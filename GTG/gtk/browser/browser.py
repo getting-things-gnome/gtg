@@ -94,11 +94,6 @@ class TaskBrowser(gobject.GObject):
         self.activetree = self.req.get_tasks_tree(name='active',refresh=False)
         self.vtree_panes['active'] = \
                 self.tv_factory.active_tasks_treeview(self.activetree)
-        # FIXME
-        self.searchtree = self.req.get_search_tree(refresh=False)
-        self.vtree_panes['search'] = \
-                self.tv_factory.active_tasks_treeview(self.searchtree)
-
 
         ### YOU CAN DEFINE YOUR INTERNAL MECHANICS VARIABLES BELOW
         self.in_toggle_workview = False
@@ -141,8 +136,7 @@ class TaskBrowser(gobject.GObject):
         #boolean to control with view is on
         # fixme
         self.mainIsSearch = False
-        self.s = Search('', self.req, self.req.get_search_tree())
-        #self.search_tree.reset_filters()
+        self.s = Search('', self.req)
         #sets the autocomplete for the entry
         self.set_autoComplete()
         # Rember values from last time
@@ -1363,24 +1357,6 @@ class TaskBrowser(gobject.GObject):
         for pane in self.vtree_panes:
             #1st we reset the tags filter
             #search is a diferent view, so it should be combined
-            '''
-            if pane == 'search':
-                vtree = self.req.get_search_tree(refresh=False)
-                vtree.reset_filters(refresh=False,transparent_only=False)
-                if view:
-                    # FIXME another ugly hack because of removing view_params
-# FIXME FIXME FIXME => I actually do not store anything in params and I should not need it (because we are selecting a view which is already stored and does not need any parameters)
-# maybe it be better to set it params = None... Think about it!
-                    params = tag0.get_attribute('params')
-                    #vtree.apply_filter(taglist[0], views[taglist[0]], refresh=True)
-                    vtree.apply_filter(taglist[0], params, refresh=True)
-                else:
-                    if self.s.is_empty():
-#search there means search filter => maybe rename it? FIXME
-                        vtree.apply_filter('search', None, refresh=True)
-                    else:
-                        vtree.apply_filter('search', self.s.get_params(), refresh=True)
-                        '''
             #active tree_pane
 # FIXME refractoring
             if False:
@@ -1813,7 +1789,7 @@ class TaskBrowser(gobject.GObject):
             #text = ''.join(['#',text,'#'])
             open = True
         #create the search
-        self.s = Search(text, self.req, self.searchtree)
+        self.s = Search(text, self.req)
         #build the search
         self.s.build_search_tokens()
         if self.s.is_valid():
@@ -1923,18 +1899,14 @@ class TaskBrowser(gobject.GObject):
         elif self.autocompleteActions[index] is self.autoCompleteOpen:
             # NOTE: Another piece of code to make search work without performance issue
             # this allows to open task also without search pane to be active
-            if USE_QUICK_ADD_AS_A_SEARCH:
-                tree = 'search'
-            else:
-                tree = 'active'
-            self.vmanager.open_task(self.req.get_task_id(self.getMainEntryText(), tree=tree))
+            self.vmanager.open_task(self.req.get_task_id(self.getMainEntryText()))
         #save a search as a view
         elif self.autocompleteActions[index] is self.autoCompleteSave:
             self.createView()
         elif self.autocompleteActions[index] is self.autoCompleteSearch:
             text = self.getMainEntryText()
             #create the search
-            self.s = Search(text, self.req, self.searchtree)
+            self.s = Search(text, self.req)
             #build the search
             self.s.build_search_tokens()
             if self.s.is_empty():

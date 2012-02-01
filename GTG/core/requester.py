@@ -75,13 +75,7 @@ class Requester(gobject.GObject):
     def get_main_view(self):
         return self.__basetree.get_main_view()
     
-    def get_search_tree(self,name='search',refresh=True):
-        """
-        return the search tree
-        only used by search operations to show a tree without interfering with the main
-        """
-        return self.__basetree.get_viewtree(name=name,refresh=refresh)
-        
+#FIXME for what is this code?
     # This is a FilteredTree that you have to handle yourself.
     # You can apply/unapply filters on it as you wish.
 #    def get_custom_tasks_tree(self, name=None, refresh=True):
@@ -199,6 +193,7 @@ class Requester(gobject.GObject):
         #if its gets here, there's no task by that name
         return False
     
+#FIXME for what do we need this function????
     def get_task_id(self, text, tree='search'):
         """
         returns the first task from a treeview
@@ -209,7 +204,7 @@ class Requester(gobject.GObject):
         #lowercase
         text = text.lower()
         #gets nodes from requested tree
-        nodes = self.get_search_tree(tree,False).get_all_nodes()
+        nodes = self.get_tasks_tree(tree,False).get_all_nodes()
         for x in nodes:
             if text == self.get_main_view().get_node(x).get_title().lower():
                 return self.get_main_view().get_node(x).get_id()

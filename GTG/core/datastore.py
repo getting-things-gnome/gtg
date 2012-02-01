@@ -161,7 +161,7 @@ class DataStore(object):
                 print "Warning: Trying to add view %s multiple times" %vname
 
         # FIXME make it better looking
-        s = Search(query, self.get_requester(), self.get_requester().get_search_tree())
+        s = Search(query, self.get_requester())
         s.build_search_tokens()
         params = s.get_params()
 

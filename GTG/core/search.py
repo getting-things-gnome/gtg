@@ -84,7 +84,7 @@ class Search:
     #character notations for different restrictions
     commandNotation = '!'
     
-    def __init__(self, text, requester, tree):
+    def __init__(self, text, requester):
         '''
         initialize the search object
         parameter:
@@ -108,7 +108,8 @@ class Search:
         self.error = ''
         #separate keywords in lists
         self.dicKeyword = self._init_keywords()
-        self.tree = tree
+#FIXME remove tree from this
+        self.tree =  None
         self.oldFilters =[]
         self.paramsToFilter = {}
         #get all tags
@@ -371,6 +372,7 @@ class Search:
             return
         return True
     
+#FIXME I do not need this funtion anymore!!!!
     def apply_search(self):
         """
         apply the search to the desired tree
