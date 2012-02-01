@@ -158,46 +158,32 @@ class DataStore(object):
             Log.warning("Problem with parsing query '%s' (skipping): %s" %
                 (query, e.message))
             return None
-#   FIXME this function was there because of running through gobject.idle_add see rev  => it is not needed anymore => switch it back!
-        #http://bazaar.launchpad.net/~gtg/gtg/trunk/revision/825.1.158
 
-        def adding_view(vname,tag, params):
-            if not self.__tagstore.has_node(vname):
-                self.__tasks.add_filter(vname,self.treefactory.search,parameters=params)
-                self.__tagstore.add_node(tag, CoreConfig.SEARCH_TAG)
-                tag.set_save_callback(self.save)
-                self.added_tag.pop(vname)
-                Log.debug("********* view added %s *******" % vname)
-            else:
-                print "Warning: Trying to add view %s multiple times" %vname
-
-        # FIXME make it better looking
-        #s = Search(query, self.get_requester())
-        #s.build_search_tokens()
-        #params = s.get_params()
-
-        # We need to be transparent in the same way as tags!
-# FIXME make it look better
+        # make search tags transparent (as normal tags)
         params['transparent'] = True
 
-        #we create a new view from a name
         vname = viewname.encode("UTF-8")
-        #if vname not in self.tags:
-        if not self.__tagstore.has_node(vname):
-            if vname not in self.added_tag:
-                tag = Tag(vname, req=self.requester)
-                #tag.set_attribute("special","searchsaved")
-                tag.set_attribute("label","<span weight='bold'>%s</span>"%(vname))
-                tag.set_attribute("icon","search")
-                # FIXME save original query
-                tag.set_attribute("query", query)
-                self.added_tag[vname] = tag
-                adding_view(vname,tag, params)
-            else:
-                #it means that we are in the process of adding the view
-                tag = self.added_tag[vname]
-        else:
+
+        if self.__tagstore.has_node(vname):
             raise IndexError('view %s was already in the datastore' %vname)
+
+        #FIXME for what is this?
+        if vname not in self.added_tag:
+            tag = Tag(vname, req=self.requester)
+            tag.set_attribute("icon","search")
+            tag.set_attribute("label","<span weight='bold'>%s</span>"%(vname))
+            tag.set_attribute("query", query)
+            self.added_tag[vname] = tag
+
+            self.__tasks.add_filter(vname, self.treefactory.search, parameters=params)
+            self.__tagstore.add_node(tag, CoreConfig.SEARCH_TAG)
+            tag.set_save_callback(self.save)
+            self.added_tag.pop(vname)
+
+            Log.debug("********* view added %s *******" % vname)
+        else:
+            #it means that we are in the process of adding the view
+            tag = self.added_tag[vname]
         return tag
         
     def get_tag(self, tagname):
