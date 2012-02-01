@@ -1,10 +1,9 @@
 [GTG Plugin]
 Module=urgency_coding
 Name=Urgency coding
-Short-description="Short description goes there"
-Description='''Long description goes right there
-'''
-Authors=XYZ <xyz@mail.com>
+Short-description="Task urgency color-coding"
+Description='''This plugin will calculate the urgency status of every of your currently active tasks and color-code it accordingly'''
+Authors=Wolter Hellmund <wolterh6@gmail.com>
 Version=0.1
 Enabled=False
 Dependencies=
