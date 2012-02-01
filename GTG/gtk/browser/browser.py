@@ -1264,59 +1264,26 @@ class TaskBrowser(gobject.GObject):
     def on_select_tag(self, widget=None, row=None, col=None):
         """
         callback for when selecting an element of the tagtree (left sidebar)
-        
-        search and its views need to be handled diferent, as they use a diferent treeView
         """
+        # FIXME add support for multiple selection of tags in future
 
-        # FIXME FIXME right now we made it that every pane has the same content!!!!!
-
-
-        # FIXME support just for the first selected tag? WTF? Is this because of search?
-        self.tv_factory.disable_update_tags()
-        #When you click on a tag, you want to unselect the tasks
-        taglist = self.get_selected_tags()
-        # FIXME really ugly code => refractoring
-        # this code was removed because of removing get_view_dic()
-        #views = self.req.get_view_dic()
-        ##check if its a view click
-        #if taglist[0] in views:
-            ##view = True
-        #else:
-            #view = False
-        tag0 = self.tagtree.get_node(taglist[0])
-        view = tag0.is_search_tag()
-        #We apply filters for every visible ViewTree
-        #FIXME this code smells pretty badly!
-        for pane in self.vtree_panes:
-            #1st we reset the tags filter
-            #search is a diferent view, so it should be combined
-            #active tree_pane
-# FIXME refractoring
-            if False:
-                pass
-            else:
-#FIXME WTF? Why we need to take every time tasks tree? We should have just one task tree!
-                vtree = self.req.get_tasks_tree(name=pane, refresh=False)
-                #vtree.reset_filters(refresh=False, transparent_only=True)
-#FIXME I had to change transparent_only into False... why? FIXME investigate this
-                vtree.reset_filters(refresh=False, transparent_only=True)
-                #then applying the tag
-                if view:
-# FIXME FIXME FIXME => I actually do not store anything in params and I should not need it (because we are selecting a view which is already stored and does not need any parameters)
-# maybe it be better to set it params = None... Think about it!
-                    #vtree.apply_filter(taglist[0], views[taglist[0]], refresh=True)
-                    vtree.apply_filter(taglist[0], refresh=True)
-
-                elif len(taglist) > 0:
-                    #FIXME : support for multiple tags selection
-                    if taglist[0] != CoreConfig.SEARCH_TAG and not view:
-                        vtree.apply_filter(taglist[0], refresh=True)
-        
         # When enable_update_tags we should update all tags to match
         # the current state. However, applying tag filter does not influence
         # other tags, because of transparent filter. Therefore there is no
         # self.tagree.refresh_all() => a significant optimization!
         # See do_toggle_workview()
+        self.tv_factory.disable_update_tags()
+
+        #When you click on a tag, you want to unselect the tasks
+        taglist = self.get_selected_tags()
+        if len(taglist) > 0:
+            tag= taglist[0]
+            # we apply filters for every pane: active tasks, closed tasks
+            for pane in self.vtree_panes:
+                vtree = self.req.get_tasks_tree(name=pane, refresh=False)
+                vtree.reset_filters(refresh=False, transparent_only=True)
+                vtree.apply_filter(tag, refresh=True)
+        
         self.tv_factory.enable_update_tags()
 
     def on_taskdone_cursor_changed(self, selection=None):

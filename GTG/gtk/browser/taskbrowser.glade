@@ -649,7 +649,6 @@
                         <property name="has_focus">True</property>
                         <property name="is_focus">True</property>
                         <property name="can_default">True</property>
-                        <!-- FIXME -->
                         <property name="invisible_char">●</property>
                         <property name="secondary_icon_stock">gtk-clear</property>
                         <signal name="changed" handler="on_quickadd_field_changed" swapped="no"/>
