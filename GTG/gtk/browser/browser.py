@@ -168,7 +168,7 @@ class TaskBrowser(gobject.GObject):
         """
         self.window             = self.builder.get_object("MainWindow")
         self.tagpopup           = self.builder.get_object("tag_context_menu")
-        self.viewpopup          = self.builder.get_object("view_context_menu")
+        self.searchpopup          = self.builder.get_object("search_context_menu")
         self.nonworkviewtag_cb  = self.builder.get_object("nonworkviewtag_mi")
         self.nonworkviewtag_cb.set_label(GnomeConfig.TAG_IN_WORKVIEW_TOGG)
         self.taskpopup          = self.builder.get_object("task_context_menu")
@@ -363,8 +363,8 @@ class TaskBrowser(gobject.GObject):
                 self.open_edit_backends,
             #search related signals
 #FIXME rename to have better name?
-            "on_view_delete_activate":
-                self.on_viewdelete_activate,
+            "on_search_delete_activate":
+                self.on_search_delete_activate,
         }
         self.builder.connect_signals(SIGNAL_CONNECTIONS_DIC)
 
@@ -764,17 +764,12 @@ class TaskBrowser(gobject.GObject):
             t.del_attribute("color")
         self.reset_cursor()
         
-    def on_viewdelete_activate(self, widget):
-        """
-        handler for the right click popup menu item from tag tree, when its a view
-        """
-#FIXME I am not sure about this code!
-        self.set_target_cursor()
-        #gets the view clicked
-        view = self.get_selected_tags()
-        #removes
-        if len(view) > 0:
-            self.req.remove_view(view[0])
+    def on_search_delete_activate(self, widget):
+        """ delete a selected search """
+        search = self.get_selected_search()
+        if search:
+            #FIXME rename => remove_view
+            self.req.remove_view(search)
         
     def on_tagcontext_deactivate(self, menushell):
         self.reset_cursor()
@@ -964,10 +959,10 @@ class TaskBrowser(gobject.GObject):
                 treeview.set_cursor(path, col, 0)
                 #the nospecial=True disable right clicking for special tags
                 selected_tags = self.get_selected_tags(nospecial=True)
-                selected_view = self.get_selected_view()
-                #popup menu for views
-                if selected_view is not None:
-                    self.viewpopup.popup(None, None, None, event.button, time)
+                selected_search = self.get_selected_search()
+                #popup menu for searches
+                if selected_search is not None:
+                    self.searchpopup.popup(None, None, None, event.button, time)
                 elif len(selected_tags) > 0:
                     # Then we are looking at single, normal tag rather than
                     # the special 'All tags' or 'Tasks without tags'. We only
@@ -1430,19 +1425,14 @@ class TaskBrowser(gobject.GObject):
                     taglist.remove(t)
         return taglist
     
-    def get_selected_view(self):
-        """
-        return the name that was selected on the tag tree
-        
-        if you select multiple, only return the first one
-        """
+    def get_selected_search(self):
+        """ return just one selected view """
         if self.tagtreeview:
-            view = self.tagtreeview.get_selected_nodes()
-            if len(view)>0:
-                # FIXME another ugly hack to remove view_paramas
-                vnode = self.tagtree.get_node(view[0])
-                if vnode.is_search_tag():
-                    return view[0]
+            tags = self.tagtreeview.get_selected_nodes()
+            if len(tags)>0:
+                tag = self.tagtree.get_node(tags[0])
+                if tag.is_search_tag():
+                    return tags[0]
         return None
     
     def reset_cursor(self):
@@ -1736,7 +1726,7 @@ class TaskBrowser(gobject.GObject):
         self.autoCompleteAdd = _("<b>Add Task</b>")
         self.autoCompleteOpen = _("<b>Open Task</b>")
         self.autoCompleteSearch = _("<b>Search</b>")
-        self.autoCompleteSave = _("<b>Save as View</b>")
+        self.autoCompleteSave = _("<b>Save as Search</b>")
         self.autocompleteActions = []
     
     def update_autocomplete(self):
@@ -1783,6 +1773,7 @@ class TaskBrowser(gobject.GObject):
         """
         deals when an action is selected on entryCompletion
         """
+#FIXME renaming view => search !!!! FIXME
         # NOTE: clear variable was added so search query is not erased every time
         clear = True
         #add a task

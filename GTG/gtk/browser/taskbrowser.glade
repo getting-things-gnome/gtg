@@ -1405,11 +1405,11 @@ commas.</property>
     <property name="pixel_size">16</property>
     <property name="icon_name">gtg-task-undismiss</property>
   </object>
-  <object class="GtkMenu" id="view_context_menu">
+  <object class="GtkMenu" id="search_context_menu">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <child>
-      <object class="GtkImageMenuItem" id="view_delete">
+      <object class="GtkImageMenuItem" id="search_delete">
         <property name="label">Delete</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
@@ -1419,7 +1419,7 @@ commas.</property>
         <property name="use_stock">False</property>
         <property name="accel_group">accelgroup1</property>
         <property name="always_show_image">True</property>
-        <signal name="activate" handler="on_view_delete_activate" swapped="no"/>
+        <signal name="activate" handler="on_search_delete_activate" swapped="no"/>
       </object>
     </child>
   </object>
