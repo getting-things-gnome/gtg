@@ -133,9 +133,7 @@ class TaskBrowser(gobject.GObject):
         # Define accelerator keys
         self._init_accelerators()
         
-        #boolean to control with view is on
-        # fixme
-        self.mainIsSearch = False
+#FIXME
         self.s = Search('', self.req)
         #sets the autocomplete for the entry
         self.set_autoComplete()
@@ -210,53 +208,9 @@ class TaskBrowser(gobject.GObject):
         # The Active tasks treeview
         self.main_pane.add(self.vtree_panes['active'])
         
-# FIXME
-    def _search_ui_widget(self, view=False):
-        """
-        changes the main pane to the search tree view
-        """
-        print "_search_ui_widget does not work anymore"
-        return
-        if not self.mainIsSearch:
-            self.main_pane.remove(self.vtree_panes['active'])
-            self.main_pane.add(self.vtree_panes['search'])
-            # Active tasks TreeView
-            self.vtree_panes['search'].connect('row-activated',\
-                self.on_edit_search_task)
-            self.vtree_panes['search'].connect('button-press-event',\
-                self.on_task_treeview_button_press_event)
-            self.vtree_panes['search'].connect('key-press-event',\
-                self.on_task_treeview_key_press_event)
-            self.vtree_panes['search'].connect('node-expanded',\
-                self.on_task_expanded)
-            self.vtree_panes['search'].connect('node-collapsed',\
-                self.on_task_collapsed)
-            self.mainIsSearch = True
-            
-    def _active_ui_widget(self):
-        """
-        changes the main pane to the active tree view
-        """
-        print "_active_ui_widget does not work anymore"
-        return
-        if self.mainIsSearch:
-            self.main_pane.remove(self.vtree_panes['search'])
-            self.main_pane.add(self.vtree_panes['active'])
-            self.vtree_panes['active'].connect('row-activated',\
-                self.on_edit_active_task)
-            self.vtree_panes['active'].connect('button-press-event',\
-                self.on_task_treeview_button_press_event)
-            self.vtree_panes['active'].connect('key-press-event',\
-                self.on_task_treeview_key_press_event)
-            self.vtree_panes['active'].connect('node-expanded',\
-                self.on_task_expanded)
-            self.vtree_panes['active'].connect('node-collapsed',\
-                self.on_task_collapsed)
-            self.mainIsSearch = False
-
     def init_tags_sidebar(self):
         """
-        initializes the tagtree (left area with tags, searches and views)
+        initializes the tagtree (left area with tags and searches)
         """
         # The tags treeview
         self.tagtree = self.req.get_tag_tree()
@@ -463,10 +417,6 @@ class TaskBrowser(gobject.GObject):
         self._add_accelerator_for_widget(agr, "delete_mi",      "Cancel")
         self._add_accelerator_for_widget(agr, "tcm_addtag",     "<Control>t")
         self._add_accelerator_for_widget(agr, "view_closed",    "<Control>F9")
-        
-        #search_button = self.builder.get_object("quicksearch_b1")
-        #key, mod    = gtk.accelerator_parse("<Control>f")
-        #search_button.add_accelerator("clicked", agr, key, mod, gtk.ACCEL_VISIBLE)
         
         #gets key inputs do parse actions that don't directly use a gtk widget
         #self.window.connect('key-press-event', self.on_key_pressed_on_main_window)
@@ -953,10 +903,8 @@ class TaskBrowser(gobject.GObject):
                 def selecter(treemodelsort, path, iter, self):
                     self.__last_quick_added_tid_event.wait()
                     
-                    if self.req.search_is_active():
-                        treeview = self.vtree_panes['search']
-                    else:
-                        treeview = self.vtree_panes['active']
+#FIXME cleanup code?
+                    treeview = self.vtree_panes['active']
                     tid = self.activetree.get_node_for_path(path)
                     if self.__last_quick_added_tid == tid:
                         #this is the correct task
@@ -968,14 +916,7 @@ class TaskBrowser(gobject.GObject):
                 gobject.idle_add(selecter,treemodelsort, path, iter, self)
             #event that is set when the new task is created
             self.__last_quick_added_tid_event = threading.Event()
-            if self.req.search_is_active():
-                self.__quick_add_select_handle = \
-                    self.vtree_panes['search'].get_model().connect(\
-                                        "row-inserted",
-                                        select_next_added_task_in_browser,
-                                        self)
-            else:
-                self.__quick_add_select_handle = \
+            self.__quick_add_select_handle = \
                     self.vtree_panes['active'].get_model().connect(\
                                         "row-inserted",
                                         select_next_added_task_in_browser,
@@ -992,10 +933,7 @@ class TaskBrowser(gobject.GObject):
                              task.get_id())
         else:
             #if no text is selected, we open the currently selected task
-            if self.req.search_is_active():
-                nids = self.vtree_panes['search'].get_selected_nodes()
-            else:
-                nids = self.vtree_panes['active'].get_selected_nodes()
+            nids = self.vtree_panes['active'].get_selected_nodes()
             for nid in nids:
                 self.vmanager.open_task(nid)
             
@@ -1139,11 +1077,6 @@ class TaskBrowser(gobject.GObject):
         if tid:
             self.vmanager.open_task(tid)
     
-    def on_edit_search_task(self, widget, row=None, col=None):
-        tid = self.get_selected_task('search')
-        if tid:
-            self.vmanager.open_task(tid)
-
     def on_edit_done_task(self, widget, row=None, col=None):
         tid = self.get_selected_task('closed')
         if tid:
@@ -1379,13 +1312,6 @@ class TaskBrowser(gobject.GObject):
                     if taglist[0] != CoreConfig.SEARCH_TAG and not view:
                         vtree.apply_filter(taglist[0], refresh=True)
         
-        #if CoreConfig.SEARCH_TAG in taglist:
-            #self._search_ui_widget()
-        #elif view:
-            #self._search_ui_widget()
-        #else:
-            #self._active_ui_widget()
-
         # When enable_update_tags we should update all tags to match
         # the current state. However, applying tag filter does not influence
         # other tags, because of transparent filter. Therefore there is no
@@ -1910,13 +1836,10 @@ class TaskBrowser(gobject.GObject):
             #build the search
             self.s.build_search_tokens()
             if self.s.is_empty():
-                self.req.set_search_status(False)
                 self._active_ui_widget()
             #if its a valid search
             elif self.s.is_valid():
                 self.s.apply_search()
-                self._search_ui_widget()
-                self.req.set_search_status(True)
                 save = True
                 # FIXME what is doing this command?
                 self.vtree_panes['search']

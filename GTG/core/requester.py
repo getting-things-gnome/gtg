@@ -59,7 +59,6 @@ class Requester(gobject.GObject):
 
         #TODO build filters here
         self.counter_call = 0
-        self.searchActive = False
 
     ############# Signals #########################
     #Used by the tasks to emit the task added/modified signal
@@ -194,7 +193,7 @@ class Requester(gobject.GObject):
         return False
     
 #FIXME for what do we need this function????
-    def get_task_id(self, text, tree='search'):
+    def get_task_id(self, text):
         """
         returns the first task from a treeview
         
@@ -214,20 +213,6 @@ class Requester(gobject.GObject):
     ############### Tags ##########################
     ###############################################
     
-    def search_is_active(self):
-        """
-        returns if there is a search active or not
-        
-        used mainly for stoping certain actions before a search is done
-        """
-        return self.searchActive
-    
-    def set_search_status(self, status):
-        """
-        sets the status of searches
-        """
-        self.searchActive = status
-
     def get_tag_tree(self):
         return self.ds.get_tagstore().get_viewtree(name='activetags')
     
