@@ -1211,6 +1211,7 @@ class TaskBrowser(gobject.GObject):
             self.on_addtag_confirm()
     
     def on_mark_as_done(self, widget):
+        # FIXME Why we need to filter uids so they are not None? why not do that in get_selected_tasks
         tasks_uid = filter(lambda uid: uid is not None, self.get_selected_tasks())
         if len(tasks_uid) == 0:
             return
@@ -1229,6 +1230,7 @@ class TaskBrowser(gobject.GObject):
                 task.set_status(Task.STA_DONE)
 
     def on_dismiss_task(self, widget):
+        # FIXME Why we need to filter uids so they are not None? why not do that in get_selected_tasks
         tasks_uid = filter(lambda uid: uid is not None, self.get_selected_tasks())
         if len(tasks_uid) == 0:
             return
@@ -1379,6 +1381,7 @@ class TaskBrowser(gobject.GObject):
         :param tv: The tree view to find the selected task in. Defaults to
             the task_tview.
         """
+        #FIXME Why we have active as back case? is that so? Study this code
         selected = []
         if tv:
             selected = self.vtree_panes[tv].get_selected_nodes()
