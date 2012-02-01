@@ -200,10 +200,11 @@ class Requester(gobject.GObject):
         default is a search view
         if there's 2 tasks with the same title, opens the first it finds...
         """
+#FIXME ask ploum how should be the default behaviour? allow to get all task title?
         #lowercase
         text = text.lower()
         #gets nodes from requested tree
-        nodes = self.get_tasks_tree(tree,False).get_all_nodes()
+        nodes = self.get_tasks_tree('active',False).get_all_nodes()
         for x in nodes:
             if text == self.get_main_view().get_node(x).get_title().lower():
                 return self.get_main_view().get_node(x).get_id()

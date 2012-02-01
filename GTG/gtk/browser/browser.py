@@ -48,8 +48,7 @@ from GTG.tools.dates             import no_date,\
                                         get_canonical_date
 from GTG.tools.logger            import Log
 from GTG.tools.tags              import extract_tags_from_text
-#FIXME
-from GTG.core.search             import parse_query, InvalidQuery
+from GTG.core.search             import parse_query, search_commands, InvalidQuery
 #FIXME Why is this commented?
 #from GTG.tools                   import clipboard
 from GTG.core.tagstore           import Tag
@@ -133,10 +132,9 @@ class TaskBrowser(gobject.GObject):
 
         # Define accelerator keys
         self._init_accelerators()
-        
-#FIXME
-        #sets the autocomplete for the entry
-        self.set_autoComplete()
+
+        # Initialize search completion
+        self._init_search_completion()
 
         # Rember values from last time
         self.last_added_tags = "NewTag"
@@ -332,18 +330,12 @@ class TaskBrowser(gobject.GObject):
                 self.on_bg_color_toggled,
             "on_quickadd_field_activate":
                 self.on_quickadd_activate,
-            "on_quickadd_entrycompletion_action_activated":
-#FIXME do we need thiS?
-                self.on_entrycompletion_action_activated,
             "on_quickadd_field_icon_press":
-#FIXME do we need thiS?
-                self.on_quicksearch_iconpress,
+                self.on_quickadd_iconpress,
             "on_quickadd_field_changed":
-#FIXME do we need thiS?
                 self.on_quickadd_changed,
-#FIXME remove
-            "on_quickadd_button_activate":
-                self.on_quickadd_activate,
+            "on_quickadd_entrycompletion_action_activated":
+                self.on_entrycompletion_action_activated,
             "on_view_quickadd_toggled":
                 self.on_toggle_quickadd,
             "on_view_toolbar_toggled":
@@ -362,8 +354,6 @@ class TaskBrowser(gobject.GObject):
                 self.open_preferences,
             "on_edit_backends_activate":
                 self.open_edit_backends,
-            #search related signals
-#FIXME rename to have better name?
             "on_search_delete_activate":
                 self.on_search_delete_activate,
         }
@@ -765,13 +755,6 @@ class TaskBrowser(gobject.GObject):
             t.del_attribute("color")
         self.reset_cursor()
         
-    def on_search_delete_activate(self, widget):
-        """ delete a selected search """
-        search = self.get_selected_search()
-        if search:
-            #FIXME rename => remove_view
-            self.req.remove_view(search)
-        
     def on_tagcontext_deactivate(self, menushell):
         self.reset_cursor()
 
@@ -879,10 +862,8 @@ class TaskBrowser(gobject.GObject):
             colt.append(str(tid))
 
     def on_quickadd_activate(self, widget):
-        """
-        callback for adding a task from the mainEntry
-        """
-        text = unicode(self.getMainEntryText())
+        """ Add a new task from quickadd toolbar """
+        text = unicode(self.quickadd_entry.get_text())
         due_date = no_date
         defer_date = no_date
         if text:
@@ -898,8 +879,6 @@ class TaskBrowser(gobject.GObject):
             def select_next_added_task_in_browser(treemodelsort, path, iter, self):
                 def selecter(treemodelsort, path, iter, self):
                     self.__last_quick_added_tid_event.wait()
-                    
-#FIXME cleanup code?
                     treeview = self.vtree_panes['active']
                     tid = self.activetree.get_node_for_path(path)
                     if self.__last_quick_added_tid == tid:
@@ -921,8 +900,7 @@ class TaskBrowser(gobject.GObject):
             self.__last_quick_added_tid = task.get_id()
             self.__last_quick_added_tid_event.set()
             task.set_complex_title(text,tags=tags)
-            self.setMainEntryText('')
-            #self.setMainEntryText(self.quickadd_entry,'')
+            self.quickadd_entry.set_text('')
 
             #signal the event for the plugins to catch
             gobject.idle_add(self.emit, "task-added-via-quick-add",
@@ -932,6 +910,11 @@ class TaskBrowser(gobject.GObject):
             nids = self.vtree_panes['active'].get_selected_nodes()
             for nid in nids:
                 self.vmanager.open_task(nid)
+
+    def on_quickadd_iconpress(self, widget, icon, event):
+        """ Clear the text in quickadd field by clicking on 'clear' icon """
+        if icon == gtk.ENTRY_ICON_SECONDARY:
+            self.quickadd_entry.set_text('')
             
     def on_tag_treeview_button_press_event(self, treeview, event):
         """
@@ -1426,16 +1409,6 @@ class TaskBrowser(gobject.GObject):
                     taglist.remove(t)
         return taglist
     
-    def get_selected_search(self):
-        """ return just one selected view """
-        if self.tagtreeview:
-            tags = self.tagtreeview.get_selected_nodes()
-            if len(tags)>0:
-                tag = self.tagtree.get_node(tags[0])
-                if tag.is_search_tag():
-                    return tags[0]
-        return None
-    
     def reset_cursor(self):
         """ Returns the cursor to the tag that was selected prior
             to any right click action. Should be used whenever we're done
@@ -1645,95 +1618,43 @@ class TaskBrowser(gobject.GObject):
         keyval = event.keyval
         name = gtk.gdk.keyval_name(keyval)
         print "KEY %s was pressed" % name
-    
-###############################################################################
-# SEARCH RELATED STUFF
-###############################################################################
 
-    def getMainEntryText(self):
-        """
-        get the text from the entry of the combobox
-        """
-        return self.quickadd_entry.get_text()
-    
-    def setMainEntryText(self, text):
-        """
-        set the text from the entry of the combobox
-        """
-        self.quickadd_entry.set_text(text)
-        
-    def on_quickadd_changed(self, editable):
-        """ Just popup TextEntry completition to manually run search """
-        open = False
-        add = True
-        save = False
-        text = self.getMainEntryText()
-        #if the text is exactly a title of a task, filter for that task only
-        if self.req.task_exist(text, lowercase=True) :
-            #text = ''.join(['#',text,'#'])
-            open = True
-        #create the search
-        self.s = Search(text, self.req)
-        #build the search
-        self.s.build_search_tokens()
-        if self.s.is_valid():
-            save = True
-        #add the actions for the popup
-        # FIXME I've blocked online searching because we don't want that
-        search = False
-        self.addActionsAutocomplete(open, add, save, search)
+#### SEARCH RELATED STUFF #####################################################
 
-    def addActionsAutocomplete(self, open, add, save, search=False):
-        """
-        adds an action to autocomplete
-        
-        firs delets all previous actions and then, acording to the situation adds the correct ones.
-        
-        its necessary to do this because, when clicking an element of the autocomplete list, only the position is returned
-        """
-        # FIXME added additional search parameter, it should be removed when performance issue is removed
-        actions = 0
-        #deletes old actions
-        for i in range(len(self.autocompleteActions)):
-            self.completion.delete_action(0)
-        
-        self.autocompleteActions = []
-        #sets the actions
-        if open:
-            self.completion.insert_action_markup(actions, self.autoCompleteOpen)
-            self.autocompleteActions.append(self.autoCompleteOpen)
-            actions += 1
-        if add:
-            self.completion.insert_action_markup(actions, self.autoCompleteAdd)
-            self.autocompleteActions.append(self.autoCompleteAdd)
-            actions += 1
+    def get_selected_search(self):
+        """ return just one selected view """
+        if self.tagtreeview:
+            tags = self.tagtreeview.get_selected_nodes()
+            if len(tags)>0:
+                tag = self.tagtree.get_node(tags[0])
+                if tag.is_search_tag():
+                    return tags[0]
+        return None
+    
+
+    def on_search_delete_activate(self, widget):
+        """ delete a selected search """
+        search = self.get_selected_search()
         if search:
-            self.completion.insert_action_markup(actions, self.autoCompleteSearch)
-            self.autocompleteActions.append(self.autoCompleteSearch)
-            actions += 1
-        if save:
-            self.completion.insert_action_markup(actions, self.autoCompleteSave)
-            self.autocompleteActions.append(self.autoCompleteSave)
-            actions += 1
-    
-    def set_autoComplete(self):
-        """
-        sets the autocomplete and the text for the actions
-        """
-        self.completion = self.builder.get_object("quickadd_entrycompletion")
-        self.quickadd_entry.set_completion(self.completion)
-        self.update_autocomplete()
-        #text in pago markup for bold actions
-        self.autoCompleteAdd = _("<b>Add Task</b>")
-        self.autoCompleteOpen = _("<b>Open Task</b>")
-        self.autoCompleteSearch = _("<b>Search</b>")
-        self.autoCompleteSave = _("<b>Save as Search</b>")
-        self.autocompleteActions = []
-    
-    def update_autocomplete(self):
-        """
-        update and populate the autocomplete with tasks, tags and commands
-        """
+            #FIXME rename => remove_view
+            self.req.remove_view(search)
+
+    def _init_search_completion(self):
+        """ Initialize search completion """
+        self.search_completion = self.builder.get_object("quickadd_entrycompletion")
+        self.quickadd_entry.set_completion(self.search_completion)
+
+        self.search_possible_actions = {
+            'add':  _("<b>Add Task</b>"),
+            'open': _("<b>Open Task</b>"),
+            'search': _("<b>Search</b>"),
+        }
+
+        self.search_actions = []
+
+        # add / update things in search_completion
+        """ update and populate the autocomplete with tasks, tags and commands """
+
         # FIXME FIXME FIXME
         # This code caches the list of tasks and then use it. However, the list
         # of tasks is not accessible at the beginning
@@ -1744,124 +1665,73 @@ class TaskBrowser(gobject.GObject):
         # in the entrycompletition
         # Izidor
         # FIXME FIXME FIXME
-        self.autoCompleteliststore = gtk.ListStore(str)
-        tags = self.req.get_all_tags()
+        self.search_complete_store = gtk.ListStore(str)
+        for tagname in self.req.get_all_tags():
+            # only for regular tags
+            if tagname.startswith("@") :
+                self.search_complete_store.append([tagname])
+
         #FIXME
-        #commands = self.s.get_commands()
-        commands = ['!refractor']
-        for s in tags:
-            #removes special tags
-            if not s.startswith("@") :
-                continue
-            self.autoCompleteliststore.append([s])
-        for s in self.req.get_all_titles(lowercase=True):
-            self.autoCompleteliststore.append([s])
-        for s in commands:
-            self.autoCompleteliststore.append([s])
-        self.completion.set_model(self.autoCompleteliststore)
-        self.completion.set_text_column(0)
-    
-    def on_quicksearch_iconpress(self, widget, icon, event):
-        """
-        clears the text when clicking the clrear icon at the end
-        
-        It has suport to one at the beginnig but isn't being used now 
-        """
-        if icon == gtk.ENTRY_ICON_PRIMARY:
+        for title in self.req.get_all_titles(lowercase=True):
+            self.search_complete_store.append([title])
+
+        #FIXME
+        for command in search_commands:
+            self.search_complete_store.append([command])
+
+        self.search_completion.set_model(self.search_complete_store)
+        self.search_completion.set_text_column(0)
+
+    def on_quickadd_changed(self, editable):
+        """ Decide which actions are allowed with the current query """
+#FIXME maybe update actions on fly without delete/add cycle!
+        # delete old actions
+        for i in range(len(self.search_actions)):
+            self.search_completion.delete_action(0)
+
+        self.search_actions = []
+        new_actions = ['add']
+        query = self.quickadd_entry.get_text()
+
+        if self.req.task_exist(query, lowercase=True):
+            new_actions.append('open')
+
+        # Is query parsable?
+        try:
+            parse_query(query)
+            new_actions.append('search')
+        except InvalidQuery:
             pass
-        elif icon == gtk.ENTRY_ICON_SECONDARY:
-            self.setMainEntryText('')
-        
+
+        # Add new order of actions
+        for aid, name in enumerate(new_actions):
+            action = self.search_possible_actions[name]
+            self.search_completion.insert_action_markup(aid, action)
+#FIXME why do we store actions when we don't use them anywhere? number will be sufficient
+            self.search_actions.append(name)
+
     def on_entrycompletion_action_activated(self, completion, index):
-        """
-        deals when an action is selected on entryCompletion
-        """
-#FIXME renaming view => search !!!! FIXME
-        # NOTE: clear variable was added so search query is not erased every time
-        clear = True
-        #add a task
-        if self.autocompleteActions[index] is self.autoCompleteAdd:
+        """ Executes action selected from completition from quickadd toolbar """
+        action = self.search_actions[index]
+        if action == 'add':
             self.on_quickadd_activate(None)
-        #open a task
-        elif self.autocompleteActions[index] is self.autoCompleteOpen:
+        elif action == 'open':
+            #FIXME how works this code? examine it correctly!
             # NOTE: Another piece of code to make search work without performance issue
             # this allows to open task also without search pane to be active
-            self.vmanager.open_task(self.req.get_task_id(self.getMainEntryText()))
-        #save a search as a view
-        elif self.autocompleteActions[index] is self.autoCompleteSave:
-            self.createView()
-        elif self.autocompleteActions[index] is self.autoCompleteSearch:
-            text = self.getMainEntryText()
-            #create the search
-            '''
-            self.s = Search(text, self.req)
-            #build the search
-            self.s.build_search_tokens()
-            if self.s.is_empty():
-                self._active_ui_widget()
-            #if its a valid search
-            elif self.s.is_valid():
-                self.s.apply_search()
-                save = True
-                # FIXME what is doing this command?
-                self.vtree_panes['search']
-            else:
-                self.req.set_search_status(False)
-                self._active_ui_widget()
-                '''
-            try:
-                parse_query(text)
-                save = True
-            except InvalidQuery:
-                save = False
-            #add the actions for the popup
-            clear = False
-
-        #clear the entry
-        if clear:
-            self.setMainEntryText('')
-        
-    def createView(self):
-        """
-        Create a new view as a searched save on the tag tree
-        
-        saves searches are stored by the datastore
-        """
-        #give nunbers to repeated views
-        numeral = 1
-        #First call a dialog windows with a entry to input text
-        dlg = gtk.Dialog(GnomeConfig.SAVEASVIEW)
-        entry = gtk.Entry()
-        entry.set_activates_default(True)
-        dlg.vbox.pack_start(entry)
-        dlg.add_button(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL)
-        dlg.add_button(gtk.STOCK_OK, gtk.RESPONSE_OK)
-        dlg.set_default_response(gtk.RESPONSE_OK)
-        dlg.show_all()
-        response = dlg.run()
-        #get the response and create the view
-        if response == gtk.RESPONSE_OK:
-            text = entry.get_text()
-            #search is a reserved word for the main search filter
-            if text == '' or text == CoreConfig.SEARCH_TAG:
-                text = 'view'
-            #save on the tree
-            try:
-                print "FIXME missing there original query!"
-                self.req.new_view(text, "FIXME")
-            except IndexError:
-                #case it has that view already, tags count has views
-                #gives another name case the view exists
-                #uses the error raised by the datastore
-                while (1):
-                    try:
-                        #try to create the view, also puts it to save on gtg exit
-                        self.req.new_view(''.join(text + str(numeral)), "FIXME")
-#FIXME wrong code there, it was not updated before
-                    except IndexError:
-                        numeral += 1
-                        continue
-                    else:
-                        text = text + str(numeral)
-                        break
-        dlg.destroy()
+            task_title = self.quickadd_entry.get_text()
+            task_id = self.req.get_task_id(task_title)
+            self.vmanager.open_task(task_id)
+            self.quickadd_entry.set_text('')
+        elif action == 'search':
+            query = self.quickadd_entry.get_text()
+            name, number = query, 1
+            while True:
+                try:
+                    self.req.new_view(name, query)
+                    break
+                except IndexError:
+                    # this name is used, adding number
+                    number += 1
+                    name = query + ' ' + str(number)
+            # FIXME after searching we should select the new search tag!
