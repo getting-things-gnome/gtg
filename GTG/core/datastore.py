@@ -67,7 +67,6 @@ class DataStore(object):
         self.requester = requester.Requester(self, global_conf)
         self.tagfile = None
         self.__tagstore = self.treefactory.get_tags_tree(self.requester)
-        self.added_tag = {}
         self.load_tag_tree()
         self._backend_signals = BackendSignals()
         self.please_quit = False #when turned to true, all pending operation
@@ -116,88 +115,50 @@ class DataStore(object):
     ### Tags functions
     ##########################################################################
 
-    def new_tag(self, tagname):
-        """Create a new tag and return it or return the existing one
-        with corresponding name"""
-#   FIXME this function was there because of running through gobject.idle_add see rev  => it is not needed anymore => switch it back!
-        #http://bazaar.launchpad.net/~gtg/gtg/trunk/revision/825.1.158
-        def adding_tag(tname, tag):
-            if not self.__tagstore.has_node(tname):
-                p = {'tag': tname, 'transparent': True}
-                self.__tasks.add_filter(tname, self.treefactory.tag_filter, parameters=p)
-                self.__tagstore.add_node(tag)
-                tag.set_save_callback(self.save)
-                self.added_tag.pop(tname)
-                Log.debug("********* tag added %s *******" % tname)
-            else:
-                print "Warning: Trying to add tag %s multiple times" % tname
-        #we create a new tag from a name
-        tname = tagname.encode("UTF-8")
-        #if tname not in self.tags:
-        if not self.__tagstore.has_node(tname):
-            if tname not in self.added_tag:
-                tag = Tag(tname, req=self.requester)
-                self.added_tag[tname] = tag
-                adding_tag(tname, tag)
-            else:
-                #it means that we are in the process of adding the tag
-                tag = self.added_tag[tname]
-        else:
-            raise IndexError('tag %s was already in the datastore' % tagname)
+    def _add_new_tag(self, name, tag, filter_func, parameters, parent_id=None):
+        """ Add tag into a tree """
+        name = name.encode("UTF-8")
+        if self.__tagstore.has_node(name):
+            raise IndexError('tag %s was already in the datastore' % name)
+
+        parameters['transparent'] = True
+
+        self.__tasks.add_filter(name, filter_func, parameters=parameters)
+        self.__tagstore.add_node(tag, parent_id=parent_id)
+        tag.set_save_callback(self.save)
+
+    def new_tag(self, name):
+        """ Create a new tag and return it """
+
+        name = name.encode("UTF-8")
+        parameters = {'tag': name}
+        tag = Tag(name, req=self.requester)
+
+        self._add_new_tag(name, tag, self.treefactory.tag_filter, parameters)
+        Log.debug("*** tag added %s ***" % name)
         return tag
 
-    def rename_tag(self, oldname, newname):
-        print "Tag renaming not implemented yet"
-    
 #FIXME rename to new_search_tag
-    def new_view(self, viewname, query):
+    def new_view(self, name, query):
         """ Create a new search tag """
         try:
-            params = parse_query(query)
+            parameters = parse_query(query)
         except InvalidQuery, e:
             Log.warning("Problem with parsing query '%s' (skipping): %s" %
                 (query, e.message))
             return None
 
-        # make search tags transparent (as normal tags)
-        params['transparent'] = True
+        name = name.encode("UTF-8")
+        tag = Tag(name, req=self.requester)
+        tag.set_attribute("icon","search")
+        tag.set_attribute("label","<span weight='bold'>%s</span>" % name)
+        tag.set_attribute("query", query)
 
-        vname = viewname.encode("UTF-8")
-
-        if self.__tagstore.has_node(vname):
-            raise IndexError('view %s was already in the datastore' %vname)
-
-        #FIXME for what is this?
-        if vname not in self.added_tag:
-            tag = Tag(vname, req=self.requester)
-            tag.set_attribute("icon","search")
-            tag.set_attribute("label","<span weight='bold'>%s</span>"%(vname))
-            tag.set_attribute("query", query)
-            self.added_tag[vname] = tag
-
-            self.__tasks.add_filter(vname, self.treefactory.search, parameters=params)
-            self.__tagstore.add_node(tag, CoreConfig.SEARCH_TAG)
-            tag.set_save_callback(self.save)
-            self.added_tag.pop(vname)
-
-            Log.debug("********* view added %s *******" % vname)
-        else:
-            #it means that we are in the process of adding the view
-            tag = self.added_tag[vname]
+        self._add_new_tag(name, tag, self.treefactory.search,
+            parameters, parent_id = CoreConfig.SEARCH_TAG)
+        Log.debug("*** view added %s ***" % name)
         return tag
-        
-    def get_tag(self, tagname):
-        #The following is wrong, as we have special tags that do not start with
-        # @. I'm leaving this here temporary to help in merging (as it will
-        # probably generate a conflict). Remove at will after merging
-        # (invernizzi)
-        #if tagname[0] != "@":
-        #    tagname = "@" + tagname
-        if self.__tagstore.has_node(tagname):
-            return self.__tagstore.get_node(tagname)
-        else:
-            return None
-
+    
 # FIXME maybe not needed anymore because we don't have any view_params
     def remove_view(self,viewname):
         """
@@ -210,6 +171,21 @@ class DataStore(object):
             #self.del_view_control(viewname)
         else:
             raise IndexError("No view to by named %s" % viewname)
+
+    def rename_tag(self, oldname, newname):
+        print "Tag renaming not implemented yet"
+    
+    def get_tag(self, tagname):
+        #The following is wrong, as we have special tags that do not start with
+        # @. I'm leaving this here temporary to help in merging (as it will
+        # probably generate a conflict). Remove at will after merging
+        # (invernizzi)
+        #if tagname[0] != "@":
+        #    tagname = "@" + tagname
+        if self.__tagstore.has_node(tagname):
+            return self.__tagstore.get_node(tagname)
+        else:
+            return None
 
     def load_tag_tree(self):
         """
