@@ -119,6 +119,8 @@ class DataStore(object):
     def new_tag(self, tagname):
         """Create a new tag and return it or return the existing one
         with corresponding name"""
+#   FIXME this function was there because of running through gobject.idle_add see rev  => it is not needed anymore => switch it back!
+        #http://bazaar.launchpad.net/~gtg/gtg/trunk/revision/825.1.158
         def adding_tag(tname, tag):
             if not self.__tagstore.has_node(tname):
                 p = {'tag': tname, 'transparent': True}
@@ -150,6 +152,9 @@ class DataStore(object):
     def new_view(self, viewname, query):
         """Create a new view and return it or return the existing one
         with corresponding name"""
+#   FIXME this function was there because of running through gobject.idle_add see rev  => it is not needed anymore => switch it back!
+        #http://bazaar.launchpad.net/~gtg/gtg/trunk/revision/825.1.158
+
         def adding_view(vname,tag, params):
             if not self.__tagstore.has_node(vname):
                 self.__tasks.add_filter(vname,self.treefactory.search,parameters=params)
