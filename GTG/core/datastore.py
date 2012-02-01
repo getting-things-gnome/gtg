@@ -149,9 +149,15 @@ class DataStore(object):
     def rename_tag(self, oldname, newname):
         print "Tag renaming not implemented yet"
     
+#FIXME rename to new_search_tag
     def new_view(self, viewname, query):
-        """Create a new view and return it or return the existing one
-        with corresponding name"""
+        """ Create a new search tag """
+        try:
+            params = parse_query(query)
+        except InvalidQuery, e:
+            Log.warning("Problem with parsing query '%s' (skipping): %s" %
+                (query, e.message))
+            return None
 #   FIXME this function was there because of running through gobject.idle_add see rev  => it is not needed anymore => switch it back!
         #http://bazaar.launchpad.net/~gtg/gtg/trunk/revision/825.1.158
 
@@ -169,11 +175,6 @@ class DataStore(object):
         #s = Search(query, self.get_requester())
         #s.build_search_tokens()
         #params = s.get_params()
-        try:
-            params = parse_query(query)
-        except InvalidQuery, e:
-            print "Problem with parsing query '%s' (skipping): %s" % (query, e.message)
-            return
 
         # We need to be transparent in the same way as tags!
 # FIXME make it look better
@@ -255,37 +256,38 @@ class DataStore(object):
         self.tagfile = tagfile
 
     def save_tagtree(self):
-        """
-        saves the tag tree to a xml file
-        """
-        if self.tagfile:
-            doc, xmlroot = cleanxml.emptydoc(TAG_XMLROOT)
-            tags = self.__tagstore.get_main_view().get_all_nodes()
-            already_saved = [] #We avoid saving the same tag twice
-            
-            #we don't save tags with no attributes
-            #It saves space and allow the saved list growth to be controlled
-            for tname in tags:
-                t = self.__tagstore.get_node(tname)
-                attr = t.get_all_attributes(butname=True, withparent=True)
-                if "special" not in attr and len(attr) > 0:
-                    tagname = t.get_name()
-                    if not tagname in already_saved:
-                        t_xml = doc.createElement("tag")
-                        t_xml.setAttribute("name", tagname)
-                        already_saved.append(tagname)
-                        for a in attr:
-                            # Don't save labels => they are generated all the time
-                            if CoreConfig.SEARCH_TAG in t.get_parents() and a == 'label':
-                                continue
+        """ saves the tag tree to a xml file """
+        if not self.tagfile:
+            return
 
-                            value = t.get_attribute(a)
-                            if value:
-                                t_xml.setAttribute(a, value)
-                        xmlroot.appendChild(t_xml)
-                        
-            #finally, save it
-            cleanxml.savexml(self.tagfile, doc)
+        doc, xmlroot = cleanxml.emptydoc(TAG_XMLROOT)
+        tags = self.__tagstore.get_main_view().get_all_nodes()
+        already_saved = [] 
+        
+        for tagname in tags:
+            if tagname in already_saved:
+                continue
+
+            tag = self.__tagstore.get_node(tagname)
+            attributes = tag.get_all_attributes(butname=True, withparent=True)
+            if "special" in attributes or len(attributes) == 0:
+                continue
+
+            t_xml = doc.createElement("tag")
+            t_xml.setAttribute("name", tagname)
+            for attr in attributes:
+                # skip labels for search tags
+                if tag.is_search_tag() and attr == 'label':
+                    continue
+
+                value = tag.get_attribute(attr)
+                if value:
+                    t_xml.setAttribute(attr, value)
+
+            xmlroot.appendChild(t_xml)
+            already_saved.append(tagname)
+                    
+        cleanxml.savexml(self.tagfile, doc)
     
     ##########################################################################
     ### Tasks functions

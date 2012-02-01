@@ -96,7 +96,7 @@ class TreeFactory:
                                     self.notag, parameters=p)
         
         # Build the search tag
-        search_tag = Tag(CoreConfig.SEARCH_TAG,req=req)
+        search_tag = Tag(CoreConfig.SEARCH_TAG, req=req)
         search_tag.set_attribute("special","search")
         search_tag.set_attribute("label","<span weight='bold'>%s</span>"\
                                              % _("Search"))
