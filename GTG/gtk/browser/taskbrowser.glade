@@ -653,10 +653,8 @@
                         <property name="invisible_char">●</property>
                         <property name="secondary_icon_stock">gtk-clear</property>
                         <signal name="changed" handler="on_quickadd_field_changed" swapped="no"/>
-                        <signal name="key-release-event" handler="on_quickadd_key_release" swapped="no"/>
                         <signal name="activate" handler="on_quickadd_field_activate" swapped="no"/>
                         <signal name="icon-press" handler="on_quickadd_field_icon_press" swapped="no"/>
-                        <signal name="key-press-event" handler="on_quickadd_key_press" swapped="no"/>
                       </object>
                       <packing>
                         <property name="expand">True</property>

@@ -62,9 +62,6 @@ DOCUMENTATION_URL = "http://live.gnome.org/gtg/documentation"
 #Some default preferences that we should save in a file
 TIME             = 0
 
-# Do we want to use Search? (It is really slow right now)
-USE_QUICK_ADD_AS_A_SEARCH = False
-
 class Timer:
     def __init__(self,st):
         self.st = st
@@ -105,14 +102,6 @@ class TaskBrowser(gobject.GObject):
 
         ### YOU CAN DEFINE YOUR INTERNAL MECHANICS VARIABLES BELOW
         self.in_toggle_workview = False
-
-        # FIXME we should put the performance of search into order so it is possible to use it without problems
-        if USE_QUICK_ADD_AS_A_SEARCH:
-            self.quickadd_callback = self.on_quicksearch_activate
-            self.quickadd_changed = self.on_quicksearch_changed
-        else:
-            self.quickadd_callback = self.on_quickadd_activate
-            self.quickadd_changed = self.on_quicksearch_safe_changed
 
         # Setup GTG icon theme
         self._init_icon_theme()
@@ -393,17 +382,16 @@ class TaskBrowser(gobject.GObject):
             "on_bg_color_toggled":
                 self.on_bg_color_toggled,
             "on_quickadd_field_activate":
-                # FIXME put in normal after SEARCH has good performance
-                #self.on_quicksearch_activate,
-                self.quickadd_callback,
+                self.on_quickadd_activate,
             "on_quickadd_entrycompletion_action_activated":
+#FIXME do we need thiS?
                 self.on_entrycompletion_action_activated,
             "on_quickadd_field_icon_press":
+#FIXME do we need thiS?
                 self.on_quicksearch_iconpress,
             "on_quickadd_field_changed":
-                # FIXME put in normal after SEARCH has good performance
-                #self.on_quicksearch_changed,
-                self.quickadd_changed,
+#FIXME do we need thiS?
+                self.on_quickadd_changed,
 #FIXME remove
             "on_quickadd_button_activate":
                 self.on_quickadd_activate,
@@ -426,10 +414,7 @@ class TaskBrowser(gobject.GObject):
             "on_edit_backends_activate":
                 self.open_edit_backends,
             #search related signals
-            "on_quickadd_key_press":
-                self.quickadd_key_press,
-            "on_quickadd_key_release":
-                self.quickadd_key_release,
+#FIXME rename to have better name?
             "on_view_delete_activate":
                 self.on_viewdelete_activate,
         }
@@ -839,6 +824,7 @@ class TaskBrowser(gobject.GObject):
         """
         handler for the right click popup menu item from tag tree, when its a view
         """
+#FIXME I am not sure about this code!
         self.set_target_cursor()
         #gets the view clicked
         view = self.get_selected_tags()
@@ -1816,7 +1802,7 @@ class TaskBrowser(gobject.GObject):
         """
         self.quickadd_entry.set_text(text)
         
-    def on_quicksearch_safe_changed(self, editable):
+    def on_quickadd_changed(self, editable):
         """ Just popup TextEntry completition to manually run search """
         open = False
         add = True
@@ -1837,42 +1823,6 @@ class TaskBrowser(gobject.GObject):
         search = False
         self.addActionsAutocomplete(open, add, save, search)
 
-    def on_quicksearch_changed(self, editable):
-        """
-        controls the input from the main entry
-        """
-        if not self.doSearch:
-            return
-        open = False
-        add = True
-        save = False
-        text = self.getMainEntryText()
-        #if the text is exactly a title of a task, filter for that task only
-        if self.req.task_exist(text, lowercase=True) :
-            #text = ''.join(['#',text,'#'])
-            open = True
-        #create the search
-        self.s = Search(text, self.req, self.searchtree)
-        #build the search
-        self.s.build_search_tokens()
-        if self.s.is_empty():
-            self.req.set_search_status(False)
-            self._active_ui_widget()
-        #if its a valid search
-        elif self.s.is_valid():
-            
-            self.s.apply_search()
-            self._search_ui_widget()
-            self.req.set_search_status(True)
-            save = True
-            # FIXME what is doing this command?
-            self.vtree_panes['search']
-        else:
-            self.req.set_search_status(False)
-            self._active_ui_widget()
-            #add the actions for the popup
-        self.addActionsAutocomplete(open, add, save)
-        
     def addActionsAutocomplete(self, open, add, save, search=False):
         """
         adds an action to autocomplete
@@ -1919,7 +1869,6 @@ class TaskBrowser(gobject.GObject):
         self.autoCompleteSearch = _("<b>Search</b>")
         self.autoCompleteSave = _("<b>Save as View</b>")
         self.autocompleteActions = []
-        self.doSearch = True
     
     def update_autocomplete(self):
         """
@@ -1950,26 +1899,6 @@ class TaskBrowser(gobject.GObject):
         self.completion.set_model(self.autoCompleteliststore)
         self.completion.set_text_column(0)
     
-    def quickadd_key_press(self, widget, event):
-        """
-        optimization func
-        this serves to stop search when pressing certain keys to exaustion (backspace for example)
-        """
-        #backsapce example
-        if event.keyval == 65288:
-            self.doSearch = False
-        
-    def quickadd_key_release(self, widget, event):
-        """
-        optimization func
-        serves to stop search when pressing certain keys to exaustion (backspace for example)
-        """
-        #backsapce example
-        if event.keyval == 65288:
-            self.doSearch = True
-            # NOTE: this was changed to general callback (for instant search or for not)
-            self.quickadd_changed(None)
-    
     def on_quicksearch_iconpress(self, widget, icon, event):
         """
         clears the text when clicking the clrear icon at the end
@@ -1981,27 +1910,6 @@ class TaskBrowser(gobject.GObject):
         elif icon == gtk.ENTRY_ICON_SECONDARY:
             self.setMainEntryText('')
         
-    def on_quicksearch_activate(self, widget):
-        '''
-        deals with an "enter" on the main entry
-        
-        Activation of the main entry should use the defaul action of the dropdown
-        '''
-        #if there is no text, do nothing
-        if self.getMainEntryText() == '':
-            return
-        #add
-        if self.autocompleteActions[0] is self.autoCompleteAdd:
-            self.on_quickadd_activate(widget)
-        #opens the task with that name
-        elif self.autocompleteActions[0] is self.autoCompleteOpen:
-            self.vmanager.open_task(self.req.get_task_id(self.getMainEntryText()))
-        #save as view
-        elif self.autocompleteActions[0] is self.autoCompleteSave:
-            self.createView()
-        #clear the text
-        self.setMainEntryText('')
-            
     def on_entrycompletion_action_activated(self, completion, index):
         """
         deals when an action is selected on entryCompletion
