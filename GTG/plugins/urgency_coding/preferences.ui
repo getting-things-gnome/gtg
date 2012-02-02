@@ -12,6 +12,7 @@
     <property name="border_width">5</property>
     <property name="type_hint">dialog</property>
     <property name="has_resize_grip">False</property>
+    <signal name="close" handler="on_window_close_event" swapped="no"/>
     <child internal-child="vbox">
       <object class="GtkBox" id="vbox_main">
         <property name="can_focus">False</property>
@@ -30,6 +31,7 @@
                 <property name="receives_default">True</property>
                 <property name="use_action_appearance">False</property>
                 <property name="use_stock">True</property>
+                <signal name="clicked" handler="on_prefs_reset_event" swapped="no"/>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -46,6 +48,7 @@
                 <property name="receives_default">True</property>
                 <property name="use_action_appearance">False</property>
                 <property name="use_stock">True</property>
+                <signal name="clicked" handler="on_prefs_apply_event" swapped="no"/>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -74,7 +77,7 @@
                 <property name="top_padding">5</property>
                 <property name="left_padding">12</property>
                 <child>
-                  <object class="GtkBox" id="hbox_reddays">
+                  <object class="GtkHBox" id="hbox_reddays">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <child>
@@ -149,13 +152,12 @@
                 <property name="top_padding">5</property>
                 <property name="left_padding">12</property>
                 <child>
-                  <object class="GtkBox" id="vbox_colors">
+                  <object class="GtkVBox" id="vbox_colors">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="orientation">vertical</property>
                     <property name="spacing">5</property>
                     <child>
-                      <object class="GtkBox" id="hbox_colors_red">
+                      <object class="GtkHBox" id="hbox_colors_red">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <child>
@@ -192,7 +194,7 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkBox" id="hbox_colors_yellow">
+                      <object class="GtkHBox" id="hbox_colors_yellow">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <child>
@@ -229,7 +231,7 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkBox" id="hbox_colors_green">
+                      <object class="GtkHBox" id="hbox_colors_green">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <child>

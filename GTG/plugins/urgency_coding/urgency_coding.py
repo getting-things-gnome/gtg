@@ -18,13 +18,14 @@ from GTG.tools.dates import date, no_date
 from math import ceil
 
 import gtk
+import os
 
 class pluginUrgencyCoding:
 
     PLUGIN_NAME = 'Urgency color'
     # FIXME: Choose a definitive name for the plugin and make it
     # consistent in all the plugin files.
-    DEFAULT_PREFERENCES = {
+    DEFAULT_PREFS = {
         'reddays':30,
         'color_red':'#cfff84',
         'color_yellow':'#ffed84',
@@ -39,6 +40,7 @@ class pluginUrgencyCoding:
         """ Plugin is activated """
         self._plugin_api = plugin_api
         self.req = self._plugin_api.get_requester()
+        self.prefs_init()
         self.prefs_load()
         # Set color function
         self._plugin_api.set_bgcolor_func(self.bgcolor)
@@ -68,11 +70,14 @@ class pluginUrgencyCoding:
             # Return color for this node
             return None
 
-    def deactivate(self._plugin_api):
+    def deactivate(self, plugin_api):
         """ Plugin is deactivated """
         self._plugin_api.set_bgcolor_func()
 
 # Preferences dialog
+    def is_configurable(self):
+        """Requisite function for configurable plugins"""
+        return True
 
     def configure_dialog(self, manager_dialog):
         self.prefs_window.show_all()
@@ -85,11 +90,13 @@ class pluginUrgencyCoding:
             'preferences.ui'))
         # Get the widgets
         self.prefs_window = self.builder.get_object('window')
+        self.prefs_window.set_title(('GTG - %s preferences' % self.PLUGIN_NAME))
+        self.prefs_window.set_size_request(300,-1)
         self.spinner_reddays = self.builder.get_object('spinner_reddays')
         self.colorbutton_red = self.builder.get_object('colorbutton_red')
         self.colorbutton_yellow = self.builder.get_object('colorbutton_yellow')
         self.colorbutton_green = self.builder.get_object('colorbutton_green')
-        self.button_apply =  self.builder.get_objet('button_apply')
+        self.button_apply =  self.builder.get_object('button_apply')
         self.button_reset = self.builder.get_object('button_reset')
         SIGNAL_CONNECTIONS_DIC = {
             'on_window_close_event':
@@ -102,17 +109,17 @@ class pluginUrgencyCoding:
         self.builder.connect_signals(SIGNAL_CONNECTIONS_DIC)
 
     def on_prefs_cancel(self, widget=None, data=None):
-        self.window.hide()
+        self.prefs_window.hide()
         # Restore widgets to current saved settings
         return True
 
     def on_prefs_apply(self, widget=None, data=None):
         self.prefs_store()
-        self.window.hide()
+        self.prefs_window.hide()
 
     def on_prefs_reset(self, widget=None, data=None):
         # Restore the default plugin settings
-        self.window.hide()
+        self.prefs_window.hide()
 
     def prefs_load(self):
         data = self._plugin_api.load_configuration_object( \
@@ -126,6 +133,12 @@ class pluginUrgencyCoding:
     def prefs_store(self):
         self._plugin_api.save_configuration_object( \
             self.PLUGIN_NAME,
-            'preferences'
+            'preferences',
             self._pref_data) #FIXME: need such an attribute
 
+# TODO:
+# Make preferences load colors for color buttons
+# Make preference saving work
+# Implement the color fecthing from preferences in the bgcolor function
+# Implement the redday factor fectrhing from the preferences in the
+# bgcolor function too
