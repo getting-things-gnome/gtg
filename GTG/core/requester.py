@@ -237,7 +237,7 @@ class Requester(gobject.GObject):
         @param query: Query will be parsed using search parser
         @return:      new tag
         """
-        return self.ds.new_search_tag(viewname, params)
+        return self.ds.new_search_tag(name, query)
     
     def remove_tag(self, name):
         """ calls datastore to remove a given tag """

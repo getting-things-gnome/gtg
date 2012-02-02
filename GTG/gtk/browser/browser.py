@@ -1730,10 +1730,26 @@ class TaskBrowser(gobject.GObject):
             name, number = query, 1
             while True:
                 try:
-                    self.req.new_search_tag(name, query)
+                    tag = self.req.new_search_tag(name, query)
                     break
                 except IndexError:
                     # this name is used, adding number
                     number += 1
                     name = query + ' ' + str(number)
-            # FIXME after searching we should select the new search tag!
+
+            # Selecting the new search right after its creation
+
+            # Make sure search is expanded
+            model = self.tagtreeview.get_model()
+            search_iter = model.my_get_iter((CoreConfig.SEARCH_TAG,))
+            search_path = model.get_path(search_iter)
+            self.tagtreeview.expand_row(search_path, False)
+
+            # need to figure out iterator in tagtreeview => quite complicated
+            path = self.tagtree.get_paths_for_node(tag.get_id())[0]
+            tag_iter = model.my_get_iter(path)
+
+            selection = self.tagtreeview.get_selection()
+            selection.unselect_all()
+            selection.select_iter(tag_iter)
+            self.on_select_tag()

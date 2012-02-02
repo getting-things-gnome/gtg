@@ -161,10 +161,10 @@ class DataStore(object):
     
     def remove_tag(self, name):
         """ Removes a tag from the tagtree """
-        if self.__tagstore.has_node(viewname):
-            self.__tagstore.del_node(viewname)
+        if self.__tagstore.has_node(name):
+            self.__tagstore.del_node(name)
         else:
-            raise IndexError("No view to by named %s" % viewname)
+            raise IndexError("There is no tag %s" % name)
 
     def rename_tag(self, oldname, newname):
         print "Tag renaming not implemented yet"
