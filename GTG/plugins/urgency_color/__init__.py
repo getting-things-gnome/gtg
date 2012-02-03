@@ -14,7 +14,7 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from GTG.plugins.urgency_coding.urgency_coding import pluginUrgencyCoding
+from GTG.plugins.urgency_color.urgency_color import pluginUrgencyColor
 
 #suppress pyflakes warning (given by make lint)
-if False == True: pluginUrgencyCoding()
+if False == True: pluginUrgencyColor()

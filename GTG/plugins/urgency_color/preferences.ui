@@ -1,80 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
   <!-- interface-requires gtk+ 3.0 -->
-  <object class="GtkAdjustment" id="spinner_reddays_adjustment">
+  <object class="GtkAdjustment" id="spinbutton_reddays_adjustment">
     <property name="upper">100</property>
-    <property name="value">30</property>
     <property name="step_increment">5</property>
     <property name="page_increment">10</property>
   </object>
-  <object class="GtkDialog" id="window">
+  <object class="GtkWindow" id="prefs_window">
     <property name="can_focus">False</property>
     <property name="border_width">5</property>
     <property name="type_hint">dialog</property>
     <property name="has_resize_grip">False</property>
-    <signal name="close" handler="on_window_close_event" swapped="no"/>
-    <child internal-child="vbox">
-      <object class="GtkBox" id="vbox_main">
+    <signal name="delete-event" handler="on_prefs_window_delete_event" swapped="no"/>
+    <child>
+      <object class="GtkVBox" id="vbox_main">
         <property name="can_focus">False</property>
-        <property name="orientation">vertical</property>
         <property name="spacing">2</property>
-        <child internal-child="action_area">
-          <object class="GtkButtonBox" id="dialog-action_area1">
-            <property name="can_focus">False</property>
-            <property name="layout_style">end</property>
-            <child>
-              <object class="GtkButton" id="button_reset">
-                <property name="label">gtk-revert-to-saved</property>
-                <property name="use_action_appearance">False</property>
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
-                <property name="use_action_appearance">False</property>
-                <property name="use_stock">True</property>
-                <signal name="clicked" handler="on_prefs_reset_event" swapped="no"/>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">0</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkButton" id="button_apply">
-                <property name="label">gtk-apply</property>
-                <property name="use_action_appearance">False</property>
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
-                <property name="use_action_appearance">False</property>
-                <property name="use_stock">True</property>
-                <signal name="clicked" handler="on_prefs_apply_event" swapped="no"/>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">1</property>
-              </packing>
-            </child>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="pack_type">end</property>
-            <property name="position">0</property>
-          </packing>
-        </child>
         <child>
           <object class="GtkFrame" id="frame_reddays">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="label_xalign">0</property>
-            <property name="shadow_type">none</property>
+            <property name="shadow_type">in</property>
             <child>
               <object class="GtkAlignment" id="alignment1">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="top_padding">5</property>
+                <property name="bottom_padding">5</property>
                 <property name="left_padding">12</property>
                 <child>
                   <object class="GtkHBox" id="hbox_reddays">
@@ -93,13 +46,14 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkSpinButton" id="spinner_reddays">
+                      <object class="GtkSpinButton" id="spinbutton_reddays">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="invisible_char">•</property>
-                        <property name="adjustment">spinner_reddays_adjustment</property>
+                        <property name="adjustment">spinbutton_reddays_adjustment</property>
                         <property name="climb_rate">10</property>
                         <property name="numeric">True</property>
+                        <signal name="value-changed" handler="on_prefs_spinbutton_reddays_changed" swapped="no"/>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -136,7 +90,7 @@
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">1</property>
+            <property name="position">0</property>
           </packing>
         </child>
         <child>
@@ -144,12 +98,13 @@
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="label_xalign">0</property>
-            <property name="shadow_type">none</property>
+            <property name="shadow_type">in</property>
             <child>
               <object class="GtkAlignment" id="alignment2">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="top_padding">5</property>
+                <property name="bottom_padding">5</property>
                 <property name="left_padding">12</property>
                 <child>
                   <object class="GtkVBox" id="vbox_colors">
@@ -167,6 +122,7 @@
                             <property name="can_focus">True</property>
                             <property name="receives_default">True</property>
                             <property name="use_action_appearance">False</property>
+                            <signal name="color-set" handler="on_prefs_colorbutton_red_changed" swapped="no"/>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -204,6 +160,7 @@
                             <property name="can_focus">True</property>
                             <property name="receives_default">True</property>
                             <property name="use_action_appearance">False</property>
+                            <signal name="color-set" handler="on_prefs_colorbutton_yellow_changed" swapped="no"/>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -241,6 +198,7 @@
                             <property name="can_focus">True</property>
                             <property name="receives_default">True</property>
                             <property name="use_action_appearance">False</property>
+                            <signal name="color-set" handler="on_prefs_colorbutton_green_changed" swapped="no"/>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -283,14 +241,63 @@
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">2</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkAlignment" id="alignment3">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="top_padding">5</property>
+            <child>
+              <object class="GtkHButtonBox" id="hbuttonbox">
+                <property name="can_focus">False</property>
+                <property name="border_width">6</property>
+                <property name="homogeneous">True</property>
+                <child>
+                  <object class="GtkButton" id="button_reset">
+                    <property name="label">gtk-revert-to-saved</property>
+                    <property name="use_action_appearance">False</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="use_action_appearance">False</property>
+                    <property name="use_stock">True</property>
+                    <signal name="clicked" handler="on_prefs_reset_event" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkButton" id="button_apply">
+                    <property name="label">gtk-apply</property>
+                    <property name="use_action_appearance">False</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="use_action_appearance">False</property>
+                    <property name="use_stock">True</property>
+                    <signal name="clicked" handler="on_prefs_apply_event" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
+            <property name="position">3</property>
           </packing>
         </child>
       </object>
     </child>
-    <action-widgets>
-      <action-widget response="0">button_reset</action-widget>
-      <action-widget response="0">button_apply</action-widget>
-    </action-widgets>
   </object>
 </interface>
