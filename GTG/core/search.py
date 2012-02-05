@@ -56,20 +56,19 @@ KEYWORDS = {
 
 # transform keywords and their translations into a list of possible commands
 for key in KEYWORDS:
-    possible_words = key.lower().split() + KEYWORDS[key].lower().split()
-    possible_words = [word for word in possible_words if word != ""]
-    possible_words = list(set(possible_words))
+    if " " not in KEYWORDS[key] and KEYWORDS[key].lower() != key.lower():
+        possible_words = [key.lower(), KEYWORDS[key].lower()]
+    else:
+        possible_words = [key.lower()]
     KEYWORDS[key] = possible_words
 
-# FIXME
+# Generate list of possible commands
 search_commands = []
 for keyword in KEYWORDS:
     for command in KEYWORDS[keyword]:
         command = '!' + command
         if command not in search_commands:
             search_commands.append(command)
-
-print "commands", search_commands
 
 class InvalidQuery(Exception):
     pass
