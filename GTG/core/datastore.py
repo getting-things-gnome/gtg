@@ -167,8 +167,35 @@ class DataStore(object):
             raise IndexError("There is no tag %s" % name)
 
     def rename_tag(self, oldname, newname):
-        print "Tag renaming not implemented yet"
-    
+        """ Give a tag a new name
+
+        This function is quite high-level method. Right now,
+        only renaming search bookmarks are implemented by removing
+        the old one and creating almost identical one with the new name.
+
+        NOTE: Implementation for regular tasks must be much more robust.
+        You have to replace all occurences of tag name in tasks descriptions,
+        their parameters and backend settings (synchronize only certain tags).
+        
+        Have a fun with implementing it!
+        """
+        tag = self.get_tag(oldname)
+
+        if not tag.is_search_tag():
+            print "Tag renaming not implemented yet"
+            return None
+
+        query = tag.get_attribute("query")
+        self.__tagstore.del_node(oldname)
+
+        # Make sure the name is unique
+        label, num = newname, 1
+        while self.__tagstore.has_node(label):
+            num += 1
+            label = newname + " " + str(num)
+
+        self.new_search_tag(label, query)
+
     def get_tag(self, tagname):
         #The following is wrong, as we have special tags that do not start with
         # @. I'm leaving this here temporary to help in merging (as it will

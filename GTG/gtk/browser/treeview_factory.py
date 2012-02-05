@@ -65,7 +65,8 @@ class TreeviewFactory():
         # List of keys for connecting/disconnecting Tag tree
         self.tag_cllbcks = []
 
-        
+        # Cache tags treeview for on_rename_tag callback
+        self.tags_view = None
         
     #############################
     #Functions for tasks columns
@@ -295,11 +296,11 @@ class TreeviewFactory():
         col_name = 'tagname'
         col = {}
         render_text = gtk.CellRendererText()
-        # FIXME Change it to True when tag renaming will be implemented
-        render_text.set_property('editable', False) 
         render_text.set_property('ypad', 3)
-        #FIXME : renaming tag feature
-#        render_text.connect("edited", self.req.rename_tag)
+        # Allow renaming
+        # FIXME Is there any way how to disable renaming for certain tags?
+        render_text.set_property('editable', True) 
+        render_text.connect("edited", self.on_rename_tag)
         col['renderer'] = ['markup',render_text]
         col['value'] = [str,self.tag_name]
         col['expandable'] = True
@@ -324,6 +325,17 @@ class TreeviewFactory():
         self.enable_update_tags()
 
         return self.build_tag_treeview(tree,desc)
+
+    def on_rename_tag(self, renderer, path, new_name):
+        model = self.tags_view.get_model()
+        my_iter = model.get_iter(path)
+        tag_id = model.get_value(my_iter, 0)
+        tag = self.req.get_tag(tag_id)
+
+        if tag.is_search_tag():
+            self.req.rename_tag(tag_id, new_name)
+        else:
+            print "FIXME: renaming tags is not implemented"
 
     def enable_update_tags(self):
         self.tag_cllbcks = []
@@ -473,4 +485,5 @@ class TreeviewFactory():
         self.unactive_color = \
                         treeview.style.text[gtk.STATE_INSENSITIVE].to_string()
         treeview.set_sort_column('tag_id')
+        self.tags_view = treeview
         return treeview 
