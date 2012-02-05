@@ -45,7 +45,7 @@ from GTG.tools                   import cleanxml
 from GTG.backends.backendsignals import BackendSignals
 from GTG.tools.synchronized      import synchronized
 from GTG.tools.borg              import Borg
-from GTG.core.search             import parse_query, InvalidQuery
+from GTG.core.search             import parse_query, search_filter, InvalidQuery
 
 
 class DataStore(object):
@@ -153,7 +153,7 @@ class DataStore(object):
         tag.set_attribute("label","<span weight='bold'>%s</span>" % name)
         tag.set_attribute("query", query)
 
-        self._add_new_tag(name, tag, self.treefactory.search,
+        self._add_new_tag(name, tag, search_filter,
             parameters, parent_id = CoreConfig.SEARCH_TAG)
         Log.debug("*** view added %s ***" % name)
         return tag
