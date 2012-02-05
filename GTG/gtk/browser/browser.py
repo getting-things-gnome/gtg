@@ -47,7 +47,7 @@ from GTG.tools.dates             import no_date,\
                                         get_canonical_date
 from GTG.tools.logger            import Log
 from GTG.tools.tags              import extract_tags_from_text
-from GTG.core.search             import parse_query, search_commands, InvalidQuery
+from GTG.core.search             import parse_search_query, search_commands, InvalidQuery
 #FIXME Why is this commented?
 #from GTG.tools                   import clipboard
 
@@ -1697,7 +1697,7 @@ class TaskBrowser(gobject.GObject):
 
         # Is query parsable?
         try:
-            parse_query(query)
+            parse_search_query(query)
             new_actions.append('search')
         except InvalidQuery:
             pass

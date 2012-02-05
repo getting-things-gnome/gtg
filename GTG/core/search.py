@@ -109,8 +109,7 @@ def _tokenize_query(query):
         raise InvalidQuery('tokenizer stopped at pos %r of %r left of "%s"' % (
             pos, len(query), query[pos:pos+10]))
 
-#FIXME rename => parse_search_query()
-def parse_query(query):
+def parse_search_query(query):
     """ Parse query into parameters for search filter
 
     If query is not correct, exception InvalidQuery is raised.
@@ -335,4 +334,4 @@ def search_filter(task,parameters=None):
 
 if __name__ == "__main__":
     for query in ["my simple @not query"]:
-        print parse_query(query)
+        print parse_search_query(query)

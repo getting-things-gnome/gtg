@@ -45,7 +45,7 @@ from GTG.tools                   import cleanxml
 from GTG.backends.backendsignals import BackendSignals
 from GTG.tools.synchronized      import synchronized
 from GTG.tools.borg              import Borg
-from GTG.core.search             import parse_query, search_filter, InvalidQuery
+from GTG.core.search             import parse_search_query, search_filter, InvalidQuery
 
 
 class DataStore(object):
@@ -141,7 +141,7 @@ class DataStore(object):
     def new_search_tag(self, name, query):
         """ Create a new search tag """
         try:
-            parameters = parse_query(query)
+            parameters = parse_search_query(query)
         except InvalidQuery, e:
             Log.warning("Problem with parsing query '%s' (skipping): %s" %
                 (query, e.message))
