@@ -223,6 +223,9 @@ class TaskBrowser(gobject.GObject):
             self.on_tag_treeview_button_press_event)
         self.sidebar_container.add(self.tagtreeview)
 
+        # expanding search tag does not work automatically, request it
+        self.expand_search_tag()
+
     def _init_toolbar_tooltips(self):
         """
         sets tooltips for widgets on toolbars
@@ -1720,6 +1723,15 @@ class TaskBrowser(gobject.GObject):
 #FIXME why do we store actions when we don't use them anywhere? number will be sufficient
             self.search_actions.append(name)
 
+    def expand_search_tag(self):
+        """ For some unknown reason, search tag is not expanded correctly and
+        it must be done manually """
+        if self.tagtreeview is not None:
+            model = self.tagtreeview.get_model()
+            search_iter = model.my_get_iter((CoreConfig.SEARCH_TAG,))
+            search_path = model.get_path(search_iter)
+            self.tagtreeview.expand_row(search_path, False)
+
     def on_entrycompletion_action_activated(self, completion, index):
         """ Executes action selected from completition from quickadd toolbar """
         action = self.search_actions[index]
@@ -1761,12 +1773,10 @@ class TaskBrowser(gobject.GObject):
 
                 # Make sure search tag parent is expanded
                 # (otherwise selection does not work)
-                model = self.tagtreeview.get_model()
-                search_iter = model.my_get_iter((CoreConfig.SEARCH_TAG,))
-                search_path = model.get_path(search_iter)
-                self.tagtreeview.expand_row(search_path, False)
+                self.expand_search_tag()
 
                 # Get iterator for new search tag
+                model = self.tagtreeview.get_model()
                 path = self.tagtree.get_paths_for_node(tag.get_id())[0]
                 tag_iter = model.my_get_iter(path)
 
