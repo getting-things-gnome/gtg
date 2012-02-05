@@ -30,7 +30,6 @@ FIXME parameters of query => how it should looks like
 import re
 
 from GTG import _
-#_ = lambda s: s
 
 # Generate keywords and their possible translations
 # They must be listed because of gettext
@@ -331,7 +330,3 @@ def search_filter(task,parameters=None):
                     return False
     #if it gets here, the task is in the search params
     return True
-
-if __name__ == "__main__":
-    for query in ["my simple @not query"]:
-        print parse_search_query(query)
