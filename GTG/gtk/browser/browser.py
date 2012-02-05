@@ -32,7 +32,6 @@ import pygtk
 pygtk.require('2.0')
 import gobject
 import gtk
-import re
 
 #our own imports
 import GTG
@@ -51,8 +50,6 @@ from GTG.tools.tags              import extract_tags_from_text
 from GTG.core.search             import parse_query, search_commands, InvalidQuery
 #FIXME Why is this commented?
 #from GTG.tools                   import clipboard
-from GTG.core.tagstore           import Tag
-
 
 #=== MAIN CLASS ===============================================================
 
@@ -411,9 +408,6 @@ class TaskBrowser(gobject.GObject):
         self._add_accelerator_for_widget(agr, "delete_mi",      "Cancel")
         self._add_accelerator_for_widget(agr, "tcm_addtag",     "<Control>t")
         self._add_accelerator_for_widget(agr, "view_closed",    "<Control>F9")
-        
-        #gets key inputs do parse actions that don't directly use a gtk widget
-        #self.window.connect('key-press-event', self.on_key_pressed_on_main_window)
         
         edit_button = self.builder.get_object("edit_b")
         key, mod    = gtk.accelerator_parse("<Control>e")
@@ -1628,11 +1622,6 @@ class TaskBrowser(gobject.GObject):
         self.vbox_toolbars.pack_start(infobar, True)
         return infobar
     
-    def on_key_pressed_on_main_window(self, window, event):
-        keyval = event.keyval
-        name = gtk.gdk.keyval_name(keyval)
-        print "KEY %s was pressed" % name
-
 #### SEARCH RELATED STUFF #####################################################
 
     def get_selected_search(self):
