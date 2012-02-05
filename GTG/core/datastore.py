@@ -215,24 +215,19 @@ class DataStore(object):
         tagfile = os.path.join(CoreConfig().get_data_dir(), TAG_XMLFILE)
         doc, xmlstore = cleanxml.openxmlfile(tagfile, TAG_XMLROOT)
         for t in xmlstore.childNodes:
-            #We should only care about tag with a name beginning with "@" and search tags
-            #Other are special tags
             tagname = t.getAttribute("name")
-            #parent dictates what the element is
             parent = t.getAttribute('parent')
-            #a search is linear. by the time it finds a search all the params are extracted
+
             if parent == CoreConfig.SEARCH_TAG:
                 self.new_search_tag(tagname, t.getAttribute('query'))
             else:
-                # FIXME write this in more python fashioned way
                 tag = self.new_tag(tagname)
                 attr = t.attributes
-                i = 0
-                while i < attr.length:
+                for i in range(attr.length):
                     at_name = attr.item(i).name
                     at_val = t.getAttribute(at_name)
                     tag.set_attribute(at_name, at_val)
-                    i += 1
+
                 if parent:
                     tag.set_parent(parent)
         self.tagfile = tagfile
