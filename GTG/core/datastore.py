@@ -186,7 +186,7 @@ class DataStore(object):
             return None
 
         query = tag.get_attribute("query")
-        self.__tagstore.del_node(oldname)
+        self.remove_tag(oldname)
 
         # Make sure the name is unique
         label, num = newname, 1
