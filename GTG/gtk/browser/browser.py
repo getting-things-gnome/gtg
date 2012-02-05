@@ -1677,16 +1677,13 @@ class TaskBrowser(gobject.GObject):
         # right now. Without this it works, but not show list of prefix tasks
         # in the entrycompletition
         # Izidor
+        # FIXME load titles into search_completion
         # FIXME FIXME FIXME
         self.search_complete_store = gtk.ListStore(str)
         for tagname in self.req.get_all_tags():
             # only for regular tags
             if tagname.startswith("@") :
                 self.search_complete_store.append([tagname])
-
-        #FIXME
-        for title in self.req.get_all_titles(lowercase=True):
-            self.search_complete_store.append([title])
 
         #FIXME
         for command in search_commands:
@@ -1706,7 +1703,7 @@ class TaskBrowser(gobject.GObject):
         new_actions = ['add']
         query = self.quickadd_entry.get_text()
 
-        if self.req.task_exist(query, lowercase=True):
+        if self.req.get_task_id(query) is not None:
             new_actions.append('open')
 
         # Is query parsable?

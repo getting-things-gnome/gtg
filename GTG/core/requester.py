@@ -155,61 +155,20 @@ class Requester(gobject.GObject):
                 self.emit('tag-modified', tag.get_name())
         return self.__basetree.del_node(tid, recursive=recursive)
 
-    def get_all_titles(self, lowercase=False):
-        """
-        Gets the titles from all tasks
-        
-        if lowercase, titles are return in lowercase :)
-        """
-        titles = []
-        nodes = self.get_main_view().get_all_nodes()
-        if lowercase:
-            for x in nodes:
-                titles.append(self.get_main_view().get_node(x).get_title().lower())
-        else:
-            for x in nodes:
-                titles.append(self.get_main_view().get_node(x).get_title())
-        return titles
-    
-    def task_exist(self,text, lowercase=False):
-        """
-        Checks if a task exists by its title
-        
-        if lowercase, titles are not case checked :)
-        """
-        #gets all nodes
-        nodes = self.get_main_view().get_all_nodes()
-        #case insensitive
-        if lowercase:
-            for x in nodes:
-                if text.lower() == self.get_main_view().get_node(x).get_title().lower():
-                    return True
-        #case sensitive
-        else:
-            for x in nodes:
-                if text == self.get_main_view().get_node(x).get_title():
-                    return True
-        #if its gets here, there's no task by that name
-        return False
-    
-#FIXME for what do we need this function????
-    def get_task_id(self, text):
-        """
-        returns the first task from a treeview
-        
-        default is a search view
-        if there's 2 tasks with the same title, opens the first it finds...
-        """
-#FIXME ask ploum how should be the default behaviour? allow to get all task title?
-        #lowercase
-        text = text.lower()
-        #gets nodes from requested tree
-        nodes = self.get_tasks_tree('active',False).get_all_nodes()
-        for x in nodes:
-            if text == self.get_main_view().get_node(x).get_title().lower():
-                return self.get_main_view().get_node(x).get_id()
-        else:
-            raise IndexError("Task %s not in search tree" % text)
+    def get_task_id(self, task_title):
+        """ Heuristic which convert task_title to a task_id
+
+        Return a first task which has similar title """
+
+        task_title = task_title.lower()
+        tasks = self.get_tasks_tree('active', False).get_all_nodes()
+        tasktree = self.get_main_view()
+        for task_id in tasks:
+            task = tasktree.get_node(task_id)
+            if task_title == task.get_title().lower():
+                return task_id
+
+        return None
         
     ############### Tags ##########################
     ###############################################
