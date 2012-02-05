@@ -1265,8 +1265,14 @@ class TaskBrowser(gobject.GObject):
         #When you click on a tag, you want to unselect the tasks
         taglist = self.get_selected_tags()
         if len(taglist) > 0:
-            self.apply_filter_on_panes(taglist[0])
-        
+            tagname = taglist[0]
+            self.apply_filter_on_panes(tagname)
+
+            # In case of search tag, set query in quickadd for refining search query
+            tag = self.req.get_tag(tagname)
+            if tag.is_search_tag():
+                self.quickadd_entry.set_text(tag.get_attribute("query"))
+
         self.tv_factory.enable_update_tags()
 
     def on_taskdone_cursor_changed(self, selection=None):
