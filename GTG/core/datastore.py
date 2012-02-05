@@ -138,7 +138,6 @@ class DataStore(object):
         Log.debug("*** tag added %s ***" % name)
         return tag
 
-#FIXME rename to new_search_tag
     def new_search_tag(self, name, query):
         """ Create a new search tag """
         try:
