@@ -1727,29 +1727,47 @@ class TaskBrowser(gobject.GObject):
             self.quickadd_entry.set_text('')
         elif action == 'search':
             query = self.quickadd_entry.get_text()
+
+            # find possible name collisions
             name, number = query, 1
+            already_search = False
             while True:
-                try:
-                    tag = self.req.new_search_tag(name, query)
+                tag = self.req.get_tag(name)
+                if tag is None:
                     break
-                except IndexError:
-                    # this name is used, adding number
-                    number += 1
-                    name = query + ' ' + str(number)
+
+                if tag.is_search_tag() and tag.get_attribute("query") == query:
+                    already_search = True
+                    break
+
+                # this name is used, adding number
+                number += 1
+                name = query + ' ' + str(number)
+
+            if not already_search:
+                tag = self.req.new_search_tag(name, query)
 
             # Selecting the new search right after its creation
 
-            # Make sure search is expanded
-            model = self.tagtreeview.get_model()
-            search_iter = model.my_get_iter((CoreConfig.SEARCH_TAG,))
-            search_path = model.get_path(search_iter)
-            self.tagtreeview.expand_row(search_path, False)
+            # Make sure search is expanded => FIXME => still needs to apply filter...
+            if self.tagtreeview is not None:
+                model = self.tagtreeview.get_model()
+                search_iter = model.my_get_iter((CoreConfig.SEARCH_TAG,))
+                search_path = model.get_path(search_iter)
+                self.tagtreeview.expand_row(search_path, False)
 
-            # need to figure out iterator in tagtreeview => quite complicated
-            path = self.tagtree.get_paths_for_node(tag.get_id())[0]
-            tag_iter = model.my_get_iter(path)
+                # need to figure out iterator in tagtreeview => quite complicated
+                path = self.tagtree.get_paths_for_node(tag.get_id())[0]
+                tag_iter = model.my_get_iter(path)
 
-            selection = self.tagtreeview.get_selection()
-            selection.unselect_all()
-            selection.select_iter(tag_iter)
-            self.on_select_tag()
+                selection = self.tagtreeview.get_selection()
+                selection.unselect_all()
+                selection.select_iter(tag_iter)
+                self.on_select_tag()
+            else:
+                print "here I am"
+                # Just apply filters => FIXME this is a copy'n'paste => own function
+                for pane in self.vtree_panes:
+                    vtree = self.req.get_tasks_tree(name=pane, refresh=False)
+                    vtree.reset_filters(refresh=False, transparent_only=True)
+                    vtree.apply_filter(name, refresh=True)
