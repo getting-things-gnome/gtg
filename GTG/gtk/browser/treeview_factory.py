@@ -23,6 +23,7 @@ import xml.sax.saxutils as saxutils
 import locale
 
 from GTG                              import _
+from GTG.core                         import CoreConfig
 from GTG.core.task                    import Task
 from GTG.gtk.browser.CellRendererTags import CellRendererTags
 from GTG.gtk.liblarch_gtk             import TreeView
@@ -355,6 +356,11 @@ class TreeviewFactory():
         tree = self.req.get_tag_tree().get_basetree()
         tree.refresh_node('gtg-tags-all')
         tree.refresh_node('gtg-tags-none')
+
+        search_parent = self.req.get_tag(CoreConfig.SEARCH_TAG)
+        for search_tag in search_parent.get_children():
+            tree.refresh_node(search_tag)
+
         task = self.req.get_task(node_id)
         if task:
             for t in self.req.get_task(node_id).get_tags():
