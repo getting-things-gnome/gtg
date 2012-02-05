@@ -1242,6 +1242,13 @@ class TaskBrowser(gobject.GObject):
             else:
                 task.set_status(Task.STA_DISMISSED)
 
+    def apply_filter_on_panes(self, filter_name):
+        """ Apply filters for every pane: active tasks, closed tasks """
+        for pane in self.vtree_panes:
+            vtree = self.req.get_tasks_tree(name=pane, refresh=False)
+            vtree.reset_filters(refresh=False, transparent_only=True)
+            vtree.apply_filter(filter_name, refresh=True)
+
     def on_select_tag(self, widget=None, row=None, col=None):
         """
         callback for when selecting an element of the tagtree (left sidebar)
@@ -1258,12 +1265,7 @@ class TaskBrowser(gobject.GObject):
         #When you click on a tag, you want to unselect the tasks
         taglist = self.get_selected_tags()
         if len(taglist) > 0:
-            tag= taglist[0]
-            # we apply filters for every pane: active tasks, closed tasks
-            for pane in self.vtree_panes:
-                vtree = self.req.get_tasks_tree(name=pane, refresh=False)
-                vtree.reset_filters(refresh=False, transparent_only=True)
-                vtree.apply_filter(tag, refresh=True)
+            self.apply_filter_on_panes(taglist[0])
         
         self.tv_factory.enable_update_tags()
 
@@ -1747,27 +1749,25 @@ class TaskBrowser(gobject.GObject):
             if not already_search:
                 tag = self.req.new_search_tag(name, query)
 
-            # Selecting the new search right after its creation
-
-            # Make sure search is expanded => FIXME => still needs to apply filter...
+            # Apply new search right now
             if self.tagtreeview is not None:
+                # Select new search in tagsidebar and apply it
+
+                # Make sure search tag parent is expanded
+                # (otherwise selection does not work)
                 model = self.tagtreeview.get_model()
                 search_iter = model.my_get_iter((CoreConfig.SEARCH_TAG,))
                 search_path = model.get_path(search_iter)
                 self.tagtreeview.expand_row(search_path, False)
 
-                # need to figure out iterator in tagtreeview => quite complicated
+                # Get iterator for new search tag
                 path = self.tagtree.get_paths_for_node(tag.get_id())[0]
                 tag_iter = model.my_get_iter(path)
 
+                # Select only it and apply filters on top of that
                 selection = self.tagtreeview.get_selection()
                 selection.unselect_all()
                 selection.select_iter(tag_iter)
                 self.on_select_tag()
             else:
-                print "here I am"
-                # Just apply filters => FIXME this is a copy'n'paste => own function
-                for pane in self.vtree_panes:
-                    vtree = self.req.get_tasks_tree(name=pane, refresh=False)
-                    vtree.reset_filters(refresh=False, transparent_only=True)
-                    vtree.apply_filter(name, refresh=True)
+                self.apply_filter_on_panes(name)
