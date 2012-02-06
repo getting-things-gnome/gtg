@@ -19,10 +19,24 @@ from __future__ import with_statement
 # -----------------------------------------------------------------------------
 #
 import gobject
+import processqueue
+
+ASYNC_MODIFY = True
 
 class FilteredTree():
-    # FIXME comment of class
-    # describe cache and Virtual Root
+    """ FilteredTree is the most important and also the most buggy part of
+    LibLarch.
+
+    FilteredTree transforms general changes in tree like creating/removing 
+    relationships between nodes and adding/updating/removing nodes into a serie
+    of simple steps which can be for instance by GTK Widget.
+
+    FilteredTree allows filtering - hiding certain nodes defined by a predicate.
+
+    The reason of most bugs is that FilteredTree is request to update a node.
+    FilteredTree must update its ancestors and also decestors. You cann't do that
+    by a simple recursion.
+    """
 
     def __init__(self, tree, filtersbank, refresh=True):
         """ Construct a layer where filters could by applied
@@ -36,13 +50,14 @@ class FilteredTree():
         """
 
         self.cllbcks = {}
+        self.callcount = {'up':0,'down':0,'both':0}
+        self._queue = processqueue.SyncQueue()
 
         # Cache
         self.nodes = {}
         self.root_id = None
-#FIXME: this is just for printing
-        self.root_id = 'root'
         self.nodes[self.root_id] = {'parents': [], 'children': []}
+        self.cache_paths = {}
 
         # Connect to signals from MainTree
         self.tree = tree
@@ -55,11 +70,9 @@ class FilteredTree():
         self.applied_filters = []
         self.fbank = filtersbank
         
-        #DEBUG
-        self.count = 0
-
         if refresh:
             self.refilter()
+            
 
     def set_callback(self, event, func,node_id=None, param=None):
         """ Register a callback for an event.
@@ -81,7 +94,7 @@ class FilteredTree():
         else:
             self.cllbcks[event] = [func,node_id,param]
         
-    def callback(self, event, node_id, path, neworder=None):
+    def callback(self, event, node_id, path, neworder=None,async=False):
         """ Run a callback.
 
         To call callback, the object must be initialized and function exists.
@@ -103,86 +116,34 @@ class FilteredTree():
                 else:
                     raise Exception('%s is not displayed but %s was added' %(nid,node_id))
         func,nid,param = self.cllbcks.get(event, (None,None,None))
-        if event == "modified":
-                self.count += 1
-#                print "FT has sent modified %s times" %self.count
         if func:
             if neworder:
-                func(node_id, path, neworder)
+                if async:
+                    self._queue.push(func, node_id, path, neworder)
+                else:
+                    func(node_id,path,neworder)
             else:
-                func(node_id, path)
+                if async:
+                    self._queue.push(func, node_id, path)
+                else:
+                    func(node_id,path)
+                    
+    def flush(self):
+        return self._queue.flush()
+            
 
 #### EXTERNAL MODIFICATION ####################################################
     def __external_modify(self, node_id):
-        # First thing is to find all nodes to update
-#        print "####### external_modify called for %s" %node_id
-        need_update = [node_id]
-        visited = []
-        # Go up
-        queue = [node_id]
-        while queue != []:
-            node_id = queue.pop(0)
-            visited.append(node_id)
-
-            if node_id in self.nodes:
-                for parent_id in self.nodes[node_id]['parents']:
-                    if parent_id not in visited and not self.is_node_okay(parent_id):
-                        queue.append(parent_id)
-                        if parent_id not in need_update:
-                            need_update.insert(0, parent_id)
-
-            for parent_id in self.__node_parents(node_id):
-                if parent_id not in visited and not self.is_node_okay(parent_id):
-                    queue.append(parent_id)
-                    if parent_id not in need_update:
-                        need_update.insert(0, parent_id)
-                        
-        # Go down
-        queue = [node_id]
-        while queue != []:
-            node_id = queue.pop(0)
-            visited.append(node_id)
-
-            if node_id in self.nodes:
-                for child_id in self.nodes[node_id]['children']:
-                    if child_id not in visited and not self.is_node_okay(child_id):
-                        queue.append(child_id)
-                        if child_id not in need_update:
-                            need_update.append(child_id)
-
-            for child_id in self.__node_children(node_id):
-                if child_id not in visited and not self.is_node_okay(child_id):
-                    queue.append(child_id)
-                    if child_id not in need_update:
-                        need_update.append(child_id)
-
-        while need_update != []:
-            to_update = need_update
-            need_update = []
-            for node_id in to_update:
-                if not self.update_node(node_id):
-                    need_update.append(node_id)
-
-        #self.test_validity()
-
-    def is_node_okay(self, node_id):
-        # Root is always okay :-)
-        if node_id == self.root_id:
-            return True
-
-        current_display = self.is_displayed(node_id)
-        new_display = self.__is_displayed(node_id)
-        if current_display and new_display:
-
-            current_parents = self.nodes[node_id]['parents']
-            new_parents = self.__node_parents(node_id)
-            return current_parents == new_parents
-        else:
-            return False
-
-        return current_parents == new_parents
+        return self.__update_node(node_id,direction="both")
         
-    def update_node(self, node_id):
+    def __update_node(self, node_id,direction):
+        '''update the node node_id and propagate the 
+        change in direction (up|down|both) '''
+#        print "update %s in %s" %(node_id,direction)
+        if node_id == self.root_id:
+            return None
+        
+        #Updating the node itself.
         current_display = self.is_displayed(node_id)
         new_display = self.__is_displayed(node_id)
 
@@ -197,7 +158,7 @@ class FilteredTree():
             action = 'deleted'
         else:
             action = 'modified'
-
+            
         # Create node info for new node
         if action == 'added':
             self.nodes[node_id] = {'parents':[], 'children':[]}
@@ -211,73 +172,74 @@ class FilteredTree():
 
             remove_from = list(set(current_parents) - set(new_parents))
             add_to = list(set(new_parents) - set(current_parents))
+            stay = list(set(new_parents) - set(add_to))
 
+            #If we are updating a node at the root, we should take care
+            #of the root too
+            if direction == "down" and self.root_id in add_to:
+                direction = "both"
+
+            #We update the parents
+            if action == 'added':
+                #This check is for "phantom parents", for example
+                #If we have a flat or leave-only filter, we have to update the
+                #real parents!
+                node = self.tree.get_node(node_id)
+                for parent in node.get_parents():
+                    if parent not in new_parents and parent not in current_parents:
+                        self.__update_node(parent,direction="up")
             for parent_id in remove_from:
                 self.send_remove_tree(node_id, parent_id)
                 self.nodes[parent_id]['children'].remove(node_id)
-
+                if direction == "both" or direction == "up":
+                    self.__update_node(parent_id,direction="up")
             #there might be some optimization here
             for parent_id in add_to:
                 if parent_id in self.nodes:
                     self.nodes[parent_id]['children'].append(node_id)
                     self.send_add_tree(node_id, parent_id)
+                    if direction == "both" or direction == "up":
+                        self.__update_node(parent_id,direction="up")
                 else:
                     completely_updated = False
+            #We update all the other parents
+            if direction == "both" or direction == "up":
+                for parent_id in stay:
+                    self.__update_node(parent_id,direction="up")
+            #We update the node itself     
+            #Why should we call the callback only for modify?
+            if action == 'modified':
+                self.callcount[direction] += 1
+#                print self.callcount
+                for path in self.get_paths_for_node(node_id):
+                    self.callback(action, node_id, path,async=ASYNC_MODIFY) 
+            
+            #We update the children
+            current_children = self.nodes[node_id]['children']
+            new_children = self.__node_children(node_id)
+            if direction == "both" or direction == "down":
+                for cid in new_children:
+                    if cid not in current_children:
+                        self.__update_node(cid,direction="down")
 
         elif action == 'deleted':
-            for child_id in reversed(self.nodes[node_id]['children']):
+            paths = self.get_paths_for_node(node_id)
+            children = list(reversed(self.nodes[node_id]['children']))
+            for child_id in children:
                 self.send_remove_tree(child_id, node_id)
                 self.nodes[child_id]['parents'].remove(node_id)
-
-        #there might be some optimization here
-        if action == 'modified':
-            for path in self.get_paths_for_node(node_id):
-                self.callback(action, node_id, path)
-
-# FIXME I must admit, this is a little bit awkward. When adding/removing
-# a node, we want to update parent later. But! We have to make sure parent
-# is okay because we need a place to put / remove children. Then we send
-# modified signal. When parents are solved, we do not have to care about
-# them and just care about the children. But when we finish dealing with
-# children, the parent is not update. In most case, this is not a problem.
-# But current GTG shows count of subtasks in the name of parent and we NEED
-# to update parent.
-#
-# I am not sure what can we do about it. Maybe design a new algorithm?
-# Maybe an optimization of signals could help. Top of my head, we can cache
-# the callbacks and reduce redundant 'modified' signals (a heuristic needed)
-#
-# Please, use profiler first - maybe it does not matter at all (in that case
-# feel free to remove this long comment)
-#
-# The algorithm should be updated to every time update every ancestor!
-#
-# (Izidor, 2011-08-07)
-
-# FIXME the order of following action must be proper => when deleted signal is sent,
-# the node must be already deleted => we must cache it locally and solve callback later
-        queue = list(self.nodes[node_id]['parents'])
-
-        if action == 'deleted':
-            paths = self.get_paths_for_node(node_id)
-
             # Remove node from cache
             for parent_id in self.nodes[node_id]['parents']:
                 self.nodes[parent_id]['children'].remove(node_id)
+                self.__update_node(parent_id,direction="up")
 
             del self.nodes[node_id]
+
+            for child_id in children:
+                self.__update_node(child_id,direction="down")
+            
             for path in paths:
                 self.callback(action, node_id, path)
-
-        while queue != []:
-            parent_id = queue.pop(0)
-            if parent_id == self.root_id:
-                continue
-            queue.extend(self.nodes[parent_id]['parents'])
-            
-            for path in self.get_paths_for_node(parent_id):
-#                print "sending modified for %s at path %s" %(parent_id,str(path))
-                self.callback('modified', parent_id, path)
 
         return completely_updated
 
@@ -341,14 +303,13 @@ class FilteredTree():
         self.nodes[self.root_id] = {'parents': [], 'children': []}
 
         # Build tree again
-# FIXME do not ignore __flat
         root_node = self.tree.get_root()
         queue = root_node.get_children()
-#FIXME special call
 
         while queue != []:
             node_id = queue.pop(0)
-            self.update_node(node_id)
+            #FIXME: decide which is the best direction
+            self.__update_node(node_id, direction="both")
 
             node = self.tree.get_node(node_id)
             for child_id in node.get_children():
@@ -363,6 +324,8 @@ class FilteredTree():
                     can_be_displayed = filt.is_displayed(node_id)
                     if not can_be_displayed:
                         return False
+                else:
+                    return False
             return True
         else:
             return False
@@ -395,30 +358,58 @@ class FilteredTree():
         return toreturn
 
     def __node_parents(self, node_id):
-        """ Returns parents of the given node, or [] if there is no 
-        parent (such as if the node is a child of the virtual root),
-        or if the parent is not displayable.
+        """ Returns parents of the given node. If node has no parent or 
+        no displyed parent, return the virtual root.
         """
-        # FIXME comment
         if node_id == self.root_id:
             raise ValueError("Requested a parent of the root node")
 
         parents_nodes = []
         #we return only parents that are not root and displayed
-        if not self.__flat :
-            if self.tree.has_node(node_id):
-                node = self.tree.get_node(node_id)
-                for parent_id in node.get_parents():
-                    if self.__is_displayed(parent_id):
-                        parents_nodes.append(parent_id)
+        if not self.__flat and self.tree.has_node(node_id):
+            node = self.tree.get_node(node_id)
+            for parent_id in node.get_parents():
+                if self.__is_displayed(parent_id):
+                    parents_nodes.append(parent_id)
 
         # Add to root if it is an orphan
         if parents_nodes == []:
             parents_nodes = [self.root_id]
 
         return parents_nodes
+        
+    #This is a crude hack which is more performant that other methods
+    def is_path_valid(self,p):
+#        print "is %s valid?" %str(p)
+        valid = True
+        i = 0
+        if len(p) == 1:
+            valid = False
+        else:
+            while valid and i < len(p) - 1:
+                child = p[i+1]
+                par = p[i]
+                if self.nodes.has_key(par):
+                    valid = (child in self.nodes[par]['children'])
+                else:
+                    valid = False
+                i += 1
+        return valid
 
     def get_paths_for_node(self, node_id):
+#        cached = self.cache_paths.get(node_id,None)
+        #The cache improves performance a lot for "stairs"
+        #FIXME : the cache cannot detect if a new path has been added
+#        validcache = False
+#        if cached:
+#            validcache = True
+#            for p in cached:
+#                validcache = validcache and self.is_path_valid(p)
+#            if validcache:
+##                print "the valid cache is : %s" %str(cached)
+#                return cached
+
+        
         if node_id == self.root_id or not self.is_displayed(node_id):
             return [()]
         else:
@@ -427,11 +418,15 @@ class FilteredTree():
                 if parent_id not in self.nodes:
                     raise Exception("Parent %s does not exists" % parent_id)
                 if node_id not in self.nodes[parent_id]['children']:
-                    raise Exception("%s is not children of %s" % (node_id, parent_id))
+                    raise Exception("%s is not children of %s\n%s" % (node_id, parent_id,str(self.nodes)))
 
                 for parent_path in self.get_paths_for_node(parent_id):
                     mypath = parent_path + (node_id,)
                     toreturn.append(mypath)
+#            #Testing the cache
+#            if validcache and toreturn != cached:
+#                print "We return %s but %s was cached" %(str(toreturn),str(cached))
+            self.cache_paths[node_id] = toreturn
             return toreturn
 
     def print_tree(self, string=False):
@@ -474,9 +469,6 @@ class FilteredTree():
         If include_transparent=False, we only take into account the applied filters
         that doesn't have the transparent parameters.
         """
-#FIXME docstring
-# FIXME this implementation is the most naive
-
         if withfilters == [] and include_transparent:
             # Use current cache
             return len(self.nodes) - 1
@@ -515,7 +507,7 @@ class FilteredTree():
                     continue
 
                 # Skip transparent filters if needed
-                transparent = filt.get_parameters('transparent')
+                transparent = filt.is_transparent()
                 if not include_transparent and transparent:
                     continue
 
@@ -543,7 +535,9 @@ class FilteredTree():
         if not path or path == ():
             return None
         node_id = path[-1]
+        #Both "if" should be benchmarked
         if path in self.get_paths_for_node(node_id):
+#        if self.is_path_valid(path):
             return node_id
         else:
             return None

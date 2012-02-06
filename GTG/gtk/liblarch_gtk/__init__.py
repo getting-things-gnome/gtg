@@ -219,12 +219,10 @@ class TreeView(gtk.TreeView):
             if iter:
                 target_path = self.basetreemodel.get_path(iter)
                 if self.basetreemodel.get_value(iter,0) == node_id:
-                    print "we will collapse %s at %s" %(node_id,str(target_path))
                     self.collapse_row(target_path)
                     self.collapsed_paths.append(llpath)
                     it = self.basetreemodel.get_iter(target_path)
                     newid = self.basetreemodel.get_value(it,0)
-                    print "we have collapsed node %s" %newid
                 else:
                     self.basetree.queue_action(node_id,self.collapse_node,param=llpath)
             else:
@@ -451,7 +449,6 @@ class TreeView(gtk.TreeView):
                     #I hate to silently fail but we have no choice.
                     #It means that the iter is not good.
                     #Thanks shitty gtk API for not allowing us to test the string
-                    print "cannot get an iter from %s" %iter
                     dragged_iter = None
 
             elif info in self.dnd_external_targets and destination_tid:

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
-# Getting Things Gnome! - a personal organizer for the GNOME desktop
-# Copyright (c) 2008-2011 - Lionel Dricot & Bertrand Rousseau
+# Liblarch
+# Copyright (c) 2010-2011 - Lionel Dricot & Izidor Matušov
 #
 # This program is free software: you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -17,71 +17,9 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-
 import threading
-import gobject
-
-class SyncQueue:
-    """ Synchronized queue for processing requests"""
-
-    def __init__(self, callback):
-        """ Initialize synchronized queue.
-
-        @param callback - function for processing requests"""
-        self._queue = []
-        self._vip_queue = []
-        self._handler = None
-        self.callback = callback
-        self._lock = threading.Lock()
-
-    def push(self, *element):
-        """ Add a new element to the queue.
-
-        Schedule its processing if it is not already.  
-        """
-        self._lock.acquire()
-        self._queue.append(element)
-
-        if self._handler is None:
-            self._handler = gobject.idle_add(self.callback)
-        self._lock.release()
-        
-    def priority_push(self, *element):
-        """ Add a new element to the queue.
-
-        Schedule its processing if it is not already.  
-        vip element are in a priority queue. They will be processed first
-        (this comment was actually written in Berlin Airport, after having
-        to wait in an economy class queue)"""
-        self._lock.acquire()
-        self._vip_queue.append(element)
-
-        if self._handler is None:
-            self._handler = gobject.idle_add(self.callback)
-        self._lock.release()
-
-    def process(self):
-        """ Return elements to process
-        
-        At the moment, it returns just one element. In the future more
-        elements may be better to return (to speed it up).
-        
-        If there is no request left, disable processing. """
-
-        self._lock.acquire()
-        if len(self._vip_queue) > 0:
-            toreturn = [self._vip_queue.pop(0)]
-        elif len(self._queue) > 0:
-            toreturn = [self._queue.pop(0)]
-        else:
-            toreturn = []
-
-        if len(self._queue) == 0 and len(self._vip_queue) == 0 and\
-                                                self._handler is not None:
-            gobject.source_remove(self._handler)
-            self._handler = None
-        self._lock.release()
-        return toreturn
+import processqueue
+from GTG.tools.liblarch.treenode import TreeNode
 
 class MainTree:
     """ Tree which stores and handle all requests """
@@ -101,7 +39,7 @@ class MainTree:
         self.root = TreeNode(self.root_id)
         self.root.set_tree(self)
 
-        self._queue = SyncQueue(self._process_queue)
+        self._queue = processqueue.SyncQueue()
         self._origin_thread = threading.current_thread()
 
     def __str__(self):
@@ -142,14 +80,14 @@ class MainTree:
             func(node_id)
 
 ####### INTERFACE FOR HANDLING REQUESTS #######################################
-    def add_node(self, node, parent_id=None, high_priority=False):
-        self._external_request(self._add_node, high_priority, node, parent_id)
+    def add_node(self, node, parent_id=None, priority="low"):
+        self._external_request(self._add_node, priority, node, parent_id)
 
     def remove_node(self, node_id, recursive=False):
         self._external_request(self._remove_node, True, node_id, recursive)
 
-    def modify_node(self, node_id):
-        self._external_request(self._modify_node, False, node_id)
+    def modify_node(self, node_id, priority="low"):
+        self._external_request(self._modify_node, priority, node_id)
 
     def new_relationship(self, parent_id, child_id):
         self._external_request(self._new_relationship, False, parent_id, child_id)
@@ -157,24 +95,19 @@ class MainTree:
     def break_relationship(self, parent_id, child_id):
         self._external_request(self._break_relationship, False, parent_id, child_id)
 
-    def _external_request(self, request_type, vip, *args):
+    def _external_request(self, request_type, priority, *args):
         """ Put the reqest into queue and in the main thread handle it """
-        if vip:
+        if priority == "high":
             self._queue.priority_push(request_type, *args)
-        else:
+        elif priority == "normal" or priority == "medium":
             self._queue.push(request_type, *args)
+        else:
+            self._queue.low_push(request_type, *args)
 
+        #I'm really wondering what is this line about
+        #It doesn't seem right nor useful, except for unit tests.
         if self._origin_thread == threading.current_thread():
-            self._process_queue()
-
-    def _process_queue(self):
-        """ Process requests from queue """
-        for action in self._queue.process():
-            func = action[0]
-            func(*action[1:])
-
-        # return True to process other requests as well
-        return True
+            self._queue.process_queue()
 
     def refresh_all(self):
         """ Refresh all nodes """
@@ -293,19 +226,19 @@ class MainTree:
             self.root.children.append(node_id)
 
         # Send callbacks
-
-        #FIXME: this callback is very slow with treemodelsort
-        for parent_id in parents_to_refresh:
-            self._callback("node-modified", parent_id)
-
-        #FIXME: this callback is very slow with treemodelsort
+        #updating the parent and the children is handled by the FT
         self._callback("node-added", node_id)
+        
+#        #The following callback is only needed in case we have a
+#        #Flat filter applied.
+#        for parent_id in parents_to_refresh:
+#            self._callback("node-modified", parent_id)
 
         #this callback is really fast. No problem
-        for child_id in children_to_refresh:
-            #FIXME: why parent_id? this should be a bug!
-            #removing this doesn't affect the tests. Why is it useful?
-            self._callback("node-modified", child_id)
+#        for child_id in children_to_refresh:
+#            #FIXME: why parent_id? this should be a bug!
+#            #removing this doesn't affect the tests. Why is it useful?
+#            self._callback("node-modified", child_id)
 
     def _remove_node(self, node_id, recursive=False):
         """ Remove node from tree """
@@ -504,147 +437,3 @@ class MainTree:
             return output
         else:
             print output,
-
-class TreeNode:
-    """ Object just for a single node in Tree """
-# FIXME maybe add a lock which prevents changing root at the wrong moment,
-# updating children, etc
-
-    def __init__(self, node_id, parent=None):
-        """ Initializes node
-
-        @param node_id - unique identifier of node (str)
-        @param parent - node_id of parent
-        """
-        self.node_id = node_id
-
-        self.parents = []
-        self.children = []
-
-        self.tree = None
-        self.pending_relationships = []
-
-        if parent:
-            self.add_parent(parent)
-
-    def __str__(self):
-        return "<TreeNode: '%s'>" % (self.node_id)
-
-    def get_id(self):
-        """ Return node_id """
-        return self.node_id
-        
-    def modified(self):
-        """ Force to update node (because it has changed) """
-        if self.tree:
-            self.tree.modify_node(self.node_id)
-
-    def set_tree(self, tree):
-        """ Set tree which is should contain this node.
-        
-        This method should be called only from MainTree. It is not
-        part of public interface. """
-        self.tree = tree
-
-    def get_tree(self):
-        """ Return associated tree with this node """
-        return self.tree
-
-    def new_relationship(self, parent_id, child_id):
-        """ Create new relationship or save it for later if there is no tree """
-        if self.tree:
-            self.tree.new_relationship(parent_id, child_id)
-        else:
-            self.pending_relationships.append((parent_id, child_id))
-
-####### Parents ###############################################################
-    def add_parent(self, parent_id):
-        """ Add a new parent """
-        if parent_id not in self.parents:
-            self.parents.append(parent_id)
-            self.new_relationship(parent_id, self.node_id)
-
-    def set_parent(self, parent_id):
-        """ Remove other parents and set this parent as only parent """
-        is_already_parent_flag = False
-        for node_id in self.parents:
-            if node_id != parent_id:
-                self.remove_parent(node_id)
-            else:
-                is_already_parent_flag = True
-        if parent_id and not is_already_parent_flag:
-            self.add_parent(parent_id)
-
-    def remove_parent(self, parent_id):
-        """ Remove parent """
-        if parent_id in self.parents:
-            self.parents.remove(parent_id)
-            self.tree.break_relationship(parent_id, self.node_id)
-
-    def has_parent(self, parent_id=None):
-        """ Has parent/parents?
-
-        @param parent_id - None => has any parent?
-            not None => has this parent?
-        """
-        if parent_id:
-            return self.tree.has_node(parent_id) and parent_id in self.parents
-        else:
-            return len(self.parents) > 0
-
-    def get_parents(self):
-        """ Return parents of node """
-        parents = []
-        if self.tree:
-            for parent_id in self.parents:
-                if self.tree.has_node(parent_id):
-                    parents.append(parent_id)
-
-        return parents
-
-####### Children ##############################################################
-    def add_child(self, child_id):
-        """ Add a children to node """
-        if child_id not in self.children:
-            self.children.append(child_id)
-            self.new_relationship(self.node_id, child_id)
-        else:
-            print "%s was already in children of %s" % (child_id, self.node_id)
-
-    def has_child(self, child_id=None):
-        """ Has child/children?
-
-        @param child_id - None => has any child?
-            not None => has this child?
-        """
-        if child_id:
-            return child_id in self.children
-        else:
-            return bool(self.children)
-
-    def get_children(self):
-        """ Return children of nodes """
-        children = []
-        if self.tree:
-            for child_id in self.children:
-                if self.tree.has_node(child_id):
-                    children.append(child_id)
-
-        return children
-
-    def get_n_children(self):
-        """ Return count of children """
-        return len(self.get_children())
-
-    def get_nth_child(self, index):
-        """ Return nth child """
-        try:
-            return self.children[index]
-        except(IndexError):
-            raise ValueError("Requested non-existing child")
-
-    def get_child_index(self, node_id):
-        if node_id in self.children:
-            return self.children.index(node_id)
-        else:
-            return None

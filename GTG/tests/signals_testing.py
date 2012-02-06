@@ -127,5 +127,6 @@ class GobjectSignalsManager(object):
             time.sleep(0.1)
 
     def terminate_signals(self):
+#        if has_attr(self,'main_loop'):
         self.main_loop.quit()
 

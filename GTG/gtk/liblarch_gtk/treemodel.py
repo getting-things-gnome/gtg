@@ -25,14 +25,17 @@ class TreeModel(gtk.TreeStore):
     def __init__(self, tree, types):
         """ Initializes parent and create list of columns. The first colum
         is node_id of node """
+        
+        self.count = 0
+        self.count2 = 0
 
         self.types = [[str, lambda node: node.get_id()]] + types
         only_types = [python_type for python_type, access_method in self.types]
 
         gtk.TreeStore.__init__(self, *only_types)
         self.cache_paths = {}
+        self.cache_position = {}
         self.tree = tree
-        self.count = 0
 
     def connect_model(self):
         """ Register "signals", callbacks from liblarch.
@@ -57,19 +60,35 @@ class TreeModel(gtk.TreeStore):
         if path == ():
             return None
         nid = str(path[-1])
+        self.count += 1
         #We try to use the cache
         iter = self.cache_paths.get(path,None)
+        toreturn = None
         if iter and self.iter_is_valid(iter) and nid == self.get_value(iter,0):
-            return iter
-        root = self.my_get_iter(path[:-1])
-        if root:
-            iter = self.iter_children(root)
+            self.count2 += 1
+            toreturn = iter
         else:
-            iter = self.get_iter_first()
-        while iter and self.get_value(iter,0) != nid:
-            iter = self.iter_next(iter)
-        self.cache_paths[path] = iter
-        return iter
+            root = self.my_get_iter(path[:-1])
+            #This is a small ad-hoc optimisation.
+            #Instead of going through all the children nodes
+            #We go directly at the last known position.
+            pos = self.cache_position.get(path,None)
+            if pos:
+                iter = self.iter_nth_child(root,pos)
+                if iter and self.get_value(iter,0) == nid:
+                    toreturn = iter
+            if not toreturn:
+                if root:
+                    iter = self.iter_children(root)
+                else:
+                    iter = self.get_iter_first()
+                while iter and self.get_value(iter,0) != nid:
+                    iter = self.iter_next(iter)
+            self.cache_paths[path] = iter
+            toreturn = iter
+#        print "%s / %s" %(self.count2,self.count)
+#        print "my_get_iter %s : %s" %(nid,self.get_string_from_iter(toreturn))
+        return toreturn
 
     def print_tree(self):
         """ Print TreeStore as Tree into console """
@@ -113,10 +132,9 @@ class TreeModel(gtk.TreeStore):
         iter_path = path[:-1]
 
         iterator = self.my_get_iter(iter_path)
+        self.cache_position[path] = self.iter_n_children(iterator)
         it = self.insert(iterator, -1, row)
         
-#        print "adding task %s to path %s" %(node_id,str(path))
-
         # Show the new task if possible
 #        self.row_has_child_toggled(self.get_path(it), it)
 
@@ -132,6 +150,7 @@ class TreeModel(gtk.TreeStore):
         actual_node_id = self.get_value(it, 0)
         assert actual_node_id == node_id
         self.remove(it)
+        self.cache_position.pop(path)
 
     def update_task(self, node_id, path):
         """ Update instance of node by rebuilding the row.
@@ -139,14 +158,20 @@ class TreeModel(gtk.TreeStore):
         @param node_id: identification of task
         @param path: identification of position
         """
-        self.count += 1
-        node = self.tree.get_node(node_id)
-        iterator = self.my_get_iter(path)
-
-        for column_num, (python_type, access_method) in enumerate(self.types):
-            value = access_method(node)
-            self.set_value(iterator, column_num, value)
-#        print "update node has been called : %s times" %self.count
+        #We cannot assume that the node is in the tree because
+        #update is asynchronus
+        #Also, we should consider that missing an update is not critical
+        #and ignoring the case where there is no iterator
+        pass
+        if self.tree.is_displayed(node_id):
+            node = self.tree.get_node(node_id)
+            #That call to my_get_iter is really slow!
+            iterator = self.my_get_iter(path)
+        
+            if iterator:
+                for column_num, (python_type, access_method) in enumerate(self.types):
+                    value = access_method(node)
+                    self.set_value(iterator, column_num, value)
 
     def reorder_nodes(self, node_id, path, neworder):
         """ Reorder nodes.

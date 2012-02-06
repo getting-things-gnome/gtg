@@ -23,45 +23,41 @@ filters_bank stores all of GTG's filters in centralized place
 
 
 class Filter:
-    def __init__(self,func,req):
+    def __init__(self, func, req):
         self.func = func
         self.dic = {}
         self.tree = req
 
-    def set_parameters(self,dic):
+    def set_parameters(self, dic):
         if dic:
             self.dic = dic
     
-    def is_displayed(self,tid):
-        if self.tree.has_node(tid):
-            task = self.tree.get_node(tid)
-            value = True
+    def is_displayed(self, node_id):
+        if self.tree.has_node(node_id):
+            task = self.tree.get_node(node_id)
         else:
             return False
+
         if self.dic:
-            value = self.func(task,parameters=self.dic)
+            value = self.func(task, parameters=self.dic)
         else:
             value = self.func(task)
+
         if 'negate' in self.dic and self.dic['negate']:
             value = not value
+
         return value
         
-    def get_parameters(self,param):
-        if self.dic.has_key(param):
-            return self.dic[param]
-        else:
-            return None
+    def get_parameters(self, param):
+        return self.dic.get(param, None)
 
-    #return True is the filter is a flat list only
     def is_flat(self):
-        if self.dic.has_key('flat'):
-            return self.dic['flat']
-        else:
-            return False
-    # FIXME simplify a little bit
-# FIXME add is_transparent
-# FIXME tid, req
-            
+        """ Should be the final list flat """
+        return self.get_parameters('flat')
+
+    def is_transparent(self):
+        """ Is this filter transparent? """
+        return self.get_parameters('transparent')
     
 class FiltersBank:
     """
