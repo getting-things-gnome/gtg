@@ -64,7 +64,8 @@ class pluginUrgencyColor:
 
             if daysleft == None \
                     and ddate.__class__.__name__ != 'RealDate':
-                daysleft = (ddate.offset - date.today()).days
+                #daysleft = (ddate.offset - date.today()).days
+                daysleft = (ddate.days_left() - date.today()).days
             color = 0
             if daysleft <= dayspan:
                 color = 1
