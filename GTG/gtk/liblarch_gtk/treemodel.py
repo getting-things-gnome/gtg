@@ -162,7 +162,6 @@ class TreeModel(gtk.TreeStore):
         #update is asynchronus
         #Also, we should consider that missing an update is not critical
         #and ignoring the case where there is no iterator
-        pass
         if self.tree.is_displayed(node_id):
             node = self.tree.get_node(node_id)
             #That call to my_get_iter is really slow!

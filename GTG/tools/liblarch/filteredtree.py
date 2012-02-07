@@ -150,7 +150,13 @@ class FilteredTree():
         completely_updated = True
 
         if not current_display and not new_display:
-            # Nothing to do
+            # If a task is not displayed and should not be displayed, we
+            # should still check its parent because he might not be aware
+            # that he has a child
+            if self.tree.has_node(node_id):
+                node = self.tree.get_node(node_id)
+                for parent in node.get_parents():
+                    self.__update_node(parent,"up")
             return completely_updated
         elif not current_display and new_display:
             action = 'added'
