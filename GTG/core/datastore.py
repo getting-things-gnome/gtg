@@ -417,14 +417,14 @@ class DataStore(object):
         @return bool: True if the task has been accepted
         '''
         def adding(task):
-            vip = False
+            priority = "low"
             if task.get_status() == "Active":
-                vip = True
+                priority = "high"
             else:
                 #Tasks closed in the last 7 days are also VIP
-                if task.get_closed_date().days_left() >= -7:
-                    vip = True
-            self.__tasks.add_node(task, priority="high")
+                if task.get_closed_date().days_left() >= -15:
+                    priority = "medium"
+            self.__tasks.add_node(task, priority=priority)
             task.set_loaded()
             if self.is_default_backend_loaded:
                 task.sync()
