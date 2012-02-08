@@ -59,7 +59,6 @@ class Requester(gobject.GObject):
 
         #TODO build filters here
         self.counter_call = 0
-        self.searchActive = False
 
     ############# Signals #########################
     #Used by the tasks to emit the task added/modified signal
@@ -75,13 +74,7 @@ class Requester(gobject.GObject):
     def get_main_view(self):
         return self.__basetree.get_main_view()
     
-    def get_search_tree(self,name='search',refresh=True):
-        """
-        return the search tree
-        only used by search operations to show a tree without interfering with the main
-        """
-        return self.__basetree.get_viewtree(name=name,refresh=refresh)
-        
+#FIXME for what is this code?
     # This is a FilteredTree that you have to handle yourself.
     # You can apply/unapply filters on it as you wish.
 #    def get_custom_tasks_tree(self, name=None, refresh=True):
@@ -162,77 +155,24 @@ class Requester(gobject.GObject):
                 self.emit('tag-modified', tag.get_name())
         return self.__basetree.del_node(tid, recursive=recursive)
 
-    def get_all_titles(self, lowercase=False):
-        """
-        Gets the titles from all tasks
-        
-        if lowercase, titles are return in lowercase :)
-        """
-        titles = []
-        nodes = self.get_main_view().get_all_nodes()
-        if lowercase:
-            for x in nodes:
-                titles.append(self.get_main_view().get_node(x).get_title().lower())
-        else:
-            for x in nodes:
-                titles.append(self.get_main_view().get_node(x).get_title())
-        return titles
-    
-    def task_exist(self,text, lowercase=False):
-        """
-        Checks if a task exists by its title
-        
-        if lowercase, titles are not case checked :)
-        """
-        #gets all nodes
-        nodes = self.get_main_view().get_all_nodes()
-        #case insensitive
-        if lowercase:
-            for x in nodes:
-                if text.lower() == self.get_main_view().get_node(x).get_title().lower():
-                    return True
-        #case sensitive
-        else:
-            for x in nodes:
-                if text == self.get_main_view().get_node(x).get_title():
-                    return True
-        #if its gets here, there's no task by that name
-        return False
-    
-    def get_task_id(self, text, tree='search'):
-        """
-        returns the first task from a treeview
-        
-        default is a search view
-        if there's 2 tasks with the same title, opens the first it finds...
-        """
-        #lowercase
-        text = text.lower()
-        #gets nodes from requested tree
-        nodes = self.get_search_tree(tree,False).get_all_nodes()
-        for x in nodes:
-            if text == self.get_main_view().get_node(x).get_title().lower():
-                return self.get_main_view().get_node(x).get_id()
-        else:
-            raise IndexError("Task %s not in search tree" % text)
+    def get_task_id(self, task_title):
+        """ Heuristic which convert task_title to a task_id
+
+        Return a first task which has similar title """
+
+        task_title = task_title.lower()
+        tasks = self.get_tasks_tree('active', False).get_all_nodes()
+        tasktree = self.get_main_view()
+        for task_id in tasks:
+            task = tasktree.get_node(task_id)
+            if task_title == task.get_title().lower():
+                return task_id
+
+        return None
         
     ############### Tags ##########################
     ###############################################
     
-    def search_is_active(self):
-        """
-        returns if there is a search active or not
-        
-        used mainly for stoping certain actions before a search is done
-        """
-        return self.searchActive
-    
-    def set_search_status(self, status):
-        """
-        sets the status of searches
-        """
-        self.searchActive = status
-
     def get_tag_tree(self):
         return self.ds.get_tagstore().get_viewtree(name='activetags')
     
@@ -246,23 +186,21 @@ class Requester(gobject.GObject):
         """
         return self.ds.new_tag(tagname)
     
-    def new_view(self, viewname, params):
+    def new_search_tag(self, name, query):
         """
-        Similar to the above
-        Create a new view with the given name.
+        Create a new search tag from search query
+
         Note: this modifies the datastore.
         
-        @param viename: The name of the new view.
-        @param param:   parameters of the search to save
-        @return:        The newly-created view.
+        @param name:  name of the new search tag
+        @param query: Query will be parsed using search parser
+        @return:      new tag
         """
-        return self.ds.new_view(viewname, params)
+        return self.ds.new_search_tag(name, query)
     
-    def remove_view(self, viewname):
-        """
-        calls datastore to remove the given view
-        """
-        self.ds.remove_view(viewname)
+    def remove_tag(self, name):
+        """ calls datastore to remove a given tag """
+        self.ds.remove_tag(name)
     
     def rename_tag(self, oldname, newname):
         self.ds.rename_tag(oldname, newname)
@@ -288,18 +226,6 @@ class Requester(gobject.GObject):
         """
         return self.ds.get_tagstore().get_main_view().get_all_nodes()
     
-    def get_view_names(self):
-        """
-        returns the names of all views
-        """
-        return self.ds.get_view_control_names()
-    
-    def get_view_dic(self):
-        """
-        returns the dic of all views and params
-        """
-        return self.ds.get_view_dic()
-
     ############## Backends #######################
     ###############################################
 

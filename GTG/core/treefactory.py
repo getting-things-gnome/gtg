@@ -26,6 +26,7 @@ from GTG.tools.liblarch          import Tree
 from GTG.core.task               import Task
 from GTG.core.tagstore           import Tag
 from GTG.core         import CoreConfig
+from GTG.core.search import search_filter
 
 
 class TreeFactory:
@@ -96,16 +97,16 @@ class TreeFactory:
                                     self.notag, parameters=p)
         
         # Build the search tag
-        search_tag = Tag(CoreConfig.SEARCH_TAG,req=req)
+        search_tag = Tag(CoreConfig.SEARCH_TAG, req=req)
         search_tag.set_attribute("special","search")
-        search_tag.set_attribute("label","<span weight='bold'>%s</span>"\
-                                             % _("Search"))
+        search_tag.set_attribute("label",
+            "<span weight='bold'>%s</span>" % _("Search"))
         search_tag.set_attribute("icon","search")
         search_tag.set_attribute("order",2)
         tagtree.add_node(search_tag)
         p = {'transparent':True}
-        self.tasktree.add_filter('search',\
-                                    self.search, parameters=None)
+        self.tasktree.add_filter(CoreConfig.SEARCH_TAG,
+                                   search_filter, parameters=p)
         
         # Build the separator
         sep_tag = Tag(CoreConfig.SEP_TAG, req=req)
@@ -116,7 +117,6 @@ class TreeFactory:
         #### Filters
         tagtree.add_filter('activetag', self.actively_used_tag)
         tagtree.add_filter('usedtag', self.used_tag)
-        tagtree.add_filter('search', self.search)
 
         activeview = tagtree.get_viewtree(name='activetags', refresh=False)
         activeview.apply_filter('activetag')
@@ -240,171 +240,3 @@ class TreeFactory:
             if t.get_attribute("nonworkview") == "True":
                 toreturn = False
         return toreturn
-    
-    def search(self,task,parameters=None):
-        """
-        Single filter that has all the search parameters
-        
-        parameters will have a dictionary in which keys will be a kind of filter to apply
-        the search will check for the existence of parameters, check it's negated or not 
-        """
-        #escape case
-        if parameters == None:
-            return False
-        #if a task is active
-        if 'active' in parameters:
-            if parameters.get('active'):
-                if task.get_status() != Task.STA_ACTIVE:
-                    return False
-            else:
-                if task.get_status() == Task.STA_ACTIVE:
-                    return False
-        #if a task is Dismissed
-        if 'dismissed' in parameters:
-            if parameters.get('dismissed'):
-                if task.get_status() != Task.STA_DISMISSED:
-                    return False
-            else:
-                if task.get_status() == Task.STA_DISMISSED:
-                    return False
-        #if a task is Done
-        if 'done' in parameters:
-            if parameters.get('done'):
-                if task.get_status() != Task.STA_DONE:
-                    return False
-            else:
-                if task.get_status() == Task.STA_DONE:
-                    return False
-        #check the due date for a now
-        if 'now' in parameters:
-            #if no state is defined, it shows only active tasks
-            if 'active' not in parameters and 'done' not in parameters and 'dismissed' not in parameters:
-                if task.get_status() != Task.STA_ACTIVE:
-                    return False
-            if parameters.get('now'):
-                if str(task.get_due_date()) != 'now':
-                    return False
-            else:
-                if str(task.get_due_date()) == 'now':
-                    return False
-        #check the due date for a soon
-        if 'soon' in parameters:
-            #if no state is defined, it shows only active tasks
-            if 'active' not in parameters and 'done' not in parameters and 'dismissed' not in parameters:
-                if task.get_status() != Task.STA_ACTIVE:
-                    return False
-            if parameters.get('soon'):
-                if str(task.get_due_date()) != 'soon':
-                    return False
-            else:
-                if str(task.get_due_date()) == 'soon':
-                    return False
-        #check the due date for a later
-        if 'later' in parameters:
-            #if no state is defined, it shows only active tasks
-            if 'active' not in parameters and 'done' not in parameters and 'dismissed' not in parameters:
-                if task.get_status() != Task.STA_ACTIVE:
-                    return False
-            if parameters.get('later'):
-                if str(task.get_due_date()) != 'later':
-                    return False
-            else:
-                if str(task.get_due_date()) == 'later':
-                    return False
-        #check the due date for a later
-        if 'late' in parameters:
-            #if no state is defined, it shows only active tasks
-            if 'active' not in parameters and 'done' not in parameters and 'dismissed' not in parameters:
-                if task.get_status() != Task.STA_ACTIVE:
-                    return False
-            if parameters.get('late'):
-                if task.get_days_left() > -1 or task.get_days_left() == None:
-                    return False
-            else:
-                if task.get_days_left() < 0 and task.get_days_left() != None:
-                    return False
-        #check for tasks that have no date defined
-        if 'nodate' in parameters:
-            #if no state is defined, it shows only active tasks
-            if 'active' not in parameters and 'done' not in parameters and 'dismissed' not in parameters:
-                if task.get_status() != Task.STA_ACTIVE:
-                    return False
-            if parameters.get('nodate'):
-                if str(task.get_due_date()) != '':
-                    return False
-            else:
-                if str(task.get_due_date()) == '':
-                    return False
-        #check for tasks that are due tomorrow
-        if 'tomorrow' in parameters:
-            #if no state is defined, it shows only active tasks
-            if 'active' not in parameters and 'done' not in parameters and 'dismissed' not in parameters:
-                if task.get_status() != Task.STA_ACTIVE:
-                    return False
-            if parameters.get('tomorrow'):
-                if task.get_days_left() != 1:
-                    return False
-            else:
-                if task.get_days_left() == 1:
-                    return False
-        #check for tasks that are due today
-        if 'today' in parameters:
-            #if no state is defined, it shows only active tasks
-            if 'active' not in parameters and 'done' not in parameters and 'dismissed' not in parameters:
-                if task.get_status() != Task.STA_ACTIVE:
-                    return False
-            if parameters.get('today'):
-                if task.get_days_left() != 0:
-                    return False
-            else:
-                if task.get_days_left() == 0:
-                    return False
-        #task titles
-        if 'tasks' in parameters:
-            for tasks in parameters.get('tasks'):
-                if tasks[0]:
-                    if task.get_title().lower() != tasks[1]:
-                        return False
-                else:
-                    if task.get_title().lower() == tasks[1]:
-                        return False
-        #tags
-        if 'tags' in parameters:
-            for tags in parameters.get('tags'):
-                if tags[1] not in task.get_tags_name():
-                    if tags[0]:
-                        return False
-                else:
-                    if not tags[0]:
-                        return False
-        #words
-        if 'words' in parameters:
-            #tags are also included in the search
-            #maybe latter i'll add the option to chose
-            for words in parameters.get('words'):
-                text = task.get_excerpt(strip_tags=False).lower()
-                title = task.get_title().lower()
-                #search for the word
-                if text.find(words[1]) > -1 or words[1] in title:
-                    if not words[0]:
-                        return False
-                else:
-                    if words[0]:
-                        return False
-        #literas ex. "abc"
-        if 'literals' in parameters:
-            #tthis one is the same thing as the word search
-            #only the literal includes spaces, special chars, etc
-            #should define latter one more specific stuff about literals
-            for literals in parameters.get('literals'):
-                #search for the word
-                text = task.get_excerpt(strip_tags=False).lower()
-                title = task.get_title().lower()
-                if text.find(literals[1]) > -1 or literals[1] in title:
-                    if not literals[0]:
-                        return False
-                else:
-                    if literals[0]:
-                        return False
-        #if it gets here, the task is in the search params
-        return True
