@@ -23,12 +23,85 @@ import unittest
 from GTG.core.search import search_filter
 
 class FakeTask:
-    pass
+    def __init__(self, title="", body="", tags=[]):
+        self.title = title
+        self.body = body
+        self.tags = tags
+
+    def get_title(self):
+        return self.title
+
+    def get_excerpt(self, strip_tags=False):
+        return self.body
+
+    def get_tags_name(self):
+        return self.tags
 
 class TestSearchFilter(unittest.TestCase):
 
     def test_empty(self):
         self.assertFalse(search_filter(FakeTask()))
+
+    def test_single_tag(self):
+        task = FakeTask(tags = ['@a'])
+
+        self.assertTrue(search_filter(task, {"q": [("tag", True, "@a")]}))
+        self.assertFalse(search_filter(task, {"q": [("tag", True, "@b")]}))
+        self.assertFalse(search_filter(task, {"q": [("tag", True, "@n")]}))
+
+    def test_double_tag(self):
+        p = {"q": [("tag", True, "@a"), ("tag", True, "@b")]}
+        task = FakeTask(tags = ['@a'])
+
+        self.assertTrue(search_filter(FakeTask(tags = ['@a', '@b']), p))
+        self.assertTrue(search_filter(FakeTask(tags = ['@b', '@a']), p))
+        self.assertTrue(search_filter(FakeTask(tags = ['@b', '@a', '@a']), p))
+        self.assertTrue(search_filter(FakeTask(tags = ['@b', '@a', '@c', '@d']), p))
+        self.assertTrue(search_filter(FakeTask(tags = ['@b', 'search', '@a']), p))
+        self.assertTrue(search_filter(FakeTask(tags = ['gtg-tags-all', '@b', 'search', '@a']), p))
+        self.assertTrue(search_filter(FakeTask(tags = ['gtg-tags-all', 'gtg-tags-none', '@b', 'search', '@a']), p))
+
+        self.assertFalse(search_filter(FakeTask(tags = ['@n', '@b']), p))
+        self.assertFalse(search_filter(FakeTask(tags = ['@b', '@n']), p))
+        self.assertFalse(search_filter(FakeTask(tags = ['@a']), p))
+        self.assertFalse(search_filter(FakeTask(tags = ['@b']), p))
+        self.assertFalse(search_filter(FakeTask(tags = ['@b', '@b', '@c', '@d']), p))
+        self.assertFalse(search_filter(FakeTask(tags = ['@b', 'search', '@d']), p))
+        self.assertFalse(search_filter(FakeTask(tags = ['gtg-tags-all', '@g', 'search', '@a']), p))
+        self.assertFalse(search_filter(FakeTask(tags = ['gtg-tags-all', 'gtg-tags-none', '@@b', 'search', '@a']), p))
+
+    def test_simple_tag_or(self):
+        task = FakeTask(tags = ['@a', '@b'])
+
+        self.assertTrue(search_filter(task, {"q": [('or', True, [("tag", True, "@a"), ("tag", True, "@b")])]}))
+        self.assertTrue(search_filter(task, {"q": [('or', True, [("tag", True, "@a"), ("tag", True, "@n")])]}))
+        self.assertTrue(search_filter(task, {"q": [('or', True, [("tag", True, "@n"), ("tag", True, "@b")])]}))
+        self.assertFalse(search_filter(task, {"q": [('or', True, [("tag", True, "@n"), ("tag", True, "@n")])]}))
+
+    def test_simple_word_in_title(self):
+        task = FakeTask(title="GTG is the best ToDo manager for GNOME")
+
+        # Test the lowercasing
+        self.assertTrue(search_filter(task, {'q': [("word", True, 'GTG')]}))
+        self.assertTrue(search_filter(task, {'q': [("word", True, 'gtg')]}))
+        self.assertTrue(search_filter(task, {'q': [("word", True, 'GtG')]}))
+        self.assertTrue(search_filter(task, {'q': [("word", True, 'Gtg')]}))
+        self.assertTrue(search_filter(task, {'q': [("word", True, 'gTg')]}))
+
+        self.assertTrue(search_filter(task, {'q': [("word", True, 'GTG')]}))
+        self.assertTrue(search_filter(task, {'q': [("word", True, 'is')]}))
+        self.assertTrue(search_filter(task, {'q': [("word", True, 'the')]}))
+        self.assertTrue(search_filter(task, {'q': [("word", True, 'best')]}))
+        self.assertTrue(search_filter(task, {'q': [("word", True, 'todo')]}))
+        self.assertTrue(search_filter(task, {'q': [("word", True, 'manager')]}))
+        self.assertTrue(search_filter(task, {'q': [("word", True, 'for')]}))
+        self.assertTrue(search_filter(task, {'q': [("word", True, 'GNOME')]}))
+
+        # test literals
+        self.assertTrue(search_filter(task, {'q': [("word", True, 'GTG is')]}))
+        self.assertTrue(search_filter(task, {'q': [("word", True, 'for GNOME')]}))
+        self.assertTrue(search_filter(task, {'q': [("word", False, 'GTG for GNOME')]}))
+        self.assertFalse(search_filter(task, {'q': [("word", True, 'GTG for GNOME')]}))
 
 def test_suite():
     return unittest.TestLoader().loadTestsFromName(__name__)

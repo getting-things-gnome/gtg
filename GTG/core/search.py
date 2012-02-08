@@ -115,63 +115,117 @@ def parse_search_query(query):
     if query.count('"') % 2 != 0:
         raise InvalidQuery("Query has odd number of quotes")
 
-    parameters = { 'tag': [], 'word': [], }
+    commands = []
 
-            #FIXME handle and, not, or: it might be cool!
-
-    neg_value = False
+    not_count, after_or = 0, False
     for token, value in _tokenize_query(query):
+        cmd = None
         if token == 'command':
             value = value.lower()[1:]
-
-            if value == 'not':
-                neg_value = not neg_value
-                continue
-            
-            if value == 'or':
-                continue
 
             found = False
             for keyword in KEYWORDS:
                 if value in KEYWORDS[keyword]:
-                    parameters[keyword] = True
+                    if keyword == 'not':
+                        not_count += 1
+                    elif keyword == 'or':
+                        if not_count > 0:
+                            raise InvalidQuery("!or cann't follow !not")
+
+                        if commands == []:
+                            raise InvalidQuery("Or is not allowed at the beginning of query")
+
+                        if commands[-1][0] != "or":
+                            commands.append(("or", True, [commands.pop()]))
+
+                        after_or = True
+                    else:
+                        cmd = (keyword, not_count % 2 == 0)
                     found = True
                     break
             if not found:
                 raise InvalidQuery("Unknown command !%s" % value)
-        elif token == 'tag':
-            parameters['tag'].append((not neg_value, value))
-            neg_value = False
-        elif token in ['literal', 'word']:
-            parameters['word'].append((not neg_value, value.strip('"').lower()))
-            neg_value = False
 
-    if neg_value or (token == "command" and  value == "not"):
+        elif token == 'tag':
+            cmd = (token, not_count % 2 == 0, value)
+        elif token in ['literal', 'word']:
+            cmd = ('word', not_count % 2 == 0, value.strip('"').lower())
+
+        if cmd is not None:
+            if after_or:
+                commands[-1][2].append(cmd)
+            else:
+                commands.append(cmd)
+
+            not_count, after_or = 0, False
+
+    if not_count > 0:
         raise InvalidQuery("Query cannot end with !not (Forgot something?)")
 
-    # Clean unused parameters
-    if parameters["tag"] == []:
-        parameters.pop("tag")
-    if parameters["word"] == []:
-        parameters.pop("word")
+    if after_or:
+        raise InvalidQuery("Or is not allowed at the end of query")
 
-    return parameters
+    return {'q': commands}
 
 def search_filter(task, parameters=None):
     """ Check if task satisfies all search parameters """
+
+
+    if parameters is None or 'q' not in parameters:
+        return False
+
+    def check_commands(commands_list):
+        # Check if contian values
+        def fulltext_search(task, word):
+            word = word.lower()
+            text = task.get_excerpt(strip_tags=False).lower()
+            title = task.get_title().lower()
+
+            return word in text or word in title
+
+        value_checks = {
+            'tag': lambda t, v: v in task.get_tags_name(),
+            'word': fulltext_search,
+        }
+
+        for command in commands_list:
+            cmd, positive, args = command[0], command[1], command[2:]
+            result = False
+
+            if cmd == 'or':
+                for sub_cmd in args[0]:
+                    if check_commands([sub_cmd]):
+                        result = True
+                        break
+            elif value_checks.get(cmd, None):
+                result = value_checks[cmd](task, args[0])
+
+            if (positive and not result) or (not positive and result):
+                return False
+
+        return True
+
+
+    return check_commands(parameters['q'])
+
+def old_search_filter(task, parameters):
+
+
+
 
     if parameters is None:
         return False
 
     # Check boolean properties
     properties = {
-        'now': str(task.get_due_date()) != 'now',
-        'soon': str(task.get_due_date()) != 'soon',
-        'later': str(task.get_due_date()) != 'later',
-        'late': task.get_days_left() > -1 or task.get_days_left() == None,
-        'nodate': str(task.get_due_date()) != '',
-        'tomorrow': task.get_days_left() != 1,
-        'today': task.get_days_left() != 0,
+#FIXME
+        #'now': str(task.get_due_date()) != 'now',
+        #'soon': str(task.get_due_date()) != 'soon',
+        #'later': str(task.get_due_date()) != 'later',
+        #'late': task.get_days_left() > -1 or task.get_days_left() == None,
+        #'nodate': str(task.get_due_date()) != '',
+        #'tomorrow': task.get_days_left() != 1,
+        #'today': task.get_days_left() != 0,
     }
 
     for name, value in properties.iteritems():
@@ -183,25 +237,28 @@ def search_filter(task, parameters=None):
                 if value:
                     return False
 
-    # Check if contian values
-    def fulltext_search(task, word):
-        text = task.get_excerpt(strip_tags=False).lower()
-        title = task.get_title().lower()
-        return word in text or word in title
-
-    value_checks = {
-        'tag': lambda t, v: v in task.get_tags_name(),
-        'word': fulltext_search,
-    }
     for name, func in value_checks.iteritems():
-        neg, value = parameters[name]
-        is_ok = func(task, value)
-        if neg:
-            if is_ok:
-                return False
-        else:
-            if not is_ok:
-                return False
+        print parameters
+        for neg, value in  parameters.get(name, []):
+            is_ok = func(task, value)
+            if neg:
+                if is_ok:
+                    return False
+            else:
+                if not is_ok:
+                    return False
+
+    # Check every "or" clausur
+    for sequence in parameters.get("or", []):
+        # Check if at least one condition is true
+        found = False
+        print sequence
+        for p in sequence:
+            if search_filter(task, p):
+                found = True
+                break
+        if not found:
+            return False
 
     # passing all cirteria
     return True

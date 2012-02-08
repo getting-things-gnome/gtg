@@ -27,16 +27,16 @@ parse = parse_search_query
 class TestSearchQuery(unittest.TestCase):
 
     def test_word_query(self):
-        self.assertEqual(parse("query"), {"word": [(True, 'query')]})
+        self.assertEqual(parse("query"), {'q':[("word", True, 'query')]})
 
     def test_word_literal_query(self):
-        self.assertEqual(parse('"query"'), {"word": [(True, 'query')]})
+        self.assertEqual(parse('"query"'), {'q':[("word", True, 'query')]})
 
     def test_tag_query(self):
-        self.assertEqual(parse("@gtg"), {"tag": [(True, '@gtg')]})
+        self.assertEqual(parse("@gtg"), {'q': [("tag", True, '@gtg')]})
 
     def test_literal_tag_query(self):
-        self.assertEqual(parse('"@gtg"'), {"word": [(True, '@gtg')]})
+        self.assertEqual(parse('"@gtg"'), {'q': [("word", True, '@gtg')]})
 
     def test_only_not(self):
         self.assertRaises(InvalidQuery, parse, "!not")
@@ -45,28 +45,50 @@ class TestSearchQuery(unittest.TestCase):
         self.assertRaises(InvalidQuery, parse, "!not !not")
 
     def test_not_not_word(self):
-        self.assertEqual(parse('!not !not word'), {"word": [(True, 'word')]})
+        self.assertEqual(parse('!not !not word'), {'q': [("word", True, 'word')]})
 
     def test_not_not_not_word(self):
-        self.assertEqual(parse('!not !not !not word'), {"word": [(False, 'word')]})
+        self.assertEqual(parse('!not !not !not word'), {'q': [("word", False, 'word')]})
 
     def test_not_not_not_not_word(self):
-        self.assertEqual(parse('!not !not !not !not word'), {"word": [(True, 'word')]})
+        self.assertEqual(parse('!not !not !not !not word'), {'q': [("word", True, 'word')]})
 
     def test_not_word_query(self):
-        self.assertEqual(parse("!not query"), {"word": [(False, 'query')]})
+        self.assertEqual(parse("!not query"), {'q': [("word", False, 'query')]})
 
     def test_not_word_literal_query(self):
-        self.assertEqual(parse('!not "query"'), {"word": [(False, 'query')]})
+        self.assertEqual(parse('!not "query"'), {'q': [("word", False, 'query')]})
 
     def test_not_tag_query(self):
-        self.assertEqual(parse("!not @gtg"), {"tag": [(False, '@gtg')]})
+        self.assertEqual(parse("!not @gtg"), {'q': [("tag", False, '@gtg')]})
 
     def test_not_literal_tag_query(self):
-        self.assertEqual(parse('!not "@gtg"'), {"word": [(False, '@gtg')]})
+        self.assertEqual(parse('!not "@gtg"'), {'q': [("word", False, '@gtg')]})
 
     def test_or(self):
-        self.assertEqual(parse("@gtg !or @gtd"), {"or": [ {"tag": [(True, "@gtg")]}, {"tag": [(True, "@gtd")]}]} )
+        self.assertEqual(parse("@gtg !or @gtd"), {'q': [("or", True, [("tag", True, "@gtg"), ("tag", True, "@gtd")])]})
+
+    def test_or_or(self):
+        self.assertEqual(parse("@gtg !or @gtd !or @a"), {'q': [("or", True, [("tag", True, "@gtg"), ("tag", True, "@gtd"), ("tag", True, "@a")])]})
+
+    def test_or_or_or_or_or(self):
+        self.assertEqual(parse("@gtg !or @gtd !or @a !or @b !or @c"), 
+            {'q': [("or", True, [("tag", True, "@gtg"), ("tag", True, "@gtd"), ("tag", True, "@a"), ("tag", True, "@b"), ("tag", True, "@c")])]})
+
+    def test_not_or(self):
+        self.assertRaises(InvalidQuery, parse, '!not !or')
+
+    def test_not_or_word(self):
+        self.assertRaises(InvalidQuery, parse, '!not !or word')
+
+    def test_word_not_or_word(self):
+        self.assertRaises(InvalidQuery, parse, 'word !not !or word')
+
+    def test_double_or(self):
+        self.assertEqual(parse("a !or b c !or d"), {'q': [
+            ("or", True, [("word", True, "a"), ("word", True, "b")]),
+            ("or", True, [("word", True, "c"), ("word", True, "d")])
+        ]})
 
 def test_suite():
     return unittest.TestLoader().loadTestsFromName(__name__)
