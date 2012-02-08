@@ -1654,27 +1654,12 @@ class TaskBrowser(gobject.GObject):
 
         self.search_actions = []
 
-        # add / update things in search_completion
-        """ update and populate the autocomplete with tasks, tags and commands """
-
-        # FIXME FIXME FIXME
-        # This code caches the list of tasks and then use it. However, the list
-        # of tasks is not accessible at the beginning
-        # (liblarch is asynchronous, we know :-) We should get rid of this.
-        # 
-        # It would be non-trivial edit, and I am not sure how to solve it 
-        # right now. Without this it works, but not show list of prefix tasks
-        # in the entrycompletition
-        # Izidor
-        # FIXME load titles into search_completion
-        # FIXME FIXME FIXME
         self.search_complete_store = gtk.ListStore(str)
         for tagname in self.req.get_all_tags():
             # only for regular tags
             if tagname.startswith("@") :
                 self.search_complete_store.append([tagname])
 
-        #FIXME
         for command in search_commands:
             self.search_complete_store.append([command])
 
@@ -1683,17 +1668,18 @@ class TaskBrowser(gobject.GObject):
 
     def on_quickadd_changed(self, editable):
         """ Decide which actions are allowed with the current query """
-#FIXME maybe update actions on fly without delete/add cycle!
         # delete old actions
         for i in range(len(self.search_actions)):
             self.search_completion.delete_action(0)
 
         self.search_actions = []
-        new_actions = ['add']
+        new_actions = []
         query = self.quickadd_entry.get_text()
 
         if self.req.get_task_id(query) is not None:
             new_actions.append('open')
+        else:
+            new_actions.append('add')
 
         # Is query parsable?
         try:
@@ -1706,7 +1692,6 @@ class TaskBrowser(gobject.GObject):
         for aid, name in enumerate(new_actions):
             action = self.search_possible_actions[name]
             self.search_completion.insert_action_markup(aid, action)
-#FIXME why do we store actions when we don't use them anywhere? number will be sufficient
             self.search_actions.append(name)
 
     def expand_search_tag(self):
@@ -1724,9 +1709,6 @@ class TaskBrowser(gobject.GObject):
         if action == 'add':
             self.on_quickadd_activate(None)
         elif action == 'open':
-            #FIXME how works this code? examine it correctly!
-            # NOTE: Another piece of code to make search work without performance issue
-            # this allows to open task also without search pane to be active
             task_title = self.quickadd_entry.get_text()
             task_id = self.req.get_task_id(task_title)
             self.vmanager.open_task(task_id)
