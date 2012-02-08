@@ -482,10 +482,20 @@ class Task(TreeNode):
         self._modified_update()
         if self.is_loaded():
             #This is a liblarch call to the TreeNode ancestor
-            self.modified()
+            self.modified(priority=self.get_update_priority())
             return True
         else:
             return False
+            
+    def get_update_priority(self):
+        priority = "low"
+        if self.get_status() == "Active":
+            priority = "high"
+        else:
+            #Tasks closed in the last 7 days are also VIP
+            if self.get_closed_date().days_left() >= -15:
+                priority = "medium"
+        return priority
 
 #   the following is not currently needed
 #    def modified(self):
