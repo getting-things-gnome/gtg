@@ -1647,9 +1647,9 @@ class TaskBrowser(gobject.GObject):
         self.quickadd_entry.set_completion(self.search_completion)
 
         self.search_possible_actions = {
-            'add':  _("<b>Add Task</b>"),
-            'open': _("<b>Open Task</b>"),
-            'search': _("<b>Search</b>"),
+            'add':  _("Add Task"),
+            'open': _("Open Task"),
+            'search': _("Search"),
         }
 
         self.search_actions = []
