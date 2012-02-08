@@ -21,12 +21,16 @@
 
 import unittest
 from GTG.core.search import search_filter
+from GTG.tools.dates import get_canonical_date
+
+d = get_canonical_date
 
 class FakeTask:
-    def __init__(self, title="", body="", tags=[]):
+    def __init__(self, title="", body="", tags=[], due_date=""):
         self.title = title
         self.body = body
         self.tags = tags
+        self.due_date = get_canonical_date(due_date)
 
     def get_title(self):
         return self.title
@@ -36,6 +40,9 @@ class FakeTask:
 
     def get_tags_name(self):
         return self.tags
+
+    def get_due_date(self):
+        return self.due_date
 
 class TestSearchFilter(unittest.TestCase):
 
@@ -102,6 +109,37 @@ class TestSearchFilter(unittest.TestCase):
         self.assertTrue(search_filter(task, {'q': [("word", True, 'for GNOME')]}))
         self.assertTrue(search_filter(task, {'q': [("word", False, 'GTG for GNOME')]}))
         self.assertFalse(search_filter(task, {'q': [("word", True, 'GTG for GNOME')]}))
+
+    def test_simple_before(self):
+        v = FakeTask(due_date="2012-02-14")
+
+        self.assertTrue(search_filter(v, {'q': [("before", True, d('2022-01-01'))]}))
+        self.assertTrue(search_filter(v, {'q': [("before", True, d('2012-03-01'))]}))
+        self.assertTrue(search_filter(v, {'q': [("before", True, d('2012-02-20'))]}))
+        self.assertTrue(search_filter(v, {'q': [("before", True, d('2012-02-15'))]}))
+        self.assertFalse(search_filter(v, {'q': [("before", True, d('2012-02-14'))]}))
+        self.assertFalse(search_filter(v, {'q': [("before", True, d('2012-02-13'))]}))
+        self.assertFalse(search_filter(v, {'q': [("before", True, d('2000-01-01'))]}))
+
+        self.assertFalse(search_filter(v, {'q': [("before", False, d('2012-03-01'))]}))
+        self.assertTrue(search_filter(v, {'q': [("before", False, d('2012-02-14'))]}))
+        self.assertTrue(search_filter(v, {'q': [("before", False, d('2002-02-20'))]}))
+
+    def test_simple_after(self):
+        t = FakeTask(due_date="2012-06-01")
+
+        self.assertTrue(search_filter(t, {'q': [("after", True, d('2002-01-01'))]}))
+        self.assertTrue(search_filter(t, {'q': [("after", True, d('2012-05-30'))]}))
+        self.assertFalse(search_filter(t, {'q': [("after", True, d('2013-02-20'))]}))
+        self.assertTrue(search_filter(t, {'q': [("after", False, d('2022-02-15'))]}))
+
+    def test_dates(self):
+        self.assertTrue(search_filter(FakeTask(due_date="today"), {'q': [("today", True)]}))
+        self.assertTrue(search_filter(FakeTask(due_date="tomorrow"), {'q': [("tomorrow", True)]}))
+        self.assertTrue(search_filter(FakeTask(due_date=""), {'q': [("nodate", True)]}))
+        self.assertTrue(search_filter(FakeTask(due_date="now"), {'q': [("now", True)]}))
+        self.assertTrue(search_filter(FakeTask(due_date="soon"), {'q': [("soon", True)]}))
+        self.assertTrue(search_filter(FakeTask(due_date="later"), {'q': [("later", True)]}))
 
 def test_suite():
     return unittest.TestLoader().loadTestsFromName(__name__)

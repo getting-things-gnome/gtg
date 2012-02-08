@@ -30,27 +30,22 @@ FIXME parameters of query => how it should looks like
 import re
 
 from GTG import _
+from GTG.tools.dates import get_canonical_date, no_date
+from GTG.tools.dates import date_today, NOW, SOON, LATER
 
 # Generate keywords and their possible translations
 # They must be listed because of gettext
 KEYWORDS = {
   "not": _("not"),
   "or": _("or"),
-
-# FIXME
-#  "and": _("and"),
-#  "before": _("before"),
-#  "after": _("after"),
-#  "past": _("past"),
-#  "future": _("future"),
-#  "today": _("today"),
-#  "tomorrow": _("tomorrow"),
-#  "nextmonth": _("nextmonth"),
-#  "nodate": _("nodate"),
-#  "now": _("now"),
-#  "soon": _("soon"),
-#  "later": _("later"),
-#  "late": _("late"),
+  "after": _("after"),
+  "before": _("before"),
+  "today": _("today"),
+  "tomorrow": _("tomorrow"),
+  "nodate": _("nodate"),
+  "now": _("now"),
+  "soon": _("soon"),
+  "later": _("later"),
 }
 
 # transform keywords and their translations into a list of possible commands
@@ -75,7 +70,7 @@ class InvalidQuery(Exception):
 TOKENS_RE = re.compile(r"""
             (?P<command>!\S+(?=\s)?) |
             (?P<tag>@\S+(?=\s)?) |
-            (?P<date>[01][0-2][/\.-]?[0-3][0-9][/\.-]\d{4}) |
+            (?P<date>\d{4}-\d{2}-\d{2}|\d{8}|\d{4}) |
             (?P<literal>".+?") | 
             (?P<word>(?![!"@])\S+(?=\s)?) |
             (?P<space>(\s+))
@@ -118,31 +113,49 @@ def parse_search_query(query):
     commands = []
 
     not_count, after_or = 0, False
+    require_date = None
     for token, value in _tokenize_query(query):
         cmd = None
-        if token == 'command':
+
+        if require_date:
+            if token not in ['date', 'word', 'literal']:
+                raise InvalidQuery("Unexpected token '%s' after '%s'" % (token, require_date))
+
+            value = value.strip('"')
+            date = get_canonical_date(value)
+            if date == no_date:
+                raise InvalidQuery("Date '%s' in wrong format" % (value))
+
+            cmd = (require_date, not_count % 2 == 0, date)
+            require_date = None
+
+        elif token == 'command':
             value = value.lower()[1:]
 
             found = False
             for keyword in KEYWORDS:
-                if value in KEYWORDS[keyword]:
-                    if keyword == 'not':
-                        not_count += 1
-                    elif keyword == 'or':
-                        if not_count > 0:
-                            raise InvalidQuery("!or cann't follow !not")
+                if value not in KEYWORDS[keyword]:
+                    continue
 
-                        if commands == []:
-                            raise InvalidQuery("Or is not allowed at the beginning of query")
+                if keyword == 'not':
+                    not_count += 1
+                elif keyword == 'or':
+                    if not_count > 0:
+                        raise InvalidQuery("!or cann't follow !not")
 
-                        if commands[-1][0] != "or":
-                            commands.append(("or", True, [commands.pop()]))
+                    if commands == []:
+                        raise InvalidQuery("Or is not allowed at the beginning of query")
 
-                        after_or = True
-                    else:
-                        cmd = (keyword, not_count % 2 == 0)
-                    found = True
-                    break
+                    if commands[-1][0] != "or":
+                        commands.append(("or", True, [commands.pop()]))
+
+                    after_or = True
+                elif keyword in ['after', 'before']:
+                    require_date = keyword
+                else:
+                    cmd = (keyword, not_count % 2 == 0)
+                found = True
+                break
             if not found:
                 raise InvalidQuery("Unknown command !%s" % value)
 
@@ -165,11 +178,13 @@ def parse_search_query(query):
     if after_or:
         raise InvalidQuery("Or is not allowed at the end of query")
 
+    if require_date:
+        raise InvalidQuery("Required date after '%s'" % require_date)
+
     return {'q': commands}
 
 def search_filter(task, parameters=None):
     """ Check if task satisfies all search parameters """
-
 
     if parameters is None or 'q' not in parameters:
         return False
@@ -184,8 +199,16 @@ def search_filter(task, parameters=None):
             return word in text or word in title
 
         value_checks = {
+            'after': lambda t, v: task.get_due_date() > v,
+            'before': lambda t, v: task.get_due_date() < v,
             'tag': lambda t, v: v in task.get_tags_name(),
             'word': fulltext_search,
+            'today': lambda task, v: task.get_due_date() == date_today(),
+            'tomorrow': lambda task, v: task.get_due_date() == get_canonical_date('tomorrow'),
+            'nodate': lambda task, v: task.get_due_date() == no_date,
+            'now': lambda task, v: task.get_due_date() == NOW,
+            'soon': lambda task, v: task.get_due_date() == SOON,
+            'later': lambda task, v: task.get_due_date() == LATER,
         }
 
         for command in commands_list:
@@ -198,7 +221,9 @@ def search_filter(task, parameters=None):
                         result = True
                         break
             elif value_checks.get(cmd, None):
-                result = value_checks[cmd](task, args[0])
+                if len(args) > 0:
+                    args = args[0]
+                result = value_checks[cmd](task, args)
 
             if (positive and not result) or (not positive and result):
                 return False
@@ -207,58 +232,3 @@ def search_filter(task, parameters=None):
 
 
     return check_commands(parameters['q'])
-
-def old_search_filter(task, parameters):
-
-
-
-
-    if parameters is None:
-        return False
-
-    # Check boolean properties
-    properties = {
-#FIXME
-        #'now': str(task.get_due_date()) != 'now',
-        #'soon': str(task.get_due_date()) != 'soon',
-        #'later': str(task.get_due_date()) != 'later',
-        #'late': task.get_days_left() > -1 or task.get_days_left() == None,
-        #'nodate': str(task.get_due_date()) != '',
-        #'tomorrow': task.get_days_left() != 1,
-        #'today': task.get_days_left() != 0,
-    }
-
-    for name, value in properties.iteritems():
-        if name in parameters:
-            if parameters[name] == True:
-                if not value:
-                    return False
-            else:
-                if value:
-                    return False
-
-    for name, func in value_checks.iteritems():
-        print parameters
-        for neg, value in  parameters.get(name, []):
-            is_ok = func(task, value)
-            if neg:
-                if is_ok:
-                    return False
-            else:
-                if not is_ok:
-                    return False
-
-    # Check every "or" clausur
-    for sequence in parameters.get("or", []):
-        # Check if at least one condition is true
-        found = False
-        print sequence
-        for p in sequence:
-            if search_filter(task, p):
-                found = True
-                break
-        if not found:
-            return False
-
-    # passing all cirteria
-    return True

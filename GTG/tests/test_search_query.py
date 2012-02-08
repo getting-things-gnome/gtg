@@ -21,8 +21,10 @@
 
 import unittest
 from GTG.core.search import parse_search_query, InvalidQuery
+from GTG.tools.dates import get_canonical_date
 
 parse = parse_search_query
+d = get_canonical_date
 
 class TestSearchQuery(unittest.TestCase):
 
@@ -89,6 +91,67 @@ class TestSearchQuery(unittest.TestCase):
             ("or", True, [("word", True, "a"), ("word", True, "b")]),
             ("or", True, [("word", True, "c"), ("word", True, "d")])
         ]})
+
+    def test_after(self):
+        self.assertEqual(parse("!after 2012-02-14"), {'q': [('after', True, d('2012-02-14'))]})
+        self.assertEqual(parse("!after tomorrow"), {'q': [('after', True, d('tomorrow'))]})
+        self.assertEqual(parse("!after today"), {'q': [('after', True, d('today'))]})
+        self.assertEqual(parse('!after "next month"'), {'q': [('after', True, d('next month'))]})
+
+        # Test other things as well
+        self.assertEqual(parse("!after tomorrow @gtg"), {'q': [('after', True, d('tomorrow')), ('tag', True, '@gtg')]})
+        self.assertEqual(parse("!after tomorrow !not @gtg"), {'q': [('after', True, d('tomorrow')), ('tag', False, '@gtg')]})
+        self.assertEqual(parse("!after tomorrow mytask"), {'q': [('after', True, d('tomorrow')), ('word', True, 'mytask')]})
+        self.assertEqual(parse("!after tomorrow !not mytask"), {'q': [('after', True, d('tomorrow')), ('word', False, 'mytask')]})
+
+        # Test whitespace
+        self.assertEqual(parse("!after                        today       "), {'q': [('after', True, d('today'))]})
+
+        # Test nondate information
+        self.assertRaises(InvalidQuery, parse, "!after non-date-information")
+
+        # Missing date
+        self.assertRaises(InvalidQuery, parse, "!after")
+        self.assertRaises(InvalidQuery, parse, "!after !after")
+        self.assertRaises(InvalidQuery, parse, "!after @now")
+        self.assertRaises(InvalidQuery, parse, "!not !after")
+
+        # Not after "The End of the World" :-)
+        self.assertEqual(parse("!not !after 2012-12-21"), {'q': [('after', False, d('2012-12-21'))]})
+
+    def test_before(self):
+        self.assertEqual(parse("!before 2000-01-01"), {'q': [('before', True, d('2000-01-01'))]})
+        self.assertEqual(parse("!before tomorrow"), {'q': [('before', True, d('tomorrow'))]})
+        self.assertEqual(parse('!before "next month"'), {'q': [('before', True, d('next month'))]})
+
+        # Test other things as well
+        self.assertEqual(parse("@gtg !before tomorrow @gtg"), {'q': [('tag', True, '@gtg'), ('before', True, d('tomorrow')), ('tag', True, '@gtg')]})
+        self.assertEqual(parse("!before tomorrow !not @gtg"), {'q': [('before', True, d('tomorrow')), ('tag', False, '@gtg')]})
+        self.assertEqual(parse("!before tomorrow mytask"), {'q': [('before', True, d('tomorrow')), ('word', True, 'mytask')]})
+        self.assertEqual(parse("!before tomorrow !not mytask"), {'q': [('before', True, d('tomorrow')), ('word', False, 'mytask')]})
+
+        # Test whitespace
+        self.assertEqual(parse("!before                        today       "), {'q': [('before', True, d('today'))]})
+
+        # Test nondate information
+        self.assertRaises(InvalidQuery, parse, "!before non-date-information")
+
+        # Missing date
+        self.assertRaises(InvalidQuery, parse, "!before")
+        self.assertRaises(InvalidQuery, parse, "!before !before")
+        self.assertRaises(InvalidQuery, parse, "!before @now")
+        self.assertRaises(InvalidQuery, parse, "!not !before")
+
+    def test_dates(self):
+        self.assertEqual(parse('!today'), {'q': [('today', True)]})
+        self.assertEqual(parse('!tomorrow'), {'q': [('tomorrow', True)]})
+        self.assertEqual(parse('!nodate'), {'q': [('nodate', True)]})
+        self.assertEqual(parse('!now'), {'q': [('now', True)]})
+        self.assertEqual(parse('!soon'), {'q': [('soon', True)]})
+        self.assertEqual(parse('!later'), {'q': [('later', True)]})
+
+        self.assertEqual(parse('!not !today'), {'q': [('today', False)]})
+        self.assertEqual(parse('word !today'), {'q': [('word', True, 'word'), ('today', True)]})
 
 def test_suite():
     return unittest.TestLoader().loadTestsFromName(__name__)
