@@ -34,20 +34,23 @@ from GTG import _
 # Generate keywords and their possible translations
 # They must be listed because of gettext
 KEYWORDS = {
-  "and": _("and"),
   "not": _("not"),
-  "before": _("before"),
-  "after": _("after"),
-  "past": _("past"),
-  "future": _("future"),
-  "today": _("today"),
-  "tomorrow": _("tomorrow"),
-  "nextmonth": _("nextmonth"),
-  "nodate": _("nodate"),
-  "now": _("now"),
-  "soon": _("soon"),
-  "later": _("later"),
-  "late": _("late"),
+  "or": _("or"),
+
+# FIXME
+#  "and": _("and"),
+#  "before": _("before"),
+#  "after": _("after"),
+#  "past": _("past"),
+#  "future": _("future"),
+#  "today": _("today"),
+#  "tomorrow": _("tomorrow"),
+#  "nextmonth": _("nextmonth"),
+#  "nodate": _("nodate"),
+#  "now": _("now"),
+#  "soon": _("soon"),
+#  "later": _("later"),
+#  "late": _("late"),
 }
 
 # transform keywords and their translations into a list of possible commands
@@ -69,17 +72,12 @@ for keyword in KEYWORDS:
 class InvalidQuery(Exception):
     pass
 
-# FIXME MISSING
-# - different date formats"
-# - wildcard searches
-# - parsing list of all tasks? -> why?
 TOKENS_RE = re.compile(r"""
             (?P<command>!\S+(?=\s)?) |
             (?P<tag>@\S+(?=\s)?) |
-            (?P<task>\#.+?\#) |
             (?P<date>[01][0-2][/\.-]?[0-3][0-9][/\.-]\d{4}) |
             (?P<literal>".+?") | 
-            (?P<word>(?![!"#@])\S+(?=\s)?) |
+            (?P<word>(?![!"@])\S+(?=\s)?) |
             (?P<space>(\s+))
             """, re.VERBOSE)
 
@@ -117,40 +115,45 @@ def parse_search_query(query):
     if query.count('"') % 2 != 0:
         raise InvalidQuery("Query has odd number of quotes")
 
-# FIXME: value from Joao's code?????
-#FIXME why are literals and words differently handled?
-    parameters = {
-        'tags': [],
-        'literals': [],
-        'words': []
-    }
+    parameters = { 'tag': [], 'word': [], }
 
+            #FIXME handle and, not, or: it might be cool!
+
+    neg_value = False
     for token, value in _tokenize_query(query):
         if token == 'command':
             value = value.lower()[1:]
+
+            if value == 'not':
+                neg_value = not neg_value
+                continue
+            
+            if value == 'or':
+                continue
+
             found = False
             for keyword in KEYWORDS:
-                if value.lower() in KEYWORDS[keyword]:
+                if value in KEYWORDS[keyword]:
                     parameters[keyword] = True
                     found = True
                     break
             if not found:
                 raise InvalidQuery("Unknown command !%s" % value)
-
-#FIXME MAYBE it would make sense merge 'tags' with 'tag', etc
-            #FIXME handle and, not, or: it might be cool!
-#FIXME merge those classes!
         elif token == 'tag':
-#FIXME (want/dontwant, value)
-            parameters['tags'].append((True, value))
-        elif token == 'task':
-            print "not implemented"
-            #FIXME remove tasks
-        elif token == 'literal':
-#FIXME why lower()? 
-            parameters['literals'].append((True, value.strip('"').lower()))
-        elif token == 'word':
-            parameters['words'].append((True, value.lower()))
+            parameters['tag'].append((not neg_value, value))
+            neg_value = False
+        elif token in ['literal', 'word']:
+            parameters['word'].append((not neg_value, value.strip('"').lower()))
+            neg_value = False
+
+    if neg_value or (token == "command" and  value == "not"):
+        raise InvalidQuery("Query cannot end with !not (Forgot something?)")
+
+    # Clean unused parameters
+    if parameters["tag"] == []:
+        parameters.pop("tag")
+    if parameters["word"] == []:
+        parameters.pop("word")
 
     return parameters
 
@@ -184,13 +187,11 @@ def search_filter(task, parameters=None):
     def fulltext_search(task, word):
         text = task.get_excerpt(strip_tags=False).lower()
         title = task.get_title().lower()
-        return text.find(word) > -1 or word[1] in title
+        return word in text or word in title
 
     value_checks = {
-        'tasks': lambda t, v: t.get_title().lower() == v,
-        'tags': lambda t, v: v in task.get_tags_name(),
-        'words': fulltext_search,
-        'literals', fulltext_search
+        'tag': lambda t, v: v in task.get_tags_name(),
+        'word': fulltext_search,
     }
     for name, func in value_checks.iteritems():
         neg, value = parameters[name]
