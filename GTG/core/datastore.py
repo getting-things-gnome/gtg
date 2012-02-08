@@ -188,6 +188,9 @@ class DataStore(object):
         self.remove_tag(oldname)
 
         # Make sure the name is unique
+        if newname.startswith('!'):
+            newname = '_' + newname
+
         label, num = newname, 1
         while self.__tagstore.has_node(label):
             num += 1

@@ -1733,9 +1733,14 @@ class TaskBrowser(gobject.GObject):
             self.quickadd_entry.set_text('')
         elif action == 'search':
             query = self.quickadd_entry.get_text()
+            # ! at the beginning is reserved keyword for liblarch
+            if query.startswith('!'):
+                label = '_' + query
+            else:
+                label = query
 
             # find possible name collisions
-            name, number = query, 1
+            name, number = label, 1
             already_search = False
             while True:
                 tag = self.req.get_tag(name)
@@ -1748,7 +1753,7 @@ class TaskBrowser(gobject.GObject):
 
                 # this name is used, adding number
                 number += 1
-                name = query + ' ' + str(number)
+                name = label + ' ' + str(number)
 
             if not already_search:
                 tag = self.req.new_search_tag(name, query)
