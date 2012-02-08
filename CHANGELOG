@@ -1,4 +1,3 @@
-
 ????-??-?? Getting Things GNOME! ?.?.?
     * Fixed bugs #897703, #897703, hamster integration, by Richard Klein
     * Fixed url autolinking for http(s) schemes, by Madhumitha Viswanathan
@@ -18,6 +17,12 @@
     * Underscore characters in tasks not treated as accelerators (bug #676088) fixed, by Madhumitha Viswanathan
     * Setting start/due date by a right click menu in the task browser, by Fabio Prina & Kevin Mehall
     * Fixed bug #584667, indicating missing plugin dependencies, by Erin McLaughlin
+
+2011-12-01 Getting Things GNOME! 0.2.5
+    * Ability to downgrade data from development, future 0.3 GTG code, by Izidor Matušov
+
+2010-03-02 Getting Things GNOME! 0.2.3
+    * Removal of disabled widgets
 
 2010-03-01 Getting Things GNOME! 0.2.2
     * Autostart on login, by Luca Invernizzi
