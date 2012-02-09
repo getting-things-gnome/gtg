@@ -32,7 +32,7 @@ import GTG
 from GTG                     import _
 from GTG.tools.dates         import date_today, no_date, Date
 from datetime                import datetime
-from GTG.tools.liblarch.tree import TreeNode
+from liblarch.tree           import TreeNode
 from GTG.tools.logger        import Log
 from GTG.tools.dates         import no_date, get_canonical_date
 

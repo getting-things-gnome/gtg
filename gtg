@@ -39,6 +39,26 @@ def X_is_running():
     except RuntimeError:
         pass
     return False
+    
+#This funtion import liblarch from the system, then from the local folder
+#and, as a last resort, give the command to install it.
+def import_liblarch():
+    try:
+        import liblarch
+        return True
+    except:
+        sys.path.append("../liblarch/")
+        try:
+            import liblarch
+            return True
+        except:
+	        print "GTG requires liblarch but liblarch is not installed."
+	        print "To install liblarch, run the following command in the current folder:"
+	        print "\n"
+	        print "   git clone git://github.com/ploum/liblarch.git  ../liblarch"
+	        print "\n"
+	        print "More informations about liblarch: https://live.gnome.org/liblarch/"
+	        return False
 
 
 try:
@@ -64,7 +84,7 @@ try:
         print "Could not open X display"
         sys.exit(1)
 
-    else:
+    elif import_liblarch():
         import GTG.gtg
         sys.exit(GTG.gtg.main(options, args))
 

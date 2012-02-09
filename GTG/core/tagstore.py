@@ -29,7 +29,7 @@ import xml.sax.saxutils as saxutils
 
 from GTG              import _
 from GTG.core         import CoreConfig
-from GTG.tools.liblarch.tree    import TreeNode
+from liblarch.tree    import TreeNode
 from GTG.tools        import cleanxml
 from GTG.tools.logger import Log
 

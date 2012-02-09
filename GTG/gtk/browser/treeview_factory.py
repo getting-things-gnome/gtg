@@ -25,7 +25,7 @@ import locale
 from GTG                              import _
 from GTG.core.task                    import Task
 from GTG.gtk.browser.CellRendererTags import CellRendererTags
-from GTG.gtk.liblarch_gtk             import TreeView
+from liblarch_gtk                     import TreeView
 from GTG.gtk                          import colors
 from GTG.tools                        import dates
 
