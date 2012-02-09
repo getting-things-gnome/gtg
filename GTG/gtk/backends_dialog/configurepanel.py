@@ -84,7 +84,7 @@ class ConfigurePanel(gtk.VBox):
         '''
         hbox.set_spacing(10)
         self.image_icon = gtk.Image()
-        self.image_icon.set_size_request(100, 100)
+        self.image_icon.set_size_request(48, 48)
         vbox = gtk.VBox()
         hbox_top = gtk.HBox()
         self.human_name_label = gtk.Label()
@@ -107,7 +107,7 @@ class ConfigurePanel(gtk.VBox):
         vbox.pack_start(self.sync_desc_label, True)
         hbox.pack_start(self.image_icon, False)
         align_vbox = gtk.Alignment(xalign = 0, yalign = 0, xscale = 1)
-        align_vbox.set_padding(10, 0, 20, 0)
+        align_vbox.set_padding(12, 0, 0, 0)
         align_vbox.add(vbox)
         hbox.pack_start(align_vbox, True)
 
@@ -134,7 +134,7 @@ class ConfigurePanel(gtk.VBox):
         self.refresh_sync_status()
         self.parameters_ui.refresh(self.backend)
         self.image_icon.set_from_pixbuf(self.dialog.get_pixbuf_from_icon_name(\
-                                        self.backend.get_name(), 80, 80))
+                                        self.backend.get_name(), 48, 48))
 
     def refresh_title(self, sender = None, data = None):
         '''
