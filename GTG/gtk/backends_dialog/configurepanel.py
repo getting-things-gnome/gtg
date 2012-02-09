@@ -192,9 +192,9 @@ class ConfigurePanel(gtk.VBox):
             label = _("This is the default backend")
         else:
             if self.backend.is_enabled():
-                label = _("Syncing is enabled")
+                label = _("Syncing is enabled.")
             else:
-                label = _('Syncing is <span color="red">disabled</span>')
+                label = _('Syncing is <span color="red">disabled</span>.')
         self.sync_status_label.set_markup(label)
 
     def refresh_sync_status(self, sender = False, data = False):
