@@ -54,6 +54,7 @@ class AddPanel(gtk.VBox):
         #Division of the available space in three segments:
         # top, middle and bottom.
         top = gtk.HBox()
+        top.set_spacing(6)
         middle = gtk.HBox()
         bottom = gtk.HBox()
         self._fill_top_hbox(top)
@@ -62,6 +63,7 @@ class AddPanel(gtk.VBox):
         self.pack_start(top, False)
         self.pack_start(middle, True)
         self.pack_start(bottom, True)
+        self.set_border_width(12)
 
     def _fill_top_hbox(self, hbox):
         '''
@@ -70,11 +72,11 @@ class AddPanel(gtk.VBox):
 
         @param hbox: the gtk.HBox to fill
         '''
-        label = gtk.Label("Select a backend")
-        label.set_size_request(-1, 30)
+        label = gtk.Label(_("Select a backend:"))
+        label.set_alignment(0, 0.5)
         self.combo_types = BackendsCombo(self.dialog)
         self.combo_types.child.connect('changed', self.on_combo_changed)
-        hbox.pack_start(label, True, True)
+        hbox.pack_start(label, False, True)
         hbox.pack_start(self.combo_types, False, True)
 
     def _fill_middle_hbox(self, hbox):
