@@ -149,7 +149,6 @@ class DataStore(object):
 
         name = name.encode("UTF-8")
         tag = Tag(name, req=self.requester)
-        tag.set_attribute("icon","search")
         tag.set_attribute("label","%s" % name)
         tag.set_attribute("query", query)
 
