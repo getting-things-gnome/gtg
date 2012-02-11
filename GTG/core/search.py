@@ -17,434 +17,265 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
+"""
+Search feature for GTG
+
+Created by:
+  * João Ascenso, GSoC 2011
+  * Izidor Matušov, Jan/Feb 2012
+
+You can search by entring a query in a simple language. Function parse_search_query()
+parse the query and return internal representation which is used for filtering
+in search_filter() function. If the query is malformed, the exception InvalidQuery is
+raised.
+
+The query language consists of several elements:
+  * commands
+    * !not <elem> -- the next element will be negated
+    * <elem> !or <elem> -- return True if the former or the later element are true
+    * !after <date> -- show tasks which could be done after this date 
+    * !before <date> -- show tasks which must be done before this date
+    * !today -- show tasks with due_date == today
+    * !tomorrow -- show tasks with due_date == tomorrow
+    * !nodate -- show tasks without due_date
+    * !now -- show tasks with due_date == now
+    * !soon -- show tasks with due_date == soon
+    * !later -- show tasks with due_date == later
+  * tags -- show tasks with this tag
+  * word -- show tasks which contains this word
+  * "literal" -- basically the same as word but allows the space and special charasters
+        inside. Literal must be inside "quotes".
+  * date -- date which could be parsed with get_canonical_date
+
+Elements are supposed to be in conjuction, i.e. they are interpreted as
+ E1 AND E2 AND E3 AND E4 AND ( E5 OR E6 OR E7 ) AND E8 ...
+
+Examples of queries:
+'!tomorrow !or !today' => show tasks which are today or tomorrow
+'@gtg @writing' => show tasks with both of the tags @gtg, @writing
+'@gtg !before 2012-03-01' => show GTG tasks with due_date before Marz 1
+'buy @errands' => show errands where I have to buy something
+'!not buy @errands' => show errands without keyword buy
+'!after "next month"' => show tasks after this month
+
+
+search_filter() expect parameter 'q' which is a list of commands in the form
+(name_of_command, should_be_positive, arguments). If
+  should_be_positive == True => task has to satisfy this command
+  should_be_positive == False => task must not satisfy this command
+
+A special command is "or" which contains subcommands and returns Ture if
+at least one subcommand returns True.
+
+search_filter() could be easily plugged in Liblarch and filter only suitable tasks.
+
+For more information see unittests:
+  * GTG/tests/test_search_query.py -- parsing query
+  * GTG/tests/test_search_filter.py -- filtering a task
+"""
+
 import re
 
-import GTG
-from GTG.core.datastore import DataStore
-from GTG                import _, info, ngettext
-from GTG.core.task               import Task
-'''
-search.py - contains all search related definitions and operations
-'''
+from GTG import _
+from GTG.tools.dates import get_canonical_date, no_date
+from GTG.tools.dates import date_today, NOW, SOON, LATER
 
-class Search:
-    ''' 
-    This class represent a search instance in GTG.
-    '''
-    
-    #usable join keyWords
-    andKeyword = _("and +")
-    #orKeyword = _("or |")
-    notKeyword = _("not -")
-    
-    #usable task state keyWords
-    activeKeywords = _("active")
-    dismissedKeyword = _("dismissed")
-    doneKeyword = _("done")
-    
-    #usable temporal keywords
-    beforeKeywords = _("before")
-    afterKeywords = _("after")
-    pastKeywords = _("past")
-    futureKeywords = _("future")
-    todayKeywords = _("today")
-    tomorrowKeywords = _("tomorrow")
-    nextmonthKeywords = _("nextmonth")
-    nowKeywords = _("now")
-    soonKeywords = _("soon")
-    laterKeywords = _("later")
-    nodateKeywords = _("nodate")
-    lateKeywords = _("late")
-    
-    #keywords for translations
-    #translate this to add the original english and an additional language to all keywords
-    #usable join keyWords
-    andKeywordTranslation = _("")
-    #orKeywordTranslation = _("")
-    notKeywordTranslation = _("")
-    
-    #usable task state keyWords
-    activeKeywordsTranslation = _("")
-    dismissedKeywordTranslation = _("")
-    doneKeywordTranslation = _("")
-    
-    #usable temporal keywords
-    beforeKeywordsTranslation = _("")
-    afterKeywordsTranslation = _("")
-    pastKeywordsTranslation = _("")
-    futureKeywordsTranslation = _("")
-    todayKeywordsTranslation = _("")
-    tomorrowKeywordsTranslation = _("")
-    nextmonthKeywordsTranslation = _("")
-    nodateKeywordsTranslation = _("")
-    nowKeywordsTranslation = _("")
-    soonKeywordsTranslation = _("")
-    laterKeywordsTranslation = _("")
-    lateKeywordsTranslation = _("")
-    
-    #character notations for different restrictions
-    taskNotation = '#'
-    tagNotation = '@'
-    commandNotation = '!'
-    literalNotation = '"'
-    
-    
-    def __init__(self, text, requester, tree):
-        '''
-        initialize the search object
-        parameter:
-         - text of the query
-         - requester
-         - task tree view
-         - tag tree view
-        '''
-        self.req = requester
-        
-        self.title = ("My new search")
-        self.text = text
-        #deals with empty searches
-        if len(self.text) == 0:
-            self.empty = True
-            self.valid = True
-        else:
-            self.empty = False
-            self.valid = False
-        
-        self.error = ''
-        #separate keywords in lists
-        self.dicKeyword = self._init_keywords()
-        self.tree = tree
-        self.oldFilters =[]
-        self.paramsToFilter = {}
-        #get all tags
-        self.alltags = self.req.get_all_tags()
-        
-##################################private#####################################
+# Generate keywords and their possible translations
+# They must be listed because of gettext
+KEYWORDS = {
+  "not": _("not"),
+  "or": _("or"),
+  "after": _("after"),
+  "before": _("before"),
+  "today": _("today"),
+  "tomorrow": _("tomorrow"),
+  "nodate": _("nodate"),
+  "now": _("now"),
+  "soon": _("soon"),
+  "later": _("later"),
+}
 
-    def _my_split(self, s, delim=None):
-        """
-        string split that removes empty strings
-        useful for when there are no translations
-        """
-        return [x for x in s.split(delim) if x]
-    
-    def _init_keywords(self):
-        """
-        gets all keywords, including translations and puts it in lists
-        """
-        dic = {}
-        #join Keywords including translations
-        dic["and"] = self.andKeyword.split(' ') + self._my_split(self.andKeywordTranslation, ' ')
-        dic["not"] = self.notKeyword.split(' ') + self._my_split(self.notKeywordTranslation, ' ')
-        #state keywords
-        dic["active"] = self.activeKeywords.split(' ') + self._my_split(self.activeKeywordsTranslation, ' ')
-        dic["dismissed"] = self.dismissedKeyword.split(' ') + self._my_split(self.dismissedKeywordTranslation, ' ')
-        dic["done"] = self.doneKeyword.split(' ') + self._my_split(self.doneKeywordTranslation, ' ')
-        #temporal keywords
-        dic["before"]    = self.beforeKeywords.split(' ') + self._my_split(self.beforeKeywordsTranslation, ' ')
-        dic["after"]     = self.afterKeywords.split(' ') + self._my_split(self.afterKeywordsTranslation, ' ')
-        dic["past"]      = self.pastKeywords.split(' ') + self._my_split(self.pastKeywordsTranslation, ' ')
-        dic["future"]    = self.futureKeywords.split(' ') + self._my_split(self.futureKeywordsTranslation, ' ')
-        dic["today"]     = self.todayKeywords.split(' ') + self._my_split(self.todayKeywordsTranslation, ' ')
-        dic["tomorrow"] = self.tomorrowKeywords.split(' ') + self._my_split(self.tomorrowKeywordsTranslation, ' ')
-        dic["nextmonth"] = self.nextmonthKeywords.split(' ') + self._my_split(self.nextmonthKeywordsTranslation, ' ')
-        dic["nodate"]    = self.nodateKeywords.split(' ') + self._my_split(self.nodateKeywordsTranslation, ' ')
-        dic["now"]    = self.nowKeywords.split(' ') + self._my_split(self.nowKeywordsTranslation, ' ')
-        dic["soon"]    = self.soonKeywords.split(' ') + self._my_split(self.soonKeywordsTranslation, ' ')
-        dic["later"]    = self.laterKeywords.split(' ') + self._my_split(self.laterKeywordsTranslation, ' ')
-        dic["late"]    = self.lateKeywords.split(' ') + self._my_split(self.lateKeywordsTranslation, ' ')
-        return dic
-        
-    def build_search_tokens(self):
-        '''
-        From the text given on the builder, separate the text, check if its a valid syntax,
-        prepares the data for filters and sets flag and error message for a valid search or not 
-        '''
-        value = True
-        union = False
-        sequence = -1
-        # the OR clausule is discarted for now, until i see a purpose
-        #clause = False
-        errorList=[]
-        self.error = ''
-        tempTokens = {}
-        #if its empty, is valid but returns
-        if self.empty:
-            return
-        #if the number of " is not pair, the search query is considered invalid
-        if (self.text.count('"') % 2) != 0:
-            self.error = '"'
-            self.valid = False
-            return
-        #MISSING
-        # - different date formats"
-        # - wildcard searches
-        expression = re.compile(r"""
-                    (?P<command>(?<=!)\S+(?=\s)?)|                      # commands
-                    (?P<tag>@\S+(?=\s)?)                                # tags
-                    |(?P<task>\#.+?\#)|                                 # tasks
-                    (?P<date>[01][0-2][/\.-]?[0-3][0-9][/\.-]\d{4})|    # dates - needs work
-                    (?P<literal>".+?")|                                 # literals
-                    (?P<word>(?![!"#@])\S+(?=\s)?)                      # words
-                    """, re.VERBOSE)
-        match = expression.findall(self.text)
-        #analyze the sets
-        #sets are given in a list of sub,lists
-        #each main list will have a sublist with one of 5 possible positions with text
-        for sets in match:
-            #ugly hack so i can look in future elements of the cycle
-            sequence +=1
-            for word in range(len(sets)):
-                #if the position is empty, continue
-                if sets[word] =='':
+# transform keywords and their translations into a list of possible commands
+for key in KEYWORDS:
+    if " " not in KEYWORDS[key] and KEYWORDS[key].lower() != key.lower():
+        possible_words = [key.lower(), KEYWORDS[key].lower()]
+    else:
+        possible_words = [key.lower()]
+    KEYWORDS[key] = possible_words
+
+# Generate list of possible commands
+search_commands = []
+for keyword in KEYWORDS:
+    for command in KEYWORDS[keyword]:
+        command = '!' + command
+        if command not in search_commands:
+            search_commands.append(command)
+
+class InvalidQuery(Exception):
+    pass
+
+TOKENS_RE = re.compile(r"""
+            (?P<command>!\S+(?=\s)?) |
+            (?P<tag>@\S+(?=\s)?) |
+            (?P<date>\d{4}-\d{2}-\d{2}|\d{8}|\d{4}) |
+            (?P<literal>".+?") | 
+            (?P<word>(?![!"@])\S+(?=\s)?) |
+            (?P<space>(\s+))
+            """, re.VERBOSE)
+
+def _tokenize_query(query):
+    """ Split query into a sequence of tokens (type, value)
+
+    This is inspired by following tokenizer:
+    http://stackoverflow.com/a/2359619/99944
+    by Matt Anderson
+    (it is licensed under CC atribution required)
+    """
+    pos = 0
+    while True:
+        m = TOKENS_RE.match(query, pos)
+        if not m: 
+            break
+        pos = m.end()
+        token_type = m.lastgroup
+        token_value = m.group(token_type)
+        if token_type != 'space':
+            yield token_type, token_value
+    if pos != len(query):
+        raise InvalidQuery('tokenizer stopped at pos %r of %r left of "%s"' % (
+            pos, len(query), query[pos:pos+10]))
+
+def parse_search_query(query):
+    """ Parse query into parameters for search filter
+
+    If query is not correct, exception InvalidQuery is raised.
+    """
+
+    if len(query.strip()) == 0:
+        raise InvalidQuery("Query is empty")
+
+    if query.count('"') % 2 != 0:
+        raise InvalidQuery("Query has odd number of quotes")
+
+    commands = []
+
+    not_count, after_or = 0, False
+    require_date = None
+    for token, value in _tokenize_query(query):
+        cmd = None
+
+        if require_date:
+            if token not in ['date', 'word', 'literal']:
+                raise InvalidQuery("Unexpected token '%s' after '%s'" % (token, require_date))
+
+            value = value.strip('"')
+            date = get_canonical_date(value)
+            if date == no_date:
+                raise InvalidQuery("Date '%s' in wrong format" % (value))
+
+            cmd = (require_date, not_count % 2 == 0, date)
+            require_date = None
+
+        elif token == 'command':
+            value = value.lower()[1:]
+
+            found = False
+            for keyword in KEYWORDS:
+                if value not in KEYWORDS[keyword]:
                     continue
-                #if its a command
-                if word == 0:
-                    #check if there's a 'and' to retain previous expression value
-                    if sets[word].lower() in self.dicKeyword.get('and'):
-                        #if the last operation is false, so is the next
-                        #you cannot negate !and
-                        if not value:
-                            self.error = sets[word]
-                            self.valid = False
-                            return
-                        #gets the value from last entry
-                        if not self.paramsToFilter.values()[(len(self.paramsToFilter.values())-1)]:
-                            value = False
-                        continue
-                    #not
-                    if sets[word].lower() in self.dicKeyword.get('not'):
-                        if value:
-                            value = False
-                            #cannot be 2 negations in a row
-                        else:
-                            errorList.append(self.commandNotation)
-                            errorList.append(sets[word])
-                            self.error = ''.join(errorList)
-                            self.valid = False
-                            return
-                        continue
-                    #and
-                    if sets[word].lower() in self.dicKeyword.get('and'):
-                        continue
-                    #active
-                    if sets[word].lower() in self.dicKeyword.get("active"):
-                        if value:
-                            self.paramsToFilter["active"]= True
-                        else:
-                            self.paramsToFilter["active"]= False
-                            value = True
-                        continue
-                    #dismissed
-                    if sets[word].lower() in self.dicKeyword.get("dismissed"):
-                        if value:
-                            self.paramsToFilter["dismissed"]= True
-                        else:
-                            self.paramsToFilter["dismissed"]= False
-                            value = True
-                        continue
-                    #done
-                    if sets[word].lower() in self.dicKeyword.get("done"):
-                        if value:
-                            self.paramsToFilter["done"]= True
-                        else:
-                            self.paramsToFilter["done"]= False
-                            value = True
-                        continue
-                    #now
-                    if sets[word].lower() in self.dicKeyword.get("now"):
-                        if value:
-                            self.paramsToFilter["now"]= True
-                        else:
-                            self.paramsToFilter["now"]= False
-                            value = True
-                        continue
-                    #soon
-                    if sets[word].lower() in self.dicKeyword.get("soon"):
-                        if value:
-                            self.paramsToFilter["soon"]= True
-                        else:
-                            self.paramsToFilter["soon"]= False
-                            value = True
-                        continue
-                    #later
-                    if sets[word].lower() in self.dicKeyword.get("later"):
-                        if value:
-                            self.paramsToFilter["later"]= True
-                        else:
-                            self.paramsToFilter["later"]= False
-                            value = True
-                        continue
-                    #no date defined
-                    if sets[word].lower() in self.dicKeyword.get("nodate"):
-                        if value:
-                            self.paramsToFilter["nodate"]= True
-                        else:
-                            self.paramsToFilter["nodate"]= False
-                            value = True
-                        continue
-                    #late taks ex taks that the due date already passed
-                    if sets[word].lower() in self.dicKeyword.get("late"):
-                        if value:
-                            self.paramsToFilter["late"]= True
-                        else:
-                            self.paramsToFilter["late"]= False
-                            value = True
-                        continue
-                    #taks that are due today
-                    if sets[word].lower() in self.dicKeyword.get("today"):
-                        if value:
-                            self.paramsToFilter["today"]= True
-                        else:
-                            self.paramsToFilter["today"]= False
-                            value = True
-                        continue
-                    #tasks that are due tomorrow
-                    if sets[word].lower() in self.dicKeyword.get("tomorrow"):
-                        if value:
-                            self.paramsToFilter["tomorrow"]= True
-                        else:
-                            self.paramsToFilter["tomorrow"]= False
-                            value = True
-                        continue
-                    #case the command given doens't exist, return error
-                    else:
-                        errorList.append(self.commandNotation)
-                        errorList.append(sets[word])
-                        self.error = ''.join(errorList)
-                        self.valid = False
-                        return
-                
-                #if its a tag
-                if word == 1:
-                    #verifies if the tag exists
-                    #for some reason, if the @ remains the lambda function fails
-                    if(sum(map(lambda x: x.lower() == sets[word].lower(), self.alltags))):
-                        if 'tags' not in self.paramsToFilter:
-                            self.paramsToFilter['tags'] = []
-                        self.paramsToFilter['tags'].append((value, sets[word]))
-                        if not value:
-                            value = True
-                        continue
-                    else:
-                        self.error = sets[word]
-                        self.valid = False
-                        return
-                #if its a task
-                elif word == 2:
-                    #verifies if the task exists
-                    taskStriped = sets[word].strip('#')
-                    if(sum(map(lambda x: x.lower() == taskStriped.lower(), self.req.get_all_titles()))):
-                        if 'tasks' not in self.paramsToFilter:
-                            self.paramsToFilter['tasks'] = []
-                        self.paramsToFilter['tasks'].append((value, taskStriped))
-                        if not value:
-                            value = True
-                        continue
-                    else:
-                        self.error = sets[word]
-                        self.valid = False
-                        return
-                #if its a date
-                elif word == 3:
-                    print("not implemented")
-                #if its a literal
-                elif word == 4:
-                    literalStriped = sets[word].strip('"')
-                    if 'literals' not in self.paramsToFilter:
-                        self.paramsToFilter['literals'] = []
-                    self.paramsToFilter['literals'].append((value, literalStriped.lower()))
-                    if not value:
-                        value = True
-                    continue
-                #if its a word
-                elif word == 5:
-                    if 'words' not in self.paramsToFilter:
-                        self.paramsToFilter['words'] = []
-                    self.paramsToFilter['words'].append((value, sets[word].lower()))
-                    if not value:
-                        value = True
-                    continue
-        self.valid = True
-        if len (self.paramsToFilter) < 1:
-            self.error = 'NONE'
-            self.valid = False
-            return
+
+                if keyword == 'not':
+                    not_count += 1
+                elif keyword == 'or':
+                    if not_count > 0:
+                        raise InvalidQuery("!or cann't follow !not")
+
+                    if commands == []:
+                        raise InvalidQuery("Or is not allowed at the beginning of query")
+
+                    if commands[-1][0] != "or":
+                        commands.append(("or", True, [commands.pop()]))
+
+                    after_or = True
+                elif keyword in ['after', 'before']:
+                    require_date = keyword
+                else:
+                    cmd = (keyword, not_count % 2 == 0)
+                found = True
+                break
+            if not found:
+                raise InvalidQuery("Unknown command !%s" % value)
+
+        elif token == 'tag':
+            cmd = (token, not_count % 2 == 0, value)
+        elif token in ['literal', 'word']:
+            cmd = ('word', not_count % 2 == 0, value.strip('"').lower())
+
+        if cmd is not None:
+            if after_or:
+                commands[-1][2].append(cmd)
+            else:
+                commands.append(cmd)
+
+            not_count, after_or = 0, False
+
+    if not_count > 0:
+        raise InvalidQuery("Query cannot end with !not (Forgot something?)")
+
+    if after_or:
+        raise InvalidQuery("Or is not allowed at the end of query")
+
+    if require_date:
+        raise InvalidQuery("Required date after '%s'" % require_date)
+
+    return {'q': commands}
+
+def search_filter(task, parameters=None):
+    """ Check if task satisfies all search parameters """
+
+    if parameters is None or 'q' not in parameters:
+        return False
+
+    def check_commands(commands_list):
+        # Check if contian values
+        def fulltext_search(task, word):
+            word = word.lower()
+            text = task.get_excerpt(strip_tags=False).lower()
+            title = task.get_title().lower()
+
+            return word in text or word in title
+
+        value_checks = {
+            'after': lambda t, v: task.get_due_date() > v,
+            'before': lambda t, v: task.get_due_date() < v,
+            'tag': lambda t, v: v in task.get_tags_name(),
+            'word': fulltext_search,
+            'today': lambda task, v: task.get_due_date() == date_today(),
+            'tomorrow': lambda task, v: task.get_due_date() == get_canonical_date('tomorrow'),
+            'nodate': lambda task, v: task.get_due_date() == no_date,
+            'now': lambda task, v: task.get_due_date() == NOW,
+            'soon': lambda task, v: task.get_due_date() == SOON,
+            'later': lambda task, v: task.get_due_date() == LATER,
+        }
+
+        for command in commands_list:
+            cmd, positive, args = command[0], command[1], command[2:]
+            result = False
+
+            if cmd == 'or':
+                for sub_cmd in args[0]:
+                    if check_commands([sub_cmd]):
+                        result = True
+                        break
+            elif value_checks.get(cmd, None):
+                if len(args) > 0:
+                    args = args[0]
+                result = value_checks[cmd](task, args)
+
+            if (positive and not result) or (not positive and result):
+                return False
+
         return True
-    
-    def apply_search(self):
-        """
-        apply the search to the desired tree
-        
-        Return false if the search tokens are not build or are invalid
-        """
-        if not self.valid:
-            return False
-        else:
-            self.tree.reset_filters()
-            self.tree.apply_filter('search', self.paramsToFilter)
-            return True
-    
-    def is_valid(self):
-        '''
-        returns true if the search tokens given are valid
-        returns false if the tokens are not yet given or are not compliant with the syntax
-        '''
-        return self.valid
-    
-    def is_empty(self):
-        '''
-        return True if the search string is ''
-        '''
-        return self.empty
-    
-    def return_error(self):
-        '''
-        Return the error message
-        '''
-        return self.error
-    
-    def get_commands(self):
-        """
-        returns the list of commands with the ! at the beginning
-        
-        except + and - at this time
-        """
-        dictlist = []
-        for item in self.dicKeyword.iteritems():
-            for key in item[1]:
-                #exceptions
-                if key in ['+', '-']:
-                    continue
-                dictlist.append('!'+ key)
-        return sorted(dictlist)
-    
-    def get_params(self):
-        """
-        returns the parameters from the search query
-        """
-        return self.paramsToFilter
-   
-    def __str__(self):
-        '''
-        String representation of the search object
-        '''
-        s = ""
-        s = s + "Search Object\n"
-        s = s + 'valid = ' + str(self.is_valid()) + '\n'
-        s = s + self.text + "\n"
-        return s
-    
-###############################################################################
-# Search Filters
-###############################################################################
 
-    """
-    The filter used for search is on treefactory.py
-    
-    Its there to be inserted into filterbank when gtg starts and also to be 
-    connected to the tagtree element AKA tagsidebar ^^
-    
-    as such any any additional variables to the search have to go through 
-    self.paramsToFilter{} as that is always passed to the filter
-    """
+
+    return check_commands(parameters['q'])
