@@ -188,6 +188,8 @@ class NotificationArea:
     def __on_task_added(self, tid, path):
         self.__task_separator.show()
         task = self.__requester.get_task(tid)
+        if task is None:
+            return
 
         #ellipsis of the title
         title = self.__create_short_title(task.get_title())
