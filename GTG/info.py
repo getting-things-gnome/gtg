@@ -18,30 +18,41 @@ AUTHORS     = ["Main developers:", \
                "\tLuca Falavigna <dktrkranz@debian.org>", \
                "\tIzidor Matušov <izidor.matusov@gmail.com>", \
                "Contributors:", \
-               "\tGérôme Fournier <>", \
+               "\tAlayn Gortazar <zutoin@gmail.com>", \
+               "\tAndrew Starr-Bochicchio <andrewsomething@ubuntu.com>", \
                "\tAntons Rebguns <arebgun@gmail.com>", \
-               "\tCarl Chenet <chaica@ohmytux.com>", \
-               "\tJérôme Guelfucci <jerome.guelfucci@gmail.com>",      \
-               "\tKalle Persson <kalle@kallepersson.se>", \
-               "\tJonathan Barnoud <jonathan@barnoud.net>", \
-               "\tMichael Vogt <michael.vogt@ubuntu.com>", \
                "\tBen Dowling <ben.m.dowling@gmail.com>", \
                "\tBrian Kennedy <ekspiulo@gmail.com>", \
-               "\tZach Shepherd <eightball1989@gmail.com>", \
-               "\tJean-François Fortin Tam <nekohayo@gmail.com>", \
-               "\tJonathan Lange <jml@mumak.net>", \
-               "\tMatthew Rasmus <tareth.ml@gmail.com>", \
                "\tBryce Harrington <bryce@bryceharrington.org>", \
+               "\tCarl Chenet <chaica@ohmytux.com>", \
                "\tChris Johnston <chrisjohnston@ubuntu.com>", \
-               "\tDavid Planella <david.planella@jabber.org>", \
-               "\tMarko Kevac <marko@kevac.org>", \
-               "\tVolodymyr Floreskul <exufer@gmail.com>", \
-               "\tJeff Oliver <kaiserfro@gmail.com>", \
-               "\tAndrew Starr-Bochicchio <andrewsomething@ubuntu.com>", \
                "\tDaniel Neel <dneelyep@gmail.com>", \
-               "\tIvan Evtukhovich <evtuhovich@gmail.com>", \
-               "\tMadhumitha Viswanathan <madhuvishy@gmail.com>", \
+               "\tDavid Planella <david.planella@jabber.org>", \
+               "\tErin McLaughlin <emclaughlin1215@gmail.com>", \
                "\tFabio Prina <fabio@nimsh.com>", \
+               "\tFrançois <>", \
+               "\tGérôme Fournier <>", \
+               "\tIvan Evtukhovich <evtuhovich@gmail.com>", \
+               "\tJean-François Fortin Tam <nekohayo@gmail.com>", \
+               "\tJeff Oliver <kaiserfro@gmail.com>", \
+               "\tJérôme Guelfucci <jerome.guelfucci@gmail.com>",      \
+               "\tJoão Ascenso <joaoricardoascenso@gmail.com>", \
+               "\tJonathan Barnoud <jonathan@barnoud.net>", \
+               "\tJonathan Lange <jml@mumak.net>", \
+               "\tKalle Persson <kalle@kallepersson.se>", \
+               "\tKees Cook <kees@ubuntu.com>", \
+               "\tMadhumitha Viswanathan <madhuvishy@gmail.com>", \
+               "\tMarcos Lenharo <>", \
+               "\tMarko Kevac <marko@kevac.org>", \
+               "\tMatthew Rasmus <tareth.ml@gmail.com>", \
+               "\tMichael Vogt <michael.vogt@ubuntu.com>", \
+               "\tNicolas Maître <nimai@skynet.be>", \
+               "\tRichard Klein <kleinric@gmail.com>", \
+               "\tThibault Fevry <ThibaultFevry@gmail.com>", \
+               "\tViktor Nagy <viktor.nagy@toolpart.hu>", \
+               "\tVolodymyr Floreskul <exufer@gmail.com>", \
+               "\tZach Shepherd <eightball1989@gmail.com>", \
+               "\tZimin Huang <ienjoycoding@gmail.com>", \
 ]
 ARTISTS     = ["Kalle Persson <kalle@kallepersson.se>", \
                 "Bertrand Rousseau <bertrand.rousseau@gmail.com>"]
