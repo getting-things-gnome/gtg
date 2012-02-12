@@ -22,7 +22,7 @@ from datetime import datetime
 from GTG.tools.dates  import date_today, no_date, Date
 
 from GTG                         import _
-from GTG.tools.liblarch          import Tree
+from liblarch                    import Tree
 from GTG.core.task               import Task
 from GTG.core.tagstore           import Tag
 from GTG.core         import CoreConfig
