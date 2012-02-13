@@ -12,7 +12,7 @@ Vcs-Browser: http://svn.debian.org/viewsvn/python-apps/packages/gtg/trunk/
 
 Package: gtg
 Architecture: all
-Depends: ${misc:Depends}, ${python:Depends}, python-gtk2 (>= 2.22), python-gnome2, python-glade2, python-dbus, python-xdg, python-configobj
+Depends: ${misc:Depends}, ${python:Depends}, python-gtk2 (>= 2.22), python-gnome2, python-glade2, python-dbus, python-xdg, python-configobj, python-liblarch (>= 0.1), python-liblarch-gtk (>= 0.1)
 Description: organizer for the GNOME desktop environment
  Getting Things GNOME! is an organizer for the GNOME desktop environment.
  GTG focuses on usability and ease of use. Its main objective is to
