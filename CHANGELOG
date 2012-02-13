@@ -1,10 +1,12 @@
-2012-02-12 Getting Things GNOME! 0.2.9
+2012-02-13 Getting Things GNOME! 0.2.9
     * Big refractorization of code, now using liblarch
     * Extended backend system to support multiple backends by Luca Invernizzi
     * Backend GUI configuration by Luca Invernizzi
     * Backends:
        * Added Mantis Bug Tracker backend, by Alayn Gortazar
-       * New Tomboy/Gnote backend, by Luca Invernizzi
+       * Added Tomboy/Gnote backend, by Luca Invernizzi
+       * Added Launchpad backend, by Luca Invernizzi
+       * Added Twitter/Identica backend, by Luca Invernizzi
     * Graphical crah handler, thanks to Acire and python-snippets
     * Command line tool based on DBus interface of GTG, by Bryce Harrington
     * Added search feature, by João Ascenso
