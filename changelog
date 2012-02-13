@@ -1,3 +1,45 @@
+gtg (0.2.9-1) oneiric; urgency=low
+
+  * Big refractorization of code, now using liblarch
+  * Extended backend system to support multiple backends by Luca Invernizzi
+  * Backend GUI configuration by Luca Invernizzi
+  * Backends:
+    - Added Mantis Bug Tracker backend, by Alayn Gortazar
+    - Added Tomboy/Gnote backend, by Luca Invernizzi
+    - Added Launchpad backend, by Luca Invernizzi
+    - Added Twitter/Identica backend, by Luca Invernizzi
+  * Graphical crah handler, thanks to Acire and python-snippets
+  * Command line tool based on DBus interface of GTG, by Bryce Harrington
+  * Added search feature, by João Ascenso
+  * Rewritten notification area plugin with showing only 10 most doable tasks from Workview, by Izidor Matušov
+  * Setting start/due date by a right click menu in the task browser, by Fabio Prina & Kevin Mehall
+  * Right click behaviour in the task treeview is now consistant with other GNOME applications, by Jonathan Barnoud
+  * Rework of deleting dialog
+  * Previewing task content (gmail-like-ui), #384049, by Luca Invernizzi and Kevin Mehall
+  * Attaching file to a task by drag-and-dropping it on the task or writing file:// URI
+  * Added script for anonymizing task files; Marko Kevac
+  * "Sexy" export template, created by Duncan Lock
+  * DBus API is now CamelCase (be sure to update your personal scripts), by Lionel Dricot
+  * Fuzzy date "Later" was renamed to "Someday"
+  * Daily backup of gtg_tasks.xml
+  * Save perferences, window positions and statuses immediately after a change
+  * Fixed crash traceback when pressing 'delete' key, by Jeff Oliver
+  * Fixed url autolinking for http(s) schemes, by Madhumitha Viswanathan
+  * Underscore characters in tasks not treated as accelerators (bug #676088) fixed, by Madhumitha Viswanathan
+  * Fixed several bugs about hamster integration, by Richard Klein
+  * Added link to web documentation in Help menu, by Ronan Jouchet
+  * Fixed bug with data consistency #579189 (empty tags.xml), by Marko Kevac
+  * Added samba bugzilla to the bugzilla plugin, by Jelmer Vernoij
+  * Fixed bug #532392, a start date is later than a due date, by Volodymyr Floreskul
+  * support for gtg:// URIs by Luca Invernizzi
+  * Fixed bug #584667, indicating missing plugin dependencies, by Erin McLaughlin
+  * Add a new tag dialog keeps the previous value, by Izidor Matušov
+  * Added keyword bko for recognizing and linking KDE bugs, by Zimin Huango
+  * Several usability improvements, by Jean-François Fortin Tam
+  * Several code refratorings by Paul Kishimoto
+
+ -- Izidor Matušov <izidor.matusov@gmail.com>  Mon, 13 Feb 2012 13:23:55 +0100
+
 gtg (0.2.5-3) oneiric; urgency=low
 
   * New upstream bugfix release.
