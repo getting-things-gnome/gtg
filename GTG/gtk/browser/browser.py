@@ -1207,9 +1207,23 @@ class TaskBrowser(gobject.GObject):
         if gtk.gdk.keyval_name(event.keyval) == "Return":
             self.on_addtag_confirm()
     
+    def close_all_task_editors(self, task_id):
+        """ Including editors of subtasks """
+        all_subtasks = []
+
+        def trace_subtasks(root):
+            all_subtasks.append(root)
+            for i in root.get_subtasks():
+                if i not in all_subtasks:
+                    trace_subtasks(i)
+
+        trace_subtasks(self.req.get_task(task_id))
+
+        for task in all_subtasks:
+            self.vmanager.close_task(task.get_id())
+
     def on_mark_as_done(self, widget):
-        # FIXME Why we need to filter uids so they are not None? why not do that in get_selected_tasks
-        tasks_uid = filter(lambda uid: uid is not None, self.get_selected_tasks())
+        tasks_uid = [uid for uid in self.get_selected_tasks() if uid is not None]
         if len(tasks_uid) == 0:
             return
         tasks = [self.req.get_task(uid) for uid in tasks_uid]
@@ -1225,10 +1239,10 @@ class TaskBrowser(gobject.GObject):
                     parent.modified()
             else:
                 task.set_status(Task.STA_DONE)
+                self.close_all_task_editors(uid)
 
     def on_dismiss_task(self, widget):
-        # FIXME Why we need to filter uids so they are not None? why not do that in get_selected_tasks
-        tasks_uid = filter(lambda uid: uid is not None, self.get_selected_tasks())
+        tasks_uid = [uid for uid in self.get_selected_tasks() if uid is not None]
         if len(tasks_uid) == 0:
             return
         tasks = [self.req.get_task(uid) for uid in tasks_uid]
@@ -1238,6 +1252,7 @@ class TaskBrowser(gobject.GObject):
                 task.set_status(Task.STA_ACTIVE)
             else:
                 task.set_status(Task.STA_DISMISSED)
+                self.close_all_task_editors(uid)
 
     def apply_filter_on_panes(self, filter_name):
         """ Apply filters for every pane: active tasks, closed tasks """

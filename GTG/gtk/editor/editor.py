@@ -413,6 +413,20 @@ class TaskEditor:
             self.task.set_closed_date(date)
         self.refresh_editor()
 
+    def close_all_subtasks(self):
+        all_subtasks = []
+
+        def trace_subtasks(root):
+            for i in root.get_subtasks():
+                if i not in all_subtasks:
+                    all_subtasks.append(i)
+                    trace_subtasks(i)
+
+        trace_subtasks(self.task)
+
+        for task in all_subtasks:
+            self.vmanager.close_task(task.get_id())
+
     def dismiss(self,widget) : #pylint: disable-msg=W0613
         stat = self.task.get_status()
         if stat == "Dismiss":
@@ -420,6 +434,7 @@ class TaskEditor:
             self.refresh_editor()
         else:
             self.task.set_status("Dismiss")
+            self.close_all_subtasks()
             self.close(None)
 
     def change_status(self,widget) : #pylint: disable-msg=W0613
@@ -429,6 +444,7 @@ class TaskEditor:
             self.refresh_editor()
         else:
             self.task.set_status("Done")
+            self.close_all_subtasks()
             self.close(None)
 
     def delete_task(self, widget) :
