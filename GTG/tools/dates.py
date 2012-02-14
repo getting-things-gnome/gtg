@@ -179,23 +179,20 @@ def get_canonical_date(arg):
     When clashes occur the locale takes precedence.
     """
     today = date.today()
-    #FIXME: there surely exist a way to get day names from the  datetime
-    #       or time module.
-    day_names = ["monday", "tuesday", "wednesday", \
-                 "thursday", "friday", "saturday", \
-                 "sunday"]
+    day_names = ["monday", "tuesday", "wednesday", "thursday",
+                "friday", "saturday", "sunday"]
     day_names_localized = [_(day).lower() for day in day_names]
 
-    delta_day_names = {"today":      0, \
-                       "tomorrow":   1, \
-                       "next week":  7, \
-                       "next month": calendar.mdays[today.month], \
+    delta_day_names = {"today":      0,
+                       "tomorrow":   1,
+                       "next week":  7,
+                       "next month": calendar.mdays[today.month],
                        "next year":  365 + int(calendar.isleap(today.year))}
     delta_day_names_localized = \
-                      {_("today").lower():      0, \
-                       _("tomorrow").lower():   1, \
-                       _("next week").lower():  7, \
-                       _("next month").lower(): calendar.mdays[today.month], \
+                      {_("today").lower():      0,
+                       _("tomorrow").lower():   1,
+                       _("next week").lower():  7,
+                       _("next month").lower(): calendar.mdays[today.month],
                        _("next year").lower():  365 + int(calendar.isleap(today.year))}
     ### String sanitization
     arg = arg.lower()
@@ -220,9 +217,9 @@ def get_canonical_date(arg):
         else:
             arg_day = day_names_localized.index(arg)
         today_day = today.weekday()
-        next_date = timedelta(days = arg_day - today_day + \
+        next_date = timedelta(days = arg_day - today_day +
                           7 * int(arg_day <= today_day)) + today
-        arg = "%i-%i-%i" % (next_date.year,  \
-                            next_date.month, \
+        arg = "%i-%i-%i" % (next_date.year,
+                            next_date.month,
                             next_date.day)
     return strtodate(arg)
