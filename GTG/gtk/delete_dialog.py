@@ -124,6 +124,6 @@ class DeletionUI():
             delete_dialog.run()
             delete_dialog.hide()
             #has the task been deleted ?
-            return len(self.tids_todelete) == 0
+            return tasks
         else:
-            return False
+            return []
