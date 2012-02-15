@@ -218,17 +218,18 @@ class DataStore(object):
         doc, xmlstore = cleanxml.openxmlfile(tagfile, TAG_XMLROOT)
         for t in xmlstore.childNodes:
             tagname = t.getAttribute("name")
-            parent = t.getAttribute('parent')
+            parent = t.getAttribute("parent")
 
             if parent == CoreConfig.SEARCH_TAG:
-                self.new_search_tag(tagname, t.getAttribute('query'))
+                self.new_search_tag(tagname, t.getAttribute("query"))
             else:
                 tag = self.new_tag(tagname)
                 attr = t.attributes
                 for i in range(attr.length):
                     at_name = attr.item(i).name
-                    at_val = t.getAttribute(at_name)
-                    tag.set_attribute(at_name, at_val)
+                    if at_name not in ["name", "parent"]:
+                        at_val = t.getAttribute(at_name)
+                        tag.set_attribute(at_name, at_val)
 
                 if parent:
                     tag.set_parent(parent)
