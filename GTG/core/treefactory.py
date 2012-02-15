@@ -24,7 +24,7 @@ from GTG.tools.dates  import date_today, no_date, Date
 from GTG                         import _
 from liblarch                    import Tree
 from GTG.core.task               import Task
-from GTG.core.tagstore           import Tag
+from GTG.core.tag                import Tag
 from GTG.core         import CoreConfig
 from GTG.core.search import search_filter
 

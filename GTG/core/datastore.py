@@ -17,12 +17,8 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-# FIXME: Why is there two times the same constant with the same value? Compare with core/tagstore.py
 TAG_XMLFILE = "tags.xml"
 TAG_XMLROOT = "tagstore"
-
-#I disabled that since we don't want idle_add here
-#MULTITHREADS = True #with False, it fails to pass tests (invernizzi)
 
 """
 Contains the Datastore object, which is the manager of all the active backends
@@ -36,7 +32,7 @@ from collections import deque
 
 from GTG.core                    import requester
 from GTG.core.task               import Task
-from GTG.core.tagstore           import Tag
+from GTG.core.tag                import Tag
 from GTG.core                    import CoreConfig
 from GTG.core.treefactory        import TreeFactory
 from GTG.tools.logger            import Log

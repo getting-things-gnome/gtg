@@ -33,12 +33,6 @@ from liblarch         import TreeNode
 from GTG.tools        import cleanxml
 from GTG.tools.logger import Log
 
-XMLFILE = "tags.xml"
-XMLROOT = "tagstore"
-
-#TODO: rename this file to tag.py
-
-
 class Tag(TreeNode):
     """A short name that can be applied to L{Task}s.
 
