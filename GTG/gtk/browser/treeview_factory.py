@@ -103,13 +103,17 @@ class TreeviewFactory():
     #task title/label
     def task_label_column(self, node):
         str_format = "%s"
-        # we mark in bold tasks which are due today or as Now
-        due = node.get_due_date()
-        if (due.days_left == 0 or due == dates.NOW):
-            str_format = "<b>%s</b>"
-        if self._has_hidden_subtask(node):
-            str_format = "<span color='%s'>%s</span>"\
-                                            % (self.unactive_color, str_format)
+        
+        if node.get_status() == Task.STA_ACTIVE:
+            # we mark in bold tasks which are due today or as Now
+            due = node.get_due_date()
+            days_left = due.days_left()
+            if (days_left is not None and due.days_left() <= 0) or due == dates.NOW:
+                str_format = "<b>%s</b>"
+            if self._has_hidden_subtask(node):
+                str_format = "<span color='%s'>%s</span>"\
+                                                % (self.unactive_color, str_format)
+
         title = str_format % saxutils.escape(node.get_title())
         if node.get_status() == Task.STA_ACTIVE:
             count = self.mainview.node_n_children(node.get_id(), recursive=True)
