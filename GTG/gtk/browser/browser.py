@@ -1512,9 +1512,11 @@ class TaskBrowser(gobject.GObject):
     def show(self):
         """ Unhides the TaskBrowser """
         self.browser_shown = True
-        self.window.present()
         #redraws the GDK window, bringing it to front
         self.window.show()
+        self.window.present()
+        self.window.grab_focus()
+        self.quickadd_entry.grab_focus()
         gobject.idle_add(self.emit, "visibility-toggled")
 
     def iconify(self):
