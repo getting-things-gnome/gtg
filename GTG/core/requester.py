@@ -74,12 +74,6 @@ class Requester(gobject.GObject):
     def get_main_view(self):
         return self.__basetree.get_main_view()
     
-#FIXME for what is this code?
-    # This is a FilteredTree that you have to handle yourself.
-    # You can apply/unapply filters on it as you wish.
-#    def get_custom_tasks_tree(self, name=None, refresh=True):
-#        return self.__basetree.get_viewtree(name=name, refresh=refresh)
-
     def is_displayed(self, task):
         return self.__basetree.get_viewtree(name='active').is_displayed(task)
 

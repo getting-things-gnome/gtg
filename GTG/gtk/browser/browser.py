@@ -532,19 +532,15 @@ class TaskBrowser(gobject.GObject):
 
         self.set_view(self.config.get("view"))
 
-#FIXME this is just a big hack, it should be refractored in the future,
-# maybe better designed
         def open_task(req, t):
+            """ Open the task if loaded. Otherwise ask for next iteration """
             if req.has_task(t):
                 self.vmanager.open_task(t)
-                # Do not do it again
                 return False
             else:
-                # Try it later
                 return True
                 
-        odic = self.config.get("opened_tasks")
-        for t in odic:
+        for t in self.config.get("opened_tasks"):
             gobject.idle_add(open_task, self.req, t)
 
     def do_toggle_workview(self):

@@ -91,11 +91,7 @@ class Tag(TreeNode):
             string.
         """
         if att_name == "name":
-            # Warning : only the constructor can set the "name".
-            #or the internalrename
-            #This should raise an exception : FIXME
-            #print "Error : The name of a tag cannot be manually set"
-            pass
+            raise Exception("The name of tag cannot be set manually")
         elif att_name == "parent":
             self.add_parent(att_value)
             #self.new_relationship(att_value, self._name)
@@ -105,7 +101,6 @@ class Tag(TreeNode):
             val = unicode(str(att_value), "UTF-8")
             self._attributes[att_name] = val
             if self._save:
-#                print "saving tag : attribute %s set to %s" %(att_name,att_value)
                 self._save()
 
     def get_attribute(self, att_name):

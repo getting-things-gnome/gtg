@@ -142,12 +142,9 @@ class TreeFactory:
     ################# Task Filters #########################################
     #That one is used to filters tag. Is it built dynamically each times
     #a tag is added to the tagstore
-    def tag_filter(self, node, parameters=None):
-        #FIXME: we should take tag children into account
-        #Bryce : use self.tagtree to find children/parents of tags
-        tname = parameters['tag']
-        toreturn = node.has_tags([tname])
-        return toreturn
+    def tag_filter(self, node, parameters):
+        tag = parameters['tag']
+        return node.has_tags([tag])
 
     def alltag(self, task, parameters=None):
         return True
@@ -225,7 +222,6 @@ class TreeFactory:
 
     def active(self, task, parameters=None):
         """ Filter of tasks which are active """
-        #FIXME: we should also handle unactive tags
         return task.get_status() == Task.STA_ACTIVE
 
     def closed(self, task, parameters=None):

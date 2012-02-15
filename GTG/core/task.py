@@ -478,7 +478,6 @@ class Task(TreeNode):
         return self.attributes.get((namespace, att_name), None)
 
     def sync(self):
-#        print "ask for %s sync" %self.id
         self._modified_update()
         if self.is_loaded():
             #This is a liblarch call to the TreeNode ancestor

@@ -223,7 +223,6 @@ class TreeviewFactory():
             return label
         
     def get_tag_count(self,node):
-# FIXME: is this good idea?
         if node.get_id() == 'search':
             return ""
         else:
