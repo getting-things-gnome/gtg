@@ -103,30 +103,26 @@ class TreeviewFactory():
     #task title/label
     def task_label_column(self, node):
         str_format = "%s"
-        #we mark in bold tasks which are due now and those marked as Now (fuzzy
-        # date)
+        # we mark in bold tasks which are due today or as Now
         due = node.get_due_date()
         if (due.days_left == 0 or due == dates.NOW):
             str_format = "<b>%s</b>"
         if self._has_hidden_subtask(node):
             str_format = "<span color='%s'>%s</span>"\
-                                            %(self.unactive_color,str_format)
+                                            % (self.unactive_color, str_format)
         title = str_format % saxutils.escape(node.get_title())
-        #FIXME
-#        color = self.treeview.style.text[gtk.STATE_INSENSITIVE].to_string()
-        color = "red"
         if node.get_status() == Task.STA_ACTIVE:
-            count = self.mainview.node_n_children(node.get_id(),recursive=True)
+            count = self.mainview.node_n_children(node.get_id(), recursive=True)
             if count != 0:
                 title += " (%s)" % count
             
             if self.config.get("contents_preview_enable"):
-            	excerpt = saxutils.escape(node.get_excerpt(lines=1, \
+            	excerpt = saxutils.escape(node.get_excerpt(lines=1,
             		strip_tags=True, strip_subtasks=True))
             	title += " <span size='small' color='%s'>%s</span>" \
-            		%(self.unactive_color, excerpt) 
+            		% (self.unactive_color, excerpt) 
         elif node.get_status() == Task.STA_DISMISSED:
-            title = "<span color='%s'>%s</span>"%(self.unactive_color, title)
+            title = "<span color='%s'>%s</span>" % (self.unactive_color, title)
         return title
         
     #task start date
