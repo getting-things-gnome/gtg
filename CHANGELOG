@@ -1,3 +1,6 @@
+2012-0?-?? Getting Things GNOME! 0.3
+    * Hide tasks with due date someday, #931376
+
 2012-02-13 Getting Things GNOME! 0.2.9
     * Big refractorization of code, now using liblarch
     * Extended backend system to support multiple backends by Luca Invernizzi

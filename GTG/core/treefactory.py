@@ -27,6 +27,7 @@ from GTG.core.task               import Task
 from GTG.core.tag                import Tag
 from GTG.core         import CoreConfig
 from GTG.core.search import search_filter
+from GTG.tools.dates import LATER
 
 
 class TreeFactory:
@@ -188,10 +189,12 @@ class TreeFactory:
             return True
 
     def workview(self, task, parameters=None):
-        wv = self.active(task) and\
-             self.is_started(task) and\
-             self.is_workable(task) and\
-             self.no_disabled_tag(task)
+        wv = ( self.active(task) and
+             self.is_started(task) and
+             self.is_workable(task) and
+             self.no_disabled_tag(task) and
+             task.get_due_date() != LATER
+             )
         return wv
 
     def workdue(self, task):
