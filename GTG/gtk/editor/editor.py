@@ -33,16 +33,10 @@ from GTG.gtk.editor.taskview import TaskView
 from GTG.core.plugins.engine import PluginEngine
 from GTG.core.plugins.api    import PluginAPI
 from GTG.core.task           import Task
-from GTG.tools               import dates
+from GTG.tools.dates         import Date
 from GTG.gtk.editor.calendar import GTGCalendar
 
-
-date_separator = "-"
-
-
-
 class TaskEditor:
-
 
     def __init__(self, 
                  requester, 
@@ -181,7 +175,7 @@ class TaskEditor:
 
         self.textview.set_editable(True)
         #Connection for the update
-        self.req.connect('task-modified',self.task_modified)
+        self.req.connect('task-modified', self.task_modified)
         self.window.show()
 
 
@@ -276,18 +270,24 @@ class TaskEditor:
             self.builder.get_object("label2").show() 
             self.builder.get_object("hbox1").show()
 
+        #refreshing the start date field
+        startdate = self.task.get_start_date()
+        prevdate = Date.parse(self.startdate_widget.get_text())
+        if startdate != prevdate:
+            self.startdate_widget.set_text(str(startdate)) 
+
         #refreshing the due date field
         duedate = self.task.get_due_date()
-        prevdate = dates.strtodate(self.duedate_widget.get_text())
-        if duedate != prevdate or type(duedate) is not type(prevdate):
-            zedate = str(duedate).replace("-", date_separator)
-            self.duedate_widget.set_text(zedate)
+        prevdate = Date.parse(self.duedate_widget.get_text())
+        if duedate != prevdate:
+            self.duedate_widget.set_text(str(duedate))
+
         # refreshing the closed date field
         closeddate = self.task.get_closed_date()
-        prevcldate = dates.strtodate(self.closeddate_widget.get_text())
-        if closeddate != prevcldate or type(closeddate) is not type(prevcldate):
-            zecldate = str(closeddate).replace("-", date_separator)
-            self.closeddate_widget.set_text(zecldate)
+        prevcldate = Date.parse(self.closeddate_widget.get_text())
+        if closeddate != prevcldate:
+            self.closeddate_widget.set_text(str(closeddate))
+
         #refreshing the day left label
         #If the task is marked as done, we display the delay between the 
         #due date and the actual closing date. If the task isn't marked 
@@ -318,11 +318,6 @@ class TaskEditor:
         color = str(window_style.text[gtk.STATE_INSENSITIVE])
         self.dayleft_label.set_markup("<span color='"+color+"'>"+txt+"</span>")
 
-        startdate = self.task.get_start_date()
-        prevdate = dates.strtodate(self.startdate_widget.get_text())
-        if startdate != prevdate or type(startdate) is not type(prevdate):
-            zedate = str(startdate).replace("-",date_separator)
-            self.startdate_widget.set_text(zedate) 
         #Refreshing the tag list in the insert tag button
         taglist = self.req.get_used_tags()
         menu = gtk.Menu()
@@ -346,27 +341,29 @@ class TaskEditor:
 
     def date_changed(self,widget,data):
         text = widget.get_text()
-        validdate = False
-        if not text :
-            validdate = True
-            datetoset = dates.no_date
+        valid = True
+        if not text:
+            datetoset = Date.no_date()
         else :
-            datetoset = dates.strtodate(text)
-            if datetoset :
-                validdate = True
+            try:
+                datetoset = Date.parse(text)
+            except ValueError:
+                valid = False
 
-        if validdate :
+        if valid:
             #If the date is valid, we write with default color in the widget
             # "none" will set the default color.
             widget.modify_text(gtk.STATE_NORMAL, None)
             widget.modify_base(gtk.STATE_NORMAL, None)
+
             if data == "start" :
                 self.task.set_start_date(datetoset)
             elif data == "due" :
                 self.task.set_due_date(datetoset)
             elif data == "closed" :
                 self.task.set_closed_date(datetoset)
-            #Set the due date to be equal to the start date
+
+            # Set the due date to be equal to the start date
             # when it happens that the start date is later than the due date
             start_date = self.task.get_start_date()
             due_date = self.task.get_due_date()
@@ -377,17 +374,12 @@ class TaskEditor:
             widget.modify_text(gtk.STATE_NORMAL, gtk.gdk.color_parse("#F00"))
             widget.modify_base(gtk.STATE_NORMAL, gtk.gdk.color_parse("#F88"))
 
-
-
     def on_date_pressed(self, widget, date_kind):
         """Called when a date-changing button is clicked."""
         if date_kind == GTGCalendar.DATE_KIND_DUE:
             date = self.task.get_due_date()
-
-            # is due_date < start_date ?
-            # no_date need special care because we want to no_date < anything
             start_date = self.task.get_start_date()
-            due_before_start = start_date != dates.no_date and start_date > date
+            due_before_start = start_date and start_date > date
 
             if not date or due_before_start:
                 date = self.task.get_start_date()
@@ -401,7 +393,6 @@ class TaskEditor:
         x, y = widget.window.get_origin()
         self.calendar.show_at_position(x + rect.x + rect.width,
                                        y + rect.y)
-
 
     def on_date_changed(self, calendar):
         date, date_kind = calendar.get_selected_date()

@@ -1088,14 +1088,14 @@ commas.</property>
       </object>
     </child>
     <child>
-      <object class="GtkImageMenuItem" id="tcm_due_later">
-        <property name="label" translatable="yes">_later</property>
+      <object class="GtkImageMenuItem" id="tcm_due_someday">
+        <property name="label" translatable="yes">_someday</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="use_action_appearance">False</property>
         <property name="use_underline">True</property>
         <property name="use_stock">False</property>
-        <signal name="activate" handler="on_set_due_later" swapped="no"/>
+        <signal name="activate" handler="on_set_due_someday" swapped="no"/>
       </object>
     </child>
     <child>

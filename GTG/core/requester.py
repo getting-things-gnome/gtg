@@ -23,7 +23,6 @@ A nice general purpose interface for the datastore and tagstore
 
 import gobject
 
-
 from GTG.core.tag          import Tag
 from GTG.tools.logger      import Log
 

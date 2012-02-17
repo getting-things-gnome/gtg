@@ -22,8 +22,8 @@ import dbus
 import dbus.glib
 import dbus.service
 
-from GTG.core  import CoreConfig
-from GTG.tools import dates
+from GTG.core        import CoreConfig
+from GTG.tools.dates import Date
 
 
 BUSNAME = CoreConfig.BUSNAME
@@ -167,7 +167,7 @@ class DBusTaskWrapper(dbus.service.Object):
         @param status:     One of 'Active', 'Dismiss', or 'Done'
         @param title:      String name of the task
         @param duedate:    Date the task is due, such as "2010-05-01".
-         also supports 'now', 'soon', 'later'
+         also supports 'now', 'soon', 'someday'
         @param startdate:  Date the task will be started
         @param donedate:   Date the task was finished
         @param tags:       List of strings for tags to apply for this task
@@ -178,10 +178,10 @@ class DBusTaskWrapper(dbus.service.Object):
         nt = self.req.new_task(tags=tags)
         for sub in subtasks:
             nt.add_child(sub)
-        nt.set_status(status, donedate=dates.strtodate(donedate))
+        nt.set_status(status, donedate=Date.parse(donedate))
         nt.set_title(title)
-        nt.set_due_date(dates.strtodate(duedate))
-        nt.set_start_date(dates.strtodate(startdate))
+        nt.set_due_date(Date.parse(duedate))
+        nt.set_start_date(Date.parse(startdate))
         nt.set_text(text)
         return task_to_dict(nt)
 
@@ -196,10 +196,10 @@ class DBusTaskWrapper(dbus.service.Object):
         via this function.        
         """
         task = self.req.get_task(tid)
-        task.set_status(task_data["status"], donedate=dates.strtodate(task_data["donedate"]))
+        task.set_status(task_data["status"], donedate=Date.parse(task_data["donedate"]))
         task.set_title(task_data["title"])
-        task.set_due_date(dates.strtodate(task_data["duedate"]))
-        task.set_start_date(dates.strtodate(task_data["startdate"]))
+        task.set_due_date(Date.parse(task_data["duedate"]))
+        task.set_start_date(Date.parse(task_data["startdate"]))
         task.set_text(task_data["text"])
 
         for tag in task_data["tags"]:
