@@ -28,7 +28,7 @@ from GTG.core.task                    import Task
 from GTG.gtk.browser.CellRendererTags import CellRendererTags
 from liblarch_gtk                     import TreeView
 from GTG.gtk                          import colors
-from GTG.tools                        import dates
+from GTG.tools.dates                  import Date
 
 
 class AutoExpandTreeView(TreeView):
@@ -108,7 +108,7 @@ class TreeviewFactory():
             # we mark in bold tasks which are due today or as Now
             due = node.get_due_date()
             days_left = due.days_left()
-            if (days_left is not None and due.days_left() <= 0) or due == dates.NOW:
+            if (days_left is not None and days_left <= 0) or due == Date.now():
                 str_format = "<b>%s</b>"
             if self._has_hidden_subtask(node):
                 str_format = "<span color='%s'>%s</span>"\
@@ -184,15 +184,6 @@ class TreeviewFactory():
             else:
                 return -1*s
 
-        if sort == 0:
-            # Put fuzzy dates below real dates
-            if isinstance(t1, dates.FuzzyDate) \
-               and not isinstance(t2, dates.FuzzyDate):
-                sort = reverse_if_descending(1)
-            elif isinstance(t2, dates.FuzzyDate) \
-                    and not isinstance(t1, dates.FuzzyDate):
-                sort = reverse_if_descending(-1)
-        
         if sort == 0: # Group tasks with the same tag together for visual cleanness 
             t1_tags = task1.get_tags_name()
             t1_tags.sort()

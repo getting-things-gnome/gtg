@@ -28,13 +28,13 @@ import datetime
 import evolution
 from dateutil.tz                        import tzutc, tzlocal
 
-from GTG.backends.genericbackend        import GenericBackend
 from GTG                                import _
-from GTG.backends.syncengine            import SyncEngine, SyncMeme
+from GTG.backends.genericbackend        import GenericBackend
 from GTG.backends.periodicimportbackend import PeriodicImportBackend
-from GTG.tools.dates                    import RealDate, NoDate
+from GTG.backends.syncengine            import SyncEngine, SyncMeme
 from GTG.core.task                      import Task
 from GTG.tools.interruptible            import interruptible
+from GTG.tools.dates                    import Date
 from GTG.tools.logger                   import Log
 from GTG.tools.tags                     import extract_tags_from_text
 
@@ -331,7 +331,7 @@ class Backend(PeriodicImportBackend):
         if isinstance(due_date_timestamp, (int, float)):
             due_date = self.__date_from_evo_to_gtg(due_date_timestamp)
         else:
-            due_date = NoDate()
+            due_date = Date.no_date()
         task.set_due_date(due_date)
         status = evo_task.get_status()
         if task.get_status() != _EVOLUTION_TO_GTG_STATUS[status]:
@@ -344,7 +344,7 @@ class Backend(PeriodicImportBackend):
         if evo_task.get_description() != text:
             evo_task.set_description(text)
         due_date = task.get_due_date()
-        if isinstance(due_date, NoDate):
+        if due_date == Date.no_date():
             evo_task.set_due(None)
         else:
             evo_task.set_due(self.__date_from_gtg_to_evo(due_date))
@@ -397,7 +397,7 @@ class Backend(PeriodicImportBackend):
         gtg_datetime = evo_datetime.astimezone(tzutc())
         #we strip timezone infos, as they're not used or expected in GTG
         gtg_datetime.replace(tzinfo = None)
-        return RealDate(gtg_datetime.date())
+        return Date(gtg_datetime.date())
 
     def __date_from_gtg_to_evo(self, gtg_date):
         """

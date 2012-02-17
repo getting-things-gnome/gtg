@@ -37,7 +37,7 @@ from GTG.backends.backendsignals        import BackendSignals
 from GTG.backends.syncengine            import SyncEngine, SyncMeme
 from GTG.backends.rtm.rtm               import createRTM, RTMError, RTMAPIError
 from GTG.backends.periodicimportbackend import PeriodicImportBackend
-from GTG.tools.dates                    import RealDate, NoDate
+from GTG.tools.dates                    import Date
 from GTG.core.task                      import Task
 from GTG.tools.interruptible            import interruptible
 from GTG.tools.logger                   import Log
@@ -461,10 +461,7 @@ class Backend(PeriodicImportBackend):
         #rtm tags are lowercase only
         if rtm_task_tags != [t.lower() for t in tags]:
             self.__call_or_retry(rtm_task.set_tags, tags, transaction_ids)
-        if isinstance(task.get_due_date(), NoDate):
-            due_date = None
-        else:
-            due_date = task.get_due_date().to_py_date()
+        due_date = task.get_due_date()
         if rtm_task.get_due_date() != due_date:
             self.__call_or_retry(rtm_task.set_due_date, due_date,
                                  transaction_ids)
@@ -940,12 +937,9 @@ class RTMTask(object):
         '''
         due = self.rtm_task.due
         if due == "":
-            return NoDate()
+            return Date.no_date()
         date = self.__time_rtm_to_datetime(due).date()
-        if date:
-            return RealDate(date)
-        else:
-            return NoDate()
+        return Date(date)
 
     def set_due_date(self, due, transaction_ids = []):
         '''

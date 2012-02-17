@@ -21,16 +21,16 @@
 
 import unittest
 from GTG.core.search import search_filter
-from GTG.tools.dates import get_canonical_date
+from GTG.tools.dates import Date
 
-d = get_canonical_date
+d = Date.parse
 
 class FakeTask:
     def __init__(self, title="", body="", tags=[], due_date=""):
         self.title = title
         self.body = body
         self.tags = tags
-        self.due_date = get_canonical_date(due_date)
+        self.due_date = Date.parse(due_date)
 
     def get_title(self):
         return self.title
@@ -139,7 +139,7 @@ class TestSearchFilter(unittest.TestCase):
         self.assertTrue(search_filter(FakeTask(due_date=""), {'q': [("nodate", True)]}))
         self.assertTrue(search_filter(FakeTask(due_date="now"), {'q': [("now", True)]}))
         self.assertTrue(search_filter(FakeTask(due_date="soon"), {'q': [("soon", True)]}))
-        self.assertTrue(search_filter(FakeTask(due_date="later"), {'q': [("later", True)]}))
+        self.assertTrue(search_filter(FakeTask(due_date="someday"), {'q': [("someday", True)]}))
 
 def test_suite():
     return unittest.TestLoader().loadTestsFromName(__name__)

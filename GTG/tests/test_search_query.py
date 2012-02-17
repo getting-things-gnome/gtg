@@ -21,10 +21,10 @@
 
 import unittest
 from GTG.core.search import parse_search_query, InvalidQuery
-from GTG.tools.dates import get_canonical_date
+from GTG.tools.dates import Date
 
 parse = parse_search_query
-d = get_canonical_date
+d = Date.parse
 
 class TestSearchQuery(unittest.TestCase):
 
@@ -148,7 +148,7 @@ class TestSearchQuery(unittest.TestCase):
         self.assertEqual(parse('!nodate'), {'q': [('nodate', True)]})
         self.assertEqual(parse('!now'), {'q': [('now', True)]})
         self.assertEqual(parse('!soon'), {'q': [('soon', True)]})
-        self.assertEqual(parse('!later'), {'q': [('later', True)]})
+        self.assertEqual(parse('!someday'), {'q': [('someday', True)]})
 
         self.assertEqual(parse('!not !today'), {'q': [('today', False)]})
         self.assertEqual(parse('word !today'), {'q': [('word', True, 'word'), ('today', True)]})

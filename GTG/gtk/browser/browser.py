@@ -43,8 +43,7 @@ from GTG.core.task               import Task
 from GTG.gtk.browser             import GnomeConfig
 from GTG.gtk.browser.treeview_factory import TreeviewFactory
 from GTG.tools                   import openurl
-from GTG.tools.dates             import no_date,\
-                                        get_canonical_date
+from GTG.tools.dates             import Date
 from GTG.tools.logger            import Log
 from GTG.tools.tags              import extract_tags_from_text
 from GTG.core.search             import parse_search_query, search_commands, InvalidQuery
@@ -292,8 +291,8 @@ class TaskBrowser(gobject.GObject):
                 self.on_set_due_now,
             "on_set_due_soon":
                 self.on_set_due_soon,
-            "on_set_due_later":
-                self.on_set_due_later,
+            "on_set_due_someday":
+                self.on_set_due_someday,
             "on_set_due_clear":
                 self.on_set_due_clear,
             "on_dismiss_task":
@@ -591,7 +590,7 @@ class TaskBrowser(gobject.GObject):
         self.toggle_workview.set_active(workview)
         #The config_set has to be after the toggle, else you will have a loop
         self.config.set('view',viewname)
-        self.vtree_panes['active'].set_col_visible('startdate',not workview)
+        self.vtree_panes['active'].set_col_visible('startdate', not workview)
 
     def _update_window_title(self,nid=None,path=None,state_id=None):
         count = self.activetree.get_n_nodes()
@@ -604,7 +603,6 @@ class TaskBrowser(gobject.GObject):
                                    "%(tasks)d active tasks", \
                                    count) % {'tasks': count}
         self.window.set_title("%s - "%parenthesis + WINDOW_TITLE)
-
 
     def tag_match_func(self, completion, key, iter, column):
         """
@@ -857,8 +855,6 @@ class TaskBrowser(gobject.GObject):
     def on_quickadd_activate(self, widget):
         """ Add a new task from quickadd toolbar """
         text = unicode(self.quickadd_entry.get_text())
-        due_date = no_date
-        defer_date = no_date
         if text:
             tags = self.get_selected_tags(nospecial=True)
             #We will select quick-added task in browser.
@@ -1071,10 +1067,7 @@ class TaskBrowser(gobject.GObject):
             for uid in self.get_selected_tasks()
             if uid is not None]
 
-        if new_start_date:
-            start_date = get_canonical_date(new_start_date)
-        else:
-            start_date = no_date
+        start_date = Date.parse(new_start_date)
 
         for task in tasks:
             task.set_start_date(start_date)
@@ -1103,10 +1096,7 @@ class TaskBrowser(gobject.GObject):
             for uid in self.get_selected_tasks()
             if uid is not None]
 
-        if new_due_date:
-            due_date = get_canonical_date(new_due_date)
-        else:
-            due_date = no_date
+        due_date = Date.parse(new_due_date)
 
         for task in tasks:
             task.set_due_date(due_date)
@@ -1133,8 +1123,8 @@ class TaskBrowser(gobject.GObject):
     def on_set_due_soon(self, widget):
         self.update_due_date(widget, "soon")
         
-    def on_set_due_later(self, widget):
-        self.update_due_date(widget, "later")
+    def on_set_due_someday(self, widget):
+        self.update_due_date(widget, "someday")
 
     def on_set_due_clear(self, widget):
         self.update_due_date(widget, None)

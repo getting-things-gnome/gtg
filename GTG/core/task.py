@@ -20,22 +20,18 @@
 """
 task.py contains the Task class which represents (guess what) a task
 """
-
-import xml.dom.minidom
-import uuid
+from datetime         import datetime
 import cgi
-import re
-import xml.sax.saxutils as saxutils
 import gobject
+import re
+import uuid
+import xml.dom.minidom
+import xml.sax.saxutils as saxutils
 
-import GTG
 from GTG                     import _
-from GTG.tools.dates         import date_today, no_date, Date
-from datetime                import datetime
-from liblarch                import TreeNode
+from GTG.tools.dates         import Date
 from GTG.tools.logger        import Log
-from GTG.tools.dates         import no_date, get_canonical_date
-
+from liblarch                import TreeNode
 
 class Task(TreeNode):
     """ This class represent a task in GTG.
@@ -60,9 +56,9 @@ class Task(TreeNode):
         self.title = _("My new task")
         #available status are: Active - Done - Dismiss - Note
         self.status = self.STA_ACTIVE
-        self.closed_date = no_date
-        self.due_date = no_date
-        self.start_date = no_date
+        self.closed_date = Date.no_date()
+        self.due_date = Date.no_date()
+        self.start_date = Date.no_date()
         self.can_be_deleted = newtask
         # tags
         self.tags = []
@@ -148,8 +144,8 @@ class Task(TreeNode):
     def set_complex_title(self, text, tags=[]):
         if tags:
             assert(isinstance(tags[0], str))
-        due_date = no_date
-        defer_date = no_date
+        due_date = Date.no_date()
+        defer_date = Date.no_date()
         if text:
 
             # Get tags in the title
@@ -173,13 +169,15 @@ class Task(TreeNode):
                         tags.append(tag)
                 elif attribute.lower() == "defer" or \
                      attribute.lower() == _("defer"):
-                    defer_date = get_canonical_date(args)
-                    if not defer_date:
+                    try:
+                        defer_date = Date.parse(args)
+                    except ValueError:
                         valid_attribute = False
                 elif attribute.lower() == "due" or \
                      attribute.lower() == _("due"):
-                    due_date = get_canonical_date(args)
-                    if not due_date:
+                    try:
+                        due_date = Date.parse(args)
+                    except:
                         valid_attribute = False
                 else:
                     # attribute is unknown
@@ -239,7 +237,7 @@ class Task(TreeNode):
                 self.closed_date = donedate
             #or to today
             else:
-                self.closed_date = date_today()
+                self.closed_date = Date.today()
         self.sync()
 
     def get_status(self):
@@ -249,14 +247,13 @@ class Task(TreeNode):
         return self.last_modified
 
     def get_modified_string(self):
-        return self.last_modified.strftime("%Y-%m-%dT%H:%M:%S")
+        return self.last_modified.isoformat()
 
     def set_modified(self, modified):
         self.last_modified = modified
 
     def set_due_date(self, fulldate):
-        assert(isinstance(fulldate, Date))
-        self.due_date = fulldate
+        self.due_date = Date(fulldate)
         self.sync()
 
     #Due date return the most urgent date of all parents
@@ -272,30 +269,25 @@ class Task(TreeNode):
         return zedate
 
     def set_start_date(self, fulldate):
-        assert(isinstance(fulldate, Date))
-        self.start_date = fulldate
+        self.start_date = Date(fulldate)
         self.sync()
 
     def get_start_date(self):
         return self.start_date
 
     def set_closed_date(self, fulldate):
-        assert(isinstance(fulldate, Date))
-        self.closed_date = fulldate
+        self.closed_date = Date(fulldate)
         self.sync()
 
     def get_closed_date(self):
         return self.closed_date
 
     def get_days_left(self):
-        due_date = self.get_due_date()
-        if due_date == no_date:
-            return None
-        return due_date.days_left()
-
+        return self.get_due_date().days_left()
+    
     def get_days_late(self):
         due_date = self.get_due_date()
-        if due_date == no_date:
+        if due_date == Date.no_date():
             return None
         closed_date = self.get_closed_date()
         return (closed_date - due_date).days

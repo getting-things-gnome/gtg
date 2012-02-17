@@ -40,12 +40,12 @@ The query language consists of several elements:
     * !nodate -- show tasks without due_date
     * !now -- show tasks with due_date == now
     * !soon -- show tasks with due_date == soon
-    * !later -- show tasks with due_date == later
+    * !someday -- show tasks with due_date == someday
   * tags -- show tasks with this tag
   * word -- show tasks which contains this word
   * "literal" -- basically the same as word but allows the space and special charasters
         inside. Literal must be inside "quotes".
-  * date -- date which could be parsed with get_canonical_date
+  * date -- date which could be parsed with Date.parse()
 
 Elements are supposed to be in conjuction, i.e. they are interpreted as
  E1 AND E2 AND E3 AND E4 AND ( E5 OR E6 OR E7 ) AND E8 ...
@@ -77,8 +77,7 @@ For more information see unittests:
 import re
 
 from GTG import _
-from GTG.tools.dates import get_canonical_date, no_date
-from GTG.tools.dates import date_today, NOW, SOON, LATER
+from GTG.tools.dates import Date
 
 # Generate keywords and their possible translations
 # They must be listed because of gettext
@@ -92,7 +91,7 @@ KEYWORDS = {
   "nodate": _("nodate"),
   "now": _("now"),
   "soon": _("soon"),
-  "later": _("later"),
+  "someday": _("someday"),
 }
 
 # transform keywords and their translations into a list of possible commands
@@ -169,8 +168,9 @@ def parse_search_query(query):
                 raise InvalidQuery("Unexpected token '%s' after '%s'" % (token, require_date))
 
             value = value.strip('"')
-            date = get_canonical_date(value)
-            if date == no_date:
+            try:
+                date = Date.parse(value)
+            except ValueError:
                 raise InvalidQuery("Date '%s' in wrong format" % (value))
 
             cmd = (require_date, not_count % 2 == 0, date)
@@ -250,12 +250,12 @@ def search_filter(task, parameters=None):
             'before': lambda t, v: task.get_due_date() < v,
             'tag': lambda t, v: v in task.get_tags_name(),
             'word': fulltext_search,
-            'today': lambda task, v: task.get_due_date() == date_today(),
-            'tomorrow': lambda task, v: task.get_due_date() == get_canonical_date('tomorrow'),
-            'nodate': lambda task, v: task.get_due_date() == no_date,
-            'now': lambda task, v: task.get_due_date() == NOW,
-            'soon': lambda task, v: task.get_due_date() == SOON,
-            'later': lambda task, v: task.get_due_date() == LATER,
+            'today': lambda task, v: task.get_due_date() == Date.today(),
+            'tomorrow': lambda task, v: task.get_due_date() == Date.tomorrow(),
+            'nodate': lambda task, v: task.get_due_date() == Date.no_date(),
+            'now': lambda task, v: task.get_due_date() == Date.now(),
+            'soon': lambda task, v: task.get_due_date() == Date.soon(),
+            'someday': lambda task, v: task.get_due_date() == Date.someday(),
         }
 
         for command in commands_list:

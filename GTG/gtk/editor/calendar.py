@@ -21,8 +21,7 @@ import gtk
 from gtk import gdk
 import datetime
 
-from GTG.tools import dates
-
+from GTG.tools.dates import Date
 
 class GTGCalendar(gobject.GObject):
     '''
@@ -46,7 +45,7 @@ class GTGCalendar(gobject.GObject):
         super(GTGCalendar, self).__init__()
         self.__builder = gtk_builder
         self.__date_kind = None
-        self.__date = dates.NoDate()
+        self.__date = Date.no_date()
         self.__init_gtk__()
 
     def __init_gtk__(self):
@@ -54,30 +53,30 @@ class GTGCalendar(gobject.GObject):
         self.__calendar = self.__builder.get_object("calendar1")
         self.__fuzzydate_btns = self.__builder.get_object("fuzzydate_btns")
         self.__builder.get_object("button_clear").connect("clicked",
-                                    lambda w: self.__day_selected(w, "NoDate"))
+                                    lambda w: self.__day_selected(w, ""))
         self.__builder.get_object("button_now").connect("clicked",
-                                    lambda w: self.__day_selected(w, "FuzzyNow"))
+                                    lambda w: self.__day_selected(w, "now"))
         self.__builder.get_object("button_soon").connect("clicked",
-                                    lambda w: self.__day_selected(w, "FuzzySoon"))
-        self.__builder.get_object("button_later").connect("clicked",
-                                    lambda w: self.__day_selected(w, "FuzzyLater"))
+                                    lambda w: self.__day_selected(w, "soon"))
+        self.__builder.get_object("button_someday").connect("clicked",
+                                    lambda w: self.__day_selected(w, "someday"))
 
     def set_date(self, date, date_kind):
         self.__date_kind = date_kind
-        if date_kind in (GTGCalendar.DATE_KIND_DUE):
+        if date_kind == GTGCalendar.DATE_KIND_DUE:
             self.__fuzzydate_btns.show()
         else:
             self.__fuzzydate_btns.hide()
         if not date:
             # we set the widget to today's date if there is not a
             #date defined
-            date = dates.date_today()
+            date = Date.today()
         self.__date = date
-        if isinstance(date, dates.RealDate):
-            self.__calendar.select_day(date.day())
+        if not date.is_fuzzy():
+            self.__calendar.select_day(date.day)
             # Calendar use 0..11 for a month so we need -1
             # We can't use conversion through python standard datetime because often times it is invalid date
-            self.__calendar.select_month(date.month()-1, date.year())
+            self.__calendar.select_month(date.month-1, date.year)
 
     def __mark_today_in_bold(self):
         """ Mark today in bold
@@ -147,28 +146,19 @@ class GTGCalendar(gobject.GObject):
 
 
     def __day_selected(self, widget, date_type):
-        self.__date_type = date_type
         if date_type == "RealDate":
-            date = self.__from_calendar_date_to_datetime(\
+            date = self.__from_calendar_date_to_datetime(
                                         self.__calendar.get_date())
-            #we check that the user isn't just browsing the calendar
-            self.__date = dates.RealDate(date)
-        elif date_type == "NoDate":
-            self.__date = dates.no_date
-        elif date_type == "FuzzyNow":
-            self.__date = dates.NOW
-        elif date_type == "FuzzySoon":
-            self.__date = dates.SOON
-        elif date_type == "FuzzyLater":
-            self.__date = dates.LATER
+            self.__date = Date(date)
+        else:
+            self.__date = Date(date_type)
 
         if self.__is_user_just_browsing_the_calendar:
-            #this day-selected signal was caused by a month/year change. 
-            # We discard it
+            # this day-selected signal was caused by a month/year change
             self.__is_user_just_browsing_the_calendar = False
         else:
+            # inform the Editor that the date has changed
             self.close_calendar()
-            #we inform the Editor that the date has changed
             gobject.idle_add(self.emit, "date-changed")
 
     def __from_calendar_date_to_datetime(self, calendar_date):

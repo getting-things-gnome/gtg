@@ -19,15 +19,13 @@
 
 from datetime import datetime
 
-from GTG.tools.dates  import date_today, no_date, Date
-
 from GTG                         import _
 from liblarch                    import Tree
 from GTG.core.task               import Task
 from GTG.core.tag                import Tag
 from GTG.core         import CoreConfig
 from GTG.core.search import search_filter
-from GTG.tools.dates import LATER
+from GTG.tools.dates import Date
 
 
 class TreeFactory:
@@ -172,43 +170,41 @@ class TreeFactory:
         return True
 
     def is_started(self, task, parameters=None):
-        '''Filter for tasks that are already started'''
-        start_date = task.get_start_date()
-        if start_date:
-            #Seems like pylint falsely assumes that subtraction always results
-            #in an object of the same type. The subtraction of dates
-            #results in a datetime.timedelta objec
-            #that does have a 'days' member.
-            difference = date_today() - start_date
-            if difference.days == 0:
-                # Don't count today's tasks started until morning
-                return datetime.now().hour > 4
-            else:
-                return difference.days > 0 #pylint: disable-msg=E1101
-        else:
+        """ Filter for tasks that are already started """
+        days_left = task.get_start_date().days_left()
+
+        if days_left is None:
+            # without startdate
             return True
+        elif days_left == 0:
+            # Don't count today's tasks started until morning
+            return datetime.now().hour > 4
+        else:
+            return days_left < 0
 
     def workview(self, task, parameters=None):
         wv = ( self.active(task) and
              self.is_started(task) and
              self.is_workable(task) and
              self.no_disabled_tag(task) and
-             task.get_due_date() != LATER
+             task.get_due_date() != Date.someday()
              )
         return wv
 
     def workdue(self, task):
         ''' Filter for tasks due within the next day '''
-        wv = self.workview(task) and \
-             task.get_due_date() != no_date and \
+        wv = ( self.workview(task) and
+             task.get_due_date() and
              task.get_days_left() < 2
+             )
         return wv
 
     def worklate(self, task):
         ''' Filter for tasks due within the next day '''
-        wv = self.workview(task) and \
-             task.get_due_date() != no_date and \
+        wv = ( self.workview(task) and
+             task.get_due_date() and
              task.get_days_late() > 0
+             )
         return wv
 
     def workstarted(self, task):

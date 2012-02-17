@@ -22,8 +22,8 @@ import xml.dom.minidom
 import xml.sax.saxutils as saxutils
 import datetime
 
-from GTG.tools import cleanxml
-from GTG.tools import dates
+from GTG.tools       import cleanxml
+from GTG.tools.dates import Date
 
 #Take an empty task, an XML node and return a Task.
 def task_from_xml(task,xmlnode) :
@@ -32,7 +32,7 @@ def task_from_xml(task,xmlnode) :
     uuid = "%s" %xmlnode.getAttribute("uuid")
     cur_task.set_uuid(uuid)
     donedate = cleanxml.readTextNode(xmlnode,"donedate")
-    cur_task.set_status(cur_stat,donedate=dates.strtodate(donedate))
+    cur_task.set_status(cur_stat,donedate=Date.parse(donedate))
     #we will fill the task with its content
     cur_task.set_title(cleanxml.readTextNode(xmlnode,"title"))
     #the subtasks
@@ -55,8 +55,8 @@ def task_from_xml(task,xmlnode) :
             tas = "<content>%s</content>" %tasktext[0].firstChild.nodeValue
             content = xml.dom.minidom.parseString(tas)
             cur_task.set_text(content.firstChild.toxml()) #pylint: disable-msg=E1103 
-    cur_task.set_due_date(dates.strtodate(cleanxml.readTextNode(xmlnode,"duedate")))
-    cur_task.set_start_date(dates.strtodate(cleanxml.readTextNode(xmlnode,"startdate")))
+    cur_task.set_due_date(Date(cleanxml.readTextNode(xmlnode,"duedate")))
+    cur_task.set_start_date(Date(cleanxml.readTextNode(xmlnode,"startdate")))
     cur_tags = xmlnode.getAttribute("tags").replace(' ','').split(",")
     if "" in cur_tags: cur_tags.remove("")
     for tag in cur_tags: cur_task.tag_added(saxutils.unescape(tag))
@@ -124,6 +124,5 @@ def task_to_xml(doc,task) :
         task_element = doc.createElement('task-id')
         backend_element.appendChild(task_element)
         task_element.appendChild(doc.createTextNode(task_id))
-
 
     return t_xml
