@@ -34,7 +34,8 @@ from GTG.tools                   import cleanxml, taskxml
 from GTG                         import _
 from GTG.tools.logger            import Log
 
-
+# Ignore all other elements but this one
+TASK_NODE = "task"
 
 class Backend(GenericBackend):
     '''
@@ -140,6 +141,8 @@ class Backend(GenericBackend):
         '''
         tid_list = []
         for node in self.xmlproj.childNodes:
+            if node.nodeName != TASK_NODE:
+                continue
             tid = node.getAttribute("id")
             if tid not in self.tids:
                 self.tids.append(tid)
@@ -165,7 +168,7 @@ class Backend(GenericBackend):
         #we find if the task exists in the XML treenode.
         existing = None
         for node in self.xmlproj.childNodes:
-            if node.getAttribute("id") == tid:
+            if node.nodeName == TASK_NODE and node.getAttribute("id") == tid:
                 existing = node
 
         modified = False
