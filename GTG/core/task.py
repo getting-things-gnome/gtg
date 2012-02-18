@@ -247,7 +247,7 @@ class Task(TreeNode):
         return self.last_modified
 
     def get_modified_string(self):
-        return self.last_modified.isoformat()
+        return self.last_modified.strftime("%Y-%m-%dT%H:%M:%S")
 
     def set_modified(self, modified):
         self.last_modified = modified
