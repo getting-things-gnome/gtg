@@ -25,8 +25,6 @@ from GTG import _, ngettext
 
 __all__ = 'Date',
 
-locale.setlocale(locale.LC_TIME, '')
-
 NOW, SOON, SOMEDAY, NODATE = range(4)
 # strings representing fuzzy dates + no date
 ENGLISH_STRINGS = {
