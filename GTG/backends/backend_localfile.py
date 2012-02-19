@@ -195,7 +195,7 @@ class Backend(GenericBackend):
         '''
         modified = False
         for node in self.xmlproj.childNodes:
-            if node.getAttribute("id") == tid:
+            if node.nodeName == TASK_NODE and node.getAttribute("id") == tid:
                 modified = True
                 self.xmlproj.removeChild(node)
                 if tid in self.tids:
