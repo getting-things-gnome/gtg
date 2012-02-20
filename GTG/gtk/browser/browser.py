@@ -71,9 +71,9 @@ class TaskBrowser(gobject.GObject):
 
     __string_signal__ = (gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (str, ))
     __none_signal__ = (gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, tuple())
-    __gsignals__ = {'task-added-via-quick-add' : __string_signal__, \
+    __gsignals__ = {'task-added-via-quick-add' : __string_signal__,
                     'visibility-toggled': __none_signal__,
-                   }
+   }
 
     def __init__(self, requester, vmanager):
         gobject.GObject.__init__(self)
@@ -382,7 +382,6 @@ class TaskBrowser(gobject.GObject):
         # Selection changes
         self.selection = self.vtree_panes['active'].get_selection()
         self.selection.connect("changed", self.on_task_cursor_changed)
-        self.req.connect("task-deleted", self.update_buttons_sensitivity)
 
     def _add_accelerator_for_widget(self, agr, name, accel):
         widget    = self.builder.get_object(name)

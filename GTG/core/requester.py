@@ -28,7 +28,7 @@ from GTG.tools.logger      import Log
 
 
 class Requester(gobject.GObject):
-    """A view on a GTG datastore.
+    """ A view on a GTG datastore.
 
     L{Requester} is a stateless object that simply provides a nice API for
     user interfaces to use for datastore operations.
@@ -37,33 +37,12 @@ class Requester(gobject.GObject):
     never have state of their own.
     """
 
-    __string_signal__ = (gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (str, ))
-
-    __gsignals__ = {'task-added' : __string_signal__, \
-              'task-deleted'     : __string_signal__, \
-              'task-modified'    : __string_signal__, \
-              'task-tagged'      : __string_signal__, \
-              'task-untagged'    : __string_signal__, \
-              'tag-added'        : __string_signal__, \
-              'tag-deleted'      : __string_signal__, \
-              'tag-path-deleted' : __string_signal__, \
-              'tag-modified'     : __string_signal__}
-
     def __init__(self, datastore, global_conf):
         """Construct a L{Requester}."""
         gobject.GObject.__init__(self)
         self.ds = datastore
         self.__config = global_conf
         self.__basetree = self.ds.get_tasks_tree()
-
-        #TODO build filters here
-        self.counter_call = 0
-
-    ############# Signals #########################
-    #Used by the tasks to emit the task added/modified signal
-    #Should NOT be used by anyone else
-    def _task_loaded(self, tid):
-        gobject.idle_add(self.emit, "task-added", tid)
 
     ############ Tasks Tree ######################
     # By default, we return the task tree of the main window
@@ -129,7 +108,6 @@ class Requester(gobject.GObject):
             for t in tags:
                 assert(isinstance(t, Tag) == False)
                 task.tag_added(t)
-        self._task_loaded(task.get_id())
         return task
 
     def delete_task(self, tid, recursive=True):
@@ -142,10 +120,6 @@ class Requester(gobject.GObject):
         """
         #send the signal before actually deleting the task !
         Log.debug("deleting task %s" % tid)
-        task = self.get_task(tid)
-        if task:
-            for tag in task.get_tags():
-                self.emit('tag-modified', tag.get_name())
         return self.__basetree.del_node(tid, recursive=recursive)
 
     def get_task_id(self, task_title):

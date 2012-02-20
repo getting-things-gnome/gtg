@@ -208,39 +208,6 @@ class ConfigurePanel(gtk.VBox):
         self.refresh_sync_button()
         self.refresh_sync_status_label()
     
-    def set_hidden(self, is_hidden):
-        '''
-        Notifies this pane if it's hidden or not. We disconnect signals when
-        hidden, since there is no need to keep the UI updated.
-        Hopefully, this should make GTG faster :)
-
-        @param is_hidden: boolean, True if the window is not visible
-        '''
-        #These is only needed to refresh the number of synced tasks.
-        #since that is disabled for now, there is no need for this
-
-#        if is_hidden:
-#            if self.task_added_handle:
-#                self.req.disconnect(self.task_added_handle)
-#                self.task_added_handle = None
-#            if self.task_deleted_handle:
-#                self.req.disconnect(self.task_deleted_handle)
-#                self.task_deleted_handle = None
-#        else:
-#            self.task_added_handle = self.req.connect("task-added", \
-#                                            self.__on_task_changed)
-#            self.task_added_handle = self.req.connect("task-modified", \
-#                                            self.__on_task_changed)
-#            self.task_deleted_handle = self.req.connect("task-deleted",  \
-#                                            self.__on_task_changed)
-#
-#    def __on_task_changed(self, sender, task_id):
-#        '''
-#        If tasks are added, modified or removed, updates the number of
-#        tasks of the current backend
-#        '''
-#        self.refresh_sync_status()
-
     def on_sync_button_clicked(self, sender):
         '''
         Signal callback when a backend is enabled/disabled via the UI button
