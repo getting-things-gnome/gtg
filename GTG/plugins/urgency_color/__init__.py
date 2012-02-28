@@ -17,4 +17,5 @@
 from GTG.plugins.urgency_color.urgency_color import pluginUrgencyColor
 
 #suppress pyflakes warning (given by make lint)
-if False == True: pluginUrgencyColor()
+if False == True:
+    pluginUrgencyColor()

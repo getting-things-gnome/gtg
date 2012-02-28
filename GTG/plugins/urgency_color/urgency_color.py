@@ -20,16 +20,16 @@ from math import ceil
 import gtk
 import os
 
+
 class pluginUrgencyColor:
 
     PLUGIN_NAME = 'Urgency Color'
     DEFAULT_PREFS = {
-        'reddays':30,
-        'color_green':'#cfff84',
-        'color_yellow':'#ffed84',
-        'color_red':'#ff9784'
-    }
-    
+        'reddays': 30,
+        'color_green': '#cfff84',
+        'color_yellow': '#ffed84',
+        'color_red': '#ff9784'}
+
     def __init__(self):
         self._plugin_api = None
         self.req = None
@@ -50,7 +50,8 @@ class pluginUrgencyColor:
             return self._pref_data['color_yellow']
         elif colindex == 2:
             return self._pref_data['color_red']
-        else: return None
+        else:
+            return None
 
     def bgcolor(self, node_id, standard_color):
         node = self.req.get_task(node_id)
@@ -61,7 +62,7 @@ class pluginUrgencyColor:
             redf = self._pref_data['reddays']
             reddays = int(ceil(redf*dayspan/100))
             daysleft = ddate.days_left()
-            
+
             if daysleft == None \
                     and ddate.__class__.__name__ != 'RealDate':
                 # FIXME: Offset should always yield the same type of
@@ -95,34 +96,36 @@ class pluginUrgencyColor:
         self._pref_data_potential = self._pref_data
         self.prefs_window.show_all()
         #self.prefs_window.set_transient_for(manager_dialog)
+        pass
 
     def prefs_init(self):
         self.builder = gtk.Builder()
         self.builder.add_from_file(os.path.join(
             os.path.dirname(os.path.abspath(__file__)),
             'preferences.ui'))
-        
+
         # Get the widgets
         #   Window
         self.prefs_window = self.builder.get_object('prefs_window')
-        self.prefs_window.set_title(('GTG - %s preferences' % self.PLUGIN_NAME))
-        self.prefs_window.set_size_request(300,-1)
+        self.prefs_window.set_title(('GTG - %s preferences' \
+            % self.PLUGIN_NAME))
+        self.prefs_window.set_size_request(300, -1)
         self.prefs_window.hide_on_delete()
-        
+
         #   Spin button
         self.spinbutton_reddays = self.builder.get_object('spinbutton_reddays')
-        
+
         #   Colorbutton - RED
         self.colorbutton_red = self.builder.get_object('colorbutton_red')
-        
+
         #   Colorbutton - YELLOW
         self.colorbutton_yellow = self.builder.get_object('colorbutton_yellow')
-        
+
         #   Colorbutton - GREEN
         self.colorbutton_green = self.builder.get_object('colorbutton_green')
-        
+
         #   Buttons
-        self.button_apply =  self.builder.get_object('button_apply')
+        self.button_apply = self.builder.get_object('button_apply')
         self.button_reset = self.builder.get_object('button_reset')
 
         # Update widget's values
@@ -143,14 +146,13 @@ class pluginUrgencyColor:
             'on_prefs_colorbutton_yellow_changed':
                 self.on_prefs_colorbutton_yellow_changed,
             'on_prefs_colorbutton_green_changed':
-                self.on_prefs_colorbutton_green_changed
-        }
+                self.on_prefs_colorbutton_green_changed}
         self.builder.connect_signals(SIGNAL_CONNECTIONS_DIC)
 
     def prefs_update_widgets(self):
         """ Synchronizes the widgets with the data in _pref_data """
         # Spin button
-        self.spinbutton_reddays.set_value(self._pref_data['reddays'])   
+        self.spinbutton_reddays.set_value(self._pref_data['reddays'])
         # Colorbutton - RED
         self.colorbutton_red.set_color( \
             gtk.gdk.color_parse(self._pref_data['color_red']))
@@ -159,7 +161,7 @@ class pluginUrgencyColor:
             gtk.gdk.color_parse(self._pref_data['color_yellow']))
         # Colorbutton - GREEN
         self.colorbutton_green.set_color( \
-            gtk.gdk.color_parse(self._pref_data['color_green']))       
+            gtk.gdk.color_parse(self._pref_data['color_green']))
 
     def on_prefs_cancel(self, widget=None, data=None):
         self.prefs_update_widgets()
@@ -189,16 +191,20 @@ class pluginUrgencyColor:
         self._plugin_api.save_configuration_object( \
             self.PLUGIN_NAME,
             'preferences',
-            self._pref_data) 
+            self._pref_data)
 
     def on_prefs_spinbutton_reddays_changed(self, widget=None, data=None):
-        self._pref_data_potential['reddays'] = self.spinbutton_reddays.get_value()
+        self._pref_data_potential['reddays'] = \
+            self.spinbutton_reddays.get_value()
 
     def on_prefs_colorbutton_red_changed(self, widget=None, data=None):
-        self._pref_data_potential['color_red'] = self.colorbutton_red.get_color().to_string()
+        self._pref_data_potential['color_red'] = \
+            self.colorbutton_red.get_color().to_string()
 
     def on_prefs_colorbutton_yellow_changed(self, widget=None, data=None):
-        self._pref_data_potential['color_yellow'] = self.colorbutton_yellow.get_color().to_string()
+        self._pref_data_potential['color_yellow'] = \
+            self.colorbutton_yellow.get_color().to_string()
 
     def on_prefs_colorbutton_green_changed(self, widget=None, data=None):
-        self._pref_data_potential['color_green'] = self.colorbutton_green.get_color().to_string()
+        self._pref_data_potential['color_green'] = \
+            self.colorbutton_green.get_color().to_string()
