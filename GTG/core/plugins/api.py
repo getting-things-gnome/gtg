@@ -192,7 +192,9 @@ class PluginAPI:
         for pane in browser.vtree_panes:
             pane = browser.vtree_panes[pane]
             pane.set_bg_color(func, info_col)
-            pane.basetree.reset_filters()
+            # FIXME: Commented the line below because it was causing all
+            # tasks ever created to be shown again
+            #pane.basetree.reset_filters()
 
 #=== file saving/loading ======================================================
 
