@@ -59,13 +59,17 @@ class pluginUrgencyColor:
         if (sdate != no_date != ddate):
             dayspan = (ddate - sdate).days
             redf = self._pref_data['reddays']
-            reddays = ceil(redf*dayspan/100)
+            reddays = int(ceil(redf*dayspan/100))
             daysleft = ddate.days_left()
-
+            
             if daysleft == None \
                     and ddate.__class__.__name__ != 'RealDate':
-                #daysleft = (ddate.offset - date.today()).days
-                daysleft = (ddate.days_left() - date.today()).days
+                # FIXME: Offset should always yield the same type of
+                # instance whether the FuzzyDate is soon, later or now.
+                if isinstance(ddate.offset, int):
+                    daysleft = ddate.offset
+                else:
+                    daysleft = (ddate.offset - date.today()).days
             color = 0
             if daysleft <= dayspan:
                 color = 1
