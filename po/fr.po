@@ -8,15 +8,15 @@ msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2012-02-15 10:46+0100\n"
-"PO-Revision-Date: 2011-10-18 14:09+0000\n"
-"Last-Translator: Dominick Rivard <Unknown>\n"
+"PO-Revision-Date: 2012-02-27 05:53+0000\n"
+"Last-Translator: François <Unknown>\n"
 "Language-Team: French <fr@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Launchpad-Export-Date: 2012-02-16 05:08+0000\n"
-"X-Generator: Launchpad (build 14781)\n"
+"X-Launchpad-Export-Date: 2012-02-28 05:48+0000\n"
+"X-Generator: Launchpad (build 14874)\n"
 
 #: GTG/plugins/notification_area/notification_area.py:120
 msgid "_View Main Window"
@@ -79,7 +79,7 @@ msgstr "Modèle introuvable"
 #: GTG/plugins/export/export.py:121
 #, python-format
 msgid "Could not generate the document: %s"
-msgstr ""
+msgstr "Impossible de générer le document : %s"
 
 #: GTG/plugins/export/export.py:169
 msgid "Export the tasks currently listed"
@@ -91,12 +91,12 @@ msgstr "Choisissez où sauvegarder votre liste"
 
 #: GTG/plugins/send_email/sendEmail.py:44
 msgid "Send via email"
-msgstr ""
+msgstr "Envoyer par courriel"
 
 #: GTG/plugins/send_email/sendEmail.py:69
 #, python-format
 msgid "Status: %s"
-msgstr ""
+msgstr "État : %s"
 
 #: GTG/plugins/send_email/sendEmail.py:70
 #, python-format
@@ -104,6 +104,8 @@ msgid ""
 "\n"
 "Tags: %s"
 msgstr ""
+"\n"
+"Étiquettes : %s"
 
 #: GTG/plugins/send_email/sendEmail.py:71
 #, python-format
@@ -112,6 +114,9 @@ msgid ""
 "Subtasks:\n"
 "%s"
 msgstr ""
+"\n"
+"Sous-tâches : \n"
+"%s"
 
 #: GTG/plugins/send_email/sendEmail.py:73
 #, python-format
@@ -120,11 +125,14 @@ msgid ""
 "Task content:\n"
 "%s"
 msgstr ""
+"\n"
+"Contenu de la tâche : \n"
+"%s"
 
 #: GTG/plugins/send_email/sendEmail.py:76
 #, python-format
 msgid "Task: %(task_title)s"
-msgstr ""
+msgstr "Tâche : %(task_title)s"
 
 #: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:1
 msgid "<b>Location Determination Method</b>"
@@ -235,7 +243,7 @@ msgstr "plus tard"
 
 #: GTG/backends/backend_identica.py:54
 msgid "Identi.ca"
-msgstr ""
+msgstr "Identi.ca"
 
 #: GTG/backends/backend_identica.py:58
 msgid "Imports your identi.ca  messages into your GTG "
@@ -243,7 +251,7 @@ msgstr ""
 
 #: GTG/backends/backend_gnote.py:42
 msgid "Gnote"
-msgstr ""
+msgstr "Gnote"
 
 #: GTG/backends/backend_gnote.py:46
 msgid ""
@@ -255,7 +263,7 @@ msgstr ""
 
 #: GTG/backends/backend_rtm.py:54
 msgid "Remember The Milk"
-msgstr ""
+msgstr "Remember The Milk"
 
 #: GTG/backends/backend_rtm.py:58
 msgid ""
@@ -268,7 +276,7 @@ msgstr ""
 
 #: GTG/backends/backend_twitter.py:54
 msgid "Twitter"
-msgstr ""
+msgstr "Twitter"
 
 #: GTG/backends/backend_twitter.py:58
 msgid "Imports your twitter  messages into your GTG "
@@ -276,7 +284,7 @@ msgstr ""
 
 #: GTG/backends/backend_tomboy.py:41
 msgid "Tomboy"
-msgstr ""
+msgstr "Tomboy"
 
 #: GTG/backends/backend_tomboy.py:45
 msgid ""
@@ -328,15 +336,15 @@ msgstr ""
 
 #: GTG/backends/backend_localfile.py:61
 msgid "Local File"
-msgstr ""
+msgstr "Fichier local"
 
 #: GTG/backends/backend_localfile.py:66
 msgid "Your tasks are saved in a text file (XML format). "
-msgstr ""
+msgstr "Vos tâches sont sauvegardées dans un fichier texte (format XML). "
 
 #: GTG/backends/backend_launchpad.py:53
 msgid "Launchpad"
-msgstr ""
+msgstr "Launchpad"
 
 #: GTG/backends/backend_launchpad.py:57
 msgid ""
@@ -356,11 +364,11 @@ msgstr ""
 
 #: GTG/backends/backend_launchpad.py:244
 msgid "Bug"
-msgstr ""
+msgstr "Bogue"
 
 #: GTG/backends/backend_launchpad.py:329
 msgid "Link to bug: "
-msgstr ""
+msgstr "Lien vers le bogue : "
 
 #: GTG/backends/rtm/rtm.py:57
 msgid "Invalid state"
@@ -710,15 +718,15 @@ msgstr ""
 
 #: GTG/core/search.py:87
 msgid "or"
-msgstr ""
+msgstr "ou"
 
 #: GTG/core/search.py:88
 msgid "after"
-msgstr ""
+msgstr "après"
 
 #: GTG/core/search.py:89
 msgid "before"
-msgstr ""
+msgstr "avant"
 
 #: GTG/core/search.py:90 GTG/tools/dates.py:192
 msgid "today"
@@ -809,7 +817,7 @@ msgstr ""
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:64
 msgid "All tags"
-msgstr ""
+msgstr "Toutes les étiquettes"
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:65
 msgid "Just these tags:"
@@ -817,7 +825,7 @@ msgstr ""
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:69
 msgid "Tags to sync"
-msgstr ""
+msgstr "Étiquettes à synchroniser"
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:71
 msgid "Tasks with these tags:"
@@ -825,7 +833,7 @@ msgstr ""
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:76
 msgid "Username"
-msgstr ""
+msgstr "Nom d'utilisateur"
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:82
 msgid "Service URL"
@@ -1316,7 +1324,7 @@ msgstr "Nom de l'étiquette"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:40
 msgid "Tasks"
-msgstr ""
+msgstr "Tâches"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:41
 msgid "Und_ismiss"
