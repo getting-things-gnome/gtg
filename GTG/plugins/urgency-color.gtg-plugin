@@ -8,8 +8,8 @@ Color code
 
 Assuming your settings are default:
 Red means you are within the last 30% of days between the start-date and due-date, or your task is overdue.
-Yellow means your start-date has passed.
-Green means your start-date is oncoming.
+Yellow means your task's start-date has passed.
+Green means your task's start-date is oncoming.
 '''
 Authors=Wolter Hellmund <wolterh6@gmail.com>
 Version=0.1
