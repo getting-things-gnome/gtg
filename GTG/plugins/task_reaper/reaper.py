@@ -15,7 +15,6 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 import sys
 import os
-import datetime
 try:
     import pygtk
     pygtk.require("2.0")
@@ -29,6 +28,7 @@ from threading           import Timer
 
 from GTG.core.task       import Task
 from GTG.tools.logger    import Log
+from GTG.tools.dates     import Date
 
 
 class pluginReaper:
@@ -114,17 +114,18 @@ class pluginReaper:
 
     def delete_old_closed_tasks(self, widget = None):
         self.__log("Starting deletion of old tasks")
-        today = datetime.datetime.now().date()
+        today = Date.today()
         requester = self.plugin_api.get_requester()
         closed_tree = requester.get_tasks_tree(name = 'inactive')
         closed_tasks = [requester.get_task(tid) for tid in \
                         closed_tree.get_all_nodes()]
-        delta = datetime.timedelta(days = self.preferences["max_days"])
-        to_remove = filter(lambda t: t.get_closed_date().to_py_date() < today -delta,\
-                           closed_tasks)
+        to_remove = [t for t in closed_tasks 
+            if (today - t.get_closed_date()).days > self.preferences["max_days"]]
+
         for task in to_remove:
             if requester.has_task(task.get_id()):
                 requester.delete_task(task.get_id())
+
         #If automatic purging is on, schedule another run
         if self.is_automatic:
             self.schedule_autopurge()
