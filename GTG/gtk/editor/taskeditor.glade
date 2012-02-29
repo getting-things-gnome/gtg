@@ -385,7 +385,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkButton" id="button_later">
+              <object class="GtkButton" id="button_someday">
                 <property name="label" translatable="yes">Someday</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>

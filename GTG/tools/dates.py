@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
 # Gettings Things Gnome! - a personal organizer for the GNOME desktop
-# Copyright (c) 2008-2009 - Lionel Dricot & Bertrand Rousseau
+# Copyright (c) 2008-2012 - Lionel Dricot & Bertrand Rousseau
 #
 # This program is free software: you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -17,212 +17,295 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-from datetime import date, timedelta
-import locale
 import calendar
+import datetime
+import locale
+
 from GTG import _, ngettext
 
-#setting the locale of gtg to the system locale 
-#locale.setlocale(locale.LC_TIME, '')
+__all__ = 'Date',
+
+NOW, SOON, SOMEDAY, NODATE = range(4)
+# strings representing fuzzy dates + no date
+ENGLISH_STRINGS = {
+    NOW: 'now',
+    SOON: 'soon',
+    SOMEDAY: 'someday',
+    NODATE: '',
+}
+
+STRINGS = {
+    NOW: _('now'),
+    SOON: _('soon'),
+    SOMEDAY: _('someday'),
+    NODATE: '',
+}
+
+LOOKUP = {
+    'now': NOW,
+    _('now').lower(): NOW,
+    'soon': SOON,
+    _('soon').lower(): SOON,
+    'later': SOMEDAY,
+    _('later').lower(): SOMEDAY,
+    'someday': SOMEDAY,
+    _('someday').lower(): SOMEDAY,
+    '': NODATE,
+}
+# functions giving absolute dates for fuzzy dates + no date
+FUNCS = {
+    NOW: lambda: datetime.date.today(),
+    SOON: lambda: datetime.date.today() + datetime.timedelta(15),
+    SOMEDAY: lambda: datetime.date.max,
+    NODATE: lambda: datetime.date.max - datetime.timedelta(1),
+}
+
+# ISO 8601 date format
+ISODATE = '%Y-%m-%d'
+
+def convert_datetime_to_date(dt):
+    return datetime.date(dt.year, dt.month, dt.day)
 
 class Date(object):
-    def __cmp__(self, other):
-        if other is None: return 1
-        return cmp(self.to_py_date(), other.to_py_date())
+    """A date class that supports fuzzy dates.
     
-    def __sub__(self, other):
-        return self.to_py_date() - other.to_py_date()
+    Date supports all the methods of the standard datetime.date class. A Date
+    can be constructed with:
+      * the fuzzy strings 'now', 'soon', '' (no date, default), or 'someday'
+      * a string containing an ISO format date: YYYY-MM-DD, or
+      * a datetime.date or Date instance.
+    
+    """
+    _real_date = None
+    _fuzzy = None
 
-    def __get_locale_string(self):
-        return locale.nl_langinfo(locale.D_FMT)
+    def __init__(self, value=''):
+        if value is None:
+            self.__init__(NODATE)
+        elif isinstance(value, datetime.date):
+            self._real_date = value
+        elif isinstance(value, Date):
+            self._real_date = value._real_date
+            self._fuzzy = value._fuzzy
+        elif isinstance(value, str) or isinstance(value, unicode):
+            try:
+                dt = datetime.datetime.strptime(value, ISODATE).date()
+                self._real_date = convert_datetime_to_date(dt)
+            except ValueError:
+                # it must be a fuzzy date
+                try:
+                    value = str(value.lower())
+                    self.__init__(LOOKUP[value])
+                except KeyError:
+                    raise ValueError
+        elif isinstance(value, int):
+            self._fuzzy = value
+        else:
+            raise ValueError
+
+    def _date(self):
+        if self.is_fuzzy():
+            return FUNCS[self._fuzzy]()
+        else:
+            return self._real_date
+
+    def __add__(self, other):
+        if isinstance(other, datetime.timedelta):
+            return Date(self._date() + other)
+        else:
+            raise NotImplementedError
+    __radd__ = __add__
+
+    def __sub__(self, other):
+        if hasattr(other, '_date'):
+            return self._date() - other._date()
+        else:
+            return self._date() - other
+
+    def __rsub__(self, other):
+        if hasattr(other, '_date'):
+            return other._date() - self._date()
+        else:
+            return other - self._date()
+
+    def __cmp__(self, other):
+        """ Compare with other Date instance """
+        if isinstance(other, Date):
+            c = cmp(self._date(), other._date())
+
+            # Keep fuzzy dates below normal dates
+            if c == 0:
+                if self.is_fuzzy() and not other.is_fuzzy():
+                    return 1
+                elif not self.is_fuzzy() and other.is_fuzzy():
+                    return -1
+
+            return c
+        elif isinstance(other, datetime.date):
+            return cmp(self._date(), other)
+        else:
+            raise NotImplementedError
+
+    def __str__(self):
+        if self._fuzzy is not None:
+            return STRINGS[self._fuzzy]
+        else:
+            return self._real_date.isoformat()
+
+    def __repr__(self):
+        return "GTG_Date(%s)" % str(self)
+
+    def xml_str(self):
+        """ Representation for XML - fuzzy dates are in English """
+        if self._fuzzy is not None:
+            return ENGLISH_STRINGS[self._fuzzy]
+        else:
+            return self._real_date.isoformat()
+
+    def __nonzero__(self):
+        return self._fuzzy != NODATE
+
+    def __getattr__(self, name):
+        """ Provide access to the wrapped datetime.date """
+        try:
+            return self.__dict__[name]
+        except KeyError:
+            return getattr(self._date(), name)
+
+    def is_fuzzy(self):
+        """ True if the Date is one of the fuzzy values """
+        return self._fuzzy is not None
+
+    def days_left(self):
+        """ Return the difference between the date and today in dates """
+        if self._fuzzy == NODATE:
+            return None
+        else:
+            return (self._date() - datetime.date.today()).days
+
+    @classmethod
+    def today(cls):
+        return Date(datetime.date.today())
+
+    @classmethod
+    def tomorrow(cls):
+        return Date(datetime.date.today() + timedelta(1))
+
+    @classmethod
+    def now(cls):
+        return Date(NOW)
+
+    @classmethod
+    def no_date(cls):
+        return Date(NODATE)
+
+    @classmethod
+    def soon(cls):
+        return Date(SOON)
+
+    @classmethod
+    def someday(cls):
+        return Date(SOMEDAY)
+
+    @classmethod
+    def parse(cls, string):
+        """Return a Date corresponding to string, or None.
         
-    def xml_str(self): return str(self)
-        
-    def day(self):      return self.to_py_date().day
-    def month(self):    return self.to_py_date().month
-    def year(self):     return self.to_py_date().year
+        string may be in one of the following formats:
+         * YYYY/MM/DD, YYYYMMDD, MMDD
+         * fuzzy dates
+         * 'today', 'tomorrow', 'next week', 'next month' or 'next year' in
+           English or the system locale.
+        """
+        # sanitize input
+        if string is None:
+            string = ''
+        else:
+            string = string.lower()
+
+        # try the default formats
+        try:
+            return Date(string)
+        except ValueError:
+            pass
+
+        result = None
+        today = datetime.date.today()
+
+        # accepted date formats
+        formats = {
+          'today': 0,
+          _('today').lower(): 0,
+          'tomorrow': 1,
+          _('tomorrow').lower(): 1,
+          'next week': 7,
+          _('next week').lower(): 7,
+          'next month': calendar.mdays[today.month],
+          _('next month').lower(): calendar.mdays[today.month],
+          'next year': 365 + int(calendar.isleap(today.year)),
+          _('next year').lower(): 365 + int(calendar.isleap(today.year)),
+        }
+
+        # add week day names in the current locale
+        for i, (english, local) in enumerate([
+            ("Monday", _("Monday")),
+            ("Tuesday", _("Tuesday")),
+            ("Wednesday", _("Wednesdy")),
+            ("Thursday", _("Thursday")),
+            ("Friday", _("Friday")),
+            ("Saturday", _("Saturday")),
+            ("Sunday", _("Sunday")),
+            ]):
+            offset = i - today.weekday() + 7 * int(i <= today.weekday())
+            formats[english.lower()] = offset
+            formats[local.lower()] = offset
+
+        # attempt to parse the string with known formats
+        for fmt in ['%Y/%m/%d', '%Y%m%d', '%m%d']:
+            try: 
+                dt = datetime.datetime.strptime(string, fmt)
+                result = convert_datetime_to_date(dt)
+                if '%Y' not in fmt:
+                    # If the day has passed, assume the next year
+                    if result.month >= today.month and result.day >= today.day:
+                        year = today.year
+                    else:
+                        year = today.year +1
+                    result = result.replace(year=year)
+            except ValueError:
+                continue
+
+        offset = formats.get(string, None)
+        if result is None and offset is not None:
+            result = today + datetime.timedelta(offset)
+
+        if result is not None:
+            return Date(result)
+        else:
+            raise ValueError("Can't parse date '%s'" % string)
 
     def to_readable_string(self):
-        if self.to_py_date() == NoDate().to_py_date():
-            return None
-        dleft = (self.to_py_date() - date.today()).days
-        if dleft == 0:
-            return _("Today")
-        elif dleft < 0:
-            abs_days = abs(dleft)
-            return ngettext("Yesterday", "%(days)d days ago", abs_days) % \
-                                                           {"days": abs_days}
-        elif dleft > 0 and dleft <= 15:
-            return ngettext("Tomorrow", "In %(days)d days", dleft) % \
-                                                           {"days": dleft}
+        if self._fuzzy is not None:
+            return STRINGS[self._fuzzy]
+
+        days_left = self.days_left()
+        if days_left == 0:
+            return _('Today')
+        elif days_left < 0:
+            abs_days = abs(days_left)
+            return ngettext('Yesterday', '%(days)d days ago', abs_days) % \
+              {'days': abs_days}
+        elif days_left > 0 and days_left <= 15:
+            return ngettext('Tomorrow', 'In %(days)d days', days_left) % \
+              {'days': days_left}
         else:
-            locale_format = self.__get_locale_string()
-            if calendar.isleap(date.today().year):
+            locale_format = locale.nl_langinfo(locale.D_FMT)
+            if calendar.isleap(datetime.date.today().year):
                 year_len = 366
             else:
                 year_len = 365
-            if float(dleft) / year_len < 1.0:
+            if float(days_left) / year_len < 1.0:
                 #if it's in less than a year, don't show the year field
                 locale_format = locale_format.replace('/%Y','')
-            return  self.to_py_date().strftime(locale_format)
-
-
-class FuzzyDate(Date):
-    def __init__(self, offset, name):
-        super(FuzzyDate, self).__init__()
-        self.name=name
-        self.offset=offset
-        
-    def to_py_date(self):
-        return date.today()+timedelta(self.offset)
-        
-    def __str__(self):
-        return _(self.name)
-        
-    def to_readable_string(self):
-    	return _(self.name)
-        
-    def xml_str(self):
-    	return self.name
-        
-    def days_left(self):
-        return None
-        
-class FuzzyDateFixed(FuzzyDate):
-	def to_py_date(self):
-		return self.offset
-
-NOW = FuzzyDate(0, _('now'))
-SOON = FuzzyDate(15, _('soon'))
-LATER = FuzzyDateFixed(date.max, _('later'))
-
-class RealDate(Date):
-    def __init__(self, dt):
-        super(RealDate, self).__init__()
-        assert(dt is not None)
-        self.proto = dt
-        
-    def to_py_date(self):
-        return self.proto
-        
-    def __str__(self):
-        return str(self.proto)
-
-    def days_left(self):
-        return (self.proto - date.today()).days
-      
-DATE_MAX_MINUS_ONE = date.max-timedelta(1)  # sooner than 'later'
-class NoDate(Date):
-
-    def __init__(self):
-        super(NoDate, self).__init__()
-
-    def to_py_date(self):
-        return DATE_MAX_MINUS_ONE
-    
-    def __str__(self):
-        return ''
-        
-    def days_left(self):
-        return None
-        
-    def __nonzero__(self):
-        return False 
-no_date = NoDate()
-
-#function to convert a string of the form YYYY-MM-DD
-#to a date
-#If the date is not correct, the function returns None
-def strtodate(stri) :
-    if stri == _("now") or stri == "now":
-        return NOW
-    elif stri == _("soon") or stri == "soon":
-        return SOON
-    elif stri == _("later") or stri == "later":
-        return LATER
-        
-    toreturn = None
-    zedate = []
-    if stri :
-        if '-' in stri :
-            zedate = stri.split('-')
-        elif '/' in stri :
-            zedate = stri.split('/')
-            
-        if len(zedate) == 3 :
-            y = zedate[0]
-            m = zedate[1]
-            d = zedate[2]
-            if y.isdigit() and m.isdigit() and d.isdigit() :
-                yy = int(y)
-                mm = int(m)
-                dd = int(d)
-                # we catch exceptions here
-                try :
-                    toreturn = date(yy,mm,dd)
-                except ValueError:
-                    toreturn = None
-    
-    if not toreturn: return no_date
-    else: return RealDate(toreturn)
-    
-    
-def date_today():
-    return RealDate(date.today())
-
-def get_canonical_date(arg):
-    """
-    Transform "arg" in a valid yyyy-mm-dd date or return None.
-    "arg" can be a yyyy-mm-dd, yyyymmdd, mmdd, today, next week,
-    next month, next year, or a weekday name.
-    Literals are accepted both in english and in the locale language.
-    When clashes occur the locale takes precedence.
-    """
-    today = date.today()
-    #FIXME: there surely exist a way to get day names from the  datetime
-    #       or time module.
-    day_names = ["monday", "tuesday", "wednesday", \
-                 "thursday", "friday", "saturday", \
-                 "sunday"]
-    day_names_localized = [_(day).lower() for day in day_names]
-
-    delta_day_names = {"today":      0, \
-                       "tomorrow":   1, \
-                       "next week":  7, \
-                       "next month": calendar.mdays[today.month], \
-                       "next year":  365 + int(calendar.isleap(today.year))}
-    delta_day_names_localized = \
-                      {_("today").lower():      0, \
-                       _("tomorrow").lower():   1, \
-                       _("next week").lower():  7, \
-                       _("next month").lower(): calendar.mdays[today.month], \
-                       _("next year").lower():  365 + int(calendar.isleap(today.year))}
-    ### String sanitization
-    arg = arg.lower()
-    ### Conversion
-    #yyyymmdd and mmdd
-    if arg.isdigit():
-        if len(arg) == 4:
-            arg = str(date.today().year) + arg
-        assert(len(arg) == 8)
-        arg = "%s-%s-%s" % (arg[:4], arg[4:6], arg[6:])
-    #today, tomorrow, next {week, months, year}
-    elif arg in delta_day_names.keys() or \
-         arg in delta_day_names_localized.keys():
-        if arg in delta_day_names:
-            delta = delta_day_names[arg]
-        else:
-            delta = delta_day_names_localized[arg]
-        arg = (today + timedelta(days = delta)).isoformat()
-    elif arg in day_names or arg in day_names_localized:
-        if arg in day_names:
-            arg_day = day_names.index(arg)
-        else:
-            arg_day = day_names_localized.index(arg)
-        today_day = today.weekday()
-        next_date = timedelta(days = arg_day - today_day + \
-                          7 * int(arg_day <= today_day)) + today
-        arg = "%i-%i-%i" % (next_date.year,  \
-                            next_date.month, \
-                            next_date.day)
-    return strtodate(arg)
+                locale_format = locale_format.replace('.%Y','.')
+            return  self._real_date.strftime(locale_format)

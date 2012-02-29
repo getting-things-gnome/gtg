@@ -84,7 +84,7 @@ class ConfigurePanel(gtk.VBox):
         '''
         hbox.set_spacing(10)
         self.image_icon = gtk.Image()
-        self.image_icon.set_size_request(100, 100)
+        self.image_icon.set_size_request(48, 48)
         vbox = gtk.VBox()
         hbox_top = gtk.HBox()
         self.human_name_label = gtk.Label()
@@ -107,7 +107,7 @@ class ConfigurePanel(gtk.VBox):
         vbox.pack_start(self.sync_desc_label, True)
         hbox.pack_start(self.image_icon, False)
         align_vbox = gtk.Alignment(xalign = 0, yalign = 0, xscale = 1)
-        align_vbox.set_padding(10, 0, 20, 0)
+        align_vbox.set_padding(12, 0, 0, 0)
         align_vbox.add(vbox)
         hbox.pack_start(align_vbox, True)
 
@@ -134,7 +134,7 @@ class ConfigurePanel(gtk.VBox):
         self.refresh_sync_status()
         self.parameters_ui.refresh(self.backend)
         self.image_icon.set_from_pixbuf(self.dialog.get_pixbuf_from_icon_name(\
-                                        self.backend.get_name(), 80, 80))
+                                        self.backend.get_name(), 48, 48))
 
     def refresh_title(self, sender = None, data = None):
         '''
@@ -192,9 +192,9 @@ class ConfigurePanel(gtk.VBox):
             label = _("This is the default backend")
         else:
             if self.backend.is_enabled():
-                label = _("Syncing is enabled")
+                label = _("Syncing is enabled.")
             else:
-                label = _('Syncing is <span color="red">disabled</span>')
+                label = _('Syncing is <span color="red">disabled</span>.')
         self.sync_status_label.set_markup(label)
 
     def refresh_sync_status(self, sender = False, data = False):
@@ -208,39 +208,6 @@ class ConfigurePanel(gtk.VBox):
         self.refresh_sync_button()
         self.refresh_sync_status_label()
     
-    def set_hidden(self, is_hidden):
-        '''
-        Notifies this pane if it's hidden or not. We disconnect signals when
-        hidden, since there is no need to keep the UI updated.
-        Hopefully, this should make GTG faster :)
-
-        @param is_hidden: boolean, True if the window is not visible
-        '''
-        #These is only needed to refresh the number of synced tasks.
-        #since that is disabled for now, there is no need for this
-
-#        if is_hidden:
-#            if self.task_added_handle:
-#                self.req.disconnect(self.task_added_handle)
-#                self.task_added_handle = None
-#            if self.task_deleted_handle:
-#                self.req.disconnect(self.task_deleted_handle)
-#                self.task_deleted_handle = None
-#        else:
-#            self.task_added_handle = self.req.connect("task-added", \
-#                                            self.__on_task_changed)
-#            self.task_added_handle = self.req.connect("task-modified", \
-#                                            self.__on_task_changed)
-#            self.task_deleted_handle = self.req.connect("task-deleted",  \
-#                                            self.__on_task_changed)
-#
-#    def __on_task_changed(self, sender, task_id):
-#        '''
-#        If tasks are added, modified or removed, updates the number of
-#        tasks of the current backend
-#        '''
-#        self.refresh_sync_status()
-
     def on_sync_button_clicked(self, sender):
         '''
         Signal callback when a backend is enabled/disabled via the UI button

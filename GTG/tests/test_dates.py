@@ -22,24 +22,63 @@ Tests for the various Date classes
 '''
 
 import unittest
+from datetime import date, timedelta
 
-from GTG.tools.dates import get_canonical_date
 from GTG import _
+from GTG.tools.dates import Date
 
 class TestDates(unittest.TestCase):
     '''
     Tests for the various Date classes
     '''
 
-    def test_get_canonical_date(self):
-        '''
-        Tests for "get_canonical_date"
-        '''
-        known_values = (("1985-03-29", "1985-03-29"), ("now", _("now")),
-                        ("soon", _("soon")), ("later", _("later")), ("", ""))
-        for value, result in known_values:
-            date = get_canonical_date(value)
-            self.assertEqual(date.__str__(), result)
+    def test_parse_dates(self):
+        self.assertEqual(str(Date.parse("1985-03-29")), "1985-03-29")
+        self.assertEqual(str(Date.parse("19850329")), "1985-03-29")
+        self.assertEqual(str(Date.parse("1985/03/29")), "1985-03-29")
+
+        year = date.today().year
+        self.assertEqual(str(Date.parse("0329")), "%s-03-29" % year)
+
+    def test_parse_fuzzy_dates(self):
+        self.assertEqual(Date.parse("now"), Date.now())
+        self.assertEqual(Date.parse("soon"), Date.soon())
+        self.assertEqual(Date.parse("later"), Date.someday())
+        self.assertEqual(Date.parse("someday"), Date.someday())
+        self.assertEqual(Date.parse(""), Date.no_date())
+
+    def test_parse_local_fuzzy_dates(self):
+        self.assertEqual(Date.parse(_("now")), Date.now())
+        self.assertEqual(Date.parse(_("soon")), Date.soon())
+        self.assertEqual(Date.parse(_("later")), Date.someday())
+        self.assertEqual(Date.parse(_("someday")), Date.someday())
+        self.assertEqual(Date.parse(""), Date.no_date())
+
+    def test_parse_fuzzy_dates_str(self):
+        self.assertEqual(str(Date.parse("now")), _("now"))
+        self.assertEqual(str(Date.parse("soon")), _("soon"))
+        self.assertEqual(str(Date.parse("later")), _("someday"))
+        self.assertEqual(str(Date.parse("someday")), _("someday"))
+        self.assertEqual(str(Date.parse("")), "")
+
+    def test_parse_week_days(self):
+        weekday = date.today().weekday()
+        for i, day in enumerate(['Monday', 'Tuesday', 'Wednesday', 
+            'Thursday', 'Friday', 'Saturday', 'Sunday']):
+            if i <= weekday:
+                expected = date.today() + timedelta(7+i-weekday)
+            else:
+                expected = date.today() + timedelta(i-weekday)
+
+            self.assertEqual(Date.parse(day), expected)
+            self.assertEqual(Date.parse(day.lower()), expected)
+            self.assertEqual(Date.parse(day.upper()), expected)
+
+            # Test localized version
+            day = _(day)
+            self.assertEqual(Date.parse(day), expected)
+            self.assertEqual(Date.parse(day.lower()), expected)
+            self.assertEqual(Date.parse(day.upper()), expected)
 
 def test_suite():
     return unittest.TestLoader().loadTestsFromTestCase(TestDates)

@@ -25,15 +25,15 @@ class TestSignalTesting(unittest.TestCase):
         one_signal_arguments = signal_arguments[0]
         self.assertEqual(arg, one_signal_arguments[0])
 
-    @unittest.skip("It is slow and do not affect the current code")
-    def test_signal_missing(self):
-        generator = FakeGobject()
-        arg = str(uuid.uuid4())
-        with SignalCatcher(self, generator, 'two', False, error_code = None) \
-                as [signal_catched_event, signal_arguments]:
-            generator.emit_signal('one', arg)
-            signal_catched_event.wait()
-        self.assertEqual(len(signal_arguments), 0)
+#    @unittest.skip("It is slow and do not affect the current code")
+#    def test_signal_missing(self):
+#        generator = FakeGobject()
+#        arg = str(uuid.uuid4())
+#        with SignalCatcher(self, generator, 'two', False, error_code = None) \
+#                as [signal_catched_event, signal_arguments]:
+#            generator.emit_signal('one', arg)
+#            signal_catched_event.wait()
+#        self.assertEqual(len(signal_arguments), 0)
 
 
 class FakeGobject(gobject.GObject):

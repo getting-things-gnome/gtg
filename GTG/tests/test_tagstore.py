@@ -17,11 +17,11 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-"""Tests for the tagstore."""
+"""Tests for the tags"""
 
 import unittest
 
-from GTG.core.tagstore   import Tag
+from GTG.core.tag import Tag
 from GTG.core.datastore import DataStore
 
 from GTG.tests.signals_testing import GobjectSignalsManager

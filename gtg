@@ -30,6 +30,8 @@ Getting Things Gnome! - A personal organizer for the GNOME desktop
 import sys
 from optparse import OptionParser
 
+required_liblarch_api="1.0"
+
 
 def X_is_running():
     from gtk.gdk import Screen
@@ -39,6 +41,39 @@ def X_is_running():
     except RuntimeError:
         pass
     return False
+    
+def import_liblarch():
+    """ Check if liblarch is installed and is compatible
+
+    If not, provide information how to obtain the newest version """
+
+    git_cmd= "git clone git://github.com/ploum/liblarch.git  ../liblarch"
+    try:
+        import liblarch
+        toreturn = True
+    except:
+        sys.path.append("../liblarch/")
+        try:
+            import liblarch
+            toreturn = True
+        except:
+	        print "GTG requires liblarch but liblarch is not installed."
+	        print "To install liblarch, run the following command in the current folder:"
+	        print "\n"
+	        print "   %s" %git_cmd
+	        print "\n"
+	        print "More informations about liblarch: https://live.gnome.org/liblarch/"
+	        toreturn = False
+
+    if toreturn and not liblarch.is_compatible(required_liblarch_api):
+        print "Your liblarch copy has its API at version %s" %liblarch.api
+        print "but your GTG copy need liblarch API version %s" %required_liblarch_api
+        print ""
+        print "You may fix that by downloading the last version of liblarch with:"
+        print "   %s"%git_cmd
+        toreturn = False
+
+    return toreturn
 
 
 try:
@@ -64,7 +99,7 @@ try:
         print "Could not open X display"
         sys.exit(1)
 
-    else:
+    elif import_liblarch():
         import GTG.gtg
         sys.exit(GTG.gtg.main(options, args))
 

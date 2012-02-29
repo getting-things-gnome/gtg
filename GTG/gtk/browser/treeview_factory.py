@@ -23,11 +23,12 @@ import xml.sax.saxutils as saxutils
 import locale
 
 from GTG                              import _
+from GTG.core                         import CoreConfig
 from GTG.core.task                    import Task
 from GTG.gtk.browser.CellRendererTags import CellRendererTags
-from GTG.gtk.liblarch_gtk             import TreeView
+from liblarch_gtk                     import TreeView
 from GTG.gtk                          import colors
-from GTG.tools                        import dates
+from GTG.tools.dates                  import Date
 
 
 class AutoExpandTreeView(TreeView):
@@ -65,7 +66,8 @@ class TreeviewFactory():
         # List of keys for connecting/disconnecting Tag tree
         self.tag_cllbcks = []
 
-        
+        # Cache tags treeview for on_rename_tag callback
+        self.tags_view = None
         
     #############################
     #Functions for tasks columns
@@ -101,30 +103,29 @@ class TreeviewFactory():
     #task title/label
     def task_label_column(self, node):
         str_format = "%s"
-        #we mark in bold tasks which are due now and those marked as Now (fuzzy
-        # date)
-        due = node.get_due_date()
-        if (due.days_left == 0 or due == dates.NOW):
-            str_format = "<b>%s</b>"
-        if self._has_hidden_subtask(node):
-            str_format = "<span color='%s'>%s</span>"\
-                                            %(self.unactive_color,str_format)
-        title = str_format % saxutils.escape(node.get_title())
-        #FIXME
-#        color = self.treeview.style.text[gtk.STATE_INSENSITIVE].to_string()
-        color = "red"
+        
         if node.get_status() == Task.STA_ACTIVE:
-            count = self.mainview.node_n_children(node.get_id(),recursive=True)
+            # we mark in bold tasks which are due today or as Now
+            days_left = node.get_days_left()
+            if days_left is not None and days_left <= 0:
+                str_format = "<b>%s</b>"
+            if self._has_hidden_subtask(node):
+                str_format = "<span color='%s'>%s</span>"\
+                                                % (self.unactive_color, str_format)
+
+        title = str_format % saxutils.escape(node.get_title())
+        if node.get_status() == Task.STA_ACTIVE:
+            count = self.mainview.node_n_children(node.get_id(), recursive=True)
             if count != 0:
                 title += " (%s)" % count
             
             if self.config.get("contents_preview_enable"):
-            	excerpt = saxutils.escape(node.get_excerpt(lines=1, \
+            	excerpt = saxutils.escape(node.get_excerpt(lines=1,
             		strip_tags=True, strip_subtasks=True))
             	title += " <span size='small' color='%s'>%s</span>" \
-            		%(self.unactive_color, excerpt) 
+            		% (self.unactive_color, excerpt) 
         elif node.get_status() == Task.STA_DISMISSED:
-            title = "<span color='%s'>%s</span>"%(self.unactive_color, title)
+            title = "<span color='%s'>%s</span>" % (self.unactive_color, title)
         return title
         
     #task start date
@@ -182,15 +183,6 @@ class TreeviewFactory():
             else:
                 return -1*s
 
-        if sort == 0:
-            # Put fuzzy dates below real dates
-            if isinstance(t1, dates.FuzzyDate) \
-               and not isinstance(t2, dates.FuzzyDate):
-                sort = reverse_if_descending(1)
-            elif isinstance(t2, dates.FuzzyDate) \
-                    and not isinstance(t1, dates.FuzzyDate):
-                sort = reverse_if_descending(-1)
-        
         if sort == 0: # Group tasks with the same tag together for visual cleanness 
             t1_tags = task1.get_tags_name()
             t1_tags.sort()
@@ -221,7 +213,6 @@ class TreeviewFactory():
             return label
         
     def get_tag_count(self,node):
-# FIXME: is this good idea?
         if node.get_id() == 'search':
             return ""
         else:
@@ -295,11 +286,11 @@ class TreeviewFactory():
         col_name = 'tagname'
         col = {}
         render_text = gtk.CellRendererText()
-        # FIXME Change it to True when tag renaming will be implemented
-        render_text.set_property('editable', False) 
         render_text.set_property('ypad', 3)
-        #FIXME : renaming tag feature
-#        render_text.connect("edited", self.req.rename_tag)
+        # Allow renaming
+        # FIXME Is there any way how to disable renaming for certain tags?
+        render_text.set_property('editable', True) 
+        render_text.connect("edited", self.on_rename_tag)
         col['renderer'] = ['markup',render_text]
         col['value'] = [str,self.tag_name]
         col['expandable'] = True
@@ -325,6 +316,17 @@ class TreeviewFactory():
 
         return self.build_tag_treeview(tree,desc)
 
+    def on_rename_tag(self, renderer, path, new_name):
+        model = self.tags_view.get_model()
+        my_iter = model.get_iter(path)
+        tag_id = model.get_value(my_iter, 0)
+        tag = self.req.get_tag(tag_id)
+
+        if tag.is_search_tag():
+            self.req.rename_tag(tag_id, new_name)
+        else:
+            print "FIXME: renaming tags is not implemented"
+
     def enable_update_tags(self):
         self.tag_cllbcks = []
 
@@ -343,6 +345,11 @@ class TreeviewFactory():
         tree = self.req.get_tag_tree().get_basetree()
         tree.refresh_node('gtg-tags-all')
         tree.refresh_node('gtg-tags-none')
+
+        search_parent = self.req.get_tag(CoreConfig.SEARCH_TAG)
+        for search_tag in search_parent.get_children():
+            tree.refresh_node(search_tag)
+
         task = self.req.get_task(node_id)
         if task:
             for t in self.req.get_task(node_id).get_tags():
@@ -483,4 +490,5 @@ class TreeviewFactory():
         self.unactive_color = \
                         treeview.style.text[gtk.STATE_INSENSITIVE].to_string()
         treeview.set_sort_column('tag_id')
+        self.tags_view = treeview
         return treeview 

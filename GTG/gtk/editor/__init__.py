@@ -32,7 +32,6 @@ class GnomeConfig:
     MARK_UNDONE = _("Mark as not done")
     MARK_DISMISS = _("Dismiss")
     MARK_UNDISMISS = _("Undismiss")
-    KEEP_NOTE = _("Keep as Note")
     MAKE_TASK = _("Make a Task")
 
     MARK_DONE_TOOLTIP = _("Mark this task as done")

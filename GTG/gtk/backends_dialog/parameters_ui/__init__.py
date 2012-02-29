@@ -62,13 +62,13 @@ class ParametersUI(gtk.VBox):
                ("import-tags", self.UI_generator(ImportTagsUI, \
                             {"title": _("Import tags"), \
                              "anybox_text": _("All tags"), \
-                             "somebox_text": _("Just these tags"), \
+                             "somebox_text": _("Just these tags:"), \
                              "parameter_name": "import-tags"}) \
                ),\
                ("attached-tags", self.UI_generator(ImportTagsUI, \
                             {"title": _("Tags to sync"), \
                              "anybox_text": _("All tasks"), \
-                             "somebox_text": _("Tasks with these tags"), \
+                             "somebox_text": _("Tasks with these tags:"), \
                              "parameter_name": "attached-tags"}) \
                ),\
                ("path", self.UI_generator(PathUI)), \

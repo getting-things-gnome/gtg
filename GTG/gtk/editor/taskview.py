@@ -40,7 +40,10 @@ from GTG.gtk.editor import taskviewserial
 from GTG.tools      import openurl
 from GTG.tools      import urlregex
 
-separators = [' ', '.', ',', '/', '\n', '\t', '!', '?', ';', '\0']
+separators = [' ', ',', '\n', '\t', '!', '?', ';', '\0']
+#those separators are only separators if followed by a space. Else, they
+#are part of the word
+specials_separators = ['.','/']
 
 bullet1_ltr = '→'
 bullet1_rtl = '←'
@@ -671,14 +674,23 @@ class TaskView(gtk.TextView):
         char_start = start.copy()
         char_end   = start.copy()
         char_end.forward_char()
+        last_char = None
         
         # Iterate over characters of the line to get words
         while char_end.compare(end) <= 0:
             do_word_check = False
             my_char       = buff.get_text(char_start, char_end)
             if my_char not in separators :
+                last_char = my_char
                 word_end = char_end.copy()
+                #If a special case is at the end of the document
+                #we don't include it in the tag
+                if word_end.is_end() and last_char in specials_separators:
+                    word_end.backward_char()
             else:
+                #We remove the special case followed by a separator
+                if last_char in specials_separators:
+                    word_end.backward_char()
                 do_word_check = True
                 
             if char_end.compare(end) == 0:

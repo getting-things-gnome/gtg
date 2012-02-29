@@ -155,8 +155,6 @@ class PreferencesDialog:
         for attr, widget in widgets.iteritems():
             setattr(self, attr, self.builder.get_object(widget))
         # keep a reference to the parent task browser
-        #FIXME: this is not needed and should be removed
-#        self.tb = taskbrowser
         self.pengine = PluginEngine()
         #plugin config initiation, if never used
         if self.config.has_key("plugins"):

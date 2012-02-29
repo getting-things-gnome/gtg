@@ -228,10 +228,10 @@ class Manager(object):
     def ask_delete_tasks(self, tids):
         if not self.delete_dialog:
             self.delete_dialog = DeletionUI(self.req)
-        if self.delete_dialog.delete_tasks(tids):
-            for t in tids:
-                if t in self.opened_task:
-                    self.close_task(t)
+        finallist = self.delete_dialog.delete_tasks(tids)
+        for t in finallist:
+            if t.get_id() in self.opened_task:
+                self.close_task(t.get_id())
 
 ### URIS ###################################################################
 

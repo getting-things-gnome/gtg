@@ -18,50 +18,77 @@
 # -----------------------------------------------------------------------------
 
 #Functions to convert a Task object to an XML string and back
-import xml.dom.minidom
+import  xml.dom.minidom as minidom
 import xml.sax.saxutils as saxutils
-import datetime
+from  datetime import datetime
 
-from GTG.tools import cleanxml
-from GTG.tools import dates
+from GTG.tools       import cleanxml
+from GTG.tools.dates import Date
+
+
+def get_text(node):
+    return node.firstChild.nodeValue.strip()
+
+def read_node(xmlnode, name):
+    node_list =xmlnode.getElementsByTagName(name)
+    if len(node_list) > 0:
+        return get_text(node_list[0])
+    else:
+        return ""
+
 
 #Take an empty task, an XML node and return a Task.
-def task_from_xml(task,xmlnode) :
-    cur_task = task
-    cur_stat = "%s" %xmlnode.getAttribute("status")
-    uuid = "%s" %xmlnode.getAttribute("uuid")
-    cur_task.set_uuid(uuid)
-    donedate = cleanxml.readTextNode(xmlnode,"donedate")
-    cur_task.set_status(cur_stat,donedate=dates.strtodate(donedate))
-    #we will fill the task with its content
-    cur_task.set_title(cleanxml.readTextNode(xmlnode,"title"))
-    #the subtasks
-    sub_list = xmlnode.getElementsByTagName("subtask")
-    for s in sub_list :
-        sub_tid = s.childNodes[0].nodeValue
-        cur_task.add_child(sub_tid)
-    attr_list = xmlnode.getElementsByTagName("attribute")
-    for a in attr_list:
-        if len(a.childNodes):
-            content = a.childNodes[0].nodeValue
-        else:
-            content = ""
-        key = a.getAttribute("key")
-        namespace = a.getAttribute("namespace")
-        cur_task.set_attribute(key, content, namespace=namespace)
-    tasktext = xmlnode.getElementsByTagName("content")
-    if len(tasktext) > 0 :
-        if tasktext[0].firstChild :
-            tas = "<content>%s</content>" %tasktext[0].firstChild.nodeValue
-            content = xml.dom.minidom.parseString(tas)
-            cur_task.set_text(content.firstChild.toxml()) #pylint: disable-msg=E1103 
-    cur_task.set_due_date(dates.strtodate(cleanxml.readTextNode(xmlnode,"duedate")))
-    cur_task.set_start_date(dates.strtodate(cleanxml.readTextNode(xmlnode,"startdate")))
-    cur_tags = xmlnode.getAttribute("tags").replace(' ','').split(",")
-    if "" in cur_tags: cur_tags.remove("")
-    for tag in cur_tags: cur_task.tag_added(saxutils.unescape(tag))
+def task_from_xml(task, xmlnode) :
+    #print "********************************"
+    #print xmlnode.toprettyxml()
 
+    task.set_uuid(xmlnode.getAttribute("uuid"))
+    task.set_title(read_node(xmlnode, "title"))
+
+    status = xmlnode.getAttribute("status")
+    donedate = Date.parse(read_node(xmlnode, "donedate"))
+    task.set_status(status, donedate=donedate)
+
+    duedate = Date(read_node(xmlnode, "duedate"))
+    task.set_due_date(duedate)
+
+    startdate = Date(read_node(xmlnode,"startdate"))
+    task.set_start_date(startdate)
+
+    modified = read_node(xmlnode, "modified")
+    if modified != "":
+        modified = datetime.strptime(modified, "%Y-%m-%dT%H:%M:%S")
+        task.set_modified(modified)
+
+    tags = xmlnode.getAttribute("tags").replace(' ','')
+    tags = (tag for tag in tags.split(',') if tag.strip() != "")
+    for tag in tags:
+        #FIXME why unescape????
+        task.tag_added(saxutils.unescape(tag))
+
+    #FIXME why we need to convert that through an XML?
+    content = read_node(xmlnode, "content")
+    if content != "":
+        content = "<content>%s</content>" % content
+        content = minidom.parseString(content).firstChild.toxml()
+        task.set_text(content)
+
+    for subtask in xmlnode.getElementsByTagName("subtask"):
+        task.add_child(get_text(subtask))
+
+    for attr in xmlnode.getElementsByTagName("attribute"):
+        if len(attr.childNodes) > 0:
+            value = get_text(attr)
+        else:
+            value = ""
+        key = attr.getAttribute("key")
+        namespace = attr.getAttribute("namespace")
+        task.set_attribute(key, value, namespace=namespace)
+
+    # FIXME do we need remote task ids? I don't think so
+    # FIXME if so => rework them into a more usable structure!!! (like attributes)
     #REMOTE TASK IDS
+    '''
     remote_ids_list = xmlnode.getElementsByTagName("task-remote-ids")
     for remote_id in remote_ids_list:
         if remote_id.childNodes:
@@ -69,13 +96,11 @@ def task_from_xml(task,xmlnode) :
             backend_id = node.firstChild.nodeValue
             remote_task_id = node.childNodes[1].firstChild.nodeValue
             task.add_remote_id(backend_id, remote_task_id)
-    modified_string = cleanxml.readTextNode(xmlnode,"modified")
-    if modified_string:
-        modified_datetime = datetime.datetime.strptime(modified_string,\
-                                                    "%Y-%m-%dT%H:%M:%S")
-        cur_task.set_modified(modified_datetime)
-    return cur_task
+            '''
 
+    return task
+
+#FIXME maybe pretty XML should be enough for this...
 #Task as parameter the doc where to put the XML node
 def task_to_xml(doc,task) :
     t_xml = doc.createElement("task")
@@ -106,7 +131,7 @@ def task_to_xml(doc,task) :
     if tex :
         #We take the xml text and convert it to a string
         #but without the "<content />" 
-        element = xml.dom.minidom.parseString(tex)
+        element = minidom.parseString(tex)
         temp = element.firstChild.toxml().partition("<content>")[2] #pylint: disable-msg=E1103
         desc = temp.partition("</content>")[0]
         #t_xml.appendChild(element.firstChild)
@@ -124,6 +149,5 @@ def task_to_xml(doc,task) :
         task_element = doc.createElement('task-id')
         backend_element.appendChild(task_element)
         task_element.appendChild(doc.createTextNode(task_id))
-
 
     return t_xml

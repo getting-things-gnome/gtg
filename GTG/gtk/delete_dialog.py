@@ -58,7 +58,7 @@ class DeletionUI():
             self.tids_todelete = tids
         #We must at least have something to delete !
         if len(self.tids_todelete) > 0:
-            tasks = []
+            tasklist = []
             self.update_tags = []
             for tid in self.tids_todelete:
                 def recursive_list_tasks(task_list, root):
@@ -75,8 +75,9 @@ class DeletionUI():
                         for i in root.get_subtasks():
                             if i not in task_list:
                                 recursive_list_tasks(task_list, i)
+
                 task = self.req.get_task(tid)
-                recursive_list_tasks(tasks, task)
+                recursive_list_tasks(tasklist, task)
 
             # We fill the text and the buttons' labels according to the number 
             # of tasks to delete
@@ -85,7 +86,7 @@ class DeletionUI():
             cdlabel2 = self.builder.get_object("cd-label2")
             cdlabel3 = self.builder.get_object("cd-label3")
             cdlabel4 = self.builder.get_object("cd-label4")
-            singular = len(tasks)
+            singular = len(tasklist)
             label_text = ngettext("Deleting a task cannot be undone, "
                                   "and will delete the following task: ",
                                   "Deleting a task cannot be undone, "
@@ -108,11 +109,12 @@ class DeletionUI():
             #we don't want to end with just one task that doesn't fit the
             # screen and a line saying "And one more task", so we go a
             # little over our limit
-            missing_titles_count = len(tasks) - self.MAXIMUM_TIDS_TO_SHOW
+            missing_titles_count = len(tasklist) - self.MAXIMUM_TIDS_TO_SHOW
             if missing_titles_count >= 2:
-                tasks = tasks[: self.MAXIMUM_TIDS_TO_SHOW]
+                tasks = tasklist[: self.MAXIMUM_TIDS_TO_SHOW]
                 titles_suffix = _("\nAnd %d more tasks" % missing_titles_count)
             else:
+                tasks = tasklist
                 titles_suffix = ""
 
             titles = "".join("\n - " + task.get_title() for task in tasks)
@@ -123,7 +125,6 @@ class DeletionUI():
             cancel_button.grab_focus()
             delete_dialog.run()
             delete_dialog.hide()
-            #has the task been deleted ?
-            return len(self.tids_todelete) == 0
+            return tasklist
         else:
-            return False
+            return []

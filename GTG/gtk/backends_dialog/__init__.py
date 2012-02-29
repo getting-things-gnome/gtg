@@ -69,7 +69,6 @@ class BackendsDialog(object):
 
     def activate(self):
         '''Shows this window, refreshing the current view'''
-        self.config_panel.set_hidden(False)
         self.dialog.show_all()
         self.backends_tv.refresh()
         self.backends_tv.select_backend()
@@ -83,7 +82,6 @@ class BackendsDialog(object):
         @param data: same as widget, disregard the content
         '''
         self.dialog.hide()
-        self.config_panel.set_hidden(True)
         self.req.save_datastore()
 
 ########################################

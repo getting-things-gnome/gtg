@@ -14,12 +14,11 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from GTG.tools.dates import date, no_date
 from math import ceil
-
 import gtk
 import os
 
+from GTG.tools.dates import Date
 
 class pluginUrgencyColor:
 
@@ -57,20 +56,12 @@ class pluginUrgencyColor:
         node = self.req.get_task(node_id)
         sdate = node.get_start_date()
         ddate = node.get_due_date()
-        if (sdate != no_date != ddate):
+        if (sdate != Date.no_date() != ddate):
             dayspan = (ddate - sdate).days
-            redf = self._pref_data['reddays']
-            reddays = int(ceil(redf*dayspan/100))
             daysleft = ddate.days_left()
 
-            if daysleft == None \
-                    and ddate.__class__.__name__ != 'RealDate':
-                # FIXME: Offset should always yield the same type of
-                # instance whether the FuzzyDate is soon, later or now.
-                if isinstance(ddate.offset, int):
-                    daysleft = ddate.offset
-                else:
-                    daysleft = (ddate.offset - date.today()).days
+            redf = self._pref_data['reddays']
+            reddays = int(ceil(redf*dayspan/100))
             color = 0
             if daysleft <= dayspan:
                 color = 1
