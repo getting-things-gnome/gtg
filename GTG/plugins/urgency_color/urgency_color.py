@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (c) 2012 - XYZ <xyz@mail.com>
+# Copyright (c) 2012 - Wolter Hellmund <wolterh6@gmail.com>
 #
 # This program is free software: you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
