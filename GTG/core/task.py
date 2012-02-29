@@ -483,7 +483,7 @@ class Task(TreeNode):
         if self.get_status() == "Active":
             priority = "high"
         else:
-            #Tasks closed in the last 7 days are also VIP
+            #Tasks closed in the last 15 days are also VIP
             if self.get_closed_date().days_left() >= -15:
                 priority = "medium"
         return priority

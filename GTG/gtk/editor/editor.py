@@ -297,8 +297,9 @@ class TaskEditor:
                 abs_delay = abs(delay)
                 txt = ngettext("Completed %(days)d day early", "Completed %(days)d days early", abs_delay) % {'days': abs_delay}
         else:
-            result = self.task.get_days_left()
-            if result is None:
+            due_date = self.task.get_due_date()
+            result = due_date.days_left()
+            if due_date.is_fuzzy():
                 txt = ""
             elif result > 0:
                 txt = ngettext("Due tomorrow!", "%(days)d days left", result) % {'days': result}

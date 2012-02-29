@@ -106,9 +106,8 @@ class TreeviewFactory():
         
         if node.get_status() == Task.STA_ACTIVE:
             # we mark in bold tasks which are due today or as Now
-            due = node.get_due_date()
-            days_left = due.days_left()
-            if (days_left is not None and days_left <= 0) or due == Date.now():
+            days_left = node.get_days_left()
+            if days_left is not None and days_left <= 0:
                 str_format = "<b>%s</b>"
             if self._has_hidden_subtask(node):
                 str_format = "<span color='%s'>%s</span>"\

@@ -178,10 +178,10 @@ class Date(object):
 
     def days_left(self):
         """ Return the difference between the date and today in dates """
-        if self.is_fuzzy():
+        if self._fuzzy == NODATE:
             return None
         else:
-            return (self._real_date - datetime.date.today()).days
+            return (self._date() - datetime.date.today()).days
 
     @classmethod
     def today(cls):
