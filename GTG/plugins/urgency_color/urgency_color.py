@@ -175,7 +175,7 @@ class pluginUrgencyColor:
 
     def on_prefs_reset(self, widget=None, data=None):
         # Restore the default plugin settings
-        self._pref_data = self._pref_data_potential = self.DEFAULT_PREFS
+        self._pref_data = self._pref_data_potential = dict(self.DEFAULT_PREFS)
         self.prefs_update_widgets()
 
     def prefs_load(self):
@@ -183,7 +183,7 @@ class pluginUrgencyColor:
             self.PLUGIN_NAME,
             'preferences')
         if not data or not isinstance(data, dict):
-            self._pref_data = self.DEFAULT_PREFS
+            self._pref_data = dict(self.DEFAULT_PREFS)
         else:
             self._pref_data = data
 
