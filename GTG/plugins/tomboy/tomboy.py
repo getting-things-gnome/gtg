@@ -112,7 +112,6 @@ Please install it or disable the Tomboy/Gnote plugin in GTG"))
     def addButtonToToolbar(self, plugin_api):
         if not self.checkTomboyPresent():
             return
-        print "ADDING"
         tb_Taskbutton_image = gtk.Image()
         tb_Taskbutton_image_path = self.tomboy_icon_path
         tb_Taskbutton_pixbuf=gtk.gdk.\
@@ -123,7 +122,6 @@ Please install it or disable the Tomboy/Gnote plugin in GTG"))
         self.tb_Taskbutton.connect('clicked', self.onTbTaskButton,
                                    self.plugin_api)
         self.tb_Taskbutton.show_all()
-        print "ADDING!!!"
         self.plugin_api.add_toolbar_item(self.tb_Taskbutton)
 
 

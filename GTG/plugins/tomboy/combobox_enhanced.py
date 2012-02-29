@@ -65,6 +65,7 @@ def smartifyComboboxEntry(combobox, list_obj, callback):
         entry.set_completion(completionFromListStore(list_store))
         combobox.set_model(list_store)
         combobox.set_active(0)
+        entry.set_text(list_store[0][0])
     combobox.add(entry)
     combobox.connect('changed', setText, entry )
     #render the combo-box drop down menu
