@@ -250,7 +250,7 @@ class Date(object):
         for i, (english, local) in enumerate([
             ("Monday", _("Monday")),
             ("Tuesday", _("Tuesday")),
-            ("Wednesday", _("Wednesdy")),
+            ("Wednesday", _("Wednesday")),
             ("Thursday", _("Thursday")),
             ("Friday", _("Friday")),
             ("Saturday", _("Saturday")),

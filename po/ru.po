@@ -7,21 +7,943 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2011-08-17 12:40+0200\n"
-"PO-Revision-Date: 2011-12-23 04:00+0000\n"
-"Last-Translator: Nikita Putko <Unknown>\n"
+"POT-Creation-Date: 2012-02-15 10:46+0100\n"
+"PO-Revision-Date: 2012-03-04 04:26+0000\n"
+"Last-Translator: DmDr <cardioexp@gmail.com>\n"
 "Language-Team: Russian <ru@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Launchpad-Export-Date: 2011-12-24 05:56+0000\n"
-"X-Generator: Launchpad (build 14560)\n"
+"X-Launchpad-Export-Date: 2012-03-05 04:43+0000\n"
+"X-Generator: Launchpad (build 14900)\n"
 
-#: GTG/gtk/deletion.glade.h:1
-msgid "Confirm task deletion"
-msgstr "Подтвердите удаление задачи"
+#: GTG/plugins/notification_area/notification_area.py:120
+msgid "_View Main Window"
+msgstr "_Показать главное окно"
+
+#: GTG/plugins/notification_area/notification_area.py:130
+msgid "Add _New Task"
+msgstr "Добавить _новую задачу"
+
+#: GTG/plugins/export/export_templates/description_textual.py:18
+msgid "Text-only"
+msgstr "Только текст"
+
+#: GTG/plugins/export/export_templates/description_textual.py:19
+msgid "A template to create a simple text file with some tasks."
+msgstr "Шаблон текстового списка задач."
+
+#: GTG/plugins/export/export_templates/description_simple.py:18
+msgid "A simple Web page (nicely printable)"
+msgstr "Простая веб-страница (удобная печать)"
+
+#: GTG/plugins/export/export_templates/description_simple.py:19
+msgid ""
+"A template to create a simple HTML page with some tasks. It can be printed "
+"nicely."
+msgstr ""
+"Шаблон создания простой HTML страницы с несколькими задачами. Может быть "
+"красиво напечатан."
+
+#: GTG/plugins/export/export_templates/description_statusrpt.py:18
+msgid "Status report"
+msgstr "Отчет о состоянии"
+
+#: GTG/plugins/export/export_templates/description_statusrpt.py:19
+msgid "A template to create a compact text file listing only task titles."
+msgstr "Шаблон краткого списка заголовков задач."
+
+#: GTG/plugins/export/export_templates/description_pocketmod.py:18
+msgid "Foldable booklet (PDF)"
+msgstr "Складной буклет (PDF)"
+
+#: GTG/plugins/export/export_templates/description_pocketmod.py:19
+msgid ""
+"A template to create a <a href=\"http://www.pocketmod.com\">PocketMod</a>, "
+"which is a  small foldable booklet."
+msgstr ""
+"Шаблон <a href=\"http://www.pocketmod.com\">PocketMod</> является небольшим "
+"складным буклетом."
+
+#: GTG/plugins/export/export_templates/description_sexy.py:18
+msgid "A professional-looking HTML page"
+msgstr "Профессионально оформленная HTML страница"
+
+#: GTG/plugins/export/export_templates/description_sexy.py:19
+msgid ""
+"A template to create a HTML page with some tasks and tags. Tags colors are "
+"also displayed."
+msgstr ""
+"Шаблон простой HTML страницы с несколькими задачами. Метки будут цветными."
+
+#: GTG/plugins/export/export.py:114
+msgid "Template not found"
+msgstr "Шаблон не найден"
+
+#: GTG/plugins/export/export.py:121
+#, python-format
+msgid "Could not generate the document: %s"
+msgstr "Не удалось сформировать документ: %s"
+
+#: GTG/plugins/export/export.py:169
+msgid "Export the tasks currently listed"
+msgstr "Экспортировать перечисленные задачи"
+
+#: GTG/plugins/export/export.py:322
+msgid "Choose where to save your list"
+msgstr "Укажите, где сохранить ваш список"
+
+#: GTG/plugins/send_email/sendEmail.py:44
+msgid "Send via email"
+msgstr "Послать по почте"
+
+#: GTG/plugins/send_email/sendEmail.py:69
+#, python-format
+msgid "Status: %s"
+msgstr "Статус: %s"
+
+#: GTG/plugins/send_email/sendEmail.py:70
+#, python-format
+msgid ""
+"\n"
+"Tags: %s"
+msgstr ""
+"\n"
+"Метки: %s"
+
+#: GTG/plugins/send_email/sendEmail.py:71
+#, python-format
+msgid ""
+"\n"
+"Subtasks:\n"
+"%s"
+msgstr ""
+"\n"
+"Подзадачи: \n"
+"%s"
+
+#: GTG/plugins/send_email/sendEmail.py:73
+#, python-format
+msgid ""
+"\n"
+"Task content:\n"
+"%s"
+msgstr ""
+"\n"
+"Описание задачи\n"
+"%s"
+
+#: GTG/plugins/send_email/sendEmail.py:76
+#, python-format
+msgid "Task: %(task_title)s"
+msgstr "Задача: %(task_title)s"
+
+#: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:1
+msgid "<b>Location Determination Method</b>"
+msgstr "<b>Способ определения положения</b>"
+
+#: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:2
+msgid "<b>Proximity Factor</b>"
+msgstr "<b>Фактор близости</b>"
+
+#: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:3
+msgid ""
+"<small>Distance in kilometers from \n"
+"the current location.</small>"
+msgstr "<small>Расстояние в километрах от текущего расположения</small>"
+
+#: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:5
+msgid "Associate with existing tag"
+msgstr "Пометить существующей меткой"
+
+#: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:6
+msgid "Associate with new tag"
+msgstr "Пометить новой меткой"
+
+#: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:7
+msgid "Geolocalized-tasks Preferences"
+msgstr "Задачи привязаные к расположению"
+
+#: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:8
+msgid "Set the task's location"
+msgstr "Установить расположение задачи"
+
+#: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:9
+msgid "Use cellphone"
+msgstr "Использовать мобильный телефон"
+
+#: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:10
+msgid "Use gps"
+msgstr "Использовать GPS"
+
+#: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:11
+msgid "Use network"
+msgstr "Использовать сеть"
+
+#: GTG/plugins/hamster/hamster.py:154
+msgid "Start task in Hamster"
+msgstr "Начать задачу в Hamster"
+
+#: GTG/plugins/hamster/hamster.py:159
+msgid "Start in Hamster"
+msgstr "Начать в Hamster"
+
+#: GTG/plugins/hamster/hamster.py:161
+msgid "Start a new activity in Hamster Time"
+msgstr "Начать новое дело в Hamster Time"
+
+#: GTG/plugins/hamster/hamster.py:175
+msgid "Start a new activity in Hamster Time "
+msgstr "Начать новое дело в Hamster Time "
+
+#: GTG/plugins/tomboy/tomboy.py:79
+msgid ""
+"Tomboy/Gnote not found. Please install it or disable the Tomboy/Gnote plugin "
+"in GTG"
+msgstr ""
+"Tomboy/Gnote не найден. Пожалуйста, установите его или отключите модуль "
+"Tomboy/Gnote в GTG"
+
+#: GTG/plugins/tomboy/tomboy.py:122
+msgid "Add Tomboy note"
+msgstr "Добавить заметку Tomboy"
+
+#: GTG/plugins/tomboy/tomboy.py:196
+msgid ""
+" was found on the system, but it doesn't provide a dbus interface. the "
+"Tomboy/Gnote plugin will not work with it."
+msgstr ""
+" был найден в системе, однако он не предоставляет интерфейс dbus. Модуль "
+"Tomboy/Gnote с ним работать не будет."
+
+#: GTG/plugins/tomboy/tomboy.py:243
+msgid "That note does not exist!"
+msgstr "Заметка не существует!"
+
+#: GTG/plugins/tomboy/tomboy.py:248
+msgid "That note does not exist. Do you want to create a new one?"
+msgstr "Заметка не существует! Создать её?"
+
+#: GTG/plugins/tomboy/tomboy.py:276
+msgid "This Tomboy note does not exist anymore. Do you want to create it?"
+msgstr "Эта заметка больше не существует в Tomboy. Создать новую?"
+
+#: GTG/tests/test_dates.py:38 GTG/core/search.py:93 GTG/tools/dates.py:95
+#: GTG/tools/dates.py:137
+msgid "now"
+msgstr "сейчас"
+
+#: GTG/tests/test_dates.py:39 GTG/core/search.py:94 GTG/tools/dates.py:96
+#: GTG/tools/dates.py:139
+msgid "soon"
+msgstr "скоро"
+
+#: GTG/tests/test_dates.py:39 GTG/core/search.py:95 GTG/tools/dates.py:97
+#: GTG/tools/dates.py:141
+msgid "later"
+msgstr "позже"
+
+#: GTG/backends/backend_identica.py:54
+msgid "Identi.ca"
+msgstr "Identi.ca"
+
+#: GTG/backends/backend_identica.py:58
+msgid "Imports your identi.ca  messages into your GTG "
+msgstr "Импортирует ваши сообщения из identi.ca в GTG "
+
+#: GTG/backends/backend_gnote.py:42
+msgid "Gnote"
+msgstr "Gnote"
+
+#: GTG/backends/backend_gnote.py:46
+msgid ""
+"This backend can synchronize all or part of your Gnote notes in GTG. If you "
+"decide it would be handy to have one of your notes in your TODO list, just "
+"tag it with the tag you have chosen (you'll configure it later), and it will "
+"appear in GTG."
+msgstr ""
+
+#: GTG/backends/backend_rtm.py:54
+msgid "Remember The Milk"
+msgstr "Remember The Milk"
+
+#: GTG/backends/backend_rtm.py:58
+msgid ""
+"This backend synchronizes your tasks with the web service RememberTheMilk:\n"
+"\t\thttp://rememberthemilk.com\n"
+"\n"
+"Note: This product uses the Remember The Milk API but is not endorsed or "
+"certified by Remember The Milk"
+msgstr ""
+"Синхронизация задач с веб-сервисом RememberTheMilk:\n"
+"\t\thttp://rememberthemilk.com\n"
+"\n"
+"Внимание! Используется API сервиса Remember The Milk без одобрения или "
+"сертификации самим Remember The Milk"
+
+#: GTG/backends/backend_twitter.py:54
+msgid "Twitter"
+msgstr "Твиттер"
+
+#: GTG/backends/backend_twitter.py:58
+msgid "Imports your twitter  messages into your GTG "
+msgstr "Импортирует ваши сообщения из Твиттера в GTG "
+
+#: GTG/backends/backend_tomboy.py:41
+msgid "Tomboy"
+msgstr "Tomboy"
+
+#: GTG/backends/backend_tomboy.py:45
+msgid ""
+"This backend can synchronize all or part of your Tomboy notes in GTG. If you "
+"decide it would be handy to have one of your notes in your TODO list, just "
+"tag it with the tag you have chosen (you'll configure it later), and it will "
+"appear in GTG."
+msgstr ""
+"Синхронизация всех или части заметок Tomboy с GTG. Пометьте заметки Tomboy, "
+"котороые нужно синхронизировать с GTG, какой-нибудь меткой (её настроим "
+"позже), и они будут видны в GTG."
+
+#: GTG/backends/backend_mantis.py:42
+msgid "MantisBT"
+msgstr "MantisBT"
+
+#: GTG/backends/backend_mantis.py:46
+msgid ""
+"This backend lets you import the issues found on mantis using a "
+"prestablished filter called 'gtg'. As the issue state changes in Mantis, the "
+"GTG task is  updated.\n"
+"Please note that this is a read only backend, which means that if you open "
+"one of the imported tasks and  change one of the:\n"
+"  - title\n"
+"  - description\n"
+"  - tags\n"
+"Your changes <b>will</b> be reverted when the associated issue is modified. "
+"Apart from those, you are free to set  any other field (start/due dates, "
+"subtasks...): your  changes will be preserved. This is useful to add  "
+"personal annotations to issue"
+msgstr ""
+
+#: GTG/backends/backend_mantis.py:224
+msgid "Iss."
+msgstr ""
+
+#: GTG/backends/backend_mantis.py:244 GTG/backends/backend_launchpad.py:324
+msgid "Reported by: "
+msgstr "Сообщил(а): "
+
+#: GTG/backends/backend_mantis.py:245
+msgid "Link to issue: "
+msgstr ""
+
+#: GTG/backends/backend_evolution.py:69
+msgid "Evolution tasks"
+msgstr "Задачи в Evolution"
+
+#: GTG/backends/backend_evolution.py:73
+msgid "Lets you synchronize your GTG tasks with Evolution tasks"
+msgstr "Синхронизирует ваши задачи в GTG и Evolution"
+
+#: GTG/backends/backend_localfile.py:61
+msgid "Local File"
+msgstr "Локальный файл"
+
+#: GTG/backends/backend_localfile.py:66
+msgid "Your tasks are saved in a text file (XML format). "
+msgstr "Ваши задачи сохранены в текстовом файле формата XML. "
+
+#: GTG/backends/backend_launchpad.py:53
+msgid "Launchpad"
+msgstr "Launchpad"
+
+#: GTG/backends/backend_launchpad.py:57
+msgid ""
+"This backend lets you import the bugs assigned to you (or someone else) on "
+"Launchpad in GTG. As the bug state changes in Launchpad, the GTG task is  "
+"updated.\n"
+"Please note that this is a read only backend, which means that if you open "
+"one of the imported tasks and  change one of the:\n"
+"  - title\n"
+"  - description\n"
+"  - tags\n"
+"Your changes <b>will</b> be reverted when the associated bug is modified. "
+"Apart from those, you are free to set  any other field (start/due dates, "
+"subtasks...): your  changes will be preserved. This is useful to add  "
+"personal annotations to bug"
+msgstr ""
+
+#: GTG/backends/backend_launchpad.py:244
+msgid "Bug"
+msgstr "Ошибка"
+
+#: GTG/backends/backend_launchpad.py:329
+msgid "Link to bug: "
+msgstr "Ссылка на ошибку: "
+
+#: GTG/backends/rtm/rtm.py:57
+msgid "Invalid state"
+msgstr "Недопустимое состояние"
+
+#: GTG/core/plugins/__init__.py:33
+msgid "Everything necessary to run this plugin is available."
+msgstr "Всё необходимое для запуска этого расширения имеется."
+
+#: GTG/core/plugins/__init__.py:34
+msgid "The plugin can not be loaded"
+msgstr "Модуль не может быть загружен"
+
+#: GTG/core/plugins/__init__.py:35
+msgid "Some python modules are missing"
+msgstr "Отсутствуют требуемые модули python"
+
+#: GTG/core/plugins/__init__.py:36
+msgid "Please install the following python modules:"
+msgstr "Пожалуйста, установите следующие модули python:"
+
+#: GTG/core/plugins/__init__.py:38
+msgid "Some remote dbus objects are missing."
+msgstr "Отсутствуют отдельные удаленные объекты dbus."
+
+#: GTG/core/plugins/__init__.py:39
+msgid "Please start the following applications:"
+msgstr "Пожалуйста, запустите следующие приложения:"
+
+#: GTG/core/plugins/__init__.py:41
+msgid "Some modules and remote dbus objects are missing."
+msgstr "Отсутствуют некоторые модули и удаленные объекты dbus."
+
+#: GTG/core/plugins/__init__.py:42
+msgid "Please install or start the following components:"
+msgstr "Пожалуйста, установите или запустите следующие приложения:"
+
+#: GTG/core/plugins/__init__.py:44
+msgid "Unknown error while loading the plugin."
+msgstr "Неизвестная ошибка при загрузке модуля."
+
+#: GTG/core/plugins/__init__.py:45
+msgid "Very helpful message, isn't it? Please report a bug."
+msgstr "Не правда ли, очень полезное сообщение? Пожалуйста, сообщите о баге."
+
+#: GTG/core/firstrun_tasks.py:10
+msgid "Getting started with GTG"
+msgstr "Начало работы с GTG"
+
+#: GTG/core/firstrun_tasks.py:11
+msgid ""
+"Welcome to Getting Things Gnome!, your new task manager.\n"
+"\n"
+"In GTG, everything is a task. From building a bridge over the Pacific Ocean "
+"to changing a light bulb or organizing a party. When you edit a task, it is "
+"automatically saved.\n"
+"\n"
+"Once a task is done, you can push the &quot;Mark as done&quot; button. If "
+"the task is not relevant any-more, simply press &quot;Dismiss&quot;.\n"
+"\n"
+"A task might be composed of multiple subtasks that appear as links in the "
+"description. Simply click on the following link:"
+msgstr ""
+"Добро пожаловать в Getting Things Gnome!, ваш новый менеджер задач.\n"
+"\n"
+"В GTG всё есть задача. От постройки моста через Тихий Океан до смены "
+"лампочки или организации вечеринки. Когда вы редактируете задачу, она сразу "
+"же сохраняется.\n"
+"\n"
+"Когда задача выполнена, вы можете нажать кнопку \"Отметить выполнение\". "
+"Если задача более неактуальна, просто нажмите \"Отменить выполнение\".\n"
+"\n"
+"Задача может состоять из нескольких подзадач, которые видны как ссылки в "
+"описании. Просто нажмите на следующую ссылку:"
+
+#: GTG/core/firstrun_tasks.py:19
+msgid ""
+"Once you've read the above subtask, mark it as Done. If you don't want to do "
+"the task, mark it as dismissed. Done and Dismissed tasks are kept in the "
+"closed tasks pane, hidden by default but you can easily enable it in the "
+"View menu.\n"
+"\n"
+"If you choose to close this current task, subtasks will be automatically "
+"closed too. We indeed consider that, if you achieve a given task, you don't "
+"need to do the subtask anymore.\n"
+"Other stuff you should read:"
+msgstr ""
+"Как только вы ознакомитесь с вышеописанной подзадачей, отметьте ее "
+"выполнение. Если вы не намерены выполнять задачу, отмените ее. Выполненные и "
+"отмененные задачи хранятся на панели выполненных задач, которая по умолчанию "
+"скрыта. Однако в любой момент можно включить ее в меню Вид.\n"
+"\n"
+"Если вы закроете (то есть отметите выполненной или отмените выполнение) "
+"текущую задачу, подзадачи также будут закрыты. Действительно, можно "
+"посчитать, что, если вы выполнили данную задачу, вам не надо больше "
+"выполнять её подзадачи."
+
+#: GTG/core/firstrun_tasks.py:28
+msgid ""
+"We hope that you will appreciate GTG. Please send us bug reports and ideas "
+"for improvement using:\n"
+"    https://bugs.launchpad.net/gtg\n"
+"\n"
+"Thank you for trying out GTG :-)"
+msgstr ""
+"Мы надеемся, вам понравится GTG. Пожалуйста, присылайте нам сообщения об "
+"ошибках и идеи по улучшению:\n"
+"    https://bugs.launchpad.net/gtg\n"
+"\n"
+"Благодарим за использование GTG :-)"
+
+#: GTG/core/firstrun_tasks.py:36
+msgid "Learn how to use subtasks"
+msgstr "Научиться пользоваться подзадачами"
+
+#: GTG/core/firstrun_tasks.py:37
+msgid ""
+"In the task description (this window), if you begin a line with &quot;-"
+"&quot;, it will be considered as a &quot;subtask&quot;, something that needs "
+"to be done in order to accomplish your task. Just try to write &quot;- test "
+"subtask&quot; on the next line and press enter.\n"
+"\n"
+"You can also use the &quot;insert subtask&quot; button.\n"
+"\n"
+"Tasks and subtasks can be re-organized by drag-n-drop in the tasks list.\n"
+"\n"
+"Some concepts come with subtasks: for example, a subtask's due date can "
+"never be after its parent's due date.\n"
+"\n"
+"Also, marking a parent as done will mark all the subtasks as done."
+msgstr ""
+"В описании задачи (этом окне) строка, начинающаяся с &quot;-&quot; создает "
+"подзадачу, нечто, что необходимо сделать для выполнения текущей задачи. "
+"Просто попробуйте написать &quot;- проверка подзадач&quot; на следующей "
+"строке и нажмите ввод.\n"
+"\n"
+"Также вы можете использовать кнопку инструментальной панели &quot;Добавить "
+"подзадачу&quot;.\n"
+"\n"
+"Задачи и подзадачи можно организовывать по-разному, просто  перетаскивая их "
+"в списке.\n"
+"\n"
+"С подзадачами связаны некоторые правила, к примеру, дата окончания "
+"выполнения подзадачи не может быть позже даты выполнения "
+"&quot;родительской&quot; задачи.\n"
+"\n"
+"Также, выполнение родительской задачи отметит выполнение всех подзадач."
+
+#: GTG/core/firstrun_tasks.py:50
+msgid "Learn how to use tags"
+msgstr "Научиться использовать метки"
+
+#: GTG/core/firstrun_tasks.py:51
+msgid ""
+"A tag is a simple word that begins with &quot;@&quot;.\n"
+"\n"
+"Try to type a word beginning with @ here:\n"
+"\n"
+"It becomes yellow, it's a tag.\n"
+"\n"
+"Tags are useful to sort your tasks. In the view menu, you can enable a "
+"sidebar which displays all the tags you are using so you can easily see "
+"tasks assigned to a given tag. There's no limit to the number of tags a task "
+"can have.\n"
+"\n"
+"You can drag-n-drop a tag onto another to create \"subtags\". As an example, "
+"if you drag the tag @to_pay onto the tag @money, every task tagged with "
+"@to_pay will also appear in the view of @money (but the @money tag is not "
+"added to the task).\n"
+"\n"
+"If you right click on a tag in the sidebar you can also set its color. It "
+"will allow you to have a more colorful list of tasks, if you want it that "
+"way.\n"
+"\n"
+"A new tag is only added to the current task. There's no recursion and the "
+"tag is not applied to subtasks. But when you create a new subtask, this "
+"subtask will inherit the tags of its parent as a good primary default (it "
+"will also be the case if you add a tag to a parent just after creating a "
+"subtask). Of course, you can modify at any time the tags of this particular "
+"subtask. It will never be changed by the parent."
+msgstr ""
+"Метка - это просто слово, начинающееся с \"@\".\n"
+"\n"
+"Попробуйте ввести слово, начав его с @, здесь:\n"
+"\n"
+"Оно станет жёлтым, это метка\n"
+"\n"
+"Метки полезны для сортировки ваших задач. В меню Вид вы можете "
+"активизировать Панель меток, на которой отображены все используемые вами "
+"метки, так что вы можете с легкостью видеть задачи, назначенные заданной "
+"метке. Число меток, которые может иметь задача, неограничено.\n"
+"\n"
+"Вы можете перетащить одну метку на другую для создания их иерархии. "
+"Например, если вы перетащите метку @to_pay на метку @money, каждая задача с "
+"меткой @to_pay также появится в списке задач с меткой @money (но при этом "
+"сама метка @money добавлена в задачу не будет).\n"
+"\n"
+"При щелчке правой кнопкой на метке в боковой панели, вы также выбрать ее "
+"цвет. Это позволит вам сделать список задач более наглядным.\n"
+"\n"
+"Новая метка добавляется только к текущей задаче. Рекурсии тут нет и метка не "
+"применяется к имеющимся подзадачам. Однако, когда вы создаете новую "
+"подзадачу, она по умолчанию унаследует метки родительской задачи (это "
+"произойдет также в случае, если вы добавите метку к родительской задаче "
+"после создания подзадачи). Конечно, вы в любой момент можете изменить метки "
+"данной конкретной подзадачи. Они никогда не изменятся родительской задачей."
+
+#: GTG/core/firstrun_tasks.py:68
+msgid "Learn how to use the Workview"
+msgstr "Научиться использовать Рабочий план"
+
+#: GTG/core/firstrun_tasks.py:69
+msgid ""
+"If you press the &quot;Workview&quot; button, only actionable tasks will be "
+"displayed.\n"
+"\n"
+"What is an actionable task? It's a task you can do directly, right now.\n"
+"\n"
+"It's a task that is already &quot;start-able&quot;, i.e. the start date is "
+"already over.\n"
+"\n"
+"It's a task that doesn't have open subtasks, i.e. you can do the task itself "
+"directly.\n"
+"\n"
+"Thus, the workview will only show you tasks you should do right now.\n"
+"\n"
+"If you use tags, you can right click on a tag in the sidebar and choose to "
+"hide tasks assigned to this particular tag in the workview. It's very useful "
+"if you have a tag like &quot;someday&quot; that you use for tasks you would "
+"like to do but are not particularly urgent."
+msgstr ""
+"Если вы нажмёте кнопку &quot;Рабочий план&quot;, будут показаны только "
+"активные задачи.\n"
+"\n"
+"Что такое активные задачи? Это задачи, выполнение которых возможно "
+"непосредственно сейчас.\n"
+"\n"
+"Это задача, которая уже началась; то есть, дата начала исполнения которой "
+"уже наступила.\n"
+"\n"
+"Это задача не имеет открытых подзадач. То есть,  вы можете работать "
+"непосредственно по этой задаче.\n"
+"\n"
+"Таким образом, в списоке задач показывается только те задачи, которыми вы "
+"должны заниматься прямо сейчас.\n"
+"\n"
+"При использовании меток, вы можете щелкнуть правой кнопкой мыши по метке в "
+"боковой панели и выбрать скрытие задач, назначенных данной конкретной метке, "
+"в рабочем плане. Это очень полезно в случае, если у вас есть метка вроде "
+"&quot;когда-нибудь&quot;, используемую для задач, которые вы хотели бы "
+"выполнить, но не очень скоро."
+
+#: GTG/core/firstrun_tasks.py:84
+msgid "Learn how to use Plugins"
+msgstr "Получить информацию об использовании расширений"
+
+#: GTG/core/firstrun_tasks.py:85
+msgid ""
+"GTG has the ability to add plugins to extend it's core functionality.\n"
+"\n"
+"Some examples of the current plugins are Syncing with Remember the Milk and "
+"Evolution, Tomboy/Gnote integration and Geolocalized Tasks.\n"
+"You can find the Plugin Manager by selecting Edit in the Menu Bar, then "
+"clicking Preferences. You will then see a tab labeled Plugins."
+msgstr ""
+"GTG поддерживает расширения для добавления новых возможностей.\n"
+"\n"
+"Вот некоторые примеры расширений для GTG: модуль синхронизации с Remember "
+"the Milk и Evolution, интеграция в Tomboy/Gnote и Geolocalized Tasks.\n"
+"Менеджер расширений находится в меню Редактировать, в разделе Настройки, "
+"закладка Расширения."
+
+#: GTG/core/firstrun_tasks.py:94
+msgid "Reporting bugs"
+msgstr "Сообщайте об ошибках"
+
+#: GTG/core/firstrun_tasks.py:95
+msgid ""
+"GTG is still very alpha software. We like it and use it everyday but you "
+"will encounter some bugs.\n"
+"\n"
+"Please, report them on our Launchpad page:\n"
+"https://bugs.launchpad.net/gtg\n"
+"\n"
+"We need you to make this software better. Any contribution, any idea is "
+"welcome.\n"
+"\n"
+"If you have some trouble with GTG, we might be able to help you or to solve "
+"your problem really quickly."
+msgstr ""
+"Программа GTG всё ещё находится в стадии альфа-версии. Нам она нравится и мы "
+"постоянно используем её, но вы можете столкнуться с некоторыми ошибками в её "
+"работе.\n"
+"\n"
+"Сообщите о них, пожалуйста, по этому адресу:\n"
+"https://bugs.launchpad.net/gtg\n"
+"\n"
+"Нам нужна ваша помощь, чтобы сделать эту программу ещё лучше. Мы "
+"приветствуем любые отзывы и идеи!\n"
+"\n"
+"Если использование GTG вызывает у вас какие-либо затруднения, возможно мы "
+"сможем помочь вам решить проблему очень быстро."
+
+#: GTG/core/firstrun_tasks.py:108
+msgid "Learn how to use the QuickAdd Entry"
+msgstr "Помощь по использованию строки быстрого добавления задачи"
+
+#: GTG/core/firstrun_tasks.py:109
+msgid ""
+"The quickadd entry is the quickest way to create a new task. You can show or "
+"hide it in the View menu.\n"
+"\n"
+"For adding a task you just have to type its title in the entry and press "
+"return. The task will be created and selected in the task browser. If a tag "
+"is selected in the tag panel, this tag is applied to the task you create.\n"
+"\n"
+"You can also create a task with the attributes \"tags\", \"due\", and "
+"\"defer\" in the quickadd entry. The syntax for these attributes is:\n"
+"\n"
+"tags:tag1,tag2,tag3\n"
+" - This way you can apply as many tags as you wish using comma as separator\n"
+"\n"
+"due:date\n"
+"defer:date\n"
+" - This way you can apply a due date or a defer date. date can be yyyy-mm-dd "
+"(for example 2009-04-01) or yyyymmdd (20090401) or mmdd (0401, in this case "
+"the year is implicitly the current one) or today or tomorrow or a weekday "
+"name (due:monday means due next Monday)\n"
+"\n"
+"Attributes which are added in this way apply but do not appear in the "
+"title.\n"
+"\n"
+"If a word begins with @, it is interpreted as a tag."
+msgstr ""
+
+#: GTG/core/search.py:86
+msgid "not"
+msgstr "нет"
+
+#: GTG/core/search.py:87
+msgid "or"
+msgstr "или"
+
+#: GTG/core/search.py:88
+msgid "after"
+msgstr "после"
+
+#: GTG/core/search.py:89
+msgid "before"
+msgstr "до"
+
+#: GTG/core/search.py:90 GTG/tools/dates.py:192
+msgid "today"
+msgstr "сегодня"
+
+#: GTG/core/search.py:91 GTG/tools/dates.py:193
+msgid "tomorrow"
+msgstr "завтра"
+
+#: GTG/core/search.py:92
+msgid "nodate"
+msgstr "без даты"
+
+#: GTG/core/task.py:60
+msgid "My new task"
+msgstr "Моя новая задача"
+
+#: GTG/core/task.py:169
+msgid "tags"
+msgstr "метки"
+
+#: GTG/core/task.py:169
+msgid "tag"
+msgstr "метка"
+
+#: GTG/core/task.py:175
+msgid "defer"
+msgstr "отложить"
+
+#: GTG/core/task.py:180
+msgid "due"
+msgstr "до"
+
+#: GTG/core/treefactory.py:80
+#: GTG/gtk/backends_dialog/parameters_ui/__init__.py:70
+msgid "All tasks"
+msgstr "Все задачи"
+
+#: GTG/core/treefactory.py:91
+msgid "Tasks with no tags"
+msgstr "Задачи без меток"
+
+#: GTG/core/treefactory.py:103 GTG/gtk/browser/browser.py:1665
+msgid "Search"
+msgstr "Искать"
+
+#: GTG/tools/dates.py:50
+msgid "Today"
+msgstr "Сегодня"
+
+#: GTG/tools/dates.py:53
+#, python-format
+msgid "Yesterday"
+msgid_plural "%(days)d days ago"
+msgstr[0] "Вчера"
+msgstr[1] "%(days)d дня назад"
+msgstr[2] "%(days)d дней назад"
+
+#: GTG/tools/dates.py:56
+#, python-format
+msgid "Tomorrow"
+msgid_plural "In %(days)d days"
+msgstr[0] "В течение %(days)d дня"
+msgstr[1] "В течение %(days)d дней"
+msgstr[2] "В течение %(days)d дней"
+
+#: GTG/tools/dates.py:194
+msgid "next week"
+msgstr "следующая неделя"
+
+#: GTG/tools/dates.py:195
+msgid "next month"
+msgstr "следующй месяц"
+
+#: GTG/tools/dates.py:196
+msgid "next year"
+msgstr "следующий год"
+
+#: GTG/gtg.py:84
+msgid "gtg is already running!"
+msgstr "gtg уже запущена!"
+
+#: GTG/gtk/backends_dialog/parameters_ui/pathui.py:52
+msgid "Filename:"
+msgstr "Имя файла:"
+
+#: GTG/gtk/backends_dialog/parameters_ui/__init__.py:63
+msgid "Import tags"
+msgstr "Импорт меток"
+
+#: GTG/gtk/backends_dialog/parameters_ui/__init__.py:64
+msgid "All tags"
+msgstr "Все метки"
+
+#: GTG/gtk/backends_dialog/parameters_ui/__init__.py:65
+msgid "Just these tags:"
+msgstr "Только с этими метками:"
+
+#: GTG/gtk/backends_dialog/parameters_ui/__init__.py:69
+msgid "Tags to sync"
+msgstr "Метки для синхронизации"
+
+#: GTG/gtk/backends_dialog/parameters_ui/__init__.py:71
+msgid "Tasks with these tags:"
+msgstr "Задачи с этими метками:"
+
+#: GTG/gtk/backends_dialog/parameters_ui/__init__.py:76
+msgid "Username"
+msgstr "Пользователь"
+
+#: GTG/gtk/backends_dialog/parameters_ui/__init__.py:82
+msgid "Service URL"
+msgstr "URL службы"
+
+#: GTG/gtk/backends_dialog/parameters_ui/__init__.py:86
+msgid "Import tasks from @ replies "
+msgstr "Импортировать задачи из ответов почты "
+
+#: GTG/gtk/backends_dialog/parameters_ui/__init__.py:91
+msgid "Import tasks from direct messages"
+msgstr "Импортировать задачи из сообщений"
+
+#: GTG/gtk/backends_dialog/parameters_ui/__init__.py:95
+msgid "Import tasks from your tweets"
+msgstr "Импортировать метки из Ваших твитов"
+
+#: GTG/gtk/backends_dialog/parameters_ui/__init__.py:99
+msgid "Tag your GTG tasks with the bug tags"
+msgstr "Присвоить вашим задачам из GTG метки ошибок"
+
+#: GTG/gtk/backends_dialog/parameters_ui/__init__.py:103
+msgid "Tag your GTG tasks with the project targeted by the bug"
+msgstr ""
+
+#: GTG/gtk/backends_dialog/parameters_ui/passwordui.py:50
+msgid "Password:"
+msgstr "Пароль:"
+
+#: GTG/gtk/backends_dialog/parameters_ui/periodui.py:51
+msgid "Check for new tasks every"
+msgstr "Проверять новые задачи каждые"
+
+#: GTG/gtk/backends_dialog/parameters_ui/periodui.py:96
+msgid " minute"
+msgid_plural " minutes"
+msgstr[0] " минуту"
+msgstr[1] " минуты"
+msgstr[2] " минут"
+
+#: GTG/gtk/backends_dialog/addpanel.py:75
+msgid "Select a backend:"
+msgstr "Выберите хранилище"
+
+#: GTG/gtk/backends_dialog/addpanel.py:179
+msgid "Syncing is <span color=\"red\">disabled</span>"
+msgstr "Синхронизация <span color=\"red\">запрещена</span>"
+
+#: GTG/gtk/backends_dialog/addpanel.py:185
+msgid "Author"
+msgid_plural "Authors"
+msgstr[0] "Автор"
+msgstr[1] "Авторы"
+msgstr[2] "Авторы"
+
+#: GTG/gtk/backends_dialog/__init__.py:287
+#, python-format
+msgid "Do you really want to remove the backend '%s'?"
+msgstr "Вы действительно хотите отключить это хранилище: '%s'?"
+
+#: GTG/gtk/backends_dialog/configurepanel.py:162
+msgid "Ready to start syncing"
+msgstr "К синхронизации все готово"
+
+#: GTG/gtk/backends_dialog/configurepanel.py:164
+#, python-format
+msgid "Syncing your only task"
+msgid_plural "Syncing all %d tasks"
+msgstr[0] "Синхронизировать только задачу"
+msgstr[1] "Синхронизировать все %d задачи"
+msgstr[2] "Синхронизировать все %d задач"
+
+#: GTG/gtk/backends_dialog/configurepanel.py:169
+#, python-format
+msgid "There's no task tagged %s"
+msgstr "Нет задач с меткой %s"
+
+#: GTG/gtk/backends_dialog/configurepanel.py:171
+#, python-format
+msgid "Syncing a task tagged %s"
+msgid_plural "Syncing %d tasks tagged %s"
+msgstr[0] "Синхронизировать %d задачу с метками %s"
+msgstr[1] "Синхронизировать %d задачи с метками %s"
+msgstr[2] "Синхронизировать %d задач с метками %s"
+
+#: GTG/gtk/backends_dialog/configurepanel.py:182
+msgid "Disable syncing"
+msgstr "Запретить синхронизацию"
+
+#: GTG/gtk/backends_dialog/configurepanel.py:184
+msgid "Enable syncing"
+msgstr "Разрешить синхронизацию"
+
+#: GTG/gtk/backends_dialog/configurepanel.py:192
+msgid "This is the default backend"
+msgstr "Это - хранилище по умолчанию"
+
+#: GTG/gtk/backends_dialog/configurepanel.py:195
+msgid "Syncing is enabled."
+msgstr "Синхронизация разрешена."
+
+#: GTG/gtk/backends_dialog/configurepanel.py:197
+msgid "Syncing is <span color=\"red\">disabled</span>."
+msgstr "Синхронизация <span color=\"red\">запрещена</span>."
 
 #: GTG/gtk/preferences.glade.h:1
 msgid "<b>Dependencies</b>"
@@ -75,47 +997,37 @@ msgstr "Запускать Getting Things GNOME! при каждом входе 
 msgid "_About Plugin"
 msgstr "_О модуле"
 
-#: GTG/gtk/preferences.py:38
-msgid "Click on a plugin to get a description here."
-msgstr "Выберите плагин чтобы посмотреть описание."
-
-#: GTG/gtk/delete_dialog.py:63
+#: GTG/gtk/delete_dialog.py:90
 msgid ""
-"Deleting a task cannot be undone, and will delete the following tasks: "
-msgid_plural ""
 "Deleting a task cannot be undone, and will delete the following task: "
-msgstr[0] ""
-"Это действие не может быть отменено и повлечёт за собой удаление следующей "
-"задач: "
-msgstr[1] ""
-"Это действие не может быть отменено и повлечёт за собой удаление следующих "
-"задач: "
-msgstr[2] ""
-"Это действие не может быть отменено и повлечёт за собой удаление следующих "
-"задач: "
+msgid_plural ""
+"Deleting a task cannot be undone, and will delete the following tasks: "
+msgstr[0] "Удаление задачи нельзя отменить! Будет удалена и задача: "
+msgstr[1] "Удаление задачи нельзя отменить! Будут удалены и другие задачи: "
+msgstr[2] "Удаление задачи нельзя отменить! Будут удалены и другие задачи: "
 
-#: GTG/gtk/delete_dialog.py:68
-msgid "Are you sure you want to delete these tasks?"
-msgid_plural "Are you sure you want to delete this task?"
-msgstr[0] "Вы точно хотите удалить эту задачу?"
-msgstr[1] "Вы точно хотите удалить эти задачи?"
-msgstr[2] "Вы точно хотите удалить эти задачи?"
+#: GTG/gtk/delete_dialog.py:95
+msgid "Are you sure you want to delete this task?"
+msgid_plural "Are you sure you want to delete these tasks?"
+msgstr[0] "Вы уверены, что хотите удалить эту задачу?"
+msgstr[1] "Вы уверены, что хотите удалить эти задачи?"
+msgstr[2] "Вы уверены, что хотите удалить эти задачи?"
 
-#: GTG/gtk/delete_dialog.py:74
-msgid "Keep selected tasks"
-msgid_plural "Keep selected task"
-msgstr[0] "Сохранить выбранную задачу"
-msgstr[1] "Сохранить выбранные задачи"
-msgstr[2] "Сохранить выбранные задачи"
+#: GTG/gtk/delete_dialog.py:101
+msgid "Keep selected task"
+msgid_plural "Keep selected tasks"
+msgstr[0] "Оставить эту задачу"
+msgstr[1] "Оставить эти задачи"
+msgstr[2] "Оставить эти задачи"
 
-#: GTG/gtk/delete_dialog.py:77
-msgid "Permanently remove tasks"
-msgid_plural "Permanently remove task"
-msgstr[0] "Окончательно удалить задачу"
-msgstr[1] "Окончательно удалить задачи"
-msgstr[2] "Окончательно удалить задачи"
+#: GTG/gtk/delete_dialog.py:104
+msgid "Permanently remove task"
+msgid_plural "Permanently remove tasks"
+msgstr[0] "Удалить задачу навсегда"
+msgstr[1] "Удалить задачи навсегда"
+msgstr[2] "Удалить задачи навсегда"
 
-#: GTG/gtk/delete_dialog.py:108
+#: GTG/gtk/delete_dialog.py:115
 #, python-format
 msgid ""
 "\n"
@@ -124,310 +1036,154 @@ msgstr ""
 "\n"
 "И еще %d задач"
 
-#: GTG/gtk/backends_dialog/parameters_ui/passwordui.py:50
-msgid "Password:"
-msgstr "Пароль:"
+#: GTG/gtk/preferences.py:38
+msgid "Click on a plugin to get a description here."
+msgstr "Выберите плагин чтобы посмотреть описание."
 
-#: GTG/gtk/backends_dialog/parameters_ui/pathui.py:52
-msgid "Filename:"
-msgstr "Имя файла:"
+#: GTG/gtk/browser/custominfobar.py:36
+#, python-format
+msgid ""
+"The <b>%s</b> backend cannot login with the supplied authentication data and "
+"has been disabled. To retry the login, re-enable the backend."
+msgstr ""
+"Вход в хранилище <b>%s</b> не удался: данные для аутентификации не верны. "
+"Для новой попытки входа отключите и вновь включите это хранилище."
 
-#: GTG/gtk/backends_dialog/parameters_ui/__init__.py:63
-msgid "Import tags"
-msgstr "Импорт меток"
+#: GTG/gtk/browser/custominfobar.py:40
+#, python-format
+msgid "Due to a network problem, I cannot contact the <b>%s</b> backend."
+msgstr "Из-за проблем с сетью доступ к хранилищу <b>%s</b> не возможнен."
 
-#: GTG/gtk/backends_dialog/parameters_ui/__init__.py:64
-msgid "All tags"
-msgstr "Все метки"
-
-#: GTG/gtk/backends_dialog/parameters_ui/__init__.py:65
-msgid "Just these tags"
-msgstr "Только эти метки"
-
-#: GTG/gtk/backends_dialog/parameters_ui/__init__.py:69
-msgid "Tags to sync"
-msgstr "Метки для синхронизации"
-
-#: GTG/gtk/backends_dialog/parameters_ui/__init__.py:70
-#: GTG/core/treefactory.py:79
-msgid "All tasks"
-msgstr "Все задачи"
-
-#: GTG/gtk/backends_dialog/parameters_ui/__init__.py:71
-msgid "Tasks with these tags"
-msgstr "Задачи с такими метками"
-
-#: GTG/gtk/backends_dialog/parameters_ui/__init__.py:76
-msgid "Username"
-msgstr "Пользователь"
-
-#: GTG/gtk/backends_dialog/parameters_ui/__init__.py:82
-msgid "Import tasks from @ replies "
-msgstr "Импортировать задачи из ответов почты "
-
-#: GTG/gtk/backends_dialog/parameters_ui/__init__.py:87
-msgid "Import tasks from direct messages"
-msgstr "Импортировать задачи из сообщений"
-
-#: GTG/gtk/backends_dialog/parameters_ui/__init__.py:91
-msgid "Import tasks from your tweets"
-msgstr "Импортировать метки из Ваших твитов"
-
-#: GTG/gtk/backends_dialog/parameters_ui/__init__.py:95
-msgid "Tag your GTG tasks with the bug tags"
+#: GTG/gtk/browser/custominfobar.py:43
+#, python-format
+msgid "Cannot connect to DBUS, I've disabled the <b>%s</b> backend."
 msgstr ""
 
-#: GTG/gtk/backends_dialog/parameters_ui/__init__.py:99
-msgid "Tag your GTG tasks with the project targeted by the bug"
-msgstr ""
+#: GTG/gtk/browser/custominfobar.py:105
+msgid "Configure backend"
+msgstr "Настроить хранилище"
 
-#: GTG/gtk/backends_dialog/parameters_ui/periodui.py:51
-msgid "Check for new tasks every"
-msgstr "Проверять новые задачи каждые"
+#: GTG/gtk/browser/custominfobar.py:106
+msgid "Ignore"
+msgstr "Пропустить"
 
-#: GTG/gtk/backends_dialog/parameters_ui/periodui.py:96
-msgid " minute"
-msgid_plural " minutes"
-msgstr[0] " минуту"
-msgstr[1] " минуты"
-msgstr[2] " минут"
+#: GTG/gtk/browser/custominfobar.py:114 GTG/gtk/browser/custominfobar.py:119
+msgid "Ok"
+msgstr "ОК"
 
-#: GTG/gtk/backends_dialog/configurepanel.py:162
-msgid "Ready to start syncing"
-msgstr "К синхронизации все готово"
+#: GTG/gtk/browser/custominfobar.py:140
+msgid "Confirm"
+msgstr "Подвердить"
 
-#: GTG/gtk/backends_dialog/configurepanel.py:164
-#, python-format
-msgid "Syncing your only task"
-msgid_plural "Syncing all %d tasks"
-msgstr[0] "Синхронизировать только задачу"
-msgstr[1] "Синхронизировать все %d задачи"
-msgstr[2] "Синхронизировать все %d задач"
+#: GTG/gtk/browser/custominfobar.py:142
+msgid "Continue"
+msgstr "Далее"
 
-#: GTG/gtk/backends_dialog/configurepanel.py:169
-#, python-format
-msgid "There's no task tagged %s"
-msgstr "Нет задач с меткой %s"
+#: GTG/gtk/browser/treeview_factory.py:287
+#: GTG/gtk/browser/taskbrowser.glade.h:39
+msgid "Tags"
+msgstr "Метки"
 
-#: GTG/gtk/backends_dialog/configurepanel.py:171
-#, python-format
-msgid "Syncing a task tagged %s"
-msgid_plural "Syncing %d tasks tagged %s"
-msgstr[0] "Синхронизировать %d задачу с метками %s"
-msgstr[1] "Синхронизировать %d задачи с метками %s"
-msgstr[2] "Синхронизировать %d задач с метками %s"
-
-#: GTG/gtk/backends_dialog/configurepanel.py:182
-msgid "Disable syncing"
-msgstr "Запретить синхронизацию"
-
-#: GTG/gtk/backends_dialog/configurepanel.py:184
-msgid "Enable syncing"
-msgstr "Разрешить синхронизацию"
-
-#: GTG/gtk/backends_dialog/configurepanel.py:192
-msgid "This is the default backend"
-msgstr ""
-
-#: GTG/gtk/backends_dialog/configurepanel.py:195
-msgid "Syncing is enabled"
-msgstr "Синхронизация разрешена"
-
-#: GTG/gtk/backends_dialog/configurepanel.py:197
-#: GTG/gtk/backends_dialog/addpanel.py:177
-msgid "Syncing is <span color=\"red\">disabled</span>"
-msgstr "Синхронизация <span color=\"red\">запрещена</span>"
-
-#: GTG/gtk/backends_dialog/addpanel.py:183
-msgid "Author"
-msgid_plural "Authors"
-msgstr[0] "Автор"
-msgstr[1] "Авторы"
-msgstr[2] "Авторы"
-
-#: GTG/gtk/backends_dialog/__init__.py:287
-#, python-format
-msgid "Do you really want to remove the backend '%s'?"
-msgstr ""
-
-#: GTG/gtk/editor/taskeditor.glade.h:1
-msgid "Closed on"
-msgstr "Выполнено"
-
-#: GTG/gtk/editor/taskeditor.glade.h:2 GTG/gtk/browser/taskbrowser.glade.h:13
-msgid "Delete"
-msgstr "Удалить"
-
-#: GTG/gtk/editor/taskeditor.glade.h:3 GTG/gtk/editor/__init__.py:33
-#: GTG/gtk/browser/taskbrowser.glade.h:14 GTG/gtk/browser/__init__.py:38
-msgid "Dismiss"
-msgstr "Отменить выполнение задачи"
-
-#: GTG/gtk/editor/taskeditor.glade.h:4
-msgid "Due for"
-msgstr "Срок"
-
-#: GTG/gtk/editor/taskeditor.glade.h:5
-msgid "Insert subtask"
-msgstr "Вставить подзадачу"
-
-#: GTG/gtk/editor/taskeditor.glade.h:6
-msgid "Insert tag"
-msgstr "Вставить метку"
-
-#: GTG/gtk/editor/taskeditor.glade.h:7
-msgid "Mark Done"
-msgstr "Отметить выполнение"
-
-#: GTG/gtk/editor/taskeditor.glade.h:8
-msgid "Now"
-msgstr "Сейчас"
-
-#: GTG/gtk/editor/taskeditor.glade.h:9
-msgid "Someday"
-msgstr "Когда-нибудь"
-
-#: GTG/gtk/editor/taskeditor.glade.h:10
-msgid "Soon"
-msgstr "Скоро"
-
-#: GTG/gtk/editor/taskeditor.glade.h:11
-msgid "Starting on"
+#: GTG/gtk/browser/treeview_factory.py:375
+msgid "Start date"
 msgstr "Дата начала"
 
-#: GTG/gtk/editor/taskeditor.glade.h:12
-msgid "Task"
-msgstr "Задача"
+#: GTG/gtk/browser/treeview_factory.py:386
+msgid "Due"
+msgstr "Ожидается"
 
-#: GTG/gtk/editor/__init__.py:31 GTG/gtk/browser/__init__.py:34
-msgid "Mark as done"
-msgstr "Отметить как «выполнено»"
+#: GTG/gtk/browser/treeview_factory.py:406
+msgid "Closed date"
+msgstr "Дата закрытия"
 
-#: GTG/gtk/editor/__init__.py:32 GTG/gtk/browser/__init__.py:36
-msgid "Mark as not done"
-msgstr "Отметить как «не выполнено»"
+#: GTG/gtk/browser/treeview_factory.py:451
+msgid "Title"
+msgstr "Заголовок"
 
-#: GTG/gtk/editor/__init__.py:34 GTG/gtk/browser/__init__.py:40
-msgid "Undismiss"
-msgstr "Восстановить"
-
-#: GTG/gtk/editor/__init__.py:35
-msgid "Keep as Note"
-msgstr "Оставить как заметку"
-
-#: GTG/gtk/editor/__init__.py:36
-msgid "Make a Task"
-msgstr "Создать задачу"
-
-#: GTG/gtk/editor/__init__.py:38
-msgid "Mark this task as done"
-msgstr "Отметить задачу выполненной"
-
-#: GTG/gtk/editor/__init__.py:39 GTG/gtk/editor/__init__.py:41
-msgid "Mark this task as to be done"
-msgstr "Отметить, что эта задача должна быть выполнена"
-
-#: GTG/gtk/editor/__init__.py:40
-msgid "Mark this task as not to be done anymore"
-msgstr "Пометить задачу как не требующую выполнения"
-
-#: GTG/gtk/editor/__init__.py:42
-msgid "Permanently remove this task"
-msgstr "Удалить эту задачу навсегда"
-
-#: GTG/gtk/editor/__init__.py:43
-msgid "Insert a subtask in this task"
-msgstr "Добавить подзадачу"
-
-#: GTG/gtk/editor/__init__.py:44
-msgid "Insert a tag in this task"
-msgstr "Добавить метку к этой задаче"
-
-#: GTG/gtk/editor/editor.py:302
-#, python-format
-msgid "Completed %(days)d day late"
-msgid_plural "Completed %(days)d days late"
-msgstr[0] "Просрочено на %(days)d день"
-msgstr[1] "Просрочено на %(days)d дня"
-msgstr[2] "Просрочено на %(days)d дней"
-
-#: GTG/gtk/editor/editor.py:305
-#, python-format
-msgid "Completed %(days)d day early"
-msgid_plural "Completed %(days)d days early"
-msgstr[0] "Выполнено за %(days)d день до срока"
-msgstr[1] "Выполнено за %(days)d дня до срока"
-msgstr[2] "Выполнено за %(days)d дней до срока"
-
-#: GTG/gtk/editor/editor.py:311
-#, python-format
-msgid "Due tomorrow!"
-msgid_plural "%(days)d days left"
-msgstr[0] "Задания на завтра"
-msgstr[1] "Задания на завтра"
-msgstr[2] "Задания на завтра"
-
-#: GTG/gtk/editor/editor.py:313
-msgid "Due today!"
-msgstr "Задания на сегодня"
-
-#: GTG/gtk/editor/editor.py:316
-#, python-format
-msgid "Due yesterday!"
-msgid_plural "Was %(days)d days ago"
-msgstr[0] "Вчерашние задания"
-msgstr[1] "Вчерашние задания"
-msgstr[2] "Вчерашние задания"
-
-#: GTG/gtk/crashhandler.py:57
-msgid ""
-"We're terribly sorry. Could you help us fix the problem by reporting the "
-"crash?"
-msgstr ""
-"К сожалению, произошла ошибка. Желаете ли вы помочь нам устранить проблему, "
-"сообщив об ошибке?"
-
-#: GTG/gtk/crashhandler.py:170
-msgid "An error has occurred"
-msgstr "Произошла ошибка"
-
-#: GTG/gtk/crashhandler.py:180
-msgid "It looks like an error has occurred."
-msgstr "Возможно, произошла ошибка"
-
-#: GTG/gtk/crashhandler.py:214
-msgid "_Details"
-msgstr "_Подробности"
-
-#: GTG/gtk/crashhandler.py:221
-msgid "_Report this problem..."
-msgstr "_Сообщить об этой проблеме…"
-
-#: GTG/gtk/crashhandler.py:225
-msgid "_Ignore the error"
-msgstr "_Игнорировать ошибку"
-
-#: GTG/gtk/crashhandler.py:319
-msgid ""
-" has crashed. Please report the bug on <a "
-"href=\"http://bugs.edge.launchpad.net/gtg\">our Launchpad page</a>. If you "
-"have Apport installed, it will be started for you."
-msgstr ""
-" завершился ошибкой. Пожалуйста, сообщите об этой ошибке на <a "
-"href=\"http://bugs.edge.launchpad.net/gtg\">нашей странице в Launchpad</a>. "
-"Если у вас установлено приложение Apport, оно будет вызвано автоматически."
-
-#: GTG/gtk/browser/browser.py:550
+#: GTG/gtk/browser/browser.py:601
 msgid "no active tasks"
 msgstr "активные задачи отсутствуют"
 
-#: GTG/gtk/browser/browser.py:552
+#: GTG/gtk/browser/browser.py:603
 #, python-format
 msgid "%(tasks)d active task"
 msgid_plural "%(tasks)d active tasks"
 msgstr[0] "%(tasks)d активная задача"
 msgstr[1] "%(tasks)d активные задачи"
 msgstr[2] "%(tasks)d активных задач"
+
+#: GTG/gtk/browser/browser.py:1663
+msgid "Add Task"
+msgstr "Добавить задачу"
+
+#: GTG/gtk/browser/browser.py:1664
+msgid "Open Task"
+msgstr "Открыть задачу"
+
+#: GTG/gtk/browser/__init__.py:34 GTG/gtk/editor/__init__.py:31
+msgid "Mark as done"
+msgstr "Отметить как «выполнено»"
+
+#: GTG/gtk/browser/__init__.py:35
+msgid "Mark the selected task as done"
+msgstr "Отметить выбранную задачу выполненной"
+
+#: GTG/gtk/browser/__init__.py:36 GTG/gtk/editor/__init__.py:32
+msgid "Mark as not done"
+msgstr "Отметить как «не выполнено»"
+
+#: GTG/gtk/browser/__init__.py:37 GTG/gtk/browser/__init__.py:41
+msgid "Mark the selected task as to be done"
+msgstr "Отметить выбранную задачу как требующую выполнения"
+
+#: GTG/gtk/browser/__init__.py:38 GTG/gtk/browser/taskbrowser.glade.h:14
+#: GTG/gtk/editor/__init__.py:33 GTG/gtk/editor/taskeditor.glade.h:3
+msgid "Dismiss"
+msgstr "Отменить выполнение задачи"
+
+#: GTG/gtk/browser/__init__.py:39
+msgid "Mark the task as not to be done anymore"
+msgstr "Отметить выбранную задачу как не требующую выполнения"
+
+#: GTG/gtk/browser/__init__.py:40 GTG/gtk/editor/__init__.py:34
+msgid "Undismiss"
+msgstr "Восстановить"
+
+#: GTG/gtk/browser/__init__.py:42
+msgid "Permanently remove the selected task"
+msgstr "Навсегда удалить выбраную задачу"
+
+#: GTG/gtk/browser/__init__.py:43
+msgid "Edit the selected task"
+msgstr "Изменить выбранную задачу"
+
+#: GTG/gtk/browser/__init__.py:44 GTG/gtk/browser/taskbrowser.glade.h:11
+msgid "Create a new task"
+msgstr "Создать новую задачу"
+
+#: GTG/gtk/browser/__init__.py:45
+msgid "Create a new subtask"
+msgstr "Создать новую подзадачу"
+
+#: GTG/gtk/browser/__init__.py:46
+msgid "Display only the currently actionable tasks"
+msgstr "Показать только доступные для выполнения задачи"
+
+#: GTG/gtk/browser/__init__.py:47
+msgid "Hide this tag from the workview"
+msgstr "Скрыть эту метку из рабочего плана"
+
+#: GTG/gtk/browser/__init__.py:48
+msgid "Show this tag in the workview"
+msgstr "Показывать эту метку в рабочем плане"
+
+#: GTG/gtk/browser/__init__.py:49
+msgid "You can create, open or filter your tasks here"
+msgstr "Тут можно создавать, открывать или фильтровать свои задачи."
+
+#: GTG/gtk/browser/__init__.py:50
+msgid "Clear"
+msgstr "Очистить"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:1
 msgid ""
@@ -466,16 +1222,16 @@ msgid "Cancel"
 msgstr "Отменить"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:10
-msgid "Copyrights&#xA9; 2008, 2009 Lionel Dricot, Bertrand Rousseau"
-msgstr "&#xA9; Lionel Dricot, Bertrand Rousseau, 2008—2009"
-
-#: GTG/gtk/browser/taskbrowser.glade.h:11 GTG/gtk/browser/__init__.py:44
-msgid "Create a new task"
-msgstr "Создать новую задачу"
+msgid "Copyrights© 2008, 2009 Lionel Dricot, Bertrand Rousseau"
+msgstr "Copyrights© 2008, 2009 Lionel Dricot, Bertrand Rousseau"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:12
 msgid "D_ismiss"
 msgstr "_Отменить"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:13 GTG/gtk/editor/taskeditor.glade.h:2
+msgid "Delete"
+msgstr "Удалить"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:15
 msgid "Edit"
@@ -584,11 +1340,6 @@ msgstr "Панель _инструментов"
 msgid "TagName"
 msgstr "ИмяМетки"
 
-#: GTG/gtk/browser/taskbrowser.glade.h:39
-#: GTG/gtk/browser/treeview_factory.py:255
-msgid "Tags"
-msgstr "Метки"
-
 #: GTG/gtk/browser/taskbrowser.glade.h:40
 msgid "Tasks"
 msgstr "Задачи"
@@ -689,871 +1440,151 @@ msgstr "следующий _год"
 msgid "t_oday"
 msgstr "_сегодня"
 
-#: GTG/gtk/browser/__init__.py:35
-msgid "Mark the selected task as done"
-msgstr "Отметить выбранную задачу выполненной"
-
-#: GTG/gtk/browser/__init__.py:37 GTG/gtk/browser/__init__.py:41
-msgid "Mark the selected task as to be done"
-msgstr "Отметить выбранную задачу как требующую выполнения"
-
-#: GTG/gtk/browser/__init__.py:39
-msgid "Mark the task as not to be done anymore"
-msgstr "Отметить выбранную задачу как не требующую выполнения"
-
-#: GTG/gtk/browser/__init__.py:42
-msgid "Permanently remove the selected task"
-msgstr "Навсегда удалить выбраную задачу"
-
-#: GTG/gtk/browser/__init__.py:43
-msgid "Edit the selected task"
-msgstr "Изменить выбранную задачу"
-
-#: GTG/gtk/browser/__init__.py:45
-msgid "Create a new subtask"
-msgstr "Создать новую подзадачу"
-
-#: GTG/gtk/browser/__init__.py:46
-msgid "Display only the currently actionable tasks"
-msgstr "Показать только доступные для выполнения задачи"
-
-#: GTG/gtk/browser/__init__.py:47
-msgid "Hide this tag from the workview"
-msgstr "Скрыть эту метку из рабочего плана"
-
-#: GTG/gtk/browser/__init__.py:48
-msgid "Show this tag in the workview"
-msgstr "Показывать эту метку в рабочем плане"
-
-#: GTG/gtk/browser/custominfobar.py:36
+#: GTG/gtk/editor/editor.py:302
 #, python-format
-msgid ""
-"The <b>%s</b> backend cannot login with the supplied authentication data and "
-"has been disabled. To retry the login, re-enable the backend."
-msgstr ""
+msgid "Completed %(days)d day late"
+msgid_plural "Completed %(days)d days late"
+msgstr[0] "Просрочено на %(days)d день"
+msgstr[1] "Просрочено на %(days)d дня"
+msgstr[2] "Просрочено на %(days)d дней"
 
-#: GTG/gtk/browser/custominfobar.py:40
+#: GTG/gtk/editor/editor.py:305
 #, python-format
-msgid "Due to a network problem, I cannot contact the <b>%s</b> backend."
-msgstr ""
+msgid "Completed %(days)d day early"
+msgid_plural "Completed %(days)d days early"
+msgstr[0] "Выполнено за %(days)d день до срока"
+msgstr[1] "Выполнено за %(days)d дня до срока"
+msgstr[2] "Выполнено за %(days)d дней до срока"
 
-#: GTG/gtk/browser/custominfobar.py:43
+#: GTG/gtk/editor/editor.py:311
 #, python-format
-msgid "Cannot connect to DBUS, I've disabled the <b>%s</b> backend."
-msgstr ""
+msgid "Due tomorrow!"
+msgid_plural "%(days)d days left"
+msgstr[0] "Задания на завтра"
+msgstr[1] "Задания на завтра"
+msgstr[2] "Задания на завтра"
 
-#: GTG/gtk/browser/custominfobar.py:105
-msgid "Configure backend"
-msgstr "Настроить интерфейс"
+#: GTG/gtk/editor/editor.py:313
+msgid "Due today!"
+msgstr "Задания на сегодня"
 
-#: GTG/gtk/browser/custominfobar.py:106
-msgid "Ignore"
-msgstr "Пропустить"
+#: GTG/gtk/editor/editor.py:316
+#, python-format
+msgid "Due yesterday!"
+msgid_plural "Was %(days)d days ago"
+msgstr[0] "Вчерашние задания"
+msgstr[1] "Вчерашние задания"
+msgstr[2] "Вчерашние задания"
 
-#: GTG/gtk/browser/custominfobar.py:114 GTG/gtk/browser/custominfobar.py:119
-msgid "Ok"
-msgstr "ОК"
+#: GTG/gtk/editor/__init__.py:35
+msgid "Make a Task"
+msgstr "Создать задачу"
 
-#: GTG/gtk/browser/custominfobar.py:140
-msgid "Confirm"
-msgstr "Подвердить"
+#: GTG/gtk/editor/__init__.py:37
+msgid "Mark this task as done"
+msgstr "Отметить задачу выполненной"
 
-#: GTG/gtk/browser/custominfobar.py:142
-msgid "Continue"
-msgstr "Далее"
+#: GTG/gtk/editor/__init__.py:38 GTG/gtk/editor/__init__.py:40
+msgid "Mark this task as to be done"
+msgstr "Отметить, что эта задача должна быть выполнена"
 
-#: GTG/gtk/browser/treeview_factory.py:316
-msgid "Start date"
+#: GTG/gtk/editor/__init__.py:39
+msgid "Mark this task as not to be done anymore"
+msgstr "Пометить задачу как не требующую выполнения"
+
+#: GTG/gtk/editor/__init__.py:41
+msgid "Permanently remove this task"
+msgstr "Удалить эту задачу навсегда"
+
+#: GTG/gtk/editor/__init__.py:42
+msgid "Insert a subtask in this task"
+msgstr "Добавить подзадачу"
+
+#: GTG/gtk/editor/__init__.py:43
+msgid "Insert a tag in this task"
+msgstr "Добавить метку к этой задаче"
+
+#: GTG/gtk/editor/taskeditor.glade.h:1
+msgid "Closed on"
+msgstr "Выполнено"
+
+#: GTG/gtk/editor/taskeditor.glade.h:4
+msgid "Due for"
+msgstr "Срок"
+
+#: GTG/gtk/editor/taskeditor.glade.h:5
+msgid "Insert subtask"
+msgstr "Вставить подзадачу"
+
+#: GTG/gtk/editor/taskeditor.glade.h:6
+msgid "Insert tag"
+msgstr "Вставить метку"
+
+#: GTG/gtk/editor/taskeditor.glade.h:7
+msgid "Mark Done"
+msgstr "Отметить выполнение"
+
+#: GTG/gtk/editor/taskeditor.glade.h:8
+msgid "Now"
+msgstr "Сейчас"
+
+#: GTG/gtk/editor/taskeditor.glade.h:9
+msgid "Someday"
+msgstr "Когда-нибудь"
+
+#: GTG/gtk/editor/taskeditor.glade.h:10
+msgid "Soon"
+msgstr "Скоро"
+
+#: GTG/gtk/editor/taskeditor.glade.h:11
+msgid "Starting on"
 msgstr "Дата начала"
 
-#: GTG/gtk/browser/treeview_factory.py:327
-msgid "Due"
-msgstr "Ожидается"
+#: GTG/gtk/editor/taskeditor.glade.h:12
+msgid "Task"
+msgstr "Задача"
 
-#: GTG/gtk/browser/treeview_factory.py:347
-msgid "Closed date"
-msgstr "Дата закрытия"
+#: GTG/gtk/deletion.glade.h:1
+msgid "Confirm task deletion"
+msgstr "Подтвердите удаление задачи"
 
-#: GTG/gtk/browser/treeview_factory.py:392
-msgid "Title"
-msgstr "Заголовок"
-
-#: GTG/plugins/notification_area/notification_area.py:95
-msgid "_View Main Window"
-msgstr "_Показать главное окно"
-
-#: GTG/plugins/notification_area/notification_area.py:106
-msgid "Add _New Task"
-msgstr "Добавить _новую задачу"
-
-#: GTG/plugins/tomboy/tomboy.py:79
+#: GTG/gtk/crashhandler.py:57
 msgid ""
-"Tomboy/Gnote not found. Please install it or disable the Tomboy/Gnote plugin "
-"in GTG"
+"We're terribly sorry. Could you help us fix the problem by reporting the "
+"crash?"
 msgstr ""
-"Tomboy/Gnote не найден. Пожалуйста, установите его или отключите модуль "
-"Tomboy/Gnote в GTG"
+"К сожалению, произошла ошибка. Желаете ли вы помочь нам устранить проблему, "
+"сообщив об ошибке?"
 
-#: GTG/plugins/tomboy/tomboy.py:122
-msgid "Add Tomboy note"
-msgstr "Добавить заметку Tomboy"
+#: GTG/gtk/crashhandler.py:170
+msgid "An error has occurred"
+msgstr "Произошла ошибка"
 
-#: GTG/plugins/tomboy/tomboy.py:196
+#: GTG/gtk/crashhandler.py:184
+msgid "It looks like an error has occurred."
+msgstr "Возможно, произошла ошибка"
+
+#: GTG/gtk/crashhandler.py:218
+msgid "_Details"
+msgstr "_Подробности"
+
+#: GTG/gtk/crashhandler.py:225
+msgid "_Report this problem..."
+msgstr "_Сообщить об этой проблеме…"
+
+#: GTG/gtk/crashhandler.py:229
+msgid "_Ignore the error"
+msgstr "_Игнорировать ошибку"
+
+#: GTG/gtk/crashhandler.py:323
 msgid ""
-" was found on the system, but it doesn't provide a dbus interface. the "
-"Tomboy/Gnote plugin will not work with it."
+" has crashed. Please report the bug on <a "
+"href=\"http://bugs.edge.launchpad.net/gtg\">our Launchpad page</a>. If you "
+"have Apport installed, it will be started for you."
 msgstr ""
-" был найден в системе, однако он не предоставляет интерфейс dbus. Модуль "
-"Tomboy/Gnote с ним работать не будет."
-
-#: GTG/plugins/tomboy/tomboy.py:243
-msgid "That note does not exist!"
-msgstr "Заметка не существует!"
-
-#: GTG/plugins/tomboy/tomboy.py:248
-msgid "That note does not exist. Do you want to create a new one?"
-msgstr "Заметка не существует! Создать её?"
-
-#: GTG/plugins/tomboy/tomboy.py:276
-msgid "This Tomboy note does not exist anymore. Do you want to create it?"
-msgstr "Эта заметка больше не существует в Tomboy. Создать новую?"
-
-#: GTG/plugins/send_email/sendEmail.py:44
-msgid "Send via email"
-msgstr "Послать по почте"
-
-#: GTG/plugins/send_email/sendEmail.py:69
-#, python-format
-msgid "Status: %s"
-msgstr "Статус: %s"
-
-#: GTG/plugins/send_email/sendEmail.py:70
-#, python-format
-msgid ""
-"\n"
-"Tags: %s"
-msgstr ""
-"\n"
-"Метки: %s"
-
-#: GTG/plugins/send_email/sendEmail.py:71
-#, python-format
-msgid ""
-"\n"
-"Subtasks:\n"
-"%s"
-msgstr ""
-"\n"
-"Подзадачи: \n"
-"%s"
-
-#: GTG/plugins/send_email/sendEmail.py:73
-#, python-format
-msgid ""
-"\n"
-"Task content:\n"
-"%s"
-msgstr ""
-"\n"
-"Описание задачи\n"
-"%s"
-
-#: GTG/plugins/send_email/sendEmail.py:76
-#, python-format
-msgid "Task: %(task_title)s"
-msgstr "Задача: %(task_title)s"
-
-#: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:1
-msgid "<b>Location Determination Method</b>"
-msgstr "<b>Способ определения положения</b>"
-
-#: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:2
-msgid "<b>Proximity Factor</b>"
-msgstr "<b>Фактор близости</b>"
-
-#: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:3
-msgid ""
-"<small>Distance in kilometers from \n"
-"the current location.</small>"
-msgstr "<small>Расстояние в километрах от текущего расположения</small>"
-
-#: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:5
-msgid "Associate with existing tag"
-msgstr "Пометить существующей меткой"
-
-#: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:6
-msgid "Associate with new tag"
-msgstr "Пометить новой меткой"
-
-#: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:7
-msgid "Geolocalized-tasks Preferences"
-msgstr "Задачи привязаные к расположению"
-
-#: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:8
-msgid "Set the task's location"
-msgstr "Установить расположение задачи"
-
-#: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:9
-msgid "Use cellphone"
-msgstr "Использовать мобильный телефон"
-
-#: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:10
-msgid "Use gps"
-msgstr "Использовать GPS"
-
-#: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:11
-msgid "Use network"
-msgstr "Использовать сеть"
-
-#: GTG/plugins/export/export.py:114
-msgid "Template not found"
-msgstr "Шаблон не найден"
-
-#: GTG/plugins/export/export.py:121
-#, python-format
-msgid "Could not generate the document: %s"
-msgstr "Не удалось сформировать документ: %s"
-
-#: GTG/plugins/export/export.py:169
-msgid "Export the tasks currently listed"
-msgstr "Экспортировать перечисленные задачи"
-
-#: GTG/plugins/export/export.py:322
-msgid "Choose where to save your list"
-msgstr "Укажите, где сохранить ваш список"
-
-#: GTG/plugins/export/export_templates/description_pocketmod.py:18
-msgid "Foldable booklet (PDF)"
-msgstr "Складной буклет (PDF)"
-
-#: GTG/plugins/export/export_templates/description_pocketmod.py:19
-msgid ""
-"A template to create a <a href=\"http://www.pocketmod.com\">PocketMod</a>, "
-"which is a  small foldable booklet."
-msgstr ""
-"Шаблон <a href=\"http://www.pocketmod.com\">PocketMod</> является небольшим "
-"складным буклетом."
-
-#: GTG/plugins/export/export_templates/description_simple.py:18
-msgid "A simple Web page (nicely printable)"
-msgstr "Простая веб-страница (удобная печать)"
-
-#: GTG/plugins/export/export_templates/description_simple.py:19
-msgid ""
-"A template to create a simple HTML page with some tasks. It can be printed "
-"nicely."
-msgstr ""
-"Шаблон создания простой HTML страницы с несколькими задачами. Может быть "
-"красиво напечатан."
-
-#: GTG/plugins/export/export_templates/description_sexy.py:18
-msgid "A professional-looking HTML page"
-msgstr "Профессионально оформленная HTML страница"
-
-#: GTG/plugins/export/export_templates/description_sexy.py:19
-msgid ""
-"A template to create a HTML page with some tasks and tags. Tags colors are "
-"also displayed."
-msgstr ""
-"Шаблон простой HTML страницы с несколькими задачами. Метки будут цветными."
-
-#: GTG/plugins/export/export_templates/description_textual.py:18
-msgid "Text-only"
-msgstr "Только текст"
-
-#: GTG/plugins/export/export_templates/description_textual.py:19
-msgid "A template to create a simple text file with some tasks."
-msgstr "Шаблон текстового списка задач."
-
-#: GTG/plugins/export/export_templates/description_statusrpt.py:18
-msgid "Status report"
-msgstr "Отчет о состоянии"
-
-#: GTG/plugins/export/export_templates/description_statusrpt.py:19
-msgid "A template to create a compact text file listing only task titles."
-msgstr "Шаблон краткого списка заголовков задач."
-
-#: GTG/plugins/hamster/hamster.py:154
-msgid "Start task in Hamster"
-msgstr "Начать задачу в Hamster"
-
-#: GTG/plugins/hamster/hamster.py:159
-msgid "Start in Hamster"
-msgstr "Начать в Hamster"
-
-#: GTG/plugins/hamster/hamster.py:161
-msgid "Start a new activity in Hamster Time"
-msgstr "Начать новое дело в Hamster Time"
-
-#: GTG/plugins/hamster/hamster.py:175
-msgid "Start a new activity in Hamster Time "
-msgstr "Начать новое дело в Hamster Time "
-
-#: GTG/gtg.py:84
-msgid "gtg is already running!"
-msgstr "gtg уже запущена!"
-
-#: GTG/backends/backend_rtm.py:54
-msgid "Remember The Milk"
-msgstr "Remember The Milk"
-
-#: GTG/backends/backend_rtm.py:58
-msgid ""
-"This backend synchronizes your tasks with the web service RememberTheMilk:\n"
-"\t\thttp://rememberthemilk.com\n"
-"\n"
-"Note: This product uses the Remember The Milk API but is not endorsed or "
-"certified by Remember The Milk"
-msgstr ""
-
-#: GTG/backends/backend_tomboy.py:41
-msgid "Tomboy"
-msgstr "Tomboy"
-
-#: GTG/backends/backend_tomboy.py:45
-msgid ""
-"This backend can synchronize all or part of your Tomboy notes in GTG. If you "
-"decide it would be handy to have one of your notes in your TODO list, just "
-"tag it with the tag you have chosen (you'll configure it later), and it will "
-"appear in GTG."
-msgstr ""
-
-#: GTG/backends/backend_launchpad.py:53
-msgid "Launchpad"
-msgstr "Launchpad"
-
-#: GTG/backends/backend_launchpad.py:57
-msgid ""
-"This backend lets you import the bugs assigned to you (or someone else) on "
-"Launchpad in GTG. As the bug state changes in Launchpad, the GTG task is  "
-"updated.\n"
-"Please note that this is a read only backend, which means that if you open "
-"one of the imported tasks and  change one of the:\n"
-"  - title\n"
-"  - description\n"
-"  - tags\n"
-"Your changes <b>will</b> be reverted when the associated bug is modified. "
-"Apart from those, you are free to set  any other field (start/due dates, "
-"subtasks...): your  changes will be preserved. This is useful to add  "
-"personal annotations to bug"
-msgstr ""
-
-#: GTG/backends/backend_launchpad.py:244
-msgid "Bug"
-msgstr "Ошибка"
-
-#: GTG/backends/backend_launchpad.py:324
-msgid "Reported by: "
-msgstr "Сообщил(а): "
-
-#: GTG/backends/backend_launchpad.py:329
-msgid "Link to bug: "
-msgstr "Ссылка на ошибку: "
-
-#: GTG/backends/backend_twitter.py:54
-msgid "Twitter"
-msgstr "Твиттер"
-
-#: GTG/backends/backend_twitter.py:58
-msgid "Imports your twitter  messages into your GTG "
-msgstr "Импортирует ваши сообщения из Твиттера в GTG "
-
-#: GTG/backends/rtm/rtm.py:53
-msgid "Invalid state"
-msgstr "Недопустимое состояние"
-
-#: GTG/backends/backend_identica.py:54
-msgid "Identi.ca"
-msgstr "Identi.ca"
-
-#: GTG/backends/backend_identica.py:58
-msgid "Imports your identi.ca  messages into your GTG "
-msgstr "Импортирует ваши сообщения из identi.ca в GTG "
-
-#: GTG/backends/backend_localfile.py:61
-msgid "Local File"
-msgstr "Локальный файл"
-
-#: GTG/backends/backend_localfile.py:66
-msgid "Your tasks are saved in a text file (XML format). "
-msgstr "Ваши задачи сохранены в текстовом файле формата XML. "
-
-#: GTG/backends/backend_gnote.py:42
-msgid "Gnote"
-msgstr "Gnote"
-
-#: GTG/backends/backend_gnote.py:46
-msgid ""
-"This backend can synchronize all or part of your Gnote notes in GTG. If you "
-"decide it would be handy to have one of your notes in your TODO list, just "
-"tag it with the tag you have chosen (you'll configure it later), and it will "
-"appear in GTG."
-msgstr ""
-
-#: GTG/backends/backend_evolution.py:69
-msgid "Evolution tasks"
-msgstr "Задачи в Evolution"
-
-#: GTG/backends/backend_evolution.py:73
-msgid "Lets you synchronize your GTG tasks with Evolution tasks"
-msgstr "Синхронизирует ваши задачи в GTG и Evolution"
-
-#: GTG/core/firstrun_tasks.py:8
-msgid "Getting started with GTG"
-msgstr "Начало работы с GTG"
-
-#: GTG/core/firstrun_tasks.py:9
-msgid ""
-"Welcome to Getting Things Gnome!, your new task manager.\n"
-"\n"
-"In GTG, everything is a task. From building a bridge over the Pacific Ocean "
-"to changing a light bulb or organizing a party. When you edit a task, it is "
-"automatically saved.\n"
-"\n"
-"Once a task is done, you can push the &quot;Mark as done&quot; button. If "
-"the task is not relevant any-more, simply press &quot;Dismiss&quot;.\n"
-"\n"
-"A task might be composed of multiple subtasks that appear as links in the "
-"description. Simply click on the following link:"
-msgstr ""
-"Добро пожаловать в Getting Things Gnome!, ваш новый менеджер задач.\n"
-"\n"
-"В GTG всё есть задача. От постройки моста через Тихий Океан до смены "
-"лампочки или организации вечеринки. Когда вы редактируете задачу, она сразу "
-"же сохраняется.\n"
-"\n"
-"Когда задача выполнена, вы можете нажать кнопку \"Отметить выполнение\". "
-"Если задача более неактуальна, просто нажмите \"Отменить выполнение\".\n"
-"\n"
-"Задача может состоять из нескольких подзадач, которые видны как ссылки в "
-"описании. Просто нажмите на следующую ссылку:"
-
-#: GTG/core/firstrun_tasks.py:17
-msgid ""
-"Once you've read the above subtask, mark it as Done. If you don't want to do "
-"the task, mark it as dismissed. Done and Dismissed tasks are kept in the "
-"closed tasks pane, hidden by default but you can easily enable it in the "
-"View menu.\n"
-"\n"
-"If you choose to close this current task, subtasks will be automatically "
-"closed too. We indeed consider that, if you achieve a given task, you don't "
-"need to do the subtask anymore.\n"
-"Other stuff you should read:"
-msgstr ""
-"Как только вы ознакомитесь с вышеописанной подзадачей, отметьте ее "
-"выполнение. Если вы не намерены выполнять задачу, отмените ее. Выполненные и "
-"отмененные задачи хранятся на панели выполненных задач, которая по умолчанию "
-"скрыта. Однако в любой момент можно включить ее в меню Вид.\n"
-"\n"
-"Если вы закроете (то есть отметите выполненной или отмените выполнение) "
-"текущую задачу, подзадачи также будут закрыты. Действительно, можно "
-"посчитать, что, если вы выполнили данную задачу, вам не надо больше "
-"выполнять её подзадачи."
-
-#: GTG/core/firstrun_tasks.py:26
-msgid ""
-"We hope that you will appreciate GTG. Please send us bug reports and ideas "
-"for improvement using:\n"
-"    https://bugs.launchpad.net/gtg\n"
-"\n"
-"Thank you for trying out GTG :-)"
-msgstr ""
-"Мы надеемся, вам понравится GTG. Пожалуйста, присылайте нам сообщения об "
-"ошибках и идеи по улучшению:\n"
-"    https://bugs.launchpad.net/gtg\n"
-"\n"
-"Благодарим за использование GTG :-)"
-
-#: GTG/core/firstrun_tasks.py:34
-msgid "Learn how to use subtasks"
-msgstr "Научиться пользоваться подзадачами"
-
-#: GTG/core/firstrun_tasks.py:35
-msgid ""
-"In the task description (this window), if you begin a line with &quot;-"
-"&quot;, it will be considered as a &quot;subtask&quot;, something that needs "
-"to be done in order to accomplish your task. Just try to write &quot;- test "
-"subtask&quot; on the next line and press enter.\n"
-"\n"
-"You can also use the &quot;insert subtask&quot; button.\n"
-"\n"
-"Tasks and subtasks can be re-organized by drag-n-drop in the tasks list.\n"
-"\n"
-"Some concepts come with subtasks: for example, a subtask's due date can "
-"never be after its parent's due date.\n"
-"\n"
-"Also, marking a parent as done will mark all the subtasks as done."
-msgstr ""
-"В описании задачи (этом окне) строка, начинающаяся с &quot;-&quot; создает "
-"подзадачу, нечто, что необходимо сделать для выполнения текущей задачи. "
-"Просто попробуйте написать &quot;- проверка подзадач&quot; на следующей "
-"строке и нажмите ввод.\n"
-"\n"
-"Также вы можете использовать кнопку инструментальной панели &quot;Добавить "
-"подзадачу&quot;.\n"
-"\n"
-"Задачи и подзадачи можно организовывать по-разному, просто  перетаскивая их "
-"в списке.\n"
-"\n"
-"С подзадачами связаны некоторые правила, к примеру, дата окончания "
-"выполнения подзадачи не может быть позже даты выполнения "
-"&quot;родительской&quot; задачи.\n"
-"\n"
-"Также, выполнение родительской задачи отметит выполнение всех подзадач."
-
-#: GTG/core/firstrun_tasks.py:48
-msgid "Learn how to use tags"
-msgstr "Научиться использовать метки"
-
-#: GTG/core/firstrun_tasks.py:49
-msgid ""
-"A tag is a simple word that begins with &quot;@&quot;.\n"
-"\n"
-"Try to type a word beginning with @ here:\n"
-"\n"
-"It becomes yellow, it's a tag.\n"
-"\n"
-"Tags are useful to sort your tasks. In the view menu, you can enable a "
-"sidebar which displays all the tags you are using so you can easily see "
-"tasks assigned to a given tag. There's no limit to the number of tags a task "
-"can have.\n"
-"\n"
-"You can drag-n-drop a tag onto another to create \"subtags\". As an example, "
-"if you drag the tag @to_pay onto the tag @money, every task tagged with "
-"@to_pay will also appear in the view of @money (but the @money tag is not "
-"added to the task).\n"
-"\n"
-"If you right click on a tag in the sidebar you can also set its color. It "
-"will allow you to have a more colorful list of tasks, if you want it that "
-"way.\n"
-"\n"
-"A new tag is only added to the current task. There's no recursion and the "
-"tag is not applied to subtasks. But when you create a new subtask, this "
-"subtask will inherit the tags of its parent as a good primary default (it "
-"will also be the case if you add a tag to a parent just after creating a "
-"subtask). Of course, you can modify at any time the tags of this particular "
-"subtask. It will never be changed by the parent."
-msgstr ""
-"Метка - это просто слово, начинающееся с \"@\".\n"
-"\n"
-"Попробуйте ввести слово, начав его с @, здесь:\n"
-"\n"
-"Оно станет жёлтым, это метка\n"
-"\n"
-"Метки полезны для сортировки ваших задач. В меню Вид вы можете "
-"активизировать Панель меток, на которой отображены все используемые вами "
-"метки, так что вы можете с легкостью видеть задачи, назначенные заданной "
-"метке. Число меток, которые может иметь задача, неограничено.\n"
-"\n"
-"Вы можете перетащить одну метку на другую для создания их иерархии. "
-"Например, если вы перетащите метку @to_pay на метку @money, каждая задача с "
-"меткой @to_pay также появится в списке задач с меткой @money (но при этом "
-"сама метка @money добавлена в задачу не будет).\n"
-"\n"
-"При щелчке правой кнопкой на метке в боковой панели, вы также выбрать ее "
-"цвет. Это позволит вам сделать список задач более наглядным.\n"
-"\n"
-"Новая метка добавляется только к текущей задаче. Рекурсии тут нет и метка не "
-"применяется к имеющимся подзадачам. Однако, когда вы создаете новую "
-"подзадачу, она по умолчанию унаследует метки родительской задачи (это "
-"произойдет также в случае, если вы добавите метку к родительской задаче "
-"после создания подзадачи). Конечно, вы в любой момент можете изменить метки "
-"данной конкретной подзадачи. Они никогда не изменятся родительской задачей."
-
-#: GTG/core/firstrun_tasks.py:66
-msgid "Learn how to use the Workview"
-msgstr "Научиться использовать Рабочий план"
-
-#: GTG/core/firstrun_tasks.py:67
-msgid ""
-"If you press the &quot;Workview&quot; button, only actionable tasks will be "
-"displayed.\n"
-"\n"
-"What is an actionable task? It's a task you can do directly, right now.\n"
-"\n"
-"It's a task that is already &quot;start-able&quot;, i.e. the start date is "
-"already over.\n"
-"\n"
-"It's a task that doesn't have open subtasks, i.e. you can do the task itself "
-"directly.\n"
-"\n"
-"Thus, the workview will only show you tasks you should do right now.\n"
-"\n"
-"If you use tags, you can right click on a tag in the sidebar and choose to "
-"hide tasks assigned to this particular tag in the workview. It's very useful "
-"if you have a tag like &quot;someday&quot; that you use for tasks you would "
-"like to do but are not particularly urgent."
-msgstr ""
-"Если вы нажмёте кнопку &quot;Рабочий план&quot;, будут показаны только "
-"активные задачи.\n"
-"\n"
-"Что такое активные задачи? Это задачи, выполнение которых возможно "
-"непосредственно сейчас.\n"
-"\n"
-"Это задача, которая уже началась; то есть, дата начала исполнения которой "
-"уже наступила.\n"
-"\n"
-"Это задача не имеет открытых подзадач. То есть,  вы можете работать "
-"непосредственно по этой задаче.\n"
-"\n"
-"Таким образом, в списоке задач показывается только те задачи, которыми вы "
-"должны заниматься прямо сейчас.\n"
-"\n"
-"При использовании меток, вы можете щелкнуть правой кнопкой мыши по метке в "
-"боковой панели и выбрать скрытие задач, назначенных данной конкретной метке, "
-"в рабочем плане. Это очень полезно в случае, если у вас есть метка вроде "
-"&quot;когда-нибудь&quot;, используемую для задач, которые вы хотели бы "
-"выполнить, но не очень скоро."
-
-#: GTG/core/firstrun_tasks.py:82
-msgid "Learn how to use Plugins"
-msgstr "Получить информацию об использовании расширений"
-
-#: GTG/core/firstrun_tasks.py:83
-msgid ""
-"GTG has the ability to add plugins to extend it's core functionality.\n"
-"\n"
-"Some examples of the current plugins are Syncing with Remember the Milk and "
-"Evolution, Tomboy/Gnote integration and Geolocalized Tasks.\n"
-"You can find the Plugin Manager by selecting Edit in the Menu Bar, then "
-"clicking Preferences. You will then see a tab labeled Plugins."
-msgstr ""
-"GTG поддерживает расширения для добавления новых возможностей.\n"
-"\n"
-"Вот некоторые примеры расширений для GTG: модуль синхронизации с Remember "
-"the Milk и Evolution, интеграция в Tomboy/Gnote и Geolocalized Tasks.\n"
-"Менеджер расширений находится в меню Редактировать, в разделе Настройки, "
-"закладка Расширения."
-
-#: GTG/core/firstrun_tasks.py:92
-msgid "Reporting bugs"
-msgstr "Сообщайте об ошибках"
-
-#: GTG/core/firstrun_tasks.py:93
-msgid ""
-"GTG is still very alpha software. We like it and use it everyday but you "
-"will encounter some bugs.\n"
-"\n"
-"Please, report them on our Launchpad page:\n"
-"https://bugs.launchpad.net/gtg\n"
-"\n"
-"We need you to make this software better. Any contribution, any idea is "
-"welcome.\n"
-"\n"
-"If you have some trouble with GTG, we might be able to help you or to solve "
-"your problem really quickly."
-msgstr ""
-"Программа GTG всё ещё находится в стадии альфа-версии. Нам она нравится и мы "
-"постоянно используем её, но вы можете столкнуться с некоторыми ошибками в её "
-"работе.\n"
-"\n"
-"Сообщите о них, пожалуйста, по этому адресу:\n"
-"https://bugs.launchpad.net/gtg\n"
-"\n"
-"Нам нужна ваша помощь, чтобы сделать эту программу ещё лучше. Мы "
-"приветствуем любые отзывы и идеи!\n"
-"\n"
-"Если использование GTG вызывает у вас какие-либо затруднения, возможно мы "
-"сможем помочь вам решить проблему очень быстро."
-
-#: GTG/core/firstrun_tasks.py:106
-msgid "Learn how to use the QuickAdd Entry"
-msgstr "Помощь по использованию строки быстрого добавления задачи"
-
-#: GTG/core/firstrun_tasks.py:107
-msgid ""
-"The quickadd entry is the quickest way to create a new task. You can show or "
-"hide it in the View menu.\n"
-"\n"
-"For adding a task you just have to type its title in the entry and press "
-"return. The task will be created and selected in the task browser. If a tag "
-"is selected in the tag panel, this tag is applied to the task you create.\n"
-"\n"
-"You can also create a task with the attributes \"tags\", \"due\", and "
-"\"defer\" in the quickadd entry. The syntax for these attributes is:\n"
-"\n"
-"tags:tag1,tag2,tag3\n"
-" - This way you can apply as many tags as you wish using comma as separator\n"
-"\n"
-"due:date \n"
-"defer:date \n"
-" - This way you can apply a due date or a defer date. date can be yyyy-mm-dd "
-"(for example 2009-04-01) or yyyymmdd (20090401) or mmdd (0401, in this case "
-"the year is implicitly the current one) or today or tomorrow or a weekday "
-"name (due:monday means due next Monday)\n"
-"\n"
-"Attributes which are added in this way apply but do not appear in the "
-"title.\n"
-"\n"
-"If a word begins with @, it is interpreted as a tag."
-msgstr ""
-"Поле для быстрого ввода - самый простой способ создания новой задачи. В меню "
-"Вид можно включить или отключить это поле.\n"
-"\n"
-"Чтобы добавить задачу, напечатайте ее заголовок и нажмите ВВОД. После этого "
-"задача будет добавлена в список, в котором она будет выделена. Если в панели "
-"меток будет выделена метка, то она будет установлена для этой задачи.\n"
-"\n"
-"Можно сразу задать метки (tags) и даты завершения (due) и начала (defer) "
-"работы над задачей. Синтаксис атрибутов таков:\n"
-"\n"
-"tags:метка1, метка2, метка3\n"
-" - Таким способом можно задать сразу несколько меток, разделив их запятыми\n"
-"\n"
-"due:дата\n"
-"defer:дата \n"
-" - Дата может быть задана в формате be yyyy-mm-dd (например, 2009-04-01) или "
-"yyyymmdd (20090401) или mmdd (0401, в этом случае будет использован текущий "
-"год) или сегодня(today) или завтра или просто день недели (например, "
-"due:monday означает ближайший понедельник)\n"
-"\n"
-"Заданные таким способом атрибуты не отображаются в заголовке задачи.\n"
-"\n"
-"Если слово начинается с символа @, то оно воспринимается как метка."
-
-#: GTG/core/plugins/__init__.py:32
-msgid "Everything necessary to run this plugin is available."
-msgstr "Всё необходимое для запуска этого расширения имеется."
-
-#: GTG/core/plugins/__init__.py:33
-msgid "The plugin can not be loaded"
-msgstr "Модуль не может быть загружен"
-
-#: GTG/core/plugins/__init__.py:34
-msgid "Some python modules are missing"
-msgstr "Отсутствуют требуемые модули python"
-
-#: GTG/core/plugins/__init__.py:35
-msgid "Please install the following python modules:"
-msgstr "Пожалуйста, установите следующие модули python:"
-
-#: GTG/core/plugins/__init__.py:37
-msgid "Some remote dbus objects are missing."
-msgstr "Отсутствуют отдельные удаленные объекты dbus."
-
-#: GTG/core/plugins/__init__.py:38
-msgid "Please start the following applications:"
-msgstr "Пожалуйста, запустите следующие приложения:"
-
-#: GTG/core/plugins/__init__.py:40
-msgid "Some modules and remote dbus objects are missing."
-msgstr "Отсутствуют некоторые модули и удаленные объекты dbus."
-
-#: GTG/core/plugins/__init__.py:41
-msgid "Please install or start the following components:"
-msgstr "Пожалуйста, установите или запустите следующие приложения:"
-
-#: GTG/core/plugins/__init__.py:43
-msgid "Unknown error while loading the plugin."
-msgstr "Неизвестная ошибка при загрузке модуля."
-
-#: GTG/core/plugins/__init__.py:44
-msgid "Very helpful message, isn't it? Please report a bug."
-msgstr "Не правда ли, очень полезное сообщение? Пожалуйста, сообщите о баге."
-
-#: GTG/core/treefactory.py:90
-msgid "Tasks with no tags"
-msgstr "Задачи без меток"
-
-#: GTG/core/task.py:60
-msgid "My new task"
-msgstr "Моя новая задача"
-
-#: GTG/core/task.py:169
-msgid "tags"
-msgstr "метки"
-
-#: GTG/core/task.py:169
-msgid "tag"
-msgstr "метка"
-
-#: GTG/core/task.py:175
-msgid "defer"
-msgstr "отложить"
-
-#: GTG/core/task.py:180
-msgid "due"
-msgstr "до"
-
-#: GTG/tests/test_dates.py:38 GTG/tools/dates.py:95 GTG/tools/dates.py:137
-msgid "now"
-msgstr "сейчас"
-
-#: GTG/tests/test_dates.py:39 GTG/tools/dates.py:96 GTG/tools/dates.py:139
-msgid "soon"
-msgstr "скоро"
-
-#: GTG/tests/test_dates.py:39 GTG/tools/dates.py:97 GTG/tools/dates.py:141
-msgid "later"
-msgstr "позже"
-
-#: GTG/tools/dates.py:50
-msgid "Today"
-msgstr "Сегодня"
-
-#: GTG/tools/dates.py:53
-#, python-format
-msgid "Yesterday"
-msgid_plural "%(days)d days ago"
-msgstr[0] "Вчера"
-msgstr[1] "%(days)d дня назад"
-msgstr[2] "%(days)d дней назад"
-
-#: GTG/tools/dates.py:56
-#, python-format
-msgid "Tomorrow"
-msgid_plural "In %(days)d days"
-msgstr[0] "В течение %(days)d дня"
-msgstr[1] "В течение %(days)d дней"
-msgstr[2] "В течение %(days)d дней"
-
-#: GTG/tools/dates.py:187
-msgid "monday"
-msgstr "понедельник"
-
-#: GTG/tools/dates.py:187
-msgid "tuesday"
-msgstr "вторник"
-
-#: GTG/tools/dates.py:187
-msgid "wednesday"
-msgstr "среда"
-
-#: GTG/tools/dates.py:188
-msgid "thursday"
-msgstr "четверг"
-
-#: GTG/tools/dates.py:188
-msgid "friday"
-msgstr "пятница"
-
-#: GTG/tools/dates.py:188
-msgid "saturday"
-msgstr "суббота"
-
-#: GTG/tools/dates.py:189
-msgid "sunday"
-msgstr "воскресенье"
-
-#: GTG/tools/dates.py:196
-msgid "today"
-msgstr "сегодня"
-
-#: GTG/tools/dates.py:197
-msgid "tomorrow"
-msgstr "завтра"
-
-#: GTG/tools/dates.py:198
-msgid "next week"
-msgstr "следующая неделя"
-
-#: GTG/tools/dates.py:199
-msgid "next month"
-msgstr "следующй месяц"
-
-#: GTG/tools/dates.py:200
-msgid "next year"
-msgstr "следующий год"
+" завершился ошибкой. Пожалуйста, сообщите об этой ошибке на <a "
+"href=\"http://bugs.edge.launchpad.net/gtg\">нашей странице в Launchpad</a>. "
+"Если у вас установлено приложение Apport, оно будет вызвано автоматически."
 
 #~ msgid "New Note"
 #~ msgstr "Новая заметка"
@@ -1563,9 +1594,6 @@ msgstr "следующий год"
 
 #~ msgid "Thank you for trying out GTG :-)"
 #~ msgstr "Благодарим за использование GTG :-)"
-
-#~ msgid "It becomes yellow, it's a tag."
-#~ msgstr "Оно станет жёлтым, это метка"
 
 #~ msgid "Also, marking a parent as done will mark all the subtasks as done."
 #~ msgstr ""
@@ -1585,22 +1613,29 @@ msgstr "следующий год"
 #~ "Это задача не имеет открытых подзадач. т.е.  вы можете работать "
 #~ "непосредственно по этой задаче."
 
-#~ msgid ""
-#~ "GTG is still very alpha software. We like it and use it everyday but you "
-#~ "will encounter some bugs."
-#~ msgstr ""
-#~ "GTG всё ещё очень сырая программа. Мы бы хотели чтобы вы ей пользовались "
-#~ "каждый день, но вы можете столкнуться с разными ошибками."
-
 #~ msgid "Due today !"
 #~ msgstr "Сегодня!"
 
-#~ msgid ""
-#~ "If you have some trouble with GTG, we might be able to help you or to solve "
-#~ "your problem really quickly."
-#~ msgstr ""
-#~ "Если у вас есть проблемы с GTG мы можем помочь или исправить ошибку весьма "
-#~ "быстро."
+#~ msgid "wednesday"
+#~ msgstr "среда"
+
+#~ msgid "thursday"
+#~ msgstr "четверг"
+
+#~ msgid "monday"
+#~ msgstr "понедельник"
+
+#~ msgid "tuesday"
+#~ msgstr "вторник"
+
+#~ msgid "friday"
+#~ msgstr "пятница"
+
+#~ msgid "saturday"
+#~ msgstr "суббота"
+
+#~ msgid "sunday"
+#~ msgstr "воскресенье"
 
 #~ msgid ""
 #~ "In the task description (this window), if you begin a line with &quot;-"
@@ -1632,6 +1667,9 @@ msgstr "следующий год"
 #~ msgstr ""
 #~ "Поэтому список задач показывает задачи, которыми вы должны заниматься прямо "
 #~ "сейчас."
+
+#~ msgid "Keep as Note"
+#~ msgstr "Оставить как заметку"
 
 #~ msgid "Deleting tasks from gtg.."
 #~ msgstr "Удаление задач из gtg.."
@@ -1757,17 +1795,6 @@ msgstr "следующий год"
 #~ msgstr "Невозможно загрузить файл шаблона"
 
 #~ msgid ""
-#~ "Tags are useful to sort your tasks. In the view menu, you can enable a "
-#~ "sidebar which displays all the tags you are using so you can easily see "
-#~ "tasks assigned to a given tag. There's no limit to the number of tags a task "
-#~ "can have."
-#~ msgstr ""
-#~ "Метки полезны для сортировки ваших задач. В меню Вид вы можете "
-#~ "активизировать Панель меток, на которой отображены все используемые вами "
-#~ "метки, так что вы можете с легкостью видеть задачи, назначенные заданной "
-#~ "метке. Число меток, которые может иметь задача, неограничено."
-
-#~ msgid ""
 #~ "Some concepts come with subtasks: for example, a subtask's due date can "
 #~ "never be after its parent's due date."
 #~ msgstr ""
@@ -1806,14 +1833,14 @@ msgstr "следующий год"
 #~ msgid "Updating changed tasks.."
 #~ msgstr "Обновление измененных задач.."
 
-#~ msgid "Permanently remove task"
-#~ msgstr "Удалить задачу полностью"
+#~ msgid "Are you sure you want to delete these tasks?"
+#~ msgstr "Вы точно хотите удалить эти задачи?"
 
-#~ msgid "Are you sure you want to delete this task?"
-#~ msgstr "Вы действительно хотите удалить эту задачу?"
-
-#~ msgid "Keep selected task"
+#~ msgid "Keep selected tasks"
 #~ msgstr "Оставить выбранные задачи"
+
+#~ msgid "Permanently remove tasks"
+#~ msgstr "Полностью удалить задачи"
 
 #~ msgid "GTG has the ability to add plugins to extend it's core functionality."
 #~ msgstr "Добавление модулей расширяет возможности GTG."
@@ -1824,12 +1851,6 @@ msgstr "следующий год"
 #~ msgstr ""
 #~ "Строка для быстрого добавления — это самый быстрый способ создания задачи. "
 #~ "Её можно отключить или включить в меню «Вид»."
-
-#~ msgid ""
-#~ "Deleting a task cannot be undone, and will delete the following task: "
-#~ msgstr ""
-#~ "Удаление задачи не может быть отменено и повлечёт за собой удаление "
-#~ "следующих задач: "
 
 #~ msgid ""
 #~ "For adding a task you just have to type its title in the entry and press "
@@ -1899,13 +1920,6 @@ msgstr "следующий год"
 #~ "после создания подзадачи). Конечно, вы в любой момент можете изменить метки "
 #~ "данной конкретной подзадачи. Они никогда не изменятся родительской задачей."
 
-#~ msgid ""
-#~ "tags:tag1,tag2,tag3 : This way you can apply as many tags as you wish using "
-#~ "comma as separator"
-#~ msgstr ""
-#~ "tags:tag1,tag2,tag3 : Таким образом можно добавить сколько угодно меток, "
-#~ "разделяя их запятыми."
-
 #~ msgid "If a word begins with @, it is interpreted as a tag."
 #~ msgstr ""
 #~ "Если слово начинается с символа @, то оно интерпретируется как метка."
@@ -1934,8 +1948,17 @@ msgstr "следующий год"
 #~ msgid "Downloading task list..."
 #~ msgstr "Загружается список задач..."
 
+#~ msgid "Copyrights&#xA9; 2008, 2009 Lionel Dricot, Bertrand Rousseau"
+#~ msgstr "&#xA9; Lionel Dricot, Bertrand Rousseau, 2008—2009"
+
 #~ msgid "View Notes"
 #~ msgstr "Просмотреть заметки"
+
+#~ msgid ""
+#~ "Deleting a task cannot be undone, and will delete the following tasks: "
+#~ msgstr ""
+#~ "Удаление задачи не может быть отменено и повлечёт за собой удаление "
+#~ "следующих задач: "
 
 #~ msgid ""
 #~ "If you press the &quot;Workview&quot; button, only actionable tasks will be "
@@ -1945,21 +1968,56 @@ msgstr "следующий год"
 #~ "активные задачи."
 
 #~ msgid ""
-#~ "due:date or defer:date : This way you can apply a due date or a defer date. "
-#~ "date can be yyyy-mm-dd (for exemple 2009-04-01) or yyyymmdd (20090401) or "
-#~ "mmdd (0401, in this case the year is implicitly the current one) or today or "
-#~ "tomorrow or a weekday name (due:monday means due next Monday)"
-#~ msgstr ""
-#~ "due:дата или defer:дата : Таким образом задается дата выполнения или срок, "
-#~ "до которого откладывается, задача. Дата может быть в формате yyyy-mm-dd "
-#~ "(например, 2009-04-01), yyyymmdd (20090401) или mmdd (0401, в этом случае "
-#~ "используется ткущий год), либо можно указать сегодня, завтра или день недели "
-#~ "(до:понедельник означает до ближайшего понедельника)."
-
-#~ msgid ""
 #~ "If you right click on a tag in the sidebar you can also set its color. It "
 #~ "will allow you to have a more colorful list of tasks, if you want it that "
 #~ "way."
 #~ msgstr ""
 #~ "При щелчке правой кнопкой на метке в боковой панели, вы также можете выбрать "
 #~ "ее цвет. Это позволит вам сделать список задач более наглядным."
+
+#~ msgid ""
+#~ "due:date or defer:date : This way you can apply a due date or a defer date. "
+#~ "date can be yyyy-mm-dd (for exemple 2009-04-01) or yyyymmdd (20090401) or "
+#~ "mmdd (0401, in this case the year is implicitly the current one) or today or "
+#~ "tomorrow or a weekday name (due:monday means due next Monday)"
+#~ msgstr ""
+#~ "due:дата или defer:дата : Таким образом задается дата выполнения или срок, "
+#~ "до которого откладывается задача. Дата может быть в формате yyyy-mm-dd "
+#~ "(например, 2009-04-01), yyyymmdd (20090401) или mmdd (0401, в этом случае "
+#~ "используется текущий год), либо можно указать сегодня, завтра или день "
+#~ "недели (due:Monday означает «до ближайшего понедельника»)."
+
+#~ msgid ""
+#~ "tags:tag1,tag2,tag3 : This way you can apply as many tags as you wish using "
+#~ "comma as separator"
+#~ msgstr ""
+#~ "tags:метка1,метка2,метка3 : Таким образом можно добавить сколько угодно "
+#~ "меток, разделяя их запятыми."
+
+#~ msgid ""
+#~ "GTG is still very alpha software. We like it and use it everyday but you "
+#~ "will encounter some bugs."
+#~ msgstr ""
+#~ "GTG — всё ещё очень сырая программа. Мы бы хотели, чтобы вы пользовались ей "
+#~ "каждый день, но вы можете столкнуться с разными ошибками."
+
+#~ msgid ""
+#~ "If you have some trouble with GTG, we might be able to help you or to solve "
+#~ "your problem really quickly."
+#~ msgstr ""
+#~ "Если вы испытываете затруднения с GTG, мы можем помочь вам или решить вашу "
+#~ "проблему весьма быстро."
+
+#~ msgid "It becomes yellow, it's a tag."
+#~ msgstr "Оно станет жёлтым. Это метка."
+
+#~ msgid ""
+#~ "Tags are useful to sort your tasks. In the view menu, you can enable a "
+#~ "sidebar which displays all the tags you are using so you can easily see "
+#~ "tasks assigned to a given tag. There's no limit to the number of tags a task "
+#~ "can have."
+#~ msgstr ""
+#~ "Метки полезны для сортировки ваших задач. В меню Вид вы можете включить "
+#~ "Панель меток, на которой отображены все используемые вами метки, так что вы "
+#~ "можете с легкостью видеть задачи, назначенные заданной метке. Число меток, "
+#~ "которые может иметь задача, неограничено."
