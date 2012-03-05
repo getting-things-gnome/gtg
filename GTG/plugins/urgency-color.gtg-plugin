@@ -1,0 +1,16 @@
+[GTG Plugin]
+Module=urgency_color
+Name=Urgency Color
+Short-description="Task urgency color-coding"
+Description='''This plugin will calculate the urgency status of every of your currently active tasks and color-code it accordingly.
+
+Color code
+
+Assuming your settings are default:
+Red means you are within the last 30% of days between the start-date and due-date, or your task is overdue.
+Yellow means your task's start-date has passed.
+Green means your task's start-date is oncoming.
+'''
+Authors=Wolter Hellmund <wolterh6@gmail.com>
+Version=0.1
+Enabled=False

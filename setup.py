@@ -142,6 +142,7 @@ setup(
     'GTG.plugins.send_email',
     'GTG.plugins.tomboy',
     'GTG.plugins.import_json',
+    'GTG.plugins.urgency_color'
     ],
   package_data = {
     'GTG.core.plugins': ['pluginmanager.glade'],
@@ -158,6 +159,7 @@ setup(
         'send-email.gtg-plugin',
         'tomboy.gtg-plugin',
         'import-json.gtg-plugin',
+        'urgency-color.gtg-plugin'
         ],
     'GTG.plugins.export': ['export.ui',
                           './export_templates/description_pocketmod.py',

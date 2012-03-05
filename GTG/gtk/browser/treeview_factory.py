@@ -411,6 +411,16 @@ class TreeviewFactory():
     #to both active and closed tasks treeview
     def common_desc_for_tasks(self,tree):
         desc = {}
+
+        #invisible 'task_id' column
+        col_name = 'task_id'
+        col = {}
+        col['renderer'] = ['markup', gtk.CellRendererText()]
+        col['value'] = [str, lambda node: node.get_id()]
+        col['visible'] = False
+        col['order'] = 0
+        desc[col_name] = col
+
         #invisible 'title' column
         col_name = 'title'
         col = {}
