@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-02-15 10:46+0100\n"
+"POT-Creation-Date: 2012-03-05 10:48+0100\n"
 "PO-Revision-Date: 2011-04-11 13:22+0000\n"
 "Last-Translator: Daniel Tiecher <morubidu.angeru@gmail.com>\n"
 "Language-Team: Brazilian Portuguese <gnome-pt_br-list@gnome.org>\n"
@@ -14,8 +14,8 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Launchpad-Export-Date: 2012-02-16 05:09+0000\n"
-"X-Generator: Launchpad (build 14781)\n"
+"X-Launchpad-Export-Date: 2012-03-06 04:50+0000\n"
+"X-Generator: Launchpad (build 14900)\n"
 "Language: pt_BR\n"
 
 #: GTG/plugins/notification_area/notification_area.py:120
@@ -194,11 +194,11 @@ msgstr ""
 "Tomboy/Gnote não encontrado. Por favor, instale-o ou desabilite o plugin "
 "Tomboy/Gnote no GTG"
 
-#: GTG/plugins/tomboy/tomboy.py:122
+#: GTG/plugins/tomboy/tomboy.py:121
 msgid "Add Tomboy note"
 msgstr "Adicionar nota do Tomboy"
 
-#: GTG/plugins/tomboy/tomboy.py:196
+#: GTG/plugins/tomboy/tomboy.py:194
 msgid ""
 " was found on the system, but it doesn't provide a dbus interface. the "
 "Tomboy/Gnote plugin will not work with it."
@@ -206,32 +206,37 @@ msgstr ""
 " foi encontrado no sistema, mas não provê uma interface dbus. O plug-in "
 "Tomboy/Gnote não funcionará com ele."
 
-#: GTG/plugins/tomboy/tomboy.py:243
+#: GTG/plugins/tomboy/tomboy.py:241
 msgid "That note does not exist!"
 msgstr "Esta nota não existe!"
 
-#: GTG/plugins/tomboy/tomboy.py:248
+#: GTG/plugins/tomboy/tomboy.py:246
 msgid "That note does not exist. Do you want to create a new one?"
 msgstr "Esta nota não existe. Você deseja criar agora?"
 
-#: GTG/plugins/tomboy/tomboy.py:276
+#: GTG/plugins/tomboy/tomboy.py:274
 msgid "This Tomboy note does not exist anymore. Do you want to create it?"
 msgstr "Esta nota do Tomboy não existe mais. Você deseja criá-la?"
 
-#: GTG/tests/test_dates.py:38 GTG/core/search.py:93 GTG/tools/dates.py:95
-#: GTG/tools/dates.py:137
+#: GTG/tests/test_dates.py:51 GTG/tests/test_dates.py:58 GTG/core/search.py:92
+#: GTG/tools/dates.py:38 GTG/tools/dates.py:46
 msgid "now"
 msgstr "agora"
 
-#: GTG/tests/test_dates.py:39 GTG/core/search.py:94 GTG/tools/dates.py:96
-#: GTG/tools/dates.py:139
+#: GTG/tests/test_dates.py:52 GTG/tests/test_dates.py:59 GTG/core/search.py:93
+#: GTG/tools/dates.py:39 GTG/tools/dates.py:48
 msgid "soon"
 msgstr "em breve"
 
-#: GTG/tests/test_dates.py:39 GTG/core/search.py:95 GTG/tools/dates.py:97
-#: GTG/tools/dates.py:141
+#: GTG/tests/test_dates.py:53 GTG/tools/dates.py:50
 msgid "later"
 msgstr "depois"
+
+#: GTG/tests/test_dates.py:54 GTG/tests/test_dates.py:60
+#: GTG/tests/test_dates.py:61 GTG/core/search.py:94 GTG/tools/dates.py:40
+#: GTG/tools/dates.py:52
+msgid "someday"
+msgstr ""
 
 #: GTG/backends/backend_identica.py:54
 msgid "Identi.ca"
@@ -620,96 +625,124 @@ msgid ""
 "If a word begins with @, it is interpreted as a tag."
 msgstr ""
 
-#: GTG/core/search.py:86
+#: GTG/core/search.py:85
 msgid "not"
 msgstr ""
 
-#: GTG/core/search.py:87
+#: GTG/core/search.py:86
 msgid "or"
 msgstr ""
 
-#: GTG/core/search.py:88
+#: GTG/core/search.py:87
 msgid "after"
 msgstr ""
 
-#: GTG/core/search.py:89
+#: GTG/core/search.py:88
 msgid "before"
 msgstr ""
 
-#: GTG/core/search.py:90 GTG/tools/dates.py:192
+#: GTG/core/search.py:89 GTG/tools/dates.py:238
 msgid "today"
 msgstr "todos os dias"
 
-#: GTG/core/search.py:91 GTG/tools/dates.py:193
+#: GTG/core/search.py:90 GTG/tools/dates.py:240
 msgid "tomorrow"
 msgstr "amanhã"
 
-#: GTG/core/search.py:92
+#: GTG/core/search.py:91
 msgid "nodate"
 msgstr ""
 
-#: GTG/core/task.py:60
+#: GTG/core/task.py:56
 msgid "My new task"
 msgstr "Minha nova tarefa"
 
-#: GTG/core/task.py:169
+#: GTG/core/task.py:165
 msgid "tags"
 msgstr "etiquetas"
 
-#: GTG/core/task.py:169
+#: GTG/core/task.py:165
 msgid "tag"
 msgstr "etiqueta"
 
-#: GTG/core/task.py:175
+#: GTG/core/task.py:171
 msgid "defer"
 msgstr "adiar"
 
-#: GTG/core/task.py:180
+#: GTG/core/task.py:177
 msgid "due"
 msgstr "conclusão"
 
-#: GTG/core/treefactory.py:80
+#: GTG/core/treefactory.py:79
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:70
 msgid "All tasks"
 msgstr "Todas as tarefas"
 
-#: GTG/core/treefactory.py:91
+#: GTG/core/treefactory.py:90
 msgid "Tasks with no tags"
 msgstr "Tarefas sem etiquetas"
 
-#: GTG/core/treefactory.py:103 GTG/gtk/browser/browser.py:1665
+#: GTG/core/treefactory.py:102 GTG/gtk/browser/browser.py:1654
 msgid "Search"
 msgstr ""
 
-#: GTG/tools/dates.py:50
+#: GTG/tools/dates.py:242
+msgid "next week"
+msgstr "próxima semana"
+
+#: GTG/tools/dates.py:244
+msgid "next month"
+msgstr "próximo mês"
+
+#: GTG/tools/dates.py:246
+msgid "next year"
+msgstr "próximo ano"
+
+#: GTG/tools/dates.py:251
+msgid "Monday"
+msgstr ""
+
+#: GTG/tools/dates.py:252
+msgid "Tuesday"
+msgstr ""
+
+#: GTG/tools/dates.py:253
+msgid "Wednesday"
+msgstr ""
+
+#: GTG/tools/dates.py:254
+msgid "Thursday"
+msgstr ""
+
+#: GTG/tools/dates.py:255
+msgid "Friday"
+msgstr ""
+
+#: GTG/tools/dates.py:256
+msgid "Saturday"
+msgstr ""
+
+#: GTG/tools/dates.py:257
+msgid "Sunday"
+msgstr ""
+
+#: GTG/tools/dates.py:293
 msgid "Today"
 msgstr "Hoje"
 
-#: GTG/tools/dates.py:53
+#: GTG/tools/dates.py:296
 #, python-format
 msgid "Yesterday"
 msgid_plural "%(days)d days ago"
 msgstr[0] "Ontem"
 msgstr[1] "Há %(days)d dias atrás"
 
-#: GTG/tools/dates.py:56
+#: GTG/tools/dates.py:299
 #, python-format
 msgid "Tomorrow"
 msgid_plural "In %(days)d days"
 msgstr[0] "Amanhã"
 msgstr[1] "Em %(days)d dias"
-
-#: GTG/tools/dates.py:194
-msgid "next week"
-msgstr "próxima semana"
-
-#: GTG/tools/dates.py:195
-msgid "next month"
-msgstr "próximo mês"
-
-#: GTG/tools/dates.py:196
-msgid "next year"
-msgstr "próximo ano"
 
 #: GTG/gtg.py:84
 msgid "gtg is already running!"
@@ -795,7 +828,7 @@ msgid_plural "Authors"
 msgstr[0] ""
 msgstr[1] ""
 
-#: GTG/gtk/backends_dialog/__init__.py:287
+#: GTG/gtk/backends_dialog/__init__.py:285
 #, python-format
 msgid "Do you really want to remove the backend '%s'?"
 msgstr ""
@@ -969,43 +1002,43 @@ msgstr ""
 msgid "Continue"
 msgstr ""
 
-#: GTG/gtk/browser/treeview_factory.py:287
+#: GTG/gtk/browser/treeview_factory.py:277
 #: GTG/gtk/browser/taskbrowser.glade.h:39
 msgid "Tags"
 msgstr "Etiquetas"
 
-#: GTG/gtk/browser/treeview_factory.py:375
+#: GTG/gtk/browser/treeview_factory.py:365
 msgid "Start date"
 msgstr "Data de início"
 
-#: GTG/gtk/browser/treeview_factory.py:386
+#: GTG/gtk/browser/treeview_factory.py:376
 msgid "Due"
 msgstr "Prazo"
 
-#: GTG/gtk/browser/treeview_factory.py:406
+#: GTG/gtk/browser/treeview_factory.py:396
 msgid "Closed date"
 msgstr ""
 
-#: GTG/gtk/browser/treeview_factory.py:451
+#: GTG/gtk/browser/treeview_factory.py:441
 msgid "Title"
 msgstr "Título"
 
-#: GTG/gtk/browser/browser.py:601
+#: GTG/gtk/browser/browser.py:599
 msgid "no active tasks"
 msgstr "sem tarefas ativas"
 
-#: GTG/gtk/browser/browser.py:603
+#: GTG/gtk/browser/browser.py:601
 #, python-format
 msgid "%(tasks)d active task"
 msgid_plural "%(tasks)d active tasks"
 msgstr[0] "%(tasks)d tarefa ativa"
 msgstr[1] "%(tasks)d tarefas ativas"
 
-#: GTG/gtk/browser/browser.py:1663
+#: GTG/gtk/browser/browser.py:1652
 msgid "Add Task"
 msgstr ""
 
-#: GTG/gtk/browser/browser.py:1664
+#: GTG/gtk/browser/browser.py:1653
 msgid "Open Task"
 msgstr ""
 
@@ -1297,11 +1330,11 @@ msgid "_clear start date"
 msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:57
-msgid "_later"
+msgid "_now"
 msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:58
-msgid "_now"
+msgid "_someday"
 msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:59
@@ -1328,32 +1361,32 @@ msgstr "próximo a_no"
 msgid "t_oday"
 msgstr "h_oje"
 
-#: GTG/gtk/editor/editor.py:302
+#: GTG/gtk/editor/editor.py:295
 #, python-format
 msgid "Completed %(days)d day late"
 msgid_plural "Completed %(days)d days late"
 msgstr[0] "Completa com  %(days)d dia de atraso"
 msgstr[1] "Concluído com %(days)d dias de atraso"
 
-#: GTG/gtk/editor/editor.py:305
+#: GTG/gtk/editor/editor.py:298
 #, python-format
 msgid "Completed %(days)d day early"
 msgid_plural "Completed %(days)d days early"
 msgstr[0] "Concluído %(days)d dia mais cedo"
 msgstr[1] "Concluído %(days)d dias mais cedo"
 
-#: GTG/gtk/editor/editor.py:311
+#: GTG/gtk/editor/editor.py:305
 #, python-format
 msgid "Due tomorrow!"
 msgid_plural "%(days)d days left"
 msgstr[0] "Para amanhã!"
 msgstr[1] "%(days)d dias restantes"
 
-#: GTG/gtk/editor/editor.py:313
+#: GTG/gtk/editor/editor.py:307
 msgid "Due today!"
 msgstr "Para hoje!"
 
-#: GTG/gtk/editor/editor.py:316
+#: GTG/gtk/editor/editor.py:310
 #, python-format
 msgid "Due yesterday!"
 msgid_plural "Was %(days)d days ago"

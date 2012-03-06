@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2012-02-15 10:46+0100\n"
+"POT-Creation-Date: 2012-03-05 10:48+0100\n"
 "PO-Revision-Date: 2011-11-08 06:32+0000\n"
 "Last-Translator: Algimantas Margevičius <Unknown>\n"
 "Language-Team: Lithuanian <lt@li.org>\n"
@@ -16,8 +16,8 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "(n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Launchpad-Export-Date: 2012-02-16 05:09+0000\n"
-"X-Generator: Launchpad (build 14781)\n"
+"X-Launchpad-Export-Date: 2012-03-06 04:49+0000\n"
+"X-Generator: Launchpad (build 14900)\n"
 
 #: GTG/plugins/notification_area/notification_area.py:120
 msgid "_View Main Window"
@@ -194,42 +194,47 @@ msgid ""
 msgstr ""
 "Tomboy/Gnote nerastas. Įdiekite jį arba išjunkite GTG Tomboy/Gnote įskiepį."
 
-#: GTG/plugins/tomboy/tomboy.py:122
+#: GTG/plugins/tomboy/tomboy.py:121
 msgid "Add Tomboy note"
 msgstr "Pridėti Tomboy raštelį"
 
-#: GTG/plugins/tomboy/tomboy.py:196
+#: GTG/plugins/tomboy/tomboy.py:194
 msgid ""
 " was found on the system, but it doesn't provide a dbus interface. the "
 "Tomboy/Gnote plugin will not work with it."
 msgstr " rastas, bet nepateikia dbus sąsajos. Tomboy/Gnote įskiepis neveiks."
 
-#: GTG/plugins/tomboy/tomboy.py:243
+#: GTG/plugins/tomboy/tomboy.py:241
 msgid "That note does not exist!"
 msgstr "Nėra tokio raštelio!"
 
-#: GTG/plugins/tomboy/tomboy.py:248
+#: GTG/plugins/tomboy/tomboy.py:246
 msgid "That note does not exist. Do you want to create a new one?"
 msgstr "Nėra tokio raštelio. Ar norite sukurti naują?"
 
-#: GTG/plugins/tomboy/tomboy.py:276
+#: GTG/plugins/tomboy/tomboy.py:274
 msgid "This Tomboy note does not exist anymore. Do you want to create it?"
 msgstr "Šio Tomboy raštelio nebėra. Ar norite jį sukurti?"
 
-#: GTG/tests/test_dates.py:38 GTG/core/search.py:93 GTG/tools/dates.py:95
-#: GTG/tools/dates.py:137
+#: GTG/tests/test_dates.py:51 GTG/tests/test_dates.py:58 GTG/core/search.py:92
+#: GTG/tools/dates.py:38 GTG/tools/dates.py:46
 msgid "now"
 msgstr "dabar"
 
-#: GTG/tests/test_dates.py:39 GTG/core/search.py:94 GTG/tools/dates.py:96
-#: GTG/tools/dates.py:139
+#: GTG/tests/test_dates.py:52 GTG/tests/test_dates.py:59 GTG/core/search.py:93
+#: GTG/tools/dates.py:39 GTG/tools/dates.py:48
 msgid "soon"
 msgstr "netrukus"
 
-#: GTG/tests/test_dates.py:39 GTG/core/search.py:95 GTG/tools/dates.py:97
-#: GTG/tools/dates.py:141
+#: GTG/tests/test_dates.py:53 GTG/tools/dates.py:50
 msgid "later"
 msgstr "vėliau"
+
+#: GTG/tests/test_dates.py:54 GTG/tests/test_dates.py:60
+#: GTG/tests/test_dates.py:61 GTG/core/search.py:94 GTG/tools/dates.py:40
+#: GTG/tools/dates.py:52
+msgid "someday"
+msgstr ""
 
 #: GTG/backends/backend_identica.py:54
 msgid "Identi.ca"
@@ -590,72 +595,112 @@ msgid ""
 "If a word begins with @, it is interpreted as a tag."
 msgstr ""
 
-#: GTG/core/search.py:86
+#: GTG/core/search.py:85
 msgid "not"
 msgstr ""
 
-#: GTG/core/search.py:87
+#: GTG/core/search.py:86
 msgid "or"
 msgstr ""
 
-#: GTG/core/search.py:88
+#: GTG/core/search.py:87
 msgid "after"
 msgstr ""
 
-#: GTG/core/search.py:89
+#: GTG/core/search.py:88
 msgid "before"
 msgstr ""
 
-#: GTG/core/search.py:90 GTG/tools/dates.py:192
+#: GTG/core/search.py:89 GTG/tools/dates.py:238
 msgid "today"
 msgstr "šiandien"
 
-#: GTG/core/search.py:91 GTG/tools/dates.py:193
+#: GTG/core/search.py:90 GTG/tools/dates.py:240
 msgid "tomorrow"
 msgstr "rytoj"
 
-#: GTG/core/search.py:92
+#: GTG/core/search.py:91
 msgid "nodate"
 msgstr ""
 
-#: GTG/core/task.py:60
+#: GTG/core/task.py:56
 msgid "My new task"
 msgstr "Mano nauja užduotis"
 
-#: GTG/core/task.py:169
+#: GTG/core/task.py:165
 msgid "tags"
 msgstr "žymos"
 
-#: GTG/core/task.py:169
+#: GTG/core/task.py:165
 msgid "tag"
 msgstr "žyma"
 
-#: GTG/core/task.py:175
+#: GTG/core/task.py:171
 msgid "defer"
 msgstr "atidėti"
 
-#: GTG/core/task.py:180
+#: GTG/core/task.py:177
 msgid "due"
 msgstr "atliktina"
 
-#: GTG/core/treefactory.py:80
+#: GTG/core/treefactory.py:79
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:70
 msgid "All tasks"
 msgstr "Visos užduotys"
 
-#: GTG/core/treefactory.py:91
+#: GTG/core/treefactory.py:90
 msgid "Tasks with no tags"
 msgstr "Užduotys be žymų"
 
-#: GTG/core/treefactory.py:103 GTG/gtk/browser/browser.py:1665
+#: GTG/core/treefactory.py:102 GTG/gtk/browser/browser.py:1654
 msgid "Search"
 msgstr ""
 
-#: GTG/tools/dates.py:50
+#: GTG/tools/dates.py:242
+msgid "next week"
+msgstr "kitą savaitę"
+
+#: GTG/tools/dates.py:244
+msgid "next month"
+msgstr "kitą mėnesį"
+
+#: GTG/tools/dates.py:246
+msgid "next year"
+msgstr "kitais metais"
+
+#: GTG/tools/dates.py:251
+msgid "Monday"
+msgstr ""
+
+#: GTG/tools/dates.py:252
+msgid "Tuesday"
+msgstr ""
+
+#: GTG/tools/dates.py:253
+msgid "Wednesday"
+msgstr ""
+
+#: GTG/tools/dates.py:254
+msgid "Thursday"
+msgstr ""
+
+#: GTG/tools/dates.py:255
+msgid "Friday"
+msgstr ""
+
+#: GTG/tools/dates.py:256
+msgid "Saturday"
+msgstr ""
+
+#: GTG/tools/dates.py:257
+msgid "Sunday"
+msgstr ""
+
+#: GTG/tools/dates.py:293
 msgid "Today"
 msgstr "Šiandien"
 
-#: GTG/tools/dates.py:53
+#: GTG/tools/dates.py:296
 #, python-format
 msgid "Yesterday"
 msgid_plural "%(days)d days ago"
@@ -663,25 +708,13 @@ msgstr[0] "Vakar"
 msgstr[1] "Prieš %(days)d dienų"
 msgstr[2] "Prieš %(days)d dienų"
 
-#: GTG/tools/dates.py:56
+#: GTG/tools/dates.py:299
 #, python-format
 msgid "Tomorrow"
 msgid_plural "In %(days)d days"
 msgstr[0] "Rytoj"
 msgstr[1] "Po %(days)d dienų"
 msgstr[2] "Po %(days)d dienų"
-
-#: GTG/tools/dates.py:194
-msgid "next week"
-msgstr "kitą savaitę"
-
-#: GTG/tools/dates.py:195
-msgid "next month"
-msgstr "kitą mėnesį"
-
-#: GTG/tools/dates.py:196
-msgid "next year"
-msgstr "kitais metais"
 
 #: GTG/gtg.py:84
 msgid "gtg is already running!"
@@ -767,7 +800,7 @@ msgid_plural "Authors"
 msgstr[0] ""
 msgstr[1] ""
 
-#: GTG/gtk/backends_dialog/__init__.py:287
+#: GTG/gtk/backends_dialog/__init__.py:285
 #, python-format
 msgid "Do you really want to remove the backend '%s'?"
 msgstr ""
@@ -941,32 +974,32 @@ msgstr ""
 msgid "Continue"
 msgstr ""
 
-#: GTG/gtk/browser/treeview_factory.py:287
+#: GTG/gtk/browser/treeview_factory.py:277
 #: GTG/gtk/browser/taskbrowser.glade.h:39
 msgid "Tags"
 msgstr "Žymos"
 
-#: GTG/gtk/browser/treeview_factory.py:375
+#: GTG/gtk/browser/treeview_factory.py:365
 msgid "Start date"
 msgstr "Pradžios data"
 
-#: GTG/gtk/browser/treeview_factory.py:386
+#: GTG/gtk/browser/treeview_factory.py:376
 msgid "Due"
 msgstr "Atlikti iki"
 
-#: GTG/gtk/browser/treeview_factory.py:406
+#: GTG/gtk/browser/treeview_factory.py:396
 msgid "Closed date"
 msgstr ""
 
-#: GTG/gtk/browser/treeview_factory.py:451
+#: GTG/gtk/browser/treeview_factory.py:441
 msgid "Title"
 msgstr "Pavadinimas"
 
-#: GTG/gtk/browser/browser.py:601
+#: GTG/gtk/browser/browser.py:599
 msgid "no active tasks"
 msgstr "nėra aktyvių užduočių"
 
-#: GTG/gtk/browser/browser.py:603
+#: GTG/gtk/browser/browser.py:601
 #, python-format
 msgid "%(tasks)d active task"
 msgid_plural "%(tasks)d active tasks"
@@ -974,11 +1007,11 @@ msgstr[0] "%(tasks)d aktyvi užduotis"
 msgstr[1] "%(tasks)d aktyvios užduotys"
 msgstr[2] "%(tasks)d aktyvių užduočių"
 
-#: GTG/gtk/browser/browser.py:1663
+#: GTG/gtk/browser/browser.py:1652
 msgid "Add Task"
 msgstr ""
 
-#: GTG/gtk/browser/browser.py:1664
+#: GTG/gtk/browser/browser.py:1653
 msgid "Open Task"
 msgstr ""
 
@@ -1270,11 +1303,11 @@ msgid "_clear start date"
 msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:57
-msgid "_later"
+msgid "_now"
 msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:58
-msgid "_now"
+msgid "_someday"
 msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:59
@@ -1301,7 +1334,7 @@ msgstr "kitais m_etais"
 msgid "t_oday"
 msgstr "_šiandien"
 
-#: GTG/gtk/editor/editor.py:302
+#: GTG/gtk/editor/editor.py:295
 #, python-format
 msgid "Completed %(days)d day late"
 msgid_plural "Completed %(days)d days late"
@@ -1309,7 +1342,7 @@ msgstr[0] "Užbaigta %(days)d diena per vėlai"
 msgstr[1] "Užbaigta %(days)d dienomis per vėlai"
 msgstr[2] "Užbaigta %(days)d dienų per vėlai"
 
-#: GTG/gtk/editor/editor.py:305
+#: GTG/gtk/editor/editor.py:298
 #, python-format
 msgid "Completed %(days)d day early"
 msgid_plural "Completed %(days)d days early"
@@ -1317,18 +1350,18 @@ msgstr[0] "Užbaigta %(days)d diena anksčiau"
 msgstr[1] "Užbaigta %(days)d dienomis anksčiau"
 msgstr[2] "Užbaigta %(days)d dienų anksčiau"
 
-#: GTG/gtk/editor/editor.py:311
+#: GTG/gtk/editor/editor.py:305
 #, python-format
 msgid "Due tomorrow!"
 msgid_plural "%(days)d days left"
 msgstr[0] ""
 msgstr[1] ""
 
-#: GTG/gtk/editor/editor.py:313
+#: GTG/gtk/editor/editor.py:307
 msgid "Due today!"
 msgstr ""
 
-#: GTG/gtk/editor/editor.py:316
+#: GTG/gtk/editor/editor.py:310
 #, python-format
 msgid "Due yesterday!"
 msgid_plural "Was %(days)d days ago"
