@@ -183,7 +183,6 @@ class NotificationArea:
             (c3, "node-deleted-inview")]
 
         self.__tree.apply_filter('workview')
-        self.__tree.refresh_all()
 
     def __on_task_added(self, tid, path):
         self.__task_separator.show()
