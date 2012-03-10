@@ -25,6 +25,7 @@ import locale
 from GTG                              import _
 from GTG.core                         import CoreConfig
 from GTG.core.task                    import Task
+from GTG.core.search                  import parse_search_query, search_filter
 from GTG.gtk.browser.CellRendererTags import CellRendererTags
 from liblarch_gtk                     import TreeView
 from GTG.gtk                          import colors
@@ -93,6 +94,14 @@ class TreeviewFactory():
     #return an ordered list of tags of a task
     def task_tags_column(self,node):
         tags = node.get_tags()
+
+        search_parent = self.req.get_tag(CoreConfig.SEARCH_TAG)
+        for search_tag in search_parent.get_children():
+            tag = self.req.get_tag(search_tag)
+            match = search_filter(node, parse_search_query(tag.get_attribute('query')))
+            if match and search_tag not in tags:
+                tags.append(tag)
+
         tags.sort(key = lambda x: x.get_name())
         return tags
         

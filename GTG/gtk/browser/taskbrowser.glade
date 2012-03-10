@@ -1411,6 +1411,18 @@ commas.</property>
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <child>
+      <object class="GtkImageMenuItem" id="search_color">
+        <property name="label">gtk-select-color</property>
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="use_action_appearance">False</property>
+        <property name="use_underline">True</property>
+        <property name="use_stock">True</property>
+        <property name="accel_group">accelgroup1</property>
+        <signal name="activate" handler="on_colorchooser_activate" swapped="no"/>
+      </object>
+    </child>
+    <child>
       <object class="GtkImageMenuItem" id="search_delete">
         <property name="label">Delete</property>
         <property name="visible">True</property>
