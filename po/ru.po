@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2012-03-05 10:48+0100\n"
-"PO-Revision-Date: 2012-03-09 12:05+0000\n"
+"PO-Revision-Date: 2012-03-10 18:01+0000\n"
 "Last-Translator: DmDr <cardioexp@gmail.com>\n"
 "Language-Team: Russian <ru@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Launchpad-Export-Date: 2012-03-10 04:55+0000\n"
+"X-Launchpad-Export-Date: 2012-03-11 04:45+0000\n"
 "X-Generator: Launchpad (build 14914)\n"
 
 #: GTG/plugins/notification_area/notification_area.py:120
@@ -152,7 +152,9 @@ msgstr "<b>Фактор близости</b>"
 msgid ""
 "<small>Distance in kilometers from \n"
 "the current location.</small>"
-msgstr "<small>Расстояние в километрах от текущего расположения</small>"
+msgstr ""
+"<small>Расстояние в километрах \n"
+"от текущего места.</small>"
 
 #: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:5
 msgid "Associate with existing tag"
@@ -228,7 +230,7 @@ msgstr "Заметка не существует! Создать её?"
 
 #: GTG/plugins/tomboy/tomboy.py:274
 msgid "This Tomboy note does not exist anymore. Do you want to create it?"
-msgstr "Эта заметка больше не существует в Tomboy. Создать новую?"
+msgstr "Этой заметки больше нет в Tomboy. Создать заново?"
 
 #: GTG/tests/test_dates.py:51 GTG/tests/test_dates.py:58 GTG/core/search.py:92
 #: GTG/tools/dates.py:38 GTG/tools/dates.py:46
@@ -269,6 +271,9 @@ msgid ""
 "tag it with the tag you have chosen (you'll configure it later), and it will "
 "appear in GTG."
 msgstr ""
+"Это хранилище позволяет синхронизировать все или часть заметок Gnote и в "
+"GTG. Пометьте нужные заметки специальной меткой (ее можно настроить позже), "
+"и эти заметки появятся в GTG."
 
 #: GTG/backends/backend_rtm.py:54
 msgid "Remember The Milk"
@@ -290,11 +295,11 @@ msgstr ""
 
 #: GTG/backends/backend_twitter.py:54
 msgid "Twitter"
-msgstr "Твиттер"
+msgstr "Twitter"
 
 #: GTG/backends/backend_twitter.py:58
 msgid "Imports your twitter  messages into your GTG "
-msgstr "Импортирует ваши сообщения из Твиттера в GTG "
+msgstr "Импортирует ваши сообщения из Twitter в GTG "
 
 #: GTG/backends/backend_tomboy.py:41
 msgid "Tomboy"
@@ -308,7 +313,7 @@ msgid ""
 "appear in GTG."
 msgstr ""
 "Синхронизация всех или части заметок Tomboy с GTG. Пометьте заметки Tomboy, "
-"котороые нужно синхронизировать с GTG, какой-нибудь меткой (её настроим "
+"которые нужно синхронизировать с GTG, какой-нибудь меткой (её настроим "
 "позже), и они будут видны в GTG."
 
 #: GTG/backends/backend_mantis.py:42
@@ -341,7 +346,7 @@ msgstr "Сообщил(а): "
 
 #: GTG/backends/backend_mantis.py:245
 msgid "Link to issue: "
-msgstr ""
+msgstr "Ссылка на задание: "
 
 #: GTG/backends/backend_evolution.py:69
 msgid "Evolution tasks"
@@ -378,6 +383,19 @@ msgid ""
 "subtasks...): your  changes will be preserved. This is useful to add  "
 "personal annotations to bug"
 msgstr ""
+"Это хранилище позволяет синхронизировать ваши задачи (или чьи-то еще) в "
+"Launchpad и в GTG. Как только статус ошибки в Launchpad изменится, задача в "
+"GTG также будет обновлена.\n"
+"Обратите внимание! Это хранилище работает только для чтения. Поэтому, если "
+"изменить что-либо в описании ошибки, например:\n"
+"  - заголовок,\n"
+"  - описание,\n"
+"  - метки\n"
+"ваши локальные изменения <b>обязательно</b> будут перезаписаны, если задача "
+"в Launchpad будет изменена. В отличие от этого, вы можете задавать "
+"собственные значения других полей (даты начала и завершения, подзадачи и "
+"т.п.): ваши изменения будут защищены. Это полезно, чтобы делать собственные "
+"заметки к ошибкам."
 
 #: GTG/backends/backend_launchpad.py:244
 msgid "Bug"
@@ -397,35 +415,35 @@ msgstr "Всё необходимое для запуска этого расш�
 
 #: GTG/core/plugins/__init__.py:34
 msgid "The plugin can not be loaded"
-msgstr "Модуль не может быть загружен"
+msgstr "Расширение не возможно загрузить"
 
 #: GTG/core/plugins/__init__.py:35
 msgid "Some python modules are missing"
-msgstr "Отсутствуют требуемые модули python"
+msgstr "Отсутствуют нужные модули python"
 
 #: GTG/core/plugins/__init__.py:36
 msgid "Please install the following python modules:"
-msgstr "Пожалуйста, установите следующие модули python:"
+msgstr "Пожалуйста, установите модули python:"
 
 #: GTG/core/plugins/__init__.py:38
 msgid "Some remote dbus objects are missing."
-msgstr "Отсутствуют отдельные удаленные объекты dbus."
+msgstr "Отсутствуют некоторые объекты dbus."
 
 #: GTG/core/plugins/__init__.py:39
 msgid "Please start the following applications:"
-msgstr "Пожалуйста, запустите следующие приложения:"
+msgstr "Пожалуйста, запустите эти приложения:"
 
 #: GTG/core/plugins/__init__.py:41
 msgid "Some modules and remote dbus objects are missing."
-msgstr "Отсутствуют некоторые модули и удаленные объекты dbus."
+msgstr "Отсутствуют некоторые модули и объекты dbus."
 
 #: GTG/core/plugins/__init__.py:42
 msgid "Please install or start the following components:"
-msgstr "Пожалуйста, установите или запустите следующие приложения:"
+msgstr "Пожалуйста, установите или запустите приложения:"
 
 #: GTG/core/plugins/__init__.py:44
 msgid "Unknown error while loading the plugin."
-msgstr "Неизвестная ошибка при загрузке модуля."
+msgstr "Неизвестная ошибка при загрузке расширения."
 
 #: GTG/core/plugins/__init__.py:45
 msgid "Very helpful message, isn't it? Please report a bug."
@@ -640,7 +658,7 @@ msgstr ""
 
 #: GTG/core/firstrun_tasks.py:84
 msgid "Learn how to use Plugins"
-msgstr "Получить информацию об использовании расширений"
+msgstr "Как использовать расширения"
 
 #: GTG/core/firstrun_tasks.py:85
 msgid ""
@@ -823,15 +841,15 @@ msgstr "следующий год"
 
 #: GTG/tools/dates.py:251
 msgid "Monday"
-msgstr ""
+msgstr "понедельник"
 
 #: GTG/tools/dates.py:252
 msgid "Tuesday"
-msgstr ""
+msgstr "вторник"
 
 #: GTG/tools/dates.py:253
 msgid "Wednesday"
-msgstr ""
+msgstr "среда"
 
 #: GTG/tools/dates.py:254
 msgid "Thursday"
@@ -857,7 +875,7 @@ msgstr "Сегодня"
 #, python-format
 msgid "Yesterday"
 msgid_plural "%(days)d days ago"
-msgstr[0] "Вчера"
+msgstr[0] "вчера"
 msgstr[1] "%(days)d дня назад"
 msgstr[2] "%(days)d дней назад"
 
@@ -936,7 +954,7 @@ msgstr "Проверять новые задачи каждые"
 #: GTG/gtk/backends_dialog/parameters_ui/periodui.py:96
 msgid " minute"
 msgid_plural " minutes"
-msgstr[0] " минуту"
+msgstr[0] " минута"
 msgstr[1] " минуты"
 msgstr[2] " минут"
 
@@ -969,8 +987,8 @@ msgstr "К синхронизации все готово"
 msgid "Syncing your only task"
 msgid_plural "Syncing all %d tasks"
 msgstr[0] "Синхронизировать только задачу"
-msgstr[1] "Синхронизировать все %d задачи"
-msgstr[2] "Синхронизировать все %d задач"
+msgstr[1] "Синхронизировать %d задачи сразу"
+msgstr[2] "Синхронизировать %d задач сразу"
 
 #: GTG/gtk/backends_dialog/configurepanel.py:169
 #, python-format
@@ -1023,7 +1041,7 @@ msgstr "<b>Редактор задач</b>"
 
 #: GTG/gtk/preferences.glade.h:5
 msgid "Active _Plugins:"
-msgstr "Активные _модули:"
+msgstr "Акт_ивные расширения:"
 
 #: GTG/gtk/preferences.glade.h:6
 msgid "Behaviour"
