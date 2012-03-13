@@ -47,7 +47,7 @@ def import_liblarch():
 
     If not, provide information how to obtain the newest version """
 
-    git_cmd= "git clone git://github.com/ploum/liblarch.git  ../liblarch"
+    git_cmd= "git clone git://github.com/liblarch/liblarch.git  ../liblarch"
     try:
         import liblarch
         toreturn = True
