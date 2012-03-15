@@ -175,6 +175,7 @@ class Manager(object):
                 taskconfig = self.task_config, \
                 thisisnew = thisisnew,\
                 clipboard = self.clipboard)
+            tv.present()
             #registering as opened
             self.opened_task[uid] = tv
             # save that we opened this task
