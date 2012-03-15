@@ -33,6 +33,7 @@ pygtk.require('2.0')
 import gobject
 import gtk
 
+
 #our own imports
 import GTG
 from GTG.backends.backendsignals import BackendSignals
@@ -451,9 +452,9 @@ class TaskBrowser(gobject.GObject):
 #            # inferior to the "first run" width
 #            self.builder.get_object("hpaned1").set_position(250)
 #            return
-
-        width = self.config.get('width')
-        height = self.config.get('height')
+#default window size
+        width, height = self.window.get_size()
+        #height = self.window.get_size()
         if width and height:
             self.window.resize(width, height)
 
