@@ -137,6 +137,7 @@ class TaskBrowser(gobject.GObject):
         self.last_added_tags = "NewTag"
         self.last_apply_tags_to_subtasks = False
         
+        
         self.restore_state_from_conf()
 
         self.on_select_tag()
@@ -452,12 +453,12 @@ class TaskBrowser(gobject.GObject):
 #            # inferior to the "first run" width
 #            self.builder.get_object("hpaned1").set_position(250)
 #            return
-#default window size
+
 		
-	width = newWidth
-	height = newHeight
-        #width, height = self.window.get_size()
-        #height = self.window.get_size()
+	#width = newWidth
+	#height = newHeight
+        width = self.config.get('width')
+        height = self.config.get('height')
         if width and height:
             self.window.resize(width, height)
 
