@@ -453,7 +453,9 @@ class TaskBrowser(gobject.GObject):
 #            self.builder.get_object("hpaned1").set_position(250)
 #            return
 #default window size
-        width, height = self.window.get_size()
+	width = newWidth
+	height = newHeight
+        #width, height = self.window.get_size()
         #height = self.window.get_size()
         if width and height:
             self.window.resize(width, height)
@@ -674,6 +676,8 @@ class TaskBrowser(gobject.GObject):
         width, height = self.window.get_size()
         self.config.set('width',width)
         self.config.set('height',height)
+	newWidth=width
+	newHeight=height
 
     def on_bottom_pane_position(self, widget, data = None):
         self.config.set('bottom_pane_position', widget.get_position())
