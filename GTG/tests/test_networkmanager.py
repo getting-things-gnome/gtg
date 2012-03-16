@@ -1,8 +1,7 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
 # Gettings Things Gnome! - a personal organizer for the GNOME desktop
-# Copyright (c) 2008-2009 - Lionel Dricot & Bertrand Rousseau
+# Copyright (c) 2008-2012 - Lionel Dricot & Bertrand Rousseau
 #
 # This program is free software: you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -18,24 +17,15 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-""" Communicate with Network Manager over its D-Bus API
+""" Tests for Network Manager """
 
-API spec: http://projects.gnome.org/NetworkManager/developers/api/09/spec.html
-"""
+import unittest
 
-import dbus
+from GTG.tools.networkmanager import is_connection_up
 
-# A network device is connected, with global network connectivity. 
-NM_STATE_CONNECTED_GLOBAL = 70
+class TestNetworkManager(unittest.TestCase):
+    def test_is_connection_up_dont_throw_exception(self):
+        self.assertIn(is_connection_up(), [True, False])
 
-def is_connection_up():
-    """ Returns True if GTG can access the Internet """
-    bus = dbus.SystemBus()
-    proxy = bus.get_object('org.freedesktop.NetworkManager', 
-                            '/org/freedesktop/NetworkManager')
-    network_manager = dbus.Interface(proxy, 'org.freedesktop.NetworkManager')
-
-    return network_manager.state() == NM_STATE_CONNECTED_GLOBAL
-
-if __name__ == "__main__":
-    print "is_connection_up() == %s" % is_connection_up()
+def test_suite():
+    return unittest.TestLoader().loadTestsFromName(__name__)
