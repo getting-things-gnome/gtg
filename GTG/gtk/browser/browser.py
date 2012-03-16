@@ -453,6 +453,7 @@ class TaskBrowser(gobject.GObject):
 #            self.builder.get_object("hpaned1").set_position(250)
 #            return
 #default window size
+		
 	width = newWidth
 	height = newHeight
         #width, height = self.window.get_size()
