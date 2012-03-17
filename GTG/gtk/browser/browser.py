@@ -1156,13 +1156,29 @@ class TaskBrowser(gobject.GObject):
         entry_text = tag_entry.get_text()
         #use spaces and commas as separators
         new_tags = []
+        del_tags = []
         for text in entry_text.split(","):
             tags = [t.strip() for t in text.split(" ")]
             for tag in tags:
-                if tag:
-                    if not tag.startswith('@'):
-                        tag = "@" + tag 
+                if tag == "":
+                    continue
+
+                # FIXME: make sure that '!' is not allowed first character
+                # of tagname (tag handling should be unified)
+                if tag.startswith('!'):
+                    tag = tag[1:]
+                    to_add = False
+                else:
+                    to_add = True
+
+                if not tag.startswith('@'):
+                    tag = "@" + tag 
+
+                if to_add:
                     new_tags.append(tag)
+                else:
+                    del_tags.append(tag)
+
         # If the checkbox is checked, add all the subtasks to the list of
         # tasks to add.
         if apply_to_subtasks.get_active():
@@ -1179,6 +1195,8 @@ class TaskBrowser(gobject.GObject):
             task = self.req.get_task(tid)
             for new_tag in new_tags:
                 task.add_tag(new_tag)
+            for del_tag in del_tags:
+                task.remove_tag(del_tag)
             task.sync()
 
         # Rember the last actions
