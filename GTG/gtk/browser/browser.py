@@ -25,7 +25,7 @@
 import time
 import webbrowser
 import threading
-import unicodedata
+import unicodedata #FIXME this is something with diacritic
 
 import pygtk
 pygtk.require('2.0')
@@ -40,6 +40,7 @@ from GTG.core.search import parse_search_query, search_commands, InvalidQuery
 from GTG.core.task import Task
 from GTG.gtk.browser import GnomeConfig
 from GTG.gtk.browser.custominfobar import CustomInfoBar
+from GTG.gtk.browser.modifytags_dialog import ModifyTagsDialog
 from GTG.gtk.browser.treeview_factory import TreeviewFactory
 from GTG.tools import openurl
 from GTG.tools.dates import Date
@@ -75,10 +76,11 @@ class TaskBrowser(gobject.GObject):
     def __init__(self, requester, vmanager):
         gobject.GObject.__init__(self)
         # Object prime variables
-        self.req    = requester
+        self.req = requester
         self.vmanager = vmanager
         self.config = self.req.get_config('browser')
         self.tag_active = False
+        # FIXME this is not needed
         self.filter_cbs = []
         
         #treeviews handlers
@@ -129,18 +131,14 @@ class TaskBrowser(gobject.GObject):
         # Initialize search completion
         self._init_search_completion()
 
-        # Rember values from last time
-        self.last_added_tags = "NewTag"
-        self.last_apply_tags_to_subtasks = False
-        
         self.restore_state_from_conf()
 
         self.on_select_tag()
         self.browser_shown = False
         
         #Update the title when a task change
-        self.activetree.register_cllbck('node-added-inview',self._update_window_title)
-        self.activetree.register_cllbck('node-deleted-inview',self._update_window_title)
+        self.activetree.register_cllbck('node-added-inview', self._update_window_title)
+        self.activetree.register_cllbck('node-deleted-inview', self._update_window_title)
 
 ### INIT HELPER FUNCTIONS #####################################################
 #
@@ -195,10 +193,11 @@ class TaskBrowser(gobject.GObject):
 
     def _init_ui_widget(self):
         """
-        sets the main pane with the tree with active tasks
+        sets the main pane with the tree with active tasks and create ModifyTagsDialog
         """
         # The Active tasks treeview
         self.main_pane.add(self.vtree_panes['active'])
+        self.modifytags_dialog = ModifyTagsDialog(self.req)
         
     def init_tags_sidebar(self):
         """
@@ -258,8 +257,8 @@ class TaskBrowser(gobject.GObject):
                 self.on_edit_done_task,
             "on_delete_task":
                 self.on_delete_tasks,
-            "on_add_new_tag":
-                self.on_add_new_tag,
+            "on_modify_tags":
+                self.on_modify_tags,
             "on_mark_as_done":
                 self.on_mark_as_done,
             "on_mark_as_started":
@@ -300,10 +299,7 @@ class TaskBrowser(gobject.GObject):
                 self.on_size_allocate,
             "gtk_main_quit":
                 self.on_close,
-            "on_addtag_confirm":
-                self.on_addtag_confirm,
-            "on_addtag_cancel":
-                lambda x: x.hide,
+#FIXME Does somebody use this?
             "on_tag_entry_key_press_event":
                 self.on_tag_entry_key_press_event,
             "on_add_subtask":
@@ -401,7 +397,7 @@ class TaskBrowser(gobject.GObject):
         self._add_accelerator_for_widget(agr, "done_mi",        "<Control>d")
         self._add_accelerator_for_widget(agr, "dismiss_mi",     "<Control>i")
         self._add_accelerator_for_widget(agr, "delete_mi",      "Cancel")
-        self._add_accelerator_for_widget(agr, "tcm_addtag",     "<Control>t")
+        self._add_accelerator_for_widget(agr, "tcm_modifytags", "<Control>t")
         self._add_accelerator_for_widget(agr, "view_closed",    "<Control>F9")
         
         edit_button = self.builder.get_object("edit_b")
@@ -412,6 +408,7 @@ class TaskBrowser(gobject.GObject):
         key, mod = gtk.accelerator_parse("<Control>l")
         quickadd_field.add_accelerator("grab-focus", agr, key, mod, gtk.ACCEL_VISIBLE)
 
+#FIXME move this to modifytags_dialog
     def _init_tag_completion(self):
         """
         Entry completation for the add tag to a task dialog
@@ -1125,84 +1122,17 @@ class TaskBrowser(gobject.GObject):
     def on_set_due_clear(self, widget):
         self.update_due_date(widget, None)
 
-    def on_add_new_tag(self, widget=None, tid=None, tryagain = False):
+    def on_modify_tags(self, widget=None, tid=None, tryagain = False):
+        #FIXME WHY TO have all those None values?
+        #FIXME implement this!!!
         if not tid:
-            self.tids_to_addtag = self.get_selected_tasks()
+            tasks = self.get_selected_tasks()
         else:
-            self.tids_to_addtag = [tid]
+            tasks = [tid]
 
-        if not self.tids_to_addtag == [None]:
-            tag_entry = self.builder.get_object("tag_entry")
-            apply_to_subtasks = self.builder.get_object("apply_to_subtasks")
-            # We don't want to reset the text entry and checkbox if we got
-            # sent back here after a warning.
-            if not tryagain:
-                tag_entry.set_text(self.last_added_tags)
-                tag_entry.set_completion(self.tag_completion)
-                apply_to_subtasks.set_active(self.last_apply_tags_to_subtasks)
-            tag_entry.grab_focus()
-            addtag_dialog = self.builder.get_object("addtag_dialog")
-            addtag_dialog.run()
-            addtag_dialog.hide()
-            self.tids_to_addtag = None            
-        else:
-            return False
-    
-    def on_addtag_confirm(self, widget):
-        tag_entry = self.builder.get_object("tag_entry")
-        addtag_dialog = self.builder.get_object("addtag_dialog")
-        apply_to_subtasks = self.builder.get_object("apply_to_subtasks")
-        addtag_error = False
-        entry_text = tag_entry.get_text()
-        #use spaces and commas as separators
-        new_tags = []
-        del_tags = []
-        for text in entry_text.split(","):
-            tags = [t.strip() for t in text.split(" ")]
-            for tag in tags:
-                if tag == "":
-                    continue
+        self.modifytags_dialog.modify_tags(tasks)
 
-                # FIXME: make sure that '!' is not allowed first character
-                # of tagname (tag handling should be unified)
-                if tag.startswith('!'):
-                    tag = tag[1:]
-                    to_add = False
-                else:
-                    to_add = True
-
-                if not tag.startswith('@'):
-                    tag = "@" + tag 
-
-                if to_add:
-                    new_tags.append(tag)
-                else:
-                    del_tags.append(tag)
-
-        # If the checkbox is checked, add all the subtasks to the list of
-        # tasks to add.
-        if apply_to_subtasks.get_active():
-            for tid in self.tids_to_addtag:
-                task = self.req.get_task(tid)
-                # FIXME: Python not reinitialize the default value of its parameter
-                # therefore it must be done manually. This function should be refractored
-                # as far it is marked as depricated
-                for i in task.get_self_and_all_subtasks(tasks=[]):
-                    taskid = i.get_id()
-                    if taskid not in self.tids_to_addtag: 
-                        self.tids_to_addtag.append(taskid)        
-        for tid in self.tids_to_addtag:
-            task = self.req.get_task(tid)
-            for new_tag in new_tags:
-                task.add_tag(new_tag)
-            for del_tag in del_tags:
-                task.remove_tag(del_tag)
-            task.sync()
-
-        # Rember the last actions
-        self.last_added_tags = tag_entry.get_text()
-        self.last_apply_tags_to_subtasks = apply_to_subtasks.get_active()
-      
+#FIXME Does somebody use this?
     def on_tag_entry_key_press_event(self, widget, event):
         if gtk.gdk.keyval_name(event.keyval) == "Return":
             self.on_addtag_confirm()
