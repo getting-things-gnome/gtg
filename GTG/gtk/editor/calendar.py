@@ -16,17 +16,17 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
+import datetime
+
 import gobject
 import gtk
 from gtk import gdk
-import datetime
 
 from GTG.tools.dates import Date
 
+
 class GTGCalendar(gobject.GObject):
-    '''
-    Wrapper around gtk.Calendar object
-    '''
+    """ Wrapper around gtk.Calendar object """
 
     #CONSTANTS
     DATE_KIND_DUE = "due"
@@ -40,7 +40,6 @@ class GTGCalendar(gobject.GObject):
 
     __gsignals__ = {'date-changed': __signal_type__, }
 
-
     def __init__(self, gtk_builder):
         super(GTGCalendar, self).__init__()
         self.__builder = gtk_builder
@@ -53,13 +52,13 @@ class GTGCalendar(gobject.GObject):
         self.__calendar = self.__builder.get_object("calendar1")
         self.__fuzzydate_btns = self.__builder.get_object("fuzzydate_btns")
         self.__builder.get_object("button_clear").connect("clicked",
-                                    lambda w: self.__day_selected(w, ""))
+                                lambda w: self.__day_selected(w, ""))
         self.__builder.get_object("button_now").connect("clicked",
-                                    lambda w: self.__day_selected(w, "now"))
+                                lambda w: self.__day_selected(w, "now"))
         self.__builder.get_object("button_soon").connect("clicked",
-                                    lambda w: self.__day_selected(w, "soon"))
+                                lambda w: self.__day_selected(w, "soon"))
         self.__builder.get_object("button_someday").connect("clicked",
-                                    lambda w: self.__day_selected(w, "someday"))
+                                lambda w: self.__day_selected(w, "someday"))
 
     def set_date(self, date, date_kind):
         self.__date_kind = date_kind
@@ -68,14 +67,14 @@ class GTGCalendar(gobject.GObject):
         else:
             self.__fuzzydate_btns.hide()
         if not date:
-            # we set the widget to today's date if there is not a
-            #date defined
+            # we set the widget to today's date if there is not a date defined
             date = Date.today()
         self.__date = date
         if not date.is_fuzzy():
             self.__calendar.select_day(date.day)
             # Calendar use 0..11 for a month so we need -1
-            # We can't use conversion through python standard datetime because often times it is invalid date
+            # We can't use conversion through python's datetime
+            # because it is often an invalid date
             self.__calendar.select_month(date.month-1, date.year)
 
     def __mark_today_in_bold(self):
@@ -99,7 +98,6 @@ class GTGCalendar(gobject.GObject):
             # unmark_day raises a warning. Clear_marks() is clever way how
             # to let PyGTK solve it's bussiness.
             self.__calendar.clear_marks()
-
 
     def show_at_position(self, x, y):
         width, height = self.__window.get_size()
@@ -143,7 +141,6 @@ class GTGCalendar(gobject.GObject):
         if self.__sigid_month is not None:
             self.__calendar.disconnect(self.__sigid_month)
             self.__sigid_month = None
-
 
     def __day_selected(self, widget, date_type):
         if date_type == "RealDate":

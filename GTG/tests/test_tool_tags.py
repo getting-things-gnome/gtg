@@ -16,27 +16,19 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-
-'''
-Tests for the tags utilities
-'''
+""" Tests for the tags utilities """
 
 import unittest
 
-from GTG.tools.tags import *
-
+from GTG.tools.tags import extract_tags_from_text
 
 
 class TestTagsUtils(unittest.TestCase):
-    '''
-    Tests for the tags utilities
-    '''
+    """ Tests for the tags utilities """
     
     def test_extract_tags_from_text(self):
-        '''
-        Test for extracting tags from a string
-        '''
-        tests = (\
+        """ Test for extracting tags from a string """
+        tests = (
                  ("@mamma mia", ["@mamma"]),
                  ("vive le @roy", ["@roy"]),
                  ("hey @mr. jack!", ["@mr"]),
@@ -48,9 +40,5 @@ class TestTagsUtils(unittest.TestCase):
             self.assertEqual(extract_tags_from_text(text), tags)
 
 
-
-
-
 def test_suite():
     return unittest.TestLoader().loadTestsFromTestCase(TestTagsUtils)
-

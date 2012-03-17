@@ -63,6 +63,7 @@ _old_sys_excepthook = None # None means that initialize() has not been called
 
 dialog = None
 
+
 def initialize(app_name=None, message=None, use_apport=False):
     """Initialize the except hook built on GTK.
 
@@ -115,7 +116,8 @@ def _replacement_excepthook(type, value, tracebk, thread=None):
                     sys.argv[0]))
             except:
                 filename = os.path.realpath("/proc/%i/exe" % os.getpid())
-            if not os.path.isfile(filename) or not os.access(filename, os.X_OK):
+            if not os.path.isfile(filename) or \
+                    not os.access(filename, os.X_OK):
                 raise Exception()
             add_apport_button = likely_packaged(filename)
         except:
@@ -157,6 +159,7 @@ def _replacement_excepthook(type, value, tracebk, thread=None):
         sys.stderr = sys.__stderr__
         os._exit(1)
 
+
 def show_error_window(error_string, add_apport_button=False):
     """Displays an error dialog, and returns the response ID.
 
@@ -181,7 +184,7 @@ def show_error_window(error_string, add_apport_button=False):
 
     # title Label
     label = gtk.Label()
-    label.set_markup("<b>" + _("It looks like an error has occurred.") + "</b>")
+    label.set_markup("<b>%s</b>" % _("It looks like an error has occurred."))
     label.set_alignment(0, 0.5)
     dialog.get_content_area().pack_start(label, False)
 
@@ -191,9 +194,11 @@ def show_error_window(error_string, add_apport_button=False):
     text_label.set_markup(MESSAGE)
     text_label.set_alignment(0, 0.5)
     text_label.set_line_wrap(True)
+
     def text_label_size_allocate(widget, rect):
         """Lets label resize correctly while wrapping text."""
         widget.set_size_request(rect.width, -1)
+
     text_label.connect("size-allocate", text_label_size_allocate)
     if not MESSAGE == "":
         dialog.get_content_area().pack_start(text_label, False)
@@ -243,6 +248,7 @@ def show_error_window(error_string, add_apport_button=False):
         res = 2
     return res
 
+
 def on_expanded(widget):
     global dialog
     dialog.set_size_request(600, 600)
@@ -264,8 +270,9 @@ def gtkcrashhandler_thread(run):
     #Example 2:
     def function(arg):
         arg / 0 # this error will be caught by gtkcrashhandler
-    threading.Thread(target=gtkcrashhandler_thread(function), args=(1,)).start()
+    threading.Thread(target=gtkcrashhandler_thread(function),args=(1,)).start()
     """
+
     def gtkcrashhandler_wrapped_run(*args, **kwargs):
         try:
             run(*args, **kwargs)
@@ -276,7 +283,8 @@ def gtkcrashhandler_thread(run):
             if gtk.main_level() > 0:
                 gobject.idle_add(
                     lambda ee=ee, tb=tb, thread=threading.currentThread():
-                    _replacement_excepthook(ee.__class__, ee, tb, thread=thread))
+                    _replacement_excepthook(ee.__class__, ee, tb,
+                                                            thread=thread))
             else:
                 time.sleep(0.1) # ugly hack, seems like threads that are
                                 # started before running gtk.main() cause
@@ -288,6 +296,7 @@ def gtkcrashhandler_thread(run):
                 _replacement_excepthook(ee.__class__, ee, tb,
                                         thread=threading.currentThread())
             lock.release()
+
     # return wrapped run if gtkcrashhandler has been initialized
     global _gtk_initialized, _old_sys_excepthook
     if _gtk_initialized and _old_sys_excepthook:
@@ -299,18 +308,22 @@ if __name__ == "__main__":
     # throw test exception
     initialize(app_name="gtkcrashhandler", message="Don't worry, though. This "
         "is just a test. To use the code properly, call "
-        "gtkcrashhandler.initialize() in your PyGTK app to automatically catch "
-        " any Python exceptions like this.")
+        "gtkcrashhandler.initialize() in your PyGTK app to automatically "
+        "catch any Python exceptions like this.")
+
     class DoNotRunException(Exception):
+
         def __str__(self):
             return "gtkcrashhandler.py should imported, not run"
+
     raise DoNotRunException()
 
 
 ## We handle initialization directly here, since this module will be used as a
 #  singleton
-        #we listen for signals from the system in order to save our configuration
-        # if GTG is forcefully terminated (e.g.: on shutdown).
+# we listen for signals from the system in order to save our configuration
+# if GTG is forcefully terminated (e.g.: on shutdown).
+
 @contextmanager
 def signal_catcher(callback):
     #if TERM or ABORT are caught, we execute the callback function
@@ -319,8 +332,8 @@ def signal_catcher(callback):
     yield
 
 initialize(app_name = "Getting Things GNOME!",
-           message  =  "GTG" + info.VERSION + 
-           _(" has crashed. Please report the bug on <a "\
-             "href=\"http://bugs.edge.launchpad.net/gtg\">our Launchpad page</a>."\
-             " If you have Apport installed, it will be started for you."),       \
+           message  =  "GTG" + info.VERSION +
+           _(" has crashed. Please report the bug on <a href=\""
+           "http://bugs.edge.launchpad.net/gtg\">our Launchpad page</a>."
+             " If you have Apport installed, it will be started for you."),
           use_apport = True)

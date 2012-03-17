@@ -20,6 +20,7 @@ import os
 
 from GTG.tools.dates import Date
 
+
 class pluginUrgencyColor:
 
     PLUGIN_NAME = 'Urgency Color'

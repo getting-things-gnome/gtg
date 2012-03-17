@@ -1,7 +1,6 @@
 import threading
 import gobject
 import time
-import unittest
 
 from GTG.tools.watchdog import Watchdog
 

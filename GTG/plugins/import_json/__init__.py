@@ -16,6 +16,6 @@
 
 from GTG.plugins.import_json.import_json import pluginImportJson
 
-
 #suppress pyflakes warning (given by make lint)
-if False == True: pluginImportJson()
+if False == True:
+    pluginImportJson()

@@ -189,7 +189,7 @@ class Date(object):
 
     @classmethod
     def tomorrow(cls):
-        return Date(datetime.date.today() + timedelta(1))
+        return Date(datetime.date.today() + datetime.timedelta(1))
 
     @classmethod
     def now(cls):

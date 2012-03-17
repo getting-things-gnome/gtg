@@ -33,7 +33,7 @@ BUSFACE = CoreConfig.BUSINTERFACE
 def dsanitize(data):
     """
     Clean up a dict so that it can be transmitted through D-Bus.
-    D-Bus does not have concepts for empty or null arrays or values 
+    D-Bus does not have concepts for empty or null arrays or values
     so these need to be converted into blank values D-Bus accepts.
     @return: Cleaned up dictionary
     """
@@ -193,10 +193,11 @@ class DBusTaskWrapper(dbus.service.Object):
         or undefined in task_data will clear the value in the task,
         so the best way to update a task is to first retrieve it via
         get_task(tid), modify entries as desired, and send it back
-        via this function.        
+        via this function.
         """
         task = self.req.get_task(tid)
-        task.set_status(task_data["status"], donedate=Date.parse(task_data["donedate"]))
+        task.set_status(task_data["status"],
+                    donedate=Date.parse(task_data["donedate"]))
         task.set_title(task_data["title"])
         task.set_due_date(Date.parse(task_data["duedate"]))
         task.set_start_date(Date.parse(task_data["startdate"]))
@@ -216,7 +217,7 @@ class DBusTaskWrapper(dbus.service.Object):
         This routine returns as soon as the GUI has launched.
         """
         self.view_manager.open_task(tid)
-        
+
     @dbus.service.method(BUSNAME, in_signature="ss")
     def OpenNewTask(self, title, description):
         """

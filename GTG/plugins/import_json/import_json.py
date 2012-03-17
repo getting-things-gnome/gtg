@@ -26,11 +26,12 @@
 # tags, or dates.
 #
 # Only items with a "status" of "todo" are imported, the rest are skipped.
-
-# The software will first scan the file to find all the "assignee" values in the file
-# And then pop-up a dialog as you to choose an username. It then imports only the TODO
-# items for those usernames. The username is not actually imported.
-
+#
+# The software will first scan the file to find all the "assignee" values
+# in the file and then pop-up a dialog as you to choose an username. It then
+# imports only the TODO items for those usernames. The username is not
+# actually imported.
+#
 # {
 #  "specs": {
 #   "my-spec": {
@@ -55,7 +56,6 @@
 import gtk
 import os
 import re
-import urllib2
 
 # Choose simplejson or json by which is available
 try:
@@ -65,14 +65,15 @@ except ImportError:
 
 from GTG.tools.readurl import readurl
 
+
 class pluginImportJson:
-    
+
     def __init__(self):
         self.plugin_api = None
 
         self.menu_item = gtk.MenuItem("Import from _JSON")
         self.menu_item.connect('activate', self.on_import_json_activate)
-        
+
         self.tb_button = gtk.ToolButton(gtk.STOCK_INFO)
         self.tb_button.set_label("Import from JSON")
         self.tb_button.connect('clicked', self.on_import_json_activate)
@@ -94,10 +95,10 @@ class pluginImportJson:
 
     def onTaskClosed(self, plugin_api):
         pass
-        
+
     def onTaskOpened(self, plugin_api):
         pass
-        
+
     def deactivate(self, plugin_api):
         plugin_api.remove_menu_item(self.menu_item)
         plugin_api.remove_toolbar_item(self.tb_button)
@@ -117,21 +118,22 @@ class pluginImportJson:
 
         self.dialog.connect("delete_event", self.close_dialog)
         self.dialog.connect("response", self.on_response)
-        
+
         self.dialog.show_all()
 
     def loadDialogSelectUsername(self):
-        path = os.path.dirname(os.path.abspath(__file__))
-
-        self.dialog_select_username = self.builder.get_object("dlg_select_username")
+        self.dialog_select_username = self.builder.get_object(
+                                            "dlg_select_username")
         if not self.dialog_select_username or len(self.usernames) < 1:
             return
         self.dialog_select_username.set_title("Select username")
         self.dialog_select_username.set_transient_for(self.dialog)
         self.dialog_select_username.set_position(gtk.WIN_POS_CENTER_ON_PARENT)
         # TODO:  Handle ok and cancel buttons
-        self.dialog_select_username.connect("response", self.on_response_select_username)
-        self.dialog_select_username.connect("delete_event", self.close_dialog_select_username)
+        self.dialog_select_username.connect("response",
+                                            self.on_response_select_username)
+        self.dialog_select_username.connect("delete_event",
+                                            self.close_dialog_select_username)
 
         username_model = gtk.ListStore(str)
         self.select_username = self.builder.get_object("select_username")
@@ -147,12 +149,12 @@ class pluginImportJson:
 
     def close_dialog(self, widget, data=None):
         self.dialog.destroy()
-        return True    
-    
+        return True
+
     def close_dialog_select_username(self, widget, data=None):
         self.dialog_select_username.destroy()
-        return True    
-    
+        return True
+
     # plugin features
     def on_import_json_activate(self, widget):
         self.loadDialog()
@@ -190,8 +192,8 @@ class pluginImportJson:
         self.json_tasks = json.loads(json_text)
 
         # TODO:  Create listing of usernames available
-        self.usernames = [ ]
-        for specname,spec in self.json_tasks['specs'].items():
+        self.usernames = []
+        for specname, spec in self.json_tasks['specs'].items():
             for wi in spec['work_items']:
                 if wi['status'] != "todo":
                     continue
@@ -210,8 +212,9 @@ class pluginImportJson:
     def import_tasks(self, widget):
         username = self.usernames[self.select_username.get_active()]
         re_dehtml = re.compile(r'<.*?>')
+        req = self.plugin_api.get_requester()
 
-        for specname,spec in self.json_tasks['specs'].items():
+        for specname, spec in self.json_tasks['specs'].items():
             for wi in spec['work_items']:
                 if wi['assignee'] != username:
                     continue
@@ -223,7 +226,7 @@ class pluginImportJson:
                     text = spec['details_url']
                 elif spec['url']:
                     text = spec['url']
-                task = self.plugin_api.get_requester().new_task(pid=None, tags=None, newtask=True)
+                task = req.new_task(pid=None, tags=None, newtask=True)
                 task.set_title(re_dehtml.sub('', wi['description']))
                 task.set_text(re_dehtml.sub('', text))
                 task.sync()

@@ -142,11 +142,12 @@ setup(
     'GTG.plugins.send_email',
     'GTG.plugins.tomboy',
     'GTG.plugins.import_json',
-    'GTG.plugins.urgency_color'
+    'GTG.plugins.urgency_color',
     ],
   package_data = {
     'GTG.core.plugins': ['pluginmanager.glade'],
-    'GTG.gtk': ['preferences.glade', 'deletion.glade', 'backends_dialog.glade'],
+    'GTG.gtk':
+        ['preferences.glade', 'deletion.glade', 'backends_dialog.glade'],
     'GTG.gtk.browser': ['taskbrowser.glade'],
     'GTG.gtk.editor': ['taskeditor.glade'],
     'GTG.plugins': [

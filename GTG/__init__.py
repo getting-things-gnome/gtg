@@ -35,7 +35,6 @@ try:
 except:
     #that's not pretty but it looks functional.
     loaded_glade = None
-from os.path import pardir, abspath, dirname, join
 
 try:
     from xdg.BaseDirectory import xdg_config_home

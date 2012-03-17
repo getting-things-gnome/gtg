@@ -555,7 +555,7 @@ class DataStore(object):
         '''
         try:
             self.start_get_tasks_thread.join()
-        except Exception, e:
+        except Exception:
             pass
         doc, xmlconfig = cleanxml.emptydoc("config")
         #we ask all the backends to quit first.
@@ -810,15 +810,15 @@ class TaskSource():
         '''
         try:
             self.to_set_timer.cancel()
-        except Exception, e:
+        except Exception:
             pass
         try:
             self.to_set_timer.join(3)
-        except Exception, e:
+        except Exception:
             pass
         try:
             self.start_get_tasks_thread.join(3)
-        except:
+        except Exception:
             pass
         self.launch_setting_thread(bypass_please_quit=True)
 

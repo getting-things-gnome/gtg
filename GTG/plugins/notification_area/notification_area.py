@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright (c) 2009 - Paulo Cabido <paulo.cabido@gmail.com>
-#                    - Luca Invernizzi <invernizzi.l@gmail.com> 
+#                    - Luca Invernizzi <invernizzi.l@gmail.com>
 #                    - Izidor Matušov <izidor.matusov@gmail.com>
 #
 # This program is free software: you can redistribute it and/or modify it under
@@ -26,6 +26,7 @@ except:
 from GTG                   import _
 from GTG.tools.borg        import Borg
 
+
 class NotificationArea:
     """
     Plugin that display a notification area widget or an indicator
@@ -45,6 +46,7 @@ class NotificationArea:
         we need to keep a reference to the indicator object. This class
         does that.
         """
+
         def __init__(self):
             super(NotificationArea.TheIndicator, self).__init__()
             if not hasattr(self, "_indicator"):
@@ -81,7 +83,7 @@ class NotificationArea:
         self.preferences_load()
 
         # When no windows (browser or text editors) are shown, it tries to quit
-        # With hidden browser and closing the only single text editor, 
+        # With hidden browser and closing the only single text editor,
         # GTG would quit no matter what
         self.__view_manager.set_daemon_mode(True)
 
@@ -110,8 +112,7 @@ class NotificationArea:
         self.__tree = None
         self.__liblarch_callbacks = []
 
-## Helper methods ##############################################################
-
+## Helper methods #############################################################
     def __init_gtk(self):
         browser = self.__view_manager.get_browser()
 
@@ -148,14 +149,13 @@ class NotificationArea:
             self.__indicator.set_menu(self.__menu)
             self.__indicator.set_status(appindicator.STATUS_ACTIVE)
         else:
-	    self.status_icon = gtk.StatusIcon()
-	    self.status_icon.set_from_icon_name("gtg")
+            self.status_icon = gtk.StatusIcon()
+            self.status_icon.set_from_icon_name("gtg")
             self.status_icon.set_tooltip("Getting Things Gnome!")
             self.status_icon.set_visible(True)
             self.status_icon.connect('activate', self.__toggle_browser)
-            self.status_icon.connect('popup-menu', \
-                                     self.__on_icon_popup, \
-                                     self.__menu)
+            self.status_icon.connect('popup-menu',
+                                     self.__on_icon_popup, self.__menu)
 
     def __open_task(self, widget, task_id = None):
         """
@@ -175,12 +175,14 @@ class NotificationArea:
         # Request a new view so we do not influence anybody
         self.__tree = self.__tree.get_basetree().get_viewtree(refresh=False)
 
-        c1 = self.__tree.register_cllbck("node-added-inview", self.__on_task_added)
-        c2 = self.__tree.register_cllbck("node-modified-inview", self.__on_task_added)
-        c3 = self.__tree.register_cllbck("node-deleted-inview", self.__on_task_deleted)
-        self.__liblarch_callbacks = [(c1, "node-added-inview"),
-            (c2, "node-modified-inview"), 
-            (c3, "node-deleted-inview")]
+        self.__liblarch_callbacks = []
+        for signal, cllbck in [
+            ("node-added-inview", self.__on_task_added),
+            ("node-modified-inview", self.__on_task_added),
+            ("node-deleted-inview", self.__on_task_deleted),
+        ]:
+            cb_id = self.__tree.register_cllbck(signal, cllbck)
+            self.__liblarch_callbacks.append((cb_id, signal))
 
         self.__tree.apply_filter('workview')
 
@@ -207,10 +209,10 @@ class NotificationArea:
             self.__task_separator.hide()
 
     def __create_short_title(self, title):
-        """ Make title short if it is long.  Replace '_' by '__' so 
+        """ Make title short if it is long.  Replace '_' by '__' so
         it is not ignored or  interpreted as an accelerator."""
         title =title.replace("_", "__")
-        short_title = title[0 : self.MAX_TITLE_LEN]
+        short_title = title[0:self.MAX_TITLE_LEN]
         if len(title) > self.MAX_TITLE_LEN:
             short_title = short_title.strip() + "..."
         return short_title
@@ -221,7 +223,6 @@ class NotificationArea:
                        button, timestamp, icon)
 
 ### Preferences methods #######################################################
-
     def preferences_load(self):
         data = self.__plugin_api.load_configuration_object(self.PLUGIN_NAME,
                                                          "preferences")
@@ -234,6 +235,7 @@ class NotificationArea:
         self.__plugin_api.save_configuration_object(self.PLUGIN_NAME,
                                                   "preferences",
                                                   self.preferences)
+
     def is_configurable(self):
         """A configurable plugin should have this method and return True"""
         return True
@@ -251,7 +253,7 @@ class NotificationArea:
             "on_btn_preferences_cancel_clicked":
                 self.on_preferences_cancel,
             "on_btn_preferences_ok_clicked":
-                self.on_preferences_ok
+                self.on_preferences_ok,
         }
         self.builder.connect_signals(SIGNAL_CONNECTIONS_DIC)
 
@@ -270,7 +272,6 @@ class NotificationArea:
         self.preferences_dialog.hide()
 
 ### Browser methods ###########################################################
-
     def __on_browser_toggled(self, sender, checkbox):
         checkbox.disconnect(self.__signal_handler)
         is_shown = self.__view_manager.get_browser().is_shown()
@@ -301,6 +302,7 @@ class NotificationArea:
             self.__browser_handler = browser.window.connect(
                 "delete-event", method)
 
+
 class SortedLimitedMenu:
     """ Sorted GTK Menu which shows only first N elements """
 
@@ -315,7 +317,7 @@ class SortedLimitedMenu:
 
         self.sorted_keys = []
         self.elements = {}
-    
+
     def add(self, key, sort_elem, menu_item):
         """ Add/modify item """
         if key in self.elements:
@@ -347,8 +349,10 @@ class SortedLimitedMenu:
                 self.sorted_keys.remove(item)
                 break
 
-        # show elemnt which takes the freed place
-        if position < self.max_items and len(self.sorted_keys) >= self.max_items:
+        # show element which takes the freed place
+        was_displayed = position < self.max_items
+        hidden_elements = len(self.sorted_keys) >= self.max_items
+        if was_displayed and hidden_elements:
             shown_key = self.sorted_keys[self.max_items-1][1]
             self.elements[shown_key].show()
 

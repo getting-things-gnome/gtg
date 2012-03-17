@@ -22,7 +22,6 @@ task.py contains the Task class which represents (guess what) a task
 """
 from datetime         import datetime
 import cgi
-import gobject
 import re
 import uuid
 import xml.dom.minidom
@@ -487,12 +486,6 @@ class Task(TreeNode):
             if self.get_closed_date().days_left() >= -15:
                 priority = "medium"
         return priority
-
-#   the following is not currently needed
-#    def modified(self):
-#        TreeNode.modified(self)
-#        for t in self.get_tags():
-#            gobject.idle_add(t.modified)
 
     def _modified_update(self):
         '''

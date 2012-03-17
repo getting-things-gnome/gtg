@@ -14,15 +14,12 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 
-
-
 class TaskStr:
     '''
     This class is a wrapper around the classic GTG.core.task.Task. It provides
     access to the task various attributes directly via python attributes
     instead of method calls. This makes writing Cheetah templates easier
     '''
-
 
     def __init__(self,
                  title,
@@ -34,7 +31,7 @@ class TaskStr:
                  closed_date,
                  start_date,
                  days_left,
-                 tags
+                 tags,
                 ):
         self.title         = title
         self.text          = text

@@ -115,7 +115,6 @@ args = None
 # Plugins (check functions) for physical lines
 ##############################################################################
 
-
 def tabs_or_spaces(physical_line, indent_char):
     """
     Never mix tabs and spaces.
@@ -190,7 +189,6 @@ def maximum_line_length(physical_line):
 ##############################################################################
 # Plugins (check functions) for logical lines
 ##############################################################################
-
 
 def blank_lines(logical_line, blank_lines, indent_level, line_number,
                 previous_logical):
@@ -404,7 +402,6 @@ def python_3000_raise_comma(logical_line):
 # Helper functions
 ##############################################################################
 
-
 def expand_indent(line):
     """
     Return the amount of indentation.
@@ -435,7 +432,6 @@ def expand_indent(line):
 ##############################################################################
 # Framework to run all checks
 ##############################################################################
-
 
 def message(text):
     """Print a message."""

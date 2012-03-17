@@ -16,6 +16,6 @@
 
 from GTG.plugins.notification_area.notification_area import NotificationArea
 
-
 #suppress pyflakes warning (given by make lint)
-if False == True: NotificationArea()
+if False == True:
+    NotificationArea()

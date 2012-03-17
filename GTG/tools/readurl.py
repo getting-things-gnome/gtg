@@ -17,12 +17,8 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-"""
-Loads the contents of a given URL
-"""
+""" Loads the contents of a given URL """
 
-import os
-import sys
 import urllib2
 
 def readurl(url):

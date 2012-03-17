@@ -16,8 +16,6 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-
-
 """
 GTG's core functionality.
 
@@ -37,7 +35,6 @@ If you want to display only a subset of tasks, you can either:
 
 """
 
-
 #=== IMPORT ====================================================================
 import os
 from xdg.BaseDirectory import xdg_data_home, xdg_config_home
@@ -45,9 +42,7 @@ from configobj         import ConfigObj
 from GTG.tools.testingmode import TestingMode
 
 import GTG
-from GTG.tools.logger import Log
 from GTG.tools.borg   import Borg
-
 
 DEFAULTS = {
 'browser': {

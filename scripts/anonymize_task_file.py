@@ -20,8 +20,8 @@ import sys
 from xml.dom.minidom import parse
 from xdg.BaseDirectory import xdg_data_home
 
-def anonymize(filename, outputfile):
 
+def anonymize(filename, outputfile):
     try:
         dom = parse(filename)
     except Exception, err:
@@ -36,7 +36,7 @@ def anonymize(filename, outputfile):
         newnodevalue = ""
 
         for i in range(len(nodevalue)):
-            if nodevalue[i] != " " and nodevalue[i] != "\t" and nodevalue[i] != "\n":
+            if nodevalue[i] not in [" ", "\t", "\n"]:
                 newnodevalue = newnodevalue + "m"
             else:
                 newnodevalue = newnodevalue + nodevalue[i]
@@ -53,7 +53,7 @@ def anonymize(filename, outputfile):
         newnodevalue = ""
 
         for i in range(len(nodevalue)):
-            if nodevalue[i] != " " and nodevalue[i] != "\t" and nodevalue[i] != "\n":
+            if nodevalue[i] not in [" ", "\t", "\n"]:
                 newnodevalue = newnodevalue + "m"
             else:
                 newnodevalue = newnodevalue + nodevalue[i]
@@ -66,6 +66,7 @@ def anonymize(filename, outputfile):
     except Exception, err:
         print "error while saving output file: %s" % err
 
+
 def usage():
     print "Usage: %s [taskfile] [outputfile]" % sys.argv[0]
     print
@@ -75,10 +76,8 @@ def usage():
     print "outputfile if provided."
     sys.exit(1)
 
-def main():
-    #if len(sys.argv) != 3:
-    #    usage()
 
+def main():
     if len(sys.argv) > 1:
         xmlfile = sys.argv[1]
     else:
@@ -107,4 +106,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

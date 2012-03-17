@@ -24,14 +24,10 @@ Tagstore is to tag as datastore is to task. Of course, the tagstore is
 easier.  See the end of this file for the Tag object implementation.
 """
 
-import os
 import xml.sax.saxutils as saxutils
 
-from GTG              import _
 from GTG.core         import CoreConfig
 from liblarch         import TreeNode
-from GTG.tools        import cleanxml
-from GTG.tools.logger import Log
 
 class Tag(TreeNode):
     """A short name that can be applied to L{Task}s.

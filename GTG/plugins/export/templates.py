@@ -22,13 +22,11 @@ from xdg.BaseDirectory import xdg_config_home
 from GTG.tools.borg import Borg
 
 
-
 class TemplateFactory(Borg):
     '''
     A Factory which provides an easy access to the templates. It caches
     templates for the sake of speed.
     '''
-
 
     TEMPLATE_PATHS = [\
             os.path.join(xdg_config_home,
@@ -94,12 +92,11 @@ class Template(object):
                 pass
 
     @classmethod
-    def __find_template_file(cls, path,  prefix, suffix = ""):
-        directory = os.path.dirname(path)
-        path= os.path.join(os.path.dirname(path),
-                            os.path.basename(path).replace(\
-                                    "template_", prefix))
-        path = "%s*" %path[: path.rindex(".") - 1]
+    def __find_template_file(cls, path, prefix, suffix = ""):
+        basename = os.path.basename(path).replace("template_", prefix)
+        path = os.path.join(os.path.dirname(path), basename)
+                            
+        path = "%s*" % path[: path.rindex(".") - 1]
         try:
             possible_paths = glob.glob(path)
             return filter(lambda p: p.endswith(suffix), possible_paths)[0]

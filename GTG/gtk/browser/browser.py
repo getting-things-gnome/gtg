@@ -22,7 +22,6 @@
 
 #=== IMPORT ===================================================================
 #system imports
-import locale
 import time
 import webbrowser
 import threading
@@ -34,19 +33,17 @@ import gobject
 import gtk
 
 #our own imports
-import GTG
+from GTG import _, info, ngettext
 from GTG.backends.backendsignals import BackendSignals
+from GTG.core import CoreConfig
+from GTG.core.search import parse_search_query, search_commands, InvalidQuery
+from GTG.core.task import Task
+from GTG.gtk.browser import GnomeConfig
 from GTG.gtk.browser.custominfobar import CustomInfoBar
-from GTG.core                       import CoreConfig
-from GTG                         import _, info, ngettext
-from GTG.core.task               import Task
-from GTG.gtk.browser             import GnomeConfig
 from GTG.gtk.browser.treeview_factory import TreeviewFactory
-from GTG.tools                   import openurl
-from GTG.tools.dates             import Date
-from GTG.tools.logger            import Log
-from GTG.tools.tags              import extract_tags_from_text
-from GTG.core.search             import parse_search_query, search_commands, InvalidQuery
+from GTG.tools import openurl
+from GTG.tools.dates import Date
+from GTG.tools.logger import Log
 #FIXME Why is this commented?
 #from GTG.tools                   import clipboard
 
