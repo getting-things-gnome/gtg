@@ -33,7 +33,6 @@ pygtk.require('2.0')
 import gobject
 import gtk
 
-
 #our own imports
 import GTG
 from GTG.backends.backendsignals import BackendSignals
@@ -138,7 +137,7 @@ class TaskBrowser(gobject.GObject):
         self.last_apply_tags_to_subtasks = False
         
         
-        
+        self.restore_state_from_conf()
 
         self.on_select_tag()
         self.browser_shown = False
@@ -455,17 +454,21 @@ class TaskBrowser(gobject.GObject):
 #            return
 
 		
+	newwidth = self.window.get_width
+        newheight = self.window.get_heigh
+	width1 = self.config.get('width')
+	height1 = self.config.get('height')        
 	
-	width = self.config.get('width')
-        height = self.config.get('height')
-        if width and height:
-            self.window.resize(width, height)
+	if newwidth and newheight:
+           self.window.resize(newwidth, newheight)
+	
+	if width1 == newwidth and height1 == newheight:
+	   self.window.maximize()
+	
         
-        max = self.maximize()
-	if max:
-	   self.maximize()
+	#f = gtk.Widget.window-state-event(self,maximize(),True)
 	
-	max= GTK_WINDOW_STATE_MAXIMIZED
+	
         xpos = self.config.get("x_pos")
         ypos = self.config.get("y_pos")
         if ypos and xpos:
