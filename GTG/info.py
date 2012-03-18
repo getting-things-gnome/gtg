@@ -3,6 +3,7 @@
 
 NAME            = "Getting Things GNOME!"
 URL             = "http://gtg.fritalk.com"
+DOCUMENTATION_URL = "http://live.gnome.org/gtg/documentation"
 EMAIL           = "gtg-contributors@lists.launchpad.net"
 VERSION         = '0.3-development'
 

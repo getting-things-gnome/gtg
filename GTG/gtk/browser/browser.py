@@ -50,7 +50,6 @@ from GTG.tools.logger import Log
 #=== MAIN CLASS ===============================================================
 
 WINDOW_TITLE = "Getting Things GNOME!"
-DOCUMENTATION_URL = "http://live.gnome.org/gtg/documentation"
 
 #Some default preferences that we should save in a file
 TIME             = 0
@@ -691,7 +690,7 @@ class TaskBrowser(gobject.GObject):
         return True
 
     def on_documentation_clicked(self, widget):
-        webbrowser.open(DOCUMENTATION_URL)
+        webbrowser.open(info.DOCUMENTATION_URL)
 
     def on_color_changed(self, widget):
         gtkcolor = widget.get_current_color()
