@@ -138,7 +138,7 @@ class TaskBrowser(gobject.GObject):
         self.last_apply_tags_to_subtasks = False
         
         
-        self.restore_state_from_conf()
+        
 
         self.on_select_tag()
         self.browser_shown = False
@@ -455,13 +455,17 @@ class TaskBrowser(gobject.GObject):
 #            return
 
 		
-	#width = newWidth
-	#height = newHeight
-        width = self.config.get('width')
+	
+	width = self.config.get('width')
         height = self.config.get('height')
         if width and height:
             self.window.resize(width, height)
-
+        
+        max = self.maximize()
+	if max:
+	   self.maximize()
+	
+	max= GTK_WINDOW_STATE_MAXIMIZED
         xpos = self.config.get("x_pos")
         ypos = self.config.get("y_pos")
         if ypos and xpos:
@@ -678,9 +682,7 @@ class TaskBrowser(gobject.GObject):
         width, height = self.window.get_size()
         self.config.set('width',width)
         self.config.set('height',height)
-	newWidth=width
-	newHeight=height
-
+	
     def on_bottom_pane_position(self, widget, data = None):
         self.config.set('bottom_pane_position', widget.get_position())
 
