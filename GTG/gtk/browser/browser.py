@@ -453,17 +453,20 @@ class TaskBrowser(gobject.GObject):
 #            self.builder.get_object("hpaned1").set_position(250)
 #            return
 
+	#max = self.window.getMaximized()		
+	newwidth = self.config.get('width')
+        newheight = self.config.get('height')
+	if newwidth == -1 and newheight == -1:	
+	   self.window.maximize()
 		
-	newwidth = self.window.get_width
-        newheight = self.window.get_heigh
-	width1 = self.config.get('width')
-	height1 = self.config.get('height')        
+	#width1 = self.config.get('width')
+	#height1 = self.config.get('height')        
 	
 	if newwidth and newheight:
            self.window.resize(newwidth, newheight)
-	
-	if width1 == newwidth and height1 == newheight:
-	   self.window.maximize()
+		
+	#if width1 == newwidth and height1 == newheight:
+	 #  self.window.maximize()
 	
         
 	#f = gtk.Widget.window-state-event(self,maximize(),True)
