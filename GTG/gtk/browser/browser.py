@@ -453,7 +453,7 @@ class TaskBrowser(gobject.GObject):
 #            self.builder.get_object("hpaned1").set_position(250)
 #            return
 
-			
+#	checks for maximum size of window			
 	newwidth = self.config.get('width')
         newheight = self.config.get('height')
 	if newwidth == -1 and newheight == -1:	
