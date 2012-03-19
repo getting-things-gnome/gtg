@@ -32,6 +32,7 @@ import pygtk
 pygtk.require('2.0')
 import gobject
 import gtk
+import gtk.gdk as gdk
 
 #our own imports
 import GTG
@@ -444,6 +445,12 @@ class TaskBrowser(gobject.GObject):
     def quit(self,widget=None):
         self.vmanager.close_browser()
         
+    def on_window_state_event(self,widget,event,data=None):
+	mask = gtk.gdk.WINDOW_STATE_MAXIMIZED
+	if widget.get_window().get_state() & mask == mask:	
+	   self.window.maximize()
+	
+        
     def restore_state_from_conf(self):
 
 #        # Extract state from configuration dictionary
@@ -456,11 +463,12 @@ class TaskBrowser(gobject.GObject):
 #	checks for maximum size of window			
 	newwidth = self.config.get('width')
         newheight = self.config.get('height')
-	if newwidth == -1 and newheight == -1:	
-	   self.window.maximize()
-	elif newwidth and newheight:
+	
+	if newwidth and newheight:
            self.window.resize(newwidth, newheight)
-		
+
+	self.window.connect('window-state-event',self.on_window_state_event)
+	   	
 	
 	
         xpos = self.config.get("x_pos")
