@@ -239,13 +239,13 @@ class TreeviewFactory():
             return cmp(t1_order, t2_order)
             
     def ontag_task_dnd(self,source,target):
+        task = self.req.get_task(source)
         if target.startswith('@'):
-            task = self.req.get_task(source)
             task.add_tag(target)
         elif target == 'gtg-tags-none':
-            task = self.req.get_task(source)
             for t in task.get_tags_name():
                 task.remove_tag(t)
+        task.modified()
 
     ############################################
     ######## The Factory #######################
