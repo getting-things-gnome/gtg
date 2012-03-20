@@ -448,7 +448,6 @@ class TaskBrowser(gobject.GObject):
     def on_window_state_event(self,widget,event,data=None):
 	mask = gtk.gdk.WINDOW_STATE_MAXIMIZED
 	if widget.get_window().get_state() & mask == mask:	
-	   #self.window.maximize()
 	   state = 1
 	   return state
 	
@@ -462,13 +461,13 @@ class TaskBrowser(gobject.GObject):
 #            self.builder.get_object("hpaned1").set_position(250)
 #            return
 
-#	checks for maximum size of window			
+			
 	width = self.config.get('width')
         height = self.config.get('height')
 	
 	if width and height:
            self.window.resize(width, height)
-
+#	checks for maximum size of window
         state = self.window.connect('window-state-event',self.on_window_state_event)
 	if state == 1:
            self.window.maximize()
