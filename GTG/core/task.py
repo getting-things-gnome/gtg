@@ -601,10 +601,12 @@ class Task(TreeNode):
         return (text
                     .replace('<tag>%s</tag>\n\n' % (tagname), newtag) #trail \n
                     .replace('<tag>%s</tag>, ' % (tagname), newtag) #trail comma
+                    .replace('<tag>%s</tag>,' % (tagname), newtag) #Need more discussion (bug #940534) 
                     .replace('<tag>%s</tag>' % (tagname), newtag)
                     #in case XML is missing (bug #504899)
                     .replace('%s\n\n' % (tagname), newtag)
                     .replace('%s, ' % (tagname), newtag)
+                    .replace('%s,' % (tagname), newtag) #Need more discussion (bug #940534) 
                     #don't forget a space a the end
                     .replace('%s ' % (tagname), newtag)
                )
