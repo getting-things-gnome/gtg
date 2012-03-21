@@ -123,18 +123,18 @@ class DataStore(object):
         self.__tagstore.add_node(tag, parent_id=parent_id)
         tag.set_save_callback(self.save)
 
-    def new_tag(self, name):
+    def new_tag(self, name, attributes={}):
         """ Create a new tag and return it """
 
         name = name.encode("UTF-8")
         parameters = {'tag': name}
-        tag = Tag(name, req=self.requester)
+        tag = Tag(name, req=self.requester, attributes=attributes)
 
         self._add_new_tag(name, tag, self.treefactory.tag_filter, parameters)
         Log.debug("*** tag added %s ***" % name)
         return tag
 
-    def new_search_tag(self, name, query):
+    def new_search_tag(self, name, query, attributes={}):
         """ Create a new search tag """
         try:
             parameters = parse_search_query(query)
@@ -144,9 +144,13 @@ class DataStore(object):
             return None
 
         name = name.encode("UTF-8")
-        tag = Tag(name, req=self.requester)
-        tag.set_attribute("label","%s" % name)
-        tag.set_attribute("query", query)
+
+        # Create own copy of attributes and add special attributes label, query
+        init_attr = dict(attributes)
+        init_attr["label"] = name
+        init_attr["query"] = query
+
+        tag = Tag(name, req=self.requester, attributes=init_attr)
 
         self._add_new_tag(name, tag, search_filter,
             parameters, parent_id = CoreConfig.SEARCH_TAG)
@@ -219,14 +223,15 @@ class DataStore(object):
             if parent == CoreConfig.SEARCH_TAG:
                 self.new_search_tag(tagname, t.getAttribute("query"))
             else:
-                tag = self.new_tag(tagname)
+                tag_attr = {}
                 attr = t.attributes
                 for i in range(attr.length):
                     at_name = attr.item(i).name
                     if at_name not in ["name", "parent"]:
                         at_val = t.getAttribute(at_name)
-                        tag.set_attribute(at_name, at_val)
+                        tag_attr[at_name] = at_val
 
+                tag = self.new_tag(tagname, tag_attr)
                 if parent:
                     tag.set_parent(parent)
         self.tagfile = tagfile

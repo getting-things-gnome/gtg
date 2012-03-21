@@ -40,17 +40,21 @@ class Tag(TreeNode):
     for tags is C{name}, which always matches L{Tag.get_name()}.
     """
 
-    def __init__(self, name, req):
+    def __init__(self, name, req, attributes={}):
         """Construct a tag.
 
         @param name: The name of the tag. Should be a string, generally a
             short one.
+        @param attributes: Allow having initial set of attributes without calling _save callback
         """
         TreeNode.__init__(self, name)
         self._name = saxutils.unescape(str(name))
         self.req = req
-        self._attributes = {'name': self._name}
         self._save = None
+        self._attributes = {'name': self._name}
+        for key, value in attributes.iteritems():
+            self.set_attribute(key, value)
+
         self._tasks_count = 0
         #list of tasks associated with this tag
 
