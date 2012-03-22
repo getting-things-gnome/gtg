@@ -25,7 +25,6 @@
 import time
 import webbrowser
 import threading
-import unicodedata #FIXME this is something with diacritic
 
 import pygtk
 pygtk.require('2.0')
@@ -38,6 +37,7 @@ from GTG.backends.backendsignals import BackendSignals
 from GTG.core import CoreConfig
 from GTG.core.search import parse_search_query, search_commands, InvalidQuery
 from GTG.core.task import Task
+from GTG.gtk.tag_completion import TagCompletion
 from GTG.gtk.browser import GnomeConfig
 from GTG.gtk.browser.custominfobar import CustomInfoBar
 from GTG.gtk.browser.modifytags_dialog import ModifyTagsDialog
@@ -119,9 +119,6 @@ class TaskBrowser(gobject.GObject):
         # Initialize "About" dialog
         self._init_about_dialog()
 
-        # Initialize tag completion
-        self._init_tag_completion()
-
         #Create our dictionary and connect it
         self._init_signal_connections()
 
@@ -197,7 +194,9 @@ class TaskBrowser(gobject.GObject):
         """
         # The Active tasks treeview
         self.main_pane.add(self.vtree_panes['active'])
-        self.modifytags_dialog = ModifyTagsDialog(self.req)
+
+        tag_completion = TagCompletion(self.req.get_tag_tree())
+        self.modifytags_dialog = ModifyTagsDialog(tag_completion, self.req)
         
     def init_tags_sidebar(self):
         """
@@ -408,24 +407,6 @@ class TaskBrowser(gobject.GObject):
         key, mod = gtk.accelerator_parse("<Control>l")
         quickadd_field.add_accelerator("grab-focus", agr, key, mod, gtk.ACCEL_VISIBLE)
 
-#FIXME move this to modifytags_dialog
-    def _init_tag_completion(self):
-        """
-        Entry completation for the add tag to a task dialog
-        """
-        #Initialize tag completion.
-        tagtree = self.req.get_tag_tree()
-        completion_view = self.tv_factory.tags_completion_treeview(tagtree)
-        col_num = 1
-
-        self.tag_completion = gtk.EntryCompletion()
-        self.tag_completion.set_model(completion_view.get_model())
-        self.tag_completion.set_text_column(col_num)
-        self.tag_completion.set_match_func(self.tag_match_func, col_num)
-        self.tag_completion.set_inline_completion(True)
-        self.tag_completion.set_inline_selection(True)
-        self.tag_completion.set_popup_single_match(False)
-
 ### HELPER FUNCTIONS ########################################################
 
     def open_preferences(self, widget):
@@ -596,25 +577,6 @@ class TaskBrowser(gobject.GObject):
                                    "%(tasks)d active tasks", \
                                    count) % {'tasks': count}
         self.window.set_title("%s - "%parenthesis + WINDOW_TITLE)
-
-    def tag_match_func(self, completion, key, iter, column):
-        """
-        function that defines autocompletation on the add tag dialog
-        """
-        model = completion.get_model()
-        text = model.get_value(iter, column)
-        if text:
-            # key is always lowercase => convert text also into lowercase
-            text = text.lower()
-
-            # Exclude the special tags.
-            if text.startswith("<span") or text.startswith('gtg-tags-'):
-                return False
-            else:
-                # Compare normalized unicode representation
-                text = unicodedata.normalize('NFC', unicode(text))
-                key =  unicodedata.normalize('NFC', unicode(key))
-                return text.startswith(key)
 
     def _add_page(self, notebook, label, page):
         notebook.append_page(page, label)

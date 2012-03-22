@@ -27,11 +27,12 @@ from GTG.gtk.browser import GnomeConfig
 class ModifyTagsDialog:
     """ Dialog for batch adding/removal of tags """
 
-    def __init__(self, req):
+    def __init__(self, tag_completion, req):
         self.req = req
         self.tasks = []
 
         self._init_dialog()
+        self.tag_entry.set_completion(tag_completion)
 
         # Rember values from last time
         self.last_tag_entry = _("NewTag")
@@ -60,10 +61,6 @@ class ModifyTagsDialog:
         self.tasks = tasks
 
         self.tag_entry.set_text(self.last_tag_entry)
-
-        #FIXME completion
-        #FIXME diacritic
-        #self.tag_entry.set_completion(self.tag_completion)
         self.tag_entry.grab_focus()
         self.apply_to_subtasks.set_active(self.last_apply_to_subtasks)
 
@@ -74,11 +71,11 @@ class ModifyTagsDialog:
 
     # FIXME write unittests
     # FIXME parse in tools/*
-    # FIXME: make sure that '!' is not allowed first character of tagname (tag handling should be unified)
     def parse_entry(self, text):
         """ parse entry and return list of tags to add and remove """
         positive = []
         negative = []
+#FIXME only separate by spaces...
         tags = [tag.strip() for by_space in text.split()
                                 for tag in by_space.split(",")]
 
