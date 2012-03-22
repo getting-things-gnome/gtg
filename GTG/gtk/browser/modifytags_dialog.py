@@ -17,11 +17,11 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 """ A dialog for batch adding/removal of tags """
-# FIXME pylint, pyflakes, pep8
 import gtk
 
 from GTG import _
 from GTG.gtk.browser import GnomeConfig
+from GTG.tools.tags import parse_tag_list
 
 
 class ModifyTagsDialog:
@@ -69,38 +69,9 @@ class ModifyTagsDialog:
 
         self.tasks = []
 
-    # FIXME write unittests
-    # FIXME parse in tools/*
-    def parse_entry(self, text):
-        """ parse entry and return list of tags to add and remove """
-        positive = []
-        negative = []
-#FIXME only separate by spaces...
-        tags = [tag.strip() for by_space in text.split()
-                                for tag in by_space.split(",")]
-
-        for tag in tags:
-            if tag == "":
-                continue
-
-            is_positive = True
-            if tag.startswith('!'):
-                tag = tag[1:]
-                is_positive = False
-
-            if not tag.startswith('@'):
-                tag = "@" + tag
-
-            if is_positive:
-                positive.append(tag)
-            else:
-                negative.append(tag)
-
-        return positive, negative
-
     def on_confirm(self, widget):
         """ apply changes """
-        new_tags, del_tags = self.parse_entry(self.tag_entry.get_text())
+        tags = parse_tag_list(self.tag_entry.get_text())
 
         # If the checkbox is checked, find all subtasks
         if self.apply_to_subtasks.get_active():
@@ -116,10 +87,11 @@ class ModifyTagsDialog:
 
         for task_id in self.tasks:
             task = self.req.get_task(task_id)
-            for new_tag in new_tags:
-                task.add_tag(new_tag)
-            for del_tag in del_tags:
-                task.remove_tag(del_tag)
+            for tag, is_positive in tags:
+                if is_positive:
+                    task.add_tag(tag)
+                else:
+                    task.remove_tag(tag)
             task.sync()
 
         # Rember the last actions

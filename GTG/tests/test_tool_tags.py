@@ -21,9 +21,10 @@
 import unittest
 
 from GTG.tools.tags import extract_tags_from_text
+from GTG.tools.tags import parse_tag_list
 
 
-class TestTagsUtils(unittest.TestCase):
+class TestToolTags(unittest.TestCase):
     """ Tests for the tags utilities """
     
     def test_extract_tags_from_text(self):
@@ -38,6 +39,24 @@ class TestTagsUtils(unittest.TestCase):
                 )
         for text, tags in tests:
             self.assertEqual(extract_tags_from_text(text), tags)
+
+    def test_parse_tag_list(self):
+        """ Test parsing tag list"""
+        ptl = parse_tag_list
+
+        self.assertEqual(ptl("tag"), [("@tag", True)])
+        self.assertEqual(ptl("@tag"), [("@tag", True)])
+
+        self.assertEqual(ptl("!tag"), [("@tag", False)])
+        self.assertEqual(ptl("!@tag"), [("@tag", False)])
+
+        self.assertEqual(ptl("a b c"),
+            [("@a", True), ("@b", True), ("@c", True)])
+        self.assertEqual(ptl("a @b c"),
+            [("@a", True), ("@b", True), ("@c", True)])
+        self.assertEqual(ptl("@a b @c"),
+            [("@a", True), ("@b", True), ("@c", True)])
+        self.assertEqual(ptl("@a @b @c"),[("@a", True), ("@b", True), ("@c", True)])
 
 
 def test_suite():
