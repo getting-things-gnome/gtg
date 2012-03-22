@@ -2,6 +2,7 @@
     * Hide tasks with due date someday, #931376
     * New Date class by Paul Kishimoto and Izidor Matušov
     * Urgency Color plugin by Wolter Hellmund
+    * Allow GTG to run from different locations than /usr/share or /usr/local/share
 
 2012-02-13 Getting Things GNOME! 0.2.9
     * Big refractorization of code, now using liblarch
