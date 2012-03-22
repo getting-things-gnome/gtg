@@ -70,7 +70,7 @@ class ModifyTagsDialog:
         self.tasks = []
 
     def on_confirm(self, widget):
-        """ apply changes """
+        """ Apply changes """
         tags = parse_tag_list(self.tag_entry.get_text())
 
         # If the checkbox is checked, find all subtasks

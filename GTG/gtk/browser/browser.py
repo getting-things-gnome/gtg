@@ -80,7 +80,6 @@ class TaskBrowser(gobject.GObject):
         self.vmanager = vmanager
         self.config = self.req.get_config('browser')
         self.tag_active = False
-        # FIXME this is not needed
         self.filter_cbs = []
         
         #treeviews handlers
@@ -298,7 +297,6 @@ class TaskBrowser(gobject.GObject):
                 self.on_size_allocate,
             "gtk_main_quit":
                 self.on_close,
-#FIXME Does somebody use this?
             "on_tag_entry_key_press_event":
                 self.on_tag_entry_key_press_event,
             "on_add_subtask":
@@ -1084,17 +1082,11 @@ class TaskBrowser(gobject.GObject):
     def on_set_due_clear(self, widget):
         self.update_due_date(widget, None)
 
-    def on_modify_tags(self, widget=None, tid=None, tryagain = False):
-        #FIXME WHY TO have all those None values?
-        #FIXME implement this!!!
-        if not tid:
-            tasks = self.get_selected_tasks()
-        else:
-            tasks = [tid]
-
+    def on_modify_tags(self, widget):
+        """ Run Modify Tags dialog on selected tasks """
+        tasks = self.get_selected_tasks()
         self.modifytags_dialog.modify_tags(tasks)
 
-#FIXME Does somebody use this?
     def on_tag_entry_key_press_event(self, widget, event):
         if gtk.gdk.keyval_name(event.keyval) == "Return":
             self.on_addtag_confirm()
