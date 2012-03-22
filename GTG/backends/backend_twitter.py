@@ -26,6 +26,7 @@ import re
 import sys
 import uuid
 import subprocess
+from webbrowser import open as openurl
 
 #the tweepy library is not packaged for Debian/Ubuntu. Thus, a copy of it is
 # kept in the GTG/backends directory
@@ -39,7 +40,6 @@ from GTG.backends.backendsignals        import BackendSignals
 from GTG.backends.periodicimportbackend import PeriodicImportBackend
 from GTG.backends.syncengine            import SyncEngine
 from GTG.tools.logger                   import Log
-from GTG.tools.openurl                  import openurl
 
 
 class Backend(PeriodicImportBackend):

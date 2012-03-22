@@ -35,9 +35,9 @@ from gtk import gdk
 import gobject
 import pango
 import os
+from webbrowser import open as openurl
 
 from GTG.gtk.editor import taskviewserial
-from GTG.tools      import openurl
 from GTG.tools      import urlregex
 
 separators = [' ', ',', '\n', '\t', '!', '?', ';', '\0']
@@ -1253,7 +1253,7 @@ class TaskView(gtk.TextView):
                     if typ == "subtask":
                         self.open_task(anchor)
                     elif typ == "http" and self.check_link(anchor):
-                        openurl.openurl(anchor)
+                        openurl(anchor)
 
             return True
 
@@ -1331,7 +1331,7 @@ class TaskView(gtk.TextView):
                     self.open_task(anchor)
                 elif typ == "http":
                     if button == 1 and self.check_link(anchor):
-                        openurl.openurl(anchor)
+                        openurl(anchor)
                 else:
                     print "Unknown link type for %s" %anchor
                 self.emit('anchor-clicked', text, anchor, button)

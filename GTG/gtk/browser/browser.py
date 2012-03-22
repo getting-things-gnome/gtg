@@ -26,6 +26,7 @@ import time
 import webbrowser
 import threading
 import unicodedata
+from webbrowser import open as openurl
 
 import pygtk
 pygtk.require('2.0')
@@ -41,7 +42,6 @@ from GTG.core.task import Task
 from GTG.gtk.browser import GnomeConfig
 from GTG.gtk.browser.custominfobar import CustomInfoBar
 from GTG.gtk.browser.treeview_factory import TreeviewFactory
-from GTG.tools import openurl
 from GTG.tools.dates import Date
 from GTG.tools.logger import Log
 #FIXME Why is this commented?
@@ -236,7 +236,7 @@ class TaskBrowser(gobject.GObject):
         """
         Show the about dialog
         """
-        gtk.about_dialog_set_url_hook(lambda dialog, url: openurl.openurl(url))
+        gtk.about_dialog_set_url_hook(lambda dialog, url: openurl(url))
         self.about.set_website(info.URL)
         self.about.set_website_label(info.URL)
         self.about.set_version(info.VERSION)
