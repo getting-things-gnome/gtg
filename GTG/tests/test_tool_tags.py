@@ -26,7 +26,7 @@ from GTG.tools.tags import parse_tag_list
 
 class TestToolTags(unittest.TestCase):
     """ Tests for the tags utilities """
-    
+
     def test_extract_tags_from_text(self):
         """ Test for extracting tags from a string """
         tests = (
@@ -56,8 +56,27 @@ class TestToolTags(unittest.TestCase):
             [("@a", True), ("@b", True), ("@c", True)])
         self.assertEqual(ptl("@a b @c"),
             [("@a", True), ("@b", True), ("@c", True)])
-        self.assertEqual(ptl("@a @b @c"),[("@a", True), ("@b", True), ("@c", True)])
+        self.assertEqual(ptl("@a @b @c"),
+            [("@a", True), ("@b", True), ("@c", True)])
+
+        self.assertEqual(ptl("!a !b !c"),
+            [("@a", False), ("@b", False), ("@c", False)])
+        self.assertEqual(ptl("!a !@b !c"),
+            [("@a", False), ("@b", False), ("@c", False)])
+        self.assertEqual(ptl("!@a !b !@c"),
+            [("@a", False), ("@b", False), ("@c", False)])
+        self.assertEqual(ptl("!@a !@b !@c"),
+            [("@a", False), ("@b", False), ("@c", False)])
+
+        self.assertEqual(ptl("add !remove"),
+            [("@add", True), ("@remove", False)])
+        self.assertEqual(ptl("@add !@remove"),
+            [("@add", True), ("@remove", False)])
+        self.assertEqual(ptl("!remove add"),
+            [("@remove", False), ("@add", True)])
+        self.assertEqual(ptl("!@remove @add"),
+            [("@remove", False), ("@add", True)])
 
 
 def test_suite():
-    return unittest.TestLoader().loadTestsFromTestCase(TestTagsUtils)
+    return unittest.TestLoader().loadTestsFromTestCase(TestToolTags)
