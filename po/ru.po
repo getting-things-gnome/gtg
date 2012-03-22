@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2012-03-05 10:48+0100\n"
-"PO-Revision-Date: 2012-03-10 18:01+0000\n"
+"PO-Revision-Date: 2012-03-21 18:45+0000\n"
 "Last-Translator: DmDr <cardioexp@gmail.com>\n"
 "Language-Team: Russian <ru@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -16,8 +16,8 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Launchpad-Export-Date: 2012-03-11 04:45+0000\n"
-"X-Generator: Launchpad (build 14914)\n"
+"X-Launchpad-Export-Date: 2012-03-22 04:57+0000\n"
+"X-Generator: Launchpad (build 14981)\n"
 
 #: GTG/plugins/notification_area/notification_area.py:120
 msgid "_View Main Window"
@@ -335,10 +335,21 @@ msgid ""
 "subtasks...): your  changes will be preserved. This is useful to add  "
 "personal annotations to issue"
 msgstr ""
+"Это хранилище позволяет найти в Mantis ошибки, используя стандартный фильтр "
+"'gtg'. При изменении записи в Mantis, задача в GTG также будет обновлена.\n"
+"Обратите внимание, что это хранилище работает только на чтение. Поэтому, "
+"если вы отредактировали в импортированной задаче\n"
+"  - заголовок,\n"
+"  - описание,\n"
+"  - метки,\n"
+"сделанные изменения <b>будут обязательно</b> затерты при обновление записи в "
+" Mantis. В отличие от перечисленных полей, изменения в дате начала или "
+"завершения задачи, подзадачах и т.п.не будут затираться. Это можно "
+"использовать, чтобы добавить какие-то свои пояснения к задачам."
 
 #: GTG/backends/backend_mantis.py:224
 msgid "Iss."
-msgstr ""
+msgstr "Iss."
 
 #: GTG/backends/backend_mantis.py:244 GTG/backends/backend_launchpad.py:324
 msgid "Reported by: "
@@ -941,7 +952,7 @@ msgstr "Присвоить вашим задачам из GTG метки оши�
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:103
 msgid "Tag your GTG tasks with the project targeted by the bug"
-msgstr ""
+msgstr "Пометить задачи в GTG как проект, назначенный на ошибку"
 
 #: GTG/gtk/backends_dialog/parameters_ui/passwordui.py:50
 msgid "Password:"
