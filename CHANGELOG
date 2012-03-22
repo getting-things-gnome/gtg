@@ -4,6 +4,7 @@
     * Urgency Color plugin by Wolter Hellmund
     * Allow GTG to run from different locations than /usr/share or /usr/local/share
     * Removed module GTG.tools.openurl and replaced by python's webbrowser.open
+    * Removed import_json plugin
 
 2012-02-13 Getting Things GNOME! 0.2.9
     * Big refractorization of code, now using liblarch
