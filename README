@@ -25,7 +25,7 @@ these modules if they're not currently available.
 
 To install these packages on Debian-based systems, execute the following
 command:
-    $ sudo apt-get install install python-gtk2 python-gnome2 python-glade2 \
+    $ sudo apt-get install python-gtk2 python-gnome2 python-glade2 \
          python-xdg python-configobj python-pydoctor
 
 Note that the python-pydoctor package is broken in karmic.
