@@ -448,8 +448,10 @@ class TaskBrowser(gobject.GObject):
     def on_window_state_event(self,widget,event,data=None):
 	mask = gtk.gdk.WINDOW_STATE_MAXIMIZED
 	if widget.get_window().get_state() & mask == mask:	
-	   state = 1
-	   return state
+	   self.config.set("max",1)
+	else:
+	   self.config.set("max",0) 
+#      stores mzximized state of browser in config	   
 	
         
     def restore_state_from_conf(self):
@@ -468,7 +470,8 @@ class TaskBrowser(gobject.GObject):
 	if width and height:
            self.window.resize(width, height)
 #	checks for maximum size of window
-        state = self.window.connect('window-state-event',self.on_window_state_event)
+        self.window.connect('window-state-event',self.on_window_state_event)
+	state = self.config.get("max")
 	if state == 1:
            self.window.maximize()
 	   	
