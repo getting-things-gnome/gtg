@@ -50,15 +50,17 @@ def import_liblarch():
     git_cmd= "git clone git://github.com/liblarch/liblarch.git  ../liblarch"
     try:
         import liblarch
+	import liblarch_gtk
         toreturn = True
     except:
         sys.path.append("../liblarch/")
         try:
             import liblarch
+	    import liblarch_gtk
             toreturn = True
         except:
-	        print "GTG requires liblarch but liblarch is not installed."
-	        print "To install liblarch, run the following command in the current folder:"
+	        print "GTG requires liblarch and liblarch_gtk but at least on of them is not installed."
+	        print "To install liblarch and liblarch_gtk, run the following command in the current folder:"
 	        print "\n"
 	        print "   %s" %git_cmd
 	        print "\n"
