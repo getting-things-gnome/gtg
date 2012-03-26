@@ -122,7 +122,7 @@ class DeletionUI():
             delete_dialog.resize(1, 1)
             cancel_button = self.builder.get_object("cancel")
             cancel_button.grab_focus()
-            if delete_dialog.run() == -1:
+            if delete_dialog.run() != 1:
             	tasklist = []
             delete_dialog.hide()
             return tasklist

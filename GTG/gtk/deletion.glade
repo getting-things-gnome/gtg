@@ -191,7 +191,7 @@
     </child>
     <action-widgets>
       <action-widget response="-1">cancel</action-widget>
-      <action-widget response="0">delete</action-widget>
+      <action-widget response="1">delete</action-widget>
     </action-widgets>
   </object>
 </interface>
