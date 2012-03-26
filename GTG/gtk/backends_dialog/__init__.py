@@ -83,6 +83,7 @@ class BackendsDialog(object):
         '''
         self.dialog.hide()
         self.req.save_datastore()
+        return True
 
 ########################################
 ### HELPER FUNCTIONS ###################
