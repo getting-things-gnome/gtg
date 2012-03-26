@@ -157,19 +157,18 @@ class PreferencesDialog:
         # keep a reference to the parent task browser
         self.pengine = PluginEngine()
         #plugin config initiation, if never used
-        if self.config.has_key("plugins"):
-            if self.config["plugins"].has_key("enabled") == False:
+        if "plugins" in self.config:
+            if "enabled" not in self.config["plugins"]:
                 self.config["plugins"]["enabled"] = []
             
-            if self.config["plugins"].has_key("disabled") == False:
+            if "disabled" not in self.config["plugins"]:
                 self.config["plugins"]["disabled"] = []
-        else:
-            if self.pengine.get_plugins():
-                self.config["plugins"] = {}
-                self.config["plugins"]["disabled"] = \
-                  [p.module_name for p in self.pengine.get_plugins("disabled")]
-                self.config["plugins"]["enabled"] = \
-                  [p.module_name for p in self.pengine.get_plugins("enabled")]
+        elif self.pengine.get_plugins():
+            self.config["plugins"] = {}
+            self.config["plugins"]["disabled"] = \
+              [p.module_name for p in self.pengine.get_plugins("disabled")]
+            self.config["plugins"]["enabled"] = \
+              [p.module_name for p in self.pengine.get_plugins("enabled")]
         # initialize tree models
         self._init_backend_tree()
         # this can't happen yet, due to the order of things in
@@ -393,9 +392,11 @@ class PreferencesDialog:
 
     def toggle_preview(self, widget):
         """Toggle previews in the task view on or off."""
-        self.config_priv.set("contents_preview_enable", widget.get_active())
-        view = self.req.get_tasks_tree(refresh=False)
-        view.refresh_all()
+        curstate = self.config_priv.get("contents_preview_enable")
+        if curstate != widget.get_active():
+            self.config_priv.set("contents_preview_enable", not curstate)
+            view = self.req.get_tasks_tree(refresh=False)
+            view.refresh_all()
 
     def toggle_spellcheck(self, widget):
         """Toggle spell checking on or off."""
