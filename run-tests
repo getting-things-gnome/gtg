@@ -25,6 +25,7 @@ import unittest
 
 from GTG.tests import test_suite
 from GTG.tools.testingmode import TestingMode
+from GTG.tools.import_liblarch import import_liblarch
 
 TEST_MODULE_PREFIX = "GTG.tests."
 
@@ -89,4 +90,5 @@ def main(args):
         return 1
 
 if __name__ == '__main__':
-    sys.exit(main(sys.argv[1:]))
+    if import_liblarch():
+        sys.exit(main(sys.argv[1:]))

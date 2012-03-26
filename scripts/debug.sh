@@ -46,6 +46,18 @@ else
     export XDG_CONFIG_HOME="./tmp/default/xdg/config"
 fi
 
+# Check for liblarch
+if ! ./GTG/tools/import_liblarch.py ; then
+    echo
+    echo -n "Download latest liblarch? [y/N] "
+    read answer
+    if [ "$answer" = "y" -o "$answer" = "Y" -o "$answer" = "yes" ]; then
+        git clone https://github.com/liblarch/liblarch ../liblarch
+    else
+        exit 1
+    fi
+fi
+
 if [ $norun -eq 0 ]; then
     if [ $profile -eq 1 ]; then
 	python -m cProfile -o gtg.prof ./gtg $args
