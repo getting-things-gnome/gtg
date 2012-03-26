@@ -6,6 +6,7 @@
     * Removed module GTG.tools.openurl and replaced by python's webbrowser.open
     * Removed import_json plugin
     * Saved searches could have assigned color
+    * Search through DBus
 
 2012-02-13 Getting Things GNOME! 0.2.9
     * Big refractorization of code, now using liblarch

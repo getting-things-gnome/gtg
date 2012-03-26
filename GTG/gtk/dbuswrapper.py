@@ -22,9 +22,10 @@ import dbus
 import dbus.glib
 import dbus.service
 
-from GTG.core        import CoreConfig
-from GTG.tools.dates import Date
-
+from GTG.core           import CoreConfig
+from GTG.tools.dates    import Date
+from GTG.core.search    import InvalidQuery
+from GTG.core.search    import parse_search_query
 
 BUSNAME = CoreConfig.BUSNAME
 BUSFACE = CoreConfig.BUSINTERFACE
@@ -143,7 +144,21 @@ class DBusTaskWrapper(dbus.service.Object):
             return [self.GetTask(id) for id in tasks]
         else:
             return dbus.Array([], "s")
-
+            
+    @dbus.service.method(BUSNAME, in_signature="s", out_signature="as")
+    def SearchTasks(self, query):
+        """
+        Searches the task list
+        """
+        tree = self.req.get_tasks_tree().get_basetree()
+        view = tree.get_viewtree()
+        try:
+            search = parse_search_query(query)
+            view.apply_filter('search', parameters = search)
+            return view.get_all_nodes()
+        except InvalidQuery:
+            return dbus.Array([], "s")
+    
     @dbus.service.method(BUSNAME)
     def HasTask(self, tid):
         """
