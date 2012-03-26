@@ -141,7 +141,6 @@ setup(
     'GTG.plugins.task_reaper',
     'GTG.plugins.send_email',
     'GTG.plugins.tomboy',
-    'GTG.plugins.import_json',
     'GTG.plugins.urgency_color',
     ],
   package_data = {
@@ -159,7 +158,6 @@ setup(
         'task-reaper.gtg-plugin',
         'send-email.gtg-plugin',
         'tomboy.gtg-plugin',
-        'import-json.gtg-plugin',
         'urgency-color.gtg-plugin'
         ],
     'GTG.plugins.export': ['export.ui',
@@ -189,7 +187,6 @@ setup(
     'GTG.plugins.tomboy': ['tomboy.ui'],
     'GTG.plugins.hamster': ['prefs.ui'],
     'GTG.plugins.task_reaper': ['reaper.ui'],
-    'GTG.plugins.import_json': ['import_json.ui'],
     'GTG.plugins.notification_area': ['notification_area.ui'],
     'GTG.plugins.urgency_color': ['preferences.ui'],
    },
