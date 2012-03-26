@@ -35,7 +35,7 @@ __all__ = [
   ]
 
 # Default plugin information text
-PLUGINS_DEFAULT_DESC = _("Click on a plugin to get a description here.")
+PLUGINS_DEFAULT_DESC = _("Click on a plugin name to view its description here.")
 
 # columns in PreferencesDialog.plugin_store
 PLUGINS_COL_ID = 0

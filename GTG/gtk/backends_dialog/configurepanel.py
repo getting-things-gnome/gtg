@@ -166,7 +166,7 @@ class ConfigurePanel(gtk.VBox):
         else:
             tags_txt = get_colored_tags_markup(self.req, tags)
             if tasks_number == 0:
-                markup = _("There's no task tagged %s") % tags_txt
+                markup = _("There is no task tagged %s") % tags_txt
             else:
                 markup = ngettext("Syncing a task tagged %s" % tags_txt, \
                     "Syncing %d tasks tagged %s" % (tasks_number, tags_txt), \

@@ -118,7 +118,7 @@ class pluginExport:
             self.export_generate(document_ready)
         except Exception, e:
             self.show_error_dialog( \
-                            _("Could not generate the document: %s") % e)
+                            _("GTG could not generate the document: %s") % e)
             return False
         return True
 

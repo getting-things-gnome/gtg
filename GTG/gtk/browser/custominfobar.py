@@ -40,7 +40,7 @@ class CustomInfoBar(gtk.InfoBar):
     NETWORK_MESSAGE = _("Due to a network problem, I cannot contact "
                         "the <b>%s</b> backend.")
 
-    DBUS_MESSAGE = _("Cannot connect to DBUS, I've disabled "
+    DBUS_MESSAGE = _("Cannot connect to DBus, I've disabled "
                         "the <b>%s</b> backend.")
 
     def __init__(self, req, browser, vmanager, backend_id):

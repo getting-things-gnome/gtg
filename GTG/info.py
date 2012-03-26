@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 """Various information about GTG. Should be updated for every release. Contains the information displayed in GTG's Credits."""
 
-NAME            = "Getting Things GNOME!"
-URL             = "http://gtg.fritalk.com"
+NAME = "Getting Things GNOME!"
+URL = "http://gtg.fritalk.com"
 DOCUMENTATION_URL = "http://live.gnome.org/gtg/documentation"
-EMAIL           = "gtg-contributors@lists.launchpad.net"
-VERSION         = '0.3-development'
+TRANSLATE_URL = "https://translations.launchpad.net/gtg"
+REPORT_BUG_URL = "https://bugs.launchpad.net/gtg/+filebug"
+EMAIL = "gtg-contributors@lists.launchpad.net"
+VERSION = '0.3-development'
 
 SHORT_DESCRIPTION = 'GTG is a personal organizer for the GNOME desktop environment.'
 

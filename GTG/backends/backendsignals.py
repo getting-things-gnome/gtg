@@ -34,7 +34,7 @@ class BackendSignals(Borg):
     #error codes to send along with the BACKEND_FAILED signal
     ERRNO_AUTHENTICATION = "authentication failed"
     ERRNO_NETWORK = "network is down"
-    ERRNO_DBUS = "Dbus interface cannot be connected"
+    ERRNO_DBUS = "DBus interface cannot be connected"
 
     def __init__(self):
         '''Checks that this is the only instance, and instantiates the

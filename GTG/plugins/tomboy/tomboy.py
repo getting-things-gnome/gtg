@@ -191,9 +191,10 @@ Please install it or disable the Tomboy/Gnote plugin in GTG"))
                      flags = gtk.DIALOG_DESTROY_WITH_PARENT,
                      type = gtk.MESSAGE_ERROR,
                      buttons=gtk.BUTTONS_OK,
-                     message_format= self.software.title() + _(" was found on\
- the system, but it doesn't provide a dbus interface. the Tomboy/Gnote plugin\
- will not work with it."))
+                     message_format = _("%s seems to be installed on your "
+                        "system, but it does not provide a DBus interface "
+                        "which is required by the Tomboy/Gnote plugin "
+                        "in GTG.") % self.software.title())
                 dialog.run() 
                 dialog.destroy()
                 self.disable_flag = True

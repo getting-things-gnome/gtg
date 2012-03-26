@@ -24,16 +24,16 @@ simple, HIG compliant and well integrated with Gnome.
 """
 import os
 
-from GTG     import _
+from GTG import _
 
 
 class GnomeConfig:
     current_rep = os.path.dirname(os.path.abspath(__file__))
     GLADE_FILE  = os.path.join(current_rep, "taskbrowser.glade")
 
-    MARK_DONE               = _("Mark as done")
+    MARK_DONE               = _("Mark as Done")
     MARK_DONE_TOOLTIP       = _("Mark the selected task as done")
-    MARK_UNDONE             = _("Mark as not done")
+    MARK_UNDONE             = _("Mark as not Done")
     MARK_UNDONE_TOOLTIP     = _("Mark the selected task as to be done")
     MARK_DISMISS            = _("Dismiss")
     MARK_DISMISS_TOOLTIP    = _("Mark the task as not to be done anymore")
