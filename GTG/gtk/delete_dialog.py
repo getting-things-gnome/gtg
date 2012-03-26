@@ -26,7 +26,6 @@ from GTG.gtk import ViewConfig
 class DeletionUI():
     
     MAXIMUM_TIDS_TO_SHOW = 5
-
     def __init__(self, req):
         self.req = req
         self.tids_todelete = []
@@ -58,7 +57,7 @@ class DeletionUI():
             self.tids_todelete = tids
         #We must at least have something to delete !
         if len(self.tids_todelete) > 0:
-            tasklist = []
+            tasklist=[]
             self.update_tags = []
             for tid in self.tids_todelete:
                 def recursive_list_tasks(task_list, root):
@@ -123,7 +122,8 @@ class DeletionUI():
             delete_dialog.resize(1, 1)
             cancel_button = self.builder.get_object("cancel")
             cancel_button.grab_focus()
-            delete_dialog.run()
+            if delete_dialog.run() != 1:
+            	tasklist = []
             delete_dialog.hide()
             return tasklist
         else:
