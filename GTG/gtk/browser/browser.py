@@ -451,7 +451,7 @@ class TaskBrowser(gobject.GObject):
 	   self.config.set("max","True")
 	else:
 	   self.config.set("max","False") 
-#      stores mzximized state of browser in config	   
+#      stores mzzximized state of browser in config	   
 	
         
     def restore_state_from_conf(self):
