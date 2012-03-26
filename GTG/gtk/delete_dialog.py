@@ -31,16 +31,12 @@ class DeletionUI():
         self.tids_todelete = []
         # Tags which must be updated
         self.update_tags = []
-        self.tasklist=[]
         # Load window tree
         self.builder = gtk.Builder() 
         self.builder.add_from_file(ViewConfig.DELETE_GLADE_FILE)
         signals = { "on_delete_confirm": self.on_delete_confirm,
-                    "on_delete_cancel": self.on_delete_cancel}
+                    "on_delete_cancel": lambda x: x.hide,}
         self.builder.connect_signals(signals)
-    
-    def on_delete_cancel(self, widget):
-        self.tasklist=[]
 
     def on_delete_confirm(self, widget):
         """if we pass a tid as a parameter, we delete directly
@@ -61,6 +57,7 @@ class DeletionUI():
             self.tids_todelete = tids
         #We must at least have something to delete !
         if len(self.tids_todelete) > 0:
+            tasklist=[]
             self.update_tags = []
             for tid in self.tids_todelete:
                 def recursive_list_tasks(task_list, root):
@@ -79,7 +76,7 @@ class DeletionUI():
                                 recursive_list_tasks(task_list, i)
 
                 task = self.req.get_task(tid)
-                recursive_list_tasks(self.tasklist, task)
+                recursive_list_tasks(tasklist, task)
 
             # We fill the text and the buttons' labels according to the number 
             # of tasks to delete
@@ -88,7 +85,7 @@ class DeletionUI():
             cdlabel2 = self.builder.get_object("cd-label2")
             cdlabel3 = self.builder.get_object("cd-label3")
             cdlabel4 = self.builder.get_object("cd-label4")
-            singular = len(self.tasklist)
+            singular = len(tasklist)
             label_text = ngettext("Deleting a task cannot be undone, "
                                   "and will delete the following task: ",
                                   "Deleting a task cannot be undone, "
@@ -111,12 +108,12 @@ class DeletionUI():
             #we don't want to end with just one task that doesn't fit the
             # screen and a line saying "And one more task", so we go a
             # little over our limit
-            missing_titles_count = len(self.tasklist) - self.MAXIMUM_TIDS_TO_SHOW
+            missing_titles_count = len(tasklist) - self.MAXIMUM_TIDS_TO_SHOW
             if missing_titles_count >= 2:
                 tasks = tasklist[: self.MAXIMUM_TIDS_TO_SHOW]
                 titles_suffix = _("\nAnd %d more tasks" % missing_titles_count)
             else:
-                tasks = self.tasklist
+                tasks = tasklist
                 titles_suffix = ""
 
             titles = "".join("\n - " + task.get_title() for task in tasks)
@@ -125,8 +122,9 @@ class DeletionUI():
             delete_dialog.resize(1, 1)
             cancel_button = self.builder.get_object("cancel")
             cancel_button.grab_focus()
-            delete_dialog.run()
+            if delete_dialog.run() == -1:
+            	tasklist = []
             delete_dialog.hide()
-            return self.tasklist
+            return tasklist
         else:
             return []
