@@ -1,3 +1,5 @@
+2012-03-26
+    * Stopped links from opening when accidently letting go of mouse button while selecting them
 2012-0?-?? Getting Things GNOME! 0.3
     * Hide tasks with due date someday, #931376
     * New Date class by Paul Kishimoto and Izidor Matušov
