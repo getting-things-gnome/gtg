@@ -10,15 +10,16 @@ def populate():
     title1 = _("Getting started with GTG")
     text1 = _("""Welcome to Getting Things Gnome!, your new task manager.
 
-In GTG, everything is a task. From building a bridge over the Pacific Ocean to changing a light bulb or organizing a party. When you edit a task, it is automatically saved.
+In GTG, everything is a task. From building a bridge over the Pacific Ocean to changing a light bulb or organizing a party. Task is automatically saved while you are editing.
 
-Once a task is done, you can push the &quot;Mark as done&quot; button. If the task is not relevant any-more, simply press &quot;Dismiss&quot;.
+Once you are done with a specific task, you can push the &quot;Mark as Done&quot; button. If the task is not relevant anymore, simply press &quot;Dismiss&quot; button.
 
-A task might be composed of multiple subtasks that appear as links in the description. Simply click on the following link:""")
+A task might be composed of multiple subtasks that appear as links in the task description. Simply click on the following link to open the subtask:""")
     text1 += "\n<subtask>1@1</subtask>\n"
-    text1 += _("""Once you've read the above subtask, mark it as Done. If you don't want to do the task, mark it as dismissed. Done and Dismissed tasks are kept in the closed tasks pane, hidden by default but you can easily enable it in the View menu.
+    text1 += _("""Once you've read the above subtask, mark it as done. If you don't want to do the task, mark it as dismissed. Tasks that you marked as done or dismissed are stored in the Closed Tasks Pane which is hidden by default, but you can easily enable it in the View menu.
+    
+If you choose to close this current task, subtasks will be automatically closed too. GTG considers that if you have completed a given task, you don't need to do the subtasks anymore.
 
-If you choose to close this current task, subtasks will be automatically closed too. We indeed consider that, if you achieve a given task, you don't need to do the subtask anymore.
 Other stuff you should read:""")
     text1 += """\n<subtask>2@1</subtask>
     <subtask>3@1</subtask>
@@ -34,15 +35,13 @@ Thank you for trying out GTG :-)""")
 
     #Task 1@1: Learn to use subtasks
     title2 = _("Learn how to use subtasks")
-    text2 = _("""In the task description (this window), if you begin a line with &quot;-&quot;, it will be considered as a &quot;subtask&quot;, something that needs to be done in order to accomplish your task. Just try to write &quot;- test subtask&quot; on the next line and press enter.
-
+    text2 = _("""&quot;Subtask&quot; is something that you need to do first in order to accomplish your task. To insert a subtask in the task description (this window), begin a line with &quot;-&quot;, write the subtask title and press Enter. Try inserting one subtask below.
+    
 You can also use the &quot;insert subtask&quot; button.
 
 Tasks and subtasks can be re-organized by drag-n-drop in the tasks list.
 
-Some concepts come with subtasks: for example, a subtask's due date can never be after its parent's due date.
-
-Also, marking a parent as done will mark all the subtasks as done.""")
+Subtasks have certain rules: for example, a subtask's due date can never be after its parent's due date and when you mark a parent task as done, its subtasks will also be marked as done.""")
     t2 = addtask(doc, "1@1", title2, text2, [])
     root.appendChild(t2)
 
@@ -105,23 +104,29 @@ If you have some trouble with GTG, we might be able to help you or to solve your
     root.appendChild(t6)
 
     #Task 6@1: Learn how to use the QuickAdd Entry
-    title7 = _("Learn how to use the QuickAdd Entry")
-    text7 = _("""The quickadd entry is the quickest way to create a new task. You can show or hide it in the View menu.
+    title7 = _("Learn how to use the Quick Add Entry")
+    text7 = _("""The Quick Add Entry is the fastest way to create a new task. Use the check box in the View menu to enable and disable the entry field.
 
-For adding a task you just have to type its title in the entry and press return. The task will be created and selected in the task browser. If a tag is selected in the tag panel, this tag is applied to the task you create.
+To add a task simply type its title in the entry and press Enter. The task will be created and selected in the task browser. If a tag is selected in the Tags Sidebar, it will be applied to the task you created.
 
-You can also create a task with the attributes "tags", "due", and "defer" in the quickadd entry. The syntax for these attributes is:
+You can also create a task in the Quick Add Entry and at the same time specify its tags, due and defer date. Follow these format rules:
+
 
 tags:tag1,tag2,tag3
  - This way you can apply as many tags as you wish using comma as separator
+ - Any word that begins with &quot;@&quot; will be interpreted as a tag
 
 due:date
 defer:date
- - This way you can apply a due date or a defer date. date can be yyyy-mm-dd (for example 2009-04-01) or yyyymmdd (20090401) or mmdd (0401, in this case the year is implicitly the current one) or today or tomorrow or a weekday name (due:monday means due next Monday)
+ - This way you can apply a due date or a defer date. Dates can be formated as yyyy-mm-dd (for example 2012-04-01) or yyyymmdd (20120401) or mmdd (0401 - the year being implicitly the current one) or today, tomorrow or a weekday name (due:monday means due next Monday). Dates which are added in this way will not appear in the task title.
 
-Attributes which are added in this way apply but do not appear in the title.
+Examples:
+buy stationary tags:purchases,office due:20120330 defer:tuesday
 
-If a word begins with @, it is interpreted as a tag.""")
+ - The above example tells GTG to create a new task with the title "buy stationary", under the tags "purchases" and "office", with the due date March 30, 2012 and the start date next Tuesday.
+
+call mum tags:family,calls due:sunday defer:tomorrow
+ - The above example tells GTG to create a new task with the title "call mum", under the tags "family" and "calls", with the due date next Sunday and the start date tomorrow.""")
 
     t7 = addtask(doc, "6@1", title7, text7, [])
     root.appendChild(t7)

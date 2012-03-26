@@ -90,7 +90,7 @@ try:
 
     if options.version_and_exit:
         from GTG import info
-        print "gtg (Getting Things Gnome!) %s" %(info.VERSION)
+        print "GTG (Getting Things Gnome!) %s" %(info.VERSION)
         print
         print "For more information: %s" %(info.URL)
         sys.exit(0)

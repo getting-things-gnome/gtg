@@ -342,7 +342,11 @@ class TaskBrowser(gobject.GObject):
             "on_about_close":
                 self.on_about_close,
             "on_documentation_clicked":
-                self.on_documentation_clicked,
+                lambda w: webbrowser.open(info.DOCUMENTATION_URL),
+            "on_translate_clicked":
+                lambda w: webbrowser.open(info.TRANSLATE_URL),
+            "on_report_bug_clicked":
+                lambda w: webbrowser.open(info.REPORT_BUG_URL),
             "on_nonworkviewtag_toggled":
                 self.on_nonworkviewtag_toggled,
             "on_preferences_activate":
@@ -402,6 +406,7 @@ class TaskBrowser(gobject.GObject):
         self._add_accelerator_for_widget(agr, "delete_mi",      "Cancel")
         self._add_accelerator_for_widget(agr, "tcm_addtag",     "<Control>t")
         self._add_accelerator_for_widget(agr, "view_closed",    "<Control>F9")
+        self._add_accelerator_for_widget(agr, "online_help",    "F1")
         
         edit_button = self.builder.get_object("edit_b")
         key, mod    = gtk.accelerator_parse("<Control>e")
@@ -688,9 +693,6 @@ class TaskBrowser(gobject.GObject):
         """
         self.about.hide()
         return True
-
-    def on_documentation_clicked(self, widget):
-        webbrowser.open(info.DOCUMENTATION_URL)
 
     def on_color_changed(self, widget):
         gtkcolor = widget.get_current_color()

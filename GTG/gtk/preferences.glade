@@ -75,7 +75,7 @@
                               <object class="GtkLabel" id="prefs-label8">
                                 <property name="visible">True</property>
                                 <property name="ypad">5</property>
-                                <property name="label" translatable="yes">&lt;b&gt;General&lt;/b&gt;</property>
+                                <property name="label" translatable="yes">&lt;b&gt;Startup&lt;/b&gt;</property>
                                 <property name="use_markup">True</property>
                               </object>
                             </child>
@@ -219,7 +219,7 @@
                 <child type="tab">
                   <object class="GtkLabel" id="prefs-label1">
                     <property name="visible">True</property>
-                    <property name="label" translatable="yes">Behaviour</property>
+                    <property name="label" translatable="yes">General</property>
                   </object>
                   <packing>
                     <property name="tab_fill">False</property>
