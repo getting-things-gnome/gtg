@@ -7,6 +7,7 @@
     * Removed import_json plugin
     * Saved searches could have assigned color
     * Stopped links from opening when accidently letting go of mouse button while selecting them, #823339, by Steve Scheel
+    * Search through DBus
 
 2012-02-13 Getting Things GNOME! 0.2.9
     * Big refractorization of code, now using liblarch

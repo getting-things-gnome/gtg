@@ -98,7 +98,7 @@ def plugin_error_short_text(plugin):
     elif modules and dbus:
         text = '\n'.join((GnomeConfig.bmiss2, modules, dbus))
     else:
-        test = ""
+        text = ""
     return text
 
 def plugin_error_text(plugin):
