@@ -1330,7 +1330,7 @@ class TaskView(gtk.TextView):
                 if typ == "subtask":
                     self.open_task(anchor)
                 elif typ == "http":
-                    if button == 1 and self.check_link(anchor):
+                    if button == 1 and self.check_link(anchor) and self.buff.get_has_selection() == False:
                         openurl(anchor)
                 else:
                     print "Unknown link type for %s" %anchor
