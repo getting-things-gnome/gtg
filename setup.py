@@ -147,7 +147,7 @@ setup(
     'GTG.core.plugins': ['pluginmanager.glade'],
     'GTG.gtk':
         ['preferences.glade', 'deletion.glade', 'backends_dialog.glade'],
-    'GTG.gtk.browser': ['taskbrowser.glade'],
+    'GTG.gtk.browser': ['taskbrowser.glade', 'modifytags_dialog.glade'],
     'GTG.gtk.editor': ['taskeditor.glade'],
     'GTG.plugins': [
         'bugzilla.gtg-plugin',
