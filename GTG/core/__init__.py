@@ -61,6 +61,7 @@ DEFAULTS = {
             "opened_tasks": [],
             'width': 400,
             'height': 400,
+            'max': False,
             'x_pos': 10,
             'y_pos': 10,
             'tasklist_sort_column': 5,
