@@ -41,6 +41,7 @@ The query language consists of several elements:
     * !now -- show tasks with due_date == now
     * !soon -- show tasks with due_date == soon
     * !someday -- show tasks with due_date == someday
+    * !notag -- show tasks without tags
   * tags -- show tasks with this tag
   * word -- show tasks which contains this word
   * "literal" -- basically the same as word but allows the space and special charasters
@@ -92,6 +93,7 @@ KEYWORDS = {
   "now": _("now"),
   "soon": _("soon"),
   "someday": _("someday"),
+  "notag": _("notag"),
 }
 
 # transform keywords and their translations into a list of possible commands
@@ -256,6 +258,7 @@ def search_filter(task, parameters=None):
             'now': lambda task, v: task.get_due_date() == Date.now(),
             'soon': lambda task, v: task.get_due_date() == Date.soon(),
             'someday': lambda task, v: task.get_due_date() == Date.someday(),
+            'notag': lambda task, v: task.get_tags() == [],
         }
 
         for command in commands_list:
