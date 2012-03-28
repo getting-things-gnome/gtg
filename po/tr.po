@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2012-03-05 10:48+0100\n"
+"POT-Creation-Date: 2012-03-27 00:43+0200\n"
 "PO-Revision-Date: 2011-01-27 08:04+0000\n"
 "Last-Translator: Onur ALTINTAŞI <Unknown>\n"
 "Language-Team: Turkish <tr@li.org>\n"
@@ -15,14 +15,14 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Launchpad-Export-Date: 2012-03-06 04:50+0000\n"
-"X-Generator: Launchpad (build 14900)\n"
+"X-Launchpad-Export-Date: 2012-03-27 04:53+0000\n"
+"X-Generator: Launchpad (build 15011)\n"
 
-#: GTG/plugins/notification_area/notification_area.py:120
+#: GTG/plugins/notification_area/notification_area.py:121
 msgid "_View Main Window"
 msgstr ""
 
-#: GTG/plugins/notification_area/notification_area.py:130
+#: GTG/plugins/notification_area/notification_area.py:131
 msgid "Add _New Task"
 msgstr ""
 
@@ -35,13 +35,13 @@ msgid "A template to create a simple text file with some tasks."
 msgstr ""
 
 #: GTG/plugins/export/export_templates/description_simple.py:18
-msgid "A simple Web page (nicely printable)"
+msgid "A simple Web page that can be easily printed."
 msgstr ""
 
 #: GTG/plugins/export/export_templates/description_simple.py:19
 msgid ""
-"A template to create a simple HTML page with some tasks. It can be printed "
-"nicely."
+"A template to create a simple HTML page with some tasks that can be easily "
+"printed."
 msgstr ""
 
 #: GTG/plugins/export/export_templates/description_statusrpt.py:18
@@ -78,7 +78,7 @@ msgstr "Şablon bulunamadı"
 
 #: GTG/plugins/export/export.py:121
 #, python-format
-msgid "Could not generate the document: %s"
+msgid "GTG could not generate the document: %s"
 msgstr ""
 
 #: GTG/plugins/export/export.py:169
@@ -127,46 +127,46 @@ msgid "Task: %(task_title)s"
 msgstr ""
 
 #: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:1
-msgid "<b>Location Determination Method</b>"
+msgid "Set the task's location"
 msgstr ""
 
 #: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:2
-msgid "<b>Proximity Factor</b>"
-msgstr ""
+msgid "Associate with new tag"
+msgstr "Yeni bir etiket ile ilişkilendir"
 
 #: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:3
+msgid "Associate with existing tag"
+msgstr "Varolan bir etiket ile ilişkilendir"
+
+#: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:4
+msgid "Geolocalized-tasks Preferences"
+msgstr ""
+
+#: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:5
+msgid "Use network"
+msgstr "Ağ kullan"
+
+#: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:6
+msgid "Use cellphone"
+msgstr "Cep telefonu kullan"
+
+#: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:7
+msgid "Use gps"
+msgstr "Gps kullan"
+
+#: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:8
+msgid "<b>Location Determination Method</b>"
+msgstr ""
+
+#: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:9
 msgid ""
 "<small>Distance in kilometers from \n"
 "the current location.</small>"
 msgstr ""
 
-#: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:5
-msgid "Associate with existing tag"
-msgstr "Varolan bir etiket ile ilişkilendir"
-
-#: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:6
-msgid "Associate with new tag"
-msgstr "Yeni bir etiket ile ilişkilendir"
-
-#: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:7
-msgid "Geolocalized-tasks Preferences"
-msgstr ""
-
-#: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:8
-msgid "Set the task's location"
-msgstr ""
-
-#: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:9
-msgid "Use cellphone"
-msgstr "Cep telefonu kullan"
-
-#: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:10
-msgid "Use gps"
-msgstr "Gps kullan"
-
 #: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:11
-msgid "Use network"
-msgstr "Ağ kullan"
+msgid "<b>Proximity Factor</b>"
+msgstr ""
 
 #: GTG/plugins/hamster/hamster.py:154
 msgid "Start task in Hamster"
@@ -195,20 +195,21 @@ msgid "Add Tomboy note"
 msgstr "Tomboy notu ekle"
 
 #: GTG/plugins/tomboy/tomboy.py:194
+#, python-format
 msgid ""
-" was found on the system, but it doesn't provide a dbus interface. the "
-"Tomboy/Gnote plugin will not work with it."
+"%s seems to be installed on your system, but it does not provide a DBus "
+"interface which is required by the Tomboy/Gnote plugin in GTG."
 msgstr ""
 
-#: GTG/plugins/tomboy/tomboy.py:241
+#: GTG/plugins/tomboy/tomboy.py:240
 msgid "That note does not exist!"
 msgstr ""
 
-#: GTG/plugins/tomboy/tomboy.py:246
+#: GTG/plugins/tomboy/tomboy.py:245
 msgid "That note does not exist. Do you want to create a new one?"
 msgstr ""
 
-#: GTG/plugins/tomboy/tomboy.py:274
+#: GTG/plugins/tomboy/tomboy.py:273
 msgid "This Tomboy note does not exist anymore. Do you want to create it?"
 msgstr ""
 
@@ -291,7 +292,7 @@ msgstr ""
 
 #: GTG/backends/backend_mantis.py:46
 msgid ""
-"This backend lets you import the issues found on mantis using a "
+"This backend lets you import the issues found on Mantis using a "
 "prestablished filter called 'gtg'. As the issue state changes in Mantis, the "
 "GTG task is  updated.\n"
 "Please note that this is a read only backend, which means that if you open "
@@ -414,30 +415,32 @@ msgid ""
 "Welcome to Getting Things Gnome!, your new task manager.\n"
 "\n"
 "In GTG, everything is a task. From building a bridge over the Pacific Ocean "
-"to changing a light bulb or organizing a party. When you edit a task, it is "
-"automatically saved.\n"
+"to changing a light bulb or organizing a party. Task is automatically saved "
+"while you are editing.\n"
 "\n"
-"Once a task is done, you can push the &quot;Mark as done&quot; button. If "
-"the task is not relevant any-more, simply press &quot;Dismiss&quot;.\n"
+"Once you are done with a specific task, you can push the &quot;Mark as "
+"Done&quot; button. If the task is not relevant anymore, simply press "
+"&quot;Dismiss&quot; button.\n"
 "\n"
 "A task might be composed of multiple subtasks that appear as links in the "
-"description. Simply click on the following link:"
+"task description. Simply click on the following link to open the subtask:"
 msgstr ""
 
 #: GTG/core/firstrun_tasks.py:19
 msgid ""
-"Once you've read the above subtask, mark it as Done. If you don't want to do "
-"the task, mark it as dismissed. Done and Dismissed tasks are kept in the "
-"closed tasks pane, hidden by default but you can easily enable it in the "
-"View menu.\n"
-"\n"
+"Once you've read the above subtask, mark it as done. If you don't want to do "
+"the task, mark it as dismissed. Tasks that you marked as done or dismissed "
+"are stored in the Closed Tasks Pane which is hidden by default, but you can "
+"easily enable it in the View menu.\n"
+"    \n"
 "If you choose to close this current task, subtasks will be automatically "
-"closed too. We indeed consider that, if you achieve a given task, you don't "
-"need to do the subtask anymore.\n"
+"closed too. GTG considers that if you have completed a given task, you don't "
+"need to do the subtasks anymore.\n"
+"\n"
 "Other stuff you should read:"
 msgstr ""
 
-#: GTG/core/firstrun_tasks.py:28
+#: GTG/core/firstrun_tasks.py:29
 msgid ""
 "We hope that you will appreciate GTG. Please send us bug reports and ideas "
 "for improvement using:\n"
@@ -446,32 +449,31 @@ msgid ""
 "Thank you for trying out GTG :-)"
 msgstr ""
 
-#: GTG/core/firstrun_tasks.py:36
+#: GTG/core/firstrun_tasks.py:37
 msgid "Learn how to use subtasks"
 msgstr "İkincil görevleri kullanmayı öğren"
 
-#: GTG/core/firstrun_tasks.py:37
+#: GTG/core/firstrun_tasks.py:38
 msgid ""
-"In the task description (this window), if you begin a line with &quot;-"
-"&quot;, it will be considered as a &quot;subtask&quot;, something that needs "
-"to be done in order to accomplish your task. Just try to write &quot;- test "
-"subtask&quot; on the next line and press enter.\n"
-"\n"
+"&quot;Subtask&quot; is something that you need to do first in order to "
+"accomplish your task. To insert a subtask in the task description (this "
+"window), begin a line with &quot;-&quot;, write the subtask title and press "
+"Enter. Try inserting one subtask below.\n"
+"    \n"
 "You can also use the &quot;insert subtask&quot; button.\n"
 "\n"
 "Tasks and subtasks can be re-organized by drag-n-drop in the tasks list.\n"
 "\n"
-"Some concepts come with subtasks: for example, a subtask's due date can "
-"never be after its parent's due date.\n"
-"\n"
-"Also, marking a parent as done will mark all the subtasks as done."
+"Subtasks have certain rules: for example, a subtask's due date can never be "
+"after its parent's due date and when you mark a parent task as done, its "
+"subtasks will also be marked as done."
 msgstr ""
 
-#: GTG/core/firstrun_tasks.py:50
+#: GTG/core/firstrun_tasks.py:49
 msgid "Learn how to use tags"
 msgstr "Etiketleri kullanmayı öğren"
 
-#: GTG/core/firstrun_tasks.py:51
+#: GTG/core/firstrun_tasks.py:50
 msgid ""
 "A tag is a simple word that begins with &quot;@&quot;.\n"
 "\n"
@@ -501,11 +503,11 @@ msgid ""
 "subtask. It will never be changed by the parent."
 msgstr ""
 
-#: GTG/core/firstrun_tasks.py:68
+#: GTG/core/firstrun_tasks.py:67
 msgid "Learn how to use the Workview"
 msgstr ""
 
-#: GTG/core/firstrun_tasks.py:69
+#: GTG/core/firstrun_tasks.py:68
 msgid ""
 "If you press the &quot;Workview&quot; button, only actionable tasks will be "
 "displayed.\n"
@@ -526,11 +528,11 @@ msgid ""
 "like to do but are not particularly urgent."
 msgstr ""
 
-#: GTG/core/firstrun_tasks.py:84
+#: GTG/core/firstrun_tasks.py:83
 msgid "Learn how to use Plugins"
 msgstr "Ekletilerin nasıl kullanılacağını öğrenin"
 
-#: GTG/core/firstrun_tasks.py:85
+#: GTG/core/firstrun_tasks.py:84
 msgid ""
 "GTG has the ability to add plugins to extend it's core functionality.\n"
 "\n"
@@ -540,11 +542,11 @@ msgid ""
 "clicking Preferences. You will then see a tab labeled Plugins."
 msgstr ""
 
-#: GTG/core/firstrun_tasks.py:94
+#: GTG/core/firstrun_tasks.py:93
 msgid "Reporting bugs"
 msgstr "Hataları bildirme"
 
-#: GTG/core/firstrun_tasks.py:95
+#: GTG/core/firstrun_tasks.py:94
 msgid ""
 "GTG is still very alpha software. We like it and use it everyday but you "
 "will encounter some bugs.\n"
@@ -559,36 +561,46 @@ msgid ""
 "your problem really quickly."
 msgstr ""
 
-#: GTG/core/firstrun_tasks.py:108
-msgid "Learn how to use the QuickAdd Entry"
+#: GTG/core/firstrun_tasks.py:107
+msgid "Learn how to use the Quick Add Entry"
 msgstr ""
 
-#: GTG/core/firstrun_tasks.py:109
+#: GTG/core/firstrun_tasks.py:108
 msgid ""
-"The quickadd entry is the quickest way to create a new task. You can show or "
-"hide it in the View menu.\n"
+"The Quick Add Entry is the fastest way to create a new task. Use the check "
+"box in the View menu to enable and disable the entry field.\n"
 "\n"
-"For adding a task you just have to type its title in the entry and press "
-"return. The task will be created and selected in the task browser. If a tag "
-"is selected in the tag panel, this tag is applied to the task you create.\n"
+"To add a task simply type its title in the entry and press Enter. The task "
+"will be created and selected in the task browser. If a tag is selected in "
+"the Tags Sidebar, it will be applied to the task you created.\n"
 "\n"
-"You can also create a task with the attributes \"tags\", \"due\", and "
-"\"defer\" in the quickadd entry. The syntax for these attributes is:\n"
+"You can also create a task in the Quick Add Entry and at the same time "
+"specify its tags, due and defer date. Follow these format rules:\n"
+"\n"
 "\n"
 "tags:tag1,tag2,tag3\n"
 " - This way you can apply as many tags as you wish using comma as separator\n"
+" - Any word that begins with &quot;@&quot; will be interpreted as a tag\n"
 "\n"
 "due:date\n"
 "defer:date\n"
-" - This way you can apply a due date or a defer date. date can be yyyy-mm-dd "
-"(for example 2009-04-01) or yyyymmdd (20090401) or mmdd (0401, in this case "
-"the year is implicitly the current one) or today or tomorrow or a weekday "
-"name (due:monday means due next Monday)\n"
+" - This way you can apply a due date or a defer date. Dates can be formated "
+"as yyyy-mm-dd (for example 2012-04-01) or yyyymmdd (20120401) or mmdd (0401 -"
+" the year being implicitly the current one) or today, tomorrow or a weekday "
+"name (due:monday means due next Monday). Dates which are added in this way "
+"will not appear in the task title.\n"
 "\n"
-"Attributes which are added in this way apply but do not appear in the "
-"title.\n"
+"Examples:\n"
+"buy stationary tags:purchases,office due:20120330 defer:tuesday\n"
 "\n"
-"If a word begins with @, it is interpreted as a tag."
+" - The above example tells GTG to create a new task with the title \"buy "
+"stationary\", under the tags \"purchases\" and \"office\", with the due date "
+"March 30, 2012 and the start date next Tuesday.\n"
+"\n"
+"call mum tags:family,calls due:sunday defer:tomorrow\n"
+" - The above example tells GTG to create a new task with the title \"call "
+"mum\", under the tags \"family\" and \"calls\", with the due date next "
+"Sunday and the start date tomorrow."
 msgstr ""
 
 #: GTG/core/search.py:85
@@ -619,23 +631,23 @@ msgstr "yarın"
 msgid "nodate"
 msgstr ""
 
-#: GTG/core/task.py:56
+#: GTG/core/task.py:55
 msgid "My new task"
 msgstr "Yeni Görevim"
 
-#: GTG/core/task.py:165
+#: GTG/core/task.py:164
 msgid "tags"
 msgstr "etiketler"
 
-#: GTG/core/task.py:165
+#: GTG/core/task.py:164
 msgid "tag"
 msgstr "etiket"
 
-#: GTG/core/task.py:171
+#: GTG/core/task.py:170
 msgid "defer"
 msgstr "ertele"
 
-#: GTG/core/task.py:177
+#: GTG/core/task.py:176
 msgid "due"
 msgstr "bitiş"
 
@@ -648,7 +660,7 @@ msgstr "Tüm görevler"
 msgid "Tasks with no tags"
 msgstr "Etiketsiz görevler"
 
-#: GTG/core/treefactory.py:102 GTG/gtk/browser/browser.py:1654
+#: GTG/core/treefactory.py:102 GTG/gtk/browser/browser.py:1670
 msgid "Search"
 msgstr ""
 
@@ -795,7 +807,7 @@ msgid_plural "Authors"
 msgstr[0] ""
 msgstr[1] ""
 
-#: GTG/gtk/backends_dialog/__init__.py:285
+#: GTG/gtk/backends_dialog/__init__.py:286
 #, python-format
 msgid "Do you really want to remove the backend '%s'?"
 msgstr ""
@@ -813,7 +825,7 @@ msgstr[1] ""
 
 #: GTG/gtk/backends_dialog/configurepanel.py:169
 #, python-format
-msgid "There's no task tagged %s"
+msgid "There is no task tagged %s"
 msgstr ""
 
 #: GTG/gtk/backends_dialog/configurepanel.py:171
@@ -844,27 +856,27 @@ msgid "Syncing is <span color=\"red\">disabled</span>."
 msgstr ""
 
 #: GTG/gtk/preferences.glade.h:1
-msgid "<b>Dependencies</b>"
+msgid "Getting Things GNOME! Preferences"
 msgstr ""
 
 #: GTG/gtk/preferences.glade.h:2
-msgid "<b>General</b>"
+msgid "Start Getting Things GNOME! on every login"
 msgstr ""
 
 #: GTG/gtk/preferences.glade.h:3
-msgid "<b>Task Browser</b>"
+msgid "<b>Startup</b>"
 msgstr ""
 
 #: GTG/gtk/preferences.glade.h:4
-msgid "<b>Task Editor</b>"
+msgid "Show description preview in the task list."
 msgstr ""
 
 #: GTG/gtk/preferences.glade.h:5
-msgid "Active _Plugins:"
+msgid "Hide closed tasks older than "
 msgstr ""
 
 #: GTG/gtk/preferences.glade.h:6
-msgid "Behaviour"
+msgid "<b>Task Browser</b>"
 msgstr ""
 
 #: GTG/gtk/preferences.glade.h:7
@@ -872,30 +884,30 @@ msgid "Check spelling"
 msgstr ""
 
 #: GTG/gtk/preferences.glade.h:8
-msgid "Getting Things GNOME! Preferences"
+msgid "<b>Task Editor</b>"
 msgstr ""
 
 #: GTG/gtk/preferences.glade.h:9
-msgid "Hide closed tasks older than "
+msgid "General"
 msgstr ""
 
 #: GTG/gtk/preferences.glade.h:10
-msgid "Plugins"
+msgid "Active _Plugins:"
 msgstr ""
 
 #: GTG/gtk/preferences.glade.h:11
-msgid "Show description preview in the task list."
-msgstr ""
-
-#: GTG/gtk/preferences.glade.h:12
-msgid "Start Getting Things GNOME! on every login"
-msgstr ""
-
-#: GTG/gtk/preferences.glade.h:13
 msgid "_About Plugin"
 msgstr ""
 
-#: GTG/gtk/delete_dialog.py:90
+#: GTG/gtk/preferences.glade.h:12
+msgid "Plugins"
+msgstr ""
+
+#: GTG/gtk/preferences.glade.h:13
+msgid "<b>Dependencies</b>"
+msgstr ""
+
+#: GTG/gtk/delete_dialog.py:89
 msgid ""
 "Deleting a task cannot be undone, and will delete the following task: "
 msgid_plural ""
@@ -903,25 +915,25 @@ msgid_plural ""
 msgstr[0] ""
 msgstr[1] ""
 
-#: GTG/gtk/delete_dialog.py:95
+#: GTG/gtk/delete_dialog.py:94
 msgid "Are you sure you want to delete this task?"
 msgid_plural "Are you sure you want to delete these tasks?"
 msgstr[0] ""
 msgstr[1] ""
 
-#: GTG/gtk/delete_dialog.py:101
+#: GTG/gtk/delete_dialog.py:100
 msgid "Keep selected task"
 msgid_plural "Keep selected tasks"
 msgstr[0] ""
 msgstr[1] ""
 
-#: GTG/gtk/delete_dialog.py:104
+#: GTG/gtk/delete_dialog.py:103
 msgid "Permanently remove task"
 msgid_plural "Permanently remove tasks"
 msgstr[0] ""
 msgstr[1] ""
 
-#: GTG/gtk/delete_dialog.py:115
+#: GTG/gtk/delete_dialog.py:114
 #, python-format
 msgid ""
 "\n"
@@ -929,7 +941,7 @@ msgid ""
 msgstr ""
 
 #: GTG/gtk/preferences.py:38
-msgid "Click on a plugin to get a description here."
+msgid "Click on a plugin name to view its description here."
 msgstr ""
 
 #: GTG/gtk/browser/custominfobar.py:36
@@ -946,7 +958,7 @@ msgstr ""
 
 #: GTG/gtk/browser/custominfobar.py:43
 #, python-format
-msgid "Cannot connect to DBUS, I've disabled the <b>%s</b> backend."
+msgid "Cannot connect to DBus, I've disabled the <b>%s</b> backend."
 msgstr ""
 
 #: GTG/gtk/browser/custominfobar.py:105
@@ -969,63 +981,64 @@ msgstr ""
 msgid "Continue"
 msgstr ""
 
-#: GTG/gtk/browser/treeview_factory.py:277
-#: GTG/gtk/browser/taskbrowser.glade.h:39
+#: GTG/gtk/browser/treeview_factory.py:286
+#: GTG/gtk/browser/taskbrowser.glade.h:33
 msgid "Tags"
 msgstr "Etiketler"
 
-#: GTG/gtk/browser/treeview_factory.py:365
+#: GTG/gtk/browser/treeview_factory.py:374
 msgid "Start date"
 msgstr "Başlangıç tarihi"
 
-#: GTG/gtk/browser/treeview_factory.py:376
+#: GTG/gtk/browser/treeview_factory.py:385
 msgid "Due"
 msgstr "Bitiş"
 
-#: GTG/gtk/browser/treeview_factory.py:396
+#: GTG/gtk/browser/treeview_factory.py:405
 msgid "Closed date"
 msgstr ""
 
-#: GTG/gtk/browser/treeview_factory.py:441
+#: GTG/gtk/browser/treeview_factory.py:460
 msgid "Title"
 msgstr "Başlık"
 
-#: GTG/gtk/browser/browser.py:599
+#: GTG/gtk/browser/browser.py:600
 msgid "no active tasks"
 msgstr "etkin görev yok"
 
-#: GTG/gtk/browser/browser.py:601
+#: GTG/gtk/browser/browser.py:602
 #, python-format
 msgid "%(tasks)d active task"
 msgid_plural "%(tasks)d active tasks"
 msgstr[0] ""
 msgstr[1] ""
 
-#: GTG/gtk/browser/browser.py:1652
+#: GTG/gtk/browser/browser.py:1668
 msgid "Add Task"
 msgstr ""
 
-#: GTG/gtk/browser/browser.py:1653
+#: GTG/gtk/browser/browser.py:1669
 msgid "Open Task"
 msgstr ""
 
-#: GTG/gtk/browser/__init__.py:34 GTG/gtk/editor/__init__.py:31
-msgid "Mark as done"
-msgstr "Yapılmış olarak işaretle"
+#: GTG/gtk/browser/__init__.py:34 GTG/gtk/browser/taskbrowser.glade.h:29
+#: GTG/gtk/editor/__init__.py:31
+msgid "Mark as Done"
+msgstr "Yapıldı olarak işaretle"
 
 #: GTG/gtk/browser/__init__.py:35
 msgid "Mark the selected task as done"
 msgstr "Seçili görevi yapıldı olarak işaretle"
 
 #: GTG/gtk/browser/__init__.py:36 GTG/gtk/editor/__init__.py:32
-msgid "Mark as not done"
-msgstr "Yapılmamış olarak işaretle"
+msgid "Mark as not Done"
+msgstr ""
 
 #: GTG/gtk/browser/__init__.py:37 GTG/gtk/browser/__init__.py:41
 msgid "Mark the selected task as to be done"
 msgstr "Seçili görevi yapılacak olarak işaretle"
 
-#: GTG/gtk/browser/__init__.py:38 GTG/gtk/browser/taskbrowser.glade.h:14
+#: GTG/gtk/browser/__init__.py:38 GTG/gtk/browser/taskbrowser.glade.h:30
 #: GTG/gtk/editor/__init__.py:33 GTG/gtk/editor/taskeditor.glade.h:3
 msgid "Dismiss"
 msgstr "İptal Et"
@@ -1046,7 +1059,7 @@ msgstr "Seçili görevi kalıcı olarak kaldır"
 msgid "Edit the selected task"
 msgstr "Seçili görevi düzenle"
 
-#: GTG/gtk/browser/__init__.py:44 GTG/gtk/browser/taskbrowser.glade.h:11
+#: GTG/gtk/browser/__init__.py:44 GTG/gtk/browser/taskbrowser.glade.h:4
 msgid "Create a new task"
 msgstr "Yeni bir görev oluştur"
 
@@ -1075,6 +1088,134 @@ msgid "Clear"
 msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:1
+msgid "Getting Things Gnome!"
+msgstr "Getting Things Gnome!"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:2
+msgid "_Tasks"
+msgstr "_Görevler"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:3
+msgid "New _Task"
+msgstr "Yeni _Görev"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:5
+msgid "New _Subtask"
+msgstr "Yeni _Altgörev"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:6
+msgid "Mark as _Done"
+msgstr "_Yapıldı olarak işaretle"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:7
+msgid "D_ismiss"
+msgstr ""
+
+#: GTG/gtk/browser/taskbrowser.glade.h:8
+msgid "_Edit"
+msgstr "_Düzenle"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:9
+msgid "_View"
+msgstr "_Görünüm"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:10
+msgid "_Work View"
+msgstr ""
+
+#: GTG/gtk/browser/taskbrowser.glade.h:11
+msgid "_Background Colors"
+msgstr "_Arkaplan renkleri"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:12
+msgid "_Tags Sidebar"
+msgstr ""
+
+#: GTG/gtk/browser/taskbrowser.glade.h:13
+msgid "_Closed Tasks Pane"
+msgstr ""
+
+#: GTG/gtk/browser/taskbrowser.glade.h:14
+msgid "T_oolbar"
+msgstr ""
+
+#: GTG/gtk/browser/taskbrowser.glade.h:15
+msgid "_Quick Add Entry"
+msgstr ""
+
+#: GTG/gtk/browser/taskbrowser.glade.h:16
+msgid "_Plugins"
+msgstr "_Eklentiler"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:17
+msgid "_Help"
+msgstr "_Yardım"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:18
+msgid "Get _Help Online"
+msgstr ""
+
+#: GTG/gtk/browser/taskbrowser.glade.h:19
+msgid "Open GTG documentation in your web browser"
+msgstr ""
+
+#: GTG/gtk/browser/taskbrowser.glade.h:20
+msgid "_Translate GTG"
+msgstr ""
+
+#: GTG/gtk/browser/taskbrowser.glade.h:21
+msgid "Help to translate GTG into your language"
+msgstr ""
+
+#: GTG/gtk/browser/taskbrowser.glade.h:22
+msgid "_Report a Problem"
+msgstr ""
+
+#: GTG/gtk/browser/taskbrowser.glade.h:23
+msgid "Report a problem to GTG developers"
+msgstr ""
+
+#: GTG/gtk/browser/taskbrowser.glade.h:24
+msgid "New Task"
+msgstr "Yeni Görev"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:25
+msgid "New Subtask"
+msgstr "Yeni Alt Görev"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:26
+msgid "Edit"
+msgstr "Düzenle"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:27
+msgid "Undo"
+msgstr "Geri Al"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:28
+msgid "Redo"
+msgstr "Yinele"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:31 GTG/gtk/editor/taskeditor.glade.h:4
+msgid "Delete"
+msgstr "Sil"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:32
+msgid "Work View"
+msgstr ""
+
+#: GTG/gtk/browser/taskbrowser.glade.h:34
+msgid "Tasks"
+msgstr ""
+
+#: GTG/gtk/browser/taskbrowser.glade.h:35
+msgid "About GTG!"
+msgstr "GTG Hakkında!"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:36
+msgid "Copyright © 2008-2012 Lionel Dricot, Bertrand Rousseau"
+msgstr ""
+
+#: GTG/gtk/browser/taskbrowser.glade.h:37
 msgid ""
 "\n"
 "Getting Things Gnome! is an organizer for the GNOME desktop environment."
@@ -1082,63 +1223,11 @@ msgstr ""
 "\n"
 "Getting Things Gnome! GNOME masaüstü ortamı için bir ajandadır."
 
-#: GTG/gtk/browser/taskbrowser.glade.h:3
-msgid "About GTG!"
-msgstr "GTG Hakkında!"
-
-#: GTG/gtk/browser/taskbrowser.glade.h:4
-msgid "Add Tag"
-msgstr "Etiket Ekle"
-
-#: GTG/gtk/browser/taskbrowser.glade.h:5
-msgid "Add Tag..."
-msgstr "Etiket Ekle..."
-
-#: GTG/gtk/browser/taskbrowser.glade.h:6
-msgid "Add a Tag..."
-msgstr "Bir Etiket Ekle..."
-
-#: GTG/gtk/browser/taskbrowser.glade.h:7
-msgid "Add a subtask"
-msgstr "İkincil görev ekle"
-
-#: GTG/gtk/browser/taskbrowser.glade.h:8
-msgid "Apply to subtasks"
-msgstr ""
-
-#: GTG/gtk/browser/taskbrowser.glade.h:9
-msgid "Cancel"
-msgstr "Vazgeç"
-
-#: GTG/gtk/browser/taskbrowser.glade.h:10
-msgid "Copyrights© 2008, 2009 Lionel Dricot, Bertrand Rousseau"
-msgstr ""
-
-#: GTG/gtk/browser/taskbrowser.glade.h:12
-msgid "D_ismiss"
-msgstr ""
-
-#: GTG/gtk/browser/taskbrowser.glade.h:13 GTG/gtk/editor/taskeditor.glade.h:2
-msgid "Delete"
-msgstr "Sil"
-
-#: GTG/gtk/browser/taskbrowser.glade.h:15
-msgid "Edit"
-msgstr "Düzenle"
-
-#: GTG/gtk/browser/taskbrowser.glade.h:16
-msgid "Enter the name of the tag(s) you wish to add:"
-msgstr "Eklemek istediğiniz etiketin/etiketlerin adını girin:"
-
-#: GTG/gtk/browser/taskbrowser.glade.h:17
+#: GTG/gtk/browser/taskbrowser.glade.h:39
 msgid "GTG website"
 msgstr "GTG web sayfası"
 
-#: GTG/gtk/browser/taskbrowser.glade.h:18
-msgid "Getting Things Gnome!"
-msgstr "Getting Things Gnome!"
-
-#: GTG/gtk/browser/taskbrowser.glade.h:19
+#: GTG/gtk/browser/taskbrowser.glade.h:40
 msgid ""
 "Getting Things Gnome! is free software; you can redistribute it and/or "
 "modify it under the terms of the GNU General Public License as published by "
@@ -1155,7 +1244,27 @@ msgid ""
 "51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA."
 msgstr ""
 
-#: GTG/gtk/browser/taskbrowser.glade.h:24
+#: GTG/gtk/browser/taskbrowser.glade.h:45
+msgid "Add a Tag..."
+msgstr "Bir Etiket Ekle..."
+
+#: GTG/gtk/browser/taskbrowser.glade.h:46
+msgid "Add Tag"
+msgstr "Etiket Ekle"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:47
+msgid "Cancel"
+msgstr "Vazgeç"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:48
+msgid "Enter the name of the tag(s) you wish to add:"
+msgstr "Eklemek istediğiniz etiketin/etiketlerin adını girin:"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:49
+msgid "TagName"
+msgstr "EtiketAdı"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:50
 msgid ""
 "Hint: you can add several tags by separating them with\n"
 "commas."
@@ -1163,157 +1272,77 @@ msgstr ""
 "İpucu: virgülle birbirinden ayırarak çeşitli\n"
 "etiketler ekleyebilirsiniz"
 
-#: GTG/gtk/browser/taskbrowser.glade.h:26
-msgid "Mark as Done"
-msgstr "Yapıldı olarak işaretle"
+#: GTG/gtk/browser/taskbrowser.glade.h:52
+msgid "Apply to subtasks"
+msgstr ""
 
-#: GTG/gtk/browser/taskbrowser.glade.h:27
+#: GTG/gtk/browser/taskbrowser.glade.h:53
 msgid "Mark as Not Done"
 msgstr "Yapılmadı olarak işaretle"
 
-#: GTG/gtk/browser/taskbrowser.glade.h:28
-msgid "Mark as _Done"
-msgstr "_Yapıldı olarak işaretle"
-
-#: GTG/gtk/browser/taskbrowser.glade.h:29
-msgid "New Subtask"
-msgstr "Yeni Alt Görev"
-
-#: GTG/gtk/browser/taskbrowser.glade.h:30
-msgid "New Task"
-msgstr "Yeni Görev"
-
-#: GTG/gtk/browser/taskbrowser.glade.h:31
-msgid "New _Subtask"
-msgstr "Yeni _Altgörev"
-
-#: GTG/gtk/browser/taskbrowser.glade.h:32
-msgid "New _Task"
-msgstr "Yeni _Görev"
-
-#: GTG/gtk/browser/taskbrowser.glade.h:33
-msgid "Open GTG documentation in your web browser"
-msgstr ""
-
-#: GTG/gtk/browser/taskbrowser.glade.h:34
-msgid "Redo"
-msgstr "Yinele"
-
-#: GTG/gtk/browser/taskbrowser.glade.h:35
-msgid "Reset Color"
-msgstr "Rengi Sıfırla"
-
-#: GTG/gtk/browser/taskbrowser.glade.h:36
-msgid "Set due date"
-msgstr ""
-
-#: GTG/gtk/browser/taskbrowser.glade.h:37
-msgid "T_oolbar"
-msgstr ""
-
-#: GTG/gtk/browser/taskbrowser.glade.h:38
-msgid "TagName"
-msgstr "EtiketAdı"
-
-#: GTG/gtk/browser/taskbrowser.glade.h:40
-msgid "Tasks"
-msgstr ""
-
-#: GTG/gtk/browser/taskbrowser.glade.h:41
+#: GTG/gtk/browser/taskbrowser.glade.h:54
 msgid "Und_ismiss"
 msgstr ""
 
-#: GTG/gtk/browser/taskbrowser.glade.h:42
-msgid "Undo"
-msgstr "Geri Al"
-
-#: GTG/gtk/browser/taskbrowser.glade.h:43
-msgid "Work View"
-msgstr ""
-
-#: GTG/gtk/browser/taskbrowser.glade.h:44
-msgid "_Background Colors"
-msgstr "_Arkaplan renkleri"
-
-#: GTG/gtk/browser/taskbrowser.glade.h:45
-msgid "_Closed Tasks Pane"
-msgstr ""
-
-#: GTG/gtk/browser/taskbrowser.glade.h:46
-msgid "_Edit"
-msgstr "_Düzenle"
-
-#: GTG/gtk/browser/taskbrowser.glade.h:47
-msgid "_Help"
-msgstr "_Yardım"
-
-#: GTG/gtk/browser/taskbrowser.glade.h:48
-msgid "_Plugins"
-msgstr "_Eklentiler"
-
-#: GTG/gtk/browser/taskbrowser.glade.h:49
-msgid "_Quick Add Entry"
-msgstr ""
-
-#: GTG/gtk/browser/taskbrowser.glade.h:50
-msgid "_Set start date"
-msgstr ""
-
-#: GTG/gtk/browser/taskbrowser.glade.h:51
-msgid "_Tags Sidebar"
-msgstr ""
-
-#: GTG/gtk/browser/taskbrowser.glade.h:52
-msgid "_Tasks"
-msgstr "_Görevler"
-
-#: GTG/gtk/browser/taskbrowser.glade.h:53
-msgid "_View"
-msgstr "_Görünüm"
-
-#: GTG/gtk/browser/taskbrowser.glade.h:54
-msgid "_Work View"
-msgstr ""
-
 #: GTG/gtk/browser/taskbrowser.glade.h:55
-msgid "_clear due date"
-msgstr ""
+msgid "t_oday"
+msgstr "b_ugün"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:56
-msgid "_clear start date"
-msgstr ""
-
-#: GTG/gtk/browser/taskbrowser.glade.h:57
-msgid "_now"
-msgstr ""
-
-#: GTG/gtk/browser/taskbrowser.glade.h:58
-msgid "_someday"
-msgstr ""
-
-#: GTG/gtk/browser/taskbrowser.glade.h:59
-msgid "_soon"
-msgstr ""
-
-#: GTG/gtk/browser/taskbrowser.glade.h:60
 msgid "_tomorrow"
 msgstr "_yarın"
 
-#: GTG/gtk/browser/taskbrowser.glade.h:61
-msgid "next _month"
-msgstr "gelecek_ay"
-
-#: GTG/gtk/browser/taskbrowser.glade.h:62
+#: GTG/gtk/browser/taskbrowser.glade.h:57
 msgid "next _week"
 msgstr "gelecek_hafta"
 
-#: GTG/gtk/browser/taskbrowser.glade.h:63
+#: GTG/gtk/browser/taskbrowser.glade.h:58
+msgid "next _month"
+msgstr "gelecek_ay"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:59
 msgid "next _year"
 msgstr "gelecek_yıl"
 
+#: GTG/gtk/browser/taskbrowser.glade.h:60
+msgid "_now"
+msgstr ""
+
+#: GTG/gtk/browser/taskbrowser.glade.h:61
+msgid "_soon"
+msgstr ""
+
+#: GTG/gtk/browser/taskbrowser.glade.h:62
+msgid "_someday"
+msgstr ""
+
+#: GTG/gtk/browser/taskbrowser.glade.h:63
+msgid "_clear due date"
+msgstr ""
+
 #: GTG/gtk/browser/taskbrowser.glade.h:64
-msgid "t_oday"
-msgstr "b_ugün"
+msgid "_clear start date"
+msgstr ""
+
+#: GTG/gtk/browser/taskbrowser.glade.h:65
+msgid "Reset Color"
+msgstr "Rengi Sıfırla"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:66
+msgid "Add a subtask"
+msgstr "İkincil görev ekle"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:67
+msgid "_Set start date"
+msgstr ""
+
+#: GTG/gtk/browser/taskbrowser.glade.h:68
+msgid "Set due date"
+msgstr ""
+
+#: GTG/gtk/browser/taskbrowser.glade.h:69
+msgid "Add Tag..."
+msgstr "Etiket Ekle..."
 
 #: GTG/gtk/editor/editor.py:295
 #, python-format
@@ -1346,41 +1375,37 @@ msgid_plural "Was %(days)d days ago"
 msgstr[0] ""
 msgstr[1] ""
 
-#: GTG/gtk/editor/__init__.py:35
-msgid "Make a Task"
-msgstr "Görev Oluştur"
-
-#: GTG/gtk/editor/__init__.py:37
+#: GTG/gtk/editor/__init__.py:36
 msgid "Mark this task as done"
 msgstr "Bu görevi yapıldı olarak işaretle"
 
-#: GTG/gtk/editor/__init__.py:38 GTG/gtk/editor/__init__.py:40
+#: GTG/gtk/editor/__init__.py:37 GTG/gtk/editor/__init__.py:39
 msgid "Mark this task as to be done"
 msgstr "Bu görevi yapılacak olarak işaretle"
 
-#: GTG/gtk/editor/__init__.py:39
+#: GTG/gtk/editor/__init__.py:38
 msgid "Mark this task as not to be done anymore"
 msgstr "Bu görevi artık yapılmayacak olarak işaretle"
 
-#: GTG/gtk/editor/__init__.py:41
+#: GTG/gtk/editor/__init__.py:40
 msgid "Permanently remove this task"
 msgstr "Bu görevi kalıcı olarak kaldır"
 
-#: GTG/gtk/editor/__init__.py:42
+#: GTG/gtk/editor/__init__.py:41
 msgid "Insert a subtask in this task"
 msgstr "Bu göreve ikincil görev ekle"
 
-#: GTG/gtk/editor/__init__.py:43
+#: GTG/gtk/editor/__init__.py:42
 msgid "Insert a tag in this task"
 msgstr "Bu göreve etiket ekle"
 
 #: GTG/gtk/editor/taskeditor.glade.h:1
-msgid "Closed on"
-msgstr ""
+msgid "Task"
+msgstr "Görev"
 
-#: GTG/gtk/editor/taskeditor.glade.h:4
-msgid "Due for"
-msgstr ""
+#: GTG/gtk/editor/taskeditor.glade.h:2
+msgid "Mark Done"
+msgstr "Yapıldı olarak işaretle"
 
 #: GTG/gtk/editor/taskeditor.glade.h:5
 msgid "Insert subtask"
@@ -1391,28 +1416,28 @@ msgid "Insert tag"
 msgstr "Etiket ekle"
 
 #: GTG/gtk/editor/taskeditor.glade.h:7
-msgid "Mark Done"
-msgstr "Yapıldı olarak işaretle"
-
-#: GTG/gtk/editor/taskeditor.glade.h:8
-msgid "Now"
-msgstr "Şimdi"
-
-#: GTG/gtk/editor/taskeditor.glade.h:9
-msgid "Someday"
-msgstr ""
-
-#: GTG/gtk/editor/taskeditor.glade.h:10
-msgid "Soon"
-msgstr "Yakında"
-
-#: GTG/gtk/editor/taskeditor.glade.h:11
 msgid "Starting on"
 msgstr ""
 
+#: GTG/gtk/editor/taskeditor.glade.h:8
+msgid "Due for"
+msgstr ""
+
+#: GTG/gtk/editor/taskeditor.glade.h:9
+msgid "Closed on"
+msgstr ""
+
+#: GTG/gtk/editor/taskeditor.glade.h:10
+msgid "Now"
+msgstr "Şimdi"
+
+#: GTG/gtk/editor/taskeditor.glade.h:11
+msgid "Soon"
+msgstr "Yakında"
+
 #: GTG/gtk/editor/taskeditor.glade.h:12
-msgid "Task"
-msgstr "Görev"
+msgid "Someday"
+msgstr ""
 
 #: GTG/gtk/deletion.glade.h:1
 msgid "Confirm task deletion"
@@ -1426,27 +1451,27 @@ msgstr ""
 "Çok üzgünüz. Oluşan hata hakkında geribildirim göndererek sorunu çözmemize "
 "yardımcı olmak ister misiniz ?"
 
-#: GTG/gtk/crashhandler.py:170
+#: GTG/gtk/crashhandler.py:173
 msgid "An error has occurred"
 msgstr "Bir hata oluştu"
 
-#: GTG/gtk/crashhandler.py:184
+#: GTG/gtk/crashhandler.py:187
 msgid "It looks like an error has occurred."
 msgstr "Görünüşe göre bir hata oluştu."
 
-#: GTG/gtk/crashhandler.py:218
+#: GTG/gtk/crashhandler.py:223
 msgid "_Details"
 msgstr "_Ayrıntılar"
 
-#: GTG/gtk/crashhandler.py:225
+#: GTG/gtk/crashhandler.py:230
 msgid "_Report this problem..."
 msgstr "_Hatayı bildir..."
 
-#: GTG/gtk/crashhandler.py:229
+#: GTG/gtk/crashhandler.py:234
 msgid "_Ignore the error"
 msgstr "_Hatayı görmezden gel"
 
-#: GTG/gtk/crashhandler.py:323
+#: GTG/gtk/crashhandler.py:336
 msgid ""
 " has crashed. Please report the bug on <a "
 "href=\"http://bugs.edge.launchpad.net/gtg\">our Launchpad page</a>. If you "
@@ -1458,6 +1483,12 @@ msgstr ""
 
 #~ msgid "Thank you for trying out GTG :-)"
 #~ msgstr "GTG'yi denediğiniz için teşekkürler :-)"
+
+#~ msgid "Mark as not done"
+#~ msgstr "Yapılmamış olarak işaretle"
+
+#~ msgid "Mark as done"
+#~ msgstr "Yapılmış olarak işaretle"
 
 #~ msgid "wednesday"
 #~ msgstr "çarşamba"
@@ -1533,6 +1564,9 @@ msgstr ""
 
 #~ msgid "Try to type a word beginning with @ here:"
 #~ msgstr "Buraya @ ile başlayan bir sözcük yazmayı deneyin:"
+
+#~ msgid "Make a Task"
+#~ msgstr "Görev Oluştur"
 
 #~ msgid "Can't load the template file"
 #~ msgstr "Şablon dosyası yüklenemedi"

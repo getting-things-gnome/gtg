@@ -1,39 +1,38 @@
-# Croatian translation for gtg
-# Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
+# Esperanto translation for gtg
+# Copyright (c) 2012 Rosetta Contributors and Canonical Ltd 2012
 # This file is distributed under the same license as the gtg package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2012.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2012-03-27 00:43+0200\n"
-"PO-Revision-Date: 2011-09-19 16:56+0000\n"
-"Last-Translator: Saša Teković <Unknown>\n"
-"Language-Team: Croatian <hr@li.org>\n"
+"PO-Revision-Date: 2012-03-26 04:27+0000\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: Esperanto <eo@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
-"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Launchpad-Export-Date: 2012-03-27 04:53+0000\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Launchpad-Export-Date: 2012-03-27 04:52+0000\n"
 "X-Generator: Launchpad (build 15011)\n"
 
 #: GTG/plugins/notification_area/notification_area.py:121
 msgid "_View Main Window"
-msgstr "_Prikaži glavni prozor"
+msgstr ""
 
 #: GTG/plugins/notification_area/notification_area.py:131
 msgid "Add _New Task"
-msgstr "Dodaj _novi zadatak"
+msgstr ""
 
 #: GTG/plugins/export/export_templates/description_textual.py:18
 msgid "Text-only"
-msgstr "Samo tekst"
+msgstr ""
 
 #: GTG/plugins/export/export_templates/description_textual.py:19
 msgid "A template to create a simple text file with some tasks."
-msgstr "Predložak za stvaranje jednostavne tekstualne datoteke sa zadacima."
+msgstr ""
 
 #: GTG/plugins/export/export_templates/description_simple.py:18
 msgid "A simple Web page that can be easily printed."
@@ -47,41 +46,35 @@ msgstr ""
 
 #: GTG/plugins/export/export_templates/description_statusrpt.py:18
 msgid "Status report"
-msgstr "Izvještaj o stanju"
+msgstr ""
 
 #: GTG/plugins/export/export_templates/description_statusrpt.py:19
 msgid "A template to create a compact text file listing only task titles."
 msgstr ""
-"Predložak za stvaranje kompaktne tekstualne datoteke koja sadrži samo "
-"naslove zadataka."
 
 #: GTG/plugins/export/export_templates/description_pocketmod.py:18
 msgid "Foldable booklet (PDF)"
-msgstr "Presavijena knjižica (PDF)"
+msgstr ""
 
 #: GTG/plugins/export/export_templates/description_pocketmod.py:19
 msgid ""
 "A template to create a <a href=\"http://www.pocketmod.com\">PocketMod</a>, "
 "which is a  small foldable booklet."
 msgstr ""
-"Predložak za stvaranje <a href=\"http://www.pocketmod.com\">PocketModa</a>, "
-"koji je mala, presavijena knjižica."
 
 #: GTG/plugins/export/export_templates/description_sexy.py:18
 msgid "A professional-looking HTML page"
-msgstr "Profesionalna HTML stranica"
+msgstr ""
 
 #: GTG/plugins/export/export_templates/description_sexy.py:19
 msgid ""
 "A template to create a HTML page with some tasks and tags. Tags colors are "
 "also displayed."
 msgstr ""
-"Predložak za stvaranje HTML stranice sa zadacima i oznakama u različitim "
-"bojama."
 
 #: GTG/plugins/export/export.py:114
 msgid "Template not found"
-msgstr "Predložak nije pronađen"
+msgstr ""
 
 #: GTG/plugins/export/export.py:121
 #, python-format
@@ -90,20 +83,20 @@ msgstr ""
 
 #: GTG/plugins/export/export.py:169
 msgid "Export the tasks currently listed"
-msgstr "Izvezi trenutno izlistane zadatke"
+msgstr ""
 
 #: GTG/plugins/export/export.py:322
 msgid "Choose where to save your list"
-msgstr "Odaberite gdje želite spremiti vaš popis"
+msgstr ""
 
 #: GTG/plugins/send_email/sendEmail.py:44
 msgid "Send via email"
-msgstr "Pošalji e-poštom"
+msgstr ""
 
 #: GTG/plugins/send_email/sendEmail.py:69
 #, python-format
 msgid "Status: %s"
-msgstr "Stanje: %s"
+msgstr ""
 
 #: GTG/plugins/send_email/sendEmail.py:70
 #, python-format
@@ -111,8 +104,6 @@ msgid ""
 "\n"
 "Tags: %s"
 msgstr ""
-"\n"
-"Oznake: %s"
 
 #: GTG/plugins/send_email/sendEmail.py:71
 #, python-format
@@ -121,9 +112,6 @@ msgid ""
 "Subtasks:\n"
 "%s"
 msgstr ""
-"\n"
-"Podzadaci:\n"
-"%s"
 
 #: GTG/plugins/send_email/sendEmail.py:73
 #, python-format
@@ -132,86 +120,79 @@ msgid ""
 "Task content:\n"
 "%s"
 msgstr ""
-"\n"
-"Sadržaj zadatka:\n"
-"%s"
 
 #: GTG/plugins/send_email/sendEmail.py:76
 #, python-format
 msgid "Task: %(task_title)s"
-msgstr "Zadatak: %(task_title)s"
+msgstr ""
 
 #: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:1
 msgid "Set the task's location"
-msgstr "Postavi lokaciju zadatka"
+msgstr ""
 
 #: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:2
 msgid "Associate with new tag"
-msgstr "Poveži s novom oznakom"
+msgstr ""
 
 #: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:3
 msgid "Associate with existing tag"
-msgstr "Poveži s postojećom oznakom"
+msgstr ""
 
 #: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:4
 msgid "Geolocalized-tasks Preferences"
-msgstr "Osobitosti geolokaliziranih zadataka"
+msgstr ""
 
 #: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:5
 msgid "Use network"
-msgstr "Koristi mrežu"
+msgstr ""
 
 #: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:6
 msgid "Use cellphone"
-msgstr "Koristi mobilni telefon"
+msgstr ""
 
 #: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:7
 msgid "Use gps"
-msgstr "Koristi GPS"
+msgstr ""
 
 #: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:8
 msgid "<b>Location Determination Method</b>"
-msgstr "<b>Metoda određivanja lokacije</b>"
+msgstr ""
 
 #: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:9
 msgid ""
 "<small>Distance in kilometers from \n"
 "the current location.</small>"
 msgstr ""
-"<small>Udaljenost u kilometrima od \n"
-"trenutne lokacije.</small>"
 
 #: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:11
 msgid "<b>Proximity Factor</b>"
-msgstr "<b>Čimbenik udaljenosti</b>"
+msgstr ""
 
 #: GTG/plugins/hamster/hamster.py:154
 msgid "Start task in Hamster"
-msgstr "Pokreni zadatak u Hamsteru"
+msgstr ""
 
 #: GTG/plugins/hamster/hamster.py:159
 msgid "Start in Hamster"
-msgstr "Pokreni u Hamsteru"
+msgstr ""
 
 #: GTG/plugins/hamster/hamster.py:161
 msgid "Start a new activity in Hamster Time"
-msgstr "Pokreni novu aktivnost u Hamster Timeu"
+msgstr ""
 
 #: GTG/plugins/hamster/hamster.py:175
 msgid "Start a new activity in Hamster Time "
-msgstr "Pokreni novu aktivnost u Hamster Timeu "
+msgstr ""
 
 #: GTG/plugins/tomboy/tomboy.py:79
 msgid ""
 "Tomboy/Gnote not found. Please install it or disable the Tomboy/Gnote plugin "
 "in GTG"
 msgstr ""
-"Tomboy/Gnote nije pronađen. Molim instalirajte ga ili onemogućite "
-"Tomboy/Gnote dodatak u GTG-u"
 
 #: GTG/plugins/tomboy/tomboy.py:121
 msgid "Add Tomboy note"
-msgstr "Dodaj Tomboy bilješku"
+msgstr ""
 
 #: GTG/plugins/tomboy/tomboy.py:194
 #, python-format
@@ -222,29 +203,29 @@ msgstr ""
 
 #: GTG/plugins/tomboy/tomboy.py:240
 msgid "That note does not exist!"
-msgstr "Ta bilješka ne postoji!"
+msgstr ""
 
 #: GTG/plugins/tomboy/tomboy.py:245
 msgid "That note does not exist. Do you want to create a new one?"
-msgstr "Ta bilješka ne postoji. Želite li stvoriti novu?"
+msgstr ""
 
 #: GTG/plugins/tomboy/tomboy.py:273
 msgid "This Tomboy note does not exist anymore. Do you want to create it?"
-msgstr "Ova Tomboy bilješka više ne postoji. Želite li je stvoriti?"
+msgstr ""
 
 #: GTG/tests/test_dates.py:51 GTG/tests/test_dates.py:58 GTG/core/search.py:92
 #: GTG/tools/dates.py:38 GTG/tools/dates.py:46
 msgid "now"
-msgstr "sada"
+msgstr ""
 
 #: GTG/tests/test_dates.py:52 GTG/tests/test_dates.py:59 GTG/core/search.py:93
 #: GTG/tools/dates.py:39 GTG/tools/dates.py:48
 msgid "soon"
-msgstr "uskoro"
+msgstr ""
 
 #: GTG/tests/test_dates.py:53 GTG/tools/dates.py:50
 msgid "later"
-msgstr "kasnije"
+msgstr ""
 
 #: GTG/tests/test_dates.py:54 GTG/tests/test_dates.py:60
 #: GTG/tests/test_dates.py:61 GTG/core/search.py:94 GTG/tools/dates.py:40
@@ -254,15 +235,15 @@ msgstr ""
 
 #: GTG/backends/backend_identica.py:54
 msgid "Identi.ca"
-msgstr "Identi.ca"
+msgstr ""
 
 #: GTG/backends/backend_identica.py:58
 msgid "Imports your identi.ca  messages into your GTG "
-msgstr "Uvozi vaše Identi.ca poruke u GTG "
+msgstr ""
 
 #: GTG/backends/backend_gnote.py:42
 msgid "Gnote"
-msgstr "Gnote"
+msgstr ""
 
 #: GTG/backends/backend_gnote.py:46
 msgid ""
@@ -271,14 +252,10 @@ msgid ""
 "tag it with the tag you have chosen (you'll configure it later), and it will "
 "appear in GTG."
 msgstr ""
-"Ovaj pozadinski servis sinkronizira sve ili dio vaših Gnote bilješki s GTG-"
-"om. Ako procijenite da bi bilo dobro imati jednu od bilješki na popisu "
-"zadataka, jednostavno označite bilješku s oznakom koju ste odabrali (podesit "
-"ćete je kasnije), a poruka će se pojaviti u GTG-u."
 
 #: GTG/backends/backend_rtm.py:54
 msgid "Remember The Milk"
-msgstr "Remember The Milk"
+msgstr ""
 
 #: GTG/backends/backend_rtm.py:58
 msgid ""
@@ -288,24 +265,18 @@ msgid ""
 "Note: This product uses the Remember The Milk API but is not endorsed or "
 "certified by Remember The Milk"
 msgstr ""
-"Ovaj pozadinski servis sinkronizira vaše zadatke s web servisom "
-"RememberTheMilk:\n"
-"\t\thttp://rememberthemilk.com\n"
-"\n"
-"Napomena: ovaj proizvod koristi Remember The Milk API, ali nije podržan ili "
-"certificiran od strane Remember The Milka"
 
 #: GTG/backends/backend_twitter.py:54
 msgid "Twitter"
-msgstr "Twitter"
+msgstr ""
 
 #: GTG/backends/backend_twitter.py:58
 msgid "Imports your twitter  messages into your GTG "
-msgstr "Uvozi vaše Twitter poruke u GTG "
+msgstr ""
 
 #: GTG/backends/backend_tomboy.py:41
 msgid "Tomboy"
-msgstr "Tomboy"
+msgstr ""
 
 #: GTG/backends/backend_tomboy.py:45
 msgid ""
@@ -314,10 +285,6 @@ msgid ""
 "tag it with the tag you have chosen (you'll configure it later), and it will "
 "appear in GTG."
 msgstr ""
-"Ovaj pozadinski servis sinkronizira sve ili dio vaših Tomboy bilješki s GTG-"
-"om. Ako procijenite da bi bilo dobro imati jednu od vaših bilješki na popisu "
-"zadataka, jednostavno upotrijebite oznaku koju ste sami odredili (odabrat "
-"ćete je kasnije), a bilješka će se automatski pojaviti u GTG-u."
 
 #: GTG/backends/backend_mantis.py:42
 msgid "MantisBT"
@@ -345,7 +312,7 @@ msgstr ""
 
 #: GTG/backends/backend_mantis.py:244 GTG/backends/backend_launchpad.py:324
 msgid "Reported by: "
-msgstr "Prijavio/la: "
+msgstr ""
 
 #: GTG/backends/backend_mantis.py:245
 msgid "Link to issue: "
@@ -353,23 +320,23 @@ msgstr ""
 
 #: GTG/backends/backend_evolution.py:69
 msgid "Evolution tasks"
-msgstr "Evolution zadaci"
+msgstr ""
 
 #: GTG/backends/backend_evolution.py:73
 msgid "Lets you synchronize your GTG tasks with Evolution tasks"
-msgstr "Omogućava vam sinkronizaciju GTG zadataka s Evolution zadacima"
+msgstr ""
 
 #: GTG/backends/backend_localfile.py:61
 msgid "Local File"
-msgstr "Lokalna datoteka"
+msgstr ""
 
 #: GTG/backends/backend_localfile.py:66
 msgid "Your tasks are saved in a text file (XML format). "
-msgstr "Vaši su zadaci spremljeni u tekstualnu datoteku (XML format). "
+msgstr ""
 
 #: GTG/backends/backend_launchpad.py:53
 msgid "Launchpad"
-msgstr "Launchpad"
+msgstr ""
 
 #: GTG/backends/backend_launchpad.py:57
 msgid ""
@@ -386,74 +353,62 @@ msgid ""
 "subtasks...): your  changes will be preserved. This is useful to add  "
 "personal annotations to bug"
 msgstr ""
-"Ovaj pozadinski servis vam omogućava uvoz grešaka koje su vam dodijeljene "
-"(ili su dodijeljene nekom drugom) na Launchpadu. Promjene stanja greške "
-"odrazit će se i u GTG zadatku.\n"
-"Imajte na umu da ovaj pozadinski servis podržava samo čitanje, što znači da "
-"ako otvorite jedan od uvezenih zadataka i promijenite :\n"
-"  - naslov\n"
-"  - opis\n"
-"  - oznake\n"
-"vaše će promjene <b>biti poništene</b> kada se pripadajuća greška promijeni. "
-"Osim navedenih stvari, možete slobodno postaviti bilo koje drugo polje "
-"(datum početka/kraja, podzadaci...) - vaše će promjene biti sačuvane. Ovo je "
-"korisno za dodavanje osobnih bilješki za grešku"
 
 #: GTG/backends/backend_launchpad.py:244
 msgid "Bug"
-msgstr "Greška"
+msgstr ""
 
 #: GTG/backends/backend_launchpad.py:329
 msgid "Link to bug: "
-msgstr "Poveznica na grešku: "
+msgstr ""
 
 #: GTG/backends/rtm/rtm.py:57
 msgid "Invalid state"
-msgstr "Neispravno stanje"
+msgstr ""
 
 #: GTG/core/plugins/__init__.py:33
 msgid "Everything necessary to run this plugin is available."
-msgstr "Sve potrebno za pokretanje ovog dodatka je dostupno."
+msgstr ""
 
 #: GTG/core/plugins/__init__.py:34
 msgid "The plugin can not be loaded"
-msgstr "Ovaj dodatak se ne može učitati."
+msgstr ""
 
 #: GTG/core/plugins/__init__.py:35
 msgid "Some python modules are missing"
-msgstr "Nedostaju neki python moduli"
+msgstr ""
 
 #: GTG/core/plugins/__init__.py:36
 msgid "Please install the following python modules:"
-msgstr "Molim instalirajte sljedeće python module:"
+msgstr ""
 
 #: GTG/core/plugins/__init__.py:38
 msgid "Some remote dbus objects are missing."
-msgstr "Nedostaju neki udaljeni dbus objekti."
+msgstr ""
 
 #: GTG/core/plugins/__init__.py:39
 msgid "Please start the following applications:"
-msgstr "Molim pokrenute sljedeće aplikacije:"
+msgstr ""
 
 #: GTG/core/plugins/__init__.py:41
 msgid "Some modules and remote dbus objects are missing."
-msgstr "Nedostaju neki moduli i udaljeni dbus objekti."
+msgstr ""
 
 #: GTG/core/plugins/__init__.py:42
 msgid "Please install or start the following components:"
-msgstr "Molim instalirajte ili pokrenite sljedeće komponente:"
+msgstr ""
 
 #: GTG/core/plugins/__init__.py:44
 msgid "Unknown error while loading the plugin."
-msgstr "Došlo je do nepoznate greške prilikom pokretanja dodatka."
+msgstr ""
 
 #: GTG/core/plugins/__init__.py:45
 msgid "Very helpful message, isn't it? Please report a bug."
-msgstr "Vrlo korisna poruka, zar ne? Molim prijavite grešku."
+msgstr ""
 
 #: GTG/core/firstrun_tasks.py:10
 msgid "Getting started with GTG"
-msgstr "Početak s GTG-om"
+msgstr ""
 
 #: GTG/core/firstrun_tasks.py:11
 msgid ""
@@ -493,15 +448,10 @@ msgid ""
 "\n"
 "Thank you for trying out GTG :-)"
 msgstr ""
-"Nadamo se da ćete cijenitiGTG. Molimo vas da nam pošaljete izvješća o "
-"greškama ili ideje za poboljšanja koristeći:\n"
-"    https://bugs.launchpad.net/gtg\n"
-"\n"
-"Hvala vam što ste odlučili isprobati GTG :-)"
 
 #: GTG/core/firstrun_tasks.py:37
 msgid "Learn how to use subtasks"
-msgstr "Naučite kako koristiti podzadatke"
+msgstr ""
 
 #: GTG/core/firstrun_tasks.py:38
 msgid ""
@@ -521,7 +471,7 @@ msgstr ""
 
 #: GTG/core/firstrun_tasks.py:49
 msgid "Learn how to use tags"
-msgstr "Naučite kako koristiti oznake"
+msgstr ""
 
 #: GTG/core/firstrun_tasks.py:50
 msgid ""
@@ -552,36 +502,10 @@ msgid ""
 "subtask). Of course, you can modify at any time the tags of this particular "
 "subtask. It will never be changed by the parent."
 msgstr ""
-"Oznaka je jednostavna riječ koja započinje sa znakom &quot;@&quot;.\n"
-"\n"
-"Pokušajte u nastavku upisati riječ koja započinje sa znakom @:\n"
-"\n"
-"Postaje oznakom i žute je boje.\n"
-"\n"
-"Oznake su korisne za sortiranje vaših zadataka. U izborniku Prikaz, možete "
-"omogućiti bočnu traku koja prikazuje sve iznake koje koristite, stoga možete "
-"lako vidjeti zadatke kojima je dodijeljena određena oznaka. Ne postoji "
-"ograničenje broja oznaka koje određeni zadatak može imati.\n"
-"\n"
-"Oznaku možete odvući u drugu oznaku kako biste stvorili \"podoznaku\". Na "
-"primjer, ako odvučete oznaku @za_platiti u oznaku @novac, svaki zadatak koji "
-"ima oznaku @za_platiti će se također prikazati na popisu zadataka s oznakom "
-"@novac (ali oznaka @novac neće biti dodana tim zadacima).\n"
-"\n"
-"Ako desnom tipkom miša kliknete na oznaku bočnoj traci, također joj možete "
-"promijeniti boju. Ako želite, to će vam omogućiti da imate šaroliki popis "
-"zadataka.\n"
-"\n"
-"Nova oznaka se dodaje samo trenutnom zadatku. Ne postoji rekurzija kojom se "
-"ta oznaka dodaje svim podzadacima, ali kada dodate podzadatak, on će tada "
-"naslijediti sve oznake glavnog zadatka (isto će se dogoditi ako glavnom "
-"zadatku dodate oznaku odmah nakon što dodate podzadatak). Naravno, u bilo "
-"kojem trenutku možete izmijeniti oznake određenog podzadatka, a da se "
-"promjena ne odrazi na glavni zadatak."
 
 #: GTG/core/firstrun_tasks.py:67
 msgid "Learn how to use the Workview"
-msgstr "Naučite kako koristiti Radni prikaz"
+msgstr ""
 
 #: GTG/core/firstrun_tasks.py:68
 msgid ""
@@ -603,29 +527,10 @@ msgid ""
 "if you have a tag like &quot;someday&quot; that you use for tasks you would "
 "like to do but are not particularly urgent."
 msgstr ""
-"Ako pritisnete tipku &quot;Radni prikaz&quot;, prikazat će se samo akcijski "
-"zadaci.\n"
-"\n"
-"Što je akcijski zadatak? To je zadatak kojeg možete obaviti izravno, odmah.\n"
-"\n"
-"To je zadatak koji je već &quot;započeo&quot;, tj. datum početka je već "
-"prošao.\n"
-"\n"
-"To je zadatak koji nema otvorene podzadatke, tj. možete izravno obaviti taj "
-"zadatak.\n"
-"\n"
-"Dakle, radni prikaz će vam prikazati samo zadatke koje biste trebali obaviti "
-"odmah.\n"
-"\n"
-"Ako koristite oznake, desnom tipkom miša možete kliknuti na određenu oznaku "
-"u bočnoj traci i odabrati skrivanje zadataka kojima je dodijeljena ta oznaka "
-"u radnom prikazu. To je vrlo korisno ako imate oznaku poput &quot;jednoga "
-"dana&quot; koju ste dodijelili zadacima koje biste htjeli jednom obaviti, "
-"ali nisu baš hitni."
 
 #: GTG/core/firstrun_tasks.py:83
 msgid "Learn how to use Plugins"
-msgstr "Naučite kako koristiti dodatke"
+msgstr ""
 
 #: GTG/core/firstrun_tasks.py:84
 msgid ""
@@ -636,18 +541,10 @@ msgid ""
 "You can find the Plugin Manager by selecting Edit in the Menu Bar, then "
 "clicking Preferences. You will then see a tab labeled Plugins."
 msgstr ""
-"GTG ima mogućnost proširivanja osnovnih funkcionalnosti instalacijom "
-"dodataka.\n"
-"\n"
-"Neki od primjera trenutnih dodataka su sinkronizacija sa Evolutionom i "
-"uslugom Remember the Milk, integracija s Tomboyem/Gnoteom i geolokalizirani "
-"zadaci.\n"
-"Upravitelja dodacima možete pronaći odabirom Uredi u glavnom izborniku, te "
-"klikom na Osobitosti. Tada ćete vidjeti karticu naziva Dodaci."
 
 #: GTG/core/firstrun_tasks.py:93
 msgid "Reporting bugs"
-msgstr "Prijavljivanje grešaka"
+msgstr ""
 
 #: GTG/core/firstrun_tasks.py:94
 msgid ""
@@ -663,17 +560,6 @@ msgid ""
 "If you have some trouble with GTG, we might be able to help you or to solve "
 "your problem really quickly."
 msgstr ""
-"GTG je još uvijek u ranoj fazi razvoja. Mi ga volimo i koristimo ga "
-"svakodnevno, no vi ćete naići na neke greške.\n"
-"\n"
-"Molimo vas da ih prijavite na našoj Launchpad stranici:\n"
-"https://bugs.launchpad.net/gtg\n"
-"\n"
-"Vi ste nam potrebni da bismo ovaj program učinili boljim. Svaki doprinos i "
-"ideja su dobrodošli.\n"
-"\n"
-"Ako imate poteškoća s GTG-om, možda vam možemo pomoći ili riješiti vaš "
-"problem vrlo brzo."
 
 #: GTG/core/firstrun_tasks.py:107
 msgid "Learn how to use the Quick Add Entry"
@@ -735,11 +621,11 @@ msgstr ""
 
 #: GTG/core/search.py:89 GTG/tools/dates.py:238
 msgid "today"
-msgstr "danas"
+msgstr ""
 
 #: GTG/core/search.py:90 GTG/tools/dates.py:240
 msgid "tomorrow"
-msgstr "sutra"
+msgstr ""
 
 #: GTG/core/search.py:91
 msgid "nodate"
@@ -747,32 +633,32 @@ msgstr ""
 
 #: GTG/core/task.py:55
 msgid "My new task"
-msgstr "Moj novi zadatak"
+msgstr ""
 
 #: GTG/core/task.py:164
 msgid "tags"
-msgstr "oznake"
+msgstr ""
 
 #: GTG/core/task.py:164
 msgid "tag"
-msgstr "oznaka"
+msgstr ""
 
 #: GTG/core/task.py:170
 msgid "defer"
-msgstr "odgodi"
+msgstr ""
 
 #: GTG/core/task.py:176
 msgid "due"
-msgstr "za"
+msgstr ""
 
 #: GTG/core/treefactory.py:79
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:70
 msgid "All tasks"
-msgstr "Svi zadaci"
+msgstr ""
 
 #: GTG/core/treefactory.py:90
 msgid "Tasks with no tags"
-msgstr "Zadaci bez oznaka"
+msgstr ""
 
 #: GTG/core/treefactory.py:102 GTG/gtk/browser/browser.py:1670
 msgid "Search"
@@ -780,15 +666,15 @@ msgstr ""
 
 #: GTG/tools/dates.py:242
 msgid "next week"
-msgstr "idući tjedan"
+msgstr ""
 
 #: GTG/tools/dates.py:244
 msgid "next month"
-msgstr "idući mjesec"
+msgstr ""
 
 #: GTG/tools/dates.py:246
 msgid "next year"
-msgstr "iduće godine"
+msgstr ""
 
 #: GTG/tools/dates.py:251
 msgid "Monday"
@@ -820,39 +706,37 @@ msgstr ""
 
 #: GTG/tools/dates.py:293
 msgid "Today"
-msgstr "Danas"
+msgstr ""
 
 #: GTG/tools/dates.py:296
 #, python-format
 msgid "Yesterday"
 msgid_plural "%(days)d days ago"
-msgstr[0] "Jučer"
-msgstr[1] "Prije %(days)d dana"
-msgstr[2] "Prije %(days)d dana"
+msgstr[0] ""
+msgstr[1] ""
 
 #: GTG/tools/dates.py:299
 #, python-format
 msgid "Tomorrow"
 msgid_plural "In %(days)d days"
-msgstr[0] "Sutra"
-msgstr[1] "Za %(days)d dana"
-msgstr[2] "Za %(days)d dana"
+msgstr[0] ""
+msgstr[1] ""
 
 #: GTG/gtg.py:84
 msgid "gtg is already running!"
-msgstr "gtg je već pokrenut!"
+msgstr ""
 
 #: GTG/gtk/backends_dialog/parameters_ui/pathui.py:52
 msgid "Filename:"
-msgstr "Naziv datoteke:"
+msgstr ""
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:63
 msgid "Import tags"
-msgstr "Uvoz oznaka"
+msgstr ""
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:64
 msgid "All tags"
-msgstr "Sve oznake"
+msgstr ""
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:65
 msgid "Just these tags:"
@@ -860,7 +744,7 @@ msgstr ""
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:69
 msgid "Tags to sync"
-msgstr "Oznake koje će se sinkronizirati"
+msgstr ""
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:71
 msgid "Tasks with these tags:"
@@ -868,7 +752,7 @@ msgstr ""
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:76
 msgid "Username"
-msgstr "Korisničko ime"
+msgstr ""
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:82
 msgid "Service URL"
@@ -876,38 +760,37 @@ msgstr ""
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:86
 msgid "Import tasks from @ replies "
-msgstr "Uvoz zadataka iz @ odgovora "
+msgstr ""
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:91
 msgid "Import tasks from direct messages"
-msgstr "Uvoz zadataka iz izravnih poruka"
+msgstr ""
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:95
 msgid "Import tasks from your tweets"
-msgstr "Uvoz zadataka iz vaših tweetova"
+msgstr ""
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:99
 msgid "Tag your GTG tasks with the bug tags"
-msgstr "Označite svoje GTG zadatke s oznakama grešaka"
+msgstr ""
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:103
 msgid "Tag your GTG tasks with the project targeted by the bug"
-msgstr "Označite svoj GTG zadatke s projektom na kojeg ciljaju greške"
+msgstr ""
 
 #: GTG/gtk/backends_dialog/parameters_ui/passwordui.py:50
 msgid "Password:"
-msgstr "Lozinka:"
+msgstr ""
 
 #: GTG/gtk/backends_dialog/parameters_ui/periodui.py:51
 msgid "Check for new tasks every"
-msgstr "Provjeri nove zadatke svakih"
+msgstr ""
 
 #: GTG/gtk/backends_dialog/parameters_ui/periodui.py:96
 msgid " minute"
 msgid_plural " minutes"
-msgstr[0] " minutu"
-msgstr[1] " minute"
-msgstr[2] " minuta"
+msgstr[0] ""
+msgstr[1] ""
 
 #: GTG/gtk/backends_dialog/addpanel.py:75
 msgid "Select a backend:"
@@ -915,31 +798,29 @@ msgstr ""
 
 #: GTG/gtk/backends_dialog/addpanel.py:179
 msgid "Syncing is <span color=\"red\">disabled</span>"
-msgstr "Sinkronizacija je <span color=\"red\">onemogućena</span>"
+msgstr ""
 
 #: GTG/gtk/backends_dialog/addpanel.py:185
 msgid "Author"
 msgid_plural "Authors"
-msgstr[0] "Autor"
-msgstr[1] "Autora"
-msgstr[2] "Autora"
+msgstr[0] ""
+msgstr[1] ""
 
 #: GTG/gtk/backends_dialog/__init__.py:286
 #, python-format
 msgid "Do you really want to remove the backend '%s'?"
-msgstr "Jeste li sigurni da želite ukloniti pozadinski servis '%s'?"
+msgstr ""
 
 #: GTG/gtk/backends_dialog/configurepanel.py:162
 msgid "Ready to start syncing"
-msgstr "Spremno za početak sinkronizacije"
+msgstr ""
 
 #: GTG/gtk/backends_dialog/configurepanel.py:164
 #, python-format
 msgid "Syncing your only task"
 msgid_plural "Syncing all %d tasks"
-msgstr[0] "Sinkronizacija vašeg jedinog zadatka"
-msgstr[1] "Sinkronizacija sva %d zadatka"
-msgstr[2] "Sinkronizacija svih %d zadataka"
+msgstr[0] ""
+msgstr[1] ""
 
 #: GTG/gtk/backends_dialog/configurepanel.py:169
 #, python-format
@@ -950,21 +831,20 @@ msgstr ""
 #, python-format
 msgid "Syncing a task tagged %s"
 msgid_plural "Syncing %d tasks tagged %s"
-msgstr[0] "Sinkronizacija %d zadatka označenog sa %s"
-msgstr[1] "Sinkronizacija %d zadatka označenih sa %s"
-msgstr[2] "Sinkronizacija %d zadataka označenih sa %s"
+msgstr[0] ""
+msgstr[1] ""
 
 #: GTG/gtk/backends_dialog/configurepanel.py:182
 msgid "Disable syncing"
-msgstr "Onemogući sinkronizaciju"
+msgstr ""
 
 #: GTG/gtk/backends_dialog/configurepanel.py:184
 msgid "Enable syncing"
-msgstr "Omogući sinkronizaciju"
+msgstr ""
 
 #: GTG/gtk/backends_dialog/configurepanel.py:192
 msgid "This is the default backend"
-msgstr "Ovo je zadani pozadinski servis"
+msgstr ""
 
 #: GTG/gtk/backends_dialog/configurepanel.py:195
 msgid "Syncing is enabled."
@@ -976,11 +856,11 @@ msgstr ""
 
 #: GTG/gtk/preferences.glade.h:1
 msgid "Getting Things GNOME! Preferences"
-msgstr "Getting Things GNOME! osobitosti"
+msgstr ""
 
 #: GTG/gtk/preferences.glade.h:2
 msgid "Start Getting Things GNOME! on every login"
-msgstr "Pokreni Getting Things GNOME! prilikom svake prijave"
+msgstr ""
 
 #: GTG/gtk/preferences.glade.h:3
 msgid "<b>Startup</b>"
@@ -988,23 +868,23 @@ msgstr ""
 
 #: GTG/gtk/preferences.glade.h:4
 msgid "Show description preview in the task list."
-msgstr "Prikaži pretpregled opisa na popisu zadataka."
+msgstr ""
 
 #: GTG/gtk/preferences.glade.h:5
 msgid "Hide closed tasks older than "
-msgstr "Sakrij skrivene zadatke koji su stariji od "
+msgstr ""
 
 #: GTG/gtk/preferences.glade.h:6
 msgid "<b>Task Browser</b>"
-msgstr "<b>Preglednik zadataka</b>"
+msgstr ""
 
 #: GTG/gtk/preferences.glade.h:7
 msgid "Check spelling"
-msgstr "Provjeri pravopis"
+msgstr ""
 
 #: GTG/gtk/preferences.glade.h:8
 msgid "<b>Task Editor</b>"
-msgstr "<b>Uređivač zadataka</b>"
+msgstr ""
 
 #: GTG/gtk/preferences.glade.h:9
 msgid "General"
@@ -1012,19 +892,19 @@ msgstr ""
 
 #: GTG/gtk/preferences.glade.h:10
 msgid "Active _Plugins:"
-msgstr "Uključeni _dodaci:"
+msgstr ""
 
 #: GTG/gtk/preferences.glade.h:11
 msgid "_About Plugin"
-msgstr "_O dodatku"
+msgstr ""
 
 #: GTG/gtk/preferences.glade.h:12
 msgid "Plugins"
-msgstr "Dodaci"
+msgstr ""
 
 #: GTG/gtk/preferences.glade.h:13
 msgid "<b>Dependencies</b>"
-msgstr "<b>Ovisnosti</b>"
+msgstr ""
 
 #: GTG/gtk/delete_dialog.py:89
 msgid ""
@@ -1058,8 +938,6 @@ msgid ""
 "\n"
 "And %d more tasks"
 msgstr ""
-"\n"
-"I još %d zadatka"
 
 #: GTG/gtk/preferences.py:38
 msgid "Click on a plugin name to view its description here."
@@ -1071,16 +949,11 @@ msgid ""
 "The <b>%s</b> backend cannot login with the supplied authentication data and "
 "has been disabled. To retry the login, re-enable the backend."
 msgstr ""
-"Pozadinski servis <b>%s</b> se ne može prijaviti s danim podacima, te je "
-"onemogućen. Da biste se ponovili prijavu, trebat ćete pokrenuti pozadinski "
-"servis."
 
 #: GTG/gtk/browser/custominfobar.py:40
 #, python-format
 msgid "Due to a network problem, I cannot contact the <b>%s</b> backend."
 msgstr ""
-"Kontaktiranje pozadinskog servisa <b>%s</b> nije moguće zbog mrežnog "
-"problema."
 
 #: GTG/gtk/browser/custominfobar.py:43
 #, python-format
@@ -1089,56 +962,55 @@ msgstr ""
 
 #: GTG/gtk/browser/custominfobar.py:105
 msgid "Configure backend"
-msgstr "Podešavanje pozadinskog servisa"
+msgstr ""
 
 #: GTG/gtk/browser/custominfobar.py:106
 msgid "Ignore"
-msgstr "Ignoriraj"
+msgstr ""
 
 #: GTG/gtk/browser/custominfobar.py:114 GTG/gtk/browser/custominfobar.py:119
 msgid "Ok"
-msgstr "U redu"
+msgstr ""
 
 #: GTG/gtk/browser/custominfobar.py:140
 msgid "Confirm"
-msgstr "Potvrdi"
+msgstr ""
 
 #: GTG/gtk/browser/custominfobar.py:142
 msgid "Continue"
-msgstr "Nastavi"
+msgstr ""
 
 #: GTG/gtk/browser/treeview_factory.py:286
 #: GTG/gtk/browser/taskbrowser.glade.h:33
 msgid "Tags"
-msgstr "Oznake"
+msgstr ""
 
 #: GTG/gtk/browser/treeview_factory.py:374
 msgid "Start date"
-msgstr "Datum početka"
+msgstr ""
 
 #: GTG/gtk/browser/treeview_factory.py:385
 msgid "Due"
-msgstr "Krajnji rok"
+msgstr ""
 
 #: GTG/gtk/browser/treeview_factory.py:405
 msgid "Closed date"
-msgstr "Zatvoreno stanje"
+msgstr ""
 
 #: GTG/gtk/browser/treeview_factory.py:460
 msgid "Title"
-msgstr "Naslov"
+msgstr ""
 
 #: GTG/gtk/browser/browser.py:600
 msgid "no active tasks"
-msgstr "nema aktivnih zadataka"
+msgstr ""
 
 #: GTG/gtk/browser/browser.py:602
 #, python-format
 msgid "%(tasks)d active task"
 msgid_plural "%(tasks)d active tasks"
-msgstr[0] "%(tasks)d aktivan zadatak"
-msgstr[1] "%(tasks)d aktivna zadatka"
-msgstr[2] "%(tasks)d aktivnih zadataka"
+msgstr[0] ""
+msgstr[1] ""
 
 #: GTG/gtk/browser/browser.py:1668
 msgid "Add Task"
@@ -1151,11 +1023,11 @@ msgstr ""
 #: GTG/gtk/browser/__init__.py:34 GTG/gtk/browser/taskbrowser.glade.h:29
 #: GTG/gtk/editor/__init__.py:31
 msgid "Mark as Done"
-msgstr "Označi kao obavljeno"
+msgstr ""
 
 #: GTG/gtk/browser/__init__.py:35
 msgid "Mark the selected task as done"
-msgstr "Označi odabrani zadatak kao obavljen"
+msgstr ""
 
 #: GTG/gtk/browser/__init__.py:36 GTG/gtk/editor/__init__.py:32
 msgid "Mark as not Done"
@@ -1163,48 +1035,48 @@ msgstr ""
 
 #: GTG/gtk/browser/__init__.py:37 GTG/gtk/browser/__init__.py:41
 msgid "Mark the selected task as to be done"
-msgstr "Označi odabrani zadatak kao \"bit će obavljen\""
+msgstr ""
 
 #: GTG/gtk/browser/__init__.py:38 GTG/gtk/browser/taskbrowser.glade.h:30
 #: GTG/gtk/editor/__init__.py:33 GTG/gtk/editor/taskeditor.glade.h:3
 msgid "Dismiss"
-msgstr "Odbaci"
+msgstr ""
 
 #: GTG/gtk/browser/__init__.py:39
 msgid "Mark the task as not to be done anymore"
-msgstr "Označi odabrani zadatak kao \"više neće biti obavljen\""
+msgstr ""
 
 #: GTG/gtk/browser/__init__.py:40 GTG/gtk/editor/__init__.py:34
 msgid "Undismiss"
-msgstr "Poništi odbacivanje"
+msgstr ""
 
 #: GTG/gtk/browser/__init__.py:42
 msgid "Permanently remove the selected task"
-msgstr "Trajno ukloni odabrani zadatak"
+msgstr ""
 
 #: GTG/gtk/browser/__init__.py:43
 msgid "Edit the selected task"
-msgstr "Uredi odabrani zadatak"
+msgstr ""
 
 #: GTG/gtk/browser/__init__.py:44 GTG/gtk/browser/taskbrowser.glade.h:4
 msgid "Create a new task"
-msgstr "Stvori novi zadatak"
+msgstr ""
 
 #: GTG/gtk/browser/__init__.py:45
 msgid "Create a new subtask"
-msgstr "Stvori novi podzadatak"
+msgstr ""
 
 #: GTG/gtk/browser/__init__.py:46
 msgid "Display only the currently actionable tasks"
-msgstr "Prikaži samo trenutno akcijske zadatke"
+msgstr ""
 
 #: GTG/gtk/browser/__init__.py:47
 msgid "Hide this tag from the workview"
-msgstr "Sakrij ovu oznaku iz radnog prikaza"
+msgstr ""
 
 #: GTG/gtk/browser/__init__.py:48
 msgid "Show this tag in the workview"
-msgstr "Prikaži ovu oznaku u radnom prikazu"
+msgstr ""
 
 #: GTG/gtk/browser/__init__.py:49
 msgid "You can create, open or filter your tasks here"
@@ -1216,67 +1088,67 @@ msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:1
 msgid "Getting Things Gnome!"
-msgstr "Getting Things Gnome!"
+msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:2
 msgid "_Tasks"
-msgstr "_Zadaci"
+msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:3
 msgid "New _Task"
-msgstr "_Novi zadatak"
+msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:5
 msgid "New _Subtask"
-msgstr "Novi _podzadatak"
+msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:6
 msgid "Mark as _Done"
-msgstr "Označi kao _obavljeno"
+msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:7
 msgid "D_ismiss"
-msgstr "_Odbaci"
+msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:8
 msgid "_Edit"
-msgstr "_Uredi"
+msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:9
 msgid "_View"
-msgstr "_Prikaz"
+msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:10
 msgid "_Work View"
-msgstr "_Radni prikaz"
+msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:11
 msgid "_Background Colors"
-msgstr "Pozadinske _boje"
+msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:12
 msgid "_Tags Sidebar"
-msgstr "Bočna _traka oznaka"
+msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:13
 msgid "_Closed Tasks Pane"
-msgstr "Okno _zatvorenih zadataka"
+msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:14
 msgid "T_oolbar"
-msgstr "Alatna _traka"
+msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:15
 msgid "_Quick Add Entry"
-msgstr "_Brzo dodavanje stavke"
+msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:16
 msgid "_Plugins"
-msgstr "_Dodaci"
+msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:17
 msgid "_Help"
-msgstr "_Pomoć"
+msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:18
 msgid "Get _Help Online"
@@ -1284,7 +1156,7 @@ msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:19
 msgid "Open GTG documentation in your web browser"
-msgstr "Otvori GTG dokumentaciju u web pregledniku"
+msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:20
 msgid "_Translate GTG"
@@ -1304,39 +1176,39 @@ msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:24
 msgid "New Task"
-msgstr "Novi zadatak"
+msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:25
 msgid "New Subtask"
-msgstr "Novi podzadatak"
+msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:26
 msgid "Edit"
-msgstr "Uredi"
+msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:27
 msgid "Undo"
-msgstr "Vrati"
+msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:28
 msgid "Redo"
-msgstr "Ponovi"
+msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:31 GTG/gtk/editor/taskeditor.glade.h:4
 msgid "Delete"
-msgstr "Obriši"
+msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:32
 msgid "Work View"
-msgstr "Radni prikaz"
+msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:34
 msgid "Tasks"
-msgstr "Zadaci"
+msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:35
 msgid "About GTG!"
-msgstr "O GTG!"
+msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:36
 msgid "Copyright © 2008-2012 Lionel Dricot, Bertrand Rousseau"
@@ -1347,12 +1219,10 @@ msgid ""
 "\n"
 "Getting Things Gnome! is an organizer for the GNOME desktop environment."
 msgstr ""
-"\n"
-"Getting Things Gnome! je planer za GNOME radno okružje."
 
 #: GTG/gtk/browser/taskbrowser.glade.h:39
 msgid "GTG website"
-msgstr "Web stranica GTG-a"
+msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:40
 msgid ""
@@ -1370,86 +1240,72 @@ msgid ""
 "Getting Things Gnome!; if not, write to the Free Software Foundation, Inc., "
 "51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA."
 msgstr ""
-"Getting Things Gnome! je slobodan softver; možete ga besplatno dijeliti "
-"i/ili mijenjati pod uvjetima navedenima u GNU Općoj javnoj licenci koju je "
-"izdala Zaklada za slobodan softver; bilo prema 2. inačici ili (ako želite) "
-"prema novijoj.\n"
-"\n"
-"Getting Things Gnome! se distribuira u nadi da će biti koristan, ali bez "
-"ikakvog jamstva; čak i bez impliciranog jamstva mogućnosti prodaje ili "
-"svrhovitosti. Za više detalja provjerite GNU Opću javnu licencu.\n"
-"\n"
-"Uz Getting Things Gnome! ste trebali ste dobiti kopiju GNU Opće javne "
-"licence; ako niste, pišite na Free Software Fundation, Inc., 59 Temple "
-"Place, Suite 330, Boston, MA 02111-1307 USA."
 
 #: GTG/gtk/browser/taskbrowser.glade.h:45
 msgid "Add a Tag..."
-msgstr "Dodaj oznaku..."
+msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:46
 msgid "Add Tag"
-msgstr "Dodaj oznaku"
+msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:47
 msgid "Cancel"
-msgstr "Otkaži"
+msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:48
 msgid "Enter the name of the tag(s) you wish to add:"
-msgstr "Upišite naziv oznake/a koju/e želite dodati:"
+msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:49
 msgid "TagName"
-msgstr "Naziv oznake"
+msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:50
 msgid ""
 "Hint: you can add several tags by separating them with\n"
 "commas."
 msgstr ""
-"Savjet: možete dodati nekoliko oznaka tako da ih odvojite\n"
-"zarezima."
 
 #: GTG/gtk/browser/taskbrowser.glade.h:52
 msgid "Apply to subtasks"
-msgstr "Primijeni na podzadatke"
+msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:53
 msgid "Mark as Not Done"
-msgstr "Označi kao neobavljeno"
+msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:54
 msgid "Und_ismiss"
-msgstr "Poništi otkaz_ivanje"
+msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:55
 msgid "t_oday"
-msgstr "_danas"
+msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:56
 msgid "_tomorrow"
-msgstr "_sutra"
+msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:57
 msgid "next _week"
-msgstr "idući _tjedan"
+msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:58
 msgid "next _month"
-msgstr "idući _mjesec"
+msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:59
 msgid "next _year"
-msgstr "iduće _godine"
+msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:60
 msgid "_now"
-msgstr "sa_da"
+msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:61
 msgid "_soon"
-msgstr "u_skoro"
+msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:62
 msgid "_someday"
@@ -1457,162 +1313,157 @@ msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:63
 msgid "_clear due date"
-msgstr "_ukloni datum isteka"
+msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:64
 msgid "_clear start date"
-msgstr "_ukloni datum početka"
+msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:65
 msgid "Reset Color"
-msgstr "Vrati izvornu boju"
+msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:66
 msgid "Add a subtask"
-msgstr "Dodaj podzadatak"
+msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:67
 msgid "_Set start date"
-msgstr "Po_stavi datum početka"
+msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:68
 msgid "Set due date"
-msgstr "Postavi datum isteka"
+msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:69
 msgid "Add Tag..."
-msgstr "Dodaj oznaku..."
+msgstr ""
 
 #: GTG/gtk/editor/editor.py:295
 #, python-format
 msgid "Completed %(days)d day late"
 msgid_plural "Completed %(days)d days late"
-msgstr[0] "Dovršeno uz %(days)d dan zakašnjenja"
-msgstr[1] "Dovršeno uz %(days)d dana zakašnjenja"
-msgstr[2] "Dovršeno uz %(days)d dana zakašnjenja"
+msgstr[0] ""
+msgstr[1] ""
 
 #: GTG/gtk/editor/editor.py:298
 #, python-format
 msgid "Completed %(days)d day early"
 msgid_plural "Completed %(days)d days early"
-msgstr[0] "Dovršeno %(days)d dan ranije"
-msgstr[1] "Dovršeno %(days)d dana ranije"
-msgstr[2] "Dovršeno %(days)d dana ranije"
+msgstr[0] ""
+msgstr[1] ""
 
 #: GTG/gtk/editor/editor.py:305
 #, python-format
 msgid "Due tomorrow!"
 msgid_plural "%(days)d days left"
-msgstr[0] "Istiće sutra!"
-msgstr[1] "Preostala %(days)d dana"
-msgstr[2] "Preostalo %(days)d dana"
+msgstr[0] ""
+msgstr[1] ""
 
 #: GTG/gtk/editor/editor.py:307
 msgid "Due today!"
-msgstr "Istiće danas!"
+msgstr ""
 
 #: GTG/gtk/editor/editor.py:310
 #, python-format
 msgid "Due yesterday!"
 msgid_plural "Was %(days)d days ago"
-msgstr[0] "Isteklo jučer!"
-msgstr[1] "Bilo prije %(days)d dana"
-msgstr[2] "Bilo prije %(days)d dana"
+msgstr[0] ""
+msgstr[1] ""
 
 #: GTG/gtk/editor/__init__.py:36
 msgid "Mark this task as done"
-msgstr "Označi ovaj zadatak kao obavljeni"
+msgstr ""
 
 #: GTG/gtk/editor/__init__.py:37 GTG/gtk/editor/__init__.py:39
 msgid "Mark this task as to be done"
-msgstr "Označi ovaj zadatak kao \"bit će obavljen\""
+msgstr ""
 
 #: GTG/gtk/editor/__init__.py:38
 msgid "Mark this task as not to be done anymore"
-msgstr "Označi ovaj zadatak kao \"više neće biti obavljen\""
+msgstr ""
 
 #: GTG/gtk/editor/__init__.py:40
 msgid "Permanently remove this task"
-msgstr "Trajno ukloni ovaj zadatak"
+msgstr ""
 
 #: GTG/gtk/editor/__init__.py:41
 msgid "Insert a subtask in this task"
-msgstr "Umetni podzadatak u ovaj zadatak"
+msgstr ""
 
 #: GTG/gtk/editor/__init__.py:42
 msgid "Insert a tag in this task"
-msgstr "Umetni oznaku u ovaj zadatak"
+msgstr ""
 
 #: GTG/gtk/editor/taskeditor.glade.h:1
 msgid "Task"
-msgstr "Zadatak"
+msgstr ""
 
 #: GTG/gtk/editor/taskeditor.glade.h:2
 msgid "Mark Done"
-msgstr "Označi kao obavljeno"
+msgstr ""
 
 #: GTG/gtk/editor/taskeditor.glade.h:5
 msgid "Insert subtask"
-msgstr "Umetni podzadatak"
+msgstr ""
 
 #: GTG/gtk/editor/taskeditor.glade.h:6
 msgid "Insert tag"
-msgstr "Umetni oznaku"
+msgstr ""
 
 #: GTG/gtk/editor/taskeditor.glade.h:7
 msgid "Starting on"
-msgstr "Počinje dana"
+msgstr ""
 
 #: GTG/gtk/editor/taskeditor.glade.h:8
 msgid "Due for"
-msgstr "Istječe za"
+msgstr ""
 
 #: GTG/gtk/editor/taskeditor.glade.h:9
 msgid "Closed on"
-msgstr "Zatvoreno dana"
+msgstr ""
 
 #: GTG/gtk/editor/taskeditor.glade.h:10
 msgid "Now"
-msgstr "Sada"
+msgstr ""
 
 #: GTG/gtk/editor/taskeditor.glade.h:11
 msgid "Soon"
-msgstr "Uskoro"
+msgstr ""
 
 #: GTG/gtk/editor/taskeditor.glade.h:12
 msgid "Someday"
-msgstr "Jednoga dana"
+msgstr ""
 
 #: GTG/gtk/deletion.glade.h:1
 msgid "Confirm task deletion"
-msgstr "Potvrdi brisanje zadatka"
+msgstr ""
 
 #: GTG/gtk/crashhandler.py:57
 msgid ""
 "We're terribly sorry. Could you help us fix the problem by reporting the "
 "crash?"
 msgstr ""
-"Veoma nam je žao. Možete li nam pomoći u rješavanju problema prijavom greške?"
 
 #: GTG/gtk/crashhandler.py:173
 msgid "An error has occurred"
-msgstr "Dogodila se greška"
+msgstr ""
 
 #: GTG/gtk/crashhandler.py:187
 msgid "It looks like an error has occurred."
-msgstr "Čini se da je došlo do greške."
+msgstr ""
 
 #: GTG/gtk/crashhandler.py:223
 msgid "_Details"
-msgstr "_Detalji"
+msgstr ""
 
 #: GTG/gtk/crashhandler.py:230
 msgid "_Report this problem..."
-msgstr "_Prijavite ovaj problem..."
+msgstr ""
 
 #: GTG/gtk/crashhandler.py:234
 msgid "_Ignore the error"
-msgstr "_Zanemari grešku"
+msgstr ""
 
 #: GTG/gtk/crashhandler.py:336
 msgid ""
@@ -1620,466 +1471,3 @@ msgid ""
 "href=\"http://bugs.edge.launchpad.net/gtg\">our Launchpad page</a>. If you "
 "have Apport installed, it will be started for you."
 msgstr ""
-" se srušio. Molim prijavite grešku na našoj <a "
-"href=\"http://bugs.edge.launchpad.net/gtg\">Launchpad stranici</a>. Ako "
-"imate instaliran Apport, automatski će se pokrenuti."
-
-#~ msgid "Due today !"
-#~ msgstr "Rok istječe danas!"
-
-#~ msgid "Due tomorrow !"
-#~ msgstr "Rok istječe sutra!"
-
-#~ msgid "Due yesterday"
-#~ msgstr "Rok istekao jučer!"
-
-#~ msgid "Keep as Note"
-#~ msgstr "Zadrži kao bilješku"
-
-#~ msgid "Later"
-#~ msgstr "Kasnije"
-
-#~ msgid "Mark as not done"
-#~ msgstr "Označi kao neobavljeno"
-
-#~ msgid "Mark as done"
-#~ msgstr "Označi kao obavljeno"
-
-#~ msgid "Make a Task"
-#~ msgstr "Napravi zadatak"
-
-#~ msgid "<b>General</b>"
-#~ msgstr "<b>Općenito</b>"
-
-#~ msgid "Behaviour"
-#~ msgstr "Ponašanje"
-
-#~ msgid "Copyrights&#xA9; 2008, 2009 Lionel Dricot, Bertrand Rousseau"
-#~ msgstr "Autorska prava &#xA9; 2008, 2009 Lionel Dricot, Bertrand Rousseau"
-
-#~ msgid "New Note"
-#~ msgstr "Nova bilješka"
-
-#~ msgid "View Notes"
-#~ msgstr "Prikaži bilješke"
-
-#~ msgid "Tag is displayed in the workview"
-#~ msgstr "Oznaka je prikazana u radnom prikazu"
-
-#~ msgid "_Schedule for..."
-#~ msgstr "_Zakaži za..."
-
-#~ msgid "wednesday"
-#~ msgstr "srijeda"
-
-#~ msgid "monday"
-#~ msgstr "ponedjeljak"
-
-#~ msgid "tuesday"
-#~ msgstr "utorak"
-
-#~ msgid "thursday"
-#~ msgstr "četvrtak"
-
-#~ msgid "friday"
-#~ msgstr "petak"
-
-#~ msgid "saturday"
-#~ msgstr "subota"
-
-#~ msgid "sunday"
-#~ msgstr "nedjelja"
-
-#~ msgid "Are you sure you want to delete these tasks?"
-#~ msgstr "Jeste li sigurni da želite obrisati ove zadatke?"
-
-#~ msgid ""
-#~ "Deleting a task cannot be undone, and will delete the following tasks: "
-#~ msgstr ""
-#~ "Brisanje zadatka se ne može poništiti. Bit će obrisani sljedeći zadaci: "
-
-#~ msgid "Keep selected tasks"
-#~ msgstr "Zadrži označene zadatke"
-
-#~ msgid ""
-#~ "In GTG, everything is a task. From building a bridge over the Pacific Ocean "
-#~ "to changing a light bulb or organizing a party. When you edit a task, it is "
-#~ "automatically saved."
-#~ msgstr ""
-#~ "U GTG-u su sve stvari zadaci - od izgradnje mosta preko Tihog oceana do "
-#~ "promjene žarulje ili organizacije zabave. Kada uredite zadatak, on je "
-#~ "automatski spremljen."
-
-#~ msgid "Welcome to Getting Things Gnome!, your new task manager."
-#~ msgstr "Dobrodošli u Getting Things Gnome!, vaš novi upravitelj zadacima."
-
-#~ msgid "Permanently remove tasks"
-#~ msgstr "Trajno ukloni zadatke"
-
-#~ msgid "Closing date"
-#~ msgstr "Datum završetka"
-
-#~ msgid ""
-#~ "Once you've read the above subtask, mark it as Done. If you don't want to do "
-#~ "the task, mark it as dismissed. Done and Dismissed tasks are kept in the "
-#~ "closed tasks pane, hidden by default but you can easily enable it in the "
-#~ "View menu."
-#~ msgstr ""
-#~ "Nakon što pročitate gornji podzadatak, označite ga kao obavljenim. Ako ne "
-#~ "želite obaviti zadatak, odbacite ga. Obavljeni i odbačeni zadaci se čuvaju u "
-#~ "oknu zatvorenih zadataka. Prema zadanim postavkama su skriveni, ali možete "
-#~ "ih omogućiti u izborniku \"Prikaz\"."
-
-#~ msgid "Thank you for trying out GTG :-)"
-#~ msgstr "Hvala vam što ste odlučili isprobati GTG :-)"
-
-#~ msgid ""
-#~ "Once a task is done, you can push the &quot;Mark as done&quot; button. If "
-#~ "the task is not relevant any-more, simply press &quot;Dismiss&quot;."
-#~ msgstr ""
-#~ "Nakon što je zadatak obavljen, možete pritisnuti tipku &quot;Označi kao "
-#~ "obavljeno&quot;. Ako zadatak više nije važeći, jednostavno kliknite na "
-#~ "&quot;Odbaci&quot;."
-
-#~ msgid ""
-#~ "In the task description (this window), if you begin a line with &quot;-"
-#~ "&quot;, it will be considered as a &quot;subtask&quot;, something that needs "
-#~ "to be done in order to accomplish your task. Just try to write &quot;- test "
-#~ "subtask&quot; on the next line and press enter."
-#~ msgstr ""
-#~ "Ako u opisu zadatka (ovaj prozor) redak započnete sa znakom &quot;-&quot;, "
-#~ "isti će se prepoznati kao &quot;podzatadak&quot;, odnosno nešto što bi se "
-#~ "trebalo obaviti da bi se dovršio vaš zadatak. Pokušajte upisati &quot;- "
-#~ "testni podzadatak&quot; u novom retku i pritisnite tipku Enter."
-
-#~ msgid "You can also use the &quot;insert subtask&quot; button."
-#~ msgstr "Također, možete iskoristiti tipku &quot;umetni podzadatak&quot;."
-
-#~ msgid "Other stuff you should read:"
-#~ msgstr "Ostale stvari koje biste trebali pročitati:"
-
-#~ msgid ""
-#~ "We hope that you will appreciate GTG. Please send us bug reports and ideas "
-#~ "for improvement using: "
-#~ msgstr ""
-#~ "Nadamo se da ćete cijeniti GTG. Molimo vas da nam pošaljete izvješća o "
-#~ "greškama i ideje za poboljšanje koristeći: "
-
-#~ msgid ""
-#~ "A task might be composed of multiple subtasks that appear as links in the "
-#~ "description. Simply click on the following link:"
-#~ msgstr ""
-#~ "Zadatak može biti sastavljen od nekoliko podzadataka koji se  u opisu "
-#~ "pojavljuju kao poveznice. Jednostavno kliknite na sljedeću poveznicu:"
-
-#~ msgid ""
-#~ "If you choose to close this current task, subtasks will be automatically "
-#~ "closed too. We indeed consider that, if you achieve a given task, you don't "
-#~ "need to do the subtask anymore."
-#~ msgstr ""
-#~ "Ako odlučite zatvoriti trenutni zadatak, podzadaci se će automatski "
-#~ "zatvoriti. Zaključili smo da, nakon što obavite dani zadatak, više nemate "
-#~ "potrebu za njegovim podzadacima."
-
-#~ msgid ""
-#~ "Tasks and subtasks can be re-organized by drag-n-drop in the tasks list."
-#~ msgstr "Zadaci i podzadaci se mogu reorganizirati povlačenjem pomoću miša."
-
-#~ msgid "A tag is a simple word that begins with &quot;@&quot;."
-#~ msgstr "Oznaka je jednostavna riječ koja započinje sa znakom &quot;@&quot;."
-
-#~ msgid ""
-#~ "If you right click on a tag in the sidebar you can also set its color. It "
-#~ "will allow you to have a more colorful list of tasks, if you want it that "
-#~ "way."
-#~ msgstr ""
-#~ "Ako u bočnoj traci oznaka desnom tipkom miša kliknete na oznaku, moći ćete "
-#~ "podesiti željenu boju. Ako želite, ovime možete postići šaroliki popis "
-#~ "zadataka."
-
-#~ msgid ""
-#~ "Tags are useful to sort your tasks. In the view menu, you can enable a "
-#~ "sidebar which displays all the tags you are using so you can easily see "
-#~ "tasks assigned to a given tag. There's no limit to the number of tags a task "
-#~ "can have."
-#~ msgstr ""
-#~ "Oznake su korisne za sortiranje zadataka. U izborniku \"Prikaz\" možete "
-#~ "omogućiti bočnu traku koja prikazuje sve oznake koje koristite, stoga možete "
-#~ "jednostavno vidjeti zadatke koje imaju određenu oznaku. Ne postoji nikakvo "
-#~ "ograničenje broja oznaka po zadatku."
-
-#~ msgid ""
-#~ "You can drag-n-drop a tag onto another to create \"subtags\". As an example, "
-#~ "if you drag the tag @to_pay onto the tag @money, every task tagged with "
-#~ "@to_pay will also appear in the view of @money (but the @money tag is not "
-#~ "added to the task)."
-#~ msgstr ""
-#~ "Ako oznaku odvučete mišem do druge oznake, možete stvoriti \"podoznaku\". Na "
-#~ "primjer, ako odvučete oznaku @platiti u oznaku @novac, svaki zadatak označen "
-#~ "s @platiti će biti vidljiv pod @novac (no oznaka @novac neće biti dodana tom "
-#~ "zadatku)."
-
-#~ msgid "It becomes yellow, it's a tag."
-#~ msgstr "Poprima žutu boju i postaje oznakom."
-
-#~ msgid "Try to type a word beginning with @ here:"
-#~ msgstr "Pokušajte u nastavku upisati riječ koja započinje s @:"
-
-#~ msgid ""
-#~ "Some concepts come with subtasks: for example, a subtask's due date can "
-#~ "never be after its parent's due date."
-#~ msgstr ""
-#~ "Neki koncepti dolaze uz podzadatak: na primjer, krajnji rok podzadatka ne "
-#~ "može biti nakon krajnjeg roka nadređenog zadatka."
-
-#~ msgid "Also, marking a parent as done will mark all the subtasks as done."
-#~ msgstr ""
-#~ "Također, označavanjem nadređenog zadatka kao obavljenim, isti će status "
-#~ "poprimiti svi podzadaci."
-
-#~ msgid ""
-#~ "If you press the &quot;Workview&quot; button, only actionable tasks will be "
-#~ "displayed."
-#~ msgstr ""
-#~ "Ako pritisnete tipku &quot;Radni prikaz&quot;, prikazat će se samo akcijski "
-#~ "zadaci."
-
-#~ msgid ""
-#~ "What is an actionable task? It's a task you can do directly, right now."
-#~ msgstr ""
-#~ "Što je akcijski zadatak? To je zadatak kojeg možete obaviti izravno, odmah."
-
-#~ msgid ""
-#~ "It's a task that is already &quot;start-able&quot;, i.e. the start date is "
-#~ "already over."
-#~ msgstr ""
-#~ "To je zadatak koji je već &quot;započeo&quot;, tj. datum početka je već "
-#~ "prošao."
-
-#~ msgid "Thus, the workview will only show you tasks you should do right now."
-#~ msgstr ""
-#~ "Dakle, radni prikaz će vam prikazati samo zadatke koje biste trebali obaviti "
-#~ "odmah."
-
-#~ msgid ""
-#~ "A new tag is only added to the current task. There's no recursion and the "
-#~ "tag is not applied to subtasks. But when you create a new subtask, this "
-#~ "subtask will inherit the tags of its parent as a good primary default (it "
-#~ "will also be the case if you add a tag to a parent just after creating a "
-#~ "subtask). Of course, you can modify at any time the tags of this particular "
-#~ "subtask. It will never be changed by the parent."
-#~ msgstr ""
-#~ "Nova oznaka se pridružuje jedino trenutnom zadatku. Rekurzija ne postoji i "
-#~ "oznaka se ne primijenjuje na podzadatke. Međutim, kada stvorite novi "
-#~ "podzadatak, on će naslijediti oznake njihovog nadređenog zadatka (isto će se "
-#~ "dogoditi ako nadređenom zadatku dodijelite oznaku nakon stvaranja "
-#~ "podzadatka). Naravno, u bilo kojem trenutku možete urediti oznake za "
-#~ "određeni podzadatak, a promjena neće imati utjecaja na nadređeni zadatak."
-
-#~ msgid ""
-#~ "If you use tags, you can right click on a tag in the sidebar and choose to "
-#~ "hide tasks assigned to this particular tag in the workview. It's very useful "
-#~ "if you have a tag like &quot;someday&quot; that you use for tasks you would "
-#~ "like to do but are not particularly urgent."
-#~ msgstr ""
-#~ "Ako koristite oznake, desnom tipkom miša možete kliknuti na određenu oznaku "
-#~ "u bočnoj traci i odabrati skrivanje zadataka kojima je dodijeljena ta oznaka "
-#~ "u radnom prikazu. To je vrlo korisno ako imate oznaku poput &quot;jednoga "
-#~ "dana&quot; koju ste dodijelili zadacima koje biste htjeli jednom obaviti, "
-#~ "ali nisu baš hitni."
-
-#~ msgid "GTG has the ability to add plugins to extend it's core functionality."
-#~ msgstr ""
-#~ "GTG ima mogućnost proširivanja osnovnih funkcionalnosti instalacijom "
-#~ "dodataka."
-
-#~ msgid ""
-#~ "It's a task that doesn't have open subtasks, i.e. you can do the task itself "
-#~ "directly."
-#~ msgstr ""
-#~ "To je zadatak koji nema otvorene podzadatke, tj. možete izravno obaviti taj "
-#~ "zadatak."
-
-#~ msgid ""
-#~ "GTG is still very alpha software. We like it and use it everyday but you "
-#~ "will encounter some bugs."
-#~ msgstr ""
-#~ "GTG je još uvijek u ranoj fazi razvoja. Mi ga volimo i koristimo ga "
-#~ "svakodnevno, no vi ćete naići na neke greške."
-
-#~ msgid ""
-#~ "We need you to make this software better. Any contribution, any idea is "
-#~ "welcome."
-#~ msgstr ""
-#~ "Vi ste nam potrebni da bismo ovaj program učinili boljim. Svaki doprinos i "
-#~ "ideja su dobrodošli."
-
-#~ msgid ""
-#~ "For adding a task you just have to type its title in the entry and press "
-#~ "return. The task will be created and selected in the task browser. If a tag "
-#~ "is selected in the tag panel, this tag is applied to the task you create."
-#~ msgstr ""
-#~ "Da biste dodali zadatak trebate samo upisati naslov u polje brzog dodavanja "
-#~ "i pritisnuti tipku Enter. Zadatak će se stvoriti i automatski biti označen u "
-#~ "pregledniku zadataka. Ako je pritom označena neka oznaka, ona će biti "
-#~ "primjenjena na zadatak kojeg stvarate."
-
-#~ msgid ""
-#~ "The quickadd entry is the quickest way to create a new task. You can show or "
-#~ "hide it in the View menu."
-#~ msgstr ""
-#~ "Brzo dodavanje stavke je najbrži način za stvaranje novog zadatka. Ovu "
-#~ "mogućnost možete prikazati ili sakriti u izborniku Prikaz."
-
-#~ msgid ""
-#~ "If you have some trouble with GTG, we might be able to help you or to solve "
-#~ "your problem really quickly."
-#~ msgstr ""
-#~ "Ako imate poteškoća s GTG-om, možda vam možemo pomoći ili riješiti vaš "
-#~ "problem vrlo brzo."
-
-#~ msgid "Please, report them on our Launchpad page:"
-#~ msgstr "Molimo vas, prijavite ih na našoj Launchpad stranici:"
-
-#~ msgid "Learn how to use the QuickAdd Entry"
-#~ msgstr "Naučite kako koristiti Brzo dodavanje stavke"
-
-#~ msgid ""
-#~ "Some examples of the current plugins are Syncing with Remember the Milk and "
-#~ "Evolution, Tomboy/Gnote integration and Geolocalized Tasks."
-#~ msgstr ""
-#~ "Neki od primjera trenutnih dodataka su sinkronizacija sa Evolutionom i "
-#~ "uslugom Remember the Milk, integracija s Tomboyem/Gnoteom i geolokalizirani "
-#~ "zadaci."
-
-#~ msgid "If a word begins with @, it is interpreted as a tag."
-#~ msgstr "Ako riječ započinje sa znakom @, interpretira se kao oznaka."
-
-#~ msgid ""
-#~ "due:date or defer:date : This way you can apply a due date or a defer date. "
-#~ "date can be yyyy-mm-dd (for exemple 2009-04-01) or yyyymmdd (20090401) or "
-#~ "mmdd (0401, in this case the year is implicitly the current one) or today or "
-#~ "tomorrow or a weekday name (due:monday means due next Monday)"
-#~ msgstr ""
-#~ "due:datum ili defer:datum : Na ovaj način možete primijeniti krajnji rok ili "
-#~ "rok odgode. Datum može biti gggg-mm-dd (na primjer 2009-04-01) ili ggggmmdd "
-#~ "(20090401) ili mmdd (0401, u ovom slučaju se u obzir uzima tekuća godina), "
-#~ "te today ili tomorrow ili pak naziv dana u tjednu (due:monday se odnosi na "
-#~ "idući ponedjeljak)"
-
-#~ msgid ""
-#~ "tags:tag1,tag2,tag3 : This way you can apply as many tags as you wish using "
-#~ "comma as separator"
-#~ msgstr ""
-#~ "tags:oznaka1,oznaka2,oznaka3 : Odvajajući ih zarezom, na ovaj način možete "
-#~ "dodati koliko god oznaka želite"
-
-#~ msgid ""
-#~ "Attributes which are added in this way apply but do not appear in the title."
-#~ msgstr ""
-#~ "Atributi koji se dodaju na ovaj način se primijenjuju na zadatak, ali se ne "
-#~ "pojavljuju u naslovu."
-
-#~ msgid "For that the syntax is :"
-#~ msgstr "Za takve stvari, sintaksa glasi:"
-
-#~ msgid ""
-#~ "You can also create a task with attributes like tags, due date or defer date "
-#~ "in the quickadd entry."
-#~ msgstr ""
-#~ "U brzom dodavanju stavke također možete stvoriti zadatak s atributima poput "
-#~ "oznake, krajnjim rokom ili datumom odgode."
-
-#~ msgid "Synchronize with Evolution"
-#~ msgstr "Sinkroniziraj s Evolutionom"
-
-#~ msgid ""
-#~ " was found on the system, but it doesn't provide a dbus interface. the "
-#~ "Tomboy/Gnote plugin will not work with it."
-#~ msgstr ""
-#~ " je pronađen u sustavu, ali ne omogućuje dbus sučelje. Tomboy/Gnote dodatak "
-#~ "neće raditi s time."
-
-#~ msgid "Can't load the template file"
-#~ msgstr "Učitavanje datoteke predloška nije uspjelo"
-
-#~ msgid "Couldn't connect to Remember The Milk"
-#~ msgstr "Spajanje na Remember The Milk nije uspjelo"
-
-#~ msgid "Please retry."
-#~ msgstr "Molim pokušajte ponovno."
-
-#~ msgid "Trying to access, please stand by..."
-#~ msgstr "Pokušaj pristupanja, molim pričekajte..."
-
-#~ msgid "Synchronization started"
-#~ msgstr "Sinkronizacija pokrenuta"
-
-#~ msgid "Synchronize with RTM"
-#~ msgstr "Sinkroniziraj s RTM"
-
-#~ msgid ""
-#~ "Please authenticate to Remember The Milk in the browser that is being opened "
-#~ "now. When done, press OK"
-#~ msgstr ""
-#~ "Molim prijavite se na Remember The Milk u pregledniku koji se upravo otvara. "
-#~ "Kada završite, kliknite na OK"
-
-#~ msgid "Authentication failed."
-#~ msgstr "Neuspjela prijava."
-
-#~ msgid "saving critical object failed"
-#~ msgstr "spremanje kritičnog objekta nije uspjelo"
-
-#~ msgid "Downloading task list..."
-#~ msgstr "Preuzimanje popisa zadataka..."
-
-#~ msgid "Adding tasks to rtm.."
-#~ msgstr "Dodavanje zadataka na rtm.."
-
-#~ msgid "Adding tasks to gtg.."
-#~ msgstr "Dodavanje zadataka na gtg.."
-
-#~ msgid "Updating changed tasks.."
-#~ msgstr "Ažuriranje promijenjenih zadataka.."
-
-#~ msgid "Downloading..."
-#~ msgstr "Preuzimanje..."
-
-#~ msgid "Deleting tasks from gtg.."
-#~ msgstr "Brisanje zadataka iz gtg.."
-
-#~ msgid "Updating "
-#~ msgstr "Ažuriranje "
-
-#~ msgid "Saving current state.."
-#~ msgstr "Spremanje trenutnog stanja.."
-
-#~ msgid "Deleting tasks from rtm.."
-#~ msgstr "Brisanje zadataka iz rtm.."
-
-#~ msgid "Adding "
-#~ msgstr "Dodavanje "
-
-#~ msgid "Closing in one second"
-#~ msgstr "Zatvaranje za sekundu"
-
-#~ msgid "Synchronization completed."
-#~ msgstr "Sinkronizacija dovršena."
-
-#~ msgid "Deleting "
-#~ msgstr "Brisanje "
-
-#, python-format
-#~ msgid "%(days)d day left"
-#~ msgid_plural "%(days)d days left"
-#~ msgstr[0] "Preostao %(days)d dan"
-#~ msgstr[1] "Preostala %(days)d dana"
-#~ msgstr[2] "Preostalo %(days)d dana"
-
-#, python-format
-#~ msgid "Was %(days)d day ago"
-#~ msgid_plural "Was %(days)d days ago"
-#~ msgstr[0] "Bilo prije %(days)d dan"
-#~ msgstr[1] "Bilo prije %(days)d dana"
-#~ msgstr[2] "Bilo prije %(days)d dana"
