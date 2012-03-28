@@ -1157,7 +1157,7 @@ class TaskView(gtk.TextView):
                     #the "-" might be after a space
                     #Python 2.5 should allow both tests in one
                     if current_indent == 0:
-                        if line.startswith('-') or line.startswith(' -'):
+                        if (line.startswith('-') or line.startswith(' -')) and line.lstrip(' -').strip() != "":
                             line = line.lstrip(' -')
                             end_i = self.__newsubtask(self.buff, line, line_nbr)
                             #Here, we should increment indent level
