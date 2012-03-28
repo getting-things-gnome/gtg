@@ -666,14 +666,6 @@ class TaskBrowser(gobject.GObject):
         self.about.hide()
         return True
 
-    def on_color_changed(self, widget):
-        gtkcolor = widget.get_current_color()
-        strcolor = gtk.color_selection_palette_to_string([gtkcolor])
-        tags = self.get_selected_tags()
-        for tname in tags:
-            t = self.req.get_tag(tname)
-            t.set_attribute("color", strcolor)
-
     def on_colorchooser_activate(self, widget):
         #TODO: Color chooser should be refactorized in its own class. Well, in
         #fact we should have a TagPropertiesEditor (like for project) Also,
@@ -681,11 +673,9 @@ class TaskBrowser(gobject.GObject):
         self.set_target_cursor()
         color_dialog = gtk.ColorSelectionDialog('Choose color')
         colorsel = color_dialog.colorsel
-        colorsel.connect("color_changed", self.on_color_changed)
 
         # Get previous color
         tags= self.get_selected_tags()
-        init_color = None
         if len(tags) == 1:
             ta = self.req.get_tag(tags[0])
             color = ta.get_attribute("color")
@@ -693,13 +683,15 @@ class TaskBrowser(gobject.GObject):
                 colorspec = gtk.gdk.color_parse(color)
                 colorsel.set_previous_color(colorspec)
                 colorsel.set_current_color(colorspec)
-                init_color = colorsel.get_current_color()
         response = color_dialog.run()
-        # Check response and set color if required
-        if response != gtk.RESPONSE_OK and init_color:
-            strcolor = gtk.color_selection_palette_to_string([init_color])
+        new_color = colorsel.get_current_color()
+        
+        # Check response_id and set color if required
+        if response == gtk.RESPONSE_OK and new_color:
+            strcolor = gtk.color_selection_palette_to_string([new_color])
             tags = self.get_selected_tags()
-            for t in tags:
+            for tname in tags:
+                t = self.req.get_tag(tname)
                 t.set_attribute("color", strcolor)
         self.reset_cursor()
         color_dialog.destroy()
