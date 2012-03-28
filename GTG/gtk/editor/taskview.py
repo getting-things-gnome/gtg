@@ -40,7 +40,7 @@ from webbrowser import open as openurl
 from GTG.gtk.editor import taskviewserial
 from GTG.tools      import urlregex
 
-separators = [' ', ',', '\n', '\t', '!', '?', ';', '\0']
+separators = [' ', ',', '\n', '\t', '!', '?', ';', '\0','(',')']
 #those separators are only separators if followed by a space. Else, they
 #are part of the word
 specials_separators = ['.','/']
