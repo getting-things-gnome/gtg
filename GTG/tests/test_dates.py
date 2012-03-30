@@ -37,8 +37,9 @@ class TestDates(unittest.TestCase):
         self.assertEqual(str(Date.parse("19850329")), "1985-03-29")
         self.assertEqual(str(Date.parse("1985/03/29")), "1985-03-29")
 
-        year = date.today().year
-        self.assertEqual(str(Date.parse("0329")), "%s-03-29" % year)
+        today = date.today()
+        parse_string = "%02d%02d" % (today.month, today.day)
+        self.assertEqual(Date.parse(parse_string), today)
 
     def test_parse_fuzzy_dates(self):
         self.assertEqual(Date.parse("now"), Date.now())
@@ -79,6 +80,27 @@ class TestDates(unittest.TestCase):
             self.assertEqual(Date.parse(day), expected)
             self.assertEqual(Date.parse(day.lower()), expected)
             self.assertEqual(Date.parse(day.upper()), expected)
+
+    def test_missing_year_this_year(self):
+        """ Parsing %m%d have to find correct date:
+        we enter a day this year """
+        aday = date.today()
+        aday = aday.replace(month=aday.month+1, day=1)
+        parse_string = "%02d%02d" % (aday.month, aday.day)
+        self.assertEqual(Date.parse(parse_string), aday)
+
+    def test_missing_year_next_year(self):
+        """ Parsing %m%d have to find correct date:
+        we enter a day the next year """
+        aday = date.today()
+        if aday.day == 1 and aday.month == 1:
+            # not possible to add a day next year
+            return
+
+        aday = aday.replace(year=aday.year+1, month=1, day=1)
+
+        self.assertEqual(Date.parse("0101"), aday)
+
 
 def test_suite():
     return unittest.TestLoader().loadTestsFromTestCase(TestDates)

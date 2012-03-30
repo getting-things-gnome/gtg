@@ -157,7 +157,7 @@ class Task(TreeNode):
                 # Remove the @
                 #text =text.replace(match,match[1:],1)
             # Get attributes
-            regexp = r'([\s]*)([\w-]+):([^\s]+)'
+            regexp = r'([\s]*)([\w-]+):\s*([^\s]+)'
             for spaces, attribute, args in re.findall(regexp, text, re.UNICODE):
                 valid_attribute = True
                 if attribute.lower() in ["tags", "tag"] or \

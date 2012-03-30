@@ -267,7 +267,8 @@ class Date(object):
                 result = convert_datetime_to_date(dt)
                 if '%Y' not in fmt:
                     # If the day has passed, assume the next year
-                    if result.month >= today.month and result.day >= today.day:
+                    if result.month > today.month or \
+                        (result.month == today.month and result.day >= today.day):
                         year = today.year
                     else:
                         year = today.year +1
