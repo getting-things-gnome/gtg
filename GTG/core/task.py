@@ -166,8 +166,7 @@ class Task(TreeNode):
                         if not tag.startswith("@"):
                             tag = "@" + tag
                         tags.append(tag)
-                elif attribute.lower() == "defer" or \
-                     attribute.lower() == _("defer"):
+                elif attribute.lower() in ["defer", _("defer"), "start", _("start")]:
                     try:
                         defer_date = Date.parse(args)
                     except ValueError:

@@ -10,6 +10,7 @@
     * Search through DBus
     * Small change to QuickAdd toolbar:
       * there is allowed whitespace after due: and others, i.e. "due: 2012-04-01" is parsed as a valid attribute
+      * added start: which has the same meaning as defer:
 
 2012-02-13 Getting Things GNOME! 0.2.9
     * Big refractorization of code, now using liblarch
