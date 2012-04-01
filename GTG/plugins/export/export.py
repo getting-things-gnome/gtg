@@ -227,6 +227,7 @@ class pluginExport:
 
     def __gtk_hide(self, sender = None, data = None):
         self.export_dialog.hide()
+        return True
 
     def __on_combo_changed(self, widget = None):
         if self.load_template():
