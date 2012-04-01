@@ -282,7 +282,7 @@ class BackendsDialog(object):
                     type = gtk.MESSAGE_QUESTION,
                     buttons = gtk.BUTTONS_YES_NO,
                     message_format = \
-                     _("Do you really want to remove the backend '%s'?") % \
+                     _("Do you really want to remove the '%s' Sync Service?") % \
                             backend.get_human_name())
         response = dialog.run() 
         dialog.destroy()

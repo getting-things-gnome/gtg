@@ -189,7 +189,7 @@ class ConfigurePanel(gtk.VBox):
         Refreshes the gtk.Label that shows the current state of this backend
         '''
         if self.backend.is_default():
-            label = _("This is the default backend")
+            label = _("This is the default Sync Service")
         else:
             if self.backend.is_enabled():
                 label = _("Syncing is enabled.")

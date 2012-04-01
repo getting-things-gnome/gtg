@@ -190,7 +190,7 @@
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="use_action_appearance">False</property>
-                        <property name="label">Backends</property>
+                        <property name="label">Sync Services</property>
                         <signal name="activate" handler="on_edit_backends_activate" swapped="no"/>
                       </object>
                     </child>
