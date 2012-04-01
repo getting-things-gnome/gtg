@@ -11,6 +11,7 @@
     * Small change to QuickAdd toolbar:
       * there is allowed whitespace after due: and others, i.e. "due: 2012-04-01" is parsed as a valid attribute
       * added start: which has the same meaning as defer:
+    * Automatic restore a backup XML file if the original XML file could not be loaded
 
 2012-02-13 Getting Things GNOME! 0.2.9
     * Big refractorization of code, now using liblarch
