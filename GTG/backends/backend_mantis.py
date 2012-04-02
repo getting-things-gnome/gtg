@@ -43,11 +43,11 @@ class Backend(PeriodicImportBackend):
         GenericBackend.BACKEND_AUTHORS:    ["Luca Invernizzi", "Alayn Gortazar"], \
         GenericBackend.BACKEND_TYPE:       GenericBackend.TYPE_READONLY, \
         GenericBackend.BACKEND_DESCRIPTION: \
-            _("This backend lets you import the issues found on Mantis" 
+            _("This synchronization service lets you import the issues found on Mantis" 
               " using a prestablished filter called 'gtg'."
               " As the issue state changes in Mantis, the GTG task is "
               " updated.\n"
-              "Please note that this is a read only backend, which "
+              "Please note that this is a read only synchronization service, which "
               "means that if you open one of the imported tasks and "
               " change one of the:\n"
               "  - title\n"

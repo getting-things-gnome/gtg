@@ -72,7 +72,7 @@ class AddPanel(gtk.VBox):
 
         @param hbox: the gtk.HBox to fill
         '''
-        label = gtk.Label(_("Select a backend:"))
+        label = gtk.Label(_("Select synchronization service:"))
         label.set_alignment(0, 0.5)
         self.combo_types = BackendsCombo(self.dialog)
         self.combo_types.child.connect('changed', self.on_combo_changed)

@@ -33,15 +33,15 @@ class CustomInfoBar(gtk.InfoBar):
     '''
 
 
-    AUTHENTICATION_MESSAGE = _("The <b>%s</b> backend cannot login with the "
+    AUTHENTICATION_MESSAGE = _("The <b>%s</b> synchronization service cannot login with the "
                                "supplied authentication data and has been"
-                               " disabled. To retry the login, re-enable the backend.")
+                               " disabled. To retry the login, re-enable the service.")
 
     NETWORK_MESSAGE = _("Due to a network problem, I cannot contact "
-                        "the <b>%s</b> backend.")
+                        "the <b>%s</b> synchronization service.")
 
     DBUS_MESSAGE = _("Cannot connect to DBus, I've disabled "
-                        "the <b>%s</b> backend.")
+                        "the <b>%s</b> synchronization service.")
 
     def __init__(self, req, browser, vmanager, backend_id):
         '''
@@ -102,7 +102,7 @@ class CustomInfoBar(gtk.InfoBar):
         if error_code == BackendSignals.ERRNO_AUTHENTICATION:
             self.set_message_type(gtk.MESSAGE_ERROR)
             self.label.set_markup(self.AUTHENTICATION_MESSAGE % backend_name)
-            self.add_button(_('Configure backend'), gtk.RESPONSE_ACCEPT)
+            self.add_button(_('Configure synchronization service'), gtk.RESPONSE_ACCEPT)
             self.add_button(_('Ignore'), gtk.RESPONSE_CLOSE)
 
         elif error_code == BackendSignals.ERRNO_NETWORK:
