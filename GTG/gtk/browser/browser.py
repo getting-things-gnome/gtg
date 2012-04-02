@@ -32,7 +32,6 @@ import pygtk
 pygtk.require('2.0')
 import gobject
 import gtk
-import gtk.gdk as gdk
 
 #our own imports
 import GTG
@@ -136,7 +135,6 @@ class TaskBrowser(gobject.GObject):
         # Rember values from last time
         self.last_added_tags = "NewTag"
         self.last_apply_tags_to_subtasks = False
-        
         
         self.restore_state_from_conf()
 
@@ -444,23 +442,6 @@ class TaskBrowser(gobject.GObject):
 
     def quit(self,widget=None):
         self.vmanager.close_browser()
-    
-          
-    def on_window_state_event(self,widget,event,data=None):
-
-        """This event checks for the window state: maximized?
-	    and stores the state in self.config.max
-	    This is used to check the window state afterwards
-	     and maximize it if needed
-        """
- 	mask = gtk.gdk.WINDOW_STATE_MAXIMIZED
-	
-	if widget.get_window().get_state() & mask == mask:	
-	   self.config.set("max","True")
-	else:
-	   self.config.set("max","False") 
-
-	
         
     def restore_state_from_conf(self):
 
@@ -471,21 +452,11 @@ class TaskBrowser(gobject.GObject):
 #            self.builder.get_object("hpaned1").set_position(250)
 #            return
 
-			
-	width = self.config.get('width')
+        width = self.config.get('width')
         height = self.config.get('height')
-	
-	if width and height:
-           self.window.resize(width, height)
-#	checks for maximum size of window
-        self.window.connect('window-state-event',self.on_window_state_event)
-	state = self.config.get("max")
-	if state == "True":
-	   print "Maximize"
-           self.window.maximize()
-	   	
-	
-	
+        if width and height:
+            self.window.resize(width, height)
+
         xpos = self.config.get("x_pos")
         ypos = self.config.get("y_pos")
         if ypos and xpos:
@@ -703,6 +674,7 @@ class TaskBrowser(gobject.GObject):
         self.config.set('width',width)
         self.config.set('height',height)
 	
+
     def on_bottom_pane_position(self, widget, data = None):
         self.config.set('bottom_pane_position', widget.get_position())
 
