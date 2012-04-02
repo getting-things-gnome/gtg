@@ -42,7 +42,7 @@ from GTG.backends.genericbackend            import GenericBackend
 
 class BackendsDialog(object):
     '''
-    BackendsDialog manages a window that lets you manage and configure backends.
+    BackendsDialog manages a window that lets you manage and configure synchronization service.
     It can display two "views", or "panels":
         - the backend configuration view
         - the backend adding view

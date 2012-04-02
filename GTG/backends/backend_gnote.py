@@ -43,7 +43,7 @@ class Backend(GenericTomboy):
         GenericBackend.BACKEND_AUTHORS:    ["Luca Invernizzi"], \
         GenericBackend.BACKEND_TYPE:       GenericBackend.TYPE_READWRITE, \
         GenericBackend.BACKEND_DESCRIPTION: \
-            _("This backend can synchronize all or part of your Gnote"
+            _("This service can synchronize all or part of your Gnote"
               " notes in GTG. If you decide it would be handy to"
               " have one of your notes in your TODO list, just tag it "
               "with the tag you have chosen (you'll configure it later"
