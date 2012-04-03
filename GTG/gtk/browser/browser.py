@@ -51,15 +51,15 @@ from GTG.tools.logger import Log
 
 WINDOW_TITLE = "Getting Things GNOME!"
 
-#Some default preferences that we should save in a file
-TIME             = 0
-
 class Timer:
-    def __init__(self,st):
-        self.st = st
-    def __enter__(self): self.start = time.time()
+    def __init__(self, name):
+        self.name = name 
+
+    def __enter__(self):
+        self.start = time.time()
+
     def __exit__(self, *args): 
-        print "%s : %s" %(self.st,time.time() - self.start)
+        print "%s : %s" % (self.name, time.time() - self.start)
 
 
 class TaskBrowser(gobject.GObject):
@@ -74,11 +74,10 @@ class TaskBrowser(gobject.GObject):
     def __init__(self, requester, vmanager):
         gobject.GObject.__init__(self)
         # Object prime variables
-        self.req    = requester
+        self.req = requester
         self.vmanager = vmanager
         self.config = self.req.get_config('browser')
         self.tag_active = False
-        self.filter_cbs = []
         
         #treeviews handlers
         self.vtree_panes = {}
@@ -303,8 +302,6 @@ class TaskBrowser(gobject.GObject):
                 self.on_addtag_confirm,
             "on_addtag_cancel":
                 lambda x: x.hide,
-            "on_tag_entry_key_press_event":
-                self.on_tag_entry_key_press_event,
             "on_add_subtask":
                 self.on_add_subtask,
             "on_colorchooser_activate":
@@ -1202,10 +1199,6 @@ class TaskBrowser(gobject.GObject):
         self.last_added_tags = tag_entry.get_text()
         self.last_apply_tags_to_subtasks = apply_to_subtasks.get_active()
       
-    def on_tag_entry_key_press_event(self, widget, event):
-        if gtk.gdk.keyval_name(event.keyval) == "Return":
-            self.on_addtag_confirm()
-    
     def close_all_task_editors(self, task_id):
         """ Including editors of subtasks """
         all_subtasks = []
