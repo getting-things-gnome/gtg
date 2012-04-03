@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2012-03-27 00:43+0200\n"
+"POT-Creation-Date: 2012-04-02 20:02+0200\n"
 "PO-Revision-Date: 2010-04-18 22:25+0000\n"
 "Last-Translator: yvadim <Unknown>\n"
 "Language-Team: Ukrainian <uk@li.org>\n"
@@ -16,8 +16,8 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Launchpad-Export-Date: 2012-03-27 04:53+0000\n"
-"X-Generator: Launchpad (build 15011)\n"
+"X-Launchpad-Export-Date: 2012-04-03 04:55+0000\n"
+"X-Generator: Launchpad (build 15052)\n"
 
 #: GTG/plugins/notification_area/notification_area.py:121
 msgid "_View Main Window"
@@ -86,7 +86,7 @@ msgstr ""
 msgid "Export the tasks currently listed"
 msgstr ""
 
-#: GTG/plugins/export/export.py:322
+#: GTG/plugins/export/export.py:323
 msgid "Choose where to save your list"
 msgstr "Виберіть де зберегти ваш список"
 
@@ -218,22 +218,22 @@ msgstr "Така замітка не існує. Бажаєте створити
 msgid "This Tomboy note does not exist anymore. Do you want to create it?"
 msgstr "Ця Tomboy-замітка більше не існує. Бажаєте її створити?"
 
-#: GTG/tests/test_dates.py:51 GTG/tests/test_dates.py:58 GTG/core/search.py:92
+#: GTG/tests/test_dates.py:52 GTG/tests/test_dates.py:59 GTG/core/search.py:93
 #: GTG/tools/dates.py:38 GTG/tools/dates.py:46
 msgid "now"
 msgstr "зараз"
 
-#: GTG/tests/test_dates.py:52 GTG/tests/test_dates.py:59 GTG/core/search.py:93
+#: GTG/tests/test_dates.py:53 GTG/tests/test_dates.py:60 GTG/core/search.py:94
 #: GTG/tools/dates.py:39 GTG/tools/dates.py:48
 msgid "soon"
 msgstr "незабаром"
 
-#: GTG/tests/test_dates.py:53 GTG/tools/dates.py:50
+#: GTG/tests/test_dates.py:54 GTG/tools/dates.py:50
 msgid "later"
 msgstr "пізніше"
 
-#: GTG/tests/test_dates.py:54 GTG/tests/test_dates.py:60
-#: GTG/tests/test_dates.py:61 GTG/core/search.py:94 GTG/tools/dates.py:40
+#: GTG/tests/test_dates.py:55 GTG/tests/test_dates.py:61
+#: GTG/tests/test_dates.py:62 GTG/core/search.py:95 GTG/tools/dates.py:40
 #: GTG/tools/dates.py:52
 msgid "someday"
 msgstr ""
@@ -252,7 +252,7 @@ msgstr ""
 
 #: GTG/backends/backend_gnote.py:46
 msgid ""
-"This backend can synchronize all or part of your Gnote notes in GTG. If you "
+"This service can synchronize all or part of your Gnote notes in GTG. If you "
 "decide it would be handy to have one of your notes in your TODO list, just "
 "tag it with the tag you have chosen (you'll configure it later), and it will "
 "appear in GTG."
@@ -264,7 +264,7 @@ msgstr ""
 
 #: GTG/backends/backend_rtm.py:58
 msgid ""
-"This backend synchronizes your tasks with the web service RememberTheMilk:\n"
+"This service synchronizes your tasks with the web service RememberTheMilk:\n"
 "\t\thttp://rememberthemilk.com\n"
 "\n"
 "Note: This product uses the Remember The Milk API but is not endorsed or "
@@ -285,10 +285,10 @@ msgstr ""
 
 #: GTG/backends/backend_tomboy.py:45
 msgid ""
-"This backend can synchronize all or part of your Tomboy notes in GTG. If you "
-"decide it would be handy to have one of your notes in your TODO list, just "
-"tag it with the tag you have chosen (you'll configure it later), and it will "
-"appear in GTG."
+"This synchronization service can synchronize all or part of your Tomboy "
+"notes in GTG. If you decide it would be handy to have one of your notes in "
+"your TODO list, just tag it with the tag you have chosen (you'll configure "
+"it later), and it will appear in GTG."
 msgstr ""
 
 #: GTG/backends/backend_mantis.py:42
@@ -297,11 +297,11 @@ msgstr ""
 
 #: GTG/backends/backend_mantis.py:46
 msgid ""
-"This backend lets you import the issues found on Mantis using a "
-"prestablished filter called 'gtg'. As the issue state changes in Mantis, the "
-"GTG task is  updated.\n"
-"Please note that this is a read only backend, which means that if you open "
-"one of the imported tasks and  change one of the:\n"
+"This synchronization service lets you import the issues found on Mantis "
+"using a prestablished filter called 'gtg'. As the issue state changes in "
+"Mantis, the GTG task is  updated.\n"
+"Please note that this is a read only synchronization service, which means "
+"that if you open one of the imported tasks and  change one of the:\n"
 "  - title\n"
 "  - description\n"
 "  - tags\n"
@@ -345,11 +345,11 @@ msgstr ""
 
 #: GTG/backends/backend_launchpad.py:57
 msgid ""
-"This backend lets you import the bugs assigned to you (or someone else) on "
-"Launchpad in GTG. As the bug state changes in Launchpad, the GTG task is  "
-"updated.\n"
-"Please note that this is a read only backend, which means that if you open "
-"one of the imported tasks and  change one of the:\n"
+"This synchronization service lets you import the bugs assigned to you (or "
+"someone else) on Launchpad in GTG. As the bug state changes in Launchpad, "
+"the GTG task is  updated.\n"
+"Please note that this is a read only synchronization service, which means "
+"that if you open one of the imported tasks and  change one of the:\n"
 "  - title\n"
 "  - description\n"
 "  - tags\n"
@@ -673,32 +673,36 @@ msgid ""
 "Sunday and the start date tomorrow."
 msgstr ""
 
-#: GTG/core/search.py:85
+#: GTG/core/search.py:86
 msgid "not"
 msgstr ""
 
-#: GTG/core/search.py:86
+#: GTG/core/search.py:87
 msgid "or"
 msgstr ""
 
-#: GTG/core/search.py:87
+#: GTG/core/search.py:88
 msgid "after"
 msgstr ""
 
-#: GTG/core/search.py:88
+#: GTG/core/search.py:89
 msgid "before"
 msgstr ""
 
-#: GTG/core/search.py:89 GTG/tools/dates.py:238
+#: GTG/core/search.py:90 GTG/tools/dates.py:238
 msgid "today"
 msgstr "сьогодні"
 
-#: GTG/core/search.py:90 GTG/tools/dates.py:240
+#: GTG/core/search.py:91 GTG/tools/dates.py:240
 msgid "tomorrow"
 msgstr "завтра"
 
-#: GTG/core/search.py:91
+#: GTG/core/search.py:92
 msgid "nodate"
+msgstr ""
+
+#: GTG/core/search.py:96
+msgid "notag"
 msgstr ""
 
 #: GTG/core/task.py:55
@@ -713,11 +717,15 @@ msgstr "мітки"
 msgid "tag"
 msgstr "мітка"
 
-#: GTG/core/task.py:170
+#: GTG/core/task.py:169
 msgid "defer"
 msgstr "відкласти"
 
-#: GTG/core/task.py:176
+#: GTG/core/task.py:169
+msgid "start"
+msgstr ""
+
+#: GTG/core/task.py:175
 msgid "due"
 msgstr "до"
 
@@ -730,7 +738,7 @@ msgstr "Всі завдання"
 msgid "Tasks with no tags"
 msgstr "Завдання без міток"
 
-#: GTG/core/treefactory.py:102 GTG/gtk/browser/browser.py:1670
+#: GTG/core/treefactory.py:102 GTG/gtk/browser/browser.py:1561
 msgid "Search"
 msgstr ""
 
@@ -774,11 +782,11 @@ msgstr ""
 msgid "Sunday"
 msgstr ""
 
-#: GTG/tools/dates.py:293
+#: GTG/tools/dates.py:294
 msgid "Today"
 msgstr "Сьогодні"
 
-#: GTG/tools/dates.py:296
+#: GTG/tools/dates.py:297
 #, python-format
 msgid "Yesterday"
 msgid_plural "%(days)d days ago"
@@ -786,7 +794,7 @@ msgstr[0] "Вчора"
 msgstr[1] "%(days)d дні тому"
 msgstr[2] "%(days)d днів тому"
 
-#: GTG/tools/dates.py:299
+#: GTG/tools/dates.py:300
 #, python-format
 msgid "Tomorrow"
 msgid_plural "In %(days)d days"
@@ -865,7 +873,7 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: GTG/gtk/backends_dialog/addpanel.py:75
-msgid "Select a backend:"
+msgid "Select synchronization service:"
 msgstr ""
 
 #: GTG/gtk/backends_dialog/addpanel.py:179
@@ -880,7 +888,7 @@ msgstr[1] ""
 
 #: GTG/gtk/backends_dialog/__init__.py:286
 #, python-format
-msgid "Do you really want to remove the backend '%s'?"
+msgid "Do you really want to remove the '%s' synchronization service?"
 msgstr ""
 
 #: GTG/gtk/backends_dialog/configurepanel.py:162
@@ -915,7 +923,7 @@ msgid "Enable syncing"
 msgstr ""
 
 #: GTG/gtk/backends_dialog/configurepanel.py:192
-msgid "This is the default backend"
+msgid "This is the default synchronization service"
 msgstr ""
 
 #: GTG/gtk/backends_dialog/configurepanel.py:195
@@ -1018,22 +1026,26 @@ msgstr ""
 #: GTG/gtk/browser/custominfobar.py:36
 #, python-format
 msgid ""
-"The <b>%s</b> backend cannot login with the supplied authentication data and "
-"has been disabled. To retry the login, re-enable the backend."
+"The <b>%s</b> synchronization service cannot login with the supplied "
+"authentication data and has been disabled. To retry the login, re-enable the "
+"service."
 msgstr ""
 
 #: GTG/gtk/browser/custominfobar.py:40
 #, python-format
-msgid "Due to a network problem, I cannot contact the <b>%s</b> backend."
+msgid ""
+"Due to a network problem, I cannot contact the <b>%s</b> synchronization "
+"service."
 msgstr ""
 
 #: GTG/gtk/browser/custominfobar.py:43
 #, python-format
-msgid "Cannot connect to DBus, I've disabled the <b>%s</b> backend."
+msgid ""
+"Cannot connect to DBus, I've disabled the <b>%s</b> synchronization service."
 msgstr ""
 
 #: GTG/gtk/browser/custominfobar.py:105
-msgid "Configure backend"
+msgid "Configure synchronization service"
 msgstr ""
 
 #: GTG/gtk/browser/custominfobar.py:106
@@ -1052,32 +1064,32 @@ msgstr ""
 msgid "Continue"
 msgstr ""
 
-#: GTG/gtk/browser/treeview_factory.py:286
+#: GTG/gtk/browser/treeview_factory.py:280
 #: GTG/gtk/browser/taskbrowser.glade.h:33
 msgid "Tags"
 msgstr "Мітки"
 
-#: GTG/gtk/browser/treeview_factory.py:374
+#: GTG/gtk/browser/treeview_factory.py:368
 msgid "Start date"
 msgstr "Дата початку"
 
-#: GTG/gtk/browser/treeview_factory.py:385
+#: GTG/gtk/browser/treeview_factory.py:379
 msgid "Due"
 msgstr "Термін"
 
-#: GTG/gtk/browser/treeview_factory.py:405
+#: GTG/gtk/browser/treeview_factory.py:399
 msgid "Closed date"
 msgstr ""
 
-#: GTG/gtk/browser/treeview_factory.py:460
+#: GTG/gtk/browser/treeview_factory.py:454
 msgid "Title"
 msgstr "Заголовок"
 
-#: GTG/gtk/browser/browser.py:600
+#: GTG/gtk/browser/browser.py:591
 msgid "no active tasks"
 msgstr "активні завдання відсутні"
 
-#: GTG/gtk/browser/browser.py:602
+#: GTG/gtk/browser/browser.py:593
 #, python-format
 msgid "%(tasks)d active task"
 msgid_plural "%(tasks)d active tasks"
@@ -1085,77 +1097,81 @@ msgstr[0] "%(tasks)d активне завдання"
 msgstr[1] "%(tasks)d активних завдання"
 msgstr[2] "%(tasks)d активних завдань"
 
-#: GTG/gtk/browser/browser.py:1668
+#: GTG/gtk/browser/browser.py:1559
 msgid "Add Task"
 msgstr ""
 
-#: GTG/gtk/browser/browser.py:1669
+#: GTG/gtk/browser/browser.py:1560
 msgid "Open Task"
 msgstr ""
 
-#: GTG/gtk/browser/__init__.py:34 GTG/gtk/browser/taskbrowser.glade.h:29
+#: GTG/gtk/browser/modifytags_dialog.py:38
+msgid "NewTag"
+msgstr ""
+
+#: GTG/gtk/browser/__init__.py:35 GTG/gtk/browser/taskbrowser.glade.h:29
 #: GTG/gtk/editor/__init__.py:31
 msgid "Mark as Done"
 msgstr "Відмітити як виконане"
 
-#: GTG/gtk/browser/__init__.py:35
+#: GTG/gtk/browser/__init__.py:36
 msgid "Mark the selected task as done"
 msgstr "Відмітити, що виділене завдання виконане"
 
-#: GTG/gtk/browser/__init__.py:36 GTG/gtk/editor/__init__.py:32
+#: GTG/gtk/browser/__init__.py:37 GTG/gtk/editor/__init__.py:32
 msgid "Mark as not Done"
 msgstr ""
 
-#: GTG/gtk/browser/__init__.py:37 GTG/gtk/browser/__init__.py:41
+#: GTG/gtk/browser/__init__.py:38 GTG/gtk/browser/__init__.py:42
 msgid "Mark the selected task as to be done"
 msgstr "Відмітити, що виділене завдання вимагає виконання"
 
-#: GTG/gtk/browser/__init__.py:38 GTG/gtk/browser/taskbrowser.glade.h:30
+#: GTG/gtk/browser/__init__.py:39 GTG/gtk/browser/taskbrowser.glade.h:30
 #: GTG/gtk/editor/__init__.py:33 GTG/gtk/editor/taskeditor.glade.h:3
 msgid "Dismiss"
 msgstr "Відхилити"
 
-#: GTG/gtk/browser/__init__.py:39
+#: GTG/gtk/browser/__init__.py:40
 msgid "Mark the task as not to be done anymore"
 msgstr "Відмітити, що виділене завдання не потребує більше виконання"
 
-#: GTG/gtk/browser/__init__.py:40 GTG/gtk/editor/__init__.py:34
+#: GTG/gtk/browser/__init__.py:41 GTG/gtk/editor/__init__.py:34
 msgid "Undismiss"
 msgstr "Відновити"
 
-#: GTG/gtk/browser/__init__.py:42
+#: GTG/gtk/browser/__init__.py:43
 msgid "Permanently remove the selected task"
 msgstr "Назавжди видалити виділене завдання"
 
-#: GTG/gtk/browser/__init__.py:43
+#: GTG/gtk/browser/__init__.py:44
 msgid "Edit the selected task"
 msgstr "Редагувати виділене завдання"
 
-#: GTG/gtk/browser/__init__.py:44 GTG/gtk/browser/taskbrowser.glade.h:4
+#: GTG/gtk/browser/__init__.py:45 GTG/gtk/browser/taskbrowser.glade.h:4
 msgid "Create a new task"
 msgstr "Створити нове завдання"
 
-#: GTG/gtk/browser/__init__.py:45
+#: GTG/gtk/browser/__init__.py:46
 msgid "Create a new subtask"
 msgstr "Створити нове підзавдання"
 
-#: GTG/gtk/browser/__init__.py:46
+#: GTG/gtk/browser/__init__.py:47
 msgid "Display only the currently actionable tasks"
 msgstr "Відобразити тільки завдання, що доступні для виконання"
 
-#: GTG/gtk/browser/__init__.py:47
+#: GTG/gtk/browser/__init__.py:48
 msgid "Hide this tag from the workview"
 msgstr ""
 
-#: GTG/gtk/browser/__init__.py:48
+#: GTG/gtk/browser/__init__.py:49
 msgid "Show this tag in the workview"
 msgstr ""
 
-#: GTG/gtk/browser/__init__.py:49
+#: GTG/gtk/browser/__init__.py:50
 msgid "You can create, open or filter your tasks here"
 msgstr ""
 
-#: GTG/gtk/browser/__init__.py:50
+#: GTG/gtk/browser/__init__.py:51
 msgid "Clear"
 msgstr ""
 
@@ -1329,102 +1345,102 @@ msgstr ""
 "Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA, США."
 
 #: GTG/gtk/browser/taskbrowser.glade.h:45
-msgid "Add a Tag..."
-msgstr "Додати мітку..."
-
-#: GTG/gtk/browser/taskbrowser.glade.h:46
-msgid "Add Tag"
-msgstr "Додати мітку"
-
-#: GTG/gtk/browser/taskbrowser.glade.h:47
-msgid "Cancel"
-msgstr "Скасувати"
-
-#: GTG/gtk/browser/taskbrowser.glade.h:48
-msgid "Enter the name of the tag(s) you wish to add:"
-msgstr "Введіть ім’я мітки, яку ви хочете додати:"
-
-#: GTG/gtk/browser/taskbrowser.glade.h:49
-msgid "TagName"
-msgstr "Ім’яМітки"
-
-#: GTG/gtk/browser/taskbrowser.glade.h:50
-msgid ""
-"Hint: you can add several tags by separating them with\n"
-"commas."
-msgstr "Порада: ви можете додати декілька міток розділивши їх комою"
-
-#: GTG/gtk/browser/taskbrowser.glade.h:52
-msgid "Apply to subtasks"
-msgstr "Застосувати до підзавдань"
-
-#: GTG/gtk/browser/taskbrowser.glade.h:53
 msgid "Mark as Not Done"
 msgstr "Відмітити як не виконане"
 
-#: GTG/gtk/browser/taskbrowser.glade.h:54
+#: GTG/gtk/browser/taskbrowser.glade.h:46
 msgid "Und_ismiss"
 msgstr "_Відновити"
 
-#: GTG/gtk/browser/taskbrowser.glade.h:55
+#: GTG/gtk/browser/taskbrowser.glade.h:47
 msgid "t_oday"
 msgstr "сь_огодні"
 
-#: GTG/gtk/browser/taskbrowser.glade.h:56
+#: GTG/gtk/browser/taskbrowser.glade.h:48
 msgid "_tomorrow"
 msgstr "_завтра"
 
-#: GTG/gtk/browser/taskbrowser.glade.h:57
+#: GTG/gtk/browser/taskbrowser.glade.h:49
 msgid "next _week"
 msgstr "наступний _тиждень"
 
-#: GTG/gtk/browser/taskbrowser.glade.h:58
+#: GTG/gtk/browser/taskbrowser.glade.h:50
 msgid "next _month"
 msgstr "наступний _місяць"
 
-#: GTG/gtk/browser/taskbrowser.glade.h:59
+#: GTG/gtk/browser/taskbrowser.glade.h:51
 msgid "next _year"
 msgstr "наступний _рік"
 
-#: GTG/gtk/browser/taskbrowser.glade.h:60
+#: GTG/gtk/browser/taskbrowser.glade.h:52
 msgid "_now"
 msgstr ""
 
-#: GTG/gtk/browser/taskbrowser.glade.h:61
+#: GTG/gtk/browser/taskbrowser.glade.h:53
 msgid "_soon"
 msgstr ""
 
-#: GTG/gtk/browser/taskbrowser.glade.h:62
+#: GTG/gtk/browser/taskbrowser.glade.h:54
 msgid "_someday"
 msgstr ""
 
-#: GTG/gtk/browser/taskbrowser.glade.h:63
+#: GTG/gtk/browser/taskbrowser.glade.h:55
 msgid "_clear due date"
 msgstr ""
 
-#: GTG/gtk/browser/taskbrowser.glade.h:64
+#: GTG/gtk/browser/taskbrowser.glade.h:56
 msgid "_clear start date"
 msgstr ""
 
-#: GTG/gtk/browser/taskbrowser.glade.h:65
+#: GTG/gtk/browser/taskbrowser.glade.h:57
 msgid "Reset Color"
 msgstr "Скинути колір"
 
-#: GTG/gtk/browser/taskbrowser.glade.h:66
+#: GTG/gtk/browser/taskbrowser.glade.h:58
 msgid "Add a subtask"
 msgstr "Додати підзавдання"
 
-#: GTG/gtk/browser/taskbrowser.glade.h:67
+#: GTG/gtk/browser/taskbrowser.glade.h:59
 msgid "_Set start date"
 msgstr ""
 
-#: GTG/gtk/browser/taskbrowser.glade.h:68
+#: GTG/gtk/browser/taskbrowser.glade.h:60
 msgid "Set due date"
 msgstr ""
 
-#: GTG/gtk/browser/taskbrowser.glade.h:69
-msgid "Add Tag..."
-msgstr "Додати мітку..."
+#: GTG/gtk/browser/taskbrowser.glade.h:61
+msgid "Modify Tags..."
+msgstr ""
+
+#: GTG/gtk/browser/modifytags_dialog.glade.h:1
+msgid "Modify Tags"
+msgstr ""
+
+#: GTG/gtk/browser/modifytags_dialog.glade.h:2
+msgid "Add/Remove Tags"
+msgstr ""
+
+#: GTG/gtk/browser/modifytags_dialog.glade.h:3
+msgid "Cancel"
+msgstr "Скасувати"
+
+#: GTG/gtk/browser/modifytags_dialog.glade.h:4
+msgid "Enter the name of the tag(s) you wish to add or remove:"
+msgstr ""
+
+#: GTG/gtk/browser/modifytags_dialog.glade.h:5
+msgid "TagName"
+msgstr "Ім’яМітки"
+
+#: GTG/gtk/browser/modifytags_dialog.glade.h:6
+msgid ""
+"Hint: you can add several tags by separating them with\n"
+"space. Place '!' before tags you want to remove."
+msgstr ""
+
+#: GTG/gtk/browser/modifytags_dialog.glade.h:8
+msgid "Apply to subtasks"
+msgstr "Застосувати до підзавдань"
 
 #: GTG/gtk/editor/editor.py:295
 #, python-format
@@ -1629,6 +1645,23 @@ msgstr ""
 
 #~ msgid "<b>General</b>"
 #~ msgstr "<b>Загальні</b>"
+
+#~ msgid "Add Tag..."
+#~ msgstr "Додати мітку..."
+
+#~ msgid "Add Tag"
+#~ msgstr "Додати мітку"
+
+#~ msgid "Add a Tag..."
+#~ msgstr "Додати мітку..."
+
+#~ msgid "Enter the name of the tag(s) you wish to add:"
+#~ msgstr "Введіть ім’я мітки, яку ви хочете додати:"
+
+#~ msgid ""
+#~ "Hint: you can add several tags by separating them with\n"
+#~ "commas."
+#~ msgstr "Порада: ви можете додати декілька міток розділивши їх комою"
 
 #~ msgid "View Notes"
 #~ msgstr "Переглянути замітки"
