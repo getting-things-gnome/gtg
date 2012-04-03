@@ -51,15 +51,15 @@ from GTG.tools.logger import Log
 
 WINDOW_TITLE = "Getting Things GNOME!"
 
-#Some default preferences that we should save in a file
-TIME             = 0
-
 class Timer:
-    def __init__(self,st):
-        self.st = st
-    def __enter__(self): self.start = time.time()
+    def __init__(self, name):
+        self.name = name 
+
+    def __enter__(self):
+        self.start = time.time()
+
     def __exit__(self, *args): 
-        print "%s : %s" %(self.st,time.time() - self.start)
+        print "%s : %s" % (self.name, time.time() - self.start)
 
 
 class TaskBrowser(gobject.GObject):
@@ -78,7 +78,6 @@ class TaskBrowser(gobject.GObject):
         self.vmanager = vmanager
         self.config = self.req.get_config('browser')
         self.tag_active = False
-        self.filter_cbs = []
         
         #treeviews handlers
         self.vtree_panes = {}
@@ -295,8 +294,6 @@ class TaskBrowser(gobject.GObject):
                 self.on_size_allocate,
             "gtk_main_quit":
                 self.on_close,
-            "on_tag_entry_key_press_event":
-                self.on_tag_entry_key_press_event,
             "on_add_subtask":
                 self.on_add_subtask,
             "on_colorchooser_activate":
@@ -1094,10 +1091,6 @@ class TaskBrowser(gobject.GObject):
         """ Run Modify Tags dialog on selected tasks """
         tasks = self.get_selected_tasks()
         self.modifytags_dialog.modify_tags(tasks)
-
-    def on_tag_entry_key_press_event(self, widget, event):
-        if gtk.gdk.keyval_name(event.keyval) == "Return":
-            self.on_addtag_confirm()
     
     def close_all_task_editors(self, task_id):
         """ Including editors of subtasks """
