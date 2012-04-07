@@ -51,6 +51,8 @@ try:
       help="Disable the automatic crash handler", default=False)
     parser.add_option('-d', '--debug', action='store_true', dest='debug',
       help="Enable debug output", default=False)
+    parser.add_option('-l', '--local-liblarch', action='store_true', dest='local_liblarch',
+      help="Use local liblarch located in ../liblarch if it is posible", default=False)
     parser.add_option('-v', '--version', action='store_true', dest='version_and_exit',
       help="Print GTG's version number", default=False)
     (options, args) = parser.parse_args()
@@ -66,7 +68,7 @@ try:
         print "Could not open X display"
         sys.exit(1)
 
-    elif import_liblarch():
+    elif import_liblarch(options.local_liblarch):
         import GTG.gtg
         sys.exit(GTG.gtg.main(options, args))
 

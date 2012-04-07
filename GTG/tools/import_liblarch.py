@@ -25,11 +25,11 @@ import sys
 REQUIRED_LIBLARCH_API = "1.0"
 GIT_CMD = "git clone https://github.com/liblarch/liblarch ../liblarch"
 
-
-def import_liblarch():
+def import_liblarch(use_local=False):
     """ Check if liblarch is installed and is compatible
 
-    If not, provide information how to obtain the newest version """
+    If not, provide information how to obtain the newest version.
+    If use_local, prioritize local (development) liblarch in ../liblarch"""
 
     def check_liblarch():
         """ Import liblarch and find out which one is missing """
@@ -49,8 +49,13 @@ def import_liblarch():
 
         return has_libraries, " and ".join(missing)
 
+    if use_local:
+        sys.path.insert(0, "../liblarch")
+
     has_libraries, missing = check_liblarch()
-    if not has_libraries:
+
+    if not use_local and not has_libraries:
+        Log.warning('Switching to local liblarch')
         sys.path.append("../liblarch/")
         has_libraries, missing = check_liblarch()
 
@@ -76,7 +81,9 @@ You may fix that by downloading the last version of liblarch with
     return True
 
 if __name__ == "__main__":
-    if import_liblarch():
+    use_local = "-l" in sys.argv[1:] or "--local-liblarch" in sys.argv[1:]
+
+    if import_liblarch(use_local):
         sys.exit(0)
     else:
         sys.exit(1)
