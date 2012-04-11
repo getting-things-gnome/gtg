@@ -27,7 +27,10 @@ from GTG.tools.dates import Date
 
 
 def get_text(node):
-    return node.firstChild.nodeValue.strip()
+    if len(node.childNodes) > 0:
+        return node.firstChild.nodeValue.strip()
+    else:
+        return ""
 
 def read_node(xmlnode, name):
     node_list =xmlnode.getElementsByTagName(name)
