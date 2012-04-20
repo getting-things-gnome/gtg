@@ -56,6 +56,8 @@ def task_to_dict(task):
     """
     Translate a task object into a D-Bus dictionary
     """
+    if not task:
+        return None
     return dbus.Dictionary(dsanitize({
           "id": task.get_id(),
           "status": task.get_status(),
