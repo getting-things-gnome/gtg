@@ -41,6 +41,7 @@ from GTG.gtk.tag_completion import TagCompletion
 from GTG.gtk.browser import GnomeConfig
 from GTG.gtk.browser.custominfobar import CustomInfoBar
 from GTG.gtk.browser.modifytags_dialog import ModifyTagsDialog
+from GTG.gtk.browser.tag_context_menu import TagContextMenu
 from GTG.gtk.browser.treeview_factory import TreeviewFactory
 from GTG.tools.dates import Date
 from GTG.tools.logger import Log
@@ -150,10 +151,7 @@ class TaskBrowser(gobject.GObject):
         defines aliases for UI elements found in the glide file
         """
         self.window             = self.builder.get_object("MainWindow")
-        self.tagpopup           = self.builder.get_object("tag_context_menu")
         self.searchpopup          = self.builder.get_object("search_context_menu")
-        self.nonworkviewtag_cb  = self.builder.get_object("nonworkviewtag_mi")
-        self.nonworkviewtag_cb.set_label(GnomeConfig.TAG_IN_WORKVIEW_TOGG)
         self.taskpopup          = self.builder.get_object("task_context_menu")
         self.defertopopup       = self.builder.get_object("defer_to_context_menu")
         self.ctaskpopup         = self.builder.get_object("closed_task_context_menu")
@@ -183,6 +181,7 @@ class TaskBrowser(gobject.GObject):
         self.vbox_toolbars      = self.builder.get_object("vbox_toolbars")
         
         self.closed_pane        = None
+        self.tagpopup           = TagContextMenu(self.req)
 
     def _init_ui_widget(self):
         """
@@ -296,10 +295,10 @@ class TaskBrowser(gobject.GObject):
                 self.on_close,
             "on_add_subtask":
                 self.on_add_subtask,
-            "on_colorchooser_activate":
-                self.on_colorchooser_activate,
-            "on_resetcolor_activate":
-                self.on_resetcolor_activate,
+#            "on_colorchooser_activate":
+#                self.on_colorchooser_activate,
+#            "on_resetcolor_activate":
+#                self.on_resetcolor_activate,
             "on_tagcontext_deactivate":
                 self.on_tagcontext_deactivate,
             "on_workview_toggled":
@@ -336,8 +335,6 @@ class TaskBrowser(gobject.GObject):
                 lambda w: openurl(info.TRANSLATE_URL),
             "on_report_bug_clicked":
                 lambda w: openurl(info.REPORT_BUG_URL),
-            "on_nonworkviewtag_toggled":
-                self.on_nonworkviewtag_toggled,
             "on_preferences_activate":
                 self.open_preferences,
             "on_edit_backends_activate":
@@ -663,46 +660,49 @@ class TaskBrowser(gobject.GObject):
         self.about.hide()
         return True
 
-    def on_colorchooser_activate(self, widget):
-        #TODO: Color chooser should be refactorized in its own class. Well, in
-        #fact we should have a TagPropertiesEditor (like for project) Also,
-        #color change should be immediate. There's no reason for a Ok/Cancel
-        self.set_target_cursor()
-        color_dialog = gtk.ColorSelectionDialog('Choose color')
-        colorsel = color_dialog.colorsel
+# <color chooser>
+# SHOULD BE DEPRECATED
+#    def on_colorchooser_activate(self, widget):
+#        #TODO: Color chooser should be refactorized in its own class. Well, in
+#        #fact we should have a TagPropertiesEditor (like for project) Also,
+#        #color change should be immediate. There's no reason for a Ok/Cancel
+#        self.set_target_cursor()
+#        color_dialog = gtk.ColorSelectionDialog('Choose color')
+#        colorsel = color_dialog.colorsel
 
-        # Get previous color
-        tags= self.get_selected_tags()
-        if len(tags) == 1:
-            ta = self.req.get_tag(tags[0])
-            color = ta.get_attribute("color")
-            if color is not None:
-                colorspec = gtk.gdk.color_parse(color)
-                colorsel.set_previous_color(colorspec)
-                colorsel.set_current_color(colorspec)
-        response = color_dialog.run()
-        new_color = colorsel.get_current_color()
-        
-        # Check response_id and set color if required
-        if response == gtk.RESPONSE_OK and new_color:
-            strcolor = gtk.color_selection_palette_to_string([new_color])
-            tags = self.get_selected_tags()
-            for tname in tags:
-                t = self.req.get_tag(tname)
-                t.set_attribute("color", strcolor)
-        self.reset_cursor()
-        color_dialog.destroy()
-        
-    def on_resetcolor_activate(self, widget):
-        """
-        handler for the right click popup menu item from tag tree, when its a @tag
-        """
-        self.set_target_cursor()
-        tags = self.get_selected_tags()
-        for tname in tags:
-            t = self.req.get_tag(tname)
-            t.del_attribute("color")
-        self.reset_cursor()
+#        # Get previous color
+#        tags= self.get_selected_tags()
+#        if len(tags) == 1:
+#            ta = self.req.get_tag(tags[0])
+#            color = ta.get_attribute("color")
+#            if color is not None:
+#                colorspec = gtk.gdk.color_parse(color)
+#                colorsel.set_previous_color(colorspec)
+#                colorsel.set_current_color(colorspec)
+#        response = color_dialog.run()
+#        new_color = colorsel.get_current_color()
+#        
+#        # Check response_id and set color if required
+#        if response == gtk.RESPONSE_OK and new_color:
+#            strcolor = gtk.color_selection_palette_to_string([new_color])
+#            tags = self.get_selected_tags()
+#            for tname in tags:
+#                t = self.req.get_tag(tname)
+#                t.set_attribute("color", strcolor)
+#        self.reset_cursor()
+#        color_dialog.destroy()
+#        
+#    def on_resetcolor_activate(self, widget):
+#        """
+#        handler for the right click popup menu item from tag tree, when its a @tag
+#        """
+#        self.set_target_cursor()
+#        tags = self.get_selected_tags()
+#        for tname in tags:
+#            t = self.req.get_tag(tname)
+#            t.del_attribute("color")
+#        self.reset_cursor()
+# </color chooser>
         
     def on_tagcontext_deactivate(self, menushell):
         self.reset_cursor()
@@ -898,46 +898,12 @@ class TaskBrowser(gobject.GObject):
                     # Then we are looking at single, normal tag rather than
                     # the special 'All tags' or 'Tasks without tags'. We only
                     # want to popup the menu for normal tags.
-
-                    display_in_workview_item = self.tagpopup.get_children()[2]
                     selected_tag = self.req.get_tag(selected_tags[0])
-                    nonworkview = selected_tag.get_attribute("nonworkview")
-                    # We must invert because the tagstore has "True" for tasks
-                    # that are *not* in workview, and the checkbox is set if
-                    # the tag *is* shown in the workview.
-                    if nonworkview == "True":
-                        shown = False
-                    else:
-                        shown = True
-                    # HACK: CheckMenuItem.set_active() emits a toggled() when 
-                    # switching between True and False, which will reset 
-                    # the cursor. Using self.dont_reset to work around that.
-                    # Calling set_target_cursor after set_active() is another
-                    # option, but there's noticeable amount of lag when right
-                    # clicking tags that way.
-                    self.dont_reset = True
-                    display_in_workview_item.set_active(shown)
-                    self.dont_reset = False
+                    self.tagpopup.set_tag(selected_tag)
                     self.tagpopup.popup(None, None, None, event.button, time)
                 else:
                     self.reset_cursor()
             return 1
-
-    def on_nonworkviewtag_toggled(self, widget):
-        self.set_target_cursor()
-        tag_id = self.get_selected_tags()[0]
-        #We must inverse because the tagstore has True
-        #for tasks that are not in workview (and also convert to string)
-        toset = not self.nonworkviewtag_cb.get_active()
-        tag = self.req.get_tag(tag_id)
-        tag.set_attribute("nonworkview", str(toset))
-        if toset:
-            label = GnomeConfig.TAG_NOTIN_WORKVIEW_TOGG
-        else:
-            label = GnomeConfig.TAG_IN_WORKVIEW_TOGG
-        self.nonworkviewtag_cb.set_label(label)
-        if not self.dont_reset:
-            self.reset_cursor()
 
     def on_task_treeview_button_press_event(self, treeview, event):
         """Pop up context menu on right mouse click in the main task tree view"""

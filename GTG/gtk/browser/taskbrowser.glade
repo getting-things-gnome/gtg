@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
   <requires lib="gtk+" version="2.16"/>
+  <!-- interface-naming-policy toplevel-contextual -->
   <object class="GtkWindow" id="MainWindow">
     <property name="can_focus">False</property>
     <property name="title" translatable="yes">Getting Things Gnome!</property>
@@ -313,7 +314,7 @@
                     <property name="can_focus">False</property>
                     <child>
                       <object class="GtkImageMenuItem" id="online_help">
-                        <property name="label" translatable="yes">Get _Help Online</property>
+                        <property name="label">Get _Help Online</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="tooltip_text" translatable="yes">Open GTG documentation in your web browser</property>
@@ -332,7 +333,7 @@
                     </child>
                     <child>
                       <object class="GtkImageMenuItem" id="launchpad_translate">
-                        <property name="label" translatable="yes">_Translate GTG</property>
+                        <property name="label">_Translate GTG</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="tooltip_text" translatable="yes">Help to translate GTG into your language</property>
@@ -345,7 +346,7 @@
                     </child>
                     <child>
                       <object class="GtkImageMenuItem" id="launchpad_report_bug">
-                        <property name="label" translatable="yes">_Report a Problem</property>
+                        <property name="label">_Report a Problem</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="tooltip_text" translatable="yes">Report a problem to GTG developers</property>
@@ -643,7 +644,7 @@
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="hscrollbar_policy">never</property>
-                        <property name="vscrollbar_policy">GTK_POLICY_AUTOMATIC</property>
+                        <property name="vscrollbar_policy">automatic</property>
                         <property name="shadow_type">in</property>
                         <child>
                           <placeholder/>
@@ -690,6 +691,10 @@
                         <property name="can_default">True</property>
                         <property name="invisible_char">●</property>
                         <property name="secondary_icon_stock">gtk-clear</property>
+                        <property name="primary_icon_activatable">False</property>
+                        <property name="secondary_icon_activatable">False</property>
+                        <property name="primary_icon_sensitive">True</property>
+                        <property name="secondary_icon_sensitive">True</property>
                         <signal name="changed" handler="on_quickadd_field_changed" swapped="no"/>
                         <signal name="activate" handler="on_quickadd_field_activate" swapped="no"/>
                         <signal name="icon-press" handler="on_quickadd_field_icon_press" swapped="no"/>
@@ -723,7 +728,7 @@
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="hscrollbar_policy">never</property>
-                            <property name="vscrollbar_policy">GTK_POLICY_AUTOMATIC</property>
+                            <property name="vscrollbar_policy">automatic</property>
                             <child>
                               <placeholder/>
                             </child>
@@ -806,12 +811,12 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
     <signal name="delete-event" handler="on_about_delete" swapped="no"/>
     <signal name="response" handler="on_about_close" swapped="no"/>
     <child internal-child="vbox">
-      <object class="GtkBox" id="about_dialog_vbox">
+      <object class="GtkVBox" id="about_dialog_vbox">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="spacing">2</property>
         <child internal-child="action_area">
-          <object class="GtkButtonBox" id="dialog-action_area2">
+          <object class="GtkHButtonBox" id="dialog-action_area2">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="layout_style">end</property>
@@ -1060,9 +1065,33 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
     <property name="can_focus">False</property>
     <property name="stock">gtk-delete</property>
   </object>
+  <object class="GtkImage" id="image6">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="stock">gtk-edit</property>
+    <property name="icon-size">1</property>
+  </object>
   <object class="GtkEntryCompletion" id="quickadd_entrycompletion">
     <property name="popup_set_width">False</property>
     <signal name="action-activated" handler="on_quickadd_entrycompletion_action_activated" swapped="no"/>
+  </object>
+  <object class="GtkMenu" id="search_context_menu">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <child>
+      <object class="GtkImageMenuItem" id="search_delete">
+        <property name="label">Delete</property>
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="use_action_appearance">False</property>
+        <property name="use_underline">True</property>
+        <property name="image">image5</property>
+        <property name="use_stock">False</property>
+        <property name="accel_group">accelgroup1</property>
+        <property name="always_show_image">True</property>
+        <signal name="activate" handler="on_search_delete_activate" swapped="no"/>
+      </object>
+    </child>
   </object>
   <object class="GtkMenu" id="start_for_context_menu">
     <property name="visible">True</property>
@@ -1137,46 +1166,6 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
         <property name="use_underline">True</property>
         <property name="use_stock">False</property>
         <signal name="activate" handler="on_start_clear" swapped="no"/>
-      </object>
-    </child>
-  </object>
-  <object class="GtkMenu" id="tag_context_menu">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="no_show_all">True</property>
-    <signal name="deactivate" handler="on_tagcontext_deactivate" swapped="no"/>
-    <child>
-      <object class="GtkImageMenuItem" id="colorchooser_mi">
-        <property name="label">gtk-select-color</property>
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="use_action_appearance">False</property>
-        <property name="use_underline">True</property>
-        <property name="use_stock">True</property>
-        <property name="accel_group">accelgroup1</property>
-        <signal name="activate" handler="on_colorchooser_activate" swapped="no"/>
-      </object>
-    </child>
-    <child>
-      <object class="GtkImageMenuItem" id="resetcolor_mi">
-        <property name="label" translatable="yes">Reset Color</property>
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="use_action_appearance">False</property>
-        <property name="image">image2</property>
-        <property name="use_stock">False</property>
-        <property name="accel_group">accelgroup1</property>
-        <signal name="activate" handler="on_resetcolor_activate" swapped="no"/>
-      </object>
-    </child>
-    <child>
-      <object class="GtkCheckMenuItem" id="nonworkviewtag_mi">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="use_action_appearance">False</property>
-        <property name="use_underline">True</property>
-        <property name="active">True</property>
-        <signal name="toggled" handler="on_nonworkviewtag_toggled" swapped="no"/>
       </object>
     </child>
   </object>
@@ -1261,7 +1250,6 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
     <child>
       <object class="GtkImageMenuItem" id="tcm_start_menu">
         <property name="label" translatable="yes">_Set start date</property>
-        <property name="submenu">start_for_context_menu</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="use_action_appearance">False</property>
@@ -1272,7 +1260,6 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
     <child>
       <object class="GtkImageMenuItem" id="tcm_due_menu">
         <property name="label" translatable="yes">Set due date</property>
-        <property name="submenu">due_context_menu</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="use_action_appearance">False</property>
@@ -1322,35 +1309,5 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
     <property name="can_focus">False</property>
     <property name="pixel_size">16</property>
     <property name="icon_name">gtg-task-undismiss</property>
-  </object>
-  <object class="GtkMenu" id="search_context_menu">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <child>
-      <object class="GtkImageMenuItem" id="search_color">
-        <property name="label">gtk-select-color</property>
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="use_action_appearance">False</property>
-        <property name="use_underline">True</property>
-        <property name="use_stock">True</property>
-        <property name="accel_group">accelgroup1</property>
-        <signal name="activate" handler="on_colorchooser_activate" swapped="no"/>
-      </object>
-    </child>
-    <child>
-      <object class="GtkImageMenuItem" id="search_delete">
-        <property name="label">Delete</property>
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="use_action_appearance">False</property>
-        <property name="use_underline">True</property>
-        <property name="image">image5</property>
-        <property name="use_stock">False</property>
-        <property name="accel_group">accelgroup1</property>
-        <property name="always_show_image">True</property>
-        <signal name="activate" handler="on_search_delete_activate" swapped="no"/>
-      </object>
-    </child>
   </object>
 </interface>
