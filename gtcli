@@ -237,7 +237,6 @@ def summary_of_tasks(criteria):
                                     report[dstr]['due'])
         else:
             print "%-20s %5d %5d" %(d.strftime(fmt), 0, 0)
-            
 
 def list_tasks(criteria, count_only=False):
     """ Display a listing of tasks 
@@ -285,6 +284,13 @@ def list_tasks(criteria, count_only=False):
                                  initial_indent='',
                                  subsequent_indent=' ' * 40)
             print "  %-36s  %s" %(task['id'], text)
+
+def search_tasks(criteria):
+    """ Search Tasks according to criteria"""
+    timi = connect_to_gtg()
+    tasks = timi.SearchTasks(criteria)
+    for task in tasks:
+        print task
 
 if __name__ == '__main__':
     try:
@@ -375,7 +381,11 @@ if __name__ == '__main__':
             state = args[1]
         toggle_browser_visibility(state)
 
+    elif command == "search":
+        if len(args)<2:
+            usage()
+            sys.exit(1)
+        search_tasks(' '.join(args[1:]))
+
     else:
         die("Unknown command '%s'\n" %(command))
-
-
