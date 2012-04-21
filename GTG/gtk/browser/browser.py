@@ -660,8 +660,6 @@ class TaskBrowser(gobject.GObject):
         self.about.hide()
         return True
 
-# <color chooser>
-# SHOULD BE DEPRECATED
 #    def on_colorchooser_activate(self, widget):
 #        #TODO: Color chooser should be refactorized in its own class. Well, in
 #        #fact we should have a TagPropertiesEditor (like for project) Also,
@@ -691,18 +689,17 @@ class TaskBrowser(gobject.GObject):
 #                t.set_attribute("color", strcolor)
 #        self.reset_cursor()
 #        color_dialog.destroy()
-#        
-#    def on_resetcolor_activate(self, widget):
-#        """
-#        handler for the right click popup menu item from tag tree, when its a @tag
-#        """
-#        self.set_target_cursor()
-#        tags = self.get_selected_tags()
-#        for tname in tags:
-#            t = self.req.get_tag(tname)
-#            t.del_attribute("color")
-#        self.reset_cursor()
-# </color chooser>
+        
+    def on_resetcolor_activate(self, widget):
+        """
+        handler for the right click popup menu item from tag tree, when its a @tag
+        """
+        self.set_target_cursor()
+        tags = self.get_selected_tags()
+        for tname in tags:
+            t = self.req.get_tag(tname)
+            t.del_attribute("color")
+        self.reset_cursor()
         
     def on_tagcontext_deactivate(self, menushell):
         self.reset_cursor()
