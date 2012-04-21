@@ -295,10 +295,6 @@ class TaskBrowser(gobject.GObject):
                 self.on_close,
             "on_add_subtask":
                 self.on_add_subtask,
-#            "on_colorchooser_activate":
-#                self.on_colorchooser_activate,
-#            "on_resetcolor_activate":
-#                self.on_resetcolor_activate,
             "on_tagcontext_deactivate":
                 self.on_tagcontext_deactivate,
             "on_workview_toggled":
@@ -660,47 +656,6 @@ class TaskBrowser(gobject.GObject):
         self.about.hide()
         return True
 
-#    def on_colorchooser_activate(self, widget):
-#        #TODO: Color chooser should be refactorized in its own class. Well, in
-#        #fact we should have a TagPropertiesEditor (like for project) Also,
-#        #color change should be immediate. There's no reason for a Ok/Cancel
-#        self.set_target_cursor()
-#        color_dialog = gtk.ColorSelectionDialog('Choose color')
-#        colorsel = color_dialog.colorsel
-
-#        # Get previous color
-#        tags= self.get_selected_tags()
-#        if len(tags) == 1:
-#            ta = self.req.get_tag(tags[0])
-#            color = ta.get_attribute("color")
-#            if color is not None:
-#                colorspec = gtk.gdk.color_parse(color)
-#                colorsel.set_previous_color(colorspec)
-#                colorsel.set_current_color(colorspec)
-#        response = color_dialog.run()
-#        new_color = colorsel.get_current_color()
-#        
-#        # Check response_id and set color if required
-#        if response == gtk.RESPONSE_OK and new_color:
-#            strcolor = gtk.color_selection_palette_to_string([new_color])
-#            tags = self.get_selected_tags()
-#            for tname in tags:
-#                t = self.req.get_tag(tname)
-#                t.set_attribute("color", strcolor)
-#        self.reset_cursor()
-#        color_dialog.destroy()
-        
-    def on_resetcolor_activate(self, widget):
-        """
-        handler for the right click popup menu item from tag tree, when its a @tag
-        """
-        self.set_target_cursor()
-        tags = self.get_selected_tags()
-        for tname in tags:
-            t = self.req.get_tag(tname)
-            t.del_attribute("color")
-        self.reset_cursor()
-        
     def on_tagcontext_deactivate(self, menushell):
         self.reset_cursor()
 
