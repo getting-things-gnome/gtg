@@ -290,7 +290,10 @@ def search_tasks(criteria):
     timi = connect_to_gtg()
     tasks = timi.SearchTasks(criteria)
     for task in tasks:
-        print task
+        text = textwrap.fill(task['title'], 
+                             initial_indent='',
+                             subsequent_indent=' ' * 40)
+        print "  %-36s  %s" %(task['id'], text)
 
 if __name__ == '__main__':
     try:

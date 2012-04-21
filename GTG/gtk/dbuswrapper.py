@@ -147,7 +147,7 @@ class DBusTaskWrapper(dbus.service.Object):
         else:
             return dbus.Array([], "s")
             
-    @dbus.service.method(BUSNAME, in_signature="s", out_signature="as")
+    @dbus.service.method(BUSNAME, in_signature="s")
     def SearchTasks(self, query):
         """
         Searches the task list
@@ -157,7 +157,8 @@ class DBusTaskWrapper(dbus.service.Object):
         try:
             search = parse_search_query(query)
             view.apply_filter('search', parameters = search)
-            return view.get_all_nodes()
+            tasks = view.get_all_nodes()
+            return [self.GetTask(id) for id in tasks]
         except InvalidQuery:
             return dbus.Array([], "s")
     
