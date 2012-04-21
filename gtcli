@@ -94,6 +94,7 @@ def close_task(tid):
         timi.ModifyTask(tid, task_data)
     else:
         print MSG_ERROR_TASK_ID_INVALID
+        sys.exit(1)
 
 def show_task(tid):
     """ Displays a given task """
@@ -119,6 +120,7 @@ def show_task(tid):
         print content
     else:
         print MSG_ERROR_TASK_ID_INVALID
+        sys.exit(1)
 
 def postpone(identifier, startdate):
     """ Change the start date of a task """
@@ -140,6 +142,7 @@ def postpone(identifier, startdate):
             timi.ModifyTask(task['id'], task)
         else:
             print MSG_ERROR_TASK_ID_INVALID
+            sys.exit(1)
 
 def open_task_editor(tid):
     """ Load task in the task editor gui """
