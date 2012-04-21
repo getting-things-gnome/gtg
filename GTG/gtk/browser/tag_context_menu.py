@@ -43,12 +43,17 @@ class TagContextMenu(gtk.Menu):
         self.mi_cc = gtk.MenuItem()
         self.mi_cc.set_label(_("Set color..."))
         self.append(self.mi_cc)
+        # Reset color
+        self.mi_rc = gtk.MenuItem()
+        self.mi_rc.set_label(_("Reset color"))
+        self.append(self.mi_rc)
         # Don't display in work view mode
         self.mi_wv = gtk.CheckMenuItem()
         self.mi_wv.set_label(GnomeConfig.TAG_IN_WORKVIEW_TOGG)
         self.append(self.mi_wv)
         # Set the callbacks
         self.mi_cc.connect('activate', self.on_mi_cc_activate)
+        self.mi_rc.connect('activate', self.on_mi_rc_activate)
         self.mi_wv_toggle_hid = self.mi_wv.connect('activate', self.on_mi_wv_activate)
 
     def __set_default_values(self):
@@ -104,3 +109,10 @@ class TagContextMenu(gtk.Menu):
             strcolor = gtk.color_selection_palette_to_string([new_color])
             self.tag.set_attribute("color", strcolor)
         color_dialog.destroy()
+
+    def on_mi_rc_activate(self, widget):
+        """
+        handler for the right click popup menu item from tag tree, when its a @tag
+        """
+        self.tag.del_attribute("color")
+
