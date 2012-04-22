@@ -127,14 +127,14 @@ class TreeviewFactory():
             count = self.mainview.node_n_children(node.get_id(), recursive=True)
             if count != 0:
                 title += " (%s)" % count
-            
-            if self.config.get("contents_preview_enable"):
-            	excerpt = saxutils.escape(node.get_excerpt(lines=1,
-            		strip_tags=True, strip_subtasks=True))
-            	title += " <span size='small' color='%s'>%s</span>" \
-            		% (self.unactive_color, excerpt) 
         elif node.get_status() == Task.STA_DISMISSED:
             title = "<span color='%s'>%s</span>" % (self.unactive_color, title)
+
+        if self.config.get("contents_preview_enable"):
+            excerpt = saxutils.escape(node.get_excerpt(lines=1,
+                    strip_tags=True, strip_subtasks=True))
+            title += " <span size='small' color='%s'>%s</span>" \
+                    % (self.unactive_color, excerpt) 
         return title
         
     #task start date
