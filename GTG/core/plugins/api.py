@@ -189,14 +189,9 @@ class PluginAPI:
         else:
             info_col = 'task_id'
 
-        for pane in browser.vtree_panes:
-            pane = browser.vtree_panes[pane]
+        for pane in browser.vtree_panes.itervalues():
             pane.set_bg_color(func, info_col)
-            # FIXME: Added a parameter to the reset_filters call because
-            # otherwise all old completed tasks are re-shown and unable
-            # to be marked as done
-            #pane.basetree.reset_filters()
-            pane.basetree.reset_filters(transparent_only=True)
+            pane.basetree.get_basetree().refresh_all()
 
 #=== file saving/loading ======================================================
 

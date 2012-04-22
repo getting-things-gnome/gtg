@@ -729,10 +729,11 @@ class TaskBrowser(gobject.GObject):
         self.config.set('closed_task_pane',False)
 
     def on_bg_color_toggled(self, widget):
-        if widget.get_active():
-            self.config.set("bg_color_enable",True)
-        else:
-            self.config.set("bg_color_enable",False)
+        """ Save configuration and refresh nodes to apply the change """
+        bg_color_enable = bool(widget.get_active())
+        self.config.set("bg_color_enable", bg_color_enable)
+        task_tree = self.req.get_tasks_tree(refresh=False).get_basetree()
+        task_tree.refresh_all()
 
     def on_toolbar_toggled(self, widget):
         if widget.get_active():
