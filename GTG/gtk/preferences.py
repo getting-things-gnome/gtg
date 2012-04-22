@@ -150,7 +150,8 @@ class PreferencesDialog:
           'plugin_depends': 'PluginDepends',
           'plugin_config_dialog': 'PluginConfigDialog',
           'pref_autostart': 'pref_autostart',
-          'pref_show_preview': 'pref_show_preview'
+          'pref_show_preview': 'pref_show_preview',
+          'bg_color_enable': 'bg_color_enable',
           }
         for attr, widget in widgets.iteritems():
             setattr(self, attr, self.builder.get_object(widget))
@@ -215,13 +216,12 @@ class PreferencesDialog:
         autostart_path = os.path.join(self.__AUTOSTART_DIRECTORY, \
                                       self.__AUTOSTART_FILE)
         self.pref_autostart.set_active(os.path.isfile(autostart_path))
-        #This set_active method doesn't even understand what a boolean is!
-        #what a PITA !
-        if self.config_priv.get("contents_preview_enable"):
-            toset = 1
-        else:
-            toset = 0
-        self.pref_show_preview.set_active(toset)
+
+        show_preview = self.config_priv.get("contents_preview_enable")
+        self.pref_show_preview.set_active(show_preview)
+
+        bg_color = self.config_priv.get("bg_color_enable")
+        self.bg_color_enable.set_active(bg_color)
 
     def _init_plugin_tree(self):
         """Initialize the PluginTree gtk.TreeView.
@@ -278,6 +278,8 @@ class PreferencesDialog:
           # preferences on the Tasks tab
           'on_pref_show_preview_toggled':
             self.toggle_preview,
+          'on_bg_color_toggled':
+            self.on_bg_color_toggled,
           'on_pref_check_spelling_toggled':
             self.toggle_spellcheck,
           # buttons on the Plugins tab
@@ -397,6 +399,14 @@ class PreferencesDialog:
             self.config_priv.set("contents_preview_enable", not curstate)
             view = self.req.get_tasks_tree(refresh=False)
             view.refresh_all()
+
+    def on_bg_color_toggled(self, widget):
+        """ Save configuration and refresh nodes to apply the change """
+        curstate = self.config_priv.get("bg_color_enable")
+        if curstate != widget.get_active():
+            self.config_priv.set("bg_color_enable", not curstate)
+            task_tree = self.req.get_tasks_tree(refresh=False).get_basetree()
+            task_tree.refresh_all()
 
     def toggle_spellcheck(self, widget):
         """Toggle spell checking on or off."""

@@ -303,8 +303,6 @@ class TaskBrowser(gobject.GObject):
                 self.on_closed_toggled,
             "on_view_sidebar_toggled":
                 self.on_sidebar_toggled,
-            "on_bg_color_toggled":
-                self.on_bg_color_toggled,
             "on_quickadd_field_activate":
                 self.on_quickadd_activate,
             "on_quickadd_field_icon_press":
@@ -490,9 +488,6 @@ class TaskBrowser(gobject.GObject):
             sort_column, sort_order = int(sort_column), int(sort_order)
             model.set_sort_column_id(sort_column, sort_order)
 
-        bgcol_enable = self.config.get("bg_color_enable")
-        self.builder.get_object("bgcol_enable").set_active(bgcol_enable)
-        
         for path_s in self.config.get("collapsed_tasks"):
             #the tuple was stored as a string. we have to reconstruct it
             path = ()
@@ -727,13 +722,6 @@ class TaskBrowser(gobject.GObject):
         self.remove_page_from_accessory_notebook(self.closed_pane)
         self.builder.get_object("view_closed").set_active(False)
         self.config.set('closed_task_pane',False)
-
-    def on_bg_color_toggled(self, widget):
-        """ Save configuration and refresh nodes to apply the change """
-        bg_color_enable = bool(widget.get_active())
-        self.config.set("bg_color_enable", bg_color_enable)
-        task_tree = self.req.get_tasks_tree(refresh=False).get_basetree()
-        task_tree.refresh_all()
 
     def on_toolbar_toggled(self, widget):
         if widget.get_active():
