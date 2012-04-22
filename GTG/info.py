@@ -1,5 +1,26 @@
 # -*- coding: utf-8 -*-
-"""Various information about GTG. Should be updated for every release. Contains the information displayed in GTG's Credits."""
+# -----------------------------------------------------------------------------
+# Getting Things Gnome! - a personal organizer for the GNOME desktop
+# Copyright (c) 2008-2012 - Lionel Dricot & Bertrand Rousseau
+#
+# This program is free software: you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation, either version 3 of the License, or (at your option) any later
+# version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+# details.
+#
+# You should have received a copy of the GNU General Public License along with
+# this program.  If not, see <http://www.gnu.org/licenses/>.
+# -----------------------------------------------------------------------------
+"""Various information about GTG. Should be updated for every release. 
+
+Contains the information displayed in GTG's Credits."""
+
+from GTG import _
 
 NAME = "Getting Things GNOME!"
 URL = "http://gtg.fritalk.com"
@@ -9,7 +30,7 @@ REPORT_BUG_URL = "https://bugs.launchpad.net/gtg/+filebug"
 EMAIL = "gtg-contributors@lists.launchpad.net"
 VERSION = '0.3-development'
 
-SHORT_DESCRIPTION = 'GTG is a personal organizer for the GNOME desktop environment.'
+SHORT_DESCRIPTION = _('GTG is a personal organizer for the GNOME desktop environment.')
 
 # CREDITS
 AUTHORS     = ["Main developers:", \
