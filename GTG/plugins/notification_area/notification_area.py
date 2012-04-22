@@ -292,10 +292,11 @@ class NotificationArea:
         return True
 
     def __toggle_browser(self, sender = None, data = None):
-        if self.__plugin_api.get_ui().is_shown():
-            self.__plugin_api.get_view_manager().hide_browser()
+        manager = self.__plugin_api.get_view_manager()
+        if manager.is_browser_visible():
+            manager.hide_browser()
         else:
-            self.__plugin_api.get_view_manager().show_browser()
+            manager.show_browser()
 
     def __set_browser_close_callback(self, method):
         """ Set a callback for browser's close event. If method is None,
