@@ -8,6 +8,8 @@
     * Saved searches could have assigned color
     * Stopped links from opening when accidently letting go of mouse button while selecting them, #823339, by Steve Scheel
     * Search through DBus
+    * GTCli handles error better
+    * GTCli allows search through DBus
     * Small change to QuickAdd toolbar:
       * there is allowed whitespace after due: and others, i.e. "due: 2012-04-01" is parsed as a valid attribute
       * added start: which has the same meaning as defer:

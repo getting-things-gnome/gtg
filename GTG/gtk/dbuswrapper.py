@@ -56,6 +56,8 @@ def task_to_dict(task):
     """
     Translate a task object into a D-Bus dictionary
     """
+    if not task:
+        return None
     return dbus.Dictionary(dsanitize({
           "id": task.get_id(),
           "status": task.get_status(),
@@ -145,7 +147,7 @@ class DBusTaskWrapper(dbus.service.Object):
         else:
             return dbus.Array([], "s")
             
-    @dbus.service.method(BUSNAME, in_signature="s", out_signature="as")
+    @dbus.service.method(BUSNAME, in_signature="s")
     def SearchTasks(self, query):
         """
         Searches the task list
@@ -155,9 +157,12 @@ class DBusTaskWrapper(dbus.service.Object):
         try:
             search = parse_search_query(query)
             view.apply_filter('search', parameters = search)
-            return view.get_all_nodes()
+            tasks = view.get_all_nodes()
+            if tasks:
+                return [self.GetTask(id) for id in tasks]
         except InvalidQuery:
-            return dbus.Array([], "s")
+            pass
+        return dbus.Array([], "s")
     
     @dbus.service.method(BUSNAME)
     def HasTask(self, tid):

@@ -22,6 +22,8 @@ import textwrap
 from datetime import datetime, date, timedelta
 from string import split
 
+MSG_ERROR_TASK_ID_INVALID = '[Error] Task ID Invalid'
+
 def _(text):
     return text
 
@@ -87,29 +89,38 @@ def close_task(tid):
     """ Marks a task closed """
     timi = connect_to_gtg()
     task_data = timi.GetTask(tid)
-    task_data['status'] = "Done"
-    timi.ModifyTask(tid, task_data)
+    if task_data:
+        task_data['status'] = "Done"
+        timi.ModifyTask(tid, task_data)
+    else:
+        print MSG_ERROR_TASK_ID_INVALID
+        sys.exit(1)
 
 def show_task(tid):
     """ Displays a given task """
     timi = connect_to_gtg()
     task_data = timi.GetTask(tid)
-    content_regex = re.compile(r"<content>(.+)</content>", re.DOTALL)
 
-    content = task_data['text'] + "\n(unknown)"
-    m = content_regex.match(task_data['text'])
-    if m:
-        content = m.group(1)
+    if task_data:
+        content_regex = re.compile(r"<content>(.+)</content>", re.DOTALL)
 
-    print task_data['title']
-    if len(task_data['tags'])>0:
-        print " %-12s %s" %('tags:', task_data['tags'][0])
-    for k in ['id', 'startdate', 'duedate', 'status']:
-        print " %-12s %s" %(k+":", task_data[k])
-    if len(task_data['parents'])>0:
-        print " %-12s %s" %('parents:', task_data['parents'][0])
-    print
-    print content
+        content = task_data['text'] + "\n(unknown)"
+        m = content_regex.match(task_data['text'])
+        if m:
+            content = m.group(1)
+
+        print task_data['title']
+        if len(task_data['tags'])>0:
+            print " %-12s %s" %('tags:', task_data['tags'][0])
+        for k in ['id', 'startdate', 'duedate', 'status']:
+            print " %-12s %s" %(k+":", task_data[k])
+        if len(task_data['parents'])>0:
+            print " %-12s %s" %('parents:', task_data['parents'][0])
+        print
+        print content
+    else:
+        print MSG_ERROR_TASK_ID_INVALID
+        sys.exit(1)
 
 def postpone(identifier, startdate):
     """ Change the start date of a task """
@@ -122,12 +133,16 @@ def postpone(identifier, startdate):
         timi = connect_to_gtg()
         tasks = timi.GetTasksFiltered(filters)
     else:
-        tasks = [ timi.GeTask(identifier) ]
+        tasks = [ timi.GetTask(identifier) ]
 
     for task in tasks:
-        task['startdate'] = startdate
-        print "%-12s %-20s %s" %(task['id'], ", ".join(task['tags']), task['title'])
-        timi.ModifyTask(task['id'], task)
+        if task:
+            task['startdate'] = startdate
+            print "%-12s %-20s %s" %(task['id'], ", ".join(task['tags']), task['title'])
+            timi.ModifyTask(task['id'], task)
+        else:
+            print MSG_ERROR_TASK_ID_INVALID
+            sys.exit(1)
 
 def open_task_editor(tid):
     """ Load task in the task editor gui """
@@ -147,7 +162,7 @@ def toggle_browser_visibility(state):
         timi.ShowTaskBrowser()
 
 def _criteria_to_filters(criteria):
-    if not criteria:
+    if not criteria or criteria == 'all':
         filters = ['active']
     else:
         filters = split(criteria, ' ')
@@ -177,7 +192,7 @@ def count_tasks(criteria):
 def summary_of_tasks(criteria):
     """ Print report showing number of tasks starting and due each day """
 
-    if not criteria:
+    if not criteria or criteria == 'all':
         criteria = 'workable'
 
     filters = _criteria_to_filters(criteria)
@@ -222,7 +237,6 @@ def summary_of_tasks(criteria):
                                     report[dstr]['due'])
         else:
             print "%-20s %5d %5d" %(d.strftime(fmt), 0, 0)
-            
 
 def list_tasks(criteria, count_only=False):
     """ Display a listing of tasks 
@@ -270,6 +284,16 @@ def list_tasks(criteria, count_only=False):
                                  initial_indent='',
                                  subsequent_indent=' ' * 40)
             print "  %-36s  %s" %(task['id'], text)
+
+def search_tasks(criteria):
+    """ Search Tasks according to criteria"""
+    timi = connect_to_gtg()
+    tasks = timi.SearchTasks(criteria)
+    for task in tasks:
+        text = textwrap.fill(task['title'], 
+                             initial_indent='',
+                             subsequent_indent=' ' * 40)
+        print "  %-36s  %s" %(task['id'], text)
 
 if __name__ == '__main__':
     try:
@@ -360,7 +384,11 @@ if __name__ == '__main__':
             state = args[1]
         toggle_browser_visibility(state)
 
+    elif command == "search":
+        if len(args)<2:
+            usage()
+            sys.exit(1)
+        search_tasks(' '.join(args[1:]))
+
     else:
         die("Unknown command '%s'\n" %(command))
-
-
