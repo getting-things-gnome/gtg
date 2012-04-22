@@ -117,6 +117,13 @@ class NotificationArea:
         browser = self.__view_manager.get_browser()
 
         self.__menu = gtk.Menu()
+
+        #add "new task"
+        menuItem = gtk.ImageMenuItem(gtk.STOCK_ADD)
+        menuItem.get_children()[0].set_label(_('Add _New Task'))
+        menuItem.connect('activate', self.__open_task)
+        self.__menu.append(menuItem)
+
         #view in main window checkbox
         view_browser_checkbox = gtk.CheckMenuItem(_("_View Main Window"))
         view_browser_checkbox.set_active(browser.is_shown())
@@ -126,21 +133,22 @@ class NotificationArea:
                                                 view_browser_checkbox)
         self.__menu.append(view_browser_checkbox)
         self.checkbox = view_browser_checkbox
-        #add "new task"
-        menuItem = gtk.ImageMenuItem(gtk.STOCK_ADD)
-        menuItem.get_children()[0].set_label(_('Add _New Task'))
-        menuItem.connect('activate', self.__open_task)
-        self.__menu.append(menuItem)
-        #quit item
-        menuItem = gtk.ImageMenuItem(gtk.STOCK_QUIT)
-        menuItem.connect('activate', self.__view_manager.close_browser)
-        self.__menu.append(menuItem)
-        self.__menu.show_all()
+
         #separator (it's intended to be after show_all)
         # separator should be shown only when having tasks
         self.__task_separator = gtk.SeparatorMenuItem()
         self.__menu.append(self.__task_separator)
         self.__menu_top_length = len(self.__menu)
+
+        self.__menu.append(gtk.SeparatorMenuItem())
+
+        #quit item
+        menuItem = gtk.ImageMenuItem(gtk.STOCK_QUIT)
+        menuItem.connect('activate', self.__view_manager.close_browser)
+        self.__menu.append(menuItem)
+
+        self.__menu.show_all()
+        self.__task_separator.hide()
 
         self.__tasks_menu = SortedLimitedMenu(self.MAX_ITEMS,
                             self.__menu, self.__menu_top_length)
