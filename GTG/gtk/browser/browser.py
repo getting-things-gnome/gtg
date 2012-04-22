@@ -205,6 +205,8 @@ class TaskBrowser(gobject.GObject):
             self.on_select_tag)
         self.tagtreeview.connect('button-press-event',\
             self.on_tag_treeview_button_press_event)
+        self.tagtreeview.connect('key-press-event',\
+            self.on_tag_treeview_key_press_event)
         self.sidebar_container.add(self.tagtreeview)
 
         # expanding search tag does not work automatically, request it
@@ -842,7 +844,27 @@ class TaskBrowser(gobject.GObject):
                     self.tagpopup.popup(None, None, None, event.button, time)
                 else:
                     self.reset_cursor()
-            return 1
+            return True
+
+    def on_tag_treeview_key_press_event(self, treeview, event):
+        keyname = gtk.gdk.keyval_name(event.keyval)
+        is_shift_f10 = keyname == "F10" and event.get_state() & gtk.gdk.SHIFT_MASK
+        if is_shift_f10 or keyname == "Menu":
+            selected_tags = self.get_selected_tags(nospecial=True)
+            selected_search = self.get_selected_search()
+            #popup menu for searches
+            if selected_search is not None:
+                self.searchpopup.popup(None, None, None, 0, event.time)
+            elif len(selected_tags) > 0:
+                # Then we are looking at single, normal tag rather than
+                # the special 'All tags' or 'Tasks without tags'. We only
+                # want to popup the menu for normal tags.
+                selected_tag = self.req.get_tag(selected_tags[0])
+                self.tagpopup.set_tag(selected_tag)
+                self.tagpopup.popup(None, None, None, 0, event.time)
+            else:
+                self.reset_cursor()
+            return True
 
     def on_task_treeview_button_press_event(self, treeview, event):
         """Pop up context menu on right mouse click in the main task tree view"""
@@ -862,11 +884,18 @@ class TaskBrowser(gobject.GObject):
                     treeview.set_cursor(path, col, 0)
                 treeview.grab_focus()
                 self.taskpopup.popup(None, None, None, event.button, time)
-            return 1
+            return True
 
     def on_task_treeview_key_press_event(self, treeview, event):
-        if gtk.gdk.keyval_name(event.keyval) == "Delete":
+        keyname = gtk.gdk.keyval_name(event.keyval)
+        is_shift_f10 = keyname == "F10" and event.get_state() & gtk.gdk.SHIFT_MASK
+
+        if keyname == "Delete":
             self.on_delete_tasks()
+            return True
+        elif is_shift_f10 or keyname == "Menu":
+            self.taskpopup.popup(None, None, None, 0, event.time)
+            return True
 
     def on_closed_task_treeview_button_press_event(self, treeview, event):
         if event.button == 3:
@@ -879,11 +908,18 @@ class TaskBrowser(gobject.GObject):
                 treeview.grab_focus()
                 treeview.set_cursor(path, col, 0)
                 self.ctaskpopup.popup(None, None, None, event.button, time)
-            return 1
+            return True
 
     def on_closed_task_treeview_key_press_event(self, treeview, event):
-        if gtk.gdk.keyval_name(event.keyval) == "Delete":
+        keyname = gtk.gdk.keyval_name(event.keyval)
+        is_shift_f10 = keyname == "F10" and event.get_state() & gtk.gdk.SHIFT_MASK
+
+        if keyname == "Delete":
             self.on_delete_tasks()
+            return True
+        elif is_shift_f10 or keyname == "Menu":
+            self.ctaskpopup.popup(None, None, None, 0, event.time)
+            return True
 
     def on_add_task(self, widget, status=None):
         tags = [tag for tag in self.get_selected_tags() if tag.startswith('@')]
