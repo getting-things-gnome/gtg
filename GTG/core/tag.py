@@ -55,9 +55,6 @@ class Tag(TreeNode):
         for key, value in attributes.iteritems():
             self.set_attribute(key, value)
 
-        self._tasks_count = 0
-        #list of tasks associated with this tag
-
     #overiding some functions to not allow dnd of special tags
     def add_parent(self, parent_id):
         p = self.req.get_tag(parent_id)
