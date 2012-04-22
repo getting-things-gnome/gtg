@@ -85,8 +85,6 @@ class Tag(TreeNode):
             raise Exception("The name of tag cannot be set manually")
         elif att_name == "parent":
             self.add_parent(att_value)
-            #self.new_relationship(att_value, self._name)
-            self._attributes['parent'] = "We don't care about that value"
         else:
             # Attributes should all be strings.
             val = unicode(str(att_value), "UTF-8")

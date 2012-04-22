@@ -45,8 +45,6 @@ from GTG.gtk.browser.tag_context_menu import TagContextMenu
 from GTG.gtk.browser.treeview_factory import TreeviewFactory
 from GTG.tools.dates import Date
 from GTG.tools.logger import Log
-#FIXME Why is this commented?
-#from GTG.tools                   import clipboard
 
 #=== MAIN CLASS ===============================================================
 
