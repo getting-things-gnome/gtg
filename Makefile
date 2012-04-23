@@ -12,12 +12,18 @@ clean:
 
 # Check for common & easily catchable Python mistakes.
 pyflakes:
-	pyflakes GTG
+	pyflakes gtg gtcli gtg_new_task GTG
 
 # Check for coding standard violations.
 pep8:
-	find . -name '*.py' -print0 | xargs -0 ./scripts/pep8.py --ignore E221,E222
-	find . -name '*.py' -print0 | xargs -0 ./scripts/pep8.py --ignore E221,E222 --repeat | wc -l
+	(echo gtg; echo gtcli;  echo gtg_new_task ; find . -name '*.py' -print ) | \
+	xargs ./scripts/pep8.py --ignore E221,E222
+	(echo gtg; echo gtcli;  echo gtg_new_task ; find . -name '*.py' -print ) | \
+	xargs ./scripts/pep8.py --ignore E221,E222 --repeat | wc -l
+
+# Pylint code
+pylint:
+	pylint gtg gtcli gtg_new_task GTG
 
 # Build API documentation.
 apidocs:
@@ -32,7 +38,7 @@ edit-apidocs:
 		--server --edit
 
 # Check for coding standard violations & flakes.
-lint: pyflakes pep8
+lint: pyflakes pep8 pylint
 
 .PHONY: check lint pyflakes pep8 apidocs edit-apidocs clean
 

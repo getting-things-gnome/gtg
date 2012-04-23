@@ -1,9 +1,8 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-
 # -----------------------------------------------------------------------------
 # Getting Things Gnome! - A personal organizer for the GNOME desktop
-# Copyright (c) 2008,2009,2010 Lionel Dricot & Bertrand Rousseau
+# Copyright (c) 2008-2012 Lionel Dricot & Bertrand Rousseau
 #
 # This program is free software: you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -19,56 +18,58 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-"""
-Getting Things Gnome! - A personal organizer for the GNOME desktop
-==================================================================
-
-:copyright: 2008,2009,2010 Lionel Dricot & Bertrand Rousseau
-:license: GNU General Public License, version 3 or later
-"""
+""" Main script which parse arguments and launch GTG """
 
 import sys
-from optparse import OptionParser
 
+from optparse import OptionParser
+from gtk.gdk import Screen
+
+from GTG import gtg
+from GTG import info
 from GTG.tools.import_liblarch import import_liblarch
 
 
-def X_is_running():
-    from gtk.gdk import Screen
+def x_is_running():
+    """ Return True if GTG could be displayed on the current XServer """
     try:
         if Screen().get_display():
             return True
     except RuntimeError:
         pass
     return False
-    
 
-try:
+
+def main():
+    """ Parse arguments and run GTG """
     parser = OptionParser()
-    parser.add_option('-b', '--boot-test', action='store_true', dest='boot_test',
-      help="Exit immediately after completing boot-up actions", default=False)
-    parser.add_option('-c', '--no-crash-handler', action='store_true', dest='no_crash_handler',
-      help="Disable the automatic crash handler", default=False)
+    parser.add_option('-b', '--boot-test', action='store_true',
+      dest='boot_test', help="Exit after completing boot-up actions",
+      default=False)
+    parser.add_option('-c', '--no-crash-handler', action='store_true',
+      dest='no_crash_handler', help="Disable the automatic crash handler",
+      default=False)
     parser.add_option('-d', '--debug', action='store_true', dest='debug',
       help="Enable debug output", default=False)
-    parser.add_option('-v', '--version', action='store_true', dest='version_and_exit',
-      help="Print GTG's version number", default=False)
+    parser.add_option('-v', '--version', action='store_true',
+      dest='print_version', help="Print GTG's version number", default=False)
     (options, args) = parser.parse_args()
 
-    if options.version_and_exit:
-        from GTG import info
-        print "GTG (Getting Things Gnome!) %s" %(info.VERSION)
+    if options.print_version:
+        print "GTG (Getting Things Gnome!)", info.VERSION
         print
-        print "For more information: %s" %(info.URL)
+        print "For more information:", info.URL
         sys.exit(0)
 
-    elif not X_is_running():
+    elif not x_is_running():
         print "Could not open X display"
         sys.exit(1)
 
     elif import_liblarch():
-        import GTG.gtg
-        sys.exit(GTG.gtg.main(options, args))
+        sys.exit(gtg.main(options, args))
 
-except KeyboardInterrupt:
-    sys.exit(1)
+if __name__ == "__main__":
+    try:
+        main()
+    except KeyboardInterrupt:
+        sys.exit(1)
