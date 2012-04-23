@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2012-04-02 20:02+0200\n"
+"POT-Creation-Date: 2012-04-22 17:25+0200\n"
 "PO-Revision-Date: 2010-10-28 11:31+0000\n"
 "Last-Translator: Svetoslav Stefanov <svetlisashkov@yahoo.com>\n"
 "Language-Team: Bulgarian <bg@li.org>\n"
@@ -15,16 +15,16 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2012-04-03 04:54+0000\n"
-"X-Generator: Launchpad (build 15052)\n"
+"X-Launchpad-Export-Date: 2012-04-23 04:47+0000\n"
+"X-Generator: Launchpad (build 15135)\n"
 
-#: GTG/plugins/notification_area/notification_area.py:121
-msgid "_View Main Window"
-msgstr "_Преглед на Основния Прозорец"
-
-#: GTG/plugins/notification_area/notification_area.py:131
+#: GTG/plugins/notification_area/notification_area.py:123
 msgid "Add _New Task"
 msgstr "Добавяне на _Нова Задача"
+
+#: GTG/plugins/notification_area/notification_area.py:128
+msgid "_View Main Window"
+msgstr "_Преглед на Основния Прозорец"
 
 #: GTG/plugins/export/export_templates/description_textual.py:18
 msgid "Text-only"
@@ -706,27 +706,27 @@ msgstr ""
 msgid "notag"
 msgstr ""
 
-#: GTG/core/task.py:55
+#: GTG/core/task.py:53
 msgid "My new task"
 msgstr "Моята нова задача"
 
-#: GTG/core/task.py:164
+#: GTG/core/task.py:154
 msgid "tags"
 msgstr "етикети"
 
-#: GTG/core/task.py:164
+#: GTG/core/task.py:154
 msgid "tag"
 msgstr "етикет"
 
-#: GTG/core/task.py:169
+#: GTG/core/task.py:159
 msgid "defer"
 msgstr "отлагане"
 
-#: GTG/core/task.py:169
+#: GTG/core/task.py:159
 msgid "start"
 msgstr ""
 
-#: GTG/core/task.py:175
+#: GTG/core/task.py:165
 msgid "due"
 msgstr "срок"
 
@@ -739,7 +739,7 @@ msgstr "Всички задачи"
 msgid "Tasks with no tags"
 msgstr "Задачи без етикети"
 
-#: GTG/core/treefactory.py:102 GTG/gtk/browser/browser.py:1561
+#: GTG/core/treefactory.py:102 GTG/gtk/browser/browser.py:1495
 msgid "Search"
 msgstr ""
 
@@ -804,6 +804,10 @@ msgstr[1] "след %(days)d  дни"
 #: GTG/gtg.py:84
 msgid "gtg is already running!"
 msgstr "gtg вече е стартирана"
+
+#: GTG/info.py:33
+msgid "GTG is a personal organizer for the GNOME desktop environment."
+msgstr ""
 
 #: GTG/gtk/backends_dialog/parameters_ui/pathui.py:52
 msgid "Filename:"
@@ -950,38 +954,42 @@ msgid "Show description preview in the task list."
 msgstr ""
 
 #: GTG/gtk/preferences.glade.h:5
-msgid "Hide closed tasks older than "
+msgid "Show background colors of tasks"
 msgstr ""
 
 #: GTG/gtk/preferences.glade.h:6
+msgid "Hide closed tasks older than "
+msgstr ""
+
+#: GTG/gtk/preferences.glade.h:7
 msgid "<b>Task Browser</b>"
 msgstr "<b>Преглед на задачи</b>"
 
-#: GTG/gtk/preferences.glade.h:7
+#: GTG/gtk/preferences.glade.h:8
 msgid "Check spelling"
 msgstr "Проверка на провописа"
 
-#: GTG/gtk/preferences.glade.h:8
+#: GTG/gtk/preferences.glade.h:9
 msgid "<b>Task Editor</b>"
 msgstr "<b>Редактор на задачи</b>"
 
-#: GTG/gtk/preferences.glade.h:9
+#: GTG/gtk/preferences.glade.h:10
 msgid "General"
 msgstr ""
 
-#: GTG/gtk/preferences.glade.h:10
+#: GTG/gtk/preferences.glade.h:11
 msgid "Active _Plugins:"
 msgstr "_Включени приставки:"
 
-#: GTG/gtk/preferences.glade.h:11
+#: GTG/gtk/preferences.glade.h:12
 msgid "_About Plugin"
 msgstr "_Относно приставката"
 
-#: GTG/gtk/preferences.glade.h:12
+#: GTG/gtk/preferences.glade.h:13
 msgid "Plugins"
 msgstr "Приставки"
 
-#: GTG/gtk/preferences.glade.h:13
+#: GTG/gtk/preferences.glade.h:14
 msgid "<b>Dependencies</b>"
 msgstr "<b>Зависими</b>"
 
@@ -1064,7 +1072,7 @@ msgid "Continue"
 msgstr ""
 
 #: GTG/gtk/browser/treeview_factory.py:280
-#: GTG/gtk/browser/taskbrowser.glade.h:33
+#: GTG/gtk/browser/taskbrowser.glade.h:29
 msgid "Tags"
 msgstr "Етикети"
 
@@ -1084,22 +1092,22 @@ msgstr ""
 msgid "Title"
 msgstr "Заглавие"
 
-#: GTG/gtk/browser/browser.py:591
+#: GTG/gtk/browser/browser.py:576
 msgid "no active tasks"
 msgstr "няма активни задачи"
 
-#: GTG/gtk/browser/browser.py:593
+#: GTG/gtk/browser/browser.py:578
 #, python-format
 msgid "%(tasks)d active task"
 msgid_plural "%(tasks)d active tasks"
 msgstr[0] "%(tasks)d активна задача"
 msgstr[1] "%(tasks)d активни задачи"
 
-#: GTG/gtk/browser/browser.py:1559
+#: GTG/gtk/browser/browser.py:1493
 msgid "Add Task"
 msgstr ""
 
-#: GTG/gtk/browser/browser.py:1560
+#: GTG/gtk/browser/browser.py:1494
 msgid "Open Task"
 msgstr ""
 
@@ -1107,69 +1115,69 @@ msgstr ""
 msgid "NewTag"
 msgstr ""
 
-#: GTG/gtk/browser/__init__.py:35 GTG/gtk/browser/taskbrowser.glade.h:29
+#: GTG/gtk/browser/__init__.py:36 GTG/gtk/browser/taskbrowser.glade.h:25
 #: GTG/gtk/editor/__init__.py:31
 msgid "Mark as Done"
 msgstr "Изпълнена"
 
-#: GTG/gtk/browser/__init__.py:36
+#: GTG/gtk/browser/__init__.py:37
 msgid "Mark the selected task as done"
 msgstr "Маркиране на задачата като изпълнена"
 
-#: GTG/gtk/browser/__init__.py:37 GTG/gtk/editor/__init__.py:32
+#: GTG/gtk/browser/__init__.py:38 GTG/gtk/editor/__init__.py:32
 msgid "Mark as not Done"
 msgstr ""
 
-#: GTG/gtk/browser/__init__.py:38 GTG/gtk/browser/__init__.py:42
+#: GTG/gtk/browser/__init__.py:39 GTG/gtk/browser/__init__.py:43
 msgid "Mark the selected task as to be done"
 msgstr "Маркиране на задачата за изпълнение"
 
-#: GTG/gtk/browser/__init__.py:39 GTG/gtk/browser/taskbrowser.glade.h:30
+#: GTG/gtk/browser/__init__.py:40 GTG/gtk/browser/taskbrowser.glade.h:26
 #: GTG/gtk/editor/__init__.py:33 GTG/gtk/editor/taskeditor.glade.h:3
 msgid "Dismiss"
 msgstr "Отхвърляне"
 
-#: GTG/gtk/browser/__init__.py:40
+#: GTG/gtk/browser/__init__.py:41
 msgid "Mark the task as not to be done anymore"
 msgstr "Отхвърляне на задачата като неподлежаща на изпълнение"
 
-#: GTG/gtk/browser/__init__.py:41 GTG/gtk/editor/__init__.py:34
+#: GTG/gtk/browser/__init__.py:42 GTG/gtk/editor/__init__.py:34
 msgid "Undismiss"
 msgstr "Възстановяване"
 
-#: GTG/gtk/browser/__init__.py:43
+#: GTG/gtk/browser/__init__.py:44
 msgid "Permanently remove the selected task"
 msgstr "Окончателно изтриване на избраната задача"
 
-#: GTG/gtk/browser/__init__.py:44
+#: GTG/gtk/browser/__init__.py:45
 msgid "Edit the selected task"
 msgstr "Редактиране на избраната задача"
 
-#: GTG/gtk/browser/__init__.py:45 GTG/gtk/browser/taskbrowser.glade.h:4
+#: GTG/gtk/browser/__init__.py:46 GTG/gtk/browser/taskbrowser.glade.h:4
 msgid "Create a new task"
 msgstr "Създаване на задача"
 
-#: GTG/gtk/browser/__init__.py:46
+#: GTG/gtk/browser/__init__.py:47
 msgid "Create a new subtask"
 msgstr "Създаване на нова подзадача"
 
-#: GTG/gtk/browser/__init__.py:47
+#: GTG/gtk/browser/__init__.py:48
 msgid "Display only the currently actionable tasks"
 msgstr "Показване само на  действителен задачи в момента"
 
-#: GTG/gtk/browser/__init__.py:48
+#: GTG/gtk/browser/__init__.py:49
 msgid "Hide this tag from the workview"
 msgstr ""
 
-#: GTG/gtk/browser/__init__.py:49
+#: GTG/gtk/browser/__init__.py:50
 msgid "Show this tag in the workview"
 msgstr ""
 
-#: GTG/gtk/browser/__init__.py:50
+#: GTG/gtk/browser/__init__.py:51
 msgid "You can create, open or filter your tasks here"
 msgstr ""
 
-#: GTG/gtk/browser/__init__.py:51
+#: GTG/gtk/browser/__init__.py:52
 msgid "Clear"
 msgstr ""
 
@@ -1210,98 +1218,82 @@ msgid "_Work View"
 msgstr "_Работен изглед"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:11
-msgid "_Background Colors"
-msgstr "Цветове за фон"
-
-#: GTG/gtk/browser/taskbrowser.glade.h:12
 msgid "_Tags Sidebar"
 msgstr "_Странична лента с етикети"
 
-#: GTG/gtk/browser/taskbrowser.glade.h:13
+#: GTG/gtk/browser/taskbrowser.glade.h:12
 msgid "_Closed Tasks Pane"
 msgstr "Приключени задачи"
 
-#: GTG/gtk/browser/taskbrowser.glade.h:14
+#: GTG/gtk/browser/taskbrowser.glade.h:13
 msgid "T_oolbar"
 msgstr "Лента с _инструменти"
 
-#: GTG/gtk/browser/taskbrowser.glade.h:15
+#: GTG/gtk/browser/taskbrowser.glade.h:14
 msgid "_Quick Add Entry"
 msgstr "Поле за бързо добавяне"
 
-#: GTG/gtk/browser/taskbrowser.glade.h:16
+#: GTG/gtk/browser/taskbrowser.glade.h:15
 msgid "_Plugins"
 msgstr "_Приставки"
 
-#: GTG/gtk/browser/taskbrowser.glade.h:17
+#: GTG/gtk/browser/taskbrowser.glade.h:16
 msgid "_Help"
 msgstr "_Помощ"
 
-#: GTG/gtk/browser/taskbrowser.glade.h:18
-msgid "Get _Help Online"
-msgstr ""
-
-#: GTG/gtk/browser/taskbrowser.glade.h:19
+#: GTG/gtk/browser/taskbrowser.glade.h:17
 msgid "Open GTG documentation in your web browser"
 msgstr ""
 
-#: GTG/gtk/browser/taskbrowser.glade.h:20
-msgid "_Translate GTG"
-msgstr ""
-
-#: GTG/gtk/browser/taskbrowser.glade.h:21
+#: GTG/gtk/browser/taskbrowser.glade.h:18
 msgid "Help to translate GTG into your language"
 msgstr ""
 
-#: GTG/gtk/browser/taskbrowser.glade.h:22
-msgid "_Report a Problem"
-msgstr ""
-
-#: GTG/gtk/browser/taskbrowser.glade.h:23
+#: GTG/gtk/browser/taskbrowser.glade.h:19
 msgid "Report a problem to GTG developers"
 msgstr ""
 
-#: GTG/gtk/browser/taskbrowser.glade.h:24
+#: GTG/gtk/browser/taskbrowser.glade.h:20
 msgid "New Task"
 msgstr "Нова задача"
 
-#: GTG/gtk/browser/taskbrowser.glade.h:25
+#: GTG/gtk/browser/taskbrowser.glade.h:21
 msgid "New Subtask"
 msgstr "Нова подзадача"
 
-#: GTG/gtk/browser/taskbrowser.glade.h:26
+#: GTG/gtk/browser/taskbrowser.glade.h:22
 msgid "Edit"
 msgstr "Редактиране"
 
-#: GTG/gtk/browser/taskbrowser.glade.h:27
+#: GTG/gtk/browser/taskbrowser.glade.h:23
 msgid "Undo"
 msgstr "Отмяна"
 
-#: GTG/gtk/browser/taskbrowser.glade.h:28
+#: GTG/gtk/browser/taskbrowser.glade.h:24
 msgid "Redo"
 msgstr "Възстановяване"
 
-#: GTG/gtk/browser/taskbrowser.glade.h:31 GTG/gtk/editor/taskeditor.glade.h:4
+#: GTG/gtk/browser/taskbrowser.glade.h:27 GTG/gtk/editor/taskeditor.glade.h:4
 msgid "Delete"
 msgstr "Изтриване"
 
-#: GTG/gtk/browser/taskbrowser.glade.h:32
+#: GTG/gtk/browser/taskbrowser.glade.h:28
 msgid "Work View"
 msgstr "Работен изглед"
 
-#: GTG/gtk/browser/taskbrowser.glade.h:34
+#: GTG/gtk/browser/taskbrowser.glade.h:30
 msgid "Tasks"
 msgstr ""
 
-#: GTG/gtk/browser/taskbrowser.glade.h:35
+#: GTG/gtk/browser/taskbrowser.glade.h:31
 msgid "About GTG!"
 msgstr "Относно GTG!"
 
-#: GTG/gtk/browser/taskbrowser.glade.h:36
+#: GTG/gtk/browser/taskbrowser.glade.h:32
 msgid "Copyright © 2008-2012 Lionel Dricot, Bertrand Rousseau"
 msgstr ""
 
-#: GTG/gtk/browser/taskbrowser.glade.h:37
+#: GTG/gtk/browser/taskbrowser.glade.h:33
 msgid ""
 "\n"
 "Getting Things Gnome! is an organizer for the GNOME desktop environment."
@@ -1309,11 +1301,11 @@ msgstr ""
 "\n"
 "Getting Things Gnome! е организатор за работната среда GNOME."
 
-#: GTG/gtk/browser/taskbrowser.glade.h:39
+#: GTG/gtk/browser/taskbrowser.glade.h:35
 msgid "GTG website"
 msgstr "страницата на GTG в Интернет"
 
-#: GTG/gtk/browser/taskbrowser.glade.h:40
+#: GTG/gtk/browser/taskbrowser.glade.h:36
 msgid ""
 "Getting Things Gnome! is free software; you can redistribute it and/or "
 "modify it under the terms of the GNU General Public License as published by "
@@ -1342,71 +1334,67 @@ msgstr ""
 "Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, "
 "USA."
 
-#: GTG/gtk/browser/taskbrowser.glade.h:45
+#: GTG/gtk/browser/taskbrowser.glade.h:41
 msgid "Mark as Not Done"
 msgstr "Неизпълнена"
 
-#: GTG/gtk/browser/taskbrowser.glade.h:46
+#: GTG/gtk/browser/taskbrowser.glade.h:42
 msgid "Und_ismiss"
 msgstr "Активиране"
 
-#: GTG/gtk/browser/taskbrowser.glade.h:47
+#: GTG/gtk/browser/taskbrowser.glade.h:43
 msgid "t_oday"
 msgstr "д_нес"
 
-#: GTG/gtk/browser/taskbrowser.glade.h:48
+#: GTG/gtk/browser/taskbrowser.glade.h:44
 msgid "_tomorrow"
 msgstr "_ytre"
 
-#: GTG/gtk/browser/taskbrowser.glade.h:49
+#: GTG/gtk/browser/taskbrowser.glade.h:45
 msgid "next _week"
 msgstr "следващата _седмица"
 
-#: GTG/gtk/browser/taskbrowser.glade.h:50
+#: GTG/gtk/browser/taskbrowser.glade.h:46
 msgid "next _month"
 msgstr "следващия _месец"
 
-#: GTG/gtk/browser/taskbrowser.glade.h:51
+#: GTG/gtk/browser/taskbrowser.glade.h:47
 msgid "next _year"
 msgstr "следващата _година"
 
-#: GTG/gtk/browser/taskbrowser.glade.h:52
+#: GTG/gtk/browser/taskbrowser.glade.h:48
 msgid "_now"
 msgstr ""
 
-#: GTG/gtk/browser/taskbrowser.glade.h:53
+#: GTG/gtk/browser/taskbrowser.glade.h:49
 msgid "_soon"
 msgstr ""
 
-#: GTG/gtk/browser/taskbrowser.glade.h:54
+#: GTG/gtk/browser/taskbrowser.glade.h:50
 msgid "_someday"
 msgstr ""
 
-#: GTG/gtk/browser/taskbrowser.glade.h:55
+#: GTG/gtk/browser/taskbrowser.glade.h:51
 msgid "_clear due date"
 msgstr ""
 
-#: GTG/gtk/browser/taskbrowser.glade.h:56
+#: GTG/gtk/browser/taskbrowser.glade.h:52
 msgid "_clear start date"
 msgstr ""
 
-#: GTG/gtk/browser/taskbrowser.glade.h:57
-msgid "Reset Color"
-msgstr "Връщане на началния цвят"
-
-#: GTG/gtk/browser/taskbrowser.glade.h:58
+#: GTG/gtk/browser/taskbrowser.glade.h:53
 msgid "Add a subtask"
 msgstr "Добавяне на подзадача"
 
-#: GTG/gtk/browser/taskbrowser.glade.h:59
+#: GTG/gtk/browser/taskbrowser.glade.h:54
 msgid "_Set start date"
 msgstr ""
 
-#: GTG/gtk/browser/taskbrowser.glade.h:60
+#: GTG/gtk/browser/taskbrowser.glade.h:55
 msgid "Set due date"
 msgstr ""
 
-#: GTG/gtk/browser/taskbrowser.glade.h:61
+#: GTG/gtk/browser/taskbrowser.glade.h:56
 msgid "Modify Tags..."
 msgstr ""
 
@@ -1439,6 +1427,14 @@ msgstr ""
 #: GTG/gtk/browser/modifytags_dialog.glade.h:8
 msgid "Apply to subtasks"
 msgstr "Приложи към подзадачи"
+
+#: GTG/gtk/browser/tag_context_menu.py:44
+msgid "Set color..."
+msgstr ""
+
+#: GTG/gtk/browser/tag_context_menu.py:48
+msgid "Reset color"
+msgstr ""
 
 #: GTG/gtk/editor/editor.py:295
 #, python-format
@@ -1613,6 +1609,9 @@ msgstr ""
 
 #~ msgid "Later"
 #~ msgstr "По-късно"
+
+#~ msgid "_Background Colors"
+#~ msgstr "Цветове за фон"
 
 #~ msgid ""
 #~ "Once you've read the above subtask, mark it as Done. If you don't want to do "
@@ -1991,6 +1990,9 @@ msgstr ""
 
 #~ msgid "Keep as Note"
 #~ msgstr "Запазване като бележка"
+
+#~ msgid "Reset Color"
+#~ msgstr "Връщане на началния цвят"
 
 #~ msgid "Keep selected tasks"
 #~ msgstr "Запазване на избраните задачи"
