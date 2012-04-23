@@ -24,16 +24,16 @@ Created by:
   * João Ascenso, GSoC 2011
   * Izidor Matušov, Jan/Feb 2012
 
-You can search by entring a query in a simple language. Function parse_search_query()
-parse the query and return internal representation which is used for filtering
-in search_filter() function. If the query is malformed, the exception InvalidQuery is
-raised.
+You can search by entring a query in a simple language. Function
+parse_search_query() parse the query and return internal representation which
+is used for filtering in search_filter() function. If the query is malformed,
+the exception InvalidQuery is raised.
 
 The query language consists of several elements:
   * commands
     * !not <elem> -- the next element will be negated
-    * <elem> !or <elem> -- return True if the former or the later element are true
-    * !after <date> -- show tasks which could be done after this date 
+    * <elem> !or <elem> -- return True if at least on of elements is true
+    * !after <date> -- show tasks which could be done after this date
     * !before <date> -- show tasks which must be done before this date
     * !today -- show tasks with due_date == today
     * !tomorrow -- show tasks with due_date == tomorrow
@@ -44,8 +44,8 @@ The query language consists of several elements:
     * !notag -- show tasks without tags
   * tags -- show tasks with this tag
   * word -- show tasks which contains this word
-  * "literal" -- basically the same as word but allows the space and special charasters
-        inside. Literal must be inside "quotes".
+  * "literal" -- basically the same as word but allows the space and special
+        characters inside. Literal must be inside "quotes".
   * date -- date which could be parsed with Date.parse()
 
 Elements are supposed to be in conjuction, i.e. they are interpreted as
@@ -68,7 +68,8 @@ search_filter() expect parameter 'q' which is a list of commands in the form
 A special command is "or" which contains subcommands and returns Ture if
 at least one subcommand returns True.
 
-search_filter() could be easily plugged in Liblarch and filter only suitable tasks.
+search_filter() could be easily plugged in Liblarch and filter only suitable
+tasks.
 
 For more information see unittests:
   * GTG/tests/test_search_query.py -- parsing query
@@ -105,24 +106,28 @@ for key in KEYWORDS:
     KEYWORDS[key] = possible_words
 
 # Generate list of possible commands
-search_commands = []
-for keyword in KEYWORDS:
-    for command in KEYWORDS[keyword]:
-        command = '!' + command
-        if command not in search_commands:
-            search_commands.append(command)
+SEARCH_COMMANDS = []
+for key in KEYWORDS:
+    for key_command in KEYWORDS[key]:
+        key_command = '!' + key_command
+        if key_command not in SEARCH_COMMANDS:
+            SEARCH_COMMANDS.append(key_command)
+
 
 class InvalidQuery(Exception):
+    """ Exception which is raised during parsing of
+    search query if it is invalid """
     pass
 
 TOKENS_RE = re.compile(r"""
             (?P<command>!\S+(?=\s)?) |
             (?P<tag>@\S+(?=\s)?) |
             (?P<date>\d{4}-\d{2}-\d{2}|\d{8}|\d{4}) |
-            (?P<literal>".+?") | 
+            (?P<literal>".+?") |
             (?P<word>(?![!"@])\S+(?=\s)?) |
             (?P<space>(\s+))
             """, re.VERBOSE)
+
 
 def _tokenize_query(query):
     """ Split query into a sequence of tokens (type, value)
@@ -134,17 +139,18 @@ def _tokenize_query(query):
     """
     pos = 0
     while True:
-        m = TOKENS_RE.match(query, pos)
-        if not m: 
+        match = TOKENS_RE.match(query, pos)
+        if not match:
             break
-        pos = m.end()
-        token_type = m.lastgroup
-        token_value = m.group(token_type)
+        pos = match.end()
+        token_type = match.lastgroup
+        token_value = match.group(token_type)
         if token_type != 'space':
             yield token_type, token_value
     if pos != len(query):
         raise InvalidQuery('tokenizer stopped at pos %r of %r left of "%s"' % (
             pos, len(query), query[pos:pos+10]))
+
 
 def parse_search_query(query):
     """ Parse query into parameters for search filter
@@ -167,7 +173,8 @@ def parse_search_query(query):
 
         if require_date:
             if token not in ['date', 'word', 'literal']:
-                raise InvalidQuery("Unexpected token '%s' after '%s'" % (token, require_date))
+                raise InvalidQuery("Unexpected token '%s' after '%s'" % (
+                            token, require_date))
 
             value = value.strip('"')
             try:
@@ -193,7 +200,8 @@ def parse_search_query(query):
                         raise InvalidQuery("!or cann't follow !not")
 
                     if commands == []:
-                        raise InvalidQuery("Or is not allowed at the beginning of query")
+                        raise InvalidQuery( \
+                            "Or is not allowed at the beginning of query")
 
                     if commands[-1][0] != "or":
                         commands.append(("or", True, [commands.pop()]))
@@ -232,6 +240,7 @@ def parse_search_query(query):
 
     return {'q': commands}
 
+
 def search_filter(task, parameters=None):
     """ Check if task satisfies all search parameters """
 
@@ -239,8 +248,12 @@ def search_filter(task, parameters=None):
         return False
 
     def check_commands(commands_list):
-        # Check if contian values
+        """ Execute search commands
+
+        This method is recursive for !or and !and """
+
         def fulltext_search(task, word):
+            """ check if task contains the word """
             word = word.lower()
             text = task.get_excerpt(strip_tags=False).lower()
             title = task.get_title().lower()

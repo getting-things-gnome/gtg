@@ -35,7 +35,7 @@ import gtk
 from GTG import _, info, ngettext
 from GTG.backends.backendsignals import BackendSignals
 from GTG.core import CoreConfig
-from GTG.core.search import parse_search_query, search_commands, InvalidQuery
+from GTG.core.search import parse_search_query, SEARCH_COMMANDS, InvalidQuery
 from GTG.core.task import Task
 from GTG.gtk.tag_completion import TagCompletion
 from GTG.gtk.browser import GnomeConfig
@@ -1503,7 +1503,7 @@ class TaskBrowser(gobject.GObject):
             if tagname.startswith("@") :
                 self.search_complete_store.append([tagname])
 
-        for command in search_commands:
+        for command in SEARCH_COMMANDS:
             self.search_complete_store.append([command])
 
         self.search_completion.set_model(self.search_complete_store)
