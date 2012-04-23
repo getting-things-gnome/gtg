@@ -65,7 +65,14 @@ More information about liblarch: https://live.gnome.org/liblarch/""" % (
         return False
 
     import liblarch
-    if not liblarch.is_compatible(REQUIRED_LIBLARCH_API):
+    try:
+        is_liblarch_compatible = liblarch.is_compatible(REQUIRED_LIBLARCH_API)
+    except:
+        print """I could not recognize your liblarch module. Make sure that
+you don't have stale copies of liblarch in your import path
+"""
+        is_liblarch_compatible = False
+    if not is_liblarch_compatible:
         print """Your liblarch copy has its API at version %s
 but your GTG copy need liblarch API version %s
 You may fix that by downloading the last version of liblarch with
