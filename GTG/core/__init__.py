@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
 # Gettings Things Gnome! - a personal organizer for the GNOME desktop
-# Copyright (c) 2008-2009 - Lionel Dricot & Bertrand Rousseau
+# Copyright (c) 2008-2012 - Lionel Dricot & Bertrand Rousseau
 #
 # This program is free software: you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -16,6 +16,7 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
+
 """
 GTG's core functionality.
 
@@ -46,7 +47,7 @@ from GTG.tools.borg   import Borg
 
 DEFAULTS = {
 'browser': {
-            'bg_color_enable': False,
+            "bg_color_enable": True,
             "contents_preview_enable": False,
             'tag_pane': False,
             "sidebar_width": 120,
@@ -54,7 +55,6 @@ DEFAULTS = {
             'bottom_pane_position': 300,
             'toolbar': True,
             'quick_add': True,
-            "bg_color_enable": True,
             'collapsed_tasks': [],
             'collapsed_tags': [],
             'view': 'default',
@@ -107,7 +107,8 @@ class SubConfig():
             toreturn = self.__defaults[name]
             self.__conf[name] = toreturn
         else:
-            print "Warning : no default conf value for %s in %s" % (name, self.__name)
+            print "Warning : no default conf value for %s in %s" % (
+                name, self.__name)
             toreturn = None
         return toreturn
 
@@ -150,14 +151,12 @@ class CoreConfig(Borg):
         if not os.path.exists(self.data_dir):
             os.makedirs(self.data_dir)
         if not os.path.exists(self.conf_dir + self.CONF_FILE):
-            f = open(self.conf_dir + self.CONF_FILE, "w")
-            f.close()
+            open(self.conf_dir + self.CONF_FILE, "w").close()
         if not os.path.exists(self.conf_dir + self.TASK_CONF_FILE):
-            f = open(self.conf_dir + self.TASK_CONF_FILE, "w")
-            f.close()
-        for file in [self.conf_dir + self.CONF_FILE,
+            open(self.conf_dir + self.TASK_CONF_FILE, "w").close()
+        for conf_file in [self.conf_dir + self.CONF_FILE,
                      self.conf_dir + self.TASK_CONF_FILE]:
-            if not ((file, os.R_OK) and os.access(file, os.W_OK)):
+            if not os.access(conf_file, os.R_OK | os.W_OK):
                 raise Exception("File " + file + \
                             " is a configuration file for gtg, but it "
                             "cannot be read or written. Please check it")
@@ -175,9 +174,7 @@ class CoreConfig(Borg):
         return SubConfig(name, self.conf_dict[name])
 
     def get_icons_directories(self):
-        '''
-        Returns the directories containing the icons
-        '''
+        """ Returns the directories containing the icons """
         return [GTG.DATA_DIR, os.path.join(GTG.DATA_DIR, "icons")]
 
     def get_data_dir(self):
