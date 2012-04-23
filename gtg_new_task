@@ -27,6 +27,8 @@ import sys
 
 from optparse import OptionParser
 
+from GTG import _
+
 
 def new_task(title, body):
     """ Open a new task in GTG with given title and body """
@@ -40,7 +42,7 @@ def main():
     """ Parse arguments and create a new task """
     parser = OptionParser()
     parser.add_option('-i', '--interactive', action='store_true',
-      dest='interactive', help="Use input as the text of a new task",
+      dest='interactive', help=_("Use input as the text of a new task"),
       default=False)
     (options, args) = parser.parse_args()
 
