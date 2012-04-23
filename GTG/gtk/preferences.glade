@@ -115,7 +115,7 @@
                                     </child>
                                     <child>
                                       <object class="GtkCheckButton" id="bg_color_enable">
-                                        <property name="label" translatable="yes">Show background colors of tasks</property>
+                                        <property name="label" translatable="yes">Enable colored backgrounds in the task list</property>
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
                                         <property name="receives_default">False</property>
@@ -362,11 +362,11 @@
         <child internal-child="action_area">
           <object class="GtkHButtonBox" id="prefs-action_area">
             <property name="visible">True</property>
-            <property name="layout_style">edge</property>
+            <property name="layout_style">end</property>
             <child>
               <object class="GtkButton" id="prefs_help">
                 <property name="label">gtk-help</property>
-                <property name="visible">True</property>
+                <property name="no_show_all">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="use_stock">True</property>
