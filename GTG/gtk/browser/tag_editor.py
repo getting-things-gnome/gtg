@@ -25,6 +25,7 @@ import gtk
 
 from GTG import _
 from GTG.gtk.browser import GnomeConfig
+from GTG.gtk.browser.simple_color_selector import SimpleColorSelector
 
 class TagEditor(gtk.Window):
 
@@ -34,7 +35,7 @@ class TagEditor(gtk.Window):
         self.tag = tag
         # Build up the menu
         self.__build_window()
-#        self.set_tag(tag)
+        self.set_tag(tag)
         # Make it visible
         self.show_all()
 
@@ -54,6 +55,8 @@ class TagEditor(gtk.Window):
         # Button to tag icon selector
         self.ti_bt_img = gtk.Image()
         self.ti_bt = gtk.Button()
+        self.ti_bt_label = gtk.Label()
+        self.ti_bt.add(self.ti_bt_label)
         self.hdr_hbox.pack_start(self.ti_bt)
         self.ti_bt.set_size_request(64, 64)
         self.ti_bt.set_relief(gtk.RELIEF_HALF)
@@ -77,24 +80,24 @@ class TagEditor(gtk.Window):
             "<span weight='bold'>%s</span>" % _("Select Tag Color:"))
         self.tc_label.set_alignment(0, 0.5)
         # Tag color chooser
-        self.tc_cc_align = gtk.Alignment(0.5, 0.5)
+        self.tc_cc_align = gtk.Alignment(0.5, 0.5, 1, 1)
         self.tc_vbox.pack_start(self.tc_cc_align)
-        self.tc_cc_align.set_padding(15, 15, 0, 0)
-        self.tc_cc_align.add(gtk.Label('(insert awesome color picker here)'))
-        
+        self.tc_cc_align.set_padding(15, 15, 10, 10)
+        self.tc_cc_colsel = SimpleColorSelector()
+        self.tc_cc_align.add(self.tc_cc_colsel)
+
         # Set the callbacks
         self.ti_bt.connect('clicked', self.on_ti_bt_clicked)
         self.tn_entry.connect('changed', self.on_tn_entry_changed)
         self.tn_cb.connect('clicked', self.on_tn_cb_clicked)
-
+        self.tc_cc_colsel.connect('color-selected', self.on_tc_colsel_selected)
+        
     def __set_default_values(self):
         # Default icon
-        label = gtk.Label()
         markup = "<span size='small'>%s</span>" % _("Click To\nSet Icon")
-        label.set_justify(gtk.JUSTIFY_CENTER)
-        label.set_markup(markup)
-        self.ti_bt.add(label)
-        label.show()
+        self.ti_bt_label.set_justify(gtk.JUSTIFY_CENTER)
+        self.ti_bt_label.set_markup(markup)
+        self.ti_bt_label.show()
         # Show in WV
         self.tn_cb.set_active(True)
         # Name entry
@@ -124,7 +127,6 @@ class TagEditor(gtk.Window):
             # If available, update color selection
             if (tag.get_attribute('color') is not None):
               print "FIXME: GTG.gtk.browser.tag_editor: Colors are still not supported."
-            
 
     ### CALLBACKS ###
 
@@ -136,6 +138,12 @@ class TagEditor(gtk.Window):
 
     def on_tn_cb_clicked(self, widget):
         print "tn_cb says: \"you clicked me!\""
+
+    def on_tc_colsel_selected(self, widget, color):
+        print "You selected %s" % color
+
+#    def on_tc_cc_colsel_color_changed(self, widget):
+#        print "tc_cc_colsel says: \"you changed me!\""
 
 from GTG.core.tag import Tag
 
