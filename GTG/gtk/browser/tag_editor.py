@@ -22,6 +22,7 @@ import pygtk
 pygtk.require('2.0')
 import gobject
 import gtk
+import datetime
 
 from GTG import _
 from GTG.gtk.browser import GnomeConfig
@@ -33,6 +34,7 @@ class TagEditor(gtk.Window):
         self.__gobject_init__()
         self.req = req
         self.tag = tag
+        self.tn_cb_hdlr = None
         # Build up the menu
         self.__build_window()
         self.set_tag(tag)
@@ -55,6 +57,7 @@ class TagEditor(gtk.Window):
         # Button to tag icon selector
         self.ti_bt_img = gtk.Image()
         self.ti_bt = gtk.Button()
+        self.ti_bt.set_sensitive(False) # FIXME: implement icon selection
         self.ti_bt_label = gtk.Label()
         self.ti_bt.add(self.ti_bt_label)
         self.hdr_hbox.pack_start(self.ti_bt)
@@ -80,7 +83,7 @@ class TagEditor(gtk.Window):
             "<span weight='bold'>%s</span>" % _("Select Tag Color:"))
         self.tc_label.set_alignment(0, 0.5)
         # Tag color chooser
-        self.tc_cc_align = gtk.Alignment(0.5, 0.5, 1, 1)
+        self.tc_cc_align = gtk.Alignment(0.5, 0.5, 0, 0)
         self.tc_vbox.pack_start(self.tc_cc_align)
         self.tc_cc_align.set_padding(15, 15, 10, 10)
         self.tc_cc_colsel = SimpleColorSelector()
@@ -89,10 +92,13 @@ class TagEditor(gtk.Window):
         # Set the callbacks
         self.ti_bt.connect('clicked', self.on_ti_bt_clicked)
         self.tn_entry.connect('changed', self.on_tn_entry_changed)
-        self.tn_cb.connect('clicked', self.on_tn_cb_clicked)
+        self.tn_cb_hdlr = self.tn_cb.connect('clicked', self.on_tn_cb_clicked)
         self.tc_cc_colsel.connect('color-selected', self.on_tc_colsel_selected)
         
     def __set_default_values(self):
+        # Setting the default value can provoke unwanted changes to the related
+        # tag if the checkbutton callback is not blocked 
+        self.tn_cb.handler_block(self.tn_cb_hdlr)
         # Default icon
         markup = "<span size='small'>%s</span>" % _("Click To\nSet Icon")
         self.ti_bt_label.set_justify(gtk.JUSTIFY_CENTER)
@@ -104,6 +110,8 @@ class TagEditor(gtk.Window):
         self.tn_entry.set_text(_("Enter tag name here"))
         # Focus
         self.tn_entry.grab_focus()
+        # Re-enable checkbutton handler_block
+        self.tn_cb.handler_unblock(self.tn_cb_hdlr)
 
     ### PUBLIC API ###
 
@@ -117,42 +125,37 @@ class TagEditor(gtk.Window):
         else:
             self.tag = tag
             # Update entry
-            self.tn_entry.set_text(tag.get_name())
+            name = tag.get_name()[1:]
+            self.tn_entry.set_text(name)
             # Update visibility in Work View
             s_hidden_in_wv = (self.tag.get_attribute("nonworkview") == "True")
             self.tn_cb.set_active(not s_hidden_in_wv)
             # If available, update icon
             if (tag.get_attribute('icon') is not None):
-              print "FIXME: GTG.gtk.browser.tag_editor: Icons are still not supported."
+                print "FIXME: GTG.gtk.browser.tag_editor: Icon setup is still not supported."
             # If available, update color selection
             if (tag.get_attribute('color') is not None):
-              print "FIXME: GTG.gtk.browser.tag_editor: Colors are still not supported."
+                col = tag.get_attribute('color')
+                self.tc_cc_colsel.set_selected_color(col)
 
     ### CALLBACKS ###
 
     def on_ti_bt_clicked(self, widget):
-        print "ti_bt says: \"you clicked me!\""
+        print "FIXME: GTG.gtk.browser.tag_editor: Icons selection is still not supported."
 
     def on_tn_entry_changed(self, widget):
-        print "tn_entry says: \"you changed me!\""
+          print "FIXME: GTG.gtk.browser.tag_editor: tag renaming is disabled since we should rather wait that user has stopped writing before commiting changes."
+#        oldname = self.tag.get_name()
+#        newname = "@%s" % self.tn_entry.get_text()
+#        self.req.rename_tag(oldname, newname)
 
     def on_tn_cb_clicked(self, widget):
-        print "tn_cb says: \"you clicked me!\""
+        if self.tag is not None:
+            show_in_wv = self.tn_cb.get_active()
+            hide_in_wv = not show_in_wv
+            self.tag.set_attribute('nonworkview', str(hide_in_wv))
 
     def on_tc_colsel_selected(self, widget, color):
-        print "You selected %s" % color
+        if self.tag is not None:
+            self.tag.set_attribute('color', color)
 
-#    def on_tc_cc_colsel_color_changed(self, widget):
-#        print "tc_cc_colsel says: \"you changed me!\""
-
-from GTG.core.tag import Tag
-
-te = TagEditor(None)
-te.show()
-t = None
-#t = Tag("Test", None)
-#t.set_attribute("nonworkview", "True")
-#t.set_attribute("color", "#003366")
-#t.set_attribute("icon", "prout")
-te.set_tag(t)
-gtk.main()

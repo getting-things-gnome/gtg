@@ -25,6 +25,7 @@ import gtk
 
 from GTG import _
 from GTG.gtk.browser import GnomeConfig
+from GTG.gtk.browser.tag_editor import TagEditor
 
 class TagContextMenu(gtk.Menu):
 
@@ -92,23 +93,8 @@ class TagContextMenu(gtk.Menu):
         self.tag.set_attribute("nonworkview", str(is_hidden_in_wv))
 
     def on_mi_cc_activate(self, widget):
-        color_dialog = gtk.ColorSelectionDialog('Choose color')
-        colorsel = color_dialog.colorsel
-
-        # Get previous color
-        color = self.tag.get_attribute("color")
-        if color is not None:
-            colorspec = gtk.gdk.color_parse(color)
-            colorsel.set_previous_color(colorspec)
-            colorsel.set_current_color(colorspec)
-        response = color_dialog.run()
-        new_color = colorsel.get_current_color()
-        
-        # Check response_id and set color if required
-        if response == gtk.RESPONSE_OK and new_color:
-            strcolor = gtk.color_selection_palette_to_string([new_color])
-            self.tag.set_attribute("color", strcolor)
-        color_dialog.destroy()
+          tag_editor = TagEditor(self.req, self.tag)
+          tag_editor.show()
 
     def on_mi_rc_activate(self, widget):
         """
