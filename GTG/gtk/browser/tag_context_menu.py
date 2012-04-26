@@ -42,63 +42,20 @@ class TagContextMenu(gtk.Menu):
     def __build_menu(self):
         # Color chooser FIXME: SHOULD BECOME A COLOR PICKER
         self.mi_cc = gtk.MenuItem()
-        self.mi_cc.set_label(_("Set color..."))
+        self.mi_cc.set_label(_("Edit"))
         self.append(self.mi_cc)
-        # Reset color
-        self.mi_rc = gtk.MenuItem()
-        self.mi_rc.set_label(_("Reset color"))
-        self.append(self.mi_rc)
-        # Don't display in work view mode
-        self.mi_wv = gtk.CheckMenuItem()
-        self.mi_wv.set_label(GnomeConfig.TAG_IN_WORKVIEW_TOGG)
-        self.append(self.mi_wv)
         # Set the callbacks
         self.mi_cc.connect('activate', self.on_mi_cc_activate)
-        self.mi_rc.connect('activate', self.on_mi_rc_activate)
-        self.mi_wv_toggle_hid = self.mi_wv.connect('activate', self.on_mi_wv_activate)
-
-    def __set_default_values(self):
-        # Don't set "Hide in workview" as active
-        self.mi_wv.set_active(False)
-
-    def __disable_all(self):
-        pass
-
-    def __enable_all(self):
-        pass
 
     ### PUBLIC API ###
 
     def set_tag(self, tag):
         """Update the context menu items using the tag attributes."""
-        # set_active emit the 'toggle' signal, so we have to disable the handler
-        # when we update programmatically
-        self.mi_wv.handler_block(self.mi_wv_toggle_hid)
-        if tag is None:
-            self.tag = None
-            self.__set_default_values()
-            self.__disable_all()
-        else:
-            self.tag = tag
-            self.__enable_all()
-            is_hidden_in_wv = (self.tag.get_attribute("nonworkview") == "True")
-            self.mi_wv.set_active(is_hidden_in_wv)
-        self.mi_wv.handler_unblock(self.mi_wv_toggle_hid)
+        self.tag = tag
 
     ### CALLBACKS ###
-
-    def on_mi_wv_activate(self, widget):
-        """Toggle the nonworkview attribute of the tag, update the view"""
-        is_hidden_in_wv = not (self.tag.get_attribute("nonworkview") == "True")
-        self.tag.set_attribute("nonworkview", str(is_hidden_in_wv))
 
     def on_mi_cc_activate(self, widget):
           tag_editor = TagEditor(self.req, self.tag)
           tag_editor.show()
-
-    def on_mi_rc_activate(self, widget):
-        """
-        handler for the right click popup menu item from tag tree, when its a @tag
-        """
-        self.tag.del_attribute("color")
 
