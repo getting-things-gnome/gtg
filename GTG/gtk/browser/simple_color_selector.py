@@ -31,10 +31,9 @@ from GTG.gtk.browser import GnomeConfig
 #FIXME: rearrange colors by neighbouring tone
 #FIXME: use a more saturated palette
 DEFAULT_PALETTE = [
-  ["#EF2929", "#AD7FA8", "#729FCF", "#8AE234", "#E9B96E", "#FCAF3E", "#FCE94F"],
-#  ["#CC0000", "#75507B", "#3465A4", "#73D216", "#C17D11", "#F57900", "#EDD400"],
-  ["#A40000", "#5C3566", "#204A87", "#4E9A06", "#8F5902", "#CE5C00", "#C4A000"],
-  ["#FFFFFF", "#D3D7CF", "#BABDB6", "#888A85", "#555753", "#2E3436", "#000000"],
+  ["#EF2929", "#AD7FA8", "#729FCF", "#8AE234", "#E9B96E", "#FCAF3E", "#FCE94F", "#EEEEEC", "#888A85"],
+  ["#CC0000", "#75507B", "#3465A4", "#73D216", "#C17D11", "#F57900", "#EDD400", "#D3D7CF", "#555753"],
+  ["#A40000", "#5C3566", "#204A87", "#4E9A06", "#8F5902", "#CE5C00", "#C4A000", "#BABDB6", "#2E3436"],
 ]
 
 class SimpleColorSelectorPaletteItem(gtk.DrawingArea):
@@ -104,7 +103,7 @@ class SimpleColorSelectorPalette(gtk.VBox):
     BUTTON_WIDTH  = 36
     BUTTON_HEIGHT = 24
 
-    def __init__(self, width=7, height=3):
+    def __init__(self, width=9, height=3):
         self.__gobject_init__()
         self.width = width
         self.height = height

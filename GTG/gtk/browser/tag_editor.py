@@ -42,6 +42,7 @@ class TagEditor(gtk.Window):
         self.show_all()
 
     def __build_window(self):
+        self.set_position(gtk.WIN_POS_CENTER)
         self.set_border_width(10)
         self.set_resizable(False)
         # toplevel widget
@@ -67,6 +68,7 @@ class TagEditor(gtk.Window):
         self.tp_vbox = gtk.VBox()
         self.hdr_hbox.pack_start(self.tp_vbox)
         self.tn_entry = gtk.Entry()
+        self.tn_entry.set_sensitive(False) # FIXME: implement proper tag renaming + event filtering
         self.tn_entry.set_width_chars(20)
         self.tp_vbox.pack_start(self.tn_entry)
         self.tn_cb = gtk.CheckButton(_("Show Tag in Work View"))

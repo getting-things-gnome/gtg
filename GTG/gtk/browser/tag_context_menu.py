@@ -42,7 +42,7 @@ class TagContextMenu(gtk.Menu):
     def __build_menu(self):
         # Color chooser FIXME: SHOULD BECOME A COLOR PICKER
         self.mi_cc = gtk.MenuItem()
-        self.mi_cc.set_label(_("Edit"))
+        self.mi_cc.set_label(_("Edit Tag..."))
         self.append(self.mi_cc)
         # Set the callbacks
         self.mi_cc.connect('activate', self.on_mi_cc_activate)
