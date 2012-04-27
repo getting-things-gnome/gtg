@@ -36,6 +36,9 @@ DEFAULT_PALETTE = [
   ["#A40000", "#5C3566", "#204A87", "#4E9A06", "#8F5902", "#CE5C00", "#C4A000", "#BABDB6", "#2E3436"],
 ]
 
+BUTTON_WIDTH  = 36
+BUTTON_HEIGHT = 24
+
 class SimpleColorSelectorPaletteItem(gtk.DrawingArea):
 
     def __init__(self, color="#FFFFFF"):
@@ -97,11 +100,10 @@ class SimpleColorSelectorPaletteItem(gtk.DrawingArea):
         self.selected = sel
         self.queue_draw()
 
+    def get_selected(self):
+        return self.selected
 
 class SimpleColorSelectorPalette(gtk.VBox):
-
-    BUTTON_WIDTH  = 36
-    BUTTON_HEIGHT = 24
 
     def __init__(self, width=9, height=3):
         self.__gobject_init__()
@@ -124,7 +126,7 @@ class SimpleColorSelectorPalette(gtk.VBox):
             for j in xrange(self.width):
                 img = SimpleColorSelectorPaletteItem()
                 img.set_size_request( \
-                    self.BUTTON_WIDTH, self.BUTTON_HEIGHT)
+                    BUTTON_WIDTH, BUTTON_HEIGHT)
                 img.set_color(self.palette[i][j])
                 img.connect("button-press-event", self.on_color_clicked)
                 self.buttons[self.palette[i][j]] = img
@@ -150,7 +152,13 @@ class SimpleColorSelectorPalette(gtk.VBox):
     def has_color(self, col):
         return col in self.buttons.keys()
 
-    def set_selected_color(self, col):
+    def get_color_selected(self, col):
+        if self.has_color(col):
+            return self.buttons[col].get_selected()
+        else:
+            return None
+
+    def set_color_selected(self, col):
         if self.has_color(col):
             self.buttons[col].set_selected(True)
             self.selected_col = self.buttons[col]
@@ -166,11 +174,112 @@ gobject.signal_new("color-clicked", SimpleColorSelectorPalette,
                    gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_STRING,))
 
 
+class SimpleColorSelectorPaletteCustom(gtk.VBox):
+
+    def __init__(self, width=9, height=1):
+        self.__gobject_init__()
+        self.width = width
+        self.height = height
+        self.colors = []
+        self.buttons = {}
+        self.selected_col = None
+        # Build up the widget
+        self.__build_widget()
+        # Make it visible
+        self.show_all()
+
+    def __build_widget(self):
+        col_count = 0
+        # Draw the palette
+        self.set_spacing(4)
+        for i in xrange(self.height):
+            if col_count > len(self.colors)-1 or color_count > self.width:
+                break
+            cur_hbox = gtk.HBox()
+            cur_hbox.set_spacing(4)
+            for j in xrange(self.width):
+                if col_count > len(self.colors)-1 or color_count > self.width:
+                    break
+                img = SimpleColorSelectorPaletteItem()
+                img.set_size_request( \
+                    BUTTON_WIDTH, BUTTON_HEIGHT)
+                img.set_color(self.colors[col_count])
+                img.connect("button-press-event", self.on_color_clicked)
+                self.buttons[self.colors[col_count]] = img
+                cur_hbox.pack_start(img, expand=False, fill=False)
+                col_count = col_count + 1
+            self.pack_start(cur_hbox)
+        # Draw the add button
+        self.add_button = gtk.Button(_('Add'))
+        self.add_button.connect("clicked", self.on_color_add)
+        self.pack_start(self.add_button)
+
+    # Handlers
+    def on_color_clicked(self, widget, event):
+        # if re-click: unselect
+        if self.selected_col == widget:
+            self.selected_col.set_selected(False)
+            self.selected_col = None
+        else:
+            # if previous selection: unselect
+            if self.selected_col is not None:
+                self.selected_col.set_selected(False)
+            self.selected_col = widget
+            self.selected_col.set_selected(True)
+        self.emit("color-clicked", widget.color)
+
+    def on_color_add(self, widget):
+        color_dialog = gtk.ColorSelectionDialog(_('Choose a color'))
+        colorsel = color_dialog.colorsel
+        response = color_dialog.run()
+        new_color = colorsel.get_current_color()
+        # Check response_id and set color if required
+        if response == gtk.RESPONSE_OK and new_color:
+            strcolor = gtk.color_selection_palette_to_string([new_color])
+            # Add the color to the palette and notify
+            print "FIXME: update custom palette"
+            self.emit("color-added")
+            # Select the new colro and notify
+            print "FIXME: slect the color in the custom palette"
+            self.selected_col = strcolor
+            self.emit("color-clicked", self.selected_col)
+        # Clean up
+        color_dialog.destroy()
+
+    # public IF
+
+    def has_color(self, col):
+        return col in self.buttons.keys()
+
+    def get_color_selected(self, col):
+        if self.has_color(col):
+            return self.buttons[col].get_selected()
+        else:
+            return None
+
+    def set_color_selected(self, col):
+        if self.has_color(col):
+            self.buttons[col].set_selected(True)
+            self.selected_col = self.buttons[col]
+
+    def unselect_color(self):
+        if self.selected_col is not None:
+            self.selected_col.set_selected(False)
+            self.selected_col = None
+
+
+gobject.type_register(SimpleColorSelectorPaletteCustom)
+gobject.signal_new("color-clicked", SimpleColorSelectorPaletteCustom,
+                   gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_STRING,))
+gobject.signal_new("color-added", SimpleColorSelectorPaletteCustom,
+                   gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, ())
+
 class SimpleColorSelector(gtk.VBox):
 
     def __init__(self):
         self.__gobject_init__()
         self.sel_color = None
+        self.custom_colors = []
         # Build up the menu
         self.__build_widget()
         # Make it visible
@@ -179,49 +288,62 @@ class SimpleColorSelector(gtk.VBox):
     def __build_widget(self):
         self.set_spacing(10)
         self.colsel_pal = SimpleColorSelectorPalette()
-        self.colsel_pal.connect("color-clicked", self.on_pal_color_selected)
+        self.colsel_pal.connect("color-clicked", self.on_colsel_pal_color_clicked)
         self.pack_start(self.colsel_pal)
-        self.colsel_cust = gtk.Button(_("Select A Custom Color"))
-        self.colsel_cust.connect("clicked", self.on_cust_color_selected)
-        self.pack_start(self.colsel_cust)
+        self.colsel_custcol = SimpleColorSelectorPaletteCustom()
+        self.colsel_custcol.connect("color-clicked", self.on_colsel_custcol_color_clicked)
+        self.colsel_custcol.connect("color-added", self.on_colsel_custcol_color_added)
+        self.pack_start(self.colsel_custcol)
 
     ### handlers ###
-    def on_pal_color_selected(self, widget, color):
-        self.sel_color = color
-        self.emit("color-selected", self.sel_color)
+    def on_colsel_pal_color_clicked(self, widget, color):
+        # if we click on the palette, we can unselect a potentially slected
+        # custom color
+        self.colsel_custcol.unselect_color()
+        # Determine if it's a selection or an de-selection
+        if self.colsel_pal.get_color_selected(color) == True:
+            self.sel_color = color
+            self.emit("color-defined")
+        else:
+            self.sel_color = None
+            self.emit("color-defined")
 
-    def on_cust_color_selected(self, widget):
+    def on_colsel_custcol_color_clicked(self, widget, color):
+        # if we click on the custom colors, we can unselect a potentially slctd
+        # palette color
         self.colsel_pal.unselect_color()
-        color_dialog = gtk.ColorSelectionDialog(_('Choose a color'))
-        colorsel = color_dialog.colorsel
-        # Get previous color
-        color = self.sel_color
-        if color is not None:
-            colorspec = gtk.gdk.color_parse(color)
-            colorsel.set_previous_color(colorspec)
-            colorsel.set_current_color(colorspec)
-        response = color_dialog.run()
-        new_color = colorsel.get_current_color()
-        # Check response_id and set color if required
-        if response == gtk.RESPONSE_OK and new_color:
-            strcolor = gtk.color_selection_palette_to_string([new_color])
-            # Save the change and notify
-            self.sel_color = strcolor
-            self.emit("color-selected", self.sel_color)
-        # Clean up
-        color_dialog.destroy()
+        # Determine if it's a selection or an de-selection
+        if self.colsel_custcol.get_color_selected(color) == True:
+            self.sel_color = color
+        else:
+            self.sel_color = None
+            self.emit("color-defined")
+
+    def on_colsel_custcol_color_added(self, widget):
+        self.emit("color-added")
 
     ### public API ###
 
     def set_selected_color(self, col):
         self.sel_color = col
         if self.colsel_pal.has_color(col):
-            self.colsel_pal.set_selected_color(col)
+            self.colsel_pal.set_color_selected(col)
         else:
             # insert as custom color
-            pass
+            print "FIXME: add custom color to custom color palette"
 
+    def get_selected_color(self):
+        return self.sel_color
+
+    def set_custom_colors(self, col_lst):
+        print "FIXME: custom color definition not implement yet"
+
+    def get_custom_colors(self):
+        return self.custom_colors
 
 gobject.type_register(SimpleColorSelector)
-gobject.signal_new("color-selected", SimpleColorSelector,
-                   gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_STRING,))
+gobject.signal_new("color-defined", SimpleColorSelector,
+                   gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, ())
+gobject.signal_new("color-added", SimpleColorSelector,
+                   gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, ())
+

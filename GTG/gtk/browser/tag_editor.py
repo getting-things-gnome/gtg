@@ -34,7 +34,9 @@ class TagEditor(gtk.Window):
         self.__gobject_init__()
         self.req = req
         self.tag = tag
+        self.config = self.req.get_config('tag_editor')
         self.tn_cb_hdlr = None
+        self.custom_colors = None
         # Build up the menu
         self.__build_window()
         self.set_tag(tag)
@@ -95,7 +97,8 @@ class TagEditor(gtk.Window):
         self.ti_bt.connect('clicked', self.on_ti_bt_clicked)
         self.tn_entry.connect('changed', self.on_tn_entry_changed)
         self.tn_cb_hdlr = self.tn_cb.connect('clicked', self.on_tn_cb_clicked)
-        self.tc_cc_colsel.connect('color-selected', self.on_tc_colsel_selected)
+        self.tc_cc_colsel.connect('color-defined', self.on_tc_colsel_defined)
+        self.tc_cc_colsel.connect('color-added', self.on_tc_colsel_added)
         
     def __set_default_values(self):
         # Setting the default value can provoke unwanted changes to the related
@@ -110,6 +113,10 @@ class TagEditor(gtk.Window):
         self.tn_cb.set_active(True)
         # Name entry
         self.tn_entry.set_text(_("Enter tag name here"))
+        # Custom colors
+        self.custom_colors = self.config.get('custom_colors')
+        if len(self.custom_colors) > 0:
+            self.tc_cc_colsel.set_custom_colors(self.custom_colors)
         # Focus
         self.tn_entry.grab_focus()
         # Re-enable checkbutton handler_block
@@ -157,7 +164,16 @@ class TagEditor(gtk.Window):
             hide_in_wv = not show_in_wv
             self.tag.set_attribute('nonworkview', str(hide_in_wv))
 
-    def on_tc_colsel_selected(self, widget, color):
+    def on_tc_colsel_defined(self, widget):
+        color = self.tc_cc_colsel.get_selected_color()
         if self.tag is not None:
-            self.tag.set_attribute('color', color)
+            if color is not None:
+                self.tag.set_attribute('color', color)
+            else:
+                self.tag.del_attribute('color')
 
+    def on_tc_colsel_added(self, widget):
+        self.custom_colors = self.tc_cc_colsel.get_custom_colors()
+        print "Custom colors = %s" % str(self.custom_colors)
+        self.config.set('custom_colors', self.custom_colors)
+        self.req.save_config()

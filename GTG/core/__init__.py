@@ -66,6 +66,9 @@ DEFAULTS = {
             'y_pos': 10,
             'tasklist_sort_column': 5,
             'tasklist_sort_order': 1,
+            },
+'tag_editor': {
+            "custom_colors" : []
             }
 }
 
