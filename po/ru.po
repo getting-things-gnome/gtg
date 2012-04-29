@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2012-04-22 17:25+0200\n"
-"PO-Revision-Date: 2012-04-07 09:27+0000\n"
+"PO-Revision-Date: 2012-04-28 16:50+0000\n"
 "Last-Translator: DmDr <cardioexp@gmail.com>\n"
 "Language-Team: Russian <ru@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -16,8 +16,8 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Launchpad-Export-Date: 2012-04-23 04:48+0000\n"
-"X-Generator: Launchpad (build 15135)\n"
+"X-Launchpad-Export-Date: 2012-04-29 04:46+0000\n"
+"X-Generator: Launchpad (build 15149)\n"
 
 #: GTG/plugins/notification_area/notification_area.py:123
 msgid "Add _New Task"
@@ -935,7 +935,7 @@ msgstr "gtg уже запущена!"
 
 #: GTG/info.py:33
 msgid "GTG is a personal organizer for the GNOME desktop environment."
-msgstr ""
+msgstr "GTG - планировщик (органайзер) для рабочего окружения GNOME."
 
 #: GTG/gtk/backends_dialog/parameters_ui/pathui.py:52
 msgid "Filename:"
@@ -1087,7 +1087,7 @@ msgstr "Показать краткое описание в списке зад�
 
 #: GTG/gtk/preferences.glade.h:5
 msgid "Show background colors of tasks"
-msgstr ""
+msgstr "Показать цветные метки задач"
 
 #: GTG/gtk/preferences.glade.h:6
 msgid "Hide closed tasks older than "
@@ -1579,11 +1579,11 @@ msgstr "Применить к подзадачам"
 
 #: GTG/gtk/browser/tag_context_menu.py:44
 msgid "Set color..."
-msgstr ""
+msgstr "Установить цвет..."
 
 #: GTG/gtk/browser/tag_context_menu.py:48
 msgid "Reset color"
-msgstr ""
+msgstr "Сбросить цвет"
 
 #: GTG/gtk/editor/editor.py:295
 #, python-format
