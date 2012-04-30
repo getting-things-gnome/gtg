@@ -25,7 +25,6 @@ import sys
 from optparse import OptionParser
 from gtk.gdk import Screen
 
-from GTG import gtg
 from GTG import info
 from GTG.tools.import_liblarch import import_liblarch
 
@@ -66,6 +65,7 @@ def main():
         sys.exit(1)
 
     elif import_liblarch():
+        from GTG import gtg
         sys.exit(gtg.main(options, args))
 
 if __name__ == "__main__":
