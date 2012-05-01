@@ -77,7 +77,7 @@ class TagIconSelector(gtk.Window): # pylint: disable-msg=R0904
         self.symbol_iv.connect("selection-changed", self.on_selection_changed)
         self.remove_bt.connect("clicked", self.on_remove_bt_clicked)
 
-    def __focus_out(self):
+    def __focus_out(self, widget, event): # pylint: disable-msg=W0613
         """Hides the window if the user clicks out of it"""
         win_ptr = self.window.get_pointer() # pylint: disable-msg=E1101
         win_size = self.get_size()
