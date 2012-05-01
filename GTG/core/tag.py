@@ -187,5 +187,4 @@ class Tag(TreeNode):
 
 class Set_Name_Attribute_Error(Exception):
     """Exception raised when try to set attribute to name"""
-    def __init__(self, *args, **kwargs):
-        super(Set_Name_Attribute_Error, self).__init__(*args, **kwargs)
+    pass
