@@ -47,8 +47,8 @@ class TagIconSelector(gtk.Window): # pylint: disable-msg=R0904
     HEIGHT = 200
 
     def __init__(self):
-        gtk.Window.__init__(self)
         self.__gobject_init__(type=gtk.WINDOW_POPUP)
+        gtk.Window.__init__(self)
         self.loaded = False
         self.selected_icon = None
         self.symbol_model = None
