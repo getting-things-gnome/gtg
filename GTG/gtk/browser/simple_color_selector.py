@@ -23,10 +23,8 @@ pygtk.require('2.0')
 import gobject
 import gtk
 import math
-import cairo
 
 from GTG import _
-from GTG.gtk.browser import GnomeConfig
 
 DEFAULT_PALETTE = [
   "#EF2929", "#AD7FA8", "#729FCF", "#8AE234", "#E9B96E", "#FCAF3E", "#FCE94F", "#EEEEEC", "#888A85",

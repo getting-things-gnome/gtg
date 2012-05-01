@@ -20,11 +20,9 @@
 
 import pygtk
 pygtk.require('2.0')
-import gobject
 import gtk
 
 from GTG import _
-from GTG.gtk.browser import GnomeConfig
 
 
 class TagContextMenu(gtk.Menu):

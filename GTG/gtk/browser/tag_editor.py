@@ -23,10 +23,8 @@ pygtk.require('2.0')
 import gobject
 import gtk.gdk as gdk
 import gtk
-import datetime
 
 from GTG import _
-from GTG.gtk.browser import GnomeConfig
 from GTG.gtk.browser.simple_color_selector import SimpleColorSelector
 
 class TagIconSelector(gtk.Window):
@@ -87,6 +85,7 @@ class TagIconSelector(gtk.Window):
         else:
             self.selected_icon = None
         self.emit('selection-changed')
+        self.close_selector()
 
     def on_remove_bt_clicked(self, widget):
         self.selected_icon = None
