@@ -68,7 +68,7 @@ class TagIconSelector(gtk.Window):
             self.close_selector()
 
     def __load_icon(self):
-        self.symbol_model = gtk.ListStore (gtk.gdk.Pixbuf, str)
+        self.symbol_model = gtk.ListStore(gtk.gdk.Pixbuf, str)
         for icon in gtk.icon_theme_get_default().list_icons(context="Emblems"):
             img = gtk.icon_theme_get_default().load_icon(icon, 16, 0)
             self.symbol_model.append([img, icon])

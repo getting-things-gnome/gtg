@@ -56,4 +56,3 @@ class TagContextMenu(gtk.Menu):
 
     def on_mi_cc_activate(self, widget):
         self.vmanager.open_tag_editor(self.tag)
-

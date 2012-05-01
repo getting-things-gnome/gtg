@@ -154,7 +154,7 @@ class SimpleColorSelectorPalette(gtk.VBox):
     def __prepend_color(self, col):
         self.colors.insert(0, col)
         if len(self.colors) > self.width:
-          self.colors.pop()
+            self.colors.pop()
 
     # Handlers
     def on_color_clicked(self, widget, event):
@@ -308,4 +308,3 @@ gobject.signal_new("color-defined", SimpleColorSelector,
                    gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, ())
 gobject.signal_new("color-added", SimpleColorSelector,
                    gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, ())
-
