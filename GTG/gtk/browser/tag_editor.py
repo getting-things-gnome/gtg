@@ -114,7 +114,7 @@ class TagEditor(gtk.Window):
         # Name entry
         self.tn_entry.set_text(_("Enter tag name here"))
         # Custom colors
-        self.custom_colors = self.config.get('custom_colors')
+        self.custom_colors = list(self.config.get('custom_colors'))
         if len(self.custom_colors) > 0:
             self.tc_cc_colsel.set_custom_colors(self.custom_colors)
         # Focus
@@ -174,6 +174,5 @@ class TagEditor(gtk.Window):
 
     def on_tc_colsel_added(self, widget):
         self.custom_colors = self.tc_cc_colsel.get_custom_colors()
-        print "Custom colors = %s" % str(self.custom_colors)
-        self.config.set('custom_colors', self.custom_colors)
+        self.config.set_lst("custom_colors", [s for s in self.custom_colors])
         self.req.save_config()

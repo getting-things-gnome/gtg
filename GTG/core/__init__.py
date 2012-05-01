@@ -120,6 +120,10 @@ class SubConfig():
         # Save immediately
         self.__conf.parent.write()
 
+    def set_lst(self, name, value_lst):
+        self.__conf[name] = [ str(s) for s in value_lst]
+        # Save immediately
+        self.__conf.parent.write()
 
 class CoreConfig(Borg):
     #The projects and tasks are of course DATA !

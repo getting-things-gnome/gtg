@@ -31,9 +31,9 @@ from GTG.gtk.browser import GnomeConfig
 #FIXME: rearrange colors by neighbouring tone
 #FIXME: use a more saturated palette
 DEFAULT_PALETTE = [
-  ["#EF2929", "#AD7FA8", "#729FCF", "#8AE234", "#E9B96E", "#FCAF3E", "#FCE94F", "#EEEEEC", "#888A85"],
-  ["#CC0000", "#75507B", "#3465A4", "#73D216", "#C17D11", "#F57900", "#EDD400", "#D3D7CF", "#555753"],
-  ["#A40000", "#5C3566", "#204A87", "#4E9A06", "#8F5902", "#CE5C00", "#C4A000", "#BABDB6", "#2E3436"],
+  "#EF2929", "#AD7FA8", "#729FCF", "#8AE234", "#E9B96E", "#FCAF3E", "#FCE94F", "#EEEEEC", "#888A85",
+  "#CC0000", "#75507B", "#3465A4", "#73D216", "#C17D11", "#F57900", "#EDD400", "#D3D7CF", "#555753",
+  "#A40000", "#5C3566", "#204A87", "#4E9A06", "#8F5902", "#CE5C00", "#C4A000", "#BABDB6", "#2E3436",
 ]
 
 BUTTON_WIDTH  = 36
@@ -68,7 +68,7 @@ class SimpleColorSelectorPaletteItem(gtk.DrawingArea):
         gdkcontext.rectangle(0, 0, alloc_w, alloc_h)
         gdkcontext.stroke()
 
-        # If selected draw a symbol
+          # If selected draw a symbol
         if(self.selected):
             size = alloc_h * 0.50 - 3
             x = math.floor((alloc_w-size)/2)
@@ -103,116 +103,62 @@ class SimpleColorSelectorPaletteItem(gtk.DrawingArea):
     def get_selected(self):
         return self.selected
 
+
 class SimpleColorSelectorPalette(gtk.VBox):
 
-    def __init__(self, width=9, height=3):
+    def __init__(self, width, height, colors, show_add=False):
         self.__gobject_init__()
         self.width = width
         self.height = height
-        self.palette = DEFAULT_PALETTE
+        self.colors = colors
         self.buttons = {}
         self.selected_col = None
+        self.show_add = show_add
         # Build up the widget
-        self.__build_widget()
+        self.__draw()
         # Make it visible
         self.show_all()
 
-    def __build_widget(self):
-        # Draw the palette
+    def __draw(self):
+        max_n_col = self.width*self.height
+        # Empty the palette
+        for i in self:
+            for j in i:
+                i.remove(j)
+                del j
+            self.remove(i)
+            del i
+        # Draw the palette container
         self.set_spacing(4)
-        for i in xrange(self.height):
-            cur_hbox = gtk.HBox()
-            cur_hbox.set_spacing(4)
-            for j in xrange(self.width):
-                img = SimpleColorSelectorPaletteItem()
-                img.set_size_request( \
-                    BUTTON_WIDTH, BUTTON_HEIGHT)
-                img.set_color(self.palette[i][j])
-                img.connect("button-press-event", self.on_color_clicked)
-                self.buttons[self.palette[i][j]] = img
-                cur_hbox.pack_start(img, expand=False, fill=False)
-            self.pack_start(cur_hbox)
-
-    # Handlers
-    def on_color_clicked(self, widget, event):
-        # if re-click: unselect
-        if self.selected_col == widget:
-            self.selected_col.set_selected(False)
-            self.selected_col = None
-        else:
-            # if previous selection: unselect
-            if self.selected_col is not None:
-                self.selected_col.set_selected(False)
-            self.selected_col = widget
-            self.selected_col.set_selected(True)
-        self.emit("color-clicked", widget.color)
-
-    # public IF
-
-    def has_color(self, col):
-        return col in self.buttons.keys()
-
-    def get_color_selected(self, col):
-        if self.has_color(col):
-            return self.buttons[col].get_selected()
-        else:
-            return None
-
-    def set_color_selected(self, col):
-        if self.has_color(col):
-            self.buttons[col].set_selected(True)
-            self.selected_col = self.buttons[col]
-
-    def unselect_color(self):
-        if self.selected_col is not None:
-            self.selected_col.set_selected(False)
-            self.selected_col = None
-
-
-gobject.type_register(SimpleColorSelectorPalette)
-gobject.signal_new("color-clicked", SimpleColorSelectorPalette,
-                   gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_STRING,))
-
-
-class SimpleColorSelectorPaletteCustom(gtk.VBox):
-
-    def __init__(self, width=9, height=1):
-        self.__gobject_init__()
-        self.width = width
-        self.height = height
-        self.colors = []
-        self.buttons = {}
-        self.selected_col = None
-        # Build up the widget
-        self.__build_widget()
-        # Make it visible
-        self.show_all()
-
-    def __build_widget(self):
-        col_count = 0
-        # Draw the palette
-        self.set_spacing(4)
-        for i in xrange(self.height):
-            if col_count > len(self.colors)-1 or color_count > self.width:
+        for i in xrange(len(self.colors)):
+            if i > max_n_col-1:
                 break
-            cur_hbox = gtk.HBox()
+            if i%self.width == 0:
+                cur_hbox = gtk.HBox()
+                self.pack_start(cur_hbox)
+            # add the color box
+            img = SimpleColorSelectorPaletteItem()
+            img.set_size_request( \
+                BUTTON_WIDTH, BUTTON_HEIGHT)
+            img.set_color(self.colors[i])
+            img.connect("button-press-event", self.on_color_clicked)
+            self.buttons[self.colors[i]] = img
+            cur_hbox.pack_start(img, expand=False, fill=False)
             cur_hbox.set_spacing(4)
-            for j in xrange(self.width):
-                if col_count > len(self.colors)-1 or color_count > self.width:
-                    break
-                img = SimpleColorSelectorPaletteItem()
-                img.set_size_request( \
-                    BUTTON_WIDTH, BUTTON_HEIGHT)
-                img.set_color(self.colors[col_count])
-                img.connect("button-press-event", self.on_color_clicked)
-                self.buttons[self.colors[col_count]] = img
-                cur_hbox.pack_start(img, expand=False, fill=False)
-                col_count = col_count + 1
+        # Draw the add button if required
+        if self.show_add:
+            cur_hbox = gtk.HBox()
             self.pack_start(cur_hbox)
-        # Draw the add button
-        self.add_button = gtk.Button(_('Add'))
-        self.add_button.connect("clicked", self.on_color_add)
-        self.pack_start(self.add_button)
+            self.add_button = gtk.Button(stock=gtk.STOCK_ADD)
+            cur_hbox.pack_end(self.add_button)
+            self.add_button.connect("clicked", self.on_color_add)
+        # set as visible
+        self.show_all()
+
+    def __prepend_color(self, col):
+        self.colors.insert(0, col)
+        if len(self.colors) > self.width:
+          self.colors.pop()
 
     # Handlers
     def on_color_clicked(self, widget, event):
@@ -237,16 +183,27 @@ class SimpleColorSelectorPaletteCustom(gtk.VBox):
         if response == gtk.RESPONSE_OK and new_color:
             strcolor = gtk.color_selection_palette_to_string([new_color])
             # Add the color to the palette and notify
-            print "FIXME: update custom palette"
-            self.emit("color-added")
+            self.add_color(strcolor)
             # Select the new colro and notify
-            print "FIXME: slect the color in the custom palette"
-            self.selected_col = strcolor
-            self.emit("color-clicked", self.selected_col)
+            self.selected_col = self.buttons[strcolor]
+            self.selected_col.set_selected(True)
+            self.emit("color-clicked", strcolor)
         # Clean up
         color_dialog.destroy()
 
     # public IF
+
+    def get_colors(self):
+        return self.colors
+
+    def add_color(self, col):
+        self.__prepend_color(col)
+        self.__draw()
+        self.emit("color-added")
+
+    def set_colors(self, col_lst):
+        self.colors = col_lst
+        self.__draw()
 
     def has_color(self, col):
         return col in self.buttons.keys()
@@ -268,10 +225,10 @@ class SimpleColorSelectorPaletteCustom(gtk.VBox):
             self.selected_col = None
 
 
-gobject.type_register(SimpleColorSelectorPaletteCustom)
-gobject.signal_new("color-clicked", SimpleColorSelectorPaletteCustom,
+gobject.type_register(SimpleColorSelectorPalette)
+gobject.signal_new("color-clicked", SimpleColorSelectorPalette,
                    gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_STRING,))
-gobject.signal_new("color-added", SimpleColorSelectorPaletteCustom,
+gobject.signal_new("color-added", SimpleColorSelectorPalette,
                    gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, ())
 
 class SimpleColorSelector(gtk.VBox):
@@ -279,7 +236,6 @@ class SimpleColorSelector(gtk.VBox):
     def __init__(self):
         self.__gobject_init__()
         self.sel_color = None
-        self.custom_colors = []
         # Build up the menu
         self.__build_widget()
         # Make it visible
@@ -287,10 +243,10 @@ class SimpleColorSelector(gtk.VBox):
 
     def __build_widget(self):
         self.set_spacing(10)
-        self.colsel_pal = SimpleColorSelectorPalette()
+        self.colsel_pal = SimpleColorSelectorPalette(9, 3, DEFAULT_PALETTE)
         self.colsel_pal.connect("color-clicked", self.on_colsel_pal_color_clicked)
         self.pack_start(self.colsel_pal)
-        self.colsel_custcol = SimpleColorSelectorPaletteCustom()
+        self.colsel_custcol = SimpleColorSelectorPalette(9, 1, [], True)
         self.colsel_custcol.connect("color-clicked", self.on_colsel_custcol_color_clicked)
         self.colsel_custcol.connect("color-added", self.on_colsel_custcol_color_added)
         self.pack_start(self.colsel_custcol)
@@ -303,10 +259,9 @@ class SimpleColorSelector(gtk.VBox):
         # Determine if it's a selection or an de-selection
         if self.colsel_pal.get_color_selected(color) == True:
             self.sel_color = color
-            self.emit("color-defined")
         else:
             self.sel_color = None
-            self.emit("color-defined")
+        self.emit("color-defined")
 
     def on_colsel_custcol_color_clicked(self, widget, color):
         # if we click on the custom colors, we can unselect a potentially slctd
@@ -317,9 +272,10 @@ class SimpleColorSelector(gtk.VBox):
             self.sel_color = color
         else:
             self.sel_color = None
-            self.emit("color-defined")
+        self.emit("color-defined")
 
     def on_colsel_custcol_color_added(self, widget):
+        self.colsel_custcol.get_colors()
         self.emit("color-added")
 
     ### public API ###
@@ -329,17 +285,23 @@ class SimpleColorSelector(gtk.VBox):
         if self.colsel_pal.has_color(col):
             self.colsel_pal.set_color_selected(col)
         else:
-            # insert as custom color
-            print "FIXME: add custom color to custom color palette"
+            # it's not in the std palette, maybe it's in the custom palette?
+            if self.colsel_custcol.has_color(col):
+                self.colsel_custcol.set_color_selected(col)
+           # it's not in the cust. palette: insert as a new custom color
+            else:
+                self.colsel_custcol.add_color(col)
+                self.colsel_custcol.set_color_selected(col)
 
     def get_selected_color(self):
         return self.sel_color
 
     def set_custom_colors(self, col_lst):
-        print "FIXME: custom color definition not implement yet"
+        self.colsel_custcol.set_colors(col_lst)
 
     def get_custom_colors(self):
-        return self.custom_colors
+        return self.colsel_custcol.get_colors()
+
 
 gobject.type_register(SimpleColorSelector)
 gobject.signal_new("color-defined", SimpleColorSelector,
