@@ -21,12 +21,107 @@
 import pygtk
 pygtk.require('2.0')
 import gobject
+import gtk.gdk as gdk
 import gtk
 import datetime
 
 from GTG import _
 from GTG.gtk.browser import GnomeConfig
 from GTG.gtk.browser.simple_color_selector import SimpleColorSelector
+
+class TagIconSelector(gtk.Window):
+
+    WIDTH  = 310
+    HEIGHT = 200
+
+    def __init__(self):
+        self.__gobject_init__(type=gtk.WINDOW_POPUP)
+        self.loaded = False
+        self.selected_icon = None
+        self.symbol_model = None
+        # Build up the window
+        self.__build_window()
+        # Make it visible
+        self.hide_all()
+
+    def __build_window(self):
+        self.set_size_request(TagIconSelector.WIDTH, TagIconSelector.HEIGHT)
+        self.set_type_hint(gtk.gdk.WINDOW_TYPE_HINT_POPUP_MENU)
+        vbox = gtk.VBox()
+        self.add(vbox)
+        sb = gtk.ScrolledWindow()
+        vbox.pack_start(sb)
+        self.symbol_iv = gtk.IconView()
+        self.symbol_iv.set_pixbuf_column(0)
+        self.symbol_iv.set_property("item-padding", 2)
+        self.symbol_iv.set_property("column-spacing", 0)
+        self.symbol_iv.set_property("row-spacing", 0)
+        sb.add(self.symbol_iv)
+        self.remove_bt = gtk.Button(stock=gtk.STOCK_REMOVE)
+        vbox.pack_start(self.remove_bt, fill=False, expand=False)
+        # set the callbacks
+        self.symbol_iv.connect("selection-changed", self.on_selection_changed)
+        self.remove_bt.connect("clicked", self.on_remove_bt_clicked)
+
+    def __focus_out(self, w = None, e = None):
+        p = self.window.get_pointer()
+        s = self.get_size()
+        if not(0 <= p[0] <= s[0] and 0 <= p[1] <= s[1]):
+            self.close_selector()
+
+    def __load_icon(self):
+        self.symbol_model = gtk.ListStore (gtk.gdk.Pixbuf, str)
+        for icon in gtk.icon_theme_get_default().list_icons(context="Emblems"):
+            img = gtk.icon_theme_get_default().load_icon(icon, 16, 0)
+            self.symbol_model.append([img, icon])
+        self.symbol_iv.set_model(self.symbol_model)
+        self.loaded = True
+
+    ### callbacks ###
+
+    def on_selection_changed(self, widget):
+        my_path = self.symbol_iv.get_selected_items()
+        if len(my_path)>0:
+            my_iter  = self.symbol_model.get_iter(my_path[0])
+            self.selected_icon = self.symbol_model.get_value(my_iter, 1)
+        else:
+            self.selected_icon = None
+        self.emit('selection-changed')
+
+    def on_remove_bt_clicked(self, widget):
+        self.selected_icon = None
+        self.emit('selection-changed')
+        self.close_selector()
+
+    ### PUBLIC IF ###
+
+    def show_at_position(self, x, y):
+        if not self.loaded:
+            self.__load_icon()
+        self.move(x, y)
+        self.show_all()
+        ##some window managers ignore move before you show a window. (which
+        # ones? question by invernizzi)
+        self.move(x, y)
+        self.grab_add()
+        #We grab the pointer in the calendar
+        gdk.pointer_grab(self.window, True,
+                         gdk.BUTTON1_MASK | gdk.MOD2_MASK)
+        self.connect('button-press-event', self.__focus_out)
+
+    def close_selector(self):
+        self.hide()
+        gtk.gdk.pointer_ungrab()
+        self.grab_remove()
+
+    def get_selected_icon(self):
+        return self.selected_icon
+
+
+gobject.type_register(TagIconSelector)
+gobject.signal_new("selection-changed", TagIconSelector,
+                   gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, ())
+
 
 class TagEditor(gtk.Window):
 
@@ -40,7 +135,8 @@ class TagEditor(gtk.Window):
         self.tn_entry_watch_id = None
         self.tn_cb_clicked_hid = None
         self.tn_entry_clicked_hid = None
-        # Build up the menu
+        self.tag_icon_selector = None
+        # Build up the window
         self.__build_window()
         self.set_tag(tag)
         # Make it visible
@@ -62,9 +158,7 @@ class TagEditor(gtk.Window):
         self.hdr_align.add(self.hdr_hbox)
         self.hdr_hbox.set_spacing(10)
         # Button to tag icon selector
-        self.ti_bt_img = gtk.Image()
         self.ti_bt = gtk.Button()
-        self.ti_bt.set_sensitive(False) # FIXME: implement icon selection
         self.ti_bt_label = gtk.Label()
         self.ti_bt.add(self.ti_bt_label)
         self.hdr_hbox.pack_start(self.ti_bt)
@@ -105,12 +199,17 @@ class TagEditor(gtk.Window):
         self.tc_cc_align.set_padding(15, 15, 10, 10)
         self.tc_cc_colsel = SimpleColorSelector()
         self.tc_cc_align.add(self.tc_cc_colsel)
+        # Icon selector
+        self.tag_icon_selector = TagIconSelector()
 
         # Set the callbacks
         self.ti_bt.connect('clicked', self.on_ti_bt_clicked)
+        self.tag_icon_selector.connect('selection-changed', \
+            self.on_tag_icon_selector_selection_changed)
         self.tn_entry_clicked_hid = \
             self.tn_entry.connect('changed', self.on_tn_entry_changed)
-        self.tn_cb_clicked_hid = self.tn_cb.connect('clicked', self.on_tn_cb_clicked)
+        self.tn_cb_clicked_hid = self.tn_cb.connect('clicked', \
+            self.on_tn_cb_clicked)
         self.tc_cc_colsel.connect('color-defined', self.on_tc_colsel_defined)
         self.tc_cc_colsel.connect('color-added', self.on_tc_colsel_added)
         self.connect('delete-event', self.on_close)
@@ -129,7 +228,7 @@ class TagEditor(gtk.Window):
         self.tn_cb.set_active(True)
         # Name entry
         self.tn_entry.set_text(_("Enter tag name here"))
-        self.tn_entry.set_icon_from_stock(gtk.POS_RIGHT, None)
+        self.tn_entry.set_icon_from_stock(gtk.ENTRY_ICON_SECONDARY, None)
         # Color selection
         self.tc_cc_colsel.unselected_color()
         # Custom colors
@@ -141,6 +240,18 @@ class TagEditor(gtk.Window):
         # Re-enable checkbutton handler_block
         self.tn_cb.handler_unblock(self.tn_cb_clicked_hid)
         self.tn_entry.handler_unblock(self.tn_entry_clicked_hid)
+
+    def __set_icon(self, icon):
+        if icon is not None:
+            for i in self.ti_bt:
+                self.ti_bt.remove(i)
+            ti_bt_img = gtk.image_new_from_icon_name(icon, gtk.ICON_SIZE_BUTTON)
+            ti_bt_img.show()
+            self.ti_bt.add(ti_bt_img)
+        else:
+            for i in self.ti_bt:
+                self.ti_bt.remove(i)
+            self.ti_bt.add(self.ti_bt_label)
 
     ### PUBLIC API ###
 
@@ -165,7 +276,8 @@ class TagEditor(gtk.Window):
             self.tn_cb.set_active(not s_hidden_in_wv)
             # If available, update icon
             if (tag.get_attribute('icon') is not None):
-                print "FIXME: GTG.gtk.browser.tag_editor: Icon setup is still not supported."
+                icon = tag.get_attribute('icon')
+                self.__set_icon(icon)
             # If available, update color selection
             if (tag.get_attribute('color') is not None):
                 col = tag.get_attribute('color')
@@ -189,16 +301,28 @@ class TagEditor(gtk.Window):
                 self.req.rename_tag(self.tag.get_name(), "@"+cur_value)
             return False
 
+    def on_tag_icon_selector_selection_changed(self, widget):
+        icon = self.tag_icon_selector.get_selected_icon()
+        if icon is not None:
+            self.tag.set_attribute("icon", icon)
+            self.__set_icon(icon)
+        else:
+            self.tag.del_attribute("icon")
+            self.__set_icon(None)
+
+
     def on_ti_bt_clicked(self, widget):
-        print "FIXME: GTG.gtk.browser.tag_editor: Icons selection is still not supported."
+        rect = self.ti_bt.get_allocation()
+        x, y = self.ti_bt.window.get_origin()
+        self.tag_icon_selector.show_at_position(x+rect.x+rect.width, y+rect.y)
 
     def on_tn_entry_changed(self, widget):
         self.tn_entry_last_recorded_value = self.tn_entry.get_text()
         # check validity
         if self.tn_entry_last_recorded_value.strip() == "":
-            self.tn_entry.set_icon_from_stock(gtk.POS_RIGHT, gtk.STOCK_DIALOG_ERROR)
+            self.tn_entry.set_icon_from_stock(gtk.ENTRY_ICON_SECONDARY, gtk.STOCK_DIALOG_ERROR)
         else:
-            self.tn_entry.set_icon_from_stock(gtk.POS_RIGHT, None)
+            self.tn_entry.set_icon_from_stock(gtk.ENTRY_ICON_SECONDARY, None)
         # filter out change requests to reduce commit overhead
         if self.tn_entry_watch_id is None:
             # There is no watchers for the text entry. Register one.
