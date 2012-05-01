@@ -18,6 +18,11 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
+"""
+simple_color_selector: a module defining a widget allowing to pick a color
+from a palette. The widget also allows to define and add new colors.
+"""
+
 import pygtk
 pygtk.require('2.0')
 import gobject
@@ -27,17 +32,22 @@ import math
 from GTG import _
 
 DEFAULT_PALETTE = [
-  "#EF2929", "#AD7FA8", "#729FCF", "#8AE234", "#E9B96E", "#FCAF3E", "#FCE94F", "#EEEEEC", "#888A85",
-  "#CC0000", "#75507B", "#3465A4", "#73D216", "#C17D11", "#F57900", "#EDD400", "#D3D7CF", "#555753",
-  "#A40000", "#5C3566", "#204A87", "#4E9A06", "#8F5902", "#CE5C00", "#C4A000", "#BABDB6", "#2E3436",
+  "#EF2929", "#AD7FA8", "#729FCF", "#8AE234", "#E9B96E",
+  "#FCAF3E", "#FCE94F", "#EEEEEC", "#888A85",
+  "#CC0000", "#75507B", "#3465A4", "#73D216", "#C17D11",
+  "#F57900", "#EDD400", "#D3D7CF", "#555753",
+  "#A40000", "#5C3566", "#204A87", "#4E9A06", "#8F5902",
+  "#CE5C00", "#C4A000", "#BABDB6", "#2E3436",
 ]
 
 BUTTON_WIDTH  = 36
 BUTTON_HEIGHT = 24
 
-class SimpleColorSelectorPaletteItem(gtk.DrawingArea):
+class SimpleColorSelectorPaletteItem(gtk.DrawingArea): # pylint: disable-msg=R0904,C0301
+    """An item of the color selecctor palette"""
 
     def __init__(self, color="#FFFFFF"):
+        gtk.DrawingArea.__init__(self)
         self.__gobject_init__()
         self.color = color
         self.selected = False
@@ -47,10 +57,12 @@ class SimpleColorSelectorPaletteItem(gtk.DrawingArea):
         self.connect("configure_event", self.on_configure)
 
     def __draw(self):
-        alloc_x, alloc_y, alloc_w, alloc_h = self.get_allocation()
+        """Draws the widget"""
+        alloc = self.get_allocation()
+        alloc_w, alloc_h = alloc[2], alloc[3]
         # Drawing context
-        cr         = self.window.cairo_create()
-        gdkcontext = gtk.gdk.CairoContext(cr)
+        cr_ctxt    = self.window.cairo_create() # pylint: disable-msg=E1101
+        gdkcontext = gtk.gdk.CairoContext(cr_ctxt)
 
         # Draw rounded rectangle
         my_color = gtk.gdk.color_parse(self.color)
@@ -67,8 +79,8 @@ class SimpleColorSelectorPaletteItem(gtk.DrawingArea):
           # If selected draw a symbol
         if(self.selected):
             size = alloc_h * 0.50 - 3
-            x = math.floor((alloc_w-size)/2)
-            y = math.floor((alloc_h-size)/2)
+            pos_x = math.floor((alloc_w-size)/2)
+            pos_y = math.floor((alloc_h-size)/2)
             gdkcontext.set_source_rgba(255, 255, 255, 0.80)
             gdkcontext.arc(alloc_w/2, alloc_h/2, size/2 + 3, 0, 2*math.pi)
             gdkcontext.fill()
@@ -78,31 +90,43 @@ class SimpleColorSelectorPaletteItem(gtk.DrawingArea):
             gdkcontext.stroke()
             gdkcontext.set_source_rgba(0, 0, 0, 0.50)
             gdkcontext.set_line_width(3.0)
-            gdkcontext.move_to(x       , y+size/2)
-            gdkcontext.line_to(x+size/2, y+size)
-            gdkcontext.line_to(x+size  , y)
+            gdkcontext.move_to(pos_x       , pos_y+size/2)
+            gdkcontext.line_to(pos_x+size/2, pos_y+size)
+            gdkcontext.line_to(pos_x+size  , pos_y)
             gdkcontext.stroke()
 
-    def on_expose(self, widget, params):
+    ### callbacks ###
+
+    def on_expose(self, widget, params): # pylint: disable-msg=W0613
+        """Callback: redraws the widget when it is exposed"""
         self.__draw()
 
-    def on_configure(self, widget, params):
+    def on_configure(self, widget, params): # pylint: disable-msg=W0613
+        """Callback: redraws the widget when it is exposed"""
         self.__draw()
+
+    ### PUBLIC IF ###
 
     def set_color(self, color):
+        """Defines the widget color"""
         self.color = color
 
     def set_selected(self, sel):
+        """Toggle the selected state of the widget"""
         self.selected = sel
         self.queue_draw()
 
     def get_selected(self):
+        """Returns the selected state of the widget"""
         return self.selected
 
 
-class SimpleColorSelectorPalette(gtk.VBox):
+class SimpleColorSelectorPalette(gtk.VBox): # pylint: disable-msg=R0904,C0301
+    """Widget displaying a palette of colors, possibly with a button allowing to
+    define new colors."""
 
     def __init__(self, width, height, colors, show_add=False):
+        gtk.VBox.__init__(self)
         self.__gobject_init__()
         self.width = width
         self.height = height
@@ -116,6 +140,7 @@ class SimpleColorSelectorPalette(gtk.VBox):
         self.show_all()
 
     def __draw(self):
+        """Draws the widget"""
         max_n_col = self.width*self.height
         # Empty the palette
         for i in self:
@@ -129,7 +154,7 @@ class SimpleColorSelectorPalette(gtk.VBox):
         for i in xrange(len(self.colors)):
             if i > max_n_col-1:
                 break
-            if i%self.width == 0:
+            if i % self.width == 0:
                 cur_hbox = gtk.HBox()
                 self.pack_start(cur_hbox)
             # add the color box
@@ -152,12 +177,15 @@ class SimpleColorSelectorPalette(gtk.VBox):
         self.show_all()
 
     def __prepend_color(self, col):
+        """Add a color to the palette, at the first position"""
         self.colors.insert(0, col)
         if len(self.colors) > self.width:
             self.colors.pop()
 
     # Handlers
-    def on_color_clicked(self, widget, event):
+    def on_color_clicked(self, widget, event): # pylint: disable-msg=W0613
+        """Callback: when a color is clicked, update the model and
+        notify the parent"""
         # if re-click: unselect
         if self.selected_col == widget:
             self.selected_col.set_selected(False)
@@ -170,11 +198,13 @@ class SimpleColorSelectorPalette(gtk.VBox):
             self.selected_col.set_selected(True)
         self.emit("color-clicked", widget.color)
 
-    def on_color_add(self, widget):
+    def on_color_add(self, widget): # pylint: disable-msg=W0613
+        """Callback: when adding a new color, show the color definition
+        window, update the model, notifies the parent."""
         color_dialog = gtk.ColorSelectionDialog(_('Choose a color'))
         colorsel = color_dialog.colorsel
         response = color_dialog.run()
-        new_color = colorsel.get_current_color()
+        new_color = colorsel.get_current_color() # pylint: disable-msg=E1101
         # Check response_id and set color if required
         if response == gtk.RESPONSE_OK and new_color:
             strcolor = gtk.color_selection_palette_to_string([new_color])
@@ -190,32 +220,39 @@ class SimpleColorSelectorPalette(gtk.VBox):
     # public IF
 
     def get_colors(self):
+        """Return the list of displayed colors"""
         return self.colors
 
     def add_color(self, col):
+        """Add a color to the palette"""
         self.__prepend_color(col)
         self.__draw()
         self.emit("color-added")
 
     def set_colors(self, col_lst):
+        """Defines the list of displayed colors"""
         self.colors = col_lst
         self.__draw()
 
     def has_color(self, col):
+        """Returns true if the color is displayed in the palette"""
         return col in self.buttons.keys()
 
     def get_color_selected(self, col):
+        """Return the selected state of a particular color"""
         if self.has_color(col):
             return self.buttons[col].get_selected()
         else:
             return None
 
     def set_color_selected(self, col):
+        """Defines the selected state of a displayed color"""
         if self.has_color(col):
             self.buttons[col].set_selected(True)
             self.selected_col = self.buttons[col]
 
     def unselect_color(self):
+        """Deselect all colors"""
         if self.selected_col is not None:
             self.selected_col.set_selected(False)
             self.selected_col = None
@@ -223,13 +260,18 @@ class SimpleColorSelectorPalette(gtk.VBox):
 
 gobject.type_register(SimpleColorSelectorPalette)
 gobject.signal_new("color-clicked", SimpleColorSelectorPalette,
-                   gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_STRING,))
+                   gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, \
+                  (gobject.TYPE_STRING,))
 gobject.signal_new("color-added", SimpleColorSelectorPalette,
                    gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, ())
 
-class SimpleColorSelector(gtk.VBox):
+class SimpleColorSelector(gtk.VBox): # pylint: disable-msg=R0904,C0301
+    """A widget allowing to picka color from a displayed palette. The user can
+    either pick a color from a default palette, or define and use user-defined
+    colors."""
 
     def __init__(self):
+        gtk.VBox.__init__(self)
         self.__gobject_init__()
         self.sel_color = None
         # Build up the menu
@@ -238,17 +280,23 @@ class SimpleColorSelector(gtk.VBox):
         self.show_all()
 
     def __build_widget(self):
+        """Build up the widget"""
         self.set_spacing(10)
         self.colsel_pal = SimpleColorSelectorPalette(9, 3, DEFAULT_PALETTE)
-        self.colsel_pal.connect("color-clicked", self.on_colsel_pal_color_clicked)
+        self.colsel_pal.connect("color-clicked", \
+            self.on_colsel_pal_color_clicked)
         self.pack_start(self.colsel_pal)
         self.colsel_custcol = SimpleColorSelectorPalette(9, 1, [], True)
-        self.colsel_custcol.connect("color-clicked", self.on_colsel_custcol_color_clicked)
-        self.colsel_custcol.connect("color-added", self.on_colsel_custcol_color_added)
+        self.colsel_custcol.connect("color-clicked", \
+            self.on_colsel_custcol_color_clicked)
+        self.colsel_custcol.connect("color-added", \
+            self.on_colsel_custcol_color_added)
         self.pack_start(self.colsel_custcol)
 
     ### handlers ###
-    def on_colsel_pal_color_clicked(self, widget, color):
+    def on_colsel_pal_color_clicked(self, widget, color): # pylint: disable-msg=W0613,C0301
+        """Callback: identifies the selected color and notifies the parent for 
+        colro from the default palette"""
         # if we click on the palette, we can unselect a potentially slected
         # custom color
         self.colsel_custcol.unselect_color()
@@ -259,7 +307,9 @@ class SimpleColorSelector(gtk.VBox):
             self.sel_color = None
         self.emit("color-defined")
 
-    def on_colsel_custcol_color_clicked(self, widget, color):
+    def on_colsel_custcol_color_clicked(self, widget, color): # pylint: disable-msg=W0613,C0301
+        """Callback: identifies the selected color and notifies the parent for 
+        colro from the user-defined palette"""
         # if we click on the custom colors, we can unselect a potentially slctd
         # palette color
         self.colsel_pal.unselect_color()
@@ -270,17 +320,20 @@ class SimpleColorSelector(gtk.VBox):
             self.sel_color = None
         self.emit("color-defined")
 
-    def on_colsel_custcol_color_added(self, widget):
+    def on_colsel_custcol_color_added(self, widget): # pylint: disable-msg=W0613,C0301
+        """Callback: notifies the parent when a new color is defined"""
         self.colsel_custcol.get_colors()
         self.emit("color-added")
 
     ### public API ###
 
     def unselected_color(self):
+        """Unselects all colors in the palettes"""
         self.colsel_pal.unselect_color()
         self.colsel_custcol.unselect_color()
 
     def set_selected_color(self, col):
+        """Defines the selected color"""
         self.sel_color = col
         if self.colsel_pal.has_color(col):
             self.colsel_pal.set_color_selected(col)
@@ -294,12 +347,15 @@ class SimpleColorSelector(gtk.VBox):
                 self.colsel_custcol.set_color_selected(col)
 
     def get_selected_color(self):
+        """Returns the currently selected color"""
         return self.sel_color
 
     def set_custom_colors(self, col_lst):
+        """Defines the color for the used-defined palette"""
         self.colsel_custcol.set_colors(col_lst)
 
     def get_custom_colors(self):
+        """Return the list of user-defined palette"""
         return self.colsel_custcol.get_colors()
 
 
