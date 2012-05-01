@@ -179,7 +179,7 @@ class TaskBrowser(gobject.GObject):
         self.vbox_toolbars      = self.builder.get_object("vbox_toolbars")
         
         self.closed_pane        = None
-        self.tagpopup           = TagContextMenu(self.req)
+        self.tagpopup           = TagContextMenu(self.req, self.vmanager)
 
     def _init_ui_widget(self):
         """

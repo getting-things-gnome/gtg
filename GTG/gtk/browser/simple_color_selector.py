@@ -28,8 +28,6 @@ import cairo
 from GTG import _
 from GTG.gtk.browser import GnomeConfig
 
-#FIXME: rearrange colors by neighbouring tone
-#FIXME: use a more saturated palette
 DEFAULT_PALETTE = [
   "#EF2929", "#AD7FA8", "#729FCF", "#8AE234", "#E9B96E", "#FCAF3E", "#FCE94F", "#EEEEEC", "#888A85",
   "#CC0000", "#75507B", "#3465A4", "#73D216", "#C17D11", "#F57900", "#EDD400", "#D3D7CF", "#555753",
@@ -279,6 +277,10 @@ class SimpleColorSelector(gtk.VBox):
         self.emit("color-added")
 
     ### public API ###
+
+    def unselected_color(self):
+        self.colsel_pal.unselect_color()
+        self.colsel_custcol.unselect_color()
 
     def set_selected_color(self, col):
         self.sel_color = col

@@ -25,13 +25,14 @@ import gtk
 
 from GTG import _
 from GTG.gtk.browser import GnomeConfig
-from GTG.gtk.browser.tag_editor import TagEditor
+
 
 class TagContextMenu(gtk.Menu):
 
-    def __init__(self, req, tag=None):
+    def __init__(self, req, vmanager, tag=None):
         self.__gobject_init__()
         self.req = req
+        self.vmanager = vmanager
         self.tag = tag
         # Build up the menu
         self.__build_menu()
@@ -56,6 +57,5 @@ class TagContextMenu(gtk.Menu):
     ### CALLBACKS ###
 
     def on_mi_cc_activate(self, widget):
-          tag_editor = TagEditor(self.req, self.tag)
-          tag_editor.show()
+        self.vmanager.open_tag_editor(self.tag)
 
