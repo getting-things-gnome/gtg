@@ -29,8 +29,8 @@ def parse_tag_list(text):
     """ Parse a line of a list of tasks. User can specify if the tag is
     positive or not by prepending '!'.
 
-    @param  text - string entry from user
-    @return list of tupples (tag, is_positive)
+    @param  text:  string entry from user
+    @return: list of tupples (tag, is_positive)
     """
     result = []
     for tag in text.split():

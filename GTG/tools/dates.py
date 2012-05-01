@@ -71,9 +71,9 @@ class Date(object):
     
     Date supports all the methods of the standard datetime.date class. A Date
     can be constructed with:
-      * the fuzzy strings 'now', 'soon', '' (no date, default), or 'someday'
-      * a string containing an ISO format date: YYYY-MM-DD, or
-      * a datetime.date or Date instance.
+      - the fuzzy strings 'now', 'soon', '' (no date, default), or 'someday'
+      - a string containing an ISO format date: YYYY-MM-DD, or
+      - a datetime.date or Date instance.
     
     """
     _real_date = None
@@ -212,9 +212,9 @@ class Date(object):
         """Return a Date corresponding to string, or None.
         
         string may be in one of the following formats:
-         * YYYY/MM/DD, YYYYMMDD, MMDD
-         * fuzzy dates
-         * 'today', 'tomorrow', 'next week', 'next month' or 'next year' in
+         - YYYY/MM/DD, YYYYMMDD, MMDD
+         - fuzzy dates
+         - 'today', 'tomorrow', 'next week', 'next month' or 'next year' in
            English or the system locale.
         """
         # sanitize input

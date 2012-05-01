@@ -18,11 +18,11 @@
 # -----------------------------------------------------------------------------
 """Reusable logging configuration.
 
-GTG modules and plugins that wish to use logging should import the Log object:
+GTG modules and plugins that wish to use logging should import the Log object::
 
   from GTG.tools.logger import Log
 
-...and target it with debug or info messages:
+...and target it with debug or info messages::
 
   Log.debug('Something has gone terribly wrong!')
 

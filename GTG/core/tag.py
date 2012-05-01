@@ -126,7 +126,7 @@ class Tag(TreeNode):
 
         @param butname: If True, exclude C{name} from the list of attribute
             names.
-        #param withparent: If True, the "parent" attribute is attached
+        @param withparent: If True, the "parent" attribute is attached
         """
         attributes = self._attributes.keys()
         if butname:

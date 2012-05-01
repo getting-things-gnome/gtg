@@ -483,7 +483,7 @@ class DataStore(object):
         Reloads a disabled backend. Backend must be already known by the
         Datastore
 
-        @parma backend_id: a backend id
+        @param backend_id: a backend id
         @param state: True to enable, False to disable
         """
         if backend_id in self.backends:
@@ -610,7 +610,7 @@ class DataStore(object):
         Returns the mutex object used by backends to avoid modifying a task
         at the same time.
 
-        @returns threading.Lock
+        @returns: threading.Lock
         '''
         return self._backend_mutex
 
