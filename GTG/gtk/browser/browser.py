@@ -1206,11 +1206,12 @@ class TaskBrowser(gobject.GObject):
 
 ### PUBLIC METHODS #########################################################
     def get_selected_task(self, tv=None):
-        """Returns the'uid' of the selected task, if any.
-           If multiple tasks are selected, returns only the first and 
-           takes care of selecting only that (unselecting the others)
+        """
+        Returns the'uid' of the selected task, if any.
+        If multiple tasks are selected, returns only the first and 
+        takes care of selecting only that (unselecting the others)
 
-        :param tv: The tree view to find the selected task in. Defaults to
+        @param tv: The tree view to find the selected task in. Defaults to
             the task_tview.
         """
         ids = self.get_selected_tasks(tv)
@@ -1221,10 +1222,11 @@ class TaskBrowser(gobject.GObject):
             return None
 
     def get_selected_tasks(self, tv=None):
-        """Returns a list of 'uids' of the selected tasks, and the corresponding
-           iters
+        """
+        Returns a list of 'uids' of the selected tasks, and the corresponding
+        iters
 
-        :param tv: The tree view to find the selected task in. Defaults to
+        @param tv: The tree view to find the selected task in. Defaults to
             the task_tview.
         """
         #FIXME Why we have active as back case? is that so? Study this code
@@ -1243,8 +1245,8 @@ class TaskBrowser(gobject.GObject):
     def get_selected_tags(self,nospecial=False):
         """
         Returns the selected nodes from the tagtree
-        @args
-            nospecial - doesn't return tags that do not stat with @
+
+        @param nospecial: doesn't return tags that do not stat with
         """
         taglist = []
         if self.tagtreeview:

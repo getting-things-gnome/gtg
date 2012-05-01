@@ -49,7 +49,7 @@ class TestDatastore(unittest.TestCase):
     def setUp(self):
         '''
         Creates the environment for the tests
-        @returns None
+        @returns: None
         '''
         self.datastore = DataStore()
         self.requester = self.datastore.get_requester()

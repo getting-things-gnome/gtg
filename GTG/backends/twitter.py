@@ -67,19 +67,19 @@ class Status(object):
 
   The Status structure exposes the following properties:
 
-    status.created_at
-    status.created_at_in_seconds # read only
-    status.favorited
-    status.in_reply_to_screen_name
-    status.in_reply_to_user_id
-    status.in_reply_to_status_id
-    status.truncated
-    status.source
-    status.id
-    status.text
-    status.location
-    status.relative_created_at # read only
-    status.user
+      - status.created_at
+      - status.created_at_in_seconds # read only
+      - status.favorited
+      - status.in_reply_to_screen_name
+      - status.in_reply_to_user_id
+      - status.in_reply_to_status_id
+      - status.truncated
+      - status.source
+      - status.id
+      - status.text
+      - status.location
+      - status.relative_created_at # read only
+      - status.user
   '''
   def __init__(self,
                created_at=None,
@@ -101,17 +101,16 @@ class Status(object):
 
     Note: Dates are posted in the form "Sat Jan 27 04:17:38 +0000 2007"
 
-    Args:
-      created_at: The time this status message was posted
-      favorited: Whether this is a favorite of the authenticated user
-      id: The unique id of this status message
-      text: The text of this status message
-      location: the geolocation string associated with this message
-      relative_created_at:
+    @var created_at: The time this status message was posted
+    @var favorited: Whether this is a favorite of the authenticated user
+    @var id: The unique id of this status message
+    @var text: The text of this status message
+    @var location: the geolocation string associated with this message
+    @var relative_created_at:
         A human readable string representing the posting time
-      user:
+    @var user:
         A twitter.User instance representing the person posting the message
-      now:
+    @var now:
         The current time, if the client choses to set it.  Defaults to the
         wall clock time.
     '''
@@ -131,16 +130,14 @@ class Status(object):
   def GetCreatedAt(self):
     '''Get the time this status message was posted.
 
-    Returns:
-      The time this status message was posted
+    @returns: The time this status message was posted
     '''
     return self._created_at
 
   def SetCreatedAt(self, created_at):
     '''Set the time this status message was posted.
 
-    Args:
-      created_at: The time this status message was created
+    @var created_at: The time this status message was created
     '''
     self._created_at = created_at
 
@@ -150,7 +147,7 @@ class Status(object):
   def GetCreatedAtInSeconds(self):
     '''Get the time this status message was posted, in seconds since the epoch.
 
-    Returns:
+    @returns:
       The time this status message was posted, in seconds since the epoch.
     '''
     return calendar.timegm(rfc822.parsedate(self.created_at))
@@ -162,7 +159,7 @@ class Status(object):
   def GetFavorited(self):
     '''Get the favorited setting of this status message.
 
-    Returns:
+    @returns:
       True if this status message is favorited; False otherwise
     '''
     return self._favorited
@@ -170,8 +167,7 @@ class Status(object):
   def SetFavorited(self, favorited):
     '''Set the favorited state of this status message.
 
-    Args:
-      favorited: boolean True/False favorited state of this status message
+    @var favorited: boolean True/False favorited state of this status message
     '''
     self._favorited = favorited
 
@@ -181,16 +177,14 @@ class Status(object):
   def GetId(self):
     '''Get the unique id of this status message.
 
-    Returns:
-      The unique id of this status message
+    @returns: The unique id of this status message
     '''
     return self._id
 
   def SetId(self, id):
     '''Set the unique id of this status message.
 
-    Args:
-      id: The unique id of this status message
+    @var id: The unique id of this status message
     '''
     self._id = id
 
@@ -245,16 +239,14 @@ class Status(object):
   def GetText(self):
     '''Get the text of this status message.
 
-    Returns:
-      The text of this status message.
+    @returns: The text of this status message.
     '''
     return self._text
 
   def SetText(self, text):
     '''Set the text of this status message.
 
-    Args:
-      text: The text of this status message
+    @var text: The text of this status message
     '''
     self._text = text
 
@@ -264,16 +256,14 @@ class Status(object):
   def GetLocation(self):
     '''Get the geolocation associated with this status message
 
-    Returns:
-      The geolocation string of this status message.
+    @returns: The geolocation string of this status message.
     '''
     return self._location
 
   def SetLocation(self, location):
     '''Set the geolocation associated with this status message
 
-    Args:
-      location: The geolocation string of this status message
+    @var location: The geolocation string of this status message
     '''
     self._location = location
 
@@ -283,8 +273,7 @@ class Status(object):
   def GetRelativeCreatedAt(self):
     '''Get a human redable string representing the posting time
 
-    Returns:
-      A human readable string representing the posting time
+    @returns: A human readable string representing the posting time
     '''
     fudge = 1.25
     delta  = long(self.now) - long(self.created_at_in_seconds)
@@ -313,16 +302,14 @@ class Status(object):
   def GetUser(self):
     '''Get a twitter.User reprenting the entity posting this status message.
 
-    Returns:
-      A twitter.User reprenting the entity posting this status message
+    @returns: A twitter.User reprenting the entity posting this status message
     '''
     return self._user
 
   def SetUser(self, user):
     '''Set a twitter.User reprenting the entity posting this status message.
 
-    Args:
-      user: A twitter.User reprenting the entity posting this status message
+    @var user: A twitter.User reprenting the entity posting this status message
     '''
     self._user = user
 
@@ -336,9 +323,8 @@ class Status(object):
     Used to calculate relative_created_at.  Defaults to the time
     the object was instantiated.
 
-    Returns:
-      Whatever the status instance believes the current time to be,
-      in seconds since the epoch.
+    @returns: Whatever the status instance believes the current time to be,
+        in seconds since the epoch.
     '''
     if self._now is None:
       self._now = time.time()
@@ -350,8 +336,7 @@ class Status(object):
     Used to calculate relative_created_at.  Defaults to the time
     the object was instantiated.
 
-    Args:
-      now: The wallclock time for this instance.
+    @var now: The wallclock time for this instance.
     '''
     self._now = now
 
@@ -384,15 +369,14 @@ class Status(object):
 
     The return value is the same as the JSON string representation.
 
-    Returns:
-      A string representation of this twitter.Status instance.
+    @returns: A string representation of this twitter.Status instance.
     '''
     return self.AsJsonString()
 
   def AsJsonString(self):
     '''A JSON string representation of this twitter.Status instance.
 
-    Returns:
+    @returns:
       A JSON string representation of this twitter.Status instance
    '''
     return json.dumps(self.AsDict(), sort_keys=True)
@@ -402,7 +386,7 @@ class Status(object):
 
     The return value uses the same key names as the JSON representation.
 
-    Return:
+    @return:
       A dict representing this twitter.Status instance
     '''
     data = {}
@@ -438,7 +422,7 @@ class Status(object):
 
     Args:
       data: A JSON dict, as converted from the JSON in the twitter API
-    Returns:
+    @returns:
       A twitter.Status instance
     '''
     if 'user' in data:
@@ -533,7 +517,7 @@ class User(object):
   def GetId(self):
     '''Get the unique id of this user.
 
-    Returns:
+    @returns:
       The unique id of this user
     '''
     return self._id
@@ -552,7 +536,7 @@ class User(object):
   def GetName(self):
     '''Get the real name of this user.
 
-    Returns:
+    @returns:
       The real name of this user
     '''
     return self._name
@@ -571,7 +555,7 @@ class User(object):
   def GetScreenName(self):
     '''Get the short username of this user.
 
-    Returns:
+    @returns:
       The short username of this user
     '''
     return self._screen_name
@@ -590,7 +574,7 @@ class User(object):
   def GetLocation(self):
     '''Get the geographic location of this user.
 
-    Returns:
+    @returns:
       The geographic location of this user
     '''
     return self._location
@@ -609,7 +593,7 @@ class User(object):
   def GetDescription(self):
     '''Get the short text description of this user.
 
-    Returns:
+    @returns:
       The short text description of this user
     '''
     return self._description
@@ -628,7 +612,7 @@ class User(object):
   def GetUrl(self):
     '''Get the homepage url of this user.
 
-    Returns:
+    @returns:
       The homepage url of this user
     '''
     return self._url
@@ -647,7 +631,7 @@ class User(object):
   def GetProfileImageUrl(self):
     '''Get the url of the thumbnail of this user.
 
-    Returns:
+    @returns:
       The url of the thumbnail of this user
     '''
     return self._profile_image_url
@@ -666,7 +650,7 @@ class User(object):
   def GetProfileBackgroundTile(self):
     '''Boolean for whether to tile the profile background image.
 
-    Returns:
+    @returns:
       True if the background is to be tiled, False if not, None if unset.
     '''
     return self._profile_background_tile
@@ -742,7 +726,7 @@ class User(object):
   def GetTimeZone(self):
     '''Returns the current time zone string for the user.
 
-    Returns:
+    @returns:
       The descriptive time zone string for the user.
     '''
     return self._time_zone
@@ -760,7 +744,7 @@ class User(object):
   def GetStatus(self):
     '''Get the latest twitter.Status of this user.
 
-    Returns:
+    @returns:
       The latest twitter.Status of this user
     '''
     return self._status
@@ -779,7 +763,7 @@ class User(object):
   def GetFriendsCount(self):
     '''Get the friend count for this user.
     
-    Returns:
+    @returns:
       The number of users this user has befriended.
     '''
     return self._friends_count
@@ -798,7 +782,7 @@ class User(object):
   def GetFollowersCount(self):
     '''Get the follower count for this user.
     
-    Returns:
+    @returns:
       The number of users following this user.
     '''
     return self._followers_count
@@ -817,7 +801,7 @@ class User(object):
   def GetStatusesCount(self):
     '''Get the number of status updates for this user.
     
-    Returns:
+    @returns:
       The number of status updates for this user.
     '''
     return self._statuses_count
@@ -836,7 +820,7 @@ class User(object):
   def GetFavouritesCount(self):
     '''Get the number of favourites for this user.
     
-    Returns:
+    @returns:
       The number of favourites for this user.
     '''
     return self._favourites_count
@@ -887,7 +871,7 @@ class User(object):
 
     The return value is the same as the JSON string representation.
 
-    Returns:
+    @returns:
       A string representation of this twitter.User instance.
     '''
     return self.AsJsonString()
@@ -895,7 +879,7 @@ class User(object):
   def AsJsonString(self):
     '''A JSON string representation of this twitter.User instance.
 
-    Returns:
+    @returns:
       A JSON string representation of this twitter.User instance
    '''
     return json.dumps(self.AsDict(), sort_keys=True)
@@ -905,7 +889,7 @@ class User(object):
 
     The return value uses the same key names as the JSON representation.
 
-    Return:
+    @return:
       A dict representing this twitter.User instance
     '''
     data = {}
@@ -957,7 +941,7 @@ class User(object):
 
     Args:
       data: A JSON dict, as converted from the JSON in the twitter API
-    Returns:
+    @returns:
       A twitter.User instance
     '''
     if 'status' in data:
@@ -1036,7 +1020,7 @@ class DirectMessage(object):
   def GetId(self):
     '''Get the unique id of this direct message.
 
-    Returns:
+    @returns:
       The unique id of this direct message
     '''
     return self._id
@@ -1055,7 +1039,7 @@ class DirectMessage(object):
   def GetCreatedAt(self):
     '''Get the time this direct message was posted.
 
-    Returns:
+    @returns:
       The time this direct message was posted
     '''
     return self._created_at
@@ -1074,7 +1058,7 @@ class DirectMessage(object):
   def GetCreatedAtInSeconds(self):
     '''Get the time this direct message was posted, in seconds since the epoch.
 
-    Returns:
+    @returns:
       The time this direct message was posted, in seconds since the epoch.
     '''
     return calendar.timegm(rfc822.parsedate(self.created_at))
@@ -1086,7 +1070,7 @@ class DirectMessage(object):
   def GetSenderId(self):
     '''Get the unique sender id of this direct message.
 
-    Returns:
+    @returns:
       The unique sender id of this direct message
     '''
     return self._sender_id
@@ -1105,7 +1089,7 @@ class DirectMessage(object):
   def GetSenderScreenName(self):
     '''Get the unique sender screen name of this direct message.
 
-    Returns:
+    @returns:
       The unique sender screen name of this direct message
     '''
     return self._sender_screen_name
@@ -1124,7 +1108,7 @@ class DirectMessage(object):
   def GetRecipientId(self):
     '''Get the unique recipient id of this direct message.
 
-    Returns:
+    @returns:
       The unique recipient id of this direct message
     '''
     return self._recipient_id
@@ -1143,7 +1127,7 @@ class DirectMessage(object):
   def GetRecipientScreenName(self):
     '''Get the unique recipient screen name of this direct message.
 
-    Returns:
+    @returns:
       The unique recipient screen name of this direct message
     '''
     return self._recipient_screen_name
@@ -1162,7 +1146,7 @@ class DirectMessage(object):
   def GetText(self):
     '''Get the text of this direct message.
 
-    Returns:
+    @returns:
       The text of this direct message.
     '''
     return self._text
@@ -1199,7 +1183,7 @@ class DirectMessage(object):
 
     The return value is the same as the JSON string representation.
 
-    Returns:
+    @returns:
       A string representation of this twitter.DirectMessage instance.
     '''
     return self.AsJsonString()
@@ -1207,7 +1191,7 @@ class DirectMessage(object):
   def AsJsonString(self):
     '''A JSON string representation of this twitter.DirectMessage instance.
 
-    Returns:
+    @returns:
       A JSON string representation of this twitter.DirectMessage instance
    '''
     return json.dumps(self.AsDict(), sort_keys=True)
@@ -1217,7 +1201,7 @@ class DirectMessage(object):
 
     The return value uses the same key names as the JSON representation.
 
-    Return:
+    @return:
       A dict representing this twitter.DirectMessage instance
     '''
     data = {}
@@ -1243,7 +1227,7 @@ class DirectMessage(object):
 
     Args:
       data: A JSON dict, as converted from the JSON in the twitter API
-    Returns:
+    @returns:
       A twitter.DirectMessage instance
     '''
     return DirectMessage(created_at=data.get('created_at', None),
@@ -1376,7 +1360,7 @@ class Api(object):
         Returns only public statuses with an ID greater than
         (that is, more recent than) the specified ID. [optional]
 
-    Returns:
+    @returns:
       An sequence of twitter.Status instances, one for each message
     '''
     parameters = {}
@@ -1405,7 +1389,7 @@ class Api(object):
         Returns only public statuses with an ID greater than
         (that is, more recent than) the specified ID. [optional]
 
-    Returns:
+    @returns:
       A sequence of twitter.Status instances, one for each message
       containing the term
     '''
@@ -1451,7 +1435,7 @@ class Api(object):
         profile_image_url available.
         If set to True, all information of users are available,
         but it uses lots of request quota, one per status.
-    Returns:
+    @returns:
       A sequence of twitter.Status instances, one for each message containing
       the term
     '''
@@ -1520,7 +1504,7 @@ class Api(object):
         Returns only public statuses with an ID greater than (that is,
         more recent than) the specified ID. [Optional]
 
-    Returns:
+    @returns:
       A sequence of twitter.Status instances, one for each message
     '''
     if not user and not self._username:
@@ -1583,7 +1567,7 @@ class Api(object):
          Specifies the page of results to retrieve. Note: there are
          pagination limits. [optional]
 
-    Returns:
+    @returns:
       A sequence of Status instances, one for each message up to count
     '''
     parameters = {}
@@ -1637,7 +1621,7 @@ class Api(object):
     Args:
       id: The numerical ID of the status you're trying to retrieve.
 
-    Returns:
+    @returns:
       A twitter.Status instance representing that status message
     '''
     try:
@@ -1660,7 +1644,7 @@ class Api(object):
     Args:
       id: The numerical ID of the status you're trying to destroy.
 
-    Returns:
+    @returns:
       A twitter.Status instance representing the destroyed status message
     '''
     try:
@@ -1689,7 +1673,7 @@ class Api(object):
         attribute of the resulting status to the user ID of the
         message being replied to.  Invalid/missing status IDs will be
         ignored. [Optional]
-    Returns:
+    @returns:
       A twitter.Status instance representing the message posted.
     '''
     if not self._username:
@@ -1727,7 +1711,7 @@ class Api(object):
         (horizontal ellipsis) instead. [Defaults to None]
       **kwargs:
         See api.PostUpdate for a list of accepted parameters.
-    Returns:
+    @returns:
       A of list twitter.Status instance representing the messages posted.
     '''
     results = list()
@@ -1754,7 +1738,7 @@ class Api(object):
         Returns only public statuses with an ID greater than (that is,
         more recent than) the specified ID. [Optional]
 
-    Returns:
+    @returns:
       A sequence of twitter.Status instances, one for each reply to the user.
     '''
     url = '%s/statuses/replies.json' % self.base_url
@@ -1781,7 +1765,7 @@ class Api(object):
 
     The twitter.Api instance must be authenticated.
 
-    Returns:
+    @returns:
       A sequence of twitter.User instances, one for each friend
     '''
     if not user and not self._username:
@@ -1814,7 +1798,7 @@ class Api(object):
           every time as suspended users will be filtered.)
           [optional]
 
-      Returns:
+      @returns:
         A list of integers, one for each user id.
       '''
       if not user and not self._username:
@@ -1836,7 +1820,7 @@ class Api(object):
 
     The twitter.Api instance must be authenticated.
 
-    Returns:
+    @returns:
       A sequence of twitter.User instances, one for each follower
     '''
     if not self._username:
@@ -1855,7 +1839,7 @@ class Api(object):
 
     The twitter.Api instance must be authenticated.
 
-    Returns:
+    @returns:
       A sequence of twitter.User instances
     '''
     url = '%s/statuses/featured.json' % self.base_url
@@ -1872,7 +1856,7 @@ class Api(object):
     Args:
       user: The username or id of the user to retrieve.
 
-    Returns:
+    @returns:
       A twitter.User instance representing that user
     '''
     url = '%s/users/show/%s.json' % (self.base_url, user)
@@ -1894,7 +1878,7 @@ class Api(object):
         Returns only public statuses with an ID greater than (that is,
         more recent than) the specified ID. [Optional]
 
-    Returns:
+    @returns:
       A sequence of twitter.DirectMessage instances
     '''
     url = '%s/direct_messages.json' % self.base_url
@@ -1921,7 +1905,7 @@ class Api(object):
       user: The ID or screen name of the recipient user.
       text: The message text to be posted.  Must be less than 140 characters.
 
-    Returns:
+    @returns:
       A twitter.DirectMessage instance representing the message posted
     '''
     if not self._username:
@@ -1943,7 +1927,7 @@ class Api(object):
     Args:
       id: The id of the direct message to be destroyed
 
-    Returns:
+    @returns:
       A twitter.DirectMessage instance representing the message destroyed
     '''
     url = '%s/direct_messages/destroy/%s.json' % (self.base_url, id)
@@ -1959,7 +1943,7 @@ class Api(object):
 
     Args:
       The ID or screen name of the user to befriend.
-    Returns:
+    @returns:
       A twitter.User instance representing the befriended user.
     '''
     url = '%s/friendships/create/%s.json' % (self.base_url, user)
@@ -1975,7 +1959,7 @@ class Api(object):
 
     Args:
       The ID or screen name of the user  with whom to discontinue friendship.
-    Returns:
+    @returns:
       A twitter.User instance representing the discontinued friend.
     '''
     url = '%s/friendships/destroy/%s.json' % (self.base_url, user)
@@ -1992,7 +1976,7 @@ class Api(object):
 
     Args:
       The twitter.Status instance to mark as a favorite.
-    Returns:
+    @returns:
       A twitter.Status instance representing the newly-marked favorite.
     '''
     url = '%s/favorites/create/%s.json' % (self.base_url, status.id)
@@ -2009,7 +1993,7 @@ class Api(object):
 
     Args:
       The twitter.Status to unmark as a favorite.
-    Returns:
+    @returns:
       A twitter.Status instance representing the newly-unmarked favorite.
     '''
     url = '%s/favorites/destroy/%s.json' % (self.base_url, status.id)
@@ -2071,7 +2055,7 @@ class Api(object):
       page:
         Retrieves the 20 next most recent replies. [optional]
     
-    Returns:
+    @returns:
       A sequence of twitter.Status instances, one for each mention of the user.
       see: http://apiwiki.twitter.com/REST-API-Documentation#statuses/mentions
     '''
@@ -2102,7 +2086,7 @@ class Api(object):
 
     Args:
       email: The email of the user to retrieve.
-    Returns:
+    @returns:
       A twitter.User instance representing that user
     '''
     url = '%s/users/show.json?email=%s' % (self.base_url, email)
@@ -2114,7 +2098,7 @@ class Api(object):
   def VerifyCredentials(self):
     '''Returns a twitter.User instance if the authenticating user is valid.
 
-    Returns: 
+    @returns: 
       A twitter.User instance representing that user if the
       credentials are valid, None otherwise.
     '''
@@ -2218,7 +2202,7 @@ class Api(object):
   def GetRateLimitStatus(self):
     '''Fetch the rate limit status for the currently authorized user.
     
-    Returns:
+    @returns:
       A dictionary containing the time the limit will reset (reset_time),
       the number of remaining hits allowed before the reset (remaining_hits),
       the number of hits allowed in a 60-minute period (hourly_limit), and the
@@ -2237,7 +2221,7 @@ class Api(object):
     hitting the server again without exceeding the rate_limit imposed for the
     currently authenticated user.
     
-    Returns:
+    @returns:
       The minimum second interval that a program must use so as to not exceed
       the rate_limit imposed for the user.
     '''
@@ -2342,7 +2326,7 @@ class Api(object):
       parameters:
         A dict of (key, value) tuples, where value is encoded as
         specified by self._encoding
-    Returns:
+    @returns:
       A URL-encoded string in "key=value&key=value" form
     '''
     if parameters is None:
@@ -2360,7 +2344,7 @@ class Api(object):
       post_data:
         A dict of (key, value) tuples, where value is encoded as
         specified by self._encoding
-    Returns:
+    @returns:
       A URL-encoded string in "key=value&key=value" form
     '''
     if post_data is None:
@@ -2406,7 +2390,7 @@ class Api(object):
         Defaults to None, which will get the value to use from
         the instance variable self._use_gzip [optional]
 
-    Returns:
+    @returns:
       A string containing the body of the response.
     '''
     # Build the extra parameters dict
