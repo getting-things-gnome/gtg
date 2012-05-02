@@ -209,6 +209,9 @@ class TaskBrowser(gobject.GObject):
             self.on_tag_treeview_key_press_event)
         self.sidebar_container.add(self.tagtreeview)
 
+        # Refresh tree 
+        self.tagtree.reset_filters(transparent_only=True)
+
         # expanding search tag does not work automatically, request it
         self.expand_search_tag()
 
