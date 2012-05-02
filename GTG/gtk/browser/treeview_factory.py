@@ -85,9 +85,9 @@ class TreeviewFactory():
                     real_count = real_count + 1
         return display_count < real_count
     
-    def task_bg_color(self,tags,bg):
+    def task_bg_color(self, node, default_color):
         if self.config.get('bg_color_enable'):
-            return colors.background_color(tags,bg)
+            return colors.background_color(node.get_tags(), default_color)
         else:
             return None
     
@@ -424,6 +424,13 @@ class TreeviewFactory():
         col['order'] = 0
         desc[col_name] = col
 
+        #invisible 'bg_color' column
+        col_name = 'bg_color'
+        col = {}
+        col['value'] = [str, lambda node: None]
+        col['visible'] = False
+        desc[col_name] = col
+
         #invisible 'title' column
         col_name = 'title'
         col = {}
@@ -463,6 +470,7 @@ class TreeviewFactory():
         desc[col_name] = col
         return desc
         
+    
     def build_task_treeview(self,tree,desc):
         treeview = AutoExpandTreeView(tree,desc)
         #Now that the treeview is done, we can polish
@@ -470,7 +478,7 @@ class TreeviewFactory():
         treeview.set_expander_column('label')
         treeview.set_dnd_name('gtg/task-iter-str')
         #Background colors
-        treeview.set_bg_color(self.task_bg_color,'tags')
+        treeview.set_bg_color(self.task_bg_color, 'bg_color')
          # Global treeview properties
         treeview.set_property("enable-tree-lines", False)
         treeview.set_rules_hint(False)

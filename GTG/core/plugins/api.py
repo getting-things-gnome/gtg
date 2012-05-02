@@ -185,13 +185,10 @@ class PluginAPI:
         # set default bgcolor?
         if func is None:
             func = browser.tv_factory.task_bg_color
-            info_col = 'tags'
-        else:
-            info_col = 'task_id'
 
         for pane in browser.vtree_panes:
             pane = browser.vtree_panes[pane]
-            pane.set_bg_color(func, info_col)
+            pane.set_bg_color(func, 'bg_color')
             # FIXME: Added a parameter to the reset_filters call because
             # otherwise all old completed tasks are re-shown and unable
             # to be marked as done
