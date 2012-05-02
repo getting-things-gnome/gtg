@@ -192,6 +192,7 @@ class Backend(PeriodicImportBackend):
 
         @param note: a launchpad bug
         '''
+        print "_process_launchpad_bug", bug
         action, tid = self.sync_engine.analyze_remote_id(bug.self_link, \
                  self.datastore.has_task, lambda b: True)
         Log.debug("processing launchpad (%s)" % (action))

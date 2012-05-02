@@ -51,8 +51,8 @@ import logging
 import dbus
 
 #our own imports
-from GTG.backends       import BackendFactory
 from GTG                import _
+from GTG.backends       import BackendFactory
 from GTG.core           import CoreConfig
 from GTG.core.datastore import DataStore
 from GTG.gtk.manager    import Manager

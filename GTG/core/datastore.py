@@ -334,7 +334,7 @@ class DataStore(object):
         self.__tasks.add_node(task)
         return task
 
-    @synchronized
+    #@synchronized
     def push_task(self, task):
         '''
         Adds the given task object to the task tree. In other words, registers
@@ -650,10 +650,11 @@ class TaskSource():
         ''''
         Maps the TaskSource to the backend and starts threading.
         '''
-        self.start_get_tasks_thread = \
-             threading.Thread(target=self.__start_get_tasks)
-        self.start_get_tasks_thread.setDaemon(True)
-        self.start_get_tasks_thread.start()
+        #self.start_get_tasks_thread = \
+             #threading.Thread(target=self.__start_get_tasks)
+        #self.start_get_tasks_thread.setDaemon(True)
+        #self.start_get_tasks_thread.start()
+        self.__start_get_tasks()
 
     def __start_get_tasks(self):
         '''
