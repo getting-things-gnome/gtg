@@ -55,7 +55,6 @@ def import_liblarch(use_local=False):
     has_libraries, missing = check_liblarch()
 
     if not use_local and not has_libraries:
-        Log.warning('Switching to local liblarch')
         sys.path.append("../liblarch/")
         has_libraries, missing = check_liblarch()
 
