@@ -27,6 +27,20 @@ from datetime import date, timedelta
 from GTG import _
 from GTG.tools.dates import Date
 
+def next_month(aday, day=None):
+    """ Increase month, change 2012-02-13 into 2012-03-13.
+    If day is set, replace day in month as well
+    
+    @return updated date """
+    if day is None:
+        day = aday.day
+    
+    if aday.month == 12:
+        return aday.replace(day=day, month=1, year=aday.year + 1)
+    else:
+        return aday.replace(day=day, month=aday.month + 1)
+
+
 class TestDates(unittest.TestCase):
     '''
     Tests for the various Date classes
@@ -100,6 +114,19 @@ class TestDates(unittest.TestCase):
         aday = aday.replace(year=aday.year+1, month=1, day=1)
 
         self.assertEqual(Date.parse("0101"), aday)
+
+    def test_on_certain_day(self):
+        """ Parse due:3 as 3rd day this month or next month
+        if it is already more or already 3rd day """
+        for i in range(28):
+            i += 1
+            aday = date.today()
+            if i <= aday.day:
+                aday = next_month(aday, i)
+            else:
+                aday = aday.replace(day=i)
+
+            self.assertEqual(Date.parse(str(i)), aday)
 
 
 def test_suite():

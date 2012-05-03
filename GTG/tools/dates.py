@@ -276,6 +276,31 @@ class Date(object):
             except ValueError:
                 continue
 
+        try:
+            mday = int(string)
+            if not 1 <= mday <= 31 or string.startswith('0'):
+                mday = None
+        except ValueError:
+            mday = None
+
+        if mday is not None:
+            try:
+                result = today.replace(day=mday)
+            except ValueError:
+                pass
+            if result is None or result <= today:
+                if today.month == 12:
+                    next_month = 1
+                    next_year = today.year + 1
+                else:
+                    next_month = today.month + 1
+                    next_year = today.year
+
+                try:
+                    result = datetime.date(next_year, next_month, mday)
+                except ValueError:
+                    pass
+
         offset = formats.get(string, None)
         if result is None and offset is not None:
             result = today + datetime.timedelta(offset)
