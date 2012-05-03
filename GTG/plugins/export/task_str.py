@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright (c) 2009 - Luca Invernizzi <invernizzi.l@gmail.com>
+#               2012 - Izidor Matušov <izidor.matusov@gmail.com>
 #
 # This program is free software: you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -76,22 +77,19 @@ def tree_to_TaskStr(tree, nodes, plugin_api, days = None):
         The resulting TaskStr will be linked to its subtasks in the
         same way as the tree"""
     tasks_str = []
-    for node in nodes:
-        if not tree.is_displayed(node.get_id()):
-            continue
-        task = plugin_api.get_requester().get_task(node.get_id())
+    for node_id in nodes:
+        task = plugin_api.get_requester().get_task(node_id)
         #The task_str is added to the result only if it satisfies the time
         # limit imposed with the @days parameter of this function
         if days and not _is_task_in_timespan(task, days):
             continue
         task_str = TaskStr_factory(task)
         tasks_str.append(task_str)
-        if node.has_child():
-            children = [tree.get_node(c) for c in node.get_children()]
-            task_str.subtasks = tree_to_TaskStr(tree,
-                                                children,
-                                                plugin_api,
-                                                days)
+        children = tree.node_all_children(node_id)
+        task_str.subtasks = tree_to_TaskStr(tree,
+                                            children,
+                                            plugin_api,
+                                            days)
     return tasks_str
 
 def _is_task_in_timespan(task, days):
