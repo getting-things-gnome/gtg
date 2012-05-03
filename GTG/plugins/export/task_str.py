@@ -17,14 +17,14 @@
 
 """ Text representation of GTG task for easier work in templates """
 
+
 class TaskStr(object):
     """ Wrapper around GTG Task.
     It provides access to the task various attributes directly via python
-    attributes instead of method calls and makes writing Cheetah 
+    attributes instead of method calls and makes writing Cheetah
     templates easier. """
     # Ignore big number of properties and small number of public methods
     # pylint: disable-msg=R0902,R0903
-
     def __init__(self, task, subtasks):
         self.title = task.get_title()
         self.text = str(task.get_text())
@@ -49,10 +49,11 @@ class TaskStr(object):
     has_days_left     = property(lambda s: s.days_left   != "")
     has_tags          = property(lambda s: s.tags        != [])
 
+
 def get_task_wrappers(tree, days = None, task_id = None):
     """ Recursively find all task on given tree and
     convert them into TaskStr
-    
+
     tree - tree of tasks
     days - filter days in certain timespan
     task_id - return subtasks of this tasks. If not set, use root node """

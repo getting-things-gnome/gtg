@@ -85,9 +85,6 @@ class PluginExport:
         self.filename = None
         self.template = None
 
-        self._init_gtk()
-        
-
     def activate(self, plugin_api):
         """ Loads saved preferences """
         self.plugin_api = plugin_api
@@ -269,7 +266,7 @@ class PluginExport:
         model = combo.get_model()
         active = combo.get_active()
         if not 0 <= active < len(model):
-            return 
+            return
         description, image = model[active][2], model[active][3]
 
         if image:

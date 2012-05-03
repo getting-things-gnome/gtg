@@ -33,6 +33,7 @@ TEMPLATE_PATHS = [
  os.path.join(os.path.dirname(os.path.abspath(__file__)), "export_templates"),
 ]
 
+
 def get_templates_paths():
     """ Returns a list containing the full path for all the
     available templates. """
@@ -40,6 +41,7 @@ def get_templates_paths():
     for a_dir in TEMPLATE_PATHS:
         template_list += glob(os.path.join(a_dir, "template_*"))
     return template_list
+
 
 class Template:
     """ Representation of a template """
@@ -66,7 +68,7 @@ class Template:
             return None
 
     def _load_description(self):
-        """ Returns title and description of the template 
+        """ Returns title and description of the template
         template description are stored in python module for easier l10n.
         thus, we need to import the module given its path """
         path = self._find_file("description_", ".py")
