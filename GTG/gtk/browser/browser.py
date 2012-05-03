@@ -93,7 +93,7 @@ class TaskBrowser(gobject.GObject):
 
         # Set up models
         # Active Tasks
-        self.activetree.apply_filter('active',refresh=False)
+        self.activetree.apply_filter('active')
         # Tags
         self.tagtree = None
         self.tagtreeview = None
