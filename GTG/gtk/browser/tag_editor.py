@@ -43,9 +43,6 @@ class TagIconSelector(gtk.Window): # pylint: disable-msg=R0904
     an icon for a tag. It display a list of icon in a popup window.
     """
 
-    WIDTH  = 310
-    HEIGHT = 200
-
     def __init__(self):
         self.__gobject_init__(type=gtk.WINDOW_POPUP)
         gtk.Window.__init__(self)
@@ -59,19 +56,34 @@ class TagIconSelector(gtk.Window): # pylint: disable-msg=R0904
 
     def __build_window(self):
         """Build up the widget"""
-        self.set_size_request(TagIconSelector.WIDTH, TagIconSelector.HEIGHT)
         self.set_type_hint(gtk.gdk.WINDOW_TYPE_HINT_POPUP_MENU)
         vbox = gtk.VBox()
         self.add(vbox)
+        # icon list
         scld_win = gtk.ScrolledWindow()
-        vbox.pack_start(scld_win)
+        scld_win.set_policy(gtk.POLICY_NEVER, gtk.POLICY_ALWAYS)
+        scld_win.set_shadow_type(gtk.SHADOW_ETCHED_IN)
+        vbox.pack_start(scld_win, expand=True, fill=True)
         self.symbol_iv = gtk.IconView()
         self.symbol_iv.set_pixbuf_column(0)
-        self.symbol_iv.set_property("item-padding", 2)
-        self.symbol_iv.set_property("column-spacing", 0)
-        self.symbol_iv.set_property("row-spacing", 0)
+        self.symbol_iv.set_property("columns", 7)
+        self.symbol_iv.set_property("item-width", 32)
+        # IconView size:
+        # --------------
+        #  it seems that with the above parameters, a row width is about:
+        #  item_count * (32px (item) + 6px (dflt padding) + 2px (spacing?)) \
+        #      + 2*6px (dflt widget margin)
+        #  The same goes for row height, but being right for this value is less
+        #  important due to the vertical scrollbar.
+        #  The IcVw size should fit the width of 7 cols and height of ~4 lines.
+        self.symbol_iv.set_size_request(40*7 + 12, 38*4)
         scld_win.add(self.symbol_iv)
-        self.remove_bt = gtk.Button(stock=gtk.STOCK_REMOVE)
+        # icon remove button
+        img = gtk.Image()
+        img.set_from_stock(gtk.STOCK_REMOVE, gtk.ICON_SIZE_BUTTON)
+        self.remove_bt = gtk.Button()
+        self.remove_bt.set_image(img)
+        self.remove_bt.set_label(_("Remove selected icon"))
         vbox.pack_start(self.remove_bt, fill=False, expand=False)
         # set the callbacks
         self.symbol_iv.connect("selection-changed", self.on_selection_changed)
@@ -93,6 +105,12 @@ class TagIconSelector(gtk.Window): # pylint: disable-msg=R0904
             self.symbol_model.append([img, icon])
         self.symbol_iv.set_model(self.symbol_model)
         self.loaded = True
+
+    ### PUBLIC IF ###
+
+    def set_remove_enabled(self, enable):
+        """Disable/enable the remove button"""
+        self.remove_bt.set_sensitive(enable)
 
     ### callbacks ###
 
@@ -256,6 +274,7 @@ class TagEditor(gtk.Window): # pylint: disable-msg=R0904
         self.ti_bt_label.set_justify(gtk.JUSTIFY_CENTER)
         self.ti_bt_label.set_markup(markup)
         self.ti_bt_label.show()
+        self.__set_icon(None)
         # Show in WV
         self.tn_cb.set_active(True)
         # Name entry
@@ -347,15 +366,18 @@ class TagEditor(gtk.Window): # pylint: disable-msg=R0904
             self.tag.del_attribute("icon")
             self.__set_icon(None)
 
-
     def on_ti_bt_clicked(self, widget): # pylint: disable-msg=W0613
         """Callback: displays the tag icon selector widget next
         to the button."""
         rect = self.ti_bt.get_allocation()
         pos_x, pos_y = \
             self.ti_bt.window.get_origin() # pylint: disable-msg=E1101
-        self.tag_icon_selector.show_at_position(pos_x+rect.x+rect.width, \
+        self.tag_icon_selector.show_at_position(pos_x+rect.x+rect.width+2, \
             pos_y+rect.y)
+        if self.tag.get_attribute('icon') is not None:
+            self.tag_icon_selector.set_remove_enabled(True)
+        else:
+            self.tag_icon_selector.set_remove_enabled(False)
 
     def on_tn_entry_changed(self, widget): # pylint: disable-msg=W0613
         """Callback: checks tag name validity and start value changes monitoring

@@ -243,6 +243,7 @@ class Manager(object):
         else:
             self.tag_editor_dialog.set_tag(tag)
         self.tag_editor_dialog.show()
+        self.tag_editor_dialog.present()
 
     def close_tag_editor(self):
         self.tag_editor_dialog.hide()
