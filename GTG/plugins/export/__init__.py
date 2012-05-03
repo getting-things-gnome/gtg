@@ -14,8 +14,6 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from GTG.plugins.export.export import pluginExport
-
-
-#suppress pyflakes warning (given by make lint)
-if False == True: pluginExport()
+""" Initialize export pugin """
+ 
+from GTG.plugins.export.export import PluginExport

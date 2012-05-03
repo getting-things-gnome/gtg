@@ -15,23 +15,21 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 
-""" Export plugin - plugin for exporting into nice lists in TXT, HTML or PDF """
+""" Export plugin
+Plugin for exporting into nice lists in TXT, HTML or PDF """
 
 import os
 import shutil
-import subprocess
-import tempfile
-import threading
 import webbrowser
 
-from Cheetah.Template  import Template as CheetahTemplate
 from xdg.BaseDirectory import xdg_config_home
 import gobject
 import gtk
 
 from GTG import _
-from GTG.plugins.export.task_str import tree_to_TaskStr
-from GTG.plugins.export.templates import TemplateFactory
+from GTG.plugins.export.task_str import get_task_wrappers
+from GTG.plugins.export.templates import Template, get_templates_paths
+
 
 def get_user_dir(key):
     """
@@ -51,33 +49,44 @@ def get_user_dir(key):
     """
     user_dirs_dirs = os.path.join(xdg_config_home, "user-dirs.dirs")
     user_dirs_dirs = os.path.expanduser(user_dirs_dirs)
-    if os.path.exists(user_dirs_dirs):
-        f = open(user_dirs_dirs, "r")
-        for line in f.readlines():
-            if line.startswith(key):
-                return os.path.expandvars(line[len(key)+2:-2])
+    if not os.path.exists(user_dirs_dirs):
+        return
+    for line in open(user_dirs_dirs, "r"):
+        if line.startswith(key):
+            return os.path.expandvars(line[len(key)+2:-2])
 
 
 def get_desktop_dir():
     """ Returns path to desktop dir based on XDG.
 
     If XDG is not setup corectly, use home directory instead """
-    desktop_dir = self.get_user_dir("XDG_DESKTOP_DIR")
+    desktop_dir = get_user_dir("XDG_DESKTOP_DIR")
     if desktop_dir is not None and os.path.exists(desktop_dir):
         return desktop_dir
     else:
         return os.path.expanduser('~')
 
 
-class pluginExport:
+class PluginExport:
     """ Export plugin - handle UI and trigger exporting tasks """
+
+    # Allow initilization outside __init__() and don't complain
+    # about too many attributes
+    # pylint: disable-msg=W0201,R0902
 
     PLUGIN_NAME = "export"
 
     DEFAULT_PREFERENCES = {
         "menu_entry": True,
-        "toolbar_entry": True
+        "toolbar_entry": True,
     }
+
+    def __init__(self):
+        self.filename = None
+        self.template = None
+
+        self._init_gtk()
+        
 
     def activate(self, plugin_api):
         """ Loads saved preferences """
@@ -86,7 +95,7 @@ class pluginExport:
         self._preferences_load()
         self._preferences_apply()
 
-    def deactivate(self, plugin_api):
+    def deactivate(self, plugin_api): # pylint: disable-msg=W0613
         """ Removes the gtk widgets before quitting """
         self._gtk_deactivate()
 
@@ -96,9 +105,9 @@ class pluginExport:
         If saving == True, ask user where to store the document. Otherwise,
         open it afterwards. """
 
-        if not self.load_template():
-            self.show_error_dialog(_("Template not found"))
-            return
+        model = self.combo.get_model()
+        active = self.combo.get_active()
+        self.template = Template(model[active][0])
 
         self.filename = None
         if saving:
@@ -110,19 +119,26 @@ class pluginExport:
         self.open_button.set_sensitive(False)
 
         try:
-            self.export_generate()
+            tasks = self.get_selected_tasks()
+            self.template.generate(tasks, self.plugin_api,
+                                    self.on_export_finished)
         except Exception, err:
             self.show_error_dialog(
                         _("GTG could not generate the document: %s") % err)
             raise
 
     def on_export_finished(self):
-        """ Save generated file or open it, reenable buttons and hide dialog """
-        if self.document_path:
+        """ Save generated file or open it, reenable buttons
+        and hide dialog """
+        document_path = self.template.get_document_path()
+        if document_path:
             if self.filename:
-                shutil.copyfile(self.document_path, self.filename)
+                shutil.copyfile(document_path, self.filename)
             else:
-                webbrowser.open(self.document_path)
+                webbrowser.open(document_path)
+        else:
+            self.show_error_dialog("Document creation failed. "
+                "Ensure you have all needed programs.")
 
         self.save_button.set_sensitive(True)
         self.open_button.set_sensitive(True)
@@ -145,64 +161,8 @@ class pluginExport:
         if treename not in tree.list_applied_filters():
             tree.apply_filter(treename)
 
-        return tree_to_TaskStr(tree, tree.node_all_children(),
-            self.plugin_api, timespan)
+        return get_task_wrappers(tree, timespan)
 
-    def export_generate(self):
-        """ Fill template, run a post-script if needed and 
-        call on_export_finished().
-
-        Created files are saved with the same suffix as the template. Opening
-        the final file determines its type based on suffix. """
-
-        tasks = self.get_selected_tasks()
-        document = CheetahTemplate( file = self.template.get_path(),
-            searchList = [{'tasks': tasks, 'plugin_api': self.plugin_api}])
-
-        suffix = ".%s" % self.template.get_suffix()
-        with tempfile.NamedTemporaryFile(suffix = suffix, delete = False) as f:
-            f.write(str(document))
-            self.document_path = f.name
-
-        if self.template.get_script_path():
-            self.run_script()
-        else:
-            self.on_export_finished()
-
-    def run_script(self):
-        """ Run script in its own thread and in other thread wait 
-        for the result. """
-        document_ready = threading.Event()
-
-        def script():
-            """ Run script using /bin/sh.
-
-            The script gets path to a document as it only argument and
-            this thread expects resulting file as the only output of
-            the script. """
-
-            cmd = self.template.get_script_path() + " " + self.document_path
-            self.document_path = None
-            try:
-                self.document_path = subprocess.Popen(
-                    args = ['/bin/sh', '-c', cmd],
-                    shell = False, stdout = subprocess.PIPE)\
-                                            .communicate()[0]
-            except:
-                pass
-
-            if not os.path.exists(self.document_path):
-                gobject.idle_add(self.show_error_dialog, "Document creation failed. Ensure you have all needed programs.")
-                self.document_path = None
-            document_ready.set()
-
-        def wait_for_document():
-            """ Wait for the completion of the script and finish generation """
-            document_ready.wait()
-            gobject.idle_add(self.on_export_finished)
-
-        threading.Thread(target = script).start()
-        threading.Thread(target = wait_for_document).start()
 
 ## GTK FUNCTIONS ##############################################################
     def _init_gtk(self):
@@ -224,13 +184,12 @@ class pluginExport:
         builder.add_from_file(builder_file)
 
         self.combo = builder.get_object("export_combo_templ")
-        self.templates_list = gtk.ListStore(
-                    gobject.TYPE_STRING, gobject.TYPE_STRING)
-        self.combo.set_model(self.templates_list)
+        templates_list = gtk.ListStore(gobject.TYPE_STRING,
+            gobject.TYPE_STRING, gobject.TYPE_STRING, gobject.TYPE_STRING)
+        self.combo.set_model(templates_list)
         cell = gtk.CellRendererText()
         self.combo.pack_start(cell, True)
-        self.combo.add_attribute(cell, 'text', 0)
-        self.combo_active = 0
+        self.combo.add_attribute(cell, 'text', 1)
 
         self.export_dialog = builder.get_object("export_dialog")
         self.export_image = builder.get_object("export_image")
@@ -267,73 +226,60 @@ class pluginExport:
 
     def _gtk_deactivate(self):
         """ Remove Toolbar Button and Menu item for this plugin """
-        try:
+        if self.menu_entry:
             self.plugin_api.remove_menu_item(self.menu_item)
-        except:
-            pass
-        self.menu_entry = False
-        try:
-            self.plugin_api.remove_toolbar_item(self.tb_button)
-        except:
-            pass
-        self.toolbar_entry = False
+            self.menu_entry = False
 
-    def show_dialog(self, widget):
+        if self.toolbar_entry:
+            self.plugin_api.remove_toolbar_item(self.tb_button)
+            self.toolbar_entry = False
+
+    def show_dialog(self, widget): # pylint: disable-msg=W0613
         """ Show dialog with options for export """
         parent_window = self.plugin_api.get_ui().get_window()
         self.export_dialog.set_transient_for(parent_window)
         self._update_combobox()
         self.export_dialog.show_all()
 
-    def _hide_dialog(self, sender=None, data=None):
+    def _hide_dialog(self, sender=None, data=None): # pylint: disable-msg=W0613
         """ Hide dialog """
         self.export_dialog.hide()
         return True
 
     def _update_combobox(self):
         """ Reload list of templates """
-        self.templates_list.clear()
+        model = self.combo.get_model()
+        model.clear()
 
-        templates = TemplateFactory().get_templates_paths()
+        templates = get_templates_paths()
         for path in templates:
-            title = TemplateFactory().create_template(path).get_title()
-            self.templates_list.append((title, path))
+            template = Template(path)
+            model.append((path,
+                template.get_title(),
+                template.get_description(),
+                template.get_image_path()))
 
         # wrap the combo-box if it's too long
         if len(templates) > 15:
             self.combo.set_wrap_width(5)
+        self.combo.set_active(0)
 
-        if not 0 <= self.combo_active < len(templates):
-            self.combo_active = 0
-
-        self.combo.set_active(self.combo_active)
-
-# WTF??????  #FIXME
-    def combo_get_path(self, combobox):
-        model = combobox.get_model()
-        active = combobox.get_active()
-        if active < 0:
-            return None
-        return model[active][1]
-    #FIXME
-    def load_template(self):
-        self.template = TemplateFactory().create_template(\
-                                            self.combo_get_path(self.combo))
-        return self.template
-
-    def on_combo_changed(self, widget):
+    def on_combo_changed(self, combo):
         """ Display details about the selected template """
-        # WTF?
-        if self.load_template():
-            image_path = self.template.get_image_path()
-            if image_path:
-                pixbuf = gtk.gdk.pixbuf_new_from_file(image_path)
-                width, height = self.export_image.get_size_request()
-                pixbuf = pixbuf.scale_simple(width, height, gtk.gdk.INTERP_BILINEAR)
-                self.export_image.set_from_pixbuf(pixbuf)
-            else:
-                self.export_image.clear()
-        description = self.template.get_description()
+        model = combo.get_model()
+        active = combo.get_active()
+        if not 0 <= active < len(model):
+            return 
+        description, image = model[active][2], model[active][3]
+
+        if image:
+            pixbuf = gtk.gdk.pixbuf_new_from_file(image)
+            width, height = self.export_image.get_size_request()
+            pixbuf = pixbuf.scale_simple(width, height,
+                                        gtk.gdk.INTERP_BILINEAR)
+            self.export_image.set_from_pixbuf(pixbuf)
+        else:
+            self.export_image.clear()
         self.description_label.set_markup("<i>%s</i>" % description)
 
     def show_error_dialog(self, message):
@@ -367,7 +313,8 @@ class pluginExport:
             return None
 
 ## Preferences methods ########################################################
-    def is_configurable(self):
+    @classmethod
+    def is_configurable(cls):
         """A configurable plugin should have this method and return True"""
         return True
 
@@ -380,11 +327,12 @@ class pluginExport:
         self.preferences_dialog.show_all()
 
     def on_preferences_cancel(self, widget, data=None):
+        # pylint: disable-msg=W0613
         """ Only hide the dialog """
         self.preferences_dialog.hide()
         return True
 
-    def on_preferences_ok(self, widget):
+    def on_preferences_ok(self, widget): # pylint: disable-msg=W0613
         """ Apply and store new preferences """
         self.preferences["menu_entry"] = self.pref_menu.get_active()
         self.preferences["toolbar_entry"] = self.pref_toolbar.get_active()
