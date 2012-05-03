@@ -27,26 +27,26 @@ from datetime import date, timedelta
 from GTG import _
 from GTG.tools.dates import Date
 
+
 def next_month(aday, day=None):
     """ Increase month, change 2012-02-13 into 2012-03-13.
     If day is set, replace day in month as well
-    
+
     @return updated date """
     if day is None:
         day = aday.day
-    
+
     if aday.month == 12:
         return aday.replace(day=day, month=1, year=aday.year + 1)
     else:
         return aday.replace(day=day, month=aday.month + 1)
 
 
-class TestDates(unittest.TestCase):
-    '''
-    Tests for the various Date classes
-    '''
+class TestDates(unittest.TestCase): # pylint: disable-msg=R0904
+    """ Tests for the various Date classes """
 
     def test_parse_dates(self):
+        """ Parse common numeric date """
         self.assertEqual(str(Date.parse("1985-03-29")), "1985-03-29")
         self.assertEqual(str(Date.parse("19850329")), "1985-03-29")
         self.assertEqual(str(Date.parse("1985/03/29")), "1985-03-29")
@@ -56,6 +56,7 @@ class TestDates(unittest.TestCase):
         self.assertEqual(Date.parse(parse_string), today)
 
     def test_parse_fuzzy_dates(self):
+        """ Parse fuzzy dates like now, soon, later, someday """
         self.assertEqual(Date.parse("now"), Date.now())
         self.assertEqual(Date.parse("soon"), Date.soon())
         self.assertEqual(Date.parse("later"), Date.someday())
@@ -63,6 +64,7 @@ class TestDates(unittest.TestCase):
         self.assertEqual(Date.parse(""), Date.no_date())
 
     def test_parse_local_fuzzy_dates(self):
+        """ Parse fuzzy dates in their localized version """
         self.assertEqual(Date.parse(_("now")), Date.now())
         self.assertEqual(Date.parse(_("soon")), Date.soon())
         self.assertEqual(Date.parse(_("later")), Date.someday())
@@ -70,6 +72,7 @@ class TestDates(unittest.TestCase):
         self.assertEqual(Date.parse(""), Date.no_date())
 
     def test_parse_fuzzy_dates_str(self):
+        """ Print fuzzy dates in localized version """
         self.assertEqual(str(Date.parse("now")), _("now"))
         self.assertEqual(str(Date.parse("soon")), _("soon"))
         self.assertEqual(str(Date.parse("later")), _("someday"))
@@ -77,8 +80,9 @@ class TestDates(unittest.TestCase):
         self.assertEqual(str(Date.parse("")), "")
 
     def test_parse_week_days(self):
+        """ Parse name of week days and don't care about case-sensitivity """
         weekday = date.today().weekday()
-        for i, day in enumerate(['Monday', 'Tuesday', 'Wednesday', 
+        for i, day in enumerate(['Monday', 'Tuesday', 'Wednesday',
             'Thursday', 'Friday', 'Saturday', 'Sunday']):
             if i <= weekday:
                 expected = date.today() + timedelta(7+i-weekday)
@@ -113,6 +117,7 @@ class TestDates(unittest.TestCase):
 
         aday = aday.replace(year=aday.year+1, month=1, day=1)
 
+        print repr(Date.parse("0101"))
         self.assertEqual(Date.parse("0101"), aday)
 
     def test_on_certain_day(self):
@@ -128,7 +133,12 @@ class TestDates(unittest.TestCase):
 
             self.assertEqual(Date.parse(str(i)), aday)
 
+    def test_prevent_regression(self):
+        """ A day represented in GTG Date must be still the same """
+        aday = date.today()
+        self.assertEqual(Date(aday), aday)
+
 
 def test_suite():
+    """ Return unittests """
     return unittest.TestLoader().loadTestsFromTestCase(TestDates)
-
