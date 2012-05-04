@@ -93,7 +93,7 @@ class TaskBrowser(gobject.GObject):
 
         # Set up models
         # Active Tasks
-        self.activetree.apply_filter('active',refresh=False)
+        self.activetree.apply_filter('active')
         # Tags
         self.tagtree = None
         self.tagtreeview = None
@@ -131,6 +131,7 @@ class TaskBrowser(gobject.GObject):
         #Update the title when a task change
         self.activetree.register_cllbck('node-added-inview', self._update_window_title)
         self.activetree.register_cllbck('node-deleted-inview', self._update_window_title)
+        self._update_window_title()
 
 ### INIT HELPER FUNCTIONS #####################################################
 #
@@ -208,6 +209,9 @@ class TaskBrowser(gobject.GObject):
         self.tagtreeview.connect('key-press-event',\
             self.on_tag_treeview_key_press_event)
         self.sidebar_container.add(self.tagtreeview)
+
+        # Refresh tree 
+        self.tagtree.reset_filters(transparent_only=True)
 
         # expanding search tag does not work automatically, request it
         self.expand_search_tag()
