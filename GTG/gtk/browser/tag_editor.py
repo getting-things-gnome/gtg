@@ -159,6 +159,9 @@ class TagIconSelector(gtk.Window): # pylint: disable-msg=R0904
         """Return the selected icon. None if no icon is selected."""
         return self.selected_icon
 
+    def unselect_icon(self):
+        self.symbol_iv.unselect_all()
+
 
 gobject.type_register(TagIconSelector)
 gobject.signal_new("selection-changed", TagIconSelector,
@@ -179,6 +182,7 @@ class TagEditor(gtk.Window): # pylint: disable-msg=R0904
         self.tn_entry_watch_id = None
         self.tn_cb_clicked_hid = None
         self.tn_entry_clicked_hid = None
+        self.tis_selection_changed_hid = None
         self.tag_icon_selector = None
         # Build up the window
         self.set_position(gtk.WIN_POS_CENTER)
@@ -253,7 +257,8 @@ class TagEditor(gtk.Window): # pylint: disable-msg=R0904
         """Define the widget callbacks"""
         # Set the callbacks
         self.ti_bt.connect('clicked', self.on_ti_bt_clicked)
-        self.tag_icon_selector.connect('selection-changed', \
+        self.tis_selection_changed_hid = \
+            self.tag_icon_selector.connect('selection-changed', \
             self.on_tis_selection_changed)
         self.tn_entry_clicked_hid = \
             self.tn_entry.connect('changed', self.on_tn_entry_changed)
@@ -269,12 +274,15 @@ class TagEditor(gtk.Window): # pylint: disable-msg=R0904
         # interferences
         self.tn_cb.handler_block(self.tn_cb_clicked_hid)
         self.tn_entry.handler_block(self.tn_entry_clicked_hid)
+        self.tag_icon_selector.handler_block(self.tis_selection_changed_hid)
         # Default icon
         markup = "<span size='small'>%s</span>" % _("Click To\nSet Icon")
         self.ti_bt_label.set_justify(gtk.JUSTIFY_CENTER)
         self.ti_bt_label.set_markup(markup)
         self.ti_bt_label.show()
         self.__set_icon(None)
+        # Unselect any previously selected icon
+        self.tag_icon_selector.unselect_icon()
         # Show in WV
         self.tn_cb.set_active(True)
         # Name entry
@@ -291,6 +299,7 @@ class TagEditor(gtk.Window): # pylint: disable-msg=R0904
         # Re-enable checkbutton handler_block
         self.tn_cb.handler_unblock(self.tn_cb_clicked_hid)
         self.tn_entry.handler_unblock(self.tn_entry_clicked_hid)
+        self.tag_icon_selector.handler_unblock(self.tis_selection_changed_hid)
 
     def __set_icon(self, icon):
         """Set the icon in the related button widget. Restore the label when
