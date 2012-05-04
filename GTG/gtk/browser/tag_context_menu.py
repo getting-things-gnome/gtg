@@ -43,28 +43,42 @@ class TagContextMenu(gtk.Menu): # pylint: disable-msg=R0904
         self.vmanager = vmanager
         self.tag = tag
         # Build up the menu
-        self.__build_menu()
         self.set_tag(tag)
-        # Make it visible
-        self.show_all()
+        self.__build_menu()
 
     def __build_menu(self):
         """Build up the widget"""
-        # Color chooser FIXME: SHOULD BECOME A COLOR PICKER
-        self.mi_cc = gtk.MenuItem()
-        self.mi_cc.set_label(_("Edit Tag..."))
-        self.append(self.mi_cc)
-        # Set the callbacks
-        self.mi_cc.connect('activate', self.on_mi_cc_activate)
+        # Reset the widget
+        for i in self:
+            self.remove(i)
+            i.destroy()
+        if self.tag is not None:
+            # Color chooser FIXME: SHOULD BECOME A COLOR PICKER
+            self.mi_cc = gtk.MenuItem()
+            self.mi_cc.set_label(_("Edit Tag..."))
+            self.append(self.mi_cc)
+            self.mi_cc.connect('activate', self.on_mi_cc_activate)
+            if self.tag.is_search_tag():
+                self.mi_del = gtk.MenuItem()
+                self.mi_del.set_label(_("Delete"))
+                self.append(self.mi_del)
+                self.mi_del.connect('activate', self.on_mi_del_activate)
+        # Make it visible
+        self.show_all()
 
     ### PUBLIC API ###
 
     def set_tag(self, tag):
         """Update the context menu items using the tag attributes."""
         self.tag = tag
+        self.__build_menu()
 
     ### CALLBACKS ###
 
     def on_mi_cc_activate(self, widget): # pylint: disable-msg=W0613
         """Callback: show the tag editor upon request"""
         self.vmanager.open_tag_editor(self.tag)
+
+    def on_mi_del_activate(self, widget): # pylint: disable-msg=W0613
+        """ delete a selected search """
+        self.req.remove_tag(self.tag.get_name())

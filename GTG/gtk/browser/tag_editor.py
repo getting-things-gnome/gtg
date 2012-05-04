@@ -332,7 +332,10 @@ class TagEditor(gtk.Window): # pylint: disable-msg=R0904
             self.tn_entry.handler_block(self.tn_entry_clicked_hid)
             self.tag = tag
             # Update entry
-            name = tag.get_name()[1:]
+            if tag.is_search_tag():
+                name = tag.get_name()
+            else:
+                name = tag.get_name()[1:]
             self.tn_entry.set_text(name)
             # Update visibility in Work View
             s_hidden_in_wv = (self.tag.get_attribute("nonworkview") == "True")
@@ -365,7 +368,11 @@ class TagEditor(gtk.Window): # pylint: disable-msg=R0904
             # update the tag name
             self.tn_entry_watch_id = None
             if cur_value.strip() != '':
-                self.req.rename_tag(self.tag.get_name(), "@"+cur_value)
+                if self.tag.is_search_tag():
+                    new_name = cur_value
+                else:
+                    new_name = "@"+cur_value
+                self.req.rename_tag(self.tag.get_name(), new_name)
             return False
 
     def on_tis_selection_changed(self, widget): # pylint: disable-msg=W0613

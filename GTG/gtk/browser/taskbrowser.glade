@@ -1058,24 +1058,6 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
     <property name="popup_set_width">False</property>
     <signal name="action-activated" handler="on_quickadd_entrycompletion_action_activated" swapped="no"/>
   </object>
-  <object class="GtkMenu" id="search_context_menu">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <child>
-      <object class="GtkImageMenuItem" id="search_delete">
-        <property name="label">Delete</property>
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="use_action_appearance">False</property>
-        <property name="use_underline">True</property>
-        <property name="image">image5</property>
-        <property name="use_stock">False</property>
-        <property name="accel_group">accelgroup1</property>
-        <property name="always_show_image">True</property>
-        <signal name="activate" handler="on_search_delete_activate" swapped="no"/>
-      </object>
-    </child>
-  </object>
   <object class="GtkMenu" id="start_for_context_menu">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
@@ -1233,7 +1215,6 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
     <child>
       <object class="GtkImageMenuItem" id="tcm_start_menu">
         <property name="label" translatable="yes">_Set start date</property>
-        <property name="submenu">start_for_context_menu</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="use_action_appearance">False</property>
@@ -1244,7 +1225,6 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
     <child>
       <object class="GtkImageMenuItem" id="tcm_due_menu">
         <property name="label" translatable="yes">Set due date</property>
-        <property name="submenu">due_context_menu</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="use_action_appearance">False</property>
