@@ -131,6 +131,7 @@ class TaskBrowser(gobject.GObject):
         #Update the title when a task change
         self.activetree.register_cllbck('node-added-inview', self._update_window_title)
         self.activetree.register_cllbck('node-deleted-inview', self._update_window_title)
+        self._update_window_title()
 
 ### INIT HELPER FUNCTIONS #####################################################
 #
