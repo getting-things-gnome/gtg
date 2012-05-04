@@ -259,7 +259,7 @@ class TagEditor(gtk.Window): # pylint: disable-msg=R0904
             self.tn_entry.connect('changed', self.on_tn_entry_changed)
         self.tn_cb_clicked_hid = self.tn_cb.connect('clicked', \
             self.on_tn_cb_clicked)
-        self.tc_cc_colsel.connect('color-defined', self.on_tc_colsel_defined)
+        self.tc_cc_colsel.connect('color-changed', self.on_tc_colsel_changed)
         self.tc_cc_colsel.connect('color-added', self.on_tc_colsel_added)
         self.connect('delete-event', self.on_close)
         
@@ -281,7 +281,7 @@ class TagEditor(gtk.Window): # pylint: disable-msg=R0904
         self.tn_entry.set_text(_("Enter tag name here"))
         self.tn_entry.set_icon_from_stock(gtk.ENTRY_ICON_SECONDARY, None)
         # Color selection
-        self.tc_cc_colsel.unselected_color()
+        self.tc_cc_colsel.unselect_color()
         # Custom colors
         self.custom_colors = list(self.config.get('custom_colors'))
         if len(self.custom_colors) > 0:
@@ -405,7 +405,7 @@ class TagEditor(gtk.Window): # pylint: disable-msg=R0904
             hide_in_wv = not show_in_wv
             self.tag.set_attribute('nonworkview', str(hide_in_wv))
 
-    def on_tc_colsel_defined(self, widget): # pylint: disable-msg=W0613
+    def on_tc_colsel_changed(self, widget): # pylint: disable-msg=W0613
         """Callback: update the tag color depending on the current color
         selection"""
         color = self.tc_cc_colsel.get_selected_color()
