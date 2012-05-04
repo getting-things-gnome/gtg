@@ -128,13 +128,19 @@ class SimpleColorSelector(gtk.VBox): # pylint: disable-msg=R0904,C0301
     """Widget displaying a palette of colors, possibly with a button allowing to
     define new colors."""
 
-    def __init__(self, width=9, colors=DEFAULT_PALETTE, custom_colors=[]):
+    def __init__(self, width=9, colors=None, custom_colors=None):
         gtk.VBox.__init__(self)
         self.__gobject_init__()
         self.width = width
         # widget model
-        self.colors = colors
-        self.custom_colors = custom_colors
+        if colors is None:
+            self.colors = DEFAULT_PALETTE
+        else:
+            self.colors = colors
+        if custom_colors is None:
+            self.custom_colors = []
+        else:
+            self.custom_colors = custom_colors
         self.buttons = []
         self.cc_buttons = []
         self.buttons_lookup = {}
@@ -259,7 +265,7 @@ class SimpleColorSelector(gtk.VBox): # pylint: disable-msg=R0904,C0301
         colorsel = color_dialog.colorsel
         if self.selected_col is not None:
             color = gtk.gdk.color_parse(self.selected_col.color)
-            colorsel.set_current_color(color)
+            colorsel.set_current_color(color) # pylint: disable-msg=E1101
         response = color_dialog.run()
         new_color = colorsel.get_current_color() # pylint: disable-msg=E1101
         # Check response_id and set color if required
@@ -306,7 +312,10 @@ class SimpleColorSelector(gtk.VBox): # pylint: disable-msg=R0904,C0301
 
     def get_selected_color(self):
         """Return the selected state of a particular color"""
-        return self.selected_col.color
+        if self.selected_col is None:
+            return None
+        else:
+            return self.selected_col.color
 
     def set_selected_color(self, col):
         """Defines the selected state of a displayed color"""

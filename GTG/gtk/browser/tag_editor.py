@@ -156,10 +156,11 @@ class TagIconSelector(gtk.Window): # pylint: disable-msg=R0904
         self.grab_remove()
 
     def get_selected_icon(self):
-        """Return the selected icon. None if no icon is selected."""
+        """Returns the selected icon. None if no icon is selected."""
         return self.selected_icon
 
     def unselect_icon(self):
+        """Unselects all icon in the iconview."""
         self.symbol_iv.unselect_all()
 
 
