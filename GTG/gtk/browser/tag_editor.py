@@ -334,6 +334,8 @@ class TagEditor(gtk.Window): # pylint: disable-msg=R0904
             # If available, update color selection
             if (tag.get_attribute('color') is not None):
                 col = tag.get_attribute('color')
+                if not self.tc_cc_colsel.has_color(col):
+                    self.tc_cc_colsel.add_custom_color(col)
                 self.tc_cc_colsel.set_selected_color(col)
             # Re-enable checkbutton handler_block
             self.tn_cb.handler_unblock(self.tn_cb_clicked_hid)

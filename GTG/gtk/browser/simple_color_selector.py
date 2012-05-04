@@ -201,7 +201,7 @@ class SimpleColorSelector(gtk.VBox): # pylint: disable-msg=R0904,C0301
         """Draws the palette of custom colors"""
         self.__reset_custom_palette()
         # (re-)create the palette widget
-        self.custom_palette = gtk.Alignment()
+        self.custom_palette = gtk.Alignment(xscale=1.0)
         self.custom_palette.set_padding(10, 0, 0, 0)
         self.pack_start(self.custom_palette)
         # Draw the previous color palette: only one line
@@ -209,8 +209,8 @@ class SimpleColorSelector(gtk.VBox): # pylint: disable-msg=R0904,C0301
         self.custom_palette.add(cc_vbox)
         cc_vbox.set_spacing(4)
         cc_hbox = gtk.HBox()
-        cc_vbox.add(cc_hbox)
-        for i in xrange(self.width):
+        cc_vbox.pack_start(cc_hbox)
+        for i in xrange(len(self.custom_colors)):
             # add the color box
             img = SimpleColorSelectorPaletteItem()
             img.set_size_request( \
@@ -228,19 +228,13 @@ class SimpleColorSelector(gtk.VBox): # pylint: disable-msg=R0904,C0301
         self.add_button = gtk.Button()
         self.add_button.set_image(img)
         self.add_button.set_label(_("Add custom color"))
-        cc_vbox.pack_start(self.add_button)
+        cc_vbox.pack_start(self.add_button, expand=True, fill=True)
         self.add_button.connect("clicked", self.on_color_add)
         # hide the custom palette if no custom color is defined
         if len(self.custom_colors) == 0:
             self.custom_palette.hide()
         else:
             self.custom_palette.show_all()
-
-    def __prepend_color(self, col):
-        """Add a color to the palette, at the first position"""
-        self.custom_colors.insert(0, col)
-        if len(self.custom_colors) > self.width:
-            self.custom_colors.pop()
 
     # Handlers
     def on_color_clicked(self, widget, event): # pylint: disable-msg=W0613
@@ -273,9 +267,7 @@ class SimpleColorSelector(gtk.VBox): # pylint: disable-msg=R0904,C0301
             strcolor = gtk.color_selection_palette_to_string([new_color])
             # Add the color to the palette and notify
             if strcolor not in self.colors:
-                self.__prepend_color(strcolor)
-                self.__build_custom_palette()
-                self.emit("color-added")
+                self.add_custom_color(strcolor)
             # Select the new color and notify
             self.set_selected_color(strcolor)
             self.emit("color-changed")
@@ -283,6 +275,10 @@ class SimpleColorSelector(gtk.VBox): # pylint: disable-msg=R0904,C0301
         color_dialog.destroy()
 
     # public IF
+
+    def has_color(self, col):
+        """Returns True if the color is already present"""
+        return col in self.colors or col in self.custom_colors
 
     def get_custom_colors(self):
         """Return the list of custom-defined colors"""
@@ -300,6 +296,14 @@ class SimpleColorSelector(gtk.VBox): # pylint: disable-msg=R0904,C0301
         if len(self.custom_colors) == 0:
             self.custom_palette.hide()
 
+    def add_custom_color(self, col):
+        """Add a color to the palette, at the first position"""
+        self.custom_colors.insert(0, col)
+        if len(self.custom_colors) > self.width:
+            self.custom_colors.pop()
+        self.__build_custom_palette()
+        self.emit("color-added")
+
     def get_selected_color(self):
         """Return the selected state of a particular color"""
         return self.selected_col.color
@@ -307,7 +311,7 @@ class SimpleColorSelector(gtk.VBox): # pylint: disable-msg=R0904,C0301
     def set_selected_color(self, col):
         """Defines the selected state of a displayed color"""
         self.unselect_color()
-        if col in self.colors or col in self.custom_colors:
+        if self.has_color(col):
             self.buttons_lookup[col].set_selected(True)
             self.selected_col = self.buttons_lookup[col]
 
