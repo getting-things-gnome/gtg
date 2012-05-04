@@ -5,6 +5,7 @@ check:
 
 # Get rid of stale files or files made during testing.
 clean:
+	rm -rf tmp
 	rm -rf doc/api
 	rm -rf GTG/test_build_api-*
 	find . -name '*.pyc' -print0 | xargs -0 rm -f
