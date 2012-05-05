@@ -39,7 +39,6 @@ from GTG.tools.logger            import Log
 from GTG.backends.genericbackend import GenericBackend
 from GTG.tools                   import cleanxml
 from GTG.backends.backendsignals import BackendSignals
-from GTG.tools.synchronized      import synchronized
 from GTG.tools.borg              import Borg
 from GTG.core.search             import parse_search_query, search_filter, InvalidQuery
 
@@ -334,7 +333,6 @@ class DataStore(object):
         self.__tasks.add_node(task)
         return task
 
-    @synchronized
     def push_task(self, task):
         '''
         Adds the given task object to the task tree. In other words, registers
@@ -647,19 +645,8 @@ class TaskSource():
         self.to_set_timer = None
 
     def start_get_tasks(self):
-        ''''
-        Maps the TaskSource to the backend and starts threading.
-        '''
-        self.start_get_tasks_thread = \
-             threading.Thread(target=self.__start_get_tasks)
-        self.start_get_tasks_thread.setDaemon(True)
-        self.start_get_tasks_thread.start()
-
-    def __start_get_tasks(self):
-        '''
-        Loads all task from the backend and connects its signals afterwards.
-        Launched as a thread by start_get_tasks
-        '''
+        """ Loads all task from the backend and connects its signals
+        afterwards. """
         self.backend.start_get_tasks()
         self._connect_signals()
         if self.backend.is_default():
