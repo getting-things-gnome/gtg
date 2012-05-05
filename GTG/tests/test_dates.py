@@ -116,8 +116,6 @@ class TestDates(unittest.TestCase): # pylint: disable-msg=R0904
             return
 
         aday = aday.replace(year=aday.year+1, month=1, day=1)
-
-        print repr(Date.parse("0101"))
         self.assertEqual(Date.parse("0101"), aday)
 
     def test_on_certain_day(self):

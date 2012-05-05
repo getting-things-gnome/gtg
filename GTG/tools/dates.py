@@ -148,16 +148,16 @@ class Date(object):
     def __cmp__(self, other):
         """ Compare with other Date instance """
         if isinstance(other, Date):
-            comparsion = cmp(self.date(), other.date())
+            comparison = cmp(self.date(), other.date())
 
             # Keep fuzzy dates below normal dates
-            if comparsion == 0:
+            if comparison == 0:
                 if self.is_fuzzy() and not other.is_fuzzy():
                     return 1
                 elif not self.is_fuzzy() and other.is_fuzzy():
                     return -1
 
-            return comparsion
+            return comparison
         elif isinstance(other, datetime.date):
             return cmp(self.date(), other)
         else:
