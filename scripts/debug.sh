@@ -15,14 +15,18 @@ profile=0
 mkdir -p tmp
 
 # Interpret arguments
-while getopts bdnps: o
+while getopts bdlnps: o
 do  case "$o" in
     b)   args="$args --boot-test";;
     d)   args="$args -d";;
+    # Request usage local liblarch if it is possible
+    l)   args="$args -l"
+         liblarchArgs="$liblarchArgs -l"
+        ;;
     n)   norun=1;;
     p)   profile=1;;
     s)   set="$OPTARG";;
-    [?]) echo >&2 "Usage: $0 [-s dataset] [-b] [-d] [-n] [-p]"
+    [?]) echo >&2 "Usage: $0 [-s dataset] [-b] [-d] [-l] [-n] [-p]"
          exit 1;;
     esac
 done
@@ -46,19 +50,19 @@ else
     export XDG_CONFIG_HOME="./tmp/default/xdg/config"
 fi
 
-# Check for liblarch
-if ! ./GTG/tools/import_liblarch.py ; then
-    echo
-    echo -n "Download latest liblarch? [y/N] "
-    read answer
-    if [ "$answer" = "y" -o "$answer" = "Y" -o "$answer" = "yes" ]; then
-        git clone https://github.com/liblarch/liblarch ../liblarch
-    else
-        exit 1
-    fi
-fi
-
 if [ $norun -eq 0 ]; then
+    # Check for liblarch
+    if ! ./GTG/tools/import_liblarch.py $liblarchArgs; then
+        echo
+        echo -n "Download latest liblarch? [y/N] "
+        read answer
+        if [ "$answer" = "y" -o "$answer" = "Y" -o "$answer" = "yes" ]; then
+            git clone https://github.com/liblarch/liblarch ../liblarch
+        else
+            exit 1
+        fi
+    fi
+
     if [ $profile -eq 1 ]; then
 	python -m cProfile -o gtg.prof ./gtg $args
     python ./scripts/profile_interpret.sh
