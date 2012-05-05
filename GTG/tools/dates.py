@@ -326,10 +326,10 @@ class Date(object):
         """Return a Date corresponding to string, or None.
 
         string may be in one of the following formats:
-         * YYYY/MM/DD, YYYYMMDD, MMDD, D
-         * fuzzy dates
-         * 'today', 'tomorrow', 'next week', 'next month' or 'next year' in
-           English or the system locale.
+            - YYYY/MM/DD, YYYYMMDD, MMDD, D
+            - fuzzy dates
+            - 'today', 'tomorrow', 'next week', 'next month' or 'next year' in
+                English or the system locale.
         """
         # sanitize input
         if string is None:

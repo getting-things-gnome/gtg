@@ -112,7 +112,7 @@ class TestBackendTomboy(unittest.TestCase):
         self.datastore.save(quit = True) 
         time.sleep(0.5)
         self.tomboy.FakeQuit()
-        #self.bus.close()
+        # FIXME: self.bus.close()
         os.kill(pid_tomboy, signal.SIGKILL)
         os.waitpid(pid_tomboy, 0)
     

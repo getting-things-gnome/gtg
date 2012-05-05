@@ -32,7 +32,7 @@ def next_month(aday, day=None):
     """ Increase month, change 2012-02-13 into 2012-03-13.
     If day is set, replace day in month as well
 
-    @return updated date """
+    @returns: updated date """
     if day is None:
         day = aday.day
 
