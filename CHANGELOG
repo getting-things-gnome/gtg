@@ -19,6 +19,7 @@
     * Reimplement the tag context menu as a widget, in order to - hopefully - be able to implement an enhanced context menu with, for instance, a color picker.
     * Background Colors option was moved from View menu into preferences dialog
     * Reorganised notification area menu (New task, Show browser, <tasks>, Quit)
+    * Added an option to import local (development) version of liblarch instead of system installed one
 
 2012-02-13 Getting Things GNOME! 0.2.9
     * Big refractorization of code, now using liblarch

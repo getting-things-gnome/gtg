@@ -53,8 +53,7 @@ class pluginUrgencyColor:
         else:
             return None
 
-    def bgcolor(self, node_id, standard_color):
-        node = self.req.get_task(node_id)
+    def bgcolor(self, node, standard_color):
         sdate = node.get_start_date()
         ddate = node.get_due_date()
         if (sdate != Date.no_date() != ddate):
