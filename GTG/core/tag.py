@@ -81,16 +81,26 @@ class Tag(TreeNode):
         @param att_value: The value of the attribute. Will be converted to a
             string.
         """
+        modified = False
         if att_name == "name":
             raise Exception("The name of tag cannot be set manually")
         elif att_name == "parent":
             self.add_parent(att_value)
+            modified = True
         else:
             # Attributes should all be strings.
             val = unicode(str(att_value), "UTF-8")
             self._attributes[att_name] = val
             if self._save:
                 self._save()
+            modified = True
+        if modified:
+            self.modified()
+            # notify all related tasks tools
+            for task_id in self.get_related_tasks():
+                my_task = self.req.get_task(task_id)
+                assert my_task is not None, "Unknown task id: %s" % task_id
+                my_task.modified()
 
     def get_attribute(self, att_name):
         """Get the attribute C{att_name}.
@@ -147,20 +157,23 @@ class Tag(TreeNode):
         return self.__get_count()
 
     def __get_count(self, tasktree=None):
+        return len(self.get_related_tasks(tasktree=tasktree))
+
+    def get_related_tasks(self, tasktree=None):
         if not tasktree:
             tasktree = self.req.get_tasks_tree()
         sp_id = self.get_attribute("special")
         if sp_id == "all":
-            toreturn = tasktree.get_n_nodes(\
+            toreturn = tasktree.get_nodes(\
                     withfilters=['active'], include_transparent=False)
         elif sp_id == "notag":
-            toreturn = tasktree.get_n_nodes(\
+            toreturn = tasktree.get_nodes(\
                             withfilters=['notag'], include_transparent=False)
         elif sp_id == "sep" :
-            toreturn = 0
+            toreturn = []
         else:
             tname = self.get_name()
-            toreturn = tasktree.get_n_nodes(\
+            toreturn = tasktree.get_nodes(\
                                 withfilters=[tname], include_transparent=False)
         return toreturn
 
