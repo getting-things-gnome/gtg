@@ -96,11 +96,7 @@ class Tag(TreeNode):
             modified = True
         if modified:
             self.modified()
-            # notify all related tasks tools
-            for task_id in self.get_related_tasks():
-                my_task = self.req.get_task(task_id)
-                assert my_task is not None, "Unknown task id: %s" % task_id
-                my_task.modified()
+            self.notify_related_tasks()
 
     def get_attribute(self, att_name):
         """Get the attribute C{att_name}.
@@ -130,6 +126,8 @@ class Tag(TreeNode):
             del self._attributes[att_name]
         if self._save:
             self._save()
+        self.modified()
+        self.notify_related_tasks()
 
     def get_all_attributes(self, butname=False, withparent=False):
         """Return a list of all attribute names.
@@ -160,6 +158,7 @@ class Tag(TreeNode):
         return len(self.get_related_tasks(tasktree=tasktree))
 
     def get_related_tasks(self, tasktree=None):
+        """Returns all related tasks node ids"""
         if not tasktree:
             tasktree = self.req.get_tasks_tree()
         sp_id = self.get_attribute("special")
@@ -176,6 +175,13 @@ class Tag(TreeNode):
             toreturn = tasktree.get_nodes(\
                                 withfilters=[tname], include_transparent=False)
         return toreturn
+
+    def notify_related_tasks(self):
+        """Notify changes to all related tasks"""
+        for task_id in self.get_related_tasks():
+            my_task = self.req.get_task(task_id)
+            assert my_task is not None, "Unknown task id: %s" % task_id
+            my_task.modified()
 
     #is it useful to keep the tag in the tagstore.
     #if no attributes and no tasks, it is not useful.
