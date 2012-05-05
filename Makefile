@@ -7,7 +7,6 @@ check:
 clean:
 	rm -rf tmp
 	rm -rf doc/api
-	rm -rf GTG/test_build_api-*
 	find . -name '*.pyc' -print0 | xargs -0 rm -f
 	find . -name '*~' -print0 | xargs -0 rm -f
 	find . -name '.*.swp' -print0 | xargs -0 rm -f
