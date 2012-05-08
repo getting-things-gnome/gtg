@@ -854,6 +854,7 @@ class TaskBrowser(gobject.GObject):
     def on_quickadd_activate(self, widget):
         """ Add a new task from quickadd toolbar """
         text = unicode(self.quickadd_entry.get_text())
+        text = text.strip()
         if text:
             tags = self.get_selected_tags(nospecial=True)
             #We will select quick-added task in browser.
