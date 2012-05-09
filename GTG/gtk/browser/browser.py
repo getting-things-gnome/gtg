@@ -1681,7 +1681,7 @@ class TaskBrowser(gobject.GObject):
         query=query.strip()
         if query:
 		    if self.req.get_task_id(query) is not None:
-	            new_actions.append('open')
+	             new_actions.append('open')
 		    else:
 		        new_actions.append('add')
 
