@@ -1,10 +1,3 @@
-2012-05-09 Getting Things GNOME! 0.3
-    * Prevent (no title task) from being created due to only whitespace strings from quickadd bar Bug#995740
-    * Also prevent "add task" and "search" popups from being created for strings having just whitespaces in quickadd bar
-    * on_quickaddbar_changed() modified to strip the initial whitespaces from entry
-    * on_quickaddbar_activate() modified to do the same
-    * changes made by Nimit Shah
-
 2012-0?-?? Getting Things GNOME! 0.3
     * Hide tasks with due date someday, #931376
     * New Date class by Paul Kishimoto and Izidor Matušov
@@ -27,6 +20,7 @@
     * Background Colors option was moved from View menu into preferences dialog
     * Reorganised notification area menu (New task, Show browser, <tasks>, Quit)
     * Added an option to import local (development) version of liblarch instead of system installed one
+    * Fix for bug #995740: (no title task) through quickadd bar, by Nimit Shah
 
 2012-02-13 Getting Things GNOME! 0.2.9
     * Big refractorization of code, now using liblarch
