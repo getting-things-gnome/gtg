@@ -1680,23 +1680,23 @@ class TaskBrowser(gobject.GObject):
         query = self.quickadd_entry.get_text()
         query=query.strip()
         if query:
-		    if self.req.get_task_id(query) is not None:
-	             new_actions.append('open')
-		    else:
-		        new_actions.append('add')
+            if self.req.get_task_id(query) is not None:
+                 new_actions.append('open')
+            else:
+                new_actions.append('add')
 
-		    # Is query parsable?
-		    try:
-		        parse_search_query(query)
-		        new_actions.append('search')
-		    except InvalidQuery:
-		        pass
+            # Is query parsable?
+            try:
+                parse_search_query(query)
+                new_actions.append('search')
+            except InvalidQuery:
+                pass
 
-		    # Add new order of actions
-		    for aid, name in enumerate(new_actions):
-		        action = self.search_possible_actions[name]
-		        self.search_completion.insert_action_markup(aid, action)
-		        self.search_actions.append(name)
+            # Add new order of actions
+            for aid, name in enumerate(new_actions):
+                action = self.search_possible_actions[name]
+                self.search_completion.insert_action_markup(aid, action)
+                self.search_actions.append(name)
 
     def expand_search_tag(self):
         """ For some unknown reason, search tag is not expanded correctly and
