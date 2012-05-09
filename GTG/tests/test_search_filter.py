@@ -58,7 +58,6 @@ class TestSearchFilter(unittest.TestCase):
 
     def test_double_tag(self):
         p = {"q": [("tag", True, "@a"), ("tag", True, "@b")]}
-        task = FakeTask(tags = ['@a'])
 
         self.assertTrue(search_filter(FakeTask(tags = ['@a', '@b']), p))
         self.assertTrue(search_filter(FakeTask(tags = ['@b', '@a']), p))

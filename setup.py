@@ -141,12 +141,13 @@ setup(
     'GTG.plugins.task_reaper',
     'GTG.plugins.send_email',
     'GTG.plugins.tomboy',
-    'GTG.plugins.import_json',
+    'GTG.plugins.urgency_color',
     ],
   package_data = {
     'GTG.core.plugins': ['pluginmanager.glade'],
-    'GTG.gtk': ['preferences.glade', 'deletion.glade', 'backends_dialog.glade'],
-    'GTG.gtk.browser': ['taskbrowser.glade'],
+    'GTG.gtk':
+        ['preferences.glade', 'deletion.glade', 'backends_dialog.glade'],
+    'GTG.gtk.browser': ['taskbrowser.glade', 'modifytags_dialog.glade'],
     'GTG.gtk.editor': ['taskeditor.glade'],
     'GTG.plugins': [
         'bugzilla.gtg-plugin',
@@ -157,7 +158,7 @@ setup(
         'task-reaper.gtg-plugin',
         'send-email.gtg-plugin',
         'tomboy.gtg-plugin',
-        'import-json.gtg-plugin',
+        'urgency-color.gtg-plugin'
         ],
     'GTG.plugins.export': ['export.ui',
                           './export_templates/description_pocketmod.py',
@@ -186,8 +187,9 @@ setup(
     'GTG.plugins.tomboy': ['tomboy.ui'],
     'GTG.plugins.hamster': ['prefs.ui'],
     'GTG.plugins.task_reaper': ['reaper.ui'],
-    'GTG.plugins.import_json': ['import_json.ui'],
-    'GTG.plugins.notification_area': ['notification_area.ui']},
+    'GTG.plugins.notification_area': ['notification_area.ui'],
+    'GTG.plugins.urgency_color': ['preferences.ui'],
+   },
   data_files = create_data_files(),
   scripts=['gtg', 'gtcli', 'gtg_new_task'],
   cmdclass={'install_data': InstallData},

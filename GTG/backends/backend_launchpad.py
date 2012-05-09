@@ -54,11 +54,11 @@ class Backend(PeriodicImportBackend):
         GenericBackend.BACKEND_AUTHORS:    ["Luca Invernizzi"], \
         GenericBackend.BACKEND_TYPE:       GenericBackend.TYPE_READONLY, \
         GenericBackend.BACKEND_DESCRIPTION: \
-            _("This backend lets you import the bugs assigned to "
+            _("This synchronization service lets you import the bugs assigned to "
               "you (or someone else) on Launchpad in GTG. As the"
               " bug state changes in Launchpad, the GTG task is "
               " updated.\n"
-              "Please note that this is a read only backend, which "
+              "Please note that this is a read only synchronization service, which "
               "means that if you open one of the imported tasks and "
               " change one of the:\n"
               "  - title\n"

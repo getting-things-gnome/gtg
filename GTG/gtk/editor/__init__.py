@@ -28,11 +28,10 @@ class GnomeConfig:
     current_rep = os.path.dirname(os.path.abspath(__file__))
     GLADE_FILE  = os.path.join(current_rep, "taskeditor.glade")
 
-    MARK_DONE = _("Mark as done")
-    MARK_UNDONE = _("Mark as not done")
+    MARK_DONE = _("Mark as Done")
+    MARK_UNDONE = _("Mark as not Done")
     MARK_DISMISS = _("Dismiss")
     MARK_UNDISMISS = _("Undismiss")
-    MAKE_TASK = _("Make a Task")
 
     MARK_DONE_TOOLTIP = _("Mark this task as done")
     MARK_UNDONE_TOOLTIP = _("Mark this task as to be done")

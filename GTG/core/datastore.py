@@ -39,7 +39,6 @@ from GTG.tools.logger            import Log
 from GTG.backends.genericbackend import GenericBackend
 from GTG.tools                   import cleanxml
 from GTG.backends.backendsignals import BackendSignals
-from GTG.tools.synchronized      import synchronized
 from GTG.tools.borg              import Borg
 from GTG.core.search             import parse_search_query, search_filter, InvalidQuery
 
@@ -123,18 +122,18 @@ class DataStore(object):
         self.__tagstore.add_node(tag, parent_id=parent_id)
         tag.set_save_callback(self.save)
 
-    def new_tag(self, name):
+    def new_tag(self, name, attributes={}):
         """ Create a new tag and return it """
 
         name = name.encode("UTF-8")
         parameters = {'tag': name}
-        tag = Tag(name, req=self.requester)
+        tag = Tag(name, req=self.requester, attributes=attributes)
 
         self._add_new_tag(name, tag, self.treefactory.tag_filter, parameters)
         Log.debug("*** tag added %s ***" % name)
         return tag
 
-    def new_search_tag(self, name, query):
+    def new_search_tag(self, name, query, attributes={}):
         """ Create a new search tag """
         try:
             parameters = parse_search_query(query)
@@ -144,9 +143,13 @@ class DataStore(object):
             return None
 
         name = name.encode("UTF-8")
-        tag = Tag(name, req=self.requester)
-        tag.set_attribute("label","%s" % name)
-        tag.set_attribute("query", query)
+
+        # Create own copy of attributes and add special attributes label, query
+        init_attr = dict(attributes)
+        init_attr["label"] = name
+        init_attr["query"] = query
+
+        tag = Tag(name, req=self.requester, attributes=init_attr)
 
         self._add_new_tag(name, tag, search_filter,
             parameters, parent_id = CoreConfig.SEARCH_TAG)
@@ -216,19 +219,22 @@ class DataStore(object):
             tagname = t.getAttribute("name")
             parent = t.getAttribute("parent")
 
-            if parent == CoreConfig.SEARCH_TAG:
-                self.new_search_tag(tagname, t.getAttribute("query"))
-            else:
-                tag = self.new_tag(tagname)
-                attr = t.attributes
-                for i in range(attr.length):
-                    at_name = attr.item(i).name
-                    if at_name not in ["name", "parent"]:
-                        at_val = t.getAttribute(at_name)
-                        tag.set_attribute(at_name, at_val)
+            tag_attr = {}
+            attr = t.attributes
+            for i in range(attr.length):
+                at_name = attr.item(i).name
+                if at_name not in ["name", "parent"]:
+                    at_val = t.getAttribute(at_name)
+                    tag_attr[at_name] = at_val
 
+            if parent == CoreConfig.SEARCH_TAG:
+                query = t.getAttribute("query")
+                tag = self.new_search_tag(tagname, query, tag_attr)
+            else:
+                tag = self.new_tag(tagname, tag_attr)
                 if parent:
                     tag.set_parent(parent)
+
         self.tagfile = tagfile
 
     def save_tagtree(self):
@@ -327,7 +333,6 @@ class DataStore(object):
         self.__tasks.add_node(task)
         return task
 
-    @synchronized
     def push_task(self, task):
         '''
         Adds the given task object to the task tree. In other words, registers
@@ -555,7 +560,7 @@ class DataStore(object):
         '''
         try:
             self.start_get_tasks_thread.join()
-        except Exception, e:
+        except Exception:
             pass
         doc, xmlconfig = cleanxml.emptydoc("config")
         #we ask all the backends to quit first.
@@ -640,19 +645,8 @@ class TaskSource():
         self.to_set_timer = None
 
     def start_get_tasks(self):
-        ''''
-        Maps the TaskSource to the backend and starts threading.
-        '''
-        self.start_get_tasks_thread = \
-             threading.Thread(target=self.__start_get_tasks)
-        self.start_get_tasks_thread.setDaemon(True)
-        self.start_get_tasks_thread.start()
-
-    def __start_get_tasks(self):
-        '''
-        Loads all task from the backend and connects its signals afterwards.
-        Launched as a thread by start_get_tasks
-        '''
+        """ Loads all task from the backend and connects its signals
+        afterwards. """
         self.backend.start_get_tasks()
         self._connect_signals()
         if self.backend.is_default():
@@ -810,15 +804,15 @@ class TaskSource():
         '''
         try:
             self.to_set_timer.cancel()
-        except Exception, e:
+        except Exception:
             pass
         try:
             self.to_set_timer.join(3)
-        except Exception, e:
+        except Exception:
             pass
         try:
             self.start_get_tasks_thread.join(3)
-        except:
+        except Exception:
             pass
         self.launch_setting_thread(bypass_please_quit=True)
 

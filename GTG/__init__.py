@@ -35,7 +35,6 @@ try:
 except:
     #that's not pretty but it looks functional.
     loaded_glade = None
-from os.path import pardir, abspath, dirname, join
 
 try:
     from xdg.BaseDirectory import xdg_config_home
@@ -44,8 +43,6 @@ except ImportError:
     config_home = os.path.dirname(__file__)
 
 LOCAL_ROOTDIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-DIST_ROOTDIR_LOCAL = "/usr/local/share/gtg"
-DIST_ROOTDIR = "/usr/share/gtg"
 
 #Translation setup (from pyroom)
 GETTEXT_DOMAIN = 'gtg'
@@ -65,19 +62,15 @@ ngettext = translation.ngettext
 #GTG directories setup
 if os.path.isdir(os.path.join(LOCAL_ROOTDIR, 'data')):
     DATA_DIR = os.path.join(LOCAL_ROOTDIR, 'data')
-elif os.path.isdir(DIST_ROOTDIR_LOCAL):
-    DATA_DIR = DIST_ROOTDIR_LOCAL
 else:
-    DATA_DIR = DIST_ROOTDIR
+    DATA_DIR = LOCAL_ROOTDIR
 
 #GTG plugin dir setup
-if not os.path.isdir(os.path.join(LOCAL_ROOTDIR, 'GTG/plugins/')):
-    PLUGIN_DIR = [DIST_ROOTDIR]
-else:
-    PLUGIN_DIR = [os.path.join(LOCAL_ROOTDIR, 'GTG/plugins/')]
+PLUGIN_DIR = [os.path.join(LOCAL_ROOTDIR, 'GTG/plugins')]
 
-if os.path.isdir(os.path.join(config_home, 'gtg/plugins')):
-    PLUGIN_DIR.append(os.path.join(config_home, 'gtg/plugins'))
+user_plugins = os.path.join(config_home, 'gtg/plugins')
+if os.path.isdir(user_plugins):
+    PLUGIN_DIR.append(user_plugins)
 
 # FIXME Register GTG URI (temporary, it should be created by a schema upon installing)
 # FIXME Uncomment it or even better - install it properly - it breaks build

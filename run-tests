@@ -25,6 +25,7 @@ import unittest
 
 from GTG.tests import test_suite
 from GTG.tools.testingmode import TestingMode
+from GTG.tools.import_liblarch import import_liblarch
 
 TEST_MODULE_PREFIX = "GTG.tests."
 
@@ -41,11 +42,11 @@ def main(args):
         print "./run_tests  [function_path ..] to run the selected " + \
               "functions as tests"
         return
+    # fake modules that mimic the behaviour of external libraries ...
+    TestingMode().set_testing_mode(True)
     if args:
         #if we have specified the name of the test in the command line
         suites = []
-        # fake modules that mimic the behaviour of external libraries ...
-        TestingMode().set_testing_mode(True)
         for arg in args:
             #each arg can be a module name (as test_liblarch), or a module name
             # "dot" a function name (as test_liblarch.test_something)
@@ -89,4 +90,5 @@ def main(args):
         return 1
 
 if __name__ == '__main__':
-    sys.exit(main(sys.argv[1:]))
+    if import_liblarch():
+        sys.exit(main(sys.argv[1:]))

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright (c) 2009 - Paulo Cabido <paulo.cabido@gmail.com>
-#                    - Luca Invernizzi <invernizzi.l@gmail.com> 
+#                    - Luca Invernizzi <invernizzi.l@gmail.com>
 #                    - Izidor Matušov <izidor.matusov@gmail.com>
 #
 # This program is free software: you can redistribute it and/or modify it under
@@ -26,6 +26,7 @@ except:
 from GTG                   import _
 from GTG.tools.borg        import Borg
 
+
 class NotificationArea:
     """
     Plugin that display a notification area widget or an indicator
@@ -45,6 +46,7 @@ class NotificationArea:
         we need to keep a reference to the indicator object. This class
         does that.
         """
+
         def __init__(self):
             super(NotificationArea.TheIndicator, self).__init__()
             if not hasattr(self, "_indicator"):
@@ -81,7 +83,7 @@ class NotificationArea:
         self.preferences_load()
 
         # When no windows (browser or text editors) are shown, it tries to quit
-        # With hidden browser and closing the only single text editor, 
+        # With hidden browser and closing the only single text editor,
         # GTG would quit no matter what
         self.__view_manager.set_daemon_mode(True)
 
@@ -110,12 +112,18 @@ class NotificationArea:
         self.__tree = None
         self.__liblarch_callbacks = []
 
-## Helper methods ##############################################################
-
+## Helper methods #############################################################
     def __init_gtk(self):
         browser = self.__view_manager.get_browser()
 
         self.__menu = gtk.Menu()
+
+        #add "new task"
+        menuItem = gtk.ImageMenuItem(gtk.STOCK_ADD)
+        menuItem.get_children()[0].set_label(_('Add _New Task'))
+        menuItem.connect('activate', self.__open_task)
+        self.__menu.append(menuItem)
+
         #view in main window checkbox
         view_browser_checkbox = gtk.CheckMenuItem(_("_View Main Window"))
         view_browser_checkbox.set_active(browser.is_shown())
@@ -125,21 +133,22 @@ class NotificationArea:
                                                 view_browser_checkbox)
         self.__menu.append(view_browser_checkbox)
         self.checkbox = view_browser_checkbox
-        #add "new task"
-        menuItem = gtk.ImageMenuItem(gtk.STOCK_ADD)
-        menuItem.get_children()[0].set_label(_('Add _New Task'))
-        menuItem.connect('activate', self.__open_task)
-        self.__menu.append(menuItem)
-        #quit item
-        menuItem = gtk.ImageMenuItem(gtk.STOCK_QUIT)
-        menuItem.connect('activate', self.__view_manager.close_browser)
-        self.__menu.append(menuItem)
-        self.__menu.show_all()
+
         #separator (it's intended to be after show_all)
         # separator should be shown only when having tasks
         self.__task_separator = gtk.SeparatorMenuItem()
         self.__menu.append(self.__task_separator)
         self.__menu_top_length = len(self.__menu)
+
+        self.__menu.append(gtk.SeparatorMenuItem())
+
+        #quit item
+        menuItem = gtk.ImageMenuItem(gtk.STOCK_QUIT)
+        menuItem.connect('activate', self.__view_manager.close_browser)
+        self.__menu.append(menuItem)
+
+        self.__menu.show_all()
+        self.__task_separator.hide()
 
         self.__tasks_menu = SortedLimitedMenu(self.MAX_ITEMS,
                             self.__menu, self.__menu_top_length)
@@ -148,14 +157,13 @@ class NotificationArea:
             self.__indicator.set_menu(self.__menu)
             self.__indicator.set_status(appindicator.STATUS_ACTIVE)
         else:
-	    self.status_icon = gtk.StatusIcon()
-	    self.status_icon.set_from_icon_name("gtg")
+            self.status_icon = gtk.StatusIcon()
+            self.status_icon.set_from_icon_name("gtg")
             self.status_icon.set_tooltip("Getting Things Gnome!")
             self.status_icon.set_visible(True)
             self.status_icon.connect('activate', self.__toggle_browser)
-            self.status_icon.connect('popup-menu', \
-                                     self.__on_icon_popup, \
-                                     self.__menu)
+            self.status_icon.connect('popup-menu',
+                                     self.__on_icon_popup, self.__menu)
 
     def __open_task(self, widget, task_id = None):
         """
@@ -175,15 +183,16 @@ class NotificationArea:
         # Request a new view so we do not influence anybody
         self.__tree = self.__tree.get_basetree().get_viewtree(refresh=False)
 
-        c1 = self.__tree.register_cllbck("node-added-inview", self.__on_task_added)
-        c2 = self.__tree.register_cllbck("node-modified-inview", self.__on_task_added)
-        c3 = self.__tree.register_cllbck("node-deleted-inview", self.__on_task_deleted)
-        self.__liblarch_callbacks = [(c1, "node-added-inview"),
-            (c2, "node-modified-inview"), 
-            (c3, "node-deleted-inview")]
+        self.__liblarch_callbacks = []
+        for signal, cllbck in [
+            ("node-added-inview", self.__on_task_added),
+            ("node-modified-inview", self.__on_task_added),
+            ("node-deleted-inview", self.__on_task_deleted),
+        ]:
+            cb_id = self.__tree.register_cllbck(signal, cllbck)
+            self.__liblarch_callbacks.append((cb_id, signal))
 
         self.__tree.apply_filter('workview')
-        self.__tree.refresh_all()
 
     def __on_task_added(self, tid, path):
         self.__task_separator.show()
@@ -208,10 +217,10 @@ class NotificationArea:
             self.__task_separator.hide()
 
     def __create_short_title(self, title):
-        """ Make title short if it is long.  Replace '_' by '__' so 
+        """ Make title short if it is long.  Replace '_' by '__' so
         it is not ignored or  interpreted as an accelerator."""
         title =title.replace("_", "__")
-        short_title = title[0 : self.MAX_TITLE_LEN]
+        short_title = title[0:self.MAX_TITLE_LEN]
         if len(title) > self.MAX_TITLE_LEN:
             short_title = short_title.strip() + "..."
         return short_title
@@ -222,7 +231,6 @@ class NotificationArea:
                        button, timestamp, icon)
 
 ### Preferences methods #######################################################
-
     def preferences_load(self):
         data = self.__plugin_api.load_configuration_object(self.PLUGIN_NAME,
                                                          "preferences")
@@ -235,6 +243,7 @@ class NotificationArea:
         self.__plugin_api.save_configuration_object(self.PLUGIN_NAME,
                                                   "preferences",
                                                   self.preferences)
+
     def is_configurable(self):
         """A configurable plugin should have this method and return True"""
         return True
@@ -252,7 +261,7 @@ class NotificationArea:
             "on_btn_preferences_cancel_clicked":
                 self.on_preferences_cancel,
             "on_btn_preferences_ok_clicked":
-                self.on_preferences_ok
+                self.on_preferences_ok,
         }
         self.builder.connect_signals(SIGNAL_CONNECTIONS_DIC)
 
@@ -271,7 +280,6 @@ class NotificationArea:
         self.preferences_dialog.hide()
 
 ### Browser methods ###########################################################
-
     def __on_browser_toggled(self, sender, checkbox):
         checkbox.disconnect(self.__signal_handler)
         is_shown = self.__view_manager.get_browser().is_shown()
@@ -284,10 +292,11 @@ class NotificationArea:
         return True
 
     def __toggle_browser(self, sender = None, data = None):
-        if self.__plugin_api.get_ui().is_shown():
-            self.__plugin_api.get_view_manager().hide_browser()
+        manager = self.__plugin_api.get_view_manager()
+        if manager.is_browser_visible():
+            manager.hide_browser()
         else:
-            self.__plugin_api.get_view_manager().show_browser()
+            manager.show_browser()
 
     def __set_browser_close_callback(self, method):
         """ Set a callback for browser's close event. If method is None,
@@ -301,6 +310,7 @@ class NotificationArea:
         if method is not None:
             self.__browser_handler = browser.window.connect(
                 "delete-event", method)
+
 
 class SortedLimitedMenu:
     """ Sorted GTK Menu which shows only first N elements """
@@ -316,7 +326,7 @@ class SortedLimitedMenu:
 
         self.sorted_keys = []
         self.elements = {}
-    
+
     def add(self, key, sort_elem, menu_item):
         """ Add/modify item """
         if key in self.elements:
@@ -348,8 +358,10 @@ class SortedLimitedMenu:
                 self.sorted_keys.remove(item)
                 break
 
-        # show elemnt which takes the freed place
-        if position < self.max_items and len(self.sorted_keys) >= self.max_items:
+        # show element which takes the freed place
+        was_displayed = position < self.max_items
+        hidden_elements = len(self.sorted_keys) >= self.max_items
+        if was_displayed and hidden_elements:
             shown_key = self.sorted_keys[self.max_items-1][1]
             self.elements[shown_key].show()
 

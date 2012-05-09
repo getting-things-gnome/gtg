@@ -22,7 +22,6 @@ task.py contains the Task class which represents (guess what) a task
 """
 from datetime         import datetime
 import cgi
-import gobject
 import re
 import uuid
 import xml.dom.minidom
@@ -51,8 +50,6 @@ class Task(TreeNode):
         self.set_uuid(uuid.uuid4())
         self.remote_ids = {}
         self.content = ""
-        #self.content = \
-        #    "<content>Press Escape or close this task to save it</content>"
         self.title = _("My new task")
         #available status are: Active - Done - Dismiss - Note
         self.status = self.STA_ACTIVE
@@ -147,28 +144,19 @@ class Task(TreeNode):
         due_date = Date.no_date()
         defer_date = Date.no_date()
         if text:
-
             # Get tags in the title
-            #NOTE: the ?: tells regexp that the first one is
-            # a non-capturing group, so it must not be returned
-            # to findall. http://www.amk.ca/python/howto/regex/regex.html
-            # ~~~~Invernizzi
             for match in re.findall(r'(?:^|[\s])(@\w+)', text, re.UNICODE):
                 tags.append(match)
-                # Remove the @
-                #text =text.replace(match,match[1:],1)
             # Get attributes
-            regexp = r'([\s]*)([\w-]+):([^\s]+)'
+            regexp = r'([\s]*)([\w-]+):\s*([^\s]+)'
             for spaces, attribute, args in re.findall(regexp, text, re.UNICODE):
                 valid_attribute = True
-                if attribute.lower() in ["tags", "tag"] or \
-                   attribute.lower() in [_("tags"), _("tag")]:
+                if attribute.lower() in ["tags", _("tags"), "tag", _("tag")]:
                     for tag in args.split(","):
                         if not tag.startswith("@"):
                             tag = "@" + tag
                         tags.append(tag)
-                elif attribute.lower() == "defer" or \
-                     attribute.lower() == _("defer"):
+                elif attribute.lower() in ["defer", _("defer"), "start", _("start")]:
                     try:
                         defer_date = Date.parse(args)
                     except ValueError:
@@ -182,18 +170,19 @@ class Task(TreeNode):
                 else:
                     # attribute is unknown
                     valid_attribute = False
+
                 if valid_attribute:
-                    # if the command is valid we have to remove it
-                    # from the task title
+                    # remove valid attribute from the task title
                     text = \
                         text.replace("%s%s:%s" % (spaces, attribute, args), "")
-#            # Create the new task
-#            task = self.req.new_task(tags=[t.get_name() for t in tags], newtask=True)
+
             for t in tags:
                 self.add_tag(t)
+
             if text != "":
                 self.set_title(text.strip())
                 self.set_to_keep()
+
             self.set_due_date(due_date)
             self.set_start_date(defer_date)
 
@@ -256,12 +245,12 @@ class Task(TreeNode):
         self.due_date = Date(fulldate)
         self.sync()
 
-    #Due date return the most urgent date of all parents
     def get_due_date(self):
+        """ Due date return the most urgent date of all parents """
         zedate = self.due_date
 
         for par in self.get_parents():
-            #Here we compare with the parent's due date
+            # compare with the parent's due date
             pardate = self.req.get_task(par).get_due_date()
             if pardate and zedate > pardate:
                 zedate = pardate
@@ -293,7 +282,7 @@ class Task(TreeNode):
         return (closed_date - due_date).days
 
     def get_text(self):
-        #defensive programmtion to avoid returning None
+        """ Return the content or empty string in case of None """
         if self.content:
             return str(self.content)
         else:
@@ -488,12 +477,6 @@ class Task(TreeNode):
                 priority = "medium"
         return priority
 
-#   the following is not currently needed
-#    def modified(self):
-#        TreeNode.modified(self)
-#        for t in self.get_tags():
-#            gobject.idle_add(t.modified)
-
     def _modified_update(self):
         '''
         Updates the modified timestamp
@@ -531,13 +514,10 @@ class Task(TreeNode):
         """
         Adds a tag. Does not add '@tag' to the contents. See add_tag
         """
-#        print "tag %s added to task %s" %(tagname,self.get_title())
         t = tagname.encode("UTF-8")
         #Do not add the same tag twice
         if not t in self.tags:
             self.tags.append(t)
-            #we notify the backends
-            #self.req.tag_was_added_to_task(self, tagname)
             if self.is_loaded():
                 for child in self.get_subtasks():
                     if child.can_be_deleted:
@@ -551,7 +531,6 @@ class Task(TreeNode):
 
     def add_tag(self, tagname):
         "Add a tag to the task and insert '@tag' into the task's content"
-#        print "add tag %s to task %s" %(tagname,self.get_title())
         if self.tag_added(tagname):
             c = self.content
 
@@ -608,10 +587,12 @@ class Task(TreeNode):
         return (text
                     .replace('<tag>%s</tag>\n\n' % (tagname), newtag) #trail \n
                     .replace('<tag>%s</tag>, ' % (tagname), newtag) #trail comma
+                    .replace('<tag>%s</tag>,' % (tagname), newtag)
                     .replace('<tag>%s</tag>' % (tagname), newtag)
                     #in case XML is missing (bug #504899)
                     .replace('%s\n\n' % (tagname), newtag)
                     .replace('%s, ' % (tagname), newtag)
+                    .replace('%s,' % (tagname), newtag)
                     #don't forget a space a the end
                     .replace('%s ' % (tagname), newtag)
                )
@@ -646,18 +627,7 @@ class Task(TreeNode):
         else:
             #Well, if we don't filter on tags or notag, it's true, of course
             toreturn = True
-#        print "task %s has tag %s : %s" %(self.get_id(),tag_list,toreturn)
         return toreturn
-
-    #return the color of one tag that have a color defined
-    #Yes, the choosen color is a bit random in case of multiple colored tags
-    def get_color(self):
-        color = None
-        for t in self.get_tags():
-            c = t.get_attribute("color")
-            if c:
-                color = c
-        return color
 
     def __str__(self):
         s = ""

@@ -1,9 +1,8 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-
 # -----------------------------------------------------------------------------
 # Getting Things Gnome! - A personal organizer for the GNOME desktop
-# Copyright (c) 2008,2009,2010 Lionel Dricot & Bertrand Rousseau
+# Copyright (c) 2008-2012 Lionel Dricot & Bertrand Rousseau
 #
 # This program is free software: you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -19,89 +18,61 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-"""
-Getting Things Gnome! - A personal organizer for the GNOME desktop
-==================================================================
-
-:copyright: 2008,2009,2010 Lionel Dricot & Bertrand Rousseau
-:license: GNU General Public License, version 3 or later
-"""
+""" Main script which parse arguments and launch GTG """
 
 import sys
+
 from optparse import OptionParser
+from gtk.gdk import Screen
 
-required_liblarch_api="1.0"
+from GTG import info
+from GTG.tools.import_liblarch import import_liblarch
 
 
-def X_is_running():
-    from gtk.gdk import Screen
+def x_is_running():
+    """ Return True if GTG could be displayed on the current XServer """
     try:
         if Screen().get_display():
             return True
     except RuntimeError:
         pass
     return False
-    
-def import_liblarch():
-    """ Check if liblarch is installed and is compatible
-
-    If not, provide information how to obtain the newest version """
-
-    git_cmd= "git clone git://github.com/ploum/liblarch.git  ../liblarch"
-    try:
-        import liblarch
-        toreturn = True
-    except:
-        sys.path.append("../liblarch/")
-        try:
-            import liblarch
-            toreturn = True
-        except:
-	        print "GTG requires liblarch but liblarch is not installed."
-	        print "To install liblarch, run the following command in the current folder:"
-	        print "\n"
-	        print "   %s" %git_cmd
-	        print "\n"
-	        print "More informations about liblarch: https://live.gnome.org/liblarch/"
-	        toreturn = False
-
-    if toreturn and not liblarch.is_compatible(required_liblarch_api):
-        print "Your liblarch copy has its API at version %s" %liblarch.api
-        print "but your GTG copy need liblarch API version %s" %required_liblarch_api
-        print ""
-        print "You may fix that by downloading the last version of liblarch with:"
-        print "   %s"%git_cmd
-        toreturn = False
-
-    return toreturn
 
 
-try:
+def main():
+    """ Parse arguments and run GTG """
     parser = OptionParser()
-    parser.add_option('-b', '--boot-test', action='store_true', dest='boot_test',
-      help="Exit immediately after completing boot-up actions", default=False)
-    parser.add_option('-c', '--no-crash-handler', action='store_true', dest='no_crash_handler',
-      help="Disable the automatic crash handler", default=False)
+    parser.add_option('-b', '--boot-test', action='store_true',
+      dest='boot_test', help="Exit after completing boot-up actions",
+      default=False)
+    parser.add_option('-c', '--no-crash-handler', action='store_true',
+      dest='no_crash_handler', help="Disable the automatic crash handler",
+      default=False)
     parser.add_option('-d', '--debug', action='store_true', dest='debug',
       help="Enable debug output", default=False)
-    parser.add_option('-v', '--version', action='store_true', dest='version_and_exit',
-      help="Print GTG's version number", default=False)
+    parser.add_option('-l', '--local-liblarch', action='store_true',
+      dest='local_liblarch', default=False,
+      help="Use local liblarch located in ../liblarch if it is posible")
+    parser.add_option('-v', '--version', action='store_true',
+      dest='print_version', help="Print GTG's version number", default=False)
     (options, args) = parser.parse_args()
 
-    if options.version_and_exit:
-        from GTG import info
-        print "gtg (Getting Things Gnome!) %s" %(info.VERSION)
+    if options.print_version:
+        print "GTG (Getting Things Gnome!)", info.VERSION
         print
-        print "For more information: %s" %(info.URL)
+        print "For more information:", info.URL
         sys.exit(0)
 
-    elif not X_is_running():
+    elif not x_is_running():
         print "Could not open X display"
         sys.exit(1)
 
-    elif import_liblarch():
-        import GTG.gtg
-        sys.exit(GTG.gtg.main(options, args))
+    elif import_liblarch(options.local_liblarch):
+        from GTG import gtg
+        sys.exit(gtg.main(options, args))
 
-except KeyboardInterrupt:
-    sys.exit(1)
+if __name__ == "__main__":
+    try:
+        main()
+    except KeyboardInterrupt:
+        sys.exit(1)

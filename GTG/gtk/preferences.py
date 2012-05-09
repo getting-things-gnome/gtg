@@ -35,7 +35,7 @@ __all__ = [
   ]
 
 # Default plugin information text
-PLUGINS_DEFAULT_DESC = _("Click on a plugin to get a description here.")
+PLUGINS_DEFAULT_DESC = _("Click on a plugin name to view its description here.")
 
 # columns in PreferencesDialog.plugin_store
 PLUGINS_COL_ID = 0
@@ -98,7 +98,7 @@ def plugin_error_short_text(plugin):
     elif modules and dbus:
         text = '\n'.join((GnomeConfig.bmiss2, modules, dbus))
     else:
-        test = ""
+        text = ""
     return text
 
 def plugin_error_text(plugin):
@@ -150,26 +150,26 @@ class PreferencesDialog:
           'plugin_depends': 'PluginDepends',
           'plugin_config_dialog': 'PluginConfigDialog',
           'pref_autostart': 'pref_autostart',
-          'pref_show_preview': 'pref_show_preview'
+          'pref_show_preview': 'pref_show_preview',
+          'bg_color_enable': 'bg_color_enable',
           }
         for attr, widget in widgets.iteritems():
             setattr(self, attr, self.builder.get_object(widget))
         # keep a reference to the parent task browser
         self.pengine = PluginEngine()
         #plugin config initiation, if never used
-        if self.config.has_key("plugins"):
-            if self.config["plugins"].has_key("enabled") == False:
+        if "plugins" in self.config:
+            if "enabled" not in self.config["plugins"]:
                 self.config["plugins"]["enabled"] = []
             
-            if self.config["plugins"].has_key("disabled") == False:
+            if "disabled" not in self.config["plugins"]:
                 self.config["plugins"]["disabled"] = []
-        else:
-            if self.pengine.get_plugins():
-                self.config["plugins"] = {}
-                self.config["plugins"]["disabled"] = \
-                  [p.module_name for p in self.pengine.get_plugins("disabled")]
-                self.config["plugins"]["enabled"] = \
-                  [p.module_name for p in self.pengine.get_plugins("enabled")]
+        elif self.pengine.get_plugins():
+            self.config["plugins"] = {}
+            self.config["plugins"]["disabled"] = \
+              [p.module_name for p in self.pengine.get_plugins("disabled")]
+            self.config["plugins"]["enabled"] = \
+              [p.module_name for p in self.pengine.get_plugins("enabled")]
         # initialize tree models
         self._init_backend_tree()
         # this can't happen yet, due to the order of things in
@@ -216,13 +216,12 @@ class PreferencesDialog:
         autostart_path = os.path.join(self.__AUTOSTART_DIRECTORY, \
                                       self.__AUTOSTART_FILE)
         self.pref_autostart.set_active(os.path.isfile(autostart_path))
-        #This set_active method doesn't even understand what a boolean is!
-        #what a PITA !
-        if self.config_priv.get("contents_preview_enable"):
-            toset = 1
-        else:
-            toset = 0
-        self.pref_show_preview.set_active(toset)
+
+        show_preview = self.config_priv.get("contents_preview_enable")
+        self.pref_show_preview.set_active(show_preview)
+
+        bg_color = self.config_priv.get("bg_color_enable")
+        self.bg_color_enable.set_active(bg_color)
 
     def _init_plugin_tree(self):
         """Initialize the PluginTree gtk.TreeView.
@@ -279,6 +278,8 @@ class PreferencesDialog:
           # preferences on the Tasks tab
           'on_pref_show_preview_toggled':
             self.toggle_preview,
+          'on_bg_color_toggled':
+            self.on_bg_color_toggled,
           'on_pref_check_spelling_toggled':
             self.toggle_spellcheck,
           # buttons on the Plugins tab
@@ -393,9 +394,19 @@ class PreferencesDialog:
 
     def toggle_preview(self, widget):
         """Toggle previews in the task view on or off."""
-        self.config_priv.set("contents_preview_enable", widget.get_active())
-        view = self.req.get_tasks_tree(refresh=False)
-        view.refresh_all()
+        curstate = self.config_priv.get("contents_preview_enable")
+        if curstate != widget.get_active():
+            self.config_priv.set("contents_preview_enable", not curstate)
+            view = self.req.get_tasks_tree(refresh=False)
+            view.refresh_all()
+
+    def on_bg_color_toggled(self, widget):
+        """ Save configuration and refresh nodes to apply the change """
+        curstate = self.config_priv.get("bg_color_enable")
+        if curstate != widget.get_active():
+            self.config_priv.set("bg_color_enable", not curstate)
+            task_tree = self.req.get_tasks_tree(refresh=False).get_basetree()
+            task_tree.refresh_all()
 
     def toggle_spellcheck(self, widget):
         """Toggle spell checking on or off."""

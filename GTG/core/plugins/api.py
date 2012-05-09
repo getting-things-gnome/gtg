@@ -176,6 +176,22 @@ class PluginAPI:
                 Log.debug("Error removing the toolbar item in the TaskEditor:"
                           "%s" % e)
 
+    def set_bgcolor_func(self, func=None):
+        """ Set a function which defines a background color for each task
+        
+        NOTE: This function stronglye depend on browser and could be easily
+        broken by changes in browser code
+        """
+        browser = self.__ui
+
+        # set default bgcolor?
+        if func is None:
+            func = browser.tv_factory.task_bg_color
+
+        for pane in browser.vtree_panes.itervalues():
+            pane.set_bg_color(func, 'bg_color')
+            pane.basetree.get_basetree().refresh_all()
+
 #=== file saving/loading ======================================================
 
     def load_configuration_object(self, plugin_name, filename, \

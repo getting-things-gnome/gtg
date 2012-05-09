@@ -87,7 +87,7 @@ class Plugin(object):
                 bus, obj_path = dbobj.split(':')
                 try:
                     dbus.SessionBus().get_object(bus, obj_path)
-                except Exception, e:
+                except Exception:
                     self.missing_dbus.append(dbobj.split(':'))
                     self.error = True
             else:

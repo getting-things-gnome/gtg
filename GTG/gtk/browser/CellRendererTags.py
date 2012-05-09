@@ -23,8 +23,10 @@
 import pygtk
 pygtk.require('2.0')
 import gobject
+import glib
 import gtk
 import cairo
+from GTG.tools.logger import Log
 
 #=== MAIN CLASS ===============================================================
 
@@ -131,11 +133,17 @@ class CellRendererTags(gtk.GenericCellRenderer):
             rect_y  = orig_y
 
             if my_tag_icon:
-                pixbuf = gtk.icon_theme_get_default().load_icon(\
-                    my_tag_icon, 16, 0)
-                gdkcontext.set_source_pixbuf(pixbuf, rect_x, rect_y)
-                gdkcontext.paint()
-                count = count + 1
+                try:
+                    pixbuf = gtk.icon_theme_get_default().load_icon(
+                                    my_tag_icon, 16, 0)
+                    gdkcontext.set_source_pixbuf(pixbuf, rect_x, rect_y)
+                    gdkcontext.paint()
+                    count = count + 1
+                except glib.GError:
+                    # In some rare cases an icon could not be found
+                    # (e.g. wrong set icon path, missing icon)
+                    # Raising an exception breaks UI and signal catcher badly
+                    Log.error("Can't load icon '%s'" % my_tag_icon)
 
             elif my_tag_color:
 

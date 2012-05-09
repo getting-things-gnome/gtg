@@ -24,14 +24,10 @@ Tagstore is to tag as datastore is to task. Of course, the tagstore is
 easier.  See the end of this file for the Tag object implementation.
 """
 
-import os
 import xml.sax.saxutils as saxutils
 
-from GTG              import _
 from GTG.core         import CoreConfig
 from liblarch         import TreeNode
-from GTG.tools        import cleanxml
-from GTG.tools.logger import Log
 
 class Tag(TreeNode):
     """A short name that can be applied to L{Task}s.
@@ -44,19 +40,20 @@ class Tag(TreeNode):
     for tags is C{name}, which always matches L{Tag.get_name()}.
     """
 
-    def __init__(self, name, req):
+    def __init__(self, name, req, attributes={}):
         """Construct a tag.
 
         @param name: The name of the tag. Should be a string, generally a
             short one.
+        @param attributes: Allow having initial set of attributes without calling _save callback
         """
         TreeNode.__init__(self, name)
         self._name = saxutils.unescape(str(name))
         self.req = req
-        self._attributes = {'name': self._name}
         self._save = None
-        self._tasks_count = 0
-        #list of tasks associated with this tag
+        self._attributes = {'name': self._name}
+        for key, value in attributes.iteritems():
+            self.set_attribute(key, value)
 
     #overiding some functions to not allow dnd of special tags
     def add_parent(self, parent_id):
@@ -88,8 +85,6 @@ class Tag(TreeNode):
             raise Exception("The name of tag cannot be set manually")
         elif att_name == "parent":
             self.add_parent(att_value)
-            #self.new_relationship(att_value, self._name)
-            self._attributes['parent'] = "We don't care about that value"
         else:
             # Attributes should all be strings.
             val = unicode(str(att_value), "UTF-8")

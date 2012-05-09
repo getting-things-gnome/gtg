@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (c) 2009 - Paulo Cabido <paulo.cabido@gmail.com>
+# Copyright (c) 2012 - Wolter Hellmund <wolterh6@gmail.com>
 #
 # This program is free software: you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -14,8 +14,8 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from GTG.plugins.import_json.import_json import pluginImportJson
-
+from GTG.plugins.urgency_color.urgency_color import pluginUrgencyColor
 
 #suppress pyflakes warning (given by make lint)
-if False == True: pluginImportJson()
+if False == True:
+    pluginUrgencyColor()

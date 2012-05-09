@@ -16,27 +16,20 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-
-'''
-Tests for the tags utilities
-'''
+""" Tests for the tags utilities """
 
 import unittest
 
-from GTG.tools.tags import *
+from GTG.tools.tags import extract_tags_from_text
+from GTG.tools.tags import parse_tag_list
 
 
+class TestToolTags(unittest.TestCase):
+    """ Tests for the tags utilities """
 
-class TestTagsUtils(unittest.TestCase):
-    '''
-    Tests for the tags utilities
-    '''
-    
     def test_extract_tags_from_text(self):
-        '''
-        Test for extracting tags from a string
-        '''
-        tests = (\
+        """ Test for extracting tags from a string """
+        tests = (
                  ("@mamma mia", ["@mamma"]),
                  ("vive le @roy", ["@roy"]),
                  ("hey @mr. jack!", ["@mr"]),
@@ -47,10 +40,43 @@ class TestTagsUtils(unittest.TestCase):
         for text, tags in tests:
             self.assertEqual(extract_tags_from_text(text), tags)
 
+    def test_parse_tag_list(self):
+        """ Test parsing tag list"""
+        ptl = parse_tag_list
 
+        self.assertEqual(ptl("tag"), [("@tag", True)])
+        self.assertEqual(ptl("@tag"), [("@tag", True)])
 
+        self.assertEqual(ptl("!tag"), [("@tag", False)])
+        self.assertEqual(ptl("!@tag"), [("@tag", False)])
+
+        self.assertEqual(ptl("a b c"),
+            [("@a", True), ("@b", True), ("@c", True)])
+        self.assertEqual(ptl("a @b c"),
+            [("@a", True), ("@b", True), ("@c", True)])
+        self.assertEqual(ptl("@a b @c"),
+            [("@a", True), ("@b", True), ("@c", True)])
+        self.assertEqual(ptl("@a @b @c"),
+            [("@a", True), ("@b", True), ("@c", True)])
+
+        self.assertEqual(ptl("!a !b !c"),
+            [("@a", False), ("@b", False), ("@c", False)])
+        self.assertEqual(ptl("!a !@b !c"),
+            [("@a", False), ("@b", False), ("@c", False)])
+        self.assertEqual(ptl("!@a !b !@c"),
+            [("@a", False), ("@b", False), ("@c", False)])
+        self.assertEqual(ptl("!@a !@b !@c"),
+            [("@a", False), ("@b", False), ("@c", False)])
+
+        self.assertEqual(ptl("add !remove"),
+            [("@add", True), ("@remove", False)])
+        self.assertEqual(ptl("@add !@remove"),
+            [("@add", True), ("@remove", False)])
+        self.assertEqual(ptl("!remove add"),
+            [("@remove", False), ("@add", True)])
+        self.assertEqual(ptl("!@remove @add"),
+            [("@remove", False), ("@add", True)])
 
 
 def test_suite():
-    return unittest.TestLoader().loadTestsFromTestCase(TestTagsUtils)
-
+    return unittest.TestLoader().loadTestsFromTestCase(TestToolTags)

@@ -15,20 +15,22 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 import sys
 import os
+
 try:
     import pygtk
     pygtk.require("2.0")
 except: # pylint: disable-msg=W0702
     sys.exit(1)
+
 try:
     import gtk
 except: # pylint: disable-msg=W0702
     sys.exit(1)
-from threading           import Timer
 
-from GTG.core.task       import Task
-from GTG.tools.logger    import Log
-from GTG.tools.dates     import Date
+from threading import Timer
+
+from GTG.tools.logger import Log
+from GTG.tools.dates import Date
 
 
 class pluginReaper:
@@ -38,7 +40,7 @@ class pluginReaper:
                            'show_menu_item': True}
 
     PLUGIN_NAME = "task-reaper"
-    
+
     #In case of automatic removing tasks, the time
     # between two runs of the cleaner function
     TIME_BETWEEN_PURGES = 60 * 60
@@ -52,18 +54,18 @@ class pluginReaper:
                              "/reaper.ui"))
         self.preferences_dialog = self.builder.get_object("preferences_dialog")
         self.pref_chbox_show_menu_item    = \
-                            self.builder.get_object("pref_chbox_show_menu_item")
+                        self.builder.get_object("pref_chbox_show_menu_item")
         self.pref_chbox_is_automatic    = \
-                            self.builder.get_object("pref_chbox_is_automatic")
+                        self.builder.get_object("pref_chbox_is_automatic")
         self.pref_spinbtn_max_days    = \
-                            self.builder.get_object("pref_spinbtn_max_days")
+                        self.builder.get_object("pref_spinbtn_max_days")
         SIGNAL_CONNECTIONS_DIC = {
             "on_preferences_dialog_delete_event":
                 self.on_preferences_cancel,
             "on_btn_preferences_cancel_clicked":
                 self.on_preferences_cancel,
             "on_btn_preferences_ok_clicked":
-                self.on_preferences_ok
+                self.on_preferences_ok,
         }
         self.builder.connect_signals(SIGNAL_CONNECTIONS_DIC)
         self.menu_item = gtk.MenuItem("Delete old closed tasks")
@@ -94,15 +96,14 @@ class pluginReaper:
         if self.menu_item_is_shown == True:
             plugin_api.remove_menu_item(self.menu_item)
 
-## HELPER FUNCTIONS ############################################################
-
+## HELPER FUNCTIONS ###########################################################
     def __log(self, message):
         Log.debug(message)
 
-## CORE FUNCTIONS ##############################################################
-
+## CORE FUNCTIONS #############################################################
     def schedule_autopurge(self):
-        self.timer = Timer(self.TIME_BETWEEN_PURGES, self.delete_old_closed_tasks)
+        self.timer = Timer(self.TIME_BETWEEN_PURGES,
+                                self.delete_old_closed_tasks)
         self.timer.setDaemon(True)
         self.timer.start()
         self.__log("Automatic deletion of old tasks scheduled")
@@ -115,12 +116,13 @@ class pluginReaper:
     def delete_old_closed_tasks(self, widget = None):
         self.__log("Starting deletion of old tasks")
         today = Date.today()
+        max_days = self.preferences["max_days"]
         requester = self.plugin_api.get_requester()
         closed_tree = requester.get_tasks_tree(name = 'inactive')
         closed_tasks = [requester.get_task(tid) for tid in \
                         closed_tree.get_all_nodes()]
-        to_remove = [t for t in closed_tasks 
-            if (today - t.get_closed_date()).days > self.preferences["max_days"]]
+        to_remove = [t for t in closed_tasks
+                        if (today - t.get_closed_date()).days > max_days]
 
         for task in to_remove:
             if requester.has_task(task.get_id()):
@@ -131,8 +133,7 @@ class pluginReaper:
             self.schedule_autopurge()
 
 
-## Preferences methods #########################################################
-
+## Preferences methods ########################################################
     def is_configurable(self):
         """A configurable plugin should have this method and return True"""
         return True
@@ -140,9 +141,12 @@ class pluginReaper:
     def configure_dialog(self, manager_dialog):
         self.preferences_load()
         self.preferences_dialog.set_transient_for(manager_dialog)
-        self.pref_chbox_is_automatic.set_active(self.preferences["is_automatic"])
-        self.pref_chbox_show_menu_item.set_active(self.preferences["show_menu_item"])
-        self.pref_spinbtn_max_days.set_value(self.preferences["max_days"])
+        self.pref_chbox_is_automatic.set_active(
+                        self.preferences["is_automatic"])
+        self.pref_chbox_show_menu_item.set_active(
+                        self.preferences["show_menu_item"])
+        self.pref_spinbtn_max_days.set_value(
+                        self.preferences["max_days"])
         self.preferences_dialog.show_all()
 
     def on_preferences_cancel(self, widget = None, data = None):
@@ -150,25 +154,27 @@ class pluginReaper:
         return True
 
     def on_preferences_ok(self, widget = None, data = None):
-        self.preferences["is_automatic"] = self.pref_chbox_is_automatic.get_active()
-        self.preferences["show_menu_item"] = self.pref_chbox_show_menu_item.get_active()
-        self.preferences["max_days"] = self.pref_spinbtn_max_days.get_value()
+        self.preferences["is_automatic"] = \
+                self.pref_chbox_is_automatic.get_active()
+        self.preferences["show_menu_item"] = \
+                self.pref_chbox_show_menu_item.get_active()
+        self.preferences["max_days"] = \
+                self.pref_spinbtn_max_days.get_value()
         self.preferences_apply()
         self.preferences_store()
         self.preferences_dialog.hide()
 
     def preferences_load(self):
-        data = self.plugin_api.load_configuration_object(self.PLUGIN_NAME,\
+        data = self.plugin_api.load_configuration_object(self.PLUGIN_NAME,
                                                          "preferences")
-        if data == None or type(data) != type (dict()):
+        if data == None or type(data) != type(dict()):
             self.preferences = self.DEFAULT_PREFERENCES
         else:
             self.preferences = data
 
     def preferences_store(self):
-        self.plugin_api.save_configuration_object(self.PLUGIN_NAME,\
-                                                  "preferences", \
-                                                  self.preferences)
+        self.plugin_api.save_configuration_object(self.PLUGIN_NAME,
+                                      "preferences", self.preferences)
 
     def preferences_apply(self):
         #Showing the GUI
@@ -184,7 +190,7 @@ class pluginReaper:
         if self.preferences['is_automatic'] == True and \
                             self.is_automatic == False:
             self.is_automatic = True
-            # Run the first iteration immediately (also schedule next iteration)
+            # Run the first iteration immediately and schedule next iteration
             self.delete_old_closed_tasks()
         elif self.preferences['is_automatic'] == False and \
                             self.is_automatic == True:

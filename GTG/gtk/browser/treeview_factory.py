@@ -25,6 +25,7 @@ import locale
 from GTG                              import _
 from GTG.core                         import CoreConfig
 from GTG.core.task                    import Task
+from GTG.core.search                  import parse_search_query, search_filter
 from GTG.gtk.browser.CellRendererTags import CellRendererTags
 from liblarch_gtk                     import TreeView
 from GTG.gtk                          import colors
@@ -84,15 +85,23 @@ class TreeviewFactory():
                     real_count = real_count + 1
         return display_count < real_count
     
-    def task_bg_color(self,tags,bg):
+    def task_bg_color(self, node, default_color):
         if self.config.get('bg_color_enable'):
-            return colors.background_color(tags,bg)
+            return colors.background_color(node.get_tags(), default_color)
         else:
             return None
     
     #return an ordered list of tags of a task
     def task_tags_column(self,node):
         tags = node.get_tags()
+
+        search_parent = self.req.get_tag(CoreConfig.SEARCH_TAG)
+        for search_tag in search_parent.get_children():
+            tag = self.req.get_tag(search_tag)
+            match = search_filter(node, parse_search_query(tag.get_attribute('query')))
+            if match and search_tag not in tags:
+                tags.append(tag)
+
         tags.sort(key = lambda x: x.get_name())
         return tags
         
@@ -118,14 +127,14 @@ class TreeviewFactory():
             count = self.mainview.node_n_children(node.get_id(), recursive=True)
             if count != 0:
                 title += " (%s)" % count
-            
-            if self.config.get("contents_preview_enable"):
-            	excerpt = saxutils.escape(node.get_excerpt(lines=1,
-            		strip_tags=True, strip_subtasks=True))
-            	title += " <span size='small' color='%s'>%s</span>" \
-            		% (self.unactive_color, excerpt) 
         elif node.get_status() == Task.STA_DISMISSED:
             title = "<span color='%s'>%s</span>" % (self.unactive_color, title)
+
+        if self.config.get("contents_preview_enable"):
+            excerpt = saxutils.escape(node.get_excerpt(lines=1,
+                    strip_tags=True, strip_subtasks=True))
+            title += " <span size='small' color='%s'>%s</span>" \
+                    % (self.unactive_color, excerpt) 
         return title
         
     #task start date
@@ -239,23 +248,17 @@ class TreeviewFactory():
             return cmp(t1_order, t2_order)
             
     def ontag_task_dnd(self,source,target):
+        task = self.req.get_task(source)
         if target.startswith('@'):
-            task = self.req.get_task(source)
             task.add_tag(target)
         elif target == 'gtg-tags-none':
-            task = self.req.get_task(source)
             for t in task.get_tags_name():
                 task.remove_tag(t)
+        task.modified()
 
     ############################################
     ######## The Factory #######################
     ############################################
-    def tags_completion_treeview(self, tree):
-        desc = {}
-        desc['tagname'] = {'value': [str, self.tag_name]}
-
-        return TreeView(tree, desc)
-
     def tags_treeview(self,tree):
         desc = {}
 
@@ -411,6 +414,23 @@ class TreeviewFactory():
     #to both active and closed tasks treeview
     def common_desc_for_tasks(self,tree):
         desc = {}
+
+        #invisible 'task_id' column
+        col_name = 'task_id'
+        col = {}
+        col['renderer'] = ['markup', gtk.CellRendererText()]
+        col['value'] = [str, lambda node: node.get_id()]
+        col['visible'] = False
+        col['order'] = 0
+        desc[col_name] = col
+
+        #invisible 'bg_color' column
+        col_name = 'bg_color'
+        col = {}
+        col['value'] = [str, lambda node: None]
+        col['visible'] = False
+        desc[col_name] = col
+
         #invisible 'title' column
         col_name = 'title'
         col = {}
@@ -450,6 +470,7 @@ class TreeviewFactory():
         desc[col_name] = col
         return desc
         
+    
     def build_task_treeview(self,tree,desc):
         treeview = AutoExpandTreeView(tree,desc)
         #Now that the treeview is done, we can polish
@@ -457,7 +478,7 @@ class TreeviewFactory():
         treeview.set_expander_column('label')
         treeview.set_dnd_name('gtg/task-iter-str')
         #Background colors
-        treeview.set_bg_color(self.task_bg_color,'tags')
+        treeview.set_bg_color(self.task_bg_color, 'bg_color')
          # Global treeview properties
         treeview.set_property("enable-tree-lines", False)
         treeview.set_rules_hint(False)

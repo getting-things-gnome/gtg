@@ -22,11 +22,9 @@
 
 #=== IMPORT ===================================================================
 #system imports
-import locale
 import time
-import webbrowser
 import threading
-import unicodedata
+from webbrowser import open as openurl
 
 import pygtk
 pygtk.require('2.0')
@@ -34,36 +32,33 @@ import gobject
 import gtk
 
 #our own imports
-import GTG
+from GTG import _, info, ngettext
 from GTG.backends.backendsignals import BackendSignals
+from GTG.core import CoreConfig
+from GTG.core.search import parse_search_query, SEARCH_COMMANDS, InvalidQuery
+from GTG.core.task import Task
+from GTG.gtk.tag_completion import TagCompletion
+from GTG.gtk.browser import GnomeConfig
 from GTG.gtk.browser.custominfobar import CustomInfoBar
-from GTG.core                       import CoreConfig
-from GTG                         import _, info, ngettext
-from GTG.core.task               import Task
-from GTG.gtk.browser             import GnomeConfig
+from GTG.gtk.browser.modifytags_dialog import ModifyTagsDialog
+from GTG.gtk.browser.tag_context_menu import TagContextMenu
 from GTG.gtk.browser.treeview_factory import TreeviewFactory
-from GTG.tools                   import openurl
-from GTG.tools.dates             import Date
-from GTG.tools.logger            import Log
-from GTG.tools.tags              import extract_tags_from_text
-from GTG.core.search             import parse_search_query, search_commands, InvalidQuery
-#FIXME Why is this commented?
-#from GTG.tools                   import clipboard
+from GTG.tools.dates import Date
+from GTG.tools.logger import Log
 
 #=== MAIN CLASS ===============================================================
 
 WINDOW_TITLE = "Getting Things GNOME!"
-DOCUMENTATION_URL = "http://live.gnome.org/gtg/documentation"
-
-#Some default preferences that we should save in a file
-TIME             = 0
 
 class Timer:
-    def __init__(self,st):
-        self.st = st
-    def __enter__(self): self.start = time.time()
+    def __init__(self, name):
+        self.name = name 
+
+    def __enter__(self):
+        self.start = time.time()
+
     def __exit__(self, *args): 
-        print "%s : %s" %(self.st,time.time() - self.start)
+        print "%s : %s" % (self.name, time.time() - self.start)
 
 
 class TaskBrowser(gobject.GObject):
@@ -78,11 +73,10 @@ class TaskBrowser(gobject.GObject):
     def __init__(self, requester, vmanager):
         gobject.GObject.__init__(self)
         # Object prime variables
-        self.req    = requester
+        self.req = requester
         self.vmanager = vmanager
         self.config = self.req.get_config('browser')
         self.tag_active = False
-        self.filter_cbs = []
         
         #treeviews handlers
         self.vtree_panes = {}
@@ -99,7 +93,7 @@ class TaskBrowser(gobject.GObject):
 
         # Set up models
         # Active Tasks
-        self.activetree.apply_filter('active',refresh=False)
+        self.activetree.apply_filter('active')
         # Tags
         self.tagtree = None
         self.tagtreeview = None
@@ -120,9 +114,6 @@ class TaskBrowser(gobject.GObject):
         # Initialize "About" dialog
         self._init_about_dialog()
 
-        # Initialize tag completion
-        self._init_tag_completion()
-
         #Create our dictionary and connect it
         self._init_signal_connections()
 
@@ -132,18 +123,15 @@ class TaskBrowser(gobject.GObject):
         # Initialize search completion
         self._init_search_completion()
 
-        # Rember values from last time
-        self.last_added_tags = "NewTag"
-        self.last_apply_tags_to_subtasks = False
-        
         self.restore_state_from_conf()
 
         self.on_select_tag()
         self.browser_shown = False
         
         #Update the title when a task change
-        self.activetree.register_cllbck('node-added-inview',self._update_window_title)
-        self.activetree.register_cllbck('node-deleted-inview',self._update_window_title)
+        self.activetree.register_cllbck('node-added-inview', self._update_window_title)
+        self.activetree.register_cllbck('node-deleted-inview', self._update_window_title)
+        self._update_window_title()
 
 ### INIT HELPER FUNCTIONS #####################################################
 #
@@ -162,10 +150,7 @@ class TaskBrowser(gobject.GObject):
         defines aliases for UI elements found in the glide file
         """
         self.window             = self.builder.get_object("MainWindow")
-        self.tagpopup           = self.builder.get_object("tag_context_menu")
         self.searchpopup          = self.builder.get_object("search_context_menu")
-        self.nonworkviewtag_cb  = self.builder.get_object("nonworkviewtag_mi")
-        self.nonworkviewtag_cb.set_label(GnomeConfig.TAG_IN_WORKVIEW_TOGG)
         self.taskpopup          = self.builder.get_object("task_context_menu")
         self.defertopopup       = self.builder.get_object("defer_to_context_menu")
         self.ctaskpopup         = self.builder.get_object("closed_task_context_menu")
@@ -195,13 +180,17 @@ class TaskBrowser(gobject.GObject):
         self.vbox_toolbars      = self.builder.get_object("vbox_toolbars")
         
         self.closed_pane        = None
+        self.tagpopup           = TagContextMenu(self.req)
 
     def _init_ui_widget(self):
         """
-        sets the main pane with the tree with active tasks
+        sets the main pane with the tree with active tasks and create ModifyTagsDialog
         """
         # The Active tasks treeview
         self.main_pane.add(self.vtree_panes['active'])
+
+        tag_completion = TagCompletion(self.req.get_tag_tree())
+        self.modifytags_dialog = ModifyTagsDialog(tag_completion, self.req)
         
     def init_tags_sidebar(self):
         """
@@ -217,7 +206,12 @@ class TaskBrowser(gobject.GObject):
             self.on_select_tag)
         self.tagtreeview.connect('button-press-event',\
             self.on_tag_treeview_button_press_event)
+        self.tagtreeview.connect('key-press-event',\
+            self.on_tag_treeview_key_press_event)
         self.sidebar_container.add(self.tagtreeview)
+
+        # Refresh tree 
+        self.tagtree.reset_filters(transparent_only=True)
 
         # expanding search tag does not work automatically, request it
         self.expand_search_tag()
@@ -240,7 +234,7 @@ class TaskBrowser(gobject.GObject):
         """
         Show the about dialog
         """
-        gtk.about_dialog_set_url_hook(lambda dialog, url: openurl.openurl(url))
+        gtk.about_dialog_set_url_hook(lambda dialog, url: openurl(url))
         self.about.set_website(info.URL)
         self.about.set_website_label(info.URL)
         self.about.set_version(info.VERSION)
@@ -261,8 +255,8 @@ class TaskBrowser(gobject.GObject):
                 self.on_edit_done_task,
             "on_delete_task":
                 self.on_delete_tasks,
-            "on_add_new_tag":
-                self.on_add_new_tag,
+            "on_modify_tags":
+                self.on_modify_tags,
             "on_mark_as_done":
                 self.on_mark_as_done,
             "on_mark_as_started":
@@ -303,18 +297,8 @@ class TaskBrowser(gobject.GObject):
                 self.on_size_allocate,
             "gtk_main_quit":
                 self.on_close,
-            "on_addtag_confirm":
-                self.on_addtag_confirm,
-            "on_addtag_cancel":
-                lambda x: x.hide,
-            "on_tag_entry_key_press_event":
-                self.on_tag_entry_key_press_event,
             "on_add_subtask":
                 self.on_add_subtask,
-            "on_colorchooser_activate":
-                self.on_colorchooser_activate,
-            "on_resetcolor_activate":
-                self.on_resetcolor_activate,
             "on_tagcontext_deactivate":
                 self.on_tagcontext_deactivate,
             "on_workview_toggled":
@@ -325,8 +309,6 @@ class TaskBrowser(gobject.GObject):
                 self.on_closed_toggled,
             "on_view_sidebar_toggled":
                 self.on_sidebar_toggled,
-            "on_bg_color_toggled":
-                self.on_bg_color_toggled,
             "on_quickadd_field_activate":
                 self.on_quickadd_activate,
             "on_quickadd_field_icon_press":
@@ -346,9 +328,11 @@ class TaskBrowser(gobject.GObject):
             "on_about_close":
                 self.on_about_close,
             "on_documentation_clicked":
-                self.on_documentation_clicked,
-            "on_nonworkviewtag_toggled":
-                self.on_nonworkviewtag_toggled,
+                lambda w: openurl(info.DOCUMENTATION_URL),
+            "on_translate_clicked":
+                lambda w: openurl(info.TRANSLATE_URL),
+            "on_report_bug_clicked":
+                lambda w: openurl(info.REPORT_BUG_URL),
             "on_preferences_activate":
                 self.open_preferences,
             "on_edit_backends_activate":
@@ -404,8 +388,9 @@ class TaskBrowser(gobject.GObject):
         self._add_accelerator_for_widget(agr, "done_mi",        "<Control>d")
         self._add_accelerator_for_widget(agr, "dismiss_mi",     "<Control>i")
         self._add_accelerator_for_widget(agr, "delete_mi",      "Cancel")
-        self._add_accelerator_for_widget(agr, "tcm_addtag",     "<Control>t")
+        self._add_accelerator_for_widget(agr, "tcm_modifytags", "<Control>t")
         self._add_accelerator_for_widget(agr, "view_closed",    "<Control>F9")
+        self._add_accelerator_for_widget(agr, "online_help",    "F1")
         
         edit_button = self.builder.get_object("edit_b")
         key, mod    = gtk.accelerator_parse("<Control>e")
@@ -414,23 +399,6 @@ class TaskBrowser(gobject.GObject):
         quickadd_field = self.builder.get_object("quickadd_field")
         key, mod = gtk.accelerator_parse("<Control>l")
         quickadd_field.add_accelerator("grab-focus", agr, key, mod, gtk.ACCEL_VISIBLE)
-
-    def _init_tag_completion(self):
-        """
-        Entry completation for the add tag to a task dialog
-        """
-        #Initialize tag completion.
-        tagtree = self.req.get_tag_tree()
-        completion_view = self.tv_factory.tags_completion_treeview(tagtree)
-        col_num = 1
-
-        self.tag_completion = gtk.EntryCompletion()
-        self.tag_completion.set_model(completion_view.get_model())
-        self.tag_completion.set_text_column(col_num)
-        self.tag_completion.set_match_func(self.tag_match_func, col_num)
-        self.tag_completion.set_inline_completion(True)
-        self.tag_completion.set_inline_selection(True)
-        self.tag_completion.set_popup_single_match(False)
 
 ### HELPER FUNCTIONS ########################################################
 
@@ -442,7 +410,18 @@ class TaskBrowser(gobject.GObject):
 
     def quit(self,widget=None):
         self.vmanager.close_browser()
-        
+
+    def on_window_state_event(self,widget,event,data=None):
+        """This event checks for the window state: maximized?
+	   and stores the state in self.config.max
+	   This is used to check the window state afterwards
+	   and maximize it if needed """
+        mask = gtk.gdk.WINDOW_STATE_MAXIMIZED
+        if widget.get_window().get_state() & mask == mask:	
+            self.config.set("max", True)
+        else:
+            self.config.set("max", False) 
+
     def restore_state_from_conf(self):
 
 #        # Extract state from configuration dictionary
@@ -456,6 +435,11 @@ class TaskBrowser(gobject.GObject):
         height = self.config.get('height')
         if width and height:
             self.window.resize(width, height)
+
+        # checks for maximum size of window
+        self.window.connect('window-state-event', self.on_window_state_event)
+        if self.config.get("max"):
+            self.window.maximize()
 
         xpos = self.config.get("x_pos")
         ypos = self.config.get("y_pos")
@@ -510,9 +494,6 @@ class TaskBrowser(gobject.GObject):
             sort_column, sort_order = int(sort_column), int(sort_order)
             model.set_sort_column_id(sort_column, sort_order)
 
-        bgcol_enable = self.config.get("bg_color_enable")
-        self.builder.get_object("bgcol_enable").set_active(bgcol_enable)
-        
         for path_s in self.config.get("collapsed_tasks"):
             #the tuple was stored as a string. we have to reconstruct it
             path = ()
@@ -603,25 +584,6 @@ class TaskBrowser(gobject.GObject):
                                    count) % {'tasks': count}
         self.window.set_title("%s - "%parenthesis + WINDOW_TITLE)
 
-    def tag_match_func(self, completion, key, iter, column):
-        """
-        function that defines autocompletation on the add tag dialog
-        """
-        model = completion.get_model()
-        text = model.get_value(iter, column)
-        if text:
-            # key is always lowercase => convert text also into lowercase
-            text = text.lower()
-
-            # Exclude the special tags.
-            if text.startswith("<span") or text.startswith('gtg-tags-'):
-                return False
-            else:
-                # Compare normalized unicode representation
-                text = unicodedata.normalize('NFC', unicode(text))
-                key =  unicodedata.normalize('NFC', unicode(key))
-                return text.startswith(key)
-
     def _add_page(self, notebook, label, page):
         notebook.append_page(page, label)
         if notebook.get_n_pages() > 1:
@@ -693,58 +655,6 @@ class TaskBrowser(gobject.GObject):
         self.about.hide()
         return True
 
-    def on_documentation_clicked(self, widget):
-        webbrowser.open(DOCUMENTATION_URL)
-
-    def on_color_changed(self, widget):
-        gtkcolor = widget.get_current_color()
-        strcolor = gtk.color_selection_palette_to_string([gtkcolor])
-        tags = self.get_selected_tags()
-        for tname in tags:
-            t = self.req.get_tag(tname)
-            t.set_attribute("color", strcolor)
-
-    def on_colorchooser_activate(self, widget):
-        #TODO: Color chooser should be refactorized in its own class. Well, in
-        #fact we should have a TagPropertiesEditor (like for project) Also,
-        #color change should be immediate. There's no reason for a Ok/Cancel
-        self.set_target_cursor()
-        color_dialog = gtk.ColorSelectionDialog('Choose color')
-        colorsel = color_dialog.colorsel
-        colorsel.connect("color_changed", self.on_color_changed)
-
-        # Get previous color
-        tags= self.get_selected_tags()
-        init_color = None
-        if len(tags) == 1:
-            ta = self.req.get_tag(tags[0])
-            color = ta.get_attribute("color")
-            if color is not None:
-                colorspec = gtk.gdk.color_parse(color)
-                colorsel.set_previous_color(colorspec)
-                colorsel.set_current_color(colorspec)
-                init_color = colorsel.get_current_color()
-        response = color_dialog.run()
-        # Check response and set color if required
-        if response != gtk.RESPONSE_OK and init_color:
-            strcolor = gtk.color_selection_palette_to_string([init_color])
-            tags = self.get_selected_tags()
-            for t in tags:
-                t.set_attribute("color", strcolor)
-        self.reset_cursor()
-        color_dialog.destroy()
-        
-    def on_resetcolor_activate(self, widget):
-        """
-        handler for the right click popup menu item from tag tree, when its a @tag
-        """
-        self.set_target_cursor()
-        tags = self.get_selected_tags()
-        for tname in tags:
-            t = self.req.get_tag(tname)
-            t.del_attribute("color")
-        self.reset_cursor()
-        
     def on_tagcontext_deactivate(self, menushell):
         self.reset_cursor()
 
@@ -818,12 +728,6 @@ class TaskBrowser(gobject.GObject):
         self.remove_page_from_accessory_notebook(self.closed_pane)
         self.builder.get_object("view_closed").set_active(False)
         self.config.set('closed_task_pane',False)
-
-    def on_bg_color_toggled(self, widget):
-        if widget.get_active():
-            self.config.set("bg_color_enable",True)
-        else:
-            self.config.set("bg_color_enable",False)
 
     def on_toolbar_toggled(self, widget):
         if widget.get_active():
@@ -940,46 +844,32 @@ class TaskBrowser(gobject.GObject):
                     # Then we are looking at single, normal tag rather than
                     # the special 'All tags' or 'Tasks without tags'. We only
                     # want to popup the menu for normal tags.
-
-                    display_in_workview_item = self.tagpopup.get_children()[2]
                     selected_tag = self.req.get_tag(selected_tags[0])
-                    nonworkview = selected_tag.get_attribute("nonworkview")
-                    # We must invert because the tagstore has "True" for tasks
-                    # that are *not* in workview, and the checkbox is set if
-                    # the tag *is* shown in the workview.
-                    if nonworkview == "True":
-                        shown = False
-                    else:
-                        shown = True
-                    # HACK: CheckMenuItem.set_active() emits a toggled() when 
-                    # switching between True and False, which will reset 
-                    # the cursor. Using self.dont_reset to work around that.
-                    # Calling set_target_cursor after set_active() is another
-                    # option, but there's noticeable amount of lag when right
-                    # clicking tags that way.
-                    self.dont_reset = True
-                    display_in_workview_item.set_active(shown)
-                    self.dont_reset = False
+                    self.tagpopup.set_tag(selected_tag)
                     self.tagpopup.popup(None, None, None, event.button, time)
                 else:
                     self.reset_cursor()
-            return 1
+            return True
 
-    def on_nonworkviewtag_toggled(self, widget):
-        self.set_target_cursor()
-        tag_id = self.get_selected_tags()[0]
-        #We must inverse because the tagstore has True
-        #for tasks that are not in workview (and also convert to string)
-        toset = not self.nonworkviewtag_cb.get_active()
-        tag = self.req.get_tag(tag_id)
-        tag.set_attribute("nonworkview", str(toset))
-        if toset:
-            label = GnomeConfig.TAG_NOTIN_WORKVIEW_TOGG
-        else:
-            label = GnomeConfig.TAG_IN_WORKVIEW_TOGG
-        self.nonworkviewtag_cb.set_label(label)
-        if not self.dont_reset:
-            self.reset_cursor()
+    def on_tag_treeview_key_press_event(self, treeview, event):
+        keyname = gtk.gdk.keyval_name(event.keyval)
+        is_shift_f10 = keyname == "F10" and event.get_state() & gtk.gdk.SHIFT_MASK
+        if is_shift_f10 or keyname == "Menu":
+            selected_tags = self.get_selected_tags(nospecial=True)
+            selected_search = self.get_selected_search()
+            #popup menu for searches
+            if selected_search is not None:
+                self.searchpopup.popup(None, None, None, 0, event.time)
+            elif len(selected_tags) > 0:
+                # Then we are looking at single, normal tag rather than
+                # the special 'All tags' or 'Tasks without tags'. We only
+                # want to popup the menu for normal tags.
+                selected_tag = self.req.get_tag(selected_tags[0])
+                self.tagpopup.set_tag(selected_tag)
+                self.tagpopup.popup(None, None, None, 0, event.time)
+            else:
+                self.reset_cursor()
+            return True
 
     def on_task_treeview_button_press_event(self, treeview, event):
         """Pop up context menu on right mouse click in the main task tree view"""
@@ -999,11 +889,18 @@ class TaskBrowser(gobject.GObject):
                     treeview.set_cursor(path, col, 0)
                 treeview.grab_focus()
                 self.taskpopup.popup(None, None, None, event.button, time)
-            return 1
+            return True
 
     def on_task_treeview_key_press_event(self, treeview, event):
-        if gtk.gdk.keyval_name(event.keyval) == "Delete":
+        keyname = gtk.gdk.keyval_name(event.keyval)
+        is_shift_f10 = keyname == "F10" and event.get_state() & gtk.gdk.SHIFT_MASK
+
+        if keyname == "Delete":
             self.on_delete_tasks()
+            return True
+        elif is_shift_f10 or keyname == "Menu":
+            self.taskpopup.popup(None, None, None, 0, event.time)
+            return True
 
     def on_closed_task_treeview_button_press_event(self, treeview, event):
         if event.button == 3:
@@ -1016,11 +913,18 @@ class TaskBrowser(gobject.GObject):
                 treeview.grab_focus()
                 treeview.set_cursor(path, col, 0)
                 self.ctaskpopup.popup(None, None, None, event.button, time)
-            return 1
+            return True
 
     def on_closed_task_treeview_key_press_event(self, treeview, event):
-        if gtk.gdk.keyval_name(event.keyval) == "Delete":
+        keyname = gtk.gdk.keyval_name(event.keyval)
+        is_shift_f10 = keyname == "F10" and event.get_state() & gtk.gdk.SHIFT_MASK
+
+        if keyname == "Delete":
             self.on_delete_tasks()
+            return True
+        elif is_shift_f10 or keyname == "Menu":
+            self.ctaskpopup.popup(None, None, None, 0, event.time)
+            return True
 
     def on_add_task(self, widget, status=None):
         tags = [tag for tag in self.get_selected_tags() if tag.startswith('@')]
@@ -1129,69 +1033,10 @@ class TaskBrowser(gobject.GObject):
     def on_set_due_clear(self, widget):
         self.update_due_date(widget, None)
 
-    def on_add_new_tag(self, widget=None, tid=None, tryagain = False):
-        if not tid:
-            self.tids_to_addtag = self.get_selected_tasks()
-        else:
-            self.tids_to_addtag = [tid]
-
-        if not self.tids_to_addtag == [None]:
-            tag_entry = self.builder.get_object("tag_entry")
-            apply_to_subtasks = self.builder.get_object("apply_to_subtasks")
-            # We don't want to reset the text entry and checkbox if we got
-            # sent back here after a warning.
-            if not tryagain:
-                tag_entry.set_text(self.last_added_tags)
-                tag_entry.set_completion(self.tag_completion)
-                apply_to_subtasks.set_active(self.last_apply_tags_to_subtasks)
-            tag_entry.grab_focus()
-            addtag_dialog = self.builder.get_object("addtag_dialog")
-            addtag_dialog.run()
-            addtag_dialog.hide()
-            self.tids_to_addtag = None            
-        else:
-            return False
-    
-    def on_addtag_confirm(self, widget):
-        tag_entry = self.builder.get_object("tag_entry")
-        addtag_dialog = self.builder.get_object("addtag_dialog")
-        apply_to_subtasks = self.builder.get_object("apply_to_subtasks")
-        addtag_error = False
-        entry_text = tag_entry.get_text()
-        #use spaces and commas as separators
-        new_tags = []
-        for text in entry_text.split(","):
-            tags = [t.strip() for t in text.split(" ")]
-            for tag in tags:
-                if tag:
-                    if not tag.startswith('@'):
-                        tag = "@" + tag 
-                    new_tags.append(tag)
-        # If the checkbox is checked, add all the subtasks to the list of
-        # tasks to add.
-        if apply_to_subtasks.get_active():
-            for tid in self.tids_to_addtag:
-                task = self.req.get_task(tid)
-                # FIXME: Python not reinitialize the default value of its parameter
-                # therefore it must be done manually. This function should be refractored
-                # as far it is marked as depricated
-                for i in task.get_self_and_all_subtasks(tasks=[]):
-                    taskid = i.get_id()
-                    if taskid not in self.tids_to_addtag: 
-                        self.tids_to_addtag.append(taskid)        
-        for tid in self.tids_to_addtag:
-            task = self.req.get_task(tid)
-            for new_tag in new_tags:
-                task.add_tag(new_tag)
-            task.sync()
-
-        # Rember the last actions
-        self.last_added_tags = tag_entry.get_text()
-        self.last_apply_tags_to_subtasks = apply_to_subtasks.get_active()
-      
-    def on_tag_entry_key_press_event(self, widget, event):
-        if gtk.gdk.keyval_name(event.keyval) == "Return":
-            self.on_addtag_confirm()
+    def on_modify_tags(self, widget):
+        """ Run Modify Tags dialog on selected tasks """
+        tasks = self.get_selected_tasks()
+        self.modifytags_dialog.modify_tags(tasks)
     
     def close_all_task_editors(self, task_id):
         """ Including editors of subtasks """
@@ -1663,7 +1508,7 @@ class TaskBrowser(gobject.GObject):
             if tagname.startswith("@") :
                 self.search_complete_store.append([tagname])
 
-        for command in search_commands:
+        for command in SEARCH_COMMANDS:
             self.search_complete_store.append([command])
 
         self.search_completion.set_model(self.search_complete_store)

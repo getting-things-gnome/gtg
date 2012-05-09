@@ -75,7 +75,7 @@
                               <object class="GtkLabel" id="prefs-label8">
                                 <property name="visible">True</property>
                                 <property name="ypad">5</property>
-                                <property name="label" translatable="yes">&lt;b&gt;General&lt;/b&gt;</property>
+                                <property name="label" translatable="yes">&lt;b&gt;Startup&lt;/b&gt;</property>
                                 <property name="use_markup">True</property>
                               </object>
                             </child>
@@ -114,6 +114,21 @@
                                       </packing>
                                     </child>
                                     <child>
+                                      <object class="GtkCheckButton" id="bg_color_enable">
+                                        <property name="label" translatable="yes">Enable colored backgrounds in the task list</property>
+                                        <property name="visible">True</property>
+                                        <property name="can_focus">True</property>
+                                        <property name="receives_default">False</property>
+                                        <property name="draw_indicator">True</property>
+                                        <signal name="toggled" handler="on_bg_color_toggled"/>
+                                      </object>
+                                      <packing>
+                                        <property name="expand">False</property>
+                                        <property name="padding">3</property>
+                                        <property name="position">1</property>
+                                      </packing>
+                                    </child>
+                                    <child>
                                       <object class="GtkHBox" id="prefs-hbox1">
                                         <property name="no_show_all">True</property>
                                         <child>
@@ -144,7 +159,7 @@
                                       <packing>
                                         <property name="expand">False</property>
                                         <property name="padding">3</property>
-                                        <property name="position">1</property>
+                                        <property name="position">2</property>
                                       </packing>
                                     </child>
                                   </object>
@@ -219,7 +234,7 @@
                 <child type="tab">
                   <object class="GtkLabel" id="prefs-label1">
                     <property name="visible">True</property>
-                    <property name="label" translatable="yes">Behaviour</property>
+                    <property name="label" translatable="yes">General</property>
                   </object>
                   <packing>
                     <property name="tab_fill">False</property>
@@ -347,11 +362,11 @@
         <child internal-child="action_area">
           <object class="GtkHButtonBox" id="prefs-action_area">
             <property name="visible">True</property>
-            <property name="layout_style">edge</property>
+            <property name="layout_style">end</property>
             <child>
               <object class="GtkButton" id="prefs_help">
                 <property name="label">gtk-help</property>
-                <property name="visible">True</property>
+                <property name="no_show_all">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="use_stock">True</property>

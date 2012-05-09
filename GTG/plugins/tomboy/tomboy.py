@@ -184,16 +184,17 @@ Please install it or disable the Tomboy/Gnote plugin in GTG"))
         try:
             obj = bus.get_object("org.gnome.Tomboy",
                                "/org/gnome/Tomboy/RemoteControl")
-        except dbus.DBusException, exception:
+        except dbus.DBusException:
             if not hasattr(self, "disable_flag"):
                 dialog = gtk.MessageDialog(parent = \
                      self.plugin_api.get_ui().get_window(),
                      flags = gtk.DIALOG_DESTROY_WITH_PARENT,
                      type = gtk.MESSAGE_ERROR,
                      buttons=gtk.BUTTONS_OK,
-                     message_format= self.software.title() + _(" was found on\
- the system, but it doesn't provide a dbus interface. the Tomboy/Gnote plugin\
- will not work with it."))
+                     message_format = _("%s seems to be installed on your "
+                        "system, but it does not provide a DBus interface "
+                        "which is required by the Tomboy/Gnote plugin "
+                        "in GTG.") % self.software.title())
                 dialog.run() 
                 dialog.destroy()
                 self.disable_flag = True
@@ -216,8 +217,6 @@ Please install it or disable the Tomboy/Gnote plugin in GTG"))
         user_interface_file = os.path.join(self.path, "tomboy.ui")
         self.builder.add_from_file(user_interface_file)
         self.dialog = self.builder.get_object("InsertNoteDialog")
-        btn_add = self.builder.get_object("btn_add")
-        btn_cancel = self.builder.get_object("btn_cancel")
         self.combobox = self.builder.get_object("titles_combobox")
         self.label_caption = self.builder.get_object("label_caption")
         dic = { "on_btn_cancel_clicked"      : self.close_dialog,

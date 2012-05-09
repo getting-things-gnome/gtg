@@ -1,9 +1,8 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-
 # -----------------------------------------------------------------------------
 # Getting Things Gnome! - A personal organizer for the GNOME desktop
-# Copyright (c) 2008,2009 Lionel Dricot & Bertrand Rousseau
+# Copyright (c) 2008-2012 Lionel Dricot & Bertrand Rousseau
 #
 # This program is free software: you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -19,52 +18,36 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-"""
-This script creates a new task and launches the editor to display it. GTG should be running
-"""
+""" This script creates a new task and launches the editor to display it. """
 
+import cgi
+import dbus
 import re
 import sys
-import dbus
-import cgi
-import getopt
+
+from optparse import OptionParser
+
 from GTG import _
 
-def get_task(title, body) :
-    #We will connect on the session bus
-    bus = dbus.SessionBus()
-    liste = bus.list_names()
-    busname = "org.gnome.GTG"
-    remote_object = bus.get_object(busname,"/org/gnome/GTG")
-    timi = dbus.Interface(remote_object,dbus_interface="org.gnome.GTG")
-    #Calling the method
-    timi.OpenNewTask(title, body)
 
-def usage():
-    print _("Usage: %s [-i | --interactive] [-h | --help]") % sys.argv[0]
-        
-if __name__ == '__main__':
-    interactive = False
-    #Command line options handling
-    try:
-        opts, args = getopt.getopt(sys.argv[1:], "hi", ["help", "interactive"])
-    except getopt.GetoptError, err:
-        # print help information and exit:
-        print str(err) # will print something like "option -a not recognized"
-        usage()
-        sys.exit(2)
-    for o, a in opts:
-        if o in ("-i", "--interactive"):
-            interactive = True
-        elif o in ("-h", "--help"):
-            usage()
-            sys.exit()
-        else:
-            assert False, "unhandled option"
+def new_task(title, body):
+    """ Open a new task in GTG with given title and body """
+    bus = dbus.SessionBus()
+    proxy = bus.get_object("org.gnome.GTG", "/org/gnome/GTG")
+    gtg = dbus.Interface(proxy, "org.gnome.GTG")
+    gtg.OpenNewTask(title, body)
+
+
+def main():
+    """ Parse arguments and create a new task """
+    parser = OptionParser()
+    parser.add_option('-i', '--interactive', action='store_true',
+      dest='interactive', help=_("Use input as the text of a new task"),
+      default=False)
+    (options, args) = parser.parse_args()
 
     title = " ".join(args)
-    if interactive:
-        optlist, args = getopt.getopt(args, 'i::')
+    if options.interactive:
         body = sys.stdin.read()
         subject_regex = re.compile("^Subject: (.*)$", re.M | re.I)
         if subject_regex.search(body):
@@ -72,6 +55,7 @@ if __name__ == '__main__':
             title = title + ": " + subject
     else:
         body = ""
-    get_task(title, cgi.escape(body))
+    new_task(title, cgi.escape(body))
 
-
+if __name__ == "__main__":
+    main()

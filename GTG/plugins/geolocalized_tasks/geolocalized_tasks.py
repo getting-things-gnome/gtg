@@ -15,10 +15,7 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import gtk
-import os, sys
-#from time import sleep
-
-#from configobj import ConfigObj
+import os
 
 import Geoclue
 
@@ -152,7 +149,7 @@ class geolocalizedTasks:
                 self.geoclue.init(resource=(1 << 2))
             else:
                 self.geoclue.init(resource=((1 << 10) - 1))
-        except Exception, e:
+        except Exception:
             self.geoclue.init(resource=0)
             
         

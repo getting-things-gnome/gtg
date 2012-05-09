@@ -12,7 +12,5 @@ include org.gnome.GTG.service
 recursive-include data/icons *.png
 recursive-include data/icons *.svg
 include doc/*.1
-recursive-include GTG/plugins/rtm_sync/pyrtm *.py
 recursive-include GTG/plugins/export *
-recursive-include GTG/plugins/evolution_sync *.py
 recursive-include po *.po

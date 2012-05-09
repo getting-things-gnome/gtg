@@ -13,9 +13,10 @@ from small tasks to large projects.
 GTG depends on the following packages:
  * Python, version 2.6 or above
  * PyGTK
- * python ConfigObj
- * python gobject
- * python XDG
+ * python-configobj
+ * python-xdg
+ * python-liblarch 
+ * python-liblarch-gtk
 
 To generate the API documentation, you'll also need to install 'pydoctor'.
 
@@ -24,8 +25,8 @@ these modules if they're not currently available.
 
 To install these packages on Debian-based systems, execute the following
 command:
-    $ sudo aptitude install python-gtk2 python-glade2 python-xdg python-gobject\
-         python-configobj python-pydoctor
+    $ sudo apt-get install python-gtk2 python-gnome2 python-glade2 \
+         python-xdg python-configobj python-pydoctor
 
 Note that the python-pydoctor package is broken in karmic.
 

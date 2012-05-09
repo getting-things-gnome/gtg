@@ -22,9 +22,10 @@ import dbus
 import dbus.glib
 import dbus.service
 
-from GTG.core        import CoreConfig
-from GTG.tools.dates import Date
-
+from GTG.core           import CoreConfig
+from GTG.tools.dates    import Date
+from GTG.core.search    import InvalidQuery
+from GTG.core.search    import parse_search_query
 
 BUSNAME = CoreConfig.BUSNAME
 BUSFACE = CoreConfig.BUSINTERFACE
@@ -33,7 +34,7 @@ BUSFACE = CoreConfig.BUSINTERFACE
 def dsanitize(data):
     """
     Clean up a dict so that it can be transmitted through D-Bus.
-    D-Bus does not have concepts for empty or null arrays or values 
+    D-Bus does not have concepts for empty or null arrays or values
     so these need to be converted into blank values D-Bus accepts.
     @return: Cleaned up dictionary
     """
@@ -55,6 +56,8 @@ def task_to_dict(task):
     """
     Translate a task object into a D-Bus dictionary
     """
+    if not task:
+        return None
     return dbus.Dictionary(dsanitize({
           "id": task.get_id(),
           "status": task.get_status(),
@@ -143,7 +146,24 @@ class DBusTaskWrapper(dbus.service.Object):
             return [self.GetTask(id) for id in tasks]
         else:
             return dbus.Array([], "s")
-
+            
+    @dbus.service.method(BUSNAME, in_signature="s")
+    def SearchTasks(self, query):
+        """
+        Searches the task list
+        """
+        tree = self.req.get_tasks_tree().get_basetree()
+        view = tree.get_viewtree()
+        try:
+            search = parse_search_query(query)
+            view.apply_filter('search', parameters = search)
+            tasks = view.get_all_nodes()
+            if tasks:
+                return [self.GetTask(id) for id in tasks]
+        except InvalidQuery:
+            pass
+        return dbus.Array([], "s")
+    
     @dbus.service.method(BUSNAME)
     def HasTask(self, tid):
         """
@@ -193,10 +213,11 @@ class DBusTaskWrapper(dbus.service.Object):
         or undefined in task_data will clear the value in the task,
         so the best way to update a task is to first retrieve it via
         get_task(tid), modify entries as desired, and send it back
-        via this function.        
+        via this function.
         """
         task = self.req.get_task(tid)
-        task.set_status(task_data["status"], donedate=Date.parse(task_data["donedate"]))
+        task.set_status(task_data["status"],
+                    donedate=Date.parse(task_data["donedate"]))
         task.set_title(task_data["title"])
         task.set_due_date(Date.parse(task_data["duedate"]))
         task.set_start_date(Date.parse(task_data["startdate"]))
@@ -216,7 +237,7 @@ class DBusTaskWrapper(dbus.service.Object):
         This routine returns as soon as the GUI has launched.
         """
         self.view_manager.open_task(tid)
-        
+
     @dbus.service.method(BUSNAME, in_signature="ss")
     def OpenNewTask(self, title, description):
         """

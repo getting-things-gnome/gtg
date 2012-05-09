@@ -44,7 +44,7 @@ class hamsterPlugin:
         """Send a gtg task to hamster-applet"""
         if task is None: return
         gtg_title = task.get_title()
-        gtg_tags = tags=[t.lstrip('@').lower() for t in task.get_tags_name()]
+        gtg_tags = [t.lstrip('@').lower() for t in task.get_tags_name()]
         
         activity = "Other"
         if self.preferences['activity'] == 'tag':

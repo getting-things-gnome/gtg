@@ -493,7 +493,7 @@ class GenericTomboy(GenericBackend):
 
     class TomboyConnection(Borg):
         '''
-        TomboyConnection creates a connection to TOMBOY via DBUS and
+        TomboyConnection creates a connection to TOMBOY via DBus and
         handles all the possible exceptions.
         It is a class that can be used with a with statement.
         Example:
@@ -511,9 +511,9 @@ class GenericTomboy(GenericBackend):
             is not possible, the user is notified about it.
 
             @param backend: a reference to a Backend
-            @param bus_name: the DBUS address of Tomboy
-            @param bus_path: the DBUS path of Tomboy RemoteControl
-            @param bus_interface: the DBUS address of Tomboy RemoteControl 
+            @param bus_name: the DBus address of Tomboy
+            @param bus_path: the DBus path of Tomboy RemoteControl
+            @param bus_interface: the DBus address of Tomboy RemoteControl 
             '''
             super(GenericTomboy.TomboyConnection, self).__init__()
             if hasattr(self, "tomboy_connection_is_ok") and \

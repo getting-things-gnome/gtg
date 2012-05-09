@@ -118,7 +118,7 @@ class pluginExport:
             self.export_generate(document_ready)
         except Exception, e:
             self.show_error_dialog( \
-                            _("Could not generate the document: %s") % e)
+                            _("GTG could not generate the document: %s") % e)
             return False
         return True
 
@@ -227,6 +227,7 @@ class pluginExport:
 
     def __gtk_hide(self, sender = None, data = None):
         self.export_dialog.hide()
+        return True
 
     def __on_combo_changed(self, widget = None):
         if self.load_template():

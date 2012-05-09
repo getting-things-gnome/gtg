@@ -80,50 +80,75 @@ def readTextNode(node,title) :
         if content :
             return content
     return None
+
             
-#This function open an XML file if it exists and return the XML object
-#If the file doesn't exist, it is created with an empty XML tree    
-def openxmlfile(zefile,root ):
-    tmpfile = zefile+'__'
-#    print "opening %s file" %zefile
+def _try_openxmlfile(zefile, root):
+    """ Open an XML file and clean whitespaces in it """
+    f = open(zefile, "r")
+    stringed = f.read()
+    stringed = cleanString(stringed, tab, enter)
+    doc = xml.dom.minidom.parseString(stringed)
+    cleanDoc(doc, tab, enter)
+    xmlproject = doc.getElementsByTagName(root)[0]
+    f.close()
+    return doc, xmlproject
+
+
+def openxmlfile(zefile, root):
+    """ Open an XML file in a robust way
+
+    If file could not be opened, try:
+        * file__
+        * file.bak.0
+        * file.bak.1
+        * .... until BACKUP_NBR
+
+    If file doesn't exist, create a new file """
+
+    tmpfile = zefile + '__'
     try:
         if os.path.exists(zefile):
-            f = open(zefile, "r")
+            return _try_openxmlfile(zefile, root)
         elif os.path.exists(tmpfile):
-            Log.debug("Something happened to the tags file. Using backup")
+            Log.warning("Something happened to %s. Using backup" % zefile)
             os.rename(tmpfile, zefile)
-            f = open(zefile, "r")
+            return _try_openxmlfile(zefile, root)
         else:
             # Creating empty file
             doc,xmlproject = emptydoc(root)
-            newfile = savexml(zefile, doc) # use our function to save file
+            newfile = savexml(zefile, doc)
             if not newfile:
+                Log.error("Could not create a new file %s" % zefile)
                 sys.exit(1)
-            return openxmlfile(zefile, root) # recursive call
-        stringed = f.read()
-        stringed = cleanString(stringed,tab,enter)
-        doc = xml.dom.minidom.parseString(stringed)
-#        doc = xml.dom.minidom.parse(f)
-#        print "cleaning %s" %zefile
-        cleanDoc(doc,tab,enter)
-        xmlproject = doc.getElementsByTagName(root)[0]
-        f.close()
-        return doc,xmlproject
+            return _try_openxmlfile(zefile, root)
+
     except IOError, msg:
         print msg
         sys.exit(1)
         
     except xml.parsers.expat.ExpatError, msg:
-        f.close()
-        errormsg = "Error parsing XML file %s: %s" %(zefile, msg)
-        Log.debug(errormsg)
+        errormsg = "Error parsing XML file %s: %s" % (zefile, msg)
+        Log.error(errormsg)
         if os.path.exists(tmpfile):
-            Log.debug("Something happened to the tags file. Using backup")
+            Log.warning("Something happened to %s. Using backup" % zefile)
             os.rename(tmpfile, zefile)
             # Ok, try one more time now
-            return openxmlfile(zefile, root)
-        # At least, print error message so users are not so much confused
-        print errormsg
+            try:
+                return _try_openxmlfile(zefile, root)
+            except Exception, msg:
+                Log.warning('Failed with reason: %s' % msg)
+
+        # Try to revert to backup
+        for i in range(BACKUP_NBR):
+            backup_file = "%s.bak.%d" % (zefile, i)
+            if os.path.exists(backup_file):
+                Log.info("Trying to restore backup file %s" % backup_file)
+                try:
+                    return _try_openxmlfile(backup_file, root)
+                except Exception, msg:
+                    Log.warning('Failed with reason: %s' % msg)
+
+        Log.info("No suitable backup was found")
         sys.exit(1)
 
 

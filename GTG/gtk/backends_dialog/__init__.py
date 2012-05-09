@@ -42,7 +42,7 @@ from GTG.backends.genericbackend            import GenericBackend
 
 class BackendsDialog(object):
     '''
-    BackendsDialog manages a window that lets you manage and configure backends.
+    BackendsDialog manages a window that lets you manage and configure synchronization service.
     It can display two "views", or "panels":
         - the backend configuration view
         - the backend adding view
@@ -83,6 +83,7 @@ class BackendsDialog(object):
         '''
         self.dialog.hide()
         self.req.save_datastore()
+        return True
 
 ########################################
 ### HELPER FUNCTIONS ###################
@@ -282,7 +283,7 @@ class BackendsDialog(object):
                     type = gtk.MESSAGE_QUESTION,
                     buttons = gtk.BUTTONS_YES_NO,
                     message_format = \
-                     _("Do you really want to remove the backend '%s'?") % \
+                     _("Do you really want to remove the '%s' synchronization service?") % \
                             backend.get_human_name())
         response = dialog.run() 
         dialog.destroy()

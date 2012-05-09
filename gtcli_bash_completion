@@ -30,7 +30,7 @@ _gtcli_completion()
 
         if [ $COMP_CWORD -eq 1 ]; then
             COMPREPLY=( $( compgen -W '-h  --help new show  edit  delete list
-            count postpone close' -- $cur ) )
+            count postpone close search' -- $cur ) )
         else
             _filedir '@(rar|RAR)'
                 fi
