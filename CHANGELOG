@@ -1,3 +1,10 @@
+2012-05-09 Getting Things GNOME! 0.3
+    * Prevent (no title task) from being created due to only whitespace strings from quickadd bar Bug#995740
+    * Also prevent "add task" and "search" popups from being created for strings having just whitespaces in quickadd bar
+    * on_quickaddbar_changed() modified to strip the initial whitespaces from entry
+    * on_quickaddbar_activate() modified to do the same
+    * changes made by Nimit Shah
+
 2012-0?-?? Getting Things GNOME! 0.3
     * Hide tasks with due date someday, #931376
     * New Date class by Paul Kishimoto and Izidor Matušov
