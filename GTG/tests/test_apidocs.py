@@ -38,8 +38,10 @@ class TestApiDocs(unittest.TestCase):
             #if no pydoctor is present, abort the test w/out giving error
             return
         GTG_basedir = os.path.dirname(GTG.__file__)
-        api_dir = os.path.join(GTG_basedir, 
+        api_dir = os.path.join(GTG_basedir, '..', 'tmp',
                                'test_build_api-' + str(uuid.uuid4()))
+        if not os.path.isdir(api_dir):
+            os.makedirs(api_dir)
         args = ['pydoctor', 
                 '--add-package', GTG_basedir,
                 '--make-html',

@@ -51,7 +51,7 @@ class Serializer:
             @var buff, start, end  : the buffer to parse from start to end
             @var parent, doc: the XML element to add data and doc is
                                 the XML dom
-            @done : the list of parsed tags
+            @var done : the list of parsed tags
         """
 
         def is_know_tag(tag):

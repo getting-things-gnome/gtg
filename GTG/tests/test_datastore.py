@@ -31,6 +31,7 @@ import GTG
 from GTG.core.datastore import DataStore
 from GTG.backends.genericbackend import GenericBackend
 from GTG.core import CoreConfig
+from liblarch import Tree
 
 def sleep_within_loop(duration):
     main_loop = gobject.MainLoop()
@@ -48,7 +49,7 @@ class TestDatastore(unittest.TestCase):
     def setUp(self):
         '''
         Creates the environment for the tests
-        @returns None
+        @returns: None
         '''
         self.datastore = DataStore()
         self.requester = self.datastore.get_requester()
@@ -114,7 +115,7 @@ class TestDatastore(unittest.TestCase):
         Tests the get_tasks_tree function
         '''
         tasks_tree = self.datastore.get_tasks_tree()
-        self.assertTrue(isinstance(tasks_tree, GTG.tools.liblarch.Tree))
+        self.assertTrue(isinstance(tasks_tree, Tree))
 
     def test_push_task(self):
         '''
@@ -306,7 +307,8 @@ class FakeBackend(unittest.TestCase):
         self.enabled = True
 
     def queue_set_task(self, task):
-        self.tasks_ids.append(task.get_id())
+        if task.get_id() not in self.tasks_ids:
+            self.tasks_ids.append(task.get_id())
 
     def has_task(self, task_id):
         return task_id in self.tasks_ids

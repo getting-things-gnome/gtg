@@ -67,18 +67,15 @@ dialog = None
 def initialize(app_name=None, message=None, use_apport=False):
     """Initialize the except hook built on GTK.
 
-    Keyword arguments:
-    app_name   -- The current application's name to be read by humans,
-                  untranslated.
-    message    -- A message that will be displayed in the error dialog,
-                  replacing the default message string. Untranslated.
-                  If you don't want a message, pass "".
-    use_apport -- If set to True, gtkcrashhandler will override the settings
-                  in /etc/default/apport and call apport if possible,
-                  silently failing if not.
-                  If set to False, the normal behaviour will be executed,
-                  which may mean Apport kicking in anyway.
-
+    @param app_name: The current application's name to be read by humans,
+        untranslated.
+    @param message: A message that will be displayed in the error dialog,
+        replacing the default message string. Untranslated.
+        If you don't want a message, pass "".
+    @param use_apport: If set to True, gtkcrashhandler will override the 
+        settings in /etc/default/apport and call apport if possible, silently
+        failing if not. If set to False, the normal behaviour will be executed,
+        which may mean Apport kicking in anyway.
     """
     global APP_NAME, MESSAGE, USE_APPORT, _gtk_initialized, _old_sys_excepthook
     if app_name:
@@ -261,16 +258,18 @@ def gtkcrashhandler_thread(run):
     If you forget to use this decorator, exceptions in threads will be
     printed to standard error output, and GTK's main loop will continue to run.
 
-    #Example 1:
-    class ExampleThread(threading.Thread):
-        @gtkcrashhandler_thread
-        def run(self):
-            1 / 0 # this error will be caught by gtkcrashhandler
+    #Example 1::
 
-    #Example 2:
-    def function(arg):
-        arg / 0 # this error will be caught by gtkcrashhandler
-    threading.Thread(target=gtkcrashhandler_thread(function),args=(1,)).start()
+        class ExampleThread(threading.Thread):
+            E{@}gtkcrashhandler_thread
+            def run(self):
+                1 / 0 # this error will be caught by gtkcrashhandler
+
+    #Example 2::
+
+        def function(arg):
+            arg / 0 # this error will be caught by gtkcrashhandler
+        threading.Thread(target=gtkcrashhandler_thread(function),args=(1,)).start()
     """
 
     def gtkcrashhandler_wrapped_run(*args, **kwargs):

@@ -98,10 +98,10 @@ def openxmlfile(zefile, root):
     """ Open an XML file in a robust way
 
     If file could not be opened, try:
-        * file__
-        * file.bak.0
-        * file.bak.1
-        * .... until BACKUP_NBR
+        - file__
+        - file.bak.0
+        - file.bak.1
+        - .... until BACKUP_NBR
 
     If file doesn't exist, create a new file """
 

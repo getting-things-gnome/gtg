@@ -212,7 +212,7 @@ class BackendsTree(gtk.TreeView):
     def on_select_row(self, treeview = None):
         '''When a row is selected, displays the corresponding editing panel
 
-        @treeview: not used
+        @var treeview: not used
         '''
         self.dialog.on_backend_selected(self.get_selected_backend_id())
 

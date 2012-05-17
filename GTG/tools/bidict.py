@@ -86,7 +86,7 @@ class BiDict(object):
         '''
         Returns the list of all first keys
 
-        @returns list
+        @returns: list
         '''
         return list(self._first_to_second)
 
@@ -94,7 +94,7 @@ class BiDict(object):
         '''
         Returns the list of all second keys
 
-        @returns list
+        @returns: list
         '''
         return list(self._second_to_first)
 
@@ -102,7 +102,7 @@ class BiDict(object):
         '''
         returns a string representing the content of this BiDict
 
-        @returns string
+        @returns: string
         '''
         return reduce(lambda text, keys: \
                       str(text) + str(keys),

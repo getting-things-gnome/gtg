@@ -21,7 +21,7 @@
 
 import unittest
 
-from GTG.core.tag import Tag
+from GTG.core.tag import Tag, Set_Name_Attribute_Error
 from GTG.core.datastore import DataStore
 
 from GTG.tests.signals_testing import GobjectSignalsManager
@@ -109,7 +109,10 @@ class TestTag(unittest.TestCase):
         # The 'name' attribute is set by the constructor. After it is set, it
         # cannot be changed with further calls to set_attribute.
         tag = Tag('old', self.req)
-        tag.set_attribute('name', 'new')
+        try:
+            tag.set_attribute('name', 'new')
+        except Set_Name_Attribute_Error:
+            pass
         self.assertEqual('old', tag.get_name())
         self.assertEqual('old', tag.get_attribute('name'))
 
@@ -126,7 +129,10 @@ class TestTag(unittest.TestCase):
         # Setting the name attribute doesn't call save.
         save_calls = []
         tag = Tag('old', self.req)
-        tag.set_attribute('name', 'new')
+        try:
+            tag.set_attribute('name', 'new')
+        except Set_Name_Attribute_Error:
+            pass
         self.assertEqual(0, len(save_calls))
         
     def test_intask_counting_after_rename(self):

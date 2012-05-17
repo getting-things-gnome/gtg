@@ -499,7 +499,7 @@ class GenericBackend(object):
         '''
         Returns if the backend is enabled
 
-        @returns bool
+        @returns: bool
         '''
         return self.get_parameters()[GenericBackend.KEY_ENABLED] or \
                 self.is_default()
@@ -508,7 +508,7 @@ class GenericBackend(object):
         '''
         Returns if the backend is enabled
 
-        @returns bool
+        @returns: bool
         '''
         return self.get_parameters()[GenericBackend.KEY_DEFAULT_BACKEND]
 
@@ -516,7 +516,7 @@ class GenericBackend(object):
         '''
         Returns if the backend is up and running
 
-        @returns is_initialized
+        @returns: is_initialized
         '''
         return self._is_initialized
 

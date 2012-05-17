@@ -30,7 +30,7 @@ class TwoKeyDict(object):
     It's a standard Dictionary with a secondary key.
     For example, you can add an element ('2', 'II', two'), where the
     first two arguments are keys and the third is the stored object, and access
-    it as:
+    it as::
         twokey['2'] ==> 'two'
         twokey['II'] ==> 'two'
     You can also request the other key, given one.
@@ -43,7 +43,7 @@ class TwoKeyDict(object):
         '''
         Creates the TwoKeyDict and optionally populates it with some data
 
-        @oaram triplets: tuples for populating the TwoKeyDict. Format:
+        @param triplets: tuples for populating the TwoKeyDict. Format:
                          ((key1, key2, data_to_store), ...)
         '''
         super(TwoKeyDict, self).__init__()

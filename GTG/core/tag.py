@@ -82,7 +82,7 @@ class Tag(TreeNode):
             string.
         """
         if att_name == "name":
-            raise Exception("The name of tag cannot be set manually")
+            raise Set_Name_Attribute_Error("The name of tag cannot be set manually")
         elif att_name == "parent":
             self.add_parent(att_value)
         else:
@@ -126,7 +126,7 @@ class Tag(TreeNode):
 
         @param butname: If True, exclude C{name} from the list of attribute
             names.
-        #param withparent: If True, the "parent" attribute is attached
+        @param withparent: If True, the "parent" attribute is attached
         """
         attributes = self._attributes.keys()
         if butname:
@@ -184,3 +184,7 @@ class Tag(TreeNode):
 
     def __str__(self):
         return "Tag: %s" % self.get_name()
+
+class Set_Name_Attribute_Error(Exception):
+    """Exception raised when try to set attribute to name"""
+    pass

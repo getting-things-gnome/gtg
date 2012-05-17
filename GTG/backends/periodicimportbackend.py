@@ -37,7 +37,7 @@ class PeriodicImportBackend(GenericBackend):
     changes.
     To use this, only two things are necessary:
         - using do_periodic_import instead of start_get_tasks
-        - having in _static_parameters a "period" key, as in 
+        - having in _static_parameters a "period" key, as in:: 
             "period": { \
                 GenericBackend.PARAM_TYPE: GenericBackend.TYPE_INT, \
                 GenericBackend.PARAM_DEFAULT_VALUE: 2, },
