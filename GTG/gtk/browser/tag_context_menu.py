@@ -18,101 +18,67 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
+"""
+tag_context_menu:
+Implements a context (pop-up) menu for the tag item in the sidebar.
+Right now it is just a void shell It is supposed to become a more generic 
+sidebar context for all kind of item displayed there.
+Also, it is supposed to handle more complex menus (with non-std widgets,
+like a color picker)
+"""
+
 import pygtk
 pygtk.require('2.0')
-import gobject
 import gtk
 
 from GTG import _
-from GTG.gtk.browser import GnomeConfig
 
-class TagContextMenu(gtk.Menu):
+class TagContextMenu(gtk.Menu): # pylint: disable-msg=R0904
+    """Context menu fo the tag i the sidebar"""
 
-    def __init__(self, req, tag=None):
+    def __init__(self, req, vmanager, tag=None):
         self.__gobject_init__()
+        gtk.Menu.__init__(self)
         self.req = req
+        self.vmanager = vmanager
         self.tag = tag
         # Build up the menu
-        self.__build_menu()
         self.set_tag(tag)
-        # Make it visible
-        self.show_all()
+        self.__build_menu()
 
     def __build_menu(self):
-        # Color chooser FIXME: SHOULD BECOME A COLOR PICKER
-        self.mi_cc = gtk.MenuItem()
-        self.mi_cc.set_label(_("Set color..."))
-        self.append(self.mi_cc)
-        # Reset color
-        self.mi_rc = gtk.MenuItem()
-        self.mi_rc.set_label(_("Reset color"))
-        self.append(self.mi_rc)
-        # Don't display in work view mode
-        self.mi_wv = gtk.CheckMenuItem()
-        self.mi_wv.set_label(GnomeConfig.TAG_IN_WORKVIEW_TOGG)
-        self.append(self.mi_wv)
-        # Set the callbacks
-        self.mi_cc.connect('activate', self.on_mi_cc_activate)
-        self.mi_rc.connect('activate', self.on_mi_rc_activate)
-        self.mi_wv_toggle_hid = self.mi_wv.connect('activate', self.on_mi_wv_activate)
-
-    def __set_default_values(self):
-        # Don't set "Hide in workview" as active
-        self.mi_wv.set_active(False)
-
-    def __disable_all(self):
-        pass
-
-    def __enable_all(self):
-        pass
+        """Build up the widget"""
+        # Reset the widget
+        for i in self:
+            self.remove(i)
+            i.destroy()
+        if self.tag is not None:
+            # Color chooser FIXME: SHOULD BECOME A COLOR PICKER
+            self.mi_cc = gtk.MenuItem()
+            self.mi_cc.set_label(_("Edit Tag..."))
+            self.append(self.mi_cc)
+            self.mi_cc.connect('activate', self.on_mi_cc_activate)
+            if self.tag.is_search_tag():
+                self.mi_del = gtk.MenuItem()
+                self.mi_del.set_label(_("Delete"))
+                self.append(self.mi_del)
+                self.mi_del.connect('activate', self.on_mi_del_activate)
+        # Make it visible
+        self.show_all()
 
     ### PUBLIC API ###
 
     def set_tag(self, tag):
         """Update the context menu items using the tag attributes."""
-        # set_active emit the 'toggle' signal, so we have to disable the handler
-        # when we update programmatically
-        self.mi_wv.handler_block(self.mi_wv_toggle_hid)
-        if tag is None:
-            self.tag = None
-            self.__set_default_values()
-            self.__disable_all()
-        else:
-            self.tag = tag
-            self.__enable_all()
-            is_hidden_in_wv = (self.tag.get_attribute("nonworkview") == "True")
-            self.mi_wv.set_active(is_hidden_in_wv)
-        self.mi_wv.handler_unblock(self.mi_wv_toggle_hid)
+        self.tag = tag
+        self.__build_menu()
 
     ### CALLBACKS ###
 
-    def on_mi_wv_activate(self, widget):
-        """Toggle the nonworkview attribute of the tag, update the view"""
-        is_hidden_in_wv = not (self.tag.get_attribute("nonworkview") == "True")
-        self.tag.set_attribute("nonworkview", str(is_hidden_in_wv))
+    def on_mi_cc_activate(self, widget): # pylint: disable-msg=W0613
+        """Callback: show the tag editor upon request"""
+        self.vmanager.open_tag_editor(self.tag)
 
-    def on_mi_cc_activate(self, widget):
-        color_dialog = gtk.ColorSelectionDialog('Choose color')
-        colorsel = color_dialog.colorsel
-
-        # Get previous color
-        color = self.tag.get_attribute("color")
-        if color is not None:
-            colorspec = gtk.gdk.color_parse(color)
-            colorsel.set_previous_color(colorspec)
-            colorsel.set_current_color(colorspec)
-        response = color_dialog.run()
-        new_color = colorsel.get_current_color()
-        
-        # Check response_id and set color if required
-        if response == gtk.RESPONSE_OK and new_color:
-            strcolor = gtk.color_selection_palette_to_string([new_color])
-            self.tag.set_attribute("color", strcolor)
-        color_dialog.destroy()
-
-    def on_mi_rc_activate(self, widget):
-        """
-        handler for the right click popup menu item from tag tree, when its a @tag
-        """
-        self.tag.del_attribute("color")
-
+    def on_mi_del_activate(self, widget): # pylint: disable-msg=W0613
+        """ delete a selected search """
+        self.req.remove_tag(self.tag.get_name())

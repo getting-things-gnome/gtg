@@ -905,121 +905,6 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
     <property name="pixel_size">16</property>
     <property name="icon_name">gtg-task-undone</property>
   </object>
-  <object class="GtkMenu" id="due_context_menu">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <child>
-      <object class="GtkImageMenuItem" id="tcm_due_today">
-        <property name="label" translatable="yes">t_oday</property>
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="use_action_appearance">False</property>
-        <property name="use_underline">True</property>
-        <property name="use_stock">False</property>
-        <signal name="activate" handler="on_set_due_today" swapped="no"/>
-      </object>
-    </child>
-    <child>
-      <object class="GtkImageMenuItem" id="tcm_due_tomorrow">
-        <property name="label" translatable="yes">_tomorrow</property>
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="use_action_appearance">False</property>
-        <property name="use_underline">True</property>
-        <property name="use_stock">False</property>
-        <signal name="activate" handler="on_set_due_tomorrow" swapped="no"/>
-      </object>
-    </child>
-    <child>
-      <object class="GtkImageMenuItem" id="tcm_due_next_week">
-        <property name="label" translatable="yes">next _week</property>
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="use_action_appearance">False</property>
-        <property name="use_underline">True</property>
-        <property name="use_stock">False</property>
-        <signal name="activate" handler="on_set_due_next_week" swapped="no"/>
-      </object>
-    </child>
-    <child>
-      <object class="GtkImageMenuItem" id="tcm_due_next_month">
-        <property name="label" translatable="yes">next _month</property>
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="use_action_appearance">False</property>
-        <property name="use_underline">True</property>
-        <property name="use_stock">False</property>
-        <signal name="activate" handler="on_set_due_next_month" swapped="no"/>
-      </object>
-    </child>
-    <child>
-      <object class="GtkImageMenuItem" id="tcm_due_next_year">
-        <property name="label" translatable="yes">next _year</property>
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="use_action_appearance">False</property>
-        <property name="use_underline">True</property>
-        <property name="use_stock">False</property>
-        <signal name="activate" handler="on_set_due_next_year" swapped="no"/>
-      </object>
-    </child>
-    <child>
-      <object class="GtkSeparatorMenuItem" id="menuitem2">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-      </object>
-    </child>
-    <child>
-      <object class="GtkImageMenuItem" id="tcm_due_now">
-        <property name="label" translatable="yes">_now</property>
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="use_action_appearance">False</property>
-        <property name="use_underline">True</property>
-        <property name="use_stock">False</property>
-        <signal name="activate" handler="on_set_due_now" swapped="no"/>
-      </object>
-    </child>
-    <child>
-      <object class="GtkImageMenuItem" id="tcm_due_soon">
-        <property name="label" translatable="yes">_soon</property>
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="use_action_appearance">False</property>
-        <property name="use_underline">True</property>
-        <property name="use_stock">False</property>
-        <signal name="activate" handler="on_set_due_soon" swapped="no"/>
-      </object>
-    </child>
-    <child>
-      <object class="GtkImageMenuItem" id="tcm_due_someday">
-        <property name="label" translatable="yes">_someday</property>
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="use_action_appearance">False</property>
-        <property name="use_underline">True</property>
-        <property name="use_stock">False</property>
-        <signal name="activate" handler="on_set_due_someday" swapped="no"/>
-      </object>
-    </child>
-    <child>
-      <object class="GtkSeparatorMenuItem" id="menuitem3">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-      </object>
-    </child>
-    <child>
-      <object class="GtkImageMenuItem" id="tcm_due_clear">
-        <property name="label" translatable="yes">_clear due date</property>
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="use_action_appearance">False</property>
-        <property name="use_underline">True</property>
-        <property name="use_stock">False</property>
-        <signal name="activate" handler="on_set_due_clear" swapped="no"/>
-      </object>
-    </child>
-  </object>
   <object class="GtkImage" id="image1">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
@@ -1057,100 +942,6 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
   <object class="GtkEntryCompletion" id="quickadd_entrycompletion">
     <property name="popup_set_width">False</property>
     <signal name="action-activated" handler="on_quickadd_entrycompletion_action_activated" swapped="no"/>
-  </object>
-  <object class="GtkMenu" id="search_context_menu">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <child>
-      <object class="GtkImageMenuItem" id="search_delete">
-        <property name="label">Delete</property>
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="use_action_appearance">False</property>
-        <property name="use_underline">True</property>
-        <property name="image">image5</property>
-        <property name="use_stock">False</property>
-        <property name="accel_group">accelgroup1</property>
-        <property name="always_show_image">True</property>
-        <signal name="activate" handler="on_search_delete_activate" swapped="no"/>
-      </object>
-    </child>
-  </object>
-  <object class="GtkMenu" id="start_for_context_menu">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <child>
-      <object class="GtkImageMenuItem" id="tcm_mark_as_started">
-        <property name="label" translatable="yes">t_oday</property>
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="use_action_appearance">False</property>
-        <property name="use_underline">True</property>
-        <property name="use_stock">False</property>
-        <signal name="activate" handler="on_mark_as_started" swapped="no"/>
-      </object>
-    </child>
-    <child>
-      <object class="GtkImageMenuItem" id="tcm_start_for_tomorrow">
-        <property name="label" translatable="yes">_tomorrow</property>
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="use_action_appearance">False</property>
-        <property name="use_underline">True</property>
-        <property name="use_stock">False</property>
-        <signal name="activate" handler="on_start_for_tomorrow" swapped="no"/>
-      </object>
-    </child>
-    <child>
-      <object class="GtkImageMenuItem" id="tcm_start_for_next_week">
-        <property name="label" translatable="yes">next _week</property>
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="use_action_appearance">False</property>
-        <property name="use_underline">True</property>
-        <property name="use_stock">False</property>
-        <signal name="activate" handler="on_start_for_next_week" swapped="no"/>
-      </object>
-    </child>
-    <child>
-      <object class="GtkImageMenuItem" id="tcm_start_for_next_month">
-        <property name="label" translatable="yes">next _month</property>
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="use_action_appearance">False</property>
-        <property name="use_underline">True</property>
-        <property name="use_stock">False</property>
-        <signal name="activate" handler="on_start_for_next_month" swapped="no"/>
-      </object>
-    </child>
-    <child>
-      <object class="GtkImageMenuItem" id="tcm_start_for_next_year">
-        <property name="label" translatable="yes">next _year</property>
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="use_action_appearance">False</property>
-        <property name="use_underline">True</property>
-        <property name="use_stock">False</property>
-        <signal name="activate" handler="on_start_for_next_year" swapped="no"/>
-      </object>
-    </child>
-    <child>
-      <object class="GtkSeparatorMenuItem" id="menuitem1">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-      </object>
-    </child>
-    <child>
-      <object class="GtkImageMenuItem" id="tcm_start_clear">
-        <property name="label" translatable="yes">_clear start date</property>
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="use_action_appearance">False</property>
-        <property name="use_underline">True</property>
-        <property name="use_stock">False</property>
-        <signal name="activate" handler="on_start_clear" swapped="no"/>
-      </object>
-    </child>
   </object>
   <object class="GtkMenu" id="task_context_menu">
     <property name="visible">True</property>
@@ -1239,6 +1030,84 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
         <property name="use_action_appearance">False</property>
         <property name="use_underline">True</property>
         <property name="use_stock">False</property>
+        <child type="submenu">
+          <object class="GtkMenu" id="start_for_context_menu">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <child>
+              <object class="GtkImageMenuItem" id="tcm_mark_as_started">
+                <property name="label" translatable="yes">t_oday</property>
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="use_action_appearance">False</property>
+                <property name="use_underline">True</property>
+                <property name="use_stock">False</property>
+                <signal name="activate" handler="on_mark_as_started" swapped="no"/>
+              </object>
+            </child>
+            <child>
+              <object class="GtkImageMenuItem" id="tcm_start_for_tomorrow">
+                <property name="label" translatable="yes">_tomorrow</property>
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="use_action_appearance">False</property>
+                <property name="use_underline">True</property>
+                <property name="use_stock">False</property>
+                <signal name="activate" handler="on_start_for_tomorrow" swapped="no"/>
+              </object>
+            </child>
+            <child>
+              <object class="GtkImageMenuItem" id="tcm_start_for_next_week">
+                <property name="label" translatable="yes">next _week</property>
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="use_action_appearance">False</property>
+                <property name="use_underline">True</property>
+                <property name="use_stock">False</property>
+                <signal name="activate" handler="on_start_for_next_week" swapped="no"/>
+              </object>
+            </child>
+            <child>
+              <object class="GtkImageMenuItem" id="tcm_start_for_next_month">
+                <property name="label" translatable="yes">next _month</property>
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="use_action_appearance">False</property>
+                <property name="use_underline">True</property>
+                <property name="use_stock">False</property>
+                <signal name="activate" handler="on_start_for_next_month" swapped="no"/>
+              </object>
+            </child>
+            <child>
+              <object class="GtkImageMenuItem" id="tcm_start_for_next_year">
+                <property name="label" translatable="yes">next _year</property>
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="use_action_appearance">False</property>
+                <property name="use_underline">True</property>
+                <property name="use_stock">False</property>
+                <signal name="activate" handler="on_start_for_next_year" swapped="no"/>
+              </object>
+            </child>
+            <child>
+              <object class="GtkSeparatorMenuItem" id="menuitem1">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkImageMenuItem" id="tcm_start_clear">
+                <property name="label" translatable="yes">_clear start date</property>
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="use_action_appearance">False</property>
+                <property name="use_underline">True</property>
+                <property name="use_stock">False</property>
+                <signal name="activate" handler="on_start_clear" swapped="no"/>
+              </object>
+            </child>
+          </object>
+        </child>
       </object>
     </child>
     <child>
@@ -1250,6 +1119,123 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
         <property name="use_action_appearance">False</property>
         <property name="use_underline">True</property>
         <property name="use_stock">False</property>
+        <child type="submenu">
+          <object class="GtkMenu" id="due_context_menu">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <child>
+              <object class="GtkImageMenuItem" id="tcm_due_today">
+                <property name="label" translatable="yes">t_oday</property>
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="use_action_appearance">False</property>
+                <property name="use_underline">True</property>
+                <property name="use_stock">False</property>
+                <signal name="activate" handler="on_set_due_today" swapped="no"/>
+              </object>
+            </child>
+            <child>
+              <object class="GtkImageMenuItem" id="tcm_due_tomorrow">
+                <property name="label" translatable="yes">_tomorrow</property>
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="use_action_appearance">False</property>
+                <property name="use_underline">True</property>
+                <property name="use_stock">False</property>
+                <signal name="activate" handler="on_set_due_tomorrow" swapped="no"/>
+              </object>
+            </child>
+            <child>
+              <object class="GtkImageMenuItem" id="tcm_due_next_week">
+                <property name="label" translatable="yes">next _week</property>
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="use_action_appearance">False</property>
+                <property name="use_underline">True</property>
+                <property name="use_stock">False</property>
+                <signal name="activate" handler="on_set_due_next_week" swapped="no"/>
+              </object>
+            </child>
+            <child>
+              <object class="GtkImageMenuItem" id="tcm_due_next_month">
+                <property name="label" translatable="yes">next _month</property>
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="use_action_appearance">False</property>
+                <property name="use_underline">True</property>
+                <property name="use_stock">False</property>
+                <signal name="activate" handler="on_set_due_next_month" swapped="no"/>
+              </object>
+            </child>
+            <child>
+              <object class="GtkImageMenuItem" id="tcm_due_next_year">
+                <property name="label" translatable="yes">next _year</property>
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="use_action_appearance">False</property>
+                <property name="use_underline">True</property>
+                <property name="use_stock">False</property>
+                <signal name="activate" handler="on_set_due_next_year" swapped="no"/>
+              </object>
+            </child>
+            <child>
+              <object class="GtkSeparatorMenuItem" id="menuitem2">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkImageMenuItem" id="tcm_due_now">
+                <property name="label" translatable="yes">_now</property>
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="use_action_appearance">False</property>
+                <property name="use_underline">True</property>
+                <property name="use_stock">False</property>
+                <signal name="activate" handler="on_set_due_now" swapped="no"/>
+              </object>
+            </child>
+            <child>
+              <object class="GtkImageMenuItem" id="tcm_due_soon">
+                <property name="label" translatable="yes">_soon</property>
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="use_action_appearance">False</property>
+                <property name="use_underline">True</property>
+                <property name="use_stock">False</property>
+                <signal name="activate" handler="on_set_due_soon" swapped="no"/>
+              </object>
+            </child>
+            <child>
+              <object class="GtkImageMenuItem" id="tcm_due_someday">
+                <property name="label" translatable="yes">_someday</property>
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="use_action_appearance">False</property>
+                <property name="use_underline">True</property>
+                <property name="use_stock">False</property>
+                <signal name="activate" handler="on_set_due_someday" swapped="no"/>
+              </object>
+            </child>
+            <child>
+              <object class="GtkSeparatorMenuItem" id="menuitem3">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkImageMenuItem" id="tcm_due_clear">
+                <property name="label" translatable="yes">_clear due date</property>
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="use_action_appearance">False</property>
+                <property name="use_underline">True</property>
+                <property name="use_stock">False</property>
+                <signal name="activate" handler="on_set_due_clear" swapped="no"/>
+              </object>
+            </child>
+          </object>
+        </child>
       </object>
     </child>
     <child>
