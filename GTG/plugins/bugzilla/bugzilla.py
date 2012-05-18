@@ -22,17 +22,15 @@ from GTG.plugins.bugzilla.server import ServersStore
 from GTG.plugins.bugzilla.bug import Bug
 
 
-
 class pluginBugzilla:
-
 
     def __init__(self):
         self.servers = ServersStore()
 
     def activate(self, plugin_api):
         self.plugin_api = plugin_api
-        self.connect_id = plugin_api.get_ui().connect("task-added-via-quick-add", \
-                                      self.task_added_cb)
+        self.connect_id = plugin_api.get_ui().connect(
+                        "task-added-via-quick-add", self.task_added_cb)
 
     def task_added_cb(self, sender, task_id):
         #this is a gobject callback that will block the Browser.
@@ -54,14 +52,14 @@ class pluginBugzilla:
         if server is None:
             return
 
-        base = '%s://%s' % (r.scheme, server.name)  
-        
+        base = '%s://%s' % (r.scheme, server.name)
+
         # get the number of the bug
         try:
             nb = r.query.split('id=')[1]
         except IndexError:
             return
-        
+
         try:
             bug = Bug(base, nb)
         except:
