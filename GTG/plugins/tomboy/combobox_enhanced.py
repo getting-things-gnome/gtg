@@ -21,18 +21,23 @@
 import gtk
 import gobject
 
-def ifKeyPressedCallback( widget, key, callback):
+
+def ifKeyPressedCallback(widget, key, callback):
+
     def keyPress(combobox, event):
         keyname = gtk.gdk.keyval_name(event.keyval)
         if keyname == key:
             callback()
     widget.connect("key-press-event", keyPress)
 
-def ifClipboardTextIsInListCallback (clipboard_obj, list_obj, callback):
+
+def ifClipboardTextIsInListCallback(clipboard_obj, list_obj, callback):
+
     def clipboardCallback(clipboard_obj, text, list_obj):
         if len(filter(lambda x: x == text, list_obj)) != 0:
             callback(text)
     clipboard_obj.request_text(clipboardCallback, list_obj)
+
 
 def listStoreFromList(list_obj):
     list_store = gtk.ListStore(gobject.TYPE_STRING)
@@ -41,13 +46,15 @@ def listStoreFromList(list_obj):
         list_store.set(iter, 0, elem)
     return list_store
 
-def completionFromListStore (list_store):
+
+def completionFromListStore(list_store):
     completion = gtk.EntryCompletion()
     completion.set_minimum_key_length(0)
     completion.set_text_column(0)
     completion.set_inline_completion(True)
     completion.set_model(list_store)
     return completion
+
 
 def smartifyComboboxEntry(combobox, list_obj, callback):
     entry = gtk.Entry()
@@ -67,16 +74,16 @@ def smartifyComboboxEntry(combobox, list_obj, callback):
         combobox.set_active(0)
         entry.set_text(list_store[0][0])
     combobox.add(entry)
-    combobox.connect('changed', setText, entry )
+    combobox.connect('changed', setText, entry)
     #render the combo-box drop down menu
     cell = gtk.CellRendererText()
     combobox.pack_start(cell, True)
-    combobox.add_attribute(cell, 'text', 0) 
+    combobox.add_attribute(cell, 'text', 0)
     return entry
+
 
 def setText(combobox, entry):
     model = combobox.get_model()
     index = combobox.get_active()
     if index > -1:
         entry.set_text(model[index][0])
-
