@@ -684,7 +684,7 @@ class TaskBrowser(gobject.GObject):
             
     def show_closed_pane(self):
         # The done/dismissed tasks treeview
-        if not self.vtree_panes.has_key('closed'):
+        if not 'closed' in self.vtree_panes:
             ctree = self.__create_closed_tree()
             self.vtree_panes['closed'] = \
                          self.tv_factory.closed_tasks_treeview(ctree)
@@ -1182,7 +1182,7 @@ class TaskBrowser(gobject.GObject):
         self.donebutton.set_icon_name("gtg-task-done")
         self.dismissbutton.set_icon_name("gtg-task-dismiss")
         if selection.count_selected_rows() > 0:
-            if self.vtree_panes.has_key('closed'):
+            if 'closed' in self.vtree_panes:
                 self.vtree_panes['closed'].get_selection().unselect_all()
             self.donebutton.set_label(GnomeConfig.MARK_DONE)
             self.donebutton.set_tooltip_text(GnomeConfig.MARK_DONE_TOOLTIP)
@@ -1197,7 +1197,7 @@ class TaskBrowser(gobject.GObject):
     #using dummy parameters that are given by the signal
     def update_buttons_sensitivity(self,a=None,b=None,c=None):
         enable = self.selection.count_selected_rows() 
-        if self.vtree_panes.has_key('closed'):
+        if 'closed' in self.vtree_panes:
             enable += self.closed_selection.count_selected_rows() > 0
         self.edit_mi.set_sensitive(enable)
         self.new_subtask_mi.set_sensitive(enable)
@@ -1238,7 +1238,7 @@ class TaskBrowser(gobject.GObject):
         if tv:
             selected = self.vtree_panes[tv].get_selected_nodes()
         else:
-            if self.vtree_panes.has_key('active'):
+            if 'active' in self.vtree_panes:
                 selected = self.vtree_panes['active'].get_selected_nodes()
             for i in self.vtree_panes:
                 if len(selected) == 0:
