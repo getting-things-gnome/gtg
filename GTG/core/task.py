@@ -32,6 +32,7 @@ from GTG.tools.dates         import Date
 from GTG.tools.logger        import Log
 from liblarch                import TreeNode
 
+
 class Task(TreeNode):
     """ This class represent a task in GTG.
     You should never create a Task directly. Use the datastore.new_task()
@@ -149,14 +150,16 @@ class Task(TreeNode):
                 tags.append(match)
             # Get attributes
             regexp = r'([\s]*)([\w-]+):\s*([^\s]+)'
-            for spaces, attribute, args in re.findall(regexp, text, re.UNICODE):
+            matches = re.findall(regexp, text, re.UNICODE)
+            for spaces, attribute, args in matches:
                 valid_attribute = True
                 if attribute.lower() in ["tags", _("tags"), "tag", _("tag")]:
                     for tag in args.split(","):
                         if not tag.startswith("@"):
                             tag = "@" + tag
                         tags.append(tag)
-                elif attribute.lower() in ["defer", _("defer"), "start", _("start")]:
+                elif attribute.lower() in ["defer", _("defer"), "start",
+                        _("start")]:
                     try:
                         defer_date = Date.parse(args)
                     except ValueError:
@@ -273,7 +276,7 @@ class Task(TreeNode):
 
     def get_days_left(self):
         return self.get_due_date().days_left()
-    
+
     def get_days_late(self):
         due_date = self.get_due_date()
         if due_date == Date.no_date():
@@ -288,7 +291,8 @@ class Task(TreeNode):
         else:
             return ""
 
-    def get_excerpt(self, lines=0, char=0, strip_tags=False, strip_subtasks=True):
+    def get_excerpt(self, lines=0, char=0, strip_tags=False,
+            strip_subtasks=True):
         """
         get_excerpt return the beginning of the content of the task.
         If "lines" is provided and different than 0, it return the number X
@@ -466,7 +470,7 @@ class Task(TreeNode):
             return True
         else:
             return False
-            
+
     def get_update_priority(self):
         priority = "low"
         if self.get_status() == "Active":
@@ -586,7 +590,8 @@ class Task(TreeNode):
     def _strip_tag(self, text, tagname, newtag=''):
         return (text
                     .replace('<tag>%s</tag>\n\n' % (tagname), newtag) #trail \n
-                    .replace('<tag>%s</tag>, ' % (tagname), newtag) #trail comma
+                    #trail comma
+                    .replace('<tag>%s</tag>, ' % (tagname), newtag)
                     .replace('<tag>%s</tag>,' % (tagname), newtag)
                     .replace('<tag>%s</tag>' % (tagname), newtag)
                     #in case XML is missing (bug #504899)
@@ -594,8 +599,7 @@ class Task(TreeNode):
                     .replace('%s, ' % (tagname), newtag)
                     .replace('%s,' % (tagname), newtag)
                     #don't forget a space a the end
-                    .replace('%s ' % (tagname), newtag)
-               )
+                    .replace('%s ' % (tagname), newtag))
 
     #tag_list is a list of tags names
     #return true if at least one of the list is in the task
