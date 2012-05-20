@@ -38,9 +38,9 @@ class Task(TreeNode):
     You should never create a Task directly. Use the datastore.new_task()
     function."""
 
-    STA_ACTIVE    = "Active"
+    STA_ACTIVE = "Active"
     STA_DISMISSED = "Dismiss"
-    STA_DONE      = "Done"
+    STA_DONE = "Done"
 
     def __init__(self, ze_id, requester, newtask=False):
         TreeNode.__init__(self, ze_id)

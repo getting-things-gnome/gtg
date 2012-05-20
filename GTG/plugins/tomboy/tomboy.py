@@ -86,7 +86,7 @@ Please install it or disable the Tomboy/Gnote plugin in GTG"))
 
     # Converts all tomboy note widgets in the  equivalent text
     def onTaskClosed(self, plugin_api):
-        if not  hasattr(self, "activated") or not self.activated == True:
+        if not hasattr(self, "activated") or not self.activated == True:
             # plugin has not been properly activated, (bug 475877 )
             # closing without executing onTaskClosed
             return
