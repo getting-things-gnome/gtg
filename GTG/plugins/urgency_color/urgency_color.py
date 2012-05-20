@@ -28,7 +28,8 @@ class pluginUrgencyColor:
         'reddays': 30,
         'color_green': '#cfff84',
         'color_yellow': '#ffed84',
-        'color_red': '#ff9784'}
+        'color_red': '#ff9784',
+        'color_overdue': '#e12100'}
 
     def __init__(self):
         self._plugin_api = None
@@ -50,6 +51,8 @@ class pluginUrgencyColor:
             return self._pref_data['color_yellow']
         elif colindex == 2:
             return self._pref_data['color_red']
+        elif colindex == 3:
+            return self._pref_data['color_overdue']
         else:
             return None
 
@@ -67,6 +70,8 @@ class pluginUrgencyColor:
                 color = 1
             if daysleft <= reddays:
                 color = 2
+            if daysleft < 0:
+                color = 3
             # This list should be implemented in the settings
             #print "Giving color"
             return self._get_color(color)
@@ -106,6 +111,9 @@ class pluginUrgencyColor:
         #   Spin button
         self.spinbutton_reddays = self.builder.get_object('spinbutton_reddays')
 
+        #   Colorbutton - OVERDUE
+        self.colorbutton_overdue = self.builder.get_object('colorbutton_overdue')
+
         #   Colorbutton - RED
         self.colorbutton_red = self.builder.get_object('colorbutton_red')
 
@@ -132,6 +140,8 @@ class pluginUrgencyColor:
                 self.on_prefs_reset,
             'on_prefs_spinbutton_reddays_changed':
                 self.on_prefs_spinbutton_reddays_changed,
+            'on_prefs_colorbutton_overdue_changed':
+                self.on_prefs_colorbutton_overdue_changed,
             'on_prefs_colorbutton_red_changed':
                 self.on_prefs_colorbutton_red_changed,
             'on_prefs_colorbutton_yellow_changed':
@@ -144,6 +154,9 @@ class pluginUrgencyColor:
         """ Synchronizes the widgets with the data in _pref_data """
         # Spin button
         self.spinbutton_reddays.set_value(self._pref_data['reddays'])
+        # Colorbutton - OVERDUE
+        self.colorbutton_overdue.set_color( \
+            gtk.gdk.color_parse(self._pref_data['color_overdue']))
         # Colorbutton - RED
         self.colorbutton_red.set_color( \
             gtk.gdk.color_parse(self._pref_data['color_red']))
@@ -187,6 +200,10 @@ class pluginUrgencyColor:
     def on_prefs_spinbutton_reddays_changed(self, widget=None, data=None):
         self._pref_data_potential['reddays'] = \
             self.spinbutton_reddays.get_value()
+
+    def on_prefs_colorbutton_overdue_changed(self, widget=None, data=None):
+        self._pref_data_potential['color_overdue'] = \
+            self.colorbutton_overdue.get_color().to_string()
 
     def on_prefs_colorbutton_red_changed(self, widget=None, data=None):
         self._pref_data_potential['color_red'] = \
