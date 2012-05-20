@@ -17,9 +17,7 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-'''
-Tests for the SyncMeme class
-'''
+""" Tests for the SyncMeme class """
 
 import unittest
 import datetime
@@ -27,33 +25,31 @@ import datetime
 from GTG.backends.syncengine import SyncMeme
 
 
-
 class TestSyncMeme(unittest.TestCase):
-    '''
-    Tests for the SyncEngine object.
-    '''
-    
-    def test_which_is_newest(self):
-        '''
-        test the which_is_newest function
+    """ Tests for the SyncEngine object. """
 
-        '''
+    def test_which_is_newest(self):
+        """ test the which_is_newest function """
         meme = SyncMeme()
         #tasks have not changed
         local_modified = datetime.datetime.now()
         remote_modified = datetime.datetime.now()
         meme.set_local_last_modified(local_modified)
         meme.set_remote_last_modified(remote_modified)
-        self.assertEqual(meme.which_is_newest(local_modified, \
-                                              remote_modified), None)
+        self.assertEqual(
+            meme.which_is_newest(local_modified, remote_modified),
+            None)
         #we update the local
         local_modified = datetime.datetime.now()
-        self.assertEqual(meme.which_is_newest(local_modified, \
-                                              remote_modified), 'local')
+        self.assertEqual(
+            meme.which_is_newest(local_modified, remote_modified),
+            'local')
         #we update the remote
         remote_modified = datetime.datetime.now()
-        self.assertEqual(meme.which_is_newest(local_modified, \
-                                              remote_modified), 'remote')
+        self.assertEqual(
+            meme.which_is_newest(local_modified, remote_modified),
+            'remote')
+
+
 def test_suite():
     return unittest.TestLoader().loadTestsFromTestCase(TestSyncMeme)
-

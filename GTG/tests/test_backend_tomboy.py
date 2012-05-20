@@ -17,58 +17,53 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-'''
-Tests for the tomboy backend
-'''
+""" Tests for the tomboy backend """
 
-import os
-import sys
-import errno
-import unittest
-import uuid
-import signal
-import time
-import math
-import dbus
-import gobject
-import random
-import threading
-import dbus.glib
-import dbus.service
-import tempfile
 from datetime           import datetime
 from dbus.mainloop.glib import DBusGMainLoop
+import dbus
+import dbus.glib
+import dbus.service
+import errno
+import gobject
+import math
+import os
+import random
+import signal
+import sys
+import tempfile
+import threading
+import time
+import unittest
+import uuid
 
-from GTG.core.datastore          import DataStore
-from GTG.backends                import BackendFactory
+from GTG.backends import BackendFactory
 from GTG.backends.genericbackend import GenericBackend
+from GTG.core.datastore import DataStore
 
 global pid_tomboy
 
+
 class TestBackendTomboy(unittest.TestCase):
-    '''
-    Tests for the tomboy backend.
-    '''
-    
+    """ Tests for the tomboy backend """
 
     def setUp(self):
-        thread_tomboy = threading.Thread(target = self.spawn_fake_tomboy_server)
+        thread_tomboy = threading.Thread(target=self.spawn_fake_tomboy_server)
         thread_tomboy.start()
         thread_tomboy.join()
         #only the test process should go further, the dbus server one should
         #stop here
-        if not pid_tomboy: return
+        if not pid_tomboy:
+            return
         #we create a custom dictionary listening to the server, and register it
-        # in GTG. 
+        # in GTG.
         additional_dic = {}
-        additional_dic["use this fake connection instead"] = \
-                (FakeTomboy.BUS_NAME,
-                 FakeTomboy.BUS_PATH,
-                 FakeTomboy.BUS_INTERFACE)
+        additional_dic["use this fake connection instead"] = (
+            FakeTomboy.BUS_NAME, FakeTomboy.BUS_PATH, FakeTomboy.BUS_INTERFACE)
         additional_dic[GenericBackend.KEY_ATTACHED_TAGS] = \
                         [GenericBackend.ALLTASKS_TAG]
         additional_dic[GenericBackend.KEY_DEFAULT_BACKEND] = True
-        dic = BackendFactory().get_new_backend_dict('backend_tomboy', 
+        dic = BackendFactory().get_new_backend_dict('backend_tomboy',
                                                    additional_dic)
         self.datastore = DataStore()
         self.backend = self.datastore.register_backend(dic)
@@ -78,7 +73,7 @@ class TestBackendTomboy(unittest.TestCase):
         self.bus = dbus.SessionBus()
         obj = self.bus.get_object(FakeTomboy.BUS_NAME, FakeTomboy.BUS_PATH)
         self.tomboy = dbus.Interface(obj, FakeTomboy.BUS_INTERFACE)
-        
+
     def spawn_fake_tomboy_server(self):
         #the fake tomboy server has to be in a different process,
         #otherwise it will lock on the GIL.
@@ -94,7 +89,8 @@ class TestBackendTomboy(unittest.TestCase):
             #we wait in polling that the server has been started
             while True:
                 try:
-                    fd = os.open(lockfile_path, os.O_CREAT | os.O_EXCL | os.O_RDWR)
+                    fd = os.open(lockfile_path,
+                            os.O_CREAT | os.O_EXCL | os.O_RDWR)
                 except OSError, e:
                     if e.errno != errno.EEXIST:
                         raise
@@ -108,20 +104,20 @@ class TestBackendTomboy(unittest.TestCase):
             os.unlink(lockfile_path)
 
     def tearDown(self):
-        if not pid_tomboy: return
-        self.datastore.save(quit = True) 
+        if not pid_tomboy:
+            return
+        self.datastore.save(quit = True)
         time.sleep(0.5)
         self.tomboy.FakeQuit()
         # FIXME: self.bus.close()
         os.kill(pid_tomboy, signal.SIGKILL)
         os.waitpid(pid_tomboy, 0)
-    
+
     def test_everything(self):
-        '''
-        '''
         #we cannot use separate test functions because we only want a single
         # FakeTomboy dbus server running
-        if not pid_tomboy: return
+        if not pid_tomboy:
+            return
         for function in dir(self):
             if function.startswith("TEST_"):
                 getattr(self, function)()
@@ -249,11 +245,11 @@ class TestBackendTomboy(unittest.TestCase):
         task.set_title("title")
         self.backend.set_task(task)
         self.assertEqual(len(self.tomboy.ListAllNotes()), 0)
-        #making that task  syncable 
+        #making that task  syncable
         task.set_title("something else")
         task.add_tag("@a")
         self.backend.set_task(task)
-        self.assertEqual(len(self.tomboy.ListAllNotes()),  1)
+        self.assertEqual(len(self.tomboy.ListAllNotes()), 1)
         note = self.tomboy.ListAllNotes()[0]
         self.assertEqual(str(self.tomboy.GetNoteTitle(note)), task.get_title())
         #re-adding that (should not change anything)
@@ -283,7 +279,6 @@ def test_suite():
     return unittest.TestLoader().loadTestsFromTestCase(TestBackendTomboy)
 
 
-
 class FakeTomboy(dbus.service.Object):
     """
     D-Bus service object that mimics TOMBOY
@@ -300,7 +295,7 @@ class FakeTomboy(dbus.service.Object):
     def __init__(self):
         # Attach the object to D-Bus
         DBusGMainLoop(set_as_default=True)
-        self.bus = dbus.SessionBus() 
+        self.bus = dbus.SessionBus()
         bus_name = dbus.service.BusName(self.BUS_NAME, bus = self.bus)
         dbus.service.Object.__init__(self, bus_name, self.BUS_PATH)
         self.notes = {}
@@ -312,7 +307,7 @@ class FakeTomboy(dbus.service.Object):
 
     @dbus.service.method(BUS_INTERFACE, in_signature="s", out_signature="b")
     def NoteExists(self, note):
-        return self.notes.has_key(note)
+        return note in self.notes
 
     @dbus.service.method(BUS_INTERFACE, in_signature="s", out_signature="d")
     def GetNoteChangeDate(self, note):
@@ -362,7 +357,7 @@ class FakeTomboy(dbus.service.Object):
     @dbus.service.method(BUS_INTERFACE, out_signature = "as")
     def ListAllNotes(self):
         return list(self.notes)
-    
+
     @dbus.service.signal(BUS_INTERFACE, signature='s')
     def NoteSaved(self, note):
         pass
@@ -375,7 +370,6 @@ class FakeTomboy(dbus.service.Object):
 ### Function with the fake_ prefix are here to assist in testing, they do not
 ### need to be present in the real class
 ###############################################################################
-
     def fake_update_note(self, note):
         self.notes[note]['changed'] = time.mktime(datetime.now().timetuple())
 
