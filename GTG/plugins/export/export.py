@@ -21,6 +21,7 @@ Plugin for exporting into nice lists in TXT, HTML or PDF """
 import os
 import shutil
 import webbrowser
+import subprocess
 
 from xdg.BaseDirectory import xdg_config_home
 import gobject
@@ -29,6 +30,13 @@ import gtk
 from GTG import _
 from GTG.plugins.export.task_str import get_task_wrappers
 from GTG.plugins.export.templates import Template, get_templates_paths
+
+
+# Enforce external dependencies
+for dependence in "pdflatex", "pdftk", "pdfjam":
+    retval = subprocess.call(["which", dependence], stdout=subprocess.PIPE)
+    if retval != 0:
+        raise ImportError("Missing command %s" % dependence)
 
 
 def get_user_dir(key):

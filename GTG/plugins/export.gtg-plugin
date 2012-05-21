@@ -8,4 +8,4 @@ of your tasks by writing your own template"""
 Authors=Luca Invernizzi <invernizzi.l@gmail.com>, Izidor Matušov <izidor.matusov@gmail.com>
 Version=0.2
 Enabled=False
-Dependencies=Cheetah,
+Dependencies=Cheetah,pdflatex,pdftk,pdfjam
