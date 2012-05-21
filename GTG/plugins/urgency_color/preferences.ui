@@ -149,17 +149,17 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkHBox" id="hbox_colors_red">
+                      <object class="GtkHBox" id="hbox_colors_high">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <child>
-                          <object class="GtkColorButton" id="colorbutton_red">
+                          <object class="GtkColorButton" id="colorbutton_high">
                             <property name="use_action_appearance">False</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">True</property>
                             <property name="use_action_appearance">False</property>
-                            <signal name="color-set" handler="on_prefs_colorbutton_red_changed" swapped="no"/>
+                            <signal name="color-set" handler="on_prefs_colorbutton_high_changed" swapped="no"/>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -171,45 +171,7 @@
                           <object class="GtkLabel" id="label5">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
-                            <property name="label" translatable="yes">In danger zone</property>
-                          </object>
-                          <packing>
-                            <property name="expand">True</property>
-                            <property name="fill">True</property>
-                            <property name="position">1</property>
-                          </packing>
-                        </child>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">0</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkHBox" id="hbox_colors_yellow">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <child>
-                          <object class="GtkColorButton" id="colorbutton_yellow">
-                            <property name="use_action_appearance">False</property>
-                            <property name="visible">True</property>
-                            <property name="can_focus">True</property>
-                            <property name="receives_default">True</property>
-                            <property name="use_action_appearance">False</property>
-                            <signal name="color-set" handler="on_prefs_colorbutton_yellow_changed" swapped="no"/>
-                          </object>
-                          <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">True</property>
-                            <property name="position">0</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="GtkLabel" id="label6">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="label" translatable="yes">Should work on it</property>
+                            <property name="label" translatable="yes">High</property>
                           </object>
                           <packing>
                             <property name="expand">True</property>
@@ -225,17 +187,17 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkHBox" id="hbox_colors_green">
+                      <object class="GtkHBox" id="hbox_colors_normal">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <child>
-                          <object class="GtkColorButton" id="colorbutton_green">
+                          <object class="GtkColorButton" id="colorbutton_normal">
                             <property name="use_action_appearance">False</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">True</property>
                             <property name="use_action_appearance">False</property>
-                            <signal name="color-set" handler="on_prefs_colorbutton_green_changed" swapped="no"/>
+                            <signal name="color-set" handler="on_prefs_colorbutton_normal_changed" swapped="no"/>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -244,10 +206,10 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkLabel" id="label7">
+                          <object class="GtkLabel" id="label6">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
-                            <property name="label" translatable="yes">Don't worry about it</property>
+                            <property name="label" translatable="yes">Normal</property>
                           </object>
                           <packing>
                             <property name="expand">True</property>
@@ -262,6 +224,44 @@
                         <property name="position">2</property>
                       </packing>
                     </child>
+                    <child>
+                      <object class="GtkHBox" id="hbox_colors_low">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <child>
+                          <object class="GtkColorButton" id="colorbutton_low">
+                            <property name="use_action_appearance">False</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="receives_default">True</property>
+                            <property name="use_action_appearance">False</property>
+                            <signal name="color-set" handler="on_prefs_colorbutton_low_changed" swapped="no"/>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkLabel" id="label7">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="label" translatable="yes">Low</property>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">3</property>
+                      </packing>
+                    </child>
                   </object>
                 </child>
               </object>
@@ -270,7 +270,7 @@
               <object class="GtkLabel" id="label2">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="label" translatable="yes">&lt;b&gt;Colors&lt;/b&gt;</property>
+                <property name="label" translatable="yes">&lt;b&gt;Urgency level color&lt;/b&gt;</property>
                 <property name="use_markup">True</property>
               </object>
             </child>

@@ -26,10 +26,10 @@ class pluginUrgencyColor:
     PLUGIN_NAME = 'Urgency Color'
     DEFAULT_PREFS = {
         'reddays': 30,
-        'color_green': '#cfff84',
-        'color_yellow': '#ffed84',
-        'color_red': '#ff9784',
-        'color_overdue': '#e12100'}
+        'color_low': '#cfff84',
+        'color_normal': '#ffed84',
+        'color_high': '#ff9784',
+        'color_overdue': '#b8b8b8'}
 
     def __init__(self):
         self._plugin_api = None
@@ -42,15 +42,18 @@ class pluginUrgencyColor:
         self.prefs_load()
         self.prefs_init()
         # Set color function
+        self._refresh_task_color()
+
+    def _refresh_task_color(self):
         self._plugin_api.set_bgcolor_func(self.bgcolor)
 
     def _get_color(self, colindex):
         if colindex == 0:
-            return self._pref_data['color_green']
+            return self._pref_data['color_low']
         elif colindex == 1:
-            return self._pref_data['color_yellow']
+            return self._pref_data['color_normal']
         elif colindex == 2:
-            return self._pref_data['color_red']
+            return self._pref_data['color_high']
         elif colindex == 3:
             return self._pref_data['color_overdue']
         else:
@@ -115,13 +118,13 @@ class pluginUrgencyColor:
         self.colorbutton_overdue = self.builder.get_object('colorbutton_overdue')
 
         #   Colorbutton - RED
-        self.colorbutton_red = self.builder.get_object('colorbutton_red')
+        self.colorbutton_high = self.builder.get_object('colorbutton_high')
 
         #   Colorbutton - YELLOW
-        self.colorbutton_yellow = self.builder.get_object('colorbutton_yellow')
+        self.colorbutton_normal = self.builder.get_object('colorbutton_normal')
 
         #   Colorbutton - GREEN
-        self.colorbutton_green = self.builder.get_object('colorbutton_green')
+        self.colorbutton_low = self.builder.get_object('colorbutton_low')
 
         #   Buttons
         self.button_apply = self.builder.get_object('button_apply')
@@ -142,12 +145,12 @@ class pluginUrgencyColor:
                 self.on_prefs_spinbutton_reddays_changed,
             'on_prefs_colorbutton_overdue_changed':
                 self.on_prefs_colorbutton_overdue_changed,
-            'on_prefs_colorbutton_red_changed':
-                self.on_prefs_colorbutton_red_changed,
-            'on_prefs_colorbutton_yellow_changed':
-                self.on_prefs_colorbutton_yellow_changed,
-            'on_prefs_colorbutton_green_changed':
-                self.on_prefs_colorbutton_green_changed}
+            'on_prefs_colorbutton_high_changed':
+                self.on_prefs_colorbutton_high_changed,
+            'on_prefs_colorbutton_normal_changed':
+                self.on_prefs_colorbutton_normal_changed,
+            'on_prefs_colorbutton_low_changed':
+                self.on_prefs_colorbutton_low_changed}
         self.builder.connect_signals(SIGNAL_CONNECTIONS_DIC)
 
     def prefs_update_widgets(self):
@@ -158,14 +161,14 @@ class pluginUrgencyColor:
         self.colorbutton_overdue.set_color( \
             gtk.gdk.color_parse(self._pref_data['color_overdue']))
         # Colorbutton - RED
-        self.colorbutton_red.set_color( \
-            gtk.gdk.color_parse(self._pref_data['color_red']))
+        self.colorbutton_high.set_color( \
+            gtk.gdk.color_parse(self._pref_data['color_high']))
         # Colorbutton - YELLOW
-        self.colorbutton_yellow.set_color( \
-            gtk.gdk.color_parse(self._pref_data['color_yellow']))
+        self.colorbutton_normal.set_color( \
+            gtk.gdk.color_parse(self._pref_data['color_normal']))
         # Colorbutton - GREEN
-        self.colorbutton_green.set_color( \
-            gtk.gdk.color_parse(self._pref_data['color_green']))
+        self.colorbutton_low.set_color( \
+            gtk.gdk.color_parse(self._pref_data['color_low']))
 
     def on_prefs_cancel(self, widget=None, data=None):
         self.prefs_update_widgets()
@@ -175,6 +178,7 @@ class pluginUrgencyColor:
     def on_prefs_apply(self, widget=None, data=None):
         self._pref_data = self._pref_data_potential
         self.prefs_store()
+        self._refresh_task_color()
         self.prefs_window.hide()
 
     def on_prefs_reset(self, widget=None, data=None):
@@ -189,7 +193,21 @@ class pluginUrgencyColor:
         if not data or not isinstance(data, dict):
             self._pref_data = dict(self.DEFAULT_PREFS)
         else:
-            self._pref_data = data
+            # CORRECT NAMES FROM OLD PREFERENCES
+            # This is a dirty fix and thus should be removed in a
+            # distant future, when nobody has "red", "yellow" or "green"
+            # settings
+            namepairs = {'red':'high','yellow':'normal','green':'low'}
+            for key,val in data.iteritems():
+                for oldname,newname in namepairs.iteritems():
+                    if key == "color_"+oldname:
+                        data['color_'+newname] = data.pop(key)
+            # Add new preferences where not present
+            for setting in self.DEFAULT_PREFS.iterkeys():
+                if setting not in data:
+                    data[setting] = self.DEFAULT_PREFS[setting]
+            self._pref_data = dict(data)
+
 
     def prefs_store(self):
         self._plugin_api.save_configuration_object( \
@@ -205,14 +223,14 @@ class pluginUrgencyColor:
         self._pref_data_potential['color_overdue'] = \
             self.colorbutton_overdue.get_color().to_string()
 
-    def on_prefs_colorbutton_red_changed(self, widget=None, data=None):
-        self._pref_data_potential['color_red'] = \
-            self.colorbutton_red.get_color().to_string()
+    def on_prefs_colorbutton_high_changed(self, widget=None, data=None):
+        self._pref_data_potential['color_high'] = \
+            self.colorbutton_high.get_color().to_string()
 
-    def on_prefs_colorbutton_yellow_changed(self, widget=None, data=None):
-        self._pref_data_potential['color_yellow'] = \
-            self.colorbutton_yellow.get_color().to_string()
+    def on_prefs_colorbutton_normal_changed(self, widget=None, data=None):
+        self._pref_data_potential['color_normal'] = \
+            self.colorbutton_normal.get_color().to_string()
 
-    def on_prefs_colorbutton_green_changed(self, widget=None, data=None):
-        self._pref_data_potential['color_green'] = \
-            self.colorbutton_green.get_color().to_string()
+    def on_prefs_colorbutton_low_changed(self, widget=None, data=None):
+        self._pref_data_potential['color_low'] = \
+            self.colorbutton_low.get_color().to_string()
