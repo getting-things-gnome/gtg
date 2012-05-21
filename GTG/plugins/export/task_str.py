@@ -38,16 +38,16 @@ class TaskStr(object):
 
         self.subtasks = subtasks
 
-    has_title         = property(lambda s: s.title       != "")
-    has_text          = property(lambda s: s.text        != "")
-    has_subtasks      = property(lambda s: s.subtasks    != [])
-    has_status        = property(lambda s: s.status      != "")
-    has_modified      = property(lambda s: s.modified    != "")
-    has_due_date      = property(lambda s: s.due_date    != "")
-    has_closed_date   = property(lambda s: s.closed_date != "")
-    has_start_date    = property(lambda s: s.start_date  != "")
-    has_days_left     = property(lambda s: s.days_left   != "")
-    has_tags          = property(lambda s: s.tags        != [])
+    has_title = property(lambda s: s.title != "")
+    has_text = property(lambda s: s.text != "")
+    has_subtasks = property(lambda s: s.subtasks != [])
+    has_status = property(lambda s: s.status != "")
+    has_modified = property(lambda s: s.modified != "")
+    has_due_date = property(lambda s: s.due_date != "")
+    has_closed_date = property(lambda s: s.closed_date != "")
+    has_start_date = property(lambda s: s.start_date != "")
+    has_days_left = property(lambda s: s.days_left != "")
+    has_tags = property(lambda s: s.tags != [])
 
 
 def get_task_wrappers(tree, days = None, task_id = None):
