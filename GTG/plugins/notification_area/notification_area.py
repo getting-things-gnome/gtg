@@ -260,7 +260,8 @@ class NotificationArea:
 
     def __on_task_added(self, tid, path):
         # Update icon on modification
-        self.__attention.update_on_task_modified(tid, self.__indicator)
+        if self.__attention:
+            self.__attention.update_on_task_modified(tid, self.__indicator)
 
         self.__task_separator.show()
         task = self.__requester.get_task(tid)
@@ -280,7 +281,8 @@ class NotificationArea:
 
     def __on_task_deleted(self, tid, path):
         # Update icon on deletion
-        self.__attention.update_on_task_deleted(tid, self.__indicator)
+        if self.__attention:
+            self.__attention.update_on_task_deleted(tid, self.__indicator)
 
         self.__tasks_menu.remove(tid)
         if self.__tasks_menu.empty():
