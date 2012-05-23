@@ -45,12 +45,12 @@ class _Attention:
     def __init__(self, tree, req):
         self.__tree = tree 
         self.__req = req
-        # Maintain a list of overdue tasks
+        # Maintain a list of overdue tasks ids
         self.tasks_overdue = []
         for tid in self.__tree.get_all_nodes():
             task = self.__req.get_task(tid)
             if _overdue(task):
-                self.tasks_overdue.append(task)
+                self.tasks_overdue.append(tid)
 
     def level(self):
         return 0 if len(self.tasks_overdue)==0 else 1
@@ -66,12 +66,12 @@ class _Attention:
         old_lev = self.level()
 
         task = self.__req.get_task(tid)
-        if task in self.tasks_overdue:
+        if tid in self.tasks_overdue:
             if not _overdue(task):
-                self.tasks_overdue.remove(task)
+                self.tasks_overdue.remove(tid)
         else:
             if _overdue(task):
-                self.tasks_overdue.append(task)
+                self.tasks_overdue.append(tid)
 
         # Update icon only if attention level has changed
         self.__update_indicator(indicator, old_lev, self.level())
@@ -80,9 +80,8 @@ class _Attention:
         # Store current attention level
         old_lev = self.level()
 
-        task = self.__req.get_task(tid)
-        if task in self.tasks_overdue:
-            self.tasks_overdue.remove(task)
+        if tid in self.tasks_overdue:
+            self.tasks_overdue.remove(tid)
 
         # Update icon only if attention level has changed
         self.__update_indicator(indicator, old_lev, self.level())
