@@ -25,7 +25,46 @@ except:
 
 from GTG                   import _
 from GTG.tools.borg        import Borg
+from GTG.tools.dates       import Date
 
+# Determine if a task is overdue
+def _overdue(task):
+    ddate = task.get_due_date()
+    if (ddate != Date.no_date()):
+        if ddate.days_left() <= 0:
+            return True
+    return False
+
+class _Attention:
+
+    """Define attention depending on due today / overdue tasks."""
+
+    def __init__(self, tree, req):
+        self.__tree = tree 
+        self.__req = req
+        # Maintain a list of overdue tasks
+        self.tasks_overdue = []
+        for tid in self.__tree.get_all_nodes():
+            task = self.__req.get_task(tid)
+            if _overdue(task):
+                self.tasks_overdue.append(task)
+
+    def level(self):
+        return 0 if len(self.tasks_overdue)==0 else 1
+                        
+    def update_on_modified(self, tid):
+        task = self.__req.get_task(tid)
+        if task in self.tasks_overdue:
+            if not _overdue(task):
+                self.tasks_overdue.remove(task)
+        else:
+            if _overdue(task):
+                self.tasks_overdue.append(task)
+
+    def update_on_deleted(self, tid):
+        task = self.__req.get_task(tid)
+        if task in self.tasks_overdue:
+            self.tasks_overdue.remove(task)
 
 class NotificationArea:
     """
@@ -192,9 +231,23 @@ class NotificationArea:
             cb_id = self.__tree.register_cllbck(signal, cllbck)
             self.__liblarch_callbacks.append((cb_id, signal))
 
+        # Enable attention monitor
+        self.__attention = _Attention(self.__tree, self.__requester)
+
         self.__tree.apply_filter('workview')
 
+
     def __on_task_added(self, tid, path):
+        # Store current attention level
+        old_lev = self.__attention.level()
+        self.__attention.update_on_modified(tid)
+        lev = self.__attention.level()
+        # Update icon only if attention level has changed
+        if old_lev == 1 and lev == 0:
+            self.__indicator.set_icon("gtg")
+        elif old_lev == 0 and lev == 1:
+            self.__indicator.set_icon("new-messages-red")
+
         self.__task_separator.show()
         task = self.__requester.get_task(tid)
         if task is None:
