@@ -39,6 +39,9 @@ class _Attention:
 
     """Define attention depending on due today / overdue tasks."""
 
+    ICONS = {'relax'     : 'gtg',
+             'attention' : 'new-messages-red'}
+
     def __init__(self, tree, req):
         self.__tree = tree 
         self.__req = req
@@ -51,8 +54,17 @@ class _Attention:
 
     def level(self):
         return 0 if len(self.tasks_overdue)==0 else 1
-                        
-    def update_on_modified(self, tid):
+
+    def __update_indicator(self, indicator, old_level, new_level):
+        if old_level == 1 and new_level == 0:
+            indicator.set_icon(self.ICONS['relax'])
+        elif old_level == 0 and new_level == 1:
+            indicator.set_icon(self.ICONS['attention'])
+          
+    def update_on_task_modified(self, tid, indicator):
+        # Store current attention level
+        old_lev = self.level()
+
         task = self.__req.get_task(tid)
         if task in self.tasks_overdue:
             if not _overdue(task):
@@ -61,10 +73,19 @@ class _Attention:
             if _overdue(task):
                 self.tasks_overdue.append(task)
 
-    def update_on_deleted(self, tid):
+        # Update icon only if attention level has changed
+        self.__update_indicator(indicator, old_lev, self.level())
+              
+    def update_on_task_deleted(self, tid, indicator):
+        # Store current attention level
+        old_lev = self.level()
+
         task = self.__req.get_task(tid)
         if task in self.tasks_overdue:
             self.tasks_overdue.remove(task)
+
+        # Update icon only if attention level has changed
+        self.__update_indicator(indicator, old_lev, self.level())
 
 class NotificationArea:
     """
@@ -238,15 +259,8 @@ class NotificationArea:
 
 
     def __on_task_added(self, tid, path):
-        # Store current attention level
-        old_lev = self.__attention.level()
-        self.__attention.update_on_modified(tid)
-        lev = self.__attention.level()
-        # Update icon only if attention level has changed
-        if old_lev == 1 and lev == 0:
-            self.__indicator.set_icon("gtg")
-        elif old_lev == 0 and lev == 1:
-            self.__indicator.set_icon("new-messages-red")
+        # Update icon on modification
+        self.__attention.update_on_task_modified(tid, self.__indicator)
 
         self.__task_separator.show()
         task = self.__requester.get_task(tid)
@@ -265,6 +279,9 @@ class NotificationArea:
             self.__indicator.set_menu(self.__menu)
 
     def __on_task_deleted(self, tid, path):
+        # Update icon on deletion
+        self.__attention.update_on_task_deleted(tid, self.__indicator)
+
         self.__tasks_menu.remove(tid)
         if self.__tasks_menu.empty():
             self.__task_separator.hide()
