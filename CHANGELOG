@@ -1,4 +1,5 @@
 2012-0?-?? Getting Things GNOME! 0.3
+    * Fix for bug #984847: setup.py install doesn't install icons on right place, by Alan Gomes
     * Hide tasks with due date someday, #931376
     * New Date class by Paul Kishimoto and Izidor Matušov
       * Parse due:3 as next 3rd day in month
