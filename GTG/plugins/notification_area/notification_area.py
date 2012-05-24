@@ -28,10 +28,10 @@ from GTG.tools.borg        import Borg
 from GTG.tools.dates       import Date
 
 # Determine if a task is overdue
-def _overdue(task):
+def _is_due_within(task, danger_zone=0):
     ddate = task.get_due_date()
     if (ddate != Date.no_date()):
-        if ddate.days_left() <= 0:
+        if ddate.days_left() <= danger_zone:
             return True
     return False
 
@@ -42,14 +42,15 @@ class _Attention:
     ICONS = {'relax'     : 'gtg',
              'attention' : 'new-messages-red'}
 
-    def __init__(self, tree, req):
+    def __init__(self, tree, req, danger_zone=0):
         self.__tree = tree 
         self.__req = req
+        self.danger_zone = danger_zone
         # Maintain a list of overdue tasks ids
         self.tasks_overdue = []
         for tid in self.__tree.get_all_nodes():
             task = self.__req.get_task(tid)
-            if _overdue(task):
+            if _is_due_within(task, self.danger_zone):
                 self.tasks_overdue.append(tid)
 
     def level(self):
@@ -67,10 +68,10 @@ class _Attention:
 
         task = self.__req.get_task(tid)
         if tid in self.tasks_overdue:
-            if not _overdue(task):
+            if not _due_within(task, self.danger_zone):
                 self.tasks_overdue.remove(tid)
         else:
-            if _overdue(task):
+            if _due_within(task, self.danger_zone):
                 self.tasks_overdue.append(tid)
 
         # Update icon only if attention level has changed
@@ -259,7 +260,7 @@ class NotificationArea:
 
     def __on_task_added(self, tid, path):
         # Update icon on modification
-        if self.__attention:
+        if not self.__attention is None is self.__indicator:
             self.__attention.update_on_task_modified(tid, self.__indicator)
 
         self.__task_separator.show()
@@ -280,7 +281,7 @@ class NotificationArea:
 
     def __on_task_deleted(self, tid, path):
         # Update icon on deletion
-        if self.__attention:
+        if not self.__attention is None is self.__indicator:
             self.__attention.update_on_task_deleted(tid, self.__indicator)
 
         self.__tasks_menu.remove(tid)
