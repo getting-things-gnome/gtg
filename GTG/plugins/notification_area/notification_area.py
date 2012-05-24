@@ -40,7 +40,8 @@ class _Attention:
     """Define attention depending on due today / overdue tasks."""
 
     ICONS = {'relax'     : 'gtg',
-             'attention' : 'new-messages-red'}
+             'attention' : 'gtg-need-attention'}
+#             'attention' : 'new-messages-red'}
 
     def __init__(self, tree, req, danger_zone=0):
         self.__tree = tree 
@@ -146,6 +147,7 @@ class NotificationArea:
         # Request a new view so we do not influence anybody.
         self.__tree_att = self.__requester.get_tasks_tree()
         self.__tree_att = self.__tree_att.get_basetree().get_viewtree(refresh=False)
+        self.__tree_att.apply_filter('workview')
         self.__attention = _Attention(self.__tree_att, self.__requester, \
                                               self.preferences['danger_zone'])
 
