@@ -31,6 +31,7 @@ from GTG.tools.dates       import Date
 def _due_within(task, danger_zone=0):
     ddate = task.get_due_date()
     if (ddate != Date.no_date()):
+        #print task.get_title(), ddate.days_left(),  ddate
         if ddate.days_left() <= danger_zone:
             return True
     return False
@@ -147,7 +148,7 @@ class NotificationArea:
         # Request a new view so we do not influence anybody.
         self.__tree_att = self.__requester.get_tasks_tree()
         self.__tree_att = self.__tree_att.get_basetree().get_viewtree(refresh=False)
-        self.__tree_att.apply_filter('workview')
+        #self.__tree_att.apply_filter('workview')
         self.__attention = _Attention(self.__tree_att, self.__requester, \
                                               self.preferences['danger_zone'])
 
@@ -268,7 +269,7 @@ class NotificationArea:
 
     def __on_task_added(self, tid, path):
         # Update icon on modification
-        if not self.__attention is None is self.__indicator:
+        if self.__attention and self.__indicator:
             self.__attention.update_on_task_modified(tid, self.__indicator)
 
         self.__task_separator.show()
@@ -289,7 +290,7 @@ class NotificationArea:
 
     def __on_task_deleted(self, tid, path):
         # Update icon on deletion
-        if not self.__attention is None is self.__indicator:
+        if self.__attention and self.__indicator:
             self.__attention.update_on_task_deleted(tid, self.__indicator)
 
         self.__tasks_menu.remove(tid)
