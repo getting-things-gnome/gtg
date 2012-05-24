@@ -38,7 +38,7 @@ from GTG.tools.logger                       import Log
 from GTG                                    import _
 from GTG.backends.genericbackend            import GenericBackend
 
-
+DIALOG_TITLE = "Synchronization Services - Getting Things GNOME!"
 
 class BackendsDialog(object):
     '''
@@ -69,6 +69,7 @@ class BackendsDialog(object):
 
     def activate(self):
         '''Shows this window, refreshing the current view'''
+        self.dialog.set_title(DIALOG_TITLE)
         self.dialog.show_all()
         self.backends_tv.refresh()
         self.backends_tv.select_backend()
