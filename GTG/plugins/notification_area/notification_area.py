@@ -28,7 +28,7 @@ from GTG.tools.borg        import Borg
 from GTG.tools.dates       import Date
 
 # Determine if a task is overdue
-def _is_due_within(task, danger_zone=0):
+def _due_within(task, danger_zone=0):
     ddate = task.get_due_date()
     if (ddate != Date.no_date()):
         if ddate.days_left() <= danger_zone:
@@ -50,7 +50,7 @@ class _Attention:
         self.tasks_overdue = []
         for tid in self.__tree.get_all_nodes():
             task = self.__req.get_task(tid)
-            if _is_due_within(task, self.danger_zone):
+            if _due_within(task, self.danger_zone):
                 self.tasks_overdue.append(tid)
 
     def level(self):
@@ -93,7 +93,8 @@ class NotificationArea:
     to quickly access tasks.
     """
 
-    DEFAULT_PREFERENCES = {"start_minimized": False}
+    DEFAULT_PREFERENCES = {"start_minimized": False,
+                           "danger_zone"    : 0}
     PLUGIN_NAME = "notification_area"
     MAX_TITLE_LEN = 30
     MAX_ITEMS = 10
@@ -136,11 +137,19 @@ class NotificationArea:
         # them given the task id. Contains tuple of this format:
         # (title, key, gtk.MenuItem)
         self.__init_gtk()
-        self.__connect_to_tree()
 
-        #Load the preferences
+        # We load preferences before connecting to tree
         self.preference_dialog_init()
         self.preferences_load()
+
+        # Enable attention monitor.
+        # Request a new view so we do not influence anybody.
+        self.__tree_att = self.__requester.get_tasks_tree()
+        self.__tree_att = self.__tree_att.get_basetree().get_viewtree(refresh=False)
+        self.__attention = _Attention(self.__tree_att, self.__requester, \
+                                              self.preferences['danger_zone'])
+
+        self.__connect_to_tree()
 
         # When no windows (browser or text editors) are shown, it tries to quit
         # With hidden browser and closing the only single text editor,
@@ -252,9 +261,6 @@ class NotificationArea:
             cb_id = self.__tree.register_cllbck(signal, cllbck)
             self.__liblarch_callbacks.append((cb_id, signal))
 
-        # Enable attention monitor
-        self.__attention = _Attention(self.__tree, self.__requester)
-
         self.__tree.apply_filter('workview')
 
 
@@ -306,10 +312,11 @@ class NotificationArea:
     def preferences_load(self):
         data = self.__plugin_api.load_configuration_object(self.PLUGIN_NAME,
                                                          "preferences")
-        if not data or not isinstance(data, dict):
-            self.preferences = self.DEFAULT_PREFERENCES
-        else:
-            self.preferences = data
+        # We first load the preferences then update the dict
+        # This way new default options are recognized with old cfg files
+        self.preferences = self.DEFAULT_PREFERENCES
+        if isinstance(data, dict):
+            self.preferences.update(data)
 
     def preferences_store(self):
         self.__plugin_api.save_configuration_object(self.PLUGIN_NAME,
