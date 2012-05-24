@@ -29,7 +29,6 @@ from GTG.core.plugins import GnomeConfig
 from GTG.gtk          import ViewConfig
 from GTG.core.plugins.engine import PluginEngine
 
-
 __all__ = [
   'PreferencesDialog',
   ]
