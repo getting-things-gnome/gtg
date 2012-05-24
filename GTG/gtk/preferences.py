@@ -24,10 +24,11 @@ import gtk
 import pango
 from xdg.BaseDirectory import xdg_config_home
 
-from GTG              import _
+from GTG              import _, info
 from GTG.core.plugins import GnomeConfig
 from GTG.gtk          import ViewConfig
 from GTG.core.plugins.engine import PluginEngine
+
 
 __all__ = [
   'PreferencesDialog',
@@ -313,6 +314,7 @@ class PreferencesDialog:
             self._refresh_plugin_store()
         self._refresh_backend_store()
         self._refresh_preferences_store()
+        self.dialog.set_title("Preferences - " + info.NAME)
         self.dialog.present()
         self.dialog.show_all()
 
