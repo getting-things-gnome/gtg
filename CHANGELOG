@@ -1,5 +1,5 @@
 2012-0?-?? Getting Things GNOME! 0.3
-    * Fix bug 1002067, by Alan Gomes
+    * Fix bug 1002067: Added title to BackendDialog, by Alan Gomes
     * Hide tasks with due date someday, #931376
     * New Date class by Paul Kishimoto and Izidor Matušov
       * Parse due:3 as next 3rd day in month
