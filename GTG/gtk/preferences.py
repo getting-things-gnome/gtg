@@ -34,6 +34,8 @@ __all__ = [
   'PreferencesDialog',
   ]
 
+DIALOG_TITLE = "Preferences"
+
 # Default plugin information text
 PLUGINS_DEFAULT_DESC = _("Click on a plugin name to view its description here.")
 
@@ -44,6 +46,7 @@ PLUGINS_COL_NAME = 2
 PLUGINS_COL_SHORT_DESC = 3
 PLUGINS_COL_DESC = 4
 PLUGINS_COL_ACTIVATABLE = 5
+
 
 def plugin_icon(column, cell, store, iter):
     """Callback to set the content of a PluginTree cell.
@@ -314,7 +317,7 @@ class PreferencesDialog:
             self._refresh_plugin_store()
         self._refresh_backend_store()
         self._refresh_preferences_store()
-        self.dialog.set_title("Preferences - " + info.NAME)
+        self.dialog.set_title("%s - %s" % (DIALOG_TITLE, info.NAME))
         self.dialog.present()
         self.dialog.show_all()
 
