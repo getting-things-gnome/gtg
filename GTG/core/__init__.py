@@ -38,7 +38,7 @@ If you want to display only a subset of tasks, you can either:
 
 #=== IMPORT ====================================================================
 import os
-from xdg.BaseDirectory import xdg_data_home, xdg_config_home
+from xdg.BaseDirectory import xdg_data_home, xdg_config_home, xdg_data_dirs
 from configobj         import ConfigObj
 from GTG.tools.testingmode import TestingMode
 
@@ -182,7 +182,10 @@ class CoreConfig(Borg):
 
     def get_icons_directories(self):
         """ Returns the directories containing the icons """
-        return [GTG.DATA_DIR, os.path.join(GTG.DATA_DIR, "icons")]
+        icons_dirs = [os.path.join(dir, 'gtg/icons') for dir in xdg_data_dirs]
+        icons_dirs.append(os.path.join(GTG.DATA_DIR, "icons"))
+        icons_dirs.append(GTG.DATA_DIR)
+        return icons_dirs
 
     def get_data_dir(self):
         return self.data_dir
