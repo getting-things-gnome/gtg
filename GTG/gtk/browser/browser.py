@@ -48,7 +48,6 @@ from GTG.tools.logger import Log
 
 #=== MAIN CLASS ===============================================================
 
-WINDOW_TITLE = "Getting Things GNOME!"
 
 class Timer:
     def __init__(self, name):
@@ -579,7 +578,7 @@ class TaskBrowser(gobject.GObject):
             parenthesis = ngettext("%(tasks)d active task", \
                                    "%(tasks)d active tasks", \
                                    count) % {'tasks': count}
-        self.window.set_title("%s - "%parenthesis + WINDOW_TITLE)
+        self.window.set_title("%s - "%parenthesis + info.NAME)
 
     def _add_page(self, notebook, label, page):
         notebook.append_page(page, label)
