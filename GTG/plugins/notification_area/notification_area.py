@@ -337,6 +337,7 @@ class NotificationArea:
                     "notification_area.ui"))
         self.preferences_dialog = self.builder.get_object("preferences_dialog")
         self.chbox_minimized = self.builder.get_object("pref_chbox_minimized")
+        self.spinbutton_dangerzone = self.builder.get_object("pref_spinbutton_dangerzone")
         SIGNAL_CONNECTIONS_DIC = {
             "on_preferences_dialog_delete_event":
                 self.on_preferences_cancel,
@@ -349,6 +350,7 @@ class NotificationArea:
 
     def configure_dialog(self, manager_dialog):
         self.chbox_minimized.set_active(self.preferences["start_minimized"])
+        self.spinbutton_dangerzone.set_value(self.preferences["danger_zone"])
         self.preferences_dialog.show_all()
         self.preferences_dialog.set_transient_for(manager_dialog)
 
@@ -358,6 +360,7 @@ class NotificationArea:
 
     def on_preferences_ok(self, widget = None, data = None):
         self.preferences["start_minimized"] = self.chbox_minimized.get_active()
+        self.preferences["danger_zone"] = self.spinbutton_dangerzone.get_value()
         self.preferences_store()
         self.preferences_dialog.hide()
 
