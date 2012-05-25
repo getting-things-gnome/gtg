@@ -114,6 +114,12 @@ class PluginExport:
         active = self.combo.get_active()
         self.template = Template(model[active][0])
 
+        tasks = self.get_selected_tasks()
+        if len(tasks) == 0:
+            self.show_error_dialog(_("No task matches your criteria. " \
+                "Empty report can't be generated."))
+            return
+
         self.filename = None
         if saving:
             self.filename = self.choose_file()
@@ -124,7 +130,6 @@ class PluginExport:
         self.open_button.set_sensitive(False)
 
         try:
-            tasks = self.get_selected_tasks()
             self.template.generate(tasks, self.plugin_api,
                                     self.on_export_finished)
         except Exception, err:
@@ -207,6 +212,7 @@ class PluginExport:
 
         self.export_all_active = builder.get_object(
                                                 "export_all_active_rb")
+        self.export_all_active.set_active(True)
         self.export_finished_last_week = builder.get_object(
                                                 "export_finished_last_week_rb")
         self.export_all_finished = builder.get_object(
