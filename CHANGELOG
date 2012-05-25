@@ -22,7 +22,7 @@
     * Added an option to import local (development) version of liblarch instead of system installed one
     * Fix for bug #995740: (no title task) through quickadd bar, by Nimit Shah
     * New tag editor
-    * Fix bug 1003872: Preferences window title wrong pattern, by Alan Gomes
+    * Fix bugs #1003872 and #1002067: Correct titles to Preferences and Synchronization Services Dialogs, by Alan Gomes
 
 2012-02-13 Getting Things GNOME! 0.2.9
     * Big refractorization of code, now using liblarch
