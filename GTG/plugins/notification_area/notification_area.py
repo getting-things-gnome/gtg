@@ -49,14 +49,14 @@ class _Attention:
         self.__req = req
         self.danger_zone = danger_zone
         # Maintain a list of overdue tasks ids
-        self.tasks_overdue = []
+        self.tasks_danger = []
         for tid in self.__tree.get_all_nodes():
             task = self.__req.get_task(tid)
             if _due_within(task, self.danger_zone):
-                self.tasks_overdue.append(tid)
+                self.tasks_danger.append(tid)
 
     def level(self):
-        return 0 if len(self.tasks_overdue)==0 else 1
+        return 0 if len(self.tasks_danger)==0 else 1
 
     def __update_indicator(self, indicator, old_level, new_level):
         if old_level == 1 and new_level == 0:
@@ -69,12 +69,12 @@ class _Attention:
         old_lev = self.level()
 
         task = self.__req.get_task(tid)
-        if tid in self.tasks_overdue:
+        if tid in self.tasks_danger:
             if not _due_within(task, self.danger_zone):
-                self.tasks_overdue.remove(tid)
+                self.tasks_danger.remove(tid)
         else:
             if _due_within(task, self.danger_zone):
-                self.tasks_overdue.append(tid)
+                self.tasks_danger.append(tid)
 
         # Update icon only if attention level has changed
         self.__update_indicator(indicator, old_lev, self.level())
@@ -83,8 +83,8 @@ class _Attention:
         # Store current attention level
         old_lev = self.level()
 
-        if tid in self.tasks_overdue:
-            self.tasks_overdue.remove(tid)
+        if tid in self.tasks_danger:
+            self.tasks_danger.remove(tid)
 
         # Update icon only if attention level has changed
         self.__update_indicator(indicator, old_lev, self.level())
