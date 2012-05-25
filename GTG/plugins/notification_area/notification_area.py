@@ -27,28 +27,36 @@ from GTG                   import _
 from GTG.tools.borg        import Borg
 from GTG.tools.dates       import Date
 
-# Determine if a task is overdue
-def _due_within(task, danger_zone=0):
+# Determine how many days are left to do a task, 1 means due today.
+def _due_within(task, danger_zone):
     ddate = task.get_due_date()
     if (ddate != Date.no_date()):
-        #print task.get_title(), ddate.days_left(),  ddate
-        if ddate.days_left() <= danger_zone:
+        if ddate.days_left() < danger_zone:
             return True
     return False
 
 class _Attention:
 
-    """Define attention depending on due today / overdue tasks."""
+    """
+    Define need attention state depending on whether there 
+    are tasks in danger zone.
+
+    There are two levels of attention:
+    0 = "relax": there are no tasks in danger zone
+    1 = "attention": there is at least one task in danger zone
+
+    A task is in danger zone if the number of days left is less
+    than time span (in days) defined by danger_zone.
+    """
 
     ICONS = {'relax'     : 'gtg',
              'attention' : 'gtg-need-attention'}
-#             'attention' : 'new-messages-red'}
 
-    def __init__(self, tree, req, danger_zone=0):
+    def __init__(self, tree, req, danger_zone=1):
         self.__tree = tree 
         self.__req = req
         self.danger_zone = danger_zone
-        # Maintain a list of overdue tasks ids
+        # Maintain a list of tasks in danger zone, use task id
         self.tasks_danger = []
         for tid in self.__tree.get_all_nodes():
             task = self.__req.get_task(tid)
@@ -67,7 +75,6 @@ class _Attention:
     def update_on_task_modified(self, tid, indicator):
         # Store current attention level
         old_lev = self.level()
-
         task = self.__req.get_task(tid)
         if tid in self.tasks_danger:
             if not _due_within(task, self.danger_zone):
@@ -96,7 +103,7 @@ class NotificationArea:
     """
 
     DEFAULT_PREFERENCES = {"start_minimized": False,
-                           "danger_zone"    : 0}
+                           "danger_zone"    : 1}
     PLUGIN_NAME = "notification_area"
     MAX_TITLE_LEN = 30
     MAX_ITEMS = 10
@@ -148,9 +155,12 @@ class NotificationArea:
         # Request a new view so we do not influence anybody.
         self.__tree_att = self.__requester.get_tasks_tree()
         self.__tree_att = self.__tree_att.get_basetree().get_viewtree(refresh=False)
-        #self.__tree_att.apply_filter('workview')
-        self.__attention = _Attention(self.__tree_att, self.__requester, \
+        # Convention: if danger zone is <=0, we disable need attention notification
+        if self.preferences['danger_zone'] > 0:
+            self.__attention = _Attention(self.__tree_att, self.__requester, \
                                               self.preferences['danger_zone'])
+        else:
+            self.__attention = None
 
         self.__connect_to_tree()
 
@@ -265,7 +275,6 @@ class NotificationArea:
             self.__liblarch_callbacks.append((cb_id, signal))
 
         self.__tree.apply_filter('workview')
-
 
     def __on_task_added(self, tid, path):
         # Update icon on modification
