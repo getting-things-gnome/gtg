@@ -42,14 +42,14 @@ for dependence in "pdflatex", "pdftk", "pdfjam":
 def get_user_dir(key):
     """
     http://www.freedesktop.org/wiki/Software/xdg-user-dirs
-        XDG_DESKTOP_DIR
-        XDG_DOWNLOAD_DIR
-        XDG_TEMPLATES_DIR
-        XDG_PUBLICSHARE_DIR
-        XDG_DOCUMENTS_DIR
-        XDG_MUSIC_DIR
-        XDG_PICTURES_DIR
-        XDG_VIDEOS_DIR
+     - XDG_DESKTOP_DIR
+     - XDG_DOWNLOAD_DIR
+     - XDG_TEMPLATES_DIR
+     - XDG_PUBLICSHARE_DIR
+     - XDG_DOCUMENTS_DIR
+     - XDG_MUSIC_DIR
+     - XDG_PICTURES_DIR
+     - XDG_VIDEOS_DIR
 
     Taken from FrontBringer
     (distributed under the GNU GPL v3 license),

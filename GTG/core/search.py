@@ -21,8 +21,8 @@
 Search feature for GTG
 
 Created by:
-  * João Ascenso, GSoC 2011
-  * Izidor Matušov, Jan/Feb 2012
+  - João Ascenso, GSoC 2011
+  - Izidor Matušov, Jan/Feb 2012
 
 You can search by entring a query in a simple language. Function
 parse_search_query() parse the query and return internal representation which
@@ -30,26 +30,26 @@ is used for filtering in search_filter() function. If the query is malformed,
 the exception InvalidQuery is raised.
 
 The query language consists of several elements:
-  * commands
-    * !not <elem> -- the next element will be negated
-    * <elem> !or <elem> -- return True if at least on of elements is true
-    * !after <date> -- show tasks which could be done after this date
-    * !before <date> -- show tasks which must be done before this date
-    * !today -- show tasks with due_date == today
-    * !tomorrow -- show tasks with due_date == tomorrow
-    * !nodate -- show tasks without due_date
-    * !now -- show tasks with due_date == now
-    * !soon -- show tasks with due_date == soon
-    * !someday -- show tasks with due_date == someday
-    * !notag -- show tasks without tags
-  * tags -- show tasks with this tag
-  * word -- show tasks which contains this word
-  * "literal" -- basically the same as word but allows the space and special
+  - commands
+    - !not <elem> -- the next element will be negated
+    - <elem> !or <elem> -- return True if at least on of elements is true
+    - !after <date> -- show tasks which could be done after this date
+    - !before <date> -- show tasks which must be done before this date
+    - !today -- show tasks with due_date == today
+    - !tomorrow -- show tasks with due_date == tomorrow
+    - !nodate -- show tasks without due_date
+    - !now -- show tasks with due_date == now
+    - !soon -- show tasks with due_date == soon
+    - !someday -- show tasks with due_date == someday
+    - !notag -- show tasks without tags
+  - tags -- show tasks with this tag
+  - word -- show tasks which contains this word
+  - "literal" -- basically the same as word but allows the space and special
         characters inside. Literal must be inside "quotes".
-  * date -- date which could be parsed with Date.parse()
+  - date -- date which could be parsed with Date.parse()
 
-Elements are supposed to be in conjuction, i.e. they are interpreted as
- E1 AND E2 AND E3 AND E4 AND ( E5 OR E6 OR E7 ) AND E8 ...
+Elements are supposed to be in conjuction, i.e. they are interpreted as::
+  E1 AND E2 AND E3 AND E4 AND ( E5 OR E6 OR E7 ) AND E8 ...
 
 Examples of queries:
 '!tomorrow !or !today' => show tasks which are today or tomorrow
@@ -61,7 +61,7 @@ Examples of queries:
 
 
 search_filter() expect parameter 'q' which is a list of commands in the form
-(name_of_command, should_be_positive, arguments). If
+(name_of_command, should_be_positive, arguments). If::
   should_be_positive == True => task has to satisfy this command
   should_be_positive == False => task must not satisfy this command
 
@@ -72,8 +72,8 @@ search_filter() could be easily plugged in Liblarch and filter only suitable
 tasks.
 
 For more information see unittests:
-  * GTG/tests/test_search_query.py -- parsing query
-  * GTG/tests/test_search_filter.py -- filtering a task
+  - GTG/tests/test_search_query.py -- parsing query
+  - GTG/tests/test_search_filter.py -- filtering a task
 """
 
 import re

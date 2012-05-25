@@ -43,7 +43,7 @@ from GTG.core.datastore          import DataStore
 from GTG.backends                import BackendFactory
 from GTG.backends.genericbackend import GenericBackend
 
-
+global pid_tomboy
 
 class TestBackendTomboy(unittest.TestCase):
     '''
@@ -52,10 +52,12 @@ class TestBackendTomboy(unittest.TestCase):
     
 
     def setUp(self):
-        self.spawn_fake_tomboy_server()
+        thread_tomboy = threading.Thread(target = self.spawn_fake_tomboy_server)
+        thread_tomboy.start()
+        thread_tomboy.join()
         #only the test process should go further, the dbus server one should
         #stop here
-        if not self.child_process_pid: return
+        if not pid_tomboy: return
         #we create a custom dictionary listening to the server, and register it
         # in GTG. 
         additional_dic = {}
@@ -85,9 +87,10 @@ class TestBackendTomboy(unittest.TestCase):
 
         #we use a lockfile to make sure the server is running before we start
         # the test
+        global pid_tomboy
         lockfile_fd, lockfile_path = tempfile.mkstemp()
-        self.child_process_pid = os.fork()
-        if self.child_process_pid:
+        pid_tomboy = os.fork()
+        if pid_tomboy:
             #we wait in polling that the server has been started
             while True:
                 try:
@@ -105,20 +108,20 @@ class TestBackendTomboy(unittest.TestCase):
             os.unlink(lockfile_path)
 
     def tearDown(self):
-        if not self.child_process_pid: return
+        if not pid_tomboy: return
         self.datastore.save(quit = True) 
         time.sleep(0.5)
         self.tomboy.FakeQuit()
-        self.bus.close()
-        os.kill(self.child_process_pid, signal.SIGKILL)
-        os.waitpid(self.child_process_pid, 0)
+        # FIXME: self.bus.close()
+        os.kill(pid_tomboy, signal.SIGKILL)
+        os.waitpid(pid_tomboy, 0)
     
     def test_everything(self):
         '''
         '''
         #we cannot use separate test functions because we only want a single
         # FakeTomboy dbus server running
-        if not self.child_process_pid: return
+        if not pid_tomboy: return
         for function in dir(self):
             if function.startswith("TEST_"):
                 getattr(self, function)()

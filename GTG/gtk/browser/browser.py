@@ -150,7 +150,6 @@ class TaskBrowser(gobject.GObject):
         defines aliases for UI elements found in the glide file
         """
         self.window             = self.builder.get_object("MainWindow")
-        self.searchpopup          = self.builder.get_object("search_context_menu")
         self.taskpopup          = self.builder.get_object("task_context_menu")
         self.defertopopup       = self.builder.get_object("defer_to_context_menu")
         self.ctaskpopup         = self.builder.get_object("closed_task_context_menu")
@@ -180,7 +179,7 @@ class TaskBrowser(gobject.GObject):
         self.vbox_toolbars      = self.builder.get_object("vbox_toolbars")
         
         self.closed_pane        = None
-        self.tagpopup           = TagContextMenu(self.req)
+        self.tagpopup           = TagContextMenu(self.req, self.vmanager)
 
     def _init_ui_widget(self):
         """
@@ -337,8 +336,6 @@ class TaskBrowser(gobject.GObject):
                 self.open_preferences,
             "on_edit_backends_activate":
                 self.open_edit_backends,
-            "on_search_delete_activate":
-                self.on_search_delete_activate,
         }
         self.builder.connect_signals(SIGNAL_CONNECTIONS_DIC)
 
@@ -758,6 +755,7 @@ class TaskBrowser(gobject.GObject):
     def on_quickadd_activate(self, widget):
         """ Add a new task from quickadd toolbar """
         text = unicode(self.quickadd_entry.get_text())
+        text = text.strip()
         if text:
             tags = self.get_selected_tags(nospecial=True)
             #We will select quick-added task in browser.
@@ -838,13 +836,15 @@ class TaskBrowser(gobject.GObject):
                 selected_search = self.get_selected_search()
                 #popup menu for searches
                 if selected_search is not None:
-                    self.searchpopup.popup(None, None, None, event.button, time)
+                    my_tag = self.req.get_tag(selected_search)
+                    self.tagpopup.set_tag(my_tag)
+                    self.tagpopup.popup(None, None, None, event.button, time)
                 elif len(selected_tags) > 0:
                     # Then we are looking at single, normal tag rather than
                     # the special 'All tags' or 'Tasks without tags'. We only
                     # want to popup the menu for normal tags.
-                    selected_tag = self.req.get_tag(selected_tags[0])
-                    self.tagpopup.set_tag(selected_tag)
+                    my_tag = self.req.get_tag(selected_tags[0])
+                    self.tagpopup.set_tag(my_tag)
                     self.tagpopup.popup(None, None, None, event.button, time)
                 else:
                     self.reset_cursor()
@@ -1210,11 +1210,12 @@ class TaskBrowser(gobject.GObject):
 
 ### PUBLIC METHODS #########################################################
     def get_selected_task(self, tv=None):
-        """Returns the'uid' of the selected task, if any.
-           If multiple tasks are selected, returns only the first and 
-           takes care of selecting only that (unselecting the others)
+        """
+        Returns the'uid' of the selected task, if any.
+        If multiple tasks are selected, returns only the first and 
+        takes care of selecting only that (unselecting the others)
 
-        :param tv: The tree view to find the selected task in. Defaults to
+        @param tv: The tree view to find the selected task in. Defaults to
             the task_tview.
         """
         ids = self.get_selected_tasks(tv)
@@ -1225,10 +1226,11 @@ class TaskBrowser(gobject.GObject):
             return None
 
     def get_selected_tasks(self, tv=None):
-        """Returns a list of 'uids' of the selected tasks, and the corresponding
-           iters
+        """
+        Returns a list of 'uids' of the selected tasks, and the corresponding
+        iters
 
-        :param tv: The tree view to find the selected task in. Defaults to
+        @param tv: The tree view to find the selected task in. Defaults to
             the task_tview.
         """
         #FIXME Why we have active as back case? is that so? Study this code
@@ -1247,8 +1249,8 @@ class TaskBrowser(gobject.GObject):
     def get_selected_tags(self,nospecial=False):
         """
         Returns the selected nodes from the tagtree
-        @args
-            nospecial - doesn't return tags that do not stat with @
+
+        @param nospecial: doesn't return tags that do not stat with
         """
         taglist = []
         if self.tagtreeview:
@@ -1481,13 +1483,6 @@ class TaskBrowser(gobject.GObject):
                     return tags[0]
         return None
     
-
-    def on_search_delete_activate(self, widget):
-        """ delete a selected search """
-        search = self.get_selected_search()
-        if search:
-            self.req.remove_tag(search)
-
     def _init_search_completion(self):
         """ Initialize search completion """
         self.search_completion = self.builder.get_object("quickadd_entrycompletion")
@@ -1522,24 +1517,25 @@ class TaskBrowser(gobject.GObject):
         self.search_actions = []
         new_actions = []
         query = self.quickadd_entry.get_text()
+        query=query.strip()
+        if query:
+            if self.req.get_task_id(query) is not None:
+                 new_actions.append('open')
+            else:
+                new_actions.append('add')
 
-        if self.req.get_task_id(query) is not None:
-            new_actions.append('open')
-        else:
-            new_actions.append('add')
+            # Is query parsable?
+            try:
+                parse_search_query(query)
+                new_actions.append('search')
+            except InvalidQuery:
+                pass
 
-        # Is query parsable?
-        try:
-            parse_search_query(query)
-            new_actions.append('search')
-        except InvalidQuery:
-            pass
-
-        # Add new order of actions
-        for aid, name in enumerate(new_actions):
-            action = self.search_possible_actions[name]
-            self.search_completion.insert_action_markup(aid, action)
-            self.search_actions.append(name)
+            # Add new order of actions
+            for aid, name in enumerate(new_actions):
+                action = self.search_possible_actions[name]
+                self.search_completion.insert_action_markup(aid, action)
+                self.search_actions.append(name)
 
     def expand_search_tag(self):
         """ For some unknown reason, search tag is not expanded correctly and

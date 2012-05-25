@@ -66,6 +66,9 @@ DEFAULTS = {
             'y_pos': 10,
             'tasklist_sort_column': 5,
             'tasklist_sort_order': 1,
+            },
+'tag_editor': {
+            "custom_colors" : []
             }
 }
 
@@ -117,6 +120,10 @@ class SubConfig():
         # Save immediately
         self.__conf.parent.write()
 
+    def set_lst(self, name, value_lst):
+        self.__conf[name] = [ str(s) for s in value_lst]
+        # Save immediately
+        self.__conf.parent.write()
 
 class CoreConfig(Borg):
     #The projects and tasks are of course DATA !

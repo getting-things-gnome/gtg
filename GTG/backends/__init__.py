@@ -129,8 +129,8 @@ class BackendFactory(Borg):
         '''
         Function restoring a backend from its xml description.
         dic should be a dictionary containing at least the key 
-        - "module", with the module name
-        - "xmlobject", with its xml description.
+            - "module", with the module name
+            - "xmlobject", with its xml description.
         Every other key is passed as-is to the backend, as parameter.
 
         Returns the backend instance, or None is something goes wrong
