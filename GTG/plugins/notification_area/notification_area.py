@@ -154,11 +154,13 @@ class NotificationArea:
         # Enable attention monitor.
         # Request a new view so we do not influence anybody.
         self.__tree_att = self.__requester.get_tasks_tree()
-        self.__tree_att = self.__tree_att.get_basetree().get_viewtree(refresh=False)
-        # Convention: if danger zone is <=0, we disable need attention notification
+        self.__tree_att = \
+            self.__tree_att.get_basetree().get_viewtree(refresh=False)
+        # Convention: if danger zone is <=0, disable attention
         if self.preferences['danger_zone'] > 0:
-            self.__attention = _Attention(self.__tree_att, self.__requester, \
-                                              self.preferences['danger_zone'])
+            self.__attention = _Attention(self.__tree_att, 
+                                          self.__requester,
+                                          self.preferences['danger_zone'])
         else:
             self.__attention = None
 
@@ -346,7 +348,8 @@ class NotificationArea:
                     "notification_area.ui"))
         self.preferences_dialog = self.builder.get_object("preferences_dialog")
         self.chbox_minimized = self.builder.get_object("pref_chbox_minimized")
-        self.spinbutton_dangerzone = self.builder.get_object("pref_spinbutton_dangerzone")
+        self.spinbutton_dangerzone = \
+            self.builder.get_object("pref_spinbutton_dangerzone")
         SIGNAL_CONNECTIONS_DIC = {
             "on_preferences_dialog_delete_event":
                 self.on_preferences_cancel,
