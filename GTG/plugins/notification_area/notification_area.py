@@ -96,6 +96,12 @@ class _Attention:
         # Update icon only if attention level has changed
         self.__update_indicator(indicator, old_lev, self.level())
 
+    def init_indicator(self, indicator):
+        if self.level() == 1:
+            indicator.set_icon(self.ICONS['attention'])
+        elif self.level() == 0:
+            indicator.set_icon(self.ICONS['relax'])
+
 class NotificationArea:
     """
     Plugin that display a notification area widget or an indicator
@@ -152,19 +158,20 @@ class NotificationArea:
         self.preferences_load()
 
         # Enable attention monitor.
-        # Request a new view so we do not influence anybody.
-        self.__tree_att = self.__requester.get_tasks_tree()
-        self.__tree_att = \
-            self.__tree_att.get_basetree().get_viewtree(refresh=False)
+        # Use two different viewtree for attention and menu
+        # This way we can filter them independently.
+        self.__attention = None
+        self.__tree_att = self.__connect_to_tree()
+        self.__tree_att.apply_filter('workview')
         # Convention: if danger zone is <=0, disable attention
-        if self.preferences['danger_zone'] > 0:
+        # Attention is also disabled if there is no indicator
+        if self.preferences['danger_zone'] > 0 and self.__indicator:
             self.__attention = _Attention(self.__tree_att, 
                                           self.__requester,
                                           self.preferences['danger_zone'])
-        else:
-            self.__attention = None
 
-        self.__connect_to_tree()
+        self.__tree = self.__connect_to_tree()
+        self.__tree.apply_filter('workview')
 
         # When no windows (browser or text editors) are shown, it tries to quit
         # With hidden browser and closing the only single text editor,
@@ -263,9 +270,10 @@ class NotificationArea:
         self.__view_manager.open_task(task_id, thisisnew=new_task)
 
     def __connect_to_tree(self):
-        self.__tree = self.__requester.get_tasks_tree()
+        """ Return a new view tree """
+        tree = self.__requester.get_tasks_tree()
         # Request a new view so we do not influence anybody
-        self.__tree = self.__tree.get_basetree().get_viewtree(refresh=False)
+        tree = tree.get_basetree().get_viewtree(refresh=False)
 
         self.__liblarch_callbacks = []
         for signal, cllbck in [
@@ -273,10 +281,9 @@ class NotificationArea:
             ("node-modified-inview", self.__on_task_added),
             ("node-deleted-inview", self.__on_task_deleted),
         ]:
-            cb_id = self.__tree.register_cllbck(signal, cllbck)
+            cb_id = tree.register_cllbck(signal, cllbck)
             self.__liblarch_callbacks.append((cb_id, signal))
-
-        self.__tree.apply_filter('workview')
+        return tree
 
     def __on_task_added(self, tid, path):
         # Update icon on modification
