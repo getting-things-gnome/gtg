@@ -52,10 +52,12 @@ class _Attention:
     ICONS = {'relax'     : 'gtg',
              'attention' : 'gtg-need-attention'}
 
-    def __init__(self, tree, req, danger_zone=1):
+    def __init__(self, tree, req, indicator, danger_zone=1):
         self.__tree = tree 
         self.__req = req
+        self.__indicator = indicator
         self.danger_zone = danger_zone
+
         # Maintain a list of tasks in danger zone, use task id
         self.tasks_danger = []
         for tid in self.__tree.get_all_nodes():
@@ -63,16 +65,23 @@ class _Attention:
             if _due_within(task, self.danger_zone):
                 self.tasks_danger.append(tid)
 
+        # Set initial icon. Later on we only update if needed 
+        if self.level() == 1:
+            indicator.set_icon(self.ICONS['attention'])
+        elif self.level() == 0:
+            indicator.set_icon(self.ICONS['relax'])
+
+
     def level(self):
         return 0 if len(self.tasks_danger)==0 else 1
 
-    def __update_indicator(self, indicator, old_level, new_level):
+    def __update_indicator(self, old_level, new_level):
         if old_level == 1 and new_level == 0:
-            indicator.set_icon(self.ICONS['relax'])
+            self.__indicator.set_icon(self.ICONS['relax'])
         elif old_level == 0 and new_level == 1:
-            indicator.set_icon(self.ICONS['attention'])
+            self.__indicator.set_icon(self.ICONS['attention'])
           
-    def update_on_task_modified(self, tid, indicator):
+    def update_on_task_modified(self, tid):
         # Store current attention level
         old_lev = self.level()
         task = self.__req.get_task(tid)
@@ -84,9 +93,9 @@ class _Attention:
                 self.tasks_danger.append(tid)
 
         # Update icon only if attention level has changed
-        self.__update_indicator(indicator, old_lev, self.level())
+        self.__update_indicator(old_lev, self.level())
               
-    def update_on_task_deleted(self, tid, indicator):
+    def update_on_task_deleted(self, tid):
         # Store current attention level
         old_lev = self.level()
 
@@ -94,13 +103,7 @@ class _Attention:
             self.tasks_danger.remove(tid)
 
         # Update icon only if attention level has changed
-        self.__update_indicator(indicator, old_lev, self.level())
-
-    def init_indicator(self, indicator):
-        if self.level() == 1:
-            indicator.set_icon(self.ICONS['attention'])
-        elif self.level() == 0:
-            indicator.set_icon(self.ICONS['relax'])
+        self.__update_indicator(old_lev, self.level())
 
 class NotificationArea:
     """
@@ -161,16 +164,25 @@ class NotificationArea:
         # Use two different viewtree for attention and menu
         # This way we can filter them independently.
         self.__attention = None
-        self.__tree_att = self.__connect_to_tree()
+        self.__tree_att = self.__connect_to_tree([
+                ("node-added-inview", self.__on_task_added_att),
+                ("node-modified-inview", self.__on_task_added_att),
+                ("node-deleted-inview", self.__on_task_deleted_att),
+                ])
         self.__tree_att.apply_filter('workview')
         # Convention: if danger zone is <=0, disable attention
         # Attention is also disabled if there is no indicator
         if self.preferences['danger_zone'] > 0 and self.__indicator:
             self.__attention = _Attention(self.__tree_att, 
                                           self.__requester,
+                                          self.__indicator,
                                           self.preferences['danger_zone'])
 
-        self.__tree = self.__connect_to_tree()
+        self.__tree = self.__connect_to_tree([
+                ("node-added-inview", self.__on_task_added),
+                ("node-modified-inview", self.__on_task_added),
+                ("node-deleted-inview", self.__on_task_deleted),
+                ])
         self.__tree.apply_filter('workview')
 
         # When no windows (browser or text editors) are shown, it tries to quit
@@ -269,27 +281,24 @@ class NotificationArea:
 
         self.__view_manager.open_task(task_id, thisisnew=new_task)
 
-    def __connect_to_tree(self):
+    def __connect_to_tree(self, signal_cllbck):
         """ Return a new view tree """
         tree = self.__requester.get_tasks_tree()
         # Request a new view so we do not influence anybody
         tree = tree.get_basetree().get_viewtree(refresh=False)
 
         self.__liblarch_callbacks = []
-        for signal, cllbck in [
-            ("node-added-inview", self.__on_task_added),
-            ("node-modified-inview", self.__on_task_added),
-            ("node-deleted-inview", self.__on_task_deleted),
-        ]:
+        for signal, cllbck in signal_cllbck:
             cb_id = tree.register_cllbck(signal, cllbck)
             self.__liblarch_callbacks.append((cb_id, signal))
         return tree
 
-    def __on_task_added(self, tid, path):
+    def __on_task_added_att(self, tid, path):
         # Update icon on modification
-        if self.__attention and self.__indicator:
-            self.__attention.update_on_task_modified(tid, self.__indicator)
+        if self.__attention:
+            self.__attention.update_on_task_modified(tid)
 
+    def __on_task_added(self, tid, path):
         self.__task_separator.show()
         task = self.__requester.get_task(tid)
         if task is None:
@@ -306,11 +315,12 @@ class NotificationArea:
         if self.__indicator:
             self.__indicator.set_menu(self.__menu)
 
-    def __on_task_deleted(self, tid, path):
+    def __on_task_deleted_att(self, tid, path):
         # Update icon on deletion
-        if self.__attention and self.__indicator:
-            self.__attention.update_on_task_deleted(tid, self.__indicator)
+        if self.__attention:
+            self.__attention.update_on_task_deleted(tid)
 
+    def __on_task_deleted(self, tid, path):
         self.__tasks_menu.remove(tid)
         if self.__tasks_menu.empty():
             self.__task_separator.hide()
