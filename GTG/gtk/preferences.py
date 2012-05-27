@@ -329,10 +329,10 @@ class PreferencesDialog:
 
     def on_plugin_about(self, widget):
         """Display information about a plugin."""
-        (junk, iter) = self.plugin_tree.get_selection().get_selected()
-        if iter == None:
+        _, iterator = self.plugin_tree.get_selection().get_selected()
+        if iterator is None:
             return
-        plugin_id = self.plugin_store.get_value(iter, PLUGINS_COL_ID)
+        plugin_id = self.plugin_store.get_value(iterator, PLUGINS_COL_ID)
         p = self.pengine.get_plugin(plugin_id)
         
         pad = self.plugin_about_dialog
@@ -352,24 +352,31 @@ class PreferencesDialog:
 
     def on_plugin_configure(self, widget):
         """Configure a plugin."""
-        (junk, iter) = self.plugin_tree.get_selection().get_selected()
-        plugin_id = self.plugin_store.get_value(iter, PLUGINS_COL_ID)
+        _, iterator = self.plugin_tree.get_selection().get_selected()
+        if iterator is None:
+            return
+        plugin_id = self.plugin_store.get_value(iterator, PLUGINS_COL_ID)
         # TODO: load plugin's configuration UI and insert into pc-vbox1 in
         #  position 0. Something like...
         #pcd = self.plugin_config_dialog
         #pcd.show_all()
         # ...for now, use existing code.
-        self.pengine.get_plugin(plugin_id).instance.configure_dialog(self.dialog)
+        plugin = self.pengine.get_plugin(plugin_id)
+        plugin.instance.configure_dialog(self.dialog)
 
     def on_plugin_config_close(self, widget):
         """Close the PluginConfigDialog."""
         self.plugin_config_dialog.hide()
 
     def on_plugin_select(self, plugin_tree):
-        (model, iter) = plugin_tree.get_selection().get_selected()
-        if iter is not None:
-            plugin_id = model.get_value(iter, PLUGINS_COL_ID)
-            self._update_plugin_configure(self.pengine.get_plugin(plugin_id))
+        """ Callback when user select/unselect a plugin
+
+        Update the button "Configure plugin" sensitivity """
+        model, iterator = plugin_tree.get_selection().get_selected()
+        if iterator is not None:
+            plugin_id = model.get_value(iterator, PLUGINS_COL_ID)
+            plugin = self.pengine.get_plugin(plugin_id)
+            self._update_plugin_configure(plugin)
 
     def on_plugin_toggle(self, widget, path):
         """Toggle a plugin enabled/disabled."""
@@ -413,7 +420,7 @@ class PreferencesDialog:
         print __name__
 
     def _update_plugin_configure(self, plugin):
-        """Enable the "Configure Plugin" button if appropriate."""
+        """ Enable the button "Configure Plugin" appropriate. """
         configurable = plugin.active and plugin.is_configurable()
         self.plugin_configure.set_property('sensitive', configurable)
 
