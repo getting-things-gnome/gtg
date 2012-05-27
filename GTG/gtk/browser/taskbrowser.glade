@@ -675,7 +675,7 @@
                         <property name="invisible_char">●</property>
                         <property name="secondary_icon_stock">gtk-clear</property>
                         <property name="primary_icon_activatable">False</property>
-                        <property name="secondary_icon_activatable">False</property>
+                        <property name="secondary_icon_activatable">True</property>
                         <property name="primary_icon_sensitive">True</property>
                         <property name="secondary_icon_sensitive">True</property>
                         <signal name="changed" handler="on_quickadd_field_changed" swapped="no"/>
