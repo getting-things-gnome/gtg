@@ -9,16 +9,16 @@ msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2012-04-22 17:25+0200\n"
-"PO-Revision-Date: 2010-12-31 22:04+0000\n"
-"Last-Translator: Radek Puła <Unknown>\n"
+"PO-Revision-Date: 2012-05-28 16:47+0000\n"
+"Last-Translator: btomasz <btomasz92@gmail.com>\n"
 "Language-Team: Polish <ponton@jabster.pl>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
 "|| n%100>=20) ? 1 : 2;\n"
-"X-Launchpad-Export-Date: 2012-04-23 04:48+0000\n"
-"X-Generator: Launchpad (build 15135)\n"
+"X-Launchpad-Export-Date: 2012-05-29 04:46+0000\n"
+"X-Generator: Launchpad (build 15316)\n"
 
 #: GTG/plugins/notification_area/notification_area.py:123
 msgid "Add _New Task"
@@ -30,49 +30,57 @@ msgstr "_Pokaż Główne Okno"
 
 #: GTG/plugins/export/export_templates/description_textual.py:18
 msgid "Text-only"
-msgstr ""
+msgstr "Tylko tekst"
 
 #: GTG/plugins/export/export_templates/description_textual.py:19
 msgid "A template to create a simple text file with some tasks."
-msgstr ""
+msgstr "Szablon do stworzenia pliku tekstowego z listą zadań."
 
 #: GTG/plugins/export/export_templates/description_simple.py:18
 msgid "A simple Web page that can be easily printed."
-msgstr ""
+msgstr "Prosta strona internetowa (do wydruku)"
 
 #: GTG/plugins/export/export_templates/description_simple.py:19
 msgid ""
 "A template to create a simple HTML page with some tasks that can be easily "
 "printed."
 msgstr ""
+"Szablon do stworzenia prostej strony HTML, która dobrze nadaje się do "
+"wydruku."
 
 #: GTG/plugins/export/export_templates/description_statusrpt.py:18
 msgid "Status report"
-msgstr ""
+msgstr "Raport"
 
 #: GTG/plugins/export/export_templates/description_statusrpt.py:19
 msgid "A template to create a compact text file listing only task titles."
 msgstr ""
+"Szablon do stworzenia niewielkiego pliku tekstowego zawierającego tylko "
+"tytuły zadań."
 
 #: GTG/plugins/export/export_templates/description_pocketmod.py:18
 msgid "Foldable booklet (PDF)"
-msgstr ""
+msgstr "Zginana broszura (PDF)"
 
 #: GTG/plugins/export/export_templates/description_pocketmod.py:19
 msgid ""
 "A template to create a <a href=\"http://www.pocketmod.com\">PocketMod</a>, "
 "which is a  small foldable booklet."
 msgstr ""
+"Szablon do stworzenia niewielkiej broszury <a "
+"href=\"http://www.pocketmod.com\">PocketMod</a>"
 
 #: GTG/plugins/export/export_templates/description_sexy.py:18
 msgid "A professional-looking HTML page"
-msgstr ""
+msgstr "Profesjonalna strona internetowa"
 
 #: GTG/plugins/export/export_templates/description_sexy.py:19
 msgid ""
 "A template to create a HTML page with some tasks and tags. Tags colors are "
 "also displayed."
 msgstr ""
+"Szablon do stworzenia ładnie wyglądającej strony HTML. Wyświetlane są "
+"również kolory znaczników."
 
 #: GTG/plugins/export/export.py:114
 msgid "Template not found"
@@ -81,11 +89,11 @@ msgstr "Nie znaleziono szablonu"
 #: GTG/plugins/export/export.py:121
 #, python-format
 msgid "GTG could not generate the document: %s"
-msgstr ""
+msgstr "GTG nie może wygenerować dokumentu: %s"
 
 #: GTG/plugins/export/export.py:169
 msgid "Export the tasks currently listed"
-msgstr ""
+msgstr "Eksportuj teraz wyświetlane zadania"
 
 #: GTG/plugins/export/export.py:323
 msgid "Choose where to save your list"
@@ -93,12 +101,12 @@ msgstr "Wybierz gdzie zapisać listę"
 
 #: GTG/plugins/send_email/sendEmail.py:44
 msgid "Send via email"
-msgstr ""
+msgstr "Wyślij przez email"
 
 #: GTG/plugins/send_email/sendEmail.py:69
 #, python-format
 msgid "Status: %s"
-msgstr ""
+msgstr "Status: %s"
 
 #: GTG/plugins/send_email/sendEmail.py:70
 #, python-format
@@ -106,6 +114,8 @@ msgid ""
 "\n"
 "Tags: %s"
 msgstr ""
+"\n"
+"Znaczniki: %s"
 
 #: GTG/plugins/send_email/sendEmail.py:71
 #, python-format
@@ -114,6 +124,9 @@ msgid ""
 "Subtasks:\n"
 "%s"
 msgstr ""
+"\n"
+"Podzadania:\n"
+"%s"
 
 #: GTG/plugins/send_email/sendEmail.py:73
 #, python-format
@@ -122,11 +135,14 @@ msgid ""
 "Task content:\n"
 "%s"
 msgstr ""
+"\n"
+"Treść zadania:\n"
+"%s"
 
 #: GTG/plugins/send_email/sendEmail.py:76
 #, python-format
 msgid "Task: %(task_title)s"
-msgstr ""
+msgstr "Zadanie: %(task_title)s"
 
 #: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:1
 msgid "Set the task's location"
@@ -142,7 +158,7 @@ msgstr "Powiąż z istniejącym tagiem"
 
 #: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:4
 msgid "Geolocalized-tasks Preferences"
-msgstr ""
+msgstr "Preferencje zadań geolokalizowanych"
 
 #: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:5
 msgid "Use network"
@@ -158,7 +174,7 @@ msgstr "Używaj GPS"
 
 #: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:8
 msgid "<b>Location Determination Method</b>"
-msgstr ""
+msgstr "<b>Metoda ustalania miejsca</b>"
 
 #: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:9
 msgid ""
@@ -204,6 +220,8 @@ msgid ""
 "%s seems to be installed on your system, but it does not provide a DBus "
 "interface which is required by the Tomboy/Gnote plugin in GTG."
 msgstr ""
+"%s jest prawdopodobnie zainstalowany w systemie, ale nie dostarcza "
+"interfejsu DBus, który jest wymagany przez plugin Tomboy/Gnote."
 
 #: GTG/plugins/tomboy/tomboy.py:240
 msgid "That note does not exist!"
@@ -239,15 +257,15 @@ msgstr ""
 
 #: GTG/backends/backend_identica.py:54
 msgid "Identi.ca"
-msgstr ""
+msgstr "Identi.ca"
 
 #: GTG/backends/backend_identica.py:58
 msgid "Imports your identi.ca  messages into your GTG "
-msgstr ""
+msgstr "Importuje do GTG wiadomości z serwisu identi.ca "
 
 #: GTG/backends/backend_gnote.py:42
 msgid "Gnote"
-msgstr ""
+msgstr "Gnote"
 
 #: GTG/backends/backend_gnote.py:46
 msgid ""
@@ -256,10 +274,13 @@ msgid ""
 "tag it with the tag you have chosen (you'll configure it later), and it will "
 "appear in GTG."
 msgstr ""
+"Ta usługa może zsynchronizować wszystkie lub część twoich notatek Gnote z "
+"GTG. Notatki oznaczone wybranym znacznikiem (tagiem) w programie Gnote będą "
+"widoczne na liście zadań."
 
 #: GTG/backends/backend_rtm.py:54
 msgid "Remember The Milk"
-msgstr ""
+msgstr "Remember The Milk"
 
 #: GTG/backends/backend_rtm.py:58
 msgid ""
@@ -269,18 +290,23 @@ msgid ""
 "Note: This product uses the Remember The Milk API but is not endorsed or "
 "certified by Remember The Milk"
 msgstr ""
+"Ta usługa synchronizuje zadania z usługą sieciową RememberTheMilk:\n"
+"\t\thttp://rememberthemilk.com\n"
+"\n"
+"Uwaga: Ta usługa korzysta z API Remember The Milk, ale nie jest zatwierdzona "
+"lub certyfikowana przez Remember The Milk."
 
 #: GTG/backends/backend_twitter.py:54
 msgid "Twitter"
-msgstr ""
+msgstr "Twitter"
 
 #: GTG/backends/backend_twitter.py:58
 msgid "Imports your twitter  messages into your GTG "
-msgstr ""
+msgstr "Importuje do GTG  wiadomości z twittera. "
 
 #: GTG/backends/backend_tomboy.py:41
 msgid "Tomboy"
-msgstr ""
+msgstr "Tomboy"
 
 #: GTG/backends/backend_tomboy.py:45
 msgid ""
@@ -289,6 +315,9 @@ msgid ""
 "your TODO list, just tag it with the tag you have chosen (you'll configure "
 "it later), and it will appear in GTG."
 msgstr ""
+"Ta usługa może zsynchronizować wszystkie lub część twoich notatek Tomboy z "
+"GTG. Notatki oznaczone wybranym znacznikiem (tagiem) w programie Tomboy będą "
+"widoczne na liście zadań."
 
 #: GTG/backends/backend_mantis.py:42
 msgid "MantisBT"
@@ -309,6 +338,18 @@ msgid ""
 "subtasks...): your  changes will be preserved. This is useful to add  "
 "personal annotations to issue"
 msgstr ""
+"Ta usługa pozwala zaimportować problemy z platformy Mantis używając "
+"wcześniej zdefiniowanego filtru 'gtg'. Jeśli zmieni się stan problemu w "
+"Mantis, odpowiadające mu zadanie w GTG zostanie zaktualizowane.\n"
+"To jest usługa 'tylko do odczytu', co oznacza, że jeśli otworzysz "
+"zaimportowany problem i zmodyfikujesz:\n"
+"  - tytuł\n"
+"  - opis\n"
+"  - tagi\n"
+"Twoje zmiany <b>będą odwrócone</b> gdy ten problem zostanie zmodyfikowany w "
+"Mantis. Poza tym, możesz zmieniać stan innych pól (data rozpoczęcia, termin, "
+"podzadania...), te informacje zostaną zachowane. W ten sposób możesz dodać "
+"prywatne adnotacje do problemu."
 
 #: GTG/backends/backend_mantis.py:224
 msgid "Iss."
@@ -316,31 +357,31 @@ msgstr ""
 
 #: GTG/backends/backend_mantis.py:244 GTG/backends/backend_launchpad.py:324
 msgid "Reported by: "
-msgstr ""
+msgstr "Zgłoszone przez: "
 
 #: GTG/backends/backend_mantis.py:245
 msgid "Link to issue: "
-msgstr ""
+msgstr "Link: "
 
 #: GTG/backends/backend_evolution.py:69
 msgid "Evolution tasks"
-msgstr ""
+msgstr "Zadania z Evolution"
 
 #: GTG/backends/backend_evolution.py:73
 msgid "Lets you synchronize your GTG tasks with Evolution tasks"
-msgstr ""
+msgstr "Pozwala na synchronizację zadań GTG z zadaniami programu Evolution"
 
 #: GTG/backends/backend_localfile.py:61
 msgid "Local File"
-msgstr ""
+msgstr "Plik lokalny"
 
 #: GTG/backends/backend_localfile.py:66
 msgid "Your tasks are saved in a text file (XML format). "
-msgstr ""
+msgstr "Twoje zadania są zapisywane w pliku tekstowym w formacie XML. "
 
 #: GTG/backends/backend_launchpad.py:53
 msgid "Launchpad"
-msgstr ""
+msgstr "Launchpad"
 
 #: GTG/backends/backend_launchpad.py:57
 msgid ""
@@ -357,14 +398,26 @@ msgid ""
 "subtasks...): your  changes will be preserved. This is useful to add  "
 "personal annotations to bug"
 msgstr ""
+"Ta usługa pozwala importować błędy przypisane do ciebie (lub kogoś innego) w "
+"serwisie Launchpad. Gdy zmieni się stan błędu w usłudze Launchpad, zadanie w "
+"GTG zostanie uaktualnione.\n"
+"To jest usługa 'tylko do odczytu', co oznacza, że jeśli otworzysz "
+"zaimportowany problem i zmodyfikujesz:\n"
+"  - tytuł\n"
+"  - opis\n"
+"  - tagi\n"
+"Twoje zmiany <b>będą odwrócone</b> gdy ten problem zostanie zmodyfikowany w "
+"usłudze Launchpad. Poza tym, możesz zmieniać stan innych pól (data "
+"rozpoczęcia, termin, podzadania...), te informacje zostaną zachowane. W ten "
+"sposób możesz dodać prywatne adnotacje do problemu."
 
 #: GTG/backends/backend_launchpad.py:244
 msgid "Bug"
-msgstr ""
+msgstr "Błąd"
 
 #: GTG/backends/backend_launchpad.py:329
 msgid "Link to bug: "
-msgstr ""
+msgstr "Link do błędu: "
 
 #: GTG/backends/rtm/rtm.py:57
 msgid "Invalid state"
@@ -430,6 +483,18 @@ msgid ""
 "A task might be composed of multiple subtasks that appear as links in the "
 "task description. Simply click on the following link to open the subtask:"
 msgstr ""
+"Witamy w Getting Things Gnome!, Twoim nowym programie do planowania zadań.\n"
+"\n"
+"W GTG wszystko jest zadaniem. Od budowania mostu nad Oceanem Spokojnym do "
+"wymieniania żarówki lub organizowania imprezy. Zadania są automatycznie "
+"zapisywane w czasie edycji.\n"
+"\n"
+"Jeśli wykonasz zadanie, daj programowi o tym znać przyciskiem &quot;Oznacz "
+"jako wykonane&quot;. Jeśli zadanie nie jest już potrzebne, możesz skorzystać "
+"z przycisku oznaczania jako nieistotne.\n"
+"\n"
+"Zadanie może składać się z wielu podzadań, które są widoczne jako linki w "
+"opisie zadania. Kliknij na linku by otworzyć podzadanie:"
 
 #: GTG/core/firstrun_tasks.py:19
 msgid ""
