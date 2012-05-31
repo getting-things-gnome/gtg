@@ -33,7 +33,7 @@ AUTOSTART_PATH = os.path.join(AUTOSTART_DIRECTORY, AUTOSTART_FILE)
 
 def enable_gtg_autostart():
     """ Enable autostart
-    
+
     Firstly, locate gtg.desktop file. Then link it in AUTOSTART_FILE.
     On Windows, there is no os.symlink, just copy the file. """
     desktop_file_path = None
@@ -60,17 +60,16 @@ def enable_gtg_autostart():
 
 def disable_gtg_autostart():
     """ Disable autostart, removing the file in autostart_path """
-    if os.path.isfile(autostart_path):
-        os.remove(autostart_path)
+    if os.path.isfile(AUTOSTART_PATH):
+        os.remove(AUTOSTART_PATH)
 
 
 class PreferencesDialog:
     """ Show preference dialog """
 
-    def __init__(self, config_obj, req):
-        self.config_obj = config_obj
+    def __init__(self, req):
         self.req = req
-        self.config = self.config_obj.conf_dict            
+        self.config = self.req.get_config('browser')
         builder = gtk.Builder()
         builder.add_from_file(ViewConfig.PREFERENCES_GLADE_FILE)
 
@@ -99,10 +98,10 @@ class PreferencesDialog:
         has_autostart = os.path.isfile(AUTOSTART_PATH)
         self.pref_autostart.set_active(has_autostart)
 
-        show_preview = self.config_priv.get("contents_preview_enable")
+        show_preview = self.config.get("contents_preview_enable")
         self.pref_show_preview.set_active(show_preview)
 
-        bg_color = self.config_priv.get("bg_color_enable")
+        bg_color = self.config.get("bg_color_enable")
         self.bg_color_enable.set_active(bg_color)
 
     def _refresh_task_browser(self):
@@ -110,25 +109,23 @@ class PreferencesDialog:
         task_tree = self.req.get_tasks_tree(refresh=False).get_basetree()
         task_tree.refresh_all()
 
-    ## GTK signals & related functions
-    def activate(self, config_priv):
+    def activate(self):
         """ Activate the preferences dialog."""
-        print "activate"
-        #FIXME which config?
-        self.config_priv = config_priv
         self._refresh_preferences_store()
         self.dialog.show_all()
 
-    def on_close(self, widget, data=None):
+    def on_close(self, widget, data=None): # pylint: disable-msg=W0613
         """ Close the preferences dialog."""
         self.dialog.hide()
         return True
 
-    def on_help(self, widget):
+    @classmethod
+    def on_help(cls, widget): # pylint: disable-msg=W0613
         """ In future, this will open help for preferences """
         return True
 
-    def on_autostart_toggled(self, widget):
+    @classmethod
+    def on_autostart_toggled(cls, widget):
         """ Toggle GTG autostarting with the GNOME desktop """
         if widget.get_active():
             enable_gtg_autostart()
@@ -137,14 +134,14 @@ class PreferencesDialog:
 
     def toggle_preview(self, widget):
         """ Toggle previews in the task view on or off."""
-        curstate = self.config_priv.get("contents_preview_enable")
+        curstate = self.config.get("contents_preview_enable")
         if curstate != widget.get_active():
-            self.config_priv.set("contents_preview_enable", not curstate)
+            self.config.set("contents_preview_enable", not curstate)
             self._refresh_task_browser()
 
     def on_bg_color_toggled(self, widget):
         """ Save configuration and refresh nodes to apply the change """
-        curstate = self.config_priv.get("bg_color_enable")
+        curstate = self.config.get("bg_color_enable")
         if curstate != widget.get_active():
-            self.config_priv.set("bg_color_enable", not curstate)
+            self.config.set("bg_color_enable", not curstate)
             self._refresh_task_browser()

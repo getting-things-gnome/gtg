@@ -33,14 +33,16 @@ PLUGINS_COL_NAME = 2
 PLUGINS_COL_SHORT_DESC = 3
 PLUGINS_COL_ACTIVATABLE = 4
 
-def plugin_icon(column, cell, store, iter):
+
+def plugin_icon(column, cell, store, iterator): # pylint: disable-msg=W0613
     """ Callback to set the content of a PluginTree cell.
 
     See PluginsDialog._init_plugin_tree().
     """
     cell.set_property('icon-name', 'gtg-plugin')
-    cell.set_property('sensitive', 
-        store.get_value(iter, PLUGINS_COL_ACTIVATABLE))
+    cell.set_property('sensitive',
+        store.get_value(iterator, PLUGINS_COL_ACTIVATABLE))
+
 
 def plugin_error_short_text(plugin):
     """ Return small version of description of missing module dependencies
@@ -51,7 +53,7 @@ def plugin_error_short_text(plugin):
     # get lists
     modules = plugin.missing_modules
     dbus = plugin.missing_dbus
-    
+
     # convert to strings
     if modules:
         modules = "<small><b>%s</b></small>" % ', '.join(modules)
@@ -70,6 +72,7 @@ def plugin_error_short_text(plugin):
         text = ""
 
     return text
+
 
 def plugin_error_text(plugin):
     """ Generate some helpful text about missing module dependencies. """
@@ -101,32 +104,35 @@ def plugin_error_text(plugin):
 
     return text
 
-def plugin_markup(column, cell, store, iter, self):
+
+def plugin_markup(column, cell, store, iterator, self):
+    # pylint: disable-msg=W0613
     """ Callback to set the content of a PluginTree cell.
 
     See PluginsDialog._init_plugin_tree().
     """
-    name = store.get_value(iter, PLUGINS_COL_NAME)
-    desc = store.get_value(iter, PLUGINS_COL_SHORT_DESC)
+    name = store.get_value(iterator, PLUGINS_COL_NAME)
+    desc = store.get_value(iterator, PLUGINS_COL_SHORT_DESC)
 
-    plugin_id = store.get_value(iter, PLUGINS_COL_ID)
-    p = self.pengine.get_plugin(plugin_id)
-    error_text = plugin_error_short_text(p)
+    plugin_id = store.get_value(iterator, PLUGINS_COL_ID)
+    plugin = self.pengine.get_plugin(plugin_id)
+    error_text = plugin_error_short_text(plugin)
     if error_text != "":
         text = "<b>%s</b>\n%s\n<i>%s</i>" % (name, desc, error_text)
     else:
         text = "<b>%s</b>\n%s" % (name, desc)
 
     cell.set_property('markup', text)
-    cell.set_property('sensitive', 
-        store.get_value(iter, PLUGINS_COL_ACTIVATABLE))
+    cell.set_property('sensitive',
+        store.get_value(iterator, PLUGINS_COL_ACTIVATABLE))
+
 
 class PluginsDialog:
-
-    def __init__(self, config_obj, req):
+    """ Dialog for Plugins configuration """
+    # pylint: disable-msg=R0902
+    def __init__(self, config_obj):
         self.config_obj = config_obj
-        self.req = req
-        self.config = self.config_obj.conf_dict            
+        self.config = self.config_obj.conf_dict
         builder = gtk.Builder()
         builder.add_from_file(ViewConfig.PLUGINS_GLADE_FILE)
 
@@ -141,7 +147,7 @@ class PluginsDialog:
         if "plugins" in self.config:
             if "enabled" not in self.config["plugins"]:
                 self.config["plugins"]["enabled"] = []
-            
+
             if "disabled" not in self.config["plugins"]:
                 self.config["plugins"]["disabled"] = []
         elif self.pengine.get_plugins():
@@ -186,7 +192,8 @@ class PluginsDialog:
         renderer.connect('toggled', self.on_plugin_toggle)
         # toggle column
         column = gtk.TreeViewColumn(None, renderer, active=PLUGINS_COL_ENABLED,
-          activatable=PLUGINS_COL_ACTIVATABLE, sensitive=PLUGINS_COL_ACTIVATABLE)
+          activatable=PLUGINS_COL_ACTIVATABLE,
+          sensitive=PLUGINS_COL_ACTIVATABLE)
         self.plugin_tree.append_column(column)
 
         # plugin name column
@@ -214,46 +221,50 @@ class PluginsDialog:
         """ Refresh status of plugins and put it in a gtk.ListStore """
         self.plugin_store.clear()
         self.pengine.recheck_plugin_errors(True)
-        for name, p in self.pengine.plugins.iteritems():
+        for name, plugin in self.pengine.plugins.iteritems():
             # activateable if there is no error
-            self.plugin_store.append([name, p.enabled, p.full_name,
-              p.short_description, not p.error, ])
+            self.plugin_store.append((name, plugin.enabled, plugin.full_name,
+              plugin.short_description, not plugin.error))
 
     def activate(self):
+        """ Refresh status of plugins and show the dialog """
         if len(self.plugin_tree.get_columns()) == 0:
             self._init_plugin_tree()
         else:
             self._refresh_plugin_store()
         self.dialog.show_all()
 
-    def on_close(self, widget, data=None):
+    def on_close(self, widget, data=None): # pylint: disable-msg=W0613
         """ Close the plugins dialog."""
         self.dialog.hide()
         return True
 
-    def on_help(self, widget):
+    @classmethod
+    def on_help(cls, widget): # pylint: disable-msg=W0613
         """ In future, this will open help for plugins """
         return True
 
-    def on_plugin_toggle(self, widget, path):
+    def on_plugin_toggle(self, widget, path): # pylint: disable-msg=W0613
         """Toggle a plugin enabled/disabled."""
-        iter = self.plugin_store.get_iter(path)
-        plugin_id = self.plugin_store.get_value(iter, PLUGINS_COL_ID)
-        p = self.pengine.get_plugin(plugin_id)
-        p.enabled = not self.plugin_store.get_value(iter, PLUGINS_COL_ENABLED)
-        if p.enabled:
-            self.pengine.activate_plugins([p])
-            self.config["plugins"]["enabled"].append(p.module_name)
-            if p.module_name in self.config["plugins"]["disabled"]:
-                self.config["plugins"]["disabled"].remove(p.module_name)
+        iterator = self.plugin_store.get_iter(path)
+        plugin_id = self.plugin_store.get_value(iterator, PLUGINS_COL_ID)
+        plugin = self.pengine.get_plugin(plugin_id)
+        plugin.enabled = not self.plugin_store.get_value(iterator,
+                                                PLUGINS_COL_ENABLED)
+        if plugin.enabled:
+            self.pengine.activate_plugins([plugin])
+            self.config["plugins"]["enabled"].append(plugin.module_name)
+            if plugin.module_name in self.config["plugins"]["disabled"]:
+                self.config["plugins"]["disabled"].remove(plugin.module_name)
         else:
-            self.pengine.deactivate_plugins([p])
-            self.config["plugins"]["disabled"].append(p.module_name)
-            if p.module_name in self.config["plugins"]["enabled"]:
-                self.config["plugins"]["enabled"].remove(p.module_name)
-        self.plugin_store.set_value(iter, PLUGINS_COL_ENABLED, p.enabled)
-        self._update_plugin_configure(p)
-        
+            self.pengine.deactivate_plugins([plugin])
+            self.config["plugins"]["disabled"].append(plugin.module_name)
+            if plugin.module_name in self.config["plugins"]["enabled"]:
+                self.config["plugins"]["enabled"].remove(plugin.module_name)
+        self.plugin_store.set_value(iterator, PLUGINS_COL_ENABLED,
+                                                            plugin.enabled)
+        self._update_plugin_configure(plugin)
+
         self.config_obj.save()
 
     def on_plugin_select(self, plugin_tree):
@@ -271,7 +282,7 @@ class PluginsDialog:
         configurable = plugin.active and plugin.is_configurable()
         self.plugin_configure.set_property('sensitive', configurable)
 
-    def on_plugin_configure(self, widget):
+    def on_plugin_configure(self, widget): # pylint: disable-msg=W0613
         """ Show the dialog for plugin configuration """
         _, iterator = self.plugin_tree.get_selection().get_selected()
         if iterator is None:
@@ -280,19 +291,20 @@ class PluginsDialog:
         plugin = self.pengine.get_plugin(plugin_id)
         plugin.instance.configure_dialog(self.dialog)
 
-    def on_plugin_about(self, widget):
+    def on_plugin_about(self, widget): # pylint: disable-msg=W0613
         """ Display information about a plugin. """
         _, iterator = self.plugin_tree.get_selection().get_selected()
         if iterator is None:
             return
         plugin_id = self.plugin_store.get_value(iterator, PLUGINS_COL_ID)
         plugin = self.pengine.get_plugin(plugin_id)
-        
+
         self.plugin_about.set_name(plugin.full_name)
         self.plugin_about.set_version(plugin.version)
         authors = plugin.authors
         if isinstance(authors, str):
-            authors = "\n".join(author.strip() for author in authors.split(','))
+            authors = "\n".join(author.strip()
+                    for author in authors.split(','))
             authors = [authors, ]
         self.plugin_about.set_authors(authors)
         description = plugin.description.replace(r'\n', "\n")
@@ -301,6 +313,7 @@ class PluginsDialog:
         self.plugin_about.show_all()
 
     def on_plugin_about_close(self, widget, data=None):
+        # pylint: disable-msg=W0613
         """ Close the PluginAboutDialog. """
         self.plugin_about.hide()
         return True

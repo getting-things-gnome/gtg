@@ -84,7 +84,8 @@ class Manager(object):
         
         #Preferences and Backends windows
         # Initialize  dialogs
-        self.preferences_dialog = None
+        self.preferences = PreferencesDialog(self.req)
+        self.plugins = PluginsDialog(self.config_obj)
         self.edit_backends_dialog = None
 
         # Tag Editor
@@ -226,14 +227,9 @@ class Manager(object):
         self.open_edit_backends(None, backend_id)
 
     def open_preferences(self, config_priv):
-        if not hasattr(self, "preferences"):
-            self.preferences = PreferencesDialog(self.config_obj, self.req)
-        self.preferences.activate(config_priv)
+        self.preferences.activate()
 
     def configure_plugins(self):
-        print "Configure plugins"
-        if not hasattr(self, "plugins"):
-            self.plugins = PluginsDialog(self.config_obj, self.req)
         self.plugins.activate()
         
     def ask_delete_tasks(self, tids):
