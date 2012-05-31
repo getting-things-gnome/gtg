@@ -187,11 +187,22 @@
                       </object>
                     </child>
                     <child>
+                      <object class="GtkMenuItem" id="plugins_mi">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="use_action_appearance">False</property>
+                        <property name="label">P_lugins</property>
+                        <property name="use_underline">True</property>
+                        <signal name="activate" handler="on_edit_plugins_activate" swapped="no"/>
+                      </object>
+                    </child>
+                    <child>
                       <object class="GtkMenuItem" id="backends_mi">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="use_action_appearance">False</property>
-                        <property name="label">Setup Sync. Services</property>
+                        <property name="label">_Synchronization Services</property>
+                        <property name="use_underline">True</property>
                         <signal name="activate" handler="on_edit_backends_activate" swapped="no"/>
                       </object>
                     </child>

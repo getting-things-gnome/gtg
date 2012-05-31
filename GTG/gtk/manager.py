@@ -34,6 +34,7 @@ from GTG.gtk.delete_dialog   import DeletionUI
 from GTG.gtk.browser.browser import TaskBrowser
 from GTG.gtk.editor.editor   import TaskEditor
 from GTG.gtk.preferences     import PreferencesDialog
+from GTG.gtk.plugins         import PluginsDialog
 from GTG.gtk.dbuswrapper     import DBusTaskWrapper
 from GTG.tools               import clipboard
 from GTG.core.plugins.engine import PluginEngine
@@ -224,10 +225,16 @@ class Manager(object):
     def configure_backend(self, backend_id):
         self.open_edit_backends(None, backend_id)
 
-    def open_preferences(self, config_priv, sender=None):
+    def open_preferences(self, config_priv):
         if not hasattr(self, "preferences"):
             self.preferences = PreferencesDialog(self.config_obj, self.req)
         self.preferences.activate(config_priv)
+
+    def configure_plugins(self):
+        print "Configure plugins"
+        if not hasattr(self, "plugins"):
+            self.plugins = PluginsDialog(self.config_obj, self.req)
+        self.plugins.activate()
         
     def ask_delete_tasks(self, tids):
         if not self.delete_dialog:

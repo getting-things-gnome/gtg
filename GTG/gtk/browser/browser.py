@@ -333,6 +333,8 @@ class TaskBrowser(gobject.GObject):
                 lambda w: openurl(info.REPORT_BUG_URL),
             "on_preferences_activate":
                 self.open_preferences,
+            "on_edit_plugins_activate":
+                self.open_plugins,
             "on_edit_backends_activate":
                 self.open_edit_backends,
         }
@@ -401,6 +403,9 @@ class TaskBrowser(gobject.GObject):
     def open_preferences(self, widget):
         self.vmanager.open_preferences(self.config)
         
+    def open_plugins(self, widget):
+        self.vmanager.configure_plugins()
+
     def open_edit_backends(self, widget):
         self.vmanager.open_edit_backends()
 
