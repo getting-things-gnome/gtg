@@ -61,7 +61,6 @@ class PluginAPI:
             self.__task_id = None
 
 #=== Accessor methods ========================================================
-
     def is_editor(self):
         """
         Returns true if this is an Editor API
@@ -99,7 +98,6 @@ class PluginAPI:
         return self.__ui
 
 #=== Changing the UI =========================================================
-
     def add_menu_item(self, item):
         """Adds a menu entry to the Plugin Menu of the Main Window
         (task browser).
@@ -178,7 +176,7 @@ class PluginAPI:
 
     def set_bgcolor_func(self, func=None):
         """ Set a function which defines a background color for each task
-        
+
         NOTE: This function stronglye depend on browser and could be easily
         broken by changes in browser code
         """
@@ -193,7 +191,6 @@ class PluginAPI:
             pane.basetree.get_basetree().refresh_all()
 
 #=== file saving/loading ======================================================
-
     def load_configuration_object(self, plugin_name, filename, \
                                   basedir=xdg_config_home):
         dirname = os.path.join(basedir, 'gtg/plugins', plugin_name)

@@ -148,7 +148,7 @@ class TaskView(gtk.TextView):
         unserializer = taskviewserial.Unserializer(self)
         self.buff.register_serialize_format(self.mime_type, serializer.serialize, None)
         self.buff.register_deserialize_format(self.mime_type, unserializer.unserialize, None)
-        
+
         #The list of callbacks we have to set
         self.remove_tag_callback = None
         self.add_tag_callback = None
@@ -159,7 +159,7 @@ class TaskView(gtk.TextView):
         self.open_task            = None # open another task
         self.new_subtask_callback = None # create a subtask
         self.save_task = None #This will save the task without refreshing all
-        
+
         #The signal emitted each time the buffer is modified
         #Putting it at the end to avoid doing it too much when starting
         self.modified_sigid = self.buff.connect("changed", self.modified)
@@ -175,7 +175,7 @@ class TaskView(gtk.TextView):
 
     def drag_receive(self, widget, context, x, y, selection, datatype, etime):
         """ After drag and drop just insert it and refresh the editor
-        
+
         Example usage: drag and drop of file links """
         self.buff.insert_at_cursor(selection.data)
         self.modified(full=True)
@@ -191,7 +191,7 @@ class TaskView(gtk.TextView):
 
     def get_editable(self):
         return self.editable
-        
+
     #This function is called to refresh the editor
     #Specially when we change the title
     def refresh(self, title):
@@ -204,23 +204,23 @@ class TaskView(gtk.TextView):
     #This callback is called to add a new tag
     def set_add_tag_callback(self, funct):
         self.add_tag_callback = funct
-        
+
     #This callback is called to add a new tag
     def set_remove_tag_callback(self, funct):
         self.remove_tag_callback = funct
-        
+
     #This callback is called to have the list of tags of a task
     def set_get_tagslist_callback(self, funct):
         self.get_tagslist = funct
-        
+
     #This callback is called to create a new subtask
     def set_subtask_callback(self, funct):
         self.new_subtask_callback = funct
-    
+
     #This callback is called to open another task
     def open_task_callback(self, funct):
         self.open_task = funct
-        
+
     #This was historically a callback but it returns the title
     def get_subtasktitle(self, tid):
         task = self.req.get_task(tid)
@@ -228,18 +228,18 @@ class TaskView(gtk.TextView):
             return task.get_title()
         else:
             return None
-    
+
     #This callback is called to get the list of tid of subtasks
     def subtasks_callback(self, funct):
         self.get_subtasks = funct
-        
+
     #This callback is called to remove a subtask by its pid
     def removesubtask_callback(self, funct):
         self.remove_subtask = funct
-        
+
     def save_task_callback(self, funct):
         self.save_task = funct
-    
+
     #Buffer related functions
     #Those functions are higly related and should always be symetrical
     #See also the serializing functions
@@ -264,22 +264,22 @@ class TaskView(gtk.TextView):
             self.buff.disconnect(self.modified_sigid)
             self.modified_sigid = False
             reconnect_modified = True
-            
+
         #deserialize
         self.buff.deserialize(self.buff, self.mime_type, _iter, text)
-        
+
         #reconnect
         if reconnect_insert:
             self.insert_sigid = self.buff.connect('insert-text', self._insert_at_cursor)
         if reconnect_modified:
             self.modified_sigid = self.buff.connect("changed", self.modified)
-            
+
     #This insert raw text without deserializing
     def insert_text(self, text, _iter=None):
         if _iter is None:
             _iter = self.buff.get_end_iter()
         self.buff.insert(_iter, text)
-    
+
     #We cannot get an insert in the title
     def get_insert(self):
         mark = self.buff.get_insert()
@@ -287,7 +287,7 @@ class TaskView(gtk.TextView):
         if itera.get_line() == 0:
             itera.forward_line()
         return itera
-    
+
     def insert_with_anchor(self, text, anchor=None, _iter=None, typ=None):
         b = self.get_buffer()
         if _iter is None:
@@ -334,7 +334,7 @@ class TaskView(gtk.TextView):
         tag.connect('event', self._tag_event, text, anchor, typ)
         self.__tags.append(tag)
         return tag
-        
+
     #Apply the tag tag to a set of TextMarks (not Iter)
     def apply_tag_tag(self, buff, tag, s, e):
         ss = buff.get_iter_at_mark(s)
@@ -355,7 +355,7 @@ class TaskView(gtk.TextView):
             #This one is for marks
         if not already:
             self.__apply_tag_to_mark(s, e, tag=texttag)
-        
+
     #Apply the tag tag to a set of TextMarks (not Iter)
     #Also change the subtask title if needed
     def apply_subtask_tag(self, buff, subtask, s, e):
@@ -380,20 +380,20 @@ class TaskView(gtk.TextView):
             self.remove_subtask(subtask)
             buff.delete_mark(s)
             buff.delete_mark(e)
-        
+
     def create_indent_tag(self, buff, level):
         tag = buff.create_tag(None, **self.get_property('indent'))#pylint: disable-msg=W0142
         tag.set_data('is_indent', True)
         tag.set_data('indent_level', level)
         return tag
-    
+
     #Insert a list of subtasks at the end of the buffer
     def insert_subtasks(self, st_list):
         for tid in st_list:
             line_nbr = self.buff.get_end_iter().get_line()
             #Warning, we have to take the next line !
             self.write_subtask(self.buff, line_nbr+1, tid)
-            
+
     #Insert a list of tag in the first line of the buffer
     def insert_tags(self, tag_list):
         #First, we don't insert tags that are already present
@@ -437,23 +437,23 @@ class TaskView(gtk.TextView):
                     self.insert_at_mark(self.buff, line_mark,",")
             self.buff.delete_mark(line_mark)
             self.modified(full=True)
-        
+
     # add a tag to the last line of the task
     def insert_tag(self, tag):
         lastline = self.buff.get_end_iter()
         lastline.forward_to_line_end()
         self.insert_text("\n", lastline)
-        
+
         line_mark = self.buff.create_mark("lastline", lastline, False)
         self.insert_at_mark(self.buff, line_mark, tag)
-        
+
     #this function select and highligth the title (first line)
     def select_title(self):
         start = self.buff.get_start_iter()
         stop = start.copy()
         stop.forward_to_line_end()
         self.buff.select_range(start, stop)
-        
+
  ##### The "Get text" group #########
     #Get the complete serialized text
     #But without the title
@@ -470,7 +470,7 @@ class TaskView(gtk.TextView):
         start.forward_line()
         end = self.buff.get_end_iter()
         texte = self.buff.serialize(self.buff, self.mime_type, start, end)
-        
+
         return texte
     #Get the title of the task (aka the first line of the buffer)
     def get_title(self):
@@ -489,10 +489,10 @@ class TaskView(gtk.TextView):
         #Let's strip blank lines
         stripped = title.strip(' \n\t')
         return stripped
-        
+
 ### PRIVATE FUNCTIONS ##########################################################
 
-        
+
     #This function is called so frequently that we should optimize it more.
     def modified(self, buff=None, full=False, refresheditor=True):
         """Called when the buffer has been modified.
@@ -526,7 +526,7 @@ class TaskView(gtk.TextView):
             local_end = cursor_iter.copy()
             local_end.forward_lines(2)
         #if full=False we detect tag only on the current line
-        
+
         #The following 3 lines are a quick ugly fix for bug #359469
 #        temp = buff.get_iter_at_line(1)
 #        temp.backward_char()
@@ -534,7 +534,7 @@ class TaskView(gtk.TextView):
         #This should be the good line
         self._detect_tag(buff, local_start, local_end)
         self._detect_url(buff, local_start, local_end)
-        
+
         #subt_list = self.get_subtasks()
         #First, we remove the olds tags
         tag_list = []
@@ -546,7 +546,7 @@ class TaskView(gtk.TextView):
         for t in tag_list:
             buff.remove_tag(t, start, end)
             table.remove(t)
-        
+
         #We apply the hyperlink tag to subtask
         for s in self.get_subtasks():
             start_mark = buff.get_mark(s)
@@ -560,8 +560,8 @@ class TaskView(gtk.TextView):
                     self.apply_subtask_tag(buff, s, start_mark, end_mark)
                 else:
                     self.remove_subtask(s)
-    
-                
+
+
         #Now we apply the tag tag to the marks
         for t in self.get_tagslist():
             start_mark = buff.get_mark(t)
@@ -569,13 +569,13 @@ class TaskView(gtk.TextView):
             # "applying %s to %s - %s"%(t, start_mark, end_mark)
             if start_mark and end_mark:
                 self.apply_tag_tag(buff, t, start_mark, end_mark)
-        
+
         #Ok, we took care of the modification
         self.buff.set_modified(False)
         #Else we save the task anyway (but without refreshing all)
         if self.save_task:
             self.save_task()
-            
+
     #Detect URL in the tasks
     #It's ugly...
     def _detect_url(self, buff, start, end):
@@ -597,7 +597,7 @@ class TaskView(gtk.TextView):
             prev = it.copy()
             prev.backward_word_start()
             text = buff.get_text(prev, it)
-            
+
             if text in ["http", "https", "www", "file"]:
                 isurl = buff.get_text(prev, buff.get_end_iter())
                 m = urlregex.match(isurl)
@@ -633,7 +633,7 @@ class TaskView(gtk.TextView):
                         texttag = self.create_anchor_tag(buff,\
                                                 topoint, text=None, typ="http")
                         buff.apply_tag(texttag, prev, it)
-        
+
 
     #Detect tags in buff in the region between start iter and end iter
     def _detect_tag(self, buff, start, end):
@@ -677,7 +677,7 @@ class TaskView(gtk.TextView):
         char_end   = start.copy()
         char_end.forward_char()
         last_char = None
-        
+
         # Iterate over characters of the line to get words
         while char_end.compare(end) <= 0:
             do_word_check = False
@@ -694,10 +694,10 @@ class TaskView(gtk.TextView):
                 if last_char in specials_separators:
                     word_end.backward_char()
                 do_word_check = True
-                
+
             if char_end.compare(end) == 0:
                 do_word_check = True
-            
+
             # We have a new word
             if do_word_check:
                 if (word_end.compare(word_start) > 0):
@@ -715,7 +715,7 @@ class TaskView(gtk.TextView):
                         new_tags.append(my_word)
                         #adding tag to the model
                         self.add_tag_callback(my_word)
-    
+
                 # We set new word boundaries
                 word_start = char_end.copy()
                 word_end   = char_end.copy()
@@ -723,17 +723,17 @@ class TaskView(gtk.TextView):
             # Stop loop if we are at the end
             if char_end.compare(end) == 0:
                 break
-            
+
             # We search the next word
             char_start = char_end.copy()
             char_end.forward_char()
-            
+
         # Update tags in model:
         # we remove tags that are not in the description anymore
         for t in old_tags:
             if not t in new_tags:
                 self.remove_tag_callback(t)
-                
+
     def is_at_title(self, buff, itera):
         to_return = False
         if itera.get_line() == 0:
@@ -745,7 +745,7 @@ class TaskView(gtk.TextView):
         elif not buff.get_text(buff.get_start_iter(), itera).strip('\n\t '):
             to_return = True
         return to_return
-        
+
     #When the user removes a selection, we remove subtasks and @tags
     #from this selection
     def _delete_range(self, buff, start, end):
@@ -793,7 +793,7 @@ class TaskView(gtk.TextView):
                         buff.remove_tag(ta, it, endtag)
                         #Also, we want to delete the indent completely,
                         #Even if the selection was in the middle of an indent
-                        
+
             it.forward_char()
         #now we really delete the selected stuffs
         selec = self.buff.get_selection_bounds()
@@ -811,17 +811,17 @@ class TaskView(gtk.TextView):
 #        self.backspace_sigid = self.connect("backspace", self.backspace)
         #We return false so the parent still get the signal
         return False
-        
+
     #Apply the title and return an iterator after that title.buff.get_iter_at_mar
     def _apply_title(self, buff, refresheditor=True):
         start     = buff.get_start_iter()
         end       = buff.get_end_iter()
         line_nbr  = 1
         linecount = buff.get_line_count()
-    
+
         # Apply the title tag on the first line
         #---------------------------------------
-        
+
         # Determine the iterators for title
         title_start = start.copy()
         if linecount > line_nbr:
@@ -845,14 +845,14 @@ class TaskView(gtk.TextView):
         if refresheditor:
             self.refresh(buff.get_text(title_start, title_end).strip('\n\t'))
         return title_end
-    
-            
-        
+
+
+
     def __newsubtask(self, buff, title, line_nbr, level=1):
         anchor = self.new_subtask_callback(title)
         end_i = self.write_subtask(buff, line_nbr, anchor, level=level)
         return end_i
-    
+
     #Write the subtask then return the iterator at the end of the line
     def write_subtask(self, buff, line_nbr, anchor, level=1):
         #disable the insert signal to avoid recursion
@@ -869,7 +869,7 @@ class TaskView(gtk.TextView):
             self.buff.disconnect(self.modified_sigid)
             self.modified_sigid = False
             reconnect_modified = True
-        
+
         #First, we insert the request \n
         #If we don't do this, the content of next line will automatically
         #be in the subtask title
@@ -903,13 +903,13 @@ class TaskView(gtk.TextView):
         self.apply_subtask_tag(buff, anchor, startm, endm)
         #buff.delete_mark(start)
         #buff.delete_mark(end)
-        
+
         if reconnect_insert:
             self.insert_sigid = self.buff.connect('insert-text', self._insert_at_cursor)
         if reconnect_modified:
             self.modified_sigid = self.buff.connect("changed", self.modified)
         return end_i
-        
+
     def insert_newtask(self, fitera=None):
         if not fitera:
             fitera = self.get_insert()
@@ -930,7 +930,7 @@ class TaskView(gtk.TextView):
                         found = False
             if found:
                 itera = startl
-                
+
         #if the last line is indented, then insert a new line
         #at the end
         if line == self.buff.get_line_count():
@@ -939,7 +939,7 @@ class TaskView(gtk.TextView):
             self.buff.insert(itera,"\n")
             itera = self.buff.get_iter_at_mark(mark)
             self.buff.delete_mark(mark)
-                    
+
         #If we are not on the end of line, go there
         #but if we are at the start of line, then create the subtask
         #before the current line
@@ -955,7 +955,7 @@ class TaskView(gtk.TextView):
         endm = self.insert_indent(self.buff, itera, 1, enter=enter)
         end = self.buff.get_iter_at_mark(endm)
         self.buff.place_cursor(end)
-        
+
     def insert_indent(self, buff, start_i, level, enter=True):
         #We will close the current subtask tag
         list_stag = start_i.get_toggled_tags(False)
@@ -976,11 +976,11 @@ class TaskView(gtk.TextView):
         #We have to create a temporary mark with left gravity
         #It will be later replaced by the good one with right gravity
         temp_mark = self.buff.create_mark("temp", start_i, True)
-        
+
         end     = buff.create_mark("end", start_i, False)
         if enter:
             buff.insert(start_i,"\n")
-        
+
         #Moving the end of subtask mark to the position of the temp mark
         if stag:
             itera = buff.get_iter_at_mark(temp_mark)
@@ -988,7 +988,7 @@ class TaskView(gtk.TextView):
         buff.delete_mark(temp_mark)
         #The mark has right gravity but because we put it on the left
         #of the newly inserted \n, it will not move anymore.
-        
+
         itera = buff.get_iter_at_mark(end)
         #We should never have an indentation at 0.
         #This is normally not needed and purely defensive
@@ -1007,7 +1007,7 @@ class TaskView(gtk.TextView):
         self.__apply_tag_to_mark(start, end, tag=indenttag)
         return end
 
-        
+
     def __apply_tag_to_mark(self, start, end, tag=None, name=None):
         start_i = self.buff.get_iter_at_mark(start)
         end_i = self.buff.get_iter_at_mark(end)
@@ -1019,15 +1019,15 @@ class TaskView(gtk.TextView):
                 self.buff.apply_tag_by_name(name, start_i, end_i)
         elif tag:
             self.buff.remove_tag(tag, start_i, end_i)
-    
+
     def insert_at_mark(self, buff, mark, text, anchor=None):
         ite = buff.get_iter_at_mark(mark)
         if anchor:
             self.insert_with_anchor(text, anchor, _iter=ite, typ="subtask")
         else:
             buff.insert(ite, text)
-            
-            
+
+
     def _get_indent_level(self, itera):
         line_nbr   = itera.get_line()
         start_line = itera.copy()
@@ -1050,18 +1050,18 @@ class TaskView(gtk.TextView):
         if not bounds:
             return
         start, stop =  self.buff.get_selection_bounds()
-        
+
         self.clipboard.copy(start, stop, bullet=self.bullet1)
-        
+
         clip.set_text(self.clipboard.paste_text())
         clip.store()
-        
+
         if param == "cut":
             self.buff.delete_selection(False, True)
             self.stop_emission("cut_clipboard")
         else:
             self.stop_emission("copy_clipboard")
-        
+
     #Called on paste.
     def paste_clipboard(self, widget, param=None):
         clip = gtk.clipboard_get(gdk.SELECTION_CLIPBOARD)
@@ -1091,7 +1091,7 @@ class TaskView(gtk.TextView):
         else:
             #we keep the normal pasting by not interupting the signal
             self.clipboard.clear()
-        
+
     #Function called each time the user inputs a letter
     def _insert_at_cursor(self, tv, itera, tex, leng):
         #We don't paste the bullet
@@ -1102,7 +1102,7 @@ class TaskView(gtk.TextView):
             self.insert_sigid = False
             self.buff.disconnect(self.modified_sigid)
             self.modified_sigid = False
-            
+
             #First, we will get the actual indentation value
             #The nbr just before the \n
             line_nbr   = itera.get_line()
@@ -1152,7 +1152,7 @@ class TaskView(gtk.TextView):
                         realend.forward_to_line_end()
                         restofline = end_line.get_slice(realend)
                         restofline.strip()
-                    
+
                     #If indent is 0, We check if we created a new task
                     #the "-" might be after a space
                     #Python 2.5 should allow both tests in one
@@ -1176,7 +1176,7 @@ class TaskView(gtk.TextView):
                         else:
                             self.buff.insert(itera,"\n")
                             tv.emit_stop_by_name('insert-text')
-                            
+
                     #Then, if indent > 0, we increment it
                     #First step: we preserve it.
                     else:
@@ -1237,7 +1237,7 @@ class TaskView(gtk.TextView):
             self.insert_sigid = self.buff.connect('insert-text', self._insert_at_cursor)
             self.connect('key_press_event', self._keypress)
             self.modified_sigid = self.buff.connect("changed", self.modified)
-        
+
     def _keypress(self, widget, event):
         # Check for Ctrl-Return/Enter
         if event.state & gtk.gdk.CONTROL_MASK and event.keyval in (gtk.keysyms.Return, gtk.keysyms.KP_Enter):
@@ -1266,7 +1266,7 @@ class TaskView(gtk.TextView):
             for t in itera.get_toggled_tags(False):
                 if t.get_data('is_indent'):
                     newlevel = t.get_data('indent_level')
-                    
+
             if newlevel > 0:
                 newlevel -= 1
         #If it's still < 0
@@ -1284,7 +1284,7 @@ class TaskView(gtk.TextView):
         #newiter = self.buff.get_iter_at_mark(tempm)
         #self.buff.delete_mark(tempm)
         #self.insert_indent(self.buff, newiter, newlevel, enter=False)
-        
+
     def backspace(self, tv):
         self.buff.disconnect(self.insert_sigid)
         insert_mark = self.buff.get_insert()
