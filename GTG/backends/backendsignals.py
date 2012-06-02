@@ -58,7 +58,7 @@ def signal_type_factory(*args):
     '''
     Simply returns a gobject signal type
 
-    @returns tuple
+    @returns: tuple
     '''
     return (gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, args)
 

@@ -108,7 +108,7 @@ class BackendFactory(Borg):
         exact terms, creates a dictionary, containing all the necessary
         entries to initialize a backend.
         '''
-        if not self.backend_modules.has_key(backend_name):
+        if backend_name not in self.backend_modules:
             return None
         dic = {}
         module = self.get_backend(backend_name)
@@ -129,8 +129,8 @@ class BackendFactory(Borg):
         '''
         Function restoring a backend from its xml description.
         dic should be a dictionary containing at least the key 
-        - "module", with the module name
-        - "xmlobject", with its xml description.
+            - "module", with the module name
+            - "xmlobject", with its xml description.
         Every other key is passed as-is to the backend, as parameter.
 
         Returns the backend instance, or None is something goes wrong

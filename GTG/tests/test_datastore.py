@@ -17,9 +17,7 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-'''
-Tests for the datastore
-'''
+""" Tests for the datastore """
 
 import unittest
 import uuid
@@ -31,6 +29,8 @@ import GTG
 from GTG.core.datastore import DataStore
 from GTG.backends.genericbackend import GenericBackend
 from GTG.core import CoreConfig
+from liblarch import Tree
+
 
 def sleep_within_loop(duration):
     main_loop = gobject.MainLoop()
@@ -40,23 +40,20 @@ def sleep_within_loop(duration):
     gobject.idle_add(lambda: True)
     main_loop.run()
 
+
 class TestDatastore(unittest.TestCase):
-    '''
-    Tests for the DataStore object.
-    '''
+    """ Tests for the DataStore object.  """
 
     def setUp(self):
-        '''
+        """
         Creates the environment for the tests
-        @returns None
-        '''
+        @returns: None
+        """
         self.datastore = DataStore()
         self.requester = self.datastore.get_requester()
 
     def test_task_factory(self):
-        '''
-        Test for the task_factory function
-        '''
+        """ Test for the task_factory function """
         #generate a Task with a random id
         tid = str(uuid.uuid4())
         task = self.datastore.task_factory(tid, newtask=True)
@@ -68,9 +65,7 @@ class TestDatastore(unittest.TestCase):
         self.assertEqual(task.is_new(), False)
 
     def test_new_task_and_has_task(self):
-        '''
-        Tests the new_task function
-        '''
+        """ Tests the new_task function """
         task = self.datastore.new_task()
         tid = task.get_id()
         self.assertTrue(isinstance(tid, str))
@@ -80,9 +75,7 @@ class TestDatastore(unittest.TestCase):
         self.assertTrue(len(self.datastore.get_all_tasks()) == 1)
 
     def test_get_all_tasks(self):
-        '''
-        Tests the get_all_tasks function
-        '''
+        """ Tests the get_all_tasks function """
         task_ids = []
         for i in xrange(1, 10):
             task = self.datastore.new_task()
@@ -114,7 +107,7 @@ class TestDatastore(unittest.TestCase):
         Tests the get_tasks_tree function
         '''
         tasks_tree = self.datastore.get_tasks_tree()
-        self.assertTrue(isinstance(tasks_tree, GTG.tools.liblarch.Tree))
+        self.assertTrue(isinstance(tasks_tree, Tree))
 
     def test_push_task(self):
         '''
@@ -215,11 +208,8 @@ class TestDatastore(unittest.TestCase):
 #        self.datastore.set_backend_enabled(disabled_backend.get_id(), True)
 #        self.assertEqual(disabled_backend.fake_get_initialized_count(), 1)
 #        self.assertTrue(disabled_backend.is_enabled())
-
     def test_remove_backend(self):
-        '''
-        Tests the remove_backend function
-        '''
+        """ Tests the remove_backend function """
         enabled_backend = FakeBackend(enabled=True)
         disabled_backend = FakeBackend(enabled=False)
         self.datastore.register_backend({'backend': enabled_backend, \
@@ -306,7 +296,8 @@ class FakeBackend(unittest.TestCase):
         self.enabled = True
 
     def queue_set_task(self, task):
-        self.tasks_ids.append(task.get_id())
+        if task.get_id() not in self.tasks_ids:
+            self.tasks_ids.append(task.get_id())
 
     def has_task(self, task_id):
         return task_id in self.tasks_ids
@@ -335,12 +326,11 @@ class FakeBackend(unittest.TestCase):
 
     def register_datastore(self, datastore):
         self.datastore = datastore
-    
+
     ##########################################################################
     # The following are used just for testing, they're not present inside a
     # normal backend
     ##########################################################################
-
     def fake_get_initialized_count(self):
         return self.initialized_count
 
@@ -349,4 +339,3 @@ class FakeBackend(unittest.TestCase):
 
     def fake_add_random_task(self):
         self.tasks_ids.append(str(uuid.uuid4()))
-

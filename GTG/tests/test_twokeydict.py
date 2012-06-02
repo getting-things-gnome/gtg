@@ -17,9 +17,7 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-'''
-Tests for the TwoKeyDict class
-'''
+""" Tests for the TwoKeyDict class """
 
 import unittest
 import uuid
@@ -27,18 +25,12 @@ import uuid
 from GTG.tools.twokeydict import TwoKeyDict
 
 
-
 class TestTwoKeyDict(unittest.TestCase):
-    '''
-    Tests for the TwoKeyDict object.
-    '''
+    """ Tests for the TwoKeyDict object. """
 
-    
     def test_add_and_gets(self):
-        '''
-        Test for the __init__, _get_by_first, _get_by_second function
-        '''
-        triplets = [(uuid.uuid4(), uuid.uuid4(), uuid.uuid4()) \
+        """ Test for the __init__, _get_by_first, _get_by_second function """
+        triplets = [(uuid.uuid4(), uuid.uuid4(), uuid.uuid4())
                     for a in xrange(10)]
         tw_dict = TwoKeyDict(*triplets)
         for triplet in triplets:
@@ -46,9 +38,7 @@ class TestTwoKeyDict(unittest.TestCase):
             self.assertEqual(tw_dict._get_by_secondary(triplet[1]), triplet[2])
 
     def test_remove_by_first_or_second(self):
-        '''
-        Test for removing triplets form the TwoKeyDict
-        '''
+        """ Test for removing triplets form the TwoKeyDict """
         triplet_first = (1, 'I', 'one')
         triplet_second = (2, 'II', 'two')
         tw_dict = TwoKeyDict(triplet_first, triplet_second)
@@ -81,16 +71,14 @@ class TestTwoKeyDict(unittest.TestCase):
         self.assertEqual(dict_len, 0)
 
     def test_get_primary_and_secondary_key(self):
-        '''
-        Test for fetching the objects stored in the TwoKeyDict
-        '''
-        triplets = [(uuid.uuid4(), uuid.uuid4(), uuid.uuid4()) \
-                    for a in xrange(10)]
+        """ Test for fetching the objects stored in the TwoKeyDict """
+        triplets = [(uuid.uuid4(), uuid.uuid4(), uuid.uuid4())
+                        for a in xrange(10)]
         tw_dict = TwoKeyDict(*triplets)
         for triplet in triplets:
-            self.assertEqual(tw_dict._get_secondary_key(triplet[0]), \
+            self.assertEqual(tw_dict._get_secondary_key(triplet[0]),
                              triplet[1])
-            self.assertEqual(tw_dict._get_primary_key(triplet[1]), \
+            self.assertEqual(tw_dict._get_primary_key(triplet[1]),
                              triplet[0])
 
     def test_missing_and_then_add(self):
@@ -105,6 +93,6 @@ class TestTwoKeyDict(unittest.TestCase):
         tw_dict.add((local_id, remote_id, value))
         self.assertEqual(remote_id, tw_dict._get_secondary_key(local_id))
 
+
 def test_suite():
     return unittest.TestLoader().loadTestsFromTestCase(TestTwoKeyDict)
-

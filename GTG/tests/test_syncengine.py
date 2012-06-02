@@ -17,9 +17,7 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-'''
-Tests for the SyncEngine class
-'''
+""" Tests for the SyncEngine class """
 
 import unittest
 import uuid
@@ -27,22 +25,17 @@ import uuid
 from GTG.backends.syncengine import SyncEngine
 
 
-
 class TestSyncEngine(unittest.TestCase):
-    '''
-    Tests for the SyncEngine object.
-    '''
-    
+    """ Tests for the SyncEngine object. """
+
     def setUp(self):
         self.ftp_local = FakeTaskProvider()
         self.ftp_remote = FakeTaskProvider()
         self.sync_engine = SyncEngine()
-    
+
     def test_analyze_element_and_record_and_break_relationship(self):
-        '''
-        Test for the _analyze_element, analyze_remote_id, analyze_local_id,
-        record_relationship, break_relationship
-        '''
+        """ Test for the _analyze_element, analyze_remote_id, analyze_local_id,
+        record_relationship, break_relationship """
         #adding a new local task
         local_id = uuid.uuid4()
         self.ftp_local.fake_add_task(local_id)
@@ -80,8 +73,8 @@ class TestSyncEngine(unittest.TestCase):
         self.assertEqual(self.sync_engine.analyze_remote_id(remote_id, \
                        self.ftp_local.has_task, self.ftp_remote.has_task), \
                          (SyncEngine.ADD, None))
-        #we add them back and remove giving the remote id as key to find what to
-        #delete
+        # we add them back and remove giving the remote id as key to find
+        # what to delete
         self.ftp_local.fake_add_task(local_id)
         self.ftp_remote.fake_add_task(remote_id)
         self.ftp_remote.fake_remove_task(remote_id)
@@ -95,10 +88,8 @@ class TestSyncEngine(unittest.TestCase):
                          (SyncEngine.ADD, None))
 
     def test_syncability(self):
-        '''
-        Test for the _analyze_element, analyze_remote_id, analyze_local_id.
-        Checks that the is_syncable parameter is used correctly
-        '''
+        """ Test for the _analyze_element, analyze_remote_id, analyze_local_id.
+        Checks that the is_syncable parameter is used correctly """
         #adding a new local task unsyncable
         local_id = uuid.uuid4()
         self.ftp_local.fake_add_task(local_id)
@@ -137,11 +128,11 @@ class TestSyncEngine(unittest.TestCase):
         #now we remove the remote task
         self.ftp_remote.fake_remove_task(remote_id)
         self.assertEqual(self.sync_engine.analyze_local_id(local_id, \
-                       self.ftp_local.has_task, self.ftp_remote.has_task, 
+                       self.ftp_local.has_task, self.ftp_remote.has_task,
                                                           True), \
                          (SyncEngine.REMOVE, None))
         self.assertEqual(self.sync_engine.analyze_local_id(local_id, \
-                       self.ftp_local.has_task, self.ftp_remote.has_task, 
+                       self.ftp_local.has_task, self.ftp_remote.has_task,
                                                           False), \
                          (SyncEngine.REMOVE, None))
         self.sync_engine.break_relationship(local_id = local_id)
@@ -162,6 +153,7 @@ class TestSyncEngine(unittest.TestCase):
                                                            False), \
                          (None, None))
 
+
 def test_suite():
     return unittest.TestLoader().loadTestsFromTestCase(TestSyncEngine)
 
@@ -172,13 +164,12 @@ class FakeTaskProvider(object):
         self.dic = {}
 
     def has_task(self, tid):
-        return self.dic.has_key(tid)
+        return tid in self.dic
 
 ###############################################################################
 ### Function with the fake_ prefix are here to assist in testing, they do not
 ### need to be present in the real class
 ###############################################################################
-
     def fake_add_task(self, tid):
         self.dic[tid] = "something"
 

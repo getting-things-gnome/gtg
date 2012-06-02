@@ -4,6 +4,7 @@
   <!-- interface-naming-policy project-wide -->
   <object class="GtkWindow" id="backends_dialog">
     <property name="window_position">mouse</property>
+    <property name="title" translatable="yes">Synchronization Services - Getting Things GNOME!</property>
     <signal name="delete_event" handler="on_BackendsDialog_delete_event"/>
     <child>
       <object class="GtkAlignment" id="alignment1">

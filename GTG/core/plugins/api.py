@@ -61,7 +61,6 @@ class PluginAPI:
             self.__task_id = None
 
 #=== Accessor methods ========================================================
-
     def is_editor(self):
         """
         Returns true if this is an Editor API
@@ -99,7 +98,6 @@ class PluginAPI:
         return self.__ui
 
 #=== Changing the UI =========================================================
-
     def add_menu_item(self, item):
         """Adds a menu entry to the Plugin Menu of the Main Window
         (task browser).
@@ -177,24 +175,22 @@ class PluginAPI:
                           "%s" % e)
 
     def set_bgcolor_func(self, func=None):
-        """ Set a function which defines a background color for each task """
-        # NOTE: this function is strongly dependend of browser structure
-        # after refaractoring browser, this might need to review
+        """ Set a function which defines a background color for each task
+
+        NOTE: This function stronglye depend on browser and could be easily
+        broken by changes in browser code
+        """
         browser = self.__ui
 
         # set default bgcolor?
         if func is None:
             func = browser.tv_factory.task_bg_color
-            info_col = 'tags'
-        else:
-            info_col = 'task_id'
 
         for pane in browser.vtree_panes.itervalues():
-            pane.set_bg_color(func, info_col)
+            pane.set_bg_color(func, 'bg_color')
             pane.basetree.get_basetree().refresh_all()
 
 #=== file saving/loading ======================================================
-
     def load_configuration_object(self, plugin_name, filename, \
                                   basedir=xdg_config_home):
         dirname = os.path.join(basedir, 'gtg/plugins', plugin_name)

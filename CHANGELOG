@@ -1,6 +1,7 @@
 2012-0?-?? Getting Things GNOME! 0.3
     * Hide tasks with due date someday, #931376
     * New Date class by Paul Kishimoto and Izidor Matušov
+      * Parse due:3 as next 3rd day in month
     * Urgency Color plugin by Wolter Hellmund
     * Allow GTG to run from different locations than /usr/share or /usr/local/share
     * Removed module GTG.tools.openurl and replaced by python's webbrowser.open
@@ -18,6 +19,10 @@
     * Reimplement the tag context menu as a widget, in order to - hopefully - be able to implement an enhanced context menu with, for instance, a color picker.
     * Background Colors option was moved from View menu into preferences dialog
     * Reorganised notification area menu (New task, Show browser, <tasks>, Quit)
+    * Added an option to import local (development) version of liblarch instead of system installed one
+    * Fix for bug #995740: (no title task) through quickadd bar, by Nimit Shah
+    * New tag editor
+    * Fix bugs #1003872 and #1002067: Correct titles to Preferences and Synchronization Services Dialogs, by Alan Gomes
 
 2012-02-13 Getting Things GNOME! 0.2.9
     * Big refractorization of code, now using liblarch

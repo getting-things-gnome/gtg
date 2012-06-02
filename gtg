@@ -54,6 +54,9 @@ def main():
       default=False)
     parser.add_option('-d', '--debug', action='store_true', dest='debug',
       help="Enable debug output", default=False)
+    parser.add_option('-l', '--local-liblarch', action='store_true',
+      dest='local_liblarch', default=False,
+      help="Use local liblarch located in ../liblarch if it is posible")
     parser.add_option('-v', '--version', action='store_true',
       dest='print_version', help="Print GTG's version number", default=False)
     (options, args) = parser.parse_args()
@@ -68,7 +71,7 @@ def main():
         print "Could not open X display"
         sys.exit(1)
 
-    elif import_liblarch():
+    elif import_liblarch(options.local_liblarch):
         from GTG import gtg
         sys.exit(gtg.main(options, args))
 
