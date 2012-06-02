@@ -8,15 +8,15 @@ msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2012-04-22 17:25+0200\n"
-"PO-Revision-Date: 2012-04-11 07:57+0000\n"
+"PO-Revision-Date: 2012-06-01 19:59+0000\n"
 "Last-Translator: Daniel Dietrich <Unknown>\n"
 "Language-Team: German <de@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2012-04-23 04:47+0000\n"
-"X-Generator: Launchpad (build 15135)\n"
+"X-Launchpad-Export-Date: 2012-06-02 05:41+0000\n"
+"X-Generator: Launchpad (build 15342)\n"
 
 #: GTG/plugins/notification_area/notification_area.py:123
 msgid "Add _New Task"
@@ -28,7 +28,7 @@ msgstr "Hauptfenster _anzeigen"
 
 #: GTG/plugins/export/export_templates/description_textual.py:18
 msgid "Text-only"
-msgstr ""
+msgstr "Nur Text"
 
 #: GTG/plugins/export/export_templates/description_textual.py:19
 msgid "A template to create a simple text file with some tasks."
@@ -46,7 +46,7 @@ msgstr ""
 
 #: GTG/plugins/export/export_templates/description_statusrpt.py:18
 msgid "Status report"
-msgstr ""
+msgstr "Statusbericht"
 
 #: GTG/plugins/export/export_templates/description_statusrpt.py:19
 msgid "A template to create a compact text file listing only task titles."
@@ -64,7 +64,7 @@ msgstr ""
 
 #: GTG/plugins/export/export_templates/description_sexy.py:18
 msgid "A professional-looking HTML page"
-msgstr ""
+msgstr "Eine professionell aussehende HTML-Seite"
 
 #: GTG/plugins/export/export_templates/description_sexy.py:19
 msgid ""
@@ -91,12 +91,12 @@ msgstr "Speicherort für die Liste auswählen"
 
 #: GTG/plugins/send_email/sendEmail.py:44
 msgid "Send via email"
-msgstr ""
+msgstr "Per eMail senden"
 
 #: GTG/plugins/send_email/sendEmail.py:69
 #, python-format
 msgid "Status: %s"
-msgstr ""
+msgstr "Status: %s"
 
 #: GTG/plugins/send_email/sendEmail.py:70
 #, python-format
@@ -239,7 +239,7 @@ msgstr ""
 
 #: GTG/backends/backend_identica.py:54
 msgid "Identi.ca"
-msgstr ""
+msgstr "Identi.ca"
 
 #: GTG/backends/backend_identica.py:58
 msgid "Imports your identi.ca  messages into your GTG "
@@ -247,7 +247,7 @@ msgstr ""
 
 #: GTG/backends/backend_gnote.py:42
 msgid "Gnote"
-msgstr ""
+msgstr "Gnote"
 
 #: GTG/backends/backend_gnote.py:46
 msgid ""
@@ -272,7 +272,7 @@ msgstr ""
 
 #: GTG/backends/backend_twitter.py:54
 msgid "Twitter"
-msgstr ""
+msgstr "Twitter"
 
 #: GTG/backends/backend_twitter.py:58
 msgid "Imports your twitter  messages into your GTG "
@@ -280,7 +280,7 @@ msgstr ""
 
 #: GTG/backends/backend_tomboy.py:41
 msgid "Tomboy"
-msgstr ""
+msgstr "Tomboy"
 
 #: GTG/backends/backend_tomboy.py:45
 msgid ""
@@ -332,7 +332,7 @@ msgstr ""
 
 #: GTG/backends/backend_localfile.py:61
 msgid "Local File"
-msgstr ""
+msgstr "Lokale Datei"
 
 #: GTG/backends/backend_localfile.py:66
 msgid "Your tasks are saved in a text file (XML format). "
@@ -340,7 +340,7 @@ msgstr ""
 
 #: GTG/backends/backend_launchpad.py:53
 msgid "Launchpad"
-msgstr ""
+msgstr "Launchpad"
 
 #: GTG/backends/backend_launchpad.py:57
 msgid ""
@@ -360,11 +360,11 @@ msgstr ""
 
 #: GTG/backends/backend_launchpad.py:244
 msgid "Bug"
-msgstr ""
+msgstr "Programmfehler"
 
 #: GTG/backends/backend_launchpad.py:329
 msgid "Link to bug: "
-msgstr ""
+msgstr "Link zum Fehler: "
 
 #: GTG/backends/rtm/rtm.py:57
 msgid "Invalid state"
@@ -688,7 +688,7 @@ msgstr ""
 
 #: GTG/core/search.py:87
 msgid "or"
-msgstr ""
+msgstr "oder"
 
 #: GTG/core/search.py:88
 msgid "after"
@@ -880,8 +880,8 @@ msgstr ""
 #: GTG/gtk/backends_dialog/parameters_ui/periodui.py:96
 msgid " minute"
 msgid_plural " minutes"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] " Minute"
+msgstr[1] " Minuten"
 
 #: GTG/gtk/backends_dialog/addpanel.py:75
 msgid "Select synchronization service:"
