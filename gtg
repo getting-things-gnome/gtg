@@ -40,7 +40,11 @@ def x_is_running():
 
 
 def main():
-    """ Parse arguments and run GTG """
+    """ Parse arguments and run GTG
+    
+    Importing GTG.gtg must be done after importing and setting up paths
+    for Liblarch """
+
     parser = OptionParser()
     parser.add_option('-b', '--boot-test', action='store_true',
       dest='boot_test', help="Exit after completing boot-up actions",
