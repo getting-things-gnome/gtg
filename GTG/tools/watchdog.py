@@ -21,9 +21,9 @@ import threading
 class Watchdog(object):
     '''
     a simple thread-safe watchdog.
-    usage:
-    with Watchdod(timeout, error_function):
-        #do something
+    usage::
+        with Watchdod(timeout, error_function):
+            #do something
     '''
 
     def __init__(self, timeout, error_function):

@@ -9,7 +9,7 @@
   </object>
   <object class="GtkDialog" id="PreferencesDialog">
     <property name="border_width">5</property>
-    <property name="title" translatable="yes">Getting Things GNOME! Preferences</property>
+    <property name="title" translatable="yes">Preferences - Getting Things GNOME!</property>
     <property name="window_position">center-on-parent</property>
     <property name="default_width">500</property>
     <property name="default_height">500</property>

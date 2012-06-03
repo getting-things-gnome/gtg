@@ -496,9 +496,9 @@ class GenericTomboy(GenericBackend):
         TomboyConnection creates a connection to TOMBOY via DBus and
         handles all the possible exceptions.
         It is a class that can be used with a with statement.
-        Example:
-        with self.TomboyConnection(self, *self.BUS_ADDRESS) as tomboy:
-            #do something
+        Example::
+            with self.TomboyConnection(self, *self.BUS_ADDRESS) as tomboy:
+                #do something
         '''
 
 
@@ -530,7 +530,7 @@ class GenericTomboy(GenericBackend):
             '''
             Returns the Tomboy connection
 
-            @returns dbus.Interface
+            @returns: dbus.Interface
             '''
             return self.tomboy
 

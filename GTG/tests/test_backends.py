@@ -17,7 +17,7 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-"""Tests for GTG backends.
+""" Tests for GTG backends.
 
 Some of these tests will generate files in
 xdg.BaseDirectory.xdg_data_home/gtg directory.
@@ -43,7 +43,7 @@ class GtgBackendsUniTests(unittest.TestCase):
         self.datafile = ''
         self.taskpath = ''
         self.datapath = ''
-    
+
     def SetUp(self):
         CoreConfig().set_data_dir("./test_data")
         CoreConfig().set_conf_dir("./test_data")
@@ -64,7 +64,6 @@ class GtgBackendsUniTests(unittest.TestCase):
         expectedres = "Your tasks are saved"
         self.assertEqual(res[:len(expectedres)], expectedres)
 
-
     def test_localfile_get_static_parameters(self):
         """Tests for localfile/get_static_parameters function:
         - a string is expected.
@@ -79,7 +78,6 @@ class GtgBackendsUniTests(unittest.TestCase):
         res = localfile.Backend.get_type()
         expectedres = "readwrite"
         self.assertEqual(res, expectedres)
-
 
     def test_localfile_backend_method3(self):
         """Tests for localfile/Backend/remove_task method:

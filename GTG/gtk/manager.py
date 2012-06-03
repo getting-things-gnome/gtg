@@ -41,7 +41,7 @@ from GTG.core.plugins.api    import PluginAPI
 from GTG.tools.logger        import Log
 from GTG.gtk.backends_dialog import BackendsDialog
 from GTG.backends.backendsignals import BackendSignals
-
+from GTG.gtk.browser.tag_editor import TagEditor
 
 
 class Manager(object):
@@ -85,6 +85,9 @@ class Manager(object):
         # Initialize  dialogs
         self.preferences_dialog = None
         self.edit_backends_dialog = None
+
+        # Tag Editor
+        self.tag_editor_dialog = None
         
         #DBus
         DBusTaskWrapper(self.req, self)
@@ -233,6 +236,17 @@ class Manager(object):
         for t in finallist:
             if t.get_id() in self.opened_task:
                 self.close_task(t.get_id())
+
+    def open_tag_editor(self, tag):
+        if not self.tag_editor_dialog:
+            self.tag_editor_dialog = TagEditor(self.req, self, tag)
+        else:
+            self.tag_editor_dialog.set_tag(tag)
+        self.tag_editor_dialog.show()
+        self.tag_editor_dialog.present()
+
+    def close_tag_editor(self):
+        self.tag_editor_dialog.hide()
 
 ### URIS ###################################################################
 

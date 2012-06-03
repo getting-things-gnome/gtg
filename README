@@ -17,6 +17,8 @@ GTG depends on the following packages:
  * python-xdg
  * python-liblarch 
  * python-liblarch-gtk
+ * python-suds (dependency of MantisBT backend)
+ * python-evolution (dependency of Evolution backend)
 
 To generate the API documentation, you'll also need to install 'pydoctor'.
 
@@ -27,6 +29,12 @@ To install these packages on Debian-based systems, execute the following
 command:
     $ sudo apt-get install python-gtk2 python-gnome2 python-glade2 \
          python-xdg python-configobj python-pydoctor
+
+For evolution backend, you need python-evolution by command:
+    $ sudo apt-get install python-evolution
+
+For MantisBT backend, you need python-suds by command:
+    $ sudo apt-get install python-suds
 
 Note that the python-pydoctor package is broken in karmic.
 
