@@ -155,7 +155,26 @@ class Tag(TreeNode):
         return self.__get_count()
 
     def __get_count(self, tasktree=None):
-        return len(self.get_related_tasks(tasktree=tasktree))
+        """Returns the number of all related tasks"""
+        # this method purposefully doesn't rely on get_related_tasks()
+        # which does a similar job, in order to benefit from liblarch
+        # optimizations
+        if not tasktree:
+            tasktree = self.req.get_tasks_tree()
+        sp_id = self.get_attribute("special")
+        if sp_id == "all":
+            toreturn = tasktree.get_n_nodes(\
+                    withfilters=['active'], include_transparent=False)
+        elif sp_id == "notag":
+            toreturn = tasktree.get_n_nodes(\
+                            withfilters=['notag'], include_transparent=False)
+        elif sp_id == "sep" :
+            toreturn = 0
+        else:
+            tname = self.get_name()
+            toreturn = tasktree.get_n_nodes(\
+                                withfilters=[tname], include_transparent=False)
+        return toreturn
 
     def get_related_tasks(self, tasktree=None):
         """Returns all related tasks node ids"""
@@ -180,7 +199,6 @@ class Tag(TreeNode):
         """Notify changes to all related tasks"""
         for task_id in self.get_related_tasks():
             my_task = self.req.get_task(task_id)
-            assert my_task is not None, "Unknown task id: %s" % task_id
             my_task.modified()
 
     #is it useful to keep the tag in the tagstore.
