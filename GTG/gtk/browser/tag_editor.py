@@ -37,6 +37,7 @@ import gtk.gdk as gdk # pylint: disable-msg=F0401
 from GTG import _
 from GTG.gtk.browser.simple_color_selector import SimpleColorSelector
 
+
 class TagIconSelector(gtk.Window): # pylint: disable-msg=R0904
     """
     TagIconSelector is intended as a floating window that allows to select
@@ -107,19 +108,17 @@ class TagIconSelector(gtk.Window): # pylint: disable-msg=R0904
         self.loaded = True
 
     ### PUBLIC IF ###
-
     def set_remove_enabled(self, enable):
         """Disable/enable the remove button"""
         self.remove_bt.set_sensitive(enable)
 
     ### callbacks ###
-
     def on_selection_changed(self, widget): # pylint: disable-msg=W0613
         """Callback: update the model according to the selected icon. Also
         notifies the parent widget."""
         my_path = self.symbol_iv.get_selected_items()
         if len(my_path)>0:
-            my_iter  = self.symbol_model.get_iter(my_path[0])
+            my_iter = self.symbol_model.get_iter(my_path[0])
             self.selected_icon = self.symbol_model.get_value(my_iter, 1)
         else:
             self.selected_icon = None
@@ -133,7 +132,6 @@ class TagIconSelector(gtk.Window): # pylint: disable-msg=R0904
         self.close_selector()
 
     ### PUBLIC IF ###
-
     def show_at_position(self, pos_x, pos_y):
         """Displays the window at a specific point on the screen"""
         if not self.loaded:
@@ -268,7 +266,13 @@ class TagEditor(gtk.Window): # pylint: disable-msg=R0904
         self.tc_cc_colsel.connect('color-changed', self.on_tc_colsel_changed)
         self.tc_cc_colsel.connect('color-added', self.on_tc_colsel_added)
         self.connect('delete-event', self.on_close)
-        
+
+        # allow fast closing by Escape key
+        agr = gtk.AccelGroup()
+        self.add_accel_group(agr)
+        key, modifier = gtk.accelerator_parse('Escape')
+        agr.connect_group(key, modifier, gtk.ACCEL_VISIBLE, self.on_close)
+
     def __set_default_values(self):
         """Configure the widget components with their initial default values"""
         # Disable some handlers while setting up the widget to avoid
@@ -308,7 +312,8 @@ class TagEditor(gtk.Window): # pylint: disable-msg=R0904
         if icon is not None:
             for i in self.ti_bt:
                 self.ti_bt.remove(i)
-            ti_bt_img = gtk.image_new_from_icon_name(icon, gtk.ICON_SIZE_BUTTON)
+            ti_bt_img = gtk.image_new_from_icon_name(icon,
+                gtk.ICON_SIZE_BUTTON)
             ti_bt_img.show()
             self.ti_bt.add(ti_bt_img)
         else:
@@ -317,11 +322,10 @@ class TagEditor(gtk.Window): # pylint: disable-msg=R0904
             self.ti_bt.add(self.ti_bt_label)
 
     ### PUBLIC API ###
-
     def set_tag(self, tag):
         """Update the context menu items using the tag attributes."""
-        # set_active emit the 'toggle' signal, so we have to disable the handler
-        # when we update programmatically
+        # set_active emit the 'toggle' signal, so we have to disable
+        # the handler when we update programmatically
         self.__set_default_values()
         if tag is None:
             self.tag = None
@@ -355,7 +359,6 @@ class TagEditor(gtk.Window): # pylint: disable-msg=R0904
             self.tn_entry.handler_unblock(self.tn_entry_clicked_hid)
 
     ### CALLBACKS ###
-
     def watch_tn_entry_changes(self):
         """Monitors the value changes in the tag name entry. If no updates have
         been noticed after 1 second, request an update."""
@@ -399,8 +402,8 @@ class TagEditor(gtk.Window): # pylint: disable-msg=R0904
             self.tag_icon_selector.set_remove_enabled(False)
 
     def on_tn_entry_changed(self, widget): # pylint: disable-msg=W0613
-        """Callback: checks tag name validity and start value changes monitoring
-        to decide when to update a tag's name."""
+        """ Callback: checks tag name validity and start value changes
+        monitoring to decide when to update a tag's name."""
         self.tn_entry_last_recorded_value = self.tn_entry.get_text()
         # check validity
         if self.tn_entry_last_recorded_value.strip() == "":
@@ -441,7 +444,12 @@ class TagEditor(gtk.Window): # pylint: disable-msg=R0904
         self.config.set_lst("custom_colors", [s for s in self.custom_colors])
         self.req.save_config()
 
-    def on_close(self, widget, event): # pylint: disable-msg=W0613
-        """Callback: hide the tag editor when the close the window."""
+    def on_close(self, widget, event, arg1=None, arg2=None, arg3=None):
+        # pylint: disable-msg=W0613,R0913
+        """ Callback: hide the tag editor when the close the window.
+
+        Arguments arg1-arg3 are needed to satisfy callback when closing
+        by Escape
+        """
         self.vmanager.close_tag_editor()
         return True
