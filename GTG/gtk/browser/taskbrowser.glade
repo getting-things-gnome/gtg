@@ -175,18 +175,6 @@
                       </object>
                     </child>
                     <child>
-                      <object class="GtkImageMenuItem" id="edit_preferences_mi">
-                        <property name="label">gtk-preferences</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="use_action_appearance">False</property>
-                        <property name="use_underline">True</property>
-                        <property name="use_stock">True</property>
-                        <property name="accel_group">accelgroup1</property>
-                        <signal name="activate" handler="on_preferences_activate" swapped="no"/>
-                      </object>
-                    </child>
-                    <child>
                       <object class="GtkMenuItem" id="plugins_mi">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
@@ -204,6 +192,24 @@
                         <property name="label">_Synchronization Services</property>
                         <property name="use_underline">True</property>
                         <signal name="activate" handler="on_edit_backends_activate" swapped="no"/>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkSeparatorMenuItem" id="separator_4">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkImageMenuItem" id="edit_preferences_mi">
+                        <property name="label">gtk-preferences</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="use_action_appearance">False</property>
+                        <property name="use_underline">True</property>
+                        <property name="use_stock">True</property>
+                        <property name="accel_group">accelgroup1</property>
+                        <signal name="activate" handler="on_preferences_activate" swapped="no"/>
                       </object>
                     </child>
                   </object>
@@ -232,7 +238,7 @@
                       </object>
                     </child>
                     <child>
-                      <object class="GtkSeparatorMenuItem" id="separator_4">
+                      <object class="GtkSeparatorMenuItem" id="separator_5">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                       </object>
@@ -1035,7 +1041,6 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
     <child>
       <object class="GtkImageMenuItem" id="tcm_start_menu">
         <property name="label" translatable="yes">_Set start date</property>
-        <property name="submenu">start_for_context_menu</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="use_action_appearance">False</property>
@@ -1124,7 +1129,6 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
     <child>
       <object class="GtkImageMenuItem" id="tcm_due_menu">
         <property name="label" translatable="yes">Set due date</property>
-        <property name="submenu">due_context_menu</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="use_action_appearance">False</property>
