@@ -245,23 +245,31 @@ class Task(TreeNode):
         self.last_modified = modified
 
     def set_due_date(self, fulldate):
-        self.due_date = Date(fulldate)
+        if self.start_date > Date(fulldate) and self.start_date != Date.no_date():
+            self.due_date=Date(fulldate)
+            self.set_start_date(fulldate)
+        
+        for par_id in self.parents:
+            par = self.req.get_task(par_id)
+            if par.due_date and par.due_date < Date(fulldate) and Date(fulldate)!= Date.no_date():
+            	par.set_due_date(fulldate)
+        
+        for sub_id in self.children:
+            sub=self.req.get_task(sub_id)
+            if sub.due_date > Date(fulldate) and sub.due_date != Date.no_date():
+                sub.set_due_date(fulldate)
+            if sub.start_date and sub.start_date > Date(fulldate):
+                sub.set_start_date(fulldate)
+        self.due_date=Date(fulldate)   
         self.sync()
 
     def get_due_date(self):
-        """ Due date return the most urgent date of all parents """
-        zedate = self.due_date
-
-        for par in self.get_parents():
-            # compare with the parent's due date
-            pardate = self.req.get_task(par).get_due_date()
-            if pardate and zedate > pardate:
-                zedate = pardate
-
-        return zedate
+        return self.due_date
 
     def set_start_date(self, fulldate):
-        self.start_date = Date(fulldate)
+    	self.start_date = Date(fulldate)
+        if Date(fulldate) > self.due_date and Date(fulldate) != Date.no_date():
+            self.set_due_date(fulldate)
         self.sync()
 
     def get_start_date(self):
