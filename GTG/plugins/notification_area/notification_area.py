@@ -27,18 +27,23 @@ from GTG                   import _
 from GTG.tools.borg        import Borg
 from GTG.tools.dates       import Date
 
-# Determine how many days are left to do a task, 1 means due today.
+
 def _due_within(task, danger_zone):
+    """
+    Determine if a task is the danger zone.
+    Convention: a danger zone of 1 day includes tasks due today.
+    """
     ddate = task.get_due_date()
     if (ddate != Date.no_date()):
         if ddate.days_left() < danger_zone:
             return True
     return False
 
+
 class _Attention:
 
     """
-    Define need attention state depending on whether there 
+    Define need attention state depending on whether there
     are tasks in danger zone.
 
     There are two levels of attention:
@@ -49,11 +54,11 @@ class _Attention:
     than time span (in days) defined by danger_zone.
     """
 
-    ICONS = {'relax'     : 'gtg',
-             'attention' : 'gtg-need-attention'}
+    ICONS = {'relax': 'gtg',
+             'attention': 'gtg-need-attention'}
 
     def __init__(self, tree, req, indicator, danger_zone=1):
-        self.__tree = tree 
+        self.__tree = tree
         self.__req = req
         self.__indicator = indicator
         self.danger_zone = danger_zone
@@ -65,12 +70,11 @@ class _Attention:
             if _due_within(task, self.danger_zone):
                 self.tasks_danger.append(tid)
 
-        # Set initial icon. Later on we only update if needed 
+        # Set initial icon. Later on we only update if needed
         if self.level() == 1:
             indicator.set_icon(self.ICONS['attention'])
         elif self.level() == 0:
             indicator.set_icon(self.ICONS['relax'])
-
 
     def level(self):
         return 0 if len(self.tasks_danger)==0 else 1
@@ -80,7 +84,7 @@ class _Attention:
             self.__indicator.set_icon(self.ICONS['relax'])
         elif old_level == 0 and new_level == 1:
             self.__indicator.set_icon(self.ICONS['attention'])
-          
+
     def update_on_task_modified(self, tid):
         # Store current attention level
         old_lev = self.level()
@@ -94,7 +98,7 @@ class _Attention:
 
         # Update icon only if attention level has changed
         self.__update_indicator(old_lev, self.level())
-              
+
     def update_on_task_deleted(self, tid):
         # Store current attention level
         old_lev = self.level()
@@ -105,6 +109,7 @@ class _Attention:
         # Update icon only if attention level has changed
         self.__update_indicator(old_lev, self.level())
 
+
 class NotificationArea:
     """
     Plugin that display a notification area widget or an indicator
@@ -112,7 +117,7 @@ class NotificationArea:
     """
 
     DEFAULT_PREFERENCES = {"start_minimized": False,
-                           "danger_zone"    : 1}
+                           "danger_zone": 1}
     PLUGIN_NAME = "notification_area"
     MAX_TITLE_LEN = 30
     MAX_ITEMS = 10
@@ -173,7 +178,7 @@ class NotificationArea:
         # Convention: if danger zone is <=0, disable attention
         # Attention is also disabled if there is no indicator
         if self.preferences['danger_zone'] > 0 and self.__indicator:
-            self.__attention = _Attention(self.__tree_att, 
+            self.__attention = _Attention(self.__tree_att,
                                           self.__requester,
                                           self.__indicator,
                                           self.preferences['danger_zone'])
@@ -397,7 +402,8 @@ class NotificationArea:
 
     def on_preferences_ok(self, widget = None, data = None):
         self.preferences["start_minimized"] = self.chbox_minimized.get_active()
-        self.preferences["danger_zone"] = self.spinbutton_dangerzone.get_value()
+        self.preferences["danger_zone"] = \
+            self.spinbutton_dangerzone.get_value()
         self.preferences_store()
         self.preferences_dialog.hide()
 
