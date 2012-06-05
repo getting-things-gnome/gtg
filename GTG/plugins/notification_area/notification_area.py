@@ -178,6 +178,14 @@ class NotificationArea:
                                           self.__indicator,
                                           self.preferences['danger_zone'])
 
+        # Check if the icon theme has need-attention icon.
+        # If not, attention monitor is disabled.
+        theme = gtk.icon_theme_get_default()
+        if not theme.has_icon(_Attention.ICONS['attention']):
+            self.__attention = None
+            print 'Warning: icon %s not found. Please update the gtk theme.' %\
+                _Attention.ICONS['attention']
+
         self.__tree = self.__connect_to_tree([
                 ("node-added-inview", self.__on_task_added),
                 ("node-modified-inview", self.__on_task_added),
