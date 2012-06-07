@@ -7,7 +7,7 @@ if [ $UID -eq 0 ]; then
 fi
 
 args="--no-crash-handler"
-set="default"
+dataset="default"
 norun=0
 profile=0
 
@@ -25,30 +25,23 @@ do  case "$o" in
         ;;
     n)   norun=1;;
     p)   profile=1;;
-    s)   set="$OPTARG";;
+    s)   dataset="$OPTARG";;
     [?]) echo >&2 "Usage: $0 [-s dataset] [-b] [-d] [-l] [-n] [-p]"
          exit 1;;
     esac
 done
 
 # Copy dataset
-if [  $set != "default" ]
+if [  $dataset != "default" -a ! -d "./tmp/$dataset" ]
 then
-    if [ ! -d "./tmp/$set" ]
-    then
-        echo "Copying $set dataset to ./tmp/"
-        cp -r test/data/$set tmp/
-    fi
-    echo "Setting XDG vars to use $set dataset."
-    export XDG_DATA_HOME="./tmp/$set/xdg/data"
-    export XDG_CACHE_HOME="./tmp/$set/xdg/cache"
-    export XDG_CONFIG_HOME="./tmp/$set/xdg/config"
-else
-    echo "Setting XDG vars to use default dataset."
-    export XDG_DATA_HOME="./tmp/default/xdg/data"
-    export XDG_CACHE_HOME="./tmp/default/xdg/cache"
-    export XDG_CONFIG_HOME="./tmp/default/xdg/config"
+    echo "Copying $dataset dataset to ./tmp/"
+    cp -r test/data/$dataset tmp/
 fi
+
+echo "Setting XDG vars to use $dataset dataset."
+export XDG_DATA_HOME="./tmp/$dataset/xdg/data"
+export XDG_CACHE_HOME="./tmp/$dataset/xdg/cache"
+export XDG_CONFIG_HOME="./tmp/$dataset/xdg/config"
 
 if [ $norun -eq 0 ]; then
     # Check for liblarch
