@@ -4,7 +4,7 @@
   <!-- interface-naming-policy toplevel-contextual -->
   <object class="GtkDialog" id="PreferencesDialog">
     <property name="can_focus">False</property>
-    <property name="border_width">10</property>
+    <property name="border_width">3</property>
     <property name="window_position">center-on-parent</property>
     <property name="type_hint">dialog</property>
     <signal name="delete-event" handler="on_PreferencesDialog_delete_event" swapped="no"/>
