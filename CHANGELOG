@@ -24,6 +24,7 @@
     * New tag editor
     * Fix bugs #1003872 and #1002067: Correct titles to Preferences and Synchronization Services Dialogs, by Alan Gomes
     * Improved Export plugin, export to PDF works now, by Izidor Matušov
+    * Added -t option to distinguish between multiple instances of GTG
 
 2012-02-13 Getting Things GNOME! 0.2.9
     * Big refractorization of code, now using liblarch
