@@ -141,15 +141,6 @@ class GenericBackend(object):
         '''
         pass
 
-#NOTE: task counting is disabled in the UI, so I've disabled it here
-#      (invernizzi)
-#    def get_number_of_tasks(self):
-#        '''
-#        Returns the number of tasks stored in the backend. Doesn't need
-#        to be a fast function, is called just for the UI
-#        '''
-#        raise NotImplemented()
-
 #NOTE: I'm disabling this since support for runtime checking of the
 #        presence of the necessary modules is disabled. (invernizzi)
 #    @staticmethod
