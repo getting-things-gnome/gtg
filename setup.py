@@ -145,8 +145,12 @@ setup(
     ],
   package_data = {
     'GTG.core.plugins': ['pluginmanager.glade'],
-    'GTG.gtk':
-        ['preferences.glade', 'deletion.glade', 'backends_dialog.glade'],
+    'GTG.gtk': [
+        'preferences.glade',
+        'plugins.glade',
+        'deletion.glade',
+        'backends_dialog.glade',
+        ],
     'GTG.gtk.browser': ['taskbrowser.glade', 'modifytags_dialog.glade'],
     'GTG.gtk.editor': ['taskeditor.glade'],
     'GTG.plugins': [
