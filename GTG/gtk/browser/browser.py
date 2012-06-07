@@ -243,6 +243,7 @@ class TaskBrowser(gobject.GObject):
         self.about.set_version(info.VERSION)
         self.about.set_authors(info.AUTHORS)
         self.about.set_artists(info.ARTISTS)
+        self.about.set_documenters(info.DOCUMENTERS)
         self.about.set_translator_credits(info.TRANSLATORS)
 
     def _init_signal_connections(self):

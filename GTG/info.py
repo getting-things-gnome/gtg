@@ -103,3 +103,5 @@ Spanish: David Prieto, DiegoJ, Pititjo
 Swedish: Christian Widell, Daniel Holm, Kalle Persson, Petri Rosenström
 Traditional Chinese: Rex Tsai
 Turkish: Murat Güneş"""
+
+DOCUMENTERS = ["Radina Matic <radina.matic@gmail.com>"]
