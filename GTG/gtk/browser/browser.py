@@ -339,6 +339,8 @@ class TaskBrowser(gobject.GObject):
                 lambda w: openurl(info.REPORT_BUG_URL),
             "on_preferences_activate":
                 self.open_preferences,
+            "on_edit_plugins_activate":
+                self.open_plugins,
             "on_edit_backends_activate":
                 self.open_edit_backends,
         }
@@ -388,17 +390,13 @@ class TaskBrowser(gobject.GObject):
         self._add_accelerator_for_widget(agr, "new_task_mi", "<Control>n")
         self._add_accelerator_for_widget(agr, "new_subtask_mi",
             "<Control><Shift>n")
+        self._add_accelerator_for_widget(agr, "edit_mi", "Return")
         self._add_accelerator_for_widget(agr, "done_mi", "<Control>d")
         self._add_accelerator_for_widget(agr, "dismiss_mi", "<Control>i")
-        self._add_accelerator_for_widget(agr, "delete_mi", "Cancel")
+        self._add_accelerator_for_widget(agr, "delete_mi", "Delete")
         self._add_accelerator_for_widget(agr, "tcm_modifytags", "<Control>t")
         self._add_accelerator_for_widget(agr, "view_closed", "<Control>F9")
         self._add_accelerator_for_widget(agr, "online_help", "F1")
-
-        edit_button = self.builder.get_object("edit_b")
-        key, mod = gtk.accelerator_parse("<Control>e")
-        edit_button.add_accelerator("clicked", agr, key, mod,
-            gtk.ACCEL_VISIBLE)
 
         quickadd_field = self.builder.get_object("quickadd_field")
         key, mod = gtk.accelerator_parse("<Control>l")
@@ -408,6 +406,9 @@ class TaskBrowser(gobject.GObject):
 ### HELPER FUNCTIONS ########################################################
     def open_preferences(self, widget):
         self.vmanager.open_preferences(self.config)
+        
+    def open_plugins(self, widget):
+        self.vmanager.configure_plugins()
 
     def open_edit_backends(self, widget):
         self.vmanager.open_edit_backends()

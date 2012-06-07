@@ -37,7 +37,7 @@ from GTG.backends                           import BackendFactory
 from GTG.tools.logger                       import Log
 from GTG                                    import _
 from GTG.backends.genericbackend            import GenericBackend
-
+from GTG import info
 
 
 class BackendsDialog(object):
@@ -48,7 +48,6 @@ class BackendsDialog(object):
         - the backend adding view
     '''
 
-
     def __init__(self, req):
         '''
         Initializes the gtk objects and signals.
@@ -58,6 +57,7 @@ class BackendsDialog(object):
         self._configure_icon_theme()
         builder = gtk.Builder() 
         self._load_widgets_from_glade(builder)
+        self.dialog.set_title(_("Synchronization Services - %s" % info.NAME))
         self._create_widgets_for_add_panel()
         self._create_widgets_for_configure_panel()
         self._setup_signal_connections(builder)
