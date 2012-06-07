@@ -57,9 +57,14 @@ def main():
     parser.add_option('-l', '--local-liblarch', action='store_true',
       dest='local_liblarch', default=False,
       help="Use local liblarch located in ../liblarch if it is posible")
+    parser.add_option('-t', '--title', action='store',
+      help="Use special title for windows' title")
     parser.add_option('-v', '--version', action='store_true',
       dest='print_version', help="Print GTG's version number", default=False)
     (options, args) = parser.parse_args()
+
+    if options.title is not None:
+        info.NAME = options.title
 
     if options.print_version:
         print "GTG (Getting Things Gnome!)", info.VERSION
