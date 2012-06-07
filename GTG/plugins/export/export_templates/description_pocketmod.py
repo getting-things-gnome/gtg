@@ -16,6 +16,7 @@
 
 from GTG import _
 title = _("Foldable booklet (PDF)")
-description = _("A template to create a <a"
-                " href=\"http://www.pocketmod.com\">PocketMod</a>, which is a "
-                " small foldable booklet.")
+description = _("""A template to create
+<a href="http://www.pocketmod.com">PocketMod</a>, which is a small foldable
+booklet. Packages <b>pdflatex</b>, <b>pdftk</b> and <b>pdfjam</b>
+are required.""")

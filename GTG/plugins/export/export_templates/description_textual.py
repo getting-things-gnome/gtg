@@ -14,6 +14,9 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 
+""" Text only template """
+
 from GTG import _
+
 title = _("Text-only")
 description = _("A template to create a simple text file with some tasks.")

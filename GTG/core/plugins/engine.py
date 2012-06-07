@@ -107,8 +107,8 @@ class Plugin(object):
 
     def is_configurable(self):
         """Since some plugins don't have a is_configurable() method."""
-        return self.instance and hasattr(self.instance, 'is_configurable') and (
-          self.instance.is_configurable())
+        return self.instance and hasattr(self.instance, 'is_configurable') and\
+            self.instance.is_configurable()
 
     def _load_module(self, module_path):
         """Load the module containing this plugin."""
@@ -186,10 +186,10 @@ class PluginEngine(Borg):
             return all_plugins
 
         def filter_fun(plugin):
-            return (kind_of_plugins == "active"   and plugin.active) or \
-                   (kind_of_plugins == "inactive" and not plugin.active) or \
-                   (kind_of_plugins == "enabled"  and plugin.enabled) or \
-                   (kind_of_plugins == "disabled" and not plugin.enabled)
+            return ((kind_of_plugins == "active" and plugin.active) or
+                   (kind_of_plugins == "inactive" and not plugin.active) or
+                   (kind_of_plugins == "enabled" and plugin.enabled) or
+                   (kind_of_plugins == "disabled" and not plugin.enabled))
         return filter(filter_fun, all_plugins)
 
     def register_api(self, api):
@@ -258,7 +258,6 @@ class PluginEngine(Borg):
                 plugin.instance.onTaskClosed(plugin_api)
 
 #FIXME: What are these for? must check someday! (invernizzi)
-
     def recheck_plugins(self, plugin_apis):
         """Check plugins to make sure their states are consistent.
 
