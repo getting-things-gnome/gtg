@@ -23,8 +23,11 @@ import os
 import shutil
 
 import gtk
-from GTG.gtk import ViewConfig
 from xdg.BaseDirectory import xdg_config_home
+
+from GTG import _
+from GTG import info
+from GTG.gtk import ViewConfig
 
 AUTOSTART_DIRECTORY = os.path.join(xdg_config_home, "autostart")
 AUTOSTART_FILE = "gtg.desktop"
@@ -74,6 +77,7 @@ class PreferencesDialog:
         builder.add_from_file(ViewConfig.PREFERENCES_GLADE_FILE)
 
         self.dialog = builder.get_object("PreferencesDialog")
+        self.dialog.set_title(_("Preferences - %s" % info.NAME))
         self.pref_autostart = builder.get_object("pref_autostart")
         self.pref_show_preview = builder.get_object("pref_show_preview")
         self.bg_color_enable = builder.get_object("bg_color_enable")

@@ -22,6 +22,8 @@
 import gtk
 import pango
 
+from GTG import _
+from GTG import info
 from GTG.core.plugins import GnomeConfig
 from GTG.core.plugins.engine import PluginEngine
 from GTG.gtk import ViewConfig
@@ -137,6 +139,7 @@ class PluginsDialog:
         builder.add_from_file(ViewConfig.PLUGINS_GLADE_FILE)
 
         self.dialog = builder.get_object("PluginsDialog")
+        self.dialog.set_title(_("Plugins - %s" % info.NAME))
         self.plugin_tree = builder.get_object("PluginTree")
         self.plugin_configure = builder.get_object("plugin_configure")
         self.plugin_about = builder.get_object("PluginAboutDialog")

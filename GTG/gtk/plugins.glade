@@ -69,7 +69,6 @@
   <object class="GtkDialog" id="PluginsDialog">
     <property name="can_focus">False</property>
     <property name="border_width">10</property>
-    <property name="title" translatable="yes">Plugins - Getting Things GNOME!</property>
     <property name="window_position">center-on-parent</property>
     <property name="default_width">500</property>
     <property name="default_height">500</property>
