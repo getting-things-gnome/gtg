@@ -30,7 +30,8 @@ REPORT_BUG_URL = "https://bugs.launchpad.net/gtg/+filebug"
 EMAIL = "gtg-contributors@lists.launchpad.net"
 VERSION = '0.3-development'
 
-SHORT_DESCRIPTION = _('GTG is a personal organizer for the GNOME desktop environment.')
+SHORT_DESCRIPTION = \
+ _('GTG is a personal tasks and TODO-list items organizer for the GNOME.')
 
 # CREDITS
 AUTHORS     = ["Main developers:", \
