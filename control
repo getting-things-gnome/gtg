@@ -13,7 +13,7 @@ Vcs-Browser: http://svn.debian.org/viewsvn/python-apps/packages/gtg/trunk/
 Package: gtg
 Architecture: all
 Depends: ${misc:Depends}, ${python:Depends}, python-gtk2 (>= 2.14), python-gnome2, python-glade2, python-dbus, python-xdg, python-configobj, python-liblarch (>= 0.1), python-liblarch-gtk (>= 0.1)
-Description: organizer for the GNOME desktop environment
- Getting Things GNOME! is an organizer for the GNOME desktop environment.
- GTG focuses on usability and ease of use. Its main objective is to
- provide a simple and yet flexible organization tool for life and work.
+Description: a personal tasks and TODO-list items organizer for the GNOME desktop environment.
+ Getting Things GNOME! (GTG) is a personal tasks and TODO-list items organizer for the GNOME desktop environment inspired by the Getting Things Done (GTD) methodology. GTG is designed with flexibility, adaptability, and ease of use in mind so it can be used as more than just GTD software.
+ 
+ GTG is intended to help you track everything you need to do and need to know, from small tasks to large projects.
