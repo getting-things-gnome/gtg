@@ -23,12 +23,9 @@
     * Fix for bug #995740: (no title task) through quickadd bar, by Nimit Shah
     * New tag editor
     * Fix bugs #1003872 and #1002067: Correct titles to Preferences and Synchronization Services Dialogs, by Alan Gomes
-<<<<<<< TREE
-    * Fix for bug #826916 by Nimit Shah
-=======
     * Improved Export plugin, export to PDF works now, by Izidor Matušov
     * Added -t option to distinguish between multiple instances of GTG
->>>>>>> MERGE-SOURCE
+    * Fix for bug #826916 by Nimit Shah
 
 2012-02-13 Getting Things GNOME! 0.2.9
     * Big refractorization of code, now using liblarch
