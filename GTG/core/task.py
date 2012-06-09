@@ -274,7 +274,7 @@ class Task(TreeNode):
         return zedate
 
     def set_start_date(self, fulldate):
-    	self.start_date = Date(fulldate)
+        self.start_date = Date(fulldate)
         if Date(fulldate) > self.due_date and Date(fulldate) != Date.no_date():
             self.set_due_date(fulldate)
         self.sync()
