@@ -21,20 +21,15 @@
 Manager loads the prefs and launches the gtk main loop
 """
 try:
-    import pygtk
-    pygtk.require('2.0')
+    from gi.repository import GObject, Gtk
 except: # pylint: disable-msg=W0702
     raise SystemExit(1)
-
-import gtk
-import gobject
 
 import GTG
 from GTG.gtk.delete_dialog   import DeletionUI
 from GTG.gtk.browser.browser import TaskBrowser
 from GTG.gtk.editor.editor   import TaskEditor
 from GTG.gtk.preferences     import PreferencesDialog
-from GTG.gtk.plugins         import PluginsDialog
 from GTG.gtk.dbuswrapper     import DBusTaskWrapper
 from GTG.tools               import clipboard
 from GTG.core.plugins.engine import PluginEngine
@@ -46,7 +41,6 @@ from GTG.gtk.browser.tag_editor import TagEditor
 
 
 class Manager(object):
-    
 
     ############## init #####################################################
     def __init__(self, req):
@@ -54,12 +48,12 @@ class Manager(object):
         self.config_obj = self.req.get_global_config()
         self.config = self.config_obj.conf_dict
         self.task_config = self.config_obj.task_conf_dict
-        
+
         # Editors
         self.opened_task  = {}   # This is the list of tasks that are already
                                  # opened in an editor of course it's empty
                                  # right now
-                                 
+
         self.browser = None
         self.__start_browser_hidden = False
         self.gtk_terminate = False #if true, the gtk main is not started
@@ -67,34 +61,33 @@ class Manager(object):
         # if true, closing the last window doesn't quit GTG
         # (GTG lives somewhere else without GUI, e.g. notification area)
         self.daemon_mode = False
-                                 
+
         #Shared clipboard
         self.clipboard = clipboard.TaskClipboard(self.req)
 
         #Browser (still hidden)
         self.browser = TaskBrowser(self.req, self)
-        
+
         self.__init_plugin_engine()
-        
+
         if not self.__start_browser_hidden:
             self.show_browser()
-        
+
         #Deletion UI
         self.delete_dialog = None
-        
+
         #Preferences and Backends windows
         # Initialize  dialogs
-        self.preferences = PreferencesDialog(self.req)
-        self.plugins = PluginsDialog(self.config_obj)
+        self.preferences_dialog = None
         self.edit_backends_dialog = None
 
         # Tag Editor
         self.tag_editor_dialog = None
-        
+
         #DBus
         DBusTaskWrapper(self.req, self)
         Log.debug("Manager initialization finished")
-        
+
     def __init_plugin_engine(self):
         self.pengine = PluginEngine(GTG.PLUGIN_DIR)
         # initializes the plugin api class
@@ -109,7 +102,7 @@ class Manager(object):
             plugin.enabled = plugin.module_name in plugins_enabled
         # initializes and activates each plugin (that is enabled)
         self.pengine.activate_plugins()
-        
+
     ############## Browser #################################################
 
     def open_browser(self):
@@ -136,7 +129,7 @@ class Manager(object):
 
     def show_browser(self,sender=None):
         self.browser.show()
-        
+
     def is_browser_visible(self,sender=None):
         return self.browser.is_visible()
 
@@ -213,7 +206,7 @@ class Manager(object):
         if not self.daemon_mode and not self.is_browser_visible() and not self.opened_task:
             #no need to live"
             self.quit()
-            
+
 ################ Others dialog ############################################
 
     def open_edit_backends(self, sender = None, backend_id = None):
@@ -226,12 +219,11 @@ class Manager(object):
     def configure_backend(self, backend_id):
         self.open_edit_backends(None, backend_id)
 
-    def open_preferences(self, config_priv):
-        self.preferences.activate()
+    def open_preferences(self, config_priv, sender=None):
+        if not hasattr(self, "preferences"):
+            self.preferences = PreferencesDialog(self.config_obj, self.req)
+        self.preferences.activate(config_priv)
 
-    def configure_plugins(self):
-        self.plugins.activate()
-        
     def ask_delete_tasks(self, tids):
         if not self.delete_dialog:
             self.delete_dialog = DeletionUI(self.req)
@@ -264,7 +256,6 @@ class Manager(object):
         #if no window was opened, we just quit
         self.check_quit_condition()
 
-            
 ### MAIN ###################################################################
     def main(self, once_thru = False,  uri_list = []):
         if uri_list:
@@ -275,23 +266,23 @@ class Manager(object):
                                      uri_list)
         else:
             self.open_browser()
-        gobject.threads_init()
+        GObject.threads_init()
         if not self.gtk_terminate:
             if once_thru:
-                gtk.main_iteration()
+                Gtk.main_iteration()
             else:
-                gtk.main()
+                Gtk.main()
         return 0
-        
+
     def quit(self,sender=None):
-        gtk.main_quit()
+        Gtk.main_quit()
         #save opened tasks and their positions.
         open_task = []
         for otid in self.opened_task.keys():     
             open_task.append(otid)
             self.opened_task[otid].close()
         self.config["browser"]["opened_tasks"] = open_task
-        
+
         # adds the plugin settings to the conf
         #FIXME: this code is replicated in the preference window.
         if len(self.pengine.plugins) > 0:

@@ -285,9 +285,11 @@ class Task(TreeNode):
         return (closed_date - due_date).days
 
     def get_text(self):
-        """ Return the content or empty string in case of None """
+        """
+        Return the content or empty string in case of None
+        """
         if self.content:
-            return str(self.content)
+            return str(self.content.encode('utf-8'))
         else:
             return ""
 
@@ -343,16 +345,17 @@ class Task(TreeNode):
                     txt += n.nodeValue
         return txt
 
-    def set_text(self, texte):
+    def set_text(self, text):
         self.can_be_deleted = False
-        if texte != "<content/>":
+        if text != "<content/>":
+            text = text.encode('utf-8')
             #defensive programmation to filter bad formatted tasks
-            if not texte.startswith("<content>"):
-                texte = cgi.escape(texte, quote=True)
-                texte = "<content>%s" % texte
-            if not texte.endswith("</content>"):
-                texte = "%s</content>" % texte
-            self.content = str(texte)
+            if not text.startswith("<content>"):
+                text = cgi.escape(text, quote=True)
+                text = "<content>{0}".format(text)
+            if not text.endswith("</content>"):
+                text = "{0}</content>".format(text)
+            self.content = str(text)
         else:
             self.content = ''
 

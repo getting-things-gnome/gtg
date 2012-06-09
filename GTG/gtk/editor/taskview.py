@@ -19,10 +19,10 @@
 
 
 """
-This class implements a gtk.TextView but with many other features
+This class implements a Gtk.TextView but with many other features
 like hyperlink and other stuff special for GTG
 
-For your information, a gtkTextView always contains a gtk.TextBuffer which
+For your information, a GtkTextView always contains a Gtk.TextBuffer which
 Contains the text. Ours is called self.buff (how original !)
 
 This is a class taken originally from
@@ -30,13 +30,12 @@ http://trac.atzm.org/index.cgi/wiki/PyGTK
 It was in Japanese and I didn't understand anything but the code.
 """
 
-import gtk
-from gtk import gdk
-import gobject
-import pango
-import os
-from webbrowser import open as openurl
 
+import os
+
+from gi.repository import GObject, Gtk, Gdk, Pango
+
+from webbrowser import open as openurl
 from GTG.gtk.editor import taskviewserial
 from GTG.tools      import urlregex
 
@@ -49,25 +48,25 @@ bullet1_ltr = '→'
 bullet1_rtl = '←'
 
 
-class TaskView(gtk.TextView):
+class TaskView(Gtk.TextView):
     __gtype_name__ = 'HyperTextView'
-    __gsignals__ = {'anchor-clicked': (gobject.SIGNAL_RUN_LAST, \
+    __gsignals__ = {'anchor-clicked': (GObject.SignalFlags.RUN_LAST, \
                      None, (str, str, int))}
     __gproperties__ = {
-        'link': (gobject.TYPE_PYOBJECT, 'link color',\
-                  'link color of TextView', gobject.PARAM_READWRITE),
-        'failedlink': (gobject.TYPE_PYOBJECT, 'failed link color',\
-                  'failed link color of TextView', gobject.PARAM_READWRITE),
-        'active': (gobject.TYPE_PYOBJECT, 'active color', \
-                  'active color of TextView', gobject.PARAM_READWRITE),
-        'hover': (gobject.TYPE_PYOBJECT, 'link:hover color', \
-                  'link:hover color of TextView', gobject.PARAM_READWRITE),
-        'tag': (gobject.TYPE_PYOBJECT, 'tag color', \
-                  'tag color of TextView', gobject.PARAM_READWRITE),
-        'done': (gobject.TYPE_PYOBJECT, 'link color', \
-                  'link color of TextView', gobject.PARAM_READWRITE),
-        'indent': (gobject.TYPE_PYOBJECT, 'indent color', \
-                  'indent color of TextView', gobject.PARAM_READWRITE),
+        'link': (GObject.TYPE_PYOBJECT, 'link color',\
+                  'link color of TextView', GObject.PARAM_READWRITE),
+        'failedlink': (GObject.TYPE_PYOBJECT, 'failed link color',\
+                  'failed link color of TextView', GObject.PARAM_READWRITE),
+        'active': (GObject.TYPE_PYOBJECT, 'active color', \
+                  'active color of TextView', GObject.PARAM_READWRITE),
+        'hover': (GObject.TYPE_PYOBJECT, 'link:hover color', \
+                  'link:hover color of TextView', GObject.PARAM_READWRITE),
+        'tag': (GObject.TYPE_PYOBJECT, 'tag color', \
+                  'tag color of TextView', GObject.PARAM_READWRITE),
+        'done': (GObject.TYPE_PYOBJECT, 'link color', \
+                  'link color of TextView', GObject.PARAM_READWRITE),
+        'indent': (GObject.TYPE_PYOBJECT, 'indent color', \
+                  'indent color of TextView', GObject.PARAM_READWRITE),
         }
 
     def do_get_property(self, prop):
@@ -84,20 +83,20 @@ class TaskView(gtk.TextView):
 
     #Yes, we want to redefine the buffer. Disabling pylint on that error.
     def __init__(self, requester, clipboard, buffer=None): #pylint: disable-msg=W0622
-        gtk.TextView.__init__(self, buffer)
+        GObject.GObject.__init__(self, buffer)
         self.buff = self.get_buffer()
         self.req = requester
         #Buffer init
         self.link = {'background': 'white', 'foreground': '#007bff', \
-                      'underline': pango.UNDERLINE_SINGLE, \
+                      'underline': Pango.Underline.SINGLE, \
                       'strikethrough': False}
         self.failedlink = {'background': 'white', 'foreground': '#ff5454', \
-                      'underline': pango.UNDERLINE_NONE, \
+                      'underline': Pango.Underline.NONE, \
                       'strikethrough': False}
         self.done   = {'background': 'white', 'foreground': 'gray',\
                                     'strikethrough': True}
         self.active = {'background': 'light gray', 'foreground': '#ff1e00',\
-                                    'underline': pango.UNDERLINE_SINGLE}
+                                    'underline': Pango.Underline.SINGLE}
         self.hover  = {'background': 'light gray'}
         self.tag = {'background': "#FFea00", 'foreground': 'black'}
         self.indent = {'scale': 1.4, 'editable': False, 'left-margin': 10,
@@ -137,7 +136,7 @@ class TaskView(gtk.TextView):
         self.connect('drag-data-received', self.drag_receive)
 
         #All the typical properties of our textview
-        self.set_wrap_mode(gtk.WRAP_WORD)
+        self.set_wrap_mode(Gtk.WrapMode.WORD)
         self.set_editable(True)
         self.set_cursor_visible(True)
         self.buff.set_modified(False)
@@ -167,7 +166,7 @@ class TaskView(gtk.TextView):
         self.tobe_refreshed = False
         self.clipboard = clipboard
 
-        if self.get_direction() == gtk.TEXT_DIR_RTL:
+        if self.get_direction() == Gtk.TextDirection.RTL:
             self.bullet1 = bullet1_rtl
         else:
             self.bullet1 = bullet1_ltr
@@ -1042,7 +1041,7 @@ class TaskView(gtk.TextView):
     #Method called on copy and cut actions
     #param is either "cut" or "copy"
     def copy_clipboard(self, widget, param=None):
-        clip = gtk.clipboard_get(gdk.SELECTION_CLIPBOARD)
+        clip = Gtk.clipboard_get(Gdk.SELECTION_CLIPBOARD)
 
         #First, we analyse the selection to put in our own
         #GTG clipboard a selection with description of subtasks
@@ -1064,7 +1063,7 @@ class TaskView(gtk.TextView):
 
     #Called on paste.
     def paste_clipboard(self, widget, param=None):
-        clip = gtk.clipboard_get(gdk.SELECTION_CLIPBOARD)
+        clip = Gtk.clipboard_get(Gdk.SELECTION_CLIPBOARD)
         #if the clipboard text is the same are our own internal
         #clipboard text, it means that we can paste from our own clipboard
         #else, that we can empty it.
@@ -1240,7 +1239,7 @@ class TaskView(gtk.TextView):
 
     def _keypress(self, widget, event):
         # Check for Ctrl-Return/Enter
-        if event.state & gtk.gdk.CONTROL_MASK and event.keyval in (gtk.keysyms.Return, gtk.keysyms.KP_Enter):
+        if event.get_state() & Gdk.ModifierType.CONTROL_MASK and event.keyval in (Gdk.KEY_Return, Gdk.KEY_KP_Enter):
             buff = self.buff
             cursor_mark = buff.get_insert()
             cursor_iter = buff.get_iter_at_mark(cursor_mark)
@@ -1305,13 +1304,13 @@ class TaskView(gtk.TextView):
     def _motion(self, view, ev):
         window = ev.window
         x, y, _ = window.get_pointer()
-        x, y = view.window_to_buffer_coords(gtk.TEXT_WINDOW_TEXT, x, y)
+        x, y = view.window_to_buffer_coords(Gtk.TextWindowType.TEXT, x, y)
         tags = view.get_iter_at_location(x, y).get_tags()
         for tag in tags:
             if tag.get_data('is_anchor'):
                 for t in set(self.__tags) - set([tag]):
                     self.__tag_reset(t, window)
-                self.__set_anchor(window, tag, gtk.gdk.Cursor(gtk.gdk.HAND2),
+                self.__set_anchor(window, tag, Gdk.Cursor.new(Gdk.CursorType.HAND2),
                                   self.get_property('hover'))
                 break
         else:
@@ -1321,12 +1320,12 @@ class TaskView(gtk.TextView):
     #We clicked on a link
     def _tag_event(self, tag, view, ev, _iter, text, anchor, typ): #pylint: disable-msg=W0613
         _type = ev.type
-        if _type == gtk.gdk.MOTION_NOTIFY:
+        if _type == Gdk.EventType.MOTION_NOTIFY:
             return
-        elif _type in [gtk.gdk.BUTTON_PRESS, gtk.gdk.BUTTON_RELEASE]:
+        elif _type in [Gdk.EventType.BUTTON_PRESS, Gdk.EventType.BUTTON_RELEASE]:
             button = ev.button
-            cursor = gtk.gdk.Cursor(gtk.gdk.HAND2)
-            if _type == gtk.gdk.BUTTON_RELEASE:
+            cursor = Gdk.Cursor.new(Gdk.CursorType.HAND2)
+            if _type == Gdk.EventType.BUTTON_RELEASE:
                 if typ == "subtask":
                     self.open_task(anchor)
                 elif typ == "http":
@@ -1342,7 +1341,7 @@ class TaskView(gtk.TextView):
     def __tag_reset(self, tag, window):
         if tag.get_data('is_anchor'):
             #We need to get the normal cursor back
-            editing_cursor = gtk.gdk.Cursor(gtk.gdk.XTERM)
+            editing_cursor = Gdk.Cursor.new(Gdk.CursorType.XTERM)
             if tag.get_property('strikethrough'):
                 linktype = 'done'
             else:
@@ -1359,4 +1358,6 @@ class TaskView(gtk.TextView):
             tag.set_property(key, val)
 
 
-gobject.type_register(TaskView)
+GObject.type_register(TaskView)
+
+# -----------------------------------------------------------------------------

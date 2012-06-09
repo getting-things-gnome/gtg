@@ -17,7 +17,7 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-import gobject
+from gi.repository import GObject
 import unittest
 import uuid
 
@@ -46,14 +46,14 @@ class TestSignalTesting(unittest.TestCase):
         self.assertEqual(arg, one_signal_arguments[0])
 
 
-class FakeGobject(gobject.GObject):
-    __gsignals__ = {'one': (gobject.SIGNAL_RUN_FIRST,
-                               gobject.TYPE_NONE, (str, )),
-                    'two': (gobject.SIGNAL_RUN_FIRST,
-                               gobject.TYPE_NONE, (str, ))}
+class FakeGobject(GObject.GObject):
+    __gsignals__ = {'one': (GObject.SignalFlags.RUN_FIRST,
+                               None, (str, )),
+                    'two': (GObject.SignalFlags.RUN_FIRST,
+                               None, (str, ))}
 
     def emit_signal(self, signal_name, argument):
-        gobject.idle_add(self.emit, signal_name, argument)
+        GObject.idle_add(self.emit, signal_name, argument)
 
 
 def test_suite():

@@ -32,7 +32,9 @@ def import_liblarch(use_local=False):
     If use_local, prioritize local (development) liblarch in ../liblarch"""
 
     def check_liblarch():
-        """ Import liblarch and find out which one is missing """
+        """
+        Import liblarch and find out which one is missing
+        """
         has_libraries = True
         missing = []
         try:
@@ -59,13 +61,13 @@ def import_liblarch(use_local=False):
         has_libraries, missing = check_liblarch()
 
     if not has_libraries:
-        print """GTG can't find %s. To install missing libraries,
-run the following command in the current folder:
+        print((
+            "GTG can't find {0}. To install missing libraries,\n"
+            "run the following command in the current folder:\n"
+            "\n{1}\n\n"
+            "More information about liblarch: https://live.gnome.org/liblarch/"
+        )).format(missing, GIT_CMD)
 
-%s
-
-More information about liblarch: https://live.gnome.org/liblarch/""" % (
-                                                            missing, GIT_CMD)
         return False
 
     import liblarch

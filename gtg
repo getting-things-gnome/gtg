@@ -23,7 +23,7 @@
 import sys
 
 from optparse import OptionParser
-from gtk.gdk import Screen
+from gi.repository.Gdk import Screen
 
 from GTG import info
 from GTG.tools.import_liblarch import import_liblarch
@@ -34,8 +34,8 @@ def x_is_running():
     try:
         if Screen().get_display():
             return True
-    except RuntimeError:
-        pass
+    except RuntimeError, exc:
+        print(exc)
     return False
 
 
@@ -45,6 +45,7 @@ def main():
     Importing GTG.gtg must be done after importing and setting up paths
     for Liblarch """
 
+    print("setting parsing")
     parser = OptionParser()
     parser.add_option('-b', '--boot-test', action='store_true',
       dest='boot_test', help="Exit after completing boot-up actions",
@@ -63,8 +64,12 @@ def main():
       dest='print_version', help="Print GTG's version number", default=False)
     (options, args) = parser.parse_args()
 
+    print("setting title")
+
     if options.title is not None:
         info.NAME = options.title
+
+    print("version printing")
 
     if options.print_version:
         print "GTG (Getting Things Gnome!)", info.VERSION
@@ -77,11 +82,15 @@ def main():
         sys.exit(1)
 
     elif import_liblarch(options.local_liblarch):
+        print("importing GTG")
         from GTG import gtg
+        print("running main in gtg")
         sys.exit(gtg.main(options, args))
+
 
 if __name__ == "__main__":
     try:
+        print("running as main")
         main()
     except KeyboardInterrupt:
         sys.exit(1)

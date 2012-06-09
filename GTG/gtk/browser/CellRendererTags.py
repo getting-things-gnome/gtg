@@ -20,22 +20,18 @@
 #=== IMPORT ===================================================================
 
 #system imports
-import pygtk
-pygtk.require('2.0')
-import gobject
-import glib
-import gtk
+from gi.repository import GObject, GLib, Gtk, Gdk
 import cairo
 from GTG.tools.logger import Log
 
 #=== MAIN CLASS ===============================================================
 
-class CellRendererTags(gtk.GenericCellRenderer):
+class CellRendererTags(Gtk.CellRenderer):
     __gproperties__ = {
-        'tag_list': (gobject.TYPE_PYOBJECT,\
-            "Tag list", "A list of tags", gobject.PARAM_READWRITE),
-        'tag': (gobject.TYPE_PYOBJECT, "Tag",\
-             "Tag", gobject.PARAM_READWRITE),
+        'tag_list': (GObject.TYPE_PYOBJECT,\
+            "Tag list", "A list of tags", GObject.PARAM_READWRITE),
+        'tag': (GObject.TYPE_PYOBJECT, "Tag",\
+             "Tag", GObject.PARAM_READWRITE),
     }
 
     # Private methods
@@ -78,7 +74,7 @@ class CellRendererTags(gtk.GenericCellRenderer):
 
     # Class methods
     def __init__(self): #pylint: disable-msg=W0231
-        self.__gobject_init__()
+        Gtk.CellRenderer.__init__(self)
         self.tag_list = None
         self.tag      = None
         self.xpad     = 1
@@ -113,7 +109,7 @@ class CellRendererTags(gtk.GenericCellRenderer):
 
         # Drawing context
         cr         = window.cairo_create()
-        gdkcontext = gtk.gdk.CairoContext(cr)
+        gdkcontext = Gdk.CairoContext(cr)
         gdkcontext.set_antialias(cairo.ANTIALIAS_NONE)
 
         # Coordinates of the origin point
@@ -134,12 +130,12 @@ class CellRendererTags(gtk.GenericCellRenderer):
 
             if my_tag_icon:
                 try:
-                    pixbuf = gtk.icon_theme_get_default().load_icon(
+                    pixbuf = Gtk.IconTheme.get_default().load_icon(
                                     my_tag_icon, 16, 0)
                     gdkcontext.set_source_pixbuf(pixbuf, rect_x, rect_y)
                     gdkcontext.paint()
                     count = count + 1
-                except glib.GError:
+                except GLib.GError:
                     # In some rare cases an icon could not be found
                     # (e.g. wrong set icon path, missing icon)
                     # Raising an exception breaks UI and signal catcher badly
@@ -148,7 +144,7 @@ class CellRendererTags(gtk.GenericCellRenderer):
             elif my_tag_color:
 
                 # Draw rounded rectangle
-                my_color = gtk.gdk.color_parse(my_tag_color)
+                my_color = Gdk.color_parse(my_tag_color)
                 gdkcontext.set_source_color(my_color)
                 self.__roundedrec(gdkcontext, rect_x, rect_y, 16, 16, 8)
                 gdkcontext.fill()
@@ -188,4 +184,8 @@ class CellRendererTags(gtk.GenericCellRenderer):
         else:
             return (self.xpad, self.ypad, self.xpad*2, self.ypad*2)
 
-gobject.type_register(CellRendererTags)
+# -----------------------------------------------------------------------------
+
+GObject.type_register(CellRendererTags)
+
+# -----------------------------------------------------------------------------

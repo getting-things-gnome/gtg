@@ -17,15 +17,18 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 """ A dialog for batch adding/removal of tags """
-import gtk
+
+from gi.repository import Gtk
 
 from GTG import _
 from GTG.gtk.browser import GnomeConfig
 from GTG.tools.tags import parse_tag_list
 
 
-class ModifyTagsDialog:
-    """ Dialog for batch adding/removal of tags """
+class ModifyTagsDialog(object):
+    """
+    Dialog for batch adding/removal of tags
+    """
 
     def __init__(self, tag_completion, req):
         self.req = req
@@ -40,7 +43,7 @@ class ModifyTagsDialog:
 
     def _init_dialog(self):
         """ Init .glade file """
-        builder = gtk.Builder()
+        builder = Gtk.Builder()
         builder.add_from_file(GnomeConfig.MODIFYTAGS_GLADE_FILE)
         builder.connect_signals({
             "on_modifytags_confirm":
@@ -97,3 +100,5 @@ class ModifyTagsDialog:
         # Rember the last actions
         self.last_tag_entry = self.tag_entry.get_text()
         self.last_apply_to_subtasks = self.apply_to_subtasks.get_active()
+
+# -----------------------------------------------------------------------------

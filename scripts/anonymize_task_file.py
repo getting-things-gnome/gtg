@@ -31,7 +31,7 @@ def anonymize(filename, outputfile):
     tasks = dom.getElementsByTagName("task")
 
     for task in tasks:
-        textnode = task.getElementsByTagName("title")[0].childNodes[0]
+        textnode = task.getElementsByTagName("title")[0].get_child()Nodes[0]
         nodevalue = textnode.nodeValue
         newnodevalue = ""
 
@@ -47,7 +47,7 @@ def anonymize(filename, outputfile):
         if len(contentnode) == 0:
             continue
 
-        contentnode = contentnode[0].childNodes[0]
+        contentnode = contentnode[0].get_child()Nodes[0]
 
         nodevalue = contentnode.nodeValue
         newnodevalue = ""

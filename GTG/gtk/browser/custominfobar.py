@@ -17,7 +17,7 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-import gtk
+from gi.repository import Gtk
 import threading
 
 from GTG                         import _
@@ -26,9 +26,9 @@ from GTG.tools.networkmanager    import is_connection_up
 
 
 
-class CustomInfoBar(gtk.InfoBar):
+class CustomInfoBar(Gtk.InfoBar):
     '''
-    A gtk.InfoBar specialized for displaying errors and requests for
+    A Gtk.InfoBar specialized for displaying errors and requests for
     interaction coming from the backends
     '''
 
@@ -62,7 +62,7 @@ class CustomInfoBar(gtk.InfoBar):
     def get_backend_id(self):
         '''
         Getter function to return the id of the backend for which this
-        gtk.InfoBar was created
+        Gtk.InfoBar was created
         '''
         return self.backend_id
 
@@ -70,10 +70,10 @@ class CustomInfoBar(gtk.InfoBar):
         '''Setting up gtk widgets'''
         content_hbox = self.get_content_area()
         content_hbox.set_homogeneous(False)
-        self.label = gtk.Label()
+        self.label = Gtk.Label()
         self.label.set_line_wrap(True)
         self.label.set_alignment(0.5, 0.5)
-        self.label.set_justify(gtk.JUSTIFY_FILL)
+        self.label.set_justify(Gtk.Justification.FILL)
         content_hbox.pack_start(self.label, True, True)
 
     def _on_error_response(self, widget, event):
@@ -85,7 +85,7 @@ class CustomInfoBar(gtk.InfoBar):
         @param event: the code of the gtk response
         '''
         self.hide()
-        if event == gtk.RESPONSE_ACCEPT:
+        if event == Gtk.ResponseType.ACCEPT:
             self.vmanager.configure_backend(backend_id = self.backend_id)
 
     def set_error_code(self, error_code):
@@ -100,23 +100,23 @@ class CustomInfoBar(gtk.InfoBar):
         backend_name = self.backend.get_human_name()
 
         if error_code == BackendSignals.ERRNO_AUTHENTICATION:
-            self.set_message_type(gtk.MESSAGE_ERROR)
+            self.set_message_type(Gtk.MessageType.ERROR)
             self.label.set_markup(self.AUTHENTICATION_MESSAGE % backend_name)
-            self.add_button(_('Configure synchronization service'), gtk.RESPONSE_ACCEPT)
-            self.add_button(_('Ignore'), gtk.RESPONSE_CLOSE)
+            self.add_button(_('Configure synchronization service'), Gtk.ResponseType.ACCEPT)
+            self.add_button(_('Ignore'), Gtk.ResponseType.CLOSE)
 
         elif error_code == BackendSignals.ERRNO_NETWORK:
             if not is_connection_up():
                 return
-            self.set_message_type(gtk.MESSAGE_WARNING)
+            self.set_message_type(Gtk.MessageType.WARNING)
             self.label.set_markup(self.NETWORK_MESSAGE % backend_name)
             #FIXME: use gtk stock button instead
-            self.add_button(_('Ok'), gtk.RESPONSE_CLOSE)
+            self.add_button(_('Ok'), Gtk.ResponseType.CLOSE)
         
         elif error_code == BackendSignals.ERRNO_DBUS:
-            self.set_message_type(gtk.MESSAGE_WARNING)
+            self.set_message_type(Gtk.MessageType.WARNING)
             self.label.set_markup(self.DBUS_MESSAGE % backend_name)
-            self.add_button(_('Ok'), gtk.RESPONSE_CLOSE)
+            self.add_button(_('Ok'), Gtk.ResponseType.CLOSE)
 
         self.show_all()
 
@@ -132,14 +132,14 @@ class CustomInfoBar(gtk.InfoBar):
         '''
         self._populate()
         self.callback = callback
-        self.set_message_type(gtk.MESSAGE_INFO)
+        self.set_message_type(Gtk.MessageType.INFO)
         self.label.set_markup(description)
         self.connect("response", self._on_interaction_response)
         self.interaction_type = interaction_type
         if interaction_type == BackendSignals().INTERACTION_CONFIRM:
-            self.add_button(_('Confirm'), gtk.RESPONSE_ACCEPT)
+            self.add_button(_('Confirm'), Gtk.ResponseType.ACCEPT)
         elif interaction_type == BackendSignals().INTERACTION_TEXT:
-            self.add_button(_('Continue'), gtk.RESPONSE_ACCEPT)
+            self.add_button(_('Continue'), Gtk.ResponseType.ACCEPT)
         self.show_all()
 
     def _on_interaction_response(self, widget, event):
@@ -150,7 +150,7 @@ class CustomInfoBar(gtk.InfoBar):
         @param widget: not used, here for compatibility with signals callbacks
         @param event: the code of the gtk response
         '''
-        if event == gtk.RESPONSE_ACCEPT:
+        if event == Gtk.ResponseType.ACCEPT:
             if self.interaction_type == BackendSignals().INTERACTION_TEXT:
                 self._prepare_textual_interaction()
                 print "done"
@@ -164,33 +164,35 @@ class CustomInfoBar(gtk.InfoBar):
         Helper function. gtk calls to populate the infobar in the case of
         interaction request
         '''
-        title, description\
-                = getattr(self.backend,
-                          self.callback)("get_ui_dialog_text")
-        self.dialog = gtk.Window()#type = gtk.WINDOW_POPUP)
+        title, description = getattr(
+            self.backend,
+            self.callback
+        )("get_ui_dialog_text")
+
+        self.dialog = Gtk.Window() #  type = Gtk.WindowType.POPUP
         self.dialog.set_title(title)
         self.dialog.set_transient_for(self.browser.window)
         self.dialog.set_destroy_with_parent(True)
-        self.dialog.set_position(gtk.WIN_POS_CENTER_ON_PARENT)
+        self.dialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
         self.dialog.set_modal(True)
         #        self.dialog.set_size_request(300,170)
-        vbox = gtk.VBox()
+        vbox = Gtk.VBox()
         self.dialog.add(vbox)
-        description_label = gtk.Label()
-        description_label.set_justify(gtk.JUSTIFY_FILL)
+        description_label = Gtk.Label()
+        description_label.set_justify(Gtk.Justification.FILL)
         description_label.set_line_wrap(True)
         description_label.set_markup(description)
-        align = gtk.Alignment(0.5, 0.5, 1, 1)
+        align = Gtk.Alignment.new(0.5, 0.5, 1, 1)
         align.set_padding(10, 0, 20, 20)
         align.add(description_label)
-        vbox.pack_start(align)
-        self.text_box = gtk.Entry()
+        vbox.pack_start(align, True, True, 0)
+        self.text_box = Gtk.Entry()
         self.text_box.set_size_request(-1, 40)
-        align = gtk.Alignment(0.5, 0.5, 1, 1)
+        align = Gtk.Alignment.new(0.5, 0.5, 1, 1)
         align.set_padding(20, 20, 20, 20)
         align.add(self.text_box)
-        vbox.pack_start(align)
-        button = gtk.Button(stock = gtk.STOCK_OK)
+        vbox.pack_start(align, True, True, 0)
+        button = Gtk.Button(stock = Gtk.STOCK_OK)
         button.connect("clicked", self._on_text_confirmed)
         button.set_size_request(-1, 40)
         vbox.pack_start(button, False)

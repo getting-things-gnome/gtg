@@ -18,7 +18,7 @@
 # -----------------------------------------------------------------------------
 from calendar import timegm
 import dbus
-import gtk
+from gi.repository import Gtk
 import os
 import re
 import time
@@ -40,7 +40,7 @@ class hamsterPlugin:
     def __init__(self):
         #task editor widget
         self.vbox = None
-        self.button=gtk.ToolButton()
+        self.button=Gtk.ToolButton()
 
     #### Interaction with Hamster
     def sendTask(self, task):
@@ -169,7 +169,7 @@ class hamsterPlugin:
 
         # add menu item
         if plugin_api.is_browser():
-            self.menu_item = gtk.MenuItem(_("Start task in Hamster"))
+            self.menu_item = Gtk.MenuItem(_("Start task in Hamster"))
             self.menu_item.show_all()
             self.menu_item.connect('activate', self.browser_cb, plugin_api)
             plugin_api.add_menu_item(self.menu_item)
@@ -186,7 +186,7 @@ class hamsterPlugin:
 
     def onTaskOpened(self, plugin_api):
         # add button
-        self.taskbutton = gtk.ToolButton()
+        self.taskbutton = Gtk.ToolButton()
         self.taskbutton.set_label("Start")
         self.taskbutton.set_icon_name('hamster-applet')
         self.taskbutton.set_tooltip_text(self.TOOLTIP_TEXT)
@@ -199,23 +199,23 @@ class hamsterPlugin:
 
         if len(records):
             # add section to bottom of window
-            vbox = gtk.VBox()
-            inner_table = gtk.Table(rows=len(records), columns=2)
+            vbox = Gtk.VBox()
+            inner_table = Gtk.Table(rows=len(records), columns=2)
             if len(records)>8:
-                s = gtk.ScrolledWindow()
-                s.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
-                v=gtk.Viewport()
+                s = Gtk.ScrolledWindow()
+                s.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
+                v=Gtk.Viewport()
                 v.add(inner_table)
                 s.add(v)
-                v.set_shadow_type(gtk.SHADOW_NONE)
+                v.set_shadow_type(Gtk.ShadowType.NONE)
                 s.set_size_request(-1, 150)
             else:
                 s=inner_table
 
-            outer_table = gtk.Table(rows=1, columns=2)
-            vbox.pack_start(s)
-            vbox.pack_start(outer_table)
-            vbox.pack_end(gtk.HSeparator())
+            outer_table = Gtk.Table(rows=1, columns=2)
+            vbox.pack_start(s, True, True, 0)
+            vbox.pack_start(outer_table, True, True, 0)
+            vbox.pack_end(Gtk.HSeparator())
 
             total = 0
 
@@ -224,20 +224,20 @@ class hamsterPlugin:
                     a = "<span color='red'>%s</span>" % a
                     b = "<span color='red'>%s</span>" % b
 
-                dateLabel=gtk.Label(a)
+                dateLabel=Gtk.Label(label=a)
                 dateLabel.set_use_markup(True)
                 dateLabel.set_alignment(xalign=0.0, yalign=0.5)
                 dateLabel.set_size_request(200, -1)
                 w.attach(dateLabel, left_attach=0, right_attach=1,
                     top_attach=offset, bottom_attach=offset+1,
-                    xoptions=gtk.FILL, xpadding=20, yoptions=0)
+                    xoptions=Gtk.AttachOptions.FILL, xpadding=20, yoptions=0)
 
-                durLabel=gtk.Label(b)
+                durLabel=Gtk.Label(label=b)
                 durLabel.set_use_markup(True)
                 durLabel.set_alignment(xalign=0.0, yalign=0.5)
                 w.attach(durLabel, left_attach=1, right_attach=2,
                     top_attach=offset, bottom_attach=offset+1,
-                    xoptions=gtk.FILL, yoptions=0)
+                    xoptions=Gtk.AttachOptions.FILL, yoptions=0)
 
             active_id = self.get_active_id()
             for offset, i in enumerate(records):
@@ -319,7 +319,7 @@ class hamsterPlugin:
                                               "preferences", self.preferences)
 
     def preference_dialog_init(self):
-        self.builder = gtk.Builder()
+        self.builder = Gtk.Builder()
         path = "%s/prefs.ui" % os.path.dirname(os.path.abspath(__file__))
         self.builder.add_from_file(path)
         self.preferences_dialog = self.builder.get_object("dialog1")

@@ -133,13 +133,15 @@ def core_main_init(options = None, args = None):
     '''
     Part of the main function prior to the UI initialization.
     '''
-    # Debugging subsystem initialization
-    if options.debug:
-        Log.setLevel(logging.DEBUG)
-        Log.debug("Debug output enabled.")
-    else:
-        Log.setLevel(logging.INFO)
-    Log.set_debugging_mode(options.debug)
+    if not options == None:
+        # Debugging subsystem initialization
+        if options.debug:
+            Log.setLevel(logging.DEBUG)
+            Log.debug("Debug output enabled.")
+        else:
+            Log.setLevel(logging.INFO)
+        Log.set_debugging_mode(options.debug)
+
     config = CoreConfig()
     check_instance(config.get_data_dir(), args)
     backends_list = BackendFactory().get_saved_backends_list()

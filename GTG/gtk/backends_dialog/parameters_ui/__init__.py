@@ -24,7 +24,7 @@ built for them: it should play along the lines of the separation between GTG
 server and client
 '''
 
-import gtk
+from gi.repository import Gtk
 import functools
 
 from GTG import _
@@ -38,9 +38,9 @@ from GTG.gtk.backends_dialog.parameters_ui.pathui       import PathUI
 
 
 
-class ParametersUI(gtk.VBox):
+class ParametersUI(Gtk.VBox):
     '''
-    Given a bakcend, this gtk.VBox populates itself with all the necessary
+    Given a bakcend, this Gtk.VBox populates itself with all the necessary
     widgets to view and edit a backend configuration
     '''
 
@@ -139,7 +139,7 @@ class ParametersUI(gtk.VBox):
             return
         for parameter_name, widget in self.parameter_widgets:
             if parameter_name in backend_parameters:
-                self.pack_start(widget(backend), True)
+                self.pack_start(widget(backend, True, True, 0), True)
         self.show_all()
 
     def commit_changes(self):

@@ -18,13 +18,13 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-from distutils.core     import setup
-from distutils.command.install_data import install_data
-from subprocess import call
-
-import glob
 import os
+from subprocess import call
+from distutils.command.install_data import install_data
 
+from glob import glob
+
+from setuptools import setup
 from GTG import info
 
 ### CONSTANTS ################################################################
@@ -79,7 +79,7 @@ def create_data_files():
 PO_DIR = 'po'
 MO_DIR = os.path.join('build', 'po')
 
-for po in glob.glob(os.path.join(PO_DIR, '*.po')):
+for po in glob(os.path.join(PO_DIR, '*.po')):
     lang = os.path.basename(po[:-3])
     mo = os.path.join(MO_DIR, lang, 'gtg.mo')
     target_dir = os.path.dirname(mo)
@@ -102,7 +102,7 @@ class InstallData(install_data):
 
     def find_mo_files(self):
         data_files = []
-        for mo in glob.glob(os.path.join(MO_DIR, '*', 'gtg.mo')):
+        for mo in glob(os.path.join(MO_DIR, '*', 'gtg.mo')):
             lang = os.path.basename(os.path.dirname(mo))
             dest = os.path.join('share', 'locale', lang, 'LC_MESSAGES')
             data_files.append((dest, [mo]))
@@ -145,12 +145,8 @@ setup(
     ],
   package_data = {
     'GTG.core.plugins': ['pluginmanager.glade'],
-    'GTG.gtk': [
-        'preferences.glade',
-        'plugins.glade',
-        'deletion.glade',
-        'backends_dialog.glade',
-        ],
+    'GTG.gtk':
+        ['preferences.glade', 'deletion.glade', 'backends_dialog.glade'],
     'GTG.gtk.browser': ['taskbrowser.glade', 'modifytags_dialog.glade'],
     'GTG.gtk.editor': ['taskeditor.glade'],
     'GTG.plugins': [

@@ -17,11 +17,11 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-import gtk
+from gi.repository import Gtk
 
 
 
-class CheckBoxUI(gtk.HBox):
+class CheckBoxUI(Gtk.HBox):
     '''
     It's a widget displaying a simple checkbox, with some text to explain its
     meaning
@@ -34,7 +34,7 @@ class CheckBoxUI(gtk.HBox):
 
         @param req: a Requester
         @param backend: a backend object
-        @param width: the width of the gtk.Label object
+        @param width: the width of the Gtk.Label object
         @param parameter: the backend parameter this checkbox should display and
                            modify
         '''
@@ -48,9 +48,9 @@ class CheckBoxUI(gtk.HBox):
     def _populate_gtk(self, width):
         '''Creates the checkbox and the related label
         
-        @param width: the width of the gtk.Label object
+        @param width: the width of the Gtk.Label object
         '''
-        self.checkbutton =gtk.CheckButton(label = self.text)
+        self.checkbutton =Gtk.CheckButton(label = self.text)
         self.checkbutton.set_active(self.backend.get_parameters()[self.parameter])
         self.checkbutton.connect("toggled", self.on_modified)
         self.pack_start(self.checkbutton, False)

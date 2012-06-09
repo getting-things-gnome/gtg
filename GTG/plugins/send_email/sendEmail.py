@@ -19,8 +19,8 @@
 - Added support for tags and subtasks. (Thibault Févry)
 """
 
-import gio
-import gtk
+from gi.repository import Gio
+from gi.repository import Gtk
 import urllib
 
 from GTG import _
@@ -37,10 +37,10 @@ class pluginSendEmail:
         """
         self.plugin_api = plugin_api
         # add a item (button) to the ToolBar
-        tb_Taskicon = gtk.Image()
+        tb_Taskicon = Gtk.Image()
         tb_Taskicon.set_from_icon_name('mail-send', 32)
 
-        self.tb_Taskbutton = gtk.ToolButton(tb_Taskicon)
+        self.tb_Taskbutton = Gtk.ToolButton(tb_Taskicon)
         self.tb_Taskbutton.set_label(_("Send via email"))
         self.tb_Taskbutton.connect('clicked', self.onTbTaskButton, plugin_api)
         self.tb_Taskbutton.show_all()
@@ -77,5 +77,5 @@ class pluginSendEmail:
         parameters = urllib.urlencode({'subject': title, 'body': body})
         parameters = parameters.replace('+', '%20')
 
-        gio.app_info_get_default_for_uri_scheme('mailto').launch_uris( \
+        Gio.app_info_get_default_for_uri_scheme('mailto').launch_uris( \
                 ['mailto:' + 'gtg@example.com?' + parameters])

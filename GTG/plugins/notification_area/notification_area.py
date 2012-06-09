@@ -17,7 +17,7 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import os
-import gtk
+from gi.repository import Gtk
 try:
     import appindicator
 except:
@@ -74,7 +74,7 @@ class NotificationArea:
         self.__requester = plugin_api.get_requester()
         # Tasks_in_menu will hold the menu_items in the menu, to quickly access
         # them given the task id. Contains tuple of this format:
-        # (title, key, gtk.MenuItem)
+        # (title, key, Gtk.MenuItem)
         self.__init_gtk()
         self.__connect_to_tree()
 
@@ -116,16 +116,16 @@ class NotificationArea:
     def __init_gtk(self):
         browser = self.__view_manager.get_browser()
 
-        self.__menu = gtk.Menu()
+        self.__menu = Gtk.Menu()
 
         #add "new task"
-        menuItem = gtk.ImageMenuItem(gtk.STOCK_ADD)
+        menuItem = Gtk.ImageMenuItem(Gtk.STOCK_ADD)
         menuItem.get_children()[0].set_label(_('Add _New Task'))
         menuItem.connect('activate', self.__open_task)
         self.__menu.append(menuItem)
 
         #view in main window checkbox
-        view_browser_checkbox = gtk.CheckMenuItem(_("_View Main Window"))
+        view_browser_checkbox = Gtk.CheckMenuItem(_("_View Main Window"))
         view_browser_checkbox.set_active(browser.is_shown())
         self.__signal_handler = view_browser_checkbox.connect('activate',
                                                        self.__toggle_browser)
@@ -136,14 +136,14 @@ class NotificationArea:
 
         #separator (it's intended to be after show_all)
         # separator should be shown only when having tasks
-        self.__task_separator = gtk.SeparatorMenuItem()
+        self.__task_separator = Gtk.SeparatorMenuItem()
         self.__menu.append(self.__task_separator)
         self.__menu_top_length = len(self.__menu)
 
-        self.__menu.append(gtk.SeparatorMenuItem())
+        self.__menu.append(Gtk.SeparatorMenuItem())
 
         #quit item
-        menuItem = gtk.ImageMenuItem(gtk.STOCK_QUIT)
+        menuItem = Gtk.ImageMenuItem(Gtk.STOCK_QUIT)
         menuItem.connect('activate', self.__view_manager.close_browser)
         self.__menu.append(menuItem)
 
@@ -157,7 +157,7 @@ class NotificationArea:
             self.__indicator.set_menu(self.__menu)
             self.__indicator.set_status(appindicator.STATUS_ACTIVE)
         else:
-            self.status_icon = gtk.StatusIcon()
+            self.status_icon = Gtk.StatusIcon()
             self.status_icon.set_from_icon_name("gtg")
             self.status_icon.set_tooltip("Getting Things Gnome!")
             self.status_icon.set_visible(True)
@@ -204,7 +204,7 @@ class NotificationArea:
         title = self.__create_short_title(task.get_title())
 
         #creating the menu item
-        menu_item = gtk.MenuItem(title, False)
+        menu_item = Gtk.MenuItem(title, False)
         menu_item.connect('activate', self.__open_task, tid)
         self.__tasks_menu.add(tid, (task.get_due_date(), title), menu_item)
 
@@ -227,7 +227,7 @@ class NotificationArea:
 
     def __on_icon_popup(self, icon, button, timestamp, menu=None):
         if not self.__indicator:
-            menu.popup(None, None, gtk.status_icon_position_menu, \
+            menu.popup(None, None, Gtk.status_icon_position_menu, \
                        button, timestamp, icon)
 
 ### Preferences methods #######################################################
@@ -249,7 +249,7 @@ class NotificationArea:
         return True
 
     def preference_dialog_init(self):
-        self.builder = gtk.Builder()
+        self.builder = Gtk.Builder()
         self.builder.add_from_file(os.path.join(
                     os.path.dirname(os.path.abspath(__file__)),
                     "notification_area.ui"))

@@ -15,7 +15,7 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from math import ceil
-import gtk
+from gi.repository import Gtk
 import os
 
 from GTG.tools.dates import Date
@@ -90,7 +90,7 @@ class pluginUrgencyColor:
         pass
 
     def prefs_init(self):
-        self.builder = gtk.Builder()
+        self.builder = Gtk.Builder()
         self.builder.add_from_file(os.path.join(
             os.path.dirname(os.path.abspath(__file__)),
             'preferences.ui'))
@@ -146,13 +146,13 @@ class pluginUrgencyColor:
         self.spinbutton_reddays.set_value(self._pref_data['reddays'])
         # Colorbutton - RED
         self.colorbutton_red.set_color( \
-            gtk.gdk.color_parse(self._pref_data['color_red']))
+            Gdk.color_parse(self._pref_data['color_red']))
         # Colorbutton - YELLOW
         self.colorbutton_yellow.set_color( \
-            gtk.gdk.color_parse(self._pref_data['color_yellow']))
+            Gdk.color_parse(self._pref_data['color_yellow']))
         # Colorbutton - GREEN
         self.colorbutton_green.set_color( \
-            gtk.gdk.color_parse(self._pref_data['color_green']))
+            Gdk.color_parse(self._pref_data['color_green']))
 
     def on_prefs_cancel(self, widget=None, data=None):
         self.prefs_update_widgets()

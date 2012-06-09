@@ -26,10 +26,7 @@ import time
 import threading
 from webbrowser import open as openurl
 
-import pygtk
-pygtk.require('2.0')
-import gobject
-import gtk
+from gi.repository import GObject, Gtk, Gdk
 
 #our own imports
 from GTG import _, info, ngettext
@@ -59,21 +56,21 @@ class Timer:
         self.start = time.time()
 
     def __exit__(self, *args):
-        print "%s : %s" % (self.name, time.time() - self.start)
+        print("{0} : {1}".format(self.name, time.time()-self.start))
 
 
-class TaskBrowser(gobject.GObject):
+class TaskBrowser(GObject.GObject):
     """ The UI for browsing open and closed tasks,
     and listing tags in a tree """
 
-    __string_signal__ = (gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (str, ))
-    __none_signal__ = (gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, tuple())
+    __string_signal__ = (GObject.SignalFlags.RUN_FIRST, None, (str, ))
+    __none_signal__ = (GObject.SignalFlags.RUN_FIRST, None, tuple())
     __gsignals__ = {'task-added-via-quick-add': __string_signal__,
                     'visibility-toggled': __none_signal__,
    }
 
     def __init__(self, requester, vmanager):
-        gobject.GObject.__init__(self)
+        GObject.GObject.__init__(self)
         # Object prime variables
         self.req = requester
         self.vmanager = vmanager
@@ -101,7 +98,7 @@ class TaskBrowser(gobject.GObject):
         self.tagtreeview = None
 
         # Load window tree
-        self.builder = gtk.Builder()
+        self.builder = Gtk.Builder()
         self.builder.add_from_file(GnomeConfig.GLADE_FILE)
 
         # Define aliases for specific widgets
@@ -145,8 +142,8 @@ class TaskBrowser(gobject.GObject):
         """
         icon_dirs = CoreConfig().get_icons_directories()
         for i in icon_dirs:
-            gtk.icon_theme_get_default().prepend_search_path(i)
-            gtk.window_set_default_icon_name("gtg")
+            Gtk.IconTheme.get_default().prepend_search_path(i)
+            Gtk.Window.set_default_icon_name("gtg")
 
     def _init_widget_aliases(self):
         """
@@ -237,7 +234,7 @@ class TaskBrowser(gobject.GObject):
         """
         Show the about dialog
         """
-        gtk.about_dialog_set_url_hook(lambda dialog, url: openurl(url))
+        Gtk.about_dialog_set_url_hook(lambda dialog, url: openurl(url))
         self.about.set_website(info.URL)
         self.about.set_website_label(info.URL)
         self.about.set_version(info.VERSION)
@@ -373,14 +370,14 @@ class TaskBrowser(gobject.GObject):
 
     def _add_accelerator_for_widget(self, agr, name, accel):
         widget = self.builder.get_object(name)
-        key, mod = gtk.accelerator_parse(accel)
-        widget.add_accelerator("activate", agr, key, mod, gtk.ACCEL_VISIBLE)
+        key, mod = Gtk.accelerator_parse(accel)
+        widget.add_accelerator("activate", agr, key, mod, Gtk.AccelFlags.VISIBLE)
 
     def _init_accelerators(self):
         """
         initialize gtk accelerators for different interface elements
         """
-        agr = gtk.AccelGroup()
+        agr = Gtk.AccelGroup()
         self.builder.get_object("MainWindow").add_accel_group(agr)
 
         self._add_accelerator_for_widget(agr, "view_sidebar", "F9")
@@ -399,9 +396,9 @@ class TaskBrowser(gobject.GObject):
         self._add_accelerator_for_widget(agr, "online_help", "F1")
 
         quickadd_field = self.builder.get_object("quickadd_field")
-        key, mod = gtk.accelerator_parse("<Control>l")
+        key, mod = Gtk.accelerator_parse("<Control>l")
         quickadd_field.add_accelerator("grab-focus", agr, key, mod,
-            gtk.ACCEL_VISIBLE)
+            Gtk.AccelFlags.VISIBLE)
 
 ### HELPER FUNCTIONS ########################################################
     def open_preferences(self, widget):
@@ -421,7 +418,7 @@ class TaskBrowser(gobject.GObject):
         and stores the state in self.config.max
         This is used to check the window state afterwards
         and maximize it if needed """
-        mask = gtk.gdk.WINDOW_STATE_MAXIMIZED
+        mask = Gdk.WindowState.MAXIMIZED
         if widget.get_window().get_state() & mask == mask:
             self.config.set("max", True)
         else:
@@ -527,7 +524,7 @@ class TaskBrowser(gobject.GObject):
                 return True
 
         for t in self.config.get("opened_tasks"):
-            gobject.idle_add(open_task, self.req, t)
+            GObject.idle_add(open_task, self.req, t)
 
     def do_toggle_workview(self):
         """ Switch between default and work view
@@ -625,7 +622,7 @@ class TaskBrowser(gobject.GObject):
     def on_sort_column_changed(self, model):
         sort_column, sort_order = model.get_sort_column_id()
 
-        if sort_order == gtk.SORT_ASCENDING:
+        if sort_order == Gtk.SortType.ASCENDING:
             sort_order = 0
         else:
             sort_order = 1
@@ -711,10 +708,10 @@ class TaskBrowser(gobject.GObject):
                 self.on_taskdone_cursor_changed)
             ctree.apply_filter(self.get_selected_tags()[0], refresh=True)
         if not self.closed_pane:
-            self.closed_pane = gtk.ScrolledWindow()
+            self.closed_pane = Gtk.ScrolledWindow()
             self.closed_pane.set_size_request(-1, 100)
-            self.closed_pane.set_policy(gtk.POLICY_AUTOMATIC,
-                gtk.POLICY_AUTOMATIC)
+            self.closed_pane.set_policy(Gtk.PolicyType.AUTOMATIC,
+                Gtk.PolicyType.AUTOMATIC)
             self.closed_pane.add(self.vtree_panes['closed'])
 
         elif self.accessory_notebook.page_num(self.closed_pane) != -1:
@@ -795,7 +792,7 @@ class TaskBrowser(gobject.GObject):
                         selection.select_path(path)
 
                 #It cannot be another thread than the main gtk thread !
-                gobject.idle_add(selecter, treemodelsort, path, iter, self)
+                GObject.idle_add(selecter, treemodelsort, path, iter, self)
             #event that is set when the new task is created
             self.__last_quick_added_tid_event = threading.Event()
             self.__quick_add_select_handle = \
@@ -809,7 +806,7 @@ class TaskBrowser(gobject.GObject):
             self.quickadd_entry.set_text('')
 
             #signal the event for the plugins to catch
-            gobject.idle_add(self.emit, "task-added-via-quick-add",
+            GObject.idle_add(self.emit, "task-added-via-quick-add",
                              task.get_id())
         else:
             #if no text is selected, we open the currently selected task
@@ -819,7 +816,7 @@ class TaskBrowser(gobject.GObject):
 
     def on_quickadd_iconpress(self, widget, icon, event):
         """ Clear the text in quickadd field by clicking on 'clear' icon """
-        if icon == gtk.ENTRY_ICON_SECONDARY:
+        if icon == Gtk.EntryIconPosition.SECONDARY:
             self.quickadd_entry.set_text('')
 
     def on_tag_treeview_button_press_event(self, treeview, event):
@@ -868,9 +865,9 @@ class TaskBrowser(gobject.GObject):
             return True
 
     def on_tag_treeview_key_press_event(self, treeview, event):
-        keyname = gtk.gdk.keyval_name(event.keyval)
+        keyname = Gdk.keyval_name(event.keyval)
         is_shift_f10 = (keyname == "F10" and
-            event.get_state() & gtk.gdk.SHIFT_MASK)
+            event.get_state() & Gdk.ModifierType.SHIFT_MASK)
         if is_shift_f10 or keyname == "Menu":
             selected_tags = self.get_selected_tags(nospecial=True)
             selected_search = self.get_selected_search()
@@ -911,9 +908,9 @@ class TaskBrowser(gobject.GObject):
             return True
 
     def on_task_treeview_key_press_event(self, treeview, event):
-        keyname = gtk.gdk.keyval_name(event.keyval)
+        keyname = Gdk.keyval_name(event.keyval)
         is_shift_f10 = (keyname == "F10" and
-            event.get_state() & gtk.gdk.SHIFT_MASK)
+            event.get_state() & Gdk.ModifierType.SHIFT_MASK)
 
         if keyname == "Delete":
             self.on_delete_tasks()
@@ -936,9 +933,9 @@ class TaskBrowser(gobject.GObject):
             return True
 
     def on_closed_task_treeview_key_press_event(self, treeview, event):
-        keyname = gtk.gdk.keyval_name(event.keyval)
+        keyname = Gdk.keyval_name(event.keyval)
         is_shift_f10 = (keyname == "F10" and
-            event.get_state() & gtk.gdk.SHIFT_MASK)
+            event.get_state() & Gdk.ModifierType.SHIFT_MASK)
 
         if keyname == "Delete":
             self.on_delete_tasks()
@@ -1165,7 +1162,7 @@ class TaskBrowser(gobject.GObject):
             button.set_label(settings["label"])
 
         def update_menu_item(menu_item, settings):
-            image = gtk.image_new_from_icon_name(settings["icon-name"], 16)
+            image = Gtk.Image.new_from_icon_name(settings["icon-name"], 16)
             image.set_pixel_size(16)
             image.show()
             menu_item.set_image(image)
@@ -1318,8 +1315,8 @@ class TaskBrowser(gobject.GObject):
         """Adds a new page tab to the left panel.  The tab will
         be added as the last tab.  Also causes the tabs to be
         shown if they're not.
-        @param icon: a gtk.Image picture to display on the tab
-        @param page: gtk.Frame-based panel to be added
+        @param icon: a Gtk.Image picture to display on the tab
+        @param page: Gtk.Frame-based panel to be added
         """
         return self._add_page(self.sidebar_notebook, icon, page)
 
@@ -1328,23 +1325,23 @@ class TaskBrowser(gobject.GObject):
         will be added as the last tab.  Also causes the tabs to be
         shown.
         @param title: Short text to use for the tab label
-        @param page: gtk.Frame-based panel to be added
+        @param page: Gtk.Frame-based panel to be added
         """
-        return self._add_page(self.main_notebook, gtk.Label(title), page)
+        return self._add_page(self.main_notebook, Gtk.Label(label=title), page)
 
     def add_page_to_accessory_notebook(self, title, page):
         """Adds a new page tab to the lower right accessory panel.  The
         tab will be added as the last tab.  Also causes the tabs to be
         shown.
         @param title: Short text to use for the tab label
-        @param page: gtk.Frame-based panel to be added
+        @param page: Gtk.Frame-based panel to be added
         """
-        return self._add_page(self.accessory_notebook, gtk.Label(title), page)
+        return self._add_page(self.accessory_notebook, Gtk.Label(label=title), page)
 
     def remove_page_from_sidebar_notebook(self, page):
         """Removes a new page tab from the left panel.  If this leaves
         only one tab in the notebook, the tab selector will be hidden.
-        @param page: gtk.Frame-based panel to be removed
+        @param page: Gtk.Frame-based panel to be removed
         """
         return self._remove_page(self.sidebar_notebook, page)
 
@@ -1352,7 +1349,7 @@ class TaskBrowser(gobject.GObject):
         """Removes a new page tab from the top right main panel.  If
         this leaves only one tab in the notebook, the tab selector will
         be hidden.
-        @param page: gtk.Frame-based panel to be removed
+        @param page: Gtk.Frame-based panel to be removed
         """
         return self._remove_page(self.main_notebook, page)
 
@@ -1360,7 +1357,7 @@ class TaskBrowser(gobject.GObject):
         """Removes a new page tab from the lower right accessory panel.
         If this leaves only one tab in the notebook, the tab selector
         will be hidden.
-        @param page: gtk.Frame-based panel to be removed
+        @param page: Gtk.Frame-based panel to be removed
         """
         return self._remove_page(self.accessory_notebook, page)
 
@@ -1368,7 +1365,7 @@ class TaskBrowser(gobject.GObject):
         """ Hides the task browser """
         self.browser_shown = False
         self.window.hide()
-        gobject.idle_add(self.emit, "visibility-toggled")
+        GObject.idle_add(self.emit, "visibility-toggled")
 
     def show(self):
         """ Unhides the TaskBrowser """
@@ -1378,7 +1375,7 @@ class TaskBrowser(gobject.GObject):
         self.window.present()
         self.window.grab_focus()
         self.quickadd_entry.grab_focus()
-        gobject.idle_add(self.emit, "visibility-toggled")
+        GObject.idle_add(self.emit, "visibility-toggled")
 
     def iconify(self):
         """ Minimizes the TaskBrowser """
@@ -1420,7 +1417,7 @@ class TaskBrowser(gobject.GObject):
     def on_backend_failed(self, sender, backend_id, error_code):
         """
         Signal callback.
-        When a backend fails to work, loads a gtk.Infobar to alert the user
+        When a backend fails to work, loads a Gtk.Infobar to alert the user
 
         @param sender: not used, only here for signal compatibility
         @param backend_id: the id of the failing backend
@@ -1435,7 +1432,7 @@ class TaskBrowser(gobject.GObject):
         '''
         Signal callback.
         When a backend needs some kind of feedback from the user,
-        loads a gtk.Infobar to alert the user.
+        loads a Gtk.Infobar to alert the user.
         This is used, for example, to request confirmation after authenticating
         via OAuth.
 
@@ -1453,10 +1450,10 @@ class TaskBrowser(gobject.GObject):
 
     def __remove_backend_infobar(self, child, backend_id):
         '''
-        Helper function to remove an gtk.Infobar related to a backend
+        Helper function to remove an Gtk.Infobar related to a backend
 
-        @param child: a gtk.Infobar
-        @param backend_id: the id of the backend which gtk.Infobar should be
+        @param child: a Gtk.Infobar
+        @param backend_id: the id of the backend which Gtk.Infobar should be
                             removed.
         '''
         if isinstance(child, CustomInfoBar) and\
@@ -1467,10 +1464,10 @@ class TaskBrowser(gobject.GObject):
     def remove_backend_infobar(self, sender, backend_id):
         '''
         Signal callback.
-        Deletes the gtk.Infobars related to a backend
+        Deletes the Gtk.Infobars related to a backend
 
         @param sender: not used, only here for signal compatibility
-        @param backend_id: the id of the backend which gtk.Infobar should be
+        @param backend_id: the id of the backend which Gtk.Infobar should be
                             removed.
         '''
         backend = self.req.get_backend(backend_id)
@@ -1485,7 +1482,7 @@ class TaskBrowser(gobject.GObject):
         Helper function to create a new infobar for a backend
 
         @param backend_id: the backend for which we're creating the infobar
-        @returns gtk.Infobar: the created infobar
+        @returns Gtk.Infobar: the created infobar
         '''
         #remove old infobar related to backend_id, if any
         if not self.vbox_toolbars:
@@ -1521,7 +1518,7 @@ class TaskBrowser(gobject.GObject):
 
         self.search_actions = []
 
-        self.search_complete_store = gtk.ListStore(str)
+        self.search_complete_store = Gtk.ListStore(str)
         for tagname in self.req.get_all_tags():
             # only for regular tags
             if tagname.startswith("@"):

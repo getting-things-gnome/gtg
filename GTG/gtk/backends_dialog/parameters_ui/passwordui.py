@@ -17,14 +17,14 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-import gtk
+from gi.repository import Gtk
 
 from GTG import _
 
 
 
-class PasswordUI(gtk.HBox):
-    '''Widget displaying a gtk.Label and a textbox to input a password'''
+class PasswordUI(Gtk.HBox):
+    '''Widget displaying a Gtk.Label and a textbox to input a password'''
     
 
     def __init__(self, req, backend, width):
@@ -33,7 +33,7 @@ class PasswordUI(gtk.HBox):
 
         @param req: a Requester
         @param backend: a backend object
-        @param width: the width of the gtk.Label object
+        @param width: the width of the Gtk.Label object
         '''
         super(PasswordUI, self).__init__()
         self.backend = backend
@@ -45,16 +45,16 @@ class PasswordUI(gtk.HBox):
     def _populate_gtk(self, width):
         '''Creates the text box and the related label
         
-        @param width: the width of the gtk.Label object
+        @param width: the width of the Gtk.Label object
         '''
-        password_label = gtk.Label(_("Password:"))
+        password_label = Gtk.Label(label=_("Password:"))
         password_label.set_alignment(xalign = 0, yalign = 0.5)
         password_label.set_size_request(width = width, height = -1)
         self.pack_start(password_label, False)
-        align = gtk.Alignment(xalign = 0, yalign = 0.5, xscale = 1)
+        align = Gtk.Alignment.new(xalign = 0, yalign = 0.5, xscale = 1)
         align.set_padding(0, 0, 10, 0)
         self.pack_start(align, True)
-        self.password_textbox = gtk.Entry()
+        self.password_textbox = Gtk.Entry()
         align.add(self.password_textbox)
 
     def _load_password(self):

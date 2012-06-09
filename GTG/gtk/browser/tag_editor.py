@@ -28,25 +28,21 @@ TagIconSelector is intended as a floating window that allows to select an icon
 for a tag.
 """
 
-import pygtk
-pygtk.require('2.0')
-import gobject
-import gtk
-import gtk.gdk as gdk # pylint: disable-msg=F0401
+from gi.repository import GObject, Gtk, Gdk, GdkPixbuf
 
 from GTG import _
 from GTG.gtk.browser.simple_color_selector import SimpleColorSelector
 
 
-class TagIconSelector(gtk.Window): # pylint: disable-msg=R0904
+class TagIconSelector(Gtk.Window): # pylint: disable-msg=R0904
     """
     TagIconSelector is intended as a floating window that allows to select
     an icon for a tag. It display a list of icon in a popup window.
     """
 
     def __init__(self):
-        self.__gobject_init__(type=gtk.WINDOW_POPUP)
-        gtk.Window.__init__(self)
+        self.__gobject_init__(type=Gtk.WindowType.POPUP)
+        GObject.GObject.__init__(self)
         self.loaded = False
         self.selected_icon = None
         self.symbol_model = None
@@ -57,15 +53,15 @@ class TagIconSelector(gtk.Window): # pylint: disable-msg=R0904
 
     def __build_window(self):
         """Build up the widget"""
-        self.set_type_hint(gtk.gdk.WINDOW_TYPE_HINT_POPUP_MENU)
-        vbox = gtk.VBox()
+        self.set_type_hint(Gdk.WindowTypeHint.POPUP_MENU)
+        vbox = Gtk.VBox()
         self.add(vbox)
         # icon list
-        scld_win = gtk.ScrolledWindow()
-        scld_win.set_policy(gtk.POLICY_NEVER, gtk.POLICY_ALWAYS)
-        scld_win.set_shadow_type(gtk.SHADOW_ETCHED_IN)
+        scld_win = Gtk.ScrolledWindow()
+        scld_win.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.ALWAYS)
+        scld_win.set_shadow_type(Gtk.ShadowType.ETCHED_IN)
         vbox.pack_start(scld_win, expand=True, fill=True)
-        self.symbol_iv = gtk.IconView()
+        self.symbol_iv = Gtk.IconView()
         self.symbol_iv.set_pixbuf_column(0)
         self.symbol_iv.set_property("columns", 7)
         self.symbol_iv.set_property("item-width", 32)
@@ -80,9 +76,9 @@ class TagIconSelector(gtk.Window): # pylint: disable-msg=R0904
         self.symbol_iv.set_size_request(40*7 + 12, 38*4)
         scld_win.add(self.symbol_iv)
         # icon remove button
-        img = gtk.Image()
-        img.set_from_stock(gtk.STOCK_REMOVE, gtk.ICON_SIZE_BUTTON)
-        self.remove_bt = gtk.Button()
+        img = Gtk.Image()
+        img.set_from_stock(Gtk.STOCK_REMOVE, Gtk.IconSize.BUTTON)
+        self.remove_bt = Gtk.Button()
         self.remove_bt.set_image(img)
         self.remove_bt.set_label(_("Remove selected icon"))
         vbox.pack_start(self.remove_bt, fill=False, expand=False)
@@ -99,10 +95,12 @@ class TagIconSelector(gtk.Window): # pylint: disable-msg=R0904
             self.close_selector()
 
     def __load_icon(self):
-        """Loads emblem icons from the current icon theme"""
-        self.symbol_model = gtk.ListStore(gtk.gdk.Pixbuf, str)
-        for icon in gtk.icon_theme_get_default().list_icons(context="Emblems"):
-            img = gtk.icon_theme_get_default().load_icon(icon, 16, 0)
+        """
+        Loads emblem icons from the current icon theme
+        """
+        self.symbol_model = Gtk.ListStore(GdkPixbuf.Pixbuf, str)
+        for icon in Gtk.IconTheme.get_default().list_icons(context="Emblems"):
+            img = Gtk.IconTheme.get_default().load_icon(icon, 16, 0)
             self.symbol_model.append([img, icon])
         self.symbol_iv.set_model(self.symbol_model)
         self.loaded = True
@@ -143,14 +141,17 @@ class TagIconSelector(gtk.Window): # pylint: disable-msg=R0904
         self.move(pos_x, pos_y)
         self.grab_add()
         #We grab the pointer in the calendar
-        gdk.pointer_grab(self.window, True,
-                         gdk.BUTTON1_MASK | gdk.MOD2_MASK)
+        Gdk.pointer_grab(
+            self.window,
+            True,
+            Gdk.ModifierType.BUTTON1_MASK | Gdk.ModifierType.MOD2_MASK
+        )
         self.connect('button-press-event', self.__focus_out)
 
     def close_selector(self):
         """Hides the window"""
         self.hide()
-        gtk.gdk.pointer_ungrab()
+        Gdk.pointer_ungrab()
         self.grab_remove()
 
     def get_selected_icon(self):
@@ -162,16 +163,16 @@ class TagIconSelector(gtk.Window): # pylint: disable-msg=R0904
         self.symbol_iv.unselect_all()
 
 
-gobject.type_register(TagIconSelector)
-gobject.signal_new("selection-changed", TagIconSelector,
-                   gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, ())
+GObject.type_register(TagIconSelector)
+GObject.signal_new("selection-changed", TagIconSelector,
+                   GObject.SignalFlags.RUN_FIRST, None, ())
 
 
-class TagEditor(gtk.Window): # pylint: disable-msg=R0904
+class TagEditor(Gtk.Window): # pylint: disable-msg=R0904
     """Window allowing to edit a tag's properties."""
 
     def __init__(self, req, vmanager, tag=None):
-        gtk.Window.__init__(self)
+        GObject.GObject.__init__(self)
         self.__gobject_init__()
         self.req = req
         self.vmanager = vmanager
@@ -184,7 +185,7 @@ class TagEditor(gtk.Window): # pylint: disable-msg=R0904
         self.tis_selection_changed_hid = None
         self.tag_icon_selector = None
         # Build up the window
-        self.set_position(gtk.WIN_POS_CENTER)
+        self.set_position(Gtk.WindowPosition.CENTER)
         self.set_title('Edit tag')
         self.set_border_width(10)
         self.set_resizable(False)
@@ -197,55 +198,55 @@ class TagEditor(gtk.Window): # pylint: disable-msg=R0904
     def __build_window(self):
         """Build up the widget"""
         # toplevel widget
-        self.top_vbox = gtk.VBox()
+        self.top_vbox = Gtk.VBox()
         self.add(self.top_vbox)
         # header line: icon, table with name and "hide in wv"
-        self.hdr_align = gtk.Alignment()
-        self.top_vbox.pack_start(self.hdr_align)
+        self.hdr_align = Gtk.Alignment.new()
+        self.top_vbox.pack_start(self.hdr_align, True, True, 0)
         self.hdr_align.set_padding(0, 25, 0, 0)
-        self.hdr_hbox = gtk.HBox()
+        self.hdr_hbox = Gtk.HBox()
         self.hdr_align.add(self.hdr_hbox)
         self.hdr_hbox.set_spacing(10)
         # Button to tag icon selector
-        self.ti_bt = gtk.Button()
-        self.ti_bt_label = gtk.Label()
+        self.ti_bt = Gtk.Button()
+        self.ti_bt_label = Gtk.Label()
         self.ti_bt.add(self.ti_bt_label)
-        self.hdr_hbox.pack_start(self.ti_bt)
+        self.hdr_hbox.pack_start(self.ti_bt, True, True, 0)
         self.ti_bt.set_size_request(64, 64)
-        self.ti_bt.set_relief(gtk.RELIEF_HALF)
+        self.ti_bt.set_relief(Gtk.ReliefStyle.HALF)
         # vbox for tag name and hid in WV
-        self.tp_table = gtk.Table(2, 2)
-        self.hdr_hbox.pack_start(self.tp_table)
+        self.tp_table = Gtk.Table(2, 2)
+        self.hdr_hbox.pack_start(self.tp_table, True, True, 0)
         self.tp_table.set_col_spacing(0, 5)
-        self.tn_entry_lbl_align = gtk.Alignment(0, 0.5)
+        self.tn_entry_lbl_align = Gtk.Alignment.new(0, 0.5)
         self.tp_table.attach(self.tn_entry_lbl_align, 0, 1, 0, 1)
-        self.tn_entry_lbl = gtk.Label()
+        self.tn_entry_lbl = Gtk.Label()
         self.tn_entry_lbl.set_markup("<span weight='bold'>%s</span>" \
             % _("Name : "))
         self.tn_entry_lbl_align.add(self.tn_entry_lbl)
-        self.tn_entry = gtk.Entry()
+        self.tn_entry = Gtk.Entry()
         self.tp_table.attach(self.tn_entry, 1, 2, 0, 1)
         self.tn_entry.set_width_chars(20)
-        self.tn_cb_lbl_align = gtk.Alignment(0, 0.5)
+        self.tn_cb_lbl_align = Gtk.Alignment.new(0, 0.5)
         self.tp_table.attach(self.tn_cb_lbl_align, 0, 1, 1, 2)
-        self.tn_cb_lbl = gtk.Label(_("Show Tag in Work View :"))
+        self.tn_cb_lbl = Gtk.Label(label=_("Show Tag in Work View :"))
         self.tn_cb_lbl_align.add(self.tn_cb_lbl)
-        self.tn_cb = gtk.CheckButton()
+        self.tn_cb = Gtk.CheckButton()
         self.tp_table.attach(self.tn_cb, 1, 2, 1, 2)
         # Tag color
-        self.tc_vbox = gtk.VBox()
-        self.top_vbox.pack_start(self.tc_vbox)
-        self.tc_label_align = gtk.Alignment()
-        self.tc_vbox.pack_start(self.tc_label_align)
+        self.tc_vbox = Gtk.VBox()
+        self.top_vbox.pack_start(self.tc_vbox, True, True, 0)
+        self.tc_label_align = Gtk.Alignment.new()
+        self.tc_vbox.pack_start(self.tc_label_align, True, True, 0)
         self.tc_label_align.set_padding(0, 0, 0, 0)
-        self.tc_label = gtk.Label()
+        self.tc_label = Gtk.Label()
         self.tc_label_align.add(self.tc_label)
         self.tc_label.set_markup( \
             "<span weight='bold'>%s</span>" % _("Select Tag Color:"))
         self.tc_label.set_alignment(0, 0.5)
         # Tag color chooser
-        self.tc_cc_align = gtk.Alignment(0.5, 0.5, 0, 0)
-        self.tc_vbox.pack_start(self.tc_cc_align)
+        self.tc_cc_align = Gtk.Alignment.new(0.5, 0.5, 0, 0)
+        self.tc_vbox.pack_start(self.tc_cc_align, True, True, 0)
         self.tc_cc_align.set_padding(15, 15, 10, 10)
         self.tc_cc_colsel = SimpleColorSelector()
         self.tc_cc_align.add(self.tc_cc_colsel)
@@ -268,10 +269,10 @@ class TagEditor(gtk.Window): # pylint: disable-msg=R0904
         self.connect('delete-event', self.on_close)
 
         # allow fast closing by Escape key
-        agr = gtk.AccelGroup()
+        agr = Gtk.AccelGroup()
         self.add_accel_group(agr)
-        key, modifier = gtk.accelerator_parse('Escape')
-        agr.connect_group(key, modifier, gtk.ACCEL_VISIBLE, self.on_close)
+        key, modifier = Gtk.accelerator_parse('Escape')
+        agr.connect_group(key, modifier, Gtk.AccelFlags.VISIBLE, self.on_close)
 
     def __set_default_values(self):
         """Configure the widget components with their initial default values"""
@@ -282,7 +283,7 @@ class TagEditor(gtk.Window): # pylint: disable-msg=R0904
         self.tag_icon_selector.handler_block(self.tis_selection_changed_hid)
         # Default icon
         markup = "<span size='small'>%s</span>" % _("Click To\nSet Icon")
-        self.ti_bt_label.set_justify(gtk.JUSTIFY_CENTER)
+        self.ti_bt_label.set_justify(Gtk.Justification.CENTER)
         self.ti_bt_label.set_markup(markup)
         self.ti_bt_label.show()
         self.__set_icon(None)
@@ -292,7 +293,7 @@ class TagEditor(gtk.Window): # pylint: disable-msg=R0904
         self.tn_cb.set_active(True)
         # Name entry
         self.tn_entry.set_text(_("Enter tag name here"))
-        self.tn_entry.set_icon_from_stock(gtk.ENTRY_ICON_SECONDARY, None)
+        self.tn_entry.set_icon_from_stock(Gtk.EntryIconPosition.SECONDARY, None)
         # Color selection
         self.tc_cc_colsel.unselect_color()
         # Custom colors
@@ -312,8 +313,8 @@ class TagEditor(gtk.Window): # pylint: disable-msg=R0904
         if icon is not None:
             for i in self.ti_bt:
                 self.ti_bt.remove(i)
-            ti_bt_img = gtk.image_new_from_icon_name(icon,
-                gtk.ICON_SIZE_BUTTON)
+            ti_bt_img = Gtk.Image.new_from_icon_name(icon,
+                Gtk.IconSize.BUTTON)
             ti_bt_img.show()
             self.ti_bt.add(ti_bt_img)
         else:
@@ -407,16 +408,16 @@ class TagEditor(gtk.Window): # pylint: disable-msg=R0904
         self.tn_entry_last_recorded_value = self.tn_entry.get_text()
         # check validity
         if self.tn_entry_last_recorded_value.strip() == "":
-            self.tn_entry.set_icon_from_stock(gtk.ENTRY_ICON_SECONDARY, \
-                gtk.STOCK_DIALOG_ERROR)
+            self.tn_entry.set_icon_from_stock(Gtk.EntryIconPosition.SECONDARY, \
+                Gtk.STOCK_DIALOG_ERROR)
         else:
-            self.tn_entry.set_icon_from_stock(gtk.ENTRY_ICON_SECONDARY, None)
+            self.tn_entry.set_icon_from_stock(Gtk.EntryIconPosition.SECONDARY, None)
         # filter out change requests to reduce commit overhead
         if self.tn_entry_watch_id is None:
             # There is no watchers for the text entry. Register one.
             # Also, wait 1 second before commiting the change in order to
             # reduce rename requests
-            self.tn_entry_watch_id = gobject.timeout_add(1000, \
+            self.tn_entry_watch_id = GObject.timeout_add(1000, \
                 self.watch_tn_entry_changes)
 
     def on_tn_cb_clicked(self, widget): # pylint: disable-msg=W0613

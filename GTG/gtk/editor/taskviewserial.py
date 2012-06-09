@@ -16,17 +16,18 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
+
 import xml.dom.minidom
 
 
-#The following functions are used by the gtk.TextBuffer to serialize
+# The following functions are used by the Gtk.TextBuffer to serialize
 # the content of the task
 
 ########### Serializing functions ##############
 ### Serialize the task : transform it's content in something
 #we can store. This function signature is defined in PyGTK
 
-class Serializer:
+class Serializer(object):
     #Disabling pylint argument usage since we know we are not using all args
     def serialize(self, register_buf, content_buf, start, end, udata):
         #Currently we serialize in XML
@@ -56,7 +57,7 @@ class Serializer:
 
         def is_know_tag(tag):
             """
-            Return True if "tag" is a know tag. "tag" must be a gtk.TextTag.
+            Return True if "tag" is a know tag. "tag" must be a Gtk.TextTag.
             """
             know_tags = ["is_subtask", "is_indent", "is_tag"]
             for know in know_tags:
@@ -240,3 +241,5 @@ class Unserializer:
         buf.delete_mark(start)
         buf.delete_mark(end)
         return True
+
+# -----------------------------------------------------------------------------

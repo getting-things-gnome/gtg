@@ -27,7 +27,7 @@ class TaskClipboard():
         self.content = []
         self.req = req
         
-    """"take two gtk.TextIter as parameter and copy the
+    """"take two Gtk.TextIter as parameter and copy the
     """
     def copy(self,start,stop,bullet=None):
         self.clear()

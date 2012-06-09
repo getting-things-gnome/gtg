@@ -21,6 +21,10 @@ Getting Things Gnome!  A personal organizer for the GNOME desktop
 """
 
 import os
+
+
+# -----------------------------------------------------------------------------
+
 import locale
 #Fallback to LANG C if unsupported locale
 try:
@@ -28,13 +32,11 @@ try:
 except:
     locale.setlocale(locale.LC_ALL, 'C')
 
+# -----------------------------------------------------------------------------
+
 import gettext
-try:
-    from gtk import glade
-    loaded_glade = glade
-except:
-    #that's not pretty but it looks functional.
-    loaded_glade = None
+
+# -----------------------------------------------------------------------------
 
 try:
     from xdg.BaseDirectory import xdg_config_home
@@ -48,11 +50,10 @@ LOCAL_ROOTDIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 GETTEXT_DOMAIN = 'gtg'
 LOCALE_PATH = gettext.bindtextdomain(GETTEXT_DOMAIN)
 
-for module in gettext, loaded_glade:
-    #check if glade is well loaded to avoid error in Fedora build farm
-    if module:
-        module.bindtextdomain(GETTEXT_DOMAIN, LOCALE_PATH)
-        module.textdomain(GETTEXT_DOMAIN)
+module = gettext
+if module:
+    module.bindtextdomain(GETTEXT_DOMAIN, LOCALE_PATH)
+    module.textdomain(GETTEXT_DOMAIN)
 
 translation = gettext.translation(GETTEXT_DOMAIN, LOCALE_PATH, fallback=True)
 
@@ -76,9 +77,9 @@ if os.path.isdir(user_plugins):
 # FIXME Uncomment it or even better - install it properly - it breaks build
 """
 try:
-    import gconf
+    from gi.repository import GConf
     domain = "/desktop/gnome/url-handlers/gtg/"
-    client = gconf.client_get_default()
+    client = GConf.Client.get_default()
     #this should work both in debugging mode and in deployed mode
     client.set_string(os.path.join(domain, "command"), "gtg %s")
     client.set_bool(os.path.join(domain, "enabled"), True)
@@ -87,3 +88,5 @@ except ImportError:
     # Ignore it on systems which do not have GConf
     pass
     """
+
+# -----------------------------------------------------------------------------

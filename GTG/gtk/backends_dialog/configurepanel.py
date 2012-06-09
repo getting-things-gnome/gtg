@@ -17,7 +17,7 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-import gtk
+from gi.repository import Gtk
 
 from GTG.gtk.colors                        import get_colored_tags_markup
 from GTG                                   import _, ngettext
@@ -26,7 +26,7 @@ from GTG.gtk.backends_dialog.parameters_ui import ParametersUI
 from GTG.backends.backendsignals           import BackendSignals
 
 
-class ConfigurePanel(gtk.VBox):
+class ConfigurePanel(Gtk.VBox):
     ''' 
     A VBox that lets you configure a backend
     '''
@@ -63,13 +63,13 @@ class ConfigurePanel(gtk.VBox):
         '''
         #Division of the available space in three segments:
         # top, middle and bottom
-        top = gtk.HBox()
-        middle = gtk.HBox()
+        top = Gtk.HBox()
+        middle = Gtk.HBox()
         self._fill_top_hbox(top)
         self._fill_middle_hbox(middle)
         self.pack_start(top, False)
         self.pack_start(middle, False)
-        align = gtk.Alignment(xalign = 0, yalign = 0, xscale = 1)
+        align = Gtk.Alignment.new(xalign = 0, yalign = 0, xscale = 1)
         align.set_padding(10, 0, 0, 0)
         self.parameters_ui = ParametersUI(self.req)
         align.add(self.parameters_ui)
@@ -80,33 +80,33 @@ class ConfigurePanel(gtk.VBox):
         Helper function to fill an hbox with an image, a spinner and 
         three labels
 
-        @param hbox: the gtk.HBox to fill
+        @param hbox: the Gtk.HBox to fill
         '''
         hbox.set_spacing(10)
-        self.image_icon = gtk.Image()
+        self.image_icon = Gtk.Image()
         self.image_icon.set_size_request(48, 48)
-        vbox = gtk.VBox()
-        hbox_top = gtk.HBox()
-        self.human_name_label = gtk.Label()
+        vbox = Gtk.VBox()
+        hbox_top = Gtk.HBox()
+        self.human_name_label = Gtk.Label()
         self.human_name_label.set_alignment(xalign = 0, yalign = 0.5)
         try:
-            self.spinner = gtk.Spinner()
+            self.spinner = Gtk.Spinner()
         except AttributeError:
             #worarkound for archlinux: bug #624204
-            self.spinner = gtk.HBox()
+            self.spinner = Gtk.HBox()
         self.spinner.connect("show", self.on_spinner_show)
         self.spinner.set_size_request(32, 32)
-        align_spin = gtk.Alignment(xalign = 1, yalign = 0)
+        align_spin = Gtk.Alignment.new(xalign = 1, yalign = 0)
         align_spin.add(self.spinner)
         hbox_top.pack_start(self.human_name_label, True)
         hbox_top.pack_start(align_spin, False)
-        self.sync_desc_label = gtk.Label()
+        self.sync_desc_label = Gtk.Label()
         self.sync_desc_label.set_alignment(xalign = 0, yalign = 1)
         self.sync_desc_label.set_line_wrap(True)
         vbox.pack_start(hbox_top, True)
         vbox.pack_start(self.sync_desc_label, True)
         hbox.pack_start(self.image_icon, False)
-        align_vbox = gtk.Alignment(xalign = 0, yalign = 0, xscale = 1)
+        align_vbox = Gtk.Alignment.new(xalign = 0, yalign = 0, xscale = 1)
         align_vbox.set_padding(12, 0, 0, 0)
         align_vbox.add(vbox)
         hbox.pack_start(align_vbox, True)
@@ -115,11 +115,11 @@ class ConfigurePanel(gtk.VBox):
         '''
         Helper function to fill an hbox with a label and a button
 
-        @param hbox: the gtk.HBox to fill
+        @param hbox: the Gtk.HBox to fill
         '''
-        self.sync_status_label = gtk.Label()
+        self.sync_status_label = Gtk.Label()
         self.sync_status_label.set_alignment(xalign = 0.8, yalign = 0.5)
-        self.sync_button = gtk.Button()
+        self.sync_button = Gtk.Button()
         self.sync_button.connect("clicked", self.on_sync_button_clicked)
         hbox.pack_start(self.sync_status_label, True)
         hbox.pack_start(self.sync_button, True)
@@ -186,7 +186,7 @@ class ConfigurePanel(gtk.VBox):
 
     def refresh_sync_status_label(self):
         '''
-        Refreshes the gtk.Label that shows the current state of this backend
+        Refreshes the Gtk.Label that shows the current state of this backend
         '''
         if self.backend.is_default():
             label = _("This is the default synchronization service")
@@ -221,7 +221,7 @@ class ConfigurePanel(gtk.VBox):
     def on_sync_started(self, sender, backend_id):
         '''
         If the backend has started syncing tasks, update the state of the
-        gtk.Spinner
+        Gtk.Spinner
 
         @param sender: not used, here only for signal callback compatibility
         @param backend_id: the id of the backend that emitted this signal
@@ -232,7 +232,7 @@ class ConfigurePanel(gtk.VBox):
     def on_sync_ended(self, sender, backend_id):
         '''
         If the backend has stopped syncing tasks, update the state of the
-        gtk.Spinner
+        Gtk.Spinner
 
         @param sender: not used, here only for signal callback compatibility
         @param backend_id: the id of the backend that emitted this signal
@@ -254,18 +254,18 @@ class ConfigurePanel(gtk.VBox):
 
     def spinner_set_active(self, active):
         '''
-        Enables/disables the gtk.Spinner, while showing/hiding it at the same
+        Enables/disables the Gtk.Spinner, while showing/hiding it at the same
         time
         
         @param active: True if the spinner should spin
         '''
         self.should_spinner_be_shown = active
         if active:
-            if isinstance(self.spinner, gtk.Spinner):
+            if isinstance(self.spinner, Gtk.Spinner):
                 self.spinner.start()
             self.spinner.show()
         else:
             self.spinner.hide()
-            if isinstance(self.spinner, gtk.Spinner):
+            if isinstance(self.spinner, Gtk.Spinner):
                 self.spinner.stop()
 

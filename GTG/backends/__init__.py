@@ -36,6 +36,7 @@ from GTG.tools                   import cleanxml
 from GTG.core                    import CoreConfig
 
 
+# -----------------------------------------------------------------------------
 
 class BackendFactory(Borg):
     '''
@@ -46,14 +47,13 @@ class BackendFactory(Borg):
     since it makes no sense of keeping multiple instances of this.
     '''
 
-
     BACKEND_PREFIX = "backend_"
 
     def __init__(self):
         """
          Creates a dictionary of the currently available backend modules
         """
-        super(BackendFactory, self).__init__()
+        Borg.__init__(self)
         if hasattr(self, "backend_modules"):
             #This object has already been constructed
             return
@@ -199,3 +199,5 @@ class BackendFactory(Borg):
         # collect configured backends
         return [{"xmlobject": xp, \
                  "module": xp.getAttribute("module")} for xp in xmlproject]
+
+# -----------------------------------------------------------------------------

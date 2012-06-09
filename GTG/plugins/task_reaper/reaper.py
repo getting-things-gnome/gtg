@@ -17,13 +17,13 @@ import sys
 import os
 
 try:
-    import pygtk
-    pygtk.require("2.0")
+    import gi
+    pyGtk.require("2.0")
 except: # pylint: disable-msg=W0702
     sys.exit(1)
 
 try:
-    import gtk
+    from gi.repository import Gtk
 except: # pylint: disable-msg=W0702
     sys.exit(1)
 
@@ -48,7 +48,7 @@ class pluginReaper:
     def __init__(self):
         self.path = os.path.dirname(os.path.abspath(__file__))
         #GUI initialization
-        self.builder = gtk.Builder()
+        self.builder = Gtk.Builder()
         self.builder.add_from_file(os.path.join(
                              os.path.dirname(os.path.abspath(__file__)) + \
                              "/reaper.ui"))
@@ -68,7 +68,7 @@ class pluginReaper:
                 self.on_preferences_ok,
         }
         self.builder.connect_signals(SIGNAL_CONNECTIONS_DIC)
-        self.menu_item = gtk.MenuItem("Delete old closed tasks")
+        self.menu_item = Gtk.MenuItem("Delete old closed tasks")
         self.menu_item.connect('activate', self.delete_old_closed_tasks)
 
     def activate(self, plugin_api):

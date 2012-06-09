@@ -17,25 +17,25 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-import gtk
+from gi.repository import Gtk
 
 from GTG import _, ngettext
 
 
 
-class PeriodUI(gtk.HBox):
+class PeriodUI(Gtk.HBox):
     '''A widget to change the frequency of a backend synchronization
     '''
     
 
     def __init__(self, req, backend, width):
         '''
-        Creates the gtk.Adjustment and the related label. Loads the current
+        Creates the Gtk.Adjustment and the related label. Loads the current
         period.
 
         @param req: a Requester
         @param backend: a backend object
-        @param width: the width of the gtk.Label object
+        @param width: the width of the Gtk.Label object
         '''
         super(PeriodUI, self).__init__()
         self.backend = backend
@@ -46,27 +46,27 @@ class PeriodUI(gtk.HBox):
     def _populate_gtk(self, width):
         '''Creates the gtk widgets
         
-        @param width: the width of the gtk.Label object
+        @param width: the width of the Gtk.Label object
         '''
-        period_label = gtk.Label(_("Check for new tasks every"))
+        period_label = Gtk.Label(label=_("Check for new tasks every"))
         period_label.set_alignment(xalign = 0, yalign = 0.5)
         period_label.set_line_wrap(True)
         period_label.set_size_request(width = width, height = -1)
         self.pack_start(period_label, False)
-        align = gtk.Alignment(xalign = 0, yalign = 0.5, xscale = 1)
+        align = Gtk.Alignment.new(xalign = 0, yalign = 0.5, xscale = 1)
         align.set_padding(0, 0, 10, 0)
         self.pack_start(align, False)
         period = self.backend.get_parameters()['period']
-        self.adjustment = gtk.Adjustment(value = period,
+        self.adjustment = Gtk.Adjustment(value = period,
                                          lower = 1,
                                          upper = 120,
                                          step_incr = 1,
                                          page_incr = 0,
                                          page_size = 0)
-        self.period_spin = gtk.SpinButton(adjustment = self.adjustment,
+        self.period_spin = Gtk.SpinButton(adjustment = self.adjustment,
                                           climb_rate = 0.3,
                                           digits = 0)
-        self.minutes_label = gtk.Label()
+        self.minutes_label = Gtk.Label()
         self.update_minutes_label()
         self.minutes_label.set_alignment(xalign = 0, yalign = 0.5)
         self.pack_start(self.minutes_label, False)

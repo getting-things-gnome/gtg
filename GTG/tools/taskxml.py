@@ -72,7 +72,7 @@ def task_from_xml(task, xmlnode) :
     #FIXME why we need to convert that through an XML?
     content = read_node(xmlnode, "content")
     if content != "":
-        content = "<content>%s</content>" % content
+        content = "<content>{0}</content>".format(content.encode('utf-8'))
         content = minidom.parseString(content).firstChild.toxml()
         task.set_text(content)
 
@@ -94,10 +94,10 @@ def task_from_xml(task, xmlnode) :
     '''
     remote_ids_list = xmlnode.getElementsByTagName("task-remote-ids")
     for remote_id in remote_ids_list:
-        if remote_id.childNodes:
-            node = remote_id.childNodes[0]
+        if remote_id.get_child()Nodes:
+            node = remote_id.get_child()Nodes[0]
             backend_id = node.firstChild.nodeValue
-            remote_task_id = node.childNodes[1].firstChild.nodeValue
+            remote_task_id = node.get_child()Nodes[1].firstChild.nodeValue
             task.add_remote_id(backend_id, remote_task_id)
             '''
 
