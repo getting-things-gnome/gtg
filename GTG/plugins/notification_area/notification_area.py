@@ -63,12 +63,8 @@ class _Attention:
         self.__indicator = indicator
         self.danger_zone = danger_zone
 
-        # Maintain a list of tasks in danger zone, use task id
-        self.tasks_danger = []
-        for tid in self.__tree.get_all_nodes():
-            task = self.__req.get_task(tid)
-            if _due_within(task, self.danger_zone):
-                self.tasks_danger.append(tid)
+        # Setup list of tasks in danger zone
+        self.refresh()
 
         # Set initial icon. Later on we only update if needed
         if self.level() == 1:
@@ -109,6 +105,19 @@ class _Attention:
         # Update icon only if attention level has changed
         self.__update_indicator(old_lev, self.level())
 
+    def refresh(self):
+        """ Setup a list of tasks in danger zone, use task id """
+        self.tasks_danger = []
+        for tid in self.__tree.get_all_nodes():
+            task = self.__req.get_task(tid)
+            if _due_within(task, self.danger_zone):
+                self.tasks_danger.append(tid)
+
+        # Set the icon whatever the old level was
+        if self.level() == 0:
+            self.__indicator.set_icon(self.ICONS['relax'])
+        else:
+            self.__indicator.set_icon(self.ICONS['attention'])
 
 class NotificationArea:
     """
@@ -401,9 +410,16 @@ class NotificationArea:
         return True
 
     def on_preferences_ok(self, widget = None, data = None):
+        dzone = self.spinbutton_dangerzone.get_value()
+        # update danger zone only if it has changed
+        if not dzone == self.preferences["danger_zone"]:
+            self.preferences["danger_zone"] = dzone
+            # refresh attention monitor
+            if self.__attention:
+                self.__attention.danger_zone = dzone
+                self.__attention.refresh()
+
         self.preferences["start_minimized"] = self.chbox_minimized.get_active()
-        self.preferences["danger_zone"] = \
-            self.spinbutton_dangerzone.get_value()
         self.preferences_store()
         self.preferences_dialog.hide()
 
