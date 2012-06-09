@@ -245,9 +245,9 @@ class Task(TreeNode):
         self.last_modified = modified
 
     def set_due_date(self, fulldate):
-        self.due_date=Date(fulldate)   
+        self.due_date=Date(fulldate)
         if self.get_start_date() > Date(fulldate) and self.get_start_date() != Date.no_date():
-            self.set_start_date(fulldate)           
+            self.set_start_date(fulldate)
         if Date(fulldate)!= Date.no_date():
             for par_id in self.parents:
                 par = self.req.get_task(par_id)
