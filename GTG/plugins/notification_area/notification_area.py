@@ -64,7 +64,12 @@ class _Attention:
         self.danger_zone = danger_zone
 
         # Setup list of tasks in danger zone
-        self.refresh()
+        """ Setup a list of tasks in danger zone, use task id """
+        self.tasks_danger = []
+        for tid in self.__tree.get_all_nodes():
+            task = self.__req.get_task(tid)
+            if _due_within(task, self.danger_zone):
+                self.tasks_danger.append(tid)
 
         # Set initial icon. Later on we only update if needed
         if self.level() == 1:
@@ -105,19 +110,6 @@ class _Attention:
         # Update icon only if attention level has changed
         self.__update_indicator(old_lev, self.level())
 
-    def refresh(self):
-        """ Setup a list of tasks in danger zone, use task id """
-        self.tasks_danger = []
-        for tid in self.__tree.get_all_nodes():
-            task = self.__req.get_task(tid)
-            if _due_within(task, self.danger_zone):
-                self.tasks_danger.append(tid)
-
-        # Set the icon whatever the old level was
-        if self.level() == 0:
-            self.__indicator.set_icon(self.ICONS['relax'])
-        else:
-            self.__indicator.set_icon(self.ICONS['attention'])
 
 class NotificationArea:
     """
@@ -175,8 +167,6 @@ class NotificationArea:
         self.preferences_load()
 
         # Enable attention monitor.
-        # Use two different viewtree for attention and menu
-        # This way we can filter them independently.
         self.__attention = None
         self.__tree_att = self.__connect_to_tree([
                 ("node-added-inview", self.__on_task_added_att),
@@ -184,21 +174,7 @@ class NotificationArea:
                 ("node-deleted-inview", self.__on_task_deleted_att),
                 ])
         self.__tree_att.apply_filter('workview')
-        # Convention: if danger zone is <=0, disable attention
-        # Attention is also disabled if there is no indicator
-        if self.preferences['danger_zone'] > 0 and self.__indicator:
-            self.__attention = _Attention(self.__tree_att,
-                                          self.__requester,
-                                          self.__indicator,
-                                          self.preferences['danger_zone'])
-
-        # Check if the icon theme has need-attention icon.
-        # If not, attention monitor is disabled.
-        theme = gtk.icon_theme_get_default()
-        if not theme.has_icon(_Attention.ICONS['attention']):
-            self.__attention = None
-            print 'Warning: icon %s not found. Please update the gtk theme.' %\
-                _Attention.ICONS['attention']
+        self.__init_attention()
 
         self.__tree = self.__connect_to_tree([
                 ("node-added-inview", self.__on_task_added),
@@ -289,6 +265,29 @@ class NotificationArea:
             self.status_icon.connect('activate', self.__toggle_browser)
             self.status_icon.connect('popup-menu',
                                      self.__on_icon_popup, self.__menu)
+
+    def __init_attention(self):
+        # Use two different viewtree for attention and menu
+        # This way we can filter them independently.
+        # Convention: if danger zone is <=0, disable attention
+        # Attention is also disabled if there is no indicator
+        if self.__indicator:
+            if self.preferences['danger_zone'] > 0:
+                self.__attention = _Attention(self.__tree_att,
+                                              self.__requester,
+                                              self.__indicator,
+                                              self.preferences['danger_zone'])
+            else:
+                self.__indicator.set_icon("gtg")
+                self.__attention = None
+
+        # Check if the icon theme has need-attention icon.
+        # If not, attention monitor is disabled.
+        theme = gtk.icon_theme_get_default()
+        if not theme.has_icon(_Attention.ICONS['attention']):
+            self.__attention = None
+            print 'Warning: icon %s not found. Please update the gtk theme.' %\
+                _Attention.ICONS['attention']
 
     def __open_task(self, widget, task_id = None):
         """
@@ -412,12 +411,10 @@ class NotificationArea:
     def on_preferences_ok(self, widget = None, data = None):
         dzone = self.spinbutton_dangerzone.get_value()
         # update danger zone only if it has changed
+        # and refresh attention monitor
         if not dzone == self.preferences["danger_zone"]:
             self.preferences["danger_zone"] = dzone
-            # refresh attention monitor
-            if self.__attention:
-                self.__attention.danger_zone = dzone
-                self.__attention.refresh()
+            self.__init_attention()
 
         self.preferences["start_minimized"] = self.chbox_minimized.get_active()
         self.preferences_store()
