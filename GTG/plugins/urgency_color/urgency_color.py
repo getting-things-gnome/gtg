@@ -117,13 +117,13 @@ class pluginUrgencyColor:
         #   Colorbutton - OVERDUE
         self.colorbutton_overdue = self.builder.get_object('colorbutton_overdue')
 
-        #   Colorbutton - RED
+        #   Colorbutton - HIGH
         self.colorbutton_high = self.builder.get_object('colorbutton_high')
 
-        #   Colorbutton - YELLOW
+        #   Colorbutton - NORMAL
         self.colorbutton_normal = self.builder.get_object('colorbutton_normal')
 
-        #   Colorbutton - GREEN
+        #   Colorbutton - LOW
         self.colorbutton_low = self.builder.get_object('colorbutton_low')
 
         #   Buttons
