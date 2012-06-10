@@ -356,13 +356,6 @@ class TaskEditor:
                 self.task.set_due_date(datetoset)
             elif data == "closed":
                 self.task.set_closed_date(datetoset)
-
-            # Set the due date to be equal to the start date
-            # when it happens that the start date is later than the due date
-            start_date = self.task.get_start_date()
-            due_date = self.task.get_due_date()
-            if start_date and (start_date > due_date):
-                self.task.set_due_date(self.task.get_start_date())
         else:
             #We should write in red in the entry if the date is not valid
             widget.modify_text(gtk.STATE_NORMAL, gtk.gdk.color_parse("#F00"))
@@ -371,12 +364,7 @@ class TaskEditor:
     def on_date_pressed(self, widget, date_kind):
         """Called when a date-changing button is clicked."""
         if date_kind == GTGCalendar.DATE_KIND_DUE:
-            date = self.task.get_due_date()
-            start_date = self.task.get_start_date()
-            due_before_start = start_date and start_date > date
-
-            if not date or due_before_start:
-                date = self.task.get_start_date()
+            date = self.task.get_start_date()
         elif date_kind == GTGCalendar.DATE_KIND_START:
             date = self.task.get_start_date()
         elif date_kind == GTGCalendar.DATE_KIND_CLOSED:
