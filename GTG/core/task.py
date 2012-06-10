@@ -280,11 +280,24 @@ class Task(TreeNode):
                 if sub.get_start_date() != Date.no_date() and \
                    sub.get_start_date() > fulldate_obj:
                     sub.set_start_date(fulldate)
-            self.sync()
+        else:
+            self.due_date = self.get_due_date_constraint()
+        self.sync()
 
     def get_due_date(self):
         """ Returns the due date, which always respects all constraints """
         return self.due_date
+
+    def get_due_date_constraint(self):
+        """ Returns the most urgent due date constraint, following parents'
+            due dates. Return Date.no_date() if no constraint is applied. """
+        cur_date = Date.no_date()
+        for par_id in self.get_parents():
+            par = self.req.get_task(par_id)
+            if par.get_due_date() != Date.no_date() and \
+               par.get_due_date() < cur_date:
+                cur_date = par.get_due_date()
+        return cur_date
 
     def set_start_date(self, fulldate):
         self.start_date = Date(fulldate)
