@@ -393,7 +393,6 @@ class TaskBrowser(gobject.GObject):
         self._add_accelerator_for_widget(agr, "edit_mi", "Return")
         self._add_accelerator_for_widget(agr, "done_mi", "<Control>d")
         self._add_accelerator_for_widget(agr, "dismiss_mi", "<Control>i")
-        self._add_accelerator_for_widget(agr, "delete_mi", "Delete")
         self._add_accelerator_for_widget(agr, "tcm_modifytags", "<Control>t")
         self._add_accelerator_for_widget(agr, "view_closed", "<Control>F9")
         self._add_accelerator_for_widget(agr, "online_help", "F1")
