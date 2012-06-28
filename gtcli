@@ -98,14 +98,25 @@ def new_task(title):
         title = title + ": " + subject
 
     gtg = connect_to_gtg()
-    gtg.NewTask("Active", title, '', '', '', [], cgi.escape(body), [])
+    if gtg.NewTask("Active", title, '', '', '', [], cgi.escape(body), []):
+        print "\nNew Task Created"
+    else:
+        print "\nSorry I could not create a new task"
 
 
 def delete_tasks(task_ids):
     """ Delete tasks from GTG """
     gtg = connect_to_gtg()
     for task_id in task_ids.split():
-        gtg.DeleteTask(task_id)
+        if gtg.GetTask(task_id):
+            task = gtg.GetTask(task_id)
+            gtg.DeleteTask(task_id)
+            if gtg.GetTask(task_id):
+                print "\nSorry I could not delete %s" % (task['title'])
+            else:
+                print "\n%s deleted" % (task['title'])
+        else:
+             print MSG_ERROR_TASK_ID_INVALID
 
 
 def close_tasks(task_ids):
@@ -178,7 +189,11 @@ def edit_tasks(task_ids):
     """ Open tasks in the task editor GUI """
     gtg = connect_to_gtg()
     for task in task_ids.split():
-        gtg.OpenTaskEditor(task)
+        if gtg.GetTask(task):
+            count = 1
+            gtg.OpenTaskEditor(task)
+        else:
+            print MSG_ERROR_TASK_ID_INVALID
 
 
 def toggle_browser_visibility(state):
