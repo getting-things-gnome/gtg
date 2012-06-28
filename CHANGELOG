@@ -26,6 +26,7 @@
     * Improved Export plugin, export to PDF works now, by Izidor Matušov
     * Added -t option to distinguish between multiple instances of GTG
     * Fix for bug #826916 by Nimit Shah
+    * Fix for bug #1018331: (gtg more interactive) by Nimit Shah
 
 2012-02-13 Getting Things GNOME! 0.2.9
     * Big refractorization of code, now using liblarch
