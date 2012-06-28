@@ -8,15 +8,15 @@ msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2012-04-22 17:25+0200\n"
-"PO-Revision-Date: 2012-06-01 19:59+0000\n"
+"PO-Revision-Date: 2012-06-27 06:43+0000\n"
 "Last-Translator: Daniel Dietrich <Unknown>\n"
 "Language-Team: German <de@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2012-06-02 05:41+0000\n"
-"X-Generator: Launchpad (build 15342)\n"
+"X-Launchpad-Export-Date: 2012-06-28 04:41+0000\n"
+"X-Generator: Launchpad (build 15505)\n"
 
 #: GTG/plugins/notification_area/notification_area.py:123
 msgid "Add _New Task"
@@ -54,7 +54,7 @@ msgstr ""
 
 #: GTG/plugins/export/export_templates/description_pocketmod.py:18
 msgid "Foldable booklet (PDF)"
-msgstr ""
+msgstr "Faltbares Booklet (PDF)"
 
 #: GTG/plugins/export/export_templates/description_pocketmod.py:19
 msgid ""
@@ -79,7 +79,7 @@ msgstr "Vorlage nicht gefunden"
 #: GTG/plugins/export/export.py:121
 #, python-format
 msgid "GTG could not generate the document: %s"
-msgstr ""
+msgstr "GTG kann das Dokument \"%s\" nicht generieren"
 
 #: GTG/plugins/export/export.py:169
 msgid "Export the tasks currently listed"
@@ -104,6 +104,8 @@ msgid ""
 "\n"
 "Tags: %s"
 msgstr ""
+"\n"
+"Schlagworte: %s"
 
 #: GTG/plugins/send_email/sendEmail.py:71
 #, python-format
@@ -831,7 +833,7 @@ msgstr ""
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:65
 msgid "Just these tags:"
-msgstr ""
+msgstr "Nur diese Schlagwörter:"
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:69
 msgid "Tags to sync"
@@ -839,7 +841,7 @@ msgstr ""
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:71
 msgid "Tasks with these tags:"
-msgstr ""
+msgstr "Aufgaben mit diesen Schlagwörtern:"
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:76
 msgid "Username"
@@ -875,7 +877,7 @@ msgstr ""
 
 #: GTG/gtk/backends_dialog/parameters_ui/periodui.py:51
 msgid "Check for new tasks every"
-msgstr ""
+msgstr "Überprüfe auf neue Aufgaben jede"
 
 #: GTG/gtk/backends_dialog/parameters_ui/periodui.py:96
 msgid " minute"
@@ -904,7 +906,7 @@ msgstr ""
 
 #: GTG/gtk/backends_dialog/configurepanel.py:162
 msgid "Ready to start syncing"
-msgstr ""
+msgstr "Bereit zum Synchronisieren"
 
 #: GTG/gtk/backends_dialog/configurepanel.py:164
 #, python-format
@@ -927,11 +929,11 @@ msgstr[1] ""
 
 #: GTG/gtk/backends_dialog/configurepanel.py:182
 msgid "Disable syncing"
-msgstr ""
+msgstr "Synchronisation deaktivieren"
 
 #: GTG/gtk/backends_dialog/configurepanel.py:184
 msgid "Enable syncing"
-msgstr ""
+msgstr "Synchronisation aktivieren"
 
 #: GTG/gtk/backends_dialog/configurepanel.py:192
 msgid "This is the default synchronization service"
@@ -939,11 +941,11 @@ msgstr ""
 
 #: GTG/gtk/backends_dialog/configurepanel.py:195
 msgid "Syncing is enabled."
-msgstr ""
+msgstr "Synchronisation ist aktiviert."
 
 #: GTG/gtk/backends_dialog/configurepanel.py:197
 msgid "Syncing is <span color=\"red\">disabled</span>."
-msgstr ""
+msgstr "Synchronisation ist <span color=\"red\">deaktiviert</span>."
 
 #: GTG/gtk/preferences.glade.h:1
 msgid "Getting Things GNOME! Preferences"
@@ -1117,7 +1119,7 @@ msgstr ""
 
 #: GTG/gtk/browser/browser.py:1494
 msgid "Open Task"
-msgstr ""
+msgstr "Aufgabe öffnen"
 
 #: GTG/gtk/browser/modifytags_dialog.py:38
 msgid "NewTag"
@@ -1251,7 +1253,7 @@ msgstr "_Hilfe"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:17
 msgid "Open GTG documentation in your web browser"
-msgstr ""
+msgstr "Öffne die GTG-Dokumentation in deinem Webbrowser"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:18
 msgid "Help to translate GTG into your language"
