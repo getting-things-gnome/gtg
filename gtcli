@@ -116,7 +116,7 @@ def delete_tasks(task_ids):
             else:
                 print "\n%s deleted" % (task['title'])
         else:
-             print MSG_ERROR_TASK_ID_INVALID
+            print MSG_ERROR_TASK_ID_INVALID
 
 
 def close_tasks(task_ids):
@@ -127,6 +127,11 @@ def close_tasks(task_ids):
         if task:
             task['status'] = "Done"
             gtg.ModifyTask(task_id, task)
+            task = gtg.GetTask(task_id)
+            if task['status'] == "Done":
+                print "Task Marked as Done\n"
+            else:
+                print "Sorry the task could not be marked as done\n"
         else:
             print MSG_ERROR_TASK_ID_INVALID
             sys.exit(1)
