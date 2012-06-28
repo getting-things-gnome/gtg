@@ -102,6 +102,7 @@ def new_task(title):
         print "\nNew Task Created"
     else:
         print "\nSorry I could not create a new task"
+        sys.exit(1)
 
 
 def delete_tasks(task_ids):
@@ -117,6 +118,7 @@ def delete_tasks(task_ids):
                 print "\n%s deleted" % (task['title'])
         else:
             print MSG_ERROR_TASK_ID_INVALID
+            sys.exit(1)
 
 
 def close_tasks(task_ids):
@@ -131,7 +133,8 @@ def close_tasks(task_ids):
             if task['status'] == "Done":
                 print "Task Marked as Done\n"
             else:
-                print "Sorry the task could not be marked as done\n"
+                print "Sorry I could not mark the task %s as done\n" % (task['title'])
+                sys.exit(1)
         else:
             print MSG_ERROR_TASK_ID_INVALID
             sys.exit(1)
@@ -195,10 +198,10 @@ def edit_tasks(task_ids):
     gtg = connect_to_gtg()
     for task in task_ids.split():
         if gtg.GetTask(task):
-            count = 1
             gtg.OpenTaskEditor(task)
         else:
             print MSG_ERROR_TASK_ID_INVALID
+            sys.exit(1)
 
 
 def toggle_browser_visibility(state):
