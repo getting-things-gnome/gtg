@@ -131,7 +131,7 @@ def close_tasks(task_ids):
             gtg.ModifyTask(task_id, task)
             task = gtg.GetTask(task_id)
             if task['status'] == "Done":
-                print "Task Marked as Done\n"
+                print "Task %s Marked as Done\n" % (task['title'])
             else:
                 print "Sorry I could not mark the task %s as done\n" % (task['title'])
                 sys.exit(1)
