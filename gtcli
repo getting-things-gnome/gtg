@@ -98,10 +98,11 @@ def new_task(title):
         title = title + ": " + subject
 
     gtg = connect_to_gtg()
-    if gtg.NewTask("Active", title, '', '', '', [], cgi.escape(body), []):
-        print "\nNew Task Created"
+    task = gtg.NewTask("Active", title, '', '', '', [], cgi.escape(body), [])
+    if task:
+        print "New task created with id %s" % task['id']
     else:
-        print "\nSorry I could not create a new task"
+        print "New task not be created"
         sys.exit(1)
 
 
@@ -113,9 +114,9 @@ def delete_tasks(task_ids):
             task = gtg.GetTask(task_id)
             gtg.DeleteTask(task_id)
             if gtg.GetTask(task_id):
-                print "\nSorry I could not delete %s" % (task['title'])
+                print "Task %s could not deleted" % (task['title'])
             else:
-                print "\n%s deleted" % (task['title'])
+                print "Task %s deleted" % (task['title'])
         else:
             print MSG_ERROR_TASK_ID_INVALID
             sys.exit(1)
@@ -131,9 +132,9 @@ def close_tasks(task_ids):
             gtg.ModifyTask(task_id, task)
             task = gtg.GetTask(task_id)
             if task['status'] == "Done":
-                print "Task %s Marked as Done\n" % (task['title'])
+                print "Task %s marked as done\n" % (task['title'])
             else:
-                print "Sorry I could not mark the task %s as done\n" % (task['title'])
+                print "Task %s coudl not be marked as done\n" % (task['title'])
                 sys.exit(1)
         else:
             print MSG_ERROR_TASK_ID_INVALID
