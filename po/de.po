@@ -8,15 +8,15 @@ msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2012-04-22 17:25+0200\n"
-"PO-Revision-Date: 2012-06-27 06:43+0000\n"
-"Last-Translator: Daniel Dietrich <Unknown>\n"
+"PO-Revision-Date: 2012-07-01 18:32+0000\n"
+"Last-Translator: Daniel Winzen <d@winzen4.de>\n"
 "Language-Team: German <de@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2012-06-28 04:41+0000\n"
-"X-Generator: Launchpad (build 15505)\n"
+"X-Launchpad-Export-Date: 2012-07-02 04:38+0000\n"
+"X-Generator: Launchpad (build 15520)\n"
 
 #: GTG/plugins/notification_area/notification_area.py:123
 msgid "Add _New Task"
@@ -33,16 +33,17 @@ msgstr "Nur Text"
 #: GTG/plugins/export/export_templates/description_textual.py:19
 msgid "A template to create a simple text file with some tasks."
 msgstr ""
+"Eine Vorlage zum Erzeugen einer einfachen Textdatei mit einigen Aufgaben."
 
 #: GTG/plugins/export/export_templates/description_simple.py:18
 msgid "A simple Web page that can be easily printed."
-msgstr ""
+msgstr "Eine einfache Webseite, die gut zu drucken ist."
 
 #: GTG/plugins/export/export_templates/description_simple.py:19
 msgid ""
 "A template to create a simple HTML page with some tasks that can be easily "
 "printed."
-msgstr ""
+msgstr "Eine Vorlage einer einfachen Webseite, die gut zu drucken ist."
 
 #: GTG/plugins/export/export_templates/description_statusrpt.py:18
 msgid "Status report"
@@ -51,6 +52,8 @@ msgstr "Statusbericht"
 #: GTG/plugins/export/export_templates/description_statusrpt.py:19
 msgid "A template to create a compact text file listing only task titles."
 msgstr ""
+"Eine Vorlage zum Erzeugen einer kompakten Textdatei, die nur die "
+"Aufgabentitel auflistet."
 
 #: GTG/plugins/export/export_templates/description_pocketmod.py:18
 msgid "Foldable booklet (PDF)"
@@ -61,6 +64,9 @@ msgid ""
 "A template to create a <a href=\"http://www.pocketmod.com\">PocketMod</a>, "
 "which is a  small foldable booklet."
 msgstr ""
+"Eine Vorlage zum Erstellen eines <a "
+"href=\"http://www.pocketmod.com\">PocketMod</a>, was ein kleines faltbares "
+"Booklet ist."
 
 #: GTG/plugins/export/export_templates/description_sexy.py:18
 msgid "A professional-looking HTML page"
@@ -71,6 +77,8 @@ msgid ""
 "A template to create a HTML page with some tasks and tags. Tags colors are "
 "also displayed."
 msgstr ""
+"Eine Vorlage zum Erstellen einer HTML-Seite, mit einigen Aufgaben und "
+"Schlagworten. Schlagwort-Farben können ebenfalls dargstellt werden."
 
 #: GTG/plugins/export/export.py:114
 msgid "Template not found"
@@ -83,7 +91,7 @@ msgstr "GTG kann das Dokument \"%s\" nicht generieren"
 
 #: GTG/plugins/export/export.py:169
 msgid "Export the tasks currently listed"
-msgstr ""
+msgstr "Exportiere die aktuell gelisteten Aufgaben"
 
 #: GTG/plugins/export/export.py:323
 msgid "Choose where to save your list"
@@ -114,6 +122,9 @@ msgid ""
 "Subtasks:\n"
 "%s"
 msgstr ""
+"\n"
+"Unteraufgaben:\n"
+"%s"
 
 #: GTG/plugins/send_email/sendEmail.py:73
 #, python-format
@@ -122,11 +133,14 @@ msgid ""
 "Task content:\n"
 "%s"
 msgstr ""
+"\n"
+"Aufgabeninhalt:\n"
+"%s"
 
 #: GTG/plugins/send_email/sendEmail.py:76
 #, python-format
 msgid "Task: %(task_title)s"
-msgstr ""
+msgstr "Aufgabe: %(task_title)s"
 
 #: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:1
 msgid "Set the task's location"
@@ -245,7 +259,7 @@ msgstr "Identi.ca"
 
 #: GTG/backends/backend_identica.py:58
 msgid "Imports your identi.ca  messages into your GTG "
-msgstr ""
+msgstr "Importiert deine Identi.ca Nachrichten in dein GTG "
 
 #: GTG/backends/backend_gnote.py:42
 msgid "Gnote"
@@ -261,7 +275,7 @@ msgstr ""
 
 #: GTG/backends/backend_rtm.py:54
 msgid "Remember The Milk"
-msgstr ""
+msgstr "Denk an die Milch"
 
 #: GTG/backends/backend_rtm.py:58
 msgid ""
@@ -278,7 +292,7 @@ msgstr "Twitter"
 
 #: GTG/backends/backend_twitter.py:58
 msgid "Imports your twitter  messages into your GTG "
-msgstr ""
+msgstr "Importiert deine Twitter-Nachrichten in dein GTG "
 
 #: GTG/backends/backend_tomboy.py:41
 msgid "Tomboy"
@@ -326,7 +340,7 @@ msgstr ""
 
 #: GTG/backends/backend_evolution.py:69
 msgid "Evolution tasks"
-msgstr ""
+msgstr "Evolution Aufgaben"
 
 #: GTG/backends/backend_evolution.py:73
 msgid "Lets you synchronize your GTG tasks with Evolution tasks"
@@ -338,7 +352,7 @@ msgstr "Lokale Datei"
 
 #: GTG/backends/backend_localfile.py:66
 msgid "Your tasks are saved in a text file (XML format). "
-msgstr ""
+msgstr "Deine Aufgaben werden in einer Textdatei (XML-Format) gespeichert. "
 
 #: GTG/backends/backend_launchpad.py:53
 msgid "Launchpad"
@@ -686,7 +700,7 @@ msgstr ""
 
 #: GTG/core/search.py:86
 msgid "not"
-msgstr ""
+msgstr "nicht"
 
 #: GTG/core/search.py:87
 msgid "or"
@@ -710,7 +724,7 @@ msgstr "Morgen"
 
 #: GTG/core/search.py:92
 msgid "nodate"
-msgstr ""
+msgstr "kein Datum"
 
 #: GTG/core/search.py:96
 msgid "notag"
@@ -912,8 +926,8 @@ msgstr "Bereit zum Synchronisieren"
 #, python-format
 msgid "Syncing your only task"
 msgid_plural "Syncing all %d tasks"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Synchronisiere nur eine Aufgabe"
+msgstr[1] "Synchronisiere alle %d Aufgaben"
 
 #: GTG/gtk/backends_dialog/configurepanel.py:169
 #, python-format
@@ -969,7 +983,7 @@ msgstr ""
 
 #: GTG/gtk/preferences.glade.h:6
 msgid "Hide closed tasks older than "
-msgstr ""
+msgstr "Verstecke abgeschlossene Aufgaben, die älter sind als "
 
 #: GTG/gtk/preferences.glade.h:7
 msgid "<b>Task Browser</b>"
