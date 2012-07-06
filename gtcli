@@ -102,7 +102,7 @@ def new_task(title):
     if task:
         print _("New task created with id %s") % task['id']
     else:
-        print _("New task not be created")
+        print _("New task could not be created")
         sys.exit(1)
 
 
@@ -114,7 +114,7 @@ def delete_tasks(task_ids):
             task = gtg.GetTask(task_id)
             gtg.DeleteTask(task_id)
             if gtg.GetTask(task_id):
-                print _("Task %s could not deleted") % (task['title'])
+                print _("Task %s could not be deleted") % (task['title'])
             else:
                 print _("Task %s deleted") % (task['title'])
         else:
