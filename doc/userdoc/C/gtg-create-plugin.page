@@ -1,0 +1,29 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="topic" style="task"
+      id="gtg-create-plugin">
+
+  <info>
+    <link type="guide" xref="index#gtg-advanced"/>
+    <link type="seealso" xref="gtg-ppa"/>
+    <link type="seealso" xref="gtg-create-sync"/>
+    <link type="seealso" xref="gtg-join-developers"/>
+    <revision pkgversion="0.1" version="0.1" date="2012-07-03" status="candidate"/>
+    <credit type="author">
+      <name>Radina Matic</name>
+     <email>radina.matic@gmail.com</email>
+    </credit>
+  </info>
+
+  <title>Create your own Plugin</title>
+
+<p>Here are some resources in case you are interested in making your own plugin for <app>GTG</app>:</p>
+
+<p><link href="https://live.gnome.org/gtg/pluginHowTo">How do plugins work and how can you build a plugin for <app>GTG</app></link></p>
+
+<p><link href="https://live.gnome.org/gtg/plugins">Plugin examples</link></p>
+
+
+
+
+</page>
+

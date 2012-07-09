@@ -1,0 +1,46 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="guide" style="task 2column"
+      id="gtg-subtasks">
+
+  <info>
+    <link type="guide" xref="index#gtg-task-management" group="second"/>
+    <revision pkgversion="0.1" version="0.1" date="2012-07-03" status="candidate"/>
+    <credit type="author">
+      <name>Radina Matic</name>
+     <email>radina.matic@gmail.com</email>
+    </credit>
+  </info>
+
+  <title>Insert Subtasks</title>
+  
+<p>Even the biggest project is only a simple list of tasks. Often, in order to accomplish a certain task, you first need to accomplish another, separate task. GTG calls this <em>prerequisite</em> task a <em style="strong">Subtask</em>. You can insert as many subtasks as you need for each task.</p>
+
+ <section id="gtg-create-new-subtask">
+ <title>Create a New Subtask</title>
+
+  <p>To create a subtask for the task that is currently opened, you can:</p>
+
+ <list>
+      <item><p>Start a new line with "-" and write the subtask title.</p></item>
+      <item><p>Click the <gui>Insert the subtask in this task</gui> button in the task editor toolbar.</p></item>
+      <item><p>Use the <keyseq><key>Ctrl</key><key>Shift</key><key>N</key></keyseq> keyboard shortcut.</p></item>  
+</list>
+
+<p>Subtask title will appear with an arrow bullet and underlined as a link: if you click the link it will open the subtask in a separate task editor window.</p>
+  
+<figure>
+  <title>Insert Subtasks</title>
+  <desc> </desc>
+ <media type="image" mime="image/png" src="figures/subtasks2.png"/>
+</figure>
+
+<p>You can reorganize tasks and subtasks by drag-n-drop in the tasks browser to achieve the hierarchy and order that you require. However, keep in mind that subtasks obey to certain rules. For example, a subtask's due date can never be after its parent's due date, and when you mark a parent task as done, its subtasks will also be marked as done.</p>
+
+</section>
+ 
+  <section id="gtg-edit-delete-subtask">
+   <title>Edit, Dismiss and Delete Subtasks</title>
+
+  <p>Follow the same steps as for Tasks.</p>
+    </section>
+</page>
