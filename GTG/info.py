@@ -24,6 +24,7 @@ from GTG import _
 
 NAME = "Getting Things GNOME!"
 URL = "http://gtg.fritalk.com"
+HELP_URI = "help:gtg"
 DOCUMENTATION_URL = "http://live.gnome.org/gtg/documentation"
 TRANSLATE_URL = "https://translations.launchpad.net/gtg"
 REPORT_BUG_URL = "https://bugs.launchpad.net/gtg/+filebug"

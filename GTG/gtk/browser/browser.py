@@ -332,7 +332,7 @@ class TaskBrowser(gobject.GObject):
             "on_about_close":
                 self.on_about_close,
             "on_documentation_clicked":
-                lambda w: openurl(info.DOCUMENTATION_URL),
+                lambda w: openurl(info.HELP_URI),
             "on_translate_clicked":
                 lambda w: openurl(info.TRANSLATE_URL),
             "on_report_bug_clicked":
@@ -395,7 +395,7 @@ class TaskBrowser(gobject.GObject):
         self._add_accelerator_for_widget(agr, "dismiss_mi", "<Control>i")
         self._add_accelerator_for_widget(agr, "tcm_modifytags", "<Control>t")
         self._add_accelerator_for_widget(agr, "view_closed", "<Control>F9")
-        self._add_accelerator_for_widget(agr, "online_help", "F1")
+        self._add_accelerator_for_widget(agr, "help_contents", "F1")
 
         quickadd_field = self.builder.get_object("quickadd_field")
         key, mod = gtk.accelerator_parse("<Control>l")
