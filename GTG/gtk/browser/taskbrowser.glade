@@ -317,7 +317,7 @@
                         <property name="label">Contents</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="tooltip_text" translatable="yes">Open GTG documentation in your web browser</property>
+                        <property name="tooltip_text" translatable="yes">Open GTG help</property>
                         <property name="use_action_appearance">False</property>
                         <property name="image">image7</property>
                         <property name="use_stock">False</property>
@@ -794,7 +794,7 @@
     <property name="resizable">False</property>
     <property name="window_position">center-on-parent</property>
     <property name="type_hint">dialog</property>
-    <property name="program_name">Getting Things GNOME!</property>
+    <property name="program_name" translatable="yes">Getting Things GNOME!</property>
     <property name="copyright" translatable="yes">Copyright © 2008-2012 Lionel Dricot, Bertrand Rousseau</property>
     <property name="comments" translatable="yes">GTG is a personal tasks and TODO-list items organizer for the GNOME.</property>
     <property name="website_label" translatable="yes">GTG website</property>
