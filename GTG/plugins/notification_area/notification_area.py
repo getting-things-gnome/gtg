@@ -48,15 +48,15 @@ class _Attention:
     are tasks in danger zone.
 
     There are two levels of attention:
-    0 = "relax": there are no tasks in danger zone
-    1 = "attention": there is at least one task in danger zone
+    "normal": there are no tasks in danger zone
+    "high": there is at least one task in danger zone
 
     A task is in danger zone if the number of days left is less
     than time span (in days) defined by danger_zone.
     """
 
-    ICONS = {'relax': 'gtg',
-             'attention': 'gtg_need_attention'}
+    STATUS = {'normal': appindicator.STATUS_ACTIVE,
+              'high': appindicator.STATUS_ATTENTION}
 
     def __init__(self, tree, req, indicator, danger_zone=1):
         self.__tree = tree
@@ -72,20 +72,17 @@ class _Attention:
             if _due_within(task, self.danger_zone):
                 self.tasks_danger.append(tid)
 
-        # Set initial icon. Later on we only update if needed
-        if self.level() == 1:
-            indicator.set_icon(self.ICONS['attention'])
-        elif self.level() == 0:
-            indicator.set_icon(self.ICONS['relax'])
+        # Set initial status
+        self.__update_indicator(self.level())
 
     def level(self):
-        return 0 if len(self.tasks_danger)==0 else 1
+        """ Two states only: attention is either needed or not """
+        return 'high' if len(self.tasks_danger)>0 else 'normal'
 
-    def __update_indicator(self, old_level, new_level):
-        if old_level == 1 and new_level == 0:
-            self.__indicator.set_icon(self.ICONS['relax'])
-        elif old_level == 0 and new_level == 1:
-            self.__indicator.set_icon(self.ICONS['attention'])
+    def __update_indicator(self, new, old=None):
+        """ Reset indicator status or update upon change in status """
+        if old is None or not old == new:
+            self.__indicator.set_status(self.STATUS[new])
 
     def update_on_task_modified(self, tid):
         # Store current attention level
@@ -97,9 +94,9 @@ class _Attention:
         else:
             if _due_within(task, self.danger_zone):
                 self.tasks_danger.append(tid)
-
+                
         # Update icon only if attention level has changed
-        self.__update_indicator(old_lev, self.level())
+        self.__update_indicator(self.level(), old_lev)
 
     def update_on_task_deleted(self, tid):
         # Store current attention level
@@ -109,7 +106,7 @@ class _Attention:
             self.tasks_danger.remove(tid)
 
         # Update icon only if attention level has changed
-        self.__update_indicator(old_lev, self.level())
+        self.__update_indicator(self.level(), old_lev)
 
 
 class NotificationArea:
@@ -143,10 +140,10 @@ class NotificationArea:
                                    appindicator.CATEGORY_APPLICATION_STATUS)
                     icon_theme = os.path.join('notification_area', 'data', 'icons')
                     abs_theme_path = os.path.join(PLUGIN_DIR[0], icon_theme)
-                    theme = gtk.icon_theme_get_default()
-                    theme.append_search_path(abs_theme_path)
-                    # FIXME: theme has icon now but the indicator does not see it
-                    #print theme.has_icon("gtg_need_attention")
+                    # TODO: theme sees the icon but indicator doesn't
+                    # theme = gtk.icon_theme_get_default()
+                    # theme.append_search_path(abs_theme_path)
+                    # print theme.has_icon("gtg_need_attention")
                     self._indicator.set_icon_theme_path(abs_theme_path)
                     self._indicator.set_icon("gtg")
                     self._indicator.set_attention_icon("gtg_need_attention")
@@ -287,7 +284,6 @@ class NotificationArea:
                                               self.__indicator,
                                               self.preferences['danger_zone'])
             else:
-                self.__indicator.set_icon("gtg")
                 self.__attention = None
 
     def __open_task(self, widget, task_id = None):
