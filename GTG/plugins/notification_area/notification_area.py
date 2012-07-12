@@ -24,6 +24,7 @@ except:
     pass
 
 from GTG                   import _
+from GTG                   import PLUGIN_DIR
 from GTG.tools.borg        import Borg
 from GTG.tools.dates       import Date
 
@@ -55,7 +56,7 @@ class _Attention:
     """
 
     ICONS = {'relax': 'gtg',
-             'attention': 'gtg-need-attention'}
+             'attention': 'gtg_need_attention'}
 
     def __init__(self, tree, req, indicator, danger_zone=1):
         self.__tree = tree
@@ -140,7 +141,15 @@ class NotificationArea:
                                   "gtg",
                                   "indicator-messages",
                                    appindicator.CATEGORY_APPLICATION_STATUS)
+                    icon_theme = os.path.join('notification_area', 'data', 'icons')
+                    abs_theme_path = os.path.join(PLUGIN_DIR[0], icon_theme)
+                    theme = gtk.icon_theme_get_default()
+                    theme.append_search_path(abs_theme_path)
+                    # FIXME: theme has icon now but the indicator does not see it
+                    #print theme.has_icon("gtg_need_attention")
+                    self._indicator.set_icon_theme_path(abs_theme_path)
                     self._indicator.set_icon("gtg")
+                    self._indicator.set_attention_icon("gtg_need_attention")
                 except:
                     self._indicator = None
 
@@ -280,14 +289,6 @@ class NotificationArea:
             else:
                 self.__indicator.set_icon("gtg")
                 self.__attention = None
-
-        # Check if the icon theme has need-attention icon.
-        # If not, attention monitor is disabled.
-        theme = gtk.icon_theme_get_default()
-        if not theme.has_icon(_Attention.ICONS['attention']):
-            self.__attention = None
-            print 'Warning: icon %s not found. Please update the gtk theme.' %\
-                _Attention.ICONS['attention']
 
     def __open_task(self, widget, task_id = None):
         """
