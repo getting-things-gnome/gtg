@@ -127,6 +127,8 @@ class Task(TreeNode):
         #We should check for other task with the same title
         #In that case, we should add a number (like Tomboy does)
         old_title = self.title
+        if isinstance(title, str):
+            title = title.decode('utf8')
         if title:
             self.title = title.strip('\t\n')
         else:
