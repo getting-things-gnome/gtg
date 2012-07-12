@@ -17,32 +17,20 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-"""
-Detects urls using regex
+""" Tests for URL regex """
 
-Based on
-https://dev.twitter.com/docs/tco-url-wrapper/how-twitter-wrap-urls
-"""
+import unittest
+from GTG.tools.urlregex import match
 
-import re
 
-UTF_CHARS = ur'a-z0-9_\u00c0-\u00d6\u00d8-\u00f6\u00f8-\u00ff'
+class TestURLRegex(unittest.TestCase):
+    """ Test extractor of URL from text """
 
-SUBST_DICT = {
-    "pre": ur'(?:[^/"\':!=]|^|\:)',
-    "domain": ur'([\.-]|[^\s_\!\.\/])+\.[a-z]{2,}(?::[0-9]+)?',
-    "path":ur'(?:[\.,]?[%s!\*\'\(\);:&=\+\$/%s#\[\]\-_,~@])' % (UTF_CHARS, '%'),
-    "query": ur'[a-z0-9!\*\'\(\);:&=\+\$/%#\[\]\-_\.,~]',
-    # Valid end-of-path characters (so /foo. does not gobble the period).
-    "path_end": r'[%s\)=#/]' % UTF_CHARS,
-    "query_end": '[a-z0-9_&=#]'
-}
+    def test_anchor_amperstand(self):
+        """ Reproducer for bug #1023555 """
+        url = "http://test.com/#hi&there"
+        self.assertEqual(match(url).group(0), url)
 
-HTTP_URI= '((%(pre)s)((https?://|www\\.)(%(domain)s)(\/%(path)s*' \
-          '%(path_end)s?)?(\?%(query)s*%(query_end)s)?))' % SUBST_DICT
-FILE_URI='(file:///(%(path)s*%(path_end)s?)?)' % SUBST_DICT
 
-URL_REGEX = re.compile('%s|%s' % (HTTP_URI, FILE_URI), re.IGNORECASE)
-
-def match(text):
-    return re.match(URL_REGEX, text)
+def test_suite():
+    return unittest.TestLoader().loadTestsFromName(__name__)
