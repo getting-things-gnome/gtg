@@ -264,12 +264,6 @@ class NotificationArea:
             self.__indicator.set_menu(self.__menu)
             self.__indicator.set_status(appindicator.STATUS_ACTIVE)
         else:
-            icon_theme = os.path.join('notification_area', 'data', 'icons')
-            abs_theme_path = os.path.join(PLUGIN_DIR[0], icon_theme)
-            theme = gtk.icon_theme_get_default()
-            theme.append_search_path(abs_theme_path)
-            print theme.has_icon("gtg_need_attention")
-
             self.status_icon = gtk.StatusIcon()
             self.status_icon.set_from_icon_name("gtg")
             self.status_icon.set_tooltip("Getting Things Gnome!")
