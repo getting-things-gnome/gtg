@@ -1,0 +1,39 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="guide" style="task 2column"
+      id="gtg-workview">
+
+  <info>
+    <link type="guide" xref="index#gtg-task-management"/>
+    <revision pkgversion="0.1" version="0.1" date="2012-07-03" status="candidate"/>
+    <credit type="author">
+      <name>Radina Matic</name>
+     <email>radina.matic@gmail.com</email>
+    </credit>
+  </info>
+
+  <title>Understand Work View</title>
+  
+    <p> If you press the <gui>Work View</gui> button, only actionable tasks will be displayed.</p> 
+
+
+<figure>
+  <title>Work View</title>
+  <desc> </desc>
+ <media type="image" mime="image/png" src="figures/workview.png"/>
+</figure>
+  
+ <p>What is an actionable task? Actionable tasks are the ones that you can do directly, right now, and it has to meet two conditions:</p>
+
+<list>
+      <item><p>Be "start-able", meaning that the start date has already arrived or passed.</p></item>
+      <item><p>Not have any open subtasks, meaning that all its “prerequisites” are met and you can do the task itself directly.</p></item> 
+</list>
+
+<p>This way the <gui>Work View</gui> will only show you the tasks you can do right now.</p>
+
+<p>If you use tags, you can right click on a tag in the sidebar and choose to hide tasks tagged with it in the <gui>Work View</gui>. This option is very useful if you have a tag like "someday" that you use for tasks you would like to do but are not particularly urgent.</p>
+ 
+ 
+  
+  <links type="topic" groups="first second third fourth fifth sixth" style="2column"/>
+</page>

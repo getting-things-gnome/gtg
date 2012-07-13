@@ -27,6 +27,7 @@
     * Added -t option to distinguish between multiple instances of GTG
     * Fix for bug #826916 by Nimit Shah
     * Fix for bug #1018331: (gtg more interactive) by Nimit Shah
+    * User documentation for GTG, written by Radina Matic, integrated in GTG by Bertrand Rousseau
 
 2012-02-13 Getting Things GNOME! 0.2.9
     * Big refractorization of code, now using liblarch

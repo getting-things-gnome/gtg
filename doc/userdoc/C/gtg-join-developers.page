@@ -1,0 +1,28 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="topic" style="task"
+      id="gtg-join-developers">
+
+  <info>
+    <link type="guide" xref="index#gtg-advanced" group="second"/>
+    <link type="seealso" xref="gtg-ppa"/>
+    <link type="seealso" xref="gtg-create-sync"/>
+    <link type="seealso" xref="gtg-create-plugin"/>
+    <revision pkgversion="0.1" version="0.1" date="2012-07-03" status="candidate"/>
+    <credit type="author">
+      <name>Radina Matic</name>
+     <email>radina.matic@gmail.com</email>
+    </credit>
+  </info>
+
+  <title>Join the GTG Developer Team</title>
+
+<p>Are you up for an interesting adventure? Want to join the developer team? Start here:</p>
+
+
+<p><link href="https://live.gnome.org/gtg/contributing/">Contributing to GTG</link></p>
+
+<p><link href="https://live.gnome.org/gtg/becoming%20a%20gtg%20developer/">Becoming a GTG developer</link></p>
+
+
+</page>
+

@@ -313,14 +313,14 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <child>
-                      <object class="GtkImageMenuItem" id="online_help">
-                        <property name="label">Get _Help Online</property>
+                      <object class="GtkImageMenuItem" id="help_contents">
+                        <property name="label">Contents</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="tooltip_text" translatable="yes">Open GTG documentation in your web browser</property>
+                        <property name="tooltip_text" translatable="yes">Open GTG help</property>
                         <property name="use_action_appearance">False</property>
-                        <property name="use_underline">True</property>
-                        <property name="use_stock">True</property>
+                        <property name="image">image7</property>
+                        <property name="use_stock">False</property>
                         <property name="accel_group">accelgroup1</property>
                         <signal name="activate" handler="on_documentation_clicked" swapped="no"/>
                       </object>
@@ -954,6 +954,11 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
     <property name="can_focus">False</property>
     <property name="stock">gtk-edit</property>
     <property name="icon-size">1</property>
+  </object>
+  <object class="GtkImage" id="image7">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="stock">gtk-help</property>
   </object>
   <object class="GtkEntryCompletion" id="quickadd_entrycompletion">
     <property name="popup_set_width">False</property>

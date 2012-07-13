@@ -1,0 +1,32 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="guide" style="task 2column"
+      id="gtg-tags">
+
+  <info>
+    <link type="guide" xref="index#gtg-task-management" group="third"/>
+    <revision pkgversion="0.1" version="0.1" date="2012-07-03" status="candidate"/>
+    <credit type="author">
+      <name>Radina Matic</name>
+     <email>radina.matic@gmail.com</email>
+    </credit>
+  </info>
+
+  <title>Tag your Tasks</title>
+
+  <p>Tag is a simple word that begins with the sign &quot;@&quot;.</p>
+  
+  <p>When you type a word beginning with @, it will appear higlighted yellow which is the indicator that <app>GTG</app> considers the word to be a tag.</p>
+
+<figure>
+  <title>GTG Tag</title>
+ <media type="image" mime="image/png" src="figures/tag.png"/>
+</figure>
+
+  <p>Tags are useful to sort your tasks. In the <gui>View</gui> menu, you can enable the <gui>Tags Sidebar</gui> which displays all the tags you have used, in a way that you can easily see and select only the tasks with a given tag by clicking on it. There's no limit to the number of tags a task can have.</p>
+
+  <p>You can drag-n-drop a tag onto another to create "subtags". As an example, if you drag the tag @to_pay onto the tag @money, every task tagged with @to_pay will also appear in the view of @money (but the @money tag is not added to the task).</p>
+
+  <p>New tag is only added to the current task - there's no recursion and the tag is not applied to subtasks. However, when you create a new subtask, it will inherit the tags of its parents, but you can modify at any time the tags of a subtask to make it different from its parents if required.</p>
+  
+  <links type="topic" groups="first second third fourth fifth sixth" style="2column"/>
+</page>

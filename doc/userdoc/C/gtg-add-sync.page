@@ -1,0 +1,38 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="topic" style="task"
+      id="gtg-add-sync">
+
+  <info>
+    <link type="guide" xref="index#gtg-sync"/>
+     <link type="seealso" xref="gtg-sync"/>
+      <link type="seealso" xref="gtg-remove-sync"/>
+
+    <revision pkgversion="0.1" version="0.1" date="2012-07-03" status="candidate"/>
+    <credit type="author">
+      <name>Radina Matic</name>
+     <email>radina.matic@gmail.com</email>
+    </credit>
+  </info>
+
+  <title>Enable/Disable Sync Service</title>
+
+<p>To enable or disable Sync Services in the GTG main menu go to <guiseq><gui>Edit</gui><gui>Setup Sync Services</gui></guiseq>. Press the button <gui>Add</gui> and choose the desired sync service from the drop down menu on the right.</p>
+
+<figure>
+  <title>Enable Sync Service</title>
+  <desc> </desc>
+ <media type="image" mime="image/png" src="figures/select-sync.png"/>
+</figure>
+
+<p>For each sync service that you wish to enable you will have to set certain parameters, provide the user name and password if necessary and press the <gui>Enable syncing</gui> button.</p>
+
+<p>To disable a sync service press the <gui>Disable syncing</gui> button.</p>
+
+<figure>
+  <title>Configure Sync Service</title>
+  <desc> </desc>
+ <media type="image" mime="image/png" src="figures/configure-sync.png"/>
+</figure>
+
+</page>
+
