@@ -160,13 +160,13 @@ class pluginUrgencyColor:
         # Colorbutton - OVERDUE
         self.colorbutton_overdue.set_color( \
             gtk.gdk.color_parse(self._pref_data['color_overdue']))
-        # Colorbutton - RED
+        # Colorbutton - HIGH
         self.colorbutton_high.set_color( \
             gtk.gdk.color_parse(self._pref_data['color_high']))
-        # Colorbutton - YELLOW
+        # Colorbutton - NORMAL
         self.colorbutton_normal.set_color( \
             gtk.gdk.color_parse(self._pref_data['color_normal']))
-        # Colorbutton - GREEN
+        # Colorbutton - LOW
         self.colorbutton_low.set_color( \
             gtk.gdk.color_parse(self._pref_data['color_low']))
 
