@@ -58,7 +58,10 @@ class _Attention:
     STATUS = {'normal': appindicator.STATUS_ACTIVE,
               'high': appindicator.STATUS_ATTENTION}
 
-    def __init__(self, tree, req, indicator, danger_zone=1):
+    ICON = {'normal': 'gtg',
+            'high': 'gtg_need_attention'}
+
+    def __init__(self, danger_zone, indicator, tree, req):
         self.__tree = tree
         self.__req = req
         self.__indicator = indicator
@@ -82,7 +85,14 @@ class _Attention:
     def __update_indicator(self, new, old=None):
         """ Reset indicator status or update upon change in status """
         if old is None or not old == new:
-            self.__indicator.set_status(self.STATUS[new])
+            try:
+                # This works if __indicator implements the appindicator api 
+                self.__indicator.set_status(self.STATUS[new])
+            except AttributeError:
+                # If we passed a status icon instead try this
+                self.__indicator.set_from_icon_name(self.ICON[new])
+            except:
+                raise
 
     def update_on_task_modified(self, tid):
         # Store current attention level
@@ -138,11 +148,7 @@ class NotificationArea:
                                   "gtg",
                                   "indicator-messages",
                                    appindicator.CATEGORY_APPLICATION_STATUS)
-                    icon_theme = os.path.join('notification_area', 'data', 'icons')
-                    abs_theme_path = os.path.join(PLUGIN_DIR[0], icon_theme)
-                    self._indicator.set_icon_theme_path(abs_theme_path)
                     self._indicator.set_icon("gtg")
-                    self._indicator.set_attention_icon("gtg_need_attention")
                 except:
                     self._indicator = None
 
@@ -256,7 +262,15 @@ class NotificationArea:
         self.__tasks_menu = SortedLimitedMenu(self.MAX_ITEMS,
                             self.__menu, self.__menu_top_length)
 
+        # Update the icon theme
+        icon_theme = os.path.join('notification_area', 'data', 'icons')
+        abs_theme_path = os.path.join(PLUGIN_DIR[0], icon_theme)
+        theme = gtk.icon_theme_get_default()
+        theme.append_search_path(abs_theme_path)
+
         if self.__indicator:
+            self.__indicator.set_icon_theme_path(abs_theme_path)
+            self.__indicator.set_attention_icon("gtg_need_attention")
             self.__indicator.set_menu(self.__menu)
             self.__indicator.set_status(appindicator.STATUS_ACTIVE)
         else:
@@ -272,15 +286,15 @@ class NotificationArea:
         # Use two different viewtree for attention and menu
         # This way we can filter them independently.
         # Convention: if danger zone is <=0, disable attention
-        # Attention is also disabled if there is no indicator
-        if self.__indicator:
-            if self.preferences['danger_zone'] > 0:
-                self.__attention = _Attention(self.__tree_att,
-                                              self.__requester,
-                                              self.__indicator,
-                                              self.preferences['danger_zone'])
-            else:
-                self.__attention = None
+        # Fallback: if there is no indicator we pass the status icon instead
+        if self.preferences['danger_zone'] > 0:
+            self.__attention = _Attention( \
+                self.preferences['danger_zone'],
+                self.__indicator if self.__indicator else self.status_icon,
+                self.__tree_att,
+                self.__requester)
+        else:
+            self.__attention = None
 
     def __open_task(self, widget, task_id = None):
         """
