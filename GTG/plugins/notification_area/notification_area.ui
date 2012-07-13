@@ -55,6 +55,7 @@
           <packing>
             <property name="expand">True</property>
             <property name="fill">True</property>
+            <property name="padding">5</property>
             <property name="position">1</property>
           </packing>
         </child>
@@ -88,6 +89,7 @@
                 <property name="has_tooltip">True</property>
                 <property name="tooltip_text" translatable="yes">The icon in the notification area is colored if there are tasks in the danger zone. 
 A danger zone of 0 disables icon coloring.</property>
+                <property name="xpad">4</property>
                 <property name="label" translatable="yes"> Danger zone (in days) </property>
               </object>
               <packing>
@@ -100,6 +102,7 @@ A danger zone of 0 disables icon coloring.</property>
           <packing>
             <property name="expand">True</property>
             <property name="fill">True</property>
+            <property name="padding">5</property>
             <property name="position">2</property>
           </packing>
         </child>
@@ -145,6 +148,7 @@ A danger zone of 0 disables icon coloring.</property>
           <packing>
             <property name="expand">True</property>
             <property name="fill">True</property>
+            <property name="padding">5</property>
             <property name="position">3</property>
           </packing>
         </child>
