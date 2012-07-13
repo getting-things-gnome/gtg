@@ -146,7 +146,7 @@ class DBusTaskWrapper(dbus.service.Object):
             return [self.GetTask(id) for id in tasks]
         else:
             return dbus.Array([], "s")
-            
+
     @dbus.service.method(BUSNAME, in_signature="s")
     def SearchTasks(self, query):
         """
@@ -163,7 +163,7 @@ class DBusTaskWrapper(dbus.service.Object):
         except InvalidQuery:
             pass
         return dbus.Array([], "s")
-    
+
     @dbus.service.method(BUSNAME)
     def HasTask(self, tid):
         """

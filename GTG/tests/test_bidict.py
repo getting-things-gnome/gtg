@@ -17,9 +17,7 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-'''
-Tests for the BiDict class
-'''
+""" Tests for the BiDict class """
 
 import unittest
 import uuid
@@ -27,17 +25,11 @@ import uuid
 from GTG.tools.bidict import BiDict
 
 
-
 class TestBiDict(unittest.TestCase):
-    '''
-    Tests for the BiDict object.
-    '''
+    """ Tests for the BiDict object."""
 
-    
     def test_add_and_gets(self):
-        '''
-        Test for the __init__, _get_by_first, _get_by_second function
-        '''
+        """ Test for the __init__, _get_by_first, _get_by_second function """
         pairs = [(uuid.uuid4(), uuid.uuid4()) for a in xrange(10)]
         bidict = BiDict(*pairs)
         for pair in pairs:
@@ -45,9 +37,7 @@ class TestBiDict(unittest.TestCase):
             self.assertEqual(bidict._get_by_second(pair[1]), pair[0])
 
     def test_remove_by_first_or_second(self):
-        '''
-        Tests for removing elements from the biDict
-        '''
+        """ Tests for removing elements from the biDict """
         pair_first = (1, 'one')
         pair_second = (2, 'two')
         bidict = BiDict(pair_first, pair_second)
@@ -74,6 +64,6 @@ class TestBiDict(unittest.TestCase):
         self.assertEqual(missing_first, 2)
         self.assertEqual(missing_second, 2)
 
+
 def test_suite():
     return unittest.TestLoader().loadTestsFromTestCase(TestBiDict)
-

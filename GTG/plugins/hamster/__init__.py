@@ -18,4 +18,5 @@ from GTG.plugins.hamster.hamster import hamsterPlugin
 
 
 #suppress pyflakes warning (given by make lint)
-if False == True: hamsterPlugin()
+if False == True:
+    hamsterPlugin()

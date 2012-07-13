@@ -28,6 +28,8 @@ This window is divided in two:
 
 import gtk
 
+from webbrowser import open as openurl
+
 from GTG.gtk                                import ViewConfig
 from GTG.core                               import CoreConfig
 from GTG.gtk.backends_dialog.backendstree   import BackendsTree
@@ -37,17 +39,17 @@ from GTG.backends                           import BackendFactory
 from GTG.tools.logger                       import Log
 from GTG                                    import _
 from GTG.backends.genericbackend            import GenericBackend
-
+from GTG import info
 
 
 class BackendsDialog(object):
     '''
-    BackendsDialog manages a window that lets you manage and configure synchronization service.
+    BackendsDialog manages a window that lets you manage and configure
+    synchronization service.
     It can display two "views", or "panels":
         - the backend configuration view
         - the backend adding view
     '''
-
 
     def __init__(self, req):
         '''
@@ -55,13 +57,26 @@ class BackendsDialog(object):
         @param req: a Requester object
         '''
         self.req = req
+        self.icon_theme = None
         self._configure_icon_theme()
-        builder = gtk.Builder() 
+        # Declare subsequently loaded widget
+        self.dialog = None
+        self.treeview_window = None
+        self.central_pane = None
+        self.add_button = None
+        self.remove_button = None
+        self.backends_tv = None
+        self.config_panel = None
+        self.add_panel = None
+        # Load from Glade
+        builder = gtk.Builder()
         self._load_widgets_from_glade(builder)
+        # Load and setup other widgets
+        self.dialog.set_title(_("Synchronization Services - %s" % info.NAME))
         self._create_widgets_for_add_panel()
-        self._create_widgets_for_configure_panel()
+        self._create_widgets_for_conf_panel()
         self._setup_signal_connections(builder)
-        self._create_widgets_for_backends_tree()
+        self._create_widgets_for_treeview()
 
 ########################################
 ### INTERFACE WITH THE VIEWMANAGER #####
@@ -74,10 +89,10 @@ class BackendsDialog(object):
         self.backends_tv.select_backend()
         self.dialog.present()
 
-    def on_close(self, widget, data = None):
+    def on_close(self, widget, data = None): # pylint: disable-msg=W0613
         '''
         Hides this window, saving the backends configuration.
-        
+
         @param widget: not used, here only for using this as signal callback
         @param data: same as widget, disregard the content
         '''
@@ -109,13 +124,13 @@ class BackendsDialog(object):
         @returns gtk.gdk.Pixbuf: a pixbuf containing the wanted icon, or None
         (if the icon is not present)
         '''
-        #NOTE: loading icons directly from the theme and scaling them results in
-        #      blurry icons. So, instead of doing that, I'm loading them
+        #NOTE: loading icons directly from the theme and scaling them results
+        #      in blurry icons. So, instead of doing that, I'm loading them
         #      directly from file. 
         icon_info = self.icon_theme.lookup_icon(name, gtk.ICON_SIZE_MENU, 0)
         if icon_info == None:
             return None
-        pixbuf =  gtk.gdk.pixbuf_new_from_file(icon_info.get_filename())
+        pixbuf = gtk.gdk.pixbuf_new_from_file(icon_info.get_filename())
         return pixbuf.scale_simple(width, height, gtk.gdk.INTERP_BILINEAR)
 
     def _show_panel(self, panel_name):
@@ -166,11 +181,11 @@ class BackendsDialog(object):
         '''
         builder.add_from_file(ViewConfig.BACKENDS_GLADE_FILE)
         widgets = {
-          'dialog'        : 'backends_dialog',
-          'treeview_window'   : 'treeview_window',
-          'central_pane'  : 'central_pane',
-          'add_button'    : 'add_button',
-          'remove_button' : 'remove_button',
+          'dialog'          : 'backends_dialog',
+          'treeview_window' : 'treeview_window',
+          'central_pane'    : 'central_pane',
+          'add_button'      : 'add_button',
+          'remove_button'   : 'remove_button',
           }
         for attr, widget in widgets.iteritems():
             setattr(self, attr, builder.get_object(widget))
@@ -186,6 +201,7 @@ class BackendsDialog(object):
          'on_BackendsDialog_delete_event': self.on_close,
          'on_close_button_clicked': self.on_close,
          'on_remove_button_clicked': self.on_remove_button,
+         'on_help_button_clicked': lambda w: openurl("help:gtg/gtg-add-sync"),
         }
         builder.connect_signals(signals)
 
@@ -198,7 +214,7 @@ class BackendsDialog(object):
         for directory in CoreConfig().get_icons_directories():
             self.icon_theme.prepend_search_path(directory)
 
-    def _create_widgets_for_backends_tree(self):
+    def _create_widgets_for_treeview(self):
         '''
         Creates the widgets for the lateral treeview displaying the 
         backends the user has added
@@ -206,7 +222,7 @@ class BackendsDialog(object):
         self.backends_tv = BackendsTree(self)
         self.treeview_window.add(self.backends_tv)
 
-    def _create_widgets_for_configure_panel(self):
+    def _create_widgets_for_conf_panel(self):
         '''simply creates the panel to configure backends'''
         self.config_panel = ConfigurePanel(self)
 
@@ -231,6 +247,7 @@ class BackendsDialog(object):
             backend = self.req.get_backend(backend_id)
             self.remove_button.set_sensitive(not backend.is_default())
 
+    # pylint: disable-msg=W0613
     def on_add_button(self, widget = None, data = None):
         '''
         When the add button is pressed, the add panel is shown
@@ -249,11 +266,9 @@ class BackendsDialog(object):
         @param backend_name: the name of the type of the backend to add
                              (identified as BACKEND_NAME in the Backend class)
         '''
-        backend_id = None
         #Create Backend
         backend_dic = BackendFactory().get_new_backend_dict(backend_name)
         if backend_dic:
-            backend_id = backend_dic["backend"].get_id()
             backend_dic[GenericBackend.KEY_ENABLED] = False
             self.req.register_backend(backend_dic)
         #Restore UI
@@ -267,6 +282,7 @@ class BackendsDialog(object):
         '''
         self.backends_tv.select_backend(backend_id)
 
+    # pylint: disable-msg=W0613
     def on_remove_button(self, widget = None, data = None):
         '''
         When the remove button is pressed, a confirmation dialog is shown, 
@@ -283,7 +299,8 @@ class BackendsDialog(object):
                     type = gtk.MESSAGE_QUESTION,
                     buttons = gtk.BUTTONS_YES_NO,
                     message_format = \
-                     _("Do you really want to remove the '%s' synchronization service?") % \
+                     _("Do you really want to remove the '%s' "
+                       "synchronization service?") % \
                             backend.get_human_name())
         response = dialog.run() 
         dialog.destroy()

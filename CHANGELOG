@@ -22,6 +22,13 @@
     * Added an option to import local (development) version of liblarch instead of system installed one
     * Fix for bug #995740: (no title task) through quickadd bar, by Nimit Shah
     * New tag editor
+    * Fix bugs #1003872 and #1002067: Correct titles to Preferences and Synchronization Services Dialogs, by Alan Gomes
+    * Improved Export plugin, export to PDF works now, by Izidor Matušov
+    * Added -t option to distinguish between multiple instances of GTG
+    * Fix for bug #826916 by Nimit Shah
+    * Fix for bug #1018331: (gtg more interactive) by Nimit Shah
+    * User documentation for GTG, written by Radina Matic, integrated in GTG by Bertrand Rousseau
+    * It is not possible to add another instance of local file synchronization service
     * Fixes for bugs #906516, #1002160 (task urgency color plugin), by Wolter Hellmund
 
 2012-02-13 Getting Things GNOME! 0.2.9

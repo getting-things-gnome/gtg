@@ -175,6 +175,32 @@
                       </object>
                     </child>
                     <child>
+                      <object class="GtkMenuItem" id="plugins_mi">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="use_action_appearance">False</property>
+                        <property name="label">P_lugins</property>
+                        <property name="use_underline">True</property>
+                        <signal name="activate" handler="on_edit_plugins_activate" swapped="no"/>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkMenuItem" id="backends_mi">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="use_action_appearance">False</property>
+                        <property name="label">_Synchronization Services</property>
+                        <property name="use_underline">True</property>
+                        <signal name="activate" handler="on_edit_backends_activate" swapped="no"/>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkSeparatorMenuItem" id="separator_4">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                      </object>
+                    </child>
+                    <child>
                       <object class="GtkImageMenuItem" id="edit_preferences_mi">
                         <property name="label">gtk-preferences</property>
                         <property name="visible">True</property>
@@ -184,15 +210,6 @@
                         <property name="use_stock">True</property>
                         <property name="accel_group">accelgroup1</property>
                         <signal name="activate" handler="on_preferences_activate" swapped="no"/>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkMenuItem" id="backends_mi">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="use_action_appearance">False</property>
-                        <property name="label">Setup Sync. Services</property>
-                        <signal name="activate" handler="on_edit_backends_activate" swapped="no"/>
                       </object>
                     </child>
                   </object>
@@ -221,7 +238,7 @@
                       </object>
                     </child>
                     <child>
-                      <object class="GtkSeparatorMenuItem" id="separator_4">
+                      <object class="GtkSeparatorMenuItem" id="separator_5">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                       </object>
@@ -296,14 +313,14 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <child>
-                      <object class="GtkImageMenuItem" id="online_help">
-                        <property name="label">Get _Help Online</property>
+                      <object class="GtkImageMenuItem" id="help_contents">
+                        <property name="label">Contents</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="tooltip_text" translatable="yes">Open GTG documentation in your web browser</property>
+                        <property name="tooltip_text" translatable="yes">Open GTG help</property>
                         <property name="use_action_appearance">False</property>
-                        <property name="use_underline">True</property>
-                        <property name="use_stock">True</property>
+                        <property name="image">image7</property>
+                        <property name="use_stock">False</property>
                         <property name="accel_group">accelgroup1</property>
                         <signal name="activate" handler="on_documentation_clicked" swapped="no"/>
                       </object>
@@ -675,7 +692,7 @@
                         <property name="invisible_char">●</property>
                         <property name="secondary_icon_stock">gtk-clear</property>
                         <property name="primary_icon_activatable">False</property>
-                        <property name="secondary_icon_activatable">False</property>
+                        <property name="secondary_icon_activatable">True</property>
                         <property name="primary_icon_sensitive">True</property>
                         <property name="secondary_icon_sensitive">True</property>
                         <signal name="changed" handler="on_quickadd_field_changed" swapped="no"/>
@@ -777,10 +794,9 @@
     <property name="resizable">False</property>
     <property name="window_position">center-on-parent</property>
     <property name="type_hint">dialog</property>
-    <property name="program_name">Getting Things Gnome!</property>
+    <property name="program_name" translatable="yes">Getting Things GNOME!</property>
     <property name="copyright" translatable="yes">Copyright © 2008-2012 Lionel Dricot, Bertrand Rousseau</property>
-    <property name="comments" translatable="yes">
-Getting Things Gnome! is an organizer for the GNOME desktop environment.</property>
+    <property name="comments" translatable="yes">GTG is a personal tasks and TODO-list items organizer for the GNOME.</property>
     <property name="website_label" translatable="yes">GTG website</property>
     <property name="license" translatable="yes">Getting Things Gnome! is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 3 of the License, or (at your option) any later version.
 
@@ -939,6 +955,11 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
     <property name="stock">gtk-edit</property>
     <property name="icon-size">1</property>
   </object>
+  <object class="GtkImage" id="image7">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="stock">gtk-help</property>
+  </object>
   <object class="GtkEntryCompletion" id="quickadd_entrycompletion">
     <property name="popup_set_width">False</property>
     <signal name="action-activated" handler="on_quickadd_entrycompletion_action_activated" swapped="no"/>
@@ -1024,7 +1045,6 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
     <child>
       <object class="GtkImageMenuItem" id="tcm_start_menu">
         <property name="label" translatable="yes">_Set start date</property>
-        <property name="submenu">start_for_context_menu</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="use_action_appearance">False</property>
@@ -1113,7 +1133,6 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
     <child>
       <object class="GtkImageMenuItem" id="tcm_due_menu">
         <property name="label" translatable="yes">Set due date</property>
-        <property name="submenu">due_context_menu</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="use_action_appearance">False</property>

@@ -23,9 +23,15 @@ import unittest
 
 from GTG.tools.networkmanager import is_connection_up
 
+
 class TestNetworkManager(unittest.TestCase):
+    """ Test network manager tool code """
+
     def test_is_connection_up_dont_throw_exception(self):
+        """ is_connection_up() returns a boolean value and
+        don't throw any exception """
         self.assertIn(is_connection_up(), [True, False])
+
 
 def test_suite():
     return unittest.TestLoader().loadTestsFromName(__name__)
