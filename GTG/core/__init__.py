@@ -169,8 +169,12 @@ class CoreConfig(Borg):
                 raise Exception("File " + file + \
                             " is a configuration file for gtg, but it "
                             "cannot be read or written. Please check it")
-        self.conf_dict = ConfigObj(self.conf_dir + self.CONF_FILE)
-        self.task_conf_dict = ConfigObj(self.conf_dir + self.TASK_CONF_FILE)
+	try:        
+	    self.conf_dict = ConfigObj(self.conf_dir + self.CONF_FILE)
+            self.task_conf_dict = ConfigObj(self.conf_dir + self.TASK_CONF_FILE)    
+	except configobj.ConfigObjError as e:
+	    open(self.conf_dir + self.CONF_FILE, "w").close()
+	    self.conf_dict = ConfigObj(self.conf_dir + self.CONF_FILE)
 
     def save(self):
         ''' Saves the configuration of CoreConfig '''
