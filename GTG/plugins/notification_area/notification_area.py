@@ -140,10 +140,6 @@ class NotificationArea:
                                    appindicator.CATEGORY_APPLICATION_STATUS)
                     icon_theme = os.path.join('notification_area', 'data', 'icons')
                     abs_theme_path = os.path.join(PLUGIN_DIR[0], icon_theme)
-                    # TODO: theme sees the icon but indicator doesn't
-                    # theme = gtk.icon_theme_get_default()
-                    # theme.append_search_path(abs_theme_path)
-                    # print theme.has_icon("gtg_need_attention")
                     self._indicator.set_icon_theme_path(abs_theme_path)
                     self._indicator.set_icon("gtg")
                     self._indicator.set_attention_icon("gtg_need_attention")
