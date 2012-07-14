@@ -7,16 +7,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2012-04-22 17:25+0200\n"
+"POT-Creation-Date: 2012-07-13 16:43+0200\n"
 "PO-Revision-Date: 2012-04-12 20:23+0000\n"
-"Last-Translator: huxuan <Unknown>\n"
+"Last-Translator: Xuan Hu <Unknown>\n"
 "Language-Team: Simplified Chinese <zh_CN@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Launchpad-Export-Date: 2012-04-23 04:48+0000\n"
-"X-Generator: Launchpad (build 15135)\n"
+"X-Launchpad-Export-Date: 2012-07-14 06:30+0000\n"
+"X-Generator: Launchpad (build 15614)\n"
 
 #: GTG/plugins/notification_area/notification_area.py:123
 msgid "Add _New Task"
@@ -26,11 +26,11 @@ msgstr "添加新任务(_N)"
 msgid "_View Main Window"
 msgstr "查看主窗口(_V)"
 
-#: GTG/plugins/export/export_templates/description_textual.py:18
+#: GTG/plugins/export/export_templates/description_textual.py:21
 msgid "Text-only"
 msgstr "文本方式"
 
-#: GTG/plugins/export/export_templates/description_textual.py:19
+#: GTG/plugins/export/export_templates/description_textual.py:22
 msgid "A template to create a simple text file with some tasks."
 msgstr "一个创建包含数个任务的简易文本文件模板"
 
@@ -58,8 +58,11 @@ msgstr "可折叠的小册子(PDF)"
 
 #: GTG/plugins/export/export_templates/description_pocketmod.py:19
 msgid ""
-"A template to create a <a href=\"http://www.pocketmod.com\">PocketMod</a>, "
-"which is a  small foldable booklet."
+"A template to create\n"
+"<a href=\"http://www.pocketmod.com\">PocketMod</a>, which is a small "
+"foldable\n"
+"booklet. Packages <b>pdflatex</b>, <b>pdftk</b> and <b>pdfjam</b>\n"
+"are required."
 msgstr ""
 
 #: GTG/plugins/export/export_templates/description_sexy.py:18
@@ -72,20 +75,20 @@ msgid ""
 "also displayed."
 msgstr ""
 
-#: GTG/plugins/export/export.py:114
-msgid "Template not found"
-msgstr "没找到模板"
+#: GTG/plugins/export/export.py:119
+msgid "No task matches your criteria. Empty report can't be generated."
+msgstr ""
 
-#: GTG/plugins/export/export.py:121
+#: GTG/plugins/export/export.py:137
 #, python-format
 msgid "GTG could not generate the document: %s"
 msgstr "GTG 不能生成此文档： %s"
 
-#: GTG/plugins/export/export.py:169
+#: GTG/plugins/export/export.py:183
 msgid "Export the tasks currently listed"
 msgstr "导出当前列出的任务"
 
-#: GTG/plugins/export/export.py:323
+#: GTG/plugins/export/export.py:310
 msgid "Choose where to save your list"
 msgstr "选择保存列表的位置"
 
@@ -93,12 +96,12 @@ msgstr "选择保存列表的位置"
 msgid "Send via email"
 msgstr "通过邮件发送"
 
-#: GTG/plugins/send_email/sendEmail.py:69
+#: GTG/plugins/send_email/sendEmail.py:68
 #, python-format
 msgid "Status: %s"
 msgstr "状态: %s"
 
-#: GTG/plugins/send_email/sendEmail.py:70
+#: GTG/plugins/send_email/sendEmail.py:69
 #, python-format
 msgid ""
 "\n"
@@ -107,7 +110,7 @@ msgstr ""
 "\n"
 "标签：%s"
 
-#: GTG/plugins/send_email/sendEmail.py:71
+#: GTG/plugins/send_email/sendEmail.py:70
 #, python-format
 msgid ""
 "\n"
@@ -118,7 +121,7 @@ msgstr ""
 "子任务：\n"
 "%s"
 
-#: GTG/plugins/send_email/sendEmail.py:73
+#: GTG/plugins/send_email/sendEmail.py:72
 #, python-format
 msgid ""
 "\n"
@@ -129,7 +132,7 @@ msgstr ""
 "任务描述：\n"
 "%s"
 
-#: GTG/plugins/send_email/sendEmail.py:76
+#: GTG/plugins/send_email/sendEmail.py:75
 #, python-format
 msgid "Task: %(task_title)s"
 msgstr "任务：%(task_title)s"
@@ -178,68 +181,64 @@ msgstr ""
 msgid "<b>Proximity Factor</b>"
 msgstr "相邻因素"
 
-#: GTG/plugins/hamster/hamster.py:154
+#: GTG/plugins/hamster/hamster.py:37
+msgid "Start a new activity in Hamster Time Tracker "
+msgstr ""
+
+#: GTG/plugins/hamster/hamster.py:172
 msgid "Start task in Hamster"
 msgstr "开始 Hamster 中的任务"
 
-#: GTG/plugins/hamster/hamster.py:159
+#: GTG/plugins/hamster/hamster.py:177
 msgid "Start in Hamster"
 msgstr "在 Hamster 中开始"
 
-#: GTG/plugins/hamster/hamster.py:161
-msgid "Start a new activity in Hamster Time"
-msgstr "在 Hamster Time 中开始新活动"
-
-#: GTG/plugins/hamster/hamster.py:175
-msgid "Start a new activity in Hamster Time "
-msgstr "在 Hamster 程序中开始新活动 "
-
-#: GTG/plugins/tomboy/tomboy.py:79
+#: GTG/plugins/tomboy/tomboy.py:76
 msgid ""
 "Tomboy/Gnote not found. Please install it or disable the Tomboy/Gnote plugin "
 "in GTG"
 msgstr "未找到 Tomboy 或 Gnote。请安装这些软件，或在 GTG 中禁用 Tomboy/Gnote 插件。"
 
-#: GTG/plugins/tomboy/tomboy.py:121
+#: GTG/plugins/tomboy/tomboy.py:118
 msgid "Add Tomboy note"
 msgstr "添加 Tomboy 便签"
 
-#: GTG/plugins/tomboy/tomboy.py:194
+#: GTG/plugins/tomboy/tomboy.py:191
 #, python-format
 msgid ""
 "%s seems to be installed on your system, but it does not provide a DBus "
 "interface which is required by the Tomboy/Gnote plugin in GTG."
 msgstr "%s 似乎已经安装在你的系统中，但是没有提供GTG中的Tomboy/Gnote插件需要的DBus接口"
 
-#: GTG/plugins/tomboy/tomboy.py:240
+#: GTG/plugins/tomboy/tomboy.py:237
 msgid "That note does not exist!"
 msgstr "便签不存在！"
 
-#: GTG/plugins/tomboy/tomboy.py:245
+#: GTG/plugins/tomboy/tomboy.py:242
 msgid "That note does not exist. Do you want to create a new one?"
 msgstr "便签不存在。您想建一个新的吗？"
 
-#: GTG/plugins/tomboy/tomboy.py:273
+#: GTG/plugins/tomboy/tomboy.py:270
 msgid "This Tomboy note does not exist anymore. Do you want to create it?"
 msgstr "这个 Tomboy 便签不存在了。您想创建它吗？"
 
-#: GTG/tests/test_dates.py:52 GTG/tests/test_dates.py:59 GTG/core/search.py:93
-#: GTG/tools/dates.py:38 GTG/tools/dates.py:46
+#: GTG/tests/test_dates.py:68 GTG/tests/test_dates.py:76 GTG/core/search.py:94
+#: GTG/tools/dates.py:45 GTG/tools/dates.py:53
 msgid "now"
 msgstr "现在"
 
-#: GTG/tests/test_dates.py:53 GTG/tests/test_dates.py:60 GTG/core/search.py:94
-#: GTG/tools/dates.py:39 GTG/tools/dates.py:48
+#: GTG/tests/test_dates.py:69 GTG/tests/test_dates.py:77 GTG/core/search.py:95
+#: GTG/tools/dates.py:46 GTG/tools/dates.py:55
 msgid "soon"
 msgstr "马上"
 
-#: GTG/tests/test_dates.py:54 GTG/tools/dates.py:50
+#: GTG/tests/test_dates.py:70 GTG/tools/dates.py:57
 msgid "later"
 msgstr "稍后"
 
-#: GTG/tests/test_dates.py:55 GTG/tests/test_dates.py:61
-#: GTG/tests/test_dates.py:62 GTG/core/search.py:95 GTG/tools/dates.py:40
-#: GTG/tools/dates.py:52
+#: GTG/tests/test_dates.py:71 GTG/tests/test_dates.py:78
+#: GTG/tests/test_dates.py:79 GTG/core/search.py:96 GTG/tools/dates.py:47
+#: GTG/tools/dates.py:59
 msgid "someday"
 msgstr "某天"
 
@@ -416,11 +415,11 @@ msgstr "载入插件时出现未知错误。"
 msgid "Very helpful message, isn't it? Please report a bug."
 msgstr "是不是很有用的信息？ 请提交 bug 报告。"
 
-#: GTG/core/firstrun_tasks.py:10
+#: GTG/core/firstrun_tasks.py:33
 msgid "Getting started with GTG"
 msgstr "GTG 入门指南"
 
-#: GTG/core/firstrun_tasks.py:11
+#: GTG/core/firstrun_tasks.py:34
 msgid ""
 "Welcome to Getting Things Gnome!, your new task manager.\n"
 "\n"
@@ -436,7 +435,7 @@ msgid ""
 "task description. Simply click on the following link to open the subtask:"
 msgstr ""
 
-#: GTG/core/firstrun_tasks.py:19
+#: GTG/core/firstrun_tasks.py:42
 msgid ""
 "Once you've read the above subtask, mark it as done. If you don't want to do "
 "the task, mark it as dismissed. Tasks that you marked as done or dismissed "
@@ -450,7 +449,7 @@ msgid ""
 "Other stuff you should read:"
 msgstr ""
 
-#: GTG/core/firstrun_tasks.py:29
+#: GTG/core/firstrun_tasks.py:52
 msgid ""
 "We hope that you will appreciate GTG. Please send us bug reports and ideas "
 "for improvement using:\n"
@@ -459,11 +458,11 @@ msgid ""
 "Thank you for trying out GTG :-)"
 msgstr ""
 
-#: GTG/core/firstrun_tasks.py:37
+#: GTG/core/firstrun_tasks.py:60
 msgid "Learn how to use subtasks"
 msgstr "学习如何使用子任务"
 
-#: GTG/core/firstrun_tasks.py:38
+#: GTG/core/firstrun_tasks.py:61
 msgid ""
 "&quot;Subtask&quot; is something that you need to do first in order to "
 "accomplish your task. To insert a subtask in the task description (this "
@@ -479,11 +478,11 @@ msgid ""
 "subtasks will also be marked as done."
 msgstr ""
 
-#: GTG/core/firstrun_tasks.py:49
+#: GTG/core/firstrun_tasks.py:72
 msgid "Learn how to use tags"
 msgstr "学习如何使用标签"
 
-#: GTG/core/firstrun_tasks.py:50
+#: GTG/core/firstrun_tasks.py:73
 msgid ""
 "A tag is a simple word that begins with &quot;@&quot;.\n"
 "\n"
@@ -513,11 +512,11 @@ msgid ""
 "subtask. It will never be changed by the parent."
 msgstr ""
 
-#: GTG/core/firstrun_tasks.py:67
+#: GTG/core/firstrun_tasks.py:90
 msgid "Learn how to use the Workview"
 msgstr "学习如何使用工作视图"
 
-#: GTG/core/firstrun_tasks.py:68
+#: GTG/core/firstrun_tasks.py:91
 msgid ""
 "If you press the &quot;Workview&quot; button, only actionable tasks will be "
 "displayed.\n"
@@ -538,11 +537,11 @@ msgid ""
 "like to do but are not particularly urgent."
 msgstr ""
 
-#: GTG/core/firstrun_tasks.py:83
+#: GTG/core/firstrun_tasks.py:106
 msgid "Learn how to use Plugins"
 msgstr "学习如何使用插件"
 
-#: GTG/core/firstrun_tasks.py:84
+#: GTG/core/firstrun_tasks.py:107
 msgid ""
 "GTG has the ability to add plugins to extend it's core functionality.\n"
 "\n"
@@ -556,11 +555,11 @@ msgstr ""
 "现有插件的例子包括与 Remember the Milk 和 Evolution 同步。Tomboy/Gnote "
 "集成，以及具备地理定位特点的任务。您可以通过点击菜单栏的编辑菜单，然后选择偏好选项，找到插件管理器。您会看到名为插件的标签页。"
 
-#: GTG/core/firstrun_tasks.py:93
+#: GTG/core/firstrun_tasks.py:116
 msgid "Reporting bugs"
 msgstr "报告缺陷"
 
-#: GTG/core/firstrun_tasks.py:94
+#: GTG/core/firstrun_tasks.py:117
 msgid ""
 "GTG is still very alpha software. We like it and use it everyday but you "
 "will encounter some bugs.\n"
@@ -575,11 +574,11 @@ msgid ""
 "your problem really quickly."
 msgstr ""
 
-#: GTG/core/firstrun_tasks.py:107
+#: GTG/core/firstrun_tasks.py:130
 msgid "Learn how to use the Quick Add Entry"
 msgstr "学习怎样使用快速插入条目功能"
 
-#: GTG/core/firstrun_tasks.py:108
+#: GTG/core/firstrun_tasks.py:131
 msgid ""
 "The Quick Add Entry is the fastest way to create a new task. Use the check "
 "box in the View menu to enable and disable the entry field.\n"
@@ -617,59 +616,59 @@ msgid ""
 "Sunday and the start date tomorrow."
 msgstr ""
 
-#: GTG/core/search.py:86
+#: GTG/core/search.py:87
 msgid "not"
 msgstr "不是"
 
-#: GTG/core/search.py:87
+#: GTG/core/search.py:88
 msgid "or"
 msgstr "或者"
 
-#: GTG/core/search.py:88
+#: GTG/core/search.py:89
 msgid "after"
 msgstr "之后"
 
-#: GTG/core/search.py:89
+#: GTG/core/search.py:90
 msgid "before"
 msgstr "之前"
 
-#: GTG/core/search.py:90 GTG/tools/dates.py:238
+#: GTG/core/search.py:91 GTG/tools/dates.py:293
 msgid "today"
 msgstr "今天"
 
-#: GTG/core/search.py:91 GTG/tools/dates.py:240
+#: GTG/core/search.py:92 GTG/tools/dates.py:295
 msgid "tomorrow"
 msgstr "明天"
 
-#: GTG/core/search.py:92
+#: GTG/core/search.py:93
 msgid "nodate"
 msgstr "无日期"
 
-#: GTG/core/search.py:96
+#: GTG/core/search.py:97
 msgid "notag"
 msgstr "无标签"
 
-#: GTG/core/task.py:53
+#: GTG/core/task.py:54
 msgid "My new task"
 msgstr "我的新任务"
 
-#: GTG/core/task.py:154
+#: GTG/core/task.py:158
 msgid "tags"
 msgstr "标签"
 
-#: GTG/core/task.py:154
+#: GTG/core/task.py:158
 msgid "tag"
 msgstr "标签"
 
-#: GTG/core/task.py:159
+#: GTG/core/task.py:163
 msgid "defer"
 msgstr "推迟"
 
-#: GTG/core/task.py:159
+#: GTG/core/task.py:164
 msgid "start"
 msgstr "开始"
 
-#: GTG/core/task.py:165
+#: GTG/core/task.py:170
 msgid "due"
 msgstr "到期"
 
@@ -682,61 +681,61 @@ msgstr "全部任务"
 msgid "Tasks with no tags"
 msgstr "没有标签的任务"
 
-#: GTG/core/treefactory.py:102 GTG/gtk/browser/browser.py:1495
+#: GTG/core/treefactory.py:102 GTG/gtk/browser/browser.py:1518
 msgid "Search"
 msgstr "查询"
 
-#: GTG/tools/dates.py:242
+#: GTG/tools/dates.py:297
 msgid "next week"
 msgstr "下周"
 
-#: GTG/tools/dates.py:244
+#: GTG/tools/dates.py:299
 msgid "next month"
 msgstr "下月"
 
-#: GTG/tools/dates.py:246
+#: GTG/tools/dates.py:301
 msgid "next year"
 msgstr "明年"
 
-#: GTG/tools/dates.py:251
+#: GTG/tools/dates.py:306
 msgid "Monday"
 msgstr "周一"
 
-#: GTG/tools/dates.py:252
+#: GTG/tools/dates.py:307
 msgid "Tuesday"
 msgstr "周二"
 
-#: GTG/tools/dates.py:253
+#: GTG/tools/dates.py:308
 msgid "Wednesday"
 msgstr "周三"
 
-#: GTG/tools/dates.py:254
+#: GTG/tools/dates.py:309
 msgid "Thursday"
 msgstr "周四"
 
-#: GTG/tools/dates.py:255
+#: GTG/tools/dates.py:310
 msgid "Friday"
 msgstr "周五"
 
-#: GTG/tools/dates.py:256
+#: GTG/tools/dates.py:311
 msgid "Saturday"
 msgstr "周六"
 
-#: GTG/tools/dates.py:257
+#: GTG/tools/dates.py:312
 msgid "Sunday"
 msgstr "周日"
 
-#: GTG/tools/dates.py:294
+#: GTG/tools/dates.py:371
 msgid "Today"
 msgstr "今天"
 
-#: GTG/tools/dates.py:297
+#: GTG/tools/dates.py:374
 #, python-format
 msgid "Yesterday"
 msgid_plural "%(days)d days ago"
 msgstr[0] "%(days)d 天前"
 
-#: GTG/tools/dates.py:300
+#: GTG/tools/dates.py:377
 #, python-format
 msgid "Tomorrow"
 msgid_plural "In %(days)d days"
@@ -746,8 +745,8 @@ msgstr[0] "%(days)d 天后"
 msgid "gtg is already running!"
 msgstr "gtg 已经在运行！"
 
-#: GTG/info.py:33
-msgid "GTG is a personal organizer for the GNOME desktop environment."
+#: GTG/info.py:34 GTG/gtk/browser/taskbrowser.glade.h:34
+msgid "GTG is a personal tasks and TODO-list items organizer for the GNOME."
 msgstr ""
 
 #: GTG/gtk/backends_dialog/parameters_ui/pathui.py:52
@@ -815,122 +814,80 @@ msgid " minute"
 msgid_plural " minutes"
 msgstr[0] " 分钟"
 
-#: GTG/gtk/backends_dialog/addpanel.py:75
+#: GTG/gtk/backends_dialog/addpanel.py:69
 msgid "Select synchronization service:"
 msgstr "选择同步服务："
 
-#: GTG/gtk/backends_dialog/addpanel.py:179
+#: GTG/gtk/backends_dialog/addpanel.py:173
 msgid "Syncing is <span color=\"red\">disabled</span>"
 msgstr "同步已经<span color=\"red\">关闭</span>"
 
-#: GTG/gtk/backends_dialog/addpanel.py:185
+#: GTG/gtk/backends_dialog/addpanel.py:179
 msgid "Author"
 msgid_plural "Authors"
 msgstr[0] "创作者"
 
-#: GTG/gtk/backends_dialog/__init__.py:286
+#: GTG/gtk/backends_dialog/__init__.py:75
+#, python-format
+msgid "Synchronization Services - %s"
+msgstr ""
+
+#: GTG/gtk/backends_dialog/__init__.py:302
 #, python-format
 msgid "Do you really want to remove the '%s' synchronization service?"
 msgstr "你确定想删除'%s'同步服务么？"
 
-#: GTG/gtk/backends_dialog/configurepanel.py:162
-msgid "Ready to start syncing"
-msgstr "准备开始同步"
-
-#: GTG/gtk/backends_dialog/configurepanel.py:164
-#, python-format
-msgid "Syncing your only task"
-msgid_plural "Syncing all %d tasks"
-msgstr[0] ""
-msgstr[1] ""
-
-#: GTG/gtk/backends_dialog/configurepanel.py:169
-#, python-format
-msgid "There is no task tagged %s"
-msgstr "没有标签为%s的任务"
-
-#: GTG/gtk/backends_dialog/configurepanel.py:171
-#, python-format
-msgid "Syncing a task tagged %s"
-msgid_plural "Syncing %d tasks tagged %s"
-msgstr[0] ""
-msgstr[1] ""
-
-#: GTG/gtk/backends_dialog/configurepanel.py:182
+#: GTG/gtk/backends_dialog/configurepanel.py:149
 msgid "Disable syncing"
 msgstr ""
 
-#: GTG/gtk/backends_dialog/configurepanel.py:184
+#: GTG/gtk/backends_dialog/configurepanel.py:151
 msgid "Enable syncing"
 msgstr ""
 
-#: GTG/gtk/backends_dialog/configurepanel.py:192
+#: GTG/gtk/backends_dialog/configurepanel.py:159
 msgid "This is the default synchronization service"
 msgstr ""
 
-#: GTG/gtk/backends_dialog/configurepanel.py:195
+#: GTG/gtk/backends_dialog/configurepanel.py:162
 msgid "Syncing is enabled."
 msgstr ""
 
-#: GTG/gtk/backends_dialog/configurepanel.py:197
+#: GTG/gtk/backends_dialog/configurepanel.py:164
 msgid "Syncing is <span color=\"red\">disabled</span>."
 msgstr ""
 
 #: GTG/gtk/preferences.glade.h:1
-msgid "Getting Things GNOME! Preferences"
-msgstr "Getting Things GNOME! 首选项"
-
-#: GTG/gtk/preferences.glade.h:2
 msgid "Start Getting Things GNOME! on every login"
 msgstr "每次登录自动运行 Getting Things GNOME!"
 
-#: GTG/gtk/preferences.glade.h:3
+#: GTG/gtk/preferences.glade.h:2
 msgid "<b>Startup</b>"
 msgstr ""
 
-#: GTG/gtk/preferences.glade.h:4
+#: GTG/gtk/preferences.glade.h:3
 msgid "Show description preview in the task list."
 msgstr ""
 
+#: GTG/gtk/preferences.glade.h:4
+msgid "Enable colored backgrounds in the task list"
+msgstr ""
+
 #: GTG/gtk/preferences.glade.h:5
-msgid "Show background colors of tasks"
-msgstr ""
-
-#: GTG/gtk/preferences.glade.h:6
-msgid "Hide closed tasks older than "
-msgstr ""
-
-#: GTG/gtk/preferences.glade.h:7
 msgid "<b>Task Browser</b>"
 msgstr "<b>任务浏览器</b>"
 
-#: GTG/gtk/preferences.glade.h:8
-msgid "Check spelling"
-msgstr "拼写检查"
-
-#: GTG/gtk/preferences.glade.h:9
-msgid "<b>Task Editor</b>"
-msgstr "<b>任务编辑器</b>"
-
-#: GTG/gtk/preferences.glade.h:10
-msgid "General"
+#: GTG/gtk/preferences.glade.h:6
+msgid "page 1"
 msgstr ""
 
-#: GTG/gtk/preferences.glade.h:11
-msgid "Active _Plugins:"
-msgstr "活动插件(_P)："
+#: GTG/gtk/preferences.glade.h:7
+msgid "page 2"
+msgstr ""
 
-#: GTG/gtk/preferences.glade.h:12
-msgid "_About Plugin"
-msgstr "关于插件(_A)"
-
-#: GTG/gtk/preferences.glade.h:13
-msgid "Plugins"
-msgstr "插件"
-
-#: GTG/gtk/preferences.glade.h:14
-msgid "<b>Dependencies</b>"
-msgstr "<b>依赖关系</b>"
+#: GTG/gtk/preferences.glade.h:8
+msgid "page 3"
+msgstr ""
 
 #: GTG/gtk/delete_dialog.py:89
 msgid ""
@@ -965,8 +922,17 @@ msgid ""
 "And %d more tasks"
 msgstr ""
 
-#: GTG/gtk/preferences.py:38
-msgid "Click on a plugin name to view its description here."
+#: GTG/gtk/preferences.py:80
+#, python-format
+msgid "Preferences - %s"
+msgstr ""
+
+#: GTG/gtk/browser/simple_color_selector.py:236
+msgid "Add custom color"
+msgstr ""
+
+#: GTG/gtk/browser/simple_color_selector.py:264
+msgid "Choose a color"
 msgstr ""
 
 #: GTG/gtk/browser/custominfobar.py:36
@@ -1015,42 +981,68 @@ msgstr ""
 msgid "Tags"
 msgstr "标签"
 
-#: GTG/gtk/browser/treeview_factory.py:368
+#: GTG/gtk/browser/treeview_factory.py:353
 msgid "Start date"
 msgstr "开始日期"
 
-#: GTG/gtk/browser/treeview_factory.py:379
+#: GTG/gtk/browser/treeview_factory.py:364
 msgid "Due"
 msgstr "到期"
 
-#: GTG/gtk/browser/treeview_factory.py:399
+#: GTG/gtk/browser/treeview_factory.py:384
 msgid "Closed date"
 msgstr ""
 
-#: GTG/gtk/browser/treeview_factory.py:454
+#: GTG/gtk/browser/treeview_factory.py:446
 msgid "Title"
 msgstr "标题"
 
-#: GTG/gtk/browser/browser.py:576
+#: GTG/gtk/browser/browser.py:586
 msgid "no active tasks"
 msgstr "没有活动任务"
 
-#: GTG/gtk/browser/browser.py:578
+#: GTG/gtk/browser/browser.py:588
 #, python-format
 msgid "%(tasks)d active task"
 msgid_plural "%(tasks)d active tasks"
 msgstr[0] "%(tasks)d 个进行中的任务"
 
-#: GTG/gtk/browser/browser.py:1493
+#: GTG/gtk/browser/browser.py:1516
 msgid "Add Task"
 msgstr ""
 
-#: GTG/gtk/browser/browser.py:1494
+#: GTG/gtk/browser/browser.py:1517
 msgid "Open Task"
 msgstr ""
 
 #: GTG/gtk/browser/modifytags_dialog.py:38
 msgid "NewTag"
+msgstr ""
+
+#: GTG/gtk/browser/tag_editor.py:87
+msgid "Remove selected icon"
+msgstr ""
+
+#: GTG/gtk/browser/tag_editor.py:224
+msgid "Name : "
+msgstr ""
+
+#: GTG/gtk/browser/tag_editor.py:231
+msgid "Show Tag in Work View :"
+msgstr ""
+
+#: GTG/gtk/browser/tag_editor.py:244
+msgid "Select Tag Color:"
+msgstr ""
+
+#: GTG/gtk/browser/tag_editor.py:284
+msgid ""
+"Click To\n"
+"Set Icon"
+msgstr ""
+
+#: GTG/gtk/browser/tag_editor.py:294
+msgid "Enter tag name here"
 msgstr ""
 
 #: GTG/gtk/browser/__init__.py:36 GTG/gtk/browser/taskbrowser.glade.h:25
@@ -1180,7 +1172,7 @@ msgid "_Help"
 msgstr "帮助(_H)"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:17
-msgid "Open GTG documentation in your web browser"
+msgid "Open GTG help"
 msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:18
@@ -1211,7 +1203,8 @@ msgstr "撤销"
 msgid "Redo"
 msgstr "重做"
 
-#: GTG/gtk/browser/taskbrowser.glade.h:27 GTG/gtk/editor/taskeditor.glade.h:4
+#: GTG/gtk/browser/taskbrowser.glade.h:27
+#: GTG/gtk/browser/tag_context_menu.py:63 GTG/gtk/editor/taskeditor.glade.h:4
 msgid "Delete"
 msgstr "删除"
 
@@ -1228,16 +1221,12 @@ msgid "About GTG!"
 msgstr "关于 GTG!"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:32
-msgid "Copyright © 2008-2012 Lionel Dricot, Bertrand Rousseau"
+msgid "Getting Things GNOME!"
 msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:33
-msgid ""
-"\n"
-"Getting Things Gnome! is an organizer for the GNOME desktop environment."
+msgid "Copyright © 2008-2012 Lionel Dricot, Bertrand Rousseau"
 msgstr ""
-"\n"
-"Getting Things Gnome! 是一个基于GNOME桌面环境的组织工具"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:35
 msgid "GTG website"
@@ -1282,55 +1271,55 @@ msgid "Und_ismiss"
 msgstr "取消解除(_i)"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:43
-msgid "t_oday"
-msgstr "今天(_o)"
-
-#: GTG/gtk/browser/taskbrowser.glade.h:44
-msgid "_tomorrow"
-msgstr "明天(_t)"
-
-#: GTG/gtk/browser/taskbrowser.glade.h:45
-msgid "next _week"
-msgstr "下周(_w)"
-
-#: GTG/gtk/browser/taskbrowser.glade.h:46
-msgid "next _month"
-msgstr "下月(_m)"
-
-#: GTG/gtk/browser/taskbrowser.glade.h:47
-msgid "next _year"
-msgstr "明年(_y)"
-
-#: GTG/gtk/browser/taskbrowser.glade.h:48
-msgid "_now"
-msgstr ""
-
-#: GTG/gtk/browser/taskbrowser.glade.h:49
-msgid "_soon"
-msgstr ""
-
-#: GTG/gtk/browser/taskbrowser.glade.h:50
-msgid "_someday"
-msgstr ""
-
-#: GTG/gtk/browser/taskbrowser.glade.h:51
-msgid "_clear due date"
-msgstr ""
-
-#: GTG/gtk/browser/taskbrowser.glade.h:52
-msgid "_clear start date"
-msgstr ""
-
-#: GTG/gtk/browser/taskbrowser.glade.h:53
 msgid "Add a subtask"
 msgstr "增加一个子任务"
 
-#: GTG/gtk/browser/taskbrowser.glade.h:54
+#: GTG/gtk/browser/taskbrowser.glade.h:44
 msgid "_Set start date"
 msgstr ""
 
-#: GTG/gtk/browser/taskbrowser.glade.h:55
+#: GTG/gtk/browser/taskbrowser.glade.h:45
+msgid "t_oday"
+msgstr "今天(_o)"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:46
+msgid "_tomorrow"
+msgstr "明天(_t)"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:47
+msgid "next _week"
+msgstr "下周(_w)"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:48
+msgid "next _month"
+msgstr "下月(_m)"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:49
+msgid "next _year"
+msgstr "明年(_y)"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:50
+msgid "_clear start date"
+msgstr ""
+
+#: GTG/gtk/browser/taskbrowser.glade.h:51
 msgid "Set due date"
+msgstr ""
+
+#: GTG/gtk/browser/taskbrowser.glade.h:52
+msgid "_now"
+msgstr ""
+
+#: GTG/gtk/browser/taskbrowser.glade.h:53
+msgid "_soon"
+msgstr ""
+
+#: GTG/gtk/browser/taskbrowser.glade.h:54
+msgid "_someday"
+msgstr ""
+
+#: GTG/gtk/browser/taskbrowser.glade.h:55
+msgid "_clear due date"
 msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:56
@@ -1367,38 +1356,42 @@ msgstr ""
 msgid "Apply to subtasks"
 msgstr "应用到子任务"
 
-#: GTG/gtk/browser/tag_context_menu.py:44
-msgid "Set color..."
+#: GTG/gtk/browser/tag_context_menu.py:58
+msgid "Edit Tag..."
 msgstr ""
 
-#: GTG/gtk/browser/tag_context_menu.py:48
-msgid "Reset color"
-msgstr ""
+#: GTG/gtk/plugins.glade.h:1
+msgid "<b>Dependencies</b>"
+msgstr "<b>依赖关系</b>"
 
-#: GTG/gtk/editor/editor.py:295
+#: GTG/gtk/plugins.glade.h:2
+msgid "_About Plugin"
+msgstr "关于插件(_A)"
+
+#: GTG/gtk/editor/editor.py:305
 #, python-format
 msgid "Completed %(days)d day late"
 msgid_plural "Completed %(days)d days late"
 msgstr[0] "延迟 %(days)d 天完成"
 
-#: GTG/gtk/editor/editor.py:298
+#: GTG/gtk/editor/editor.py:308
 #, python-format
 msgid "Completed %(days)d day early"
 msgid_plural "Completed %(days)d days early"
 msgstr[0] "提前 %(days)d 天完成"
 
-#: GTG/gtk/editor/editor.py:305
+#: GTG/gtk/editor/editor.py:315
 #, python-format
 msgid "Due tomorrow!"
 msgid_plural "%(days)d days left"
 msgstr[0] ""
 msgstr[1] ""
 
-#: GTG/gtk/editor/editor.py:307
+#: GTG/gtk/editor/editor.py:317
 msgid "Due today!"
 msgstr ""
 
-#: GTG/gtk/editor/editor.py:310
+#: GTG/gtk/editor/editor.py:320
 #, python-format
 msgid "Due yesterday!"
 msgid_plural "Was %(days)d days ago"
@@ -1479,23 +1472,23 @@ msgid ""
 "crash?"
 msgstr ""
 
-#: GTG/gtk/crashhandler.py:173
+#: GTG/gtk/crashhandler.py:170
 msgid "An error has occurred"
 msgstr ""
 
-#: GTG/gtk/crashhandler.py:187
+#: GTG/gtk/crashhandler.py:184
 msgid "It looks like an error has occurred."
 msgstr ""
 
-#: GTG/gtk/crashhandler.py:223
+#: GTG/gtk/crashhandler.py:220
 msgid "_Details"
 msgstr ""
 
-#: GTG/gtk/crashhandler.py:230
+#: GTG/gtk/crashhandler.py:227
 msgid "_Report this problem..."
 msgstr ""
 
-#: GTG/gtk/crashhandler.py:234
+#: GTG/gtk/crashhandler.py:231
 msgid "_Ignore the error"
 msgstr ""
 
@@ -1504,6 +1497,11 @@ msgid ""
 " has crashed. Please report the bug on <a "
 "href=\"http://bugs.edge.launchpad.net/gtg\">our Launchpad page</a>. If you "
 "have Apport installed, it will be started for you."
+msgstr ""
+
+#: GTG/gtk/plugins.py:142
+#, python-format
+msgid "Plugins - %s"
 msgstr ""
 
 #~ msgid ""
@@ -1542,6 +1540,13 @@ msgstr ""
 
 #~ msgid "Closing date"
 #~ msgstr "关闭日期"
+
+#~ msgid ""
+#~ "\n"
+#~ "Getting Things Gnome! is an organizer for the GNOME desktop environment."
+#~ msgstr ""
+#~ "\n"
+#~ "Getting Things Gnome! 是一个基于GNOME桌面环境的组织工具"
 
 #~ msgid "New Note"
 #~ msgstr "新记录"
@@ -1681,6 +1686,9 @@ msgstr ""
 #~ msgid "Can't load the template file"
 #~ msgstr "无法加载模板文件"
 
+#~ msgid "Template not found"
+#~ msgstr "没找到模板"
+
 #~ msgid ""
 #~ "Once you've read the above subtask, mark it as Done. If you don't want to do "
 #~ "the task, mark it as dismissed. Done and Dismissed tasks are kept in the "
@@ -1765,6 +1773,12 @@ msgstr ""
 #~ msgid "Enter the name of the tag(s) you wish to add:"
 #~ msgstr "输入您希望添加的标签名称:"
 
+#~ msgid "Plugins"
+#~ msgstr "插件"
+
+#~ msgid "Active _Plugins:"
+#~ msgstr "活动插件(_P)："
+
 #~ msgid "Behaviour"
 #~ msgstr "行为"
 
@@ -1804,6 +1818,15 @@ msgstr ""
 
 #~ msgid "GTG has the ability to add plugins to extend it's core functionality."
 #~ msgstr "GTG 可通过加入插件，扩充其核心功能。"
+
+#~ msgid "Start a new activity in Hamster Time "
+#~ msgstr "在 Hamster 程序中开始新活动 "
+
+#~ msgid "Getting Things GNOME! Preferences"
+#~ msgstr "Getting Things GNOME! 首选项"
+
+#~ msgid "Start a new activity in Hamster Time"
+#~ msgstr "在 Hamster Time 中开始新活动"
 
 #~ msgid "If a word begins with @, it is interpreted as a tag."
 #~ msgstr "如果词组以 @ 打头，则会被认为是一个标签。"
