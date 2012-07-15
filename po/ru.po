@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2012-07-13 16:43+0200\n"
-"PO-Revision-Date: 2012-04-28 16:50+0000\n"
+"PO-Revision-Date: 2012-07-14 07:15+0000\n"
 "Last-Translator: DmDr <cardioexp@gmail.com>\n"
 "Language-Team: Russian <ru@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Launchpad-Export-Date: 2012-07-14 06:30+0000\n"
+"X-Launchpad-Export-Date: 2012-07-15 05:14+0000\n"
 "X-Generator: Launchpad (build 15614)\n"
 
 #: GTG/plugins/notification_area/notification_area.py:123
@@ -66,6 +66,10 @@ msgid ""
 "booklet. Packages <b>pdflatex</b>, <b>pdftk</b> and <b>pdfjam</b>\n"
 "are required."
 msgstr ""
+"Шаблон для создания\n"
+"<a href=\"http://www.pocketmod.com\">PocketMod</a>, узкого\n"
+"буклета-\"раскладушки\". Требуются пакеты \n"
+"<b>pdflatex</b>, <b>pdftk</b> and <b>pdfjam</b>."
 
 #: GTG/plugins/export/export_templates/description_sexy.py:18
 msgid "A professional-looking HTML page"
@@ -80,7 +84,7 @@ msgstr ""
 
 #: GTG/plugins/export/export.py:119
 msgid "No task matches your criteria. Empty report can't be generated."
-msgstr ""
+msgstr "Нет задач, удовлетворяющих критериям. Пустой отчет создать нельзя."
 
 #: GTG/plugins/export/export.py:137
 #, python-format
@@ -186,7 +190,7 @@ msgstr "<b>Фактор близости</b>"
 
 #: GTG/plugins/hamster/hamster.py:37
 msgid "Start a new activity in Hamster Time Tracker "
-msgstr ""
+msgstr "Создать новую задачу в Hamster Time Tracker "
 
 #: GTG/plugins/hamster/hamster.py:172
 msgid "Start task in Hamster"
@@ -932,7 +936,7 @@ msgstr "gtg уже запущена!"
 
 #: GTG/info.py:34 GTG/gtk/browser/taskbrowser.glade.h:34
 msgid "GTG is a personal tasks and TODO-list items organizer for the GNOME."
-msgstr ""
+msgstr "GTG персональный инструмент ведения списков задач и дел для GNOME."
 
 #: GTG/gtk/backends_dialog/parameters_ui/pathui.py:52
 msgid "Filename:"
@@ -1019,7 +1023,7 @@ msgstr[2] "Авторы"
 #: GTG/gtk/backends_dialog/__init__.py:75
 #, python-format
 msgid "Synchronization Services - %s"
-msgstr ""
+msgstr "Сервисы синхронизации - %s"
 
 #: GTG/gtk/backends_dialog/__init__.py:302
 #, python-format
@@ -1060,7 +1064,7 @@ msgstr "Показать краткое описание в списке зад�
 
 #: GTG/gtk/preferences.glade.h:4
 msgid "Enable colored backgrounds in the task list"
-msgstr ""
+msgstr "Разрешить выделение цветом фона в списке задач"
 
 #: GTG/gtk/preferences.glade.h:5
 msgid "<b>Task Browser</b>"
@@ -1068,15 +1072,15 @@ msgstr "<b>Просмотр задач</b>"
 
 #: GTG/gtk/preferences.glade.h:6
 msgid "page 1"
-msgstr ""
+msgstr "страница 1"
 
 #: GTG/gtk/preferences.glade.h:7
 msgid "page 2"
-msgstr ""
+msgstr "страница 2"
 
 #: GTG/gtk/preferences.glade.h:8
 msgid "page 3"
-msgstr ""
+msgstr "страница 3"
 
 #: GTG/gtk/delete_dialog.py:89
 msgid ""
@@ -1120,15 +1124,15 @@ msgstr ""
 #: GTG/gtk/preferences.py:80
 #, python-format
 msgid "Preferences - %s"
-msgstr ""
+msgstr "Предпочтения - %s"
 
 #: GTG/gtk/browser/simple_color_selector.py:236
 msgid "Add custom color"
-msgstr ""
+msgstr "Добавить цвет"
 
 #: GTG/gtk/browser/simple_color_selector.py:264
 msgid "Choose a color"
-msgstr ""
+msgstr "Выбрать цвет"
 
 #: GTG/gtk/browser/custominfobar.py:36
 #, python-format
@@ -1224,29 +1228,31 @@ msgstr "Новая метка"
 
 #: GTG/gtk/browser/tag_editor.py:87
 msgid "Remove selected icon"
-msgstr ""
+msgstr "Удалить выбранные иконки"
 
 #: GTG/gtk/browser/tag_editor.py:224
 msgid "Name : "
-msgstr ""
+msgstr "Название: "
 
 #: GTG/gtk/browser/tag_editor.py:231
 msgid "Show Tag in Work View :"
-msgstr ""
+msgstr "Показать метки в рабочем плане"
 
 #: GTG/gtk/browser/tag_editor.py:244
 msgid "Select Tag Color:"
-msgstr ""
+msgstr "Выбрать цвет для метки:"
 
 #: GTG/gtk/browser/tag_editor.py:284
 msgid ""
 "Click To\n"
 "Set Icon"
 msgstr ""
+"Клик для\n"
+"выбора иконки"
 
 #: GTG/gtk/browser/tag_editor.py:294
 msgid "Enter tag name here"
-msgstr ""
+msgstr "Введите тут метку"
 
 #: GTG/gtk/browser/__init__.py:36 GTG/gtk/browser/taskbrowser.glade.h:25
 #: GTG/gtk/editor/__init__.py:31
@@ -1376,7 +1382,7 @@ msgstr "_Справка"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:17
 msgid "Open GTG help"
-msgstr ""
+msgstr "Открыть справку по GTG"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:18
 msgid "Help to translate GTG into your language"
@@ -1564,7 +1570,7 @@ msgstr "Применить к подзадачам"
 
 #: GTG/gtk/browser/tag_context_menu.py:58
 msgid "Edit Tag..."
-msgstr ""
+msgstr "Редактировать метку..."
 
 #: GTG/gtk/plugins.glade.h:1
 msgid "<b>Dependencies</b>"
@@ -1719,7 +1725,7 @@ msgstr ""
 #: GTG/gtk/plugins.py:142
 #, python-format
 msgid "Plugins - %s"
-msgstr ""
+msgstr "Расширения - %s"
 
 #~ msgid "New Note"
 #~ msgstr "Новая заметка"
