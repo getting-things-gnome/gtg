@@ -154,11 +154,11 @@ Please install it or disable the Tomboy/Gnote plugin in GTG"))
             token_ending = text.find(self.token_end)
 
     def onTaskOpened(self, plugin_api):
+        self.plugin_api = plugin_api
         if not self.checkTomboyPresent() or not plugin_api.is_editor():
             return
         #NOTE: get_textview() only works in this function
         # (see GTG/core/plugins/api.py docs)
-        self.plugin_api = plugin_api
         self.textview = plugin_api.get_ui().get_textview()
         self.addButtonToToolbar(plugin_api)
         self.convertTokensToWidgets()
