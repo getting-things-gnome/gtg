@@ -58,7 +58,7 @@ class _Attention:
     STATUS = {'normal': appindicator.STATUS_ACTIVE,
               'high': appindicator.STATUS_ATTENTION}
 
-    ICON = {'normal': 'gtg',
+    ICON = {'normal': 'gtg-panel',
             'high': 'gtg_need_attention'}
 
     def __init__(self, danger_zone, indicator, tree, req):
@@ -148,7 +148,6 @@ class NotificationArea:
                                   "gtg",
                                   "indicator-messages",
                                    appindicator.CATEGORY_APPLICATION_STATUS)
-                    self._indicator.set_icon("gtg")
                 except:
                     self._indicator = None
 
@@ -270,12 +269,13 @@ class NotificationArea:
 
         if self.__indicator:
             self.__indicator.set_icon_theme_path(abs_theme_path)
+            self.__indicator.set_icon("gtg-panel")
             self.__indicator.set_attention_icon("gtg_need_attention")
             self.__indicator.set_menu(self.__menu)
             self.__indicator.set_status(appindicator.STATUS_ACTIVE)
         else:
             self.status_icon = gtk.StatusIcon()
-            self.status_icon.set_from_icon_name("gtg")
+            self.status_icon.set_from_icon_name("gtg-panel")
             self.status_icon.set_tooltip("Getting Things Gnome!")
             self.status_icon.set_visible(True)
             self.status_icon.connect('activate', self.__toggle_browser)
