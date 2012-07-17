@@ -31,40 +31,63 @@ def populate():
 
     #Task 0@1: Getting started with GTG
     title1 = _("Getting started with GTG")
-    text1 = _("""Welcome to Getting Things Gnome!, your new task manager.
+    text1 = _("""Welcome to Getting Things GNOME!, your new task manager! In Getting Things GNOME! (GTG), everything is a task. From building a bridge over the Pacific Ocean to changing a light bulb or organizing a party!
 
-In GTG, everything is a task. From building a bridge over the Pacific Ocean to changing a light bulb or organizing a party. Task is automatically saved while you are editing.
+If you are new to GTG, please take the time to read this, as it will provide you useful information about how to use GTG to organize your everyday life.
 
-Once you are done with a specific task, you can push the &quot;Mark as Done&quot; button. If the task is not relevant anymore, simply press &quot;Dismiss&quot; button.
+Creating and editing tasks:
 
-A task might be composed of multiple subtasks that appear as links in the task description. Simply click on the following link to open the subtask:""")
+Using GTG is easy: you organize your doings by creating new tasks. To do this, simply press the &quot;New Task&quot; button, then edit the task by describing it and setting some parameters, and that's it! Once a task is done, you can close it by pressing the &quot;Mark As Done&quot; button.
+
+In GTG, a task is automatically saved while you are editing. No need to press any "save" button! Try it: add some text to this task, close the window, and reopen it: your changes are still there!
+
+About subtasks:
+
+Sometimes it is easier to cut down a task in several smaller tasks. GTG helps to do just this by defining &quot;subtasks&quot;. In GTG, those subtasks are prerequisite that must be completed before being able to close their parent task.
+
+Consequently, a task might host one or several subtasks. Those will appear as links in the task description, just like the link below. To open and edit a subtask, simply click on its link! Try it yourself, open the following subtask:""")
     text1 += "\n<subtask>1@1</subtask>\n"
-    text1 += _("""Once you've read the above subtask, mark it as done. If you don't want to do the task, mark it as dismissed. Tasks that you marked as done or dismissed are stored in the Closed Tasks Pane which is hidden by default, but you can easily enable it in the View menu.
-    
-If you choose to close this current task, subtasks will be automatically closed too. GTG considers that if you have completed a given task, you don't need to do the subtasks anymore.
+    text1 += _("""\nClosing a task:
 
-Other stuff you should read:""")
+In GTG, once you are done with a task, you can close it by pushing either the &quot;Mark as Done&quot; or the &quot;Dismiss&quot; button. Use the first one if the task is done, and the latter if you want to close it because it is not relevant anymore. Want to try it? Try to close the above subtask for instance.
+    
+The tasks that you marked as done or dismissed are stored in the Closed Tasks Pane which is hidden by default, but you can easily enable it using the View menu.
+    
+Now, if you choose to close this current task, notice that subtasks will be automatically closed too! Indeed, GTG considers that if you have completed a given task, then you don't need to do the subtasks anymore. Handy, right?
+
+Learn more about GTG:
+
+Thanks for reading this! Here are other stuff you will find interesting to read:""")
     text1 += """\n<subtask>2@1</subtask>
     <subtask>3@1</subtask>
     <subtask>4@1</subtask>
     <subtask>5@1</subtask>
     <subtask>6@1</subtask>\n"""
-    text1 += _("""We hope that you will appreciate GTG. Please send us bug reports and ideas for improvement using:
-    https://bugs.launchpad.net/gtg
+    text1 += _("""\nWe hope that you will appreciate GTG. Please send us bug reports and ideas for improvement using this web page: https://bugs.launchpad.net/gtg
 
-Thank you for trying out GTG :-)""")
+You can also browse GTG documentation by pressing F1 or opening it using the Help menu.
+
+We sincerely hope you will enjoy using GTG, and thank you for trying it out!
+
+The GTG team.""")
     t1 = addtask(doc, "0@1", title1, text1, ["1@1", "2@1", "3@1", "4@1", "5@1", "6@1"])
     root.appendChild(t1)
 
     #Task 1@1: Learn to use subtasks
     title2 = _("Learn how to use subtasks")
-    text2 = _("""&quot;Subtask&quot; is something that you need to do first in order to accomplish your task. To insert a subtask in the task description (this window), begin a line with &quot;-&quot;, write the subtask title and press Enter. Try inserting one subtask below.
+    text2 = _("""A &quot;Subtask&quot; is something that you need to do first before being able to accomplish your task. In GTG, the purpose of subtasks is to cut down a task in smaller subtasks that are easier to achieve and to track down.
     
-You can also use the &quot;insert subtask&quot; button.
+To insert a subtask in the task description (this window, for instance), begin a line with &quot;-&quot;, then write the subtask title and press Enter.
+
+Try inserting one subtask below. Type &quot;- This is my first subtask!&quot;, for instance, and press Enter:
+
+
+    
+Alternatively, you can also use the &quot;insert subtask&quot; button.
 
 Tasks and subtasks can be re-organized by drag-n-drop in the tasks list.
 
-Subtasks have certain rules: for example, a subtask's due date can never be after its parent's due date and when you mark a parent task as done, its subtasks will also be marked as done.""")
+Note that subtasks obey to some rules: first, a subtask's due date can never be happen after its parent's due date and, second, when you mark a parent task as done, its subtasks will also be marked as done.""")
     t2 = addtask(doc, "1@1", title2, text2, [])
     root.appendChild(t2)
 
@@ -74,7 +97,7 @@ Subtasks have certain rules: for example, a subtask's due date can never be afte
 
 Try to type a word beginning with @ here:
 
-It becomes yellow, it's a tag.
+It becomes yellow, it's now a tag.
 
 Tags are useful to sort your tasks. In the view menu, you can enable a sidebar which displays all the tags you are using so you can easily see tasks assigned to a given tag. There's no limit to the number of tags a task can have.
 
@@ -87,8 +110,8 @@ A new tag is only added to the current task. There's no recursion and the tag is
     root.appendChild(t3)
 
     #Task 3@1: Using the Workview
-    title4 = _("Learn how to use the Workview")
-    text4 = _("""If you press the &quot;Workview&quot; button, only actionable tasks will be displayed.
+    title4 = _("Learn how to use the Work View")
+    text4 = _("""If you press the &quot;Work View&quot; button, only actionable tasks will be displayed.
 
 What is an actionable task? It's a task you can do directly, right now.
 
@@ -96,17 +119,18 @@ It's a task that is already &quot;start-able&quot;, i.e. the start date is alrea
 
 It's a task that doesn't have open subtasks, i.e. you can do the task itself directly.
 
-Thus, the workview will only show you tasks you should do right now.
+Thus, the workview will only show you tasks you can do right now.
 
 If you use tags, you can right click on a tag in the sidebar and choose to hide tasks assigned to this particular tag in the workview. It's very useful if you have a tag like &quot;someday&quot; that you use for tasks you would like to do but are not particularly urgent.""")
     t4 = addtask(doc, "3@1", title4, text4, [])
     root.appendChild(t4)
 
     #Task 5@1: Plugins
-    title5 = _("Learn how to use Plugins")
-    text5 = _("""GTG has the ability to add plugins to extend it's core functionality.
+    title5 = _("Learn how to use plugins")
+    text5 = _("""GTG has the ability to add plugins to extend its core functionality.
 
-Some examples of the current plugins are Syncing with Remember the Milk and Evolution, Tomboy/Gnote integration and Geolocalized Tasks.
+Some examples of the current plugins are synchronization with online services like Remember the Milk and Evolution, Tomboy/Gnote integration and Geolocalized Tasks.
+
 You can find the Plugin Manager by selecting Edit in the Menu Bar, then clicking Preferences. You will then see a tab labeled Plugins.""")
 
     t5 = addtask(doc, "4@1", title5, text5, [])
@@ -137,7 +161,7 @@ You can also create a task in the Quick Add Entry and at the same time specify i
 
 tags:tag1,tag2,tag3
  - This way you can apply as many tags as you wish using comma as separator
- - Any word that begins with &quot;@&quot; will be interpreted as a tag
+ - Note: any word in the title that begins with &quot;@&quot; will also be interpreted as a tag
 
 due:date
 defer:date
