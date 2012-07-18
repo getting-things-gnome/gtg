@@ -78,6 +78,7 @@ AUTHORS     = ["Main developers:", \
                "\tZach Shepherd <eightball1989@gmail.com>", \
                "\tZimin Huang <ienjoycoding@gmail.com>", \
                "\tNimit Shah <nimit.svnit@gmail.com>", \
+               "\tAntonio Roquentin <>", \
 ]
 ARTISTS     = ["Kalle Persson <kalle@kallepersson.se>", \
                 "Bertrand Rousseau <bertrand.rousseau@gmail.com>"]
