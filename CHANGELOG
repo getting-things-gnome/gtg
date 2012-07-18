@@ -30,6 +30,7 @@
     * User documentation for GTG, written by Radina Matic, integrated in GTG by Bertrand Rousseau
     * It is not possible to add another instance of local file synchronization service
     * Fixes for bugs #906516, #1002160 (task urgency color plugin), by Wolter Hellmund
+    * Fix for bug #1001012: Notification area icon should change color when there are urgent tasks, by Antonio Roquentin
 
 2012-02-13 Getting Things GNOME! 0.2.9
     * Big refractorization of code, now using liblarch
