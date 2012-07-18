@@ -1,0 +1,49 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="topic" style="task"
+      id="gtg-sync">
+
+  <info>
+    <link type="guide" xref="index#gtg-sync"/>
+     <link type="seealso" xref="gtg-add-sync"/>
+      <link type="seealso" xref="gtg-remove-sync"/>
+
+    <revision pkgversion="0.1" version="0.1" date="2012-07-03" status="candidate"/>
+    <credit type="author">
+      <name>Radina Matic</name>
+     <email>radina.matic@gmail.com</email>
+    </credit>
+  </info>
+
+  <title>Understand Sync Services</title>
+
+<p>Sync Services allow GTG to synchronize (meaning to have access or to import) tasks, notes or bugs from other sites or services like <em>Launchpad</em>, <em>Remember the Milk</em>, <em>Tomboy</em>, <em>GNote</em>...</p> 
+
+<p>There are different types of synchronization:</p>
+<list>
+      <item><p><em>Read-only synchronization</em>: The primary goal is to track things, for example the bugs assigned to you on a bug tracking system. You cannot directly mark the task as resolved in GTG, but when you mark the associated bug as fixed on the bug tracking system, it will show up as such in GTG.  Read-only also means that if you open one of the imported tasks and change the title, description or tags, those changes are visible only to you and will be lost when the associated task is modified on the originating service. You are free to set any other field (start/due dates, subtasks...) as for those field your changes will be preserved. This is useful to add personal annotations to imported tasks.</p></item>
+      <item><p><em>Import synchronization</em>: This is similar to read-only synchronization but you are free to change any field you want. However, keep in mind that all the changes you make will be visible only on your computer. GTG will also make sure that no task is imported twice</p></item> 
+      <item><p><em>Full synchronization</em>:</p></item>
+</list>
+
+<p>List of available sync services in GTG:</p>
+
+<p><em style="strong">Evolution tasks</em></p>
+<p>Allows you to synchronize your GTG tasks with Evolution tasks (full synchronization). <em>This sync service is currently disabled because of a bug between PyGTK and python-evolution.</em></p>
+
+<p><em style="strong">Identi.ca</em></p>
+<p>Imports your Identi.ca messages into your GTG (import synchronization).</p>
+
+<p><em style="strong">Tomboy</em></p>
+<p>Synchronizes all or part of your Tomboy notes in GTG (full synchronization).</p>
+
+<p><em style="strong">Gnote</em></p>
+<p>Synchronizes all or part of your Gnote notes in GTG (full synchronization).</p>
+
+<p><em style="strong">Launchpad</em></p>
+<p>Allows you to import any Launchpad bugs assigned to you (or someone else) in your GTG (read-only synchronization).</p> 
+
+<p><em style="strong">Remember the Milk</em></p>
+<p>Synchronize your tasks with the web service RememberTheMilk (full synchronization).</p>
+
+</page>
+

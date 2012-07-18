@@ -29,6 +29,7 @@ import xml.sax.saxutils as saxutils
 from GTG.core         import CoreConfig
 from liblarch         import TreeNode
 
+
 class Tag(TreeNode):
     """A short name that can be applied to L{Task}s.
 
@@ -43,9 +44,10 @@ class Tag(TreeNode):
     def __init__(self, name, req, attributes={}):
         """Construct a tag.
 
-        @param name: The name of the tag. Should be a string, generally a
-            short one.
-        @param attributes: Allow having initial set of attributes without calling _save callback
+        @param name: The name of the tag. Should be a string, generally
+            a short one.
+        @param attributes: Allow having initial set of attributes without
+            calling _save callback
         """
         TreeNode.__init__(self, name)
         self._name = saxutils.unescape(str(name))
@@ -62,7 +64,8 @@ class Tag(TreeNode):
             TreeNode.add_parent(self, parent_id)
 
     def add_child(self, child_id):
-        if not self.is_special() and not self.req.get_tag(child_id).is_special():
+        special_child = self.req.get_tag(child_id).is_special()
+        if not self.is_special() and not special_child:
             TreeNode.add_child(self, child_id)
 
     def get_name(self):
@@ -82,7 +85,8 @@ class Tag(TreeNode):
             string.
         """
         if att_name == "name":
-            raise Set_Name_Attribute_Error("The name of tag cannot be set manually")
+            raise Set_Name_Attribute_Error(
+                "The name of tag cannot be set manually")
         elif att_name == "parent":
             self.add_parent(att_value)
         else:
@@ -102,7 +106,8 @@ class Tag(TreeNode):
             if self.has_parent():
                 parents_id = self.get_parents()
                 if len(parents_id) > 0:
-                    to_return = reduce(lambda a, b: "%s,%s" % (a, b), parents_id)
+                    to_return = reduce(lambda a, b: "%s,%s" % (a, b),
+                        parents_id)
         elif att_name == 'label':
             to_return = self._attributes.get(att_name, self.get_id())
         else:
@@ -138,7 +143,6 @@ class Tag(TreeNode):
         return attributes
 
     ### TASK relation ####
-
     def get_active_tasks_count(self):
         count = self.__get_count()
         return count
@@ -156,7 +160,7 @@ class Tag(TreeNode):
         elif sp_id == "notag":
             toreturn = tasktree.get_n_nodes(\
                             withfilters=['notag'], include_transparent=False)
-        elif sp_id == "sep" :
+        elif sp_id == "sep":
             toreturn = 0
         else:
             tname = self.get_name()
@@ -180,10 +184,12 @@ class Tag(TreeNode):
         return self.get_total_tasks_count() > 0
 
     def is_actively_used(self):
-        return self.is_search_tag() or self.is_special() or self.get_active_tasks_count() > 0
+        return self.is_search_tag() or self.is_special() or\
+            self.get_active_tasks_count() > 0
 
     def __str__(self):
         return "Tag: %s" % self.get_name()
+
 
 class Set_Name_Attribute_Error(Exception):
     """Exception raised when try to set attribute to name"""

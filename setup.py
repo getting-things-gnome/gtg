@@ -30,6 +30,7 @@ from GTG import info
 ### CONSTANTS ################################################################
 
 DATA_DIR        = "share/gtg"
+HELP_DIR        = "share/help"
 GLOBAL_ICON_DIR = "share/icons/hicolor"
 
 ### TOOLS ####################################################################
@@ -47,6 +48,23 @@ def create_icon_list():
             fileList.append((os.path.join(DATA_DIR, newroot), dirList))
     return fileList
 
+def create_userdoc_list():
+    fileList = []
+    rootdir  = "doc/userdoc"
+    for root, subFolders, files in os.walk(rootdir):
+        dirList = []
+        for file in files:
+            dirList.append(os.path.join(root, file))
+        if len(dirList)!=0:
+            comps = root.split(os.sep)
+            prefix = os.path.join(comps[0], comps[1], comps[2])+os.sep
+            if root != prefix[:-1]:
+                newroot = root.replace(prefix, "")
+            else:
+                newroot = ""
+            newroot = os.path.join( HELP_DIR, comps[2], "gtg", newroot)
+            fileList.append((newroot, dirList))
+    return fileList
 
 def create_data_files():
     data_files = []
@@ -64,6 +82,9 @@ def create_data_files():
                        ['data/icons/hicolor/32x32/apps/gtg.png']))
     data_files.append(('share/icons/hicolor/scalable/apps', \
                        ['data/icons/hicolor/scalable/apps/gtg.svg']))
+    # documentation
+    helpfiles = create_userdoc_list()
+    data_files.extend(helpfiles)
     # misc
     data_files.append(('share/applications', ['gtg.desktop']))
     data_files.append(('share/dbus-1/services', ['org.gnome.GTG.service']))
@@ -145,8 +166,12 @@ setup(
     ],
   package_data = {
     'GTG.core.plugins': ['pluginmanager.glade'],
-    'GTG.gtk':
-        ['preferences.glade', 'deletion.glade', 'backends_dialog.glade'],
+    'GTG.gtk': [
+        'preferences.glade',
+        'plugins.glade',
+        'deletion.glade',
+        'backends_dialog.glade',
+        ],
     'GTG.gtk.browser': ['taskbrowser.glade', 'modifytags_dialog.glade'],
     'GTG.gtk.editor': ['taskeditor.glade'],
     'GTG.plugins': [

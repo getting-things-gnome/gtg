@@ -13,30 +13,27 @@
 #
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
+
+import dbus
+import os
 import sys
+
 try:
     import pygtk
     pygtk.require("2.0")
 except: # pylint: disable-msg=W0702
     sys.exit(1)
-try:
-    import gtk
-except: # pylint: disable-msg=W0702
-    sys.exit(1)
 
-import os
-import dbus
+import gtk
 
 from GTG import _
 from GTG.plugins.tomboy.combobox_enhanced import smartifyComboboxEntry
 
 
-
 class pluginTomboy:
 
-
     def __init__(self):
-        #These tokens are used to identify the beginning and the end of the 
+        #These tokens are used to identify the beginning and the end of the
         #tomboy note point of insertion
         self.token_start = 'TOMBOY__'
         self.token_end = '|'
@@ -61,10 +58,10 @@ class pluginTomboy:
 
     #Function called upon plug-in activation
     def activate(self, plugin_api):
-        self.builder = gtk.Builder() 
+        self.builder = gtk.Builder()
 
     #Returns true is Tomboy/Gnote is present, otherwise shows a dialog
-    #(only once)  and returns False 
+    #(only once)  and returns False
     def checkTomboyPresent(self):
         if not hasattr(self, 'activated'):
             self.activated = self.findTomboyIconPath()
@@ -78,7 +75,7 @@ class pluginTomboy:
                      buttons=gtk.BUTTONS_OK,
                      message_format=_("Tomboy/Gnote not found. \
 Please install it or disable the Tomboy/Gnote plugin in GTG"))
-                dialog.run() 
+                dialog.run()
                 dialog.destroy()
         return self.activated
 
@@ -89,8 +86,8 @@ Please install it or disable the Tomboy/Gnote plugin in GTG"))
 
     # Converts all tomboy note widgets in the  equivalent text
     def onTaskClosed(self, plugin_api):
-        if not  hasattr (self, "activated") or not self.activated == True:
-            #plugin has not been properly activated, (bug 475877 )
+        if not hasattr(self, "activated") or not self.activated == True:
+            # plugin has not been properly activated, (bug 475877 )
             # closing without executing onTaskClosed
             return
         for anchor in self.anchors:
@@ -157,11 +154,11 @@ Please install it or disable the Tomboy/Gnote plugin in GTG"))
             token_ending = text.find(self.token_end)
 
     def onTaskOpened(self, plugin_api):
+        self.plugin_api = plugin_api
         if not self.checkTomboyPresent() or not plugin_api.is_editor():
             return
         #NOTE: get_textview() only works in this function
         # (see GTG/core/plugins/api.py docs)
-        self.plugin_api = plugin_api
         self.textview = plugin_api.get_ui().get_textview()
         self.addButtonToToolbar(plugin_api)
         self.convertTokensToWidgets()
@@ -195,7 +192,7 @@ Please install it or disable the Tomboy/Gnote plugin in GTG"))
                         "system, but it does not provide a DBus interface "
                         "which is required by the Tomboy/Gnote plugin "
                         "in GTG.") % self.software.title())
-                dialog.run() 
+                dialog.run()
                 dialog.destroy()
                 self.disable_flag = True
             return None
@@ -219,16 +216,16 @@ Please install it or disable the Tomboy/Gnote plugin in GTG"))
         self.dialog = self.builder.get_object("InsertNoteDialog")
         self.combobox = self.builder.get_object("titles_combobox")
         self.label_caption = self.builder.get_object("label_caption")
-        dic = { "on_btn_cancel_clicked"      : self.close_dialog,
-                "on_btn_add_clicked"         : self.noteChosen,
-                "on_InsertNoteDialog_close"  : self.close_dialog
-        }
-        self.builder.connect_signals(dic)
-        self.combobox_entry = smartifyComboboxEntry(self.combobox, title_list,\
-                self.noteChosen)
+        self.builder.connect_signals({
+            "on_btn_cancel_clicked": self.close_dialog,
+            "on_btn_add_clicked": self.noteChosen,
+            "on_InsertNoteDialog_close": self.close_dialog,
+        })
+        self.combobox_entry = smartifyComboboxEntry(self.combobox,
+                        title_list, self.noteChosen)
         self.dialog.show_all()
 
-    #A title has been chosen by the user. If the note exists, it will be 
+    #A title has been chosen by the user. If the note exists, it will be
     # linked, otherwise the user will have the option to create the note.
     def noteChosen(self, widget=None, data=None):
         tomboy = self.getTomboyObject()
@@ -244,7 +241,7 @@ Please install it or disable the Tomboy/Gnote plugin in GTG"))
                                        buttons=gtk.BUTTONS_YES_NO,
                                        message_format=_("That note does not \
 exist. Do you want to create a new one?"))
-            response = dialog.run() 
+            response = dialog.run()
             dialog.destroy()
             if response == gtk.RESPONSE_YES:
                 tomboy.CreateNamedNote(supposed_title)
@@ -272,7 +269,7 @@ exist. Do you want to create a new one?"))
                   buttons=gtk.BUTTONS_YES_NO,
                   message_format=(_("This Tomboy note does not exist anymore. \
 Do you want to create it?")))
-            response = dialog.run() 
+            response = dialog.run()
             dialog.destroy()
             if response == gtk.RESPONSE_YES:
                 tomboy.CreateNamedNote(widget.tomboy_note_title)
@@ -297,10 +294,11 @@ Do you want to create it?")))
                 pixbuf_new_from_file_at_size(self.tomboy_icon_path, 16, 16)
         image.show()
         image.set_from_pixbuf(pixbuf)
-        image.set_alignment(0.5,1.0)
+        image.set_alignment(0.5, 1.0)
         label = gtk.Label()
         color = str(window_style.text[gtk.STATE_PRELIGHT])
-        label.set_markup("<span underline='low' color='" + color +"'>" + tomboy_note_title + "</span>")
+        label.set_markup("<span underline='low' color='%s'>%s</span>" % (color,
+                                                            tomboy_note_title))
         label.show()
         label.set_alignment(0.5, 1.0)
         eventbox = gtk.EventBox()
@@ -315,8 +313,8 @@ Do you want to create it?")))
         #properly
         textview_style = self.textview.get_style()
         eventbox_style = eventbox.get_style().copy()
-        for state in (gtk.STATE_NORMAL,gtk.STATE_PRELIGHT,gtk.STATE_ACTIVE,\
-                      gtk.STATE_SELECTED,gtk.STATE_INSENSITIVE):
+        for state in (gtk.STATE_NORMAL, gtk.STATE_PRELIGHT, gtk.STATE_ACTIVE,
+                      gtk.STATE_SELECTED, gtk.STATE_INSENSITIVE):
             eventbox_style.base[state] = textview_style.base[state]
             eventbox_style.bg[state] = textview_style.bg[state]
             eventbox_style.fg[state] = textview_style.fg[state]
@@ -331,4 +329,3 @@ Do you want to create it?")))
             eventbox.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.HAND2))
         eventbox.connect("realize", realize_callback)
         return eventbox
-

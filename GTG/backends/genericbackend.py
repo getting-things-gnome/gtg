@@ -17,10 +17,10 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-'''
-This file contains the most generic representation of a backend, the
-GenericBackend class
-'''
+"""
+This file contains the most generic representation of a backend,
+the GenericBackend class
+"""
 
 import os
 import sys
@@ -34,7 +34,6 @@ from GTG.tools.keyring           import Keyring
 from GTG.core                    import CoreConfig
 from GTG.tools.logger            import Log
 from GTG.tools.interruptible     import _cancellation_point
-
 
 
 class GenericBackend(object):
@@ -91,10 +90,6 @@ class GenericBackend(object):
         Optional. 
         NOTE: make sure to call super().initialize()
         '''
-        #NOTE: I'm disabling this since support for runtime checking of the
-        #        presence of the necessary modules is disabled. (invernizzi)
-#        for module_name in self.get_required_modules():
-#            sys.modules[module_name]= __import__(module_name)
         self._parameters[self.KEY_ENABLED] = True
         self._is_initialized = True
         #we signal that the backend has been enabled
@@ -140,21 +135,6 @@ class GenericBackend(object):
         @param xml: an xml object containing the default tasks.
         '''
         pass
-
-#NOTE: task counting is disabled in the UI, so I've disabled it here
-#      (invernizzi)
-#    def get_number_of_tasks(self):
-#        '''
-#        Returns the number of tasks stored in the backend. Doesn't need
-#        to be a fast function, is called just for the UI
-#        '''
-#        raise NotImplemented()
-
-#NOTE: I'm disabling this since support for runtime checking of the
-#        presence of the necessary modules is disabled. (invernizzi)
-#    @staticmethod
-#    def get_required_modules():
-#        return []
 
     def quit(self, disable = False):
         '''
@@ -689,5 +669,3 @@ class GenericBackend(object):
                 pass
         self.launch_setting_thread(bypass_quit_request = True)
         self.save_state()
-
-

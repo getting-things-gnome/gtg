@@ -18,4 +18,5 @@ from GTG.plugins.geolocalized_tasks.geolocalized_tasks import geolocalizedTasks
 
 
 #suppress pyflakes warning (given by make lint)
-if False == True: geolocalizedTasks()
+if False == True:
+    geolocalizedTasks()

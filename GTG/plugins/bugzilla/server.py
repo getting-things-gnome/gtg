@@ -17,7 +17,9 @@
 SERVER_TAG_PRODUCT = 1
 SERVER_TAG_COMPONENT = 2
 
+
 class ServersStore:
+
     def __init__(self):
         self.servers = {}
 
@@ -40,7 +42,7 @@ class ServersStore:
         server = Server('bugzilla.samba.org')
         server.tag = SERVER_TAG_COMPONENT
         self.add(server)
-        
+
         # GENTOO
         server = Server('bugs.gentoo.org')
         server.tag = SERVER_TAG_COMPONENT
@@ -52,7 +54,9 @@ class ServersStore:
     def get(self, name):
         return self.servers.get(name)
 
+
 class Server:
+
     def __init__(self, name):
         self.name = name
         self.tag = None

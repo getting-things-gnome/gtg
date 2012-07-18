@@ -53,11 +53,11 @@ class pluginReaper:
                              os.path.dirname(os.path.abspath(__file__)) + \
                              "/reaper.ui"))
         self.preferences_dialog = self.builder.get_object("preferences_dialog")
-        self.pref_chbox_show_menu_item    = \
+        self.pref_chbox_show_menu_item = \
                         self.builder.get_object("pref_chbox_show_menu_item")
-        self.pref_chbox_is_automatic    = \
+        self.pref_chbox_is_automatic = \
                         self.builder.get_object("pref_chbox_is_automatic")
-        self.pref_spinbtn_max_days    = \
+        self.pref_spinbtn_max_days = \
                         self.builder.get_object("pref_spinbtn_max_days")
         SIGNAL_CONNECTIONS_DIC = {
             "on_preferences_dialog_delete_event":

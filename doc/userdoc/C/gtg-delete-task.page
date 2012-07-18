@@ -1,0 +1,32 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="topic" style="task"
+      id="gtg-delete-task">
+
+  <info>
+    <link type="guide" xref="gtg-tasks" group="second"/>
+    <link type="seealso" xref="gtg-create-new-task"/>
+    <link type="seealso" xref="gtg-edit-task"/>
+    <link type="seealso" xref="gtg-dismiss-task"/>
+    <link type="seealso" xref="gtg-set-task-date"/>
+    <revision pkgversion="0.1" version="0.1" date="2012-07-03" status="candidate"/>
+    <credit type="author">
+      <name>Radina Matic</name>
+     <email>radina.matic@gmail.com</email>
+    </credit>
+  </info>
+
+  <title>Delete Task</title>
+
+  <p>To delete a selected task from the main <app>GTG</app> window, you can:</p>
+  
+  <list>
+      <item><p>Go to <guiseq><gui>Tasks</gui><gui>Delete</gui></guiseq> in the main menu.</p></item>
+      <item><p>Press the <keyseq><key>Del</key></keyseq> key on your keyboard.</p></item>
+      <item><p>Right-click the task and select <gui>Delete Task</gui> from the contextual menu.</p></item>
+</list> 
+  
+   <p>To delete an open <app>GTG</app> task click the <gui>Delete Task</gui> button in the task toolbar.</p>
+    <p>Since deleting tasks cannot be undone, in each case you will be asked to confirm the deletion. </p> 
+ 
+ 
+</page>

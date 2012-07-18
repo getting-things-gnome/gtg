@@ -22,6 +22,7 @@
 import unittest
 from GTG.tools.tags import extract_tags_from_text as tags
 
+
 class TestExtractTags(unittest.TestCase):
 
     def test_empty(self):
@@ -34,19 +35,20 @@ class TestExtractTags(unittest.TestCase):
         self.assertEqual(tags("some text ended with @endtag"), ["@endtag"])
 
     def test_hypen_in_tag(self):
-        self.assertEqual(tags("@tag, @my-tag, bla bla @do-this-today"), 
+        self.assertEqual(tags("@tag, @my-tag, bla bla @do-this-today"),
             ["@tag", "@my-tag", "@do-this-today"])
 
-        self.assertEqual(tags("@hypen-at-end- some other text"), ["@hypen-at-end"])
+        self.assertEqual(tags("@hypen-at-end- some other text"),
+            ["@hypen-at-end"])
         self.assertEqual(tags("@hypen-at-end-, with comma"), ["@hypen-at-end"])
 
     def test_dot(self):
         self.assertEqual(tags("text @gtg-0.3"), ["@gtg-0.3"])
-        self.assertEqual(tags("@tag., @my.tag, bla bla @do.this.today"), 
+        self.assertEqual(tags("@tag., @my.tag, bla bla @do.this.today"),
             ["@tag", "@my.tag", "@do.this.today"])
 
     def test_slash(self):
-        self.assertEqual(tags("@tag/, @my/tag, bla bla @do/this/today/"), 
+        self.assertEqual(tags("@tag/, @my/tag, bla bla @do/this/today/"),
             ["@tag", "@my/tag", "@do/this/today"])
 
 

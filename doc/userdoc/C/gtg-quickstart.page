@@ -1,0 +1,32 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="topic" style="task"
+      id="gtg-quickstart">
+
+  <info>
+    <link type="guide" xref="index"/>
+    <link type="seealso" xref="gtg-shortcut-keys"/>
+    <link type="seealso" xref="gtg-workflows"/>
+    <link type="seealso" xref="gtg-main-window"/>
+    <revision pkgversion="0.1" version="0.1" date="2012-07-03" status="candidate"/>
+    <credit type="author">
+      <name>Radina Matic</name>
+     <email>radina.matic@gmail.com</email>
+    </credit>
+  </info>
+
+  <title>Get started with GTG</title>
+
+  <p>Welcome to <app>Getting Things GNOME!</app>. In <app>GTG</app>, everything is a task: from building a bridge over the Pacific Ocean to changing a light bulb or organizing a party.</p>
+
+<figure>
+  <title>GTG Main Window</title>
+  <desc> </desc>
+ <media type="image" mime="image/png" src="figures/get_started.png"/>
+</figure>
+
+<p>To start a new task just click the <gui>New Task</gui> button and start writing. You do not need to save the task yourself – GTG does that for you automatically while you write! Once you have completed the task, just click the <gui>Mark as Done</gui> button and the task will disappear from the GTG main window (you can still see it if you activate the <gui>Closed Task Pane</gui>). If the task is not relevant any more, simply click the <gui>Dismiss</gui> button to archive it.</p>
+
+<p>You can learn all about various <app>GTG</app> features by exploring <link xref="index">the main page</link> of this <app>GTG</app> user manual.</p>
+
+</page>
+

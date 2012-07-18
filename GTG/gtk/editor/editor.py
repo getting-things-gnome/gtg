@@ -21,7 +21,7 @@ This is the TaskEditor
 
 It's the window you see when you double-click on a Task
 The main text widget is a home-made TextView called TaskView (see taskview.py)
-The rest is the logic of the widget : date changing widgets, buttons, ...
+The rest is the logic of the widget: date changing widgets, buttons, ...
 """
 import time
 
@@ -44,7 +44,7 @@ class TaskEditor:
                  task, 
                  taskconfig = None,
                  thisisnew = False,
-                 clipboard = None) :
+                 clipboard = None):
         '''
         req is the requester
         vmanager is the view manager
@@ -68,25 +68,25 @@ class TaskEditor:
         self.inserttag_button.set_tooltip_text(GnomeConfig.TAG_TOOLTIP)
         #Create our dictionary and connect it
         dic = {
-                "mark_as_done_clicked"      : self.change_status,
-                "on_dismiss"                : self.dismiss,
-                "delete_clicked"            : self.delete_task,
-                "on_duedate_pressed"        : (self.on_date_pressed,
+                "mark_as_done_clicked": self.change_status,
+                "on_dismiss": self.dismiss,
+                "delete_clicked": self.delete_task,
+                "on_duedate_pressed": (self.on_date_pressed,
                                                GTGCalendar.DATE_KIND_DUE),
-                "on_startdate_pressed"      : (self.on_date_pressed,
+                "on_startdate_pressed": (self.on_date_pressed,
                                                GTGCalendar.DATE_KIND_START),
-                "on_closeddate_pressed"     : (self.on_date_pressed,
+                "on_closeddate_pressed": (self.on_date_pressed,
                                                GTGCalendar.DATE_KIND_CLOSED),
-                "close_clicked"             : self.close,
-                "duedate_changed"           : (self.date_changed,
+                "close_clicked": self.close,
+                "duedate_changed": (self.date_changed,
                                                GTGCalendar.DATE_KIND_DUE),
-                "startingdate_changed"      : (self.date_changed,
+                "startingdate_changed": (self.date_changed,
                                                GTGCalendar.DATE_KIND_START),
-                "closeddate_changed"        : (self.date_changed,
+                "closeddate_changed": (self.date_changed,
                                                GTGCalendar.DATE_KIND_CLOSED),
-                "on_insert_subtask_clicked" : self.insert_subtask,
-                "on_inserttag_clicked"      : self.inserttag_clicked,
-                "on_move"                   : self.on_move,
+                "on_insert_subtask_clicked": self.insert_subtask,
+                "on_inserttag_clicked": self.inserttag_clicked,
+                "on_move": self.on_move,
         }
         self.builder.connect_signals(dic)
         self.window         = self.builder.get_object("TaskEditor")
@@ -95,7 +95,7 @@ class TaskEditor:
         textview = self.builder.get_object("textview")
         scrolled = self.builder.get_object("scrolledtask")
         scrolled.remove(textview)
-        self.textview   = TaskView(self.req,self.clipboard)
+        self.textview   = TaskView(self.req, self.clipboard)
         self.textview.show()
         self.textview.set_subtask_callback(self.new_subtask)
         self.textview.open_task_callback(self.vmanager.open_task)
@@ -126,22 +126,22 @@ class TaskEditor:
         #the first line is the title
         self.textview.set_text("%s\n"%title)
         #we insert the rest of the task
-        if texte :
+        if texte:
             self.textview.insert("%s"%texte)
-        else :
+        else:
             #If not text, we insert tags
-            if tags :
-                for t in tags :
+            if tags:
+                for t in tags:
                     self.textview.insert_text("%s, "%t.get_name())
                 self.textview.insert_text("\n")
             #If we don't have text, we still need to insert subtasks if any
             subtasks = task.get_children()
-            if subtasks :
+            if subtasks:
                 self.textview.insert_subtasks(subtasks)
         #We select the title if it's a new task
-        if thisisnew :
+        if thisisnew:
             self.textview.select_title()
-        else :
+        else:
             self.task.set_to_keep()
         self.textview.modified(full=True)
         self.window.connect("destroy", self.destruction)
@@ -159,7 +159,7 @@ class TaskEditor:
         self.textview.grab_focus()
 
         #restoring size and position, spatial tasks
-        if self.config :
+        if self.config:
             tid = self.task.get_id()
             if tid in self.config:
                 if "position" in self.config[tid]:
@@ -168,7 +168,7 @@ class TaskEditor:
                     #print "restoring position %s %s" %(pos[0],pos[1])
                 if "size" in self.config[tid]:
                     size = self.config[tid]["size"]
-                    #print "size %s - %s" %(str(size[0]),str(size[1]))
+                    #print "size %s - %s" %(str(size[0]), str(size[1]))
                     #this eval(str()) is a ugly (!) hack to accept both int and str
                     #FIXME: Fix this!
                     self.window.resize(eval(str(size[0])),eval(str(size[1])))
@@ -220,10 +220,10 @@ class TaskEditor:
             return
         to_save = False
         #title of the window 
-        if title :
+        if title:
             self.window.set_title(title)
             to_save = True
-        else :
+        else:
             self.window.set_title(self.task.get_title())
 
         status = self.task.get_status() 
@@ -265,14 +265,24 @@ class TaskEditor:
 
         #refreshing the start date field
         startdate = self.task.get_start_date()
-        prevdate = Date.parse(self.startdate_widget.get_text())
-        if startdate != prevdate:
+        try:
+            prevdate = Date.parse(self.startdate_widget.get_text())
+            update_date = startdate != prevdate
+        except ValueError:
+            update_date = True
+
+        if update_date:
             self.startdate_widget.set_text(str(startdate)) 
 
         #refreshing the due date field
         duedate = self.task.get_due_date()
-        prevdate = Date.parse(self.duedate_widget.get_text())
-        if duedate != prevdate:
+        try:
+            prevdate = Date.parse(self.duedate_widget.get_text())
+            update_date = duedate != prevdate
+        except ValueError:
+            update_date = True
+
+        if update_date:
             self.duedate_widget.set_text(str(duedate))
 
         # refreshing the closed date field
@@ -325,7 +335,7 @@ class TaskEditor:
                 mi.connect("activate", self.inserttag, tagname)
                 mi.show()
                 menu.append(mi)
-        if tag_count > 0 :
+        if tag_count > 0:
             self.inserttag_button.set_menu(menu)
 
         if refreshtext:
@@ -338,7 +348,7 @@ class TaskEditor:
         valid = True
         if not text:
             datetoset = Date.no_date()
-        else :
+        else:
             try:
                 datetoset = Date.parse(text)
             except ValueError:
@@ -350,11 +360,11 @@ class TaskEditor:
             widget.modify_text(gtk.STATE_NORMAL, None)
             widget.modify_base(gtk.STATE_NORMAL, None)
 
-            if data == "start" :
+            if data == "start":
                 self.task.set_start_date(datetoset)
-            elif data == "due" :
+            elif data == "due":
                 self.task.set_due_date(datetoset)
-            elif data == "closed" :
+            elif data == "closed":
                 self.task.set_closed_date(datetoset)
 
             # Set the due date to be equal to the start date
@@ -363,7 +373,7 @@ class TaskEditor:
             due_date = self.task.get_due_date()
             if start_date and (start_date > due_date):
                 self.task.set_due_date(self.task.get_start_date())
-        else :
+        else:
             #We should write in red in the entry if the date is not valid
             widget.modify_text(gtk.STATE_NORMAL, gtk.gdk.color_parse("#F00"))
             widget.modify_base(gtk.STATE_NORMAL, gtk.gdk.color_parse("#F88"))
@@ -412,7 +422,7 @@ class TaskEditor:
         for task in all_subtasks:
             self.vmanager.close_task(task.get_id())
 
-    def dismiss(self,widget) : #pylint: disable-msg=W0613
+    def dismiss(self,widget): #pylint: disable-msg=W0613
         stat = self.task.get_status()
         if stat == "Dismiss":
             self.task.set_status("Active")
@@ -422,7 +432,7 @@ class TaskEditor:
             self.close_all_subtasks()
             self.close(None)
 
-    def change_status(self,widget) : #pylint: disable-msg=W0613
+    def change_status(self,widget): #pylint: disable-msg=W0613
         stat = self.task.get_status()
         if stat == "Done":
             self.task.set_status("Active")
@@ -432,7 +442,7 @@ class TaskEditor:
             self.close_all_subtasks()
             self.close(None)
 
-    def delete_task(self, widget) :
+    def delete_task(self, widget):
         #this triggers the closing of the window in the view manager
         if self.task.is_new():
 #            self.req.delete_task(self.task.get_id())
@@ -441,7 +451,7 @@ class TaskEditor:
             self.vmanager.ask_delete_tasks([self.task.get_id()])
 
     #Take the title as argument and return the subtask ID
-    def new_subtask(self,title=None,tid=None) :
+    def new_subtask(self,title=None,tid=None):
         if tid:
             self.task.add_child(tid)
         elif title:
@@ -456,23 +466,23 @@ class TaskEditor:
         task_id = task.get_id()
         self.vmanager.open_task(task_id)
 
-    def insert_subtask(self,widget) : #pylint: disable-msg=W0613
+    def insert_subtask(self,widget): #pylint: disable-msg=W0613
         self.textview.insert_newtask()
         self.textview.grab_focus()
 
-    def inserttag_clicked(self,widget) : #pylint: disable-msg=W0613
+    def inserttag_clicked(self,widget): #pylint: disable-msg=W0613
         itera = self.textview.get_insert()
-        if itera.starts_line() :
+        if itera.starts_line():
             self.textview.insert_text("@",itera)
-        else :
+        else:
             self.textview.insert_text(" @",itera)
         self.textview.grab_focus()
 
-    def inserttag(self,widget,tag) : #pylint: disable-msg=W0613
+    def inserttag(self,widget,tag): #pylint: disable-msg=W0613
         self.textview.insert_tags([tag])
         self.textview.grab_focus()
 
-    def save(self) :
+    def save(self):
         self.task.set_title(self.textview.get_title())
         self.task.set_text(self.textview.get_text()) 
         self.task.sync()
@@ -481,7 +491,7 @@ class TaskEditor:
         self.time = time.time()
     #light_save save the task without refreshing every 30seconds
     #We will reduce the time when the get_text will be in another thread
-    def light_save(self) :
+    def light_save(self):
         #if self.time is none, we never called any save
         if self.time:
             diff = time.time() - self.time
@@ -512,7 +522,7 @@ class TaskEditor:
         #saving the position
         if self.config != None:
             tid = self.task.get_id()
-            if not tid in self.config :
+            if not tid in self.config:
                 self.config[tid] = dict()
             #print "saving task position %s" %str(self.get_position())
             self.config[tid]["position"] = self.get_position()

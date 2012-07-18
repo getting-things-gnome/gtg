@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2012-04-02 20:02+0200\n"
+"POT-Creation-Date: 2012-04-22 17:25+0200\n"
 "PO-Revision-Date: 2012-04-13 15:32+0000\n"
 "Last-Translator: Hanssen <Unknown>\n"
 "Language-Team: Dutch <nl@li.org>\n"
@@ -15,16 +15,16 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2012-04-14 04:58+0000\n"
-"X-Generator: Launchpad (build 15070)\n"
+"X-Launchpad-Export-Date: 2012-04-23 04:47+0000\n"
+"X-Generator: Launchpad (build 15135)\n"
 
-#: GTG/plugins/notification_area/notification_area.py:121
-msgid "_View Main Window"
-msgstr "_Hoofdvenster weergeven"
-
-#: GTG/plugins/notification_area/notification_area.py:131
+#: GTG/plugins/notification_area/notification_area.py:123
 msgid "Add _New Task"
 msgstr "Voeg _Nieuwe Task Toe"
+
+#: GTG/plugins/notification_area/notification_area.py:128
+msgid "_View Main Window"
+msgstr "_Hoofdvenster weergeven"
 
 #: GTG/plugins/export/export_templates/description_textual.py:18
 msgid "Text-only"
@@ -658,27 +658,27 @@ msgstr ""
 msgid "notag"
 msgstr ""
 
-#: GTG/core/task.py:55
+#: GTG/core/task.py:53
 msgid "My new task"
 msgstr "Mijn nieuwe taak"
 
-#: GTG/core/task.py:164
+#: GTG/core/task.py:154
 msgid "tags"
 msgstr "labels"
 
-#: GTG/core/task.py:164
+#: GTG/core/task.py:154
 msgid "tag"
 msgstr "label"
 
-#: GTG/core/task.py:169
+#: GTG/core/task.py:159
 msgid "defer"
 msgstr "uitstellen"
 
-#: GTG/core/task.py:169
+#: GTG/core/task.py:159
 msgid "start"
 msgstr ""
 
-#: GTG/core/task.py:175
+#: GTG/core/task.py:165
 msgid "due"
 msgstr "vervalt"
 
@@ -691,7 +691,7 @@ msgstr "Alle taken"
 msgid "Tasks with no tags"
 msgstr "Taken zonder labels"
 
-#: GTG/core/treefactory.py:102 GTG/gtk/browser/browser.py:1561
+#: GTG/core/treefactory.py:102 GTG/gtk/browser/browser.py:1495
 msgid "Search"
 msgstr ""
 
@@ -756,6 +756,10 @@ msgstr[1] "over %(days)d dagen"
 #: GTG/gtg.py:84
 msgid "gtg is already running!"
 msgstr "gtg is al actief!"
+
+#: GTG/info.py:33
+msgid "GTG is a personal organizer for the GNOME desktop environment."
+msgstr ""
 
 #: GTG/gtk/backends_dialog/parameters_ui/pathui.py:52
 msgid "Filename:"
@@ -902,38 +906,42 @@ msgid "Show description preview in the task list."
 msgstr "Voorbeeld van de beschrijving tonen in de takenlijst"
 
 #: GTG/gtk/preferences.glade.h:5
+msgid "Show background colors of tasks"
+msgstr ""
+
+#: GTG/gtk/preferences.glade.h:6
 msgid "Hide closed tasks older than "
 msgstr "Verberg afgesloten taken ouder dan "
 
-#: GTG/gtk/preferences.glade.h:6
+#: GTG/gtk/preferences.glade.h:7
 msgid "<b>Task Browser</b>"
 msgstr "<b>Taak Browser</b>"
 
-#: GTG/gtk/preferences.glade.h:7
+#: GTG/gtk/preferences.glade.h:8
 msgid "Check spelling"
 msgstr "Spelling controleren"
 
-#: GTG/gtk/preferences.glade.h:8
+#: GTG/gtk/preferences.glade.h:9
 msgid "<b>Task Editor</b>"
 msgstr "<b>Taak Editor</b>"
 
-#: GTG/gtk/preferences.glade.h:9
+#: GTG/gtk/preferences.glade.h:10
 msgid "General"
 msgstr ""
 
-#: GTG/gtk/preferences.glade.h:10
+#: GTG/gtk/preferences.glade.h:11
 msgid "Active _Plugins:"
 msgstr "Actieve _Plugins:"
 
-#: GTG/gtk/preferences.glade.h:11
+#: GTG/gtk/preferences.glade.h:12
 msgid "_About Plugin"
 msgstr "Info over _plugin"
 
-#: GTG/gtk/preferences.glade.h:12
+#: GTG/gtk/preferences.glade.h:13
 msgid "Plugins"
 msgstr "Plugins"
 
-#: GTG/gtk/preferences.glade.h:13
+#: GTG/gtk/preferences.glade.h:14
 msgid "<b>Dependencies</b>"
 msgstr "<b>Afhankelijkheden</b>"
 
@@ -1018,7 +1026,7 @@ msgid "Continue"
 msgstr "Doorgaan"
 
 #: GTG/gtk/browser/treeview_factory.py:280
-#: GTG/gtk/browser/taskbrowser.glade.h:33
+#: GTG/gtk/browser/taskbrowser.glade.h:29
 msgid "Tags"
 msgstr "Labels"
 
@@ -1038,22 +1046,22 @@ msgstr ""
 msgid "Title"
 msgstr "Titel"
 
-#: GTG/gtk/browser/browser.py:591
+#: GTG/gtk/browser/browser.py:576
 msgid "no active tasks"
 msgstr "geen actieve taken"
 
-#: GTG/gtk/browser/browser.py:593
+#: GTG/gtk/browser/browser.py:578
 #, python-format
 msgid "%(tasks)d active task"
 msgid_plural "%(tasks)d active tasks"
 msgstr[0] "%(tasks)d actieve taak"
 msgstr[1] "%(tasks)d actieve taken"
 
-#: GTG/gtk/browser/browser.py:1559
+#: GTG/gtk/browser/browser.py:1493
 msgid "Add Task"
 msgstr ""
 
-#: GTG/gtk/browser/browser.py:1560
+#: GTG/gtk/browser/browser.py:1494
 msgid "Open Task"
 msgstr ""
 
@@ -1061,69 +1069,69 @@ msgstr ""
 msgid "NewTag"
 msgstr ""
 
-#: GTG/gtk/browser/__init__.py:35 GTG/gtk/browser/taskbrowser.glade.h:29
+#: GTG/gtk/browser/__init__.py:36 GTG/gtk/browser/taskbrowser.glade.h:25
 #: GTG/gtk/editor/__init__.py:31
 msgid "Mark as Done"
 msgstr "Markeren als uitgevoerd"
 
-#: GTG/gtk/browser/__init__.py:36
+#: GTG/gtk/browser/__init__.py:37
 msgid "Mark the selected task as done"
 msgstr "Markeer de geselecteerde taak als uitgevoerd"
 
-#: GTG/gtk/browser/__init__.py:37 GTG/gtk/editor/__init__.py:32
+#: GTG/gtk/browser/__init__.py:38 GTG/gtk/editor/__init__.py:32
 msgid "Mark as not Done"
 msgstr ""
 
-#: GTG/gtk/browser/__init__.py:38 GTG/gtk/browser/__init__.py:42
+#: GTG/gtk/browser/__init__.py:39 GTG/gtk/browser/__init__.py:43
 msgid "Mark the selected task as to be done"
 msgstr "Markeer de geselecteerde taak als te doen"
 
-#: GTG/gtk/browser/__init__.py:39 GTG/gtk/browser/taskbrowser.glade.h:30
+#: GTG/gtk/browser/__init__.py:40 GTG/gtk/browser/taskbrowser.glade.h:26
 #: GTG/gtk/editor/__init__.py:33 GTG/gtk/editor/taskeditor.glade.h:3
 msgid "Dismiss"
 msgstr "Verwerpen"
 
-#: GTG/gtk/browser/__init__.py:40
+#: GTG/gtk/browser/__init__.py:41
 msgid "Mark the task as not to be done anymore"
 msgstr "Markeer de taak als niet meer te doen"
 
-#: GTG/gtk/browser/__init__.py:41 GTG/gtk/editor/__init__.py:34
+#: GTG/gtk/browser/__init__.py:42 GTG/gtk/editor/__init__.py:34
 msgid "Undismiss"
 msgstr "Terugplaatsen"
 
-#: GTG/gtk/browser/__init__.py:43
+#: GTG/gtk/browser/__init__.py:44
 msgid "Permanently remove the selected task"
 msgstr "De geselecteerde taak permanent verwijderen"
 
-#: GTG/gtk/browser/__init__.py:44
+#: GTG/gtk/browser/__init__.py:45
 msgid "Edit the selected task"
 msgstr "Bewerk de geselecteerde taak"
 
-#: GTG/gtk/browser/__init__.py:45 GTG/gtk/browser/taskbrowser.glade.h:4
+#: GTG/gtk/browser/__init__.py:46 GTG/gtk/browser/taskbrowser.glade.h:4
 msgid "Create a new task"
 msgstr "Nieuwe taak aanmaken"
 
-#: GTG/gtk/browser/__init__.py:46
+#: GTG/gtk/browser/__init__.py:47
 msgid "Create a new subtask"
 msgstr "Nieuwe subtaak aanmaken"
 
-#: GTG/gtk/browser/__init__.py:47
+#: GTG/gtk/browser/__init__.py:48
 msgid "Display only the currently actionable tasks"
 msgstr "Geef alleen direct uitvoerbare taken weer"
 
-#: GTG/gtk/browser/__init__.py:48
+#: GTG/gtk/browser/__init__.py:49
 msgid "Hide this tag from the workview"
 msgstr "Dit label verbergen in de werkweergave"
 
-#: GTG/gtk/browser/__init__.py:49
+#: GTG/gtk/browser/__init__.py:50
 msgid "Show this tag in the workview"
 msgstr "Dit label tonen in de werkweergave"
 
-#: GTG/gtk/browser/__init__.py:50
+#: GTG/gtk/browser/__init__.py:51
 msgid "You can create, open or filter your tasks here"
 msgstr ""
 
-#: GTG/gtk/browser/__init__.py:51
+#: GTG/gtk/browser/__init__.py:52
 msgid "Clear"
 msgstr ""
 
@@ -1164,98 +1172,82 @@ msgid "_Work View"
 msgstr "_Werkweergave"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:11
-msgid "_Background Colors"
-msgstr "_Achtergrondkleuren"
-
-#: GTG/gtk/browser/taskbrowser.glade.h:12
 msgid "_Tags Sidebar"
 msgstr "_Labels zijpaneel"
 
-#: GTG/gtk/browser/taskbrowser.glade.h:13
+#: GTG/gtk/browser/taskbrowser.glade.h:12
 msgid "_Closed Tasks Pane"
 msgstr "Paneel met _gesloten taken"
 
-#: GTG/gtk/browser/taskbrowser.glade.h:14
+#: GTG/gtk/browser/taskbrowser.glade.h:13
 msgid "T_oolbar"
 msgstr "_Werkbalk"
 
-#: GTG/gtk/browser/taskbrowser.glade.h:15
+#: GTG/gtk/browser/taskbrowser.glade.h:14
 msgid "_Quick Add Entry"
 msgstr "_Snel taak toevoegen"
 
-#: GTG/gtk/browser/taskbrowser.glade.h:16
+#: GTG/gtk/browser/taskbrowser.glade.h:15
 msgid "_Plugins"
 msgstr "_Plugins"
 
-#: GTG/gtk/browser/taskbrowser.glade.h:17
+#: GTG/gtk/browser/taskbrowser.glade.h:16
 msgid "_Help"
 msgstr "_Hulp"
 
-#: GTG/gtk/browser/taskbrowser.glade.h:18
-msgid "Get _Help Online"
-msgstr ""
-
-#: GTG/gtk/browser/taskbrowser.glade.h:19
+#: GTG/gtk/browser/taskbrowser.glade.h:17
 msgid "Open GTG documentation in your web browser"
 msgstr "De GTG-documentatie openen in uw webbrowser"
 
-#: GTG/gtk/browser/taskbrowser.glade.h:20
-msgid "_Translate GTG"
-msgstr ""
-
-#: GTG/gtk/browser/taskbrowser.glade.h:21
+#: GTG/gtk/browser/taskbrowser.glade.h:18
 msgid "Help to translate GTG into your language"
 msgstr ""
 
-#: GTG/gtk/browser/taskbrowser.glade.h:22
-msgid "_Report a Problem"
-msgstr ""
-
-#: GTG/gtk/browser/taskbrowser.glade.h:23
+#: GTG/gtk/browser/taskbrowser.glade.h:19
 msgid "Report a problem to GTG developers"
 msgstr ""
 
-#: GTG/gtk/browser/taskbrowser.glade.h:24
+#: GTG/gtk/browser/taskbrowser.glade.h:20
 msgid "New Task"
 msgstr "Nieuwe taak"
 
-#: GTG/gtk/browser/taskbrowser.glade.h:25
+#: GTG/gtk/browser/taskbrowser.glade.h:21
 msgid "New Subtask"
 msgstr "Nieuwe subtaak"
 
-#: GTG/gtk/browser/taskbrowser.glade.h:26
+#: GTG/gtk/browser/taskbrowser.glade.h:22
 msgid "Edit"
 msgstr "Bewerken"
 
-#: GTG/gtk/browser/taskbrowser.glade.h:27
+#: GTG/gtk/browser/taskbrowser.glade.h:23
 msgid "Undo"
 msgstr "Ongedaan maken"
 
-#: GTG/gtk/browser/taskbrowser.glade.h:28
+#: GTG/gtk/browser/taskbrowser.glade.h:24
 msgid "Redo"
 msgstr "Opnieuw"
 
-#: GTG/gtk/browser/taskbrowser.glade.h:31 GTG/gtk/editor/taskeditor.glade.h:4
+#: GTG/gtk/browser/taskbrowser.glade.h:27 GTG/gtk/editor/taskeditor.glade.h:4
 msgid "Delete"
 msgstr "Verwijder"
 
-#: GTG/gtk/browser/taskbrowser.glade.h:32
+#: GTG/gtk/browser/taskbrowser.glade.h:28
 msgid "Work View"
 msgstr "Werkweergave"
 
-#: GTG/gtk/browser/taskbrowser.glade.h:34
+#: GTG/gtk/browser/taskbrowser.glade.h:30
 msgid "Tasks"
 msgstr "Taken"
 
-#: GTG/gtk/browser/taskbrowser.glade.h:35
+#: GTG/gtk/browser/taskbrowser.glade.h:31
 msgid "About GTG!"
 msgstr "Over GTG!"
 
-#: GTG/gtk/browser/taskbrowser.glade.h:36
+#: GTG/gtk/browser/taskbrowser.glade.h:32
 msgid "Copyright © 2008-2012 Lionel Dricot, Bertrand Rousseau"
 msgstr ""
 
-#: GTG/gtk/browser/taskbrowser.glade.h:37
+#: GTG/gtk/browser/taskbrowser.glade.h:33
 msgid ""
 "\n"
 "Getting Things Gnome! is an organizer for the GNOME desktop environment."
@@ -1263,11 +1255,11 @@ msgstr ""
 "\n"
 "Getting Things Gnome! is een organizer for de Gnome-werkomgeving."
 
-#: GTG/gtk/browser/taskbrowser.glade.h:39
+#: GTG/gtk/browser/taskbrowser.glade.h:35
 msgid "GTG website"
 msgstr "GTG-website"
 
-#: GTG/gtk/browser/taskbrowser.glade.h:40
+#: GTG/gtk/browser/taskbrowser.glade.h:36
 msgid ""
 "Getting Things Gnome! is free software; you can redistribute it and/or "
 "modify it under the terms of the GNU General Public License as published by "
@@ -1296,71 +1288,67 @@ msgstr ""
 "Software Foundation, Inc. aanschrijven; 51 Franklin Street, Fifth Floor, "
 "Boston, MA 02110-1301, USA."
 
-#: GTG/gtk/browser/taskbrowser.glade.h:45
+#: GTG/gtk/browser/taskbrowser.glade.h:41
 msgid "Mark as Not Done"
 msgstr "Markeren als niet uitgevoerd"
 
-#: GTG/gtk/browser/taskbrowser.glade.h:46
+#: GTG/gtk/browser/taskbrowser.glade.h:42
 msgid "Und_ismiss"
 msgstr "_Terugplaatsen"
 
-#: GTG/gtk/browser/taskbrowser.glade.h:47
+#: GTG/gtk/browser/taskbrowser.glade.h:43
 msgid "t_oday"
 msgstr "vandaag (_o)"
 
-#: GTG/gtk/browser/taskbrowser.glade.h:48
+#: GTG/gtk/browser/taskbrowser.glade.h:44
 msgid "_tomorrow"
 msgstr "morgen (_t)"
 
-#: GTG/gtk/browser/taskbrowser.glade.h:49
+#: GTG/gtk/browser/taskbrowser.glade.h:45
 msgid "next _week"
 msgstr "volgende _week"
 
-#: GTG/gtk/browser/taskbrowser.glade.h:50
+#: GTG/gtk/browser/taskbrowser.glade.h:46
 msgid "next _month"
 msgstr "volgende _maand"
 
-#: GTG/gtk/browser/taskbrowser.glade.h:51
+#: GTG/gtk/browser/taskbrowser.glade.h:47
 msgid "next _year"
 msgstr "volgend jaar (_y)"
 
-#: GTG/gtk/browser/taskbrowser.glade.h:52
+#: GTG/gtk/browser/taskbrowser.glade.h:48
 msgid "_now"
 msgstr "_nu"
 
-#: GTG/gtk/browser/taskbrowser.glade.h:53
+#: GTG/gtk/browser/taskbrowser.glade.h:49
 msgid "_soon"
 msgstr "_binnenkort"
 
-#: GTG/gtk/browser/taskbrowser.glade.h:54
+#: GTG/gtk/browser/taskbrowser.glade.h:50
 msgid "_someday"
 msgstr ""
 
-#: GTG/gtk/browser/taskbrowser.glade.h:55
+#: GTG/gtk/browser/taskbrowser.glade.h:51
 msgid "_clear due date"
 msgstr "_wis datum deadline"
 
-#: GTG/gtk/browser/taskbrowser.glade.h:56
+#: GTG/gtk/browser/taskbrowser.glade.h:52
 msgid "_clear start date"
 msgstr "_wis begindatum"
 
-#: GTG/gtk/browser/taskbrowser.glade.h:57
-msgid "Reset Color"
-msgstr "Herstel Kleur"
-
-#: GTG/gtk/browser/taskbrowser.glade.h:58
+#: GTG/gtk/browser/taskbrowser.glade.h:53
 msgid "Add a subtask"
 msgstr "Subtaak toevoegen"
 
-#: GTG/gtk/browser/taskbrowser.glade.h:59
+#: GTG/gtk/browser/taskbrowser.glade.h:54
 msgid "_Set start date"
 msgstr "_Begindatum instellen"
 
-#: GTG/gtk/browser/taskbrowser.glade.h:60
+#: GTG/gtk/browser/taskbrowser.glade.h:55
 msgid "Set due date"
 msgstr "Datum deadline instellen"
 
-#: GTG/gtk/browser/taskbrowser.glade.h:61
+#: GTG/gtk/browser/taskbrowser.glade.h:56
 msgid "Modify Tags..."
 msgstr ""
 
@@ -1393,6 +1381,14 @@ msgstr ""
 #: GTG/gtk/browser/modifytags_dialog.glade.h:8
 msgid "Apply to subtasks"
 msgstr "Pas toe op subtaken"
+
+#: GTG/gtk/browser/tag_context_menu.py:44
+msgid "Set color..."
+msgstr ""
+
+#: GTG/gtk/browser/tag_context_menu.py:48
+msgid "Reset color"
+msgstr ""
 
 #: GTG/gtk/editor/editor.py:295
 #, python-format
@@ -1791,6 +1787,9 @@ msgstr ""
 #~ msgid "View Notes"
 #~ msgstr "Notities bekijken"
 
+#~ msgid "_Background Colors"
+#~ msgstr "_Achtergrondkleuren"
+
 #~ msgid "Trying to access, please stand by..."
 #~ msgstr "Aan het proberen om toegang te krijgen, een moment..."
 
@@ -1933,6 +1932,9 @@ msgstr ""
 
 #~ msgid "Mark as done"
 #~ msgstr "Markeren als voltooid"
+
+#~ msgid "Reset Color"
+#~ msgstr "Herstel Kleur"
 
 #~ msgid ""
 #~ " was found on the system, but it doesn't provide a dbus interface. the "

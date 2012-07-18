@@ -17,28 +17,25 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-'''
-Tests for interrupting cooperative threads
-'''
+""" Tests for interrupting cooperative threads """
 
-import unittest
-import time
 from threading import Thread, Event
+import time
+import unittest
 
 from GTG.tools.interruptible import interruptible, _cancellation_point
 
 
 class TestInterruptible(unittest.TestCase):
-    '''
-    Tests for interrupting cooperative threads
-    '''
+    """ Tests for interrupting cooperative threads """
 
     def test_interruptible_decorator(self):
-        '''Tests for the @interruptible decorator.'''
+        """ Tests for the @interruptible decorator. """
         self.quit_condition = False
-        cancellation_point = lambda: _cancellation_point(\
+        cancellation_point = lambda: _cancellation_point(
                                         lambda: self.quit_condition)
         self.thread_started = Event()
+
         @interruptible
         def never_ending(cancellation_point):
             self.thread_started.set()
@@ -58,4 +55,3 @@ class TestInterruptible(unittest.TestCase):
 
 def test_suite():
     return unittest.TestLoader().loadTestsFromTestCase(TestInterruptible)
-

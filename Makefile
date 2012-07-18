@@ -18,9 +18,9 @@ pyflakes:
 # Check for coding standard violations.
 pep8:
 	(echo gtg; echo gtcli;  echo gtg_new_task ; find . -name '*.py' -print ) | \
-	xargs ./scripts/pep8.py --ignore E221,E222
+	xargs ./scripts/pep8.py --repeat
 	(echo gtg; echo gtcli;  echo gtg_new_task ; find . -name '*.py' -print ) | \
-	xargs ./scripts/pep8.py --ignore E221,E222 --repeat | wc -l
+	xargs ./scripts/pep8.py --repeat | wc -l
 
 # Pylint code
 pylint:
