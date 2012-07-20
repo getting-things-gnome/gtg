@@ -30,7 +30,7 @@ def populate():
     doc, root = cleanxml.emptydoc("project")
 
     #Task 0@1: Getting started with GTG
-    title1 = _("Getting started with GTG")
+    title1 = _("Getting Started With GTG")
     text1 = _(\
 "Welcome to Getting Things GNOME!, your new task manager! In Getting "
 "Things GNOME! (GTG), everything is a task. From building a bridge over "
@@ -107,107 +107,176 @@ def populate():
     root.appendChild(t1)
 
     #Task 1@1: Learn to use subtasks
-    title2 = _("Learn how to use subtasks")
-    text2 = _("""A &quot;Subtask&quot; is something that you need to do first before being able to accomplish your task. In GTG, the purpose of subtasks is to cut down a task in smaller subtasks that are easier to achieve and to track down.
-    
-To insert a subtask in the task description (this window, for instance), begin a line with &quot;-&quot;, then write the subtask title and press Enter.
-
-Try inserting one subtask below. Type &quot;- This is my first subtask!&quot;, for instance, and press Enter:
-
-
-    
-Alternatively, you can also use the &quot;insert subtask&quot; button.
-
-Tasks and subtasks can be re-organized by drag-n-drop in the tasks list.
-
-Note that subtasks obey to some rules: first, a subtask's due date can never be happen after its parent's due date and, second, when you mark a parent task as done, its subtasks will also be marked as done.""")
+    title2 = _("Learn How To Use Subtasks")
+    text2 = _(\
+"A &quot;Subtask&quot; is something that you need to do first before being "
+"able to accomplish your task. In GTG, the purpose of subtasks is to cut down "
+"a task in smaller subtasks that are easier to achieve and to track down.\n"
+"\n"
+"To insert a subtask in the task description (this window, for instance), "
+"begin a line with &quot;-&quot;, then write the subtask title and press "
+"Enter.\n"
+"\n"
+"Try inserting one subtask below. Type &quot;- This is my first "
+"subtask!&quot;, for instance, and press Enter:\n"
+"\n"
+"\n"
+"\n"
+"Alternatively, you can also use the &quot;Insert Subtask&quot; button.\n"
+"\n"
+"Note that subtasks obey to some rules: first, a subtask's due date can never "
+"happen after its parent's due date and, second, when you mark a parent "
+"task as done, its subtasks will also be marked as done.\n"
+"\n"
+"And if you are not happy with your current tasks/subtasks organization, you "
+"can always change it by drag-and-dropping tasks on each other in the tasks "
+"list.")
     t2 = addtask(doc, "1@1", title2, text2, [])
     root.appendChild(t2)
 
     #Task 2@1: Learn to use tags
-    title3 = _("Learn how to use tags")
-    text3 = _("""A tag is a simple word that begins with &quot;@&quot;.
-
-Try to type a word beginning with @ here:
-
-It becomes yellow, it's now a tag.
-
-Tags are useful to sort your tasks. In the view menu, you can enable a sidebar which displays all the tags you are using so you can easily see tasks assigned to a given tag. There's no limit to the number of tags a task can have.
-
-You can drag-n-drop a tag onto another to create \"subtags\". As an example, if you drag the tag @to_pay onto the tag @money, every task tagged with @to_pay will also appear in the view of @money (but the @money tag is not added to the task).
-
-If you right click on a tag in the sidebar you can also set its color. It will allow you to have a more colorful list of tasks, if you want it that way.
-
-A new tag is only added to the current task. There's no recursion and the tag is not applied to subtasks. But when you create a new subtask, this subtask will inherit the tags of its parent as a good primary default (it will also be the case if you add a tag to a parent just after creating a subtask). Of course, you can modify at any time the tags of this particular subtask. It will never be changed by the parent.""")
+    title3 = _("Learn How To Use Tags")
+    text3 = _(\
+"In GTG, you use tags to sort your tasks. A tag is a simple word that begins "
+"with &quot;&#64;&quot;.\n"
+"\n"
+"Try to type a word beginning with &quot;&#64;&quot; here:\n"
+"\n"
+"Once it becomes yellow, it is a tag! And this tag is now linked to the "
+"task!\n"
+"\n"
+"Using the View menu, you can enable a sidebar which displays all the tags "
+"you are using. This allows you to easily see all tasks associated to a "
+"given tag.\n"
+"\n"
+"If you right-click on a tag in the sidebar, you can also edit it. It allows "
+"you to assign it a color or an icon for instance. This is handy if you want "
+"to quickly identify the tasks associated to a given tag in the task list!\n"
+"\n"
+"New tags are always added exclusively to the currently edited task, and "
+"never to its subtasks. However, when you create a new subtask, it will "
+"inherit its parent's tags.\n"
+"\n"
+"If you need a more advanced task organization, you can also create a "
+"hierarchy of tags by drag-and-dropping a tag onto another. This is useful "
+"when you want to regroup several tags together and see all related tasks "
+"easily. For instance, if you have two tags &#64;money and &#64;to_pay, and "
+"you drag &#64;to_pay on &#64;money, every task tagged with &#64;to_pay will "
+"also appear when you select &#64;money.")
     t3 = addtask(doc, "2@1", title3, text3, [])
     root.appendChild(t3)
 
     #Task 3@1: Using the Workview
-    title4 = _("Learn how to use the Work View")
-    text4 = _("""If you press the &quot;Work View&quot; button, only actionable tasks will be displayed.
-
-What is an actionable task? It's a task you can do directly, right now.
-
-It's a task that is already &quot;start-able&quot;, i.e. the start date is already over.
-
-It's a task that doesn't have open subtasks, i.e. you can do the task itself directly.
-
-Thus, the workview will only show you tasks you can do right now.
-
-If you use tags, you can right click on a tag in the sidebar and choose to hide tasks assigned to this particular tag in the workview. It's very useful if you have a tag like &quot;someday&quot; that you use for tasks you would like to do but are not particularly urgent.""")
+    title4 = _("Learn How To Use The Work View")
+    text4 = _(\
+"If you press the &quot;Work View&quot; button, only actionable tasks will "
+"be displayed in your list.\n"
+"\n"
+"What is an actionable task? It's a task you can do directly, right now.\n"
+"\n"
+"It's a task that is already &quot;start-able&quot;, i.e. the start date "
+"is already over.\n"
+"\n"
+"It's a task that doesn't have open subtasks, i.e. you can do the task "
+"itself directly.\n"
+"\n"
+"It's a task that has a due date different than &quot;Someday&quot;, since "
+"this kind of date is reserved for things that needs more thoughts before "
+"being actionable.\n"
+"\n"
+"Thus, in short, the Work View shows you tasks that you can do right now. "
+"It's very useful when you want to get things done and to focus on the "
+"relevant tasks!\n"
+"\n"
+"If you use tags, you can right click on a tag in the sidebar and choose "
+"to hide tasks assigned to this particular tag in the Work View. It is very "
+"useful if you have a tag like &quot;&#64;wait&quot; that you use for tasks "
+"blocked by some external event (i.e. a phone call you wait to receive).\n"
+"\n"
+"And finally, an important note regarding the Work View: since the Work View "
+"is updated instantaneously, if you edit your task while using the Work "
+"View, this task might disappear due to the change you just made (e.g. "
+"adding a subtask, adding a tag hidden in the Work View, etc.). To avoid "
+"this, it's better not to edit your task while using the Work View."
+)
     t4 = addtask(doc, "3@1", title4, text4, [])
     root.appendChild(t4)
 
     #Task 5@1: Plugins
-    title5 = _("Learn how to use plugins")
-    text5 = _("""GTG has the ability to add plugins to extend its core functionality.
-
-Some examples of the current plugins are synchronization with online services like Remember the Milk and Evolution, Tomboy/Gnote integration and Geolocalized Tasks.
-
-You can find the Plugin Manager by selecting Edit in the Menu Bar, then clicking Preferences. You will then see a tab labeled Plugins.""")
-
+    title5 = _("Learn How To Use Plugins")
+    text5 = _(\
+"GTG has the ability to add plugins to extend its core functionality.\n"
+"\n"
+"Some examples of the currently available plugins are the notification "
+"icon which displays a handy shortcut to GTG in your notification space, or "
+"the closed tasks remover which automatically deletes old tasks from your "
+"closed tasks list.\n"
+"\n"
+"You can find the Plugin Manager by selecting Edit in the Menu Bar, then "
+"clicking Plugins.")
     t5 = addtask(doc, "4@1", title5, text5, [])
     root.appendChild(t5)
 
     #Task 5@1: Reporting bugs
-    title6 = _("Reporting bugs")
-    text6 = _("""GTG is still very alpha software. We like it and use it everyday but you will encounter some bugs.
-
-Please, report them on our Launchpad page:
-https://bugs.launchpad.net/gtg
-
-We need you to make this software better. Any contribution, any idea is welcome.
-
-If you have some trouble with GTG, we might be able to help you or to solve your problem really quickly.""")
-
+    title6 = _("Reporting Bugs")
+    text6 = _(\
+"GTG is still beta software. We like it and use it everyday but you will "
+"probably encounter some bugs will you do.\n"
+"\n"
+"Please, help us improving GTG by reporting them on our Launchpad page:"
+"https://bugs.launchpad.net/gtg\n"
+"\n"
+"We need you to make this software better. Any contribution, any idea is "
+"welcome!\n"
+"\n"
+"If you have some trouble with GTG, we might be able to help you or to "
+"solve your problem really quickly.")
     t6 = addtask(doc, "5@1", title6, text6, [])
     root.appendChild(t6)
 
     #Task 6@1: Learn how to use the QuickAdd Entry
-    title7 = _("Learn how to use the Quick Add Entry")
-    text7 = _("""The Quick Add Entry is the fastest way to create a new task. Use the check box in the View menu to enable and disable the entry field.
-
-To add a task simply type its title in the entry and press Enter. The task will be created and selected in the task browser. If a tag is selected in the Tags Sidebar, it will be applied to the task you created.
-
-You can also create a task in the Quick Add Entry and at the same time specify its tags, due and defer date. Follow these format rules:
-
-
-tags:tag1,tag2,tag3
- - This way you can apply as many tags as you wish using comma as separator
- - Note: any word in the title that begins with &quot;@&quot; will also be interpreted as a tag
-
-due:date
-defer:date
- - This way you can apply a due date or a defer date. Dates can be formated as yyyy-mm-dd (for example 2012-04-01) or yyyymmdd (20120401) or mmdd (0401 - the year being implicitly the current one) or today, tomorrow or a weekday name (due:monday means due next Monday). Dates which are added in this way will not appear in the task title.
-
-Examples:
-buy stationary tags:purchases,office due:20120330 defer:tuesday
-
- - The above example tells GTG to create a new task with the title "buy stationary", under the tags "purchases" and "office", with the due date March 30, 2012 and the start date next Tuesday.
-
-call mum tags:family,calls due:sunday defer:tomorrow
- - The above example tells GTG to create a new task with the title "call mum", under the tags "family" and "calls", with the due date next Sunday and the start date tomorrow.""")
-
+    title7 = _("Learn How To Use The Quick Add Entry")
+    text7 = _(\
+"The Quick Add Entry is the fastest way to create a new task. Use the check "
+"box in the View menu to enable and disable the entry field.\n"
+"\n"
+"To add a task simply type its title in the entry and press Enter. The task "
+"will be created and selected in the task browser. If a tag is selected in "
+"the Tags Sidebar, it will be applied to the task you created.\n"
+"\n"
+"You can also create a task in the Quick Add Entry and at the same time "
+"specify its tags, due and defer date. Follow these format rules:\n"
+"\n"
+"tags:tag1,tag2,tag3\n"
+"\n"
+"Using this you can apply as many tags as you wish using comma as "
+"separator. Note that any word in the title that begins with &quot;@&quot; "
+"will also be interpreted as a tag!\n"
+"\n"
+"due:date\n"
+"defer:date\n"
+"\n"
+"Using this you can apply a due date or a defer date. Dates can be "
+"formated as yyyy-mm-dd (for example 2012-04-01) or yyyymmdd (20120401) "
+"or mmdd (0401 - the year being implicitly the current one) or today, "
+"tomorrow or a weekday name (due:monday means due next Monday). Dates "
+"which are added in this way will not appear in the task title.\n"
+"\n"
+"Examples:\n"
+"\n"
+"buy stationary tags:purchases,office due:20120330 defer:tuesday\n"
+"\n"
+"The above example tells GTG to create a new task with the title "
+"&quot;buy stationary&quot;, under the tags &quot;purchases&quot; and "
+"&quot;office&quot;, with the due date March 30, 2012 and the start date "
+"next Tuesday.\n"
+"\n"
+"call mum tags:family,calls due:sunday defer:tomorrow\n"
+"\n"
+"The above example tells GTG to create a new task with the title "
+"&quot;call mum&quot;, under the tags &quot;family&quot; and "
+"&quot;calls&quot;, with the due date next Sunday and the start date "
+"tomorrow.")
     t7 = addtask(doc, "6@1", title7, text7, [])
     root.appendChild(t7)
 
