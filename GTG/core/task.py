@@ -247,6 +247,7 @@ class Task(TreeNode):
         self.last_modified = modified
 
     def set_due_date(self, fulldate):
+        """Defines the task's due date."""
         def get_due_date_constraint():
             """ Returns the most urgent due date constraint, following
                 parents' due dates. Return Date.no_date() if no constraint
@@ -258,9 +259,8 @@ class Task(TreeNode):
                    par.get_due_date() < cur_date:
                     cur_date = par.get_due_date()
             return cur_date
-        fulldate_obj = Date(fulldate)
-        self.prev_due_date=self.due_date
-        self.due_date=fulldate_obj
+        fulldate_obj = Date(fulldate) # caching the conversion
+        self.due_date = fulldate_obj
         # if the task's start date happens later than the 
         # new due date, we update it
         if self.get_start_date() != Date.no_date() and \
@@ -277,7 +277,7 @@ class Task(TreeNode):
             # the current task being one of its children's parents, we must
             # apply the constraints on their due/start dates as well
             for sub_id in self.children:
-                sub=self.req.get_task(sub_id)
+                sub = self.req.get_task(sub_id)
                 # child's due date is not set, we use the task's new 
                 # due date
                 if sub.get_due_date() == Date.no_date():
