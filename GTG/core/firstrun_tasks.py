@@ -27,6 +27,8 @@ from GTG.tools.tags import extract_tags_from_text
 
 
 def populate():
+    """On the first run of GTG, populate the task list with tasks meant to
+    act as a GTG tutorial."""
     doc, root = cleanxml.emptydoc("project")
 
     #Task 0@1: Getting started with GTG
@@ -91,6 +93,8 @@ def populate():
 "<subtask>4@1</subtask>\n"
 "<subtask>5@1</subtask>\n"
 "<subtask>6@1</subtask>\n"
+"<subtask>7@1</subtask>\n"
+"<subtask>8@1</subtask>\n"
 "\n"
 "You can also browse GTG documentation by pressing F1 or opening it using "
 "the Help menu.\n"
@@ -102,9 +106,9 @@ def populate():
 "http://gtg.fritalk.com\n"
 "\n"
 "The GTG team.")
-    t1 = addtask(doc, "0@1", title1, text1, \
-        ["1@1", "2@1", "3@1", "4@1", "5@1", "6@1"])
-    root.appendChild(t1)
+    task1 = addtask(doc, "0@1", title1, text1, \
+        ["1@1", "2@1", "3@1", "4@1", "5@1", "6@1", "7@1", "8@1"])
+    root.appendChild(task1)
 
     #Task 1@1: Learn to use subtasks
     title2 = _("Learn How To Use Subtasks")
@@ -131,8 +135,8 @@ def populate():
 "And if you are not happy with your current tasks/subtasks organization, you "
 "can always change it by drag-and-dropping tasks on each other in the tasks "
 "list.")
-    t2 = addtask(doc, "1@1", title2, text2, [])
-    root.appendChild(t2)
+    task2 = addtask(doc, "1@1", title2, text2, [])
+    root.appendChild(task2)
 
     #Task 2@1: Learn to use tags
     title3 = _("Learn How To Use Tags")
@@ -163,8 +167,8 @@ def populate():
 "easily. For instance, if you have two tags &#64;money and &#64;to_pay, and "
 "you drag &#64;to_pay on &#64;money, every task tagged with &#64;to_pay will "
 "also appear when you select &#64;money.")
-    t3 = addtask(doc, "2@1", title3, text3, [])
-    root.appendChild(t3)
+    task3 = addtask(doc, "2@1", title3, text3, [])
+    root.appendChild(task3)
 
     #Task 3@1: Using the Workview
     title4 = _("Learn How To Use The Work View")
@@ -197,10 +201,9 @@ def populate():
 "is updated instantaneously, if you edit your task while using the Work "
 "View, this task might disappear due to the change you just made (e.g. "
 "adding a subtask, adding a tag hidden in the Work View, etc.). To avoid "
-"this, it's better not to edit your task while using the Work View."
-)
-    t4 = addtask(doc, "3@1", title4, text4, [])
-    root.appendChild(t4)
+"this, it's better not to edit your task while using the Work View.")
+    task4 = addtask(doc, "3@1", title4, text4, [])
+    root.appendChild(task4)
 
     #Task 5@1: Plugins
     title5 = _("Learn How To Use Plugins")
@@ -214,8 +217,8 @@ def populate():
 "\n"
 "You can find the Plugin Manager by selecting Edit in the Menu Bar, then "
 "clicking Plugins.")
-    t5 = addtask(doc, "4@1", title5, text5, [])
-    root.appendChild(t5)
+    task5 = addtask(doc, "4@1", title5, text5, [])
+    root.appendChild(task5)
 
     #Task 5@1: Reporting bugs
     title6 = _("Reporting Bugs")
@@ -231,8 +234,8 @@ def populate():
 "\n"
 "If you have some trouble with GTG, we might be able to help you or to "
 "solve your problem really quickly.")
-    t6 = addtask(doc, "5@1", title6, text6, [])
-    root.appendChild(t6)
+    task6 = addtask(doc, "5@1", title6, text6, [])
+    root.appendChild(task6)
 
     #Task 6@1: Learn how to use the QuickAdd Entry
     title7 = _("Learn How To Use The Quick Add Entry")
@@ -277,13 +280,61 @@ def populate():
 "&quot;call mum&quot;, under the tags &quot;family&quot; and "
 "&quot;calls&quot;, with the due date next Sunday and the start date "
 "tomorrow.")
-    t7 = addtask(doc, "6@1", title7, text7, [])
-    root.appendChild(t7)
+    task7 = addtask(doc, "6@1", title7, text7, [])
+    root.appendChild(task7)
+
+    #Task 7@1: Learn How To Use Synchonization Services
+    title8 = _("Learn How To Use Synchronization Services")
+    text8 = _(\
+"Synchronization Services allow GTG to synchronize (meaning to have access "
+"or to import) tasks, notes or bugs from other sites or services like "
+"Launchpad, Remember the Milk, Tomboy, etc.\n"
+"\n"
+"This can incredibly useful if, for instance, you want to access your tasks "
+"on several instances of GTG running on separate computers, or if you want "
+"to edit your tasks using an online service. GTG can also import tasks from "
+"specific sites like launchpad for instance, which allows you "
+"to manage the bug reports you're working on in GTG!\n"
+"\n"
+"To use Synchronization Services, use the Edit menu, and select "
+"&quot;Synchronization Services&quot;. You will then have the possibility "
+"to select among several online or local services from/to where you can "
+"import or export your tasks.\n"
+"\n"
+"If you want to know more about Synchronization Services, you can read "
+"more about them by in the dedicated documentation in GTG's help (use "
+"the Help menu or press F1 to get access to it).")
+    task8 = addtask(doc, "7@1", title8, text8, [])
+    root.appendChild(task8)
+
+    #Task 8@1: Learn How To Search For Tasks
+    title9 = _("Learn How To Search For Tasks")
+    text9 = _(\
+"To help you to find specific tasks more easily, GTG allows you to search "
+"for tasks based on their content.\n"
+"\n"
+"Searching for tasks is really easy: just type the words you are looking for "
+"in the Quick Add Entry, and select &quot;Search&quot; in the menu that "
+"will appear automatically.\n"
+"\n"
+"GTG stores your searches in the sidebar, under the &quot;Search&quot; "
+"section. You can thus always go back to a previous search later on if you "
+"need it. Search results are updated automatically, so you always get "
+"all the tasks matching your search request.\n"
+"\n"
+"GTG also saves all the search requests you have made until you explicitely "
+"delete them (which you can do by right-clicking on them and selecting "
+"&quot;Delete&quot;). That allows you to safely quit GTG without loosing your "
+"search requests. This can be very useful when you use the search features "
+"to identify specific tasks regularly!")
+    task9 = addtask(doc, "8@1", title9, text9, [])
+    root.appendChild(task9)
 
     return doc
 
 
-def addtask(doc, ze_id, title, text, childs):
+def addtask(doc, ze_id, title, text, children):
+    """Initialize GTG tasks in order to display them at first run."""
     t_xml = doc.createElement("task")
     t_xml.setAttribute("id", ze_id)
     t_xml.setAttribute("status", "Active")
@@ -292,7 +343,7 @@ def addtask(doc, ze_id, title, text, childs):
     t_xml.setAttribute("tags", ",".join(tags))
 
     cleanxml.addTextNode(doc, t_xml, "title", title)
-    for c in childs:
-        cleanxml.addTextNode(doc, t_xml, "subtask", c)
+    for child in children:
+        cleanxml.addTextNode(doc, t_xml, "subtask", child)
     cleanxml.addTextNode(doc, t_xml, "content", text)
     return t_xml

@@ -31,6 +31,8 @@
     * It is not possible to add another instance of local file synchronization service
     * Fixes for bugs #906516, #1002160 (task urgency color plugin), by Wolter Hellmund
     * Fix for bug #629683: update initial tutorial for 0.3
+    * Fix for bug #615027: Introductory task set should suggest organizing tasks in a tag hierarchy
+    * Fix for bug #1026264: Write user documentation for search/smart tag
 
 2012-02-13 Getting Things GNOME! 0.2.9
     * Big refractorization of code, now using liblarch
