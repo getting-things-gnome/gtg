@@ -31,46 +31,79 @@ def populate():
 
     #Task 0@1: Getting started with GTG
     title1 = _("Getting started with GTG")
-    text1 = _("""Welcome to Getting Things GNOME!, your new task manager! In Getting Things GNOME! (GTG), everything is a task. From building a bridge over the Pacific Ocean to changing a light bulb or organizing a party!
-
-If you are new to GTG, please take the time to read this, as it will provide you useful information about how to use GTG to organize your everyday life.
-
-Creating and editing tasks:
-
-Using GTG is easy: you organize your doings by creating new tasks. To do this, simply press the &quot;New Task&quot; button, then edit the task by describing it and setting some parameters, and that's it! Once a task is done, you can close it by pressing the &quot;Mark As Done&quot; button.
-
-In GTG, a task is automatically saved while you are editing. No need to press any "save" button! Try it: add some text to this task, close the window, and reopen it: your changes are still there!
-
-About subtasks:
-
-Sometimes it is easier to cut down a task in several smaller tasks. GTG helps to do just this by defining &quot;subtasks&quot;. In GTG, those subtasks are prerequisite that must be completed before being able to close their parent task.
-
-Consequently, a task might host one or several subtasks. Those will appear as links in the task description, just like the link below. To open and edit a subtask, simply click on its link! Try it yourself, open the following subtask:""")
-    text1 += "\n<subtask>1@1</subtask>\n"
-    text1 += _("""\nClosing a task:
-
-In GTG, once you are done with a task, you can close it by pushing either the &quot;Mark as Done&quot; or the &quot;Dismiss&quot; button. Use the first one if the task is done, and the latter if you want to close it because it is not relevant anymore. Want to try it? Try to close the above subtask for instance.
-    
-The tasks that you marked as done or dismissed are stored in the Closed Tasks Pane which is hidden by default, but you can easily enable it using the View menu.
-    
-Now, if you choose to close this current task, notice that subtasks will be automatically closed too! Indeed, GTG considers that if you have completed a given task, then you don't need to do the subtasks anymore. Handy, right?
-
-Learn more about GTG:
-
-Thanks for reading this! Here are other stuff you will find interesting to read:""")
-    text1 += """\n<subtask>2@1</subtask>
-    <subtask>3@1</subtask>
-    <subtask>4@1</subtask>
-    <subtask>5@1</subtask>
-    <subtask>6@1</subtask>\n"""
-    text1 += _("""\nWe hope that you will appreciate GTG. Please send us bug reports and ideas for improvement using this web page: https://bugs.launchpad.net/gtg
-
-You can also browse GTG documentation by pressing F1 or opening it using the Help menu.
-
-We sincerely hope you will enjoy using GTG, and thank you for trying it out!
-
-The GTG team.""")
-    t1 = addtask(doc, "0@1", title1, text1, ["1@1", "2@1", "3@1", "4@1", "5@1", "6@1"])
+    text1 = _(\
+"Welcome to Getting Things GNOME!, your new task manager! In Getting "
+"Things GNOME! (GTG), everything is a task. From building a bridge over "
+"the Pacific Ocean to changing a light bulb or organizing a party!\n"
+"\n"
+"If you are new to GTG, please take the time to read this, as it will "
+"provide you useful information about how to use GTG to organize your "
+"everyday life.\n"
+"\n"
+"Creating and editing tasks:\n"
+"\n"
+"Using GTG is easy: you organize what you have to do by creating new "
+"tasks. To do this, simply press the &quot;New Task&quot; button, "
+"edit the task by describing it, set some parameters, and that's "
+"it! Once a task done, you can close it by pressing the &quot;Mark As "
+"Done&quot; button.\n"
+"\n"
+"In GTG, a task is automatically saved while you are editing it. No need to "
+"press any &quot;Save&quot; button! Try it: add some text to this task, close "
+"the window, and reopen it: your changes are still there!\n"
+"\n"
+"About subtasks:\n"
+"\n"
+"In life, you often get more things done by refining them in "
+"smaller, more operational tasks. GTG helps to do just this by defining "
+"&quot;subtasks&quot;. In GTG, those subtasks are considered as prerequisites "
+"that must be completed before being able to close their parent task.\n"
+"\n"
+"Therefore, in GTG, a task might host one or several subtasks. Those "
+"appear as links in the task description, just like the link below. To "
+"open and edit a subtask, simply click on its link! Try it yourself: open "
+"the following subtask:\n"
+"<subtask>1@1</subtask>\n"
+"\n"
+"Closing a task:\n"
+"\n"
+"In GTG, once you are done with a task, you can close it by pushing "
+"either the &quot;Mark as Done&quot; or the &quot;Dismiss&quot; button. "
+"Use the first one if the task is done, and the latter if you want to "
+"close it because it is not relevant anymore. Want to try it? Try to "
+"close the subtask above for instance!\n"
+"\n"
+"When you close a task, you will notice that all its subtasks will be "
+"automatically closed too! Indeed, GTG considers that if you have completed a "
+"given task, then you don't need to do its subtasks anymore (they were "
+"prerequisites, after all).\n"
+"\n"
+"Note that the tasks that you have marked as done or dismissed are listed in "
+"the &quot;Closed Tasks Pane&quot; which is hidden by default, but you can "
+"easily show it using the View menu.\n"
+"\n"""
+"Learn more about GTG:\n"
+"\n"
+"If you are interested in knowing more about "
+"GTG's other features, you will find more information here:\n"
+"<subtask>2@1</subtask>\n"
+"<subtask>3@1</subtask>\n"
+"<subtask>4@1</subtask>\n"
+"<subtask>5@1</subtask>\n"
+"<subtask>6@1</subtask>\n"
+"\n"
+"You can also browse GTG documentation by pressing F1 or opening it using "
+"the Help menu.\n"
+"\n"
+"We sincerely hope you will enjoy using GTG, and thank you for trying it out! "
+"Please send us bug reports and ideas for improvement using this web page: "
+"https://bugs.launchpad.net/gtg If you want to get tips for using GTG or be "
+"informed about the newest features, also visit our blog at "
+"http://gtg.fritalk.com\n"
+"\n"
+"The GTG team.")
+    t1 = addtask(doc, "0@1", title1, text1, \
+        ["1@1", "2@1", "3@1", "4@1", "5@1", "6@1"])
     root.appendChild(t1)
 
     #Task 1@1: Learn to use subtasks
