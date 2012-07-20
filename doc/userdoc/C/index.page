@@ -43,6 +43,10 @@
     <title>Task Management</title>
  </section>
 
+ <section id="gtg-search" style="2column">
+    <title>Search For Tasks</title>
+ </section>
+
  <section id="gtg-sync" style="2column">
     <title>Sync Services</title>
  </section>

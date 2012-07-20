@@ -1,0 +1,123 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      xmlns:ui="http://projectmallard.org/experimental/ui/"
+      type="guide" style="tip"
+      id="gtg-search-syntax">
+
+  <info>
+    <link type="guide" xref="index#gtg-search" group="first"/>
+    <revision pkgversion="0.1" version="0.1" date="2012-07-03" status="candidate" />
+    <credit type="author">
+      <name>Bertrand Rousseau</name>
+      <email>bertrand.rousseau@gmail.com</email>
+    </credit>
+  </info>
+
+  <title>GTG Search Syntax</title>
+
+<p>When typing your search request in the Quick Add Entry, you can also use
+special keywords to refine your request. The table below describes those keywords.</p>
+
+<table rules="rows" frame="top bottom" ui:expanded="yes">
+<title>GTG Search Keywords</title>
+  <thead>
+    <tr>
+      <td><p><em style="strong">Search Keyword</em></p></td>
+      <td><p><em style="strong">Effect</em></p></td>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><p><code>word</code></p></td>
+      <td><p>Search tasks which contains this word</p></td>
+    </tr>
+    <tr>
+      <td><p><code>"text"</code></p></td>
+      <td><p>Basically the same as above but allows the space and special characters inside. Literal must be inside "quotes".
+</p></td>
+    </tr>
+    <tr>
+      <td><p><code>@tag</code></p></td>
+      <td><p>Search tasks with this tag</p></td>
+    </tr>
+    <tr>
+      <td><p><code>!after [date]</code></p></td>
+      <td>
+        <p>Search tasks which could be done after this date</p>
+        <p>Look below for the formatting of the <code>[date]</code> element.</p>
+      </td>
+    </tr>
+    <tr>
+      <td><p><code>!before [date]</code></p></td>
+      <td>
+        <p>Search tasks which must be done before this date</p>
+        <p>Look below for the formatting of the <code>[date]</code> element.</p>
+      </td>
+    </tr>
+    <tr>
+      <td><p><code>!today</code></p></td>
+      <td><p>Search tasks with a due date happening today</p></td>
+    </tr>
+    <tr>
+      <td><p><code>!tomorrow</code></p></td>
+      <td><p>Search tasks with due date happening tomorrow</p></td>
+    </tr>
+    <tr>
+      <td><p><code>!nodate</code></p></td>
+      <td><p>Search tasks without due date</p></td>
+    </tr>
+    <tr>
+      <td><p><code>!now</code></p></td>
+      <td><p>Search tasks with due date defined as "now"</p></td>
+    </tr>
+    <tr>
+      <td><p><code>!soon</code></p></td>
+      <td><p>Seach tasks with due date defined as "soon"</p></td>
+    </tr>
+    <tr>
+      <td><p><code>!notag</code></p></td>
+      <td><p>Search tasks without tags</p></td>
+    </tr>
+    <tr>
+      <td><p><code>!someday</code></p></td>
+      <td><p>Search tasks with due date defined as "someday"</p></td>
+    </tr>
+    <tr>
+      <td><p><code>!not [query]</code></p></td>
+      <td><p>The next part of the query will be negated</p></td>
+    </tr>
+    <tr>
+      <td><p><code>[query] !or [query]</code></p></td>
+      <td><p>Return True if at least on of elements is true</p></td>
+    </tr>
+  </tbody>
+</table>
+
+<p><code>[date]</code> can be formatted as yyyy-mm-dd (for example 2012-04-01)
+or yyyymmdd (20120401) or mmdd (0401 - the year being implicitly the current
+one) or today, tomorrow or a weekday name (due:monday means due next Monday).
+</p>
+
+<p>All elements of the query must be true for the query to be true. In other words,
+the search feature behave like it add an implicit logical 'AND' between each element.</p>
+
+<p>Examples of queries:</p>
+
+<p><em style="strong"><code>!tomorrow !or !today</code></em></p>
+<p>Show tasks which are today or tomorrow</p>
+
+<p><em style="strong"><code>@gtg @writing</code></em></p>
+<p>Show tasks with both of the tags @gtg, @writing</p>
+
+<p><em style="strong"><code>@gtg !before 2012-03-01</code></em></p>
+<p>Show GTG tasks with due_date before Marz 1</p>
+
+<p><em style="strong"><code>buy @errands</code></em></p>
+<p>Show errands where I have to buy something</p>
+
+<p><em style="strong"><code>!not buy @errands</code></em></p>
+<p>Show errands without keyword buy</p>
+
+<p><em style="strong"><code>!after "next month"</code></em></p>
+<p>Show tasks after this month</p>
+
+</page>
