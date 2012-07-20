@@ -265,14 +265,24 @@ class TaskEditor:
 
         #refreshing the start date field
         startdate = self.task.get_start_date()
-        prevdate = Date.parse(self.startdate_widget.get_text())
-        if startdate != prevdate:
+        try:
+            prevdate = Date.parse(self.startdate_widget.get_text())
+            update_date = startdate != prevdate
+        except ValueError:
+            update_date = True
+
+        if update_date:
             self.startdate_widget.set_text(str(startdate)) 
 
         #refreshing the due date field
         duedate = self.task.get_due_date()
-        prevdate = Date.parse(self.duedate_widget.get_text())
-        if duedate != prevdate:
+        try:
+            prevdate = Date.parse(self.duedate_widget.get_text())
+            update_date = duedate != prevdate
+        except ValueError:
+            update_date = True
+
+        if update_date:
             self.duedate_widget.set_text(str(duedate))
 
         # refreshing the closed date field

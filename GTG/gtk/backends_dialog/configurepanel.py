@@ -76,19 +76,18 @@ class ConfigurePanel(gtk.VBox):
         self.pack_start(align, False)
 
     def _fill_top_hbox(self, hbox):
-        '''
-        Helper function to fill an hbox with an image, a spinner and 
-        three labels
+        """ Fill header with service's icon, name, and a spinner
+        for inidcation of work.
 
         @param hbox: the gtk.HBox to fill
-        '''
-        hbox.set_spacing(10)
+        """
         self.image_icon = gtk.Image()
         self.image_icon.set_size_request(48, 48)
-        vbox = gtk.VBox()
         hbox_top = gtk.HBox()
+
         self.human_name_label = gtk.Label()
         self.human_name_label.set_alignment(xalign = 0, yalign = 0.5)
+
         try:
             self.spinner = gtk.Spinner()
         except AttributeError:
@@ -98,18 +97,11 @@ class ConfigurePanel(gtk.VBox):
         self.spinner.set_size_request(32, 32)
         align_spin = gtk.Alignment(xalign = 1, yalign = 0)
         align_spin.add(self.spinner)
-        hbox_top.pack_start(self.human_name_label, True)
-        hbox_top.pack_start(align_spin, False)
-        self.sync_desc_label = gtk.Label()
-        self.sync_desc_label.set_alignment(xalign = 0, yalign = 1)
-        self.sync_desc_label.set_line_wrap(True)
-        vbox.pack_start(hbox_top, True)
-        vbox.pack_start(self.sync_desc_label, True)
+
+        hbox.set_spacing(10)
         hbox.pack_start(self.image_icon, False)
-        align_vbox = gtk.Alignment(xalign = 0, yalign = 0, xscale = 1)
-        align_vbox.set_padding(12, 0, 0, 0)
-        align_vbox.add(vbox)
-        hbox.pack_start(align_vbox, True)
+        hbox.pack_start(self.human_name_label, True)
+        hbox.pack_start(align_spin, False)
 
     def _fill_middle_hbox(self, hbox):
         '''
@@ -148,31 +140,6 @@ class ConfigurePanel(gtk.VBox):
                                         self.backend.get_human_name()
         self.human_name_label.set_markup(markup)
     
-    def refresh_number_of_tasks(self):
-        '''refreshes the number of synced tasks by this backend'''
-        #FIXME: disabled for now. I'm not sure that this is nice because the
-        # count is correct only after the backend has synced all the pending
-        # tasks, and this is quite misleading (invernizzi)
-        return
-        #This will have to be changed for import/export..
-        tags = self.backend.get_attached_tags()
-        tasks_number = self.backend.get_number_of_tasks()
-        if GenericBackend.ALLTASKS_TAG in tags:
-            if tasks_number == 0:
-                markup = _("Ready to start syncing")
-            else:
-                markup = ngettext("Syncing your only task", \
-                    "Syncing all %d tasks" % tasks_number, tasks_number)
-        else:
-            tags_txt = get_colored_tags_markup(self.req, tags)
-            if tasks_number == 0:
-                markup = _("There is no task tagged %s") % tags_txt
-            else:
-                markup = ngettext("Syncing a task tagged %s" % tags_txt, \
-                    "Syncing %d tasks tagged %s" % (tasks_number, tags_txt), \
-                              tasks_number) 
-        self.sync_desc_label.set_markup(markup)
-
     def refresh_sync_button(self):
         '''
         Refreshes the state of the button that enables the backend
@@ -204,7 +171,6 @@ class ConfigurePanel(gtk.VBox):
         @param sender: not used, here only for signal callback compatibility
         @param data: not used, here only for signal callback compatibility
         '''
-        self.refresh_number_of_tasks()
         self.refresh_sync_button()
         self.refresh_sync_status_label()
     

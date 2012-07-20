@@ -23,12 +23,6 @@ from GTG.gtk.backends_dialog.backendscombo import BackendsCombo
 from GTG.backends                          import BackendFactory
 from GTG                                   import _, ngettext
 
-#The code for showing the required modules has been disabled since it
-# seems that backends will be packaged separately (as plugins). I'm
-# leaving this here in case we change that decision (invernizzi).
-#from GTG.tools.moduletopackage             import ModuleToPackage
-
-
 
 class AddPanel(gtk.VBox):
     ''' 
@@ -185,32 +179,6 @@ class AddPanel(gtk.VBox):
                 (ngettext("Author", "Authors", len(authors)),
                  reduce(lambda a, b: a + "\n" + "   - " + b, authors))
         self.label_author.set_markup(author_txt)
-        #The code for showing the required modules has been disabled since it
-        # seems that backends will be packaged separately (as plugins). I'm
-        # leaving this here in case we change that decision (invernizzi).
-        #self._build_module_list(backend.Backend)
         pixbuf = self.dialog.get_pixbuf_from_icon_name(backend_name, 100, 100)
         self.image_icon.set_from_pixbuf(pixbuf)
         self.show_all()
-
-        #The code for showing the required modules has been disabled since it
-        # seems that backends will be packaged separately (as plugins). I'm
-        # leaving this here in case we change that decision (invernizzi).
-#    def _build_module_list(self, backend):
-#        missing_modules = []
-#        for module in backend.get_required_modules():
-#            try:
-#                __import__(module)
-#            except ImportError:
-#                missing_modules.append(module)
-#        if missing_modules:
-#            text = "<b> Missing modules:</b>\n - "
-#            module2package = ModuleToPackage()
-#            missing_modules = map(lambda a: \
-#                    "<span color='red'>" + \
-#                    module2package.lookup(a) +\
-#                    "</span>", missing_modules)
-#            text += reduce(lambda a, b: a + "\n - " + b, missing_modules)
-#            self.label_modules.set_markup(text)
-#        self.ok_button.set_sensitive(missing_modules == [])
-

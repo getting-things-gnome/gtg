@@ -342,8 +342,7 @@ class DataStore(object):
         """
 
         def adding(task):
-            priority = task.get_update_priority()
-            self.__tasks.add_node(task, priority=priority)
+            self.__tasks.add_node(task)
             task.set_loaded()
             if self.is_default_backend_loaded:
                 task.sync()

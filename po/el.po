@@ -2,33 +2,34 @@
 # Copyright (c) 2011 Rosetta Contributors and Canonical Ltd 2011
 # This file is distributed under the same license as the gtg package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2011.
+# Efstathios Iosifidis <iosifidis@opensuse.org>, 2012.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2012-04-02 20:02+0200\n"
-"PO-Revision-Date: 2011-02-06 23:58+0000\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: Greek <el@li.org>\n"
+"POT-Creation-Date: 2012-04-22 17:25+0200\n"
+"PO-Revision-Date: 2012-05-26 14:33+0000\n"
+"Last-Translator: Stathis Iosifidis <Unknown>\n"
+"Language-Team: Ελληνικά, Σύγχρονα <opensuse-translation-el@opensuse.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2012-04-03 04:55+0000\n"
-"X-Generator: Launchpad (build 15052)\n"
+"X-Launchpad-Export-Date: 2012-05-27 04:41+0000\n"
+"X-Generator: Launchpad (build 15288)\n"
 
-#: GTG/plugins/notification_area/notification_area.py:121
-msgid "_View Main Window"
-msgstr ""
-
-#: GTG/plugins/notification_area/notification_area.py:131
+#: GTG/plugins/notification_area/notification_area.py:123
 msgid "Add _New Task"
-msgstr ""
+msgstr "Προσθήκη _Νέας Εργασίας"
+
+#: GTG/plugins/notification_area/notification_area.py:128
+msgid "_View Main Window"
+msgstr "_Προβολή Κυρίως Παραθύρου"
 
 #: GTG/plugins/export/export_templates/description_textual.py:18
 msgid "Text-only"
-msgstr ""
+msgstr "Μόνο κείμενο"
 
 #: GTG/plugins/export/export_templates/description_textual.py:19
 msgid "A template to create a simple text file with some tasks."
@@ -46,7 +47,7 @@ msgstr ""
 
 #: GTG/plugins/export/export_templates/description_statusrpt.py:18
 msgid "Status report"
-msgstr ""
+msgstr "Αναφορά κατάστασης"
 
 #: GTG/plugins/export/export_templates/description_statusrpt.py:19
 msgid "A template to create a compact text file listing only task titles."
@@ -91,12 +92,12 @@ msgstr ""
 
 #: GTG/plugins/send_email/sendEmail.py:44
 msgid "Send via email"
-msgstr ""
+msgstr "Αποστολή μέσω email"
 
 #: GTG/plugins/send_email/sendEmail.py:69
 #, python-format
 msgid "Status: %s"
-msgstr ""
+msgstr "Κατάσταση: %s"
 
 #: GTG/plugins/send_email/sendEmail.py:70
 #, python-format
@@ -104,6 +105,8 @@ msgid ""
 "\n"
 "Tags: %s"
 msgstr ""
+"\n"
+"Ετικέτες: %s"
 
 #: GTG/plugins/send_email/sendEmail.py:71
 #, python-format
@@ -112,6 +115,9 @@ msgid ""
 "Subtasks:\n"
 "%s"
 msgstr ""
+"\n"
+"Υποεργασίες:\n"
+"%s"
 
 #: GTG/plugins/send_email/sendEmail.py:73
 #, python-format
@@ -120,15 +126,18 @@ msgid ""
 "Task content:\n"
 "%s"
 msgstr ""
+"\n"
+"Περιεχόμενο εργασίας:\n"
+"%s"
 
 #: GTG/plugins/send_email/sendEmail.py:76
 #, python-format
 msgid "Task: %(task_title)s"
-msgstr ""
+msgstr "Εργασία: %(task_title)s"
 
 #: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:1
 msgid "Set the task's location"
-msgstr ""
+msgstr "Ορίστε την τοποθεσία της εργασίας"
 
 #: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:2
 msgid "Associate with new tag"
@@ -144,15 +153,15 @@ msgstr ""
 
 #: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:5
 msgid "Use network"
-msgstr ""
+msgstr "Χρήση δικτύου"
 
 #: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:6
 msgid "Use cellphone"
-msgstr ""
+msgstr "Χρήση κινητού"
 
 #: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:7
 msgid "Use gps"
-msgstr ""
+msgstr "Χρήση gps"
 
 #: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:8
 msgid "<b>Location Determination Method</b>"
@@ -192,7 +201,7 @@ msgstr ""
 
 #: GTG/plugins/tomboy/tomboy.py:121
 msgid "Add Tomboy note"
-msgstr ""
+msgstr "Προσθήκη σημείωσης Tomboy"
 
 #: GTG/plugins/tomboy/tomboy.py:194
 #, python-format
@@ -216,12 +225,12 @@ msgstr ""
 #: GTG/tests/test_dates.py:52 GTG/tests/test_dates.py:59 GTG/core/search.py:93
 #: GTG/tools/dates.py:38 GTG/tools/dates.py:46
 msgid "now"
-msgstr ""
+msgstr "τώρα"
 
 #: GTG/tests/test_dates.py:53 GTG/tests/test_dates.py:60 GTG/core/search.py:94
 #: GTG/tools/dates.py:39 GTG/tools/dates.py:48
 msgid "soon"
-msgstr ""
+msgstr "σύντομα"
 
 #: GTG/tests/test_dates.py:54 GTG/tools/dates.py:50
 msgid "later"
@@ -235,15 +244,15 @@ msgstr ""
 
 #: GTG/backends/backend_identica.py:54
 msgid "Identi.ca"
-msgstr ""
+msgstr "Identi.ca"
 
 #: GTG/backends/backend_identica.py:58
 msgid "Imports your identi.ca  messages into your GTG "
-msgstr ""
+msgstr "Εσαγωγή μηνυμάτων από το identi.ca στο GTG "
 
 #: GTG/backends/backend_gnote.py:42
 msgid "Gnote"
-msgstr ""
+msgstr "Gnote"
 
 #: GTG/backends/backend_gnote.py:46
 msgid ""
@@ -255,7 +264,7 @@ msgstr ""
 
 #: GTG/backends/backend_rtm.py:54
 msgid "Remember The Milk"
-msgstr ""
+msgstr "Remember The Milk"
 
 #: GTG/backends/backend_rtm.py:58
 msgid ""
@@ -265,18 +274,24 @@ msgid ""
 "Note: This product uses the Remember The Milk API but is not endorsed or "
 "certified by Remember The Milk"
 msgstr ""
+"Αυτή η υπηρεσία συγχρονίζει τις εργασίες σας με την υπηρεσία "
+"RememberTheMilk:\n"
+"\t\thttp://rememberthemilk.com\n"
+"\n"
+"Σημείωση: Αυτό το προϊόν χρησιμοποιεί το Remember The Milk API αλλά δεν "
+"είναι ενεκριμένο ή πιστοποιημένο από την Remember The Milk"
 
 #: GTG/backends/backend_twitter.py:54
 msgid "Twitter"
-msgstr ""
+msgstr "Twitter"
 
 #: GTG/backends/backend_twitter.py:58
 msgid "Imports your twitter  messages into your GTG "
-msgstr ""
+msgstr "Εισαγωγή μηνυμάτων από το twitter στο GTG "
 
 #: GTG/backends/backend_tomboy.py:41
 msgid "Tomboy"
-msgstr ""
+msgstr "Tomboy"
 
 #: GTG/backends/backend_tomboy.py:45
 msgid ""
@@ -288,7 +303,7 @@ msgstr ""
 
 #: GTG/backends/backend_mantis.py:42
 msgid "MantisBT"
-msgstr ""
+msgstr "MantisBT"
 
 #: GTG/backends/backend_mantis.py:46
 msgid ""
@@ -328,7 +343,7 @@ msgstr ""
 
 #: GTG/backends/backend_localfile.py:61
 msgid "Local File"
-msgstr ""
+msgstr "Τοπικό Αρχείο"
 
 #: GTG/backends/backend_localfile.py:66
 msgid "Your tasks are saved in a text file (XML format). "
@@ -336,7 +351,7 @@ msgstr ""
 
 #: GTG/backends/backend_launchpad.py:53
 msgid "Launchpad"
-msgstr ""
+msgstr "Launchpad"
 
 #: GTG/backends/backend_launchpad.py:57
 msgid ""
@@ -356,7 +371,7 @@ msgstr ""
 
 #: GTG/backends/backend_launchpad.py:244
 msgid "Bug"
-msgstr ""
+msgstr "Σφάλμα"
 
 #: GTG/backends/backend_launchpad.py:329
 msgid "Link to bug: "
@@ -372,15 +387,15 @@ msgstr ""
 
 #: GTG/core/plugins/__init__.py:34
 msgid "The plugin can not be loaded"
-msgstr ""
+msgstr "Αδυναμία φόρτωσης προσθέτου"
 
 #: GTG/core/plugins/__init__.py:35
 msgid "Some python modules are missing"
-msgstr ""
+msgstr "Μερικά αρθρώματα της python λείπουν"
 
 #: GTG/core/plugins/__init__.py:36
 msgid "Please install the following python modules:"
-msgstr ""
+msgstr "Παρακαλώ εγκαταστήστε τα παρακάτω αρθρώματα της python:"
 
 #: GTG/core/plugins/__init__.py:38
 msgid "Some remote dbus objects are missing."
@@ -388,7 +403,7 @@ msgstr ""
 
 #: GTG/core/plugins/__init__.py:39
 msgid "Please start the following applications:"
-msgstr ""
+msgstr "Παρακαλώ εκκινήστε τις παρακάτω εφαρμογές:"
 
 #: GTG/core/plugins/__init__.py:41
 msgid "Some modules and remote dbus objects are missing."
@@ -396,11 +411,11 @@ msgstr ""
 
 #: GTG/core/plugins/__init__.py:42
 msgid "Please install or start the following components:"
-msgstr ""
+msgstr "Παρακαλώ εγκαταστήστε ή εκκινήστε τα παρακάτω συστατικά:"
 
 #: GTG/core/plugins/__init__.py:44
 msgid "Unknown error while loading the plugin."
-msgstr ""
+msgstr "Άγνωστο σφάλμα κατά την φόρτωση του πρόσθετου."
 
 #: GTG/core/plugins/__init__.py:45
 msgid "Very helpful message, isn't it? Please report a bug."
@@ -408,7 +423,7 @@ msgstr ""
 
 #: GTG/core/firstrun_tasks.py:10
 msgid "Getting started with GTG"
-msgstr ""
+msgstr "Έναρξη με το GTG"
 
 #: GTG/core/firstrun_tasks.py:11
 msgid ""
@@ -451,7 +466,7 @@ msgstr ""
 
 #: GTG/core/firstrun_tasks.py:37
 msgid "Learn how to use subtasks"
-msgstr ""
+msgstr "Εκμάθηση χρήσης υποεργασιών"
 
 #: GTG/core/firstrun_tasks.py:38
 msgid ""
@@ -471,7 +486,7 @@ msgstr ""
 
 #: GTG/core/firstrun_tasks.py:49
 msgid "Learn how to use tags"
-msgstr ""
+msgstr "Εκμάθηση χρήσης ετικετών"
 
 #: GTG/core/firstrun_tasks.py:50
 msgid ""
@@ -505,7 +520,7 @@ msgstr ""
 
 #: GTG/core/firstrun_tasks.py:67
 msgid "Learn how to use the Workview"
-msgstr ""
+msgstr "Εκμάθηση χρήσης Προβολής Εργασιών"
 
 #: GTG/core/firstrun_tasks.py:68
 msgid ""
@@ -530,7 +545,7 @@ msgstr ""
 
 #: GTG/core/firstrun_tasks.py:83
 msgid "Learn how to use Plugins"
-msgstr ""
+msgstr "Εκμάθηση χρήσης Πρόσθετων"
 
 #: GTG/core/firstrun_tasks.py:84
 msgid ""
@@ -544,7 +559,7 @@ msgstr ""
 
 #: GTG/core/firstrun_tasks.py:93
 msgid "Reporting bugs"
-msgstr ""
+msgstr "Αναφορά σφαλμάτων"
 
 #: GTG/core/firstrun_tasks.py:94
 msgid ""
@@ -563,7 +578,7 @@ msgstr ""
 
 #: GTG/core/firstrun_tasks.py:107
 msgid "Learn how to use the Quick Add Entry"
-msgstr ""
+msgstr "Εκμάθηση χρήσης Γρήγορης Προσθήκης Καταχώρισης"
 
 #: GTG/core/firstrun_tasks.py:108
 msgid ""
@@ -609,23 +624,23 @@ msgstr ""
 
 #: GTG/core/search.py:87
 msgid "or"
-msgstr ""
+msgstr "ή"
 
 #: GTG/core/search.py:88
 msgid "after"
-msgstr ""
+msgstr "μετά"
 
 #: GTG/core/search.py:89
 msgid "before"
-msgstr ""
+msgstr "πριν"
 
 #: GTG/core/search.py:90 GTG/tools/dates.py:238
 msgid "today"
-msgstr ""
+msgstr "σήμερα"
 
 #: GTG/core/search.py:91 GTG/tools/dates.py:240
 msgid "tomorrow"
-msgstr ""
+msgstr "αύριο"
 
 #: GTG/core/search.py:92
 msgid "nodate"
@@ -633,84 +648,84 @@ msgstr ""
 
 #: GTG/core/search.py:96
 msgid "notag"
-msgstr ""
+msgstr "χωρις ετικέτα"
 
-#: GTG/core/task.py:55
+#: GTG/core/task.py:53
 msgid "My new task"
-msgstr ""
+msgstr "Η νέα μου εργασία"
 
-#: GTG/core/task.py:164
+#: GTG/core/task.py:154
 msgid "tags"
-msgstr ""
+msgstr "ετικέτες"
 
-#: GTG/core/task.py:164
+#: GTG/core/task.py:154
 msgid "tag"
-msgstr ""
+msgstr "ετικέτα"
 
-#: GTG/core/task.py:169
+#: GTG/core/task.py:159
 msgid "defer"
 msgstr ""
 
-#: GTG/core/task.py:169
+#: GTG/core/task.py:159
 msgid "start"
-msgstr ""
+msgstr "έναρξη"
 
-#: GTG/core/task.py:175
+#: GTG/core/task.py:165
 msgid "due"
-msgstr ""
+msgstr "λήξη"
 
 #: GTG/core/treefactory.py:79
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:70
 msgid "All tasks"
-msgstr ""
+msgstr "Όλες οι εργασίες"
 
 #: GTG/core/treefactory.py:90
 msgid "Tasks with no tags"
-msgstr ""
+msgstr "Εργασίες χωρίς ετικέτες"
 
-#: GTG/core/treefactory.py:102 GTG/gtk/browser/browser.py:1561
+#: GTG/core/treefactory.py:102 GTG/gtk/browser/browser.py:1495
 msgid "Search"
-msgstr ""
+msgstr "Αναζήτηση"
 
 #: GTG/tools/dates.py:242
 msgid "next week"
-msgstr ""
+msgstr "επόμενη εβδομάδα"
 
 #: GTG/tools/dates.py:244
 msgid "next month"
-msgstr ""
+msgstr "επόμενος μήνας"
 
 #: GTG/tools/dates.py:246
 msgid "next year"
-msgstr ""
+msgstr "επόμενος χρόνος"
 
 #: GTG/tools/dates.py:251
 msgid "Monday"
-msgstr ""
+msgstr "Δευτέρα"
 
 #: GTG/tools/dates.py:252
 msgid "Tuesday"
-msgstr ""
+msgstr "Τρίτη"
 
 #: GTG/tools/dates.py:253
 msgid "Wednesday"
-msgstr ""
+msgstr "Τετάρτη"
 
 #: GTG/tools/dates.py:254
 msgid "Thursday"
-msgstr ""
+msgstr "Πέμπτη"
 
 #: GTG/tools/dates.py:255
 msgid "Friday"
-msgstr ""
+msgstr "Παρασκευή"
 
 #: GTG/tools/dates.py:256
 msgid "Saturday"
-msgstr ""
+msgstr "Σάββατο"
 
 #: GTG/tools/dates.py:257
 msgid "Sunday"
-msgstr ""
+msgstr "Κυριακή"
 
 #: GTG/tools/dates.py:294
 msgid "Today"
@@ -720,8 +735,8 @@ msgstr "Σήμερα"
 #, python-format
 msgid "Yesterday"
 msgid_plural "%(days)d days ago"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Χθές"
+msgstr[1] "%(days)d ημέρες πριν"
 
 #: GTG/tools/dates.py:300
 #, python-format
@@ -734,49 +749,54 @@ msgstr[1] "Σε %(days)d ημέρες"
 msgid "gtg is already running!"
 msgstr ""
 
+#: GTG/info.py:33
+msgid "GTG is a personal organizer for the GNOME desktop environment."
+msgstr ""
+"Το GTG είναι ένα προσωπικό organizer για το περιβάλλον εργασίας GNOME."
+
 #: GTG/gtk/backends_dialog/parameters_ui/pathui.py:52
 msgid "Filename:"
-msgstr ""
+msgstr "Όνομα αρχείου:"
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:63
 msgid "Import tags"
-msgstr ""
+msgstr "Εισαγωγή ετικετών"
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:64
 msgid "All tags"
-msgstr ""
+msgstr "Όλες οι ετικέτες"
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:65
 msgid "Just these tags:"
-msgstr ""
+msgstr "Μόνο αυτές τις ετικέτες:"
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:69
 msgid "Tags to sync"
-msgstr ""
+msgstr "Ετικέτες προς συγχρονισμό"
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:71
 msgid "Tasks with these tags:"
-msgstr ""
+msgstr "Εργασίες με αυτές τις ετικέτες:"
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:76
 msgid "Username"
-msgstr ""
+msgstr "Όνομα χρήστη"
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:82
 msgid "Service URL"
-msgstr ""
+msgstr "URL υπηρεσίας"
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:86
 msgid "Import tasks from @ replies "
-msgstr ""
+msgstr "Εισαγωγή εργασιών από τις @ απαντήσεις "
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:91
 msgid "Import tasks from direct messages"
-msgstr ""
+msgstr "Είσοδος εργασιών από τα άμεσα μηνύματα"
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:95
 msgid "Import tasks from your tweets"
-msgstr ""
+msgstr "Εισαγωγή εργασιών από τα tweets σας"
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:99
 msgid "Tag your GTG tasks with the bug tags"
@@ -788,25 +808,25 @@ msgstr ""
 
 #: GTG/gtk/backends_dialog/parameters_ui/passwordui.py:50
 msgid "Password:"
-msgstr ""
+msgstr "Συνθηματικό:"
 
 #: GTG/gtk/backends_dialog/parameters_ui/periodui.py:51
 msgid "Check for new tasks every"
-msgstr ""
+msgstr "Έλεγχος για νέες εργασίες κάθε"
 
 #: GTG/gtk/backends_dialog/parameters_ui/periodui.py:96
 msgid " minute"
 msgid_plural " minutes"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] " λεπτό"
+msgstr[1] " λεπτά"
 
 #: GTG/gtk/backends_dialog/addpanel.py:75
 msgid "Select synchronization service:"
-msgstr ""
+msgstr "Επιλογή υπηρεσίας συγχρονισμού:"
 
 #: GTG/gtk/backends_dialog/addpanel.py:179
 msgid "Syncing is <span color=\"red\">disabled</span>"
-msgstr ""
+msgstr "Ο συγχρονισμός είναι <span color=\"red\">απενεργοποιημένος</span>"
 
 #: GTG/gtk/backends_dialog/addpanel.py:185
 msgid "Author"
@@ -844,11 +864,11 @@ msgstr[1] ""
 
 #: GTG/gtk/backends_dialog/configurepanel.py:182
 msgid "Disable syncing"
-msgstr ""
+msgstr "Απενεργοποίηση συγχρονισμού"
 
 #: GTG/gtk/backends_dialog/configurepanel.py:184
 msgid "Enable syncing"
-msgstr ""
+msgstr "Ενεργοποίηση συγχρονισμού"
 
 #: GTG/gtk/backends_dialog/configurepanel.py:192
 msgid "This is the default synchronization service"
@@ -856,7 +876,7 @@ msgstr ""
 
 #: GTG/gtk/backends_dialog/configurepanel.py:195
 msgid "Syncing is enabled."
-msgstr ""
+msgstr "Ο συγχρονισμός είναι ενεργοποιημένος."
 
 #: GTG/gtk/backends_dialog/configurepanel.py:197
 msgid "Syncing is <span color=\"red\">disabled</span>."
@@ -864,7 +884,7 @@ msgstr ""
 
 #: GTG/gtk/preferences.glade.h:1
 msgid "Getting Things GNOME! Preferences"
-msgstr ""
+msgstr "Προτιμήσεις Getting Things GNOME!"
 
 #: GTG/gtk/preferences.glade.h:2
 msgid "Start Getting Things GNOME! on every login"
@@ -872,47 +892,51 @@ msgstr ""
 
 #: GTG/gtk/preferences.glade.h:3
 msgid "<b>Startup</b>"
-msgstr ""
+msgstr "<b>Εκκίνηση</b>"
 
 #: GTG/gtk/preferences.glade.h:4
 msgid "Show description preview in the task list."
 msgstr ""
 
 #: GTG/gtk/preferences.glade.h:5
-msgid "Hide closed tasks older than "
+msgid "Show background colors of tasks"
 msgstr ""
 
 #: GTG/gtk/preferences.glade.h:6
-msgid "<b>Task Browser</b>"
+msgid "Hide closed tasks older than "
 msgstr ""
 
 #: GTG/gtk/preferences.glade.h:7
-msgid "Check spelling"
+msgid "<b>Task Browser</b>"
 msgstr ""
 
 #: GTG/gtk/preferences.glade.h:8
+msgid "Check spelling"
+msgstr "Ορθογραφικός έλεγχος"
+
+#: GTG/gtk/preferences.glade.h:9
 msgid "<b>Task Editor</b>"
 msgstr ""
 
-#: GTG/gtk/preferences.glade.h:9
-msgid "General"
-msgstr ""
-
 #: GTG/gtk/preferences.glade.h:10
+msgid "General"
+msgstr "Γενικά"
+
+#: GTG/gtk/preferences.glade.h:11
 msgid "Active _Plugins:"
 msgstr ""
 
-#: GTG/gtk/preferences.glade.h:11
-msgid "_About Plugin"
-msgstr ""
-
 #: GTG/gtk/preferences.glade.h:12
-msgid "Plugins"
-msgstr ""
+msgid "_About Plugin"
+msgstr "_Περί Πρόσθετου"
 
 #: GTG/gtk/preferences.glade.h:13
+msgid "Plugins"
+msgstr "Πρόσθετα"
+
+#: GTG/gtk/preferences.glade.h:14
 msgid "<b>Dependencies</b>"
-msgstr ""
+msgstr "<b>Εξαρτήσεις</b>"
 
 #: GTG/gtk/delete_dialog.py:89
 msgid ""
@@ -937,8 +961,8 @@ msgstr[1] ""
 #: GTG/gtk/delete_dialog.py:103
 msgid "Permanently remove task"
 msgid_plural "Permanently remove tasks"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Μόνιμη αφαίρεση εργασίας"
+msgstr[1] "Μόνιμη αφαίρεση εργασιών"
 
 #: GTG/gtk/delete_dialog.py:114
 #, python-format
@@ -946,6 +970,8 @@ msgid ""
 "\n"
 "And %d more tasks"
 msgstr ""
+"\n"
+"Και %d περισσότερων εργασιών"
 
 #: GTG/gtk/preferences.py:38
 msgid "Click on a plugin name to view its description here."
@@ -978,32 +1004,32 @@ msgstr ""
 
 #: GTG/gtk/browser/custominfobar.py:106
 msgid "Ignore"
-msgstr ""
+msgstr "Παράβλεψη"
 
 #: GTG/gtk/browser/custominfobar.py:114 GTG/gtk/browser/custominfobar.py:119
 msgid "Ok"
-msgstr ""
+msgstr "ΟΚ"
 
 #: GTG/gtk/browser/custominfobar.py:140
 msgid "Confirm"
-msgstr ""
+msgstr "Επιβεβαίωση"
 
 #: GTG/gtk/browser/custominfobar.py:142
 msgid "Continue"
-msgstr ""
+msgstr "Συνέχεια"
 
 #: GTG/gtk/browser/treeview_factory.py:280
-#: GTG/gtk/browser/taskbrowser.glade.h:33
+#: GTG/gtk/browser/taskbrowser.glade.h:29
 msgid "Tags"
-msgstr ""
+msgstr "Ετικέτες"
 
 #: GTG/gtk/browser/treeview_factory.py:368
 msgid "Start date"
-msgstr ""
+msgstr "Ημερομηνία έναρξης"
 
 #: GTG/gtk/browser/treeview_factory.py:379
 msgid "Due"
-msgstr ""
+msgstr "Λήξη"
 
 #: GTG/gtk/browser/treeview_factory.py:399
 msgid "Closed date"
@@ -1011,112 +1037,112 @@ msgstr ""
 
 #: GTG/gtk/browser/treeview_factory.py:454
 msgid "Title"
-msgstr ""
+msgstr "Τίτλος"
 
-#: GTG/gtk/browser/browser.py:591
+#: GTG/gtk/browser/browser.py:576
 msgid "no active tasks"
-msgstr ""
+msgstr "μη ενεργές εργασίες"
 
-#: GTG/gtk/browser/browser.py:593
+#: GTG/gtk/browser/browser.py:578
 #, python-format
 msgid "%(tasks)d active task"
 msgid_plural "%(tasks)d active tasks"
 msgstr[0] ""
 msgstr[1] ""
 
-#: GTG/gtk/browser/browser.py:1559
+#: GTG/gtk/browser/browser.py:1493
 msgid "Add Task"
-msgstr ""
+msgstr "Προσθήκη εργασίας"
 
-#: GTG/gtk/browser/browser.py:1560
+#: GTG/gtk/browser/browser.py:1494
 msgid "Open Task"
-msgstr ""
+msgstr "Άνοιγμα Εργασίας"
 
 #: GTG/gtk/browser/modifytags_dialog.py:38
 msgid "NewTag"
-msgstr ""
+msgstr "Νέα Ετικέτα"
 
-#: GTG/gtk/browser/__init__.py:35 GTG/gtk/browser/taskbrowser.glade.h:29
+#: GTG/gtk/browser/__init__.py:36 GTG/gtk/browser/taskbrowser.glade.h:25
 #: GTG/gtk/editor/__init__.py:31
 msgid "Mark as Done"
-msgstr ""
+msgstr "Σημείωση ως Ολοκληρωμένης"
 
-#: GTG/gtk/browser/__init__.py:36
+#: GTG/gtk/browser/__init__.py:37
 msgid "Mark the selected task as done"
-msgstr ""
+msgstr "Σημείωση της επιλεγμένης εργασίας ως ολοκληρωμένης"
 
-#: GTG/gtk/browser/__init__.py:37 GTG/gtk/editor/__init__.py:32
+#: GTG/gtk/browser/__init__.py:38 GTG/gtk/editor/__init__.py:32
 msgid "Mark as not Done"
-msgstr ""
+msgstr "Σημείωση ως Μη Ολοκληρωμένης"
 
-#: GTG/gtk/browser/__init__.py:38 GTG/gtk/browser/__init__.py:42
+#: GTG/gtk/browser/__init__.py:39 GTG/gtk/browser/__init__.py:43
 msgid "Mark the selected task as to be done"
 msgstr ""
 
-#: GTG/gtk/browser/__init__.py:39 GTG/gtk/browser/taskbrowser.glade.h:30
+#: GTG/gtk/browser/__init__.py:40 GTG/gtk/browser/taskbrowser.glade.h:26
 #: GTG/gtk/editor/__init__.py:33 GTG/gtk/editor/taskeditor.glade.h:3
 msgid "Dismiss"
 msgstr ""
 
-#: GTG/gtk/browser/__init__.py:40
+#: GTG/gtk/browser/__init__.py:41
 msgid "Mark the task as not to be done anymore"
 msgstr ""
 
-#: GTG/gtk/browser/__init__.py:41 GTG/gtk/editor/__init__.py:34
+#: GTG/gtk/browser/__init__.py:42 GTG/gtk/editor/__init__.py:34
 msgid "Undismiss"
 msgstr ""
 
-#: GTG/gtk/browser/__init__.py:43
-msgid "Permanently remove the selected task"
-msgstr ""
-
 #: GTG/gtk/browser/__init__.py:44
+msgid "Permanently remove the selected task"
+msgstr "Μόνιμη αφαίρεση επιλεγμένης εργασίας"
+
+#: GTG/gtk/browser/__init__.py:45
 msgid "Edit the selected task"
-msgstr ""
+msgstr "Επεξεργασία επιλεγμένης εργασίας"
 
-#: GTG/gtk/browser/__init__.py:45 GTG/gtk/browser/taskbrowser.glade.h:4
+#: GTG/gtk/browser/__init__.py:46 GTG/gtk/browser/taskbrowser.glade.h:4
 msgid "Create a new task"
-msgstr ""
+msgstr "Δημιουργία νέας εργασίας"
 
-#: GTG/gtk/browser/__init__.py:46
+#: GTG/gtk/browser/__init__.py:47
 msgid "Create a new subtask"
 msgstr ""
 
-#: GTG/gtk/browser/__init__.py:47
+#: GTG/gtk/browser/__init__.py:48
 msgid "Display only the currently actionable tasks"
 msgstr ""
 
-#: GTG/gtk/browser/__init__.py:48
+#: GTG/gtk/browser/__init__.py:49
 msgid "Hide this tag from the workview"
 msgstr ""
 
-#: GTG/gtk/browser/__init__.py:49
+#: GTG/gtk/browser/__init__.py:50
 msgid "Show this tag in the workview"
 msgstr ""
 
-#: GTG/gtk/browser/__init__.py:50
+#: GTG/gtk/browser/__init__.py:51
 msgid "You can create, open or filter your tasks here"
 msgstr ""
 
-#: GTG/gtk/browser/__init__.py:51
+#: GTG/gtk/browser/__init__.py:52
 msgid "Clear"
-msgstr ""
+msgstr "Εκκαθάριση"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:1
 msgid "Getting Things Gnome!"
-msgstr ""
+msgstr "Getting Things Gnome!"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:2
 msgid "_Tasks"
-msgstr ""
+msgstr "_Εργασίες"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:3
 msgid "New _Task"
-msgstr ""
+msgstr "Νέα _Εργασία"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:5
 msgid "New _Subtask"
-msgstr ""
+msgstr "Νέα _Υποεργασία"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:6
 msgid "Mark as _Done"
@@ -1128,119 +1154,103 @@ msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:8
 msgid "_Edit"
-msgstr ""
+msgstr "_Επεξεργασία"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:9
 msgid "_View"
-msgstr ""
+msgstr "_Προβολή"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:10
 msgid "_Work View"
 msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:11
-msgid "_Background Colors"
-msgstr ""
-
-#: GTG/gtk/browser/taskbrowser.glade.h:12
 msgid "_Tags Sidebar"
 msgstr ""
 
-#: GTG/gtk/browser/taskbrowser.glade.h:13
+#: GTG/gtk/browser/taskbrowser.glade.h:12
 msgid "_Closed Tasks Pane"
 msgstr ""
 
-#: GTG/gtk/browser/taskbrowser.glade.h:14
+#: GTG/gtk/browser/taskbrowser.glade.h:13
 msgid "T_oolbar"
 msgstr ""
 
-#: GTG/gtk/browser/taskbrowser.glade.h:15
+#: GTG/gtk/browser/taskbrowser.glade.h:14
 msgid "_Quick Add Entry"
-msgstr ""
+msgstr "Προσθήκη _Γρήγορης Καταχώρησης"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:15
+msgid "_Plugins"
+msgstr "_Πρόσθετα"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:16
-msgid "_Plugins"
-msgstr ""
+msgid "_Help"
+msgstr "_Βοήθεια"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:17
-msgid "_Help"
-msgstr ""
-
-#: GTG/gtk/browser/taskbrowser.glade.h:18
-msgid "Get _Help Online"
-msgstr ""
-
-#: GTG/gtk/browser/taskbrowser.glade.h:19
 msgid "Open GTG documentation in your web browser"
 msgstr ""
 
-#: GTG/gtk/browser/taskbrowser.glade.h:20
-msgid "_Translate GTG"
-msgstr ""
-
-#: GTG/gtk/browser/taskbrowser.glade.h:21
+#: GTG/gtk/browser/taskbrowser.glade.h:18
 msgid "Help to translate GTG into your language"
 msgstr ""
 
+#: GTG/gtk/browser/taskbrowser.glade.h:19
+msgid "Report a problem to GTG developers"
+msgstr "Αναφορά προβλήματος στους προγραμματιστές του GTG"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:20
+msgid "New Task"
+msgstr "Νέα εργασία"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:21
+msgid "New Subtask"
+msgstr "Νέα υποεργασία"
+
 #: GTG/gtk/browser/taskbrowser.glade.h:22
-msgid "_Report a Problem"
-msgstr ""
+msgid "Edit"
+msgstr "Επεξεργασία"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:23
-msgid "Report a problem to GTG developers"
-msgstr ""
+msgid "Undo"
+msgstr "Αναίρεση"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:24
-msgid "New Task"
-msgstr ""
+msgid "Redo"
+msgstr "Ακύρωση αναίρεσης"
 
-#: GTG/gtk/browser/taskbrowser.glade.h:25
-msgid "New Subtask"
-msgstr ""
-
-#: GTG/gtk/browser/taskbrowser.glade.h:26
-msgid "Edit"
-msgstr ""
-
-#: GTG/gtk/browser/taskbrowser.glade.h:27
-msgid "Undo"
-msgstr ""
+#: GTG/gtk/browser/taskbrowser.glade.h:27 GTG/gtk/editor/taskeditor.glade.h:4
+msgid "Delete"
+msgstr "Διαγραφή"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:28
-msgid "Redo"
-msgstr ""
+msgid "Work View"
+msgstr "Προβολή Εργασιών"
 
-#: GTG/gtk/browser/taskbrowser.glade.h:31 GTG/gtk/editor/taskeditor.glade.h:4
-msgid "Delete"
-msgstr ""
+#: GTG/gtk/browser/taskbrowser.glade.h:30
+msgid "Tasks"
+msgstr "Εργασίες"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:31
+msgid "About GTG!"
+msgstr "Περί GTG!"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:32
-msgid "Work View"
-msgstr ""
-
-#: GTG/gtk/browser/taskbrowser.glade.h:34
-msgid "Tasks"
-msgstr ""
-
-#: GTG/gtk/browser/taskbrowser.glade.h:35
-msgid "About GTG!"
-msgstr ""
-
-#: GTG/gtk/browser/taskbrowser.glade.h:36
 msgid "Copyright © 2008-2012 Lionel Dricot, Bertrand Rousseau"
-msgstr ""
+msgstr "Πνευματικά Δικαιώματα © 2008-2012 Lionel Dricot, Bertrand Rousseau"
 
-#: GTG/gtk/browser/taskbrowser.glade.h:37
+#: GTG/gtk/browser/taskbrowser.glade.h:33
 msgid ""
 "\n"
 "Getting Things Gnome! is an organizer for the GNOME desktop environment."
 msgstr ""
 
-#: GTG/gtk/browser/taskbrowser.glade.h:39
+#: GTG/gtk/browser/taskbrowser.glade.h:35
 msgid "GTG website"
-msgstr ""
+msgstr "Ιστοσελίδα GTG"
 
-#: GTG/gtk/browser/taskbrowser.glade.h:40
+#: GTG/gtk/browser/taskbrowser.glade.h:36
 msgid ""
 "Getting Things Gnome! is free software; you can redistribute it and/or "
 "modify it under the terms of the GNU General Public License as published by "
@@ -1257,85 +1267,81 @@ msgid ""
 "51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA."
 msgstr ""
 
-#: GTG/gtk/browser/taskbrowser.glade.h:45
+#: GTG/gtk/browser/taskbrowser.glade.h:41
 msgid "Mark as Not Done"
 msgstr ""
 
-#: GTG/gtk/browser/taskbrowser.glade.h:46
+#: GTG/gtk/browser/taskbrowser.glade.h:42
 msgid "Und_ismiss"
 msgstr ""
 
-#: GTG/gtk/browser/taskbrowser.glade.h:47
+#: GTG/gtk/browser/taskbrowser.glade.h:43
 msgid "t_oday"
-msgstr ""
+msgstr "σ_ήμερα"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:44
+msgid "_tomorrow"
+msgstr "_αύριο"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:45
+msgid "next _week"
+msgstr "επόμενη _εβδομάδα"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:46
+msgid "next _month"
+msgstr "επόμενος _μήνας"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:47
+msgid "next _year"
+msgstr "επόμενος _χρόνος"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:48
-msgid "_tomorrow"
-msgstr ""
+msgid "_now"
+msgstr "_τώρα"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:49
-msgid "next _week"
-msgstr ""
+msgid "_soon"
+msgstr "_σύντομα"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:50
-msgid "next _month"
-msgstr ""
-
-#: GTG/gtk/browser/taskbrowser.glade.h:51
-msgid "next _year"
-msgstr ""
-
-#: GTG/gtk/browser/taskbrowser.glade.h:52
-msgid "_now"
-msgstr ""
-
-#: GTG/gtk/browser/taskbrowser.glade.h:53
-msgid "_soon"
-msgstr ""
-
-#: GTG/gtk/browser/taskbrowser.glade.h:54
 msgid "_someday"
 msgstr ""
 
-#: GTG/gtk/browser/taskbrowser.glade.h:55
+#: GTG/gtk/browser/taskbrowser.glade.h:51
 msgid "_clear due date"
 msgstr ""
 
-#: GTG/gtk/browser/taskbrowser.glade.h:56
+#: GTG/gtk/browser/taskbrowser.glade.h:52
 msgid "_clear start date"
 msgstr ""
 
-#: GTG/gtk/browser/taskbrowser.glade.h:57
-msgid "Reset Color"
-msgstr ""
-
-#: GTG/gtk/browser/taskbrowser.glade.h:58
+#: GTG/gtk/browser/taskbrowser.glade.h:53
 msgid "Add a subtask"
-msgstr ""
+msgstr "Προσθήκη υποεργασίας"
 
-#: GTG/gtk/browser/taskbrowser.glade.h:59
+#: GTG/gtk/browser/taskbrowser.glade.h:54
 msgid "_Set start date"
 msgstr ""
 
-#: GTG/gtk/browser/taskbrowser.glade.h:60
+#: GTG/gtk/browser/taskbrowser.glade.h:55
 msgid "Set due date"
 msgstr ""
 
-#: GTG/gtk/browser/taskbrowser.glade.h:61
+#: GTG/gtk/browser/taskbrowser.glade.h:56
 msgid "Modify Tags..."
-msgstr ""
+msgstr "Τροποποίηση Ετικετών..."
 
 #: GTG/gtk/browser/modifytags_dialog.glade.h:1
 msgid "Modify Tags"
-msgstr ""
+msgstr "Τροποποίηση Ετικετών"
 
 #: GTG/gtk/browser/modifytags_dialog.glade.h:2
 msgid "Add/Remove Tags"
-msgstr ""
+msgstr "Προσθήκη/Αφαίρεση Ετικετών"
 
 #: GTG/gtk/browser/modifytags_dialog.glade.h:3
 msgid "Cancel"
-msgstr ""
+msgstr "Άκυρο"
 
 #: GTG/gtk/browser/modifytags_dialog.glade.h:4
 msgid "Enter the name of the tag(s) you wish to add or remove:"
@@ -1353,6 +1359,14 @@ msgstr ""
 
 #: GTG/gtk/browser/modifytags_dialog.glade.h:8
 msgid "Apply to subtasks"
+msgstr "Εφαρμογή στις υποεργασίες"
+
+#: GTG/gtk/browser/tag_context_menu.py:44
+msgid "Set color..."
+msgstr "Ορισμός χρώματος..."
+
+#: GTG/gtk/browser/tag_context_menu.py:48
+msgid "Reset color"
 msgstr ""
 
 #: GTG/gtk/editor/editor.py:295
@@ -1373,12 +1387,12 @@ msgstr[1] ""
 #, python-format
 msgid "Due tomorrow!"
 msgid_plural "%(days)d days left"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Λήξη αύριο!"
+msgstr[1] "%(days)d ημέρες έμειναν"
 
 #: GTG/gtk/editor/editor.py:307
 msgid "Due today!"
-msgstr ""
+msgstr "Λήξη σήμερα!"
 
 #: GTG/gtk/editor/editor.py:310
 #, python-format
@@ -1389,11 +1403,11 @@ msgstr[1] ""
 
 #: GTG/gtk/editor/__init__.py:36
 msgid "Mark this task as done"
-msgstr ""
+msgstr "Σήμανση της εργασίας ως ολοκληρωμένης"
 
 #: GTG/gtk/editor/__init__.py:37 GTG/gtk/editor/__init__.py:39
 msgid "Mark this task as to be done"
-msgstr ""
+msgstr "Σήμανση της εργασίας προς ολοκλήρωση"
 
 #: GTG/gtk/editor/__init__.py:38
 msgid "Mark this task as not to be done anymore"
@@ -1401,31 +1415,31 @@ msgstr ""
 
 #: GTG/gtk/editor/__init__.py:40
 msgid "Permanently remove this task"
-msgstr ""
+msgstr "Μόνιμη αφαίρεση της εργασίας"
 
 #: GTG/gtk/editor/__init__.py:41
 msgid "Insert a subtask in this task"
-msgstr ""
+msgstr "Εισαγωγή υποεργασίας στην εργασία"
 
 #: GTG/gtk/editor/__init__.py:42
 msgid "Insert a tag in this task"
-msgstr ""
+msgstr "Εισαγωγή νέας ετικέτας στην εργασία"
 
 #: GTG/gtk/editor/taskeditor.glade.h:1
 msgid "Task"
-msgstr ""
+msgstr "Εργασία"
 
 #: GTG/gtk/editor/taskeditor.glade.h:2
 msgid "Mark Done"
-msgstr ""
+msgstr "Σήμανση Ολοκληρωμένου"
 
 #: GTG/gtk/editor/taskeditor.glade.h:5
 msgid "Insert subtask"
-msgstr ""
+msgstr "Εισαγωγή υποεργασίας"
 
 #: GTG/gtk/editor/taskeditor.glade.h:6
 msgid "Insert tag"
-msgstr ""
+msgstr "Εισαγωγή ετικέτας"
 
 #: GTG/gtk/editor/taskeditor.glade.h:7
 msgid "Starting on"
@@ -1433,7 +1447,7 @@ msgstr ""
 
 #: GTG/gtk/editor/taskeditor.glade.h:8
 msgid "Due for"
-msgstr ""
+msgstr "Λήξη για"
 
 #: GTG/gtk/editor/taskeditor.glade.h:9
 msgid "Closed on"
@@ -1441,11 +1455,11 @@ msgstr ""
 
 #: GTG/gtk/editor/taskeditor.glade.h:10
 msgid "Now"
-msgstr ""
+msgstr "Τώρα"
 
 #: GTG/gtk/editor/taskeditor.glade.h:11
 msgid "Soon"
-msgstr ""
+msgstr "Σύντομα"
 
 #: GTG/gtk/editor/taskeditor.glade.h:12
 msgid "Someday"
@@ -1453,33 +1467,35 @@ msgstr ""
 
 #: GTG/gtk/deletion.glade.h:1
 msgid "Confirm task deletion"
-msgstr ""
+msgstr "Επιβεβαίωση διαγραφής εργασίας"
 
 #: GTG/gtk/crashhandler.py:57
 msgid ""
 "We're terribly sorry. Could you help us fix the problem by reporting the "
 "crash?"
 msgstr ""
+"Σας ζητούμε συγγνώμη. Θέλετε να μας βοηθήσετε να διορθώσουμε το πρόβλημα "
+"αναφέροντας την κατάρρευση;"
 
 #: GTG/gtk/crashhandler.py:173
 msgid "An error has occurred"
-msgstr ""
+msgstr "Προκλήθηκε ένα σφάλμα"
 
 #: GTG/gtk/crashhandler.py:187
 msgid "It looks like an error has occurred."
-msgstr ""
+msgstr "Φαίνεται ότι προκλήθηκε σφάλμα."
 
 #: GTG/gtk/crashhandler.py:223
 msgid "_Details"
-msgstr ""
+msgstr "_Λεπτομέρειες"
 
 #: GTG/gtk/crashhandler.py:230
 msgid "_Report this problem..."
-msgstr ""
+msgstr "_Αναφορά αυτού του προβλήματος..."
 
 #: GTG/gtk/crashhandler.py:234
 msgid "_Ignore the error"
-msgstr ""
+msgstr "_Παράβλεψη σφάλματος"
 
 #: GTG/gtk/crashhandler.py:336
 msgid ""
