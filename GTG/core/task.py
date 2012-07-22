@@ -247,33 +247,59 @@ class Task(TreeNode):
         self.last_modified = modified
 
     def set_due_date(self, fulldate):
-        self.due_date=Date(fulldate)
-        if self.get_start_date() > Date(fulldate) and self.get_start_date() != Date.no_date():
+        """Defines the task's due date."""
+        def get_due_date_constraint():
+            """ Returns the most urgent due date constraint, following
+                parents' due dates. Return Date.no_date() if no constraint
+                is applied. """
+            cur_date = Date.no_date()
+            for par_id in self.get_parents():
+                par = self.req.get_task(par_id)
+                if par.get_due_date() != Date.no_date() and \
+                   par.get_due_date() < cur_date:
+                    cur_date = par.get_due_date()
+            return cur_date
+        fulldate_obj = Date(fulldate) # caching the conversion
+        self.due_date = fulldate_obj
+        # if the task's start date happens later than the 
+        # new due date, we update it
+        if self.get_start_date() != Date.no_date() and \
+           self.get_start_date() > fulldate_obj:
             self.set_start_date(fulldate)
-        if Date(fulldate)!= Date.no_date():
+        if fulldate_obj != Date.no_date():
+            # if the parent's due date happens before the task's new
+            # due date, we update it
             for par_id in self.parents:
                 par = self.req.get_task(par_id)
-                if par.due_date != Date.no_date() and par.due_date < Date(fulldate):
+                if par.get_due_date() != Date.no_date() and \
+                   par.get_due_date() < fulldate_obj:
                     par.set_due_date(fulldate)
+            # the current task being one of its children's parents, we must
+            # apply the constraints on their due/start dates as well
             for sub_id in self.children:
-                sub=self.req.get_task(sub_id)
-                if sub.due_date > Date(fulldate) and sub.due_date != Date.no_date():
+                sub = self.req.get_task(sub_id)
+                # child's due date is not set, we use the task's new 
+                # due date
+                if sub.get_due_date() == Date.no_date():
                     sub.set_due_date(fulldate)
-                if sub.get_start_date() != Date.no_date() and sub.get_start_date() > Date(fulldate):
+                # child's due date happens later than the task's: we
+                # update it to the task's new due date
+                # (= the new most restrictive)
+                if sub.get_due_date() != Date.no_date() and \
+                   sub.get_due_date() > fulldate_obj:
+                    sub.set_due_date(fulldate)
+                # if the child's start date happens later than
+                # the task's new due date, we update it
+                if sub.get_start_date() != Date.no_date() and \
+                   sub.get_start_date() > fulldate_obj:
                     sub.set_start_date(fulldate)
+        else:
+            self.due_date = get_due_date_constraint()
         self.sync()
 
     def get_due_date(self):
-        """ Due date return the most urgent date of all parents """
-        zedate = self.due_date
-
-        for par in self.get_parents():
-            # compare with the parent's due date
-            pardate = self.req.get_task(par).get_due_date()
-            if pardate and zedate > pardate:
-                zedate = pardate
-
-        return zedate
+        """ Returns the due date, which always respects all constraints """
+        return self.due_date
 
     def set_start_date(self, fulldate):
         self.start_date = Date(fulldate)
