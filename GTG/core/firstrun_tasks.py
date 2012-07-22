@@ -101,8 +101,8 @@ def populate():
 "\n"
 "We sincerely hope you will enjoy using GTG, and thank you for trying it out! "
 "Please send us bug reports and ideas for improvement using this web page: "
-"https://bugs.launchpad.net/gtg If you want to get tips for using GTG or be "
-"informed about the newest features, also visit our blog at "
+"https://bugs.launchpad.net/gtg/+filebug If you want to get tips for using "
+"GTG or be informed about the newest features, also visit our blog at "
 "http://gtg.fritalk.com\n"
 "\n"
 "The GTG team.")
@@ -227,7 +227,7 @@ def populate():
 "probably encounter some bugs will you do.\n"
 "\n"
 "Please, help us improving GTG by reporting them on our Launchpad page:"
-"https://bugs.launchpad.net/gtg\n"
+"https://bugs.launchpad.net/gtg/+filebug\n"
 "\n"
 "We need you to make this software better. Any contribution, any idea is "
 "welcome!\n"
@@ -326,7 +326,14 @@ def populate():
 "delete them (which you can do by right-clicking on them and selecting "
 "&quot;Delete&quot;). That allows you to safely quit GTG without loosing your "
 "search requests. This can be very useful when you use the search features "
-"to identify specific tasks regularly!")
+"to identify specific tasks regularly!\n"
+"\n"
+"GTG search feature is really powerful and accept many parameters that "
+"allows you to search for very specific tasks. For instance, using the search "
+"query &quot;&#64;errands !today&quot;, you can search for tasks with the "
+"&#64;errands tag that must be done today. To learn more about those search "
+"query parameters, you can read the documentation available in GTG's help "
+"(press F1 or use the Help menu to get access to it).")
     task9 = addtask(doc, "8@1", title9, text9, [])
     root.appendChild(task9)
 

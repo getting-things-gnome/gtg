@@ -109,7 +109,7 @@ the search feature behave like it add an implicit logical 'AND' between each ele
 <p>Show tasks with both of the tags @gtg, @writing</p>
 
 <p><em style="strong"><code>@gtg !before 2012-03-01</code></em></p>
-<p>Show GTG tasks with due_date before Marz 1</p>
+<p>Show GTG tasks with due_date before March 1</p>
 
 <p><em style="strong"><code>buy @errands</code></em></p>
 <p>Show errands where I have to buy something</p>
