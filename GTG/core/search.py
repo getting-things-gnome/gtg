@@ -54,7 +54,7 @@ Elements are supposed to be in conjuction, i.e. they are interpreted as::
 Examples of queries:
 '!tomorrow !or !today' => show tasks which are today or tomorrow
 '@gtg @writing' => show tasks with both of the tags @gtg, @writing
-'@gtg !before 2012-03-01' => show GTG tasks with due_date before Marz 1
+'@gtg !before 2012-03-01' => show GTG tasks with due_date before March 1
 'buy @errands' => show errands where I have to buy something
 '!not buy @errands' => show errands without keyword buy
 '!after "next month"' => show tasks after this month
