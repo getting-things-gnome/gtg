@@ -142,9 +142,9 @@ def populate():
     title3 = _("Learn How To Use Tags")
     text3 = _(\
 "In GTG, you use tags to sort your tasks. A tag is a simple word that begins "
-"with &quot;&#64;&quot;.\n"
+"with &quot;@&quot;.\n"
 "\n"
-"Try to type a word beginning with &quot;&#64;&quot; here:\n"
+"Try to type a word beginning with &quot;@&quot; here:\n"
 "\n"
 "Once it becomes yellow, it is a tag! And this tag is now linked to the "
 "task!\n"
@@ -164,9 +164,9 @@ def populate():
 "If you need a more advanced task organization, you can also create a "
 "hierarchy of tags by drag-and-dropping a tag onto another. This is useful "
 "when you want to regroup several tags together and see all related tasks "
-"easily. For instance, if you have two tags &#64;money and &#64;to_pay, and "
-"you drag &#64;to_pay on &#64;money, every task tagged with &#64;to_pay will "
-"also appear when you select &#64;money.")
+"easily. For instance, if you have two tags @money and @to_pay, and "
+"you drag @to_pay on @money, every task tagged with @to_pay will "
+"also appear when you select @money.")
     task3 = addtask(doc, "2@1", title3, text3, [])
     root.appendChild(task3)
 
@@ -194,7 +194,7 @@ def populate():
 "\n"
 "If you use tags, you can right click on a tag in the sidebar and choose "
 "to hide tasks assigned to this particular tag in the Work View. It is very "
-"useful if you have a tag like &quot;&#64;wait&quot; that you use for tasks "
+"useful if you have a tag like &quot;@wait&quot; that you use for tasks "
 "blocked by some external event (i.e. a phone call you wait to receive).\n"
 "\n"
 "And finally, an important note regarding the Work View: since the Work View "
@@ -330,8 +330,8 @@ def populate():
 "\n"
 "GTG search feature is really powerful and accept many parameters that "
 "allows you to search for very specific tasks. For instance, using the search "
-"query &quot;&#64;errands !today&quot;, you can search for tasks with the "
-"&#64;errands tag that must be done today. To learn more about those search "
+"query &quot;@errands !today&quot;, you can search for tasks with the "
+"@errands tag that must be done today. To learn more about those search "
 "query parameters, you can read the documentation available in GTG's help "
 "(press F1 or use the Help menu to get access to it).")
     task9 = addtask(doc, "8@1", title9, text9, [])
