@@ -149,18 +149,18 @@ class CoreConfig(Borg):
     SEP_TAG = "gtg-tags-sep"
     SEARCH_TAG = "search"
 
-    def check_config_file(self,file_path,some):
+    def check_config_file(self,file_path):
         
-        self.file_path=file_path
-	localvar = ConfigObj(str(self.conf_dir) + str(self.file_path))
+	localvar = ConfigObj(self.conf_dir + self.file_path)
 	    
-	try:        
-            
-            self.conf_dict = localvar
+	try:
+            localvar = ConfigObj(self.conf_dir + self.file_path)
+	    self.conf_dict = localvar
                 
 	except configobj.ConfigObjError:
 	    open(self.conf_dir + self.file_path, "w").close()
-	    self.conf_dict = localvar
+	    localvar = ConfigObj(self.conf_dir + self.file_path)
+            self.conf_dict = localvar
  	return localvar
 
     def __init__(self):
@@ -188,7 +188,7 @@ class CoreConfig(Borg):
                 raise Exception("File " + file + \
                             " is a configuration file for gtg, but it "
                             "cannot be read or written. Please check it")
-        self.conf_dict = self.check_config_file(self,'gtg.conf')
+        self.conf_dict = self.check_config_file('gtg.conf')
                 
 	        
         self.task_conf_dict = self.check_config_file(self,'tasks.conf')    
