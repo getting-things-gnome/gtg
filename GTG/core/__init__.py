@@ -151,7 +151,6 @@ class CoreConfig(Borg):
 
     def check_config_file(self,file_path):
         
-	localvar = ConfigObj(self.conf_dir + self.file_path)
 	    
 	try:
             localvar = ConfigObj(self.conf_dir + self.file_path)
