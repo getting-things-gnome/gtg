@@ -84,17 +84,23 @@ class Tag(TreeNode):
         @param att_value: The value of the attribute. Will be converted to a
             string.
         """
+        modified = False
         if att_name == "name":
             raise Set_Name_Attribute_Error(
                 "The name of tag cannot be set manually")
         elif att_name == "parent":
             self.add_parent(att_value)
+            modified = True
         else:
             # Attributes should all be strings.
             val = unicode(str(att_value), "UTF-8")
             self._attributes[att_name] = val
             if self._save:
                 self._save()
+            modified = True
+        if modified:
+            self.modified()
+            self.notify_related_tasks()
 
     def get_attribute(self, att_name):
         """Get the attribute C{att_name}.
@@ -125,6 +131,8 @@ class Tag(TreeNode):
             del self._attributes[att_name]
         if self._save:
             self._save()
+        self.modified()
+        self.notify_related_tasks()
 
     def get_all_attributes(self, butname=False, withparent=False):
         """Return a list of all attribute names.
@@ -151,6 +159,10 @@ class Tag(TreeNode):
         return self.__get_count()
 
     def __get_count(self, tasktree=None):
+        """Returns the number of all related tasks"""
+        # this method purposefully doesn't rely on get_related_tasks()
+        # which does a similar job, in order to benefit from liblarch
+        # optimizations
         if not tasktree:
             tasktree = self.req.get_tasks_tree()
         sp_id = self.get_attribute("special")
@@ -167,6 +179,31 @@ class Tag(TreeNode):
             toreturn = tasktree.get_n_nodes(\
                                 withfilters=[tname], include_transparent=False)
         return toreturn
+
+    def get_related_tasks(self, tasktree=None):
+        """Returns all related tasks node ids"""
+        if not tasktree:
+            tasktree = self.req.get_tasks_tree()
+        sp_id = self.get_attribute("special")
+        if sp_id == "all":
+            toreturn = tasktree.get_nodes(\
+                    withfilters=['active'], include_transparent=False)
+        elif sp_id == "notag":
+            toreturn = tasktree.get_nodes(\
+                            withfilters=['notag'], include_transparent=False)
+        elif sp_id == "sep" :
+            toreturn = []
+        else:
+            tname = self.get_name()
+            toreturn = tasktree.get_nodes(\
+                                withfilters=[tname], include_transparent=False)
+        return toreturn
+
+    def notify_related_tasks(self):
+        """Notify changes to all related tasks"""
+        for task_id in self.get_related_tasks():
+            my_task = self.req.get_task(task_id)
+            my_task.modified()
 
     #is it useful to keep the tag in the tagstore.
     #if no attributes and no tasks, it is not useful.
