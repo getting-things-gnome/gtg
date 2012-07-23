@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python2
 # -*- coding: UTF-8 -*-
 # Copyright © 2009 Luca Falavigna <dktrkranz@debian.org>
 #

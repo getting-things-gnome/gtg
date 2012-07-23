@@ -32,6 +32,7 @@
     * Fixes for bugs #906516, #1002160 (task urgency color plugin), by Wolter Hellmund
     * Fix for bug #1001012: Notification area icon should change color when there are urgent tasks, by Antonio Roquentin
     * Saner implementation of set_due_date
+    * Conform to PEP394 (use python2 instead of python)
 
 2012-02-13 Getting Things GNOME! 0.2.9
     * Big refractorization of code, now using liblarch
