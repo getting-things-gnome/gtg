@@ -22,7 +22,7 @@
 
 import sys
 
-REQUIRED_LIBLARCH_API = "1.0"
+REQUIRED_LIBLARCH_API = "1.2"
 GIT_CMD = "git clone https://github.com/liblarch/liblarch ../liblarch"
 
 def import_liblarch(use_local=False):
@@ -81,7 +81,7 @@ you don't have stale copies of liblarch in your import path
 but your GTG copy need liblarch API version %s
 You may fix that by downloading the last version of liblarch with
 
-%s """ % (liblarch.api, REQUIRED_LIBLARCH_API, GIT_CMD)
+%s """ % (liblarch.API, REQUIRED_LIBLARCH_API, GIT_CMD)
         return False
 
     return True
