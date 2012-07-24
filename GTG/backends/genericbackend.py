@@ -143,13 +143,14 @@ class GenericBackend(object):
         @param disable: If disable is True, the backend won't
                         be automatically loaded when GTG starts
         '''
-        self._is_initialized = False
-        if disable:
-            self._parameters[self.KEY_ENABLED] = False
-            #we signal that we have been disabled
-            self._signal_manager.backend_state_changed(self.get_id())
-            self._signal_manager.backend_sync_ended(self.get_id())
-        syncing_thread = threading.Thread(target = self.sync).run()
+        if self._parameters[self.KEY_ENABLED]:
+            self._is_initialized = False
+            if disable:
+                self._parameters[self.KEY_ENABLED] = False
+                #we signal that we have been disabled
+                self._signal_manager.backend_state_changed(self.get_id())
+                self._signal_manager.backend_sync_ended(self.get_id())
+            syncing_thread = threading.Thread(target = self.sync).run()
 
     def save_state(self):
         '''
