@@ -150,17 +150,15 @@ class CoreConfig(Borg):
     SEARCH_TAG = "search"
 
     def check_config_file(self,file_path):
-        
-	total_path=self.conf_dir+file_path    
+# This function bypasses the errors of config file and allows GTG to open smoothly, whenever the config file is filled with corrupt data. 
+# This is done by catching the error of Config error. We then open a new config file.
+      	total_path=self.conf_dir+file_path    
 	try:
-            localvar = ConfigObj(total_path)
-	    
-                
+            config = ConfigObj(total_path)
 	except configobj.ConfigObjError:
 	    open(total_path, "w").close()
-	    localvar = ConfigObj(total_path)
-            
- 	return localvar
+	    config = ConfigObj(total_path)            
+ 	return config
 
     def __init__(self):
         if  hasattr(self, 'data_dir'):
@@ -188,11 +186,8 @@ class CoreConfig(Borg):
                             " is a configuration file for gtg, but it "
                             "cannot be read or written. Please check it")
         self.conf_dict = self.check_config_file('gtg.conf')
-                
-	        
         self.task_conf_dict = self.check_config_file('tasks.conf')    
 	
-
     def save(self):
         ''' Saves the configuration of CoreConfig '''
         self.conf_dict.write()
@@ -218,7 +213,3 @@ class CoreConfig(Borg):
 
     def set_conf_dir(self, path):
         self.conf_dir = path
-
-
-
-
