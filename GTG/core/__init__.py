@@ -150,7 +150,7 @@ class CoreConfig(Borg):
     SEARCH_TAG = "search"
 
     def check_config_file(self,file_path):
-""" This function bypasses the errors of config file and allows GTG to open smoothly. """ 
+        """ This function bypasses the errors of config file and allows GTG to open smoothly""" 
       	total_path=self.conf_dir+file_path    
 	try:
             config = ConfigObj(total_path)
