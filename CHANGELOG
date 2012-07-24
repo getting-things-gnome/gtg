@@ -36,6 +36,7 @@
     * Fix for bug #629683: update initial tutorial for 0.3
     * Fix for bug #615027: Introductory task set should suggest organizing tasks in a tag hierarchy
     * Fix for bug #1026264: Write user documentation for search/smart tag
+    * Fix for bug #1020611: Use deafult configuration when config is corrupted by Abhiram
 
 2012-02-13 Getting Things GNOME! 0.2.9
     * Big refractorization of code, now using liblarch
