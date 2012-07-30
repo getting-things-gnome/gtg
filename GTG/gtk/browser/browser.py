@@ -95,7 +95,7 @@ class TaskBrowser(gobject.GObject):
 
         # Set up models
         # Active Tasks
-        self.activetree.apply_filter('active')
+        self.req.apply_global_filter(self.activetree,'active')
         # Tags
         self.tagtree = None
         self.tagtreeview = None
@@ -565,10 +565,10 @@ class TaskBrowser(gobject.GObject):
 
     def set_view(self, viewname):
         if viewname == 'default':
-            self.activetree.unapply_filter('workview')
+            self.req.unapply_global_filter(self.activetree,'workview')
             workview = False
         elif viewname == 'workview':
-            self.activetree.apply_filter('workview')
+            self.req.apply_global_filter(self.activetree,'workview')
             workview = True
         else:
             raise Exception('Cannot set the view %s' %viewname)

@@ -56,6 +56,24 @@ class Tag(TreeNode):
         self._attributes = {'name': self._name}
         for key, value in attributes.iteritems():
             self.set_attribute(key, value)
+        
+        self.viewcount = None
+        
+    def __get_viewcount(self):
+        if not self.viewcount:
+            self.viewcount = self.req.get_basetree().get_viewcount\
+                                                    (name=self.get_name())
+            self.viewcount.apply_filter(self.get_name())
+            self.viewcount.register_cllbck(self.modified)
+        return self.viewcount
+    
+    def apply_filter(self,filtername):
+        if self.viewcount:
+            self.viewcount.apply_filter(filtername)
+            
+    def unapply_filter(self,filtername):
+        if self.viewcount:
+            self.viewcount.unapply_filter(filtername)
 
     #overiding some functions to not allow dnd of special tags
     def add_parent(self, parent_id):
@@ -163,21 +181,18 @@ class Tag(TreeNode):
         # this method purposefully doesn't rely on get_related_tasks()
         # which does a similar job, in order to benefit from liblarch
         # optimizations
-        if not tasktree:
-            tasktree = self.req.get_tasks_tree()
-        sp_id = self.get_attribute("special")
+        vc = self.__get_viewcount()
+        sp_id = self.get_attribute("special")        
         if sp_id == "all":
-            toreturn = tasktree.get_n_nodes(\
-                    withfilters=['active'], include_transparent=False)
+            vc.apply_filter('active')
+            toreturn = vc.get_n_nodes()
         elif sp_id == "notag":
-            toreturn = tasktree.get_n_nodes(\
-                            withfilters=['notag'], include_transparent=False)
+            vc.apply_filter('notag')
+            toreturn = vc.get_n_nodes()
         elif sp_id == "sep":
             toreturn = 0
         else:
-            tname = self.get_name()
-            toreturn = tasktree.get_n_nodes(\
-                                withfilters=[tname], include_transparent=False)
+            toreturn = vc.get_n_nodes()
         return toreturn
 
     def get_related_tasks(self, tasktree=None):
