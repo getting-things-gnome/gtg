@@ -8,15 +8,15 @@ msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2012-07-13 16:43+0200\n"
-"PO-Revision-Date: 2012-07-25 09:38+0000\n"
-"Last-Translator: David Kovář <davidkov@gmx.com>\n"
+"PO-Revision-Date: 2012-07-31 12:10+0000\n"
+"Last-Translator: Martin Rotter <Unknown>\n"
 "Language-Team: Czech <cs@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
-"X-Launchpad-Export-Date: 2012-07-26 04:41+0000\n"
-"X-Generator: Launchpad (build 15679)\n"
+"X-Launchpad-Export-Date: 2012-08-01 04:44+0000\n"
+"X-Generator: Launchpad (build 15719)\n"
 
 #: GTG/plugins/notification_area/notification_area.py:123
 msgid "Add _New Task"
@@ -108,7 +108,7 @@ msgstr "Poslat e-mailem"
 #: GTG/plugins/send_email/sendEmail.py:68
 #, python-format
 msgid "Status: %s"
-msgstr ""
+msgstr "Status: %s"
 
 #: GTG/plugins/send_email/sendEmail.py:69
 #, python-format
@@ -257,7 +257,7 @@ msgstr "někdy"
 
 #: GTG/backends/backend_identica.py:54
 msgid "Identi.ca"
-msgstr ""
+msgstr "Identi.ca"
 
 #: GTG/backends/backend_identica.py:58
 msgid "Imports your identi.ca  messages into your GTG "
@@ -265,7 +265,7 @@ msgstr "Importuje vaše zprávy z identi.ca do GTG "
 
 #: GTG/backends/backend_gnote.py:42
 msgid "Gnote"
-msgstr ""
+msgstr "Gnote"
 
 #: GTG/backends/backend_gnote.py:46
 msgid ""
@@ -281,7 +281,7 @@ msgstr ""
 
 #: GTG/backends/backend_rtm.py:54
 msgid "Remember The Milk"
-msgstr ""
+msgstr "Remember The Milk"
 
 #: GTG/backends/backend_rtm.py:58
 msgid ""
@@ -299,7 +299,7 @@ msgstr ""
 
 #: GTG/backends/backend_twitter.py:54
 msgid "Twitter"
-msgstr ""
+msgstr "Twitter"
 
 #: GTG/backends/backend_twitter.py:58
 msgid "Imports your twitter  messages into your GTG "
@@ -375,7 +375,7 @@ msgstr "Synchronizuje úkoly v GTG s úkoly v programu Evolution"
 
 #: GTG/backends/backend_localfile.py:61
 msgid "Local File"
-msgstr ""
+msgstr "Místní Soubor"
 
 #: GTG/backends/backend_localfile.py:66
 msgid "Your tasks are saved in a text file (XML format). "
@@ -383,7 +383,7 @@ msgstr "Úkoly jsou uloženy v textovém souboru (ve formátu XML). "
 
 #: GTG/backends/backend_launchpad.py:53
 msgid "Launchpad"
-msgstr ""
+msgstr "Launchpad"
 
 #: GTG/backends/backend_launchpad.py:57
 msgid ""
@@ -415,7 +415,7 @@ msgstr ""
 
 #: GTG/backends/backend_launchpad.py:244
 msgid "Bug"
-msgstr ""
+msgstr "Bug"
 
 #: GTG/backends/backend_launchpad.py:329
 msgid "Link to bug: "
@@ -423,7 +423,7 @@ msgstr "Odkaz na chybu: "
 
 #: GTG/backends/rtm/rtm.py:57
 msgid "Invalid state"
-msgstr ""
+msgstr "Chybový stav"
 
 #: GTG/core/plugins/__init__.py:33
 msgid "Everything necessary to run this plugin is available."
@@ -801,19 +801,19 @@ msgstr ""
 
 #: GTG/core/search.py:87
 msgid "not"
-msgstr ""
+msgstr "ne"
 
 #: GTG/core/search.py:88
 msgid "or"
-msgstr ""
+msgstr "nebo"
 
 #: GTG/core/search.py:89
 msgid "after"
-msgstr ""
+msgstr "po"
 
 #: GTG/core/search.py:90
 msgid "before"
-msgstr ""
+msgstr "před"
 
 #: GTG/core/search.py:91 GTG/tools/dates.py:293
 msgid "today"
@@ -849,7 +849,7 @@ msgstr "odložit"
 
 #: GTG/core/task.py:164
 msgid "start"
-msgstr ""
+msgstr "start"
 
 #: GTG/core/task.py:170
 msgid "due"
@@ -866,7 +866,7 @@ msgstr "Úkoly bez štítků"
 
 #: GTG/core/treefactory.py:102 GTG/gtk/browser/browser.py:1518
 msgid "Search"
-msgstr ""
+msgstr "Hledat"
 
 #: GTG/tools/dates.py:297
 msgid "next week"
@@ -882,7 +882,7 @@ msgstr "příští rok"
 
 #: GTG/tools/dates.py:306
 msgid "Monday"
-msgstr ""
+msgstr "Pondělí"
 
 #: GTG/tools/dates.py:307
 msgid "Tuesday"
@@ -890,23 +890,23 @@ msgstr ""
 
 #: GTG/tools/dates.py:308
 msgid "Wednesday"
-msgstr ""
+msgstr "Středa"
 
 #: GTG/tools/dates.py:309
 msgid "Thursday"
-msgstr ""
+msgstr "Čtvrtek"
 
 #: GTG/tools/dates.py:310
 msgid "Friday"
-msgstr ""
+msgstr "Pátek"
 
 #: GTG/tools/dates.py:311
 msgid "Saturday"
-msgstr ""
+msgstr "Sobota"
 
 #: GTG/tools/dates.py:312
 msgid "Sunday"
-msgstr ""
+msgstr "Neděle"
 
 #: GTG/tools/dates.py:371
 msgid "Today"
@@ -938,7 +938,7 @@ msgstr "GTG je osobní organizátor úkolů a seznamů TODO pro GNOME."
 
 #: GTG/gtk/backends_dialog/parameters_ui/pathui.py:52
 msgid "Filename:"
-msgstr ""
+msgstr "Název souboru:"
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:63
 msgid "Import tags"
@@ -946,7 +946,7 @@ msgstr "Importovat štítky"
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:64
 msgid "All tags"
-msgstr ""
+msgstr "Všechny štítky"
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:65
 msgid "Just these tags:"
@@ -962,15 +962,15 @@ msgstr "Úkoly s těmito štítky:"
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:76
 msgid "Username"
-msgstr ""
+msgstr "Uživatelské jméno"
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:82
 msgid "Service URL"
-msgstr ""
+msgstr "Adresa služby"
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:86
 msgid "Import tasks from @ replies "
-msgstr ""
+msgstr "Importovat uĺohy z @ odpovědí "
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:91
 msgid "Import tasks from direct messages"
@@ -986,11 +986,11 @@ msgstr "Označit úkoly v GTG chybovými štítky"
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:103
 msgid "Tag your GTG tasks with the project targeted by the bug"
-msgstr ""
+msgstr "Označit Vaše GTG úkoly s projektem spojeným s bugem"
 
 #: GTG/gtk/backends_dialog/parameters_ui/passwordui.py:50
 msgid "Password:"
-msgstr ""
+msgstr "Heslo:"
 
 #: GTG/gtk/backends_dialog/parameters_ui/periodui.py:51
 msgid "Check for new tasks every"
@@ -999,8 +999,9 @@ msgstr "Kontrolovat nové úkoly každý"
 #: GTG/gtk/backends_dialog/parameters_ui/periodui.py:96
 msgid " minute"
 msgid_plural " minutes"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] " minuta"
+msgstr[1] " minuty"
+msgstr[2] " minut"
 
 #: GTG/gtk/backends_dialog/addpanel.py:69
 msgid "Select synchronization service:"
