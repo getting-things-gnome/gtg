@@ -82,7 +82,6 @@ class PreferencesDialog:
         self.pref_show_preview = builder.get_object("pref_show_preview")
         self.bg_color_enable = builder.get_object("bg_color_enable")
         self.fontbutton1 = builder.get_object("fontbutton1")
- 
         builder.connect_signals({
           'on_pref_autostart_toggled':
             self.on_autostart_toggled,
@@ -96,7 +95,7 @@ class PreferencesDialog:
             self.on_close,
           'on_PreferencesDialog_delete_event':
             self.on_close,
-          'on_fontbutton1_font-set':
+          'on_fontbutton1_font_set':
             self.on_font_change,  
         })
 
@@ -152,6 +151,6 @@ class PreferencesDialog:
         if curstate != widget.get_active():
             self.config.set("bg_color_enable", not curstate)
             self._refresh_task_browser()
-    def on_font_change(self, widget):
-        self.config.set("font_name", gtk.FontButton.get_font_name())
-        
+    def on_font_change(self):
+        self.config.set("font_name", self.fontbutton1.get_font_name())
+

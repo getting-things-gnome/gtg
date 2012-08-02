@@ -73,7 +73,7 @@ DEFAULTS = {
             },
 'tag_editor': {
             "custom_colors": [],
-            "font_name": "sans 12"
+            "font_name": "Rekha  bold 18"
             }
 }
 
