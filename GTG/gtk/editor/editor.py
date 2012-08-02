@@ -24,7 +24,7 @@ The main text widget is a home-made TextView called TaskView (see taskview.py)
 The rest is the logic of the widget: date changing widgets, buttons, ...
 """
 import time
-
+import pango
 import gtk
 
 from GTG                     import _, ngettext
