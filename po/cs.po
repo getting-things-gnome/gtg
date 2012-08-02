@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2012-07-13 16:43+0200\n"
-"PO-Revision-Date: 2012-07-31 12:10+0000\n"
-"Last-Translator: Martin Rotter <Unknown>\n"
+"PO-Revision-Date: 2012-08-01 16:37+0000\n"
+"Last-Translator: Kuvaly [LCT] <kuvaly@seznam.cz>\n"
 "Language-Team: Czech <cs@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
-"X-Launchpad-Export-Date: 2012-08-01 04:44+0000\n"
+"X-Launchpad-Export-Date: 2012-08-02 04:47+0000\n"
 "X-Generator: Launchpad (build 15719)\n"
 
 #: GTG/plugins/notification_area/notification_area.py:123
@@ -886,7 +886,7 @@ msgstr "Pondělí"
 
 #: GTG/tools/dates.py:307
 msgid "Tuesday"
-msgstr ""
+msgstr "Úterý"
 
 #: GTG/tools/dates.py:308
 msgid "Wednesday"
@@ -1054,7 +1054,7 @@ msgstr "Spouštět Getting Things GNOME! při každém přihlášení"
 
 #: GTG/gtk/preferences.glade.h:2
 msgid "<b>Startup</b>"
-msgstr ""
+msgstr "<b>Spuštění</b>"
 
 #: GTG/gtk/preferences.glade.h:3
 msgid "Show description preview in the task list."
@@ -1070,11 +1070,11 @@ msgstr "<b>Prohlížeč úkolů</b>"
 
 #: GTG/gtk/preferences.glade.h:6
 msgid "page 1"
-msgstr ""
+msgstr "strana 1"
 
 #: GTG/gtk/preferences.glade.h:7
 msgid "page 2"
-msgstr ""
+msgstr "strana 2"
 
 #: GTG/gtk/preferences.glade.h:8
 msgid "page 3"
@@ -1130,7 +1130,7 @@ msgstr "Přidat vlastní barvu"
 
 #: GTG/gtk/browser/simple_color_selector.py:264
 msgid "Choose a color"
-msgstr ""
+msgstr "Zvolit barvu"
 
 #: GTG/gtk/browser/custominfobar.py:36
 #, python-format
@@ -1164,19 +1164,19 @@ msgstr "Nastavení synchronizační služby"
 
 #: GTG/gtk/browser/custominfobar.py:106
 msgid "Ignore"
-msgstr ""
+msgstr "Ignorovat"
 
 #: GTG/gtk/browser/custominfobar.py:114 GTG/gtk/browser/custominfobar.py:119
 msgid "Ok"
-msgstr ""
+msgstr "Ok"
 
 #: GTG/gtk/browser/custominfobar.py:140
 msgid "Confirm"
-msgstr ""
+msgstr "Potvrdit"
 
 #: GTG/gtk/browser/custominfobar.py:142
 msgid "Continue"
-msgstr ""
+msgstr "Pokračovat"
 
 #: GTG/gtk/browser/treeview_factory.py:280
 #: GTG/gtk/browser/taskbrowser.glade.h:29
@@ -1213,7 +1213,7 @@ msgstr[2] "%(tasks)d aktivních úkolů"
 
 #: GTG/gtk/browser/browser.py:1516
 msgid "Add Task"
-msgstr ""
+msgstr "Přidat úkol"
 
 #: GTG/gtk/browser/browser.py:1517
 msgid "Open Task"
@@ -1315,7 +1315,7 @@ msgstr "Zde můžete vytvořit, otevřít, nebo filtrovat své úkoly"
 
 #: GTG/gtk/browser/__init__.py:52
 msgid "Clear"
-msgstr ""
+msgstr "Vyčistit"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:1
 msgid "Getting Things Gnome!"
@@ -1420,7 +1420,7 @@ msgstr "Pracovní pohled"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:30
 msgid "Tasks"
-msgstr ""
+msgstr "Úkoly"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:31
 msgid "About GTG!"
@@ -1428,7 +1428,7 @@ msgstr "O GTG!"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:32
 msgid "Getting Things GNOME!"
-msgstr ""
+msgstr "Getting Things GNOME!"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:33
 msgid "Copyright © 2008-2012 Lionel Dricot, Bertrand Rousseau"
@@ -1566,7 +1566,7 @@ msgstr "Aplikovat na podúkoly"
 
 #: GTG/gtk/browser/tag_context_menu.py:58
 msgid "Edit Tag..."
-msgstr ""
+msgstr "Upravit štítek…"
 
 #: GTG/gtk/plugins.glade.h:1
 msgid "<b>Dependencies</b>"
@@ -1686,26 +1686,28 @@ msgid ""
 "We're terribly sorry. Could you help us fix the problem by reporting the "
 "crash?"
 msgstr ""
+"Je nám moc líto. Mohli byste nám pomoci opravit tento problém nahlášením "
+"pádu aplikace?"
 
 #: GTG/gtk/crashhandler.py:170
 msgid "An error has occurred"
-msgstr ""
+msgstr "Vyskytla se chyba"
 
 #: GTG/gtk/crashhandler.py:184
 msgid "It looks like an error has occurred."
-msgstr ""
+msgstr "Zdá se, že se objevila chyba."
 
 #: GTG/gtk/crashhandler.py:220
 msgid "_Details"
-msgstr ""
+msgstr "_Podrobnosti"
 
 #: GTG/gtk/crashhandler.py:227
 msgid "_Report this problem..."
-msgstr ""
+msgstr "_Nahlásit tento problém..."
 
 #: GTG/gtk/crashhandler.py:231
 msgid "_Ignore the error"
-msgstr ""
+msgstr "_Ignorovat chybu"
 
 #: GTG/gtk/crashhandler.py:336
 msgid ""
