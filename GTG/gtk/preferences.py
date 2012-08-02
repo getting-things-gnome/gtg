@@ -154,4 +154,4 @@ class PreferencesDialog:
             self._refresh_task_browser()
     def on_font_change(self, widget):
         self.config.set("font_name", get_font_name())
-        self._refresh_task_browser()
+        
