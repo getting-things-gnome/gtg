@@ -153,5 +153,5 @@ class PreferencesDialog:
             self.config.set("bg_color_enable", not curstate)
             self._refresh_task_browser()
     def on_font_change(self, widget):
-        self.config.set("font_name", get_font_name())
+        self.config.set("font_name", gtk.FontButton.get_font_name())
         
