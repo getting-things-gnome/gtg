@@ -73,6 +73,7 @@ DEFAULTS = {
             },
 'tag_editor': {
             "custom_colors": [],
+            "font_name": "sans 12"
             }
 }
 
