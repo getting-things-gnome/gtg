@@ -151,6 +151,5 @@ class PreferencesDialog:
         if curstate != widget.get_active():
             self.config.set("bg_color_enable", not curstate)
             self._refresh_task_browser()
-    def on_font_change(self):
-        self.config.set("font_name", self.fontbutton1.get_font_name())
-
+    def on_font_change(self,widget):
+	self.config.set("font_name", self.fontbutton1.get_font_name())        
