@@ -23,7 +23,6 @@ It's the window you see when you double-click on a Task
 The main text widget is a home-made TextView called TaskView (see taskview.py)
 The rest is the logic of the widget: date changing widgets, buttons, ...
 """
-import pygtk
 import time
 import pango
 import gtk
@@ -53,7 +52,7 @@ class TaskEditor:
         thisisnew is True when a new task is created and opened
         '''
 	self.req = requester
-	self.config1 = self.req.get_config('browser')
+	self.browser_config = self.req.get_config('browser')
 	self.vmanager = vmanager
         self.config = taskconfig
         self.time = None
@@ -104,7 +103,8 @@ class TaskEditor:
         self.textview.set_left_margin(7)
         self.textview.set_right_margin(5)
         scrolled.add(self.textview)
-	self.textview.modify_font(pango.FontDescription(self.config1.get("font_name")) ) 
+        print self.browser_config.get("font_name")
+	self.textview.modify_font(pango.FontDescription(self.browser_config.get("font_name")) ) 
         #Voila! it's done
         self.calendar       = GTGCalendar(self.builder)
         self.duedate_widget = self.builder.get_object("duedate_entry")

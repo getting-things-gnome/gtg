@@ -161,12 +161,12 @@
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <child>
-                              <object class="GtkFontButton" id="fontbutton1">
+                              <object class="GtkFontButton" id="fontbutton">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <property name="receives_default">False</property>
                                 <property name="use_action_appearance">False</property>
-                                <signal name="font-set" handler="on_fontbutton1_font_set" swapped="no"/>
+                                <signal name="font-set" handler="on_fontbutton_font_set" swapped="no"/>
                               </object>
                               <packing>
                                 <property name="expand">True</property>
@@ -182,7 +182,7 @@
                       <object class="GtkLabel" id="label1">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">&lt;b&gt;Editor&lt;/b&gt;</property>
+                        <property name="label" translatable="yes">&lt;b&gt;Editor (Font)&lt;/b&gt;</property>
                         <property name="use_markup">True</property>
                       </object>
                     </child>

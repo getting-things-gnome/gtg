@@ -18,7 +18,6 @@
 # -----------------------------------------------------------------------------
 
 """ The Preferences Dialog for configuring GTG """
-import pygtk
 import os
 import shutil
 
@@ -81,7 +80,8 @@ class PreferencesDialog:
         self.pref_autostart = builder.get_object("pref_autostart")
         self.pref_show_preview = builder.get_object("pref_show_preview")
         self.bg_color_enable = builder.get_object("bg_color_enable")
-        self.fontbutton1 = builder.get_object("fontbutton1")
+        self.fontbutton = builder.get_object("fontbutton")
+	self.fontbutton.set_font_name(self.config.get("font_name")) 
         builder.connect_signals({
           'on_pref_autostart_toggled':
             self.on_autostart_toggled,
@@ -95,7 +95,7 @@ class PreferencesDialog:
             self.on_close,
           'on_PreferencesDialog_delete_event':
             self.on_close,
-          'on_fontbutton1_font_set':
+          'on_fontbutton_font_set':
             self.on_font_change,  
         })
 
@@ -152,4 +152,5 @@ class PreferencesDialog:
             self.config.set("bg_color_enable", not curstate)
             self._refresh_task_browser()
     def on_font_change(self,widget):
-	self.config.set("font_name", self.fontbutton1.get_font_name())        
+	self.config.set("font_name", self.fontbutton.get_font_name())     
+        self.fontbutton.set_font_name(self.fontbutton.get_font_name())
