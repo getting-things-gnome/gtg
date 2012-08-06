@@ -157,9 +157,21 @@
                         <property name="bottom_padding">15</property>
                         <property name="left_padding">12</property>
                         <child>
-                          <object class="GtkVBox" id="prefs-vbox4">
+                          <object class="GtkHBox" id="prefs-vbox4">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
+                            <child>
+                              <object class="GtkLabel" id="label5">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="label" translatable="yes">Font :</property>
+                              </object>
+                              <packing>
+                                <property name="expand">True</property>
+                                <property name="fill">True</property>
+                                <property name="position">0</property>
+                              </packing>
+                            </child>
                             <child>
                               <object class="GtkFontButton" id="fontbutton">
                                 <property name="visible">True</property>
@@ -171,7 +183,7 @@
                               <packing>
                                 <property name="expand">True</property>
                                 <property name="fill">True</property>
-                                <property name="position">0</property>
+                                <property name="position">1</property>
                               </packing>
                             </child>
                           </object>
@@ -182,7 +194,7 @@
                       <object class="GtkLabel" id="label1">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">&lt;b&gt;Editor (Font)&lt;/b&gt;</property>
+                        <property name="label" translatable="yes">&lt;b&gt;Editor&lt;/b&gt;</property>
                         <property name="use_markup">True</property>
                       </object>
                     </child>
