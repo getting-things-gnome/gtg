@@ -81,7 +81,8 @@ class PreferencesDialog:
         self.pref_show_preview = builder.get_object("pref_show_preview")
         self.bg_color_enable = builder.get_object("bg_color_enable")
         self.fontbutton = builder.get_object("fontbutton")
-	self.fontbutton.set_font_name(self.config.get("font_name")) 
+        style = self.dialog.get_style()
+	self.fontbutton.set_font_name(str(style.font_desc))
         builder.connect_signals({
           'on_pref_autostart_toggled':
             self.on_autostart_toggled,
@@ -152,5 +153,4 @@ class PreferencesDialog:
             self.config.set("bg_color_enable", not curstate)
             self._refresh_task_browser()
     def on_font_change(self,widget):
-	self.config.set("font_name", self.fontbutton.get_font_name())     
-        self.fontbutton.set_font_name(self.config.get("font_name"))
+	self.config.set("font_name", self.fontbutton.get_font_name())  
