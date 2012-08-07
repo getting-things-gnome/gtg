@@ -82,9 +82,9 @@ class PreferencesDialog:
         self.bg_color_enable = builder.get_object("bg_color_enable")
         self.fontbutton = builder.get_object("fontbutton")
         style = self.dialog.get_style()
-	check_style = str(style.font_desc)
+	check_style = self.config.get("font_name")
 	if(check_style!=""):
-	    self.fontbutton.set_font_name(str(style.font_desc))
+	    self.fontbutton.set_font_name(check_style)
         builder.connect_signals({
           'on_pref_autostart_toggled':
             self.on_autostart_toggled,
