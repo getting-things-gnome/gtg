@@ -104,8 +104,9 @@ class TaskEditor:
         self.textview.set_right_margin(5)
         scrolled.add(self.textview)
 	style = self.textview.get_style()
-	if ( (self.browser_config.get("font_name"))!= "" ):
-            self.textview.modify_font(pango.FontDescription(self.browser_config.get("font_name")) ) 
+	conf_font_value = self.browser_config.get("font_name")
+	if ( (conf_font_value)!= "" ):
+            self.textview.modify_font(pango.FontDescription(conf_font_value) ) 
         #Voila! it's done
         self.calendar       = GTGCalendar(self.builder)
         self.duedate_widget = self.builder.get_object("duedate_entry")
