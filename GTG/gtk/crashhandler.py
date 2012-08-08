@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 # Copyright 2010 David D. Lowe
 # All rights reserved.
 #

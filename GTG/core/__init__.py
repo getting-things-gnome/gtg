@@ -36,7 +36,7 @@ If you want to display only a subset of tasks, you can either:
 """
 
 #=== IMPORT ===================================================================
-from configobj         import ConfigObj
+from configobj         import ConfigObj, ConfigObjError
 from xdg.BaseDirectory import xdg_data_home, xdg_config_home
 import os
 
@@ -144,6 +144,16 @@ class CoreConfig(Borg):
     SEP_TAG = "gtg-tags-sep"
     SEARCH_TAG = "search"
 
+    def check_config_file(self,file_path):
+        """ This function bypasses the errors of config file and allows GTG to open smoothly""" 
+      	total_path=self.conf_dir+file_path    
+	try:
+            config = ConfigObj(total_path)
+	except ConfigObjError:
+	    open(total_path, "w").close()
+	    config = ConfigObj(total_path)            
+ 	return config
+
     def __init__(self):
         if  hasattr(self, 'data_dir'):
             #Borg has already been initialized
@@ -169,9 +179,9 @@ class CoreConfig(Borg):
                 raise Exception("File " + file + \
                             " is a configuration file for gtg, but it "
                             "cannot be read or written. Please check it")
-        self.conf_dict = ConfigObj(self.conf_dir + self.CONF_FILE)
-        self.task_conf_dict = ConfigObj(self.conf_dir + self.TASK_CONF_FILE)
-
+        self.conf_dict = self.check_config_file(self.CONF_FILE)
+        self.task_conf_dict = self.check_config_file(self.TASK_CONF_FILE)    
+	
     def save(self):
         ''' Saves the configuration of CoreConfig '''
         self.conf_dict.write()

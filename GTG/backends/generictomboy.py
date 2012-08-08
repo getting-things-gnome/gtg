@@ -520,11 +520,15 @@ class GenericTomboy(GenericBackend):
                                 self.tomboy_connection_is_ok:
                 return
             self.backend = backend
+            self.tomboy_connection_is_ok = True
             with GenericTomboy.DbusWatchdog(backend):
                 bus = dbus.SessionBus()
-                obj = bus.get_object(bus_name, bus_path)
-                self.tomboy = dbus.Interface(obj, bus_interface)
-            self.tomboy_connection_is_ok = True
+                try:
+                    obj = bus.get_object(bus_name, bus_path)
+                    self.tomboy = dbus.Interface(obj, bus_interface)
+                except dbus.DBusException:
+                    self.tomboy_failed()
+                    self.tomboy = None
 
         def __enter__(self):
             '''
@@ -533,6 +537,7 @@ class GenericTomboy(GenericBackend):
             @returns: dbus.Interface
             '''
             return self.tomboy
+                
 
         def __exit__(self, exception_type, value, traceback):
             '''
@@ -545,15 +550,21 @@ class GenericTomboy(GenericBackend):
             @param traceback: the traceback of the error
             @returns: False if some exception must be re-raised.
             '''
-            if isinstance(value, dbus.DBusException):
-                self.tomboy_connection_is_ok = False
-                self.backend.quit(disable = True)
-                BackendSignals().backend_failed(self.backend.get_id(), \
-                            BackendSignals.ERRNO_DBUS)
+            if isinstance(value, dbus.DBusException) or \
+                not self.tomboy_connection_is_ok:
+                self.tomboy_failed()
+                return True
             else:
                 return False
-            return True
+        
+        def tomboy_failed(self):
+            """ Handle failed tomboy connection.
 
+            Disable backend and show error in notification bar """
+            self.tomboy_connection_is_ok = False
+            BackendSignals().backend_failed(self.backend.get_id(),
+                BackendSignals.ERRNO_DBUS)
+            self.backend.quit(disable = True)
 
 
     class DbusWatchdog(Watchdog):
@@ -570,8 +581,8 @@ class GenericTomboy(GenericBackend):
             @param backend: a Backend object
             '''
             self.backend = backend
-            super(GenericTomboy.DbusWatchdog, self).__init__(3, \
-                                    self._when_taking_too_long)
+            super(GenericTomboy.DbusWatchdog, self).__init__(
+                        3, self._when_taking_too_long)
 
         def _when_taking_too_long(self):
             '''
@@ -580,7 +591,6 @@ class GenericTomboy(GenericBackend):
             '''
             Log.error("Dbus connection is taking too long for the Tomboy/Gnote"
                       "backend!")
-            self.backend.quit(disable = True)
-            BackendSignals().backend_failed(self.backend.get_id(), \
+            BackendSignals().backend_failed(self.backend.get_id(),
                             BackendSignals.ERRNO_DBUS)
-
+            self.backend.quit(disable = True)

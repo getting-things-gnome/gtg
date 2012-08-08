@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 ### -*- coding: utf-8 -*-
 # Copyright © 2010 Marko Kevac <marko@kevac.org>
 #

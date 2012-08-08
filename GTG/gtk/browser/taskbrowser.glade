@@ -4,7 +4,7 @@
   <!-- interface-naming-policy toplevel-contextual -->
   <object class="GtkWindow" id="MainWindow">
     <property name="can_focus">False</property>
-    <property name="title" translatable="yes">Getting Things Gnome!</property>
+    <property name="title" translatable="yes">Getting Things GNOME!</property>
     <property name="default_width">700</property>
     <property name="default_height">550</property>
     <signal name="configure-event" handler="on_move" swapped="no"/>
@@ -796,13 +796,13 @@
     <property name="type_hint">dialog</property>
     <property name="program_name" translatable="yes">Getting Things GNOME!</property>
     <property name="copyright" translatable="yes">Copyright © 2008-2012 Lionel Dricot, Bertrand Rousseau</property>
-    <property name="comments" translatable="yes">GTG is a personal tasks and TODO-list items organizer for the GNOME.</property>
+    <property name="comments" translatable="yes">GTG is a personal tasks and TODO-list items organizer for the GNOME desktop environment.</property>
     <property name="website_label" translatable="yes">GTG website</property>
-    <property name="license" translatable="yes">Getting Things Gnome! is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 3 of the License, or (at your option) any later version.
+    <property name="license" translatable="yes">Getting Things GNOME! is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 3 of the License, or (at your option) any later version.
 
-Getting Things Gnome! is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+Getting Things GNOME! is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License along with Getting Things Gnome!; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.</property>
+You should have received a copy of the GNU General Public License along with Getting Things GNOME!; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.</property>
     <property name="authors">Lionel Dricot (ploum@ploum.net),
 Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
     <property name="logo_icon_name">gtg</property>
@@ -1044,7 +1044,7 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
     </child>
     <child>
       <object class="GtkImageMenuItem" id="tcm_start_menu">
-        <property name="label" translatable="yes">_Set start date</property>
+        <property name="label" translatable="yes">_Set Start Date</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="use_action_appearance">False</property>
@@ -1056,7 +1056,7 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
             <property name="can_focus">False</property>
             <child>
               <object class="GtkImageMenuItem" id="tcm_mark_as_started">
-                <property name="label" translatable="yes">t_oday</property>
+                <property name="label" translatable="yes">T_oday</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="use_action_appearance">False</property>
@@ -1067,7 +1067,7 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
             </child>
             <child>
               <object class="GtkImageMenuItem" id="tcm_start_for_tomorrow">
-                <property name="label" translatable="yes">_tomorrow</property>
+                <property name="label" translatable="yes">_Tomorrow</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="use_action_appearance">False</property>
@@ -1078,7 +1078,7 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
             </child>
             <child>
               <object class="GtkImageMenuItem" id="tcm_start_for_next_week">
-                <property name="label" translatable="yes">next _week</property>
+                <property name="label" translatable="yes">Next _Week</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="use_action_appearance">False</property>
@@ -1089,7 +1089,7 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
             </child>
             <child>
               <object class="GtkImageMenuItem" id="tcm_start_for_next_month">
-                <property name="label" translatable="yes">next _month</property>
+                <property name="label" translatable="yes">Next _Month</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="use_action_appearance">False</property>
@@ -1100,7 +1100,7 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
             </child>
             <child>
               <object class="GtkImageMenuItem" id="tcm_start_for_next_year">
-                <property name="label" translatable="yes">next _year</property>
+                <property name="label" translatable="yes">Next _Year</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="use_action_appearance">False</property>
@@ -1117,7 +1117,7 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
             </child>
             <child>
               <object class="GtkImageMenuItem" id="tcm_start_clear">
-                <property name="label" translatable="yes">_clear start date</property>
+                <property name="label" translatable="yes">_Clear Start Date</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="use_action_appearance">False</property>
@@ -1132,7 +1132,7 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
     </child>
     <child>
       <object class="GtkImageMenuItem" id="tcm_due_menu">
-        <property name="label" translatable="yes">Set due date</property>
+        <property name="label" translatable="yes">Set Due Date</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="use_action_appearance">False</property>
@@ -1144,7 +1144,7 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
             <property name="can_focus">False</property>
             <child>
               <object class="GtkImageMenuItem" id="tcm_due_today">
-                <property name="label" translatable="yes">t_oday</property>
+                <property name="label" translatable="yes">T_oday</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="use_action_appearance">False</property>
@@ -1155,7 +1155,7 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
             </child>
             <child>
               <object class="GtkImageMenuItem" id="tcm_due_tomorrow">
-                <property name="label" translatable="yes">_tomorrow</property>
+                <property name="label" translatable="yes">_Tomorrow</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="use_action_appearance">False</property>
@@ -1166,7 +1166,7 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
             </child>
             <child>
               <object class="GtkImageMenuItem" id="tcm_due_next_week">
-                <property name="label" translatable="yes">next _week</property>
+                <property name="label" translatable="yes">Next _Week</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="use_action_appearance">False</property>
@@ -1177,7 +1177,7 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
             </child>
             <child>
               <object class="GtkImageMenuItem" id="tcm_due_next_month">
-                <property name="label" translatable="yes">next _month</property>
+                <property name="label" translatable="yes">Next _Month</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="use_action_appearance">False</property>
@@ -1188,7 +1188,7 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
             </child>
             <child>
               <object class="GtkImageMenuItem" id="tcm_due_next_year">
-                <property name="label" translatable="yes">next _year</property>
+                <property name="label" translatable="yes">Next _Year</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="use_action_appearance">False</property>
@@ -1205,7 +1205,7 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
             </child>
             <child>
               <object class="GtkImageMenuItem" id="tcm_due_now">
-                <property name="label" translatable="yes">_now</property>
+                <property name="label" translatable="yes">_Now</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="use_action_appearance">False</property>
@@ -1216,7 +1216,7 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
             </child>
             <child>
               <object class="GtkImageMenuItem" id="tcm_due_soon">
-                <property name="label" translatable="yes">_soon</property>
+                <property name="label" translatable="yes">_Soon</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="use_action_appearance">False</property>
@@ -1227,7 +1227,7 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
             </child>
             <child>
               <object class="GtkImageMenuItem" id="tcm_due_someday">
-                <property name="label" translatable="yes">_someday</property>
+                <property name="label" translatable="yes">_Someday</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="use_action_appearance">False</property>
@@ -1244,7 +1244,7 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
             </child>
             <child>
               <object class="GtkImageMenuItem" id="tcm_due_clear">
-                <property name="label" translatable="yes">_clear due date</property>
+                <property name="label" translatable="yes">_Clear Due Date</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="use_action_appearance">False</property>
