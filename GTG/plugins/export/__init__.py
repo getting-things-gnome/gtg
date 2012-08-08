@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright (c) 2009 - Luca Invernizzi <invernizzi.l@gmail.com>
+#               2012 - Izidor Matušov <izidor.matusov@gmail.com>
 #
 # This program is free software: you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -14,8 +15,10 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from GTG.plugins.export.export import pluginExport
+""" Initialize export pugin """
 
+from GTG.plugins.export.export import PluginExport
 
-#suppress pyflakes warning (given by make lint)
-if False == True: pluginExport()
+# Make pyflakes happy
+if False:
+    PluginExport()

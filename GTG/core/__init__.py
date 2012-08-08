@@ -33,17 +33,16 @@ If you want to display only a subset of tasks, you can either:
  - get your own personal FilteredTree and apply on it the filters you
    want without interfering with the main view. (This is how the closed
    tasks pane is built currently)
-
 """
 
-#=== IMPORT ====================================================================
-import os
+#=== IMPORT ===================================================================
+from configobj         import ConfigObj, ConfigObjError
 from xdg.BaseDirectory import xdg_data_home, xdg_config_home, xdg_data_dirs
-from configobj         import ConfigObj
-from GTG.tools.testingmode import TestingMode
+import os
 
-import GTG
 from GTG.tools.borg   import Borg
+from GTG.tools.testingmode import TestingMode
+import GTG
 
 DEFAULTS = {
 'browser': {
@@ -68,7 +67,7 @@ DEFAULTS = {
             'tasklist_sort_order': 1,
             },
 'tag_editor': {
-            "custom_colors" : []
+            "custom_colors": [],
             }
 }
 
@@ -85,7 +84,9 @@ DEFAULTS = {
 #
 #Currently done : browser
 #Todo : editor, plugins
+
 class SubConfig():
+
     def __init__(self, name, conf_dic):
         self.__name = name
         self.__conf = conf_dic
@@ -121,9 +122,10 @@ class SubConfig():
         self.__conf.parent.write()
 
     def set_lst(self, name, value_lst):
-        self.__conf[name] = [ str(s) for s in value_lst]
+        self.__conf[name] = [str(s) for s in value_lst]
         # Save immediately
         self.__conf.parent.write()
+
 
 class CoreConfig(Borg):
     #The projects and tasks are of course DATA !
@@ -141,6 +143,16 @@ class CoreConfig(Borg):
     NOTAG_TAG = "gtg-tags-none"
     SEP_TAG = "gtg-tags-sep"
     SEARCH_TAG = "search"
+
+    def check_config_file(self,file_path):
+        """ This function bypasses the errors of config file and allows GTG to open smoothly""" 
+      	total_path=self.conf_dir+file_path    
+	try:
+            config = ConfigObj(total_path)
+	except ConfigObjError:
+	    open(total_path, "w").close()
+	    config = ConfigObj(total_path)            
+ 	return config
 
     def __init__(self):
         if  hasattr(self, 'data_dir'):
@@ -167,9 +179,9 @@ class CoreConfig(Borg):
                 raise Exception("File " + file + \
                             " is a configuration file for gtg, but it "
                             "cannot be read or written. Please check it")
-        self.conf_dict = ConfigObj(self.conf_dir + self.CONF_FILE)
-        self.task_conf_dict = ConfigObj(self.conf_dir + self.TASK_CONF_FILE)
-
+        self.conf_dict = self.check_config_file(self.CONF_FILE)
+        self.task_conf_dict = self.check_config_file(self.TASK_CONF_FILE)    
+	
     def save(self):
         ''' Saves the configuration of CoreConfig '''
         self.conf_dict.write()

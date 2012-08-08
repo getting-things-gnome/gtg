@@ -166,7 +166,7 @@ All modules should begin with the following header::
 # -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
 # Gettings Things Gnome! - a personal organizer for the GNOME desktop
-# Copyright (c) 2008-2010 - Lionel Dricot & Bertrand Rousseau
+# Copyright (c) 2008-2012 - Lionel Dricot & Bertrand Rousseau
 #
 # This program is free software: you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -206,7 +206,7 @@ Landing Branches
 
   6. Update ``AUTHORS`` if the patch author is not already in there.
 
-  7. Merge the branch into trunk, then commit!
+  7. Commit your changes and propose a merge request.
 
 
 Documentation

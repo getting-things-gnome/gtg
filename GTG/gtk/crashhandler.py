@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 # Copyright 2010 David D. Lowe
 # All rights reserved.
 #
@@ -72,10 +72,10 @@ def initialize(app_name=None, message=None, use_apport=False):
     @param message: A message that will be displayed in the error dialog,
         replacing the default message string. Untranslated.
         If you don't want a message, pass "".
-    @param use_apport: If set to True, gtkcrashhandler will override the 
-        settings in /etc/default/apport and call apport if possible, silently
-        failing if not. If set to False, the normal behaviour will be executed,
-        which may mean Apport kicking in anyway.
+    @param use_apport: If set to True, gtkcrashhandler will override
+        the settings in /etc/default/apport and call apport if possible,
+        silently failing if not. If set to False, the normal behaviour will
+        be executed, which may mean Apport kicking in anyway.
     """
     global APP_NAME, MESSAGE, USE_APPORT, _gtk_initialized, _old_sys_excepthook
     if app_name:
@@ -269,7 +269,8 @@ def gtkcrashhandler_thread(run):
 
         def function(arg):
             arg / 0 # this error will be caught by gtkcrashhandler
-        threading.Thread(target=gtkcrashhandler_thread(function),args=(1,)).start()
+        threading.Thread(target=gtkcrashhandler_thread(function),args=(1,))
+                .start()
     """
 
     def gtkcrashhandler_wrapped_run(*args, **kwargs):

@@ -32,14 +32,15 @@ from GTG.tools.dates         import Date
 from GTG.tools.logger        import Log
 from liblarch                import TreeNode
 
+
 class Task(TreeNode):
     """ This class represent a task in GTG.
     You should never create a Task directly. Use the datastore.new_task()
     function."""
 
-    STA_ACTIVE    = "Active"
+    STA_ACTIVE = "Active"
     STA_DISMISSED = "Dismiss"
-    STA_DONE      = "Done"
+    STA_DONE = "Done"
 
     def __init__(self, ze_id, requester, newtask=False):
         TreeNode.__init__(self, ze_id)
@@ -126,6 +127,8 @@ class Task(TreeNode):
         #We should check for other task with the same title
         #In that case, we should add a number (like Tomboy does)
         old_title = self.title
+        if isinstance(title, str):
+            title = title.decode('utf8')
         if title:
             self.title = title.strip('\t\n')
         else:
@@ -149,14 +152,16 @@ class Task(TreeNode):
                 tags.append(match)
             # Get attributes
             regexp = r'([\s]*)([\w-]+):\s*([^\s]+)'
-            for spaces, attribute, args in re.findall(regexp, text, re.UNICODE):
+            matches = re.findall(regexp, text, re.UNICODE)
+            for spaces, attribute, args in matches:
                 valid_attribute = True
                 if attribute.lower() in ["tags", _("tags"), "tag", _("tag")]:
                     for tag in args.split(","):
                         if not tag.startswith("@"):
                             tag = "@" + tag
                         tags.append(tag)
-                elif attribute.lower() in ["defer", _("defer"), "start", _("start")]:
+                elif attribute.lower() in ["defer", _("defer"), "start",
+                        _("start")]:
                     try:
                         defer_date = Date.parse(args)
                     except ValueError:
@@ -242,23 +247,64 @@ class Task(TreeNode):
         self.last_modified = modified
 
     def set_due_date(self, fulldate):
-        self.due_date = Date(fulldate)
+        """Defines the task's due date."""
+        def get_due_date_constraint():
+            """ Returns the most urgent due date constraint, following
+                parents' due dates. Return Date.no_date() if no constraint
+                is applied. """
+            cur_date = Date.no_date()
+            for par_id in self.get_parents():
+                par = self.req.get_task(par_id)
+                if par.get_due_date() != Date.no_date() and \
+                   par.get_due_date() < cur_date:
+                    cur_date = par.get_due_date()
+            return cur_date
+        fulldate_obj = Date(fulldate) # caching the conversion
+        self.due_date = fulldate_obj
+        # if the task's start date happens later than the 
+        # new due date, we update it
+        if self.get_start_date() != Date.no_date() and \
+           self.get_start_date() > fulldate_obj:
+            self.set_start_date(fulldate)
+        if fulldate_obj != Date.no_date():
+            # if the parent's due date happens before the task's new
+            # due date, we update it
+            for par_id in self.parents:
+                par = self.req.get_task(par_id)
+                if par.get_due_date() != Date.no_date() and \
+                   par.get_due_date() < fulldate_obj:
+                    par.set_due_date(fulldate)
+            # the current task being one of its children's parents, we must
+            # apply the constraints on their due/start dates as well
+            for sub_id in self.children:
+                sub = self.req.get_task(sub_id)
+                # child's due date is not set, we use the task's new 
+                # due date
+                if sub.get_due_date() == Date.no_date():
+                    sub.set_due_date(fulldate)
+                # child's due date happens later than the task's: we
+                # update it to the task's new due date
+                # (= the new most restrictive)
+                if sub.get_due_date() != Date.no_date() and \
+                   sub.get_due_date() > fulldate_obj:
+                    sub.set_due_date(fulldate)
+                # if the child's start date happens later than
+                # the task's new due date, we update it
+                if sub.get_start_date() != Date.no_date() and \
+                   sub.get_start_date() > fulldate_obj:
+                    sub.set_start_date(fulldate)
+        else:
+            self.due_date = get_due_date_constraint()
         self.sync()
 
     def get_due_date(self):
-        """ Due date return the most urgent date of all parents """
-        zedate = self.due_date
-
-        for par in self.get_parents():
-            # compare with the parent's due date
-            pardate = self.req.get_task(par).get_due_date()
-            if pardate and zedate > pardate:
-                zedate = pardate
-
-        return zedate
+        """ Returns the due date, which always respects all constraints """
+        return self.due_date
 
     def set_start_date(self, fulldate):
         self.start_date = Date(fulldate)
+        if Date(fulldate) > self.due_date and Date(fulldate) != Date.no_date():
+            self.set_due_date(fulldate)
         self.sync()
 
     def get_start_date(self):
@@ -273,7 +319,7 @@ class Task(TreeNode):
 
     def get_days_left(self):
         return self.get_due_date().days_left()
-    
+
     def get_days_late(self):
         due_date = self.get_due_date()
         if due_date == Date.no_date():
@@ -288,7 +334,8 @@ class Task(TreeNode):
         else:
             return ""
 
-    def get_excerpt(self, lines=0, char=0, strip_tags=False, strip_subtasks=True):
+    def get_excerpt(self, lines=0, char=0, strip_tags=False,
+            strip_subtasks=True):
         """
         get_excerpt return the beginning of the content of the task.
         If "lines" is provided and different than 0, it return the number X
@@ -462,20 +509,10 @@ class Task(TreeNode):
         self._modified_update()
         if self.is_loaded():
             #This is a liblarch call to the TreeNode ancestor
-            self.modified(priority=self.get_update_priority())
+            self.modified()
             return True
         else:
             return False
-            
-    def get_update_priority(self):
-        priority = "low"
-        if self.get_status() == "Active":
-            priority = "high"
-        else:
-            #Tasks closed in the last 15 days are also VIP
-            if self.get_closed_date().days_left() >= -15:
-                priority = "medium"
-        return priority
 
     def _modified_update(self):
         '''
@@ -586,7 +623,8 @@ class Task(TreeNode):
     def _strip_tag(self, text, tagname, newtag=''):
         return (text
                     .replace('<tag>%s</tag>\n\n' % (tagname), newtag) #trail \n
-                    .replace('<tag>%s</tag>, ' % (tagname), newtag) #trail comma
+                    #trail comma
+                    .replace('<tag>%s</tag>, ' % (tagname), newtag)
                     .replace('<tag>%s</tag>,' % (tagname), newtag)
                     .replace('<tag>%s</tag>' % (tagname), newtag)
                     #in case XML is missing (bug #504899)
@@ -594,8 +632,7 @@ class Task(TreeNode):
                     .replace('%s, ' % (tagname), newtag)
                     .replace('%s,' % (tagname), newtag)
                     #don't forget a space a the end
-                    .replace('%s ' % (tagname), newtag)
-               )
+                    .replace('%s ' % (tagname), newtag))
 
     #tag_list is a list of tags names
     #return true if at least one of the list is in the task

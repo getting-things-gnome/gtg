@@ -29,6 +29,7 @@ import xml.sax.saxutils as saxutils
 from GTG.core         import CoreConfig
 from liblarch         import TreeNode
 
+
 class Tag(TreeNode):
     """A short name that can be applied to L{Task}s.
 
@@ -43,9 +44,10 @@ class Tag(TreeNode):
     def __init__(self, name, req, attributes={}):
         """Construct a tag.
 
-        @param name: The name of the tag. Should be a string, generally a
-            short one.
-        @param attributes: Allow having initial set of attributes without calling _save callback
+        @param name: The name of the tag. Should be a string, generally
+            a short one.
+        @param attributes: Allow having initial set of attributes without
+            calling _save callback
         """
         TreeNode.__init__(self, name)
         self._name = saxutils.unescape(str(name))
@@ -62,7 +64,8 @@ class Tag(TreeNode):
             TreeNode.add_parent(self, parent_id)
 
     def add_child(self, child_id):
-        if not self.is_special() and not self.req.get_tag(child_id).is_special():
+        special_child = self.req.get_tag(child_id).is_special()
+        if not self.is_special() and not special_child:
             TreeNode.add_child(self, child_id)
 
     def get_name(self):
@@ -81,16 +84,23 @@ class Tag(TreeNode):
         @param att_value: The value of the attribute. Will be converted to a
             string.
         """
+        modified = False
         if att_name == "name":
-            raise Set_Name_Attribute_Error("The name of tag cannot be set manually")
+            raise Set_Name_Attribute_Error(
+                "The name of tag cannot be set manually")
         elif att_name == "parent":
             self.add_parent(att_value)
+            modified = True
         else:
             # Attributes should all be strings.
             val = unicode(str(att_value), "UTF-8")
             self._attributes[att_name] = val
             if self._save:
                 self._save()
+            modified = True
+        if modified:
+            self.modified()
+            self.notify_related_tasks()
 
     def get_attribute(self, att_name):
         """Get the attribute C{att_name}.
@@ -102,7 +112,8 @@ class Tag(TreeNode):
             if self.has_parent():
                 parents_id = self.get_parents()
                 if len(parents_id) > 0:
-                    to_return = reduce(lambda a, b: "%s,%s" % (a, b), parents_id)
+                    to_return = reduce(lambda a, b: "%s,%s" % (a, b),
+                        parents_id)
         elif att_name == 'label':
             to_return = self._attributes.get(att_name, self.get_id())
         else:
@@ -120,6 +131,8 @@ class Tag(TreeNode):
             del self._attributes[att_name]
         if self._save:
             self._save()
+        self.modified()
+        self.notify_related_tasks()
 
     def get_all_attributes(self, butname=False, withparent=False):
         """Return a list of all attribute names.
@@ -138,7 +151,6 @@ class Tag(TreeNode):
         return attributes
 
     ### TASK relation ####
-
     def get_active_tasks_count(self):
         count = self.__get_count()
         return count
@@ -147,6 +159,10 @@ class Tag(TreeNode):
         return self.__get_count()
 
     def __get_count(self, tasktree=None):
+        """Returns the number of all related tasks"""
+        # this method purposefully doesn't rely on get_related_tasks()
+        # which does a similar job, in order to benefit from liblarch
+        # optimizations
         if not tasktree:
             tasktree = self.req.get_tasks_tree()
         sp_id = self.get_attribute("special")
@@ -156,13 +172,38 @@ class Tag(TreeNode):
         elif sp_id == "notag":
             toreturn = tasktree.get_n_nodes(\
                             withfilters=['notag'], include_transparent=False)
-        elif sp_id == "sep" :
+        elif sp_id == "sep":
             toreturn = 0
         else:
             tname = self.get_name()
             toreturn = tasktree.get_n_nodes(\
                                 withfilters=[tname], include_transparent=False)
         return toreturn
+
+    def get_related_tasks(self, tasktree=None):
+        """Returns all related tasks node ids"""
+        if not tasktree:
+            tasktree = self.req.get_tasks_tree()
+        sp_id = self.get_attribute("special")
+        if sp_id == "all":
+            toreturn = tasktree.get_nodes(\
+                    withfilters=['active'], include_transparent=False)
+        elif sp_id == "notag":
+            toreturn = tasktree.get_nodes(\
+                            withfilters=['notag'], include_transparent=False)
+        elif sp_id == "sep" :
+            toreturn = []
+        else:
+            tname = self.get_name()
+            toreturn = tasktree.get_nodes(\
+                                withfilters=[tname], include_transparent=False)
+        return toreturn
+
+    def notify_related_tasks(self):
+        """Notify changes to all related tasks"""
+        for task_id in self.get_related_tasks():
+            my_task = self.req.get_task(task_id)
+            my_task.modified()
 
     #is it useful to keep the tag in the tagstore.
     #if no attributes and no tasks, it is not useful.
@@ -180,10 +221,12 @@ class Tag(TreeNode):
         return self.get_total_tasks_count() > 0
 
     def is_actively_used(self):
-        return self.is_search_tag() or self.is_special() or self.get_active_tasks_count() > 0
+        return self.is_search_tag() or self.is_special() or\
+            self.get_active_tasks_count() > 0
 
     def __str__(self):
         return "Tag: %s" % self.get_name()
+
 
 class Set_Name_Attribute_Error(Exception):
     """Exception raised when try to set attribute to name"""

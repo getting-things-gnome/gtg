@@ -1,5 +1,4 @@
 2012-0?-?? Getting Things GNOME! 0.3
-    * Fix for bug #984847: setup.py install doesn't install icons on right place, by Alan Gomes
     * Hide tasks with due date someday, #931376
     * New Date class by Paul Kishimoto and Izidor Matušov
       * Parse due:3 as next 3rd day in month
@@ -23,6 +22,23 @@
     * Added an option to import local (development) version of liblarch instead of system installed one
     * Fix for bug #995740: (no title task) through quickadd bar, by Nimit Shah
     * New tag editor
+    * Fix bugs #1003872 and #1002067: Correct titles to Preferences and Synchronization Services Dialogs, by Alan Gomes
+    * Improved Export plugin, export to PDF works now, by Izidor Matušov
+    * Added -t option to distinguish between multiple instances of GTG
+    * Fix for bug #826916 by Nimit Shah
+    * Fix for bug #1018331: (gtg more interactive) by Nimit Shah
+    * User documentation for GTG, written by Radina Matic, integrated in GTG by Bertrand Rousseau
+    * It is not possible to add another instance of local file synchronization service
+    * Fixes for bugs #906516, #1002160 (task urgency color plugin), by Wolter Hellmund
+    * Fix for bug #1001012: Notification area icon should change color when there are urgent tasks, by Antonio Roquentin
+    * Saner implementation of set_due_date
+    * Conform to PEP394 (use python2 instead of python)
+    * Fix for bug #629683: update initial tutorial for 0.3
+    * Fix for bug #615027: Introductory task set should suggest organizing tasks in a tag hierarchy
+    * Fix for bug #1026264: Write user documentation for search/smart tag
+    * Fix for bug #1020611: Use deafult configuration when config is corrupted by Abhiram
+    * Fix for bug #1013869: Saved searches can't be deleted when GTG crashes, by Antonio Roquentin
+    * Fix for bug #984847: setup.py install doesn't install icons on right place, by Alan Gomes
 
 2012-02-13 Getting Things GNOME! 0.2.9
     * Big refractorization of code, now using liblarch

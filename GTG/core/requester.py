@@ -51,7 +51,7 @@ class Requester(gobject.GObject):
 
     def get_main_view(self):
         return self.__basetree.get_main_view()
-    
+
     def is_displayed(self, task):
         return self.__basetree.get_viewtree(name='active').is_displayed(task)
 
@@ -136,13 +136,12 @@ class Requester(gobject.GObject):
                 return task_id
 
         return None
-        
+
     ############### Tags ##########################
     ###############################################
-    
     def get_tag_tree(self):
         return self.ds.get_tagstore().get_viewtree(name='activetags')
-    
+
     def new_tag(self, tagname):
         """Create a new tag called 'tagname'.
 
@@ -152,23 +151,23 @@ class Requester(gobject.GObject):
         @return: The newly-created tag.
         """
         return self.ds.new_tag(tagname)
-    
+
     def new_search_tag(self, name, query):
         """
         Create a new search tag from search query
 
         Note: this modifies the datastore.
-        
+
         @param name:  name of the new search tag
         @param query: Query will be parsed using search parser
         @return:      new tag
         """
         return self.ds.new_search_tag(name, query)
-    
+
     def remove_tag(self, name):
         """ calls datastore to remove a given tag """
         self.ds.remove_tag(name)
-    
+
     def rename_tag(self, oldname, newname):
         self.ds.rename_tag(oldname, newname)
 
@@ -180,20 +179,20 @@ class Requester(gobject.GObject):
 
         @return: A list of tag names used by a task.
         """
-        view = self.ds.get_tagstore().get_viewtree(name='tag_completion', refresh=False)
-        l = view.get_all_nodes()
-        l.sort(cmp=lambda x, y: cmp(x.lower(), y.lower()))
-        return l
-    
+        tagstore = self.ds.get_tagstore()
+        view = tagstore.get_viewtree(name='tag_completion', refresh=False)
+        tags = view.get_all_nodes()
+        tags.sort(cmp=lambda x, y: cmp(x.lower(), y.lower()))
+        return tags
+
     def get_all_tags(self):
         """
         Gets all tags from all tasks
         """
         return self.ds.get_tagstore().get_main_view().get_all_nodes()
-    
+
     ############## Backends #######################
     ###############################################
-
     def get_all_backends(self, disabled=False):
         return self.ds.get_all_backends(disabled)
 

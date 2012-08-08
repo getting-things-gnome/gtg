@@ -94,23 +94,23 @@ class TreeFactory:
         p = {'transparent': True}
         self.tasktree.add_filter(CoreConfig.NOTAG_TAG,\
                                     self.notag, parameters=p)
-        
+
         # Build the search tag
         search_tag = Tag(CoreConfig.SEARCH_TAG, req=req)
-        search_tag.set_attribute("special","search")
+        search_tag.set_attribute("special", "search")
         search_tag.set_attribute("label",
             "<span weight='bold'>%s</span>" % _("Search"))
-        search_tag.set_attribute("icon","search")
-        search_tag.set_attribute("order",1)
+        search_tag.set_attribute("icon", "search")
+        search_tag.set_attribute("order", 1)
         tagtree.add_node(search_tag)
-        p = {'transparent':True}
+        p = {'transparent': True}
         self.tasktree.add_filter(CoreConfig.SEARCH_TAG,
                                    search_filter, parameters=p)
-        
+
         # Build the separator
         sep_tag = Tag(CoreConfig.SEP_TAG, req=req)
         sep_tag.set_attribute("special", "sep")
-        sep_tag.set_attribute("order",3)
+        sep_tag.set_attribute("order", 3)
         tagtree.add_node(sep_tag)
 
         #### Filters
@@ -119,7 +119,7 @@ class TreeFactory:
 
         activeview = tagtree.get_viewtree(name='activetags', refresh=False)
         activeview.apply_filter('activetag')
-        
+
         #This view doesn't seem to be used. So it's not useful to build it now
 #        usedview = tagtree.get_viewtree(name='usedtags',refresh=False)
 #        usedview.apply_filter('usedtag')
@@ -183,28 +183,25 @@ class TreeFactory:
             return days_left < 0
 
     def workview(self, task, parameters=None):
-        wv = ( self.active(task) and
+        wv = (self.active(task) and
              self.is_started(task) and
              self.is_workable(task) and
              self.no_disabled_tag(task) and
-             task.get_due_date() != Date.someday()
-             )
+             task.get_due_date() != Date.someday())
         return wv
 
     def workdue(self, task):
         ''' Filter for tasks due within the next day '''
-        wv = ( self.workview(task) and
+        wv = (self.workview(task) and
              task.get_due_date() and
-             task.get_days_left() < 2
-             )
+             task.get_days_left() < 2)
         return wv
 
     def worklate(self, task):
         ''' Filter for tasks due within the next day '''
-        wv = ( self.workview(task) and
+        wv = (self.workview(task) and
              task.get_due_date() and
-             task.get_days_late() > 0
-             )
+             task.get_days_late() > 0)
         return wv
 
     def workstarted(self, task):

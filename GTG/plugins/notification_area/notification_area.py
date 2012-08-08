@@ -24,7 +24,99 @@ except:
     pass
 
 from GTG                   import _
+from GTG                   import PLUGIN_DIR
 from GTG.tools.borg        import Borg
+from GTG.tools.dates       import Date
+
+
+def _due_within(task, danger_zone):
+    """
+    Determine if a task is the danger zone.
+    Convention: a danger zone of 1 day includes tasks due today.
+    """
+    ddate = task.get_due_date()
+    if (ddate != Date.no_date()):
+        if ddate.days_left() < danger_zone:
+            return True
+    return False
+
+
+class _Attention:
+
+    """
+    Define need attention state depending on whether there
+    are tasks in danger zone.
+
+    There are two levels of attention:
+    "normal": there are no tasks in danger zone
+    "high": there is at least one task in danger zone
+
+    A task is in danger zone if the number of days left is less
+    than time span (in days) defined by danger_zone.
+    """
+
+    STATUS = {'normal': appindicator.STATUS_ACTIVE,
+              'high': appindicator.STATUS_ATTENTION}
+
+    ICON = {'normal': 'gtg-panel',
+            'high': 'gtg_need_attention'}
+
+    def __init__(self, danger_zone, indicator, tree, req):
+        self.__tree = tree
+        self.__req = req
+        self.__indicator = indicator
+        self.danger_zone = danger_zone
+
+        # Setup list of tasks in danger zone
+        """ Setup a list of tasks in danger zone, use task id """
+        self.tasks_danger = []
+        for tid in self.__tree.get_all_nodes():
+            task = self.__req.get_task(tid)
+            if _due_within(task, self.danger_zone):
+                self.tasks_danger.append(tid)
+
+        # Set initial status
+        self.__update_indicator(self.level())
+
+    def level(self):
+        """ Two states only: attention is either needed or not """
+        return 'high' if len(self.tasks_danger)>0 else 'normal'
+
+    def __update_indicator(self, new, old=None):
+        """ Reset indicator status or update upon change in status """
+        if old is None or not old == new:
+            try:
+                # This works if __indicator implements the appindicator api 
+                self.__indicator.set_status(self.STATUS[new])
+            except AttributeError:
+                # If we passed a status icon instead try this
+                self.__indicator.set_from_icon_name(self.ICON[new])
+            except:
+                raise
+
+    def update_on_task_modified(self, tid):
+        # Store current attention level
+        old_lev = self.level()
+        task = self.__req.get_task(tid)
+        if tid in self.tasks_danger:
+            if not _due_within(task, self.danger_zone):
+                self.tasks_danger.remove(tid)
+        else:
+            if _due_within(task, self.danger_zone):
+                self.tasks_danger.append(tid)
+                
+        # Update icon only if attention level has changed
+        self.__update_indicator(self.level(), old_lev)
+
+    def update_on_task_deleted(self, tid):
+        # Store current attention level
+        old_lev = self.level()
+
+        if tid in self.tasks_danger:
+            self.tasks_danger.remove(tid)
+
+        # Update icon only if attention level has changed
+        self.__update_indicator(self.level(), old_lev)
 
 
 class NotificationArea:
@@ -33,7 +125,8 @@ class NotificationArea:
     to quickly access tasks.
     """
 
-    DEFAULT_PREFERENCES = {"start_minimized": False}
+    DEFAULT_PREFERENCES = {"start_minimized": False,
+                           "danger_zone": 1}
     PLUGIN_NAME = "notification_area"
     MAX_TITLE_LEN = 30
     MAX_ITEMS = 10
@@ -55,7 +148,6 @@ class NotificationArea:
                                   "gtg",
                                   "indicator-messages",
                                    appindicator.CATEGORY_APPLICATION_STATUS)
-                    self._indicator.set_icon("gtg")
                 except:
                     self._indicator = None
 
@@ -76,11 +168,27 @@ class NotificationArea:
         # them given the task id. Contains tuple of this format:
         # (title, key, gtk.MenuItem)
         self.__init_gtk()
-        self.__connect_to_tree()
 
-        #Load the preferences
+        # We load preferences before connecting to tree
         self.preference_dialog_init()
         self.preferences_load()
+
+        # Enable attention monitor.
+        self.__attention = None
+        self.__tree_att = self.__connect_to_tree([
+                ("node-added-inview", self.__on_task_added_att),
+                ("node-modified-inview", self.__on_task_added_att),
+                ("node-deleted-inview", self.__on_task_deleted_att),
+                ])
+        self.__tree_att.apply_filter('workview')
+        self.__init_attention()
+
+        self.__tree = self.__connect_to_tree([
+                ("node-added-inview", self.__on_task_added),
+                ("node-modified-inview", self.__on_task_added),
+                ("node-deleted-inview", self.__on_task_deleted),
+                ])
+        self.__tree.apply_filter('workview')
 
         # When no windows (browser or text editors) are shown, it tries to quit
         # With hidden browser and closing the only single text editor,
@@ -153,17 +261,40 @@ class NotificationArea:
         self.__tasks_menu = SortedLimitedMenu(self.MAX_ITEMS,
                             self.__menu, self.__menu_top_length)
 
+        # Update the icon theme
+        icon_theme = os.path.join('notification_area', 'data', 'icons')
+        abs_theme_path = os.path.join(PLUGIN_DIR[0], icon_theme)
+        theme = gtk.icon_theme_get_default()
+        theme.append_search_path(abs_theme_path)
+
         if self.__indicator:
+            self.__indicator.set_icon_theme_path(abs_theme_path)
+            self.__indicator.set_icon("gtg-panel")
+            self.__indicator.set_attention_icon("gtg_need_attention")
             self.__indicator.set_menu(self.__menu)
             self.__indicator.set_status(appindicator.STATUS_ACTIVE)
         else:
             self.status_icon = gtk.StatusIcon()
-            self.status_icon.set_from_icon_name("gtg")
+            self.status_icon.set_from_icon_name("gtg-panel")
             self.status_icon.set_tooltip("Getting Things Gnome!")
             self.status_icon.set_visible(True)
             self.status_icon.connect('activate', self.__toggle_browser)
             self.status_icon.connect('popup-menu',
                                      self.__on_icon_popup, self.__menu)
+
+    def __init_attention(self):
+        # Use two different viewtree for attention and menu
+        # This way we can filter them independently.
+        # Convention: if danger zone is <=0, disable attention
+        # Fallback: if there is no indicator we pass the status icon instead
+        if self.preferences['danger_zone'] > 0:
+            self.__attention = _Attention( \
+                self.preferences['danger_zone'],
+                self.__indicator if self.__indicator else self.status_icon,
+                self.__tree_att,
+                self.__requester)
+        else:
+            self.__attention = None
 
     def __open_task(self, widget, task_id = None):
         """
@@ -178,21 +309,22 @@ class NotificationArea:
 
         self.__view_manager.open_task(task_id, thisisnew=new_task)
 
-    def __connect_to_tree(self):
-        self.__tree = self.__requester.get_tasks_tree()
+    def __connect_to_tree(self, signal_cllbck):
+        """ Return a new view tree """
+        tree = self.__requester.get_tasks_tree()
         # Request a new view so we do not influence anybody
-        self.__tree = self.__tree.get_basetree().get_viewtree(refresh=False)
+        tree = tree.get_basetree().get_viewtree(refresh=False)
 
         self.__liblarch_callbacks = []
-        for signal, cllbck in [
-            ("node-added-inview", self.__on_task_added),
-            ("node-modified-inview", self.__on_task_added),
-            ("node-deleted-inview", self.__on_task_deleted),
-        ]:
-            cb_id = self.__tree.register_cllbck(signal, cllbck)
+        for signal, cllbck in signal_cllbck:
+            cb_id = tree.register_cllbck(signal, cllbck)
             self.__liblarch_callbacks.append((cb_id, signal))
+        return tree
 
-        self.__tree.apply_filter('workview')
+    def __on_task_added_att(self, tid, path):
+        # Update icon on modification
+        if self.__attention:
+            self.__attention.update_on_task_modified(tid)
 
     def __on_task_added(self, tid, path):
         self.__task_separator.show()
@@ -210,6 +342,11 @@ class NotificationArea:
 
         if self.__indicator:
             self.__indicator.set_menu(self.__menu)
+
+    def __on_task_deleted_att(self, tid, path):
+        # Update icon on deletion
+        if self.__attention:
+            self.__attention.update_on_task_deleted(tid)
 
     def __on_task_deleted(self, tid, path):
         self.__tasks_menu.remove(tid)
@@ -234,10 +371,11 @@ class NotificationArea:
     def preferences_load(self):
         data = self.__plugin_api.load_configuration_object(self.PLUGIN_NAME,
                                                          "preferences")
-        if not data or not isinstance(data, dict):
-            self.preferences = self.DEFAULT_PREFERENCES
-        else:
-            self.preferences = data
+        # We first load the preferences then update the dict
+        # This way new default options are recognized with old cfg files
+        self.preferences = self.DEFAULT_PREFERENCES
+        if isinstance(data, dict):
+            self.preferences.update(data)
 
     def preferences_store(self):
         self.__plugin_api.save_configuration_object(self.PLUGIN_NAME,
@@ -255,6 +393,8 @@ class NotificationArea:
                     "notification_area.ui"))
         self.preferences_dialog = self.builder.get_object("preferences_dialog")
         self.chbox_minimized = self.builder.get_object("pref_chbox_minimized")
+        self.spinbutton_dangerzone = \
+            self.builder.get_object("pref_spinbutton_dangerzone")
         SIGNAL_CONNECTIONS_DIC = {
             "on_preferences_dialog_delete_event":
                 self.on_preferences_cancel,
@@ -267,6 +407,7 @@ class NotificationArea:
 
     def configure_dialog(self, manager_dialog):
         self.chbox_minimized.set_active(self.preferences["start_minimized"])
+        self.spinbutton_dangerzone.set_value(self.preferences["danger_zone"])
         self.preferences_dialog.show_all()
         self.preferences_dialog.set_transient_for(manager_dialog)
 
@@ -275,6 +416,13 @@ class NotificationArea:
         return True
 
     def on_preferences_ok(self, widget = None, data = None):
+        dzone = self.spinbutton_dangerzone.get_value()
+        # update danger zone only if it has changed
+        # and refresh attention monitor
+        if not dzone == self.preferences["danger_zone"]:
+            self.preferences["danger_zone"] = dzone
+            self.__init_attention()
+
         self.preferences["start_minimized"] = self.chbox_minimized.get_active()
         self.preferences_store()
         self.preferences_dialog.hide()

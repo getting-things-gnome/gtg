@@ -17,7 +17,7 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-"""Tests for the documentation."""
+""" Tests for the documentation. """
 
 import unittest
 
@@ -28,13 +28,11 @@ import shutil
 import uuid
 
 
-
 class TestApiDocs(unittest.TestCase):
-    """Test if the documentation still builds."""
+    """ Test if the documentation still builds. """
 
-    
     def test_pydoctor(self):
-        if int(subprocess.call(['which', 'pydoctor'], stdout = subprocess.PIPE)):
+        if int(subprocess.call(['which', 'pydoctor'], stdout=subprocess.PIPE)):
             #if no pydoctor is present, abort the test w/out giving error
             return
         GTG_basedir = os.path.dirname(GTG.__file__)
@@ -42,17 +40,18 @@ class TestApiDocs(unittest.TestCase):
                                'test_build_api-' + str(uuid.uuid4()))
         if not os.path.isdir(api_dir):
             os.makedirs(api_dir)
-        args = ['pydoctor', 
+        args = ['pydoctor',
                 '--add-package', GTG_basedir,
                 '--make-html',
-                '--html-output=' + api_dir , 
+                '--html-output=' + api_dir,
                 '--project-name=GTG',
                 '--project-url=http://gtg.fritalk.com/']
         #we suppress printing of errors to keep a clean output
         assert(int(subprocess.call(args,
                                    stdout = subprocess.PIPE,
-                                   stderr = subprocess.PIPE,)) == 0)
+                                   stderr = subprocess.PIPE)) == 0)
         shutil.rmtree(api_dir)
+
 
 def test_suite():
     return unittest.TestLoader().loadTestsFromTestCase(TestApiDocs)

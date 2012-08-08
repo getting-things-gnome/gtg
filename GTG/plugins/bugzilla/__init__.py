@@ -18,4 +18,5 @@ from GTG.plugins.bugzilla.bugzilla import pluginBugzilla
 
 
 #suppress pyflakes warning (given by make lint)
-if False == True: pluginBugzilla()
+if False == True:
+    pluginBugzilla()

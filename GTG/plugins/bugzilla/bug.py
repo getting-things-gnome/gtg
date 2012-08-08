@@ -23,6 +23,7 @@ except:
 #changed the default action to skip auth
 
 class Bug:
+
     def __init__(self, base, nb):
         #this also handles old versions of pybugz
         try:
@@ -53,8 +54,8 @@ class Bug:
         return comment.find('.//thetext').text
 
 if __name__ == '__main__':
-     for bug in [Bug('http://bugzilla.gnome.org', '598354'),
-         Bug('http://bugs.freedesktop.org', '24120')]:
+    for bug in [Bug('http://bugzilla.gnome.org', '598354'),
+            Bug('http://bugs.freedesktop.org', '24120')]:
         print "title:", bug.get_title()
         print "product:", bug.get_product()
         print "component:", bug.get_component()

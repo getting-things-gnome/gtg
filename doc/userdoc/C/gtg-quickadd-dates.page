@@ -1,0 +1,86 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="topic" style="task"
+      id="gtg-quickadd-dates">
+
+  <info>
+    <link type="guide" xref="gtg-quickadd" group="fourth"/>
+    <link type="seealso" xref="gtg-quickadd-new-task"/>
+    <link type="seealso" xref="gtg-quickadd-tags"/>
+    <revision pkgversion="0.1" version="0.1" date="2012-07-03" status="candidate"/>
+    <credit type="author">
+      <name>Radina Matic</name>
+     <email>radina.matic@gmail.com</email>
+    </credit>
+  </info>
+
+  <title>Add Dates and Tags to Tasks using the Quick Add Entry</title>
+
+    <p>You can also create a task in the Quick Add Entry and at the same time specify its tags, due and defer date. Follow these format rules:</p>
+
+    <p><em style="strong">tags:tag1,tag2,tag3</em></p>
+
+<list>
+      <item><p>This way you can apply as many tags as you wish using comma as a separator.</p></item>
+      <item><p>Any word that begins with “@” sign will be interpreted as a tag.</p></item> 
+</list>
+
+
+    <p><em style="strong">due:date</em></p>
+
+    <p><em style="strong">defer:date</em></p>
+
+ <p>This way you can apply a due date or a defer date. Dates can be formatted as yyyy-mm-dd (for example 2012-04-01) or yyyymmdd (20120401) or mmdd (0401 - the year being implicitly the current one) or today, tomorrow or a weekday name (due:monday means due next Monday). Dates which are added in this way will not appear in the task title.</p>
+
+    <p>Examples</p>
+
+    <p><em style="strong">buy stationary tags:purchases,office due:20120330 defer:tuesday</em></p>
+
+    <p>The above example tells GTG to create a new task with the title "buy stationary", under the tags "purchases" and "office", with the due date March 30, 2012 and the start date next Tuesday.</p>
+
+    <p><em style="strong">call mum tags:family,calls due:sunday defer:tomorrow</em></p>
+
+    <p>The above example tells GTG to create a new task with the title "call mum", under the tags "family" and "calls", with the due date next Sunday and the start date tomorrow.</p>
+
+<p>Watch this short video tutorial to understand better how the Quick Add Entry works:</p>
+
+<media type="video" src="videos/quick-add2.webm" title="Add Dates and Tags to Tasks using the Quick Add Entry">
+
+<tt:tt xmlns:tt="http://www.w3.org/ns/ttml">
+        <tt:body>
+          <tt:div begin="1s" end="11s">
+            <tt:p>
+              Let's see an example how to use the <em style="strong">Quick Add Entry</em> to set up a new task.
+            </tt:p>
+          </tt:div>
+          <tt:div begin="11s" end="25s">
+            <tt:p>
+              We are going to copy an already prepared line with parameters and explain them one by one.
+            </tt:p>
+          </tt:div>
+          <tt:div begin="25s" end="36s">
+            <tt:p>
+               Once you press the <gui>Enter</gui> key, the new task will appear in the task browser.
+            </tt:p>
+          </tt:div>
+          <tt:div begin="36s" end="53s">
+            <tt:p>
+             The first part ("call mum") is the task title.
+            </tt:p>
+          </tt:div>
+          <tt:div begin="53s" end="65s">
+            <tt:p>
+              When GTG sees "tags:calls,family" it will add the tags <gui>@calls</gui> and <gui>@family</gui> highligthed in yellow under the task name.
+            </tt:p>
+          </tt:div>
+          <tt:div begin="65s" end="104s">
+            <tt:p>
+          Setting the dates is easy: "due:sunday" and "defer:tomorrow" will be recorded correctly as the due and start date of the task.
+            </tt:p>
+          </tt:div>
+        </tt:body>
+      </tt:tt>
+
+</media>
+
+
+</page>

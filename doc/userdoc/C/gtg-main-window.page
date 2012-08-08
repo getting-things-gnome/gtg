@@ -1,0 +1,67 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="topic" style="task"
+      id="gtg-main-window">
+
+  <info>
+    <link type="guide" xref="index"/>
+    <link type="seealso" xref="gtg-shortcut-keys"/>
+    <link type="seealso" xref="gtg-quickstart"/>
+    
+    <revision pkgversion="0.1" version="0.1" date="2012-07-03" status="candidate"/>
+    <credit type="author">
+      <name>Radina Matic</name>
+     <email>radina.matic@gmail.com</email>
+    </credit>
+  </info>
+
+  <title>Understand GTG Main Window</title>
+
+
+  <p>Watch the video to become more familiar with various parts of the <app>GTG</app> main window.</p>
+
+<media type="video" src="videos/GetStarted.ogg">
+ <tt:tt xmlns:tt="http://www.w3.org/ns/ttml">
+        <tt:body>
+          <tt:div begin="1s" end="16s">
+            <tt:p>
+              The GTG Main Menu has the following items: Tasks, Edit, View, Plugins and Help.
+            </tt:p>
+          </tt:div>
+          <tt:div begin="16s" end="23s">
+            <tt:p>
+              Bellow the menu there is the <em style="strong">Toolbar</em>.
+            </tt:p>
+          </tt:div>
+          <tt:div begin="23s" end="36s">
+            <tt:p>
+               <em style="strong">Tag Sidebar</em> is on the right side of the window.
+            </tt:p>
+          </tt:div>
+          <tt:div begin="36s" end="53s">
+            <tt:p>
+             Use the <em style="strong">Quick Add Entry</em> as the fastest way to create a new task.
+            </tt:p>
+          </tt:div>
+          <tt:div begin="53s" end="61s">
+            <tt:p>
+              All the tasks are listed in the <em style="strong">GTG Task Browser</em>.
+            </tt:p>
+          </tt:div>
+          <tt:div begin="61s" end="77s">
+            <tt:p>
+          You can show and hide the <em style="strong">Closed Task Pane</em> from the View menu.
+            </tt:p>
+          </tt:div>
+        </tt:body>
+      </tt:tt>
+
+<figure>
+  <title>GTG Main Window</title>
+  <desc> </desc>
+ <media type="image" mime="image/png" src="figures/Understand-GTG-main-window.png"/>
+</figure>
+
+</media>
+
+</page>
+

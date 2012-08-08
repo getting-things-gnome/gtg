@@ -27,11 +27,9 @@ from GTG.core.datastore import DataStore
 from GTG.tests.signals_testing import GobjectSignalsManager
 
 
-
 class TestTag(unittest.TestCase):
     """Tests for `Tag`."""
 
-    
     def setUp(self):
         ds = DataStore()
         self.req = ds.get_requester()
@@ -41,7 +39,7 @@ class TestTag(unittest.TestCase):
         #refresh the viewtree for tasks
         tt = self.req.get_tasks_tree()
         tt.reset_filters()
-        
+
     def tearDown(self):
 #        finally:
         #stopping gobject main loop
@@ -134,18 +132,19 @@ class TestTag(unittest.TestCase):
         except Set_Name_Attribute_Error:
             pass
         self.assertEqual(0, len(save_calls))
-        
+
     def test_intask_counting_after_rename(self):
         '''We test that the task counting for tags work
         even after tag renaming (stuttering tag bug)'''
         t = self.req.new_task(tags=['@testtag'])
         t.modified()
         tag = self.req.get_tag('@testtag')
-        self.assertEqual(tag.get_active_tasks_count(),1)
-        t.rename_tag('@testtag','@test')
+        self.assertEqual(tag.get_active_tasks_count(), 1)
+        t.rename_tag('@testtag', '@test')
         tag2 = self.req.get_tag('@test')
-        self.assertEqual(tag2.get_active_tasks_count(),1)
-        self.assertEqual(tag.get_active_tasks_count(),0)
+        self.assertEqual(tag2.get_active_tasks_count(), 1)
+        self.assertEqual(tag.get_active_tasks_count(), 0)
+
 
 def test_suite():
     return unittest.TestLoader().loadTestsFromTestCase(TestTag)

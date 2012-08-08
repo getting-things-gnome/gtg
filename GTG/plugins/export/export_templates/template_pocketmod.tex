@@ -20,10 +20,10 @@
 #def task_template($task)
 \item[\Square]
 	#if $task.has_title
-	\textbf{$task.title}
+	\textbf{$task.title.replace('_', '\_')}
 		#if $task.has_tags
 			#for $tag in $task.tags:
-				\textit{$tag}
+				\textit{$tag.replace('_', '\_')}
 			#end for
 		#end if
 	#end if

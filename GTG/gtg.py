@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 # -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
 # Gettings Things Gnome! - a personal organizer for the GNOME desktop
@@ -101,9 +101,13 @@ def check_instance(directory, uri_list = []):
         f.write(`os.getpid()`)
 
 def remove_pidfile(directory):
-    """Remove the pid file"""
+    """ Remove the pid file """
     pidfile = os.path.join(directory, "gtg.pid")
-    os.remove(pidfile)
+    try:
+        os.remove(pidfile)
+    except OSError:
+        # Ignore missing PID file
+        pass
 
 #=== MAIN CLASS ===============================================================
 

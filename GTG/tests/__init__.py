@@ -17,13 +17,14 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-"""Unit tests for GTG."""
+""" Unit tests for GTG. """
 
 import unittest
 import os
 import sys
 
 TEST_MODULE_PREFIX = "GTG.tests."
+
 
 def test_suite():
     '''
