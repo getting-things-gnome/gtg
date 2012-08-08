@@ -82,6 +82,13 @@ class PreferencesDialog:
         self.pref_show_preview = builder.get_object("pref_show_preview")
         self.bg_color_enable = builder.get_object("bg_color_enable")
 
+        self.fontbutton = builder.get_object("fontbutton")
+        editor_font = self.config.get("font_name")
+        if editor_font == "":
+            style = self.dialog.get_style()
+            editor_font = str(style.font_desc)
+        self.fontbutton.set_font_name(editor_font)
+
         builder.connect_signals({
           'on_pref_autostart_toggled':
             self.on_autostart_toggled,
@@ -95,6 +102,8 @@ class PreferencesDialog:
             self.on_close,
           'on_PreferencesDialog_delete_event':
             self.on_close,
+          'on_fontbutton_font_set':
+            self.on_font_change,  
         })
 
     def  _refresh_preferences_store(self):
@@ -149,3 +158,7 @@ class PreferencesDialog:
         if curstate != widget.get_active():
             self.config.set("bg_color_enable", not curstate)
             self._refresh_task_browser()
+
+    def on_font_change(self,widget):
+        """ Set a new font for editor """
+	self.config.set("font_name", self.fontbutton.get_font_name())  
