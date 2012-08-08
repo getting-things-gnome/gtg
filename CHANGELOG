@@ -38,6 +38,7 @@
     * Fix for bug #1026264: Write user documentation for search/smart tag
     * Fix for bug #1020611: Use deafult configuration when config is corrupted by Abhiram
     * Fix for bug #1013869: Saved searches can't be deleted when GTG crashes, by Antonio Roquentin
+    * Added option to change font used in task editor by Abhiram
     * Fix for bug #984847: setup.py install doesn't install icons on right place, by Alan Gomes
 
 2012-02-13 Getting Things GNOME! 0.2.9
