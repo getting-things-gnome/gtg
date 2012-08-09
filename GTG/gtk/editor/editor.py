@@ -25,6 +25,7 @@ The rest is the logic of the widget: date changing widgets, buttons, ...
 """
 import time
 
+import pango
 import gtk
 
 from GTG                     import _, ngettext
@@ -52,6 +53,7 @@ class TaskEditor:
         thisisnew is True when a new task is created and opened
         '''
         self.req = requester
+        self.browser_config = self.req.get_config('browser')
         self.vmanager = vmanager
         self.config = taskconfig
         self.time = None
@@ -102,6 +104,9 @@ class TaskEditor:
         self.textview.set_left_margin(7)
         self.textview.set_right_margin(5)
         scrolled.add(self.textview)
+        conf_font_value = self.browser_config.get("font_name")
+        if conf_font_value!= "":
+            self.textview.modify_font(pango.FontDescription(conf_font_value)) 
         #Voila! it's done
         self.calendar       = GTGCalendar(self.builder)
         self.duedate_widget = self.builder.get_object("duedate_entry")

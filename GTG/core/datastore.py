@@ -152,12 +152,14 @@ class DataStore(object):
         self._add_new_tag(name, tag, search_filter,
             parameters, parent_id = CoreConfig.SEARCH_TAG)
         Log.debug("*** view added %s ***" % name)
+        self.save_tagtree()
         return tag
 
     def remove_tag(self, name):
         """ Removes a tag from the tagtree """
         if self.__tagstore.has_node(name):
             self.__tagstore.del_node(name)
+            self.save_tagtree()
         else:
             raise IndexError("There is no tag %s" % name)
 
