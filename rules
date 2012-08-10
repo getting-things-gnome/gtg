@@ -1,10 +1,10 @@
 #!/usr/bin/make -f
 
 %:
-	dh $@
+	dh $@ --buildsystem=python_distutils
 
 clean:
-	dh $@
+	dh $@ --buildsystem=python_distutils
 	rm -fr build
 
 override_dh_auto_install:
