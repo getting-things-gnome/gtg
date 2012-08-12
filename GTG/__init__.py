@@ -71,19 +71,3 @@ PLUGIN_DIR = [os.path.join(LOCAL_ROOTDIR, 'GTG/plugins')]
 user_plugins = os.path.join(config_home, 'gtg/plugins')
 if os.path.isdir(user_plugins):
     PLUGIN_DIR.append(user_plugins)
-
-# FIXME Register GTG URI (temporary, it should be created by a schema upon installing)
-# FIXME Uncomment it or even better - install it properly - it breaks build
-"""
-try:
-    import gconf
-    domain = "/desktop/gnome/url-handlers/gtg/"
-    client = gconf.client_get_default()
-    #this should work both in debugging mode and in deployed mode
-    client.set_string(os.path.join(domain, "command"), "gtg %s")
-    client.set_bool(os.path.join(domain, "enabled"), True)
-    client.set_bool(os.path.join(domain, "needs_terminal"), False)
-except ImportError:
-    # Ignore it on systems which do not have GConf
-    pass
-    """
