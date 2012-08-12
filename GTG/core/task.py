@@ -307,7 +307,9 @@ class Task(TreeNode):
 
     def set_start_date(self, fulldate):
         self.start_date = Date(fulldate)
-        if Date(fulldate) > self.due_date and Date(fulldate) != Date.no_date():
+        if Date(fulldate) != Date.no_date() and \
+           not self.due_date.is_fuzzy() and \
+           Date(fulldate) > self.due_date:
             self.set_due_date(fulldate)
         self.sync()
 
