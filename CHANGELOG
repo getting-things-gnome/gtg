@@ -46,6 +46,7 @@
     * Fix for bug #1026400: script_pocketmod doesn't have execute permission
     * Fix for bug #1027817: Export plugin: changing output format moves widgets up and down
     * Save backups into backup/ folder, creates backups of tags.xml closes #993920
+    * Search filter is deleted on empty search if tag_pane is closed, by Stefan Handschuh, closes #996236
 
 2012-02-13 Getting Things GNOME! 0.2.9
     * Big refractorization of code, now using liblarch
