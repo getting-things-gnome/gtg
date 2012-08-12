@@ -43,6 +43,8 @@
     * Fix for bug #1026312: Numbers of tasks in tags pane disappear after a regular search, by Antonio Roquentin
     * Cleaned gtg.desktop file
     * Re-enabled support for gtg:// URI
+    * Fix for bug #1026400: script_pocketmod doesn't have execute permission
+    * Fix for bug #1027817: Export plugin: changing output format moves widgets up and down
 
 2012-02-13 Getting Things GNOME! 0.2.9
     * Big refractorization of code, now using liblarch
