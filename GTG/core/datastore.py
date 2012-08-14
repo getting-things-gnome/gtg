@@ -269,7 +269,7 @@ class DataStore(object):
             xmlroot.appendChild(t_xml)
             already_saved.append(tagname)
 
-        cleanxml.savexml(self.tagfile, doc)
+        cleanxml.savexml(self.tagfile, doc, backup=True)
 
     ##########################################################################
     ### Tasks functions
