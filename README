@@ -1,9 +1,9 @@
 ====== Getting Things GNOME! ======
 
-Getting Things GNOME! (GTG) is a personal organizer for the GNOME desktop
-environment inspired by the Getting Things Done (GTD) methodology. GTG is
-designed with flexibility, adaptability, and ease of use in mind so it can be
-used as more than just GTD software.
+Getting Things GNOME! (GTG) is a personal task and TODO list items organizer
+for the GNOME desktop environment inspired by the Getting Things Done (GTD)
+methodology. GTG is designed with flexibility, adaptability, and ease of use
+in mind so it can be used as more than just GTD software.
 
 GTG is intended to help you track everything you need to do and need to know,
 from small tasks to large projects.
@@ -11,12 +11,15 @@ from small tasks to large projects.
 ===== Dependencies =====
 
 GTG depends on the following packages:
+
  * Python, version 2.6 or above
  * PyGTK
+ * python-support
  * python-configobj
  * python-xdg
  * python-liblarch 
- * python-liblarch-gtk
+ * python-dbus
+ * yelp (to read GTG documentation)
  * python-suds (dependency of MantisBT backend)
  * python-evolution (dependency of Evolution backend)
 
@@ -25,18 +28,19 @@ To generate the API documentation, you'll also need to install 'pydoctor'.
 Please refer to your system documentation for information on how to install
 these modules if they're not currently available.
 
-To install these packages on Debian-based systems, execute the following
-command:
-    $ sudo apt-get install python-gtk2 python-gnome2 python-glade2 \
-         python-xdg python-configobj python-pydoctor
+To install the all the required packages providing the basic features on
+Debian-based systems, execute the following command:
+    $ sudo apt-get install python-support python-gtk2 python-gnome2 \
+         python-glade2 python-xdg python-configobj python-liblarch yelp
+
+To enable API documentation generation, execute this command:
+    $ sudo apt-get install python-pydoctor
 
 For evolution backend, you need python-evolution by command:
     $ sudo apt-get install python-evolution
 
 For MantisBT backend, you need python-suds by command:
     $ sudo apt-get install python-suds
-
-Note that the python-pydoctor package is broken in karmic.
 
 ===== Installing and Running =====
 
@@ -65,28 +69,52 @@ to correctly install GTG on recent Ubuntu versions (9.04 "Jaunty" or later):
 
     $ sudo python setup.py install --install-layout=deb
 
-==== Usage ====
+==== How To Use GTG? ====
 
-When writing a task, keep in mind that:
- 1) A line beginning with "-" will automatically create a subtask on that line
- 2) A word beginning with "@" is a tag
+Please refer to our documentation to get a thorough explanation on how GTG
+works.
 
-===== Quick add =====
+To do this, you will need the yelp help viewer. On Debian-based systems, you
+can install yelp by executing this command:
 
-In the quickadd line you can use "attribute:argument" with any title.
-Valid attributes are: "tags", "defer", "due"
-E.g.:
- "due:friday task description"
- "more work due:today"
- "due:tomorrow foo work"
- "my bar task tags:@foo"
+    $ sudo apt-get install yelp
 
+You can then view the documentation either by accessing it through GTG (press
+F1 or use the help menu), or by using the command line using the following
+command:
 
-Please refer to http://gtg.fritalk.com/pages/documentation
+    $ yelp help:gtg
+
+If you want to read the documentation directly from the source code, use
+this command (from the source root dir):
+
+    $ yelp doc/userdoc/C/index.page
+
+==== Using GTG from the command line ====
+
+GTG provides two command line tools that allows to interact with GTG:
+
+ * gtcli
+ * gtg_new_task
+
+gtcli provides many options to display, list or edit tasks. gtg_new_task
+provides a GTG command line client that allows to easily add tasks.
+
+If you want to know more about how to use these tools, please refer to the
+tools man page.
+
+If you have installed gtg, you can access those by executing:
+
+    $ man gtcli
+    $ man gtg_new_task
 
 ===== Want to know more? =====
 
  * GTG Website: http://gtg.fritalk.com/
  * GTG project page on Launchpad: https://launchpad.net/gtg
  * GTG Wiki: http://live.gnome.org/gtg/
- * GTG code documentation:  http://allievi.sssup.it/GTG/
+
+Feel free to join our user mailing-list to receive news about GTG. You can
+register on this mailing-list from this page: https://launchpad.net/~gtg-user
+
+Thanks for using GTG!
