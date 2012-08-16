@@ -596,6 +596,7 @@ class GenericBackend(object):
                         data = pickle.load(file)
                         Log.info("Succesfully restored backup #%d for '%s'" % \
                             (i, self.get_name()))
+                        return data
                     except Exception:
                         Log.error("Backup #%d for '%s' is damaged as well" % \
                             (i, self.get_name()))
