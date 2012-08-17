@@ -35,6 +35,8 @@ from GTG.core                    import CoreConfig
 from GTG.tools.logger            import Log
 from GTG.tools.interruptible     import _cancellation_point
 
+PICKLE_BACKUP_NBR = 2
+
 
 class GenericBackend(object):
     '''
@@ -543,6 +545,24 @@ class GenericBackend(object):
         except OSError, exception:
             if exception.errno != errno.EEXIST: 
                 raise
+
+        # Shift backups
+        for i in range(PICKLE_BACKUP_NBR, 1, -1):
+            destination = "%s.bak.%d" % (path, i)
+            source = "%s.bak.%d" % (path, i-1)
+
+            if os.path.exists(destination):
+                os.unlink(destination)
+
+            if os.path.exists(source):
+                os.rename(source, destination)
+
+        # Backup main file
+        if PICKLE_BACKUP_NBR > 0:
+            destination = "%s.bak.1" % path
+            if os.path.exists(path):
+                os.rename(path, destination)
+
         #saving
         with open(path, 'wb') as file:
                 pickle.dump(data, file)
@@ -559,13 +579,33 @@ class GenericBackend(object):
         path = os.path.join(CoreConfig().get_data_dir(), path)
         if not os.path.exists(path):
             return default_value
-        else:
-            with open(path, 'r') as file:
-                try:
-                    return pickle.load(file)
-                except pickle.PickleError:
-                    Log.error("PICKLE ERROR")
-                    return default_value
+
+        with open(path, 'r') as file:
+            try:
+                return pickle.load(file)
+            except Exception:
+                Log.error("Pickle file for backend '%s' is damaged" % \
+                    self.get_name())
+
+        # Loading file failed, trying backups
+        for i in range(1, PICKLE_BACKUP_NBR+1):
+            backup_file = "%s.bak.%d" % (path, i)
+            if os.path.exists(backup_file):
+                with open(backup_file, 'r') as file:
+                    try:
+                        data = pickle.load(file)
+                        Log.info("Succesfully restored backup #%d for '%s'" % \
+                            (i, self.get_name()))
+                        return data
+                    except Exception:
+                        Log.error("Backup #%d for '%s' is damaged as well" % \
+                            (i, self.get_name()))
+
+        # Data could not be loaded, degrade to default data
+        Log.error("There is no suitable backup for '%s', " \
+            "loading default data" % self.get_name())
+        return default_value
+
 
     def _gtg_task_is_syncable_per_attached_tags(self, task):
         '''
