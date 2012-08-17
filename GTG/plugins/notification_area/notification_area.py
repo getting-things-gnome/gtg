@@ -233,14 +233,10 @@ class NotificationArea:
         self.__menu.append(menuItem)
 
         #view in main window checkbox
-        view_browser_checkbox = gtk.CheckMenuItem(_("_View Main Window"))
-        view_browser_checkbox.set_active(browser.is_shown())
-        self.__signal_handler = view_browser_checkbox.connect('activate',
-                                                       self.__toggle_browser)
-        browser.connect('visibility-toggled', self.__on_browser_toggled,
-                                                view_browser_checkbox)
-        self.__menu.append(view_browser_checkbox)
-        self.checkbox = view_browser_checkbox
+        show_browser = gtk.ImageMenuItem(gtk.STOCK_ADD)
+        show_browser.get_children()[0].set_label(_('_Show Main Window'))
+        show_browser.connect('activate', self.__show_browser)
+        self.__menu.append(show_browser)
 
         #separator (it's intended to be after show_all)
         # separator should be shown only when having tasks
@@ -428,23 +424,13 @@ class NotificationArea:
         self.preferences_dialog.hide()
 
 ### Browser methods ###########################################################
-    def __on_browser_toggled(self, sender, checkbox):
-        checkbox.disconnect(self.__signal_handler)
-        is_shown = self.__view_manager.get_browser().is_shown()
-        checkbox.set_active(is_shown)
-        self.__signal_handler = checkbox.connect('activate',
-                                               self.__toggle_browser)
-
     def __on_browser_minimize(self, widget = None, plugin_api = None):
         self.__view_manager.hide_browser()
         return True
 
-    def __toggle_browser(self, sender = None, data = None):
+    def __show_browser(self, sender = None, data = None):
         manager = self.__plugin_api.get_view_manager()
-        if manager.is_browser_visible():
-            manager.hide_browser()
-        else:
-            manager.show_browser()
+        manager.show_browser()
 
     def __set_browser_close_callback(self, method):
         """ Set a callback for browser's close event. If method is None,
