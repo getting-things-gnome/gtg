@@ -429,6 +429,7 @@ class Task(TreeNode):
         child = self.req.get_task(tid)
         if self.is_loaded() and child and child.can_be_deleted:
             child.set_start_date(self.get_start_date())
+            child.set_due_date(self.get_due_date())
             for t in self.get_tags():
                 child.add_tag(t.get_name())
         self.sync()
