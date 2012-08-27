@@ -51,6 +51,7 @@
     * Pickle files for synchronization services are backuped to prevent loosing files, closes #1036554
     * Fix for bug #897425: Write manpage for gtcli and update other manpages as well
     * Fix for bug-1037051 (Due date is not set for a new subtask), by Nimit Shah
+    * Fix for bug #1036955: Due date is not preselected when start date is filled, by Steve Scheel
 
 2012-02-13 Getting Things GNOME! 0.2.9
     * Big refractorization of code, now using liblarch
