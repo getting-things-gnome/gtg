@@ -2,102 +2,130 @@
 # Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
 # This file is distributed under the same license as the gtg package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
-# Slavko <linux@slavino.sk>, 2011.
+# Slavko <linux@slavino.sk>, 2011, 2012.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2012-04-22 17:25+0200\n"
-"PO-Revision-Date: 2012-03-27 08:19+0000\n"
-"Last-Translator: Izidor Matušov <izidor.matusov@gmail.com>\n"
-"Language-Team: Slovak <nomail>\n"
+"POT-Creation-Date: 2012-07-13 16:43+0200\n"
+"PO-Revision-Date: 2012-09-02 18:30+0200\n"
+"Last-Translator: Slavko <linux@slavino.sk>\n"
+"Language-Team: slovenčina <debian-l10n-slovak@lists.debian.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n==1) ? 1 : (n>=2 && n<=4) ? 2 : 0;\n"
-"X-Launchpad-Export-Date: 2012-04-23 04:48+0000\n"
-"X-Generator: Launchpad (build 15135)\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+"X-Launchpad-Export-Date: 2012-09-02 15:32+0000\n"
+"X-Generator: Launchpad (build 15890)\n"
+"X-POFile-SpellExtra: Launchpad money webovou MantisBT Public Foundation\n"
+"X-POFile-SpellExtra: gtg Gnote Free tj Evolution GNOME paneli PocketMod\n"
+"X-POFile-SpellExtra: TODO net 02110-1301 GPS Tomboy OK dbus 51 API\n"
+"X-POFile-SpellExtra: kliknúť Milk pdflatex twittera Dricot Tracker\n"
+"X-POFile-SpellExtra: tweetov http DBus HTML Gnome 2008-2012 Hamster\n"
+"X-POFile-SpellExtra: Geo-lokalizovaných pdfjam NováZnačka Prezerač\n"
+"X-POFile-SpellExtra: Pythonu com Things Rousseau Floor podznačku https\n"
+"X-POFile-SpellExtra: Geo-lokalizačné Identi XML Remember GTG vývojárom\n"
+"X-POFile-SpellExtra: Launchpade Franklin Time PDF Software novšej\n"
+"X-POFile-SpellExtra: RememberTheMilk Twitter General Inc GNU implikovanej\n"
+"X-POFile-SpellExtra: pdftk MenoZnačky Python Lionel rememberthemilk\n"
+"X-POFile-SpellExtra: License Getting The identi bugs Street the Fifth\n"
+"X-POFile-SpellExtra: launchpad Iss iek topay podúloh Factor Apport\n"
+"X-POFile-SpellExtra: tasktitle\n"
 
-#: GTG/plugins/notification_area/notification_area.py:123
+#: GTG/plugins/notification_area/notification_area.py:106
 msgid "Add _New Task"
 msgstr "_Nová úloha"
 
-#: GTG/plugins/notification_area/notification_area.py:128
+#: GTG/plugins/notification_area/notification_area.py:95
 msgid "_View Main Window"
 msgstr "_Zobraziť hlavné okno"
 
 #: GTG/plugins/export/export_templates/description_textual.py:18
 msgid "Text-only"
-msgstr ""
+msgstr "Len text"
 
 #: GTG/plugins/export/export_templates/description_textual.py:19
 msgid "A template to create a simple text file with some tasks."
 msgstr ""
+"Šablóna na vytvorenie jednoduchého textového súboru s niekoľkými úlohami."
 
 #: GTG/plugins/export/export_templates/description_simple.py:18
 msgid "A simple Web page that can be easily printed."
-msgstr ""
+msgstr "Jednoduchá webová stránka, ktorú možno ľahko vytlačiť."
 
 #: GTG/plugins/export/export_templates/description_simple.py:19
 msgid ""
 "A template to create a simple HTML page with some tasks that can be easily "
 "printed."
 msgstr ""
+"Šablóna na vytvorenie jednoduchej stránky HTML s niekoľkými úlohami, ktorá "
+"môže byť jednoducho vytlačená."
 
 #: GTG/plugins/export/export_templates/description_statusrpt.py:18
 msgid "Status report"
-msgstr ""
+msgstr "Stavové hlásenie"
 
 #: GTG/plugins/export/export_templates/description_statusrpt.py:19
 msgid "A template to create a compact text file listing only task titles."
 msgstr ""
+"Šablóna na vytvorenie stručného textového súboru, vypisuje len názvy úloh."
 
 #: GTG/plugins/export/export_templates/description_pocketmod.py:18
 msgid "Foldable booklet (PDF)"
-msgstr ""
+msgstr "Brožúra (PDF)"
 
 #: GTG/plugins/export/export_templates/description_pocketmod.py:19
 msgid ""
-"A template to create a <a href=\"http://www.pocketmod.com\">PocketMod</a>, "
-"which is a  small foldable booklet."
+"A template to create\n"
+"<a href=\"http://www.pocketmod.com\">PocketMod</a>, which is a small "
+"foldable\n"
+"booklet. Packages <b>pdflatex</b>, <b>pdftk</b> and <b>pdfjam</b>\n"
+"are required."
 msgstr ""
+"Šablóna na vytvorenie\n"
+"<a href=\"http://www.pocketmod.com\">PocketMod</a>, jednoduchá skladacia\n"
+"brožúrka. Potrebné sú balíky <b>pdflatex</b>, <b>pdftk</b> a <b>pdfjam</b>."
 
 #: GTG/plugins/export/export_templates/description_sexy.py:18
 msgid "A professional-looking HTML page"
-msgstr ""
+msgstr "Stránky HTML s profesionálnym vzhľadom"
 
 #: GTG/plugins/export/export_templates/description_sexy.py:19
 msgid ""
 "A template to create a HTML page with some tasks and tags. Tags colors are "
 "also displayed."
 msgstr ""
+"Šablóna na vytvorenie jednoduchej stránky HTML s niekoľkými úlohami a "
+"značkami. Zobrazené sú aj farby značiek."
 
-#: GTG/plugins/export/export.py:114
-msgid "Template not found"
-msgstr "Šablóna nenájdená"
+#: GTG/plugins/export/export.py:119
+msgid "No task matches your criteria. Empty report can't be generated."
+msgstr ""
+"zadaným kritériám nevyhovuje žiadna úloha. Prázdna zostava nemôže byť "
+"vygenerovaná."
 
-#: GTG/plugins/export/export.py:121
+#: GTG/plugins/export/export.py:137
 #, python-format
 msgid "GTG could not generate the document: %s"
-msgstr ""
+msgstr "GTG nemôže vygenerovať dokument: %s"
 
 #: GTG/plugins/export/export.py:169
 msgid "Export the tasks currently listed"
-msgstr ""
+msgstr "Exportovať zobrazené úlohy"
 
-#: GTG/plugins/export/export.py:323
+#: GTG/plugins/export/export.py:322
 msgid "Choose where to save your list"
 msgstr "Vyberte si kam chcete uložiť svoj zoznam"
 
 #: GTG/plugins/send_email/sendEmail.py:44
 msgid "Send via email"
-msgstr ""
+msgstr "Poslať emailom"
 
 #: GTG/plugins/send_email/sendEmail.py:69
 #, python-format
 msgid "Status: %s"
-msgstr ""
+msgstr "Stav: %s"
 
 #: GTG/plugins/send_email/sendEmail.py:70
 #, python-format
@@ -105,6 +133,8 @@ msgid ""
 "\n"
 "Tags: %s"
 msgstr ""
+"\n"
+"Značky: %s"
 
 #: GTG/plugins/send_email/sendEmail.py:71
 #, python-format
@@ -113,6 +143,9 @@ msgid ""
 "Subtasks:\n"
 "%s"
 msgstr ""
+"\n"
+"Podúlohy:\n"
+"%s"
 
 #: GTG/plugins/send_email/sendEmail.py:73
 #, python-format
@@ -121,45 +154,48 @@ msgid ""
 "Task content:\n"
 "%s"
 msgstr ""
+"\n"
+"Obsah úlohy:\n"
+"%s"
 
 #: GTG/plugins/send_email/sendEmail.py:76
 #, python-format
 msgid "Task: %(task_title)s"
-msgstr ""
+msgstr "Úloha: %(task_title)s"
 
-#: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:1
+#: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:8
 msgid "Set the task's location"
 msgstr "nastaviť polohu úlohy"
 
-#: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:2
+#: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:6
 msgid "Associate with new tag"
 msgstr "Pričleniť s novou značkou"
 
-#: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:3
+#: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:5
 msgid "Associate with existing tag"
 msgstr "Pričleniť k existujúcej značke"
 
-#: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:4
+#: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:7
 msgid "Geolocalized-tasks Preferences"
 msgstr "nastavenia Geo-lokalizovaných úloh"
 
-#: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:5
+#: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:11
 msgid "Use network"
 msgstr "Použiť sieť"
 
-#: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:6
+#: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:9
 msgid "Use cellphone"
 msgstr "Použiť telefón"
 
-#: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:7
+#: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:10
 msgid "Use gps"
 msgstr "Použiť GPS"
 
-#: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:8
+#: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:1
 msgid "<b>Location Determination Method</b>"
 msgstr "<b>Metóda určenia polohy</b>"
 
-#: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:9
+#: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:3
 msgid ""
 "<small>Distance in kilometers from \n"
 "the current location.</small>"
@@ -167,9 +203,13 @@ msgstr ""
 "<small>Vzdialenosť v kilometroch od \n"
 "aktuálnej polohy.</small>"
 
-#: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:11
+#: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:2
 msgid "<b>Proximity Factor</b>"
 msgstr "<b>Factor blízkosti</b>"
+
+#: GTG/plugins/hamster/hamster.py:37
+msgid "Start a new activity in Hamster Time Tracker "
+msgstr "začať novú aktivitu v Hamster Time Tracker "
 
 #: GTG/plugins/hamster/hamster.py:154
 msgid "Start task in Hamster"
@@ -179,14 +219,6 @@ msgstr "začať úlohu v Hamster"
 msgid "Start in Hamster"
 msgstr "Začať v Hamster"
 
-#: GTG/plugins/hamster/hamster.py:161
-msgid "Start a new activity in Hamster Time"
-msgstr "Začať novú aktivitu v Hamster Time"
-
-#: GTG/plugins/hamster/hamster.py:175
-msgid "Start a new activity in Hamster Time "
-msgstr "Začať novú aktivitu v Hamster Time "
-
 #: GTG/plugins/tomboy/tomboy.py:79
 msgid ""
 "Tomboy/Gnote not found. Please install it or disable the Tomboy/Gnote plugin "
@@ -195,60 +227,60 @@ msgstr ""
 "Tomboy/Gnote nebol nájdený. Prosím nainštalujte ho, alebo zakážte zásuvný "
 "modul Tomboy/Gnote v GTG"
 
-#: GTG/plugins/tomboy/tomboy.py:121
+#: GTG/plugins/tomboy/tomboy.py:122
 msgid "Add Tomboy note"
 msgstr "Pridať poznámku Tomboy"
 
-#: GTG/plugins/tomboy/tomboy.py:194
+#: GTG/plugins/tomboy/tomboy.py:191
 #, python-format
 msgid ""
 "%s seems to be installed on your system, but it does not provide a DBus "
 "interface which is required by the Tomboy/Gnote plugin in GTG."
 msgstr ""
+"%s vyzerá, že je v systéme nainštalovaný, ale neposkytuje rozhranie DBus, "
+"ktoré je potrebné pre zásuvný modul Tomboy/Gnote v GTG."
 
-#: GTG/plugins/tomboy/tomboy.py:240
+#: GTG/plugins/tomboy/tomboy.py:243
 msgid "That note does not exist!"
 msgstr "Taká poznámka neexistuje!"
 
-#: GTG/plugins/tomboy/tomboy.py:245
+#: GTG/plugins/tomboy/tomboy.py:248
 msgid "That note does not exist. Do you want to create a new one?"
 msgstr "Taká poznámka neexistuje. Chcete vytvoriť novú?"
 
-#: GTG/plugins/tomboy/tomboy.py:273
+#: GTG/plugins/tomboy/tomboy.py:276
 msgid "This Tomboy note does not exist anymore. Do you want to create it?"
 msgstr "Táto poznámka Tomboy neexistuje. Chcete ju vytvoriť?"
 
-#: GTG/tests/test_dates.py:52 GTG/tests/test_dates.py:59 GTG/core/search.py:93
-#: GTG/tools/dates.py:38 GTG/tools/dates.py:46
+#: GTG/tests/test_dates.py:38 GTG/tools/dates.py:95 GTG/tools/dates.py:137
 msgid "now"
 msgstr "teraz"
 
-#: GTG/tests/test_dates.py:53 GTG/tests/test_dates.py:60 GTG/core/search.py:94
-#: GTG/tools/dates.py:39 GTG/tools/dates.py:48
+#: GTG/tests/test_dates.py:39 GTG/tools/dates.py:96 GTG/tools/dates.py:139
 msgid "soon"
 msgstr "čoskoro"
 
-#: GTG/tests/test_dates.py:54 GTG/tools/dates.py:50
+#: GTG/tests/test_dates.py:39 GTG/tools/dates.py:97 GTG/tools/dates.py:141
 msgid "later"
 msgstr "neskôr"
 
-#: GTG/tests/test_dates.py:55 GTG/tests/test_dates.py:61
-#: GTG/tests/test_dates.py:62 GTG/core/search.py:95 GTG/tools/dates.py:40
-#: GTG/tools/dates.py:52
+#: GTG/tests/test_dates.py:71 GTG/tests/test_dates.py:78
+#: GTG/tests/test_dates.py:79 GTG/core/search.py:96 GTG/tools/dates.py:47
+#: GTG/tools/dates.py:59
 msgid "someday"
-msgstr ""
+msgstr "niekedy"
 
 #: GTG/backends/backend_identica.py:54
 msgid "Identi.ca"
-msgstr ""
+msgstr "Identi.ca"
 
 #: GTG/backends/backend_identica.py:58
 msgid "Imports your identi.ca  messages into your GTG "
-msgstr ""
+msgstr "Importuje vaše správy z identi.ca  do GTG "
 
 #: GTG/backends/backend_gnote.py:42
 msgid "Gnote"
-msgstr ""
+msgstr "Gnote"
 
 #: GTG/backends/backend_gnote.py:46
 msgid ""
@@ -257,10 +289,14 @@ msgid ""
 "tag it with the tag you have chosen (you'll configure it later), and it will "
 "appear in GTG."
 msgstr ""
+"Táto služba môže synchronizovať všetky alebo len časť poznámok Gnote v GTG. "
+"Keď sa rozhodnete, že je vhodné mať nejakú poznámku vo svojom zozname TODO, "
+"prosto ju označte značkou, ktorú ste si zvolil (budete ju nastavovať neskôr) "
+"a poznámka sa objaví v GTG."
 
 #: GTG/backends/backend_rtm.py:54
 msgid "Remember The Milk"
-msgstr ""
+msgstr "Remember The Milk"
 
 #: GTG/backends/backend_rtm.py:58
 msgid ""
@@ -270,18 +306,23 @@ msgid ""
 "Note: This product uses the Remember The Milk API but is not endorsed or "
 "certified by Remember The Milk"
 msgstr ""
+"Táto služba synchronizuje vaše úlohy s webovou službou RememberTheMilk:\n"
+"\t\thttp://rememberthemilk.com\n"
+"\n"
+"Poznámka: Tento produkt používa API Remember The Milk, ale nie je schválený "
+"ani certifikovaný od Remember The Milk"
 
 #: GTG/backends/backend_twitter.py:54
 msgid "Twitter"
-msgstr ""
+msgstr "Twitter"
 
 #: GTG/backends/backend_twitter.py:58
 msgid "Imports your twitter  messages into your GTG "
-msgstr ""
+msgstr "Importuje správy z twittera do GTG "
 
 #: GTG/backends/backend_tomboy.py:41
 msgid "Tomboy"
-msgstr ""
+msgstr "Tomboy"
 
 #: GTG/backends/backend_tomboy.py:45
 msgid ""
@@ -290,10 +331,14 @@ msgid ""
 "your TODO list, just tag it with the tag you have chosen (you'll configure "
 "it later), and it will appear in GTG."
 msgstr ""
+"Táto synchronizačná služba synchronizuje všetky alebo časť poznámok Tomboy v "
+"GTG. keď sa rozhodnete, že je vhodné mať nejakú poznámku vo svojom zozname "
+"TODO, prosto ju označte značkou, ktorú ste si zvolil (budete ju nastavovať "
+"neskôr) a poznámka sa objaví v GTG."
 
 #: GTG/backends/backend_mantis.py:42
 msgid "MantisBT"
-msgstr ""
+msgstr "MantisBT"
 
 #: GTG/backends/backend_mantis.py:46
 msgid ""
@@ -313,35 +358,35 @@ msgstr ""
 
 #: GTG/backends/backend_mantis.py:224
 msgid "Iss."
-msgstr ""
+msgstr "Iss."
 
-#: GTG/backends/backend_mantis.py:244 GTG/backends/backend_launchpad.py:324
+#: GTG/backends/backend_launchpad.py:324
 msgid "Reported by: "
-msgstr ""
+msgstr "Nahlásil:"
 
 #: GTG/backends/backend_mantis.py:245
 msgid "Link to issue: "
-msgstr ""
+msgstr "Odkaz na problém:"
 
 #: GTG/backends/backend_evolution.py:69
 msgid "Evolution tasks"
-msgstr ""
+msgstr "Úlohy Evolution"
 
 #: GTG/backends/backend_evolution.py:73
 msgid "Lets you synchronize your GTG tasks with Evolution tasks"
-msgstr ""
+msgstr "Dovoľuje synchronizovať vaše úlohy GTG s úlohami Evolution"
 
 #: GTG/backends/backend_localfile.py:61
 msgid "Local File"
-msgstr ""
+msgstr "Lokálny súbor"
 
 #: GTG/backends/backend_localfile.py:66
 msgid "Your tasks are saved in a text file (XML format). "
-msgstr ""
+msgstr "Vaše úlohy sú uložené v textovom súbore (vo formáte XML). "
 
 #: GTG/backends/backend_launchpad.py:53
 msgid "Launchpad"
-msgstr ""
+msgstr "Launchpad"
 
 #: GTG/backends/backend_launchpad.py:57
 msgid ""
@@ -358,64 +403,77 @@ msgid ""
 "subtasks...): your  changes will be preserved. This is useful to add  "
 "personal annotations to bug"
 msgstr ""
+"Táto synchronizačná služba importovať chyby v Launchpade priradené vám "
+"(alebo niekomu inému) do GTG. Keď sa stav chyby zmení v Launchpade, bude "
+"úloha GTG aktualizovaná.\n"
+"Prosím, nezabudnite, že je to synchronizačná služba len na čítanie, čo "
+"znamená, že ak otvoríte niektorú z importovaných úloh a zmeníte jedno z "
+"polí:\n"
+"  - názov\n"
+"  - popis\n"
+"  - značky\n"
+"Vaše zmeny <b>budú</b> zrušené, keď bude priradená chyba zmenená. Bez ohľadu "
+"na to, môžete meniť akékoľvek iné polia (dátumy začatia/dokončenia, "
+"podúlohy...): tieto zmeny budú zachované. Takto si môžete k chybám pridať "
+"osobné poznámky"
 
 #: GTG/backends/backend_launchpad.py:244
 msgid "Bug"
-msgstr ""
+msgstr "Chyba"
 
 #: GTG/backends/backend_launchpad.py:329
 msgid "Link to bug: "
-msgstr ""
+msgstr "Odkaz na chybu:"
 
-#: GTG/backends/rtm/rtm.py:57
+#: GTG/backends/rtm/rtm.py:53
 msgid "Invalid state"
 msgstr "Neplatný stav"
 
-#: GTG/core/plugins/__init__.py:33
+#: GTG/core/plugins/__init__.py:32
 msgid "Everything necessary to run this plugin is available."
 msgstr "Všetko potrebné na spustenie tohoto zásuvného modulu je dostupné."
 
-#: GTG/core/plugins/__init__.py:34
+#: GTG/core/plugins/__init__.py:33
 msgid "The plugin can not be loaded"
 msgstr "Zásuvný modul nebolo možné načítať"
 
-#: GTG/core/plugins/__init__.py:35
+#: GTG/core/plugins/__init__.py:34
 msgid "Some python modules are missing"
 msgstr "Niektoré moduly Pythonu chýbajú"
 
-#: GTG/core/plugins/__init__.py:36
+#: GTG/core/plugins/__init__.py:35
 msgid "Please install the following python modules:"
 msgstr "Prosím, nainštalujte nasledujúce moduly Python:"
 
-#: GTG/core/plugins/__init__.py:38
+#: GTG/core/plugins/__init__.py:37
 msgid "Some remote dbus objects are missing."
 msgstr "Niektoré vzdialené objekty dbus chýbajú."
 
-#: GTG/core/plugins/__init__.py:39
+#: GTG/core/plugins/__init__.py:38
 msgid "Please start the following applications:"
 msgstr "Prosím spustite tieto aplikácie:"
 
-#: GTG/core/plugins/__init__.py:41
+#: GTG/core/plugins/__init__.py:40
 msgid "Some modules and remote dbus objects are missing."
 msgstr "Niektoré moduly a vzdialené objekty dbus chýbajú."
 
-#: GTG/core/plugins/__init__.py:42
+#: GTG/core/plugins/__init__.py:41
 msgid "Please install or start the following components:"
 msgstr "Prosím, nainštalujte a spusťte tieto komponenty:"
 
-#: GTG/core/plugins/__init__.py:44
+#: GTG/core/plugins/__init__.py:43
 msgid "Unknown error while loading the plugin."
 msgstr "Neznámy chyba pri načítaní modulu."
 
-#: GTG/core/plugins/__init__.py:45
+#: GTG/core/plugins/__init__.py:44
 msgid "Very helpful message, isn't it? Please report a bug."
 msgstr "Veľmi užitočná správa, však? Prosím, nahláste chybu."
 
-#: GTG/core/firstrun_tasks.py:10
+#: GTG/core/firstrun_tasks.py:8
 msgid "Getting started with GTG"
 msgstr "Začíname s GTG"
 
-#: GTG/core/firstrun_tasks.py:11
+#: GTG/core/firstrun_tasks.py:34
 msgid ""
 "Welcome to Getting Things Gnome!, your new task manager.\n"
 "\n"
@@ -424,14 +482,14 @@ msgid ""
 "while you are editing.\n"
 "\n"
 "Once you are done with a specific task, you can push the &quot;Mark as "
-"Done&quot; button. If the task is not relevant anymore, simply press "
-"&quot;Dismiss&quot; button.\n"
+"Done&quot; button. If the task is not relevant anymore, simply press &quot;"
+"Dismiss&quot; button.\n"
 "\n"
 "A task might be composed of multiple subtasks that appear as links in the "
 "task description. Simply click on the following link to open the subtask:"
 msgstr ""
 
-#: GTG/core/firstrun_tasks.py:19
+#: GTG/core/firstrun_tasks.py:42
 msgid ""
 "Once you've read the above subtask, mark it as done. If you don't want to do "
 "the task, mark it as dismissed. Tasks that you marked as done or dismissed "
@@ -445,7 +503,7 @@ msgid ""
 "Other stuff you should read:"
 msgstr ""
 
-#: GTG/core/firstrun_tasks.py:29
+#: GTG/core/firstrun_tasks.py:26
 msgid ""
 "We hope that you will appreciate GTG. Please send us bug reports and ideas "
 "for improvement using:\n"
@@ -459,11 +517,11 @@ msgstr ""
 "\n"
 "Ďakujeme, že ste vyskúšali GTG :-)"
 
-#: GTG/core/firstrun_tasks.py:37
+#: GTG/core/firstrun_tasks.py:34
 msgid "Learn how to use subtasks"
 msgstr "Naučte sa používať Podúlohy"
 
-#: GTG/core/firstrun_tasks.py:38
+#: GTG/core/firstrun_tasks.py:61
 msgid ""
 "&quot;Subtask&quot; is something that you need to do first in order to "
 "accomplish your task. To insert a subtask in the task description (this "
@@ -479,11 +537,11 @@ msgid ""
 "subtasks will also be marked as done."
 msgstr ""
 
-#: GTG/core/firstrun_tasks.py:49
+#: GTG/core/firstrun_tasks.py:48
 msgid "Learn how to use tags"
 msgstr "Naučte sa ako používať Značky"
 
-#: GTG/core/firstrun_tasks.py:50
+#: GTG/core/firstrun_tasks.py:49
 msgid ""
 "A tag is a simple word that begins with &quot;@&quot;.\n"
 "\n"
@@ -516,7 +574,7 @@ msgstr ""
 "\n"
 "Skúste tu napísať slovo, ktoré začína @:\n"
 "\n"
-"Slovo bude onačené žltou, je to značka.\n"
+"Slovo bude označené žltou, je to značka.\n"
 "\n"
 "Značky sú užitočné na triedenie úloh. V menu Zobraziť môžete zapnúť bočný "
 "panel, ktorý bude zobrazuje všetky značky, ktoré používate, takže možno "
@@ -539,11 +597,11 @@ msgstr ""
 "Samozrejme, kedykoľvek môžete zmeniť značky príslušnej podúlohy. Tieto "
 "nebudú nikdy zmenené rodičom."
 
-#: GTG/core/firstrun_tasks.py:67
+#: GTG/core/firstrun_tasks.py:66
 msgid "Learn how to use the Workview"
 msgstr "Naučte sa ako používať Pracovný pohľad"
 
-#: GTG/core/firstrun_tasks.py:68
+#: GTG/core/firstrun_tasks.py:67
 msgid ""
 "If you press the &quot;Workview&quot; button, only actionable tasks will be "
 "displayed.\n"
@@ -571,7 +629,7 @@ msgstr ""
 "Je to úloha, ktorá už je &quot;začatá&quot;, tj. už prešiel dátum jej "
 "začiatku.\n"
 "\n"
-"Je to úloha, ktorá nemá otvorené podúlohy, tj. môžeze pracovať na úlohe "
+"Je to úloha, ktorá nemá otvorené podúlohy, tj. môžete pracovať na úlohe "
 "samotnej.\n"
 "\n"
 "Takže, Pracovný pohľad bude zobrazovať len úlohy, ktoré môžete plniť práve "
@@ -582,11 +640,11 @@ msgstr ""
 "užitočné, ak máte napr. značku &quot;niekedy&quot; ktorú používate na úlohy, "
 "ktoré chcete urobiť, ale nie sú veľmi veľmi dôležité."
 
-#: GTG/core/firstrun_tasks.py:83
+#: GTG/core/firstrun_tasks.py:82
 msgid "Learn how to use Plugins"
 msgstr "Naučte sa ako používať Zásuvné moduly"
 
-#: GTG/core/firstrun_tasks.py:84
+#: GTG/core/firstrun_tasks.py:83
 msgid ""
 "GTG has the ability to add plugins to extend it's core functionality.\n"
 "\n"
@@ -598,17 +656,17 @@ msgstr ""
 "GTG umožňuje pridávanie zásuvných modulov, ktoré rozširujú jeho základné "
 "možnosti.\n"
 "\n"
-"Ako príkaldy aktuálnych zásuvných modulov môžu poslúžiť napr. Synchronizácia "
-"s Remember the Milk a Evolution, Itegrácia s Tomboy/Gnote a Geo-lokalizačné "
+"Ako príklady aktuálnych zásuvných modulov môžu poslúžiť napr. Synchronizácia "
+"s Remember the Milk a Evolution, Integrácia s Tomboy/Gnote a Geo-lokalizačné "
 "úlohy.\n"
 "Správcu zásuvných modulov môžete nájsť výberom Upraviť v paneli menu, potom "
 "kliknutím na Nastavenia. Potom uvidíte záložku, nazvanú Zásuvné moduly."
 
-#: GTG/core/firstrun_tasks.py:93
+#: GTG/core/firstrun_tasks.py:92
 msgid "Reporting bugs"
 msgstr "Hlásenie chýb"
 
-#: GTG/core/firstrun_tasks.py:94
+#: GTG/core/firstrun_tasks.py:93
 msgid ""
 "GTG is still very alpha software. We like it and use it everyday but you "
 "will encounter some bugs.\n"
@@ -634,11 +692,11 @@ msgstr ""
 "Ak máte s GTG nejaké problémy, môžno vám budeme vedieť pomôcť alebo vyriešiť "
 "váš problém naozaj rýchlo."
 
-#: GTG/core/firstrun_tasks.py:107
+#: GTG/core/firstrun_tasks.py:130
 msgid "Learn how to use the Quick Add Entry"
-msgstr ""
+msgstr "Naučte sa ako používať Rýchle pridanie položky"
 
-#: GTG/core/firstrun_tasks.py:108
+#: GTG/core/firstrun_tasks.py:131
 msgid ""
 "The Quick Add Entry is the fastest way to create a new task. Use the check "
 "box in the View menu to enable and disable the entry field.\n"
@@ -658,8 +716,8 @@ msgid ""
 "due:date\n"
 "defer:date\n"
 " - This way you can apply a due date or a defer date. Dates can be formated "
-"as yyyy-mm-dd (for example 2012-04-01) or yyyymmdd (20120401) or mmdd (0401 -"
-" the year being implicitly the current one) or today, tomorrow or a weekday "
+"as yyyy-mm-dd (for example 2012-04-01) or yyyymmdd (20120401) or mmdd (0401 "
+"- the year being implicitly the current one) or today, tomorrow or a weekday "
 "name (due:monday means due next Monday). Dates which are added in this way "
 "will not appear in the task title.\n"
 "\n"
@@ -671,69 +729,69 @@ msgid ""
 "March 30, 2012 and the start date next Tuesday.\n"
 "\n"
 "call mum tags:family,calls due:sunday defer:tomorrow\n"
-" - The above example tells GTG to create a new task with the title \"call "
-"mum\", under the tags \"family\" and \"calls\", with the due date next "
-"Sunday and the start date tomorrow."
-msgstr ""
-
-#: GTG/core/search.py:86
-msgid "not"
+" - The above example tells GTG to create a new task with the title \"call mum"
+"\", under the tags \"family\" and \"calls\", with the due date next Sunday "
+"and the start date tomorrow."
 msgstr ""
 
 #: GTG/core/search.py:87
-msgid "or"
-msgstr ""
+msgid "not"
+msgstr "nie"
 
 #: GTG/core/search.py:88
-msgid "after"
-msgstr ""
+msgid "or"
+msgstr "alebo"
 
 #: GTG/core/search.py:89
-msgid "before"
-msgstr ""
+msgid "after"
+msgstr "po"
 
-#: GTG/core/search.py:90 GTG/tools/dates.py:238
+#: GTG/core/search.py:90
+msgid "before"
+msgstr "pred"
+
+#: GTG/tools/dates.py:196
 msgid "today"
 msgstr "dnes"
 
-#: GTG/core/search.py:91 GTG/tools/dates.py:240
+#: GTG/tools/dates.py:197
 msgid "tomorrow"
 msgstr "zajtra"
 
-#: GTG/core/search.py:92
+#: GTG/core/search.py:93
 msgid "nodate"
-msgstr ""
+msgstr "bez dátumu"
 
-#: GTG/core/search.py:96
+#: GTG/core/search.py:97
 msgid "notag"
-msgstr ""
+msgstr "bez značky"
 
-#: GTG/core/task.py:53
+#: GTG/core/task.py:60
 msgid "My new task"
 msgstr "Moja nová úloha"
 
-#: GTG/core/task.py:154
+#: GTG/core/task.py:169
 msgid "tags"
 msgstr "značky"
 
-#: GTG/core/task.py:154
+#: GTG/core/task.py:169
 msgid "tag"
 msgstr "značka"
 
-#: GTG/core/task.py:159
+#: GTG/core/task.py:175
 msgid "defer"
 msgstr "odložiť"
 
-#: GTG/core/task.py:159
+#: GTG/core/task.py:164
 msgid "start"
-msgstr ""
+msgstr "začať"
 
-#: GTG/core/task.py:165
+#: GTG/core/task.py:180
 msgid "due"
 msgstr "termín"
 
-#: GTG/core/treefactory.py:79
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:70
+#: GTG/core/treefactory.py:79
 msgid "All tasks"
 msgstr "Všetky úlohy"
 
@@ -741,63 +799,63 @@ msgstr "Všetky úlohy"
 msgid "Tasks with no tags"
 msgstr "Úlohy bez značiek"
 
-#: GTG/core/treefactory.py:102 GTG/gtk/browser/browser.py:1495
+#: GTG/core/treefactory.py:102 GTG/gtk/browser/browser.py:1518
 msgid "Search"
-msgstr ""
+msgstr "Hľadať"
 
-#: GTG/tools/dates.py:242
+#: GTG/tools/dates.py:198
 msgid "next week"
 msgstr "budúci týždeň"
 
-#: GTG/tools/dates.py:244
+#: GTG/tools/dates.py:199
 msgid "next month"
 msgstr "budúci mesiac"
 
-#: GTG/tools/dates.py:246
+#: GTG/tools/dates.py:200
 msgid "next year"
 msgstr "budúci rok"
 
-#: GTG/tools/dates.py:251
+#: GTG/tools/dates.py:306
 msgid "Monday"
-msgstr ""
+msgstr "pondelok"
 
-#: GTG/tools/dates.py:252
+#: GTG/tools/dates.py:307
 msgid "Tuesday"
-msgstr ""
+msgstr "utorok"
 
-#: GTG/tools/dates.py:253
+#: GTG/tools/dates.py:308
 msgid "Wednesday"
-msgstr ""
+msgstr "streda"
 
-#: GTG/tools/dates.py:254
+#: GTG/tools/dates.py:309
 msgid "Thursday"
-msgstr ""
+msgstr "štvrtok"
 
-#: GTG/tools/dates.py:255
+#: GTG/tools/dates.py:310
 msgid "Friday"
-msgstr ""
+msgstr "piatok"
 
-#: GTG/tools/dates.py:256
+#: GTG/tools/dates.py:311
 msgid "Saturday"
-msgstr ""
+msgstr "sobota"
 
-#: GTG/tools/dates.py:257
+#: GTG/tools/dates.py:312
 msgid "Sunday"
-msgstr ""
+msgstr "nedeľa"
 
-#: GTG/tools/dates.py:294
+#: GTG/tools/dates.py:50
 msgid "Today"
 msgstr "Dnes"
 
-#: GTG/tools/dates.py:297
+#: GTG/tools/dates.py:53
 #, python-format
 msgid "Yesterday"
 msgid_plural "%(days)d days ago"
-msgstr[0] "Pred %(days)d dňami"
-msgstr[1] "Včera"
+msgstr[0] "Včera"
+msgstr[1] "Pred %(days)d dňami"
 msgstr[2] "Pred %(days)d dňami"
 
-#: GTG/tools/dates.py:300
+#: GTG/tools/dates.py:56
 #, python-format
 msgid "Tomorrow"
 msgid_plural "In %(days)d days"
@@ -809,231 +867,205 @@ msgstr[2] "Za %(days)d dni"
 msgid "gtg is already running!"
 msgstr "gtg už je spustený!"
 
-#: GTG/info.py:33
-msgid "GTG is a personal organizer for the GNOME desktop environment."
-msgstr ""
+#: GTG/info.py:34 GTG/gtk/browser/taskbrowser.glade.h:34
+msgid "GTG is a personal tasks and TODO-list items organizer for the GNOME."
+msgstr "GTG je organizátor osobných úloh a položiek zoznamu TODO pre GNOME."
 
 #: GTG/gtk/backends_dialog/parameters_ui/pathui.py:52
 msgid "Filename:"
-msgstr ""
+msgstr "Meno súboru:"
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:63
 msgid "Import tags"
-msgstr ""
+msgstr "Importovať značky"
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:64
 msgid "All tags"
-msgstr ""
+msgstr "Všetky značky"
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:65
 msgid "Just these tags:"
-msgstr ""
+msgstr "Len tieto značky:"
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:69
 msgid "Tags to sync"
-msgstr ""
+msgstr "Značky na synchronizáciu"
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:71
 msgid "Tasks with these tags:"
-msgstr ""
+msgstr "Úlohy s týmito značkami:"
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:76
 msgid "Username"
-msgstr ""
+msgstr "Používateľské meno"
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:82
 msgid "Service URL"
-msgstr ""
+msgstr "URL služby"
 
-#: GTG/gtk/backends_dialog/parameters_ui/__init__.py:86
+#: GTG/gtk/backends_dialog/parameters_ui/__init__.py:82
 msgid "Import tasks from @ replies "
-msgstr ""
+msgstr "Importovať úlohy z @ odpovedí "
+
+#: GTG/gtk/backends_dialog/parameters_ui/__init__.py:87
+msgid "Import tasks from direct messages"
+msgstr "Importovať úlohy z priamych správ"
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:91
-msgid "Import tasks from direct messages"
-msgstr ""
+msgid "Import tasks from your tweets"
+msgstr "Importovať úlohy z tweetov"
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:95
-msgid "Import tasks from your tweets"
-msgstr ""
+msgid "Tag your GTG tasks with the bug tags"
+msgstr "Označiť úlohy GTG značkami chyby"
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:99
-msgid "Tag your GTG tasks with the bug tags"
-msgstr ""
-
-#: GTG/gtk/backends_dialog/parameters_ui/__init__.py:103
 msgid "Tag your GTG tasks with the project targeted by the bug"
-msgstr ""
+msgstr "Označiť úlohy GTG projektom, ktorému chyba patrí"
 
 #: GTG/gtk/backends_dialog/parameters_ui/passwordui.py:50
 msgid "Password:"
-msgstr ""
+msgstr "Heslo:"
 
 #: GTG/gtk/backends_dialog/parameters_ui/periodui.py:51
 msgid "Check for new tasks every"
-msgstr ""
+msgstr "Kontrolovať nové úlohy každých"
 
 #: GTG/gtk/backends_dialog/parameters_ui/periodui.py:96
 msgid " minute"
 msgid_plural " minutes"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "minúta"
+msgstr[1] "minúty"
+msgstr[2] "minút"
 
-#: GTG/gtk/backends_dialog/addpanel.py:75
+#: GTG/gtk/backends_dialog/addpanel.py:69
 msgid "Select synchronization service:"
-msgstr ""
+msgstr "vyberte synchronizačnú službu:"
 
-#: GTG/gtk/backends_dialog/addpanel.py:179
+#: GTG/gtk/backends_dialog/configurepanel.py:197
+#: GTG/gtk/backends_dialog/addpanel.py:177
 msgid "Syncing is <span color=\"red\">disabled</span>"
-msgstr ""
+msgstr "Synchronizácia je <span color=\"red\">vypnutá</span>"
 
-#: GTG/gtk/backends_dialog/addpanel.py:185
+#: GTG/gtk/backends_dialog/addpanel.py:183
 msgid "Author"
 msgid_plural "Authors"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Autor"
+msgstr[1] "Autori"
+msgstr[2] "Autori"
 
-#: GTG/gtk/backends_dialog/__init__.py:286
+#: GTG/gtk/backends_dialog/__init__.py:75
+#, python-format
+msgid "Synchronization Services - %s"
+msgstr "Synchronizačné služby – %s"
+
+#: GTG/gtk/backends_dialog/__init__.py:302
 #, python-format
 msgid "Do you really want to remove the '%s' synchronization service?"
-msgstr ""
-
-#: GTG/gtk/backends_dialog/configurepanel.py:162
-msgid "Ready to start syncing"
-msgstr ""
-
-#: GTG/gtk/backends_dialog/configurepanel.py:164
-#, python-format
-msgid "Syncing your only task"
-msgid_plural "Syncing all %d tasks"
-msgstr[0] "Synchronizujem jedinú úlohu"
-msgstr[1] "Synchroizujem všetky %d úlohy"
-msgstr[2] "Synchronizujm všetkých %d úloh"
-
-#: GTG/gtk/backends_dialog/configurepanel.py:169
-#, python-format
-msgid "There is no task tagged %s"
-msgstr ""
-
-#: GTG/gtk/backends_dialog/configurepanel.py:171
-#, python-format
-msgid "Syncing a task tagged %s"
-msgid_plural "Syncing %d tasks tagged %s"
-msgstr[0] ""
-msgstr[1] ""
+msgstr "Naozaj chcete odstrániť synchronizačnú službu „%s”?"
 
 #: GTG/gtk/backends_dialog/configurepanel.py:182
 msgid "Disable syncing"
-msgstr ""
+msgstr "Vypnúť synchronizáciu"
 
 #: GTG/gtk/backends_dialog/configurepanel.py:184
 msgid "Enable syncing"
-msgstr ""
+msgstr "Zapnúť synchronizáciu"
 
-#: GTG/gtk/backends_dialog/configurepanel.py:192
+#: GTG/gtk/backends_dialog/configurepanel.py:159
 msgid "This is the default synchronization service"
-msgstr ""
+msgstr "Toto je predvolená synchronizačná služba"
 
-#: GTG/gtk/backends_dialog/configurepanel.py:195
+#: GTG/gtk/backends_dialog/configurepanel.py:162
 msgid "Syncing is enabled."
-msgstr ""
+msgstr "Synchronizácia je zapnutá."
 
-#: GTG/gtk/backends_dialog/configurepanel.py:197
+#: GTG/gtk/backends_dialog/configurepanel.py:164
 msgid "Syncing is <span color=\"red\">disabled</span>."
-msgstr ""
+msgstr "Synchronizácia je <span color=\"red\">vypnutá</span>."
 
-#: GTG/gtk/preferences.glade.h:1
-msgid "Getting Things GNOME! Preferences"
-msgstr "Nastavenia Getting Things GNOME!"
-
-#: GTG/gtk/preferences.glade.h:2
+#: GTG/gtk/preferences.glade.h:12
 msgid "Start Getting Things GNOME! on every login"
 msgstr "Spustiť Getting Things GNOME! pri každom prihlásení"
 
-#: GTG/gtk/preferences.glade.h:3
+#: GTG/gtk/preferences.glade.h:2
 msgid "<b>Startup</b>"
-msgstr ""
+msgstr "<b>Spúšťanie</b>"
+
+#: GTG/gtk/preferences.glade.h:11
+msgid "Show description preview in the task list."
+msgstr "Zobraziť náhľad popisu v zozname úloh."
 
 #: GTG/gtk/preferences.glade.h:4
-msgid "Show description preview in the task list."
-msgstr ""
+msgid "Enable colored backgrounds in the task list"
+msgstr "Zapnúť farebné pozadia v zozname úloh"
 
-#: GTG/gtk/preferences.glade.h:5
-msgid "Show background colors of tasks"
-msgstr ""
-
-#: GTG/gtk/preferences.glade.h:6
-msgid "Hide closed tasks older than "
-msgstr ""
-
-#: GTG/gtk/preferences.glade.h:7
+#: GTG/gtk/preferences.glade.h:3
 msgid "<b>Task Browser</b>"
 msgstr "<b>Prezerač úloh</b>"
 
+#: GTG/gtk/preferences.glade.h:6
+msgid "page 1"
+msgstr "strana 1"
+
+#: GTG/gtk/preferences.glade.h:7
+msgid "page 2"
+msgstr "strana 2"
+
 #: GTG/gtk/preferences.glade.h:8
-msgid "Check spelling"
-msgstr "Kontrola preklepov"
-
-#: GTG/gtk/preferences.glade.h:9
-msgid "<b>Task Editor</b>"
-msgstr "<b>Editor úloh</b>"
-
-#: GTG/gtk/preferences.glade.h:10
-msgid "General"
-msgstr ""
-
-#: GTG/gtk/preferences.glade.h:11
-msgid "Active _Plugins:"
-msgstr "Aktívne _zásuvné moduly:"
-
-#: GTG/gtk/preferences.glade.h:12
-msgid "_About Plugin"
-msgstr "_O zásuvnom module"
-
-#: GTG/gtk/preferences.glade.h:13
-msgid "Plugins"
-msgstr "Zásuvné moduly"
-
-#: GTG/gtk/preferences.glade.h:14
-msgid "<b>Dependencies</b>"
-msgstr "<b>Závislosti</b>"
+msgid "page 3"
+msgstr "strana 3"
 
 #: GTG/gtk/delete_dialog.py:89
-msgid ""
-"Deleting a task cannot be undone, and will delete the following task: "
+msgid "Deleting a task cannot be undone, and will delete the following task: "
 msgid_plural ""
 "Deleting a task cannot be undone, and will delete the following tasks: "
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Odstránenie úlohy nemôže byť vrátené, bude zmazaná táto úloha: "
+msgstr[1] "Odstránenie úlohy nemôže byť vrátené, bude zmazaná táto úlohy: "
+msgstr[2] "Odstránenie úlohy nemôže byť vrátené, bude zmazaná táto úlohy: "
 
 #: GTG/gtk/delete_dialog.py:94
 msgid "Are you sure you want to delete this task?"
 msgid_plural "Are you sure you want to delete these tasks?"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Naozaj chcete odstrániť túto úlohu?"
+msgstr[1] "Naozaj chcete odstrániť tieto úlohy?"
+msgstr[2] "Naozaj chcete odstrániť tieto úlohy?"
 
 #: GTG/gtk/delete_dialog.py:100
 msgid "Keep selected task"
 msgid_plural "Keep selected tasks"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Ponechať zvolenú úlohy"
+msgstr[1] "Ponechať zvolené úlohy"
+msgstr[2] "Ponechať zvolené úlohy"
 
 #: GTG/gtk/delete_dialog.py:103
 msgid "Permanently remove task"
 msgid_plural "Permanently remove tasks"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Natrvalo odstrániť úlohu"
+msgstr[1] "Natrvalo odstrániť úlohy"
+msgstr[2] "Natrvalo odstrániť úlohy"
 
-#: GTG/gtk/delete_dialog.py:114
+#: GTG/gtk/delete_dialog.py:108
 #, python-format
 msgid ""
 "\n"
 "And %d more tasks"
 msgstr ""
+"\n"
+"A %d ďalších úloh"
 
-#: GTG/gtk/preferences.py:38
-msgid "Click on a plugin name to view its description here."
-msgstr ""
+#: GTG/gtk/preferences.py:80
+#, python-format
+msgid "Preferences - %s"
+msgstr "Nastavenia – %s"
+
+#: GTG/gtk/browser/simple_color_selector.py:236
+msgid "Add custom color"
+msgstr "Pridať vlastnú farbu"
+
+#: GTG/gtk/browser/simple_color_selector.py:264
+msgid "Choose a color"
+msgstr "Vyberte farbu"
 
 #: GTG/gtk/browser/custominfobar.py:36
 #, python-format
@@ -1042,6 +1074,9 @@ msgid ""
 "authentication data and has been disabled. To retry the login, re-enable the "
 "service."
 msgstr ""
+"Synchronizačná služba <b>%s</b> sa nemôže prihlásiť pomocou zadaných "
+"prihlasovacích údajov a bola vypnutá. Na zopakovanie prihlásenia opäť službu "
+"zapnite."
 
 #: GTG/gtk/browser/custominfobar.py:40
 #, python-format
@@ -1049,59 +1084,60 @@ msgid ""
 "Due to a network problem, I cannot contact the <b>%s</b> synchronization "
 "service."
 msgstr ""
+"Kvôli problému so sieťou nemôžem kontaktovať synchronizačnú službu <b>%s</b>."
 
 #: GTG/gtk/browser/custominfobar.py:43
 #, python-format
 msgid ""
 "Cannot connect to DBus, I've disabled the <b>%s</b> synchronization service."
-msgstr ""
+msgstr "Nemôžem sa pripojiť k DBus, vypol som synchronizačnú službu <b>%s</b>."
 
 #: GTG/gtk/browser/custominfobar.py:105
 msgid "Configure synchronization service"
-msgstr ""
+msgstr "Nastaviť synchronizačnú službu"
 
 #: GTG/gtk/browser/custominfobar.py:106
 msgid "Ignore"
-msgstr ""
+msgstr "Ignorovať"
 
 #: GTG/gtk/browser/custominfobar.py:114 GTG/gtk/browser/custominfobar.py:119
 msgid "Ok"
-msgstr ""
+msgstr "OK"
 
 #: GTG/gtk/browser/custominfobar.py:140
 msgid "Confirm"
-msgstr ""
+msgstr "Potvrdiť"
 
 #: GTG/gtk/browser/custominfobar.py:142
 msgid "Continue"
-msgstr ""
+msgstr "Pokračovať"
 
-#: GTG/gtk/browser/treeview_factory.py:280
-#: GTG/gtk/browser/taskbrowser.glade.h:29
+#: GTG/gtk/browser/taskbrowser.glade.h:39
+#: GTG/gtk/browser/treeview_factory.py:255
 msgid "Tags"
 msgstr "Značky"
 
-#: GTG/gtk/browser/treeview_factory.py:368
+#: GTG/gtk/browser/treeview_factory.py:316
 msgid "Start date"
-msgstr "Začiatok"
+msgstr "Dátum začiatku"
 
-#: GTG/gtk/browser/treeview_factory.py:379
+#: GTG/gtk/browser/treeview_factory.py:327
 msgid "Due"
 msgstr "Termín"
 
-#: GTG/gtk/browser/treeview_factory.py:399
+#: GTG/gtk/browser/treeview_factory.py:347
 msgid "Closed date"
-msgstr ""
+msgstr "Dátum dokončenia"
 
-#: GTG/gtk/browser/treeview_factory.py:454
+#: GTG/gtk/browser/treeview_factory.py:392
 msgid "Title"
 msgstr "Názov"
 
-#: GTG/gtk/browser/browser.py:576
+#: GTG/gtk/browser/browser.py:550
 msgid "no active tasks"
 msgstr "žiadne aktívne úlohy"
 
-#: GTG/gtk/browser/browser.py:578
+#: GTG/gtk/browser/browser.py:552
 #, python-format
 msgid "%(tasks)d active task"
 msgid_plural "%(tasks)d active tasks"
@@ -1109,209 +1145,232 @@ msgstr[0] "%(tasks)d aktívnych úloh"
 msgstr[1] "Žiadna aktívny úloha"
 msgstr[2] "%(tasks)d aktívne úlohy"
 
-#: GTG/gtk/browser/browser.py:1493
+#: GTG/gtk/browser/browser.py:1516
 msgid "Add Task"
-msgstr ""
+msgstr "Pridať úlohu"
 
-#: GTG/gtk/browser/browser.py:1494
+#: GTG/gtk/browser/browser.py:1517
 msgid "Open Task"
-msgstr ""
+msgstr "Otvoriť úlohu"
 
 #: GTG/gtk/browser/modifytags_dialog.py:38
 msgid "NewTag"
-msgstr ""
+msgstr "NováZnačka"
 
-#: GTG/gtk/browser/__init__.py:36 GTG/gtk/browser/taskbrowser.glade.h:25
-#: GTG/gtk/editor/__init__.py:31
+#: GTG/gtk/browser/tag_editor.py:87
+msgid "Remove selected icon"
+msgstr "Odstrániť označenú ikonu"
+
+#: GTG/gtk/browser/tag_editor.py:224
+msgid "Name : "
+msgstr "Názov:"
+
+#: GTG/gtk/browser/tag_editor.py:231
+msgid "Show Tag in Work View :"
+msgstr "Zobraziť značku v pracovnom pohľade :"
+
+#: GTG/gtk/browser/tag_editor.py:244
+msgid "Select Tag Color:"
+msgstr "Vyberte farbu značky:"
+
+#: GTG/gtk/browser/tag_editor.py:284
+msgid ""
+"Click To\n"
+"Set Icon"
+msgstr ""
+"Kliknite na\n"
+"ikonu"
+
+#: GTG/gtk/browser/tag_editor.py:294
+msgid "Enter tag name here"
+msgstr "Tu zadajte názov značky"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:26
 msgid "Mark as Done"
 msgstr "Označiť ako dokončené"
 
-#: GTG/gtk/browser/__init__.py:37
+#: GTG/gtk/browser/__init__.py:35
 msgid "Mark the selected task as done"
 msgstr "Označiť zvolenú úlohu ako dokončenú"
 
 #: GTG/gtk/browser/__init__.py:38 GTG/gtk/editor/__init__.py:32
 msgid "Mark as not Done"
-msgstr ""
+msgstr "Označiť ako _Nedokončené"
 
-#: GTG/gtk/browser/__init__.py:39 GTG/gtk/browser/__init__.py:43
+#: GTG/gtk/browser/__init__.py:37 GTG/gtk/browser/__init__.py:41
 msgid "Mark the selected task as to be done"
 msgstr "Označiť zvolenú úlohu ako nedokončenú"
 
-#: GTG/gtk/browser/__init__.py:40 GTG/gtk/browser/taskbrowser.glade.h:26
-#: GTG/gtk/editor/__init__.py:33 GTG/gtk/editor/taskeditor.glade.h:3
+#: GTG/gtk/editor/taskeditor.glade.h:3 GTG/gtk/editor/__init__.py:33
+#: GTG/gtk/browser/taskbrowser.glade.h:14 GTG/gtk/browser/__init__.py:38
 msgid "Dismiss"
 msgstr "Odvolať"
 
-#: GTG/gtk/browser/__init__.py:41
+#: GTG/gtk/browser/__init__.py:39
 msgid "Mark the task as not to be done anymore"
 msgstr "Označiť zvolenú úlohu ako nebude dokončené"
 
-#: GTG/gtk/browser/__init__.py:42 GTG/gtk/editor/__init__.py:34
+#: GTG/gtk/editor/__init__.py:34 GTG/gtk/browser/__init__.py:40
 msgid "Undismiss"
 msgstr "Ne_odvolať"
 
-#: GTG/gtk/browser/__init__.py:44
+#: GTG/gtk/browser/__init__.py:42
 msgid "Permanently remove the selected task"
-msgstr "trvalo odstrániť zvolenú úlohu"
+msgstr "Natrvalo odstrániť zvolenú úlohu"
 
-#: GTG/gtk/browser/__init__.py:45
+#: GTG/gtk/browser/__init__.py:43
 msgid "Edit the selected task"
 msgstr "Upraviť zvolenú úlohu"
 
-#: GTG/gtk/browser/__init__.py:46 GTG/gtk/browser/taskbrowser.glade.h:4
+#: GTG/gtk/browser/taskbrowser.glade.h:11 GTG/gtk/browser/__init__.py:44
 msgid "Create a new task"
 msgstr "Vytvoriť novú úlohu"
 
-#: GTG/gtk/browser/__init__.py:47
+#: GTG/gtk/browser/__init__.py:45
 msgid "Create a new subtask"
 msgstr "vytvoriť novú podúlohu"
 
-#: GTG/gtk/browser/__init__.py:48
+#: GTG/gtk/browser/__init__.py:46
 msgid "Display only the currently actionable tasks"
 msgstr "Zobraziť len aktuálne dostupné úlohy"
 
-#: GTG/gtk/browser/__init__.py:49
+#: GTG/gtk/browser/__init__.py:47
 msgid "Hide this tag from the workview"
-msgstr ""
+msgstr "Skryť túto značku z pracovného pohľadu"
 
-#: GTG/gtk/browser/__init__.py:50
+#: GTG/gtk/browser/__init__.py:48
 msgid "Show this tag in the workview"
-msgstr ""
+msgstr "Zobraziť túto značku v pracovnom pohľade"
 
 #: GTG/gtk/browser/__init__.py:51
 msgid "You can create, open or filter your tasks here"
-msgstr ""
+msgstr "Tu môžete vytvoriť, otvoriť alebo filtrovať svoje úlohy"
 
 #: GTG/gtk/browser/__init__.py:52
 msgid "Clear"
-msgstr ""
+msgstr "Vymazať"
 
-#: GTG/gtk/browser/taskbrowser.glade.h:1
+#: GTG/gtk/browser/taskbrowser.glade.h:18
 msgid "Getting Things Gnome!"
 msgstr "Getting Things Gnome!"
 
-#: GTG/gtk/browser/taskbrowser.glade.h:2
+#: GTG/gtk/browser/taskbrowser.glade.h:52
 msgid "_Tasks"
 msgstr "Úl_ohy"
 
-#: GTG/gtk/browser/taskbrowser.glade.h:3
+#: GTG/gtk/browser/taskbrowser.glade.h:32
 msgid "New _Task"
 msgstr "_Nová úloha"
 
-#: GTG/gtk/browser/taskbrowser.glade.h:5
+#: GTG/gtk/browser/taskbrowser.glade.h:31
 msgid "New _Subtask"
 msgstr "Nová _podúloha"
 
-#: GTG/gtk/browser/taskbrowser.glade.h:6
+#: GTG/gtk/browser/taskbrowser.glade.h:28
 msgid "Mark as _Done"
 msgstr "Označiť ako _Dokončené"
 
-#: GTG/gtk/browser/taskbrowser.glade.h:7
+#: GTG/gtk/browser/taskbrowser.glade.h:12
 msgid "D_ismiss"
 msgstr "_Odvolať"
 
-#: GTG/gtk/browser/taskbrowser.glade.h:8
+#: GTG/gtk/browser/taskbrowser.glade.h:46
 msgid "_Edit"
 msgstr "_Upraviť"
 
-#: GTG/gtk/browser/taskbrowser.glade.h:9
+#: GTG/gtk/browser/taskbrowser.glade.h:53
 msgid "_View"
 msgstr "_Zobraziť"
 
-#: GTG/gtk/browser/taskbrowser.glade.h:10
+#: GTG/gtk/browser/taskbrowser.glade.h:54
 msgid "_Work View"
 msgstr "_Pracovný pohľad"
 
-#: GTG/gtk/browser/taskbrowser.glade.h:11
+#: GTG/gtk/browser/taskbrowser.glade.h:51
 msgid "_Tags Sidebar"
 msgstr "Panel _značiek"
 
-#: GTG/gtk/browser/taskbrowser.glade.h:12
+#: GTG/gtk/browser/taskbrowser.glade.h:45
 msgid "_Closed Tasks Pane"
 msgstr "Panel _hotových úloh"
 
-#: GTG/gtk/browser/taskbrowser.glade.h:13
+#: GTG/gtk/browser/taskbrowser.glade.h:37
 msgid "T_oolbar"
 msgstr "Panel _nástrojov"
 
-#: GTG/gtk/browser/taskbrowser.glade.h:14
+#: GTG/gtk/browser/taskbrowser.glade.h:49
 msgid "_Quick Add Entry"
 msgstr "_Rýchle pridanie položky"
 
-#: GTG/gtk/browser/taskbrowser.glade.h:15
+#: GTG/gtk/browser/taskbrowser.glade.h:48
 msgid "_Plugins"
 msgstr "_Zásuvné moduly"
 
-#: GTG/gtk/browser/taskbrowser.glade.h:16
+#: GTG/gtk/browser/taskbrowser.glade.h:47
 msgid "_Help"
 msgstr "_Pomocník"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:17
-msgid "Open GTG documentation in your web browser"
-msgstr ""
+msgid "Open GTG help"
+msgstr "Otvoriť pomocníka GTG"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:18
 msgid "Help to translate GTG into your language"
-msgstr ""
+msgstr "Pomôžte preložiť GTG do svojho jazyka"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:19
 msgid "Report a problem to GTG developers"
-msgstr ""
+msgstr "nahlásiť problém vývojárom GTG"
 
-#: GTG/gtk/browser/taskbrowser.glade.h:20
+#: GTG/gtk/browser/taskbrowser.glade.h:30
 msgid "New Task"
 msgstr "Nová úloha"
 
-#: GTG/gtk/browser/taskbrowser.glade.h:21
+#: GTG/gtk/browser/taskbrowser.glade.h:29
 msgid "New Subtask"
 msgstr "Nová podúloha"
 
-#: GTG/gtk/browser/taskbrowser.glade.h:22
+#: GTG/gtk/browser/taskbrowser.glade.h:15
 msgid "Edit"
 msgstr "Upraviť"
 
-#: GTG/gtk/browser/taskbrowser.glade.h:23
+#: GTG/gtk/browser/taskbrowser.glade.h:42
 msgid "Undo"
 msgstr "Vrátiť"
 
-#: GTG/gtk/browser/taskbrowser.glade.h:24
+#: GTG/gtk/browser/taskbrowser.glade.h:34
 msgid "Redo"
 msgstr "Opakovať"
 
-#: GTG/gtk/browser/taskbrowser.glade.h:27 GTG/gtk/editor/taskeditor.glade.h:4
+#: GTG/gtk/editor/taskeditor.glade.h:2 GTG/gtk/browser/taskbrowser.glade.h:13
 msgid "Delete"
 msgstr "Odstrániť"
 
-#: GTG/gtk/browser/taskbrowser.glade.h:28
+#: GTG/gtk/browser/taskbrowser.glade.h:43
 msgid "Work View"
 msgstr "Pracovný pohľad"
 
-#: GTG/gtk/browser/taskbrowser.glade.h:30
+#: GTG/gtk/browser/taskbrowser.glade.h:40
 msgid "Tasks"
-msgstr ""
+msgstr "Úlohy"
 
-#: GTG/gtk/browser/taskbrowser.glade.h:31
+#: GTG/gtk/browser/taskbrowser.glade.h:3
 msgid "About GTG!"
 msgstr "O GTG!"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:32
-msgid "Copyright © 2008-2012 Lionel Dricot, Bertrand Rousseau"
-msgstr ""
+msgid "Getting Things GNOME!"
+msgstr "Getting Things GNOME!"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:33
-msgid ""
-"\n"
-"Getting Things Gnome! is an organizer for the GNOME desktop environment."
-msgstr ""
-"\n"
-"Getting Things Gnome! je organizátor pre pracovné prostredie GNOME."
+msgid "Copyright © 2008-2012 Lionel Dricot, Bertrand Rousseau"
+msgstr "Copyright © 2008-2012 Lionel Dricot, Bertrand Rousseau"
 
-#: GTG/gtk/browser/taskbrowser.glade.h:35
+#: GTG/gtk/browser/taskbrowser.glade.h:17
 msgid "GTG website"
 msgstr "GTG webová stránka"
 
-#: GTG/gtk/browser/taskbrowser.glade.h:36
+#: GTG/gtk/browser/taskbrowser.glade.h:19
 msgid ""
 "Getting Things Gnome! is free software; you can redistribute it and/or "
 "modify it under the terms of the GNU General Public License as published by "
@@ -1327,8 +1386,8 @@ msgid ""
 "Getting Things Gnome!; if not, write to the Free Software Foundation, Inc., "
 "51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA."
 msgstr ""
-"Getting Things Gnome! je slobodný softvér; môžete ho ďalej distribuovať "
-"a/alebo upravovať pod GNU General Public License, v znení ako je zverejnená "
+"Getting Things Gnome! je slobodný softvér; môžete ho ďalej distribuovať a/"
+"alebo upravovať pod GNU General Public License, v znení ako je zverejnená "
 "Free Software Foundation; buď verzie 3 alebo (podľa vašeho úsudku) akúkoľvek "
 "novšej verzie.\n"
 "\n"
@@ -1341,87 +1400,87 @@ msgstr ""
 "Gnome!; ak nie, napíšte si o ňu na Free Software Foundation, Inc., 51 "
 "Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA."
 
-#: GTG/gtk/browser/taskbrowser.glade.h:41
+#: GTG/gtk/browser/taskbrowser.glade.h:27
 msgid "Mark as Not Done"
 msgstr "Označiť ako _Nedokončené"
 
-#: GTG/gtk/browser/taskbrowser.glade.h:42
+#: GTG/gtk/browser/taskbrowser.glade.h:41
 msgid "Und_ismiss"
 msgstr "_Obnoviť odvolané"
 
-#: GTG/gtk/browser/taskbrowser.glade.h:43
-msgid "t_oday"
-msgstr "_dnes"
-
-#: GTG/gtk/browser/taskbrowser.glade.h:44
-msgid "_tomorrow"
-msgstr "_zajtra"
-
-#: GTG/gtk/browser/taskbrowser.glade.h:45
-msgid "next _week"
-msgstr "budúci _týždeň"
-
-#: GTG/gtk/browser/taskbrowser.glade.h:46
-msgid "next _month"
-msgstr "budúci _mesiac"
-
-#: GTG/gtk/browser/taskbrowser.glade.h:47
-msgid "next _year"
-msgstr "budúci _rok"
-
-#: GTG/gtk/browser/taskbrowser.glade.h:48
-msgid "_now"
-msgstr ""
-
-#: GTG/gtk/browser/taskbrowser.glade.h:49
-msgid "_soon"
-msgstr ""
-
-#: GTG/gtk/browser/taskbrowser.glade.h:50
-msgid "_someday"
-msgstr ""
-
-#: GTG/gtk/browser/taskbrowser.glade.h:51
-msgid "_clear due date"
-msgstr ""
-
-#: GTG/gtk/browser/taskbrowser.glade.h:52
-msgid "_clear start date"
-msgstr ""
-
-#: GTG/gtk/browser/taskbrowser.glade.h:53
+#: GTG/gtk/browser/taskbrowser.glade.h:7
 msgid "Add a subtask"
 msgstr "Pridať podúlohu"
 
-#: GTG/gtk/browser/taskbrowser.glade.h:54
+#: GTG/gtk/browser/taskbrowser.glade.h:50
 msgid "_Set start date"
-msgstr ""
+msgstr "_Nastaviť dátum začatia"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:64
+msgid "t_oday"
+msgstr "_dnes"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:60
+msgid "_tomorrow"
+msgstr "_zajtra"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:62
+msgid "next _week"
+msgstr "budúci _týždeň"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:61
+msgid "next _month"
+msgstr "budúci _mesiac"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:63
+msgid "next _year"
+msgstr "budúci _rok"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:56
+msgid "_clear start date"
+msgstr "_zmazať termín začatia"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:36
+msgid "Set due date"
+msgstr "Nastaviť dátum dokončenia"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:58
+msgid "_now"
+msgstr "_teraz"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:59
+msgid "_soon"
+msgstr "č_oskoro"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:54
+msgid "_someday"
+msgstr "_niekedy"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:55
-msgid "Set due date"
-msgstr ""
+msgid "_clear due date"
+msgstr "_zmazať termín dokončenia"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:56
 msgid "Modify Tags..."
-msgstr ""
+msgstr "Upraviť značky…"
 
 #: GTG/gtk/browser/modifytags_dialog.glade.h:1
 msgid "Modify Tags"
-msgstr ""
+msgstr "Upraviť značky"
 
 #: GTG/gtk/browser/modifytags_dialog.glade.h:2
 msgid "Add/Remove Tags"
-msgstr ""
+msgstr "Pridať/Odstrániť značku"
 
-#: GTG/gtk/browser/modifytags_dialog.glade.h:3
+#: GTG/gtk/browser/taskbrowser.glade.h:9
 msgid "Cancel"
 msgstr "Zrušiť"
 
 #: GTG/gtk/browser/modifytags_dialog.glade.h:4
 msgid "Enter the name of the tag(s) you wish to add or remove:"
-msgstr ""
+msgstr "Zadajte názov značky(iek), ktorú chcete pridať alebo odstrániť:"
 
-#: GTG/gtk/browser/modifytags_dialog.glade.h:5
+#: GTG/gtk/browser/taskbrowser.glade.h:38
 msgid "TagName"
 msgstr "MenoZnačky"
 
@@ -1430,20 +1489,26 @@ msgid ""
 "Hint: you can add several tags by separating them with\n"
 "space. Place '!' before tags you want to remove."
 msgstr ""
+"Tip: môžete pridať viacero značiek, oddelených medzerou.\n"
+"Pred značku, ktorú chcete odstrániť pridajte „!”."
 
-#: GTG/gtk/browser/modifytags_dialog.glade.h:8
+#: GTG/gtk/browser/taskbrowser.glade.h:8
 msgid "Apply to subtasks"
 msgstr "Použiť na podúlohy"
 
-#: GTG/gtk/browser/tag_context_menu.py:44
-msgid "Set color..."
-msgstr ""
+#: GTG/gtk/browser/tag_context_menu.py:58
+msgid "Edit Tag..."
+msgstr "Upraviť značku…"
 
-#: GTG/gtk/browser/tag_context_menu.py:48
-msgid "Reset color"
-msgstr ""
+#: GTG/gtk/preferences.glade.h:1
+msgid "<b>Dependencies</b>"
+msgstr "<b>Závislosti</b>"
 
-#: GTG/gtk/editor/editor.py:295
+#: GTG/gtk/preferences.glade.h:13
+msgid "_About Plugin"
+msgstr "_O zásuvnom module"
+
+#: GTG/gtk/editor/editor.py:302
 #, python-format
 msgid "Completed %(days)d day late"
 msgid_plural "Completed %(days)d days late"
@@ -1451,7 +1516,7 @@ msgstr[0] "Dokončené o %(days)d dní neskôr"
 msgstr[1] "Dokončené o %(days)d deň neskôr"
 msgstr[2] "Dokončené o %(days)d dni neskôr"
 
-#: GTG/gtk/editor/editor.py:298
+#: GTG/gtk/editor/editor.py:305
 #, python-format
 msgid "Completed %(days)d day early"
 msgid_plural "Completed %(days)d days early"
@@ -1459,7 +1524,7 @@ msgstr[0] "Dokončené o %(days)d dní skôr"
 msgstr[1] "Dokončené o %(days)d deň skôr"
 msgstr[2] "Dokončené o %(days)d dni skôr"
 
-#: GTG/gtk/editor/editor.py:305
+#: GTG/gtk/editor/editor.py:311
 #, python-format
 msgid "Due tomorrow!"
 msgid_plural "%(days)d days left"
@@ -1467,11 +1532,11 @@ msgstr[0] "Ostáva %(days)d dní"
 msgstr[1] "Termín zajtra!"
 msgstr[2] "Ostávajú %(days)d dni"
 
-#: GTG/gtk/editor/editor.py:307
+#: GTG/gtk/editor/editor.py:313
 msgid "Due today!"
 msgstr "Termín dnes!"
 
-#: GTG/gtk/editor/editor.py:310
+#: GTG/gtk/editor/editor.py:316
 #, python-format
 msgid "Due yesterday!"
 msgid_plural "Was %(days)d days ago"
@@ -1479,35 +1544,35 @@ msgstr[0] "Pred %(days)d dňami"
 msgstr[1] "Termín včera!"
 msgstr[2] "Pred %(days)d dňami"
 
-#: GTG/gtk/editor/__init__.py:36
+#: GTG/gtk/editor/__init__.py:38
 msgid "Mark this task as done"
 msgstr "Označiť túto úlohu ako dokončenú"
 
-#: GTG/gtk/editor/__init__.py:37 GTG/gtk/editor/__init__.py:39
+#: GTG/gtk/editor/__init__.py:39 GTG/gtk/editor/__init__.py:41
 msgid "Mark this task as to be done"
 msgstr "Označiť túto úlohu ako nedokončenú"
 
-#: GTG/gtk/editor/__init__.py:38
+#: GTG/gtk/editor/__init__.py:40
 msgid "Mark this task as not to be done anymore"
 msgstr "Označiť túto úlohu ako nebude dokončené"
 
-#: GTG/gtk/editor/__init__.py:40
+#: GTG/gtk/editor/__init__.py:42
 msgid "Permanently remove this task"
 msgstr "Natrvalo odstrániť túto úlohu"
 
-#: GTG/gtk/editor/__init__.py:41
+#: GTG/gtk/editor/__init__.py:43
 msgid "Insert a subtask in this task"
 msgstr "Pridať k tejto úlohe podúlohu"
 
-#: GTG/gtk/editor/__init__.py:42
+#: GTG/gtk/editor/__init__.py:44
 msgid "Insert a tag in this task"
 msgstr "Pridať tejto úlohe značku"
 
-#: GTG/gtk/editor/taskeditor.glade.h:1
+#: GTG/gtk/editor/taskeditor.glade.h:12
 msgid "Task"
 msgstr "Úloha"
 
-#: GTG/gtk/editor/taskeditor.glade.h:2
+#: GTG/gtk/editor/taskeditor.glade.h:7
 msgid "Mark Done"
 msgstr "Označiť ako _dokončené"
 
@@ -1519,29 +1584,29 @@ msgstr "Vložiť podúlohu"
 msgid "Insert tag"
 msgstr "Vložiť značku"
 
-#: GTG/gtk/editor/taskeditor.glade.h:7
+#: GTG/gtk/editor/taskeditor.glade.h:11
 msgid "Starting on"
 msgstr "Začína"
 
-#: GTG/gtk/editor/taskeditor.glade.h:8
+#: GTG/gtk/editor/taskeditor.glade.h:4
 msgid "Due for"
 msgstr "Termín"
 
-#: GTG/gtk/editor/taskeditor.glade.h:9
+#: GTG/gtk/editor/taskeditor.glade.h:1
 msgid "Closed on"
 msgstr "Dokončené"
 
-#: GTG/gtk/editor/taskeditor.glade.h:10
+#: GTG/gtk/editor/taskeditor.glade.h:8
 msgid "Now"
 msgstr "Teraz"
 
-#: GTG/gtk/editor/taskeditor.glade.h:11
+#: GTG/gtk/editor/taskeditor.glade.h:10
 msgid "Soon"
 msgstr "Čoskoro"
 
-#: GTG/gtk/editor/taskeditor.glade.h:12
+#: GTG/gtk/editor/taskeditor.glade.h:9
 msgid "Someday"
-msgstr ""
+msgstr "Niekedy"
 
 #: GTG/gtk/deletion.glade.h:1
 msgid "Confirm task deletion"
@@ -1555,35 +1620,40 @@ msgstr ""
 "Veľmi sa ospravedlňujeme. Mohli by ste nám pomôcť opraviť tento problém "
 "nahlásením pádu?"
 
-#: GTG/gtk/crashhandler.py:173
+#: GTG/gtk/crashhandler.py:170
 msgid "An error has occurred"
 msgstr "Nastala chyba"
 
-#: GTG/gtk/crashhandler.py:187
+#: GTG/gtk/crashhandler.py:180
 msgid "It looks like an error has occurred."
 msgstr "Vyzerá to, že nastala chyba."
 
-#: GTG/gtk/crashhandler.py:223
+#: GTG/gtk/crashhandler.py:214
 msgid "_Details"
 msgstr "Po_drobnosti"
 
-#: GTG/gtk/crashhandler.py:230
+#: GTG/gtk/crashhandler.py:221
 msgid "_Report this problem..."
 msgstr "Nahlásiť tento p_roblém..."
 
-#: GTG/gtk/crashhandler.py:234
+#: GTG/gtk/crashhandler.py:225
 msgid "_Ignore the error"
 msgstr "_Ignorovať chybu"
 
-#: GTG/gtk/crashhandler.py:336
+#: GTG/gtk/crashhandler.py:319
 msgid ""
-" has crashed. Please report the bug on <a "
-"href=\"http://bugs.edge.launchpad.net/gtg\">our Launchpad page</a>. If you "
-"have Apport installed, it will be started for you."
+" has crashed. Please report the bug on <a href=\"http://bugs.edge.launchpad."
+"net/gtg\">our Launchpad page</a>. If you have Apport installed, it will be "
+"started for you."
 msgstr ""
-" spadol. Prosím, nahláste chybu na <a "
-"href=\"http://bugs.edge.launchpad.net/gtg\">našej stránke Launchpad</a>. Ak "
-"máte nainštalovaný Apport, bude spustený."
+" spadol. Prosím, nahláste chybu na <a href=\"http://bugs.edge.launchpad.net/"
+"gtg\">našej stránke Launchpad</a>. Ak máte nainštalovaný Apport, bude "
+"spustený."
+
+#: GTG/gtk/plugins.py:142
+#, python-format
+msgid "Plugins - %s"
+msgstr "Zásuvné moduly – %s"
 
 #~ msgid "Due tomorrow !"
 #~ msgstr "Do zajtra!"
@@ -1594,6 +1664,9 @@ msgstr ""
 #~ msgid "Make a Task"
 #~ msgstr "Vytvoriť úlohu"
 
+#~ msgid "Active _Plugins:"
+#~ msgstr "Aktívne _zásuvné moduly:"
+
 #~ msgid "<b>General</b>"
 #~ msgstr "<b>Všeobecné</b>"
 
@@ -1602,6 +1675,9 @@ msgstr ""
 
 #~ msgid "New Note"
 #~ msgstr "Nová poznámka"
+
+#~ msgid "Plugins"
+#~ msgstr "Zásuvné moduly"
 
 #~ msgid "Reset Color"
 #~ msgstr "Zrušiť farbu"
@@ -1642,6 +1718,13 @@ msgstr ""
 #~ msgid "Keep as Note"
 #~ msgstr "Nechať ako poznámku"
 
+#~ msgid ""
+#~ "\n"
+#~ "Getting Things Gnome! is an organizer for the GNOME desktop environment."
+#~ msgstr ""
+#~ "\n"
+#~ "Getting Things Gnome! je organizátor pre pracovné prostredie GNOME."
+
 #~ msgid "Add Tag"
 #~ msgstr "Pridať značku"
 
@@ -1679,7 +1762,8 @@ msgstr ""
 
 #~ msgid ""
 #~ "Deleting a task cannot be undone, and will delete the following tasks: "
-#~ msgstr "Odstránenie úlohy nemôže byť vrátené a budú odstránené tieto úlohy: "
+#~ msgstr ""
+#~ "Odstránenie úlohy nemôže byť vrátené a budú odstránené tieto úlohy: "
 
 #~ msgid "Are you sure you want to delete these tasks?"
 #~ msgstr "Naozaj chcete odstrániť tieto úlohy?"
@@ -1689,6 +1773,9 @@ msgstr ""
 
 #~ msgid "Permanently remove tasks"
 #~ msgstr "trvalo odstrániť úlohy"
+
+#~ msgid "Getting Things GNOME! Preferences"
+#~ msgstr "Nastavenia Getting Things GNOME!"
 
 #~ msgid "Synchronize with Evolution"
 #~ msgstr "Synchronizovať s Evolution"
@@ -1700,8 +1787,17 @@ msgstr ""
 #~ " bol nájdený v systéme, ale neposkytuje rozhranie dbus. Zásuvný modul "
 #~ "Tomboy/Gnote nebude s ním pracovať."
 
+#~ msgid "Template not found"
+#~ msgstr "Šablóna nenájdená"
+
 #~ msgid "Can't load the template file"
 #~ msgstr "Nemožno načítať súbor šablóny"
+
+#~ msgid "Start a new activity in Hamster Time"
+#~ msgstr "Začať novú aktivitu v Hamster Time"
+
+#~ msgid "Start a new activity in Hamster Time "
+#~ msgstr "Začať novú aktivitu v Hamster Time "
 
 #~ msgid "Synchronize with RTM"
 #~ msgstr "Synchronizovať s RTM"
@@ -1722,11 +1818,11 @@ msgstr ""
 #~ msgstr "Prosím opakujte."
 
 #~ msgid ""
-#~ "Please authenticate to Remember The Milk in the browser that is being opened "
-#~ "now. When done, press OK"
+#~ "Please authenticate to Remember The Milk in the browser that is being "
+#~ "opened now. When done, press OK"
 #~ msgstr ""
-#~ "Prosím, prihláste sa k Remember The Milk v okne prehliadača, ktoré je práve "
-#~ "otvorené. Po dokončení stlačte OK"
+#~ "Prosím, prihláste sa k Remember The Milk v okne prehliadača, ktoré je "
+#~ "práve otvorené. Po dokončení stlačte OK"
 
 #~ msgid "saving critical object failed"
 #~ msgstr "uloženie kritického objektu zlyhalo"
@@ -1769,10 +1865,3 @@ msgstr ""
 
 #~ msgid "Closing in one second"
 #~ msgstr "Zatvorenie za sekundu"
-
-#, python-format
-#~ msgid "Was %(days)d day ago"
-#~ msgid_plural "Was %(days)d days ago"
-#~ msgstr[0] ""
-#~ msgstr[1] "Bolo pred %(days)d dňom"
-#~ msgstr[2] "Bolo pred %(days)d dňami"
