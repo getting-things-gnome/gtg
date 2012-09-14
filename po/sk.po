@@ -9,15 +9,15 @@ msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2012-09-11 10:37+0200\n"
-"PO-Revision-Date: 2012-09-11 08:24+0000\n"
-"Last-Translator: Slavko <Unknown>\n"
+"PO-Revision-Date: 2012-09-13 17:13+0000\n"
+"Last-Translator: Izidor Matušov <izidor.matusov@gmail.com>\n"
 "Language-Team: slovenčina <debian-l10n-slovak@lists.debian.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 1 : (n>=2 && n<=4) ? 2 : 0;\n"
-"X-Launchpad-Export-Date: 2012-09-12 04:38+0000\n"
-"X-Generator: Launchpad (build 15930)\n"
+"X-Launchpad-Export-Date: 2012-09-14 04:37+0000\n"
+"X-Generator: Launchpad (build 15944)\n"
 "X-POFile-SpellExtra: tasktitle\n"
 
 #: GTG/plugins/export/export_templates/description_pocketmod.py:18
@@ -906,9 +906,9 @@ msgstr[2] "Pred %(days)d dňami"
 #, python-format
 msgid "Tomorrow"
 msgid_plural "In %(days)d days"
-msgstr[0] "Za %(days)d dni"
-msgstr[1] "Za %(days)d dní"
-msgstr[2] "Zajtra"
+msgstr[0] "Zajtra"
+msgstr[1] "Za %(days)d dni"
+msgstr[2] "Za %(days)d dní"
 
 #: GTG/gtk/crashhandler.py:57
 msgid ""
@@ -1214,9 +1214,9 @@ msgstr[2] "Dokončené o %(days)d deň skôr"
 #, python-format
 msgid "Due tomorrow!"
 msgid_plural "%(days)d days left"
-msgstr[0] "Ostávajú %(days)d dni"
-msgstr[1] "Ostáva %(days)d dní"
-msgstr[2] "Termín zajtra!"
+msgstr[0] "Termín zajtra"
+msgstr[1] "Ostávajú %(days)d dni"
+msgstr[2] "Ostáva %(days)d dní"
 
 #: GTG/gtk/editor/editor.py:322
 msgid "Due today!"
@@ -1652,7 +1652,7 @@ msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:45
 msgid "_Tomorrow"
-msgstr ""
+msgstr "_Zajtra"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:46
 msgid "Next _Week"
