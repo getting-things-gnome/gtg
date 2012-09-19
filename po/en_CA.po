@@ -8,19 +8,19 @@ msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2012-09-11 10:37+0200\n"
-"PO-Revision-Date: 2011-11-15 03:42+0000\n"
-"Last-Translator: Anthony Harrington <untaintableangel@hotmail.co.uk>\n"
+"PO-Revision-Date: 2012-09-19 01:36+0000\n"
+"Last-Translator: Ken Sharp <Unknown>\n"
 "Language-Team: English (Canada) <en_CA@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2012-09-12 04:39+0000\n"
-"X-Generator: Launchpad (build 15930)\n"
+"X-Launchpad-Export-Date: 2012-09-19 04:39+0000\n"
+"X-Generator: Launchpad (build 15966)\n"
 
 #: GTG/plugins/export/export_templates/description_pocketmod.py:18
 msgid "Foldable booklet (PDF)"
-msgstr ""
+msgstr "Foldable booklet (PDF)"
 
 #: GTG/plugins/export/export_templates/description_pocketmod.py:19
 msgid ""
@@ -30,6 +30,11 @@ msgid ""
 "booklet. Packages <b>pdflatex</b>, <b>pdftk</b> and <b>pdfjam</b>\n"
 "are required."
 msgstr ""
+"A template to create\n"
+"<a href=\"http://www.pocketmod.com\">PocketMod</a>, which is a small "
+"foldable\n"
+"booklet. Packages <b>pdflatex</b>, <b>pdftk</b> and <b>pdfjam</b>\n"
+"are required."
 
 #: GTG/plugins/export/export_templates/description_sexy.py:18
 msgid "A professional-looking HTML page"
@@ -40,45 +45,49 @@ msgid ""
 "A template to create a HTML page with some tasks and tags. Tags colors are "
 "also displayed."
 msgstr ""
+"A template to create a HTML page with some tasks and tags. Tag colours are "
+"also displayed."
 
 #: GTG/plugins/export/export_templates/description_simple.py:18
 msgid "A simple Web page that can be easily printed."
-msgstr ""
+msgstr "A simple web page that can be easily printed."
 
 #: GTG/plugins/export/export_templates/description_simple.py:19
 msgid ""
 "A template to create a simple HTML page with some tasks that can be easily "
 "printed."
 msgstr ""
+"A template to create a simple HTML page with some tasks that can be easily "
+"printed."
 
 #: GTG/plugins/export/export_templates/description_textual.py:21
 msgid "Text-only"
-msgstr ""
+msgstr "Text only"
 
 #: GTG/plugins/export/export_templates/description_textual.py:22
 msgid "A template to create a simple text file with some tasks."
-msgstr ""
+msgstr "A template to create a simple text file with some tasks."
 
 #: GTG/plugins/export/export_templates/description_statusrpt.py:18
 msgid "Status report"
-msgstr ""
+msgstr "Status report"
 
 #: GTG/plugins/export/export_templates/description_statusrpt.py:19
 msgid "A template to create a compact text file listing only task titles."
-msgstr ""
+msgstr "A template to create a compact text file listing only task titles."
 
 #: GTG/plugins/export/export.py:120
 msgid "No task matches your criteria. Empty report can't be generated."
-msgstr ""
+msgstr "No task matches your criteria. Empty report can't be generated."
 
 #: GTG/plugins/export/export.py:138
 #, python-format
 msgid "GTG could not generate the document: %s"
-msgstr ""
+msgstr "GTG could not generate the document: %s"
 
 #: GTG/plugins/export/export.py:184
 msgid "Export the tasks currently listed"
-msgstr ""
+msgstr "Export the tasks currently listed"
 
 #: GTG/plugins/export/export.py:322
 msgid "Choose where to save your list"
@@ -154,6 +163,8 @@ msgid ""
 "%s seems to be installed on your system, but it does not provide a DBus "
 "interface which is required by the Tomboy/Gnote plugin in GTG."
 msgstr ""
+"%s seems to be installed on your system, but it does not provide a DBus "
+"interface which is required by the Tomboy/Gnote plugin in GTG."
 
 #: GTG/plugins/tomboy/tomboy.py:237
 msgid "That note does not exist!"
@@ -169,7 +180,7 @@ msgstr "This Tomboy note does not exist anymore. Do you want to create it?"
 
 #: GTG/plugins/hamster/hamster.py:37
 msgid "Start a new activity in Hamster Time Tracker "
-msgstr ""
+msgstr "Start a new activity in Hamster Time Tracker "
 
 #: GTG/plugins/hamster/hamster.py:172
 msgid "Start task in Hamster"
@@ -181,12 +192,12 @@ msgstr "Start in Hamster"
 
 #: GTG/plugins/send_email/sendEmail.py:44
 msgid "Send via email"
-msgstr ""
+msgstr "Send via e-mail"
 
 #: GTG/plugins/send_email/sendEmail.py:68
 #, python-format
 msgid "Status: %s"
-msgstr ""
+msgstr "Status: %s"
 
 #: GTG/plugins/send_email/sendEmail.py:69
 #, python-format
@@ -194,6 +205,8 @@ msgid ""
 "\n"
 "Tags: %s"
 msgstr ""
+"\n"
+"Tags: %s"
 
 #: GTG/plugins/send_email/sendEmail.py:70
 #, python-format
@@ -202,6 +215,9 @@ msgid ""
 "Subtasks:\n"
 "%s"
 msgstr ""
+"\n"
+"Subtasks:\n"
+"%s"
 
 #: GTG/plugins/send_email/sendEmail.py:72
 #, python-format
@@ -210,11 +226,14 @@ msgid ""
 "Task content:\n"
 "%s"
 msgstr ""
+"\n"
+"Task content:\n"
+"%s"
 
 #: GTG/plugins/send_email/sendEmail.py:75
 #, python-format
 msgid "Task: %(task_title)s"
-msgstr ""
+msgstr "Task: %(task_title)s"
 
 #: GTG/core/plugins/__init__.py:33
 msgid "Everything necessary to run this plugin is available."
@@ -258,7 +277,7 @@ msgstr "Very helpful message, isn't it? Please report a bug."
 
 #: GTG/core/firstrun_tasks.py:35
 msgid "Getting Started With GTG"
-msgstr ""
+msgstr "Getting Started With GTG"
 
 #: GTG/core/firstrun_tasks.py:36
 msgid ""
@@ -333,10 +352,80 @@ msgid ""
 "\n"
 "The GTG team."
 msgstr ""
+"Welcome to Getting Things GNOME!, your new task manager! In Getting Things "
+"GNOME! (GTG), everything is a task. From building a bridge over the Pacific "
+"Ocean to changing a light bulb or organizing a party!\n"
+"\n"
+"If you are new to GTG, please take the time to read this, as it will provide "
+"you useful information about how to use GTG to organize your everyday life.\n"
+"\n"
+"Creating and editing tasks:\n"
+"\n"
+"Using GTG is easy: you organize what you have to do by creating new tasks. "
+"To do this, simply press the &quot;New Task&quot; button, edit the task by "
+"describing it, set some parameters, and that's it! Once a task done, you can "
+"close it by pressing the &quot;Mark As Done&quot; button.\n"
+"\n"
+"In GTG, a task is automatically saved while you are editing it. No need to "
+"press any &quot;Save&quot; button! Try it: add some text to this task, close "
+"the window, and reopen it: your changes are still there!\n"
+"\n"
+"About subtasks:\n"
+"\n"
+"In life, you often get more things done by refining them in smaller, more "
+"operational tasks. GTG helps to do just this by defining "
+"&quot;subtasks&quot;. In GTG, those subtasks are considered as prerequisites "
+"that must be completed before being able to close their parent task.\n"
+"\n"
+"Therefore, in GTG, a task might host one or several subtasks. Those appear "
+"as links in the task description, just like the link below. To open and edit "
+"a subtask, simply click on its link! Try it yourself: open the following "
+"subtask:\n"
+"<subtask>1@1</subtask>\n"
+"\n"
+"Closing a task:\n"
+"\n"
+"In GTG, once you are done with a task, you can close it by pushing either "
+"the &quot;Mark as Done&quot; or the &quot;Dismiss&quot; button. Use the "
+"first one if the task is done, and the latter if you want to close it "
+"because it is not relevant anymore. Want to try it? Try to close the subtask "
+"above for instance!\n"
+"\n"
+"When you close a task, you will notice that all its subtasks will be "
+"automatically closed too! Indeed, GTG considers that if you have completed a "
+"given task, then you don't need to do its subtasks anymore (they were "
+"prerequisites, after all).\n"
+"\n"
+"Note that the tasks that you have marked as done or dismissed are listed in "
+"the &quot;Closed Tasks Pane&quot; which is hidden by default, but you can "
+"easily show it using the View menu.\n"
+"\n"
+"Learn more about GTG:\n"
+"\n"
+"If you are interested in knowing more about GTG's other features, you will "
+"find more information here:\n"
+"<subtask>2@1</subtask>\n"
+"<subtask>3@1</subtask>\n"
+"<subtask>4@1</subtask>\n"
+"<subtask>5@1</subtask>\n"
+"<subtask>6@1</subtask>\n"
+"<subtask>7@1</subtask>\n"
+"<subtask>8@1</subtask>\n"
+"\n"
+"You can also browse GTG documentation by pressing F1 or opening it using the "
+"Help menu.\n"
+"\n"
+"We sincerely hope you will enjoy using GTG, and thank you for trying it out! "
+"Please send us bug reports and ideas for improvement using this web page: "
+"https://bugs.launchpad.net/gtg/+filebug If you want to get tips for using "
+"GTG or be informed about the newest features, also visit our blog at "
+"http://gtg.fritalk.com\n"
+"\n"
+"The GTG team."
 
 #: GTG/core/firstrun_tasks.py:114
 msgid "Learn How To Use Subtasks"
-msgstr ""
+msgstr "Learn How To Use Subtasks"
 
 #: GTG/core/firstrun_tasks.py:115
 msgid ""
@@ -363,6 +452,28 @@ msgid ""
 "can always change it by drag-and-dropping tasks on each other in the tasks "
 "list."
 msgstr ""
+"A &quot;Subtask&quot; is something that you need to do first before being "
+"able to accomplish your task. In GTG, the purpose of subtasks is to cut down "
+"a task in smaller subtasks that are easier to achieve and to track down.\n"
+"\n"
+"To insert a subtask in the task description (this window, for instance), "
+"begin a line with &quot;-&quot;, then write the subtask title and press "
+"Enter.\n"
+"\n"
+"Try inserting one subtask below. Type &quot;- This is my first "
+"subtask!&quot;, for instance, and press Enter:\n"
+"\n"
+"\n"
+"\n"
+"Alternatively, you can also use the &quot;Insert Subtask&quot; button.\n"
+"\n"
+"Note that subtasks obey to some rules: first, a subtask's due date can never "
+"happen after its parent's due date and, second, when you mark a parent task "
+"as done, its subtasks will also be marked as done.\n"
+"\n"
+"And if you are not happy with your current tasks/subtasks organization, you "
+"can always change it by drag-and-dropping tasks on each other in the tasks "
+"list."
 
 #: GTG/core/firstrun_tasks.py:142
 msgid "Learn How To Use Tags"
@@ -397,10 +508,36 @@ msgid ""
 "@to_pay on @money, every task tagged with @to_pay will also appear when you "
 "select @money."
 msgstr ""
+"In GTG, you use tags to sort your tasks. A tag is a simple word that begins "
+"with &quot;@&quot;.\n"
+"\n"
+"Try to type a word beginning with &quot;@&quot; here:\n"
+"\n"
+"Once it becomes yellow, it is a tag! And this tag is now linked to the "
+"task!\n"
+"\n"
+"Using the View menu, you can enable a sidebar which displays all the tags "
+"you are using. This allows you to easily see all tasks associated to a given "
+"tag.\n"
+"\n"
+"If you right-click on a tag in the sidebar, you can also edit it. It allows "
+"you to assign it a color or an icon for instance. This is handy if you want "
+"to quickly identify the tasks associated to a given tag in the task list!\n"
+"\n"
+"New tags are always added exclusively to the currently edited task, and "
+"never to its subtasks. However, when you create a new subtask, it will "
+"inherit its parent's tags.\n"
+"\n"
+"If you need a more advanced task organization, you can also create a "
+"hierarchy of tags by drag-and-dropping a tag onto another. This is useful "
+"when you want to regroup several tags together and see all related tasks "
+"easily. For instance, if you have two tags @money and @to_pay, and you drag "
+"@to_pay on @money, every task tagged with @to_pay will also appear when you "
+"select @money."
 
 #: GTG/core/firstrun_tasks.py:174
 msgid "Learn How To Use The Work View"
-msgstr ""
+msgstr "Learn How To Use The Work View"
 
 #: GTG/core/firstrun_tasks.py:175
 msgid ""
@@ -434,10 +571,39 @@ msgid ""
 "subtask, adding a tag hidden in the Work View, etc.). To avoid this, it's "
 "better not to edit your task while using the Work View."
 msgstr ""
+"If you press the &quot;Work View&quot; button, only actionable tasks will be "
+"displayed in your list.\n"
+"\n"
+"What is an actionable task? It's a task you can do directly, right now.\n"
+"\n"
+"It's a task that is already &quot;start-able&quot;, i.e. the start date is "
+"already over.\n"
+"\n"
+"It's a task that doesn't have open subtasks, i.e. you can do the task itself "
+"directly.\n"
+"\n"
+"It's a task that has a due date different than &quot;Someday&quot;, since "
+"this kind of date is reserved for things that needs more thoughts before "
+"being actionable.\n"
+"\n"
+"Thus, in short, the Work View shows you tasks that you can do right now. "
+"It's very useful when you want to get things done and to focus on the "
+"relevant tasks!\n"
+"\n"
+"If you use tags, you can right click on a tag in the sidebar and choose to "
+"hide tasks assigned to this particular tag in the Work View. It is very "
+"useful if you have a tag like &quot;@wait&quot; that you use for tasks "
+"blocked by some external event (i.e. a phone call you wait to receive).\n"
+"\n"
+"And finally, an important note regarding the Work View: since the Work View "
+"is updated instantaneously, if you edit your task while using the Work View, "
+"this task might disappear due to the change you just made (e.g. adding a "
+"subtask, adding a tag hidden in the Work View, etc.). To avoid this, it's "
+"better not to edit your task while using the Work View."
 
 #: GTG/core/firstrun_tasks.py:209
 msgid "Learn How To Use Plugins"
-msgstr ""
+msgstr "Learn How To Use Plugins"
 
 #: GTG/core/firstrun_tasks.py:210
 msgid ""
@@ -451,10 +617,19 @@ msgid ""
 "You can find the Plugin Manager by selecting Edit in the Menu Bar, then "
 "clicking Plugins."
 msgstr ""
+"GTG has the ability to add plugins to extend its core functionality.\n"
+"\n"
+"Some examples of the currently available plugins are the notification icon "
+"which displays a handy shortcut to GTG in your notification space, or the "
+"closed tasks remover which automatically deletes old tasks from your closed "
+"tasks list.\n"
+"\n"
+"You can find the Plugin Manager by selecting Edit in the Menu Bar, then "
+"clicking Plugins."
 
 #: GTG/core/firstrun_tasks.py:224
 msgid "Reporting Bugs"
-msgstr ""
+msgstr "Reporting Bugs"
 
 #: GTG/core/firstrun_tasks.py:225
 msgid ""
@@ -470,10 +645,21 @@ msgid ""
 "If you have some trouble with GTG, we might be able to help you or to solve "
 "your problem really quickly."
 msgstr ""
+"GTG is still beta software. We like it and use it everyday but you will "
+"probably encounter some bugs will you do.\n"
+"\n"
+"Please, help us improving GTG by reporting them on our Launchpad "
+"page:https://bugs.launchpad.net/gtg/+filebug\n"
+"\n"
+"We need you to make this software better. Any contribution, any idea is "
+"welcome!\n"
+"\n"
+"If you have some trouble with GTG, we might be able to help you or to solve "
+"your problem really quickly."
 
 #: GTG/core/firstrun_tasks.py:241
 msgid "Learn How To Use The Quick Add Entry"
-msgstr ""
+msgstr "Learn How To Use The Quick Add Entry"
 
 #: GTG/core/firstrun_tasks.py:242
 msgid ""
@@ -517,10 +703,49 @@ msgid ""
 "mum&quot;, under the tags &quot;family&quot; and &quot;calls&quot;, with the "
 "due date next Sunday and the start date tomorrow."
 msgstr ""
+"The Quick Add Entry is the fastest way to create a new task. Use the check "
+"box in the View menu to enable and disable the entry field.\n"
+"\n"
+"To add a task simply type its title in the entry and press Enter. The task "
+"will be created and selected in the task browser. If a tag is selected in "
+"the Tags Sidebar, it will be applied to the task you created.\n"
+"\n"
+"You can also create a task in the Quick Add Entry and at the same time "
+"specify its tags, due and defer date. Follow these format rules:\n"
+"\n"
+"tags:tag1,tag2,tag3\n"
+"\n"
+"Using this you can apply as many tags as you wish using comma as separator. "
+"Note that any word in the title that begins with &quot;@&quot; will also be "
+"interpreted as a tag!\n"
+"\n"
+"due:date\n"
+"defer:date\n"
+"\n"
+"Using this you can apply a due date or a defer date. Dates can be formated "
+"as yyyy-mm-dd (for example 2012-04-01) or yyyymmdd (20120401) or mmdd (0401 -"
+" the year being implicitly the current one) or today, tomorrow or a weekday "
+"name (due:monday means due next Monday). Dates which are added in this way "
+"will not appear in the task title.\n"
+"\n"
+"Examples:\n"
+"\n"
+"buy stationary tags:purchases,office due:20120330 defer:tuesday\n"
+"\n"
+"The above example tells GTG to create a new task with the title &quot;buy "
+"stationary&quot;, under the tags &quot;purchases&quot; and "
+"&quot;office&quot;, with the due date March 30, 2012 and the start date next "
+"Tuesday.\n"
+"\n"
+"call mum tags:family,calls due:sunday defer:tomorrow\n"
+"\n"
+"The above example tells GTG to create a new task with the title &quot;call "
+"mum&quot;, under the tags &quot;family&quot; and &quot;calls&quot;, with the "
+"due date next Sunday and the start date tomorrow."
 
 #: GTG/core/firstrun_tasks.py:287
 msgid "Learn How To Use Synchronization Services"
-msgstr ""
+msgstr "Learn How To Use Synchronization Services"
 
 #: GTG/core/firstrun_tasks.py:288
 msgid ""
@@ -543,10 +768,28 @@ msgid ""
 "about them by in the dedicated documentation in GTG's help (use the Help "
 "menu or press F1 to get access to it)."
 msgstr ""
+"Synchronization Services allow GTG to synchronize (meaning to have access or "
+"to import) tasks, notes or bugs from other sites or services like Launchpad, "
+"Remember the Milk, Tomboy, etc.\n"
+"\n"
+"This can incredibly useful if, for instance, you want to access your tasks "
+"on several instances of GTG running on separate computers, or if you want to "
+"edit your tasks using an online service. GTG can also import tasks from "
+"specific sites like launchpad for instance, which allows you to manage the "
+"bug reports you're working on in GTG!\n"
+"\n"
+"To use Synchronization Services, use the Edit menu, and select "
+"&quot;Synchronization Services&quot;. You will then have the possibility to "
+"select among several online or local services from/to where you can import "
+"or export your tasks.\n"
+"\n"
+"If you want to know more about Synchronization Services, you can read more "
+"about them by in the dedicated documentation in GTG's help (use the Help "
+"menu or press F1 to get access to it)."
 
 #: GTG/core/firstrun_tasks.py:311
 msgid "Learn How To Search For Tasks"
-msgstr ""
+msgstr "Learn How To Search For Tasks"
 
 #: GTG/core/firstrun_tasks.py:312
 msgid ""
@@ -575,22 +818,46 @@ msgid ""
 "you can read the documentation available in GTG's help (press F1 or use the "
 "Help menu to get access to it)."
 msgstr ""
+"To help you to find specific tasks more easily, GTG allows you to search for "
+"tasks based on their content.\n"
+"\n"
+"Searching for tasks is really easy: just type the words you are looking for "
+"in the Quick Add Entry, and select &quot;Search&quot; in the menu that will "
+"appear automatically.\n"
+"\n"
+"GTG stores your searches in the sidebar, under the &quot;Search&quot; "
+"section. You can thus always go back to a previous search later on if you "
+"need it. Search results are updated automatically, so you always get all the "
+"tasks matching your search request.\n"
+"\n"
+"GTG also saves all the search requests you have made until you explicitely "
+"delete them (which you can do by right-clicking on them and selecting "
+"&quot;Delete&quot;). That allows you to safely quit GTG without loosing your "
+"search requests. This can be very useful when you use the search features to "
+"identify specific tasks regularly!\n"
+"\n"
+"GTG search feature is really powerful and accept many parameters that allows "
+"you to search for very specific tasks. For instance, using the search query "
+"&quot;@errands !today&quot;, you can search for tasks with the @errands tag "
+"that must be done today. To learn more about those search query parameters, "
+"you can read the documentation available in GTG's help (press F1 or use the "
+"Help menu to get access to it)."
 
 #: GTG/core/search.py:87
 msgid "not"
-msgstr ""
+msgstr "not"
 
 #: GTG/core/search.py:88
 msgid "or"
-msgstr ""
+msgstr "or"
 
 #: GTG/core/search.py:89
 msgid "after"
-msgstr ""
+msgstr "after"
 
 #: GTG/core/search.py:90
 msgid "before"
-msgstr ""
+msgstr "before"
 
 #: GTG/core/search.py:91 GTG/tools/dates.py:293
 msgid "today"
@@ -641,7 +908,7 @@ msgstr "defer"
 
 #: GTG/core/task.py:164
 msgid "start"
-msgstr ""
+msgstr "start"
 
 #: GTG/core/task.py:170
 msgid "due"
@@ -658,7 +925,7 @@ msgstr "Tasks with no tags"
 
 #: GTG/core/treefactory.py:102 GTG/gtk/browser/browser.py:1518
 msgid "Search"
-msgstr ""
+msgstr "Search"
 
 #: GTG/tests/test_dates.py:70 GTG/tools/dates.py:57
 msgid "later"
@@ -666,11 +933,11 @@ msgstr "later"
 
 #: GTG/backends/backend_identica.py:54
 msgid "Identi.ca"
-msgstr ""
+msgstr "Identi.ca"
 
 #: GTG/backends/backend_identica.py:58
 msgid "Imports your identi.ca  messages into your GTG "
-msgstr ""
+msgstr "Imports your identi.ca  messages into your GTG "
 
 #: GTG/backends/backend_gnote.py:42
 msgid "Gnote"
@@ -683,10 +950,14 @@ msgid ""
 "tag it with the tag you have chosen (you'll configure it later), and it will "
 "appear in GTG."
 msgstr ""
+"This service can synchronize all or part of your Gnote notes in GTG. If you "
+"decide it would be handy to have one of your notes in your TODO list, just "
+"tag it with the tag you have chosen (you'll configure it later), and it will "
+"appear in GTG."
 
 #: GTG/backends/backend_launchpad.py:53
 msgid "Launchpad"
-msgstr ""
+msgstr "Launchpad"
 
 #: GTG/backends/backend_launchpad.py:57
 msgid ""
@@ -703,18 +974,30 @@ msgid ""
 "subtasks...): your  changes will be preserved. This is useful to add  "
 "personal annotations to bug"
 msgstr ""
+"This synchronization service lets you import the bugs assigned to you (or "
+"someone else) on Launchpad in GTG. As the bug state changes in Launchpad, "
+"the GTG task is  updated.\n"
+"Please note that this is a read only synchronization service, which means "
+"that if you open one of the imported tasks and  change one of the:\n"
+"  - title\n"
+"  - description\n"
+"  - tags\n"
+"Your changes <b>will</b> be reverted when the associated bug is modified. "
+"Apart from those, you are free to set  any other field (start/due dates, "
+"subtasks...): your  changes will be preserved. This is useful to add  "
+"personal annotations to bug"
 
 #: GTG/backends/backend_launchpad.py:244
 msgid "Bug"
-msgstr ""
+msgstr "Bug"
 
 #: GTG/backends/backend_launchpad.py:324 GTG/backends/backend_mantis.py:244
 msgid "Reported by: "
-msgstr ""
+msgstr "Reported by: "
 
 #: GTG/backends/backend_launchpad.py:329
 msgid "Link to bug: "
-msgstr ""
+msgstr "Link to bug: "
 
 #: GTG/backends/rtm/rtm.py:57
 msgid "Invalid state"
@@ -722,7 +1005,7 @@ msgstr "Invalid state"
 
 #: GTG/backends/backend_rtm.py:54
 msgid "Remember The Milk"
-msgstr ""
+msgstr "Remember The Milk"
 
 #: GTG/backends/backend_rtm.py:58
 msgid ""
@@ -732,34 +1015,39 @@ msgid ""
 "Note: This product uses the Remember The Milk API but is not endorsed or "
 "certified by Remember The Milk"
 msgstr ""
+"This service synchronizes your tasks with the web service RememberTheMilk:\n"
+"\t\thttp://rememberthemilk.com\n"
+"\n"
+"Note: This product uses the Remember The Milk API but is not endorsed or "
+"certified by Remember The Milk"
 
 #: GTG/backends/backend_localfile.py:61
 msgid "Local File"
-msgstr ""
+msgstr "Local File"
 
 #: GTG/backends/backend_localfile.py:66
 msgid "Your tasks are saved in a text file (XML format). "
-msgstr ""
+msgstr "Your tasks are saved in a text file (XML format). "
 
 #: GTG/backends/backend_twitter.py:54
 msgid "Twitter"
-msgstr ""
+msgstr "Twitter"
 
 #: GTG/backends/backend_twitter.py:58
 msgid "Imports your twitter  messages into your GTG "
-msgstr ""
+msgstr "Imports your Twitter messages into your GTG "
 
 #: GTG/backends/backend_evolution.py:69
 msgid "Evolution tasks"
-msgstr ""
+msgstr "Evolution tasks"
 
 #: GTG/backends/backend_evolution.py:73
 msgid "Lets you synchronize your GTG tasks with Evolution tasks"
-msgstr ""
+msgstr "Lets you synchronize your GTG tasks with Evolution tasks"
 
 #: GTG/backends/backend_tomboy.py:41
 msgid "Tomboy"
-msgstr ""
+msgstr "Tomboy"
 
 #: GTG/backends/backend_tomboy.py:45
 msgid ""
@@ -768,10 +1056,14 @@ msgid ""
 "your TODO list, just tag it with the tag you have chosen (you'll configure "
 "it later), and it will appear in GTG."
 msgstr ""
+"This synchronization service can synchronize all or part of your Tomboy "
+"notes in GTG. If you decide it would be handy to have one of your notes in "
+"your TODO list, just tag it with the tag you have chosen (you'll configure "
+"it later), and it will appear in GTG."
 
 #: GTG/backends/backend_mantis.py:42
 msgid "MantisBT"
-msgstr ""
+msgstr "MantisBT"
 
 #: GTG/backends/backend_mantis.py:46
 msgid ""
@@ -788,6 +1080,18 @@ msgid ""
 "subtasks...): your  changes will be preserved. This is useful to add  "
 "personal annotations to issue"
 msgstr ""
+"This synchronization service lets you import the issues found on Mantis "
+"using a prestablished filter called 'gtg'. As the issue state changes in "
+"Mantis, the GTG task is  updated.\n"
+"Please note that this is a read only synchronization service, which means "
+"that if you open one of the imported tasks and  change one of the:\n"
+"  - title\n"
+"  - description\n"
+"  - tags\n"
+"Your changes <b>will</b> be reverted when the associated issue is modified. "
+"Apart from those, you are free to set  any other field (start/due dates, "
+"subtasks...): your  changes will be preserved. This is useful to add  "
+"personal annotations to issue"
 
 #: GTG/backends/backend_mantis.py:224
 msgid "Iss."
