@@ -227,13 +227,13 @@ class NotificationArea:
         self.__menu = gtk.Menu()
 
         #add "new task"
-        menuItem = gtk.ImageMenuItem(gtk.STOCK_ADD)
+        menuItem = gtk.MenuItem(gtk.STOCK_ADD)
         menuItem.get_children()[0].set_label(_('Add _New Task'))
         menuItem.connect('activate', self.__open_task)
         self.__menu.append(menuItem)
 
         #view in main window checkbox
-        show_browser = gtk.ImageMenuItem(gtk.STOCK_ADD)
+        show_browser = gtk.MenuItem(gtk.STOCK_ADD)
         show_browser.get_children()[0].set_label(_('_Show Main Window'))
         show_browser.connect('activate', self.__show_browser)
         self.__menu.append(show_browser)
@@ -247,7 +247,8 @@ class NotificationArea:
         self.__menu.append(gtk.SeparatorMenuItem())
 
         #quit item
-        menuItem = gtk.ImageMenuItem(gtk.STOCK_QUIT)
+        menuItem = gtk.MenuItem(gtk.STOCK_QUIT)
+        menuItem.get_children()[0].set_label(_('_Quit'))
         menuItem.connect('activate', self.__view_manager.close_browser)
         self.__menu.append(menuItem)
 
@@ -274,7 +275,7 @@ class NotificationArea:
             self.status_icon.set_from_icon_name("gtg-panel")
             self.status_icon.set_tooltip("Getting Things Gnome!")
             self.status_icon.set_visible(True)
-            self.status_icon.connect('activate', self.__toggle_browser)
+            self.status_icon.connect('activate', self.__show_browser)
             self.status_icon.connect('popup-menu',
                                      self.__on_icon_popup, self.__menu)
 
