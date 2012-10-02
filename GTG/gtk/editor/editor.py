@@ -379,7 +379,10 @@ class TaskEditor:
     def on_date_pressed(self, widget, date_kind):
         """Called when a date-changing button is clicked."""
         if date_kind == GTGCalendar.DATE_KIND_DUE:
-            date = self.task.get_due_date()
+            if not self.task.get_due_date():
+                date = self.task.get_start_date()
+            else:
+                date = self.task.get_due_date()
         elif date_kind == GTGCalendar.DATE_KIND_START:
             date = self.task.get_start_date()
         elif date_kind == GTGCalendar.DATE_KIND_CLOSED:
