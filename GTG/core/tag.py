@@ -202,16 +202,16 @@ class Tag(TreeNode):
         sp_id = self.get_attribute("special")
         if sp_id == "all":
             toreturn = tasktree.get_nodes(\
-                    withfilters=['active'], include_transparent=False)
+                    withfilters=['active'])
         elif sp_id == "notag":
             toreturn = tasktree.get_nodes(\
-                            withfilters=['notag'], include_transparent=False)
+                            withfilters=['notag'])
         elif sp_id == "sep" :
             toreturn = []
         else:
             tname = self.get_name()
             toreturn = tasktree.get_nodes(\
-                                withfilters=[tname], include_transparent=False)
+                                withfilters=[tname])
         return toreturn
 
     def notify_related_tasks(self):
