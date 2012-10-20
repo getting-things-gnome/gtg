@@ -594,6 +594,7 @@ class Task(TreeNode):
 
     #remove by tagname
     def remove_tag(self, tagname):
+#        print "remove tag %s" %tagname
         modified = False
         if tagname in self.tags:
             self.tags.remove(tagname)
@@ -604,6 +605,7 @@ class Task(TreeNode):
         self.content = self._strip_tag(self.content, tagname)
         if modified:
             tag = self.req.get_tag(tagname)
+            print "removing now %s and tag is %s" %(tagname,tag)
             if tag:
                 tag.modified()
 
