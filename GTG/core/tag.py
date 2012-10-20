@@ -74,6 +74,12 @@ class Tag(TreeNode):
     def unapply_filter(self,filtername):
         if self.viewcount:
             self.viewcount.unapply_filter(filtername)
+            
+    #When a task change a tag, we may want to manually update
+    #To ensure that the task is well counted/uncounted for that tag
+    def update_task(self,nid):
+        vc = self.__get_viewcount()
+        vc.modify(nid)
 
     #overiding some functions to not allow dnd of special tags
     def add_parent(self, parent_id):

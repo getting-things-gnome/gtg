@@ -605,9 +605,12 @@ class Task(TreeNode):
         self.content = self._strip_tag(self.content, tagname)
         if modified:
             tag = self.req.get_tag(tagname)
-            print "removing now %s and tag is %s" %(tagname,tag)
+            # The ViewCount of the tag still doesn't know that
+            # the task was removed. We need to update manually
+            tag.update_task(self.get_id())
             if tag:
                 tag.modified()
+#            print "removing now %s and tag is %s - %s" %(tagname,tag, tag.get_active_tasks_count())
 
     def set_only_these_tags(self, tags_list):
         '''
