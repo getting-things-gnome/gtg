@@ -1100,7 +1100,6 @@ class TaskBrowser(gobject.GObject):
         """ Apply filters for every pane: active tasks, closed tasks """
         for pane in self.vtree_panes:
             vtree = self.req.get_tasks_tree(name=pane, refresh=False)
-#            vtree.reset_filters(refresh=False, transparent_only=True)
             vtree.apply_filter(filter_name, refresh=refresh)
             
     def unapply_filter_on_panes(self, filter_name,refresh=True):
@@ -1124,6 +1123,7 @@ class TaskBrowser(gobject.GObject):
 
         #When you click on a tag, you want to unselect the tasks
         new_taglist = self.get_selected_tags()
+        
         for tagname in self.applied_tags:
             if tagname not in new_taglist:
                 self.unapply_filter_on_panes(tagname,refresh=False)

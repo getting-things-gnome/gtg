@@ -62,17 +62,17 @@ class Tag(TreeNode):
     def __get_viewcount(self):
         if not self.viewcount and self.get_name() != "gtg-tags-sep":
             self.viewcount = self.req.get_basetree().get_viewcount\
-                                                    (name=self.get_name())
+                                        (name=self.get_name(),refresh=False)
             
-            self.viewcount.apply_filter('active')
             sp_id = self.get_attribute("special")        
             if sp_id == "all":
                 pass
             if sp_id == "notag":
-                self.viewcount.apply_filter('notag')
+                self.viewcount.apply_filter('notag',refresh=False)
             #No special means a normal tag
             else:
-                self.viewcount.apply_filter(self.get_name())
+                self.viewcount.apply_filter(self.get_name(),refresh=False)
+            self.viewcount.apply_filter('active')
             self.viewcount.register_cllbck(self.modified)
         return self.viewcount
     
