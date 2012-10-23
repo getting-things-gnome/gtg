@@ -227,14 +227,12 @@ class NotificationArea:
         self.__menu = gtk.Menu()
 
         #add "new task"
-        menuItem = gtk.MenuItem(gtk.STOCK_ADD)
-        menuItem.get_children()[0].set_label(_('Add _New Task'))
+        menuItem = gtk.MenuItem(_('Add _New Task'))
         menuItem.connect('activate', self.__open_task)
         self.__menu.append(menuItem)
 
         #view in main window checkbox
-        show_browser = gtk.MenuItem(gtk.STOCK_ADD)
-        show_browser.get_children()[0].set_label(_('_Show Main Window'))
+        show_browser = gtk.MenuItem(_('_Show Main Window'))
         show_browser.connect('activate', self.__show_browser)
         self.__menu.append(show_browser)
 
@@ -247,8 +245,7 @@ class NotificationArea:
         self.__menu.append(gtk.SeparatorMenuItem())
 
         #quit item
-        menuItem = gtk.MenuItem(gtk.STOCK_QUIT)
-        menuItem.get_children()[0].set_label(_('_Quit'))
+        menuItem = gtk.MenuItem(_('_Quit'))
         menuItem.connect('activate', self.__view_manager.close_browser)
         self.__menu.append(menuItem)
 
