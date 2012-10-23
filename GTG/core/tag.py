@@ -193,6 +193,7 @@ class Tag(TreeNode):
             vc.apply_filter('active')
             toreturn = vc.get_n_nodes()
         elif sp_id == "notag":
+            vc.apply_filter('active')
             vc.apply_filter('notag')
             toreturn = vc.get_n_nodes()
         elif sp_id == "sep":
