@@ -714,7 +714,6 @@ class TaskView(gtk.TextView):
                         #adding tag to a local list
                         new_tags.append(my_word)
                         #adding tag to the model
-#                        print "adding %s to the add_tag_callback" %my_word
                         self.add_tag_callback(my_word)
 
                 # We set new word boundaries
@@ -734,8 +733,6 @@ class TaskView(gtk.TextView):
         for t in old_tags:
             if not t in new_tags:
                 self.remove_tag_callback(t)
-#        for t in new_tags:
-#            self.add_tag_callback(t)
 
     def is_at_title(self, buff, itera):
         to_return = False

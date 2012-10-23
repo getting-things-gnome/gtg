@@ -202,19 +202,13 @@ class TaskBrowser(gobject.GObject):
         self.tagtree = self.req.get_tag_tree()
         self.tagtreeview = self.tv_factory.tags_treeview(self.tagtree)
         #Tags treeview
-        #TODO : change that with a gtk.TreeSelection
         self.tagtreeview.get_selection().connect('changed', \
             self.on_select_tag)
-#        self.tagtreeview.connect('row-activated', \
-#            self.on_select_tag)
         self.tagtreeview.connect('button-press-event', \
             self.on_tag_treeview_button_press_event)
         self.tagtreeview.connect('key-press-event', \
             self.on_tag_treeview_key_press_event)
         self.sidebar_container.add(self.tagtreeview)
-
-        # Refresh tree
-#        self.tagtree.reset_filters(transparent_only=True)
 
         # expanding search tag does not work automatically, request it
         self.expand_search_tag()
