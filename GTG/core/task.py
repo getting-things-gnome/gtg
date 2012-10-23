@@ -208,7 +208,7 @@ class Task(TreeNode):
             # (old_status check is necessary to avoid false positive a start)
             elif status in [self.STA_ACTIVE] and\
                  old_status in [self.STA_DONE, self.STA_DISMISSED]:
-                if self.has_parents():
+                if self.has_parent():
                     for p_tid in self.get_parents():
                         par = self.req.get_task(p_tid)
                         if par.is_loaded() and par.get_status() in\
@@ -468,24 +468,6 @@ class Task(TreeNode):
         @param tid: the ID of the task to return.
         """
         return self.req.get_task(tid)
-
-    #Return true is the task has parent
-    #If tag is provided, return True only
-    #if the parent has this particular tag
-    #FIXME : this function should be removed. Use the liblarch instead !
-    def has_parents(self, tag=None):
-        print "DEPRECATED: has_parent"
-        has_par = TreeNode.has_parent(self)
-        #The "all tag" argument
-        if tag and has_par:
-            a = 0
-            for tid in self.get_parents():
-                p = self.req.get_task(tid)
-                a += p.has_tags(tag)
-            to_return = a
-        else:
-            to_return = has_par
-        return to_return
 
     def set_attribute(self, att_name, att_value, namespace=""):
         """Set an arbitrary attribute.
