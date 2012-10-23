@@ -63,7 +63,16 @@ class Tag(TreeNode):
         if not self.viewcount and self.get_name() != "gtg-tags-sep":
             self.viewcount = self.req.get_basetree().get_viewcount\
                                                     (name=self.get_name())
-            self.viewcount.apply_filter(self.get_name())
+            
+            self.viewcount.apply_filter('active')
+            sp_id = self.get_attribute("special")        
+            if sp_id == "all":
+                pass
+            if sp_id == "notag":
+                self.viewcount.apply_filter('notag')
+            #No special means a normal tag
+            else:
+                self.viewcount.apply_filter(self.get_name())
             self.viewcount.register_cllbck(self.modified)
         return self.viewcount
     
@@ -188,19 +197,10 @@ class Tag(TreeNode):
         # which does a similar job, in order to benefit from liblarch
         # optimizations
         vc = self.__get_viewcount()
-        sp_id = self.get_attribute("special")        
-        if sp_id == "all":
-            vc.apply_filter('active')
-            toreturn = vc.get_n_nodes()
-        elif sp_id == "notag":
-            vc.apply_filter('active')
-            vc.apply_filter('notag')
-            toreturn = vc.get_n_nodes()
-        elif sp_id == "sep":
-            toreturn = 0
+        if vc:
+            return vc.get_n_nodes()
         else:
-            toreturn = vc.get_n_nodes()
-        return toreturn
+            return 0
 
     def get_related_tasks(self, tasktree=None):
         """Returns all related tasks node ids"""
