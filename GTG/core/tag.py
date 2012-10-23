@@ -60,7 +60,7 @@ class Tag(TreeNode):
         self.viewcount = None
         
     def __get_viewcount(self):
-        if not self.viewcount:
+        if not self.viewcount and self.get_name() != "gtg-tags-sep":
             self.viewcount = self.req.get_basetree().get_viewcount\
                                                     (name=self.get_name())
             self.viewcount.apply_filter(self.get_name())
