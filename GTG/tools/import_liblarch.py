@@ -22,7 +22,7 @@
 
 import sys
 
-REQUIRED_LIBLARCH_API = "2.0"
+REQUIRED_LIBLARCH_API = "2.1"
 GIT_CMD = "git clone https://github.com/liblarch/liblarch ../liblarch"
 
 def import_liblarch(use_local=False):

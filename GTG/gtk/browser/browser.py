@@ -208,6 +208,10 @@ class TaskBrowser(gobject.GObject):
             self.on_tag_treeview_button_press_event)
         self.tagtreeview.connect('key-press-event', \
             self.on_tag_treeview_key_press_event)
+        self.tagtreeview.connect('node-expanded', \
+            self.on_tag_expanded)
+        self.tagtreeview.connect('node-collapsed', \
+            self.on_tag_collapsed)
         self.sidebar_container.add(self.tagtreeview)
 
         # expanding search tag does not work automatically, request it
@@ -506,10 +510,15 @@ class TaskBrowser(gobject.GObject):
                 path = path[:-1]
             self.vtree_panes['active'].collapse_node(path)
 
-        for t in self.config.get("collapsed_tags"):
-            #FIXME
-            print "Collapsing tag %s not implememted in browser.py" %t
-#            self.tagtreeview.set_collapsed_tags(toset)
+        for path_t in self.config.get("expanded_tags"):
+            #the tuple was stored as a string. we have to reconstruct it
+            path = ()
+            for p in path_t[1:-1].split(","):
+                p = p.strip(" '")
+                path += (p, )
+            if path[-1] == '':
+                path = path[:-1]
+            self.tagtreeview.expand_node(path)
 
         self.set_view(self.config.get("view"))
 
@@ -751,6 +760,16 @@ class TaskBrowser(gobject.GObject):
         colt = self.config.get("collapsed_tasks")
         if tid not in colt:
             colt.append(str(tid))
+    
+    def on_tag_expanded(self, sender, tag):
+        colt = self.config.get("expanded_tags")
+        if tag not in colt:
+            colt.append(tag)
+
+    def on_tag_collapsed(self, sender, tag):
+        colt = self.config.get("expanded_tags")
+        if tag in colt:
+            colt.remove(str(tag))
 
     def on_quickadd_activate(self, widget):
         """ Add a new task from quickadd toolbar """
