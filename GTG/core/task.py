@@ -246,6 +246,13 @@ class Task(TreeNode):
     def set_modified(self, modified):
         self.last_modified = modified
 
+    def recursive_sync(self):
+        """Recursively sync the task and all task children. Defined"""
+        self.sync()
+        for sub_id in self.children:
+            sub = self.req.get_task(sub_id)
+            sub.recursive_sync()
+
     # ABOUT DUE DATES
     #
     # PLEASE READ THIS: although simple in appearance, handling task dates can
@@ -316,13 +323,6 @@ class Task(TreeNode):
                     child_list.append(child)
             return child_list
 
-        def __recursive_sync(task):
-            """Recursively sync the task and all task children. Defined"""
-            task.sync()
-            for sub_id in task.children:
-                sub = self.req.get_task(sub_id)
-                __recursive_sync(sub)
-
         old_due_date    = self.due_date
         new_duedate_obj = Date(new_duedate) # caching the conversion
         self.due_date   = new_duedate_obj
@@ -358,7 +358,7 @@ class Task(TreeNode):
         # If the date changed, we notify the change for the children since the
         # constraints might have changed
         if old_due_date != new_duedate_obj:
-            __recursive_sync(self)
+            self.recursive_sync()
 
     def get_due_date(self):
         """ Returns the due date, which always respects all constraints """
@@ -608,6 +608,18 @@ class Task(TreeNode):
         else:
             to_return = has_par
         return to_return
+
+    def set_parent(self, parent_id):
+        TreeNode.set_parent(self, parent_id)
+        par = self.req.get_task(parent_id)
+        par_duedate = par.get_due_date_constraint()
+        if par_duedate != Date.no_date() and \
+           not par_duedate.is_fuzzy()    and \
+           self.due_date != Date.no_date() and \
+           not self.due_date.is_fuzzy()  and \
+           par_duedate < self.due_date:
+            self.set_due_date(par_duedate)
+        self.recursive_sync()
 
     def set_attribute(self, att_name, att_value, namespace=""):
         """Set an arbitrary attribute.
