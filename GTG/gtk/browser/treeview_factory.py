@@ -143,7 +143,7 @@ class TreeviewFactory():
         
     def task_duedate_column(self,node):
         # We show the most constraining due date for task with no due dates.
-        if node == Date.no_date():
+        if node.get_due_date() == Date.no_date():
             return node.get_due_date_constraint().to_readable_string()
         else:
         # Other tasks show their due date (which *can* be fuzzy)
