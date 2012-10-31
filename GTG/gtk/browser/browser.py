@@ -555,16 +555,11 @@ class TaskBrowser(gobject.GObject):
             return
 
         self.in_toggle_workview = True
-        self.tv_factory.disable_update_tags()
 
         if self.config.get('view') == 'workview':
             self.set_view('default')
         else:
             self.set_view('workview')
-
-        if self.tagtree is not None:
-            self.tv_factory.enable_update_tags()
-            self.tagtree.refresh_all()
 
         self.in_toggle_workview = False
 
@@ -1133,13 +1128,6 @@ class TaskBrowser(gobject.GObject):
         """
         # FIXME add support for multiple selection of tags in future
 
-        # When enable_update_tags we should update all tags to match
-        # the current state. However, applying tag filter does not influence
-        # other tags, because of transparent filter. Therefore there is no
-        # self.tagree.refresh_all() => a significant optimization!
-        # See do_toggle_workview()
-        self.tv_factory.disable_update_tags()
-
         #When you click on a tag, you want to unselect the tasks
         new_taglist = self.get_selected_tags()
         
@@ -1157,7 +1145,6 @@ class TaskBrowser(gobject.GObject):
                     self.quickadd_entry.set_text(tag.get_attribute("query"))
         
         self.applied_tags = new_taglist
-        self.tv_factory.enable_update_tags()
 
     def on_taskdone_cursor_changed(self, selection=None):
         """Called when selection changes in closed task view.
