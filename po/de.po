@@ -8,15 +8,15 @@ msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2012-09-11 10:37+0200\n"
-"PO-Revision-Date: 2012-07-01 18:32+0000\n"
-"Last-Translator: Daniel Winzen <d@winzen4.de>\n"
+"PO-Revision-Date: 2012-10-12 12:52+0000\n"
+"Last-Translator: gerber <Unknown>\n"
 "Language-Team: German <de@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2012-09-12 04:38+0000\n"
-"X-Generator: Launchpad (build 15930)\n"
+"X-Launchpad-Export-Date: 2012-10-13 04:37+0000\n"
+"X-Generator: Launchpad (build 16137)\n"
 
 #: GTG/plugins/export/export_templates/description_pocketmod.py:18
 msgid "Foldable booklet (PDF)"
@@ -916,7 +916,7 @@ msgstr ""
 
 #: GTG/gtk/backends_dialog/addpanel.py:173
 msgid "Syncing is <span color=\"red\">disabled</span>"
-msgstr ""
+msgstr "Die Synchronisation ist <span color=\"red\">deaktiviert</span>"
 
 #: GTG/gtk/backends_dialog/addpanel.py:179
 msgid "Author"
@@ -926,7 +926,7 @@ msgstr[1] "Autoren"
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:63
 msgid "Import tags"
-msgstr ""
+msgstr "Schlagworte importieren"
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:64
 msgid "All tags"
@@ -938,7 +938,7 @@ msgstr "Nur diese Schlagwörter:"
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:69
 msgid "Tags to sync"
-msgstr ""
+msgstr "Zu synchronisierende Schlagworte"
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:71
 msgid "Tasks with these tags:"
@@ -1060,6 +1060,8 @@ msgid ""
 "\n"
 "And %d more tasks"
 msgstr ""
+"\n"
+"Und %d weitere Aufgaben"
 
 #: GTG/gtk/editor/taskeditor.glade.h:1
 msgid "Task"
