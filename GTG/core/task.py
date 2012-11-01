@@ -208,7 +208,7 @@ class Task(TreeNode):
             # (old_status check is necessary to avoid false positive a start)
             elif status in [self.STA_ACTIVE] and\
                  old_status in [self.STA_DONE, self.STA_DISMISSED]:
-                if self.has_parents():
+                if self.has_parent():
                     for p_tid in self.get_parents():
                         par = self.req.get_task(p_tid)
                         if par.is_loaded() and par.get_status() in\
@@ -476,24 +476,6 @@ class Task(TreeNode):
         """
         return self.req.get_task(tid)
 
-    #Return true is the task has parent
-    #If tag is provided, return True only
-    #if the parent has this particular tag
-    #FIXME : this function should be removed. Use the liblarch instead !
-    def has_parents(self, tag=None):
-        print "DEPRECATED: has_parent"
-        has_par = TreeNode.has_parent(self)
-        #The "all tag" argument
-        if tag and has_par:
-            a = 0
-            for tid in self.get_parents():
-                p = self.req.get_task(tid)
-                a += p.has_tags(tag)
-            to_return = a
-        else:
-            to_return = has_par
-        return to_return
-
     def set_attribute(self, att_name, att_value, namespace=""):
         """Set an arbitrary attribute.
 
@@ -601,6 +583,7 @@ class Task(TreeNode):
 
     #remove by tagname
     def remove_tag(self, tagname):
+#        print "remove tag %s" %tagname
         modified = False
         if tagname in self.tags:
             self.tags.remove(tagname)
@@ -611,8 +594,12 @@ class Task(TreeNode):
         self.content = self._strip_tag(self.content, tagname)
         if modified:
             tag = self.req.get_tag(tagname)
+            # The ViewCount of the tag still doesn't know that
+            # the task was removed. We need to update manually
+            tag.update_task(self.get_id())
             if tag:
                 tag.modified()
+#            print "removing now %s and tag is %s - %s" %(tagname,tag, tag.get_active_tasks_count())
 
     def set_only_these_tags(self, tags_list):
         '''

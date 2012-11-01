@@ -45,14 +45,14 @@ class TreeFactory:
           'workview': [self.workview],
           'active': [self.active],
           'closed': [self.closed, {'flat': True}],
-          'notag': [self.notag, {'transparent': True}],
+          'notag': [self.notag],
           'workable': [self.is_workable],
           'started': [self.is_started],
           'workdue': [self.workdue],
           'workstarted': [self.workstarted],
           'worktostart': [self.worktostart],
           'worklate': [self.worklate],
-          'no_disabled_tag': [self.no_disabled_tag, {'transparent': True}],
+          'no_disabled_tag': [self.no_disabled_tag],
           }
 
         for f in f_dic:
@@ -80,7 +80,7 @@ class TreeFactory:
         alltag.set_attribute("icon", "gtg-tags-all")
         alltag.set_attribute("order", 0)
         tagtree.add_node(alltag)
-        p = {'transparent': True}
+        p = {}
         self.tasktree.add_filter(CoreConfig.ALLTASKS_TAG,\
                                     self.alltag, parameters=p)
         # Build the "without tag tag"
@@ -91,7 +91,7 @@ class TreeFactory:
         notag_tag.set_attribute("icon", "gtg-tags-none")
         notag_tag.set_attribute("order", 2)
         tagtree.add_node(notag_tag)
-        p = {'transparent': True}
+        p = {}
         self.tasktree.add_filter(CoreConfig.NOTAG_TAG,\
                                     self.notag, parameters=p)
 
@@ -103,7 +103,7 @@ class TreeFactory:
         search_tag.set_attribute("icon", "search")
         search_tag.set_attribute("order", 1)
         tagtree.add_node(search_tag)
-        p = {'transparent': True}
+        p = {}
         self.tasktree.add_filter(CoreConfig.SEARCH_TAG,
                                    search_filter, parameters=p)
 
