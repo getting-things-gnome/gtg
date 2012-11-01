@@ -1,0 +1,58 @@
+.TH gtgcli 1 2012-08-16 "gtgcli"
+.SH NAME
+gtcli \-  Command-line interface for Getting Things GNOME!
+.SH SYNOPSIS
+.B gtgcli [options] COMMAND [command options]
+.SH DESCRIPTION
+gtgcli provides a handy command-line interface to GTG. It allows to list and
+modify your task directly from the command line. It also allows to interact
+with GTG using shell scripts.
+.SH OPTIONS
+.TP
+\fB-h, --help\fB
+Prints some information about gtg's usage and options.
+.SH COMMAND OPTIONS
+.TP
+\fBnew\fB
+Creates a new task.
+.TP
+\fBshow <tid>\fB
+Display task with <tid> task ID.
+.TP
+\fBedit <tid>\fB
+Opens the GUI editor for the task with <tid> task ID.
+.TP
+\fBdelete <tid>\fB
+Removes task with <tid> task ID.
+.TP
+\fBlist [all|today|<filter>|<tag>]\fB
+List tasks corresponding to the given attributes.
+.TP
+\fBsearch <expression>\fB
+Search tasks corresponding to <expression>. Read the documentation from GTG's
+help to know more about the search query syntax.
+.TP
+\fBcount [all|today|<filter>|<tag>]\fB
+Outputs the task count for all the task corresponding to the given attributes.
+.TP
+\fBsummary [all|today|<filter>|<tag]\fB
+Report how many tasks starting/due each day.
+.TP
+\fBpostpone <tid> <date>\fB
+Updates the start date of the task with <tid> task id to <date>.
+.TP
+\fBclose <tid>\fB
+Sets state of task identified by <tid> to done.
+.TP
+\fBbrowser [hide|show]\fB
+Hides or shows the task browser window.
+.SH "SEE ALSO"
+gtg (1)
+.SH BUGS
+Please report any bug you may experience to the \fBGTG\fP Developers, that can
+be reached at \fRhttps://edge.launchpad.net/gtg\fP
+.SH COPYRIGHT
+This manual page is Copyright 2012 Bertrand Rousseau
+<bertrand.rousseau@gmail.com>. Permission is granted to copy, distribute
+and/or modify this document under the terms of the GNU General Public License,
+Version 3 or any later version published by the Free Software Foundation.

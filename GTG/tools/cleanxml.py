@@ -94,6 +94,12 @@ def _try_openxmlfile(zefile, root):
     return doc, xmlproject
 
 
+def _get_backup_name(zefile):
+    """ Get name of backups which are in backup/ directory """
+    dirname, filename = os.path.split(zefile)
+    return os.path.join(dirname, 'backup', filename)
+
+
 def openxmlfile(zefile, root):
     """ Open an XML file in a robust way
 
@@ -115,7 +121,7 @@ def openxmlfile(zefile, root):
             return _try_openxmlfile(zefile, root)
         else:
             # Creating empty file
-            doc,xmlproject = emptydoc(root)
+            doc, xmlproject = emptydoc(root)
             newfile = savexml(zefile, doc)
             if not newfile:
                 Log.error("Could not create a new file %s" % zefile)
@@ -139,8 +145,9 @@ def openxmlfile(zefile, root):
                 Log.warning('Failed with reason: %s' % msg)
 
         # Try to revert to backup
+        backup_name = _get_backup_name(zefile)
         for i in range(BACKUP_NBR):
-            backup_file = "%s.bak.%d" % (zefile, i)
+            backup_file = "%s.bak.%d" % (backup_name, i)
             if os.path.exists(backup_file):
                 Log.info("Trying to restore backup file %s" % backup_file)
                 try:
@@ -158,11 +165,22 @@ def emptydoc(root) :
     rootproject = doc.createElement(root)
     doc.appendChild(rootproject)
     return doc, rootproject
-    
+
 #write a XML doc to a file
 def savexml(zefile,doc,backup=False):
 #    print "writing %s file" %(zefile)
     tmpfile = zefile+'__'
+    backup_name = _get_backup_name(zefile)
+
+    # Create backup directory
+    backup_dir = os.path.dirname(backup_name)
+    if not os.path.exists(backup_dir):
+        try:
+            os.makedirs(backup_dir)
+        except IOError as error:
+            print "Error while creating backup/ directory:", msg
+            return False
+
     try:
         if os.path.exists(zefile):
             os.rename(zefile, tmpfile)
@@ -185,17 +203,18 @@ def savexml(zefile,doc,backup=False):
                 #We keep BACKUP_NBR versions of the file
                 #The 0 is the youngest one
                 while backup_nbr > 0 :
-                    older = "%s.bak.%s" %(zefile,backup_nbr)
+                    older = "%s.bak.%s" % (backup_name, backup_nbr)
                     backup_nbr -= 1
-                    newer = "%s.bak.%s" %(zefile,backup_nbr)
+                    newer = "%s.bak.%s" % (backup_name, backup_nbr)
                     if os.path.exists(newer) :
                         shutil.move(newer,older)
                 #The bak.0 is always a fresh copy of the closed file
                 #So that it's not touched in case of bad opening next time
-                current = "%s.bak.0" %(zefile)
+                current = "%s.bak.0" % backup_name
                 shutil.copy(zefile,current)
 
-                daily_backup = "%s.%s.bak" % (zefile, datetime.date.today().strftime("%Y-%m-%d"))
+                daily_backup = "%s.%s.bak" % (backup_name,
+                        datetime.date.today().strftime("%Y-%m-%d"))
                 if not os.path.exists(daily_backup):
                     shutil.copy(zefile, daily_backup)
             return True

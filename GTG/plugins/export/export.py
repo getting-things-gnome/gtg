@@ -87,6 +87,7 @@ class PluginExport:
     DEFAULT_PREFERENCES = {
         "menu_entry": True,
         "toolbar_entry": True,
+        "last_template": None,
     }
 
     def __init__(self):
@@ -263,8 +264,12 @@ class PluginExport:
         model.clear()
 
         templates = get_templates_paths()
-        for path in templates:
+        active_entry = None
+        for i, path in enumerate(templates):
             template = Template(path)
+            if path == self.preferences["last_template"]:
+                active_entry = i
+
             model.append((path,
                 template.get_title(),
                 template.get_description(),
@@ -273,7 +278,10 @@ class PluginExport:
         # wrap the combo-box if it's too long
         if len(templates) > 15:
             self.combo.set_wrap_width(5)
-        self.combo.set_active(0)
+
+        if active_entry is None:
+            active_entry = 0
+        self.combo.set_active(active_entry)
 
     def on_combo_changed(self, combo):
         """ Display details about the selected template """
@@ -292,6 +300,10 @@ class PluginExport:
         else:
             self.export_image.clear()
         self.description_label.set_markup("<i>%s</i>" % description)
+
+        # Remember the last selected path
+        self.preferences["last_template"] = model[active][0]
+        self._preferences_store()
 
     def show_error_dialog(self, message):
         """ Display an error """

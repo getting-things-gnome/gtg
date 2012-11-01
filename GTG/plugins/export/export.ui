@@ -92,6 +92,7 @@
                   </object>
                   <packing>
                     <property name="position">0</property>
+                    <property name="expand">False</property>
                   </packing>
                 </child>
                 <child>
