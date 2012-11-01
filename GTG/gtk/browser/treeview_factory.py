@@ -122,7 +122,12 @@ class TreeviewFactory():
         return node.get_start_date().to_readable_string()
         
     def task_duedate_column(self,node):
-        return node.get_due_date().to_readable_string()
+        # We show the most constraining due date for task with no due dates.
+        if node.get_due_date() == Date.no_date():
+            return node.get_due_date_constraint().to_readable_string()
+        else:
+        # Other tasks show their due date (which *can* be fuzzy)
+            return node.get_due_date().to_readable_string()
         
     def task_cdate_column(self,node):
         return node.get_closed_date().to_readable_string()
@@ -154,6 +159,10 @@ class TreeviewFactory():
             elif para == 'due':
                 t1 = task1.get_due_date()
                 t2 = task2.get_due_date()
+                if t1 == Date.no_date():
+                    t1 = task1.get_due_date_constraint()
+                if t2 == Date.no_date():
+                    t2 = task2.get_due_date_constraint()
             elif para == 'closed':
                 t1 = task1.get_closed_date()
                 t2 = task2.get_closed_date()
