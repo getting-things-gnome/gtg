@@ -594,14 +594,15 @@ class Task(TreeNode):
     def set_parent(self, parent_id):
         """Update the task's parent. Refresh due date constraints."""
         TreeNode.set_parent(self, parent_id)
-        par = self.req.get_task(parent_id)
-        par_duedate = par.get_due_date_constraint()
-        if par_duedate != Date.no_date() and \
-           not par_duedate.is_fuzzy()    and \
-           self.due_date != Date.no_date() and \
-           not self.due_date.is_fuzzy()  and \
-           par_duedate < self.due_date:
-            self.set_due_date(par_duedate)
+        if parent_id is not None:
+            par = self.req.get_task(parent_id)
+            par_duedate = par.get_due_date_constraint()
+            if par_duedate != Date.no_date() and \
+               not par_duedate.is_fuzzy()    and \
+               self.due_date != Date.no_date() and \
+               not self.due_date.is_fuzzy()  and \
+               par_duedate < self.due_date:
+                self.set_due_date(par_duedate)
         self.recursive_sync()
 
     def set_attribute(self, att_name, att_value, namespace=""):
