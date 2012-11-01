@@ -1546,7 +1546,19 @@ class TaskBrowser(gobject.GObject):
         self.search_actions = []
         new_actions = []
         query = self.quickadd_entry.get_text()
-        query=query.strip()
+        query = query.strip()
+
+        # If the tag pane is hidden, reset search filter when query is empty
+        if query == '' and not self.config.get("tag_pane"):
+            tree = self.req.get_tasks_tree(refresh=False)
+            filters = tree.list_applied_filters()
+            for tag_id in self.req.get_all_tags():
+                tag = self.req.get_tag(tag_id)
+                if tag.is_search_tag() and tag_id in filters:
+                    self.req.remove_tag(tag_id)
+                    self.apply_filter_on_panes(CoreConfig.ALLTASKS_TAG)
+                    return
+
         if query:
             if self.req.get_task_id(query) is not None:
                 new_actions.append('open')

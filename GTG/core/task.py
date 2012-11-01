@@ -263,7 +263,9 @@ class Task(TreeNode):
         self.due_date = fulldate_obj
         # if the task's start date happens later than the 
         # new due date, we update it
+        # (except for fuzzy dates)
         if self.get_start_date() != Date.no_date() and \
+           not fulldate_obj.is_fuzzy() and \
            self.get_start_date() > fulldate_obj:
             self.set_start_date(fulldate)
         if fulldate_obj != Date.no_date():
@@ -290,7 +292,9 @@ class Task(TreeNode):
                     sub.set_due_date(fulldate)
                 # if the child's start date happens later than
                 # the task's new due date, we update it
+                # (except for fuzzy dates)
                 if sub.get_start_date() != Date.no_date() and \
+                   not fulldate_obj.is_fuzzy() and \
                    sub.get_start_date() > fulldate_obj:
                     sub.set_start_date(fulldate)
         else:
@@ -303,7 +307,9 @@ class Task(TreeNode):
 
     def set_start_date(self, fulldate):
         self.start_date = Date(fulldate)
-        if Date(fulldate) > self.due_date and Date(fulldate) != Date.no_date():
+        if Date(fulldate) != Date.no_date() and \
+           not self.due_date.is_fuzzy() and \
+           Date(fulldate) > self.due_date:
             self.set_due_date(fulldate)
         self.sync()
 
@@ -423,6 +429,7 @@ class Task(TreeNode):
         child = self.req.get_task(tid)
         if self.is_loaded() and child and child.can_be_deleted:
             child.set_start_date(self.get_start_date())
+            child.set_due_date(self.get_due_date())
             for t in self.get_tags():
                 child.add_tag(t.get_name())
         self.sync()

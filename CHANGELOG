@@ -38,6 +38,21 @@
     * Fix for bug #1026264: Write user documentation for search/smart tag
     * Fix for bug #1020611: Use deafult configuration when config is corrupted by Abhiram
     * Fix for bug #1013869: Saved searches can't be deleted when GTG crashes, by Antonio Roquentin
+    * Added option to change font used in task editor by Abhiram
+    * Fix for bug #984847: setup.py install doesn't install icons on right place, by Alan Gomes
+    * Fix for bug #1026312: Numbers of tasks in tags pane disappear after a regular search, by Antonio Roquentin
+    * Cleaned gtg.desktop file
+    * Re-enabled support for gtg:// URI
+    * Fix for bug #1026400: script_pocketmod doesn't have execute permission
+    * Fix for bug #1027817: Export plugin: changing output format moves widgets up and down
+    * Fix for bug #1027844: Fuzzy date shouldn't become start date
+    * Save backups into backup/ folder, creates backups of tags.xml closes #993920
+    * Search filter is deleted on empty search if tag_pane is closed, by Stefan Handschuh, closes #996236
+    * Pickle files for synchronization services are backuped to prevent loosing files, closes #1036554
+    * Fix for bug #897425: Write manpage for gtcli and update other manpages as well
+    * Fix for bug-1037051 (Due date is not set for a new subtask), by Nimit Shah
+    * Fix for bug #1036955: Due date is not preselected when start date is filled, by Steve Scheel
+    * Fix for bug #1045036: Slovak Translation Updated by Slavko
     * Remove use of liblarch's "transparent" concept (since it's been removed from liblarch), fixes bugs #1001962, #1001962, #1069257, #1069963: intermediary tags, counter initialization, and regressions caused by initial versions of the patch
 
 2012-02-13 Getting Things GNOME! 0.2.9

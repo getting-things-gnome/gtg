@@ -1,16 +1,16 @@
 [Desktop Entry]
 Version=1.0
 Name=Getting Things GNOME!
-# KDE 4 uses GenericName
-GenericName=Getting Things GNOME!
-# Gnome and KDE 3 use Comment
-Comment=Personal organizer for the GNOME desktop environment
-Comment[pl]=Osobisty organizer dla środowiska GNOME
+GenericName=Task Manager
+GenericName[sk]=Správca pracovných úloh
+Comment=Personal tasks and TODO-list items organizer for the GNOME desktop environment.
+Comment[sk]=Osobný správca pracovných úloh pre prostredie GNOME
 Icon=gtg
-Exec=gtg %F
+Exec=gtg %U
 Terminal=false
 Type=Application
-Categories=GNOME;GTK;Office;
+Categories=Office;ProjectManagement;
+MimeType=x-scheme-handler/gtg;
 StartupNotify=true
 X-Ayatana-Desktop-Shortcuts=NewTask
 

@@ -135,21 +135,29 @@ class Template:
         document_ready = threading.Event()
 
         def script():
-            """ Run script using /bin/sh.
+            """ Run script using the shebang of the script
 
             The script gets path to a document as it only argument and
             this thread expects resulting file as the only output of
             the script. """
 
-            cmd = self._script_path + " " + self._document_path
+            with open(self._script_path, 'r') as script_file:
+                first_line = script_file.readline().strip()
+                if first_line.startswith('#!'):
+                    cmd = [first_line[2:], self._script_path,
+                            self._document_path]
+                else:
+                    cmd = None
+
             self._document_path = None
-            try:
-                self._document_path = subprocess.Popen(
-                    args = ['/bin/sh', '-c', cmd],
-                    shell = False, stdout = subprocess.PIPE)\
-                                            .communicate()[0]
-            except Exception: # pylint: disable-msg=W0703
-                pass
+
+            if cmd is not None:
+                try:
+                    self._document_path = subprocess.Popen(
+                        args = cmd, shell = False,
+                        stdout = subprocess.PIPE).communicate()[0]
+                except Exception: # pylint: disable-msg=W0703
+                    pass
 
             if self._document_path and not os.path.exists(self._document_path):
                 self._document_path = None

@@ -1,36 +1,52 @@
-.TH gtg 1 2009-03-21 "gtg"
+.TH gtg 1 2012-08-16 "gtg"
 .SH NAME
-gtg \-  Getting Things Gnome!, an organizer for the GNOME desktop
+gtg \-  Getting Things GNOME!, a personal tasks and TODO-list items organizer
+for the GNOME desktop environment
 .SH SYNOPSIS
-.B gtg [-d]
+.B gtg [options]
 .SH DESCRIPTION
-Getting Things GNOME! is an organizer for the GNOME desktop environment.
-GTG focuses on usability and ease of use. Its main objective is to
-provide a simple and yet flexible organization tool for life and work.
+Getting Things GNOME! is a personal tasks and TODO-list items organizer for the
+GNOME desktop environment inspired by the Getting Things Done (GTD)
+methodology. GTG is designed with flexibility, adaptability, and ease of use
+in mind so it can be used as more than just GTD software.
+.PP
+GTG is intended to help you track everything you need to do and need to know,
+from small tasks to large projects.
 .PP
 GTG uses a very handy system for creating and editing tasks. The task editor
 can automatically recognize metadata such as tags and subtasks through the use
 of a very simple syntax.
 .SH OPTIONS
 .TP
-\fB-b\fB
+\fB-b, --boot-test\fB
 Boot-up only.  Causes gtg to exit immediately after completing the first
 iteration of the main loop.  Useful for boot performance testing work.
 .TP
-\fB-c\fB
+\fB-c, --no-crash-handler\fB
 Disable crash handler.  Causes the Apport automatic crash reporting
 utility to not be invoked when gtg crashes; instead it will print out a
 normal python backtrace.  This can be useful for debugging crash bugs,
 or if the crash handler is misbehaving.
 .TP
-\fB-d\fB
+\fB-d, --debug\fB
 Debug mode.  Prints extra information to the console which may be useful
 for understanding and reporting bugs.
 .TP
-\fB-v\fB
+\fB-h, --help\fB
+Prints some information about gtg's usage and options.
+.TP
+\fB-l, --local-liblarch\fB
+Use local liblarch. Look for the liblarch python library in ../liblarch.
+This is mainly useful for testing purpose.
+.TP
+\fB-t TITLE, --title=TITLE\fB
+Set the window's title to TITLE.
+.TP
+\fB-v, --version\fB
 Prints version and exits.
 .SH COPYRIGHT
-This manual page is Copyright 2009 Luca Falavigna <dktrkranz@debian.org>.
-Permission is granted to copy, distribute and/or modify this document
-under the terms of the GNU General Public License, Version 3 or any later
-version published by the Free Software Foundation.
+This manual page is Copyright 2009, 2012 Luca Falavigna <dktrkranz@debian.org>
+and Bertrand Rousseau <bertrand.rousseau@gmail.com>. Permission is granted
+to copy, distribute and/or modify this document under the terms of the GNU
+General Public License, Version 3 or any later version published by the Free
+Software Foundation.
