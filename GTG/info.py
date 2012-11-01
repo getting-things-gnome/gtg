@@ -28,7 +28,7 @@ HELP_URI = "help:gtg"
 TRANSLATE_URL = "https://translations.launchpad.net/gtg"
 REPORT_BUG_URL = "https://bugs.launchpad.net/gtg/+filebug"
 EMAIL = "gtg-contributors@lists.launchpad.net"
-VERSION = '0.3-development'
+VERSION = '0.3-rc1'
 
 SHORT_DESCRIPTION = \
  _('GTG is a personal tasks and TODO-list items organizer for the GNOME.')
