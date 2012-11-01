@@ -1,4 +1,4 @@
-2012-0?-?? Getting Things GNOME! 0.3
+2012-11-01 Getting Things GNOME! 0.3-rc1
     * Hide tasks with due date someday, #931376
     * New Date class by Paul Kishimoto and Izidor Matušov
       * Parse due:3 as next 3rd day in month
