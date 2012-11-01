@@ -53,6 +53,7 @@
     * Fix for bug-1037051 (Due date is not set for a new subtask), by Nimit Shah
     * Fix for bug #1036955: Due date is not preselected when start date is filled, by Steve Scheel
     * Fix for bug #1045036: Slovak Translation Updated by Slavko
+    * Remove use of liblarch's "transparent" concept (since it's been removed from liblarch), fixes bugs #1001962, #1001962, #1069257, #1069963: intermediary tags, counter initialization, and regressions caused by initial versions of the patch
     * Fix for bug #1038662: Undefined due dates in subtasks should always stay undefined and displayed as such in the editor
     * Fix for bug #1036695: Date constraints after drag and drop not applied
 
