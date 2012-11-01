@@ -114,8 +114,6 @@ class DataStore(object):
         if self.__tagstore.has_node(name):
             raise IndexError('tag %s was already in the datastore' % name)
 
-        parameters['transparent'] = True
-
         self.__tasks.add_filter(name, filter_func, parameters=parameters)
         self.__tagstore.add_node(tag, parent_id=parent_id)
         tag.set_save_callback(self.save)

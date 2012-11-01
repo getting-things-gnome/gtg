@@ -56,6 +56,39 @@ class Tag(TreeNode):
         self._attributes = {'name': self._name}
         for key, value in attributes.iteritems():
             self.set_attribute(key, value)
+        
+        self.viewcount = None
+        
+    def __get_viewcount(self):
+        if not self.viewcount and self.get_name() != "gtg-tags-sep":
+            self.viewcount = self.req.get_basetree().get_viewcount\
+                                        (name=self.get_name(),refresh=False)
+            
+            sp_id = self.get_attribute("special")        
+            if sp_id == "all":
+                pass
+            if sp_id == "notag":
+                self.viewcount.apply_filter('notag',refresh=False)
+            #No special means a normal tag
+            else:
+                self.viewcount.apply_filter(self.get_name(),refresh=False)
+            self.viewcount.apply_filter('active')
+            self.viewcount.register_cllbck(self.modified)
+        return self.viewcount
+    
+    def apply_filter(self,filtername):
+        if self.viewcount:
+            self.viewcount.apply_filter(filtername)
+            
+    def unapply_filter(self,filtername):
+        if self.viewcount:
+            self.viewcount.unapply_filter(filtername)
+            
+    #When a task change a tag, we may want to manually update
+    #To ensure that the task is well counted/uncounted for that tag
+    def update_task(self,nid):
+        vc = self.__get_viewcount()
+        vc.modify(nid)
 
     #overiding some functions to not allow dnd of special tags
     def add_parent(self, parent_id):
@@ -163,22 +196,11 @@ class Tag(TreeNode):
         # this method purposefully doesn't rely on get_related_tasks()
         # which does a similar job, in order to benefit from liblarch
         # optimizations
-        if not tasktree:
-            tasktree = self.req.get_tasks_tree()
-        sp_id = self.get_attribute("special")
-        if sp_id == "all":
-            toreturn = tasktree.get_n_nodes(\
-                    withfilters=['active'], include_transparent=False)
-        elif sp_id == "notag":
-            toreturn = tasktree.get_n_nodes(\
-                            withfilters=['notag'], include_transparent=False)
-        elif sp_id == "sep":
-            toreturn = 0
+        vc = self.__get_viewcount()
+        if vc:
+            return vc.get_n_nodes()
         else:
-            tname = self.get_name()
-            toreturn = tasktree.get_n_nodes(\
-                                withfilters=[tname], include_transparent=False)
-        return toreturn
+            return 0
 
     def get_related_tasks(self, tasktree=None):
         """Returns all related tasks node ids"""
@@ -187,16 +209,16 @@ class Tag(TreeNode):
         sp_id = self.get_attribute("special")
         if sp_id == "all":
             toreturn = tasktree.get_nodes(\
-                    withfilters=['active'], include_transparent=False)
+                    withfilters=['active'])
         elif sp_id == "notag":
             toreturn = tasktree.get_nodes(\
-                            withfilters=['notag'], include_transparent=False)
+                            withfilters=['notag'])
         elif sp_id == "sep" :
             toreturn = []
         else:
             tname = self.get_name()
             toreturn = tasktree.get_nodes(\
-                                withfilters=[tname], include_transparent=False)
+                                withfilters=[tname])
         return toreturn
 
     def notify_related_tasks(self):

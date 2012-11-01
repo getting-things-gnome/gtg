@@ -55,7 +55,7 @@ DEFAULTS = {
             'toolbar': True,
             'quick_add': True,
             'collapsed_tasks': [],
-            'collapsed_tags': [],
+            'expanded_tags': [],
             'view': 'default',
             "opened_tasks": [],
             'width': 400,
