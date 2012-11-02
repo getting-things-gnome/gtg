@@ -24,9 +24,107 @@ except:
     pass
 
 from GTG                   import _
-from GTG                   import PLUGIN_DIR
 from GTG.tools.borg        import Borg
 from GTG.tools.dates       import Date
+
+
+class TheIndicator(Borg):
+    """
+    Application indicator can be instantiated only once. The
+    plugin api, when toggling the activation state of a plugin,
+    instantiates different objects from the plugin class. Therefore,
+    we need to keep a reference to the indicator object. This class
+    does that.
+    """
+
+    def __init__(self):
+        super(TheIndicator, self).__init__()
+        if not hasattr(self, "_indicator"):
+            try:
+                self._indicator = appindicator.Indicator( \
+                              "gtg",
+                              "indicator-messages",
+                               appindicator.CATEGORY_APPLICATION_STATUS)
+            except:
+                self._indicator = None
+
+    def get_indicator(self):
+        return self._indicator
+
+
+class IconIndicator:
+    """
+    A common interface to an app indicator and a status icon
+    """
+
+    NORMAL_ICON = "gtg"
+    ATTENTION_ICON = "gtg_need_attention"
+
+    def __init__(self):
+        self._indicator = TheIndicator().get_indicator()
+        self._icon = None
+        self._menu = None
+        self._attention = False
+
+    def activate(self, leftbtn_callback, menu):
+        """ Setup the icon / the indicator """
+
+        self._menu = menu
+
+        if self._indicator:
+            self._indicator.set_icon("gtg-panel")
+            self._indicator.set_attention_icon(self.ATTENTION_ICON)
+            self._indicator.set_menu(menu)
+            self._indicator.set_status(appindicator.STATUS_ACTIVE)
+        else:
+            self._icon = gtk.StatusIcon()
+            self._icon.set_from_icon_name(self.NORMAL_ICON)
+            self._icon.set_tooltip("Getting Things GNOME!")
+            self._icon.set_visible(True)
+            self._icon.connect('activate', leftbtn_callback)
+            self._icon.connect('popup-menu', self._on_icon_popup)
+
+    def deactivate(self):
+        """ Hide the icon """
+        if self._indicator:
+            self._indicator.set_status(appindicator.STATUS_PASSIVE)
+        else:
+            self._icon.set_visible(False)
+
+    def update_menu(self):
+        """ Force indicator to update menu """
+        if self._indicator:
+            self._indicator.set_menu(self._menu)
+
+    def set_attention(self, attention):
+        """ Show a special icon when the indicator needs attention """
+        # Change icon only when the attention change
+        if self._attention == attention:
+            return
+
+        if self._indicator:
+            if attention:
+                status = appindicator.STATUS_ATTENTION
+            else:
+                status = appindicator.STATUS_ACTIVE
+
+            self._indicator.set_status(status)
+        else:
+            if attention:
+                icon = self.ATTENTION_ICON
+            else:
+                icon = self.NORMAL_ICON
+
+            self._icon.set_from_icon_name(icon)
+
+        self._attention = attention
+
+    def _on_icon_popup(self, icon, button, timestamp):
+        """ Show the menu on right click on the icon """
+        if not self._indicator:
+            self._menu.popup(None, None, gtk.status_icon_position_menu,
+                       button, timestamp, icon)
+
 
 
 def _due_within(task, danger_zone):
@@ -55,16 +153,10 @@ class _Attention:
     than time span (in days) defined by danger_zone.
     """
 
-    STATUS = {'normal': appindicator.STATUS_ACTIVE,
-              'high': appindicator.STATUS_ATTENTION}
-
-    ICON = {'normal': 'gtg-panel',
-            'high': 'gtg_need_attention'}
-
     def __init__(self, danger_zone, indicator, tree, req):
         self.__tree = tree
         self.__req = req
-        self.__indicator = indicator
+        self._indicator = indicator
         self.danger_zone = danger_zone
 
         # Setup list of tasks in danger zone
@@ -76,27 +168,13 @@ class _Attention:
                 self.tasks_danger.append(tid)
 
         # Set initial status
-        self.__update_indicator(self.level())
+        self._update_indicator()
 
-    def level(self):
-        """ Two states only: attention is either needed or not """
-        return 'high' if len(self.tasks_danger)>0 else 'normal'
-
-    def __update_indicator(self, new, old=None):
-        """ Reset indicator status or update upon change in status """
-        if old is None or not old == new:
-            try:
-                # This works if __indicator implements the appindicator api 
-                self.__indicator.set_status(self.STATUS[new])
-            except AttributeError:
-                # If we passed a status icon instead try this
-                self.__indicator.set_from_icon_name(self.ICON[new])
-            except:
-                raise
+    def _update_indicator(self):
+        """ Set the proper icon for the indicator """
+        self._indicator.set_attention(len(self.tasks_danger) > 0)
 
     def update_on_task_modified(self, tid):
-        # Store current attention level
-        old_lev = self.level()
         task = self.__req.get_task(tid)
         if tid in self.tasks_danger:
             if not _due_within(task, self.danger_zone):
@@ -104,19 +182,14 @@ class _Attention:
         else:
             if _due_within(task, self.danger_zone):
                 self.tasks_danger.append(tid)
-                
-        # Update icon only if attention level has changed
-        self.__update_indicator(self.level(), old_lev)
+
+        self._update_indicator()
 
     def update_on_task_deleted(self, tid):
-        # Store current attention level
-        old_lev = self.level()
-
         if tid in self.tasks_danger:
             self.tasks_danger.remove(tid)
 
-        # Update icon only if attention level has changed
-        self.__update_indicator(self.level(), old_lev)
+        self._update_indicator()
 
 
 class NotificationArea:
@@ -131,31 +204,9 @@ class NotificationArea:
     MAX_TITLE_LEN = 30
     MAX_ITEMS = 10
 
-    class TheIndicator(Borg):
-        """
-        Application indicator can be instantiated only once. The
-        plugin api, when toggling the activation state of a plugin,
-        instantiates different objects from the plugin class. Therefore,
-        we need to keep a reference to the indicator object. This class
-        does that.
-        """
-
-        def __init__(self):
-            super(NotificationArea.TheIndicator, self).__init__()
-            if not hasattr(self, "_indicator"):
-                try:
-                    self._indicator = appindicator.Indicator( \
-                                  "gtg",
-                                  "indicator-messages",
-                                   appindicator.CATEGORY_APPLICATION_STATUS)
-                except:
-                    self._indicator = None
-
-        def get_indicator(self):
-            return self._indicator
 
     def __init__(self):
-        self.__indicator = NotificationArea.TheIndicator().get_indicator()
+        self._indicator = IconIndicator()
         self.__browser_handler = None
         self.__liblarch_callbacks = []
 
@@ -203,10 +254,7 @@ class NotificationArea:
 
     def deactivate(self, plugin_api):
         """ Set everything back to normal """
-        if self.__indicator:
-            self.__indicator.set_status(appindicator.STATUS_PASSIVE)
-        else:
-            self.status_icon.set_visible(False)
+        self._indicator.deactivate()
 
         # Allow to close browser after deactivation
         self.__set_browser_close_callback(None)
@@ -224,13 +272,13 @@ class NotificationArea:
     def __init_gtk(self):
         browser = self.__view_manager.get_browser()
 
-        self.__menu = gtk.Menu()
+        menu = gtk.Menu()
 
         #add "new task"
         menuItem = gtk.ImageMenuItem(gtk.STOCK_ADD)
         menuItem.get_children()[0].set_label(_('Add _New Task'))
         menuItem.connect('activate', self.__open_task)
-        self.__menu.append(menuItem)
+        menu.append(menuItem)
 
         #view in main window checkbox
         view_browser_checkbox = gtk.CheckMenuItem(_("_View Main Window"))
@@ -239,48 +287,29 @@ class NotificationArea:
                                                        self.__toggle_browser)
         browser.connect('visibility-toggled', self.__on_browser_toggled,
                                                 view_browser_checkbox)
-        self.__menu.append(view_browser_checkbox)
+        menu.append(view_browser_checkbox)
         self.checkbox = view_browser_checkbox
 
         #separator (it's intended to be after show_all)
         # separator should be shown only when having tasks
         self.__task_separator = gtk.SeparatorMenuItem()
-        self.__menu.append(self.__task_separator)
-        self.__menu_top_length = len(self.__menu)
+        menu.append(self.__task_separator)
+        menu_top_length = len(menu)
 
-        self.__menu.append(gtk.SeparatorMenuItem())
+        menu.append(gtk.SeparatorMenuItem())
 
         #quit item
         menuItem = gtk.ImageMenuItem(gtk.STOCK_QUIT)
         menuItem.connect('activate', self.__view_manager.close_browser)
-        self.__menu.append(menuItem)
+        menu.append(menuItem)
 
-        self.__menu.show_all()
+        menu.show_all()
         self.__task_separator.hide()
 
         self.__tasks_menu = SortedLimitedMenu(self.MAX_ITEMS,
-                            self.__menu, self.__menu_top_length)
-
-        # Update the icon theme
-        icon_theme = os.path.join('notification_area', 'data', 'icons')
-        abs_theme_path = os.path.join(PLUGIN_DIR[0], icon_theme)
-        theme = gtk.icon_theme_get_default()
-        theme.append_search_path(abs_theme_path)
-
-        if self.__indicator:
-            self.__indicator.set_icon_theme_path(abs_theme_path)
-            self.__indicator.set_icon("gtg-panel")
-            self.__indicator.set_attention_icon("gtg_need_attention")
-            self.__indicator.set_menu(self.__menu)
-            self.__indicator.set_status(appindicator.STATUS_ACTIVE)
-        else:
-            self.status_icon = gtk.StatusIcon()
-            self.status_icon.set_from_icon_name("gtg-panel")
-            self.status_icon.set_tooltip("Getting Things Gnome!")
-            self.status_icon.set_visible(True)
-            self.status_icon.connect('activate', self.__toggle_browser)
-            self.status_icon.connect('popup-menu',
-                                     self.__on_icon_popup, self.__menu)
+                            menu, menu_top_length)
+        
+        self._indicator.activate(self.__toggle_browser, menu)
 
     def __init_attention(self):
         # Use two different viewtree for attention and menu
@@ -290,7 +319,7 @@ class NotificationArea:
         if self.preferences['danger_zone'] > 0:
             self.__attention = _Attention( \
                 self.preferences['danger_zone'],
-                self.__indicator if self.__indicator else self.status_icon,
+                self._indicator,
                 self.__tree_att,
                 self.__requester)
         else:
@@ -340,8 +369,7 @@ class NotificationArea:
         menu_item.connect('activate', self.__open_task, tid)
         self.__tasks_menu.add(tid, (task.get_due_date(), title), menu_item)
 
-        if self.__indicator:
-            self.__indicator.set_menu(self.__menu)
+        self._indicator.update_menu()
 
     def __on_task_deleted_att(self, tid, path):
         # Update icon on deletion
@@ -362,10 +390,6 @@ class NotificationArea:
             short_title = short_title.strip() + "..."
         return short_title
 
-    def __on_icon_popup(self, icon, button, timestamp, menu=None):
-        if not self.__indicator:
-            menu.popup(None, None, gtk.status_icon_position_menu, \
-                       button, timestamp, icon)
 
 ### Preferences methods #######################################################
     def preferences_load(self):
