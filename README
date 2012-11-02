@@ -17,11 +17,9 @@ GTG depends on the following packages:
  * python-support
  * python-configobj
  * python-xdg
- * python-liblarch 
  * python-dbus
+ * python-liblarch 
  * yelp (to read GTG documentation)
- * python-suds (dependency of MantisBT backend)
- * python-evolution (dependency of Evolution backend)
 
 To generate the API documentation, you'll also need to install 'pydoctor'.
 
@@ -31,16 +29,77 @@ these modules if they're not currently available.
 To install the all the required packages providing the basic features on
 Debian-based systems, execute the following command:
     $ sudo apt-get install python-support python-gtk2 python-gnome2 \
-         python-glade2 python-xdg python-configobj python-liblarch yelp
+         python-glade2 python-xdg python-configobj python-dbus \
+         python-liblarch yelp
 
 To enable API documentation generation, execute this command:
     $ sudo apt-get install python-pydoctor
 
-For evolution backend, you need python-evolution by command:
-    $ sudo apt-get install python-evolution
+There are additional plugins (modules for extending the user interface) and
+synchronization services (modules for importing/exporting tasks from/to
+external services) which needs additional packages to work correctly.
 
-For MantisBT backend, you need python-suds by command:
-    $ sudo apt-get install python-suds
+=== Dependencies for Plugins ===
+
+"Bugzilla" plugin dependencies:
+  * python-bugz
+
+"Export and print" plugin dependencies:
+  * python-cheetah
+  * pdflatex
+  * pdftk
+  * pdfjam
+
+Installable on Debian-based system via
+    $ sudo apt-get install python-cheetah pdftk pdfjam texlive-latex-base
+
+"Geolocalized tasks" plugin is not maintained for a long time and needs to be
+rewritten from scratch. Dependencies:
+  * python-geoclue
+  * python-clutter
+  * python-clutter-gtk
+  * python-champlain
+  * python-champlain-gtk
+
+"Hamster Time Tracker Integration" plugin needs a running instance of Hamster.
+
+"Notification area" plugin has only an optional dependence for systems
+which supports indicators:
+  * python-appindicator
+
+"Send task via email" plugin does not have any external dependencies.
+
+"Closed tasks remover" plugin does not have any external dependencies.
+
+"Tomboy/Gnote" plugin needs a running instance of Tomboy or Gnote.
+python-dbus
+
+"Urgency Color" plugin does not have any external dependencies.
+
+=== Dependencies for Synchronization Services ===
+
+Evolution synchronization service has dependencies:
+  * python-evolution
+  * python-dateutil
+
+Because of a bug in PyGTK (see https://bugs.launchpad.net/gtg/+bug/936183),
+the synchronization service freezes GTG and the synchronization service can't be used.
+
+MantisBT synchronization service has a dependency:
+  * python-suds
+
+Launchpad synchronization service has a dependency:
+  * python-launchpadlib
+
+Gnote and Tomboy synchronization services has no external dependency.
+
+Identica and Twitter synchronization services are shipped with the local
+version of Tweety library.
+
+Remember the Milk synchronization service is shipped with a library for RTM api. It has an external dependency:
+  * python-dateutil
+
+Remember the Milk is not maintained for a long time and might be potentially harmful.
 
 ===== Installing and Running =====
 
@@ -63,11 +122,6 @@ or install it system-wide (must install as root to install system-wide):
     $ cd gtg
     $ sudo python setup.py install # must be root to install system-wide
     $ gtg
-
-Please note you have to pass --install-layout=deb option to setup.py script
-to correctly install GTG on recent Ubuntu versions (9.04 "Jaunty" or later):
-
-    $ sudo python setup.py install --install-layout=deb
 
 ==== How To Use GTG? ====
 
