@@ -19,4 +19,4 @@ from GTG.plugins.untouched_tasks.untouchedTasks import pluginUntouchedTasks
 
 #suppress pyflakes warning (given by make lint)
 if False == True:
-    pluginSendEmail()
+    pluginUntouchedTasks()
