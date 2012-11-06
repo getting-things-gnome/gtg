@@ -1,0 +1,82 @@
+Getting Things GNOME! 0.3 - Release Note - 06/11/2012
+=====================================================
+
+After about 9 months of very active development, the GTG team is proud to
+announce the release of Getting Things GNOME! 0.3!
+
+This version is packed with an amazing amount of bug fixes and many novelties!
+The goal with 0.3 was to get GTG back on its feet after more than a year of
+working on the internal plumbing. We also fixed many bugs in the process. We
+can now say that this goal has been reached, and then some!
+
+What's new in 0.3?
+------------------
+
+Here's an (incomplete) list of changes:
+
+  - Performance: thanks to the amazing work of Izidor Matusov, GTG has recovered
+    its youth and can handle your many tasks way faster than before!
+  - Data backup: GTG keeps several copies of your data, and it's now able to 
+    restore the most recent backup automatically if your data are corrupted.
+  - Help: GTG now has many help pages providing useful documentation for GTG,
+    thanks to Radina Matic (our community manager and 2012 intern for the GNOME
+    outreach program) [2]
+  - UI: we've improved our UI in several ways. The most notable will probably
+    be the new tag editor, which provides an easier way to customize and edit
+    tag's properties such as colors, icon, etc.
+  - Translations: all translations were updated, and we also got new languages
+    added to this release!
+  - Stability: we've fixed many bugs causing crashes during this release.
+  - Various other fixes:
+      - Updated and improved plugins: notification area icon, urgency color,
+        export, ...
+      - Improved Quick Add Toolbar, with more features and flags for you geeks.
+      - Improved command line clients
+      - Saner handling of due dates constraints.
+
+You can see the complete list of changes in our CHANGELOG:
+https://bazaar.launchpad.net/~gtg/gtg/trunk/view/1240/CHANGELOG
+
+The GTG developer team would like to thank and congratulate all the great people
+which contributed to this version. You did an amazing work! Thanks also to our
+many new contributors which joined us during this development cycle!
+
+What's next?
+------------
+
+During the next months, we plan to work on the porting of GTG to GTK3. This
+should hopefully enable the upcoming redesign of GTG [3]!
+
+We also have many other projects in the pipeline, most notably:
+
+ - collaborative task management, a project which has been started by
+   Izidor Matusov during Google Summer of Code 2012 [4].
+ - improved task editor, a work performed by Steve Scheel during Google Summer
+   of Code 2012 [5].
+
+It's also worth mentioning the great work accomplished by Baptiste Saleil, who
+has integrated GTG with GNOME Shell through a GNOME Shell extension (also a
+Google Summer of Code 2012) [6].
+
+About Getting Things GNOME!
+---------------------------
+
+GTG is a personal task organizer for the GNOME desktop inspired by the Getting
+Things Done (GTD) methodology. GTG is designed with flexibility, adaptability,
+and ease of use in mind so it can be used as more than just GTD software.
+
+GTG is intended to help you track everything you need to do and need to know,
+from small tasks to large projects.
+
+Links:
+------
+
+ [1] Screenshots: http://gtg.fritalk.com/pages/screenshots
+ [2] Radina Matic's GOPW (GTG User Doc): http://www.tcloc.com/the-first-of-my-gnome-summers/
+ [3] GTG design page: https://live.gnome.org/gtg/Design
+ [4] Izidor Matusov's GSoC (collaborative GTG): https://live.gnome.org/SummerOfCode2012/Projects/IzidorMatusov_CollaborativeGTG
+ [5] Steve Scheel's GSoC (improved task editor): https://live.gnome.org/SummerOfCode2012/Projects/SteveScheel_GTGTaskEditor
+ [6] Baptiste Saleil's GSoC (GNOME shell integration): https://live.gnome.org/SummerOfCode2012/Projects/BaptisteSaleil_GTG_GNOME_Shell
+ [7] The project's blog: http://gtg.fritalk.com/
+ [8] The project's page on launchpad: https://launchpad.net/gtg
+ [9] The project's page on the GNOME wiki: https://live.gnome.org/gtg/
