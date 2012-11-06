@@ -17,13 +17,13 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-import gtk
+from gi.repository import Gtk
 
 from GTG.backends.genericbackend import GenericBackend
 
 
 
-class ImportTagsUI(gtk.VBox):
+class ImportTagsUI(Gtk.VBox):
     '''
     It's a widget displaying a couple of radio buttons, a label and a textbox
     to let the user change the attached tags (or imported)
@@ -61,25 +61,25 @@ class ImportTagsUI(gtk.VBox):
 
         @param width: the length of the radio buttons
         '''
-        title_label = gtk.Label()
+        title_label = Gtk.Label()
         title_label.set_alignment(xalign = 0, yalign = 0)
         title_label.set_markup("<big><b>%s</b></big>" % self.title)
         self.pack_start(title_label, True)
-        align = gtk.Alignment(xalign = 0, yalign = 0, xscale = 1)
+        align = Gtk.Alignment.new(xalign = 0, yalign = 0, xscale = 1)
         align.set_padding(0, 0, 10, 0)
         self.pack_start(align, True)
-        vbox = gtk.VBox()
+        vbox = Gtk.VBox()
         align.add(vbox)
-        self.all_tags_radio = gtk.RadioButton(group = None, \
+        self.all_tags_radio = Gtk.RadioButton(group = None, \
                                               label = self.anybox_text)
         vbox.pack_start(self.all_tags_radio, True)
-        self.some_tags_radio = gtk.RadioButton(group = self.all_tags_radio,
+        self.some_tags_radio = Gtk.RadioButton(group = self.all_tags_radio,
                                                label = self.somebox_text)
         self.some_tags_radio.set_size_request(width = width, height = -1)
-        hbox = gtk.HBox()
+        hbox = Gtk.HBox()
         vbox.pack_start(hbox, True)
         hbox.pack_start(self.some_tags_radio, False)
-        self.tags_entry = gtk.Entry()
+        self.tags_entry = Gtk.Entry()
         hbox.pack_start(self.tags_entry, True)
 
     def on_changed(self, radio, data = None):

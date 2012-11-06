@@ -23,10 +23,8 @@ simple_color_selector: a module defining a widget allowing to pick a color
 from a palette. The widget also allows to define and add new colors.
 """
 
-import pygtk
-pygtk.require('2.0')
-import gobject
-import gtk
+from gi.repository import GObject, Gtk, Gdk
+
 import math
 
 from GTG import _
@@ -43,15 +41,15 @@ DEFAULT_PALETTE = [
 BUTTON_WIDTH  = 36
 BUTTON_HEIGHT = 24
 
-class SimpleColorSelectorPaletteItem(gtk.DrawingArea): # pylint: disable-msg=R0904,C0301
+class SimpleColorSelectorPaletteItem(Gtk.DrawingArea): # pylint: disable-msg=R0904,C0301
     """An item of the color selecctor palette"""
 
     def __init__(self, color=None):
-        gtk.DrawingArea.__init__(self)
+        GObject.GObject.__init__(self)
         self.__gobject_init__()
         self.color = color
         self.selected = False
-        self.add_events(gtk.gdk.BUTTON_PRESS_MASK)
+        self.add_events(Gdk.EventMask.BUTTON_PRESS_MASK)
         # Connect callbacks
         self.connect("expose_event", self.on_expose)
         self.connect("configure_event", self.on_configure)
@@ -62,11 +60,11 @@ class SimpleColorSelectorPaletteItem(gtk.DrawingArea): # pylint: disable-msg=R09
         alloc_w, alloc_h = alloc[2], alloc[3]
         # Drawing context
         cr_ctxt    = self.window.cairo_create() # pylint: disable-msg=E1101
-        gdkcontext = gtk.gdk.CairoContext(cr_ctxt)
+        gdkcontext = Gdk.CairoContext(cr_ctxt)
 
         # Draw rectangle
         if self.color is not None:
-            my_color = gtk.gdk.color_parse(self.color)
+            my_color = Gdk.color_parse(self.color)
             gdkcontext.set_source_color(my_color)
         else:
             gdkcontext.set_source_rgba(0, 0, 0, 0)
@@ -124,12 +122,12 @@ class SimpleColorSelectorPaletteItem(gtk.DrawingArea): # pylint: disable-msg=R09
         return self.selected
 
 
-class SimpleColorSelector(gtk.VBox): # pylint: disable-msg=R0904,C0301
+class SimpleColorSelector(Gtk.VBox): # pylint: disable-msg=R0904,C0301
     """Widget displaying a palette of colors, possibly with a button allowing to
     define new colors."""
 
     def __init__(self, width=9, colors=None, custom_colors=None):
-        gtk.VBox.__init__(self)
+        GObject.GObject.__init__(self)
         self.__gobject_init__()
         self.width = width
         # widget model
@@ -168,16 +166,16 @@ class SimpleColorSelector(gtk.VBox): # pylint: disable-msg=R0904,C0301
         """Draws the palette of colors"""
         self.__reset_palette()
         # (re-)create the palette widget
-        self.palette = gtk.Alignment()
-        self.pack_start(self.palette)
+        self.palette = Gtk.Alignment.new()
+        self.pack_start(self.palette, True, True, 0)
         # Draw the palette
-        vbox = gtk.VBox()
+        vbox = Gtk.VBox()
         self.palette.add(vbox)
         vbox.set_spacing(4)
         for i in xrange(len(self.colors)):
             if i % self.width == 0:
-                cur_hbox = gtk.HBox()
-                vbox.pack_start(cur_hbox)
+                cur_hbox = Gtk.HBox()
+                vbox.pack_start(cur_hbox, True, True, 0)
             # add the color box
             img = SimpleColorSelectorPaletteItem()
             img.set_size_request( \
@@ -207,15 +205,15 @@ class SimpleColorSelector(gtk.VBox): # pylint: disable-msg=R0904,C0301
         """Draws the palette of custom colors"""
         self.__reset_custom_palette()
         # (re-)create the palette widget
-        self.custom_palette = gtk.Alignment(xscale=1.0)
+        self.custom_palette = Gtk.Alignment.new(xscale=1.0)
         self.custom_palette.set_padding(10, 0, 0, 0)
-        self.pack_start(self.custom_palette)
+        self.pack_start(self.custom_palette, True, True, 0)
         # Draw the previous color palette: only one line
-        cc_vbox = gtk.VBox()
+        cc_vbox = Gtk.VBox()
         self.custom_palette.add(cc_vbox)
         cc_vbox.set_spacing(4)
-        cc_hbox = gtk.HBox()
-        cc_vbox.pack_start(cc_hbox)
+        cc_hbox = Gtk.HBox()
+        cc_vbox.pack_start(cc_hbox, True, True, 0)
         for i in xrange(len(self.custom_colors)):
             # add the color box
             img = SimpleColorSelectorPaletteItem()
@@ -229,9 +227,9 @@ class SimpleColorSelector(gtk.VBox): # pylint: disable-msg=R0904,C0301
             cc_hbox.set_spacing(4)
             self.cc_buttons.append(img)
         # Draw the add button
-        img = gtk.Image()
-        img.set_from_stock(gtk.STOCK_ADD, gtk.ICON_SIZE_BUTTON)
-        self.add_button = gtk.Button()
+        img = Gtk.Image()
+        img.set_from_stock(Gtk.STOCK_ADD, Gtk.IconSize.BUTTON)
+        self.add_button = Gtk.Button()
         self.add_button.set_image(img)
         self.add_button.set_label(_("Add custom color"))
         cc_vbox.pack_start(self.add_button, expand=True, fill=True)
@@ -261,16 +259,16 @@ class SimpleColorSelector(gtk.VBox): # pylint: disable-msg=R0904,C0301
     def on_color_add(self, widget): # pylint: disable-msg=W0613
         """Callback: when adding a new color, show the color definition
         window, update the model, notifies the parent."""
-        color_dialog = gtk.ColorSelectionDialog(_('Choose a color'))
+        color_dialog = Gtk.ColorSelectionDialog(_('Choose a color'))
         colorsel = color_dialog.colorsel
         if self.selected_col is not None:
-            color = gtk.gdk.color_parse(self.selected_col.color)
+            color = Gdk.color_parse(self.selected_col.color)
             colorsel.set_current_color(color) # pylint: disable-msg=E1101
         response = color_dialog.run()
         new_color = colorsel.get_current_color() # pylint: disable-msg=E1101
         # Check response_id and set color if required
-        if response == gtk.RESPONSE_OK and new_color:
-            strcolor = gtk.color_selection_palette_to_string([new_color])
+        if response == Gtk.ResponseType.OK and new_color:
+            strcolor = Gtk.color_selection_palette_to_string([new_color])
             # Add the color to the palette and notify
             if strcolor not in self.colors:
                 self.add_custom_color(strcolor)
@@ -330,9 +328,8 @@ class SimpleColorSelector(gtk.VBox): # pylint: disable-msg=R0904,C0301
             self.selected_col.set_selected(False)
             self.selected_col = None
 
-
-gobject.type_register(SimpleColorSelector)
-gobject.signal_new("color-changed", SimpleColorSelector,
-                   gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, ())
-gobject.signal_new("color-added", SimpleColorSelector,
-                   gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, ())
+GObject.type_register(SimpleColorSelector)
+GObject.signal_new("color-changed", SimpleColorSelector,
+                   GObject.SignalFlags.RUN_FIRST, None, ())
+GObject.signal_new("color-added", SimpleColorSelector,
+                   GObject.SignalFlags.RUN_FIRST, None, ())

@@ -14,7 +14,7 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import gobject
+from gi.repository import GObject
 import threading
 from urlparse import urlparse
 
@@ -35,7 +35,7 @@ class pluginBugzilla:
     def task_added_cb(self, sender, task_id):
         #this is a gobject callback that will block the Browser.
         #decoupling with a thread. All interaction with task and tags objects
-        #(anything in a Tree) must be done with gobject.idle_add (invernizzi)
+        #(anything in a Tree) must be done with GObject.idle_add (invernizzi)
         thread = threading.Thread(target = self.__analyze_task,
                                   args = (task_id, ))
         thread.setDaemon(True)
@@ -70,14 +70,14 @@ class pluginBugzilla:
             # can't find the title of the bug
             return
 
-        gobject.idle_add(task.set_title, '#%s: %s' % (nb, title))
+        GObject.idle_add(task.set_title, '#%s: %s' % (nb, title))
 
         text = "%s\n\n%s" % (url, bug.get_description())
-        gobject.idle_add(task.set_text, text)
+        GObject.idle_add(task.set_text, text)
 
         tag = server.get_tag(bug)
         if tag is not None:
-            gobject.idle_add(task.add_tag, '@%s' % tag)
+            GObject.idle_add(task.add_tag, '@%s' % tag)
 
     def deactivate(self, plugin_api):
         plugin_api.get_ui().disconnect(self.connect_id)

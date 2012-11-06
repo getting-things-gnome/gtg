@@ -15,7 +15,7 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from math import ceil
-import gtk
+from gi.repository import Gtk
 import os
 
 from GTG.tools.dates import Date
@@ -98,7 +98,7 @@ class pluginUrgencyColor:
         pass
 
     def prefs_init(self):
-        self.builder = gtk.Builder()
+        self.builder = Gtk.Builder()
         self.builder.add_from_file(os.path.join(
             os.path.dirname(os.path.abspath(__file__)),
             'preferences.ui'))
@@ -159,16 +159,16 @@ class pluginUrgencyColor:
         self.spinbutton_reddays.set_value(self._pref_data['reddays'])
         # Colorbutton - OVERDUE
         self.colorbutton_overdue.set_color( \
-            gtk.gdk.color_parse(self._pref_data['color_overdue']))
+            Gdk.color_parse(self._pref_data['color_overdue']))
         # Colorbutton - HIGH
         self.colorbutton_high.set_color( \
-            gtk.gdk.color_parse(self._pref_data['color_high']))
+            Gdk.color_parse(self._pref_data['color_high']))
         # Colorbutton - NORMAL
         self.colorbutton_normal.set_color( \
-            gtk.gdk.color_parse(self._pref_data['color_normal']))
+            Gdk.color_parse(self._pref_data['color_normal']))
         # Colorbutton - LOW
         self.colorbutton_low.set_color( \
-            gtk.gdk.color_parse(self._pref_data['color_low']))
+            Gdk.color_parse(self._pref_data['color_low']))
 
     def on_prefs_cancel(self, widget=None, data=None):
         self.prefs_update_widgets()

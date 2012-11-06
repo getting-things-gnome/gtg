@@ -73,7 +73,7 @@ class PreferencesDialog:
     def __init__(self, req):
         self.req = req
         self.config = self.req.get_config('browser')
-        builder = gtk.Builder()
+        builder = Gtk.Builder()
         builder.add_from_file(ViewConfig.PREFERENCES_GLADE_FILE)
 
         self.dialog = builder.get_object("PreferencesDialog")

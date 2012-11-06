@@ -17,7 +17,7 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-import gobject
+from gi.repository import GObject
 
 from GTG.tools.borg import Borg
 
@@ -30,7 +30,7 @@ class BackendSignals(Borg):
     class, and all method of the wrapped class can be used as if they were part
     of this class
     '''
-    
+
     #error codes to send along with the BACKEND_FAILED signal
     ERRNO_AUTHENTICATION = "authentication failed"
     ERRNO_NETWORK = "network is down"
@@ -60,11 +60,11 @@ def signal_type_factory(*args):
 
     @returns: tuple
     '''
-    return (gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, args)
+    return (GObject.SignalFlags.RUN_FIRST, None, args)
 
 
 
-class _BackendSignalsGObject(gobject.GObject):
+class _BackendSignalsGObject(GObject.GObject):
 
     #signal name constants
     BACKEND_STATE_TOGGLED = 'backend-state-toggled' #emitted when a
@@ -106,7 +106,7 @@ class _BackendSignalsGObject(gobject.GObject):
     #class
     
     def _emit_signal(self, signal, backend_id):
-        gobject.idle_add(self.emit, signal, backend_id)
+        GObject.idle_add(self.emit, signal, backend_id)
 
     def backend_state_changed(self, backend_id):
         self._emit_signal(self.BACKEND_STATE_TOGGLED, backend_id)
@@ -121,15 +121,15 @@ class _BackendSignalsGObject(gobject.GObject):
         self._emit_signal(self.BACKEND_REMOVED, backend_id)
 
     def default_backend_loaded(self):
-        gobject.idle_add(self.emit, self.DEFAULT_BACKEND_LOADED)
+        GObject.idle_add(self.emit, self.DEFAULT_BACKEND_LOADED)
 
     def backend_failed(self, backend_id, error_code):
-        gobject.idle_add(self.emit, self.BACKEND_FAILED, backend_id, \
+        GObject.idle_add(self.emit, self.BACKEND_FAILED, backend_id, \
                          error_code)
 
     def interaction_requested(self, backend_id, description, \
                               interaction_type, callback_str):
-        gobject.idle_add(self.emit, self.INTERACTION_REQUESTED, \
+        GObject.idle_add(self.emit, self.INTERACTION_REQUESTED, \
                          backend_id, description, interaction_type, callback_str)
 
     def backend_sync_started(self, backend_id):
@@ -145,4 +145,3 @@ class _BackendSignalsGObject(gobject.GObject):
     
     def is_backend_syncing(self, backend_id):
         return backend_id in self.backends_currently_syncing
-

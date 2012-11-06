@@ -18,7 +18,7 @@
 # -----------------------------------------------------------------------------
 
 import threading
-import gobject
+from gi.repository import GObject
 import time
 
 from GTG.tools.watchdog import Watchdog
@@ -131,8 +131,8 @@ class GobjectSignalsManager(object):
         """
 
         def gobject_main_loop():
-            gobject.threads_init()
-            self.main_loop = gobject.MainLoop()
+            GObject.threads_init()
+            self.main_loop = GObject.MainLoop()
             self.main_loop.run()
 
         threading.Thread(target = gobject_main_loop).start()

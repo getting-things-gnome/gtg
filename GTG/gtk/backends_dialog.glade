@@ -11,7 +11,7 @@
   <object class="GtkWindow" id="backends_dialog">
     <property name="can_focus">False</property>
     <property name="window_position">mouse</property>
-    <signal name="delete-event" handler="on_BackendsDialog_delete_event" swapped="no"/>
+    <signal name="delete_event" handler="on_BackendsDialog_delete_event"/>
     <child>
       <object class="GtkAlignment" id="alignment1">
         <property name="visible">True</property>

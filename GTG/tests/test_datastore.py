@@ -23,7 +23,7 @@ import unittest
 import uuid
 import time
 from random import randint
-import gobject
+from gi.repository import GObject
 
 import GTG
 from GTG.core.datastore import DataStore
@@ -33,11 +33,11 @@ from liblarch import Tree
 
 
 def sleep_within_loop(duration):
-    main_loop = gobject.MainLoop()
-    gobject.timeout_add(duration*1000, main_loop.quit)
+    main_loop = GObject.MainLoop()
+    GObject.timeout_add(duration*1000, main_loop.quit)
     # NOTE: I am not sure why, but I need add this
     # dumb thing to run _process method of LibLarch
-    gobject.idle_add(lambda: True)
+    GObject.idle_add(lambda: True)
     main_loop.run()
 
 

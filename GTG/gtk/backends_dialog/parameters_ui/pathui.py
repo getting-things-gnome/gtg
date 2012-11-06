@@ -17,7 +17,7 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-import gtk
+from gi.repository import Gtk
 import os.path
 
 from GTG import _
@@ -25,7 +25,7 @@ from GTG import _
 
 
 
-class PathUI(gtk.HBox):
+class PathUI(Gtk.HBox):
     '''Gtk widgets to show a path in a textbox, and a button to bring up a
     filesystem explorer to modify that path (also, a label to describe those)
     '''
@@ -37,7 +37,7 @@ class PathUI(gtk.HBox):
 
         @param req: a Requester
         @param backend: a backend object
-        @param width: the width of the gtk.Label object
+        @param width: the width of the Gtk.Label object
         '''
         super(PathUI, self).__init__()
         self.backend = backend
@@ -45,23 +45,23 @@ class PathUI(gtk.HBox):
         self._populate_gtk(width)
 
     def _populate_gtk(self, width):
-        '''Creates the gtk.Label, the textbox and the button
+        '''Creates the Gtk.Label, the textbox and the button
         
-        @param width: the width of the gtk.Label object
+        @param width: the width of the Gtk.Label object
         '''
-        label = gtk.Label(_("Filename:"))
+        label = Gtk.Label(label=_("Filename:"))
         label.set_line_wrap(True)
         label.set_alignment(xalign = 0, yalign = 0.5)
         label.set_size_request(width = width, height = -1)
         self.pack_start(label, False)
-        align = gtk.Alignment(xalign = 0, yalign = 0.5, xscale = 1)
+        align = Gtk.Alignment.new(xalign = 0, yalign = 0.5, xscale = 1)
         align.set_padding(0, 0, 10, 0)
         self.pack_start(align, True)
-        self.textbox = gtk.Entry()
+        self.textbox = Gtk.Entry()
         self.textbox.set_text(self.backend.get_parameters()['path'])
         self.textbox.connect('changed', self.on_path_modified)
         align.add(self.textbox)
-        self.button = gtk.Button(stock = gtk.STOCK_EDIT)
+        self.button = Gtk.Button(stock = Gtk.STOCK_EDIT)
         self.button.connect('clicked', self.on_button_clicked)
         self.pack_start(self.button, False)
 
@@ -84,29 +84,29 @@ class PathUI(gtk.HBox):
 
         @param sender: not used, only here for signal compatibility
         '''
-        self.chooser = gtk.FileChooserDialog( \
+        self.chooser = Gtk.FileChooserDialog( \
                     title=None,
-                    action=gtk.FILE_CHOOSER_ACTION_SAVE,
-                    buttons=(gtk.STOCK_CANCEL,
-                             gtk.RESPONSE_CANCEL, \
-                             gtk.STOCK_OK, \
-                             gtk.RESPONSE_OK))
-        self.chooser.set_default_response(gtk.RESPONSE_OK)
+                    action=Gtk.FileChooserAction.SAVE,
+                    buttons=(Gtk.STOCK_CANCEL,
+                             Gtk.ResponseType.CANCEL, \
+                             Gtk.STOCK_OK, \
+                             Gtk.ResponseType.OK))
+        self.chooser.set_default_response(Gtk.ResponseType.OK)
         #set default file as the current self.path
         self.chooser.set_current_name(os.path.basename(self.textbox.get_text()))
         self.chooser.set_current_folder(os.path.dirname(self.textbox.get_text()))
         
         #filter files
-        afilter = gtk.FileFilter()
+        afilter = Gtk.FileFilter()
         afilter.set_name("All files")
         afilter.add_pattern("*")
         self.chooser.add_filter(afilter)
-        afilter = gtk.FileFilter()
+        afilter = Gtk.FileFilter()
         afilter.set_name("XML files")
         afilter.add_mime_type("text/plain")
         afilter.add_pattern("*.xml")
         self.chooser.add_filter(afilter)
         response = self.chooser.run()
-        if response == gtk.RESPONSE_OK:
+        if response == Gtk.ResponseType.OK:
             self.textbox.set_text(self.chooser.get_filename())
         self.chooser.destroy()

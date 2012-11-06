@@ -18,15 +18,13 @@
 # -----------------------------------------------------------------------------
 import datetime
 
-import gobject
-import gtk
-from gtk import gdk
+from gi.repository import GObject, Gtk, Gdk
 
 from GTG.tools.dates import Date
 
 
-class GTGCalendar(gobject.GObject):
-    """ Wrapper around gtk.Calendar object """
+class GTGCalendar(GObject.GObject):
+    """ Wrapper around Gtk.Calendar object """
 
     #CONSTANTS
     DATE_KIND_DUE = "due"
@@ -34,15 +32,15 @@ class GTGCalendar(gobject.GObject):
     DATE_KIND_CLOSED = "closed"
 
     #Gobject signal description
-    __signal_type__ = (gobject.SIGNAL_RUN_FIRST,
-                       gobject.TYPE_NONE,
+    __signal_type__ = (GObject.SignalFlags.RUN_FIRST,
+                       None,
                        [])
 
     __gsignals__ = {'date-changed': __signal_type__, }
 
-    def __init__(self, gtk_builder):
+    def __init__(self, Gtk_builder):
         super(GTGCalendar, self).__init__()
-        self.__builder = gtk_builder
+        self.__builder = Gtk_builder
         self.__date_kind = None
         self.__date = Date.no_date()
         self.__init_gtk__()
@@ -96,27 +94,36 @@ class GTGCalendar(gobject.GObject):
         else:
             # If marked day is 31th, and the next month does not have 31th day,
             # unmark_day raises a warning. Clear_marks() is clever way how
-            # to let PyGTK solve it's bussiness.
+            # to let GTK solve it's bussiness.
             self.__calendar.clear_marks()
 
     def show_at_position(self, x, y):
         width, height = self.__window.get_size()
         self.__window.move(x - width, y - height)
         self.__window.show()
+
         ##some window managers ignore move before you show a window. (which
         # ones? question by invernizzi)
         self.__window.move(x - width, y - height)
         self.__window.grab_add()
+
         #We grab the pointer in the calendar
-        gdk.pointer_grab(self.__window.window, True,
-                         gdk.BUTTON1_MASK | gdk.MOD2_MASK)
+        Gdk.pointer_grab(
+            self.__window.window,
+            True,
+            Gdk.ModifierType.BUTTON1_MASK | Gdk.ModifierType.MOD2_MASK
+        )
+
         self.__window.connect('button-press-event', self.__focus_out)
-        self.__sigid = self.__calendar.connect("day-selected",
-                                               self.__day_selected,
-                                              "RealDate")
+        self.__sigid = self.__calendar.connect(
+            "day-selected",
+            self.__day_selected,
+            "RealDate"
+        )
+
         self.__sigid_month = self.__calendar.connect("month-changed",
                                                      self.__month_changed)
-        #Problem: gtk.Calendar does not tell you directly if the "day-selected"
+        #Problem: Gtk.Calendar does not tell you directly if the "day-selected"
         #         signal was caused by the user clicking on a date, or just
         #         browsing the calendar.
         #Solution: we track that in a variable
@@ -132,7 +139,7 @@ class GTGCalendar(gobject.GObject):
 
     def close_calendar(self, widget = None, e = None):
         self.__window.hide()
-        gtk.gdk.pointer_ungrab()
+        Gdk.pointer_ungrab()
         self.__window.grab_remove()
         if self.__sigid is not None:
             self.__calendar.disconnect(self.__sigid)
@@ -156,11 +163,11 @@ class GTGCalendar(gobject.GObject):
         else:
             # inform the Editor that the date has changed
             self.close_calendar()
-            gobject.idle_add(self.emit, "date-changed")
+            GObject.idle_add(self.emit, "date-changed")
 
     def __from_calendar_date_to_datetime(self, calendar_date):
         '''
-        gtk.Calendar uses a 0-based convention for counting months.
+        Gtk.Calendar uses a 0-based convention for counting months.
         The rest of the world, including the datetime module, starts from 1.
         This is a converter between the two. GTG follows the datetime
         convention.

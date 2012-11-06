@@ -17,13 +17,13 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-import gtk
+from gi.repository import Gtk
 
 from GTG.backends import BackendFactory
 
 
 
-class BackendsCombo(gtk.ComboBoxEntry):
+class BackendsCombo(Gtk.ComboBox):
     '''
     A combobox listing all the available backends types
     '''
@@ -41,7 +41,7 @@ class BackendsCombo(gtk.ComboBoxEntry):
         @param backends_dialog: reference to the dialog in which this combo is
                                 loaded.
         '''
-        super(BackendsCombo, self).__init__()
+        BackendsCombo.__init__(self, True)
         self.dialog = backends_dialog
         self._liststore_init()
         self._renderers_init()
@@ -49,18 +49,18 @@ class BackendsCombo(gtk.ComboBoxEntry):
         self.show_all()
 
     def _liststore_init(self):
-        '''Setup the gtk.ListStore'''
-        self.liststore = gtk.ListStore(str, str, gtk.gdk.Pixbuf)
+        '''Setup the Gtk.ListStore'''
+        self.liststore = Gtk.ListStore(str, str, GdkPixbuf.Pixbuf)
         self.set_model(self.liststore)
 
     def _renderers_init(self):
         '''Configure the cell renderers'''
         #Text renderer
-        text_cell = gtk.CellRendererText()
+        text_cell = Gtk.CellRendererText()
         self.pack_start(text_cell, False)
         self.set_text_column(self.COLUMN_HUMAN_NAME)
         #Icon renderer
-        pixbuf_cell = gtk.CellRendererPixbuf()
+        pixbuf_cell = Gtk.CellRendererPixbuf()
         self.pack_start(pixbuf_cell, False)
         self.add_attribute(pixbuf_cell, "pixbuf", self.COLUMN_ICON)
 

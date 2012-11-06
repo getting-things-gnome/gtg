@@ -15,17 +15,17 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-#TODO: put this in a class extending gtk.Combobox and place the file in
+#TODO: put this in a class extending Gtk.Combobox and place the file in
 #      GTG.tools
 
-import gtk
-import gobject
+from gi.repository import Gtk
+from gi.repository import GObject
 
 
 def ifKeyPressedCallback(widget, key, callback):
 
     def keyPress(combobox, event):
-        keyname = gtk.gdk.keyval_name(event.keyval)
+        keyname = Gdk.keyval_name(event.keyval)
         if keyname == key:
             callback()
     widget.connect("key-press-event", keyPress)
@@ -40,7 +40,7 @@ def ifClipboardTextIsInListCallback(clipboard_obj, list_obj, callback):
 
 
 def listStoreFromList(list_obj):
-    list_store = gtk.ListStore(gobject.TYPE_STRING)
+    list_store = Gtk.ListStore(GObject.TYPE_STRING)
     for elem in list_obj:
         iter = list_store.append()
         list_store.set(iter, 0, elem)
@@ -48,7 +48,7 @@ def listStoreFromList(list_obj):
 
 
 def completionFromListStore(list_store):
-    completion = gtk.EntryCompletion()
+    completion = Gtk.EntryCompletion()
     completion.set_minimum_key_length(0)
     completion.set_text_column(0)
     completion.set_inline_completion(True)
@@ -57,9 +57,9 @@ def completionFromListStore(list_store):
 
 
 def smartifyComboboxEntry(combobox, list_obj, callback):
-    entry = gtk.Entry()
+    entry = Gtk.Entry()
     #check if Clipboard contains an element of the list
-    clipboard = gtk.Clipboard()
+    clipboard = Gtk.Clipboard()
     ifClipboardTextIsInListCallback(clipboard, list_obj, entry.set_text)
     #pressing Enter will cause the callback
     ifKeyPressedCallback(entry, "Return", callback)
@@ -76,7 +76,7 @@ def smartifyComboboxEntry(combobox, list_obj, callback):
     combobox.add(entry)
     combobox.connect('changed', setText, entry)
     #render the combo-box drop down menu
-    cell = gtk.CellRendererText()
+    cell = Gtk.CellRendererText()
     combobox.pack_start(cell, True)
     combobox.add_attribute(cell, 'text', 0)
     return entry

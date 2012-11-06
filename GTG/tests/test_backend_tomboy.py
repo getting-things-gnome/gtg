@@ -25,7 +25,7 @@ import dbus
 import dbus.glib
 import dbus.service
 import errno
-import gobject
+from gi.repository import GObject
 import math
 import os
 import random
@@ -374,9 +374,9 @@ class FakeTomboy(dbus.service.Object):
         self.notes[note]['changed'] = time.mktime(datetime.now().timetuple())
 
     def fake_main_loop(self):
-        gobject.threads_init()
+        GObject.threads_init()
         dbus.glib.init_threads()
-        self.main_loop = gobject.MainLoop()
+        self.main_loop = GObject.MainLoop()
         self.main_loop.run()
 
     @dbus.service.method(BUS_INTERFACE)
