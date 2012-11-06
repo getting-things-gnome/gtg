@@ -24,8 +24,8 @@ import webbrowser
 import subprocess
 
 from xdg.BaseDirectory import xdg_config_home
-import gobject
-import gtk
+from gi.repository import GObject
+from gi.repository import Gtk
 
 from GTG import _
 from GTG.plugins.export.task_str import get_task_wrappers
@@ -181,24 +181,24 @@ class PluginExport:
         self.menu_entry = False
         self.toolbar_entry = False
 
-        self.menu_item = gtk.MenuItem(_("Export the tasks currently listed"))
+        self.menu_item = Gtk.MenuItem(_("Export the tasks currently listed"))
         self.menu_item.connect('activate', self.show_dialog)
         self.menu_item.show()
 
-        self.tb_button = gtk.ToolButton(gtk.STOCK_PRINT)
+        self.tb_button = Gtk.ToolButton(Gtk.STOCK_PRINT)
         self.tb_button.connect('clicked', self.show_dialog)
         self.tb_button.show()
 
-        builder = gtk.Builder()
+        builder = Gtk.Builder()
         cur_dir = os.path.dirname(os.path.abspath(__file__))
         builder_file = os.path.join(cur_dir, "export.ui")
         builder.add_from_file(builder_file)
 
         self.combo = builder.get_object("export_combo_templ")
-        templates_list = gtk.ListStore(gobject.TYPE_STRING,
-            gobject.TYPE_STRING, gobject.TYPE_STRING, gobject.TYPE_STRING)
+        templates_list = Gtk.ListStore(GObject.TYPE_STRING,
+            GObject.TYPE_STRING, GObject.TYPE_STRING, GObject.TYPE_STRING)
         self.combo.set_model(templates_list)
-        cell = gtk.CellRendererText()
+        cell = Gtk.CellRendererText()
         self.combo.pack_start(cell, True)
         self.combo.add_attribute(cell, 'text', 1)
 
@@ -292,10 +292,10 @@ class PluginExport:
         description, image = model[active][2], model[active][3]
 
         if image:
-            pixbuf = gtk.gdk.pixbuf_new_from_file(image)
+            pixbuf = GdkPixbuf.Pixbuf.new_from_file(image)
             width, height = self.export_image.get_size_request()
             pixbuf = pixbuf.scale_simple(width, height,
-                                        gtk.gdk.INTERP_BILINEAR)
+                                        GdkPixbuf.InterpType.BILINEAR)
             self.export_image.set_from_pixbuf(pixbuf)
         else:
             self.export_image.clear()
@@ -307,30 +307,30 @@ class PluginExport:
 
     def show_error_dialog(self, message):
         """ Display an error """
-        dialog = gtk.MessageDialog(
+        dialog = Gtk.MessageDialog(
             parent = self.export_dialog,
-            flags = gtk.DIALOG_DESTROY_WITH_PARENT,
-            type = gtk.MESSAGE_ERROR,
-            buttons = gtk.BUTTONS_OK,
+            flags = Gtk.DialogFlags.DESTROY_WITH_PARENT,
+            type = Gtk.MessageType.ERROR,
+            buttons = Gtk.ButtonsType.OK,
             message_format = message)
         dialog.run()
         dialog.destroy()
 
     def choose_file(self):
         """ Let user choose a file to save and return its path """
-        chooser = gtk.FileChooserDialog(
+        chooser = Gtk.FileChooserDialog(
                 title = _("Choose where to save your list"),
                 parent = self.export_dialog,
-                action = gtk.FILE_CHOOSER_ACTION_SAVE,
-                buttons = (gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
-                           gtk.STOCK_SAVE, gtk.RESPONSE_OK))
+                action = Gtk.FileChooserAction.SAVE,
+                buttons = (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
+                           Gtk.STOCK_SAVE, Gtk.ResponseType.OK))
         chooser.set_do_overwrite_confirmation(True)
-        chooser.set_default_response(gtk.RESPONSE_OK)
+        chooser.set_default_response(Gtk.ResponseType.OK)
         chooser.set_current_folder(get_desktop_dir())
         response = chooser.run()
         filename = chooser.get_filename()
         chooser.destroy()
-        if response == gtk.RESPONSE_OK:
+        if response == Gtk.ResponseType.OK:
             return filename
         else:
             return None

@@ -21,13 +21,13 @@
 A nice general purpose interface for the datastore and tagstore
 """
 
-import gobject
+from gi.repository import GObject
 
 from GTG.core.tag          import Tag
 from GTG.tools.logger      import Log
 
 
-class Requester(gobject.GObject):
+class Requester(GObject.GObject):
     """ A view on a GTG datastore.
 
     L{Requester} is a stateless object that simply provides a nice API for
@@ -39,7 +39,7 @@ class Requester(gobject.GObject):
 
     def __init__(self, datastore, global_conf):
         """Construct a L{Requester}."""
-        gobject.GObject.__init__(self)
+        GObject.GObject.__init__(self)
         self.ds = datastore
         self.__config = global_conf
         self.__basetree = self.ds.get_tasks_tree()

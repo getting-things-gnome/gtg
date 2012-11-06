@@ -17,14 +17,14 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-import gtk
+from gi.repository import Gtk
 
 from GTG.gtk.backends_dialog.backendscombo import BackendsCombo
 from GTG.backends                          import BackendFactory
 from GTG                                   import _, ngettext
 
 
-class AddPanel(gtk.VBox):
+class AddPanel(Gtk.VBox):
     ''' 
     A VBox filled with gtk widgets to let the user choose a new backend.
     '''
@@ -47,10 +47,10 @@ class AddPanel(gtk.VBox):
         '''
         #Division of the available space in three segments:
         # top, middle and bottom.
-        top = gtk.HBox()
+        top = Gtk.HBox()
         top.set_spacing(6)
-        middle = gtk.HBox()
-        bottom = gtk.HBox()
+        middle = Gtk.HBox()
+        bottom = Gtk.HBox()
         self._fill_top_hbox(top)
         self._fill_middle_hbox(middle)
         self._fill_bottom_hbox(bottom)
@@ -62,49 +62,49 @@ class AddPanel(gtk.VBox):
     def _fill_top_hbox(self, hbox):
         '''
         Helper function to fill and hbox with a combobox that lists the
-        available backends and a gtk.Label.
+        available backends and a Gtk.Label.
 
-        @param hbox: the gtk.HBox to fill
+        @param hbox: the Gtk.HBox to fill
         '''
-        label = gtk.Label(_("Select synchronization service:"))
+        label = Gtk.Label(label=_("Select synchronization service:"))
         label.set_alignment(0, 0.5)
         self.combo_types = BackendsCombo(self.dialog)
-        self.combo_types.child.connect('changed', self.on_combo_changed)
+        self.combo_types.get_child().connect('changed', self.on_combo_changed)
         hbox.pack_start(label, False, True)
         hbox.pack_start(self.combo_types, False, True)
 
     def _fill_middle_hbox(self, hbox):
         '''
         Helper function to fill an hbox with a label describing the backend
-        and a gtk.Image (that loads the backend image)
+        and a Gtk.Image (that loads the backend image)
 
-        @param hbox: the gtk.HBox to fill
+        @param hbox: the Gtk.HBox to fill
         '''
-        self.label_name = gtk.Label("name")
+        self.label_name = Gtk.Label(label="name")
         self.label_name.set_alignment(xalign = 0.5, yalign = 1)
-        self.label_description = gtk.Label()
-        self.label_description.set_justify(gtk.JUSTIFY_FILL)
+        self.label_description = Gtk.Label()
+        self.label_description.set_justify(Gtk.Justification.FILL)
         self.label_description.set_line_wrap(True)
         self.label_description.set_size_request(300, -1)
         self.label_description.set_alignment(xalign = 0, yalign = 0.5)
-        self.label_author = gtk.Label("")
+        self.label_author = Gtk.Label(label="")
         self.label_author.set_line_wrap(True)
         self.label_author.set_alignment(xalign = 0, yalign = 0)
-        self.label_modules = gtk.Label("")
+        self.label_modules = Gtk.Label(label="")
         self.label_modules.set_line_wrap(True)
         self.label_modules.set_alignment(xalign = 0, yalign = 0)
-        self.image_icon = gtk.Image()
+        self.image_icon = Gtk.Image()
         self.image_icon.set_size_request(100, 100)
-        align_image = gtk.Alignment(xalign = 1, yalign = 0)
+        align_image = Gtk.Alignment.new(xalign = 1, yalign = 0)
         align_image.add(self.image_icon)
-        labels_vbox = gtk.VBox()
+        labels_vbox = Gtk.VBox()
         labels_vbox.pack_start(self.label_description, True, True)
         labels_vbox.pack_start(self.label_author, True, True)
         labels_vbox.pack_start(self.label_modules, True, True)
-        low_hbox = gtk.HBox()
+        low_hbox = Gtk.HBox()
         low_hbox.pack_start(labels_vbox, True, True)
         low_hbox.pack_start(align_image, True, True)
-        vbox = gtk.VBox()
+        vbox = Gtk.VBox()
         vbox.pack_start(self.label_name, True, True)
         vbox.pack_start(low_hbox, True, True)
         hbox.pack_start(vbox, True, True)
@@ -114,18 +114,18 @@ class AddPanel(gtk.VBox):
         Helper function to fill and hbox with a buttonbox, featuring 
         and ok and cancel buttons.
 
-        @param hbox: the gtk.HBox to fill
+        @param hbox: the Gtk.HBox to fill
         '''
-        cancel_button = gtk.Button(stock = gtk.STOCK_CANCEL)
+        cancel_button = Gtk.Button(stock = Gtk.STOCK_CANCEL)
         cancel_button.connect('clicked', self.on_cancel)
-        self.ok_button = gtk.Button(stock = gtk.STOCK_OK)
+        self.ok_button = Gtk.Button(stock = Gtk.STOCK_OK)
         self.ok_button.connect('clicked', self.on_confirm)
-        align =gtk.Alignment(xalign = 0.5, \
+        align =Gtk.Alignment.new(xalign = 0.5, \
                              yalign = 1, \
                              xscale = 1)
         align.set_padding(0, 10, 0, 0)
-        buttonbox = gtk.HButtonBox()
-        buttonbox.set_layout(gtk.BUTTONBOX_EDGE)
+        buttonbox = Gtk.HButtonBox()
+        buttonbox.set_layout(Gtk.ButtonBoxStyle.EDGE)
         buttonbox.add(cancel_button)
         buttonbox.set_child_secondary(cancel_button, False)
         buttonbox.add(self.ok_button)

@@ -102,7 +102,7 @@ class PluginAPI:
         """Adds a menu entry to the Plugin Menu of the Main Window
         (task browser).
 
-        @param item: The gtk.MenuItem that is going to be added.
+        @param item: The Gtk.MenuItem that is going to be added.
         """
         widget = self.__builder.get_object('plugin_mi')
         widget.get_submenu().append(item)
@@ -112,7 +112,7 @@ class PluginAPI:
         """Removes a menu entry from the Plugin Menu of the Main Window
         (task browser).
 
-        @param item: The gtk.MenuItem that is going to be removed.
+        @param item: The Gtk.MenuItem that is going to be removed.
         @return: Returns C{True} if the operation has sucess or c{False} if it
         fails.
         """
@@ -129,7 +129,7 @@ class PluginAPI:
         """Adds a button to the task browser's toolbar or the task editor
         toolbar, depending on which plugin api it's being used.
 
-        @param widget: The gtk.ToolButton that is going to be added to the
+        @param widget: The Gtk.ToolButton that is going to be added to the
         toolbar.
         """
         #-1 means "append to the end"
@@ -147,11 +147,11 @@ class PluginAPI:
     def add_widget_to_taskeditor(self, widget):
         """Adds a widget to the bottom of the task editor dialog
 
-        @param widget: The gtk.Widget that is going to be added.
+        @param widget: The Gtk.Widget that is going to be added.
         """
         vbox = self.__builder.get_object('vbox4')
         if vbox:
-            vbox.pack_start(widget)
+            vbox.pack_start(widget, True, True, 0)
             vbox.reorder_child(widget, -2)
             widget.show_all()
             self.taskwidget_id += 1
@@ -163,7 +163,7 @@ class PluginAPI:
     def remove_widget_from_taskeditor(self, widg_id):
         """Remove a widget from the bottom of the task editor dialog
 
-        @param widget: The gtk.Widget that is going to be removed
+        @param widget: The Gtk.Widget that is going to be removed
         """
         if self.is_editor() and widg_id:
             try:

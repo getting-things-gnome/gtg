@@ -16,13 +16,14 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-import gtk
+
+from gi.repository import Gdk
 
 #Take list of Tags and give the background color that should be applied
 #The returned color might be None (in which case, the default is used)
 def background_color(tags, bgcolor = None):
     if not bgcolor:
-        bgcolor = gtk.gdk.color_parse("#FFFFFF")
+        bgcolor = Gdk.color_parse("#FFFFFF")
     # Compute color
     my_color = None
     color_count = 0.0
@@ -32,7 +33,7 @@ def background_color(tags, bgcolor = None):
     for my_tag in tags:
         my_color_str = my_tag.get_attribute("color")
         if my_color_str :
-            my_color = gtk.gdk.color_parse(my_color_str)
+            my_color = Gdk.color_parse(my_color_str)
             color_count = color_count + 1
             red   = red   + my_color.red
             green = green + my_color.green
@@ -49,7 +50,7 @@ def background_color(tags, bgcolor = None):
         green = int(green*alpha + bgcolor.green*(1-alpha))
         blue = int(blue*alpha + bgcolor.blue*(1-alpha))
         
-        my_color = gtk.gdk.Color(red, green, blue).to_string()
+        my_color = Gdk.Color(red, green, blue).to_string()
     return my_color
 
 def get_colored_tag_markup(req, tag_name, html = False):
@@ -83,3 +84,5 @@ def get_colored_tags_markup(req, tag_names):
         #reduce crashes if applied to an empty list
         tags_txt = reduce(lambda a, b: a + ", " + b, tag_markups)
     return tags_txt
+
+# -----------------------------------------------------------------------------

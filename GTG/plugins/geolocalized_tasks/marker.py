@@ -14,7 +14,7 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import clutter
+from gi.repository import Clutter
 import champlain
 
 
@@ -23,11 +23,11 @@ class MarkerLayer(champlain.Layer):
     def __init__(self):
         champlain.Layer.__init__(self)
         # a marker can also be set in RGB with ints
-        self.gray = clutter.Color(51, 51, 51)
+        self.gray = Clutter.Color(51, 51, 51)
 
         #RGBA
-        self.white = clutter.Color(0xff, 0xff, 0xff, 0xff)
-        self.black = clutter.Color(0x00, 0x00, 0x00, 0xff)
+        self.white = Clutter.Color(0xff, 0xff, 0xff, 0xff)
+        self.black = Clutter.Color(0x00, 0x00, 0x00, 0xff)
 
         self.hide()
 

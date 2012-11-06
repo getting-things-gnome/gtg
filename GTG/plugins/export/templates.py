@@ -26,7 +26,7 @@ import threading
 
 from Cheetah.Template  import Template as CheetahTemplate
 from xdg.BaseDirectory import xdg_config_home
-import gobject
+from gi.repository import GObject
 
 TEMPLATE_PATHS = [
  os.path.join(xdg_config_home, "gtg/plugins/export/export_templates"),
@@ -166,7 +166,7 @@ class Template:
         def wait_for_document():
             """ Wait for the completion of the script and finish generation """
             document_ready.wait()
-            gobject.idle_add(callback)
+            GObject.idle_add(callback)
 
         threading.Thread(target = script).start()
         threading.Thread(target = wait_for_document).start()

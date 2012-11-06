@@ -26,7 +26,7 @@ This window is divided in two:
     panel (these are called also "views" in this class)
 '''
 
-import gtk
+from gi.repository import Gtk, GdkPixbuf
 
 from webbrowser import open as openurl
 
@@ -51,6 +51,7 @@ class BackendsDialog(object):
         - the backend adding view
     '''
 
+
     def __init__(self, req):
         '''
         Initializes the gtk objects and signals.
@@ -69,7 +70,7 @@ class BackendsDialog(object):
         self.config_panel = None
         self.add_panel = None
         # Load from Glade
-        builder = gtk.Builder()
+        builder = Gtk.Builder()
         self._load_widgets_from_glade(builder)
         # Load and setup other widgets
         self.dialog.set_title(_("Synchronization Services - %s" % info.NAME))
@@ -121,17 +122,17 @@ class BackendsDialog(object):
         @param height: the height of the returned pixbuf
         @param width:  the width of the returned pixbuf
 
-        @returns gtk.gdk.Pixbuf: a pixbuf containing the wanted icon, or None
+        @returns GdkPixbuf: a pixbuf containing the wanted icon, or None
         (if the icon is not present)
         '''
         #NOTE: loading icons directly from the theme and scaling them results
         #      in blurry icons. So, instead of doing that, I'm loading them
         #      directly from file. 
-        icon_info = self.icon_theme.lookup_icon(name, gtk.ICON_SIZE_MENU, 0)
+        icon_info = self.icon_theme.lookup_icon(name, Gtk.IconSize.MENU, 0)
         if icon_info == None:
             return None
-        pixbuf = gtk.gdk.pixbuf_new_from_file(icon_info.get_filename())
-        return pixbuf.scale_simple(width, height, gtk.gdk.INTERP_BILINEAR)
+        pixbuf =  GdkPixbuf.Pixbuf.new_from_file(icon_info.get_filename())
+        return pixbuf.scale_simple(width, height, GdkPixbuf.InterpType.BILINEAR)
 
     def _show_panel(self, panel_name):
         '''
@@ -152,7 +153,7 @@ class BackendsDialog(object):
             Log.error("panel name unknown")
             return
         ##Central pane
-        #NOTE: self.central_pane is the gtk.Container in which we load panels
+        #NOTE: self.central_pane is the Gtk.Container in which we load panels
         if panel_to_remove in self.central_pane:
             self.central_pane.remove(panel_to_remove)
         if not panel_to_add in self.central_pane:
@@ -177,7 +178,7 @@ class BackendsDialog(object):
         '''
         Loads widgets from the glade file
 
-        @param builder: a gtk.Builder
+        @param builder: a Gtk.Builder
         '''
         builder.add_from_file(ViewConfig.BACKENDS_GLADE_FILE)
         widgets = {
@@ -194,7 +195,7 @@ class BackendsDialog(object):
         '''
         Creates some GTK signals connections
 
-        @param builder: a gtk.Builder
+        @param builder: a Gtk.Builder
         '''
         signals = {
          'on_add_button_clicked': self.on_add_button,
@@ -210,7 +211,7 @@ class BackendsDialog(object):
         Inform gtk on the location of the backends icons (which is in
         the GTG directory tree, and not in the default location for icons
         '''
-        self.icon_theme = gtk.icon_theme_get_default()
+        self.icon_theme = Gtk.IconTheme.get_default()
         for directory in CoreConfig().get_icons_directories():
             self.icon_theme.prepend_search_path(directory)
 
@@ -293,18 +294,18 @@ class BackendsDialog(object):
             #no backend selected
             return
         backend = self.req.get_backend(backend_id)
-        dialog = gtk.MessageDialog( \
+        dialog = Gtk.MessageDialog( \
                     parent = self.dialog,
-                    flags = gtk.DIALOG_DESTROY_WITH_PARENT,
-                    type = gtk.MESSAGE_QUESTION,
-                    buttons = gtk.BUTTONS_YES_NO,
+                    flags = Gtk.DialogFlags.DESTROY_WITH_PARENT,
+                    type = Gtk.MessageType.QUESTION,
+                    buttons = Gtk.ButtonsType.YES_NO,
                     message_format = \
                      _("Do you really want to remove the '%s' "
                        "synchronization service?") % \
                             backend.get_human_name())
         response = dialog.run() 
         dialog.destroy()
-        if response == gtk.RESPONSE_YES:
+        if response == Gtk.ResponseType.YES:
             #delete the backend and remove it from the lateral treeview
             self.req.remove_backend(backend_id)
             self.backends_tv.remove_backend(backend_id)

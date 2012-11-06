@@ -27,18 +27,18 @@ Also, it is supposed to handle more complex menus (with non-std widgets,
 like a color picker)
 """
 
-import pygtk
-pygtk.require('2.0')
-import gtk
+from gi.repository import Gtk
 
 from GTG import _
 
-class TagContextMenu(gtk.Menu): # pylint: disable-msg=R0904
-    """Context menu fo the tag i the sidebar"""
+class TagContextMenu(Gtk.Menu): # pylint: disable-msg=R0904
+    """
+    Context menu fo the tag i the sidebar
+    """
 
     def __init__(self, req, vmanager, tag=None):
         self.__gobject_init__()
-        gtk.Menu.__init__(self)
+        GObject.GObject.__init__(self)
         self.req = req
         self.vmanager = vmanager
         self.tag = tag
@@ -54,12 +54,12 @@ class TagContextMenu(gtk.Menu): # pylint: disable-msg=R0904
             i.destroy()
         if self.tag is not None:
             # Color chooser FIXME: SHOULD BECOME A COLOR PICKER
-            self.mi_cc = gtk.MenuItem()
+            self.mi_cc = Gtk.MenuItem()
             self.mi_cc.set_label(_("Edit Tag..."))
             self.append(self.mi_cc)
             self.mi_cc.connect('activate', self.on_mi_cc_activate)
             if self.tag.is_search_tag():
-                self.mi_del = gtk.MenuItem()
+                self.mi_del = Gtk.MenuItem()
                 self.mi_del.set_label(_("Delete"))
                 self.append(self.mi_del)
                 self.mi_del.connect('activate', self.on_mi_del_activate)

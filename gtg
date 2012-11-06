@@ -23,7 +23,7 @@
 import sys
 
 from optparse import OptionParser
-from gtk.gdk import Screen
+from gi.repository.Gdk import Screen
 
 from GTG import info
 from GTG.tools.import_liblarch import import_liblarch
@@ -34,8 +34,8 @@ def x_is_running():
     try:
         if Screen().get_display():
             return True
-    except RuntimeError:
-        pass
+    except RuntimeError, exc:
+        print(exc)
     return False
 
 
@@ -79,6 +79,7 @@ def main():
     elif import_liblarch(options.local_liblarch):
         from GTG import gtg
         sys.exit(gtg.main(options, args))
+
 
 if __name__ == "__main__":
     try:

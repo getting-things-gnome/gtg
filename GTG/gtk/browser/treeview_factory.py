@@ -16,9 +16,9 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-import gtk
-import gobject
-import pango
+
+from gi.repository import GObject, Gtk, Pango
+
 import xml.sax.saxutils as saxutils
 import locale
 
@@ -37,7 +37,7 @@ class TreeviewFactory():
         self.req = requester
         self.mainview = self.req.get_tasks_tree()
         self.config = config
-        
+
         #Initial unactive color
         #This is a crude hack. As we don't have a reference to the 
         #treeview to retrieve the style, we save that color when we 
@@ -49,11 +49,11 @@ class TreeviewFactory():
 
         # Cache tags treeview for on_rename_tag callback
         self.tags_view = None
-        
+
     #############################
     #Functions for tasks columns
     ################################
-        
+
     def _has_hidden_subtask(self,task):
         #not recursive
         display_count = self.mainview.node_n_children(task.get_id())
@@ -64,13 +64,13 @@ class TreeviewFactory():
                 if sub_task and sub_task.get_status() == Task.STA_ACTIVE:
                     real_count = real_count + 1
         return display_count < real_count
-    
+
     def task_bg_color(self, node, default_color):
         if self.config.get('bg_color_enable'):
             return colors.background_color(node.get_tags(), default_color)
         else:
             return None
-    
+
     #return an ordered list of tags of a task
     def task_tags_column(self,node):
         tags = node.get_tags()
@@ -84,15 +84,15 @@ class TreeviewFactory():
 
         tags.sort(key = lambda x: x.get_name())
         return tags
-        
+
     #task title
     def task_title_column(self, node):
         return saxutils.escape(node.get_title())
-        
+
     #task title/label
     def task_label_column(self, node):
         str_format = "%s"
-        
+
         if node.get_status() == Task.STA_ACTIVE:
             # we mark in bold tasks which are due today or as Now
             days_left = node.get_days_left()
@@ -120,7 +120,7 @@ class TreeviewFactory():
     #task start date
     def task_sdate_column(self,node):
         return node.get_start_date().to_readable_string()
-        
+
     def task_duedate_column(self,node):
         # We show the most constraining due date for task with no due dates.
         if node.get_due_date() == Date.no_date():
@@ -131,22 +131,22 @@ class TreeviewFactory():
         
     def task_cdate_column(self,node):
         return node.get_closed_date().to_readable_string()
-        
+
     def start_date_sorting(self,task1,task2,order):
         sort = self.__date_comp(task1,task2,'start',order)
         return sort
-        
+
     def due_date_sorting(self,task1,task2,order):
         sort = self.__date_comp(task1,task2,'due',order)
         return sort
-    
+
     def closed_date_sorting(self,task1,task2,order):
         sort = self.__date_comp(task1,task2,'closed',order)
         return sort
-        
+
     def title_sorting(self,task1,task2,order):
         return cmp(task1.get_title(),task2.get_title())
-        
+
     def __date_comp(self,task1,task2,para,order):
         '''This is a quite complex method to sort tasks by date,
         handling fuzzy date and complex situation.
@@ -171,12 +171,12 @@ class TreeviewFactory():
             sort = cmp(t2,t1)
         else:
             sort = 0
-        
+
         #local function
         def reverse_if_descending(s):
             """Make a cmp() result relative to the top instead of following 
                user-specified sort direction"""
-            if order == gtk.SORT_ASCENDING:
+            if order == Gtk.SortType.ASCENDING:
                 return s
             else:
                 return -1*s
@@ -187,16 +187,16 @@ class TreeviewFactory():
             t2_tags = task2.get_tags_name()
             t2_tags.sort()
             sort = reverse_if_descending(cmp(t1_tags, t2_tags))
-            
+
         if sort == 0:  # Break ties by sorting by title
             t1_title = task1.get_title()
             t2_title = task2.get_title()
             t1_title = locale.strxfrm(t1_title)
             t2_title = locale.strxfrm(t2_title)
             sort = reverse_if_descending(cmp(t1_title, t2_title))
-        
+
         return sort
-        
+
     #############################
     #Functions for tags columns
     #############################
@@ -209,17 +209,17 @@ class TreeviewFactory():
             return "<span color='%s'>%s</span>" %(self.unactive_color, label)
         else:
             return label
-        
+
     def get_tag_count(self,node):
         if node.get_id() == 'search':
             return ""
         else:
             toreturn = node.get_active_tasks_count()
             return "<span color='%s'>%s</span>" %(self.unactive_color,toreturn)
-        
+
     def is_tag_separator_filter(self,tag):
         return tag.get_attribute('special') == 'sep'
-        
+
     def tag_sorting(self,t1,t2,order):
         t1_sp = t1.get_attribute("special")
         t2_sp = t2.get_attribute("special")
@@ -235,7 +235,7 @@ class TreeviewFactory():
             t1_order = t1.get_attribute("order")
             t2_order = t2.get_attribute("order")
             return cmp(t1_order, t2_order)
-            
+
     def ontag_task_dnd(self,source,target):
         task = self.req.get_task(source)
         if target.startswith('@'):
@@ -254,13 +254,13 @@ class TreeviewFactory():
         #Tag id
         col_name = 'tag_id'
         col = {}
-        col['renderer'] = ['markup', gtk.CellRendererText()]
+        col['renderer'] = ['markup', Gtk.CellRendererText()]
         col['value'] = [str, lambda node: node.get_id()]
         col['visible'] = False
         col['order'] = 0
         col['sorting_func'] = self.tag_sorting
         desc[col_name] = col
-        
+
         #Tags color
         col_name = 'color'
         col = {}
@@ -268,16 +268,16 @@ class TreeviewFactory():
         render_tags.set_property('ypad', 3)
         col['title'] = _("Tags")
         col['renderer'] = ['tag',render_tags]
-        col['value'] = [gobject.TYPE_PYOBJECT,lambda node: node]
+        col['value'] = [GObject.TYPE_PYOBJECT,lambda node: node]
         col['expandable'] = False
         col['resizable'] = False
         col['order'] = 1
         desc[col_name] = col
-        
+
         #Tag names
         col_name = 'tagname'
         col = {}
-        render_text = gtk.CellRendererText()
+        render_text = Gtk.CellRendererText()
         render_text.set_property('ypad', 3)
         col['renderer'] = ['markup',render_text]
         col['value'] = [str,self.tag_name]
@@ -285,11 +285,11 @@ class TreeviewFactory():
         col['new_column'] = False
         col['order'] = 2
         desc[col_name] = col
-        
+
         #Tag count
         col_name = 'tagcount'
         col = {}
-        render_text = gtk.CellRendererText()
+        render_text = Gtk.CellRendererText()
         render_text.set_property('xpad', 3)
         render_text.set_property('ypad', 3)
         render_text.set_property('xalign', 1.0)
@@ -301,11 +301,11 @@ class TreeviewFactory():
         desc[col_name] = col
 
         return self.build_tag_treeview(tree,desc)
-    
+
     def active_tasks_treeview(self,tree):
         #Build the title/label/tags columns
         desc = self.common_desc_for_tasks(tree)
-        
+
         # "startdate" column
         col_name = 'startdate'
         col = {}
@@ -332,7 +332,7 @@ class TreeviewFactory():
         treeview = self.build_task_treeview(tree,desc)
         treeview.set_sort_column('duedate')
         return treeview
-        
+
     def closed_tasks_treeview(self,tree):
         #Build the title/label/tags columns
         desc = self.common_desc_for_tasks(tree)
@@ -352,8 +352,7 @@ class TreeviewFactory():
         treeview = self.build_task_treeview(tree,desc)
         treeview.set_sort_column('closeddate')
         return treeview
-        
-    
+
     #This build the first tag/title columns, common
     #to both active and closed tasks treeview
     def common_desc_for_tasks(self,tree):
@@ -362,7 +361,7 @@ class TreeviewFactory():
         #invisible 'task_id' column
         col_name = 'task_id'
         col = {}
-        col['renderer'] = ['markup', gtk.CellRendererText()]
+        col['renderer'] = ['markup', Gtk.CellRendererText()]
         col['value'] = [str, lambda node: node.get_id()]
         col['visible'] = False
         col['order'] = 0
@@ -378,22 +377,22 @@ class TreeviewFactory():
         #invisible 'title' column
         col_name = 'title'
         col = {}
-        render_text = gtk.CellRendererText()
-        render_text.set_property("ellipsize", pango.ELLIPSIZE_END)
+        render_text = Gtk.CellRendererText()
+        render_text.set_property("ellipsize", Pango.EllipsizeMode.END)
         col['renderer'] = ['markup',render_text]
         col['value'] = [str,self.task_title_column]
         col['visible'] = False
         col['order'] = 0
         col['sorting_func'] = self.title_sorting
         desc[col_name] = col
-        
+
         # "tags" column (no title)
         col_name = 'tags'
         col = {}
         render_tags = CellRendererTags()
         render_tags.set_property('xalign', 0.0)
         col['renderer'] = ['tag_list',render_tags]
-        col['value'] = [gobject.TYPE_PYOBJECT,self.task_tags_column]
+        col['value'] = [GObject.TYPE_PYOBJECT,self.task_tags_column]
         col['expandable'] = False
         col['resizable'] = False
         col['order'] = 1
@@ -403,8 +402,8 @@ class TreeviewFactory():
         col_name = 'label'
         col = {}
         col['title'] = _("Title")
-        render_text = gtk.CellRendererText()
-        render_text.set_property("ellipsize", pango.ELLIPSIZE_END)
+        render_text = Gtk.CellRendererText()
+        render_text.set_property("ellipsize", Pango.EllipsizeMode.END)
         col['renderer'] = ['markup',render_text]
         col['value'] = [str,self.task_label_column]
         col['expandable'] = True
@@ -413,8 +412,7 @@ class TreeviewFactory():
         col['order'] = 2
         desc[col_name] = col
         return desc
-        
-    
+
     def build_task_treeview(self,tree,desc):
         treeview = TreeView(tree,desc)
         #Now that the treeview is done, we can polish
@@ -429,9 +427,9 @@ class TreeviewFactory():
         treeview.set_multiple_selection(True)
         #Updating the unactive color (same for everyone)
         self.unactive_color = \
-                        treeview.style.text[gtk.STATE_INSENSITIVE].to_string()
+                        treeview.get_style().text[Gtk.StateType.INSENSITIVE].to_string()
         return treeview
-        
+
     def build_tag_treeview(self,tree,desc):
         treeview = TreeView(tree,desc)
         # Global treeview properties
@@ -443,7 +441,7 @@ class TreeviewFactory():
         treeview.set_dnd_external('gtg/task-iter-str',self.ontag_task_dnd)
         #Updating the unactive color (same for everyone)
         self.unactive_color = \
-                        treeview.style.text[gtk.STATE_INSENSITIVE].to_string()
+                        treeview.get_style().text[Gtk.StateType.INSENSITIVE].to_string()
         treeview.set_sort_column('tag_id')
         self.tags_view = treeview
-        return treeview 
+        return treeview
