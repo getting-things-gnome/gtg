@@ -97,8 +97,8 @@ AUTHORS     = ["Main developers:", \
 ARTISTS     = ["Kalle Persson <kalle@kallepersson.se>", \
                 "Bertrand Rousseau <bertrand.rousseau@gmail.com>"]
 ARTISTS.sort()
-TRANSLATORS = """
-Afrikaans:Arthur Rilke, Walter Leibbrandt, Wesley Channon
+TRANSLATORS = \
+"""Afrikaans:Arthur Rilke, Walter Leibbrandt, Wesley Channon
 Albanian: Vilson Gjeci
 Arabic: Ahmed Kotb, Ali AlNoaimi, Anas Almzoghy, Basher Aobasher, Islam Alshaikh, Kaïs Bejaoui
 Asturian: Xuacu Saturio, ivarela
