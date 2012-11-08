@@ -1,3 +1,63 @@
+gtg (0.3) quantal; urgency=low
+
+  * Hide tasks with due date someday, #931376
+  * New Date class by Paul Kishimoto and Izidor Matušov
+  * Parse due:3 as next 3rd day in month
+  * Urgency Color plugin by Wolter Hellmund
+  * Allow GTG to run from different locations than /usr/share or /usr/local/share
+  * Removed module GTG.tools.openurl and replaced by python's webbrowser.open
+  * Removed import_json plugin
+  * Saved searches could have assigned color
+  * Stopped links from opening when accidently letting go of mouse button while selecting them, #823339, by Steve Scheel
+  * Search through DBus
+  * GTCli handles error better
+  * GTCli allows search through DBus
+  * Small change to QuickAdd toolbar:
+    - there is allowed whitespace after due: and others, i.e. "due: 2012-04-01" is parsed as a valid attribute
+    - added start: which has the same meaning as defer:
+  * Automatic restore a backup XML file if the original XML file could not be loaded
+  * Backends were renamed to Synchronization Services, by Anant Gupta
+  * Reimplement the tag context menu as a widget, in order to - hopefully - be able to implement an enhanced context menu with, for instance, a color picker.
+  * Background Colors option was moved from View menu into preferences dialog
+  * Reorganised notification area menu (New task, Show browser, <tasks>, Quit)
+  * Added an option to import local (development) version of liblarch instead of system installed one
+  * Fix for bug #995740: (no title task) through quickadd bar, by Nimit Shah
+  * New tag editor
+  * Fix bugs #1003872 and #1002067: Correct titles to Preferences and Synchronization Services Dialogs, by Alan Gomes
+  * Improved Export plugin, export to PDF works now, by Izidor Matušov
+  * Added -t option to distinguish between multiple instances of GTG
+  * Fix for bug #826916 by Nimit Shah
+  * Fix for bug #1018331: (gtg more interactive) by Nimit Shah
+  * User documentation for GTG, written by Radina Matic, integrated in GTG by Bertrand Rousseau
+  * It is not possible to add another instance of local file synchronization service
+  * Fixes for bugs #906516, #1002160 (task urgency color plugin), by Wolter Hellmund
+  * Fix for bug #1001012: Notification area icon should change color when there are urgent tasks, by Antonio Roquentin
+  * Saner implementation of set_due_date
+  * Conform to PEP394 (use python2 instead of python)
+  * Fix for bug #629683: update initial tutorial for 0.3
+  * Fix for bug #615027: Introductory task set should suggest organizing tasks in a tag hierarchy
+  * Fix for bug #1026264: Write user documentation for search/smart tag
+  * Fix for bug #1020611: Use deafult configuration when config is corrupted by Abhiram
+  * Fix for bug #1013869: Saved searches can't be deleted when GTG crashes, by Antonio Roquentin
+  * Added option to change font used in task editor by Abhiram
+  * Fix for bug #984847: setup.py install doesn't install icons on right place, by Alan Gomes
+  * Fix for bug #1026312: Numbers of tasks in tags pane disappear after a regular search, by Antonio Roquentin
+  * Cleaned gtg.desktop file
+  * Re-enabled support for gtg:// URI
+  * Fix for bug #1026400: script_pocketmod doesn't have execute permission
+  * Fix for bug #1027817: Export plugin: changing output format moves widgets up and down
+  * Fix for bug #1027844: Fuzzy date shouldn't become start date
+  * Save backups into backup/ folder, creates backups of tags.xml closes #993920
+  * Search filter is deleted on empty search if tag_pane is closed, by Stefan Handschuh, closes #996236
+  * Pickle files for synchronization services are backuped to prevent loosing files, closes #1036554
+  * Fix for bug #897425: Write manpage for gtcli and update other manpages as well
+  * Fix for bug-1037051 (Due date is not set for a new subtask), by Nimit Shah
+  * Fix for bug #1036955: Due date is not preselected when start date is filled, by Steve Scheel
+  * Fix for bug #1045036: Slovak Translation Updated by Slavko
+  * Remove use of liblarch's "transparent" concept (since it's been removed from liblarch), fixes bugs #1001962, #1001962, #1069257, #1069963: intermediary tags, counter initialization, and regressions caused by initial versions of the patch
+  * Fix for bug #1038662: Undefined due dates in subtasks should always stay undefined and displayed as such in the editor
+  * Fix for bug #1036695: Date constraints after drag and drop not applied
+
 gtg (0.2.9-1) oneiric; urgency=low
 
   * Big refractorization of code, now using liblarch
