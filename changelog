@@ -58,6 +58,8 @@ gtg (0.3) quantal; urgency=low
   * Fix for bug #1038662: Undefined due dates in subtasks should always stay undefined and displayed as such in the editor
   * Fix for bug #1036695: Date constraints after drag and drop not applied
 
+ -- Bertrand Rousseau <bertrand.rousseau@gmail.com>  Tue, 06 Nov 2012 20:00:00 +0100
+
 gtg (0.2.9-1) oneiric; urgency=low
 
   * Big refractorization of code, now using liblarch
