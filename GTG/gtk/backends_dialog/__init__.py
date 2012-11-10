@@ -112,7 +112,7 @@ class BackendsDialog(object):
         '''
         return self.req
 
-    def get_pixbuf_from_icon_name(self, name, height, width):
+    def get_pixbuf_from_icon_name(self, name, height):
         '''
         Helper function: returns a pixbuf of an icon given its name in the
         loaded icon theme
@@ -124,14 +124,11 @@ class BackendsDialog(object):
         @returns gtk.gdk.Pixbuf: a pixbuf containing the wanted icon, or None
         (if the icon is not present)
         '''
-        #NOTE: loading icons directly from the theme and scaling them results
-        #      in blurry icons. So, instead of doing that, I'm loading them
-        #      directly from file. 
-        icon_info = self.icon_theme.lookup_icon(name, gtk.ICON_SIZE_MENU, 0)
+        icon_info = self.icon_theme.lookup_icon(name, height, 0)
         if icon_info == None:
             return None
-        pixbuf = gtk.gdk.pixbuf_new_from_file(icon_info.get_filename())
-        return pixbuf.scale_simple(width, height, gtk.gdk.INTERP_BILINEAR)
+        else:
+            return gtk.icon_theme_get_default().load_icon(name, height, 0)
 
     def _show_panel(self, panel_name):
         '''
