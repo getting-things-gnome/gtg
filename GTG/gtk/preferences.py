@@ -53,6 +53,11 @@ def enable_gtg_autostart():
         if not os.path.exists(AUTOSTART_DIRECTORY):
             os.mkdir(AUTOSTART_DIRECTORY)
 
+        # If the path is a symlink and is broken, remove it
+        if os.path.islink(AUTOSTART_PATH) and \
+            not os.path.exists(os.path.realpath(AUTOSTART_PATH)):
+            os.unlink(AUTOSTART_PATH)
+
         if os.path.isdir(AUTOSTART_DIRECTORY) and \
            not os.path.exists(AUTOSTART_PATH):
             if hasattr(os, "symlink"):
