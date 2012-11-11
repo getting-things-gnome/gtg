@@ -19,33 +19,39 @@
 
 
 try:
-    import gnomekeyring
+    from gi.repository import GnomeKeyring
 except ImportError:
-    gnomekeyring = None
+    GnomeKeyring = None
 
 from GTG.tools.borg import Borg
 from GTG.tools.logger import Log
+
 
 class GNOMEKeyring(Borg):
     def __init__(self):
         super(Keyring, self).__init__()
         if not hasattr(self, "keyring"):
-            self.keyring = gnomekeyring.get_default_keyring_sync()
+            result, self.keyring = GnomeKeyring.get_default_keyring_sync()
+            if result != GnomeKeyring.Result.OK:
+                raise Exception("Can't get default keyring, error=%s" % result)
 
     def set_password(self, name, password, userid = ""):
-        return gnomekeyring.item_create_sync(
-                    self.keyring,
-                    gnomekeyring.ITEM_GENERIC_SECRET,
-                    name,
-                    {"backend": name},
-                    password,
-                    True)
+        attrs = GnomeKeyring.Attribute.list_new()
+        GnomeKeyring.Attribute.list_append_string(attrs, "backend", name)
+        result, password_id = GnomeKeyring.item_create_sync(self.keyring,
+                GnomeKeyring.ItemType.GENERIC_SECRET, name, attrs,
+                password, True)
+
+        if result != GnomeKeyring.Result.OK:
+            raise Exception("Can't create a new password, error=%s" % result)
+
+        return password_id
 
     def get_password(self, item_id):
-        try:
-            item_info = gnomekeyring.item_get_info_sync(self.keyring, item_id)
+        result, item_info = GnomeKeyring.item_get_info_sync(self.keyring, item_id)
+        if result == GnomeKeyring.Result.OK:
             return item_info.get_secret()
-        except (gnomekeyring.DeniedError, gnomekeyring.NoMatchError):
+        else:
             return ""
 
 class FallbackKeyring(Borg):
@@ -69,7 +75,7 @@ class FallbackKeyring(Borg):
     def get_password(self, key):
         return self.keyring.get(key, "")
 
-if gnomekeyring is not None:
+if GnomeKeyring is not None:
     Keyring = GNOMEKeyring 
 else:
     Log.info("GNOME keyring was not found, passwords will be not stored after restart of GTG")
