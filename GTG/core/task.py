@@ -208,7 +208,7 @@ class Task(TreeNode):
             # (old_status check is necessary to avoid false positive a start)
             elif status in [self.STA_ACTIVE] and\
                  old_status in [self.STA_DONE, self.STA_DISMISSED]:
-                if self.has_parents():
+                if self.has_parent():
                     for p_tid in self.get_parents():
                         par = self.req.get_task(p_tid)
                         if par.is_loaded() and par.get_status() in\
@@ -246,68 +246,177 @@ class Task(TreeNode):
     def set_modified(self, modified):
         self.last_modified = modified
 
-    def set_due_date(self, fulldate):
+    def recursive_sync(self):
+        """Recursively sync the task and all task children. Defined"""
+        self.sync()
+        for sub_id in self.children:
+            sub = self.req.get_task(sub_id)
+            sub.recursive_sync()
+
+    # ABOUT DUE DATES
+    #
+    # PLEASE READ THIS: although simple in appearance, handling task dates can
+    # actually be subtle. Take the time to understand this if you plan to work
+    # on the methods below.
+    #
+    # Due date is the date at which a task must be accomplished. Constraints
+    # exist between a task's due date and its ancestor/children's due dates.
+    #
+    # Date constraints
+    #
+    # Those are the following:
+    #   - children of a task cannot have a task due date that happens later than
+    #     the task's due date
+    #   - ancestors of a task cannot have a due that happens before the
+    #     task's due date (this is the reverse constraint from the first one)
+    #   - a task's start date cannot happen later than this task's due date
+    #
+    # Tasks with undefined or fuzzy due dates
+    #
+    # Task with no due date (="undefined" tasks) or tasks with fuzzy start/due
+    # dates are not subject to constraints. Furthermore, they are "transparent".
+    # Meaning that they let the constraints coming from their children/parents
+    # pass through them. So, for instance, a children of a task with an
+    # undefined or fuzzy task would be constrained by this latter task's
+    # ancestors. Equally, the an ancestor from the same undefined/fuzzy task
+    # would be constrained by the children due dates.
+    #
+    # Updating a task due date
+    #
+    # Whenever a task due date is changed, all ancestor/chldren of this task
+    # *must* be updated according to the constraining rules. As said above,
+    # constraints must go through tasks with undefined/fuzzy due dates too!
+    # 
+    # Undefined/fuzzy task dates are NEVER to be updated. They are not sensitive
+    # to constraint. If you want to now what constraint there is on this task's
+    # due date though, you can obtain it by using the get_due_date_constraint
+    # method.
+
+    def set_due_date(self, new_duedate):
         """Defines the task's due date."""
-        def get_due_date_constraint():
-            """ Returns the most urgent due date constraint, following
-                parents' due dates. Return Date.no_date() if no constraint
-                is applied. """
-            cur_date = Date.no_date()
-            for par_id in self.get_parents():
+
+        def __get_defined_parent_list(task):
+            """Recursively fetch a list of parents that have a defined due date
+               which is not fuzzy"""
+            parent_list = []
+            for par_id in task.parents:
                 par = self.req.get_task(par_id)
-                if par.get_due_date() != Date.no_date() and \
-                   par.get_due_date() < cur_date:
-                    cur_date = par.get_due_date()
-            return cur_date
-        fulldate_obj = Date(fulldate) # caching the conversion
-        self.due_date = fulldate_obj
-        # if the task's start date happens later than the 
-        # new due date, we update it
-        # (except for fuzzy dates)
-        if self.get_start_date() != Date.no_date() and \
-           not fulldate_obj.is_fuzzy() and \
-           self.get_start_date() > fulldate_obj:
-            self.set_start_date(fulldate)
-        if fulldate_obj != Date.no_date():
-            # if the parent's due date happens before the task's new
-            # due date, we update it
-            for par_id in self.parents:
-                par = self.req.get_task(par_id)
-                if par.get_due_date() != Date.no_date() and \
-                   par.get_due_date() < fulldate_obj:
-                    par.set_due_date(fulldate)
-            # the current task being one of its children's parents, we must
-            # apply the constraints on their due/start dates as well
-            for sub_id in self.children:
-                sub = self.req.get_task(sub_id)
-                # child's due date is not set, we use the task's new 
-                # due date
-                if sub.get_due_date() == Date.no_date():
-                    sub.set_due_date(fulldate)
-                # child's due date happens later than the task's: we
+                if par.get_due_date() == Date.no_date() or \
+                  ( par.get_due_date() != Date.no_date() and \
+                    par.get_due_date().is_fuzzy() ):
+                    parent_list += __get_defined_parent_list(par)
+                else:
+                    parent_list.append(par)
+            return parent_list
+
+        def __get_defined_child_list(task):
+            """Recursively fetch a list of children that have a defined due date
+               which is not fuzzy"""
+            child_list = []
+            for child_id in task.children:
+                child = self.req.get_task(child_id)
+                if child.get_due_date() == Date.no_date() or \
+                   ( child.get_due_date() != Date.no_date() and \
+                     child.get_due_date().is_fuzzy() ):
+                    child_list += __get_defined_child_list(child)
+                else:
+                    child_list.append(child)
+            return child_list
+
+        old_due_date    = self.due_date
+        new_duedate_obj = Date(new_duedate) # caching the conversion
+        self.due_date   = new_duedate_obj
+        # If the new date is fuzzy or undefined, we don't update related tasks
+        if not new_duedate_obj.is_fuzzy() and new_duedate_obj != Date.no_date():
+            # if the task's start date happens later than the 
+            # new due date, we update it (except for fuzzy dates)
+            if self.get_start_date() != Date.no_date() and \
+               not self.get_start_date().is_fuzzy()    and \
+               self.get_start_date() > new_duedate_obj:
+                self.set_start_date(new_duedate)
+            # if some ancestors' due dates happen before the task's new
+            # due date, we update them (except for fuzzy dates)
+            for par in __get_defined_parent_list(self):
+                if par.get_due_date() < new_duedate_obj:
+                    par.set_due_date(new_duedate)
+            # we must apply the constraints to the defined & non-fuzzy children
+            # as well
+            for sub in __get_defined_child_list(self):
+                sub_duedate = sub.get_due_date()
+                # if the child's due date happens later than the task's: we
                 # update it to the task's new due date
-                # (= the new most restrictive)
-                if sub.get_due_date() != Date.no_date() and \
-                   sub.get_due_date() > fulldate_obj:
-                    sub.set_due_date(fulldate)
+                if sub_duedate > new_duedate_obj:
+                    sub.set_due_date(new_duedate)
                 # if the child's start date happens later than
                 # the task's new due date, we update it
-                # (except for fuzzy dates)
-                if sub.get_start_date() != Date.no_date() and \
-                   not fulldate_obj.is_fuzzy() and \
-                   sub.get_start_date() > fulldate_obj:
-                    sub.set_start_date(fulldate)
-        else:
-            self.due_date = get_due_date_constraint()
-        self.sync()
+                # (except for fuzzy start dates)
+                sub_startdate = sub.get_start_date()
+                if sub_startdate != Date.no_date() and \
+                   not sub_startdate.is_fuzzy() and \
+                   sub_startdate > new_duedate_obj:
+                    sub.set_start_date(new_duedate)
+        # If the date changed, we notify the change for the children since the
+        # constraints might have changed
+        if old_due_date != new_duedate_obj:
+            self.recursive_sync()
 
     def get_due_date(self):
         """ Returns the due date, which always respects all constraints """
         return self.due_date
 
+    def get_due_date_constraint(self):
+        """ Returns the most urgent due date constraint, following
+            parents' due dates. Return Date.no_date() if no constraint
+            is applied. """
+        # Check out for constraints depending on date definition/fuzziness.
+        strongest_const_date = self.due_date
+        if strongest_const_date == Date.no_date() or \
+           ( strongest_const_date != Date.no_date() and \
+             strongest_const_date.is_fuzzy() ):
+            for par_id in self.parents:
+                par = self.req.get_task(par_id)
+                par_duedate = par.get_due_date()
+                # if parent date is undefined or fuzzy, look further up
+                if par_duedate == Date.no_date() or \
+                   par_duedate.is_fuzzy():
+                    par_duedate = par.get_due_date_constraint()
+                # if par_duedate is still undefined/fuzzy, all parents' due
+                # dates are undefined or fuzzy: strongest_const_date is then
+                # the best choice so far, we don't update it.
+                if par_duedate == Date.no_date() or \
+                   par_duedate.is_fuzzy():
+                    continue
+                # par_duedate is not undefined/fuzzy. If strongest_const_date is
+                # still undefined or fuzzy, parent_duedate is the best choice.
+                if strongest_const_date == Date.no_date() or \
+                   ( strongest_const_date != Date.no_date() and \
+                     strongest_const_date.is_fuzzy() ):
+                    strongest_const_date = par_duedate
+                    continue
+                # strongest_const_date and par_date are defined and not fuzzy:
+                # we compare the dates
+                if par_duedate < strongest_const_date:
+                    strongest_const_date = par_duedate
+        return strongest_const_date
+
+    # ABOUT START DATE
+    #
+    # Start date is the date at which the user has decided to work or consider
+    # working on this task.
+    # 
+    # The only constraint applied to start dates is that start dates cannot
+    # happen later than the task due date.
+    # 
+    # The task due date (and any constrained relatives) is updated if a new
+    # task start date is chosen that does not respect this rule.
+    #
+    # Undefined/fizzy start dates don't constraint the task due date.
+
     def set_start_date(self, fulldate):
         self.start_date = Date(fulldate)
         if Date(fulldate) != Date.no_date() and \
+           not Date(fulldate).is_fuzzy() and \
+           self.due_date != Date.no_date() and \
            not self.due_date.is_fuzzy() and \
            Date(fulldate) > self.due_date:
             self.set_due_date(fulldate)
@@ -315,6 +424,12 @@ class Task(TreeNode):
 
     def get_start_date(self):
         return self.start_date
+
+    # ABOUT CLOSED DATE
+    #
+    # Closed date is the date at which the task has been closed (done or
+    # dismissed). Closed date is not constrained and doesn't constrain other
+    # dates.
 
     def set_closed_date(self, fulldate):
         self.closed_date = Date(fulldate)
@@ -476,23 +591,19 @@ class Task(TreeNode):
         """
         return self.req.get_task(tid)
 
-    #Return true is the task has parent
-    #If tag is provided, return True only
-    #if the parent has this particular tag
-    #FIXME : this function should be removed. Use the liblarch instead !
-    def has_parents(self, tag=None):
-        print "DEPRECATED: has_parent"
-        has_par = TreeNode.has_parent(self)
-        #The "all tag" argument
-        if tag and has_par:
-            a = 0
-            for tid in self.get_parents():
-                p = self.req.get_task(tid)
-                a += p.has_tags(tag)
-            to_return = a
-        else:
-            to_return = has_par
-        return to_return
+    def set_parent(self, parent_id):
+        """Update the task's parent. Refresh due date constraints."""
+        TreeNode.set_parent(self, parent_id)
+        if parent_id is not None:
+            par = self.req.get_task(parent_id)
+            par_duedate = par.get_due_date_constraint()
+            if par_duedate != Date.no_date() and \
+               not par_duedate.is_fuzzy()    and \
+               self.due_date != Date.no_date() and \
+               not self.due_date.is_fuzzy()  and \
+               par_duedate < self.due_date:
+                self.set_due_date(par_duedate)
+        self.recursive_sync()
 
     def set_attribute(self, att_name, att_value, namespace=""):
         """Set an arbitrary attribute.
@@ -601,6 +712,7 @@ class Task(TreeNode):
 
     #remove by tagname
     def remove_tag(self, tagname):
+#        print "remove tag %s" %tagname
         modified = False
         if tagname in self.tags:
             self.tags.remove(tagname)
@@ -611,8 +723,12 @@ class Task(TreeNode):
         self.content = self._strip_tag(self.content, tagname)
         if modified:
             tag = self.req.get_tag(tagname)
+            # The ViewCount of the tag still doesn't know that
+            # the task was removed. We need to update manually
+            tag.update_task(self.get_id())
             if tag:
                 tag.modified()
+#            print "removing now %s and tag is %s - %s" %(tagname,tag, tag.get_active_tasks_count())
 
     def set_only_these_tags(self, tags_list):
         '''

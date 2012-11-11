@@ -79,6 +79,7 @@ class TaskBrowser(gobject.GObject):
         self.vmanager = vmanager
         self.config = self.req.get_config('browser')
         self.tag_active = False
+        self.applied_tags = []
 
         #treeviews handlers
         self.vtree_panes = {}
@@ -95,7 +96,7 @@ class TaskBrowser(gobject.GObject):
 
         # Set up models
         # Active Tasks
-        self.activetree.apply_filter('active')
+        self.req.apply_global_filter(self.activetree,'active')
         # Tags
         self.tagtree = None
         self.tagtreeview = None
@@ -201,18 +202,17 @@ class TaskBrowser(gobject.GObject):
         self.tagtree = self.req.get_tag_tree()
         self.tagtreeview = self.tv_factory.tags_treeview(self.tagtree)
         #Tags treeview
-        self.tagtreeview.connect('cursor-changed', \
-            self.on_select_tag)
-        self.tagtreeview.connect('row-activated', \
+        self.tagtreeview.get_selection().connect('changed', \
             self.on_select_tag)
         self.tagtreeview.connect('button-press-event', \
             self.on_tag_treeview_button_press_event)
         self.tagtreeview.connect('key-press-event', \
             self.on_tag_treeview_key_press_event)
+        self.tagtreeview.connect('node-expanded', \
+            self.on_tag_expanded)
+        self.tagtreeview.connect('node-collapsed', \
+            self.on_tag_collapsed)
         self.sidebar_container.add(self.tagtreeview)
-
-        # Refresh tree
-        self.tagtree.reset_filters(transparent_only=True)
 
         # expanding search tag does not work automatically, request it
         self.expand_search_tag()
@@ -510,10 +510,15 @@ class TaskBrowser(gobject.GObject):
                 path = path[:-1]
             self.vtree_panes['active'].collapse_node(path)
 
-        for t in self.config.get("collapsed_tags"):
-            #FIXME
-            print "Collapsing tag %s not implememted in browser.py" %t
-#            self.tagtreeview.set_collapsed_tags(toset)
+        for path_t in self.config.get("expanded_tags"):
+            #the tuple was stored as a string. we have to reconstruct it
+            path = ()
+            for p in path_t[1:-1].split(","):
+                p = p.strip(" '")
+                path += (p, )
+            if path[-1] == '':
+                path = path[:-1]
+            self.tagtreeview.expand_node(path)
 
         self.set_view(self.config.get("view"))
 
@@ -550,25 +555,20 @@ class TaskBrowser(gobject.GObject):
             return
 
         self.in_toggle_workview = True
-        self.tv_factory.disable_update_tags()
 
         if self.config.get('view') == 'workview':
             self.set_view('default')
         else:
             self.set_view('workview')
 
-        if self.tagtree is not None:
-            self.tv_factory.enable_update_tags()
-            self.tagtree.refresh_all()
-
         self.in_toggle_workview = False
 
     def set_view(self, viewname):
         if viewname == 'default':
-            self.activetree.unapply_filter('workview')
+            self.req.unapply_global_filter(self.activetree,'workview')
             workview = False
         elif viewname == 'workview':
-            self.activetree.apply_filter('workview')
+            self.req.apply_global_filter(self.activetree,'workview')
             workview = True
         else:
             raise Exception('Cannot set the view %s' %viewname)
@@ -613,13 +613,6 @@ class TaskBrowser(gobject.GObject):
 ### SIGNAL CALLBACKS ##########################################################
 # Typically, reaction to user input & interactions with the GUI
 #
-    def register_filter_callback(self, cb):
-        print "DEPRECATED function register_filter_callback."
-        print "It is only dummy funnction now, ready for removing"
-
-    def unregister_filter_callback(self, cb):
-        print "DEPRECATED function unregister_filter_callback."
-        print "It is only dummy funnction now, ready for removing"
 
     def on_sort_column_changed(self, model):
         sort_column, sort_order = model.get_sort_column_id()
@@ -762,6 +755,16 @@ class TaskBrowser(gobject.GObject):
         colt = self.config.get("collapsed_tasks")
         if tid not in colt:
             colt.append(str(tid))
+    
+    def on_tag_expanded(self, sender, tag):
+        colt = self.config.get("expanded_tags")
+        if tag not in colt:
+            colt.append(tag)
+
+    def on_tag_collapsed(self, sender, tag):
+        colt = self.config.get("expanded_tags")
+        if tag in colt:
+            colt.remove(str(tag))
 
     def on_quickadd_activate(self, widget):
         """ Add a new task from quickadd toolbar """
@@ -1107,12 +1110,17 @@ class TaskBrowser(gobject.GObject):
                 task.set_status(Task.STA_DISMISSED)
                 self.close_all_task_editors(uid)
 
-    def apply_filter_on_panes(self, filter_name):
+    def apply_filter_on_panes(self, filter_name,refresh=True):
         """ Apply filters for every pane: active tasks, closed tasks """
         for pane in self.vtree_panes:
             vtree = self.req.get_tasks_tree(name=pane, refresh=False)
-            vtree.reset_filters(refresh=False, transparent_only=True)
-            vtree.apply_filter(filter_name, refresh=True)
+            vtree.apply_filter(filter_name, refresh=refresh)
+            
+    def unapply_filter_on_panes(self, filter_name,refresh=True):
+        """ Apply filters for every pane: active tasks, closed tasks """
+        for pane in self.vtree_panes:
+            vtree = self.req.get_tasks_tree(name=pane, refresh=False)
+            vtree.unapply_filter(filter_name, refresh=refresh)
 
     def on_select_tag(self, widget=None, row=None, col=None):
         """
@@ -1120,26 +1128,23 @@ class TaskBrowser(gobject.GObject):
         """
         # FIXME add support for multiple selection of tags in future
 
-        # When enable_update_tags we should update all tags to match
-        # the current state. However, applying tag filter does not influence
-        # other tags, because of transparent filter. Therefore there is no
-        # self.tagree.refresh_all() => a significant optimization!
-        # See do_toggle_workview()
-        self.tv_factory.disable_update_tags()
-
         #When you click on a tag, you want to unselect the tasks
-        taglist = self.get_selected_tags()
-        if len(taglist) > 0:
-            tagname = taglist[0]
-            self.apply_filter_on_panes(tagname)
-
-            # In case of search tag, set query in quickadd for
-            # refining search query
-            tag = self.req.get_tag(tagname)
-            if tag.is_search_tag():
-                self.quickadd_entry.set_text(tag.get_attribute("query"))
-
-        self.tv_factory.enable_update_tags()
+        new_taglist = self.get_selected_tags()
+        
+        for tagname in self.applied_tags:
+            if tagname not in new_taglist:
+                self.unapply_filter_on_panes(tagname,refresh=False)
+        
+        for tagname in new_taglist:
+            if tagname not in self.applied_tags:
+                self.apply_filter_on_panes(tagname)
+                # In case of search tag, set query in quickadd for
+                # refining search query
+                tag = self.req.get_tag(tagname)
+                if tag.is_search_tag():
+                    self.quickadd_entry.set_text(tag.get_attribute("query"))
+        
+        self.applied_tags = new_taglist
 
     def on_taskdone_cursor_changed(self, selection=None):
         """Called when selection changes in closed task view.

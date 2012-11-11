@@ -31,26 +31,6 @@ from liblarch_gtk                     import TreeView
 from GTG.gtk                          import colors
 from GTG.tools.dates                  import Date
 
-
-class AutoExpandTreeView(TreeView):
-    """TreeView which hide the expander column when not needed"""
-
-    def __init__(self, tree, desc):
-        TreeView.__init__(self, tree, desc)
-        self.show_expander = False
-        self.treemodel.connect("row-has-child-toggled", self.__show_expander_col)
-        self.__show_expander_col(self.treemodel, None, None)
-
-    def __has_child(self, model, path, iter):
-        if model.iter_has_child(iter):
-            self.show_expander = True
-            return True
-
-    def __show_expander_col(self, treemodel, path, iter):
-        self.show_expander = False
-        treemodel.foreach(self.__has_child)
-        self.set_show_expanders(self.show_expander)
-
 class TreeviewFactory():
 
     def __init__(self,requester,config):
@@ -142,7 +122,12 @@ class TreeviewFactory():
         return node.get_start_date().to_readable_string()
         
     def task_duedate_column(self,node):
-        return node.get_due_date().to_readable_string()
+        # We show the most constraining due date for task with no due dates.
+        if node.get_due_date() == Date.no_date():
+            return node.get_due_date_constraint().to_readable_string()
+        else:
+        # Other tasks show their due date (which *can* be fuzzy)
+            return node.get_due_date().to_readable_string()
         
     def task_cdate_column(self,node):
         return node.get_closed_date().to_readable_string()
@@ -174,6 +159,10 @@ class TreeviewFactory():
             elif para == 'due':
                 t1 = task1.get_due_date()
                 t2 = task2.get_due_date()
+                if t1 == Date.no_date():
+                    t1 = task1.get_due_date_constraint()
+                if t2 == Date.no_date():
+                    t2 = task2.get_due_date_constraint()
             elif para == 'closed':
                 t1 = task1.get_closed_date()
                 t2 = task2.get_closed_date()
@@ -311,37 +300,7 @@ class TreeviewFactory():
         col['order'] = 3
         desc[col_name] = col
 
-        self.enable_update_tags()
-
         return self.build_tag_treeview(tree,desc)
-
-    def enable_update_tags(self):
-        self.tag_cllbcks = []
-
-        tasks = self.req.get_tasks_tree()
-        for event in 'node-added-inview', 'node-modified-inview', 'node-deleted-inview':
-            handle = tasks.register_cllbck(event, self._update_tags)
-            self.tag_cllbcks.append((event, handle))
-
-    def disable_update_tags(self):
-        tasks = self.req.get_tasks_tree()
-        for event, handle in self.tag_cllbcks:
-            tasks.deregister_cllbck(event, handle)
-        self.tag_cllbcks = []
-
-    def _update_tags(self, node_id, path):
-        tree = self.req.get_tag_tree().get_basetree()
-        tree.refresh_node('gtg-tags-all')
-        tree.refresh_node('gtg-tags-none')
-
-        search_parent = self.req.get_tag(CoreConfig.SEARCH_TAG)
-        for search_tag in search_parent.get_children():
-            tree.refresh_node(search_tag)
-
-        task = self.req.get_task(node_id)
-        if task:
-            for t in self.req.get_task(node_id).get_tags():
-                tree.refresh_node(t.get_name())
     
     def active_tasks_treeview(self,tree):
         #Build the title/label/tags columns
@@ -457,7 +416,7 @@ class TreeviewFactory():
         
     
     def build_task_treeview(self,tree,desc):
-        treeview = AutoExpandTreeView(tree,desc)
+        treeview = TreeView(tree,desc)
         #Now that the treeview is done, we can polish
         treeview.set_main_search_column('label')
         treeview.set_expander_column('label')
@@ -474,7 +433,7 @@ class TreeviewFactory():
         return treeview
         
     def build_tag_treeview(self,tree,desc):
-        treeview = AutoExpandTreeView(tree,desc)
+        treeview = TreeView(tree,desc)
         # Global treeview properties
         treeview.set_property("enable-tree-lines", False)
         treeview.set_rules_hint(False)
