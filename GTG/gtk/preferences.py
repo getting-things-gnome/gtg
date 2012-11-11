@@ -22,7 +22,7 @@
 import os
 import shutil
 
-import gtk
+from gi.repository import Gtk
 from xdg.BaseDirectory import xdg_config_home
 
 from GTG import _
