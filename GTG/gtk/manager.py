@@ -20,10 +20,8 @@
 """
 Manager loads the prefs and launches the gtk main loop
 """
-try:
-    from gi.repository import GObject, Gtk
-except: # pylint: disable-msg=W0702
-    raise SystemExit(1)
+
+from gi.repository import GObject, Gtk
 
 import GTG
 from GTG.gtk.delete_dialog   import DeletionUI
