@@ -126,7 +126,7 @@ class ConfigurePanel(gtk.VBox):
         self.refresh_sync_status()
         self.parameters_ui.refresh(self.backend)
         self.image_icon.set_from_pixbuf(self.dialog.get_pixbuf_from_icon_name(\
-                                        self.backend.get_name(), 48, 48))
+                                        self.backend.get_name(), 48))
 
     def refresh_title(self, sender = None, data = None):
         '''
