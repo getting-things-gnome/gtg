@@ -31,11 +31,8 @@ from GTG.tools.import_liblarch import import_liblarch
 
 def x_is_running():
     """ Return True if GTG could be displayed on the current XServer """
-    return True
-
-    #FIXME there is a bug with Screen().get_display() that throws a Segmentation fault
     try:
-        if Screen().get_display():
+        if Screen().get_default().get_display():
             return True
     except RuntimeError, exc:
         print(exc)

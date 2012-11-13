@@ -234,7 +234,6 @@ class TaskBrowser(GObject.GObject):
         """
         Show the about dialog
         """
-        Gtk.about_dialog_set_url_hook(lambda dialog, url: openurl(url))
         self.about.set_website(info.URL)
         self.about.set_website_label(info.URL)
         self.about.set_version(info.VERSION)
