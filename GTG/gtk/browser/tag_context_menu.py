@@ -37,8 +37,7 @@ class TagContextMenu(Gtk.Menu): # pylint: disable-msg=R0904
     """
 
     def __init__(self, req, vmanager, tag=None):
-        self.__gobject_init__()
-        GObject.GObject.__init__(self)
+        Gtk.Menu.__init__(self)
         self.req = req
         self.vmanager = vmanager
         self.tag = tag
