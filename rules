@@ -1,11 +1,16 @@
 #!/usr/bin/make -f
 
 %:
-	dh $@ --buildsystem=python_distutils
+	dh $@ --with python2 --buildsystem=python_distutils
 
 clean:
-	dh $@ --buildsystem=python_distutils
+	dh $@ --with python2 --buildsystem=python_distutils
 	rm -fr build
 
 override_dh_auto_install:
 	dh_auto_install -- --install-scripts=/usr/share/gtg --install-lib=/usr/share/gtg
+	find debian/gtg -name "*.egg-info" -delete
+
+override_dh_fixperms:
+	chmod +x $(CURDIR)/debian/gtg/usr/share/gtg/GTG/plugins/export/export_templates/script_pocketmod
+	dh_fixperms

@@ -1,115 +1,123 @@
-gtg (0.3) quantal; urgency=low
+gtg (0.3-1) experimental; urgency=low
 
-  * Hide tasks with due date someday, #931376
-  * New Date class by Paul Kishimoto and Izidor Matušov
-  * Parse due:3 as next 3rd day in month
-  * Urgency Color plugin by Wolter Hellmund
-  * Allow GTG to run from different locations than /usr/share or /usr/local/share
-  * Removed module GTG.tools.openurl and replaced by python's webbrowser.open
-  * Removed import_json plugin
-  * Saved searches could have assigned color
-  * Stopped links from opening when accidently letting go of mouse button while selecting them, #823339, by Steve Scheel
-  * Search through DBus
-  * GTCli handles error better
-  * GTCli allows search through DBus
-  * Small change to QuickAdd toolbar:
-    - there is allowed whitespace after due: and others, i.e. "due: 2012-04-01" is parsed as a valid attribute
-    - added start: which has the same meaning as defer:
-  * Automatic restore a backup XML file if the original XML file could not be loaded
-  * Backends were renamed to Synchronization Services, by Anant Gupta
-  * Reimplement the tag context menu as a widget, in order to - hopefully - be able to implement an enhanced context menu with, for instance, a color picker.
-  * Background Colors option was moved from View menu into preferences dialog
-  * Reorganised notification area menu (New task, Show browser, <tasks>, Quit)
-  * Added an option to import local (development) version of liblarch instead of system installed one
-  * Fix for bug #995740: (no title task) through quickadd bar, by Nimit Shah
-  * New tag editor
-  * Fix bugs #1003872 and #1002067: Correct titles to Preferences and Synchronization Services Dialogs, by Alan Gomes
-  * Improved Export plugin, export to PDF works now, by Izidor Matušov
-  * Added -t option to distinguish between multiple instances of GTG
-  * Fix for bug #826916 by Nimit Shah
-  * Fix for bug #1018331: (gtg more interactive) by Nimit Shah
-  * User documentation for GTG, written by Radina Matic, integrated in GTG by Bertrand Rousseau
-  * It is not possible to add another instance of local file synchronization service
-  * Fixes for bugs #906516, #1002160 (task urgency color plugin), by Wolter Hellmund
-  * Fix for bug #1001012: Notification area icon should change color when there are urgent tasks, by Antonio Roquentin
-  * Saner implementation of set_due_date
-  * Conform to PEP394 (use python2 instead of python)
-  * Fix for bug #629683: update initial tutorial for 0.3
-  * Fix for bug #615027: Introductory task set should suggest organizing tasks in a tag hierarchy
-  * Fix for bug #1026264: Write user documentation for search/smart tag
-  * Fix for bug #1020611: Use deafult configuration when config is corrupted by Abhiram
-  * Fix for bug #1013869: Saved searches can't be deleted when GTG crashes, by Antonio Roquentin
-  * Added option to change font used in task editor by Abhiram
-  * Fix for bug #984847: setup.py install doesn't install icons on right place, by Alan Gomes
-  * Fix for bug #1026312: Numbers of tasks in tags pane disappear after a regular search, by Antonio Roquentin
-  * Cleaned gtg.desktop file
-  * Re-enabled support for gtg:// URI
-  * Fix for bug #1026400: script_pocketmod doesn't have execute permission
-  * Fix for bug #1027817: Export plugin: changing output format moves widgets up and down
-  * Fix for bug #1027844: Fuzzy date shouldn't become start date
-  * Save backups into backup/ folder, creates backups of tags.xml closes #993920
-  * Search filter is deleted on empty search if tag_pane is closed, by Stefan Handschuh, closes #996236
-  * Pickle files for synchronization services are backuped to prevent loosing files, closes #1036554
-  * Fix for bug #897425: Write manpage for gtcli and update other manpages as well
-  * Fix for bug-1037051 (Due date is not set for a new subtask), by Nimit Shah
-  * Fix for bug #1036955: Due date is not preselected when start date is filled, by Steve Scheel
-  * Fix for bug #1045036: Slovak Translation Updated by Slavko
-  * Remove use of liblarch's "transparent" concept (since it's been removed from liblarch), fixes bugs #1001962, #1001962, #1069257, #1069963: intermediary tags, counter initialization, and regressions caused by initial versions of the patch
-  * Fix for bug #1038662: Undefined due dates in subtasks should always stay undefined and displayed as such in the editor
-  * Fix for bug #1036695: Date constraints after drag and drop not applied
+  * New upstream release.
+    - Fix crash with liblarch module (Closes: #669872).
+  * Remove all Debian patches, applied upstream.
+  * debian/control:
+    - Depend on python-liblarch (>= 2.1.0).
+    - Drop python-liblarch-gtk dependency.
+    - Add yelp to Recommends field.
+    - Add plugin dependencies to Suggests field, also including
+      librsvg2-common for Tomboy/Gnote (Closes: #674613).
+    - Bump Standards-Version to 3.9.4, no changes required.
+  * debian/copyright:
+    - Refresh copyright information.
+  * debian/links:
+    - Provide gtcli symlink.
+  * debian/rules:
+    - Set executable bit to script_pocketmod.
 
- -- Bertrand Rousseau <bertrand.rousseau@gmail.com>  Tue, 06 Nov 2012 20:00:00 +0100
+ -- Luca Falavigna <dktrkranz@debian.org>  Sat, 10 Nov 2012 10:44:36 +0100
 
-gtg (0.2.9-1) oneiric; urgency=low
+gtg (0.2.9-1) unstable; urgency=low
 
-  * Big refractorization of code, now using liblarch
-  * Extended backend system to support multiple backends by Luca Invernizzi
-  * Backend GUI configuration by Luca Invernizzi
-  * Backends:
-    - Added Mantis Bug Tracker backend, by Alayn Gortazar
-    - Added Tomboy/Gnote backend, by Luca Invernizzi
-    - Added Launchpad backend, by Luca Invernizzi
-    - Added Twitter/Identica backend, by Luca Invernizzi
-  * Graphical crah handler, thanks to Acire and python-snippets
-  * Command line tool based on DBus interface of GTG, by Bryce Harrington
-  * Added search feature, by João Ascenso
-  * Rewritten notification area plugin with showing only 10 most doable tasks from Workview, by Izidor Matušov
-  * Setting start/due date by a right click menu in the task browser, by Fabio Prina & Kevin Mehall
-  * Right click behaviour in the task treeview is now consistant with other GNOME applications, by Jonathan Barnoud
-  * Rework of deleting dialog
-  * Previewing task content (gmail-like-ui), #384049, by Luca Invernizzi and Kevin Mehall
-  * Attaching file to a task by drag-and-dropping it on the task or writing file:// URI
-  * Added script for anonymizing task files; Marko Kevac
-  * "Sexy" export template, created by Duncan Lock
-  * DBus API is now CamelCase (be sure to update your personal scripts), by Lionel Dricot
-  * Fuzzy date "Later" was renamed to "Someday"
-  * Daily backup of gtg_tasks.xml
-  * Save perferences, window positions and statuses immediately after a change
-  * Fixed crash traceback when pressing 'delete' key, by Jeff Oliver
-  * Fixed url autolinking for http(s) schemes, by Madhumitha Viswanathan
-  * Underscore characters in tasks not treated as accelerators (bug #676088) fixed, by Madhumitha Viswanathan
-  * Fixed several bugs about hamster integration, by Richard Klein
-  * Added link to web documentation in Help menu, by Ronan Jouchet
-  * Fixed bug with data consistency #579189 (empty tags.xml), by Marko Kevac
-  * Added samba bugzilla to the bugzilla plugin, by Jelmer Vernoij
-  * Fixed bug #532392, a start date is later than a due date, by Volodymyr Floreskul
-  * support for gtg:// URIs by Luca Invernizzi
-  * Fixed bug #584667, indicating missing plugin dependencies, by Erin McLaughlin
-  * Add a new tag dialog keeps the previous value, by Izidor Matušov
-  * Added keyword bko for recognizing and linking KDE bugs, by Zimin Huango
-  * Several usability improvements, by Jean-François Fortin Tam
-  * Several code refratorings by Paul Kishimoto
+  * New upstream release (Closes: #668096).
+    - Implement a search text box (Closes: #650279).
+    - Window title reflects active tasks (LP: #537096).
+    - Fix misbehaviours of the indicator applet (LP: #548836, #676353).
+    - Fix crash when selecting notification area plugin twice (LP: #550321).
+    - Fix sorting of tasks by date (LP: #556159).
+    - Fix excessive delays at startup (LP: #558600).
+    - Fix crash with dates having unknown values (LP: #561449).
+    - Fix crash issued when pressing delete key (LP: #583103).
+    - Keep notification plugin enabled after logoff (LP: #617257).
+    - Fix Hamster plugin to work with recent Hamster versions (LP: #620313).
+    - No longer use non-unicode strings (LP: #680632).
+    - New RTM sync mechanism (LP: #753327).
+    - Fix crashes while handling XML storage file (LP: #916474, #917634).
+  * debian/patches/*:
+    - Drop all patches, they have been merged upstream.
+  * debian/patches/shebang.patch:
+    - Fix shebang line.
+  * debian/patches/manpages.patch:
+    - Fix some groff warnings in gtg_new_task man page
+  * debian/compat:
+    - Bump compatibility level to 9.
+  * debian/control:
+    - Bump X-Python-Version to >= 2.6.
+    - Add python-liblarch and python-liblarch-gtk to Depends field.
+    - Add python-cheetah, python-geoclue, python-gnomekeyring,
+      python-launchpadlib and python-suds to Suggests field.
+    - Bump Standards-Version to 3.9.3.
+  * debian/copyright:
+    - Refresh copyright information.
+    - Format now points to copyright-format site.
+  * debian/rules:
+    - Make gtcli_bash_completion script executable.
+  * debian/watch:
+    - Update watch file.
 
- -- Izidor Matušov <izidor.matusov@gmail.com>  Mon, 13 Feb 2012 13:23:55 +0100
+ -- Luca Falavigna <dktrkranz@debian.org>  Tue, 10 Apr 2012 23:08:21 +0200
 
-gtg (0.2.5-3) oneiric; urgency=low
+gtg (0.2.4-6) unstable; urgency=low
 
-  * New upstream bugfix release.
-    - Downgrade data from development GTG code (LP: #827658)
+  * debian/patches/*.patch:
+    - Use DEP3 headers in patches.
+  * debian/patches/select_right_clicked_tasks.patch:
+    - Change selection when right-clicking on a different task,
+      patch cherry-picked by Jérôme Guelfucci (Closes: #624225).
+  * debian/control:
+    - Add python-simplejson to Recommends (Closes: #585629).
+    - Bump Standards-Version to 3.9.2.
 
- -- Izidor Matušov <izidor.matusov@gmail.com>  Thu, 01 Dec 2011 18:11:40 +0100
+ -- Luca Falavigna <dktrkranz@debian.org>  Thu, 11 Aug 2011 21:20:24 +0200
 
-gtg (0.2.4-1~karmic1) karmic; urgency=low
+gtg (0.2.4-5) unstable; urgency=low
+
+  * Switch to dh_python2.
+  * debian/patches/gnome2.patch:
+    - Drop obsolete python-gnome2 methods.
+  * debian/control:
+    - Depend on python-simplejson | python (>= 2.6).
+    - Drop python-gnome2 dependency (Closes: #611097).
+  * debian/copyright:
+    - Update copyright years.
+  * debian/rules:
+    - Delete unused .egg-info file.
+
+ -- Luca Falavigna <dktrkranz@debian.org>  Sun, 06 Feb 2011 18:53:44 +0100
+
+gtg (0.2.4-4) unstable; urgency=low
+
+  * debian/patches/x_is_running.patch:
+    - Check if a display is available instead of relying on xset being
+      installed and functional (Closes: #595430).
+  * debian/patches/locale.patch:
+    - Use bindtextdomain to simplify locale handling (Closes: #595436, #595440).
+
+ -- Luca Falavigna <dktrkranz@debian.org>  Sun, 05 Sep 2010 15:03:35 +0200
+
+gtg (0.2.4-3) unstable; urgency=low
+
+  * debian/patches/xml_temp_file.patch:
+    - Use temp files to temporarily store GTG status, to avoid
+      generating empty XML files (Closes: #590043).
+  * debian/control:
+    - Bump Standards-Version to 3.9.1, no changes required.
+
+ -- Luca Falavigna <dktrkranz@debian.org>  Wed, 11 Aug 2010 09:08:39 +0200
+
+gtg (0.2.4-2) unstable; urgency=low
+
+  * debian/patches/test_executable.patch:
+    - Do not launch program to see if it is available, check if it is
+      installed and has executable bit enabled instead.
+  * debian/patches/reaper_hang.patch:
+    - Do not hang on quit due to "completed tasks remover" plugin.
+
+ -- Luca Falavigna <dktrkranz@debian.org>  Thu, 24 Jun 2010 20:22:12 +0200
+
+gtg (0.2.4-1) unstable; urgency=low
 
   * New upstream bugfix release.
     - Restore export_templates directory (Closes: #574454).
