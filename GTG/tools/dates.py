@@ -69,6 +69,8 @@ FUNCS = {
 
 # ISO 8601 date format
 ISODATE = '%Y-%m-%d'
+#get date format from locale
+locale_format = locale.nl_langinfo(locale.D_FMT)
 
 
 def convert_datetime_to_date(aday):
@@ -84,7 +86,8 @@ class Date(object):
     can be constructed with:
       - the fuzzy strings 'now', 'soon', '' (no date, default), or 'someday'
       - a string containing an ISO format date: YYYY-MM-DD, or
-      - a datetime.date or Date instance.
+      - a datetime.date or Date instance, or
+      - a string containing a locale format date.
     """
     _real_date = None
     _fuzzy = None
@@ -104,15 +107,21 @@ class Date(object):
             self._fuzzy = value._fuzzy # pylint: disable-msg=W0212
         elif isinstance(value, str) or isinstance(value, unicode):
             try:
-                da_ti = datetime.datetime.strptime(value, ISODATE).date()
+                da_ti = datetime.datetime.strptime(value, locale_format).date()
                 self._real_date = convert_datetime_to_date(da_ti)
             except ValueError:
                 # it must be a fuzzy date
                 try:
-                    value = str(value.lower())
-                    self._parse_init_value(LOOKUP[value])
-                except KeyError:
-                    raise ValueError("Unknown value for date: '%s'" % value)
+                    #allow both locale format and ISO format
+                    da_ti = datetime.datetime.strptime(value, ISODATE).date()
+                    self._real_date = convert_datetime_to_date(da_ti)
+                except ValueError:
+                    # it must be a fuzzy date
+                    try:
+                        value = str(value.lower())
+                        self._parse_init_value(LOOKUP[value])
+                    except KeyError:
+                        raise ValueError("Unknown value for date: '%s'" % value)
         elif isinstance(value, int):
             self._fuzzy = value
         else:
