@@ -35,7 +35,7 @@ PLUGINS_COL_SHORT_DESC = 3
 PLUGINS_COL_ACTIVATABLE = 4
 
 
-def plugin_icon(column, cell, store, iterator): # pylint: disable-msg=W0613
+def plugin_icon(column, cell, store, iterator, data): # pylint: disable-msg=W0613
     """ Callback to set the content of a PluginTree cell.
 
     See PluginsDialog._init_plugin_tree().
@@ -205,12 +205,12 @@ class PluginsDialog:
         icon_renderer = Gtk.CellRendererPixbuf()
         icon_renderer.set_property('stock-size', Gtk.IconSize.SMALL_TOOLBAR)
         icon_renderer.set_property('xpad', 3)
-        column.pack_start(icon_renderer, False, True, 0)
+        column.pack_start(icon_renderer, False)
         column.set_cell_data_func(icon_renderer, plugin_icon)
         # text renderer for the plugin name column
         name_renderer = Gtk.CellRendererText()
         name_renderer.set_property('ellipsize', Pango.EllipsizeMode.END)
-        column.pack_start(name_renderer, True, True, 0)
+        column.pack_start(name_renderer, True)
         column.set_cell_data_func(name_renderer, plugin_markup, self)
 
         self.plugin_tree.append_column(column)
@@ -301,7 +301,10 @@ class PluginsDialog:
         plugin_id = self.plugin_store.get_value(iterator, PLUGINS_COL_ID)
         plugin = self.pengine.get_plugin(plugin_id)
 
-        self.plugin_about.set_name(plugin.full_name)
+        #FIXME About plugin dialog looks much more different than it is in the current trunk
+        #FIXME repair it!
+        #FIXME Author is not usually set and is preserved from previous plugin... :/
+        self.plugin_about.set_program_name(plugin.full_name)
         self.plugin_about.set_version(plugin.version)
         authors = plugin.authors
         if isinstance(authors, str):

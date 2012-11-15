@@ -199,7 +199,7 @@ class PluginExport:
             GObject.TYPE_STRING, GObject.TYPE_STRING, GObject.TYPE_STRING)
         self.combo.set_model(templates_list)
         cell = Gtk.CellRendererText()
-        self.combo.pack_start(cell, True, True, 0)
+        self.combo.pack_start(cell, True)
         self.combo.add_attribute(cell, 'text', 1)
 
         self.export_dialog = builder.get_object("export_dialog")

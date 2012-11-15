@@ -79,7 +79,7 @@ class IconIndicator:
         else:
             self._icon = Gtk.StatusIcon()
             self._icon.set_from_icon_name(self.NORMAL_ICON)
-            self._icon.set_tooltip("Getting Things GNOME!")
+            self._icon.set_tooltip_text("Getting Things GNOME!")
             self._icon.set_visible(True)
             self._icon.connect('activate', leftbtn_callback)
             self._icon.connect('popup-menu', self._on_icon_popup)
@@ -275,14 +275,13 @@ class NotificationArea:
         menu = Gtk.Menu()
 
         #add "new task"
-        menuItem = Gtk.MenuItem()
-        menuItem.set_label(_('Add _New Task'))
+        #FIXME test this label... is it needed? play with it a little
+        menuItem = Gtk.MenuItem(label=_('Add _New Task'))
         menuItem.connect('activate', self.__open_task)
         menu.append(menuItem)
 
         # Show Main Window
-        show_browser = Gtk.MenuItem()
-        show_browser.set_label(_('_Show Main Window'))
+        show_browser = Gtk.MenuItem(label=_('_Show Main Window'))
         show_browser.connect('activate', self.__show_browser)
         menu.append(show_browser)
 
@@ -295,8 +294,7 @@ class NotificationArea:
         menu.append(Gtk.SeparatorMenuItem())
 
         #quit item
-        menuItem = gtk.MenuItem()
-        menuItem.set_label(_('_Quit'))
+        menuItem = Gtk.MenuItem(label=_('_Quit'))
         menuItem.connect('activate', self.__view_manager.close_browser)
         menu.append(menuItem)
 
@@ -362,7 +360,8 @@ class NotificationArea:
         title = self.__create_short_title(task.get_title())
 
         #creating the menu item
-        menu_item = Gtk.MenuItem(title, False)
+        #FIXME test for regression: create a task like Hello_world (_ might be converted)
+        menu_item = Gtk.MenuItem(label=title)
         menu_item.connect('activate', self.__open_task, tid)
         self.__tasks_menu.add(tid, (task.get_due_date(), title), menu_item)
 
