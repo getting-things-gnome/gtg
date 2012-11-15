@@ -53,7 +53,7 @@ class CheckBoxUI(Gtk.HBox):
         self.checkbutton =Gtk.CheckButton(label = self.text)
         self.checkbutton.set_active(self.backend.get_parameters()[self.parameter])
         self.checkbutton.connect("toggled", self.on_modified)
-        self.pack_start(self.checkbutton, False)
+        self.pack_start(self.checkbutton, False, True, 0)
 
     def commit_changes(self):
         '''Saves the changes to the backend parameter'''

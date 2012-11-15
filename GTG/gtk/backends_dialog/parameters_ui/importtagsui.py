@@ -64,23 +64,23 @@ class ImportTagsUI(Gtk.VBox):
         title_label = Gtk.Label()
         title_label.set_alignment(xalign = 0, yalign = 0)
         title_label.set_markup("<big><b>%s</b></big>" % self.title)
-        self.pack_start(title_label, True)
-        align = Gtk.Alignment.new(xalign = 0, yalign = 0, xscale = 1)
+        self.pack_start(title_label, True, True, 0)
+        align = Gtk.Alignment.new(0, 0, 1, 0)
         align.set_padding(0, 0, 10, 0)
-        self.pack_start(align, True)
+        self.pack_start(align, True, True, 0)
         vbox = Gtk.VBox()
         align.add(vbox)
         self.all_tags_radio = Gtk.RadioButton(group = None, \
                                               label = self.anybox_text)
-        vbox.pack_start(self.all_tags_radio, True)
+        vbox.pack_start(self.all_tags_radio, True, True, 0)
         self.some_tags_radio = Gtk.RadioButton(group = self.all_tags_radio,
                                                label = self.somebox_text)
         self.some_tags_radio.set_size_request(width = width, height = -1)
         hbox = Gtk.HBox()
-        vbox.pack_start(hbox, True)
-        hbox.pack_start(self.some_tags_radio, False)
+        vbox.pack_start(hbox, True, True, 0)
+        hbox.pack_start(self.some_tags_radio, False, True, 0)
         self.tags_entry = Gtk.Entry()
-        hbox.pack_start(self.tags_entry, True)
+        hbox.pack_start(self.tags_entry, True, True, 0)
 
     def on_changed(self, radio, data = None):
         ''' Signal callback, executed when the user modifies something.

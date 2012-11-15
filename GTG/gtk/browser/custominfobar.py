@@ -74,7 +74,7 @@ class CustomInfoBar(Gtk.InfoBar):
         self.label.set_line_wrap(True)
         self.label.set_alignment(0.5, 0.5)
         self.label.set_justify(Gtk.Justification.FILL)
-        content_hbox.pack_start(self.label, True, True)
+        content_hbox.pack_start(self.label, True, True, 0)
 
     def _on_error_response(self, widget, event):
         '''
@@ -195,7 +195,7 @@ class CustomInfoBar(Gtk.InfoBar):
         button = Gtk.Button(stock = Gtk.STOCK_OK)
         button.connect("clicked", self._on_text_confirmed)
         button.set_size_request(-1, 40)
-        vbox.pack_start(button, False)
+        vbox.pack_start(button, False, True, 0)
         self.dialog.show_all()
         self.hide()
 

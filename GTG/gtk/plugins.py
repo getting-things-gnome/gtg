@@ -210,7 +210,7 @@ class PluginsDialog:
         # text renderer for the plugin name column
         name_renderer = Gtk.CellRendererText()
         name_renderer.set_property('ellipsize', Pango.EllipsizeMode.END)
-        column.pack_start(name_renderer, True)
+        column.pack_start(name_renderer, True, True, 0)
         column.set_cell_data_func(name_renderer, plugin_markup, self)
 
         self.plugin_tree.append_column(column)

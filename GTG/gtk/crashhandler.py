@@ -181,7 +181,7 @@ def show_error_window(error_string, add_apport_button=False):
     label = Gtk.Label()
     label.set_markup("<b>%s</b>" % _("It looks like an error has occurred."))
     label.set_alignment(0, 0.5)
-    dialog.get_content_area().pack_start(label, False)
+    dialog.get_content_area().pack_start(label, False, True, 0)
 
     # message Label
     global MESSAGE
@@ -196,7 +196,7 @@ def show_error_window(error_string, add_apport_button=False):
 
     text_label.connect("size-allocate", text_label_size_allocate)
     if not MESSAGE == "":
-        dialog.get_content_area().pack_start(text_label, False)
+        dialog.get_content_area().pack_start(text_label, False, True, 0)
 
     # TextView with error_string
     buffer = Gtk.TextBuffer()
@@ -218,7 +218,7 @@ def show_error_window(error_string, add_apport_button=False):
     expander = Gtk.expander_new_with_mnemonic(_("_Details"))
     expander.add(scrolled)
     expander.connect('activate', on_expanded)
-    dialog.get_content_area().pack_start(expander, True)
+    dialog.get_content_area().pack_start(expander, True, True, 0)
 
     # add buttons
     if add_apport_button:

@@ -57,11 +57,11 @@ class BackendsCombo(Gtk.ComboBox):
         '''Configure the cell renderers'''
         #Text renderer
         text_cell = Gtk.CellRendererText()
-        self.pack_start(text_cell, False)
+        self.pack_start(text_cell, False, True, 0)
         self.set_text_column(self.COLUMN_HUMAN_NAME)
         #Icon renderer
         pixbuf_cell = Gtk.CellRendererPixbuf()
-        self.pack_start(pixbuf_cell, False)
+        self.pack_start(pixbuf_cell, False, True, 0)
         self.add_attribute(pixbuf_cell, "pixbuf", self.COLUMN_ICON)
 
     def refresh(self):

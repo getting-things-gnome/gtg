@@ -853,14 +853,14 @@ class TaskBrowser(GObject.GObject):
                 if selected_search is not None:
                     my_tag = self.req.get_tag(selected_search)
                     self.tagpopup.set_tag(my_tag)
-                    self.tagpopup.popup(None, None, None, event.button, time)
+                    self.tagpopup.popup(None, None, None, None, event.button, time)
                 elif len(selected_tags) > 0:
                     # Then we are looking at single, normal tag rather than
                     # the special 'All tags' or 'Tasks without tags'. We only
                     # want to popup the menu for normal tags.
                     my_tag = self.req.get_tag(selected_tags[0])
                     self.tagpopup.set_tag(my_tag)
-                    self.tagpopup.popup(None, None, None, event.button, time)
+                    self.tagpopup.popup(None, None, None, None, event.button, time)
                 else:
                     self.reset_cursor()
             return True
@@ -1493,7 +1493,7 @@ class TaskBrowser(GObject.GObject):
         self.vbox_toolbars.foreach(self.__remove_backend_infobar, backend_id)
         #add a new one
         infobar = CustomInfoBar(self.req, self, self.vmanager, backend_id)
-        self.vbox_toolbars.pack_start(infobar, True)
+        self.vbox_toolbars.pack_start(infobar, True, True, 0)
         return infobar
 
 #### SEARCH RELATED STUFF #####################################################

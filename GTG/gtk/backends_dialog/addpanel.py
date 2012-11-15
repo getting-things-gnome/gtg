@@ -54,9 +54,9 @@ class AddPanel(Gtk.VBox):
         self._fill_top_hbox(top)
         self._fill_middle_hbox(middle)
         self._fill_bottom_hbox(bottom)
-        self.pack_start(top, False)
-        self.pack_start(middle, True)
-        self.pack_start(bottom, True)
+        self.pack_start(top, False, True, 0)
+        self.pack_start(middle, True, True, 0)
+        self.pack_start(bottom, True, True, 0)
         self.set_border_width(12)
 
     def _fill_top_hbox(self, hbox):
@@ -70,8 +70,8 @@ class AddPanel(Gtk.VBox):
         label.set_alignment(0, 0.5)
         self.combo_types = BackendsCombo(self.dialog)
         self.combo_types.get_child().connect('changed', self.on_combo_changed)
-        hbox.pack_start(label, False, True)
-        hbox.pack_start(self.combo_types, False, True)
+        hbox.pack_start(label, False, True, True, 0)
+        hbox.pack_start(self.combo_types, False, True, 0)
 
     def _fill_middle_hbox(self, hbox):
         '''
@@ -95,19 +95,19 @@ class AddPanel(Gtk.VBox):
         self.label_modules.set_alignment(xalign = 0, yalign = 0)
         self.image_icon = Gtk.Image()
         self.image_icon.set_size_request(128, 128)
-        align_image = Gtk.Alignment.new(xalign = 1, yalign = 0)
+        align_image = Gtk.Alignment.new(1, 0, 0, 0)
         align_image.add(self.image_icon)
         labels_vbox = Gtk.VBox()
-        labels_vbox.pack_start(self.label_description, True, True, padding=10)
-        labels_vbox.pack_start(self.label_author, True, True)
-        labels_vbox.pack_start(self.label_modules, True, True)
+        labels_vbox.pack_start(self.label_description, True, True, 10)
+        labels_vbox.pack_start(self.label_author, True, True, 0)
+        labels_vbox.pack_start(self.label_modules, True, True, 0)
         low_hbox = Gtk.HBox()
-        low_hbox.pack_start(labels_vbox, True, True)
-        low_hbox.pack_start(align_image, True, True)
+        low_hbox.pack_start(labels_vbox, True, True, 0)
+        low_hbox.pack_start(align_image, True, True, 0)
         vbox = Gtk.VBox()
-        vbox.pack_start(self.label_name, True, True)
-        vbox.pack_start(low_hbox, True, True)
-        hbox.pack_start(vbox, True, True)
+        vbox.pack_start(self.label_name, True, True, 0)
+        vbox.pack_start(low_hbox, True, True, 0)
+        hbox.pack_start(vbox, True, True, 0)
 
     def _fill_bottom_hbox(self, hbox):
         '''
@@ -120,9 +120,7 @@ class AddPanel(Gtk.VBox):
         cancel_button.connect('clicked', self.on_cancel)
         self.ok_button = Gtk.Button(stock = Gtk.STOCK_OK)
         self.ok_button.connect('clicked', self.on_confirm)
-        align =Gtk.Alignment.new(xalign = 0.5, \
-                             yalign = 1, \
-                             xscale = 1)
+        align =Gtk.Alignment.new(0.5, 1, 1, 0)
         align.set_padding(0, 10, 0, 0)
         buttonbox = Gtk.HButtonBox()
         buttonbox.set_layout(Gtk.ButtonBoxStyle.EDGE)
@@ -130,7 +128,7 @@ class AddPanel(Gtk.VBox):
         buttonbox.set_child_secondary(cancel_button, False)
         buttonbox.add(self.ok_button)
         align.add(buttonbox)
-        hbox.pack_start(align, True, True)
+        hbox.pack_start(align, True, True, 0)
 
     def refresh_backends(self):
         '''Populates the combo box containing the available backends'''
