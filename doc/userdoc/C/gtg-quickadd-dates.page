@@ -29,7 +29,7 @@
 
     <p><em style="strong">defer:date</em></p>
 
- <p>This way you can apply a due date or a defer date. Dates can be formatted as yyyy-mm-dd (for example 2012-04-01) or yyyymmdd (20120401) or mmdd (0401 - the year being implicitly the current one) or today, tomorrow or a weekday name (due:monday means due next Monday). Dates which are added in this way will not appear in the task title.</p>
+ <p>This way you can apply a due date or a defer date. Dates can be formatted as dates in your locale or yyyy-mm-dd (for example 2012-04-01) or yyyymmdd (20120401) or mmdd (0401 - the year being implicitly the current one) or today, tomorrow or a weekday name (due:monday means due next Monday). Dates which are added in this way will not appear in the task title.</p>
 
     <p>Examples</p>
 
