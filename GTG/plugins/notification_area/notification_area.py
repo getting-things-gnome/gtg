@@ -19,7 +19,7 @@
 import os
 from gi.repository import Gtk
 try:
-    from gi.repository import AppIndicator as appindicator
+    from gi.repository import AppIndicator3 as appindicator
 except:
     pass
 
