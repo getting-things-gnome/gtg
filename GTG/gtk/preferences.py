@@ -90,8 +90,8 @@ class PreferencesDialog:
         self.fontbutton = builder.get_object("fontbutton")
         editor_font = self.config.get("font_name")
         if editor_font == "":
-            style = self.dialog.get_style()
-            editor_font = str(style.font_desc)
+            font = self.dialog.get_style_context().get_font(Gtk.StateFlags.NORMAL)
+            editor_font = font.to_string()
         self.fontbutton.set_font_name(editor_font)
 
         builder.connect_signals({
