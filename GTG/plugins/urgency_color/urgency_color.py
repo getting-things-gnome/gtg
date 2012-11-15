@@ -16,6 +16,7 @@
 
 from math import ceil
 from gi.repository import Gtk
+from gi.repository import Gdk
 import os
 
 from GTG.tools.dates import Date

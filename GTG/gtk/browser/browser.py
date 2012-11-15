@@ -234,6 +234,8 @@ class TaskBrowser(GObject.GObject):
         """
         Show the about dialog
         """
+        #FIXME about dialog behaves differently in GTK2 and in GTK3
+        #FIXME play with it and make it usuable!!!
         self.about.set_website(info.URL)
         self.about.set_website_label(info.URL)
         self.about.set_version(info.VERSION)
