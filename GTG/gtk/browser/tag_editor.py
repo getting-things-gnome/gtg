@@ -146,17 +146,24 @@ class TagIconSelector(Gtk.Window): # pylint: disable-msg=R0904
         self.move(pos_x, pos_y)
         self.grab_add()
         #We grab the pointer in the calendar
+#FIXME THIS DOES NOT WORK!!!!!!!
         Gdk.pointer_grab(
-            self.window,
+            self.get_window(),
             True,
-            Gdk.ModifierType.BUTTON1_MASK | Gdk.ModifierType.MOD2_MASK
+            #Gdk.ModifierType.BUTTON1_MASK | Gdk.ModifierType.MOD2_MASK,
+#FIXME!!!! JUST GUESSING THE TYPE
+            Gdk.EventMask.ALL_EVENTS_MASK,
+            None,
+            None,
+            0
         )
         self.connect('button-press-event', self.__focus_out)
 
     def close_selector(self):
         """Hides the window"""
         self.hide()
-        Gdk.pointer_ungrab()
+#FIXME!!!
+        Gdk.pointer_ungrab(0)
         self.grab_remove()
 
     def get_selected_icon(self):
@@ -402,8 +409,11 @@ class TagEditor(Gtk.Window): # pylint: disable-msg=R0904
         """Callback: displays the tag icon selector widget next
         to the button."""
         rect = self.ti_bt.get_allocation()
-        pos_x, pos_y = \
-            self.ti_bt.window.get_origin() # pylint: disable-msg=E1101
+        #print self.ti_bt.get_window().get_origin() # pylint: disable-msg=E1101
+#FIXME
+        result, pos_x, pos_y = \
+            self.ti_bt.get_window().get_origin() # pylint: disable-msg=E1101
+            #self.ti_bt.window.get_origin() # pylint: disable-msg=E1101
         self.tag_icon_selector.show_at_position(pos_x+rect.x+rect.width+2, \
             pos_y+rect.y)
         if self.tag.get_attribute('icon') is not None:
