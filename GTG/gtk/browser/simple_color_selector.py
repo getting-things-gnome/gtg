@@ -264,7 +264,8 @@ class SimpleColorSelector(Gtk.VBox): # pylint: disable-msg=R0904,C0301
         """Callback: when adding a new color, show the color definition
         window, update the model, notifies the parent."""
         color_dialog = Gtk.ColorSelectionDialog(_('Choose a color'))
-        colorsel = color_dialog.colorsel
+#FIXME
+        colorsel = color_dialog.get_color_selection()
         if self.selected_col is not None:
             color = Gdk.color_parse(self.selected_col.color)
             colorsel.set_current_color(color) # pylint: disable-msg=E1101
@@ -272,7 +273,9 @@ class SimpleColorSelector(Gtk.VBox): # pylint: disable-msg=R0904,C0301
         new_color = colorsel.get_current_color() # pylint: disable-msg=E1101
         # Check response_id and set color if required
         if response == Gtk.ResponseType.OK and new_color:
-            strcolor = Gtk.color_selection_palette_to_string([new_color])
+#FIXME
+            #strcolor = Gtk.color_selection_palette_to_string([new_color])
+            strcolor = new_color.to_string()
             # Add the color to the palette and notify
             if strcolor not in self.colors:
                 self.add_custom_color(strcolor)
