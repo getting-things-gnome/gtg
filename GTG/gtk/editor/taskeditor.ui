@@ -1,7 +1,6 @@
 <?xml version="1.0"?>
 <interface>
-  <requires lib="gtk+" version="2.16"/>
-  <!-- interface-naming-policy toplevel-contextual -->
+  <!-- interface-requires gtk+ 3.0 -->
   <object class="GtkWindow" id="TaskEditor">
     <property name="title" translatable="yes">Task</property>
     <property name="default_width">450</property>

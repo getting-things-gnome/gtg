@@ -42,9 +42,9 @@ class ModifyTagsDialog(object):
         self.last_apply_to_subtasks = False
 
     def _init_dialog(self):
-        """ Init .glade file """
+        """ Init GtkBuilder .ui file """
         builder = Gtk.Builder()
-        builder.add_from_file(GnomeConfig.MODIFYTAGS_GLADE_FILE)
+        builder.add_from_file(GnomeConfig.MODIFYTAGS_UI_FILE)
         builder.connect_signals({
             "on_modifytags_confirm":
                 self.on_confirm,

@@ -29,9 +29,8 @@ from GTG import _
 
 class GnomeConfig:
     current_rep = os.path.dirname(os.path.abspath(__file__))
-    GLADE_FILE  = os.path.join(current_rep, "taskbrowser.glade")
-    MODIFYTAGS_GLADE_FILE  = os.path.join(current_rep, "modifytags_dialog.glade")
-    TAGEDITOR_GLADE_FILE  = os.path.join(current_rep, "tageditor.glade")
+    BROWSER_UI_FILE  = os.path.join(current_rep, "taskbrowser.ui")
+    MODIFYTAGS_UI_FILE  = os.path.join(current_rep, "modifytags_dialog.ui")
 
     MARK_DONE               = _("Mark as Done")
     MARK_DONE_TOOLTIP       = _("Mark the selected task as done")

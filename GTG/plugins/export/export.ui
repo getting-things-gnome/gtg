@@ -1,7 +1,6 @@
 <?xml version="1.0"?>
 <interface>
-  <requires lib="gtk+" version="2.16"/>
-  <!-- interface-naming-policy toplevel-contextual -->
+  <!-- interface-requires gtk+ 3.0 -->
   <object class="GtkAccelGroup" id="accelgroup1"/>
   <object class="GtkWindow" id="export_dialog">
     <property name="title" translatable="yes">Export tasks</property>

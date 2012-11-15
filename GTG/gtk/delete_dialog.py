@@ -34,7 +34,7 @@ class DeletionUI():
         self.update_tags = []
         # Load window tree
         self.builder = Gtk.Builder() 
-        self.builder.add_from_file(ViewConfig.DELETE_GLADE_FILE)
+        self.builder.add_from_file(ViewConfig.DELETE_UI_FILE)
         signals = { "on_delete_confirm": self.on_delete_confirm,
                     "on_delete_cancel": lambda x: x.hide,}
         self.builder.connect_signals(signals)
