@@ -189,14 +189,14 @@ class TaskEditor(object):
         # Escape and Ctrl-W close the dialog. It's faster to call close
         # directly, rather than use the close button widget
         key, modifier = Gtk.accelerator_parse('Escape')
-        agr.connect_group(key, modifier, Gtk.AccelFlags.VISIBLE, self.close)
+        agr.connect(key, modifier, Gtk.AccelFlags.VISIBLE, self.close)
 
         key, modifier = Gtk.accelerator_parse('<Control>w')
-        agr.connect_group(key, modifier, Gtk.AccelFlags.VISIBLE, self.close)
+        agr.connect(key, modifier, Gtk.AccelFlags.VISIBLE, self.close)
 
         # Ctrl-N creates a new task
         key, modifier = Gtk.accelerator_parse('<Control>n')
-        agr.connect_group(key, modifier, Gtk.AccelFlags.VISIBLE, self.new_task)
+        agr.connect(key, modifier, Gtk.AccelFlags.VISIBLE, self.new_task)
 
         # Ctrl-Shift-N creates a new subtask
         insert_subtask = self.builder.get_object("insert_subtask")
@@ -322,9 +322,10 @@ class TaskEditor(object):
             elif result < 0:
                 abs_result = abs(result)
                 txt = ngettext("Due yesterday!", "Was %(days)d days ago", abs_result) % {'days': abs_result}
-        window_style = self.window.get_style()
-        color = str(window_style.text[Gtk.StateType.INSENSITIVE])
-        self.dayleft_label.set_markup("<span color='"+color+"'>"+txt+"</span>")
+
+        style_context = self.window.get_style_context()
+        color = style_context.get_color(Gtk.StateFlags.INSENSITIVE).to_color()
+        self.dayleft_label.set_markup("<span color='"+color.to_string()+"'>"+txt+"</span>")
 
         #Refreshing the tag list in the insert tag button
         taglist = self.req.get_used_tags()
