@@ -139,7 +139,7 @@ class ParametersUI(Gtk.VBox):
             return
         for parameter_name, widget in self.parameter_widgets:
             if parameter_name in backend_parameters:
-                self.pack_start(widget(backend, True, True, 0), True)
+                self.pack_start(widget(backend, True, True, 0), True, True, 0)
         self.show_all()
 
     def commit_changes(self):

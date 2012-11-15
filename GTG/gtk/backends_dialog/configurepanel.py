@@ -67,13 +67,13 @@ class ConfigurePanel(Gtk.VBox):
         middle = Gtk.HBox()
         self._fill_top_hbox(top)
         self._fill_middle_hbox(middle)
-        self.pack_start(top, False)
-        self.pack_start(middle, False)
-        align = Gtk.Alignment.new(xalign = 0, yalign = 0, xscale = 1)
+        self.pack_start(top, False, True, 0)
+        self.pack_start(middle, False, True, 0)
+        align = Gtk.Alignment.new(0, 0, 1, 0)
         align.set_padding(10, 0, 0, 0)
         self.parameters_ui = ParametersUI(self.req)
         align.add(self.parameters_ui)
-        self.pack_start(align, False)
+        self.pack_start(align, False, True, 0)
 
     def _fill_top_hbox(self, hbox):
         """ Fill header with service's icon, name, and a spinner
@@ -94,13 +94,13 @@ class ConfigurePanel(Gtk.VBox):
             self.spinner = Gtk.HBox()
         self.spinner.connect("show", self.on_spinner_show)
         self.spinner.set_size_request(32, 32)
-        align_spin = Gtk.Alignment.new(xalign = 1, yalign = 0)
+        align_spin = Gtk.Alignment.new(1, 0, 0, 0)
         align_spin.add(self.spinner)
 
         hbox.set_spacing(10)
-        hbox.pack_start(self.image_icon, False)
-        hbox.pack_start(self.human_name_label, True)
-        hbox.pack_start(align_spin, False)
+        hbox.pack_start(self.image_icon, False, True, 0)
+        hbox.pack_start(self.human_name_label, True, True, 0)
+        hbox.pack_start(align_spin, False, True, 0)
 
     def _fill_middle_hbox(self, hbox):
         '''
@@ -112,8 +112,8 @@ class ConfigurePanel(Gtk.VBox):
         self.sync_status_label.set_alignment(xalign = 0.8, yalign = 0.5)
         self.sync_button = Gtk.Button()
         self.sync_button.connect("clicked", self.on_sync_button_clicked)
-        hbox.pack_start(self.sync_status_label, True)
-        hbox.pack_start(self.sync_button, True)
+        hbox.pack_start(self.sync_status_label, True, True, 0)
+        hbox.pack_start(self.sync_button, True, True, 0)
 
     def set_backend(self, backend_id):
         '''Changes the backend to configure, refreshing this view.

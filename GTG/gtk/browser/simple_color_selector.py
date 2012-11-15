@@ -45,34 +45,38 @@ class SimpleColorSelectorPaletteItem(Gtk.DrawingArea): # pylint: disable-msg=R09
     """An item of the color selecctor palette"""
 
     def __init__(self, color=None):
-        GObject.GObject.__init__(self)
-        self.__gobject_init__()
+        Gtk.DrawingArea.__init__(self)
         self.color = color
         self.selected = False
         self.add_events(Gdk.EventMask.BUTTON_PRESS_MASK)
         # Connect callbacks
-        self.connect("expose_event", self.on_expose)
+        #FIXME
+        #self.connect("expose-event", self.on_expose)
+        self.connect("draw", self.on_expose)
         self.connect("configure_event", self.on_configure)
 
-    def __draw(self):
+    def __draw(self, cr):
         """Draws the widget"""
         alloc = self.get_allocation()
-        alloc_w, alloc_h = alloc[2], alloc[3]
+        #FIXME - why to use a special variables?
+        alloc_w, alloc_h = alloc.width, alloc.height
         # Drawing context
-        cr_ctxt    = self.window.cairo_create() # pylint: disable-msg=E1101
-        gdkcontext = Gdk.CairoContext(cr_ctxt)
+        #cr_ctxt    = self.window.cairo_create() # pylint: disable-msg=E1101
+        #gdkcontext = Gdk.CairoContext(cr_ctxt)
+#FIXME
+        gdkcontext = cr
 
         # Draw rectangle
         if self.color is not None:
             my_color = Gdk.color_parse(self.color)
-            gdkcontext.set_source_color(my_color)
+            Gdk.cairo_set_source_color(gdkcontext, my_color)
         else:
-            gdkcontext.set_source_rgba(0, 0, 0, 0)
+            Gdk.cairo_set_source_rgba(gdkcontext, Gdk.RGBA(0, 0, 0, 0))
         gdkcontext.rectangle(0, 0, alloc_w, alloc_h)
         gdkcontext.fill()
 
         # Outer line
-        gdkcontext.set_source_rgba(0, 0, 0, 0.30)
+        Gdk.cairo_set_source_rgba(gdkcontext, Gdk.RGBA(0, 0, 0, 0.30))
         gdkcontext.set_line_width(2.0)
         gdkcontext.rectangle(0, 0, alloc_w, alloc_h)
         gdkcontext.stroke()
@@ -82,14 +86,14 @@ class SimpleColorSelectorPaletteItem(Gtk.DrawingArea): # pylint: disable-msg=R09
             size = alloc_h * 0.50 - 3
             pos_x = math.floor((alloc_w-size)/2)
             pos_y = math.floor((alloc_h-size)/2)
-            gdkcontext.set_source_rgba(255, 255, 255, 0.80)
+            Gdk.cairo_set_source_rgba(gdkcontext, Gdk.RGBA(255, 255, 255, 0.80))
             gdkcontext.arc(alloc_w/2, alloc_h/2, size/2 + 3, 0, 2*math.pi)
             gdkcontext.fill()
             gdkcontext.set_line_width(1.0)
-            gdkcontext.set_source_rgba(0, 0, 0, 0.20)
+            Gdk.cairo_set_source_rgba(gdkcontext, Gdk.RGBA(0, 0, 0, 0.20))
             gdkcontext.arc(alloc_w/2, alloc_h/2, size/2 + 3, 0, 2*math.pi)
             gdkcontext.stroke()
-            gdkcontext.set_source_rgba(0, 0, 0, 0.50)
+            Gdk.cairo_set_source_rgba(gdkcontext, Gdk.RGBA(0, 0, 0, 0.50))
             gdkcontext.set_line_width(3.0)
             gdkcontext.move_to(pos_x       , pos_y+size/2)
             gdkcontext.line_to(pos_x+size/2, pos_y+size)
@@ -98,13 +102,14 @@ class SimpleColorSelectorPaletteItem(Gtk.DrawingArea): # pylint: disable-msg=R09
 
     ### callbacks ###
 
-    def on_expose(self, widget, params): # pylint: disable-msg=W0613
+    def on_expose(self, widget, cr): # pylint: disable-msg=W0613
         """Callback: redraws the widget when it is exposed"""
-        self.__draw()
+        self.__draw(cr)
 
     def on_configure(self, widget, params): # pylint: disable-msg=W0613
         """Callback: redraws the widget when it is exposed"""
-        self.__draw()
+        #FIXME - missing cairo context
+        #self.__draw(cr)
 
     ### PUBLIC IF ###
 
@@ -127,8 +132,7 @@ class SimpleColorSelector(Gtk.VBox): # pylint: disable-msg=R0904,C0301
     define new colors."""
 
     def __init__(self, width=9, colors=None, custom_colors=None):
-        GObject.GObject.__init__(self)
-        self.__gobject_init__()
+        Gtk.VBox.__init__(self)
         self.width = width
         # widget model
         if colors is None:
@@ -166,7 +170,7 @@ class SimpleColorSelector(Gtk.VBox): # pylint: disable-msg=R0904,C0301
         """Draws the palette of colors"""
         self.__reset_palette()
         # (re-)create the palette widget
-        self.palette = Gtk.Alignment.new()
+        self.palette = Gtk.Alignment()
         self.pack_start(self.palette, True, True, 0)
         # Draw the palette
         vbox = Gtk.VBox()
@@ -184,7 +188,7 @@ class SimpleColorSelector(Gtk.VBox): # pylint: disable-msg=R0904,C0301
             img.set_color(self.colors[i])
             self.buttons_lookup[self.colors[i]] = img
             self.buttons.append(img)
-            cur_hbox.pack_start(img, expand=False, fill=False)
+            cur_hbox.pack_start(img, False, False, 0)
             cur_hbox.set_spacing(4)
         # make palette visible
         self.palette.show_all()
@@ -205,7 +209,7 @@ class SimpleColorSelector(Gtk.VBox): # pylint: disable-msg=R0904,C0301
         """Draws the palette of custom colors"""
         self.__reset_custom_palette()
         # (re-)create the palette widget
-        self.custom_palette = Gtk.Alignment.new(xscale=1.0)
+        self.custom_palette = Gtk.Alignment.new(0, 0, 1, 0)
         self.custom_palette.set_padding(10, 0, 0, 0)
         self.pack_start(self.custom_palette, True, True, 0)
         # Draw the previous color palette: only one line
@@ -223,7 +227,7 @@ class SimpleColorSelector(Gtk.VBox): # pylint: disable-msg=R0904,C0301
             if i < len(self.custom_colors):
                 img.set_color(self.custom_colors[i])
                 self.buttons_lookup[self.custom_colors[i]] = img
-            cc_hbox.pack_start(img, expand=False, fill=False)
+            cc_hbox.pack_start(img, False, False, 0)
             cc_hbox.set_spacing(4)
             self.cc_buttons.append(img)
         # Draw the add button
@@ -232,7 +236,7 @@ class SimpleColorSelector(Gtk.VBox): # pylint: disable-msg=R0904,C0301
         self.add_button = Gtk.Button()
         self.add_button.set_image(img)
         self.add_button.set_label(_("Add custom color"))
-        cc_vbox.pack_start(self.add_button, expand=True, fill=True)
+        cc_vbox.pack_start(self.add_button, True, True, 0)
         self.add_button.connect("clicked", self.on_color_add)
         # hide the custom palette if no custom color is defined
         if len(self.custom_colors) == 0:

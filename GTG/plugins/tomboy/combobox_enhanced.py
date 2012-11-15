@@ -77,7 +77,7 @@ def smartifyComboboxEntry(combobox, list_obj, callback):
     combobox.connect('changed', setText, entry)
     #render the combo-box drop down menu
     cell = Gtk.CellRendererText()
-    combobox.pack_start(cell, True)
+    combobox.pack_start(cell, True, True, 0)
     combobox.add_attribute(cell, 'text', 0)
     return entry
 

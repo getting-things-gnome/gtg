@@ -52,10 +52,10 @@ class PeriodUI(Gtk.HBox):
         period_label.set_alignment(xalign = 0, yalign = 0.5)
         period_label.set_line_wrap(True)
         period_label.set_size_request(width = width, height = -1)
-        self.pack_start(period_label, False)
-        align = Gtk.Alignment.new(xalign = 0, yalign = 0.5, xscale = 1)
+        self.pack_start(period_label, False, True, 0)
+        align = Gtk.Alignment.new(0, 0.5, 1, 0)
         align.set_padding(0, 0, 10, 0)
-        self.pack_start(align, False)
+        self.pack_start(align, False, True, 0)
         period = self.backend.get_parameters()['period']
         self.adjustment = Gtk.Adjustment(value = period,
                                          lower = 1,
@@ -69,7 +69,7 @@ class PeriodUI(Gtk.HBox):
         self.minutes_label = Gtk.Label()
         self.update_minutes_label()
         self.minutes_label.set_alignment(xalign = 0, yalign = 0.5)
-        self.pack_start(self.minutes_label, False)
+        self.pack_start(self.minutes_label, False, True, 0)
         align.add(self.period_spin)
         self.show_all()
 

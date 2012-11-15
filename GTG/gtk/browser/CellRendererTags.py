@@ -93,8 +93,10 @@ class CellRendererTags(Gtk.CellRenderer):
         else:
             return getattr(self, pspec.name)
 
-    def on_render(\
-        self, window, widget, background_area, cell_area, expose_area, flags):
+    #def do_render(\
+        #self, window, widget, background_area, cell_area, expose_area, flags):
+    def do_render(\
+        self, cr, widget, background_area, cell_area, flags):
 
         vw_tags = self.__count_viewable_tags()
         count   = 0
@@ -108,8 +110,9 @@ class CellRendererTags(Gtk.CellRenderer):
             return
 
         # Drawing context
-        cr         = window.cairo_create()
-        gdkcontext = Gdk.CairoContext(cr)
+        #cr         = window.cairo_create()
+        #gdkcontext = Gdk.CairoContext(cr)
+        gdkcontext = cr
         gdkcontext.set_antialias(cairo.ANTIALIAS_NONE)
 
         # Coordinates of the origin point
@@ -132,7 +135,8 @@ class CellRendererTags(Gtk.CellRenderer):
                 try:
                     pixbuf = Gtk.IconTheme.get_default().load_icon(
                                     my_tag_icon, 16, 0)
-                    gdkcontext.set_source_pixbuf(pixbuf, rect_x, rect_y)
+                    Gdk.cairo_set_source_pixbuf(gdkcontext, pixbuf, rect_x, rect_y)
+                    #Gdk.cairo_set_source_pixbuf(gdkcontext, pixbuf, rect_x, rect_y)
                     gdkcontext.paint()
                     count = count + 1
                 except GLib.GError:
@@ -145,13 +149,13 @@ class CellRendererTags(Gtk.CellRenderer):
 
                 # Draw rounded rectangle
                 my_color = Gdk.color_parse(my_tag_color)
-                gdkcontext.set_source_color(my_color)
+                Gdk.cairo_set_source_color(gdkcontext, my_color)
                 self.__roundedrec(gdkcontext, rect_x, rect_y, 16, 16, 8)
                 gdkcontext.fill()
                 count = count + 1
 
                 # Outer line
-                gdkcontext.set_source_rgba(0, 0, 0, 0.20)
+                Gdk.cairo_set_source_rgba(gdkcontext, Gdk.RGBA(0, 0, 0, 0.20))
                 gdkcontext.set_line_width(1.0)
                 self.__roundedrec(gdkcontext, rect_x, rect_y, 16, 16, 8)
                 gdkcontext.stroke()
@@ -164,18 +168,17 @@ class CellRendererTags(Gtk.CellRenderer):
             if   not my_tag_icon and not my_tag_color:
 
                 # Draw rounded rectangle
-                gdkcontext.set_source_rgba(0.95, 0.95, 0.95, 1)
+                Gdk.cairo_set_source_rgba(gdkcontext, Gdk.RGBA(0.95, 0.95, 0.95, 1))
                 self.__roundedrec(gdkcontext, rect_x, rect_y, 16, 16, 8)
                 gdkcontext.fill()
 
                 # Outer line
-                gdkcontext.set_source_rgba(0, 0, 0, 0.20)
+                Gdk.cairo_set_source_rgba(gdkcontext, Gdk.RGBA(0, 0, 0, 0.20))
                 gdkcontext.set_line_width(1.0)
                 self.__roundedrec(gdkcontext, rect_x, rect_y, 16, 16, 8)
                 gdkcontext.stroke()
 
-    def on_get_size(self, widget, cell_area=None): #pylint: disable-msg=W0613
-
+    def do_get_size(self, widget, cell_area=None): #pylint: disable-msg=W0613
         count = self.__count_viewable_tags()
 
         if count != 0:

@@ -41,15 +41,20 @@ class TagIconSelector(Gtk.Window): # pylint: disable-msg=R0904
     """
 
     def __init__(self):
-        self.__gobject_init__(type=Gtk.WindowType.POPUP)
-        GObject.GObject.__init__(self)
+        # FIXME
+        #self.__gobject_init__(type=Gtk.WindowType.POPUP)
+        #GObject.GObject.__init__(self)
+        Gtk.Window.__init__(self)
+
         self.loaded = False
         self.selected_icon = None
         self.symbol_model = None
         # Build up the window
         self.__build_window()
         # Make it visible
-        self.hide_all()
+        #self.hide_all()
+        # FIXME
+        self.hide()
 
     def __build_window(self):
         """Build up the widget"""
@@ -60,7 +65,7 @@ class TagIconSelector(Gtk.Window): # pylint: disable-msg=R0904
         scld_win = Gtk.ScrolledWindow()
         scld_win.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.ALWAYS)
         scld_win.set_shadow_type(Gtk.ShadowType.ETCHED_IN)
-        vbox.pack_start(scld_win, expand=True, fill=True)
+        vbox.pack_start(scld_win, True, True, 0)
         self.symbol_iv = Gtk.IconView()
         self.symbol_iv.set_pixbuf_column(0)
         self.symbol_iv.set_property("columns", 7)
@@ -81,7 +86,7 @@ class TagIconSelector(Gtk.Window): # pylint: disable-msg=R0904
         self.remove_bt = Gtk.Button()
         self.remove_bt.set_image(img)
         self.remove_bt.set_label(_("Remove selected icon"))
-        vbox.pack_start(self.remove_bt, fill=False, expand=False)
+        vbox.pack_start(self.remove_bt, False, False, 0)
         # set the callbacks
         self.symbol_iv.connect("selection-changed", self.on_selection_changed)
         self.remove_bt.connect("clicked", self.on_remove_bt_clicked)
@@ -172,8 +177,8 @@ class TagEditor(Gtk.Window): # pylint: disable-msg=R0904
     """Window allowing to edit a tag's properties."""
 
     def __init__(self, req, vmanager, tag=None):
-        GObject.GObject.__init__(self)
-        self.__gobject_init__()
+        Gtk.Window.__init__(self)
+
         self.req = req
         self.vmanager = vmanager
         self.tag = tag
@@ -201,7 +206,8 @@ class TagEditor(Gtk.Window): # pylint: disable-msg=R0904
         self.top_vbox = Gtk.VBox()
         self.add(self.top_vbox)
         # header line: icon, table with name and "hide in wv"
-        self.hdr_align = Gtk.Alignment.new()
+        #FIXME
+        self.hdr_align = Gtk.Alignment()
         self.top_vbox.pack_start(self.hdr_align, True, True, 0)
         self.hdr_align.set_padding(0, 25, 0, 0)
         self.hdr_hbox = Gtk.HBox()
@@ -218,7 +224,7 @@ class TagEditor(Gtk.Window): # pylint: disable-msg=R0904
         self.tp_table = Gtk.Table(2, 2)
         self.hdr_hbox.pack_start(self.tp_table, True, True, 0)
         self.tp_table.set_col_spacing(0, 5)
-        self.tn_entry_lbl_align = Gtk.Alignment.new(0, 0.5)
+        self.tn_entry_lbl_align = Gtk.Alignment.new(0, 0.5, 0, 0)
         self.tp_table.attach(self.tn_entry_lbl_align, 0, 1, 0, 1)
         self.tn_entry_lbl = Gtk.Label()
         self.tn_entry_lbl.set_markup("<span weight='bold'>%s</span>" \
@@ -227,7 +233,7 @@ class TagEditor(Gtk.Window): # pylint: disable-msg=R0904
         self.tn_entry = Gtk.Entry()
         self.tp_table.attach(self.tn_entry, 1, 2, 0, 1)
         self.tn_entry.set_width_chars(20)
-        self.tn_cb_lbl_align = Gtk.Alignment.new(0, 0.5)
+        self.tn_cb_lbl_align = Gtk.Alignment.new(0, 0.5, 0, 0)
         self.tp_table.attach(self.tn_cb_lbl_align, 0, 1, 1, 2)
         self.tn_cb_lbl = Gtk.Label(label=_("Show Tag in Work View :"))
         self.tn_cb_lbl_align.add(self.tn_cb_lbl)
@@ -236,7 +242,7 @@ class TagEditor(Gtk.Window): # pylint: disable-msg=R0904
         # Tag color
         self.tc_vbox = Gtk.VBox()
         self.top_vbox.pack_start(self.tc_vbox, True, True, 0)
-        self.tc_label_align = Gtk.Alignment.new()
+        self.tc_label_align = Gtk.Alignment()
         self.tc_vbox.pack_start(self.tc_label_align, True, True, 0)
         self.tc_label_align.set_padding(0, 0, 0, 0)
         self.tc_label = Gtk.Label()
@@ -269,10 +275,13 @@ class TagEditor(Gtk.Window): # pylint: disable-msg=R0904
         self.connect('delete-event', self.on_close)
 
         # allow fast closing by Escape key
+        #FIXME
+        '''
         agr = Gtk.AccelGroup()
         self.add_accel_group(agr)
         key, modifier = Gtk.accelerator_parse('Escape')
         agr.connect_group(key, modifier, Gtk.AccelFlags.VISIBLE, self.on_close)
+        '''
 
     def __set_default_values(self):
         """Configure the widget components with their initial default values"""

@@ -53,17 +53,17 @@ class PathUI(Gtk.HBox):
         label.set_line_wrap(True)
         label.set_alignment(xalign = 0, yalign = 0.5)
         label.set_size_request(width = width, height = -1)
-        self.pack_start(label, False)
-        align = Gtk.Alignment.new(xalign = 0, yalign = 0.5, xscale = 1)
+        self.pack_start(label, False, True, 0)
+        align = Gtk.Alignment.new(0, 0.5, 1, 0)
         align.set_padding(0, 0, 10, 0)
-        self.pack_start(align, True)
+        self.pack_start(align, True, True, 0)
         self.textbox = Gtk.Entry()
         self.textbox.set_text(self.backend.get_parameters()['path'])
         self.textbox.connect('changed', self.on_path_modified)
         align.add(self.textbox)
         self.button = Gtk.Button(stock = Gtk.STOCK_EDIT)
         self.button.connect('clicked', self.on_button_clicked)
-        self.pack_start(self.button, False)
+        self.pack_start(self.button, False, True, 0)
 
     def commit_changes(self):
         '''Saves the changes to the backend parameter'''
