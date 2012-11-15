@@ -69,25 +69,32 @@ class TaskEditor(object):
         self.inserttag_button.set_tooltip_text(GnomeConfig.TAG_TOOLTIP)
         #Create our dictionary and connect it
         dic = {
-                "mark_as_done_clicked": self.change_status,
-                "on_dismiss": self.dismiss,
-                "delete_clicked": self.delete_task,
-                "on_duedate_pressed": (self.on_date_pressed,
-                                               GTGCalendar.DATE_KIND_DUE),
-                "on_startdate_pressed": (self.on_date_pressed,
-                                               GTGCalendar.DATE_KIND_START),
-                "on_closeddate_pressed": (self.on_date_pressed,
-                                               GTGCalendar.DATE_KIND_CLOSED),
-                "close_clicked": self.close,
-                "duedate_changed": (self.date_changed,
-                                               GTGCalendar.DATE_KIND_DUE),
-                "startingdate_changed": (self.date_changed,
-                                               GTGCalendar.DATE_KIND_START),
-                "closeddate_changed": (self.date_changed,
-                                               GTGCalendar.DATE_KIND_CLOSED),
-                "on_insert_subtask_clicked": self.insert_subtask,
-                "on_inserttag_clicked": self.inserttag_clicked,
-                "on_move": self.on_move,
+            "mark_as_done_clicked":
+                self.change_status,
+            "on_dismiss":
+                self.dismiss,
+            "delete_clicked":
+                self.delete_task,
+            "on_duedate_pressed":
+                lambda w: self.on_date_pressed(w, GTGCalendar.DATE_KIND_DUE),
+            "on_startdate_pressed":
+                lambda w: self.on_date_pressed(w, GTGCalendar.DATE_KIND_START),
+            "on_closeddate_pressed":
+                lambda w: self.on_date_pressed(w, GTGCalendar.DATE_KIND_CLOSED),
+            "close_clicked":
+                self.close,
+            "duedate_changed":
+                lambda w: self.date_changed(w, GTGCalendar.DATE_KIND_DUE),
+            "startingdate_changed":
+                lambda w: self.date_changed(w, GTGCalendar.DATE_KIND_START),
+            "closeddate_changed":
+                lambda w: self.date_changed(w, GTGCalendar.DATE_KIND_CLOSED),
+            "on_insert_subtask_clicked":
+                self.insert_subtask,
+            "on_inserttag_clicked":
+                self.inserttag_clicked,
+            "on_move":
+                self.on_move,
         }
         self.builder.connect_signals(dic)
         self.window         = self.builder.get_object("TaskEditor")

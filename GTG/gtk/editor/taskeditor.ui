@@ -9,7 +9,6 @@
     <child>
       <object class="GtkVBox" id="vbox4">
         <property name="visible">True</property>
-        <property name="extension_events">cursor</property>
         <child>
           <object class="GtkToolbar" id="task_tb1">
             <property name="visible">True</property>
