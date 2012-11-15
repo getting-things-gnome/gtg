@@ -142,11 +142,11 @@ class TaskView(Gtk.TextView):
         self.buff.set_modified(False)
 
         #Let's try with serializing
-        self.mime_type = 'application/x-gtg-task'
+        mime_type = 'application/x-gtg-task'
         serializer = taskviewserial.Serializer()
         unserializer = taskviewserial.Unserializer(self)
-        self.buff.register_serialize_format(self.mime_type, serializer.serialize, None)
-        self.buff.register_deserialize_format(self.mime_type, unserializer.unserialize, None)
+        self.serialize_format = self.buff.register_serialize_format(mime_type, serializer.serialize, None)
+        self.deserialize_format = self.buff.register_deserialize_format(mime_type, unserializer.unserialize, None)
 
         #The list of callbacks we have to set
         self.remove_tag_callback = None
@@ -265,7 +265,7 @@ class TaskView(Gtk.TextView):
             reconnect_modified = True
 
         #deserialize
-        self.buff.deserialize(self.buff, self.mime_type, _iter, text)
+        self.buff.deserialize(self.buff, self.deserialize_format, _iter, text)
 
         #reconnect
         if reconnect_insert:
@@ -360,14 +360,14 @@ class TaskView(Gtk.TextView):
     def apply_subtask_tag(self, buff, subtask, s, e):
         i_s = buff.get_iter_at_mark(s)
         i_e = buff.get_iter_at_mark(e)
-        tex = buff.get_text(i_s, i_e)
+        tex = buff.get_text(i_s, i_e, True)
         #we don't accept \n in a subtask title
         if "\n" in tex:
             i_e = i_s.copy()
             while i_e.get_char() != "\n":
                 i_e.forward_char()
             buff.move_mark(e, i_e)
-            tex = buff.get_text(i_s, i_e)
+            tex = buff.get_text(i_s, i_e, True)
         if len(tex) > 0:
             self.req.get_task(subtask).set_title(tex)
             texttag = self.create_anchor_tag(buff, subtask, text=tex, typ="subtask")
@@ -468,7 +468,7 @@ class TaskView(Gtk.TextView):
         #we go to the next line, just after the title
         start.forward_line()
         end = self.buff.get_end_iter()
-        texte = self.buff.serialize(self.buff, self.mime_type, start, end)
+        texte = self.buff.serialize(self.buff, self.serialize_format, start, end)
 
         return texte
     #Get the title of the task (aka the first line of the buffer)
@@ -484,7 +484,7 @@ class TaskView(Gtk.TextView):
                 conti = end.forward_to_line_end()
         #We don't want to deserialize the title
         #Let's get the pure text directly
-        title = unicode(self.buff.get_text(start, end))
+        title = unicode(self.buff.get_text(start, end, True))
         #Let's strip blank lines
         stripped = title.strip(' \n\t')
         return stripped
@@ -540,7 +540,7 @@ class TaskView(Gtk.TextView):
         def subfunc(texttag, data=None): #pylint: disable-msg=W0613
             if texttag.get_data('is_subtask'):
                 tag_list.append(texttag)
-        table.foreach(subfunc)
+        table.foreach(subfunc, None)
         start, end = buff.get_bounds()
         for t in tag_list:
             buff.remove_tag(t, start, end)
@@ -585,7 +585,7 @@ class TaskView(Gtk.TextView):
         def subfunc(texttag, data=None):
             if texttag.get_data('is_anchor'):
                 tag_list.append(texttag)
-        table.foreach(subfunc)
+        table.foreach(subfunc, None)
         for t in tag_list:
             buff.remove_tag(t, start, end)
         #Now we add the tag URL
@@ -595,10 +595,10 @@ class TaskView(Gtk.TextView):
             it.forward_word_end()
             prev = it.copy()
             prev.backward_word_start()
-            text = buff.get_text(prev, it)
+            text = buff.get_text(prev, it, True)
 
             if text in ["http", "https", "www", "file"]:
-                isurl = buff.get_text(prev, buff.get_end_iter())
+                isurl = buff.get_text(prev, buff.get_end_iter(), True)
                 m = urlregex.match(isurl)
                 if m is not None:
                     url = isurl[:m.end()]
@@ -617,7 +617,7 @@ class TaskView(Gtk.TextView):
                     it.forward_char()
                     while it.get_char().isdigit() and (it.get_char() != '\0'):
                         it.forward_char()
-                    url = buff.get_text(prev, it)
+                    url = buff.get_text(prev, it, True)
                     nbr = url.split("#")[1]
                     topoint = None
                     if url.startswith("bug #") or url.startswith("lp #"):
@@ -680,7 +680,7 @@ class TaskView(Gtk.TextView):
         # Iterate over characters of the line to get words
         while char_end.compare(end) <= 0:
             do_word_check = False
-            my_char       = buff.get_text(char_start, char_end)
+            my_char       = buff.get_text(char_start, char_end, True)
             if my_char not in separators:
                 last_char = my_char
                 word_end = char_end.copy()
@@ -700,7 +700,7 @@ class TaskView(Gtk.TextView):
             # We have a new word
             if do_word_check:
                 if (word_end.compare(word_start) > 0):
-                    my_word = buff.get_text(word_start, word_end)
+                    my_word = buff.get_text(word_start, word_end, True)
                     # We do something about it
                     #We want a tag bigger than the simple "@"
                     #and it shouldn't start with @@ (bug 531553)
@@ -741,7 +741,7 @@ class TaskView(Gtk.TextView):
         elif self.title_tag in itera.get_tags():
             to_return = True
         #else, we look if there's something between us and buffer start
-        elif not buff.get_text(buff.get_start_iter(), itera).strip('\n\t '):
+        elif not buff.get_text(buff.get_start_iter(), itera, True).strip('\n\t '):
             to_return = True
         return to_return
 
@@ -827,14 +827,14 @@ class TaskView(Gtk.TextView):
             # Applying title on the first line
             title_end = buff.get_iter_at_line(line_nbr-1)
             title_end.forward_to_line_end()
-            stripped  = buff.get_text(title_start, title_end).strip('\n\t ')
+            stripped  = buff.get_text(title_start, title_end, True).strip('\n\t ')
             # Here we ignore lines that are blank
             # Title is the first written line
             while line_nbr <= linecount and not stripped:
                 line_nbr  += 1
                 title_end  = buff.get_iter_at_line(line_nbr-1)
                 title_end.forward_to_line_end()
-                stripped   = buff.get_text(title_start, title_end).strip('\n\t ')
+                stripped   = buff.get_text(title_start, title_end, True).strip('\n\t ')
         # Or to all the buffer if there is only one line
         else:
             title_end = end.copy()
@@ -842,7 +842,7 @@ class TaskView(Gtk.TextView):
         buff.remove_tag_by_name('title', title_end, end)
         # Refresh title of the window
         if refresheditor:
-            self.refresh(buff.get_text(title_start, title_end).strip('\n\t'))
+            self.refresh(buff.get_text(title_start, title_end, True).strip('\n\t'))
         return title_end
 
 
@@ -1209,7 +1209,7 @@ class TaskView(Gtk.TextView):
                             endl = cursor.copy()
                             if not endl.ends_line():
                                 endl.forward_to_line_end()
-                            text = self.buff.get_text(cursor, endl)
+                            text = self.buff.get_text(cursor, endl, True)
                             anchor = self.new_subtask_callback(text)
                             self.buff.create_mark(anchor, cursor, True)
                             self.buff.create_mark("/%s"%anchor, endl, False)
@@ -1303,7 +1303,7 @@ class TaskView(Gtk.TextView):
     #The mouse is moving. We must change it to a hand when hovering over a link
     def _motion(self, view, ev):
         window = ev.window
-        x, y, _ = window.get_pointer()
+        _, x, y, _ = window.get_pointer()
         x, y = view.window_to_buffer_coords(Gtk.TextWindowType.TEXT, x, y)
         tags = view.get_iter_at_location(x, y).get_tags()
         for tag in tags:
