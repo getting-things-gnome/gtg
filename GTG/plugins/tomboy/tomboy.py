@@ -307,6 +307,7 @@ Do you want to create it?")))
         #properly
         textview_style = self.textview.get_style()
         eventbox_style = eventbox.get_style().copy()
+        #FIXME this state probably won't work, fix it! (because of GTK3)
         for state in (Gtk.StateType.NORMAL, Gtk.StateType.PRELIGHT, Gtk.StateType.ACTIVE,
                       Gtk.StateType.SELECTED, Gtk.StateType.INSENSITIVE):
             eventbox_style.base[state] = textview_style.base[state]

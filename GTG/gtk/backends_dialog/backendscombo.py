@@ -18,6 +18,7 @@
 # -----------------------------------------------------------------------------
 
 from gi.repository import Gtk
+from gi.repository import GdkPixbuf
 
 from GTG.backends import BackendFactory
 
@@ -41,7 +42,7 @@ class BackendsCombo(Gtk.ComboBox):
         @param backends_dialog: reference to the dialog in which this combo is
                                 loaded.
         '''
-        BackendsCombo.__init__(self, True)
+        Gtk.ComboBox.__init__(self)
         self.dialog = backends_dialog
         self._liststore_init()
         self._renderers_init()
@@ -57,11 +58,12 @@ class BackendsCombo(Gtk.ComboBox):
         '''Configure the cell renderers'''
         #Text renderer
         text_cell = Gtk.CellRendererText()
-        self.pack_start(text_cell, False, True, 0)
-        self.set_text_column(self.COLUMN_HUMAN_NAME)
+        self.pack_start(text_cell, False)
+#FIXME does it work?
+        self.set_entry_text_column(self.COLUMN_HUMAN_NAME)
         #Icon renderer
         pixbuf_cell = Gtk.CellRendererPixbuf()
-        self.pack_start(pixbuf_cell, False, True, 0)
+        self.pack_start(pixbuf_cell, False)
         self.add_attribute(pixbuf_cell, "pixbuf", self.COLUMN_ICON)
 
     def refresh(self):

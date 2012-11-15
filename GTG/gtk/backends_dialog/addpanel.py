@@ -69,8 +69,10 @@ class AddPanel(Gtk.VBox):
         label = Gtk.Label(label=_("Select synchronization service:"))
         label.set_alignment(0, 0.5)
         self.combo_types = BackendsCombo(self.dialog)
-        self.combo_types.get_child().connect('changed', self.on_combo_changed)
-        hbox.pack_start(label, False, True, True, 0)
+        #FIXME
+        #self.combo_types.get_child().connect('changed', self.on_combo_changed)
+        self.combo_types.connect('changed', self.on_combo_changed)
+        hbox.pack_start(label, False, True, 0)
         hbox.pack_start(self.combo_types, False, True, 0)
 
     def _fill_middle_hbox(self, hbox):

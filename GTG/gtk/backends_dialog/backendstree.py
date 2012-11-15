@@ -18,6 +18,7 @@
 # -----------------------------------------------------------------------------
 
 from gi.repository import Gtk
+from gi.repository import GdkPixbuf
 
 from GTG.gtk.colors              import get_colored_tags_markup
 from GTG.backends.genericbackend import GenericBackend
@@ -111,7 +112,6 @@ class BackendsTree(Gtk.TreeView):
         @param backend_id: the id of the backend to add
         '''
         if backend_id in self.backendid_to_iter:
-            style = self.get_style()
             b_iter = self.backendid_to_iter[backend_id]
             b_path = self.liststore.get_path(b_iter)
             backend = self.req.get_backend(backend_id)
@@ -119,7 +119,11 @@ class BackendsTree(Gtk.TreeView):
             if backend.is_enabled():
                 text = backend_name
             else:
-                color = str(style.text[Gtk.StateType.INSENSITIVE])
+                #FIXME This snippet is on more than 2 places!!!
+                #FIXME create a function which takes a widget and flag and returns color as #RRGGBB
+                style_context = self.get_style_context()
+                color = style_context.get_color(Gtk.StateFlags.INSENSITIVE)
+                color = color.to_color().to_string()
                 text = "<span color='%s'>%s</span>" % \
                            (color, backend_name)
             self.liststore[b_path][self.COLUMN_TEXT] = text

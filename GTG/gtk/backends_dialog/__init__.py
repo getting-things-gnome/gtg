@@ -128,7 +128,7 @@ class BackendsDialog(object):
         if icon_info == None:
             return None
         else:
-            return gtk.icon_theme_get_default().load_icon(name, height, 0)
+            return Gtk.IconTheme.get_default().load_icon(name, height, 0)
 
     def _show_panel(self, panel_name):
         '''
