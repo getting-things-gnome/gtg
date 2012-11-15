@@ -25,6 +25,10 @@ import champlain
 
 from GTG.plugins.geolocalized_tasks.marker import MarkerLayer
 
+# Attention!!! FIXME
+# FIXME During porting GTG into GTK3/PyGObject was geolocalized.glade converted to GtkBuilder format together with other glade XMLs.
+# FIXME Since this plugin is broken, I am not going to replace galde mentions to GtkBuilder, it's your job ;)
+
 
 class geolocalizedTasks:
 
@@ -33,7 +37,7 @@ class geolocalizedTasks:
         self.geoclue.connect(self.location_changed)
 
         self.plugin_path = os.path.dirname(os.path.abspath(__file__))
-        self.glade_file = os.path.join(self.plugin_path, "geolocalized.glade")
+        self.glade_file = os.path.join(self.plugin_path, "geolocalized.ui")
 
         # the preference menu for the plugin
         self.menu_item = Gtk.MenuItem("Geolocalized-tasks Preferences")

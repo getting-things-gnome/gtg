@@ -17,14 +17,14 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-""" Configuration for browser, it contains path to .glade files """
+""" Configuration for browser, it contains path to .ui files """
 
 import os
 
 
 class ViewConfig(object):
     current_rep = os.path.dirname(os.path.abspath(__file__))
-    DELETE_GLADE_FILE = os.path.join(current_rep, "deletion.glade")
-    PREFERENCES_GLADE_FILE = os.path.join(current_rep, "preferences.glade")
-    PLUGINS_GLADE_FILE = os.path.join(current_rep, "plugins.glade")
-    BACKENDS_GLADE_FILE = os.path.join(current_rep, "backends_dialog.glade")
+    DELETE_UI_FILE = os.path.join(current_rep, "deletion.ui")
+    PREFERENCES_UI_FILE = os.path.join(current_rep, "preferences.ui")
+    PLUGINS_UI_FILE = os.path.join(current_rep, "plugins.ui")
+    BACKENDS_UI_FILE = os.path.join(current_rep, "backends_dialog.ui")

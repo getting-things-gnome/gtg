@@ -69,9 +69,8 @@ class BackendsDialog(object):
         self.backends_tv = None
         self.config_panel = None
         self.add_panel = None
-        # Load from Glade
         builder = Gtk.Builder()
-        self._load_widgets_from_glade(builder)
+        self._load_widgets_from_builder(builder)
         # Load and setup other widgets
         self.dialog.set_title(_("Synchronization Services - %s" % info.NAME))
         self._create_widgets_for_add_panel()
@@ -171,13 +170,13 @@ class BackendsDialog(object):
 ### WIDGETS AND SIGNALS ################
 ########################################
 
-    def _load_widgets_from_glade(self, builder):
+    def _load_widgets_from_builder(self, builder):
         '''
-        Loads widgets from the glade file
+        Loads widgets from the builder .ui file
 
         @param builder: a Gtk.Builder
         '''
-        builder.add_from_file(ViewConfig.BACKENDS_GLADE_FILE)
+        builder.add_from_file(ViewConfig.BACKENDS_UI_FILE)
         widgets = {
           'dialog'          : 'backends_dialog',
           'treeview_window' : 'treeview_window',

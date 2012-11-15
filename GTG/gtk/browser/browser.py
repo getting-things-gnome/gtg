@@ -100,12 +100,12 @@ class TaskBrowser(GObject.GObject):
 
         # Load window tree
         self.builder = Gtk.Builder()
-        self.builder.add_from_file(GnomeConfig.GLADE_FILE)
+        self.builder.add_from_file(GnomeConfig.BROWSER_UI_FILE)
 
         # Define aliases for specific widgets
         self._init_widget_aliases()
 
-        # Init non-glade widgets
+        # Init non-GtkBuilder widgets
         self._init_ui_widget()
 
         #Set the tooltip for the toolbar buttons

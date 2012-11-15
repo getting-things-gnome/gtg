@@ -58,7 +58,7 @@ class TaskEditor(object):
         self.time = None
         self.clipboard = clipboard
         self.builder = Gtk.Builder()
-        self.builder.add_from_file(GnomeConfig.GLADE_FILE)
+        self.builder.add_from_file(GnomeConfig.EDITOR_UI_FILE)
         self.donebutton = self.builder.get_object("mark_as_done_editor")
         self.dismissbutton = self.builder.get_object("dismiss_editor")
         self.deletebutton = self.builder.get_object("delete_editor")
@@ -92,7 +92,7 @@ class TaskEditor(object):
         self.builder.connect_signals(dic)
         self.window         = self.builder.get_object("TaskEditor")
         #Removing the Normal textview to replace it by our own
-        #So don't try to change anything with glade, this is a home-made widget
+        #So don't try to change anything with GtkBuilder, this is a home-made widget
         textview = self.builder.get_object("textview")
         scrolled = self.builder.get_object("scrolledtask")
         scrolled.remove(textview)

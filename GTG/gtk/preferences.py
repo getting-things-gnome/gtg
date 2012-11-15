@@ -79,7 +79,7 @@ class PreferencesDialog:
         self.req = req
         self.config = self.req.get_config('browser')
         builder = Gtk.Builder()
-        builder.add_from_file(ViewConfig.PREFERENCES_GLADE_FILE)
+        builder.add_from_file(ViewConfig.PREFERENCES_UI_FILE)
 
         self.dialog = builder.get_object("PreferencesDialog")
         self.dialog.set_title(_("Preferences - %s" % info.NAME))

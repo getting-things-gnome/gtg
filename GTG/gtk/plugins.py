@@ -135,7 +135,7 @@ class PluginsDialog:
         self.config_obj = config_obj
         self.config = self.config_obj.conf_dict
         builder = Gtk.Builder()
-        builder.add_from_file(ViewConfig.PLUGINS_GLADE_FILE)
+        builder.add_from_file(ViewConfig.PLUGINS_UI_FILE)
 
         self.dialog = builder.get_object("PluginsDialog")
         self.dialog.set_title(_("Plugins - %s" % info.NAME))
