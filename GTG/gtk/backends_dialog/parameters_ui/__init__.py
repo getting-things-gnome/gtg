@@ -129,9 +129,9 @@ class ParametersUI(Gtk.VBox):
         @param backend: the backend that is being configured
         '''
         #remove the old parameters UIs
-        def _remove_child(self, child):
+        def _remove_child(self, child, data=None):
             self.remove(child)
-        self.foreach(functools.partial(_remove_child, self))
+        self.foreach(functools.partial(_remove_child, self), None)
         #add new widgets
         backend_parameters = backend.get_parameters()
         if backend_parameters[GenericBackend.KEY_DEFAULT_BACKEND]:
@@ -139,7 +139,8 @@ class ParametersUI(Gtk.VBox):
             return
         for parameter_name, widget in self.parameter_widgets:
             if parameter_name in backend_parameters:
-                self.pack_start(widget(backend, True, True, 0), True, True, 0)
+                #FIXME I am not 100% about this change
+                self.pack_start(widget(backend), True, True, 0)
         self.show_all()
 
     def commit_changes(self):
@@ -147,6 +148,6 @@ class ParametersUI(Gtk.VBox):
         Saves all the parameters at their current state (the user may have
         modified them)
         '''
-        def _commit_changes(child):
+        def _commit_changes(child, data=None):
             child.commit_changes()
-        self.foreach(_commit_changes)
+        self.foreach(_commit_changes, None)
