@@ -108,10 +108,21 @@ class GTGCalendar(GObject.GObject):
         self.__window.grab_add()
 
         #We grab the pointer in the calendar
+        #Gdk.pointer_grab(
+            #self.__window.get_window(),
+            #True,
+            #Gdk.ModifierType.BUTTON1_MASK | Gdk.ModifierType.MOD2_MASK
+        #)
+#FIXME THIS DOES NOT WORK!!!!!!!
         Gdk.pointer_grab(
-            self.__window.window,
+            self.get_window(),
             True,
-            Gdk.ModifierType.BUTTON1_MASK | Gdk.ModifierType.MOD2_MASK
+            #Gdk.ModifierType.BUTTON1_MASK | Gdk.ModifierType.MOD2_MASK,
+#FIXME!!!! JUST GUESSING THE TYPE
+            Gdk.EventMask.ALL_EVENTS_MASK,
+            None,
+            None,
+            0
         )
 
         self.__window.connect('button-press-event', self.__focus_out)
@@ -139,7 +150,7 @@ class GTGCalendar(GObject.GObject):
 
     def close_calendar(self, widget = None, e = None):
         self.__window.hide()
-        Gdk.pointer_ungrab()
+        Gdk.pointer_ungrab(0)
         self.__window.grab_remove()
         if self.__sigid is not None:
             self.__calendar.disconnect(self.__sigid)
