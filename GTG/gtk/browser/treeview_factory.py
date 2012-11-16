@@ -420,7 +420,7 @@ class TreeviewFactory():
         #treeview.set_expander_column('label')
         treeview.set_dnd_name('gtg/task-iter-str')
         #Background colors
-        #treeview.set_bg_color(self.task_bg_color, 'bg_color')
+        treeview.set_bg_color(self.task_bg_color, 'bg_color')
          # Global treeview properties
         treeview.set_property("enable-tree-lines", False)
         treeview.set_rules_hint(False)
