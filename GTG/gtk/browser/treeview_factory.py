@@ -350,7 +350,7 @@ class TreeviewFactory():
 
         #Returning the treeview
         treeview = self.build_task_treeview(tree,desc)
-        #treeview.set_sort_column('closeddate')
+        treeview.set_sort_column('closeddate')
         return treeview
 
     #This build the first tag/title columns, common
@@ -416,8 +416,8 @@ class TreeviewFactory():
     def build_task_treeview(self,tree,desc):
         treeview = TreeView(tree,desc)
         #Now that the treeview is done, we can polish
-        #treeview.set_main_search_column('label')
-        #treeview.set_expander_column('label')
+        treeview.set_main_search_column('label')
+        treeview.set_expander_column('label')
         treeview.set_dnd_name('gtg/task-iter-str')
         #Background colors
         treeview.set_bg_color(self.task_bg_color, 'bg_color')
