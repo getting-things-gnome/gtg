@@ -852,6 +852,7 @@ class TaskBrowser(GObject.GObject):
                 selected_tags = self.get_selected_tags(nospecial=True)
                 selected_search = self.get_selected_search()
                 #popup menu for searches
+                #FIXME thos two branches could be simplified (there is no difference betweenn search and normal tag
                 if selected_search is not None:
                     my_tag = self.req.get_tag(selected_search)
                     self.tagpopup.set_tag(my_tag)
@@ -874,16 +875,18 @@ class TaskBrowser(GObject.GObject):
         if is_shift_f10 or keyname == "Menu":
             selected_tags = self.get_selected_tags(nospecial=True)
             selected_search = self.get_selected_search()
+            #FIXME thos two branches could be simplified (there is no difference betweenn search and normal tag
             #popup menu for searches
             if selected_search is not None:
-                self.searchpopup.popup(None, None, None, 0, event.time)
+                self.tagpopup.set_tag(selected_search)
+                self.tagpopup.popup(None, None, None, 0, event.time)
             elif len(selected_tags) > 0:
                 # Then we are looking at single, normal tag rather than
                 # the special 'All tags' or 'Tasks without tags'. We only
                 # want to popup the menu for normal tags.
                 selected_tag = self.req.get_tag(selected_tags[0])
                 self.tagpopup.set_tag(selected_tag)
-                self.tagpopup.popup(None, None, None, 0, event.time)
+                self.tagpopup.popup(None, None, None, None, 0, event.time)
             else:
                 self.reset_cursor()
             return True
@@ -907,7 +910,7 @@ class TaskBrowser(GObject.GObject):
                 else:
                     treeview.set_cursor(path, col, 0)
                 treeview.grab_focus()
-                self.taskpopup.popup(None, None, None, event.button, time)
+                self.taskpopup.popup(None, None, None, None, event.button, time)
             return True
 
     def on_task_treeview_key_press_event(self, treeview, event):
