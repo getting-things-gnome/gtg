@@ -29,7 +29,7 @@ import xml.dom.minidom
 
 class Serializer(object):
     #Disabling pylint argument usage since we know we are not using all args
-    def serialize(self, register_buf, content_buf, start, end, udata):
+    def serialize(self, register_buf, content_buf, start, end, length, udata):
         #Currently we serialize in XML
         its = start.copy()
         ite = end.copy()
@@ -61,7 +61,7 @@ class Serializer(object):
             """
             know_tags = ["is_subtask", "is_indent", "is_tag"]
             for know in know_tags:
-                if tag.get_data(know):
+                if hasattr(tag, know):
                     return True
             return False
         it = start.copy()
@@ -80,7 +80,6 @@ class Serializer(object):
                     if it.begins_tag(ta) and ta not in done and \
                                                 is_know_tag(ta):
                         tags.append(ta)
-                        #print ta.get_data("tagname")
                 if it.begins_tag() and len(tags) > 0:
                     # We enter in a tag context
                     tag = tags.pop()
@@ -89,7 +88,7 @@ class Serializer(object):
                 else:
                     # We stay out of a tag context
                     # We write the char in the xml node
-                    if it.get_char() != "\0":
+                    if it.get_char() != "":
                         parent.appendChild(doc.createTextNode(it.get_char()))
             else:
                 # We are in a tag context
@@ -98,23 +97,23 @@ class Serializer(object):
                     # We process the tag
                     end_it = it.copy()
                     end_it.backward_char()
-                    if tag.get_data("is_tag"):
+                    if hasattr(tag, 'is_tag'):
                         #The current gtkTextTag is a tag
                         #Recursive call
                         nparent = doc.createElement("tag")
                         child = self.parse_buffer(buff, start_it, end_it, \
                                                     nparent, doc, done=done)
                         parent.appendChild(child)
-                    elif ta.get_data('is_subtask'):
+                    elif hasattr(ta, 'is_subtask'):
                         #The current gtkTextTag is a subtask
                         tagname = "subtask"
                         subt    = doc.createElement(tagname)
-                        target  = ta.get_data('child')
+                        target  = ta.child
                         subt.appendChild(doc.createTextNode(target))
                         parent.appendChild(subt)
                         parent.appendChild(doc.createTextNode("\n"))
                         it.forward_line()
-                    elif ta.get_data('is_indent'):
+                    elif hasattr(ta, 'is_indent'):
                         #The current gtkTextTag is a indent
                         indent = buff.get_text(start_it, end_it)
                         if '\n' in indent:
@@ -134,7 +133,7 @@ class Serializer(object):
             last_val = parent.lastChild
             #We add a \n only if needed (= we don't have a "\n" at the end)
             if last_val and last_val.nodeType == 3 and \
-                                last_val.nodeValue[-1] != '\n':
+                        last_val.nodeValue[-1] != '\n':
                 parent.appendChild(doc.createTextNode('\n'))
         #This function concatenates all the adjacent text node of the XML
         parent.normalize()
@@ -153,8 +152,8 @@ class Unserializer:
         self.tv = taskview
 
     #Disabling pylint argument usage since we know we are not using all args
-    def unserialize(self, register_buf, content_buf, ite, data,\
-                    cr_tags, udata):
+    def unserialize(self, register_buf, content_buf, ite, length,\
+                    data, cr_tags, udata):
         if data:
             element = xml.dom.minidom.parseString(data)
             success = self.parsexml(content_buf, ite, element.firstChild)

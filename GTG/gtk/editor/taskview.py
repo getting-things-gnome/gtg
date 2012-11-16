@@ -144,9 +144,11 @@ class TaskView(Gtk.TextView):
         #Let's try with serializing
         mime_type = 'application/x-gtg-task'
         serializer = taskviewserial.Serializer()
+        self.serializer = serializer
         unserializer = taskviewserial.Unserializer(self)
-        self.serialize_format = self.buff.register_serialize_format(mime_type, serializer.serialize, None)
-        self.deserialize_format = self.buff.register_deserialize_format(mime_type, unserializer.unserialize, None)
+        self.unserializer = unserializer
+        #self.serialize_format = self.buff.register_serialize_format(mime_type, serializer.serialize, None)
+        #self.deserialize_format = self.buff.register_deserialize_format(mime_type, unserializer.unserialize, None)
 
         #The list of callbacks we have to set
         self.remove_tag_callback = None
@@ -265,7 +267,8 @@ class TaskView(Gtk.TextView):
             reconnect_modified = True
 
         #deserialize
-        self.buff.deserialize(self.buff, self.deserialize_format, _iter, text)
+        #self.buff.deserialize(self.buff, self.deserialize_format, _iter, text)
+        self.unserializer.unserialize(self.buff, self.buff, _iter, 0, text, None, None)
 
         #reconnect
         if reconnect_insert:
@@ -326,10 +329,10 @@ class TaskView(Gtk.TextView):
             linktype = 'failedlink'
 
         tag = b.create_tag(None, **self.get_property(linktype)) #pylint: disable-msg=W0142
-        tag.set_data('is_anchor', True)
-        tag.set_data('link', anchor)
+        tag.is_anchor = True
+        tag.link = anchor
         if typ:
-            tag.set_data('type', typ)
+            tag.type = typ
         tag.connect('event', self._tag_event, text, anchor, typ)
         self.__tags.append(tag)
         return tag
@@ -343,14 +346,14 @@ class TaskView(Gtk.TextView):
         texttag = None
         already = False
         for t in t_list:
-            if t.get_data('is_tag') and t.get_data('tagname') == tag:
+            if hasattr(t, 'is_tag') and t.tagname == tag:
                 texttag = t
                 if ss.begins_tag(t) and ee.ends_tag(t):
                     already = True
         if not texttag:
             texttag = buff.create_tag(None,**self.get_property('tag'))#pylint: disable-msg=W0142
-            texttag.set_data('is_tag', True)
-            texttag.set_data('tagname', tag)
+            texttag.is_tag = True
+            texttag.tagname = tag
             #This one is for marks
         if not already:
             self.__apply_tag_to_mark(s, e, tag=texttag)
@@ -371,8 +374,8 @@ class TaskView(Gtk.TextView):
         if len(tex) > 0:
             self.req.get_task(subtask).set_title(tex)
             texttag = self.create_anchor_tag(buff, subtask, text=tex, typ="subtask")
-            texttag.set_data('is_subtask', True)
-            texttag.set_data('child', subtask)
+            texttag.is_subtask = True
+            texttag.child = subtask
             #This one is for marks
             self.__apply_tag_to_mark(s, e, tag=texttag)
         else:
@@ -382,8 +385,8 @@ class TaskView(Gtk.TextView):
 
     def create_indent_tag(self, buff, level):
         tag = buff.create_tag(None, **self.get_property('indent'))#pylint: disable-msg=W0142
-        tag.set_data('is_indent', True)
-        tag.set_data('indent_level', level)
+        tag.is_indent = True
+        tag.indent_level = level
         return tag
 
     #Insert a list of subtasks at the end of the buffer
@@ -405,7 +408,7 @@ class TaskView(Gtk.TextView):
             firstline = self.buff.get_iter_at_line(1)
             newline = True
             for tt in firstline.get_tags():
-                if tt.get_data('is_tag'):
+                if hasattr(tt, 'is_tag'):
                     newline = False
                     firstline.forward_to_line_end()
                     #Now we should check if the current char is a separator or not
@@ -468,7 +471,7 @@ class TaskView(Gtk.TextView):
         #we go to the next line, just after the title
         start.forward_line()
         end = self.buff.get_end_iter()
-        texte = self.buff.serialize(self.buff, self.serialize_format, start, end)
+        texte = self.serializer.serialize(self.buff, self.buff, start, end, 1, None)
 
         return texte
     #Get the title of the task (aka the first line of the buffer)
@@ -538,7 +541,7 @@ class TaskView(Gtk.TextView):
         #First, we remove the olds tags
         tag_list = []
         def subfunc(texttag, data=None): #pylint: disable-msg=W0613
-            if texttag.get_data('is_subtask'):
+            if hasattr(texttag, 'is_subtask'):
                 tag_list.append(texttag)
         table.foreach(subfunc, None)
         start, end = buff.get_bounds()
@@ -583,7 +586,7 @@ class TaskView(Gtk.TextView):
         tag_list = []
         table = buff.get_tag_table()
         def subfunc(texttag, data=None):
-            if texttag.get_data('is_anchor'):
+            if hasattr(texttag, 'is_anchor'):
                 tag_list.append(texttag)
         table.foreach(subfunc, None)
         for t in tag_list:
@@ -649,8 +652,8 @@ class TaskView(Gtk.TextView):
                 tags = it.get_toggled_tags(True)
                 for ta in tags:
                     #removing deleted tags
-                    if ta.get_data('is_tag'):
-                        tagname = ta.get_data('tagname')
+                    if hasattr(ta, 'is_tag'):
+                        tagname = ta.tagname
                         old_tags.append(tagname)
                         buff.remove_tag(ta, start, end)
                         table.remove(ta)
@@ -757,7 +760,7 @@ class TaskView(Gtk.TextView):
         #We want to start at the begining
         tags = start.get_tags()+start.get_toggled_tags(False)
         for ta in tags:
-            if (ta.get_data('is_indent')):
+            if (hasattr(ta, 'is_indent')):
                 line = start.get_line()
                 start = self.buff.get_iter_at_line(line)
 #                #it = self.buff.get_iter_at_line(line)
@@ -772,19 +775,19 @@ class TaskView(Gtk.TextView):
                 tags = it.get_tags()
                 for ta in tags:
                     #removing deleted subtasks
-                    if ta.get_data('is_subtask') and it.begins_tag(ta):
-                        target = ta.get_data('child')
+                    if hasattr(ta, 'is_subtask') and it.begins_tag(ta):
+                        target = ta.child
                         #print "removing task %s" %target
                         self.remove_subtask(target)
                     #removing deleted tags
-                    if ta.get_data('is_tag') and it.begins_tag(ta):
-                        tagname = ta.get_data('tagname')
+                    if hasattr(ta, 'is_tag') and it.begins_tag(ta):
+                        tagname = ta.tagname
                         self.remove_tag_callback(tagname)
                         if buff.get_mark(tagname):
                             buff.delete_mark_by_name(tagname)
                         if buff.get_mark("/%s"%tagname):
                             buff.delete_mark_by_name("/%s"%tagname)
-                    if ta.get_data('is_indent'):
+                    if hasattr(ta, 'is_indent'):
                         #Because the indent tag is read only
                         #we will remove it
                         endtag = it.copy()
@@ -922,7 +925,7 @@ class TaskView(Gtk.TextView):
         while not itera:
             found = True
             for t in startl.get_tags():
-                if t.get_data('is_indent'):
+                if hasattr(t, 'is_indent'):
                     line += 1
                     startl = self.buff.get_iter_at_line(line)
                     if line < self.buff.get_line_count():
@@ -960,17 +963,17 @@ class TaskView(Gtk.TextView):
         list_stag = start_i.get_toggled_tags(False)
         stag = None
         for t in list_stag:
-            if t.get_data('is_subtask'):
+            if hasattr(t, 'is_subtask'):
                 stag = t
         #maybe the tag was not toggled off here but we were in the middle
         if not stag:
             list_stag = start_i.get_tags()
             for t in list_stag:
-                if t.get_data('is_subtask'):
+                if hasattr(t, 'is_subtask'):
                     stag = t
         if stag:
             #We will remove the tag from the whole text
-            subtid = stag.get_data('child')
+            subtid = stag.child
         #We move the end_subtask mark to here
         #We have to create a temporary mark with left gravity
         #It will be later replaced by the good one with right gravity
@@ -1034,8 +1037,8 @@ class TaskView(Gtk.TextView):
         tags = start_line.get_tags()
         current_indent = 0
         for ta in tags:
-            if ta.get_data('is_indent'):
-                current_indent = ta.get_data('indent_level')
+            if hasattr(ta, 'is_indent'):
+                current_indent = ta.indent_level
         return current_indent
 
     #Method called on copy and cut actions
@@ -1113,13 +1116,13 @@ class TaskView(Gtk.TextView):
             current_indent = self._get_indent_level(itera)
             tags = itera.get_tags()
             for ta in tags:
-                if ta.get_data('is_subtask'):
-                    subtask_nbr = ta.get_data('child')
+                if hasattr(ta, 'is_subtask'):
+                    subtask_nbr = ta.child
             #Maybe we are simply at the end of the tag
             if not subtask_nbr and itera.ends_tag():
                 for ta in itera.get_toggled_tags(False):
-                    if ta.get_data('is_subtask'):
-                        subtask_nbr = ta.get_data('child')
+                    if hasattr(ta, 'is_subtask'):
+                        subtask_nbr = ta.child
 
             #New line: the user pressed enter !
             #If the line begins with "-", it's a new subtask !
@@ -1135,11 +1138,11 @@ class TaskView(Gtk.TextView):
                 else:
                     list_stag = itera.get_tags()
                 for t in list_stag:
-                    if t.get_data('is_tag'):
-                        closed_tag = t.get_data('tagname')
-                    elif t.get_data('is_subtask'):
+                    if hasattr(t, 'is_tag'):
+                        closed_tag = t.tagname
+                    elif hasattr(t, 'is_subtask'):
                         cutting_subtask = True
-                        closed_tag = t.get_data('child')
+                        closed_tag = t.child
                 #We add a bullet list but not on the first line
                 #Because it's the title
                 if line_nbr > 0:
@@ -1246,8 +1249,8 @@ class TaskView(Gtk.TextView):
             local_start = cursor_iter.copy()
 
             for tag in local_start.get_tags():
-                anchor =  tag.get_data('link')
-                typ =  tag.get_data('type')
+                anchor =  tag.link
+                typ =  tag.type
                 if(anchor):
                     if typ == "subtask":
                         self.open_task(anchor)
@@ -1263,8 +1266,8 @@ class TaskView(Gtk.TextView):
         startline = self.buff.get_iter_at_line(line)
         if newlevel < 0:
             for t in itera.get_toggled_tags(False):
-                if t.get_data('is_indent'):
-                    newlevel = t.get_data('indent_level')
+                if hasattr(t, 'is_indent'):
+                    newlevel = t.indent_level
 
             if newlevel > 0:
                 newlevel -= 1
@@ -1291,7 +1294,7 @@ class TaskView(Gtk.TextView):
         #All this crap to find if we are at the end of an indent tag
         if insert_iter.ends_tag():
             for t in insert_iter.get_toggled_tags(False):
-                if t.get_data('is_indent'):
+                if hasattr(t, 'is_indent'):
                     self.deindent(insert_iter)
                     tv.emit_stop_by_name('backspace')
                     #we stopped the signal, don't forget to erase
@@ -1307,7 +1310,7 @@ class TaskView(Gtk.TextView):
         x, y = view.window_to_buffer_coords(Gtk.TextWindowType.TEXT, x, y)
         tags = view.get_iter_at_location(x, y).get_tags()
         for tag in tags:
-            if tag.get_data('is_anchor'):
+            if hasattr(tag, 'is_anchor'):
                 for t in set(self.__tags) - set([tag]):
                     self.__tag_reset(t, window)
                 self.__set_anchor(window, tag, Gdk.Cursor.new(Gdk.CursorType.HAND2),
@@ -1339,14 +1342,13 @@ class TaskView(Gtk.TextView):
                 self.__set_anchor(ev.window, tag, cursor, self.get_property('active'))
 
     def __tag_reset(self, tag, window):
-        if tag.get_data('is_anchor'):
+        if hasattr(tag, 'is_anchor'):
             #We need to get the normal cursor back
             editing_cursor = Gdk.Cursor.new(Gdk.CursorType.XTERM)
             if tag.get_property('strikethrough'):
                 linktype = 'done'
             else:
-                anchor = tag.get_data('link')
-                if self.check_link(anchor):
+                if self.check_link(tag.link):
                     linktype = 'link'
                 else:
                     linktype = 'failedlink'
