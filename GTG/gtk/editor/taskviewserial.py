@@ -115,7 +115,7 @@ class Serializer(object):
                         it.forward_line()
                     elif hasattr(ta, 'is_indent'):
                         #The current gtkTextTag is a indent
-                        indent = buff.get_text(start_it, end_it)
+                        indent = buff.get_text(start_it, end_it, True)
                         if '\n' in indent:
                             parent.appendChild(doc.createTextNode('\n'))
                         it = end_it
@@ -167,7 +167,7 @@ class Unserializer:
         end_end = buff.get_end_iter()
         end_line = end_end.get_line()
         start_end = buff.get_iter_at_line(end_line)
-        if buff.get_text(start_end, end_end).strip():
+        if buff.get_text(start_end, end_end, True).strip():
             end_line += 1
         for tid in st_list:
             self.tv.write_subtask(buff, end_line, tid)

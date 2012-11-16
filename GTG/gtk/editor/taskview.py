@@ -147,6 +147,7 @@ class TaskView(Gtk.TextView):
         self.serializer = serializer
         unserializer = taskviewserial.Unserializer(self)
         self.unserializer = unserializer
+        # FIXME after discussion with Lionel remove those functions and simplify the code
         #self.serialize_format = self.buff.register_serialize_format(mime_type, serializer.serialize, None)
         #self.deserialize_format = self.buff.register_deserialize_format(mime_type, unserializer.unserialize, None)
 

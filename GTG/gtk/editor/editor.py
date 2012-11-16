@@ -397,7 +397,7 @@ class TaskEditor(object):
         self.calendar.set_date(date, date_kind)
         #we show the calendar at the right position
         rect = widget.get_allocation()
-        x, y = widget.window.get_origin()
+        result, x, y = widget.get_window().get_origin()
         self.calendar.show_at_position(x + rect.x + rect.width,
                                        y + rect.y)
 
