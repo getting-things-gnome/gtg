@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2012-09-11 10:37+0200\n"
-"PO-Revision-Date: 2012-09-13 20:00+0000\n"
+"PO-Revision-Date: 2012-11-17 16:54+0000\n"
 "Last-Translator: DmDr <cardioexp@gmail.com>\n"
 "Language-Team: Russian <ru@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -16,8 +16,8 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Launchpad-Export-Date: 2012-09-14 04:37+0000\n"
-"X-Generator: Launchpad (build 15944)\n"
+"X-Launchpad-Export-Date: 2012-11-18 04:38+0000\n"
+"X-Generator: Launchpad (build 16278)\n"
 
 #: GTG/plugins/export/export_templates/description_pocketmod.py:18
 msgid "Foldable booklet (PDF)"
@@ -914,7 +914,7 @@ msgstr "Задачи без меток"
 
 #: GTG/core/treefactory.py:102 GTG/gtk/browser/browser.py:1518
 msgid "Search"
-msgstr "Искать"
+msgstr "Поиск"
 
 #: GTG/tests/test_dates.py:70 GTG/tools/dates.py:57
 msgid "later"
@@ -1779,7 +1779,7 @@ msgstr "Панель _меток"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:12
 msgid "_Closed Tasks Pane"
-msgstr "_Выполненые задачи"
+msgstr "_Выполненные задачи"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:13
 msgid "T_oolbar"
