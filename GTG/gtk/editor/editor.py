@@ -69,14 +69,6 @@ class TaskEditor:
         self.inserttag_button = self.builder.get_object("inserttag")
         self.inserttag_button.set_tooltip_text(GnomeConfig.TAG_TOOLTIP)
 
-        ###################################Newly added bug fixes#############################
-
-        self.duedate_widget = self.builder.get_object("duedate_entry")
-        self.startdate_widget = self.builder.get_object("startdate_entry")
-        self.closeddate_widget = self.builder.get_object("closeddate_entry")
-
-        #############################End this section - go to next###########################
-
         #Create our dictionary and connect it
         dic = {
                 "mark_as_done_clicked": self.change_status,
@@ -129,6 +121,9 @@ class TaskEditor:
             self.textview.modify_font(pango.FontDescription(conf_font_value)) 
         #Voila! it's done
         self.calendar       = GTGCalendar(self.builder)
+        self.duedate_widget = self.builder.get_object("duedate_entry")
+        self.startdate_widget = self.builder.get_object("startdate_entry")
+        self.closeddate_widget = self.builder.get_object("closeddate_entry")
         self.dayleft_label  = self.builder.get_object("dayleft")
         self.tasksidebar = self.builder.get_object("tasksidebar")
         # Define accelerator keys
@@ -393,6 +388,8 @@ class TaskEditor:
             widget.modify_text(gtk.STATE_NORMAL, gtk.gdk.color_parse("#F00"))
             widget.modify_base(gtk.STATE_NORMAL, gtk.gdk.color_parse("#F88"))
 
+        self.refresh_editor()
+
     def on_date_pressed(self, widget, date_kind):
         """Called when a date-changing button is clicked."""
         if date_kind == GTGCalendar.DATE_KIND_DUE:
@@ -583,4 +580,3 @@ class TaskEditor:
     #To refresh the other UI components this will call the required functions within it
     def date_changed_manually(self, widget, event=None, type=None):
         self.date_changed(widget, type)
-        self.refresh_editor()
