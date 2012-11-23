@@ -65,7 +65,7 @@ DEFAULTS = {
             'y_pos': 10,
             'tasklist_sort_column': 5,
             'tasklist_sort_order': 1,
-            "font_name": ""
+            "font_name": "",
             },
 'tag_editor': {
             "custom_colors": [],
@@ -145,15 +145,16 @@ class CoreConfig(Borg):
     SEP_TAG = "gtg-tags-sep"
     SEARCH_TAG = "search"
 
-    def check_config_file(self,file_path):
-        """ This function bypasses the errors of config file and allows GTG to open smoothly""" 
-      	total_path=self.conf_dir+file_path    
-	try:
+    def check_config_file(self, file_path):
+        """ This function bypasses the errors of config file and allows GTG
+        to open smoothly"""
+        total_path=self.conf_dir+file_path
+        try:
             config = ConfigObj(total_path)
-	except ConfigObjError:
-	    open(total_path, "w").close()
-	    config = ConfigObj(total_path)            
- 	return config
+        except ConfigObjError:
+            open(total_path, "w").close()
+            config = ConfigObj(total_path)
+        return config
 
     def __init__(self):
         if  hasattr(self, 'data_dir'):
@@ -181,8 +182,8 @@ class CoreConfig(Borg):
                             " is a configuration file for gtg, but it "
                             "cannot be read or written. Please check it")
         self.conf_dict = self.check_config_file(self.CONF_FILE)
-        self.task_conf_dict = self.check_config_file(self.TASK_CONF_FILE)    
-	
+        self.task_conf_dict = self.check_config_file(self.TASK_CONF_FILE)
+
     def save(self):
         ''' Saves the configuration of CoreConfig '''
         self.conf_dict.write()

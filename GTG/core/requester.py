@@ -54,23 +54,23 @@ class Requester(gobject.GObject):
 
     def is_displayed(self, task):
         return self.__basetree.get_viewtree(name='active').is_displayed(task)
-        
+
     def get_basetree(self):
         return self.__basetree
-        
+
     #this method also update the viewcount of tags
-    def apply_global_filter(self,tree,filtername):
+    def apply_global_filter(self, tree, filtername):
         tree.apply_filter(filtername)
         for t in self.get_all_tags():
             ta = self.get_tag(t)
             ta.apply_filter(filtername)
-    
-    def unapply_global_filter(self,tree,filtername):
+
+    def unapply_global_filter(self, tree, filtername):
         tree.unapply_filter(filtername)
         for t in self.get_all_tags():
             ta = self.get_tag(t)
             ta.unapply_filter(filtername)
-    
+
 
     ######### Filters bank #######################
     # List, by name, all available filters
