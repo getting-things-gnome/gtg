@@ -9,16 +9,16 @@ msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2012-09-11 10:37+0200\n"
-"PO-Revision-Date: 2012-09-22 19:43+0000\n"
-"Last-Translator: Piotr Strębski <strebski@o2.pl>\n"
+"PO-Revision-Date: 2012-11-20 22:14+0000\n"
+"Last-Translator: Witek M. <wmitoraj@gmail.com>\n"
 "Language-Team: Polish <ponton@jabster.pl>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
 "|| n%100>=20) ? 1 : 2;\n"
-"X-Launchpad-Export-Date: 2012-09-23 04:39+0000\n"
-"X-Generator: Launchpad (build 15985)\n"
+"X-Launchpad-Export-Date: 2012-11-21 04:49+0000\n"
+"X-Generator: Launchpad (build 16293)\n"
 
 #: GTG/plugins/export/export_templates/description_pocketmod.py:18
 msgid "Foldable booklet (PDF)"
@@ -78,6 +78,8 @@ msgstr ""
 #: GTG/plugins/export/export.py:120
 msgid "No task matches your criteria. Empty report can't be generated."
 msgstr ""
+"Brak zadań spełniających twoje kryteria. Puste raporty nie mogą zostać "
+"wygenerowane."
 
 #: GTG/plugins/export/export.py:138
 #, python-format
@@ -537,7 +539,7 @@ msgstr ""
 
 #: GTG/core/firstrun_tasks.py:287
 msgid "Learn How To Use Synchronization Services"
-msgstr ""
+msgstr "Naucz Się Korzystać Z Usług Synchronizacji"
 
 #: GTG/core/firstrun_tasks.py:288
 msgid ""
@@ -1653,7 +1655,7 @@ msgstr "Dodaj podzadanie"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:43
 msgid "_Set Start Date"
-msgstr ""
+msgstr "_Ustaw Datę Rozpoczęcia"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:44
 msgid "T_oday"
@@ -1661,23 +1663,23 @@ msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:45
 msgid "_Tomorrow"
-msgstr ""
+msgstr "_Jutro"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:46
 msgid "Next _Week"
-msgstr ""
+msgstr "Następny_Tydzień"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:47
 msgid "Next _Month"
-msgstr ""
+msgstr "Następny_Miesiąc"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:48
 msgid "Next _Year"
-msgstr ""
+msgstr "Następny_Rok"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:49
 msgid "_Clear Start Date"
-msgstr ""
+msgstr "_Wymaż Datę Rozpoczęcia"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:50
 msgid "Set Due Date"
@@ -1685,15 +1687,15 @@ msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:51
 msgid "_Now"
-msgstr ""
+msgstr "_Teraz"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:52
 msgid "_Soon"
-msgstr ""
+msgstr "_Wkrótce"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:53
 msgid "_Someday"
-msgstr ""
+msgstr "_Kiedyś"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:54
 msgid "_Clear Due Date"
