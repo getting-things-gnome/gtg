@@ -41,7 +41,7 @@ def x_is_running():
 
 def main():
     """ Parse arguments and run GTG
-    
+
     Importing GTG.gtg must be done after importing and setting up paths
     for Liblarch """
 
