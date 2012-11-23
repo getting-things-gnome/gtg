@@ -107,6 +107,7 @@ class SubConfig():
             if name in self.__defaults:
                 ntype = type(self.__defaults[name])
                 if ntype in (bool, int) and type(toreturn) == str:
+                    #FIXME better way to convert -> ugly hack with eval
                     toreturn = eval(toreturn)
         elif name in self.__defaults:
             toreturn = self.__defaults[name]
