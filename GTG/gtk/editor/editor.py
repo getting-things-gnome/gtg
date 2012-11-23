@@ -379,6 +379,7 @@ class TaskEditor(object):
             elif data == "closed":
                 self.task.set_closed_date(datetoset)
         else:
+            #FIXME changing color doesn't work :(
             #We should write in red in the entry if the date is not valid
             widget.modify_text(Gtk.StateType.NORMAL, Gdk.color_parse("#F00"))
             widget.modify_base(Gtk.StateType.NORMAL, Gdk.color_parse("#F88"))
