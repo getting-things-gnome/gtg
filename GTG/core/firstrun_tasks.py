@@ -260,7 +260,8 @@ def populate():
 "defer:date\n"
 "\n"
 "Using this you can apply a due date or a defer date. Dates can be "
-"formated as yyyy-mm-dd (for example 2012-04-01) or yyyymmdd (20120401) "
+"formated as per your locale or yyyy-mm-dd (for example 2012-04-01) or \
+ yyyymmdd (20120401) "
 "or mmdd (0401 - the year being implicitly the current one) or today, "
 "tomorrow or a weekday name (due:monday means due next Monday). Dates "
 "which are added in this way will not appear in the task title.\n"
