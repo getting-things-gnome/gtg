@@ -8,15 +8,15 @@ msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2012-09-11 10:37+0200\n"
-"PO-Revision-Date: 2012-08-17 20:32+0000\n"
-"Last-Translator: Radina Matic <radina.matic@gmail.com>\n"
+"PO-Revision-Date: 2012-11-23 12:32+0000\n"
+"Last-Translator: Luca Falavigna <dktrkranz@ubuntu.com>\n"
 "Language-Team: Italian <it@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2012-09-12 04:38+0000\n"
-"X-Generator: Launchpad (build 15930)\n"
+"X-Launchpad-Export-Date: 2012-11-24 06:56+0000\n"
+"X-Generator: Launchpad (build 16293)\n"
 
 #: GTG/plugins/export/export_templates/description_pocketmod.py:18
 msgid "Foldable booklet (PDF)"
@@ -281,7 +281,7 @@ msgstr "Messaggio d'aiuto molto di aiuto, vero? Segnalare un bug."
 
 #: GTG/core/firstrun_tasks.py:35
 msgid "Getting Started With GTG"
-msgstr ""
+msgstr "Introduzione a GTG"
 
 #: GTG/core/firstrun_tasks.py:36
 msgid ""
@@ -359,7 +359,7 @@ msgstr ""
 
 #: GTG/core/firstrun_tasks.py:114
 msgid "Learn How To Use Subtasks"
-msgstr ""
+msgstr "Come usare le subattività"
 
 #: GTG/core/firstrun_tasks.py:115
 msgid ""
@@ -389,7 +389,7 @@ msgstr ""
 
 #: GTG/core/firstrun_tasks.py:142
 msgid "Learn How To Use Tags"
-msgstr ""
+msgstr "Come usare i tag"
 
 #: GTG/core/firstrun_tasks.py:143
 msgid ""
@@ -460,7 +460,7 @@ msgstr ""
 
 #: GTG/core/firstrun_tasks.py:209
 msgid "Learn How To Use Plugins"
-msgstr ""
+msgstr "Come usare i plugin"
 
 #: GTG/core/firstrun_tasks.py:210
 msgid ""
@@ -474,10 +474,20 @@ msgid ""
 "You can find the Plugin Manager by selecting Edit in the Menu Bar, then "
 "clicking Plugins."
 msgstr ""
+"GTG ha la possibilità di aggiungere plugin per estendere le sue funzionalità "
+"di base.\n"
+"\n"
+"Alcuni plugin attualmente a disposizione sono l'icona di notifica, che "
+"mostra un comodo collegamento a GTG nella tua area di notifica, o il "
+"cancellatore delle attività completate, che si occupa di cancellare "
+"periodicamente le vecchie attività dalla lista delle attività chiuse.\n"
+"\n"
+"Il Plugin Manager è disponibile selezionando Modifica nella barra del menu, "
+"e successivamente cliccando su Plugin."
 
 #: GTG/core/firstrun_tasks.py:224
 msgid "Reporting Bugs"
-msgstr ""
+msgstr "Segnalazioni di bug"
 
 #: GTG/core/firstrun_tasks.py:225
 msgid ""
@@ -493,10 +503,21 @@ msgid ""
 "If you have some trouble with GTG, we might be able to help you or to solve "
 "your problem really quickly."
 msgstr ""
+"GTG è ancora un software in fase di sviluppo. Lo usiamo ogni giorno, ma è "
+"probabile che si possa incappare in qualche problema.\n"
+"\n"
+"Aiutaci a migliorare GTG riportando i problemi riscontrati sulla pagina "
+"Launchpad: https://bugs.launchpad.net/gtg/+filebug\n"
+"\n"
+"Abbiamo bisogno anche del tuo aiuto per migliorare questo software. "
+"Qualsiasi contributo o idea è bene accetto!\n"
+"\n"
+"Se riscontri problemi con GTG, dovremmo essere in grado di aiutarti a "
+"risolverli in modo estremamente veloce."
 
 #: GTG/core/firstrun_tasks.py:241
 msgid "Learn How To Use The Quick Add Entry"
-msgstr ""
+msgstr "Come utilizzare l'aggiunta veloce"
 
 #: GTG/core/firstrun_tasks.py:242
 msgid ""
@@ -543,7 +564,7 @@ msgstr ""
 
 #: GTG/core/firstrun_tasks.py:287
 msgid "Learn How To Use Synchronization Services"
-msgstr ""
+msgstr "Come usare i servizi di sincronizzazione"
 
 #: GTG/core/firstrun_tasks.py:288
 msgid ""
@@ -569,7 +590,7 @@ msgstr ""
 
 #: GTG/core/firstrun_tasks.py:311
 msgid "Learn How To Search For Tasks"
-msgstr ""
+msgstr "Come usare la ricerca di attività"
 
 #: GTG/core/firstrun_tasks.py:312
 msgid ""
@@ -1270,11 +1291,11 @@ msgstr "<b>Esplora attività</b>"
 
 #: GTG/gtk/preferences.glade.h:6
 msgid "Font :"
-msgstr ""
+msgstr "Font :"
 
 #: GTG/gtk/preferences.glade.h:7
 msgid "<b>Editor</b>"
-msgstr ""
+msgstr "<b>Editor</b>"
 
 #: GTG/gtk/preferences.glade.h:8
 msgid "page 1"
@@ -1613,7 +1634,7 @@ msgstr "Copyright © 2008-2012 Lionel Dricot, Bertrand Rousseau"
 msgid ""
 "GTG is a personal tasks and TODO-list items organizer for the GNOME desktop "
 "environment."
-msgstr ""
+msgstr "GTG è un organizzatore di attività per l'ambiente desktop GNOME"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:34
 msgid "GTG website"
@@ -1635,6 +1656,19 @@ msgid ""
 "Getting Things GNOME!; if not, write to the Free Software Foundation, Inc., "
 "51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA."
 msgstr ""
+"Getting Things GNOME! is free software; you can redistribute it and/or "
+"modify it under the terms of the GNU General Public License as published by "
+"the Free Software Foundation; either version 3 of the License, or (at your "
+"option) any later version.\n"
+"\n"
+"Getting Things GNOME! is distributed in the hope that it will be useful, but "
+"WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY "
+"or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for "
+"more details.\n"
+"\n"
+"You should have received a copy of the GNU General Public License along with "
+"Getting Things GNOME!; if not, write to the Free Software Foundation, Inc., "
+"51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA."
 
 #: GTG/gtk/browser/taskbrowser.glade.h:40
 msgid "Mark as Not Done"
@@ -1650,51 +1684,51 @@ msgstr "Aggiungi un'attività ausiliaria"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:43
 msgid "_Set Start Date"
-msgstr ""
+msgstr "Impostare la data iniziale"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:44
 msgid "T_oday"
-msgstr ""
+msgstr "_Oggi"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:45
 msgid "_Tomorrow"
-msgstr ""
+msgstr "_Domani"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:46
 msgid "Next _Week"
-msgstr ""
+msgstr "Prossima _Settimana"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:47
 msgid "Next _Month"
-msgstr ""
+msgstr "Prossimo _Mese"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:48
 msgid "Next _Year"
-msgstr ""
+msgstr "Prossimo _Anno"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:49
 msgid "_Clear Start Date"
-msgstr ""
+msgstr "_Rimuovere la data iniziale"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:50
 msgid "Set Due Date"
-msgstr ""
+msgstr "Impostare la data di scadenza"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:51
 msgid "_Now"
-msgstr ""
+msgstr "Ad_esso"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:52
 msgid "_Soon"
-msgstr ""
+msgstr "_Presto"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:53
 msgid "_Someday"
-msgstr ""
+msgstr "Prima o po_i"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:54
 msgid "_Clear Due Date"
-msgstr ""
+msgstr "Cancellare la data di scadenza"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:55
 msgid "Modify Tags..."
