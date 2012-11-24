@@ -67,11 +67,11 @@ class DataStore(object):
 
         # Flag when turned to true, all pending operation should be
         # completed and then GTG should quit
-        self.please_quit = False 
+        self.please_quit = False
 
         # The default backend must be loaded first. This flag turns to True
         # when the default backend loading has finished.
-        self.is_default_backend_loaded = False 
+        self.is_default_backend_loaded = False
         self._backend_signals.connect('default-backend-loaded',
                                       self._activate_non_default_backends)
         self.filtered_datastore = FilteredDataStore(self)
@@ -117,7 +117,7 @@ class DataStore(object):
     def new_tag(self, name, attributes={}):
         """
         Create a new tag
-        
+
         @returns GTG.core.tag.Tag: the new tag
         """
         name = name.encode("UTF-8")
