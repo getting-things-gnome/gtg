@@ -46,9 +46,6 @@ from GTG.gtk.browser.treeview_factory import TreeviewFactory
 from GTG.tools.dates import Date
 from GTG.tools.logger import Log
 
-#=== MAIN CLASS ===============================================================
-
-
 
 class Timer:
 
@@ -96,7 +93,7 @@ class TaskBrowser(gobject.GObject):
 
         # Set up models
         # Active Tasks
-        self.req.apply_global_filter(self.activetree,'active')
+        self.req.apply_global_filter(self.activetree, 'active')
         # Tags
         self.tagtree = None
         self.tagtreeview = None
@@ -405,7 +402,7 @@ class TaskBrowser(gobject.GObject):
 ### HELPER FUNCTIONS ########################################################
     def open_preferences(self, widget):
         self.vmanager.open_preferences(self.config)
-        
+
     def open_plugins(self, widget):
         self.vmanager.configure_plugins()
 
@@ -565,10 +562,10 @@ class TaskBrowser(gobject.GObject):
 
     def set_view(self, viewname):
         if viewname == 'default':
-            self.req.unapply_global_filter(self.activetree,'workview')
+            self.req.unapply_global_filter(self.activetree, 'workview')
             workview = False
         elif viewname == 'workview':
-            self.req.apply_global_filter(self.activetree,'workview')
+            self.req.apply_global_filter(self.activetree, 'workview')
             workview = True
         else:
             raise Exception('Cannot set the view %s' %viewname)
@@ -613,7 +610,6 @@ class TaskBrowser(gobject.GObject):
 ### SIGNAL CALLBACKS ##########################################################
 # Typically, reaction to user input & interactions with the GUI
 #
-
     def on_sort_column_changed(self, model):
         sort_column, sort_order = model.get_sort_column_id()
 
@@ -755,7 +751,7 @@ class TaskBrowser(gobject.GObject):
         colt = self.config.get("collapsed_tasks")
         if tid not in colt:
             colt.append(str(tid))
-    
+
     def on_tag_expanded(self, sender, tag):
         colt = self.config.get("expanded_tags")
         if tag not in colt:
@@ -980,7 +976,7 @@ class TaskBrowser(gobject.GObject):
     def on_delete_tasks(self, widget=None, tid=None):
         #If we don't have a parameter, then take the selection in the treeview
         if not tid:
-            #tid_to_delete is a [project,task] tuple
+            #tid_to_delete is a [project, task] tuple
             tids_todelete = self.get_selected_tasks()
             if not tids_todelete:
                 return
@@ -1110,13 +1106,13 @@ class TaskBrowser(gobject.GObject):
                 task.set_status(Task.STA_DISMISSED)
                 self.close_all_task_editors(uid)
 
-    def apply_filter_on_panes(self, filter_name,refresh=True):
+    def apply_filter_on_panes(self, filter_name, refresh=True):
         """ Apply filters for every pane: active tasks, closed tasks """
         for pane in self.vtree_panes:
             vtree = self.req.get_tasks_tree(name=pane, refresh=False)
             vtree.apply_filter(filter_name, refresh=refresh)
-            
-    def unapply_filter_on_panes(self, filter_name,refresh=True):
+
+    def unapply_filter_on_panes(self, filter_name, refresh=True):
         """ Apply filters for every pane: active tasks, closed tasks """
         for pane in self.vtree_panes:
             vtree = self.req.get_tasks_tree(name=pane, refresh=False)
@@ -1130,11 +1126,11 @@ class TaskBrowser(gobject.GObject):
 
         #When you click on a tag, you want to unselect the tasks
         new_taglist = self.get_selected_tags()
-        
+
         for tagname in self.applied_tags:
             if tagname not in new_taglist:
-                self.unapply_filter_on_panes(tagname,refresh=False)
-        
+                self.unapply_filter_on_panes(tagname, refresh=False)
+
         for tagname in new_taglist:
             if tagname not in self.applied_tags:
                 self.apply_filter_on_panes(tagname)
@@ -1143,7 +1139,7 @@ class TaskBrowser(gobject.GObject):
                 tag = self.req.get_tag(tagname)
                 if tag.is_search_tag():
                     self.quickadd_entry.set_text(tag.get_attribute("query"))
-        
+
         self.applied_tags = new_taglist
 
     def on_taskdone_cursor_changed(self, selection=None):
