@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
-# Hamster Task Tracker Plugin for Gettings Things Gnome!
+# Hamster Task Tracker Plugin for Getting Things GNOME!
 # Copyright (c) 2009 Kevin Mehall
 #
 # This program is free software: you can redistribute it and/or modify it under
@@ -16,6 +16,7 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
+
 from calendar import timegm
 import dbus
 import gtk
