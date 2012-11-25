@@ -90,17 +90,6 @@ class TaskEditor:
                 "on_insert_subtask_clicked": self.insert_subtask,
                 "on_inserttag_clicked": self.inserttag_clicked,
                 "on_move": self.on_move,
-
-                ###focus lost events of entry objects
-                "startdate_entry_focus_out" : (self.date_changed_manually, GTGCalendar.DATE_KIND_START),
-                "duedate_entry_focus_out" : (self.date_changed_manually, GTGCalendar.DATE_KIND_DUE),
-                "closeddate_entry_focus_out" : (self.date_changed_manually, GTGCalendar.DATE_KIND_CLOSED),
-
-                ###enter key pressed events of entry objects
-                "startdate_entry_activate" : (self.date_changed_manually, GTGCalendar.DATE_KIND_START),
-                "duedate_entry_activate" : (self.date_changed_manually, GTGCalendar.DATE_KIND_DUE),
-                "closeddate_entry_activate" : (self.date_changed_manually, GTGCalendar.DATE_KIND_CLOSED),
-
         }
         self.builder.connect_signals(dic)
         self.window         = self.builder.get_object("TaskEditor")
@@ -574,9 +563,3 @@ class TaskEditor:
 
     def get_window(self):
         return self.window
-
-    #This will be called when user manually changed the date in the entries of
-    #starting date, due date and closed date
-    #To refresh the other UI components this will call the required functions within it
-    def date_changed_manually(self, widget, event=None, type=None):
-        self.date_changed(widget, type)
