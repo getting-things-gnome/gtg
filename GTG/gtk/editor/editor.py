@@ -168,11 +168,11 @@ class TaskEditor:
             tid = self.task.get_id()
             if tid in self.config:
                 if "position" in self.config[tid]:
-                    x, y = self.config[tid]["position"]
-                    self.move(int(x), int(y))
+                    pos_x, pos_y = self.config[tid]["position"]
+                    self.move(int(pos_x), int(pos_y))
                 if "size" in self.config[tid]:
-                    x, y = self.config[tid]["size"]
-                    self.window.resize(int(x), int(y))
+                    width, height = self.config[tid]["size"]
+                    self.window.resize(int(width), int(height))
 
         self.textview.set_editable(True)
         self.window.show()
