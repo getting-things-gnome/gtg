@@ -372,12 +372,14 @@ class TaskEditor:
                 self.task.set_due_date(datetoset)
             elif data == "closed":
                 self.task.set_closed_date(datetoset)
+            self.refresh_editor()
+
         else:
             #We should write in red in the entry if the date is not valid
             widget.modify_text(gtk.STATE_NORMAL, gtk.gdk.color_parse("#F00"))
             widget.modify_base(gtk.STATE_NORMAL, gtk.gdk.color_parse("#F88"))
 
-        self.refresh_editor()
+
 
     def on_date_pressed(self, widget, date_kind):
         """Called when a date-changing button is clicked."""
