@@ -109,7 +109,7 @@ class SubConfig():
                 if ntype == int:
                     toreturn = int(toreturn)
                 elif ntype == bool and type(toreturn) == str:
-                    toreturn = toreturn == "True"
+                    toreturn = toreturn.lower() == "true"
         elif name in self.__defaults:
             toreturn = self.__defaults[name]
             self.__conf[name] = toreturn
