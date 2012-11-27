@@ -1,7 +1,7 @@
 #!/usr/bin/env python2
 # -*- coding:utf-8 -*-
 # -----------------------------------------------------------------------------
-# Getting Things Gnome! - A personal organizer for the GNOME desktop
+# Getting Things GNOME! - A personal organizer for the GNOME desktop
 # Copyright (c) 2008-2012 Lionel Dricot & Bertrand Rousseau
 #
 # This program is free software: you can redistribute it and/or modify it under
