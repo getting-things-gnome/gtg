@@ -16,31 +16,30 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-
-TAG_XMLFILE = "tags.xml"
-TAG_XMLROOT = "tagstore"
-
 """
 Contains the Datastore object, which is the manager of all the active backends
 (both enabled and disabled ones)
 """
+
+TAG_XMLFILE = "tags.xml"
+TAG_XMLROOT = "tagstore"
 
 import threading
 import uuid
 import os.path
 from collections import deque
 
-from GTG.core import requester
-from GTG.core.task import Task
-from GTG.core.tag import Tag
-from GTG.core import CoreConfig
-from GTG.core.treefactory import TreeFactory
-from GTG.tools.logger import Log
-from GTG.backends.genericbackend import GenericBackend
-from GTG.tools import cleanxml
 from GTG.backends.backendsignals import BackendSignals
-from GTG.tools.borg import Borg
+from GTG.backends.genericbackend import GenericBackend
+from GTG.core import CoreConfig
+from GTG.core import requester
 from GTG.core.search import parse_search_query, search_filter, InvalidQuery
+from GTG.core.tag import Tag
+from GTG.core.task import Task
+from GTG.core.treefactory import TreeFactory
+from GTG.tools import cleanxml
+from GTG.tools.borg import Borg
+from GTG.tools.logger import Log
 
 
 class DataStore(object):
@@ -56,40 +55,40 @@ class DataStore(object):
         """
         Initializes a DataStore object
         """
-        self.backends = {} #dictionary {backend_name_string: Backend instance}
+        #dictionary {backend_name_string: Backend instance}
+        self.backends = {}
         self.treefactory = TreeFactory()
-        self.__tasks = self.treefactory.get_tasks_tree()
+        self._tasks = self.treefactory.get_tasks_tree()
         self.requester = requester.Requester(self, global_conf)
         self.tagfile = None
-        self.__tagstore = self.treefactory.get_tags_tree(self.requester)
+        self._tagstore = self.treefactory.get_tags_tree(self.requester)
         self.load_tag_tree()
         self._backend_signals = BackendSignals()
-        self.please_quit = False #when turned to true, all pending operation
-                                 # should be completed and then GTG should quit
-        self.is_default_backend_loaded = False #the default backend must be
-                                               # loaded before anyone else.
-                                               # This turns to True when the
-                                               # default backend loading has
-                                               # finished.
-        self._backend_signals.connect('default-backend-loaded', \
+
+        # Flag when turned to true, all pending operation should be
+        # completed and then GTG should quit
+        self.please_quit = False
+
+        # The default backend must be loaded first. This flag turns to True
+        # when the default backend loading has finished.
+        self.is_default_backend_loaded = False
+        self._backend_signals.connect('default-backend-loaded',
                                       self._activate_non_default_backends)
         self.filtered_datastore = FilteredDataStore(self)
         self._backend_mutex = threading.Lock()
 
-    ##########################################################################
-    ### Helper functions (get_ methods for Datastore embedded objects)
-    ##########################################################################
+    ### Accessor to embedded objects in DataStore ############################
     def get_tagstore(self):
         """
-        Helper function to obtain the Tagstore associated with this DataStore
+        Return the Tagstore associated with this DataStore
 
         @return GTG.core.tagstore.TagStore: the tagstore object
         """
-        return self.__tagstore
+        return self._tagstore
 
     def get_requester(self):
         """
-        Helper function to get the Requester associate with this DataStore
+        Return the Requester associate with this DataStore
 
         @returns GTG.core.requester.Requester: the requester associated with
                                                this datastore
@@ -98,39 +97,41 @@ class DataStore(object):
 
     def get_tasks_tree(self):
         """
-        Helper function to get a Tree with all the tasks contained in this
-        Datastore.
+        Return the Tree with all the tasks contained in this Datastore
 
         @returns GTG.core.tree.Tree: a task tree (the main one)
         """
-        return self.__tasks
+        return self._tasks
 
-    ##########################################################################
-    ### Tags functions
-    ##########################################################################
+    ### Tags functions ########################################################
     def _add_new_tag(self, name, tag, filter_func, parameters, parent_id=None):
         """ Add tag into a tree """
         name = name.encode("UTF-8")
-        if self.__tagstore.has_node(name):
+        if self._tagstore.has_node(name):
             raise IndexError('tag %s was already in the datastore' % name)
 
-        self.__tasks.add_filter(name, filter_func, parameters=parameters)
-        self.__tagstore.add_node(tag, parent_id=parent_id)
+        self._tasks.add_filter(name, filter_func, parameters=parameters)
+        self._tagstore.add_node(tag, parent_id=parent_id)
         tag.set_save_callback(self.save)
 
     def new_tag(self, name, attributes={}):
-        """ Create a new tag and return it """
+        """
+        Create a new tag
 
+        @returns GTG.core.tag.Tag: the new tag
+        """
         name = name.encode("UTF-8")
         parameters = {'tag': name}
         tag = Tag(name, req=self.requester, attributes=attributes)
-
         self._add_new_tag(name, tag, self.treefactory.tag_filter, parameters)
-        Log.debug("*** tag added %s ***" % name)
         return tag
 
     def new_search_tag(self, name, query, attributes={}):
-        """ Create a new search tag """
+        """
+        Create a new search tag
+
+        @returns GTG.core.tag.Tag: the new search tag/None for a invalid query
+        """
         try:
             parameters = parse_search_query(query)
         except InvalidQuery, e:
@@ -146,17 +147,15 @@ class DataStore(object):
         init_attr["query"] = query
 
         tag = Tag(name, req=self.requester, attributes=init_attr)
-
-        self._add_new_tag(name, tag, search_filter,
-            parameters, parent_id = CoreConfig.SEARCH_TAG)
-        Log.debug("*** view added %s ***" % name)
+        self._add_new_tag(name, tag, search_filter, parameters,
+            parent_id = CoreConfig.SEARCH_TAG)
         self.save_tagtree()
         return tag
 
     def remove_tag(self, name):
         """ Removes a tag from the tagtree """
-        if self.__tagstore.has_node(name):
-            self.__tagstore.del_node(name)
+        if self._tagstore.has_node(name):
+            self._tagstore.del_node(name)
             self.save_tagtree()
         else:
             raise IndexError("There is no tag %s" % name)
@@ -188,21 +187,20 @@ class DataStore(object):
             newname = '_' + newname
 
         label, num = newname, 1
-        while self.__tagstore.has_node(label):
+        while self._tagstore.has_node(label):
             num += 1
             label = newname + " " + str(num)
 
         self.new_search_tag(label, query)
 
     def get_tag(self, tagname):
-        #The following is wrong, as we have special tags that do not start with
-        # @. I'm leaving this here temporary to help in merging (as it will
-        # probably generate a conflict). Remove at will after merging
-        # (invernizzi)
-        #if tagname[0] != "@":
-        #    tagname = "@" + tagname
-        if self.__tagstore.has_node(tagname):
-            return self.__tagstore.get_node(tagname)
+        """
+        Returns tag object
+
+        @return GTG.core.tag.Tag
+        """
+        if self._tagstore.has_node(tagname):
+            return self._tagstore.get_node(tagname)
         else:
             return None
 
@@ -210,7 +208,6 @@ class DataStore(object):
         """
         Loads the tag tree from a xml file
         """
-        # Loading tags
         tagfile = os.path.join(CoreConfig().get_data_dir(), TAG_XMLFILE)
         doc, xmlstore = cleanxml.openxmlfile(tagfile, TAG_XMLROOT)
         for t in xmlstore.childNodes:
@@ -236,19 +233,19 @@ class DataStore(object):
         self.tagfile = tagfile
 
     def save_tagtree(self):
-        """ saves the tag tree to a xml file """
+        """ Saves the tag tree to an XML file """
         if not self.tagfile:
             return
 
         doc, xmlroot = cleanxml.emptydoc(TAG_XMLROOT)
-        tags = self.__tagstore.get_main_view().get_all_nodes()
+        tags = self._tagstore.get_main_view().get_all_nodes()
         already_saved = []
 
         for tagname in tags:
             if tagname in already_saved:
                 continue
 
-            tag = self.__tagstore.get_node(tagname)
+            tag = self._tagstore.get_node(tagname)
             attributes = tag.get_all_attributes(butname=True, withparent=True)
             if "special" in attributes or len(attributes) == 0:
                 continue
@@ -269,26 +266,24 @@ class DataStore(object):
 
         cleanxml.savexml(self.tagfile, doc, backup=True)
 
-    ##########################################################################
-    ### Tasks functions
-    ##########################################################################
+    ### Tasks functions #######################################################
     def get_all_tasks(self):
         """
-        Returns list of all keys of open tasks
+        Returns list of all keys of active tasks
 
         @return a list of strings: a list of task ids
         """
-        return self.__tasks.get_main_view().get_all_nodes()
+        return self._tasks.get_main_view().get_all_nodes()
 
     def has_task(self, tid):
         """
-        Returns true if the tid is among the open or closed tasks for
+        Returns true if the tid is among the active or closed tasks for
         this DataStore, False otherwise.
 
         @param tid: Task ID to search for
         @return bool: True if the task is present
         """
-        return self.__tasks.has_node(tid)
+        return self._tasks.has_node(tid)
 
     def get_task(self, tid):
         """
@@ -300,7 +295,7 @@ class DataStore(object):
         or not
         """
         if self.has_task(tid):
-            return self.__tasks.get_node(tid)
+            return self._tasks.get_node(tid)
         else:
             #Log.error("requested non-existent task %s" % tid)
             #This is not an error: it is normal to request a task which
@@ -327,7 +322,7 @@ class DataStore(object):
         @return: The task object that was created.
         """
         task = self.task_factory(str(uuid.uuid4()), True)
-        self.__tasks.add_node(task)
+        self._tasks.add_node(task)
         return task
 
     def push_task(self, task):
@@ -342,7 +337,7 @@ class DataStore(object):
         """
 
         def adding(task):
-            self.__tasks.add_node(task)
+            self._tasks.add_node(task)
             task.set_loaded()
             if self.is_default_backend_loaded:
                 task.sync()
@@ -488,7 +483,7 @@ class DataStore(object):
             if current_state == True and state == False:
                 #we disable the backend
                 #FIXME!!!
-                threading.Thread(target=backend.quit, \
+                threading.Thread(target=backend.quit,
                                  kwargs={'disable': True}).start()
             elif current_state == False and state == True:
                 if self.is_default_backend_loaded == True:
@@ -677,7 +672,7 @@ class TaskSource():
             task_tags = set(task.get_tags_name())
             return task_tags.intersection(tags_to_match_set)
 
-        return lambda task: backend_filter(self.requester, task, \
+        return lambda task: backend_filter(self.requester, task,
                         {"tags": set(self.backend.get_attached_tags())})
 
     def should_task_id_be_stored(self, task_id):
@@ -757,7 +752,7 @@ class TaskSource():
         Helper function to launch the setting thread, if it's not running
         """
         if self.to_set_timer == None and not self.please_quit:
-            self.to_set_timer = threading.Timer(self.timer_timestep, \
+            self.to_set_timer = threading.Timer(self.timer_timestep,
                                         self.launch_setting_thread)
             self.to_set_timer.setDaemon(True)
             self.to_set_timer.start()
