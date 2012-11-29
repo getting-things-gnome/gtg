@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
-# Gettings Things Gnome! - a personal organizer for the GNOME desktop
-# Copyright (c) 2008-2009 - Lionel Dricot & Bertrand Rousseau
+# Getting Things GNOME! - a personal organizer for the GNOME desktop
+# Copyright (c) 2008-2012 - Lionel Dricot & Bertrand Rousseau
 #
 # This program is free software: you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -56,39 +56,39 @@ class Tag(TreeNode):
         self._attributes = {'name': self._name}
         for key, value in attributes.iteritems():
             self.set_attribute(key, value)
-        
+
         self.viewcount = None
-        
+
     def __get_viewcount(self):
         if not self.viewcount and self.get_name() != "gtg-tags-sep":
-            self.viewcount = self.req.get_basetree().get_viewcount\
-                                        (name=self.get_name(),refresh=False)
-            
-            sp_id = self.get_attribute("special")        
+            basetree = self.req.get_basetree()
+            self.viewcount = basetree.get_viewcount(self.get_name(), False)
+
+            sp_id = self.get_attribute("special")
             if sp_id == "all":
                 pass
             if sp_id == "notag":
-                self.viewcount.apply_filter('notag',refresh=False)
+                self.viewcount.apply_filter('notag', refresh=False)
             #No special means a normal tag
             else:
-                self.viewcount.apply_filter(self.get_name(),refresh=False)
+                self.viewcount.apply_filter(self.get_name(), refresh=False)
             self.viewcount.apply_filter('active')
             self.viewcount.register_cllbck(self.modified)
         return self.viewcount
-    
-    def apply_filter(self,filtername):
+
+    def apply_filter(self, filtername):
         if self.viewcount:
             self.viewcount.apply_filter(filtername)
-            
-    def unapply_filter(self,filtername):
+
+    def unapply_filter(self, filtername):
         if self.viewcount:
             self.viewcount.unapply_filter(filtername)
-            
+
     #When a task change a tag, we may want to manually update
     #To ensure that the task is well counted/uncounted for that tag
-    def update_task(self,nid):
+    def update_task(self, task_id):
         vc = self.__get_viewcount()
-        vc.modify(nid)
+        vc.modify(task_id)
 
     #overiding some functions to not allow dnd of special tags
     def add_parent(self, parent_id):
@@ -208,17 +208,14 @@ class Tag(TreeNode):
             tasktree = self.req.get_tasks_tree()
         sp_id = self.get_attribute("special")
         if sp_id == "all":
-            toreturn = tasktree.get_nodes(\
-                    withfilters=['active'])
+            toreturn = tasktree.get_nodes(withfilters=['active'])
         elif sp_id == "notag":
-            toreturn = tasktree.get_nodes(\
-                            withfilters=['notag'])
-        elif sp_id == "sep" :
+            toreturn = tasktree.get_nodes(withfilters=['notag'])
+        elif sp_id == "sep":
             toreturn = []
         else:
             tname = self.get_name()
-            toreturn = tasktree.get_nodes(\
-                                withfilters=[tname])
+            toreturn = tasktree.get_nodes(withfilters=[tname])
         return toreturn
 
     def notify_related_tasks(self):

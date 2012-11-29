@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
-# Getting Things Gnome! - a personal organizer for the GNOME desktop
-# Copyright (c) 2008-2009 - Lionel Dricot & Bertrand Rousseau
+# Getting Things GNOME! - a personal organizer for the GNOME desktop
+# Copyright (c) 2008-2012 - Lionel Dricot & Bertrand Rousseau
 #
 # This program is free software: you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -67,6 +67,7 @@ class TaskEditor(object):
         self.subtask_button.set_tooltip_text(GnomeConfig.SUBTASK_TOOLTIP)
         self.inserttag_button = self.builder.get_object("inserttag")
         self.inserttag_button.set_tooltip_text(GnomeConfig.TAG_TOOLTIP)
+
         #Create our dictionary and connect it
         dic = {
             "mark_as_done_clicked":
@@ -378,6 +379,7 @@ class TaskEditor(object):
                 self.task.set_due_date(datetoset)
             elif data == "closed":
                 self.task.set_closed_date(datetoset)
+            self.refresh_editor()
         else:
             #FIXME changing color doesn't work :(
             #We should write in red in the entry if the date is not valid
