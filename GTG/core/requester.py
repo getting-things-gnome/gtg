@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
-# Getting Things Gnome! - a personal organizer for the GNOME desktop
-# Copyright (c) 2008-2009 - Lionel Dricot & Bertrand Rousseau
+# Getting Things GNOME! - a personal organizer for the GNOME desktop
+# Copyright (c) 2008-2012 - Lionel Dricot & Bertrand Rousseau
 #
 # This program is free software: you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -54,23 +54,23 @@ class Requester(GObject.GObject):
 
     def is_displayed(self, task):
         return self.__basetree.get_viewtree(name='active').is_displayed(task)
-        
+
     def get_basetree(self):
         return self.__basetree
-        
+
     #this method also update the viewcount of tags
-    def apply_global_filter(self,tree,filtername):
+    def apply_global_filter(self, tree, filtername):
         tree.apply_filter(filtername)
         for t in self.get_all_tags():
             ta = self.get_tag(t)
             ta.apply_filter(filtername)
-    
-    def unapply_global_filter(self,tree,filtername):
+
+    def unapply_global_filter(self, tree, filtername):
         tree.unapply_filter(filtername)
         for t in self.get_all_tags():
             ta = self.get_tag(t)
             ta.unapply_filter(filtername)
-    
+
 
     ######### Filters bank #######################
     # List, by name, all available filters

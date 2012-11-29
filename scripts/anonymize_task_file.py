@@ -1,5 +1,5 @@
 #!/usr/bin/env python2
-### -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 # Copyright © 2010 Marko Kevac <marko@kevac.org>
 #
 # This program is free software: you can redistribute it and/or modify
