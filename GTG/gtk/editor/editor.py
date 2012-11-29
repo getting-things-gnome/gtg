@@ -68,6 +68,7 @@ class TaskEditor:
         self.subtask_button.set_tooltip_text(GnomeConfig.SUBTASK_TOOLTIP)
         self.inserttag_button = self.builder.get_object("inserttag")
         self.inserttag_button.set_tooltip_text(GnomeConfig.TAG_TOOLTIP)
+
         #Create our dictionary and connect it
         dic = {
                 "mark_as_done_clicked": self.change_status,
@@ -371,6 +372,7 @@ class TaskEditor:
                 self.task.set_due_date(datetoset)
             elif data == "closed":
                 self.task.set_closed_date(datetoset)
+            self.refresh_editor()
         else:
             #We should write in red in the entry if the date is not valid
             widget.modify_text(gtk.STATE_NORMAL, gtk.gdk.color_parse("#F00"))
