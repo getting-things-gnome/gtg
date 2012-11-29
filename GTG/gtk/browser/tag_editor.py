@@ -35,6 +35,7 @@ import gtk
 import gtk.gdk as gdk # pylint: disable-msg=F0401
 
 from GTG import _
+from GTG.tools.logger import Log
 from GTG.gtk.browser.simple_color_selector import SimpleColorSelector
 
 
@@ -99,11 +100,20 @@ class TagIconSelector(gtk.Window): # pylint: disable-msg=R0904
             self.close_selector()
 
     def __load_icon(self):
-        """Loads emblem icons from the current icon theme"""
+        """
+        Loads emblem icons from the current icon theme
+        
+        Sometimes an icon can't be loaded because of a bug in system
+        libraries, e.g. bug #1079587. Gracefuly degradate and skip
+        the loading of a corrupted icon.
+        """
         self.symbol_model = gtk.ListStore(gtk.gdk.Pixbuf, str)
         for icon in gtk.icon_theme_get_default().list_icons(context="Emblems"):
-            img = gtk.icon_theme_get_default().load_icon(icon, 16, 0)
-            self.symbol_model.append([img, icon])
+            try:
+                img = gtk.icon_theme_get_default().load_icon(icon, 16, 0)
+                self.symbol_model.append([img, icon])
+            except gobject.GError:
+                Log.error("Failed to load icon '%s'" % icon)
         self.symbol_iv.set_model(self.symbol_model)
         self.loaded = True
 
