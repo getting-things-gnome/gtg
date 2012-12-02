@@ -108,8 +108,8 @@ class Serializer:
                     elif ta.get_data('is_subtask'):
                         #The current gtkTextTag is a subtask
                         tagname = "subtask"
-                        subt    = doc.createElement(tagname)
-                        target  = ta.get_data('child')
+                        subt = doc.createElement(tagname)
+                        target = ta.get_data('child')
                         subt.appendChild(doc.createTextNode(target))
                         parent.appendChild(subt)
                         parent.appendChild(doc.createTextNode("\n"))
@@ -188,7 +188,7 @@ class Unserializer:
     #parse the XML and put the content in the buffer
     def parsexml(self, buf, ite, element):
         start = buf.create_mark(None, ite, True)
-        end   = buf.create_mark(None, ite, False)
+        end = buf.create_mark(None, ite, False)
         subtasks = self.tv.get_subtasks()
         taglist2 = []
         if element:

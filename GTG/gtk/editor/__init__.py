@@ -21,12 +21,12 @@ The task editing GUI
 """
 import os
 
-from GTG    import _
+from GTG import _
 
 
 class GnomeConfig:
     current_rep = os.path.dirname(os.path.abspath(__file__))
-    GLADE_FILE  = os.path.join(current_rep, "taskeditor.glade")
+    GLADE_FILE = os.path.join(current_rep, "taskeditor.glade")
 
     MARK_DONE = _("Mark as Done")
     MARK_UNDONE = _("Mark as not Done")

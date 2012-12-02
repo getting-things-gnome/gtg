@@ -25,18 +25,19 @@ from GTG.gtk import ViewConfig
 
 
 class DeletionUI():
-    
+
     MAXIMUM_TIDS_TO_SHOW = 5
+
     def __init__(self, req):
         self.req = req
         self.tids_todelete = []
         # Tags which must be updated
         self.update_tags = []
         # Load window tree
-        self.builder = gtk.Builder() 
+        self.builder = gtk.Builder()
         self.builder.add_from_file(ViewConfig.DELETE_GLADE_FILE)
-        signals = { "on_delete_confirm": self.on_delete_confirm,
-                    "on_delete_cancel": lambda x: x.hide,}
+        signals = {"on_delete_confirm": self.on_delete_confirm,
+                   "on_delete_cancel": lambda x: x.hide, }
         self.builder.connect_signals(signals)
 
     def on_delete_confirm(self, widget):
@@ -44,7 +45,7 @@ class DeletionUI():
         otherwise, we will look which tid is selected"""
         for tid in self.tids_todelete:
             if self.req.has_task(tid):
-                self.req.delete_task(tid,recursive=True)
+                self.req.delete_task(tid, recursive=True)
         self.tids_todelete = []
 
         # Update tags
@@ -61,10 +62,11 @@ class DeletionUI():
             tasklist=[]
             self.update_tags = []
             for tid in self.tids_todelete:
+
                 def recursive_list_tasks(task_list, root):
-                    """Populate a list of all the subtasks and 
+                    """Populate a list of all the subtasks and
                        their children, recursively.
-                       
+
                        Also collect the list of affected tags
                        which should be refreshed"""
                     if root not in task_list:
@@ -79,7 +81,7 @@ class DeletionUI():
                 task = self.req.get_task(tid)
                 recursive_list_tasks(tasklist, task)
 
-            # We fill the text and the buttons' labels according to the number 
+            # We fill the text and the buttons' labels according to the number
             # of tasks to delete
             label = self.builder.get_object("label1")
             label_text = label.get_text()
@@ -105,7 +107,7 @@ class DeletionUI():
                                        "Permanently remove tasks",
                                        singular))
             label_text = label_text[0:label_text.find(":") + 1]
-            
+
             #we don't want to end with just one task that doesn't fit the
             # screen and a line saying "And one more task", so we go a
             # little over our limit
@@ -124,7 +126,7 @@ class DeletionUI():
             cancel_button = self.builder.get_object("cancel")
             cancel_button.grab_focus()
             if delete_dialog.run() != 1:
-            	tasklist = []
+                tasklist = []
             delete_dialog.hide()
             return tasklist
         else:
