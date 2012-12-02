@@ -197,7 +197,10 @@ class Date(object):
             return getattr(self.date(), name)
 
     def is_fuzzy(self):
-        """ True if the Date is one of the fuzzy values """
+        """
+        True if the Date is one of the fuzzy values:
+        now, soon, someday or no_date
+        """
         return self._fuzzy is not None
 
     def days_left(self):
