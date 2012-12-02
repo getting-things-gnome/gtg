@@ -213,6 +213,16 @@ class TaskBrowser(gobject.GObject):
             self.on_tag_collapsed)
         self.sidebar_container.add(self.tagtreeview)
 
+        for path_t in self.config.get("expanded_tags"):
+            #the tuple was stored as a string. we have to reconstruct it
+            path = ()
+            for p in path_t[1:-1].split(","):
+                p = p.strip(" '")
+                path += (p, )
+            if path[-1] == '':
+                path = path[:-1]
+            self.tagtreeview.expand_node(path)
+
         # expanding search tag does not work automatically, request it
         self.expand_search_tag()
 
@@ -508,16 +518,6 @@ class TaskBrowser(gobject.GObject):
             if path[-1] == '':
                 path = path[:-1]
             self.vtree_panes['active'].collapse_node(path)
-
-        for path_t in self.config.get("expanded_tags"):
-            #the tuple was stored as a string. we have to reconstruct it
-            path = ()
-            for p in path_t[1:-1].split(","):
-                p = p.strip(" '")
-                path += (p, )
-            if path[-1] == '':
-                path = path[:-1]
-            self.tagtreeview.expand_node(path)
 
         self.set_view(self.config.get("view"))
 
