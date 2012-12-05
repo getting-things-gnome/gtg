@@ -81,7 +81,6 @@ class BackendsDialog(object):
 ########################################
 ### INTERFACE WITH THE VIEWMANAGER #####
 ########################################
-
     def activate(self):
         '''Shows this window, refreshing the current view'''
         self.dialog.show_all()
@@ -103,7 +102,6 @@ class BackendsDialog(object):
 ########################################
 ### HELPER FUNCTIONS ###################
 ########################################
-
     def get_requester(self):
         '''
         Helper function: returns the requester.
@@ -134,7 +132,7 @@ class BackendsDialog(object):
         '''
         Helper function to switch between panels.
 
-        @param panel_name: the name of the wanted panel. Choose between 
+        @param panel_name: the name of the wanted panel. Choose between
                         "configuration" or "add"
         '''
         if panel_name == "configuration":
@@ -169,7 +167,6 @@ class BackendsDialog(object):
 ########################################
 ### WIDGETS AND SIGNALS ################
 ########################################
-
     def _load_widgets_from_glade(self, builder):
         '''
         Loads widgets from the glade file
@@ -178,11 +175,11 @@ class BackendsDialog(object):
         '''
         builder.add_from_file(ViewConfig.BACKENDS_GLADE_FILE)
         widgets = {
-          'dialog'          : 'backends_dialog',
-          'treeview_window' : 'treeview_window',
-          'central_pane'    : 'central_pane',
-          'add_button'      : 'add_button',
-          'remove_button'   : 'remove_button',
+          'dialog': 'backends_dialog',
+          'treeview_window': 'treeview_window',
+          'central_pane': 'central_pane',
+          'add_button': 'add_button',
+          'remove_button': 'remove_button',
           }
         for attr, widget in widgets.iteritems():
             setattr(self, attr, builder.get_object(widget))
@@ -213,7 +210,7 @@ class BackendsDialog(object):
 
     def _create_widgets_for_treeview(self):
         '''
-        Creates the widgets for the lateral treeview displaying the 
+        Creates the widgets for the lateral treeview displaying the
         backends the user has added
         '''
         self.backends_tv = BackendsTree(self)
@@ -230,7 +227,6 @@ class BackendsDialog(object):
 ########################################
 ### EVENT HANDLING #####################
 ########################################
-
     def on_backend_selected(self, backend_id):
         '''
         When a backend in the treeview gets selected, show
@@ -282,7 +278,7 @@ class BackendsDialog(object):
     # pylint: disable-msg=W0613
     def on_remove_button(self, widget = None, data = None):
         '''
-        When the remove button is pressed, a confirmation dialog is shown, 
+        When the remove button is pressed, a confirmation dialog is shown,
         and if the answer is positive, the backend is deleted.
         '''
         backend_id = self.backends_tv.get_selected_backend_id()
@@ -299,7 +295,7 @@ class BackendsDialog(object):
                      _("Do you really want to remove the '%s' "
                        "synchronization service?") % \
                             backend.get_human_name())
-        response = dialog.run() 
+        response = dialog.run()
         dialog.destroy()
         if response == gtk.RESPONSE_YES:
             #delete the backend and remove it from the lateral treeview

@@ -25,10 +25,9 @@ from GTG                                   import _, ngettext
 
 
 class AddPanel(gtk.VBox):
-    ''' 
+    '''
     A VBox filled with gtk widgets to let the user choose a new backend.
     '''
-
 
     def __init__(self, backends_dialog):
         '''
@@ -111,7 +110,7 @@ class AddPanel(gtk.VBox):
 
     def _fill_bottom_hbox(self, hbox):
         '''
-        Helper function to fill and hbox with a buttonbox, featuring 
+        Helper function to fill and hbox with a buttonbox, featuring
         and ok and cancel buttons.
 
         @param hbox: the gtk.HBox to fill

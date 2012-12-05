@@ -20,11 +20,9 @@
 import gtk
 
 
-
 class TextUI(gtk.HBox):
     '''A widget to display a simple textbox and a label to describe its content
     '''
-    
 
     def __init__(self, req, backend, width, description, parameter_name):
         '''
@@ -44,7 +42,7 @@ class TextUI(gtk.HBox):
 
     def _populate_gtk(self, width):
         '''Creates the gtk widgets
-        
+
         @param width: the width of the gtk.Label object
         '''
         label = gtk.Label("%s:" % self.description)

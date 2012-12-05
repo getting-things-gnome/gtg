@@ -23,13 +23,10 @@ import os.path
 from GTG import _
 
 
-
-
 class PathUI(gtk.HBox):
     '''Gtk widgets to show a path in a textbox, and a button to bring up a
     filesystem explorer to modify that path (also, a label to describe those)
     '''
-    
 
     def __init__(self, req, backend, width):
         '''
@@ -46,7 +43,7 @@ class PathUI(gtk.HBox):
 
     def _populate_gtk(self, width):
         '''Creates the gtk.Label, the textbox and the button
-        
+
         @param width: the width of the gtk.Label object
         '''
         label = gtk.Label(_("Filename:"))
@@ -78,7 +75,7 @@ class PathUI(gtk.HBox):
         '''
         if self.backend.is_enabled() and not self.backend.is_default():
             self.req.set_backend_enabled(self.backend.get_id(), False)
-    
+
     def on_button_clicked(self, sender):
         '''Shows the filesystem explorer to choose a new file
 
@@ -93,9 +90,11 @@ class PathUI(gtk.HBox):
                              gtk.RESPONSE_OK))
         self.chooser.set_default_response(gtk.RESPONSE_OK)
         #set default file as the current self.path
-        self.chooser.set_current_name(os.path.basename(self.textbox.get_text()))
-        self.chooser.set_current_folder(os.path.dirname(self.textbox.get_text()))
-        
+        self.chooser.set_current_name(os.path.basename(
+                                                     self.textbox.get_text()))
+        self.chooser.set_current_folder(os.path.dirname(
+                                                     self.textbox.get_text()))
+
         #filter files
         afilter = gtk.FileFilter()
         afilter.set_name("All files")
