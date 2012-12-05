@@ -27,10 +27,9 @@ from GTG.backends.backendsignals           import BackendSignals
 
 
 class ConfigurePanel(gtk.VBox):
-    ''' 
+    '''
     A VBox that lets you configure a backend
     '''
-
 
     def __init__(self, backends_dialog):
         '''
@@ -56,7 +55,7 @@ class ConfigurePanel(gtk.VBox):
                          self.refresh_sync_status)
         _signals.connect(_signals.BACKEND_SYNC_STARTED, self.on_sync_started)
         _signals.connect(_signals.BACKEND_SYNC_ENDED, self.on_sync_ended)
-    
+
     def _create_widgets(self):
         '''
         This function fills this Vbox with widgets
@@ -118,7 +117,7 @@ class ConfigurePanel(gtk.VBox):
 
     def set_backend(self, backend_id):
         '''Changes the backend to configure, refreshing this view.
-        
+
         @param backend_id: the id of the backend to configure
         '''
         self.backend = self.dialog.get_requester().get_backend(backend_id)
@@ -139,7 +138,7 @@ class ConfigurePanel(gtk.VBox):
         markup = "<big><big><big><b>%s</b></big></big></big>" % \
                                         self.backend.get_human_name()
         self.human_name_label.set_markup(markup)
-    
+
     def refresh_sync_button(self):
         '''
         Refreshes the state of the button that enables the backend
@@ -173,7 +172,7 @@ class ConfigurePanel(gtk.VBox):
         '''
         self.refresh_sync_button()
         self.refresh_sync_status_label()
-    
+
     def on_sync_button_clicked(self, sender):
         '''
         Signal callback when a backend is enabled/disabled via the UI button
@@ -222,7 +221,7 @@ class ConfigurePanel(gtk.VBox):
         '''
         Enables/disables the gtk.Spinner, while showing/hiding it at the same
         time
-        
+
         @param active: True if the spinner should spin
         '''
         self.should_spinner_be_shown = active
@@ -234,4 +233,3 @@ class ConfigurePanel(gtk.VBox):
             self.spinner.hide()
             if isinstance(self.spinner, gtk.Spinner):
                 self.spinner.stop()
-

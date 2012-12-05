@@ -22,13 +22,11 @@ import gtk
 from GTG.backends.genericbackend import GenericBackend
 
 
-
 class ImportTagsUI(gtk.VBox):
     '''
     It's a widget displaying a couple of radio buttons, a label and a textbox
     to let the user change the attached tags (or imported)
     '''
-    
 
     def __init__(self, req, backend, width, title, anybox_text, somebox_text, \
                  parameter_name):
@@ -132,4 +130,3 @@ class ImportTagsUI(gtk.VBox):
         self.some_tags_radio.connect("toggled", self.on_changed)
         self.all_tags_radio.connect("toggled", self.on_changed)
         self.tags_entry.connect("changed", self.on_changed)
-

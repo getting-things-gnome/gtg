@@ -24,7 +24,6 @@ from GTG.backends.genericbackend import GenericBackend
 from GTG.backends.backendsignals import BackendSignals
 
 
-
 class BackendsTree(gtk.TreeView):
     '''
     gtk.TreeView that shows the currently loaded backends.
@@ -43,7 +42,7 @@ class BackendsTree(gtk.TreeView):
         @param backends_dialog: a reference to the dialog in which this is
         loaded
         '''
-        super(BackendsTree,self).__init__()
+        super(BackendsTree, self).__init__()
         self.dialog = backendsdialog
         self.req = backendsdialog.get_requester()
         self._init_liststore()
@@ -60,7 +59,9 @@ class BackendsTree(gtk.TreeView):
         # 1, put default backend on top
         # 2, sort backends by human name
         backends = list(self.req.get_all_backends(disabled = True))
-        backends = sorted(backends, key=lambda backend:(not backend.is_default(), backend.get_human_name()))
+        backends = sorted(backends,
+                      key=lambda backend: (not backend.is_default(),
+                                          backend.get_human_name()))
 
         for backend in backends:
             self.add_backend(backend)
@@ -101,7 +102,6 @@ class BackendsTree(gtk.TreeView):
                 ])
             self.backendid_to_iter[backend.get_id()] = backend_iter
 
-
     def on_backend_state_changed(self, sender, backend_id):
         '''
         Signal callback executed when a backend is enabled/disabled.
@@ -129,8 +129,8 @@ class BackendsTree(gtk.TreeView):
             self.liststore[b_path][self.COLUMN_TAGS] = new_tags
 
     def _get_markup_for_tags(self, tag_names):
-        '''Given a list of tags names, generates the pango markup to render that
-        list with the tag colors used in GTG
+        '''Given a list of tags names, generates the pango markup to render
+         that list with the tag colors used in GTG
 
         @param tag_names: the list of the tags (strings)
         @return str: the pango markup string
@@ -140,7 +140,6 @@ class BackendsTree(gtk.TreeView):
         else:
             tags_txt = get_colored_tags_markup(self.req, tag_names)
         return "<small>" + tags_txt + "</small>"
-
 
     def remove_backend(self, backend_id):
         ''' Removes a backend from the treeview, and selects the first (to show
@@ -220,8 +219,8 @@ class BackendsTree(gtk.TreeView):
         '''
         Helper function to get the selected path
 
-        @return gtk.TreePath : returns exactly one path for the selected object or
-                               None
+        @return gtk.TreePath : returns exactly one path for the selected object
+                               or None
         '''
         selection = self.get_selection()
         if selection:

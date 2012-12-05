@@ -22,10 +22,8 @@ import gtk
 from GTG import _
 
 
-
 class PasswordUI(gtk.HBox):
     '''Widget displaying a gtk.Label and a textbox to input a password'''
-    
 
     def __init__(self, req, backend, width):
         '''Creates the gtk widgets and loads the current password in the text
@@ -44,7 +42,7 @@ class PasswordUI(gtk.HBox):
 
     def _populate_gtk(self, width):
         '''Creates the text box and the related label
-        
+
         @param width: the width of the gtk.Label object
         '''
         password_label = gtk.Label(_("Password:"))
@@ -70,7 +68,8 @@ class PasswordUI(gtk.HBox):
 
     def commit_changes(self):
         '''Saves the changes to the backend parameter ('password')'''
-        self.backend.set_parameter('password', self.password_textbox.get_text())
+        self.backend.set_parameter('password',
+                                             self.password_textbox.get_text())
 
     def on_password_modified(self, sender):
         ''' Signal callback, executed when the user edits the password.
@@ -81,4 +80,3 @@ class PasswordUI(gtk.HBox):
         '''
         if self.backend.is_enabled() and not self.backend.is_default():
             self.req.set_backend_enabled(self.backend.get_id(), False)
-
