@@ -25,7 +25,6 @@ from GTG.backends.backendsignals import BackendSignals
 from GTG.tools.networkmanager    import is_connection_up
 
 
-
 class CustomInfoBar(gtk.InfoBar):
     '''
     A gtk.InfoBar specialized for displaying errors and requests for
@@ -33,9 +32,10 @@ class CustomInfoBar(gtk.InfoBar):
     '''
 
 
-    AUTHENTICATION_MESSAGE = _("The <b>%s</b> synchronization service cannot login with the "
-                               "supplied authentication data and has been"
-                               " disabled. To retry the login, re-enable the service.")
+    AUTHENTICATION_MESSAGE = _("The <b>%s</b> synchronization service cannot "
+                               "login with the  supplied authentication data "
+                               "and has been disabled. To retry the login, "
+                               "re-enable the service.")
 
     NETWORK_MESSAGE = _("Due to a network problem, I cannot contact "
                         "the <b>%s</b> synchronization service.")
@@ -92,8 +92,8 @@ class CustomInfoBar(gtk.InfoBar):
         '''
         Sets this infobar to show an error to the user
 
-        @param error_code: the code of the error to show. Error codes are listed
-                           in BackendSignals
+        @param error_code: the code of the error to show. Error codes are
+                           listed in BackendSignals
         '''
         self._populate()
         self.connect("response", self._on_error_response)
@@ -102,7 +102,8 @@ class CustomInfoBar(gtk.InfoBar):
         if error_code == BackendSignals.ERRNO_AUTHENTICATION:
             self.set_message_type(gtk.MESSAGE_ERROR)
             self.label.set_markup(self.AUTHENTICATION_MESSAGE % backend_name)
-            self.add_button(_('Configure synchronization service'), gtk.RESPONSE_ACCEPT)
+            self.add_button(_('Configure synchronization service'),
+                                                         gtk.RESPONSE_ACCEPT)
             self.add_button(_('Ignore'), gtk.RESPONSE_CLOSE)
 
         elif error_code == BackendSignals.ERRNO_NETWORK:
@@ -112,7 +113,7 @@ class CustomInfoBar(gtk.InfoBar):
             self.label.set_markup(self.NETWORK_MESSAGE % backend_name)
             #FIXME: use gtk stock button instead
             self.add_button(_('Ok'), gtk.RESPONSE_CLOSE)
-        
+
         elif error_code == BackendSignals.ERRNO_DBUS:
             self.set_message_type(gtk.MESSAGE_WARNING)
             self.label.set_markup(self.DBUS_MESSAGE % backend_name)
@@ -206,5 +207,5 @@ class CustomInfoBar(gtk.InfoBar):
         '''
         text = self.text_box.get_text()
         self.dialog.destroy()
-        threading.Thread(target = getattr(self.backend, self.callback), 
+        threading.Thread(target = getattr(self.backend, self.callback),
                           args = ("set_text", text)).start()
