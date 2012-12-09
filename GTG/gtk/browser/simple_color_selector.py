@@ -40,10 +40,12 @@ DEFAULT_PALETTE = [
   "#CE5C00", "#C4A000", "#BABDB6", "#2E3436",
 ]
 
-BUTTON_WIDTH  = 36
+BUTTON_WIDTH = 36
 BUTTON_HEIGHT = 24
 
-class SimpleColorSelectorPaletteItem(gtk.DrawingArea): # pylint: disable-msg=R0904,C0301
+
+class SimpleColorSelectorPaletteItem(gtk.DrawingArea):
+# pylint: disable-msg=R0904,C0301
     """An item of the color selecctor palette"""
 
     def __init__(self, color=None):
@@ -61,7 +63,7 @@ class SimpleColorSelectorPaletteItem(gtk.DrawingArea): # pylint: disable-msg=R09
         alloc = self.get_allocation()
         alloc_w, alloc_h = alloc[2], alloc[3]
         # Drawing context
-        cr_ctxt    = self.window.cairo_create() # pylint: disable-msg=E1101
+        cr_ctxt = self.window.cairo_create() # pylint: disable-msg=E1101
         gdkcontext = gtk.gdk.CairoContext(cr_ctxt)
 
         # Draw rectangle
@@ -93,13 +95,12 @@ class SimpleColorSelectorPaletteItem(gtk.DrawingArea): # pylint: disable-msg=R09
             gdkcontext.stroke()
             gdkcontext.set_source_rgba(0, 0, 0, 0.50)
             gdkcontext.set_line_width(3.0)
-            gdkcontext.move_to(pos_x       , pos_y+size/2)
+            gdkcontext.move_to(pos_x, pos_y+size/2)
             gdkcontext.line_to(pos_x+size/2, pos_y+size)
-            gdkcontext.line_to(pos_x+size  , pos_y)
+            gdkcontext.line_to(pos_x+size, pos_y)
             gdkcontext.stroke()
 
     ### callbacks ###
-
     def on_expose(self, widget, params): # pylint: disable-msg=W0613
         """Callback: redraws the widget when it is exposed"""
         self.__draw()
@@ -109,7 +110,6 @@ class SimpleColorSelectorPaletteItem(gtk.DrawingArea): # pylint: disable-msg=R09
         self.__draw()
 
     ### PUBLIC IF ###
-
     def set_color(self, color):
         """Defines the widget color"""
         self.color = color
@@ -125,8 +125,8 @@ class SimpleColorSelectorPaletteItem(gtk.DrawingArea): # pylint: disable-msg=R09
 
 
 class SimpleColorSelector(gtk.VBox): # pylint: disable-msg=R0904,C0301
-    """Widget displaying a palette of colors, possibly with a button allowing to
-    define new colors."""
+    """Widget displaying a palette of colors, possibly with a button allowing
+     to define new colors."""
 
     def __init__(self, width=9, colors=None, custom_colors=None):
         gtk.VBox.__init__(self)
@@ -281,7 +281,6 @@ class SimpleColorSelector(gtk.VBox): # pylint: disable-msg=R0904,C0301
         color_dialog.destroy()
 
     # public IF
-
     def has_color(self, col):
         """Returns True if the color is already present"""
         return col in self.colors or col in self.custom_colors
