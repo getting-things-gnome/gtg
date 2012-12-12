@@ -44,7 +44,7 @@ class pluginUntouchedTasks:
 
     DEFAULT_PREFERENCES = {'max_days': 30,
                            'is_automatic': False,
-                           'show_menu_item': True}
+                           'default_tag': '@untouched'}
 
     PLUGIN_NAME = "untouched-tasks"
 
@@ -60,12 +60,12 @@ class pluginUntouchedTasks:
                              os.path.dirname(os.path.abspath(__file__)) + \
                              "/untouchedTasks.ui"))
         self.preferences_dialog = self.builder.get_object("preferences_dialog")
-        self.pref_chbox_show_menu_item = \
-                        self.builder.get_object("pref_chbox_show_menu_item")
         self.pref_chbox_is_automatic = \
                         self.builder.get_object("pref_chbox_is_automatic")
         self.pref_spinbtn_max_days = \
                         self.builder.get_object("pref_spinbtn_max_days")
+        self.pref_tag_name = \
+                        self.builder.get_object("pref_tag_name")
         SIGNAL_CONNECTIONS_DIC = {
             "on_preferences_dialog_delete_event":
                 self.on_preferences_cancel,
@@ -81,12 +81,13 @@ class pluginUntouchedTasks:
     def activate(self, plugin_api):
         self.plugin_api = plugin_api
         #preferences initialization
-        self.menu_item_is_shown = False
         self.is_automatic = False
         self.timer = None
         self.preferences_load()
         self.preferences_apply()
         requester = self.plugin_api.get_requester()
+        #add menu item
+        self.plugin_api.add_menu_item(self.menu_item)
 
     def deactivate(self, plugin_api):
         """
@@ -116,23 +117,31 @@ class pluginUntouchedTasks:
             self.timer.cancel()
 
     def add_untouched_tag(self, widget = None):
-        """
-        When the user presses the button.
-        """
-        self.__log("Starting process for adding @untouched tag")
+        #If no tag is picked up from preferences
+        tag_name = self.pref_tag_name.get_text()
+        if not tag_name:
+            tag_name = self.preferences['default_tag']
+
+        #Add @ if user has not entered it
+        if tag_name.find('@') != 0:
+            tag_name = '@' + tag_name
+
+        self.__log("Starting process for adding " + tag_name)
         today = datetime.datetime.now()
         max_days = self.preferences["max_days"]
         requester = self.plugin_api.get_requester()
         closed_tree = requester.get_tasks_tree(name = 'inactive')
         closed_tasks = [requester.get_task(tid) for tid in \
                         closed_tree.get_all_nodes()]
+
+        #Add untouched tag to all tasks where new_date < time now
         for task in closed_tasks:
             modified_time = task.get_modified()
             new_time = modified_time + datetime.timedelta(days=max_days)
             if new_time < today:
-                self.__log('Adding @untouched tag to: "' + task.title +
+                self.__log('Adding ' + tag_name + ' tag to: "' + task.title +
                 '" as last time it was modified was ' + str(modified_time))
-                task.add_tag('@untouched')
+                task.add_tag(tag_name)
 
         #If automatic purging is on, schedule another run
         if self.is_automatic:
@@ -148,10 +157,10 @@ class pluginUntouchedTasks:
         self.preferences_dialog.set_transient_for(manager_dialog)
         self.pref_chbox_is_automatic.set_active(
                         self.preferences["is_automatic"])
-        self.pref_chbox_show_menu_item.set_active(
-                        self.preferences["show_menu_item"])
         self.pref_spinbtn_max_days.set_value(
                         self.preferences["max_days"])
+        self.pref_tag_name.set_text(
+                        self.preferences["default_tag"])
         self.preferences_dialog.show_all()
 
     def on_preferences_cancel(self, widget = None, data = None):
@@ -161,10 +170,10 @@ class pluginUntouchedTasks:
     def on_preferences_ok(self, widget = None, data = None):
         self.preferences["is_automatic"] = \
                 self.pref_chbox_is_automatic.get_active()
-        self.preferences["show_menu_item"] = \
-                self.pref_chbox_show_menu_item.get_active()
         self.preferences["max_days"] = \
                 self.pref_spinbtn_max_days.get_value()
+        self.preferences['default_tag'] = \
+                self.pref_tag_name.get_text()
         self.preferences_apply()
         self.preferences_store()
         self.preferences_dialog.hide()
@@ -182,15 +191,6 @@ class pluginUntouchedTasks:
                                       "preferences", self.preferences)
 
     def preferences_apply(self):
-        #Showing the GUI
-        if self.preferences['show_menu_item'] == True and \
-                            self.menu_item_is_shown == False:
-            self.plugin_api.add_menu_item(self.menu_item)
-            self.menu_item_is_shown = True
-        elif self.preferences['show_menu_item'] == False and \
-                            self.menu_item_is_shown == True:
-            self.plugin_api.remove_menu_item(self.menu_item)
-            self.menu_item_is_shown = False
         #Auto-purge
         if self.preferences['is_automatic'] == True and \
                             self.is_automatic == False:
