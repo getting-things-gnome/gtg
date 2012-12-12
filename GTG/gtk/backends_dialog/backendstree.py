@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
-# Getting Things Gnome! - a personal organizer for the GNOME desktop
-# Copyright (c) 2008-2009 - Lionel Dricot & Bertrand Rousseau
+# Getting Things GNOME! - a personal organizer for the GNOME desktop
+# Copyright (c) 2008-2012 - Lionel Dricot & Bertrand Rousseau
 #
 # This program is free software: you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -95,7 +95,7 @@ class BackendsTree(gtk.TreeView):
             backend_iter = self.liststore.append([ \
                 backend.get_id(), \
                 self.dialog.get_pixbuf_from_icon_name(backend.get_name(), \
-                                                      16, 16), \
+                                                      16), \
                 backend.get_human_name(), \
                 self._get_markup_for_tags(backend.get_attached_tags()), \
                 ])

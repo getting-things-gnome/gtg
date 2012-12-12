@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
-# Getting Things Gnome! - a personal organizer for the GNOME desktop
-# Copyright (c) 2008-2009 - Lionel Dricot & Bertrand Rousseau
+# Getting Things GNOME! - a personal organizer for the GNOME desktop
+# Copyright (c) 2008-2012 - Lionel Dricot & Bertrand Rousseau
 #
 # This program is free software: you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -126,7 +126,7 @@ class ConfigurePanel(gtk.VBox):
         self.refresh_sync_status()
         self.parameters_ui.refresh(self.backend)
         self.image_icon.set_from_pixbuf(self.dialog.get_pixbuf_from_icon_name(\
-                                        self.backend.get_name(), 48, 48))
+                                        self.backend.get_name(), 48))
 
     def refresh_title(self, sender = None, data = None):
         '''

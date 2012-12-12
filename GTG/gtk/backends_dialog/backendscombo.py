@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
-# Getting Things Gnome! - a personal organizer for the GNOME desktop
-# Copyright (c) 2008-2009 - Lionel Dricot & Bertrand Rousseau
+# Getting Things GNOME! - a personal organizer for the GNOME desktop
+# Copyright (c) 2008-2012 - Lionel Dricot & Bertrand Rousseau
 #
 # This program is free software: you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -76,7 +76,7 @@ class BackendsCombo(gtk.ComboBoxEntry):
             # See LP bug #940917 (Izidor)
             if name == "backend_localfile":
                 continue
-            pixbuf = self.dialog.get_pixbuf_from_icon_name(name, 16, 16)
+            pixbuf = self.dialog.get_pixbuf_from_icon_name(name, 16)
             self.liststore.append((name, \
                                    module.Backend.get_human_default_name(), \
                                    pixbuf))

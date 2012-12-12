@@ -1,7 +1,7 @@
 #!/usr/bin/env python2
 # -*- coding:utf-8 -*-
 # -----------------------------------------------------------------------------
-# Getting Things Gnome! - A personal organizer for the GNOME desktop
+# Getting Things GNOME! - A personal organizer for the GNOME desktop
 # Copyright (c) 2008-2012 Lionel Dricot & Bertrand Rousseau
 #
 # This program is free software: you can redistribute it and/or modify it under
@@ -41,7 +41,7 @@ def x_is_running():
 
 def main():
     """ Parse arguments and run GTG
-    
+
     Importing GTG.gtg must be done after importing and setting up paths
     for Liblarch """
 
@@ -67,7 +67,7 @@ def main():
         info.NAME = options.title
 
     if options.print_version:
-        print "GTG (Getting Things Gnome!)", info.VERSION
+        print "GTG (Getting Things GNOME!)", info.VERSION
         print
         print "For more information:", info.URL
         sys.exit(0)
