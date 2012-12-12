@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
-# Gettings Things Gnome! - a personal organizer for the GNOME desktop
+# Getting Things GNOME! - a personal organizer for the GNOME desktop
 # Copyright (c) 2008-2012 - Lionel Dricot & Bertrand Rousseau
 #
 # This program is free software: you can redistribute it and/or modify it under
@@ -52,6 +52,11 @@ def enable_gtg_autostart():
     if desktop_file_path:
         if not os.path.exists(AUTOSTART_DIRECTORY):
             os.mkdir(AUTOSTART_DIRECTORY)
+
+        # If the path is a symlink and is broken, remove it
+        if os.path.islink(AUTOSTART_PATH) and \
+            not os.path.exists(os.path.realpath(AUTOSTART_PATH)):
+            os.unlink(AUTOSTART_PATH)
 
         if os.path.isdir(AUTOSTART_DIRECTORY) and \
            not os.path.exists(AUTOSTART_PATH):

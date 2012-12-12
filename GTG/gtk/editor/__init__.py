@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
-# Getting Things Gnome! - a personal organizer for the GNOME desktop
-# Copyright (c) 2008-2009 - Lionel Dricot & Bertrand Rousseau
+# Getting Things GNOME! - a personal organizer for the GNOME desktop
+# Copyright (c) 2008-2012 - Lionel Dricot & Bertrand Rousseau
 #
 # This program is free software: you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -21,12 +21,12 @@ The task editing GUI
 """
 import os
 
-from GTG    import _
+from GTG import _
 
 
 class GnomeConfig:
     current_rep = os.path.dirname(os.path.abspath(__file__))
-    GLADE_FILE  = os.path.join(current_rep, "taskeditor.glade")
+    GLADE_FILE = os.path.join(current_rep, "taskeditor.glade")
 
     MARK_DONE = _("Mark as Done")
     MARK_UNDONE = _("Mark as not Done")
