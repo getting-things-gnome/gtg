@@ -23,10 +23,31 @@
                 <child>
                   <object class="GtkLabel" id="label2">
                     <property name="visible">True</property>
-                    <property name="label" translatable="yes">Add @untouched tag to task after it has been left untouched for at least </property>
+                    <property name="label" translatable="yes">Add </property>
                   </object>
                   <packing>
                     <property name="position">0</property>
+                  </packing>
+                </child>
+		<child>
+                  <object class="GtkEntry" id="pref_tag_name">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="invisible_char">&#x25CF;</property>
+		    <property name="width_chars">15</property>
+		    <!--<property name="text" translatable="yes">@untouched</property>-->
+                  </object>
+                  <packing>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="label4">
+                    <property name="visible">True</property>
+                    <property name="label" translatable="yes"> tag to task after it has been left untouched for at least </property>
+                  </object>
+                  <packing>
+                    <property name="position">2</property>
                   </packing>
                 </child>
                 <child>
@@ -41,7 +62,7 @@
                     <property name="numeric">True</property>
                   </object>
                   <packing>
-                    <property name="position">1</property>
+                    <property name="position">3</property>
                   </packing>
                 </child>
                 <child>
@@ -50,7 +71,7 @@
                     <property name="label" translatable="yes"> days</property>
                   </object>
                   <packing>
-                    <property name="position">2</property>
+                    <property name="position">4</property>
                   </packing>
                 </child>
               </object>
@@ -60,7 +81,7 @@
             </child>
             <child>
               <object class="GtkCheckButton" id="pref_chbox_is_automatic">
-                <property name="label" translatable="yes">Add @untouched tag to old tasks automatically</property>
+                <property name="label" translatable="yes">Check for untouched tasks automatically</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">False</property>
@@ -71,7 +92,7 @@
                 <property name="position">1</property>
               </packing>
             </child>
-            <child>
+            <!--<child>
               <object class="GtkCheckButton" id="pref_chbox_show_menu_item">
                 <property name="label" translatable="yes">Add the "Plugins &gt; Add @untouched plugin" menu item</property>
                 <property name="visible">True</property>
@@ -83,7 +104,7 @@
               <packing>
                 <property name="position">2</property>
               </packing>
-            </child>
+            </child>-->
           </object>
           <packing>
             <property name="padding">21</property>
