@@ -172,11 +172,11 @@ class Manager(object):
             tv.present()
         elif t:
             tv = TaskEditor(
-                requester = self.req, \
-                vmanager = self, \
-                task = t, \
-                taskconfig = self.task_config, \
-                thisisnew = thisisnew,\
+                requester = self.req,
+                vmanager = self,
+                task = t,
+                taskconfig = self.task_config,
+                thisisnew = thisisnew,
                 clipboard = self.clipboard)
             tv.present()
             #registering as opened

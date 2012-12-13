@@ -68,8 +68,8 @@ class PasswordUI(gtk.HBox):
 
     def commit_changes(self):
         '''Saves the changes to the backend parameter ('password')'''
-        self.backend.set_parameter('password',
-                                             self.password_textbox.get_text())
+        password = self.password_textbox.get_text()
+        self.backend.set_parameter('password', password)
 
     def on_password_modified(self, sender):
         ''' Signal callback, executed when the user edits the password.

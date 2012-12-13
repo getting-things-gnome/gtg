@@ -81,19 +81,18 @@ class PathUI(gtk.HBox):
 
         @param sender: not used, only here for signal compatibility
         '''
-        self.chooser = gtk.FileChooserDialog( \
+        self.chooser = gtk.FileChooserDialog(
                     title=None,
                     action=gtk.FILE_CHOOSER_ACTION_SAVE,
                     buttons=(gtk.STOCK_CANCEL,
-                             gtk.RESPONSE_CANCEL, \
-                             gtk.STOCK_OK, \
+                             gtk.RESPONSE_CANCEL,
+                             gtk.STOCK_OK,
                              gtk.RESPONSE_OK))
         self.chooser.set_default_response(gtk.RESPONSE_OK)
         #set default file as the current self.path
-        self.chooser.set_current_name(os.path.basename(
-                                                     self.textbox.get_text()))
-        self.chooser.set_current_folder(os.path.dirname(
-                                                     self.textbox.get_text()))
+        dirname, basename = os.path.split(self.textbox.get_text())
+        self.chooser.set_current_name(basename)
+        self.chosser.set_current_folder(dirname)
 
         #filter files
         afilter = gtk.FileFilter()

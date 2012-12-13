@@ -752,8 +752,9 @@ class TaskView(gtk.TextView):
             if not t in new_tags:
                 self.remove_tag_callback(t)
 
-    def is_at_title(self, buff, itera):
         to_return = False
+
+    def is_at_title(self, buff, itera):
         if itera.get_line() == 0:
             to_return = True
         #We are at a line with the title tag applied

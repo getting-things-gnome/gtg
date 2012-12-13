@@ -51,7 +51,7 @@ class ConfigurePanel(gtk.VBox):
         ''' Connects the backends generated signals '''
         _signals = BackendSignals()
         _signals.connect(_signals.BACKEND_RENAMED, self.refresh_title)
-        _signals.connect(_signals.BACKEND_STATE_TOGGLED, \
+        _signals.connect(_signals.BACKEND_STATE_TOGGLED,
                          self.refresh_sync_status)
         _signals.connect(_signals.BACKEND_SYNC_STARTED, self.on_sync_started)
         _signals.connect(_signals.BACKEND_SYNC_ENDED, self.on_sync_ended)
@@ -124,7 +124,7 @@ class ConfigurePanel(gtk.VBox):
         self.refresh_title()
         self.refresh_sync_status()
         self.parameters_ui.refresh(self.backend)
-        self.image_icon.set_from_pixbuf(self.dialog.get_pixbuf_from_icon_name(\
+        self.image_icon.set_from_pixbuf(self.dialog.get_pixbuf_from_icon_name(
                                         self.backend.get_name(), 48))
 
     def refresh_title(self, sender = None, data = None):
@@ -180,7 +180,7 @@ class ConfigurePanel(gtk.VBox):
         @param sender: not used, here only for signal callback compatibility
         '''
         self.parameters_ui.commit_changes()
-        self.req.set_backend_enabled(self.backend.get_id(), \
+        self.req.set_backend_enabled(self.backend.get_id(),
                                      not self.backend.is_enabled())
 
     def on_sync_started(self, sender, backend_id):

@@ -145,8 +145,8 @@ class GTGCalendar(gobject.GObject):
 
     def __day_selected(self, widget, date_type):
         if date_type == "RealDate":
-            date = self.__from_calendar_date_to_datetime(
-                                        self.__calendar.get_date())
+            calendar_date = self.__calendar.get_date()
+            date = self.__from_calendar_date_to_datetime(calendar_date)
             self.__date = Date(date)
         else:
             self.__date = Date(date_type)

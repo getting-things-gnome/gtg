@@ -54,14 +54,14 @@ class TextUI(gtk.HBox):
         align.set_padding(0, 0, 10, 0)
         self.pack_start(align, True)
         self.textbox = gtk.Entry()
-        self.textbox.set_text(\
-                        self.backend.get_parameters()[self.parameter_name])
+        backend_parameters = self.backend.get_parameters()[self.parameter_name]
+        self.textbox.set_text(backend_parameters)
         self.textbox.connect('changed', self.on_text_modified)
         align.add(self.textbox)
 
     def commit_changes(self):
         '''Saves the changes to the backend parameter'''
-        self.backend.set_parameter(self.parameter_name,\
+        self.backend.set_parameter(self.parameter_name,
                         self.textbox.get_text())
 
     def on_text_modified(self, sender):

@@ -93,12 +93,12 @@ class BackendsTree(gtk.TreeView):
         @param backend_id: the id of the backend to add
         '''
         if backend:
-            backend_iter = self.liststore.append([ \
-                backend.get_id(), \
-                self.dialog.get_pixbuf_from_icon_name(backend.get_name(), \
-                                                      16), \
-                backend.get_human_name(), \
-                self._get_markup_for_tags(backend.get_attached_tags()), \
+            backend_iter = self.liststore.append([
+                backend.get_id(),
+                self.dialog.get_pixbuf_from_icon_name(backend.get_name(),
+                                                      16),
+                backend.get_human_name(),
+                self._get_markup_for_tags(backend.get_attached_tags()),
                 ])
             self.backendid_to_iter[backend.get_id()] = backend_iter
 
@@ -192,7 +192,7 @@ class BackendsTree(gtk.TreeView):
                                     c in [" ", "-", "_"]))
         selected_iter = self.liststore.get_iter(path)
         # update the backend name
-        backend_id = self.liststore.get_value(selected_iter, \
+        backend_id = self.liststore.get_value(selected_iter,
                                               self.COLUMN_BACKEND_ID)
         backend = self.dialog.get_requester().get_backend(backend_id)
         if backend:
