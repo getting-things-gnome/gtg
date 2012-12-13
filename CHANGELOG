@@ -63,6 +63,7 @@
     * Remove use of liblarch's "transparent" concept (since it's been removed from liblarch), fixes bugs #1001962, #1001962, #1069257, #1069963: intermediary tags, counter initialization, and regressions caused by initial versions of the patch
     * Fix for bug #1038662: Undefined due dates in subtasks should always stay undefined and displayed as such in the editor
     * Fix for bug #1036695: Date constraints after drag and drop not applied
+    * Fix for bug #320589: Added untouched_tasks plugin
 
 2012-02-13 Getting Things GNOME! 0.2.9
     * Big refractorization of code, now using liblarch
