@@ -20,13 +20,11 @@
 import gtk
 
 
-
 class CheckBoxUI(gtk.HBox):
     '''
     It's a widget displaying a simple checkbox, with some text to explain its
     meaning
     '''
-    
 
     def __init__(self, req, backend, width, text, parameter):
         '''
@@ -35,8 +33,8 @@ class CheckBoxUI(gtk.HBox):
         @param req: a Requester
         @param backend: a backend object
         @param width: the width of the gtk.Label object
-        @param parameter: the backend parameter this checkbox should display and
-                           modify
+        @param parameter: the backend parameter this checkbox should display
+                           and modify
         '''
         super(CheckBoxUI, self).__init__()
         self.backend = backend
@@ -47,17 +45,18 @@ class CheckBoxUI(gtk.HBox):
 
     def _populate_gtk(self, width):
         '''Creates the checkbox and the related label
-        
+
         @param width: the width of the gtk.Label object
         '''
         self.checkbutton =gtk.CheckButton(label = self.text)
-        self.checkbutton.set_active(self.backend.get_parameters()[self.parameter])
+        backend_parameters = self.backend.get_parameters()[self.parameter]
+        self.checkbutton.set_active(backend_parameters)
         self.checkbutton.connect("toggled", self.on_modified)
         self.pack_start(self.checkbutton, False)
 
     def commit_changes(self):
         '''Saves the changes to the backend parameter'''
-        self.backend.set_parameter(self.parameter,\
+        self.backend.set_parameter(self.parameter,
                         self.checkbutton.get_active())
 
     def on_modified(self, sender = None):

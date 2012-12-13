@@ -32,6 +32,7 @@ from liblarch_gtk                     import TreeView
 from GTG.gtk                          import colors
 from GTG.tools.dates                  import Date
 
+
 class TreeviewFactory():
 
     def __init__(self, requester, config):
@@ -54,7 +55,6 @@ class TreeviewFactory():
     #############################
     #Functions for tasks columns
     ################################
-
     def _has_hidden_subtask(self, task):
         #not recursive
         display_count = self.mainview.node_n_children(task.get_id())
@@ -79,7 +79,8 @@ class TreeviewFactory():
         search_parent = self.req.get_tag(CoreConfig.SEARCH_TAG)
         for search_tag in search_parent.get_children():
             tag = self.req.get_tag(search_tag)
-            match = search_filter(node, parse_search_query(tag.get_attribute('query')))
+            match = search_filter(node,
+                             parse_search_query(tag.get_attribute('query')))
             if match and search_tag not in tags:
                 tags.append(tag)
 
@@ -101,11 +102,12 @@ class TreeviewFactory():
                 str_format = "<b>%s</b>"
             if self._has_hidden_subtask(node):
                 str_format = "<span color='%s'>%s</span>"\
-                                                % (self.unactive_color, str_format)
+                                          % (self.unactive_color, str_format)
 
         title = str_format % saxutils.escape(node.get_title())
         if node.get_status() == Task.STA_ACTIVE:
-            count = self.mainview.node_n_children(node.get_id(), recursive=True)
+            count = self.mainview.node_n_children(node.get_id(),
+                                                              recursive=True)
             if count != 0:
                 title += " (%s)" % count
         elif node.get_status() == Task.STA_DISMISSED:
@@ -182,7 +184,8 @@ class TreeviewFactory():
             else:
                 return -1*s
 
-        if sort == 0: # Group tasks with the same tag together for visual cleanness
+        if sort == 0:
+        # Group tasks with the same tag together for visual cleanness
             t1_tags = task1.get_tags_name()
             t1_tags.sort()
             t2_tags = task2.get_tags_name()
@@ -216,7 +219,8 @@ class TreeviewFactory():
             return ""
         else:
             toreturn = node.get_active_tasks_count()
-            return "<span color='%s'>%s</span>" %(self.unactive_color, toreturn)
+            return "<span color='%s'>%s</span>" %(self.unactive_color,
+                                                                   toreturn)
 
     def is_tag_separator_filter(self, tag):
         return tag.get_attribute('special') == 'sep'
@@ -414,7 +418,6 @@ class TreeviewFactory():
         col['order'] = 2
         desc[col_name] = col
         return desc
-
 
     def build_task_treeview(self, tree, desc):
         treeview = TreeView(tree, desc)

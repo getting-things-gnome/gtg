@@ -754,6 +754,7 @@ class TaskView(gtk.TextView):
 
     def is_at_title(self, buff, itera):
         to_return = False
+
         if itera.get_line() == 0:
             to_return = True
         #We are at a line with the title tag applied
@@ -762,6 +763,7 @@ class TaskView(gtk.TextView):
         #else, we look if there's something between us and buffer start
         elif not buff.get_text(buff.get_start_iter(), itera).strip('\n\t '):
             to_return = True
+
         return to_return
 
     #When the user removes a selection, we remove subtasks and @tags
