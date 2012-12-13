@@ -119,8 +119,8 @@ class AddPanel(gtk.VBox):
         cancel_button.connect('clicked', self.on_cancel)
         self.ok_button = gtk.Button(stock = gtk.STOCK_OK)
         self.ok_button.connect('clicked', self.on_confirm)
-        align =gtk.Alignment(xalign = 0.5, \
-                             yalign = 1, \
+        align =gtk.Alignment(xalign = 0.5,
+                             yalign = 1,
                              xscale = 1)
         align.set_padding(0, 10, 0, 0)
         buttonbox = gtk.HButtonBox()

@@ -28,7 +28,7 @@ class ImportTagsUI(gtk.VBox):
     to let the user change the attached tags (or imported)
     '''
 
-    def __init__(self, req, backend, width, title, anybox_text, somebox_text, \
+    def __init__(self, req, backend, width, title, anybox_text, somebox_text,
                  parameter_name):
         '''Populates the widgets and refresh the tags to display
 
@@ -68,7 +68,7 @@ class ImportTagsUI(gtk.VBox):
         self.pack_start(align, True)
         vbox = gtk.VBox()
         align.add(vbox)
-        self.all_tags_radio = gtk.RadioButton(group = None, \
+        self.all_tags_radio = gtk.RadioButton(group = None,
                                               label = self.anybox_text)
         vbox.pack_start(self.all_tags_radio, True)
         self.some_tags_radio = gtk.RadioButton(group = self.all_tags_radio,

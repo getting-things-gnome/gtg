@@ -166,4 +166,4 @@ class PreferencesDialog:
 
     def on_font_change(self, widget):
         """ Set a new font for editor """
-    self.config.set("font_name", self.fontbutton.get_font_name())
+        self.config.set("font_name", self.fontbutton.get_font_name())
