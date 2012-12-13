@@ -198,15 +198,15 @@ class TaskBrowser(gobject.GObject):
         self.tagtree = self.req.get_tag_tree()
         self.tagtreeview = self.tv_factory.tags_treeview(self.tagtree)
         #Tags treeview
-        self.tagtreeview.get_selection().connect('changed', \
+        self.tagtreeview.get_selection().connect('changed',
             self.on_select_tag)
-        self.tagtreeview.connect('button-press-event', \
+        self.tagtreeview.connect('button-press-event',
             self.on_tag_treeview_button_press_event)
-        self.tagtreeview.connect('key-press-event', \
+        self.tagtreeview.connect('key-press-event',
             self.on_tag_treeview_key_press_event)
-        self.tagtreeview.connect('node-expanded', \
+        self.tagtreeview.connect('node-expanded',
             self.on_tag_expanded)
-        self.tagtreeview.connect('node-collapsed', \
+        self.tagtreeview.connect('node-collapsed',
             self.on_tag_collapsed)
         self.sidebar_container.add(self.tagtreeview)
 
@@ -356,22 +356,22 @@ class TaskBrowser(gobject.GObject):
         self.window.connect("destroy", self.quit)
 
         # Active tasks TreeView
-        self.vtree_panes['active'].connect('row-activated', \
+        self.vtree_panes['active'].connect('row-activated',
             self.on_edit_active_task)
-        self.vtree_panes['active'].connect('button-press-event', \
+        self.vtree_panes['active'].connect('button-press-event',
             self.on_task_treeview_button_press_event)
-        self.vtree_panes['active'].connect('key-press-event', \
+        self.vtree_panes['active'].connect('key-press-event',
             self.on_task_treeview_key_press_event)
-        self.vtree_panes['active'].connect('node-expanded', \
+        self.vtree_panes['active'].connect('node-expanded',
             self.on_task_expanded)
-        self.vtree_panes['active'].connect('node-collapsed', \
+        self.vtree_panes['active'].connect('node-collapsed',
             self.on_task_collapsed)
 
         b_signals = BackendSignals()
         b_signals.connect(b_signals.BACKEND_FAILED, self.on_backend_failed)
-        b_signals.connect(b_signals.BACKEND_STATE_TOGGLED, \
+        b_signals.connect(b_signals.BACKEND_STATE_TOGGLED,
                           self.remove_backend_infobar)
-        b_signals.connect(b_signals.INTERACTION_REQUESTED, \
+        b_signals.connect(b_signals.INTERACTION_REQUESTED,
                           self.on_backend_needing_interaction)
         # Selection changes
         self.selection = self.vtree_panes['active'].get_selection()
@@ -581,8 +581,8 @@ class TaskBrowser(gobject.GObject):
         if count == 0:
             parenthesis = _("no active tasks")
         else:
-            parenthesis = ngettext("%(tasks)d active task", \
-                                   "%(tasks)d active tasks", \
+            parenthesis = ngettext("%(tasks)d active task",
+                                   "%(tasks)d active tasks",
                                    count) % {'tasks': count}
         self.window.set_title("%s - "%parenthesis + info.NAME)
 
@@ -686,11 +686,11 @@ class TaskBrowser(gobject.GObject):
             self.vtree_panes['closed'] = \
                          self.tv_factory.closed_tasks_treeview(ctree)
                     # Closed tasks TreeView
-            self.vtree_panes['closed'].connect('row-activated', \
+            self.vtree_panes['closed'].connect('row-activated',
                 self.on_edit_done_task)
-            self.vtree_panes['closed'].connect('button-press-event', \
+            self.vtree_panes['closed'].connect('button-press-event',
                 self.on_closed_task_treeview_button_press_event)
-            self.vtree_panes['closed'].connect('key-press-event', \
+            self.vtree_panes['closed'].connect('key-press-event',
                 self.on_closed_task_treeview_key_press_event)
 
             self.closed_selection = self.vtree_panes['closed'].get_selection()
@@ -1429,7 +1429,7 @@ class TaskBrowser(gobject.GObject):
         infobar = self._new_infobar(backend_id)
         infobar.set_error_code(error_code)
 
-    def on_backend_needing_interaction(self, sender, backend_id, description, \
+    def on_backend_needing_interaction(self, sender, backend_id, description,
                                        interaction_type, callback):
         '''
         Signal callback.
@@ -1476,7 +1476,7 @@ class TaskBrowser(gobject.GObject):
         if not backend or (backend and backend.is_enabled()):
             #remove old infobar related to backend_id, if any
             if self.vbox_toolbars:
-                self.vbox_toolbars.foreach(self.__remove_backend_infobar, \
+                self.vbox_toolbars.foreach(self.__remove_backend_infobar,
                                        backend_id)
 
     def _new_infobar(self, backend_id):
