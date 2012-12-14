@@ -166,7 +166,7 @@ class BackendsDialog(object):
 ########################################
 ### WIDGETS AND SIGNALS ################
 ########################################
-    def _load_widgets_from_glade(self, builder):
+    def _load_widgets_from_builder(self, builder):
         '''
         Loads widgets from the builder .ui file
 
