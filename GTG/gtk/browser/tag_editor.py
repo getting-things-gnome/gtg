@@ -93,7 +93,7 @@ class TagIconSelector(Gtk.Window): # pylint: disable-msg=R0904
 
     def __focus_out(self, widget, event): # pylint: disable-msg=W0613
         """Hides the window if the user clicks out of it"""
-        win_ptr = self.window.get_pointer() # pylint: disable-msg=E1101
+        win_ptr = self.get_window().get_pointer() # pylint: disable-msg=E1101
         win_size = self.get_size()
         if not(0 <= win_ptr[0] <= win_size[0] and \
                0 <= win_ptr[1] <= win_size[1]):
