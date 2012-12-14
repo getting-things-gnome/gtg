@@ -20,11 +20,9 @@
 from gi.repository import Gtk
 
 
-
 class TextUI(Gtk.HBox):
     '''A widget to display a simple textbox and a label to describe its content
     '''
-    
 
     def __init__(self, req, backend, width, description, parameter_name):
         '''
@@ -44,7 +42,7 @@ class TextUI(Gtk.HBox):
 
     def _populate_gtk(self, width):
         '''Creates the gtk widgets
-        
+
         @param width: the width of the Gtk.Label object
         '''
         label = Gtk.Label(label="%s:" % self.description)
@@ -56,14 +54,14 @@ class TextUI(Gtk.HBox):
         align.set_padding(0, 0, 10, 0)
         self.pack_start(align, True, True, 0)
         self.textbox = Gtk.Entry()
-        self.textbox.set_text(\
-                        self.backend.get_parameters()[self.parameter_name])
+        backend_parameters = self.backend.get_parameters()[self.parameter_name]
+        self.textbox.set_text(backend_parameters)
         self.textbox.connect('changed', self.on_text_modified)
         align.add(self.textbox)
 
     def commit_changes(self):
         '''Saves the changes to the backend parameter'''
-        self.backend.set_parameter(self.parameter_name,\
+        self.backend.set_parameter(self.parameter_name,
                         self.textbox.get_text())
 
     def on_text_modified(self, sender):

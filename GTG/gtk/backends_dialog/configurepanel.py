@@ -27,10 +27,9 @@ from GTG.backends.backendsignals           import BackendSignals
 
 
 class ConfigurePanel(Gtk.VBox):
-    ''' 
+    '''
     A VBox that lets you configure a backend
     '''
-
 
     def __init__(self, backends_dialog):
         '''
@@ -52,11 +51,11 @@ class ConfigurePanel(Gtk.VBox):
         ''' Connects the backends generated signals '''
         _signals = BackendSignals()
         _signals.connect(_signals.BACKEND_RENAMED, self.refresh_title)
-        _signals.connect(_signals.BACKEND_STATE_TOGGLED, \
+        _signals.connect(_signals.BACKEND_STATE_TOGGLED,
                          self.refresh_sync_status)
         _signals.connect(_signals.BACKEND_SYNC_STARTED, self.on_sync_started)
         _signals.connect(_signals.BACKEND_SYNC_ENDED, self.on_sync_ended)
-    
+
     def _create_widgets(self):
         '''
         This function fills this Vbox with widgets
@@ -117,14 +116,14 @@ class ConfigurePanel(Gtk.VBox):
 
     def set_backend(self, backend_id):
         '''Changes the backend to configure, refreshing this view.
-        
+
         @param backend_id: the id of the backend to configure
         '''
         self.backend = self.dialog.get_requester().get_backend(backend_id)
         self.refresh_title()
         self.refresh_sync_status()
         self.parameters_ui.refresh(self.backend)
-        self.image_icon.set_from_pixbuf(self.dialog.get_pixbuf_from_icon_name(\
+        self.image_icon.set_from_pixbuf(self.dialog.get_pixbuf_from_icon_name(
                                         self.backend.get_name(), 48))
 
     def refresh_title(self, sender = None, data = None):
@@ -138,7 +137,7 @@ class ConfigurePanel(Gtk.VBox):
         markup = "<big><big><big><b>%s</b></big></big></big>" % \
                                         self.backend.get_human_name()
         self.human_name_label.set_markup(markup)
-    
+
     def refresh_sync_button(self):
         '''
         Refreshes the state of the button that enables the backend
@@ -172,7 +171,7 @@ class ConfigurePanel(Gtk.VBox):
         '''
         self.refresh_sync_button()
         self.refresh_sync_status_label()
-    
+
     def on_sync_button_clicked(self, sender):
         '''
         Signal callback when a backend is enabled/disabled via the UI button
@@ -180,7 +179,7 @@ class ConfigurePanel(Gtk.VBox):
         @param sender: not used, here only for signal callback compatibility
         '''
         self.parameters_ui.commit_changes()
-        self.req.set_backend_enabled(self.backend.get_id(), \
+        self.req.set_backend_enabled(self.backend.get_id(),
                                      not self.backend.is_enabled())
 
     def on_sync_started(self, sender, backend_id):
@@ -221,7 +220,7 @@ class ConfigurePanel(Gtk.VBox):
         '''
         Enables/disables the Gtk.Spinner, while showing/hiding it at the same
         time
-        
+
         @param active: True if the spinner should spin
         '''
         self.should_spinner_be_shown = active
@@ -233,4 +232,3 @@ class ConfigurePanel(Gtk.VBox):
             self.spinner.hide()
             if isinstance(self.spinner, Gtk.Spinner):
                 self.spinner.stop()
-

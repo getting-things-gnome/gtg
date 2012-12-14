@@ -27,21 +27,22 @@ import time
 
 from gi.repository import Gtk, Gdk, Pango
 
-from GTG                     import _, ngettext
-from GTG.gtk.editor          import GnomeConfig
+from GTG import _, ngettext
+from GTG.gtk.editor import GnomeConfig
 from GTG.gtk.editor.taskview import TaskView
 from GTG.core.plugins.engine import PluginEngine
-from GTG.core.plugins.api    import PluginAPI
-from GTG.core.task           import Task
-from GTG.tools.dates         import Date
+from GTG.core.plugins.api import PluginAPI
+from GTG.core.task import Task
+from GTG.tools.dates import Date
 from GTG.gtk.editor.calendar import GTGCalendar
+
 
 class TaskEditor(object):
 
-    def __init__(self, 
-                 requester, 
-                 vmanager, 
-                 task, 
+    def __init__(self,
+                 requester,
+                 vmanager,
+                 task,
                  taskconfig = None,
                  thisisnew = False,
                  clipboard = None):
@@ -98,13 +99,13 @@ class TaskEditor(object):
                 self.on_move,
         }
         self.builder.connect_signals(dic)
-        self.window         = self.builder.get_object("TaskEditor")
+        self.window = self.builder.get_object("TaskEditor")
         #Removing the Normal textview to replace it by our own
         #So don't try to change anything with GtkBuilder, this is a home-made widget
         textview = self.builder.get_object("textview")
         scrolled = self.builder.get_object("scrolledtask")
         scrolled.remove(textview)
-        self.textview   = TaskView(self.req, self.clipboard)
+        self.textview = TaskView(self.req, self.clipboard)
         self.textview.show()
         self.textview.set_subtask_callback(self.new_subtask)
         self.textview.open_task_callback(self.vmanager.open_task)
@@ -113,13 +114,13 @@ class TaskEditor(object):
         scrolled.add(self.textview)
         conf_font_value = self.browser_config.get("font_name")
         if conf_font_value!= "":
-            self.textview.modify_font(Pango.FontDescription(conf_font_value)) 
+            self.textview.modify_font(Pango.FontDescription(conf_font_value))
         #Voila! it's done
-        self.calendar       = GTGCalendar(self.builder)
+        self.calendar = GTGCalendar(self.builder)
         self.duedate_widget = self.builder.get_object("duedate_entry")
         self.startdate_widget = self.builder.get_object("startdate_entry")
         self.closeddate_widget = self.builder.get_object("closeddate_entry")
-        self.dayleft_label  = self.builder.get_object("dayleft")
+        self.dayleft_label = self.builder.get_object("dayleft")
         self.tasksidebar = self.builder.get_object("tasksidebar")
         # Define accelerator keys
         self.init_accelerators()
@@ -176,14 +177,15 @@ class TaskEditor(object):
             if tid in self.config:
                 if "position" in self.config[tid]:
                     pos = self.config[tid]["position"]
-                    self.move(pos[0],pos[1])
-                    #print "restoring position %s %s" %(pos[0],pos[1])
+                    self.move(pos[0], pos[1])
+                    #print "restoring position %s %s" %(pos[0], pos[1])
                 if "size" in self.config[tid]:
                     size = self.config[tid]["size"]
                     #print "size %s - %s" %(str(size[0]), str(size[1]))
-                    #this eval(str()) is a ugly (!) hack to accept both int and str
+                    #this eval(str()) is a ugly (!) hack to accept both int and
+                    #str
                     #FIXME: Fix this!
-                    self.window.resize(eval(str(size[0])),eval(str(size[1])))
+                    self.window.resize(eval(str(size[0])), eval(str(size[1])))
 
         self.textview.set_editable(True)
         self.window.show()
@@ -208,18 +210,21 @@ class TaskEditor(object):
 
         # Ctrl-Shift-N creates a new subtask
         insert_subtask = self.builder.get_object("insert_subtask")
-        key, mod       = Gtk.accelerator_parse("<Control><Shift>n")
-        insert_subtask.add_accelerator('clicked', agr, key, mod, Gtk.AccelFlags.VISIBLE)
+        key, mod = Gtk.accelerator_parse("<Control><Shift>n")
+        insert_subtask.add_accelerator('clicked', agr, key, mod,
+            Gtk.AccelFlags.VISIBLE)
 
         # Ctrl-D marks task as done
         mark_as_done_editor = self.builder.get_object('mark_as_done_editor')
         key, mod = Gtk.accelerator_parse('<Control>d')
-        mark_as_done_editor.add_accelerator('clicked', agr, key, mod, Gtk.AccelFlags.VISIBLE)
+        mark_as_done_editor.add_accelerator('clicked', agr, key, mod,
+            Gtk.AccelFlags.VISIBLE)
 
         # Ctrl-I marks task as dismissed
         dismiss_editor = self.builder.get_object('dismiss_editor')
         key, mod = Gtk.accelerator_parse('<Control>i')
-        dismiss_editor.add_accelerator('clicked', agr, key, mod, Gtk.AccelFlags.VISIBLE)
+        dismiss_editor.add_accelerator('clicked', agr, key, mod,
+            Gtk.AccelFlags.VISIBLE)
 
     #Can be called at any time to reflect the status of the Task
     #Refresh should never interfere with the TaskView.
@@ -231,34 +236,35 @@ class TaskEditor(object):
         if self.window == None:
             return
         to_save = False
-        #title of the window 
+        #title of the window
         if title:
             self.window.set_title(title)
             to_save = True
         else:
             self.window.set_title(self.task.get_title())
 
-        status = self.task.get_status() 
+        status = self.task.get_status()
+        dismiss_tooltip = GnomeConfig.MARK_UNDISMISS_TOOLTIP
         if status == Task.STA_DISMISSED:
             self.donebutton.set_label(GnomeConfig.MARK_DONE)
             self.donebutton.set_tooltip_text(GnomeConfig.MARK_DONE_TOOLTIP)
             self.donebutton.set_icon_name("gtg-task-done")
             self.dismissbutton.set_label(GnomeConfig.MARK_UNDISMISS)
-            self.dismissbutton.set_tooltip_text(GnomeConfig.MARK_UNDISMISS_TOOLTIP)
+            self.dismissbutton.set_tooltip_text(dismiss_tooltip)
             self.dismissbutton.set_icon_name("gtg-task-undismiss")
         elif status == Task.STA_DONE:
             self.donebutton.set_label(GnomeConfig.MARK_UNDONE)
             self.donebutton.set_tooltip_text(GnomeConfig.MARK_UNDONE_TOOLTIP)
             self.donebutton.set_icon_name("gtg-task-undone")
             self.dismissbutton.set_label(GnomeConfig.MARK_DISMISS)
-            self.dismissbutton.set_tooltip_text(GnomeConfig.MARK_DISMISS_TOOLTIP)
+            self.dismissbutton.set_tooltip_text(dismiss_tooltip)
             self.dismissbutton.set_icon_name("gtg-task-dismiss")
         else:
             self.donebutton.set_label(GnomeConfig.MARK_DONE)
             self.donebutton.set_tooltip_text(GnomeConfig.MARK_DONE_TOOLTIP)
             self.donebutton.set_icon_name("gtg-task-done")
             self.dismissbutton.set_label(GnomeConfig.MARK_DISMISS)
-            self.dismissbutton.set_tooltip_text(GnomeConfig.MARK_DISMISS_TOOLTIP)
+            self.dismissbutton.set_tooltip_text(dismiss_tooltip)
             self.dismissbutton.set_icon_name("gtg-task-dismiss")
         self.donebutton.show()
         self.tasksidebar.show()
@@ -272,7 +278,7 @@ class TaskEditor(object):
         else:
             self.builder.get_object("label4").hide()
             self.builder.get_object("hbox4").hide()
-            self.builder.get_object("label2").show() 
+            self.builder.get_object("label2").show()
             self.builder.get_object("hbox1").show()
 
         #refreshing the start date field
@@ -284,7 +290,7 @@ class TaskEditor(object):
             update_date = True
 
         if update_date:
-            self.startdate_widget.set_text(str(startdate)) 
+            self.startdate_widget.set_text(str(startdate))
 
         #refreshing the due date field
         duedate = self.task.get_due_date()
@@ -304,8 +310,8 @@ class TaskEditor(object):
             self.closeddate_widget.set_text(str(closeddate))
 
         #refreshing the day left label
-        #If the task is marked as done, we display the delay between the 
-        #due date and the actual closing date. If the task isn't marked 
+        #If the task is marked as done, we display the delay between the
+        #due date and the actual closing date. If the task isn't marked
         #as done, we display the number of days left.
         if status in [Task.STA_DISMISSED, Task.STA_DONE]:
             delay = self.task.get_days_late()
@@ -314,26 +320,32 @@ class TaskEditor(object):
             elif delay == 0:
                 txt = "Completed on time"
             elif delay >= 1:
-                txt = ngettext("Completed %(days)d day late", "Completed %(days)d days late", delay) % {'days': delay}
+                txt = ngettext("Completed %(days)d day late",
+                    "Completed %(days)d days late", delay) % {'days': delay}
             elif delay <= -1:
                 abs_delay = abs(delay)
-                txt = ngettext("Completed %(days)d day early", "Completed %(days)d days early", abs_delay) % {'days': abs_delay}
+                txt = ngettext("Completed %(days)d day early",
+                    "Completed %(days)d days early", abs_delay) % \
+                    {'days': abs_delay}
         else:
             due_date = self.task.get_due_date()
             result = due_date.days_left()
             if due_date.is_fuzzy():
                 txt = ""
             elif result > 0:
-                txt = ngettext("Due tomorrow!", "%(days)d days left", result) % {'days': result}
+                txt = ngettext("Due tomorrow!", "%(days)d days left", result) \
+                    % {'days': result}
             elif result == 0:
                 txt = _("Due today!")
             elif result < 0:
                 abs_result = abs(result)
-                txt = ngettext("Due yesterday!", "Was %(days)d days ago", abs_result) % {'days': abs_result}
+                txt = ngettext("Due yesterday!", "Was %(days)d days ago",
+                    abs_result) % {'days': abs_result}
 
         style_context = self.window.get_style_context()
         color = style_context.get_color(Gtk.StateFlags.INSENSITIVE).to_color()
-        self.dayleft_label.set_markup("<span color='"+color.to_string()+"'>"+txt+"</span>")
+        self.dayleft_label.set_markup("<span color='%s'>%s</span>" % (
+            color.to_string(), txt))
 
         #Refreshing the tag list in the insert tag button
         taglist = self.req.get_used_tags()
@@ -356,7 +368,7 @@ class TaskEditor(object):
         if to_save:
             self.light_save()
 
-    def date_changed(self,widget,data):
+    def date_changed(self, widget, data):
         text = widget.get_text()
         valid = True
         if not text:
@@ -428,7 +440,7 @@ class TaskEditor(object):
         for task in all_subtasks:
             self.vmanager.close_task(task.get_id())
 
-    def dismiss(self,widget): #pylint: disable-msg=W0613
+    def dismiss(self, widget): #pylint: disable-msg=W0613
         stat = self.task.get_status()
         if stat == "Dismiss":
             self.task.set_status("Active")
@@ -438,7 +450,7 @@ class TaskEditor(object):
             self.close_all_subtasks()
             self.close(None)
 
-    def change_status(self,widget): #pylint: disable-msg=W0613
+    def change_status(self, widget): #pylint: disable-msg=W0613
         stat = self.task.get_status()
         if stat == "Done":
             self.task.set_status("Active")
@@ -457,7 +469,7 @@ class TaskEditor(object):
             self.vmanager.ask_delete_tasks([self.task.get_id()])
 
     #Take the title as argument and return the subtask ID
-    def new_subtask(self,title=None,tid=None):
+    def new_subtask(self, title=None, tid=None):
         if tid:
             self.task.add_child(tid)
         elif title:
@@ -472,25 +484,25 @@ class TaskEditor(object):
         task_id = task.get_id()
         self.vmanager.open_task(task_id)
 
-    def insert_subtask(self,widget): #pylint: disable-msg=W0613
+    def insert_subtask(self, widget): #pylint: disable-msg=W0613
         self.textview.insert_newtask()
         self.textview.grab_focus()
 
-    def inserttag_clicked(self,widget): #pylint: disable-msg=W0613
+    def inserttag_clicked(self, widget): #pylint: disable-msg=W0613
         itera = self.textview.get_insert()
         if itera.starts_line():
-            self.textview.insert_text("@",itera)
+            self.textview.insert_text("@", itera)
         else:
-            self.textview.insert_text(" @",itera)
+            self.textview.insert_text(" @", itera)
         self.textview.grab_focus()
 
-    def inserttag(self,widget,tag): #pylint: disable-msg=W0613
+    def inserttag(self, widget, tag): #pylint: disable-msg=W0613
         self.textview.insert_tags([tag])
         self.textview.grab_focus()
 
     def save(self):
         self.task.set_title(self.textview.get_title())
-        self.task.set_text(self.textview.get_text()) 
+        self.task.set_text(self.textview.get_text())
         self.task.sync()
         if self.config != None:
             self.config.write()
@@ -509,22 +521,22 @@ class TaskEditor(object):
         if tosave:
             self.save()
 
-    #This will bring the Task Editor to front    
+    #This will bring the Task Editor to front
     def present(self):
         self.window.present()
 
-    def move(self,x,y):
+    def move(self, x, y):
         try:
             xx=int(x)
             yy=int(y)
-            self.window.move(xx,yy)
+            self.window.move(xx, yy)
         except:
             pass
 
     def get_position(self):
         return self.window.get_position()
 
-    def on_move(self,widget,event):
+    def on_move(self, widget, event):
         #saving the position
         if self.config != None:
             tid = self.task.get_id()
@@ -535,17 +547,19 @@ class TaskEditor(object):
             self.config[tid]["size"] = self.window.get_size()
 
     #We define dummy variable for when close is called from a callback
-    def close(self,window=None,a=None,b=None,c=None): #pylint: disable-msg=W0613
+    def close(self, window=None, a=None, b=None, c=None):
+        #pylint: disable-msg=W0613
         #We should also destroy the whole taskeditor object.
         if self.window:
             self.window.destroy()
             self.window = None
 
     #The destroy signal is linked to the "close" button. So if we call
-    #destroy in the close function, this will cause the close to be called twice
+    #destroy in the close function, this will cause the close to be called
+    #twice
     #To solve that, close will just call "destroy" and the destroy signal
     #Will be linked to this destruction method that will save the task
-    def destruction(self,a=None):
+    def destruction(self, a=None):
         #Save should be also called when buffer is modified
         self.pengine.onTaskClose(self.plugin_api)
         self.pengine.remove_api(self.plugin_api)

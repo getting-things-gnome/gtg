@@ -300,11 +300,7 @@ class Task(TreeNode):
             parent_list = []
             for par_id in task.parents:
                 par = self.req.get_task(par_id)
-                has_due_date = par.get_due_date() == Date.no_date()
-                is_fuzzy_due = has_due_date and par.get_due_date().is_fuzzy()
-
-                #FIXME should is_fuzzy() == None? It could simplify more code
-                if not has_due_date or is_fuzzy_due:
+                if par.get_due_date().is_fuzzy():
                     parent_list += __get_defined_parent_list(par)
                 else:
                     parent_list.append(par)
@@ -316,9 +312,7 @@ class Task(TreeNode):
             child_list = []
             for child_id in task.children:
                 child = self.req.get_task(child_id)
-                if child.get_due_date() == Date.no_date() or \
-                   (child.get_due_date() != Date.no_date() and \
-                     child.get_due_date().is_fuzzy()):
+                if child.get_due_date().is_fuzzy():
                     child_list += __get_defined_child_list(child)
                 else:
                     child_list.append(child)
@@ -328,12 +322,10 @@ class Task(TreeNode):
         new_duedate_obj = Date(new_duedate) # caching the conversion
         self.due_date = new_duedate_obj
         # If the new date is fuzzy or undefined, we don't update related tasks
-        if not new_duedate_obj.is_fuzzy() and \
-            new_duedate_obj != Date.no_date():
+        if not new_duedate_obj.is_fuzzy():
             # if the task's start date happens later than the
             # new due date, we update it (except for fuzzy dates)
-            if self.get_start_date() != Date.no_date() and \
-               not self.get_start_date().is_fuzzy() and \
+            if not self.get_start_date().is_fuzzy() and \
                self.get_start_date() > new_duedate_obj:
                 self.set_start_date(new_duedate)
             # if some ancestors' due dates happen before the task's new
@@ -353,8 +345,7 @@ class Task(TreeNode):
                 # the task's new due date, we update it
                 # (except for fuzzy start dates)
                 sub_startdate = sub.get_start_date()
-                if sub_startdate != Date.no_date() and \
-                   not sub_startdate.is_fuzzy() and \
+                if not sub_startdate.is_fuzzy() and \
                    sub_startdate > new_duedate_obj:
                     sub.set_start_date(new_duedate)
         # If the date changed, we notify the change for the children since the
@@ -372,28 +363,22 @@ class Task(TreeNode):
             is applied. """
         # Check out for constraints depending on date definition/fuzziness.
         strongest_const_date = self.due_date
-        if strongest_const_date == Date.no_date() or \
-           (strongest_const_date != Date.no_date() and \
-             strongest_const_date.is_fuzzy()):
+        if strongest_const_date.is_fuzzy():
             for par_id in self.parents:
                 par = self.req.get_task(par_id)
                 par_duedate = par.get_due_date()
                 # if parent date is undefined or fuzzy, look further up
-                if par_duedate == Date.no_date() or \
-                   par_duedate.is_fuzzy():
+                if par_duedate.is_fuzzy():
                     par_duedate = par.get_due_date_constraint()
                 # if par_duedate is still undefined/fuzzy, all parents' due
                 # dates are undefined or fuzzy: strongest_const_date is then
                 # the best choice so far, we don't update it.
-                if par_duedate == Date.no_date() or \
-                   par_duedate.is_fuzzy():
+                if par_duedate.is_fuzzy():
                     continue
                 # par_duedate is not undefined/fuzzy. If strongest_const_date
                 # is still undefined or fuzzy, parent_duedate is the best
                 # choice.
-                if strongest_const_date == Date.no_date() or \
-                   (strongest_const_date != Date.no_date() and \
-                     strongest_const_date.is_fuzzy()):
+                if strongest_const_date.is_fuzzy():
                     strongest_const_date = par_duedate
                     continue
                 # strongest_const_date and par_date are defined and not fuzzy:
@@ -416,9 +401,7 @@ class Task(TreeNode):
     # Undefined/fizzy start dates don't constraint the task due date.
     def set_start_date(self, fulldate):
         self.start_date = Date(fulldate)
-        if Date(fulldate) != Date.no_date() and \
-           not Date(fulldate).is_fuzzy() and \
-           self.due_date != Date.no_date() and \
+        if not Date(fulldate).is_fuzzy() and \
            not self.due_date.is_fuzzy() and \
            Date(fulldate) > self.due_date:
             self.set_due_date(fulldate)
@@ -598,9 +581,7 @@ class Task(TreeNode):
         if parent_id is not None:
             par = self.req.get_task(parent_id)
             par_duedate = par.get_due_date_constraint()
-            if par_duedate != Date.no_date() and \
-               not par_duedate.is_fuzzy() and \
-               self.due_date != Date.no_date() and \
+            if not par_duedate.is_fuzzy() and \
                not self.due_date.is_fuzzy() and \
                par_duedate < self.due_date:
                 self.set_due_date(par_duedate)

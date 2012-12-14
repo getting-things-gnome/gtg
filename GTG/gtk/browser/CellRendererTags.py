@@ -28,9 +28,9 @@ from GTG.tools.logger import Log
 
 class CellRendererTags(Gtk.CellRenderer):
     __gproperties__ = {
-        'tag_list': (GObject.TYPE_PYOBJECT,\
+        'tag_list': (GObject.TYPE_PYOBJECT,
             "Tag list", "A list of tags", GObject.PARAM_READWRITE),
-        'tag': (GObject.TYPE_PYOBJECT, "Tag",\
+        'tag': (GObject.TYPE_PYOBJECT, "Tag",
              "Tag", GObject.PARAM_READWRITE),
     }
 
@@ -62,7 +62,7 @@ class CellRendererTags(Gtk.CellRenderer):
         if self.tag_list != None:
             for my_tag in self.tag_list:
                 my_tag_color = my_tag.get_attribute("color")
-                my_tag_icon  = my_tag.get_attribute("icon")
+                my_tag_icon = my_tag.get_attribute("icon")
                 if my_tag_color or my_tag_icon:
                     count = count + 1
         elif self.tag != None:
@@ -76,10 +76,10 @@ class CellRendererTags(Gtk.CellRenderer):
     def __init__(self): #pylint: disable-msg=W0231
         Gtk.CellRenderer.__init__(self)
         self.tag_list = None
-        self.tag      = None
-        self.xpad     = 1
-        self.ypad     = 1
-        self.PADDING  = 1
+        self.tag = None
+        self.xpad = 1
+        self.ypad = 1
+        self.PADDING = 1
 
     def do_set_property(self, pspec, value):
         if pspec.name == "tag-list":
@@ -93,13 +93,10 @@ class CellRendererTags(Gtk.CellRenderer):
         else:
             return getattr(self, pspec.name)
 
-    #def do_render(\
-        #self, window, widget, background_area, cell_area, expose_area, flags):
-    def do_render(\
-        self, cr, widget, background_area, cell_area, flags):
+    def do_render(self, cr, widget, background_area, cell_area, flags):
 
         vw_tags = self.__count_viewable_tags()
-        count   = 0
+        count = 0
 
         # Select source
         if self.tag_list != None:
@@ -118,18 +115,18 @@ class CellRendererTags(Gtk.CellRenderer):
         # Coordinates of the origin point
         x_align = self.get_property("xalign")
         y_align = self.get_property("yalign")
-        orig_x  = cell_area.x + int((cell_area.width  - 16*vw_tags -\
+        orig_x = cell_area.x + int((cell_area.width - 16*vw_tags - \
             self.PADDING*2*(vw_tags-1)) * x_align)
-        orig_y  = cell_area.y + int((cell_area.height - 16) * y_align)
+        orig_y = cell_area.y + int((cell_area.height - 16) * y_align)
 
         # We draw the icons & squares
         for my_tag in tags:
 
-            my_tag_icon  = my_tag.get_attribute("icon")
+            my_tag_icon = my_tag.get_attribute("icon")
             my_tag_color = my_tag.get_attribute("color")
 
-            rect_x  = orig_x + self.PADDING*2*count + 16*count
-            rect_y  = orig_y
+            rect_x = orig_x + self.PADDING*2*count + 16*count
+            rect_y = orig_y
 
             if my_tag_icon:
                 try:
@@ -162,11 +159,10 @@ class CellRendererTags(Gtk.CellRenderer):
 
         if self.tag and my_tag: #pylint: disable-msg=W0631
 
-            my_tag_icon  = my_tag.get_attribute("icon")
+            my_tag_icon = my_tag.get_attribute("icon")
             my_tag_color = my_tag.get_attribute("color")
 
-            if   not my_tag_icon and not my_tag_color:
-
+            if not my_tag_icon and not my_tag_color:
                 # Draw rounded rectangle
                 Gdk.cairo_set_source_rgba(gdkcontext, Gdk.RGBA(0.95, 0.95, 0.95, 1))
                 self.__roundedrec(gdkcontext, rect_x, rect_y, 16, 16, 8)
@@ -182,8 +178,9 @@ class CellRendererTags(Gtk.CellRenderer):
         count = self.__count_viewable_tags()
 
         if count != 0:
-            return (self.xpad, self.ypad, self.xpad*2 + 16*count +\
-                 2*count*self.PADDING, 16 + 2*self.ypad)
+            return (self.xpad, self.ypad,
+                self.xpad*2 + 16*count + 2*count*self.PADDING,
+                16 + 2*self.ypad)
         else:
             return (self.xpad, self.ypad, self.xpad*2, self.ypad*2)
 

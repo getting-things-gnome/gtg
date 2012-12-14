@@ -101,14 +101,14 @@ class Serializer(object):
                         #The current gtkTextTag is a tag
                         #Recursive call
                         nparent = doc.createElement("tag")
-                        child = self.parse_buffer(buff, start_it, end_it, \
+                        child = self.parse_buffer(buff, start_it, end_it,
                                                     nparent, doc, done=done)
                         parent.appendChild(child)
                     elif hasattr(ta, 'is_subtask'):
                         #The current gtkTextTag is a subtask
                         tagname = "subtask"
-                        subt    = doc.createElement(tagname)
-                        target  = ta.child
+                        subt = doc.createElement(tagname)
+                        target = ta.get_data('child')
                         subt.appendChild(doc.createTextNode(target))
                         parent.appendChild(subt)
                         parent.appendChild(doc.createTextNode("\n"))
@@ -152,7 +152,7 @@ class Unserializer:
         self.tv = taskview
 
     #Disabling pylint argument usage since we know we are not using all args
-    def unserialize(self, register_buf, content_buf, ite, length,\
+    def unserialize(self, register_buf, content_buf, ite, length,
                     data, cr_tags, udata):
         if data:
             element = xml.dom.minidom.parseString(data)
@@ -187,7 +187,7 @@ class Unserializer:
     #parse the XML and put the content in the buffer
     def parsexml(self, buf, ite, element):
         start = buf.create_mark(None, ite, True)
-        end   = buf.create_mark(None, ite, False)
+        end = buf.create_mark(None, ite, False)
         subtasks = self.tv.get_subtasks()
         taglist2 = []
         if element:

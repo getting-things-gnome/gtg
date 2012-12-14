@@ -25,7 +25,6 @@ from GTG.backends.genericbackend import GenericBackend
 from GTG.backends.backendsignals import BackendSignals
 
 
-
 class BackendsTree(Gtk.TreeView):
     '''
     Gtk.TreeView that shows the currently loaded backends.
@@ -44,7 +43,7 @@ class BackendsTree(Gtk.TreeView):
         @param backends_dialog: a reference to the dialog in which this is
         loaded
         '''
-        super(BackendsTree,self).__init__()
+        super(BackendsTree, self).__init__()
         self.dialog = backendsdialog
         self.req = backendsdialog.get_requester()
         self._init_liststore()
@@ -61,7 +60,9 @@ class BackendsTree(Gtk.TreeView):
         # 1, put default backend on top
         # 2, sort backends by human name
         backends = list(self.req.get_all_backends(disabled = True))
-        backends = sorted(backends, key=lambda backend:(not backend.is_default(), backend.get_human_name()))
+        backends = sorted(backends,
+                      key=lambda backend: (not backend.is_default(),
+                                          backend.get_human_name()))
 
         for backend in backends:
             self.add_backend(backend)
@@ -93,15 +94,14 @@ class BackendsTree(Gtk.TreeView):
         @param backend_id: the id of the backend to add
         '''
         if backend:
-            backend_iter = self.liststore.append([ \
-                backend.get_id(), \
-                self.dialog.get_pixbuf_from_icon_name(backend.get_name(), \
-                                                      16), \
-                backend.get_human_name(), \
-                self._get_markup_for_tags(backend.get_attached_tags()), \
+            backend_iter = self.liststore.append([
+                backend.get_id(),
+                self.dialog.get_pixbuf_from_icon_name(backend.get_name(),
+                                                      16),
+                backend.get_human_name(),
+                self._get_markup_for_tags(backend.get_attached_tags()),
                 ])
             self.backendid_to_iter[backend.get_id()] = backend_iter
-
 
     def on_backend_state_changed(self, sender, backend_id):
         '''
@@ -133,8 +133,8 @@ class BackendsTree(Gtk.TreeView):
             self.liststore[b_path][self.COLUMN_TAGS] = new_tags
 
     def _get_markup_for_tags(self, tag_names):
-        '''Given a list of tags names, generates the pango markup to render that
-        list with the tag colors used in GTG
+        '''Given a list of tags names, generates the pango markup to render
+         that list with the tag colors used in GTG
 
         @param tag_names: the list of the tags (strings)
         @return str: the pango markup string
@@ -144,7 +144,6 @@ class BackendsTree(Gtk.TreeView):
         else:
             tags_txt = get_colored_tags_markup(self.req, tag_names)
         return "<small>" + tags_txt + "</small>"
-
 
     def remove_backend(self, backend_id):
         ''' Removes a backend from the treeview, and selects the first (to show
@@ -197,7 +196,7 @@ class BackendsTree(Gtk.TreeView):
                                     c in [" ", "-", "_"]))
         selected_iter = self.liststore.get_iter(path)
         # update the backend name
-        backend_id = self.liststore.get_value(selected_iter, \
+        backend_id = self.liststore.get_value(selected_iter,
                                               self.COLUMN_BACKEND_ID)
         backend = self.dialog.get_requester().get_backend(backend_id)
         if backend:
@@ -224,8 +223,8 @@ class BackendsTree(Gtk.TreeView):
         '''
         Helper function to get the selected path
 
-        @return Gtk.TreePath : returns exactly one path for the selected object or
-                               None
+        @return Gtk.TreePath : returns exactly one path for the selected object
+                               or None
         '''
         selection = self.get_selection()
         if selection:

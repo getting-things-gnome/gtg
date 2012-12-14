@@ -108,7 +108,7 @@ class PreferencesDialog:
           'on_PreferencesDialog_delete_event':
             self.on_close,
           'on_fontbutton_font_set':
-            self.on_font_change,  
+            self.on_font_change,
         })
 
     def  _refresh_preferences_store(self):
@@ -164,6 +164,6 @@ class PreferencesDialog:
             self.config.set("bg_color_enable", not curstate)
             self._refresh_task_browser()
 
-    def on_font_change(self,widget):
+    def on_font_change(self, widget):
         """ Set a new font for editor """
-	self.config.set("font_name", self.fontbutton.get_font_name())  
+        self.config.set("font_name", self.fontbutton.get_font_name())

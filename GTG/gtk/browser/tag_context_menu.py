@@ -21,7 +21,7 @@
 """
 tag_context_menu:
 Implements a context (pop-up) menu for the tag item in the sidebar.
-Right now it is just a void shell It is supposed to become a more generic 
+Right now it is just a void shell It is supposed to become a more generic
 sidebar context for all kind of item displayed there.
 Also, it is supposed to handle more complex menus (with non-std widgets,
 like a color picker)
@@ -31,10 +31,9 @@ from gi.repository import Gtk
 
 from GTG import _
 
+
 class TagContextMenu(Gtk.Menu): # pylint: disable-msg=R0904
-    """
-    Context menu fo the tag i the sidebar
-    """
+    """Context menu fo the tag i the sidebar"""
 
     def __init__(self, req, vmanager, tag=None):
         Gtk.Menu.__init__(self)
@@ -65,15 +64,13 @@ class TagContextMenu(Gtk.Menu): # pylint: disable-msg=R0904
         # Make it visible
         self.show_all()
 
-    ### PUBLIC API ###
-
+    ### PUBLIC API ############################################################
     def set_tag(self, tag):
         """Update the context menu items using the tag attributes."""
         self.tag = tag
         self.__build_menu()
 
-    ### CALLBACKS ###
-
+    ### CALLBACKS #############################################################
     def on_mi_cc_activate(self, widget): # pylint: disable-msg=W0613
         """Callback: show the tag editor upon request"""
         self.vmanager.open_tag_editor(self.tag)
