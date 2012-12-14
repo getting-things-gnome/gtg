@@ -128,12 +128,12 @@ class SimpleColorSelectorPaletteItem(Gtk.DrawingArea):
         return self.selected
 
 
-class SimpleColorSelector(Gtk.VBox): # pylint: disable-msg=R0904,C0301
+class SimpleColorSelector(Gtk.Box): # pylint: disable-msg=R0904,C0301
     """Widget displaying a palette of colors, possibly with a button allowing
      to define new colors."""
 
     def __init__(self, width=9, colors=None, custom_colors=None):
-        Gtk.VBox.__init__(self)
+        Gtk.Box.__init__(self, orientation=Gtk.Orientation.VERTICAL)
         self.width = width
         # widget model
         if colors is None:
@@ -174,7 +174,7 @@ class SimpleColorSelector(Gtk.VBox): # pylint: disable-msg=R0904,C0301
         self.palette = Gtk.Alignment()
         self.pack_start(self.palette, True, True, 0)
         # Draw the palette
-        vbox = Gtk.VBox()
+        vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         self.palette.add(vbox)
         vbox.set_spacing(4)
         for i in xrange(len(self.colors)):
@@ -214,7 +214,7 @@ class SimpleColorSelector(Gtk.VBox): # pylint: disable-msg=R0904,C0301
         self.custom_palette.set_padding(10, 0, 0, 0)
         self.pack_start(self.custom_palette, True, True, 0)
         # Draw the previous color palette: only one line
-        cc_vbox = Gtk.VBox()
+        cc_vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         self.custom_palette.add(cc_vbox)
         cc_vbox.set_spacing(4)
         cc_box = Gtk.Box()

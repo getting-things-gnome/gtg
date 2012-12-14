@@ -22,7 +22,7 @@ from gi.repository import Gtk
 from GTG.backends.genericbackend import GenericBackend
 
 
-class ImportTagsUI(Gtk.VBox):
+class ImportTagsUI(Gtk.Box):
     '''
     It's a widget displaying a couple of radio buttons, a label and a textbox
     to let the user change the attached tags (or imported)
@@ -42,7 +42,7 @@ class ImportTagsUI(Gtk.VBox):
                              radio button
         @param parameter_name: the backend parameter this widget should modify
         '''
-        super(ImportTagsUI, self).__init__()
+        super(ImportTagsUI, self).__init__(orientation=Gtk.Orientation.VERTICAL)
         self.backend = backend
         self.req = req
         self.title = title
@@ -66,7 +66,7 @@ class ImportTagsUI(Gtk.VBox):
         align = Gtk.Alignment.new(0, 0, 1, 0)
         align.set_padding(0, 0, 10, 0)
         self.pack_start(align, True, True, 0)
-        vbox = Gtk.VBox()
+        vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         align.add(vbox)
         self.all_tags_radio = Gtk.RadioButton(group = None,
                                               label = self.anybox_text)

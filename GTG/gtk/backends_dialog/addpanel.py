@@ -24,9 +24,9 @@ from GTG.backends                          import BackendFactory
 from GTG                                   import _, ngettext
 
 
-class AddPanel(Gtk.VBox):
+class AddPanel(Gtk.Box):
     '''
-    A VBox filled with gtk widgets to let the user choose a new backend.
+    A vertical Box filled with gtk widgets to let the user choose a new backend.
     '''
 
     def __init__(self, backends_dialog):
@@ -36,7 +36,7 @@ class AddPanel(Gtk.VBox):
         @param backends_dialog: a reference to the dialog in which this is
         loaded
         '''
-        super(AddPanel, self).__init__()
+        super(AddPanel, self).__init__(orientation=Gtk.Orientation.VERTICAL)
         self.dialog = backends_dialog
         self._create_widgets()
 
@@ -98,14 +98,14 @@ class AddPanel(Gtk.VBox):
         self.image_icon.set_size_request(128, 128)
         align_image = Gtk.Alignment.new(1, 0, 0, 0)
         align_image.add(self.image_icon)
-        labels_vbox = Gtk.VBox()
+        labels_vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         labels_vbox.pack_start(self.label_description, True, True, 10)
         labels_vbox.pack_start(self.label_author, True, True, 0)
         labels_vbox.pack_start(self.label_modules, True, True, 0)
         low_box = Gtk.Box()
         low_box.pack_start(labels_vbox, True, True, 0)
         low_box.pack_start(align_image, True, True, 0)
-        vbox = Gtk.VBox()
+        vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         vbox.pack_start(self.label_name, True, True, 0)
         vbox.pack_start(low_box, True, True, 0)
         box.pack_start(vbox, True, True, 0)
@@ -137,7 +137,7 @@ class AddPanel(Gtk.VBox):
 
     def on_confirm(self, widget = None):
         '''
-        Notifies the dialog holding this VBox that a backend has been
+        Notifies the dialog holding this Box that a backend has been
         chosen
 
         @param widget: just to make this function usable as a signal callback.
