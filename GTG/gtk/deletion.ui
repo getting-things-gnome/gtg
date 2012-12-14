@@ -28,7 +28,7 @@
                 <property name="use_action_appearance">False</property>
                 <signal name="released" handler="on_delete_cancel" swapped="no"/>
                 <child>
-                  <object class="GtkHBox" id="cd-hbox2">
+                  <object class="GtkBox" id="cd-box2">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <child>
@@ -75,7 +75,7 @@
                 <signal name="activate" handler="on_delete_confirm" swapped="no"/>
                 <signal name="released" handler="on_delete_confirm" swapped="no"/>
                 <child>
-                  <object class="GtkHBox" id="cd-hbox3">
+                  <object class="GtkBox" id="cd-box3">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <child>
@@ -120,7 +120,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkHBox" id="cd-hbox1">
+          <object class="GtkBox" id="cd-box1">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <child>

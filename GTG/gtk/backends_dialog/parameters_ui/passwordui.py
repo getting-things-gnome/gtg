@@ -22,7 +22,7 @@ from gi.repository import Gtk
 from GTG import _
 
 
-class PasswordUI(Gtk.HBox):
+class PasswordUI(Gtk.Box):
     '''Widget displaying a gtk.Label and a textbox to input a password'''
 
     def __init__(self, req, backend, width):

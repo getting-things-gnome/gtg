@@ -179,8 +179,8 @@ class SimpleColorSelector(Gtk.VBox): # pylint: disable-msg=R0904,C0301
         vbox.set_spacing(4)
         for i in xrange(len(self.colors)):
             if i % self.width == 0:
-                cur_hbox = Gtk.HBox()
-                vbox.pack_start(cur_hbox, True, True, 0)
+                cur_box = Gtk.Box()
+                vbox.pack_start(cur_box, True, True, 0)
             # add the color box
             img = SimpleColorSelectorPaletteItem()
             img.set_size_request( \
@@ -189,8 +189,8 @@ class SimpleColorSelector(Gtk.VBox): # pylint: disable-msg=R0904,C0301
             img.set_color(self.colors[i])
             self.buttons_lookup[self.colors[i]] = img
             self.buttons.append(img)
-            cur_hbox.pack_start(img, False, False, 0)
-            cur_hbox.set_spacing(4)
+            cur_box.pack_start(img, False, False, 0)
+            cur_box.set_spacing(4)
         # make palette visible
         self.palette.show_all()
 
@@ -217,8 +217,8 @@ class SimpleColorSelector(Gtk.VBox): # pylint: disable-msg=R0904,C0301
         cc_vbox = Gtk.VBox()
         self.custom_palette.add(cc_vbox)
         cc_vbox.set_spacing(4)
-        cc_hbox = Gtk.HBox()
-        cc_vbox.pack_start(cc_hbox, True, True, 0)
+        cc_box = Gtk.Box()
+        cc_vbox.pack_start(cc_box, True, True, 0)
         for i in xrange(len(self.custom_colors)):
             # add the color box
             img = SimpleColorSelectorPaletteItem()
@@ -228,8 +228,8 @@ class SimpleColorSelector(Gtk.VBox): # pylint: disable-msg=R0904,C0301
             if i < len(self.custom_colors):
                 img.set_color(self.custom_colors[i])
                 self.buttons_lookup[self.custom_colors[i]] = img
-            cc_hbox.pack_start(img, False, False, 0)
-            cc_hbox.set_spacing(4)
+            cc_box.pack_start(img, False, False, 0)
+            cc_box.set_spacing(4)
             self.cc_buttons.append(img)
         # Draw the add button
         img = Gtk.Image()

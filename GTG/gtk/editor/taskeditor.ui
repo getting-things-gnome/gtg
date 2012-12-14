@@ -98,7 +98,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkHBox" id="hbox3">
+          <object class="GtkBox" id="box3">
             <property name="visible">True</property>
             <child>
               <object class="GtkScrolledWindow" id="scrolledtask">
@@ -139,7 +139,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkHBox" id="tasksidebar">
+          <object class="GtkBox" id="tasksidebar">
             <property name="visible">True</property>
             <child>
               <object class="GtkLabel" id="label2">
@@ -157,7 +157,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkHBox" id="hbox1">
+              <object class="GtkBox" id="box1">
                 <property name="visible">True</property>
                 <child>
                   <object class="GtkEntry" id="startdate_entry">
@@ -214,7 +214,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkHBox" id="hbox2">
+              <object class="GtkBox" id="box2">
                 <property name="visible">True</property>
                 <child>
                   <object class="GtkEntry" id="duedate_entry">
@@ -271,7 +271,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkHBox" id="hbox4">
+              <object class="GtkBox" id="box4">
                 <property name="visible">True</property>
                 <child>
                   <object class="GtkEntry" id="closeddate_entry">
@@ -357,7 +357,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkHBox" id="fuzzydate_btns">
+          <object class="GtkBox" id="fuzzydate_btns">
             <property name="visible">True</property>
             <property name="homogeneous">True</property>
             <child>

@@ -74,11 +74,11 @@ class ImportTagsUI(Gtk.VBox):
         self.some_tags_radio = Gtk.RadioButton(group = self.all_tags_radio,
                                                label = self.somebox_text)
         self.some_tags_radio.set_size_request(width = width, height = -1)
-        hbox = Gtk.HBox()
-        vbox.pack_start(hbox, True, True, 0)
-        hbox.pack_start(self.some_tags_radio, False, True, 0)
+        box = Gtk.Box()
+        vbox.pack_start(box, True, True, 0)
+        box.pack_start(self.some_tags_radio, False, True, 0)
         self.tags_entry = Gtk.Entry()
-        hbox.pack_start(self.tags_entry, True, True, 0)
+        box.pack_start(self.tags_entry, True, True, 0)
 
     def on_changed(self, radio, data = None):
         ''' Signal callback, executed when the user modifies something.

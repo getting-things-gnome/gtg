@@ -29,7 +29,7 @@
                 <property name="bottom_padding">5</property>
                 <property name="left_padding">12</property>
                 <child>
-                  <object class="GtkHBox" id="hbox_reddays">
+                  <object class="GtkBox" id="box_reddays">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <child>
@@ -111,7 +111,7 @@
                     <property name="can_focus">False</property>
                     <property name="spacing">5</property>
                     <child>
-                      <object class="GtkHBox" id="hbox_colors_overdue">
+                      <object class="GtkBox" id="box_colors_overdue">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <child>
@@ -149,7 +149,7 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkHBox" id="hbox_colors_high">
+                      <object class="GtkBox" id="box_colors_high">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <child>
@@ -187,7 +187,7 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkHBox" id="hbox_colors_normal">
+                      <object class="GtkBox" id="box_colors_normal">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <child>
@@ -225,7 +225,7 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkHBox" id="hbox_colors_low">
+                      <object class="GtkBox" id="box_colors_low">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <child>

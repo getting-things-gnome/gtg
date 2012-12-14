@@ -59,7 +59,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkHBox" id="hbox2">
+          <object class="GtkBox" id="box2">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <child>
@@ -106,7 +106,7 @@ A danger zone of 0 disables icon coloring.</property>
           </packing>
         </child>
         <child>
-          <object class="GtkHBox" id="hbox1">
+          <object class="GtkBox" id="box1">
             <property name="height_request">30</property>
             <property name="visible">True</property>
             <property name="can_focus">False</property>
