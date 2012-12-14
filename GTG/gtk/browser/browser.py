@@ -426,10 +426,8 @@ class TaskBrowser(GObject.GObject):
         This is used to check the window state afterwards
         and maximize it if needed """
         mask = Gdk.WindowState.MAXIMIZED
-        if widget.get_window().get_state() & mask == mask:
-            self.config.set("max", True)
-        else:
-            self.config.set("max", False)
+        is_maximized = widget.get_window().get_state() & mask == mask
+        self.config.set("max", is_maximized)
 
     def restore_state_from_conf(self):
 
