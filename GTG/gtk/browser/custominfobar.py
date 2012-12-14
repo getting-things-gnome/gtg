@@ -176,7 +176,7 @@ class CustomInfoBar(Gtk.InfoBar):
         self.dialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
         self.dialog.set_modal(True)
         #        self.dialog.set_size_request(300,170)
-        vbox = Gtk.VBox()
+        vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         self.dialog.add(vbox)
         description_label = Gtk.Label()
         description_label.set_justify(Gtk.Justification.FILL)

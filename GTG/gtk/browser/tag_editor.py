@@ -59,7 +59,7 @@ class TagIconSelector(Gtk.Window): # pylint: disable-msg=R0904
     def __build_window(self):
         """Build up the widget"""
         self.set_type_hint(Gdk.WindowTypeHint.POPUP_MENU)
-        vbox = Gtk.VBox()
+        vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         self.add(vbox)
         # icon list
         scld_win = Gtk.ScrolledWindow()
@@ -210,7 +210,7 @@ class TagEditor(Gtk.Window): # pylint: disable-msg=R0904
     def __build_window(self):
         """Build up the widget"""
         # toplevel widget
-        self.top_vbox = Gtk.VBox()
+        self.top_vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         self.add(self.top_vbox)
         # header line: icon, grid with name and "hide in wv"
         #FIXME
@@ -247,7 +247,7 @@ class TagEditor(Gtk.Window): # pylint: disable-msg=R0904
         self.tn_cb = Gtk.CheckButton()
         self.tp_grid.attach(self.tn_cb, 1, 1, 1, 1)
         # Tag color
-        self.tc_vbox = Gtk.VBox()
+        self.tc_vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         self.top_vbox.pack_start(self.tc_vbox, True, True, 0)
         self.tc_label_align = Gtk.Alignment()
         self.tc_vbox.pack_start(self.tc_label_align, True, True, 0)

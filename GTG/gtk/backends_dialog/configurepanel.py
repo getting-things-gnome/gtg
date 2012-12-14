@@ -26,9 +26,9 @@ from GTG.gtk.backends_dialog.parameters_ui import ParametersUI
 from GTG.backends.backendsignals           import BackendSignals
 
 
-class ConfigurePanel(Gtk.VBox):
+class ConfigurePanel(Gtk.Box):
     '''
-    A VBox that lets you configure a backend
+    A vertical Box that lets you configure a backend
     '''
 
     def __init__(self, backends_dialog):
@@ -38,7 +38,7 @@ class ConfigurePanel(Gtk.VBox):
         @param backends_dialog: a reference to the dialog in which this is
         loaded
         '''
-        super(ConfigurePanel, self).__init__()
+        super(ConfigurePanel, self).__init__(orientation=Gtk.Orientation.VERTICAL)
         self.dialog = backends_dialog
         self.should_spinner_be_shown = False
         self.task_deleted_handle = None
@@ -58,7 +58,7 @@ class ConfigurePanel(Gtk.VBox):
 
     def _create_widgets(self):
         '''
-        This function fills this Vbox with widgets
+        This function fills this box with widgets
         '''
         #Division of the available space in three segments:
         # top, middle and bottom

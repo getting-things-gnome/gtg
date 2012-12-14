@@ -200,7 +200,7 @@ class hamsterPlugin:
 
         if len(records):
             # add section to bottom of window
-            vbox = Gtk.VBox()
+            vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
             inner_grid = Gtk.Grid()
             if len(records)>8:
                 s = Gtk.ScrolledWindow()

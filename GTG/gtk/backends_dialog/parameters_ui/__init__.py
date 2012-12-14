@@ -37,9 +37,9 @@ from GTG.gtk.backends_dialog.parameters_ui.checkboxui   import CheckBoxUI
 from GTG.gtk.backends_dialog.parameters_ui.pathui       import PathUI
 
 
-class ParametersUI(Gtk.VBox):
+class ParametersUI(Gtk.Box):
     '''
-    Given a bakcend, this Gtk.VBox populates itself with all the necessary
+    Given a bakcend, this vertical Gtk.Box populates itself with all the necessary
     widgets to view and edit a backend configuration
     '''
 
@@ -51,7 +51,7 @@ class ParametersUI(Gtk.VBox):
 
         @param requester: a GTG.core.requester.Requester object
         '''
-        super(ParametersUI, self).__init__(False)
+        super(ParametersUI, self).__init__(False, orientation=Gtk.Orientation.VERTICAL)
         self.req = requester
         self.set_spacing(10)
 
