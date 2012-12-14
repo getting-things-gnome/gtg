@@ -212,7 +212,7 @@ class TagEditor(Gtk.Window): # pylint: disable-msg=R0904
         # toplevel widget
         self.top_vbox = Gtk.VBox()
         self.add(self.top_vbox)
-        # header line: icon, table with name and "hide in wv"
+        # header line: icon, grid with name and "hide in wv"
         #FIXME
         self.hdr_align = Gtk.Alignment()
         self.top_vbox.pack_start(self.hdr_align, True, True, 0)
@@ -228,24 +228,24 @@ class TagEditor(Gtk.Window): # pylint: disable-msg=R0904
         self.ti_bt.set_size_request(64, 64)
         self.ti_bt.set_relief(Gtk.ReliefStyle.HALF)
         # vbox for tag name and hid in WV
-        self.tp_table = Gtk.Table(2, 2)
-        self.hdr_hbox.pack_start(self.tp_table, True, True, 0)
-        self.tp_table.set_col_spacing(0, 5)
+        self.tp_grid = Gtk.Grid()
+        self.hdr_hbox.pack_start(self.tp_grid, True, True, 0)
+        self.tp_grid.set_column_spacing(5)
         self.tn_entry_lbl_align = Gtk.Alignment.new(0, 0.5, 0, 0)
-        self.tp_table.attach(self.tn_entry_lbl_align, 0, 1, 0, 1)
+        self.tp_grid.add(self.tn_entry_lbl_align)
         self.tn_entry_lbl = Gtk.Label()
         self.tn_entry_lbl.set_markup("<span weight='bold'>%s</span>" \
             % _("Name : "))
         self.tn_entry_lbl_align.add(self.tn_entry_lbl)
         self.tn_entry = Gtk.Entry()
-        self.tp_table.attach(self.tn_entry, 1, 2, 0, 1)
         self.tn_entry.set_width_chars(20)
+        self.tp_grid.attach(self.tn_entry, 1, 0, 1, 1)
         self.tn_cb_lbl_align = Gtk.Alignment.new(0, 0.5, 0, 0)
-        self.tp_table.attach(self.tn_cb_lbl_align, 0, 1, 1, 2)
+        self.tp_grid.attach(self.tn_cb_lbl_align, 0, 1, 1, 1)
         self.tn_cb_lbl = Gtk.Label(label=_("Show Tag in Work View :"))
         self.tn_cb_lbl_align.add(self.tn_cb_lbl)
         self.tn_cb = Gtk.CheckButton()
-        self.tp_table.attach(self.tn_cb, 1, 2, 1, 2)
+        self.tp_grid.attach(self.tn_cb, 1, 1, 1, 1)
         # Tag color
         self.tc_vbox = Gtk.VBox()
         self.top_vbox.pack_start(self.tc_vbox, True, True, 0)
