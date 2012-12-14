@@ -201,21 +201,21 @@ class hamsterPlugin:
         if len(records):
             # add section to bottom of window
             vbox = Gtk.VBox()
-            inner_table = Gtk.Table(rows=len(records), columns=2)
+            inner_grid = Gtk.Grid()
             if len(records)>8:
                 s = Gtk.ScrolledWindow()
                 s.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
                 v=Gtk.Viewport()
-                v.add(inner_table)
+                v.add(inner_grid)
                 s.add(v)
                 v.set_shadow_type(Gtk.ShadowType.NONE)
                 s.set_size_request(-1, 150)
             else:
-                s=inner_table
+                s=inner_grid
 
-            outer_table = Gtk.Table(rows=1, columns=2)
+            outer_grid = Gtk.Grid()
             vbox.pack_start(s, True, True, 0)
-            vbox.pack_start(outer_table, True, True, 0)
+            vbox.pack_start(outer_grid, True, True, 0)
             vbox.pack_end(Gtk.HSeparator())
 
             total = 0
@@ -229,25 +229,21 @@ class hamsterPlugin:
                 dateLabel.set_use_markup(True)
                 dateLabel.set_alignment(xalign=0.0, yalign=0.5)
                 dateLabel.set_size_request(200, -1)
-                w.attach(dateLabel, left_attach=0, right_attach=1,
-                    top_attach=offset, bottom_attach=offset+1,
-                    xoptions=Gtk.AttachOptions.FILL, xpadding=20, yoptions=0)
+                w.attach(dateLabel, 0, offset, 1, 1)
 
                 durLabel=Gtk.Label(label=b)
                 durLabel.set_use_markup(True)
                 durLabel.set_alignment(xalign=0.0, yalign=0.5)
-                w.attach(durLabel, left_attach=1, right_attach=2,
-                    top_attach=offset, bottom_attach=offset+1,
-                    xoptions=Gtk.AttachOptions.FILL, yoptions=0)
+                w.attach(durLabel, 1, offset, 1, 1)
 
             active_id = self.get_active_id()
             for offset, i in enumerate(records):
                 t = calc_duration(i)
                 total += t
-                add(inner_table, format_date(i), format_duration(t),
+                add(inner_grid, format_date(i), format_duration(t),
                                             offset, i['id'] == active_id)
 
-            add(outer_table, "<big><b>Total</b></big>",
+            add(outer_grid, "<big><b>Total</b></big>",
                 "<big><b>%s</b></big>" % format_duration(total), 1)
 
             self.vbox = plugin_api.add_widget_to_taskeditor(vbox)
