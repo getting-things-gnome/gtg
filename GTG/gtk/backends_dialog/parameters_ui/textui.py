@@ -20,7 +20,7 @@
 from gi.repository import Gtk
 
 
-class TextUI(Gtk.HBox):
+class TextUI(Gtk.Box):
     '''A widget to display a simple textbox and a label to describe its content
     '''
 

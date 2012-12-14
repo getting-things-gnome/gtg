@@ -20,7 +20,7 @@
 from gi.repository import Gtk
 
 
-class CheckBoxUI(Gtk.HBox):
+class CheckBoxUI(Gtk.Box):
     '''
     It's a widget displaying a simple checkbox, with some text to explain its
     meaning

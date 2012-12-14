@@ -68,13 +68,13 @@ class CustomInfoBar(Gtk.InfoBar):
 
     def _populate(self):
         '''Setting up gtk widgets'''
-        content_hbox = self.get_content_area()
-        content_hbox.set_homogeneous(False)
+        content_box = self.get_content_area()
+        content_box.set_homogeneous(False)
         self.label = Gtk.Label()
         self.label.set_line_wrap(True)
         self.label.set_alignment(0.5, 0.5)
         self.label.set_justify(Gtk.Justification.FILL)
-        content_hbox.pack_start(self.label, True, True, 0)
+        content_box.pack_start(self.label, True, True, 0)
 
     def _on_error_response(self, widget, event):
         '''

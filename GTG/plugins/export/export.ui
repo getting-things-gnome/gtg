@@ -11,7 +11,7 @@
       <object class="GtkVBox" id="vbox3">
         <property name="visible">True</property>
         <child>
-          <object class="GtkHBox" id="hbox11">
+          <object class="GtkBox" id="box11">
             <property name="visible">True</property>
             <property name="border_width">15</property>
             <property name="spacing">15</property>
@@ -174,7 +174,7 @@
             <property name="visible">True</property>
             <property name="yalign">1</property>
             <child>
-              <object class="GtkHBox" id="buttonbox">
+              <object class="GtkBox" id="buttonbox">
                 <property name="height_request">50</property>
                 <property name="visible">True</property>
                 <property name="border_width">12</property>
@@ -267,7 +267,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkHBox" id="hbox1">
+          <object class="GtkBox" id="box1">
             <property name="height_request">30</property>
             <property name="visible">True</property>
             <property name="spacing">50</property>

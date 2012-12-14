@@ -274,14 +274,14 @@ class TaskEditor(object):
         #Refreshing the status bar labels and date boxes
         if status in [Task.STA_DISMISSED, Task.STA_DONE]:
             self.builder.get_object("label2").hide()
-            self.builder.get_object("hbox1").hide()
+            self.builder.get_object("box1").hide()
             self.builder.get_object("label4").show()
-            self.builder.get_object("hbox4").show()
+            self.builder.get_object("box4").show()
         else:
             self.builder.get_object("label4").hide()
-            self.builder.get_object("hbox4").hide()
+            self.builder.get_object("box4").hide()
             self.builder.get_object("label2").show()
-            self.builder.get_object("hbox1").show()
+            self.builder.get_object("box1").show()
 
         #refreshing the start date field
         startdate = self.task.get_start_date()

@@ -25,7 +25,7 @@
             <property name="can_focus">False</property>
             <property name="spacing">10</property>
             <child>
-              <object class="GtkHBox" id="big_central_hbox">
+              <object class="GtkBox" id="big_central_box">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="spacing">10</property>

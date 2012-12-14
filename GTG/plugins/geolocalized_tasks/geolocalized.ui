@@ -338,7 +338,7 @@
                     <property name="visible">True</property>
                     <property name="left_padding">12</property>
                     <child>
-                      <object class="GtkHBox" id="hbox5">
+                      <object class="GtkBox" id="box5">
                         <property name="visible">True</property>
                         <child>
                           <object class="GtkVBox" id="vbox5">
@@ -421,7 +421,7 @@
                     <property name="visible">True</property>
                     <property name="left_padding">12</property>
                     <child>
-                      <object class="GtkHBox" id="hbox3">
+                      <object class="GtkBox" id="box3">
                         <property name="visible">True</property>
                         <child>
                           <object class="GtkSpinButton" id="spin_proximityfactor">

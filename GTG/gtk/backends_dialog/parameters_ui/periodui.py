@@ -22,7 +22,7 @@ from gi.repository import Gtk
 from GTG import _, ngettext
 
 
-class PeriodUI(Gtk.HBox):
+class PeriodUI(Gtk.Box):
     '''A widget to change the frequency of a backend synchronization
     '''
 

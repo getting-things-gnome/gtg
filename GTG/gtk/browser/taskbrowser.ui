@@ -573,7 +573,7 @@
                 <property name="width_request">75</property>
                 <property name="can_focus">False</property>
                 <child>
-                  <object class="GtkHBox" id="hbox4">
+                  <object class="GtkBox" id="box4">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <child>
@@ -678,7 +678,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <child>
-                  <object class="GtkHBox" id="quickadd_pane">
+                  <object class="GtkBox" id="quickadd_pane">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <child>

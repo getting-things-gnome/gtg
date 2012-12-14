@@ -23,7 +23,7 @@ import os.path
 from GTG import _
 
 
-class PathUI(Gtk.HBox):
+class PathUI(Gtk.Box):
     '''Gtk widgets to show a path in a textbox, and a button to bring up a
     filesystem explorer to modify that path (also, a label to describe those)
     '''
