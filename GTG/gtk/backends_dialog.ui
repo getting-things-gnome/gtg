@@ -20,19 +20,21 @@
         <property name="left_padding">10</property>
         <property name="right_padding">10</property>
         <child>
-          <object class="GtkVBox" id="vbox1">
+          <object class="GtkBox" id="vbox1">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="spacing">10</property>
+            <property name="orientation">vertical</property>
             <child>
               <object class="GtkBox" id="big_central_box">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="spacing">10</property>
                 <child>
-                  <object class="GtkVBox" id="vbox2">
+                  <object class="GtkBox" id="vbox2">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="orientation">vertical</property>
                     <child>
                       <object class="GtkViewport" id="treeview_window">
                         <property name="height_request">400</property>

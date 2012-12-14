@@ -139,10 +139,11 @@
               </packing>
             </child>
             <child>
-              <object class="GtkVBox" id="cd-vbox2">
+              <object class="GtkBox" id="cd-vbox2">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="spacing">16</property>
+                <property name="orientation">vertical</property>
                 <child>
                   <object class="GtkLabel" id="cd-label2">
                     <property name="visible">True</property>

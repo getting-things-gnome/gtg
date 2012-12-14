@@ -12,9 +12,10 @@
     <property name="type_hint">dialog</property>
     <signal name="delete-event" handler="on_prefs_window_delete_event" swapped="no"/>
     <child>
-      <object class="GtkVBox" id="vbox_main">
+      <object class="GtkBox" id="vbox_main">
         <property name="can_focus">False</property>
         <property name="spacing">2</property>
+        <property name="orientation">vertical</property>
         <child>
           <object class="GtkFrame" id="frame_reddays">
             <property name="visible">True</property>
@@ -106,10 +107,11 @@
                 <property name="bottom_padding">5</property>
                 <property name="left_padding">12</property>
                 <child>
-                  <object class="GtkVBox" id="vbox_colors">
+                  <object class="GtkBox" id="vbox_colors">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="spacing">5</property>
+                    <property name="orientation">vertical</property>
                     <child>
                       <object class="GtkBox" id="box_colors_overdue">
                         <property name="visible">True</property>

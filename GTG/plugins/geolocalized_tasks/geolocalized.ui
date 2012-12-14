@@ -14,12 +14,14 @@
     <property name="title" translatable="yes">Set the task's location</property>
     <property name="type_hint">dialog</property>
     <child internal-child="vbox">
-      <object class="GtkVBox" id="dialog-vbox2">
+      <object class="GtkBox" id="dialog-vbox2">
         <property name="visible">True</property>
+        <property name="orientation">vertical</property>
         <child>
-          <object class="GtkVBox" id="vbox">
+          <object class="GtkBox" id="vbox">
             <property name="width_request">400</property>
             <property name="visible">True</property>
+            <property name="orientation">vertical</property>
             <child>
               <object class="GtkToolbar" id="toolbar2">
                 <property name="visible">True</property>
@@ -52,8 +54,9 @@
               </packing>
             </child>
             <child>
-              <object class="GtkVBox" id="vbox_map">
+              <object class="GtkBox" id="vbox_map">
                 <property name="visible">True</property>
+                <property name="orientation">vertical</property>
                 <child>
                   <placeholder/>
                 </child>
@@ -63,8 +66,9 @@
               </packing>
             </child>
             <child>
-              <object class="GtkVBox" id="vbox_opt">
+              <object class="GtkBox" id="vbox_opt">
                 <property name="visible">True</property>
+                <property name="orientation">vertical</property>
                 <child>
                   <object class="GtkTable" id="tabela_set_task">
                     <property name="visible">True</property>
@@ -213,11 +217,13 @@
     <property name="visible">True</property>
     <property name="type_hint">dialog</property>
     <child internal-child="vbox">
-      <object class="GtkVBox" id="dialog-vbox3">
+      <object class="GtkBox" id="dialog-vbox3">
         <property name="visible">True</property>
+        <property name="orientation">vertical</property>
         <child>
-          <object class="GtkVBox" id="vbox3">
+          <object class="GtkBox" id="vbox3">
             <property name="visible">True</property>
+            <property name="orientation">vertical</property>
             <child>
               <object class="GtkToolbar" id="toolbar3">
                 <property name="visible">True</property>
@@ -250,8 +256,9 @@
               </packing>
             </child>
             <child>
-              <object class="GtkVBox" id="vbox_map2">
+              <object class="GtkBox" id="vbox_map2">
                 <property name="width_request">400</property>
+                <property name="orientation">vertical</property>
                 <property name="visible">True</property>
                 <child>
                   <placeholder/>
@@ -322,11 +329,13 @@
     <property name="title" translatable="yes">Geolocalized-tasks Preferences</property>
     <property name="type_hint">dialog</property>
     <child internal-child="vbox">
-      <object class="GtkVBox" id="dialog-vbox4">
+      <object class="GtkBox" id="dialog-vbox4">
         <property name="visible">True</property>
+        <property name="orientation">vertical</property>
         <child>
-          <object class="GtkVBox" id="vbox4">
+          <object class="GtkBox" id="vbox4">
             <property name="visible">True</property>
+            <property name="orientation">vertical</property>
             <child>
               <object class="GtkFrame" id="frame4">
                 <property name="visible">True</property>
@@ -341,7 +350,7 @@
                       <object class="GtkBox" id="box5">
                         <property name="visible">True</property>
                         <child>
-                          <object class="GtkVBox" id="vbox5">
+                          <object class="GtkBox" id="vbox5">
                             <property name="visible">True</property>
                             <property name="orientation">vertical</property>
                             <child>

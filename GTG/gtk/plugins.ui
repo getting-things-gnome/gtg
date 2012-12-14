@@ -10,10 +10,11 @@
     <signal name="delete-event" handler="on_PluginAboutDialog_close" swapped="no"/>
     <signal name="response" handler="on_PluginAboutDialog_close" swapped="no"/>
     <child internal-child="vbox">
-      <object class="GtkVBox" id="pa-vbox1">
+      <object class="GtkBox" id="pa-vbox1">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="spacing">2</property>
+        <property name="orientation">vertical</property>
         <child internal-child="action_area">
           <object class="GtkHButtonBox" id="pa-action_area1">
             <property name="visible">True</property>
@@ -74,9 +75,10 @@
     <property name="type_hint">dialog</property>
     <signal name="delete-event" handler="on_PluginsDialog_delete_event" swapped="no"/>
     <child internal-child="vbox">
-      <object class="GtkVBox" id="dialog-vbox5">
+      <object class="GtkBox" id="dialog-vbox5">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
+        <property name="orientation">vertical</property>
         <child internal-child="action_area">
           <object class="GtkHButtonBox" id="dialog-action_area5">
             <property name="visible">True</property>
@@ -123,10 +125,11 @@
           </packing>
         </child>
         <child>
-          <object class="GtkVBox" id="plugins-vbox6">
+          <object class="GtkBox" id="plugins-vbox6">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="spacing">6</property>
+            <property name="orientation">vertical</property>
             <child>
               <object class="GtkScrolledWindow" id="plugins-scrolledwindow2">
                 <property name="width_request">240</property>
