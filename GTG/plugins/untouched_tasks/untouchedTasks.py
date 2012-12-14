@@ -93,6 +93,7 @@ class pluginUntouchedTasks:
         """
         Deactivates the plugin.
         """
+        plugin_api.remove_menu_item(self.menu_item)
         #everything should be removed, in case a task is currently opened
         try:
             self.plugin_api.remove_task_toolbar_item(self.tb_Taskbutton)
