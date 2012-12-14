@@ -384,8 +384,8 @@ class TaskEditor(object):
         if valid:
             #If the date is valid, we write with default color in the widget
             # "none" will set the default color.
-            widget.modify_text(Gtk.StateType.NORMAL, None)
-            widget.modify_base(Gtk.StateType.NORMAL, None)
+            widget.override_color(Gtk.StateType.NORMAL, None)
+            widget.override_background_color(Gtk.StateType.NORMAL, None)
 
             if data == "start":
                 self.task.set_start_date(datetoset)
@@ -395,10 +395,14 @@ class TaskEditor(object):
                 self.task.set_closed_date(datetoset)
             self.refresh_editor()
         else:
-            #FIXME changing color doesn't work :(
             #We should write in red in the entry if the date is not valid
-            widget.modify_text(Gtk.StateType.NORMAL, Gdk.color_parse("#F00"))
-            widget.modify_base(Gtk.StateType.NORMAL, Gdk.color_parse("#F88"))
+            text_color = Gdk.RGBA()
+            text_color.parse("#F00")
+            widget.override_color(Gtk.StateType.NORMAL, text_color)
+
+            bg_color = Gdk.RGBA()
+            bg_color.parse("#F88")
+            widget.override_background_color(Gtk.StateType.NORMAL, bg_color)
 
     def on_date_pressed(self, widget, date_kind):
         """Called when a date-changing button is clicked."""
