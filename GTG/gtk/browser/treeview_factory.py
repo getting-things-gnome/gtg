@@ -430,7 +430,8 @@ class TreeviewFactory():
         treeview.set_rules_hint(False)
         treeview.set_multiple_selection(True)
         #Updating the unactive color (same for everyone)
-        color = treeview.get_style_context().get_color(Gtk.StateFlags.INSENSITIVE)
+        color = treeview.get_style_context().get_color(
+            Gtk.StateFlags.INSENSITIVE)
         # Convert color into #RRRGGGBBB
         self.unactive_color = color.to_color().to_string()
         return treeview
@@ -445,7 +446,8 @@ class TreeviewFactory():
         treeview.set_dnd_name('gtg/tag-iter-str')
         treeview.set_dnd_external('gtg/task-iter-str', self.ontag_task_dnd)
         #Updating the unactive color (same for everyone)
-        color = treeview.get_style_context().get_color(Gtk.StateFlags.INSENSITIVE)
+        color = treeview.get_style_context().get_color(
+            Gtk.StateFlags.INSENSITIVE)
         # Convert color into #RRRGGGBBB
         self.unactive_color = color.to_color().to_string()
 

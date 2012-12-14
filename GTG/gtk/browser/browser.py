@@ -378,7 +378,8 @@ class TaskBrowser(GObject.GObject):
     def _add_accelerator_for_widget(self, agr, name, accel):
         widget = self.builder.get_object(name)
         key, mod = Gtk.accelerator_parse(accel)
-        widget.add_accelerator("activate", agr, key, mod, Gtk.AccelFlags.VISIBLE)
+        widget.add_accelerator("activate", agr, key, mod,
+            Gtk.AccelFlags.VISIBLE)
 
     def _init_accelerators(self):
         """
@@ -847,18 +848,21 @@ class TaskBrowser(GObject.GObject):
                 selected_tags = self.get_selected_tags(nospecial=True)
                 selected_search = self.get_selected_search()
                 #popup menu for searches
-                #FIXME thos two branches could be simplified (there is no difference betweenn search and normal tag
+                #FIXME thos two branches could be simplified
+                #(there is no difference betweenn search and normal tag
                 if selected_search is not None:
                     my_tag = self.req.get_tag(selected_search)
                     self.tagpopup.set_tag(my_tag)
-                    self.tagpopup.popup(None, None, None, None, event.button, time)
+                    self.tagpopup.popup(None, None, None, None,
+                        event.button, time)
                 elif len(selected_tags) > 0:
                     # Then we are looking at single, normal tag rather than
                     # the special 'All tags' or 'Tasks without tags'. We only
                     # want to popup the menu for normal tags.
                     my_tag = self.req.get_tag(selected_tags[0])
                     self.tagpopup.set_tag(my_tag)
-                    self.tagpopup.popup(None, None, None, None, event.button, time)
+                    self.tagpopup.popup(None, None, None, None,
+                        event.button, time)
                 else:
                     self.reset_cursor()
             return True
@@ -870,7 +874,8 @@ class TaskBrowser(GObject.GObject):
         if is_shift_f10 or keyname == "Menu":
             selected_tags = self.get_selected_tags(nospecial=True)
             selected_search = self.get_selected_search()
-            #FIXME thos two branches could be simplified (there is no difference betweenn search and normal tag
+            #FIXME thos two branches could be simplified (there is
+            #no difference betweenn search and normal tag
             #popup menu for searches
             if selected_search is not None:
                 self.tagpopup.set_tag(selected_search)
@@ -905,7 +910,8 @@ class TaskBrowser(GObject.GObject):
                 else:
                     treeview.set_cursor(path, col, 0)
                 treeview.grab_focus()
-                self.taskpopup.popup(None, None, None, None, event.button, time)
+                self.taskpopup.popup(None, None, None, None,
+                    event.button, time)
             return True
 
     def on_task_treeview_key_press_event(self, treeview, event):
@@ -1339,7 +1345,8 @@ class TaskBrowser(GObject.GObject):
         @param title: Short text to use for the tab label
         @param page: Gtk.Frame-based panel to be added
         """
-        return self._add_page(self.accessory_notebook, Gtk.Label(label=title), page)
+        return self._add_page(self.accessory_notebook, Gtk.Label(label=title),
+            page)
 
     def remove_page_from_sidebar_notebook(self, page):
         """Removes a new page tab from the left panel.  If this leaves

@@ -35,7 +35,8 @@ PLUGINS_COL_SHORT_DESC = 3
 PLUGINS_COL_ACTIVATABLE = 4
 
 
-def plugin_icon(column, cell, store, iterator, data): # pylint: disable-msg=W0613
+def plugin_icon(column, cell, store, iterator, data):
+    # pylint: disable-msg=W0613
     """ Callback to set the content of a PluginTree cell.
 
     See PluginsDialog._init_plugin_tree().
@@ -301,9 +302,11 @@ class PluginsDialog:
         plugin_id = self.plugin_store.get_value(iterator, PLUGINS_COL_ID)
         plugin = self.pengine.get_plugin(plugin_id)
 
-        #FIXME About plugin dialog looks much more different than it is in the current trunk
+        #FIXME About plugin dialog looks much more different than
+        #it is in the current trunk
         #FIXME repair it!
-        #FIXME Author is not usually set and is preserved from previous plugin... :/
+        #FIXME Author is not usually set and is preserved from
+        #previous plugin... :/
         self.plugin_about.set_program_name(plugin.full_name)
         self.plugin_about.set_version(plugin.version)
         authors = plugin.authors

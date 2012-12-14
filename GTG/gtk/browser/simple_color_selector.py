@@ -88,7 +88,8 @@ class SimpleColorSelectorPaletteItem(Gtk.DrawingArea):
             size = alloc_h * 0.50 - 3
             pos_x = math.floor((alloc_w-size)/2)
             pos_y = math.floor((alloc_h-size)/2)
-            Gdk.cairo_set_source_rgba(gdkcontext, Gdk.RGBA(255, 255, 255, 0.80))
+            Gdk.cairo_set_source_rgba(gdkcontext,
+                Gdk.RGBA(255, 255, 255, 0.80))
             gdkcontext.arc(alloc_w/2, alloc_h/2, size/2 + 3, 0, 2*math.pi)
             gdkcontext.fill()
             gdkcontext.set_line_width(1.0)
