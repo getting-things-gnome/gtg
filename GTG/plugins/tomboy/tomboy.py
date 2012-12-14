@@ -18,7 +18,7 @@ import dbus
 import os
 import sys
 
-from gi.repository import Gtk
+from gi.repository import Gtk, GdkPixbuf
 
 from GTG import _
 from GTG.plugins.tomboy.combobox_enhanced import smartifyComboboxEntry
@@ -105,8 +105,8 @@ Please install it or disable the Tomboy/Gnote plugin in GTG"))
             return
         tb_Taskbutton_image = Gtk.Image()
         tb_Taskbutton_image_path = self.tomboy_icon_path
-        tb_Taskbutton_pixbuf=Gdk.\
-                pixbuf_new_from_file_at_size(tb_Taskbutton_image_path, 16, 16)
+        tb_Taskbutton_pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(
+                tb_Taskbutton_image_path, 16, 16)
         tb_Taskbutton_image.set_from_pixbuf(tb_Taskbutton_pixbuf)
         self.tb_Taskbutton = Gtk.ToolButton(tb_Taskbutton_image)
         self.tb_Taskbutton.set_label(_("Add Tomboy note"))
@@ -121,7 +121,7 @@ Please install it or disable the Tomboy/Gnote plugin in GTG"))
         self.anchors=[]
         start_iter = self.textview.buff.get_start_iter()
         end_iter = self.textview.buff.get_end_iter()
-        text = self.textview.buff.get_slice(start_iter, end_iter)
+        text = self.textview.buff.get_slice(start_iter, end_iter, True)
         text_offset = 0
         token_position = text.find(self.token_start)
         token_ending = text.find(self.token_end, token_position)
@@ -305,18 +305,14 @@ Do you want to create it?")))
         eventbox.add(box)
         #the eventbox should follow the colours of the textview to blend in
         #properly
-        textview_style = self.textview.get_style()
-        eventbox_style = eventbox.get_style().copy()
-        #FIXME this state probably won't work, fix it! (because of GTK3)
+        textview_style = self.textview.get_style_context()
         for state in (Gtk.StateType.NORMAL, Gtk.StateType.PRELIGHT, Gtk.StateType.ACTIVE,
                       Gtk.StateType.SELECTED, Gtk.StateType.INSENSITIVE):
-            eventbox_style.base[state] = textview_style.base[state]
-            eventbox_style.bg[state] = textview_style.bg[state]
-            eventbox_style.fg[state] = textview_style.fg[state]
-            eventbox_style.text[state] = textview_style.text[state]
-        eventbox_style.bg[Gtk.StateType.NORMAL] = \
-                textview_style.base[Gtk.StateType.NORMAL]
-        eventbox.set_style(eventbox_style)
+            fg_color = textview_style.get_color(state)
+            eventbox.override_color(state, fg_color)
+
+            bg_color = textview_style.get_background_color(state)
+            eventbox.override_background_color(state, bg_color)
         eventbox.show()
         eventbox.tomboy_note_title = tomboy_note_title
         #cursor changes to a hand
