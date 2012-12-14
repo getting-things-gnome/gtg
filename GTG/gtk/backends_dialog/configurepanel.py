@@ -62,10 +62,10 @@ class ConfigurePanel(Gtk.VBox):
         '''
         #Division of the available space in three segments:
         # top, middle and bottom
-        top = Gtk.HBox()
-        middle = Gtk.HBox()
-        self._fill_top_hbox(top)
-        self._fill_middle_hbox(middle)
+        top = Gtk.Box()
+        middle = Gtk.Box()
+        self._fill_top_box(top)
+        self._fill_middle_box(middle)
         self.pack_start(top, False, True, 0)
         self.pack_start(middle, False, True, 0)
         align = Gtk.Alignment.new(0, 0, 1, 0)
@@ -74,45 +74,45 @@ class ConfigurePanel(Gtk.VBox):
         align.add(self.parameters_ui)
         self.pack_start(align, False, True, 0)
 
-    def _fill_top_hbox(self, hbox):
+    def _fill_top_box(self, box):
         """ Fill header with service's icon, name, and a spinner
         for inidcation of work.
         """
-        hbox.set_spacing(10)
+        box.set_spacing(10)
         self.image_icon = Gtk.Image()
         self.image_icon.set_size_request(48, 48)
-        hbox_top = Gtk.HBox()
 
         self.human_name_label = Gtk.Label()
         self.human_name_label.set_alignment(xalign = 0, yalign = 0.5)
 
+        #FIXME in the newer versions of GTK3 there always be Spinner!
         try:
             self.spinner = Gtk.Spinner()
         except AttributeError:
             #worarkound for archlinux: bug #624204
-            self.spinner = Gtk.HBox()
+            self.spinner = Gtk.Box()
         self.spinner.connect("show", self.on_spinner_show)
         self.spinner.set_size_request(32, 32)
         align_spin = Gtk.Alignment.new(1, 0, 0, 0)
         align_spin.add(self.spinner)
 
-        hbox.set_spacing(10)
-        hbox.pack_start(self.image_icon, False, True, 0)
-        hbox.pack_start(self.human_name_label, True, True, 0)
-        hbox.pack_start(align_spin, False, True, 0)
+        box.set_spacing(10)
+        box.pack_start(self.image_icon, False, True, 0)
+        box.pack_start(self.human_name_label, True, True, 0)
+        box.pack_start(align_spin, False, True, 0)
 
-    def _fill_middle_hbox(self, hbox):
+    def _fill_middle_box(self, box):
         '''
-        Helper function to fill an hbox with a label and a button
+        Helper function to fill an box with a label and a button
 
-        @param hbox: the Gtk.HBox to fill
+        @param box: the Gtk.Box to fill
         '''
         self.sync_status_label = Gtk.Label()
         self.sync_status_label.set_alignment(xalign = 0.8, yalign = 0.5)
         self.sync_button = Gtk.Button()
         self.sync_button.connect("clicked", self.on_sync_button_clicked)
-        hbox.pack_start(self.sync_status_label, True, True, 0)
-        hbox.pack_start(self.sync_button, True, True, 0)
+        box.pack_start(self.sync_status_label, True, True, 0)
+        box.pack_start(self.sync_button, True, True, 0)
 
     def set_backend(self, backend_id):
         '''Changes the backend to configure, refreshing this view.
