@@ -51,7 +51,6 @@ class BackendsDialog(object):
         - the backend adding view
     '''
 
-
     def __init__(self, req):
         '''
         Initializes the gtk objects and signals.

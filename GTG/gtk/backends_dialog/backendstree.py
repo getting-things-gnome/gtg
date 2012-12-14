@@ -120,7 +120,8 @@ class BackendsTree(Gtk.TreeView):
                 text = backend_name
             else:
                 #FIXME This snippet is on more than 2 places!!!
-                #FIXME create a function which takes a widget and flag and returns color as #RRGGBB
+                #FIXME create a function which takes a widget and
+                #flag and returns color as #RRGGBB
                 style_context = self.get_style_context()
                 color = style_context.get_color(Gtk.StateFlags.INSENSITIVE)
                 color = color.to_color().to_string()

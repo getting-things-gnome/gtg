@@ -132,8 +132,10 @@ class CellRendererTags(Gtk.CellRenderer):
                 try:
                     pixbuf = Gtk.IconTheme.get_default().load_icon(
                                     my_tag_icon, 16, 0)
-                    Gdk.cairo_set_source_pixbuf(gdkcontext, pixbuf, rect_x, rect_y)
-                    #Gdk.cairo_set_source_pixbuf(gdkcontext, pixbuf, rect_x, rect_y)
+                    Gdk.cairo_set_source_pixbuf(gdkcontext, pixbuf,
+                        rect_x, rect_y)
+                    #Gdk.cairo_set_source_pixbuf(gdkcontext,
+                    #pixbuf, rect_x, rect_y)
                     gdkcontext.paint()
                     count = count + 1
                 except GLib.GError:
@@ -164,7 +166,8 @@ class CellRendererTags(Gtk.CellRenderer):
 
             if not my_tag_icon and not my_tag_color:
                 # Draw rounded rectangle
-                Gdk.cairo_set_source_rgba(gdkcontext, Gdk.RGBA(0.95, 0.95, 0.95, 1))
+                Gdk.cairo_set_source_rgba(gdkcontext,
+                    Gdk.RGBA(0.95, 0.95, 0.95, 1))
                 self.__roundedrec(gdkcontext, rect_x, rect_y, 16, 16, 8)
                 gdkcontext.fill()
 

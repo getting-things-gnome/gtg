@@ -91,11 +91,11 @@ class TaskView(Gtk.TextView):
         self.failedlink = {'background': 'white', 'foreground': '#ff5454',
                       'underline': Pango.Underline.NONE,
                       'strikethrough': False}
-        self.done   = {'background': 'white', 'foreground': 'gray',
+        self.done = {'background': 'white', 'foreground': 'gray',
                                     'strikethrough': True}
         self.active = {'background': 'light gray', 'foreground': '#ff1e00',
                                     'underline': Pango.Underline.SINGLE}
-        self.hover  = {'background': 'light gray'}
+        self.hover = {'background': 'light gray'}
         self.tag = {'background': "#FFea00", 'foreground': 'black'}
         self.indent = {'scale': 1.4, 'editable': False, 'left-margin': 10,
                                  "accumulative-margin": True}
@@ -146,9 +146,12 @@ class TaskView(Gtk.TextView):
         self.serializer = serializer
         unserializer = taskviewserial.Unserializer(self)
         self.unserializer = unserializer
-        # FIXME after discussion with Lionel remove those functions and simplify the code
-        #self.serialize_format = self.buff.register_serialize_format(mime_type, serializer.serialize, None)
-        #self.deserialize_format = self.buff.register_deserialize_format(mime_type, unserializer.unserialize, None)
+        # FIXME after discussion with Lionel remove those functions
+        #and simplify the code
+        #self.serialize_format = self.buff.register_serialize_format(
+        #mime_type, serializer.serialize, None)
+        #self.deserialize_format = self.buff.register_deserialize_format(
+        #mime_type, unserializer.unserialize, None)
 
         #The list of callbacks we have to set
         self.remove_tag_callback = None
@@ -269,7 +272,8 @@ class TaskView(Gtk.TextView):
 
         #deserialize
         #self.buff.deserialize(self.buff, self.deserialize_format, _iter, text)
-        self.unserializer.unserialize(self.buff, self.buff, _iter, 0, text, None, None)
+        self.unserializer.unserialize(self.buff, self.buff, _iter, 0,
+            text, None, None)
 
         #reconnect
         if reconnect_insert:
@@ -354,7 +358,7 @@ class TaskView(Gtk.TextView):
                     already = True
         if not texttag:
             #pylint: disable-msg=W0142
-            texttag = buff.create_tag(None,**self.get_property('tag'))
+            texttag = buff.create_tag(None, **self.get_property('tag'))
             texttag.is_tag = True
             texttag.tagname = tag
             #This one is for marks
@@ -478,7 +482,8 @@ class TaskView(Gtk.TextView):
         #we go to the next line, just after the title
         start.forward_line()
         end = self.buff.get_end_iter()
-        texte = self.serializer.serialize(self.buff, self.buff, start, end, 1, None)
+        texte = self.serializer.serialize(self.buff, self.buff,
+            start, end, 1, None)
 
         return texte
     #Get the title of the task (aka the first line of the buffer)
@@ -761,7 +766,8 @@ class TaskView(Gtk.TextView):
         elif self.title_tag in itera.get_tags():
             to_return = True
         #else, we look if there's something between us and buffer start
-        elif not buff.get_text(buff.get_start_iter(), itera, True).strip('\n\t '):
+        elif not buff.get_text(buff.get_start_iter(), itera, True)\
+            .strip('\n\t '):
             to_return = True
 
         return to_return
@@ -870,7 +876,9 @@ class TaskView(Gtk.TextView):
         buff.remove_tag_by_name('title', title_end, end)
         # Refresh title of the window
         if refresheditor:
-            self.refresh(buff.get_text(title_start, title_end, True).strip('\n\t'))
+            stripped = buff.get_text(title_start, title_end, True)
+            stripped = stripped.strip('\n\t')
+            self.refresh(stripped)
         return title_end
 
     def __newsubtask(self, buff, title, line_nbr, level=1):
@@ -1346,7 +1354,8 @@ class TaskView(Gtk.TextView):
             if hasattr(tag, 'is_anchor'):
                 for t in set(self.__tags) - set([tag]):
                     self.__tag_reset(t, window)
-                self.__set_anchor(window, tag, Gdk.Cursor.new(Gdk.CursorType.HAND2),
+                self.__set_anchor(window, tag,
+                    Gdk.Cursor.new(Gdk.CursorType.HAND2),
                                   self.get_property('hover'))
                 break
         else:
@@ -1361,7 +1370,8 @@ class TaskView(Gtk.TextView):
         _type = ev.type
         if _type == Gdk.EventType.MOTION_NOTIFY:
             return
-        elif _type in [Gdk.EventType.BUTTON_PRESS, Gdk.EventType.BUTTON_RELEASE]:
+        elif _type in [Gdk.EventType.BUTTON_PRESS,
+            Gdk.EventType.BUTTON_RELEASE]:
             button = ev.button
             cursor = Gdk.Cursor.new(Gdk.CursorType.HAND2)
             if _type == Gdk.EventType.BUTTON_RELEASE:

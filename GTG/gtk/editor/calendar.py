@@ -123,14 +123,14 @@ class GTGCalendar(GObject.GObject):
             Gdk.EventMask.ALL_EVENTS_MASK,
             None,
             None,
-            0
+            0,
         )
 
         self.__window.connect('button-press-event', self.__focus_out)
         self.__sigid = self.__calendar.connect(
             "day-selected",
             self.__day_selected,
-            "RealDate"
+            "RealDate",
         )
 
         self.__sigid_month = self.__calendar.connect("month-changed",

@@ -82,7 +82,8 @@ class TaskEditor(object):
             "on_startdate_pressed":
                 lambda w: self.on_date_pressed(w, GTGCalendar.DATE_KIND_START),
             "on_closeddate_pressed":
-                lambda w: self.on_date_pressed(w, GTGCalendar.DATE_KIND_CLOSED),
+                lambda w: self.on_date_pressed(w,
+                    GTGCalendar.DATE_KIND_CLOSED),
             "close_clicked":
                 self.close,
             "duedate_changed":
@@ -101,7 +102,8 @@ class TaskEditor(object):
         self.builder.connect_signals(dic)
         self.window = self.builder.get_object("TaskEditor")
         #Removing the Normal textview to replace it by our own
-        #So don't try to change anything with GtkBuilder, this is a home-made widget
+        #So don't try to change anything with GtkBuilder,
+        #this is a home-made widget
         textview = self.builder.get_object("textview")
         scrolled = self.builder.get_object("scrolledtask")
         scrolled.remove(textview)

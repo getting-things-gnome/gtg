@@ -155,7 +155,7 @@ class TagIconSelector(Gtk.Window): # pylint: disable-msg=R0904
             Gdk.EventMask.ALL_EVENTS_MASK,
             None,
             None,
-            0
+            0,
         )
         self.connect('button-press-event', self.__focus_out)
 
@@ -309,7 +309,8 @@ class TagEditor(Gtk.Window): # pylint: disable-msg=R0904
         self.tn_cb.set_active(True)
         # Name entry
         self.tn_entry.set_text(_("Enter tag name here"))
-        self.tn_entry.set_icon_from_stock(Gtk.EntryIconPosition.SECONDARY, None)
+        self.tn_entry.set_icon_from_stock(Gtk.EntryIconPosition.SECONDARY,
+            None)
         # Color selection
         self.tc_cc_colsel.unselect_color()
         # Custom colors
@@ -427,10 +428,11 @@ class TagEditor(Gtk.Window): # pylint: disable-msg=R0904
         self.tn_entry_last_recorded_value = self.tn_entry.get_text()
         # check validity
         if self.tn_entry_last_recorded_value.strip() == "":
-            self.tn_entry.set_icon_from_stock(Gtk.EntryIconPosition.SECONDARY, \
+            self.tn_entry.set_icon_from_stock(Gtk.EntryIconPosition.SECONDARY,
                 Gtk.STOCK_DIALOG_ERROR)
         else:
-            self.tn_entry.set_icon_from_stock(Gtk.EntryIconPosition.SECONDARY, None)
+            self.tn_entry.set_icon_from_stock(
+                Gtk.EntryIconPosition.SECONDARY, None)
         # filter out change requests to reduce commit overhead
         if self.tn_entry_watch_id is None:
             # There is no watchers for the text entry. Register one.
