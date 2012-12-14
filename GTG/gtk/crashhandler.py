@@ -330,7 +330,7 @@ def signal_catcher(callback):
     yield
 
 initialize(app_name = "Getting Things GNOME!",
-           message  =  "GTG" + info.VERSION +
+           message = "GTG" + info.VERSION +
            _(" has crashed. Please report the bug on <a href=\""
            "http://bugs.edge.launchpad.net/gtg\">our Launchpad page</a>."
              " If you have Apport installed, it will be started for you."),

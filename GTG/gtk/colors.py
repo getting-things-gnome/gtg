@@ -21,6 +21,7 @@ from gi.repository import Gdk
 
 #Take list of Tags and give the background color that should be applied
 #The returned color might be None (in which case, the default is used)
+
 def background_color(tags, bgcolor = None):
     if not bgcolor:
         bgcolor = Gdk.color_parse("#FFFFFF")
@@ -32,26 +33,27 @@ def background_color(tags, bgcolor = None):
     blue = 0
     for my_tag in tags:
         my_color_str = my_tag.get_attribute("color")
-        if my_color_str :
+        if my_color_str:
             my_color = Gdk.color_parse(my_color_str)
             color_count = color_count + 1
-            red   = red   + my_color.red
+            red = red + my_color.red
             green = green + my_color.green
-            blue  = blue  + my_color.blue
+            blue = blue + my_color.blue
     if color_count != 0:
-        red        = int(red  / color_count)
-        green      = int(green / color_count)
-        blue       = int(blue  / color_count)
+        red = int(red / color_count)
+        green = int(green / color_count)
+        blue = int(blue / color_count)
         brightness = (red+green+blue) / 3.0
         target_brightness = (bgcolor.red+bgcolor.green+bgcolor.blue)/3.0
-        
+
         alpha = (1-abs(brightness-target_brightness)/65535.0)/2.0
         red = int(red*alpha + bgcolor.red*(1-alpha))
         green = int(green*alpha + bgcolor.green*(1-alpha))
         blue = int(blue*alpha + bgcolor.blue*(1-alpha))
-        
+
         my_color = Gdk.Color(red, green, blue).to_string()
     return my_color
+
 
 def get_colored_tag_markup(req, tag_name, html = False):
     '''
@@ -73,6 +75,7 @@ def get_colored_tag_markup(req, tag_name, html = False):
             return format_string % (tag_color, tag_name)
         else:
             return tag_name
+
 
 def get_colored_tags_markup(req, tag_names):
     '''

@@ -23,13 +23,10 @@ import os.path
 from GTG import _
 
 
-
-
 class PathUI(Gtk.HBox):
     '''Gtk widgets to show a path in a textbox, and a button to bring up a
     filesystem explorer to modify that path (also, a label to describe those)
     '''
-    
 
     def __init__(self, req, backend, width):
         '''
@@ -46,7 +43,7 @@ class PathUI(Gtk.HBox):
 
     def _populate_gtk(self, width):
         '''Creates the Gtk.Label, the textbox and the button
-        
+
         @param width: the width of the Gtk.Label object
         '''
         label = Gtk.Label(label=_("Filename:"))
@@ -78,24 +75,25 @@ class PathUI(Gtk.HBox):
         '''
         if self.backend.is_enabled() and not self.backend.is_default():
             self.req.set_backend_enabled(self.backend.get_id(), False)
-    
+
     def on_button_clicked(self, sender):
         '''Shows the filesystem explorer to choose a new file
 
         @param sender: not used, only here for signal compatibility
         '''
-        self.chooser = Gtk.FileChooserDialog( \
+        self.chooser = Gtk.FileChooserDialog(
                     title=None,
                     action=Gtk.FileChooserAction.SAVE,
                     buttons=(Gtk.STOCK_CANCEL,
-                             Gtk.ResponseType.CANCEL, \
-                             Gtk.STOCK_OK, \
+                             Gtk.ResponseType.CANCEL,
+                             Gtk.STOCK_OK,
                              Gtk.ResponseType.OK))
         self.chooser.set_default_response(Gtk.ResponseType.OK)
         #set default file as the current self.path
-        self.chooser.set_current_name(os.path.basename(self.textbox.get_text()))
-        self.chooser.set_current_folder(os.path.dirname(self.textbox.get_text()))
-        
+        dirname, basename = os.path.split(self.textbox.get_text())
+        self.chooser.set_current_name(basename)
+        self.chosser.set_current_folder(dirname)
+
         #filter files
         afilter = Gtk.FileFilter()
         afilter.set_name("All files")

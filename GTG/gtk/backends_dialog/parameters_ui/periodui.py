@@ -22,11 +22,9 @@ from gi.repository import Gtk
 from GTG import _, ngettext
 
 
-
 class PeriodUI(Gtk.HBox):
     '''A widget to change the frequency of a backend synchronization
     '''
-    
 
     def __init__(self, req, backend, width):
         '''
@@ -45,7 +43,7 @@ class PeriodUI(Gtk.HBox):
 
     def _populate_gtk(self, width):
         '''Creates the gtk widgets
-        
+
         @param width: the width of the Gtk.Label object
         '''
         period_label = Gtk.Label(label=_("Check for new tasks every"))

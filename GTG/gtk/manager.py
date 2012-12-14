@@ -26,7 +26,7 @@ from gi.repository import GObject, Gtk
 import GTG
 from GTG.gtk.delete_dialog   import DeletionUI
 from GTG.gtk.browser.browser import TaskBrowser
-from GTG.gtk.editor.editor   import TaskEditor
+from GTG.gtk.editor.editor import TaskEditor
 from GTG.gtk.preferences     import PreferencesDialog
 from GTG.gtk.plugins         import PluginsDialog
 from GTG.gtk.dbuswrapper     import DBusTaskWrapper
@@ -41,6 +41,7 @@ from GTG.gtk.browser.tag_editor import TagEditor
 
 class Manager(object):
 
+
     ############## init #####################################################
     def __init__(self, req):
         self.req = req
@@ -49,7 +50,7 @@ class Manager(object):
         self.task_config = self.config_obj.task_conf_dict
 
         # Editors
-        self.opened_task  = {}   # This is the list of tasks that are already
+        self.opened_task = {}   # This is the list of tasks that are already
                                  # opened in an editor of course it's empty
                                  # right now
 
@@ -104,7 +105,6 @@ class Manager(object):
         self.pengine.activate_plugins()
 
     ############## Browser #################################################
-
     def open_browser(self):
         if not self.browser:
             self.browser = TaskBrowser(self.req, self)
@@ -113,24 +113,24 @@ class Manager(object):
     #FIXME : the browser should not be the center of the universe.
     # In fact, we should build a system where view can register themselves
     # as "stay_alive" views. As long as at least one "stay_alive" view
-    # is registered, gtg keeps running. It quit only when the last 
+    # is registered, gtg keeps running. It quit only when the last
     # "stay_alive view" is closed (and then unregistered).
     # Currently, the browser is our only "stay_alive" view.
-    def close_browser(self,sender=None):
+    def close_browser(self, sender=None):
         self.hide_browser()
         #may take a while to quit
         self.quit()
 
-    def hide_browser(self,sender=None):
+    def hide_browser(self, sender=None):
         self.browser.hide()
 
-    def iconify_browser(self,sender=None):
+    def iconify_browser(self, sender=None):
         self.browser.iconify()
 
-    def show_browser(self,sender=None):
+    def show_browser(self, sender=None):
         self.browser.show()
 
-    def is_browser_visible(self,sender=None):
+    def is_browser_visible(self, sender=None):
         return self.browser.is_visible()
 
     def get_browser(self):
@@ -146,7 +146,6 @@ class Manager(object):
         self.daemon_mode = in_daemon_mode
 
 ################# Task Editor ############################################
-
     def get_opened_editors(self):
         '''
         Returns a dict of task_uid -> TaskEditor, one for each opened editor
@@ -167,11 +166,11 @@ class Manager(object):
             tv.present()
         elif t:
             tv = TaskEditor(
-                requester = self.req, \
-                vmanager = self, \
-                task = t, \
-                taskconfig = self.task_config, \
-                thisisnew = thisisnew,\
+                requester = self.req,
+                vmanager = self,
+                task = t,
+                taskconfig = self.task_config,
+                thisisnew = thisisnew,
                 clipboard = self.clipboard)
             tv.present()
             #registering as opened
@@ -185,13 +184,13 @@ class Manager(object):
     def close_task(self, tid):
         # When an editor is closed, it should de-register itself.
         if tid in self.opened_task:
-            #the following line has the side effect of removing the 
+            #the following line has the side effect of removing the
             # tid key in the opened_task dictionary.
             editor = self.opened_task[tid]
             if editor:
                 del self.opened_task[tid]
                 #we have to remove the tid from opened_task first
-                #else, it close_task would be called once again 
+                #else, it close_task would be called once again
                 #by editor.close
                 editor.close()
             if tid in self.config["browser"]["opened_tasks"]:
@@ -203,12 +202,12 @@ class Manager(object):
         '''
         checking if we need to shut down the whole GTG (if no window is open)
         '''
-        if not self.daemon_mode and not self.is_browser_visible() and not self.opened_task:
+        if not self.daemon_mode and not self.is_browser_visible() and \
+                                                        not self.opened_task:
             #no need to live"
             self.quit()
 
 ################ Others dialog ############################################
-
     def open_edit_backends(self, sender = None, backend_id = None):
         if not self.edit_backends_dialog:
             self.edit_backends_dialog = BackendsDialog(self.req)
@@ -245,7 +244,6 @@ class Manager(object):
         self.tag_editor_dialog.hide()
 
 ### URIS ###################################################################
-
     def open_uri_list(self, unused, uri_list):
         '''
         Open the Editor windows of the tasks associated with the uris given.
@@ -257,8 +255,9 @@ class Manager(object):
         #if no window was opened, we just quit
         self.check_quit_condition()
 
+
 ### MAIN ###################################################################
-    def main(self, once_thru = False,  uri_list = []):
+    def main(self, once_thru = False, uri_list = []):
         if uri_list:
             #before opening the requested tasks, we make sure that all of them
             #are loaded.
@@ -275,11 +274,11 @@ class Manager(object):
                 Gtk.main()
         return 0
 
-    def quit(self,sender=None):
+    def quit(self, sender=None):
         Gtk.main_quit()
         #save opened tasks and their positions.
         open_task = []
-        for otid in self.opened_task.keys():     
+        for otid in self.opened_task.keys():
             open_task.append(otid)
             self.opened_task[otid].close()
         self.config["browser"]["opened_tasks"] = open_task
@@ -294,4 +293,3 @@ class Manager(object):
               [p.module_name for p in self.pengine.get_plugins("enabled")]
         # plugins are deactivated
         self.pengine.deactivate_plugins()
-

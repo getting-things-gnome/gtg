@@ -23,18 +23,17 @@ from gi.repository import GdkPixbuf
 from GTG.backends import BackendFactory
 
 
-
 class BackendsCombo(Gtk.ComboBox):
     '''
     A combobox listing all the available backends types
     '''
-    
+
 
     COLUMN_NAME = 0         #unique name for the backend type. It's never
                             # displayed, it's used to find which backend has
                             # been selected
     COLUMN_HUMAN_NAME = 1   #human friendly name (which is localized).
-    COLUMN_ICON = 2 
+    COLUMN_ICON = 2
 
     def __init__(self, backends_dialog):
         '''
@@ -79,8 +78,8 @@ class BackendsCombo(Gtk.ComboBox):
             if name == "backend_localfile":
                 continue
             pixbuf = self.dialog.get_pixbuf_from_icon_name(name, 16)
-            self.liststore.append((name, \
-                                   module.Backend.get_human_default_name(), \
+            self.liststore.append((name,
+                                   module.Backend.get_human_default_name(),
                                    pixbuf))
         if backend_types:
             #triggers a "changed" signal, which is used in the AddPanel to
@@ -93,7 +92,7 @@ class BackendsCombo(Gtk.ComboBox):
         '''
         selected_iter = self.get_active_iter()
         if selected_iter:
-            return self.liststore.get_value(selected_iter, \
-                                        BackendsCombo.COLUMN_NAME)
+            column_name = BackendsCombo.COLUMN_NAME
+            return self.liststore.get_value(selected_iter, column_name)
         else:
             return None

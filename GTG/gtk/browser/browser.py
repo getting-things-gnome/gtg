@@ -42,9 +42,6 @@ from GTG.gtk.browser.treeview_factory import TreeviewFactory
 from GTG.tools.dates import Date
 from GTG.tools.logger import Log
 
-#=== MAIN CLASS ===============================================================
-
-
 
 class Timer:
 
@@ -92,7 +89,7 @@ class TaskBrowser(GObject.GObject):
 
         # Set up models
         # Active Tasks
-        self.req.apply_global_filter(self.activetree,'active')
+        self.req.apply_global_filter(self.activetree, 'active')
         # Tags
         self.tagtree = None
         self.tagtreeview = None
@@ -198,17 +195,27 @@ class TaskBrowser(GObject.GObject):
         self.tagtree = self.req.get_tag_tree()
         self.tagtreeview = self.tv_factory.tags_treeview(self.tagtree)
         #Tags treeview
-        self.tagtreeview.get_selection().connect('changed', \
+        self.tagtreeview.get_selection().connect('changed',
             self.on_select_tag)
-        self.tagtreeview.connect('button-press-event', \
+        self.tagtreeview.connect('button-press-event',
             self.on_tag_treeview_button_press_event)
-        self.tagtreeview.connect('key-press-event', \
+        self.tagtreeview.connect('key-press-event',
             self.on_tag_treeview_key_press_event)
-        self.tagtreeview.connect('node-expanded', \
+        self.tagtreeview.connect('node-expanded',
             self.on_tag_expanded)
-        self.tagtreeview.connect('node-collapsed', \
+        self.tagtreeview.connect('node-collapsed',
             self.on_tag_collapsed)
         self.sidebar_container.add(self.tagtreeview)
+
+        for path_t in self.config.get("expanded_tags"):
+            #the tuple was stored as a string. we have to reconstruct it
+            path = ()
+            for p in path_t[1:-1].split(","):
+                p = p.strip(" '")
+                path += (p, )
+            if path[-1] == '':
+                path = path[:-1]
+            self.tagtreeview.expand_node(path)
 
         # expanding search tag does not work automatically, request it
         self.expand_search_tag()
@@ -347,22 +354,22 @@ class TaskBrowser(GObject.GObject):
         self.window.connect("destroy", self.quit)
 
         # Active tasks TreeView
-        self.vtree_panes['active'].connect('row-activated', \
+        self.vtree_panes['active'].connect('row-activated',
             self.on_edit_active_task)
-        self.vtree_panes['active'].connect('button-press-event', \
+        self.vtree_panes['active'].connect('button-press-event',
             self.on_task_treeview_button_press_event)
-        self.vtree_panes['active'].connect('key-press-event', \
+        self.vtree_panes['active'].connect('key-press-event',
             self.on_task_treeview_key_press_event)
-        self.vtree_panes['active'].connect('node-expanded', \
+        self.vtree_panes['active'].connect('node-expanded',
             self.on_task_expanded)
-        self.vtree_panes['active'].connect('node-collapsed', \
+        self.vtree_panes['active'].connect('node-collapsed',
             self.on_task_collapsed)
 
         b_signals = BackendSignals()
         b_signals.connect(b_signals.BACKEND_FAILED, self.on_backend_failed)
-        b_signals.connect(b_signals.BACKEND_STATE_TOGGLED, \
+        b_signals.connect(b_signals.BACKEND_STATE_TOGGLED,
                           self.remove_backend_infobar)
-        b_signals.connect(b_signals.INTERACTION_REQUESTED, \
+        b_signals.connect(b_signals.INTERACTION_REQUESTED,
                           self.on_backend_needing_interaction)
         # Selection changes
         self.selection = self.vtree_panes['active'].get_selection()
@@ -402,7 +409,7 @@ class TaskBrowser(GObject.GObject):
 ### HELPER FUNCTIONS ########################################################
     def open_preferences(self, widget):
         self.vmanager.open_preferences(self.config)
-        
+
     def open_plugins(self, widget):
         self.vmanager.configure_plugins()
 
@@ -507,16 +514,6 @@ class TaskBrowser(GObject.GObject):
                 path = path[:-1]
             self.vtree_panes['active'].collapse_node(path)
 
-        for path_t in self.config.get("expanded_tags"):
-            #the tuple was stored as a string. we have to reconstruct it
-            path = ()
-            for p in path_t[1:-1].split(","):
-                p = p.strip(" '")
-                path += (p, )
-            if path[-1] == '':
-                path = path[:-1]
-            self.tagtreeview.expand_node(path)
-
         self.set_view(self.config.get("view"))
 
         def open_task(req, t):
@@ -562,10 +559,10 @@ class TaskBrowser(GObject.GObject):
 
     def set_view(self, viewname):
         if viewname == 'default':
-            self.req.unapply_global_filter(self.activetree,'workview')
+            self.req.unapply_global_filter(self.activetree, 'workview')
             workview = False
         elif viewname == 'workview':
-            self.req.apply_global_filter(self.activetree,'workview')
+            self.req.apply_global_filter(self.activetree, 'workview')
             workview = True
         else:
             raise Exception('Cannot set the view %s' %viewname)
@@ -582,8 +579,8 @@ class TaskBrowser(GObject.GObject):
         if count == 0:
             parenthesis = _("no active tasks")
         else:
-            parenthesis = ngettext("%(tasks)d active task", \
-                                   "%(tasks)d active tasks", \
+            parenthesis = ngettext("%(tasks)d active task",
+                                   "%(tasks)d active tasks",
                                    count) % {'tasks': count}
         self.window.set_title("%s - "%parenthesis + info.NAME)
 
@@ -610,7 +607,6 @@ class TaskBrowser(GObject.GObject):
 ### SIGNAL CALLBACKS ##########################################################
 # Typically, reaction to user input & interactions with the GUI
 #
-
     def on_sort_column_changed(self, model):
         sort_column, sort_order = model.get_sort_column_id()
 
@@ -688,11 +684,11 @@ class TaskBrowser(GObject.GObject):
             self.vtree_panes['closed'] = \
                          self.tv_factory.closed_tasks_treeview(ctree)
                     # Closed tasks TreeView
-            self.vtree_panes['closed'].connect('row-activated', \
+            self.vtree_panes['closed'].connect('row-activated',
                 self.on_edit_done_task)
-            self.vtree_panes['closed'].connect('button-press-event', \
+            self.vtree_panes['closed'].connect('button-press-event',
                 self.on_closed_task_treeview_button_press_event)
-            self.vtree_panes['closed'].connect('key-press-event', \
+            self.vtree_panes['closed'].connect('key-press-event',
                 self.on_closed_task_treeview_key_press_event)
 
             self.closed_selection = self.vtree_panes['closed'].get_selection()
@@ -752,7 +748,7 @@ class TaskBrowser(GObject.GObject):
         colt = self.config.get("collapsed_tasks")
         if tid not in colt:
             colt.append(str(tid))
-    
+
     def on_tag_expanded(self, sender, tag):
         colt = self.config.get("expanded_tags")
         if tag not in colt:
@@ -980,7 +976,7 @@ class TaskBrowser(GObject.GObject):
     def on_delete_tasks(self, widget=None, tid=None):
         #If we don't have a parameter, then take the selection in the treeview
         if not tid:
-            #tid_to_delete is a [project,task] tuple
+            #tid_to_delete is a [project, task] tuple
             tids_todelete = self.get_selected_tasks()
             if not tids_todelete:
                 return
@@ -1110,13 +1106,13 @@ class TaskBrowser(GObject.GObject):
                 task.set_status(Task.STA_DISMISSED)
                 self.close_all_task_editors(uid)
 
-    def apply_filter_on_panes(self, filter_name,refresh=True):
+    def apply_filter_on_panes(self, filter_name, refresh=True):
         """ Apply filters for every pane: active tasks, closed tasks """
         for pane in self.vtree_panes:
             vtree = self.req.get_tasks_tree(name=pane, refresh=False)
             vtree.apply_filter(filter_name, refresh=refresh)
-            
-    def unapply_filter_on_panes(self, filter_name,refresh=True):
+
+    def unapply_filter_on_panes(self, filter_name, refresh=True):
         """ Apply filters for every pane: active tasks, closed tasks """
         for pane in self.vtree_panes:
             vtree = self.req.get_tasks_tree(name=pane, refresh=False)
@@ -1130,11 +1126,11 @@ class TaskBrowser(GObject.GObject):
 
         #When you click on a tag, you want to unselect the tasks
         new_taglist = self.get_selected_tags()
-        
+
         for tagname in self.applied_tags:
             if tagname not in new_taglist:
-                self.unapply_filter_on_panes(tagname,refresh=False)
-        
+                self.unapply_filter_on_panes(tagname, refresh=False)
+
         for tagname in new_taglist:
             if tagname not in self.applied_tags:
                 self.apply_filter_on_panes(tagname)
@@ -1143,7 +1139,7 @@ class TaskBrowser(GObject.GObject):
                 tag = self.req.get_tag(tagname)
                 if tag.is_search_tag():
                     self.quickadd_entry.set_text(tag.get_attribute("query"))
-        
+
         self.applied_tags = new_taglist
 
     def on_taskdone_cursor_changed(self, selection=None):
@@ -1434,7 +1430,7 @@ class TaskBrowser(GObject.GObject):
         infobar = self._new_infobar(backend_id)
         infobar.set_error_code(error_code)
 
-    def on_backend_needing_interaction(self, sender, backend_id, description, \
+    def on_backend_needing_interaction(self, sender, backend_id, description,
                                        interaction_type, callback):
         '''
         Signal callback.
@@ -1481,7 +1477,7 @@ class TaskBrowser(GObject.GObject):
         if not backend or (backend and backend.is_enabled()):
             #remove old infobar related to backend_id, if any
             if self.vbox_toolbars:
-                self.vbox_toolbars.foreach(self.__remove_backend_infobar, \
+                self.vbox_toolbars.foreach(self.__remove_backend_infobar,
                                        backend_id)
 
     def _new_infobar(self, backend_id):

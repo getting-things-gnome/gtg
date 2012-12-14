@@ -37,7 +37,6 @@ from GTG.gtk.backends_dialog.parameters_ui.checkboxui   import CheckBoxUI
 from GTG.gtk.backends_dialog.parameters_ui.pathui       import PathUI
 
 
-
 class ParametersUI(Gtk.VBox):
     '''
     Given a bakcend, this Gtk.VBox populates itself with all the necessary
@@ -58,68 +57,59 @@ class ParametersUI(Gtk.VBox):
 
         #builds a list of widget generators. More precisely, it's a
         # list of tuples: (backend_parameter_name, widget_generator)
-        self.parameter_widgets = ( \
-               ("import-tags", self.UI_generator(ImportTagsUI, \
-                            {"title": _("Import tags"), \
-                             "anybox_text": _("All tags"), \
-                             "somebox_text": _("Just these tags:"), \
-                             "parameter_name": "import-tags"}) \
-               ),\
-               ("attached-tags", self.UI_generator(ImportTagsUI, \
-                            {"title": _("Tags to sync"), \
-                             "anybox_text": _("All tasks"), \
-                             "somebox_text": _("Tasks with these tags:"), \
-                             "parameter_name": "attached-tags"}) \
-               ),\
-               ("path", self.UI_generator(PathUI)), \
-               ("username", self.UI_generator(TextUI, \
+        self.parameter_widgets = (
+               ("import-tags", self.UI_generator(ImportTagsUI,
+                            {"title": _("Import tags"),
+                             "anybox_text": _("All tags"),
+                             "somebox_text": _("Just these tags:"),
+                             "parameter_name": "import-tags"})),
+               ("attached-tags", self.UI_generator(ImportTagsUI,
+                            {"title": _("Tags to sync"),
+                             "anybox_text": _("All tasks"),
+                             "somebox_text": _("Tasks with these tags:"),
+                             "parameter_name": "attached-tags"})),
+               ("path", self.UI_generator(PathUI)),
+               ("username", self.UI_generator(TextUI,
                             {"description": _("Username"),
-                             "parameter_name": "username"})
-               ), \
-               ("password"     , self.UI_generator(PasswordUI)), \
-               ("period"       , self.UI_generator(PeriodUI)), \
-               ("service-url", self.UI_generator(TextUI, \
-                            {"description": _("Service URL"), \
-                             "parameter_name": "service-url"}) \
-               ),\
-               ("import-from-replies", self.UI_generator(CheckBoxUI, \
+                             "parameter_name": "username"})),
+               ("password", self.UI_generator(PasswordUI)),
+               ("period", self.UI_generator(PeriodUI)),
+               ("service-url", self.UI_generator(TextUI,
+                            {"description": _("Service URL"),
+                             "parameter_name": "service-url"})),
+               ("import-from-replies", self.UI_generator(CheckBoxUI,
                             {"text": _("Import tasks from @ replies " + \
-                                                         "directed to you"), \
-                             "parameter": "import-from-replies"}) \
-               ),\
-               ("import-from-direct-messages", self.UI_generator(CheckBoxUI,  \
-                            {"text": _("Import tasks from direct messages"), \
-                             "parameter": "import-from-direct-messages"}) \
-               ),\
-               ("import-from-my-tweets", self.UI_generator(CheckBoxUI, \
-                            {"text": _("Import tasks from your tweets"), \
-                             "parameter": "import-from-my-tweets"}) \
-               ),\
-               ("import-bug-tags", self.UI_generator(CheckBoxUI, \
-                            {"text": _("Tag your GTG tasks with the bug tags"), \
-                             "parameter": "import-bug-tags"}) \
-               ),\
-               ("tag-with-project-name", self.UI_generator(CheckBoxUI, \
+                                                         "directed to you"),
+                             "parameter": "import-from-replies"})),
+               ("import-from-direct-messages", self.UI_generator(CheckBoxUI,
+                            {"text": _("Import tasks from direct messages"),
+                             "parameter": "import-from-direct-messages"})),
+               ("import-from-my-tweets", self.UI_generator(CheckBoxUI,
+                            {"text": _("Import tasks from your tweets"),
+                             "parameter": "import-from-my-tweets"})),
+               ("import-bug-tags", self.UI_generator(CheckBoxUI,
+                           {"text": _("Tag your GTG tasks with the bug tags"),
+                             "parameter": "import-bug-tags"})),
+               ("tag-with-project-name", self.UI_generator(CheckBoxUI,
                             {"text": _("Tag your GTG tasks with the project "
-                                       "targeted by the bug"), \
-                             "parameter": "tag-with-project-name"}) \
-               ),\
-           ) 
+                                       "targeted by the bug"),
+                             "parameter": "tag-with-project-name"})), )
+
     def UI_generator(self, param_type, special_arguments = {}):
         '''A helper function to build a widget type from a template.
-        It passes to the created widget generator a series of common parameters,
-        plus the ones needed to specialize the given template
+        It passes to the created widget generator a series of common
+         parameters, plus the ones needed to specialize the given template
 
         @param param_type: the template to specialize
         @param special_arguments: the arguments used for this particular widget
                                   generator.
 
-        @return function: return a widget generator, not a widget. the widget can
-                          be obtained by calling widget_generator(backend)
+        @return function: return a widget generator, not a widget. the widget
+                           can be obtained by calling widget_generator(backend)
         '''
-        return lambda backend: param_type(req = self.req, \
-                                          backend = backend, \
-                                          width = self.COMMON_WIDTH, \
+        return lambda backend: param_type(req = self.req,
+                                          backend = backend,
+                                          width = self.COMMON_WIDTH,
                                           **special_arguments)
 
     def refresh(self, backend):
@@ -148,6 +138,7 @@ class ParametersUI(Gtk.VBox):
         Saves all the parameters at their current state (the user may have
         modified them)
         '''
+
         def _commit_changes(child, data=None):
             child.commit_changes()
         self.foreach(_commit_changes, None)
