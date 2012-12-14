@@ -9,9 +9,10 @@
     <signal name="configure-event" handler="on_move" swapped="no"/>
     <signal name="size-allocate" handler="on_size_allocate" swapped="no"/>
     <child>
-      <object class="GtkVBox" id="master_vbox">
+      <object class="GtkBox" id="master_vbox">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
+        <property name="orientation">vertical</property>
         <child>
           <object class="GtkMenuBar" id="browser_menu">
             <property name="visible">True</property>
@@ -386,9 +387,10 @@
           </packing>
         </child>
         <child>
-          <object class="GtkVBox" id="vbox_toolbars">
+          <object class="GtkBox" id="vbox_toolbars">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
+            <property name="orientation">vertical</property>
             <child>
               <object class="GtkToolbar" id="task_toolbar">
                 <property name="visible">True</property>
@@ -569,9 +571,10 @@
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <child>
-              <object class="GtkVBox" id="sidebar_vbox">
+              <object class="GtkBox" id="sidebar_vbox">
                 <property name="width_request">75</property>
                 <property name="can_focus">False</property>
+                <property name="orientation">vertical</property>
                 <child>
                   <object class="GtkBox" id="box4">
                     <property name="visible">True</property>
@@ -674,9 +677,10 @@
               </packing>
             </child>
             <child>
-              <object class="GtkVBox" id="main_vbox">
+              <object class="GtkBox" id="main_vbox">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="orientation">vertical</property>
                 <child>
                   <object class="GtkBox" id="quickadd_pane">
                     <property name="visible">True</property>
@@ -809,8 +813,9 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
     <signal name="delete-event" handler="on_about_delete" swapped="no"/>
     <signal name="response" handler="on_about_close" swapped="no"/>
     <child internal-child="vbox">
-      <object class="GtkVBox" id="about_dialog_vbox">
+      <object class="GtkBox" id="about_dialog_vbox">
         <property name="visible">True</property>
+        <property name="orientation">vertical</property>
         <property name="can_focus">False</property>
         <property name="spacing">2</property>
         <child internal-child="action_area">

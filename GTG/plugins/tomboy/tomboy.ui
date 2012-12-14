@@ -7,8 +7,9 @@
     <property name="type_hint">dialog</property>
     <signal name="close" handler="on_InsertNoteDialog_close"/>
     <child internal-child="vbox">
-      <object class="GtkVBox" id="dialog-vbox1">
+      <object class="GtkBox" id="dialog-vbox1">
         <property name="visible">True</property>
+        <property name="orientation">vertical</property>
         <child>
           <object class="GtkLabel" id="label_caption">
             <property name="visible">True</property>
