@@ -1,8 +1,6 @@
 <?xml version="1.0"?>
 <interface>
-  <requires lib="gtk+" version="2.16"/>
-  <!-- interface-naming-policy toplevel-contextual -->
-  <object class="GtkAccelGroup" id="accelgroup1"/>
+  <!-- interface-requires gtk+ 3.0 -->
   <object class="GtkWindow" id="preferences_dialog">
     <property name="border_width">10</property>
     <property name="window_position">center-on-parent</property>

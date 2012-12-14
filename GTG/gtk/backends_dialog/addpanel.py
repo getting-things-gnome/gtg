@@ -24,7 +24,7 @@ from GTG.backends                          import BackendFactory
 from GTG                                   import _, ngettext
 
 
-class AddPanel(gtk.VBox):
+class AddPanel(Gtk.VBox):
     '''
     A VBox filled with gtk widgets to let the user choose a new backend.
     '''
