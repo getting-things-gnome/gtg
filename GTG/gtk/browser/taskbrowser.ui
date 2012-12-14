@@ -21,7 +21,6 @@
               <object class="GtkMenuItem" id="bm_task">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="use_action_appearance">False</property>
                 <property name="label" translatable="yes">_Tasks</property>
                 <property name="use_underline">True</property>
                 <child type="submenu">
@@ -34,7 +33,6 @@
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="tooltip_text" translatable="yes">Create a new task</property>
-                        <property name="use_action_appearance">False</property>
                         <property name="use_underline">True</property>
                         <property name="image">bm_img_task</property>
                         <property name="use_stock">False</property>
@@ -48,7 +46,6 @@
                         <property name="visible">True</property>
                         <property name="sensitive">False</property>
                         <property name="can_focus">False</property>
-                        <property name="use_action_appearance">False</property>
                         <property name="use_underline">True</property>
                         <property name="image">bm_img_subtask</property>
                         <property name="use_stock">False</property>
@@ -62,7 +59,6 @@
                         <property name="visible">True</property>
                         <property name="sensitive">False</property>
                         <property name="can_focus">False</property>
-                        <property name="use_action_appearance">False</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                         <property name="accel_group">accelgroup1</property>
@@ -81,7 +77,6 @@
                         <property name="visible">True</property>
                         <property name="sensitive">False</property>
                         <property name="can_focus">False</property>
-                        <property name="use_action_appearance">False</property>
                         <property name="use_underline">True</property>
                         <property name="image">bm_img_done</property>
                         <property name="use_stock">False</property>
@@ -95,7 +90,6 @@
                         <property name="visible">True</property>
                         <property name="sensitive">False</property>
                         <property name="can_focus">False</property>
-                        <property name="use_action_appearance">False</property>
                         <property name="use_underline">True</property>
                         <property name="image">bm_img_dismiss</property>
                         <property name="use_stock">False</property>
@@ -109,7 +103,6 @@
                         <property name="visible">True</property>
                         <property name="sensitive">False</property>
                         <property name="can_focus">False</property>
-                        <property name="use_action_appearance">False</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                         <property name="accel_group">accelgroup1</property>
@@ -127,7 +120,6 @@
                         <property name="label">gtk-quit</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="use_action_appearance">False</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                         <property name="accel_group">accelgroup1</property>
@@ -142,7 +134,6 @@
               <object class="GtkMenuItem" id="bm_edit">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="use_action_appearance">False</property>
                 <property name="label" translatable="yes">_Edit</property>
                 <property name="use_underline">True</property>
                 <child type="submenu">
@@ -153,7 +144,6 @@
                       <object class="GtkImageMenuItem" id="edit_undo">
                         <property name="label">gtk-undo</property>
                         <property name="can_focus">False</property>
-                        <property name="use_action_appearance">False</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                         <property name="accel_group">accelgroup1</property>
@@ -163,7 +153,6 @@
                       <object class="GtkImageMenuItem" id="edit_redo">
                         <property name="label">gtk-redo</property>
                         <property name="can_focus">False</property>
-                        <property name="use_action_appearance">False</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                         <property name="accel_group">accelgroup1</property>
@@ -178,7 +167,6 @@
                       <object class="GtkMenuItem" id="plugins_mi">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="use_action_appearance">False</property>
                         <property name="label">P_lugins</property>
                         <property name="use_underline">True</property>
                         <signal name="activate" handler="on_edit_plugins_activate" swapped="no"/>
@@ -188,7 +176,6 @@
                       <object class="GtkMenuItem" id="backends_mi">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="use_action_appearance">False</property>
                         <property name="label">_Synchronization Services</property>
                         <property name="use_underline">True</property>
                         <signal name="activate" handler="on_edit_backends_activate" swapped="no"/>
@@ -205,7 +192,6 @@
                         <property name="label">gtk-preferences</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="use_action_appearance">False</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                         <property name="accel_group">accelgroup1</property>
@@ -220,7 +206,6 @@
               <object class="GtkMenuItem" id="menu_view">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="use_action_appearance">False</property>
                 <property name="label" translatable="yes">_View</property>
                 <property name="use_underline">True</property>
                 <child type="submenu">
@@ -231,7 +216,6 @@
                       <object class="GtkCheckMenuItem" id="view_workview">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="use_action_appearance">False</property>
                         <property name="label" translatable="yes">_Work View</property>
                         <property name="use_underline">True</property>
                         <signal name="toggled" handler="on_view_workview_toggled" swapped="no"/>
@@ -247,7 +231,6 @@
                       <object class="GtkCheckMenuItem" id="view_sidebar">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="use_action_appearance">False</property>
                         <property name="label" translatable="yes">_Tags Sidebar</property>
                         <property name="use_underline">True</property>
                         <signal name="toggled" handler="on_view_sidebar_toggled" swapped="no"/>
@@ -257,7 +240,6 @@
                       <object class="GtkCheckMenuItem" id="view_closed">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="use_action_appearance">False</property>
                         <property name="label" translatable="yes">_Closed Tasks Pane</property>
                         <property name="use_underline">True</property>
                         <signal name="toggled" handler="on_view_closed_toggled" swapped="no"/>
@@ -267,7 +249,6 @@
                       <object class="GtkCheckMenuItem" id="view_toolbar">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="use_action_appearance">False</property>
                         <property name="label" translatable="yes">T_oolbar</property>
                         <property name="use_underline">True</property>
                         <signal name="toggled" handler="on_view_toolbar_toggled" swapped="no"/>
@@ -277,7 +258,6 @@
                       <object class="GtkCheckMenuItem" id="view_quickadd">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="use_action_appearance">False</property>
                         <property name="label" translatable="yes">_Quick Add Entry</property>
                         <property name="use_underline">True</property>
                         <signal name="toggled" handler="on_view_quickadd_toggled" swapped="no"/>
@@ -290,7 +270,6 @@
             <child>
               <object class="GtkMenuItem" id="plugin_mi">
                 <property name="can_focus">False</property>
-                <property name="use_action_appearance">False</property>
                 <property name="label" translatable="yes">_Plugins</property>
                 <property name="use_underline">True</property>
                 <child type="submenu">
@@ -305,7 +284,6 @@
               <object class="GtkMenuItem" id="help_mi">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="use_action_appearance">False</property>
                 <property name="label" translatable="yes">_Help</property>
                 <property name="use_underline">True</property>
                 <child type="submenu">
@@ -318,7 +296,6 @@
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="tooltip_text" translatable="yes">Open GTG help</property>
-                        <property name="use_action_appearance">False</property>
                         <property name="image">image7</property>
                         <property name="use_stock">False</property>
                         <property name="accel_group">accelgroup1</property>
@@ -337,7 +314,6 @@
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="tooltip_text" translatable="yes">Help to translate GTG into your language</property>
-                        <property name="use_action_appearance">False</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                         <property name="accel_group">accelgroup1</property>
@@ -350,7 +326,6 @@
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="tooltip_text" translatable="yes">Report a problem to GTG developers</property>
-                        <property name="use_action_appearance">False</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                         <property name="accel_group">accelgroup1</property>
@@ -368,7 +343,6 @@
                         <property name="label">gtk-about</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="use_action_appearance">False</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                         <property name="accel_group">accelgroup1</property>
@@ -399,7 +373,6 @@
                   <object class="GtkToolButton" id="new_task_b">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="use_action_appearance">False</property>
                     <property name="is_important">True</property>
                     <property name="label" translatable="yes">New Task</property>
                     <property name="icon_name">gtg-task-new</property>
@@ -413,7 +386,6 @@
                 <child>
                   <object class="GtkToolButton" id="new_subtask_b">
                     <property name="can_focus">False</property>
-                    <property name="use_action_appearance">False</property>
                     <property name="label" translatable="yes">New Subtask</property>
                     <property name="icon_name">gtg-task-new</property>
                     <signal name="clicked" handler="on_add_subtask" swapped="no"/>
@@ -427,7 +399,6 @@
                   <object class="GtkToolButton" id="edit_b">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="use_action_appearance">False</property>
                     <property name="visible_horizontal">False</property>
                     <property name="visible_vertical">False</property>
                     <property name="label" translatable="yes">Edit</property>
@@ -451,7 +422,6 @@
                 <child>
                   <object class="GtkToolButton" id="Undo">
                     <property name="can_focus">False</property>
-                    <property name="use_action_appearance">False</property>
                     <property name="label" translatable="yes">Undo</property>
                     <property name="stock_id">gtk-undo</property>
                   </object>
@@ -463,7 +433,6 @@
                 <child>
                   <object class="GtkToolButton" id="Redo">
                     <property name="can_focus">False</property>
-                    <property name="use_action_appearance">False</property>
                     <property name="label" translatable="yes">Redo</property>
                     <property name="stock_id">gtk-redo</property>
                   </object>
@@ -487,7 +456,6 @@
                     <property name="visible">True</property>
                     <property name="sensitive">False</property>
                     <property name="can_focus">False</property>
-                    <property name="use_action_appearance">False</property>
                     <property name="is_important">True</property>
                     <property name="label" translatable="yes">Mark as Done</property>
                     <property name="icon_name">gtg-task-done</property>
@@ -503,7 +471,6 @@
                     <property name="visible">True</property>
                     <property name="sensitive">False</property>
                     <property name="can_focus">False</property>
-                    <property name="use_action_appearance">False</property>
                     <property name="label" translatable="yes">Dismiss</property>
                     <property name="icon_name">gtg-task-dismiss</property>
                     <signal name="clicked" handler="on_dismiss_task" swapped="no"/>
@@ -517,7 +484,6 @@
                   <object class="GtkToolButton" id="delete_b">
                     <property name="sensitive">False</property>
                     <property name="can_focus">False</property>
-                    <property name="use_action_appearance">False</property>
                     <property name="label" translatable="yes">Delete</property>
                     <property name="icon_name">edit-delete</property>
                     <signal name="clicked" handler="on_delete_task" swapped="no"/>
@@ -541,7 +507,6 @@
                   <object class="GtkToggleToolButton" id="workview_toggle">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="use_action_appearance">False</property>
                     <property name="is_important">True</property>
                     <property name="label" translatable="yes">Work View</property>
                     <property name="stock_id">gtk-index</property>
@@ -610,7 +575,6 @@
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
-                        <property name="use_action_appearance">False</property>
                         <property name="relief">none</property>
                         <signal name="clicked" handler="on_view_sidebar_toggled" swapped="no"/>
                         <child>
@@ -645,8 +609,6 @@
                       <object class="GtkScrolledWindow" id="sidebar-scroll">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
-                        <property name="hscrollbar_policy">automatic</property>
-                        <property name="vscrollbar_policy">automatic</property>
                         <property name="shadow_type">in</property>
                         <child>
                           <placeholder/>
@@ -695,9 +657,6 @@
                         <property name="invisible_char">●</property>
                         <property name="secondary_icon_stock">gtk-clear</property>
                         <property name="primary_icon_activatable">False</property>
-                        <property name="secondary_icon_activatable">True</property>
-                        <property name="primary_icon_sensitive">True</property>
-                        <property name="secondary_icon_sensitive">True</property>
                         <signal name="changed" handler="on_quickadd_field_changed" swapped="no"/>
                         <signal name="activate" handler="on_quickadd_field_activate" swapped="no"/>
                         <signal name="icon-press" handler="on_quickadd_field_icon_press" swapped="no"/>
@@ -731,7 +690,6 @@
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="hscrollbar_policy">never</property>
-                            <property name="vscrollbar_policy">automatic</property>
                             <child>
                               <placeholder/>
                             </child>
@@ -797,9 +755,10 @@
     <property name="resizable">False</property>
     <property name="window_position">center-on-parent</property>
     <property name="type_hint">dialog</property>
-    <property name="program_name" translatable="yes">Getting Things GNOME!</property>
+    <property name="program_name">Getting Things GNOME!</property>
     <property name="copyright" translatable="yes">Copyright © 2008-2012 Lionel Dricot, Bertrand Rousseau</property>
-    <property name="comments" translatable="yes">GTG is a personal tasks and TODO-list items organizer for the GNOME desktop environment.</property>
+    <property name="comments" translatable="yes">GTG is a personal tasks and TODO-list items
+organizer for the GNOME desktop environment.</property>
     <property name="website_label" translatable="yes">GTG website</property>
     <property name="license" translatable="yes">Getting Things GNOME! is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 3 of the License, or (at your option) any later version.
 
@@ -815,11 +774,11 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
     <child internal-child="vbox">
       <object class="GtkBox" id="about_dialog_vbox">
         <property name="visible">True</property>
-        <property name="orientation">vertical</property>
         <property name="can_focus">False</property>
+        <property name="orientation">vertical</property>
         <property name="spacing">2</property>
         <child internal-child="action_area">
-          <object class="GtkHButtonBox" id="dialog-action_area2">
+          <object class="GtkButtonBox" id="dialog-action_area2">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="layout_style">end</property>
@@ -867,7 +826,6 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
         <property name="label">gtk-edit</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="use_action_appearance">False</property>
         <property name="use_underline">True</property>
         <property name="use_stock">True</property>
         <property name="accel_group">accelgroup1</property>
@@ -885,7 +843,6 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
         <property name="label" translatable="yes">Mark as Not Done</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="use_action_appearance">False</property>
         <property name="use_underline">True</property>
         <property name="image">ctcm_img_mark_not_done</property>
         <property name="use_stock">False</property>
@@ -898,7 +855,6 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
         <property name="label" translatable="yes">Und_ismiss</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="use_action_appearance">False</property>
         <property name="use_underline">True</property>
         <property name="image">tcm_img_undismiss</property>
         <property name="use_stock">False</property>
@@ -911,7 +867,6 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
         <property name="label">gtk-delete</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="use_action_appearance">False</property>
         <property name="use_underline">True</property>
         <property name="use_stock">True</property>
         <property name="accel_group">accelgroup1</property>
@@ -976,7 +931,6 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
         <property name="label" translatable="yes">Add a subtask</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="use_action_appearance">False</property>
         <property name="use_underline">True</property>
         <property name="image">tcm_img_add_subtask</property>
         <property name="use_stock">False</property>
@@ -989,7 +943,6 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
         <property name="label">gtk-edit</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="use_action_appearance">False</property>
         <property name="use_underline">True</property>
         <property name="use_stock">True</property>
         <property name="accel_group">accelgroup1</property>
@@ -1007,7 +960,6 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
         <property name="label" translatable="yes">Mark as _Done</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="use_action_appearance">False</property>
         <property name="use_underline">True</property>
         <property name="image">tcm_img_mark_done</property>
         <property name="use_stock">False</property>
@@ -1020,7 +972,6 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
         <property name="label" translatable="yes">D_ismiss</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="use_action_appearance">False</property>
         <property name="use_underline">True</property>
         <property name="image">tcm_img_dismiss</property>
         <property name="use_stock">False</property>
@@ -1033,7 +984,6 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
         <property name="label">gtk-delete</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="use_action_appearance">False</property>
         <property name="use_underline">True</property>
         <property name="use_stock">True</property>
         <property name="accel_group">accelgroup1</property>
@@ -1051,7 +1001,6 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
         <property name="label" translatable="yes">_Set Start Date</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="use_action_appearance">False</property>
         <property name="use_underline">True</property>
         <property name="use_stock">False</property>
         <child type="submenu">
@@ -1063,7 +1012,6 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
                 <property name="label" translatable="yes">T_oday</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="use_action_appearance">False</property>
                 <property name="use_underline">True</property>
                 <property name="use_stock">False</property>
                 <signal name="activate" handler="on_mark_as_started" swapped="no"/>
@@ -1074,7 +1022,6 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
                 <property name="label" translatable="yes">_Tomorrow</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="use_action_appearance">False</property>
                 <property name="use_underline">True</property>
                 <property name="use_stock">False</property>
                 <signal name="activate" handler="on_start_for_tomorrow" swapped="no"/>
@@ -1085,7 +1032,6 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
                 <property name="label" translatable="yes">Next _Week</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="use_action_appearance">False</property>
                 <property name="use_underline">True</property>
                 <property name="use_stock">False</property>
                 <signal name="activate" handler="on_start_for_next_week" swapped="no"/>
@@ -1096,7 +1042,6 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
                 <property name="label" translatable="yes">Next _Month</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="use_action_appearance">False</property>
                 <property name="use_underline">True</property>
                 <property name="use_stock">False</property>
                 <signal name="activate" handler="on_start_for_next_month" swapped="no"/>
@@ -1107,7 +1052,6 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
                 <property name="label" translatable="yes">Next _Year</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="use_action_appearance">False</property>
                 <property name="use_underline">True</property>
                 <property name="use_stock">False</property>
                 <signal name="activate" handler="on_start_for_next_year" swapped="no"/>
@@ -1124,7 +1068,6 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
                 <property name="label" translatable="yes">_Clear Start Date</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="use_action_appearance">False</property>
                 <property name="use_underline">True</property>
                 <property name="use_stock">False</property>
                 <signal name="activate" handler="on_start_clear" swapped="no"/>
@@ -1139,7 +1082,6 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
         <property name="label" translatable="yes">Set Due Date</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="use_action_appearance">False</property>
         <property name="use_underline">True</property>
         <property name="use_stock">False</property>
         <child type="submenu">
@@ -1151,7 +1093,6 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
                 <property name="label" translatable="yes">T_oday</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="use_action_appearance">False</property>
                 <property name="use_underline">True</property>
                 <property name="use_stock">False</property>
                 <signal name="activate" handler="on_set_due_today" swapped="no"/>
@@ -1162,7 +1103,6 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
                 <property name="label" translatable="yes">_Tomorrow</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="use_action_appearance">False</property>
                 <property name="use_underline">True</property>
                 <property name="use_stock">False</property>
                 <signal name="activate" handler="on_set_due_tomorrow" swapped="no"/>
@@ -1173,7 +1113,6 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
                 <property name="label" translatable="yes">Next _Week</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="use_action_appearance">False</property>
                 <property name="use_underline">True</property>
                 <property name="use_stock">False</property>
                 <signal name="activate" handler="on_set_due_next_week" swapped="no"/>
@@ -1184,7 +1123,6 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
                 <property name="label" translatable="yes">Next _Month</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="use_action_appearance">False</property>
                 <property name="use_underline">True</property>
                 <property name="use_stock">False</property>
                 <signal name="activate" handler="on_set_due_next_month" swapped="no"/>
@@ -1195,7 +1133,6 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
                 <property name="label" translatable="yes">Next _Year</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="use_action_appearance">False</property>
                 <property name="use_underline">True</property>
                 <property name="use_stock">False</property>
                 <signal name="activate" handler="on_set_due_next_year" swapped="no"/>
@@ -1212,7 +1149,6 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
                 <property name="label" translatable="yes">_Now</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="use_action_appearance">False</property>
                 <property name="use_underline">True</property>
                 <property name="use_stock">False</property>
                 <signal name="activate" handler="on_set_due_now" swapped="no"/>
@@ -1223,7 +1159,6 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
                 <property name="label" translatable="yes">_Soon</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="use_action_appearance">False</property>
                 <property name="use_underline">True</property>
                 <property name="use_stock">False</property>
                 <signal name="activate" handler="on_set_due_soon" swapped="no"/>
@@ -1234,7 +1169,6 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
                 <property name="label" translatable="yes">_Someday</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="use_action_appearance">False</property>
                 <property name="use_underline">True</property>
                 <property name="use_stock">False</property>
                 <signal name="activate" handler="on_set_due_someday" swapped="no"/>
@@ -1251,7 +1185,6 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
                 <property name="label" translatable="yes">_Clear Due Date</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="use_action_appearance">False</property>
                 <property name="use_underline">True</property>
                 <property name="use_stock">False</property>
                 <signal name="activate" handler="on_set_due_clear" swapped="no"/>
@@ -1272,7 +1205,6 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
         <property name="label" translatable="yes">Modify Tags...</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="use_action_appearance">False</property>
         <property name="image">image3</property>
         <property name="use_stock">False</property>
         <signal name="activate" handler="on_modify_tags" swapped="no"/>
