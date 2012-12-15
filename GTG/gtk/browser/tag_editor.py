@@ -261,7 +261,8 @@ class TagEditor(Gtk.Window): # pylint: disable-msg=R0904
         self.tc_cc_align = Gtk.Alignment.new(0.5, 0.5, 0, 0)
         self.tc_vbox.pack_start(self.tc_cc_align, True, True, 0)
         self.tc_cc_align.set_padding(15, 15, 10, 10)
-        self.tc_cc_colsel = SimpleColorSelector()
+        #self.tc_cc_colsel = SimpleColorSelector()
+        self.tc_cc_colsel = Gtk.ColorChooserWidget()
         self.tc_cc_align.add(self.tc_cc_colsel)
         # Icon selector
         self.tag_icon_selector = TagIconSelector()
@@ -277,8 +278,10 @@ class TagEditor(Gtk.Window): # pylint: disable-msg=R0904
             self.tn_entry.connect('changed', self.on_tn_entry_changed)
         self.tn_cb_clicked_hid = self.tn_cb.connect('clicked', \
             self.on_tn_cb_clicked)
-        self.tc_cc_colsel.connect('color-changed', self.on_tc_colsel_changed)
-        self.tc_cc_colsel.connect('color-added', self.on_tc_colsel_added)
+        #FIXME
+        #self.tc_cc_colsel.connect('color-changed', self.on_tc_colsel_changed)
+        #self.tc_cc_colsel.connect('color-added', self.on_tc_colsel_added)
+        self.tc_cc_colsel.connect('color-activated', self.on_tc_colsel_activated)
         self.connect('delete-event', self.on_close)
 
         # allow fast closing by Escape key
@@ -312,7 +315,10 @@ class TagEditor(Gtk.Window): # pylint: disable-msg=R0904
         self.tn_entry.set_icon_from_stock(Gtk.EntryIconPosition.SECONDARY,
             None)
         # Color selection
-        self.tc_cc_colsel.unselect_color()
+        #FIXME
+        #self.tc_cc_colsel.unselect_color()
+        self.tc_cc_colsel.set_use_alpha(False)
+        #self.tc_cc_colsel.set_rgba(self.tc_cc_colsel, None)
         # Custom colors
         self.custom_colors = list(self.config.get('custom_colors'))
         if len(self.custom_colors) > 0:
@@ -453,6 +459,19 @@ class TagEditor(Gtk.Window): # pylint: disable-msg=R0904
         """Callback: update the tag color depending on the current color
         selection"""
         color = self.tc_cc_colsel.get_selected_color()
+        if self.tag is not None:
+            if color is not None:
+                self.tag.set_attribute('color', color)
+            else:
+                self.tag.del_attribute('color')
+
+    def on_tc_colsel_activated(self, widget, color): # pylint: disable-msg=W0613
+        """Callback: update the tag color depending on the current color
+        selection"""
+        print "activated", widget, color, " <--- ignoring for now"
+        return
+        #color = self.tc_cc_colsel.get_rgba().to_color()
+        color = color.to_color()
         if self.tag is not None:
             if color is not None:
                 self.tag.set_attribute('color', color)
