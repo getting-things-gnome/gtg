@@ -41,7 +41,7 @@ class TheIndicator(Borg):
         super(TheIndicator, self).__init__()
         if not hasattr(self, "_indicator"):
             try:
-                self._indicator = appindicator.Indicator( \
+                self._indicator = appindicator.Indicator(
                               "gtg",
                               "indicator-messages",
                                appindicator.CATEGORY_APPLICATION_STATUS)
@@ -126,7 +126,6 @@ class IconIndicator:
                        button, timestamp, icon)
 
 
-
 def _due_within(task, danger_zone):
     """
     Determine if a task is the danger zone.
@@ -203,7 +202,6 @@ class NotificationArea:
     PLUGIN_NAME = "notification_area"
     MAX_TITLE_LEN = 30
     MAX_ITEMS = 10
-
 
     def __init__(self):
         self._indicator = IconIndicator()
@@ -302,7 +300,7 @@ class NotificationArea:
 
         self.__tasks_menu = SortedLimitedMenu(self.MAX_ITEMS,
                             menu, menu_top_length)
-        
+
         self._indicator.activate(self.__show_browser, menu)
 
     def __init_attention(self):
@@ -311,7 +309,7 @@ class NotificationArea:
         # Convention: if danger zone is <=0, disable attention
         # Fallback: if there is no indicator we pass the status icon instead
         if self.preferences['danger_zone'] > 0:
-            self.__attention = _Attention( \
+            self.__attention = _Attention(
                 self.preferences['danger_zone'],
                 self._indicator,
                 self.__tree_att,

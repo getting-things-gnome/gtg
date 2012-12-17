@@ -115,7 +115,8 @@ class pluginUrgencyColor:
         self.spinbutton_reddays = self.builder.get_object('spinbutton_reddays')
 
         #   Colorbutton - OVERDUE
-        self.colorbutton_overdue = self.builder.get_object('colorbutton_overdue')
+        self.colorbutton_overdue = self.builder.get_object(
+                                                         'colorbutton_overdue')
 
         #   Colorbutton - HIGH
         self.colorbutton_high = self.builder.get_object('colorbutton_high')
@@ -187,7 +188,7 @@ class pluginUrgencyColor:
         self.prefs_update_widgets()
 
     def prefs_load(self):
-        data = self._plugin_api.load_configuration_object( \
+        data = self._plugin_api.load_configuration_object(
             self.PLUGIN_NAME,
             'preferences')
         if not data or not isinstance(data, dict):
@@ -197,9 +198,9 @@ class pluginUrgencyColor:
             # This is a dirty fix and thus should be removed in a
             # distant future, when nobody has "red", "yellow" or "green"
             # settings
-            namepairs = {'red':'high','yellow':'normal','green':'low'}
-            for key,val in data.iteritems():
-                for oldname,newname in namepairs.iteritems():
+            namepairs = {'red': 'high', 'yellow': 'normal', 'green': 'low'}
+            for key, val in data.iteritems():
+                for oldname, newname in namepairs.iteritems():
                     if key == "color_"+oldname:
                         data['color_'+newname] = data.pop(key)
             # Add new preferences where not present
@@ -208,9 +209,8 @@ class pluginUrgencyColor:
                     data[setting] = self.DEFAULT_PREFS[setting]
             self._pref_data = dict(data)
 
-
     def prefs_store(self):
-        self._plugin_api.save_configuration_object( \
+        self._plugin_api.save_configuration_object(
             self.PLUGIN_NAME,
             'preferences',
             self._pref_data)
