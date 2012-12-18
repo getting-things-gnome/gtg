@@ -15,6 +15,7 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import gtk
+from GTG.tools.dates import Date
 
 class notToday:
 
@@ -25,6 +26,7 @@ class notToday:
 
     def activate(self, plugin_api):
         self.plugin_api = plugin_api
+        self.req = self.plugin_api.get_requester()
         self._init_gtk()
         self.plugin_api.set_active_selection_changed_callback(self.selection_changed)
 
@@ -34,8 +36,10 @@ class notToday:
         
         
     def mark_not_today(self,button):
-        print "now we need to select tasks:"
-        print self.plugin_api.get_selected()
+        start_date = Date.parse("tomorrow")
+        for tid in self.plugin_api.get_selected():
+            task = self.req.get_task(tid)
+            task.set_start_date(start_date)
         
     def selection_changed(self,selection):
         if selection.count_selected_rows() > 0:
