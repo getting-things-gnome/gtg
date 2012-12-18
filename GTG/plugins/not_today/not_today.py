@@ -16,6 +16,7 @@
 
 import gtk
 from GTG.tools.dates import Date
+from GTG                import _
 
 class notToday:
 
@@ -56,7 +57,7 @@ class notToday:
         self.tb_button.set_sensitive(False)
         self.tb_button.set_icon_name("document-revert")
         self.tb_button.set_is_important(True)
-        self.tb_button.set_label("Do it tomorrow")
+        self.tb_button.set_label(_("Do it tomorrow"))
         self.tb_button.connect('clicked', self.mark_not_today)
         self.tb_button.show()
         self.plugin_api.add_toolbar_item(self.tb_button)
