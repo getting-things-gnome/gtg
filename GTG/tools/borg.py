@@ -17,7 +17,6 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-
 class Borg(object):
     """
     This pattern ensures that all instances of a particular class share
@@ -25,6 +24,6 @@ class Borg(object):
     """
 
     _borg_state = {}
-    
+
     def __init__(self):
         self.__dict__ = self._borg_state

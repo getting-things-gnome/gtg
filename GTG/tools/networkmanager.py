@@ -25,13 +25,14 @@ API spec: http://projects.gnome.org/NetworkManager/developers/api/09/spec.html
 
 import dbus
 
-# A network device is connected, with global network connectivity. 
+# A network device is connected, with global network connectivity.
 NM_STATE_CONNECTED_GLOBAL = 70
+
 
 def is_connection_up():
     """ Returns True if GTG can access the Internet """
     bus = dbus.SystemBus()
-    proxy = bus.get_object('org.freedesktop.NetworkManager', 
+    proxy = bus.get_object('org.freedesktop.NetworkManager',
                             '/org/freedesktop/NetworkManager')
     network_manager = dbus.Interface(proxy, 'org.freedesktop.NetworkManager')
 

@@ -120,7 +120,8 @@ class Date(object):
                         value = str(value.lower())
                         self._parse_init_value(LOOKUP[value])
                     except KeyError:
-                        raise ValueError("Unknown value for date: '%s'" % value)
+                        raise ValueError("Unknown value for date: '%s'" \
+                                                                     % value)
         elif isinstance(value, int):
             self._fuzzy = value
         else:
