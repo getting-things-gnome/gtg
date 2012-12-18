@@ -21,15 +21,19 @@
 TaskClipboard allows to cut/copy the content of a TaskView accross multiples
 taskeditors, preserving subtasks
 """
+
+
 class TaskClipboard():
-    def __init__(self,req):
+
+    def __init__(self, req):
         self.description = None
         self.content = []
         self.req = req
-        
+
     """"take two gtk.TextIter as parameter and copy the
     """
-    def copy(self,start,stop,bullet=None):
+
+    def copy(self, start, stop, bullet=None):
         self.clear()
         #Now, we take care of the normal, cross application clipboard
         text = start.get_text(stop)
@@ -39,7 +43,7 @@ class TaskClipboard():
             self.description = newtext
         elif text:
             self.description = text
-        
+
         end_line = start.copy()
         #we take line after line in the selection
         nextline = True
@@ -49,7 +53,7 @@ class TaskClipboard():
             #we want to detect subtasks in the selection
             tags = end_line.get_tags()+end_line.get_toggled_tags(False)
             is_subtask = False
-            for ta in tags :
+            for ta in tags:
                 if (ta.get_data('is_subtask')):
                     is_subtask = True
                     tid = ta.get_data('child')
@@ -59,7 +63,8 @@ class TaskClipboard():
                     self.content.append(['subtask', tid])
             if not is_subtask:
                 if end_line.get_line() < stop.get_line():
-                    self.content.append(['text', "%s\n" %start.get_text(end_line)])
+                    self.content.append(['text', "%s\n" %\
+                                              start.get_text(end_line)])
                 else:
                     self.content.append(['text', start.get_text(stop)])
             end_line.forward_char()
@@ -67,10 +72,10 @@ class TaskClipboard():
 
     def paste_text(self):
         return self.description
-        
+
     def paste(self):
         return self.content
-    
+
     def clear(self):
         self.descriptiion = None
         self.content = []

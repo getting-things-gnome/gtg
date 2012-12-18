@@ -24,7 +24,6 @@ Contains TwoKeyDict, a Dictionary which also has a secondary key
 from GTG.tools.bidict import BiDict
 
 
-
 class TwoKeyDict(object):
     '''
     It's a standard Dictionary with a secondary key.
@@ -34,10 +33,9 @@ class TwoKeyDict(object):
         twokey['2'] ==> 'two'
         twokey['II'] ==> 'two'
     You can also request the other key, given one.
-    Function calls start with _ because you'll probably want to rename them when
-    you use this dictionary, for the sake of clarity.
+    Function calls start with _ because you'll probably want to rename them
+     when you use this dictionary, for the sake of clarity.
     '''
-
 
     def __init__(self, *triplets):
         '''
@@ -120,7 +118,7 @@ class TwoKeyDict(object):
     def _get_all_primary_keys(self):
         '''
         Returns all primary keys
-        
+
         @returns list: list of all primary keys
         '''
         return self._key_to_key_bidict._get_all_first()
@@ -128,8 +126,7 @@ class TwoKeyDict(object):
     def _get_all_secondary_keys(self):
         '''
         Returns all secondary keys
-        
+
         @returns list: list of all secondary keys
         '''
         return self._key_to_key_bidict._get_all_second()
-
