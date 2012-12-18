@@ -2,11 +2,11 @@
 # -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
 # Getting Things GNOME! - a personal organizer for the GNOME desktop
-# Copyright (c) 2008-2012 - Lionel Dricot & Bertrand Rousseau
+# Copyright(c) 2008-2012 - Lionel Dricot & Bertrand Rousseau
 #
 # This program is free software: you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
-# Foundation, either version 3 of the License, or (at your option) any later
+# Foundation, either version 3 of the License, or(at your option) any later
 # version.
 #
 # This program is distributed in the hope that it will be useful, but WITHOUT
@@ -29,15 +29,15 @@ from GTG import info
 
 ### CONSTANTS ################################################################
 
-DATA_DIR        = "share/gtg"
-HELP_DIR        = "share/help"
+DATA_DIR = "share/gtg"
+HELP_DIR = "share/help"
 GLOBAL_ICON_DIR = "share/icons/hicolor"
 
 ### TOOLS ####################################################################
 
 def create_icon_list():
     fileList = []
-    rootdir  = "data/icons"
+    rootdir = "data/icons"
     for root, subFolders, files in os.walk(rootdir):
         dirList = []
         for file in files:
@@ -48,9 +48,10 @@ def create_icon_list():
             fileList.append((os.path.join(DATA_DIR, newroot), dirList))
     return fileList
 
+
 def create_userdoc_list():
     fileList = []
-    rootdir  = "doc/userdoc"
+    rootdir = "doc/userdoc"
     for root, subFolders, files in os.walk(rootdir):
         dirList = []
         for file in files:
@@ -62,9 +63,10 @@ def create_userdoc_list():
                 newroot = root.replace(prefix, "")
             else:
                 newroot = ""
-            newroot = os.path.join( HELP_DIR, comps[2], "gtg", newroot)
+            newroot = os.path.join(HELP_DIR, comps[2], "gtg", newroot)
             fileList.append((newroot, dirList))
     return fileList
+
 
 def create_data_files():
     data_files = []
@@ -72,15 +74,15 @@ def create_data_files():
     icons = create_icon_list()
     data_files.extend(icons)
     # gtg .desktop icon
-    data_files.append(('share/icons/hicolor/16x16/apps', \
+    data_files.append(('share/icons/hicolor/16x16/apps',
                        ['data/icons/hicolor/16x16/apps/gtg.png']))
-    data_files.append(('share/icons/hicolor/22x22/apps', \
+    data_files.append(('share/icons/hicolor/22x22/apps',
                        ['data/icons/hicolor/22x22/apps/gtg.png']))
-    data_files.append(('share/icons/hicolor/24x24/apps', \
+    data_files.append(('share/icons/hicolor/24x24/apps',
                        ['data/icons/hicolor/24x24/apps/gtg.png']))
-    data_files.append(('share/icons/hicolor/32x32/apps', \
+    data_files.append(('share/icons/hicolor/32x32/apps',
                        ['data/icons/hicolor/32x32/apps/gtg.png']))
-    data_files.append(('share/icons/hicolor/scalable/apps', \
+    data_files.append(('share/icons/hicolor/scalable/apps',
                        ['data/icons/hicolor/scalable/apps/gtg.svg']))
     # documentation
     helpfiles = create_userdoc_list()
@@ -88,14 +90,15 @@ def create_data_files():
     # misc
     data_files.append(('share/applications', ['gtg.desktop']))
     data_files.append(('share/dbus-1/services', ['org.gnome.GTG.service']))
-    data_files.append(('share/man/man1', ['doc/gtg.1', 'doc/gtcli.1', 'doc/gtg_new_task.1']))
+    data_files.append(('share/man/man1',
+                       ['doc/gtg.1', 'doc/gtcli.1', 'doc/gtg_new_task.1']))
 
     # bash completion
     data_files.append(('share/gtg/', ['gtcli_bash_completion']))
     return data_files
 
 
-#### TRANSLATIONS (from pyroom setup.py) ######################################
+#### TRANSLATIONS(from pyroom setup.py) ######################################
 
 PO_DIR = 'po'
 MO_DIR = os.path.join('build', 'po')
@@ -134,13 +137,13 @@ class InstallData(install_data):
 author = 'The GTG Team'
 
 setup(
-  name         = 'gtg',
-  version      = info.VERSION,
-  url          = info.URL,
-  author       = author,
+  name = 'gtg',
+  version = info.VERSION,
+  url = info.URL,
+  author = author,
   author_email = info.EMAIL,
-  description  = info.SHORT_DESCRIPTION,
-  packages     = [
+  description = info.SHORT_DESCRIPTION,
+  packages = [
     'GTG',
     'GTG.backends',
     'GTG.backends.rtm',
@@ -213,9 +216,12 @@ setup(
     'GTG.plugins.hamster': ['prefs.ui'],
     'GTG.plugins.task_reaper': ['reaper.ui'],
     'GTG.plugins.notification_area': ['notification_area.ui',
-                            './data/icons/hicolor/22x22/apps/gtg_need_attention.png',
-                            './data/icons/ubuntu-mono-dark/22x22/apps/gtg_need_attention.svg',
-                            './data/icons/ubuntu-mono-light/22x22/apps/gtg_need_attention.svg',
+                            './data/icons/hicolor/22x22/apps/gtg_need_attenti\
+                                                                      on.png',
+                            './data/icons/ubuntu-mono-dark/22x22/apps/\
+                                                      gtg_need_attention.svg',
+                            './data/icons/ubuntu-mono-light/22x22/apps/\
+                                                      gtg_need_attention.svg',
                             ],
     'GTG.plugins.urgency_color': ['preferences.ui'],
    },
