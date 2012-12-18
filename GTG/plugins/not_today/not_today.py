@@ -24,7 +24,6 @@ class notToday:
         self.tb_button = None
 
     def activate(self, plugin_api):
-        """ Loads saved preferences """
         self.plugin_api = plugin_api
         self._init_gtk()
 
@@ -33,19 +32,14 @@ class notToday:
         self._gtk_deactivate()
         
         
-    def mark_not_today(self,a):
-        print "now we need to select tasks: %s" %a
+    def mark_not_today(self,button):
+        print "now we need to select tasks:"
+        print self.plugin_api.get_selected()
         
         
 ## GTK FUNCTIONS ##############################################################
     def _init_gtk(self):
         """ Initialize all the GTK widgets """
-#        self.menu_entry = False
-#        self.toolbar_entry = False
-
-#        self.menu_item = gtk.MenuItem(_("Not do the selected tasks today"))
-#        self.menu_item.connect('activate', self.mark_not_today)
-#        self.menu_item.show()
 
         self.tb_button = gtk.ToolButton()
         self.tb_button.set_icon_name("document-revert")

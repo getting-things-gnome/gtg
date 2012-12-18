@@ -96,6 +96,15 @@ class PluginAPI:
         Returns a Browser or an Editor
         '''
         return self.__ui
+        
+    def get_selected(self):
+        '''
+        Returns the selected tasks in the browser or the task ID if the editor
+        '''
+        if self.is_editor():
+            return self.__task_id
+        else:
+            return self.__view_manager.browser.get_selected_tasks()
 
 #=== Changing the UI =========================================================
     def add_menu_item(self, item):
