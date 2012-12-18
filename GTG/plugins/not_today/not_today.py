@@ -26,6 +26,7 @@ class notToday:
     def activate(self, plugin_api):
         self.plugin_api = plugin_api
         self._init_gtk()
+        self.plugin_api.set_active_selection_changed_callback(self.selection_changed)
 
     def deactivate(self, plugin_api): # pylint: disable-msg=W0613
         """ Removes the gtk widgets before quitting """
@@ -36,12 +37,19 @@ class notToday:
         print "now we need to select tasks:"
         print self.plugin_api.get_selected()
         
+    def selection_changed(self,selection):
+        if selection.count_selected_rows() > 0:
+            self.tb_button.set_sensitive(True)
+        else:
+            self.tb_button.set_sensitive(False)
+        
         
 ## GTK FUNCTIONS ##############################################################
     def _init_gtk(self):
         """ Initialize all the GTK widgets """
 
         self.tb_button = gtk.ToolButton()
+        self.tb_button.set_sensitive(False)
         self.tb_button.set_icon_name("document-revert")
         self.tb_button.set_is_important(True)
         self.tb_button.set_label("Do it tomorrow")
