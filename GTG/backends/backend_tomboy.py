@@ -27,23 +27,22 @@ from GTG                         import _
 from GTG.backends.generictomboy  import GenericTomboy
 
 
-
 class Backend(GenericTomboy):
     '''
     A simple class that adds some description to the GenericTomboy class.
     It's done this way since Tomboy and Gnote backends have different
     descriptions and Dbus addresses but the same backend behind them.
     '''
-    
+
 
     _general_description = { \
-        GenericBackend.BACKEND_NAME:       "backend_tomboy", \
+        GenericBackend.BACKEND_NAME: "backend_tomboy", \
         GenericBackend.BACKEND_HUMAN_NAME: _("Tomboy"), \
-        GenericBackend.BACKEND_AUTHORS:    ["Luca Invernizzi"], \
-        GenericBackend.BACKEND_TYPE:       GenericBackend.TYPE_READWRITE, \
+        GenericBackend.BACKEND_AUTHORS: ["Luca Invernizzi"], \
+        GenericBackend.BACKEND_TYPE: GenericBackend.TYPE_READWRITE, \
         GenericBackend.BACKEND_DESCRIPTION: \
-            _("This synchronization service can synchronize all or part of your Tomboy"
-              " notes in GTG. If you decide it would be handy to"
+            _("This synchronization service can synchronize all or part of"
+              " your Tomboy notes in GTG. If you decide it would be handy to"
               " have one of your notes in your TODO list, just tag it "
               "with the tag you have chosen (you'll configure it later"
               "), and it will appear in GTG."),\

@@ -52,8 +52,8 @@ class Backend(PeriodicImportBackend):
     _general_description = { \
         GenericBackend.BACKEND_NAME: "backend_twitter", \
         GenericBackend.BACKEND_HUMAN_NAME: _("Twitter"), \
-        GenericBackend.BACKEND_AUTHORS:    ["Luca Invernizzi"], \
-        GenericBackend.BACKEND_TYPE:       GenericBackend.TYPE_IMPORT, \
+        GenericBackend.BACKEND_AUTHORS: ["Luca Invernizzi"], \
+        GenericBackend.BACKEND_TYPE: GenericBackend.TYPE_IMPORT, \
         GenericBackend.BACKEND_DESCRIPTION: \
             _("Imports your twitter  messages into your GTG " + \
               "tasks. You can choose to either import all your " + \
@@ -81,10 +81,10 @@ class Backend(PeriodicImportBackend):
             GenericBackend.PARAM_TYPE: GenericBackend.TYPE_BOOL, \
             GenericBackend.PARAM_DEFAULT_VALUE: True, },
         }
-    
+
     CONSUMER_KEY = "UDRov5YF3ZUinftvVBoeyA"
     #This is supposed to be secret (because of OAuth), but that's not possible.
-    #A xAuth alternative is possible, but it's enabled on mail request if the 
+    #A xAuth alternative is possible, but it's enabled on mail request if the
     # twitter staff considers your application worthy of such honour.
     CONSUMER_SECRET = "BApykCPskoZ0g4QpVS7yC7TrZntm87KruSeJwvqTg"
 
@@ -103,7 +103,7 @@ class Backend(PeriodicImportBackend):
         self.auth_path = os.path.join('backends/twitter/', "auth-%s" %\
                                      self.get_id())
         self.auth_params = self._load_pickled_file(self.auth_path, None)
-        self.authenticated  = False
+        self.authenticated = False
         self.authenticating = False
 
     def save_state(self):
@@ -116,7 +116,6 @@ class Backend(PeriodicImportBackend):
 ###############################################################################
 ### IMPORTING TWEETS ##########################################################
 ###############################################################################
-
     def do_periodic_import(self):
         '''
         See GenericBackend for an explanation of this function.
@@ -158,11 +157,11 @@ class Backend(PeriodicImportBackend):
                                         lambda tweet_id: True, \
                                         is_syncable)
         Log.debug("processing tweet (%s, %s)" % (action, is_syncable))
-        
+
         self.cancellation_point()
         if action == None or action == SyncEngine.UPDATE:
             return
-        
+
         elif action == SyncEngine.ADD:
             tid = str(uuid.uuid4())
             task = self.datastore.task_factory(tid)
@@ -181,7 +180,6 @@ class Backend(PeriodicImportBackend):
 
         self.save_state()
 
-
     def _populate_task(self, task, message):
         '''
         Given a twitter message and a GTG task, fills the task with the content
@@ -198,7 +196,7 @@ class Backend(PeriodicImportBackend):
             task.add_tag("@" + user)
 
         #setting title, text and tags
-        text = message.text    
+        text = message.text
         #convert #hastags to @tags
         matches = re.finditer("(?<![^|\s])(#\w+)", text)
         for g in matches:
@@ -228,7 +226,7 @@ class Backend(PeriodicImportBackend):
             tags = set(Backend._extract_tags_from_text(tweet.text))
             return tags.intersection(set(self._parameters["import-tags"])) \
                     != set()
-    
+
     @staticmethod
     def _extract_tags_from_text(text):
         '''
@@ -239,7 +237,6 @@ class Backend(PeriodicImportBackend):
 ###############################################################################
 ### AUTHENTICATION ############################################################
 ###############################################################################
-
     def _start_authentication(self):
         '''
         Fist step of authentication: opening the browser with the oauth page
@@ -250,8 +247,8 @@ class Backend(PeriodicImportBackend):
         #      However, twitter is moving to oauth only authentication, while
         #      identica uses standard login. For now, I'll keep the backends
         #      separate, using two different libraries (Invernizzi)
-                #auth = tweepy.BasicAuthHandler(username, password, 
-                #host ='identi.ca', api_root = '/api', 
+                #auth = tweepy.BasicAuthHandler(username, password,
+                #host ='identi.ca', api_root = '/api',
                 #secure=True)
         self.auth = tweepy.OAuthHandler(self.CONSUMER_KEY, \
                                         self.CONSUMER_SECRET)
@@ -303,7 +300,7 @@ class Backend(PeriodicImportBackend):
             self.auth_params = (token.key, token.secret)
             self._store_pickled_file(self.auth_path, self.auth_params)
             self._end_authentication()
-    
+
     def _end_authentication(self):
         '''
         Last step of authentication. Creates the API objects and starts
