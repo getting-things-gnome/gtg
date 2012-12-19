@@ -216,12 +216,9 @@ setup(
     'GTG.plugins.hamster': ['prefs.ui'],
     'GTG.plugins.task_reaper': ['reaper.ui'],
     'GTG.plugins.notification_area': ['notification_area.ui',
-                            './data/icons/hicolor/22x22/apps/gtg_need_attenti\
-                                                                      on.png',
-                            './data/icons/ubuntu-mono-dark/22x22/apps/\
-                                                      gtg_need_attention.svg',
-                            './data/icons/ubuntu-mono-light/22x22/apps/\
-                                                      gtg_need_attention.svg',
+                     './data/icons/hicolor/22x22/apps/gtg_need_attention.png',
+            './data/icons/ubuntu-mono-dark/22x22/apps/gtg_need_attention.svg',
+           './data/icons/ubuntu-mono-light/22x22/apps/gtg_need_attention.svg',
                             ],
     'GTG.plugins.urgency_color': ['preferences.ui'],
    },
