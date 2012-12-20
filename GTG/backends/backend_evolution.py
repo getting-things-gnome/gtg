@@ -119,7 +119,7 @@ class Backend(PeriodicImportBackend):
                 if not self._gtg_task_is_syncable_per_attached_tags(gtg_task):
                     continue
                 gtg_title = gtg_task.get_title()
-                if gtg_titles_dic.has_key(gtg_title):
+                if gtg_title in gtg_titles_dic:
                     gtg_titles_dic[gtg_task.get_title()].append(tid)
                 else:
                     gtg_titles_dic[gtg_task.get_title()] = [tid]

@@ -35,11 +35,10 @@ from GTG.backends.periodicimportbackend import PeriodicImportBackend
 from GTG.backends.syncengine            import SyncEngine
 from GTG.tools.logger                   import Log
 
-#The Ubuntu version of python twitter is not updated: 
+#The Ubuntu version of python twitter is not updated:
 # it does not have identi.ca support. Meanwhile, we ship the right version
 # with our code.
 import GTG.backends.twitter as twitter
-
 
 
 class Backend(PeriodicImportBackend):
@@ -52,8 +51,8 @@ class Backend(PeriodicImportBackend):
     _general_description = { \
         GenericBackend.BACKEND_NAME: "backend_identica", \
         GenericBackend.BACKEND_HUMAN_NAME: _("Identi.ca"), \
-        GenericBackend.BACKEND_AUTHORS:    ["Luca Invernizzi"], \
-        GenericBackend.BACKEND_TYPE:       GenericBackend.TYPE_IMPORT, \
+        GenericBackend.BACKEND_AUTHORS: ["Luca Invernizzi"], \
+        GenericBackend.BACKEND_TYPE: GenericBackend.TYPE_IMPORT, \
         GenericBackend.BACKEND_DESCRIPTION: \
             _("Imports your identi.ca  messages into your GTG " + \
               "tasks. You can choose to either import all your " + \
@@ -101,7 +100,7 @@ class Backend(PeriodicImportBackend):
                                      self.get_id())
         self.sync_engine = self._load_pickled_file(self.data_path, \
                                                         SyncEngine())
-        
+
     def save_state(self):
         '''
         See GenericBackend for an explanation of this function.
@@ -152,7 +151,7 @@ class Backend(PeriodicImportBackend):
                                         lambda tweet_id: True, \
                                         is_syncable)
         Log.debug("processing tweet (%s, %s)" % (action, is_syncable))
-        
+
         self.cancellation_point()
         if action == None or action == SyncEngine.UPDATE:
             return
@@ -185,8 +184,8 @@ class Backend(PeriodicImportBackend):
             task.add_tag("@" + message.GetSenderScreenName())
         except:
             pass
-        text = message.GetText()    
-        
+        text = message.GetText()
+
         #convert #hastags to @tags
         matches = re.finditer("(?<![^|\s])(#\w+)", text)
         for g in matches:
@@ -227,7 +226,6 @@ class Backend(PeriodicImportBackend):
 ###############################################################################
 ### AUTHENTICATION ############################################################
 ###############################################################################
-
     class controlled_execution(object):
         '''
         This class performs the login to identica and execute the appropriate
@@ -277,4 +275,3 @@ class Backend(PeriodicImportBackend):
         def signal_network_down(self):
             BackendSignals().backend_failed(self.backend.get_id(), \
                             BackendSignals.ERRNO_NETWORK)
-
