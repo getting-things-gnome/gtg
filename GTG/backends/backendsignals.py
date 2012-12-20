@@ -22,15 +22,14 @@ import gobject
 from GTG.tools.borg import Borg
 
 
-
 class BackendSignals(Borg):
     '''
-    This class handles the signals that involve backends. 
+    This class handles the signals that involve backends.
     In particular, it's a wrapper Borg class around a _BackendSignalsGObject
     class, and all method of the wrapped class can be used as if they were part
     of this class
     '''
-    
+
     #error codes to send along with the BACKEND_FAILED signal
     ERRNO_AUTHENTICATION = "authentication failed"
     ERRNO_NETWORK = "network is down"
@@ -63,7 +62,6 @@ def signal_type_factory(*args):
     return (gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, args)
 
 
-
 class _BackendSignalsGObject(gobject.GObject):
 
     #signal name constants
@@ -85,17 +83,17 @@ class _BackendSignalsGObject(gobject.GObject):
     INTERACTION_CONFIRM = 'confirm'
     INTERACTION_TEXT = 'text'
 
-    __gsignals__ = {BACKEND_STATE_TOGGLED : signal_type_factory(str), \
-                    BACKEND_RENAMED       : signal_type_factory(str), \
-                    BACKEND_ADDED         : signal_type_factory(str), \
-                    BACKEND_REMOVED       : signal_type_factory(str), \
-                    BACKEND_SYNC_STARTED  : signal_type_factory(str), \
-                    BACKEND_SYNC_ENDED    : signal_type_factory(str), \
+    __gsignals__ = {BACKEND_STATE_TOGGLED: signal_type_factory(str), \
+                    BACKEND_RENAMED: signal_type_factory(str), \
+                    BACKEND_ADDED: signal_type_factory(str), \
+                    BACKEND_REMOVED: signal_type_factory(str), \
+                    BACKEND_SYNC_STARTED: signal_type_factory(str), \
+                    BACKEND_SYNC_ENDED: signal_type_factory(str), \
                     DEFAULT_BACKEND_LOADED: signal_type_factory(), \
-                    BACKEND_FAILED        : signal_type_factory(str, str), \
-                    INTERACTION_REQUESTED : signal_type_factory(str, str, \
-                                                                str,  str)}
-    
+                    BACKEND_FAILED: signal_type_factory(str, str), \
+                    INTERACTION_REQUESTED: signal_type_factory(str, str, \
+                                                                str, str)}
+
     def __init__(self):
         super(_BackendSignalsGObject, self).__init__()
         self.backends_currently_syncing = []
@@ -104,7 +102,6 @@ class _BackendSignalsGObject(gobject.GObject):
     #connecting to signals is fine, but keep an eye if you should emit them.
     #As a general rule, signals should only be emitted in the GenericBackend
     #class
-    
     def _emit_signal(self, signal, backend_id):
         gobject.idle_add(self.emit, signal, backend_id)
 
@@ -124,13 +121,13 @@ class _BackendSignalsGObject(gobject.GObject):
         gobject.idle_add(self.emit, self.DEFAULT_BACKEND_LOADED)
 
     def backend_failed(self, backend_id, error_code):
-        gobject.idle_add(self.emit, self.BACKEND_FAILED, backend_id, \
+        gobject.idle_add(self.emit, self.BACKEND_FAILED, backend_id,
                          error_code)
 
-    def interaction_requested(self, backend_id, description, \
+    def interaction_requested(self, backend_id, description,
                               interaction_type, callback_str):
-        gobject.idle_add(self.emit, self.INTERACTION_REQUESTED, \
-                         backend_id, description, interaction_type, callback_str)
+        gobject.idle_add(self.emit, self.INTERACTION_REQUESTED,
+                      backend_id, description, interaction_type, callback_str)
 
     def backend_sync_started(self, backend_id):
         self._emit_signal(self.BACKEND_SYNC_STARTED, backend_id)
@@ -142,7 +139,6 @@ class _BackendSignalsGObject(gobject.GObject):
             self.backends_currently_syncing.remove(backend_id)
         except:
             pass
-    
+
     def is_backend_syncing(self, backend_id):
         return backend_id in self.backends_currently_syncing
-

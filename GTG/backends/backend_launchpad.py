@@ -46,20 +46,20 @@ from GTG.backends.periodicimportbackend import PeriodicImportBackend
 
 class Backend(PeriodicImportBackend):
     '''Launchpad backend, capable of importing launchpad bugs in GTG.'''
-    
+
 
     _general_description = { \
-        GenericBackend.BACKEND_NAME:       "backend_launchpad", \
+        GenericBackend.BACKEND_NAME: "backend_launchpad", \
         GenericBackend.BACKEND_HUMAN_NAME: _("Launchpad"), \
-        GenericBackend.BACKEND_AUTHORS:    ["Luca Invernizzi"], \
-        GenericBackend.BACKEND_TYPE:       GenericBackend.TYPE_READONLY, \
+        GenericBackend.BACKEND_AUTHORS: ["Luca Invernizzi"], \
+        GenericBackend.BACKEND_TYPE: GenericBackend.TYPE_READONLY, \
         GenericBackend.BACKEND_DESCRIPTION: \
-            _("This synchronization service lets you import the bugs assigned to "
-              "you (or someone else) on Launchpad in GTG. As the"
+            _("This synchronization service lets you import the bugs assigned"
+              " to you (or someone else) on Launchpad in GTG. As the"
               " bug state changes in Launchpad, the GTG task is "
               " updated.\n"
-              "Please note that this is a read only synchronization service, which "
-              "means that if you open one of the imported tasks and "
+              "Please note that this is a read only synchronization service,"
+              " which means that if you open one of the imported tasks and "
               " change one of the:\n"
               "  - title\n"
               "  - description\n"
@@ -89,7 +89,6 @@ class Backend(PeriodicImportBackend):
 ###############################################################################
 ### Backend standard methods ##################################################
 ###############################################################################
-
     def __init__(self, parameters):
         '''
         See GenericBackend for an explanation of this function.
@@ -114,8 +113,8 @@ class Backend(PeriodicImportBackend):
         # bug to multiple projects: you have one bug and several bug tasks).
         # At least, one bug contains a bug task (if it's referring to a single
         # project).
-        # Here, we process bug tasks, since those are the ones that get assigned
-        # to someone.
+        # Here, we process bug tasks, since those are the ones that get
+        # assigned to someone.
         # To avoid having multiple GTG Tasks for the same bug (because we use
         # bug tasks, this may happen if somebody is working at the same bug for
         # different projects), we use the bug self_link for indexing the tasks.
@@ -137,7 +136,7 @@ class Backend(PeriodicImportBackend):
             BackendSignals().backend_failed(self.get_id(), \
                             BackendSignals.ERRNO_NETWORK)
             return
-        #Getting the user data 
+        #Getting the user data
         try:
             self.cancellation_point()
             me = self.launchpad.people[self._parameters["username"]]
@@ -182,10 +181,9 @@ class Backend(PeriodicImportBackend):
 ###############################################################################
 ### Process tasks #############################################################
 ###############################################################################
-
     def _process_launchpad_bug(self, bug):
         '''
-        Given a bug object, finds out if it must be synced to a GTG note and, 
+        Given a bug object, finds out if it must be synced to a GTG note and,
         if so, it carries out the synchronization (by creating or
         updating a GTG task, or deleting itself if the related task has
         been deleted)
@@ -278,8 +276,8 @@ class Backend(PeriodicImportBackend):
         '''
         We fetch all the necessary info that we need from the bug to populate a
         task beforehand (these will be used in _populate_task).
-        This function takes a long time to complete (all access to bug data are 
-        requests on then net), but it can crash without having the state of the 
+        This function takes a long time to complete (all access to bug data are
+        requests on then net), but it can crash without having the state of the
         related task half-changed.
 
         @param bug: a launchpad bug task
@@ -295,9 +293,11 @@ class Backend(PeriodicImportBackend):
                    'self_link': self_link,
                    'modified': self._get_bug_modified_datetime(bug),
                    'owner': owner.display_name,
-                   'completed': bug_task.status in ["Fix Committed", "Fix Released"],
+                   'completed': bug_task.status in ["Fix Committed",
+                                                              "Fix Released"],
                    'owner_karma': owner.karma}
-        bug_dic['number'] = bug_dic['self_link'][bug_dic['self_link'].rindex("/") + 1 :]
+        bug_dic['number'] = bug_dic['self_link']\
+                                      [bug_dic['self_link'].rindex("/") + 1:]
         #find the projects target of the bug
         projects = []
         for task in bug.bug_tasks:
@@ -308,12 +308,12 @@ class Backend(PeriodicImportBackend):
             except AttributeError:
                 #bug task is not assigned to anyone
                 continue
-            a_sl[a_sl.index("~") + 1 :]
-            if a_sl[a_sl.index("~") + 1 :] == self._parameters["username"]:
+            a_sl[a_sl.index("~") + 1:]
+            if a_sl[a_sl.index("~") + 1:] == self._parameters["username"]:
                 t_sl = task.target.self_link
                 projects.append(
-                    {"project_short": t_sl[t_sl.rindex("/") + 1 :],
-                     "project_long":  task.bug_target_display_name,})
+                    {"project_short": t_sl[t_sl.rindex("/") + 1:],
+                     "project_long": task.bug_target_display_name, })
         bug_dic["projects"] = projects
         return bug_dic
 
@@ -326,9 +326,8 @@ class Backend(PeriodicImportBackend):
         projects = [dic['project_short'] for dic in bug_dic['projects']]
         #one link is enough, since they're all alias
         bug_project = bug_dic['projects'][0]['project_short']
-        text += _("Link to bug: " ) + \
+        text += _("Link to bug: ") + \
                 "https://bugs.edge.launchpad.net/%s/+bug/%s" % \
                 (bug_project, bug_dic["number"]) + '\n'
         text += '\n' + bug_dic["text"]
         return text
-
