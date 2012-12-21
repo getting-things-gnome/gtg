@@ -1,0 +1,9 @@
+[GTG Plugin]
+Module=not_today
+Name=Not Today
+Short-description="Mark task as not to do today"
+Description="""Move the start date of tasks you don't want to do today to tomorrow."""
+Authors=Lionel Dricot <lionel@ploum.net>
+Version=0.1
+Enabled=False
+Dependencies=
