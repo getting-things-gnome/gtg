@@ -163,6 +163,8 @@ setup(
     'GTG.plugins.send_email',
     'GTG.plugins.tomboy',
     'GTG.plugins.urgency_color',
+    'GTG.plugins.untouched_tasks',
+    'GTG.plugins.not_today',
     ],
   package_data = {
     'GTG.core.plugins': ['pluginmanager.glade'],
@@ -183,7 +185,9 @@ setup(
         'task-reaper.gtg-plugin',
         'send-email.gtg-plugin',
         'tomboy.gtg-plugin',
-        'urgency-color.gtg-plugin'
+        'urgency-color.gtg-plugin',
+        'not-today.gtg-plugin',
+        'untouched-tasks.gtg-plugin',
         ],
     'GTG.plugins.export': ['export.ui',
                           './export_templates/description_pocketmod.py',
@@ -218,6 +222,7 @@ setup(
                             './data/icons/ubuntu-mono-light/22x22/apps/gtg_need_attention.svg',
                             ],
     'GTG.plugins.urgency_color': ['preferences.ui'],
+    'GTG.plugins.untouched_tasks': ['untouchedTasks.ui'],
    },
   data_files = create_data_files(),
   scripts=['gtg', 'gtcli', 'gtg_new_task'],
