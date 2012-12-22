@@ -134,7 +134,7 @@ class Backend(PeriodicImportBackend):
                     meme = SyncMeme(gtg_task.get_modified(),
                                     self._evo_get_modified(evo_task),
                                     "GTG")
-                    self.sync_engine.record_relationship( \
+                    self.sync_engine.record_relationship(
                          local_id = tid,
                          remote_id = evo_task.get_uid(),
                          meme = meme)
@@ -148,7 +148,7 @@ class Backend(PeriodicImportBackend):
             self.cancellation_point()
             self._process_evo_task(evo_task_id)
 
-        for evo_task_id in stored_evolution_task_ids.difference(\
+        for evo_task_id in stored_evolution_task_ids.difference(
                                 current_evolution_task_ids):
             #Removing the old ones
             self.cancellation_point()
@@ -202,7 +202,7 @@ class Backend(PeriodicImportBackend):
             return
 
         if action == SyncEngine.ADD:
-            evo_task = evolution.ecal.ECalComponent( \
+            evo_task = evolution.ecal.ECalComponent(
                         ical = evolution.ecal.CAL_COMPONENT_TODO)
             with self.datastore.get_backend_mutex():
                 self._evolution_tasks.add_object(evo_task)
@@ -210,7 +210,7 @@ class Backend(PeriodicImportBackend):
                 meme = SyncMeme(task.get_modified(),
                                 self._evo_get_modified(evo_task),
                                 "GTG")
-                self.sync_engine.record_relationship( \
+                self.sync_engine.record_relationship(
                     local_id = tid, remote_id = evo_task.get_uid(),
                                                         meme = meme)
 
@@ -222,7 +222,7 @@ class Backend(PeriodicImportBackend):
                                      self._evo_get_modified(evo_task))
                 if newest == "local":
                     self._populate_evo_task(task, evo_task)
-                    meme.set_remote_last_modified( \
+                    meme.set_remote_last_modified(
                                 self._evo_get_modified(evo_task))
                     meme.set_local_last_modified(task.get_modified())
                 else:
@@ -249,7 +249,7 @@ class Backend(PeriodicImportBackend):
         self.cancellation_point()
         evo_task = self._evo_get_task(evo_task_id)
         is_syncable = self._evo_task_is_syncable(evo_task)
-        action, tid = self.sync_engine.analyze_remote_id( \
+        action, tid = self.sync_engine.analyze_remote_id(
                          evo_task_id,
                          self.datastore.has_task,
                          self._evo_has_task,
@@ -277,7 +277,7 @@ class Backend(PeriodicImportBackend):
                                     self._evo_get_modified(evo_task))
                 if newest == "remote":
                     self._populate_task(task, evo_task)
-                    meme.set_remote_last_modified( \
+                    meme.set_remote_last_modified(
                             self._evo_get_modified(evo_task))
                     meme.set_local_last_modified(task.get_modified())
 

@@ -54,9 +54,9 @@ class GenericTomboy(GenericBackend):
         """
         super(GenericTomboy, self).__init__(parameters)
         #loading the saved state of the synchronization, if any
-        self.data_path = os.path.join('backends/tomboy/', \
+        self.data_path = os.path.join('backends/tomboy/',
                                       "sync_engine-" + self.get_id())
-        self.sync_engine = self._load_pickled_file(self.data_path, \
+        self.sync_engine = self._load_pickled_file(self.data_path,
                                                    SyncEngine())
         #if the backend is being tested, we connect to a different DBus
         # interface to avoid clashing with a running instance of Tomboy
@@ -205,8 +205,8 @@ class GenericTomboy(GenericBackend):
             self.cancellation_point()
             is_syncable = self._tomboy_note_is_syncable(note)
             with self.DbusWatchdog(self):
-                action, tid = self.sync_engine.analyze_remote_id(note, \
-                         self.datastore.has_task, \
+                action, tid = self.sync_engine.analyze_remote_id(note,
+                         self.datastore.has_task,
                          self._tomboy_note_exists, is_syncable)
             Log.debug("processing tomboy (%s, %s)" % (action, is_syncable))
 
@@ -214,8 +214,8 @@ class GenericTomboy(GenericBackend):
                 tid = str(uuid.uuid4())
                 task = self.datastore.task_factory(tid)
                 self._populate_task(task, note)
-                self.record_relationship(local_id = tid,\
-                            remote_id = note, \
+                self.record_relationship(local_id = tid,
+                            remote_id = note,
                             meme = SyncMeme(task.get_modified(),
                                             self.get_modified_for_note(note),
                                             self.get_id()))
@@ -256,8 +256,8 @@ class GenericTomboy(GenericBackend):
         with self.datastore.get_backend_mutex():
             with self.TomboyConnection(self, *self.BUS_ADDRESS) as tomboy:
                 with self.DbusWatchdog(self):
-                    action, note = self.sync_engine.analyze_local_id(tid, \
-                              self.datastore.has_task, tomboy.NoteExists, \
+                    action, note = self.sync_engine.analyze_local_id(tid,
+                              self.datastore.has_task, tomboy.NoteExists,
                                                             is_syncable)
                 Log.debug("processing gtg (%s, %d)" % (action, is_syncable))
 
@@ -279,8 +279,8 @@ class GenericTomboy(GenericBackend):
                         task.set_title(title + " (%d)" % duplicate_counter)
 
                     self._populate_note(note, task)
-                    self.record_relationship( \
-                        local_id = tid, remote_id = note, \
+                    self.record_relationship(
+                        local_id = tid, remote_id = note,
                         meme = SyncMeme(task.get_modified(),
                                         self.get_modified_for_note(note),
                                         "GTG"))
@@ -385,7 +385,7 @@ class GenericTomboy(GenericBackend):
         '''
         with self.TomboyConnection(self, *self.BUS_ADDRESS) as tomboy:
             with self.DbusWatchdog(self):
-                return datetime.datetime.fromtimestamp( \
+                return datetime.datetime.fromtimestamp(
                                 tomboy.GetNoteChangeDate(note))
 
     def _tomboy_split_title_and_text(self, content):

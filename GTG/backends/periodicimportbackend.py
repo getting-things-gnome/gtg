@@ -37,8 +37,8 @@ class PeriodicImportBackend(GenericBackend):
     To use this, only two things are necessary:
         - using do_periodic_import instead of start_get_tasks
         - having in _static_parameters a "period" key, as in::
-            "period": { \
-                GenericBackend.PARAM_TYPE: GenericBackend.TYPE_INT, \
+            "period": {
+                GenericBackend.PARAM_TYPE: GenericBackend.TYPE_INT,
                 GenericBackend.PARAM_DEFAULT_VALUE: 2, },
           This specifies the time that must pass between consecutive imports
           (in minutes)
@@ -70,8 +70,8 @@ class PeriodicImportBackend(GenericBackend):
 
             #we schedule the next iteration, just in case this one fails
             if not self.urgent_iteration:
-                self.import_timer = threading.Timer( \
-                                    self._parameters['period'] * 60.0, \
+                self.import_timer = threading.Timer(
+                                    self._parameters['period'] * 60.0,
                                     self.start_get_tasks)
                 self.import_timer.start()
 

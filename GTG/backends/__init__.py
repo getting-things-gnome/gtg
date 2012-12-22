@@ -59,7 +59,7 @@ class BackendFactory(Borg):
         #Look for backends in the GTG/backends dir
         this_dir = os.path.dirname(__file__)
         backend_files = filter(lambda f: f.endswith(".py") and     \
-               f[: len(self.BACKEND_PREFIX)] == self.BACKEND_PREFIX, \
+               f.startswith(self.BACKEND_PREFIX), \
                os.listdir(this_dir))
         #Create module names
         module_names = map(lambda f: f.replace(".py", ""), backend_files)
@@ -176,7 +176,7 @@ class BackendFactory(Borg):
         #If no backend available, we create a new using localfile. Xmlobject
         # will be filled in by the backend
         if len(backends_dic) == 0:
-            dic = BackendFactory().get_new_backend_dict( \
+            dic = BackendFactory().get_new_backend_dict(
                                                 "backend_localfile")
             dic["backend"].this_is_the_first_run(firstrun_tasks.populate())
             backends_dic.append(dic)

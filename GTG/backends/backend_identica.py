@@ -48,44 +48,44 @@ class Backend(PeriodicImportBackend):
     '''
 
 
-    _general_description = { \
-        GenericBackend.BACKEND_NAME: "backend_identica", \
-        GenericBackend.BACKEND_HUMAN_NAME: _("Identi.ca"), \
-        GenericBackend.BACKEND_AUTHORS: ["Luca Invernizzi"], \
-        GenericBackend.BACKEND_TYPE: GenericBackend.TYPE_IMPORT, \
-        GenericBackend.BACKEND_DESCRIPTION: \
+    _general_description = {
+        GenericBackend.BACKEND_NAME: "backend_identica",
+        GenericBackend.BACKEND_HUMAN_NAME: _("Identi.ca"),
+        GenericBackend.BACKEND_AUTHORS: ["Luca Invernizzi"],
+        GenericBackend.BACKEND_TYPE: GenericBackend.TYPE_IMPORT,
+        GenericBackend.BACKEND_DESCRIPTION:
             _("Imports your identi.ca  messages into your GTG " + \
               "tasks. You can choose to either import all your " + \
               "messages or just those with a set of hash tags. \n" + \
               "The message will be interpreted following this" + \
               " format: \n" + \
               "<b>my task title, task description #tag @anothertag</b>\n" + \
-              " Tags can be  anywhere in the message"),\
+              " Tags can be  anywhere in the message"),
         }
 
     base_url = "http://identi.ca/api/"
 
-    _static_parameters = { \
-        "username": { \
-            GenericBackend.PARAM_TYPE: GenericBackend.TYPE_STRING, \
+    _static_parameters = {
+        "username": {
+            GenericBackend.PARAM_TYPE: GenericBackend.TYPE_STRING,
             GenericBackend.PARAM_DEFAULT_VALUE: "", },
-        "password": { \
-            GenericBackend.PARAM_TYPE: GenericBackend.TYPE_PASSWORD, \
+        "password": {
+            GenericBackend.PARAM_TYPE: GenericBackend.TYPE_PASSWORD,
             GenericBackend.PARAM_DEFAULT_VALUE: "", },
-        "period": { \
-            GenericBackend.PARAM_TYPE: GenericBackend.TYPE_INT, \
+        "period": {
+            GenericBackend.PARAM_TYPE: GenericBackend.TYPE_INT,
             GenericBackend.PARAM_DEFAULT_VALUE: 2, },
-        "import-tags": { \
-            GenericBackend.PARAM_TYPE: GenericBackend.TYPE_LIST_OF_STRINGS, \
+        "import-tags": {
+            GenericBackend.PARAM_TYPE: GenericBackend.TYPE_LIST_OF_STRINGS,
             GenericBackend.PARAM_DEFAULT_VALUE: ["#todo"], },
-        "import-from-replies": { \
-            GenericBackend.PARAM_TYPE: GenericBackend.TYPE_BOOL, \
+        "import-from-replies": {
+            GenericBackend.PARAM_TYPE: GenericBackend.TYPE_BOOL,
             GenericBackend.PARAM_DEFAULT_VALUE: False, },
-        "import-from-my-tweets": { \
-            GenericBackend.PARAM_TYPE: GenericBackend.TYPE_BOOL, \
+        "import-from-my-tweets": {
+            GenericBackend.PARAM_TYPE: GenericBackend.TYPE_BOOL,
             GenericBackend.PARAM_DEFAULT_VALUE: False, },
-        "import-from-direct-messages": { \
-            GenericBackend.PARAM_TYPE: GenericBackend.TYPE_BOOL, \
+        "import-from-direct-messages": {
+            GenericBackend.PARAM_TYPE: GenericBackend.TYPE_BOOL,
             GenericBackend.PARAM_DEFAULT_VALUE: True, },
         }
 
@@ -98,7 +98,7 @@ class Backend(PeriodicImportBackend):
         #loading the list of already imported tasks
         self.data_path = os.path.join('backends/identica/', "tasks_dict-%s" %\
                                      self.get_id())
-        self.sync_engine = self._load_pickled_file(self.data_path, \
+        self.sync_engine = self._load_pickled_file(self.data_path,
                                                         SyncEngine())
 
     def save_state(self):
@@ -115,9 +115,9 @@ class Backend(PeriodicImportBackend):
         #we need to authenticate only to see the direct messages or the replies
         # (why the replies? Don't know. But python-twitter requires that)
         # (invernizzi)
-        with self.controlled_execution(self._parameters['username'],\
-                                       self._parameters['password'], \
-                                       self.base_url, \
+        with self.controlled_execution(self._parameters['username'],
+                                       self._parameters['password'],
+                                       self.base_url,
                                        self) as api:
             #select what to import
             tweets_to_import = []
@@ -145,10 +145,10 @@ class Backend(PeriodicImportBackend):
         is_syncable = self._is_tweet_syncable(tweet)
         #the "lambda" is because we don't consider tweets deletion (to be
         # faster)
-        action, tid = self.sync_engine.analyze_remote_id(\
-                                        tweet_id, \
-                                        self.datastore.has_task, \
-                                        lambda tweet_id: True, \
+        action, tid = self.sync_engine.analyze_remote_id(
+                                        tweet_id,
+                                        self.datastore.has_task,
+                                        lambda tweet_id: True,
                                         is_syncable)
         Log.debug("processing tweet (%s, %s)" % (action, is_syncable))
 
@@ -163,8 +163,8 @@ class Backend(PeriodicImportBackend):
             #we care only to add tweets and if the list of tags which must be
             #imported changes (lost-syncability can happen). Thus, we don't
             # care about SyncMeme(s)
-            self.sync_engine.record_relationship(local_id = tid,\
-                                     remote_id = tweet_id, \
+            self.sync_engine.record_relationship(local_id = tid,
+                                     remote_id = tweet_id,
                                      meme = None)
             self.datastore.push_task(task)
 
@@ -246,7 +246,7 @@ class Backend(PeriodicImportBackend):
             '''
             Logins to identica and returns the Api object
             '''
-            return twitter.Api(self.username, self.password, \
+            return twitter.Api(self.username, self.password,
                             base_url = self.base_url)
 
         def __exit__(self, type, value, traceback):
@@ -269,9 +269,9 @@ class Backend(PeriodicImportBackend):
 
         def signal_authentication_wrong(self):
             self.backend.quit(disable = True)
-            BackendSignals().backend_failed(self.backend.get_id(), \
+            BackendSignals().backend_failed(self.backend.get_id(),
                             BackendSignals.ERRNO_AUTHENTICATION)
 
         def signal_network_down(self):
-            BackendSignals().backend_failed(self.backend.get_id(), \
+            BackendSignals().backend_failed(self.backend.get_id(),
                             BackendSignals.ERRNO_NETWORK)
