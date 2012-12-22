@@ -22,7 +22,6 @@ class notToday:
 
     def __init__(self):
         self.plugin_api = None
-        self.menu_entry = None
         self.tb_button = None
 
     def activate(self, plugin_api):
@@ -65,11 +64,7 @@ class notToday:
       
 
     def _gtk_deactivate(self):
-        """ Remove Toolbar Button and Menu item for this plugin """
-        if self.menu_entry:
-            self.plugin_api.remove_menu_item(self.menu_item)
-            self.menu_entry = False
-
-        if self.toolbar_entry:
+        """ Remove Toolbar Button """
+        if self.tb_button:
             self.plugin_api.remove_toolbar_item(self.tb_button)
-            self.toolbar_entry = False
+            self.tb_button = False
