@@ -58,14 +58,15 @@ class pluginUrgencyColor:
             return self._pref_data['color_overdue']
         else:
             return None
-
-    def bgcolor(self, node, standard_color):
+    
+    def get_node_bgcolor(self, node):
+        """ This method checks the background color of a node and returns the color """
         sdate = node.get_start_date()
         ddate = node.get_due_date()
         if (sdate != Date.no_date() != ddate):
             dayspan = (ddate - sdate).days
             daysleft = ddate.days_left()
-
+            
             redf = self._pref_data['reddays']
             reddays = int(ceil(redf*dayspan/100))
             color = 0
@@ -75,12 +76,44 @@ class pluginUrgencyColor:
                 color = 2
             if daysleft < 0:
                 color = 3
+            
+            return color
+        elif (sdate == Date.no_date() or ddate == Date.no_date()):
+            """ When node does not have start date or end date,
+                we set the color to -1(lowest priority)
+                so that it inherits the color of it's most urgent subtask"""
+            return -1
+        else:
+            return 4
+
+    def bgcolor(self, node, standard_color):
+        color = self.get_node_bgcolor(node)
+        if color == 4:
+            return None
+        else:
+            
+            def __get_defined_child_list(node):
+                """ This function recursively fetches a list
+                of all the children of a task. """
+                child_list = []
+                for child_id in node.children:
+                    child = node.req.get_task(child_id)
+                    child_list += __get_defined_child_list(child)
+                    child_list.append(child_id)
+                return child_list
+            
+            child_list = __get_defined_child_list(node)
+            
+            for child_id in child_list:
+                child = self.req.get_task(child_id)
+                color_of_child = self.get_node_bgcolor(child)
+                if color_of_child == 4:
+                    continue
+                elif color_of_child > color:
+                    color = color_of_child
             # This list should be implemented in the settings
             #print "Giving color"
             return self._get_color(color)
-        else:
-            # Return color for this node
-            return None
 
     def deactivate(self, plugin_api):
         """ Plugin is deactivated """
@@ -115,8 +148,7 @@ class pluginUrgencyColor:
         self.spinbutton_reddays = self.builder.get_object('spinbutton_reddays')
 
         #   Colorbutton - OVERDUE
-        self.colorbutton_overdue = self.builder.get_object(
-                                                         'colorbutton_overdue')
+        self.colorbutton_overdue = self.builder.get_object('colorbutton_overdue')
 
         #   Colorbutton - HIGH
         self.colorbutton_high = self.builder.get_object('colorbutton_high')
@@ -188,7 +220,7 @@ class pluginUrgencyColor:
         self.prefs_update_widgets()
 
     def prefs_load(self):
-        data = self._plugin_api.load_configuration_object(
+        data = self._plugin_api.load_configuration_object( \
             self.PLUGIN_NAME,
             'preferences')
         if not data or not isinstance(data, dict):
@@ -198,9 +230,9 @@ class pluginUrgencyColor:
             # This is a dirty fix and thus should be removed in a
             # distant future, when nobody has "red", "yellow" or "green"
             # settings
-            namepairs = {'red': 'high', 'yellow': 'normal', 'green': 'low'}
-            for key, val in data.iteritems():
-                for oldname, newname in namepairs.iteritems():
+            namepairs = {'red':'high','yellow':'normal','green':'low'}
+            for key,val in data.iteritems():
+                for oldname,newname in namepairs.iteritems():
                     if key == "color_"+oldname:
                         data['color_'+newname] = data.pop(key)
             # Add new preferences where not present
@@ -209,8 +241,9 @@ class pluginUrgencyColor:
                     data[setting] = self.DEFAULT_PREFS[setting]
             self._pref_data = dict(data)
 
+
     def prefs_store(self):
-        self._plugin_api.save_configuration_object(
+        self._plugin_api.save_configuration_object( \
             self.PLUGIN_NAME,
             'preferences',
             self._pref_data)
