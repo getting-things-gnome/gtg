@@ -29,7 +29,6 @@ from GTG.backends.backendsignals import BackendSignals
 from GTG.tools.interruptible     import interruptible
 
 
-
 class PeriodicImportBackend(GenericBackend):
     '''
     This class can be used in place of GenericBackend when a periodic import is
@@ -37,9 +36,9 @@ class PeriodicImportBackend(GenericBackend):
     changes.
     To use this, only two things are necessary:
         - using do_periodic_import instead of start_get_tasks
-        - having in _static_parameters a "period" key, as in:: 
-            "period": { \
-                GenericBackend.PARAM_TYPE: GenericBackend.TYPE_INT, \
+        - having in _static_parameters a "period" key, as in::
+            "period": {
+                GenericBackend.PARAM_TYPE: GenericBackend.TYPE_INT,
                 GenericBackend.PARAM_DEFAULT_VALUE: 2, },
           This specifies the time that must pass between consecutive imports
           (in minutes)
@@ -57,8 +56,8 @@ class PeriodicImportBackend(GenericBackend):
         next ones.
         '''
         self.cancellation_point()
-        #if we're already importing, we queue a "urgent" import cycle after this
-        #one. The feeling of responsiveness of the backend is improved.
+        #if we're already importing, we queue a "urgent" import cycle after
+        #this one. The feeling of responsiveness of the backend is improved.
         if not self.running_iteration:
             try:
                 #if an iteration was scheduled, we cancel it
@@ -68,11 +67,11 @@ class PeriodicImportBackend(GenericBackend):
                 pass
             if self.is_enabled() == False:
                 return
-            
+
             #we schedule the next iteration, just in case this one fails
             if not self.urgent_iteration:
-                self.import_timer = threading.Timer( \
-                                    self._parameters['period'] * 60.0, \
+                self.import_timer = threading.Timer(
+                                    self._parameters['period'] * 60.0,
                                     self.start_get_tasks)
                 self.import_timer.start()
 
@@ -81,7 +80,7 @@ class PeriodicImportBackend(GenericBackend):
             self._start_get_tasks()
             self.running_iteration = False
             self.cancellation_point()
-            
+
             #execute eventual urgent iteration
             #NOTE: this way, if the iteration fails, the whole periodic import
             #      cycle fails.
@@ -90,7 +89,6 @@ class PeriodicImportBackend(GenericBackend):
                 self.start_get_tasks()
         else:
             self.urgent_iteration = True
-
 
     def _start_get_tasks(self):
         '''
@@ -114,4 +112,3 @@ class PeriodicImportBackend(GenericBackend):
             self.import_timer.join()
         except Exception:
             pass
-

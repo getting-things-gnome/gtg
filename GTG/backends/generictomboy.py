@@ -41,24 +41,22 @@ from GTG.tools.interruptible     import interruptible
 from GTG.tools.tags              import extract_tags_from_text
 
 
-
 class GenericTomboy(GenericBackend):
     '''Backend class for Tomboy/Gnote'''
-    
+
 
 ###############################################################################
 ### Backend standard methods ##################################################
 ###############################################################################
-
     def __init__(self, parameters):
         """
         See GenericBackend for an explanation of this function.
         """
         super(GenericTomboy, self).__init__(parameters)
         #loading the saved state of the synchronization, if any
-        self.data_path = os.path.join('backends/tomboy/', \
+        self.data_path = os.path.join('backends/tomboy/',
                                       "sync_engine-" + self.get_id())
-        self.sync_engine = self._load_pickled_file(self.data_path, \
+        self.sync_engine = self._load_pickled_file(self.data_path,
                                                    SyncEngine())
         #if the backend is being tested, we connect to a different DBus
         # interface to avoid clashing with a running instance of Tomboy
@@ -74,7 +72,7 @@ class GenericTomboy(GenericBackend):
         #NOTE: I'm not sure if this is the case anymore (but it shouldn't hurt
         #      anyway). (invernizzi)
         self._tomboy_setting_timers = {}
-        
+
     def initialize(self):
         '''
         See GenericBackend for an explanation of this function.
@@ -85,10 +83,10 @@ class GenericTomboy(GenericBackend):
             bus = dbus.SessionBus()
             bus.add_signal_receiver(self.on_note_saved,
                                     dbus_interface = self.BUS_ADDRESS[2],
-                                    signal_name    = "NoteSaved")
+                                    signal_name = "NoteSaved")
             bus.add_signal_receiver(self.on_note_deleted,
                                     dbus_interface = self.BUS_ADDRESS[2],
-                                    signal_name    = "NoteDeleted")
+                                    signal_name = "NoteDeleted")
 
     @interruptible
     def start_get_tasks(self):
@@ -119,6 +117,7 @@ class GenericTomboy(GenericBackend):
         '''
         See GenericBackend for an explanation of this function.
         '''
+
         def quit_thread():
             while True:
                 try:
@@ -134,7 +133,6 @@ class GenericTomboy(GenericBackend):
 ###############################################################################
 ### Something got removed #####################################################
 ###############################################################################
-
     @interruptible
     def on_note_deleted(self, note, something):
         '''
@@ -195,12 +193,11 @@ class GenericTomboy(GenericBackend):
 ###############################################################################
 ### Process tasks #############################################################
 ###############################################################################
-
     def _process_tomboy_note(self, note):
         '''
-        Given a tomboy note, finds out if it must be synced to a GTG note and, 
-        if so, it carries out the synchronization (by creating or updating a GTG
-        task, or deleting itself if the related task has been deleted)
+        Given a tomboy note, finds out if it must be synced to a GTG note and,
+        if so, it carries out the synchronization (by creating or updating a
+        GTG task, or deleting itself if the related task has been deleted)
 
         @param note: a Tomboy note id
         '''
@@ -208,8 +205,8 @@ class GenericTomboy(GenericBackend):
             self.cancellation_point()
             is_syncable = self._tomboy_note_is_syncable(note)
             with self.DbusWatchdog(self):
-                action, tid = self.sync_engine.analyze_remote_id(note, \
-                         self.datastore.has_task, \
+                action, tid = self.sync_engine.analyze_remote_id(note,
+                         self.datastore.has_task,
                          self._tomboy_note_exists, is_syncable)
             Log.debug("processing tomboy (%s, %s)" % (action, is_syncable))
 
@@ -217,8 +214,8 @@ class GenericTomboy(GenericBackend):
                 tid = str(uuid.uuid4())
                 task = self.datastore.task_factory(tid)
                 self._populate_task(task, note)
-                self.record_relationship(local_id = tid,\
-                            remote_id = note, \
+                self.record_relationship(local_id = tid,
+                            remote_id = note,
                             meme = SyncMeme(task.get_modified(),
                                             self.get_modified_for_note(note),
                                             self.get_id()))
@@ -259,8 +256,8 @@ class GenericTomboy(GenericBackend):
         with self.datastore.get_backend_mutex():
             with self.TomboyConnection(self, *self.BUS_ADDRESS) as tomboy:
                 with self.DbusWatchdog(self):
-                    action, note = self.sync_engine.analyze_local_id(tid, \
-                              self.datastore.has_task, tomboy.NoteExists, \
+                    action, note = self.sync_engine.analyze_local_id(tid,
+                              self.datastore.has_task, tomboy.NoteExists,
                                                             is_syncable)
                 Log.debug("processing gtg (%s, %d)" % (action, is_syncable))
 
@@ -282,8 +279,8 @@ class GenericTomboy(GenericBackend):
                         task.set_title(title + " (%d)" % duplicate_counter)
 
                     self._populate_note(note, task)
-                    self.record_relationship( \
-                        local_id = tid, remote_id = note, \
+                    self.record_relationship(
+                        local_id = tid, remote_id = note,
                         meme = SyncMeme(task.get_modified(),
                                         self.get_modified_for_note(note),
                                         "GTG"))
@@ -314,9 +311,8 @@ class GenericTomboy(GenericBackend):
 ###############################################################################
 ### Helper methods ############################################################
 ###############################################################################
-
     @interruptible
-    def on_note_saved(self,  note):
+    def on_note_saved(self, note):
         '''
         Callback, executed when a tomboy note is saved by Tomboy itself.
         Updates the related GTG task (or creates one, if necessary).
@@ -389,7 +385,7 @@ class GenericTomboy(GenericBackend):
         '''
         with self.TomboyConnection(self, *self.BUS_ADDRESS) as tomboy:
             with self.DbusWatchdog(self):
-                return datetime.datetime.fromtimestamp( \
+                return datetime.datetime.fromtimestamp(
                                 tomboy.GetNoteChangeDate(note))
 
     def _tomboy_split_title_and_text(self, content):
@@ -397,8 +393,8 @@ class GenericTomboy(GenericBackend):
         Tomboy does not have a "getTitle" and "getText" functions to get the
         title and the text of a note separately. Instead, it has a getContent
         function, that returns both of them.
-        This function splits up the output of getContent into a title string and
-        a text string.
+        This function splits up the output of getContent into a title string
+        and a text string.
 
         @param content: a string, the result of a getContent call
         @returns list: a list composed by [title, text]
@@ -409,7 +405,7 @@ class GenericTomboy(GenericBackend):
             return content, unicode("")
         title = content[: end_of_title]
         if len(content) > end_of_title:
-            return title, content[end_of_title +1 :]
+            return title, content[end_of_title +1:]
         else:
             return title, unicode("")
 
@@ -488,9 +484,6 @@ class GenericTomboy(GenericBackend):
 ###############################################################################
 ### Connection handling #######################################################
 ###############################################################################
-
-
-
     class TomboyConnection(Borg):
         '''
         TomboyConnection creates a connection to TOMBOY via DBus and
@@ -500,7 +493,6 @@ class GenericTomboy(GenericBackend):
             with self.TomboyConnection(self, *self.BUS_ADDRESS) as tomboy:
                 #do something
         '''
-
 
         def __init__(self, backend, bus_name, bus_path, bus_interface):
             '''
@@ -513,7 +505,7 @@ class GenericTomboy(GenericBackend):
             @param backend: a reference to a Backend
             @param bus_name: the DBus address of Tomboy
             @param bus_path: the DBus path of Tomboy RemoteControl
-            @param bus_interface: the DBus address of Tomboy RemoteControl 
+            @param bus_interface: the DBus address of Tomboy RemoteControl
             '''
             super(GenericTomboy.TomboyConnection, self).__init__()
             if hasattr(self, "tomboy_connection_is_ok") and \
@@ -537,7 +529,6 @@ class GenericTomboy(GenericBackend):
             @returns: dbus.Interface
             '''
             return self.tomboy
-                
 
         def __exit__(self, exception_type, value, traceback):
             '''
@@ -556,7 +547,7 @@ class GenericTomboy(GenericBackend):
                 return True
             else:
                 return False
-        
+
         def tomboy_failed(self):
             """ Handle failed tomboy connection.
 
@@ -566,17 +557,15 @@ class GenericTomboy(GenericBackend):
                 BackendSignals.ERRNO_DBUS)
             self.backend.quit(disable = True)
 
-
     class DbusWatchdog(Watchdog):
         '''
         A simple watchdog to detect stale dbus connections
         '''
 
-
         def __init__(self, backend):
             '''
-            Simple constructor, which sets _when_taking_too_long as the function
-            to run when the connection is taking too long.
+            Simple constructor, which sets _when_taking_too_long as the
+            function to run when the connection is taking too long.
 
             @param backend: a Backend object
             '''

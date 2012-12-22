@@ -40,22 +40,21 @@ from GTG.tools.tags                     import extract_tags_from_text
 
 #Dictionaries to translate GTG tasks in Evolution ones
 _GTG_TO_EVOLUTION_STATUS = \
-        {Task.STA_ACTIVE:    evolution.ecal.ICAL_STATUS_CONFIRMED,
-         Task.STA_DONE:      evolution.ecal.ICAL_STATUS_COMPLETED,
+        {Task.STA_ACTIVE: evolution.ecal.ICAL_STATUS_CONFIRMED,
+         Task.STA_DONE: evolution.ecal.ICAL_STATUS_COMPLETED,
          Task.STA_DISMISSED: evolution.ecal.ICAL_STATUS_CANCELLED}
 
 _EVOLUTION_TO_GTG_STATUS = \
-        {evolution.ecal.ICAL_STATUS_CONFIRMED:   Task.STA_ACTIVE,
-         evolution.ecal.ICAL_STATUS_DRAFT:       Task.STA_ACTIVE,
-         evolution.ecal.ICAL_STATUS_FINAL:       Task.STA_ACTIVE,
-         evolution.ecal.ICAL_STATUS_INPROCESS:   Task.STA_ACTIVE,
+        {evolution.ecal.ICAL_STATUS_CONFIRMED: Task.STA_ACTIVE,
+         evolution.ecal.ICAL_STATUS_DRAFT: Task.STA_ACTIVE,
+         evolution.ecal.ICAL_STATUS_FINAL: Task.STA_ACTIVE,
+         evolution.ecal.ICAL_STATUS_INPROCESS: Task.STA_ACTIVE,
          evolution.ecal.ICAL_STATUS_NEEDSACTION: Task.STA_ACTIVE,
-         evolution.ecal.ICAL_STATUS_NONE:        Task.STA_ACTIVE,
-         evolution.ecal.ICAL_STATUS_TENTATIVE:   Task.STA_ACTIVE,
-         evolution.ecal.ICAL_STATUS_X:           Task.STA_ACTIVE,
-         evolution.ecal.ICAL_STATUS_COMPLETED:   Task.STA_DONE,
-         evolution.ecal.ICAL_STATUS_CANCELLED:   Task.STA_DISMISSED}
-
+         evolution.ecal.ICAL_STATUS_NONE: Task.STA_ACTIVE,
+         evolution.ecal.ICAL_STATUS_TENTATIVE: Task.STA_ACTIVE,
+         evolution.ecal.ICAL_STATUS_X: Task.STA_ACTIVE,
+         evolution.ecal.ICAL_STATUS_COMPLETED: Task.STA_DONE,
+         evolution.ecal.ICAL_STATUS_CANCELLED: Task.STA_DISMISSED}
 
 
 class Backend(PeriodicImportBackend):
@@ -65,10 +64,10 @@ class Backend(PeriodicImportBackend):
 
 
     _general_description = { \
-        GenericBackend.BACKEND_NAME:       "backend_evolution", \
+        GenericBackend.BACKEND_NAME: "backend_evolution", \
         GenericBackend.BACKEND_HUMAN_NAME: _("Evolution tasks"), \
-        GenericBackend.BACKEND_AUTHORS:    ["Luca Invernizzi"], \
-        GenericBackend.BACKEND_TYPE:       GenericBackend.TYPE_READWRITE, \
+        GenericBackend.BACKEND_AUTHORS: ["Luca Invernizzi"], \
+        GenericBackend.BACKEND_TYPE: GenericBackend.TYPE_READWRITE, \
         GenericBackend.BACKEND_DESCRIPTION: \
             _("Lets you synchronize your GTG tasks with Evolution tasks"),\
         }
@@ -85,7 +84,6 @@ class Backend(PeriodicImportBackend):
 ###############################################################################
 ### Backend standard methods ##################################################
 ###############################################################################
-
     def __init__(self, parameters):
         '''
         See GenericBackend for an explanation of this function.
@@ -112,8 +110,8 @@ class Backend(PeriodicImportBackend):
                for task in self._evolution_tasks.get_all_objects()])
         #If it's the very first time the backend is run, it's possible that the
         # user already synced his tasks in some way (but we don't know that).
-        # Therefore, we attempt to induce those tasks relationships matching the
-        # titles.
+        # Therefore, we attempt to induce those tasks relationships matching
+        # the titles.
         if self._parameters["is-first-run"]:
             gtg_titles_dic = {}
             for tid in self.datastore.get_all_tasks():
@@ -121,7 +119,7 @@ class Backend(PeriodicImportBackend):
                 if not self._gtg_task_is_syncable_per_attached_tags(gtg_task):
                     continue
                 gtg_title = gtg_task.get_title()
-                if gtg_titles_dic.has_key(gtg_title):
+                if gtg_title in gtg_titles_dic:
                     gtg_titles_dic[gtg_task.get_title()].append(tid)
                 else:
                     gtg_titles_dic[gtg_task.get_title()] = [tid]
@@ -136,7 +134,7 @@ class Backend(PeriodicImportBackend):
                     meme = SyncMeme(gtg_task.get_modified(),
                                     self._evo_get_modified(evo_task),
                                     "GTG")
-                    self.sync_engine.record_relationship( \
+                    self.sync_engine.record_relationship(
                          local_id = tid,
                          remote_id = evo_task.get_uid(),
                          meme = meme)
@@ -150,7 +148,7 @@ class Backend(PeriodicImportBackend):
             self.cancellation_point()
             self._process_evo_task(evo_task_id)
 
-        for evo_task_id in stored_evolution_task_ids.difference(\
+        for evo_task_id in stored_evolution_task_ids.difference(
                                 current_evolution_task_ids):
             #Removing the old ones
             self.cancellation_point()
@@ -171,7 +169,6 @@ class Backend(PeriodicImportBackend):
 ###############################################################################
 ### Process tasks #############################################################
 ###############################################################################
-
     @interruptible
     def remove_task(self, tid):
         '''
@@ -205,7 +202,7 @@ class Backend(PeriodicImportBackend):
             return
 
         if action == SyncEngine.ADD:
-            evo_task = evolution.ecal.ECalComponent( \
+            evo_task = evolution.ecal.ECalComponent(
                         ical = evolution.ecal.CAL_COMPONENT_TODO)
             with self.datastore.get_backend_mutex():
                 self._evolution_tasks.add_object(evo_task)
@@ -213,8 +210,9 @@ class Backend(PeriodicImportBackend):
                 meme = SyncMeme(task.get_modified(),
                                 self._evo_get_modified(evo_task),
                                 "GTG")
-                self.sync_engine.record_relationship( \
-                    local_id = tid, remote_id = evo_task.get_uid(), meme = meme)
+                self.sync_engine.record_relationship(
+                    local_id = tid, remote_id = evo_task.get_uid(),
+                                                        meme = meme)
 
         elif action == SyncEngine.UPDATE:
             with self.datastore.get_backend_mutex():
@@ -224,7 +222,7 @@ class Backend(PeriodicImportBackend):
                                      self._evo_get_modified(evo_task))
                 if newest == "local":
                     self._populate_evo_task(task, evo_task)
-                    meme.set_remote_last_modified( \
+                    meme.set_remote_last_modified(
                                 self._evo_get_modified(evo_task))
                     meme.set_local_last_modified(task.get_modified())
                 else:
@@ -251,7 +249,7 @@ class Backend(PeriodicImportBackend):
         self.cancellation_point()
         evo_task = self._evo_get_task(evo_task_id)
         is_syncable = self._evo_task_is_syncable(evo_task)
-        action, tid = self.sync_engine.analyze_remote_id( \
+        action, tid = self.sync_engine.analyze_remote_id(
                          evo_task_id,
                          self.datastore.has_task,
                          self._evo_has_task,
@@ -279,7 +277,7 @@ class Backend(PeriodicImportBackend):
                                     self._evo_get_modified(evo_task))
                 if newest == "remote":
                     self._populate_task(task, evo_task)
-                    meme.set_remote_last_modified( \
+                    meme.set_remote_last_modified(
                             self._evo_get_modified(evo_task))
                     meme.set_local_last_modified(task.get_modified())
 
@@ -299,7 +297,6 @@ class Backend(PeriodicImportBackend):
 ###############################################################################
 ### Helper methods ############################################################
 ###############################################################################
-
     def _evo_has_task(self, evo_task_id):
         '''Returns true if Evolution has that task'''
         return bool(self._evo_get_task(evo_task_id))
@@ -408,7 +405,8 @@ class Backend(PeriodicImportBackend):
         #GTG thinks in local time, evolution in utc
         #to convert date objects between different timezones, we must convert
         #them to datetime objects
-        gtg_datetime = datetime.datetime.combine(gtg_date.to_py_date(), datetime.time(0))
+        gtg_datetime = datetime.datetime.combine(gtg_date.to_py_date(),
+                                                             datetime.time(0))
         #We don't want to express GTG date into a UTC equivalent. Instead, we
         #want the *same* date in GTG and evolution. Therefore, we must not do
         #the conversion Local-> UTC (which would point to the same moment in

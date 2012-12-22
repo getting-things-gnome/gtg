@@ -17,7 +17,6 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-
 """
 Backends are a way to permanently store a project on a medium
 (like on the hard disk or on the internet)
@@ -34,7 +33,6 @@ from GTG.backends.genericbackend import GenericBackend
 from GTG.core                    import firstrun_tasks
 from GTG.tools                   import cleanxml
 from GTG.core                    import CoreConfig
-
 
 
 class BackendFactory(Borg):
@@ -61,10 +59,10 @@ class BackendFactory(Borg):
         #Look for backends in the GTG/backends dir
         this_dir = os.path.dirname(__file__)
         backend_files = filter(lambda f: f.endswith(".py") and     \
-               f[ : len(self.BACKEND_PREFIX)] == self.BACKEND_PREFIX , \
+               f.startswith(self.BACKEND_PREFIX), \
                os.listdir(this_dir))
         #Create module names
-        module_names = map(lambda f: f.replace(".py",""), backend_files)
+        module_names = map(lambda f: f.replace(".py", ""), backend_files)
         Log.debug("Backends found: " + str(module_names))
         #Load backend modules
         for module_name in module_names:
@@ -87,7 +85,7 @@ class BackendFactory(Borg):
 
     def get_backend(self, backend_name):
         '''
-        Returns the backend module for the backend matching 
+        Returns the backend module for the backend matching
         backend_name. Else, returns none
         '''
         if backend_name in self.backend_modules:
@@ -128,7 +126,7 @@ class BackendFactory(Borg):
     def restore_backend_from_xml(self, dic):
         '''
         Function restoring a backend from its xml description.
-        dic should be a dictionary containing at least the key 
+        dic should be a dictionary containing at least the key
             - "module", with the module name
             - "xmlobject", with its xml description.
         Every other key is passed as-is to the backend, as parameter.
@@ -136,11 +134,11 @@ class BackendFactory(Borg):
         Returns the backend instance, or None is something goes wrong
         '''
         if not "module" in dic or not "xmlobject" in dic:
-            Log.debug ("Malformed backend configuration found! %s" % \
+            Log.debug("Malformed backend configuration found! %s" % \
                        dic)
         module = self.get_backend(dic["module"])
         if module == None:
-            Log.debug ("could not load module for backend %s" % \
+            Log.debug("could not load module for backend %s" % \
                        dic["module"])
             return None
         #we pop the xml object, as it will be redundant when the parameters
@@ -171,14 +169,14 @@ class BackendFactory(Borg):
                 dic["pid"] = str(uuid.uuid4())
                 dic["need_conversion"] = \
                     dic["xmlobject"].getAttribute("filename")
-                
+
         #Now that the backend list is build, we will construct them
         for dic in backends_dic:
             self.restore_backend_from_xml(dic)
         #If no backend available, we create a new using localfile. Xmlobject
         # will be filled in by the backend
         if len(backends_dic) == 0:
-            dic = BackendFactory().get_new_backend_dict( \
+            dic = BackendFactory().get_new_backend_dict(
                                                 "backend_localfile")
             dic["backend"].this_is_the_first_run(firstrun_tasks.populate())
             backends_dic.append(dic)
@@ -186,14 +184,15 @@ class BackendFactory(Borg):
 
     def _read_backend_configuration_file(self):
         '''
-        Reads the file describing the current backend configuration (project.xml)
-        and returns a list of dictionaries, each containing: 
+        Reads the file describing the current backend configuration
+        (project.xml) and returns a list of dictionaries, each containing:
          - the xml object defining the backend characteristics under
               "xmlobject"
          - the name of the backend under "module"
         '''
         # Read configuration file, if it does not exist, create one
-        datafile = os.path.join(CoreConfig().get_data_dir(), CoreConfig.DATA_FILE)
+        datafile = os.path.join(CoreConfig().get_data_dir(),
+                                                      CoreConfig.DATA_FILE)
         doc, configxml = cleanxml.openxmlfile(datafile, "config")
         xmlproject = doc.getElementsByTagName("backend")
         # collect configured backends
