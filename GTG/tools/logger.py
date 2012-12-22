@@ -33,7 +33,7 @@ import logging
 class Debug(object):
     """Singleton class that acts as interface for GTG's logger"""
 
-    def __init__ (self):
+    def __init__(self):
         """ Configure the GTG logger """
         #If we already have a logger, we keep that
         if not hasattr(Debug, "__logger"):
@@ -63,6 +63,7 @@ class Debug(object):
 
     def set_debugging_mode(self, value):
         self.debugging_mode = value
+
     def is_debugging_mode(self):
         return self.debugging_mode
 
