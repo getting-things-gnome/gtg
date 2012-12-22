@@ -100,14 +100,14 @@ class Backend(GenericBackend):
         #NOTE: retrocompatibility from the 0.2 series to 0.3.
         # We convert "filename" to "path and we forget about "filename "
         if "need_conversion" in parameters:
-            parameters["path"] = os.path.join(self.DEFAULT_PATH, \
+            parameters["path"] = os.path.join(self.DEFAULT_PATH,
                                         parameters["need_conversion"])
             del parameters["need_conversion"]
         if not self.KEY_DEFAULT_BACKEND in parameters:
             parameters[self.KEY_DEFAULT_BACKEND] = True
         ####
 
-        self.doc, self.xmlproj = cleanxml.openxmlfile( \
+        self.doc, self.xmlproj = cleanxml.openxmlfile(
                                 self._parameters["path"], "project")
         # Make safety daily backup after loading
         cleanxml.savexml(self._parameters["path"], self.doc, backup=True)
@@ -115,7 +115,7 @@ class Backend(GenericBackend):
     def initialize(self):
         """ This is called when a backend is enabled """
         super(Backend, self).initialize()
-        self.doc, self.xmlproj = cleanxml.openxmlfile( \
+        self.doc, self.xmlproj = cleanxml.openxmlfile(
                                 self._parameters["path"], "project")
 
     def this_is_the_first_run(self, xml):
@@ -128,7 +128,7 @@ class Backend(GenericBackend):
         """
         self._parameters[self.KEY_DEFAULT_BACKEND] = True
         cleanxml.savexml(self._parameters["path"], xml)
-        self.doc, self.xmlproj = cleanxml.openxmlfile(\
+        self.doc, self.xmlproj = cleanxml.openxmlfile(
                         self._parameters["path"], "project")
 
     def start_get_tasks(self):

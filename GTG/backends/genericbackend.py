@@ -220,32 +220,32 @@ class GenericBackend(object):
                                   #    same thing conceptually. It doesn't
                                   #    matter it the naming diverges.
 
-    _static_parameters_obligatory = { \
-                                    KEY_DEFAULT_BACKEND: { \
-                                         PARAM_TYPE: TYPE_BOOL, \
-                                         PARAM_DEFAULT_VALUE: False, \
-                                    }, \
-                                    KEY_HUMAN_NAME: { \
-                                         PARAM_TYPE: TYPE_STRING, \
-                                         PARAM_DEFAULT_VALUE: "", \
-                                    }, \
-                                    KEY_USER: { \
-                                         PARAM_TYPE: TYPE_STRING, \
-                                         PARAM_DEFAULT_VALUE: "", \
-                                    }, \
-                                    KEY_PID: { \
-                                         PARAM_TYPE: TYPE_STRING, \
-                                         PARAM_DEFAULT_VALUE: "", \
-                                    }, \
-                                    KEY_ENABLED: { \
-                                         PARAM_TYPE: TYPE_BOOL, \
-                                         PARAM_DEFAULT_VALUE: False, \
+    _static_parameters_obligatory = {
+                                    KEY_DEFAULT_BACKEND: {
+                                         PARAM_TYPE: TYPE_BOOL,
+                                         PARAM_DEFAULT_VALUE: False,
+                                    },
+                                    KEY_HUMAN_NAME: {
+                                         PARAM_TYPE: TYPE_STRING,
+                                         PARAM_DEFAULT_VALUE: "",
+                                    },
+                                    KEY_USER: {
+                                         PARAM_TYPE: TYPE_STRING,
+                                         PARAM_DEFAULT_VALUE: "",
+                                    },
+                                    KEY_PID: {
+                                         PARAM_TYPE: TYPE_STRING,
+                                         PARAM_DEFAULT_VALUE: "",
+                                    },
+                                    KEY_ENABLED: {
+                                         PARAM_TYPE: TYPE_BOOL,
+                                         PARAM_DEFAULT_VALUE: False,
                                     }}
 
-    _static_parameters_obligatory_for_rw = { \
-                                    KEY_ATTACHED_TAGS: {\
-                                         PARAM_TYPE: TYPE_LIST_OF_STRINGS, \
-                                         PARAM_DEFAULT_VALUE: [ALLTASKS_TAG], \
+    _static_parameters_obligatory_for_rw = {
+                                    KEY_ATTACHED_TAGS: {
+                                         PARAM_TYPE: TYPE_LIST_OF_STRINGS,
+                                         PARAM_DEFAULT_VALUE: [ALLTASKS_TAG],
                                     }}
 
     #Handy dictionary used in type conversion (from string to type)
@@ -630,7 +630,7 @@ class GenericBackend(object):
         Helper function to launch the setting thread, if it's not running.
         '''
         if self.to_set_timer == None and self.is_enabled():
-            self.to_set_timer = threading.Timer(self.timer_timestep, \
+            self.to_set_timer = threading.Timer(self.timer_timestep,
                                         self.launch_setting_thread)
             self.to_set_timer.start()
 

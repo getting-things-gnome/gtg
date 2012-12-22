@@ -39,12 +39,12 @@ Dependencies:
 
 
 class Backend(PeriodicImportBackend):
-    _general_description = { \
-        GenericBackend.BACKEND_NAME: "backend_mantis", \
-        GenericBackend.BACKEND_HUMAN_NAME: _("MantisBT"), \
-        GenericBackend.BACKEND_AUTHORS: ["Luca Invernizzi", "Alayn Gortazar"],\
-        GenericBackend.BACKEND_TYPE: GenericBackend.TYPE_READONLY, \
-        GenericBackend.BACKEND_DESCRIPTION: \
+    _general_description = {
+        GenericBackend.BACKEND_NAME: "backend_mantis",
+        GenericBackend.BACKEND_HUMAN_NAME: _("MantisBT"),
+        GenericBackend.BACKEND_AUTHORS: ["Luca Invernizzi", "Alayn Gortazar"],
+        GenericBackend.BACKEND_TYPE: GenericBackend.TYPE_READONLY,
+        GenericBackend.BACKEND_DESCRIPTION:
             _("This synchronization service lets you import the issues found"
               " on Mantis using a prestablished filter called 'gtg'."
               " As the issue state changes in Mantis, the GTG task is "
@@ -59,27 +59,27 @@ class Backend(PeriodicImportBackend):
               " issue is modified. Apart from those, you are free to set "
               " any other field (start/due dates, subtasks...): your "
               " changes will be preserved. This is useful to add "
-              " personal annotations to issue"), \
+              " personal annotations to issue"),
         }
 
 
-    _static_parameters = {\
-        "period": { \
-            GenericBackend.PARAM_TYPE: GenericBackend.TYPE_INT, \
-            GenericBackend.PARAM_DEFAULT_VALUE: 5, }, \
-        "username": { \
-            GenericBackend.PARAM_TYPE: GenericBackend.TYPE_STRING, \
-            GenericBackend.PARAM_DEFAULT_VALUE: 'insert your username', }, \
-        "password": { \
-            GenericBackend.PARAM_TYPE: GenericBackend.TYPE_PASSWORD, \
-            GenericBackend.PARAM_DEFAULT_VALUE: '', }, \
-        "service-url": { \
-            GenericBackend.PARAM_TYPE: GenericBackend.TYPE_STRING, \
+    _static_parameters = {
+        "period": {
+            GenericBackend.PARAM_TYPE: GenericBackend.TYPE_INT,
+            GenericBackend.PARAM_DEFAULT_VALUE: 5, },
+        "username": {
+            GenericBackend.PARAM_TYPE: GenericBackend.TYPE_STRING,
+            GenericBackend.PARAM_DEFAULT_VALUE: 'insert your username', },
+        "password": {
+            GenericBackend.PARAM_TYPE: GenericBackend.TYPE_PASSWORD,
+            GenericBackend.PARAM_DEFAULT_VALUE: '', },
+        "service-url": {
+            GenericBackend.PARAM_TYPE: GenericBackend.TYPE_STRING,
             GenericBackend.PARAM_DEFAULT_VALUE: 'http://example.com/mantis',
-                                                                        }, \
-        "tag-with-project-name": { \
-            GenericBackend.PARAM_TYPE: GenericBackend.TYPE_BOOL, \
-            GenericBackend.PARAM_DEFAULT_VALUE: True}, \
+                                                                        },
+        "tag-with-project-name": {
+            GenericBackend.PARAM_TYPE: GenericBackend.TYPE_BOOL,
+            GenericBackend.PARAM_DEFAULT_VALUE: True},
        }
 
     def __init__(self, parameters):
@@ -89,9 +89,9 @@ class Backend(PeriodicImportBackend):
         '''
         super(Backend, self).__init__(parameters)
         #loading the saved state of the synchronization, if any
-        self.data_path = os.path.join('backends/mantis/', \
+        self.data_path = os.path.join('backends/mantis/',
                                       "sync_engine-" + self.get_id())
-        self.sync_engine = self._load_pickled_file(self.data_path, \
+        self.sync_engine = self._load_pickled_file(self.data_path,
                                                    SyncEngine())
 
     def save_state(self):
@@ -106,7 +106,7 @@ class Backend(PeriodicImportBackend):
                                             (self._parameters['service-url']))
         except KeyError:
             self.quit(disable = True)
-            BackendSignals().backend_failed(self.get_id(), \
+            BackendSignals().backend_failed(self.get_id(),
                             BackendSignals.ERRNO_AUTHENTICATION)
             return
 

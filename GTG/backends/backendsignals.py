@@ -83,15 +83,15 @@ class _BackendSignalsGObject(gobject.GObject):
     INTERACTION_CONFIRM = 'confirm'
     INTERACTION_TEXT = 'text'
 
-    __gsignals__ = {BACKEND_STATE_TOGGLED: signal_type_factory(str), \
-                    BACKEND_RENAMED: signal_type_factory(str), \
-                    BACKEND_ADDED: signal_type_factory(str), \
-                    BACKEND_REMOVED: signal_type_factory(str), \
-                    BACKEND_SYNC_STARTED: signal_type_factory(str), \
-                    BACKEND_SYNC_ENDED: signal_type_factory(str), \
-                    DEFAULT_BACKEND_LOADED: signal_type_factory(), \
-                    BACKEND_FAILED: signal_type_factory(str, str), \
-                    INTERACTION_REQUESTED: signal_type_factory(str, str, \
+    __gsignals__ = {BACKEND_STATE_TOGGLED: signal_type_factory(str),
+                    BACKEND_RENAMED: signal_type_factory(str),
+                    BACKEND_ADDED: signal_type_factory(str),
+                    BACKEND_REMOVED: signal_type_factory(str),
+                    BACKEND_SYNC_STARTED: signal_type_factory(str),
+                    BACKEND_SYNC_ENDED: signal_type_factory(str),
+                    DEFAULT_BACKEND_LOADED: signal_type_factory(),
+                    BACKEND_FAILED: signal_type_factory(str, str),
+                    INTERACTION_REQUESTED: signal_type_factory(str, str,
                                                                 str, str)}
 
     def __init__(self):
