@@ -102,8 +102,7 @@ class TestDates(unittest.TestCase): # pylint: disable-msg=R0904
     def test_missing_year_this_year(self):
         """ Parsing %m%d have to find correct date:
         we enter a day this year """
-        aday = date.today()
-        aday = aday.replace(month=aday.month+1, day=1)
+        aday = next_month(date.today(), day=1)
         parse_string = "%02d%02d" % (aday.month, aday.day)
         self.assertEqual(Date.parse(parse_string), aday)
 
