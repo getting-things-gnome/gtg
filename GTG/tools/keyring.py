@@ -17,7 +17,6 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-
 try:
     import gnomekeyring
 except ImportError:
@@ -26,7 +25,9 @@ except ImportError:
 from GTG.tools.borg import Borg
 from GTG.tools.logger import Log
 
+
 class GNOMEKeyring(Borg):
+
     def __init__(self):
         super(Keyring, self).__init__()
         if not hasattr(self, "keyring"):
@@ -48,7 +49,9 @@ class GNOMEKeyring(Borg):
         except (gnomekeyring.DeniedError, gnomekeyring.NoMatchError):
             return ""
 
+
 class FallbackKeyring(Borg):
+
     def __init__(self):
         super(Keyring, self).__init__()
         if not hasattr(self, "keyring"):
@@ -70,7 +73,8 @@ class FallbackKeyring(Borg):
         return self.keyring.get(key, "")
 
 if gnomekeyring is not None:
-    Keyring = GNOMEKeyring 
+    Keyring = GNOMEKeyring
 else:
-    Log.info("GNOME keyring was not found, passwords will be not stored after restart of GTG")
+    Log.info("GNOME keyring was not found, passwords will be not stored after\
+                                                              restart of GTG")
     Keyring = FallbackKeyring
