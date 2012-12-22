@@ -78,42 +78,32 @@ class pluginUrgencyColor:
                 color = 3
             
             return color
-        elif (sdate == Date.no_date() or ddate == Date.no_date()):
-            """ When node does not have start date or end date,
-                we set the color to -1(lowest priority)
-                so that it inherits the color of it's most urgent subtask"""
-            return -1
         else:
-            return 4
+            return None
 
     def bgcolor(self, node, standard_color):
         color = self.get_node_bgcolor(node)
-        if color == 4:
-            return None
-        else:
-            
-            def __get_defined_child_list(node):
-                """ This function recursively fetches a list
-                of all the children of a task. """
-                child_list = []
-                for child_id in node.children:
-                    child = node.req.get_task(child_id)
-                    child_list += __get_defined_child_list(child)
-                    child_list.append(child_id)
-                return child_list
-            
-            child_list = __get_defined_child_list(node)
-            
-            for child_id in child_list:
-                child = self.req.get_task(child_id)
-                color_of_child = self.get_node_bgcolor(child)
-                if color_of_child == 4:
-                    continue
-                elif color_of_child > color:
-                    color = color_of_child
+        
+        def __get_defined_child_list(node):
+            """ This function recursively fetches a list
+            of all the children of a task. """
+            child_list = []
+            for child_id in node.children:
+                child = node.req.get_task(child_id)
+                child_list += __get_defined_child_list(child)
+                child_list.append(child_id)
+            return child_list
+
+        child_list = __get_defined_child_list(node)
+
+        for child_id in child_list:
+            child = self.req.get_task(child_id)
+            color_of_child = self.get_node_bgcolor(child)
+            if color_of_child > color:
+                color = color_of_child
             # This list should be implemented in the settings
             #print "Giving color"
-            return self._get_color(color)
+        return self._get_color(color)
 
     def deactivate(self, plugin_api):
         """ Plugin is deactivated """
