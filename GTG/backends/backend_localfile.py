@@ -37,31 +37,32 @@ from GTG.tools.logger            import Log
 # Ignore all other elements but this one
 TASK_NODE = "task"
 
+
 class Backend(GenericBackend):
     """
     Localfile backend, which stores your tasks in a XML file in the standard
     XDG_DATA_DIR/gtg folder (the path is configurable).
     An instance of this class is used as the default backend for GTG.
-    This backend loads all the tasks stored in the localfile after it's enabled,
+    This backend loads all the tasks stored in the localfile after it's enabled
     and from that point on just writes the changes to the file: it does not
     listen for eventual file changes
     """
-    
-    # default path for filenames
-    DEFAULT_PATH = CoreConfig().get_data_dir() 
 
-    # General description of the backend: these are used to show a description of
-    # the backend to the user when s/he is considering adding it.
+    # default path for filenames
+    DEFAULT_PATH = CoreConfig().get_data_dir()
+
+    # General description of the backend: these are used to show a description
+    # of the backend to the user when s/he is considering adding it.
     # BACKEND_NAME is the name of the backend used internally (it must be
     # unique).
     # Please note that BACKEND_NAME and BACKEND_ICON_NAME should *not* be
     # translated.
     _general_description = {
-        GenericBackend.BACKEND_NAME:       "backend_localfile",
+        GenericBackend.BACKEND_NAME: "backend_localfile",
         GenericBackend.BACKEND_HUMAN_NAME: _("Local File"),
-        GenericBackend.BACKEND_AUTHORS:    ["Lionel Dricot",
+        GenericBackend.BACKEND_AUTHORS: ["Lionel Dricot",
                                             "Luca Invernizzi"],
-        GenericBackend.BACKEND_TYPE:       GenericBackend.TYPE_READWRITE,
+        GenericBackend.BACKEND_TYPE: GenericBackend.TYPE_READWRITE,
         GenericBackend.BACKEND_DESCRIPTION:
             _("Your tasks are saved in a text file (XML format). " +
               " This is the most basic and the default way " +
@@ -72,16 +73,16 @@ class Backend(GenericBackend):
     # parameter has a name, a type and a default value.
     # Here, we define a parameter "path", which is a string, and has a default
     # value as a random file in the default path
-    # NOTE: to keep this simple, the filename default path is the same until GTG
-    #      is restarted. I consider this a minor annoyance, and we can avoid
-    #      coding the change of the path each time a backend is
+    # NOTE: to keep this simple, the filename default path is the same until
+    #      GTG is restarted. I consider this a minor annoyance, and we can
+    #      avoid coding the change of the path each time a backend is
     #      created (invernizzi)
     _static_parameters = {
         "path": {
             GenericBackend.PARAM_TYPE: GenericBackend.TYPE_STRING,
             GenericBackend.PARAM_DEFAULT_VALUE:
-                 os.path.join(DEFAULT_PATH, "gtg_tasks-%s.xml" %(uuid.uuid4()))
-    }}
+                 os.path.join(DEFAULT_PATH, "gtg_tasks-%s.xml" %\
+                 (uuid.uuid4()))}}
 
     def __init__(self, parameters):
         """
@@ -90,7 +91,7 @@ class Backend(GenericBackend):
         @param parameters: A dictionary of parameters, generated from
         _static_parameters. A few parameters are added to those, the list of
         these is in the "DefaultBackend" class, look for the KEY_* constants.
-    
+
         The backend should take care if one expected value is None or
         does not exist in the dictionary.
         """
@@ -99,14 +100,14 @@ class Backend(GenericBackend):
         #NOTE: retrocompatibility from the 0.2 series to 0.3.
         # We convert "filename" to "path and we forget about "filename "
         if "need_conversion" in parameters:
-            parameters["path"] = os.path.join(self.DEFAULT_PATH, \
+            parameters["path"] = os.path.join(self.DEFAULT_PATH,
                                         parameters["need_conversion"])
             del parameters["need_conversion"]
         if not self.KEY_DEFAULT_BACKEND in parameters:
             parameters[self.KEY_DEFAULT_BACKEND] = True
         ####
-        
-        self.doc, self.xmlproj = cleanxml.openxmlfile( \
+
+        self.doc, self.xmlproj = cleanxml.openxmlfile(
                                 self._parameters["path"], "project")
         # Make safety daily backup after loading
         cleanxml.savexml(self._parameters["path"], self.doc, backup=True)
@@ -114,7 +115,7 @@ class Backend(GenericBackend):
     def initialize(self):
         """ This is called when a backend is enabled """
         super(Backend, self).initialize()
-        self.doc, self.xmlproj = cleanxml.openxmlfile( \
+        self.doc, self.xmlproj = cleanxml.openxmlfile(
                                 self._parameters["path"], "project")
 
     def this_is_the_first_run(self, xml):
@@ -127,13 +128,13 @@ class Backend(GenericBackend):
         """
         self._parameters[self.KEY_DEFAULT_BACKEND] = True
         cleanxml.savexml(self._parameters["path"], xml)
-        self.doc, self.xmlproj = cleanxml.openxmlfile(\
+        self.doc, self.xmlproj = cleanxml.openxmlfile(
                         self._parameters["path"], "project")
 
     def start_get_tasks(self):
-        """ This function starts submitting the tasks from the XML file into GTG core.
-        It's run as a separate thread.
-                
+        """ This function starts submitting the tasks from the XML file into
+        GTG core. It's run as a separate thread.
+
         @return: start_get_tasks() might not return or finish
         """
         for node in self.xmlproj.childNodes:
@@ -178,13 +179,13 @@ class Backend(GenericBackend):
             modified = True
 
         #if the XML object has changed, we save it to file
-        if modified and self._parameters["path"] and self.doc :
+        if modified and self._parameters["path"] and self.doc:
             cleanxml.savexml(self._parameters["path"], self.doc)
 
     def remove_task(self, tid):
         """ This function is called from GTG core whenever a task must be
         removed from the backend. Note that the task could be not present here.
-        
+
         @param tid: the id of the task to delete
         """
         modified = False

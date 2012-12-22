@@ -23,7 +23,7 @@ It works like this:
  - We have two sets of generic objects (local and remote)
  - We present one object of either one of the sets and ask the library what's
  the state of its synchronization
- - the library will tell us if we need to add a clone object in the other set, 
+ - the library will tell us if we need to add a clone object in the other set,
    update it or, if the other one has been removed, remove also this one
 '''
 from GTG.tools.twokeydict import TwoKeyDict
@@ -31,7 +31,6 @@ from GTG.tools.twokeydict import TwoKeyDict
 
 TYPE_LOCAL = "local"
 TYPE_REMOTE = "remote"
-
 
 
 class SyncMeme(object):
@@ -45,7 +44,6 @@ class SyncMeme(object):
     #NOTE: Checking objects CRCs would make this check nicer, as we could know
     #      if the object was really changed, or it has just updated its
     #      modified time (invernizzi)
-
     def __init__(self,
                  local_modified = None,
                  remote_modified = None,
@@ -57,8 +55,9 @@ class SyncMeme(object):
 
         @param local_modified: the modified time for the local object
         @param remote_modified: the modified time for the remote object
-        @param origin: an object that identifies whether the local or the remote is
-                       the original object, the other one being a copy.
+        @param origin: an object that identifies whether the local or the
+                       remote is the original object, the other one being a
+                       copy.
         '''
         if local_modified != None:
             self.set_local_last_modified(local_modified)
@@ -98,9 +97,9 @@ class SyncMeme(object):
     def which_is_newest(self, local_modified, remote_modified):
         '''
         Given the updated modified time for both the local and the remote
-        objects, it checks them against the stored modified times and 
+        objects, it checks them against the stored modified times and
         then against each other.
-        
+
         @returns string: "local"- if the local object has been modified and its
                          the newest
                          "remote" - the same for the remote object
@@ -114,7 +113,7 @@ class SyncMeme(object):
             return "local"
         else:
             return "remote"
-    
+
     def get_origin(self):
         '''
         Returns the name of the source that firstly presented the object
@@ -125,21 +124,20 @@ class SyncMeme(object):
         '''
         Sets the source that presented the object for the first time. This
         source holds the original object, while the other holds the copy.
-        This can be useful in the case of "lost syncability" (see the SyncEngine
-        for an explaination).
-            
+        This can be useful in the case of "lost syncability" (see the
+        SyncEngine for an explaination).
+
         @param origin: object representing the source
         '''
         self.origin = origin
 
 
-
 class SyncMemes(TwoKeyDict):
     '''
     A TwoKeyDict, with just the names changed to be better understandable.
-    The meaning of these names is explained in the SyncEngine class description.
-    It's used to store a set of SyncMeme objects, each one keeping storing all
-    the data needed to keep track of a single relationship.
+    The meaning of these names is explained in the SyncEngine class
+    description. It's used to store a set of SyncMeme objects, each one keeping
+    storing all the data needed to keep track of a single relationship.
     '''
 
 
@@ -153,7 +151,6 @@ class SyncMemes(TwoKeyDict):
     get_all_remote = TwoKeyDict._get_all_secondary_keys
 
 
-
 class SyncEngine(object):
     '''
     The SyncEngine is an object useful in keeping two sets of objects
@@ -161,8 +158,8 @@ class SyncEngine(object):
     One set is called the Local set, the other is the Remote one.
     It stores the state of the synchronization and the latest state of each
     object.
-    When asked, it can tell if a couple of related objects are up to date in the
-    sync and, if not, which one must be updated.
+    When asked, it can tell if a couple of related objects are up to date in
+    the sync and, if not, which one must be updated.
 
     It stores the state of each relationship in a series of SyncMeme.
     '''
@@ -170,7 +167,7 @@ class SyncEngine(object):
 
     UPDATE = "update"
     REMOVE = "remove"
-    ADD    = "add"
+    ADD = "add"
     LOST_SYNCABILITY = "lost syncability"
 
     def __init__(self):
@@ -195,10 +192,10 @@ class SyncEngine(object):
         A particular case happens if the other object is present, but the
         "is_syncable" parameter (which tells that we intend to keep these two
         objects in sync) is set to False. In this case, this function returns
-        that the Syncability property has been lost. This case is interesting if
-        we want to delete one of the two objects (the one that has been cloned
-        from the original).
-        
+        that the Syncability property has been lost. This case is interesting
+        if we want to delete one of the two objects (the one that has been
+        cloned from the original).
+
         @param element_id: the id of the element we're analysing.
         @param is_local: True if the element analysed is the local one (not the
                          remote)
@@ -242,7 +239,7 @@ class SyncEngine(object):
         Shortcut to call _analyze_element for a remote element
         '''
         return self._analyze_element(element_id, False, *other_args)
-    
+
     def record_relationship(self, local_id, remote_id, meme):
         '''
         Records that an object from the local set is related with one a remote
@@ -285,4 +282,3 @@ class SyncEngine(object):
             return getattr(self.sync_memes, attr)
         else:
             raise AttributeError
-

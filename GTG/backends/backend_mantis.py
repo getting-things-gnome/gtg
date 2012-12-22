@@ -36,19 +36,21 @@ Backend for importing mantis issues in GTG
 Dependencies:
   * python-suds
 '''
+
+
 class Backend(PeriodicImportBackend):
-    _general_description = { \
-        GenericBackend.BACKEND_NAME:       "backend_mantis", \
-        GenericBackend.BACKEND_HUMAN_NAME: _("MantisBT"), \
-        GenericBackend.BACKEND_AUTHORS:    ["Luca Invernizzi", "Alayn Gortazar"], \
-        GenericBackend.BACKEND_TYPE:       GenericBackend.TYPE_READONLY, \
-        GenericBackend.BACKEND_DESCRIPTION: \
-            _("This synchronization service lets you import the issues found on Mantis" 
-              " using a prestablished filter called 'gtg'."
+    _general_description = {
+        GenericBackend.BACKEND_NAME: "backend_mantis",
+        GenericBackend.BACKEND_HUMAN_NAME: _("MantisBT"),
+        GenericBackend.BACKEND_AUTHORS: ["Luca Invernizzi", "Alayn Gortazar"],
+        GenericBackend.BACKEND_TYPE: GenericBackend.TYPE_READONLY,
+        GenericBackend.BACKEND_DESCRIPTION:
+            _("This synchronization service lets you import the issues found"
+              " on Mantis using a prestablished filter called 'gtg'."
               " As the issue state changes in Mantis, the GTG task is "
               " updated.\n"
-              "Please note that this is a read only synchronization service, which "
-              "means that if you open one of the imported tasks and "
+              "Please note that this is a read only synchronization service,"
+              " which means that if you open one of the imported tasks and "
               " change one of the:\n"
               "  - title\n"
               "  - description\n"
@@ -57,28 +59,29 @@ class Backend(PeriodicImportBackend):
               " issue is modified. Apart from those, you are free to set "
               " any other field (start/due dates, subtasks...): your "
               " changes will be preserved. This is useful to add "
-              " personal annotations to issue"), \
+              " personal annotations to issue"),
         }
- 
-    
-    _static_parameters = {\
-        "period": { \
-            GenericBackend.PARAM_TYPE: GenericBackend.TYPE_INT, \
-            GenericBackend.PARAM_DEFAULT_VALUE: 5, }, \
-        "username": { \
-            GenericBackend.PARAM_TYPE: GenericBackend.TYPE_STRING, \
-            GenericBackend.PARAM_DEFAULT_VALUE: 'insert your username', }, \
-        "password": { \
-            GenericBackend.PARAM_TYPE: GenericBackend.TYPE_PASSWORD, \
-            GenericBackend.PARAM_DEFAULT_VALUE: '', }, \
-        "service-url": { \
-            GenericBackend.PARAM_TYPE: GenericBackend.TYPE_STRING, \
-            GenericBackend.PARAM_DEFAULT_VALUE: 'http://example.com/mantis', }, \
-        "tag-with-project-name": { \
-            GenericBackend.PARAM_TYPE: GenericBackend.TYPE_BOOL, \
-            GenericBackend.PARAM_DEFAULT_VALUE: True}, \
+
+
+    _static_parameters = {
+        "period": {
+            GenericBackend.PARAM_TYPE: GenericBackend.TYPE_INT,
+            GenericBackend.PARAM_DEFAULT_VALUE: 5, },
+        "username": {
+            GenericBackend.PARAM_TYPE: GenericBackend.TYPE_STRING,
+            GenericBackend.PARAM_DEFAULT_VALUE: 'insert your username', },
+        "password": {
+            GenericBackend.PARAM_TYPE: GenericBackend.TYPE_PASSWORD,
+            GenericBackend.PARAM_DEFAULT_VALUE: '', },
+        "service-url": {
+            GenericBackend.PARAM_TYPE: GenericBackend.TYPE_STRING,
+            GenericBackend.PARAM_DEFAULT_VALUE: 'http://example.com/mantis',
+                                                                        },
+        "tag-with-project-name": {
+            GenericBackend.PARAM_TYPE: GenericBackend.TYPE_BOOL,
+            GenericBackend.PARAM_DEFAULT_VALUE: True},
        }
-    
+
     def __init__(self, parameters):
         '''
         See GenericBackend for an explanation of this function.
@@ -86,28 +89,33 @@ class Backend(PeriodicImportBackend):
         '''
         super(Backend, self).__init__(parameters)
         #loading the saved state of the synchronization, if any
-        self.data_path = os.path.join('backends/mantis/', \
+        self.data_path = os.path.join('backends/mantis/',
                                       "sync_engine-" + self.get_id())
-        self.sync_engine = self._load_pickled_file(self.data_path, \
-                                                   SyncEngine())    
+        self.sync_engine = self._load_pickled_file(self.data_path,
+                                                   SyncEngine())
+
     def save_state(self):
         '''Saves the state of the synchronization'''
         self._store_pickled_file(self.data_path, self.sync_engine)
 
     def do_periodic_import(self):
-        #Establishing connection 
+        #Establishing connection
         try:
             self.cancellation_point()
-            client = Client('%s/api/soap/mantisconnect.php?wsdl' % (self._parameters['service-url']))
+            client = Client('%s/api/soap/mantisconnect.php?wsdl' % \
+                                            (self._parameters['service-url']))
         except KeyError:
             self.quit(disable = True)
-            BackendSignals().backend_failed(self.get_id(), \
+            BackendSignals().backend_failed(self.get_id(),
                             BackendSignals.ERRNO_AUTHENTICATION)
             return
 
 
-        projects = client.service.mc_projects_get_user_accessible(self._parameters['username'], self._parameters['password'])
-        filters = client.service.mc_filter_get(self._parameters['username'], self._parameters['password'], 0)
+        projects = client.service.mc_projects_get_user_accessible(
+                                        self._parameters['username'],
+                                        self._parameters['password'])
+        filters = client.service.mc_filter_get(self._parameters['username'],
+                                             self._parameters['password'], 0)
 
         #Fetching the issues
         self.cancellation_point()
@@ -115,7 +123,11 @@ class Backend(PeriodicImportBackend):
         for filt in filters:
             if filt['name'] == 'gtg':
                 for project in projects:
-                    my_issues = client.service.mc_filter_get_issues(self._parameters['username'], self._parameters['password'], project['id'], filt['id'], 0, 100)
+                    my_issues = client.service.mc_filter_get_issues(
+                                                 self._parameters['username'],
+                                                 self._parameters['password'],
+                                                 project['id'],
+                                                 filt['id'], 0, 100)
                     for issue in my_issues:
                         self.cancellation_point()
                         self._process_mantis_issue(issue)
@@ -137,17 +149,16 @@ class Backend(PeriodicImportBackend):
 ###############################################################################
 ### Process tasks #############################################################
 ###############################################################################
-
     def _process_mantis_issue(self, issue):
         '''
-        Given a issue object, finds out if it must be synced to a GTG note and, 
+        Given a issue object, finds out if it must be synced to a GTG note and,
         if so, it carries out the synchronization (by creating or
         updating a GTG task, or deleting itself if the related task has
         been deleted)
 
         @param note: a mantis issue
         '''
-        action, tid = self.sync_engine.analyze_remote_id(str(issue['id']), \
+        action, tid = self.sync_engine.analyze_remote_id(str(issue['id']),
                  self.datastore.has_task, lambda b: True)
         Log.debug("processing mantis (%s)" % (action))
 
@@ -165,18 +176,18 @@ class Backend(PeriodicImportBackend):
                 tid = str(uuid.uuid4())
                 task = self.datastore.task_factory(tid)
                 self._populate_task(task, issue_dic)
-                self.sync_engine.record_relationship(local_id = tid,\
-                            remote_id = str(issue_dic['number']), \
-                            meme = SyncMeme(\
-                                        task.get_modified(), \
-                                        issue_dic['modified'], \
+                self.sync_engine.record_relationship(local_id = tid,
+                            remote_id = str(issue_dic['number']),
+                            meme = SyncMeme(
+                                        task.get_modified(),
+                                        issue_dic['modified'],
                                         self.get_id()))
                 self.datastore.push_task(task)
 
             elif action == SyncEngine.UPDATE:
                 task = self.datastore.get_task(tid)
                 self._populate_task(task, issue_dic)
-                meme = self.sync_engine.get_meme_from_remote_id( \
+                meme = self.sync_engine.get_meme_from_remote_id(
                                                     issue_dic['number'])
                 meme.set_local_last_modified(task.get_modified())
                 meme.set_remote_last_modified(issue_dic['modified'])
@@ -184,8 +195,8 @@ class Backend(PeriodicImportBackend):
 
     def _prefetch_issue_data(self, mantis_issue):
         '''
-        We fetch all the necessary info that we need from the mantis_issue to populate a
-        task beforehand (these will be used in _populate_task).
+        We fetch all the necessary info that we need from the mantis_issue to
+        populate a task beforehand (these will be used in _populate_task).
 
         @param mantis_issue: a mantis issue
         @returns dict: a dictionary containing the relevant issue attributes
@@ -200,12 +211,12 @@ class Backend(PeriodicImportBackend):
                    'number': str(mantis_issue['id'])}
 
         try:
-            issue_dic['assigned'] = mantis_issue['handler'].name == self._parameters['username']
+            issue_dic['assigned'] = mantis_issue['handler'].name == \
+                                             self._parameters['username']
         except AttributeError:
             issue_dic['assigned'] = False
-            
-        return issue_dic
 
+        return issue_dic
 
     def _populate_task(self, task, issue_dic):
         '''
@@ -213,7 +224,7 @@ class Backend(PeriodicImportBackend):
 
         @param task: a Task
         @param issue_dic: a mantis issue
-        
+
         '''
         #set task status
         if issue_dic["completed"]:
@@ -226,23 +237,23 @@ class Backend(PeriodicImportBackend):
         text = self._build_issue_text(issue_dic)
         if task.get_excerpt() != text:
             task.set_text(text)
-            
+
         new_tags = set([])
         if self._parameters["tag-with-project-name"]:
-            new_tags = set(['@' + issue_dic['project']])        
+            new_tags = set(['@' + issue_dic['project']])
         current_tags = set(task.get_tags_name())
         #add the new ones
         for tag in new_tags.difference(current_tags):
             task.add_tag(tag)
-        
+
         task.add_remote_id(self.get_id(), issue_dic['number'])
 
     def _build_issue_text(self, issue_dic):
         '''
         Creates the text that describes a issue
         '''
-        text = _("Reported by: ") + issue_dic["reporter"] + '\n' 
-        text += _("Link to issue: " ) + \
+        text = _("Reported by: ") + issue_dic["reporter"] + '\n'
+        text += _("Link to issue: ") + \
                 self._parameters['service-url'] + '/view.php?id=%s' % \
                 (issue_dic["number"]) + '\n'
         text += '\n' + issue_dic["text"]

@@ -88,8 +88,8 @@ class GenericBackend(object):
         '''
         Called each time it is enabled (including on backend creation).
         Please note that a class instance for each disabled backend *is*
-        created, but it's not initialized. 
-        Optional. 
+        created, but it's not initialized.
+        Optional.
         NOTE: make sure to call super().initialize()
         '''
         self._parameters[self.KEY_ENABLED] = True
@@ -121,7 +121,7 @@ class GenericBackend(object):
     def remove_task(self, tid):
         ''' This function is called from GTG core whenever a task must be
         removed from the backend. Note that the task could be not present here.
-        
+
         @param tid: the id of the task to delete
         '''
         pass
@@ -133,7 +133,7 @@ class GenericBackend(object):
         This function is needed only in the default backend (XML localfile,
         currently).
         The xml parameter is an object containing GTG default tasks.
-        
+
         @param xml: an xml object containing the default tasks.
         '''
         pass
@@ -141,7 +141,7 @@ class GenericBackend(object):
     def quit(self, disable = False):
         '''
         Called when GTG quits or the user wants to disable the backend.
-        
+
         @param disable: If disable is True, the backend won't
                         be automatically loaded when GTG starts
         '''
@@ -192,7 +192,7 @@ class GenericBackend(object):
     # For an example, see the GTG/backends/backend_localfile.py file
     # Each dictionary contains the keys:
     PARAM_DEFAULT_VALUE = "default_value" # its default value
-    PARAM_TYPE = "type"  
+    PARAM_TYPE = "type"
     #PARAM_TYPE is one of the following (changing this changes the way
     # the user can configure the parameter)
     TYPE_PASSWORD = "password" #the real password is stored in the GNOME
@@ -220,34 +220,34 @@ class GenericBackend(object):
                                   #    same thing conceptually. It doesn't
                                   #    matter it the naming diverges.
 
-    _static_parameters_obligatory = { \
-                                    KEY_DEFAULT_BACKEND: { \
-                                         PARAM_TYPE: TYPE_BOOL, \
-                                         PARAM_DEFAULT_VALUE: False, \
-                                    }, \
-                                    KEY_HUMAN_NAME: { \
-                                         PARAM_TYPE: TYPE_STRING, \
-                                         PARAM_DEFAULT_VALUE: "", \
-                                    }, \
-                                    KEY_USER: { \
-                                         PARAM_TYPE: TYPE_STRING, \
-                                         PARAM_DEFAULT_VALUE: "", \
-                                    }, \
-                                    KEY_PID: { \
-                                         PARAM_TYPE: TYPE_STRING, \
-                                         PARAM_DEFAULT_VALUE: "", \
-                                    }, \
-                                    KEY_ENABLED: { \
-                                         PARAM_TYPE: TYPE_BOOL, \
-                                         PARAM_DEFAULT_VALUE: False, \
+    _static_parameters_obligatory = {
+                                    KEY_DEFAULT_BACKEND: {
+                                         PARAM_TYPE: TYPE_BOOL,
+                                         PARAM_DEFAULT_VALUE: False,
+                                    },
+                                    KEY_HUMAN_NAME: {
+                                         PARAM_TYPE: TYPE_STRING,
+                                         PARAM_DEFAULT_VALUE: "",
+                                    },
+                                    KEY_USER: {
+                                         PARAM_TYPE: TYPE_STRING,
+                                         PARAM_DEFAULT_VALUE: "",
+                                    },
+                                    KEY_PID: {
+                                         PARAM_TYPE: TYPE_STRING,
+                                         PARAM_DEFAULT_VALUE: "",
+                                    },
+                                    KEY_ENABLED: {
+                                         PARAM_TYPE: TYPE_BOOL,
+                                         PARAM_DEFAULT_VALUE: False,
                                     }}
 
-    _static_parameters_obligatory_for_rw = { \
-                                    KEY_ATTACHED_TAGS: {\
-                                         PARAM_TYPE: TYPE_LIST_OF_STRINGS, \
-                                         PARAM_DEFAULT_VALUE: [ALLTASKS_TAG], \
+    _static_parameters_obligatory_for_rw = {
+                                    KEY_ATTACHED_TAGS: {
+                                         PARAM_TYPE: TYPE_LIST_OF_STRINGS,
+                                         PARAM_DEFAULT_VALUE: [ALLTASKS_TAG],
                                     }}
-    
+
     #Handy dictionary used in type conversion (from string to type)
     _type_converter = {TYPE_STRING: str,
                        TYPE_INT: int,
@@ -269,7 +269,7 @@ class GenericBackend(object):
                 temp_dic[key] = value
         for key, value in cls._static_parameters.iteritems():
             temp_dic[key] = value
-        return temp_dic 
+        return temp_dic
 
     def __init__(self, parameters):
         """
@@ -296,7 +296,7 @@ class GenericBackend(object):
         if Log.is_debugging_mode():
             self.timer_timestep = 5
         else:
-            self.timer_timestep = 1 
+            self.timer_timestep = 1
         self.to_set_timer = None
         self.please_quit = False
         self.cancellation_point = lambda: _cancellation_point(\
@@ -311,8 +311,8 @@ class GenericBackend(object):
         if hasattr(self._parameters, self.KEY_DEFAULT_BACKEND) and \
                    self._parameters[self.KEY_DEFAULT_BACKEND]:
             #default backends should get all the tasks
-            #NOTE: this shouldn't be needed, but it doesn't cost anything and it
-            #      could avoid potential tasks losses.
+            #NOTE: this shouldn't be needed, but it doesn't cost anything and
+            #      it could avoid potential tasks losses.
             return [self.ALLTASKS_TAG]
         try:
             return self._parameters[self.KEY_ATTACHED_TAGS]
@@ -505,9 +505,9 @@ class GenericBackend(object):
 
     def get_parameter_type(self, param_name):
         '''
-        Given the name of a parameter, returns its type. If the parameter is one
-        of the default ones, it does not have a type: in that case, it returns
-        None
+        Given the name of a parameter, returns its type. If the parameter is
+         one of the default ones, it does not have a type: in that case, it
+        returns None
 
         @param param_name: the name of the parameter
         @returns string: the type, or None
@@ -519,8 +519,8 @@ class GenericBackend(object):
 
     def register_datastore(self, datastore):
         '''
-        Setter function to inform the backend about the datastore that's loading
-        it.
+        Setter function to inform the backend about the datastore that's
+        loading it.
 
         @param datastore: a Datastore
         '''
@@ -529,7 +529,6 @@ class GenericBackend(object):
 ###############################################################################
 ### HELPER FUNCTIONS ##########################################################
 ###############################################################################
-
     def _store_pickled_file(self, path, data):
         '''
         A helper function to save some object in a file.
@@ -543,7 +542,7 @@ class GenericBackend(object):
         try:
             os.makedirs(os.path.dirname(path))
         except OSError, exception:
-            if exception.errno != errno.EEXIST: 
+            if exception.errno != errno.EEXIST:
                 raise
 
         # Shift backups
@@ -606,7 +605,6 @@ class GenericBackend(object):
             "loading default data" % self.get_name())
         return default_value
 
-
     def _gtg_task_is_syncable_per_attached_tags(self, task):
         '''
         Helper function which checks if the given task satisfies the filtering
@@ -627,20 +625,19 @@ class GenericBackend(object):
 ###############################################################################
 ### THREADING #################################################################
 ###############################################################################
-
     def __try_launch_setting_thread(self):
         '''
         Helper function to launch the setting thread, if it's not running.
         '''
         if self.to_set_timer == None and self.is_enabled():
-            self.to_set_timer = threading.Timer(self.timer_timestep, \
+            self.to_set_timer = threading.Timer(self.timer_timestep,
                                         self.launch_setting_thread)
             self.to_set_timer.start()
 
     def launch_setting_thread(self, bypass_quit_request = False):
         '''
         This function is launched as a separate thread. Its job is to perform
-        the changes that have been issued from GTG core. 
+        the changes that have been issued from GTG core.
         In particular, for each task in the self.to_set queue, a task
         has to be modified or to be created (if the tid is new), and for
         each task in the self.to_remove queue, a task has to be deleted
@@ -656,7 +653,7 @@ class GenericBackend(object):
             except IndexError:
                 break
             tid = task.get_id()
-            if tid  not in self.to_remove:
+            if tid not in self.to_remove:
                 self.set_task(task)
 
         while not self.please_quit or bypass_quit_request:
@@ -672,7 +669,7 @@ class GenericBackend(object):
         ''' Save the task in the backend. In particular, it just enqueues the
         task in the self.to_set queue. A thread will shortly run to apply the
         requested changes.
-        
+
         @param task: the task that should be saved
         '''
         tid = task.get_id()
@@ -683,8 +680,8 @@ class GenericBackend(object):
     def queue_remove_task(self, tid):
         '''
         Queues task to be removed. In particular, it just enqueues the
-        task in the self.to_remove queue. A thread will shortly run to apply the
-        requested changes.
+        task in the self.to_remove queue. A thread will shortly run to apply
+        the requested changes.
 
         @param tid: The Task ID of the task to be removed
         '''
