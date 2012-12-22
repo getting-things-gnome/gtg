@@ -32,6 +32,7 @@ def get_text(node):
     else:
         return ""
 
+
 def read_node(xmlnode, name):
     node_list =xmlnode.getElementsByTagName(name)
     if len(node_list) > 0:
@@ -41,7 +42,8 @@ def read_node(xmlnode, name):
 
 
 #Take an empty task, an XML node and return a Task.
-def task_from_xml(task, xmlnode) :
+
+def task_from_xml(task, xmlnode):
     #print "********************************"
     #print xmlnode.toprettyxml()
 
@@ -55,7 +57,7 @@ def task_from_xml(task, xmlnode) :
     duedate = Date(read_node(xmlnode, "duedate"))
     task.set_due_date(duedate)
 
-    startdate = Date(read_node(xmlnode,"startdate"))
+    startdate = Date(read_node(xmlnode, "startdate"))
     task.set_start_date(startdate)
 
     modified = read_node(xmlnode, "modified")
@@ -63,7 +65,7 @@ def task_from_xml(task, xmlnode) :
         modified = datetime.strptime(modified, "%Y-%m-%dT%H:%M:%S")
         task.set_modified(modified)
 
-    tags = xmlnode.getAttribute("tags").replace(' ','')
+    tags = xmlnode.getAttribute("tags").replace(' ', '')
     tags = (tag for tag in tags.split(',') if tag.strip() != "")
     for tag in tags:
         #FIXME why unescape????
@@ -89,7 +91,8 @@ def task_from_xml(task, xmlnode) :
         task.set_attribute(key, value, namespace=namespace)
 
     # FIXME do we need remote task ids? I don't think so
-    # FIXME if so => rework them into a more usable structure!!! (like attributes)
+    # FIXME if so => rework them into a more usable structure!!!
+    #                (like attributes)
     #REMOTE TASK IDS
     '''
     remote_ids_list = xmlnode.getElementsByTagName("task-remote-ids")
@@ -105,40 +108,44 @@ def task_from_xml(task, xmlnode) :
 
 #FIXME maybe pretty XML should be enough for this...
 #Task as parameter the doc where to put the XML node
-def task_to_xml(doc,task) :
+
+def task_to_xml(doc, task):
     t_xml = doc.createElement("task")
-    t_xml.setAttribute("id",task.get_id())
-    t_xml.setAttribute("status" , task.get_status())
-    t_xml.setAttribute("uuid" , task.get_uuid())
+    t_xml.setAttribute("id", task.get_id())
+    t_xml.setAttribute("status", task.get_status())
+    t_xml.setAttribute("uuid", task.get_uuid())
     tags_str = ""
-    for tag in task.get_tags_name(): 
+    for tag in task.get_tags_name():
         tags_str = tags_str + saxutils.escape(str(tag)) + ","
     t_xml.setAttribute("tags", tags_str[:-1])
-    cleanxml.addTextNode(doc,t_xml,"title",task.get_title())
-    cleanxml.addTextNode(doc,t_xml,"duedate", task.get_due_date().xml_str())
-    cleanxml.addTextNode(doc,t_xml,"modified",task.get_modified_string())
-    cleanxml.addTextNode(doc,t_xml,"startdate", task.get_start_date().xml_str())
-    cleanxml.addTextNode(doc,t_xml,"donedate", task.get_closed_date().xml_str())
+    cleanxml.addTextNode(doc, t_xml, "title", task.get_title())
+    cleanxml.addTextNode(doc, t_xml, "duedate", task.get_due_date().xml_str())
+    cleanxml.addTextNode(doc, t_xml, "modified", task.get_modified_string())
+    cleanxml.addTextNode(doc, t_xml, "startdate",
+                                              task.get_start_date().xml_str())
+    cleanxml.addTextNode(doc, t_xml, "donedate",
+                                             task.get_closed_date().xml_str())
     childs = task.get_children()
-    for c in childs :
-        cleanxml.addTextNode(doc,t_xml,"subtask",c)
+    for c in childs:
+        cleanxml.addTextNode(doc, t_xml, "subtask", c)
     for a in task.attributes:
-        namespace,key=a
-        content=task.attributes[a]
+        namespace, key=a
+        content = task.attributes[a]
         element = doc.createElement('attribute')
         element.setAttribute("namespace", namespace)
         element.setAttribute("key", key)
         element.appendChild(doc.createTextNode(content))
         t_xml.appendChild(element)
     tex = task.get_text()
-    if tex :
+    if tex:
         #We take the xml text and convert it to a string
-        #but without the "<content />" 
+        #but without the "<content />"
         element = minidom.parseString(tex)
-        temp = element.firstChild.toxml().partition("<content>")[2] #pylint: disable-msg=E1103
+        temp = element.firstChild.toxml().partition("<content>")[2]
+        #pylint: disable-msg=E1103
         desc = temp.partition("</content>")[0]
         #t_xml.appendChild(element.firstChild)
-        cleanxml.addTextNode(doc,t_xml,"content",desc)
+        cleanxml.addTextNode(doc, t_xml, "content", desc)
     #self.__write_textnode(doc,t_xml,"content",t.get_text())
 
     #REMOTE TASK IDS

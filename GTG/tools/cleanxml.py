@@ -17,7 +17,8 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-import os, xml.dom.minidom
+import os
+import xml.dom.minidom
 import shutil
 import sys
 import time
@@ -32,17 +33,19 @@ enter = "\n"
 BACKUP_NBR = 7
 
 #Those two functions are there only to be able to read prettyXML
-#Source : http://yumenokaze.free.fr/?/Informatique/Snipplet/Python/cleandom       
-def cleanDoc(document,indent="",newl=""):
-    node = document.documentElement
-    cleanNode(node,indent,newl)
+#Source: http://yumenokaze.free.fr/?/Informatique/Snipplet/Python/cleandom
 
-def cleanNode(currentNode,indent,newl):
+def cleanDoc(document, indent="", newl=""):
+    node = document.documentElement
+    cleanNode(node, indent, newl)
+
+
+def cleanNode(currentNode, indent, newl):
     myfilter = indent+newl
     if currentNode.hasChildNodes:
         toremove = []
         for node in currentNode.childNodes:
-            if node.nodeType == 3 :
+            if node.nodeType == 3:
                 val = node.nodeValue.lstrip(myfilter).strip(myfilter)
                 if val == "":
                     toremove.append(node)
@@ -52,36 +55,39 @@ def cleanNode(currentNode,indent,newl):
         for n in toremove:
             currentNode.removeChild(n)
         for node in currentNode.childNodes:
-            cleanNode(node,indent,newl)
+            cleanNode(node, indent, newl)
 
-def cleanString(string,indent="",newl=""):
+
+def cleanString(string, indent="", newl=""):
     #we will remove the pretty XML stuffs.
     #Firt, we remove the \n and tab in elements
     e = re.compile('>\n\t*')
-    toreturn = e.sub('>',string)
+    toreturn = e.sub('>', string)
     #then we remove the \n tab before closing elements
     f = re.compile('\n\t*</')
-    toreturn = f.sub('</',toreturn)
+    toreturn = f.sub('</', toreturn)
     return toreturn
 
 #This add a text node to the node parent. We don't return anything
 #Because the doc object itself is modified.
-def addTextNode(doc,parent,title,content) :
-    if content :
+
+def addTextNode(doc, parent, title, content):
+    if content:
         element = doc.createElement(title)
         parent.appendChild(element)
         element.appendChild(doc.createTextNode(content))
-        
+
 #This is a method to read the textnode of the XML
-def readTextNode(node,title) :
+
+def readTextNode(node, title):
     n = node.getElementsByTagName(title)
-    if n and n[0].hasChildNodes() :
+    if n and n[0].hasChildNodes():
         content = n[0].childNodes[0].nodeValue
-        if content :
+        if content:
             return content
     return None
 
-            
+
 def _try_openxmlfile(zefile, root):
     """ Open an XML file and clean whitespaces in it """
     f = open(zefile, "r")
@@ -131,7 +137,7 @@ def openxmlfile(zefile, root):
     except IOError, msg:
         print msg
         sys.exit(1)
-        
+
     except xml.parsers.expat.ExpatError, msg:
         errormsg = "Error parsing XML file %s: %s" % (zefile, msg)
         Log.error(errormsg)
@@ -160,14 +166,16 @@ def openxmlfile(zefile, root):
 
 
 #Return a doc element with only one root element of the name "root"
-def emptydoc(root) :
+
+def emptydoc(root):
     doc = xml.dom.minidom.Document()
     rootproject = doc.createElement(root)
     doc.appendChild(rootproject)
     return doc, rootproject
 
 #write a XML doc to a file
-def savexml(zefile,doc,backup=False):
+
+def savexml(zefile, doc, backup=False):
 #    print "writing %s file" %(zefile)
     tmpfile = zefile+'__'
     backup_name = _get_backup_name(zefile)
@@ -193,25 +201,25 @@ def savexml(zefile,doc,backup=False):
                 f.close()
                 return False
             f.close()
-            
+
             if os.path.exists(tmpfile):
                 os.unlink(tmpfile)
-                
-            if backup :
+
+            if backup:
                 #We will now backup the file
                 backup_nbr = BACKUP_NBR
                 #We keep BACKUP_NBR versions of the file
                 #The 0 is the youngest one
-                while backup_nbr > 0 :
+                while backup_nbr > 0:
                     older = "%s.bak.%s" % (backup_name, backup_nbr)
                     backup_nbr -= 1
                     newer = "%s.bak.%s" % (backup_name, backup_nbr)
-                    if os.path.exists(newer) :
-                        shutil.move(newer,older)
+                    if os.path.exists(newer):
+                        shutil.move(newer, older)
                 #The bak.0 is always a fresh copy of the closed file
                 #So that it's not touched in case of bad opening next time
                 current = "%s.bak.0" % backup_name
-                shutil.copy(zefile,current)
+                shutil.copy(zefile, current)
 
                 daily_backup = "%s.%s.bak" % (backup_name,
                         datetime.date.today().strftime("%Y-%m-%d"))

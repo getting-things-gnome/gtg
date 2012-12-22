@@ -100,6 +100,7 @@ def check_instance(directory, uri_list = []):
     with open(pidfile, "w") as f:
         f.write(`os.getpid()`)
 
+
 def remove_pidfile(directory):
     """ Remove the pid file """
     pidfile = os.path.join(directory, "gtg.pid")
@@ -129,6 +130,7 @@ def main(options=None, args=None):
         manager.main(once_thru=options.boot_test, uri_list = args)
     core_main_quit(req, ds)
 
+
 def core_main_init(options = None, args = None):
     '''
     Part of the main function prior to the UI initialization.
@@ -154,6 +156,7 @@ def core_main_init(options = None, args = None):
     # Launch task browser
     req = ds.get_requester()
     return ds, req
+
 
 def core_main_quit(req, ds):
     '''
