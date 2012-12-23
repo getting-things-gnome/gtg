@@ -84,17 +84,19 @@ class pluginUrgencyColor:
     def bgcolor(self, node, standard_color):
         color = self.get_node_bgcolor(node)
         
-        def __get_defined_child_list(node):
+        def __get_active_child_list(node):
             """ This function recursively fetches a list
-            of all the children of a task. """
+            of all the children of a task which are active
+            (i.e - the subtasks which are not marked as 'Done' or 'Dismissed' """
             child_list = []
             for child_id in node.children:
                 child = node.req.get_task(child_id)
-                child_list += __get_defined_child_list(child)
-                child_list.append(child_id)
+                child_list += __get_active_child_list(child)
+                if child.get_status() in [child.STA_ACTIVE]:
+                    child_list.append(child_id)
             return child_list
 
-        child_list = __get_defined_child_list(node)
+        child_list = __get_active_child_list(node)
 
         for child_id in child_list:
             child = self.req.get_task(child_id)
