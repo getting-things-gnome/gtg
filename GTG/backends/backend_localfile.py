@@ -48,9 +48,6 @@ class Backend(GenericBackend):
     listen for eventual file changes
     """
 
-    # default path for filenames
-    DEFAULT_PATH = CoreConfig().get_data_dir()
-
     # General description of the backend: these are used to show a description
     # of the backend to the user when s/he is considering adding it.
     # BACKEND_NAME is the name of the backend used internally (it must be
@@ -73,16 +70,11 @@ class Backend(GenericBackend):
     # parameter has a name, a type and a default value.
     # Here, we define a parameter "path", which is a string, and has a default
     # value as a random file in the default path
-    # NOTE: to keep this simple, the filename default path is the same until
-    #      GTG is restarted. I consider this a minor annoyance, and we can
-    #      avoid coding the change of the path each time a backend is
-    #      created (invernizzi)
     _static_parameters = {
         "path": {
             GenericBackend.PARAM_TYPE: GenericBackend.TYPE_STRING,
             GenericBackend.PARAM_DEFAULT_VALUE:
-                 os.path.join(DEFAULT_PATH, "gtg_tasks-%s.xml" %\
-                 (uuid.uuid4()))}}
+                 "gtg_tasks.xml"}}
 
     def __init__(self, parameters):
         """
@@ -100,23 +92,30 @@ class Backend(GenericBackend):
         #NOTE: retrocompatibility from the 0.2 series to 0.3.
         # We convert "filename" to "path and we forget about "filename "
         if "need_conversion" in parameters:
-            parameters["path"] = os.path.join(self.DEFAULT_PATH,
-                                        parameters["need_conversion"])
-            del parameters["need_conversion"]
+            parameters["path"] = parameters.pop("need_conversion")
         if not self.KEY_DEFAULT_BACKEND in parameters:
             parameters[self.KEY_DEFAULT_BACKEND] = True
-        ####
 
         self.doc, self.xmlproj = cleanxml.openxmlfile(
-                                self._parameters["path"], "project")
+                                self.get_path(), "project")
         # Make safety daily backup after loading
-        cleanxml.savexml(self._parameters["path"], self.doc, backup=True)
+        cleanxml.savexml(self.get_path(), self.doc, backup=True)
+
+    def get_path(self):
+        """
+        Return the current path to XML
+
+        Path can be relative to projects.xml
+        """
+        path = self._parameters["path"]
+        data_dir = CoreConfig().get_data_dir()
+        return os.path.join(data_dir, path)
 
     def initialize(self):
         """ This is called when a backend is enabled """
         super(Backend, self).initialize()
         self.doc, self.xmlproj = cleanxml.openxmlfile(
-                                self._parameters["path"], "project")
+                                self.get_path(), "project")
 
     def this_is_the_first_run(self, xml):
         """ Called upon the very first GTG startup.
@@ -127,9 +126,9 @@ class Backend(GenericBackend):
         @param xml: an xml object containing the default tasks.
         """
         self._parameters[self.KEY_DEFAULT_BACKEND] = True
-        cleanxml.savexml(self._parameters["path"], xml)
+        cleanxml.savexml(self.get_path(), xml)
         self.doc, self.xmlproj = cleanxml.openxmlfile(
-                        self._parameters["path"], "project")
+                        self.get_path(), "project")
 
     def start_get_tasks(self):
         """ This function starts submitting the tasks from the XML file into
@@ -180,7 +179,7 @@ class Backend(GenericBackend):
 
         #if the XML object has changed, we save it to file
         if modified and self._parameters["path"] and self.doc:
-            cleanxml.savexml(self._parameters["path"], self.doc)
+            cleanxml.savexml(self.get_path(), self.doc)
 
     def remove_task(self, tid):
         """ This function is called from GTG core whenever a task must be
@@ -196,4 +195,4 @@ class Backend(GenericBackend):
 
         #We save the XML file only if it's necessary
         if modified:
-            cleanxml.savexml(self._parameters["path"], self.doc, backup=True)
+            cleanxml.savexml(self.get_path(), self.doc, backup=True)
