@@ -5,6 +5,7 @@
     * Fix for bug #1062659: "Allow locale format of date", by Nimit Shah
     * Fix for bug #1047753: Changing due date doesn't update "days left" information, by Codee
     * Fix for bug #1090301: "Deactivating the untouched tasks plugin leaves "add @untouched tag" in plugins menu", by Nimit Shah
+    * Fix for bug #1039651: Urgency coloring of parent tasks in collapsed view, by Parin Porecha
 
 2012-11-06 Getting Things GNOME! 0.3
     * Hide tasks with due date someday, #931376
