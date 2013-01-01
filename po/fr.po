@@ -8,15 +8,15 @@ msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2012-09-11 10:37+0200\n"
-"PO-Revision-Date: 2012-11-16 16:37+0000\n"
-"Last-Translator: Timothee Bernard <bernard.timothee@gmail.com>\n"
+"PO-Revision-Date: 2012-12-27 21:56+0000\n"
+"Last-Translator: François <Unknown>\n"
 "Language-Team: French <fr@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Launchpad-Export-Date: 2012-11-17 04:37+0000\n"
-"X-Generator: Launchpad (build 16278)\n"
+"X-Launchpad-Export-Date: 2012-12-28 05:12+0000\n"
+"X-Generator: Launchpad (build 16378)\n"
 
 #: GTG/plugins/export/export_templates/description_pocketmod.py:18
 msgid "Foldable booklet (PDF)"
@@ -184,7 +184,7 @@ msgstr "Cette note Tomboy n'existe plus. Voulez-vous la créer ?"
 
 #: GTG/plugins/hamster/hamster.py:37
 msgid "Start a new activity in Hamster Time Tracker "
-msgstr ""
+msgstr "Démarer une nouvelle activité dans le gestionnaire de temps Hamster "
 
 #: GTG/plugins/hamster/hamster.py:172
 msgid "Start task in Hamster"
@@ -479,7 +479,7 @@ msgstr ""
 
 #: GTG/core/firstrun_tasks.py:224
 msgid "Reporting Bugs"
-msgstr ""
+msgstr "Rapport d'anomalies"
 
 #: GTG/core/firstrun_tasks.py:225
 msgid ""
@@ -509,7 +509,7 @@ msgstr ""
 
 #: GTG/core/firstrun_tasks.py:241
 msgid "Learn How To Use The Quick Add Entry"
-msgstr ""
+msgstr "Apprendre à utiliser l'ajout rapide d'entrée"
 
 #: GTG/core/firstrun_tasks.py:242
 msgid ""
@@ -694,7 +694,7 @@ msgstr "Tâches sans étiquettes"
 
 #: GTG/core/treefactory.py:102 GTG/gtk/browser/browser.py:1518
 msgid "Search"
-msgstr ""
+msgstr "Rechercher"
 
 #: GTG/tests/test_dates.py:70 GTG/tools/dates.py:57
 msgid "later"
@@ -706,7 +706,7 @@ msgstr "Identi.ca"
 
 #: GTG/backends/backend_identica.py:58
 msgid "Imports your identi.ca  messages into your GTG "
-msgstr ""
+msgstr "Importer ses messages identi.ca dans GTG "
 
 #: GTG/backends/backend_gnote.py:42
 msgid "Gnote"
@@ -787,7 +787,7 @@ msgstr "Importe vos messages twitter dans votre GTG "
 
 #: GTG/backends/backend_evolution.py:69
 msgid "Evolution tasks"
-msgstr ""
+msgstr "Tâches provenant d'Evolution"
 
 #: GTG/backends/backend_evolution.py:73
 msgid "Lets you synchronize your GTG tasks with Evolution tasks"
@@ -935,7 +935,7 @@ msgstr ""
 
 #: GTG/gtk/backends_dialog/addpanel.py:69
 msgid "Select synchronization service:"
-msgstr ""
+msgstr "Sélectionner un service de synchronisation :"
 
 #: GTG/gtk/backends_dialog/addpanel.py:173
 msgid "Syncing is <span color=\"red\">disabled</span>"
@@ -973,7 +973,7 @@ msgstr "Nom d'utilisateur"
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:82
 msgid "Service URL"
-msgstr ""
+msgstr "URL du service"
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:86
 msgid "Import tasks from @ replies "
@@ -989,11 +989,11 @@ msgstr "Importer des tâches depuis vos tweets"
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:99
 msgid "Tag your GTG tasks with the bug tags"
-msgstr ""
+msgstr "Marquer vos tâches GTG avec le marqueur bug"
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:103
 msgid "Tag your GTG tasks with the project targeted by the bug"
-msgstr ""
+msgstr "Marquer vos tâches GTG avec le projet concerné par le bug"
 
 #: GTG/gtk/backends_dialog/parameters_ui/passwordui.py:50
 msgid "Password:"
@@ -1016,12 +1016,12 @@ msgstr[1] " minutes"
 #: GTG/gtk/backends_dialog/__init__.py:75
 #, python-format
 msgid "Synchronization Services - %s"
-msgstr ""
+msgstr "Services de synchronisation - %s"
 
 #: GTG/gtk/backends_dialog/__init__.py:302
 #, python-format
 msgid "Do you really want to remove the '%s' synchronization service?"
-msgstr ""
+msgstr "Voulez-vous vraiment supprimer le service de synchronisation '%s' ?"
 
 #: GTG/gtk/backends_dialog/configurepanel.py:149
 msgid "Disable syncing"
@@ -1033,7 +1033,7 @@ msgstr "Activer la synchronisation"
 
 #: GTG/gtk/backends_dialog/configurepanel.py:159
 msgid "This is the default synchronization service"
-msgstr ""
+msgstr "Ceci est le service de synchronisation par défaut"
 
 #: GTG/gtk/backends_dialog/configurepanel.py:162
 msgid "Syncing is enabled."
@@ -1057,13 +1057,17 @@ msgid ""
 msgid_plural ""
 "Deleting a task cannot be undone, and will delete the following tasks: "
 msgstr[0] ""
+"La suppression d'une tâche est irréversible et supprimera la tâche suivante "
+": "
 msgstr[1] ""
+"La suppression d'une tâche est irréversible et supprimera les tâches "
+"suivantes : "
 
 #: GTG/gtk/delete_dialog.py:94
 msgid "Are you sure you want to delete this task?"
 msgid_plural "Are you sure you want to delete these tasks?"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Voulez-vous vraiment supprimer cette tâche ?"
+msgstr[1] "Voulez-vous vraiment supprimer ces tâches ?"
 
 #: GTG/gtk/delete_dialog.py:100
 msgid "Keep selected task"
@@ -1143,7 +1147,7 @@ msgstr "Marquer comme fait"
 
 #: GTG/gtk/editor/__init__.py:32 GTG/gtk/browser/__init__.py:38
 msgid "Mark as not Done"
-msgstr ""
+msgstr "Marquer comme non réalisé"
 
 #: GTG/gtk/editor/__init__.py:34 GTG/gtk/browser/__init__.py:42
 msgid "Undismiss"
@@ -1208,7 +1212,7 @@ msgstr[1] "Il y a %(days)d jours"
 #: GTG/gtk/preferences.py:80
 #, python-format
 msgid "Preferences - %s"
-msgstr ""
+msgstr "Préférences - %s"
 
 #: GTG/gtk/plugins.py:142
 #, python-format
@@ -1241,7 +1245,7 @@ msgstr "<b>Gestionnaire de tâches</b>"
 
 #: GTG/gtk/preferences.glade.h:6
 msgid "Font :"
-msgstr ""
+msgstr "Police :"
 
 #: GTG/gtk/preferences.glade.h:7
 msgid "<b>Editor</b>"
@@ -1249,23 +1253,23 @@ msgstr ""
 
 #: GTG/gtk/preferences.glade.h:8
 msgid "page 1"
-msgstr ""
+msgstr "page 1"
 
 #: GTG/gtk/preferences.glade.h:9
 msgid "page 2"
-msgstr ""
+msgstr "page 2"
 
 #: GTG/gtk/preferences.glade.h:10
 msgid "page 3"
-msgstr ""
+msgstr "page 3"
 
 #: GTG/gtk/browser/tag_editor.py:87
 msgid "Remove selected icon"
-msgstr ""
+msgstr "Enlever les icones sélectionnées"
 
 #: GTG/gtk/browser/tag_editor.py:224
 msgid "Name : "
-msgstr ""
+msgstr "Nom : "
 
 #: GTG/gtk/browser/tag_editor.py:231
 msgid "Show Tag in Work View :"
