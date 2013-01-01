@@ -1,26 +1,26 @@
-# Spanish translation for gtg
-# Copyright (c) 2009 Rosetta Contributors and Canonical Ltd 2009
+# Urdu translation for gtg
+# Copyright (c) 2012 Rosetta Contributors and Canonical Ltd 2012
 # This file is distributed under the same license as the gtg package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2009.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2012.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2012-09-11 10:37+0200\n"
-"PO-Revision-Date: 2012-12-30 22:05+0000\n"
-"Last-Translator: Adolfo Jayme Barrientos <fitoschido@gmail.com>\n"
-"Language-Team: Spanish <es@li.org>\n"
+"PO-Revision-Date: 2012-12-01 10:40+0000\n"
+"Last-Translator: Abdul Rauf <abdulraufhaseeb@gmail.com>\n"
+"Language-Team: Urdu <ur@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2012-12-31 04:41+0000\n"
-"X-Generator: Launchpad (build 16378)\n"
+"X-Launchpad-Export-Date: 2012-12-02 04:39+0000\n"
+"X-Generator: Launchpad (build 16319)\n"
 
 #: GTG/plugins/export/export_templates/description_pocketmod.py:18
 msgid "Foldable booklet (PDF)"
-msgstr "Cuadernillo plegable (PDF)"
+msgstr "Foldable کتابچہ (PDF)"
 
 #: GTG/plugins/export/export_templates/description_pocketmod.py:19
 msgid ""
@@ -30,132 +30,131 @@ msgid ""
 "booklet. Packages <b>pdflatex</b>, <b>pdftk</b> and <b>pdfjam</b>\n"
 "are required."
 msgstr ""
+"بنانے کے سانچے\n"
+"<a href=\"http://www.pocketmod.com\"> PocketMod </ a> پر جس میں ایک چھوٹا سا "
+"foldable ہے\n"
+"کتابچہ. پیکجوں کے <b> pdflatex کریں </ b>، pdftk کے <b> </ b> پر اور <b> "
+"pdfjam کریں </ b>\n"
+"کی ضرورت ہے."
 
 #: GTG/plugins/export/export_templates/description_sexy.py:18
 msgid "A professional-looking HTML page"
-msgstr "Página HTML de aspecto profesional"
+msgstr "ایک پیشہ ورانہ نظر آنے والے HTML صفحہ"
 
 #: GTG/plugins/export/export_templates/description_sexy.py:19
 msgid ""
 "A template to create a HTML page with some tasks and tags. Tags colors are "
 "also displayed."
 msgstr ""
-"Una plantilla para crear una página HTML con algunas tareas y etiquetas. Se "
-"mostrarán también los colores de etiquetas."
+"کچھ کاموں اور ٹیگز کے ساتھ ایک HTML صفحے کو بنانے کے لئے سانچے. ٹیگز رنگ بھی "
+"دکھائے جاتے ہیں."
 
 #: GTG/plugins/export/export_templates/description_simple.py:18
 msgid "A simple Web page that can be easily printed."
-msgstr "Página web simple, fácil de imprimir"
+msgstr "ایک سادہ ویب صفحے آسانی سے رکھا جائے طباعت کیا جا سکتا ہے."
 
 #: GTG/plugins/export/export_templates/description_simple.py:19
 msgid ""
 "A template to create a simple HTML page with some tasks that can be easily "
 "printed."
 msgstr ""
-"Plantilla para crear una pagina html simple con tareas que pueden ser "
-"fácilmente impresas."
+"کچھ کاموں آسانی سے رکھا جائے طباعت کیا جا سکتا ہے کے ساتھ ایک سادہ HTML صفحے "
+"پر تخلیق کے لئے ایک سانچے."
 
 #: GTG/plugins/export/export_templates/description_textual.py:21
 msgid "Text-only"
-msgstr "Solo texto"
+msgstr "صرف متن"
 
 #: GTG/plugins/export/export_templates/description_textual.py:22
 msgid "A template to create a simple text file with some tasks."
-msgstr ""
-"Una plantilla para crear un archivo de texto sencillo con algunas tareas."
+msgstr "کچھ کاموں کے ساتھ ایک سادہ ٹیکسٹ فائل کو بنانے کے لئے سانچے."
 
 #: GTG/plugins/export/export_templates/description_statusrpt.py:18
 msgid "Status report"
-msgstr "Informe de estado"
+msgstr "حیثیت کی رپورٹ"
 
 #: GTG/plugins/export/export_templates/description_statusrpt.py:19
 msgid "A template to create a compact text file listing only task titles."
 msgstr ""
-"Una plantilla para crear un archivo de texto compacto que enlista solo los "
-"títulos de las tareas."
+"ایک کمپیکٹ ٹیکسٹ فائل کی لسٹنگ صرف کام کے عنوان کو بنانے کے لئے سانچے."
 
 #: GTG/plugins/export/export.py:120
 msgid "No task matches your criteria. Empty report can't be generated."
 msgstr ""
-"No hay tareas que coincidan con su búsqueda. No se puede generar un reporte "
-"vacío."
+"کوئی بھی کام آپ کے معیار سے میل کھاتا ہے.خالی رپورٹ نہیں کیا جا سکتا ہے."
 
 #: GTG/plugins/export/export.py:138
 #, python-format
 msgid "GTG could not generate the document: %s"
-msgstr "GTG no pudo generar el documento: %s"
+msgstr ""
 
 #: GTG/plugins/export/export.py:184
 msgid "Export the tasks currently listed"
-msgstr "Exportar la lista de tareas actual"
+msgstr "فی الحال درج کاموں برآمد"
 
 #: GTG/plugins/export/export.py:322
 msgid "Choose where to save your list"
-msgstr "Escoja donde quiere guardar su lista"
+msgstr "جہاں آپ کی فہرست کو بچانے کے لئے منتخب کریں"
 
 #: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:1
 msgid "Set the task's location"
-msgstr "Establecer la ubicación de la tarea"
+msgstr "کام مقام مقرر کریں"
 
 #: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:2
 msgid "Associate with new tag"
-msgstr "Asociar con una nueva etiqueta"
+msgstr "نیا ٹیگ کے ساتھ مربوط کریں"
 
 #: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:3
 msgid "Associate with existing tag"
-msgstr "Asociar con una etiqueta existente"
+msgstr "موجودہ ٹیگ کے ساتھ مربوط کریں"
 
 #: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:4
 msgid "Geolocalized-tasks Preferences"
-msgstr "Preferencias de tareas geolocalizadas"
+msgstr "جیو مقامی کاموں کی ترجیحات"
 
 #: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:5
 msgid "Use network"
-msgstr "Usar la red"
+msgstr "نیٹ ورک کا استعمال کریں"
 
 #: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:6
 msgid "Use cellphone"
-msgstr "Utilizar teléfono móvil"
+msgstr "سیل فون کا استعمال"
 
 #: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:7
 msgid "Use gps"
-msgstr "Usar GPS"
+msgstr ""
 
 #: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:8
 msgid "<b>Location Determination Method</b>"
-msgstr "<b>Método para determinar la ubicación</b>"
+msgstr ""
 
 #: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:9
 msgid ""
 "<small>Distance in kilometers from \n"
 "the current location.</small>"
 msgstr ""
-"<small>Distancia en kilómetros desde \n"
-"la ubicación actual.</small>"
 
 #: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:11
 msgid "<b>Proximity Factor</b>"
-msgstr "<b>Factor de proximidad</b>"
+msgstr ""
 
 #: GTG/plugins/notification_area/notification_area.py:231
 msgid "Add _New Task"
-msgstr "Añadir _nueva tarea"
+msgstr ""
 
 #: GTG/plugins/notification_area/notification_area.py:236
 msgid "_View Main Window"
-msgstr "_Ver ventana principal"
+msgstr ""
 
 #: GTG/plugins/tomboy/tomboy.py:76
 msgid ""
 "Tomboy/Gnote not found. Please install it or disable the Tomboy/Gnote plugin "
 "in GTG"
 msgstr ""
-"No se ha encontrado Tomboy/Gnote. Instálelo o desactive el complemento "
-"Tomboy/Gnote en GTG"
 
 #: GTG/plugins/tomboy/tomboy.py:118
 msgid "Add Tomboy note"
-msgstr "Añadir una nota a Tomboy"
+msgstr ""
 
 #: GTG/plugins/tomboy/tomboy.py:191
 #, python-format
@@ -163,20 +162,18 @@ msgid ""
 "%s seems to be installed on your system, but it does not provide a DBus "
 "interface which is required by the Tomboy/Gnote plugin in GTG."
 msgstr ""
-"%s está instalado en el sistema, pero no provee una interfaz DBus que es "
-"requerida por el plugin Tomboy/Gnote en GTG"
 
 #: GTG/plugins/tomboy/tomboy.py:237
 msgid "That note does not exist!"
-msgstr "¡Esa nota no existe!"
+msgstr ""
 
 #: GTG/plugins/tomboy/tomboy.py:242
 msgid "That note does not exist. Do you want to create a new one?"
-msgstr "Esa nota no existe. ¿Quiere crear una nueva?"
+msgstr ""
 
 #: GTG/plugins/tomboy/tomboy.py:270
 msgid "This Tomboy note does not exist anymore. Do you want to create it?"
-msgstr "Esta nota Tomboy ya no existe. ¿Desea crearla?"
+msgstr ""
 
 #: GTG/plugins/hamster/hamster.py:37
 msgid "Start a new activity in Hamster Time Tracker "
@@ -184,20 +181,20 @@ msgstr ""
 
 #: GTG/plugins/hamster/hamster.py:172
 msgid "Start task in Hamster"
-msgstr "Iniciar tarea en Hamster"
+msgstr ""
 
 #: GTG/plugins/hamster/hamster.py:177
 msgid "Start in Hamster"
-msgstr "Iniciar en Hamster"
+msgstr ""
 
 #: GTG/plugins/send_email/sendEmail.py:44
 msgid "Send via email"
-msgstr "Enviar por correo electrónico"
+msgstr ""
 
 #: GTG/plugins/send_email/sendEmail.py:68
 #, python-format
 msgid "Status: %s"
-msgstr "Estado: %s"
+msgstr ""
 
 #: GTG/plugins/send_email/sendEmail.py:69
 #, python-format
@@ -205,8 +202,6 @@ msgid ""
 "\n"
 "Tags: %s"
 msgstr ""
-"\n"
-"Etiquetas: %s"
 
 #: GTG/plugins/send_email/sendEmail.py:70
 #, python-format
@@ -215,9 +210,6 @@ msgid ""
 "Subtasks:\n"
 "%s"
 msgstr ""
-"\n"
-"Subtareas:\n"
-"%s"
 
 #: GTG/plugins/send_email/sendEmail.py:72
 #, python-format
@@ -226,61 +218,55 @@ msgid ""
 "Task content:\n"
 "%s"
 msgstr ""
-"\n"
-"Contenido de la tarea:\n"
-"%s"
 
 #: GTG/plugins/send_email/sendEmail.py:75
 #, python-format
 msgid "Task: %(task_title)s"
-msgstr "Tarea: %(task_title)s"
+msgstr ""
 
 #: GTG/core/plugins/__init__.py:33
 msgid "Everything necessary to run this plugin is available."
 msgstr ""
-"Todo lo que es necesario para ejecutar este complemento está disponible."
 
 #: GTG/core/plugins/__init__.py:34
 msgid "The plugin can not be loaded"
-msgstr "El complemento no se ha podido cargar"
+msgstr ""
 
 #: GTG/core/plugins/__init__.py:35
 msgid "Some python modules are missing"
-msgstr "Faltan algunos módulos de python"
+msgstr ""
 
 #: GTG/core/plugins/__init__.py:36
 msgid "Please install the following python modules:"
-msgstr "Por favor, instale los siguientes módulos de python:"
+msgstr ""
 
 #: GTG/core/plugins/__init__.py:38
 msgid "Some remote dbus objects are missing."
-msgstr "Faltan algunos objetos remotos de dbus."
+msgstr ""
 
 #: GTG/core/plugins/__init__.py:39
 msgid "Please start the following applications:"
-msgstr "Por favor, inicie las siguientes aplicaciones:"
+msgstr ""
 
 #: GTG/core/plugins/__init__.py:41
 msgid "Some modules and remote dbus objects are missing."
-msgstr "Faltan algunos módulos y objetos remotos de dbus."
+msgstr ""
 
 #: GTG/core/plugins/__init__.py:42
 msgid "Please install or start the following components:"
-msgstr "Por favor, instale o inicie los siguientes componentes:"
+msgstr ""
 
 #: GTG/core/plugins/__init__.py:44
 msgid "Unknown error while loading the plugin."
-msgstr "Error desconocido al intentar cargar el complemento."
+msgstr ""
 
 #: GTG/core/plugins/__init__.py:45
 msgid "Very helpful message, isn't it? Please report a bug."
 msgstr ""
-"Este es un mensaje muy útil, ¿no le parece? Por favor, haga un informe de "
-"bug."
 
 #: GTG/core/firstrun_tasks.py:35
 msgid "Getting Started With GTG"
-msgstr "Comenzando con GTG"
+msgstr ""
 
 #: GTG/core/firstrun_tasks.py:36
 msgid ""
@@ -358,7 +344,7 @@ msgstr ""
 
 #: GTG/core/firstrun_tasks.py:114
 msgid "Learn How To Use Subtasks"
-msgstr "Aprenda a usar subtareas"
+msgstr ""
 
 #: GTG/core/firstrun_tasks.py:115
 msgid ""
@@ -388,7 +374,7 @@ msgstr ""
 
 #: GTG/core/firstrun_tasks.py:142
 msgid "Learn How To Use Tags"
-msgstr "Aprenda a usar etiquetas"
+msgstr ""
 
 #: GTG/core/firstrun_tasks.py:143
 msgid ""
@@ -422,7 +408,7 @@ msgstr ""
 
 #: GTG/core/firstrun_tasks.py:174
 msgid "Learn How To Use The Work View"
-msgstr "Aprenda a usar la vista de trabajo"
+msgstr ""
 
 #: GTG/core/firstrun_tasks.py:175
 msgid ""
@@ -459,7 +445,7 @@ msgstr ""
 
 #: GTG/core/firstrun_tasks.py:209
 msgid "Learn How To Use Plugins"
-msgstr "Aprender a usar los complementos"
+msgstr ""
 
 #: GTG/core/firstrun_tasks.py:210
 msgid ""
@@ -473,20 +459,10 @@ msgid ""
 "You can find the Plugin Manager by selecting Edit in the Menu Bar, then "
 "clicking Plugins."
 msgstr ""
-"GTG tiene la posibilidad de añadir plugins para extender su funcionalidad "
-"básica.\n"
-"\n"
-"Algunos ejemplos de los plugins disponibles en la actualidad son el icono de "
-"notificación, que muestra un atajo útil para GTG en su espacio de "
-"notificación, o el removedor de tareas completadas que elimina "
-"automáticamente las tareas antiguas de tu lista de tareas cerrada.\n"
-"\n"
-"Se puede acceder al administrador de complementos seleccionando Editar en la "
-"barra de menú y, a continuación, en Complementos."
 
 #: GTG/core/firstrun_tasks.py:224
 msgid "Reporting Bugs"
-msgstr "Informando errores"
+msgstr ""
 
 #: GTG/core/firstrun_tasks.py:225
 msgid ""
@@ -502,21 +478,10 @@ msgid ""
 "If you have some trouble with GTG, we might be able to help you or to solve "
 "your problem really quickly."
 msgstr ""
-"GTG aún es software beta. Nos gusta y lo utilizamos todos los días, pero "
-"probablemente se encontrará con algunos errores al usarlo.\n"
-"\n"
-"Por favor, ayúdenos a mejorar GTG informando de ellos en nuestra página de "
-"Launchpad: https://bugs.launchpad.net/gtg/+filebug\n"
-"\n"
-"Te necesitamos para hacer de este software mejor. Cualquier idea y aporte es "
-"bienvenido!\n"
-"\n"
-"Si usted tiene algún problema con GTG, podríamos ser capaces de ayudarle o "
-"para resolver su problema realmente rápido."
 
 #: GTG/core/firstrun_tasks.py:241
 msgid "Learn How To Use The Quick Add Entry"
-msgstr "Aprender a usar la entrada rápida"
+msgstr ""
 
 #: GTG/core/firstrun_tasks.py:242
 msgid ""
@@ -563,7 +528,7 @@ msgstr ""
 
 #: GTG/core/firstrun_tasks.py:287
 msgid "Learn How To Use Synchronization Services"
-msgstr "Aprender a usar los servicios de sincronización"
+msgstr ""
 
 #: GTG/core/firstrun_tasks.py:288
 msgid ""
@@ -589,7 +554,7 @@ msgstr ""
 
 #: GTG/core/firstrun_tasks.py:311
 msgid "Learn How To Search For Tasks"
-msgstr "Aprender a usar la búsqueda de tareas"
+msgstr ""
 
 #: GTG/core/firstrun_tasks.py:312
 msgid ""
@@ -621,103 +586,103 @@ msgstr ""
 
 #: GTG/core/search.py:87
 msgid "not"
-msgstr "no"
+msgstr ""
 
 #: GTG/core/search.py:88
 msgid "or"
-msgstr "o"
+msgstr ""
 
 #: GTG/core/search.py:89
 msgid "after"
-msgstr "después de"
+msgstr ""
 
 #: GTG/core/search.py:90
 msgid "before"
-msgstr "antes de"
+msgstr ""
 
 #: GTG/core/search.py:91 GTG/tools/dates.py:293
 msgid "today"
-msgstr "hoy"
+msgstr ""
 
 #: GTG/core/search.py:92 GTG/tools/dates.py:295
 msgid "tomorrow"
-msgstr "mañana"
+msgstr ""
 
 #: GTG/core/search.py:93
 msgid "nodate"
-msgstr "sinfecha"
+msgstr ""
 
 #: GTG/core/search.py:94 GTG/tests/test_dates.py:68 GTG/tests/test_dates.py:76
 #: GTG/tools/dates.py:45 GTG/tools/dates.py:53
 msgid "now"
-msgstr "ahora"
+msgstr ""
 
 #: GTG/core/search.py:95 GTG/tests/test_dates.py:69 GTG/tests/test_dates.py:77
 #: GTG/tools/dates.py:46 GTG/tools/dates.py:55
 msgid "soon"
-msgstr "pronto"
+msgstr ""
 
 #: GTG/core/search.py:96 GTG/tests/test_dates.py:71 GTG/tests/test_dates.py:78
 #: GTG/tests/test_dates.py:79 GTG/tools/dates.py:47 GTG/tools/dates.py:59
 msgid "someday"
-msgstr "algún día"
+msgstr ""
 
 #: GTG/core/search.py:97
 msgid "notag"
-msgstr "sinetiqueta"
+msgstr ""
 
 #: GTG/core/task.py:54
 msgid "My new task"
-msgstr "Mi nueva tarea"
+msgstr ""
 
 #: GTG/core/task.py:158
 msgid "tags"
-msgstr "etiquetas"
+msgstr ""
 
 #: GTG/core/task.py:158
 msgid "tag"
-msgstr "etiqueta"
+msgstr ""
 
 #: GTG/core/task.py:163
 msgid "defer"
-msgstr "aplazar"
+msgstr ""
 
 #: GTG/core/task.py:164
 msgid "start"
-msgstr "inicio"
+msgstr ""
 
 #: GTG/core/task.py:170
 msgid "due"
-msgstr "vence"
+msgstr ""
 
 #: GTG/core/treefactory.py:79
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:70
 msgid "All tasks"
-msgstr "Todas las tareas"
+msgstr ""
 
 #: GTG/core/treefactory.py:90
 msgid "Tasks with no tags"
-msgstr "Tareas sin etiquetas"
+msgstr ""
 
 #: GTG/core/treefactory.py:102 GTG/gtk/browser/browser.py:1518
 msgid "Search"
-msgstr "Buscar"
+msgstr ""
 
 #: GTG/tests/test_dates.py:70 GTG/tools/dates.py:57
 msgid "later"
-msgstr "más tarde"
+msgstr ""
 
 #: GTG/backends/backend_identica.py:54
 msgid "Identi.ca"
-msgstr "Identi.ca"
+msgstr ""
 
 #: GTG/backends/backend_identica.py:58
 msgid "Imports your identi.ca  messages into your GTG "
-msgstr "Importa tus mensajes de identi.ca a GTG "
+msgstr ""
 
 #: GTG/backends/backend_gnote.py:42
 msgid "Gnote"
-msgstr "Gnote"
+msgstr ""
 
 #: GTG/backends/backend_gnote.py:46
 msgid ""
@@ -726,14 +691,10 @@ msgid ""
 "tag it with the tag you have chosen (you'll configure it later), and it will "
 "appear in GTG."
 msgstr ""
-"Este servicio puede sincronizar todas o parte de sus notas de Gnote en GTG. "
-"Si usted decide que sería útil tener una de sus notas en la lista de tareas "
-"pendientes, simplemente etiquetar con la etiqueta que ha elegido (tendrás "
-"que configurarlo más tarde), y aparecerá en GTG."
 
 #: GTG/backends/backend_launchpad.py:53
 msgid "Launchpad"
-msgstr "Launchpad"
+msgstr ""
 
 #: GTG/backends/backend_launchpad.py:57
 msgid ""
@@ -753,23 +714,23 @@ msgstr ""
 
 #: GTG/backends/backend_launchpad.py:244
 msgid "Bug"
-msgstr "Fallo"
+msgstr ""
 
 #: GTG/backends/backend_launchpad.py:324 GTG/backends/backend_mantis.py:244
 msgid "Reported by: "
-msgstr "Informado por: "
+msgstr ""
 
 #: GTG/backends/backend_launchpad.py:329
 msgid "Link to bug: "
-msgstr "Enlace al fallo: "
+msgstr ""
 
 #: GTG/backends/rtm/rtm.py:57
 msgid "Invalid state"
-msgstr "Estado no válido"
+msgstr ""
 
 #: GTG/backends/backend_rtm.py:54
 msgid "Remember The Milk"
-msgstr "Remember The Milk"
+msgstr ""
 
 #: GTG/backends/backend_rtm.py:58
 msgid ""
@@ -779,40 +740,34 @@ msgid ""
 "Note: This product uses the Remember The Milk API but is not endorsed or "
 "certified by Remember The Milk"
 msgstr ""
-"Este servicio sincroniza sus tareas con el servicio en linea "
-"RememberTheMilk:\n"
-"\t\thttp://rememberthemilk.com\n"
-"\n"
-"Nota: este producto utiliza la API de Remember The Milk pero no está "
-"aprobado ni certificado por Remember The Milk"
 
 #: GTG/backends/backend_localfile.py:61
 msgid "Local File"
-msgstr "Archivo local"
+msgstr ""
 
 #: GTG/backends/backend_localfile.py:66
 msgid "Your tasks are saved in a text file (XML format). "
-msgstr "Sus tareas se guardarán en un archivo de texto (formato XML). "
+msgstr ""
 
 #: GTG/backends/backend_twitter.py:54
 msgid "Twitter"
-msgstr "Twitter"
+msgstr ""
 
 #: GTG/backends/backend_twitter.py:58
 msgid "Imports your twitter  messages into your GTG "
-msgstr "Importa tus mensajes twitter a GTG "
+msgstr ""
 
 #: GTG/backends/backend_evolution.py:69
 msgid "Evolution tasks"
-msgstr "Tareas de Evolution"
+msgstr ""
 
 #: GTG/backends/backend_evolution.py:73
 msgid "Lets you synchronize your GTG tasks with Evolution tasks"
-msgstr "Le permite sincronizar sus tareas de GTG con las de Evolution"
+msgstr ""
 
 #: GTG/backends/backend_tomboy.py:41
 msgid "Tomboy"
-msgstr "Tomboy"
+msgstr ""
 
 #: GTG/backends/backend_tomboy.py:45
 msgid ""
@@ -821,14 +776,10 @@ msgid ""
 "your TODO list, just tag it with the tag you have chosen (you'll configure "
 "it later), and it will appear in GTG."
 msgstr ""
-"Este servicio puede sincronizar todas o parte de sus notas de Tomboy en GTG. "
-"Si usted decide que sería útil tener una de sus notas en la lista de tareas "
-"pendientes, simplemente etiquetar con la etiqueta que ha elegido (tendrás "
-"que configurarlo más tarde), y aparecerá en GTG."
 
 #: GTG/backends/backend_mantis.py:42
 msgid "MantisBT"
-msgstr "MantisBT"
+msgstr ""
 
 #: GTG/backends/backend_mantis.py:46
 msgid ""
@@ -848,100 +799,99 @@ msgstr ""
 
 #: GTG/backends/backend_mantis.py:224
 msgid "Iss."
-msgstr "Inc."
+msgstr ""
 
 #: GTG/backends/backend_mantis.py:245
 msgid "Link to issue: "
-msgstr "Enlazar con la incidencia: "
+msgstr ""
 
 #: GTG/gtg.py:84
 msgid "gtg is already running!"
-msgstr "¡gtg ya se está ejecutando!"
+msgstr ""
 
 #: GTG/tools/dates.py:297
 msgid "next week"
-msgstr "proxima semana"
+msgstr ""
 
 #: GTG/tools/dates.py:299
 msgid "next month"
-msgstr "proximo mes"
+msgstr ""
 
 #: GTG/tools/dates.py:301
 msgid "next year"
-msgstr "proximo año"
+msgstr ""
 
 #: GTG/tools/dates.py:306
 msgid "Monday"
-msgstr "lunes"
+msgstr ""
 
 #: GTG/tools/dates.py:307
 msgid "Tuesday"
-msgstr "martes"
+msgstr ""
 
 #: GTG/tools/dates.py:308
 msgid "Wednesday"
-msgstr "miércoles"
+msgstr ""
 
 #: GTG/tools/dates.py:309
 msgid "Thursday"
-msgstr "jueves"
+msgstr ""
 
 #: GTG/tools/dates.py:310
 msgid "Friday"
-msgstr "viernes"
+msgstr ""
 
 #: GTG/tools/dates.py:311
 msgid "Saturday"
-msgstr "sábado"
+msgstr ""
 
 #: GTG/tools/dates.py:312
 msgid "Sunday"
-msgstr "domingo"
+msgstr ""
 
 #: GTG/tools/dates.py:371
 msgid "Today"
-msgstr "Hoy"
+msgstr ""
 
 #: GTG/tools/dates.py:374
 #, python-format
 msgid "Yesterday"
 msgid_plural "%(days)d days ago"
-msgstr[0] "Ayer"
-msgstr[1] "Hace %(days)d días"
+msgstr[0] ""
+msgstr[1] ""
 
 #: GTG/tools/dates.py:377
 #, python-format
 msgid "Tomorrow"
 msgid_plural "In %(days)d days"
-msgstr[0] "Mañana"
-msgstr[1] "En %(days)d días"
+msgstr[0] ""
+msgstr[1] ""
 
 #: GTG/gtk/crashhandler.py:57
 msgid ""
 "We're terribly sorry. Could you help us fix the problem by reporting the "
 "crash?"
 msgstr ""
-"Lo sentimos. ¿Podría ayudarnos a arreglar el problema informando del fallo?"
 
 #: GTG/gtk/crashhandler.py:170
 msgid "An error has occurred"
-msgstr "Ha ocurrido un error"
+msgstr ""
 
 #: GTG/gtk/crashhandler.py:184
 msgid "It looks like an error has occurred."
-msgstr "Parece que ha ocurrido un error."
+msgstr ""
 
 #: GTG/gtk/crashhandler.py:220
 msgid "_Details"
-msgstr "_Detalles"
+msgstr ""
 
 #: GTG/gtk/crashhandler.py:227
 msgid "_Report this problem..."
-msgstr "Info_rmar de este problema…"
+msgstr ""
 
 #: GTG/gtk/crashhandler.py:231
 msgid "_Ignore the error"
-msgstr "_Ignorar el error"
+msgstr ""
 
 #: GTG/gtk/crashhandler.py:336
 msgid ""
@@ -949,128 +899,124 @@ msgid ""
 "href=\"http://bugs.edge.launchpad.net/gtg\">our Launchpad page</a>. If you "
 "have Apport installed, it will be started for you."
 msgstr ""
-" ha fallado. Puede informarnos sobre el error en <a "
-"href=\"https://bugs.launchpad.net/gtg\">nuestra página de Launchpad</a>. Si "
-"tiene Apport instalado se iniciará automáticamente."
 
 #: GTG/gtk/backends_dialog/addpanel.py:69
 msgid "Select synchronization service:"
-msgstr "Seleccionar el servicio de sincronización:"
+msgstr ""
 
 #: GTG/gtk/backends_dialog/addpanel.py:173
 msgid "Syncing is <span color=\"red\">disabled</span>"
-msgstr "La sincronización está <span color=\"red\">desactivada</span>"
+msgstr ""
 
 #: GTG/gtk/backends_dialog/addpanel.py:179
 msgid "Author"
 msgid_plural "Authors"
-msgstr[0] "Autor"
-msgstr[1] "Autores"
+msgstr[0] ""
+msgstr[1] ""
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:63
 msgid "Import tags"
-msgstr "Importar etiquetas"
+msgstr ""
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:64
 msgid "All tags"
-msgstr "Todas las etiquetas"
+msgstr ""
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:65
 msgid "Just these tags:"
-msgstr "Sólo estas etiquetas:"
+msgstr ""
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:69
 msgid "Tags to sync"
-msgstr "Etiquetas a sincronizar"
+msgstr ""
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:71
 msgid "Tasks with these tags:"
-msgstr "Tareas con estas etiquetas:"
+msgstr ""
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:76
 msgid "Username"
-msgstr "Nombre de usuario"
+msgstr ""
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:82
 msgid "Service URL"
-msgstr "URL del servicio"
+msgstr ""
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:86
 msgid "Import tasks from @ replies "
-msgstr "Importar tareas de @menciones "
+msgstr ""
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:91
 msgid "Import tasks from direct messages"
-msgstr "Importar tareas de mensajes directos"
+msgstr ""
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:95
 msgid "Import tasks from your tweets"
-msgstr "Importar tareas de sus twits"
+msgstr ""
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:99
 msgid "Tag your GTG tasks with the bug tags"
-msgstr "Asignar las etiquetas de error a tus tareas en GTG"
+msgstr ""
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:103
 msgid "Tag your GTG tasks with the project targeted by the bug"
 msgstr ""
-"Etiqueta tus tareas GTG con el proyecto al que está dirigido el error"
 
 #: GTG/gtk/backends_dialog/parameters_ui/passwordui.py:50
 msgid "Password:"
-msgstr "Contraseña:"
+msgstr ""
 
 #: GTG/gtk/backends_dialog/parameters_ui/pathui.py:52
 msgid "Filename:"
-msgstr "Nombre de archivo:"
+msgstr ""
 
 #: GTG/gtk/backends_dialog/parameters_ui/periodui.py:51
 msgid "Check for new tasks every"
-msgstr "Comprobar nuevas tareas cada"
+msgstr ""
 
 #: GTG/gtk/backends_dialog/parameters_ui/periodui.py:96
 msgid " minute"
 msgid_plural " minutes"
-msgstr[0] " minuto"
-msgstr[1] " minutos"
+msgstr[0] ""
+msgstr[1] ""
 
 #: GTG/gtk/backends_dialog/__init__.py:75
 #, python-format
 msgid "Synchronization Services - %s"
-msgstr "Servicios de sincronización - %s"
+msgstr ""
 
 #: GTG/gtk/backends_dialog/__init__.py:302
 #, python-format
 msgid "Do you really want to remove the '%s' synchronization service?"
-msgstr "¿Estás seguro de desear eliminar el servicio de sincronización '%s'?"
+msgstr ""
 
 #: GTG/gtk/backends_dialog/configurepanel.py:149
 msgid "Disable syncing"
-msgstr "Desactivar sincronización"
+msgstr ""
 
 #: GTG/gtk/backends_dialog/configurepanel.py:151
 msgid "Enable syncing"
-msgstr "Activar sincronización"
+msgstr ""
 
 #: GTG/gtk/backends_dialog/configurepanel.py:159
 msgid "This is the default synchronization service"
-msgstr "Éste es el servicio de sincronización predeterminado"
+msgstr ""
 
 #: GTG/gtk/backends_dialog/configurepanel.py:162
 msgid "Syncing is enabled."
-msgstr "La sincronización está activada."
+msgstr ""
 
 #: GTG/gtk/backends_dialog/configurepanel.py:164
 msgid "Syncing is <span color=\"red\">disabled</span>."
-msgstr "La sincronización está <span color=\"red\">desactivada</span>."
+msgstr ""
 
 #: GTG/gtk/plugins.glade.h:1
 msgid "<b>Dependencies</b>"
-msgstr "<b>Dependencias</b>"
+msgstr ""
 
 #: GTG/gtk/plugins.glade.h:2
 msgid "_About Plugin"
-msgstr "_Acerca del complemento"
+msgstr ""
 
 #: GTG/gtk/delete_dialog.py:89
 msgid ""
@@ -1083,20 +1029,20 @@ msgstr[1] ""
 #: GTG/gtk/delete_dialog.py:94
 msgid "Are you sure you want to delete this task?"
 msgid_plural "Are you sure you want to delete these tasks?"
-msgstr[0] "¿Está seguro de que quiere eliminar esta tarea?"
-msgstr[1] "¿Está seguro de que quiere eliminar estas tareas?"
+msgstr[0] ""
+msgstr[1] ""
 
 #: GTG/gtk/delete_dialog.py:100
 msgid "Keep selected task"
 msgid_plural "Keep selected tasks"
-msgstr[0] "Conservar tarea seleccionada"
-msgstr[1] "Conservar tareas seleccionadas"
+msgstr[0] ""
+msgstr[1] ""
 
 #: GTG/gtk/delete_dialog.py:103
 msgid "Permanently remove task"
 msgid_plural "Permanently remove tasks"
-msgstr[0] "Eliminar tarea permanentemente"
-msgstr[1] "Eliminar tareas permanentemente"
+msgstr[0] ""
+msgstr[1] ""
 
 #: GTG/gtk/delete_dialog.py:114
 #, python-format
@@ -1104,145 +1050,143 @@ msgid ""
 "\n"
 "And %d more tasks"
 msgstr ""
-"\n"
-"Y %d tareas más"
 
 #: GTG/gtk/editor/taskeditor.glade.h:1
 msgid "Task"
-msgstr "Tarea"
+msgstr ""
 
 #: GTG/gtk/editor/taskeditor.glade.h:2
 msgid "Mark Done"
-msgstr "Marcar como terminada"
+msgstr ""
 
 #: GTG/gtk/editor/taskeditor.glade.h:3 GTG/gtk/editor/__init__.py:33
 #: GTG/gtk/browser/__init__.py:40 GTG/gtk/browser/taskbrowser.glade.h:26
 msgid "Dismiss"
-msgstr "Descartar"
+msgstr ""
 
 #: GTG/gtk/editor/taskeditor.glade.h:4 GTG/gtk/browser/tag_context_menu.py:63
 #: GTG/gtk/browser/taskbrowser.glade.h:27
 msgid "Delete"
-msgstr "Eliminar"
+msgstr ""
 
 #: GTG/gtk/editor/taskeditor.glade.h:5
 msgid "Insert subtask"
-msgstr "Añadir subtarea"
+msgstr ""
 
 #: GTG/gtk/editor/taskeditor.glade.h:6
 msgid "Insert tag"
-msgstr "Insertar etiqueta"
+msgstr ""
 
 #: GTG/gtk/editor/taskeditor.glade.h:7
 msgid "Starting on"
-msgstr "Empezando el"
+msgstr ""
 
 #: GTG/gtk/editor/taskeditor.glade.h:8
 msgid "Due for"
-msgstr "Vencimiento previsto para"
+msgstr ""
 
 #: GTG/gtk/editor/taskeditor.glade.h:9
 msgid "Closed on"
-msgstr "Cerrada el"
+msgstr ""
 
 #: GTG/gtk/editor/taskeditor.glade.h:10
 msgid "Now"
-msgstr "Ahora"
+msgstr ""
 
 #: GTG/gtk/editor/taskeditor.glade.h:11
 msgid "Soon"
-msgstr "Próximamente"
+msgstr ""
 
 #: GTG/gtk/editor/taskeditor.glade.h:12
 msgid "Someday"
-msgstr "Algún día"
+msgstr ""
 
 #: GTG/gtk/editor/__init__.py:31 GTG/gtk/browser/__init__.py:36
 #: GTG/gtk/browser/taskbrowser.glade.h:25
 msgid "Mark as Done"
-msgstr "Marcar como terminada"
+msgstr ""
 
 #: GTG/gtk/editor/__init__.py:32 GTG/gtk/browser/__init__.py:38
 msgid "Mark as not Done"
-msgstr "Marcar como no realizada"
+msgstr ""
 
 #: GTG/gtk/editor/__init__.py:34 GTG/gtk/browser/__init__.py:42
 msgid "Undismiss"
-msgstr "Rehabilitar"
+msgstr ""
 
 #: GTG/gtk/editor/__init__.py:36
 msgid "Mark this task as done"
-msgstr "Marcar esta tarea como terminada"
+msgstr ""
 
 #: GTG/gtk/editor/__init__.py:37 GTG/gtk/editor/__init__.py:39
 msgid "Mark this task as to be done"
-msgstr "Marcar esta tarea como pendiente"
+msgstr ""
 
 #: GTG/gtk/editor/__init__.py:38
 msgid "Mark this task as not to be done anymore"
-msgstr "Marcar esta tarea como descartada"
+msgstr ""
 
 #: GTG/gtk/editor/__init__.py:40
 msgid "Permanently remove this task"
-msgstr "Eliminar esta tarea permanentemente"
+msgstr ""
 
 #: GTG/gtk/editor/__init__.py:41
 msgid "Insert a subtask in this task"
-msgstr "Añadir una subtarea a esta tarea"
+msgstr ""
 
 #: GTG/gtk/editor/__init__.py:42
 msgid "Insert a tag in this task"
-msgstr "Añadir una etiqueta a esta tarea"
+msgstr ""
 
 #: GTG/gtk/editor/editor.py:310
 #, python-format
 msgid "Completed %(days)d day late"
 msgid_plural "Completed %(days)d days late"
-msgstr[0] "Completada con %(days)d día de retraso"
-msgstr[1] "Completada con %(days)d días de retraso"
+msgstr[0] ""
+msgstr[1] ""
 
 #: GTG/gtk/editor/editor.py:313
 #, python-format
 msgid "Completed %(days)d day early"
 msgid_plural "Completed %(days)d days early"
-msgstr[0] "Completada con %(days)d día de antelación"
-msgstr[1] "Completada con %(days)d días de antelación"
+msgstr[0] ""
+msgstr[1] ""
 
 #: GTG/gtk/editor/editor.py:320
 #, python-format
 msgid "Due tomorrow!"
 msgid_plural "%(days)d days left"
-msgstr[0] "Vence mañana"
-msgstr[1] "Quedan %(days)d días"
+msgstr[0] ""
+msgstr[1] ""
 
 #: GTG/gtk/editor/editor.py:322
 msgid "Due today!"
-msgstr "Vence hoy"
+msgstr ""
 
 #: GTG/gtk/editor/editor.py:325
 #, python-format
 msgid "Due yesterday!"
 msgid_plural "Was %(days)d days ago"
-msgstr[0] "Venció ayer"
-msgstr[1] "Venció hace %(days)d días"
+msgstr[0] ""
+msgstr[1] ""
 
 #: GTG/gtk/preferences.py:80
 #, python-format
 msgid "Preferences - %s"
-msgstr "Preferencias - %s"
+msgstr ""
 
 #: GTG/gtk/plugins.py:142
 #, python-format
 msgid "Plugins - %s"
-msgstr "Complementos - %s"
+msgstr ""
 
 #: GTG/gtk/deletion.glade.h:1
 msgid "Confirm task deletion"
-msgstr "Confirmar eliminación de tarea"
+msgstr ""
 
 #: GTG/gtk/preferences.glade.h:1
 msgid "Start Getting Things GNOME! on every login"
-msgstr "Iniciar Getting Things GNOME! al iniciar sesión"
+msgstr ""
 
 #: GTG/gtk/preferences.glade.h:2
 msgid "<b>Startup</b>"
@@ -1250,19 +1194,19 @@ msgstr ""
 
 #: GTG/gtk/preferences.glade.h:3
 msgid "Enable colored backgrounds in the task list"
-msgstr "Habilitar fondo de color para la lista de tareas"
+msgstr ""
 
 #: GTG/gtk/preferences.glade.h:4
 msgid "Show description preview in the task list."
-msgstr "Mostrar la vista previa de la descripción en la lista de tareas."
+msgstr ""
 
 #: GTG/gtk/preferences.glade.h:5
 msgid "<b>Task Browser</b>"
-msgstr "<b>Visor de tareas</b>"
+msgstr ""
 
 #: GTG/gtk/preferences.glade.h:6
 msgid "Font :"
-msgstr "Fuente:"
+msgstr ""
 
 #: GTG/gtk/preferences.glade.h:7
 msgid "<b>Editor</b>"
@@ -1282,102 +1226,100 @@ msgstr ""
 
 #: GTG/gtk/browser/tag_editor.py:87
 msgid "Remove selected icon"
-msgstr "Eliminar el icono seleccionado"
+msgstr ""
 
 #: GTG/gtk/browser/tag_editor.py:224
 msgid "Name : "
-msgstr "Nombre: "
+msgstr ""
 
 #: GTG/gtk/browser/tag_editor.py:231
 msgid "Show Tag in Work View :"
-msgstr "Mostrar etiqueta en la vista trabajo"
+msgstr ""
 
 #: GTG/gtk/browser/tag_editor.py:244
 msgid "Select Tag Color:"
-msgstr "Seleccionar color de la etiqueta"
+msgstr ""
 
 #: GTG/gtk/browser/tag_editor.py:284
 msgid ""
 "Click To\n"
 "Set Icon"
 msgstr ""
-"Hacer click para\n"
-"Seleccionar icono"
 
 #: GTG/gtk/browser/tag_editor.py:294
 msgid "Enter tag name here"
-msgstr "Introducir nombre de etiqueta"
+msgstr ""
 
 #: GTG/gtk/browser/__init__.py:37
 msgid "Mark the selected task as done"
-msgstr "Marcar la tarea seleccionada como terminada"
+msgstr ""
 
 #: GTG/gtk/browser/__init__.py:39 GTG/gtk/browser/__init__.py:43
 msgid "Mark the selected task as to be done"
-msgstr "Marcar la tarea seleccionada como pendiente"
+msgstr ""
 
 #: GTG/gtk/browser/__init__.py:41
 msgid "Mark the task as not to be done anymore"
-msgstr "Marcar la tarea como descartada"
+msgstr ""
 
 #: GTG/gtk/browser/__init__.py:44
 msgid "Permanently remove the selected task"
-msgstr "Eliminar permanentemente la tarea seleccionada"
+msgstr ""
 
 #: GTG/gtk/browser/__init__.py:45
 msgid "Edit the selected task"
-msgstr "Editar la tarea seleccionada"
+msgstr ""
 
 #: GTG/gtk/browser/__init__.py:46 GTG/gtk/browser/taskbrowser.glade.h:4
 msgid "Create a new task"
-msgstr "Crear una nueva tarea"
+msgstr ""
 
 #: GTG/gtk/browser/__init__.py:47
 msgid "Create a new subtask"
-msgstr "Crear una nueva subtarea"
+msgstr ""
 
 #: GTG/gtk/browser/__init__.py:48
 msgid "Display only the currently actionable tasks"
-msgstr "Mostrar sólo las tareas con las cuales se puede empezar ahora"
+msgstr ""
 
 #: GTG/gtk/browser/__init__.py:49
 msgid "Hide this tag from the workview"
-msgstr "Ocultar etiqueta de la vista de trabajo"
+msgstr ""
 
 #: GTG/gtk/browser/__init__.py:50
 msgid "Show this tag in the workview"
-msgstr "Mostrar etiqueta en la vista de trabajo"
+msgstr ""
 
 #: GTG/gtk/browser/__init__.py:51
 msgid "You can create, open or filter your tasks here"
-msgstr "Aquí puede crear, abrir o filtrar sus tareas"
+msgstr ""
 
 #: GTG/gtk/browser/__init__.py:52
 msgid "Clear"
-msgstr "Limpiar"
+msgstr ""
 
 #: GTG/gtk/browser/modifytags_dialog.py:38
 msgid "NewTag"
-msgstr "Etiqueta nueva"
+msgstr ""
 
 #: GTG/gtk/browser/browser.py:586
 msgid "no active tasks"
-msgstr "no hay tareas activas"
+msgstr ""
 
 #: GTG/gtk/browser/browser.py:588
 #, python-format
 msgid "%(tasks)d active task"
 msgid_plural "%(tasks)d active tasks"
-msgstr[0] "%(tasks)d tarea activa"
-msgstr[1] "%(tasks)d tareas activas"
+msgstr[0] ""
+msgstr[1] ""
 
 #: GTG/gtk/browser/browser.py:1516
 msgid "Add Task"
-msgstr "Añadir tarea"
+msgstr ""
 
 #: GTG/gtk/browser/browser.py:1517
 msgid "Open Task"
-msgstr "Abrir tarea"
+msgstr ""
 
 #: GTG/gtk/browser/modifytags_dialog.glade.h:1
 msgid "Modify Tags"
@@ -1385,52 +1327,50 @@ msgstr ""
 
 #: GTG/gtk/browser/modifytags_dialog.glade.h:2
 msgid "Add/Remove Tags"
-msgstr "Agregar/eliminar etiquetas"
+msgstr ""
 
 #: GTG/gtk/browser/modifytags_dialog.glade.h:3
 msgid "Cancel"
-msgstr "Cancelar"
+msgstr ""
 
 #: GTG/gtk/browser/modifytags_dialog.glade.h:4
 msgid "Enter the name of the tag(s) you wish to add or remove:"
-msgstr "Introducir el nombre de etiqueta(s) que agregará o eliminará:"
+msgstr ""
 
 #: GTG/gtk/browser/modifytags_dialog.glade.h:5
 msgid "TagName"
-msgstr "Nombre de etiqueta"
+msgstr ""
 
 #: GTG/gtk/browser/modifytags_dialog.glade.h:6
 msgid ""
 "Hint: you can add several tags by separating them with\n"
 "space. Place '!' before tags you want to remove."
 msgstr ""
-"Sugerencia: puedes añadir varias etiquetas separándolas con\n"
-"espacio. Insertar '!' antes de las etiquetas que desea eliminar."
 
 #: GTG/gtk/browser/modifytags_dialog.glade.h:8
 msgid "Apply to subtasks"
-msgstr "Aplicar a subtareas"
+msgstr ""
 
 #: GTG/gtk/browser/treeview_factory.py:280
 #: GTG/gtk/browser/taskbrowser.glade.h:29
 msgid "Tags"
-msgstr "Etiquetas"
+msgstr ""
 
 #: GTG/gtk/browser/treeview_factory.py:353
 msgid "Start date"
-msgstr "Fecha de inicio"
+msgstr ""
 
 #: GTG/gtk/browser/treeview_factory.py:364
 msgid "Due"
-msgstr "Vence"
+msgstr ""
 
 #: GTG/gtk/browser/treeview_factory.py:384
 msgid "Closed date"
-msgstr "Fecha de cierre"
+msgstr ""
 
 #: GTG/gtk/browser/treeview_factory.py:446
 msgid "Title"
-msgstr "Título"
+msgstr ""
 
 #: GTG/gtk/browser/tag_context_menu.py:58
 msgid "Edit Tag..."
@@ -1443,9 +1383,6 @@ msgid ""
 "authentication data and has been disabled. To retry the login, re-enable the "
 "service."
 msgstr ""
-"El servicio de sincronización <b>% s </ b> no puede acceder con los datos de "
-"autenticación suministrados y se ha desactivado. Para volver a intentar el "
-"inicio de sesión, vuelva a habilitar el servicio."
 
 #: GTG/gtk/browser/custominfobar.py:40
 #, python-format
@@ -1453,163 +1390,158 @@ msgid ""
 "Due to a network problem, I cannot contact the <b>%s</b> synchronization "
 "service."
 msgstr ""
-"Por problemas de conección, no se pudo contactar el servicio de "
-"sincronización <b>%s</b>."
 
 #: GTG/gtk/browser/custominfobar.py:43
 #, python-format
 msgid ""
 "Cannot connect to DBus, I've disabled the <b>%s</b> synchronization service."
 msgstr ""
-"No se pouede conectar a DBus, se ha desbilitado el servicio de "
-"sincronización <b>%s</b>."
 
 #: GTG/gtk/browser/custominfobar.py:105
 msgid "Configure synchronization service"
-msgstr "Configurar servicio de sincronización"
+msgstr ""
 
 #: GTG/gtk/browser/custominfobar.py:106
 msgid "Ignore"
-msgstr "Ignorar"
+msgstr ""
 
 #: GTG/gtk/browser/custominfobar.py:114 GTG/gtk/browser/custominfobar.py:119
 msgid "Ok"
-msgstr "Aceptar"
+msgstr ""
 
 #: GTG/gtk/browser/custominfobar.py:140
 msgid "Confirm"
-msgstr "Confimar"
+msgstr ""
 
 #: GTG/gtk/browser/custominfobar.py:142
 msgid "Continue"
-msgstr "Continuar"
+msgstr ""
 
 #: GTG/gtk/browser/simple_color_selector.py:236
 msgid "Add custom color"
-msgstr "Agregar color personalizado"
+msgstr ""
 
 #: GTG/gtk/browser/simple_color_selector.py:264
 msgid "Choose a color"
-msgstr "Elegir un color"
+msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:1
 msgid "Getting Things GNOME!"
-msgstr "Getting Things GNOME!"
+msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:2
 msgid "_Tasks"
-msgstr "_Tareas"
+msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:3
 msgid "New _Task"
-msgstr "Nueva _tarea"
+msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:5
 msgid "New _Subtask"
-msgstr "Nueva _subtarea"
+msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:6
 msgid "Mark as _Done"
-msgstr "Marcar como termina_da"
+msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:7
 msgid "D_ismiss"
-msgstr "D_escartar"
+msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:8
 msgid "_Edit"
-msgstr "_Editar"
+msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:9
 msgid "_View"
-msgstr "_Ver"
+msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:10
 msgid "_Work View"
-msgstr "_Vista de trabajo"
+msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:11
 msgid "_Tags Sidebar"
-msgstr "Barra de e_tiquetas lateral"
+msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:12
 msgid "_Closed Tasks Pane"
-msgstr "Panel de tareas _cerradas"
+msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:13
 msgid "T_oolbar"
-msgstr "Barra de _herramientas"
+msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:14
 msgid "_Quick Add Entry"
-msgstr "Añadir entrada _rápida"
+msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:15
 msgid "_Plugins"
-msgstr "_Complementos"
+msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:16
 msgid "_Help"
-msgstr "_Ayuda"
+msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:17
 msgid "Open GTG help"
-msgstr "Abrir ayuda de GTG"
+msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:18
 msgid "Help to translate GTG into your language"
-msgstr "Ayudar a traducir GTG a tu idioma"
+msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:19
 msgid "Report a problem to GTG developers"
-msgstr "Reportar una error de GTG a los desarrolladores"
+msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:20
 msgid "New Task"
-msgstr "Nueva tarea"
+msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:21
 msgid "New Subtask"
-msgstr "Nueva subtarea"
+msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:22
 msgid "Edit"
-msgstr "Editar"
+msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:23
 msgid "Undo"
-msgstr "Deshacer"
+msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:24
 msgid "Redo"
-msgstr "Rehacer"
+msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:28
 msgid "Work View"
-msgstr "Vista de trabajo"
+msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:30
 msgid "Tasks"
-msgstr "Tareas"
+msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:31
 msgid "About GTG!"
-msgstr "Acerca de GTG!"
+msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:32
 msgid "Copyright © 2008-2012 Lionel Dricot, Bertrand Rousseau"
-msgstr "Derechos reservados © 2008-2012 Lionel Dricot, Bertrand Rousseau"
+msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:33
 msgid ""
 "GTG is a personal tasks and TODO-list items organizer for the GNOME desktop "
 "environment."
 msgstr ""
-"GTG es un organizador personal de tareas para el entorno de escritorio GNOME"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:34
 msgid "GTG website"
-msgstr "Web de GTG"
+msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:35
 msgid ""
@@ -1627,35 +1559,22 @@ msgid ""
 "Getting Things GNOME!; if not, write to the Free Software Foundation, Inc., "
 "51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA."
 msgstr ""
-"Getting Things GNOME! es software libre, puede redistribuirlo y/o "
-"modificarlo bajo los términos de la Licencia Pública General de GNU según es "
-"publicada por la Free Software Foundation, con la versión 3 de la Licencia o "
-"cualquier versión posterior (a su elección).\n"
-"\n"
-"Getting Things GNOME! se distribuye con la esperanza de que sea útil, pero "
-"SIN NINGUNA GARANTÍA, incluso sin la garantía implícita de COMERCIALIZACIÓN "
-"o IDONEIDAD PARA UN PROPÓSITO PARTICULAR. Vea la Licencia Pública General de "
-"GNU para más detalles.\n"
-"\n"
-"Debería haber recibido una copia de la Licencia Pública General GNU junto "
-"con Getting Things GNOME; ¡si no, escriba a la Free Software Foundation, "
-"Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, EE.UU.."
 
 #: GTG/gtk/browser/taskbrowser.glade.h:40
 msgid "Mark as Not Done"
-msgstr "Marcar como no terminada"
+msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:41
 msgid "Und_ismiss"
-msgstr "Rehab_ilitar"
+msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:42
 msgid "Add a subtask"
-msgstr "Añadir una subtarea"
+msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:43
 msgid "_Set Start Date"
-msgstr "_Seleccionar fecha de inicio"
+msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:44
 msgid "T_oday"
@@ -1663,27 +1582,27 @@ msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:45
 msgid "_Tomorrow"
-msgstr "_Mañana"
+msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:46
 msgid "Next _Week"
-msgstr "Próxima_semana"
+msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:47
 msgid "Next _Month"
-msgstr "Próximo_mes"
+msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:48
 msgid "Next _Year"
-msgstr "Próximo_año"
+msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:49
 msgid "_Clear Start Date"
-msgstr "_Borrar fecha de inicio"
+msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:50
 msgid "Set Due Date"
-msgstr "Establecer fecha de término"
+msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:51
 msgid "_Now"
@@ -1691,15 +1610,15 @@ msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:52
 msgid "_Soon"
-msgstr "_Pronto"
+msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:53
 msgid "_Someday"
-msgstr "_Algún día"
+msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:54
 msgid "_Clear Due Date"
-msgstr "_Forrar fecha de término"
+msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:55
 msgid "Modify Tags..."
@@ -1707,611 +1626,4 @@ msgstr ""
 
 #: GTG/info.py:34
 msgid "GTG is a personal tasks and TODO-list items organizer for the GNOME."
-msgstr "GTG es un organizador personal de tareas para GNOME"
-
-#~ msgid "Keep as Note"
-#~ msgstr "Mantener como nota"
-
-#~ msgid "_Background Colors"
-#~ msgstr "Colores de _fondo"
-
-#~ msgid "View Notes"
-#~ msgstr "Ver notas"
-
-#~ msgid "Tag is displayed in the workview"
-#~ msgstr "La etiqueta se muestra en la vista de trabajo"
-
-#~ msgid "monday"
-#~ msgstr "lunes"
-
-#~ msgid "Mark as done"
-#~ msgstr "Marcar como terminada"
-
-#~ msgid "wednesday"
-#~ msgstr "miércoles"
-
-#~ msgid "thursday"
-#~ msgstr "jueves"
-
-#~ msgid "tuesday"
-#~ msgstr "martes"
-
-#~ msgid "friday"
-#~ msgstr "viernes"
-
-#~ msgid "saturday"
-#~ msgstr "sábado"
-
-#~ msgid "sunday"
-#~ msgstr "domingo"
-
-#~ msgid "Due tomorrow !"
-#~ msgstr "¡Vence mañana!"
-
-#~ msgid "Due today !"
-#~ msgstr "¡Vence hoy!"
-
-#~ msgid ""
-#~ "\n"
-#~ "Getting Things Gnome! is an organizer for the GNOME desktop environment."
-#~ msgstr ""
-#~ "\n"
-#~ "Getting Things Gnome! es un organizador para el entorno de escritorio de "
-#~ "GNOME."
-
-#~ msgid "Getting Things Gnome!"
-#~ msgstr "Getting Things Gnome!"
-
-#~ msgid ""
-#~ "It's a task that is already &quot;start-able&quot;, i.e. the start date is "
-#~ "already over."
-#~ msgstr ""
-#~ "Es una tarea que ya se puede &quot;empezar&quot;, es decir, la fecha de "
-#~ "inicio ya ha pasado."
-
-#~ msgid "You can also use the &quot;insert subtask&quot; button."
-#~ msgstr "También puedes usar el botón de &quot;Añadir subtarea&quot;."
-
-#~ msgid "Getting started with GTG"
-#~ msgstr "Empezar con GTG"
-
-#~ msgid "Reporting bugs"
-#~ msgstr "Informar de errores"
-
-#~ msgid ""
-#~ "GTG is still very alpha software. We like it and use it everyday but you "
-#~ "will encounter some bugs."
-#~ msgstr ""
-#~ "GTG es todavía software en estado alfa. A nosotros nos gusta y lo usamos "
-#~ "cada día pero encontrarás algunos errores."
-
-#~ msgid "Copyrights&#xA9; 2008, 2009 Lionel Dricot, Bertrand Rousseau"
-#~ msgstr "Copyrights&#xA9; 2008, 2009 Lionel Dricot, Bertrand Rousseau"
-
-#~ msgid "Couldn't connect to Remember The Milk"
-#~ msgstr "No se ha podido conectar con Remember The Milk"
-
-#~ msgid "Synchronize with RTM"
-#~ msgstr "Sincronizar con RTM"
-
-#~ msgid "Downloading task list..."
-#~ msgstr "Descargando la lista de tareas..."
-
-#~ msgid "Adding tasks to rtm.."
-#~ msgstr "Añadiendo tareas a rtm.."
-
-#~ msgid "Deleting tasks from gtg.."
-#~ msgstr "Borrando tareas de gtg.."
-
-#~ msgid "Deleting tasks from rtm.."
-#~ msgstr "Borrando tareas de rtm.."
-
-#~ msgid "Deleting "
-#~ msgstr "Borrando "
-
-#~ msgid "Synchronization completed."
-#~ msgstr "Se ha completado la sincronización."
-
-#~ msgid "Closing in one second"
-#~ msgstr "Cerrando en un segundo"
-
-#~ msgid "Updating "
-#~ msgstr "Actualizando "
-
-#~ msgid "Saving current state.."
-#~ msgstr "Guardando el estado actual..."
-
-#~ msgid "Adding tasks to gtg.."
-#~ msgstr "Añadiendo tareas a gtg..."
-
-#~ msgid "Adding "
-#~ msgstr "Añadiendo "
-
-#~ msgid "Synchronization started"
-#~ msgstr "Se ha iniciado la sincronización"
-
-#~ msgid "Closing date"
-#~ msgstr "Fecha de finalización"
-
-#~ msgid "saving critical object failed"
-#~ msgstr "ha fallado el salvado de un objeto crítico"
-
-#~ msgid "Due yesterday"
-#~ msgstr "Venció ayer"
-
-#~ msgid "Other stuff you should read:"
-#~ msgstr "Otras cosas que debería leer:"
-
-#~ msgid ""
-#~ "Tasks and subtasks can be re-organized by drag-n-drop in the tasks list."
-#~ msgstr ""
-#~ "Las tareas y subtareas pueden reorganizarse arrastrándolas en la lista de "
-#~ "tareas."
-
-#~ msgid ""
-#~ "Some concepts come with subtasks: for example, a subtask's due date can "
-#~ "never be after its parent's due date."
-#~ msgstr ""
-#~ "Algunos conceptos vienen con subtareas: por ejemplo, la fecha de vencimiento "
-#~ "de una subtarea no puede ser posterior al vencimiento de su tarea padre."
-
-#~ msgid "Learn how to use tags"
-#~ msgstr "Aprenda a usar etiquetas"
-
-#~ msgid ""
-#~ "Tags are useful to sort your tasks. In the view menu, you can enable a "
-#~ "sidebar which displays all the tags you are using so you can easily see "
-#~ "tasks assigned to a given tag. There's no limit to the number of tags a task "
-#~ "can have."
-#~ msgstr ""
-#~ "Las etiquetas son útiles para ordenar sus tareas. En el menú Ver, puede "
-#~ "habilitar una barra lateral que muestre todas las etiquetas que está usando, "
-#~ "para que pueda ver fácilmente las tareas asignadas a una cierta etiqueta. No "
-#~ "hay límite a la cantidad de etiquetas que puede tener una tarea."
-
-#~ msgid "A tag is a simple word that begins with &quot;@&quot;."
-#~ msgstr "Una etiqueta es una palabra sencilla que comienza con &quot;@&quot;."
-
-#~ msgid "Later"
-#~ msgstr "Después"
-
-#~ msgid "Learn how to use subtasks"
-#~ msgstr "Aprenda cómo usar subtareas"
-
-#~ msgid ""
-#~ "A new tag is only added to the current task. There's no recursion and the "
-#~ "tag is not applied to subtasks. But when you create a new subtask, this "
-#~ "subtask will inherit the tags of its parent as a good primary default (it "
-#~ "will also be the case if you add a tag to a parent just after creating a "
-#~ "subtask). Of course, you can modify at any time the tags of this particular "
-#~ "subtask. It will never be changed by the parent."
-#~ msgstr ""
-#~ "Una etiqueta nueva se agrega sólo a la tarea actual. No hay recursividad y "
-#~ "la etiqueta no se aplica a las subtareas. Pero cuando cree una nueva "
-#~ "subtarea, esta subtarea heredará las etiquetas de la tarea padre como un "
-#~ "buen valor por omisión (también ocurrirá cuando si agrega una etiqueta a una "
-#~ "tarea padre justo después de crear una subtarea). Por supuesto, en cualquier "
-#~ "momento puede cambiar las etiquetas de una subtarea cualquiera. Esto nunca "
-#~ "será cambiado por la tarea padre."
-
-#~ msgid "Template not found"
-#~ msgstr "Plantilla no encontrada"
-
-#~ msgid "Can't load the template file"
-#~ msgstr "No se puede cargar el archivo de plantilla"
-
-#~ msgid "Learn how to use the Workview"
-#~ msgstr "Aprenda a usar la Vista de trabajo"
-
-#~ msgid ""
-#~ "If you right click on a tag in the sidebar you can also set its color. It "
-#~ "will allow you to have a more colorful list of tasks, if you want it that "
-#~ "way."
-#~ msgstr ""
-#~ "Si hace click derecho en una etiqueta en la barra lateral, puede cambiar su "
-#~ "color. Esto le permitirá tener listas de tareas más coloridas, si así lo "
-#~ "desea."
-
-#~ msgid ""
-#~ "If you use tags, you can right click on a tag in the sidebar and choose to "
-#~ "hide tasks assigned to this particular tag in the workview. It's very useful "
-#~ "if you have a tag like &quot;someday&quot; that you use for tasks you would "
-#~ "like to do but are not particularly urgent."
-#~ msgstr ""
-#~ "Si usa etiquetas, puede hacer click derecho en una etiqueta en la barra "
-#~ "lateral y escoger esconder las tareas asignadas a esta etiqueta en "
-#~ "particular en la Vista de trabajo. Es muy útil si tiene una etiqueta como "
-#~ "&quot;alguna-vez&quot; que puede usar para las tareas que quiera hacer pero "
-#~ "que no son particularmente urgentes."
-
-#~ msgid ""
-#~ "Once you've read the above subtask, mark it as Done. If you don't want to do "
-#~ "the task, mark it as dismissed. Done and Dismissed tasks are kept in the "
-#~ "closed tasks pane, hidden by default but you can easily enable it in the "
-#~ "View menu."
-#~ msgstr ""
-#~ "Una vez que haya leído la subtarea anterior, márquela como Hecha. Si no "
-#~ "quiere completar la tarea, márquela como descartada. Las tareas Hechas y "
-#~ "Descartadas se mantienen en el panel de tareas cerradas, ocultas por "
-#~ "defecto, pero puede habilitarlas en el menú Ver."
-
-#~ msgid "Trying to access, please stand by..."
-#~ msgstr "Intentando acceder. Espere…"
-
-#~ msgid "Thank you for trying out GTG :-)"
-#~ msgstr "Gracias por usar GTG :-)"
-
-#~ msgid ""
-#~ "In GTG, everything is a task. From building a bridge over the Pacific Ocean "
-#~ "to changing a light bulb or organizing a party. When you edit a task, it is "
-#~ "automatically saved."
-#~ msgstr ""
-#~ "En GTG, todo es una tarea. Desde construir un puente sobre el Océano "
-#~ "Pacífico a cambiar una bombilla u organizar una fiesta. Cuando edita una "
-#~ "tarea, ésta es guardada automáticamente."
-
-#~ msgid ""
-#~ "We hope that you will appreciate GTG. Please send us bug reports and ideas "
-#~ "for improvement using: "
-#~ msgstr ""
-#~ "Esperamos que valore GTG. Por favor envíenos informes de problemas e ideas "
-#~ "para mejorar mediante: "
-
-#~ msgid ""
-#~ "If you choose to close this current task, subtasks will be automatically "
-#~ "closed too. We indeed consider that, if you achieve a given task, you don't "
-#~ "need to do the subtask anymore."
-#~ msgstr ""
-#~ "Si decide cerrar esta tarea, sus subtareas se cerrarán también. Consideramos "
-#~ "que, si completa cierta tarea, ya no necesita hacer sus subtareas."
-
-#~ msgid ""
-#~ "You can drag-n-drop a tag onto another to create \"subtags\". As an example, "
-#~ "if you drag the tag @to_pay onto the tag @money, every task tagged with "
-#~ "@to_pay will also appear in the view of @money (but the @money tag is not "
-#~ "added to the task)."
-#~ msgstr ""
-#~ "Puede arrastrar y soltar una etiqueta sobre otra para crear «subetiquetas». "
-#~ "Por ejemplo, si arrastra la etiqueta @para_pagar sobre la etiqueta @cuentas, "
-#~ "cada tarea marcada con la etiqueta @para_pagar aparecerá también en la vista "
-#~ "@cuentas (pero @cuentas se añade a la tarea en cuestión)."
-
-#~ msgid "It becomes yellow, it's a tag."
-#~ msgstr "Se vuelve amarilla, es una etiqueta."
-
-#~ msgid "Try to type a word beginning with @ here:"
-#~ msgstr "Pruebe a escribir una palabra que empiece con @ aquí:"
-
-#~ msgid "Also, marking a parent as done will mark all the subtasks as done."
-#~ msgstr ""
-#~ "Además, marcar la tarea madre como terminada marcará todas sus subtareas "
-#~ "como terminadas."
-
-#~ msgid ""
-#~ "It's a task that doesn't have open subtasks, i.e. you can do the task itself "
-#~ "directly."
-#~ msgstr ""
-#~ "Es una tarea que no tiene subtareas abiertas, es decir, puede realizar la "
-#~ "propia tarea directamente."
-
-#~ msgid "Thus, the workview will only show you tasks you should do right now."
-#~ msgstr ""
-#~ "De este modo, la vista de trabajo sólo le mostrará tareas que debería "
-#~ "realizar en este momento."
-
-#~ msgid ""
-#~ "If you have some trouble with GTG, we might be able to help you or to solve "
-#~ "your problem really quickly."
-#~ msgstr ""
-#~ "Si tiene algún problema con GTG,  quizás podamos ayudarle o solucionar el "
-#~ "problema rápidamente."
-
-#~ msgid ""
-#~ "We need you to make this software better. Any contribution, any idea is "
-#~ "welcome."
-#~ msgstr ""
-#~ "Le necesitamos para mejorar este software. Cualquier contribución o "
-#~ "cualquier idea son bienvenidos."
-
-#~ msgid ""
-#~ "Getting Things Gnome! is free software; you can redistribute it and/or "
-#~ "modify it under the terms of the GNU General Public License as published by "
-#~ "the Free Software Foundation; either version 3 of the License, or (at your "
-#~ "option) any later version.\n"
-#~ "\n"
-#~ "Getting Things Gnome! is distributed in the hope that it will be useful, but "
-#~ "WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY "
-#~ "or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for "
-#~ "more details.\n"
-#~ "\n"
-#~ "You should have received a copy of the GNU General Public License along with "
-#~ "Getting Things Gnome!; if not, write to the Free Software Foundation, Inc., "
-#~ "51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA."
-#~ msgstr ""
-#~ "Getting Things Gnome! es software libre; puede redistribuirlo y/o "
-#~ "modificarlo bajo los términos de la Licencia Pública General de GNU "
-#~ "publicada por la Free Software Foundation; ya sea en su versión 3 o (a su "
-#~ "criterio) en una versión posterior.\n"
-#~ "\n"
-#~ "Getting Things Gnome! se distribuye con la esperanza de resultar útil, pero "
-#~ "SIN GARANTÍA; sin ninguna garantía implícita de COMERCIALIDAD o IDONEIDAD "
-#~ "PARA UN FIN DETERMINADO. Consulte la Licencia General GNU para más "
-#~ "detalles.\n"
-#~ "\n"
-#~ "Debería haber recibido una copia de la Licencia Pública General de GNU junto "
-#~ "con Getting Things Gnome!; si no es el caso, escriba a Free Software "
-#~ "Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, "
-#~ "EE.UU."
-
-#~ msgid "Enter the name of the tag(s) you wish to add:"
-#~ msgstr "Introduzca los nombres de la(s) etiqueta(s) que quiera añadir:"
-
-#~ msgid "Add Tag..."
-#~ msgstr "Añadir etiqueta ..."
-
-#~ msgid "Add Tag"
-#~ msgstr "Añadir etiqueta"
-
-#~ msgid "Add a Tag..."
-#~ msgstr "Añadir una etiqueta ..."
-
-#~ msgid ""
-#~ "Hint: you can add several tags by separating them with\n"
-#~ "commas."
-#~ msgstr ""
-#~ "Sugerencia: Se pueden añadir varias etiquetas separándolas con comas."
-
-#~ msgid "_tomorrow"
-#~ msgstr "_mañana"
-
-#~ msgid "t_oday"
-#~ msgstr "H_oy"
-
-#~ msgid "_Schedule for..."
-#~ msgstr "Programado para"
-
-#~ msgid "next _month"
-#~ msgstr "próximo _mes"
-
-#~ msgid "next _week"
-#~ msgstr "próxima _semana"
-
-#~ msgid "next _year"
-#~ msgstr "próximo _año"
-
-#~ msgid "GTG has the ability to add plugins to extend it's core functionality."
-#~ msgstr ""
-#~ "GTG tiene la habilidad de añadir complementos para extender su funcionalidad."
-
-#~ msgid "Synchronize with Evolution"
-#~ msgstr "Sincronizar con Evolution"
-
-#~ msgid "Downloading..."
-#~ msgstr "Descargando..."
-
-#~ msgid "Active _Plugins:"
-#~ msgstr "Com_plementos activos:"
-
-#~ msgid "<b>General</b>"
-#~ msgstr "<b>General</b>"
-
-#~ msgid "Behaviour"
-#~ msgstr "Comportamiento"
-
-#~ msgid "Getting Things GNOME! Preferences"
-#~ msgstr "Preferencias de Getting Things GNOME!"
-
-#~ msgid "Plugins"
-#~ msgstr "Complementos"
-
-#~ msgid "Reset Color"
-#~ msgstr "Reiniciar color"
-
-#~ msgid "Are you sure you want to delete these tasks?"
-#~ msgstr "¿Está seguro de que quiere eliminar estas tareas?"
-
-#~ msgid ""
-#~ "Deleting a task cannot be undone, and will delete the following tasks: "
-#~ msgstr ""
-#~ "No se puede deshacer la eliminación de una tarea y eliminará las siguientes "
-#~ "tareas: "
-
-#~ msgid "Keep selected tasks"
-#~ msgstr "Conservar tareas selccionadas"
-
-#~ msgid "Permanently remove tasks"
-#~ msgstr "Eliminar tareas permanentemente"
-
-#~ msgid "Learn how to use Plugins"
-#~ msgstr "Aprenda cómo usar complementos"
-
-#~ msgid "For that the syntax is :"
-#~ msgstr "Por eso la sintaxis es:"
-
-#~ msgid ""
-#~ "Some examples of the current plugins are Syncing with Remember the Milk and "
-#~ "Evolution, Tomboy/Gnote integration and Geolocalized Tasks."
-#~ msgstr ""
-#~ "Algunos ejemplos de los actuales complementos son la sincronización con "
-#~ "Remember the Milk y Evolution, integración con Tomboy/Gnote y tareas "
-#~ "geolocalizadas."
-
-#~ msgid "If a word begins with @, it is interpreted as a tag."
-#~ msgstr "Si una palabra comienza con @, se interpreta como etiqueta."
-
-#~ msgid ""
-#~ " was found on the system, but it doesn't provide a dbus interface. the "
-#~ "Tomboy/Gnote plugin will not work with it."
-#~ msgstr ""
-#~ " fue encontrado en el sistema, pero no proporciona una interfaz dbus. El "
-#~ "complemento Tomboy/Gnote no funcionará con él."
-
-#~ msgid "Start a new activity in Hamster Time"
-#~ msgstr "Iniciar una nueva actividad en Hamster Time"
-
-#~ msgid "Start a new activity in Hamster Time "
-#~ msgstr "Iniciar nueva actividad en Hamster Time "
-
-#~ msgid "Please retry."
-#~ msgstr "Inténtelo de nuevo."
-
-#~ msgid "Updating changed tasks.."
-#~ msgstr "Actualizando tareas cambiadas..."
-
-#~ msgid "Authentication failed."
-#~ msgstr "Falló la autenticación."
-
-#~ msgid ""
-#~ "Attributes which are added in this way apply but do not appear in the title."
-#~ msgstr ""
-#~ "Los atributos que se han agregado de esta manera se aplican, pero no "
-#~ "aparecen en el título."
-
-#~ msgid ""
-#~ "The quickadd entry is the quickest way to create a new task. You can show or "
-#~ "hide it in the View menu."
-#~ msgstr ""
-#~ "Al introducción quickadd es la forma más rápida de añadir una neuva tarea. "
-#~ "Puede mostrarlo u ocultarlo en el menú de Ver."
-
-#, python-format
-#~ msgid "%(days)d day left"
-#~ msgid_plural "%(days)d days left"
-#~ msgstr[0] "Queda %(days)d día"
-#~ msgstr[1] "Quedan %(days)d días"
-
-#~ msgid ""
-#~ "We hope that you will appreciate GTG. Please send us bug reports and ideas "
-#~ "for improvement using:\n"
-#~ "    https://bugs.launchpad.net/gtg\n"
-#~ "\n"
-#~ "Thank you for trying out GTG :-)"
-#~ msgstr ""
-#~ "Esperamos que aprecie GTG. Envíenos informes de errores e sugerencias de "
-#~ "mejoras usando:\n"
-#~ "    https://bugs.launchpad.net/gtg\n"
-#~ "\n"
-#~ "Gracias por probar GTG :-)"
-
-#~ msgid ""
-#~ "Please authenticate to Remember The Milk in the browser that is being opened "
-#~ "now. When done, press OK"
-#~ msgstr ""
-#~ "Autentíquese con Remember The Milk en el navegador que se acaba de abrir. "
-#~ "Cuando lo haya hecho, pulse aceptar."
-
-#~ msgid ""
-#~ "due:date or defer:date : This way you can apply a due date or a defer date. "
-#~ "date can be yyyy-mm-dd (for exemple 2009-04-01) or yyyymmdd (20090401) or "
-#~ "mmdd (0401, in this case the year is implicitly the current one) or today or "
-#~ "tomorrow or a weekday name (due:monday means due next Monday)"
-#~ msgstr ""
-#~ "vencimiento:fecha o aplazo:fecha : De esta manera puedes aplicar una fecha "
-#~ "de vencimiento o una fecha de aplazo. la fecha puede estar en el formato "
-#~ "aaaa-mm-dd (por ejemplo 2009-04-01) o aaaammdd (20090401) o mmdd(0401, en "
-#~ "este caso el año es implícitamente el actual) o hoy o mañana o un día de la "
-#~ "semana (vencimiento:lunes significa que finaliza el siguiente lunes)"
-
-#, python-format
-#~ msgid "Was %(days)d day ago"
-#~ msgid_plural "Was %(days)d days ago"
-#~ msgstr[0] "Fue hace %(days)d día"
-#~ msgstr[1] "Fue hace %(days)d días"
-
-#~ msgid ""
-#~ "Once a task is done, you can push the &quot;Mark as done&quot; button. If "
-#~ "the task is not relevant any-more, simply press &quot;Dismiss&quot;."
-#~ msgstr ""
-#~ "Una vez que una tarea está terminada, puede pulsar el botón «Marcar como "
-#~ "realizada». Si la tarea ya no es relevante, simplemente pulse «Descartar»."
-
-#~ msgid "Welcome to Getting Things Gnome!, your new task manager."
-#~ msgstr "Bienvenido a Getting Things Gnome!, su nuevo gestor de tareas."
-
-#~ msgid ""
-#~ "A task might be composed of multiple subtasks that appear as links in the "
-#~ "description. Simply click on the following link:"
-#~ msgstr ""
-#~ "Una tarea puede estar compuesta de múltiples subtareas que aparecen como "
-#~ "enlaces en la descripción. Simplemente pulse en el siguiente enlace:"
-
-#~ msgid "New Note"
-#~ msgstr "Nota nueva"
-
-#~ msgid ""
-#~ "If you press the &quot;Workview&quot; button, only actionable tasks will be "
-#~ "displayed."
-#~ msgstr ""
-#~ "Si pulsa el botón de «Vista de trabajo» sólo se mostrarán las tareas "
-#~ "iniciables."
-
-#~ msgid ""
-#~ "What is an actionable task? It's a task you can do directly, right now."
-#~ msgstr ""
-#~ "¿Qué es una tarea iniciable? Es una tarea que puede empezar inmediatamente, "
-#~ "ahora mismo."
-
-#~ msgid ""
-#~ "In the task description (this window), if you begin a line with &quot;-"
-#~ "&quot;, it will be considered as a &quot;subtask&quot;, something that needs "
-#~ "to be done in order to accomplish your task. Just try to write &quot;- test "
-#~ "subtask&quot; on the next line and press enter."
-#~ msgstr ""
-#~ "En la descripción de la tarea (esta ventana), si comienza una línea con "
-#~ "&quot;-&quot; se la considerará como una &quot;subtarea&quot;, algo que "
-#~ "tiene que hacerse para completar su tarea. Pruebe a escribir &quot;-subtarea "
-#~ "de prueba&quot; en la siguiente línea y presione Intro."
-
-#~ msgid ""
-#~ "tags:tag1,tag2,tag3 : This way you can apply as many tags as you wish using "
-#~ "comma as separator"
-#~ msgstr ""
-#~ "etiquetas:etiqueta1,etiqueta2,etiqueta3 : De esta manera puedes aplicar "
-#~ "cuantas etiquetas quiera usando comas como separadores"
-
-#~ msgid ""
-#~ "For adding a task you just have to type its title in the entry and press "
-#~ "return. The task will be created and selected in the task browser. If a tag "
-#~ "is selected in the tag panel, this tag is applied to the task you create."
-#~ msgstr ""
-#~ "Para añadir una tarea, escriba el título en la entrada y presione Intro. La "
-#~ "tarea será creada y seleccionada en el explorador de tareas. Si una etiqueta "
-#~ "es seleccionada en el panel de etiquetas, ésta será aplicada a la tarea que "
-#~ "acaba de crear."
-
-#~ msgid ""
-#~ "You can also create a task with attributes like tags, due date or defer date "
-#~ "in the quickadd entry."
-#~ msgstr ""
-#~ "También puede crear una tarea con atributos como etiquetas, fecha de "
-#~ "vencimiento o aplazar fecha en la entrada de agregado rápido."
-
-#~ msgid "Please, report them on our Launchpad page:"
-#~ msgstr "Iinfórmenos de ellos en nuestra página de Launchpad:"
-
-#~ msgid "Make a Task"
-#~ msgstr "Crear una tarea"
-
-#~ msgid "Set due date"
-#~ msgstr "Establecer fecha de vencimiento"
-
-#~ msgid "_soon"
-#~ msgstr "p_ronto"
-
-#~ msgid "_now"
-#~ msgstr "_ahora"
-
-#~ msgid "_clear start date"
-#~ msgstr "_borrar fecha de inicio"
-
-#~ msgid "_clear due date"
-#~ msgstr "_borrar fecha de vencimiento"
-
-#~ msgid "_Set start date"
-#~ msgstr "_Establecer fecha de inicio"
-
-#~ msgid "Learn how to use the QuickAdd Entry"
-#~ msgstr "Aprenda cómo usar la Entrada rápida"
-
-#~ msgid "Mark as not done"
-#~ msgstr "Marcar como pendiente"
+msgstr ""

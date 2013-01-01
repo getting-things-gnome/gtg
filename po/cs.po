@@ -8,15 +8,15 @@ msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2012-09-11 10:37+0200\n"
-"PO-Revision-Date: 2012-08-01 16:37+0000\n"
-"Last-Translator: Kuvaly [LCT] <kuvaly@seznam.cz>\n"
+"PO-Revision-Date: 2012-12-14 01:29+0000\n"
+"Last-Translator: Dominik Janků <djanku@email.cz>\n"
 "Language-Team: Czech <cs@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
-"X-Launchpad-Export-Date: 2012-09-12 04:37+0000\n"
-"X-Generator: Launchpad (build 15930)\n"
+"X-Launchpad-Export-Date: 2012-12-15 05:07+0000\n"
+"X-Generator: Launchpad (build 16372)\n"
 
 #: GTG/plugins/export/export_templates/description_pocketmod.py:18
 msgid "Foldable booklet (PDF)"
@@ -277,7 +277,7 @@ msgstr "Toto hlášení vám opravdu pomohlo, že? Prosím, nahlaste chybu."
 
 #: GTG/core/firstrun_tasks.py:35
 msgid "Getting Started With GTG"
-msgstr ""
+msgstr "Začínáme s GTG"
 
 #: GTG/core/firstrun_tasks.py:36
 msgid ""
@@ -352,10 +352,83 @@ msgid ""
 "\n"
 "The GTG team."
 msgstr ""
+"Vítejte v aplikaci Getting Things GNOME!, Vašemu novému organizátorovi "
+"úkolů! V Getting Things GNOME! (GTG) je všechno bráno jako úkol. Tím může "
+"být například budovaní mostu přes řeku Opavu, montování žárovky nebo "
+"organizování párty pro své přátele.\n"
+"\n"
+"Pokud jste nikdy s GTG nepracovali, věnujte prosím pozornost následujícímu "
+"textu, který Vás provede užitečnými informacemi o tom, jak můžete s GTG "
+"organizovat svůj každodenní život.\n"
+"\n"
+"Vytváření a úpravy úkolů:\n"
+"\n"
+"Používání GTG je jednoduché: ke každé činnosti, kterou potřebujete vykonat "
+"si vytvořite jeden nový úkol. Stačí jednoduše klepnutím na tlačítko "
+"&quot;Nový úkol&quot;, poté upravte popis svého úkolu, nastavte pár "
+"parametrů a je vystaráno! Jakmile úkol dokončíte, můžete jej uzavřít "
+"klepnutím na tlačítko &quot;Označit jako dokončené&quot;.\n"
+"\n"
+"Během úpravy úkolu jsou změny automaticky ukládány, není proto potřeba změny "
+"ukládat. Schválně si to vyzkoušejte: otevřete si úkol něco v něm změňte, "
+"okno uzavřene a znovu jej otevřete. Vidíte? Vše se bez problémů uložilo "
+"automaticky.\n"
+"\n"
+"Pár slov k podúkolům:\n"
+"\n"
+"V běžném životě se snáze vypořádáte s úkoly, pokud se je rozdělíte do "
+"menších částí - podúkolů. GTG Vám v tomto ohledu vychází vstříc a nabízí "
+"možnost ke každému úkolu definovat jeho podčásti, které je nezbytné vykonat. "
+"\n"
+"\n"
+"Každý úkol v GTG tedy může obsahovat jeden nebo více podúkolů. Ty se "
+"zobrazují jako odkazy v popisu úkolu, stejně tak jako odkaz uvedený níže:\n"
+"<subtask>1@1</subtask>\n"
+"\n"
+"Dokončení úkolu:\n"
+"Jakmile jste hotovi se svou práci. můžete úkol dokončit klepnutím na "
+"tlačítko &quot;Označit jako dokončené&quot; nebo na tlačítko "
+"&quot;Zahodit&quot; Použijte první způsob, pokud je práce hotová, druhý, "
+"pokud už úkol není aktuální. Chcete si to zkusit? Zkuste uzavřít úlohu "
+"uvedenou výše!\n"
+"\n"
+"Když uzavřete úlohu, budete informováni o tom, že byly rovněž uzavřeny "
+"všechny její podúlohy! GTG automaticky předpokládá, že jakmile jednou "
+"uzavřete jednu úlohu, její podúlohy budou uzavřeny také, protože je již "
+"nebude třeba vykonávat (jsou to defacto jenom předpoklady k dokončení hlavní "
+"úlohy).\n"
+"\n"
+"Mějte na paměti, že úlohy které označíte jako dokončené nebo zahozené můžete "
+"najít v &quot;panelu hotových úkolů&quot;. Ten je implicitně schovaný, pokud "
+"jej chcete zobrazit, využijte menu Zobrazit.\n"
+"\n"
+"Naučte se více o GTG:\n"
+"\n"
+"Pokud máte zájem o další informace týkající se práce s úlohami v GTG, "
+"projděte si následující odkazy:\n"
+"<subtask>2@1</subtask>\n"
+"<subtask>3@1</subtask>\n"
+"<subtask>4@1</subtask>\n"
+"<subtask>5@1</subtask>\n"
+"<subtask>6@1</subtask>\n"
+"<subtask>7@1</subtask>\n"
+"<subtask>8@1</subtask>\n"
+"\n"
+"Můžete si také prohlédnout nápovědu a dokumentaci GTG stisknutím klávesy F1 "
+"nebo využitím menu Nápověda.\n"
+"\n"
+"Doufáme, že Vás bude práce s GTG bavit a děkujeme Vám za vyzkoušení! Pokud "
+"by se snad objevila nějaká chyba, nebo byste měli nápady na zlepšení, "
+"neváhejte a kontaktujte nás na webovské stránce: "
+"https://bugs.launchpad.net/gtg/+filebug Pokud chcete být informováni o "
+"nejnovějších vlastnostech GTG, sledujte prosím náš blog na adrese: "
+"http://gtg.fritalk.com\n"
+"\n"
+"Váš GTG tým."
 
 #: GTG/core/firstrun_tasks.py:114
 msgid "Learn How To Use Subtasks"
-msgstr ""
+msgstr "Naučit se jak používat podúlohy"
 
 #: GTG/core/firstrun_tasks.py:115
 msgid ""
@@ -456,7 +529,7 @@ msgstr ""
 
 #: GTG/core/firstrun_tasks.py:209
 msgid "Learn How To Use Plugins"
-msgstr ""
+msgstr "Naučit se používát zásuvné moduly"
 
 #: GTG/core/firstrun_tasks.py:210
 msgid ""
@@ -470,10 +543,14 @@ msgid ""
 "You can find the Plugin Manager by selecting Edit in the Menu Bar, then "
 "clicking Plugins."
 msgstr ""
+"Základní funkčnost GTG můžete rozšířit přidáním zásuvných modulů.\n"
+"Příkladem takových modulů může být rozšíření zobrazující ikonu GTG v "
+"oznamovací oblasti nebo automaticky odstraňovač již dokončených úloh.\n"
+"Správce zásuvných modulů naleznete v menu Úpravy -> Zásuvné moduly."
 
 #: GTG/core/firstrun_tasks.py:224
 msgid "Reporting Bugs"
-msgstr ""
+msgstr "Oznamování chyb"
 
 #: GTG/core/firstrun_tasks.py:225
 msgid ""
@@ -1274,11 +1351,11 @@ msgstr "<b>Prohlížeč úkolů</b>"
 
 #: GTG/gtk/preferences.glade.h:6
 msgid "Font :"
-msgstr ""
+msgstr "Písmo :"
 
 #: GTG/gtk/preferences.glade.h:7
 msgid "<b>Editor</b>"
-msgstr ""
+msgstr "<b>Editor</b>"
 
 #: GTG/gtk/preferences.glade.h:8
 msgid "page 1"
@@ -1616,6 +1693,7 @@ msgid ""
 "GTG is a personal tasks and TODO-list items organizer for the GNOME desktop "
 "environment."
 msgstr ""
+"GTG je organizér úkolů a věcí k dodělání pro GNOME desktopové prostředí."
 
 #: GTG/gtk/browser/taskbrowser.glade.h:34
 msgid "GTG website"
@@ -1652,27 +1730,27 @@ msgstr "Přidat podúkol"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:43
 msgid "_Set Start Date"
-msgstr ""
+msgstr "Na_stavit počáteční datum"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:44
 msgid "T_oday"
-msgstr ""
+msgstr "Dn_es"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:45
 msgid "_Tomorrow"
-msgstr ""
+msgstr "Zí_tra"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:46
 msgid "Next _Week"
-msgstr ""
+msgstr "Násl_edující týden"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:47
 msgid "Next _Month"
-msgstr ""
+msgstr "Následující _měsíc"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:48
 msgid "Next _Year"
-msgstr ""
+msgstr "Následující _rok"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:49
 msgid "_Clear Start Date"
@@ -1684,15 +1762,15 @@ msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:51
 msgid "_Now"
-msgstr ""
+msgstr "N_yní"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:52
 msgid "_Soon"
-msgstr ""
+msgstr "Br_zy"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:53
 msgid "_Someday"
-msgstr ""
+msgstr "J_ednoho dne"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:54
 msgid "_Clear Due Date"
