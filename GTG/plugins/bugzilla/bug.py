@@ -27,35 +27,26 @@ class Bug:
     def __init__(self, base, nb):
         #this also handles old versions of pybugz
         try:
-            self.bug = bugzilla.Bugz(base, skip_auth=True).get(nb)
+            bugs = bugzilla.BugzillaProxy(base, skip_auth=True).Bug.get({ 'ids': [nb,], })
         except:
-            self.bug = bugzilla.Bugz(base).get(nb)
-        if self.bug is None:
-            raise Exception('Failed to create bug')
-
-    def _get_detail(self, detail):
-        tmp = self.bug.find('//%s' % detail)
-        if tmp is None:
-            return None
-
-        return tmp.text
+            bugs = bugzilla.BugzillaProxy(base).Bug.get({ 'ids': [nb,], })
+        self.bug = bugs['bugs'][0]
 
     def get_title(self):
-        return self._get_detail('short_desc')
+        return self.bug['summary']
 
     def get_product(self):
-        return self._get_detail('product')
+        return self.bug['product']
 
     def get_component(self):
-        return self._get_detail('component')
+        return self.bug['component']
 
     def get_description(self):
-        comment = self.bug.findall('//long_desc')[0]
-        return comment.find('.//thetext').text
+        return self.bug['summary']
 
 if __name__ == '__main__':
-    for bug in [Bug('http://bugzilla.gnome.org', '598354'),
-            Bug('http://bugs.freedesktop.org', '24120')]:
+    for bug in [Bug('https://bugzilla.gnome.org', '598354'),
+            Bug('https://bugs.freedesktop.org', '24120')]:
         print "title:", bug.get_title()
         print "product:", bug.get_product()
         print "component:", bug.get_component()
