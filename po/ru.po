@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2013-01-01 17:35+0100\n"
-"PO-Revision-Date: 2013-01-05 17:47+0000\n"
+"PO-Revision-Date: 2013-01-06 11:49+0000\n"
 "Last-Translator: DmDr <cardioexp@gmail.com>\n"
 "Language-Team: Russian <ru@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -16,8 +16,8 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Launchpad-Export-Date: 2013-01-06 04:55+0000\n"
-"X-Generator: Launchpad (build 16393)\n"
+"X-Launchpad-Export-Date: 2013-01-07 04:51+0000\n"
+"X-Generator: Launchpad (build 16402)\n"
 
 #: GTG/gtk/backends_dialog/__init__.py:75
 #, python-format
@@ -383,8 +383,8 @@ msgid ""
 "Click To\n"
 "Set Icon"
 msgstr ""
-"Клик для\n"
-"выбора иконки"
+"выбор\n"
+"иконки"
 
 #: GTG/gtk/browser/tag_editor.py:294
 msgid "Enter tag name here"
@@ -1090,7 +1090,7 @@ msgstr "завтра"
 
 #: GTG/core/search.py:93
 msgid "nodate"
-msgstr "без даты"
+msgstr "бездаты"
 
 #: GTG/core/search.py:94 GTG/tools/dates.py:45 GTG/tools/dates.py:53
 #: GTG/tests/test_dates.py:68 GTG/tests/test_dates.py:76
@@ -1106,11 +1106,11 @@ msgstr "скоро"
 #: GTG/tests/test_dates.py:71 GTG/tests/test_dates.py:78
 #: GTG/tests/test_dates.py:79
 msgid "someday"
-msgstr "любой день"
+msgstr "любойдень"
 
 #: GTG/core/search.py:97
 msgid "notag"
-msgstr "без меток"
+msgstr "безметки"
 
 #: GTG/core/firstrun_tasks.py:35
 msgid "Getting Started With GTG"
