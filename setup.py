@@ -147,7 +147,6 @@ setup(
     'GTG',
     'GTG.backends',
     'GTG.backends.rtm',
-    'GTG.backends.tweepy',
     'GTG.core',
     'GTG.core.plugins',
     'GTG.gtk',
