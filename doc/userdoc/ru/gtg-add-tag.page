@@ -1,0 +1,37 @@
+<page xmlns="http://projectmallard.org/1.0/" type="topic" style="task" id="gtg-add-tag" xml:lang="ru">
+
+<info>
+  <link type="guide" xref="gtg-tags" group="third"/>
+  <link type="seealso" xref="gtg-tag-color"/>
+  <link type="seealso" xref="gtg-add-subtag"/>
+  <revision pkgversion="0.1" version="0.1" date="2012-07-03" status="candidate"/>
+  <credit type="author">
+    <name>Radina Matic</name>
+   <email>radina.matic@gmail.com</email>
+  </credit>
+<mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator">
+  <mal:name>Dmitry Drozdov</mal:name>
+</mal:credit>
+</info>
+
+<title>Добавление и редактирование меток</title>
+
+<p>Чтобы добавить или изменить уже установленные метки у выбранной в основном окне <app>GTG</app> задачи можно:</p>
+
+<list>
+  <item><p>Использовать комбинацию <keyseq><key>Ctrl</key><key>T</key></keyseq>.</p></item>
+  <item><p>Щелкнуть на задаче правой кнопкой мыши и выбрать пункт <gui>Изменить метку...</gui> в контекстном меню.</p></item>
+</list>
+
+<p>Во всплывающем окне можно перечислить метки, разделяя их запятыми. Чтобы удалить какую-нибудь метку у конкретной задачи, поставьте перед ней восклицательный знак.</p>
+
+<figure>
+<title>Редактирование меток</title>
+<media type="image" mime="image/png" src="figures/modify-tag.png"/>
+</figure>
+
+<p>Чтобы добавить метки к уже открытой в <app>GTG</app> задаче, щелкните по кнопке <gui>Добавить метку</gui> в инструментальной панели редактора задач. В ответ будет вставлен знак &quot;@&quot; в поле редактирования задачи. Еще проще вставить метку просто набрав &quot;@&quot; и саму метку, новая метка будет подсвечена желтым и появится в списке меток сбоку в окне <app>GTG</app>.</p>
+
+<p>Чтобы установить открытой задаче уже имеющуюся метку, щелкните по стрелке справа от кнопки <gui>Добавить метку</gui> в инструментальной панели редактора задач. Это откроет список всех уже имеющихся меток, которые можно присвоить редактируемой сейчас задаче.</p>
+
+</page>

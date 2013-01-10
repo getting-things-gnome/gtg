@@ -1,0 +1,22 @@
+<page xmlns="http://projectmallard.org/1.0/" type="topic" style="task" id="gtg-join-users" xml:lang="ru">
+
+<info>
+  <link type="guide" xref="index#gtg-get-involved"/>
+  <link type="seealso" xref="gtg-report-problem"/>
+  <link type="seealso" xref="gtg-translate"/>
+  <revision pkgversion="0.1" version="0.1" date="2012-07-03" status="candidate"/>
+  <credit type="author">
+    <name>Radina Matic</name>
+    <email>radina.matic@gmail.com</email>
+  </credit>
+<mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator">
+  <mal:name>Dmitry Drozdov</mal:name>
+</mal:credit>
+</info>
+
+<title>Вливайтесь в группу пользователей GTG</title>
+
+<p>Присоединяйтесь по ссылке к <link href="https://launchpad.net/~gtg-user/+join">Группе пользователей GTG на Launchpad</link>. Вы также можете подписаться на рассылку по e-mail для пользователей GTG.</p>
+
+</page>
+

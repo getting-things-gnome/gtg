@@ -1,0 +1,27 @@
+<page xmlns="http://projectmallard.org/1.0/" type="topic" style="task" id="gtg-create-plugin"  xml:lang="ru">
+
+<info>
+  <link type="guide" xref="index#gtg-advanced"/>
+  <link type="seealso" xref="gtg-ppa"/>
+  <link type="seealso" xref="gtg-create-sync"/>
+  <link type="seealso" xref="gtg-join-developers"/>
+  <revision pkgversion="0.1" version="0.1" date="2012-07-03" status="candidate"/>
+  <credit type="author">
+    <name>Radina Matic</name>
+    <email>radina.matic@gmail.com</email>
+  </credit>
+<mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator">
+  <mal:name>Dmitry Drozdov</mal:name>
+</mal:credit>
+</info>
+
+<title>Создание собственных дополнений</title>
+
+<p>Ниже приведены ссылки, которые будут полезны, если Вы соберетесь написать собственное дополнение (plugin) для <app>GTG</app>:</p>
+
+<p><link href="https://live.gnome.org/gtg/pluginHowTo">Как работают дополнения и что нужно знать, чтобы написать дополнение для <app>GTG</app>.</link></p>
+
+<p><link href="https://live.gnome.org/gtg/plugins">Примеры дополнений.</link></p>
+
+</page>
+

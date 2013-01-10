@@ -1,0 +1,26 @@
+<page xmlns="http://projectmallard.org/1.0/" type="topic" style="task" id="gtg-create-sync" xml:lang="ru">
+
+<info>
+  <link type="guide" xref="index#gtg-advanced"/>
+  <link type="seealso" xref="gtg-ppa"/>
+  <link type="seealso" xref="gtg-create-plugin"/>
+  <link type="seealso" xref="gtg-join-developers"/>
+  <revision pkgversion="0.1" version="0.1" date="2012-07-03" status="candidate"/>
+  <credit type="author">
+    <name>Radina Matic</name>
+    <email>radina.matic@gmail.com</email>
+  </credit>
+<mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator">
+  <mal:name>Dmitry Drozdov</mal:name>
+</mal:credit>
+</info>
+
+<title>Создание сервисов синхронизации</title>
+
+<p>Если есть желание создать собственный сервис синхронизации для <app>GTG</app>, то стоит познакомиться с этими ресурсами:</p>
+
+<p><link href="https://live.gnome.org/gtg/Backends">Сервисы синхронизации Sync Services (Backends).</link></p>
+<p><link href="https://live.gnome.org/gtg/dbus">DBus</link></p>
+
+</page>
+

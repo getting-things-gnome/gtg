@@ -1,0 +1,39 @@
+<page xmlns="http://projectmallard.org/1.0/" type="guide" style="task 2column" id="gtg-workview" xml:lang="ru">
+
+<info>
+  <link type="guide" xref="index#gtg-task-management"/>
+  <revision pkgversion="0.1" version="0.1" date="2012-07-03" status="candidate"/>
+  <credit type="author">
+    <name>Radina Matic</name>
+    <email>radina.matic@gmail.com</email>
+  </credit>
+<mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator">
+  <mal:name>Dmitry Drozdov</mal:name>
+</mal:credit>
+</info>
+
+<title>Рабочий план</title>
+
+<p>Если щелкнуть по кнопке <gui>Рабочий план</gui>, то будут показаны только те задачи, по которым может вестись работа.</p> 
+
+
+<figure>
+<title>Рабочий план</title>
+<desc> </desc>
+<media type="image" mime="image/png" src="figures/workview.png"/>
+</figure>
+
+<p>Что означает &quot;может вестись работа&quot;? Это те задачи, которые можно выполнять прямо сейчас. Они должны удовлетворять двум условиям:</p>
+
+<list>
+<item><p>Дата начала задачи уже наступила.</p></item>
+<item><p>Задача не имеет открытых подзадач, т.е. все предшественники этой задачи выполнены (или закрыты) и можно непосредственно приступить к выполнению самой задачи.</p></item> 
+</list>
+
+<p>Таким образом, в <gui>Рабочий план</gui> попадают только те задачи, которыми можно заниматься прямо сейчас.</p>
+
+<p>Если пользоваться метками, то для каждой метки можно указать, показывать ли отмеченные ей задачи в рабочем плане (из контекстного меню). Это полезно, например для отметки задач, которые не являются реально срочными и которые можно выполнить в любое время.</p>
+
+<links type="topic" groups="first second third fourth fifth sixth" style="2column"/>
+
+</page>
