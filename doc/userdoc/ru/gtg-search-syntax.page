@@ -1,0 +1,117 @@
+<page xmlns="http://projectmallard.org/1.0/" xmlns:ui="http://projectmallard.org/experimental/ui/"
+ type="guide" style="tip" id="gtg-search-syntax" xml:lang="ru">
+
+<info>
+  <link type="guide" xref="index#gtg-search" group="first"/>
+  <revision pkgversion="0.1" version="0.1" date="2012-07-03" status="candidate" />
+  <credit type="author">
+    <name>Bertrand Rousseau</name>
+    <email>bertrand.rousseau@gmail.com</email>
+  </credit>
+<mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator">
+  <mal:name>Dmitry Drozdov</mal:name>
+</mal:credit>
+</info>
+
+<title>Синтаксис поисковых запросов в GTG</title>
+
+<p>Для уточнения поисковых запросов могут использоваться специальные ключевые слова в поле быстрого ввода. Они перечислены в таблице. В скобках даются русские эквиваленты, должны работать оба варианта.</p>
+
+<table rules="rows" frame="top bottom" ui:expanded="yes">
+<title>Ключевые слова поисковых запросов в GTG</title>
+<thead>
+  <tr>
+    <td><p><em style="strong">Ключевое слово</em></p></td>
+      <td><p><em style="strong">Результат</em></p></td>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><p><code>слово</code></p></td>
+      <td><p>Находит задачи, которые имеют это слово.</p></td>
+    </tr>
+    <tr>
+      <td><p><code>&quot;текст&quot;</code></p></td>
+      <td><p>В целом аналогично предыдущему, однако позволяет искать пробелы и другие специальные символы внутри текста. Текст должен быть заключен в кавычки.
+</p></td>
+    </tr>
+    <tr>
+      <td><p><code>@метка</code></p></td>
+      <td><p>Находит задачи только с этой меткой</p></td>
+    </tr>
+    <tr>
+      <td><p><code>!after [дата] (!после [date])</code></p></td>
+      <td>
+        <p>Находит только те задачи, которые можно начинать позже указанной даты.</p>
+        <p>Форматирование элемента <code>[дата]</code> описано ниже.</p>
+      </td>
+    </tr>
+    <tr>
+      <td><p><code>!before [date] (!до [date])</code></p></td>
+      <td>
+        <p>Находит только те задачи, которые должны быть завершены до указанной даты.</p>
+        <p>Форматирование элемента <code>[дата]</code> описано ниже.</p>
+      </td>
+    </tr>
+    <tr>
+      <td><p><code>!today (!сегодня)</code></p></td>
+      <td><p>Находит задачи, назначенные на сегодня.</p></td>
+    </tr>
+    <tr>
+      <td><p><code>!tomorrow (!завтра)</code></p></td>
+      <td><p>Поиск задач, назначенных на завтра.</p></td>
+    </tr>
+    <tr>
+      <td><p><code>!nodate (!бездаты)</code></p></td>
+      <td><p>Поиск задач без установленной даты выполнения.</p></td>
+    </tr>
+    <tr>
+      <td><p><code>!now (!сейчас)</code></p></td>
+      <td><p>Поиск задач, дата завершения которых установлена на сейчас (&quot;now&quot;)</p></td>
+    </tr>
+    <tr>
+      <td><p><code>!soon (!скоро)</code></p></td>
+      <td><p>Поиск задач с датой завершения &quot;скоро&quot; (&quot;soon&quot;)</p></td>
+    </tr>
+    <tr>
+      <td><p><code>!notag (!безметки)</code></p></td>
+      <td><p>Поиск задач, не отмеченных метками</p></td>
+    </tr>
+    <tr>
+      <td><p><code>!someday (!любойдень)</code></p></td>
+      <td><p>Поиск задач, дата завершения которых отмечена &quot;someday&quot; (&quot;когда-нибудь&quot;) </p></td>
+    </tr>
+    <tr>
+      <td><p><code>!not (!нет) [запрос]</code></p></td>
+      <td><p>Поиск задач, которые не соответствуют запросу.</p></td>
+    </tr>
+    <tr>
+      <td><p><code>[запрос] !or (!или) [запрос]</code></p></td>
+      <td><p>Поиск задач, которые отвечают одному либо второму запросу.</p></td>
+    </tr>
+  </tbody>
+</table>
+
+<p><code>[date]</code> может быть задана в форматах: yyyy-mm-dd (например, 2012-04-01) или yyyymmdd (20120401) или mmdd (0401 - по умолчанию используется текущий год), либо сегодня, завтра или по названию дня недели (&quot;понедельник&quot; обозначает ближайший понедельник).</p>
+
+<p>Задача должна соответствовать всем частям запроса, чтобы попасть в результаты поиска. Другими словами, поисковый запрос подобен применению логического &quot;И&quot; между всеми элементами.</p>
+
+<p>Примеры запросов:</p>
+
+<p><em style="strong"><code>!tomorrow !or !today</code></em></p>
+<p>Вывести задачи, назначенные на сегодня и завтра</p>
+
+<p><em style="strong"><code>@gtg @writing</code></em></p>
+<p>Показать задачи, имеющие обе метки и &quot;@gtg&quot;, и &quot;@writing&quot;</p>
+
+<p><em style="strong"><code>@gtg !before 2012-03-01</code></em></p>
+<p>Показать задачи с метокй &quot;@gtg&quot; и назначенные на дату до 1 марта 2012</p>
+
+<p><em style="strong"><code>купить @поручения</code></em></p>
+<p>Показать задачи с меткой &quot;@поручения&quot; в описании которых есть слово купить</p>
+
+<p><em style="strong"><code>!not купить @поручения</code></em></p>
+<p>Показать задачи с меткой &quot;@поручения&quot; в описании которых нет слова купить</p>
+
+</page>
+

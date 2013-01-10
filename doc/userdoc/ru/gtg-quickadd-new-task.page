@@ -1,0 +1,27 @@
+<page xmlns="http://projectmallard.org/1.0/" type="topic" style="task" id="gtg-quickadd-new-task" xml:lang="ru">
+
+<info>
+  <link type="guide" xref="gtg-quickadd" group="fourth"/>
+  <link type="seealso" xref="gtg-quickadd-tags"/>
+  <link type="seealso" xref="gtg-quickadd-dates"/>
+  <revision pkgversion="0.1" version="0.1" date="2012-07-03" status="candidate"/>
+  <credit type="author">
+    <name>Radina Matic</name>
+    <email>radina.matic@gmail.com</email>
+  </credit>
+<mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator">
+  <mal:name>Dmitry Drozdov</mal:name>
+</mal:credit>
+</info>
+
+<title>Создание новой задачи в поле быстрого ввода</title>
+
+<p>Чтобы создать задачу просто введите ее заголовок в поле быстрого ввода и нажмите клавишу <gui>Enter</gui>. Задача будет создана и будет выделена в списке. Если в <gui>боковой панели меток</gui> будет выбрана метка, она будет присвоена созданной задаче. </p>
+
+<figure>
+<title>Поле быстрого ввода</title>
+<desc> </desc>
+<media type="image" mime="image/png" src="figures/quick_tag_entry.png"/>
+</figure>
+
+</page>

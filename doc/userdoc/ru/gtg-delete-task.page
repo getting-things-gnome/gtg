@@ -1,0 +1,32 @@
+<page xmlns="http://projectmallard.org/1.0/" type="topic" style="task" id="gtg-delete-task" xml:lang="ru">
+
+<info>
+  <link type="guide" xref="gtg-tasks" group="second"/>
+  <link type="seealso" xref="gtg-create-new-task"/>
+  <link type="seealso" xref="gtg-edit-task"/>
+  <link type="seealso" xref="gtg-dismiss-task"/>
+  <link type="seealso" xref="gtg-set-task-date"/>
+  <revision pkgversion="0.1" version="0.1" date="2012-07-03" status="candidate"/>
+  <credit type="author">
+    <name>Radina Matic</name>
+    <email>radina.matic@gmail.com</email>
+  </credit>
+<mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator">
+  <mal:name>Dmitry Drozdov</mal:name>
+</mal:credit>
+</info>
+
+<title>Удаление задачи</title>
+
+<p>Удалить задачу из списка в основном окне <app>GTG</app>, можно:</p>
+
+<list>
+  <item><p>Командой <guiseq><gui>Задачи</gui><gui>Удалить</gui></guiseq> главного меню.</p></item>
+  <item><p>Клавишей <keyseq><key>Del</key></keyseq> клавиатуры.</p></item>
+  <item><p>Командой <gui>Удалить задачу</gui> контекстного меню после щелчка по задаче правой кнопкой мыши.</p></item>
+</list> 
+
+<p>Чтобы удалить открытую в <app>GTG</app> задачу, надо щелкнуть по кнопке <gui>Удалить задачу</gui> инструментальной панели.</p>
+<p>Поскольку удаление задачи нельзя отменить, в любом случае будет выведен запрос на подтверждение удаления задачи.</p> 
+
+</page>

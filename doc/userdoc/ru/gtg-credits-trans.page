@@ -1,0 +1,42 @@
+<page xmlns="http://projectmallard.org/1.0/" type="topic" style="task" id="gtg-credits-trans" xml:lang="ru">
+
+<info>
+  <link type="guide" xref="index#gtg-credits"/>
+  <link type="seealso" xref="gtg-credits-dev"/>
+  <link type="seealso" xref="gtg-credits-design"/>
+  <link type="seealso" xref="gtg-credits-collab"/>
+  <revision pkgversion="0.1" version="0.1" date="2012-07-03" status="candidate"/>
+  <credit type="author">
+    <name>Radina Matic</name>
+    <email>radina.matic@gmail.com</email>
+  </credit>
+<mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator">
+  <mal:name>Dmitry Drozdov</mal:name>
+</mal:credit>
+</info>
+
+<title>Переводчики GTG</title>
+
+<p>Afrikaans: Walter Leibbrandt</p>
+<p>Belarusian: Egor Kuryanovich, Iryna Nikanchuk</p>
+<p>Catalan: Siegfried Gevatter, Radina Matic</p>
+<p>Czech: Hýroumen, Ladislav Prskavec</p>
+<p>Danish: Peter Skov</p>
+<p>Dutch: puccha</p>
+<p>Finnish: Mika Tapojärvi</p>
+<p>French: Lionel Dricot, Rafik Ouerchefani, Bertrand Rousseau, Pititjo</p>
+<p>German: Philip Stewart, Thomas Pitlik</p>
+<p>Italian: Luca Falavigna, Luca Invernizzi, Radina Matic</p>
+<p>Malay: melayubuntu</p>
+<p>Polish: Tomasz Maciejewski</p>
+<p>Portuguese: Paulo Cabido</p>
+<p>Russian: Alexey Kostyuk, Alexey Nedilko, a220, mrk, wiz, DmDr</p>
+<p>Simplified Chinese: Harold.luo</p>
+<p>Slovak: Slavko (linux-slavino)</p>
+<p>Spanish: David Prieto, DiegoJ, Pititjo, Radina Matic</p>
+<p>Swedish: Christian Widell, Daniel Holm, Kalle Persson, Petri Rosenström</p>
+<p>Traditional Chinese: Rex Tsai</p>
+<p>Turkish: Murat Güneş</p>
+
+</page>
+

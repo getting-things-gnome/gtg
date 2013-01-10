@@ -1,0 +1,34 @@
+<page xmlns="http://projectmallard.org/1.0/" type="guide" style="task 2column" id="gtg-tags" xml:lang="ru">
+
+<info>
+  <link type="guide" xref="index#gtg-task-management" group="third"/>
+  <revision pkgversion="0.1" version="0.1" date="2012-07-03" status="candidate"/>
+  <credit type="author">
+    <name>Radina Matic</name>
+    <email>radina.matic@gmail.com</email>
+  </credit>
+<mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator">
+  <mal:name>Dmitry Drozdov</mal:name>
+</mal:credit>
+</info>
+
+<title>Метки задач</title>
+
+<p>Метка - просто слово, перед которым стоит знак &quot;@&quot;.</p>
+
+<p>Если ввести слово с символом &quot;@&quot; перед ним, то оно будет выделено желтым, чтобы показать, что <app>GTG</app> воспринял это как метку.</p>
+
+<figure>
+<title>метка в GTG</title>
+<media type="image" mime="image/png" src="figures/tag.png"/>
+</figure>
+
+<p>Метки удобны для сортировки задач. В меню <gui>Вид</gui> можно вывести <gui>боковую панель меток</gui> в которой перечислены все использованные в задачах метки. Чтобы быстро выбрать задачи, отмеченные какой-то меткой, просто щелкните по ней. Каждая задача может быть отмечена любым числом меток, никаких ограничений нет.</p>
+
+<p>Одни метки можно перетаскивать на другие, создавая таким образом структуру (иерархию) меток. Например, если перетащить метку &quot;@купить&quot; на метку &quot;@деньги&quot;, то все задачи, отмеченные &quot;@купить&quot; будут также показаны при выборе метки &quot;@деньги&quot; (но при этом метка &quot;@деньги&quot; не будет добавлена к задачам с меткой &quot;@купить&quot;).</p>
+
+<p>Новая метка добавляется только к выбранной задаче - рекурсия не предусмотрена и метка не добавляется к подзадачам. Однако, подзадача унаследует все метки, которые были у родительской задачи. Однако, можно в любой момент отредактировать метки подзадачи и получить различающиеся наборы меток у родительской задачи и подзадач.</p>
+
+<links type="topic" groups="first second third fourth fifth sixth" style="2column"/>
+
+</page>

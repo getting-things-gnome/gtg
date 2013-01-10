@@ -1,0 +1,33 @@
+<page xmlns="http://projectmallard.org/1.0/" type="topic" style="task" id="gtg-edit-task" xml:lang="ru">
+
+<info>
+  <link type="guide" xref="gtg-tasks" group="second"/>
+  <link type="seealso" xref="gtg-create-new-task"/>
+  <link type="seealso" xref="gtg-dismiss-task"/>
+  <link type="seealso" xref="gtg-delete-task"/>
+  <link type="seealso" xref="gtg-set-task-date"/>
+  <revision pkgversion="0.1" version="0.1" date="2012-07-03" status="candidate"/>
+  <credit type="author">
+    <name>Radina Matic</name>
+    <email>radina.matic@gmail.com</email>
+  </credit>
+<mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator">
+  <mal:name>Dmitry Drozdov</mal:name>
+</mal:credit>
+</info>
+
+<title>Редактирование задачи</title>
+
+<p>Чтобы отредактировать уже созданную задачу:</p>
+
+<list>
+  <item><p>Выберите задачу в списке и выполните на ней двойной щелчок мышью или нажмите клавишу <gui>ENTER</gui>.</p></item>
+  <item><p>Выполните команду <guiseq><gui>Задачи</gui><gui>Редактировать</gui></guiseq> главного меню.</p></item>
+  <item><p>Щелкните на задаче правой кнопкой мыши и выберите команду <gui>Редактировать</gui> контекстного меню.</p></item>
+</list>
+
+<p>Вводите нужный текст в окне редактирования задачи. Вы можете вставлять ссылки на интернет-ресурсы, добавлять метки (начиная их символом “@”) и подзадачи (начиная их символом “-”). Детально синтаксис описан в разделах <link xref="gtg-subtasks">Подзадачи</link> и <link xref="gtg-tags">Метки</link>.</p>
+
+<p>Напоминаем, что не следует специально заботиться о сохранении задач, поскольку <app>GTG</app> делает это автоматически по мере редактирования текста.</p>
+
+</page>

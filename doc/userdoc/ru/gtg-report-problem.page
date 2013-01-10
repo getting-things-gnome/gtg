@@ -1,0 +1,24 @@
+<page xmlns="http://projectmallard.org/1.0/" type="topic" style="task" id="gtg-report-problem" xml:lang="ru">
+
+<info>
+  <link type="guide" xref="index#gtg-get-involved" group="first"/>
+  <link type="seealso" xref="gtg-join-users"/>
+  <link type="seealso" xref="gtg-translate"/>
+  <revision pkgversion="0.1" version="0.1" date="2012-07-03" status="candidate"/>
+  <credit type="author">
+    <name>Radina Matic</name>
+    <email>radina.matic@gmail.com</email>
+  </credit>
+<mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator">
+  <mal:name>Dmitry Drozdov</mal:name>
+</mal:credit>
+</info>
+
+<title>Сообщить о проблеме</title>
+
+<p>Помогите улучшить <app>GTG!</app> Если Вы столкнулись с проблемой, пошлите ее описание в</p>
+
+<p><link href="https://bugs.launchpad.net/gtg/+filebug">систему контроля ошибок в GTG на Lauchpad</link></p>
+
+</page>
+

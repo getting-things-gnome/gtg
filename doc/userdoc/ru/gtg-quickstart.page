@@ -1,0 +1,33 @@
+<page xmlns="http://projectmallard.org/1.0/" type="topic" style="task" id="gtg-quickstart" xml:lang="ru">
+
+<info>
+  <link type="guide" xref="index"/>
+  <link type="seealso" xref="gtg-shortcut-keys"/>
+  <link type="seealso" xref="gtg-workflows"/>
+  <link type="seealso" xref="gtg-main-window"/>
+  <revision pkgversion="0.1" version="0.1" date="2012-07-03" status="candidate"/>
+  <credit type="author">
+    <name>Radina Matic</name>
+   <email>radina.matic@gmail.com</email>
+  </credit>
+<mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator">
+  <mal:name>Dmitry Drozdov</mal:name>
+</mal:credit>
+</info>
+
+<title>Начиная работу в GTG</title>
+
+<p>Добро пожаловать в <app>Getting Things GNOME!</app>. В <app>GTG</app> все является задачами: от постройки моста через Тихий Океан до замены лампочки или организации вечеринки.</p>
+
+<figure>
+<title>Основное окно GTG</title>
+<desc> </desc>
+<media type="image" mime="image/png" src="figures/get_started.png"/>
+</figure>
+
+<p>Щелкните по кнопке <gui>New Task</gui> и начните записывать свои идеи, чтобы создать новую задачу. Нет необходимости что-то сохранять: GTG сделает это автоматически по мере ввода текста. Если задача выполнена, щелкните по кнопке <gui>Mark as Done</gui> и задача исчезнет из списка в основном окне GTG (выполненные задачи можно посмотреть в отдельном списке, щелкнув по кнопке <gui>Closed Task Pane</gui>). Если же задача совсем более не актуальна, то просто щелкните по кнопке <gui>Dismiss</gui>, чтобы отправить задачу в архив.</p>
+
+<p>Более подробно с возможностями <app>GTG</app> можно ознакомиться по ссылкам на <link xref="index">главной странице</link> справки <app>GTG</app>.</p>
+
+</page>
+

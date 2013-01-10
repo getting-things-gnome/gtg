@@ -1,0 +1,26 @@
+<page xmlns="http://projectmallard.org/1.0/" type="topic" style="task" id="gtg-translate" xml:lang="ru">
+
+<info>
+  <link type="guide" xref="index#gtg-get-involved"/>
+  <link type="seealso" xref="gtg-report-problem"/>
+  <link type="seealso" xref="gtg-join-users"/>
+  <revision pkgversion="0.1" version="0.1" date="2012-07-03" status="candidate"/>
+  <credit type="author">
+    <name>Radina Matic</name>
+    <email>radina.matic@gmail.com</email>
+  </credit>
+<mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator">
+  <mal:name>Dmitry Drozdov</mal:name>
+</mal:credit>
+</info>
+
+<title>Перевод GTG на Ваш язык</title>
+
+<p>Даже если Вы не программист, Вы можете помочь перевести <app>GTG</app> на Ваш язык. Перейдите по ссылке:</p>
+
+<p><link href="https://translations.launchpad.net/gtg">Translate GTG</link></p>
+
+<p>Вам потребуется зарегистрироваться на Launchpad и войти в команду переводчиков на Ваш язык. Вы можете заняться переводом интерфейс программы, руководства пользователя или сайта. Спасибо!!!</p>
+
+</page>
+
