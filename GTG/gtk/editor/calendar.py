@@ -100,13 +100,23 @@ class GTGCalendar(gobject.GObject):
             # to let PyGTK solve it's bussiness.
             self.__calendar.clear_marks()
 
+    def move_calendar_inside(self, width, height, x, y):
+        """ This method moves the calender inside the screen whenever part of it is displayed outside the screen """
+        screen_width = gtk.gdk.screen_width()
+        if x < width:	#To display calendar inside the screen when editor window is outside leftside of the screen
+            self.__window.move(2, y - height)
+        elif x > (screen_width-2):	#To display calendar inside the screen when editor window is outside rightside of the screen
+            self.__window.move(screen_width - width - 2, y - height)
+        else:
+            self.__window.move(x - width, y - height)
+
     def show_at_position(self, x, y):
         width, height = self.__window.get_size()
-        self.__window.move(x - width, y - height)
+        self.move_calendar_inside(width, height, x, y)
         self.__window.show()
         ##some window managers ignore move before you show a window. (which
         # ones? question by invernizzi)
-        self.__window.move(x - width, y - height)
+        self.move_calendar_inside(width, height, x, y)
         self.__window.grab_add()
         #We grab the pointer in the calendar
         gdk.pointer_grab(self.__window.window, True,
