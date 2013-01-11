@@ -148,7 +148,7 @@ class Task(TreeNode):
         defer_date = Date.no_date()
         if text:
             # Get tags in the title
-            for match in re.findall(r'(?:^|[\s])(@\w+)', text, re.UNICODE):
+            for match in re.findall(r'(?:^|[\s])(@[\w\/\.\-\:]*\w)', text, re.UNICODE):
                 tags.append(match)
             # Get attributes
             regexp = r'([\s]*)([\w-]+):\s*([^\s]+)'
