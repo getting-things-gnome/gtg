@@ -78,11 +78,17 @@ you don't have stale copies of liblarch in your import path
 """
         is_liblarch_compatible = False
     if not is_liblarch_compatible:
+        try:
+            liblarch_version = liblarch.API
+        except AttributeError:
+            # Liblarch 1.0 has lowercased API variable
+            liblarch_version = liblarch.api
+
         print """Your liblarch copy has its API at version %s
 but your GTG copy need liblarch API version %s
 You may fix that by downloading the last version of liblarch with
 
-%s """ % (liblarch.API, REQUIRED_LIBLARCH_API, GIT_CMD)
+%s """ % (liblarch_version, REQUIRED_LIBLARCH_API, GIT_CMD)
         return False
 
     return True
