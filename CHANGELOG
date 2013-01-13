@@ -10,6 +10,7 @@
     * Russian localization of help by DmDr
     * Fix for bug #1096622: Damaged image in the help, by Parin Porecha
     * Fix for bug #1095390: Quick Add bar incorrectly parses tags, by Parin Porecha
+    * Fix for bug #1079143: Adding the same custom color in tag editor multiple times raises an Exception, by Parin Porecha
 
 2012-11-06 Getting Things GNOME! 0.3
     * Hide tasks with due date someday, #931376
