@@ -31,6 +31,7 @@ from GTG                     import _
 from GTG.tools.dates         import Date
 from GTG.tools.logger        import Log
 from liblarch                import TreeNode
+from GTG.tools.tags          import extract_tags_from_text
 
 
 class Task(TreeNode):
@@ -148,7 +149,7 @@ class Task(TreeNode):
         defer_date = Date.no_date()
         if text:
             # Get tags in the title
-            for match in re.findall(r'(?:^|[\s])(@[\w\/\.\-\:]*\w)', text, re.UNICODE):
+            for match in extract_tags_from_text(text):
                 tags.append(match)
             # Get attributes
             regexp = r'([\s]*)([\w-]+):\s*([^\s]+)'
