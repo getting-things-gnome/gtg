@@ -216,7 +216,6 @@ class SimpleColorSelector(gtk.VBox): # pylint: disable-msg=R0904,C0301
         cc_vbox.set_spacing(4)
         cc_hbox = gtk.HBox()
         cc_vbox.pack_start(cc_hbox)
-        self.custom_colors = list(set(self.custom_colors))
         for i in xrange(len(self.custom_colors)):
             # add the color box
             img = SimpleColorSelectorPaletteItem()
@@ -304,7 +303,8 @@ class SimpleColorSelector(gtk.VBox): # pylint: disable-msg=R0904,C0301
 
     def add_custom_color(self, col):
         """Add a color to the palette, at the first position"""
-        self.custom_colors.insert(0, col)
+        if col not in self.custom_colors:
+            self.custom_colors.insert(0, col)
         if len(self.custom_colors) > self.width:
             self.custom_colors.pop()
         self.__build_custom_palette()
