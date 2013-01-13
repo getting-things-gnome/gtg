@@ -35,8 +35,8 @@ class TestExtractTags(unittest.TestCase):
         self.assertEqual(tags("some text ended with @endtag"), ["@endtag"])
 
     def test_hypen_in_tag(self):
-        self.assertEqual(tags("@tag, @my-tag, bla bla @do-this-today"),
-            ["@tag", "@my-tag", "@do-this-today"])
+        self.assertEqual(tags("@tag, @my-tag, bla bla @do-this-today, it has @con--tinuous---hypen-s-"),
+            ["@tag", "@my-tag", "@do-this-today", "@con--tinuous---hypen-s"])
 
         self.assertEqual(tags("@hypen-at-end- some other text"),
             ["@hypen-at-end"])
@@ -44,13 +44,16 @@ class TestExtractTags(unittest.TestCase):
 
     def test_dot(self):
         self.assertEqual(tags("text @gtg-0.3"), ["@gtg-0.3"])
-        self.assertEqual(tags("@tag., @my.tag, bla bla @do.this.today"),
-            ["@tag", "@my.tag", "@do.this.today"])
+        self.assertEqual(tags("@tag., @my.tag, bla bla @do.this.today, also contains @hy-pen-.s"),
+            ["@tag", "@my.tag", "@do.this.today", "@hy-pen-.s"])
 
     def test_slash(self):
-        self.assertEqual(tags("@tag/, @my/tag, bla bla @do/this/today/"),
-            ["@tag", "@my/tag", "@do/this/today"])
-
+        self.assertEqual(tags("@tag/, @my/tag, bla bla @do/this/today/, @hy-p-/ens with @slash/es/"),
+            ["@tag", "@my/tag", "@do/this/today", "@hy-p-/ens", "@slash/es"])
+    
+    def test_colon(self):
+        self.assertEqual(tags("@tag:, @my:tag, bla bla @do:this:today:, @co:l-on/s-, @:dot/s:, with @com,mas"),
+            ["@tag", "@my:tag", "@do:this:today", "@co:l-on/s", "@:dot/s", "@com"])
 
 def test_suite():
     return unittest.TestLoader().loadTestsFromName(__name__)
