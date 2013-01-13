@@ -216,6 +216,7 @@ class SimpleColorSelector(gtk.VBox): # pylint: disable-msg=R0904,C0301
         cc_vbox.set_spacing(4)
         cc_hbox = gtk.HBox()
         cc_vbox.pack_start(cc_hbox)
+        self.custom_colors = list(set(self.custom_colors))
         for i in xrange(len(self.custom_colors)):
             # add the color box
             img = SimpleColorSelectorPaletteItem()
