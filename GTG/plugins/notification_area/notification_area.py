@@ -385,13 +385,9 @@ class NotificationArea:
 
 ### Preferences methods #######################################################
     def preferences_load(self):
-        data = self.__plugin_api.load_configuration_object(self.PLUGIN_NAME,
-                                                         "preferences")
-        # We first load the preferences then update the dict
-        # This way new default options are recognized with old cfg files
-        self.preferences = self.DEFAULT_PREFERENCES
-        if isinstance(data, dict):
-            self.preferences.update(data)
+        self.preferences = self.__plugin_api.load_configuration_object(
+            self.PLUGIN_NAME, "preferences",
+            default_values = self.DEFAULT_PREFERENCES)
 
     def preferences_store(self):
         self.__plugin_api.save_configuration_object(self.PLUGIN_NAME,

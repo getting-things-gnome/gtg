@@ -366,12 +366,9 @@ class PluginExport:
 
     def _preferences_load(self):
         """ Restore user preferences """
-        data = self.plugin_api.load_configuration_object(
-                            self.PLUGIN_NAME, "preferences")
-        if type(data) != type(dict()):
-            self.preferences = self.DEFAULT_PREFERENCES
-        else:
-            self.preferences = data
+        self.preferences = self.plugin_api.load_configuration_object(
+            self.PLUGIN_NAME, "preferences",
+            default_values = self.DEFAULT_PREFERENCES)
 
     def _preferences_store(self):
         """ Store user preferences """

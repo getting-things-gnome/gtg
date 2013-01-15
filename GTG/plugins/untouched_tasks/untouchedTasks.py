@@ -180,12 +180,9 @@ class pluginUntouchedTasks:
         self.preferences_dialog.hide()
 
     def preferences_load(self):
-        data = self.plugin_api.load_configuration_object(self.PLUGIN_NAME,
-                                                         "preferences")
-        if data == None or type(data) != type(dict()):
-            self.preferences = self.DEFAULT_PREFERENCES
-        else:
-            self.preferences = data
+        self.preferences = self.plugin_api.load_configuration_object(
+            self.PLUGIN_NAME, "preferences",
+            default_values = self.DEFAULT_PREFERENCES)
 
     def preferences_store(self):
         self.plugin_api.save_configuration_object(self.PLUGIN_NAME,

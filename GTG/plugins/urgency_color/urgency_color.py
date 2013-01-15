@@ -212,27 +212,19 @@ class pluginUrgencyColor:
         self.prefs_update_widgets()
 
     def prefs_load(self):
-        data = self._plugin_api.load_configuration_object( \
-            self.PLUGIN_NAME,
-            'preferences')
-        if not data or not isinstance(data, dict):
-            self._pref_data = dict(self.DEFAULT_PREFS)
-        else:
-            # CORRECT NAMES FROM OLD PREFERENCES
-            # This is a dirty fix and thus should be removed in a
-            # distant future, when nobody has "red", "yellow" or "green"
-            # settings
-            namepairs = {'red':'high','yellow':'normal','green':'low'}
-            for key,val in data.iteritems():
-                for oldname,newname in namepairs.iteritems():
-                    if key == "color_"+oldname:
-                        data['color_'+newname] = data.pop(key)
-            # Add new preferences where not present
-            for setting in self.DEFAULT_PREFS.iterkeys():
-                if setting not in data:
-                    data[setting] = self.DEFAULT_PREFS[setting]
-            self._pref_data = dict(data)
+        self._pref_data = self._plugin_api.load_configuration_object(
+            self.PLUGIN_NAME, "preferences",
+            default_values = self.DEFAULT_PREFS)
 
+        # CORRECT NAMES FROM OLD PREFERENCES
+        # This is a dirty fix and thus should be removed in a
+        # distant future, when nobody has "red", "yellow" or "green"
+        # settings
+        namepairs = {'red':'high', 'yellow':'normal', 'green':'low'}
+        for oldname, newname in namepairs.iteritems():
+            old_key, new_key = "color_" + oldname, "color_" + newname
+            if old_key in self._pref_data:
+                self._pref_data[new_key] = self._pref_data.pop(old_key)
 
     def prefs_store(self):
         self._plugin_api.save_configuration_object( \
