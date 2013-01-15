@@ -8,16 +8,16 @@ msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2013-01-01 17:35+0100\n"
-"PO-Revision-Date: 2012-11-16 16:41+0000\n"
-"Last-Translator: Jibec <jb.holcroft@gmail.com>\n"
+"PO-Revision-Date: 2013-01-14 18:48+0000\n"
+"Last-Translator: Ovidiu traistaru <owex@owex.ro>\n"
 "Language-Team: Romanian <ro@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n == 1 ? 0: (((n % 100 > 19) || ((n % 100 "
 "== 0) && (n != 0))) ? 2: 1));\n"
-"X-Launchpad-Export-Date: 2013-01-02 04:39+0000\n"
-"X-Generator: Launchpad (build 16378)\n"
+"X-Launchpad-Export-Date: 2013-01-15 04:47+0000\n"
+"X-Generator: Launchpad (build 16420)\n"
 
 #: GTG/gtk/backends_dialog/__init__.py:75
 #, python-format
@@ -31,11 +31,11 @@ msgstr ""
 
 #: GTG/gtk/backends_dialog/configurepanel.py:148
 msgid "Disable syncing"
-msgstr ""
+msgstr "Dezactivează sincronizare"
 
 #: GTG/gtk/backends_dialog/configurepanel.py:150
 msgid "Enable syncing"
-msgstr ""
+msgstr "Activează sincronizare"
 
 #: GTG/gtk/backends_dialog/configurepanel.py:158
 msgid "This is the default synchronization service"
@@ -43,11 +43,11 @@ msgstr ""
 
 #: GTG/gtk/backends_dialog/configurepanel.py:161
 msgid "Syncing is enabled."
-msgstr ""
+msgstr "Sincronizare activată"
 
 #: GTG/gtk/backends_dialog/configurepanel.py:163
 msgid "Syncing is <span color=\"red\">disabled</span>."
-msgstr ""
+msgstr "Sincronizarea este <span color=\"red\">dezactivată</span>."
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:62
 msgid "Import tags"
