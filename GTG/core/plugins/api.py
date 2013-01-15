@@ -209,8 +209,13 @@ class PluginAPI:
             pane.basetree.get_basetree().refresh_all()
 
 #=== file saving/loading ======================================================
-    def load_configuration_object(self, plugin_name, filename, \
-                                  basedir=xdg_config_home):
+    def load_configuration_object(self, plugin_name, filename,
+                                  basedir=xdg_config_home, default_values=None):
+        if default_values is not None:
+            result = dict(default_values)
+        else:
+            result = dict()
+
         dirname = os.path.join(basedir, 'gtg/plugins', plugin_name)
         path = os.path.join(dirname, filename)
         if os.path.isdir(dirname):
@@ -218,11 +223,13 @@ class PluginAPI:
                 try:
                     with open(path, 'r') as file:
                         item = pickle.load(file)
+                        result.update(item)
                 except:
-                    return None
-                return item
+                    pass
         else:
             os.makedirs(dirname)
+
+        return result
 
     def save_configuration_object(self, plugin_name, filename, item, \
                                  basedir=xdg_config_home):
