@@ -170,16 +170,11 @@ class TaskEditor:
             tid = self.task.get_id()
             if tid in self.config:
                 if "position" in self.config[tid]:
-                    pos = self.config[tid]["position"]
-                    self.move(pos[0], pos[1])
-                    #print "restoring position %s %s" %(pos[0], pos[1])
+                    pos_x, pos_y = self.config[tid]["position"]
+                    self.move(int(pos_x), int(pos_y))
                 if "size" in self.config[tid]:
-                    size = self.config[tid]["size"]
-                    #print "size %s - %s" %(str(size[0]), str(size[1]))
-                    #this eval(str()) is a ugly (!) hack to accept both int and
-                    #str
-                    #FIXME: Fix this!
-                    self.window.resize(eval(str(size[0])), eval(str(size[1])))
+                    width, height = self.config[tid]["size"]
+                    self.window.resize(int(width), int(height))
 
         self.textview.set_editable(True)
         self.window.show()
@@ -533,7 +528,6 @@ class TaskEditor:
             tid = self.task.get_id()
             if not tid in self.config:
                 self.config[tid] = dict()
-            #print "saving task position %s" %str(self.get_position())
             self.config[tid]["position"] = self.get_position()
             self.config[tid]["size"] = self.window.get_size()
 

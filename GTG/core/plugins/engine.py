@@ -59,7 +59,7 @@ class Plugin(object):
             except KeyError:
                 setattr(self, attr, [])
         # turn the enabled attribute into a bool
-        self.enabled = eval(info['Enabled'])
+        self.enabled = info['Enabled'].lower() == "true"
         # ensure the dbus dependencies are a list
         if isinstance(self.dbus_depends, str):
             self.dbus_depends = [self.dbus_depends]
