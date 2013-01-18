@@ -8,15 +8,15 @@ msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2013-01-01 17:35+0100\n"
-"PO-Revision-Date: 2012-12-30 22:05+0000\n"
+"PO-Revision-Date: 2013-01-17 21:39+0000\n"
 "Last-Translator: Adolfo Jayme Barrientos <fitoschido@gmail.com>\n"
 "Language-Team: Spanish <es@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2013-01-02 04:39+0000\n"
-"X-Generator: Launchpad (build 16378)\n"
+"X-Launchpad-Export-Date: 2013-01-18 05:06+0000\n"
+"X-Generator: Launchpad (build 16430)\n"
 
 #: GTG/gtk/backends_dialog/__init__.py:75
 #, python-format
@@ -26,7 +26,7 @@ msgstr "Servicios de sincronización - %s"
 #: GTG/gtk/backends_dialog/__init__.py:295
 #, python-format
 msgid "Do you really want to remove the '%s' synchronization service?"
-msgstr "¿Estás seguro de desear eliminar el servicio de sincronización '%s'?"
+msgstr "¿Realmente quiere eliminar el servicio de sincronización «%s»?"
 
 #: GTG/gtk/backends_dialog/configurepanel.py:148
 msgid "Disable syncing"
@@ -140,7 +140,7 @@ msgstr "Iniciar Getting Things GNOME! al iniciar sesión"
 
 #: GTG/gtk/preferences.glade.h:2
 msgid "<b>Startup</b>"
-msgstr ""
+msgstr "<b>Inicio</b>"
 
 #: GTG/gtk/preferences.glade.h:3
 msgid "Enable colored backgrounds in the task list"
@@ -160,19 +160,19 @@ msgstr "Fuente:"
 
 #: GTG/gtk/preferences.glade.h:7
 msgid "<b>Editor</b>"
-msgstr ""
+msgstr "<b>Editor</b>"
 
 #: GTG/gtk/preferences.glade.h:8
 msgid "page 1"
-msgstr ""
+msgstr "página 1"
 
 #: GTG/gtk/preferences.glade.h:9
 msgid "page 2"
-msgstr ""
+msgstr "página 2"
 
 #: GTG/gtk/preferences.glade.h:10
 msgid "page 3"
-msgstr ""
+msgstr "página 3"
 
 #: GTG/gtk/deletion.glade.h:1
 msgid "Confirm task deletion"
@@ -245,7 +245,7 @@ msgstr "Mostrar etiqueta en la vista de trabajo"
 msgid ""
 "You can create, open or filter your tasks                                    "
 "                                     here"
-msgstr ""
+msgstr "Aquí puedes crear, abrir o filtrar tus tareas"
 
 #: GTG/gtk/browser/__init__.py:54
 msgid "Clear"
@@ -298,7 +298,7 @@ msgstr "Continuar"
 
 #: GTG/gtk/browser/modifytags_dialog.glade.h:1
 msgid "Modify Tags"
-msgstr ""
+msgstr "Modificar etiquetas"
 
 #: GTG/gtk/browser/modifytags_dialog.glade.h:2
 msgid "Add/Remove Tags"
@@ -378,12 +378,12 @@ msgid ""
 "Click To\n"
 "Set Icon"
 msgstr ""
-"Hacer click para\n"
-"Seleccionar icono"
+"Pulse para\n"
+"fijar el icono"
 
 #: GTG/gtk/browser/tag_editor.py:294
 msgid "Enter tag name here"
-msgstr "Introducir nombre de etiqueta"
+msgstr "Escriba el nombre de la etiqueta aquí"
 
 #: GTG/gtk/browser/modifytags_dialog.py:38
 msgid "NewTag"
@@ -628,11 +628,11 @@ msgstr "_Forrar fecha de término"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:55
 msgid "Modify Tags..."
-msgstr ""
+msgstr "Modificar etiquetas..."
 
 #: GTG/gtk/browser/tag_context_menu.py:59
 msgid "Edit Tag..."
-msgstr ""
+msgstr "Editar etiqueta…"
 
 #: GTG/gtk/editor/__init__.py:36
 msgid "Mark this task as done"
@@ -736,7 +736,11 @@ msgid ""
 msgid_plural ""
 "Deleting a task cannot be undone, and will delete the following tasks: "
 msgstr[0] ""
+"No se puede deshacer la eliminación de una tarea y eliminará la siguiente "
+"tarea: "
 msgstr[1] ""
+"No se puede deshacer la eliminación de una tarea y eliminará las siguientes "
+"tareas: "
 
 #: GTG/gtk/delete_dialog.py:97
 msgid "Are you sure you want to delete this task?"
@@ -821,7 +825,7 @@ msgstr "GTG es un organizador personal de tareas para GNOME"
 
 #: GTG/plugins/not_today/not_today.py:59
 msgid "Do it tomorrow"
-msgstr ""
+msgstr "Realizarla mañana"
 
 #: GTG/plugins/send_email/sendEmail.py:44
 msgid "Send via email"
@@ -874,11 +878,11 @@ msgstr "Añadir _nueva tarea"
 
 #: GTG/plugins/notification_area/notification_area.py:281
 msgid "_Show Main Window"
-msgstr ""
+msgstr "_Mostrar ventana principal"
 
 #: GTG/plugins/notification_area/notification_area.py:294
 msgid "_Quit"
-msgstr ""
+msgstr "_Salir"
 
 #: GTG/plugins/export/export_templates/description_textual.py:21
 msgid "Text-only"
@@ -901,6 +905,9 @@ msgid ""
 "booklet. Packages <b>pdflatex</b>, <b>pdftk</b> and <b>pdfjam</b>\n"
 "are required."
 msgstr ""
+"Una plantilla para crear\n"
+"<a href=\"http://www.pocketmod.com\">PocketMod</a>, que es un cuadernillo "
+"plegable. Paquetes requeridos: <b>pdflatex</b>, <b>pdftk</b> y <b>pdfjam</b>."
 
 #: GTG/plugins/export/export_templates/description_sexy.py:18
 msgid "A professional-looking HTML page"
@@ -1001,7 +1008,7 @@ msgstr "<b>Factor de proximidad</b>"
 
 #: GTG/plugins/hamster/hamster.py:38
 msgid "Start a new activity in Hamster Time Tracker "
-msgstr ""
+msgstr "Iniciar nueva actividad en Hamster Time Tracker "
 
 #: GTG/plugins/hamster/hamster.py:173
 msgid "Start task in Hamster"
