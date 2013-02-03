@@ -741,7 +741,7 @@ class TaskBrowser(gobject.GObject):
             self.quickadd_pane.hide()
             self.config.set('quick_add', False)
 
-    def expand_not_collapsed(self, model, path, iter, colt):
+    def _expand_not_collapsed(self, model, path, iter, colt):
         # Generate tid from treeview
         tid_build = []
         current_iter = iter
@@ -759,7 +759,8 @@ class TaskBrowser(gobject.GObject):
         if tid in colt:
             colt.remove(tid)
         # restore expanded state of subnodes
-        self.vtree_panes['active'].get_model().foreach(self.expand_not_collapsed, colt)
+        self.vtree_panes['active'].get_model().foreach(
+            self._expand_not_collapsed, colt)
 
     def on_task_collapsed(self, sender, tid):
         colt = self.config.get("collapsed_tasks")
