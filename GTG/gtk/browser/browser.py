@@ -741,10 +741,30 @@ class TaskBrowser(gobject.GObject):
             self.quickadd_pane.hide()
             self.config.set('quick_add', False)
 
+    def _expand_not_collapsed(self, model, path, iter, colt):
+        """ Expand all not collapsed nodes
+
+        Workaround around bug in Gtk, see LP #1076909 """
+        # Generate tid from treeview
+        tid_build = []
+        current_iter = iter
+        while current_iter is not None:
+            tid = str(model.get_value(current_iter,0))
+            tid_build.insert(0, tid)
+            current_iter = model.iter_parent(current_iter)
+        tid = str(tuple(tid_build))
+
+        # expand if the node was not stored as collapsed
+        if tid not in colt:
+            self.vtree_panes['active'].expand_row(path, False)
+
     def on_task_expanded(self, sender, tid):
         colt = self.config.get("collapsed_tasks")
         if tid in colt:
             colt.remove(tid)
+        # restore expanded state of subnodes
+        self.vtree_panes['active'].get_model().foreach(
+            self._expand_not_collapsed, colt)
 
     def on_task_collapsed(self, sender, tid):
         colt = self.config.get("collapsed_tasks")
