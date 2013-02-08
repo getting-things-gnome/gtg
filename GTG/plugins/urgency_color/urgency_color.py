@@ -14,7 +14,7 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from math import ceil
+from math import ceil, floor
 import gtk
 import os
 
@@ -58,7 +58,17 @@ class pluginUrgencyColor:
             return self._pref_data['color_overdue']
         else:
             return None
-    
+
+    def _get_gradient_color(self, color1, color2, steps, step):
+        color1 = gtk.gdk.color_parse(color1)
+        color2 = gtk.gdk.color_parse(color2)
+        R1, G1, B1 = color1.red, color1.green, color1.blue
+        R2, G2, B2 = color2.red, color2.green, color2.blue
+        R = R1 + (R2-R1) * step/steps
+        G = G1 + (G2-G1) * step/steps
+        B = B1 + (B2-B1) * step/steps
+        return gtk.gdk.Color(int(R),int(G),int(B))
+
     def get_node_bgcolor(self, node):
         """ This method checks the background color of a node and returns the color """
         sdate = node.get_start_date()
@@ -67,26 +77,56 @@ class pluginUrgencyColor:
         
         # Dates undefined (Fix to bug #1039655)
         if (ddate == Date.today()):
-            return 2 # High urgency
+            return self._get_color(2) # High urgency
         elif (daysleft < 0 and ddate != Date.no_date()):
-            return 3 # Overdue
+            return self._get_color(3) # Overdue
         elif (sdate == Date.no_date() and ddate != Date.no_date()):
-            return 1 # Normal
+            return self._get_color(1) # Normal
 
-        # Dates fully defined. Calculate color
+        # Dates fully defined. Calculate gradient color
         elif (sdate != Date.no_date() != ddate):
             dayspan = (ddate - sdate).days
-            
-            redf = self._pref_data['reddays']
-            reddays = int(ceil(redf*dayspan/100))
-            color = 0
-            if daysleft <= dayspan:
-                color = 1
-            if daysleft <= reddays:
-                color = 2
+            halfdayspan = ceil(dayspan/2)
+
+            # Default to low urgency color
+            color = self._get_color(0)
+
+            # CL : low urgency color
+            # CN : normal urgency color
+            # CH : high urgency color
+            # CO : overdue color
             if daysleft < 0:
-                color = 3
+                # CO
+                color = self._get_color(3)
+            elif daysleft <= halfdayspan:
+                # Gradient CN to CH
+                steps = halfdayspan
+                step = halfdayspan - daysleft
+                color = self._get_gradient_color(self._get_color(1), \
+                        self._get_color(2), steps, step)
+            elif daysleft <= dayspan:
+                # Gradient CL to CN
+                steps = dayspan
+                step = dayspan - daysleft
+                color = self._get_gradient_color(self._get_color(0), \
+                self._get_color(1), steps, step)
+            
             return color
+
+        # # Dates fully defined. Calculate color
+        # elif (sdate != Date.no_date() != ddate):
+        #     dayspan = (ddate - sdate).days
+        #     
+        #     redf = self._pref_data['reddays']
+        #     reddays = int(ceil(redf*dayspan/100))
+        #     color = 0
+        #     if daysleft <= dayspan:
+        #         color = 1
+        #     if daysleft <= reddays:
+        #         color = 2
+        #     if daysleft < 0:
+        #         color = 3
+        #     return color
 
         # Insufficient data to determine urgency
         else:
@@ -109,21 +149,34 @@ class pluginUrgencyColor:
 
         child_list = __get_active_child_list(node)
 
+        daysleft = None
         for child_id in child_list:
             child = self.req.get_task(child_id)
-            color_of_child = self.get_node_bgcolor(child)
-            if color_of_child > color:
-                color = color_of_child
-            # This list should be implemented in the settings
-            #print "Giving color"
-        return self._get_color(color)
+
+            if child.get_due_date() == Date.no_date(): continue
+
+            # color_of_child = self.get_node_bgcolor(child)
+            # if color_of_child > color:
+            #     color = color_of_child
+            # # This list should be implemented in the settings
+            # #print "Giving color"
+
+            daysleft_of_child = child.get_due_date().days_left()
+            if daysleft is None:
+                daysleft = daysleft_of_child
+            elif daysleft_of_child < daysleft:
+                daysleft = daysleft_of_child
+                color = self.get_node_bgcolor(child)
+
+        # return self._get_color(color)
+        return color
 
     def deactivate(self, plugin_api):
         """ Plugin is deactivated """
         self._plugin_api.set_bgcolor_func()
 
 # Preferences dialog
-    def is_configurable(self):
+    def is_cfonfigurable(self):
         """Requisite function for configurable plugins"""
         return True
 
@@ -190,7 +243,7 @@ class pluginUrgencyColor:
         self.builder.connect_signals(SIGNAL_CONNECTIONS_DIC)
 
     def prefs_update_widgets(self):
-        """ Synchronizes the widgets with the data in _pref_data """
+        """ Synchfronizes the widgets with the data in _pref_data """
         # Spin button
         self.spinbutton_reddays.set_value(self._pref_data['reddays'])
         # Colorbutton - OVERDUE
@@ -238,13 +291,13 @@ class pluginUrgencyColor:
                 self._pref_data[new_key] = self._pref_data.pop(old_key)
 
     def prefs_store(self):
-        self._plugin_api.save_configuration_object( \
-            self.PLUGIN_NAME,
+        self._pluginf_api.save_configuration_object( \
+            self.PLUGfIN_NAME,
             'preferences',
             self._pref_data)
 
     def on_prefs_spinbutton_reddays_changed(self, widget=None, data=None):
-        self._pref_data_potential['reddays'] = \
+        self._pfref_data_potential['reddays'] = \
             self.spinbutton_reddays.get_value()
 
     def on_prefs_colorbutton_overdue_changed(self, widget=None, data=None):
