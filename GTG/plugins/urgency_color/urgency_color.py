@@ -59,18 +59,21 @@ class pluginUrgencyColor:
         else:
             return None
 
-    def _get_gradient_color(self, color1, color2, steps, step):
+    def _get_gradient_color(self, color1, color2, position):
+        """This function returns a gtk.gdk.Color which corresponds to the
+        position (a float value from 0 to 1) in the gradient formed by the
+        colors color1 and color2, both of type gtk.gdk.Color"""
         color1 = gtk.gdk.color_parse(color1)
         color2 = gtk.gdk.color_parse(color2)
         R1, G1, B1 = color1.red, color1.green, color1.blue
         R2, G2, B2 = color2.red, color2.green, color2.blue
-        R = R1 + (R2-R1) * step/steps
-        G = G1 + (G2-G1) * step/steps
-        B = B1 + (B2-B1) * step/steps
+        R = R1 + (R2-R1) * position
+        G = G1 + (G2-G1) * position
+        B = B1 + (B2-B1) * position
         return gtk.gdk.Color(int(R),int(G),int(B))
 
     def get_node_bgcolor(self, node):
-        """ This method checks the background color of a node and returns the color """
+        """ This method checks the urgency of a node (task) and returns its urgency background color"""
         sdate = node.get_start_date()
         ddate = node.get_due_date()
         daysleft = ddate.days_left()
@@ -80,13 +83,20 @@ class pluginUrgencyColor:
             return self._get_color(2) # High urgency
         elif (daysleft < 0 and ddate != Date.no_date()):
             return self._get_color(3) # Overdue
-        elif (sdate == Date.no_date() and ddate != Date.no_date()):
+        elif (sdate == Date.no_date() != ddate):
             return self._get_color(1) # Normal
 
         # Dates fully defined. Calculate gradient color
         elif (sdate != Date.no_date() != ddate):
             dayspan = (ddate - sdate).days
-            halfdayspan = ceil(dayspan/2)
+
+            # Reddays
+            redf = self._pref_data['reddays']
+            reddays = int(ceil(redf/100.0 * dayspan))
+            
+            # Gradient variables
+            grad_dayspan = dayspan - reddays
+            grad_half_dayspan = grad_dayspan/2
 
             # Default to low urgency color
             color = self._get_color(0)
@@ -95,21 +105,27 @@ class pluginUrgencyColor:
             # CN : normal urgency color
             # CH : high urgency color
             # CO : overdue color
-            if daysleft < 0:
-                # CO
+            # To understand this section, it is easier to draw out a
+            # timeline divided into 3 sections: CL to CN, CN to CH and
+            # the reddays section. Then point out the spans of the
+            # different variables (dayspan, daysleft, reddays,
+            # grad_dayspan, grad_half_dayspan)
+            # print node.get_title(), "dayspan: %d | reddays: %d | daysleft: %d" % (dayspan, reddays, daysleft)
+            if daysleft < 0: # CO
                 color = self._get_color(3)
-            elif daysleft <= halfdayspan:
-                # Gradient CN to CH
-                steps = halfdayspan
-                step = halfdayspan - daysleft
+            elif daysleft <= reddays: # CH
+                color = self._get_color(2)
+            elif daysleft <= (dayspan - grad_half_dayspan): # Gradient CN to CH
+                steps = float(grad_half_dayspan) # Has to be float so division by it is non-zero
+                step = grad_half_dayspan - (daysleft - reddays)
                 color = self._get_gradient_color(self._get_color(1), \
-                        self._get_color(2), steps, step)
-            elif daysleft <= dayspan:
-                # Gradient CL to CN
-                steps = dayspan
-                step = dayspan - daysleft
+                        self._get_color(2), step/steps)
+                # print "%s (%d/%d = %f from CN to CH)" % (node.get_title(), step, steps, step/steps)
+            elif daysleft <= dayspan: # Gradient CL to CN
+                steps = float(grad_half_dayspan)
+                step = grad_half_dayspan - (daysleft - reddays - grad_half_dayspan)
                 color = self._get_gradient_color(self._get_color(0), \
-                self._get_color(1), steps, step)
+                        self._get_color(1), step/steps)
             
             return color
 
