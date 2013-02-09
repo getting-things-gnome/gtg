@@ -86,6 +86,14 @@ class pluginUrgencyColor:
         elif (sdate == Date.no_date() != ddate):
             return self._get_color(1) # Normal
 
+        # Fuzzy dates (now, soon, someday)
+        if (ddate == Date.now()):
+            return self._get_color(2)
+        elif (ddate == Date.soon()):
+            return self._get_color(1)
+        elif (ddate == Date.someday()):
+            return self._get_color(0)
+
         # Dates fully defined. Calculate gradient color
         elif (sdate != Date.no_date() != ddate):
             dayspan = (ddate - sdate).days
@@ -180,11 +188,13 @@ class pluginUrgencyColor:
             daysleft_of_child = child.get_due_date().days_left()
             if daysleft is None:
                 daysleft = daysleft_of_child
+                color = self.get_node_bgcolor(child)
             elif daysleft_of_child < daysleft:
                 daysleft = daysleft_of_child
                 color = self.get_node_bgcolor(child)
 
         # return self._get_color(color)
+        if color is None: print daysleft
         return color
 
     def deactivate(self, plugin_api):
