@@ -84,9 +84,15 @@ class TaskEditor:
                 "close_clicked": self.close,
                 "duedate_changed": (self.date_changed,
                                                GTGCalendar.DATE_KIND_DUE),
+                "duedate_focus_out": (self.date_focus_out,
+                                               GTGCalendar.DATE_KIND_DUE),
                 "startingdate_changed": (self.date_changed,
                                                GTGCalendar.DATE_KIND_START),
+                "startdate_focus_out": (self.date_focus_out,
+                                               GTGCalendar.DATE_KIND_START),
                 "closeddate_changed": (self.date_changed,
+                                               GTGCalendar.DATE_KIND_CLOSED),
+                "closeddate_focus_out": (self.date_focus_out,
                                                GTGCalendar.DATE_KIND_CLOSED),
                 "on_insert_subtask_clicked": self.insert_subtask,
                 "on_inserttag_clicked": self.inserttag_clicked,
@@ -356,22 +362,29 @@ class TaskEditor:
             self.light_save()
 
     def date_changed(self, widget, data):
-        text = widget.get_text()
-        valid = True
-        if not text:
-            datetoset = Date.no_date()
-        else:
-            try:
-                datetoset = Date.parse(text)
-            except ValueError:
-                valid = False
+        try:
+            Date.parse(widget.get_text())
+            valid = True
+        except ValueError:
+            valid = False
 
         if valid:
             #If the date is valid, we write with default color in the widget
             # "none" will set the default color.
             widget.modify_text(gtk.STATE_NORMAL, None)
             widget.modify_base(gtk.STATE_NORMAL, None)
+        else:
+            #We should write in red in the entry if the date is not valid
+            widget.modify_text(gtk.STATE_NORMAL, gtk.gdk.color_parse("#F00"))
+            widget.modify_base(gtk.STATE_NORMAL, gtk.gdk.color_parse("#F88"))
 
+    def date_focus_out(self, widget, event, data):
+        try:
+            datetoset = Date.parse(widget.get_text())
+        except ValueError:
+            datetoset = None
+
+        if datetoset is not None:
             if data == "start":
                 self.task.set_start_date(datetoset)
             elif data == "due":
@@ -379,10 +392,6 @@ class TaskEditor:
             elif data == "closed":
                 self.task.set_closed_date(datetoset)
             self.refresh_editor()
-        else:
-            #We should write in red in the entry if the date is not valid
-            widget.modify_text(gtk.STATE_NORMAL, gtk.gdk.color_parse("#F00"))
-            widget.modify_base(gtk.STATE_NORMAL, gtk.gdk.color_parse("#F88"))
 
     def on_date_pressed(self, widget, date_kind):
         """Called when a date-changing button is clicked."""
