@@ -16,6 +16,7 @@
 
 import gobject
 import threading
+import xmlrpclib
 from urlparse import urlparse
 
 from GTG.plugins.bugzilla.server import ServersStore
@@ -52,7 +53,7 @@ class pluginBugzilla:
         if server is None:
             return
 
-        base = '%s://%s' % (r.scheme, server.name)
+        base = '%s://%s/xmlrpc.cgi' % (r.scheme, server.name)
 
         # get the number of the bug
         try:
@@ -62,6 +63,20 @@ class pluginBugzilla:
 
         try:
             bug = Bug(base, nb)
+        except xmlrpclib.Fault, err:
+            code = err.faultCode
+            if code == 100: # invalid bug ID
+                title = 'Invalid bug ID #%s' % nb
+            elif code == 101: # bug ID not exist
+                title = 'Bug #%s does not exist.' % nb
+            elif code == 102: # Access denied
+                title = 'Access denied to bug #%s' % nb
+            else: # unrecoganized error code currently
+                title = err.faultString
+            old_title = task.get_title()
+            gobject.idle_add(task.set_title, title)
+            gobject.idle_add(task.set_text, old_title)
+            return
         except:
             return
 
