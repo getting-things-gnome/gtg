@@ -14,7 +14,7 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from math import ceil
+from math import ceil, floor
 import gtk
 import os
 
@@ -58,34 +58,84 @@ class pluginUrgencyColor:
             return self._pref_data['color_overdue']
         else:
             return None
-    
+
+    def _get_gradient_color(self, color1, color2, position):
+        """This function returns a gtk.gdk.Color which corresponds to the
+        position (a float value from 0 to 1) in the gradient formed by the
+        colors color1 and color2, both of type gtk.gdk.Color"""
+        color1 = gtk.gdk.color_parse(color1)
+        color2 = gtk.gdk.color_parse(color2)
+        R1, G1, B1 = color1.red, color1.green, color1.blue
+        R2, G2, B2 = color2.red, color2.green, color2.blue
+        R = R1 + (R2-R1) * position
+        G = G1 + (G2-G1) * position
+        B = B1 + (B2-B1) * position
+        return gtk.gdk.Color(int(R),int(G),int(B))
+
     def get_node_bgcolor(self, node):
-        """ This method checks the background color of a node and returns the color """
+        """ This method checks the urgency of a node (task) and returns its urgency background color"""
         sdate = node.get_start_date()
         ddate = node.get_due_date()
         daysleft = ddate.days_left()
         
         # Dates undefined (Fix to bug #1039655)
         if (ddate == Date.today()):
-            return 2 # High urgency
+            return self._get_color(2) # High urgency
         elif (daysleft < 0 and ddate != Date.no_date()):
-            return 3 # Overdue
-        elif (sdate == Date.no_date() and ddate != Date.no_date()):
-            return 1 # Normal
+            return self._get_color(3) # Overdue
+        elif (sdate == Date.no_date() != ddate):
+            return self._get_color(1) # Normal
 
-        # Dates fully defined. Calculate color
+        # Fuzzy dates (now, soon, someday)
+        if (ddate == Date.now()):
+            return self._get_color(2)
+        elif (ddate == Date.soon()):
+            return self._get_color(1)
+        elif (ddate == Date.someday()):
+            return self._get_color(0)
+
+        # Dates fully defined. Calculate gradient color
         elif (sdate != Date.no_date() != ddate):
             dayspan = (ddate - sdate).days
-            
+
+            # Reddays
             redf = self._pref_data['reddays']
-            reddays = int(ceil(redf*dayspan/100))
-            color = 0
-            if daysleft <= dayspan:
-                color = 1
-            if daysleft <= reddays:
-                color = 2
-            if daysleft < 0:
-                color = 3
+            reddays = int(ceil(redf/100.0 * dayspan))
+            
+            # Gradient variables
+            grad_dayspan = dayspan - reddays
+            grad_half_dayspan = grad_dayspan/2
+
+            # Default to low urgency color
+            color = self._get_color(0)
+
+            # CL : low urgency color
+            # CN : normal urgency color
+            # CH : high urgency color
+            # CO : overdue color
+            # To understand this section, it is easier to draw out a
+            # timeline divided into 3 sections: CL to CN, CN to CH and
+            # the reddays section. Then point out the spans of the
+            # different variables (dayspan, daysleft, reddays,
+            # grad_dayspan, grad_half_dayspan)
+            if daysleft < 0: # CO
+                color = self._get_color(3)
+            elif daysleft <= reddays: # CH
+                color = self._get_color(2)
+            elif daysleft <= (dayspan - grad_half_dayspan):
+                # Gradient CN to CH
+                # Has to be float so division by it is non-zero
+                steps = float(grad_half_dayspan)
+                step = grad_half_dayspan - (daysleft - reddays)
+                color = self._get_gradient_color(self._get_color(1),
+                        self._get_color(2), step/steps)
+            elif daysleft <= dayspan:
+                # Gradient CL to CN
+                steps = float(grad_half_dayspan)
+                step = grad_half_dayspan - (daysleft - reddays - grad_half_dayspan)
+                color = self._get_gradient_color(self._get_color(0),
+                        self._get_color(1), step/steps)
+            
             return color
 
         # Insufficient data to determine urgency
@@ -109,14 +159,21 @@ class pluginUrgencyColor:
 
         child_list = __get_active_child_list(node)
 
+        daysleft = None
         for child_id in child_list:
             child = self.req.get_task(child_id)
-            color_of_child = self.get_node_bgcolor(child)
-            if color_of_child > color:
-                color = color_of_child
-            # This list should be implemented in the settings
-            #print "Giving color"
-        return self._get_color(color)
+
+            if child.get_due_date() == Date.no_date(): continue
+
+            daysleft_of_child = child.get_due_date().days_left()
+            if daysleft is None:
+                daysleft = daysleft_of_child
+                color = self.get_node_bgcolor(child)
+            elif daysleft_of_child < daysleft:
+                daysleft = daysleft_of_child
+                color = self.get_node_bgcolor(child)
+
+        return color
 
     def deactivate(self, plugin_api):
         """ Plugin is deactivated """
