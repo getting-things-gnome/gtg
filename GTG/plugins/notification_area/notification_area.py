@@ -24,6 +24,7 @@ except:
     pass
 
 from GTG                   import _
+from GTG import DATA_DIR
 from GTG.tools.borg        import Borg
 from GTG.tools.dates       import Date
 
@@ -72,6 +73,10 @@ class IconIndicator:
         self._menu = menu
 
         if self._indicator:
+            # Show the icon even when runing ./scripts/debug.sh
+            theme_path = os.path.join(DATA_DIR, 'icons')
+            self._indicator.set_icon_theme_path(theme_path)
+
             self._indicator.set_icon("gtg-panel")
             self._indicator.set_attention_icon(self.ATTENTION_ICON)
             self._indicator.set_menu(menu)
