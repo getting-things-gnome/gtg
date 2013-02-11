@@ -29,9 +29,8 @@ from GTG import info
 
 ### CONSTANTS ################################################################
 
-DATA_DIR = "share/gtg"
 HELP_DIR = "share/help"
-GLOBAL_ICON_DIR = "share/icons/hicolor"
+GLOBAL_ICON_DIR = "share/icons"
 
 ### TOOLS ####################################################################
 
@@ -44,8 +43,8 @@ def create_icon_list():
             if file.endswith(".png") or file.endswith(".svg"):
                 dirList.append(os.path.join(root, file))
         if len(dirList)!=0:
-            newroot = root.replace("data/", "")
-            fileList.append((os.path.join(DATA_DIR, newroot), dirList))
+            newroot = root.replace(rootdir + "/", "")
+            fileList.append((os.path.join(GLOBAL_ICON_DIR, newroot), dirList))
     return fileList
 
 
