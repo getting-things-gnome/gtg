@@ -83,10 +83,13 @@ class pluginUrgencyColor:
             return self._get_color(2) # High urgency
         elif (daysleft < 0 and ddate != Date.no_date()):
             return self._get_color(3) # Overdue
-        elif (sdate == Date.no_date() != ddate):
+        elif (sdate == Date.no_date() # Has no start date
+                and ddate != Date.no_date() # and a due date
+                and not ddate.is_fuzzy()): # which is not fuzzy, is fixed
             return self._get_color(1) # Normal
 
         # Fuzzy dates (now, soon, someday)
+        # These can ignore the start date
         if (ddate == Date.now()):
             return self._get_color(2)
         elif (ddate == Date.soon()):
@@ -104,7 +107,7 @@ class pluginUrgencyColor:
             
             # Gradient variables
             grad_dayspan = dayspan - reddays
-            grad_half_dayspan = grad_dayspan/2
+            grad_half_dayspan = grad_dayspan/2.0
 
             # Default to low urgency color
             color = self._get_color(0)
