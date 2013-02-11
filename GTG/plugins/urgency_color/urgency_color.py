@@ -63,9 +63,19 @@ class pluginUrgencyColor:
         """ This method checks the background color of a node and returns the color """
         sdate = node.get_start_date()
         ddate = node.get_due_date()
-        if (sdate != Date.no_date() != ddate):
+        daysleft = ddate.days_left()
+        
+        # Dates undefined (Fix to bug #1039655)
+        if (ddate == Date.today()):
+            return 2 # High urgency
+        elif (daysleft < 0 and ddate != Date.no_date()):
+            return 3 # Overdue
+        elif (sdate == Date.no_date() and ddate != Date.no_date()):
+            return 1 # Normal
+
+        # Dates fully defined. Calculate color
+        elif (sdate != Date.no_date() != ddate):
             dayspan = (ddate - sdate).days
-            daysleft = ddate.days_left()
             
             redf = self._pref_data['reddays']
             reddays = int(ceil(redf*dayspan/100))
@@ -76,8 +86,9 @@ class pluginUrgencyColor:
                 color = 2
             if daysleft < 0:
                 color = 3
-            
             return color
+
+        # Insufficient data to determine urgency
         else:
             return None
 
