@@ -108,8 +108,11 @@ class Backend(GenericBackend):
         Path can be relative to projects.xml
         """
         path = self._parameters["path"]
-        data_dir = CoreConfig().get_data_dir()
-        return os.path.join(data_dir, path)
+        if os.sep not in path:
+            # Local path
+            data_dir = CoreConfig().get_data_dir()
+            path = os.path.join(data_dir, path)
+        return os.path.abspath(path)
 
     def initialize(self):
         """ This is called when a backend is enabled """
