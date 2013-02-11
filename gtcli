@@ -54,6 +54,8 @@ def usage():
         _("Number of tasks"))
     text += spaces % ("gtcli summary [all|today|<filter>|<tag>]...",
         _("Report how many tasks starting/due each day"))
+    text += spaces % ("gtcli overview <count of days>",
+        _("Report which tasks are scheduled on each day, default 7 days"))
     text += spaces % ("gtcli postpone <tid> <date>",
         _("Updates the start date of task"))
     text += spaces % ("gtcli close <tid>",
@@ -134,7 +136,7 @@ def close_tasks(task_ids):
             if task['status'] == "Done":
                 print _("Task %s marked as done") % (task['title'])
             else:
-                print _("Task %s could not be marked as done") %(task['title'])
+                print _("Task %s could not be marked as done") % task['title']
                 sys.exit(1)
         else:
             print MSG_ERROR_TASK_ID_INVALID
@@ -155,11 +157,11 @@ def show_tasks(task_ids):
                 content = decoration.group(1)
 
             print task['title']
-            if len(task['tags'])>0:
+            if len(task['tags']) > 0:
                 print " %-12s %s" % ('tags:', task['tags'][0])
             for k in ['id', 'startdate', 'duedate', 'status']:
                 print " %-12s %s" % (k + ":", task[k])
-            if len(task['parents'])>0:
+            if len(task['parents']) > 0:
                 print " %-12s %s" % ('parents:', task['parents'][0])
             print
             print content
@@ -269,7 +271,6 @@ def summary_of_tasks(criteria):
             if datetime.strptime(startdate, "%Y-%m-%d") < datetime.today():
                 startdate = date.today().strftime("%Y-%m-%d")
 
-
         if startdate not in report:
             report[startdate] = {'starting': 0, 'due': 0}
         report[startdate]['starting'] += 1
@@ -359,6 +360,58 @@ def search_tasks(expression):
             print "  %-36s  %s" % (task['id'], text)
 
 
+def overview(expression):
+    """ Print calendar overview for couple next days """
+
+    def to_date(s):
+        """ Convert string representation into date """
+        try:
+            dt = datetime.strptime(s, "%Y-%m-%d")
+            return date(dt.year, dt.month, dt.day)
+        except ValueError:
+            return None
+
+    try:
+        overview_length = int(expression)
+    except ValueError:
+        overview_length = 7
+
+    gtg = connect_to_gtg()
+    tasks = gtg.GetActiveTasks([])
+
+    for i in range(0, overview_length):
+        day = date.today() + timedelta(days=i)
+
+        today_tasks = []
+        for task in tasks:
+            # skip tasks without start and due date
+            if not task['startdate'] and not task['duedate']:
+                continue
+
+            # due date is not eligible
+            if task['duedate'] == 'someday':
+                continue
+
+            # eliminate tasks after due date
+            duedate = to_date(task['duedate'])
+            if duedate and day > duedate:
+                continue
+
+            # eliminate tasks before start dates
+            startdate = to_date(task['startdate'])
+            if startdate and day < startdate:
+                continue
+
+            today_tasks.append(task['title'])
+
+        day_str = day.strftime("%A  %-m-%-d")
+        if i > 0:
+            print ""
+        print "%s (%d tasks)" % (day_str, len(today_tasks))
+        for task in sorted(today_tasks):
+            print " - %s" % task.encode('utf-8')
+
+
 def run_command(args):
     """ Run command and check for its minimal required arguments """
 
@@ -381,6 +434,7 @@ def run_command(args):
       (("edit"), 1, edit_tasks),
       (("browser"), 0, toggle_browser_visibility),
       (("search"), 1, search_tasks),
+      (("overview"), 0, overview),
     ]
 
     for aliases, min_args, command in commands:
