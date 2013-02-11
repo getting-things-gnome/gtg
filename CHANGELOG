@@ -2,6 +2,7 @@
     * Fix for bug #1024473: Have 'Show Main Window' in notification area, by Antonio Roquentin
     * Fix for bug #1043457: gtcli search returns closed tasks, by Nimit Shah
     * Fix for bug #1073607: "GTG starts after login" doesn't work with an invalid link
+    * Fix for bug #1076029: (Fixed regression) Notification area applet can't display attention icon
 
 2012-11-06 Getting Things GNOME! 0.3
     * Hide tasks with due date someday, #931376
