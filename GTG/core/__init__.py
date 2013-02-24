@@ -66,6 +66,7 @@ DEFAULTS = {
             'tasklist_sort_column': 5,
             'tasklist_sort_order': 1,
             "font_name": "",
+            "last_selected_tag": [], 
             },
 'tag_editor': {
             "custom_colors": [],
