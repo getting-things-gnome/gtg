@@ -14,6 +14,7 @@
     * Better handling of preferences loading (bug #1094307)
     * Added command "gtcli overview"
     * Fix for bug #1076029: (Fixed regression) Notification area applet can't display attention icon
+    * Fix for bug #1050520: Remember the last used tag, Marta Maria Casetti
 
 2012-11-06 Getting Things GNOME! 0.3
     * Hide tasks with due date someday, #931376

@@ -464,7 +464,20 @@ class TaskBrowser(gobject.GObject):
             self.builder.get_object("view_sidebar").set_active(True)
             if not self.tagtreeview:
                 self.init_tags_sidebar()
+
+            # for applying the last used tag                
+            taglist = self.config.get("last_selected_tag")
+            model = self.tagtreeview.get_model()
+            for tag_name in taglist:
+                path = self.tagtree.get_paths_for_node(tag_name)[0]
+                tag_iter = model.my_get_iter(path)
+
+                selection = self.tagtreeview.get_selection()
+                selection.select_iter(tag_iter)
+
             self.sidebar.show()
+            self.on_select_tag()
+
 
         sidebar_width = self.config.get("sidebar_width")
         self.builder.get_object("hpaned1").set_position(sidebar_width)
@@ -1145,6 +1158,8 @@ class TaskBrowser(gobject.GObject):
 
         #When you click on a tag, you want to unselect the tasks
         new_taglist = self.get_selected_tags()
+
+        self.config.set_lst("last_selected_tag", new_taglist)
 
         for tagname in self.applied_tags:
             if tagname not in new_taglist:
