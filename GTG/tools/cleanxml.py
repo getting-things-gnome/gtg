@@ -21,7 +21,6 @@ import os
 import xml.dom.minidom
 import shutil
 import sys
-import time
 import re
 import datetime
 
@@ -190,7 +189,7 @@ def savexml(zefile, doc, backup=False):
         try:
             os.makedirs(backup_dir)
         except IOError as error:
-            print "Error while creating backup/ directory:", msg
+            print "Error while creating backup/ directory:", error
             return False
 
     try:

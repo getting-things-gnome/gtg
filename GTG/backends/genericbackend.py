@@ -23,7 +23,6 @@ the GenericBackend class
 """
 
 import os
-import sys
 import errno
 import pickle
 import threading
@@ -150,7 +149,7 @@ class GenericBackend(object):
                 # we signal that we have been disabled
                 self._signal_manager.backend_state_changed(self.get_id())
                 self._signal_manager.backend_sync_ended(self.get_id())
-            syncing_thread = threading.Thread(target=self.sync).run()
+            threading.Thread(target=self.sync).run()
 
     def save_state(self):
         '''

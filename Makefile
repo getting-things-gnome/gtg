@@ -17,7 +17,7 @@
 # -----------------------------------------------------------------------------
 
 
-check: tests pep8 pyflakes pylint
+check: tests pep8 pyflakes
 
 # Run all of the tests.
 tests:
@@ -39,10 +39,6 @@ pyflakes:
 pep8:
 	pep8 --statistics --count gtg gtcli gtg_new_task GTG
 
-# Pylint code
-pylint:
-	pylint gtg gtcli gtg_new_task GTG
-
 # Build API documentation.
 apidocs:
 	pydoctor --add-package GTG --make-html --html-output=doc/api \
@@ -56,9 +52,6 @@ edit-apidocs:
 		--server --edit
 
 # Check for coding standard violations & flakes.
-lint: pyflakes pep8 pylint
+lint: pyflakes pep8
 
 .PHONY: tests check lint pyflakes pep8 apidocs edit-apidocs clean
-
-# Ignore the exit code in pyflakes, so that pep8 is always run when "make lint"
-.IGNORE: pyflakes

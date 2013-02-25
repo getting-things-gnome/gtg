@@ -512,7 +512,6 @@ class TaskView(gtk.TextView):
           1. Applying the title style on the first line
           2. Changing the name of the window if title change
         """
-        tags_before = self.get_tagslist()
         if not buff:
             buff = self.buff
         cursor_mark = buff.get_insert()
@@ -818,7 +817,7 @@ class TaskView(gtk.TextView):
 
             it.forward_char()
         # now we really delete the selected stuffs
-        selec = self.buff.get_selection_bounds()
+#        selec = self.buff.get_selection_bounds()
 #        if selec:
 #            print "deleted text is ##%s##" %self.buff.get_text(selec[0],
 #                selec[1])#(start, end)

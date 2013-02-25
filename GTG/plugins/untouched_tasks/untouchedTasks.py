@@ -14,29 +14,13 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import sys
 import os
-import gio
 import gtk
-import urllib
 import datetime
 
-from GTG import _
 from GTG.tools.logger import Log
-from GTG.tools.dates import Date
 from threading import Timer
-from datetime import date, timedelta
 
-try:
-    import pygtk
-    pygtk.require("2.0")
-except:  # pylint: disable-msg=W0702
-    sys.exit(1)
-
-try:
-    import gtk
-except:  # pylint: disable-msg=W0702
-    sys.exit(1)
 
 ###################################
 
@@ -86,7 +70,6 @@ class pluginUntouchedTasks:
         self.timer = None
         self.preferences_load()
         self.preferences_apply()
-        requester = self.plugin_api.get_requester()
         # add menu item
         self.plugin_api.add_menu_item(self.menu_item)
 

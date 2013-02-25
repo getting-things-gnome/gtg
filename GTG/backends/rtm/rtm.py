@@ -9,7 +9,6 @@ __all__ = (
 
 
 import urllib
-import time
 from hashlib import md5
 
 from GTG import _
@@ -18,10 +17,12 @@ from GTG.tools.logger import Log
 _use_jsonlib = False
 try:
     import simplejson as json
+    assert json
     _use_jsonlib = True
 except ImportError:
     try:
         import json as json
+        assert json
         _use_jsonlib = True
     except ImportError:
         try:

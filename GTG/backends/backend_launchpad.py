@@ -32,7 +32,7 @@ from launchpadlib.launchpad import Launchpad, \
 
 from GTG.core.task import Task
 from GTG.tools.testingmode import TestingMode
-from GTG import _, ngettext
+from GTG import _
 from GTG.backends.genericbackend import GenericBackend
 from GTG.backends.backendsignals import BackendSignals
 from GTG.backends.syncengine import SyncEngine, SyncMeme
@@ -327,7 +327,6 @@ class Backend(PeriodicImportBackend):
         '''
         text = _("Reported by: ") + '%s(karma: %s)' % \
             (bug_dic["owner"], bug_dic["owner_karma"]) + '\n'
-        projects = [dic['project_short'] for dic in bug_dic['projects']]
         # one link is enough, since they're all alias
         bug_project = bug_dic['projects'][0]['project_short']
         text += _("Link to bug: ") + \

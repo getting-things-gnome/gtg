@@ -17,6 +17,7 @@
 # this handles old versions of pybugz as well as new ones
 try:
     from bugz import bugzilla
+    assert bugzilla
 except:
     import bugz as bugzilla
 
