@@ -158,7 +158,7 @@ class Template:
                     self._document_path = subprocess.Popen(
                         args=cmd, shell=False,
                         stdout=subprocess.PIPE).communicate()[0]
-                except Exception:  # pylint: disable-msg=W0703
+                except Exception:
                     pass
 
             if self._document_path and not os.path.exists(self._document_path):

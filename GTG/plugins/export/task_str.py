@@ -24,7 +24,7 @@ class TaskStr(object):
     attributes instead of method calls and makes writing Cheetah
     templates easier. """
     # Ignore big number of properties and small number of public methods
-    # pylint: disable-msg=R0902,R0903
+
     def __init__(self, task, subtasks):
         self.title = task.get_title()
         self.text = str(task.get_text())

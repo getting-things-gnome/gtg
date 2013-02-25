@@ -32,7 +32,7 @@ class notToday:
         self.plugin_api.set_active_selection_changed_callback(
             self.selection_changed)
 
-    def deactivate(self, plugin_api):  # pylint: disable-msg=W0613
+    def deactivate(self, plugin_api):
         """ Removes the gtk widgets before quitting """
         self._gtk_deactivate()
 

@@ -16,14 +16,13 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-# pylint: disable-msg=W0201
 """
 Manager loads the prefs and launches the gtk main loop
 """
 try:
     import pygtk
     pygtk.require('2.0')
-except:  # pylint: disable-msg=W0702
+except:
     raise SystemExit(1)
 
 import gtk

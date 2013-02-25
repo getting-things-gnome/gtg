@@ -143,7 +143,7 @@ def task_to_xml(doc, task):
         # but without the "<content />"
         element = minidom.parseString(tex)
         temp = element.firstChild.toxml().partition("<content>")[2]
-        # pylint: disable-msg=E1103
+
         desc = temp.partition("</content>")[0]
         # t_xml.appendChild(element.firstChild)
         cleanxml.addTextNode(doc, t_xml, "content", desc)

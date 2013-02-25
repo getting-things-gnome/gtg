@@ -28,7 +28,6 @@ import xml.dom.minidom
 # we can store. This function signature is defined in PyGTK
 
 class Serializer:
-    # Disabling pylint argument usage since we know we are not using all args
     def serialize(self, register_buf, content_buf, start, end, udata):
         # Currently we serialize in XML
         its = start.copy()
@@ -40,7 +39,7 @@ class Serializer:
         doc.appendChild(self.parse_buffer(content_buf, its, ite, parent, doc))
         # We don't want the whole doc with the XML declaration
         # we only take the first node (the "content" one)
-        node = doc.firstChild  # pylint: disable-msg=E1101
+        node = doc.firstChild
         # print "********************"
         # print node.toxml().encode("utf-8")
         return node.toxml().encode("utf-8")
@@ -152,7 +151,6 @@ class Unserializer:
         # Not very pretty but convenient
         self.tv = taskview
 
-    # Disabling pylint argument usage since we know we are not using all args
     def unserialize(self, register_buf, content_buf, ite, data,
                     cr_tags, udata):
         if data:

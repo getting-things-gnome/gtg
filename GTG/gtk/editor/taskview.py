@@ -81,9 +81,9 @@ class TaskView(gtk.TextView):
         else:
             raise AttributeError('unknown property %s' % prop.name)
 
-    # Yes, we want to redefine the buffer. Disabling pylint on that error.
+    # Yes, we want to redefine the buffer.
     def __init__(self, requester, clipboard, buffer=None):
-        # pylint: disable-msg=W0622
+
         gtk.TextView.__init__(self, buffer)
         self.buff = self.get_buffer()
         self.req = requester
@@ -331,7 +331,6 @@ class TaskView(gtk.TextView):
         if linktype == 'link' and not self.check_link(anchor):
             linktype = 'failedlink'
 
-        # pylint: disable-msg=W0142
         tag = b.create_tag(None, **self.get_property(linktype))
         tag.set_data('is_anchor', True)
         tag.set_data('link', anchor)
@@ -355,7 +354,7 @@ class TaskView(gtk.TextView):
                 if ss.begins_tag(t) and ee.ends_tag(t):
                     already = True
         if not texttag:
-            # pylint: disable-msg=W0142
+
             texttag = buff.create_tag(None, **self.get_property('tag'))
             texttag.set_data('is_tag', True)
             texttag.set_data('tagname', tag)
@@ -390,7 +389,7 @@ class TaskView(gtk.TextView):
             buff.delete_mark(e)
 
     def create_indent_tag(self, buff, level):
-        # pylint: disable-msg=W0142
+
         tag = buff.create_tag(None, **self.get_property('indent'))
         tag.set_data('is_indent', True)
         tag.set_data('indent_level', level)
@@ -548,7 +547,7 @@ class TaskView(gtk.TextView):
         # First, we remove the olds tags
         tag_list = []
 
-        def subfunc(texttag, data=None):  # pylint: disable-msg=W0613
+        def subfunc(texttag, data=None):
             if texttag.get_data('is_subtask'):
                 tag_list.append(texttag)
 
@@ -1357,7 +1356,7 @@ class TaskView(gtk.TextView):
         """
         We clicked on a link
         """
-        # pylint: disable-msg=W0613
+
         _type = ev.type
         if _type == gtk.gdk.MOTION_NOTIFY:
             return

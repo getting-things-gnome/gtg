@@ -102,9 +102,9 @@ class Date(object):
         elif isinstance(value, datetime.date):
             self._real_date = value
         elif isinstance(value, Date):
-            # Copy internal values from other Date object, make pylint silent
-            self._real_date = value._real_date  # pylint: disable-msg=W0212
-            self._fuzzy = value._fuzzy  # pylint: disable-msg=W0212
+            # Copy internal values from other Date object
+            self._real_date = value._real_date
+            self._fuzzy = value._fuzzy
         elif isinstance(value, str) or isinstance(value, unicode):
             try:
                 da_ti = datetime.datetime.strptime(value, locale_format).date()

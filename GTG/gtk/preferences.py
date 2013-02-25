@@ -132,13 +132,13 @@ class PreferencesDialog:
         self._refresh_preferences_store()
         self.dialog.show_all()
 
-    def on_close(self, widget, data=None):  # pylint: disable-msg=W0613
+    def on_close(self, widget, data=None):
         """ Close the preferences dialog."""
         self.dialog.hide()
         return True
 
     @classmethod
-    def on_help(cls, widget):  # pylint: disable-msg=W0613
+    def on_help(cls, widget):
         """ In future, this will open help for preferences """
         return True
 

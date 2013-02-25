@@ -16,7 +16,6 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-# pylint: disable-msg=W0201
 
 """
 tag_context_menu:
@@ -34,7 +33,7 @@ import gtk
 from GTG import _
 
 
-class TagContextMenu(gtk.Menu):  # pylint: disable-msg=R0904
+class TagContextMenu(gtk.Menu):
     """Context menu fo the tag i the sidebar"""
 
     def __init__(self, req, vmanager, tag=None):
@@ -74,10 +73,10 @@ class TagContextMenu(gtk.Menu):  # pylint: disable-msg=R0904
         self.__build_menu()
 
     ### CALLBACKS #############################################################
-    def on_mi_cc_activate(self, widget):  # pylint: disable-msg=W0613
+    def on_mi_cc_activate(self, widget):
         """Callback: show the tag editor upon request"""
         self.vmanager.open_tag_editor(self.tag)
 
-    def on_mi_del_activate(self, widget):  # pylint: disable-msg=W0613
+    def on_mi_del_activate(self, widget):
         """ delete a selected search """
         self.req.remove_tag(self.tag.get_name())

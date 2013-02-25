@@ -859,7 +859,7 @@ class TaskBrowser(gobject.GObject):
             time = event.time
             pthinfo = treeview.get_path_at_pos(x, y)
             if pthinfo is not None:
-                path, col, cellx, celly = pthinfo  # pylint: disable-msg=W0612
+                path, col, cellx, celly = pthinfo
                 treeview.grab_focus()
                 # The location we want the cursor to return to
                 # after we're done.
