@@ -19,12 +19,12 @@ import os
 try:
     import pygtk
     pygtk.require("2.0")
-except:  # pylint: disable-msg=W0702
+except:
     sys.exit(1)
 
 try:
     import gtk
-except:  # pylint: disable-msg=W0702
+except:
     sys.exit(1)
 
 from threading import Timer

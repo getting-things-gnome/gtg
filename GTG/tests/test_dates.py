@@ -42,7 +42,7 @@ def next_month(aday, day=None):
         return aday.replace(day=day, month=aday.month + 1)
 
 
-class TestDates(unittest.TestCase):  # pylint: disable-msg=R0904
+class TestDates(unittest.TestCase):
     """ Tests for the various Date classes """
 
     def test_parse_dates(self):

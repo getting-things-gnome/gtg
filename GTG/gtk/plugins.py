@@ -36,7 +36,7 @@ PLUGINS_COL_SHORT_DESC = 3
 PLUGINS_COL_ACTIVATABLE = 4
 
 
-def plugin_icon(column, cell, store, iterator):  # pylint: disable-msg=W0613
+def plugin_icon(column, cell, store, iterator):
     """ Callback to set the content of a PluginTree cell.
 
     See PluginsDialog._init_plugin_tree().
@@ -108,7 +108,7 @@ def plugin_error_text(plugin):
 
 
 def plugin_markup(column, cell, store, iterator, self):
-    # pylint: disable-msg=W0613
+
     """ Callback to set the content of a PluginTree cell.
 
     See PluginsDialog._init_plugin_tree().
@@ -131,7 +131,7 @@ def plugin_markup(column, cell, store, iterator, self):
 
 class PluginsDialog:
     """ Dialog for Plugins configuration """
-    # pylint: disable-msg=R0902
+
     def __init__(self, config_obj):
         self.config_obj = config_obj
         self.config = self.config_obj.conf_dict
@@ -238,17 +238,17 @@ class PluginsDialog:
             self._refresh_plugin_store()
         self.dialog.show_all()
 
-    def on_close(self, widget, data=None):  # pylint: disable-msg=W0613
+    def on_close(self, widget, data=None):
         """ Close the plugins dialog."""
         self.dialog.hide()
         return True
 
     @classmethod
-    def on_help(cls, widget):  # pylint: disable-msg=W0613
+    def on_help(cls, widget):
         """ In future, this will open help for plugins """
         return True
 
-    def on_plugin_toggle(self, widget, path):  # pylint: disable-msg=W0613
+    def on_plugin_toggle(self, widget, path):
         """Toggle a plugin enabled/disabled."""
         iterator = self.plugin_store.get_iter(path)
         plugin_id = self.plugin_store.get_value(iterator, PLUGINS_COL_ID)
@@ -286,7 +286,7 @@ class PluginsDialog:
         configurable = plugin.active and plugin.is_configurable()
         self.plugin_configure.set_property('sensitive', configurable)
 
-    def on_plugin_configure(self, widget):  # pylint: disable-msg=W0613
+    def on_plugin_configure(self, widget):
         """ Show the dialog for plugin configuration """
         _, iterator = self.plugin_tree.get_selection().get_selected()
         if iterator is None:
@@ -295,7 +295,7 @@ class PluginsDialog:
         plugin = self.pengine.get_plugin(plugin_id)
         plugin.instance.configure_dialog(self.dialog)
 
-    def on_plugin_about(self, widget):  # pylint: disable-msg=W0613
+    def on_plugin_about(self, widget):
         """ Display information about a plugin. """
         _, iterator = self.plugin_tree.get_selection().get_selected()
         if iterator is None:
@@ -317,7 +317,7 @@ class PluginsDialog:
         self.plugin_about.show_all()
 
     def on_plugin_about_close(self, widget, data=None):
-        # pylint: disable-msg=W0613
+
         """ Close the PluginAboutDialog. """
         self.plugin_about.hide()
         return True

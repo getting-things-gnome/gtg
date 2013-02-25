@@ -438,7 +438,7 @@ class TaskEditor:
         for task in all_subtasks:
             self.vmanager.close_task(task.get_id())
 
-    def dismiss(self, widget):  # pylint: disable-msg=W0613
+    def dismiss(self, widget):
         stat = self.task.get_status()
         if stat == "Dismiss":
             self.task.set_status("Active")
@@ -448,7 +448,7 @@ class TaskEditor:
             self.close_all_subtasks()
             self.close(None)
 
-    def change_status(self, widget):  # pylint: disable-msg=W0613
+    def change_status(self, widget):
         stat = self.task.get_status()
         if stat == "Done":
             self.task.set_status("Active")
@@ -482,11 +482,11 @@ class TaskEditor:
         task_id = task.get_id()
         self.vmanager.open_task(task_id)
 
-    def insert_subtask(self, widget):  # pylint: disable-msg=W0613
+    def insert_subtask(self, widget):
         self.textview.insert_newtask()
         self.textview.grab_focus()
 
-    def inserttag_clicked(self, widget):  # pylint: disable-msg=W0613
+    def inserttag_clicked(self, widget):
         itera = self.textview.get_insert()
         if itera.starts_line():
             self.textview.insert_text("@", itera)
@@ -494,7 +494,7 @@ class TaskEditor:
             self.textview.insert_text(" @", itera)
         self.textview.grab_focus()
 
-    def inserttag(self, widget, tag):  # pylint: disable-msg=W0613
+    def inserttag(self, widget, tag):
         self.textview.insert_tags([tag])
         self.textview.grab_focus()
 
@@ -546,7 +546,7 @@ class TaskEditor:
 
     # We define dummy variable for when close is called from a callback
     def close(self, window=None, a=None, b=None, c=None):
-        # pylint: disable-msg=W0613
+
         # We should also destroy the whole taskeditor object.
         if self.window:
             self.window.destroy()

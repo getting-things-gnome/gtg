@@ -21,7 +21,7 @@ import sys
 try:
     import pygtk
     pygtk.require("2.0")
-except:  # pylint: disable-msg=W0702
+except:
     sys.exit(1)
 
 import gtk

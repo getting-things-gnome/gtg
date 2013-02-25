@@ -88,7 +88,7 @@ class BackendsDialog(object):
         self.backends_tv.select_backend()
         self.dialog.present()
 
-    def on_close(self, widget, data=None):  # pylint: disable-msg=W0613
+    def on_close(self, widget, data=None):
         '''
         Hides this window, saving the backends configuration.
 
@@ -241,7 +241,6 @@ class BackendsDialog(object):
             backend = self.req.get_backend(backend_id)
             self.remove_button.set_sensitive(not backend.is_default())
 
-    # pylint: disable-msg=W0613
     def on_add_button(self, widget=None, data=None):
         '''
         When the add button is pressed, the add panel is shown
@@ -276,7 +275,6 @@ class BackendsDialog(object):
         '''
         self.backends_tv.select_backend(backend_id)
 
-    # pylint: disable-msg=W0613
     def on_remove_button(self, widget=None, data=None):
         '''
         When the remove button is pressed, a confirmation dialog is shown,

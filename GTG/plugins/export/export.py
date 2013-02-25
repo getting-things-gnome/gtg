@@ -80,7 +80,6 @@ class PluginExport:
 
     # Allow initilization outside __init__() and don't complain
     # about too many attributes
-    # pylint: disable-msg=W0201,R0902
 
     PLUGIN_NAME = "export"
 
@@ -101,7 +100,7 @@ class PluginExport:
         self._preferences_load()
         self._preferences_apply()
 
-    def deactivate(self, plugin_api):  # pylint: disable-msg=W0613
+    def deactivate(self, plugin_api):
         """ Removes the gtk widgets before quitting """
         self._gtk_deactivate()
 
@@ -247,7 +246,7 @@ class PluginExport:
             self.plugin_api.remove_toolbar_item(self.tb_button)
             self.toolbar_entry = False
 
-    def show_dialog(self, widget):  # pylint: disable-msg=W0613
+    def show_dialog(self, widget):
         """ Show dialog with options for export """
         parent_window = self.plugin_api.get_ui().get_window()
         self.export_dialog.set_transient_for(parent_window)
@@ -255,7 +254,7 @@ class PluginExport:
         self.export_dialog.show_all()
 
     def _hide_dialog(self, sender=None, data=None):
-    # pylint: disable-msg=W0613
+
         """ Hide dialog """
         self.export_dialog.hide()
         return True
@@ -352,12 +351,12 @@ class PluginExport:
         self.preferences_dialog.show_all()
 
     def on_preferences_cancel(self, widget, data=None):
-        # pylint: disable-msg=W0613
+
         """ Only hide the dialog """
         self.preferences_dialog.hide()
         return True
 
-    def on_preferences_ok(self, widget):  # pylint: disable-msg=W0613
+    def on_preferences_ok(self, widget):
         """ Apply and store new preferences """
         self.preferences["menu_entry"] = self.pref_menu.get_active()
         self.preferences["toolbar_entry"] = self.pref_toolbar.get_active()

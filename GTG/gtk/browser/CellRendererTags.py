@@ -80,7 +80,7 @@ class CellRendererTags(gtk.GenericCellRenderer):
         return count
 
     # Class methods
-    def __init__(self):  # pylint: disable-msg=W0231
+    def __init__(self):
         self.__gobject_init__()
         self.tag_list = None
         self.tag = None
@@ -164,7 +164,7 @@ class CellRendererTags(gtk.GenericCellRenderer):
                 self.__roundedrec(gdkcontext, rect_x, rect_y, 16, 16, 8)
                 gdkcontext.stroke()
 
-        if self.tag and my_tag:  # pylint: disable-msg=W0631
+        if self.tag and my_tag:
 
             my_tag_icon = my_tag.get_attribute("icon")
             my_tag_color = my_tag.get_attribute("color")
@@ -181,7 +181,7 @@ class CellRendererTags(gtk.GenericCellRenderer):
                 self.__roundedrec(gdkcontext, rect_x, rect_y, 16, 16, 8)
                 gdkcontext.stroke()
 
-    def on_get_size(self, widget, cell_area=None):  # pylint: disable-msg=W0613
+    def on_get_size(self, widget, cell_area=None):
 
         count = self.__count_viewable_tags()
 
