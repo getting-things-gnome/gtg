@@ -67,26 +67,27 @@ class pluginUrgencyColor:
         color2 = gtk.gdk.color_parse(color2)
         R1, G1, B1 = color1.red, color1.green, color1.blue
         R2, G2, B2 = color2.red, color2.green, color2.blue
-        R = R1 + (R2-R1) * position
-        G = G1 + (G2-G1) * position
-        B = B1 + (B2-B1) * position
-        return gtk.gdk.Color(int(R),int(G),int(B))
+        R = R1 + (R2 - R1) * position
+        G = G1 + (G2 - G1) * position
+        B = B1 + (B2 - B1) * position
+        return gtk.gdk.Color(int(R), int(G), int(B))
 
     def get_node_bgcolor(self, node):
-        """ This method checks the urgency of a node (task) and returns its urgency background color"""
+        """ This method checks the urgency of a node (task) and returns its
+         urgency background color"""
         sdate = node.get_start_date()
         ddate = node.get_due_date()
         daysleft = ddate.days_left()
-        
+
         # Dates undefined (Fix to bug #1039655)
         if (ddate == Date.today()):
-            return self._get_color(2) # High urgency
+            return self._get_color(2)  # High urgency
         elif (daysleft < 0 and ddate != Date.no_date()):
-            return self._get_color(3) # Overdue
-        elif (sdate == Date.no_date() # Has no start date
-                and ddate != Date.no_date() # and a due date
-                and not ddate.is_fuzzy()): # which is not fuzzy, is fixed
-            return self._get_color(1) # Normal
+            return self._get_color(3)  # Overdue
+        elif (sdate == Date.no_date()  # Has no start date
+                and ddate != Date.no_date()  # and a due date
+                and not ddate.is_fuzzy()):  # which is not fuzzy, is fixed
+            return self._get_color(1)  # Normal
 
         # Fuzzy dates (now, soon, someday)
         # These can ignore the start date
@@ -100,14 +101,12 @@ class pluginUrgencyColor:
         # Dates fully defined. Calculate gradient color
         elif (sdate != Date.no_date() != ddate):
             dayspan = (ddate - sdate).days
-
-            # Reddays
             redf = self._pref_data['reddays']
-            reddays = int(ceil(redf/100.0 * dayspan))
-            
+            reddays = int(ceil(redf / 100.0 * dayspan))
+
             # Gradient variables
             grad_dayspan = dayspan - reddays
-            grad_half_dayspan = grad_dayspan/2.0
+            grad_half_dayspan = grad_dayspan / 2.0
 
             # Default to low urgency color
             color = self._get_color(0)
@@ -121,9 +120,9 @@ class pluginUrgencyColor:
             # the reddays section. Then point out the spans of the
             # different variables (dayspan, daysleft, reddays,
             # grad_dayspan, grad_half_dayspan)
-            if daysleft < 0: # CO
+            if daysleft < 0:  # CO
                 color = self._get_color(3)
-            elif daysleft <= reddays: # CH
+            elif daysleft <= reddays:  # CH
                 color = self._get_color(2)
             elif daysleft <= (dayspan - grad_half_dayspan):
                 # Gradient CN to CH
@@ -131,14 +130,17 @@ class pluginUrgencyColor:
                 steps = float(grad_half_dayspan)
                 step = grad_half_dayspan - (daysleft - reddays)
                 color = self._get_gradient_color(self._get_color(1),
-                        self._get_color(2), step/steps)
+                                                 self._get_color(2),
+                                                 step / steps)
             elif daysleft <= dayspan:
                 # Gradient CL to CN
                 steps = float(grad_half_dayspan)
-                step = grad_half_dayspan - (daysleft - reddays - grad_half_dayspan)
+                step = grad_half_dayspan - (daysleft -
+                                            reddays - grad_half_dayspan)
                 color = self._get_gradient_color(self._get_color(0),
-                        self._get_color(1), step/steps)
-            
+                                                 self._get_color(1),
+                                                 step / steps)
+
             return color
 
         # Insufficient data to determine urgency
@@ -147,11 +149,12 @@ class pluginUrgencyColor:
 
     def bgcolor(self, node, standard_color):
         color = self.get_node_bgcolor(node)
-        
+
         def __get_active_child_list(node):
             """ This function recursively fetches a list
             of all the children of a task which are active
-            (i.e - the subtasks which are not marked as 'Done' or 'Dismissed' """
+            (i.e - the subtasks which are not marked as 'Done' or 'Dismissed'
+            """
             child_list = []
             for child_id in node.children:
                 child = node.req.get_task(child_id)
@@ -165,8 +168,8 @@ class pluginUrgencyColor:
         daysleft = None
         for child_id in child_list:
             child = self.req.get_task(child_id)
-
-            if child.get_due_date() == Date.no_date(): continue
+            if child.get_due_date() == Date.no_date():
+                continue
 
             daysleft_of_child = child.get_due_date().days_left()
             if daysleft is None:
@@ -190,7 +193,7 @@ class pluginUrgencyColor:
     def configure_dialog(self, manager_dialog):
         self._pref_data_potential = self._pref_data
         self.prefs_window.show_all()
-        #self.prefs_window.set_transient_for(manager_dialog)
+        # self.prefs_window.set_transient_for(manager_dialog)
         pass
 
     def prefs_init(self):
@@ -202,8 +205,8 @@ class pluginUrgencyColor:
         # Get the widgets
         #   Window
         self.prefs_window = self.builder.get_object('prefs_window')
-        self.prefs_window.set_title(('GTG - %s preferences' \
-            % self.PLUGIN_NAME))
+        self.prefs_window.set_title(('GTG - %s preferences'
+                                     % self.PLUGIN_NAME))
         self.prefs_window.set_size_request(300, -1)
         self.prefs_window.hide_on_delete()
 
@@ -211,7 +214,8 @@ class pluginUrgencyColor:
         self.spinbutton_reddays = self.builder.get_object('spinbutton_reddays')
 
         #   Colorbutton - OVERDUE
-        self.colorbutton_overdue = self.builder.get_object('colorbutton_overdue')
+        self.colorbutton_overdue = self.builder.get_object(
+            'colorbutton_overdue')
 
         #   Colorbutton - HIGH
         self.colorbutton_high = self.builder.get_object('colorbutton_high')
@@ -232,21 +236,21 @@ class pluginUrgencyColor:
         # Signal connections
         SIGNAL_CONNECTIONS_DIC = {
             'on_prefs_window_delete_event':
-                self.on_prefs_cancel,
+            self.on_prefs_cancel,
             'on_prefs_apply_event':
-                self.on_prefs_apply,
+            self.on_prefs_apply,
             'on_prefs_reset_event':
-                self.on_prefs_reset,
+            self.on_prefs_reset,
             'on_prefs_spinbutton_reddays_changed':
-                self.on_prefs_spinbutton_reddays_changed,
+            self.on_prefs_spinbutton_reddays_changed,
             'on_prefs_colorbutton_overdue_changed':
-                self.on_prefs_colorbutton_overdue_changed,
+            self.on_prefs_colorbutton_overdue_changed,
             'on_prefs_colorbutton_high_changed':
-                self.on_prefs_colorbutton_high_changed,
+            self.on_prefs_colorbutton_high_changed,
             'on_prefs_colorbutton_normal_changed':
-                self.on_prefs_colorbutton_normal_changed,
+            self.on_prefs_colorbutton_normal_changed,
             'on_prefs_colorbutton_low_changed':
-                self.on_prefs_colorbutton_low_changed}
+            self.on_prefs_colorbutton_low_changed}
         self.builder.connect_signals(SIGNAL_CONNECTIONS_DIC)
 
     def prefs_update_widgets(self):
@@ -254,16 +258,16 @@ class pluginUrgencyColor:
         # Spin button
         self.spinbutton_reddays.set_value(self._pref_data['reddays'])
         # Colorbutton - OVERDUE
-        self.colorbutton_overdue.set_color( \
+        self.colorbutton_overdue.set_color(
             gtk.gdk.color_parse(self._pref_data['color_overdue']))
         # Colorbutton - HIGH
-        self.colorbutton_high.set_color( \
+        self.colorbutton_high.set_color(
             gtk.gdk.color_parse(self._pref_data['color_high']))
         # Colorbutton - NORMAL
-        self.colorbutton_normal.set_color( \
+        self.colorbutton_normal.set_color(
             gtk.gdk.color_parse(self._pref_data['color_normal']))
         # Colorbutton - LOW
-        self.colorbutton_low.set_color( \
+        self.colorbutton_low.set_color(
             gtk.gdk.color_parse(self._pref_data['color_low']))
 
     def on_prefs_cancel(self, widget=None, data=None):
@@ -285,20 +289,20 @@ class pluginUrgencyColor:
     def prefs_load(self):
         self._pref_data = self._plugin_api.load_configuration_object(
             self.PLUGIN_NAME, "preferences",
-            default_values = self.DEFAULT_PREFS)
+            default_values=self.DEFAULT_PREFS)
 
         # CORRECT NAMES FROM OLD PREFERENCES
         # This is a dirty fix and thus should be removed in a
         # distant future, when nobody has "red", "yellow" or "green"
         # settings
-        namepairs = {'red':'high', 'yellow':'normal', 'green':'low'}
+        namepairs = {'red': 'high', 'yellow': 'normal', 'green': 'low'}
         for oldname, newname in namepairs.iteritems():
             old_key, new_key = "color_" + oldname, "color_" + newname
             if old_key in self._pref_data:
                 self._pref_data[new_key] = self._pref_data.pop(old_key)
 
     def prefs_store(self):
-        self._plugin_api.save_configuration_object( \
+        self._plugin_api.save_configuration_object(
             self.PLUGIN_NAME,
             'preferences',
             self._pref_data)

@@ -20,33 +20,33 @@
 '''
 Backend for importing launchpad bugs in GTG
 '''
-#Documentation on launchapadlib: https://help.launchpad.net/API/launchpadlib
+# Documentation on launchapadlib: https://help.launchpad.net/API/launchpadlib
 
 import os
 import uuid
 import datetime
 from xdg.BaseDirectory import xdg_cache_home
 from launchpadlib.launchpad import Launchpad, \
-                                   STAGING_SERVICE_ROOT, \
-                                   EDGE_SERVICE_ROOT
+    STAGING_SERVICE_ROOT, \
+    EDGE_SERVICE_ROOT
 
-from GTG.core.task               import Task
-from GTG.tools.testingmode       import TestingMode
-from GTG                         import _, ngettext
+from GTG.core.task import Task
+from GTG.tools.testingmode import TestingMode
+from GTG import _, ngettext
 from GTG.backends.genericbackend import GenericBackend
 from GTG.backends.backendsignals import BackendSignals
-from GTG.backends.syncengine     import SyncEngine, SyncMeme
-from GTG.tools.logger            import Log
-from GTG.info                    import NAME as GTG_NAME
+from GTG.backends.syncengine import SyncEngine, SyncMeme
+from GTG.tools.logger import Log
+from GTG.info import NAME as GTG_NAME
 from GTG.backends.periodicimportbackend import PeriodicImportBackend
 
-#Uncomment this to see each http request
-#import httplib2
-#httplib2.debuglevel = 1
+# Uncomment this to see each http request
+# import httplib2
+# httplib2.debuglevel = 1
+
 
 class Backend(PeriodicImportBackend):
     '''Launchpad backend, capable of importing launchpad bugs in GTG.'''
-
 
     _general_description = {
         GenericBackend.BACKEND_NAME: "backend_launchpad",
@@ -54,22 +54,22 @@ class Backend(PeriodicImportBackend):
         GenericBackend.BACKEND_AUTHORS: ["Luca Invernizzi"],
         GenericBackend.BACKEND_TYPE: GenericBackend.TYPE_READONLY,
         GenericBackend.BACKEND_DESCRIPTION:
-            _("This synchronization service lets you import the bugs assigned"
-              " to you (or someone else) on Launchpad in GTG. As the"
-              " bug state changes in Launchpad, the GTG task is "
-              " updated.\n"
-              "Please note that this is a read only synchronization service,"
-              " which means that if you open one of the imported tasks and "
-              " change one of the:\n"
-              "  - title\n"
-              "  - description\n"
-              "  - tags\n"
-              "Your changes <b>will</b> be reverted when the associated"
-              " bug is modified. Apart from those, you are free to set "
-              " any other field (start/due dates, subtasks...): your "
-              " changes will be preserved. This is useful to add "
-              " personal annotations to bug"),
-        }
+        _("This synchronization service lets you import the bugs assigned"
+          " to you (or someone else) on Launchpad in GTG. As the"
+          " bug state changes in Launchpad, the GTG task is "
+          " updated.\n"
+          "Please note that this is a read only synchronization service,"
+          " which means that if you open one of the imported tasks and "
+          " change one of the:\n"
+          "  - title\n"
+          "  - description\n"
+          "  - tags\n"
+          "Your changes <b>will</b> be reverted when the associated"
+          " bug is modified. Apart from those, you are free to set "
+          " any other field (start/due dates, subtasks...): your "
+          " changes will be preserved. This is useful to add "
+          " personal annotations to bug"),
+    }
 
     _static_parameters = {
         "username": {
@@ -84,7 +84,7 @@ class Backend(PeriodicImportBackend):
         "tag-with-project-name": {
             GenericBackend.PARAM_TYPE: GenericBackend.TYPE_BOOL,
             GenericBackend.PARAM_DEFAULT_VALUE: True},
-        }
+    }
 
 ###############################################################################
 ### Backend standard methods ##################################################
@@ -95,7 +95,7 @@ class Backend(PeriodicImportBackend):
         Re-loads the saved state of the synchronization
         '''
         super(Backend, self).__init__(parameters)
-        #loading the saved state of the synchronization, if any
+        # loading the saved state of the synchronization, if any
         self.data_path = os.path.join('backends/launchpad/',
                                       "sync_engine-" + self.get_id())
         self.sync_engine = self._load_pickled_file(self.data_path,
@@ -108,7 +108,7 @@ class Backend(PeriodicImportBackend):
         bugs on launchpad.
         '''
 
-        ###########IMPORTANT NOTE!
+        # IMPORTANT NOTE!
         # Bugs can be splitted in bug tasks (such as, you can assign a single
         # bug to multiple projects: you have one bug and several bug tasks).
         # At least, one bug contains a bug task (if it's referring to a single
@@ -119,7 +119,7 @@ class Backend(PeriodicImportBackend):
         # bug tasks, this may happen if somebody is working at the same bug for
         # different projects), we use the bug self_link for indexing the tasks.
 
-        #Connecting to Launchpad
+        # Connecting to Launchpad
         CACHE_DIR = os.path.join(xdg_cache_home, 'gtg/backends/',
                                  self.get_id())
         if TestingMode().get_testing_mode():
@@ -132,45 +132,46 @@ class Backend(PeriodicImportBackend):
                                                          SERVICE_ROOT,
                                                          CACHE_DIR)
         except:
-            #The connection is not working (the exception type can be anything)
+            # The connection is not working (the exception type can be
+            # anything)
             BackendSignals().backend_failed(self.get_id(),
-                            BackendSignals.ERRNO_NETWORK)
+                                            BackendSignals.ERRNO_NETWORK)
             return
-        #Getting the user data
+        # Getting the user data
         try:
             self.cancellation_point()
             me = self.launchpad.people[self._parameters["username"]]
         except KeyError:
-            self.quit(disable = True)
+            self.quit(disable=True)
             BackendSignals().backend_failed(self.get_id(),
-                            BackendSignals.ERRNO_AUTHENTICATION)
+                                            BackendSignals.ERRNO_AUTHENTICATION
+                                            )
             return
-        #Fetching the bugs
+        # Fetching the bugs
         self.cancellation_point()
-        my_bugs_tasks = me.searchTasks(assignee = me, status=\
-                       ["New",
-                       "Incomplete",
-                       "Confirmed",
-                       "Triaged",
-                       "In Progress",
-                       "Fix Committed"])
-        #Adding and updating
+        my_bugs_tasks = me.searchTasks(assignee=me, status=["New",
+                                                            "Incomplete",
+                                                            "Confirmed",
+                                                            "Triaged",
+                                                            "In Progress",
+                                                            "Fix Committed"])
+        # Adding and updating
         for bug_task in my_bugs_tasks:
             self.cancellation_point()
             self._process_launchpad_bug(bug_task)
 
-        #removing the old ones
+        # removing the old ones
         last_bug_list = self.sync_engine.get_all_remote()
         new_bug_list = [bug.self_link for bug in my_bugs_tasks]
         for bug_link in set(last_bug_list).difference(set(new_bug_list)):
             self.cancellation_point()
-            #we make sure that the other backends are not modifying the task
+            # we make sure that the other backends are not modifying the task
             # set
             with self.datastore.get_backend_mutex():
                 tid = self.sync_engine.get_local_id(bug_link)
                 self.datastore.request_task_deletion(tid)
                 try:
-                    self.sync_engine.break_relationship(remote_id = bug_link)
+                    self.sync_engine.break_relationship(remote_id=bug_link)
                 except KeyError:
                     pass
 
@@ -190,17 +191,19 @@ class Backend(PeriodicImportBackend):
 
         @param note: a launchpad bug
         '''
+        has_task = self.datastore.has_task
         action, tid = self.sync_engine.analyze_remote_id(bug.self_link,
-                 self.datastore.has_task, lambda b: True)
+                                                         has_task,
+                                                         lambda b: True)
         Log.debug("processing launchpad (%s)" % (action))
 
-        if action == None:
+        if action is None:
             return
 
         bug_dic = self._prefetch_bug_data(bug)
-        #for the rest of the function, no access to bug must be made, so
+        # for the rest of the function, no access to bug must be made, so
         # that the time of blocking inside the with statements is short.
-        #To be sure of that, set bug to None
+        # To be sure of that, set bug to None
         bug = None
 
         with self.datastore.get_backend_mutex():
@@ -208,19 +211,20 @@ class Backend(PeriodicImportBackend):
                 tid = str(uuid.uuid4())
                 task = self.datastore.task_factory(tid)
                 self._populate_task(task, bug_dic)
-                self.sync_engine.record_relationship(local_id = tid,
-                            remote_id = str(bug_dic['self_link']),
-                            meme = SyncMeme(
-                                        task.get_modified(),
-                                        bug_dic['modified'],
-                                        self.get_id()))
+                self.sync_engine.record_relationship(local_id=tid,
+                                                     remote_id=str(
+                                                     bug_dic['self_link']),
+                                                     meme=SyncMeme(
+                                                     task.get_modified(),
+                                                     bug_dic['modified'],
+                                                     self.get_id()))
                 self.datastore.push_task(task)
 
             elif action == SyncEngine.UPDATE:
                 task = self.datastore.get_task(tid)
                 self._populate_task(task, bug_dic)
                 meme = self.sync_engine.get_meme_from_remote_id(
-                                                    bug_dic['self_link'])
+                    bug_dic['self_link'])
                 meme.set_local_last_modified(task.get_modified())
                 meme.set_remote_last_modified(bug_dic['modified'])
         self.save_state()
@@ -233,7 +237,7 @@ class Backend(PeriodicImportBackend):
         @param bug: a launchpad bug dictionary, generated with
                     _prefetch_bug_data
         '''
-        #set task status
+        # set task status
         if bug_dic["completed"]:
             task.set_status(Task.STA_DONE)
         else:
@@ -248,14 +252,14 @@ class Backend(PeriodicImportBackend):
         if self._parameters["import-bug-tags"]:
             new_tags_sources += bug_dic['tags']
         if self._parameters["tag-with-project-name"]:
-            new_tags_sources += [dic['project_short'] \
-                                    for dic in bug_dic['projects']]
+            new_tags_sources += [dic['project_short']
+                                 for dic in bug_dic['projects']]
         new_tags = set(['@' + str(tag) for tag in new_tags_sources])
         current_tags = set(task.get_tags_name())
-        #remove the lost tags
+        # remove the lost tags
         for tag in current_tags.difference(new_tags):
             task.remove_tag(tag)
-        #add the new ones
+        # add the new ones
         for tag in new_tags.difference(current_tags):
             task.add_tag(tag)
         task.add_remote_id(self.get_id(), bug_dic['self_link'])
@@ -266,11 +270,11 @@ class Backend(PeriodicImportBackend):
 
         @param bug: a launchpad bug
         '''
-        #NOTE: giving directly bug.date_last_updated fails for a reason I
+        # NOTE: giving directly bug.date_last_updated fails for a reason I
         #      couldn't find. (invernizzi)
         return datetime.datetime.strptime(
-                bug.date_last_updated.strftime("YYYY-MM-DDTHH:MM:SS.mmmmmm"),
-                "YYYY-MM-DDTHH:MM:SS.mmmmmm")
+            bug.date_last_updated.strftime("YYYY-MM-DDTHH:MM:SS.mmmmmm"),
+            "YYYY-MM-DDTHH:MM:SS.mmmmmm")
 
     def _prefetch_bug_data(self, bug_task):
         '''
@@ -294,19 +298,19 @@ class Backend(PeriodicImportBackend):
                    'modified': self._get_bug_modified_datetime(bug),
                    'owner': owner.display_name,
                    'completed': bug_task.status in ["Fix Committed",
-                                                              "Fix Released"],
+                                                    "Fix Released"],
                    'owner_karma': owner.karma}
-        bug_dic['number'] = bug_dic['self_link']\
-                                      [bug_dic['self_link'].rindex("/") + 1:]
-        #find the projects target of the bug
+        bug_dic['number'] = bug_dic['self_link'][bug_dic['self_link'].rindex(
+                                                 "/") + 1:]
+        # find the projects target of the bug
         projects = []
         for task in bug.bug_tasks:
-            #workaround: assignee.name doesn't work, although
+            # workaround: assignee.name doesn't work, although
             #            assignee.display_name does.
             try:
                 a_sl = task.assignee.self_link
             except AttributeError:
-                #bug task is not assigned to anyone
+                # bug task is not assigned to anyone
                 continue
             a_sl[a_sl.index("~") + 1:]
             if a_sl[a_sl.index("~") + 1:] == self._parameters["username"]:
@@ -322,12 +326,12 @@ class Backend(PeriodicImportBackend):
         Creates the text that describes a bug
         '''
         text = _("Reported by: ") + '%s(karma: %s)' % \
-                    (bug_dic["owner"], bug_dic["owner_karma"]) + '\n'
+            (bug_dic["owner"], bug_dic["owner_karma"]) + '\n'
         projects = [dic['project_short'] for dic in bug_dic['projects']]
-        #one link is enough, since they're all alias
+        # one link is enough, since they're all alias
         bug_project = bug_dic['projects'][0]['project_short']
         text += _("Link to bug: ") + \
-                "https://bugs.edge.launchpad.net/%s/+bug/%s" % \
-                (bug_project, bug_dic["number"]) + '\n'
+            "https://bugs.edge.launchpad.net/%s/+bug/%s" % \
+            (bug_project, bug_dic["number"]) + '\n'
         text += '\n' + bug_dic["text"]
         return text

@@ -22,7 +22,7 @@ from glob import glob
 
 tarlist = list()
 dirlist = list()
-exclude_list = ('dist/', 'build/', '.bzr', 'test', 'pyc', 'scripts/', 'tmp/', \
+exclude_list = ('dist/', 'build/', '.bzr', 'test', 'pyc', 'scripts/', 'tmp/',
                 'pot', 'HACKING', 'MANIFEST', 'Makefile', 'profile.py', '.swp')
 
 for t in glob('dist/*.tar.gz'):

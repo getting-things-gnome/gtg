@@ -69,7 +69,7 @@ FUNCS = {
 
 # ISO 8601 date format
 ISODATE = '%Y-%m-%d'
-#get date format from locale
+# get date format from locale
 locale_format = locale.nl_langinfo(locale.D_FMT)
 
 
@@ -103,15 +103,15 @@ class Date(object):
             self._real_date = value
         elif isinstance(value, Date):
             # Copy internal values from other Date object, make pylint silent
-            self._real_date = value._real_date # pylint: disable-msg=W0212
-            self._fuzzy = value._fuzzy # pylint: disable-msg=W0212
+            self._real_date = value._real_date  # pylint: disable-msg=W0212
+            self._fuzzy = value._fuzzy  # pylint: disable-msg=W0212
         elif isinstance(value, str) or isinstance(value, unicode):
             try:
                 da_ti = datetime.datetime.strptime(value, locale_format).date()
                 self._real_date = convert_datetime_to_date(da_ti)
             except ValueError:
                 try:
-                    #allow both locale format and ISO format
+                    # allow both locale format and ISO format
                     da_ti = datetime.datetime.strptime(value, ISODATE).date()
                     self._real_date = convert_datetime_to_date(da_ti)
                 except ValueError:
@@ -120,8 +120,8 @@ class Date(object):
                         value = str(value.lower())
                         self._parse_init_value(LOOKUP[value])
                     except KeyError:
-                        raise ValueError("Unknown value for date: '%s'" \
-                                                                     % value)
+                        raise ValueError("Unknown value for date: '%s'"
+                                         % value)
         elif isinstance(value, int):
             self._fuzzy = value
         else:
@@ -285,10 +285,10 @@ class Date(object):
                     # If the day has passed, assume the next year
                     if result.month > today.month or \
                         (result.month == today.month and
-                        result.day >= today.day):
+                         result.day >= today.day):
                         year = today.year
                     else:
-                        year = today.year +1
+                        year = today.year + 1
                     result = result.replace(year=year)
             except ValueError:
                 continue
@@ -301,16 +301,16 @@ class Date(object):
 
         # accepted date formats
         formats = {
-          'today': 0,
-          _('today').lower(): 0,
-          'tomorrow': 1,
-          _('tomorrow').lower(): 1,
-          'next week': 7,
-          _('next week').lower(): 7,
-          'next month': calendar.mdays[today.month],
-          _('next month').lower(): calendar.mdays[today.month],
-          'next year': 365 + int(calendar.isleap(today.year)),
-          _('next year').lower(): 365 + int(calendar.isleap(today.year)),
+            'today': 0,
+            _('today').lower(): 0,
+            'tomorrow': 1,
+            _('tomorrow').lower(): 1,
+            'next week': 7,
+            _('next week').lower(): 7,
+            'next month': calendar.mdays[today.month],
+            _('next month').lower(): calendar.mdays[today.month],
+            'next year': 365 + int(calendar.isleap(today.year)),
+            _('next year').lower(): 365 + int(calendar.isleap(today.year)),
         }
 
         # add week day names in the current locale
@@ -322,7 +322,7 @@ class Date(object):
             ("Friday", _("Friday")),
             ("Saturday", _("Saturday")),
             ("Sunday", _("Sunday")),
-            ]):
+        ]):
             offset = i - today.weekday() + 7 * int(i <= today.weekday())
             formats[english.lower()] = offset
             formats[local.lower()] = offset
@@ -384,10 +384,10 @@ class Date(object):
         elif days_left < 0:
             abs_days = abs(days_left)
             return ngettext('Yesterday', '%(days)d days ago', abs_days) % \
-              {'days': abs_days}
+                {'days': abs_days}
         elif days_left > 0 and days_left <= 15:
             return ngettext('Tomorrow', 'In %(days)d days', days_left) % \
-              {'days': days_left}
+                {'days': days_left}
         else:
             locale_format = locale.nl_langinfo(locale.D_FMT)
             if calendar.isleap(datetime.date.today().year):
@@ -395,7 +395,7 @@ class Date(object):
             else:
                 year_len = 365
             if float(days_left) / year_len < 1.0:
-                #if it's in less than a year, don't show the year field
+                # if it's in less than a year, don't show the year field
                 locale_format = locale_format.replace('/%Y', '')
                 locale_format = locale_format.replace('.%Y', '.')
-            return  self._real_date.strftime(locale_format)
+            return self._real_date.strftime(locale_format)

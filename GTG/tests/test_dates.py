@@ -42,7 +42,7 @@ def next_month(aday, day=None):
         return aday.replace(day=day, month=aday.month + 1)
 
 
-class TestDates(unittest.TestCase): # pylint: disable-msg=R0904
+class TestDates(unittest.TestCase):  # pylint: disable-msg=R0904
     """ Tests for the various Date classes """
 
     def test_parse_dates(self):
@@ -83,11 +83,11 @@ class TestDates(unittest.TestCase): # pylint: disable-msg=R0904
         """ Parse name of week days and don't care about case-sensitivity """
         weekday = date.today().weekday()
         for i, day in enumerate(['Monday', 'Tuesday', 'Wednesday',
-            'Thursday', 'Friday', 'Saturday', 'Sunday']):
+                                 'Thursday', 'Friday', 'Saturday', 'Sunday']):
             if i <= weekday:
-                expected = date.today() + timedelta(7+i-weekday)
+                expected = date.today() + timedelta(7 + i - weekday)
             else:
-                expected = date.today() + timedelta(i-weekday)
+                expected = date.today() + timedelta(i - weekday)
 
             self.assertEqual(Date.parse(day), expected)
             self.assertEqual(Date.parse(day.lower()), expected)
@@ -114,7 +114,7 @@ class TestDates(unittest.TestCase): # pylint: disable-msg=R0904
             # not possible to add a day next year
             return
 
-        aday = aday.replace(year=aday.year+1, month=1, day=1)
+        aday = aday.replace(year=aday.year + 1, month=1, day=1)
         self.assertEqual(Date.parse("0101"), aday)
 
     def test_on_certain_day(self):

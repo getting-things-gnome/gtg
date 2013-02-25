@@ -33,14 +33,14 @@ class GNOMEKeyring(Borg):
         if not hasattr(self, "keyring"):
             self.keyring = gnomekeyring.get_default_keyring_sync()
 
-    def set_password(self, name, password, userid = ""):
+    def set_password(self, name, password, userid=""):
         return gnomekeyring.item_create_sync(
-                    self.keyring,
-                    gnomekeyring.ITEM_GENERIC_SECRET,
-                    name,
-                    {"backend": name},
-                    password,
-                    True)
+            self.keyring,
+            gnomekeyring.ITEM_GENERIC_SECRET,
+            name,
+            {"backend": name},
+            password,
+            True)
 
     def get_password(self, item_id):
         try:
@@ -58,7 +58,7 @@ class FallbackKeyring(Borg):
             self.keyring = {}
             self.max_key = 1
 
-    def set_password(self, name, password, userid = ""):
+    def set_password(self, name, password, userid=""):
         """ This implementation does nto need name and userid.
         It is there because of GNOMEKeyring """
 

@@ -44,9 +44,9 @@ class ModifyTagsDialog:
         builder.add_from_file(GnomeConfig.MODIFYTAGS_GLADE_FILE)
         builder.connect_signals({
             "on_modifytags_confirm":
-                self.on_confirm,
+            self.on_confirm,
             "on_modifytags_cancel":
-                lambda dialog: dialog.hide,
+            lambda dialog: dialog.hide,
         })
 
         self.tag_entry = builder.get_object("tag_entry")

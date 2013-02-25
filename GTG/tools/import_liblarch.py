@@ -66,7 +66,7 @@ run the following command in the current folder:
 %s
 
 More information about liblarch: https://live.gnome.org/liblarch/""" % (
-                                                            missing, GIT_CMD)
+            missing, GIT_CMD)
         return False
 
     import liblarch

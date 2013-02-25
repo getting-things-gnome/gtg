@@ -21,7 +21,7 @@ import os
 import pickle
 from xdg.BaseDirectory import xdg_config_home
 
-from GTG.tools.logger  import Log
+from GTG.tools.logger import Log
 
 
 class PluginAPI:
@@ -60,9 +60,10 @@ class PluginAPI:
             self.__builder = self.__ui.get_builder()
             self.__toolbar = self.__builder.get_object('task_toolbar')
             self.__task_id = None
-            self.__view_manager.browser.selection.connect("changed",self.__selection_changed)
-            
-    def __selection_changed(self,selection):
+            self.__view_manager.browser.selection.connect(
+                "changed", self.__selection_changed)
+
+    def __selection_changed(self, selection):
         if self.selection_changed_callback:
             self.selection_changed_callback(selection)
 
@@ -102,7 +103,7 @@ class PluginAPI:
         Returns a Browser or an Editor
         '''
         return self.__ui
-        
+
     def get_selected(self):
         '''
         Returns the selected tasks in the browser or the task ID if the editor
@@ -111,7 +112,7 @@ class PluginAPI:
             return self.__task_id
         else:
             return self.__view_manager.browser.get_selected_tasks()
-            
+
     def set_active_selection_changed_callback(self, func):
         self.selection_changed_callback = func
 
@@ -208,9 +209,10 @@ class PluginAPI:
             pane.set_bg_color(func, 'bg_color')
             pane.basetree.get_basetree().refresh_all()
 
-#=== file saving/loading ======================================================
+#=== file saving/loading =====================================================
     def load_configuration_object(self, plugin_name, filename,
-                                  basedir=xdg_config_home, default_values=None):
+                                  basedir=xdg_config_home,
+                                  default_values=None):
         if default_values is not None:
             config = dict(default_values)
         else:
@@ -228,11 +230,10 @@ class PluginAPI:
                     pass
         else:
             os.makedirs(dirname)
-
         return config
 
-    def save_configuration_object(self, plugin_name, filename, item, \
-                                 basedir=xdg_config_home):
+    def save_configuration_object(self, plugin_name, filename, item,
+                                  basedir=xdg_config_home):
         dirname = os.path.join(basedir, 'gtg/plugins', plugin_name)
         path = os.path.join(dirname, filename)
         with open(path, 'wb') as file:

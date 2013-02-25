@@ -33,7 +33,7 @@ def is_connection_up():
     """ Returns True if GTG can access the Internet """
     bus = dbus.SystemBus()
     proxy = bus.get_object('org.freedesktop.NetworkManager',
-                            '/org/freedesktop/NetworkManager')
+                           '/org/freedesktop/NetworkManager')
     network_manager = dbus.Interface(proxy, 'org.freedesktop.NetworkManager')
 
     return network_manager.state() == NM_STATE_CONNECTED_GLOBAL

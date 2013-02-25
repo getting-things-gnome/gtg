@@ -28,11 +28,11 @@ wants to write a backend.
 import os
 import uuid
 
-from GTG                         import _
+from GTG import _
 from GTG.backends.genericbackend import GenericBackend
-from GTG.core                    import CoreConfig
-from GTG.tools                   import cleanxml, taskxml
-from GTG.tools.logger            import Log
+from GTG.core import CoreConfig
+from GTG.tools import cleanxml, taskxml
+from GTG.tools.logger import Log
 
 # Ignore all other elements but this one
 TASK_NODE = "task"
@@ -58,12 +58,12 @@ class Backend(GenericBackend):
         GenericBackend.BACKEND_NAME: "backend_localfile",
         GenericBackend.BACKEND_HUMAN_NAME: _("Local File"),
         GenericBackend.BACKEND_AUTHORS: ["Lionel Dricot",
-                                            "Luca Invernizzi"],
+                                         "Luca Invernizzi"],
         GenericBackend.BACKEND_TYPE: GenericBackend.TYPE_READWRITE,
         GenericBackend.BACKEND_DESCRIPTION:
-            _("Your tasks are saved in a text file (XML format). " +
-              " This is the most basic and the default way " +
-              "for GTG to save your tasks."),
+        _("Your tasks are saved in a text file (XML format). " +
+          " This is the most basic and the default way " +
+          "for GTG to save your tasks."),
     }
 
     # These are the parameters to configure a new backend of this type. A
@@ -74,7 +74,7 @@ class Backend(GenericBackend):
         "path": {
             GenericBackend.PARAM_TYPE: GenericBackend.TYPE_STRING,
             GenericBackend.PARAM_DEFAULT_VALUE:
-                 "gtg_tasks.xml"}}
+            "gtg_tasks.xml"}}
 
     def __init__(self, parameters):
         """
@@ -88,8 +88,8 @@ class Backend(GenericBackend):
         does not exist in the dictionary.
         """
         super(Backend, self).__init__(parameters)
-        #####RETROCOMPATIBILIY
-        #NOTE: retrocompatibility from the 0.2 series to 0.3.
+        # RETROCOMPATIBILIY
+        # NOTE: retrocompatibility from the 0.2 series to 0.3.
         # We convert "filename" to "path and we forget about "filename "
         if "need_conversion" in parameters:
             parameters["path"] = parameters.pop("need_conversion")
@@ -97,7 +97,7 @@ class Backend(GenericBackend):
             parameters[self.KEY_DEFAULT_BACKEND] = True
 
         self.doc, self.xmlproj = cleanxml.openxmlfile(
-                                self.get_path(), "project")
+            self.get_path(), "project")
         # Make safety daily backup after loading
         cleanxml.savexml(self.get_path(), self.doc, backup=True)
 
@@ -118,7 +118,7 @@ class Backend(GenericBackend):
         """ This is called when a backend is enabled """
         super(Backend, self).initialize()
         self.doc, self.xmlproj = cleanxml.openxmlfile(
-                                self.get_path(), "project")
+            self.get_path(), "project")
 
     def this_is_the_first_run(self, xml):
         """ Called upon the very first GTG startup.
@@ -131,7 +131,7 @@ class Backend(GenericBackend):
         self._parameters[self.KEY_DEFAULT_BACKEND] = True
         cleanxml.savexml(self.get_path(), xml)
         self.doc, self.xmlproj = cleanxml.openxmlfile(
-                        self.get_path(), "project")
+            self.get_path(), "project")
 
     def start_get_tasks(self):
         """ This function starts submitting the tasks from the XML file into
@@ -159,28 +159,28 @@ class Backend(GenericBackend):
         @param task: the task object to save
         """
         tid = task.get_id()
-        #We create an XML representation of the task
+        # We create an XML representation of the task
         t_xml = taskxml.task_to_xml(self.doc, task)
 
-        #we find if the task exists in the XML treenode.
+        # we find if the task exists in the XML treenode.
         existing = None
         for node in self.xmlproj.childNodes:
             if node.nodeName == TASK_NODE and node.getAttribute("id") == tid:
                 existing = node
 
         modified = False
-        #We then replace the existing node
+        # We then replace the existing node
         if existing and t_xml:
-            #We will write only if the task has changed
+            # We will write only if the task has changed
             if t_xml.toxml() != existing.toxml():
                 self.xmlproj.replaceChild(t_xml, existing)
                 modified = True
-        #If the node doesn't exist, we create it
+        # If the node doesn't exist, we create it
         else:
             self.xmlproj.appendChild(t_xml)
             modified = True
 
-        #if the XML object has changed, we save it to file
+        # if the XML object has changed, we save it to file
         if modified and self._parameters["path"] and self.doc:
             cleanxml.savexml(self.get_path(), self.doc)
 
@@ -196,6 +196,6 @@ class Backend(GenericBackend):
                 modified = True
                 self.xmlproj.removeChild(node)
 
-        #We save the XML file only if it's necessary
+        # We save the XML file only if it's necessary
         if modified:
             cleanxml.savexml(self.get_path(), self.doc, backup=True)

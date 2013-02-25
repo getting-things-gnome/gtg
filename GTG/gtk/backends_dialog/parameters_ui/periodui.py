@@ -47,26 +47,26 @@ class PeriodUI(gtk.HBox):
         @param width: the width of the gtk.Label object
         '''
         period_label = gtk.Label(_("Check for new tasks every"))
-        period_label.set_alignment(xalign = 0, yalign = 0.5)
+        period_label.set_alignment(xalign=0, yalign=0.5)
         period_label.set_line_wrap(True)
-        period_label.set_size_request(width = width, height = -1)
+        period_label.set_size_request(width=width, height=-1)
         self.pack_start(period_label, False)
-        align = gtk.Alignment(xalign = 0, yalign = 0.5, xscale = 1)
+        align = gtk.Alignment(xalign=0, yalign=0.5, xscale=1)
         align.set_padding(0, 0, 10, 0)
         self.pack_start(align, False)
         period = self.backend.get_parameters()['period']
-        self.adjustment = gtk.Adjustment(value = period,
-                                         lower = 1,
-                                         upper = 120,
-                                         step_incr = 1,
-                                         page_incr = 0,
-                                         page_size = 0)
-        self.period_spin = gtk.SpinButton(adjustment = self.adjustment,
-                                          climb_rate = 0.3,
-                                          digits = 0)
+        self.adjustment = gtk.Adjustment(value=period,
+                                         lower=1,
+                                         upper=120,
+                                         step_incr=1,
+                                         page_incr=0,
+                                         page_size=0)
+        self.period_spin = gtk.SpinButton(adjustment=self.adjustment,
+                                          climb_rate=0.3,
+                                          digits=0)
         self.minutes_label = gtk.Label()
         self.update_minutes_label()
-        self.minutes_label.set_alignment(xalign = 0, yalign = 0.5)
+        self.minutes_label.set_alignment(xalign=0, yalign=0.5)
         self.pack_start(self.minutes_label, False)
         align.add(self.period_spin)
         self.show_all()
@@ -91,5 +91,6 @@ class PeriodUI(gtk.HBox):
             self.req.set_backend_enabled(self.backend.get_id(), False)
 
     def update_minutes_label(self):
+        adjustment = int(self.adjustment.get_value())
         self.minutes_label.set_markup(ngettext(" minute", " minutes",
-                                           int(self.adjustment.get_value())))
+                                               adjustment))

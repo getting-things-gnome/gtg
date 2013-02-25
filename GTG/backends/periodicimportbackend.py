@@ -26,7 +26,7 @@ import threading
 
 from GTG.backends.genericbackend import GenericBackend
 from GTG.backends.backendsignals import BackendSignals
-from GTG.tools.interruptible     import interruptible
+from GTG.tools.interruptible import interruptible
 
 
 class PeriodicImportBackend(GenericBackend):
@@ -56,33 +56,33 @@ class PeriodicImportBackend(GenericBackend):
         next ones.
         '''
         self.cancellation_point()
-        #if we're already importing, we queue a "urgent" import cycle after
-        #this one. The feeling of responsiveness of the backend is improved.
+        # if we're already importing, we queue a "urgent" import cycle after
+        # this one. The feeling of responsiveness of the backend is improved.
         if not self.running_iteration:
             try:
-                #if an iteration was scheduled, we cancel it
+                # if an iteration was scheduled, we cancel it
                 if self.import_timer:
                     self.import_timer.cancel()
             except:
                 pass
-            if self.is_enabled() == False:
+            if self.is_enabled() is False:
                 return
 
-            #we schedule the next iteration, just in case this one fails
+            # we schedule the next iteration, just in case this one fails
             if not self.urgent_iteration:
                 self.import_timer = threading.Timer(
-                                    self._parameters['period'] * 60.0,
-                                    self.start_get_tasks)
+                    self._parameters['period'] * 60.0,
+                    self.start_get_tasks)
                 self.import_timer.start()
 
-            #execute the iteration
+            # execute the iteration
             self.running_iteration = True
             self._start_get_tasks()
             self.running_iteration = False
             self.cancellation_point()
 
-            #execute eventual urgent iteration
-            #NOTE: this way, if the iteration fails, the whole periodic import
+            # execute eventual urgent iteration
+            # NOTE: this way, if the iteration fails, the whole periodic import
             #      cycle fails.
             if self.urgent_iteration:
                 self.urgent_iteration = False
@@ -99,7 +99,7 @@ class PeriodicImportBackend(GenericBackend):
         self.do_periodic_import()
         BackendSignals().backend_sync_ended(self.get_id())
 
-    def quit(self, disable = False):
+    def quit(self, disable=False):
         '''
         Called when GTG quits or disconnects the backend.
         '''

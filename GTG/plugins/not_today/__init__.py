@@ -18,6 +18,6 @@
 
 from GTG.plugins.not_today.not_today import notToday
 
-#suppress pyflakes warning (given by make lint)
-if False :
+# suppress pyflakes warning (given by make lint)
+if False:
     notToday()

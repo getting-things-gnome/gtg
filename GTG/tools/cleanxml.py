@@ -27,13 +27,14 @@ import datetime
 
 from GTG.tools.logger import Log
 
-#This is for the awful pretty xml things
+# This is for the awful pretty xml things
 tab = "\t"
 enter = "\n"
 BACKUP_NBR = 7
 
-#Those two functions are there only to be able to read prettyXML
-#Source: http://yumenokaze.free.fr/?/Informatique/Snipplet/Python/cleandom
+# Those two functions are there only to be able to read prettyXML
+# Source: http://yumenokaze.free.fr/?/Informatique/Snipplet/Python/cleandom
+
 
 def cleanDoc(document, indent="", newl=""):
     node = document.documentElement
@@ -41,7 +42,7 @@ def cleanDoc(document, indent="", newl=""):
 
 
 def cleanNode(currentNode, indent, newl):
-    myfilter = indent+newl
+    myfilter = indent + newl
     if currentNode.hasChildNodes:
         toremove = []
         for node in currentNode.childNodes:
@@ -51,7 +52,7 @@ def cleanNode(currentNode, indent, newl):
                     toremove.append(node)
                 else:
                     node.nodeValue = val
-        #now we remove the nodes that were empty
+        # now we remove the nodes that were empty
         for n in toremove:
             currentNode.removeChild(n)
         for node in currentNode.childNodes:
@@ -59,17 +60,18 @@ def cleanNode(currentNode, indent, newl):
 
 
 def cleanString(string, indent="", newl=""):
-    #we will remove the pretty XML stuffs.
-    #Firt, we remove the \n and tab in elements
+    # we will remove the pretty XML stuffs.
+    # Firt, we remove the \n and tab in elements
     e = re.compile('>\n\t*')
     toreturn = e.sub('>', string)
-    #then we remove the \n tab before closing elements
+    # then we remove the \n tab before closing elements
     f = re.compile('\n\t*</')
     toreturn = f.sub('</', toreturn)
     return toreturn
 
-#This add a text node to the node parent. We don't return anything
-#Because the doc object itself is modified.
+# This add a text node to the node parent. We don't return anything
+# Because the doc object itself is modified.
+
 
 def addTextNode(doc, parent, title, content):
     if content:
@@ -77,7 +79,8 @@ def addTextNode(doc, parent, title, content):
         parent.appendChild(element)
         element.appendChild(doc.createTextNode(content))
 
-#This is a method to read the textnode of the XML
+# This is a method to read the textnode of the XML
+
 
 def readTextNode(node, title):
     n = node.getElementsByTagName(title)
@@ -165,7 +168,7 @@ def openxmlfile(zefile, root):
         sys.exit(1)
 
 
-#Return a doc element with only one root element of the name "root"
+# Return a doc element with only one root element of the name "root"
 
 def emptydoc(root):
     doc = xml.dom.minidom.Document()
@@ -173,11 +176,12 @@ def emptydoc(root):
     doc.appendChild(rootproject)
     return doc, rootproject
 
-#write a XML doc to a file
+# write a XML doc to a file
+
 
 def savexml(zefile, doc, backup=False):
 #    print "writing %s file" %(zefile)
-    tmpfile = zefile+'__'
+    tmpfile = zefile + '__'
     backup_name = _get_backup_name(zefile)
 
     # Create backup directory
@@ -206,28 +210,29 @@ def savexml(zefile, doc, backup=False):
                 os.unlink(tmpfile)
 
             if backup:
-                #We will now backup the file
+                # We will now backup the file
                 backup_nbr = BACKUP_NBR
-                #We keep BACKUP_NBR versions of the file
-                #The 0 is the youngest one
+                # We keep BACKUP_NBR versions of the file
+                # The 0 is the youngest one
                 while backup_nbr > 0:
                     older = "%s.bak.%s" % (backup_name, backup_nbr)
                     backup_nbr -= 1
                     newer = "%s.bak.%s" % (backup_name, backup_nbr)
                     if os.path.exists(newer):
                         shutil.move(newer, older)
-                #The bak.0 is always a fresh copy of the closed file
-                #So that it's not touched in case of bad opening next time
+                # The bak.0 is always a fresh copy of the closed file
+                # So that it's not touched in case of bad opening next time
                 current = "%s.bak.0" % backup_name
                 shutil.copy(zefile, current)
 
                 daily_backup = "%s.%s.bak" % (backup_name,
-                        datetime.date.today().strftime("%Y-%m-%d"))
+                                              datetime.date.today().strftime(
+                                              "%Y-%m-%d"))
                 if not os.path.exists(daily_backup):
                     shutil.copy(zefile, daily_backup)
             return True
         else:
-            print "no file %s or no pretty xml"%zefile
+            print "no file %s or no pretty xml" % zefile
             return False
     except IOError, msg:
         print msg

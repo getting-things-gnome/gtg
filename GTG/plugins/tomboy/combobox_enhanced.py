@@ -15,7 +15,7 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-#TODO: put this in a class extending gtk.Combobox and place the file in
+# TODO: put this in a class extending gtk.Combobox and place the file in
 #      GTG.tools
 
 import gtk
@@ -58,15 +58,15 @@ def completionFromListStore(list_store):
 
 def smartifyComboboxEntry(combobox, list_obj, callback):
     entry = gtk.Entry()
-    #check if Clipboard contains an element of the list
+    # check if Clipboard contains an element of the list
     clipboard = gtk.Clipboard()
     ifClipboardTextIsInListCallback(clipboard, list_obj, entry.set_text)
-    #pressing Enter will cause the callback
+    # pressing Enter will cause the callback
     ifKeyPressedCallback(entry, "Return", callback)
-    #wrap the combo-box if it's too long
+    # wrap the combo-box if it's too long
     if len(list_obj) > 15:
         combobox.set_wrap_width(5)
-    #populate the combo-box
+    # populate the combo-box
     if len(list_obj) > 0:
         list_store = listStoreFromList(list_obj)
         entry.set_completion(completionFromListStore(list_store))
@@ -75,7 +75,7 @@ def smartifyComboboxEntry(combobox, list_obj, callback):
         entry.set_text(list_store[0][0])
     combobox.add(entry)
     combobox.connect('changed', setText, entry)
-    #render the combo-box drop down menu
+    # render the combo-box drop down menu
     cell = gtk.CellRendererText()
     combobox.pack_start(cell, True)
     combobox.add_attribute(cell, 'text', 0)

@@ -20,7 +20,7 @@
 
 import gtk
 
-from GTG     import _, ngettext
+from GTG import _, ngettext
 from GTG.gtk import ViewConfig
 
 
@@ -57,9 +57,9 @@ class DeletionUI():
     def delete_tasks(self, tids=None):
         if tids:
             self.tids_todelete = tids
-        #We must at least have something to delete !
+        # We must at least have something to delete !
         if len(self.tids_todelete) > 0:
-            tasklist=[]
+            tasklist = []
             self.update_tags = []
             for tid in self.tids_todelete:
 
@@ -94,21 +94,21 @@ class DeletionUI():
                                   "Deleting a task cannot be undone, "
                                   "and will delete the following tasks: ",
                                   singular)
-            cdlabel2.set_label(ngettext("Are you sure you want to delete this "
-                                       "task?",
-                                       "Are you sure you want to delete these "
-                                       "tasks?",
-                                       singular))
+            cdlabel2.set_label(ngettext("Are you sure you want to delete this"
+                                        " task?",
+                                        "Are you sure you want to delete "
+                                        "these tasks?",
+                                        singular))
 
             cdlabel3.set_label(ngettext("Keep selected task",
                                         "Keep selected tasks",
-                                       singular))
+                                        singular))
             cdlabel4.set_label(ngettext("Permanently remove task",
-                                       "Permanently remove tasks",
-                                       singular))
+                                        "Permanently remove tasks",
+                                        singular))
             label_text = label_text[0:label_text.find(":") + 1]
 
-            #we don't want to end with just one task that doesn't fit the
+            # we don't want to end with just one task that doesn't fit the
             # screen and a line saying "And one more task", so we go a
             # little over our limit
             missing_titles_count = len(tasklist) - self.MAXIMUM_TIDS_TO_SHOW

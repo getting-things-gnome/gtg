@@ -31,21 +31,20 @@ def test_suite():
     Automatically loads all the tests in the GTG/tests directory and returns a
     unittest.TestSuite filled with them
     '''
-    #find all the test files
+    # find all the test files
     test_dir = os.path.dirname(__file__)
     test_files = filter(lambda f: f.endswith(".py") and f.startswith("test_"),
                         os.listdir(test_dir))
 
-
-    #Loading of the test files and adding to the TestSuite
+    # Loading of the test files and adding to the TestSuite
     test_suite = unittest.TestSuite()
     for module_name in [f[:-3] for f in test_files]:
-            #module loading
+            # module loading
             module_path = TEST_MODULE_PREFIX + module_name
             module = __import__(module_path)
             sys.modules[module_path] = module
             globals()[module_path] = module
-            #fetching the testsuite
+            # fetching the testsuite
 
             # Crude hack to satisfy both GIT repository and GTG trunk
             if TEST_MODULE_PREFIX == "GTG.tests.":
@@ -54,7 +53,7 @@ def test_suite():
                 tests = module
 
             a_test = getattr(tests, module_name)
-            #adding it to the unittest.TestSuite
+            # adding it to the unittest.TestSuite
             test_suite.addTest(getattr(a_test, "test_suite")())
 
     return test_suite

@@ -30,13 +30,13 @@ class TestToolTags(unittest.TestCase):
     def test_extract_tags_from_text(self):
         """ Test for extracting tags from a string """
         tests = (
-                 ("@mamma mia", ["@mamma"]),
-                 ("vive le @roy", ["@roy"]),
-                 ("hey @mr. jack!", ["@mr"]),
-                 ("no @emails allowed: invernizzi.l@gmail.com", ["@emails"]),
-                 ("and no @@diff stuff", []),
-                 ("@we @do @love @tags!", ["@we", "@do", "@love", "@tags"]),
-                )
+            ("@mamma mia", ["@mamma"]),
+            ("vive le @roy", ["@roy"]),
+            ("hey @mr. jack!", ["@mr"]),
+            ("no @emails allowed: invernizzi.l@gmail.com", ["@emails"]),
+            ("and no @@diff stuff", []),
+            ("@we @do @love @tags!", ["@we", "@do", "@love", "@tags"]),
+        )
         for text, tags in tests:
             self.assertEqual(extract_tags_from_text(text), tags)
 
@@ -51,31 +51,31 @@ class TestToolTags(unittest.TestCase):
         self.assertEqual(ptl("!@tag"), [("@tag", False)])
 
         self.assertEqual(ptl("a b c"),
-            [("@a", True), ("@b", True), ("@c", True)])
+                         [("@a", True), ("@b", True), ("@c", True)])
         self.assertEqual(ptl("a @b c"),
-            [("@a", True), ("@b", True), ("@c", True)])
+                         [("@a", True), ("@b", True), ("@c", True)])
         self.assertEqual(ptl("@a b @c"),
-            [("@a", True), ("@b", True), ("@c", True)])
+                         [("@a", True), ("@b", True), ("@c", True)])
         self.assertEqual(ptl("@a @b @c"),
-            [("@a", True), ("@b", True), ("@c", True)])
+                         [("@a", True), ("@b", True), ("@c", True)])
 
         self.assertEqual(ptl("!a !b !c"),
-            [("@a", False), ("@b", False), ("@c", False)])
+                         [("@a", False), ("@b", False), ("@c", False)])
         self.assertEqual(ptl("!a !@b !c"),
-            [("@a", False), ("@b", False), ("@c", False)])
+                         [("@a", False), ("@b", False), ("@c", False)])
         self.assertEqual(ptl("!@a !b !@c"),
-            [("@a", False), ("@b", False), ("@c", False)])
+                         [("@a", False), ("@b", False), ("@c", False)])
         self.assertEqual(ptl("!@a !@b !@c"),
-            [("@a", False), ("@b", False), ("@c", False)])
+                         [("@a", False), ("@b", False), ("@c", False)])
 
         self.assertEqual(ptl("add !remove"),
-            [("@add", True), ("@remove", False)])
+                         [("@add", True), ("@remove", False)])
         self.assertEqual(ptl("@add !@remove"),
-            [("@add", True), ("@remove", False)])
+                         [("@add", True), ("@remove", False)])
         self.assertEqual(ptl("!remove add"),
-            [("@remove", False), ("@add", True)])
+                         [("@remove", False), ("@add", True)])
         self.assertEqual(ptl("!@remove @add"),
-            [("@remove", False), ("@add", True)])
+                         [("@remove", False), ("@add", True)])
 
 
 def test_suite():

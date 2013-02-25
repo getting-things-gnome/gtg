@@ -17,6 +17,7 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
+
 class Borg(object):
     """
     This pattern ensures that all instances of a particular class share

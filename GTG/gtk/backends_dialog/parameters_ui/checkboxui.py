@@ -48,7 +48,7 @@ class CheckBoxUI(gtk.HBox):
 
         @param width: the width of the gtk.Label object
         '''
-        self.checkbutton =gtk.CheckButton(label = self.text)
+        self.checkbutton = gtk.CheckButton(label=self.text)
         backend_parameters = self.backend.get_parameters()[self.parameter]
         self.checkbutton.set_active(backend_parameters)
         self.checkbutton.connect("toggled", self.on_modified)
@@ -57,9 +57,9 @@ class CheckBoxUI(gtk.HBox):
     def commit_changes(self):
         '''Saves the changes to the backend parameter'''
         self.backend.set_parameter(self.parameter,
-                        self.checkbutton.get_active())
+                                   self.checkbutton.get_active())
 
-    def on_modified(self, sender = None):
+    def on_modified(self, sender=None):
         ''' Signal callback, executed when the user clicks on the checkbox.
         Disables the backend. The user will re-enable it to confirm the changes
         (s)he made.

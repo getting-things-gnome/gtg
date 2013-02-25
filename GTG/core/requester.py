@@ -23,8 +23,8 @@ A nice general purpose interface for the datastore and tagstore
 
 import gobject
 
-from GTG.core.tag          import Tag
-from GTG.tools.logger      import Log
+from GTG.core.tag import Tag
+from GTG.tools.logger import Log
 
 
 class Requester(gobject.GObject):
@@ -58,7 +58,7 @@ class Requester(gobject.GObject):
     def get_basetree(self):
         return self.__basetree
 
-    #this method also update the viewcount of tags
+    # this method also update the viewcount of tags
     def apply_global_filter(self, tree, filtername):
         tree.apply_filter(filtername)
         for t in self.get_all_tags():
@@ -70,7 +70,6 @@ class Requester(gobject.GObject):
         for t in self.get_all_tags():
             ta = self.get_tag(t)
             ta.unapply_filter(filtername)
-
 
     ######### Filters bank #######################
     # List, by name, all available filters
@@ -123,7 +122,7 @@ class Requester(gobject.GObject):
         task = self.ds.new_task()
         if tags:
             for t in tags:
-                assert(isinstance(t, Tag) == False)
+                assert(not isinstance(t, Tag))
                 task.tag_added(t)
         return task
 
@@ -135,7 +134,7 @@ class Requester(gobject.GObject):
 
         @param tid: The id of the task to be deleted.
         """
-        #send the signal before actually deleting the task !
+        # send the signal before actually deleting the task !
         Log.debug("deleting task %s" % tid)
         return self.__basetree.del_node(tid, recursive=recursive)
 

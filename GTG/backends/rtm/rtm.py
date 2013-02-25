@@ -5,7 +5,7 @@ __all__ = (
     'API',
     'createRTM',
     'set_log_level',
-        )
+)
 
 
 import urllib
@@ -29,24 +29,29 @@ except ImportError:
             _use_jsonlib = True
         except ImportError:
             pass
-    
+
 if not _use_jsonlib:
     Log.warning("simplejson module is not available, "
-             "falling back to the internal JSON parser. "
-             "Please consider installing the simplejson module from "
-             "http://pypi.python.org/pypi/simplejson.")
+                "falling back to the internal JSON parser. "
+                "Please consider installing the simplejson module from "
+                "http://pypi.python.org/pypi/simplejson.")
 
 SERVICE_URL = 'http://api.rememberthemilk.com/services/rest/'
 AUTH_SERVICE_URL = 'http://www.rememberthemilk.com/services/auth/'
 
 
-class RTMError(Exception): pass
+class RTMError(Exception):
+    pass
 
-class RTMAPIError(RTMError): pass
+
+class RTMAPIError(RTMError):
+    pass
+
 
 class AuthStateMachine(object):
 
-    class NoData(RTMError): pass
+    class NoData(RTMError):
+        pass
 
     def __init__(self, states):
         self.states = states
@@ -54,16 +59,16 @@ class AuthStateMachine(object):
 
     def dataReceived(self, state, datum):
         if state not in self.states:
-            error_string = _("Invalid state")+" <%s>" 
+            error_string = _("Invalid state") + " <%s>"
 
-            raise RTMError, error_string % state
+            raise RTMError(error_string % state)
         self.data[state] = datum
 
     def get(self, state):
         if state in self.data:
             return self.data[state]
         else:
-            raise AuthStateMachine.NoData, 'No data for <%s>' % state
+            raise AuthStateMachine.NoData('No data for <%s>' % state)
 
 
 class RTM(object):
@@ -83,8 +88,8 @@ class RTM(object):
 
     def _sign(self, params):
         "Sign the parameters with MD5 hash"
-        pairs = ''.join(['%s%s' % (k,v) for k,v in sortedItems(params)])
-        return md5(self.secret+pairs).hexdigest()
+        pairs = ''.join(['%s%s' % (k, v) for k, v in sortedItems(params)])
+        return md5(self.secret + pairs).hexdigest()
 
     def get(self, **params):
         "Get the XML response for the passed `params`."
@@ -94,7 +99,7 @@ class RTM(object):
 
         json_data = openURL(SERVICE_URL, params).read()
 
-        #LOG.debug("JSON response: \n%s" % json)
+        # LOG.debug("JSON response: \n%s" % json)
         if _use_jsonlib:
             data = dottedDict('ROOT', json.loads(json_data))
         else:
@@ -102,8 +107,8 @@ class RTM(object):
         rsp = data.rsp
 
         if rsp.stat == 'fail':
-            raise RTMAPIError, 'API call failed - %s (%s)' % (
-                rsp.err.msg, rsp.err.code)
+            raise RTMAPIError('API call failed - %s (%s)' % (
+                rsp.err.msg, rsp.err.code))
         else:
             return rsp
 
@@ -120,9 +125,9 @@ class RTM(object):
 
         params = {
             'api_key': self.apiKey,
-            'perms'  : 'delete',
-            'frob'   : frob
-            }
+            'perms': 'delete',
+            'frob': frob
+        }
         params['api_sig'] = self._sign(params)
         return AUTH_SERVICE_URL + '?' + urllib.urlencode(params)
 
@@ -131,6 +136,7 @@ class RTM(object):
         rsp = self.get(method='rtm.auth.getToken', frob=frob)
         self.authInfo.dataReceived('token', rsp.auth.token)
         return rsp.auth.token
+
 
 class RTMAPICategory:
     "See the `API` structure and `RTM.__init__`"
@@ -150,13 +156,14 @@ class RTMAPICategory:
             return lambda **params: self.callMethod(
                 aname, rargs, oargs, **params)
         else:
-            raise AttributeError, 'No such attribute: %s' % attr
+            raise AttributeError('No such attribute: %s' % attr)
 
     def callMethod(self, aname, rargs, oargs, **params):
         # Sanity checks
         for requiredArg in rargs:
             if requiredArg not in params:
-                raise TypeError, 'Required parameter (%s) missing' % requiredArg
+                raise TypeError(
+                    'Required parameter (%s) missing' % requiredArg)
 
         for param in params:
             if param not in rargs + oargs:
@@ -167,9 +174,7 @@ class RTMAPICategory:
                             **params)
 
 
-
 # Utility functions
-
 def sortedItems(dictionary):
     "Return a list of (key, value) sorted based on keys"
     keys = dictionary.keys()
@@ -177,11 +182,13 @@ def sortedItems(dictionary):
     for key in keys:
         yield key, dictionary[key]
 
+
 def openURL(url, queryArgs=None):
     if queryArgs:
         url = url + '?' + urllib.urlencode(queryArgs)
-    #LOG.debug("URL> %s", url)
+    # LOG.debug("URL> %s", url)
     return urllib.urlopen(url)
+
 
 class dottedDict(object):
     """Make dictionary items accessible via the object-dot notation."""
@@ -198,7 +205,7 @@ class dottedDict(object):
                              for i, item in indexed(value)]
                 setattr(self, key, value)
         else:
-            raise ValueError, 'not a dict: %s' % dictionary
+            raise ValueError('not a dict: %s' % dictionary)
 
     def __repr__(self):
         children = [c for c in dir(self) if not c.startswith('_')]
@@ -210,8 +217,10 @@ class dottedDict(object):
 def safeEval(string):
     return eval(string, {}, {})
 
+
 def dottedJSON(json):
     return dottedDict('ROOT', safeEval(json))
+
 
 def indexed(seq):
     index = 0
@@ -223,150 +232,153 @@ def indexed(seq):
 # API spec
 
 API = {
-   'auth': {
-       'checkToken':
-           [('auth_token',), ()],
-       'getFrob':
-           [(), ()],
-       'getToken':
-           [('frob',), ()]
-       },
+    'auth': {
+        'checkToken':
+        [('auth_token',), ()],
+        'getFrob':
+        [(), ()],
+        'getToken':
+        [('frob',), ()]
+    },
     'contacts': {
         'add':
-            [('timeline', 'contact'), ()],
+    [('timeline', 'contact'), ()],
         'delete':
-            [('timeline', 'contact_id'), ()],
+    [('timeline', 'contact_id'), ()],
         'getList':
-            [(), ()]
-        },
+    [(), ()]
+    },
     'groups': {
         'add':
-            [('timeline', 'group'), ()],
+    [('timeline', 'group'), ()],
         'addContact':
-            [('timeline', 'group_id', 'contact_id'), ()],
+    [('timeline', 'group_id', 'contact_id'), ()],
         'delete':
-            [('timeline', 'group_id'), ()],
+    [('timeline', 'group_id'), ()],
         'getList':
-            [(), ()],
+    [(), ()],
         'removeContact':
-            [('timeline', 'group_id', 'contact_id'), ()],
-        },
+    [('timeline', 'group_id', 'contact_id'), ()],
+    },
     'lists': {
         'add':
-            [('timeline', 'name',), ('filter',)],
+    [('timeline', 'name',), ('filter',)],
         'archive':
-            [('timeline', 'list_id'), ()],
+    [('timeline', 'list_id'), ()],
         'delete':
-            [('timeline', 'list_id'), ()],
+    [('timeline', 'list_id'), ()],
         'getList':
-            [(), ()],
+    [(), ()],
         'setDefaultList':
-            [('timeline'), ('list_id')],
+    [('timeline'), ('list_id')],
         'setName':
-            [('timeline', 'list_id', 'name'), ()],
+    [('timeline', 'list_id', 'name'), ()],
         'unarchive':
-            [('timeline',), ('list_id',)]
-        },
+    [('timeline',), ('list_id',)]
+    },
     'locations': {
         'getList':
-            [(), ()]
-        },
+    [(), ()]
+    },
     'reflection': {
         'getMethodInfo':
-            [('methodName',), ()],
+    [('methodName',), ()],
         'getMethods':
-            [(), ()]
-        },
+    [(), ()]
+    },
     'settings': {
         'getList':
-            [(), ()]
-        },
+    [(), ()]
+    },
     'tasks': {
         'add':
-            [('timeline', 'name',), ('list_id', 'parse',)],
+    [('timeline', 'name',), ('list_id', 'parse',)],
         'addTags':
-            [('timeline', 'list_id', 'taskseries_id', 'task_id', 'tags'),
-             ()],
+    [('timeline', 'list_id', 'taskseries_id', 'task_id', 'tags'),
+     ()],
         'complete':
-            [('timeline', 'list_id', 'taskseries_id', 'task_id',), ()],
+    [('timeline', 'list_id', 'taskseries_id', 'task_id',), ()],
         'delete':
-            [('timeline', 'list_id', 'taskseries_id', 'task_id'), ()],
+    [('timeline', 'list_id', 'taskseries_id', 'task_id'), ()],
         'getList':
-            [(),
-             ('list_id', 'filter', 'last_sync')],
+    [(),
+     ('list_id', 'filter', 'last_sync')],
         'movePriority':
-            [('timeline', 'list_id', 'taskseries_id', 'task_id', 'direction'),
-             ()],
+    [('timeline', 'list_id', 'taskseries_id', 'task_id', 'direction'),
+     ()],
         'moveTo':
-            [('timeline', 'from_list_id', 'to_list_id', 'taskseries_id', 'task_id'),
-             ()],
+    [(
+    'timeline', 'from_list_id', 'to_list_id', 'taskseries_id', 'task_id'),
+        ()],
         'postpone':
-            [('timeline', 'list_id', 'taskseries_id', 'task_id'),
-             ()],
+        [('timeline', 'list_id', 'taskseries_id', 'task_id'),
+         ()],
         'removeTags':
-            [('timeline', 'list_id', 'taskseries_id', 'task_id', 'tags'),
-             ()],
+        [('timeline', 'list_id', 'taskseries_id', 'task_id', 'tags'),
+         ()],
         'setDueDate':
-            [('timeline', 'list_id', 'taskseries_id', 'task_id'),
-             ('due', 'has_due_time', 'parse')],
+        [('timeline', 'list_id', 'taskseries_id', 'task_id'),
+         ('due', 'has_due_time', 'parse')],
         'setEstimate':
-            [('timeline', 'list_id', 'taskseries_id', 'task_id'),
-             ('estimate',)],
+        [('timeline', 'list_id', 'taskseries_id', 'task_id'),
+         ('estimate',)],
         'setLocation':
-            [('timeline', 'list_id', 'taskseries_id', 'task_id'),
-             ('location_id',)],
+        [('timeline', 'list_id', 'taskseries_id', 'task_id'),
+         ('location_id',)],
         'setName':
-            [('timeline', 'list_id', 'taskseries_id', 'task_id', 'name'),
-             ()],
+        [('timeline', 'list_id', 'taskseries_id', 'task_id', 'name'),
+         ()],
         'setPriority':
-            [('timeline', 'list_id', 'taskseries_id', 'task_id'),
-             ('priority',)],
+        [('timeline', 'list_id', 'taskseries_id', 'task_id'),
+         ('priority',)],
         'setRecurrence':
-            [('timeline', 'list_id', 'taskseries_id', 'task_id'),
-             ('repeat',)],
+        [('timeline', 'list_id', 'taskseries_id', 'task_id'),
+         ('repeat',)],
         'setTags':
-            [('timeline', 'list_id', 'taskseries_id', 'task_id'),
-             ('tags',)],
+        [('timeline', 'list_id', 'taskseries_id', 'task_id'),
+         ('tags',)],
         'setURL':
-            [('timeline', 'list_id', 'taskseries_id', 'task_id'),
-             ('url',)],
+        [('timeline', 'list_id', 'taskseries_id', 'task_id'),
+         ('url',)],
         'uncomplete':
-            [('timeline', 'list_id', 'taskseries_id', 'task_id'),
-             ()],
-        },
+        [('timeline', 'list_id', 'taskseries_id', 'task_id'),
+         ()],
+    },
     'tasksNotes': {
         'add':
-            [('timeline', 'list_id', 'taskseries_id', 'task_id', 'note_title', 'note_text'), ()],
+    [('timeline', 'list_id', 'taskseries_id',
+      'task_id', 'note_title', 'note_text'), ()],
         'delete':
-            [('timeline', 'note_id'), ()],
+    [('timeline', 'note_id'), ()],
         'edit':
-            [('timeline', 'note_id', 'note_title', 'note_text'), ()]
-        },
+    [('timeline', 'note_id', 'note_title', 'note_text'), ()]
+    },
     'test': {
         'echo':
-            [(), ()],
+    [(), ()],
         'login':
-            [(), ()]
-        },
+    [(), ()]
+    },
     'time': {
         'convert':
-            [('to_timezone',), ('from_timezone', 'to_timezone', 'time')],
+    [('to_timezone',), ('from_timezone', 'to_timezone', 'time')],
         'parse':
-            [('text',), ('timezone', 'dateformat')]
-        },
+    [('text',), ('timezone', 'dateformat')]
+    },
     'timelines': {
         'create':
-            [(), ()]
-        },
+    [(), ()]
+    },
     'timezones': {
         'getList':
-            [(), ()]
-        },
+    [(), ()]
+    },
     'transactions': {
         'undo':
-            [('timeline', 'transaction_id'), ()]
-        },
-    }
+    [('timeline', 'transaction_id'), ()]
+    },
+}
+
 
 def createRTM(apiKey, secret, token=None):
     rtm = RTM(apiKey, secret, token)
@@ -377,6 +389,7 @@ def createRTM(apiKey, secret, token=None):
 #        print 'Note down this token for future use:', rtm.getToken()
 
     return rtm
+
 
 def test(apiKey, secret, token=None):
     rtm = createRTM(apiKey, secret, token)
@@ -389,12 +402,13 @@ def test(apiKey, secret, token=None):
     # print rspLists.lists.list
     print [(x.name, x.id) for x in rspLists.lists.list]
 
+
 def set_log_level(level):
     '''Sets the log level of the logger used by the module.
-    
+
     >>> import rtm
     >>> import logging
     >>> rtm.set_log_level(logging.INFO)
     '''
-    
-    #LOG.setLevel(level)
+
+    # LOG.setLevel(level)

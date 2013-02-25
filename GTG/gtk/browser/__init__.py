@@ -31,7 +31,7 @@ class GnomeConfig:
     current_rep = os.path.dirname(os.path.abspath(__file__))
     GLADE_FILE = os.path.join(current_rep, "taskbrowser.glade")
     MODIFYTAGS_GLADE_FILE = os.path.join(current_rep,
-                                              "modifytags_dialog.glade")
+                                         "modifytags_dialog.glade")
     TAGEDITOR_GLADE_FILE = os.path.join(current_rep, "tageditor.glade")
 
     MARK_DONE = _("Mark as Done")

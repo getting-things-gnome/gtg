@@ -20,18 +20,18 @@
 """
 task.py contains the Task class which represents (guess what) a task
 """
-from datetime         import datetime
+from datetime import datetime
 import cgi
 import re
 import uuid
 import xml.dom.minidom
 import xml.sax.saxutils as saxutils
 
-from GTG                     import _
-from GTG.tools.dates         import Date
-from GTG.tools.logger        import Log
-from liblarch                import TreeNode
-from GTG.tools.tags          import extract_tags_from_text
+from GTG import _
+from GTG.tools.dates import Date
+from GTG.tools.logger import Log
+from liblarch import TreeNode
+from GTG.tools.tags import extract_tags_from_text
 
 
 class Task(TreeNode):
@@ -45,15 +45,15 @@ class Task(TreeNode):
 
     def __init__(self, ze_id, requester, newtask=False):
         TreeNode.__init__(self, ze_id)
-        #the id of this task in the project should be set
-        #tid is a string ! (we have to choose a type and stick to it)
+        # the id of this task in the project should be set
+        # tid is a string ! (we have to choose a type and stick to it)
         assert(isinstance(ze_id, str) or isinstance(ze_id, unicode))
         self.tid = str(ze_id)
         self.set_uuid(uuid.uuid4())
         self.remote_ids = {}
         self.content = ""
         self.title = _("My new task")
-        #available status are: Active - Done - Dismiss - Note
+        # available status are: Active - Done - Dismiss - Note
         self.status = self.STA_ACTIVE
         self.closed_date = Date.no_date()
         self.due_date = Date.no_date()
@@ -63,9 +63,9 @@ class Task(TreeNode):
         self.tags = []
         self.req = requester
         self.__main_treeview = requester.get_main_view()
-        #If we don't have a newtask, we will have to load it.
+        # If we don't have a newtask, we will have to load it.
         self.loaded = newtask
-        #Should not be necessary with the new backends
+        # Should not be necessary with the new backends
 #        if self.loaded:
 #            self.req._task_loaded(self.tid)
         self.attributes = {}
@@ -75,7 +75,7 @@ class Task(TreeNode):
         return self.loaded
 
     def set_loaded(self, signal=True):
-        #avoid doing it multiple times
+        # avoid doing it multiple times
         if not self.loaded:
             self.loaded = True
 
@@ -92,7 +92,7 @@ class Task(TreeNode):
         self.uuid = str(value)
 
     def get_uuid(self):
-        #NOTE: Transitional if switch, needed to add
+        # NOTE: Transitional if switch, needed to add
         #      the uuid field to tasks created before
         #      adding this field to the task description.
         if self.uuid == "":
@@ -122,11 +122,11 @@ class Task(TreeNode):
     def get_title(self):
         return self.title
 
-    #Return True if the title was changed.
-    #False if the title was already the same.
+    # Return True if the title was changed.
+    # False if the title was already the same.
     def set_title(self, title):
-        #We should check for other task with the same title
-        #In that case, we should add a number (like Tomboy does)
+        # We should check for other task with the same title
+        # In that case, we should add a number (like Tomboy does)
         old_title = self.title
         if isinstance(title, str):
             title = title.decode('utf8')
@@ -134,14 +134,14 @@ class Task(TreeNode):
             self.title = title.strip('\t\n')
         else:
             self.title = "(no title task)"
-        #Avoid unnecessary sync
+        # Avoid unnecessary sync
         if self.title != old_title:
             self.sync()
             return True
         else:
             return False
 
-    #TODO : should we merge this function with set_title ?
+    # TODO : should we merge this function with set_title ?
     def set_complex_title(self, text, tags=[]):
         if tags:
             assert(isinstance(tags[0], str))
@@ -162,13 +162,13 @@ class Task(TreeNode):
                             tag = "@" + tag
                         tags.append(tag)
                 elif attribute.lower() in ["defer", _("defer"), "start",
-                        _("start")]:
+                                           _("start")]:
                     try:
                         defer_date = Date.parse(args)
                     except ValueError:
                         valid_attribute = False
                 elif attribute.lower() == "due" or \
-                     attribute.lower() == _("due"):
+                        attribute.lower() == _("due"):
                     try:
                         due_date = Date.parse(args)
                     except:
@@ -195,42 +195,42 @@ class Task(TreeNode):
     def set_status(self, status, donedate=None):
         old_status = self.status
         self.can_be_deleted = False
-        #No need to update children or whatever if the task is not loaded
+        # No need to update children or whatever if the task is not loaded
         if status and self.is_loaded():
-            #we first modify the status of the children
-            #If Done, we set the done date
+            # we first modify the status of the children
+            # If Done, we set the done date
             if status in [self.STA_DONE, self.STA_DISMISSED]:
                 for c in self.get_subtasks():
                     if c.get_status() in [self.STA_ACTIVE]:
                         c.set_status(status, donedate=donedate)
-            #If we mark a task as Active and that some parent are not
-            #Active, we break the parent/child relation
-            #It has no sense to have an active subtask of a done parent.
+            # If we mark a task as Active and that some parent are not
+            # Active, we break the parent/child relation
+            # It has no sense to have an active subtask of a done parent.
             # (old_status check is necessary to avoid false positive a start)
             elif status in [self.STA_ACTIVE] and\
-                 old_status in [self.STA_DONE, self.STA_DISMISSED]:
+                    old_status in [self.STA_DONE, self.STA_DISMISSED]:
                 if self.has_parent():
                     for p_tid in self.get_parents():
                         par = self.req.get_task(p_tid)
                         if par.is_loaded() and par.get_status() in\
-                           [self.STA_DONE, self.STA_DISMISSED]:
-                            #we can either break the parent/child relationship
-                            #self.remove_parent(p_tid)
-                            #or restore the parent too
+                                [self.STA_DONE, self.STA_DISMISSED]:
+                            # we can either break the parent/child relationship
+                            # self.remove_parent(p_tid)
+                            # or restore the parent too
                             par.set_status(self.STA_ACTIVE)
-                #We dont mark the children as Active because
-                #They might be already completed after all
+                # We dont mark the children as Active because
+                # They might be already completed after all
 
-        #then the task itself
+        # then the task itself
         if status:
             self.status = status
 
         # Set closing date
         if status and status in [self.STA_DONE, self.STA_DISMISSED]:
-            #to the specified date (if any)
+            # to the specified date (if any)
             if donedate:
                 self.closed_date = donedate
-            #or to today
+            # or to today
             else:
                 self.closed_date = Date.today()
         self.sync()
@@ -320,14 +320,14 @@ class Task(TreeNode):
             return child_list
 
         old_due_date = self.due_date
-        new_duedate_obj = Date(new_duedate) # caching the conversion
+        new_duedate_obj = Date(new_duedate)  # caching the conversion
         self.due_date = new_duedate_obj
         # If the new date is fuzzy or undefined, we don't update related tasks
         if not new_duedate_obj.is_fuzzy():
             # if the task's start date happens later than the
             # new due date, we update it (except for fuzzy dates)
             if not self.get_start_date().is_fuzzy() and \
-               self.get_start_date() > new_duedate_obj:
+                    self.get_start_date() > new_duedate_obj:
                 self.set_start_date(new_duedate)
             # if some ancestors' due dates happen before the task's new
             # due date, we update them (except for fuzzy dates)
@@ -347,7 +347,7 @@ class Task(TreeNode):
                 # (except for fuzzy start dates)
                 sub_startdate = sub.get_start_date()
                 if not sub_startdate.is_fuzzy() and \
-                   sub_startdate > new_duedate_obj:
+                        sub_startdate > new_duedate_obj:
                     sub.set_start_date(new_duedate)
         # If the date changed, we notify the change for the children since the
         # constraints might have changed
@@ -403,8 +403,8 @@ class Task(TreeNode):
     def set_start_date(self, fulldate):
         self.start_date = Date(fulldate)
         if not Date(fulldate).is_fuzzy() and \
-           not self.due_date.is_fuzzy() and \
-           Date(fulldate) > self.due_date:
+            not self.due_date.is_fuzzy() and \
+                Date(fulldate) > self.due_date:
             self.set_due_date(fulldate)
         self.sync()
 
@@ -441,7 +441,7 @@ class Task(TreeNode):
             return ""
 
     def get_excerpt(self, lines=0, char=0, strip_tags=False,
-            strip_subtasks=True):
+                    strip_subtasks=True):
         """
         get_excerpt return the beginning of the content of the task.
         If "lines" is provided and different than 0, it return the number X
@@ -454,7 +454,7 @@ class Task(TreeNode):
         Warning: all markup informations are stripped down. Empty lines are
         also removed
         """
-        #defensive programmation to avoid returning None
+        # defensive programmation to avoid returning None
         if self.content:
             txt = self.content
             if strip_tags:
@@ -463,7 +463,7 @@ class Task(TreeNode):
             element = xml.dom.minidom.parseString(txt)
             txt = self.__strip_content(element, strip_subtasks=strip_subtasks)
             txt = txt.strip()
-            #We keep the desired number of lines
+            # We keep the desired number of lines
             if lines > 0:
                 liste = txt.splitlines()
                 for i in liste:
@@ -471,7 +471,7 @@ class Task(TreeNode):
                         liste.remove(i)
                 to_keep = liste[:lines]
                 txt = '\n'.join(to_keep)
-            #We keep the desired number of char
+            # We keep the desired number of char
             if char > 0:
                 txt = txt[:char]
             return txt
@@ -495,7 +495,7 @@ class Task(TreeNode):
     def set_text(self, texte):
         self.can_be_deleted = False
         if texte != "<content/>":
-            #defensive programmation to filter bad formatted tasks
+            # defensive programmation to filter bad formatted tasks
             if not texte.startswith("<content>"):
                 texte = cgi.escape(texte, quote=True)
                 texte = "<content>%s" % texte
@@ -512,7 +512,7 @@ class Task(TreeNode):
         a subtask
         """
         subt = self.req.new_task(newtask=True)
-        #we use the inherited childrens
+        # we use the inherited childrens
         self.add_child(subt.get_id())
         return subt
 
@@ -523,9 +523,9 @@ class Task(TreeNode):
         """
         Log.debug("adding child %s to task %s" % (tid, self.get_id()))
         self.can_be_deleted = False
-        #the core of the method is in the TreeNode object
+        # the core of the method is in the TreeNode object
         TreeNode.add_child(self, tid)
-        #now we set inherited attributes only if it's a new task
+        # now we set inherited attributes only if it's a new task
         child = self.req.get_task(tid)
         if self.is_loaded() and child and child.can_be_deleted:
             child.set_start_date(self.get_start_date())
@@ -549,14 +549,14 @@ class Task(TreeNode):
         else:
             return False
 
-    #FIXME: remove this function and use liblarch instead.
+    # FIXME: remove this function and use liblarch instead.
     def get_subtasks(self):
         tree = self.get_tree()
         return [tree.get_node(node_id) for node_id in self.get_children()]
 
-    #FIXME : why is this function used ? It's higly specific. Remove it?
+    # FIXME : why is this function used ? It's higly specific. Remove it?
     #        (Lionel)
-    #Agreed. it's only used by the "add tag to all subtasks" widget.
+    # Agreed. it's only used by the "add tag to all subtasks" widget.
     def get_self_and_all_subtasks(self, active_only=False, tasks=[]):
         print "DEPRECATED FUNCTION: get_self_and_all_subtasks"
         tasks.append(self)
@@ -568,7 +568,7 @@ class Task(TreeNode):
         return tasks
 
     def get_subtask(self, tid):
-        #FIXME : remove this function. This is not useful
+        # FIXME : remove this function. This is not useful
         print "DEPRECATED: get_subtask"
         """Return the task corresponding to a given ID.
 
@@ -583,8 +583,8 @@ class Task(TreeNode):
             par = self.req.get_task(parent_id)
             par_duedate = par.get_due_date_constraint()
             if not par_duedate.is_fuzzy() and \
-               not self.due_date.is_fuzzy() and \
-               par_duedate < self.due_date:
+                not self.due_date.is_fuzzy() and \
+                    par_duedate < self.due_date:
                 self.set_due_date(par_duedate)
         self.recursive_sync()
 
@@ -609,7 +609,7 @@ class Task(TreeNode):
     def sync(self):
         self._modified_update()
         if self.is_loaded():
-            #This is a liblarch call to the TreeNode ancestor
+            # This is a liblarch call to the TreeNode ancestor
             self.modified()
             return True
         else:
@@ -624,10 +624,10 @@ class Task(TreeNode):
 ### TAG FUNCTIONS ############################################################
 #
     def get_tags_name(self):
-        #Return a copy of the list of tags. Not the original object.
+        # Return a copy of the list of tags. Not the original object.
         return list(self.tags)
 
-    #return a copy of the list of tag objects
+    # return a copy of the list of tag objects
     def get_tags(self):
         l = []
         for tname in self.tags:
@@ -653,7 +653,7 @@ class Task(TreeNode):
         Adds a tag. Does not add '@tag' to the contents. See add_tag
         """
         t = tagname.encode("UTF-8")
-        #Do not add the same tag twice
+        # Do not add the same tag twice
         if not t in self.tags:
             self.tags.append(t)
             if self.is_loaded():
@@ -672,7 +672,7 @@ class Task(TreeNode):
         if self.tag_added(tagname):
             c = self.content
 
-            #strip <content>...</content> tags
+            # strip <content>...</content> tags
             if c.startswith('<content>'):
                 c = c[len('<content>'):]
             if c.endswith('</content>'):
@@ -690,10 +690,11 @@ class Task(TreeNode):
 
             self.content = "<content><tag>%s</tag>%s%s</content>" % (
                 tagname, sep, c)
-            #we modify the task internal state, thus we have to call for a sync
+            # we modify the task internal state, thus we have to call for a
+            # sync
             self.sync()
 
-    #remove by tagname
+    # remove by tagname
     def remove_tag(self, tagname):
         modified = False
         if tagname in self.tags:
@@ -726,22 +727,22 @@ class Task(TreeNode):
 
     def _strip_tag(self, text, tagname, newtag=''):
         return (text
-                    .replace('<tag>%s</tag>\n\n' % (tagname), newtag) #trail \n
-                    #trail comma
-                    .replace('<tag>%s</tag>, ' % (tagname), newtag)
-                    .replace('<tag>%s</tag>,' % (tagname), newtag)
-                    .replace('<tag>%s</tag>' % (tagname), newtag)
-                    #in case XML is missing (bug #504899)
-                    .replace('%s\n\n' % (tagname), newtag)
-                    .replace('%s, ' % (tagname), newtag)
-                    .replace('%s,' % (tagname), newtag)
-                    #don't forget a space a the end
-                    .replace('%s ' % (tagname), newtag))
+                .replace('<tag>%s</tag>\n\n' % (tagname), newtag)  # trail \n
+                # trail comma
+                .replace('<tag>%s</tag>, ' % (tagname), newtag)
+                .replace('<tag>%s</tag>,' % (tagname), newtag)
+                .replace('<tag>%s</tag>' % (tagname), newtag)
+                # in case XML is missing (bug #504899)
+                .replace('%s\n\n' % (tagname), newtag)
+                .replace('%s, ' % (tagname), newtag)
+                .replace('%s,' % (tagname), newtag)
+                # don't forget a space a the end
+                .replace('%s ' % (tagname), newtag))
 
-    #tag_list is a list of tags names
-    #return true if at least one of the list is in the task
+    # tag_list is a list of tags names
+    # return true if at least one of the list is in the task
     def has_tags(self, tag_list=None, notag_only=False):
-        #recursive function to explore the tags and its children
+        # recursive function to explore the tags and its children
         def children_tag(tagname):
             toreturn = False
             if tagname in self.tags:
@@ -753,20 +754,20 @@ class Task(TreeNode):
                         toreturn = children_tag(tagc_name)
             return toreturn
 
-        #We want to see if the task has no tags
+        # We want to see if the task has no tags
         toreturn = False
         if notag_only:
             toreturn = self.tags == []
-        #Here, the user ask for the "empty" tag
-        #And virtually every task has it.
-        elif tag_list == [] or tag_list == None:
+        # Here, the user ask for the "empty" tag
+        # And virtually every task has it.
+        elif tag_list == [] or tag_list is None:
             toreturn = True
         elif tag_list:
             for tagname in tag_list:
                 if not toreturn:
                     toreturn = children_tag(tagname)
         else:
-            #Well, if we don't filter on tags or notag, it's true, of course
+            # Well, if we don't filter on tags or notag, it's true, of course
             toreturn = True
         return toreturn
 

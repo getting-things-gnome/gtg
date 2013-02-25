@@ -19,11 +19,11 @@
 
 import gtk
 
-from GTG.gtk.colors                        import get_colored_tags_markup
-from GTG                                   import _, ngettext
-from GTG.backends.genericbackend           import GenericBackend
+from GTG.gtk.colors import get_colored_tags_markup
+from GTG import _, ngettext
+from GTG.backends.genericbackend import GenericBackend
 from GTG.gtk.backends_dialog.parameters_ui import ParametersUI
-from GTG.backends.backendsignals           import BackendSignals
+from GTG.backends.backendsignals import BackendSignals
 
 
 class ConfigurePanel(gtk.VBox):
@@ -60,7 +60,7 @@ class ConfigurePanel(gtk.VBox):
         '''
         This function fills this Vbox with widgets
         '''
-        #Division of the available space in three segments:
+        # Division of the available space in three segments:
         # top, middle and bottom
         top = gtk.HBox()
         middle = gtk.HBox()
@@ -68,7 +68,7 @@ class ConfigurePanel(gtk.VBox):
         self._fill_middle_hbox(middle)
         self.pack_start(top, False)
         self.pack_start(middle, False)
-        align = gtk.Alignment(xalign = 0, yalign = 0, xscale = 1)
+        align = gtk.Alignment(xalign=0, yalign=0, xscale=1)
         align.set_padding(10, 0, 0, 0)
         self.parameters_ui = ParametersUI(self.req)
         align.add(self.parameters_ui)
@@ -85,16 +85,16 @@ class ConfigurePanel(gtk.VBox):
         hbox_top = gtk.HBox()
 
         self.human_name_label = gtk.Label()
-        self.human_name_label.set_alignment(xalign = 0, yalign = 0.5)
+        self.human_name_label.set_alignment(xalign=0, yalign=0.5)
 
         try:
             self.spinner = gtk.Spinner()
         except AttributeError:
-            #worarkound for archlinux: bug #624204
+            # worarkound for archlinux: bug #624204
             self.spinner = gtk.HBox()
         self.spinner.connect("show", self.on_spinner_show)
         self.spinner.set_size_request(32, 32)
-        align_spin = gtk.Alignment(xalign = 1, yalign = 0)
+        align_spin = gtk.Alignment(xalign=1, yalign=0)
         align_spin.add(self.spinner)
 
         hbox.set_spacing(10)
@@ -109,7 +109,7 @@ class ConfigurePanel(gtk.VBox):
         @param hbox: the gtk.HBox to fill
         '''
         self.sync_status_label = gtk.Label()
-        self.sync_status_label.set_alignment(xalign = 0.8, yalign = 0.5)
+        self.sync_status_label.set_alignment(xalign=0.8, yalign=0.5)
         self.sync_button = gtk.Button()
         self.sync_button.connect("clicked", self.on_sync_button_clicked)
         hbox.pack_start(self.sync_status_label, True)
@@ -127,7 +127,7 @@ class ConfigurePanel(gtk.VBox):
         self.image_icon.set_from_pixbuf(self.dialog.get_pixbuf_from_icon_name(
                                         self.backend.get_name(), 48))
 
-    def refresh_title(self, sender = None, data = None):
+    def refresh_title(self, sender=None, data=None):
         '''
         Callback for the signal that notifies backends name changes. It changes
         the title of this view
@@ -136,7 +136,7 @@ class ConfigurePanel(gtk.VBox):
         @param data: not used, here only for signal callback compatibility
         '''
         markup = "<big><big><big><b>%s</b></big></big></big>" % \
-                                        self.backend.get_human_name()
+            self.backend.get_human_name()
         self.human_name_label.set_markup(markup)
 
     def refresh_sync_button(self):
@@ -163,7 +163,7 @@ class ConfigurePanel(gtk.VBox):
                 label = _('Syncing is <span color="red">disabled</span>.')
         self.sync_status_label.set_markup(label)
 
-    def refresh_sync_status(self, sender = False, data = False):
+    def refresh_sync_status(self, sender=False, data=False):
         '''Signal callback function, called when a backend state
         (enabled/disabled) changes. Refreshes this view.
 
@@ -214,7 +214,7 @@ class ConfigurePanel(gtk.VBox):
 
         @param sender: not used, here only for signal callback compatibility
         '''
-        if self.should_spinner_be_shown == False:
+        if not self.should_spinner_be_shown:
             self.spinner.hide()
 
     def spinner_set_active(self, active):

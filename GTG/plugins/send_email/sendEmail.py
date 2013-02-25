@@ -51,7 +51,7 @@ class pluginSendEmail:
         """
         Desactivates the plugin.
         """
-        #everything should be removed, in case a task is currently opened
+        # everything should be removed, in case a task is currently opened
         try:
             self.plugin_api.remove_task_toolbar_item(self.tb_Taskbutton)
         except:
@@ -66,10 +66,10 @@ class pluginSendEmail:
 
         # Body contains Status Tags, Subtasks and Content.
         body = _("Status: %s") % (task.get_status()) + \
-        _("\nTags: %s") % (", ".join(task.get_tags_name())) + \
-        _("\nSubtasks:\n%s") % (
-        "\n - ".join([i.get_title() for i in task.get_subtasks()])) + \
-        _("\nTask content:\n%s") % (task.get_excerpt())
+            _("\nTags: %s") % (", ".join(task.get_tags_name())) + \
+            _("\nSubtasks:\n%s") % (
+                "\n - ".join([i.get_title() for i in task.get_subtasks()])) + \
+            _("\nTask content:\n%s") % (task.get_excerpt())
 
         # Title contains the title and the start and due dates.
         title = _("Task: %(task_title)s") % {'task_title': task.get_title()}
@@ -77,5 +77,5 @@ class pluginSendEmail:
         parameters = urllib.urlencode({'subject': title, 'body': body})
         parameters = parameters.replace('+', '%20')
 
-        gio.app_info_get_default_for_uri_scheme('mailto').launch_uris( \
-                ['mailto:' + 'gtg@example.com?' + parameters])
+        gio.app_info_get_default_for_uri_scheme('mailto').launch_uris(
+            ['mailto:' + 'gtg@example.com?' + parameters])

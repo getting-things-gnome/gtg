@@ -16,7 +16,8 @@
 
 import gtk
 from GTG.tools.dates import Date
-from GTG                import _
+from GTG import _
+
 
 class notToday:
 
@@ -28,26 +29,25 @@ class notToday:
         self.plugin_api = plugin_api
         self.req = self.plugin_api.get_requester()
         self._init_gtk()
-        self.plugin_api.set_active_selection_changed_callback(self.selection_changed)
+        self.plugin_api.set_active_selection_changed_callback(
+            self.selection_changed)
 
-    def deactivate(self, plugin_api): # pylint: disable-msg=W0613
+    def deactivate(self, plugin_api):  # pylint: disable-msg=W0613
         """ Removes the gtk widgets before quitting """
         self._gtk_deactivate()
-        
-        
-    def mark_not_today(self,button):
+
+    def mark_not_today(self, button):
         start_date = Date.parse("tomorrow")
         for tid in self.plugin_api.get_selected():
             task = self.req.get_task(tid)
             task.set_start_date(start_date)
-        
-    def selection_changed(self,selection):
+
+    def selection_changed(self, selection):
         if selection.count_selected_rows() > 0:
             self.tb_button.set_sensitive(True)
         else:
             self.tb_button.set_sensitive(False)
-        
-        
+
 ## GTK FUNCTIONS ##############################################################
     def _init_gtk(self):
         """ Initialize all the GTK widgets """
@@ -60,8 +60,6 @@ class notToday:
         self.tb_button.connect('clicked', self.mark_not_today)
         self.tb_button.show()
         self.plugin_api.add_toolbar_item(self.tb_button)
-
-      
 
     def _gtk_deactivate(self):
         """ Remove Toolbar Button """

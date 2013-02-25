@@ -35,13 +35,13 @@ class hamsterPlugin:
         "description": "title",
         "tags": "existing",
     }
-    TOOLTIP_TEXT = _("Start a new activity in Hamster Time Tracker " +\
-        "based on the selected task")
+    TOOLTIP_TEXT = _("Start a new activity in Hamster Time Tracker " +
+                     "based on the selected task")
 
     def __init__(self):
-        #task editor widget
+        # task editor widget
         self.vbox = None
-        self.button=gtk.ToolButton()
+        self.button = gtk.ToolButton()
 
     #### Interaction with Hamster
     def sendTask(self, task):
@@ -53,11 +53,12 @@ class hamsterPlugin:
 
         activity = "Other"
         if self.preferences['activity'] == 'tag':
-            hamster_activities=set([unicode(x[0]).lower()
-                                    for x in self.hamster.GetActivities()])
-            activity_candidates=hamster_activities.intersection(set(gtg_tags))
-            if len(activity_candidates)>=1:
-                activity=list(activity_candidates)[0]
+            hamster_activities = set([unicode(x[0]).lower()
+                                      for x in self.hamster.GetActivities()])
+            activity_candidates = hamster_activities.intersection(
+                set(gtg_tags))
+            if len(activity_candidates) >= 1:
+                activity = list(activity_candidates)[0]
         elif self.preferences['activity'] == 'title':
             activity = gtg_title
         # hamster can't handle ',' or '@' in activity name
@@ -66,17 +67,17 @@ class hamsterPlugin:
 
         category = ""
         if self.preferences['category'] == 'auto_tag':
-            hamster_activities=dict([(unicode(x[0]), unicode(x[1]))
-                                for x in self.hamster.GetActivities()])
+            hamster_activities = dict([(unicode(x[0]), unicode(x[1]))
+                                       for x in self.hamster.GetActivities()])
             if (gtg_title in hamster_activities
-                or gtg_title.replace(",", "") in hamster_activities):
+                    or gtg_title.replace(",", "") in hamster_activities):
                     category = "%s" % hamster_activities[gtg_title]
 
         if (self.preferences['category'] == 'tag' or
-          (self.preferences['category'] == 'auto_tag' and not category)):
+           (self.preferences['category'] == 'auto_tag' and not category)):
             # See if any of the tags match existing categories
             categories = dict([(unicode(x[1]).lower(), unicode(x[1]))
-                                    for x in self.hamster.GetCategories()])
+                               for x in self.hamster.GetCategories()])
             lower_gtg_tags = set([x.lower() for x in gtg_tags])
             intersection = set(categories.keys()).intersection(lower_gtg_tags)
             if len(intersection) > 0:
@@ -90,13 +91,13 @@ class hamsterPlugin:
             description = gtg_title
         elif self.preferences['description'] == 'contents':
             description = task.get_excerpt(strip_tags=True,
-                    strip_subtasks=True)
+                                           strip_subtasks=True)
 
         tag_candidates = []
         try:
             if self.preferences['tags'] == 'existing':
                 hamster_tags = set([unicode(x) for x in
-                                        self.hamster.GetTags()])
+                                    self.hamster.GetTags()])
                 tag_candidates = list(hamster_tags.intersection(set(gtg_tags)))
             elif self.preferences['tags'] == 'all':
                 tag_candidates = gtg_tags
@@ -105,30 +106,30 @@ class hamsterPlugin:
             pass
         tag_str = "".join([" ," + x for x in tag_candidates])
 
-        #print '%s%s,%s%s'%(activity, category, description, tag_str)
-        hamster_id=self.hamster.AddFact(activity, tag_str, 0, 0,
-                                        category, description)
+        # print '%s%s,%s%s'%(activity, category, description, tag_str)
+        hamster_id = self.hamster.AddFact(activity, tag_str, 0, 0,
+                                          category, description)
 
-        ids=self.get_hamster_ids(task)
+        ids = self.get_hamster_ids(task)
         ids.append(str(hamster_id))
         self.set_hamster_ids(task, ids)
 
     def get_records(self, task):
         """Get a list of hamster facts for a task"""
         ids = self.get_hamster_ids(task)
-        records=[]
-        modified=False
-        valid_ids=[]
+        records = []
+        modified = False
+        valid_ids = []
         for i in ids:
             try:
-                d=self.hamster.GetFactById(i)
+                d = self.hamster.GetFactById(i)
                 if d.get("id", None) and i not in valid_ids:
                     records.append(d)
                     valid_ids.append(i)
                     continue
             except dbus.DBusException:
                 pass
-            modified=True
+            modified = True
             print "Removing invalid fact", i
         if modified:
             self.set_hamster_ids(task, valid_ids)
@@ -160,13 +161,13 @@ class hamsterPlugin:
 
     def set_hamster_ids(self, task, ids):
         task.set_attribute("id-list", ",".join(ids),
-                                        namespace=self.PLUGIN_NAMESPACE)
+                           namespace=self.PLUGIN_NAMESPACE)
 
     #### Plugin api methods
     def activate(self, plugin_api):
         self.plugin_api = plugin_api
-        self.hamster=dbus.SessionBus().get_object('org.gnome.Hamster',
-                                                '/org/gnome/Hamster')
+        self.hamster = dbus.SessionBus().get_object('org.gnome.Hamster',
+                                                    '/org/gnome/Hamster')
 
         # add menu item
         if plugin_api.is_browser():
@@ -202,16 +203,16 @@ class hamsterPlugin:
             # add section to bottom of window
             vbox = gtk.VBox()
             inner_table = gtk.Table(rows=len(records), columns=2)
-            if len(records)>8:
+            if len(records) > 8:
                 s = gtk.ScrolledWindow()
                 s.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
-                v=gtk.Viewport()
+                v = gtk.Viewport()
                 v.add(inner_table)
                 s.add(v)
                 v.set_shadow_type(gtk.SHADOW_NONE)
                 s.set_size_request(-1, 150)
             else:
-                s=inner_table
+                s = inner_table
 
             outer_table = gtk.Table(rows=1, columns=2)
             vbox.pack_start(s)
@@ -225,27 +226,27 @@ class hamsterPlugin:
                     a = "<span color='red'>%s</span>" % a
                     b = "<span color='red'>%s</span>" % b
 
-                dateLabel=gtk.Label(a)
+                dateLabel = gtk.Label(a)
                 dateLabel.set_use_markup(True)
                 dateLabel.set_alignment(xalign=0.0, yalign=0.5)
                 dateLabel.set_size_request(200, -1)
                 w.attach(dateLabel, left_attach=0, right_attach=1,
-                    top_attach=offset, bottom_attach=offset+1,
-                    xoptions=gtk.FILL, xpadding=20, yoptions=0)
+                         top_attach=offset, bottom_attach=offset + 1,
+                         xoptions=gtk.FILL, xpadding=20, yoptions=0)
 
-                durLabel=gtk.Label(b)
+                durLabel = gtk.Label(b)
                 durLabel.set_use_markup(True)
                 durLabel.set_alignment(xalign=0.0, yalign=0.5)
                 w.attach(durLabel, left_attach=1, right_attach=2,
-                    top_attach=offset, bottom_attach=offset+1,
-                    xoptions=gtk.FILL, yoptions=0)
+                         top_attach=offset, bottom_attach=offset + 1,
+                         xoptions=gtk.FILL, yoptions=0)
 
             active_id = self.get_active_id()
             for offset, i in enumerate(records):
                 t = calc_duration(i)
                 total += t
                 add(inner_table, format_date(i), format_duration(t),
-                                            offset, i['id'] == active_id)
+                    offset, i['id'] == active_id)
 
             add(outer_table, "<big><b>Total</b></big>",
                 "<big><b>%s</b></big>" % format_duration(total), 1)
@@ -268,7 +269,6 @@ class hamsterPlugin:
         task = plugin_api.get_ui().get_task()
         self.sendTask(task)
 
-
     #### Preference Handling
     def is_configurable(self):
         """A configurable plugin should have this method and return True"""
@@ -279,7 +279,7 @@ class hamsterPlugin:
         self.preferences_dialog.set_transient_for(manager_dialog)
 
         def pref_to_dialog(pref):
-            self.builder.get_object(pref+"_"+self.preferences[pref]) \
+            self.builder.get_object(pref + "_" + self.preferences[pref]) \
                 .set_active(True)
 
         pref_to_dialog("activity")
@@ -289,11 +289,11 @@ class hamsterPlugin:
 
         self.preferences_dialog.show_all()
 
-    def on_preferences_close(self, widget = None, data = None):
+    def on_preferences_close(self, widget=None, data=None):
 
         def dialog_to_pref(pref, vals):
             for val in vals:
-                if self.builder.get_object(pref+"_"+val).get_active():
+                if self.builder.get_object(pref + "_" + val).get_active():
                     self.preferences[pref] = val
                     break
 
@@ -309,11 +309,12 @@ class hamsterPlugin:
     def preferences_load(self):
         self.preferences = self.plugin_api.load_configuration_object(
             self.PLUGIN_NAME, "preferences",
-            default_values = self.DEFAULT_PREFERENCES)
+            default_values=self.DEFAULT_PREFERENCES)
 
     def preferences_store(self):
         self.plugin_api.save_configuration_object(self.PLUGIN_NAMESPACE,
-                                              "preferences", self.preferences)
+                                                  "preferences",
+                                                  self.preferences)
 
     def preference_dialog_init(self):
         self.builder = gtk.Builder()
@@ -327,17 +328,18 @@ class hamsterPlugin:
 
 #### Helper Functions
 
+
 def format_date(task):
     start_time = time.gmtime(task['start_time'])
     return time.strftime("<b>%A, %b %e</b> %l:%M %p", start_time)
 
 
 def calc_duration(fact):
-    start=fact['start_time']
-    end=fact['end_time']
+    start = fact['start_time']
+    end = fact['end_time']
     if not end:
-        end=timegm(time.localtime())
-    return end-start
+        end = timegm(time.localtime())
+    return end - start
 
 
 def format_duration(seconds):

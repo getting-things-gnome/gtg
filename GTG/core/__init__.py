@@ -36,27 +36,27 @@ If you want to display only a subset of tasks, you can either:
 """
 
 #=== IMPORT ===================================================================
-from configobj         import ConfigObj, ConfigObjError
+from configobj import ConfigObj, ConfigObjError
 from xdg.BaseDirectory import xdg_data_home, xdg_config_home, xdg_data_dirs
 import os
 
-from GTG.tools.borg   import Borg
+from GTG.tools.borg import Borg
 from GTG.tools.testingmode import TestingMode
 import GTG
 
 DEFAULTS = {
-'browser': {
-            "bg_color_enable": True,
-            "contents_preview_enable": False,
-            'tag_pane': False,
-            "sidebar_width": 120,
-            "closed_task_pane": False,
-            'bottom_pane_position': 300,
-            'toolbar': True,
-            'quick_add': True,
-            'collapsed_tasks': [],
-            'expanded_tags': [],
-            'view': 'default',
+    'browser': {
+    "bg_color_enable": True,
+    "contents_preview_enable": False,
+    'tag_pane': False,
+    "sidebar_width": 120,
+    "closed_task_pane": False,
+    'bottom_pane_position': 300,
+    'toolbar': True,
+    'quick_add': True,
+    'collapsed_tasks': [],
+    'expanded_tags': [],
+    'view': 'default',
             "opened_tasks": [],
             'width': 400,
             'height': 400,
@@ -66,26 +66,25 @@ DEFAULTS = {
             'tasklist_sort_column': 5,
             'tasklist_sort_order': 1,
             "font_name": "",
-            "last_selected_tag": [], 
-            },
+    },
 'tag_editor': {
-            "custom_colors": [],
-            }
+    "custom_colors": [],
+}
 }
 
 
-#Instead of accessing directly the ConfigObj dic, each module will have
-#one SubConfig object. (one SubConfig object always match one first level
-#element of the ConfigObj directory)
+# Instead of accessing directly the ConfigObj dic, each module will have
+# one SubConfig object. (one SubConfig object always match one first level
+# element of the ConfigObj directory)
 #
-#The goal of the SubConfig object is to handle default value and converting
-#String to Bool and Int when needed.
+# The goal of the SubConfig object is to handle default value and converting
+# String to Bool and Int when needed.
 #
-#Each GTG component using config should be ported to SubConfig and, for each
-#setting, a default value should be written in the DEFAULTS above.
+# Each GTG component using config should be ported to SubConfig and, for each
+# setting, a default value should be written in the DEFAULTS above.
 #
-#Currently done : browser
-#Todo : editor, plugins
+# Currently done : browser
+# Todo : editor, plugins
 
 class SubConfig():
 
@@ -97,14 +96,14 @@ class SubConfig():
         else:
             self.__defaults = {}
 
-    #This return the value of the setting (or the default one)
+    # This return the value of the setting (or the default one)
     #
-    #If a default value exists and is a Int or a Bool, the returned
-    #value is converted to that type.
+    # If a default value exists and is a Int or a Bool, the returned
+    # value is converted to that type.
     def get(self, name):
         if name in self.__conf:
             toreturn = self.__conf[name]
-            #Converting to the good type
+            # Converting to the good type
             if name in self.__defaults:
                 ntype = type(self.__defaults[name])
                 if ntype == int:
@@ -132,17 +131,17 @@ class SubConfig():
 
 
 class CoreConfig(Borg):
-    #The projects and tasks are of course DATA !
-    #We then use XDG_DATA for them
-    #Don't forget the "/" at the end.
+    # The projects and tasks are of course DATA !
+    # We then use XDG_DATA for them
+    # Don't forget the "/" at the end.
     DATA_FILE = "projects.xml"
     CONF_FILE = "gtg.conf"
     TASK_CONF_FILE = "tasks.conf"
     conf_dict = None
-    #DBus
+    # DBus
     BUSNAME = "org.gnome.GTG"
     BUSINTERFACE = "/org/gnome/GTG"
-    #TAGS
+    # TAGS
     ALLTASKS_TAG = "gtg-tags-all"
     NOTAG_TAG = "gtg-tags-none"
     SEP_TAG = "gtg-tags-sep"
@@ -151,7 +150,7 @@ class CoreConfig(Borg):
     def check_config_file(self, file_path):
         """ This function bypasses the errors of config file and allows GTG
         to open smoothly"""
-        total_path=self.conf_dir+file_path
+        total_path = self.conf_dir + file_path
         try:
             config = ConfigObj(total_path)
         except ConfigObjError:
@@ -160,11 +159,11 @@ class CoreConfig(Borg):
         return config
 
     def __init__(self):
-        if  hasattr(self, 'data_dir'):
-            #Borg has already been initialized
+        if hasattr(self, 'data_dir'):
+            # Borg has already been initialized
             return
         if TestingMode().get_testing_mode():
-            #we avoid running tests in the user data dir
+            # we avoid running tests in the user data dir
             self.data_dir = '/tmp/GTG_TESTS/data'
             self.conf_dir = '/tmp/GTG_TESTS/conf'
         else:
@@ -179,11 +178,11 @@ class CoreConfig(Borg):
         if not os.path.exists(self.conf_dir + self.TASK_CONF_FILE):
             open(self.conf_dir + self.TASK_CONF_FILE, "w").close()
         for conf_file in [self.conf_dir + self.CONF_FILE,
-                     self.conf_dir + self.TASK_CONF_FILE]:
+                          self.conf_dir + self.TASK_CONF_FILE]:
             if not os.access(conf_file, os.R_OK | os.W_OK):
-                raise Exception("File " + file + \
-                            " is a configuration file for gtg, but it "
-                            "cannot be read or written. Please check it")
+                raise Exception("File " + file +
+                                " is a configuration file for gtg, but it "
+                                "cannot be read or written. Please check it")
         self.conf_dict = self.check_config_file(self.CONF_FILE)
         self.task_conf_dict = self.check_config_file(self.TASK_CONF_FILE)
 

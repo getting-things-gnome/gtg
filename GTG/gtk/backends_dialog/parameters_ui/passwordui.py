@@ -46,10 +46,10 @@ class PasswordUI(gtk.HBox):
         @param width: the width of the gtk.Label object
         '''
         password_label = gtk.Label(_("Password:"))
-        password_label.set_alignment(xalign = 0, yalign = 0.5)
-        password_label.set_size_request(width = width, height = -1)
+        password_label.set_alignment(xalign=0, yalign=0.5)
+        password_label.set_size_request(width=width, height=-1)
         self.pack_start(password_label, False)
-        align = gtk.Alignment(xalign = 0, yalign = 0.5, xscale = 1)
+        align = gtk.Alignment(xalign=0, yalign=0.5, xscale=1)
         align.set_padding(0, 0, 10, 0)
         self.pack_start(align, True)
         self.password_textbox = gtk.Entry()

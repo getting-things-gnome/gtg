@@ -22,10 +22,10 @@ import dbus
 import dbus.glib
 import dbus.service
 
-from GTG.core           import CoreConfig
-from GTG.tools.dates    import Date
-from GTG.core.search    import InvalidQuery
-from GTG.core.search    import parse_search_query
+from GTG.core import CoreConfig
+from GTG.tools.dates import Date
+from GTG.core.search import InvalidQuery
+from GTG.core.search import parse_search_query
 
 BUSNAME = CoreConfig.BUSNAME
 BUSFACE = CoreConfig.BUSINTERFACE
@@ -46,7 +46,7 @@ def dsanitize(data):
         # D-Bus has no concept of a null or empty value so we have to convert
         # None types to something else. I use an empty string because it has
         # the same behavior as None in a Python conditional expression
-        elif v == None:
+        elif v is None:
             data[k] = ""
 
     return data
@@ -59,17 +59,17 @@ def task_to_dict(task):
     if not task:
         return None
     return dbus.Dictionary(dsanitize({
-          "id": task.get_id(),
-          "status": task.get_status(),
-          "title": task.get_title(),
-          "duedate": str(task.get_due_date()),
-          "startdate": str(task.get_start_date()),
-          "donedate": str(task.get_closed_date()),
-          "tags": task.get_tags_name(),
-          "text": task.get_text(),
-          "subtask": task.get_children(),
-          "parents": task.get_parents(),
-          }), signature="sv")
+                                     "id": task.get_id(),
+                                     "status": task.get_status(),
+                                     "title": task.get_title(),
+                                     "duedate": str(task.get_due_date()),
+                                     "startdate": str(task.get_start_date()),
+                                     "donedate": str(task.get_closed_date()),
+                                     "tags": task.get_tags_name(),
+                                     "text": task.get_text(),
+                                     "subtask": task.get_children(),
+                                     "parents": task.get_parents(),
+                                     }), signature="sv")
 
 
 class DBusTaskWrapper(dbus.service.Object):
@@ -85,14 +85,14 @@ class DBusTaskWrapper(dbus.service.Object):
         self.req = req
         self.view_manager = view_manager
 
-        #Start listening for signals from GTG core
+        # Start listening for signals from GTG core
         task_tree = self.req.get_main_view()
         task_tree.register_cllbck('node-added', lambda tid, _:
-                self.TaskAdded(tid))
+                                  self.TaskAdded(tid))
         task_tree.register_cllbck('node-modified', lambda tid, _:
-                self.TaskModified(tid))
+                                  self.TaskModified(tid))
         task_tree.register_cllbck('node-deleted', lambda tid, _:
-                self.TaskDeleted(tid))
+                                  self.TaskDeleted(tid))
 
     @dbus.service.method(BUSNAME)
     def GetTask(self, tid):
@@ -156,7 +156,7 @@ class DBusTaskWrapper(dbus.service.Object):
         view = tree.get_viewtree()
         try:
             search = parse_search_query(query)
-            view.apply_filter('search', parameters = search)
+            view.apply_filter('search', parameters=search)
             tasks = view.get_all_nodes()
             if tasks:
                 return [self.GetTask(id) for id in tasks]
@@ -181,7 +181,7 @@ class DBusTaskWrapper(dbus.service.Object):
 
     @dbus.service.method(BUSNAME, in_signature="sssssassas")
     def NewTask(self, status, title, duedate, startdate, donedate, tags,
-                 text, subtasks):
+                text, subtasks):
         """
         Generate a new task object and return the task data as a dict
         @param status:     One of 'Active', 'Dismiss', or 'Done'
@@ -217,7 +217,7 @@ class DBusTaskWrapper(dbus.service.Object):
         """
         task = self.req.get_task(tid)
         task.set_status(task_data["status"],
-                    donedate=Date.parse(task_data["donedate"]))
+                        donedate=Date.parse(task_data["donedate"]))
         task.set_title(task_data["title"])
         task.set_due_date(Date.parse(task_data["duedate"]))
         task.set_start_date(Date.parse(task_data["startdate"]))
