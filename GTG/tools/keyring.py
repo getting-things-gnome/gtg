@@ -19,6 +19,7 @@
 
 try:
     import gnomekeyring
+    assert gnomekeyring
 except ImportError:
     gnomekeyring = None
 

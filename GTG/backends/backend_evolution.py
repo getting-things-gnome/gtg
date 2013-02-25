@@ -377,7 +377,6 @@ class Backend(PeriodicImportBackend):
         attached_tags = set(self.get_attached_tags())
         if GenericBackend.ALLTASKS_TAG in attached_tags:
             return True
-        evo_tags = set(extract_tags_from_text(evo_task.get_description()))
         return evo_task.is_disjoint(attached_tags)
 
     def __date_from_evo_to_gtg(self, evo_date_timestamp):

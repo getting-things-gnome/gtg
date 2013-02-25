@@ -19,9 +19,7 @@
 
 import gtk
 
-from GTG.gtk.colors import get_colored_tags_markup
-from GTG import _, ngettext
-from GTG.backends.genericbackend import GenericBackend
+from GTG import _
 from GTG.gtk.backends_dialog.parameters_ui import ParametersUI
 from GTG.backends.backendsignals import BackendSignals
 
@@ -82,7 +80,6 @@ class ConfigurePanel(gtk.VBox):
         """
         self.image_icon = gtk.Image()
         self.image_icon.set_size_request(48, 48)
-        hbox_top = gtk.HBox()
 
         self.human_name_label = gtk.Label()
         self.human_name_label.set_alignment(xalign=0, yalign=0.5)

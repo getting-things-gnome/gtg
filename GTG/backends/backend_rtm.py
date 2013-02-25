@@ -569,14 +569,14 @@ class RTMProxy(object):
                 try:
                     time.sleep(1)
                     self.token = self.rtm.getToken()
-                except Exception, e:
+                except Exception:
                     # something went wrong.
                     self.token = None
                     continue
             try:
                 if self._login():
                     self.authenticated.set()
-            except exceptions.IOError, e:
+            except exceptions.IOError:
                 BackendSignals().backend_failed(self.get_id(),
                                                 BackendSignals.ERRNO_NETWORK)
 
@@ -642,7 +642,6 @@ class RTMProxy(object):
         '''
         Gets the list of the RTM Lists (the tabs on the top of rtm website)
         '''
-        rtm_get_list_output = self.rtm.lists.getList()
         # Here's the attributes of RTM lists. For the list of them, see
         # http://www.rememberthemilk.com/services/api/methods/
         # rtm.lists.getList.rtm

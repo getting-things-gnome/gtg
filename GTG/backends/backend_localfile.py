@@ -26,13 +26,11 @@ wants to write a backend.
 '''
 
 import os
-import uuid
 
 from GTG import _
 from GTG.backends.genericbackend import GenericBackend
 from GTG.core import CoreConfig
 from GTG.tools import cleanxml, taskxml
-from GTG.tools.logger import Log
 
 # Ignore all other elements but this one
 TASK_NODE = "task"

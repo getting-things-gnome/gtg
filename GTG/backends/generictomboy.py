@@ -256,11 +256,11 @@ class GenericTomboy(GenericBackend):
         self.cancellation_point()
         is_syncable = self._gtg_task_is_syncable_per_attached_tags(task)
         tid = task.get_id()
-        has_task = self.datastore.has_task
-        has_note = tomboy.NoteExists
-        can_sync = is_syncable
         with self.datastore.get_backend_mutex():
             with self.TomboyConnection(self, *self.BUS_ADDRESS) as tomboy:
+                has_task = self.datastore.has_task
+                has_note = tomboy.NoteExists
+                can_sync = is_syncable
                 with self.DbusWatchdog(self):
                     action, note = self.sync_engine.analyze_local_id(tid,
                                                                      has_task,
@@ -449,8 +449,6 @@ class GenericTomboy(GenericBackend):
         @param task: a GTG Task
         '''
         title = task.get_title()
-        tested_title = title
-        duplicate_counter = 1
         with self.TomboyConnection(self, *self.BUS_ADDRESS) as tomboy:
             with self.DbusWatchdog(self):
                 tomboy.SetNoteContents(note, title + '\n' +

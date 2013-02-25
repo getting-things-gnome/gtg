@@ -169,7 +169,6 @@ class AddPanel(gtk.VBox):
         backend = BackendFactory().get_backend(backend_name)
         self.label_description.set_markup(backend.Backend.get_description())
 
-        label = _('Syncing is <span color="red">disabled</span>')
         markup = '<big><big><big><b>%s</b></big></big></big>' % \
             backend.Backend.get_human_default_name()
         self.label_name.set_markup(markup)

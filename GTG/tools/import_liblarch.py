@@ -38,12 +38,14 @@ def import_liblarch(use_local=False):
         missing = []
         try:
             import liblarch
+            assert liblarch
         except ImportError:
             has_libraries = False
             missing.append("liblarch")
 
         try:
             import liblarch_gtk
+            assert liblarch_gtk
         except ImportError:
             has_libraries = False
             missing.append("liblarch_gtk")
