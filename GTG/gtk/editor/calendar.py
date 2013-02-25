@@ -29,12 +29,12 @@ from GTG.tools.dates import Date
 class GTGCalendar(gobject.GObject):
     """ Wrapper around gtk.Calendar object """
 
-    #CONSTANTS
+    # CONSTANTS
     DATE_KIND_DUE = "due"
     DATE_KIND_START = "start"
     DATE_KIND_CLOSED = "closed"
 
-    #Gobject signal description
+    # Gobject signal description
     __signal_type__ = (gobject.SIGNAL_RUN_FIRST,
                        gobject.TYPE_NONE,
                        [])
@@ -53,13 +53,22 @@ class GTGCalendar(gobject.GObject):
         self.__calendar = self.__builder.get_object("calendar1")
         self.__fuzzydate_btns = self.__builder.get_object("fuzzydate_btns")
         self.__builder.get_object("button_clear").connect("clicked",
-                                lambda w: self.__day_selected(w, ""))
+                                                          lambda w:
+                                                          self.__day_selected(
+                                                          w, ""))
         self.__builder.get_object("button_now").connect("clicked",
-                                lambda w: self.__day_selected(w, "now"))
+                                                        lambda w:
+                                                        self.__day_selected(
+                                                        w, "now"))
         self.__builder.get_object("button_soon").connect("clicked",
-                                lambda w: self.__day_selected(w, "soon"))
+                                                         lambda w:
+                                                         self.__day_selected(
+                                                         w, "soon"))
         self.__builder.get_object("button_someday").connect("clicked",
-                                lambda w: self.__day_selected(w, "someday"))
+                                                            lambda w:
+                                                            self.
+                                                            __day_selected(w,
+                                                            "someday"))
 
     def set_date(self, date, date_kind):
         self.__date_kind = date_kind
@@ -76,7 +85,7 @@ class GTGCalendar(gobject.GObject):
             # Calendar use 0..11 for a month so we need -1
             # We can't use conversion through python's datetime
             # because it is often an invalid date
-            self.__calendar.select_month(date.month-1, date.year)
+            self.__calendar.select_month(date.month - 1, date.year)
 
     def __mark_today_in_bold(self):
         """ Mark today in bold
@@ -90,7 +99,7 @@ class GTGCalendar(gobject.GObject):
         # Get the current displayed month
         # (month must be corrected because calendar is 0-based)
         year, month, day = self.__calendar.get_date()
-        month +=1
+        month += 1
 
         if today.year == year and today.month == month:
             self.__calendar.mark_day(today.day)
@@ -101,11 +110,16 @@ class GTGCalendar(gobject.GObject):
             self.__calendar.clear_marks()
 
     def move_calendar_inside(self, width, height, x, y):
-        """ This method moves the calender inside the screen whenever part of it is displayed outside the screen """
+        """ This method moves the calender inside the screen whenever part of
+        it is displayed outside the screen """
         screen_width = gtk.gdk.screen_width()
-        if x < width:	#To display calendar inside the screen when editor window is outside leftside of the screen
+        # To display calendar inside the screen when editor window is
+        # outside leftside of the screen
+        if x < width:
             self.__window.move(2, y - height)
-        elif x > (screen_width-2):	#To display calendar inside the screen when editor window is outside rightside of the screen
+        # To display calendar inside the screen when editor window is outside
+        # rightside of the screen
+        elif x > (screen_width - 2):
             self.__window.move(screen_width - width - 2, y - height)
         else:
             self.__window.move(x - width, y - height)
@@ -114,34 +128,34 @@ class GTGCalendar(gobject.GObject):
         width, height = self.__window.get_size()
         self.move_calendar_inside(width, height, x, y)
         self.__window.show()
-        ##some window managers ignore move before you show a window. (which
+        # some window managers ignore move before you show a window. (which
         # ones? question by invernizzi)
         self.move_calendar_inside(width, height, x, y)
         self.__window.grab_add()
-        #We grab the pointer in the calendar
+        # We grab the pointer in the calendar
         gdk.pointer_grab(self.__window.window, True,
                          gdk.BUTTON1_MASK | gdk.MOD2_MASK)
         self.__window.connect('button-press-event', self.__focus_out)
         self.__sigid = self.__calendar.connect("day-selected",
                                                self.__day_selected,
-                                              "RealDate")
+                                               "RealDate")
         self.__sigid_month = self.__calendar.connect("month-changed",
                                                      self.__month_changed)
-        #Problem: gtk.Calendar does not tell you directly if the "day-selected"
-        #         signal was caused by the user clicking on a date, or just
-        #         browsing the calendar.
-        #Solution: we track that in a variable
+        # Problem: gtk.Calendar does not tell you directly if the
+        #         "day-selected" signal was caused by the user clicking on
+        #         a date, or just browsing the calendar.
+        # Solution: we track that in a variable
         self.__is_user_just_browsing_the_calendar = False
         self.__mark_today_in_bold()
 
-    def __focus_out(self, w = None, e = None):
-        #We should only close if the pointer click is out of the calendar !
+    def __focus_out(self, w=None, e=None):
+        # We should only close if the pointer click is out of the calendar !
         p = self.__window.window.get_pointer()
         s = self.__window.get_size()
         if not(0 <= p[0] <= s[0] and 0 <= p[1] <= s[1]):
             self.close_calendar()
 
-    def close_calendar(self, widget = None, e = None):
+    def close_calendar(self, widget=None, e=None):
         self.__window.hide()
         gtk.gdk.pointer_ungrab()
         self.__window.grab_remove()

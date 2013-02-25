@@ -20,9 +20,9 @@
 import gtk
 import threading
 
-from GTG                         import _
+from GTG import _
 from GTG.backends.backendsignals import BackendSignals
-from GTG.tools.networkmanager    import is_connection_up
+from GTG.tools.networkmanager import is_connection_up
 
 
 class CustomInfoBar(gtk.InfoBar):
@@ -30,7 +30,6 @@ class CustomInfoBar(gtk.InfoBar):
     A gtk.InfoBar specialized for displaying errors and requests for
     interaction coming from the backends
     '''
-
 
     AUTHENTICATION_MESSAGE = _("The <b>%s</b> synchronization service cannot "
                                "login with the  supplied authentication data "
@@ -41,7 +40,7 @@ class CustomInfoBar(gtk.InfoBar):
                         "the <b>%s</b> synchronization service.")
 
     DBUS_MESSAGE = _("Cannot connect to DBus, I've disabled "
-                        "the <b>%s</b> synchronization service.")
+                     "the <b>%s</b> synchronization service.")
 
     def __init__(self, req, browser, vmanager, backend_id):
         '''
@@ -86,7 +85,7 @@ class CustomInfoBar(gtk.InfoBar):
         '''
         self.hide()
         if event == gtk.RESPONSE_ACCEPT:
-            self.vmanager.configure_backend(backend_id = self.backend_id)
+            self.vmanager.configure_backend(backend_id=self.backend_id)
 
     def set_error_code(self, error_code):
         '''
@@ -103,7 +102,7 @@ class CustomInfoBar(gtk.InfoBar):
             self.set_message_type(gtk.MESSAGE_ERROR)
             self.label.set_markup(self.AUTHENTICATION_MESSAGE % backend_name)
             self.add_button(_('Configure synchronization service'),
-                                                         gtk.RESPONSE_ACCEPT)
+                            gtk.RESPONSE_ACCEPT)
             self.add_button(_('Ignore'), gtk.RESPONSE_CLOSE)
 
         elif error_code == BackendSignals.ERRNO_NETWORK:
@@ -111,7 +110,7 @@ class CustomInfoBar(gtk.InfoBar):
                 return
             self.set_message_type(gtk.MESSAGE_WARNING)
             self.label.set_markup(self.NETWORK_MESSAGE % backend_name)
-            #FIXME: use gtk stock button instead
+            # FIXME: use gtk stock button instead
             self.add_button(_('Ok'), gtk.RESPONSE_CLOSE)
 
         elif error_code == BackendSignals.ERRNO_DBUS:
@@ -157,8 +156,8 @@ class CustomInfoBar(gtk.InfoBar):
                 print "done"
             elif self.interaction_type == BackendSignals().INTERACTION_CONFIRM:
                 self.hide()
-                threading.Thread(target = getattr(self.backend,
-                                            self.callback)).start()
+                threading.Thread(target=getattr(self.backend,
+                                                self.callback)).start()
 
     def _prepare_textual_interaction(self):
         '''
@@ -166,9 +165,9 @@ class CustomInfoBar(gtk.InfoBar):
         interaction request
         '''
         title, description\
-                = getattr(self.backend,
-                          self.callback)("get_ui_dialog_text")
-        self.dialog = gtk.Window()#type = gtk.WINDOW_POPUP)
+            = getattr(self.backend,
+                      self.callback)("get_ui_dialog_text")
+        self.dialog = gtk.Window()  # type = gtk.WINDOW_POPUP)
         self.dialog.set_title(title)
         self.dialog.set_transient_for(self.browser.window)
         self.dialog.set_destroy_with_parent(True)
@@ -191,7 +190,7 @@ class CustomInfoBar(gtk.InfoBar):
         align.set_padding(20, 20, 20, 20)
         align.add(self.text_box)
         vbox.pack_start(align)
-        button = gtk.Button(stock = gtk.STOCK_OK)
+        button = gtk.Button(stock=gtk.STOCK_OK)
         button.connect("clicked", self._on_text_confirmed)
         button.set_size_request(-1, 40)
         vbox.pack_start(button, False)
@@ -207,5 +206,5 @@ class CustomInfoBar(gtk.InfoBar):
         '''
         text = self.text_box.get_text()
         self.dialog.destroy()
-        threading.Thread(target = getattr(self.backend, self.callback),
-                          args = ("set_text", text)).start()
+        threading.Thread(target=getattr(self.backend, self.callback),
+                         args=("set_text", text)).start()

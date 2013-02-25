@@ -19,10 +19,11 @@
 
 import gtk
 
-#Take list of Tags and give the background color that should be applied
-#The returned color might be None (in which case, the default is used)
+# Take list of Tags and give the background color that should be applied
+# The returned color might be None (in which case, the default is used)
 
-def background_color(tags, bgcolor = None):
+
+def background_color(tags, bgcolor=None):
     if not bgcolor:
         bgcolor = gtk.gdk.color_parse("#FFFFFF")
     # Compute color
@@ -43,19 +44,19 @@ def background_color(tags, bgcolor = None):
         red = int(red / color_count)
         green = int(green / color_count)
         blue = int(blue / color_count)
-        brightness = (red+green+blue) / 3.0
-        target_brightness = (bgcolor.red+bgcolor.green+bgcolor.blue)/3.0
+        brightness = (red + green + blue) / 3.0
+        target_brightness = (bgcolor.red + bgcolor.green + bgcolor.blue) / 3.0
 
-        alpha = (1-abs(brightness-target_brightness)/65535.0)/2.0
-        red = int(red*alpha + bgcolor.red*(1-alpha))
-        green = int(green*alpha + bgcolor.green*(1-alpha))
-        blue = int(blue*alpha + bgcolor.blue*(1-alpha))
+        alpha = (1 - abs(brightness - target_brightness) / 65535.0) / 2.0
+        red = int(red * alpha + bgcolor.red * (1 - alpha))
+        green = int(green * alpha + bgcolor.green * (1 - alpha))
+        blue = int(blue * alpha + bgcolor.blue * (1 - alpha))
 
         my_color = gtk.gdk.Color(red, green, blue).to_string()
     return my_color
 
 
-def get_colored_tag_markup(req, tag_name, html = False):
+def get_colored_tag_markup(req, tag_name, html=False):
     '''
     Given a tag name, returns a string containing the markup to color the
     tag name
@@ -63,13 +64,13 @@ def get_colored_tag_markup(req, tag_name, html = False):
     '''
     tag = req.get_tag(tag_name)
     if tag is None:
-        #no task loaded with that tag, color cannot be taken
+        # no task loaded with that tag, color cannot be taken
         return tag_name
     else:
         tag_color = tag.get_attribute("color")
         if tag_color:
             if html:
-                format_string ='<span style="color:%s">%s</span>'
+                format_string = '<span style="color:%s">%s</span>'
             else:
                 format_string = '<span color="%s">%s</span>'
             return format_string % (tag_color, tag_name)
@@ -84,6 +85,6 @@ def get_colored_tags_markup(req, tag_names):
     tag_markups = map(lambda t: get_colored_tag_markup(req, t), tag_names)
     tags_txt = ""
     if tag_markups:
-        #reduce crashes if applied to an empty list
+        # reduce crashes if applied to an empty list
         tags_txt = reduce(lambda a, b: a + ", " + b, tag_markups)
     return tags_txt

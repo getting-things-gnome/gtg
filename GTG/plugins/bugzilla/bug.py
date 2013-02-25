@@ -14,22 +14,24 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#this handles old versions of pybugz as well as new ones
+# this handles old versions of pybugz as well as new ones
 try:
     from bugz import bugzilla
 except:
     import bugz as bugzilla
 
-#changed the default action to skip auth
+# changed the default action to skip auth
+
 
 class Bug:
 
     def __init__(self, base, nb):
-        #this also handles old versions of pybugz
+        # this also handles old versions of pybugz
         try:
-            bugs = bugzilla.BugzillaProxy(base, skip_auth=True).Bug.get({ 'ids': [nb,], })
+            bugs = bugzilla.BugzillaProxy(
+                base, skip_auth=True).Bug.get({'ids': [nb, ], })
         except:
-            bugs = bugzilla.BugzillaProxy(base).Bug.get({ 'ids': [nb,], })
+            bugs = bugzilla.BugzillaProxy(base).Bug.get({'ids': [nb, ], })
         self.bug = bugs['bugs'][0]
 
     def get_title(self):
@@ -46,7 +48,7 @@ class Bug:
 
 if __name__ == '__main__':
     for bug in [Bug('https://bugzilla.gnome.org', '598354'),
-            Bug('https://bugs.freedesktop.org', '24120')]:
+                Bug('https://bugs.freedesktop.org', '24120')]:
         print "title:", bug.get_title()
         print "product:", bug.get_product()
         print "component:", bug.get_component()

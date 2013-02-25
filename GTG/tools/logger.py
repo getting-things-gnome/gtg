@@ -35,10 +35,10 @@ class Debug(object):
 
     def __init__(self):
         """ Configure the GTG logger """
-        #If we already have a logger, we keep that
+        # If we already have a logger, we keep that
         if not hasattr(Debug, "__logger"):
             self.__init_logger()
-        #Shouldn't be needed, but the following line makes sure that
+        # Shouldn't be needed, but the following line makes sure that
         # this is a Singleton.
         self.__dict__['_Debug__logger'] = Debug.__logger
         self.debugging_mode = False
@@ -49,7 +49,8 @@ class Debug(object):
         ch = logging.StreamHandler()
         ch.setLevel(logging.DEBUG)
         formatter = logging.Formatter("%(asctime)s - %(levelname)s - " +
-          "%(module)s:%(funcName)s:%(lineno)d - %(message)s")
+                                      "%(module)s:%(funcName)s:%(lineno)d - " +
+                                      "%(message)s")
         ch.setFormatter(formatter)
         Debug.__logger.addHandler(ch)
 
@@ -67,5 +68,5 @@ class Debug(object):
     def is_debugging_mode(self):
         return self.debugging_mode
 
-#The singleton itself
+# The singleton itself
 Log = Debug()

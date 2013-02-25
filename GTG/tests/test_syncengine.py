@@ -36,42 +36,52 @@ class TestSyncEngine(unittest.TestCase):
     def test_analyze_element_and_record_and_break_relationship(self):
         """ Test for the _analyze_element, analyze_remote_id, analyze_local_id,
         record_relationship, break_relationship """
-        #adding a new local task
+        # adding a new local task
+        has_local_task = self.ftp_local.has_task
+        has_remote_task = self.ftp_remote.has_task
         local_id = uuid.uuid4()
         self.ftp_local.fake_add_task(local_id)
-        self.assertEqual(self.sync_engine.analyze_local_id(local_id, \
-                       self.ftp_local.has_task, self.ftp_remote.has_task), \
+        self.assertEqual(self.sync_engine.analyze_local_id(local_id,
+                                                           has_local_task,
+                                                           has_remote_task),
                          (SyncEngine.ADD, None))
-        #creating the related remote task
+        # creating the related remote task
         remote_id = uuid.uuid4()
         self.ftp_remote.fake_add_task(remote_id)
-        #informing the sync_engine about that
+        # informing the sync_engine about that
         self.sync_engine.record_relationship(local_id, remote_id, object())
-        #verifying that it understood that
-        self.assertEqual(self.sync_engine.analyze_local_id(local_id, \
-                       self.ftp_local.has_task, self.ftp_remote.has_task), \
+        # verifying that it understood that
+        self.assertEqual(self.sync_engine.analyze_local_id(local_id,
+                                                           has_local_task,
+                                                           has_remote_task),
                          (SyncEngine.UPDATE, remote_id))
-        self.assertEqual(self.sync_engine.analyze_remote_id(remote_id, \
-                       self.ftp_local.has_task, self.ftp_remote.has_task), \
+        self.assertEqual(self.sync_engine.analyze_remote_id(remote_id,
+                                                            has_local_task,
+                                                            has_remote_task),
                          (SyncEngine.UPDATE, local_id))
-        #and not the reverse
-        self.assertEqual(self.sync_engine.analyze_remote_id(local_id, \
-                       self.ftp_local.has_task, self.ftp_remote.has_task), \
+        # and not the reverse
+        self.assertEqual(self.sync_engine.analyze_remote_id(local_id,
+                                                            has_local_task,
+                                                            has_remote_task),
                          (SyncEngine.ADD, None))
-        self.assertEqual(self.sync_engine.analyze_local_id(remote_id, \
-                       self.ftp_local.has_task, self.ftp_remote.has_task), \
+        self.assertEqual(self.sync_engine.analyze_local_id(remote_id,
+                                                           has_local_task,
+                                                           has_remote_task),
                          (SyncEngine.ADD, None))
-        #now we remove the remote task
+        # now we remove the remote task
         self.ftp_remote.fake_remove_task(remote_id)
-        self.assertEqual(self.sync_engine.analyze_local_id(local_id, \
-                       self.ftp_local.has_task, self.ftp_remote.has_task), \
+        self.assertEqual(self.sync_engine.analyze_local_id(local_id,
+                                                           has_local_task,
+                                                           has_remote_task),
                          (SyncEngine.REMOVE, None))
-        self.sync_engine.break_relationship(local_id = local_id)
-        self.assertEqual(self.sync_engine.analyze_local_id(local_id, \
-                       self.ftp_local.has_task, self.ftp_remote.has_task), \
+        self.sync_engine.break_relationship(local_id=local_id)
+        self.assertEqual(self.sync_engine.analyze_local_id(local_id,
+                                                           has_local_task,
+                                                           has_remote_task),
                          (SyncEngine.ADD, None))
-        self.assertEqual(self.sync_engine.analyze_remote_id(remote_id, \
-                       self.ftp_local.has_task, self.ftp_remote.has_task), \
+        self.assertEqual(self.sync_engine.analyze_remote_id(remote_id,
+                                                            has_local_task,
+                                                            has_remote_task),
                          (SyncEngine.ADD, None))
         # we add them back and remove giving the remote id as key to find
         # what to delete
@@ -79,78 +89,94 @@ class TestSyncEngine(unittest.TestCase):
         self.ftp_remote.fake_add_task(remote_id)
         self.ftp_remote.fake_remove_task(remote_id)
         self.sync_engine.record_relationship(local_id, remote_id, object)
-        self.sync_engine.break_relationship(remote_id = remote_id)
-        self.assertEqual(self.sync_engine.analyze_local_id(local_id, \
-                       self.ftp_local.has_task, self.ftp_remote.has_task), \
+        self.sync_engine.break_relationship(remote_id=remote_id)
+        self.assertEqual(self.sync_engine.analyze_local_id(local_id,
+                                                           has_local_task,
+                                                           has_remote_task),
                          (SyncEngine.ADD, None))
-        self.assertEqual(self.sync_engine.analyze_remote_id(remote_id, \
-                       self.ftp_local.has_task, self.ftp_remote.has_task), \
+        self.assertEqual(self.sync_engine.analyze_remote_id(remote_id,
+                                                            has_local_task,
+                                                            has_remote_task),
                          (SyncEngine.ADD, None))
 
     def test_syncability(self):
         """ Test for the _analyze_element, analyze_remote_id, analyze_local_id.
         Checks that the is_syncable parameter is used correctly """
-        #adding a new local task unsyncable
+        # adding a new local task unsyncable
+        has_local_task = self.ftp_local.has_task
+        has_remote_task = self.ftp_remote.has_task
         local_id = uuid.uuid4()
         self.ftp_local.fake_add_task(local_id)
-        self.assertEqual(self.sync_engine.analyze_local_id(local_id, \
-                       self.ftp_local.has_task, self.ftp_remote.has_task,
-                                                           False), \
+        self.assertEqual(self.sync_engine.analyze_local_id(local_id,
+                                                           has_local_task,
+                                                           has_remote_task,
+                                                           False),
                          (None, None))
-        #adding a new local task, syncable
+        # adding a new local task, syncable
         local_id = uuid.uuid4()
         self.ftp_local.fake_add_task(local_id)
-        self.assertEqual(self.sync_engine.analyze_local_id(local_id, \
-                       self.ftp_local.has_task, self.ftp_remote.has_task), \
+        self.assertEqual(self.sync_engine.analyze_local_id(local_id,
+                                                           has_local_task,
+                                                           has_remote_task),
                          (SyncEngine.ADD, None))
-        #creating the related remote task
+        # creating the related remote task
         remote_id = uuid.uuid4()
         self.ftp_remote.fake_add_task(remote_id)
-        #informing the sync_engine about that
+        # informing the sync_engine about that
         self.sync_engine.record_relationship(local_id, remote_id, object())
-        #checking that it behaves correctly with established relationships
-        self.assertEqual(self.sync_engine.analyze_local_id(local_id, \
-                       self.ftp_local.has_task, self.ftp_remote.has_task,
-                                                          True), \
+        # checking that it behaves correctly with established relationships
+        self.assertEqual(self.sync_engine.analyze_local_id(local_id,
+                                                           has_local_task,
+                                                           has_remote_task,
+                                                           True),
                          (SyncEngine.UPDATE, remote_id))
-        self.assertEqual(self.sync_engine.analyze_local_id(local_id, \
-                       self.ftp_local.has_task, self.ftp_remote.has_task,
-                                                          False), \
+        self.assertEqual(self.sync_engine.analyze_local_id(local_id,
+                                                           has_local_task,
+                                                           has_remote_task,
+                                                           False),
                          (SyncEngine.LOST_SYNCABILITY, remote_id))
-        self.assertEqual(self.sync_engine.analyze_remote_id(remote_id, \
-                       self.ftp_local.has_task, self.ftp_remote.has_task,
-                                                           True), \
+        self.assertEqual(self.sync_engine.analyze_remote_id(remote_id,
+                                                            has_local_task,
+                                                            has_remote_task,
+                                                            True),
                          (SyncEngine.UPDATE, local_id))
-        self.assertEqual(self.sync_engine.analyze_remote_id(remote_id, \
-                       self.ftp_local.has_task, self.ftp_remote.has_task,
-                                                           False), \
+        self.assertEqual(self.sync_engine.analyze_remote_id(remote_id,
+                                                            has_local_task,
+                                                            has_remote_task,
+                                                            False),
                          (SyncEngine.LOST_SYNCABILITY, local_id))
-        #now we remove the remote task
+        # now we remove the remote task
         self.ftp_remote.fake_remove_task(remote_id)
-        self.assertEqual(self.sync_engine.analyze_local_id(local_id, \
-                       self.ftp_local.has_task, self.ftp_remote.has_task,
-                                                          True), \
+        self.assertEqual(self.sync_engine.analyze_local_id(local_id,
+                                                           has_local_task,
+                                                           has_remote_task,
+                                                           True),
                          (SyncEngine.REMOVE, None))
-        self.assertEqual(self.sync_engine.analyze_local_id(local_id, \
-                       self.ftp_local.has_task, self.ftp_remote.has_task,
-                                                          False), \
+        self.assertEqual(self.sync_engine.analyze_local_id(local_id,
+                                                           has_local_task,
+                                                           has_remote_task,
+                                                           False),
                          (SyncEngine.REMOVE, None))
-        self.sync_engine.break_relationship(local_id = local_id)
-        self.assertEqual(self.sync_engine.analyze_local_id(local_id, \
-                       self.ftp_local.has_task, self.ftp_remote.has_task,
-                                                          True), \
+        self.sync_engine.break_relationship(local_id=local_id)
+        self.assertEqual(self.sync_engine.analyze_local_id(local_id,
+                                                           has_local_task,
+                                                           has_remote_task,
+                                                           True),
                          (SyncEngine.ADD, None))
-        self.assertEqual(self.sync_engine.analyze_local_id(local_id, \
-                       self.ftp_local.has_task, self.ftp_remote.has_task,
-                                                          False), \
+        self.assertEqual(self.sync_engine.analyze_local_id(local_id,
+                                                           has_local_task,
+                                                           has_remote_task,
+                                                           False),
                          (None, None))
-        self.assertEqual(self.sync_engine.analyze_remote_id(remote_id, \
-                       self.ftp_local.has_task, self.ftp_remote.has_task,
-                                                           True), \
+        self.assertEqual(self.sync_engine.analyze_remote_id(remote_id,
+                                                            has_local_task,
+                                                            has_remote_task,
+                                                            True),
                          (SyncEngine.ADD, None))
-        self.assertEqual(self.sync_engine.analyze_remote_id(remote_id, \
-                       self.ftp_local.has_task, self.ftp_remote.has_task,
-                                                           False), \
+        self.assertEqual(self.sync_engine.analyze_remote_id(remote_id,
+                                                            has_local_task,
+                                                            has_remote_task,
+                                                            False),
                          (None, None))
 
 
@@ -166,10 +192,10 @@ class FakeTaskProvider(object):
     def has_task(self, tid):
         return tid in self.dic
 
-###############################################################################
+##############################################################################
 ### Function with the fake_ prefix are here to assist in testing, they do not
 ### need to be present in the real class
-###############################################################################
+##############################################################################
     def fake_add_task(self, tid):
         self.dic[tid] = "something"
 

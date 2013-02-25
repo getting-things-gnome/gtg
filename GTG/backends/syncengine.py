@@ -41,13 +41,13 @@ class SyncMeme(object):
     SyncEngine, just stores the modified date and time of the last
     synchronization for both objects (local and remote)
     '''
-    #NOTE: Checking objects CRCs would make this check nicer, as we could know
+    # NOTE: Checking objects CRCs would make this check nicer, as we could know
     #      if the object was really changed, or it has just updated its
     #      modified time (invernizzi)
     def __init__(self,
-                 local_modified = None,
-                 remote_modified = None,
-                 origin = None):
+                 local_modified=None,
+                 remote_modified=None,
+                 origin=None):
         '''
         Creates a new SyncMeme, updating the modified times for both the
         local and remote objects, and sets the given origin.
@@ -59,11 +59,11 @@ class SyncMeme(object):
                        remote is the original object, the other one being a
                        copy.
         '''
-        if local_modified != None:
+        if local_modified is not None:
             self.set_local_last_modified(local_modified)
-        if remote_modified != None:
+        if remote_modified is not None:
             self.set_remote_last_modified(remote_modified)
-        if origin != None:
+        if origin is not None:
             self.set_origin(origin)
 
     def set_local_last_modified(self, modified_datetime):
@@ -140,7 +140,6 @@ class SyncMemes(TwoKeyDict):
     storing all the data needed to keep track of a single relationship.
     '''
 
-
     get_remote_id = TwoKeyDict._get_secondary_key
     get_local_id = TwoKeyDict._get_primary_key
     remove_local_id = TwoKeyDict._remove_by_primary
@@ -164,7 +163,6 @@ class SyncEngine(object):
     It stores the state of each relationship in a series of SyncMeme.
     '''
 
-
     UPDATE = "update"
     REMOVE = "remove"
     ADD = "add"
@@ -181,7 +179,7 @@ class SyncEngine(object):
                          is_local,
                          has_local,
                          has_remote,
-                         is_syncable = True):
+                         is_syncable=True):
         '''
         Given an object that should be synced with another one,
         it finds out about the related object, and decides whether:
@@ -252,7 +250,7 @@ class SyncEngine(object):
         triplet = (local_id, remote_id, meme)
         self.sync_memes.add(triplet)
 
-    def break_relationship(self, local_id = None, remote_id = None):
+    def break_relationship(self, local_id=None, remote_id=None):
         '''
         breaks a relationship between two objects.
         Only one of the two parameters is necessary to identify the

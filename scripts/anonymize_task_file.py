@@ -90,7 +90,7 @@ def main():
             xmlproject = dom.getElementsByTagName("backend")[0]
             xmlfile = str(xmlproject.getAttribute("path"))
 
-            print "Reading tasks from %s" %(xmlfile)
+            print "Reading tasks from %s" % (xmlfile)
         except:
             print
             usage()
@@ -100,7 +100,7 @@ def main():
     else:
         # Use a reasonable default, and write out where it's sent
         outputfile = "/tmp/gtg-tasks.xml"
-        print "Saving anonymized tasks to %s" %(outputfile)
+        print "Saving anonymized tasks to %s" % (outputfile)
 
     anonymize(xmlfile, outputfile)
 

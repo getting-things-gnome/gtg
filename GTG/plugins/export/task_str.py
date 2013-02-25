@@ -50,7 +50,7 @@ class TaskStr(object):
     has_tags = property(lambda s: s.tags != [])
 
 
-def get_task_wrappers(tree, days = None, task_id = None):
+def get_task_wrappers(tree, days=None, task_id=None):
     """ Recursively find all task on given tree and
     convert them into TaskStr
 

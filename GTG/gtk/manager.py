@@ -23,30 +23,29 @@ Manager loads the prefs and launches the gtk main loop
 try:
     import pygtk
     pygtk.require('2.0')
-except: # pylint: disable-msg=W0702
+except:  # pylint: disable-msg=W0702
     raise SystemExit(1)
 
 import gtk
 import gobject
 
 import GTG
-from GTG.gtk.delete_dialog   import DeletionUI
+from GTG.gtk.delete_dialog import DeletionUI
 from GTG.gtk.browser.browser import TaskBrowser
 from GTG.gtk.editor.editor import TaskEditor
-from GTG.gtk.preferences     import PreferencesDialog
-from GTG.gtk.plugins         import PluginsDialog
-from GTG.gtk.dbuswrapper     import DBusTaskWrapper
-from GTG.tools               import clipboard
+from GTG.gtk.preferences import PreferencesDialog
+from GTG.gtk.plugins import PluginsDialog
+from GTG.gtk.dbuswrapper import DBusTaskWrapper
+from GTG.tools import clipboard
 from GTG.core.plugins.engine import PluginEngine
-from GTG.core.plugins.api    import PluginAPI
-from GTG.tools.logger        import Log
+from GTG.core.plugins.api import PluginAPI
+from GTG.tools.logger import Log
 from GTG.gtk.backends_dialog import BackendsDialog
 from GTG.backends.backendsignals import BackendSignals
 from GTG.gtk.browser.tag_editor import TagEditor
 
 
 class Manager(object):
-
 
     ############## init #####################################################
     def __init__(self, req):
@@ -62,16 +61,16 @@ class Manager(object):
 
         self.browser = None
         self.__start_browser_hidden = False
-        self.gtk_terminate = False #if true, the gtk main is not started
+        self.gtk_terminate = False  # if true, the gtk main is not started
 
         # if true, closing the last window doesn't quit GTG
         # (GTG lives somewhere else without GUI, e.g. notification area)
         self.daemon_mode = False
 
-        #Shared clipboard
+        # Shared clipboard
         self.clipboard = clipboard.TaskClipboard(self.req)
 
-        #Browser (still hidden)
+        # Browser (still hidden)
         self.browser = TaskBrowser(self.req, self)
 
         self.__init_plugin_engine()
@@ -79,10 +78,10 @@ class Manager(object):
         if not self.__start_browser_hidden:
             self.show_browser()
 
-        #Deletion UI
+        # Deletion UI
         self.delete_dialog = None
 
-        #Preferences and Backends windows
+        # Preferences and Backends windows
         # Initialize  dialogs
         self.preferences = PreferencesDialog(self.req)
         self.plugins = PluginsDialog(self.config_obj)
@@ -91,7 +90,7 @@ class Manager(object):
         # Tag Editor
         self.tag_editor_dialog = None
 
-        #DBus
+        # DBus
         DBusTaskWrapper(self.req, self)
         Log.debug("Manager initialization finished")
 
@@ -116,7 +115,7 @@ class Manager(object):
             self.browser = TaskBrowser(self.req, self)
         Log.debug("Browser is open")
 
-    #FIXME : the browser should not be the center of the universe.
+    # FIXME : the browser should not be the center of the universe.
     # In fact, we should build a system where view can register themselves
     # as "stay_alive" views. As long as at least one "stay_alive" view
     # is registered, gtg keeps running. It quit only when the last
@@ -124,7 +123,7 @@ class Manager(object):
     # Currently, the browser is our only "stay_alive" view.
     def close_browser(self, sender=None):
         self.hide_browser()
-        #may take a while to quit
+        # may take a while to quit
         self.quit()
 
     def hide_browser(self, sender=None):
@@ -140,7 +139,7 @@ class Manager(object):
         return self.browser.is_visible()
 
     def get_browser(self):
-        #used by the plugin api to hook in the browser
+        # used by the plugin api to hook in the browser
         return self.browser
 
     def start_browser_hidden(self):
@@ -159,7 +158,7 @@ class Manager(object):
         '''
         return self.opened_task
 
-    def open_task(self, uid, thisisnew = False):
+    def open_task(self, uid, thisisnew=False):
         """Open the task identified by 'uid'.
 
         If a Task editor is already opened for a given task, we present it.
@@ -172,14 +171,14 @@ class Manager(object):
             tv.present()
         elif t:
             tv = TaskEditor(
-                requester = self.req,
-                vmanager = self,
-                task = t,
-                taskconfig = self.task_config,
-                thisisnew = thisisnew,
-                clipboard = self.clipboard)
+                requester=self.req,
+                vmanager=self,
+                task=t,
+                taskconfig=self.task_config,
+                thisisnew=thisisnew,
+                clipboard=self.clipboard)
             tv.present()
-            #registering as opened
+            # registering as opened
             self.opened_task[uid] = tv
             # save that we opened this task
             if uid not in self.config["browser"]["opened_tasks"]:
@@ -190,14 +189,14 @@ class Manager(object):
     def close_task(self, tid):
         # When an editor is closed, it should de-register itself.
         if tid in self.opened_task:
-            #the following line has the side effect of removing the
+            # the following line has the side effect of removing the
             # tid key in the opened_task dictionary.
             editor = self.opened_task[tid]
             if editor:
                 del self.opened_task[tid]
-                #we have to remove the tid from opened_task first
-                #else, it close_task would be called once again
-                #by editor.close
+                # we have to remove the tid from opened_task first
+                # else, it close_task would be called once again
+                # by editor.close
                 editor.close()
             if tid in self.config["browser"]["opened_tasks"]:
                 self.config["browser"]["opened_tasks"].remove(tid)
@@ -209,16 +208,16 @@ class Manager(object):
         checking if we need to shut down the whole GTG (if no window is open)
         '''
         if not self.daemon_mode and not self.is_browser_visible() and \
-                                                        not self.opened_task:
-            #no need to live"
+                not self.opened_task:
+            # no need to live"
             self.quit()
 
 ################ Others dialog ############################################
-    def open_edit_backends(self, sender = None, backend_id = None):
+    def open_edit_backends(self, sender=None, backend_id=None):
         if not self.edit_backends_dialog:
             self.edit_backends_dialog = BackendsDialog(self.req)
         self.edit_backends_dialog.activate()
-        if backend_id != None:
+        if backend_id is not None:
             self.edit_backends_dialog.show_config_for_backend(backend_id)
 
     def configure_backend(self, backend_id):
@@ -258,15 +257,14 @@ class Manager(object):
         for uri in uri_list:
             if uri.startswith("gtg://"):
                 self.open_task(uri[6:])
-        #if no window was opened, we just quit
+        # if no window was opened, we just quit
         self.check_quit_condition()
 
-
 ### MAIN ###################################################################
-    def main(self, once_thru = False, uri_list = []):
+    def main(self, once_thru=False, uri_list=[]):
         if uri_list:
-            #before opening the requested tasks, we make sure that all of them
-            #are loaded.
+            # before opening the requested tasks, we make sure that all of them
+            # are loaded.
             BackendSignals().connect('default-backend-loaded',
                                      self.open_uri_list,
                                      uri_list)
@@ -282,7 +280,7 @@ class Manager(object):
 
     def quit(self, sender=None):
         gtk.main_quit()
-        #save opened tasks and their positions.
+        # save opened tasks and their positions.
         open_task = []
         for otid in self.opened_task.keys():
             open_task.append(otid)
@@ -290,12 +288,12 @@ class Manager(object):
         self.config["browser"]["opened_tasks"] = open_task
 
         # adds the plugin settings to the conf
-        #FIXME: this code is replicated in the preference window.
+        # FIXME: this code is replicated in the preference window.
         if len(self.pengine.plugins) > 0:
             self.config["plugins"] = {}
             self.config["plugins"]["disabled"] = \
-              [p.module_name for p in self.pengine.get_plugins("disabled")]
+                [p.module_name for p in self.pengine.get_plugins("disabled")]
             self.config["plugins"]["enabled"] = \
-              [p.module_name for p in self.pengine.get_plugins("enabled")]
+                [p.module_name for p in self.pengine.get_plugins("enabled")]
         # plugins are deactivated
         self.pengine.deactivate_plugins()

@@ -17,6 +17,7 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
+
 class BiDict(object):
     '''
     Bidirectional dictionary: the pairs stored can be accessed using either the
@@ -104,6 +105,6 @@ class BiDict(object):
 
         @returns: string
         '''
-        return reduce(lambda text, keys: \
+        return reduce(lambda text, keys:
                       str(text) + str(keys),
                       self._first_to_second.iteritems())

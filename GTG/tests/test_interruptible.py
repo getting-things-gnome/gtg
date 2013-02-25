@@ -33,7 +33,7 @@ class TestInterruptible(unittest.TestCase):
         """ Tests for the @interruptible decorator. """
         self.quit_condition = False
         cancellation_point = lambda: _cancellation_point(
-                                        lambda: self.quit_condition)
+            lambda: self.quit_condition)
         self.thread_started = Event()
 
         @interruptible
@@ -42,7 +42,7 @@ class TestInterruptible(unittest.TestCase):
             while True:
                 time.sleep(0.1)
                 cancellation_point()
-        thread = Thread(target = never_ending, args = (cancellation_point, ))
+        thread = Thread(target=never_ending, args=(cancellation_point, ))
         thread.start()
         self.thread_started.wait()
         self.quit_condition = True

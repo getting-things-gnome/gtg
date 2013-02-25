@@ -61,7 +61,7 @@ def get_user_dir(key):
         return
     for line in open(user_dirs_dirs, "r"):
         if line.startswith(key):
-            return os.path.expandvars(line[len(key)+2:-2])
+            return os.path.expandvars(line[len(key) + 2:-2])
 
 
 def get_desktop_dir():
@@ -101,7 +101,7 @@ class PluginExport:
         self._preferences_load()
         self._preferences_apply()
 
-    def deactivate(self, plugin_api): # pylint: disable-msg=W0613
+    def deactivate(self, plugin_api):  # pylint: disable-msg=W0613
         """ Removes the gtk widgets before quitting """
         self._gtk_deactivate()
 
@@ -117,8 +117,8 @@ class PluginExport:
 
         tasks = self.get_selected_tasks()
         if len(tasks) == 0:
-            self.show_error_dialog(_("No task matches your criteria. " \
-                "Empty report can't be generated."))
+            self.show_error_dialog(_("No task matches your criteria. "
+                                     "Empty report can't be generated."))
             return
 
         self.filename = None
@@ -132,10 +132,10 @@ class PluginExport:
 
         try:
             self.template.generate(tasks, self.plugin_api,
-                                    self.on_export_finished)
+                                   self.on_export_finished)
         except Exception, err:
             self.show_error_dialog(
-                        _("GTG could not generate the document: %s") % err)
+                _("GTG could not generate the document: %s") % err)
             raise
 
     def on_export_finished(self):
@@ -149,7 +149,7 @@ class PluginExport:
                 webbrowser.open(document_path)
         else:
             self.show_error_dialog("Document creation failed. "
-                "Ensure you have all needed programs.")
+                                   "Ensure you have all needed programs.")
 
         self.save_button.set_sensitive(True)
         self.open_button.set_sensitive(True)
@@ -174,7 +174,6 @@ class PluginExport:
 
         return get_task_wrappers(tree, timespan)
 
-
 ## GTK FUNCTIONS ##############################################################
     def _init_gtk(self):
         """ Initialize all the GTK widgets """
@@ -196,7 +195,9 @@ class PluginExport:
 
         self.combo = builder.get_object("export_combo_templ")
         templates_list = gtk.ListStore(gobject.TYPE_STRING,
-            gobject.TYPE_STRING, gobject.TYPE_STRING, gobject.TYPE_STRING)
+                                       gobject.TYPE_STRING,
+                                       gobject.TYPE_STRING, gobject.TYPE_STRING
+                                       )
         self.combo.set_model(templates_list)
         cell = gtk.CellRendererText()
         self.combo.pack_start(cell, True)
@@ -212,28 +213,28 @@ class PluginExport:
         self.open_button = builder.get_object("export_btn_open")
 
         self.export_all_active = builder.get_object(
-                                                "export_all_active_rb")
+            "export_all_active_rb")
         self.export_all_active.set_active(True)
         self.export_finished_last_week = builder.get_object(
-                                                "export_finished_last_week_rb")
+            "export_finished_last_week_rb")
         self.export_all_finished = builder.get_object(
-                                                "export_all_finished_rb")
+            "export_all_finished_rb")
 
         builder.connect_signals({
             "on_export_btn_open_clicked":
-                lambda widget: self.on_export_start(False),
+            lambda widget: self.on_export_start(False),
             "on_export_btn_save_clicked":
-                lambda widget: self.on_export_start(True),
+            lambda widget: self.on_export_start(True),
             "on_export_dialog_delete_event":
-                self._hide_dialog,
+            self._hide_dialog,
             "on_export_combo_templ_changed":
-                self.on_combo_changed,
+            self.on_combo_changed,
             "on_preferences_dialog_delete_event":
-                self.on_preferences_cancel,
+            self.on_preferences_cancel,
             "on_btn_preferences_cancel_clicked":
-                self.on_preferences_cancel,
+            self.on_preferences_cancel,
             "on_btn_preferences_ok_clicked":
-                self.on_preferences_ok,
+            self.on_preferences_ok,
         })
 
     def _gtk_deactivate(self):
@@ -246,14 +247,15 @@ class PluginExport:
             self.plugin_api.remove_toolbar_item(self.tb_button)
             self.toolbar_entry = False
 
-    def show_dialog(self, widget): # pylint: disable-msg=W0613
+    def show_dialog(self, widget):  # pylint: disable-msg=W0613
         """ Show dialog with options for export """
         parent_window = self.plugin_api.get_ui().get_window()
         self.export_dialog.set_transient_for(parent_window)
         self._update_combobox()
         self.export_dialog.show_all()
 
-    def _hide_dialog(self, sender=None, data=None): # pylint: disable-msg=W0613
+    def _hide_dialog(self, sender=None, data=None):
+    # pylint: disable-msg=W0613
         """ Hide dialog """
         self.export_dialog.hide()
         return True
@@ -271,9 +273,9 @@ class PluginExport:
                 active_entry = i
 
             model.append((path,
-                template.get_title(),
-                template.get_description(),
-                template.get_image_path()))
+                          template.get_title(),
+                          template.get_description(),
+                          template.get_image_path()))
 
         # wrap the combo-box if it's too long
         if len(templates) > 15:
@@ -295,7 +297,7 @@ class PluginExport:
             pixbuf = gtk.gdk.pixbuf_new_from_file(image)
             width, height = self.export_image.get_size_request()
             pixbuf = pixbuf.scale_simple(width, height,
-                                        gtk.gdk.INTERP_BILINEAR)
+                                         gtk.gdk.INTERP_BILINEAR)
             self.export_image.set_from_pixbuf(pixbuf)
         else:
             self.export_image.clear()
@@ -308,22 +310,22 @@ class PluginExport:
     def show_error_dialog(self, message):
         """ Display an error """
         dialog = gtk.MessageDialog(
-            parent = self.export_dialog,
-            flags = gtk.DIALOG_DESTROY_WITH_PARENT,
-            type = gtk.MESSAGE_ERROR,
-            buttons = gtk.BUTTONS_OK,
-            message_format = message)
+            parent=self.export_dialog,
+            flags=gtk.DIALOG_DESTROY_WITH_PARENT,
+            type=gtk.MESSAGE_ERROR,
+            buttons=gtk.BUTTONS_OK,
+            message_format=message)
         dialog.run()
         dialog.destroy()
 
     def choose_file(self):
         """ Let user choose a file to save and return its path """
         chooser = gtk.FileChooserDialog(
-                title = _("Choose where to save your list"),
-                parent = self.export_dialog,
-                action = gtk.FILE_CHOOSER_ACTION_SAVE,
-                buttons = (gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
-                           gtk.STOCK_SAVE, gtk.RESPONSE_OK))
+            title=_("Choose where to save your list"),
+            parent=self.export_dialog,
+            action=gtk.FILE_CHOOSER_ACTION_SAVE,
+            buttons=(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
+                     gtk.STOCK_SAVE, gtk.RESPONSE_OK))
         chooser.set_do_overwrite_confirmation(True)
         chooser.set_default_response(gtk.RESPONSE_OK)
         chooser.set_current_folder(get_desktop_dir())
@@ -355,7 +357,7 @@ class PluginExport:
         self.preferences_dialog.hide()
         return True
 
-    def on_preferences_ok(self, widget): # pylint: disable-msg=W0613
+    def on_preferences_ok(self, widget):  # pylint: disable-msg=W0613
         """ Apply and store new preferences """
         self.preferences["menu_entry"] = self.pref_menu.get_active()
         self.preferences["toolbar_entry"] = self.pref_toolbar.get_active()
@@ -368,7 +370,7 @@ class PluginExport:
         """ Restore user preferences """
         self.preferences = self.plugin_api.load_configuration_object(
             self.PLUGIN_NAME, "preferences",
-            default_values = self.DEFAULT_PREFERENCES)
+            default_values=self.DEFAULT_PREFERENCES)
 
     def _preferences_store(self):
         """ Store user preferences """

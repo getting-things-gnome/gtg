@@ -17,4 +17,4 @@
 from GTG import _
 title = _("A simple Web page that can be easily printed.")
 description = _("A template to create a simple HTML page with some tasks "
-    "that can be easily printed.")
+                "that can be easily printed.")

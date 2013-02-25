@@ -18,8 +18,8 @@
 # -----------------------------------------------------------------------------
 
 
-#This is the tool package. It contains some useful function and tool
-#that could be useful for any part of GTG.
+# This is the tool package. It contains some useful function and tool
+# that could be useful for any part of GTG.
 
 import os
 

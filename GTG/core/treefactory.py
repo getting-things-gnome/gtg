@@ -19,11 +19,11 @@
 
 from datetime import datetime
 
-from GTG                         import _
-from liblarch                    import Tree
-from GTG.core.task               import Task
-from GTG.core.tag                import Tag
-from GTG.core         import CoreConfig
+from GTG import _
+from liblarch import Tree
+from GTG.core.task import Task
+from GTG.core.tag import Tag
+from GTG.core import CoreConfig
 from GTG.core.search import search_filter
 from GTG.tools.dates import Date
 
@@ -31,7 +31,7 @@ from GTG.tools.dates import Date
 class TreeFactory:
 
     def __init__(self):
-        #Keep the tree in memory jus in case we have to use it for filters.
+        # Keep the tree in memory jus in case we have to use it for filters.
         self.tasktree = None
         self.tagtree = None
 
@@ -42,18 +42,18 @@ class TreeFactory:
         '''
         tasktree = Tree()
         f_dic = {
-          'workview': [self.workview],
-          'active': [self.active],
-          'closed': [self.closed, {'flat': True}],
-          'notag': [self.notag],
-          'workable': [self.is_workable],
-          'started': [self.is_started],
-          'workdue': [self.workdue],
-          'workstarted': [self.workstarted],
-          'worktostart': [self.worktostart],
-          'worklate': [self.worklate],
-          'no_disabled_tag': [self.no_disabled_tag],
-          }
+            'workview': [self.workview],
+            'active': [self.active],
+            'closed': [self.closed, {'flat': True}],
+            'notag': [self.notag],
+            'workable': [self.is_workable],
+            'started': [self.is_started],
+            'workdue': [self.workdue],
+            'workstarted': [self.workstarted],
+            'worktostart': [self.worktostart],
+            'worklate': [self.worklate],
+            'no_disabled_tag': [self.no_disabled_tag],
+        }
 
         for f in f_dic:
             filt = f_dic[f]
@@ -75,37 +75,37 @@ class TreeFactory:
         # Build the "all tasks tag"
         alltag = Tag(CoreConfig.ALLTASKS_TAG, req=req)
         alltag.set_attribute("special", "all")
-        alltag.set_attribute("label", "<span weight='bold'>%s</span>"\
-                                             % _("All tasks"))
+        alltag.set_attribute("label", "<span weight='bold'>%s</span>"
+                             % _("All tasks"))
         alltag.set_attribute("icon", "gtg-tags-all")
         alltag.set_attribute("order", 0)
         tagtree.add_node(alltag)
         p = {}
-        self.tasktree.add_filter(CoreConfig.ALLTASKS_TAG,\
-                                    self.alltag, parameters=p)
+        self.tasktree.add_filter(CoreConfig.ALLTASKS_TAG,
+                                 self.alltag, parameters=p)
         # Build the "without tag tag"
         notag_tag = Tag(CoreConfig.NOTAG_TAG, req=req)
         notag_tag.set_attribute("special", "notag")
-        notag_tag.set_attribute("label", "<span weight='bold'>%s</span>"\
-                                             % _("Tasks with no tags"))
+        notag_tag.set_attribute("label", "<span weight='bold'>%s</span>"
+                                % _("Tasks with no tags"))
         notag_tag.set_attribute("icon", "gtg-tags-none")
         notag_tag.set_attribute("order", 2)
         tagtree.add_node(notag_tag)
         p = {}
-        self.tasktree.add_filter(CoreConfig.NOTAG_TAG,\
-                                    self.notag, parameters=p)
+        self.tasktree.add_filter(CoreConfig.NOTAG_TAG,
+                                 self.notag, parameters=p)
 
         # Build the search tag
         search_tag = Tag(CoreConfig.SEARCH_TAG, req=req)
         search_tag.set_attribute("special", "search")
         search_tag.set_attribute("label",
-            "<span weight='bold'>%s</span>" % _("Search"))
+                                 "<span weight='bold'>%s</span>" % _("Search"))
         search_tag.set_attribute("icon", "search")
         search_tag.set_attribute("order", 1)
         tagtree.add_node(search_tag)
         p = {}
         self.tasktree.add_filter(CoreConfig.SEARCH_TAG,
-                                   search_filter, parameters=p)
+                                 search_filter, parameters=p)
 
         # Build the separator
         sep_tag = Tag(CoreConfig.SEP_TAG, req=req)
@@ -120,7 +120,7 @@ class TreeFactory:
         activeview = tagtree.get_viewtree(name='activetags', refresh=False)
         activeview.apply_filter('activetag')
 
-        #This view doesn't seem to be used. So it's not useful to build it now
+        # This view doesn't seem to be used. So it's not useful to build it now
 #        usedview = tagtree.get_viewtree(name='usedtags',refresh=False)
 #        usedview.apply_filter('usedtag')
 
@@ -130,7 +130,7 @@ class TreeFactory:
 
     ################# Tag Filters ##########################################
 
-    #filter to display only tags with active tasks
+    # filter to display only tags with active tasks
     def actively_used_tag(self, node, parameters=None):
         toreturn = node.is_actively_used()
         return toreturn
@@ -139,8 +139,8 @@ class TreeFactory:
         return node.is_used()
 
     ################# Task Filters #########################################
-    #That one is used to filters tag. Is it built dynamically each times
-    #a tag is added to the tagstore
+    # That one is used to filters tag. Is it built dynamically each times
+    # a tag is added to the tagstore
     def tag_filter(self, node, parameters):
         tag = parameters['tag']
         return node.has_tags([tag])
@@ -184,36 +184,36 @@ class TreeFactory:
 
     def workview(self, task, parameters=None):
         wv = (self.active(task) and
-             self.is_started(task) and
-             self.is_workable(task) and
-             self.no_disabled_tag(task) and
-             task.get_due_date() != Date.someday())
+              self.is_started(task) and
+              self.is_workable(task) and
+              self.no_disabled_tag(task) and
+              task.get_due_date() != Date.someday())
         return wv
 
     def workdue(self, task):
         ''' Filter for tasks due within the next day '''
         wv = (self.workview(task) and
-             task.get_due_date() and
-             task.get_days_left() < 2)
+              task.get_due_date() and
+              task.get_days_left() < 2)
         return wv
 
     def worklate(self, task):
         ''' Filter for tasks due within the next day '''
         wv = (self.workview(task) and
-             task.get_due_date() and
-             task.get_days_late() > 0)
+              task.get_due_date() and
+              task.get_days_late() > 0)
         return wv
 
     def workstarted(self, task):
         ''' Filter for workable tasks with a start date specified '''
         wv = self.workview(task) and \
-             task.start_date
+            task.start_date
         return wv
 
     def worktostart(self, task):
         ''' Filter for workable tasks without a start date specified '''
         wv = self.workview(task) and \
-             not task.start_date
+            not task.start_date
         return wv
 
     def active(self, task, parameters=None):

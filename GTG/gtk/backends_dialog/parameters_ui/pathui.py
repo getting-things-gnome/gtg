@@ -48,17 +48,17 @@ class PathUI(gtk.HBox):
         '''
         label = gtk.Label(_("Filename:"))
         label.set_line_wrap(True)
-        label.set_alignment(xalign = 0, yalign = 0.5)
-        label.set_size_request(width = width, height = -1)
+        label.set_alignment(xalign=0, yalign=0.5)
+        label.set_size_request(width=width, height=-1)
         self.pack_start(label, False)
-        align = gtk.Alignment(xalign = 0, yalign = 0.5, xscale = 1)
+        align = gtk.Alignment(xalign=0, yalign=0.5, xscale=1)
         align.set_padding(0, 0, 10, 0)
         self.pack_start(align, True)
         self.textbox = gtk.Entry()
         self.textbox.set_text(self.backend.get_parameters()['path'])
         self.textbox.connect('changed', self.on_path_modified)
         align.add(self.textbox)
-        self.button = gtk.Button(stock = gtk.STOCK_EDIT)
+        self.button = gtk.Button(stock=gtk.STOCK_EDIT)
         self.button.connect('clicked', self.on_button_clicked)
         self.pack_start(self.button, False)
 
@@ -82,19 +82,19 @@ class PathUI(gtk.HBox):
         @param sender: not used, only here for signal compatibility
         '''
         self.chooser = gtk.FileChooserDialog(
-                    title=None,
-                    action=gtk.FILE_CHOOSER_ACTION_SAVE,
-                    buttons=(gtk.STOCK_CANCEL,
-                             gtk.RESPONSE_CANCEL,
-                             gtk.STOCK_OK,
-                             gtk.RESPONSE_OK))
+            title=None,
+            action=gtk.FILE_CHOOSER_ACTION_SAVE,
+            buttons=(gtk.STOCK_CANCEL,
+                     gtk.RESPONSE_CANCEL,
+                     gtk.STOCK_OK,
+                     gtk.RESPONSE_OK))
         self.chooser.set_default_response(gtk.RESPONSE_OK)
-        #set default file as the current self.path
+        # set default file as the current self.path
         dirname, basename = os.path.split(self.textbox.get_text())
         self.chooser.set_current_name(basename)
         self.chosser.set_current_folder(dirname)
 
-        #filter files
+        # filter files
         afilter = gtk.FileFilter()
         afilter.set_name("All files")
         afilter.add_pattern("*")

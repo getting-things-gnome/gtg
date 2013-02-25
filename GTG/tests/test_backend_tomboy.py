@@ -19,7 +19,7 @@
 
 """ Tests for the tomboy backend """
 
-from datetime           import datetime
+from datetime import datetime
 from dbus.mainloop.glib import DBusGMainLoop
 import dbus
 import dbus.glib
@@ -51,46 +51,46 @@ class TestBackendTomboy(unittest.TestCase):
         thread_tomboy = threading.Thread(target=self.spawn_fake_tomboy_server)
         thread_tomboy.start()
         thread_tomboy.join()
-        #only the test process should go further, the dbus server one should
-        #stop here
+        # only the test process should go further, the dbus server one should
+        # stop here
         if not pid_tomboy:
             return
-        #we create a custom dictionary listening to the server, and register it
-        # in GTG.
+        # we create a custom dictionary listening to the server, and register
+        # it in GTG.
         additional_dic = {}
         additional_dic["use this fake connection instead"] = (
             FakeTomboy.BUS_NAME, FakeTomboy.BUS_PATH, FakeTomboy.BUS_INTERFACE)
         additional_dic[GenericBackend.KEY_ATTACHED_TAGS] = \
-                        [GenericBackend.ALLTASKS_TAG]
+            [GenericBackend.ALLTASKS_TAG]
         additional_dic[GenericBackend.KEY_DEFAULT_BACKEND] = True
         dic = BackendFactory().get_new_backend_dict('backend_tomboy',
-                                                   additional_dic)
+                                                    additional_dic)
         self.datastore = DataStore()
         self.backend = self.datastore.register_backend(dic)
-        #waiting for the "start_get_tasks" to settle
+        # waiting for the "start_get_tasks" to settle
         time.sleep(1)
-        #we create a dbus session to speak with the server
+        # we create a dbus session to speak with the server
         self.bus = dbus.SessionBus()
         obj = self.bus.get_object(FakeTomboy.BUS_NAME, FakeTomboy.BUS_PATH)
         self.tomboy = dbus.Interface(obj, FakeTomboy.BUS_INTERFACE)
 
     def spawn_fake_tomboy_server(self):
-        #the fake tomboy server has to be in a different process,
-        #otherwise it will lock on the GIL.
-        #For details, see
-        #http://lists.freedesktop.org/archives/dbus/2007-January/006921.html
+        # the fake tomboy server has to be in a different process,
+        # otherwise it will lock on the GIL.
+        # For details, see
+        # http://lists.freedesktop.org/archives/dbus/2007-January/006921.html
 
-        #we use a lockfile to make sure the server is running before we start
+        # we use a lockfile to make sure the server is running before we start
         # the test
         global pid_tomboy
         lockfile_fd, lockfile_path = tempfile.mkstemp()
         pid_tomboy = os.fork()
         if pid_tomboy:
-            #we wait in polling that the server has been started
+            # we wait in polling that the server has been started
             while True:
                 try:
                     fd = os.open(lockfile_path,
-                            os.O_CREAT | os.O_EXCL | os.O_RDWR)
+                                 os.O_CREAT | os.O_EXCL | os.O_RDWR)
                 except OSError, e:
                     if e.errno != errno.EEXIST:
                         raise
@@ -106,7 +106,7 @@ class TestBackendTomboy(unittest.TestCase):
     def tearDown(self):
         if not pid_tomboy:
             return
-        self.datastore.save(quit = True)
+        self.datastore.save(quit=True)
         time.sleep(0.5)
         self.tomboy.FakeQuit()
         # FIXME: self.bus.close()
@@ -114,7 +114,7 @@ class TestBackendTomboy(unittest.TestCase):
         os.waitpid(pid_tomboy, 0)
 
     def test_everything(self):
-        #we cannot use separate test functions because we only want a single
+        # we cannot use separate test functions because we only want a single
         # FakeTomboy dbus server running
         if not pid_tomboy:
             return
@@ -128,36 +128,36 @@ class TestBackendTomboy(unittest.TestCase):
 
     def TEST_processing_tomboy_notes(self):
         self.backend.set_attached_tags([GenericBackend.ALLTASKS_TAG])
-        #adding a note
+        # adding a note
         note = self.tomboy.CreateNamedNote(str(uuid.uuid4()))
         self.backend._process_tomboy_note(note)
         self.assertEqual(len(self.datastore.get_all_tasks()), 1)
         tid = self.backend.sync_engine.sync_memes.get_local_id(note)
         task = self.datastore.get_task(tid)
-        #re-adding that (should not change anything)
+        # re-adding that (should not change anything)
         self.backend._process_tomboy_note(note)
         self.assertEqual(len(self.datastore.get_all_tasks()), 1)
-        self.assertEqual( \
-                self.backend.sync_engine.sync_memes.get_local_id(note), tid)
-        #removing the note and updating gtg
+        self.assertEqual(
+            self.backend.sync_engine.sync_memes.get_local_id(note), tid)
+        # removing the note and updating gtg
         self.tomboy.DeleteNote(note)
         self.backend.set_task(task)
         self.assertEqual(len(self.datastore.get_all_tasks()), 0)
 
     def TEST_set_task(self):
         self.backend.set_attached_tags([GenericBackend.ALLTASKS_TAG])
-        #adding a task
+        # adding a task
         task = self.datastore.requester.new_task()
         task.set_title("title")
         self.backend.set_task(task)
         self.assertEqual(len(self.tomboy.ListAllNotes()), 1)
         note = self.tomboy.ListAllNotes()[0]
         self.assertEqual(str(self.tomboy.GetNoteTitle(note)), task.get_title())
-        #re-adding that (should not change anything)
+        # re-adding that (should not change anything)
         self.backend.set_task(task)
         self.assertEqual(len(self.tomboy.ListAllNotes()), 1)
         self.assertEqual(note, self.tomboy.ListAllNotes()[0])
-        #removing the task and updating tomboy
+        # removing the task and updating tomboy
         self.datastore.request_task_deletion(task.get_id())
         self.backend._process_tomboy_note(note)
         self.assertEqual(len(self.tomboy.ListAllNotes()), 0)
@@ -169,30 +169,30 @@ class TestBackendTomboy(unittest.TestCase):
         self.backend.set_task(task)
         note = self.tomboy.ListAllNotes()[0]
         gtg_modified = task.get_modified()
-        tomboy_modified = self._modified_string_to_datetime( \
-                    self.tomboy.GetNoteChangeDate(note))
-        #no-one updated, nothing should happen
+        tomboy_modified = self._modified_string_to_datetime(
+            self.tomboy.GetNoteChangeDate(note))
+        # no-one updated, nothing should happen
         self.backend.set_task(task)
         self.assertEqual(gtg_modified, task.get_modified())
-        self.assertEqual(tomboy_modified, \
-                         self._modified_string_to_datetime( \
+        self.assertEqual(tomboy_modified,
+                         self._modified_string_to_datetime(
                          self.tomboy.GetNoteChangeDate(note)))
-        #we update the GTG task
+        # we update the GTG task
         UPDATED_GTG_TITLE = "UPDATED_GTG_TITLE"
         task.set_title(UPDATED_GTG_TITLE)
         self.backend.set_task(task)
         self.assertTrue(gtg_modified < task.get_modified())
         self.assertTrue(tomboy_modified <=
-                         self._modified_string_to_datetime( \
-                         self.tomboy.GetNoteChangeDate(note)))
+                        self._modified_string_to_datetime(
+                        self.tomboy.GetNoteChangeDate(note)))
         self.assertEqual(task.get_title(), UPDATED_GTG_TITLE)
         self.assertEqual(self.tomboy.GetNoteTitle(note), UPDATED_GTG_TITLE)
         gtg_modified = task.get_modified()
-        tomboy_modified = self._modified_string_to_datetime( \
-                    self.tomboy.GetNoteChangeDate(note))
-        #we update the TOMBOY task
+        tomboy_modified = self._modified_string_to_datetime(
+            self.tomboy.GetNoteChangeDate(note))
+        # we update the TOMBOY task
         UPDATED_TOMBOY_TITLE = "UPDATED_TOMBOY_TITLE"
-        #the resolution of tomboy notes changed time is 1 second, so we need
+        # the resolution of tomboy notes changed time is 1 second, so we need
         # to wait. This *shouldn't* be needed in the actual code because
         # tomboy signals are always a few seconds late.
         time.sleep(1)
@@ -200,63 +200,63 @@ class TestBackendTomboy(unittest.TestCase):
         self.backend._process_tomboy_note(note)
         self.assertTrue(gtg_modified <= task.get_modified())
         self.assertTrue(tomboy_modified <=
-                         self._modified_string_to_datetime( \
-                         self.tomboy.GetNoteChangeDate(note)))
+                        self._modified_string_to_datetime(
+                        self.tomboy.GetNoteChangeDate(note)))
         self.assertEqual(task.get_title(), UPDATED_TOMBOY_TITLE)
         self.assertEqual(self.tomboy.GetNoteTitle(note), UPDATED_TOMBOY_TITLE)
 
     def TEST_processing_tomboy_notes_with_tags(self):
         self.backend.set_attached_tags(['@a'])
-        #adding a not syncable note
+        # adding a not syncable note
         note = self.tomboy.CreateNamedNote("title" + str(uuid.uuid4()))
         self.backend._process_tomboy_note(note)
         self.assertEqual(len(self.datastore.get_all_tasks()), 0)
-        #re-adding that (should not change anything)
+        # re-adding that (should not change anything)
         self.backend._process_tomboy_note(note)
         self.assertEqual(len(self.datastore.get_all_tasks()), 0)
-        #adding a tag to that note
+        # adding a tag to that note
         self.tomboy.SetNoteContents(note, "something with @a")
         self.backend._process_tomboy_note(note)
         self.assertEqual(len(self.datastore.get_all_tasks()), 1)
-        #removing the tag and resyncing
+        # removing the tag and resyncing
         self.tomboy.SetNoteContents(note, "something with no tags")
         self.backend._process_tomboy_note(note)
         self.assertEqual(len(self.datastore.get_all_tasks()), 0)
-        #adding a syncable note
+        # adding a syncable note
         note = self.tomboy.CreateNamedNote("title @a" + str(uuid.uuid4()))
         self.backend._process_tomboy_note(note)
         self.assertEqual(len(self.datastore.get_all_tasks()), 1)
         tid = self.backend.sync_engine.sync_memes.get_local_id(note)
         task = self.datastore.get_task(tid)
-        #re-adding that (should not change anything)
+        # re-adding that (should not change anything)
         self.backend._process_tomboy_note(note)
         self.assertEqual(len(self.datastore.get_all_tasks()), 1)
-        self.assertEqual( \
-                self.backend.sync_engine.sync_memes.get_local_id(note), tid)
-        #removing the note and updating gtg
+        self.assertEqual(
+            self.backend.sync_engine.sync_memes.get_local_id(note), tid)
+        # removing the note and updating gtg
         self.tomboy.DeleteNote(note)
         self.backend.set_task(task)
         self.assertEqual(len(self.datastore.get_all_tasks()), 0)
 
     def TEST_set_task_with_tags(self):
         self.backend.set_attached_tags(['@a'])
-        #adding a not syncable task
+        # adding a not syncable task
         task = self.datastore.requester.new_task()
         task.set_title("title")
         self.backend.set_task(task)
         self.assertEqual(len(self.tomboy.ListAllNotes()), 0)
-        #making that task  syncable
+        # making that task  syncable
         task.set_title("something else")
         task.add_tag("@a")
         self.backend.set_task(task)
         self.assertEqual(len(self.tomboy.ListAllNotes()), 1)
         note = self.tomboy.ListAllNotes()[0]
         self.assertEqual(str(self.tomboy.GetNoteTitle(note)), task.get_title())
-        #re-adding that (should not change anything)
+        # re-adding that (should not change anything)
         self.backend.set_task(task)
         self.assertEqual(len(self.tomboy.ListAllNotes()), 1)
         self.assertEqual(note, self.tomboy.ListAllNotes()[0])
-        #removing the syncable property and updating tomboy
+        # removing the syncable property and updating tomboy
         task.remove_tag("@a")
         self.backend.set_task(task)
         self.assertEqual(len(self.tomboy.ListAllNotes()), 0)
@@ -284,10 +284,8 @@ class FakeTomboy(dbus.service.Object):
     D-Bus service object that mimics TOMBOY
     """
 
-
-    #We don't directly use the tomboy dbus path to avoid conflicts
+    # We don't directly use the tomboy dbus path to avoid conflicts
     # if tomboy is running during the test
-
     BUS_NAME = "Fake.Tomboy"
     BUS_PATH = "/Fake/Tomboy"
     BUS_INTERFACE = "Fake.Tomboy.RemoteControl"
@@ -296,10 +294,10 @@ class FakeTomboy(dbus.service.Object):
         # Attach the object to D-Bus
         DBusGMainLoop(set_as_default=True)
         self.bus = dbus.SessionBus()
-        bus_name = dbus.service.BusName(self.BUS_NAME, bus = self.bus)
+        bus_name = dbus.service.BusName(self.BUS_NAME, bus=self.bus)
         dbus.service.Object.__init__(self, bus_name, self.BUS_PATH)
         self.notes = {}
-        threading.Thread(target = self.fake_main_loop).start()
+        threading.Thread(target=self.fake_main_loop).start()
 
     @dbus.service.method(BUS_INTERFACE, in_signature="s", out_signature="s")
     def GetNoteContents(self, note):
@@ -336,7 +334,7 @@ class FakeTomboy(dbus.service.Object):
 
     @dbus.service.method(BUS_INTERFACE, in_signature="s", out_signature="s")
     def CreateNamedNote(self, title):
-        #this is to mimic the way tomboy handles title clashes
+        # this is to mimic the way tomboy handles title clashes
         if self._FindNote(title) != '':
             return ''
         note = str(uuid.uuid4())
@@ -354,7 +352,7 @@ class FakeTomboy(dbus.service.Object):
                 return note
         return ''
 
-    @dbus.service.method(BUS_INTERFACE, out_signature = "as")
+    @dbus.service.method(BUS_INTERFACE, out_signature="as")
     def ListAllNotes(self):
         return list(self.notes)
 

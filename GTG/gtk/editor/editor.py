@@ -44,9 +44,9 @@ class TaskEditor:
                  requester,
                  vmanager,
                  task,
-                 taskconfig = None,
-                 thisisnew = False,
-                 clipboard = None):
+                 taskconfig=None,
+                 thisisnew=False,
+                 clipboard=None):
         '''
         req is the requester
         vmanager is the view manager
@@ -70,38 +70,39 @@ class TaskEditor:
         self.inserttag_button = self.builder.get_object("inserttag")
         self.inserttag_button.set_tooltip_text(GnomeConfig.TAG_TOOLTIP)
 
-        #Create our dictionary and connect it
+        # Create our dictionary and connect it
         dic = {
-                "mark_as_done_clicked": self.change_status,
-                "on_dismiss": self.dismiss,
-                "delete_clicked": self.delete_task,
-                "on_duedate_pressed": (self.on_date_pressed,
-                                               GTGCalendar.DATE_KIND_DUE),
-                "on_startdate_pressed": (self.on_date_pressed,
-                                               GTGCalendar.DATE_KIND_START),
-                "on_closeddate_pressed": (self.on_date_pressed,
-                                               GTGCalendar.DATE_KIND_CLOSED),
-                "close_clicked": self.close,
-                "duedate_changed": (self.date_changed,
-                                               GTGCalendar.DATE_KIND_DUE),
-                "duedate_focus_out": (self.date_focus_out,
-                                               GTGCalendar.DATE_KIND_DUE),
-                "startingdate_changed": (self.date_changed,
-                                               GTGCalendar.DATE_KIND_START),
-                "startdate_focus_out": (self.date_focus_out,
-                                               GTGCalendar.DATE_KIND_START),
-                "closeddate_changed": (self.date_changed,
-                                               GTGCalendar.DATE_KIND_CLOSED),
-                "closeddate_focus_out": (self.date_focus_out,
-                                               GTGCalendar.DATE_KIND_CLOSED),
-                "on_insert_subtask_clicked": self.insert_subtask,
-                "on_inserttag_clicked": self.inserttag_clicked,
-                "on_move": self.on_move,
+            "mark_as_done_clicked": self.change_status,
+            "on_dismiss": self.dismiss,
+            "delete_clicked": self.delete_task,
+            "on_duedate_pressed": (self.on_date_pressed,
+                                   GTGCalendar.DATE_KIND_DUE),
+            "on_startdate_pressed": (self.on_date_pressed,
+                                     GTGCalendar.DATE_KIND_START),
+            "on_closeddate_pressed": (self.on_date_pressed,
+                                      GTGCalendar.DATE_KIND_CLOSED),
+            "close_clicked": self.close,
+            "duedate_changed": (self.date_changed,
+                                GTGCalendar.DATE_KIND_DUE),
+            "duedate_focus_out": (self.date_focus_out,
+                                  GTGCalendar.DATE_KIND_DUE),
+            "startingdate_changed": (self.date_changed,
+                                     GTGCalendar.DATE_KIND_START),
+            "startdate_focus_out": (self.date_focus_out,
+                                    GTGCalendar.DATE_KIND_START),
+            "closeddate_changed": (self.date_changed,
+                                   GTGCalendar.DATE_KIND_CLOSED),
+            "closeddate_focus_out": (self.date_focus_out,
+                                     GTGCalendar.DATE_KIND_CLOSED),
+            "on_insert_subtask_clicked": self.insert_subtask,
+            "on_inserttag_clicked": self.inserttag_clicked,
+            "on_move": self.on_move,
         }
         self.builder.connect_signals(dic)
         self.window = self.builder.get_object("TaskEditor")
-        #Removing the Normal textview to replace it by our own
-        #So don't try to change anything with glade, this is a home-made widget
+        # Removing the Normal textview to replace it by our own
+        # So don't try to change anything with glade, this is a home-made
+        # widget
         textview = self.builder.get_object("textview")
         scrolled = self.builder.get_object("scrolledtask")
         scrolled.remove(textview)
@@ -113,9 +114,9 @@ class TaskEditor:
         self.textview.set_right_margin(5)
         scrolled.add(self.textview)
         conf_font_value = self.browser_config.get("font_name")
-        if conf_font_value!= "":
+        if conf_font_value != "":
             self.textview.modify_font(pango.FontDescription(conf_font_value))
-        #Voila! it's done
+        # Voila! it's done
         self.calendar = GTGCalendar(self.builder)
         self.duedate_widget = self.builder.get_object("duedate_entry")
         self.startdate_widget = self.builder.get_object("startdate_entry")
@@ -136,22 +137,22 @@ class TaskEditor:
 
         texte = self.task.get_text()
         title = self.task.get_title()
-        #the first line is the title
-        self.textview.set_text("%s\n"%title)
-        #we insert the rest of the task
+        # the first line is the title
+        self.textview.set_text("%s\n" % title)
+        # we insert the rest of the task
         if texte:
-            self.textview.insert("%s"%texte)
+            self.textview.insert("%s" % texte)
         else:
-            #If not text, we insert tags
+            # If not text, we insert tags
             if tags:
                 for t in tags:
-                    self.textview.insert_text("%s, "%t.get_name())
+                    self.textview.insert_text("%s, " % t.get_name())
                 self.textview.insert_text("\n")
-            #If we don't have text, we still need to insert subtasks if any
+            # If we don't have text, we still need to insert subtasks if any
             subtasks = task.get_children()
             if subtasks:
                 self.textview.insert_subtasks(subtasks)
-        #We select the title if it's a new task
+        # We select the title if it's a new task
         if thisisnew:
             self.textview.select_title()
         else:
@@ -166,12 +167,12 @@ class TaskEditor:
         self.pengine.register_api(self.plugin_api)
         self.pengine.onTaskLoad(self.plugin_api)
 
-        #Putting the refresh callback at the end make the start a lot faster
+        # Putting the refresh callback at the end make the start a lot faster
         self.textview.refresh_callback(self.refresh_editor)
         self.refresh_editor()
         self.textview.grab_focus()
 
-        #restoring size and position, spatial tasks
+        # restoring size and position, spatial tasks
         if self.config:
             tid = self.task.get_id()
             if tid in self.config:
@@ -207,31 +208,31 @@ class TaskEditor:
         insert_subtask = self.builder.get_object("insert_subtask")
         key, mod = gtk.accelerator_parse("<Control><Shift>n")
         insert_subtask.add_accelerator('clicked', agr, key, mod,
-            gtk.ACCEL_VISIBLE)
+                                       gtk.ACCEL_VISIBLE)
 
         # Ctrl-D marks task as done
         mark_as_done_editor = self.builder.get_object('mark_as_done_editor')
         key, mod = gtk.accelerator_parse('<Control>d')
         mark_as_done_editor.add_accelerator('clicked', agr, key, mod,
-            gtk.ACCEL_VISIBLE)
+                                            gtk.ACCEL_VISIBLE)
 
         # Ctrl-I marks task as dismissed
         dismiss_editor = self.builder.get_object('dismiss_editor')
         key, mod = gtk.accelerator_parse('<Control>i')
         dismiss_editor.add_accelerator('clicked', agr, key, mod,
-            gtk.ACCEL_VISIBLE)
+                                       gtk.ACCEL_VISIBLE)
 
-    #Can be called at any time to reflect the status of the Task
-    #Refresh should never interfere with the TaskView.
-    #If a title is passed as a parameter, it will become
-    #the new window title. If not, we will look for the task title.
-    #Refreshtext is whether or not we should refresh the TaskView
+    # Can be called at any time to reflect the status of the Task
+    # Refresh should never interfere with the TaskView.
+    # If a title is passed as a parameter, it will become
+    # the new window title. If not, we will look for the task title.
+    # Refreshtext is whether or not we should refresh the TaskView
     #(doing it all the time is dangerous if the task is empty)
     def refresh_editor(self, title=None, refreshtext=False):
-        if self.window == None:
+        if self.window is None:
             return
         to_save = False
-        #title of the window
+        # title of the window
         if title:
             self.window.set_title(title)
             to_save = True
@@ -264,7 +265,7 @@ class TaskEditor:
         self.donebutton.show()
         self.tasksidebar.show()
 
-        #Refreshing the status bar labels and date boxes
+        # Refreshing the status bar labels and date boxes
         if status in [Task.STA_DISMISSED, Task.STA_DONE]:
             self.builder.get_object("label2").hide()
             self.builder.get_object("hbox1").hide()
@@ -276,7 +277,7 @@ class TaskEditor:
             self.builder.get_object("label2").show()
             self.builder.get_object("hbox1").show()
 
-        #refreshing the start date field
+        # refreshing the start date field
         startdate = self.task.get_start_date()
         try:
             prevdate = Date.parse(self.startdate_widget.get_text())
@@ -287,7 +288,7 @@ class TaskEditor:
         if update_date:
             self.startdate_widget.set_text(str(startdate))
 
-        #refreshing the due date field
+        # refreshing the due date field
         duedate = self.task.get_due_date()
         try:
             prevdate = Date.parse(self.duedate_widget.get_text())
@@ -304,10 +305,10 @@ class TaskEditor:
         if closeddate != prevcldate:
             self.closeddate_widget.set_text(str(closeddate))
 
-        #refreshing the day left label
-        #If the task is marked as done, we display the delay between the
-        #due date and the actual closing date. If the task isn't marked
-        #as done, we display the number of days left.
+        # refreshing the day left label
+        # If the task is marked as done, we display the delay between the
+        # due date and the actual closing date. If the task isn't marked
+        # as done, we display the number of days left.
         if status in [Task.STA_DISMISSED, Task.STA_DONE]:
             delay = self.task.get_days_late()
             if delay is None:
@@ -316,11 +317,12 @@ class TaskEditor:
                 txt = "Completed on time"
             elif delay >= 1:
                 txt = ngettext("Completed %(days)d day late",
-                    "Completed %(days)d days late", delay) % {'days': delay}
+                               "Completed %(days)d days late", delay) % \
+                    {'days': delay}
             elif delay <= -1:
                 abs_delay = abs(delay)
                 txt = ngettext("Completed %(days)d day early",
-                    "Completed %(days)d days early", abs_delay) % \
+                               "Completed %(days)d days early", abs_delay) % \
                     {'days': abs_delay}
         else:
             due_date = self.task.get_due_date()
@@ -335,21 +337,22 @@ class TaskEditor:
             elif result < 0:
                 abs_result = abs(result)
                 txt = ngettext("Due yesterday!", "Was %(days)d days ago",
-                    abs_result) % {'days': abs_result}
+                               abs_result) % {'days': abs_result}
         window_style = self.window.get_style()
         color = str(window_style.text[gtk.STATE_INSENSITIVE])
-        self.dayleft_label.set_markup("<span color='"+color+"'>"+txt+"</span>")
+        self.dayleft_label.set_markup(
+            "<span color='" + color + "'>" + txt + "</span>")
 
-        #Refreshing the tag list in the insert tag button
+        # Refreshing the tag list in the insert tag button
         taglist = self.req.get_used_tags()
         menu = gtk.Menu()
         tag_count = 0
         for tagname in taglist:
             tag_object = self.req.get_tag(tagname)
             if not tag_object.is_special() and \
-               not self.task.has_tags(tag_list=[tagname]):
+                    not self.task.has_tags(tag_list=[tagname]):
                 tag_count += 1
-                mi = gtk.MenuItem(label = tagname, use_underline=False)
+                mi = gtk.MenuItem(label=tagname, use_underline=False)
                 mi.connect("activate", self.inserttag, tagname)
                 mi.show()
                 menu.append(mi)
@@ -369,12 +372,12 @@ class TaskEditor:
             valid = False
 
         if valid:
-            #If the date is valid, we write with default color in the widget
+            # If the date is valid, we write with default color in the widget
             # "none" will set the default color.
             widget.modify_text(gtk.STATE_NORMAL, None)
             widget.modify_base(gtk.STATE_NORMAL, None)
         else:
-            #We should write in red in the entry if the date is not valid
+            # We should write in red in the entry if the date is not valid
             widget.modify_text(gtk.STATE_NORMAL, gtk.gdk.color_parse("#F00"))
             widget.modify_base(gtk.STATE_NORMAL, gtk.gdk.color_parse("#F88"))
 
@@ -405,7 +408,7 @@ class TaskEditor:
         elif date_kind == GTGCalendar.DATE_KIND_CLOSED:
             date = self.task.get_closed_date()
         self.calendar.set_date(date, date_kind)
-        #we show the calendar at the right position
+        # we show the calendar at the right position
         rect = widget.get_allocation()
         x, y = widget.window.get_origin()
         self.calendar.show_at_position(x + rect.x + rect.width,
@@ -435,7 +438,7 @@ class TaskEditor:
         for task in all_subtasks:
             self.vmanager.close_task(task.get_id())
 
-    def dismiss(self, widget): #pylint: disable-msg=W0613
+    def dismiss(self, widget):  # pylint: disable-msg=W0613
         stat = self.task.get_status()
         if stat == "Dismiss":
             self.task.set_status("Active")
@@ -445,7 +448,7 @@ class TaskEditor:
             self.close_all_subtasks()
             self.close(None)
 
-    def change_status(self, widget): #pylint: disable-msg=W0613
+    def change_status(self, widget):  # pylint: disable-msg=W0613
         stat = self.task.get_status()
         if stat == "Done":
             self.task.set_status("Active")
@@ -456,14 +459,14 @@ class TaskEditor:
             self.close(None)
 
     def delete_task(self, widget):
-        #this triggers the closing of the window in the view manager
+        # this triggers the closing of the window in the view manager
         if self.task.is_new():
 #            self.req.delete_task(self.task.get_id())
             self.vmanager.close_task(self.task.get_id())
         else:
             self.vmanager.ask_delete_tasks([self.task.get_id()])
 
-    #Take the title as argument and return the subtask ID
+    # Take the title as argument and return the subtask ID
     def new_subtask(self, title=None, tid=None):
         if tid:
             self.task.add_child(tid)
@@ -479,11 +482,11 @@ class TaskEditor:
         task_id = task.get_id()
         self.vmanager.open_task(task_id)
 
-    def insert_subtask(self, widget): #pylint: disable-msg=W0613
+    def insert_subtask(self, widget):  # pylint: disable-msg=W0613
         self.textview.insert_newtask()
         self.textview.grab_focus()
 
-    def inserttag_clicked(self, widget): #pylint: disable-msg=W0613
+    def inserttag_clicked(self, widget):  # pylint: disable-msg=W0613
         itera = self.textview.get_insert()
         if itera.starts_line():
             self.textview.insert_text("@", itera)
@@ -491,7 +494,7 @@ class TaskEditor:
             self.textview.insert_text(" @", itera)
         self.textview.grab_focus()
 
-    def inserttag(self, widget, tag): #pylint: disable-msg=W0613
+    def inserttag(self, widget, tag):  # pylint: disable-msg=W0613
         self.textview.insert_tags([tag])
         self.textview.grab_focus()
 
@@ -499,31 +502,32 @@ class TaskEditor:
         self.task.set_title(self.textview.get_title())
         self.task.set_text(self.textview.get_text())
         self.task.sync()
-        if self.config != None:
+        if self.config is not None:
             self.config.write()
         self.time = time.time()
-    #light_save save the task without refreshing every 30seconds
-    #We will reduce the time when the get_text will be in another thread
+    # light_save save the task without refreshing every 30seconds
+    # We will reduce the time when the get_text will be in another thread
+
     def light_save(self):
-        #if self.time is none, we never called any save
+        # if self.time is none, we never called any save
         if self.time:
             diff = time.time() - self.time
             tosave = diff > GnomeConfig.SAVETIME
         else:
-            #we don't want to save a task while opening it
+            # we don't want to save a task while opening it
             tosave = self.textview.get_editable()
             diff = None
         if tosave:
             self.save()
 
-    #This will bring the Task Editor to front
+    # This will bring the Task Editor to front
     def present(self):
         self.window.present()
 
     def move(self, x, y):
         try:
-            xx=int(x)
-            yy=int(y)
+            xx = int(x)
+            yy = int(y)
             self.window.move(xx, yy)
         except:
             pass
@@ -532,29 +536,29 @@ class TaskEditor:
         return self.window.get_position()
 
     def on_move(self, widget, event):
-        #saving the position
-        if self.config != None:
+        # saving the position
+        if self.config is not None:
             tid = self.task.get_id()
             if not tid in self.config:
                 self.config[tid] = dict()
             self.config[tid]["position"] = self.get_position()
             self.config[tid]["size"] = self.window.get_size()
 
-    #We define dummy variable for when close is called from a callback
+    # We define dummy variable for when close is called from a callback
     def close(self, window=None, a=None, b=None, c=None):
-        #pylint: disable-msg=W0613
-        #We should also destroy the whole taskeditor object.
+        # pylint: disable-msg=W0613
+        # We should also destroy the whole taskeditor object.
         if self.window:
             self.window.destroy()
             self.window = None
 
-    #The destroy signal is linked to the "close" button. So if we call
-    #destroy in the close function, this will cause the close to be called
-    #twice
-    #To solve that, close will just call "destroy" and the destroy signal
-    #Will be linked to this destruction method that will save the task
+    # The destroy signal is linked to the "close" button. So if we call
+    # destroy in the close function, this will cause the close to be called
+    # twice
+    # To solve that, close will just call "destroy" and the destroy signal
+    # Will be linked to this destruction method that will save the task
     def destruction(self, a=None):
-        #Save should be also called when buffer is modified
+        # Save should be also called when buffer is modified
         self.pengine.onTaskClose(self.plugin_api)
         self.pengine.remove_api(self.plugin_api)
         tid = self.task.get_id()

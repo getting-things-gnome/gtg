@@ -42,26 +42,27 @@ def usage():
     text += _("Basic commands:\n")
     text += spaces % ("gtcli new", _("Create a new task"))
     text += spaces % ("gtcli show <tid>",
-        _("Display detailed information on given task id"))
+                      _("Display detailed information on given task id"))
     text += spaces % ("gtcli edit <tid>",
-        _("Opens the GUI editor for the given task id"))
+                      _("Opens the GUI editor for the given task id"))
     text += spaces % ("gtcli delete <tid>",
-        _("Removes task identified by tid"))
+                      _("Removes task identified by tid"))
     text += spaces % ("gtcli list [all|today|<filter>|<tag>]...",
-        _("List tasks"))
+                      _("List tasks"))
     text += spaces % ("gtcli search <expression>", _("Search tasks"))
     text += spaces % ("gtcli count [all|today|<filter>|<tag>]...",
-        _("Number of tasks"))
+                      _("Number of tasks"))
     text += spaces % ("gtcli summary [all|today|<filter>|<tag>]...",
-        _("Report how many tasks starting/due each day"))
+                      _("Report how many tasks starting/due each day"))
     text += spaces % ("gtcli overview <count of days>",
-        _("Report which tasks are scheduled on each day, default 7 days"))
+                      _("Report which tasks are scheduled on each day, \
+                        default 7 days"))
     text += spaces % ("gtcli postpone <tid> <date>",
-        _("Updates the start date of task"))
+                      _("Updates the start date of task"))
     text += spaces % ("gtcli close <tid>",
-        _("Sets state of task identified by tid to closed"))
+                      _("Sets state of task identified by tid to closed"))
     text += spaces % ("gtcli browser [hide|show]",
-        _("Hides or shows the task browser window"))
+                      _("Hides or shows the task browser window"))
 
     text += "\n"
     text += "http://gtg.fritalk.com/\n"
@@ -283,8 +284,8 @@ def summary_of_tasks(criteria):
     print "%-20s %5s %5s" % ("", "Start", "Due")
     if 'unscheduled' in report:
         print "%-20s %5d %5d" % ('unscheduled',
-                                report['unscheduled']['starting'],
-                                report['unscheduled']['due'])
+                                 report['unscheduled']['starting'],
+                                 report['unscheduled']['due'])
     num_days = 22
     fmt = "%a  %-m-%-d"
     if 'today' in criteria:
@@ -294,8 +295,8 @@ def summary_of_tasks(criteria):
         sday = str(day)
         if sday in report:
             print "%-20s %5d %5d" % (day.strftime(fmt),
-                                    report[sday]['starting'],
-                                    report[sday]['due'])
+                                     report[sday]['starting'],
+                                     report[sday]['due'])
         else:
             print "%-20s %5d %5d" % (day.strftime(fmt), 0, 0)
 
@@ -423,18 +424,18 @@ def run_command(args):
 
     minimal_args(0)
     commands = [
-      (("new", "add"), 0, new_task),
-      (("list"), 0, list_tasks),
-      (("count"), 0, count_tasks),
-      (("summary"), 0, summary_of_tasks),
-      (("rm", "delete"), 1, delete_tasks),
-      (("close"), 1, close_tasks),
-      (("postpone"), 2, postpone),
-      (("show"), 1, show_tasks),
-      (("edit"), 1, edit_tasks),
-      (("browser"), 0, toggle_browser_visibility),
-      (("search"), 1, search_tasks),
-      (("overview"), 0, overview),
+        (("new", "add"), 0, new_task),
+        (("list"), 0, list_tasks),
+        (("count"), 0, count_tasks),
+        (("summary"), 0, summary_of_tasks),
+        (("rm", "delete"), 1, delete_tasks),
+        (("close"), 1, close_tasks),
+        (("postpone"), 2, postpone),
+        (("show"), 1, show_tasks),
+        (("edit"), 1, edit_tasks),
+        (("browser"), 0, toggle_browser_visibility),
+        (("search"), 1, search_tasks),
+        (("overview"), 0, overview),
     ]
 
     for aliases, min_args, command in commands:

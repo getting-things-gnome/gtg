@@ -24,13 +24,14 @@ import sys
 import tempfile
 import threading
 
-from Cheetah.Template  import Template as CheetahTemplate
+from Cheetah.Template import Template as CheetahTemplate
 from xdg.BaseDirectory import xdg_config_home
 import gobject
 
 TEMPLATE_PATHS = [
- os.path.join(xdg_config_home, "gtg/plugins/export/export_templates"),
- os.path.join(os.path.dirname(os.path.abspath(__file__)), "export_templates"),
+    os.path.join(xdg_config_home, "gtg/plugins/export/export_templates"),
+    os.path.join(
+        os.path.dirname(os.path.abspath(__file__)), "export_templates"),
 ]
 
 
@@ -55,7 +56,7 @@ class Template:
 
         self._title, self._description = self._load_description()
 
-    def _find_file(self, prefix, suffix = ""):
+    def _find_file(self, prefix, suffix=""):
         """ Find a file for the template given prefix and suffix """
         basename = os.path.basename(self._template)
         basename = basename.replace("template_", prefix)
@@ -115,11 +116,12 @@ class Template:
 
         Created files are saved with the same suffix as the template. Opening
         the final file determines its type based on suffix. """
-        document = CheetahTemplate(file = self.get_path(),
-            searchList = [{'tasks': tasks, 'plugin_api': plugin_api}])
+        document = CheetahTemplate(file=self.get_path(),
+                                   searchList=[{'tasks': tasks,
+                                                'plugin_api': plugin_api}])
 
         suffix = ".%s" % self._get_suffix()
-        output = tempfile.NamedTemporaryFile(suffix = suffix, delete = False)
+        output = tempfile.NamedTemporaryFile(suffix=suffix, delete=False)
         output.write(str(document))
         self._document_path = output.name
         output.close()
@@ -145,7 +147,7 @@ class Template:
                 first_line = script_file.readline().strip()
                 if first_line.startswith('#!'):
                     cmd = [first_line[2:], self._script_path,
-                            self._document_path]
+                           self._document_path]
                 else:
                     cmd = None
 
@@ -154,9 +156,9 @@ class Template:
             if cmd is not None:
                 try:
                     self._document_path = subprocess.Popen(
-                        args = cmd, shell = False,
-                        stdout = subprocess.PIPE).communicate()[0]
-                except Exception: # pylint: disable-msg=W0703
+                        args=cmd, shell=False,
+                        stdout=subprocess.PIPE).communicate()[0]
+                except Exception:  # pylint: disable-msg=W0703
                     pass
 
             if self._document_path and not os.path.exists(self._document_path):
@@ -168,5 +170,5 @@ class Template:
             document_ready.wait()
             gobject.idle_add(callback)
 
-        threading.Thread(target = script).start()
-        threading.Thread(target = wait_for_document).start()
+        threading.Thread(target=script).start()
+        threading.Thread(target=wait_for_document).start()

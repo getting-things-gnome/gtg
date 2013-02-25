@@ -50,22 +50,23 @@ import sys
 import logging
 import dbus
 
-#our own imports
-from GTG.backends       import BackendFactory
-from GTG                import _
-from GTG.core           import CoreConfig
+# our own imports
+from GTG.backends import BackendFactory
+from GTG import _
+from GTG.core import CoreConfig
 from GTG.core.datastore import DataStore
-from GTG.gtk.manager    import Manager
-from GTG.tools.logger   import Log
+from GTG.gtk.manager import Manager
+from GTG.tools.logger import Log
 
 #=== OBJECTS ==================================================================
 
-#code borrowed from Specto. Avoid having multiples instances of gtg
-#reading the same tasks
-#that's why we put the pid file in the data directory :
-#we allow one instance of gtg by data directory.
+# code borrowed from Specto. Avoid having multiples instances of gtg
+# reading the same tasks
+# that's why we put the pid file in the data directory :
+# we allow one instance of gtg by data directory.
 
-def check_instance(directory, uri_list = []):
+
+def check_instance(directory, uri_list=[]):
     """
     Check if gtg is already running.
     If so, open the tasks whose ids are in the uri_list
@@ -75,7 +76,7 @@ def check_instance(directory, uri_list = []):
         open(pidfile, "w").close()
         os.chmod(pidfile, 0600)
 
-    #see if gtg is already running
+    # see if gtg is already running
     pid = open(pidfile, "r").readline()
     if pid:
         p = os.system("/bin/ps %s >/dev/null" % pid)
@@ -83,10 +84,10 @@ def check_instance(directory, uri_list = []):
         if p == 0 and "gtg" in p_name:
             print _("gtg is already running!")
             try:
-                d=dbus.SessionBus().get_object(CoreConfig.BUSNAME,\
-                                           CoreConfig.BUSINTERFACE)
+                d = dbus.SessionBus().get_object(CoreConfig.BUSNAME,
+                                                 CoreConfig.BUSINTERFACE)
                 d.ShowTaskBrowser()
-                #if the user has specified a task to open, do that
+                # if the user has specified a task to open, do that
                 for uri in uri_list:
                     if uri.startswith("gtg://"):
                         d.OpenTaskEditor(uri[6:])
@@ -96,9 +97,9 @@ def check_instance(directory, uri_list = []):
                 # between GTG versions), we won't do anything more
                 raise SystemExit
 
-    #write the pid file
+    # write the pid file
     with open(pidfile, "w") as f:
-        f.write(`os.getpid()`)
+        f.write(repr(os.getpid()))
 
 
 def remove_pidfile(directory):
@@ -112,6 +113,7 @@ def remove_pidfile(directory):
 
 #=== MAIN CLASS ===============================================================
 
+
 def main(options=None, args=None):
     '''
     Calling this starts the full GTG experience  ( :-D )
@@ -119,19 +121,19 @@ def main(options=None, args=None):
     ds, req = core_main_init(options, args)
     # Launch task browser
     manager = Manager(req)
-    #main loop
-    #To be more user friendly and get the logs of crashes, we show an apport
+    # main loop
+    # To be more user friendly and get the logs of crashes, we show an apport
     # hooked window upon crashes
-    if options.no_crash_handler == False:
+    if not options.no_crash_handler:
         from GTG.gtk.crashhandler import signal_catcher
         with signal_catcher(manager.close_browser):
-            manager.main(once_thru=options.boot_test, uri_list = args)
+            manager.main(once_thru=options.boot_test, uri_list=args)
     else:
-        manager.main(once_thru=options.boot_test, uri_list = args)
+        manager.main(once_thru=options.boot_test, uri_list=args)
     core_main_quit(req, ds)
 
 
-def core_main_init(options = None, args = None):
+def core_main_init(options=None, args=None):
     '''
     Part of the main function prior to the UI initialization.
     '''
@@ -150,8 +152,8 @@ def core_main_init(options = None, args = None):
     # Register backends
     for backend_dic in backends_list:
         ds.register_backend(backend_dic)
-    #save the backends directly to be sure projects.xml is written
-    ds.save(quit = False)
+    # save the backends directly to be sure projects.xml is written
+    ds.save(quit=False)
 
     # Launch task browser
     req = ds.get_requester()
@@ -169,7 +171,7 @@ def core_main_quit(req, ds):
     #
     # Ending the application: we save configuration
     req.save_config()
-    ds.save(quit = True)
+    ds.save(quit=True)
     config = req.get_global_config()
     remove_pidfile(config.get_data_dir())
     sys.exit(0)

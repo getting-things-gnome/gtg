@@ -31,7 +31,7 @@ class TestSyncMeme(unittest.TestCase):
     def test_which_is_newest(self):
         """ test the which_is_newest function """
         meme = SyncMeme()
-        #tasks have not changed
+        # tasks have not changed
         local_modified = datetime.datetime.now()
         remote_modified = datetime.datetime.now()
         meme.set_local_last_modified(local_modified)
@@ -39,12 +39,12 @@ class TestSyncMeme(unittest.TestCase):
         self.assertEqual(
             meme.which_is_newest(local_modified, remote_modified),
             None)
-        #we update the local
+        # we update the local
         local_modified = datetime.datetime.now()
         self.assertEqual(
             meme.which_is_newest(local_modified, remote_modified),
             'local')
-        #we update the remote
+        # we update the remote
         remote_modified = datetime.datetime.now()
         self.assertEqual(
             meme.which_is_newest(local_modified, remote_modified),

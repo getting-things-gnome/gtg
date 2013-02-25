@@ -32,12 +32,12 @@ import math
 from GTG import _
 
 DEFAULT_PALETTE = [
-  "#EF2929", "#AD7FA8", "#729FCF", "#8AE234", "#E9B96E",
-  "#FCAF3E", "#FCE94F", "#EEEEEC", "#888A85",
-  "#CC0000", "#75507B", "#3465A4", "#73D216", "#C17D11",
-  "#F57900", "#EDD400", "#D3D7CF", "#555753",
-  "#A40000", "#5C3566", "#204A87", "#4E9A06", "#8F5902",
-  "#CE5C00", "#C4A000", "#BABDB6", "#2E3436",
+    "#EF2929", "#AD7FA8", "#729FCF", "#8AE234", "#E9B96E",
+    "#FCAF3E", "#FCE94F", "#EEEEEC", "#888A85",
+    "#CC0000", "#75507B", "#3465A4", "#73D216", "#C17D11",
+    "#F57900", "#EDD400", "#D3D7CF", "#555753",
+    "#A40000", "#5C3566", "#204A87", "#4E9A06", "#8F5902",
+    "#CE5C00", "#C4A000", "#BABDB6", "#2E3436",
 ]
 
 BUTTON_WIDTH = 36
@@ -63,7 +63,7 @@ class SimpleColorSelectorPaletteItem(gtk.DrawingArea):
         alloc = self.get_allocation()
         alloc_w, alloc_h = alloc[2], alloc[3]
         # Drawing context
-        cr_ctxt = self.window.cairo_create() # pylint: disable-msg=E1101
+        cr_ctxt = self.window.cairo_create()  # pylint: disable-msg=E1101
         gdkcontext = gtk.gdk.CairoContext(cr_ctxt)
 
         # Draw rectangle
@@ -84,28 +84,30 @@ class SimpleColorSelectorPaletteItem(gtk.DrawingArea):
           # If selected draw a symbol
         if(self.selected):
             size = alloc_h * 0.50 - 3
-            pos_x = math.floor((alloc_w-size)/2)
-            pos_y = math.floor((alloc_h-size)/2)
+            pos_x = math.floor((alloc_w - size) / 2)
+            pos_y = math.floor((alloc_h - size) / 2)
             gdkcontext.set_source_rgba(255, 255, 255, 0.80)
-            gdkcontext.arc(alloc_w/2, alloc_h/2, size/2 + 3, 0, 2*math.pi)
+            gdkcontext.arc(
+                alloc_w / 2, alloc_h / 2, size / 2 + 3, 0, 2 * math.pi)
             gdkcontext.fill()
             gdkcontext.set_line_width(1.0)
             gdkcontext.set_source_rgba(0, 0, 0, 0.20)
-            gdkcontext.arc(alloc_w/2, alloc_h/2, size/2 + 3, 0, 2*math.pi)
+            gdkcontext.arc(
+                alloc_w / 2, alloc_h / 2, size / 2 + 3, 0, 2 * math.pi)
             gdkcontext.stroke()
             gdkcontext.set_source_rgba(0, 0, 0, 0.50)
             gdkcontext.set_line_width(3.0)
-            gdkcontext.move_to(pos_x, pos_y+size/2)
-            gdkcontext.line_to(pos_x+size/2, pos_y+size)
-            gdkcontext.line_to(pos_x+size, pos_y)
+            gdkcontext.move_to(pos_x, pos_y + size / 2)
+            gdkcontext.line_to(pos_x + size / 2, pos_y + size)
+            gdkcontext.line_to(pos_x + size, pos_y)
             gdkcontext.stroke()
 
     ### callbacks ###
-    def on_expose(self, widget, params): # pylint: disable-msg=W0613
+    def on_expose(self, widget, params):  # pylint: disable-msg=W0613
         """Callback: redraws the widget when it is exposed"""
         self.__draw()
 
-    def on_configure(self, widget, params): # pylint: disable-msg=W0613
+    def on_configure(self, widget, params):  # pylint: disable-msg=W0613
         """Callback: redraws the widget when it is exposed"""
         self.__draw()
 
@@ -124,7 +126,7 @@ class SimpleColorSelectorPaletteItem(gtk.DrawingArea):
         return self.selected
 
 
-class SimpleColorSelector(gtk.VBox): # pylint: disable-msg=R0904,C0301
+class SimpleColorSelector(gtk.VBox):  # pylint: disable-msg=R0904,C0301
     """Widget displaying a palette of colors, possibly with a button allowing
      to define new colors."""
 
@@ -157,7 +159,7 @@ class SimpleColorSelector(gtk.VBox): # pylint: disable-msg=R0904,C0301
         """Destroy existing widget and reset model for base palette color"""
         if self.palette is not None:
             if self.selected_col is not None and  \
-               self.selected_col.color in self.colors:
+                    self.selected_col.color in self.colors:
                 self.selected_col = None
             for button in self.buttons:
                 self.buttons_lookup.pop(button.color)
@@ -180,7 +182,7 @@ class SimpleColorSelector(gtk.VBox): # pylint: disable-msg=R0904,C0301
                 vbox.pack_start(cur_hbox)
             # add the color box
             img = SimpleColorSelectorPaletteItem()
-            img.set_size_request( \
+            img.set_size_request(
                 BUTTON_WIDTH, BUTTON_HEIGHT)
             img.connect("button-press-event", self.on_color_clicked)
             img.set_color(self.colors[i])
@@ -195,7 +197,7 @@ class SimpleColorSelector(gtk.VBox): # pylint: disable-msg=R0904,C0301
         """Destroy existing widget and reset model for custom colors"""
         if self.custom_palette is not None:
             if self.selected_col is not None and \
-               self.selected_col.color in self.custom_colors:
+                    self.selected_col.color in self.custom_colors:
                 self.selected_col = None
             for button in self.cc_buttons:
                 if button.color is not None:
@@ -219,7 +221,7 @@ class SimpleColorSelector(gtk.VBox): # pylint: disable-msg=R0904,C0301
         for i in xrange(len(self.custom_colors)):
             # add the color box
             img = SimpleColorSelectorPaletteItem()
-            img.set_size_request( \
+            img.set_size_request(
                 BUTTON_WIDTH, BUTTON_HEIGHT)
             img.connect("button-press-event", self.on_color_clicked)
             if i < len(self.custom_colors):
@@ -243,7 +245,7 @@ class SimpleColorSelector(gtk.VBox): # pylint: disable-msg=R0904,C0301
             self.custom_palette.show_all()
 
     # Handlers
-    def on_color_clicked(self, widget, event): # pylint: disable-msg=W0613
+    def on_color_clicked(self, widget, event):  # pylint: disable-msg=W0613
         """Callback: when a color is clicked, update the model and
         notify the parent"""
         # if re-click: unselect
@@ -258,16 +260,16 @@ class SimpleColorSelector(gtk.VBox): # pylint: disable-msg=R0904,C0301
             self.selected_col.set_selected(True)
         self.emit("color-changed")
 
-    def on_color_add(self, widget): # pylint: disable-msg=W0613
+    def on_color_add(self, widget):  # pylint: disable-msg=W0613
         """Callback: when adding a new color, show the color definition
         window, update the model, notifies the parent."""
         color_dialog = gtk.ColorSelectionDialog(_('Choose a color'))
         colorsel = color_dialog.colorsel
         if self.selected_col is not None:
             color = gtk.gdk.color_parse(self.selected_col.color)
-            colorsel.set_current_color(color) # pylint: disable-msg=E1101
+            colorsel.set_current_color(color)  # pylint: disable-msg=E1101
         response = color_dialog.run()
-        new_color = colorsel.get_current_color() # pylint: disable-msg=E1101
+        new_color = colorsel.get_current_color()  # pylint: disable-msg=E1101
         # Check response_id and set color if required
         if response == gtk.RESPONSE_OK and new_color:
             strcolor = gtk.color_selection_palette_to_string([new_color])

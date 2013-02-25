@@ -27,11 +27,10 @@ class BackendsCombo(gtk.ComboBoxEntry):
     A combobox listing all the available backends types
     '''
 
-
-    COLUMN_NAME = 0         #unique name for the backend type. It's never
+    COLUMN_NAME = 0  # unique name for the backend type. It's never
                             # displayed, it's used to find which backend has
                             # been selected
-    COLUMN_HUMAN_NAME = 1   #human friendly name (which is localized).
+    COLUMN_HUMAN_NAME = 1  # human friendly name (which is localized).
     COLUMN_ICON = 2
 
     def __init__(self, backends_dialog):
@@ -54,11 +53,11 @@ class BackendsCombo(gtk.ComboBoxEntry):
 
     def _renderers_init(self):
         '''Configure the cell renderers'''
-        #Text renderer
+        # Text renderer
         text_cell = gtk.CellRendererText()
         self.pack_start(text_cell, False)
         self.set_text_column(self.COLUMN_HUMAN_NAME)
-        #Icon renderer
+        # Icon renderer
         pixbuf_cell = gtk.CellRendererPixbuf()
         self.pack_start(pixbuf_cell, False)
         self.add_attribute(pixbuf_cell, "pixbuf", self.COLUMN_ICON)
@@ -80,8 +79,8 @@ class BackendsCombo(gtk.ComboBoxEntry):
                                    module.Backend.get_human_default_name(),
                                    pixbuf))
         if backend_types:
-            #triggers a "changed" signal, which is used in the AddPanel to
-            #refresh the backend description and icon
+            # triggers a "changed" signal, which is used in the AddPanel to
+            # refresh the backend description and icon
             self.set_active(0)
 
     def get_selected(self):

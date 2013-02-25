@@ -44,14 +44,14 @@ class Plugin(object):
     def __init__(self, info, module_path):
         """Initialize the Plugin using a ConfigObj."""
         info_fields = {
-          'module_name': 'Module',
-          'full_name': 'Name',
-          'version': 'Version',
-          'authors': 'Authors',
-          'short_description': 'Short-description',
-          'description': 'Description',
-          'module_depends': 'Dependencies',
-          'dbus_depends': 'Dbus-dependencies',
+            'module_name': 'Module',
+            'full_name': 'Name',
+            'version': 'Version',
+            'authors': 'Authors',
+            'short_description': 'Short-description',
+            'description': 'Description',
+            'module_depends': 'Dependencies',
+            'dbus_depends': 'Dbus-dependencies',
         }
         for attr, field in info_fields.iteritems():
             try:
@@ -151,7 +151,7 @@ class PluginEngine(Borg):
         """
         super(PluginEngine, self).__init__()
         if hasattr(self, "plugin_path"):
-            #Borg has already been initialized, skip
+            # Borg has already been initialized, skip
             return
 
         self.plugin_path = plugin_path
@@ -257,7 +257,7 @@ class PluginEngine(Borg):
             if hasattr(plugin.instance, 'onTaskClosed'):
                 plugin.instance.onTaskClosed(plugin_api)
 
-#FIXME: What are these for? must check someday! (invernizzi)
+# FIXME: What are these for? must check someday! (invernizzi)
     def recheck_plugins(self, plugin_apis):
         """Check plugins to make sure their states are consistent.
 
@@ -267,8 +267,8 @@ class PluginEngine(Borg):
             try:
                 if plugin.instance and plugin.enabled and plugin.active:
                     self.deactivate_plugins(self.plugin_apis, [plugin])
-                elif plugin.instance is None and plugin.enabled and (not
-                  plugin.active):
+                elif plugin.instance is None and plugin.enabled and \
+                        (not plugin.active):
                     if plugin.error:
                         plugin.enabled = False
                     else:

@@ -19,7 +19,7 @@
 
 import gtk
 
-from GTG.gtk.colors              import get_colored_tags_markup
+from GTG.gtk.colors import get_colored_tags_markup
 from GTG.backends.genericbackend import GenericBackend
 from GTG.backends.backendsignals import BackendSignals
 
@@ -29,10 +29,9 @@ class BackendsTree(gtk.TreeView):
     gtk.TreeView that shows the currently loaded backends.
     '''
 
-
-    COLUMN_BACKEND_ID = 0 #never shown, used for internal lookup.
+    COLUMN_BACKEND_ID = 0  # never shown, used for internal lookup.
     COLUMN_ICON = 1
-    COLUMN_TEXT = 2 # holds the backend "human-readable" name
+    COLUMN_TEXT = 2  # holds the backend "human-readable" name
     COLUMN_TAGS = 3
 
     def __init__(self, backendsdialog):
@@ -58,10 +57,10 @@ class BackendsTree(gtk.TreeView):
         # Sort backends
         # 1, put default backend on top
         # 2, sort backends by human name
-        backends = list(self.req.get_all_backends(disabled = True))
+        backends = list(self.req.get_all_backends(disabled=True))
         backends = sorted(backends,
-                      key=lambda backend: (not backend.is_default(),
-                                          backend.get_human_name()))
+                          key=lambda backend: (not backend.is_default(),
+                                               backend.get_human_name()))
 
         for backend in backends:
             self.add_backend(backend)
@@ -75,15 +74,15 @@ class BackendsTree(gtk.TreeView):
                        callback
         @param backend_id: the id of the backend to add
         '''
-        #Add
+        # Add
         backend = self.req.get_backend(backend_id)
         if not backend:
             return
         self.add_backend(backend)
         self.refresh()
-        #Select
+        # Select
         self.select_backend(backend_id)
-        #Update it's enabled state
+        # Update it's enabled state
         self.on_backend_state_changed(None, backend.get_id())
 
     def add_backend(self, backend):
@@ -99,7 +98,7 @@ class BackendsTree(gtk.TreeView):
                                                       16),
                 backend.get_human_name(),
                 self._get_markup_for_tags(backend.get_attached_tags()),
-                ])
+            ])
             self.backendid_to_iter[backend.get_id()] = backend_iter
 
     def on_backend_state_changed(self, sender, backend_id):
@@ -121,7 +120,7 @@ class BackendsTree(gtk.TreeView):
             else:
                 color = str(style.text[gtk.STATE_INSENSITIVE])
                 text = "<span color='%s'>%s</span>" % \
-                           (color, backend_name)
+                    (color, backend_name)
             self.liststore[b_path][self.COLUMN_TEXT] = text
 
             # Also refresh the tags
@@ -187,9 +186,9 @@ class BackendsTree(gtk.TreeView):
         @param path: the gtk.TreePath of the edited cell
         @param new_text: the new name of the backend
         '''
-        #we strip everything not permitted in backend names
-        new_text = ''.join(c for c in new_text if (c.isalnum() or\
-                                    c in [" ", "-", "_"]))
+        # we strip everything not permitted in backend names
+        new_text = ''.join(c for c in new_text if (c.isalnum() or
+                                                   c in [" ", "-", "_"]))
         selected_iter = self.liststore.get_iter(path)
         # update the backend name
         backend_id = self.liststore.get_value(selected_iter,
@@ -208,7 +207,7 @@ class BackendsTree(gtk.TreeView):
         _signals.connect(_signals.BACKEND_STATE_TOGGLED,
                          self.on_backend_state_changed)
 
-    def on_select_row(self, treeview = None):
+    def on_select_row(self, treeview=None):
         '''When a row is selected, displays the corresponding editing panel
 
         @var treeview: not used
@@ -229,7 +228,7 @@ class BackendsTree(gtk.TreeView):
                 return selected_paths[0]
         return None
 
-    def select_backend(self, backend_id = None):
+    def select_backend(self, backend_id=None):
         '''
         Selects the backend corresponding to backend_id.
         If backend_id is none, refreshes the current configuration panel.
@@ -243,10 +242,10 @@ class BackendsTree(gtk.TreeView):
                 selection.select_iter(backend_iter)
         else:
             if self._get_selected_path():
-                #We just reselect the currently selected entry
+                # We just reselect the currently selected entry
                 self.on_select_row()
             else:
-                #If nothing is selected, we select the first entry
+                # If nothing is selected, we select the first entry
                 if selection:
                     selection.select_path("0")
         self.dialog.on_backend_selected(self.get_selected_backend_id())

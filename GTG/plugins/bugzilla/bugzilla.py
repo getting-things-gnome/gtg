@@ -31,14 +31,14 @@ class pluginBugzilla:
     def activate(self, plugin_api):
         self.plugin_api = plugin_api
         self.connect_id = plugin_api.get_ui().connect(
-                        "task-added-via-quick-add", self.task_added_cb)
+            "task-added-via-quick-add", self.task_added_cb)
 
     def task_added_cb(self, sender, task_id):
-        #this is a gobject callback that will block the Browser.
-        #decoupling with a thread. All interaction with task and tags objects
+        # this is a gobject callback that will block the Browser.
+        # decoupling with a thread. All interaction with task and tags objects
         #(anything in a Tree) must be done with gobject.idle_add (invernizzi)
-        thread = threading.Thread(target = self.__analyze_task,
-                                  args = (task_id, ))
+        thread = threading.Thread(target=self.__analyze_task,
+                                  args=(task_id, ))
         thread.setDaemon(True)
         thread.start()
 
@@ -65,13 +65,13 @@ class pluginBugzilla:
             bug = Bug(base, nb)
         except xmlrpclib.Fault, err:
             code = err.faultCode
-            if code == 100: # invalid bug ID
+            if code == 100:  # invalid bug ID
                 title = 'Invalid bug ID #%s' % nb
-            elif code == 101: # bug ID not exist
+            elif code == 101:  # bug ID not exist
                 title = 'Bug #%s does not exist.' % nb
-            elif code == 102: # Access denied
+            elif code == 102:  # Access denied
                 title = 'Access denied to bug #%s' % nb
-            else: # unrecoganized error code currently
+            else:  # unrecoganized error code currently
                 title = err.faultString
             old_title = task.get_title()
             gobject.idle_add(task.set_title, title)
