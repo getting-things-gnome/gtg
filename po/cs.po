@@ -8,15 +8,15 @@ msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2013-01-01 17:35+0100\n"
-"PO-Revision-Date: 2013-02-25 21:40+0000\n"
+"PO-Revision-Date: 2013-03-01 16:53+0000\n"
 "Last-Translator: Tadeáš Pařík <tadeas.parik@gmail.com>\n"
 "Language-Team: Czech <cs@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
-"X-Launchpad-Export-Date: 2013-02-26 05:09+0000\n"
-"X-Generator: Launchpad (build 16506)\n"
+"X-Launchpad-Export-Date: 2013-03-02 04:57+0000\n"
+"X-Generator: Launchpad (build 16514)\n"
 
 #: GTG/gtk/backends_dialog/__init__.py:75
 #, python-format
@@ -555,6 +555,17 @@ msgid ""
 "Getting Things GNOME!; if not, write to the Free Software Foundation, Inc., "
 "51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA."
 msgstr ""
+"Getting Things GNOME! je svobodný software; můžete ho šířit, modifikovat za "
+"podmínek GNU General Public licence  tak jak je zveřejněna Free Software "
+"Foundation; buď ve verzi 3 nebo podle jakékoli pozdější verze.\n"
+"\n"
+"Getting Things GNOME! je distribuován s nadějí, že bude užitečný, ale BEZ "
+"JAKÉKOLI ZÁRUKY; dokonce i bez záruk PRODEJNOSTI nebo VHODNOSTI PRO JAKÝKOLI "
+"ÚČEL. Viz GNU General Public licence pro více detailů.\n"
+"\n"
+"Spolu s Getting Things GNOME! byste měli obdržet i kopii licence GNU General "
+"Public; jestliže ne, napište na ree Software Foundation, Inc., 51 Franklin "
+"Street, Fifth Floor, Boston, MA 02110-1301, USA."
 
 #: GTG/gtk/browser/taskbrowser.glade.h:40
 msgid "Mark as Not Done"
@@ -594,7 +605,7 @@ msgstr "Následující _rok"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:49
 msgid "_Clear Start Date"
-msgstr ""
+msgstr "_Smazat počáteční datum"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:50
 msgid "Set Due Date"
@@ -614,7 +625,7 @@ msgstr "J_ednoho dne"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:54
 msgid "_Clear Due Date"
-msgstr ""
+msgstr "_Smazat termín"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:55
 msgid "Modify Tags..."
@@ -1317,7 +1328,7 @@ msgstr ""
 
 #: GTG/core/firstrun_tasks.py:174
 msgid "Learn How To Use The Work View"
-msgstr ""
+msgstr "Načte se, používat zobrazení práce"
 
 #: GTG/core/firstrun_tasks.py:175
 msgid ""
@@ -1391,10 +1402,21 @@ msgid ""
 "If you have some trouble with GTG, we might be able to help you or to solve "
 "your problem really quickly."
 msgstr ""
+"GTG je stále ve fázi beta vývoje. Máme ho rádi a používáme ho každý den, "
+"pravděpodobně ovšem narazíte na nějaké problémy.\n"
+"\n"
+"Pomozte nám, prosím, vylepšit GTG jejich nahlášením na Launchpadu: "
+"https://bugs.launchpad.net/gtg/+filebug\n"
+"\n"
+"Potřebujeme vás, abych tento program vylepšili. Jakýkoli příspěvek nebo "
+"nápad je vítán!\n"
+"\n"
+"Jestliže máte nějaké problémy s GTG, můžeme vám celkem rychle problém "
+"vyřešit."
 
 #: GTG/core/firstrun_tasks.py:241
 msgid "Learn How To Use The Quick Add Entry"
-msgstr ""
+msgstr "Naučte se, jak používat rychlé vkládání záznamu"
 
 #: GTG/core/firstrun_tasks.py:242
 msgid ""
@@ -1441,7 +1463,7 @@ msgstr ""
 
 #: GTG/core/firstrun_tasks.py:288
 msgid "Learn How To Use Synchronization Services"
-msgstr ""
+msgstr "Naučte se, jak synchronizovat služby"
 
 #: GTG/core/firstrun_tasks.py:289
 msgid ""
@@ -1464,10 +1486,28 @@ msgid ""
 "about them by in the dedicated documentation in GTG's help (use the Help "
 "menu or press F1 to get access to it)."
 msgstr ""
+"Synchronizace služeb dovoluje GTG synchronizovat (přistupovat nebo "
+"importovat) úkoly, poznámky nebo bugy z dalších webů nebo služeb jako "
+"Launchpad, Remember the Milk, Tomboy atd.\n"
+"\n"
+"Toto může být opravdu velmi užitečné - chcete například přistupovat k vašim "
+"úkolům na několika počítačích, kde běží GTG, nebo chcete například editovat "
+"vaše úkoly v nějaké on-line službě. GTG může také importovat úkoly ze "
+"specifických webů jako Launchpad, kde je možné spravovat bugy na kterých "
+"pracujete.\n"
+"\n"
+"K použití Synchronizace služeb jděte do nabídky Úpravy a vyberte "
+"&quot;Synchronizace služeb&quot;. Nyní budete mít možnost vybrat z několika "
+"různých on-line nebo lokálních služeb, pro které můžete importovat nebo "
+"exportovat vaše poznámky.\n"
+"\n"
+"Jestliže chcete vědět více o Synchronizaci služeb, můžete si přečíst "
+"informace v dokumentaci pro GTG (použijte nabídku Nápověda nebo stiskněte "
+"klávesu F1)."
 
 #: GTG/core/firstrun_tasks.py:312
 msgid "Learn How To Search For Tasks"
-msgstr ""
+msgstr "Naučte se, jak vyhledávat úkoly"
 
 #: GTG/core/firstrun_tasks.py:313
 msgid ""
@@ -1496,6 +1536,30 @@ msgid ""
 "you can read the documentation available in GTG's help (press F1 or use the "
 "Help menu to get access to it)."
 msgstr ""
+"Abychom vám pomohli najít konkrétní úkoly co nejjednodušeji, GTG umožňuje "
+"hledat i v obsahu jednotlivých úkolů.\n"
+"\n"
+"Hledání úkolů je opravdu jednoduché: napište slovo, které hledáte v Rychlém "
+"přidávání položek a vyberte &bdquo;Hledat&ldquo; v menu, které se "
+"automaticky zobrazí.\n"
+"\n"
+"GTG ukládá historii vašeho vyhledávání v postranní liště, v sekci "
+"&bdquo;Hledat&ldquo;. Ke svému předchozímu vyhledávání se můžete tedy vrátit "
+"i později, jestliže je to potřeba. Všechny výsledky hledání se aktualizují "
+"automaticky, tudíž vždy naleznete všechna vaše předchozí vyhledávání.\n"
+"\n"
+"GTG ukládá všechna vaše vyhledávání, až do doby než je sami smažete (což "
+"můžete udělat pomocí pravého kliku na položku a vybráním "
+"&bdquo;Smazat&ldquo;). To vám umožňuje GTG bezpečně vypnout bez ztráty "
+"vašich výsledků hledání. Může to být užitečné, když hledáte pravidelně "
+"nějaký specifický úkol!\n"
+"\n"
+"GTG vyhledávání je velmi mocné a pracuje se spousty parametrů, které vám "
+"umožní hledat velmi specifické úkoly. Například při použití  "
+"&bdquo;@pochůzky !dnes&ldquo; budete vyhledávat úkoly se štítkem @pochůzky, "
+"které se musí vyřídit během dnešního dne. Chcete-li se naučit i další "
+"vyhledávací parametry, přečtěte si dokumentaci GTG (zmáčkněte F1 nebo "
+"použijte nabídku Nápověda)."
 
 #: GTG/core/task.py:54
 msgid "My new task"
