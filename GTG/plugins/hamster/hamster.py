@@ -308,7 +308,7 @@ class hamsterPlugin:
 
     def preferences_load(self):
         self.preferences = self.plugin_api.load_configuration_object(
-            self.PLUGIN_NAME, "preferences",
+            self.PLUGIN_NAMESPACE, "preferences",
             default_values=self.DEFAULT_PREFERENCES)
 
     def preferences_store(self):
