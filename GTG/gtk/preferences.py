@@ -30,7 +30,6 @@ from GTG import info
 from GTG.gtk import ViewConfig
 from GTG.tools.shortcut import *
 
-
 AUTOSTART_DIRECTORY = os.path.join(xdg_config_home, "autostart")
 AUTOSTART_FILE = "gtg.desktop"
 AUTOSTART_PATH = os.path.join(AUTOSTART_DIRECTORY, AUTOSTART_FILE)
@@ -44,7 +43,7 @@ def enable_gtg_autostart():
     desktop_file_path = None
     this_directory = os.path.dirname(os.path.abspath(__file__))
     for path in ["../..", "../../../applications",
-                "../../../../../share/applications"]:
+                  "../../../../../share/applications"]:
         fullpath = os.path.join(this_directory, path, AUTOSTART_FILE)
         fullpath = os.path.normpath(fullpath)
         if os.path.isfile(fullpath):
@@ -57,11 +56,11 @@ def enable_gtg_autostart():
 
         # If the path is a symlink and is broken, remove it
         if os.path.islink(AUTOSTART_PATH) and \
-            not os.path.exists(os.path.realpath(AUTOSTART_PATH)):
+                not os.path.exists(os.path.realpath(AUTOSTART_PATH)):
             os.unlink(AUTOSTART_PATH)
 
         if os.path.isdir(AUTOSTART_DIRECTORY) and \
-           not os.path.exists(AUTOSTART_PATH):
+                not os.path.exists(AUTOSTART_PATH):
             if hasattr(os, "symlink"):
                 os.symlink(desktop_file_path, AUTOSTART_PATH)
             else:
@@ -102,25 +101,25 @@ class PreferencesDialog:
         self.fontbutton.set_font_name(editor_font)
 
         builder.connect_signals({
-          'on_pref_autostart_toggled':
-            self.on_autostart_toggled,
-          'on_pref_show_preview_toggled':
-            self.toggle_preview,
-          'on_bg_color_toggled':
-            self.on_bg_color_toggled,
-          'on_prefs_help':
-            self.on_help,
-          'on_prefs_close':
-            self.on_close,
-          'on_PreferencesDialog_delete_event':
-            self.on_close,
-          'on_fontbutton_font_set':
-            self.on_font_change,
-          'on_shortcut_button_toggled':
-            self.shortcut.on_shortcut_toggled,
+                                'on_pref_autostart_toggled':
+                                    self.on_autostart_toggled,
+                                'on_pref_show_preview_toggled':
+                                    self.toggle_preview,
+                                'on_bg_color_toggled':
+                                    self.on_bg_color_toggled,
+                                'on_prefs_help':
+                                    self.on_help,
+                                'on_prefs_close':
+                                    self.on_close,
+                                'on_PreferencesDialog_delete_event':
+                                    self.on_close,
+                                'on_fontbutton_font_set':
+                                    self.on_font_change,
+                                'on_shortcut_button_toggled':
+                                    self.shortcut.on_shortcut_toggled,
         })
 
-    def  _refresh_preferences_store(self):
+    def _refresh_preferences_store(self):
         """ Sets the correct value in the preferences checkboxes """
         has_autostart = os.path.isfile(AUTOSTART_PATH)
         self.pref_autostart.set_active(has_autostart)
@@ -143,13 +142,13 @@ class PreferencesDialog:
         self._refresh_preferences_store()
         self.dialog.show_all()
 
-    def on_close(self, widget, data=None): # pylint: disable-msg=W0613
+    def on_close(self, widget, data=None):
         """ Close the preferences dialog."""
         self.dialog.hide()
         return True
 
     @classmethod
-    def on_help(cls, widget): # pylint: disable-msg=W0613
+    def on_help(cls, widget):
         """ In future, this will open help for preferences """
         return True
 
