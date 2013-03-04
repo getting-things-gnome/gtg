@@ -21,8 +21,6 @@
 
 import os
 import shutil
-import subprocess
-import re
 
 import gtk
 from xdg.BaseDirectory import xdg_config_home
