@@ -43,7 +43,7 @@ def enable_gtg_autostart():
     desktop_file_path = None
     this_directory = os.path.dirname(os.path.abspath(__file__))
     for path in ["../..", "../../../applications",
-                  "../../../../../share/applications"]:
+                 "../../../../../share/applications"]:
         fullpath = os.path.join(this_directory, path, AUTOSTART_FILE)
         fullpath = os.path.normpath(fullpath)
         if os.path.isfile(fullpath):
@@ -102,22 +102,22 @@ class PreferencesDialog:
 
         builder.connect_signals({
                                 'on_pref_autostart_toggled':
-                                    self.on_autostart_toggled,
+                                self.on_autostart_toggled,
                                 'on_pref_show_preview_toggled':
-                                    self.toggle_preview,
+                                self.toggle_preview,
                                 'on_bg_color_toggled':
-                                    self.on_bg_color_toggled,
+                                self.on_bg_color_toggled,
                                 'on_prefs_help':
-                                    self.on_help,
+                                self.on_help,
                                 'on_prefs_close':
-                                    self.on_close,
+                                self.on_close,
                                 'on_PreferencesDialog_delete_event':
-                                    self.on_close,
+                                self.on_close,
                                 'on_fontbutton_font_set':
-                                    self.on_font_change,
+                                self.on_font_change,
                                 'on_shortcut_button_toggled':
-                                    self.shortcut.on_shortcut_toggled,
-        })
+                                self.shortcut.on_shortcut_toggled,
+                                })
 
     def _refresh_preferences_store(self):
         """ Sets the correct value in the preferences checkboxes """
