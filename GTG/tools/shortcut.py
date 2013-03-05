@@ -61,7 +61,7 @@ def get_shortcut_from_dconf():
         if NEW_TASK_ACTION in get_cmd:
             get_bind = call_subprocess(cmd = GSETTINGS_GET, i = str(to_access),
                                        key = "/ binding")
-            return get_bind.rstrip("\n")
+            return get_bind.strip("\'\n")
     return None
 
 
