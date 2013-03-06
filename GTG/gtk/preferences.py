@@ -202,6 +202,7 @@ class ShortcutWidget:
         cell.set_property("editable", True)
         cell.connect("accel-edited", self._cellAccelEdit, self.liststore)
         cell.connect("accel-cleared", self._accel_cleared, self.liststore)
+        self.cell = cell
         column_accel.pack_start(cell, True)
         column_accel.add_attribute(cell, "text", 1)
         self.hbox1.add(treeview)
@@ -233,9 +234,11 @@ class ShortcutWidget:
         if widget.get_active() == True:
             self.new_task_binding = self.binding_backup
             on_shortcut_change(self.new_task_binding, True)
+            self.cell.set_property("editable", True)
         else:
             self.new_task_binding = ""
             on_shortcut_change(self.new_task_binding, True)
+            self.cell.set_property("editable", False)
 
     def _cellAccelEdit(self, cell, path, accel_key, accel_mods, code, model):
         """ Accelerator is modified """
