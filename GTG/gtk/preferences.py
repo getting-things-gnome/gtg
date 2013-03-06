@@ -199,7 +199,6 @@ class ShortcutWidget:
         cell.set_alignment(0.0, 1.0)
         cell.set_fixed_size(-1, 18)
         cell.set_property("accel-mode", gtk.CELL_RENDERER_ACCEL_MODE_OTHER)
-        cell.set_property("editable", True)
         cell.connect("accel-edited", self._cellAccelEdit, self.liststore)
         cell.connect("accel-cleared", self._accel_cleared, self.liststore)
         self.cell = cell
