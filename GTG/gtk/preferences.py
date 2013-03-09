@@ -28,7 +28,9 @@ from xdg.BaseDirectory import xdg_config_home
 from GTG import _
 from GTG import info
 from GTG.gtk import ViewConfig
-from GTG.tools.shortcut import *
+from GTG.tools.shortcut import get_saved_binding, \
+                               check_invalidity, \
+                               save_new_binding
 
 AUTOSTART_DIRECTORY = os.path.join(xdg_config_home, "autostart")
 AUTOSTART_FILE = "gtg.desktop"
@@ -232,11 +234,11 @@ class ShortcutWidget:
         """ New task shortcut checkbox is toggled """
         if widget.get_active() == True:
             self.new_task_binding = self.binding_backup
-            on_shortcut_change(self.new_task_binding, True)
+            save_new_binding(self.new_task_binding, True)
             self.cell.set_property("editable", True)
         else:
             self.new_task_binding = ""
-            on_shortcut_change(self.new_task_binding, True)
+            save_new_binding(self.new_task_binding, True)
             self.cell.set_property("editable", False)
 
     def _cellAccelEdit(self, cell, path, accel_key, accel_mods, code, model):
@@ -249,7 +251,7 @@ class ShortcutWidget:
         self.binding_backup = self.new_task_binding
         iter = model.get_iter(path)
         model.set_value(iter, 1, self.show_input)
-        on_shortcut_change(self.new_task_binding, self.button.get_active())
+        save_new_binding(self.new_task_binding, self.button.get_active())
 
     def _accel_cleared(self, widget, path, model):
         """ Clear the accelerator """
@@ -258,12 +260,12 @@ class ShortcutWidget:
 
     def _show_warning(self, widget, input_str):
         """ Show warning when user enters inappropriate accelerator """
-        str1 = "The shortcut \"" + input_str + "\" cannot be used because "
-        str1 = str1 + "it will become impossible to type using this key.\n"
-        str1 = str1 + "Please try with a key such as "
-        show = str1 + "Control, Alt or Shift at the same time."
+        show = "The shortcut \"" + input_str + "\" cannot be used because " \
+               "it will become impossible to type using this key.\n" \
+               "Please try with a key such as " \
+               "Control, Alt or Shift at the same time."
         dialog = gtk.MessageDialog(self.dialog, gtk.DIALOG_DESTROY_WITH_PARENT,
                                    gtk.MESSAGE_WARNING, gtk.BUTTONS_CANCEL,
-                                   show)
+                                   _(show))
         response = dialog.run()
         dialog.hide()
