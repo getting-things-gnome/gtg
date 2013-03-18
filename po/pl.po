@@ -9,16 +9,16 @@ msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2013-01-01 17:35+0100\n"
-"PO-Revision-Date: 2013-01-22 20:10+0000\n"
-"Last-Translator: Xevaquor <xevaquor@hotmail.com>\n"
+"PO-Revision-Date: 2013-03-17 22:15+0000\n"
+"Last-Translator: Piotr Strębski <strebski@o2.pl>\n"
 "Language-Team: Polish <ponton@jabster.pl>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
 "|| n%100>=20) ? 1 : 2;\n"
-"X-Launchpad-Export-Date: 2013-01-23 04:56+0000\n"
-"X-Generator: Launchpad (build 16441)\n"
+"X-Launchpad-Export-Date: 2013-03-18 04:47+0000\n"
+"X-Generator: Launchpad (build 16532)\n"
 
 #: GTG/gtk/backends_dialog/__init__.py:75
 #, python-format
@@ -147,7 +147,7 @@ msgstr "<b>Uruchamianie</b>"
 
 #: GTG/gtk/preferences.glade.h:3
 msgid "Enable colored backgrounds in the task list"
-msgstr ""
+msgstr "Włącz kolorowe tło na liście zadań"
 
 #: GTG/gtk/preferences.glade.h:4
 msgid "Show description preview in the task list."
@@ -248,7 +248,7 @@ msgstr "Pokaż ten znacznik w widoku roboczym"
 msgid ""
 "You can create, open or filter your tasks                                    "
 "                                     here"
-msgstr ""
+msgstr "Możesz tu tworzyć, otwierać lub filtrować swoje zadania"
 
 #: GTG/gtk/browser/__init__.py:54
 msgid "Clear"
@@ -534,6 +534,8 @@ msgid ""
 "GTG is a personal tasks and TODO-list items organizer for the GNOME desktop "
 "environment."
 msgstr ""
+"GTG to organizer osobistych zadań i list TODO (Do-Zrobienia) dla środowiska "
+"pulpitowego GNOME."
 
 #: GTG/gtk/browser/taskbrowser.glade.h:34
 msgid "GTG website"
@@ -581,7 +583,7 @@ msgstr "_Ustaw Datę Rozpoczęcia"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:44
 msgid "T_oday"
-msgstr ""
+msgstr "Dzi_siaj"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:45
 msgid "_Tomorrow"
@@ -605,7 +607,7 @@ msgstr "_Wymaż Datę Rozpoczęcia"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:50
 msgid "Set Due Date"
-msgstr ""
+msgstr "Ustaw planowaną datę"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:51
 msgid "_Now"
@@ -621,7 +623,7 @@ msgstr "_Kiedyś"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:54
 msgid "_Clear Due Date"
-msgstr ""
+msgstr "Wy_czyść planowaną datę"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:55
 msgid "Modify Tags..."
@@ -833,7 +835,7 @@ msgstr ""
 
 #: GTG/plugins/not_today/not_today.py:59
 msgid "Do it tomorrow"
-msgstr ""
+msgstr "Zrób to jutro"
 
 #: GTG/plugins/send_email/sendEmail.py:44
 msgid "Send via email"
@@ -886,11 +888,11 @@ msgstr "Dodaj _Nowe Zadanie"
 
 #: GTG/plugins/notification_area/notification_area.py:281
 msgid "_Show Main Window"
-msgstr ""
+msgstr "_Pokaż główne okno"
 
 #: GTG/plugins/notification_area/notification_area.py:294
 msgid "_Quit"
-msgstr ""
+msgstr "_Wyjdź"
 
 #: GTG/plugins/export/export_templates/description_textual.py:21
 msgid "Text-only"
@@ -912,6 +914,10 @@ msgid ""
 "booklet. Packages <b>pdflatex</b>, <b>pdftk</b> and <b>pdfjam</b>\n"
 "are required."
 msgstr ""
+"Szablon do stworzenia\n"
+"<a href=\"http://www.pocketmod.com\">PocketMod</a>, będący małą składaną\n"
+"broszurką. Pakiety <b>pdflatex</b>, <b>pdftk</b> oraz <b>pdfjam</b>\n"
+"są wymagane."
 
 #: GTG/plugins/export/export_templates/description_sexy.py:18
 msgid "A professional-looking HTML page"
@@ -1010,7 +1016,7 @@ msgstr "<b>Współczynnik bliskości</b>"
 
 #: GTG/plugins/hamster/hamster.py:38
 msgid "Start a new activity in Hamster Time Tracker "
-msgstr ""
+msgstr "Rozpocznij nową czynność w Hamster Time Tracker "
 
 #: GTG/plugins/hamster/hamster.py:173
 msgid "Start task in Hamster"
@@ -1216,6 +1222,29 @@ msgid ""
 "can always change it by drag-and-dropping tasks on each other in the tasks "
 "list."
 msgstr ""
+"&quot;Podzadanie&quot; jest czymś, co potrzebujesz wykonać przed "
+"zakończeniem właściwego zadania. Istotą podzadań w GTG jest rozdzielenie "
+"zadania na mniejsze podzadania, które łatwiej jest namierzyć i osiągnąć.\n"
+"\n"
+"Aby umieścić podzadanie w opisie zadania (na przykład: to okno), rozpocznij "
+"nową linię od &quot;-&quot;, a następnie wpisz tytuł podzadania i wciśnij "
+"Enter.\n"
+"\n"
+"Spróbuj wstawić jedno podzadanie poniżej. Dla przykładu wpisz &quot;- To "
+"jest moje pierwsze podzadanie!&quot; i wciśnij Enter.\n"
+"\n"
+"\n"
+"\n"
+"Opcjonalnie możesz użyć przycisku &quot;Wstaw podzadanie&quot;.\n"
+"\n"
+"Zwróć uwagę, że podzadania przestrzegają pewnych reguł: po pierwsze, termin "
+"wykonania podzadania nie może następować po terminie wykonania zadania "
+"będącego jego rodzicem; po drugie, kiedy oznaczysz zadanie nadrzędne jako "
+"zakończone, jego podzadania również zostaną oznaczone jako zakończone.\n"
+"\n"
+"Jeżeli nie odpowiada Ci obecny sposób, w jaki zorganizowane są "
+"zadania/podzadania, zawsze możesz go zmienić wykorzystując metodę "
+"przeciągnij i upuść na liście zadań."
 
 #: GTG/core/firstrun_tasks.py:142
 msgid "Learn How To Use Tags"
@@ -1326,7 +1355,7 @@ msgstr ""
 
 #: GTG/core/firstrun_tasks.py:241
 msgid "Learn How To Use The Quick Add Entry"
-msgstr ""
+msgstr "Naucz się używać szybkiego dodawania wpisów"
 
 #: GTG/core/firstrun_tasks.py:242
 msgid ""
