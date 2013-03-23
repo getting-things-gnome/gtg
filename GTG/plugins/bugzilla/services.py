@@ -31,8 +31,16 @@ class BugzillaService(object):
         bugs = proxy.Bug.get({'ids': [bug_id, ]})
         return BugFactory.create(self.domain, bugs['bugs'][0])
 
-    def getTag(self, bug):
-        return getattr(bug, self.tag_from, None)
+    def getTags(self, bug):
+        ''' Get a list of tags due to some bug attribute contains list rather
+            than a string in some bugzilla service.
+        '''
+        tag_names = getattr(bug, self.tag_from, None)
+        if tag_names is None:
+            return []
+        if not isinstance(tag_names, list):
+            return [tag_names]
+        return tag_names
 
 
 class GnomeBugzilla(BugzillaService):
@@ -57,6 +65,9 @@ class SambaBugzilla(BugzillaService):
     enabled = False
 
 
+class RedHatBugzilla(BugzillaService):
+    ''' Bugzilla service provided by Red Hat '''
+
 # Register bugzilla services manually, however store them in someplace and load
 # them at once is better.
 services = {
@@ -65,6 +76,7 @@ services = {
     'bugzilla.mozilla.org': MozillaBugzilla,
     'bugzilla.samba.org': SambaBugzilla,
     'bugs.gentoo.org': GentooBugzilla,
+    'bugzilla.redhat.com': RedHatBugzilla,
 }
 
 

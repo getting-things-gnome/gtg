@@ -62,12 +62,17 @@ class SambaBug(Bug):
     pass
 
 
+class RedHatBug(Bug):
+    pass
+
+
 bugs = {
     'bugzilla.gnome.org': GnomeBug,
     'bugs.freedesktop.org': FreedesktopBug,
     'bugzilla.mozilla.org': MozillaBug,
     'bugzilla.samba.org': SambaBug,
     'bugs.gentoo.org': GentooBug,
+    'bugzilla.redhat.com': RedHatBug,
 }
 
 
