@@ -80,9 +80,10 @@ class GetBugInformationTask(threading.Thread):
             text = "%s\n\n%s" % (bug_url, bug.description)
             gobject.idle_add(self.task.set_text, text)
 
-            tag = bugzillaService.getTag(bug)
-            if tag is not None:
-                gobject.idle_add(self.task.add_tag, '@%s' % tag)
+            tags = bugzillaService.getTags(bug)
+            if tags is not None and tags:
+                for tag in tags:
+                    gobject.idle_add(self.task.add_tag, '@%s' % tag)
 
 
 class pluginBugzilla:
