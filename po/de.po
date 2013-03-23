@@ -8,15 +8,15 @@ msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2013-01-01 17:35+0100\n"
-"PO-Revision-Date: 2013-03-17 20:43+0000\n"
+"PO-Revision-Date: 2013-03-22 11:56+0000\n"
 "Last-Translator: Borim <Unknown>\n"
 "Language-Team: German <de@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2013-03-18 04:47+0000\n"
-"X-Generator: Launchpad (build 16532)\n"
+"X-Launchpad-Export-Date: 2013-03-23 05:11+0000\n"
+"X-Generator: Launchpad (build 16540)\n"
 
 #: GTG/gtk/backends_dialog/__init__.py:75
 #, python-format
@@ -281,7 +281,7 @@ msgstr ""
 
 #: GTG/gtk/browser/custominfobar.py:105
 msgid "Configure synchronization service"
-msgstr ""
+msgstr "Synchronisationsdienst konfigurieren"
 
 #: GTG/gtk/browser/custominfobar.py:107
 msgid "Ignore"
@@ -535,6 +535,8 @@ msgid ""
 "GTG is a personal tasks and TODO-list items organizer for the GNOME desktop "
 "environment."
 msgstr ""
+"GTG ist ein Aufgaben- und TODO-Listen Verwalter für die GNOME "
+"Arbeitsumgebung."
 
 #: GTG/gtk/browser/taskbrowser.glade.h:34
 msgid "GTG website"
@@ -556,6 +558,21 @@ msgid ""
 "Getting Things GNOME!; if not, write to the Free Software Foundation, Inc., "
 "51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA."
 msgstr ""
+"Getting Things GNOME! ist freie Software. Sie können es unter den "
+"Bedingungen der GNU General Public License wie von der Free Software "
+"Foundation veröffentlicht weitergeben und/oder ändern, entweder gemäß "
+"Version 3 der Lizenz oder (nach Ihrer Wahl) jeder späteren Version.\n"
+"\n"
+"Die Veröffentlichung von Getting Things GNOME! erfolgt in der Hoffnung, dass "
+"es Ihnen nützlich sei, aber OHNE JEDWEDE GARANTIE, selbst ohne der "
+"impliziten Garantie der MARKTREIFE oder der VERWENDBARKEIT FÜR EINEN "
+"BESTIMMTEN ZWECK. Details hierzu finden Sie in der GNU General Public "
+"License.\n"
+"\n"
+"Sie sollten eine Kopie der GNU General Public License gemeinsam mit Getting "
+"Things GNOME! erhalten haben. Falls dies nicht der Fall ist, schreiben sie "
+"bitte der Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, "
+"Boston, MA 02110-1301, USA."
 
 #: GTG/gtk/browser/taskbrowser.glade.h:40
 msgid "Mark as Not Done"
@@ -678,7 +695,7 @@ msgstr "Heute fällig!"
 #, python-format
 msgid "Due yesterday!"
 msgid_plural "Was %(days)d days ago"
-msgstr[0] ""
+msgstr[0] "War gestern fällig!"
 msgstr[1] "War vor %(days)d Tagen fällig"
 
 #: GTG/gtk/editor/taskeditor.glade.h:1
@@ -727,25 +744,29 @@ msgid ""
 msgid_plural ""
 "Deleting a task cannot be undone, and will delete the following tasks: "
 msgstr[0] ""
+"Das Löschen einer Aufgabe kann nicht rückgängig gemacht werden und wird die "
+"folgende Aufgabe löschen: "
 msgstr[1] ""
+"Das Löschen einer Aufgabe kann nicht rückgängig gemacht werden und wird die "
+"folgenden Aufgaben löschen: "
 
 #: GTG/gtk/delete_dialog.py:97
 msgid "Are you sure you want to delete this task?"
 msgid_plural "Are you sure you want to delete these tasks?"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Sind Sie sicher, dass Sie diese Aufgabe löschen wollen?"
+msgstr[1] "Sind Sie sicher, dass Sie diese Aufgaben löschen wollen?"
 
 #: GTG/gtk/delete_dialog.py:103
 msgid "Keep selected task"
 msgid_plural "Keep selected tasks"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Ausgewählte Aufgabe behalten"
+msgstr[1] "Ausgewählte Aufgaben behalten"
 
 #: GTG/gtk/delete_dialog.py:106
 msgid "Permanently remove task"
 msgid_plural "Permanently remove tasks"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Aufgabe dauerhaft löschen"
+msgstr[1] "Aufgaben dauerhaft löschen"
 
 #: GTG/gtk/delete_dialog.py:117
 #, python-format
@@ -809,7 +830,7 @@ msgstr "Plugins - %s"
 
 #: GTG/info.py:34
 msgid "GTG is a personal tasks and TODO-list items organizer for the GNOME."
-msgstr ""
+msgstr "GTG ist ein Aufgaben- und TODO-Listen Verwalter für GNOME."
 
 #: GTG/plugins/not_today/not_today.py:59
 msgid "Do it tomorrow"
@@ -991,7 +1012,7 @@ msgstr "<b>Umgebungsfaktor</b>"
 
 #: GTG/plugins/hamster/hamster.py:38
 msgid "Start a new activity in Hamster Time Tracker "
-msgstr ""
+msgstr "Eine neue Aktivität im Hamster Time Tracker beginnen "
 
 #: GTG/plugins/hamster/hamster.py:173
 msgid "Start task in Hamster"
