@@ -99,8 +99,6 @@ class pluginBugzilla:
 
         task = self.plugin_api.get_requester().get_task(task_id)
         bugTask = GetBugInformationTask(task)
-        bugTask.run()
-        return
         bugTask.setDaemon(True)
         bugTask.start()
 
