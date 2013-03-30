@@ -8,15 +8,15 @@ msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2013-01-01 17:35+0100\n"
-"PO-Revision-Date: 2013-03-15 12:51+0000\n"
+"PO-Revision-Date: 2013-03-29 21:18+0000\n"
 "Last-Translator: David Kovář <davidkov@gmx.com>\n"
 "Language-Team: Czech <cs@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
-"X-Launchpad-Export-Date: 2013-03-16 05:54+0000\n"
-"X-Generator: Launchpad (build 16532)\n"
+"X-Launchpad-Export-Date: 2013-03-30 05:28+0000\n"
+"X-Generator: Launchpad (build 16546)\n"
 
 #: GTG/gtk/backends_dialog/__init__.py:75
 #, python-format
@@ -99,7 +99,7 @@ msgstr "Označit úkoly v GTG chybovými štítky"
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:94
 msgid "Tag your GTG tasks with the project targeted by the bug"
-msgstr "Označit Vaše GTG úkoly s projektem spojeným s bugem"
+msgstr "Označit úkoly v GTG štítkem podle projektu spojeného s chybou"
 
 #: GTG/gtk/backends_dialog/parameters_ui/periodui.py:49
 msgid "Check for new tasks every"
@@ -437,7 +437,7 @@ msgstr "Označit jako _dokončené"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:7
 msgid "D_ismiss"
-msgstr "D_ismiss"
+msgstr "_Zahodit"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:8
 msgid "_Edit"
@@ -533,7 +533,8 @@ msgid ""
 "GTG is a personal tasks and TODO-list items organizer for the GNOME desktop "
 "environment."
 msgstr ""
-"GTG je organizér úkolů a věcí k dodělání pro GNOME desktopové prostředí."
+"GTG je osobní organizátor úkolů a seznamů TODO pro desktopové prostředí "
+"GNOME."
 
 #: GTG/gtk/browser/taskbrowser.glade.h:34
 msgid "GTG website"
@@ -573,7 +574,7 @@ msgstr "Označit jako nedokončené"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:41
 msgid "Und_ismiss"
-msgstr "Odzruš_it"
+msgstr "Nez_ahodit"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:42
 msgid "Add a subtask"
@@ -581,7 +582,7 @@ msgstr "Přidat podúkol"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:43
 msgid "_Set Start Date"
-msgstr "Na_stavit počáteční datum"
+msgstr "Na_stavit datum zahájení"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:44
 msgid "T_oday"
@@ -605,7 +606,7 @@ msgstr "Následující _rok"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:49
 msgid "_Clear Start Date"
-msgstr "_Smazat počáteční datum"
+msgstr "S_mazat datum zahájení"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:50
 msgid "Set Due Date"
@@ -641,7 +642,7 @@ msgstr "Označit tento úkol jako dokončený"
 
 #: GTG/gtk/editor/__init__.py:37 GTG/gtk/editor/__init__.py:39
 msgid "Mark this task as to be done"
-msgstr "Označit tento úkol jako téměř hotový"
+msgstr "Označit tento úkol jako k dokončení"
 
 #: GTG/gtk/editor/__init__.py:38
 msgid "Mark this task as not to be done anymore"
@@ -1264,7 +1265,7 @@ msgstr ""
 
 #: GTG/core/firstrun_tasks.py:114
 msgid "Learn How To Use Subtasks"
-msgstr "Naučit se jak používat podúlohy"
+msgstr "Naučte se jak používat podúkoly"
 
 #: GTG/core/firstrun_tasks.py:115
 msgid ""
@@ -1291,6 +1292,28 @@ msgid ""
 "can always change it by drag-and-dropping tasks on each other in the tasks "
 "list."
 msgstr ""
+"Podúkol je to, co je třeba udělat před tím, než se splní vlastní úkol. "
+"Smyslem podúkolu v GTG je rozdělit úkol na menší části, které je snadnější "
+"splnit postupně.\n"
+"\n"
+"Podúkol vložíte do popisu úkolu (například do tohoto okna) tak, že řádek "
+"začnete &quot;-&quot;, potom napíšete název podúkolu a stiskne Enter.\n"
+"\n"
+"Zkuste sem vložit jeden podúkol. Napište například &quot;- Toto je můj první "
+"podúkol!&quot; a stiskněte Enter:\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"Jinak můžete také využít tlačítko &quot;Vložit podúkol&quot; button.\n"
+"\n"
+"Všiměte si, že se podúkoly řídí několika pravidly: za prvé, termín splnění "
+"podúkolu nemůže být pozdější, než termít splnění jeho nadřazeného úkolu. Za "
+"druhé, když označíte nadřazený úkol jako dokončený, jeho podúkoly se označí "
+"jako dokončené také.\n"
+"\n"
+"Kdyby se vám nelíbilo aktuální uspořádání úkolů  a podúkolů, můžete ho "
+"kdykoli změnit v seznamu úkolů tak, že přetáhnete jeden úkol na jiný."
 
 #: GTG/core/firstrun_tasks.py:142
 msgid "Learn How To Use Tags"
@@ -1325,10 +1348,35 @@ msgid ""
 "@to_pay on @money, every task tagged with @to_pay will also appear when you "
 "select @money."
 msgstr ""
+"Štítky se v GTG používají ke třídění úkolů. Štítek je jednoduché slovo, "
+"které začíná &quot;@&quot;.\n"
+"\n"
+"Zkuste sem napsat slovo s &quot;@&quot; na začátku:\n"
+"\n"
+"Slovo zežloutlo, je to štítek! A tento štítek je nyní spojen s úkolem!\n"
+"\n"
+"V nabídce Zobrazit můžete zapnout postranní panel, ve kterém jsou uvedeny "
+"všechny použité štítky. To umožňuje zobrazit všechny úkoly spojené s "
+"příslušným štítkem.\n"
+"\n"
+"Když kliknete pravým tlačítkem myši na štítek v postranním panelu, můžete "
+"štítek upravit. Je možné například přiřadit štítku barvu nebo ikonu. To je "
+"praktické pro rychlé nalezení úkolů spojených s příslušným štítkem v seznamu "
+"úkolů!\n"
+"\n"
+"Nové štítky se přiřazují pouze k právě upravovanému úkolu a nikdy k jeho "
+"stávajícím podúkolům. Avšak když vytvoříte podúkol, bude sdílet štítky svého "
+"nařazeného úkolu.\n"
+"\n"
+"Pro pokročilou organizaci úkolů můžete vytvořit hierarchii štítků přesunutím "
+"jednoho štítku na jiný. To je vhodné pro seskupení několika štítků k sobě a "
+"snadné zobrazení souvisejících úkolů. Například, kdybyste měli dva štítky "
+"@peníze a @zaplatit a přetáhli byste @zaplatit na @peníze, tak každý úkol se "
+"štítkem @zaplatit by se zobrazil i při zvolení štítku @peníze."
 
 #: GTG/core/firstrun_tasks.py:174
 msgid "Learn How To Use The Work View"
-msgstr "Naučte se používat Pracovní pohled"
+msgstr "Naučte se jak používat Pracovní pohled"
 
 #: GTG/core/firstrun_tasks.py:175
 msgid ""
@@ -1362,10 +1410,42 @@ msgid ""
 "subtask, adding a tag hidden in the Work View, etc.). To avoid this, it's "
 "better not to edit your task while using the Work View."
 msgstr ""
+"Stisknutím tlačítka &quot;Pracovní pohled&quot; se v seznamu úkolů zobrazí "
+"pouze v současnosti proveditelné úkoly.\n"
+"\n"
+"Co je v současnosti proveditelný úkol? Je to úkol, který můžete udělat "
+"přímo, právě teď.\n"
+"\n"
+"Je to úkol, který je již &quot;zahajitelný&quot;, tzn. že už uplynulo datum "
+"zahájení.\n"
+"\n"
+"Je to úkol, který nemá žádné otevřené podúkoly, tzn. můžete udělat přímo "
+"tento úkol.\n"
+"\n"
+"Je to úkol, jehož datum zahájení není &quot;Někdy&quot;, protože tento "
+"případ data je vyhrazen pro záležitosti, které potřebují ještě promyslet, "
+"než bude možné je udělat. \n"
+"\n"
+"Takže, stručně, pacovní pohled zobrazuje úkoly, které můžete udělat právě "
+"nyní. To je velmi užitečné, když chcete mít vše hotové a chcete se zaměřit "
+"jen na aktuální úkoly.\n"
+"\n"
+"Jestli používáte štítky, můžete kliknout pravým tlačítkem myši na štítek v "
+"postranním panelu a zvolit, že se úkoly s tímto štítkem nezobrazí v "
+"pracovním pohledu. To je užitečné, když máte štítek jako &quot;@čeká&quot;, "
+"který používáte na úkoly blokované nějakou událostí zvenčí (jako například "
+"telefonní hovor, na který čekáte).\n"
+"\n"
+"A konečně důležitá poznámka k pracovnímu pohledu: pracovní pohled se "
+"aktualizuje okamžitě. Když upravíte úkol v pracovním pohledu, tak úkol může "
+"z pracovního pohledu zmizet z důvodu provedených změn (jako například když "
+"přidáte podúkol, přidáte štítek, který se v pracovním pohledu nezobrazuje a "
+"podobně). Aby se tomu předešlo, je lepší neupravovat úkoly prostřednictvím "
+"pracovního pohledu."
 
 #: GTG/core/firstrun_tasks.py:209
 msgid "Learn How To Use Plugins"
-msgstr "Naučit se používát zásuvné moduly"
+msgstr "Naučte se jak používat zásuvné moduly"
 
 #: GTG/core/firstrun_tasks.py:210
 msgid ""
@@ -1416,7 +1496,7 @@ msgstr ""
 
 #: GTG/core/firstrun_tasks.py:241
 msgid "Learn How To Use The Quick Add Entry"
-msgstr "Naučte se, jak používat rychlé vkládání záznamu"
+msgstr "Naučte se jak používat řádek Rychlé přidání úkolu"
 
 #: GTG/core/firstrun_tasks.py:242
 msgid ""
@@ -1460,10 +1540,49 @@ msgid ""
 "mum&quot;, under the tags &quot;family&quot; and &quot;calls&quot;, with the "
 "due date next Sunday and the start date tomorrow."
 msgstr ""
+"Řádek Rychlé přidání úkolu je nejrychlejší možnost jak vytvořit nový úkol. "
+"Pro zobrazení nebo skrytí vstupního řádku využijte nabídku Zobrazit.\n"
+"\n"
+"Pro vytvoření nového úkolu prostě napište jeho název do tohoto řádku a "
+"stiskněte Enter. Úkol se vytvoří a označí v prohlížeči úkolů. Jestli byl "
+"vybrán nějaký štítek v panelu štítků, bude přiřazen k novému úkolu.\n"
+"\n"
+"Při vytváření úkolů v řádku Rychlé přidání úkolu můžete zároveň nastavit "
+"jeho štítky, datum zahájení a termín splnění. Dodržujte tato formátovací "
+"pravidla:\n"
+"\n"
+"tags:štítek1,štítek2,štítek3\n"
+"\n"
+"Můžete napsat tolik štítků, kolik si přejete. Štítky se oddělují čárkou. "
+"Všimněte si, že každé slovo, začínající &quot;@&quot;, se také použije jako "
+"štítek.\n"
+"\n"
+"due:datum\n"
+"defer:datum\n"
+"\n"
+"Takto můžete nastavit datum zahájení a termín splnění. Data se mohou uvádět "
+"podle vašich místních zvyklostí nebo rrrr-mm-dd (například 2012-04-01) nebo "
+"rrrrmmdd (20120401) nebo mmdd (0401 - jako rok se použije aktuální rok) nebo "
+"dnes, zítra nebo jako názvy dní v týdnu (due:monday znamená příští pondělí). "
+"Takto vložená data nebudou součástí názvu úkolu.\n"
+"\n"
+"Příklady:\n"
+"\n"
+"koupit vybavení tags:nákup,kancelář due:20130320 defer:tuesday\n"
+"\n"
+"Tento příklad říká GTG, aby vytvořilo nový úkol s názvem &quot;koupit "
+"vybavení&quot;, se štítky &quot;nákup&quot; a &quot;kancelář&quot;, s datem "
+"ukončení 20.3.3013 a zahájením příští úterý.\n"
+"\n"
+"zavolat mámě tags:rodina,telefon due:sunday defer:tomorrow\n"
+"\n"
+"Tento příklad říká GTG, aby vytvořilo nový úkol s názvem &quot;zavolat "
+"mámě&quot;, se štítky rodina a telefon, s datem ukončení příští neděli a "
+"zahájením zítra."
 
 #: GTG/core/firstrun_tasks.py:288
 msgid "Learn How To Use Synchronization Services"
-msgstr "Naučte se, jak synchronizovat služby"
+msgstr "Naučte se jak používat Synchronizační služby"
 
 #: GTG/core/firstrun_tasks.py:289
 msgid ""
@@ -1486,28 +1605,28 @@ msgid ""
 "about them by in the dedicated documentation in GTG's help (use the Help "
 "menu or press F1 to get access to it)."
 msgstr ""
-"Synchronizace služeb dovoluje GTG synchronizovat (přistupovat nebo "
-"importovat) úkoly, poznámky nebo bugy z dalších webů nebo služeb jako "
+"Synchronizační služby umožňují GTG synchronizovat (to znamená mít přístup "
+"nebo importovat) úkoly, poznámky nebo chyby z jiných webů nebo služeb jako "
 "Launchpad, Remember the Milk, Tomboy atd.\n"
 "\n"
-"Toto může být opravdu velmi užitečné - chcete například přistupovat k vašim "
+"To může být opravdu velmi užitečné - chcete například přistupovat k vašim "
 "úkolům na několika počítačích, kde běží GTG, nebo chcete například editovat "
 "vaše úkoly v nějaké on-line službě. GTG může také importovat úkoly ze "
-"specifických webů jako Launchpad, kde je možné spravovat bugy na kterých "
-"pracujete.\n"
+"specifických webů jako Launchpad, kde je možné spravovat chybová hlášení, na "
+"kterých pracujete.\n"
 "\n"
-"K použití Synchronizace služeb jděte do nabídky Úpravy a vyberte "
-"&quot;Synchronizace služeb&quot;. Nyní budete mít možnost vybrat z několika "
+"K použití Synchronizačních služeb jděte do nabídky Úpravy a vyberte "
+"&quot;Synchronizační služby&quot;. Nyní budete mít možnost vybrat z několika "
 "různých on-line nebo lokálních služeb, pro které můžete importovat nebo "
-"exportovat vaše poznámky.\n"
+"exportovat vaše úkoly.\n"
 "\n"
-"Jestliže chcete vědět více o Synchronizaci služeb, můžete si přečíst "
+"Jestli chcete vědět více o Synchronizačních službách, můžete si přečíst "
 "informace v dokumentaci pro GTG (použijte nabídku Nápověda nebo stiskněte "
 "klávesu F1)."
 
 #: GTG/core/firstrun_tasks.py:312
 msgid "Learn How To Search For Tasks"
-msgstr "Naučte se, jak vyhledávat úkoly"
+msgstr "Naučte se jak vyhledávat v úkolech"
 
 #: GTG/core/firstrun_tasks.py:313
 msgid ""
@@ -1567,7 +1686,7 @@ msgstr "Můj nový úkol"
 
 #: GTG/core/task.py:158
 msgid "tags"
-msgstr "značky"
+msgstr "štítky"
 
 #: GTG/core/task.py:158
 msgid "tag"
@@ -1575,7 +1694,7 @@ msgstr "štítek"
 
 #: GTG/core/task.py:163
 msgid "defer"
-msgstr "odložit"
+msgstr "zahájit"
 
 #: GTG/core/task.py:164
 msgid "start"
@@ -1659,7 +1778,7 @@ msgstr ""
 
 #: GTG/backends/backend_launchpad.py:242
 msgid "Bug"
-msgstr "Bug"
+msgstr "Chyba"
 
 #: GTG/backends/backend_launchpad.py:324 GTG/backends/backend_mantis.py:255
 msgid "Reported by: "
