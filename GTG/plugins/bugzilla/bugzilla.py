@@ -21,6 +21,7 @@ import xmlrpclib
 from urlparse import urlparse
 
 from services import BugzillaServiceFactory
+from notification import send_notification
 
 __all__ = ('pluginBugzilla', )
 
@@ -50,13 +51,6 @@ class GetBugInformationTask(threading.Thread):
 
         try:
             bugzillaService = BugzillaServiceFactory.create(scheme, hostname)
-        except Exception, err:
-            # When cannot get a Bugzilla service whatever due to any reason,
-            # do nothing and return just.
-            print err
-            return
-
-        try:
             bug = bugzillaService.getBug(bug_id)
         except xmlrpclib.Fault, err:
             code = err.faultCode
@@ -65,15 +59,13 @@ class GetBugInformationTask(threading.Thread):
             elif code == 101:  # bug ID not exist
                 title = 'Bug #%s does not exist.' % bug_id
             elif code == 102:  # Access denied
-                title = 'Access denied to bug #%s' % bug_id
+                title = 'Access denied to bug %s' % bug_url
             else:  # unrecoganized error code currently
                 title = err.faultString
 
-            old_title = self.task.title
-            gobject.idle_add(self.task.set_title, title)
-            gobject.idle_add(self.task.set_text, old_title)
+            send_notification(bugzillaService.name, title)
         except Exception, err:
-            print err
+            send_notification(bugzillaService.name, err.message)
         else:
             title = '#%s: %s' % (bug_id, bug.summary)
             gobject.idle_add(self.task.set_title, title)

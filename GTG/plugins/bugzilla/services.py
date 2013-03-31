@@ -10,6 +10,7 @@ __all__ = ('BugzillaServiceFactory',)
 
 
 class BugzillaService(object):
+    name = 'Bugzilla Service'
     enabled = True
     tag_from = 'component'
 
@@ -44,29 +45,36 @@ class BugzillaService(object):
 
 
 class GnomeBugzilla(BugzillaService):
+    name = 'GNOME Bugzilla Service'
     tag_from = 'product'
 
 
 class FreedesktopBugzilla(BugzillaService):
     ''' Bugzilla service of Freedesktop projects '''
 
+    name = 'Freedesktop Bugzilla Service'
 
 class GentooBugzilla(BugzillaService):
     ''' Bugzilla service of Gentoo project '''
 
+    name = 'Gentoo Bugzilla Service'
 
 class MozillaBugzilla(BugzillaService):
     ''' Bugzilla service of Mozilla products '''
 
+    name = 'Mozilla Bugzilla Service'
 
 class SambaBugzilla(BugzillaService):
     ''' Bugzilla service of Samba project '''
 
     enabled = False
+    name = 'Samba Bugzilla Service'
 
 
 class RedHatBugzilla(BugzillaService):
     ''' Bugzilla service provided by Red Hat '''
+
+    name = 'Red Hat Bugzilla Service'
 
 # Register bugzilla services manually, however store them in someplace and load
 # them at once is better.
