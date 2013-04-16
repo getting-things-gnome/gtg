@@ -8,15 +8,15 @@ msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2013-01-01 17:35+0100\n"
-"PO-Revision-Date: 2013-03-22 11:56+0000\n"
-"Last-Translator: Borim <Unknown>\n"
+"PO-Revision-Date: 2013-04-15 14:57+0000\n"
+"Last-Translator: Michael Odaischi <michel777@gmx.de>\n"
 "Language-Team: German <de@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2013-03-23 05:11+0000\n"
-"X-Generator: Launchpad (build 16540)\n"
+"X-Launchpad-Export-Date: 2013-04-16 04:45+0000\n"
+"X-Generator: Launchpad (build 16564)\n"
 
 #: GTG/gtk/backends_dialog/__init__.py:75
 #, python-format
@@ -51,7 +51,7 @@ msgstr "Synchronisation ist <span color=\"red\">deaktiviert</span>."
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:62
 msgid "Import tags"
-msgstr "Schlagworte importieren"
+msgstr "Schlagwörter importieren"
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:63
 msgid "All tags"
@@ -63,7 +63,7 @@ msgstr "Nur diese Schlagwörter:"
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:67
 msgid "Tags to sync"
-msgstr "Zu synchronisierende Schlagworte"
+msgstr "Zu synchronisierende Schlagwörter"
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:68
 #: GTG/core/treefactory.py:79
@@ -914,6 +914,9 @@ msgid ""
 "booklet. Packages <b>pdflatex</b>, <b>pdftk</b> and <b>pdfjam</b>\n"
 "are required."
 msgstr ""
+"Erstellt eine Vorlage , <a href=\"http://www.pocketmod.com\">PocketMod</a> "
+"welches eine schmales, klappbares Heft ist. Pakete <b>pdflatex</b>, "
+"<b>pdftk</b> und<b>pdfjam</b> werden benötigt."
 
 #: GTG/plugins/export/export_templates/description_sexy.py:18
 msgid "A professional-looking HTML page"
@@ -1040,6 +1043,8 @@ msgid ""
 "%s seems to be installed on your system, but it does not provide a DBus "
 "interface which is required by the Tomboy/Gnote plugin in GTG."
 msgstr ""
+"%s scheint auf ihrem System installiert zu sein, aber es stellt kein DBus "
+"Interface zur Verfügung. Dieses wird aber vom Tomboy/Gnote Plugin benötigt."
 
 #: GTG/plugins/tomboy/tomboy.py:237
 msgid "That note does not exist!"
@@ -1219,7 +1224,7 @@ msgstr ""
 
 #: GTG/core/firstrun_tasks.py:142
 msgid "Learn How To Use Tags"
-msgstr ""
+msgstr "Lernen sie wie man Tags verwendet"
 
 #: GTG/core/firstrun_tasks.py:143
 msgid ""
@@ -1250,10 +1255,39 @@ msgid ""
 "@to_pay on @money, every task tagged with @to_pay will also appear when you "
 "select @money."
 msgstr ""
+"Um Ihre Aufgaben zu organisieren nutzen Sie in GTG Markierungen.  Eine "
+"Markierung ist ein einfaches Wort, dass mit &quot;@&quot; beginnt.\n"
+"\n"
+"Versuchen Sie, ein mit &quot;@&quot; beginnendes Wort zu schreiben.\n"
+"\n"
+"Sobald es gelb erscheint, ist es eine Markierung.  Und diese Markierung ist "
+"nun mit der Aufgabe verknüpft!\n"
+"\n"
+"Mit dem Menüeintrag Ansicht, können Sie eine Ansicht öffnen die alle "
+"benutzten Markierungen anzeigt.  Damit können alle mit einer Markierung "
+"verknüpften Aufgaben sichtbar gemacht werden.\n"
+"\n"
+"Mit einem Rechtsklick auf einer Markierung kann man diese auch bearbeiten.  "
+"Damit lassen sich beispielsweise eine Farbe oder ein Symbol verbinden.  Dies "
+"ist ein Vorteil wenn Sie rasch die Aufgaben Ihrer Aufgabenliste über die mit "
+"ihnen verknüpften Markierungen identifizieren wollen.\n"
+"\n"
+"Neue Markierungen werden stets ausschliesslich mit der gerade bearbeiteten "
+"Aufgabe verknüpft, und nicht einer untergeordneten Aufgabe.  Eine neue "
+"untergeordnete Aufgabe wird jedoch die Markierungen ihrer Hauptaufgabe "
+"übernehmen.\n"
+"\n"
+"Wenn Sie eine weiter fortgeschrittenere Aufgabenplanung betreiben wollen, "
+"können Sie auch durch drag-and-drop eine Hierachie der Markierungen "
+"erstellen.  Dies ist vorteilhaft, wenn Sie beispielsweise mehrere "
+"Markierungen neu gruppieren wollen um zusammenhängende Aufgaben zu erkennen. "
+"Wenn Sie beispielsweise die zwei Markierungen @Geld und @zu_zahlen "
+"definierten, und nun @zu_zahlen über @Geld verschieben, so wird nun jeder "
+"mit @zu_zahlen auch bei Angabe von @Geld angezeigt werden."
 
 #: GTG/core/firstrun_tasks.py:174
 msgid "Learn How To Use The Work View"
-msgstr ""
+msgstr "Lernen sie wie die Arbeitsansicht verwendet wird"
 
 #: GTG/core/firstrun_tasks.py:175
 msgid ""
@@ -1287,10 +1321,43 @@ msgid ""
 "subtask, adding a tag hidden in the Work View, etc.). To avoid this, it's "
 "better not to edit your task while using the Work View."
 msgstr ""
+"Wenn Sie auf die Schaltfläche &quot;Work View&quot drücken, werden nur "
+"ausführbare Aufgaben der Liste angezeigt.\n"
+"\n"
+"Was ist eine ausführbare Aufgabe?  Es ist eine Aufgabe, die von Ihnen sofort "
+"erledigt werden kann.\n"
+"\n"
+"Es ist eine Aufgabe, die bereits &quot;start-able&quot;, d. h. deren "
+"Zeitpunkt zu beginnen bereits in der Vergangenheit liegt.\n"
+"\n"
+"Es ist eine Aufgabe, die zur Erledigung nicht von noch nicht abgeschlossenen "
+"untergeordneten Aufgaben bestimmt ist.\n"
+"\n"
+"Es ist eine Aufgabe, deren Abschlusstermin sich von &quot;Someday&quot; "
+"unterscheidet, denn dieses Datum ist für Aufgaben bestimmt die erst einer "
+"Planung bedürfen, bevor sie ausführbar werden.\n"
+"\n"
+"Oder, kurz gesagt, die Arbeitsansicht zeigt Ihnen die Aufgaben, an denen Sie "
+"bereits jetzt arbeiten können.  Das ist besonders von Vorteil wenn Sie "
+"Projekte erledigen wollen und deshalb sich deshalb auf die wichtigen "
+"Aufgaben konzentrieren wollen.\n"
+"\n"
+"Wenn Sie Markierungen einsetzen, können Sie mit Rechtsklick in der "
+"Seitansicht alle Aufgaben dieser Markierung in der Arbeitsansicht verbergen. "
+" Wenn Sie mit einer Markierung wie &quot;@wait&quot arbeiten, können Sie "
+"beispielsweise  Aufgaben, die durch externe Bedingungen beeinflusst werden "
+"(wie einer vielleicht verspätet eintreffenden Lieferung), verwalten.\n"
+"\n"
+"Schliesslich eine wichtige Bemerkung zur Arbeitsansicht:  Wenn Sie bei "
+"geöffneter Arbeitsansicht die Aufgaben bearbeiten, kann die Arbeitsansicht "
+"unsichtbar werden, denn die Arbeitsansicht wird sofort aktualisiert und "
+"pflegt die Veränderungen ein (eine neue Aufgabe, eine in der Arbeitsansicht "
+"unsichtbare Markierung, etc.).  Wir empfehlen Ihnen, die Arbeitsansicht "
+"während der Bearbeitung der Aufgaben zu schliessen."
 
 #: GTG/core/firstrun_tasks.py:209
 msgid "Learn How To Use Plugins"
-msgstr ""
+msgstr "Lernen sie wie Plugins verwendet werden"
 
 #: GTG/core/firstrun_tasks.py:210
 msgid ""
@@ -1304,6 +1371,12 @@ msgid ""
 "You can find the Plugin Manager by selecting Edit in the Menu Bar, then "
 "clicking Plugins."
 msgstr ""
+"GTG's Kernfunktionen sind durch plugins erweiterbar.\n"
+"\n"
+"Beispiele gegenwärtig verfügbarer Plugins sind das Benachrichtigungsplugin, "
+"das mit einem kurzen Verweits zu GTG in Ihrem Informationsfenster erscheint, "
+"oder der closed tasks remover, der automatisch alte bereits abgschlossene "
+"Aufgaben von Ihrer Aufgabenliste entfernt."
 
 #: GTG/core/firstrun_tasks.py:224
 msgid "Reporting Bugs"
@@ -1323,10 +1396,22 @@ msgid ""
 "If you have some trouble with GTG, we might be able to help you or to solve "
 "your problem really quickly."
 msgstr ""
+"GTG ist noch immer eine Software im beta-Status.  Wir lieben sie und nutzen "
+"sie täglich, dennoch wahrscheinlich werden Sie noch auf Fehler (bugs) "
+"treffen.\n"
+"\n"
+"Bitte helfen Sie uns, GTG weiter zu verbessern und melden Sie diese auf "
+"Launchpad's Seite https://bugs.launchpad.net/gtg/+filebug\n"
+"\n"
+"Wir brauchen Sie um diese Software zu verbessern.  Jeder Beitrag und jede "
+"Idee ist uns willkommen.\n"
+"\n"
+"Sollten Sie Schwierigkeiten mit GTG haben, könnten wie Ihnen wahrscheinlich "
+"helfen oder Ihr Problem rasch lösen."
 
 #: GTG/core/firstrun_tasks.py:241
 msgid "Learn How To Use The Quick Add Entry"
-msgstr ""
+msgstr "Lernen sie wie der Schnelleintrag verwendet wird"
 
 #: GTG/core/firstrun_tasks.py:242
 msgid ""
@@ -1373,7 +1458,7 @@ msgstr ""
 
 #: GTG/core/firstrun_tasks.py:288
 msgid "Learn How To Use Synchronization Services"
-msgstr ""
+msgstr "Lernen sie wie Synchronisierungsdienste verwendet werden"
 
 #: GTG/core/firstrun_tasks.py:289
 msgid ""
@@ -1396,6 +1481,26 @@ msgid ""
 "about them by in the dedicated documentation in GTG's help (use the Help "
 "menu or press F1 to get access to it)."
 msgstr ""
+"Die Synchronisierungsdienste erlauben GTG die Synchronisation von Aufgaben "
+"(d.h. auf diese Zugriff zu haben oder sie zu importieren), Notizen oder "
+"Fehlern anderen Seiten oder Anbietern wie Launchpad.  Erinnern Sie sich an "
+"Milk, Tomboy, usw.\n"
+"\n"
+"Dies kann sehr nützlich sein, beispielsweise wenn Sie auf Ihre Aufgaben von "
+"simultan mehreren GTG-Sessionen von verschiedenen Rechnern zugreifen wollen, "
+"oder wenn Sie Ihre Aufgaben über einen online-Dienst bearbeiten wollen.  GTG "
+"ist auch in der Lage, Aufgaben von vorbestimmten Seiten wie beispielsweise "
+"launchpad zu importieren, wodurch Sie Fehlermeldungen verwalten können "
+"während sie in GTG arbeiten.\n"
+"\n"
+"Die Synchronisationsdienste nutzen Sie über das Edit Menü, und wählen dort "
+"&quot;Synchronizationsdienste&quot;.  Anschliessend haben sie die "
+"Möglichkeit unter mehreren online und localen Diensten zu wählen, von denen "
+"Sie Aufgaben importieren oder zu diesen exportieren können.\n"
+"\n"
+"Wenn Sie mehr über Synchronisationsdienste erfahren wollen, finden Sie in "
+"GTG Hilfe detaillierte Informationen (erreichbar über das Hilfe-Menü oder "
+"durch F1)."
 
 #: GTG/core/firstrun_tasks.py:312
 msgid "Learn How To Search For Tasks"
@@ -1447,7 +1552,7 @@ msgstr "verschieben"
 
 #: GTG/core/task.py:164
 msgid "start"
-msgstr ""
+msgstr "Start"
 
 #: GTG/core/task.py:170
 msgid "due"
@@ -1512,6 +1617,19 @@ msgid ""
 "subtasks...): your  changes will be preserved. This is useful to add  "
 "personal annotations to bug"
 msgstr ""
+"Dieser Synchronisationsdienst erlaubt es Ihnen, von Ihnen (oder einer "
+"anderen Person) bezeichnete Fehler in Lauchpad nach GTG zu exportieren.  Bei "
+"einer Änderung der Fehlereinstufung in Launchpad wird der entsprechende "
+"Eintrag in  GTG aktualisiert.\n"
+"Beachten Sie bitte, das dieser Synchronisationsdienst nur lesenden Zugriff "
+"hat.  Deshalb werden, wenn Sie einen importierten Auftrag öffnen und\n"
+"  - Titel\n"
+"  - Beschreibung\n"
+"  - Markierungen\n"
+"ändern, diese Änderungen wieder <b>zurückgenommen<b> wenn die Fehlermeldung "
+"verändert wurde.  Davon abgesehen, werden alle von Ihnen vorgenommenen "
+"Änderungen anderer Felder (Anfangsdatum, Terminvorgabe, untergeordnete "
+"Aufgaben ...) beibehalten.  Dies ist für persönliche Bemerkungen nützlich."
 
 #: GTG/backends/backend_launchpad.py:242
 msgid "Bug"
@@ -1519,7 +1637,7 @@ msgstr "Programmfehler"
 
 #: GTG/backends/backend_launchpad.py:324 GTG/backends/backend_mantis.py:255
 msgid "Reported by: "
-msgstr ""
+msgstr "Gemeldet von: "
 
 #: GTG/backends/backend_launchpad.py:329
 msgid "Link to bug: "
@@ -1536,6 +1654,10 @@ msgid ""
 "your TODO list, just tag it with the tag you have chosen (you'll configure "
 "it later), and it will appear in GTG."
 msgstr ""
+"Dieser Synchronisationsdienst kann alle oder ausgewählte Notizen von Tomboy "
+"mit GTG synchronisieren.  Wenn Sie dies tun wollen, sollten Sie eine Ihrer "
+"Notizen in der Todo-Liste haben, markieren (die Markierung kann nachher "
+"angepasst werden), und es wird in GTG angezeigt werden."
 
 #: GTG/backends/backend_gnote.py:41
 msgid "Gnote"
@@ -1548,6 +1670,10 @@ msgid ""
 "tag it with the tag you have chosen (you'll configure it later), and it will "
 "appear in GTG."
 msgstr ""
+"Dieser Dienst kann alle oder ausgewählte Notizen von Gnote nach GTG "
+"aktualisieren.  Wenn Sie dies tun wollen, sollten Sie eine Ihrer Notizen in "
+"der Todo-Liste haben, diese mit einer Markierung versehen (die Markierung "
+"kann später noch angepasst werden) - und sie wird in GTG angezeigt werden."
 
 #: GTG/backends/backend_mantis.py:44
 msgid "MantisBT"
@@ -1575,7 +1701,7 @@ msgstr ""
 
 #: GTG/backends/backend_mantis.py:256
 msgid "Link to issue: "
-msgstr ""
+msgstr "Link zur Lösung: "
 
 #: GTG/backends/backend_twitter.py:54
 msgid "Twitter"
@@ -1591,7 +1717,7 @@ msgstr "Evolution Aufgaben"
 
 #: GTG/backends/backend_evolution.py:72
 msgid "Lets you synchronize your GTG tasks with Evolution tasks"
-msgstr ""
+msgstr "Synchronisiert deine GTG Aufgaben mit Evolutin Aufgaben"
 
 #: GTG/backends/rtm/rtm.py:57
 msgid "Invalid state"
@@ -1609,6 +1735,11 @@ msgid ""
 "Note: This product uses the Remember The Milk API but is not endorsed or "
 "certified by Remember The Milk"
 msgstr ""
+"Dieser Dienst synchronisiert Ihre Aufgaben mit dem Dienst RememberTheMilk:\n"
+"\t\thttp://rememberthemilk.com\n"
+"\n"
+"Anchtung: Diese Anwendung nutzt die Remember The Milk API, ist jedoch nicht "
+"von Remember The Milk entwickelt oder zertifiziert worden."
 
 #: GTG/backends/backend_identica.py:53
 msgid "Identi.ca"
