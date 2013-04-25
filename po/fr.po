@@ -8,15 +8,15 @@ msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2013-01-01 17:35+0100\n"
-"PO-Revision-Date: 2013-01-04 03:48+0000\n"
+"PO-Revision-Date: 2013-04-24 09:37+0000\n"
 "Last-Translator: Alexandre Germain <Unknown>\n"
 "Language-Team: French <fr@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Launchpad-Export-Date: 2013-01-05 05:04+0000\n"
-"X-Generator: Launchpad (build 16393)\n"
+"X-Launchpad-Export-Date: 2013-04-25 05:28+0000\n"
+"X-Generator: Launchpad (build 16580)\n"
 
 #: GTG/gtk/backends_dialog/__init__.py:75
 #, python-format
@@ -75,7 +75,7 @@ msgstr "Tâches avec ces étiquettes :"
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:73
 msgid "Username"
-msgstr "Nom d'utilisateur"
+msgstr "Utilisateur"
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:78
 msgid "Service URL"
@@ -143,7 +143,7 @@ msgstr "<b>Démarrage</b>"
 
 #: GTG/gtk/preferences.glade.h:3
 msgid "Enable colored backgrounds in the task list"
-msgstr "Activer les fond colorés dans la liste des tâches"
+msgstr "Activer les fonds colorés dans la liste des tâches"
 
 #: GTG/gtk/preferences.glade.h:4
 msgid "Show description preview in the task list."
@@ -226,7 +226,7 @@ msgstr "Créer une nouvelle tâche"
 
 #: GTG/gtk/browser/__init__.py:48
 msgid "Create a new subtask"
-msgstr "Créer une nouvelle tâche enfant"
+msgstr "Créer une nouvelle tâche fille"
 
 #: GTG/gtk/browser/__init__.py:49
 msgid "Display only the currently actionable tasks"
@@ -257,6 +257,9 @@ msgid ""
 "authentication data and has been disabled. To retry the login, re-enable the "
 "service."
 msgstr ""
+"Le service de synchronisation <b>%s</b> a été désactivé car il n'a pu ouvrir "
+"de session avec les données d'authentification fournies. Afin de vous "
+"identifier, réactivez le service."
 
 #: GTG/gtk/browser/custominfobar.py:40
 #, python-format
@@ -335,7 +338,7 @@ msgstr "Ajouter une couleur personnalisée"
 
 #: GTG/gtk/browser/simple_color_selector.py:264
 msgid "Choose a color"
-msgstr ""
+msgstr "Choisissez une couleur"
 
 #: GTG/gtk/browser/treeview_factory.py:274
 #: GTG/gtk/browser/taskbrowser.glade.h:29
@@ -368,25 +371,27 @@ msgstr "Nom : "
 
 #: GTG/gtk/browser/tag_editor.py:231
 msgid "Show Tag in Work View :"
-msgstr ""
+msgstr "Afficher l'étiquette dans la vue de travaille"
 
 #: GTG/gtk/browser/tag_editor.py:244
 msgid "Select Tag Color:"
-msgstr ""
+msgstr "Sélectionnez la couleur de l'étiquette:"
 
 #: GTG/gtk/browser/tag_editor.py:284
 msgid ""
 "Click To\n"
 "Set Icon"
 msgstr ""
+"Choisir\n"
+"l'icône"
 
 #: GTG/gtk/browser/tag_editor.py:294
 msgid "Enter tag name here"
-msgstr ""
+msgstr "Entrer le nom de l'étiquette ici"
 
 #: GTG/gtk/browser/modifytags_dialog.py:38
 msgid "NewTag"
-msgstr ""
+msgstr "NouvelleÉtiquette"
 
 #: GTG/gtk/browser/browser.py:582
 msgid "no active tasks"
@@ -413,7 +418,7 @@ msgstr "Rechercher"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:1
 msgid "Getting Things GNOME!"
-msgstr ""
+msgstr "Getting Things GNOME!"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:2
 msgid "_Tasks"
