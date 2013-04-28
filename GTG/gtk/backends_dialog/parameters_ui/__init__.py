@@ -91,7 +91,7 @@ class ParametersUI(gtk.VBox):
                                                        })),
             ("import-from-direct-messages", self.UI_generator(CheckBoxUI,
                                                               {"text":
-                                                               _("Import tasks"
+                                                               _("Import tasks "
                                                                  "from direct "
                                                                  "messages"),
                                                                "parameter":
@@ -115,7 +115,7 @@ class ParametersUI(gtk.VBox):
                                                         {"text":
                                                          _("Tag your "
                                                            "GTG tasks with "
-                                                           "the project"
+                                                           "the project "
                                                            "targeted by the"
                                                            " bug"),
                                                          "parameter":
