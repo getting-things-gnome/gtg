@@ -192,7 +192,7 @@ class pluginTomboy:
                                            type=gtk.MESSAGE_ERROR,
                                            buttons=gtk.BUTTONS_OK,
                                            message_format=_("%s seems to be "
-                                           "installed on your system, but it"
+                                           "installed on your system, but it "
                                            "does not provide a DBus interface"
                                            " which is required by the "
                                            "Tomboy/Gnote plugin in GTG.") %
@@ -274,7 +274,7 @@ exist. Do you want to create a new one?"))
                                        type=gtk.MESSAGE_WARNING,
                                        buttons=gtk.BUTTONS_YES_NO,
                                        message_format=(_("This Tomboy note \
-                                       does not exist anymore.Do you want to\
+                                       does not exist anymore. Do you want to\
                                         create it?")))
             response = dialog.run()
             dialog.destroy()
