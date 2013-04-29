@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2013-04-27 08:52+0200\n"
+"POT-Creation-Date: 2013-04-28 17:02+0200\n"
 "PO-Revision-Date: 2010-03-12 14:52+0000\n"
 "Last-Translator: Joel Patrão <joel.patrao@gmail.com>\n"
 "Language-Team: Portuguese <pt@li.org>\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2013-04-28 04:38+0000\n"
+"X-Launchpad-Export-Date: 2013-04-29 04:39+0000\n"
 "X-Generator: Launchpad (build 16580)\n"
 
 #: GTG/gtk/backends_dialog/__init__.py:75
@@ -92,8 +92,8 @@ msgid ""
 msgstr ""
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:94
-msgid "Import tasksfrom direct messages"
-msgstr ""
+msgid "Import tasks from direct messages"
+msgstr "Importar tarefas de mensagens directas"
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:102
 msgid ""
@@ -107,7 +107,7 @@ msgid "Tag your GTG tasks with the bug tags"
 msgstr ""
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:116
-msgid "Tag your GTG tasks with the projecttargeted by the bug"
+msgid "Tag your GTG tasks with the project targeted by the bug"
 msgstr ""
 
 #: GTG/gtk/backends_dialog/parameters_ui/periodui.py:49
@@ -1002,7 +1002,7 @@ msgstr "Adicionar uma nota do Tomboy"
 #: GTG/plugins/tomboy/tomboy.py:194
 #, python-format
 msgid ""
-"%s seems to be installed on your system, but itdoes not provide a DBus "
+"%s seems to be installed on your system, but it does not provide a DBus "
 "interface which is required by the Tomboy/Gnote plugin in GTG."
 msgstr ""
 
@@ -1017,7 +1017,7 @@ msgstr "Essa nota não existe. Quer criar uma nova?"
 #: GTG/plugins/tomboy/tomboy.py:276
 msgid ""
 "This Tomboy note                                        does not exist "
-"anymore.Do you want to                                        create it?"
+"anymore. Do you want to                                        create it?"
 msgstr ""
 
 #: GTG/gtg.py:85
@@ -2043,9 +2043,6 @@ msgstr[1] ""
 
 #~ msgid "Getting Things GNOME! Preferences"
 #~ msgstr "Preferências do Getting Things GNOME!"
-
-#~ msgid "Import tasks from direct messages"
-#~ msgstr "Importar tarefas de mensagens directas"
 
 #~ msgid "Import tasks from your tweets"
 #~ msgstr "Importar tarefas dos seus tweets"

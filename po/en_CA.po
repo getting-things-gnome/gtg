@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2013-04-27 08:52+0200\n"
+"POT-Creation-Date: 2013-04-28 17:02+0200\n"
 "PO-Revision-Date: 2012-11-30 15:24+0000\n"
 "Last-Translator: Luca Falavigna <dktrkranz@ubuntu.com>\n"
 "Language-Team: English (Canada) <en_CA@li.org>\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2013-04-28 04:38+0000\n"
+"X-Launchpad-Export-Date: 2013-04-29 04:40+0000\n"
 "X-Generator: Launchpad (build 16580)\n"
 
 #: GTG/gtk/backends_dialog/__init__.py:75
@@ -92,8 +92,8 @@ msgid ""
 msgstr ""
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:94
-msgid "Import tasksfrom direct messages"
-msgstr ""
+msgid "Import tasks from direct messages"
+msgstr "Import tasks from direct messages"
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:102
 msgid ""
@@ -107,8 +107,8 @@ msgid "Tag your GTG tasks with the bug tags"
 msgstr "Tag your GTG tasks with the bug tags"
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:116
-msgid "Tag your GTG tasks with the projecttargeted by the bug"
-msgstr ""
+msgid "Tag your GTG tasks with the project targeted by the bug"
+msgstr "Tag your GTG tasks with the project targeted by the bug"
 
 #: GTG/gtk/backends_dialog/parameters_ui/periodui.py:49
 msgid "Check for new tasks every"
@@ -1047,7 +1047,7 @@ msgstr "Add Tomboy note"
 #: GTG/plugins/tomboy/tomboy.py:194
 #, python-format
 msgid ""
-"%s seems to be installed on your system, but itdoes not provide a DBus "
+"%s seems to be installed on your system, but it does not provide a DBus "
 "interface which is required by the Tomboy/Gnote plugin in GTG."
 msgstr ""
 
@@ -1062,7 +1062,7 @@ msgstr "That note does not exist. Do you want to create a new one?"
 #: GTG/plugins/tomboy/tomboy.py:276
 msgid ""
 "This Tomboy note                                        does not exist "
-"anymore.Do you want to                                        create it?"
+"anymore. Do you want to                                        create it?"
 msgstr ""
 
 #: GTG/gtg.py:85
@@ -2394,11 +2394,5 @@ msgstr[1] "In %(days)d days"
 #~ msgid "Import tasks from @ replies "
 #~ msgstr "Import tasks from @ replies "
 
-#~ msgid "Import tasks from direct messages"
-#~ msgstr "Import tasks from direct messages"
-
 #~ msgid "Import tasks from your tweets"
 #~ msgstr "Import tasks from your tweets"
-
-#~ msgid "Tag your GTG tasks with the project targeted by the bug"
-#~ msgstr "Tag your GTG tasks with the project targeted by the bug"

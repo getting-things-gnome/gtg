@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2013-04-27 08:52+0200\n"
-"PO-Revision-Date: 2013-04-15 14:57+0000\n"
-"Last-Translator: Michael Odaischi <michel777@gmx.de>\n"
+"POT-Creation-Date: 2013-04-28 17:02+0200\n"
+"PO-Revision-Date: 2013-04-28 07:42+0000\n"
+"Last-Translator: Borim <Unknown>\n"
 "Language-Team: German <de@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2013-04-28 04:37+0000\n"
+"X-Launchpad-Export-Date: 2013-04-29 04:39+0000\n"
 "X-Generator: Launchpad (build 16580)\n"
 
 #: GTG/gtk/backends_dialog/__init__.py:75
@@ -90,11 +90,11 @@ msgstr "Adresse des Dienstes"
 msgid ""
 "Import tasks                                                         from @ "
 "replies "
-msgstr ""
+msgstr "Aufgaben aus den @ Antworten importieren "
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:94
-msgid "Import tasksfrom direct messages"
-msgstr ""
+msgid "Import tasks from direct messages"
+msgstr "Aufgaben aus Direktnachrichten importieren"
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:102
 msgid ""
@@ -108,8 +108,8 @@ msgid "Tag your GTG tasks with the bug tags"
 msgstr "Schlagwörter des Fehlerberichts in GTG-Aufgaben übernehmen"
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:116
-msgid "Tag your GTG tasks with the projecttargeted by the bug"
-msgstr ""
+msgid "Tag your GTG tasks with the project targeted by the bug"
+msgstr "Projekt des Fehlerberichts in GTG-Aufgaben übernehmen"
 
 #: GTG/gtk/backends_dialog/parameters_ui/periodui.py:49
 msgid "Check for new tasks every"
@@ -149,7 +149,7 @@ msgstr ""
 
 #: GTG/gtk/preferences.glade.h:3
 msgid "<b>System</b>"
-msgstr ""
+msgstr "<b>System</b>"
 
 #: GTG/gtk/preferences.glade.h:4
 msgid "Enable colored backgrounds in the task list"
@@ -194,7 +194,7 @@ msgstr "Einstellungen - %s"
 
 #: GTG/gtk/preferences.py:249
 msgid "Warning"
-msgstr ""
+msgstr "Warnung"
 
 #: GTG/gtk/preferences.py:263
 #, python-format
@@ -203,6 +203,10 @@ msgid ""
 "using this key.\n"
 "Please try with a key such as Control, Alt or Shift at the same time."
 msgstr ""
+"Die Tastenkombination »%s« kann nicht verwendet werden, da es dann unmöglich "
+"wäre, mit dieser Taste zu schreiben.\n"
+"Bitte versuchen Sie eine Kombination mit einer Taste wie Strg, Alt oder der "
+"Umschalttaste."
 
 #: GTG/gtk/browser/__init__.py:37 GTG/gtk/browser/taskbrowser.glade.h:25
 #: GTG/gtk/editor/__init__.py:31
@@ -1059,7 +1063,7 @@ msgstr "Tomboy-Notiz hinzufügen"
 #: GTG/plugins/tomboy/tomboy.py:194
 #, python-format
 msgid ""
-"%s seems to be installed on your system, but itdoes not provide a DBus "
+"%s seems to be installed on your system, but it does not provide a DBus "
 "interface which is required by the Tomboy/Gnote plugin in GTG."
 msgstr ""
 
@@ -1074,7 +1078,7 @@ msgstr "Diese Notiz existiert nicht. Möchten Sie eine neue Notiz erstellen?"
 #: GTG/plugins/tomboy/tomboy.py:276
 msgid ""
 "This Tomboy note                                        does not exist "
-"anymore.Do you want to                                        create it?"
+"anymore. Do you want to                                        create it?"
 msgstr ""
 
 #: GTG/gtg.py:85
@@ -2554,14 +2558,8 @@ msgstr[1] "In %(days)d Tagen"
 #~ msgid "Imports your twitter  messages into your GTG "
 #~ msgstr "Importiert deine Twitter-Nachrichten in dein GTG "
 
-#~ msgid "Import tasks from direct messages"
-#~ msgstr "Aufgaben aus Direktnachrichten importieren"
-
 #~ msgid "Import tasks from your tweets"
 #~ msgstr "Aufgaben aus Ihren Tweets importieren"
-
-#~ msgid "Tag your GTG tasks with the project targeted by the bug"
-#~ msgstr "Projekt des Fehlerberichts in GTG-Aufgaben übernehmen"
 
 #~ msgid "Syncing is <span color=\"red\">disabled</span>"
 #~ msgstr "Die Synchronisation ist <span color=\"red\">deaktiviert</span>"
