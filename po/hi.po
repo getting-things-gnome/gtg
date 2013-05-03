@@ -8,20 +8,20 @@ msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2013-04-28 17:02+0200\n"
-"PO-Revision-Date: 2012-11-29 09:48+0000\n"
-"Last-Translator: Abdul Rauf <abdulraufhaseeb@gmail.com>\n"
+"PO-Revision-Date: 2013-05-02 06:39+0000\n"
+"Last-Translator: Nimit Shah <Unknown>\n"
 "Language-Team: Hindi <hi@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2013-04-29 04:39+0000\n"
-"X-Generator: Launchpad (build 16580)\n"
+"X-Launchpad-Export-Date: 2013-05-03 05:15+0000\n"
+"X-Generator: Launchpad (build 16598)\n"
 
 #: GTG/gtk/backends_dialog/__init__.py:75
 #, python-format
 msgid "Synchronization Services - %s"
-msgstr "Copy text \t Synchronization Services - %s"
+msgstr "सिंक्रोनाइजेशन सेवाए - %s"
 
 #: GTG/gtk/backends_dialog/__init__.py:293
 #, python-format

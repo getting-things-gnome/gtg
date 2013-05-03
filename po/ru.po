@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2013-04-28 17:02+0200\n"
-"PO-Revision-Date: 2013-01-06 11:49+0000\n"
+"PO-Revision-Date: 2013-05-02 16:37+0000\n"
 "Last-Translator: DmDr <cardioexp@gmail.com>\n"
 "Language-Team: Russian <ru@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -16,8 +16,8 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Launchpad-Export-Date: 2013-04-29 04:39+0000\n"
-"X-Generator: Launchpad (build 16580)\n"
+"X-Launchpad-Export-Date: 2013-05-03 05:15+0000\n"
+"X-Generator: Launchpad (build 16598)\n"
 
 #: GTG/gtk/backends_dialog/__init__.py:75
 #, python-format
@@ -76,7 +76,7 @@ msgstr "Все задачи"
 msgid ""
 "Tasks with                                                                 "
 "these tags:"
-msgstr ""
+msgstr "Задачи с этими метками:"
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:76
 msgid "Username"
@@ -101,7 +101,7 @@ msgid ""
 "Import                                                                  "
 "tasks from                                                                  "
 "your tweets"
-msgstr ""
+msgstr "Импортировать задачи из ваших твитов"
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:109
 msgid "Tag your GTG tasks with the bug tags"
@@ -147,11 +147,11 @@ msgstr "Запускать Getting Things GNOME! при каждом входе 
 
 #: GTG/gtk/preferences.glade.h:2
 msgid "New Task Shortcut :"
-msgstr ""
+msgstr "Комбинация клавиш для новой задачи:"
 
 #: GTG/gtk/preferences.glade.h:3
 msgid "<b>System</b>"
-msgstr ""
+msgstr "<b>Система</b>"
 
 #: GTG/gtk/preferences.glade.h:4
 msgid "Enable colored backgrounds in the task list"
@@ -196,7 +196,7 @@ msgstr "Предпочтения - %s"
 
 #: GTG/gtk/preferences.py:249
 msgid "Warning"
-msgstr ""
+msgstr "Предупреждение"
 
 #: GTG/gtk/preferences.py:263
 #, python-format
@@ -205,6 +205,9 @@ msgid ""
 "using this key.\n"
 "Please try with a key such as Control, Alt or Shift at the same time."
 msgstr ""
+"Клавишу «%s» нельзя использовать, поскольку ее станет невозможно "
+"использовать для обычного набора.\n"
+"Попробуйте  в сочетании с Control, Alt или Shift."
 
 #: GTG/gtk/browser/__init__.py:37 GTG/gtk/browser/taskbrowser.glade.h:25
 #: GTG/gtk/editor/__init__.py:31
@@ -266,7 +269,7 @@ msgstr "Показывать эту метку в рабочем плане"
 
 #: GTG/gtk/browser/__init__.py:53
 msgid "You can create, open or filter your tasks here"
-msgstr ""
+msgstr "Тут можно создавать, открывать и фильтровать задачи"
 
 #: GTG/gtk/browser/__init__.py:54
 msgid "Clear"
@@ -1060,6 +1063,8 @@ msgid ""
 "%s seems to be installed on your system, but it does not provide a DBus "
 "interface which is required by the Tomboy/Gnote plugin in GTG."
 msgstr ""
+"Скорее всего, %s уже установлен в вашей системе, однако не предоставляет "
+"интерфейса DBus который необходим  дополнению Tomboy/Gnote в GTG."
 
 #: GTG/plugins/tomboy/tomboy.py:243
 msgid "That note does not exist!"
@@ -1073,7 +1078,7 @@ msgstr "Заметка не существует! Создать её?"
 msgid ""
 "This Tomboy note                                        does not exist "
 "anymore. Do you want to                                        create it?"
-msgstr ""
+msgstr "Эта заметка Tomboy больше не существует. Создать ее?"
 
 #: GTG/gtg.py:85
 msgid "gtg is already running!"
