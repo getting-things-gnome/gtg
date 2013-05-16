@@ -357,6 +357,15 @@ class Task(TreeNode):
     def get_due_date(self):
         """ Returns the due date, which always respects all constraints """
         return self.due_date
+        
+    def get_urgent_date(self):
+        """ Returns the most urgent due date among the task and it's subtasks """
+        urg_date = self.due_date
+        for sub in self.get_subtasks():
+            sub_urg_date = sub.get_urgent_date()
+            if urg_date >= sub_urg_date:
+                urg_date = sub_urg_date
+        return urg_date
 
     def get_due_date_constraint(self):
         """ Returns the most urgent due date constraint, following

@@ -162,8 +162,8 @@ class TreeviewFactory():
                 t1 = task1.get_start_date()
                 t2 = task2.get_start_date()
             elif para == 'due':
-                t1 = task1.get_due_date()
-                t2 = task2.get_due_date()
+                t1 = task1.get_urgent_date()
+                t2 = task2.get_urgent_date()
                 if t1 == Date.no_date():
                     t1 = task1.get_due_date_constraint()
                 if t2 == Date.no_date():
