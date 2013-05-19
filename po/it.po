@@ -8,15 +8,15 @@ msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2013-04-28 17:02+0200\n"
-"PO-Revision-Date: 2013-02-26 16:56+0000\n"
+"PO-Revision-Date: 2013-05-18 16:54+0000\n"
 "Last-Translator: Claudio Arseni <claudio.arseni@gmail.com>\n"
 "Language-Team: Italian <it@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2013-04-29 04:39+0000\n"
-"X-Generator: Launchpad (build 16580)\n"
+"X-Launchpad-Export-Date: 2013-05-19 05:17+0000\n"
+"X-Generator: Launchpad (build 16626)\n"
 
 #: GTG/gtk/backends_dialog/__init__.py:75
 #, python-format
@@ -60,7 +60,7 @@ msgstr "Tutte le etichette"
 msgid ""
 "Just these                                                                   "
 "    tags:"
-msgstr ""
+msgstr "Solo queste etichette:"
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:68
 msgid "Tags to sync"
@@ -75,7 +75,7 @@ msgstr "Tutte le attività"
 msgid ""
 "Tasks with                                                                 "
 "these tags:"
-msgstr ""
+msgstr "Attività con queste etichette:"
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:76
 msgid "Username"
@@ -100,7 +100,7 @@ msgid ""
 "Import                                                                  "
 "tasks from                                                                  "
 "your tweets"
-msgstr ""
+msgstr "Importa attività dai tweet"
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:109
 msgid "Tag your GTG tasks with the bug tags"
@@ -144,11 +144,11 @@ msgstr "Avviare Getting Things GNOME all'accesso"
 
 #: GTG/gtk/preferences.glade.h:2
 msgid "New Task Shortcut :"
-msgstr ""
+msgstr "Nuova scorciatoia per l'attività:"
 
 #: GTG/gtk/preferences.glade.h:3
 msgid "<b>System</b>"
-msgstr ""
+msgstr "<b>Sistema</b>"
 
 #: GTG/gtk/preferences.glade.h:4
 msgid "Enable colored backgrounds in the task list"
@@ -193,7 +193,7 @@ msgstr "Preferenze - %s"
 
 #: GTG/gtk/preferences.py:249
 msgid "Warning"
-msgstr ""
+msgstr "Avviso"
 
 #: GTG/gtk/preferences.py:263
 #, python-format
@@ -202,6 +202,9 @@ msgid ""
 "using this key.\n"
 "Please try with a key such as Control, Alt or Shift at the same time."
 msgstr ""
+"Non è possibile usare «%s» come scorciatoia perché diventerebbe impossibile "
+"digitare usando questo tasto.\n"
+"Provare ad usare per la combinazione un tasto come Ctrl, Alt o Maiusc."
 
 #: GTG/gtk/browser/__init__.py:37 GTG/gtk/browser/taskbrowser.glade.h:25
 #: GTG/gtk/editor/__init__.py:31
@@ -263,7 +266,7 @@ msgstr "Mostra questa etichetta nella scaletta di lavoro"
 
 #: GTG/gtk/browser/__init__.py:53
 msgid "You can create, open or filter your tasks here"
-msgstr ""
+msgstr "Da qui è possibile creare, aprire o creare filtri per le attività"
 
 #: GTG/gtk/browser/__init__.py:54
 msgid "Clear"
@@ -1062,6 +1065,8 @@ msgid ""
 "%s seems to be installed on your system, but it does not provide a DBus "
 "interface which is required by the Tomboy/Gnote plugin in GTG."
 msgstr ""
+"%s sembra essere installato nel sistema, ma non fornisce un'interfaccia DBus "
+"necessaria in GTG per il plugin Tomboy/Gnote."
 
 #: GTG/plugins/tomboy/tomboy.py:243
 msgid "That note does not exist!"
@@ -1075,7 +1080,7 @@ msgstr "La nota non esiste. Crearne una nuova?"
 msgid ""
 "This Tomboy note                                        does not exist "
 "anymore. Do you want to                                        create it?"
-msgstr ""
+msgstr "Questa nota di Tomboy non esiste più. Crearla?"
 
 #: GTG/gtg.py:85
 msgid "gtg is already running!"
