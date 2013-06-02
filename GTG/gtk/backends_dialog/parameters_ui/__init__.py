@@ -57,70 +57,51 @@ class ParametersUI(gtk.VBox):
         # builds a list of widget generators. More precisely, it's a
         # list of tuples: (backend_parameter_name, widget_generator)
         self.parameter_widgets = (
-            ("import-tags", self.UI_generator(ImportTagsUI,
-                                              {"title": _("Import tags"),
-                                               "anybox_text": _("All tags"),
-                                               "somebox_text": _("Just these \
-                                                                      tags:"),
-                                               "parameter_name": "import-tags\
-                                                                         "})),
-            ("attached-tags", self.UI_generator(ImportTagsUI,
-                                                {"title": _("Tags to sync"),
-                                                 "anybox_text": _("All tasks"),
-                                                 "somebox_text": _("Tasks with\
-                                                                 these tags:"),
-                                                 "parameter_name":
-                                                 "attached-tags"})),
+            ("import-tags", self.UI_generator(ImportTagsUI, {
+                "title": _("Import tags"),
+                "anybox_text": _("All tags"),
+                "somebox_text": _("Just these tags:"),
+                "parameter_name": "import-tags",
+            })),
+            ("attached-tags", self.UI_generator(ImportTagsUI, {
+                "title": _("Tags to sync"),
+                "anybox_text": _("All tasks"),
+                "somebox_text": _("Tasks with these tags:"),
+                "parameter_name": "attached-tags",
+            })),
             ("path", self.UI_generator(PathUI)),
-            ("username", self.UI_generator(TextUI,
-                                           {"description": _("Username"),
-                                            "parameter_name": "username"})),
+            ("username", self.UI_generator(TextUI, {
+                "description": _("Username"),
+                "parameter_name": "username",
+            })),
             ("password", self.UI_generator(PasswordUI)),
             ("period", self.UI_generator(PeriodUI)),
-            ("service-url", self.UI_generator(TextUI,
-                                              {"description": _("Service URL"),
-                                               "parameter_name": "service-url"
-                                               })),
-            ("import-from-replies", self.UI_generator(CheckBoxUI,
-                                                      {"text":
-                                                       _("Import tasks\
-                                                         from @ replies " +
-                                                         "directed to you"),
-                                                       "parameter":
-                                                       "import-from-replies"
-                                                       })),
-            ("import-from-direct-messages", self.UI_generator(CheckBoxUI,
-                                                              {"text":
-                                                               _("Import tasks "
-                                                                 "from direct "
-                                                                 "messages"),
-                                                               "parameter":
-                                                               "import-from-\
-                                                               direct-messages\
-                                                               "})),
-            ("import-from-my-tweets", self.UI_generator(CheckBoxUI,
-                                                        {"text": _("Import \
-                                                                 tasks from \
-                                                                 your tweets"),
-                                                         "parameter":
-                                                         "import-from-my-\
-                                                         tweets"})),
-            ("import-bug-tags", self.UI_generator(CheckBoxUI,
-                                                  {"text": _("Tag your GTG "
-                                                             "tasks with the "
-                                                             "bug tags"),
-                                                   "parameter": "import-bug-"
-                                                                "tags"})),
-            ("tag-with-project-name", self.UI_generator(CheckBoxUI,
-                                                        {"text":
-                                                         _("Tag your "
-                                                           "GTG tasks with "
-                                                           "the project "
-                                                           "targeted by the"
-                                                           " bug"),
-                                                         "parameter":
-                                                         "tag-with-project-"
-                                                         "name"})), )
+            ("service-url", self.UI_generator(TextUI, {
+                "description": _("Service URL"),
+                "parameter_name": "service-url",
+            })),
+            ("import-from-replies", self.UI_generator(CheckBoxUI, {
+                "text": _("Import tasks from @ replies directed to you"),
+                "parameter": "import-from-replies",
+            })),
+            ("import-from-direct-messages", self.UI_generator(CheckBoxUI, {
+                "text": _("Import tasks from direct messages"),
+                "parameter": "import-from-direct-messages",
+            })),
+            ("import-from-my-tweets", self.UI_generator(CheckBoxUI, {
+                "text": _("Import tasks from your tweets"),
+                "parameter": "import-from-my-tweets",
+            })),
+            ("import-bug-tags", self.UI_generator(CheckBoxUI, {
+                "text": _("Tag your GTG tasks with the bug tags"),
+                "parameter": "import-bug-tags",
+            })),
+            ("tag-with-project-name", self.UI_generator(CheckBoxUI, {
+                "text": _("Tag your GTG tasks with the project "
+                     "targeted by the bug"),
+                "parameter": "tag-with-project-name",
+            })),
+        )
 
     def UI_generator(self, param_type, special_arguments={}):
         '''A helper function to build a widget type from a template.
