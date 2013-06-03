@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2013-04-28 17:02+0200\n"
-"PO-Revision-Date: 2013-05-31 07:07+0000\n"
-"Last-Translator: Sergio Redondo <sergioredondo@outlook.com>\n"
+"PO-Revision-Date: 2013-06-02 12:24+0000\n"
+"Last-Translator: Adolfo Jayme Barrientos <fitoschido@gmail.com>\n"
 "Language-Team: Spanish <es@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2013-06-01 05:17+0000\n"
+"X-Launchpad-Export-Date: 2013-06-03 06:03+0000\n"
 "X-Generator: Launchpad (build 16660)\n"
 
 #: GTG/gtk/backends_dialog/__init__.py:75
@@ -100,11 +100,11 @@ msgid ""
 "Import                                                                  "
 "tasks from                                                                  "
 "your tweets"
-msgstr "Importar tareas de tus tweets"
+msgstr "Importar tareas desde sus tuits"
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:109
 msgid "Tag your GTG tasks with the bug tags"
-msgstr "Asignar las etiquetas de error a tus tareas en GTG"
+msgstr "Asignar las etiquetas de errores a las tareas en GTG"
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:116
 msgid "Tag your GTG tasks with the project targeted by the bug"
@@ -145,7 +145,7 @@ msgstr "Iniciar Getting Things GNOME! al iniciar sesión"
 
 #: GTG/gtk/preferences.glade.h:2
 msgid "New Task Shortcut :"
-msgstr "Atajo de teclado para Nueva Tarea"
+msgstr "Atajo para Tarea nueva:"
 
 #: GTG/gtk/preferences.glade.h:3
 msgid "<b>System</b>"
@@ -1077,11 +1077,11 @@ msgstr "Esa nota no existe. ¿Quiere crear una nueva?"
 msgid ""
 "This Tomboy note                                        does not exist "
 "anymore. Do you want to                                        create it?"
-msgstr "Esta nota Tomboy no existe. ¿Quieres crearla?"
+msgstr "Esta nota de Tomboy ya no existe. ¿Quiere crearla?"
 
 #: GTG/gtg.py:85
 msgid "gtg is already running!"
-msgstr "¡gtg ya se está ejecutando!"
+msgstr "GTG ya está en ejecución."
 
 #: GTG/core/treefactory.py:90
 msgid "Tasks with no tags"
