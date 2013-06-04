@@ -54,15 +54,18 @@ class FreedesktopBugzilla(BugzillaService):
 
     name = 'Freedesktop Bugzilla Service'
 
+
 class GentooBugzilla(BugzillaService):
     ''' Bugzilla service of Gentoo project '''
 
     name = 'Gentoo Bugzilla Service'
 
+
 class MozillaBugzilla(BugzillaService):
     ''' Bugzilla service of Mozilla products '''
 
     name = 'Mozilla Bugzilla Service'
+
 
 class SambaBugzilla(BugzillaService):
     ''' Bugzilla service of Samba project '''

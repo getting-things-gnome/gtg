@@ -24,7 +24,7 @@ def _notify_via_pynotify(title, message):
 def _notify_via_notify_send(title, message):
     cmd = "notify-send --app-name=%s --expire-time=%d \"%s\" \"%s\"" % (
         APP_NAME, TIMEOUT, title, message)
-    proc = subprocess.Popen(cmd, shell=True)
+    subprocess.Popen(cmd, shell=True)
 
 
 # A reference to the concrete handler that sends notification.
@@ -42,6 +42,7 @@ except ImportError:
     proc = subprocess.Popen("which notify-send", shell=True)
     if proc.wait() == 0:
         _notify_handler = _notify_via_notify_send
+
 
 def send_notification(title, message):
     ''' A proxy to send notification
