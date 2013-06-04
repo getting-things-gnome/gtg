@@ -17,6 +17,7 @@
     * Pep8ification of code, by Nimit Shah
     * Fix for bug #1141582: Crash on enabling hamster plugin, by Nimit Shah
     * System level global shortcut key for quick adding task, by Parin Porecha
+    * Refactor Bugzilla plugin, by Chenxiong Qi
 
 2012-11-06 Getting Things GNOME! 0.3
     * Hide tasks with due date someday, #931376

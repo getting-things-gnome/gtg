@@ -14,44 +14,69 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 
-# this handles old versions of pybugz as well as new ones
-try:
-    from bugz import bugzilla
-    assert bugzilla
-except:
-    import bugz as bugzilla
-
-# changed the default action to skip auth
+__all__ = ('BugFactory',)
 
 
-class Bug:
+class Bug(object):
 
-    def __init__(self, base, nb):
-        # this also handles old versions of pybugz
-        try:
-            bugs = bugzilla.BugzillaProxy(
-                base, skip_auth=True).Bug.get({'ids': [nb, ], })
-        except:
-            bugs = bugzilla.BugzillaProxy(base).Bug.get({'ids': [nb, ], })
-        self.bug = bugs['bugs'][0]
+    def __init__(self, bug):
+        ''' Initialize Bug object using bug object retrieved via Bugzilla
+            service XMLRPC
+        '''
+        self.bug = bug
 
-    def get_title(self):
+    @property
+    def summary(self):
         return self.bug['summary']
 
-    def get_product(self):
+    @property
+    def product(self):
         return self.bug['product']
 
-    def get_component(self):
-        return self.bug['component']
-
-    def get_description(self):
+    @property
+    def description(self):
         return self.bug['summary']
 
-if __name__ == '__main__':
-    for bug in [Bug('https://bugzilla.gnome.org', '598354'),
-                Bug('https://bugs.freedesktop.org', '24120')]:
-        print "title:", bug.get_title()
-        print "product:", bug.get_product()
-        print "component:", bug.get_component()
-        print "description:", bug.get_description()
-        print ""
+    @property
+    def component(self):
+        return self.bug['component']
+
+
+class GnomeBug(Bug):
+    pass
+
+
+class FreedesktopBug(Bug):
+    pass
+
+
+class GentooBug(Bug):
+    pass
+
+
+class MozillaBug(Bug):
+    pass
+
+
+class SambaBug(Bug):
+    pass
+
+
+class RedHatBug(Bug):
+    pass
+
+
+bugs = {
+    'bugzilla.gnome.org': GnomeBug,
+    'bugs.freedesktop.org': FreedesktopBug,
+    'bugzilla.mozilla.org': MozillaBug,
+    'bugzilla.samba.org': SambaBug,
+    'bugs.gentoo.org': GentooBug,
+    'bugzilla.redhat.com': RedHatBug,
+}
+
+
+class BugFactory(object):
+    @staticmethod
+    def create(serviceDomain, bug):
+        return bugs[serviceDomain](bug)
