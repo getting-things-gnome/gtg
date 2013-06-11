@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2013-04-28 17:02+0200\n"
-"PO-Revision-Date: 2013-05-02 16:37+0000\n"
+"PO-Revision-Date: 2013-06-10 18:10+0000\n"
 "Last-Translator: DmDr <cardioexp@gmail.com>\n"
 "Language-Team: Russian <ru@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -16,8 +16,8 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Launchpad-Export-Date: 2013-05-03 05:15+0000\n"
-"X-Generator: Launchpad (build 16598)\n"
+"X-Launchpad-Export-Date: 2013-06-11 05:50+0000\n"
+"X-Generator: Launchpad (build 16667)\n"
 
 #: GTG/gtk/backends_dialog/__init__.py:75
 #, python-format
@@ -61,7 +61,7 @@ msgstr "Все метки"
 msgid ""
 "Just these                                                                   "
 "    tags:"
-msgstr ""
+msgstr "Только с этими метками:"
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:68
 msgid "Tags to sync"
