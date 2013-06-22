@@ -160,7 +160,8 @@ class Task(TreeNode):
                     for tag in args.split(","):
                         if not tag.startswith("@"):
                             tag = "@" + tag
-                        tags.append(tag)
+                        if not tag.strip() == "@":
+                            tags.append(tag)
                 elif attribute.lower() in ["defer", _("defer"), "start",
                                            _("start")]:
                     try:
