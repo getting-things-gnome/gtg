@@ -119,13 +119,13 @@ class GtgBackendsUniTests(unittest.TestCase):
             '\t\t</title>\n',
             '\t</task>\n',
             '</project>\n',
-            ]
+        ]
         data = [
             '<?xml version="1.0" ?>\n',
             '<config>\n',
             '\t<backend filename="test.xml" module="localfile" pid="1"/>\n',
             '</config>\n',
-            ]
+        ]
         self.testdir = os.path.join(xdg.BaseDirectory.xdg_data_home, 'gtg')
         if not os.path.exists(self.testdir):
             os.makedirs(self.testdir)

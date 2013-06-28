@@ -26,8 +26,8 @@ easier.  See the end of this file for the Tag object implementation.
 
 import xml.sax.saxutils as saxutils
 
-from GTG.core         import CoreConfig
-from liblarch         import TreeNode
+from GTG.core import CoreConfig
+from liblarch import TreeNode
 
 
 class Tag(TreeNode):
@@ -69,7 +69,7 @@ class Tag(TreeNode):
                 pass
             if sp_id == "notag":
                 self.viewcount.apply_filter('notag', refresh=False)
-            #No special means a normal tag
+            # No special means a normal tag
             else:
                 self.viewcount.apply_filter(self.get_name(), refresh=False)
             self.viewcount.apply_filter('active')
@@ -84,13 +84,13 @@ class Tag(TreeNode):
         if self.viewcount:
             self.viewcount.unapply_filter(filtername)
 
-    #When a task change a tag, we may want to manually update
-    #To ensure that the task is well counted/uncounted for that tag
+    # When a task change a tag, we may want to manually update
+    # To ensure that the task is well counted/uncounted for that tag
     def update_task(self, task_id):
         vc = self.__get_viewcount()
         vc.modify(task_id)
 
-    #overiding some functions to not allow dnd of special tags
+    # overiding some functions to not allow dnd of special tags
     def add_parent(self, parent_id):
         p = self.req.get_tag(parent_id)
         if p and not self.is_special() and not p.is_special():
@@ -146,7 +146,7 @@ class Tag(TreeNode):
                 parents_id = self.get_parents()
                 if len(parents_id) > 0:
                     to_return = reduce(lambda a, b: "%s,%s" % (a, b),
-                        parents_id)
+                                       parents_id)
         elif att_name == 'label':
             to_return = self._attributes.get(att_name, self.get_id())
         else:
@@ -224,8 +224,8 @@ class Tag(TreeNode):
             my_task = self.req.get_task(task_id)
             my_task.modified()
 
-    #is it useful to keep the tag in the tagstore.
-    #if no attributes and no tasks, it is not useful.
+    # is it useful to keep the tag in the tagstore.
+    # if no attributes and no tasks, it is not useful.
     def is_removable(self):
         attr = self.get_all_attributes(butname=True, withparent=True)
         return (len(attr) <= 0 and not self.is_used())

@@ -31,6 +31,10 @@ class GnomeConfig:
     current_rep = os.path.dirname(os.path.abspath(__file__))
     BROWSER_UI_FILE = os.path.join(current_rep, "taskbrowser.ui")
     MODIFYTAGS_UI_FILE = os.path.join(current_rep, "modifytags_dialog.ui")
+    GLADE_FILE = os.path.join(current_rep, "taskbrowser.glade")
+    MODIFYTAGS_GLADE_FILE = os.path.join(current_rep,
+                                         "modifytags_dialog.glade")
+    TAGEDITOR_GLADE_FILE = os.path.join(current_rep, "tageditor.glade")
 
     MARK_DONE = _("Mark as Done")
     MARK_DONE_TOOLTIP = _("Mark the selected task as done")
@@ -47,6 +51,6 @@ class GnomeConfig:
     WORKVIEW_TOGGLE_TOOLTIP = _("Display only the currently actionable tasks")
     TAG_IN_WORKVIEW_TOGG = _("Hide this tag from the workview")
     TAG_NOTIN_WORKVIEW_TOGG = _("Show this tag in the workview")
-    QUICKADD_ENTRY_TOOLTIP = _("You can create, open or filter your tasks \
-                                                                        here")
+    QUICKADD_ENTRY_TOOLTIP = \
+        _("You can create, open or filter your tasks here")
     QUICKADD_ICON_TOOLTIP = _("Clear")

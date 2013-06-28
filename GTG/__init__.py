@@ -22,13 +22,20 @@ Getting Things GNOME!  A personal organizer for the GNOME desktop
 
 import os
 import locale
-#Fallback to LANG C if unsupported locale
+# Fallback to LANG C if unsupported locale
 try:
     locale.setlocale(locale.LC_ALL, '')
 except:
     locale.setlocale(locale.LC_ALL, 'C')
 
 import gettext
+
+try:
+    from gtk import glade
+    loaded_glade = glade
+except:
+    # that's not pretty but it looks functional.
+    loaded_glade = None
 
 # FIXME is this construction needed? There are many other places where this is used
 try:
@@ -39,12 +46,15 @@ except ImportError:
 
 LOCAL_ROOTDIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 
-#Translation setup (from pyroom)
+# Translation setup (from pyroom)
 GETTEXT_DOMAIN = 'gtg'
 LOCALE_PATH = gettext.bindtextdomain(GETTEXT_DOMAIN)
 
-gettext.bindtextdomain(GETTEXT_DOMAIN, LOCALE_PATH)
-gettext.textdomain(GETTEXT_DOMAIN)
+for module in gettext, loaded_glade:
+    # check if glade is well loaded to avoid error in Fedora build farm
+    if module:
+        module.bindtextdomain(GETTEXT_DOMAIN, LOCALE_PATH)
+        module.textdomain(GETTEXT_DOMAIN)
 # FIXME set translation for Builder as well!
 
 translation = gettext.translation(GETTEXT_DOMAIN, LOCALE_PATH, fallback=True)
@@ -52,13 +62,13 @@ translation = gettext.translation(GETTEXT_DOMAIN, LOCALE_PATH, fallback=True)
 _ = translation.gettext
 ngettext = translation.ngettext
 
-#GTG directories setup
+# GTG directories setup
 if os.path.isdir(os.path.join(LOCAL_ROOTDIR, 'data')):
     DATA_DIR = os.path.join(LOCAL_ROOTDIR, 'data')
 else:
     DATA_DIR = LOCAL_ROOTDIR
 
-#GTG plugin dir setup
+# GTG plugin dir setup
 PLUGIN_DIR = [os.path.join(LOCAL_ROOTDIR, 'GTG/plugins')]
 
 user_plugins = os.path.join(config_home, 'gtg/plugins')

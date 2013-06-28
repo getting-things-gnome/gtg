@@ -16,6 +16,6 @@
 
 from GTG.plugins.task_reaper.reaper import pluginReaper
 
-#suppress pyflakes warning (given by make lint)
-if False == True:
+# suppress pyflakes warning (given by make lint)
+if False is True:
     pluginReaper()

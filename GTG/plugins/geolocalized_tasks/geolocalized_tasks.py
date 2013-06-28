@@ -44,7 +44,8 @@ class geolocalizedTasks:
         self.menu_item = Gtk.MenuItem("Geolocalized-tasks Preferences")
 
         self.PROXIMITY_FACTOR = 5  # 5 km
-        self.LOCATION_DETERMINATION_METHOD = [] # "network", "gps", "cellphone"
+        self.LOCATION_DETERMINATION_METHOD = []
+            # "network", "gps", "cellphone"
 
         for provider in self.geoclue.get_available_providers():
             status = self.geoclue.provider_status(provider['object'])
@@ -68,9 +69,10 @@ class geolocalizedTasks:
         # create the pixbuf with the icon and it's size.
         # 24,24 is the TaskEditor's toolbar icon size
         image_assign_location_path = os.path.join(self.plugin_path,
-                                    "icons/hicolor/16x16/assign-location.png")
+                                                  "icons/hicolor/16x16/assign\
+                                                  -location.png")
         pixbug_assign_location = GdkPixbuf.Pixbuf.new_from_file_at_size(
-                                    image_assign_location_path, 16, 16)
+            image_assign_location_path, 16, 16)
 
         image_assign_location = Gtk.Image()
         image_assign_location.set_from_pixbuf(pixbug_assign_location)
@@ -82,7 +84,7 @@ class geolocalizedTasks:
         # TODO: add a short cut to the menu
 
         self.context_item.connect('activate',
-                    self.on_contextmenu_tag_location, plugin_api)
+                                  self.on_contextmenu_tag_location, plugin_api)
         plugin_api.add_menu_tagpopup(self.context_item)
 
         # get the user settings from the config file
@@ -93,10 +95,10 @@ class geolocalizedTasks:
                 self.PROXIMITY_FACTOR = value
 
             if "location_determination_method" in\
-                self.config["geolocalized-tasks"]:
+                    self.config["geolocalized-tasks"]:
                 self.LOCATION_DETERMINATION_METHOD =\
-                    self.config["geolocalized-tasks"]\
-                    ["location_determination_method"]
+                    self.config["geolocalized-tasks"]["location_determination\
+                                                                     _method"]
 
         providers = self.geoclue.get_available_providers()
         provider_name_list = []
@@ -111,26 +113,26 @@ class geolocalizedTasks:
                     for provider in providers:
                         if provider['name'].lower() == "hostip":
                             status = self.geoclue.provider_status(
-                                                    provider['object'])
+                                provider['object'])
                             if status in ["error", "unavailable"]:
                                 if "network" in\
-                                    self.LOCATION_DETERMINATION_METHOD:
+                                        self.LOCATION_DETERMINATION_METHOD:
                                     self.LOCATION_DETERMINATION_METHOD.remove(
-                                                            "network")
+                                        "network")
                                     break
                 else:
                     self.LOCATION_DETERMINATION_METHOD.remove("network")
             elif method == "gps":
                 if "gpsd" in provider_name_list or\
-                    "gypsy" in provider_name_list:
+                        "gypsy" in provider_name_list:
                     for provider in providers:
                         if provider['name'].lower() in ["gpsd", "gypsy"]:
                             status = self.geoclue.provider_status(
-                                                    provider['object'])
+                                provider['object'])
                             if status in ["error", "unavailable"]:
                                 if "gps" in self.LOCATION_DETERMINATION_METHOD:
                                     self.LOCATION_DETERMINATION_METHOD.remove(
-                                                                        "gps")
+                                        "gps")
                                     break
                 else:
                     self.LOCATION_DETERMINATION_METHOD.remove("gps")
@@ -139,25 +141,25 @@ class geolocalizedTasks:
                     for provider in providers:
                         if provider['name'].lower() == "gsmloc":
                             status = self.geoclue.provider_status(
-                                                    provider['object'])
+                                provider['object'])
                             if status in ["error", "unavailable"]:
                                 if "cellphone" in\
-                                    self.LOCATION_DETERMINATION_METHOD:
+                                        self.LOCATION_DETERMINATION_METHOD:
                                     self.LOCATION_DETERMINATION_METHOD.remove(
-                                                        "cellphone")
+                                        "cellphone")
                                     break
                 else:
                     self.LOCATION_DETERMINATION_METHOD.remove("cellphone")
 
         try:
             if len(self.LOCATION_DETERMINATION_METHOD) == 1 and\
-            "network" in self.LOCATION_DETERMINATION_METHOD:
+                    "network" in self.LOCATION_DETERMINATION_METHOD:
                 self.geoclue.init()
             elif len(self.LOCATION_DETERMINATION_METHOD) == 1 and\
-            "cellphone" in self.LOCATION_DETERMINATION_METHOD:
+                    "cellphone" in self.LOCATION_DETERMINATION_METHOD:
                 self.geoclue.init(resource=(1 << 1))
             elif len(self.LOCATION_DETERMINATION_METHOD) == 1 and\
-            "gps" in self.LOCATION_DETERMINATION_METHOD:
+                    "gps" in self.LOCATION_DETERMINATION_METHOD:
                 self.geoclue.init(resource=(1 << 2))
             else:
                 self.geoclue.init(resource=((1 << 10) - 1))
@@ -181,7 +183,7 @@ class geolocalizedTasks:
                 self.config["geolocalized-tasks"] = {
                     "proximity_factor": self.PROXIMITY_FACTOR,
                     "location_determination_method":
-                        self.LOCATION_DETERMINATION_METHOD,
+                    self.LOCATION_DETERMINATION_METHOD,
                 }
         except:
             pass
@@ -193,15 +195,16 @@ class geolocalizedTasks:
         # unregister the filter callback
         plugin_api.unregister_filter_cb(self.task_location_filter)
 
-        #remove the toolbar buttons
+        # remove the toolbar buttons
         plugin_api.remove_task_toolbar_item(self.task_separator)
         plugin_api.remove_task_toolbar_item(self.btn_set_location)
 
     def onTaskOpened(self, plugin_api):
         image_geolocalization_path = os.path.join(self.plugin_path,
-                           "icons/hicolor/24x24/geolocalization.png")
+                                                  "icons/hicolor/24x24/\
+                                                  geolocalization.png")
         pixbuf_geolocalization = GdkPixbuf.Pixbuf.new_from_file_at_size(
-                            image_geolocalization_path, 24, 24)
+            image_geolocalization_path, 24, 24)
 
         # create the image and associate the pixbuf
         icon_geolocalization = Gtk.Image()
@@ -214,14 +217,14 @@ class geolocalizedTasks:
         btn_location_view.set_label("Location View")
 
         self.task_separator = plugin_api.add_task_toolbar_item(
-                            Gtk.SeparatorToolItem())
+            Gtk.SeparatorToolItem())
 
         btn_set_location = Gtk.ToolButton()
         btn_set_location.set_icon_widget(icon_geolocalization)
         btn_set_location.set_label("Set/View location")
         btn_set_location.connect('clicked', self.set_task_location, plugin_api)
         self.btn_set_location = plugin_api.add_task_toolbar_item(
-                            btn_set_location)
+            btn_set_location)
 
     def is_configurable(self):
         return True
@@ -244,7 +247,7 @@ class geolocalizedTasks:
             if task.is_workable():
                 tags = task.get_tags()
 
-                #check if it has the location set
+                # check if it has the location set
                 for tag in tags:
                     if "location" in tag.get_all_attributes():
                         has_location = True
@@ -263,8 +266,7 @@ class geolocalizedTasks:
                                     return False
         return True
 
-
-    #=== GEOLOCALIZED PREFERENCES==============================================
+    #=== GEOLOCALIZED PREFERENCES=============================================
     def on_geolocalized_preferences(self):
         wTree = Gtk.glade.XML(self.glade_file, "Preferences")
         dialog = wTree.get_widget("Preferences")
@@ -299,7 +301,7 @@ class geolocalizedTasks:
                 for provider in providers:
                     status = self.geoclue.provider_status(provider['object'])
                     if provider['name'].lower() == "hostip" and\
-                        status in ["error", "unavailable"]:
+                            status in ["error", "unavailable"]:
                         check_network.set_active(False)
                         check_network.set_sensitive(False)
                         break
@@ -322,7 +324,7 @@ class geolocalizedTasks:
                 for provider in providers:
                     status = self.geoclue.provider_status(provider['object'])
                     if provider['name'].lower() == "gsmloc" and\
-                        status in ["error", "unavailable"]:
+                            status in ["error", "unavailable"]:
                         check_cellphone.set_active(False)
                         check_cellphone.set_sensitive(False)
                         break
@@ -347,7 +349,7 @@ class geolocalizedTasks:
                 for provider in providers:
                     status = self.geoclue.provider_status(provider['object'])
                     if provider['name'].lower() in ["gpsd", "gypsy"] and\
-                        status in ["error", "unavailable"]:
+                            status in ["error", "unavailable"]:
                         check_gps.set_active(False)
                         check_gps.set_sensitive(False)
                         break
@@ -355,7 +357,7 @@ class geolocalizedTasks:
         spin_proximityfactor = wTree.get_widget("spin_proximityfactor")
         spin_proximityfactor.set_value(float(self.PROXIMITY_FACTOR))
         spin_proximityfactor.connect("changed",
-                                self.spin_proximityfactor_changed)
+                                     self.spin_proximityfactor_changed)
         self.tmp_proximityfactor = float(self.PROXIMITY_FACTOR)
 
         dialog.show_all()
@@ -398,8 +400,8 @@ class geolocalizedTasks:
 
         champlain_view = champlain.View()
         champlain_view.set_property("scroll-mode",
-                        champlain.SCROLL_MODE_KINETIC)
-        #champlain_view.set_property("zoom-on-double-click", False)
+                                    champlain.SCROLL_MODE_KINETIC)
+        # champlain_view.set_property("zoom-on-double-click", False)
 
         # create a list of the tags and their attributes
         tag_list = []
@@ -448,12 +450,12 @@ class geolocalizedTasks:
             try:
                 if self.location['longitude'] and self.location['latitude']:
                     self.marker_list.append(layer.add_marker(
-                            plugin_api.get_task_title(),
-                            self.location['latitude'],
-                            self.location['longitude']))
+                        plugin_api.get_task_title(),
+                        self.location['latitude'],
+                        self.location['longitude']))
             except:
                 self.marker_list.append(layer.add_marker(
-                        plugin_api.get_task_title(), None, None))
+                    plugin_api.get_task_title(), None, None))
 
         champlain_view.add_layer(layer)
 
@@ -464,7 +466,8 @@ class geolocalizedTasks:
             # method that will change the marker's position
             champlain_view.set_reactive(True)
             champlain_view.connect("button-release-event",
-                           self.champlain_change_marker, champlain_view)
+                                   self.champlain_change_marker,
+                                   champlain_view)
 
         layer.show_all()
 
@@ -494,9 +497,9 @@ class geolocalizedTasks:
             dialog_action_area_btn.remove(btn_close)
             # show a close button or the ok/cancel
             dialog.connect("response", self.set_task_location_close,
-                                                        plugin_api)
+                           plugin_api)
 
-        #if there is no location set, we want to set it
+        # if there is no location set, we want to set it
         if not task_has_location:
             self.location_defined = False
             if len(plugin_api.get_tags()) > 0:
@@ -507,7 +510,7 @@ class geolocalizedTasks:
                 self.cmb_existing_tag.set_text_column(0)
                 self.cmb_existing_tag.set_active(0)
             else:
-                #remove radiobutton2 and the comboboxentry
+                # remove radiobutton2 and the comboboxentry
                 tabela.remove(self.radiobutton1)
                 tabela.remove(self.radiobutton2)
                 tabela.remove(self.cmb_existing_tag)
@@ -530,7 +533,7 @@ class geolocalizedTasks:
             try:
                 if self.location['longitude'] and self.location['latitude']:
                     champlain_view.center_on(self.location['latitude'],
-                                self.location['longitude'])
+                                             self.location['longitude'])
             except:
                 pass
 
@@ -552,18 +555,21 @@ class geolocalizedTasks:
                         # because users sometimes make mistakes,
                         # I'll check if the tag exists
                         tmp_tag = ""
-                        tag_name = self.txt_new_tag.get_text().replace("@", "")
+                        tag_name = self.txt_new_tag.get_text().replace("@",
+                                                                       "")
                         tag_name = "@" + tag_name
                         for tag in plugin_api.get_tags():
                             if tag.get_attribute("name") == tag_name:
                                 tmp_tag = tag_name
                         if tmp_tag:
                             plugin_api.add_tag_attribute(tag_name,
-                                    "location", marker_position)
+                                                         "location",
+                                                         marker_position)
                         else:
                             plugin_api.insert_tag(tag_name[1:])
                             plugin_api.add_tag_attribute(tag_name,
-                                    "location", marker_position)
+                                                         "location",
+                                                         marker_position)
                         dialog.destroy()
                     else:
                         # does nothing, no tag set.
@@ -576,7 +582,7 @@ class geolocalizedTasks:
                     index = self.cmb_existing_tag.get_active()
                     model = self.cmb_existing_tag.get_model()
                     plugin_api.add_tag_attribute(model[index][0],
-                                        "location", marker_position)
+                                                 "location", marker_position)
                     dialog.destroy()
         else:
             # cancel
@@ -618,23 +624,25 @@ class geolocalizedTasks:
 
         champlain_view = champlain.View()
         champlain_view.set_property("scroll-mode",
-                        champlain.SCROLL_MODE_KINETIC)
+                                    champlain.SCROLL_MODE_KINETIC)
 
         layer = MarkerLayer()
 
         marker_tag = None
         if tag_location:
             marker_tag = layer.add_marker(tag.get_attribute("name"),
-                tag_location[0], tag_location[1], tag_color)
+                                          tag_location[0], tag_location[1],
+                                          tag_color)
         else:
             try:
                 if self.location['longitude'] and self.location['latitude']:
                     marker_tag = layer.add_marker(tag.get_attribute("name"),
-                        self.location['latitude'], self.location['longitude'],
-                        tag_color)
+                                                  self.location['latitude'],
+                                                  self.location['longitude'],
+                                                  tag_color)
             except:
                 marker_tag = layer.add_marker(tag.get_attribute("name"),
-                                                None, None)
+                                              None, None)
 
         champlain_view.add_layer(layer)
 
@@ -643,7 +651,8 @@ class geolocalizedTasks:
 
         champlain_view.set_reactive(True)
         champlain_view.connect("button-release-event",
-            self.champlain__tag_change_marker, champlain_view, marker_tag)
+                               self.champlain__tag_change_marker,
+                               champlain_view, marker_tag)
 
         layer.show_all()
 
@@ -676,7 +685,7 @@ class geolocalizedTasks:
             try:
                 if self.location['longitude'] and self.location['latitude']:
                     champlain_view.center_on(self.location['latitude'],
-                                            self.location['longitude'])
+                                             self.location['longitude'])
             except:
                 pass
 

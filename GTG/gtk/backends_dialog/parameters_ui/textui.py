@@ -47,8 +47,8 @@ class TextUI(Gtk.Box):
         '''
         label = Gtk.Label(label="%s:" % self.description)
         label.set_line_wrap(True)
-        label.set_alignment(xalign = 0, yalign = 0.5)
-        label.set_size_request(width = width, height = -1)
+        label.set_alignment(xalign=0, yalign=0.5)
+        label.set_size_request(width=width, height=-1)
         self.pack_start(label, False, True, 0)
         align = Gtk.Alignment.new(0, 0.5, 1, 0)
         align.set_padding(0, 0, 10, 0)
@@ -62,7 +62,7 @@ class TextUI(Gtk.Box):
     def commit_changes(self):
         '''Saves the changes to the backend parameter'''
         self.backend.set_parameter(self.parameter_name,
-                        self.textbox.get_text())
+                                   self.textbox.get_text())
 
     def on_text_modified(self, sender):
         ''' Signal callback, executed when the user changes the text.

@@ -25,6 +25,7 @@ import sys
 REQUIRED_LIBLARCH_API = "2.1"
 GIT_CMD = "git clone https://github.com/liblarch/liblarch ../liblarch"
 
+
 def import_liblarch(use_local=False):
     """ Check if liblarch is installed and is compatible
 
@@ -39,12 +40,14 @@ def import_liblarch(use_local=False):
         missing = []
         try:
             import liblarch
+            assert liblarch
         except ImportError:
             has_libraries = False
             missing.append("liblarch")
 
         try:
             import liblarch_gtk
+            assert liblarch_gtk
         except ImportError:
             has_libraries = False
             missing.append("liblarch_gtk")
@@ -61,13 +64,13 @@ def import_liblarch(use_local=False):
         has_libraries, missing = check_liblarch()
 
     if not has_libraries:
-        print((
-            "GTG can't find {0}. To install missing libraries,\n"
-            "run the following command in the current folder:\n"
-            "\n{1}\n\n"
-            "More information about liblarch: https://live.gnome.org/liblarch/"
-        )).format(missing, GIT_CMD)
+        print """GTG can't find %s. To install missing libraries,
+run the following command in the current folder:
 
+%s
+
+More information about liblarch: https://live.gnome.org/liblarch/""" % (
+            missing, GIT_CMD)
         return False
 
     import liblarch
@@ -79,11 +82,17 @@ you don't have stale copies of liblarch in your import path
 """
         is_liblarch_compatible = False
     if not is_liblarch_compatible:
+        try:
+            liblarch_version = liblarch.API
+        except AttributeError:
+            # Liblarch 1.0 has lowercased API variable
+            liblarch_version = liblarch.api
+
         print """Your liblarch copy has its API at version %s
 but your GTG copy need liblarch API version %s
 You may fix that by downloading the last version of liblarch with
 
-%s """ % (liblarch.API, REQUIRED_LIBLARCH_API, GIT_CMD)
+%s """ % (liblarch_version, REQUIRED_LIBLARCH_API, GIT_CMD)
         return False
 
     return True

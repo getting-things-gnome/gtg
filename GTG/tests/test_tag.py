@@ -33,16 +33,16 @@ class TestTag(unittest.TestCase):
     def setUp(self):
         ds = DataStore()
         self.req = ds.get_requester()
-        #initalize gobject signaling system
+        # initalize gobject signaling system
         self.gobject_signal_manager = GobjectSignalsManager()
         self.gobject_signal_manager.init_signals()
-        #refresh the viewtree for tasks
+        # refresh the viewtree for tasks
         tt = self.req.get_tasks_tree()
         tt.reset_filters()
 
     def tearDown(self):
 #        finally:
-        #stopping gobject main loop
+        # stopping gobject main loop
         self.gobject_signal_manager.terminate_signals()
 
     def test_name(self):

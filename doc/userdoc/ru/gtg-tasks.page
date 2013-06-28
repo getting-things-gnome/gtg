@@ -1,0 +1,23 @@
+<page xmlns="http://projectmallard.org/1.0/" type="guide" style="task 2column" id="gtg-tasks" xml:lang="ru">
+
+<info>
+  <link type="guide" xref="index#gtg-task-management" group="first"/>
+  <revision pkgversion="0.1" version="0.1" date="2012-07-03" status="candidate"/>
+  <credit type="author">
+    <name>Radina Matic</name>
+    <email>radina.matic@gmail.com</email>
+  </credit>
+<mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator">
+  <mal:name>Dmitry Drozdov</mal:name>
+</mal:credit>
+</info>
+
+<title>Задачи</title>
+
+<media type="image" mime="image/png" src="figures/task-management.png"/>
+
+<p>В <app>GTG</app> все является задачами: от постройки моста через Тихий Океан до замены лампочки или организации вечеринки.</p>
+
+<links type="topic" groups="first second third fourth fifth sixth" style="2column"/>
+
+</page>

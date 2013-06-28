@@ -16,7 +16,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-#documentation: https://edge.launchpad.net/+apidoc/#bug_task
+# documentation: https://edge.launchpad.net/+apidoc/#bug_task
 
 import os
 import re
@@ -46,7 +46,7 @@ def lp_login():
         launchpad = Launchpad(credentials, EDGE_SERVICE_ROOT, cachedir)
     except IOError:
         launchpad = Launchpad.get_token_and_login('close_launchpad_bugs',
-                                                EDGE_SERVICE_ROOT, cachedir)
+                                                  EDGE_SERVICE_ROOT, cachedir)
         credfile = open(credpath, 'w')
         launchpad.credentials.save(credfile)
         credfile.close()

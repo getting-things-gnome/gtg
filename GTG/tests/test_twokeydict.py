@@ -64,7 +64,7 @@ class TestTwoKeyDict(unittest.TestCase):
             missing_second += 1
         self.assertEqual(missing_first, 2)
         self.assertEqual(missing_second, 2)
-        #check for memory leaks
+        # check for memory leaks
         dict_len = 0
         for key in tw_dict._primary_to_value.iterkeys():
             dict_len += 1
@@ -73,7 +73,7 @@ class TestTwoKeyDict(unittest.TestCase):
     def test_get_primary_and_secondary_key(self):
         """ Test for fetching the objects stored in the TwoKeyDict """
         triplets = [(uuid.uuid4(), uuid.uuid4(), uuid.uuid4())
-                        for a in xrange(10)]
+                    for a in xrange(10)]
         tw_dict = TwoKeyDict(*triplets)
         for triplet in triplets:
             self.assertEqual(tw_dict._get_secondary_key(triplet[0]),

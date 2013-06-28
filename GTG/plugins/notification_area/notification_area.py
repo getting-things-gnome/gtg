@@ -23,9 +23,10 @@ try:
 except:
     pass
 
-from GTG                   import _
-from GTG.tools.borg        import Borg
-from GTG.tools.dates       import Date
+from GTG import _
+from GTG import DATA_DIR
+from GTG.tools.borg import Borg
+from GTG.tools.dates import Date
 
 
 class TheIndicator(Borg):
@@ -41,10 +42,10 @@ class TheIndicator(Borg):
         super(TheIndicator, self).__init__()
         if not hasattr(self, "_indicator"):
             try:
-                self._indicator = appindicator.Indicator( \
-                              "gtg",
-                              "indicator-messages",
-                               appindicator.CATEGORY_APPLICATION_STATUS)
+                self._indicator = appindicator.Indicator(
+                    "gtg",
+                    "indicator-messages",
+                    appindicator.CATEGORY_APPLICATION_STATUS)
             except:
                 self._indicator = None
 
@@ -72,6 +73,10 @@ class IconIndicator:
         self._menu = menu
 
         if self._indicator:
+            # Show the icon even when runing ./scripts/debug.sh
+            theme_path = os.path.join(DATA_DIR, 'icons')
+            self._indicator.set_icon_theme_path(theme_path)
+
             self._indicator.set_icon("gtg-panel")
             self._indicator.set_attention_icon(self.ATTENTION_ICON)
             self._indicator.set_menu(menu)
@@ -123,8 +128,7 @@ class IconIndicator:
         """ Show the menu on right click on the icon """
         if not self._indicator:
             self._menu.popup(None, None, Gtk.status_icon_position_menu,
-                       button, timestamp, icon)
-
+                             button, timestamp, icon)
 
 
 def _due_within(task, danger_zone):
@@ -204,7 +208,6 @@ class NotificationArea:
     MAX_TITLE_LEN = 30
     MAX_ITEMS = 10
 
-
     def __init__(self):
         self._indicator = IconIndicator()
         self.__browser_handler = None
@@ -227,18 +230,18 @@ class NotificationArea:
         # Enable attention monitor.
         self.__attention = None
         self.__tree_att = self.__connect_to_tree([
-                ("node-added-inview", self.__on_task_added_att),
-                ("node-modified-inview", self.__on_task_added_att),
-                ("node-deleted-inview", self.__on_task_deleted_att),
-                ])
+            ("node-added-inview", self.__on_task_added_att),
+            ("node-modified-inview", self.__on_task_added_att),
+            ("node-deleted-inview", self.__on_task_deleted_att),
+        ])
         self.__tree_att.apply_filter('workview')
         self.__init_attention()
 
         self.__tree = self.__connect_to_tree([
-                ("node-added-inview", self.__on_task_added),
-                ("node-modified-inview", self.__on_task_added),
-                ("node-deleted-inview", self.__on_task_deleted),
-                ])
+            ("node-added-inview", self.__on_task_added),
+            ("node-modified-inview", self.__on_task_added),
+            ("node-deleted-inview", self.__on_task_deleted),
+        ])
         self.__tree.apply_filter('workview')
 
         # When no windows (browser or text editors) are shown, it tries to quit
@@ -274,8 +277,8 @@ class NotificationArea:
 
         menu = Gtk.Menu()
 
-        #add "new task"
-        #FIXME test this label... is it needed? play with it a little
+        # add "new task"
+        # FIXME test this label... is it needed? play with it a little
         menuItem = Gtk.MenuItem(label=_('Add _New Task'))
         menuItem.connect('activate', self.__open_task)
         menu.append(menuItem)
@@ -285,7 +288,7 @@ class NotificationArea:
         show_browser.connect('activate', self.__show_browser)
         menu.append(show_browser)
 
-        #separator (it's intended to be after show_all)
+        # separator (it's intended to be after show_all)
         # separator should be shown only when having tasks
         self.__task_separator = Gtk.SeparatorMenuItem()
         menu.append(self.__task_separator)
@@ -293,7 +296,7 @@ class NotificationArea:
 
         menu.append(Gtk.SeparatorMenuItem())
 
-        #quit item
+        # quit item
         menuItem = Gtk.MenuItem(label=_('_Quit'))
         menuItem.connect('activate', self.__view_manager.close_browser)
         menu.append(menuItem)
@@ -302,8 +305,8 @@ class NotificationArea:
         self.__task_separator.hide()
 
         self.__tasks_menu = SortedLimitedMenu(self.MAX_ITEMS,
-                            menu, menu_top_length)
-        
+                                              menu, menu_top_length)
+
         self._indicator.activate(self.__show_browser, menu)
 
     def __init_attention(self):
@@ -312,7 +315,7 @@ class NotificationArea:
         # Convention: if danger zone is <=0, disable attention
         # Fallback: if there is no indicator we pass the status icon instead
         if self.preferences['danger_zone'] > 0:
-            self.__attention = _Attention( \
+            self.__attention = _Attention(
                 self.preferences['danger_zone'],
                 self._indicator,
                 self.__tree_att,
@@ -320,12 +323,12 @@ class NotificationArea:
         else:
             self.__attention = None
 
-    def __open_task(self, widget, task_id = None):
+    def __open_task(self, widget, task_id=None):
         """
         Opens a task in the TaskEditor, if it's not currently opened.
         If task_id is None, it creates a new task and opens it
         """
-        if task_id == None:
+        if task_id is None:
             task_id = self.__requester.new_task().get_id()
             new_task = True
         else:
@@ -356,11 +359,11 @@ class NotificationArea:
         if task is None:
             return
 
-        #ellipsis of the title
+        # ellipsis of the title
         title = self.__create_short_title(task.get_title())
 
-        #creating the menu item
-        #FIXME test for regression: create a task like Hello_world (_ might be converted)
+        # creating the menu item
+        # FIXME test for regression: create a task like Hello_world (_ might be converted)
         menu_item = Gtk.MenuItem(label=title)
         menu_item.connect('activate', self.__open_task, tid)
         self.__tasks_menu.add(tid, (task.get_due_date(), title), menu_item)
@@ -380,27 +383,22 @@ class NotificationArea:
     def __create_short_title(self, title):
         """ Make title short if it is long.  Replace '_' by '__' so
         it is not ignored or  interpreted as an accelerator."""
-        title =title.replace("_", "__")
+        title = title.replace("_", "__")
         short_title = title[0:self.MAX_TITLE_LEN]
         if len(title) > self.MAX_TITLE_LEN:
             short_title = short_title.strip() + "..."
         return short_title
 
-
 ### Preferences methods #######################################################
     def preferences_load(self):
-        data = self.__plugin_api.load_configuration_object(self.PLUGIN_NAME,
-                                                         "preferences")
-        # We first load the preferences then update the dict
-        # This way new default options are recognized with old cfg files
-        self.preferences = self.DEFAULT_PREFERENCES
-        if isinstance(data, dict):
-            self.preferences.update(data)
+        self.preferences = self.__plugin_api.load_configuration_object(
+            self.PLUGIN_NAME, "preferences",
+            default_values=self.DEFAULT_PREFERENCES)
 
     def preferences_store(self):
         self.__plugin_api.save_configuration_object(self.PLUGIN_NAME,
-                                                  "preferences",
-                                                  self.preferences)
+                                                    "preferences",
+                                                    self.preferences)
 
     def is_configurable(self):
         """A configurable plugin should have this method and return True"""
@@ -409,19 +407,19 @@ class NotificationArea:
     def preference_dialog_init(self):
         self.builder = Gtk.Builder()
         self.builder.add_from_file(os.path.join(
-                    os.path.dirname(os.path.abspath(__file__)),
-                    "notification_area.ui"))
+            os.path.dirname(os.path.abspath(__file__)),
+            "notification_area.ui"))
         self.preferences_dialog = self.builder.get_object("preferences_dialog")
         self.chbox_minimized = self.builder.get_object("pref_chbox_minimized")
         self.spinbutton_dangerzone = \
             self.builder.get_object("pref_spinbutton_dangerzone")
         SIGNAL_CONNECTIONS_DIC = {
             "on_preferences_dialog_delete_event":
-                self.on_preferences_cancel,
+            self.on_preferences_cancel,
             "on_btn_preferences_cancel_clicked":
-                self.on_preferences_cancel,
+            self.on_preferences_cancel,
             "on_btn_preferences_ok_clicked":
-                self.on_preferences_ok,
+            self.on_preferences_ok,
         }
         self.builder.connect_signals(SIGNAL_CONNECTIONS_DIC)
 
@@ -431,11 +429,11 @@ class NotificationArea:
         self.preferences_dialog.show_all()
         self.preferences_dialog.set_transient_for(manager_dialog)
 
-    def on_preferences_cancel(self, widget = None, data = None):
+    def on_preferences_cancel(self, widget=None, data=None):
         self.preferences_dialog.hide()
         return True
 
-    def on_preferences_ok(self, widget = None, data = None):
+    def on_preferences_ok(self, widget=None, data=None):
         dzone = self.spinbutton_dangerzone.get_value()
         # update danger zone only if it has changed
         # and refresh attention monitor
@@ -448,11 +446,11 @@ class NotificationArea:
         self.preferences_dialog.hide()
 
 ### Browser methods ###########################################################
-    def __on_browser_minimize(self, widget = None, plugin_api = None):
+    def __on_browser_minimize(self, widget=None, plugin_api=None):
         self.__view_manager.hide_browser()
         return True
 
-    def __show_browser(self, sender = None, data = None):
+    def __show_browser(self, sender=None, data=None):
         manager = self.__plugin_api.get_view_manager()
         manager.show_browser()
 
@@ -520,7 +518,7 @@ class SortedLimitedMenu:
         was_displayed = position < self.max_items
         hidden_elements = len(self.sorted_keys) >= self.max_items
         if was_displayed and hidden_elements:
-            shown_key = self.sorted_keys[self.max_items-1][1]
+            shown_key = self.sorted_keys[self.max_items - 1][1]
             self.elements[shown_key].show()
 
     def empty(self):

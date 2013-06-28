@@ -1,0 +1,102 @@
+<page xmlns="http://projectmallard.org/1.0/" xmlns:ui="http://projectmallard.org/experimental/ui/" type="guide" style="tip" id="gtg-shortcut-keys" xml:lang="ru">
+
+<info>
+  <link type="guide" xref="index"/>
+  <link type="seealso" xref="gtg-quickstart"/>
+  <link type="seealso" xref="gtg-main-window"/>
+  <revision pkgversion="0.1" version="0.1" date="2012-07-03" status="candidate"/>
+  <credit type="author">
+    <name>Radina Matic</name>
+    <email>radina.matic@gmail.com</email>
+  </credit>
+<mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator">
+  <mal:name>Dmitry Drozdov</mal:name>
+</mal:credit>
+</info>
+
+<title>Клавиатурные комбинации</title>
+
+<p><gui>Комбинации клавиш</gui> позволяют выполнять наиболее общие задачи быстрее, чем с помощью мышки и меню. В таблицах приведены все клавиатурные комбинации<app>GTG</app>.</p>
+
+ <table rules="rows" frame="top bottom" ui:expanded="yes">
+    <title>Общие комбинации клавиш в главном окне</title>
+      <thead>
+        <tr>
+          <td><p><em style="strong">Чтобы сделать</em></p></td>  <td><p><em style="strong">Нажмите</em></p></td>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><p>Открыть задачу в редакторе</p></td>  <td><p>ENTER</p></td>
+        </tr>
+        <tr>
+          <td><p>Закрыть окно редактирования задачи</p></td>  <td><p>ESC</p></td>
+        </tr>
+<tr>
+          <td><p>Перейти к предыдущей задаче в списке</p></td>  <td><p>Up Arrow</p></td>
+        </tr>
+<tr>
+          <td><p>Перейти к следующей задаче в списке</p></td>  <td><p>Down Arrow</p></td>
+        </tr>
+        <tr>
+          <td><p>Переместить фокус в поле быстрого добавления/поиска</p></td>  <td><p>Ctrl + L</p></td>
+        </tr>
+        <tr>
+          <td><p>Включить или выключить боковую панель</p></td> <td><p>F9</p></td>
+        </tr>
+        <tr>
+          <td><p>Включит или выключить список выполненных задач</p></td>  <td><p>Ctrl + F9</p></td>
+        </tr>
+        <tr>
+          <td><p>Повторить действие</p></td>  <td><p>Ctrl + Y</p></td>
+        </tr>
+        <tr>
+          <td><p>Отменить действие</p></td>  <td><p>Ctrl + Z</p></td>
+        </tr>
+        <tr>
+          <td><p>Выход из программы</p></td>  <td><p>Ctrl + Q</p></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <table rules="rows" frame="top bottom" ui:expanded="yes">
+    <title>Работа с задачами</title>
+      <thead>
+        <tr>
+          <td><p><em style="strong">Чтобы сделать</em></p></td>  <td><p><em style="strong">Нажмите</em></p></td>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><p>Ввести новую задачу</p></td> <td><p>Ctrl + N</p></td>
+        </tr>
+        <tr>
+          <td><p>Отметить выполненную задачу</p></td>  <td><p>Ctrl + D</p></td>
+        </tr>
+        <tr>
+          <td><p>Отменить задачу</p></td>  <td><p>Ctrl + I</p></td>
+        </tr>
+        <tr>
+          <td><p>Удалить задачу</p></td>  <td><p>DEL</p></td>
+        </tr>
+        <tr>
+          <td><p>Создать новую подзадачу</p></td>  <td><p>Ctrl+Shift+N</p></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <table rules="rows" frame="top bottom"  ui:expanded="yes">
+    <title>Работа с метками</title>
+      <thead>
+        <tr>
+          <td><p><em style="strong">Чтобы сделать</em></p></td>  <td><p><em style="strong">Нажмите</em></p></td>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><p>Добавить или модифицировать метки</p></td>  <td><p>Ctrl + T</p></td>
+        </tr>
+      </tbody>
+    </table>
+
+</page>

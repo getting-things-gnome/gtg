@@ -24,7 +24,7 @@ class TaskStr(object):
     attributes instead of method calls and makes writing Cheetah
     templates easier. """
     # Ignore big number of properties and small number of public methods
-    # pylint: disable-msg=R0902,R0903
+
     def __init__(self, task, subtasks):
         self.title = task.get_title()
         self.text = str(task.get_text())
@@ -50,7 +50,7 @@ class TaskStr(object):
     has_tags = property(lambda s: s.tags != [])
 
 
-def get_task_wrappers(tree, days = None, task_id = None):
+def get_task_wrappers(tree, days=None, task_id=None):
     """ Recursively find all task on given tree and
     convert them into TaskStr
 

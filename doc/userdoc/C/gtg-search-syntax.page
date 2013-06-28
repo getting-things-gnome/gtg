@@ -1,5 +1,6 @@
 <page xmlns="http://projectmallard.org/1.0/"
       xmlns:ui="http://projectmallard.org/experimental/ui/"
+      xmlns:its="http://www.w3.org/2005/11/its"
       type="guide" style="tip"
       id="gtg-search-syntax">
 

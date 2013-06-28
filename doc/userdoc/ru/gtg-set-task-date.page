@@ -1,0 +1,37 @@
+<page xmlns="http://projectmallard.org/1.0/" type="topic" style="task" id="gtg-set-task-date" xml:lang="ru">
+
+<info>
+  <link type="guide" xref="gtg-tasks" group="second"/>
+  <link type="seealso" xref="gtg-create-new-task"/>
+  <link type="seealso" xref="gtg-edit-task"/>
+  <link type="seealso" xref="gtg-delete-task"/>
+  <link type="seealso" xref="gtg-dismiss-task"/>
+  <revision pkgversion="0.1" version="0.1" date="2012-07-03" status="candidate"/>
+<credit type="author">
+    <name>Radina Matic</name>
+    <email>radina.matic@gmail.com</email>
+  </credit>
+<mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator">
+  <mal:name>Dmitry Drozdov</mal:name>
+</mal:credit>
+</info>
+
+<title>Задание дат начала и завершения задачи</title>
+
+<p>Для установки даты начала работы над задачей и плановой даты ее завершения в списке задач <app>GTG</app> щелкните по задаче правой кнопкой мыши, и выберите нужные дни или даты в командах <gui>Задать дату начала</gui> или <gui>Завершить к</gui> контекстного меню.</p>
+
+<figure>
+<title>Задание дат в редакторе задач</title>
+<desc> </desc>
+<media type="image" mime="image/png" src="figures/set_date_task_browser.png"/>
+</figure>
+
+<p>Для задания даты начала или завершения задачи в редакторе задач щелкните мышью по нужной стрелке в строке статуса задачи, откроется календарь, в котором можно выбрать нужную дату.</p>
+
+<figure>
+<title>Задание дат открытой задачи</title>
+<desc> </desc>
+<media type="image" mime="image/png" src="figures/set_date_task_open.png"/>
+</figure>
+
+</page>

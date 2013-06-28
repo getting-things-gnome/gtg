@@ -42,8 +42,9 @@ def main():
     """ Parse arguments and create a new task """
     parser = OptionParser()
     parser.add_option('-i', '--interactive', action='store_true',
-      dest='interactive', help=_("Use input as the text of a new task"),
-      default=False)
+                      dest='interactive',
+                      help=_("Use input as the text of a new task"),
+                      default=False)
     (options, args) = parser.parse_args()
 
     title = " ".join(args)

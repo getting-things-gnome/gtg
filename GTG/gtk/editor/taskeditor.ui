@@ -186,6 +186,7 @@
                     <property name="invisible_char">●</property>
                     <property name="width_chars">10</property>
                     <signal name="changed" handler="startingdate_changed" swapped="no"/>
+                    <signal name="focus-out-event" handler="startdate_focus_out"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -248,6 +249,7 @@
                     <property name="invisible_char">●</property>
                     <property name="width_chars">10</property>
                     <signal name="changed" handler="duedate_changed" swapped="no"/>
+                    <signal name="focus-out-event" handler="duedate_focus_out"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -310,6 +312,7 @@
                     <property name="invisible_char">●</property>
                     <property name="width_chars">10</property>
                     <signal name="changed" handler="closeddate_changed" swapped="no"/>
+                    <signal name="focus-out-event" handler="closeddate_focus_out"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>

@@ -5,6 +5,20 @@
     * Fix for bug #1062659: "Allow locale format of date", by Nimit Shah
     * Fix for bug #1047753: Changing due date doesn't update "days left" information, by Codee
     * Fix for bug #1090301: "Deactivating the untouched tasks plugin leaves "add @untouched tag" in plugins menu", by Nimit Shah
+    * Fix for bug #1039651: Urgency coloring of parent tasks in collapsed view, by Parin Porecha
+    * Fix for bug #1032745: Calendar widget is padded to always be visible on the screen
+    * Russian localization of help by DmDr
+    * Fix for bug #1096622: Damaged image in the help, by Parin Porecha
+    * Fix for bug #1095390: Quick Add bar incorrectly parses tags, by Parin Porecha
+    * Fix for bug #1079143: Adding the same custom color in tag editor multiple times raises an Exception, by Parin Porecha
+    * Better handling of preferences loading (bug #1094307)
+    * Added command "gtcli overview"
+    * Fix for bug #1076029: (Fixed regression) Notification area applet can't display attention icon
+    * Pep8ification of code, by Nimit Shah
+    * Fix for bug #1141582: Crash on enabling hamster plugin, by Nimit Shah
+    * System level global shortcut key for quick adding task, by Parin Porecha
+    * Refactor Bugzilla plugin, by Chenxiong Qi
+    * Fix for bug #816356: When sorting by due-date, use the closest date of all children, by Nimit Shah
 
 2012-11-06 Getting Things GNOME! 0.3
     * Hide tasks with due date someday, #931376

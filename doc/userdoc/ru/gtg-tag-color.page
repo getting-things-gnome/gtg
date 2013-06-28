@@ -1,0 +1,33 @@
+<page xmlns="http://projectmallard.org/1.0/" type="topic" style="task" id="gtg-tag-color" xml:lang="ru">
+
+<info>
+  <link type="guide" xref="gtg-tags" group="third"/>
+  <link type="seealso" xref="gtg-add-tag"/>
+  <link type="seealso" xref="gtg-add-subtag"/>
+  <revision pkgversion="0.1" version="0.1" date="2012-07-03" status="candidate"/>
+  <credit type="author">
+    <name>Radina Matic</name>
+    <email>radina.matic@gmail.com</email>
+  </credit>
+<mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator">
+  <mal:name>Dmitry Drozdov</mal:name>
+</mal:credit>
+</info>
+
+<title>Редактирования меток</title>
+
+<p>Можно с легкостью изменить название метки, цвет подсветки задач, или задать иконку для метки. Все это делается из контекстного меню <gui>Редактировать метку...</gui>:</p>
+
+<list>
+<item><p>Название редактируется в одноименном поле.</p></item>
+<item><p>Выберите один из предложенных цветов или щелкните по кнопке <gui>Добавить цвет</gui>. Выберите подходящий цвет в окне <gui>Выбрать цвет</gui> и щелкните по кнопке <gui>OK</gui> для завершения.</p></item>
+<item><p>Щелкните по кнопке <gui>выбор иконки</gui> и выберите одну из иконок из предложенных для метки.</p></item>  
+</list>
+
+<figure>
+<title>Редактирование метки</title>
+<desc> </desc>
+<media type="image" mime="image/png" src="figures/edit_tag.png"/>
+</figure>
+
+</page>

@@ -19,6 +19,7 @@
 
 import threading
 
+
 class Watchdog(object):
     '''
     a simple thread-safe watchdog.
@@ -49,6 +50,6 @@ class Watchdog(object):
             self.timer.cancel()
         except:
             pass
-        if value == None:
+        if value is None:
             return True
         return False

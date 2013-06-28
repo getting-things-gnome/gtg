@@ -16,7 +16,6 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-# pylint: disable-msg=W0201
 
 """
 tag_editor: this module contains two classes: TagIconSelector and TagEditor.
@@ -31,10 +30,11 @@ for a tag.
 from gi.repository import GObject, Gtk, Gdk, GdkPixbuf
 
 from GTG import _
+from GTG.tools.logger import Log
 from GTG.gtk.browser.simple_color_selector import SimpleColorSelector
 
 
-class TagIconSelector(Gtk.Window): # pylint: disable-msg=R0904
+class TagIconSelector(Gtk.Window):
     """
     TagIconSelector is intended as a floating window that allows to select
     an icon for a tag. It display a list of icon in a popup window.
@@ -78,7 +78,7 @@ class TagIconSelector(Gtk.Window): # pylint: disable-msg=R0904
         #  The same goes for row height, but being right for this value is less
         #  important due to the vertical scrollbar.
         #  The IcVw size should fit the width of 7 cols and height of ~4 lines.
-        self.symbol_iv.set_size_request(40*7 + 12, 38*4)
+        self.symbol_iv.set_size_request(40 * 7 + 12, 38 * 4)
         scld_win.add(self.symbol_iv)
         # icon remove button
         img = Gtk.Image()
@@ -91,22 +91,29 @@ class TagIconSelector(Gtk.Window): # pylint: disable-msg=R0904
         self.symbol_iv.connect("selection-changed", self.on_selection_changed)
         self.remove_bt.connect("clicked", self.on_remove_bt_clicked)
 
-    def __focus_out(self, widget, event): # pylint: disable-msg=W0613
+    def __focus_out(self, widget, event):
         """Hides the window if the user clicks out of it"""
-        win_ptr = self.get_window().get_pointer() # pylint: disable-msg=E1101
+        win_ptr = self.get_window().get_pointer()
         win_size = self.get_size()
-        if not(0 <= win_ptr[0] <= win_size[0] and \
+        if not(0 <= win_ptr[0] <= win_size[0] and
                0 <= win_ptr[1] <= win_size[1]):
             self.close_selector()
 
     def __load_icon(self):
         """
         Loads emblem icons from the current icon theme
+
+        Sometimes an icon can't be loaded because of a bug in system
+        libraries, e.g. bug #1079587. Gracefuly degradate and skip
+        the loading of a corrupted icon.
         """
         self.symbol_model = Gtk.ListStore(GdkPixbuf.Pixbuf, str)
         for icon in Gtk.IconTheme.get_default().list_icons(context="Emblems"):
-            img = Gtk.IconTheme.get_default().load_icon(icon, 16, 0)
-            self.symbol_model.append([img, icon])
+            try:
+                img = Gtk.IconTheme.get_default().load_icon(icon, 16, 0)
+                self.symbol_model.append([img, icon])
+            except GObject.GError:
+                Log.error("Failed to load icon '%s'" % icon)
         self.symbol_iv.set_model(self.symbol_model)
         self.loaded = True
 
@@ -116,11 +123,11 @@ class TagIconSelector(Gtk.Window): # pylint: disable-msg=R0904
         self.remove_bt.set_sensitive(enable)
 
     ### callbacks ###
-    def on_selection_changed(self, widget): # pylint: disable-msg=W0613
+    def on_selection_changed(self, widget):
         """Callback: update the model according to the selected icon. Also
         notifies the parent widget."""
         my_path = self.symbol_iv.get_selected_items()
-        if len(my_path)>0:
+        if len(my_path) > 0:
             my_iter = self.symbol_model.get_iter(my_path[0])
             self.selected_icon = self.symbol_model.get_value(my_iter, 1)
         else:
@@ -128,7 +135,7 @@ class TagIconSelector(Gtk.Window): # pylint: disable-msg=R0904
         self.emit('selection-changed')
         self.close_selector()
 
-    def on_remove_bt_clicked(self, widget): # pylint: disable-msg=W0613
+    def on_remove_bt_clicked(self, widget):
         """Callback: unselect the current icon"""
         self.selected_icon = None
         self.emit('selection-changed')
@@ -141,22 +148,20 @@ class TagIconSelector(Gtk.Window): # pylint: disable-msg=R0904
             self.__load_icon()
         self.move(pos_x, pos_y)
         self.show_all()
-        ##some window managers ignore move before you show a window. (which
+        # some window managers ignore move before you show a window. (which
         # ones? question by invernizzi)
         self.move(pos_x, pos_y)
         self.grab_add()
-        #We grab the pointer in the calendar
+        # We grab the pointer in the calendar
 #FIXME THIS DOES NOT WORK!!!!!!!
-        Gdk.pointer_grab(
-            self.get_window(),
-            True,
-            #Gdk.ModifierType.BUTTON1_MASK | Gdk.ModifierType.MOD2_MASK,
+        Gdk.pointer_grab(self.get_window(), True,
+                         # Gdk.ModifierType.BUTTON1_MASK |
+                         # Gdk.ModifierType.MOD2_MASK,
 #FIXME!!!! JUST GUESSING THE TYPE
-            Gdk.EventMask.ALL_EVENTS_MASK,
-            None,
-            None,
-            0,
-        )
+                         Gdk.EventMask.ALL_EVENTS_MASK,
+                         None,
+                         None,
+                         0,)
         self.connect('button-press-event', self.__focus_out)
 
     def close_selector(self):
@@ -180,7 +185,7 @@ GObject.signal_new("selection-changed", TagIconSelector,
                    GObject.SignalFlags.RUN_FIRST, None, ())
 
 
-class TagEditor(Gtk.Window): # pylint: disable-msg=R0904
+class TagEditor(Gtk.Window):
     """Window allowing to edit a tag's properties."""
 
     def __init__(self, req, vmanager, tag=None):
@@ -235,7 +240,7 @@ class TagEditor(Gtk.Window): # pylint: disable-msg=R0904
         self.tp_grid.add(self.tn_entry_lbl_align)
         self.tn_entry_lbl = Gtk.Label()
         self.tn_entry_lbl.set_markup("<span weight='bold'>%s</span>" \
-            % _("Name : "))
+                                     % _("Name : "))
         self.tn_entry_lbl_align.add(self.tn_entry_lbl)
         self.tn_entry = Gtk.Entry()
         self.tn_entry.set_width_chars(20)
@@ -254,7 +259,7 @@ class TagEditor(Gtk.Window): # pylint: disable-msg=R0904
         self.tc_label_align.set_padding(0, 0, 0, 0)
         self.tc_label = Gtk.Label()
         self.tc_label_align.add(self.tc_label)
-        self.tc_label.set_markup( \
+        self.tc_label.set_markup(
             "<span weight='bold'>%s</span>" % _("Select Tag Color:"))
         self.tc_label.set_alignment(0, 0.5)
         # Tag color chooser
@@ -272,12 +277,12 @@ class TagEditor(Gtk.Window): # pylint: disable-msg=R0904
         # Set the callbacks
         self.ti_bt.connect('clicked', self.on_ti_bt_clicked)
         self.tis_selection_changed_hid = \
-            self.tag_icon_selector.connect('selection-changed', \
-            self.on_tis_selection_changed)
+            self.tag_icon_selector.connect('selection-changed',
+                                           self.on_tis_selection_changed)
         self.tn_entry_clicked_hid = \
             self.tn_entry.connect('changed', self.on_tn_entry_changed)
-        self.tn_cb_clicked_hid = self.tn_cb.connect('clicked', \
-            self.on_tn_cb_clicked)
+        self.tn_cb_clicked_hid = self.tn_cb.connect('clicked',
+                                                    self.on_tn_cb_clicked)
         #FIXME
         #self.tc_cc_colsel.connect('color-changed', self.on_tc_colsel_changed)
         #self.tc_cc_colsel.connect('color-added', self.on_tc_colsel_added)
@@ -337,7 +342,7 @@ class TagEditor(Gtk.Window): # pylint: disable-msg=R0904
             for i in self.ti_bt:
                 self.ti_bt.remove(i)
             ti_bt_img = Gtk.Image.new_from_icon_name(icon,
-                Gtk.IconSize.BUTTON)
+                                                     Gtk.IconSize.BUTTON)
             ti_bt_img.show()
             self.ti_bt.add(ti_bt_img)
         else:
@@ -398,11 +403,11 @@ class TagEditor(Gtk.Window): # pylint: disable-msg=R0904
                 if self.tag.is_search_tag():
                     new_name = cur_value
                 else:
-                    new_name = "@"+cur_value
+                    new_name = "@" + cur_value
                 self.req.rename_tag(self.tag.get_name(), new_name)
             return False
 
-    def on_tis_selection_changed(self, widget): # pylint: disable-msg=W0613
+    def on_tis_selection_changed(self, widget):
         """Callback: update tag attributes whenever an icon is (un)selected."""
         icon = self.tag_icon_selector.get_selected_icon()
         if icon is not None:
@@ -412,30 +417,31 @@ class TagEditor(Gtk.Window): # pylint: disable-msg=R0904
             self.tag.del_attribute("icon")
             self.__set_icon(None)
 
-    def on_ti_bt_clicked(self, widget): # pylint: disable-msg=W0613
+    def on_ti_bt_clicked(self, widget):
         """Callback: displays the tag icon selector widget next
         to the button."""
         rect = self.ti_bt.get_allocation()
-        #print self.ti_bt.get_window().get_origin() # pylint: disable-msg=E1101
+        # print self.ti_bt.get_window().get_origin()
 #FIXME
         result, pos_x, pos_y = \
-            self.ti_bt.get_window().get_origin() # pylint: disable-msg=E1101
-            #self.ti_bt.window.get_origin() # pylint: disable-msg=E1101
-        self.tag_icon_selector.show_at_position(pos_x+rect.x+rect.width+2, \
-            pos_y+rect.y)
+            self.ti_bt.get_window().get_origin()
+            # self.ti_bt.window.get_origin()
+        self.tag_icon_selector.show_at_position(
+            pos_x + rect.x + rect.width + 2,
+            pos_y + rect.y)
         if self.tag.get_attribute('icon') is not None:
             self.tag_icon_selector.set_remove_enabled(True)
         else:
             self.tag_icon_selector.set_remove_enabled(False)
 
-    def on_tn_entry_changed(self, widget): # pylint: disable-msg=W0613
+    def on_tn_entry_changed(self, widget):
         """ Callback: checks tag name validity and start value changes
         monitoring to decide when to update a tag's name."""
         self.tn_entry_last_recorded_value = self.tn_entry.get_text()
         # check validity
         if self.tn_entry_last_recorded_value.strip() == "":
             self.tn_entry.set_icon_from_stock(Gtk.EntryIconPosition.SECONDARY,
-                Gtk.STOCK_DIALOG_ERROR)
+                                              Gtk.STOCK_DIALOG_ERROR)
         else:
             self.tn_entry.set_icon_from_stock(
                 Gtk.EntryIconPosition.SECONDARY, None)
@@ -444,10 +450,11 @@ class TagEditor(Gtk.Window): # pylint: disable-msg=R0904
             # There is no watchers for the text entry. Register one.
             # Also, wait 1 second before commiting the change in order to
             # reduce rename requests
-            self.tn_entry_watch_id = GObject.timeout_add(1000, \
-                self.watch_tn_entry_changes)
+            tn_entry_changes = self.watch_tn_entry_changes
+            self.tn_entry_watch_id = GObject.timeout_add(1000,
+                                                         tn_entry_changes)
 
-    def on_tn_cb_clicked(self, widget): # pylint: disable-msg=W0613
+    def on_tn_cb_clicked(self, widget):
         """Callback: toggle the nonworkview property according to the related
         widget's state."""
         if self.tag is not None:
@@ -455,7 +462,7 @@ class TagEditor(Gtk.Window): # pylint: disable-msg=R0904
             hide_in_wv = not show_in_wv
             self.tag.set_attribute('nonworkview', str(hide_in_wv))
 
-    def on_tc_colsel_changed(self, widget): # pylint: disable-msg=W0613
+    def on_tc_colsel_changed(self, widget):
         """Callback: update the tag color depending on the current color
         selection"""
         color = self.tc_cc_colsel.get_selected_color()
@@ -465,7 +472,7 @@ class TagEditor(Gtk.Window): # pylint: disable-msg=R0904
             else:
                 self.tag.del_attribute('color')
 
-    def on_tc_colsel_activated(self, widget, color): # pylint: disable-msg=W0613
+    def on_tc_colsel_activated(self, widget, color):
         """Callback: update the tag color depending on the current color
         selection"""
         print "activated", widget, color, " <--- ignoring for now"
@@ -478,7 +485,7 @@ class TagEditor(Gtk.Window): # pylint: disable-msg=R0904
             else:
                 self.tag.del_attribute('color')
 
-    def on_tc_colsel_added(self, widget): # pylint: disable-msg=W0613
+    def on_tc_colsel_added(self, widget):
         """Callback: if a new color is added, we register it in the
         configuration"""
         self.custom_colors = self.tc_cc_colsel.get_custom_colors()
@@ -486,7 +493,6 @@ class TagEditor(Gtk.Window): # pylint: disable-msg=R0904
         self.req.save_config()
 
     def on_close(self, widget, event, arg1=None, arg2=None, arg3=None):
-        # pylint: disable-msg=W0613,R0913
         """ Callback: hide the tag editor when the close the window.
 
         Arguments arg1-arg3 are needed to satisfy callback when closing

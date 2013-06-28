@@ -1,0 +1,34 @@
+<page xmlns="http://projectmallard.org/1.0/" type="topic" style="task" id="gtg-dismiss-task" xml:lang="ru">
+
+<info>
+  <link type="guide" xref="gtg-tasks" group="second"/>
+  <link type="seealso" xref="gtg-create-new-task"/>
+  <link type="seealso" xref="gtg-edit-task"/>
+  <link type="seealso" xref="gtg-delete-task"/>
+  <link type="seealso" xref="gtg-set-task-date"/>
+  <revision pkgversion="0.1" version="0.1" date="2012-07-03" status="candidate"/>
+  <credit type="author">
+    <name>Radina Matic</name>
+    <email>radina.matic@gmail.com</email>
+  </credit>
+<mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator">
+  <mal:name>Dmitry Drozdov</mal:name>
+</mal:credit>
+</info>
+
+<title>Отмена задачи</title>
+
+<p>Если вы решите, что какая-то задача более не актуальна (ее не стоит выполнять), Вы можете отменить ее. Отменить выбранную в списке <app>GTG</app> задачу можно несколькими способами:</p>
+
+<list>
+  <item><p>Командой <guiseq><gui>Задачи</gui><gui>Отменить</gui></guiseq> главного меню.</p></item>
+  <item><p>Кнопкой <gui>Отменить задачу</gui> панели инструментов <app>GTG</app>.</p></item>
+  <item><p>Комбинацией <keyseq><key>Ctrl</key><key>I</key></keyseq>.</p></item>
+  <item><p>Командой <gui>Отменить</gui> контекстного меню, вызываемого правой кнопкой мыши на задаче.</p></item>
+</list> 
+
+<p>Для отмены открытой в <app>GTG</app> задачи щелкните по кнопке <gui>Отменить задачу</gui> в инструментальной панели редактора.</p>
+
+<p>Все отмененные и выполненные задачи могут быть выведены в <gui>Список выполненных задач</gui>. Вывести или отключить этот список можно командой <guiseq><gui>Вид</gui><gui>Выполненные задачи</gui></guiseq> главного меню <app>GTG</app>.</p> 
+
+</page>
