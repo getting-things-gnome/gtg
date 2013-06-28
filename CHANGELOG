@@ -19,6 +19,7 @@
     * System level global shortcut key for quick adding task, by Parin Porecha
     * Refactor Bugzilla plugin, by Chenxiong Qi
     * Fix for bug #816356: When sorting by due-date, use the closest date of all children, by Nimit Shah
+    * Fix for bug #1193678: Empty tag created, by Nimit Shah
 
 2012-11-06 Getting Things GNOME! 0.3
     * Hide tasks with due date someday, #931376
