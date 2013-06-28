@@ -60,7 +60,7 @@ class ImportTagsUI(Gtk.Box):
         @param width: the length of the radio buttons
         '''
         title_label = Gtk.Label()
-        title_label.set_alignment(xalign = 0, yalign = 0)
+        title_label.set_alignment(xalign=0, yalign=0)
         title_label.set_markup("<big><b>%s</b></big>" % self.title)
         self.pack_start(title_label, True, True, 0)
         align = Gtk.Alignment.new(0, 0, 1, 0)
@@ -68,19 +68,19 @@ class ImportTagsUI(Gtk.Box):
         self.pack_start(align, True, True, 0)
         vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         align.add(vbox)
-        self.all_tags_radio = Gtk.RadioButton(group = None,
-                                              label = self.anybox_text)
+        self.all_tags_radio = Gtk.RadioButton(group=None,
+                                              label=self.anybox_text)
         vbox.pack_start(self.all_tags_radio, True, True, 0)
-        self.some_tags_radio = Gtk.RadioButton(group = self.all_tags_radio,
-                                               label = self.somebox_text)
-        self.some_tags_radio.set_size_request(width = width, height = -1)
+        self.some_tags_radio = Gtk.RadioButton(group=self.all_tags_radio,
+                                               label=self.somebox_text)
+        self.some_tags_radio.set_size_request(width=width, height=-1)
         box = Gtk.Box()
         vbox.pack_start(box, True, True, 0)
         box.pack_start(self.some_tags_radio, False, True, 0)
         self.tags_entry = Gtk.Entry()
         box.pack_start(self.tags_entry, True, True, 0)
 
-    def on_changed(self, radio, data = None):
+    def on_changed(self, radio, data=None):
         ''' Signal callback, executed when the user modifies something.
         Disables the backend. The user will re-enable it to confirm the changes
         (s)he made.
@@ -88,7 +88,7 @@ class ImportTagsUI(Gtk.Box):
         @param sender: not used, only here for signal compatibility
         @param data: not used, only here for signal compatibility
         '''
-        #every change in the config disables the backend
+        # every change in the config disables the backend
         self.req.set_backend_enabled(self.backend.get_id(), False)
         self._refresh_textbox_state()
 
@@ -98,9 +98,9 @@ class ImportTagsUI(Gtk.Box):
             tags = [GenericBackend.ALLTASKS_TAG]
         else:
             tags = self.tags_entry.get_text().split(",")
-            #stripping spaces
+            # stripping spaces
             tags = map(lambda t: t.strip(), tags)
-            #removing empty tags
+            # removing empty tags
             tags = filter(lambda t: t, tags)
 
         self.backend.set_parameter(self.parameter_name, tags)

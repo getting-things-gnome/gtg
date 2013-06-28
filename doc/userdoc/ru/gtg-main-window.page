@@ -1,0 +1,53 @@
+<page xmlns="http://projectmallard.org/1.0/" type="topic" style="task" id="gtg-main-window" xml:lang="ru">
+  <info>
+  <link type="guide" xref="index"/>
+  <link type="seealso" xref="gtg-shortcut-keys"/>
+  <link type="seealso" xref="gtg-quickstart"/>
+  <revision pkgversion="0.1" version="0.1" date="2012-07-03" status="candidate"/>
+  <credit type="author">
+    <name>Radina Matic</name>
+    <email>radina.matic@gmail.com</email>
+  </credit>
+<mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator">
+  <mal:name>Dmitry Drozdov</mal:name>
+</mal:credit>
+</info>
+
+<title>Основное окно GTG</title>
+
+<p>Посмотрите видео (подписи в видео на английском, ниже - сокращенный перевод), в нем показаны основные возможности главного окна <app>GTG</app> и его составных частей.</p>
+
+<media type="video" src="videos/GetStarted.ogg">
+<tt:tt xmlns:tt="http://www.w3.org/ns/ttml">
+  <tt:body>
+    <tt:div begin="1s" end="16s">
+      <tt:p>Главное меню GTG имеет команды: Задачи, Правка, Вид, Расширения и Помощь.</tt:p>
+    </tt:div>
+    <tt:div begin="16s" end="23s">
+      <tt:p>Сразу под меню расположена <em style="strong">панель инструментов</em>.</tt:p>
+    </tt:div>
+    <tt:div begin="23s" end="36s">
+      <tt:p><em style="strong">Боковая панель меток</em> расположена в окне слева.</tt:p>
+    </tt:div>
+    <tt:div begin="36s" end="53s">
+       <tt:p><em style="strong">Поле быстрого ввода</em> служит для моментального создания новой задачи.</tt:p>
+    </tt:div>
+    <tt:div begin="53s" end="61s">
+      <tt:p>Список всех задач выводится в <em style="strong">GTG Task Browser</em>.</tt:p>
+    </tt:div>
+    <tt:div begin="61s" end="77s">
+      <tt:p>Можно включить или выключить показ <em style="strong">списка закрытых задач</em> из меню Вид.</tt:p>
+    </tt:div>
+  </tt:body>
+</tt:tt>
+
+<figure>
+<title>Основное окно GTG</title>
+<desc> </desc>
+<media type="image" mime="image/png" src="figures/Understand-GTG-main-window.png"/>
+</figure>
+
+</media>
+
+</page>
+

@@ -48,8 +48,8 @@ class PathUI(Gtk.Box):
         '''
         label = Gtk.Label(label=_("Filename:"))
         label.set_line_wrap(True)
-        label.set_alignment(xalign = 0, yalign = 0.5)
-        label.set_size_request(width = width, height = -1)
+        label.set_alignment(xalign=0, yalign=0.5)
+        label.set_size_request(width=width, height=-1)
         self.pack_start(label, False, True, 0)
         align = Gtk.Alignment.new(0, 0.5, 1, 0)
         align.set_padding(0, 0, 10, 0)
@@ -58,7 +58,7 @@ class PathUI(Gtk.Box):
         self.textbox.set_text(self.backend.get_parameters()['path'])
         self.textbox.connect('changed', self.on_path_modified)
         align.add(self.textbox)
-        self.button = Gtk.Button(stock = Gtk.STOCK_EDIT)
+        self.button = Gtk.Button(stock=Gtk.STOCK_EDIT)
         self.button.connect('clicked', self.on_button_clicked)
         self.pack_start(self.button, False, True, 0)
 
@@ -82,19 +82,19 @@ class PathUI(Gtk.Box):
         @param sender: not used, only here for signal compatibility
         '''
         self.chooser = Gtk.FileChooserDialog(
-                    title=None,
-                    action=Gtk.FileChooserAction.SAVE,
-                    buttons=(Gtk.STOCK_CANCEL,
-                             Gtk.ResponseType.CANCEL,
-                             Gtk.STOCK_OK,
-                             Gtk.ResponseType.OK))
+            title=None,
+            action=Gtk.FileChooserAction.SAVE,
+            buttons=(Gtk.STOCK_CANCEL,
+                     Gtk.ResponseType.CANCEL,
+                     Gtk.STOCK_OK,
+                     Gtk.ResponseType.OK))
         self.chooser.set_default_response(Gtk.ResponseType.OK)
-        #set default file as the current self.path
+        # set default file as the current self.path
         dirname, basename = os.path.split(self.textbox.get_text())
         self.chooser.set_current_name(basename)
         self.chosser.set_current_folder(dirname)
 
-        #filter files
+        # filter files
         afilter = Gtk.FileFilter()
         afilter.set_name("All files")
         afilter.add_pattern("*")

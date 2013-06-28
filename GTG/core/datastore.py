@@ -55,7 +55,7 @@ class DataStore(object):
         """
         Initializes a DataStore object
         """
-        #dictionary {backend_name_string: Backend instance}
+        # dictionary {backend_name_string: Backend instance}
         self.backends = {}
         self.treefactory = TreeFactory()
         self._tasks = self.treefactory.get_tasks_tree()
@@ -136,7 +136,7 @@ class DataStore(object):
             parameters = parse_search_query(query)
         except InvalidQuery, e:
             Log.warning("Problem with parsing query '%s' (skipping): %s" %
-                (query, e.message))
+                       (query, e.message))
             return None
 
         name = name.encode("UTF-8")
@@ -148,7 +148,7 @@ class DataStore(object):
 
         tag = Tag(name, req=self.requester, attributes=init_attr)
         self._add_new_tag(name, tag, search_filter, parameters,
-            parent_id = CoreConfig.SEARCH_TAG)
+                          parent_id=CoreConfig.SEARCH_TAG)
         self.save_tagtree()
         return tag
 
@@ -297,9 +297,9 @@ class DataStore(object):
         if self.has_task(tid):
             return self._tasks.get_node(tid)
         else:
-            #Log.error("requested non-existent task %s" % tid)
-            #This is not an error: it is normal to request a task which
-            #might not exist yet.
+            # Log.error("requested non-existent task %s" % tid)
+            # This is not an error: it is normal to request a task which
+            # might not exist yet.
             return None
 
     def task_factory(self, tid, newtask=False):
@@ -344,7 +344,7 @@ class DataStore(object):
         if self.has_task(task.get_id()):
             return False
         else:
-            #Thread protection
+            # Thread protection
             adding(task)
             return True
 
@@ -393,32 +393,32 @@ class DataStore(object):
                 Log.error("registering a backend without pid.")
                 return None
             backend = backend_dic["backend"]
-            #Checking that is a new backend
+            # Checking that is a new backend
             if backend.get_id() in self.backends:
                 Log.error("registering already registered backend")
                 return None
-            #creating the TaskSource which will wrap the backend,
+            # creating the TaskSource which will wrap the backend,
             # filtering the tasks that should hit the backend.
             source = TaskSource(requester=self.requester,
                                 backend=backend,
                                 datastore=self.filtered_datastore)
             self.backends[backend.get_id()] = source
-            #we notify that a new backend is present
+            # we notify that a new backend is present
             self._backend_signals.backend_added(backend.get_id())
-            #saving the backend in the correct dictionary (backends for enabled
-            # backends, disabled_backends for the disabled ones)
-            #this is useful for retro-compatibility
+            # saving the backend in the correct dictionary (backends for
+            # enabled backends, disabled_backends for the disabled ones)
+            # this is useful for retro-compatibility
             if not GenericBackend.KEY_ENABLED in backend_dic:
                 source.set_parameter(GenericBackend.KEY_ENABLED, True)
             if not GenericBackend.KEY_DEFAULT_BACKEND in backend_dic:
                 source.set_parameter(GenericBackend.KEY_DEFAULT_BACKEND, True)
-            #if it's enabled, we initialize it
+            # if it's enabled, we initialize it
             if source.is_enabled() and \
-               (self.is_default_backend_loaded or source.is_default()):
+                    (self.is_default_backend_loaded or source.is_default()):
                 source.initialize(connect_signals=False)
-                #Filling the backend
-                #Doing this at start is more efficient than
-                #after the GUI is launched
+                # Filling the backend
+                # Doing this at start is more efficient than
+                # after the GUI is launched
                 source.start_get_tasks()
             return source
         else:
@@ -459,7 +459,7 @@ class DataStore(object):
             self.flush_all_tasks(backend.get_id())
 
         thread = threading.Thread(target=__backend_startup,
-                                          args=(self, backend))
+                                  args=(self, backend))
         thread.setDaemon(True)
         thread.start()
 
@@ -480,18 +480,18 @@ class DataStore(object):
         if backend_id in self.backends:
             backend = self.backends[backend_id]
             current_state = backend.is_enabled()
-            if current_state == True and state == False:
-                #we disable the backend
-                #FIXME!!!
+            if current_state is True and state is False:
+                # we disable the backend
+                # FIXME!!!
                 threading.Thread(target=backend.quit,
                                  kwargs={'disable': True}).start()
-            elif current_state == False and state == True:
-                if self.is_default_backend_loaded == True:
+            elif current_state is False and state is True:
+                if self.is_default_backend_loaded is True:
                     self._backend_startup(backend)
                 else:
-                    #will be activated afterwards
+                    # will be activated afterwards
                     backend.set_parameter(GenericBackend.KEY_ENABLED,
-                                       True)
+                                          True)
 
     def remove_backend(self, backend_id):
         """
@@ -503,13 +503,13 @@ class DataStore(object):
             backend = self.backends[backend_id]
             if backend.is_enabled():
                 self.set_backend_enabled(backend_id, False)
-            #FIXME: to keep things simple, backends are not notified that they
+            # FIXME: to keep things simple, backends are not notified that they
             #       are completely removed (they think they're just
             #       deactivated). We should add a "purge" call to backend to
             #       let them know that they're removed, so that they can
             #       remove all the various files they've created. (invernizzi)
 
-            #we notify that the backend has been deleted
+            # we notify that the backend has been deleted
             self._backend_signals.backend_removed(backend.get_id())
             del self.backends[backend_id]
 
@@ -557,37 +557,37 @@ class DataStore(object):
         except Exception:
             pass
         doc, xmlconfig = cleanxml.emptydoc("config")
-        #we ask all the backends to quit first.
+        # we ask all the backends to quit first.
         if quit:
-            #we quit backends in parallel
+            # we quit backends in parallel
             threads_dic = {}
             for b in self.get_all_backends():
                 thread = threading.Thread(target=b.quit)
                 threads_dic[b.get_id()] = thread
                 thread.start()
             for backend_id, thread in threads_dic.iteritems():
-                #after 20 seconds, we give up
+                # after 20 seconds, we give up
                 thread.join(20)
                 if thread.isAlive():
                     Log.error("The %s backend stalled while quitting",
                               backend_id)
-        #we save the parameters
+        # we save the parameters
         for b in self.get_all_backends(disabled=True):
             t_xml = doc.createElement("backend")
             for key, value in b.get_parameters().iteritems():
                 if key in ["backend", "xmlobject"]:
-                    #We don't want parameters, backend, xmlobject: we'll create
-                    # them at next startup
+                    # We don't want parameters, backend, xmlobject:
+                    # we'll create them at next startup
                     continue
                 param_type = b.get_parameter_type(key)
                 value = b.cast_param_type_to_string(param_type, value)
                 t_xml.setAttribute(str(key), value)
-            #Saving all the projects at close
+            # Saving all the projects at close
             xmlconfig.appendChild(t_xml)
         datadir = CoreConfig().get_data_dir()
         datafile = os.path.join(datadir, CoreConfig.DATA_FILE)
         cleanxml.savexml(datafile, doc, backup=True)
-        #Saving the tagstore
+        # Saving the tagstore
         self.save_tagtree()
 
     def request_task_deletion(self, tid):
@@ -672,8 +672,9 @@ class TaskSource():
             task_tags = set(task.get_tags_name())
             return task_tags.intersection(tags_to_match_set)
 
+        attached_tags = self.backend.get_attached_tags()
         return lambda task: backend_filter(self.requester, task,
-                        {"tags": set(self.backend.get_attached_tags())})
+                                           {"tags": set(attached_tags)})
 
     def should_task_id_be_stored(self, task_id):
         """
@@ -682,8 +683,8 @@ class TaskSource():
         @param task_id: a task id
         @returns bool: True if the task should be stored
         """
-        #task = self.req.get_task(task_id)
-        #FIXME: it will be a lot easier to add, instead,
+        # task = self.req.get_task(task_id)
+        # FIXME: it will be a lot easier to add, instead,
         # a filter to a tree and check that this task is well in the tree
 #        return self.task_filter(task)
         return True
@@ -719,12 +720,12 @@ class TaskSource():
                 tid = self.to_set.pop()
             except IndexError:
                 break
-            #we check that the task is not already marked for deletion
-            #and that it's still to be stored in this backend
-            #NOTE: no need to lock, we're reading
+            # we check that the task is not already marked for deletion
+            # and that it's still to be stored in this backend
+            # NOTE: no need to lock, we're reading
             if tid not in self.to_remove and \
                     self.should_task_id_be_stored(tid) and \
-                   self.req.has_task(tid):
+                    self.req.has_task(tid):
                 task = self.req.get_task(tid)
                 self.backend.queue_set_task(task)
         while not self.please_quit or bypass_please_quit:
@@ -733,7 +734,7 @@ class TaskSource():
             except IndexError:
                 break
             self.backend.queue_remove_task(tid)
-        #we release the weak lock
+        # we release the weak lock
         self.to_set_timer = None
 
     def queue_remove_task(self, tid, path=None):
@@ -751,9 +752,9 @@ class TaskSource():
         """
         Helper function to launch the setting thread, if it's not running
         """
-        if self.to_set_timer == None and not self.please_quit:
+        if self.to_set_timer is None and not self.please_quit:
             self.to_set_timer = threading.Timer(self.timer_timestep,
-                                        self.launch_setting_thread)
+                                                self.launch_setting_thread)
             self.to_set_timer.setDaemon(True)
             self.to_set_timer.start()
 
@@ -787,15 +788,15 @@ class TaskSource():
         """
         if self.add_task_handle:
             self.tasktree.deregister_cllbck('node-added',
-                self.set_task_handle)
+                                            self.set_task_handle)
             self.add_task_handle = None
         if self.set_task_handle:
             self.tasktree.deregister_cllbck('node-modified',
-                self.set_task_handle)
+                                            self.set_task_handle)
             self.set_task_handle = None
-        if  self.remove_task_handle:
+        if self.remove_task_handle:
             self.tasktree.deregister_cllbck('node-deleted',
-                self.remove_task_handle)
+                                            self.remove_task_handle)
             self.remove_task_handle = None
 
     def sync(self):

@@ -17,7 +17,6 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-
 try:
     from gi.repository import GnomeKeyring
 except ImportError:
@@ -28,6 +27,7 @@ from GTG.tools.logger import Log
 
 
 class GNOMEKeyring(Borg):
+
     def __init__(self):
         super(Keyring, self).__init__()
         if not hasattr(self, "keyring"):
@@ -38,9 +38,13 @@ class GNOMEKeyring(Borg):
     def set_password(self, name, password, userid = ""):
         attrs = GnomeKeyring.Attribute.list_new()
         GnomeKeyring.Attribute.list_append_string(attrs, "backend", name)
-        result, password_id = GnomeKeyring.item_create_sync(self.keyring,
-                GnomeKeyring.ItemType.GENERIC_SECRET, name, attrs,
-                password, True)
+        result, password_id = GnomeKeyring.item_create_sync(
+            self.keyring,
+            GnomeKeyring.ItemType.GENERIC_SECRET,
+            name,
+            attrs,
+            password,
+            True)
 
         if result != GnomeKeyring.Result.OK:
             raise Exception("Can't create a new password, error=%s" % result)
@@ -54,14 +58,16 @@ class GNOMEKeyring(Borg):
         else:
             return ""
 
+
 class FallbackKeyring(Borg):
+
     def __init__(self):
         super(Keyring, self).__init__()
         if not hasattr(self, "keyring"):
             self.keyring = {}
             self.max_key = 1
 
-    def set_password(self, name, password, userid = ""):
+    def set_password(self, name, password, userid=""):
         """ This implementation does nto need name and userid.
         It is there because of GNOMEKeyring """
 
@@ -76,7 +82,8 @@ class FallbackKeyring(Borg):
         return self.keyring.get(key, "")
 
 if GnomeKeyring is not None:
-    Keyring = GNOMEKeyring 
+    Keyring = GNOMEKeyring
 else:
-    Log.info("GNOME keyring was not found, passwords will be not stored after restart of GTG")
+    Log.info("GNOME keyring was not found, passwords will be not stored after\
+                                                              restart of GTG")
     Keyring = FallbackKeyring

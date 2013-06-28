@@ -20,9 +20,9 @@ import sys
 import re
 
 exclude_list = ['data/.*', 'po/.*', 'doc/.*', 'AUTHORS', 'CHANGELOG',
-    'LICENSE', 'README', 'gtcli_bash_completion', 'gtg.desktop',
-    'org.gnome.GTG.service', 'setup.py',
-]
+                'LICENSE', 'README', 'gtcli_bash_completion', 'gtg.desktop',
+                'org.gnome.GTG.service', 'setup.py',
+                ]
 
 # Build MANIFEST and also run build action
 if os.system("python setup.py sdist > /dev/null") != 0:

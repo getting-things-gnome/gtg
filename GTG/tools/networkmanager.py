@@ -22,6 +22,7 @@
 
 from gi.repository import NetworkManager, NMClient
 
+
 def is_connection_up():
     """ Returns True if GTG can access the Internet """
     state = NMClient.Client().get_state()

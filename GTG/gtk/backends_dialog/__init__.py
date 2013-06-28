@@ -30,15 +30,15 @@ from gi.repository import Gtk, GdkPixbuf
 
 from webbrowser import open as openurl
 
-from GTG.gtk                                import ViewConfig
-from GTG.core                               import CoreConfig
-from GTG.gtk.backends_dialog.backendstree   import BackendsTree
-from GTG.gtk.backends_dialog.addpanel       import AddPanel
+from GTG.gtk import ViewConfig
+from GTG.core import CoreConfig
+from GTG.gtk.backends_dialog.backendstree import BackendsTree
+from GTG.gtk.backends_dialog.addpanel import AddPanel
 from GTG.gtk.backends_dialog.configurepanel import ConfigurePanel
-from GTG.backends                           import BackendFactory
-from GTG.tools.logger                       import Log
-from GTG                                    import _
-from GTG.backends.genericbackend            import GenericBackend
+from GTG.backends import BackendFactory
+from GTG.tools.logger import Log
+from GTG import _
+from GTG.backends.genericbackend import GenericBackend
 from GTG import info
 
 
@@ -87,7 +87,7 @@ class BackendsDialog(object):
         self.backends_tv.select_backend()
         self.dialog.present()
 
-    def on_close(self, widget, data = None): # pylint: disable-msg=W0613
+    def on_close(self, widget, data=None):
         '''
         Hides this window, saving the backends configuration.
 
@@ -122,7 +122,7 @@ class BackendsDialog(object):
         (if the icon is not present)
         '''
         icon_info = self.icon_theme.lookup_icon(name, height, 0)
-        if icon_info == None:
+        if icon_info is None:
             return None
         else:
             return Gtk.IconTheme.get_default().load_icon(name, height, 0)
@@ -145,17 +145,17 @@ class BackendsDialog(object):
         else:
             Log.error("panel name unknown")
             return
-        ##Central pane
-        #NOTE: self.central_pane is the Gtk.Container in which we load panels
+        # Central pane
+        # NOTE: self.central_pane is the Gtk.Container in which we load panels
         if panel_to_remove in self.central_pane:
             self.central_pane.remove(panel_to_remove)
         if not panel_to_add in self.central_pane:
             self.central_pane.add(panel_to_add)
         self.central_pane.show_all()
-        #Side treeview
+        # Side treeview
         # disabled if we're adding a new backend
         try:
-            #when this is called upon initialization of this class, the
+            # when this is called upon initialization of this class, the
             # backends_tv object has not been created yet.
             self.add_button.set_sensitive(side_is_enabled)
             self.remove_button.set_sensitive(side_is_enabled)
@@ -174,12 +174,12 @@ class BackendsDialog(object):
         '''
         builder.add_from_file(ViewConfig.BACKENDS_UI_FILE)
         widgets = {
-          'dialog': 'backends_dialog',
-          'treeview_window': 'treeview_window',
-          'central_pane': 'central_pane',
-          'add_button': 'add_button',
-          'remove_button': 'remove_button',
-          }
+            'dialog': 'backends_dialog',
+            'treeview_window': 'treeview_window',
+            'central_pane': 'central_pane',
+            'add_button': 'add_button',
+            'remove_button': 'remove_button',
+        }
         for attr, widget in widgets.iteritems():
             setattr(self, attr, builder.get_object(widget))
 
@@ -190,11 +190,12 @@ class BackendsDialog(object):
         @param builder: a Gtk.Builder
         '''
         signals = {
-         'on_add_button_clicked': self.on_add_button,
-         'on_BackendsDialog_delete_event': self.on_close,
-         'on_close_button_clicked': self.on_close,
-         'on_remove_button_clicked': self.on_remove_button,
-         'on_help_button_clicked': lambda w: openurl("help:gtg/gtg-add-sync"),
+            'on_add_button_clicked': self.on_add_button,
+            'on_BackendsDialog_delete_event': self.on_close,
+            'on_close_button_clicked': self.on_close,
+            'on_remove_button_clicked': self.on_remove_button,
+            'on_help_button_clicked': lambda w:
+            openurl("help:gtg/gtg-add-sync"),
         }
         builder.connect_signals(signals)
 
@@ -239,8 +240,7 @@ class BackendsDialog(object):
             backend = self.req.get_backend(backend_id)
             self.remove_button.set_sensitive(not backend.is_default())
 
-    # pylint: disable-msg=W0613
-    def on_add_button(self, widget = None, data = None):
+    def on_add_button(self, widget=None, data=None):
         '''
         When the add button is pressed, the add panel is shown
 
@@ -258,12 +258,12 @@ class BackendsDialog(object):
         @param backend_name: the name of the type of the backend to add
                              (identified as BACKEND_NAME in the Backend class)
         '''
-        #Create Backend
+        # Create Backend
         backend_dic = BackendFactory().get_new_backend_dict(backend_name)
         if backend_dic:
             backend_dic[GenericBackend.KEY_ENABLED] = False
             self.req.register_backend(backend_dic)
-        #Restore UI
+        # Restore UI
         self._show_panel("configuration")
 
     def show_config_for_backend(self, backend_id):
@@ -274,29 +274,27 @@ class BackendsDialog(object):
         '''
         self.backends_tv.select_backend(backend_id)
 
-    # pylint: disable-msg=W0613
-    def on_remove_button(self, widget = None, data = None):
+    def on_remove_button(self, widget=None, data=None):
         '''
         When the remove button is pressed, a confirmation dialog is shown,
         and if the answer is positive, the backend is deleted.
         '''
         backend_id = self.backends_tv.get_selected_backend_id()
-        if backend_id == None:
-            #no backend selected
+        if backend_id is None:
+            # no backend selected
             return
         backend = self.req.get_backend(backend_id)
-        dialog = Gtk.MessageDialog( \
-                    parent = self.dialog,
-                    flags = Gtk.DialogFlags.DESTROY_WITH_PARENT,
-                    type = Gtk.MessageType.QUESTION,
-                    buttons = Gtk.ButtonsType.YES_NO,
-                    message_format = \
-                     _("Do you really want to remove the '%s' "
-                       "synchronization service?") % \
-                            backend.get_human_name())
+        dialog = Gtk.MessageDialog(
+            parent=self.dialog,
+            flags=Gtk.DialogFlags.DESTROY_WITH_PARENT,
+            type=Gtk.MessageType.QUESTION,
+            buttons=Gtk.ButtonsType.YES_NO,
+            message_format=_("Do you really want to remove the '%s' "
+                             "synchronization service?") %
+            backend.get_human_name())
         response = dialog.run()
         dialog.destroy()
         if response == Gtk.ResponseType.YES:
-            #delete the backend and remove it from the lateral treeview
+            # delete the backend and remove it from the lateral treeview
             self.req.remove_backend(backend_id)
             self.backends_tv.remove_backend(backend_id)

@@ -41,5 +41,5 @@ class GnomeConfig:
     SUBTASK_TOOLTIP = _("Insert a subtask in this task")
     TAG_TOOLTIP = _("Insert a tag in this task")
 
-    #Number of second between to save in the task editor
+    # Number of second between to save in the task editor
     SAVETIME = 7

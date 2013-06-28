@@ -19,7 +19,7 @@
 
 #=== IMPORT ===================================================================
 
-#system imports
+# system imports
 from gi.repository import GObject, GLib, Gtk, Gdk
 import cairo
 from GTG.tools.logger import Log
@@ -29,13 +29,13 @@ from GTG.tools.logger import Log
 class CellRendererTags(Gtk.CellRenderer):
     __gproperties__ = {
         'tag_list': (GObject.TYPE_PYOBJECT,
-            "Tag list", "A list of tags", GObject.PARAM_READWRITE),
+                     "Tag list", "A list of tags", GObject.PARAM_READWRITE),
         'tag': (GObject.TYPE_PYOBJECT, "Tag",
-             "Tag", GObject.PARAM_READWRITE),
+                "Tag", GObject.PARAM_READWRITE),
     }
 
     # Private methods
-    def __roundedrec(self, context, x, y, w, h, r = 10):
+    def __roundedrec(self, context, x, y, w, h, r=10):
         "Draw a rounded rectangle"
         #   A****BQ
         #  H      C
@@ -43,29 +43,31 @@ class CellRendererTags(Gtk.CellRenderer):
         #  G      D
         #   F****E
 
-        context.move_to(x+r, y)                          # Move to A
-        context.line_to(x+w-r, y)                        # Straight line to B
+        context.move_to(x + r, y)                          # Move to A
+        context.line_to(
+            x + w - r, y)                        # Straight line to B
         # Curve to C, Control points are both at Q
-        context.curve_to(x+w, y, x+w, y, x+w, y+r)
-        context.line_to(x+w, y+h-r)                      # Move to D
-        context.curve_to(x+w, y+h, x+w, y+h, x+w-r, y+h) # Curve to E
-        context.line_to(x+r, y+h)                        # Line to F
-        context.curve_to(x, y+h, x, y+h, x, y+h-r)       # Curve to G
-        context.line_to(x, y+r)                          # Line to H
-        context.curve_to(x, y, x, y, x+r, y)             # Curve to A
+        context.curve_to(x + w, y, x + w, y, x + w, y + r)
+        context.line_to(x + w, y + h - r)                      # Move to D
+        context.curve_to(
+            x + w, y + h, x + w, y + h, x + w - r, y + h)  # Curve to E
+        context.line_to(x + r, y + h)                        # Line to F
+        context.curve_to(x, y + h, x, y + h, x, y + h - r)       # Curve to G
+        context.line_to(x, y + r)                          # Line to H
+        context.curve_to(x, y, x, y, x + r, y)             # Curve to A
         return
 
     def __count_viewable_tags(self):
 
         count = 0
 
-        if self.tag_list != None:
+        if self.tag_list is not None:
             for my_tag in self.tag_list:
                 my_tag_color = my_tag.get_attribute("color")
                 my_tag_icon = my_tag.get_attribute("icon")
                 if my_tag_color or my_tag_icon:
                     count = count + 1
-        elif self.tag != None:
+        elif self.tag is not None:
             count = 1
         else:
             count = 0
@@ -73,7 +75,7 @@ class CellRendererTags(Gtk.CellRenderer):
         return count
 
     # Class methods
-    def __init__(self): #pylint: disable-msg=W0231
+    def __init__(self):
         Gtk.CellRenderer.__init__(self)
         self.tag_list = None
         self.tag = None
@@ -99,9 +101,9 @@ class CellRendererTags(Gtk.CellRenderer):
         count = 0
 
         # Select source
-        if self.tag_list != None:
+        if self.tag_list is not None:
             tags = self.tag_list
-        elif self.tag != None:
+        elif self.tag is not None:
             tags = [self.tag]
         else:
             return
@@ -115,8 +117,9 @@ class CellRendererTags(Gtk.CellRenderer):
         # Coordinates of the origin point
         x_align = self.get_property("xalign")
         y_align = self.get_property("yalign")
-        orig_x = cell_area.x + int((cell_area.width - 16*vw_tags - \
-            self.PADDING*2*(vw_tags-1)) * x_align)
+        padding = self.PADDING
+        orig_x = cell_area.x + int((cell_area.width - 16 * vw_tags -
+                                    padding * 2 * (vw_tags - 1)) * x_align)
         orig_y = cell_area.y + int((cell_area.height - 16) * y_align)
 
         # We draw the icons & squares
@@ -125,17 +128,15 @@ class CellRendererTags(Gtk.CellRenderer):
             my_tag_icon = my_tag.get_attribute("icon")
             my_tag_color = my_tag.get_attribute("color")
 
-            rect_x = orig_x + self.PADDING*2*count + 16*count
+            rect_x = orig_x + self.PADDING * 2 * count + 16 * count
             rect_y = orig_y
 
             if my_tag_icon:
                 try:
                     pixbuf = Gtk.IconTheme.get_default().load_icon(
-                                    my_tag_icon, 16, 0)
+                        my_tag_icon, 16, 0)
                     Gdk.cairo_set_source_pixbuf(gdkcontext, pixbuf,
                         rect_x, rect_y)
-                    #Gdk.cairo_set_source_pixbuf(gdkcontext,
-                    #pixbuf, rect_x, rect_y)
                     gdkcontext.paint()
                     count = count + 1
                 except GLib.GError:
@@ -159,7 +160,7 @@ class CellRendererTags(Gtk.CellRenderer):
                 self.__roundedrec(gdkcontext, rect_x, rect_y, 16, 16, 8)
                 gdkcontext.stroke()
 
-        if self.tag and my_tag: #pylint: disable-msg=W0631
+        if self.tag and my_tag:
 
             my_tag_icon = my_tag.get_attribute("icon")
             my_tag_color = my_tag.get_attribute("color")
@@ -177,14 +178,14 @@ class CellRendererTags(Gtk.CellRenderer):
                 self.__roundedrec(gdkcontext, rect_x, rect_y, 16, 16, 8)
                 gdkcontext.stroke()
 
-    def do_get_size(self, widget, cell_area=None): #pylint: disable-msg=W0613
+    def do_get_size(self, widget, cell_area=None):
         count = self.__count_viewable_tags()
 
         if count != 0:
             return (self.xpad, self.ypad,
-                self.xpad*2 + 16*count + 2*count*self.PADDING,
-                16 + 2*self.ypad)
+                    self.xpad * 2 + 16 * count + 2 * count * self.PADDING,
+                    16 + 2 * self.ypad)
         else:
-            return (self.xpad, self.ypad, self.xpad*2, self.ypad*2)
+            return (self.xpad, self.ypad, self.xpad * 2, self.ypad * 2)
 
 GObject.type_register(CellRendererTags)

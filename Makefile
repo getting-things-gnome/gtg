@@ -16,8 +16,11 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
+
+check: tests pep8 pyflakes
+
 # Run all of the tests.
-check:
+tests:
 	./run-tests
 
 # Get rid of stale files or files made during testing.
@@ -34,14 +37,7 @@ pyflakes:
 
 # Check for coding standard violations.
 pep8:
-	(echo gtg; echo gtcli;  echo gtg_new_task ; find . -name '*.py' -print ) | \
-	xargs ./scripts/pep8.py --repeat
-	(echo gtg; echo gtcli;  echo gtg_new_task ; find . -name '*.py' -print ) | \
-	xargs ./scripts/pep8.py --repeat | wc -l
-
-# Pylint code
-pylint:
-	pylint gtg gtcli gtg_new_task GTG
+	pep8 --statistics --count gtg gtcli gtg_new_task GTG
 
 # Build API documentation.
 apidocs:
@@ -56,9 +52,6 @@ edit-apidocs:
 		--server --edit
 
 # Check for coding standard violations & flakes.
-lint: pyflakes pep8 pylint
+lint: pyflakes pep8
 
-.PHONY: check lint pyflakes pep8 apidocs edit-apidocs clean
-
-# Ignore the exit code in pyflakes, so that pep8 is always run when "make lint"
-.IGNORE: pyflakes
+.PHONY: tests check lint pyflakes pep8 apidocs edit-apidocs clean

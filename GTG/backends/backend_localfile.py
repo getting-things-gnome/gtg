@@ -26,62 +26,53 @@ wants to write a backend.
 '''
 
 import os
-import uuid
 
-from GTG                         import _
+from GTG import _
 from GTG.backends.genericbackend import GenericBackend
-from GTG.core                    import CoreConfig
-from GTG.tools                   import cleanxml, taskxml
-from GTG.tools.logger            import Log
+from GTG.core import CoreConfig
+from GTG.tools import cleanxml, taskxml
 
 # Ignore all other elements but this one
 TASK_NODE = "task"
+
 
 class Backend(GenericBackend):
     """
     Localfile backend, which stores your tasks in a XML file in the standard
     XDG_DATA_DIR/gtg folder (the path is configurable).
     An instance of this class is used as the default backend for GTG.
-    This backend loads all the tasks stored in the localfile after it's enabled,
+    This backend loads all the tasks stored in the localfile after it's enabled
     and from that point on just writes the changes to the file: it does not
     listen for eventual file changes
     """
-    
-    # default path for filenames
-    DEFAULT_PATH = CoreConfig().get_data_dir() 
 
-    # General description of the backend: these are used to show a description of
-    # the backend to the user when s/he is considering adding it.
+    # General description of the backend: these are used to show a description
+    # of the backend to the user when s/he is considering adding it.
     # BACKEND_NAME is the name of the backend used internally (it must be
     # unique).
     # Please note that BACKEND_NAME and BACKEND_ICON_NAME should *not* be
     # translated.
     _general_description = {
-        GenericBackend.BACKEND_NAME:       "backend_localfile",
+        GenericBackend.BACKEND_NAME: "backend_localfile",
         GenericBackend.BACKEND_HUMAN_NAME: _("Local File"),
-        GenericBackend.BACKEND_AUTHORS:    ["Lionel Dricot",
-                                            "Luca Invernizzi"],
-        GenericBackend.BACKEND_TYPE:       GenericBackend.TYPE_READWRITE,
+        GenericBackend.BACKEND_AUTHORS: ["Lionel Dricot",
+                                         "Luca Invernizzi"],
+        GenericBackend.BACKEND_TYPE: GenericBackend.TYPE_READWRITE,
         GenericBackend.BACKEND_DESCRIPTION:
-            _("Your tasks are saved in a text file (XML format). " +
-              " This is the most basic and the default way " +
-              "for GTG to save your tasks."),
+        _("Your tasks are saved in a text file (XML format). " +
+          " This is the most basic and the default way " +
+          "for GTG to save your tasks."),
     }
 
     # These are the parameters to configure a new backend of this type. A
     # parameter has a name, a type and a default value.
     # Here, we define a parameter "path", which is a string, and has a default
     # value as a random file in the default path
-    # NOTE: to keep this simple, the filename default path is the same until GTG
-    #      is restarted. I consider this a minor annoyance, and we can avoid
-    #      coding the change of the path each time a backend is
-    #      created (invernizzi)
     _static_parameters = {
         "path": {
             GenericBackend.PARAM_TYPE: GenericBackend.TYPE_STRING,
             GenericBackend.PARAM_DEFAULT_VALUE:
-                 os.path.join(DEFAULT_PATH, "gtg_tasks-%s.xml" %(uuid.uuid4()))
-    }}
+            "gtg_tasks.xml"}}
 
     def __init__(self, parameters):
         """
@@ -90,32 +81,42 @@ class Backend(GenericBackend):
         @param parameters: A dictionary of parameters, generated from
         _static_parameters. A few parameters are added to those, the list of
         these is in the "DefaultBackend" class, look for the KEY_* constants.
-    
+
         The backend should take care if one expected value is None or
         does not exist in the dictionary.
         """
         super(Backend, self).__init__(parameters)
-        #####RETROCOMPATIBILIY
-        #NOTE: retrocompatibility from the 0.2 series to 0.3.
+        # RETROCOMPATIBILIY
+        # NOTE: retrocompatibility from the 0.2 series to 0.3.
         # We convert "filename" to "path and we forget about "filename "
         if "need_conversion" in parameters:
-            parameters["path"] = os.path.join(self.DEFAULT_PATH, \
-                                        parameters["need_conversion"])
-            del parameters["need_conversion"]
+            parameters["path"] = parameters.pop("need_conversion")
         if not self.KEY_DEFAULT_BACKEND in parameters:
             parameters[self.KEY_DEFAULT_BACKEND] = True
-        ####
-        
-        self.doc, self.xmlproj = cleanxml.openxmlfile( \
-                                self._parameters["path"], "project")
+
+        self.doc, self.xmlproj = cleanxml.openxmlfile(
+            self.get_path(), "project")
         # Make safety daily backup after loading
-        cleanxml.savexml(self._parameters["path"], self.doc, backup=True)
+        cleanxml.savexml(self.get_path(), self.doc, backup=True)
+
+    def get_path(self):
+        """
+        Return the current path to XML
+
+        Path can be relative to projects.xml
+        """
+        path = self._parameters["path"]
+        if os.sep not in path:
+            # Local path
+            data_dir = CoreConfig().get_data_dir()
+            path = os.path.join(data_dir, path)
+        return os.path.abspath(path)
 
     def initialize(self):
         """ This is called when a backend is enabled """
         super(Backend, self).initialize()
-        self.doc, self.xmlproj = cleanxml.openxmlfile( \
-                                self._parameters["path"], "project")
+        self.doc, self.xmlproj = cleanxml.openxmlfile(
+            self.get_path(), "project")
 
     def this_is_the_first_run(self, xml):
         """ Called upon the very first GTG startup.
@@ -126,14 +127,14 @@ class Backend(GenericBackend):
         @param xml: an xml object containing the default tasks.
         """
         self._parameters[self.KEY_DEFAULT_BACKEND] = True
-        cleanxml.savexml(self._parameters["path"], xml)
-        self.doc, self.xmlproj = cleanxml.openxmlfile(\
-                        self._parameters["path"], "project")
+        cleanxml.savexml(self.get_path(), xml)
+        self.doc, self.xmlproj = cleanxml.openxmlfile(
+            self.get_path(), "project")
 
     def start_get_tasks(self):
-        """ This function starts submitting the tasks from the XML file into GTG core.
-        It's run as a separate thread.
-                
+        """ This function starts submitting the tasks from the XML file into
+        GTG core. It's run as a separate thread.
+
         @return: start_get_tasks() might not return or finish
         """
         for node in self.xmlproj.childNodes:
@@ -156,35 +157,35 @@ class Backend(GenericBackend):
         @param task: the task object to save
         """
         tid = task.get_id()
-        #We create an XML representation of the task
+        # We create an XML representation of the task
         t_xml = taskxml.task_to_xml(self.doc, task)
 
-        #we find if the task exists in the XML treenode.
+        # we find if the task exists in the XML treenode.
         existing = None
         for node in self.xmlproj.childNodes:
             if node.nodeName == TASK_NODE and node.getAttribute("id") == tid:
                 existing = node
 
         modified = False
-        #We then replace the existing node
+        # We then replace the existing node
         if existing and t_xml:
-            #We will write only if the task has changed
+            # We will write only if the task has changed
             if t_xml.toxml() != existing.toxml():
                 self.xmlproj.replaceChild(t_xml, existing)
                 modified = True
-        #If the node doesn't exist, we create it
+        # If the node doesn't exist, we create it
         else:
             self.xmlproj.appendChild(t_xml)
             modified = True
 
-        #if the XML object has changed, we save it to file
-        if modified and self._parameters["path"] and self.doc :
-            cleanxml.savexml(self._parameters["path"], self.doc)
+        # if the XML object has changed, we save it to file
+        if modified and self._parameters["path"] and self.doc:
+            cleanxml.savexml(self.get_path(), self.doc)
 
     def remove_task(self, tid):
         """ This function is called from GTG core whenever a task must be
         removed from the backend. Note that the task could be not present here.
-        
+
         @param tid: the id of the task to delete
         """
         modified = False
@@ -193,6 +194,6 @@ class Backend(GenericBackend):
                 modified = True
                 self.xmlproj.removeChild(node)
 
-        #We save the XML file only if it's necessary
+        # We save the XML file only if it's necessary
         if modified:
-            cleanxml.savexml(self._parameters["path"], self.doc, backup=True)
+            cleanxml.savexml(self.get_path(), self.doc, backup=True)

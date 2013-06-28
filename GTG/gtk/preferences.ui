@@ -56,6 +56,40 @@
                                 <property name="position">0</property>
                               </packing>
                             </child>
+                            <child>
+                              <object class="GtkBox" id="hbox1">
+                                <property name="height_request">21</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="spacing">2</property>
+                                <child>
+                                  <object class="GtkCheckButton" id="shortcut_button">
+                                    <property name="label" translatable="yes">New Task Shortcut :</property>
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">True</property>
+                                    <property name="receives_default">False</property>
+                                    <property name="use_action_appearance">False</property>
+                                    <property name="relief">none</property>
+                                    <property name="draw_indicator">True</property>
+                                    <signal name="toggled" handler="on_shortcut_button_toggled" swapped="no"/>
+                                  </object>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="fill">True</property>
+                                    <property name="position">0</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <placeholder/>
+                                </child>
+                              </object>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">True</property>
+                                <property name="padding">3</property>
+                                <property name="position">1</property>
+                              </packing>
+                            </child>
                           </object>
                         </child>
                       </object>
@@ -65,7 +99,7 @@
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="ypad">5</property>
-                        <property name="label" translatable="yes">&lt;b&gt;Startup&lt;/b&gt;</property>
+                        <property name="label" translatable="yes">&lt;b&gt;System&lt;/b&gt;</property>
                         <property name="use_markup">True</property>
                       </object>
                     </child>

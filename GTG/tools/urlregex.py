@@ -32,16 +32,16 @@ SUBST_DICT = {
     "pre": ur'(?:[^/"\':!=]|^|\:)',
     "domain": ur'([\.-]|[^\s_\!\.\/])+\.[a-z]{2,}(?::[0-9]+)?',
     "path": ur'(?:[\.,]?[%s!\*\'\(\);:&=\+\$/%s#\[\]\-_,~@])' % (
-                                                        UTF_CHARS, '%'),
+    UTF_CHARS, '%'),
     "query": ur'[a-z0-9!\*\'\(\);:&=\+\$/%#\[\]\-_\.,~]',
     # Valid end-of-path characters (so /foo. does not gobble the period).
     "path_end": r'[%s\)=#/]' % UTF_CHARS,
     "query_end": '[a-z0-9_&=#]',
 }
 
-HTTP_URI= '((%(pre)s)((https?://|www\\.)(%(domain)s)(\/%(path)s*' \
-          '%(path_end)s?)?(\?%(query)s*%(query_end)s)?))' % SUBST_DICT
-FILE_URI='(file:///(%(path)s*%(path_end)s?)?)' % SUBST_DICT
+HTTP_URI = '((%(pre)s)((https?://|www\\.)(%(domain)s)(\/%(path)s*' \
+    '%(path_end)s?)?(\?%(query)s*%(query_end)s)?))' % SUBST_DICT
+FILE_URI = '(file:///(%(path)s*%(path_end)s?)?)' % SUBST_DICT
 
 URL_REGEX = re.compile('%s|%s' % (HTTP_URI, FILE_URI), re.IGNORECASE)
 

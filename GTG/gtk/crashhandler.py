@@ -52,11 +52,11 @@ else:
 from gettext import gettext as _
 
 APP_NAME = None
-MESSAGE = _("We're terribly sorry. Could you help us fix the problem by " \
-          "reporting the crash?")
+MESSAGE = _("We're terribly sorry. Could you help us fix the problem by "
+            "reporting the crash?")
 USE_APPORT = False
 
-_old_sys_excepthook = None # None means that initialize() has not been called
+_old_sys_excepthook = None  # None means that initialize() has not been called
                            # yet.
 
 dialog = None
@@ -82,7 +82,7 @@ def initialize(app_name=None, message=None, use_apport=False):
         MESSAGE = _(message)
     if use_apport:
         USE_APPORT = use_apport
-    if _gtk_initialized == True and _old_sys_excepthook is None:
+    if _gtk_initialized is True and _old_sys_excepthook is None:
         # save sys.excepthook first, as it may not be sys.__excepthook__
         # (for example, it might be Apport's python hook)
         _old_sys_excepthook = sys.excepthook
@@ -108,7 +108,7 @@ def _replacement_excepthook(type, value, tracebk, thread=None):
             from apport.fileutils import likely_packaged
             try:
                 filename = os.path.realpath(os.path.join(os.getcwdu(),
-                    sys.argv[0]))
+                                                         sys.argv[0]))
             except:
                 filename = os.path.realpath("/proc/%i/exe" % os.getpid())
             if not os.path.isfile(filename) or \
@@ -120,7 +120,7 @@ def _replacement_excepthook(type, value, tracebk, thread=None):
 
     res = show_error_window(tb, add_apport_button=add_apport_button)
 
-    if res == 3: # report button clicked
+    if res == 3:  # report button clicked
         # enable apport, overriding preferences
         try:
             # create new temporary configuration file, where enabled=1
@@ -147,7 +147,7 @@ def _replacement_excepthook(type, value, tracebk, thread=None):
         except:
             pass
 
-    if res in (2, 3): # quit
+    if res in (2, 3):  # quit
         sys.stderr = os.tmpfile()
         global _old_sys_excepthook
         _old_sys_excepthook(type, value, tracebk)
@@ -175,7 +175,6 @@ def show_error_window(error_string, add_apport_button=False):
         return 1
 
     dialog = Gtk.Dialog(title)
-
 
     # title Label
     label = Gtk.Label()
@@ -282,9 +281,9 @@ def gtkcrashhandler_thread(run):
                 GObject.idle_add(
                     lambda ee=ee, tb=tb, thread=threading.currentThread():
                     _replacement_excepthook(ee.__class__, ee, tb,
-                                                            thread=thread))
+                                            thread=thread))
             else:
-                time.sleep(0.1) # ugly hack, seems like threads that are
+                time.sleep(0.1)  # ugly hack, seems like threads that are
                                 # started before running Gtk.main() cause
                                 # this one to crash.
                                 # This delay allows Gtk.main() to initialize
@@ -305,9 +304,9 @@ def gtkcrashhandler_thread(run):
 if __name__ == "__main__":
     # throw test exception
     initialize(app_name="gtkcrashhandler", message="Don't worry, though. This "
-        "is just a test. To use the code properly, call "
-        "gtkcrashhandler.initialize() in your GTK app to automatically "
-        "catch any Python exceptions like this.")
+               "is just a test. To use the code properly, call "
+               "gtkcrashhandler.initialize() in your GTK app to "
+               "automatically catch any Python exceptions like this.")
 
     class DoNotRunException(Exception):
 
@@ -324,14 +323,14 @@ if __name__ == "__main__":
 
 @contextmanager
 def signal_catcher(callback):
-    #if TERM or ABORT are caught, we execute the callback function
+    # if TERM or ABORT are caught, we execute the callback function
     for s in [signal.SIGABRT, signal.SIGTERM]:
         signal.signal(s, lambda a, b: callback())
     yield
 
-initialize(app_name = "Getting Things GNOME!",
-           message = "GTG" + info.VERSION +
+initialize(app_name="Getting Things GNOME!",
+           message="GTG" + info.VERSION +
            _(" has crashed. Please report the bug on <a href=\""
            "http://bugs.edge.launchpad.net/gtg\">our Launchpad page</a>."
              " If you have Apport installed, it will be started for you."),
-          use_apport = True)
+           use_apport=True)

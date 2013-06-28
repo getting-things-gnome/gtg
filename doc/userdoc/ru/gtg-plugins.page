@@ -1,0 +1,60 @@
+<page xmlns="http://projectmallard.org/1.0/" type="topic" style="task" id="gtg-plugins" xml:lang="ru">
+
+<info>
+  <link type="guide" xref="index#gtg-plugins"/>
+  <link type="seealso" xref="gtg-add-plugin"/>
+  <link type="seealso" xref="gtg-remove-plugin"/>
+  <revision pkgversion="0.1" version="0.1" date="2012-07-03" status="candidate"/>
+  <credit type="author">
+    <name>Radina Matic</name>
+    <email>radina.matic@gmail.com</email>
+  </credit>
+<mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator">
+  <mal:name>Dmitry Drozdov</mal:name>
+</mal:credit>
+</info>
+
+<title>Дополнения</title>
+
+<p>Дополнения <app>GTG</app> расширяют функциональность программы. Они дают новые возможности <app>GTG</app> и изменяют его работу.</p>
+
+<p>Чтобы включить или отключить дополнения GTG выполните команду главного меню <guiseq><gui>Правка</gui><gui>Настройки</gui><gui>Дополнения</gui></guiseq> и установите нужные галочки.</p>
+
+<note style="tip">
+<p>Порой для активации дополнения не хватает каких-то пакетов-зависимостей. <app>GTG</app> старается показать весь список зависимостей для дополнений в их описании, поэтому Вы можете сначала установить необходимые пакеты, а потом активировать дополнение.</p>
+</note>
+
+<p>Список доступных дополнений <app>GTG</app>:</p>
+
+<p><em>Tomboy/Gnote</em></p>
+<p>Это дополнение позволяет делать ссылки на заметки <app>Tomboy</app> или <app>Gnote</app> прямо в задачах, или создавать новые заметки прямо в Tomboy/Gnote из <app>GTG</app>.</p>
+
+<p><em>Notification area</em></p>
+<p>Добавляет иконку GTG в область сообщений. Иконка показывает список задач из рабочего плана.</p>
+
+<p><em>Удаление закрытых задач</em></p>
+<p>Это дополнение удаляет задачи, которые были закрыты раньше указанной даты.</p>
+
+<p><em>Послать задачу по e-mail</em></p>
+<p>Добавляет кнопку на инструментальную панель, которая позволяет легко послать задачу (с ее статусом, датой окончания, метками и подзадачами) по электронной почте.</p>
+
+<p><em>Bugzilla</em></p>
+<p>Позволяет установить связь с записью в Bugzilla (система фиксации ошибок). Сейчас эту возможность поддерживают только системы Bugzilla, проектов GNOME, Mozilla и Freedesktop.org.</p>
+
+<p><em>Экспорт и печать</em></p>
+<p>Экспортирует задачи из текущего списка в различных форматах.</p>
+
+<p><em>Интеграция с Hamster Time Tracker</em></p>
+<p>Дает возможность посылать задачи в  Hamster time tracking.</p>
+
+<p><em>Цвета срочности (Urgency Color)</em></p>
+<p>Добавляет цветовые метки задачам на основе дат начала работы и завершения задач.</p>
+
+<figure>
+<title>Дополнения GTG</title>
+<desc> </desc>
+<media type="image" mime="image/png" src="figures/plugins.png"/>
+</figure>
+
+</page>
+

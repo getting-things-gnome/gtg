@@ -84,17 +84,17 @@ from GTG.tools.dates import Date
 # Generate keywords and their possible translations
 # They must be listed because of gettext
 KEYWORDS = {
-  "not": _("not"),
-  "or": _("or"),
-  "after": _("after"),
-  "before": _("before"),
-  "today": _("today"),
-  "tomorrow": _("tomorrow"),
-  "nodate": _("nodate"),
-  "now": _("now"),
-  "soon": _("soon"),
-  "someday": _("someday"),
-  "notag": _("notag"),
+    "not": _("not"),
+    "or": _("or"),
+    "after": _("after"),
+    "before": _("before"),
+    "today": _("today"),
+    "tomorrow": _("tomorrow"),
+    "nodate": _("nodate"),
+    "now": _("now"),
+    "soon": _("soon"),
+    "someday": _("someday"),
+    "notag": _("notag"),
 }
 
 # transform keywords and their translations into a list of possible commands
@@ -149,7 +149,7 @@ def _tokenize_query(query):
             yield token_type, token_value
     if pos != len(query):
         raise InvalidQuery('tokenizer stopped at pos %r of %r left of "%s"' % (
-            pos, len(query), query[pos:pos+10]))
+            pos, len(query), query[pos:pos + 10]))
 
 
 def parse_search_query(query):
@@ -174,7 +174,7 @@ def parse_search_query(query):
         if require_date:
             if token not in ['date', 'word', 'literal']:
                 raise InvalidQuery("Unexpected token '%s' after '%s'" % (
-                            token, require_date))
+                    token, require_date))
 
             value = value.strip('"')
             try:
@@ -200,7 +200,7 @@ def parse_search_query(query):
                         raise InvalidQuery("!or cann't follow !not")
 
                     if commands == []:
-                        raise InvalidQuery( \
+                        raise InvalidQuery(
                             "Or is not allowed at the beginning of query")
 
                     if commands[-1][0] != "or":
@@ -292,6 +292,5 @@ def search_filter(task, parameters=None):
                 return False
 
         return True
-
 
     return check_commands(parameters['q'])

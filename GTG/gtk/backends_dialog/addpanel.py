@@ -20,8 +20,8 @@
 from gi.repository import Gtk
 
 from GTG.gtk.backends_dialog.backendscombo import BackendsCombo
-from GTG.backends                          import BackendFactory
-from GTG                                   import _, ngettext
+from GTG.backends import BackendFactory
+from GTG import _, ngettext
 
 
 class AddPanel(Gtk.Box):
@@ -44,7 +44,7 @@ class AddPanel(Gtk.Box):
         '''
         gtk widgets initialization
         '''
-        #Division of the available space in three segments:
+        # Division of the available space in three segments:
         # top, middle and bottom.
         top = Gtk.Box()
         top.set_spacing(6)
@@ -82,18 +82,18 @@ class AddPanel(Gtk.Box):
         @param box: the Gtk.Box to fill
         '''
         self.label_name = Gtk.Label(label="name")
-        self.label_name.set_alignment(xalign = 0.5, yalign = 1)
+        self.label_name.set_alignment(xalign=0.5, yalign=1)
         self.label_description = Gtk.Label()
         self.label_description.set_justify(Gtk.Justification.FILL)
         self.label_description.set_line_wrap(True)
         self.label_description.set_size_request(300, -1)
-        self.label_description.set_alignment(xalign = 0, yalign = 0.5)
+        self.label_description.set_alignment(xalign=0, yalign=0.5)
         self.label_author = Gtk.Label(label="")
         self.label_author.set_line_wrap(True)
-        self.label_author.set_alignment(xalign = 0, yalign = 0)
+        self.label_author.set_alignment(xalign=0, yalign=0)
         self.label_modules = Gtk.Label(label="")
         self.label_modules.set_line_wrap(True)
-        self.label_modules.set_alignment(xalign = 0, yalign = 0)
+        self.label_modules.set_alignment(xalign=0, yalign=0)
         self.image_icon = Gtk.Image()
         self.image_icon.set_size_request(128, 128)
         align_image = Gtk.Alignment.new(1, 0, 0, 0)
@@ -117,9 +117,9 @@ class AddPanel(Gtk.Box):
 
         @param box: the Gtk.Box to fill
         '''
-        cancel_button = Gtk.Button(stock = Gtk.STOCK_CANCEL)
+        cancel_button = Gtk.Button(stock=Gtk.STOCK_CANCEL)
         cancel_button.connect('clicked', self.on_cancel)
-        self.ok_button = Gtk.Button(stock = Gtk.STOCK_OK)
+        self.ok_button = Gtk.Button(stock=Gtk.STOCK_OK)
         self.ok_button.connect('clicked', self.on_confirm)
         align = Gtk.Alignment.new(0.5, 1, 1, 0)
         align.set_padding(0, 10, 0, 0)
@@ -135,7 +135,7 @@ class AddPanel(Gtk.Box):
         '''Populates the combo box containing the available backends'''
         self.combo_types.refresh()
 
-    def on_confirm(self, widget = None):
+    def on_confirm(self, widget=None):
         '''
         Notifies the dialog holding this Box that a backend has been
         chosen
@@ -146,7 +146,7 @@ class AddPanel(Gtk.Box):
         backend_name = self.combo_types.get_selected()
         self.dialog.on_backend_added(backend_name)
 
-    def on_cancel(self, widget = None):
+    def on_cancel(self, widget=None):
         '''
         Aborts the addition of a new backend. Shows the configuration panel
         previously loaded.
@@ -156,7 +156,7 @@ class AddPanel(Gtk.Box):
         '''
         self.dialog.show_config_for_backend(None)
 
-    def on_combo_changed(self, widget = None):
+    def on_combo_changed(self, widget=None):
         '''
         Updates the backend description and icon.
 
@@ -164,19 +164,18 @@ class AddPanel(Gtk.Box):
                        Not used.
         '''
         backend_name = self.combo_types.get_selected()
-        if backend_name == None:
+        if backend_name is None:
             return
         backend = BackendFactory().get_backend(backend_name)
         self.label_description.set_markup(backend.Backend.get_description())
 
-        label = _('Syncing is <span color="red">disabled</span>')
         markup = '<big><big><big><b>%s</b></big></big></big>' % \
-                                backend.Backend.get_human_default_name()
+            backend.Backend.get_human_default_name()
         self.label_name.set_markup(markup)
         authors = backend.Backend.get_authors()
         author_txt = '<b>%s</b>:\n   - %s' % \
-                (ngettext("Author", "Authors", len(authors)),
-                 reduce(lambda a, b: a + "\n" + "   - " + b, authors))
+            (ngettext("Author", "Authors", len(authors)),
+             reduce(lambda a, b: a + "\n" + "   - " + b, authors))
         self.label_author.set_markup(author_txt)
         pixbuf = self.dialog.get_pixbuf_from_icon_name(backend_name, 128)
         self.image_icon.set_from_pixbuf(pixbuf)

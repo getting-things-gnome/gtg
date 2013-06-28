@@ -25,24 +25,24 @@ import xml.dom.minidom
 
 ########### Serializing functions ##############
 ### Serialize the task : transform it's content in something
-#we can store. This function signature is defined in PyGTK
+# we can store. This function signature is defined in PyGTK
 
 class Serializer(object):
-    #Disabling pylint argument usage since we know we are not using all args
+    # Disabling pylint argument usage since we know we are not using all args
     def serialize(self, register_buf, content_buf, start, end, length, udata):
-        #Currently we serialize in XML
+        # Currently we serialize in XML
         its = start.copy()
         ite = end.copy()
-        #Warning : the serialization process cannot be allowed to modify
-        #the content of the buffer.
+        # Warning : the serialization process cannot be allowed to modify
+        # the content of the buffer.
         doc = xml.dom.minidom.Document()
         parent = doc.createElement("content")
         doc.appendChild(self.parse_buffer(content_buf, its, ite, parent, doc))
-        #We don't want the whole doc with the XML declaration
-        #we only take the first node (the "content" one)
-        node = doc.firstChild #pylint: disable-msg=E1101
-        #print "********************"
-        #print node.toxml().encode("utf-8")
+        # We don't want the whole doc with the XML declaration
+        # we only take the first node (the "content" one)
+        node = doc.firstChild
+        # print "********************"
+        # print node.toxml().encode("utf-8")
         return node.toxml().encode("utf-8")
 
     def parse_buffer(self, buff, start, end, parent, doc, done=[]):
@@ -78,7 +78,7 @@ class Serializer(object):
                 tags = []
                 for ta in it.get_tags():
                     if it.begins_tag(ta) and ta not in done and \
-                                                is_know_tag(ta):
+                            is_know_tag(ta):
                         tags.append(ta)
                 if it.begins_tag() and len(tags) > 0:
                     # We enter in a tag context
@@ -98,14 +98,14 @@ class Serializer(object):
                     end_it = it.copy()
                     end_it.backward_char()
                     if hasattr(tag, 'is_tag'):
-                        #The current gtkTextTag is a tag
-                        #Recursive call
+                        # The current gtkTextTag is a tag
+                        # Recursive call
                         nparent = doc.createElement("tag")
                         child = self.parse_buffer(buff, start_it, end_it,
-                                                    nparent, doc, done=done)
+                                                  nparent, doc, done=done)
                         parent.appendChild(child)
                     elif hasattr(ta, 'is_subtask'):
-                        #The current gtkTextTag is a subtask
+                        # The current gtkTextTag is a subtask
                         tagname = "subtask"
                         subt = doc.createElement(tagname)
                         target = ta.get_data('child')
@@ -114,7 +114,7 @@ class Serializer(object):
                         parent.appendChild(doc.createTextNode("\n"))
                         it.forward_line()
                     elif hasattr(ta, 'is_indent'):
-                        #The current gtkTextTag is a indent
+                        # The current gtkTextTag is a indent
                         indent = buff.get_text(start_it, end_it, True)
                         if '\n' in indent:
                             parent.appendChild(doc.createTextNode('\n'))
@@ -128,14 +128,14 @@ class Serializer(object):
             else:
                 it.forward_char()
 
-        #Finishing with an \n before closing </content>
+        # Finishing with an \n before closing </content>
         if parent.localName == "content":
             last_val = parent.lastChild
-            #We add a \n only if needed (= we don't have a "\n" at the end)
+            # We add a \n only if needed (= we don't have a "\n" at the end)
             if last_val and last_val.nodeType == 3 and \
-                        last_val.nodeValue[-1] != '\n':
+                    last_val.nodeValue[-1] != '\n':
                 parent.appendChild(doc.createTextNode('\n'))
-        #This function concatenates all the adjacent text node of the XML
+        # This function concatenates all the adjacent text node of the XML
         parent.normalize()
         return parent
 
@@ -147,11 +147,11 @@ class Serializer(object):
 class Unserializer:
 
     def __init__(self, taskview):
-        #We keep a reference to the original taskview
-        #Not very pretty but convenient
+        # We keep a reference to the original taskview
+        # Not very pretty but convenient
         self.tv = taskview
 
-    #Disabling pylint argument usage since we know we are not using all args
+    # Disabling pylint argument usage since we know we are not using all args
     def unserialize(self, register_buf, content_buf, ite, length,
                     data, cr_tags, udata):
         if data:
@@ -161,9 +161,9 @@ class Unserializer:
             success = self.parsexml(content_buf, ite, None)
         return success
 
-    #Insert a list of subtasks at the end of the buffer
+    # Insert a list of subtasks at the end of the buffer
     def insert_subtasks(self, buff, st_list):
-        #If the lastline of the buffer is not empty, we add an extra \n
+        # If the lastline of the buffer is not empty, we add an extra \n
         end_end = buff.get_end_iter()
         end_line = end_end.get_line()
         start_end = buff.get_iter_at_line(end_line)
@@ -173,8 +173,8 @@ class Unserializer:
             self.tv.write_subtask(buff, end_line, tid)
             end_line += 1
 
-    #insert a GTG tag with its TextView tag.
-    #Yes, we know : the word tag is used for two different concepts here.
+    # insert a GTG tag with its TextView tag.
+    # Yes, we know : the word tag is used for two different concepts here.
     def insert_tag(self, buff, tag, itera=None):
         if not itera:
             itera = buff.get_end_iter()
@@ -184,7 +184,7 @@ class Unserializer:
             buff.insert(itera, tag)
             self.tv.apply_tag_tag(buff, tag, sm, em)
 
-    #parse the XML and put the content in the buffer
+    # parse the XML and put the content in the buffer
     def parsexml(self, buf, ite, element):
         start = buf.create_mark(None, ite, True)
         end = buf.create_mark(None, ite, False)
@@ -194,12 +194,12 @@ class Unserializer:
             for n in element.childNodes:
                 itera = buf.get_iter_at_mark(end)
                 if n.nodeType == n.ELEMENT_NODE:
-                    #print "<%s>" %n.nodeName
+                    # print "<%s>" %n.nodeName
                     if n.nodeName == "subtask":
                         tid = n.firstChild.nodeValue
-                        #We remove the added subtask from the list
-                        #Of known subtasks
-                        #If the subtask is not in the list, we don't write it
+                        # We remove the added subtask from the list
+                        # Of known subtasks
+                        # If the subtask is not in the list, we don't write it
                         if tid in subtasks:
                             subtasks.remove(tid)
                             line_nbr = itera.get_line()
@@ -208,8 +208,8 @@ class Unserializer:
                         text = n.firstChild.nodeValue
                         if text:
                             self.insert_tag(buf, text, itera)
-                            #We remove the added tag from the tag list
-                            #of known tag for this task
+                            # We remove the added tag from the tag list
+                            # of known tag for this task
                             taglist2.append(text)
                     else:
                         self.parsexml(buf, itera, n)
@@ -223,14 +223,14 @@ class Unserializer:
                             buf.apply_tag_by_name(n.nodeName, s, e)
                 elif n.nodeType == n.TEXT_NODE:
                     buf.insert(itera, n.nodeValue)
-        #Now, we insert the remaining subtasks
+        # Now, we insert the remaining subtasks
         self.insert_subtasks(buf, subtasks)
-        #We also insert the remaining tags (a a new line)
+        # We also insert the remaining tags (a a new line)
         taglist = self.tv.get_tagslist()
         for t in taglist2:
             if t in taglist:
                 taglist.remove(t)
-        #We remove duplicates
+        # We remove duplicates
         for t in taglist:
             while t in taglist:
                 taglist.remove(t)

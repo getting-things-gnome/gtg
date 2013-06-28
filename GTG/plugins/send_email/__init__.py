@@ -17,6 +17,6 @@
 from GTG.plugins.send_email.sendEmail import pluginSendEmail
 
 
-#suppress pyflakes warning (given by make lint)
-if False == True:
+# suppress pyflakes warning (given by make lint)
+if False is True:
     pluginSendEmail()

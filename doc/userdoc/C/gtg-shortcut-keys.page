@@ -1,5 +1,6 @@
 <page xmlns="http://projectmallard.org/1.0/"
       xmlns:ui="http://projectmallard.org/experimental/ui/"
+      xmlns:its="http://www.w3.org/2005/11/its"
       type="guide" style="tip"
       id="gtg-shortcut-keys">
 
@@ -7,11 +8,21 @@
     <link type="guide" xref="index"/>
     <link type="seealso" xref="gtg-quickstart"/>
     <link type="seealso" xref="gtg-main-window"/>
-    <revision pkgversion="0.1" version="0.1" date="2012-07-03" status="candidate"/>
-    <credit type="author">
+      
+      <revision pkgversion="1301" date="2013-06-18" status="candidate"/>
+   <credit type="author copyright">
       <name>Radina Matic</name>
-     <email>radina.matic@gmail.com</email>
+      <email its:translate="no">radina.matic@gmail.com</email>
+      <years>2013</years>
     </credit>
+    <credit type="copyright editor">
+      <name></name>
+      <email its:translate="no"></email>
+      <years></years>
+    </credit>
+
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+
   </info>
 
   <title>Shortcut keys</title>

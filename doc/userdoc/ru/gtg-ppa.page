@@ -1,0 +1,38 @@
+<page xmlns="http://projectmallard.org/1.0/" type="topic" style="task" id="gtg-ppa" xml:lang="ru">
+
+<info>
+  <link type="guide" xref="index#gtg-advanced" group="first"/>
+  <link type="seealso" xref="gtg-create-sync"/>
+  <link type="seealso" xref="gtg-create-plugin"/>
+  <link type="seealso" xref="gtg-join-developers"/>
+  <revision pkgversion="0.1" version="0.1" date="2012-07-03" status="candidate"/>
+  <credit type="author">
+    <name>Radina Matic</name>
+    <email>radina.matic@gmail.com</email>
+  </credit>
+<mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator">
+  <mal:name>Dmitry Drozdov</mal:name>
+</mal:credit>
+</info>
+
+<title>Установка GTG из Daily PPA</title>
+
+<p>Если Вы хотите работать с самой свежей, находящейся в разработке, версией <app>Getting things GNOME!</app>, то можете установить его из Персонального архива пакетов (Personal Package Archive - PPA) репозитория разработчиков.</p> 
+
+<p>Команда разработчиков <app>GTG</app> старается поддерживать эту версию в работоспособном для ежедневного использования состоянии (поскольку сами пользуются этим репозиторием), однако именно Вы можете оказаться первым, кто столкнется с проблемой или ошибкой. В таком случае, сообщите, пожалуйста, об ошибке в <link href="https://bugs.launchpad.net/gtg/+filebug">в списке ошибок GTG на Launchpad</link>.</p> 
+
+<p>Чтобы добавить этот PPA в Ubuntu, введите команду в консоли:</p>
+<p><cmd>sudo add-apt-repository ppa:gtg/gtg-daily</cmd></p>
+
+<p>Если Вам удобнее пользоваться мышью, то в Ubuntu Oneiric (11.10) перейдите к: 
+<guiseq> <gui>Главное меню Ubuntu</gui><gui>Система</gui><gui>Администрирование</gui><gui>Источники приложений</gui></guiseq>.
+</p>
+<steps>
+<item><p>Откройте закладку <gui>Другие приложения</gui>. </p></item>
+<item><p>Щелкните по кнопке <gui>Добавить</gui>. </p></item>
+<item><p>Вставьте стоку &quot;ppa:gtg/gtg-daily&quot; и закройте оба окна, чтобы подтвердить изменения.</p></item>
+<item><p>Когда окно <gui>Источники приложений</gui> обновится Вы увидите GTG PPA в списке доступных источников.</p></item>
+</steps>
+
+</page>
+
