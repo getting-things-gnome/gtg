@@ -30,13 +30,6 @@ except:
 
 import gettext
 
-try:
-    from gtk import glade
-    loaded_glade = glade
-except:
-    # that's not pretty but it looks functional.
-    loaded_glade = None
-
 # FIXME is this construction needed? There are many other places where this is used
 try:
     from xdg.BaseDirectory import xdg_config_home
@@ -50,11 +43,8 @@ LOCAL_ROOTDIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 GETTEXT_DOMAIN = 'gtg'
 LOCALE_PATH = gettext.bindtextdomain(GETTEXT_DOMAIN)
 
-for module in gettext, loaded_glade:
-    # check if glade is well loaded to avoid error in Fedora build farm
-    if module:
-        module.bindtextdomain(GETTEXT_DOMAIN, LOCALE_PATH)
-        module.textdomain(GETTEXT_DOMAIN)
+gettext.bindtextdomain(GETTEXT_DOMAIN, LOCALE_PATH)
+gettext.textdomain(GETTEXT_DOMAIN)
 # FIXME set translation for Builder as well!
 
 translation = gettext.translation(GETTEXT_DOMAIN, LOCALE_PATH, fallback=True)
