@@ -61,17 +61,17 @@ class pluginUrgencyColor:
             return None
 
     def _get_gradient_color(self, color1, color2, position):
-        """This function returns a gtk.gdk.Color which corresponds to the
+        """This function returns a Gdk.Color which corresponds to the
         position (a float value from 0 to 1) in the gradient formed by the
-        colors color1 and color2, both of type gtk.gdk.Color"""
-        color1 = gtk.gdk.color_parse(color1)
-        color2 = gtk.gdk.color_parse(color2)
+        colors color1 and color2, both of type Gdk.Color"""
+        color1 = Gdk.color_parse(color1)
+        color2 = Gdk.color_parse(color2)
         R1, G1, B1 = color1.red, color1.green, color1.blue
         R2, G2, B2 = color2.red, color2.green, color2.blue
         R = R1 + (R2 - R1) * position
         G = G1 + (G2 - G1) * position
         B = B1 + (B2 - B1) * position
-        return gtk.gdk.Color(int(R), int(G), int(B))
+        return Gdk.Color(int(R), int(G), int(B))
 
     def get_node_bgcolor(self, node):
         """ This method checks the urgency of a node (task) and returns its
