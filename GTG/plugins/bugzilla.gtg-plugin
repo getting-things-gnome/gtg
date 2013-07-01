@@ -9,5 +9,4 @@ At the moment the GNOME, Mozilla and Freedesktop.org
 bugzillas are supported."""
 Authors=Guillaume Desmottes <gdesmott@gnome.org>
 Version=0.0.1
-Dependencies=bugz,
 Enabled=False
