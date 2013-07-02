@@ -21,11 +21,13 @@ import xmlrpclib
 from urlparse import urlparse
 
 from services import BugzillaServiceFactory
+from services import BugzillaServiceNotExist
 from notification import send_notification
 
 __all__ = ('pluginBugzilla', )
 
 bugIdPattern = re.compile('^\d+$')
+bugURLPattern = re.compile('^(https?)://(.+)/show_bug\.cgi\?id=(\d+)$')
 
 
 class GetBugInformationTask(threading.Thread):
@@ -42,6 +44,12 @@ class GetBugInformationTask(threading.Thread):
 
     def run(self):
         bug_url = self.task.get_title()
+
+        # We only handle bug URL. When task's title is not a bug URL, stop
+        # handling quietly.
+        if bugURLPattern.match(bug_url) is None:
+            return
+
         scheme, hostname, queries = self.parseBugUrl(bug_url)
 
         bug_id = queries.get('id', None)
