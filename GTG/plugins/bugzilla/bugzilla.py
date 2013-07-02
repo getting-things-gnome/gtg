@@ -59,6 +59,13 @@ class GetBugInformationTask(threading.Thread):
 
         try:
             bugzillaService = BugzillaServiceFactory.create(scheme, hostname)
+        except BugzillaServiceNotExist:
+            # Stop quietly when bugzilla cannot be found. Currently, I don't
+            # assume that user enters a wrong hostname or just an unkown
+            # bugzilla service.
+            return
+
+        try:
             bug = bugzillaService.getBug(bug_id)
         except xmlrpclib.Fault, err:
             code = err.faultCode
