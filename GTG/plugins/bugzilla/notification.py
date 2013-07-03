@@ -18,7 +18,12 @@ def _notify_via_pynotify(title, message):
     pynotify.init(APP_NAME)
     nt = pynotify.Notification(title, message)
     nt.set_timeout(TIMEOUT)
-    nt.show()
+    try:
+        nt.show()
+    except:
+        # Keep quiet here when notification service is not avialable currently
+        # sometime. For example, if user is using LXDE, no notifyd by default.
+        pass
 
 
 def _notify_via_notify_send(title, message):
