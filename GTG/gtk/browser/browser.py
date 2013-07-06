@@ -52,7 +52,7 @@ class Timer:
         self.start = time.time()
 
     def __exit__(self, *args):
-        print("{0} : {1}".format(self.name, time.time()-self.start))
+        print("{0} : {1}".format(self.name, time.time() - self.start))
 
 
 class TaskBrowser(GObject.GObject):
@@ -380,7 +380,7 @@ class TaskBrowser(GObject.GObject):
         widget = self.builder.get_object(name)
         key, mod = Gtk.accelerator_parse(accel)
         widget.add_accelerator("activate", agr, key, mod,
-            Gtk.AccelFlags.VISIBLE)
+                               Gtk.AccelFlags.VISIBLE)
 
     def _init_accelerators(self):
         """
@@ -877,16 +877,16 @@ class TaskBrowser(GObject.GObject):
                 if selected_search is not None:
                     my_tag = self.req.get_tag(selected_search)
                     self.tagpopup.set_tag(my_tag)
-                    self.tagpopup.popup(None, None, None, None,
-                        event.button, time)
+                    self.tagpopup.popup(None, None, None, None, event.button,
+                                        time)
                 elif len(selected_tags) > 0:
                     # Then we are looking at single, normal tag rather than
                     # the special 'All tags' or 'Tasks without tags'. We only
                     # want to popup the menu for normal tags.
                     my_tag = self.req.get_tag(selected_tags[0])
                     self.tagpopup.set_tag(my_tag)
-                    self.tagpopup.popup(None, None, None, None,
-                        event.button, time)
+                    self.tagpopup.popup(None, None, None, None, event.button,
+                                        time)
                 else:
                     self.reset_cursor()
             return True
@@ -934,8 +934,8 @@ class TaskBrowser(GObject.GObject):
                 else:
                     treeview.set_cursor(path, col, 0)
                 treeview.grab_focus()
-                self.taskpopup.popup(None, None, None, None,
-                    event.button, time)
+                self.taskpopup.popup(None, None, None, None, event.button,
+                                     time)
             return True
 
     def on_task_treeview_key_press_event(self, treeview, event):

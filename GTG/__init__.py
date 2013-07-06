@@ -30,7 +30,8 @@ except:
 
 import gettext
 
-# FIXME is this construction needed? There are many other places where this is used
+# FIXME is this construction needed?
+# There are many other places where this is used
 try:
     from xdg.BaseDirectory import xdg_config_home
     config_home = xdg_config_home
