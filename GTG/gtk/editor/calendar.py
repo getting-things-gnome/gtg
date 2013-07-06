@@ -110,7 +110,7 @@ class GTGCalendar(GObject.GObject):
     def move_calendar_inside(self, width, height, x, y):
         """ This method moves the calender inside the screen whenever part of
         it is displayed outside the screen """
-        screen_width = gtk.gdk.screen_width()
+        screen_width = Gdk.Screen.width()
         # To display calendar inside the screen when editor window is
         # outside leftside of the screen
         if x < width:
