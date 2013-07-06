@@ -18,7 +18,7 @@
 # TODO: put this in a class extending Gtk.Combobox and place the file in
 #      GTG.tools
 
-from gi.repository import Gtk
+from gi.repository import Gtk, Gdk
 from gi.repository import GObject
 
 
