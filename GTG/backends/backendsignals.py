@@ -121,7 +121,7 @@ class _BackendSignalsGObject(GObject.GObject):
         GObject.idle_add(self.emit, self.DEFAULT_BACKEND_LOADED)
 
     def backend_failed(self, backend_id, error_code):
-        GObject.idle_add(self.emit, self.BACKEND_FAILED, backend_id, \
+        GObject.idle_add(self.emit, self.BACKEND_FAILED, backend_id,
                          error_code)
 
     def interaction_requested(self, backend_id, description,

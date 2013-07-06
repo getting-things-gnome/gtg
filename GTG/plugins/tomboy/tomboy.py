@@ -65,7 +65,7 @@ class pluginTomboy:
                 dialog = Gtk.MessageDialog(parent=self.plugin_api.get_ui().
                                            get_window(),
                                            flags=DIALOG_DESTROY_WITH_PARENT,
-                                           type = Gtk.MessageType.ERROR,
+                                           type=Gtk.MessageType.ERROR,
                                            buttons=Gtk.ButtonsType.OK,
                                            message_format=_("Tomboy/Gnote "
                                            "not found. Please install it or "
@@ -108,7 +108,7 @@ class pluginTomboy:
         tb_Taskbutton_image = Gtk.Image()
         tb_Taskbutton_image_path = self.tomboy_icon_path
         tb_Taskbutton_pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(
-                tb_Taskbutton_image_path, 16, 16)
+            tb_Taskbutton_image_path, 16, 16)
         tb_Taskbutton_image.set_from_pixbuf(tb_Taskbutton_pixbuf)
         self.tb_Taskbutton = Gtk.ToolButton(tb_Taskbutton_image)
         self.tb_Taskbutton.set_label(_("Add Tomboy note"))
@@ -291,14 +291,15 @@ exist. Do you want to create a new one?"))
         image = Gtk.Image()
         window = self.plugin_api.get_ui().get_window()
         window.realize()
-        pixbuf=Gdk.\
-                pixbuf_new_from_file_at_size(self.tomboy_icon_path, 16, 16)
+        pixbuf = Gdk.pixbuf_new_from_file_at_size(
+            self.tomboy_icon_path, 16, 16)
         image.show()
         image.set_from_pixbuf(pixbuf)
         image.set_alignment(0.5, 1.0)
         label = Gtk.Label()
         window_style = window.get_style_context()
-        color = window_style.get_color(Gtk.StateType.PRELIGHT).to_color().to_string()
+        color = window_style.get_color(
+            Gtk.StateType.PRELIGHT).to_color().to_string()
         title = tomboy_note_title
         label.set_markup("<span underline='low' color='%s'>%s</span>" % (color,
                                                                          title)
@@ -316,8 +317,9 @@ exist. Do you want to create a new one?"))
         #the eventbox should follow the colours of the textview to blend in
         #properly
         textview_style = self.textview.get_style_context()
-        for state in (Gtk.StateType.NORMAL, Gtk.StateType.PRELIGHT, Gtk.StateType.ACTIVE,
-                      Gtk.StateType.SELECTED, Gtk.StateType.INSENSITIVE):
+        for state in (Gtk.StateType.NORMAL, Gtk.StateType.PRELIGHT,
+                      Gtk.StateType.ACTIVE, Gtk.StateType.SELECTED,
+                      Gtk.StateType.INSENSITIVE):
             fg_color = textview_style.get_color(state)
             eventbox.override_color(state, fg_color)
 

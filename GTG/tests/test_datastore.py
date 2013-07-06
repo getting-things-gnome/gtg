@@ -34,7 +34,7 @@ from liblarch import Tree
 
 def sleep_within_loop(duration):
     main_loop = GObject.MainLoop()
-    GObject.timeout_add(duration*1000, main_loop.quit)
+    GObject.timeout_add(duration * 1000, main_loop.quit)
     # NOTE: I am not sure why, but I need add this
     # dumb thing to run _process method of LibLarch
     GObject.idle_add(lambda: True)

@@ -361,7 +361,8 @@ class NotificationArea:
         title = self.__create_short_title(task.get_title())
 
         # creating the menu item
-        # FIXME test for regression: create a task like Hello_world (_ might be converted)
+        # FIXME test for regression: create a task like Hello_world
+        # (_ might be converted)
         menu_item = Gtk.MenuItem(label=title)
         menu_item.connect('activate', self.__open_task, tid)
         self.__tasks_menu.add(tid, (task.get_due_date(), title), menu_item)

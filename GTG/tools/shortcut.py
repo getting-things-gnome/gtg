@@ -22,19 +22,19 @@ import re
 
 
 CHECK_VERSION = "gsettings list-keys " \
-"org.gnome.settings-daemon.plugins.media-keys"
+    "org.gnome.settings-daemon.plugins.media-keys"
 NEW_TASK_ACTION = "gtg_new_task"
 NEW_TASK_NAME = "GTG New Task"
 GSETTINGS_GET_LIST = "gsettings get " \
-"org.gnome.settings-daemon.plugins.media-keys custom-keybindings"
+    "org.gnome.settings-daemon.plugins.media-keys custom-keybindings"
 GSETTINGS_SET_LIST = "gsettings set " \
-"org.gnome.settings-daemon.plugins.media-keys custom-keybindings"
+    "org.gnome.settings-daemon.plugins.media-keys custom-keybindings"
 GSETTINGS_GET = "gsettings get " \
-"org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:" \
-"/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom"
+    "org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:" \
+    "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom"
 GSETTINGS_SET = "gsettings set " \
-"org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:" \
-"/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom"
+    "org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:" \
+    "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom"
 GCONF_GET = "gconftool-2 --get /desktop/gnome/keybindings/custom"
 GCONF_SET = "gconftool-2 --type string --set /desktop/gnome/keybindings/custom"
 
@@ -110,7 +110,7 @@ def add_shortcut_to_dconf(binding):
         a.sort()
         index = a[-1] + 1
     append_this = "['/org/gnome/settings-daemon/plugins/media-keys/" \
-    "custom-keybindings/custom" + str(index) + "/']"
+        "custom-keybindings/custom" + str(index) + "/']"
     call_subprocess(GSETTINGS_SET, str(index), "/ command", NEW_TASK_ACTION)
     call_subprocess(GSETTINGS_SET, str(index), "/ binding", binding)
     call_subprocess(GSETTINGS_SET, str(index), "/ name", NEW_TASK_NAME)

@@ -192,8 +192,9 @@ class PluginExport:
         builder.add_from_file(builder_file)
 
         self.combo = builder.get_object("export_combo_templ")
-        templates_list = Gtk.ListStore(GObject.TYPE_STRING, GObject.TYPE_STRING,
-                                       GObject.TYPE_STRING, GObject.TYPE_STRING)
+        templates_list = Gtk.ListStore(
+            GObject.TYPE_STRING, GObject.TYPE_STRING, GObject.TYPE_STRING,
+            GObject.TYPE_STRING)
         self.combo.set_model(templates_list)
         cell = Gtk.CellRendererText()
         self.combo.pack_start(cell, True)
