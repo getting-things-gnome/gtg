@@ -14,9 +14,9 @@ APP_NAME = "GTG"
 TIMEOUT = 3000
 
 
-def _notify_via_pynotify(title, message):
-    pynotify.init(APP_NAME)
-    nt = pynotify.Notification(title, message)
+def _notify_via_notify(title, message):
+    Notify.init(APP_NAME)
+    nt = Notify.Notification.new(title, message)
     nt.set_timeout(TIMEOUT)
     nt.show()
 
@@ -34,8 +34,8 @@ _notify_handler = None
 try:
     # Primarily, pynotify is used to send notification. However, it might not
     # appear in user's machine. So, we'll try another alternative.
-    import pynotify
-    _notify_handler = _notify_via_pynotify
+    from gi.repository import Notify
+    _notify_handler = _notify_via_notify
 except ImportError:
     # The alternative is notify-send, which is a command line utility provided
     # by libnotify package.
@@ -55,5 +55,5 @@ def send_notification(title, message):
 
 
 @atexit.register
-def uinit_pynotify():
-    pynotify.uninit()
+def uinit_notify():
+    Notify.uninit()
