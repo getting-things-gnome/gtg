@@ -206,7 +206,8 @@ def show_error_window(error_string, add_apport_button=False):
     try:
         textview.override_font(Pango.FontDescription("monospace 8"))
     except Exception:
-        print >> sys.stderr, "gtkcrashhandler: override_font raised an exception"
+        print >> sys.stderr, \
+            "gtkcrashhandler: override_font raised an exception"
 
     # allow scrolling of textview
     scrolled = Gtk.ScrolledWindow()

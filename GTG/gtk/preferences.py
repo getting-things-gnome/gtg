@@ -28,9 +28,9 @@ from xdg.BaseDirectory import xdg_config_home
 from GTG import _
 from GTG import info
 from GTG.gtk import ViewConfig
-from GTG.tools.shortcut import get_saved_binding, \
-                               check_invalidity, \
-                               save_new_binding
+from GTG.tools.shortcut import get_saved_binding
+from GTG.tools.shortcut import check_invalidity
+from GTG.tools.shortcut import save_new_binding
 
 AUTOSTART_DIRECTORY = os.path.join(xdg_config_home, "autostart")
 AUTOSTART_FILE = "gtg.desktop"
@@ -262,9 +262,9 @@ class ShortcutWidget:
     def _show_warning(self, widget, input_str):
         """ Show warning when user enters inappropriate accelerator """
         show = _("The shortcut \"%s\" cannot be used because "
-               "it will become impossible to type using this key.\n"
-               "Please try with a key such as "
-               "Control, Alt or Shift at the same time.") % input_str
+                 "it will become impossible to type using this key.\n"
+                 "Please try with a key such as "
+                 "Control, Alt or Shift at the same time.") % input_str
         dialog = Gtk.MessageDialog(self.dialog,
                                    Gtk.DialogFlags.DESTROY_WITH_PARENT,
                                    Gtk.MessageType.WARNING,
