@@ -68,14 +68,14 @@ class GetBugInformationTask(threading.Thread):
             send_notification(bugzillaService.name, err.message)
         else:
             title = '#%s: %s' % (bug_id, bug.summary)
-            Gobject.idle_add(self.task.set_title, title)
+            GObject.idle_add(self.task.set_title, title)
             text = "%s\n\n%s" % (bug_url, bug.description)
-            Gobject.idle_add(self.task.set_text, text)
+            GObject.idle_add(self.task.set_text, text)
 
             tags = bugzillaService.getTags(bug)
             if tags is not None and tags:
                 for tag in tags:
-                    Gobject.idle_add(self.task.add_tag, '@%s' % tag)
+                    GObject.idle_add(self.task.add_tag, '@%s' % tag)
 
 
 class pluginBugzilla:

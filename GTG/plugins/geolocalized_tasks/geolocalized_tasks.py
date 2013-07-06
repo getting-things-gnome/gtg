@@ -14,12 +14,11 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk
+from gi.repository import Gtk, GdkPixbuf, GtkClutter
 import os
 
 import Geoclue
 
-import cluttergtk
 from gi.repository import Clutter
 import champlain
 
@@ -459,7 +458,7 @@ class geolocalizedTasks:
 
         champlain_view.add_layer(layer)
 
-        embed = clutterGtk.Embed()
+        embed = GtkClutter.Embed()
         embed.set_size_request(400, 300)
 
         if not task_has_location:
@@ -646,7 +645,7 @@ class geolocalizedTasks:
 
         champlain_view.add_layer(layer)
 
-        embed = clutterGtk.Embed()
+        embed = GtkClutter.Embed()
         embed.set_size_request(400, 300)
 
         champlain_view.set_reactive(True)

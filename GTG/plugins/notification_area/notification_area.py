@@ -273,8 +273,6 @@ class NotificationArea:
 
 ## Helper methods #############################################################
     def __init_gtk(self):
-        browser = self.__view_manager.get_browser()
-
         menu = Gtk.Menu()
 
         # add "new task"

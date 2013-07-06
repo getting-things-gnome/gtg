@@ -26,7 +26,7 @@ This window is divided in two:
     panel (these are called also "views" in this class)
 '''
 
-from gi.repository import Gtk, GdkPixbuf
+from gi.repository import Gtk
 
 from webbrowser import open as openurl
 

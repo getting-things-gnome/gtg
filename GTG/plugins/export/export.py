@@ -24,8 +24,7 @@ import webbrowser
 import subprocess
 
 from xdg.BaseDirectory import xdg_config_home
-from gi.repository import GObject
-from gi.repository import Gtk
+from gi.repository import GObject, Gtk, GdkPixbuf
 
 from GTG import _
 from GTG.plugins.export.task_str import get_task_wrappers

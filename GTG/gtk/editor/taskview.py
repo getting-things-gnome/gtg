@@ -143,7 +143,6 @@ class TaskView(Gtk.TextView):
         self.buff.set_modified(False)
 
         # Let's try with serializing
-        mime_type = 'application/x-gtg-task'
         serializer = taskviewserial.Serializer()
         self.serializer = serializer
         unserializer = taskviewserial.Unserializer(self)

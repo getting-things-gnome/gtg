@@ -31,7 +31,6 @@ from gi.repository import GObject, Gtk, Gdk, GdkPixbuf
 
 from GTG import _
 from GTG.tools.logger import Log
-from GTG.gtk.browser.simple_color_selector import SimpleColorSelector
 
 
 class TagIconSelector(Gtk.Window):
