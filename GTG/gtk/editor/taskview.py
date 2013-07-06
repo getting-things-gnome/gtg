@@ -272,9 +272,10 @@ class TaskView(Gtk.TextView):
             reconnect_modified = True
 
         # deserialize
-        # self.buff.deserialize(self.buff, self.deserialize_format, _iter, text)
-        self.unserializer.unserialize(self.buff, self.buff, _iter, 0,
-            text, None, None)
+        # self.buff.deserialize(self.buff, self.deserialize_format, _iter,
+        #                       text)
+        self.unserializer.unserialize(
+            self.buff, self.buff, _iter, 0, text, None, None)
 
         # reconnect
         if reconnect_insert:
@@ -482,8 +483,8 @@ class TaskView(Gtk.TextView):
         # we go to the next line, just after the title
         start.forward_line()
         end = self.buff.get_end_iter()
-        texte = self.serializer.serialize(self.buff, self.buff,
-            start, end, 1, None)
+        texte = self.serializer.serialize(
+            self.buff, self.buff, start, end, 1, None)
 
         return texte
     # Get the title of the task (aka the first line of the buffer)
@@ -765,8 +766,8 @@ class TaskView(Gtk.TextView):
         elif self.title_tag in itera.get_tags():
             to_return = True
         # else, we look if there's something between us and buffer start
-        elif not buff.get_text(buff.get_start_iter(), itera, True)\
-            .strip('\n\t '):
+        elif not buff.get_text(buff.get_start_iter(), itera, True) \
+                .strip('\n\t '):
             to_return = True
 
         return to_return
@@ -1282,7 +1283,7 @@ class TaskView(Gtk.TextView):
     def _keypress(self, widget, event):
         # Check for Ctrl-Return/Enter
         if event.get_state() & Gdk.ModifierType.CONTROL_MASK and \
-            event.keyval in (Gdk.KEY_Return, Gdk.KEY_KP_Enter):
+                event.keyval in (Gdk.KEY_Return, Gdk.KEY_KP_Enter):
             buff = self.buff
             cursor_mark = buff.get_insert()
             cursor_iter = buff.get_iter_at_mark(cursor_mark)
@@ -1354,9 +1355,9 @@ class TaskView(Gtk.TextView):
             if hasattr(tag, 'is_anchor'):
                 for t in set(self.__tags) - set([tag]):
                     self.__tag_reset(t, window)
-                self.__set_anchor(window, tag,
-                    Gdk.Cursor.new(Gdk.CursorType.HAND2),
-                                  self.get_property('hover'))
+                self.__set_anchor(
+                    window, tag, Gdk.Cursor.new(Gdk.CursorType.HAND2),
+                    self.get_property('hover'))
                 break
         else:
             tag_table = self.buff.get_tag_table()
@@ -1371,7 +1372,7 @@ class TaskView(Gtk.TextView):
         if _type == Gdk.EventType.MOTION_NOTIFY:
             return
         elif _type in [Gdk.EventType.BUTTON_PRESS,
-            Gdk.EventType.BUTTON_RELEASE]:
+                       Gdk.EventType.BUTTON_RELEASE]:
             button = ev.button
             cursor = Gdk.Cursor.new(Gdk.CursorType.HAND2)
             if _type == Gdk.EventType.BUTTON_RELEASE:

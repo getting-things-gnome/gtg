@@ -42,7 +42,8 @@ class ImportTagsUI(Gtk.Box):
                              radio button
         @param parameter_name: the backend parameter this widget should modify
         '''
-        super(ImportTagsUI, self).__init__(orientation=Gtk.Orientation.VERTICAL)
+        super(ImportTagsUI, self).__init__(
+            orientation=Gtk.Orientation.VERTICAL)
         self.backend = backend
         self.req = req
         self.title = title

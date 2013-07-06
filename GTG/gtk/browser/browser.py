@@ -1371,7 +1371,7 @@ class TaskBrowser(GObject.GObject):
         @param page: Gtk.Frame-based panel to be added
         """
         return self._add_page(self.accessory_notebook, Gtk.Label(label=title),
-            page)
+                              page)
 
     def remove_page_from_sidebar_notebook(self, page):
         """Removes a new page tab from the left panel.  If this leaves

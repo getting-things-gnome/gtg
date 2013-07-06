@@ -152,11 +152,11 @@ class TagIconSelector(Gtk.Window):
         self.move(pos_x, pos_y)
         self.grab_add()
         # We grab the pointer in the calendar
-#FIXME THIS DOES NOT WORK!!!!!!!
+# FIXME THIS DOES NOT WORK!!!!!!!
         Gdk.pointer_grab(self.get_window(), True,
                          # Gdk.ModifierType.BUTTON1_MASK |
                          # Gdk.ModifierType.MOD2_MASK,
-#FIXME!!!! JUST GUESSING THE TYPE
+                         # FIXME!!!! JUST GUESSING THE TYPE
                          Gdk.EventMask.ALL_EVENTS_MASK,
                          None,
                          None,
@@ -238,7 +238,7 @@ class TagEditor(Gtk.Window):
         self.tn_entry_lbl_align = Gtk.Alignment.new(0, 0.5, 0, 0)
         self.tp_grid.add(self.tn_entry_lbl_align)
         self.tn_entry_lbl = Gtk.Label()
-        self.tn_entry_lbl.set_markup("<span weight='bold'>%s</span>" \
+        self.tn_entry_lbl.set_markup("<span weight='bold'>%s</span>"
                                      % _("Name : "))
         self.tn_entry_lbl_align.add(self.tn_entry_lbl)
         self.tn_entry = Gtk.Entry()
@@ -285,7 +285,8 @@ class TagEditor(Gtk.Window):
         #FIXME
         #self.tc_cc_colsel.connect('color-changed', self.on_tc_colsel_changed)
         #self.tc_cc_colsel.connect('color-added', self.on_tc_colsel_added)
-        self.tc_cc_colsel.connect('color-activated', self.on_tc_colsel_activated)
+        self.tc_cc_colsel.connect('color-activated',
+                                  self.on_tc_colsel_activated)
         self.connect('delete-event', self.on_close)
 
         # allow fast closing by Escape key
@@ -317,7 +318,7 @@ class TagEditor(Gtk.Window):
         # Name entry
         self.tn_entry.set_text(_("Enter tag name here"))
         self.tn_entry.set_icon_from_stock(Gtk.EntryIconPosition.SECONDARY,
-            None)
+                                          None)
         # Color selection
         #FIXME
         #self.tc_cc_colsel.unselect_color()
