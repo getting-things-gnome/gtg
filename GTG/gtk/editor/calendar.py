@@ -19,7 +19,7 @@
 
 import datetime
 
-from gi.repository import GObject, Gtk, Gdk
+from gi.repository import GObject, Gdk
 
 from GTG.tools.dates import Date
 

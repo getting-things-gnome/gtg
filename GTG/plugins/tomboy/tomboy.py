@@ -16,9 +16,8 @@
 
 import dbus
 import os
-import sys
 
-from gi.repository import Gtk, GdkPixbuf
+from gi.repository import Gtk, Gdk, GdkPixbuf
 
 from GTG import _
 from GTG.plugins.tomboy.combobox_enhanced import smartifyComboboxEntry
