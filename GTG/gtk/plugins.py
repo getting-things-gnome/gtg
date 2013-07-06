@@ -196,9 +196,6 @@ class PluginsDialog:
         column = Gtk.TreeViewColumn(None, renderer, active=PLUGINS_COL_ENABLED,
                                     activatable=PLUGINS_COL_ACTIVATABLE,
                                     sensitive=PLUGINS_COL_ACTIVATABLE)
-        column = gtk.TreeViewColumn(None, renderer, active=PLUGINS_COL_ENABLED,
-                                    activatable=PLUGINS_COL_ACTIVATABLE,
-                                    sensitive=PLUGINS_COL_ACTIVATABLE)
         self.plugin_tree.append_column(column)
 
         # plugin name column
