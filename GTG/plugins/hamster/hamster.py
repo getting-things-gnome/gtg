@@ -203,10 +203,10 @@ class hamsterPlugin:
             # add section to bottom of window
             vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
             inner_grid = Gtk.Grid()
-            if len(records)>8:
+            if len(records) > 8:
                 s = Gtk.ScrolledWindow()
                 s.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
-                v=Gtk.Viewport()
+                v = Gtk.Viewport()
                 v.add(inner_grid)
                 s.add(v)
                 v.set_shadow_type(Gtk.ShadowType.NONE)

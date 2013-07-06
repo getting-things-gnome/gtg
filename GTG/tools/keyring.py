@@ -35,7 +35,7 @@ class GNOMEKeyring(Borg):
             if result != GnomeKeyring.Result.OK:
                 raise Exception("Can't get default keyring, error=%s" % result)
 
-    def set_password(self, name, password, userid = ""):
+    def set_password(self, name, password, userid=""):
         attrs = GnomeKeyring.Attribute.list_new()
         GnomeKeyring.Attribute.list_append_string(attrs, "backend", name)
         result, password_id = GnomeKeyring.item_create_sync(
@@ -52,7 +52,8 @@ class GNOMEKeyring(Borg):
         return password_id
 
     def get_password(self, item_id):
-        result, item_info = GnomeKeyring.item_get_info_sync(self.keyring, item_id)
+        result, item_info = GnomeKeyring.item_get_info_sync(
+            self.keyring, item_id)
         if result == GnomeKeyring.Result.OK:
             return item_info.get_secret()
         else:

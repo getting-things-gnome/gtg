@@ -48,9 +48,9 @@ class TestSignalTesting(unittest.TestCase):
 
 class FakeGobject(GObject.GObject):
     __gsignals__ = {'one': (GObject.SignalFlags.RUN_FIRST,
-                               None, (str, )),
+                            None, (str, )),
                     'two': (GObject.SignalFlags.RUN_FIRST,
-                               None, (str, ))}
+                            None, (str, ))}
 
     def emit_signal(self, signal_name, argument):
         GObject.idle_add(self.emit, signal_name, argument)
