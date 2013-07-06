@@ -42,6 +42,8 @@ def main(args):
         print "./run_tests  [function_path ..] to run the selected " + \
               "functions as tests"
         return
+    if "-l" in args:
+        args.remove("-l")
     # fake modules that mimic the behaviour of external libraries ...
     TestingMode().set_testing_mode(True)
     if args:
@@ -90,5 +92,7 @@ def main(args):
         return 1
 
 if __name__ == '__main__':
-    if import_liblarch():
+    use_local = "-l" in sys.argv[1:] or "--local-liblarch" in sys.argv[1:]
+
+    if import_liblarch(use_local):
         sys.exit(main(sys.argv[1:]))
