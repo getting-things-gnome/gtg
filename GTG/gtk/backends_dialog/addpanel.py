@@ -26,7 +26,8 @@ from GTG import _, ngettext
 
 class AddPanel(Gtk.Box):
     '''
-    A vertical Box filled with gtk widgets to let the user choose a new backend.
+    A vertical Box filled with gtk widgets to let the user choose a new
+    backend.
     '''
 
     def __init__(self, backends_dialog):
