@@ -57,8 +57,7 @@ class BackendsCombo(Gtk.ComboBox):
         # Text renderer
         text_cell = Gtk.CellRendererText()
         self.pack_start(text_cell, False)
-#FIXME does it work?
-        self.set_entry_text_column(self.COLUMN_HUMAN_NAME)
+        self.add_attribute(text_cell, 'text', 1)
         # Icon renderer
         pixbuf_cell = Gtk.CellRendererPixbuf()
         self.pack_start(pixbuf_cell, False)
