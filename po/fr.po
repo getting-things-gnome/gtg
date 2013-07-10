@@ -8,15 +8,15 @@ msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2013-04-28 17:02+0200\n"
-"PO-Revision-Date: 2013-07-02 22:52+0000\n"
-"Last-Translator: Alex THIERRY <athierry.pro@gmail.com>\n"
+"PO-Revision-Date: 2013-07-09 15:13+0000\n"
+"Last-Translator: Nicolas Gaulard-Querol <nicolas.gquerol@gmail.com>\n"
 "Language-Team: French <fr@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Launchpad-Export-Date: 2013-07-03 05:15+0000\n"
-"X-Generator: Launchpad (build 16692)\n"
+"X-Launchpad-Export-Date: 2013-07-10 05:27+0000\n"
+"X-Generator: Launchpad (build 16696)\n"
 
 #: GTG/gtk/backends_dialog/__init__.py:75
 #, python-format
@@ -1593,7 +1593,7 @@ msgstr ""
 
 #: GTG/backends/backend_mantis.py:44
 msgid "MantisBT"
-msgstr ""
+msgstr "MantisBT"
 
 #: GTG/backends/backend_mantis.py:48
 msgid ""
@@ -1643,6 +1643,8 @@ msgid ""
 "Note: This product uses the Remember The Milk API but is not endorsed or "
 "certified by Remember The Milk"
 msgstr ""
+"Ce service synchronise vos tâches avec le service web RememberTheMilk.\n"
+"\t \t http://rememberthemilk.com"
 
 #: GTG/backends/backend_localfile.py:57
 msgid "Local File"
