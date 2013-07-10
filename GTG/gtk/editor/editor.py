@@ -83,10 +83,16 @@ class TaskEditor(object):
             "close_clicked": self.close,
             "duedate_changed": lambda w: self.date_changed(
                 w, GTGCalendar.DATE_KIND_DUE),
+            "duedate_focus_out": lambda w, e: self.date_focus_out(
+                w, e, GTGCalendar.DATE_KIND_DUE),
             "startingdate_changed": lambda w: self.date_changed(
                 w, GTGCalendar.DATE_KIND_START),
+            "startdate_focus_out": lambda w, e: self.date_focus_out(
+                w, e, GTGCalendar.DATE_KIND_START),
             "closeddate_changed": lambda w: self.date_changed(
                 w, GTGCalendar.DATE_KIND_CLOSED),
+            "closeddate_focus_out": lambda w, e: self.date_focus_out(
+                w, e, GTGCalendar.DATE_KIND_CLOSED),
             "on_insert_subtask_clicked": self.insert_subtask,
             "on_inserttag_clicked": self.inserttag_clicked,
             "on_move": self.on_move,
@@ -380,18 +386,18 @@ class TaskEditor(object):
             bg_color.parse("#F88")
             widget.override_background_color(Gtk.StateType.NORMAL, bg_color)
 
-    def date_focus_out(self, widget, event, data):
+    def date_focus_out(self, widget, event, date_kind):
         try:
             datetoset = Date.parse(widget.get_text())
         except ValueError:
             datetoset = None
 
         if datetoset is not None:
-            if data == "start":
+            if date_kind == GTGCalendar.DATE_KIND_START:
                 self.task.set_start_date(datetoset)
-            elif data == "due":
+            elif date_kind == GTGCalendar.DATE_KIND_DUE:
                 self.task.set_due_date(datetoset)
-            elif data == "closed":
+            elif date_kind == GTGCalendar.DATE_KIND_CLOSED:
                 self.task.set_closed_date(datetoset)
             self.refresh_editor()
 
