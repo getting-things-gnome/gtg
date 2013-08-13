@@ -46,30 +46,30 @@ import GTG
 
 DEFAULTS = {
     'browser': {
-    "bg_color_enable": True,
-    "contents_preview_enable": False,
-    'tag_pane': False,
-    "sidebar_width": 120,
-    "closed_task_pane": False,
-    'bottom_pane_position': 300,
-    'toolbar': True,
-    'quick_add': True,
-    'collapsed_tasks': [],
-    'expanded_tags': [],
-    'view': 'default',
-            "opened_tasks": [],
-            'width': 400,
-            'height': 400,
-            'max': False,
-            'x_pos': 10,
-            'y_pos': 10,
-            'tasklist_sort_column': 5,
-            'tasklist_sort_order': 1,
-            "font_name": "",
+        "bg_color_enable": True,
+        "contents_preview_enable": False,
+        'tag_pane': False,
+        "sidebar_width": 120,
+        "closed_task_pane": False,
+        'bottom_pane_position': 300,
+        'toolbar': True,
+        'quick_add': True,
+        'collapsed_tasks': [],
+        'expanded_tags': [],
+        'view': 'default',
+        "opened_tasks": [],
+        'width': 400,
+        'height': 400,
+        'max': False,
+        'x_pos': 10,
+        'y_pos': 10,
+        'tasklist_sort_column': 5,
+        'tasklist_sort_order': 1,
+        "font_name": "",
     },
-'tag_editor': {
-    "custom_colors": [],
-}
+    'tag_editor': {
+        "custom_colors": [],
+    }
 }
 
 
