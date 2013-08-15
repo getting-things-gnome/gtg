@@ -36,7 +36,7 @@ If you want to display only a subset of tasks, you can either:
 """
 
 #=== IMPORT ===================================================================
-from configobj import ConfigObj, ConfigObjError
+import ConfigParser
 from xdg.BaseDirectory import xdg_data_home, xdg_config_home, xdg_data_dirs
 import os
 
@@ -69,6 +69,9 @@ DEFAULTS = {
     },
     'tag_editor': {
         "custom_colors": [],
+    },
+    'plugins': {
+        "enabled": [],
     }
 }
 
@@ -88,47 +91,85 @@ DEFAULTS = {
 
 class SubConfig():
 
-    def __init__(self, name, conf_dic):
-        self.__name = name
-        self.__conf = conf_dic
-        if name in DEFAULTS:
-            self.__defaults = DEFAULTS[name]
-        else:
-            self.__defaults = {}
+    def __init__(self, section, conf, conf_path):
+        self._section = section
+        self._conf = conf
+        self._conf_path = conf_path
 
     # This return the value of the setting (or the default one)
     #
     # If a default value exists and is a Int or a Bool, the returned
     # value is converted to that type.
-    def get(self, name):
-        if name in self.__conf:
-            toreturn = self.__conf[name]
+    def get(self, option):
+        if self._conf.has_option(self._section, option):
+            toreturn = self._conf.get(self._section, option)
             # Converting to the good type
-            if name in self.__defaults:
-                ntype = type(self.__defaults[name])
+            if option in DEFAULTS[self._section]:
+                ntype = type(DEFAULTS[self._section][option])
                 if ntype == int:
                     toreturn = int(toreturn)
+                elif ntype == list:
+                    toreturn = toreturn[1:-1].split(',')
+                    if toreturn[-1] == '':
+                        toreturn = toreturn[:-1]
                 elif ntype == bool and type(toreturn) == str:
                     toreturn = toreturn.lower() == "true"
-        elif name in self.__defaults:
-            toreturn = self.__defaults[name]
-            self.__conf[name] = toreturn
+        elif option in DEFAULTS[self._section]:
+            toreturn = DEFAULTS[self._section][option]
+            self.set(option, toreturn)
         else:
             print "Warning : no default conf value for %s in %s" % (
-                name, self.__name)
+                option, self._section)
             toreturn = None
         return toreturn
 
-    def set(self, name, value):
-        self.__conf[name] = str(value)
-        # Save immediately
-        self.__conf.parent.write()
+    def clear(self):
+        for option in self._conf.options(self._section):
+            self._conf.remove_option(self._section, option)
 
-    def set_lst(self, name, value_lst):
-        self.__conf[name] = [str(s) for s in value_lst]
-        # Save immediately
-        self.__conf.parent.write()
+    def save(self):
+        self._conf.write(open(self._conf_path, 'w'))
 
+    def set(self, option, value):
+        self._conf.set(self._section, option, str(value))
+        # Save immediately
+        self.save()
+
+    def set_lst(self, option, value_lst):
+        self._conf.set(self._section, option, [str(s) for s in value_lst])
+        # Save immediately
+        self.save()
+
+class TaskConfig():
+
+    def __init__(self, conf, conf_path):
+        self._conf = conf
+        self._conf_path = conf_path
+
+    def empty(self):
+        return not self._conf.sections()
+
+    def has_section(self, section):
+        return self._conf.has_section(section)
+
+    def has_option(self, section, option):
+        return self._conf.has_option(section, option)
+
+    def add_section(self, section):
+        self._conf.add_section(section)
+
+    def get(self, tid, option=None):
+        if option:
+            return self._conf.options(tid)
+        else:
+            return self._conf.get(tid, option)
+
+    def set(self, tid, option, value):
+        self._conf.set(tid, option, value)
+        self.save()
+
+    def save(self):
+        self._conf.write(open(self._conf_path, 'w'))
 
 class CoreConfig(Borg):
     # The projects and tasks are of course DATA !
@@ -147,15 +188,14 @@ class CoreConfig(Borg):
     SEP_TAG = "gtg-tags-sep"
     SEARCH_TAG = "search"
 
-    def check_config_file(self, file_path):
+    def check_config_file(self, path):
         """ This function bypasses the errors of config file and allows GTG
         to open smoothly"""
-        total_path = self.conf_dir + file_path
+        config = ConfigParser.ConfigParser()
         try:
-            config = ConfigObj(total_path)
-        except ConfigObjError:
-            open(total_path, "w").close()
-            config = ConfigObj(total_path)
+            config.read(path)
+        except ConfigParser.Error:
+            open(path, "w").close()
         return config
 
     def __init__(self):
@@ -173,28 +213,32 @@ class CoreConfig(Borg):
             os.makedirs(self.conf_dir)
         if not os.path.exists(self.data_dir):
             os.makedirs(self.data_dir)
-        if not os.path.exists(self.conf_dir + self.CONF_FILE):
-            open(self.conf_dir + self.CONF_FILE, "w").close()
-        if not os.path.exists(self.conf_dir + self.TASK_CONF_FILE):
-            open(self.conf_dir + self.TASK_CONF_FILE, "w").close()
-        for conf_file in [self.conf_dir + self.CONF_FILE,
-                          self.conf_dir + self.TASK_CONF_FILE]:
+        self.conf_path = os.path.join(self.conf_dir, self.CONF_FILE)
+        self.task_conf_path = os.path.join(self.conf_dir, self.TASK_CONF_FILE)
+        if not os.path.exists(self.conf_path):
+            open(self.conf_path, "w").close()
+        if not os.path.exists(self.task_conf_path):
+            open(self.task_conf_path, "w").close()
+        for conf_file in [self.conf_path, self.task_conf_path]:
             if not os.access(conf_file, os.R_OK | os.W_OK):
                 raise Exception("File " + file +
                                 " is a configuration file for gtg, but it "
                                 "cannot be read or written. Please check it")
-        self.conf_dict = self.check_config_file(self.CONF_FILE)
-        self.task_conf_dict = self.check_config_file(self.TASK_CONF_FILE)
+        self._conf = self.check_config_file(self.conf_path)
+        self._task_conf = self.check_config_file(self.task_conf_path)
 
     def save(self):
         ''' Saves the configuration of CoreConfig '''
-        self.conf_dict.write()
-        self.task_conf_dict.write()
+        self._conf.write(open(self.conf_path, 'w'))
+        self._task_conf.write(open(self.task_conf_path, 'w'))
 
-    def get_subconfig(self, name):
-        if not name in self.conf_dict:
-            self.conf_dict[name] = {}
-        return SubConfig(name, self.conf_dict[name])
+    def get_subconfig(self, section):
+        if not self._conf.has_section(section):
+            self._conf.add_section(section)
+        return SubConfig(section, self._conf, self.conf_path)
+
+    def get_taskconfig(self):
+        return TaskConfig(self._task_conf, self.conf_path)
 
     def get_icons_directories(self):
         """ Returns the directories containing the icons """
@@ -214,3 +258,5 @@ class CoreConfig(Borg):
 
     def set_conf_dir(self, path):
         self.conf_dir = path
+        self.conf_path = os.path.join(self.conf_dir, self.CONF_FILE)
+        self.task_conf_path = os.path.join(self.conf_dir, self.TASK_CONF_FILE)

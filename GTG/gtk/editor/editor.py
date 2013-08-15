@@ -173,14 +173,14 @@ class TaskEditor:
         self.textview.grab_focus()
 
         # restoring size and position, spatial tasks
-        if self.config:
+        if not self.config.empty():
             tid = self.task.get_id()
-            if tid in self.config:
-                if "position" in self.config[tid]:
-                    pos_x, pos_y = self.config[tid]["position"]
+            if self.config.has_section(tid):
+                if self.config.has_option(tid, "position"):
+                    pos_x, pos_y = self.config.get(tid, "position")
                     self.move(int(pos_x), int(pos_y))
-                if "size" in self.config[tid]:
-                    width, height = self.config[tid]["size"]
+                if self.config.has_option(tid, "size"):
+                    width, height = self.config.get(tid, "size")
                     self.window.resize(int(width), int(height))
 
         self.textview.set_editable(True)
@@ -502,8 +502,8 @@ class TaskEditor:
         self.task.set_title(self.textview.get_title())
         self.task.set_text(self.textview.get_text())
         self.task.sync()
-        if self.config is not None:
-            self.config.write()
+        if not self.config.empty():
+            self.config.save()
         self.time = time.time()
     # light_save save the task without refreshing every 30seconds
     # We will reduce the time when the get_text will be in another thread
@@ -537,12 +537,12 @@ class TaskEditor:
 
     def on_move(self, widget, event):
         # saving the position
-        if self.config is not None:
+        if not self.config.empty():
             tid = self.task.get_id()
-            if not tid in self.config:
-                self.config[tid] = dict()
-            self.config[tid]["position"] = self.get_position()
-            self.config[tid]["size"] = self.window.get_size()
+            if not self.config.has_section(tid):
+                self.config.add_section(tid)
+            self.config.set(tid, "position", self.get_position())
+            self.config.set(tid, "size", self.window.get_size())
 
     # We define dummy variable for when close is called from a callback
     def close(self, window=None, a=None, b=None, c=None):
