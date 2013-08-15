@@ -158,11 +158,8 @@ class TaskConfig():
     def add_section(self, section):
         self._conf.add_section(section)
 
-    def get(self, tid, option=None):
-        if option:
-            return self._conf.get(tid, option)
-        else:
-            return self._conf.options(tid)
+    def get(self, tid, option):
+        return self._conf.get(tid, option)
 
     def set(self, tid, option, value):
         self._conf.set(tid, option, value)
