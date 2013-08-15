@@ -160,9 +160,9 @@ class TaskConfig():
 
     def get(self, tid, option=None):
         if option:
-            return self._conf.options(tid)
-        else:
             return self._conf.get(tid, option)
+        else:
+            return self._conf.options(tid)
 
     def set(self, tid, option, value):
         self._conf.set(tid, option, value)
