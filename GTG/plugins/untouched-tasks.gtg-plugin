@@ -1,9 +1,9 @@
 [GTG Plugin]
-Module=untouched_tasks
-Name=Untouched tasks
-Short-description=Keep track of tasks you haven't touched for a while.
-Description=Assigns tasks that you haven't touched for a while with the @untouched tag.
-Authors=Tom Kadwill <tomkadwill@gmail.com>
-Version=0.0.1
-Enabled=False
+module=untouched_tasks
+name=Untouched tasks
+short-description=Keep track of tasks you haven't touched for a while.
+description=Assigns tasks that you haven't touched for a while with the @untouched tag.
+authors=Tom Kadwill <tomkadwill@gmail.com>
+version=0.0.1
+enable=False
 Dependencies=gio, urllib
