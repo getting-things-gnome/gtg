@@ -8,15 +8,15 @@ msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2013-04-28 17:02+0200\n"
-"PO-Revision-Date: 2013-05-18 16:54+0000\n"
-"Last-Translator: Claudio Arseni <claudio.arseni@gmail.com>\n"
+"PO-Revision-Date: 2013-08-16 12:56+0000\n"
+"Last-Translator: Milo Casagrande <milo.casagrande@gmail.com>\n"
 "Language-Team: Italian <it@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2013-05-19 05:17+0000\n"
-"X-Generator: Launchpad (build 16626)\n"
+"X-Launchpad-Export-Date: 2013-08-17 05:26+0000\n"
+"X-Generator: Launchpad (build 16723)\n"
 
 #: GTG/gtk/backends_dialog/__init__.py:75
 #, python-format
@@ -26,7 +26,7 @@ msgstr "Servizi di sincronizzazione - %s"
 #: GTG/gtk/backends_dialog/__init__.py:293
 #, python-format
 msgid "Do you really want to remove the '%s' synchronization service?"
-msgstr "Si desidera davvero rimuovere il servizio di sincronizzazione '%s'?"
+msgstr "Rimuovere veramente il servizio di sincronizzazione «%s»?"
 
 #: GTG/gtk/backends_dialog/configurepanel.py:145
 msgid "Disable syncing"
@@ -89,7 +89,7 @@ msgstr "Indirizzo URL del servizio"
 msgid ""
 "Import tasks                                                         from @ "
 "replies "
-msgstr ""
+msgstr "Importa attività dalle risposte @ "
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:94
 msgid "Import tasks from direct messages"
@@ -164,7 +164,7 @@ msgstr "<b>Esplora attività</b>"
 
 #: GTG/gtk/preferences.glade.h:7
 msgid "Font :"
-msgstr "Font :"
+msgstr "Carattere:"
 
 #: GTG/gtk/preferences.glade.h:8
 msgid "<b>Editor</b>"
@@ -204,7 +204,7 @@ msgid ""
 msgstr ""
 "Non è possibile usare «%s» come scorciatoia perché diventerebbe impossibile "
 "digitare usando questo tasto.\n"
-"Provare ad usare per la combinazione un tasto come Ctrl, Alt o Maiusc."
+"Provare a usare per la combinazione un tasto come Ctrl, Alt o Maiusc."
 
 #: GTG/gtk/browser/__init__.py:37 GTG/gtk/browser/taskbrowser.glade.h:25
 #: GTG/gtk/editor/__init__.py:31
@@ -217,7 +217,7 @@ msgstr "Segna l'attività selezionata come completata"
 
 #: GTG/gtk/browser/__init__.py:39 GTG/gtk/editor/__init__.py:32
 msgid "Mark as not Done"
-msgstr "Marca come non completata"
+msgstr "Segna come non completata"
 
 #: GTG/gtk/browser/__init__.py:40 GTG/gtk/browser/__init__.py:44
 msgid "Mark the selected task as to be done"
@@ -281,7 +281,7 @@ msgid ""
 msgstr ""
 "Il servizio di sincronizzazione <b>%s</b> non è accessibile con i dati "
 "forniti ed è stato quindi disabilitato. Per effettuare nuovamente l'accesso, "
-"abilitare nuovamente il servizio."
+"riabilitare il servizio."
 
 #: GTG/gtk/browser/custominfobar.py:39
 #, python-format
@@ -322,11 +322,11 @@ msgstr "Continua"
 
 #: GTG/gtk/browser/modifytags_dialog.glade.h:1
 msgid "Modify Tags"
-msgstr "Modifica i tag"
+msgstr "Modifica etichette"
 
 #: GTG/gtk/browser/modifytags_dialog.glade.h:2
 msgid "Add/Remove Tags"
-msgstr "Aggiungi o rimuovi i tag"
+msgstr "Aggiungi/Rimuovi etichette"
 
 #: GTG/gtk/browser/modifytags_dialog.glade.h:3
 msgid "Cancel"
@@ -334,7 +334,7 @@ msgstr "Annulla"
 
 #: GTG/gtk/browser/modifytags_dialog.glade.h:4
 msgid "Enter the name of the tag(s) you wish to add or remove:"
-msgstr "Inserire il nome dei tag da aggiungere o rimuovere:"
+msgstr "Inserire il nome delle etichette da aggiungere o rimuovere:"
 
 #: GTG/gtk/browser/modifytags_dialog.glade.h:5
 msgid "TagName"
@@ -345,8 +345,8 @@ msgid ""
 "Hint: you can add several tags by separating them with\n"
 "space. Place '!' before tags you want to remove."
 msgstr ""
-"Suggerimento: puoi aggiungere diversi tag separandoli con uno\n"
-"spazio. Inserisci '!' prima dei tag che desideri rimuovere."
+"Suggerimento: è possibile aggiungere diverse etichette separandole con uno\n"
+"spazio. Inserire «!» prima dell'etichetta da rimuovere."
 
 #: GTG/gtk/browser/modifytags_dialog.glade.h:8
 msgid "Apply to subtasks"
@@ -443,11 +443,11 @@ msgstr "Getting Things GNOME!"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:2
 msgid "_Tasks"
-msgstr "_Attività"
+msgstr "A_ttività"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:3
 msgid "New _Task"
-msgstr "_Nuova attività"
+msgstr "Nuova a_ttività"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:5
 msgid "New _Subtask"
@@ -495,11 +495,11 @@ msgstr "_Plugin"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:16
 msgid "_Help"
-msgstr "_Aiuto"
+msgstr "A_iuto"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:17
 msgid "Open GTG help"
-msgstr "Apri il manuale di GTG"
+msgstr "Apre l'aiuto utente di GTG"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:18
 msgid "Help to translate GTG into your language"
@@ -606,7 +606,7 @@ msgstr "Aggiungi un'attività ausiliaria"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:43
 msgid "_Set Start Date"
-msgstr "Impostare la data iniziale"
+msgstr "I_mpostare la data iniziale"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:44
 msgid "T_oday"
@@ -618,15 +618,15 @@ msgstr "_Domani"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:46
 msgid "Next _Week"
-msgstr "Prossima _Settimana"
+msgstr "Prossima _settimana"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:47
 msgid "Next _Month"
-msgstr "Prossimo _Mese"
+msgstr "Prossimo _mese"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:48
 msgid "Next _Year"
-msgstr "Prossimo _Anno"
+msgstr "Prossimo _anno"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:49
 msgid "_Clear Start Date"
@@ -654,7 +654,7 @@ msgstr "Cancellare la data di scadenza"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:55
 msgid "Modify Tags..."
-msgstr "Modifica i tag..."
+msgstr "Modifica etichette..."
 
 #: GTG/gtk/browser/tag_context_menu.py:58
 msgid "Edit Tag..."
@@ -838,7 +838,7 @@ msgstr "<b>Dipendenze</b>"
 
 #: GTG/gtk/plugins.glade.h:2
 msgid "_About Plugin"
-msgstr "I_nformazioni sul plugin"
+msgstr "I_nformazioni plugin"
 
 #: GTG/gtk/plugins.py:142
 #, python-format
@@ -1136,7 +1136,7 @@ msgstr "prima o poi"
 
 #: GTG/core/search.py:97
 msgid "notag"
-msgstr "nessun tag"
+msgstr "nessuna etichetta"
 
 #: GTG/core/firstrun_tasks.py:35
 msgid "Getting Started With GTG"
@@ -1276,7 +1276,7 @@ msgstr ""
 
 #: GTG/core/firstrun_tasks.py:142
 msgid "Learn How To Use Tags"
-msgstr "Come usare i tag"
+msgstr "Come usare le etichette"
 
 #: GTG/core/firstrun_tasks.py:144
 msgid ""
@@ -1337,7 +1337,7 @@ msgstr ""
 
 #: GTG/core/firstrun_tasks.py:174
 msgid "Learn How To Use The Work View"
-msgstr "Utilizzo della Scaletta di lavoro"
+msgstr "Utilizzo della scaletta di lavoro"
 
 #: GTG/core/firstrun_tasks.py:176
 msgid ""
