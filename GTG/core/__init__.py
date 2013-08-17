@@ -76,9 +76,9 @@ DEFAULTS = {
 }
 
 
-# Instead of accessing directly the ConfigObj dic, each module will have
+# Instead of accessing directly the ConfigParser, each module will have
 # one SubConfig object. (one SubConfig object always match one first level
-# element of the ConfigObj directory)
+# element of the ConfigParser directory)
 #
 # The goal of the SubConfig object is to handle default value and converting
 # String to Bool and Int when needed.
