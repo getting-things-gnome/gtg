@@ -1,12 +1,12 @@
 [GTG Plugin]
-Module=bugzilla
-Name=Bugzilla
-Short-description=Allow to link a task with a bugzilla ticket.
-Description=Allow to link a task with a bugzilla ticket
+module=bugzilla
+name=Bugzilla
+short-description=Allow to link a task with a bugzilla ticket.
+description=Allow to link a task with a bugzilla ticket
     Just paste the URL of the ticket in the quick add entry
     and a new task will be created for this bug.
     At the moment the GNOME, Mozilla and Freedesktop.org
     bugzillas are supported.
-Authors=Guillaume Desmottes <gdesmott@gnome.org>
-Version=0.0.1
-Enabled=False
+authors=Guillaume Desmottes <gdesmott@gnome.org>
+version=0.0.1
+enable=False
