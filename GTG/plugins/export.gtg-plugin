@@ -8,4 +8,4 @@ description=Exports the tasks in the current view into
 authors=Luca Invernizzi <invernizzi.l@gmail.com>, Izidor Matušov <izidor.matusov@gmail.com>
 version=0.2
 enabled=False
-Dependencies=Cheetah,pdflatex,pdftk,pdfjam
+dependencies=Cheetah,pdflatex,pdftk,pdfjam

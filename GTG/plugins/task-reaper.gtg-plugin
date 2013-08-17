@@ -9,4 +9,4 @@ description=This plugin deletes the task that have been
 authors=Luca Invernizzi <invernizzi.l@gmail.com>
 version=0.1.1
 enabled=False
-Dependencies=,
+dependencies=,

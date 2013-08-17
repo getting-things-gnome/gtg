@@ -6,4 +6,4 @@ description=Assigns tasks that you haven't touched for a while with the @untouch
 authors=Tom Kadwill <tomkadwill@gmail.com>
 version=0.0.1
 enabled=False
-Dependencies=gio, urllib
+dependencies=gio, urllib

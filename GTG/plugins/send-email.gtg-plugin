@@ -7,4 +7,4 @@ description=Adds a button on the toolbar to send
 authors=Luca Invernizzi <invernizzi.l@gmail.com>, Thibault Févry <ThibaultFevry@gmail.com>
 version=0.2.0
 enabled=False
-Dependencies=gio, urllib
+dependencies=gio, urllib
