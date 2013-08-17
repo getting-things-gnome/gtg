@@ -6,4 +6,4 @@ description=Move the start date of tasks you don't want to do today to tomorrow.
 authors=Lionel Dricot <lionel@ploum.net>
 version=0.1
 enabled=False
-Dependencies=
+dependencies=

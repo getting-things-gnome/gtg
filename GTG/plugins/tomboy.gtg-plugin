@@ -7,6 +7,5 @@ description=This plugin lets you add a link to a Tomboy (or Gnote)
 authors=Luca Invernizzi <invernizzi.l@gmail.com>
 version=0.1.9
 enabled=False
-#Dbus-dependencies=org.gnome.Tomboy:/org/gnome/Tomboy
-Dependencies=dbus,
-
+#dbus-dependencies=org.gnome.Tomboy:/org/gnome/Tomboy
+dependencies=dbus,
