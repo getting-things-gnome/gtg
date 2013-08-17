@@ -6,5 +6,5 @@ description=Adds a button on the toolbar to send
     easily a task via email, also sends status, due_dates, tags and subtasks.
 authors=Luca Invernizzi <invernizzi.l@gmail.com>, Thibault Févry <ThibaultFevry@gmail.com>
 version=0.2.0
-enable=False
+enabled=False
 Dependencies=gio, urllib

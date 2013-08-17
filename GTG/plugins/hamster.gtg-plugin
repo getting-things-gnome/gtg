@@ -7,4 +7,4 @@ description=Adds the ability to send a task to
 authors=Kevin Mehall <km@kevinmehall.net>
 version=0.3
 Dbus-dependencies=org.gnome.Hamster:/org/gnome/Hamster
-enable=False
+enabled=False

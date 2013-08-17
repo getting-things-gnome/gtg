@@ -5,5 +5,5 @@ short-description=Keep track of tasks you haven't touched for a while.
 description=Assigns tasks that you haven't touched for a while with the @untouched tag.
 authors=Tom Kadwill <tomkadwill@gmail.com>
 version=0.0.1
-enable=False
+enabled=False
 Dependencies=gio, urllib

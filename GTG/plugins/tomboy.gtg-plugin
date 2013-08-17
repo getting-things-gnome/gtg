@@ -6,7 +6,7 @@ description=This plugin lets you add a link to a Tomboy (or Gnote)
     note in your tasks, or create a new one
 authors=Luca Invernizzi <invernizzi.l@gmail.com>
 version=0.1.9
-enable=False
+enabled=False
 #Dbus-dependencies=org.gnome.Tomboy:/org/gnome/Tomboy
 Dependencies=dbus,
 

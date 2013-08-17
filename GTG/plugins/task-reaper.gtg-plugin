@@ -8,5 +8,5 @@ description=This plugin deletes the task that have been
     to run the deletion automatically.
 authors=Luca Invernizzi <invernizzi.l@gmail.com>
 version=0.1.1
-enable=False
+enabled=False
 Dependencies=,

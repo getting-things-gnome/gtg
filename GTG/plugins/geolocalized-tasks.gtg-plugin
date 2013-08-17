@@ -7,4 +7,4 @@ description=This plugin adds geolocalized tasks to GTG!.
 authors=Paulo Cabido <paulo.cabido@gmail.com>
 version=0.1.1
 Dependencies=Geoclue,clutter,cluttergtk,champlain,champlaingtk
-enable=False
+enabled=False
