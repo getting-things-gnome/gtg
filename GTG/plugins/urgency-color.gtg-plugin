@@ -12,4 +12,4 @@ description=This plugin will calculate the urgency status of every of your curre
     Green means your task's start-date is oncoming.
 authors=Wolter Hellmund <wolterh6@gmail.com>
 version=0.1
-enable=False
+enabled=False

@@ -9,4 +9,4 @@ description=Allow to link a task with a bugzilla ticket
     bugzillas are supported.
 authors=Guillaume Desmottes <gdesmott@gnome.org>
 version=0.0.1
-enable=False
+enabled=False
