@@ -50,7 +50,7 @@ class TaskEditor:
         '''
         req is the requester
         vmanager is the view manager
-        taskconfig is a ConfigObj dic to save infos about tasks
+        taskconfig is a ConfigParser to save infos about tasks
         thisisnew is True when a new task is created and opened
         '''
         self.req = requester
