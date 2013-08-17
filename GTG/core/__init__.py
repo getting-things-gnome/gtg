@@ -72,6 +72,7 @@ DEFAULTS = {
     },
     'plugins': {
         "enabled": [],
+        "disabled": [],
     }
 }
 
