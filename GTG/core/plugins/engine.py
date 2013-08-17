@@ -60,6 +60,11 @@ class Plugin(object):
                 setattr(self, attr, [])
         # turn the enabled attribute into a bool
         self.enabled = info['enabled'].lower() == "true"
+        # ensure the module dependencies are a list
+        if isinstance(self.module_depends, str):
+            self.module_depends = self.module_depends.split(',')
+            if not self.module_depends[-1]:
+                self.module_depends = self.module_depends[:-1]
         # ensure the dbus dependencies are a list
         if isinstance(self.dbus_depends, str):
             self.dbus_depends = [self.dbus_depends]
