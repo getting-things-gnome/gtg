@@ -294,9 +294,9 @@ class Manager(object):
         # FIXME: this code is replicated in the preference window.
         if len(self.pengine.plugins) > 0:
             self.plugins_config.clear()
-            self.plugins_config.set("disabled",
+            self.plugins_config.set_list("disabled",
                 [p.module_name for p in self.pengine.get_plugins("disabled")])
-            self.plugins_config.set("enabled",
+            self.plugins_config.set_list("enabled",
                 [p.module_name for p in self.pengine.get_plugins("enabled")])
         # plugins are deactivated
         self.pengine.deactivate_plugins()
