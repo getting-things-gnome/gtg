@@ -140,11 +140,6 @@ class SubConfig():
         # Save immediately
         self.save()
 
-    def set_lst(self, option, value_lst):
-        self._conf.set(self._section, option, [str(s) for s in value_lst])
-        # Save immediately
-        self.save()
-
     def set_list(self, option, value_list):
         value = ','.join(value_list)
         self._conf.set(self._section, option, value)
