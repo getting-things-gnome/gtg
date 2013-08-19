@@ -185,7 +185,7 @@ class Manager(object):
             opened_tasks = self.browser_config.get("opened_tasks")
             if uid not in opened_tasks:
                 opened_tasks.append(uid)
-                self.browser_config.set("opened_tasks", opened_tasks)
+            self.browser_config.set_list("opened_tasks", opened_tasks)
         return tv
 
     def close_task(self, tid):
@@ -203,7 +203,7 @@ class Manager(object):
             opened_tasks = self.browser_config.get("opened_tasks")
             if tid in opened_tasks:
                 opened_tasks.remove(tid)
-                self.browser_config.set("opened_tasks", opened_tasks)
+            self.browser_config.set_list("opened_tasks", opened_tasks)
         self.check_quit_condition()
 
     def check_quit_condition(self):
@@ -288,7 +288,7 @@ class Manager(object):
         for otid in self.opened_task.keys():
             open_task.append(otid)
             self.opened_task[otid].close()
-        self.browser_config.set("opened_tasks", open_task)
+        self.browser_config.set_list("opened_tasks", open_task)
 
         # adds the plugin settings to the conf
         # FIXME: this code is replicated in the preference window.
