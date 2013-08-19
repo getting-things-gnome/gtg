@@ -112,7 +112,7 @@ class SubConfig():
                 elif ntype == list:
                     # All list config should be saved in ','.join(list) pattern
                     # This is just for backward compatibility
-                    if toreturn[0] == '[' and toreturn[-1] == ']':
+                    if toreturn and toreturn[0] == '[' and toreturn[-1] == ']':
                         toreturn = toreturn[1:-1]
                     toreturn = toreturn.split(',')
                     if toreturn[-1] == '':
