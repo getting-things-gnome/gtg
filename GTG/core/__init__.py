@@ -141,6 +141,12 @@ class SubConfig():
         # Save immediately
         self.save()
 
+    def set_list(self, option, value_list):
+        value = '[%s]' % ','.join(value_list)
+        self._conf.set(self._section, option, value)
+        # Save immediately
+        self.save()
+
 class TaskConfig():
 
     def __init__(self, conf, conf_path):
