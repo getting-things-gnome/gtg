@@ -110,7 +110,11 @@ class SubConfig():
                 if ntype == int:
                     toreturn = int(toreturn)
                 elif ntype == list:
-                    toreturn = toreturn[1:-1].split(',')
+                    # All list config should be saved in ','.join(list) pattern
+                    # This is just for backward compatibility
+                    if toreturn[0] == '[' and toreturn[-1] == ']':
+                        toreturn = toreturn[1:-1]
+                    toreturn = toreturn.split(',')
                     if toreturn[-1] == '':
                         toreturn = toreturn[:-1]
                 elif ntype == bool and type(toreturn) == str:
@@ -142,7 +146,7 @@ class SubConfig():
         self.save()
 
     def set_list(self, option, value_list):
-        value = '[%s]' % ','.join(value_list)
+        value = ','.join(value_list)
         self._conf.set(self._section, option, value)
         # Save immediately
         self.save()
