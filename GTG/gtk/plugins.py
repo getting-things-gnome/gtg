@@ -148,9 +148,9 @@ class PluginsDialog:
         self.pengine = PluginEngine()
         # plugin config initiation
         if self.pengine.get_plugins():
-            self.config.set_list("disabled",
+            self.config.set("disabled",
                 [p.module_name for p in self.pengine.get_plugins("disabled")])
-            self.config.set_list("enabled",
+            self.config.set("enabled",
                 [p.module_name for p in self.pengine.get_plugins("enabled")])
 
         # see constants PLUGINS_COL_* for column meanings
@@ -260,8 +260,8 @@ class PluginsDialog:
             plugins_disabled.append(plugin.module_name)
             if plugin.module_name in plugins_enabled:
                 plugins_enabled.remove(plugin.module_name)
-        self.config.set_list("enabled", plugins_enabled)
-        self.config.set_list("disabled", plugins_disabled)
+        self.config.set("enabled", plugins_enabled)
+        self.config.set("disabled", plugins_disabled)
         self.plugin_store.set_value(iterator, PLUGINS_COL_ENABLED,
                                     plugin.enabled)
         self._update_plugin_configure(plugin)

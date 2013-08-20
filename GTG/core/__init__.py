@@ -136,13 +136,9 @@ class SubConfig():
         self._conf.write(open(self._conf_path, 'w'))
 
     def set(self, option, value):
+        if type(value) == list:
+            value = ','.join(value)
         self._conf.set(self._section, option, str(value))
-        # Save immediately
-        self.save()
-
-    def set_list(self, option, value_list):
-        value = ','.join(value_list)
-        self._conf.set(self._section, option, value)
         # Save immediately
         self.save()
 
