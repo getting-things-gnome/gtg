@@ -452,7 +452,7 @@ class TagEditor(gtk.Window):
         """Callback: if a new color is added, we register it in the
         configuration"""
         self.custom_colors = self.tc_cc_colsel.get_custom_colors()
-        self.config.set_list("custom_colors", self.custom_colors)
+        self.config.set("custom_colors", self.custom_colors)
 
     def on_close(self, widget, event, arg1=None, arg2=None, arg3=None):
         """ Callback: hide the tag editor when the close the window.
