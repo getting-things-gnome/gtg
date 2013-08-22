@@ -115,7 +115,7 @@ class SubConfig():
                     if toreturn and toreturn[0] == '[' and toreturn[-1] == ']':
                         toreturn = toreturn[1:-1]
                     toreturn = toreturn.split(',')
-                    if toreturn[-1] == '':
+                    while toreturn and toreturn[-1] == '':
                         toreturn = toreturn[:-1]
                 elif ntype == bool and type(toreturn) == str:
                     toreturn = toreturn.lower() == "true"
