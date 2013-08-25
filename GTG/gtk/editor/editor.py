@@ -173,7 +173,7 @@ class TaskEditor:
         self.textview.grab_focus()
 
         # restoring size and position, spatial tasks
-        if not self.config.empty():
+        if self.config is not None:
             tid = self.task.get_id()
             if self.config.has_section(tid):
                 if self.config.has_option(tid, "position"):
@@ -502,7 +502,7 @@ class TaskEditor:
         self.task.set_title(self.textview.get_title())
         self.task.set_text(self.textview.get_text())
         self.task.sync()
-        if not self.config.empty():
+        if self.config is not None:
             self.config.save()
         self.time = time.time()
     # light_save save the task without refreshing every 30seconds
@@ -537,7 +537,7 @@ class TaskEditor:
 
     def on_move(self, widget, event):
         # saving the position
-        if not self.config.empty():
+        if self.config is not None:
             tid = self.task.get_id()
             if not self.config.has_section(tid):
                 self.config.add_section(tid)
