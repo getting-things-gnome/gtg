@@ -143,13 +143,13 @@ class SubConfig():
         self.save()
 
 class TaskConfig():
+    """ TaskConfig is used to save the position and size of each task, both of
+    value are one tuple with two numbers, so set and get will use join and split
+    """
 
     def __init__(self, conf, conf_path):
         self._conf = conf
         self._conf_path = conf_path
-
-    def empty(self):
-        return not self._conf.sections()
 
     def has_section(self, section):
         return self._conf.has_section(section)
@@ -161,9 +161,14 @@ class TaskConfig():
         self._conf.add_section(section)
 
     def get(self, tid, option):
-        return self._conf.get(tid, option)
+        value = self._conf.get(tid, option)
+        # Check single quote for backward compatibility
+        if value[0] == '(' and value[-1] == ')':
+            value = value[1:-1]
+        return value.split(', ')
 
     def set(self, tid, option, value):
+        value = ','.join(str(x) for x in value)
         self._conf.set(tid, option, value)
         self.save()
 
@@ -237,7 +242,7 @@ class CoreConfig(Borg):
         return SubConfig(section, self._conf, self.conf_path)
 
     def get_taskconfig(self):
-        return TaskConfig(self._task_conf, self.conf_path)
+        return TaskConfig(self._task_conf, self.task_conf_path)
 
     def get_icons_directories(self):
         """ Returns the directories containing the icons """
