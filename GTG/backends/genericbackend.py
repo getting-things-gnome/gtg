@@ -205,7 +205,7 @@ class GenericBackend(object):
     # NOTE: for now I'm disabling changing the default backend. Once it's all
     #      set up, we will see about that (invernizzi)
     KEY_DEFAULT_BACKEND = "Default"
-    KEY_ENABLED = "Enabled"
+    KEY_ENABLED = "enabled"
     KEY_HUMAN_NAME = BACKEND_HUMAN_NAME
     KEY_ATTACHED_TAGS = "attached-tags"
     KEY_USER = "user"

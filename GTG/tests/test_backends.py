@@ -92,7 +92,7 @@ class GtgBackendsUniTests(unittest.TestCase):
                 dic["module"] = str(domobj.getAttribute("module"))
                 dic["pid"] = str(domobj.getAttribute("pid"))
                 dic["xmlobject"] = domobj
-                dic["Enabled"] = True
+                dic["enabled"] = True
                 dic["path"] = self.taskpath
         beobj = localfile.Backend(dic)
         expectedres = True
