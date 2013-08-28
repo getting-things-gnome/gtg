@@ -21,6 +21,7 @@ Manager loads the prefs and launches the gtk main loop
 """
 
 from gi.repository import GObject, Gtk
+import ConfigParser
 
 import GTG
 from GTG.gtk.delete_dialog import DeletionUI
@@ -44,8 +45,9 @@ class Manager(object):
     def __init__(self, req):
         self.req = req
         self.config_obj = self.req.get_global_config()
-        self.config = self.config_obj.conf_dict
-        self.task_config = self.config_obj.task_conf_dict
+        self.browser_config = self.config_obj.get_subconfig("browser")
+        self.plugins_config = self.config_obj.get_subconfig("plugins")
+        self.task_config = self.config_obj.get_taskconfig()
 
         # Editors
         self.opened_task = {}   # This is the list of tasks that are already
@@ -94,8 +96,8 @@ class Manager(object):
         self.pengine.register_api(self.plugin_api)
         # checks the conf for user settings
         try:
-            plugins_enabled = self.config["plugins"]["enabled"]
-        except KeyError:
+            plugins_enabled = self.plugins_config.get("enabled")
+        except ConfigParser.Error:
             plugins_enabled = []
         for plugin in self.pengine.get_plugins():
             plugin.enabled = plugin.module_name in plugins_enabled
@@ -174,9 +176,10 @@ class Manager(object):
             # registering as opened
             self.opened_task[uid] = tv
             # save that we opened this task
-            if uid not in self.config["browser"]["opened_tasks"]:
-                self.config["browser"]["opened_tasks"].append(uid)
-                self.config.write()
+            opened_tasks = self.browser_config.get("opened_tasks")
+            if uid not in opened_tasks:
+                opened_tasks.append(uid)
+            self.browser_config.set("opened_tasks", opened_tasks)
         return tv
 
     def close_task(self, tid):
@@ -191,9 +194,10 @@ class Manager(object):
                 # else, it close_task would be called once again
                 # by editor.close
                 editor.close()
-            if tid in self.config["browser"]["opened_tasks"]:
-                self.config["browser"]["opened_tasks"].remove(tid)
-                self.config.write()
+            opened_tasks = self.browser_config.get("opened_tasks")
+            if tid in opened_tasks:
+                opened_tasks.remove(tid)
+            self.browser_config.set("opened_tasks", opened_tasks)
         self.check_quit_condition()
 
     def check_quit_condition(self):
@@ -278,15 +282,15 @@ class Manager(object):
         for otid in self.opened_task.keys():
             open_task.append(otid)
             self.opened_task[otid].close()
-        self.config["browser"]["opened_tasks"] = open_task
+        self.browser_config.set("opened_tasks", open_task)
 
         # adds the plugin settings to the conf
         # FIXME: this code is replicated in the preference window.
         if len(self.pengine.plugins) > 0:
-            self.config["plugins"] = {}
-            self.config["plugins"]["disabled"] = \
-                [p.module_name for p in self.pengine.get_plugins("disabled")]
-            self.config["plugins"]["enabled"] = \
-                [p.module_name for p in self.pengine.get_plugins("enabled")]
+            self.plugins_config.clear()
+            self.plugins_config.set("disabled",
+                [p.module_name for p in self.pengine.get_plugins("disabled")])
+            self.plugins_config.set("enabled",
+                [p.module_name for p in self.pengine.get_plugins("enabled")])
         # plugins are deactivated
         self.pengine.deactivate_plugins()

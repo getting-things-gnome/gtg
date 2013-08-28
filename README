@@ -15,7 +15,6 @@ GTG depends on the following packages:
  * Python, version 2.6 or above
  * PyGTK
  * python-support
- * python-configobj
  * python-xdg
  * python-dbus
  * python-liblarch 
@@ -29,8 +28,7 @@ these modules if they're not currently available.
 To install the all the required packages providing the basic features on
 Debian-based systems, execute the following command:
     $ sudo apt-get install python-support python-gtk2 python-gnome2 \
-         python-glade2 python-xdg python-configobj python-dbus \
-         python-liblarch yelp
+         python-glade2 python-xdg python-dbus python-liblarch yelp
 
 To enable API documentation generation, execute this command:
     $ sudo apt-get install python-pydoctor
