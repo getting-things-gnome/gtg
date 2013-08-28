@@ -19,8 +19,8 @@
 import imp
 import os
 import types
+import ConfigParser
 
-from configobj import ConfigObj
 import dbus
 
 from GTG.tools.borg import Borg
@@ -42,16 +42,16 @@ class Plugin(object):
     missing_dbus = []
 
     def __init__(self, info, module_path):
-        """Initialize the Plugin using a ConfigObj."""
+        """Initialize the Plugin using a ConfigParser."""
         info_fields = {
-            'module_name': 'Module',
-            'full_name': 'Name',
-            'version': 'Version',
-            'authors': 'Authors',
-            'short_description': 'Short-description',
-            'description': 'Description',
-            'module_depends': 'Dependencies',
-            'dbus_depends': 'Dbus-dependencies',
+            'module_name': 'module',
+            'full_name': 'name',
+            'version': 'version',
+            'authors': 'authors',
+            'short_description': 'short-description',
+            'description': 'description',
+            'module_depends': 'dependencies',
+            'dbus_depends': 'dbus-dependencies',
         }
         for attr, field in info_fields.iteritems():
             try:
@@ -59,7 +59,12 @@ class Plugin(object):
             except KeyError:
                 setattr(self, attr, [])
         # turn the enabled attribute into a bool
-        self.enabled = info['Enabled'].lower() == "true"
+        self.enabled = info['enabled'].lower() == "true"
+        # ensure the module dependencies are a list
+        if isinstance(self.module_depends, str):
+            self.module_depends = self.module_depends.split(',')
+            if not self.module_depends[-1]:
+                self.module_depends = self.module_depends[:-1]
         # ensure the dbus dependencies are a list
         if isinstance(self.dbus_depends, str):
             self.dbus_depends = [self.dbus_depends]
@@ -164,8 +169,10 @@ class PluginEngine(Borg):
             for f in os.listdir(path):
                 info_file = os.path.join(path, f)
                 if os.path.isfile(info_file) and f.endswith('.gtg-plugin'):
-                    info = ConfigObj(info_file)
-                    p = Plugin(info["GTG Plugin"], self.plugin_path)
+                    info = ConfigParser.ConfigParser()
+                    info.read(info_file)
+                    info = dict(info.items("GTG Plugin"))
+                    p = Plugin(info, self.plugin_path)
                     self.plugins[p.module_name] = p
 
     def get_plugin(self, module_name):

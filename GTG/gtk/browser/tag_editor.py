@@ -305,7 +305,7 @@ class TagEditor(gtk.Window):
         # Color selection
         self.tc_cc_colsel.unselect_color()
         # Custom colors
-        self.custom_colors = list(self.config.get('custom_colors'))
+        self.custom_colors = self.config.get('custom_colors')
         if len(self.custom_colors) > 0:
             self.tc_cc_colsel.set_custom_colors(self.custom_colors)
         # Focus
@@ -452,8 +452,7 @@ class TagEditor(gtk.Window):
         """Callback: if a new color is added, we register it in the
         configuration"""
         self.custom_colors = self.tc_cc_colsel.get_custom_colors()
-        self.config.set_lst("custom_colors", [s for s in self.custom_colors])
-        self.req.save_config()
+        self.config.set("custom_colors", self.custom_colors)
 
     def on_close(self, widget, event, arg1=None, arg2=None, arg3=None):
         """ Callback: hide the tag editor when the close the window.

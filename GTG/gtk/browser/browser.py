@@ -773,21 +773,25 @@ class TaskBrowser(gobject.GObject):
         # restore expanded state of subnodes
         self.vtree_panes['active'].get_model().foreach(
             self._expand_not_collapsed, colt)
+        self.config.set("collapsed_tasks", colt)
 
     def on_task_collapsed(self, sender, tid):
         colt = self.config.get("collapsed_tasks")
         if tid not in colt:
             colt.append(str(tid))
+        self.config.set("collapsed_tasks", colt)
 
     def on_tag_expanded(self, sender, tag):
         colt = self.config.get("expanded_tags")
         if tag not in colt:
             colt.append(tag)
+        self.config.set("expanded_tags", colt)
 
     def on_tag_collapsed(self, sender, tag):
         colt = self.config.get("expanded_tags")
         if tag in colt:
             colt.remove(str(tag))
+        self.config.set("expanded_tags", colt)
 
     def on_quickadd_activate(self, widget):
         """ Add a new task from quickadd toolbar """
