@@ -216,7 +216,7 @@ class PluginsDialog:
         """ Refresh status of plugins and put it in a Gtk.ListStore """
         self.plugin_store.clear()
         self.pengine.recheck_plugin_errors(True)
-        for name, plugin in self.pengine.plugins.iteritems():
+        for name, plugin in self.pengine.plugins.items():
             # activateable if there is no error
             self.plugin_store.append((name, plugin.enabled, plugin.full_name,
                                       plugin.short_description,

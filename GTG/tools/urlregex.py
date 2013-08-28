@@ -26,14 +26,14 @@ https://dev.twitter.com/docs/tco-url-wrapper/how-twitter-wrap-urls
 
 import re
 
-UTF_CHARS = ur'a-z0-9_\u00c0-\u00d6\u00d8-\u00f6\u00f8-\u00ff'
+UTF_CHARS = r'a-z0-9_\u00c0-\u00d6\u00d8-\u00f6\u00f8-\u00ff'
 
 SUBST_DICT = {
-    "pre": ur'(?:[^/"\':!=]|^|\:)',
-    "domain": ur'([\.-]|[^\s_\!\.\/])+\.[a-z]{2,}(?::[0-9]+)?',
-    "path": ur'(?:[\.,]?[%s!\*\'\(\);:&=\+\$/%s#\[\]\-_,~@])' % (
+    "pre": r'(?:[^/"\':!=]|^|\:)',
+    "domain": r'([\.-]|[^\s_\!\.\/])+\.[a-z]{2,}(?::[0-9]+)?',
+    "path": r'(?:[\.,]?[%s!\*\'\(\);:&=\+\$/%s#\[\]\-_,~@])' % (
     UTF_CHARS, '%'),
-    "query": ur'[a-z0-9!\*\'\(\);:&=\+\$/%#\[\]\-_\.,~]',
+    "query": r'[a-z0-9!\*\'\(\);:&=\+\$/%#\[\]\-_\.,~]',
     # Valid end-of-path characters (so /foo. does not gobble the period).
     "path_end": r'[%s\)=#/]' % UTF_CHARS,
     "query_end": '[a-z0-9_&=#]',

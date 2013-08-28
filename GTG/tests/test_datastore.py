@@ -77,7 +77,7 @@ class TestDatastore(unittest.TestCase):
     def test_get_all_tasks(self):
         """ Tests the get_all_tasks function """
         task_ids = []
-        for i in xrange(1, 10):
+        for i in range(1, 10):
             task = self.datastore.new_task()
             task_ids.append(task.get_id())
             return_list = self.datastore.get_all_tasks()
@@ -114,7 +114,7 @@ class TestDatastore(unittest.TestCase):
         Tests the push_task function
         '''
         task_ids = []
-        for i in xrange(1, 10):
+        for i in range(1, 10):
             tid = str(uuid.uuid4())
             if tid not in task_ids:
                 task_ids.append(tid)
@@ -138,7 +138,7 @@ class TestDatastore(unittest.TestCase):
         # create a simple backend dictionary
         backend = FakeBackend(enabled=True)
         tasks_in_backend_count = randint(1, 20)
-        for temp in xrange(0, tasks_in_backend_count):
+        for temp in range(0, tasks_in_backend_count):
             backend.fake_add_random_task()
         backend_dic = {'backend': backend, 'pid': 'a'}
         self.datastore.register_backend(backend_dic)
@@ -157,7 +157,7 @@ class TestDatastore(unittest.TestCase):
 
         # same test, disabled backend
         backend = FakeBackend(enabled=False)
-        for temp in xrange(1, randint(2, 20)):
+        for temp in range(1, randint(2, 20)):
             backend.fake_add_random_task()
         backend_dic = {'backend': backend, 'pid': 'b'}
         self.datastore.register_backend(backend_dic)
@@ -244,7 +244,7 @@ class TestDatastore(unittest.TestCase):
         '''
         # we add some tasks in the datastore
         tasks_in_datastore_count = 10  # randint(1, 20)
-        for temp in xrange(0, tasks_in_datastore_count):
+        for temp in range(0, tasks_in_datastore_count):
             self.datastore.new_task()
         datastore_stored_tids = self.datastore.get_all_tasks()
         self.assertEqual(tasks_in_datastore_count, len(datastore_stored_tids))
@@ -258,7 +258,7 @@ class TestDatastore(unittest.TestCase):
         self.datastore.get_backend(backend.get_id()).sync()
         # and we inject task in the backend
         tasks_in_backend_count = 5  # randint(1, 20)
-        for temp in xrange(0, tasks_in_backend_count):
+        for temp in range(0, tasks_in_backend_count):
             backend.fake_add_random_task()
         backend_stored_tids = backend.fake_get_task_ids()
         self.assertEqual(tasks_in_backend_count, len(backend_stored_tids))

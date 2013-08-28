@@ -46,7 +46,7 @@ class SignalCatcher(object):
             # then we notify the error
             # if the error_code is set to None, we're expecting it to fail.
             if error_code is not None:
-                print "An expected signal wasn't received %s" % str(error_code)
+                print("An expected signal wasn't received %s" % str(error_code))
             self.unittest.assertFalse(should_be_caught)
 
         self.watchdog = Watchdog(3, _on_failure)
@@ -93,7 +93,7 @@ class CallbackCatcher(object):
             # then we notify the error
             # if the error_code is set to None, we're expecting it to fail.
             if error_code is not None:
-                print "An expected signal wasn't received %s" % str(error_code)
+                print("An expected signal wasn't received %s" % str(error_code))
             self.unittest.assertFalse(should_be_caught)
 
         self.watchdog = Watchdog(3, _on_failure)

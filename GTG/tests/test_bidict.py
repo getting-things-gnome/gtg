@@ -30,7 +30,7 @@ class TestBiDict(unittest.TestCase):
 
     def test_add_and_gets(self):
         """ Test for the __init__, _get_by_first, _get_by_second function """
-        pairs = [(uuid.uuid4(), uuid.uuid4()) for a in xrange(10)]
+        pairs = [(uuid.uuid4(), uuid.uuid4()) for a in range(10)]
         bidict = BiDict(*pairs)
         for pair in pairs:
             self.assertEqual(bidict._get_by_first(pair[0]), pair[1])

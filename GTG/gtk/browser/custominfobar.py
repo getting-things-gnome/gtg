@@ -153,7 +153,7 @@ class CustomInfoBar(Gtk.InfoBar):
         if event == Gtk.ResponseType.ACCEPT:
             if self.interaction_type == BackendSignals().INTERACTION_TEXT:
                 self._prepare_textual_interaction()
-                print "done"
+                print("done")
             elif self.interaction_type == BackendSignals().INTERACTION_CONFIRM:
                 self.hide()
                 threading.Thread(target=getattr(self.backend,

@@ -201,8 +201,7 @@ class pluginTomboy:
         tomboy = self.getTomboyObject()
         if tomboy is None:
             return None
-        return map(lambda note: str(tomboy.GetNoteTitle(note)),
-                   tomboy.ListAllNotes())
+        return [str(tomboy.GetNoteTitle(note)) for note in tomboy.ListAllNotes()]
 
     def onTbTaskButton(self, widget, plugin_api):
         title_list = self.getTomboyNoteTitleList()
@@ -231,8 +230,7 @@ class pluginTomboy:
         if tomboy is None:
             return
         supposed_title = self.combobox_entry.get_text()
-        if filter(lambda x: tomboy.GetNoteTitle(x) == supposed_title,
-                  tomboy.ListAllNotes()) == []:
+        if [x for x in tomboy.ListAllNotes() if tomboy.GetNoteTitle(x) == supposed_title] == []:
             self.label_caption.set_text(_("That note does not exist!"))
             DIALOG_DESTROY_WITH_PARENT = Gtk.DialogFlags.DESTROY_WITH_PARENT
             dialog = Gtk.MessageDialog(parent=self.dialog,

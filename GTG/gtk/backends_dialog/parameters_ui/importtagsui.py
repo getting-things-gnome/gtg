@@ -20,6 +20,7 @@
 from gi.repository import Gtk
 
 from GTG.backends.genericbackend import GenericBackend
+from functools import reduce
 
 
 class ImportTagsUI(Gtk.Box):
@@ -100,9 +101,9 @@ class ImportTagsUI(Gtk.Box):
         else:
             tags = self.tags_entry.get_text().split(",")
             # stripping spaces
-            tags = map(lambda t: t.strip(), tags)
+            tags = [t.strip() for t in tags]
             # removing empty tags
-            tags = filter(lambda t: t, tags)
+            tags = [t for t in tags if t]
 
         self.backend.set_parameter(self.parameter_name, tags)
 

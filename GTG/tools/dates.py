@@ -32,7 +32,7 @@ from GTG import _, ngettext
 
 __all__ = 'Date',
 
-NOW, SOON, SOMEDAY, NODATE = range(4)
+NOW, SOON, SOMEDAY, NODATE = list(range(4))
 # strings representing fuzzy dates + no date
 ENGLISH_STRINGS = {
     NOW: 'now',
@@ -105,7 +105,7 @@ class Date(object):
             # Copy internal values from other Date object
             self._real_date = value._real_date
             self._fuzzy = value._fuzzy
-        elif isinstance(value, str) or isinstance(value, unicode):
+        elif isinstance(value, str) or isinstance(value, str):
             try:
                 da_ti = datetime.datetime.strptime(value, locale_format).date()
                 self._real_date = convert_datetime_to_date(da_ti)
@@ -187,7 +187,7 @@ class Date(object):
         else:
             return self._real_date.isoformat()
 
-    def __nonzero__(self):
+    def __bool__(self):
         return self._fuzzy != NODATE
 
     def __getattr__(self, name):

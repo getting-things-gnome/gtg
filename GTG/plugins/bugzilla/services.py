@@ -2,9 +2,9 @@
 
 # Remove dependence of bugz due to that plugin just needs get action and
 # it is done by Python xmlrpclib simply enough.
-from xmlrpclib import ServerProxy
+from xmlrpc.client import ServerProxy
 
-from bug import BugFactory
+from .bug import BugFactory
 
 __all__ = ('BugzillaServiceFactory',)
 

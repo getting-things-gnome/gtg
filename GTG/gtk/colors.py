@@ -18,6 +18,7 @@
 # -----------------------------------------------------------------------------
 
 from gi.repository import Gdk
+from functools import reduce
 
 # Take list of Tags and give the background color that should be applied
 # The returned color might be None (in which case, the default is used)
@@ -82,7 +83,7 @@ def get_colored_tags_markup(req, tag_names):
     '''
     Calls get_colored_tag_markup for each tag_name in tag_names
     '''
-    tag_markups = map(lambda t: get_colored_tag_markup(req, t), tag_names)
+    tag_markups = [get_colored_tag_markup(req, t) for t in tag_names]
     tags_txt = ""
     if tag_markups:
         # reduce crashes if applied to an empty list

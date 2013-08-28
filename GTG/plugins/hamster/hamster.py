@@ -53,7 +53,7 @@ class hamsterPlugin:
 
         activity = "Other"
         if self.preferences['activity'] == 'tag':
-            hamster_activities = set([unicode(x[0]).lower()
+            hamster_activities = set([str(x[0]).lower()
                                       for x in self.hamster.GetActivities()])
             activity_candidates = hamster_activities.intersection(
                 set(gtg_tags))
@@ -67,7 +67,7 @@ class hamsterPlugin:
 
         category = ""
         if self.preferences['category'] == 'auto_tag':
-            hamster_activities = dict([(unicode(x[0]), unicode(x[1]))
+            hamster_activities = dict([(str(x[0]), str(x[1]))
                                        for x in self.hamster.GetActivities()])
             if (gtg_title in hamster_activities
                     or gtg_title.replace(",", "") in hamster_activities):
@@ -76,7 +76,7 @@ class hamsterPlugin:
         if (self.preferences['category'] == 'tag' or
            (self.preferences['category'] == 'auto_tag' and not category)):
             # See if any of the tags match existing categories
-            categories = dict([(unicode(x[1]).lower(), unicode(x[1]))
+            categories = dict([(str(x[1]).lower(), str(x[1]))
                                for x in self.hamster.GetCategories()])
             lower_gtg_tags = set([x.lower() for x in gtg_tags])
             intersection = set(categories.keys()).intersection(lower_gtg_tags)
@@ -96,7 +96,7 @@ class hamsterPlugin:
         tag_candidates = []
         try:
             if self.preferences['tags'] == 'existing':
-                hamster_tags = set([unicode(x) for x in
+                hamster_tags = set([str(x) for x in
                                     self.hamster.GetTags()])
                 tag_candidates = list(hamster_tags.intersection(set(gtg_tags)))
             elif self.preferences['tags'] == 'all':
@@ -130,7 +130,7 @@ class hamsterPlugin:
             except dbus.DBusException:
                 pass
             modified = True
-            print "Removing invalid fact", i
+            print("Removing invalid fact", i)
         if modified:
             self.set_hamster_ids(task, valid_ids)
         return records

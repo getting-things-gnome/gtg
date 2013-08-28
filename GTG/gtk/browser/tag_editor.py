@@ -475,7 +475,7 @@ class TagEditor(Gtk.Window):
     def on_tc_colsel_activated(self, widget, color):
         """Callback: update the tag color depending on the current color
         selection"""
-        print "activated", widget, color, " <--- ignoring for now"
+        print("activated", widget, color, " <--- ignoring for now")
         return
         #color = self.tc_cc_colsel.get_rgba().to_color()
         color = color.to_color()

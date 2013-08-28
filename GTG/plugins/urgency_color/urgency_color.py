@@ -297,7 +297,7 @@ class pluginUrgencyColor:
         # distant future, when nobody has "red", "yellow" or "green"
         # settings
         namepairs = {'red': 'high', 'yellow': 'normal', 'green': 'low'}
-        for oldname, newname in namepairs.iteritems():
+        for oldname, newname in namepairs.items():
             old_key, new_key = "color_" + oldname, "color_" + newname
             if old_key in self._pref_data:
                 self._pref_data[new_key] = self._pref_data.pop(old_key)

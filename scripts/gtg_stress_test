@@ -35,7 +35,7 @@ def connect():
 
 if __name__ == '__main__':
     if len(sys.argv) == 1:
-         print "Usage: " + sys.argv[0] + " <number-of-tasks> [number-of-words-in-bodies]"
+         print("Usage: " + sys.argv[0] + " <number-of-tasks> [number-of-words-in-bodies]")
          sys.exit(1)
     total_tasks = int(sys.argv[1])
 
@@ -44,8 +44,8 @@ if __name__ == '__main__':
         text_length = int(sys.argv[2])
 
     gtg = connect()
-    for i in xrange(total_tasks):
+    for i in range(total_tasks):
         lengthy_text = ""
-        for i in xrange(text_length):
+        for i in range(text_length):
             lengthy_text += str(uuid.uuid4())
         gtg.NewTask("Active", str(uuid.uuid4()), '', '', '', [], lengthy_text, [])

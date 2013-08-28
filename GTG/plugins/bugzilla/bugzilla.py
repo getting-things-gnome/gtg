@@ -17,12 +17,12 @@
 from gi.repository import GObject
 import re
 import threading
-import xmlrpclib
-from urlparse import urlparse
+import xmlrpc.client
+from urllib.parse import urlparse
 
-from services import BugzillaServiceFactory
-from services import BugzillaServiceNotExist
-from notification import send_notification
+from .services import BugzillaServiceFactory
+from .services import BugzillaServiceNotExist
+from .notification import send_notification
 
 __all__ = ('pluginBugzilla', )
 
@@ -67,7 +67,7 @@ class GetBugInformationTask(threading.Thread):
 
         try:
             bug = bugzillaService.getBug(bug_id)
-        except xmlrpclib.Fault, err:
+        except xmlrpc.client.Fault as err:
             code = err.faultCode
             if code == 100:  # invalid bug ID
                 title = 'Invalid bug ID #%s' % bug_id
@@ -79,7 +79,7 @@ class GetBugInformationTask(threading.Thread):
                 title = err.faultString
 
             send_notification(bugzillaService.name, title)
-        except Exception, err:
+        except Exception as err:
             send_notification(bugzillaService.name, err.message)
         else:
             title = '#%s: %s' % (bug_id, bug.summary)

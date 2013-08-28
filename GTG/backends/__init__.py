@@ -57,23 +57,22 @@ class BackendFactory(Borg):
         self.backend_modules = {}
         # Look for backends in the GTG/backends dir
         this_dir = os.path.dirname(__file__)
-        backend_files = filter(lambda f: f.endswith(".py") and
-                               f.startswith(self.BACKEND_PREFIX),
-                               os.listdir(this_dir))
+        backend_files = [f for f in os.listdir(this_dir) if f.endswith(".py") and
+                               f.startswith(self.BACKEND_PREFIX)]
         # Create module names
-        module_names = map(lambda f: f.replace(".py", ""), backend_files)
+        module_names = [f.replace(".py", "") for f in backend_files]
         Log.debug("Backends found: " + str(module_names))
         # Load backend modules
         for module_name in module_names:
             extended_module_name = "GTG.backends." + module_name
             try:
                 __import__(extended_module_name)
-            except ImportError, exception:
+            except ImportError as exception:
                 # Something is wrong with this backend, skipping
                 Log.warning("Backend %s could not be loaded: %s" %
                            (module_name, str(exception)))
                 continue
-            except Exception, exception:
+            except Exception as exception:
                 # Other exception log as errors
                 Log.error("Malformated backend %s: %s" %
                          (module_name, str(exception)))
@@ -113,11 +112,11 @@ class BackendFactory(Borg):
         # type
         parameters = module.Backend.get_static_parameters()
         # we all the parameters and their default values in dic
-        for param_name, param_dic in parameters.iteritems():
+        for param_name, param_dic in parameters.items():
             dic[param_name] = param_dic[GenericBackend.PARAM_DEFAULT_VALUE]
         dic["pid"] = str(uuid.uuid4())
         dic["module"] = module.Backend.get_name()
-        for param_name, param_value in additional_parameters.iteritems():
+        for param_name, param_value in additional_parameters.items():
             dic[param_name] = param_value
         dic["backend"] = module.Backend(dic)
         return dic
@@ -146,7 +145,7 @@ class BackendFactory(Borg):
         # Building the dictionary
         parameters_specs = module.Backend.get_static_parameters()
         dic["pid"] = str(xp.getAttribute("pid"))
-        for param_name, param_dic in parameters_specs.iteritems():
+        for param_name, param_dic in parameters_specs.items():
             if xp.hasAttribute(param_name):
                 # we need to convert the parameter to the right format.
                 # we fetch the format from the static_parameters
