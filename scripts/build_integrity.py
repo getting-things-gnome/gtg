@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 # -*- coding: UTF-8 -*-
 # Copyright © 2012 Izidor Matušov <izidor.matusov@gmail.com
 #
