@@ -133,9 +133,9 @@ class PluginsDialog:
 
     def __init__(self, config_obj):
         self.config_obj = config_obj
-        self.config = self.config_obj.conf_dict
+        self.config = self.config_obj.get_subconfig("plugins")
         builder = Gtk.Builder()
-        builder.add_from_file(ViewConfig.PLUGINS_UI_FILE)
+        builder.add_from_file(ViewConfig.PLUGINS_GLADE_FILE)
 
         self.dialog = builder.get_object("PluginsDialog")
         self.dialog.set_title(_("Plugins - %s" % info.NAME))
@@ -145,19 +145,12 @@ class PluginsDialog:
         self.plugin_depends = builder.get_object('PluginDepends')
 
         self.pengine = PluginEngine()
-        # plugin config initiation, if never used
-        if "plugins" in self.config:
-            if "enabled" not in self.config["plugins"]:
-                self.config["plugins"]["enabled"] = []
-
-            if "disabled" not in self.config["plugins"]:
-                self.config["plugins"]["disabled"] = []
-        elif self.pengine.get_plugins():
-            self.config["plugins"] = {}
-            self.config["plugins"]["disabled"] = \
-                [p.module_name for p in self.pengine.get_plugins("disabled")]
-            self.config["plugins"]["enabled"] = \
-                [p.module_name for p in self.pengine.get_plugins("enabled")]
+        # plugin config initiation
+        if self.pengine.get_plugins():
+            self.config.set("disabled",
+                [p.module_name for p in self.pengine.get_plugins("disabled")])
+            self.config.set("enabled",
+                [p.module_name for p in self.pengine.get_plugins("enabled")])
 
         # see constants PLUGINS_COL_* for column meanings
         self.plugin_store = Gtk.ListStore(str, bool, str, str, bool)
@@ -254,16 +247,20 @@ class PluginsDialog:
         plugin = self.pengine.get_plugin(plugin_id)
         plugin.enabled = not self.plugin_store.get_value(iterator,
                                                          PLUGINS_COL_ENABLED)
+        plugins_enabled = self.config.get("enabled")
+        plugins_disabled = self.config.get("disabled")
         if plugin.enabled:
             self.pengine.activate_plugins([plugin])
-            self.config["plugins"]["enabled"].append(plugin.module_name)
-            if plugin.module_name in self.config["plugins"]["disabled"]:
-                self.config["plugins"]["disabled"].remove(plugin.module_name)
+            plugins_enabled.append(plugin.module_name)
+            if plugin.module_name in plugins_disabled:
+                plugins_disabled.remove(plugin.module_name)
         else:
             self.pengine.deactivate_plugins([plugin])
-            self.config["plugins"]["disabled"].append(plugin.module_name)
-            if plugin.module_name in self.config["plugins"]["enabled"]:
-                self.config["plugins"]["enabled"].remove(plugin.module_name)
+            plugins_disabled.append(plugin.module_name)
+            if plugin.module_name in plugins_enabled:
+                plugins_enabled.remove(plugin.module_name)
+        self.config.set("enabled", plugins_enabled)
+        self.config.set("disabled", plugins_disabled)
         self.plugin_store.set_value(iterator, PLUGINS_COL_ENABLED,
                                     plugin.enabled)
         self._update_plugin_configure(plugin)
