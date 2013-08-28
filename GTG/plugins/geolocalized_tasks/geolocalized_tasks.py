@@ -422,7 +422,7 @@ class geolocalizedTasks:
         # checks if there is one tag with a location
         task_has_location = False
         for tag in tag_list:
-            for key, item in tag.items():
+            for key, item in list(tag.items()):
                 if key == "location":
                     task_has_location = True
                     break
@@ -433,7 +433,7 @@ class geolocalizedTasks:
         self.marker_list = []
         if task_has_location:
             for tag in tag_list:
-                for key, item in tag.items():
+                for key, item in list(tag.items()):
                     if key == "location":
                         color = None
                         try:

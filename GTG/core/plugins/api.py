@@ -160,8 +160,8 @@ class PluginAPI:
         """
         try:
             self.__toolbar.remove(widget)
-        except Exception, e:
-            print "Error removing the toolbar item in the TaskEditor: %s" % e
+        except Exception as e:
+            print("Error removing the toolbar item in the TaskEditor: %s" % e)
 
     def add_widget_to_taskeditor(self, widget):
         """Adds a widget to the bottom of the task editor dialog
@@ -189,7 +189,7 @@ class PluginAPI:
                 wi = self.__builder.get_object('vbox4')
                 if wi and widg_id in self.taskwidget_widg:
                     wi.remove(self.taskwidget_widg.pop(widg_id))
-            except Exception, e:
+            except Exception as e:
                 Log.debug("Error removing the toolbar item in the TaskEditor:"
                           "%s" % e)
 
@@ -205,7 +205,7 @@ class PluginAPI:
         if func is None:
             func = browser.tv_factory.task_bg_color
 
-        for pane in browser.vtree_panes.itervalues():
+        for pane in browser.vtree_panes.values():
             pane.set_bg_color(func, 'bg_color')
             pane.basetree.get_basetree().refresh_all()
 

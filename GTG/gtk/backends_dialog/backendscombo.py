@@ -69,7 +69,7 @@ class BackendsCombo(Gtk.ComboBox):
         '''
         self.liststore.clear()
         backend_types = BackendFactory().get_all_backends()
-        for name, module in backend_types.iteritems():
+        for name, module in backend_types.items():
             # FIXME: Disable adding another localfile backend.
             # It just produce many warnings, provides no use case
             # See LP bug #940917 (Izidor)

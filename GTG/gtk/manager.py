@@ -21,7 +21,7 @@ Manager loads the prefs and launches the gtk main loop
 """
 
 from gi.repository import GObject, Gtk
-import ConfigParser
+import configparser
 
 import GTG
 from GTG.gtk.delete_dialog import DeletionUI
@@ -97,7 +97,7 @@ class Manager(object):
         # checks the conf for user settings
         try:
             plugins_enabled = self.plugins_config.get("enabled")
-        except ConfigParser.Error:
+        except configparser.Error:
             plugins_enabled = []
         for plugin in self.pengine.get_plugins():
             plugin.enabled = plugin.module_name in plugins_enabled
@@ -279,7 +279,7 @@ class Manager(object):
         Gtk.main_quit()
         # save opened tasks and their positions.
         open_task = []
-        for otid in self.opened_task.keys():
+        for otid in list(self.opened_task.keys()):
             open_task.append(otid)
             self.opened_task[otid].close()
         self.browser_config.set("opened_tasks", open_task)

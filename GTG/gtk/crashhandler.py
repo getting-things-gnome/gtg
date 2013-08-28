@@ -44,7 +44,7 @@ from GTG import info
 try:
     from gi.repository import GObject, Gtk, Pango
 except Exception:
-    print >> sys.stderr, "gtkcrashhandler could not load GTK 3.0"
+    print("gtkcrashhandler could not load GTK 3.0", file=sys.stderr)
     _gtk_initialized = False
 else:
     _gtk_initialized = True
@@ -97,7 +97,7 @@ def _replacement_excepthook(type, value, tracebk, thread=None):
     if thread:
         if not isinstance(thread, threading._MainThread):
             tb = "Exception in thread %s:\n%s" % (thread.getName(), tb)
-    print >> sys.stderr, tb
+    print(tb, file=sys.stderr)
 
     # determine whether to add a "Report problem..." button
     add_apport_button = False
@@ -107,7 +107,7 @@ def _replacement_excepthook(type, value, tracebk, thread=None):
         try:
             from apport.fileutils import likely_packaged
             try:
-                filename = os.path.realpath(os.path.join(os.getcwdu(),
+                filename = os.path.realpath(os.path.join(os.getcwd(),
                                                          sys.argv[0]))
             except:
                 filename = os.path.realpath("/proc/%i/exe" % os.getpid())
@@ -206,8 +206,7 @@ def show_error_window(error_string, add_apport_button=False):
     try:
         textview.override_font(Pango.FontDescription("monospace 8"))
     except Exception:
-        print >> sys.stderr, \
-            "gtkcrashhandler: override_font raised an exception"
+        print("gtkcrashhandler: override_font raised an exception", file=sys.stderr)
 
     # allow scrolling of textview
     scrolled = Gtk.ScrolledWindow()
@@ -274,7 +273,7 @@ def gtkcrashhandler_thread(run):
     def gtkcrashhandler_wrapped_run(*args, **kwargs):
         try:
             run(*args, **kwargs)
-        except Exception, ee:
+        except Exception as ee:
             lock = threading.Lock()
             lock.acquire()
             tb = sys.exc_info()[2]

@@ -35,12 +35,12 @@ def main(args):
                     descriptions = True,
                     verbosity = 1)
     if "-h" in args:
-        print "USAGE:"
-        print "./run_tests  to run all tests"
-        print "./run_tests  [module_name ..] to run tests from the listed " + \
-              "modules"
-        print "./run_tests  [function_path ..] to run the selected " + \
-              "functions as tests"
+        print("USAGE:")
+        print("./run_tests  to run all tests")
+        print("./run_tests  [module_name ..] to run tests from the listed " + \
+              "modules")
+        print("./run_tests  [function_path ..] to run the selected " + \
+              "functions as tests")
         return
     if "-l" in args:
         args.remove("-l")
@@ -81,14 +81,14 @@ def main(args):
 
     #show the aggregated result of all the tests
     if tests_are_successful:
-        print "ALL TESTS ARE SUCCESSFUL"
+        print("ALL TESTS ARE SUCCESSFUL")
         return 0
     else:
-        print """
+        print("""
         ****************************************
         SOME TESTS *FAILED*!
         ****************************************
-        """
+        """)
         return 1
 
 if __name__ == '__main__':

@@ -33,6 +33,7 @@ from GTG.tools.keyring import Keyring
 from GTG.core import CoreConfig
 from GTG.tools.logger import Log
 from GTG.tools.interruptible import _cancellation_point
+from functools import reduce
 
 PICKLE_BACKUP_NBR = 2
 
@@ -261,9 +262,9 @@ class GenericBackend(object):
         if cls._general_description[cls.BACKEND_TYPE] == \
                 cls.TYPE_READWRITE:
             for key, value in \
-                    cls._static_parameters_obligatory_for_rw.iteritems():
+                    cls._static_parameters_obligatory_for_rw.items():
                 temp_dic[key] = value
-        for key, value in cls._static_parameters.iteritems():
+        for key, value in cls._static_parameters.items():
             temp_dic[key] = value
         return temp_dic
 
@@ -537,7 +538,7 @@ class GenericBackend(object):
         # mkdir -p
         try:
             os.makedirs(os.path.dirname(path))
-        except OSError, exception:
+        except OSError as exception:
             if exception.errno != errno.EEXIST:
                 raise
 

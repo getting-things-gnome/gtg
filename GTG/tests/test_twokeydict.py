@@ -31,7 +31,7 @@ class TestTwoKeyDict(unittest.TestCase):
     def test_add_and_gets(self):
         """ Test for the __init__, _get_by_first, _get_by_second function """
         triplets = [(uuid.uuid4(), uuid.uuid4(), uuid.uuid4())
-                    for a in xrange(10)]
+                    for a in range(10)]
         tw_dict = TwoKeyDict(*triplets)
         for triplet in triplets:
             self.assertEqual(tw_dict._get_by_primary(triplet[0]), triplet[2])
@@ -66,14 +66,14 @@ class TestTwoKeyDict(unittest.TestCase):
         self.assertEqual(missing_second, 2)
         # check for memory leaks
         dict_len = 0
-        for key in tw_dict._primary_to_value.iterkeys():
+        for key in tw_dict._primary_to_value.keys():
             dict_len += 1
         self.assertEqual(dict_len, 0)
 
     def test_get_primary_and_secondary_key(self):
         """ Test for fetching the objects stored in the TwoKeyDict """
         triplets = [(uuid.uuid4(), uuid.uuid4(), uuid.uuid4())
-                    for a in xrange(10)]
+                    for a in range(10)]
         tw_dict = TwoKeyDict(*triplets)
         for triplet in triplets:
             self.assertEqual(tw_dict._get_secondary_key(triplet[0]),

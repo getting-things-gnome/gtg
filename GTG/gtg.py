@@ -74,7 +74,7 @@ def check_instance(directory, uri_list=[]):
     pidfile = os.path.join(directory, "gtg.pid")
     if not os.path.exists(pidfile):
         open(pidfile, "w").close()
-        os.chmod(pidfile, 0600)
+        os.chmod(pidfile, 0o600)
 
     # see if gtg is already running
     pid = open(pidfile, "r").readline()
@@ -82,7 +82,7 @@ def check_instance(directory, uri_list=[]):
         p = os.system("/bin/ps %s >/dev/null" % pid)
         p_name = os.popen("/bin/ps -f %s" % pid).read()
         if p == 0 and "gtg" in p_name:
-            print _("gtg is already running!")
+            print(_("gtg is already running!"))
             try:
                 d = dbus.SessionBus().get_object(CoreConfig.BUSNAME,
                                                  CoreConfig.BUSINTERFACE)

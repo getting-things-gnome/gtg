@@ -21,7 +21,7 @@
 
 from gi.repository import Gio
 from gi.repository import Gtk
-import urllib
+import urllib.request, urllib.parse, urllib.error
 
 from GTG import _
 
@@ -74,7 +74,7 @@ class pluginSendEmail:
         # Title contains the title and the start and due dates.
         title = _("Task: %(task_title)s") % {'task_title': task.get_title()}
 
-        parameters = urllib.urlencode({'subject': title, 'body': body})
+        parameters = urllib.parse.urlencode({'subject': title, 'body': body})
         parameters = parameters.replace('+', '%20')
 
         Gio.app_info_get_default_for_uri_scheme('mailto').launch_uris(

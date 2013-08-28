@@ -36,7 +36,7 @@ If you want to display only a subset of tasks, you can either:
 """
 
 #=== IMPORT ===================================================================
-import ConfigParser
+import configparser
 from xdg.BaseDirectory import xdg_data_home, xdg_config_home, xdg_data_dirs
 import os
 
@@ -123,8 +123,8 @@ class SubConfig():
             toreturn = DEFAULTS[self._section][option]
             self.set(option, toreturn)
         else:
-            print "Warning : no default conf value for %s in %s" % (
-                option, self._section)
+            print("Warning : no default conf value for %s in %s" % (
+                option, self._section))
             toreturn = None
         return toreturn
 
@@ -195,10 +195,10 @@ class CoreConfig(Borg):
     def check_config_file(self, path):
         """ This function bypasses the errors of config file and allows GTG
         to open smoothly"""
-        config = ConfigParser.ConfigParser()
+        config = configparser.ConfigParser()
         try:
             config.read(path)
-        except ConfigParser.Error:
+        except configparser.Error:
             open(path, "w").close()
         return config
 

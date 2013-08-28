@@ -111,7 +111,7 @@ for po in glob.glob(os.path.join(PO_DIR, '*.po')):
     try:
         return_code = call(['msgfmt', '-o', mo, po])
     except OSError:
-        print 'Translation not available, please install gettext'
+        print('Translation not available, please install gettext')
         break
     if return_code:
         raise Warning('Error when building locales')

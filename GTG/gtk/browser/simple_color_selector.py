@@ -177,7 +177,7 @@ class SimpleColorSelector(Gtk.Box):
         vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         self.palette.add(vbox)
         vbox.set_spacing(4)
-        for i in xrange(len(self.colors)):
+        for i in range(len(self.colors)):
             if i % self.width == 0:
                 cur_box = Gtk.Box()
                 vbox.pack_start(cur_box, True, True, 0)
@@ -219,7 +219,7 @@ class SimpleColorSelector(Gtk.Box):
         cc_vbox.set_spacing(4)
         cc_box = Gtk.Box()
         cc_vbox.pack_start(cc_box, True, True, 0)
-        for i in xrange(len(self.custom_colors)):
+        for i in range(len(self.custom_colors)):
             # add the color box
             img = SimpleColorSelectorPaletteItem()
             img.set_size_request(

@@ -34,7 +34,7 @@ def ifKeyPressedCallback(widget, key, callback):
 def ifClipboardTextIsInListCallback(clipboard_obj, list_obj, callback):
 
     def clipboardCallback(clipboard_obj, text, list_obj):
-        if len(filter(lambda x: x == text, list_obj)) != 0:
+        if len([x for x in list_obj if x == text]) != 0:
             callback(text)
     clipboard_obj.request_text(clipboardCallback, list_obj)
 

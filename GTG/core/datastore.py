@@ -134,7 +134,7 @@ class DataStore(object):
         """
         try:
             parameters = parse_search_query(query)
-        except InvalidQuery, e:
+        except InvalidQuery as e:
             Log.warning("Problem with parsing query '%s' (skipping): %s" %
                        (query, e.message))
             return None
@@ -176,7 +176,7 @@ class DataStore(object):
         tag = self.get_tag(oldname)
 
         if not tag.is_search_tag():
-            print "Tag renaming not implemented yet"
+            print("Tag renaming not implemented yet")
             return None
 
         query = tag.get_attribute("query")
@@ -360,7 +360,7 @@ class DataStore(object):
         @return list: a list of TaskSource objects
         """
         result = []
-        for backend in self.backends.itervalues():
+        for backend in self.backends.values():
             if backend.is_enabled() or disabled:
                 result.append(backend)
         return result
@@ -437,7 +437,7 @@ class DataStore(object):
             return
 
         self.is_default_backend_loaded = True
-        for backend in self.backends.itervalues():
+        for backend in self.backends.values():
             if backend.is_enabled() and not backend.is_default():
                 self._backend_startup(backend)
 
@@ -565,7 +565,7 @@ class DataStore(object):
                 thread = threading.Thread(target=b.quit)
                 threads_dic[b.get_id()] = thread
                 thread.start()
-            for backend_id, thread in threads_dic.iteritems():
+            for backend_id, thread in threads_dic.items():
                 # after 20 seconds, we give up
                 thread.join(20)
                 if thread.isAlive():
@@ -574,7 +574,7 @@ class DataStore(object):
         # we save the parameters
         for b in self.get_all_backends(disabled=True):
             t_xml = doc.createElement("backend")
-            for key, value in b.get_parameters().iteritems():
+            for key, value in b.get_parameters().items():
                 if key in ["backend", "xmlobject"]:
                     # We don't want parameters, backend, xmlobject:
                     # we'll create them at next startup

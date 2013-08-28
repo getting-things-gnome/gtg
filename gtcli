@@ -75,12 +75,12 @@ def connect_to_gtg():
     This function handles possible errors while connecting to GTG """
     try:
         bus = dbus.SessionBus()
-    except dbus.exceptions.DBusException, err:
+    except dbus.exceptions.DBusException as err:
         if "X11 initialization failed" in err.get_dbus_message():
             os.environ['DISPLAY'] = ":0"
             bus = dbus.SessionBus()
         else:
-            print "dbus exception: '%s'" % err
+            print("dbus exception: '%s'" % err)
             raise
 
     proxy = bus.get_object("org.gnome.GTG", "/org/gnome/GTG")
@@ -103,9 +103,9 @@ def new_task(title):
     gtg = connect_to_gtg()
     task = gtg.NewTask("Active", title, '', '', '', [], cgi.escape(body), [])
     if task:
-        print _("New task created with id %s") % task['id']
+        print(_("New task created with id %s") % task['id'])
     else:
-        print _("New task could not be created")
+        print(_("New task could not be created"))
         sys.exit(1)
 
 
@@ -117,11 +117,11 @@ def delete_tasks(task_ids):
             task = gtg.GetTask(task_id)
             gtg.DeleteTask(task_id)
             if gtg.GetTask(task_id):
-                print _("Task %s could not be deleted") % (task['title'])
+                print(_("Task %s could not be deleted") % (task['title']))
             else:
-                print _("Task %s deleted") % (task['title'])
+                print(_("Task %s deleted") % (task['title']))
         else:
-            print MSG_ERROR_TASK_ID_INVALID
+            print(MSG_ERROR_TASK_ID_INVALID)
             sys.exit(1)
 
 
@@ -135,12 +135,12 @@ def close_tasks(task_ids):
             gtg.ModifyTask(task_id, task)
             task = gtg.GetTask(task_id)
             if task['status'] == "Done":
-                print _("Task %s marked as done") % (task['title'])
+                print(_("Task %s marked as done") % (task['title']))
             else:
-                print _("Task %s could not be marked as done") % task['title']
+                print(_("Task %s could not be marked as done") % task['title'])
                 sys.exit(1)
         else:
-            print MSG_ERROR_TASK_ID_INVALID
+            print(MSG_ERROR_TASK_ID_INVALID)
             sys.exit(1)
 
 
@@ -157,18 +157,18 @@ def show_tasks(task_ids):
             if decoration:
                 content = decoration.group(1)
 
-            print task['title']
+            print(task['title'])
             if len(task['tags']) > 0:
-                print " %-12s %s" % ('tags:', task['tags'][0])
+                print(" %-12s %s" % ('tags:', task['tags'][0]))
             for k in ['id', 'startdate', 'duedate', 'status']:
-                print " %-12s %s" % (k + ":", task[k])
+                print(" %-12s %s" % (k + ":", task[k]))
             if len(task['parents']) > 0:
-                print " %-12s %s" % ('parents:', task['parents'][0])
-            print
-            print content
-            print
+                print(" %-12s %s" % ('parents:', task['parents'][0]))
+            print()
+            print(content)
+            print()
         else:
-            print MSG_ERROR_TASK_ID_INVALID
+            print(MSG_ERROR_TASK_ID_INVALID)
             sys.exit(1)
 
 
@@ -190,10 +190,10 @@ def postpone(args):
         if task:
             task['startdate'] = startdate
             tags = ", ".join(task['tags'])
-            print "%-12s %-20s %s" % (task['id'], tags, task['title'])
+            print("%-12s %-20s %s" % (task['id'], tags, task['title']))
             gtg.ModifyTask(task['id'], task)
         else:
-            print MSG_ERROR_TASK_ID_INVALID
+            print(MSG_ERROR_TASK_ID_INVALID)
             sys.exit(1)
 
 
@@ -204,7 +204,7 @@ def edit_tasks(task_ids):
         if gtg.GetTask(task):
             gtg.OpenTaskEditor(task)
         else:
-            print MSG_ERROR_TASK_ID_INVALID
+            print(MSG_ERROR_TASK_ID_INVALID)
             sys.exit(1)
 
 
@@ -249,7 +249,7 @@ def count_tasks(criteria):
             continue
         total += 1
 
-    print total
+    print(total)
     return total
 
 
@@ -281,11 +281,11 @@ def summary_of_tasks(criteria):
             report[duedate] = {'starting': 0, 'due': 0}
         report[duedate]['due'] += 1
 
-    print "%-20s %5s %5s" % ("", "Start", "Due")
+    print("%-20s %5s %5s" % ("", "Start", "Due"))
     if 'unscheduled' in report:
-        print "%-20s %5d %5d" % ('unscheduled',
+        print("%-20s %5d %5d" % ('unscheduled',
                                  report['unscheduled']['starting'],
-                                 report['unscheduled']['due'])
+                                 report['unscheduled']['due']))
     num_days = 22
     fmt = "%a  %-m-%-d"
     if 'today' in criteria:
@@ -294,11 +294,11 @@ def summary_of_tasks(criteria):
         day = date.today() + timedelta(i)
         sday = str(day)
         if sday in report:
-            print "%-20s %5d %5d" % (day.strftime(fmt),
+            print("%-20s %5d %5d" % (day.strftime(fmt),
                                      report[sday]['starting'],
-                                     report[sday]['due'])
+                                     report[sday]['due']))
         else:
-            print "%-20s %5d %5d" % (day.strftime(fmt), 0, 0)
+            print("%-20s %5d %5d" % (day.strftime(fmt), 0, 0))
 
 
 def list_tasks(criteria):
@@ -334,19 +334,19 @@ def list_tasks(criteria):
     # If any tags were specified, use only those as the categories
     keys = [fname for fname in filters if fname.startswith('@')]
     if not keys:
-        keys = tasks_tree.keys()
+        keys = list(tasks_tree.keys())
         keys.sort()
 
     for key in keys:
         if key not in tasks_tree:
             continue
         if key != notag:
-            print "%s:" % (key[1:])
+            print("%s:" % (key[1:]))
         for task in tasks_tree[key]:
             text = textwrap.fill(task['title'],
                                  initial_indent='',
                                  subsequent_indent=' ' * 40)
-            print "  %-36s  %s" % (task['id'], text)
+            print("  %-36s  %s" % (task['id'], text))
 
 
 def search_tasks(expression):
@@ -358,7 +358,7 @@ def search_tasks(expression):
             text = textwrap.fill(task['title'],
                                  initial_indent='',
                                  subsequent_indent=' ' * 40)
-            print "  %-36s  %s" % (task['id'], text)
+            print("  %-36s  %s" % (task['id'], text))
 
 
 def overview(expression):
@@ -407,10 +407,10 @@ def overview(expression):
 
         day_str = day.strftime("%A  %-m-%-d")
         if i > 0:
-            print ""
-        print "%s (%d tasks)" % (day_str, len(today_tasks))
+            print("")
+        print("%s (%d tasks)" % (day_str, len(today_tasks)))
         for task in sorted(today_tasks):
-            print " - %s" % task.encode('utf-8')
+            print(" - %s" % task.encode('utf-8'))
 
 
 def run_command(args):
@@ -453,7 +453,7 @@ def main():
     """ Parse arguments and launch command """
     try:
         opts, args = getopt.gnu_getopt(sys.argv[1:], "h", ["help"])
-    except getopt.GetoptError, err:
+    except getopt.GetoptError as err:
         sys.stderr.write("Error: " + str(err) + "\n\n")
         usage()
         sys.exit(2)

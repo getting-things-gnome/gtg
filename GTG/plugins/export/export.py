@@ -131,7 +131,7 @@ class PluginExport:
         try:
             self.template.generate(tasks, self.plugin_api,
                                    self.on_export_finished)
-        except Exception, err:
+        except Exception as err:
             self.show_error_dialog(
                 _("GTG could not generate the document: %s") % err)
             raise

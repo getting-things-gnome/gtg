@@ -180,7 +180,7 @@ class BackendsDialog(object):
             'add_button': 'add_button',
             'remove_button': 'remove_button',
         }
-        for attr, widget in widgets.iteritems():
+        for attr, widget in widgets.items():
             setattr(self, attr, builder.get_object(widget))
 
     def _setup_signal_connections(self, builder):

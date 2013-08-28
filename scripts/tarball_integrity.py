@@ -55,6 +55,6 @@ for root, dirs, files in os.walk('.'):
 missing = list(set(dirlist) - set(tarlist))
 if len(missing) > 0:
     missing.sort()
-    print 'Missing files in tarball:'
-    print '\n'.join("\t%s" % f for f in missing)
+    print('Missing files in tarball:')
+    print('\n'.join("\t%s" % f for f in missing))
     sys.exit(1)

@@ -19,7 +19,7 @@
 import imp
 import os
 import types
-import ConfigParser
+import configparser
 
 import dbus
 
@@ -53,7 +53,7 @@ class Plugin(object):
             'module_depends': 'dependencies',
             'dbus_depends': 'dbus-dependencies',
         }
-        for attr, field in info_fields.iteritems():
+        for attr, field in info_fields.items():
             try:
                 setattr(self, attr, info[field])
             except KeyError:
@@ -122,12 +122,12 @@ class Plugin(object):
             f, pathname, desc = imp.find_module(self.module_name, module_path)
             module = imp.load_module(self.module_name, f, pathname, desc)
             # find the class object for the actual plugin
-            for key, item in module.__dict__.iteritems():
-                if isinstance(item, types.ClassType):
+            for key, item in module.__dict__.items():
+                if isinstance(item, type):
                     self.plugin_class = item
                     self.class_name = item.__dict__['__module__'].split('.')[1]
                     break
-        except ImportError, e:
+        except ImportError as e:
             # load_module() failed, probably because of a module dependency
             if len(self.module_depends) > 0:
                 self._check_module_depends()
@@ -135,7 +135,7 @@ class Plugin(object):
                 # no dependencies in info file; use the ImportError instead
                 self.missing_modules.append(str(e).split(" ")[3])
             self.error = True
-        except Exception, e:
+        except Exception as e:
             # load_module() failed for some other reason
             Log.error(e)
             self.error = True
@@ -169,7 +169,7 @@ class PluginEngine(Borg):
             for f in os.listdir(path):
                 info_file = os.path.join(path, f)
                 if os.path.isfile(info_file) and f.endswith('.gtg-plugin'):
-                    info = ConfigParser.ConfigParser()
+                    info = configparser.ConfigParser()
                     info.read(info_file)
                     info = dict(info.items("GTG Plugin"))
                     p = Plugin(info, self.plugin_path)
@@ -188,7 +188,7 @@ class PluginEngine(Borg):
                                        "disabled",
                                        "all"
         """
-        all_plugins = self.plugins.itervalues()
+        all_plugins = iter(self.plugins.values())
         if kind_of_plugins == "all":
             return all_plugins
 
@@ -197,7 +197,7 @@ class PluginEngine(Borg):
                    (kind_of_plugins == "inactive" and not plugin.active) or
                    (kind_of_plugins == "enabled" and plugin.enabled) or
                    (kind_of_plugins == "disabled" and not plugin.enabled))
-        return filter(filter_fun, all_plugins)
+        return list(filter(filter_fun, all_plugins))
 
     def register_api(self, api):
         '''Adds a plugin api to the list of currently loaded apis'''
@@ -285,8 +285,8 @@ class PluginEngine(Borg):
                         plugin.enabled = False
                     else:
                         self.activate_plguins(self.plugin_apis, [plugin])
-            except Exception, e:
-                print "Error: %s" % e
+            except Exception as e:
+                print("Error: %s" % e)
 
     def recheck_plugin_errors(self, check_all=False):
         """Attempt a reload of plugins with errors, or all plugins."""

@@ -52,7 +52,7 @@ class Timer:
         self.start = time.time()
 
     def __exit__(self, *args):
-        print("{0} : {1}".format(self.name, time.time() - self.start))
+        print(("{0} : {1}".format(self.name, time.time() - self.start)))
 
 
 class TaskBrowser(GObject.GObject):
@@ -790,7 +790,7 @@ class TaskBrowser(GObject.GObject):
 
     def on_quickadd_activate(self, widget):
         """ Add a new task from quickadd toolbar """
-        text = unicode(self.quickadd_entry.get_text())
+        text = str(self.quickadd_entry.get_text())
         text = text.strip()
         if text:
             tags = self.get_selected_tags(nospecial=True)

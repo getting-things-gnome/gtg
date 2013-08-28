@@ -38,7 +38,7 @@ def tag_filter(tag, parameters=None):
 def normalize_unicode(string):
     """ Unicode characters with diacritic could have more than just one
     representation. We force them to be in just one of them."""
-    return unicodedata.normalize('NFC', unicode(string))
+    return unicodedata.normalize('NFC', str(string))
 
 
 def tag_match(completion, key, iterator, column):

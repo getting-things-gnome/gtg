@@ -47,7 +47,7 @@ class Task(TreeNode):
         TreeNode.__init__(self, ze_id)
         # the id of this task in the project should be set
         # tid is a string ! (we have to choose a type and stick to it)
-        assert(isinstance(ze_id, str) or isinstance(ze_id, unicode))
+        assert(isinstance(ze_id, str) or isinstance(ze_id, str))
         self.tid = str(ze_id)
         self.set_uuid(uuid.uuid4())
         self.remote_ids = {}
@@ -569,7 +569,7 @@ class Task(TreeNode):
     #        (Lionel)
     # Agreed. it's only used by the "add tag to all subtasks" widget.
     def get_self_and_all_subtasks(self, active_only=False, tasks=[]):
-        print "DEPRECATED FUNCTION: get_self_and_all_subtasks"
+        print("DEPRECATED FUNCTION: get_self_and_all_subtasks")
         tasks.append(self)
         for tid in self.get_children():
             i = self.req.get_task(tid)
@@ -580,7 +580,7 @@ class Task(TreeNode):
 
     def get_subtask(self, tid):
         # FIXME : remove this function. This is not useful
-        print "DEPRECATED: get_subtask"
+        print("DEPRECATED: get_subtask")
         """Return the task corresponding to a given ID.
 
         @param tid: the ID of the task to return.
@@ -606,7 +606,7 @@ class Task(TreeNode):
         @param att_value: The value of the attribute. Will be converted to a
             string.
         """
-        val = unicode(str(att_value), "UTF-8")
+        val = str(str(att_value), "UTF-8")
         self.attributes[(namespace, att_name)] = val
         self.sync()
 

@@ -29,4 +29,4 @@ def is_connection_up():
     return state == NetworkManager.State.CONNECTED_GLOBAL
 
 if __name__ == "__main__":
-    print "is_connection_up() == %s" % is_connection_up()
+    print("is_connection_up() == %s" % is_connection_up())

@@ -26,7 +26,7 @@ xdg.BaseDirectory.xdg_data_home/gtg directory.
 # Standard imports
 import unittest
 import os
-import xdg
+from . import xdg
 
 # GTG imports
 from GTG.backends import backend_localfile as localfile

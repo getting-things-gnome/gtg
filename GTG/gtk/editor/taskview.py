@@ -75,7 +75,7 @@ class TaskView(Gtk.TextView):
             raise AttributeError('unknown property %s' % prop.name)
 
     def do_set_property(self, prop, val):
-        if prop.name in self.__gproperties__.keys():
+        if prop.name in list(self.__gproperties__.keys()):
             setattr(self, prop.name, val)
         else:
             raise AttributeError('unknown property %s' % prop.name)
@@ -501,7 +501,7 @@ class TaskView(Gtk.TextView):
                 conti = end.forward_to_line_end()
         # We don't want to deserialize the title
         # Let's get the pure text directly
-        title = unicode(self.buff.get_text(start, end, True))
+        title = str(self.buff.get_text(start, end, True))
         # Let's strip blank lines
         stripped = title.strip(' \n\t')
         return stripped
@@ -1314,7 +1314,7 @@ class TaskView(Gtk.TextView):
                 newlevel -= 1
         # If it's still < 0
         if newlevel < 0:
-            print "bug: no is_indent tag on that line"
+            print("bug: no is_indent tag on that line")
         # startline.backward_char()
         # We make a temp mark where we should insert the new indent
         # tempm = self.buff.create_mark("temp", startline)
@@ -1383,7 +1383,7 @@ class TaskView(Gtk.TextView):
                             not self.buff.get_has_selection():
                         openurl(anchor)
                 else:
-                    print "Unknown link type for %s" % anchor
+                    print("Unknown link type for %s" % anchor)
                 self.emit('anchor-clicked', text, anchor, button)
                 self.__set_anchor(ev.window, tag, cursor,
                                   self.get_property('hover'))
@@ -1407,7 +1407,7 @@ class TaskView(Gtk.TextView):
 
     def __set_anchor(self, window, tag, cursor, prop):
         window.set_cursor(cursor)
-        for key, val in prop.iteritems():
+        for key, val in prop.items():
             tag.set_property(key, val)
 
 

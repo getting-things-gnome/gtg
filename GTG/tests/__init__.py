@@ -33,8 +33,7 @@ def test_suite():
     '''
     # find all the test files
     test_dir = os.path.dirname(__file__)
-    test_files = filter(lambda f: f.endswith(".py") and f.startswith("test_"),
-                        os.listdir(test_dir))
+    test_files = [f for f in os.listdir(test_dir) if f.endswith(".py") and f.startswith("test_")]
 
     # Loading of the test files and adding to the TestSuite
     test_suite = unittest.TestSuite()
