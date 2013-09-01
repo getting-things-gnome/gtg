@@ -171,7 +171,7 @@ class PluginEngine(Borg):
                 if os.path.isfile(info_file) and f.endswith('.gtg-plugin'):
                     info = configparser.ConfigParser()
                     info.read(info_file)
-                    info = dict(info.items("GTG Plugin"))
+                    info = dict(info.items("GTG Plugin", True))
                     p = Plugin(info, self.plugin_path)
                     self.plugins[p.module_name] = p
 
