@@ -196,9 +196,9 @@ def savexml(zefile, doc, backup=False):
         if os.path.exists(zefile):
             os.rename(zefile, tmpfile)
         f = open(zefile, mode='w+')
-        pretty = doc.toprettyxml(tab, enter).encode("utf-8")
+        pretty = doc.toprettyxml(tab, enter)
         if f and pretty:
-            bwritten = os.write(f.fileno(), pretty)
+            bwritten = os.write(f.fileno(), bytes(pretty, 'utf8'))
             if bwritten != len(pretty):
                 print("error writing file %s" % zefile)
                 f.close()

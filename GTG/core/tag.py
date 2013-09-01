@@ -127,7 +127,7 @@ class Tag(TreeNode):
             modified = True
         else:
             # Attributes should all be strings.
-            val = str(str(att_value), "UTF-8")
+            val = str(att_value)
             self._attributes[att_name] = val
             if self._save:
                 self._save()

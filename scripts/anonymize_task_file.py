@@ -62,7 +62,7 @@ def anonymize(filename, outputfile):
 
     try:
         fp = open(outputfile, "w")
-        fp.write(dom.toxml().encode("utf8"))
+        fp.write(dom.toxml())
     except Exception as err:
         print("error while saving output file: %s" % err)
 

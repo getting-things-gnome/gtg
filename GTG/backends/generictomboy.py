@@ -435,8 +435,8 @@ class GenericTomboy(GenericBackend):
         # extract title and text
         [title, text] = self._tomboy_split_title_and_text(str(content))
         # Tomboy speaks unicode, we don't
-        title = unicodedata.normalize('NFKD', title).encode('ascii', 'ignore')
-        text = unicodedata.normalize('NFKD', text).encode('ascii', 'ignore')
+        title = unicodedata.normalize('NFKD', title)
+        text = unicodedata.normalize('NFKD', text)
         task.set_title(title)
         task.set_text(text)
         task.add_remote_id(self.get_id(), note)
