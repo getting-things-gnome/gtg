@@ -410,7 +410,7 @@ def overview(expression):
             print("")
         print("%s (%d tasks)" % (day_str, len(today_tasks)))
         for task in sorted(today_tasks):
-            print(" - %s" % task.encode('utf-8'))
+            print(" - %s" % task)
 
 
 def run_command(args):

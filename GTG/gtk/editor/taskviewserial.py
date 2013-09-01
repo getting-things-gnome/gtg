@@ -42,8 +42,8 @@ class Serializer(object):
         # we only take the first node (the "content" one)
         node = doc.firstChild
         # print "********************"
-        # print node.toxml().encode("utf-8")
-        return node.toxml().encode("utf-8")
+        # print node.toxml()
+        return node.toxml()
 
     def parse_buffer(self, buff, start, end, parent, doc, done=[]):
         """

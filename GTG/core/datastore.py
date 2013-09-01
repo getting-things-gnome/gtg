@@ -106,7 +106,6 @@ class DataStore(object):
     ### Tags functions ########################################################
     def _add_new_tag(self, name, tag, filter_func, parameters, parent_id=None):
         """ Add tag into a tree """
-        name = name.encode("UTF-8")
         if self._tagstore.has_node(name):
             raise IndexError('tag %s was already in the datastore' % name)
 
@@ -120,7 +119,6 @@ class DataStore(object):
 
         @returns GTG.core.tag.Tag: the new tag
         """
-        name = name.encode("UTF-8")
         parameters = {'tag': name}
         tag = Tag(name, req=self.requester, attributes=attributes)
         self._add_new_tag(name, tag, self.treefactory.tag_filter, parameters)
@@ -139,7 +137,6 @@ class DataStore(object):
                        (query, e.message))
             return None
 
-        name = name.encode("UTF-8")
 
         # Create own copy of attributes and add special attributes label, query
         init_attr = dict(attributes)

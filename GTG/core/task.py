@@ -128,8 +128,6 @@ class Task(TreeNode):
         # We should check for other task with the same title
         # In that case, we should add a number (like Tomboy does)
         old_title = self.title
-        if isinstance(title, str):
-            title = title.decode('utf8')
         if title:
             self.title = title.strip('\t\n')
         else:
@@ -606,7 +604,7 @@ class Task(TreeNode):
         @param att_value: The value of the attribute. Will be converted to a
             string.
         """
-        val = str(str(att_value), "UTF-8")
+        val = str(att_value)
         self.attributes[(namespace, att_name)] = val
         self.sync()
 
@@ -663,18 +661,17 @@ class Task(TreeNode):
         """
         Adds a tag. Does not add '@tag' to the contents. See add_tag
         """
-        t = tagname.encode("UTF-8")
         # Do not add the same tag twice
-        if not t in self.tags:
-            self.tags.append(t)
+        if not tagname in self.tags:
+            self.tags.append(tagname)
             if self.is_loaded():
                 for child in self.get_subtasks():
                     if child.can_be_deleted:
-                        child.add_tag(t)
+                        child.add_tag(tagname)
 
-                tag = self.req.get_tag(t)
+                tag = self.req.get_tag(tagname)
                 if not tag:
-                    tag = self.req.new_tag(t)
+                    tag = self.req.new_tag(tagname)
                 tag.modified()
             return True
 
