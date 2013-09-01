@@ -170,7 +170,6 @@ class Date(object):
             return self.date() < other
         else:
             raise NotImplementedError
-        pass
 
     def __gt__(self, other):
         """ Judge whehter greater than other Date instance """
@@ -189,7 +188,6 @@ class Date(object):
             return other < self.date()
         else:
             raise NotImplementedError
-        pass
 
     def __eq__(self, other):
         """ Judge whehter equal to other Date instance """
@@ -201,7 +199,6 @@ class Date(object):
             return td == datetime.timedelta(0)
         else:
             raise NotImplementedError
-        pass
 
     def __str__(self):
         if self._fuzzy is not None:
