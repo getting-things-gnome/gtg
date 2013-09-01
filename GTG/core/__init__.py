@@ -36,6 +36,8 @@ If you want to display only a subset of tasks, you can either:
 """
 
 #=== IMPORT ===================================================================
+from re import findall
+
 import ConfigParser
 from xdg.BaseDirectory import xdg_data_home, xdg_config_home, xdg_data_dirs
 import os
@@ -114,7 +116,11 @@ class SubConfig():
                     # This is just for backward compatibility
                     if toreturn and toreturn[0] == '[' and toreturn[-1] == ']':
                         toreturn = toreturn[1:-1]
-                    toreturn = toreturn.split(',')
+
+                    # Splitting by ',' caused bugs #1218093 and #1216807.
+                    # Parsing the below way
+                    # does not split "('string1', 'string2', ... )" further
+                    toreturn = findall(r'\(.*?\)', toreturn)
                     while toreturn and toreturn[-1] == '':
                         toreturn = toreturn[:-1]
                 elif ntype == bool and type(toreturn) == str:

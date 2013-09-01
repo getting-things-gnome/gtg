@@ -24,6 +24,7 @@
 import time
 import threading
 from webbrowser import open as openurl
+from re import search, escape, findall
 
 import pygtk
 pygtk.require('2.0')
@@ -783,14 +784,29 @@ class TaskBrowser(gobject.GObject):
 
     def on_tag_expanded(self, sender, tag):
         colt = self.config.get("expanded_tags")
+
+        # Directly appending tag to colt causes GTG to forget the state of
+        # sub-tags (expanded/collapsed) in specific scenarios. Below is an
+        # updated way which checks if any children of the tag is in colt or not
+        # If yes, then the tag is inserted before the first child.
+        # If no, it's appended to colt
         if tag not in colt:
-            colt.append(tag)
+            first_child = search("\(" + escape(tag[1:-1]) + ".*?\)", \
+                                 ','.join(colt))
+            if first_child:
+                colt.insert(colt.index(first_child.group()), tag)
+            else:
+                colt.append(tag)
         self.config.set("expanded_tags", colt)
 
     def on_tag_collapsed(self, sender, tag):
         colt = self.config.get("expanded_tags")
-        if tag in colt:
-            colt.remove(str(tag))
+
+        # When a tag is collapsed, we should also remove it's children
+        # from colt, otherwise when parent tag is expanded, they also get
+        # expanded (unwanted situation)
+        children = findall("\(" + escape(tag[1:-1]) + ".*?\)", ','.join(colt))
+        colt = [tag for tag in colt if tag not in children]
         self.config.set("expanded_tags", colt)
 
     def on_quickadd_activate(self, widget):
