@@ -198,7 +198,7 @@ class Requester(GObject.GObject):
         tagstore = self.ds.get_tagstore()
         view = tagstore.get_viewtree(name='tag_completion', refresh=False)
         tags = view.get_all_nodes()
-        tags.sort(cmp=lambda x, y: cmp(x.lower(), y.lower()))
+        tags.sort(key=str.lower)
         return tags
 
     def get_all_tags(self):
