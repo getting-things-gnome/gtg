@@ -153,23 +153,43 @@ class Date(object):
         else:
             return other - self.date()
 
-    def __cmp__(self, other):
-        """ Compare with other Date instance """
+    def __lt__(self, other):
+        """ Judge whehter less than other Date instance """
         if isinstance(other, Date):
-            comparison = cmp(self.date(), other.date())
+            td = self.date() - other.date()
 
             # Keep fuzzy dates below normal dates
-            if comparison == 0:
+            if td == datetime.timedelta(0):
                 if self.is_fuzzy() and not other.is_fuzzy():
-                    return 1
+                    return True
                 elif not self.is_fuzzy() and other.is_fuzzy():
-                    return -1
+                    return False
 
-            return comparison
+            return self.date() < other.date()
         elif isinstance(other, datetime.date):
-            return cmp(self.date(), other)
+            return self.date() < other
         else:
             raise NotImplementedError
+        pass
+
+    def __gt__(self, other):
+        """ Judge whehter greater than other Date instance """
+        if isinstance(other, Date):
+            td = other.date() - self.date()
+
+            # Keep fuzzy dates below normal dates
+            if td == datetime.timedelta(0):
+                if self.is_fuzzy() and not other.is_fuzzy():
+                    return False
+                elif not self.is_fuzzy() and other.is_fuzzy():
+                    return True
+
+            return other.date() < self.date()
+        elif isinstance(other, datetime.date):
+            return other < self.date()
+        else:
+            raise NotImplementedError
+        pass
 
     def __str__(self):
         if self._fuzzy is not None:
