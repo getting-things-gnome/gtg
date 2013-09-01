@@ -148,7 +148,9 @@ class TreeviewFactory():
         return sort
 
     def title_sorting(self, task1, task2, order):
-        return cmp(task1.get_title(), task2.get_title())
+        t1 = task1.get_title()
+        t2 = task2.get_title()
+        return (t1 > t2) - (t1 < t2)
 
     def __date_comp(self, task1, task2, para, order):
         '''This is a quite complex method to sort tasks by date,
@@ -172,13 +174,13 @@ class TreeviewFactory():
             else:
                 raise ValueError(
                     'invalid date comparison parameter: %s') % para
-            sort = cmp(t2, t1)
+            sort = (t2 > t1) - (t2 < t1)
         else:
             sort = 0
 
         # local function
         def reverse_if_descending(s):
-            """Make a cmp() result relative to the top instead of following
+            """Make a cmpare result relative to the top instead of following
                user-specified sort direction"""
             if order == Gtk.SortType.ASCENDING:
                 return s
@@ -191,14 +193,16 @@ class TreeviewFactory():
             t1_tags.sort()
             t2_tags = task2.get_tags_name()
             t2_tags.sort()
-            sort = reverse_if_descending(cmp(t1_tags, t2_tags))
+            cmp_tags = (t1_tags > t2_tags) - (t1_tags < t2_tags)
+            sort = reverse_if_descending(cmp_tags)
 
         if sort == 0:  # Break ties by sorting by title
             t1_title = task1.get_title()
             t2_title = task2.get_title()
             t1_title = locale.strxfrm(t1_title)
             t2_title = locale.strxfrm(t2_title)
-            sort = reverse_if_descending(cmp(t1_title, t2_title))
+            cmp_title = (t1_title > t2_title) - (t1_title < t2_title)
+            sort = reverse_if_descending(cmp_title)
 
         return sort
 
@@ -232,7 +236,7 @@ class TreeviewFactory():
         t1_name = locale.strxfrm(t1.get_name())
         t2_name = locale.strxfrm(t2.get_name())
         if not t1_sp and not t2_sp:
-            return cmp(t1_name, t2_name)
+            return (t1_name > t2_name) - (t1_name < t2_name)
         elif not t1_sp and t2_sp:
             return 1
         elif t1_sp and not t2_sp:
@@ -240,7 +244,7 @@ class TreeviewFactory():
         else:
             t1_order = t1.get_attribute("order")
             t2_order = t2.get_attribute("order")
-            return cmp(t1_order, t2_order)
+            return (t1_order > t2_order) - (t1_order < t2_order)
 
     def ontag_task_dnd(self, source, target):
         task = self.req.get_task(source)
