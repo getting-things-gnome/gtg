@@ -191,6 +191,18 @@ class Date(object):
             raise NotImplementedError
         pass
 
+    def __eq__(self, other):
+        """ Judge whehter equal to other Date instance """
+        if isinstance(other, Date):
+            td = self.date() - other.date()
+            return td == datetime.timedelta(0)
+        elif isinstance(other, datetime.date):
+            td = self.date() - other
+            return td == datetime.timedelta(0)
+        else:
+            raise NotImplementedError
+        pass
+
     def __str__(self):
         if self._fuzzy is not None:
             return STRINGS[self._fuzzy]
