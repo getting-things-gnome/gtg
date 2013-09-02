@@ -174,7 +174,7 @@ class TaskConfig():
         return value.split(', ')
 
     def set(self, tid, option, value):
-        value = ','.join(str(x) for x in value)
+        value = ', '.join(str(x) for x in value)
         self._conf.set(tid, option, value)
         self.save()
 
