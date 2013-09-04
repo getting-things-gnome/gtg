@@ -24,7 +24,6 @@
 import time
 import threading
 from webbrowser import open as openurl
-from re import search, escape, findall
 
 import pygtk
 pygtk.require('2.0')
