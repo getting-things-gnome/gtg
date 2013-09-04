@@ -61,7 +61,7 @@
                         <property name="left_padding">10</property>
                         <property name="right_padding">10</property>
                         <child>
-                          <object class="GtkHButtonBox" id="hbuttonbox3">
+                          <object class="GtkButtonBox" id="hbuttonbox3">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="spacing">10</property>
@@ -146,7 +146,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkHButtonBox" id="hbuttonbox2">
+              <object class="GtkButtonBox" id="hbuttonbox2">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="layout_style">edge</property>

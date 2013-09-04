@@ -29,7 +29,6 @@ from GTG.plugins.geolocalized_tasks.marker import MarkerLayer
 # to GtkBuilder format together with other glade XMLs.
 # FIXME Since this plugin is broken, I am not going to replace galde mentions
 # to GtkBuilder, it's your job ;)
-# FIXME get rid of GtkTable in .ui and replace it by GtkGrid
 
 
 class geolocalizedTasks:

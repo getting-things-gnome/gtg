@@ -16,7 +16,7 @@
         <property name="spacing">2</property>
         <property name="orientation">vertical</property>
         <child internal-child="action_area">
-          <object class="GtkHButtonBox" id="pa-action_area1">
+          <object class="GtkButtonBox" id="pa-action_area1">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="layout_style">end</property>
@@ -80,7 +80,7 @@
         <property name="can_focus">False</property>
         <property name="orientation">vertical</property>
         <child internal-child="action_area">
-          <object class="GtkHButtonBox" id="dialog-action_area5">
+          <object class="GtkButtonBox" id="dialog-action_area5">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="layout_style">end</property>
@@ -156,7 +156,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkHButtonBox" id="plugins-hbuttonbox1">
+              <object class="GtkButtonBox" id="plugins-hbuttonbox1">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="spacing">8</property>

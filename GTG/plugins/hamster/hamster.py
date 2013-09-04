@@ -217,7 +217,7 @@ class hamsterPlugin:
             outer_grid = Gtk.Grid()
             vbox.pack_start(s, True, True, 0)
             vbox.pack_start(outer_grid, True, True, 0)
-            vbox.pack_end(Gtk.HSeparator())
+            vbox.pack_end(Gtk.Separator())
 
             total = 0
 

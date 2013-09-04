@@ -532,7 +532,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkHPaned" id="hpaned1">
+          <object class="GtkPaned" id="hpaned1">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <child>
@@ -676,9 +676,10 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkVPaned" id="vpaned1">
+                  <object class="GtkPaned" id="vpaned1">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
+                    <property name="orientation">vertical</property>
                     <child>
                       <object class="GtkNotebook" id="main_notebook">
                         <property name="visible">True</property>

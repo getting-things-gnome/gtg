@@ -125,7 +125,7 @@ class AddPanel(Gtk.Box):
         self.ok_button.connect('clicked', self.on_confirm)
         align = Gtk.Alignment.new(0.5, 1, 1, 0)
         align.set_padding(0, 10, 0, 0)
-        buttonbox = Gtk.HButtonBox()
+        buttonbox = Gtk.ButtonBox()
         buttonbox.set_layout(Gtk.ButtonBoxStyle.EDGE)
         buttonbox.add(cancel_button)
         buttonbox.set_child_secondary(cancel_button, False)
