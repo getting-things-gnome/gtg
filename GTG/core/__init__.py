@@ -120,7 +120,10 @@ class SubConfig():
                     # Splitting by ',' caused bugs #1218093 and #1216807.
                     # Parsing the below way
                     # does not split "('string1', 'string2', ... )" further
+                    toreturn_backup_str = toreturn
                     toreturn = findall(r'\(.*?\)', toreturn)
+                    if not toreturn:
+                        toreturn = toreturn_backup_str.split(',')
                     while toreturn and toreturn[-1] == '':
                         toreturn = toreturn[:-1]
                 elif ntype == bool and type(toreturn) == str:
