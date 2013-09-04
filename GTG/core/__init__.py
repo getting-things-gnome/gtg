@@ -174,10 +174,11 @@ class TaskConfig():
         # Check single quote for backward compatibility
         if value[0] == '(' and value[-1] == ')':
             value = value[1:-1]
-        return value.split(', ')
+        # Remove all whitespaces, tabs, newlines and then split by ','
+        return ''.join(value.split()).split(',')
 
     def set(self, tid, option, value):
-        value = ', '.join(str(x) for x in value)
+        value = ','.join(str(x) for x in value)
         self._conf.set(tid, option, value)
         self.save()
 
