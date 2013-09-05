@@ -175,7 +175,8 @@ class TaskConfig():
         if value[0] == '(' and value[-1] == ')':
             value = value[1:-1]
         # Remove all whitespaces, tabs, newlines and then split by ','
-        return ''.join(value.split()).split(',')
+        value_without_spaces = ''.join(value.split())
+        return value_without_spaces.split(',')
 
     def set(self, tid, option, value):
         value = ','.join(str(x) for x in value)
