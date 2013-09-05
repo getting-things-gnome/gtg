@@ -35,7 +35,7 @@ PLUGINS_COL_SHORT_DESC = 3
 PLUGINS_COL_ACTIVATABLE = 4
 
 
-def plugin_icon(column, cell, store, iterator):
+def plugin_icon(column, cell, store, iterator, data):
     """ Callback to set the content of a PluginTree cell.
 
     See PluginsDialog._init_plugin_tree().
