@@ -151,10 +151,11 @@ class SubConfig():
         # Save immediately
         self.save()
 
+
 class TaskConfig():
     """ TaskConfig is used to save the position and size of each task, both of
-    value are one tuple with two numbers, so set and get will use join and split
-    """
+    value are one tuple with two numbers, so set and get will use join and
+    split"""
 
     def __init__(self, conf, conf_path):
         self._conf = conf
@@ -174,15 +175,18 @@ class TaskConfig():
         # Check single quote for backward compatibility
         if value[0] == '(' and value[-1] == ')':
             value = value[1:-1]
-        return value.split(', ')
+        # Remove all whitespaces, tabs, newlines and then split by ','
+        value_without_spaces = ''.join(value.split())
+        return value_without_spaces.split(',')
 
     def set(self, tid, option, value):
-        value = ', '.join(str(x) for x in value)
+        value = ','.join(str(x) for x in value)
         self._conf.set(tid, option, value)
         self.save()
 
     def save(self):
         self._conf.write(open(self._conf_path, 'w'))
+
 
 class CoreConfig(Borg):
     # The projects and tasks are of course DATA !
