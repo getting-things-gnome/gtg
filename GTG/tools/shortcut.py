@@ -152,7 +152,7 @@ def call_subprocess(cmd, i="", key="", to_append=None):
     if to_append is not None:
         cmd.append(to_append)
     out = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    return out.communicate()[0]
+    return out.communicate()[0].decode('ascii')
 
 
 def check_invalidity(binding, key, mods):
