@@ -36,7 +36,9 @@ If you want to display only a subset of tasks, you can either:
 """
 
 #=== IMPORT ===================================================================
+from re import findall
 import configparser
+
 from xdg.BaseDirectory import xdg_data_home, xdg_config_home, xdg_data_dirs
 import os
 
@@ -114,7 +116,14 @@ class SubConfig():
                     # This is just for backward compatibility
                     if toreturn and toreturn[0] == '[' and toreturn[-1] == ']':
                         toreturn = toreturn[1:-1]
-                    toreturn = toreturn.split(',')
+
+                    # Splitting by ',' caused bugs #1218093 and #1216807.
+                    # Parsing the below way
+                    # does not split "('string1', 'string2', ... )" further
+                    toreturn_backup_str = toreturn
+                    toreturn = findall(r'\(.*?\)', toreturn)
+                    if not toreturn:
+                        toreturn = toreturn_backup_str.split(',')
                     while toreturn and toreturn[-1] == '':
                         toreturn = toreturn[:-1]
                 elif ntype == bool and type(toreturn) == str:
@@ -142,10 +151,11 @@ class SubConfig():
         # Save immediately
         self.save()
 
+
 class TaskConfig():
     """ TaskConfig is used to save the position and size of each task, both of
-    value are one tuple with two numbers, so set and get will use join and split
-    """
+    value are one tuple with two numbers, so set and get will use join and
+    split"""
 
     def __init__(self, conf, conf_path):
         self._conf = conf
@@ -165,7 +175,9 @@ class TaskConfig():
         # Check single quote for backward compatibility
         if value[0] == '(' and value[-1] == ')':
             value = value[1:-1]
-        return value.split(', ')
+        # Remove all whitespaces, tabs, newlines and then split by ','
+        value_without_spaces = ''.join(value.split())
+        return value_without_spaces.split(',')
 
     def set(self, tid, option, value):
         value = ','.join(str(x) for x in value)
@@ -174,6 +186,7 @@ class TaskConfig():
 
     def save(self):
         self._conf.write(open(self._conf_path, 'w'))
+
 
 class CoreConfig(Borg):
     # The projects and tasks are of course DATA !

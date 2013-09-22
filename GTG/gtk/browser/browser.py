@@ -778,14 +778,30 @@ class TaskBrowser(GObject.GObject):
 
     def on_tag_expanded(self, sender, tag):
         colt = self.config.get("expanded_tags")
+
+        # Directly appending tag to colt causes GTG to forget the state of
+        # sub-tags (expanded/collapsed) in specific scenarios. Below is an
+        # updated way which checks if any child of the tag is in colt or not
+        # If yes, then the tag is inserted before the first child.
+        # If no, it's appended to colt
         if tag not in colt:
-            colt.append(tag)
+            tag_has_been_inserted = False
+            for index, colt_tag in enumerate(colt):
+                if tag[1:-1] in colt_tag:
+                    colt.insert(index, tag)
+                    tag_has_been_inserted = True
+                    break
+            if not tag_has_been_inserted:
+                colt.append(tag)
         self.config.set("expanded_tags", colt)
 
     def on_tag_collapsed(self, sender, tag):
         colt = self.config.get("expanded_tags")
-        if tag in colt:
-            colt.remove(str(tag))
+
+        # When a tag is collapsed, we should also remove it's children
+        # from colt, otherwise when parent tag is expanded, they also get
+        # expanded (unwanted situation)
+        colt = [colt_tag for colt_tag in colt if tag[1:-1] not in colt_tag]
         self.config.set("expanded_tags", colt)
 
     def on_quickadd_activate(self, widget):
