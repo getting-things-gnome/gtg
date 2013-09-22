@@ -108,7 +108,7 @@ class Serializer(object):
                         # The current gtkTextTag is a subtask
                         tagname = "subtask"
                         subt = doc.createElement(tagname)
-                        target = ta.get_data('child')
+                        target = ta.child
                         subt.appendChild(doc.createTextNode(target))
                         parent.appendChild(subt)
                         parent.appendChild(doc.createTextNode("\n"))
