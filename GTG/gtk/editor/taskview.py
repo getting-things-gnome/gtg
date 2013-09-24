@@ -1074,7 +1074,7 @@ class TaskView(Gtk.TextView):
     # Method called on copy and cut actions
     # param is either "cut" or "copy"
     def copy_clipboard(self, widget, param=None):
-        clip = Gtk.clipboard_get(Gdk.SELECTION_CLIPBOARD)
+        clip = Gtk.Clipboard.get(Gdk.SELECTION_CLIPBOARD)
 
         # First, we analyse the selection to put in our own
         # GTG clipboard a selection with description of subtasks
@@ -1085,7 +1085,8 @@ class TaskView(Gtk.TextView):
 
         self.clipboard.copy(start, stop, bullet=self.bullet1)
 
-        clip.set_text(self.clipboard.paste_text())
+        text = self.clipboard.paste_text()
+        clip.set_text(text, len(text))
         clip.store()
 
         if param == "cut":
@@ -1096,7 +1097,7 @@ class TaskView(Gtk.TextView):
 
     # Called on paste.
     def paste_clipboard(self, widget, param=None):
-        clip = Gtk.clipboard_get(Gdk.SELECTION_CLIPBOARD)
+        clip = Gtk.Clipboard.get(Gdk.SELECTION_CLIPBOARD)
         # if the clipboard text is the same are our own internal
         # clipboard text, it means that we can paste from our own clipboard
         # else, that we can empty it.
