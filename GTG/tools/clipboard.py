@@ -54,7 +54,7 @@ class TaskClipboard():
             tags = end_line.get_tags() + end_line.get_toggled_tags(False)
             is_subtask = False
             for ta in tags:
-                if (ta.is_subtask):
+                if hasattr(ta, 'is_subtask'):
                     is_subtask = True
                     tid = ta.child
                     tas = self.req.get_task(tid)
