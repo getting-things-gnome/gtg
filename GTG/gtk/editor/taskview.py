@@ -794,7 +794,7 @@ class TaskView(Gtk.TextView):
 #                buff.remove_tag(ta, start, endindent)
         # Now we delete all, char after char
         it = start.copy()
-        while it.get_offset() <= end.get_offset() and it.get_char() != '\0':
+        while it.get_offset() < end.get_offset() and it.get_char() != '\0':
             if it.begins_tag():
                 tags = it.get_tags()
                 for ta in tags:
