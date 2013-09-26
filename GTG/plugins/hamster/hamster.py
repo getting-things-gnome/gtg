@@ -23,6 +23,7 @@ import gtk
 import os
 import re
 import time
+import datetime
 
 from GTG import _
 
@@ -96,19 +97,22 @@ class hamsterPlugin:
         tag_candidates = []
         try:
             if self.preferences['tags'] == 'existing':
-                hamster_tags = set([unicode(x) for x in
-                                    self.hamster.GetTags()])
+                hamster_tags = set([unicode(x[1]) for x in
+                                    self.hamster.GetTags(False)])
                 tag_candidates = list(hamster_tags.intersection(set(gtg_tags)))
             elif self.preferences['tags'] == 'all':
                 tag_candidates = gtg_tags
         except dbus.exceptions.DBusException:
             # old hamster version, doesn't support tags
             pass
-        tag_str = "".join([" ," + x for x in tag_candidates])
+        tag_str = "".join([" #" + x for x in tag_candidates])
 
-        # print '%s%s,%s%s'%(activity, category, description, tag_str)
-        hamster_id = self.hamster.AddFact(activity, tag_str, 0, 0,
-                                          category, description)
+        """ `[-]start_time[-end_time] activity@category, description #tag1 #tag2` """
+        fact = activity
+        if category:
+            fact += "@%s" % category
+        fact += ",%s%s" % (description, tag_str)
+        hamster_id = self.hamster.AddFact(fact, timegm(datetime.datetime.now().timetuple()), 0, False)
 
         ids = self.get_hamster_ids(task)
         ids.append(str(hamster_id))
