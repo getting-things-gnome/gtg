@@ -49,7 +49,7 @@ class PluginAPI:
         """
         self.__requester = requester
         self.__view_manager = view_manager
-        self.selection_changed_callback = None
+        self.selection_changed_callback_listeners = []
         if taskeditor:
             self.__ui = taskeditor
             self.__builder = self.__ui.get_builder()
@@ -64,8 +64,8 @@ class PluginAPI:
                 "changed", self.__selection_changed)
 
     def __selection_changed(self, selection):
-        if self.selection_changed_callback:
-            self.selection_changed_callback(selection)
+        for func in self.selection_changed_callback_listeners:
+            func(selection)
 
 #=== Accessor methods ========================================================
     def is_editor(self):
@@ -114,7 +114,13 @@ class PluginAPI:
             return self.__view_manager.browser.get_selected_tasks()
 
     def set_active_selection_changed_callback(self, func):
-        self.selection_changed_callback = func
+        if func not in self.selection_changed_callback_listeners:
+            self.selection_changed_callback_listeners.append(func)
+
+    def remove_active_selection_changed_callback(self, plugin_class):
+        new_list = [func for func in self.selection_changed_callback_listeners
+                    if func.im_class != plugin_class]
+        self.selection_changed_callback_listeners = new_list
 
 #=== Changing the UI =========================================================
     def add_menu_item(self, item):
