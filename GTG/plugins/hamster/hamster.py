@@ -107,12 +107,14 @@ class hamsterPlugin:
             pass
         tag_str = "".join([" #" + x for x in tag_candidates])
 
-        """ `[-]start_time[-end_time] activity@category, description #tag1 #tag2` """
+        # Format of first argument of AddFact -
+        # `[-]start_time[-end_time] activity@category, description #tag1 #tag2`
         fact = activity
         if category:
             fact += "@%s" % category
         fact += ",%s%s" % (description, tag_str)
-        hamster_id = self.hamster.AddFact(fact, timegm(datetime.datetime.now().timetuple()), 0, False)
+        start_time = timegm(datetime.datetime.now().timetuple())
+        hamster_id = self.hamster.AddFact(fact, start_time, 0, False)
 
         ids = self.get_hamster_ids(task)
         ids.append(str(hamster_id))
