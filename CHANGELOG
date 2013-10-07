@@ -1,5 +1,4 @@
 ????-??-?? Getting Things GNOME! 0.3.1
-    * Switch from external configobj to Python's ConfigParser
     * Fix for bug #1024473: Have 'Show Main Window' in notification area, by Antonio Roquentin
     * Fix for bug #1043457: gtcli search returns closed tasks, by Nimit Shah
     * Fix for bug #1073607: "GTG starts after login" doesn't work with an invalid link
@@ -21,6 +20,9 @@
     * Refactor Bugzilla plugin, by Chenxiong Qi
     * Fix for bug #816356: When sorting by due-date, use the closest date of all children, by Nimit Shah
     * Fix for bug #1193678: Empty tag created, by Nimit Shah
+    * Switch from external configobj to Python's ConfigParser
+    * Fix for bug #1218093: GTG crashes on start with IndexError: tuple out of range, by Parin Porecha
+    * Fix for bug #1102453: hamster integration plugins crash when start a task, by Rex Tsai
 
 2012-11-06 Getting Things GNOME! 0.3
     * Hide tasks with due date someday, #931376
