@@ -31,9 +31,9 @@ from GTG import _
 class hamsterPlugin:
     PLUGIN_NAMESPACE = 'hamster-plugin'
     DEFAULT_PREFERENCES = {
-        "activity": "tag",
+        "activity": "title",
         "category": "auto",
-        "description": "title",
+        "description": "contents",
         "tags": "existing",
     }
     TOOLTIP_TEXT = _("Start a new activity in Hamster Time Tracker " +
