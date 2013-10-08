@@ -23,6 +23,7 @@ from gi.repository import Gtk
 import os
 import re
 import time
+import datetime
 
 from GTG import _
 
@@ -30,9 +31,9 @@ from GTG import _
 class hamsterPlugin:
     PLUGIN_NAMESPACE = 'hamster-plugin'
     DEFAULT_PREFERENCES = {
-        "activity": "tag",
+        "activity": "title",
         "category": "auto",
-        "description": "title",
+        "description": "contents",
         "tags": "existing",
     }
     TOOLTIP_TEXT = _("Start a new activity in Hamster Time Tracker " +
@@ -96,19 +97,24 @@ class hamsterPlugin:
         tag_candidates = []
         try:
             if self.preferences['tags'] == 'existing':
-                hamster_tags = set([str(x) for x in
-                                    self.hamster.GetTags()])
+                hamster_tags = set([str(x[1]) for x in
+                                    self.hamster.GetTags(False)])
                 tag_candidates = list(hamster_tags.intersection(set(gtg_tags)))
             elif self.preferences['tags'] == 'all':
                 tag_candidates = gtg_tags
         except dbus.exceptions.DBusException:
             # old hamster version, doesn't support tags
             pass
-        tag_str = "".join([" ," + x for x in tag_candidates])
+        tag_str = "".join([" #" + x for x in tag_candidates])
 
-        # print '%s%s,%s%s'%(activity, category, description, tag_str)
-        hamster_id = self.hamster.AddFact(activity, tag_str, 0, 0,
-                                          category, description)
+        # Format of first argument of AddFact -
+        # `[-]start_time[-end_time] activity@category, description #tag1 #tag2`
+        fact = activity
+        if category:
+            fact += "@%s" % category
+        fact += ",%s%s" % (description, tag_str)
+        start_time = timegm(datetime.datetime.now().timetuple())
+        hamster_id = self.hamster.AddFact(fact, start_time, 0, False)
 
         ids = self.get_hamster_ids(task)
         ids.append(str(hamster_id))
