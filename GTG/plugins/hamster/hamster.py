@@ -183,11 +183,14 @@ class hamsterPlugin:
             plugin_api.add_menu_item(self.menu_item)
             # and button
             self.button.set_label(_("Start in Hamster"))
-            self.button.set_icon_name('hamster-applet')
+            self.button.set_icon_name('hamster-activity-start')
             self.button.set_tooltip_text(self.TOOLTIP_TEXT)
+            self.button.set_sensitive(False)
             self.button.connect('clicked', self.browser_cb, plugin_api)
             self.button.show()
             plugin_api.add_toolbar_item(self.button)
+            plugin_api.set_active_selection_changed_callback(
+                self.selection_changed)
         # set up preferences
         self.preference_dialog_init()
         self.preferences_load()
@@ -196,7 +199,7 @@ class hamsterPlugin:
         # add button
         self.taskbutton = gtk.ToolButton()
         self.taskbutton.set_label("Start")
-        self.taskbutton.set_icon_name('hamster-applet')
+        self.taskbutton.set_icon_name('hamster-activity-start')
         self.taskbutton.set_tooltip_text(self.TOOLTIP_TEXT)
         self.taskbutton.connect('clicked', self.task_cb, plugin_api)
         self.taskbutton.show()
@@ -274,6 +277,12 @@ class hamsterPlugin:
     def task_cb(self, widget, plugin_api):
         task = plugin_api.get_ui().get_task()
         self.sendTask(task)
+
+    def selection_changed(self, selection):
+        if selection.count_selected_rows() == 1:
+            self.button.set_sensitive(True)
+        else:
+            self.button.set_sensitive(False)
 
     #### Preference Handling
     def is_configurable(self):
