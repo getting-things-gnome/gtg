@@ -440,21 +440,21 @@ class TaskEditor:
 
     def dismiss(self, widget):
         stat = self.task.get_status()
-        if stat == "Dismiss":
-            self.task.set_status("Active")
+        if stat == Task.STA_DISMISSED:
+            self.vmanager.ask_set_task_status(self.task, Task.STA_ACTIVE)
             self.refresh_editor()
         else:
-            self.task.set_status("Dismiss")
+            self.vmanager.ask_set_task_status(self.task, Task.STA_DISMISSED)
             self.close_all_subtasks()
             self.close(None)
 
     def change_status(self, widget):
         stat = self.task.get_status()
-        if stat == "Done":
-            self.task.set_status("Active")
+        if stat == Task.STA_DONE:
+            self.vmanager.ask_set_task_status(self.task, Task.STA_ACTIVE)
             self.refresh_editor()
         else:
-            self.task.set_status("Done")
+            self.vmanager.ask_set_task_status(self.task, Task.STA_DONE)
             self.close_all_subtasks()
             self.close(None)
 
