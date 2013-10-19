@@ -304,7 +304,7 @@ class hamsterPlugin:
             add(outer_table, "<big><b>Total</b></big>",
                 "<big><b>%s</b></big>" % format_duration(total), 1)
 
-            #self.vbox = plugin_api.add_widget_to_taskeditor(vbox)
+            self.vbox = plugin_api.add_widget_to_taskeditor(vbox)
 
     def deactivate(self, plugin_api):
         if plugin_api.is_browser():
@@ -312,7 +312,7 @@ class hamsterPlugin:
             plugin_api.remove_toolbar_item(self.button)
         else:
             plugin_api.remove_toolbar_item(self.taskbutton)
-            #plugin_api.remove_widget_from_taskeditor(self.vbox)
+            plugin_api.remove_widget_from_taskeditor(self.vbox)
 
     def browser_cb(self, widget, plugin_api):
         task_id = plugin_api.get_ui().get_selected_task()
@@ -394,18 +394,19 @@ def format_date(task):
 
 
 def calc_duration(fact):
+    '''
+    returns minutes
+    '''
     start = fact[1]
     end = fact[2]
     if end == 0:
         end = timegm(time.localtime())
-    return end - start
+    return (end - start) / 60
 
 
-def format_duration(seconds):
+def format_duration(minutes):
     # Based on hamster-applet code -  hamster/stuff.py
     """formats duration in a human readable format."""
-
-    minutes = seconds / 60
 
     if not minutes:
         return "0min"
