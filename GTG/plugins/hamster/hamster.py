@@ -26,6 +26,7 @@ import time
 import datetime
 
 from GTG import _
+from GTG.core.task import Task
 
 
 class hamsterPlugin:
@@ -38,6 +39,7 @@ class hamsterPlugin:
     }
     TOOLTIP_TEXT = _("Start a new activity in Hamster Time Tracker " +
                      "based on the selected task")
+    BUFFER_TIME = 60  # secs
 
     def __init__(self):
         # task editor widget
@@ -128,8 +130,8 @@ class hamsterPlugin:
         valid_ids = []
         for i in ids:
             try:
-                d = self.hamster.GetFactById(i)
-                if d.get("id", None) and i not in valid_ids:
+                d = self.hamster.GetFact(i)
+                if d and i not in valid_ids:
                     records.append(d)
                     valid_ids.append(i)
                     continue
@@ -142,20 +144,28 @@ class hamsterPlugin:
         return records
 
     def get_active_id(self):
-        f = self.hamster.GetCurrentFact()
-        if f:
-            return f['id']
+        todays_facts = self.hamster.GetTodaysFacts()
+        if todays_facts and todays_facts[-1][2] == 0:
+            # todays_facts is a list. todays_facts[-1] gives the latest fact
+            # if todays_facts[-1][-1] is the start time, and
+            # todays_facts[-1][-2] is the end time of the fact (value 0 means
+            # it is still being tracked upon which we return id of the fact)
+            return todays_facts[-1][0]
         else:
             return None
 
     def is_task_active(self, task):
         records = self.get_records(task)
-        ids = [record['id'] for record in records]
+        ids = [record[0] for record in records]
         return self.get_active_id() in ids
 
     def stop_task(self, task):
-        if self.is_task_active(self, task):
-            self.hamster.StopTracking()
+        if self.is_task_active(task):
+            now = timegm(datetime.datetime.now().timetuple())
+            # Hamster deletes an activity if it's finish time is set earlier
+            # than current time. Hence, we are setting finish time
+            # some buffer secs from now
+            self.hamster.StopTracking(now + self.BUFFER_TIME)
 
     #### Datastore
     def get_hamster_ids(self, task):
@@ -168,6 +178,36 @@ class hamsterPlugin:
     def set_hamster_ids(self, task, ids):
         task.set_attribute("id-list", ",".join(ids),
                            namespace=self.PLUGIN_NAMESPACE)
+
+    def tasks_deleted(self, widget, deleted_tasks):
+        '''
+        If a task is being tracked, and it is deleted in GTG,
+        this method stops tracking it
+        '''
+        for task in deleted_tasks:
+            self.stop_task(task)
+
+    def task_status_changed(self, widget, task, new_status):
+        '''
+        If a task is being tracked and it's status is changed from
+        Active -> Done/Dismissed, this method stops tracking it
+        '''
+
+        def recursive_list_tasks(task_list, root):
+            '''
+            Populate a list of all the subtasks and their children, recursively
+            '''
+            if root not in task_list:
+                task_list.append(root)
+                for i in root.get_subtasks():
+                    recursive_list_tasks(task_list, i)
+
+        if new_status in [Task.STA_DISMISSED, Task.STA_DONE]:
+            print "new status "
+            all_my_children = []
+            recursive_list_tasks(all_my_children, task)
+            for task in all_my_children:
+                self.stop_task(task)
 
     #### Plugin api methods
     def activate(self, plugin_api):
@@ -191,6 +231,10 @@ class hamsterPlugin:
             plugin_api.add_toolbar_item(self.button)
             plugin_api.set_active_selection_changed_callback(
                 self.selection_changed)
+        plugin_api.get_view_manager().connect('tasks-deleted',
+                                              self.tasks_deleted)
+        plugin_api.get_view_manager().connect('task-status-changed',
+                                              self.task_status_changed)
         # set up preferences
         self.preference_dialog_init()
         self.preferences_load()
@@ -198,7 +242,7 @@ class hamsterPlugin:
     def onTaskOpened(self, plugin_api):
         # add button
         self.taskbutton = gtk.ToolButton()
-        self.taskbutton.set_label("Start")
+        self.taskbutton.set_label(_("Start in Hamster"))
         self.taskbutton.set_icon_name('hamster-activity-start')
         self.taskbutton.set_tooltip_text(self.TOOLTIP_TEXT)
         self.taskbutton.connect('clicked', self.task_cb, plugin_api)
