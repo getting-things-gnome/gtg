@@ -57,7 +57,7 @@ class hamsterPlugin:
         activity = "Other"
         if self.preferences['activity'] == 'tag':
             hamster_activities = set([unicode(x[0]).lower()
-                                      for x in self.hamster.GetActivities()])
+                                      for x in self.hamster.GetActivities('')])
             activity_candidates = hamster_activities.intersection(
                 set(gtg_tags))
             if len(activity_candidates) >= 1:
@@ -71,7 +71,8 @@ class hamsterPlugin:
         category = ""
         if self.preferences['category'] == 'auto_tag':
             hamster_activities = dict([(unicode(x[0]), unicode(x[1]))
-                                       for x in self.hamster.GetActivities()])
+                                       for x in
+                                       self.hamster.GetActivities('')])
             if (gtg_title in hamster_activities
                     or gtg_title.replace(",", "") in hamster_activities):
                     category = "%s" % hamster_activities[gtg_title]
@@ -203,7 +204,6 @@ class hamsterPlugin:
                     recursive_list_tasks(task_list, i)
 
         if new_status in [Task.STA_DISMISSED, Task.STA_DONE]:
-            print "new status "
             all_my_children = []
             recursive_list_tasks(all_my_children, task)
             for task in all_my_children:
@@ -299,12 +299,12 @@ class hamsterPlugin:
                 t = calc_duration(i)
                 total += t
                 add(inner_table, format_date(i), format_duration(t),
-                    offset, i['id'] == active_id)
+                    offset, i[0] == active_id)
 
             add(outer_table, "<big><b>Total</b></big>",
                 "<big><b>%s</b></big>" % format_duration(total), 1)
 
-            self.vbox = plugin_api.add_widget_to_taskeditor(vbox)
+            #self.vbox = plugin_api.add_widget_to_taskeditor(vbox)
 
     def deactivate(self, plugin_api):
         if plugin_api.is_browser():
@@ -312,7 +312,7 @@ class hamsterPlugin:
             plugin_api.remove_toolbar_item(self.button)
         else:
             plugin_api.remove_toolbar_item(self.taskbutton)
-            plugin_api.remove_widget_from_taskeditor(self.vbox)
+            #plugin_api.remove_widget_from_taskeditor(self.vbox)
 
     def browser_cb(self, widget, plugin_api):
         task_id = plugin_api.get_ui().get_selected_task()
@@ -389,14 +389,14 @@ class hamsterPlugin:
 
 
 def format_date(task):
-    start_time = time.gmtime(task['start_time'])
+    start_time = time.gmtime(task[1])
     return time.strftime("<b>%A, %b %e</b> %l:%M %p", start_time)
 
 
 def calc_duration(fact):
-    start = fact['start_time']
-    end = fact['end_time']
-    if not end:
+    start = fact[1]
+    end = fact[2]
+    if end == 0:
         end = timegm(time.localtime())
     return end - start
 
