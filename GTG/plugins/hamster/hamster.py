@@ -37,8 +37,11 @@ class hamsterPlugin:
         "description": "contents",
         "tags": "existing",
     }
-    TOOLTIP_TEXT = _("Start a new activity in Hamster Time Tracker " +
-                     "based on the selected task")
+    TOOLTIP_TEXT_START_ACTIVITY = _("Start a new activity in Hamster Time" +
+                                    " Tracker based on the selected task")
+    TOOLTIP_TEXT_STOP_ACTIVITY = _("Stop tracking the current activity in" +
+                                   " Hamster Time Tracker corresponding" +
+                                   " to the selected task")
     BUFFER_TIME = 60  # secs
 
     def __init__(self):
@@ -224,7 +227,7 @@ class hamsterPlugin:
             # and button
             self.button.set_label(_("Start in Hamster"))
             self.button.set_icon_name('hamster-activity-start')
-            self.button.set_tooltip_text(self.TOOLTIP_TEXT)
+            self.button.set_tooltip_text(self.TOOLTIP_TEXT_START_ACTIVITY)
             self.button.set_sensitive(False)
             self.button.connect('clicked', self.browser_cb, plugin_api)
             self.button.show()
@@ -240,16 +243,17 @@ class hamsterPlugin:
         self.preferences_load()
 
     def onTaskOpened(self, plugin_api):
-        # add button
-        self.taskbutton = gtk.ToolButton()
-        self.taskbutton.set_label(_("Start in Hamster"))
-        self.taskbutton.set_icon_name('hamster-activity-start')
-        self.taskbutton.set_tooltip_text(self.TOOLTIP_TEXT)
-        self.taskbutton.connect('clicked', self.task_cb, plugin_api)
-        self.taskbutton.show()
-        plugin_api.add_toolbar_item(self.taskbutton)
-
+        # get the opened task
         task = plugin_api.get_ui().get_task()
+
+        if task.get_status() == Task.STA_ACTIVE:
+            # add button
+            self.taskbutton = gtk.ToolButton()
+            self.decide_button_mode(self.taskbutton, task)
+            self.taskbutton.connect('clicked', self.task_cb, plugin_api)
+            self.taskbutton.show()
+            plugin_api.add_toolbar_item(self.taskbutton)
+
         records = self.get_records(task)
 
         if len(records):
@@ -316,17 +320,46 @@ class hamsterPlugin:
 
     def browser_cb(self, widget, plugin_api):
         task_id = plugin_api.get_ui().get_selected_task()
-        self.sendTask(plugin_api.get_requester().get_task(task_id))
+        task = plugin_api.get_requester().get_task(task_id)
+        self.decide_start_or_stop_activity(task, widget)
 
     def task_cb(self, widget, plugin_api):
         task = plugin_api.get_ui().get_task()
-        self.sendTask(task)
+        self.decide_start_or_stop_activity(task, widget)
+
+    def decide_start_or_stop_activity(self, task, widget):
+        if self.is_task_active(task):
+            self.stop_task(task)
+            self.change_button_to_start_activity(widget)
+        elif task.get_status() == Task.STA_ACTIVE:
+            self.sendTask(task)
+            self.change_button_to_stop_activity(widget)
 
     def selection_changed(self, selection):
         if selection.count_selected_rows() == 1:
             self.button.set_sensitive(True)
+            task_id = self.plugin_api.get_ui().get_selected_task()
+            task = self.plugin_api.get_requester().get_task(task_id)
+            self.decide_button_mode(self.button, task)
         else:
+            self.change_button_to_start_activity(self.button)
             self.button.set_sensitive(False)
+
+    def decide_button_mode(self, button, task):
+        if self.is_task_active(task):
+            self.change_button_to_stop_activity(button)
+        else:
+            self.change_button_to_start_activity(button)
+
+    def change_button_to_start_activity(self, button):
+        button.set_label(_("Start in Hamster"))
+        button.set_icon_name('hamster-activity-start')
+        button.set_tooltip_text(self.TOOLTIP_TEXT_START_ACTIVITY)
+
+    def change_button_to_stop_activity(self, button):
+        button.set_label(_("Stop Hamster Activity"))
+        button.set_icon_name('hamster-activity-stop')
+        button.set_tooltip_text(self.TOOLTIP_TEXT_STOP_ACTIVITY)
 
     #### Preference Handling
     def is_configurable(self):
