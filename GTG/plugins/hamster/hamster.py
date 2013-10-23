@@ -49,6 +49,25 @@ class hamsterPlugin:
         self.vbox = None
         self.button = gtk.ToolButton()
 
+        plugin_path = os.path.dirname(os.path.abspath(__file__))
+        IMG_START_PATH = "icons/hicolor/32x32/hamster-activity-start.png"
+        IMG_STOP_PATH = "icons/hicolor/32x32/hamster-activity-stop.png"
+        self.icon_start_activity = self.create_icon(plugin_path,
+                                                    IMG_START_PATH, 24)
+        self.icon_stop_activity = self.create_icon(plugin_path,
+                                                   IMG_STOP_PATH, 24)
+
+    def create_icon(self, plugin_path, image_path, size):
+        image_path = os.path.join(plugin_path, image_path)
+        pixbuf = gtk.gdk.pixbuf_new_from_file_at_size(image_path, size, size)
+
+        # create the image and associate the pixbuf
+        icon = gtk.Image()
+        icon.set_from_pixbuf(pixbuf)
+        icon.show()
+
+        return icon
+
     #### Interaction with Hamster
     def sendTask(self, task):
         """Send a gtg task to hamster-applet"""
@@ -226,7 +245,7 @@ class hamsterPlugin:
             plugin_api.add_menu_item(self.menu_item)
             # and button
             self.button.set_label(_("Start in Hamster"))
-            self.button.set_icon_name('hamster-activity-start')
+            self.button.set_icon_widget(self.icon_start_activity)
             self.button.set_tooltip_text(self.TOOLTIP_TEXT_START_ACTIVITY)
             self.button.set_sensitive(False)
             self.button.connect('clicked', self.browser_cb, plugin_api)
@@ -353,12 +372,12 @@ class hamsterPlugin:
 
     def change_button_to_start_activity(self, button):
         button.set_label(_("Start in Hamster"))
-        button.set_icon_name('hamster-activity-start')
+        button.set_icon_widget(self.icon_start_activity)
         button.set_tooltip_text(self.TOOLTIP_TEXT_START_ACTIVITY)
 
     def change_button_to_stop_activity(self, button):
         button.set_label(_("Stop Hamster Activity"))
-        button.set_icon_name('hamster-activity-stop')
+        button.set_icon_widget(self.icon_stop_activity)
         button.set_tooltip_text(self.TOOLTIP_TEXT_STOP_ACTIVITY)
 
     #### Preference Handling
