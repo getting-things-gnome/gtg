@@ -53,7 +53,7 @@ class pluginSendEmail:
         """
         # everything should be removed, in case a task is currently opened
         try:
-            self.plugin_api.remove_task_toolbar_item(self.tb_Taskbutton)
+            self.plugin_api.remove_toolbar_item(self.tb_Taskbutton)
         except:
             pass
 
