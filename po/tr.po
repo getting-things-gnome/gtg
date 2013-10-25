@@ -8,63 +8,63 @@ msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2013-04-28 17:02+0200\n"
-"PO-Revision-Date: 2011-01-27 08:04+0000\n"
-"Last-Translator: Onur ALTINTAŞI <Unknown>\n"
+"PO-Revision-Date: 2013-10-24 21:19+0000\n"
+"Last-Translator: Baris Ata <brsata@gmail.com>\n"
 "Language-Team: Turkish <tr@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2013-04-29 04:39+0000\n"
-"X-Generator: Launchpad (build 16580)\n"
+"X-Launchpad-Export-Date: 2013-10-25 05:41+0000\n"
+"X-Generator: Launchpad (build 16810)\n"
 
 #: GTG/gtk/backends_dialog/__init__.py:75
 #, python-format
 msgid "Synchronization Services - %s"
-msgstr ""
+msgstr "Eşitleme Servisleri - %s"
 
 #: GTG/gtk/backends_dialog/__init__.py:293
 #, python-format
 msgid "Do you really want to remove the '%s' synchronization service?"
-msgstr ""
+msgstr "Gerçekten '%s' eşitleme servisini kaldırmak istiyırmusunuz?"
 
 #: GTG/gtk/backends_dialog/configurepanel.py:145
 msgid "Disable syncing"
-msgstr ""
+msgstr "Eşitlemeyi etkisizleştir"
 
 #: GTG/gtk/backends_dialog/configurepanel.py:147
 msgid "Enable syncing"
-msgstr ""
+msgstr "Eşitlemeyi etkinleştir"
 
 #: GTG/gtk/backends_dialog/configurepanel.py:155
 msgid "This is the default synchronization service"
-msgstr ""
+msgstr "Bu varsayılan eşitleme servisidir"
 
 #: GTG/gtk/backends_dialog/configurepanel.py:158
 msgid "Syncing is enabled."
-msgstr ""
+msgstr "Eşitleme etkinleştirildi"
 
 #: GTG/gtk/backends_dialog/configurepanel.py:160
 msgid "Syncing is <span color=\"red\">disabled</span>."
-msgstr ""
+msgstr "Eşitleme  <span color=\"red\">etkisizleştirildi</span>."
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:61
 msgid "Import tags"
-msgstr ""
+msgstr "Etiketleri içe aktar"
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:62
 msgid "All tags"
-msgstr ""
+msgstr "Tüm etiketler"
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:63
 msgid ""
 "Just these                                                                   "
 "    tags:"
-msgstr ""
+msgstr "Sadece şu etiketler:"
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:68
 msgid "Tags to sync"
-msgstr ""
+msgstr "Eşitlenecek etiketler"
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:69
 #: GTG/core/treefactory.py:79
@@ -75,11 +75,11 @@ msgstr "Tüm görevler"
 msgid ""
 "Tasks with                                                                 "
 "these tags:"
-msgstr ""
+msgstr "Bu etikete sahip görevler:"
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:76
 msgid "Username"
-msgstr ""
+msgstr "Kullanıcı adı"
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:81
 msgid "Service URL"
@@ -93,14 +93,14 @@ msgstr ""
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:94
 msgid "Import tasks from direct messages"
-msgstr ""
+msgstr "Görevleri direkt mesajlardan içe aktar"
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:102
 msgid ""
 "Import                                                                  "
 "tasks from                                                                  "
 "your tweets"
-msgstr ""
+msgstr "Görevleri tweetlerinden içe aktar"
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:109
 msgid "Tag your GTG tasks with the bug tags"
@@ -112,31 +112,31 @@ msgstr ""
 
 #: GTG/gtk/backends_dialog/parameters_ui/periodui.py:49
 msgid "Check for new tasks every"
-msgstr ""
+msgstr "Yeni görevleri bu sıklıkla kontrol et"
 
 #: GTG/gtk/backends_dialog/parameters_ui/periodui.py:95
 msgid " minute"
 msgid_plural " minutes"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] " dakika"
+msgstr[1] " dakika"
 
 #: GTG/gtk/backends_dialog/parameters_ui/passwordui.py:48
 msgid "Password:"
-msgstr ""
+msgstr "Parola:"
 
 #: GTG/gtk/backends_dialog/parameters_ui/pathui.py:49
 msgid "Filename:"
-msgstr ""
+msgstr "Dosya adı:"
 
 #: GTG/gtk/backends_dialog/addpanel.py:68
 msgid "Select synchronization service:"
-msgstr ""
+msgstr "Eşitleme servisini seç:"
 
 #: GTG/gtk/backends_dialog/addpanel.py:177
 msgid "Author"
 msgid_plural "Authors"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Yazar"
+msgstr[1] "Yazarlar"
 
 #: GTG/gtk/preferences.glade.h:1
 msgid "Start Getting Things GNOME! on every login"
@@ -144,15 +144,15 @@ msgstr ""
 
 #: GTG/gtk/preferences.glade.h:2
 msgid "New Task Shortcut :"
-msgstr ""
+msgstr "Yeni Görev Kısayolu:"
 
 #: GTG/gtk/preferences.glade.h:3
 msgid "<b>System</b>"
-msgstr ""
+msgstr "<b>Sistem</b>"
 
 #: GTG/gtk/preferences.glade.h:4
 msgid "Enable colored backgrounds in the task list"
-msgstr ""
+msgstr "Görev listesinde renkli arkaplanı etkinleştir"
 
 #: GTG/gtk/preferences.glade.h:5
 msgid "Show description preview in the task list."
@@ -160,11 +160,11 @@ msgstr ""
 
 #: GTG/gtk/preferences.glade.h:6
 msgid "<b>Task Browser</b>"
-msgstr ""
+msgstr "<b>Görev Tarayıcısı</b>"
 
 #: GTG/gtk/preferences.glade.h:7
 msgid "Font :"
-msgstr ""
+msgstr "Yazı tipi:"
 
 #: GTG/gtk/preferences.glade.h:8
 msgid "<b>Editor</b>"
@@ -172,15 +172,15 @@ msgstr ""
 
 #: GTG/gtk/preferences.glade.h:9
 msgid "page 1"
-msgstr ""
+msgstr "sayfa 1"
 
 #: GTG/gtk/preferences.glade.h:10
 msgid "page 2"
-msgstr ""
+msgstr "sayfa 2"
 
 #: GTG/gtk/preferences.glade.h:11
 msgid "page 3"
-msgstr ""
+msgstr "sayfa 3"
 
 #: GTG/gtk/deletion.glade.h:1
 msgid "Confirm task deletion"
@@ -193,7 +193,7 @@ msgstr ""
 
 #: GTG/gtk/preferences.py:249
 msgid "Warning"
-msgstr ""
+msgstr "Dikkat"
 
 #: GTG/gtk/preferences.py:263
 #, python-format
@@ -202,6 +202,9 @@ msgid ""
 "using this key.\n"
 "Please try with a key such as Control, Alt or Shift at the same time."
 msgstr ""
+"Kısayol tuşu \"%s\" kullanılamıyor çünkü kullanımı halinde bu tuş "
+"kullanılarak yazmak mümkün olmayacak.\n"
+"Lütfen Control, Alt ya da Shift gibi tuşlar ile aynı anda deneyin."
 
 #: GTG/gtk/browser/__init__.py:37 GTG/gtk/browser/taskbrowser.glade.h:25
 #: GTG/gtk/editor/__init__.py:31
@@ -214,7 +217,7 @@ msgstr "Seçili görevi yapıldı olarak işaretle"
 
 #: GTG/gtk/browser/__init__.py:39 GTG/gtk/editor/__init__.py:32
 msgid "Mark as not Done"
-msgstr ""
+msgstr "Yapılmadı olarak işaretle"
 
 #: GTG/gtk/browser/__init__.py:40 GTG/gtk/browser/__init__.py:44
 msgid "Mark the selected task as to be done"
@@ -267,7 +270,7 @@ msgstr ""
 
 #: GTG/gtk/browser/__init__.py:54
 msgid "Clear"
-msgstr ""
+msgstr "Temizle"
 
 #: GTG/gtk/browser/custominfobar.py:34
 #, python-format
