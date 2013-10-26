@@ -1211,6 +1211,7 @@ class TaskBrowser(gobject.GObject):
         def update_button(button, settings):
             button.set_icon_name(settings["icon-name"])
             button.set_label(settings["label"])
+            button.set_tooltip_text(settings["tooltip"])
 
         def update_menu_item(menu_item, settings):
             image = gtk.image_new_from_icon_name(settings["icon-name"], 16)

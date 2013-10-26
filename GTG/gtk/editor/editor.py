@@ -240,13 +240,14 @@ class TaskEditor:
             self.window.set_title(self.task.get_title())
 
         status = self.task.get_status()
-        dismiss_tooltip = GnomeConfig.MARK_UNDISMISS_TOOLTIP
+        dismiss_tooltip = GnomeConfig.MARK_DISMISS_TOOLTIP
+        undismiss_tooltip = GnomeConfig.MARK_UNDISMISS_TOOLTIP
         if status == Task.STA_DISMISSED:
             self.donebutton.set_label(GnomeConfig.MARK_DONE)
             self.donebutton.set_tooltip_text(GnomeConfig.MARK_DONE_TOOLTIP)
             self.donebutton.set_icon_name("gtg-task-done")
             self.dismissbutton.set_label(GnomeConfig.MARK_UNDISMISS)
-            self.dismissbutton.set_tooltip_text(dismiss_tooltip)
+            self.dismissbutton.set_tooltip_text(undismiss_tooltip)
             self.dismissbutton.set_icon_name("gtg-task-undismiss")
         elif status == Task.STA_DONE:
             self.donebutton.set_label(GnomeConfig.MARK_UNDONE)
