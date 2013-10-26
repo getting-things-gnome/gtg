@@ -43,23 +43,19 @@ class hamsterPlugin:
                                    " Hamster Time Tracker corresponding" +
                                    " to the selected task")
     BUFFER_TIME = 60  # secs
+    PLUGIN_PATH = os.path.dirname(os.path.abspath(__file__))
+    IMG_START_PATH = "icons/hicolor/32x32/hamster-activity-start.png"
+    IMG_STOP_PATH = "icons/hicolor/32x32/hamster-activity-stop.png"
 
     def __init__(self):
         # task editor widget
         self.vbox = None
         self.button = gtk.ToolButton()
+        self.other_stop_button = self.button
 
-        plugin_path = os.path.dirname(os.path.abspath(__file__))
-        IMG_START_PATH = "icons/hicolor/32x32/hamster-activity-start.png"
-        IMG_STOP_PATH = "icons/hicolor/32x32/hamster-activity-stop.png"
-        self.icon_start_activity = self.create_icon(plugin_path,
-                                                    IMG_START_PATH, 24)
-        self.icon_stop_activity = self.create_icon(plugin_path,
-                                                   IMG_STOP_PATH, 24)
-
-    def create_icon(self, plugin_path, image_path, size):
-        image_path = os.path.join(plugin_path, image_path)
-        pixbuf = gtk.gdk.pixbuf_new_from_file_at_size(image_path, size, size)
+    def get_icon_widget(self, image_path):
+        image_path = os.path.join(self.PLUGIN_PATH, image_path)
+        pixbuf = gtk.gdk.pixbuf_new_from_file_at_size(image_path, 24, 24)
 
         # create the image and associate the pixbuf
         icon = gtk.Image()
@@ -245,7 +241,8 @@ class hamsterPlugin:
             plugin_api.add_menu_item(self.menu_item)
             # and button
             self.button.set_label(_("Start in Hamster"))
-            self.button.set_icon_widget(self.icon_start_activity)
+            start_icon_widget = self.get_icon_widget(self.IMG_START_PATH)
+            self.button.set_icon_widget(start_icon_widget)
             self.button.set_tooltip_text(self.TOOLTIP_TEXT_START_ACTIVITY)
             self.button.set_sensitive(False)
             self.button.connect('clicked', self.browser_cb, plugin_api)
@@ -348,11 +345,11 @@ class hamsterPlugin:
 
     def decide_start_or_stop_activity(self, task, widget):
         if self.is_task_active(task):
-            self.stop_task(task)
             self.change_button_to_start_activity(widget)
+            self.stop_task(task)
         elif task.get_status() == Task.STA_ACTIVE:
-            self.sendTask(task)
             self.change_button_to_stop_activity(widget)
+            self.sendTask(task)
 
     def selection_changed(self, selection):
         if selection.count_selected_rows() == 1:
@@ -372,13 +369,23 @@ class hamsterPlugin:
 
     def change_button_to_start_activity(self, button):
         button.set_label(_("Start in Hamster"))
-        button.set_icon_widget(self.icon_start_activity)
+        button.set_icon_widget(self.get_icon_widget(self.IMG_START_PATH))
         button.set_tooltip_text(self.TOOLTIP_TEXT_START_ACTIVITY)
 
     def change_button_to_stop_activity(self, button):
         button.set_label(_("Stop Hamster Activity"))
-        button.set_icon_widget(self.icon_stop_activity)
+        button.set_icon_widget(self.get_icon_widget(self.IMG_STOP_PATH))
         button.set_tooltip_text(self.TOOLTIP_TEXT_STOP_ACTIVITY)
+
+        # Many task editors can be opened at a time, but only one editor can
+        # have stop activity button
+        # (Because only one task can be tracked at a time)
+        # So, we keep a track of any other task editor which also has stop
+        # button, and change it to start
+        if self.other_stop_button is not self.button and \
+           self.other_stop_button is not button:
+            self.change_button_to_start_activity(self.other_stop_button)
+        self.other_stop_button = button
 
     #### Preference Handling
     def is_configurable(self):
