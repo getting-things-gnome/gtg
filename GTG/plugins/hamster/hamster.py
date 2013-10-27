@@ -377,16 +377,6 @@ class hamsterPlugin:
         button.set_icon_widget(self.get_icon_widget(self.IMG_STOP_PATH))
         button.set_tooltip_text(self.TOOLTIP_TEXT_STOP_ACTIVITY)
 
-        # Many task editors can be opened at a time, but only one editor can
-        # have stop activity button
-        # (Because only one task can be tracked at a time)
-        # So, we keep a track of any other task editor which also has stop
-        # button, and change it to start
-        if self.other_stop_button is not self.button and \
-           self.other_stop_button is not button:
-            self.change_button_to_start_activity(self.other_stop_button)
-        self.other_stop_button = button
-
     #### Preference Handling
     def is_configurable(self):
         """A configurable plugin should have this method and return True"""
