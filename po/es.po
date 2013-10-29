@@ -7,16 +7,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2013-04-27 08:52+0200\n"
-"PO-Revision-Date: 2013-01-20 10:45+0000\n"
+"POT-Creation-Date: 2013-04-28 17:02+0200\n"
+"PO-Revision-Date: 2013-06-02 12:24+0000\n"
 "Last-Translator: Adolfo Jayme Barrientos <fitoschido@gmail.com>\n"
 "Language-Team: Spanish <es@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2013-04-28 04:38+0000\n"
-"X-Generator: Launchpad (build 16580)\n"
+"X-Launchpad-Export-Date: 2013-06-03 06:03+0000\n"
+"X-Generator: Launchpad (build 16660)\n"
 
 #: GTG/gtk/backends_dialog/__init__.py:75
 #, python-format
@@ -60,7 +60,7 @@ msgstr "Todas las etiquetas"
 msgid ""
 "Just these                                                                   "
 "    tags:"
-msgstr ""
+msgstr "Sólo estas etiquetas"
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:68
 msgid "Tags to sync"
@@ -75,7 +75,7 @@ msgstr "Todas las tareas"
 msgid ""
 "Tasks with                                                                 "
 "these tags:"
-msgstr ""
+msgstr "Tareas con estas etiquetas"
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:76
 msgid "Username"
@@ -89,26 +89,27 @@ msgstr "URL del servicio"
 msgid ""
 "Import tasks                                                         from @ "
 "replies "
-msgstr ""
+msgstr "Importar tareas de @ respuestas "
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:94
-msgid "Import tasksfrom direct messages"
-msgstr ""
+msgid "Import tasks from direct messages"
+msgstr "Importar tareas de mensajes directos"
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:102
 msgid ""
 "Import                                                                  "
 "tasks from                                                                  "
 "your tweets"
-msgstr ""
+msgstr "Importar tareas desde sus tuits"
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:109
 msgid "Tag your GTG tasks with the bug tags"
-msgstr "Asignar las etiquetas de error a tus tareas en GTG"
+msgstr "Asignar las etiquetas de errores a las tareas en GTG"
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:116
-msgid "Tag your GTG tasks with the projecttargeted by the bug"
+msgid "Tag your GTG tasks with the project targeted by the bug"
 msgstr ""
+"Etiqueta tus tareas GTG con el proyecto al que está dirigido el error"
 
 #: GTG/gtk/backends_dialog/parameters_ui/periodui.py:49
 msgid "Check for new tasks every"
@@ -144,11 +145,11 @@ msgstr "Iniciar Getting Things GNOME! al iniciar sesión"
 
 #: GTG/gtk/preferences.glade.h:2
 msgid "New Task Shortcut :"
-msgstr ""
+msgstr "Atajo para Tarea nueva:"
 
 #: GTG/gtk/preferences.glade.h:3
 msgid "<b>System</b>"
-msgstr ""
+msgstr "<b>Sistema</b>"
 
 #: GTG/gtk/preferences.glade.h:4
 msgid "Enable colored backgrounds in the task list"
@@ -193,7 +194,7 @@ msgstr "Preferencias - %s"
 
 #: GTG/gtk/preferences.py:249
 msgid "Warning"
-msgstr ""
+msgstr "Advertencia"
 
 #: GTG/gtk/preferences.py:263
 #, python-format
@@ -202,6 +203,10 @@ msgid ""
 "using this key.\n"
 "Please try with a key such as Control, Alt or Shift at the same time."
 msgstr ""
+"No se puede usar el atajo de teclado «%s» porque se haría imposible escribir "
+"usando esta tecla.\n"
+"Por favor, inténtalo con una tecla como Control, Alt o Mayús. al mismo "
+"tiempo."
 
 #: GTG/gtk/browser/__init__.py:37 GTG/gtk/browser/taskbrowser.glade.h:25
 #: GTG/gtk/editor/__init__.py:31
@@ -263,7 +268,7 @@ msgstr "Mostrar etiqueta en la vista de trabajo"
 
 #: GTG/gtk/browser/__init__.py:53
 msgid "You can create, open or filter your tasks here"
-msgstr ""
+msgstr "Aquí puedes crear, abrir o filtrar tus tareas"
 
 #: GTG/gtk/browser/__init__.py:54
 msgid "Clear"
@@ -1054,9 +1059,11 @@ msgstr "Añadir una nota a Tomboy"
 #: GTG/plugins/tomboy/tomboy.py:194
 #, python-format
 msgid ""
-"%s seems to be installed on your system, but itdoes not provide a DBus "
+"%s seems to be installed on your system, but it does not provide a DBus "
 "interface which is required by the Tomboy/Gnote plugin in GTG."
 msgstr ""
+"%s parece estar instalado en tu sistema, pero no proporciona una interfaz "
+"DBus requerida por el plugin Tomboy/Gnote en GTG."
 
 #: GTG/plugins/tomboy/tomboy.py:243
 msgid "That note does not exist!"
@@ -1069,12 +1076,12 @@ msgstr "Esa nota no existe. ¿Quiere crear una nueva?"
 #: GTG/plugins/tomboy/tomboy.py:276
 msgid ""
 "This Tomboy note                                        does not exist "
-"anymore.Do you want to                                        create it?"
-msgstr ""
+"anymore. Do you want to                                        create it?"
+msgstr "Esta nota de Tomboy ya no existe. ¿Quiere crearla?"
 
 #: GTG/gtg.py:85
 msgid "gtg is already running!"
-msgstr "¡gtg ya se está ejecutando!"
+msgstr "GTG ya está en ejecución."
 
 #: GTG/core/treefactory.py:90
 msgid "Tasks with no tags"
@@ -2342,9 +2349,6 @@ msgstr[1] "En %(days)d días"
 #~ msgid "Import tasks from @ replies "
 #~ msgstr "Importar tareas de @menciones "
 
-#~ msgid "Import tasks from direct messages"
-#~ msgstr "Importar tareas de mensajes directos"
-
 #~ msgid "_clear start date"
 #~ msgstr "_borrar fecha de inicio"
 
@@ -2365,7 +2369,3 @@ msgstr[1] "En %(days)d días"
 
 #~ msgid "Imports your twitter  messages into your GTG "
 #~ msgstr "Importa tus mensajes twitter a GTG "
-
-#~ msgid "Tag your GTG tasks with the project targeted by the bug"
-#~ msgstr ""
-#~ "Etiqueta tus tareas GTG con el proyecto al que está dirigido el error"
