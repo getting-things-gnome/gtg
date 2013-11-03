@@ -17,15 +17,18 @@
 
 import os
 
-#import Geoclue
-
 from gi.repository import Champlain
 from gi.repository import Clutter
 from gi.repository import GdkPixbuf
 from gi.repository import Gtk
 from gi.repository import GtkChamplain
+from gi.repository import GtkClutter
 
 from GTG.plugins.geolocalized_tasks.marker import MarkerLayer
+from GTG.plugins.geolocalized_tasks.geoclue import Geoclue
+
+import dbus
+
 
 # Attention!!! FIXME
 # FIXME During porting GTG into GTK3/PyGObject was geolocalized.glade converted
@@ -37,7 +40,11 @@ from GTG.plugins.geolocalized_tasks.marker import MarkerLayer
 class geolocalizedTasks:
 
     def __init__(self):
-        pass
+
+        self.where = Geoclue()
+        self.where.client.connect_to_signal('LocationUpdated', self.location_updated)
+        self.where.client.Start()
+
 #        self.geoclue = Geoclue.DiscoverLocation()
 #        self.geoclue.connect(self.location_changed)
 #
@@ -66,15 +73,27 @@ class geolocalizedTasks:
 #        self.location_filter = []
 #        self.task_separator = Gtk.SeparatorToolItem()
 
+    def location_updated(self, old_path, new_path):
+        system_bus = self.where._system_bus
+        location_object =  system_bus.get_object(self.where.GEOCLUE2_BUS_NAME, new_path)
+        location_properties = dbus.Interface(location_object, self.where.PROPERTIES_INTERFACE_NAME)
+        self.latitude = location_properties.Get(self.where.LOCATION_INTERFACE_NAME, "Latitude")
+        self.longitude = location_properties.Get(self.where.LOCATION_INTERFACE_NAME, "Longitude")
+
     def onButtonClickedCb(self, widget, plugin_api):
         Clutter.init([])
-        window = Gtk.Window()
+
         map = GtkChamplain.Embed()
+        champlain_view = map.get_view()
+        champlain_view.center_on(self.latitude, self.longitude)
+        champlain_view.set_property("zoom-level", 10)
+        window = Gtk.Window()
+        window.resize(640, 480)
         window.add(map)
         window.show_all()
 
-    def activate(self, plugin_api):
-        pass
+#    def activate(self, plugin_api):
+#        pass
 #        self.plugin_api = plugin_api
 #
 #        # toolbar button for the new Location view
@@ -188,8 +207,9 @@ class geolocalizedTasks:
         Desactivates the plugin.
         """
         # everything should be removed, in case a task is currently opened
+        self.where.client.Stop()
         try:
-            self.plugin_api.remove_toolbar_item(self.btn_set_location)
+            plugin_api.remove_toolbar_item(self.btn_set_location)
         except:
                 pass
 #        try:
@@ -237,6 +257,7 @@ class geolocalizedTasks:
         self.btn_set_location.set_icon_widget(icon_geolocalization)
         self.btn_set_location.set_label("Set/View location")
         self.btn_set_location.connect('clicked', self.onButtonClickedCb, plugin_api)
+        self.btn_set_location.show_all()
 
         plugin_api.add_toolbar_item(self.btn_set_location)
 #        pass
