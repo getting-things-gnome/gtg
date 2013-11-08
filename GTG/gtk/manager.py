@@ -39,19 +39,19 @@ from GTG.backends.backendsignals import BackendSignals
 from GTG.gtk.browser.tag_editor import TagEditor
 
 
-class Manager(gobject.GObject):
+class Manager(GObject.GObject):
 
-    __object_signal__ = (gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE,
-                         (gobject.TYPE_PYOBJECT,))
-    __object_string_signal__ = (gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE,
-                                (gobject.TYPE_PYOBJECT, gobject.TYPE_STRING, ))
+    __object_signal__ = (GObject.SIGNAL_RUN_FIRST, GObject.TYPE_NONE,
+                         (GObject.TYPE_PYOBJECT,))
+    __object_string_signal__ = (GObject.SIGNAL_RUN_FIRST, GObject.TYPE_NONE,
+                                (GObject.TYPE_PYOBJECT, GObject.TYPE_STRING, ))
     __gsignals__ = {'tasks-deleted': __object_signal__,
                     'task-status-changed': __object_string_signal__,
                     }
 
     ############## init #####################################################
     def __init__(self, req):
-        gobject.GObject.__init__(self)
+        GObject.GObject.__init__(self)
         self.req = req
         self.config_obj = self.req.get_global_config()
         self.browser_config = self.config_obj.get_subconfig("browser")
@@ -242,7 +242,7 @@ class Manager(gobject.GObject):
         for t in finallist:
             if t.get_id() in self.opened_task:
                 self.close_task(t.get_id())
-        gobject.idle_add(self.emit, "tasks-deleted", finallist)
+        GObject.idle_add(self.emit, "tasks-deleted", finallist)
         return finallist
 
     def open_tag_editor(self, tag):
@@ -264,7 +264,7 @@ class Manager(gobject.GObject):
         and the new status as second parameter
         '''
         task.set_status(new_status)
-        gobject.idle_add(self.emit, "task-status-changed", task, new_status)
+        GObject.idle_add(self.emit, "task-status-changed", task, new_status)
 
 ### URIS ###################################################################
     def open_uri_list(self, unused, uri_list):
