@@ -7,16 +7,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2013-04-27 08:52+0200\n"
-"PO-Revision-Date: 2013-04-15 20:30+0000\n"
-"Last-Translator: Michael Odaischi <michel777@gmx.de>\n"
+"POT-Creation-Date: 2013-04-28 17:02+0200\n"
+"PO-Revision-Date: 2013-07-09 15:50+0000\n"
+"Last-Translator: brylli <news@email-weltweit.de>\n"
 "Language-Team: German, Low <nds@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2013-04-28 04:38+0000\n"
-"X-Generator: Launchpad (build 16580)\n"
+"X-Launchpad-Export-Date: 2013-07-10 05:27+0000\n"
+"X-Generator: Launchpad (build 16696)\n"
 
 #: GTG/gtk/backends_dialog/__init__.py:75
 #, python-format
@@ -75,7 +75,7 @@ msgstr "Alle Aufgaben"
 msgid ""
 "Tasks with                                                                 "
 "these tags:"
-msgstr ""
+msgstr "Aufgaben mit diesen Schlagworten:"
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:76
 msgid "Username"
@@ -92,23 +92,23 @@ msgid ""
 msgstr ""
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:94
-msgid "Import tasksfrom direct messages"
-msgstr ""
+msgid "Import tasks from direct messages"
+msgstr "Importiere Aufgaben von direkten Nachrichten"
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:102
 msgid ""
 "Import                                                                  "
 "tasks from                                                                  "
 "your tweets"
-msgstr ""
+msgstr "Importiere Aufgaben von deinen Tweets"
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:109
 msgid "Tag your GTG tasks with the bug tags"
 msgstr "Markiere Deine GTG Aufgaben mit den Fehlern Stichwörtern"
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:116
-msgid "Tag your GTG tasks with the projecttargeted by the bug"
-msgstr ""
+msgid "Tag your GTG tasks with the project targeted by the bug"
+msgstr "Markiere deine GTG Aufgaben mit markierten Fehlern von dem Projekt"
 
 #: GTG/gtk/backends_dialog/parameters_ui/periodui.py:49
 msgid "Check for new tasks every"
@@ -148,7 +148,7 @@ msgstr ""
 
 #: GTG/gtk/preferences.glade.h:3
 msgid "<b>System</b>"
-msgstr ""
+msgstr "<b>System</b>"
 
 #: GTG/gtk/preferences.glade.h:4
 msgid "Enable colored backgrounds in the task list"
@@ -193,7 +193,7 @@ msgstr "Einstellungen - %s"
 
 #: GTG/gtk/preferences.py:249
 msgid "Warning"
-msgstr ""
+msgstr "Warnung"
 
 #: GTG/gtk/preferences.py:263
 #, python-format
@@ -697,8 +697,8 @@ msgstr "Fällig heute!"
 #, python-format
 msgid "Due yesterday!"
 msgid_plural "Was %(days)d days ago"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Gestern fällig!"
+msgstr[1] "War vor %(days)d fällig!"
 
 #: GTG/gtk/editor/taskeditor.glade.h:1
 msgid "Task"
@@ -746,7 +746,11 @@ msgid ""
 msgid_plural ""
 "Deleting a task cannot be undone, and will delete the following tasks: "
 msgstr[0] ""
+"Das Löschen einer Aufgabe kann nicht rückgängig gemacht werden und wird die "
+"folgende Aufgabe löschen: "
 msgstr[1] ""
+"Das Löschen einer Aufgabe kann nicht rückgängig gemacht werden und wird die "
+"folgenden Aufgaben löschen: "
 
 #: GTG/gtk/delete_dialog.py:97
 msgid "Are you sure you want to delete this task?"
@@ -783,11 +787,11 @@ msgstr ""
 
 #: GTG/gtk/crashhandler.py:170
 msgid "An error has occurred"
-msgstr ""
+msgstr "Ein Fehler ist aufgetreten"
 
 #: GTG/gtk/crashhandler.py:183
 msgid "It looks like an error has occurred."
-msgstr ""
+msgstr "Es sieht so aus, als ob ein Fehler passiert ist."
 
 #: GTG/gtk/crashhandler.py:219
 msgid "_Details"
@@ -810,7 +814,7 @@ msgstr ""
 
 #: GTG/gtk/plugins.glade.h:1
 msgid "<b>Dependencies</b>"
-msgstr ""
+msgstr "<b>Abhängigkeiten</b>"
 
 #: GTG/gtk/plugins.glade.h:2
 msgid "_About Plugin"
@@ -827,16 +831,16 @@ msgstr ""
 
 #: GTG/plugins/not_today/not_today.py:59
 msgid "Do it tomorrow"
-msgstr ""
+msgstr "Mach es morgen"
 
 #: GTG/plugins/send_email/sendEmail.py:44
 msgid "Send via email"
-msgstr ""
+msgstr "Als E-Mail senden"
 
 #: GTG/plugins/send_email/sendEmail.py:68
 #, python-format
 msgid "Status: %s"
-msgstr ""
+msgstr "Status: %s"
 
 #: GTG/plugins/send_email/sendEmail.py:69
 #, python-format
@@ -844,6 +848,8 @@ msgid ""
 "\n"
 "Tags: %s"
 msgstr ""
+"\n"
+"Schlagworte: %s"
 
 #: GTG/plugins/send_email/sendEmail.py:70
 #, python-format
@@ -950,11 +956,11 @@ msgstr ""
 
 #: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:2
 msgid "Associate with new tag"
-msgstr ""
+msgstr "Mit neuem Schlagwort assoziieren"
 
 #: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:3
 msgid "Associate with existing tag"
-msgstr ""
+msgstr "Mit vorhandenem Schlagwort assoziieren"
 
 #: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:4
 msgid "Geolocalized-tasks Preferences"
@@ -988,15 +994,15 @@ msgstr ""
 
 #: GTG/plugins/hamster/hamster.py:38
 msgid "Start a new activity in Hamster Time Tracker "
-msgstr ""
+msgstr "Starte neue Aktivität in Hamster Time Tracker "
 
 #: GTG/plugins/hamster/hamster.py:174
 msgid "Start task in Hamster"
-msgstr ""
+msgstr "Aufgage in Hamster starten"
 
 #: GTG/plugins/hamster/hamster.py:179
 msgid "Start in Hamster"
-msgstr ""
+msgstr "In Hamster starten"
 
 #: GTG/plugins/tomboy/tomboy.py:77
 msgid ""
@@ -1011,7 +1017,7 @@ msgstr ""
 #: GTG/plugins/tomboy/tomboy.py:194
 #, python-format
 msgid ""
-"%s seems to be installed on your system, but itdoes not provide a DBus "
+"%s seems to be installed on your system, but it does not provide a DBus "
 "interface which is required by the Tomboy/Gnote plugin in GTG."
 msgstr ""
 
@@ -1026,7 +1032,7 @@ msgstr ""
 #: GTG/plugins/tomboy/tomboy.py:276
 msgid ""
 "This Tomboy note                                        does not exist "
-"anymore.Do you want to                                        create it?"
+"anymore. Do you want to                                        create it?"
 msgstr ""
 
 #: GTG/gtg.py:85
@@ -1650,12 +1656,6 @@ msgstr[1] ""
 
 #~ msgid "Import tasks from @ replies "
 #~ msgstr "Importiere Aufgaben von @ Antworten "
-
-#~ msgid "Import tasks from direct messages"
-#~ msgstr "Importiere Aufgaben von direkten Nachrichten"
-
-#~ msgid "Tag your GTG tasks with the project targeted by the bug"
-#~ msgstr "Markiere deine GTG Aufgaben mit markierten Fehlern von dem Projekt"
 
 #~ msgid "Import tasks from your tweets"
 #~ msgstr "Importiere Aufgaben von deinen Tweets"

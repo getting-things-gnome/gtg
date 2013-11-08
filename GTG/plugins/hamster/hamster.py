@@ -19,13 +19,14 @@
 
 from calendar import timegm
 import dbus
-from gi.repository import Gtk
+from gi.repository import Gtk, Gdk, GdkPixbuf
 import os
 import re
 import time
 import datetime
 
 from GTG import _
+from GTG.core.task import Task
 
 
 class hamsterPlugin:
@@ -36,13 +37,32 @@ class hamsterPlugin:
         "description": "contents",
         "tags": "existing",
     }
-    TOOLTIP_TEXT = _("Start a new activity in Hamster Time Tracker " +
-                     "based on the selected task")
+    TOOLTIP_TEXT_START_ACTIVITY = _("Start a new activity in Hamster Time" +
+                                    " Tracker based on the selected task")
+    TOOLTIP_TEXT_STOP_ACTIVITY = _("Stop tracking the current activity in" +
+                                   " Hamster Time Tracker corresponding" +
+                                   " to the selected task")
+    BUFFER_TIME = 60  # secs
+    PLUGIN_PATH = os.path.dirname(os.path.abspath(__file__))
+    IMG_START_PATH = "icons/hicolor/32x32/hamster-activity-start.png"
+    IMG_STOP_PATH = "icons/hicolor/32x32/hamster-activity-stop.png"
 
     def __init__(self):
         # task editor widget
         self.vbox = None
         self.button = Gtk.ToolButton()
+        self.other_stop_button = self.button
+
+    def get_icon_widget(self, image_path):
+        image_path = os.path.join(self.PLUGIN_PATH, image_path)
+        pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(image_path, 24, 24)
+
+        # create the image and associate the pixbuf
+        icon = Gtk.Image()
+        icon.set_from_pixbuf(pixbuf)
+        icon.show()
+
+        return icon
 
     #### Interaction with Hamster
     def sendTask(self, task):
@@ -55,7 +75,7 @@ class hamsterPlugin:
         activity = "Other"
         if self.preferences['activity'] == 'tag':
             hamster_activities = set([str(x[0]).lower()
-                                      for x in self.hamster.GetActivities()])
+                                      for x in self.hamster.GetActivities('')])
             activity_candidates = hamster_activities.intersection(
                 set(gtg_tags))
             if len(activity_candidates) >= 1:
@@ -68,8 +88,9 @@ class hamsterPlugin:
 
         category = ""
         if self.preferences['category'] == 'auto_tag':
-            hamster_activities = dict([(str(x[0]), str(x[1]))
-                                       for x in self.hamster.GetActivities()])
+            hamster_activities = dict([(str(x[0]), unicode(x[1]))
+                                       for x in
+                                       self.hamster.GetActivities('')])
             if (gtg_title in hamster_activities
                     or gtg_title.replace(",", "") in hamster_activities):
                     category = "%s" % hamster_activities[gtg_title]
@@ -128,8 +149,8 @@ class hamsterPlugin:
         valid_ids = []
         for i in ids:
             try:
-                d = self.hamster.GetFactById(i)
-                if d.get("id", None) and i not in valid_ids:
+                d = self.hamster.GetFact(i)
+                if d and i not in valid_ids:
                     records.append(d)
                     valid_ids.append(i)
                     continue
@@ -142,20 +163,28 @@ class hamsterPlugin:
         return records
 
     def get_active_id(self):
-        f = self.hamster.GetCurrentFact()
-        if f:
-            return f['id']
+        todays_facts = self.hamster.GetTodaysFacts()
+        if todays_facts and todays_facts[-1][2] == 0:
+            # todays_facts is a list. todays_facts[-1] gives the latest fact
+            # if todays_facts[-1][-1] is the start time, and
+            # todays_facts[-1][-2] is the end time of the fact (value 0 means
+            # it is still being tracked upon which we return id of the fact)
+            return todays_facts[-1][0]
         else:
             return None
 
     def is_task_active(self, task):
         records = self.get_records(task)
-        ids = [record['id'] for record in records]
+        ids = [record[0] for record in records]
         return self.get_active_id() in ids
 
     def stop_task(self, task):
-        if self.is_task_active(self, task):
-            self.hamster.StopTracking()
+        if self.is_task_active(task):
+            now = timegm(datetime.datetime.now().timetuple())
+            # Hamster deletes an activity if it's finish time is set earlier
+            # than current time. Hence, we are setting finish time
+            # some buffer secs from now
+            self.hamster.StopTracking(now + self.BUFFER_TIME)
 
     #### Datastore
     def get_hamster_ids(self, task):
@@ -168,6 +197,35 @@ class hamsterPlugin:
     def set_hamster_ids(self, task, ids):
         task.set_attribute("id-list", ",".join(ids),
                            namespace=self.PLUGIN_NAMESPACE)
+
+    def tasks_deleted(self, widget, deleted_tasks):
+        '''
+        If a task is being tracked, and it is deleted in GTG,
+        this method stops tracking it
+        '''
+        for task in deleted_tasks:
+            self.stop_task(task)
+
+    def task_status_changed(self, widget, task, new_status):
+        '''
+        If a task is being tracked and it's status is changed from
+        Active -> Done/Dismissed, this method stops tracking it
+        '''
+
+        def recursive_list_tasks(task_list, root):
+            '''
+            Populate a list of all the subtasks and their children, recursively
+            '''
+            if root not in task_list:
+                task_list.append(root)
+                for i in root.get_subtasks():
+                    recursive_list_tasks(task_list, i)
+
+        if new_status in [Task.STA_DISMISSED, Task.STA_DONE]:
+            all_my_children = []
+            recursive_list_tasks(all_my_children, task)
+            for task in all_my_children:
+                self.stop_task(task)
 
     #### Plugin api methods
     def activate(self, plugin_api):
@@ -183,26 +241,35 @@ class hamsterPlugin:
             plugin_api.add_menu_item(self.menu_item)
             # and button
             self.button.set_label(_("Start in Hamster"))
-            self.button.set_icon_name('hamster-applet')
-            self.button.set_tooltip_text(self.TOOLTIP_TEXT)
+            start_icon_widget = self.get_icon_widget(self.IMG_START_PATH)
+            self.button.set_icon_widget(start_icon_widget)
+            self.button.set_tooltip_text(self.TOOLTIP_TEXT_START_ACTIVITY)
+            self.button.set_sensitive(False)
             self.button.connect('clicked', self.browser_cb, plugin_api)
             self.button.show()
             plugin_api.add_toolbar_item(self.button)
+            plugin_api.set_active_selection_changed_callback(
+                self.selection_changed)
+        plugin_api.get_view_manager().connect('tasks-deleted',
+                                              self.tasks_deleted)
+        plugin_api.get_view_manager().connect('task-status-changed',
+                                              self.task_status_changed)
         # set up preferences
         self.preference_dialog_init()
         self.preferences_load()
 
     def onTaskOpened(self, plugin_api):
-        # add button
-        self.taskbutton = Gtk.ToolButton()
-        self.taskbutton.set_label("Start")
-        self.taskbutton.set_icon_name('hamster-applet')
-        self.taskbutton.set_tooltip_text(self.TOOLTIP_TEXT)
-        self.taskbutton.connect('clicked', self.task_cb, plugin_api)
-        self.taskbutton.show()
-        plugin_api.add_toolbar_item(self.taskbutton)
-
+        # get the opened task
         task = plugin_api.get_ui().get_task()
+
+        if task.get_status() == Task.STA_ACTIVE:
+            # add button
+            self.taskbutton = Gtk.ToolButton()
+            self.decide_button_mode(self.taskbutton, task)
+            self.taskbutton.connect('clicked', self.task_cb, plugin_api)
+            self.taskbutton.show()
+            plugin_api.add_toolbar_item(self.taskbutton)
+
         records = self.get_records(task)
 
         if len(records):
@@ -247,8 +314,8 @@ class hamsterPlugin:
             for offset, i in enumerate(records):
                 t = calc_duration(i)
                 total += t
-                add(inner_grid, format_date(i), format_duration(t),
-                    offset, i['id'] == active_id)
+                add(inner_table, format_date(i), format_duration(t),
+                    offset, i[0] == active_id)
 
             add(outer_grid, "<big><b>Total</b></big>",
                 "<big><b>%s</b></big>" % format_duration(total), 1)
@@ -265,11 +332,46 @@ class hamsterPlugin:
 
     def browser_cb(self, widget, plugin_api):
         task_id = plugin_api.get_ui().get_selected_task()
-        self.sendTask(plugin_api.get_requester().get_task(task_id))
+        task = plugin_api.get_requester().get_task(task_id)
+        self.decide_start_or_stop_activity(task, widget)
 
     def task_cb(self, widget, plugin_api):
         task = plugin_api.get_ui().get_task()
-        self.sendTask(task)
+        self.decide_start_or_stop_activity(task, widget)
+
+    def decide_start_or_stop_activity(self, task, widget):
+        if self.is_task_active(task):
+            self.change_button_to_start_activity(widget)
+            self.stop_task(task)
+        elif task.get_status() == Task.STA_ACTIVE:
+            self.change_button_to_stop_activity(widget)
+            self.sendTask(task)
+
+    def selection_changed(self, selection):
+        if selection.count_selected_rows() == 1:
+            self.button.set_sensitive(True)
+            task_id = self.plugin_api.get_ui().get_selected_task()
+            task = self.plugin_api.get_requester().get_task(task_id)
+            self.decide_button_mode(self.button, task)
+        else:
+            self.change_button_to_start_activity(self.button)
+            self.button.set_sensitive(False)
+
+    def decide_button_mode(self, button, task):
+        if self.is_task_active(task):
+            self.change_button_to_stop_activity(button)
+        else:
+            self.change_button_to_start_activity(button)
+
+    def change_button_to_start_activity(self, button):
+        button.set_label(_("Start in Hamster"))
+        button.set_icon_widget(self.get_icon_widget(self.IMG_START_PATH))
+        button.set_tooltip_text(self.TOOLTIP_TEXT_START_ACTIVITY)
+
+    def change_button_to_stop_activity(self, button):
+        button.set_label(_("Stop Hamster Activity"))
+        button.set_icon_widget(self.get_icon_widget(self.IMG_STOP_PATH))
+        button.set_tooltip_text(self.TOOLTIP_TEXT_STOP_ACTIVITY)
 
     #### Preference Handling
     def is_configurable(self):
@@ -332,23 +434,24 @@ class hamsterPlugin:
 
 
 def format_date(task):
-    start_time = time.gmtime(task['start_time'])
+    start_time = time.gmtime(task[1])
     return time.strftime("<b>%A, %b %e</b> %l:%M %p", start_time)
 
 
 def calc_duration(fact):
-    start = fact['start_time']
-    end = fact['end_time']
-    if not end:
+    '''
+    returns minutes
+    '''
+    start = fact[1]
+    end = fact[2]
+    if end == 0:
         end = timegm(time.localtime())
-    return end - start
+    return (end - start) / 60
 
 
-def format_duration(seconds):
+def format_duration(minutes):
     # Based on hamster-applet code -  hamster/stuff.py
     """formats duration in a human readable format."""
-
-    minutes = seconds / 60
 
     if not minutes:
         return "0min"

@@ -39,10 +39,19 @@ from GTG.backends.backendsignals import BackendSignals
 from GTG.gtk.browser.tag_editor import TagEditor
 
 
-class Manager(object):
+class Manager(gobject.GObject):
+
+    __object_signal__ = (gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE,
+                         (gobject.TYPE_PYOBJECT,))
+    __object_string_signal__ = (gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE,
+                                (gobject.TYPE_PYOBJECT, gobject.TYPE_STRING, ))
+    __gsignals__ = {'tasks-deleted': __object_signal__,
+                    'task-status-changed': __object_string_signal__,
+                    }
 
     ############## init #####################################################
     def __init__(self, req):
+        gobject.GObject.__init__(self)
         self.req = req
         self.config_obj = self.req.get_global_config()
         self.browser_config = self.config_obj.get_subconfig("browser")
@@ -233,6 +242,8 @@ class Manager(object):
         for t in finallist:
             if t.get_id() in self.opened_task:
                 self.close_task(t.get_id())
+        gobject.idle_add(self.emit, "tasks-deleted", finallist)
+        return finallist
 
     def open_tag_editor(self, tag):
         if not self.tag_editor_dialog:
@@ -244,6 +255,16 @@ class Manager(object):
 
     def close_tag_editor(self):
         self.tag_editor_dialog.hide()
+
+### STATUS ###################################################################
+    def ask_set_task_status(self, task, new_status):
+        '''
+        Both browser and editor have to use this central method to set
+        task status. It also emits a signal with the task instance as first
+        and the new status as second parameter
+        '''
+        task.set_status(new_status)
+        gobject.idle_add(self.emit, "task-status-changed", task, new_status)
 
 ### URIS ###################################################################
     def open_uri_list(self, unused, uri_list):

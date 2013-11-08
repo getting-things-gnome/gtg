@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2013-04-27 08:52+0200\n"
+"POT-Creation-Date: 2013-04-28 17:02+0200\n"
 "PO-Revision-Date: 2013-03-30 08:26+0000\n"
 "Last-Translator: Саша Петровић <salepetronije@gmail.com>\n"
 "Language-Team: Serbian <sr@li.org>\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Launchpad-Export-Date: 2013-04-28 04:38+0000\n"
+"X-Launchpad-Export-Date: 2013-04-29 04:39+0000\n"
 "X-Generator: Launchpad (build 16580)\n"
 
 #: GTG/gtk/backends_dialog/__init__.py:75
@@ -93,8 +93,8 @@ msgid ""
 msgstr ""
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:94
-msgid "Import tasksfrom direct messages"
-msgstr ""
+msgid "Import tasks from direct messages"
+msgstr "Увези задатке из непосредних порука"
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:102
 msgid ""
@@ -108,7 +108,7 @@ msgid "Tag your GTG tasks with the bug tags"
 msgstr ""
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:116
-msgid "Tag your GTG tasks with the projecttargeted by the bug"
+msgid "Tag your GTG tasks with the project targeted by the bug"
 msgstr ""
 
 #: GTG/gtk/backends_dialog/parameters_ui/periodui.py:49
@@ -1009,7 +1009,7 @@ msgstr "Додај Томичину белешку"
 #: GTG/plugins/tomboy/tomboy.py:194
 #, python-format
 msgid ""
-"%s seems to be installed on your system, but itdoes not provide a DBus "
+"%s seems to be installed on your system, but it does not provide a DBus "
 "interface which is required by the Tomboy/Gnote plugin in GTG."
 msgstr ""
 
@@ -1024,7 +1024,7 @@ msgstr "Та белешка не постоји. Да ли желите да н�
 #: GTG/plugins/tomboy/tomboy.py:276
 msgid ""
 "This Tomboy note                                        does not exist "
-"anymore.Do you want to                                        create it?"
+"anymore. Do you want to                                        create it?"
 msgstr ""
 
 #: GTG/gtg.py:85
@@ -2225,9 +2225,6 @@ msgstr[2] "За %(days)d дана"
 
 #~ msgid "Closing in one second"
 #~ msgstr "Затворићу за једну секунду"
-
-#~ msgid "Import tasks from direct messages"
-#~ msgstr "Увези задатке из непосредних порука"
 
 #~ msgid "Syncing is <span color=\"red\">disabled</span>"
 #~ msgstr "Усклађивање је <span color=\"red\">онемогућено</span>"

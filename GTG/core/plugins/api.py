@@ -62,6 +62,8 @@ class PluginAPI:
             self.__task_id = None
             self.__view_manager.browser.selection.connect(
                 "changed", self.__selection_changed)
+        self.taskwidget_id = 0
+        self.taskwidget_widg = []
 
     def __selection_changed(self, selection):
         for func in self.selection_changed_callback_listeners:
@@ -180,7 +182,7 @@ class PluginAPI:
             vbox.reorder_child(widget, -2)
             widget.show_all()
             self.taskwidget_id += 1
-            self.taskwidget_widg[self.taskwidget_id] = widget
+            self.taskwidget_widg.append(widget)
             return self.taskwidget_id
         else:
             return None
