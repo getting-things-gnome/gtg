@@ -1000,7 +1000,7 @@ class TaskBrowser(GObject.GObject):
         task = self.req.new_task(tags=tags, newtask=True)
         uid = task.get_id()
         if status:
-            task.set_status(status)
+            self.vmanager.ask_set_task_status(task, status)
         self.vmanager.open_task(uid, thisisnew=True)
 
     def on_add_subtask(self, widget):
@@ -1133,14 +1133,14 @@ class TaskBrowser(GObject.GObject):
         for uid, task, status in zip(tasks_uid, tasks, tasks_status):
             if status == Task.STA_DONE:
                 # Marking as undone
-                task.set_status(Task.STA_ACTIVE)
+                self.vmanager.ask_set_task_status(task, Task.STA_ACTIVE)
                 # Parents of that task must be updated - not to be shown
                 # in workview, update children count, etc.
                 for parent_id in task.get_parents():
                     parent = self.req.get_task(parent_id)
                     parent.modified()
             else:
-                task.set_status(Task.STA_DONE)
+                self.vmanager.ask_set_task_status(task, Task.STA_DONE)
                 self.close_all_task_editors(uid)
 
     def on_dismiss_task(self, widget):
@@ -1152,9 +1152,9 @@ class TaskBrowser(GObject.GObject):
         tasks_status = [task.get_status() for task in tasks]
         for uid, task, status in zip(tasks_uid, tasks, tasks_status):
             if status == Task.STA_DISMISSED:
-                task.set_status(Task.STA_ACTIVE)
+                self.vmanager.ask_set_task_status(task, Task.STA_ACTIVE)
             else:
-                task.set_status(Task.STA_DISMISSED)
+                self.vmanager.ask_set_task_status(task, Task.STA_DISMISSED)
                 self.close_all_task_editors(uid)
 
     def apply_filter_on_panes(self, filter_name, refresh=True):
@@ -1214,6 +1214,7 @@ class TaskBrowser(GObject.GObject):
         def update_button(button, settings):
             button.set_icon_name(settings["icon-name"])
             button.set_label(settings["label"])
+            button.set_tooltip_text(settings["tooltip"])
 
         def update_menu_item(menu_item, settings):
             image = Gtk.Image.new_from_icon_name(settings["icon-name"], 16)

@@ -232,13 +232,24 @@ class SimpleColorSelector(Gtk.Box):
             cc_box.set_spacing(4)
             self.cc_buttons.append(img)
         # Draw the add button
+        buttons_hbox = Gtk.Box()
+        cc_vbox.pack_start(buttons_hbox)
         img = Gtk.Image()
-        img.set_from_stock(Gtk.STOCK_ADD, Gtk.IconSize.BUTTON)
+        img.set_from_stock(Gtk.STOCK_ADD, Gtk.ICON_SIZE_BUTTON)
         self.add_button = Gtk.Button()
         self.add_button.set_image(img)
         self.add_button.set_label(_("Add custom color"))
-        cc_vbox.pack_start(self.add_button, True, True, 0)
+        buttons_hbox.pack_start(self.add_button, expand=True, fill=False)
         self.add_button.connect("clicked", self.on_color_add)
+        # Draw the clear selected color button
+        img = gtk.Image()
+        img.set_from_stock(gtk.STOCK_REMOVE, gtk.ICON_SIZE_BUTTON)
+        self.clear_button = gtk.Button()
+        self.clear_button.set_image(img)
+        self.clear_button.set_label(_("Clear selected color"))
+        buttons_hbox.pack_start(self.clear_button, expand=True, fill=False)
+        self.clear_button.connect("clicked", self.on_color_clear)
+        self.clear_button.set_sensitive(False)
         # hide the custom palette if no custom color is defined
         if len(self.custom_colors) == 0:
             self.custom_palette.hide()
@@ -253,13 +264,25 @@ class SimpleColorSelector(Gtk.Box):
         if self.selected_col == widget:
             self.selected_col.set_selected(False)
             self.selected_col = None
+            self.clear_button.set_sensitive(False)
         else:
             # if previous selection: unselect
             if self.selected_col is not None:
                 self.selected_col.set_selected(False)
             self.selected_col = widget
             self.selected_col.set_selected(True)
+            self.clear_button.set_sensitive(True)
         self.emit("color-changed")
+
+    def on_color_clear(self, widget):
+        """Callback: when clearing the color, reset any selected
+        color, update the model and notify the parent"""
+        # unselect current selection
+        if self.selected_col is not None:
+            self.selected_col.set_selected(False)
+            self.selected_col = None
+            self.clear_button.set_sensitive(False)
+            self.emit("color-changed")
 
     def on_color_add(self, widget):
         """Callback: when adding a new color, show the color definition
@@ -324,20 +347,23 @@ class SimpleColorSelector(Gtk.Box):
             return self.selected_col.color
 
     def set_selected_color(self, col):
-        """Defines the selected state of a displayed color"""
+        """Defines the selected state of a displayed color,
+        enables clear button when a color is selected"""
         self.unselect_color()
         if self.has_color(col):
             self.buttons_lookup[col].set_selected(True)
             self.selected_col = self.buttons_lookup[col]
+        self.clear_button.set_sensitive(True)
 
     def unselect_color(self):
         """Deselect all colors"""
         if self.selected_col is not None:
             self.selected_col.set_selected(False)
             self.selected_col = None
+        self.clear_button.set_sensitive(False)
 
-GObject.type_register(SimpleColorSelector)
-GObject.signal_new("color-changed", SimpleColorSelector,
-                   GObject.SignalFlags.RUN_FIRST, None, ())
-GObject.signal_new("color-added", SimpleColorSelector,
-                   GObject.SignalFlags.RUN_FIRST, None, ())
+Gobject.type_register(SimpleColorSelector)
+Gobject.signal_new("color-changed", SimpleColorSelector,
+                   Gobject.SIGNAL_RUN_FIRST, Gobject.TYPE_NONE, ())
+Gobject.signal_new("color-added", SimpleColorSelector,
+                   Gobject.SIGNAL_RUN_FIRST, Gobject.TYPE_NONE, ())

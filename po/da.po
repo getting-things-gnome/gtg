@@ -7,16 +7,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2013-04-27 08:52+0200\n"
-"PO-Revision-Date: 2011-03-20 23:47+0000\n"
-"Last-Translator: Ask Hjorth Larsen <asklarsen@gmail.com>\n"
+"POT-Creation-Date: 2013-04-28 17:02+0200\n"
+"PO-Revision-Date: 2013-10-09 12:12+0000\n"
+"Last-Translator: Gamayun <Unknown>\n"
 "Language-Team: Danish <da@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2013-04-28 04:37+0000\n"
-"X-Generator: Launchpad (build 16580)\n"
+"X-Launchpad-Export-Date: 2013-10-10 04:42+0000\n"
+"X-Generator: Launchpad (build 16799)\n"
 
 #: GTG/gtk/backends_dialog/__init__.py:75
 #, python-format
@@ -79,11 +79,11 @@ msgstr ""
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:76
 msgid "Username"
-msgstr ""
+msgstr "Brugernavn"
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:81
 msgid "Service URL"
-msgstr ""
+msgstr "URL til tjeneste"
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:86
 msgid ""
@@ -92,7 +92,7 @@ msgid ""
 msgstr ""
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:94
-msgid "Import tasksfrom direct messages"
+msgid "Import tasks from direct messages"
 msgstr ""
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:102
@@ -107,7 +107,7 @@ msgid "Tag your GTG tasks with the bug tags"
 msgstr ""
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:116
-msgid "Tag your GTG tasks with the projecttargeted by the bug"
+msgid "Tag your GTG tasks with the project targeted by the bug"
 msgstr ""
 
 #: GTG/gtk/backends_dialog/parameters_ui/periodui.py:49
@@ -117,16 +117,16 @@ msgstr ""
 #: GTG/gtk/backends_dialog/parameters_ui/periodui.py:95
 msgid " minute"
 msgid_plural " minutes"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] " minut"
+msgstr[1] " minutter"
 
 #: GTG/gtk/backends_dialog/parameters_ui/passwordui.py:48
 msgid "Password:"
-msgstr ""
+msgstr "Adgangskode:"
 
 #: GTG/gtk/backends_dialog/parameters_ui/pathui.py:49
 msgid "Filename:"
-msgstr ""
+msgstr "Filnavn:"
 
 #: GTG/gtk/backends_dialog/addpanel.py:68
 msgid "Select synchronization service:"
@@ -135,8 +135,7 @@ msgstr ""
 #: GTG/gtk/backends_dialog/addpanel.py:177
 msgid "Author"
 msgid_plural "Authors"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Forfatter"
 
 #: GTG/gtk/preferences.glade.h:1
 msgid "Start Getting Things GNOME! on every login"
@@ -148,7 +147,7 @@ msgstr ""
 
 #: GTG/gtk/preferences.glade.h:3
 msgid "<b>System</b>"
-msgstr ""
+msgstr "<b>System</b>"
 
 #: GTG/gtk/preferences.glade.h:4
 msgid "Enable colored backgrounds in the task list"
@@ -164,7 +163,7 @@ msgstr "<b>Opgave Browser</b>"
 
 #: GTG/gtk/preferences.glade.h:7
 msgid "Font :"
-msgstr ""
+msgstr "Skrifttype :"
 
 #: GTG/gtk/preferences.glade.h:8
 msgid "<b>Editor</b>"
@@ -172,15 +171,15 @@ msgstr ""
 
 #: GTG/gtk/preferences.glade.h:9
 msgid "page 1"
-msgstr ""
+msgstr "side 1"
 
 #: GTG/gtk/preferences.glade.h:10
 msgid "page 2"
-msgstr ""
+msgstr "side 2"
 
 #: GTG/gtk/preferences.glade.h:11
 msgid "page 3"
-msgstr ""
+msgstr "side 3"
 
 #: GTG/gtk/deletion.glade.h:1
 msgid "Confirm task deletion"
@@ -189,11 +188,11 @@ msgstr "Bekræft sletning af opgave"
 #: GTG/gtk/preferences.py:88
 #, python-format
 msgid "Preferences - %s"
-msgstr ""
+msgstr "Indstillinger - %s"
 
 #: GTG/gtk/preferences.py:249
 msgid "Warning"
-msgstr ""
+msgstr "Advarsel"
 
 #: GTG/gtk/preferences.py:263
 #, python-format
@@ -202,6 +201,9 @@ msgid ""
 "using this key.\n"
 "Please try with a key such as Control, Alt or Shift at the same time."
 msgstr ""
+"Genvejen \"%s\" kan ikke bruges da det derved vil være umuligt at skrive med "
+"denne tast.\n"
+"Prøv venligst med f.eks. Ctrl-, Alt- eller Skift-tasten på samme tid."
 
 #: GTG/gtk/browser/__init__.py:37 GTG/gtk/browser/taskbrowser.glade.h:25
 #: GTG/gtk/editor/__init__.py:31
@@ -255,19 +257,19 @@ msgstr "Vis kun nuværende opgaver som kan udføres"
 
 #: GTG/gtk/browser/__init__.py:50
 msgid "Hide this tag from the workview"
-msgstr ""
+msgstr "Skjul dette mærkat i arbejdsoversigten"
 
 #: GTG/gtk/browser/__init__.py:51
 msgid "Show this tag in the workview"
-msgstr ""
+msgstr "Vis dette mærkat i arbejdsoversigten"
 
 #: GTG/gtk/browser/__init__.py:53
 msgid "You can create, open or filter your tasks here"
-msgstr ""
+msgstr "Her kan du oprette, åbne eller filtrere dine opgaver"
 
 #: GTG/gtk/browser/__init__.py:54
 msgid "Clear"
-msgstr ""
+msgstr "Ryd"
 
 #: GTG/gtk/browser/custominfobar.py:34
 #, python-format
@@ -296,27 +298,27 @@ msgstr ""
 
 #: GTG/gtk/browser/custominfobar.py:106
 msgid "Ignore"
-msgstr ""
+msgstr "Ignorér"
 
 #: GTG/gtk/browser/custominfobar.py:114 GTG/gtk/browser/custominfobar.py:119
 msgid "Ok"
-msgstr ""
+msgstr "OK"
 
 #: GTG/gtk/browser/custominfobar.py:140
 msgid "Confirm"
-msgstr ""
+msgstr "Bekræft"
 
 #: GTG/gtk/browser/custominfobar.py:142
 msgid "Continue"
-msgstr ""
+msgstr "Fortsæt"
 
 #: GTG/gtk/browser/modifytags_dialog.glade.h:1
 msgid "Modify Tags"
-msgstr ""
+msgstr "Redigér Mærkater"
 
 #: GTG/gtk/browser/modifytags_dialog.glade.h:2
 msgid "Add/Remove Tags"
-msgstr ""
+msgstr "Tilføj/Fjern Mærkater"
 
 #: GTG/gtk/browser/modifytags_dialog.glade.h:3
 msgid "Cancel"
@@ -346,7 +348,7 @@ msgstr ""
 
 #: GTG/gtk/browser/simple_color_selector.py:264
 msgid "Choose a color"
-msgstr ""
+msgstr "Vælg en farve"
 
 #: GTG/gtk/browser/treeview_factory.py:277
 #: GTG/gtk/browser/taskbrowser.glade.h:29
@@ -371,7 +373,7 @@ msgstr "Titel"
 
 #: GTG/gtk/browser/tag_editor.py:87
 msgid "Remove selected icon"
-msgstr ""
+msgstr "Fjern valgte ikon"
 
 #: GTG/gtk/browser/tag_editor.py:233
 msgid "Name : "
@@ -379,7 +381,7 @@ msgstr ""
 
 #: GTG/gtk/browser/tag_editor.py:240
 msgid "Show Tag in Work View :"
-msgstr ""
+msgstr "Vis Mærkat i Arbejdsoversigten :"
 
 #: GTG/gtk/browser/tag_editor.py:253
 msgid "Select Tag Color:"
@@ -420,11 +422,11 @@ msgstr ""
 
 #: GTG/gtk/browser/browser.py:1547 GTG/core/treefactory.py:102
 msgid "Search"
-msgstr ""
+msgstr "Søg"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:1
 msgid "Getting Things GNOME!"
-msgstr ""
+msgstr "Getting Things GNOME!"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:2
 msgid "_Tasks"
@@ -1004,7 +1006,7 @@ msgstr "Tilføj Tomboy notits"
 #: GTG/plugins/tomboy/tomboy.py:194
 #, python-format
 msgid ""
-"%s seems to be installed on your system, but itdoes not provide a DBus "
+"%s seems to be installed on your system, but it does not provide a DBus "
 "interface which is required by the Tomboy/Gnote plugin in GTG."
 msgstr ""
 
@@ -1019,7 +1021,7 @@ msgstr "Denne notits eksisterer ikke. Ønsker du at oprette en ny en?"
 #: GTG/plugins/tomboy/tomboy.py:276
 msgid ""
 "This Tomboy note                                        does not exist "
-"anymore.Do you want to                                        create it?"
+"anymore. Do you want to                                        create it?"
 msgstr ""
 
 #: GTG/gtg.py:85

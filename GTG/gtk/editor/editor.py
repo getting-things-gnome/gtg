@@ -239,13 +239,14 @@ class TaskEditor(object):
             self.window.set_title(self.task.get_title())
 
         status = self.task.get_status()
-        dismiss_tooltip = GnomeConfig.MARK_UNDISMISS_TOOLTIP
+        dismiss_tooltip = GnomeConfig.MARK_DISMISS_TOOLTIP
+        undismiss_tooltip = GnomeConfig.MARK_UNDISMISS_TOOLTIP
         if status == Task.STA_DISMISSED:
             self.donebutton.set_label(GnomeConfig.MARK_DONE)
             self.donebutton.set_tooltip_text(GnomeConfig.MARK_DONE_TOOLTIP)
             self.donebutton.set_icon_name("gtg-task-done")
             self.dismissbutton.set_label(GnomeConfig.MARK_UNDISMISS)
-            self.dismissbutton.set_tooltip_text(dismiss_tooltip)
+            self.dismissbutton.set_tooltip_text(undismiss_tooltip)
             self.dismissbutton.set_icon_name("gtg-task-undismiss")
         elif status == Task.STA_DONE:
             self.donebutton.set_label(GnomeConfig.MARK_UNDONE)
@@ -445,21 +446,21 @@ class TaskEditor(object):
 
     def dismiss(self, widget):
         stat = self.task.get_status()
-        if stat == "Dismiss":
-            self.task.set_status("Active")
+        if stat == Task.STA_DISMISSED:
+            self.vmanager.ask_set_task_status(self.task, Task.STA_ACTIVE)
             self.refresh_editor()
         else:
-            self.task.set_status("Dismiss")
+            self.vmanager.ask_set_task_status(self.task, Task.STA_DISMISSED)
             self.close_all_subtasks()
             self.close(None)
 
     def change_status(self, widget):
         stat = self.task.get_status()
-        if stat == "Done":
-            self.task.set_status("Active")
+        if stat == Task.STA_DONE:
+            self.vmanager.ask_set_task_status(self.task, Task.STA_ACTIVE)
             self.refresh_editor()
         else:
-            self.task.set_status("Done")
+            self.vmanager.ask_set_task_status(self.task, Task.STA_DONE)
             self.close_all_subtasks()
             self.close(None)
 
