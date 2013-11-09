@@ -67,8 +67,8 @@ class TagIconSelector(Gtk.Window):
         vbox.pack_start(scld_win, True, True, 0)
         self.symbol_iv = Gtk.IconView()
         self.symbol_iv.set_pixbuf_column(0)
-        self.symbol_iv.set_property("columns", 7)
-        self.symbol_iv.set_property("item-width", 32)
+        self.symbol_iv.set_columns(7)
+        self.symbol_iv.set_item_width(32)
         # IconView size:
         # --------------
         #  it seems that with the above parameters, a row width is about:
