@@ -240,7 +240,7 @@ class hamsterPlugin:
             self.menu_item.connect('activate', self.browser_cb, plugin_api)
             plugin_api.add_menu_item(self.menu_item)
             # and button
-            self.button.set_label(_("Start in Hamster"))
+            self.button.set_label(_("Start task in Hamster"))
             start_icon_widget = self.get_icon_widget(self.IMG_START_PATH)
             self.button.set_icon_widget(start_icon_widget)
             self.button.set_tooltip_text(self.TOOLTIP_TEXT_START_ACTIVITY)
@@ -368,14 +368,16 @@ class hamsterPlugin:
             self.change_button_to_start_activity(button)
 
     def change_button_to_start_activity(self, button):
-        button.set_label(_("Start in Hamster"))
-        button.set_icon_widget(self.get_icon_widget(self.IMG_START_PATH))
-        button.set_tooltip_text(self.TOOLTIP_TEXT_START_ACTIVITY)
+        button.set_label(_("Start task in Hamster"))
+        if not isinstance(button, gtk.MenuItem):
+            button.set_icon_widget(self.get_icon_widget(self.IMG_START_PATH))
+            button.set_tooltip_text(self.TOOLTIP_TEXT_START_ACTIVITY)
 
     def change_button_to_stop_activity(self, button):
         button.set_label(_("Stop Hamster Activity"))
-        button.set_icon_widget(self.get_icon_widget(self.IMG_STOP_PATH))
-        button.set_tooltip_text(self.TOOLTIP_TEXT_STOP_ACTIVITY)
+        if not isinstance(button, gtk.MenuItem):
+            button.set_icon_widget(self.get_icon_widget(self.IMG_STOP_PATH))
+            button.set_tooltip_text(self.TOOLTIP_TEXT_STOP_ACTIVITY)
 
     #### Preference Handling
     def is_configurable(self):
