@@ -541,8 +541,8 @@ msgid "About GTG!"
 msgstr "GTG के बारे में!"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:32
-msgid "Copyright © 2008-2012 Lionel Dricot, Bertrand Rousseau"
-msgstr "कॉपीराइट © 2008-2012 Lionel Dricot,  Bertrand Rousseau"
+msgid "Copyright © 2008-2013 Lionel Dricot, Bertrand Rousseau"
+msgstr "कॉपीराइट © 2008-2013 Lionel Dricot,  Bertrand Rousseau"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:33
 msgid ""
