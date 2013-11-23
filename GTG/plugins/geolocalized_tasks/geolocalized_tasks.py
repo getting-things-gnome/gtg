@@ -83,13 +83,27 @@ class geolocalizedTasks:
     def onButtonClickedCb(self, widget, plugin_api):
         Clutter.init([])
 
+        window = Gtk.Window()
+        contentGrid = Gtk.Grid()
+
         map = GtkChamplain.Embed()
         champlain_view = map.get_view()
         champlain_view.center_on(self.latitude, self.longitude)
+        champlain_view.set_zoom_on_double_click(False)
         champlain_view.set_property("zoom-level", 10)
-        window = Gtk.Window()
+
+        btn = Gtk.Button("Zoom In")
+        btn.connect('clicked', self.zoom_in, champlain_view)
+        contentGrid.attach(btn, 0, 0, 1, 1)
+
+        btn = Gtk.Button("Zoom Out")
+        btn.connect('clicked', self.zoom_out, champlain_view)
+        contentGrid.attach(btn, 1, 0, 1, 1)
+
+        contentGrid.attach(map, 0, 1, 2, 1)
+
+        window.add(contentGrid)
         window.resize(640, 480)
-        window.add(map)
         window.show_all()
 
 #    def activate(self, plugin_api):
@@ -782,12 +796,10 @@ class geolocalizedTasks:
 
     #=== TAG VIEW CONTEXT MENU ================================================
     def zoom_in(self, widget, view):
-        pass
-#        view.zoom_in()
+        view.zoom_in()
 
     def zoom_out(self, widget, view):
-        pass
-#        view.zoom_out()
+        view.zoom_out()
 
     # http://code.activestate.com/recipes/266466/
     # original by Paul Winkler
