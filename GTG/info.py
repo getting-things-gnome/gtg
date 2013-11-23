@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
 # Getting Things GNOME! - a personal organizer for the GNOME desktop
-# Copyright (c) 2008-2012 - Lionel Dricot & Bertrand Rousseau
+# Copyright (c) 2008-2013 - Lionel Dricot & Bertrand Rousseau
 #
 # This program is free software: you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -23,12 +23,12 @@ Contains the information displayed in GTG's Credits."""
 from GTG import _
 
 NAME = "Getting Things GNOME!"
-URL = "http://gtg.fritalk.com"
+URL = "http://gtgnome.net"
 HELP_URI = "help:gtg"
 TRANSLATE_URL = "https://translations.launchpad.net/gtg"
 REPORT_BUG_URL = "https://bugs.launchpad.net/gtg/+filebug"
 EMAIL = "gtg-contributors@lists.launchpad.net"
-VERSION = '0.3'
+VERSION = '0.3.1'
 
 SHORT_DESCRIPTION = \
     _('GTG is a personal tasks and TODO-list items organizer for the GNOME.')

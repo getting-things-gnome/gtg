@@ -795,7 +795,7 @@
     <property name="window_position">center-on-parent</property>
     <property name="type_hint">dialog</property>
     <property name="program_name" translatable="yes">Getting Things GNOME!</property>
-    <property name="copyright" translatable="yes">Copyright © 2008-2012 Lionel Dricot, Bertrand Rousseau</property>
+    <property name="copyright" translatable="yes">Copyright © 2008-2013 Lionel Dricot, Bertrand Rousseau</property>
     <property name="comments" translatable="yes">GTG is a personal tasks and TODO-list items organizer for the GNOME desktop environment.</property>
     <property name="website_label" translatable="yes">GTG website</property>
     <property name="license" translatable="yes">Getting Things GNOME! is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 3 of the License, or (at your option) any later version.
