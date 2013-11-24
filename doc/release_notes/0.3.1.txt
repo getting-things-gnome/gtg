@@ -1,4 +1,4 @@
-Getting Things GNOME! 0.3.1 - Release Note - 13/11/2013
+Getting Things GNOME! 0.3.1 - Release Note - 24/11/2013
 =====================================================
 
 After about 12 months of very active development, the GTG team is proud to
@@ -26,8 +26,7 @@ Now it is possible via a keyboard shortcut. Configure it in the settings, and on
       - 7 new feature enhancements
 
 You can see the complete list of changes in our CHANGELOG:
-http://bazaar.launchpad.net/~gtg/gtg/trunk/view/head:/CHANGELOG
-https://bazaar.launchpad.net/~gtg/gtg/trunk/view/1330 /CHANGELOG
+https://bazaar.launchpad.net/~gtg/gtg/trunk/view/1332/CHANGELOG
 
 The GTG developer team would like to thank and congratulate all the great people
 which contributed to this version. You did an amazing work! Thanks also to our
