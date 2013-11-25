@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
 # Getting Things GNOME! - a personal organizer for the GNOME desktop
-# Copyright (c) 2008-2012 - Lionel Dricot & Bertrand Rousseau
+# Copyright (c) 2008-2013 - Lionel Dricot & Bertrand Rousseau
 #
 # This program is free software: you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -23,12 +23,12 @@ Contains the information displayed in GTG's Credits."""
 from GTG import _
 
 NAME = "Getting Things GNOME!"
-URL = "http://gtg.fritalk.com"
+URL = "http://gtgnome.net"
 HELP_URI = "help:gtg"
 TRANSLATE_URL = "https://translations.launchpad.net/gtg"
 REPORT_BUG_URL = "https://bugs.launchpad.net/gtg/+filebug"
 EMAIL = "gtg-contributors@lists.launchpad.net"
-VERSION = '0.3'
+VERSION = '0.3.1'
 
 SHORT_DESCRIPTION = \
     _('GTG is a personal tasks and TODO-list items organizer for the GNOME.')
@@ -126,48 +126,54 @@ TRANSLATORS = \
     Bengali: XFACT, nasir khan saikat
 
     Brazilian: AdirKuhn, André Gondim, Belenos Govannnon, Daniel Tiecher,
-    Djavan Fagundes, Douglas Santos, João Cruz Jr, João Santana, NeLaS, Nilton,
-    Rafael Neri, Teylo Laundos Aguiar, Waldir Leoncio, andre felix
+    Davi da Silva Böger, Djavan Fagundes, Douglas Santos, Enrico Nicoletto,
+    Frederico Lopes, João Cruz Jr, João Santana, NeLaS, Nilton, Rafael Neri,
+    Teylo Laundos Aguiar, Waldir Leoncio, andre felix
 
     Bulgarian: Damyan Ivanov, Svetoslav Stefanov, i.raynov
 
-    Catalan: Carles Sala, David Planella, Juanma Hernández, Marc Recasens,
-    Radina Matic, Siegfried Gevatter, anna marti
+    Catalan: Adolfo Jayme Barrientos, Carles Sala, David Planella,
+    Juanma Hernández, Marc Recasens, Radina Matic, Siegfried Gevatter,
+    anna marti
 
     Chinese (simplified): Ang Gao, Anthony Fok, Eleanor Chen, Harold.luo,
-    Heling Yao, Kyle WANG, Wylmer Wang, Xuan Hu, chars, 百草谷居士
+    Heling Yao, Joseph Lew, Kyle WANG, Wylmer Wang, Xuan Hu, chars, 百草谷居士,
+    somebodykiss
 
     Chinese (traditional): Andrew Liu, Anthony Fok, Po-Jen Hsu, Rex Tsai,
-    Toomore
+    Toomore, extraymond@gmail.com
 
-    Croatian: Saša Teković
+    Croatian: Saša Teković, gogo
 
-    Czech: David Kovář, Jakub Kozisek, Jan Hrdina, Konki, Kuvaly [LCT],
-    Ladislav Prskavec, Mailo, Martin Rotter, Martin Volf, Marv-CZ,
-    Milos-kroulik-3, Roman Horník, Viktor
+    Czech: David Kovář, Dominik Janků, Jakub Kozisek, Jan Hrdina, Konki,
+    Kuvaly [LCT], Ladislav Prskavec, Mailo, Martin Rotter, Martin Volf,
+    Marv-CZ, Milos-kroulik-3, Roman Horník, Tadeáš Pařík, Viktor
 
-    Danish: Aputsiaq Niels Janussen, Ask Hjorth Larsen, Mogens Isager,
+    Danish: Aputsiaq Niels Janussen, Ask Hjorth Larsen, Gamayun, Mogens Isager,
     Peter Skov, mkjeldsen
 
     Dutch: Emilien Klein, Foppe Benedictus, Hanssen, Heureka, Lionel Dricot,
-    Lucas Vieites, Nathan, Rachid, Reinout van Schouwen, Tino Meinen, klap-in,
-    puccha, rob
+    Lucas Vieites, Nathan, Pieter J. Kersten (EduSense BV)Rachid,
+    Reinout van Schouwen, Tino Meinen, klap-in, puccha, rob
 
-    English (Canada): Itai Molenaar, Ken Sharp, Paul Kishimoto
+    English (Canada): Itai Molenaar, Ken Sharp, Luca Falavigna, Paul Kishimoto
 
     English (United Kingdom): Alexandre COLLIGNON, Alfredo Hernández,
     Anthony Harrington, Bruce Cowan, Cyril, Jonathon Hodges, Lionel Dricot,
     Luca Invernizzi, Michael Keppler, Olly Betts, Philipp Kleinhenz,
-    Robert Readman, Sid Roberts, ascenseur
+    Robert Readman, Sid Roberts, ascenseur, lopho, Luca Falavigna
 
-    Finnish: Heikki Mattila, Mika Tapojärvi
+    Finnish: Heikki Mattila, Jussi Tiira, Mika Tapojärvi
 
     French: AkaiKen, Alexandre COLLIGNON, Bertrand Rousseau, Bruno Veilleux,
     Cyril, David Coeurjolly, Dominick Rivard, Emilien Klein, FrancoisSchoubben,
     François, Greizgh, Jibec, Lionel Dricot, Maxime Veroone, Nicolas Delvaux,
     Perniflosse, Philippe Le Toquin, Pititjo, Ptitphysik, Quentin Pagès,
     Rafik Ouerchefani, Raphaël, Sid Roberts, Simon Leblanc, Stanislas Michalak,
-    Thibault Févry, Timothee Bernard, Yves Masson, bsaleil, gaetanpralong, sebz
+    Thibault Févry, Timothee Bernard, Yves Masson, bsaleil, gaetanpralong,
+    sebz, Alexandre Germain, François Vogelweith, Jonathan Fromentin,
+    Loic Dreux, Nicolas Gaulard-Querol, Sebastien Moran, Sylvie Gallet,
+    thomas.citharet@gmail.com
 
     Galician: Dario, Fran Diéguez, Jorge Álvarez, Miguel Anxo Bouzada, keko
 
@@ -177,11 +183,14 @@ TRANSLATORS = \
     Daniel Winzen, Fabian Affolter, Gerfried Fuchs, Henry78, Izidor Matušov,
     Jan, Jens Maucher, Jonas Endersch, Marcel Stimberg, Michael Keppler,
     Philip Stewart, Raphael J. Schmid, Scott, Seraphyn, Thomas Pitlik,
-    Tim Bordemann, gerber, schulz3000
+    Tim Bordemann, gerber, schulz3000, brylli, Michael Odaischi,
+    Florian Bäuerle, Borim
 
     Greek: Fotis Tsamis, George Chronis, Stathis Iosifidis
 
     Hebrew: Erik, Yaron
+
+    Hindi: Abdul Rauf, Nimit Shah
 
     Hungarian: András Kárász, Crcsz Tibcr, Gabor Kelemen, Gergely Szarka,
     Krasznecz Zoltán, Muszela Balázs
@@ -206,6 +215,8 @@ TRANSLATORS = \
 
     Lojabn: David Futcher
 
+    Low German: Michael Odaischi, brylli
+
     Malagasy: Thierry Andriamirado
 
     Malay: Ibrahim Elias, abuyop, itiknila, melayubuntu
@@ -217,18 +228,20 @@ TRANSLATORS = \
     Persian: Sepehr Lajevardi
 
     Polish: Jakub Kołakowski, Konrad, Piotr Hałas, Piotr Strębski, Radek Puła,
-    Tomasz 'Zen' Napierala, Tomasz Maciejewski, btomasz, szczym, tomlee
+    Tomasz 'Zen' Napierala, Tomasz Maciejewski, btomasz, szczym, tomlee,
+    Witek M., Xevaquor, Tomasz Woźniak
 
-    Portuguese: Joel Patrão, Paulo Cabido, raul_pereira
+    Portuguese: Emanuel Ângelo, Joel Patrão, Paulo Cabido, raul_pereira
 
-    Romanian: Adi Roiban, Lucian Adrian Grijincu
+    Romanian: Adi Roiban, Jibec, Lucian Adrian Grijincu, Ovidiu
 
     Russian: A. S. Popov, Alexander Semyonov, Alexey Ivanov, Alexey Kostyuk,
-    Alexey Nedilko, Andrej Surkov, DmDr, Dmitry "Divius" Tantsur, Nergal,
-    Nikita Putko, Oleg Koptev, Peter Romov, Serfer, Yevgeny Sysmanov,
-    Yuriy Vidineev, a220, dueMiR, maxzda, mrk, wiz, Олег Малахов
+    Alexey Nedilko, Andrej Surkov, DmDr, Dmitry "Divius" Tantsur,
+    Eugene Sysmanov, Nergal, Nikita Putko, Oleg Koptev, Peter Romov, Serfer,
+    Vadim Barsukov, Yevgeny Sysmanov, Yuriy Vidineev, a220, dueMiR, maxzda,
+    mrk, wiz, Олег Малахов
 
-    Serbian: Miloš Mandarić, Мирослав Николић
+    Serbian: Miloš Mandarić, Игор Миловановић, Мирослав Николић, Саша Петровић
 
     Sinhalese: ජීවන්ත ලේකම්වසම්
 
@@ -237,10 +250,11 @@ TRANSLATORS = \
     Slovenian: Andrej Znidarsic, Igor2x, grofaty
 
     Spanish: Adolfo Jayme Barrientos, Alberto Caso, Carlos Alberto Ospina,
-    Denis Fuenzalida, DiegoJ, Grillo, Javier García Díaz, Javier Jardón,
-    Javier Suárez, Jorge González, Jose R. Megia, Lionel Dricot,
-    Nicolás M. Zahlut, Nukeador, Radina Matic, Rafael Soler - Domatix,
-    Xuacu Saturio, ixzus, n_alex, perriman
+    Christopher, Denis Fuenzalida, DiegoJ, Grillo, Javier García Díaz,
+    Javier Jardón, Javier Suárez, Jorge González, Jose R. Megia, Lionel Dricot,
+    Marcello Nicolas Manso, Nicolás M. Zahlut, Nukeador, Radina Matic,
+    Rafael Soler - Domatix, Sergio Redondo, Xuacu Saturio, ixzus, n_alex,
+    perriman
 
     Swedish: Christian Widell, Daniel Nylander, David Bengtsson,
     Erik Piehl Sylvén, Kalle Persson, Maxim Andersson, Nikke, Petri Rosenström,
@@ -250,10 +264,12 @@ TRANSLATORS = \
 
     Thai: NullZer0, SiraNokyoongtong
 
-    Turkish: Aean, Ali KIBICI, Emre Ayca, Murat Gunes, Onur ALTINTAŞI,
-    Yiğit Ateş
+    Turkish: Aean, Ali KIBICI, Baris Ata, Emre Ayca, Murat Gunes,
+    Onur ALTINTAŞI, Yiğit Ateş, Volkan Gezer
 
-    Ukrainian: Alex Chmyr, Gontsa, Pavel Druzyak, dueMiR, yvadim
+    Ukrainian: Alex Chmyr, Gontsa, Pavel Druzyak, alex, dueMiR, yvadim
+
+    Urdu: Abdul Rauf
     """
 
 DOCUMENTERS = ["Radina Matic <radina.matic@gmail.com>"]

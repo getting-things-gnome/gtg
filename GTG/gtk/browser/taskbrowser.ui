@@ -757,7 +757,7 @@
     <property name="window_position">center-on-parent</property>
     <property name="type_hint">dialog</property>
     <property name="program_name">Getting Things GNOME!</property>
-    <property name="copyright" translatable="yes">Copyright © 2008-2012 Lionel Dricot, Bertrand Rousseau</property>
+    <property name="copyright" translatable="yes">Copyright © 2008-2013 Lionel Dricot, Bertrand Rousseau</property>
     <property name="comments" translatable="yes">GTG is a personal tasks and TODO-list items
 organizer for the GNOME desktop environment.</property>
     <property name="website_label" translatable="yes">GTG website</property>
