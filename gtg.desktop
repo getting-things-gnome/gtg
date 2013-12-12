@@ -10,6 +10,7 @@ Exec=gtg %U
 Terminal=false
 Type=Application
 Categories=Office;ProjectManagement;
+Keywords=Organizer;Task;Activity;Plan;Time;
 MimeType=x-scheme-handler/gtg;
 StartupNotify=true
 X-Ayatana-Desktop-Shortcuts=NewTask
