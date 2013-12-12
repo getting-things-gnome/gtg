@@ -83,8 +83,11 @@ class geolocalizedTasks:
     def onButtonClickedCb(self, widget, plugin_api):
         Clutter.init([])
 
-        window = Gtk.Window()
-        contentGrid = Gtk.Grid()
+        builder = Gtk.Builder()
+        plugin_path = os.path.dirname(os.path.abspath(__file__))
+        ui_file_path = os.path.join(plugin_path, "set_task_location.ui")
+        builder.add_from_file(ui_file_path)
+        dialog = builder.get_object("SetTaskLocation")
 
         map = GtkChamplain.Embed()
         champlain_view = map.get_view()
@@ -92,19 +95,22 @@ class geolocalizedTasks:
         champlain_view.set_zoom_on_double_click(False)
         champlain_view.set_property("zoom-level", 10)
 
-        btn = Gtk.Button("Zoom In")
+        vbox_map = builder.get_object("vbox_map")
+        vbox_map.pack_start(map, True, True, 1)
+
+        btn = builder.get_object("btn_zoom_in")
         btn.connect('clicked', self.zoom_in, champlain_view)
-        contentGrid.attach(btn, 0, 0, 1, 1)
 
-        btn = Gtk.Button("Zoom Out")
+        btn = builder.get_object("btn_zoom_out")
         btn.connect('clicked', self.zoom_out, champlain_view)
-        contentGrid.attach(btn, 1, 0, 1, 1)
 
-        contentGrid.attach(map, 0, 1, 2, 1)
+        btn = builder.get_object("btn_cancel")
+        btn.connect('clicked', self.close, dialog)
 
-        window.add(contentGrid)
-        window.resize(640, 480)
-        window.show_all()
+        btn = builder.get_object("btn_ok")
+        btn.connect('clicked', self.close, dialog)
+
+        dialog.show_all()
 
 #    def activate(self, plugin_api):
 #        pass
@@ -458,7 +464,31 @@ class geolocalizedTasks:
 
     #=== SET TASK LOCATION ====================================================
     def set_task_location(self, widget, plugin_api, location=None):
-        pass
+        builder = self._get_builder_from_file("set_task_location.ui")
+        dialog = builder.get_object("SetTaskLocation")
+
+        map = GtkChamplain.Embed()
+        champlain_view = map.get_view()
+        champlain_view.center_on(self.latitude, self.longitude)
+        champlain_view.set_property("zoom-level", 10)
+
+        vbox_map = builder.get_object("vbox_map")
+        vbox_map.pack_start(map, True, True, 1)
+
+        btn = builder.get_object("btn_zoom_in")
+        btn.connect('clicked', self.zoom_in, champlain_view)
+
+        btn = builder.get_object("btn_zoom_out")
+        btn.connect('clicked', self.zoom_out, champlain_view)
+
+        btn = builder.get_object("btn_cancel")
+        btn.connect('clicked', self.close, dialog)
+
+        btn = builder.get_object("btn_ok")
+        btn.connect('clicked', self.close, dialog)
+
+        dialog.show_all()
+
 #        wTree = Gtk.glade.XML(self.glade_file, "SetTaskLocation")
 #        dialog = wTree.get_widget("SetTaskLocation")
 #        plugin_api.set_parent_window(dialog)
@@ -800,6 +830,9 @@ class geolocalizedTasks:
 
     def zoom_out(self, widget, view):
         view.zoom_out()
+
+    def close(self, widget, dialog):
+        dialog.destroy()    
 
     # http://code.activestate.com/recipes/266466/
     # original by Paul Winkler
