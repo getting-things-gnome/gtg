@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<interface>
+  <!-- interface-requires gtk+ 3.0 -->
+  <object class="GtkAdjustment" id="adjustment1">
+    <property name="upper">100</property>
+    <property name="lower">1</property>
+    <property name="page_increment">10</property>
+    <property name="step_increment">0.10000000149</property>
+    <property name="page_size">10</property>
+    <property name="value">5</property>
+  </object>
+</interface>
