@@ -1,3 +1,7 @@
+????-??-?? Getting Things GNOME! 0.3.2
+    * Fix for bug #1261456: Adding a tag with '&' causes ExpatError, by Parin Porecha
+    * Fix for bug #1222976: Can't clear a search, by Nimit Shah
+
 2013-11-24 Getting Things GNOME! 0.3.1
     * Fix for bug #1024473: Have 'Show Main Window' in notification area, by Antonio Roquentin
     * Fix for bug #1043457: gtcli search returns closed tasks, by Nimit Shah
