@@ -29,7 +29,6 @@ from GTG.plugins.geolocalized_tasks.geoclue import Geoclue
 
 import dbus
 
-
 # Attention!!! FIXME
 # FIXME During porting GTG into GTK3/PyGObject was geolocalized.glade converted
 # to GtkBuilder format together with other glade XMLs.
@@ -40,9 +39,9 @@ import dbus
 class geolocalizedTasks:
 
     def __init__(self):
-
+        Clutter.init([])
         self.where = Geoclue()
-        self.where.client.connect_to_signal('LocationUpdated', self.location_updated)
+        self.where.client.connect_to_signal('LocationUpdated', self._location_updated)
         self.where.client.Start()
 
 #        self.geoclue = Geoclue.DiscoverLocation()
@@ -73,44 +72,12 @@ class geolocalizedTasks:
 #        self.location_filter = []
 #        self.task_separator = Gtk.SeparatorToolItem()
 
-    def location_updated(self, old_path, new_path):
+    def _location_updated(self, old_path, new_path):
         system_bus = self.where._system_bus
         location_object =  system_bus.get_object(self.where.GEOCLUE2_BUS_NAME, new_path)
         location_properties = dbus.Interface(location_object, self.where.PROPERTIES_INTERFACE_NAME)
         self.latitude = location_properties.Get(self.where.LOCATION_INTERFACE_NAME, "Latitude")
         self.longitude = location_properties.Get(self.where.LOCATION_INTERFACE_NAME, "Longitude")
-
-    def onButtonClickedCb(self, widget, plugin_api):
-        Clutter.init([])
-
-        builder = Gtk.Builder()
-        plugin_path = os.path.dirname(os.path.abspath(__file__))
-        ui_file_path = os.path.join(plugin_path, "set_task_location.ui")
-        builder.add_from_file(ui_file_path)
-        dialog = builder.get_object("SetTaskLocation")
-
-        map = GtkChamplain.Embed()
-        champlain_view = map.get_view()
-        champlain_view.center_on(self.latitude, self.longitude)
-        champlain_view.set_zoom_on_double_click(False)
-        champlain_view.set_property("zoom-level", 10)
-
-        vbox_map = builder.get_object("vbox_map")
-        vbox_map.pack_start(map, True, True, 1)
-
-        btn = builder.get_object("btn_zoom_in")
-        btn.connect('clicked', self.zoom_in, champlain_view)
-
-        btn = builder.get_object("btn_zoom_out")
-        btn.connect('clicked', self.zoom_out, champlain_view)
-
-        btn = builder.get_object("btn_cancel")
-        btn.connect('clicked', self.close, dialog)
-
-        btn = builder.get_object("btn_ok")
-        btn.connect('clicked', self.close, dialog)
-
-        dialog.show_all()
 
 #    def activate(self, plugin_api):
 #        pass
@@ -276,7 +243,7 @@ class geolocalizedTasks:
         self.btn_set_location = Gtk.ToolButton()
         self.btn_set_location.set_icon_widget(icon_geolocalization)
         self.btn_set_location.set_label("Set/View location")
-        self.btn_set_location.connect('clicked', self.onButtonClickedCb, plugin_api)
+        self.btn_set_location.connect('clicked', self.set_task_location, plugin_api)
         self.btn_set_location.show_all()
 
         plugin_api.add_toolbar_item(self.btn_set_location)
@@ -463,6 +430,13 @@ class geolocalizedTasks:
     #=== GEOLOCALIZED PREFERENCES==============================================
 
     #=== SET TASK LOCATION ====================================================
+    def _get_builder_from_file(self, filename):
+        builder = Gtk.Builder()
+        plugin_path = os.path.dirname(os.path.abspath(__file__))
+        ui_file_path = os.path.join(plugin_path, filename)
+        builder.add_from_file(ui_file_path)
+        return builder
+
     def set_task_location(self, widget, plugin_api, location=None):
         builder = self._get_builder_from_file("set_task_location.ui")
         dialog = builder.get_object("SetTaskLocation")
@@ -832,7 +806,7 @@ class geolocalizedTasks:
         view.zoom_out()
 
     def close(self, widget, dialog):
-        dialog.destroy()    
+        dialog.destroy()
 
     # http://code.activestate.com/recipes/266466/
     # original by Paul Winkler
