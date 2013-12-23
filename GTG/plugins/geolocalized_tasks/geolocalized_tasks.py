@@ -23,6 +23,7 @@ from gi.repository import GdkPixbuf
 from gi.repository import Gtk
 from gi.repository import GtkChamplain
 from gi.repository import GtkClutter
+from gi.repository import GeocodeGlib as Geocode
 
 from GTG.plugins.geolocalized_tasks.marker import MarkerLayer
 from GTG.plugins.geolocalized_tasks.geoclue import Geoclue
@@ -437,6 +438,24 @@ class geolocalizedTasks:
         builder.add_from_file(ui_file_path)
         return builder
 
+    def on_im_here (self, widget, position):
+        black = Clutter.Color.new(0x03, 0x04, 0x07, 0xbb)
+        [longitude, latitude] = position
+        marker = Champlain.Label.new_with_text("I am here!", "Serif 14", None, black)
+        marker.set_location(latitude, longitude)
+        self.layer.add_marker(marker)
+
+    def on_context_menu(self, widget, event, data):
+        if(event.button == 3):
+            builder = self._get_builder_from_file("context_menu.ui")
+            context = builder.get_object("map_context_menu")
+            context.attach_to_widget(data, None)
+            context.popup(None, None, None, None, event.button, event.time)
+            longitude = self.view.x_to_longitude (event.x)
+            latitude = self.view.y_to_latitude (event.y)
+            mi = builder.get_object("map_context_menu_item")
+            mi.connect ("activate", self.on_im_here, [longitude, latitude])
+
     def set_task_location(self, widget, plugin_api, location=None):
         builder = self._get_builder_from_file("set_task_location.ui")
         dialog = builder.get_object("SetTaskLocation")
@@ -446,8 +465,24 @@ class geolocalizedTasks:
         champlain_view.center_on(self.latitude, self.longitude)
         champlain_view.set_property("zoom-level", 10)
 
+        #Set current user location
+        black = Clutter.Color.new(0x03, 0x04, 0x07, 0xbb)
+        layer = Champlain.MarkerLayer()
+        task_name = plugin_api.get_selected().get_title()
+        marker = Champlain.Label.new_with_text(task_name, "Serif 14", None, black)
+        marker.set_location(self.latitude, self.longitude)
+        layer.add_marker(marker)
+        champlain_view.add_layer(layer)
+        marker.set_use_markup(True)
+        champlain_view.set_reactive(True)
+        self.view = champlain_view
+        self.layer = layer
+        layer.show_all()
+
         vbox_map = builder.get_object("vbox_map")
         vbox_map.pack_start(map, True, True, 1)
+
+        champlain_view.connect('button-press-event', self.on_context_menu, vbox_map)
 
         btn = builder.get_object("btn_zoom_in")
         btn.connect('clicked', self.zoom_in, champlain_view)
