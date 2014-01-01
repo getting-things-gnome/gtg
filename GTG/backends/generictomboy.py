@@ -72,6 +72,11 @@ class GenericTomboy(GenericBackend):
         #      anyway). (invernizzi)
         self._tomboy_setting_timers = {}
 
+        # We need to tell dbus-glib to initialize libdbus' thread locks.
+        # Removing this call will result in random segfaults and crashes
+        # on enabling GNote and Tomboy (Bug #1264684) - parinporecha
+        dbus.mainloop.glib.threads_init()
+
     def initialize(self):
         '''
         See GenericBackend for an explanation of this function.
