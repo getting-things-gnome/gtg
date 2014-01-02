@@ -41,10 +41,13 @@ class geolocalizedTasks:
 
     def __init__(self):
         Clutter.init([])
+        self.latitude = None
+        self.longitude = None
         self.where = Geoclue()
         self.where.client.connect_to_signal('LocationUpdated', self._location_updated)
         self.where.client.Start()
 
+        self.factory = Champlain.MapSourceFactory.dup_default()
 #        self.geoclue = Geoclue.DiscoverLocation()
 #        self.geoclue.connect(self.location_changed)
 #
@@ -459,36 +462,57 @@ class geolocalizedTasks:
     def set_task_location(self, widget, plugin_api, location=None):
         builder = self._get_builder_from_file("set_task_location.ui")
         dialog = builder.get_object("SetTaskLocation")
+        self.factory = Champlain.MapSourceFactory.dup_default()
 
         map = GtkChamplain.Embed()
         champlain_view = map.get_view()
-        champlain_view.center_on(self.latitude, self.longitude)
         champlain_view.set_property("zoom-level", 10)
-
-        #Set current user location
-        black = Clutter.Color.new(0x03, 0x04, 0x07, 0xbb)
-        layer = Champlain.MarkerLayer()
-        task_name = plugin_api.get_selected().get_title()
-        marker = Champlain.Label.new_with_text(task_name, "Serif 14", None, black)
-        marker.set_location(self.latitude, self.longitude)
-        layer.add_marker(marker)
-        champlain_view.add_layer(layer)
-        marker.set_use_markup(True)
         champlain_view.set_reactive(True)
-        self.view = champlain_view
-        self.layer = layer
-        layer.show_all()
+
+        #Factory
+        source = self.factory.create_cached_source(Champlain.MAP_SOURCE_OSM_MAPQUEST)
+        champlain_view.set_map_source(source)
 
         vbox_map = builder.get_object("vbox_map")
         vbox_map.pack_start(map, True, True, 1)
-
         champlain_view.connect('button-press-event', self.on_context_menu, vbox_map)
+
+        self.view = champlain_view
 
         btn = builder.get_object("btn_zoom_in")
         btn.connect('clicked', self.zoom_in, champlain_view)
 
         btn = builder.get_object("btn_zoom_out")
         btn.connect('clicked', self.zoom_out, champlain_view)
+
+        if self.latitude is not None and self.longitude is not None:
+            champlain_view.center_on(self.latitude, self.longitude)
+
+            #Set current user location
+            black = Clutter.Color.new(0x03, 0x04, 0x07, 0xbb)
+            layer = Champlain.MarkerLayer()
+            task_name = plugin_api.get_selected().get_title()
+            marker = Champlain.Label.new_with_text(task_name, "Serif 14", None, black)
+            marker.set_location(self.latitude, self.longitude)
+            layer.add_marker(marker)
+            champlain_view.add_layer(layer)
+            marker.set_use_markup(True)
+
+            self.layer = layer
+            layer.show_all()
+
+            vbox_map = builder.get_object("vbox_map")
+            vbox_map.pack_start(map, True, True, 1)
+
+            champlain_view.connect('button-press-event', self.on_context_menu, vbox_map)
+
+            btn = builder.get_object("btn_zoom_in")
+            btn.connect('clicked', self.zoom_in, champlain_view)
+
+            btn = builder.get_object("btn_zoom_out")
+            btn.connect('clicked', self.zoom_out, champlain_view)
+
+            marker.connect('button-press-event', self.on_marker, marker)
 
         btn = builder.get_object("btn_cancel")
         btn.connect('clicked', self.close, dialog)
