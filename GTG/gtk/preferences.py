@@ -21,16 +21,14 @@
 
 import os
 import shutil
-
 import gtk
-from xdg.BaseDirectory import xdg_config_home
+import GTG.tools.shortcut as shortcut
 
+from xdg.BaseDirectory import xdg_config_home
 from GTG import _
 from GTG import info
 from GTG.gtk import ViewConfig
-from GTG.tools.shortcut import get_saved_binding, \
-                               check_invalidity, \
-                               save_new_binding
+
 
 AUTOSTART_DIRECTORY = os.path.join(xdg_config_home, "autostart")
 AUTOSTART_FILE = "gtg.desktop"
@@ -92,8 +90,7 @@ class PreferencesDialog:
         self.hbox1 = builder.get_object("hbox1")
         self.shortcut_button = builder.get_object("shortcut_button")
 
-        self.shortcut = ShortcutWidget(self.dialog, self.hbox1,
-                                       self.shortcut_button)
+        self.shortcut = ShortcutWidget(builder)
 
         self.fontbutton = builder.get_object("fontbutton")
         editor_font = self.config.get("font_name")
@@ -184,11 +181,13 @@ class PreferencesDialog:
 class ShortcutWidget:
     """ Show Shortcut Accelerator Widget """
 
-    def __init__(self, dialog, hbox1, button1):
-        self.dialog = dialog
-        self.hbox1 = hbox1
-        self.button = button1
+    def __init__(self, builder):
+        self.builder = builder
+        self.dialog = builder.get_object("PreferencesDialog")
+        self.button = builder.get_object("shortcut_button")
+        hbox1 = builder.get_object("hbox1")
         self.new_task_default_binding = "<Primary>F12"
+        self.gsettings_install_label_shown = False
 
         self.liststore = gtk.ListStore(str, str)
         self.liststore.append(["", ""])
@@ -206,12 +205,24 @@ class ShortcutWidget:
         self.cell = cell
         column_accel.pack_start(cell, True)
         column_accel.add_attribute(cell, "text", 1)
-        self.hbox1.add(treeview)
+        hbox1.add(treeview)
 
     def refresh_accel(self):
         """ Refreshes the accelerator """
+
+        if not shortcut.is_gsettings_present():
+            self.button.set_sensitive(False)
+            iter1 = self.liststore.get_iter_first()
+            self.liststore.set_value(iter1, 1, "Disabled")
+            self.cell.set_sensitive(False)
+
+            if not self.gsettings_install_label_shown:
+                self._show_gsettings_install_label()
+                self.gsettings_install_label_shown = True
+            return
+
         iter1 = self.liststore.get_iter_first()
-        self.new_task_binding = get_saved_binding()
+        self.new_task_binding = shortcut.get_saved_binding()
         self.binding_backup = self.new_task_binding
         if self.new_task_binding == "":
             # User had set a shortcut, but has now disabled it
@@ -234,38 +245,46 @@ class ShortcutWidget:
         """ New task shortcut checkbox is toggled """
         if widget.get_active():
             self.new_task_binding = self.binding_backup
-            save_new_binding(self.new_task_binding, True)
+            shortcut.save_new_binding(self.new_task_binding, True)
             self.cell.set_property("editable", True)
         else:
             self.new_task_binding = ""
-            save_new_binding(self.new_task_binding, True)
+            shortcut.save_new_binding(self.new_task_binding, True)
             self.cell.set_property("editable", False)
 
     def _cellAccelEdit(self, cell, path, accel_key, accel_mods, code, model):
         """ Accelerator is modified """
         self.show_input = gtk.accelerator_get_label(accel_key, accel_mods)
         self.new_task_binding = gtk.accelerator_name(accel_key, accel_mods)
-        if check_invalidity(self.new_task_binding, accel_key, accel_mods):
-            self._show_warning(gtk.Button(_("Warning")), self.show_input)
+        if shortcut.check_invalidity(self.new_task_binding, accel_key,
+                                     accel_mods):
+            self._show_warning(self.show_input)
             return
         self.binding_backup = self.new_task_binding
         iter = model.get_iter(path)
         model.set_value(iter, 1, self.show_input)
-        save_new_binding(self.new_task_binding, self.button.get_active())
+        shortcut.save_new_binding(self.new_task_binding,
+                                  self.button.get_active())
 
     def _accel_cleared(self, widget, path, model):
         """ Clear the accelerator """
         iter = model.get_iter(path)
         model.set_value(iter, 1, None)
 
-    def _show_warning(self, widget, input_str):
+    def _show_gsettings_install_label(self):
+        vbox = self.builder.get_object("prefs-vbox7")
+        label = gtk.Label()
+        label.set_markup(_("<small>Please install <i><b>gsettings</b></i> "
+                           "to enable New task shortcut</small>"))
+        vbox.add(label)
+
+    def _show_warning(self, input_str):
         """ Show warning when user enters inappropriate accelerator """
         show = _("The shortcut \"%s\" cannot be used because "
                "it will become impossible to type using this key.\n"
                "Please try with a key such as "
                "Control, Alt or Shift at the same time.") % input_str
         dialog = gtk.MessageDialog(self.dialog, gtk.DIALOG_DESTROY_WITH_PARENT,
-                                   gtk.MESSAGE_WARNING, gtk.BUTTONS_CANCEL,
-                                   show)
+                                   gtk.MESSAGE_WARNING, gtk.BUTTONS_OK, show)
         dialog.run()
         dialog.hide()

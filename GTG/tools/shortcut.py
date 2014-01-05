@@ -19,8 +19,10 @@
 
 import subprocess
 import re
+import shlex
 
 
+CHECK_GSETTINGS_PRESENCE = "which gsettings"
 CHECK_VERSION = "gsettings list-keys " \
                 "org.gnome.settings-daemon.plugins.media-keys"
 NEW_TASK_ACTION = "gtg_new_task"
@@ -44,6 +46,9 @@ GSETTINGS_SET = "gsettings set " \
 GCONF_GET = "gconftool-2 --get /desktop/gnome/keybindings/custom"
 GCONF_SET = "gconftool-2 --type string --set /desktop/gnome/keybindings/custom"
 
+
+def is_gsettings_present():
+    return bool(call_subprocess(CHECK_GSETTINGS_PRESENCE))
 
 def get_saved_binding():
     """ Get the current shortcut if the task exists """
@@ -153,8 +158,7 @@ def call_subprocess(cmd, i="", key="", to_append=None):
         'i' accesses a custom shortcut,
         'key' accesses values inside the shortcut,
         'to_append' contains the new value to replace if any """
-    cmd += i + key
-    cmd = cmd.split(" ")
+    cmd = shlex.split(cmd + i + key)
     if to_append is not None:
         cmd.append(to_append)
     out = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
