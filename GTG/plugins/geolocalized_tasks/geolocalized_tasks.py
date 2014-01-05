@@ -46,6 +46,8 @@ class geolocalizedTasks:
         self.where = Geoclue()
         self.where.client.connect_to_signal('LocationUpdated', self._location_updated)
         self.where.client.Start()
+        self.marker_to_be_deleted = None
+        self.delete = False
 
         self.factory = Champlain.MapSourceFactory.dup_default()
 #        self.geoclue = Geoclue.DiscoverLocation()
@@ -447,6 +449,11 @@ class geolocalizedTasks:
         marker = Champlain.Label.new_with_text("I am here!", "Serif 14", None, black)
         marker.set_location(latitude, longitude)
         self.layer.add_marker(marker)
+        marker.connect('button-press-event', self.on_marker, marker)
+
+    def on_delete (self, widget, marker):
+        self.layer.remove_marker(marker)
+        self.marker_to_be_deleted = None
 
     def on_context_menu(self, widget, event, data):
         if(event.button == 3):
@@ -456,8 +463,19 @@ class geolocalizedTasks:
             context.popup(None, None, None, None, event.button, event.time)
             longitude = self.view.x_to_longitude (event.x)
             latitude = self.view.y_to_latitude (event.y)
-            mi = builder.get_object("map_context_menu_item")
+            mi = builder.get_object("map_context_menu_item1")
             mi.connect ("activate", self.on_im_here, [longitude, latitude])
+            mi = builder.get_object("map_context_menu_item2")
+            if self.delete is False:
+                mi.set_sensitive(False)
+            else:
+                mi.connect("activate", self.on_delete, self.marker_to_be_deleted)
+                self.delete = False
+
+    def on_marker(self, widget, event, marker):
+        self.marker_to_be_deleted = marker
+        self.delete = True
+        return False
 
     def set_task_location(self, widget, plugin_api, location=None):
         builder = self._get_builder_from_file("set_task_location.ui")
@@ -505,6 +523,8 @@ class geolocalizedTasks:
             vbox_map.pack_start(map, True, True, 1)
 
             champlain_view.connect('button-press-event', self.on_context_menu, vbox_map)
+
+            marker.connect('button-press-event', self.on_marker, marker)
 
             btn = builder.get_object("btn_zoom_in")
             btn.connect('clicked', self.zoom_in, champlain_view)

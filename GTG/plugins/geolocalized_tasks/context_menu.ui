@@ -4,8 +4,16 @@
     <property name="visible">True</property>
     <property name="can-focus">False</property>
     <child>
-      <object class="GtkMenuItem" id="map_context_menu_item">
+      <object class="GtkMenuItem" id="map_context_menu_item1">
         <property name="label" translatable="yes">I'm here!</property>
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="use_underline">True</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkMenuItem" id="map_context_menu_item2">
+        <property name="label" translatable="yes">Delete</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="use_underline">True</property>
