@@ -106,6 +106,12 @@ class PluginAPI:
         '''
         return self.__ui
 
+    def get_browser(self):
+        '''
+        Returns a Browser
+        '''
+        return self.__view_manager.get_browser()
+
     def get_selected(self):
         '''
         Returns the selected tasks in the browser or the task ID if the editor
@@ -207,7 +213,7 @@ class PluginAPI:
         NOTE: This function stronglye depend on browser and could be easily
         broken by changes in browser code
         """
-        browser = self.__ui
+        browser = self.get_browser()
 
         # set default bgcolor?
         if func is None:
