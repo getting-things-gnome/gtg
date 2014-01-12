@@ -97,7 +97,8 @@ class pluginBugzilla:
 
     def activate(self, plugin_api):
         self.plugin_api = plugin_api
-        self.connect_id = plugin_api.get_ui().connect(
+        self.browser = plugin_api.get_browser()
+        self.connect_id = self.browser.connect(
             "task-added-via-quick-add", self.task_added_cb)
 
     def task_added_cb(self, sender, task_id):
@@ -109,6 +110,3 @@ class pluginBugzilla:
         bugTask = GetBugInformationTask(task)
         bugTask.setDaemon(True)
         bugTask.start()
-
-    def deactivate(self, plugin_api):
-        plugin_api.get_ui().disconnect(self.connect_id)

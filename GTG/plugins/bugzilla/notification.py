@@ -4,7 +4,6 @@
 Notification is used to show messages to GTG users.
 '''
 
-import atexit
 import subprocess
 
 __all__ = ("send_notification", )
@@ -24,6 +23,7 @@ def _notify_via_notify(title, message):
         # Keep quiet here when notification service is not avialable currently
         # sometime. For example, if user is using LXDE, no notifyd by default.
         pass
+    Notify.uninit()
 
 
 def _notify_via_notify_send(title, message):
@@ -57,8 +57,3 @@ def send_notification(title, message):
 
     if _notify_handler is not None:
         _notify_handler(title, message)
-
-
-@atexit.register
-def uinit_notify():
-    Notify.uninit()
