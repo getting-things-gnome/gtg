@@ -64,6 +64,7 @@ def create_userdoc_list():
                 newroot = ""
             newroot = os.path.join(HELP_DIR, comps[2], "gtg", newroot)
             fileList.append((newroot, dirList))
+    fileList.append('doc/release_notes/0.3.1.txt')
     return fileList
 
 

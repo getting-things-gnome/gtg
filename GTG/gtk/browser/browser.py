@@ -1626,6 +1626,14 @@ class TaskBrowser(GObject.GObject):
                 action = self.search_possible_actions[name]
                 self.search_completion.insert_action_markup(aid, action)
                 self.search_actions.append(name)
+        else:
+            tree = self.req.get_tasks_tree(refresh=False)
+            filters = tree.list_applied_filters()
+            for tag_id in self.req.get_all_tags():
+                tag = self.req.get_tag(tag_id)
+                if tag.is_search_tag() and tag_id in filters:
+                    self.req.remove_tag(tag_id)
+                    self.apply_filter_on_panes(CoreConfig.ALLTASKS_TAG)
 
     def expand_search_tag(self):
         """ For some unknown reason, search tag is not expanded correctly and

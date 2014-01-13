@@ -42,6 +42,8 @@ class hamsterPlugin:
     TOOLTIP_TEXT_STOP_ACTIVITY = _("Stop tracking the current activity in" +
                                    " Hamster Time Tracker corresponding" +
                                    " to the selected task")
+    START_ACTIVITY_LABEL = _("Start task in Hamster")
+    STOP_ACTIVITY_LABEL = _("Stop Hamster Activity")
     BUFFER_TIME = 60  # secs
     PLUGIN_PATH = os.path.dirname(os.path.abspath(__file__))
     IMG_START_PATH = "icons/hicolor/32x32/hamster-activity-start.png"
@@ -235,12 +237,13 @@ class hamsterPlugin:
 
         # add menu item
         if plugin_api.is_browser():
-            self.menu_item = Gtk.MenuItem(_("Start task in Hamster"))
+            self.menu_item = Gtk.MenuItem(self.START_ACTIVITY_LABEL)
             self.menu_item.show_all()
             self.menu_item.connect('activate', self.browser_cb, plugin_api)
+            self.menu_item.set_sensitive(False)
             plugin_api.add_menu_item(self.menu_item)
             # and button
-            self.button.set_label(_("Start task in Hamster"))
+            self.button.set_label(self.START_ACTIVITY_LABEL)
             start_icon_widget = self.get_icon_widget(self.IMG_START_PATH)
             self.button.set_icon_widget(start_icon_widget)
             self.button.set_tooltip_text(self.TOOLTIP_TEXT_START_ACTIVITY)
@@ -331,7 +334,7 @@ class hamsterPlugin:
             plugin_api.remove_widget_from_taskeditor(self.vbox)
 
     def browser_cb(self, widget, plugin_api):
-        task_id = plugin_api.get_ui().get_selected_task()
+        task_id = plugin_api.get_browser().get_selected_task()
         task = plugin_api.get_requester().get_task(task_id)
         self.decide_start_or_stop_activity(task, widget)
 
@@ -350,12 +353,14 @@ class hamsterPlugin:
     def selection_changed(self, selection):
         if selection.count_selected_rows() == 1:
             self.button.set_sensitive(True)
-            task_id = self.plugin_api.get_ui().get_selected_task()
+            self.menu_item.set_sensitive(True)
+            task_id = self.plugin_api.get_browser().get_selected_task()
             task = self.plugin_api.get_requester().get_task(task_id)
             self.decide_button_mode(self.button, task)
         else:
             self.change_button_to_start_activity(self.button)
             self.button.set_sensitive(False)
+            self.menu_item.set_sensitive(False)
 
     def decide_button_mode(self, button, task):
         if self.is_task_active(task):
@@ -364,16 +369,14 @@ class hamsterPlugin:
             self.change_button_to_start_activity(button)
 
     def change_button_to_start_activity(self, button):
-        button.set_label(_("Start task in Hamster"))
-        if not isinstance(button, gtk.MenuItem):
-            button.set_icon_widget(self.get_icon_widget(self.IMG_START_PATH))
-            button.set_tooltip_text(self.TOOLTIP_TEXT_START_ACTIVITY)
+        self.menu_item.set_label(self.START_ACTIVITY_LABEL)
+        self.button.set_icon_widget(self.get_icon_widget(self.IMG_START_PATH))
+        self.button.set_tooltip_text(self.TOOLTIP_TEXT_START_ACTIVITY)
 
     def change_button_to_stop_activity(self, button):
-        button.set_label(_("Stop Hamster Activity"))
-        if not isinstance(button, gtk.MenuItem):
-            button.set_icon_widget(self.get_icon_widget(self.IMG_STOP_PATH))
-            button.set_tooltip_text(self.TOOLTIP_TEXT_STOP_ACTIVITY)
+        self.menu_item.set_label(self.STOP_ACTIVITY_LABEL)
+        self.button.set_icon_widget(self.get_icon_widget(self.IMG_STOP_PATH))
+        self.button.set_tooltip_text(self.TOOLTIP_TEXT_STOP_ACTIVITY)
 
     #### Preference Handling
     def is_configurable(self):
