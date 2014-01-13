@@ -50,6 +50,7 @@ class geolocalizedTasks:
         self.delete = False
 
         self.factory = Champlain.MapSourceFactory.dup_default()
+        self.context = None
 #        self.geoclue = Geoclue.DiscoverLocation()
 #        self.geoclue.connect(self.location_changed)
 #
@@ -445,32 +446,47 @@ class geolocalizedTasks:
 
     def on_im_here (self, widget, position):
         black = Clutter.Color.new(0x03, 0x04, 0x07, 0xbb)
-        [longitude, latitude] = position
+        [latitude, longitude] = position
         marker = Champlain.Label.new_with_text("I am here!", "Serif 14", None, black)
         marker.set_location(latitude, longitude)
         self.layer.add_marker(marker)
         marker.connect('button-press-event', self.on_marker, marker)
 
-    def on_delete (self, widget, marker):
-        self.layer.remove_marker(marker)
+    def on_delete (self, widget, data):
+        self.layer.remove_marker(self.marker_to_be_deleted)
         self.marker_to_be_deleted = None
 
     def on_context_menu(self, widget, event, data):
-        if(event.button == 3):
-            builder = self._get_builder_from_file("context_menu.ui")
-            context = builder.get_object("map_context_menu")
-            context.attach_to_widget(data, None)
-            context.popup(None, None, None, None, event.button, event.time)
+        if (event.button == 3):
+            if (self.context is not None):
+                self.context.popdown()
+                self.context = None
+
             longitude = self.view.x_to_longitude (event.x)
             latitude = self.view.y_to_latitude (event.y)
-            mi = builder.get_object("map_context_menu_item1")
-            mi.connect ("activate", self.on_im_here, [longitude, latitude])
-            mi = builder.get_object("map_context_menu_item2")
+
+            context = Gtk.Menu()
+
+            mi = Gtk.MenuItem()
+            mi.set_label("I am here!")
+            mi.connect ("activate", self.on_im_here, [latitude, longitude])
+            context.attach(mi, 0, 1, 0, 1)
+
+            mi = Gtk.MenuItem()
+            mi.set_label("Delete")
+            mi.connect("activate", self.on_delete, None)
+            context.attach(mi, 0, 1, 1, 2)
+
+            context.show_all()
+
+            context.popup(None, None, None, None, event.button, event.time)
+            self.context = context
+
             if self.delete is False:
                 mi.set_sensitive(False)
             else:
-                mi.connect("activate", self.on_delete, self.marker_to_be_deleted)
                 self.delete = False
+        return True
 
     def on_marker(self, widget, event, marker):
         self.marker_to_be_deleted = marker
