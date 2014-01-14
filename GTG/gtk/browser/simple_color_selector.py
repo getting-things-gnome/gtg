@@ -233,21 +233,21 @@ class SimpleColorSelector(Gtk.Box):
             self.cc_buttons.append(img)
         # Draw the add button
         buttons_hbox = Gtk.Box()
-        cc_vbox.pack_start(buttons_hbox)
+        cc_vbox.pack_start(buttons_hbox, True, True, 0)
         img = Gtk.Image()
-        img.set_from_stock(Gtk.STOCK_ADD, Gtk.ICON_SIZE_BUTTON)
+        img.set_from_stock(Gtk.STOCK_ADD, Gtk.IconSize.BUTTON)
         self.add_button = Gtk.Button()
         self.add_button.set_image(img)
         self.add_button.set_label(_("Add custom color"))
-        buttons_hbox.pack_start(self.add_button, expand=True, fill=False)
+        buttons_hbox.pack_start(self.add_button, True, False, 0)
         self.add_button.connect("clicked", self.on_color_add)
         # Draw the clear selected color button
-        img = gtk.Image()
-        img.set_from_stock(gtk.STOCK_REMOVE, gtk.ICON_SIZE_BUTTON)
-        self.clear_button = gtk.Button()
+        img = Gtk.Image()
+        img.set_from_stock(Gtk.STOCK_REMOVE, Gtk.IconSize.BUTTON)
+        self.clear_button = Gtk.Button()
         self.clear_button.set_image(img)
         self.clear_button.set_label(_("Clear selected color"))
-        buttons_hbox.pack_start(self.clear_button, expand=True, fill=False)
+        buttons_hbox.pack_start(self.clear_button, True, False, 0)
         self.clear_button.connect("clicked", self.on_color_clear)
         self.clear_button.set_sensitive(False)
         # hide the custom palette if no custom color is defined
@@ -362,8 +362,8 @@ class SimpleColorSelector(Gtk.Box):
             self.selected_col = None
         self.clear_button.set_sensitive(False)
 
-Gobject.type_register(SimpleColorSelector)
-Gobject.signal_new("color-changed", SimpleColorSelector,
-                   Gobject.SIGNAL_RUN_FIRST, Gobject.TYPE_NONE, ())
-Gobject.signal_new("color-added", SimpleColorSelector,
-                   Gobject.SIGNAL_RUN_FIRST, Gobject.TYPE_NONE, ())
+GObject.type_register(SimpleColorSelector)
+GObject.signal_new("color-changed", SimpleColorSelector,
+                   GObject.SIGNAL_RUN_FIRST, GObject.TYPE_NONE, ())
+GObject.signal_new("color-added", SimpleColorSelector,
+                   GObject.SIGNAL_RUN_FIRST, GObject.TYPE_NONE, ())

@@ -30,6 +30,7 @@ for a tag.
 from gi.repository import GObject, Gtk, Gdk, GdkPixbuf
 
 from GTG import _
+from GTG.gtk.browser.simple_color_selector import SimpleColorSelector
 from GTG.tools.logger import Log
 
 
@@ -265,8 +266,8 @@ class TagEditor(Gtk.Window):
         self.tc_cc_align = Gtk.Alignment.new(0.5, 0.5, 0, 0)
         self.tc_vbox.pack_start(self.tc_cc_align, True, True, 0)
         self.tc_cc_align.set_padding(15, 15, 10, 10)
-        #self.tc_cc_colsel = SimpleColorSelector()
-        self.tc_cc_colsel = Gtk.ColorChooserWidget()
+        self.tc_cc_colsel = SimpleColorSelector()
+        #self.tc_cc_colsel = Gtk.ColorChooserWidget()
         self.tc_cc_align.add(self.tc_cc_colsel)
         # Icon selector
         self.tag_icon_selector = TagIconSelector()
@@ -283,10 +284,10 @@ class TagEditor(Gtk.Window):
         self.tn_cb_clicked_hid = self.tn_cb.connect('clicked',
                                                     self.on_tn_cb_clicked)
         #FIXME
-        #self.tc_cc_colsel.connect('color-changed', self.on_tc_colsel_changed)
-        #self.tc_cc_colsel.connect('color-added', self.on_tc_colsel_added)
-        self.tc_cc_colsel.connect('color-activated',
-                                  self.on_tc_colsel_activated)
+        self.tc_cc_colsel.connect('color-changed', self.on_tc_colsel_changed)
+        self.tc_cc_colsel.connect('color-added', self.on_tc_colsel_added)
+        #self.tc_cc_colsel.connect('color-activated',
+         #                         self.on_tc_colsel_activated)
         self.connect('delete-event', self.on_close)
 
         # allow fast closing by Escape key
@@ -321,8 +322,8 @@ class TagEditor(Gtk.Window):
                                           None)
         # Color selection
         #FIXME
-        #self.tc_cc_colsel.unselect_color()
-        self.tc_cc_colsel.set_use_alpha(False)
+        self.tc_cc_colsel.unselect_color()
+        #self.tc_cc_colsel.set_use_alpha(False)
         #self.tc_cc_colsel.set_rgba(self.tc_cc_colsel, None)
         # Custom colors
         self.custom_colors = self.config.get('custom_colors')
