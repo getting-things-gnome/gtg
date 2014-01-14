@@ -63,7 +63,7 @@ class TagIconSelector(Gtk.Window):
         self.add(vbox)
         # icon list
         scld_win = Gtk.ScrolledWindow()
-        scld_win.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.ALWAYS)
+        scld_win.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.NEVER)
         scld_win.set_shadow_type(Gtk.ShadowType.ETCHED_IN)
         vbox.pack_start(scld_win, True, True, 0)
         self.symbol_iv = Gtk.IconView()
@@ -95,8 +95,8 @@ class TagIconSelector(Gtk.Window):
         """Hides the window if the user clicks out of it"""
         win_ptr = self.get_window().get_pointer()
         win_size = self.get_size()
-        if not(0 <= win_ptr[0] <= win_size[0] and
-               0 <= win_ptr[1] <= win_size[1]):
+        if not(0 <= win_ptr[1] <= win_size[0] and
+               0 <= win_ptr[2] <= win_size[1]):
             self.close_selector()
 
     def __load_icon(self):

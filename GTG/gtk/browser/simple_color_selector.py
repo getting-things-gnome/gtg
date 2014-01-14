@@ -61,7 +61,7 @@ class SimpleColorSelectorPaletteItem(Gtk.DrawingArea):
         #FIXME - why to use a special variables?
         alloc_w, alloc_h = alloc.width, alloc.height
         # Drawing context
-        #cr_ctxt    = self.window.cairo_create() # pylint: disable-msg=E1101
+        #cr_ctxt    = Gdk.cairo_create(self.window) # pylint: disable-msg=E1101
         #gdkcontext = Gdk.CairoContext(cr_ctxt)
         #FIXME
         gdkcontext = cr
