@@ -274,7 +274,7 @@ class ShortcutWidget:
 
     def _show_gsettings_install_label(self):
         vbox = self.builder.get_object("prefs-vbox7")
-        label = gtk.Label()
+        label = Gtk.Label()
         label.set_markup(_("<small>Please install <i><b>gsettings</b></i> "
                            "to enable New task shortcut</small>"))
         vbox.add(label)
