@@ -63,7 +63,7 @@ class TagIconSelector(Gtk.Window):
         self.add(vbox)
         # icon list
         scld_win = Gtk.ScrolledWindow()
-        scld_win.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.NEVER)
+        scld_win.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.ALWAYS)
         scld_win.set_shadow_type(Gtk.ShadowType.ETCHED_IN)
         vbox.pack_start(scld_win, True, True, 0)
         self.symbol_iv = Gtk.IconView()
@@ -78,7 +78,9 @@ class TagIconSelector(Gtk.Window):
         #  The same goes for row height, but being right for this value is less
         #  important due to the vertical scrollbar.
         #  The IcVw size should fit the width of 7 cols and height of ~4 lines.
-        self.symbol_iv.set_size_request(40 * 7 + 12, 38 * 4)
+        SIZE_REQUEST = (40 * 7 + 12, 38 * 4)
+        self.symbol_iv.set_size_request(*SIZE_REQUEST)
+        scld_win.set_size_request(*SIZE_REQUEST)
         scld_win.add(self.symbol_iv)
         # icon remove button
         img = Gtk.Image()
