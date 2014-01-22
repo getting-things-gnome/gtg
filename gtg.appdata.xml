@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<application>
+<id type="desktop">gtg.desktop</id>
+<licence>CC0</licence>
+<description>
+<p>
+Getting Things Gnome is a personal tasks and ToDo list organizer for inspired by
+the Getting Things Done (GTD) methodology.
+</p>
+<p>
+GTG is intended to help you track everything you need to do and need to know,
+from small tasks to large projects.
+</p>
+</description>
+<url type="homepage">http://gtgnome.net/</url>
+<screenshots>
+<screenshot type="default">http://gtgnome.net/wp-content/uploads/2013/01/gtg-0.3-browser-1024x640.png</screenshot>
+<screenshot>http://gtgnome.net/wp-content/uploads/2013/01/gtg-0.3-browser-tasks-bgcolor-desc-1024x640.png</screenshot>
+<screenshot>http://gtgnome.net/wp-content/uploads/2013/01/gtg-0.3-tag-editor.png</screenshot>
+<screenshot>http://gtgnome.net/wp-content/uploads/2013/01/gtg-0.3-user-help-1024x640.png</screenshot>
+</screenshots>
+<updatecontact>gtg@lists.launchpad.net</updatecontact>
+</application>

@@ -95,6 +95,9 @@ def create_data_files():
 
     # bash completion
     data_files.append(('share/gtg/', ['gtcli_bash_completion']))
+
+    # appdata file
+    data_files.append(('share/appdata/', ['gtg.appdata.xml']))
     return data_files
 
 
