@@ -27,6 +27,8 @@ from gi.repository import GeocodeGlib as Geocode
 
 from GTG.plugins.geolocalized_tasks.marker import MarkerLayer
 from GTG.plugins.geolocalized_tasks.geoclue import Geoclue
+from GTG.plugins.geolocalized_tasks.store_and_load_data import store_pickled_file
+from GTG.plugins.geolocalized_tasks.store_and_load_data import load_pickled_file
 
 import dbus
 
@@ -51,6 +53,8 @@ class geolocalizedTasks:
 
         self.factory = Champlain.MapSourceFactory.dup_default()
         self.context = None
+        self.locations = []
+        self.task_id = ""
 #        self.geoclue = Geoclue.DiscoverLocation()
 #        self.geoclue.connect(self.location_changed)
 #
@@ -451,9 +455,11 @@ class geolocalizedTasks:
         marker.set_location(latitude, longitude)
         self.layer.add_marker(marker)
         marker.connect('button-press-event', self.on_marker, marker)
+        self.locations.append(marker)
 
     def on_delete (self, widget, data):
         self.layer.remove_marker(self.marker_to_be_deleted)
+        self.locations.remove(self.marker_to_be_deleted)
         self.marker_to_be_deleted = None
 
     def on_context_menu(self, widget, event, data):
@@ -494,6 +500,8 @@ class geolocalizedTasks:
         return False
 
     def set_task_location(self, widget, plugin_api, location=None):
+        black = Clutter.Color.new(0x03, 0x04, 0x07, 0xbb)
+        self.task_id = plugin_api.get_selected().get_uuid()
         builder = self._get_builder_from_file("set_task_location.ui")
         dialog = builder.get_object("SetTaskLocation")
         self.factory = Champlain.MapSourceFactory.dup_default()
@@ -507,11 +515,15 @@ class geolocalizedTasks:
         source = self.factory.create_cached_source(Champlain.MAP_SOURCE_OSM_MAPQUEST)
         champlain_view.set_map_source(source)
 
+        layer = Champlain.MarkerLayer()
+
         vbox_map = builder.get_object("vbox_map")
         vbox_map.pack_start(map, True, True, 1)
         champlain_view.connect('button-press-event', self.on_context_menu, vbox_map)
 
         self.view = champlain_view
+        champlain_view.add_layer(layer)
+        self.layer = layer
 
         btn = builder.get_object("btn_zoom_in")
         btn.connect('clicked', self.zoom_in, champlain_view)
@@ -523,17 +535,12 @@ class geolocalizedTasks:
             champlain_view.center_on(self.latitude, self.longitude)
 
             #Set current user location
-            black = Clutter.Color.new(0x03, 0x04, 0x07, 0xbb)
-            layer = Champlain.MarkerLayer()
             task_name = plugin_api.get_selected().get_title()
             marker = Champlain.Label.new_with_text(task_name, "Serif 14", None, black)
             marker.set_location(self.latitude, self.longitude)
             layer.add_marker(marker)
-            champlain_view.add_layer(layer)
+            self.locations.append(marker)
             marker.set_use_markup(True)
-
-            self.layer = layer
-            layer.show_all()
 
             vbox_map = builder.get_object("vbox_map")
             vbox_map.pack_start(map, True, True, 1)
@@ -548,7 +555,20 @@ class geolocalizedTasks:
             btn = builder.get_object("btn_zoom_out")
             btn.connect('clicked', self.zoom_out, champlain_view)
 
+        data_path = os.path.join('plugins/geolocalized_tasks', self.task_id)
+        locations = load_pickled_file (data_path, [])
+        for location in locations:
+            [text, latitude, longitude] = location
+            marker = Champlain.Label()
+            marker.set_text(text)
+            marker.set_location(latitude, longitude)
+            self.layer.add_marker(marker)
             marker.connect('button-press-event', self.on_marker, marker)
+            self.locations.append(marker)
+
+            layer.add_marker(marker)
+
+        layer.show_all()
 
         btn = builder.get_object("btn_cancel")
         btn.connect('clicked', self.close, dialog)
@@ -901,7 +921,17 @@ class geolocalizedTasks:
         view.zoom_out()
 
     def close(self, widget, dialog):
+        data_path = os.path.join('plugins/geolocalized_tasks', self.task_id)
+        locations = []
+        for location in self.locations:
+            locations.append([location.get_text(), location.get_latitude(), location.get_longitude()])
+        store_pickled_file (data_path, locations)
         dialog.destroy()
+        self.clean_up()
+
+    def clean_up(self):
+        self.locations = []
+        self.task_id = ""
 
     # http://code.activestate.com/recipes/266466/
     # original by Paul Winkler
