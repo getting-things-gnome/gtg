@@ -450,9 +450,9 @@ class geolocalizedTasks:
         return builder
 
     def on_im_here (self, widget, position):
-        black = Clutter.Color.new(0x03, 0x04, 0x07, 0xbb)
         [latitude, longitude] = position
-        marker = Champlain.Label.new_with_text("I am here!", "Serif 14", None, black)
+        marker = Champlain.Label()
+        marker.set_text("I am here!")
         marker.set_location(latitude, longitude)
         self.layer.add_marker(marker)
         marker.connect('button-press-event', self.on_marker, marker)
@@ -504,7 +504,6 @@ class geolocalizedTasks:
         return False
 
     def set_task_location(self, widget, plugin_api, location=None):
-        black = Clutter.Color.new(0x03, 0x04, 0x07, 0xbb)
         self.task_id = plugin_api.get_selected().get_uuid()
         builder = self._get_builder_from_file("set_task_location.ui")
         dialog = builder.get_object("SetTaskLocation")
@@ -540,12 +539,14 @@ class geolocalizedTasks:
             [self.latitude, self.longitude] = load_pickled_file(last_location_data_path, [None, None])
 
         if self.latitude is not None and self.longitude is not None:
+            red = Clutter.Color.new(0xff, 0x00, 0x00, 0xbb)
             champlain_view.center_on(self.latitude, self.longitude)
             store_pickled_file(last_location_data_path, [self.latitude, self.longitude])
 
             #Set current user location
-            task_name = plugin_api.get_selected().get_title()
-            marker = Champlain.Label.new_with_text(task_name, "Serif 14", None, black)
+            marker = Champlain.Label()
+            marker.set_color(red)
+            marker.set_text("I am here!")
             marker.set_location(self.latitude, self.longitude)
             layer.add_marker(marker)
             marker.set_use_markup(True)
