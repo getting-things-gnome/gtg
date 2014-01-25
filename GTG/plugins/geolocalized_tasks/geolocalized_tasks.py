@@ -451,8 +451,12 @@ class geolocalizedTasks:
 
     def on_im_here (self, widget, position):
         [latitude, longitude] = position
+        geocodeLocation = Geocode.Location.new(latitude, longitude, Geocode.LOCATION_ACCURACY_STREET)
+        reverse = Geocode.Reverse.new_for_location (geocodeLocation)
+        place = reverse.resolve()
+
         marker = Champlain.Label()
-        marker.set_text("I am here!")
+        marker.set_text(place.get_name())
         marker.set_location(latitude, longitude)
         self.layer.add_marker(marker)
         marker.connect('button-press-event', self.on_marker, marker)
