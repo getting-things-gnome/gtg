@@ -555,8 +555,6 @@ class geolocalizedTasks:
             vbox_map = builder.get_object("vbox_map")
             vbox_map.pack_start(map, True, True, 1)
 
-            champlain_view.connect('button-press-event', self.on_context_menu, vbox_map)
-
             marker.connect('button-press-event', self.on_marker, marker)
 
             btn = builder.get_object("btn_zoom_in")
