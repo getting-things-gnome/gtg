@@ -50,6 +50,7 @@ class geolocalizedTasks:
         self.where.client.Start()
         self.marker_to_be_deleted = None
         self.delete = False
+        self.marker_last_location = None
 
         self.factory = Champlain.MapSourceFactory.dup_default()
         self.context = None
@@ -495,6 +496,9 @@ class geolocalizedTasks:
         return True
 
     def on_marker(self, widget, event, marker):
+        if marker is self.marker_last_location:
+            return False
+
         self.marker_to_be_deleted = marker
         self.delete = True
         return False
@@ -531,16 +535,21 @@ class geolocalizedTasks:
         btn = builder.get_object("btn_zoom_out")
         btn.connect('clicked', self.zoom_out, champlain_view)
 
+        last_location_data_path = os.path.join('plugins/geolocalized_tasks', "last_location")
+        if self.latitude is None and self.longitude is None:
+            [self.latitude, self.longitude] = load_pickled_file(last_location_data_path, [None, None])
+
         if self.latitude is not None and self.longitude is not None:
             champlain_view.center_on(self.latitude, self.longitude)
+            store_pickled_file(last_location_data_path, [self.latitude, self.longitude])
 
             #Set current user location
             task_name = plugin_api.get_selected().get_title()
             marker = Champlain.Label.new_with_text(task_name, "Serif 14", None, black)
             marker.set_location(self.latitude, self.longitude)
             layer.add_marker(marker)
-            self.locations.append(marker)
             marker.set_use_markup(True)
+            self.marker_last_location = marker
 
             vbox_map = builder.get_object("vbox_map")
             vbox_map.pack_start(map, True, True, 1)
