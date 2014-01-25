@@ -522,7 +522,7 @@ class geolocalizedTasks:
 
         vbox_map = builder.get_object("vbox_map")
         vbox_map.pack_start(map, True, True, 1)
-        champlain_view.connect('button-press-event', self.on_context_menu, vbox_map)
+        champlain_view.connect('button-release-event', self.on_context_menu, vbox_map)
 
         self.view = champlain_view
         champlain_view.add_layer(layer)
