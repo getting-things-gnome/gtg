@@ -449,18 +449,23 @@ class geolocalizedTasks:
         builder.add_from_file(ui_file_path)
         return builder
 
+    def update_location_name(self, reverse, res, marker):
+        place = reverse.resolve_finish(res)
+        marker.set_text(place.get_name())
+
     def on_im_here (self, widget, position):
         [latitude, longitude] = position
-        geocodeLocation = Geocode.Location.new(latitude, longitude, Geocode.LOCATION_ACCURACY_STREET)
-        reverse = Geocode.Reverse.new_for_location (geocodeLocation)
-        place = reverse.resolve()
 
         marker = Champlain.Label()
-        marker.set_text(place.get_name())
+        marker.set_text("...")
         marker.set_location(latitude, longitude)
         self.layer.add_marker(marker)
         marker.connect('button-press-event', self.on_marker, marker)
         self.locations.append(marker)
+
+        geocodeLocation = Geocode.Location.new(latitude, longitude, Geocode.LOCATION_ACCURACY_STREET)
+        reverse = Geocode.Reverse.new_for_location (geocodeLocation)
+        reverse.resolve_async(None, self.update_location_name, marker)
 
     def on_delete (self, widget, data):
         self.layer.remove_marker(self.marker_to_be_deleted)
