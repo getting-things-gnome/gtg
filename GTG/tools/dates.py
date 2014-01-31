@@ -32,7 +32,7 @@ from GTG import _, ngettext
 
 __all__ = 'Date',
 
-NOW, SOON, SOMEDAY, NODATE = range(4)
+NOW, SOON, SOMEDAY, NODATE = list(range(4))
 # strings representing fuzzy dates + no date
 ENGLISH_STRINGS = {
     NOW: 'now',
@@ -105,7 +105,7 @@ class Date(object):
             # Copy internal values from other Date object
             self._real_date = value._real_date
             self._fuzzy = value._fuzzy
-        elif isinstance(value, str) or isinstance(value, unicode):
+        elif isinstance(value, str) or isinstance(value, str):
             try:
                 da_ti = datetime.datetime.strptime(value, locale_format).date()
                 self._real_date = convert_datetime_to_date(da_ti)
@@ -153,21 +153,89 @@ class Date(object):
         else:
             return other - self.date()
 
-    def __cmp__(self, other):
-        """ Compare with other Date instance """
+    def __lt__(self, other):
+        """ Judge whehter less than other Date instance """
         if isinstance(other, Date):
-            comparison = cmp(self.date(), other.date())
-
             # Keep fuzzy dates below normal dates
-            if comparison == 0:
-                if self.is_fuzzy() and not other.is_fuzzy():
-                    return 1
-                elif not self.is_fuzzy() and other.is_fuzzy():
-                    return -1
-
-            return comparison
+            if self.date() == other.date():
+                if not self.is_fuzzy() and other.is_fuzzy():
+                    return True
+                else:
+                    return False
+            return self.date() < other.date()
         elif isinstance(other, datetime.date):
-            return cmp(self.date(), other)
+            return self.date() < other
+        else:
+            raise NotImplementedError
+
+    def __le__(self, other):
+        """ Judge whehter less than or equal to other Date instance """
+        if isinstance(other, Date):
+            # Keep fuzzy dates below normal dates
+            if self.date() == other.date():
+                if self.is_fuzzy() and not other.is_fuzzy():
+                    return False
+                else:
+                    return True
+            return self.date() <= other.date()
+        elif isinstance(other, datetime.date):
+            return self.date() <= other
+        else:
+            raise NotImplementedError
+
+    def __eq__(self, other):
+        """ Judge whehter equal to other Date instance """
+        if isinstance(other, Date):
+            # Handle fuzzy dates situations
+            if self.date() == other.date():
+                return self.is_fuzzy() == other.is_fuzzy()
+            else:
+                return False
+        elif isinstance(other, datetime.date):
+            return self.date() == other
+        else:
+            raise NotImplementedError
+
+    def __ne__(self, other):
+        """ Judge whehter not equal to other Date instance """
+        if isinstance(other, Date):
+            # Handle fuzzy dates situations
+            if self.date() == other.date():
+                return self.is_fuzzy() != other.is_fuzzy()
+            else:
+                return True
+        elif isinstance(other, datetime.date):
+            return self.date() != other
+        else:
+            raise NotImplementedError
+
+    def __gt__(self, other):
+        """ Judge whehter greater than other Date instance """
+        if isinstance(other, Date):
+            # Keep fuzzy dates below normal dates
+            if self.date() == other.date():
+                if self.is_fuzzy() and not other.is_fuzzy():
+                    return True
+                else:
+                    return False
+            return self.date() > other.date()
+        elif isinstance(other, datetime.date):
+            return self.date() > other
+        else:
+            raise NotImplementedError
+
+    def __ge__(self, other):
+        """ Judge whehter greater than or equal to other Date instance """
+        if isinstance(other, Date):
+            # Keep fuzzy dates below normal dates
+            if self.date() == other.date():
+                if not self.is_fuzzy() and other.is_fuzzy():
+                    return False
+                else:
+                    return True
+            return self.date() >= other.date()
+        elif isinstance(other, datetime.date):
+            return self.date() >= other
         else:
             raise NotImplementedError
 
@@ -187,7 +255,7 @@ class Date(object):
         else:
             return self._real_date.isoformat()
 
-    def __nonzero__(self):
+    def __bool__(self):
         return self._fuzzy != NODATE
 
     def __getattr__(self, name):

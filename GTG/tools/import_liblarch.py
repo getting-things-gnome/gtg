@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 # -*- coding:utf-8 -*-
 # -----------------------------------------------------------------------------
 # Getting Things GNOME! - A personal organizer for the GNOME desktop
@@ -33,7 +33,9 @@ def import_liblarch(use_local=False):
     If use_local, prioritize local (development) liblarch in ../liblarch"""
 
     def check_liblarch():
-        """ Import liblarch and find out which one is missing """
+        """
+        Import liblarch and find out which one is missing
+        """
         has_libraries = True
         missing = []
         try:
@@ -62,22 +64,22 @@ def import_liblarch(use_local=False):
         has_libraries, missing = check_liblarch()
 
     if not has_libraries:
-        print """GTG can't find %s. To install missing libraries,
+        print("""GTG can't find %s. To install missing libraries,
 run the following command in the current folder:
 
 %s
 
 More information about liblarch: https://live.gnome.org/liblarch/""" % (
-            missing, GIT_CMD)
+            missing, GIT_CMD))
         return False
 
     import liblarch
     try:
         is_liblarch_compatible = liblarch.is_compatible(REQUIRED_LIBLARCH_API)
     except:
-        print """I could not recognize your liblarch module. Make sure that
+        print("""I could not recognize your liblarch module. Make sure that
 you don't have stale copies of liblarch in your import path
-"""
+""")
         is_liblarch_compatible = False
     if not is_liblarch_compatible:
         try:
@@ -86,11 +88,11 @@ you don't have stale copies of liblarch in your import path
             # Liblarch 1.0 has lowercased API variable
             liblarch_version = liblarch.api
 
-        print """Your liblarch copy has its API at version %s
+        print("""Your liblarch copy has its API at version %s
 but your GTG copy need liblarch API version %s
 You may fix that by downloading the last version of liblarch with
 
-%s """ % (liblarch_version, REQUIRED_LIBLARCH_API, GIT_CMD)
+%s """ % (liblarch_version, REQUIRED_LIBLARCH_API, GIT_CMD))
         return False
 
     return True

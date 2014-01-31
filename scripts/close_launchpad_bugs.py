@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 # -*- coding: UTF-8 -*-
 # Copyright © 2009 Luca Falavigna <dktrkranz@debian.org>
 #
@@ -22,7 +22,7 @@ import os
 import re
 import sys
 from re import findall
-from urllib import urlopen
+from urllib.request import urlopen
 
 from launchpadlib.credentials import Credentials
 from launchpadlib.launchpad import Launchpad, EDGE_SERVICE_ROOT
@@ -35,7 +35,7 @@ def lp_login():
     creddir = os.path.expanduser("~/.cache/lp_credentials")
     if not os.path.isdir(creddir):
         os.makedirs(creddir)
-        os.chmod(creddir, 0700)
+        os.chmod(creddir, 0o700)
 
     credpath = os.path.join(creddir, 'close_launchpad_bugs.txt')
     try:
@@ -61,7 +61,7 @@ def process_bug(bug):
             task.lp_save()
 
 if len(sys.argv) != 2:
-    print 'Usage: %s <release>' % sys.argv[0]
+    print('Usage: %s <release>' % sys.argv[0])
     sys.exit(1)
 
 data = urlopen('https://launchpad.net/gtg/+milestone/%s' % sys.argv[1]).read()
@@ -69,13 +69,13 @@ bugs = findall('<a href="\S+/bugs/(\d+)">', data)
 launchpad = lp_login()
 
 if not 'gtg' in [e.name for e in launchpad.people[launchpad.me].super_teams]:
-    print 'You are not a GTG developer, exiting.'
+    print('You are not a GTG developer, exiting.')
     sys.exit(0)
 
 for bugno in bugs:
     try:
         process_bug(launchpad.bugs[bugno])
-        print "Bug #%s marked as Fix Released: " \
-            "https://bugs.edge.launchpad.net/gtg/+bug/%s" % (bugno, bugno)
+        print("Bug #%s marked as Fix Released: " \
+            "https://bugs.edge.launchpad.net/gtg/+bug/%s" % (bugno, bugno))
     except:
-        print "UNABLE TO PROCESS BUG #%s" % bugno
+        print("UNABLE TO PROCESS BUG #%s" % bugno)

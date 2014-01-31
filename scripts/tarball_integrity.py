@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 # -*- coding: UTF-8 -*-
 # Copyright © 2010 Luca Falavigna <dktrkranz@debian.org>
 #
@@ -55,6 +55,6 @@ for root, dirs, files in os.walk('.'):
 missing = list(set(dirlist) - set(tarlist))
 if len(missing) > 0:
     missing.sort()
-    print 'Missing files in tarball:'
-    print '\n'.join("\t%s" % f for f in missing)
+    print('Missing files in tarball:')
+    print('\n'.join("\t%s" % f for f in missing))
     sys.exit(1)

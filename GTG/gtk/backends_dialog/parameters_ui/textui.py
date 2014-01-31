@@ -17,10 +17,10 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-import gtk
+from gi.repository import Gtk
 
 
-class TextUI(gtk.HBox):
+class TextUI(Gtk.Box):
     '''A widget to display a simple textbox and a label to describe its content
     '''
 
@@ -31,7 +31,7 @@ class TextUI(gtk.HBox):
 
         @param req: a Requester
         @param backend: a backend object
-        @param width: the width of the gtk.Label object
+        @param width: the width of the Gtk.Label object
         '''
         super(TextUI, self).__init__()
         self.backend = backend
@@ -43,17 +43,17 @@ class TextUI(gtk.HBox):
     def _populate_gtk(self, width):
         '''Creates the gtk widgets
 
-        @param width: the width of the gtk.Label object
+        @param width: the width of the Gtk.Label object
         '''
-        label = gtk.Label("%s:" % self.description)
+        label = Gtk.Label(label="%s:" % self.description)
         label.set_line_wrap(True)
         label.set_alignment(xalign=0, yalign=0.5)
         label.set_size_request(width=width, height=-1)
-        self.pack_start(label, False)
-        align = gtk.Alignment(xalign=0, yalign=0.5, xscale=1)
+        self.pack_start(label, False, True, 0)
+        align = Gtk.Alignment.new(0, 0.5, 1, 0)
         align.set_padding(0, 0, 10, 0)
-        self.pack_start(align, True)
-        self.textbox = gtk.Entry()
+        self.pack_start(align, True, True, 0)
+        self.textbox = Gtk.Entry()
         backend_parameters = self.backend.get_parameters()[self.parameter_name]
         self.textbox.set_text(backend_parameters)
         self.textbox.connect('changed', self.on_text_modified)

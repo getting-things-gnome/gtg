@@ -1,24 +1,22 @@
 <?xml version="1.0"?>
 <interface>
-  <requires lib="gtk+" version="2.16"/>
-  <!-- interface-naming-policy toplevel-contextual -->
-  <object class="GtkAccelGroup" id="accelgroup1"/>
+  <!-- interface-requires gtk+ 3.0 -->
   <object class="GtkWindow" id="preferences_dialog">
     <property name="border_width">10</property>
     <property name="window_position">center-on-parent</property>
     <property name="type_hint">dialog</property>
     <signal name="delete_event" handler="on_preferences_dialog_delete_event"/>
     <child>
-      <object class="GtkVBox" id="vbox1">
+      <object class="GtkBox" id="vbox1">
         <property name="visible">True</property>
         <property name="orientation">vertical</property>
         <child>
-          <object class="GtkVBox" id="vbox2">
+          <object class="GtkBox" id="vbox2">
             <property name="visible">True</property>
             <property name="orientation">vertical</property>
             <property name="spacing">12</property>
             <child>
-              <object class="GtkHBox" id="hbox2">
+              <object class="GtkBox" id="box2">
                 <property name="visible">True</property>
                 <child>
                   <object class="GtkLabel" id="label2">
@@ -92,19 +90,6 @@
                 <property name="position">1</property>
               </packing>
             </child>
-            <!--<child>
-              <object class="GtkCheckButton" id="pref_chbox_show_menu_item">
-                <property name="label" translatable="yes">Add the "Plugins &gt; Add @untouched plugin" menu item</property>
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">False</property>
-                <property name="image_position">top</property>
-                <property name="draw_indicator">True</property>
-              </object>
-              <packing>
-                <property name="position">2</property>
-              </packing>
-            </child>-->
           </object>
           <packing>
             <property name="padding">21</property>
@@ -112,7 +97,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkHBox" id="hbox1">
+          <object class="GtkBox" id="box1">
             <property name="height_request">30</property>
             <property name="visible">True</property>
             <property name="spacing">50</property>

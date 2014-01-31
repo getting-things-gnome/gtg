@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-  <requires lib="gtk+" version="2.16"/>
-  <!-- interface-naming-policy project-wide -->
+  <!-- interface-requires gtk+ 3.0 -->
   <object class="GtkAdjustment" id="adjustment1">
     <property name="upper">100</property>
     <property name="step_increment">1</property>
@@ -11,7 +10,7 @@
   <object class="GtkWindow" id="backends_dialog">
     <property name="can_focus">False</property>
     <property name="window_position">mouse</property>
-    <signal name="delete-event" handler="on_BackendsDialog_delete_event" swapped="no"/>
+    <signal name="delete_event" handler="on_BackendsDialog_delete_event"/>
     <child>
       <object class="GtkAlignment" id="alignment1">
         <property name="visible">True</property>
@@ -21,19 +20,21 @@
         <property name="left_padding">10</property>
         <property name="right_padding">10</property>
         <child>
-          <object class="GtkVBox" id="vbox1">
+          <object class="GtkBox" id="vbox1">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="spacing">10</property>
+            <property name="orientation">vertical</property>
             <child>
-              <object class="GtkHBox" id="big_central_hbox">
+              <object class="GtkBox" id="big_central_box">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="spacing">10</property>
                 <child>
-                  <object class="GtkVBox" id="vbox2">
+                  <object class="GtkBox" id="vbox2">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="orientation">vertical</property>
                     <child>
                       <object class="GtkViewport" id="treeview_window">
                         <property name="height_request">400</property>
@@ -60,7 +61,7 @@
                         <property name="left_padding">10</property>
                         <property name="right_padding">10</property>
                         <child>
-                          <object class="GtkHButtonBox" id="hbuttonbox3">
+                          <object class="GtkButtonBox" id="hbuttonbox3">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="spacing">10</property>
@@ -145,7 +146,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkHButtonBox" id="hbuttonbox2">
+              <object class="GtkButtonBox" id="hbuttonbox2">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="layout_style">edge</property>

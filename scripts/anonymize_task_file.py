@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # Copyright © 2010 Marko Kevac <marko@kevac.org>
 #
@@ -24,8 +24,8 @@ from xdg.BaseDirectory import xdg_data_home
 def anonymize(filename, outputfile):
     try:
         dom = parse(filename)
-    except Exception, err:
-        print "error while parsing %s: %s" % (filename, err)
+    except Exception as err:
+        print("error while parsing %s: %s" % (filename, err))
         return
 
     tasks = dom.getElementsByTagName("task")
@@ -62,18 +62,18 @@ def anonymize(filename, outputfile):
 
     try:
         fp = open(outputfile, "w")
-        fp.write(dom.toxml().encode("utf8"))
-    except Exception, err:
-        print "error while saving output file: %s" % err
+        fp.write(dom.toxml())
+    except Exception as err:
+        print("error while saving output file: %s" % err)
 
 
 def usage():
-    print "Usage: %s [taskfile] [outputfile]" % sys.argv[0]
-    print
-    print "Removes private data from specified taskfile, or your"
-    print "default gtg tasks file if unspecified.  Writes output"
-    print "to /tmp/gtg-tasks.xml by default, or to specified"
-    print "outputfile if provided."
+    print("Usage: %s [taskfile] [outputfile]" % sys.argv[0])
+    print()
+    print("Removes private data from specified taskfile, or your")
+    print("default gtg tasks file if unspecified.  Writes output")
+    print("to /tmp/gtg-tasks.xml by default, or to specified")
+    print("outputfile if provided.")
     sys.exit(1)
 
 
@@ -90,9 +90,9 @@ def main():
             xmlproject = dom.getElementsByTagName("backend")[0]
             xmlfile = str(xmlproject.getAttribute("path"))
 
-            print "Reading tasks from %s" % (xmlfile)
+            print("Reading tasks from %s" % (xmlfile))
         except:
-            print
+            print()
             usage()
 
     if len(sys.argv) > 2:
@@ -100,7 +100,7 @@ def main():
     else:
         # Use a reasonable default, and write out where it's sent
         outputfile = "/tmp/gtg-tasks.xml"
-        print "Saving anonymized tasks to %s" % (outputfile)
+        print("Saving anonymized tasks to %s" % (outputfile))
 
     anonymize(xmlfile, outputfile)
 

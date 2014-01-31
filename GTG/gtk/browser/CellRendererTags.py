@@ -20,23 +20,19 @@
 #=== IMPORT ===================================================================
 
 # system imports
-import pygtk
-pygtk.require('2.0')
-import gobject
-import glib
-import gtk
+from gi.repository import GObject, GLib, Gtk, Gdk
 import cairo
 from GTG.tools.logger import Log
 
 #=== MAIN CLASS ===============================================================
 
 
-class CellRendererTags(gtk.GenericCellRenderer):
+class CellRendererTags(Gtk.CellRenderer):
     __gproperties__ = {
-        'tag_list': (gobject.TYPE_PYOBJECT,
-                     "Tag list", "A list of tags", gobject.PARAM_READWRITE),
-        'tag': (gobject.TYPE_PYOBJECT, "Tag",
-                "Tag", gobject.PARAM_READWRITE),
+        'tag_list': (GObject.TYPE_PYOBJECT,
+                     "Tag list", "A list of tags", GObject.PARAM_READWRITE),
+        'tag': (GObject.TYPE_PYOBJECT, "Tag",
+                "Tag", GObject.PARAM_READWRITE),
     }
 
     # Private methods
@@ -81,7 +77,7 @@ class CellRendererTags(gtk.GenericCellRenderer):
 
     # Class methods
     def __init__(self):
-        self.__gobject_init__()
+        Gtk.CellRenderer.__init__(self)
         self.tag_list = None
         self.tag = None
         self.xpad = 1
@@ -100,8 +96,7 @@ class CellRendererTags(gtk.GenericCellRenderer):
         else:
             return getattr(self, pspec.name)
 
-    def on_render(self, window, widget, background_area, cell_area,
-                  expose_area, flags):
+    def do_render(self, cr, widget, background_area, cell_area, flags):
 
         vw_tags = self.__count_viewable_tags()
         count = 0
@@ -115,8 +110,9 @@ class CellRendererTags(gtk.GenericCellRenderer):
             return
 
         # Drawing context
-        cr = window.cairo_create()
-        gdkcontext = gtk.gdk.CairoContext(cr)
+        #cr         = window.cairo_create()
+        #gdkcontext = Gdk.CairoContext(cr)
+        gdkcontext = cr
         gdkcontext.set_antialias(cairo.ANTIALIAS_NONE)
 
         # Coordinates of the origin point
@@ -138,12 +134,13 @@ class CellRendererTags(gtk.GenericCellRenderer):
 
             if my_tag_icon:
                 try:
-                    pixbuf = gtk.icon_theme_get_default().load_icon(
+                    pixbuf = Gtk.IconTheme.get_default().load_icon(
                         my_tag_icon, 16, 0)
-                    gdkcontext.set_source_pixbuf(pixbuf, rect_x, rect_y)
+                    Gdk.cairo_set_source_pixbuf(gdkcontext, pixbuf,
+                                                rect_x, rect_y)
                     gdkcontext.paint()
                     count = count + 1
-                except glib.GError:
+                except GLib.GError:
                     # In some rare cases an icon could not be found
                     # (e.g. wrong set icon path, missing icon)
                     # Raising an exception breaks UI and signal catcher badly
@@ -152,14 +149,14 @@ class CellRendererTags(gtk.GenericCellRenderer):
             elif my_tag_color:
 
                 # Draw rounded rectangle
-                my_color = gtk.gdk.color_parse(my_tag_color)
-                gdkcontext.set_source_color(my_color)
+                my_color = Gdk.color_parse(my_tag_color)
+                Gdk.cairo_set_source_color(gdkcontext, my_color)
                 self.__roundedrec(gdkcontext, rect_x, rect_y, 16, 16, 8)
                 gdkcontext.fill()
                 count = count + 1
 
                 # Outer line
-                gdkcontext.set_source_rgba(0, 0, 0, 0.20)
+                Gdk.cairo_set_source_rgba(gdkcontext, Gdk.RGBA(0, 0, 0, 0.20))
                 gdkcontext.set_line_width(1.0)
                 self.__roundedrec(gdkcontext, rect_x, rect_y, 16, 16, 8)
                 gdkcontext.stroke()
@@ -171,18 +168,18 @@ class CellRendererTags(gtk.GenericCellRenderer):
 
             if not my_tag_icon and not my_tag_color:
                 # Draw rounded rectangle
-                gdkcontext.set_source_rgba(0.95, 0.95, 0.95, 1)
+                Gdk.cairo_set_source_rgba(gdkcontext,
+                                          Gdk.RGBA(0.95, 0.95, 0.95, 1))
                 self.__roundedrec(gdkcontext, rect_x, rect_y, 16, 16, 8)
                 gdkcontext.fill()
 
                 # Outer line
-                gdkcontext.set_source_rgba(0, 0, 0, 0.20)
+                Gdk.cairo_set_source_rgba(gdkcontext, Gdk.RGBA(0, 0, 0, 0.20))
                 gdkcontext.set_line_width(1.0)
                 self.__roundedrec(gdkcontext, rect_x, rect_y, 16, 16, 8)
                 gdkcontext.stroke()
 
-    def on_get_size(self, widget, cell_area=None):
-
+    def do_get_size(self, widget, cell_area=None):
         count = self.__count_viewable_tags()
 
         if count != 0:
@@ -192,4 +189,4 @@ class CellRendererTags(gtk.GenericCellRenderer):
         else:
             return (self.xpad, self.ypad, self.xpad * 2, self.ypad * 2)
 
-gobject.type_register(CellRendererTags)
+GObject.type_register(CellRendererTags)

@@ -17,16 +17,17 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-import gtk
+from gi.repository import Gtk
+from gi.repository import GdkPixbuf
 
 from GTG.gtk.colors import get_colored_tags_markup
 from GTG.backends.genericbackend import GenericBackend
 from GTG.backends.backendsignals import BackendSignals
 
 
-class BackendsTree(gtk.TreeView):
+class BackendsTree(Gtk.TreeView):
     '''
-    gtk.TreeView that shows the currently loaded backends.
+    Gtk.TreeView that shows the currently loaded backends.
     '''
 
     COLUMN_BACKEND_ID = 0  # never shown, used for internal lookup.
@@ -50,7 +51,7 @@ class BackendsTree(gtk.TreeView):
         self.refresh()
 
     def refresh(self):
-        '''refreshes the gtk.Liststore'''
+        '''refreshes the Gtk.Liststore'''
         self.backendid_to_iter = {}
         self.liststore.clear()
 
@@ -110,7 +111,6 @@ class BackendsTree(gtk.TreeView):
         @param backend_id: the id of the backend to add
         '''
         if backend_id in self.backendid_to_iter:
-            style = self.get_style()
             b_iter = self.backendid_to_iter[backend_id]
             b_path = self.liststore.get_path(b_iter)
             backend = self.req.get_backend(backend_id)
@@ -118,7 +118,12 @@ class BackendsTree(gtk.TreeView):
             if backend.is_enabled():
                 text = backend_name
             else:
-                color = str(style.text[gtk.STATE_INSENSITIVE])
+                #FIXME This snippet is on more than 2 places!!!
+                #FIXME create a function which takes a widget and
+                #flag and returns color as #RRGGBB
+                style_context = self.get_style_context()
+                color = style_context.get_color(Gtk.StateFlags.INSENSITIVE)
+                color = color.to_color().to_string()
                 text = "<span color='%s'>%s</span>" % \
                     (color, backend_name)
             self.liststore[b_path][self.COLUMN_TEXT] = text
@@ -153,7 +158,7 @@ class BackendsTree(gtk.TreeView):
 
     def _init_liststore(self):
         '''Creates the liststore'''
-        self.liststore = gtk.ListStore(object, gtk.gdk.Pixbuf, str, str)
+        self.liststore = Gtk.ListStore(object, GdkPixbuf.Pixbuf, str, str)
         self.set_model(self.liststore)
 
     def _init_renderers(self):
@@ -161,29 +166,29 @@ class BackendsTree(gtk.TreeView):
         # We hide the columns headers
         self.set_headers_visible(False)
         # For the backend icon
-        pixbuf_cell = gtk.CellRendererPixbuf()
-        tvcolumn_pixbuf = gtk.TreeViewColumn('Icon', pixbuf_cell)
+        pixbuf_cell = Gtk.CellRendererPixbuf()
+        tvcolumn_pixbuf = Gtk.TreeViewColumn('Icon', pixbuf_cell)
         tvcolumn_pixbuf.add_attribute(pixbuf_cell, 'pixbuf', self.COLUMN_ICON)
         self.append_column(tvcolumn_pixbuf)
         # For the backend name
-        text_cell = gtk.CellRendererText()
-        tvcolumn_text = gtk.TreeViewColumn('Name', text_cell)
+        text_cell = Gtk.CellRendererText()
+        tvcolumn_text = Gtk.TreeViewColumn('Name', text_cell)
         tvcolumn_text.add_attribute(text_cell, 'markup', self.COLUMN_TEXT)
         self.append_column(tvcolumn_text)
         text_cell.connect('edited', self.cell_edited_callback)
         text_cell.set_property('editable', True)
         # For the backend tags
-        tags_cell = gtk.CellRendererText()
-        tvcolumn_tags = gtk.TreeViewColumn('Tags', tags_cell)
+        tags_cell = Gtk.CellRendererText()
+        tvcolumn_tags = Gtk.TreeViewColumn('Tags', tags_cell)
         tvcolumn_tags.add_attribute(tags_cell, 'markup', self.COLUMN_TAGS)
         self.append_column(tvcolumn_tags)
 
     def cell_edited_callback(self, text_cell, path, new_text):
         '''If a backend name is changed, it saves the changes in the Backend
 
-        @param text_cell: not used. The gtk.CellRendererText that emitted the
+        @param text_cell: not used. The Gtk.CellRendererText that emitted the
                           signal. Only here because it's passed by the signal
-        @param path: the gtk.TreePath of the edited cell
+        @param path: the Gtk.TreePath of the edited cell
         @param new_text: the new name of the backend
         '''
         # we strip everything not permitted in backend names
@@ -218,7 +223,7 @@ class BackendsTree(gtk.TreeView):
         '''
         Helper function to get the selected path
 
-        @return gtk.TreePath : returns exactly one path for the selected object
+        @return Gtk.TreePath : returns exactly one path for the selected object
                                or None
         '''
         selection = self.get_selection()

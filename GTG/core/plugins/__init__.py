@@ -21,15 +21,10 @@
 # This is the tool package. It contains some useful function and tool
 # that could be useful for any part of GTG.
 
-import os
-
 from GTG import _
 
 
 class GnomeConfig:
-    current_rep = os.path.dirname(os.path.abspath(__file__))
-    GLADE_FILE = os.path.join(current_rep, "pluginmanager.glade")
-
     CANLOAD = _("Everything necessary to run this plugin is available.")
     CANNOTLOAD = _("The plugin can not be loaded")
     miss1 = _("Some python modules are missing")

@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 # Copyright 2010 David D. Lowe
 # All rights reserved.
 #
@@ -23,9 +23,9 @@
 
 """GTK except hook for your applications.
 To use, simply import this module and call gtkcrashhandler.initialize().
-Import this module before calling gtk.main().
+Import this module before calling Gtk.main().
 
-If gtkcrashhandler cannot import gtk, pygtk, pango or gobject,
+If gtkcrashhandler cannot import Gtk, Pango or GObject,
 gtkcrashhandler will print a warning and use the default excepthook.
 
 If you're using multiple threads, use gtkcrashhandler_thread decorator."""
@@ -34,24 +34,22 @@ import sys
 import os
 import time
 import signal
+import traceback
+import threading
 from contextlib import contextmanager
 
 from GTG import info
 
 
 try:
-    import pygtk
-    pygtk.require("2.0")  # not tested on earlier versions
-    import gtk
-    import pango
-    import gobject
-    _gtk_initialized = True
+    from gi.repository import GObject, Gtk, Pango
 except Exception:
-    print >> sys.stderr, "gtkcrashhandler could not load GTK 2.0"
+    print("gtkcrashhandler could not load GTK 3.0", file=sys.stderr)
     _gtk_initialized = False
-import traceback
+else:
+    _gtk_initialized = True
+
 from gettext import gettext as _
-import threading
 
 APP_NAME = None
 MESSAGE = _("We're terribly sorry. Could you help us fix the problem by "
@@ -99,7 +97,7 @@ def _replacement_excepthook(type, value, tracebk, thread=None):
     if thread:
         if not isinstance(thread, threading._MainThread):
             tb = "Exception in thread %s:\n%s" % (thread.getName(), tb)
-    print >> sys.stderr, tb
+    print(tb, file=sys.stderr)
 
     # determine whether to add a "Report problem..." button
     add_apport_button = False
@@ -109,7 +107,7 @@ def _replacement_excepthook(type, value, tracebk, thread=None):
         try:
             from apport.fileutils import likely_packaged
             try:
-                filename = os.path.realpath(os.path.join(os.getcwdu(),
+                filename = os.path.realpath(os.path.join(os.getcwd(),
                                                          sys.argv[0]))
             except:
                 filename = os.path.realpath("/proc/%i/exe" % os.getpid())
@@ -176,17 +174,17 @@ def show_error_window(error_string, add_apport_button=False):
     if dialog is not None:
         return 1
 
-    dialog = gtk.Dialog(title)
+    dialog = Gtk.Dialog(title)
 
     # title Label
-    label = gtk.Label()
+    label = Gtk.Label()
     label.set_markup("<b>%s</b>" % _("It looks like an error has occurred."))
     label.set_alignment(0, 0.5)
-    dialog.get_content_area().pack_start(label, False)
+    dialog.get_content_area().pack_start(label, False, True, 0)
 
     # message Label
     global MESSAGE
-    text_label = gtk.Label()
+    text_label = Gtk.Label()
     text_label.set_markup(MESSAGE)
     text_label.set_alignment(0, 0.5)
     text_label.set_line_wrap(True)
@@ -197,36 +195,36 @@ def show_error_window(error_string, add_apport_button=False):
 
     text_label.connect("size-allocate", text_label_size_allocate)
     if not MESSAGE == "":
-        dialog.get_content_area().pack_start(text_label, False)
+        dialog.get_content_area().pack_start(text_label, False, True, 0)
 
     # TextView with error_string
-    buffer = gtk.TextBuffer()
+    buffer = Gtk.TextBuffer()
     buffer.set_text(error_string)
-    textview = gtk.TextView()
+    textview = Gtk.TextView()
     textview.set_buffer(buffer)
     textview.set_editable(False)
     try:
-        textview.modify_font(pango.FontDescription("monospace 8"))
+        textview.override_font(Pango.FontDescription("monospace 8"))
     except Exception:
-        print >> sys.stderr, "gtkcrashhandler: modify_font raised an exception"
+        print("gtkcrashhandler: override_font raised an exception", file=sys.stderr)
 
     # allow scrolling of textview
-    scrolled = gtk.ScrolledWindow()
-    scrolled.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+    scrolled = Gtk.ScrolledWindow()
+    scrolled.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
     scrolled.add_with_viewport(textview)
 
     # hide the textview in an Expander widget
-    expander = gtk.expander_new_with_mnemonic(_("_Details"))
+    expander = Gtk.expander_new_with_mnemonic(_("_Details"))
     expander.add(scrolled)
     expander.connect('activate', on_expanded)
-    dialog.get_content_area().pack_start(expander, True)
+    dialog.get_content_area().pack_start(expander, True, True, 0)
 
     # add buttons
     if add_apport_button:
         dialog.add_button(_("_Report this problem..."), 3)
     # If we're have multiple threads, or if we're in a GTK callback,
     # execution can continue normally in other threads, so add button
-    if gtk.main_level() > 0 or threading.activeCount() > 1:
+    if Gtk.main_level() > 0 or threading.activeCount() > 1:
         dialog.add_button(_("_Ignore the error"), 1)
     dialog.add_button(("_Close the program"), 2)
     dialog.set_default_response(2)
@@ -275,28 +273,28 @@ def gtkcrashhandler_thread(run):
     def gtkcrashhandler_wrapped_run(*args, **kwargs):
         try:
             run(*args, **kwargs)
-        except Exception, ee:
+        except Exception as ee:
             lock = threading.Lock()
             lock.acquire()
             tb = sys.exc_info()[2]
-            if gtk.main_level() > 0:
-                gobject.idle_add(
+            if Gtk.main_level() > 0:
+                GObject.idle_add(
                     lambda ee=ee, tb=tb, thread=threading.currentThread():
                     _replacement_excepthook(ee.__class__, ee, tb,
                                             thread=thread))
             else:
                 time.sleep(0.1)  # ugly hack, seems like threads that are
-                                # started before running gtk.main() cause
+                                # started before running Gtk.main() cause
                                 # this one to crash.
-                                # This delay allows gtk.main() to initialize
+                                # This delay allows Gtk.main() to initialize
                                 # properly.
-                                # My advice: run gtk.main() before starting
-                                # any threads or don't run gtk.main() at all
+                                # My advice: run Gtk.main() before starting
+                                # any threads or don't run Gtk.main() at all
                 _replacement_excepthook(ee.__class__, ee, tb,
                                         thread=threading.currentThread())
             lock.release()
 
-    # return wrapped run if gtkcrashhandler has been initialized
+    # return wrapped run if Gtkcrashhandler has been initialized
     global _gtk_initialized, _old_sys_excepthook
     if _gtk_initialized and _old_sys_excepthook:
         return gtkcrashhandler_wrapped_run
@@ -307,7 +305,7 @@ if __name__ == "__main__":
     # throw test exception
     initialize(app_name="gtkcrashhandler", message="Don't worry, though. This "
                "is just a test. To use the code properly, call "
-               "gtkcrashhandler.initialize() in your PyGTK app to "
+               "gtkcrashhandler.initialize() in your GTK app to "
                "automatically catch any Python exceptions like this.")
 
     class DoNotRunException(Exception):

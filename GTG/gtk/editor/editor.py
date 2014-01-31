@@ -25,8 +25,7 @@ The rest is the logic of the widget: date changing widgets, buttons, ...
 """
 import time
 
-import pango
-import gtk
+from gi.repository import Gtk, Gdk, Pango
 
 from GTG import _, ngettext
 from GTG.gtk.editor import GnomeConfig
@@ -38,7 +37,7 @@ from GTG.tools.dates import Date
 from GTG.gtk.editor.calendar import GTGCalendar
 
 
-class TaskEditor:
+class TaskEditor(object):
 
     def __init__(self,
                  requester,
@@ -59,8 +58,8 @@ class TaskEditor:
         self.config = taskconfig
         self.time = None
         self.clipboard = clipboard
-        self.builder = gtk.Builder()
-        self.builder.add_from_file(GnomeConfig.GLADE_FILE)
+        self.builder = Gtk.Builder()
+        self.builder.add_from_file(GnomeConfig.EDITOR_UI_FILE)
         self.donebutton = self.builder.get_object("mark_as_done_editor")
         self.dismissbutton = self.builder.get_object("dismiss_editor")
         self.deletebutton = self.builder.get_object("delete_editor")
@@ -75,25 +74,25 @@ class TaskEditor:
             "mark_as_done_clicked": self.change_status,
             "on_dismiss": self.dismiss,
             "delete_clicked": self.delete_task,
-            "on_duedate_pressed": (self.on_date_pressed,
-                                   GTGCalendar.DATE_KIND_DUE),
-            "on_startdate_pressed": (self.on_date_pressed,
-                                     GTGCalendar.DATE_KIND_START),
-            "on_closeddate_pressed": (self.on_date_pressed,
-                                      GTGCalendar.DATE_KIND_CLOSED),
+            "on_duedate_pressed": lambda w: self.on_date_pressed(
+                w, GTGCalendar.DATE_KIND_DUE),
+            "on_startdate_pressed": lambda w: self.on_date_pressed(
+                w, GTGCalendar.DATE_KIND_START),
+            "on_closeddate_pressed": lambda w: self.on_date_pressed(
+                w, GTGCalendar.DATE_KIND_CLOSED),
             "close_clicked": self.close,
-            "duedate_changed": (self.date_changed,
-                                GTGCalendar.DATE_KIND_DUE),
-            "duedate_focus_out": (self.date_focus_out,
-                                  GTGCalendar.DATE_KIND_DUE),
-            "startingdate_changed": (self.date_changed,
-                                     GTGCalendar.DATE_KIND_START),
-            "startdate_focus_out": (self.date_focus_out,
-                                    GTGCalendar.DATE_KIND_START),
-            "closeddate_changed": (self.date_changed,
-                                   GTGCalendar.DATE_KIND_CLOSED),
-            "closeddate_focus_out": (self.date_focus_out,
-                                     GTGCalendar.DATE_KIND_CLOSED),
+            "duedate_changed": lambda w: self.date_changed(
+                w, GTGCalendar.DATE_KIND_DUE),
+            "duedate_focus_out": lambda w, e: self.date_focus_out(
+                w, e, GTGCalendar.DATE_KIND_DUE),
+            "startingdate_changed": lambda w: self.date_changed(
+                w, GTGCalendar.DATE_KIND_START),
+            "startdate_focus_out": lambda w, e: self.date_focus_out(
+                w, e, GTGCalendar.DATE_KIND_START),
+            "closeddate_changed": lambda w: self.date_changed(
+                w, GTGCalendar.DATE_KIND_CLOSED),
+            "closeddate_focus_out": lambda w, e: self.date_focus_out(
+                w, e, GTGCalendar.DATE_KIND_CLOSED),
             "on_insert_subtask_clicked": self.insert_subtask,
             "on_inserttag_clicked": self.inserttag_clicked,
             "on_move": self.on_move,
@@ -115,7 +114,7 @@ class TaskEditor:
         scrolled.add(self.textview)
         conf_font_value = self.browser_config.get("font_name")
         if conf_font_value != "":
-            self.textview.modify_font(pango.FontDescription(conf_font_value))
+            self.textview.override_font(Pango.FontDescription(conf_font_value))
         # Voila! it's done
         self.calendar = GTGCalendar(self.builder)
         self.duedate_widget = self.builder.get_object("duedate_entry")
@@ -189,38 +188,38 @@ class TaskEditor:
     # Define accelerator-keys for this dialog
     # TODO: undo/redo
     def init_accelerators(self):
-        agr = gtk.AccelGroup()
+        agr = Gtk.AccelGroup()
         self.window.add_accel_group(agr)
 
         # Escape and Ctrl-W close the dialog. It's faster to call close
         # directly, rather than use the close button widget
-        key, modifier = gtk.accelerator_parse('Escape')
-        agr.connect_group(key, modifier, gtk.ACCEL_VISIBLE, self.close)
+        key, modifier = Gtk.accelerator_parse('Escape')
+        agr.connect(key, modifier, Gtk.AccelFlags.VISIBLE, self.close)
 
-        key, modifier = gtk.accelerator_parse('<Control>w')
-        agr.connect_group(key, modifier, gtk.ACCEL_VISIBLE, self.close)
+        key, modifier = Gtk.accelerator_parse('<Control>w')
+        agr.connect(key, modifier, Gtk.AccelFlags.VISIBLE, self.close)
 
         # Ctrl-N creates a new task
-        key, modifier = gtk.accelerator_parse('<Control>n')
-        agr.connect_group(key, modifier, gtk.ACCEL_VISIBLE, self.new_task)
+        key, modifier = Gtk.accelerator_parse('<Control>n')
+        agr.connect(key, modifier, Gtk.AccelFlags.VISIBLE, self.new_task)
 
         # Ctrl-Shift-N creates a new subtask
         insert_subtask = self.builder.get_object("insert_subtask")
-        key, mod = gtk.accelerator_parse("<Control><Shift>n")
+        key, mod = Gtk.accelerator_parse("<Control><Shift>n")
         insert_subtask.add_accelerator('clicked', agr, key, mod,
-                                       gtk.ACCEL_VISIBLE)
+                                       Gtk.AccelFlags.VISIBLE)
 
         # Ctrl-D marks task as done
         mark_as_done_editor = self.builder.get_object('mark_as_done_editor')
-        key, mod = gtk.accelerator_parse('<Control>d')
+        key, mod = Gtk.accelerator_parse('<Control>d')
         mark_as_done_editor.add_accelerator('clicked', agr, key, mod,
-                                            gtk.ACCEL_VISIBLE)
+                                            Gtk.AccelFlags.VISIBLE)
 
         # Ctrl-I marks task as dismissed
         dismiss_editor = self.builder.get_object('dismiss_editor')
-        key, mod = gtk.accelerator_parse('<Control>i')
+        key, mod = Gtk.accelerator_parse('<Control>i')
         dismiss_editor.add_accelerator('clicked', agr, key, mod,
-                                       gtk.ACCEL_VISIBLE)
+                                       Gtk.AccelFlags.VISIBLE)
 
     # Can be called at any time to reflect the status of the Task
     # Refresh should never interfere with the TaskView.
@@ -269,14 +268,14 @@ class TaskEditor:
         # Refreshing the status bar labels and date boxes
         if status in [Task.STA_DISMISSED, Task.STA_DONE]:
             self.builder.get_object("label2").hide()
-            self.builder.get_object("hbox1").hide()
+            self.builder.get_object("box1").hide()
             self.builder.get_object("label4").show()
-            self.builder.get_object("hbox4").show()
+            self.builder.get_object("box4").show()
         else:
             self.builder.get_object("label4").hide()
-            self.builder.get_object("hbox4").hide()
+            self.builder.get_object("box4").hide()
             self.builder.get_object("label2").show()
-            self.builder.get_object("hbox1").show()
+            self.builder.get_object("box1").show()
 
         # refreshing the start date field
         startdate = self.task.get_start_date()
@@ -339,21 +338,22 @@ class TaskEditor:
                 abs_result = abs(result)
                 txt = ngettext("Due yesterday!", "Was %(days)d days ago",
                                abs_result) % {'days': abs_result}
-        window_style = self.window.get_style()
-        color = str(window_style.text[gtk.STATE_INSENSITIVE])
+
+        style_context = self.window.get_style_context()
+        color = style_context.get_color(Gtk.StateFlags.INSENSITIVE).to_color()
         self.dayleft_label.set_markup(
-            "<span color='" + color + "'>" + txt + "</span>")
+            "<span color='%s'>%s</span>" % (color.to_string(), txt))
 
         # Refreshing the tag list in the insert tag button
         taglist = self.req.get_used_tags()
-        menu = gtk.Menu()
+        menu = Gtk.Menu()
         tag_count = 0
         for tagname in taglist:
             tag_object = self.req.get_tag(tagname)
             if not tag_object.is_special() and \
                     not self.task.has_tags(tag_list=[tagname]):
                 tag_count += 1
-                mi = gtk.MenuItem(label=tagname, use_underline=False)
+                mi = Gtk.MenuItem(label=tagname, use_underline=False)
                 mi.connect("activate", self.inserttag, tagname)
                 mi.show()
                 menu.append(mi)
@@ -375,25 +375,30 @@ class TaskEditor:
         if valid:
             # If the date is valid, we write with default color in the widget
             # "none" will set the default color.
-            widget.modify_text(gtk.STATE_NORMAL, None)
-            widget.modify_base(gtk.STATE_NORMAL, None)
+            widget.override_color(Gtk.StateType.NORMAL, None)
+            widget.override_background_color(Gtk.StateType.NORMAL, None)
         else:
-            # We should write in red in the entry if the date is not valid
-            widget.modify_text(gtk.STATE_NORMAL, gtk.gdk.color_parse("#F00"))
-            widget.modify_base(gtk.STATE_NORMAL, gtk.gdk.color_parse("#F88"))
+            #We should write in red in the entry if the date is not valid
+            text_color = Gdk.RGBA()
+            text_color.parse("#F00")
+            widget.override_color(Gtk.StateType.NORMAL, text_color)
 
-    def date_focus_out(self, widget, event, data):
+            bg_color = Gdk.RGBA()
+            bg_color.parse("#F88")
+            widget.override_background_color(Gtk.StateType.NORMAL, bg_color)
+
+    def date_focus_out(self, widget, event, date_kind):
         try:
             datetoset = Date.parse(widget.get_text())
         except ValueError:
             datetoset = None
 
         if datetoset is not None:
-            if data == "start":
+            if date_kind == GTGCalendar.DATE_KIND_START:
                 self.task.set_start_date(datetoset)
-            elif data == "due":
+            elif date_kind == GTGCalendar.DATE_KIND_DUE:
                 self.task.set_due_date(datetoset)
-            elif data == "closed":
+            elif date_kind == GTGCalendar.DATE_KIND_CLOSED:
                 self.task.set_closed_date(datetoset)
             self.refresh_editor()
 
@@ -411,7 +416,7 @@ class TaskEditor:
         self.calendar.set_date(date, date_kind)
         # we show the calendar at the right position
         rect = widget.get_allocation()
-        x, y = widget.window.get_origin()
+        result, x, y = widget.get_window().get_origin()
         self.calendar.show_at_position(x + rect.x + rect.width,
                                        y + rect.y)
 
@@ -583,3 +588,5 @@ class TaskEditor:
 
     def get_window(self):
         return self.window
+
+# -----------------------------------------------------------------------------

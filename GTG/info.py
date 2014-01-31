@@ -105,6 +105,9 @@ AUTHORS = ["Main developers:",
 ARTISTS = ["Kalle Persson <kalle@kallepersson.se>",
            "Bertrand Rousseau <bertrand.rousseau@gmail.com>"]
 ARTISTS.sort()
+
+# Please, keep the width at max 80 characters wide because
+# GtkAboutDialog in GTK3 can't wrap text :/
 TRANSLATORS = \
     """
     Afrikaans:Arthur Rilke, Walter Leibbrandt, Wesley Channon

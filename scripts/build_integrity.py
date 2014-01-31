@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 # -*- coding: UTF-8 -*-
 # Copyright © 2012 Izidor Matušov <izidor.matusov@gmail.com
 #
@@ -26,11 +26,11 @@ exclude_list = ['data/.*', 'po/.*', 'doc/.*', 'AUTHORS', 'CHANGELOG',
 
 # Build MANIFEST and also run build action
 if os.system("python setup.py sdist > /dev/null") != 0:
-    print "sdist operation failed"
+    print("sdist operation failed")
     sys.exit(1)
 
 if os.system("python setup.py build > /dev/null") != 0:
-    print "build operation failed"
+    print("build operation failed")
     sys.exit(1)
 
 manifest_files = []
@@ -64,6 +64,6 @@ for root, dirs, files in os.walk('build/'):
 missing_files = list(set(manifest_files) - set(build_files))
 if len(missing_files) > 0:
     missing_files.sort()
-    print "Missing build files:"
-    print "\n".join("\t%s" % f for f in missing_files)
+    print("Missing build files:")
+    print("\n".join("\t%s" % f for f in missing_files))
     sys.exit(1)

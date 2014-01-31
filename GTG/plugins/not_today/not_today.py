@@ -14,7 +14,7 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import gtk
+from gi.repository import Gtk
 from GTG.tools.dates import Date
 from GTG import _
 
@@ -52,7 +52,7 @@ class notToday:
     def _init_gtk(self):
         """ Initialize all the GTK widgets """
 
-        self.tb_button = gtk.ToolButton()
+        self.tb_button = Gtk.ToolButton()
         self.tb_button.set_sensitive(False)
         self.tb_button.set_icon_name("document-revert")
         self.tb_button.set_is_important(True)

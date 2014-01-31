@@ -17,9 +17,7 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-import gtk
-import gobject
-import pango
+from gi.repository import GObject, Gtk, Pango
 import xml.sax.saxutils as saxutils
 import locale
 
@@ -150,7 +148,9 @@ class TreeviewFactory():
         return sort
 
     def title_sorting(self, task1, task2, order):
-        return cmp(task1.get_title(), task2.get_title())
+        t1 = task1.get_title()
+        t2 = task2.get_title()
+        return (t1 > t2) - (t1 < t2)
 
     def __date_comp(self, task1, task2, para, order):
         '''This is a quite complex method to sort tasks by date,
@@ -174,15 +174,15 @@ class TreeviewFactory():
             else:
                 raise ValueError(
                     'invalid date comparison parameter: %s') % para
-            sort = cmp(t2, t1)
+            sort = (t2 > t1) - (t2 < t1)
         else:
             sort = 0
 
         # local function
         def reverse_if_descending(s):
-            """Make a cmp() result relative to the top instead of following
+            """Make a cmpare result relative to the top instead of following
                user-specified sort direction"""
-            if order == gtk.SORT_ASCENDING:
+            if order == Gtk.SortType.ASCENDING:
                 return s
             else:
                 return -1 * s
@@ -193,14 +193,16 @@ class TreeviewFactory():
             t1_tags.sort()
             t2_tags = task2.get_tags_name()
             t2_tags.sort()
-            sort = reverse_if_descending(cmp(t1_tags, t2_tags))
+            cmp_tags = (t1_tags > t2_tags) - (t1_tags < t2_tags)
+            sort = reverse_if_descending(cmp_tags)
 
         if sort == 0:  # Break ties by sorting by title
             t1_title = task1.get_title()
             t2_title = task2.get_title()
             t1_title = locale.strxfrm(t1_title)
             t2_title = locale.strxfrm(t2_title)
-            sort = reverse_if_descending(cmp(t1_title, t2_title))
+            cmp_title = (t1_title > t2_title) - (t1_title < t2_title)
+            sort = reverse_if_descending(cmp_title)
 
         return sort
 
@@ -234,7 +236,7 @@ class TreeviewFactory():
         t1_name = locale.strxfrm(t1.get_name())
         t2_name = locale.strxfrm(t2.get_name())
         if not t1_sp and not t2_sp:
-            return cmp(t1_name, t2_name)
+            return (t1_name > t2_name) - (t1_name < t2_name)
         elif not t1_sp and t2_sp:
             return 1
         elif t1_sp and not t2_sp:
@@ -242,7 +244,7 @@ class TreeviewFactory():
         else:
             t1_order = t1.get_attribute("order")
             t2_order = t2.get_attribute("order")
-            return cmp(t1_order, t2_order)
+            return (t1_order > t2_order) - (t1_order < t2_order)
 
     def ontag_task_dnd(self, source, target):
         task = self.req.get_task(source)
@@ -262,7 +264,7 @@ class TreeviewFactory():
         # Tag id
         col_name = 'tag_id'
         col = {}
-        col['renderer'] = ['markup', gtk.CellRendererText()]
+        col['renderer'] = ['markup', Gtk.CellRendererText()]
         col['value'] = [str, lambda node: node.get_id()]
         col['visible'] = False
         col['order'] = 0
@@ -276,7 +278,7 @@ class TreeviewFactory():
         render_tags.set_property('ypad', 3)
         col['title'] = _("Tags")
         col['renderer'] = ['tag', render_tags]
-        col['value'] = [gobject.TYPE_PYOBJECT, lambda node: node]
+        col['value'] = [GObject.TYPE_PYOBJECT, lambda node: node]
         col['expandable'] = False
         col['resizable'] = False
         col['order'] = 1
@@ -285,7 +287,7 @@ class TreeviewFactory():
         # Tag names
         col_name = 'tagname'
         col = {}
-        render_text = gtk.CellRendererText()
+        render_text = Gtk.CellRendererText()
         render_text.set_property('ypad', 3)
         col['renderer'] = ['markup', render_text]
         col['value'] = [str, self.tag_name]
@@ -297,7 +299,7 @@ class TreeviewFactory():
         # Tag count
         col_name = 'tagcount'
         col = {}
-        render_text = gtk.CellRendererText()
+        render_text = Gtk.CellRendererText()
         render_text.set_property('xpad', 3)
         render_text.set_property('ypad', 3)
         render_text.set_property('xalign', 1.0)
@@ -369,7 +371,7 @@ class TreeviewFactory():
         # invisible 'task_id' column
         col_name = 'task_id'
         col = {}
-        col['renderer'] = ['markup', gtk.CellRendererText()]
+        col['renderer'] = ['markup', Gtk.CellRendererText()]
         col['value'] = [str, lambda node: node.get_id()]
         col['visible'] = False
         col['order'] = 0
@@ -385,8 +387,8 @@ class TreeviewFactory():
         # invisible 'title' column
         col_name = 'title'
         col = {}
-        render_text = gtk.CellRendererText()
-        render_text.set_property("ellipsize", pango.ELLIPSIZE_END)
+        render_text = Gtk.CellRendererText()
+        render_text.set_property("ellipsize", Pango.EllipsizeMode.END)
         col['renderer'] = ['markup', render_text]
         col['value'] = [str, self.task_title_column]
         col['visible'] = False
@@ -400,7 +402,7 @@ class TreeviewFactory():
         render_tags = CellRendererTags()
         render_tags.set_property('xalign', 0.0)
         col['renderer'] = ['tag_list', render_tags]
-        col['value'] = [gobject.TYPE_PYOBJECT, self.task_tags_column]
+        col['value'] = [GObject.TYPE_PYOBJECT, self.task_tags_column]
         col['expandable'] = False
         col['resizable'] = False
         col['order'] = 1
@@ -410,8 +412,8 @@ class TreeviewFactory():
         col_name = 'label'
         col = {}
         col['title'] = _("Title")
-        render_text = gtk.CellRendererText()
-        render_text.set_property("ellipsize", pango.ELLIPSIZE_END)
+        render_text = Gtk.CellRendererText()
+        render_text.set_property("ellipsize", Pango.EllipsizeMode.END)
         col['renderer'] = ['markup', render_text]
         col['value'] = [str, self.task_label_column]
         col['expandable'] = True
@@ -434,8 +436,10 @@ class TreeviewFactory():
         treeview.set_rules_hint(False)
         treeview.set_multiple_selection(True)
         # Updating the unactive color (same for everyone)
-        self.unactive_color = \
-            treeview.style.text[gtk.STATE_INSENSITIVE].to_string()
+        color = treeview.get_style_context().get_color(
+            Gtk.StateFlags.INSENSITIVE)
+        # Convert color into #RRRGGGBBB
+        self.unactive_color = color.to_color().to_string()
         return treeview
 
     def build_tag_treeview(self, tree, desc):
@@ -448,8 +452,11 @@ class TreeviewFactory():
         treeview.set_dnd_name('gtg/tag-iter-str')
         treeview.set_dnd_external('gtg/task-iter-str', self.ontag_task_dnd)
         # Updating the unactive color (same for everyone)
-        self.unactive_color = \
-            treeview.style.text[gtk.STATE_INSENSITIVE].to_string()
+        color = treeview.get_style_context().get_color(
+            Gtk.StateFlags.INSENSITIVE)
+        # Convert color into #RRRGGGBBB
+        self.unactive_color = color.to_color().to_string()
+
         treeview.set_sort_column('tag_id')
         self.tags_view = treeview
         return treeview

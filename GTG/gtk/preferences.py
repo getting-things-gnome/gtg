@@ -21,14 +21,14 @@
 
 import os
 import shutil
-import gtk
-import GTG.tools.shortcut as shortcut
 
+from gi.repository import Gtk
 from xdg.BaseDirectory import xdg_config_home
+
+import GTG.tools.shortcut as shortcut
 from GTG import _
 from GTG import info
 from GTG.gtk import ViewConfig
-
 
 AUTOSTART_DIRECTORY = os.path.join(xdg_config_home, "autostart")
 AUTOSTART_FILE = "gtg.desktop"
@@ -79,8 +79,8 @@ class PreferencesDialog:
     def __init__(self, req):
         self.req = req
         self.config = self.req.get_config('browser')
-        builder = gtk.Builder()
-        builder.add_from_file(ViewConfig.PREFERENCES_GLADE_FILE)
+        builder = Gtk.Builder()
+        builder.add_from_file(ViewConfig.PREFERENCES_UI_FILE)
 
         self.dialog = builder.get_object("PreferencesDialog")
         self.dialog.set_title(_("Preferences - %s" % info.NAME))
@@ -95,8 +95,9 @@ class PreferencesDialog:
         self.fontbutton = builder.get_object("fontbutton")
         editor_font = self.config.get("font_name")
         if editor_font == "":
-            style = self.dialog.get_style()
-            editor_font = str(style.font_desc)
+            font = self.dialog.get_style_context().get_font(
+                Gtk.StateFlags.NORMAL)
+            editor_font = font.to_string()
         self.fontbutton.set_font_name(editor_font)
 
         builder.connect_signals({
@@ -189,17 +190,17 @@ class ShortcutWidget:
         self.new_task_default_binding = "<Primary>F12"
         self.gsettings_install_label_shown = False
 
-        self.liststore = gtk.ListStore(str, str)
+        self.liststore = Gtk.ListStore(str, str)
         self.liststore.append(["", ""])
-        treeview = gtk.TreeView(self.liststore)
-        column_accel = gtk.TreeViewColumn()
+        treeview = Gtk.TreeView(self.liststore)
+        column_accel = Gtk.TreeViewColumn()
         treeview.append_column(column_accel)
         treeview.set_headers_visible(False)
 
-        cell = gtk.CellRendererAccel()
+        cell = Gtk.CellRendererAccel()
         cell.set_alignment(0.0, 1.0)
         cell.set_fixed_size(-1, 18)
-        cell.set_property("accel-mode", gtk.CELL_RENDERER_ACCEL_MODE_OTHER)
+        cell.set_property("accel-mode", Gtk.CellRendererAccelMode.OTHER)
         cell.connect("accel-edited", self._cellAccelEdit, self.liststore)
         cell.connect("accel-cleared", self._accel_cleared, self.liststore)
         self.cell = cell
@@ -237,8 +238,8 @@ class ShortcutWidget:
         else:
             # There exists a shortcut
             self.button.set_active(True)
-        (accel_key, accel_mods) = gtk.accelerator_parse(self.new_task_binding)
-        self.show_input = gtk.accelerator_get_label(accel_key, accel_mods)
+        (accel_key, accel_mods) = Gtk.accelerator_parse(self.new_task_binding)
+        self.show_input = Gtk.accelerator_get_label(accel_key, accel_mods)
         self.liststore.set_value(iter1, 1, self.show_input)
 
     def on_shortcut_toggled(self, widget):
@@ -254,8 +255,8 @@ class ShortcutWidget:
 
     def _cellAccelEdit(self, cell, path, accel_key, accel_mods, code, model):
         """ Accelerator is modified """
-        self.show_input = gtk.accelerator_get_label(accel_key, accel_mods)
-        self.new_task_binding = gtk.accelerator_name(accel_key, accel_mods)
+        self.show_input = Gtk.accelerator_get_label(accel_key, accel_mods)
+        self.new_task_binding = Gtk.accelerator_name(accel_key, accel_mods)
         if shortcut.check_invalidity(self.new_task_binding, accel_key,
                                      accel_mods):
             self._show_warning(self.show_input)
@@ -273,7 +274,7 @@ class ShortcutWidget:
 
     def _show_gsettings_install_label(self):
         vbox = self.builder.get_object("prefs-vbox7")
-        label = gtk.Label()
+        label = Gtk.Label()
         label.set_markup(_("<small>Please install <i><b>gsettings</b></i> "
                            "to enable New task shortcut</small>"))
         vbox.add(label)
@@ -281,10 +282,13 @@ class ShortcutWidget:
     def _show_warning(self, input_str):
         """ Show warning when user enters inappropriate accelerator """
         show = _("The shortcut \"%s\" cannot be used because "
-               "it will become impossible to type using this key.\n"
-               "Please try with a key such as "
-               "Control, Alt or Shift at the same time.") % input_str
-        dialog = gtk.MessageDialog(self.dialog, gtk.DIALOG_DESTROY_WITH_PARENT,
-                                   gtk.MESSAGE_WARNING, gtk.BUTTONS_OK, show)
+                 "it will become impossible to type using this key.\n"
+                 "Please try with a key such as "
+                 "Control, Alt or Shift at the same time.") % input_str
+        dialog = Gtk.MessageDialog(self.dialog,
+                                   Gtk.DialogFlags.DESTROY_WITH_PARENT,
+                                   Gtk.MessageType.WARNING,
+                                   Gtk.ButtonsType.OK,
+                                   show)
         dialog.run()
         dialog.hide()
