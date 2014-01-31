@@ -24,7 +24,7 @@ built for them: it should play along the lines of the separation between GTG
 server and client
 '''
 
-import gtk
+from gi.repository import Gtk
 import functools
 
 from GTG import _
@@ -37,9 +37,10 @@ from GTG.gtk.backends_dialog.parameters_ui.checkboxui import CheckBoxUI
 from GTG.gtk.backends_dialog.parameters_ui.pathui import PathUI
 
 
-class ParametersUI(gtk.VBox):
+class ParametersUI(Gtk.Box):
     '''
-    Given a bakcend, this gtk.VBox populates itself with all the necessary
+    Given a bakcend, this vertical Gtk.Box populates itself with all the
+    necessary
     widgets to view and edit a backend configuration
     '''
 
@@ -50,7 +51,8 @@ class ParametersUI(gtk.VBox):
 
         @param requester: a GTG.core.requester.Requester object
         '''
-        super(ParametersUI, self).__init__(False)
+        super(ParametersUI, self).__init__(
+            False, orientation=Gtk.Orientation.VERTICAL)
         self.req = requester
         self.set_spacing(10)
 
@@ -98,7 +100,7 @@ class ParametersUI(gtk.VBox):
             })),
             ("tag-with-project-name", self.UI_generator(CheckBoxUI, {
                 "text": _("Tag your GTG tasks with the project "
-                     "targeted by the bug"),
+                          "targeted by the bug"),
                 "parameter": "tag-with-project-name",
             })),
         )
@@ -127,9 +129,9 @@ class ParametersUI(gtk.VBox):
         @param backend: the backend that is being configured
         '''
         # remove the old parameters UIs
-        def _remove_child(self, child):
+        def _remove_child(self, child, data=None):
             self.remove(child)
-        self.foreach(functools.partial(_remove_child, self))
+        self.foreach(functools.partial(_remove_child, self), None)
         # add new widgets
         backend_parameters = backend.get_parameters()
         if backend_parameters[GenericBackend.KEY_DEFAULT_BACKEND]:
@@ -137,7 +139,8 @@ class ParametersUI(gtk.VBox):
             return
         for parameter_name, widget in self.parameter_widgets:
             if parameter_name in backend_parameters:
-                self.pack_start(widget(backend), True)
+                #FIXME I am not 100% about this change
+                self.pack_start(widget(backend), True, True, 0)
         self.show_all()
 
     def commit_changes(self):
@@ -146,6 +149,6 @@ class ParametersUI(gtk.VBox):
         modified them)
         '''
 
-        def _commit_changes(child):
+        def _commit_changes(child, data=None):
             child.commit_changes()
-        self.foreach(_commit_changes)
+        self.foreach(_commit_changes, None)

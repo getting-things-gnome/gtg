@@ -41,6 +41,7 @@ from GTG.tools.dates import Date
 from GTG.core.task import Task
 from GTG.tools.interruptible import interruptible
 from GTG.tools.logger import Log
+from functools import reduce
 
 
 class Backend(PeriodicImportBackend):
@@ -140,7 +141,7 @@ class Backend(PeriodicImportBackend):
         # set
         stored_rtm_task_ids = self.sync_engine.get_all_remote()
         current_rtm_task_ids = [tid for tid in
-                                self.rtm_proxy.get_rtm_tasks_dict().iterkeys()]
+                                self.rtm_proxy.get_rtm_tasks_dict().keys()]
 
         if self._this_is_the_first_loop:
             self._on_successful_authentication()
@@ -424,7 +425,7 @@ class Backend(PeriodicImportBackend):
         # tags to add
         for tag in tags.difference(gtg_tags_lower):
             gtg_all_tags = self.datastore.get_all_tags()
-            matching_tags = filter(lambda t: t.lower() == tag, gtg_all_tags)
+            matching_tags = [t for t in gtg_all_tags if t.lower() == tag]
             if len(matching_tags) != 0:
                 tag = matching_tags[0]
             task.add_tag(tag)
@@ -471,7 +472,7 @@ class Backend(PeriodicImportBackend):
         three times before giving up.
         '''
         MAX_ATTEMPTS = 3
-        for i in xrange(MAX_ATTEMPTS):
+        for i in range(MAX_ATTEMPTS):
             try:
                 return fun(*args)
             except:
@@ -589,7 +590,7 @@ class RTMProxy(object):
             self.rtm = createRTM(self.PUBLIC_KEY, self.PRIVATE_KEY, self.token)
             self.timeline = self.rtm.timelines.create().timeline
             return True
-        except (RTMError, RTMAPIError), e:
+        except (RTMError, RTMAPIError) as e:
             Log.error("RTM ERROR" + str(e))
         return False
 
@@ -890,8 +891,7 @@ class RTMTask(object):
             return ""
         else:
             note_list = self.__getattr_the_rtm_way(notes, 'note')
-            return "".join(map(lambda note: "%s\n" % getattr(note, '$t'),
-                               note_list))
+            return "".join(["%s\n" % getattr(note, '$t') for note in note_list])
 
     def set_text(self, text, transaction_ids=[]):
         '''

@@ -7,6 +7,7 @@
     * Fix for bug #1265357: Clicking "start task in hamster" crashes gtg, by Parin Porecha
     * Fix for bug #1265979: Error when opening Preferences dialog, by Parin Porecha
     * Added Appdata file
+    * Merged the python3 and gtk3 port with GTG trunk
 
 2013-11-24 Getting Things GNOME! 0.3.1
     * Fix for bug #1024473: Have 'Show Main Window' in notification area, by Antonio Roquentin

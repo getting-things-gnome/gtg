@@ -17,12 +17,13 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-import gtk
+from gi.repository import Gtk
 
 from GTG.backends.genericbackend import GenericBackend
+from functools import reduce
 
 
-class ImportTagsUI(gtk.VBox):
+class ImportTagsUI(Gtk.Box):
     '''
     It's a widget displaying a couple of radio buttons, a label and a textbox
     to let the user change the attached tags (or imported)
@@ -42,7 +43,8 @@ class ImportTagsUI(gtk.VBox):
                              radio button
         @param parameter_name: the backend parameter this widget should modify
         '''
-        super(ImportTagsUI, self).__init__()
+        super(ImportTagsUI, self).__init__(
+            orientation=Gtk.Orientation.VERTICAL)
         self.backend = backend
         self.req = req
         self.title = title
@@ -59,26 +61,26 @@ class ImportTagsUI(gtk.VBox):
 
         @param width: the length of the radio buttons
         '''
-        title_label = gtk.Label()
+        title_label = Gtk.Label()
         title_label.set_alignment(xalign=0, yalign=0)
         title_label.set_markup("<big><b>%s</b></big>" % self.title)
-        self.pack_start(title_label, True)
-        align = gtk.Alignment(xalign=0, yalign=0, xscale=1)
+        self.pack_start(title_label, True, True, 0)
+        align = Gtk.Alignment.new(0, 0, 1, 0)
         align.set_padding(0, 0, 10, 0)
-        self.pack_start(align, True)
-        vbox = gtk.VBox()
+        self.pack_start(align, True, True, 0)
+        vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         align.add(vbox)
-        self.all_tags_radio = gtk.RadioButton(group=None,
+        self.all_tags_radio = Gtk.RadioButton(group=None,
                                               label=self.anybox_text)
-        vbox.pack_start(self.all_tags_radio, True)
-        self.some_tags_radio = gtk.RadioButton(group=self.all_tags_radio,
+        vbox.pack_start(self.all_tags_radio, True, True, 0)
+        self.some_tags_radio = Gtk.RadioButton(group=self.all_tags_radio,
                                                label=self.somebox_text)
         self.some_tags_radio.set_size_request(width=width, height=-1)
-        hbox = gtk.HBox()
-        vbox.pack_start(hbox, True)
-        hbox.pack_start(self.some_tags_radio, False)
-        self.tags_entry = gtk.Entry()
-        hbox.pack_start(self.tags_entry, True)
+        box = Gtk.Box()
+        vbox.pack_start(box, True, True, 0)
+        box.pack_start(self.some_tags_radio, False, True, 0)
+        self.tags_entry = Gtk.Entry()
+        box.pack_start(self.tags_entry, True, True, 0)
 
     def on_changed(self, radio, data=None):
         ''' Signal callback, executed when the user modifies something.
@@ -99,9 +101,9 @@ class ImportTagsUI(gtk.VBox):
         else:
             tags = self.tags_entry.get_text().split(",")
             # stripping spaces
-            tags = map(lambda t: t.strip(), tags)
+            tags = [t.strip() for t in tags]
             # removing empty tags
-            tags = filter(lambda t: t, tags)
+            tags = [t for t in tags if t]
 
         self.backend.set_parameter(self.parameter_name, tags)
 

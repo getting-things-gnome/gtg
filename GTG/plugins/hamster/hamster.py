@@ -19,7 +19,7 @@
 
 from calendar import timegm
 import dbus
-import gtk
+from gi.repository import Gtk, Gdk, GdkPixbuf
 import os
 import re
 import time
@@ -52,15 +52,15 @@ class hamsterPlugin:
     def __init__(self):
         # task editor widget
         self.vbox = None
-        self.button = gtk.ToolButton()
+        self.button = Gtk.ToolButton()
         self.other_stop_button = self.button
 
     def get_icon_widget(self, image_path):
         image_path = os.path.join(self.PLUGIN_PATH, image_path)
-        pixbuf = gtk.gdk.pixbuf_new_from_file_at_size(image_path, 24, 24)
+        pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(image_path, 24, 24)
 
         # create the image and associate the pixbuf
-        icon = gtk.Image()
+        icon = Gtk.Image()
         icon.set_from_pixbuf(pixbuf)
         icon.show()
 
@@ -76,7 +76,7 @@ class hamsterPlugin:
 
         activity = "Other"
         if self.preferences['activity'] == 'tag':
-            hamster_activities = set([unicode(x[0]).lower()
+            hamster_activities = set([str(x[0]).lower()
                                       for x in self.hamster.GetActivities('')])
             activity_candidates = hamster_activities.intersection(
                 set(gtg_tags))
@@ -90,7 +90,7 @@ class hamsterPlugin:
 
         category = ""
         if self.preferences['category'] == 'auto_tag':
-            hamster_activities = dict([(unicode(x[0]), unicode(x[1]))
+            hamster_activities = dict([(str(x[0]), unicode(x[1]))
                                        for x in
                                        self.hamster.GetActivities('')])
             if (gtg_title in hamster_activities
@@ -100,7 +100,7 @@ class hamsterPlugin:
         if (self.preferences['category'] == 'tag' or
            (self.preferences['category'] == 'auto_tag' and not category)):
             # See if any of the tags match existing categories
-            categories = dict([(unicode(x[1]).lower(), unicode(x[1]))
+            categories = dict([(str(x[1]).lower(), str(x[1]))
                                for x in self.hamster.GetCategories()])
             lower_gtg_tags = set([x.lower() for x in gtg_tags])
             intersection = set(categories.keys()).intersection(lower_gtg_tags)
@@ -120,7 +120,7 @@ class hamsterPlugin:
         tag_candidates = []
         try:
             if self.preferences['tags'] == 'existing':
-                hamster_tags = set([unicode(x[1]) for x in
+                hamster_tags = set([str(x[1]) for x in
                                     self.hamster.GetTags(False)])
                 tag_candidates = list(hamster_tags.intersection(set(gtg_tags)))
             elif self.preferences['tags'] == 'all':
@@ -159,7 +159,7 @@ class hamsterPlugin:
             except dbus.DBusException:
                 pass
             modified = True
-            print "Removing invalid fact", i
+            print("Removing invalid fact", i)
         if modified:
             self.set_hamster_ids(task, valid_ids)
         return records
@@ -237,7 +237,7 @@ class hamsterPlugin:
 
         # add menu item
         if plugin_api.is_browser():
-            self.menu_item = gtk.MenuItem(self.START_ACTIVITY_LABEL)
+            self.menu_item = Gtk.MenuItem(self.START_ACTIVITY_LABEL)
             self.menu_item.show_all()
             self.menu_item.connect('activate', self.browser_cb, plugin_api)
             self.menu_item.set_sensitive(False)
@@ -267,7 +267,7 @@ class hamsterPlugin:
 
         if task.get_status() == Task.STA_ACTIVE:
             # add button
-            self.taskbutton = gtk.ToolButton()
+            self.taskbutton = Gtk.ToolButton()
             self.decide_button_mode(self.taskbutton, task)
             self.taskbutton.connect('clicked', self.task_cb, plugin_api)
             self.taskbutton.show()
@@ -277,23 +277,23 @@ class hamsterPlugin:
 
         if len(records):
             # add section to bottom of window
-            vbox = gtk.VBox()
-            inner_table = gtk.Table(rows=len(records), columns=2)
+            vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
+            inner_grid = Gtk.Grid()
             if len(records) > 8:
-                s = gtk.ScrolledWindow()
-                s.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
-                v = gtk.Viewport()
-                v.add(inner_table)
+                s = Gtk.ScrolledWindow()
+                s.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
+                v = Gtk.Viewport()
+                v.add(inner_grid)
                 s.add(v)
-                v.set_shadow_type(gtk.SHADOW_NONE)
+                v.set_shadow_type(Gtk.ShadowType.NONE)
                 s.set_size_request(-1, 150)
             else:
-                s = inner_table
+                s = inner_grid
 
-            outer_table = gtk.Table(rows=1, columns=2)
-            vbox.pack_start(s)
-            vbox.pack_start(outer_table)
-            vbox.pack_end(gtk.HSeparator())
+            outer_grid = Gtk.Grid()
+            vbox.pack_start(s, True, True, 0)
+            vbox.pack_start(outer_grid, True, True, 0)
+            vbox.pack_end(Gtk.Separator())
 
             total = 0
 
@@ -302,20 +302,16 @@ class hamsterPlugin:
                     a = "<span color='red'>%s</span>" % a
                     b = "<span color='red'>%s</span>" % b
 
-                dateLabel = gtk.Label(a)
+                dateLabel = Gtk.Label(label=a)
                 dateLabel.set_use_markup(True)
                 dateLabel.set_alignment(xalign=0.0, yalign=0.5)
                 dateLabel.set_size_request(200, -1)
-                w.attach(dateLabel, left_attach=0, right_attach=1,
-                         top_attach=offset, bottom_attach=offset + 1,
-                         xoptions=gtk.FILL, xpadding=20, yoptions=0)
+                w.attach(dateLabel, 0, offset, 1, 1)
 
-                durLabel = gtk.Label(b)
+                durLabel = Gtk.Label(label=b)
                 durLabel.set_use_markup(True)
                 durLabel.set_alignment(xalign=0.0, yalign=0.5)
-                w.attach(durLabel, left_attach=1, right_attach=2,
-                         top_attach=offset, bottom_attach=offset + 1,
-                         xoptions=gtk.FILL, yoptions=0)
+                w.attach(durLabel, 1, offset, 1, 1)
 
             active_id = self.get_active_id()
             for offset, i in enumerate(records):
@@ -324,7 +320,7 @@ class hamsterPlugin:
                 add(inner_table, format_date(i), format_duration(t),
                     offset, i[0] == active_id)
 
-            add(outer_table, "<big><b>Total</b></big>",
+            add(outer_grid, "<big><b>Total</b></big>",
                 "<big><b>%s</b></big>" % format_duration(total), 1)
 
             self.vbox = plugin_api.add_widget_to_taskeditor(vbox)
@@ -430,7 +426,7 @@ class hamsterPlugin:
                                                   self.preferences)
 
     def preference_dialog_init(self):
-        self.builder = gtk.Builder()
+        self.builder = Gtk.Builder()
         path = "%s/prefs.ui" % os.path.dirname(os.path.abspath(__file__))
         self.builder.add_from_file(path)
         self.preferences_dialog = self.builder.get_object("dialog1")

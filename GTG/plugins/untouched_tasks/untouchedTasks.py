@@ -14,15 +14,13 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import os
-import gtk
+from threading import Timer
 import datetime
+import os
+
+from gi.repository import Gtk
 
 from GTG.tools.logger import Log
-from threading import Timer
-
-
-###################################
 
 
 class pluginUntouchedTasks:
@@ -40,7 +38,7 @@ class pluginUntouchedTasks:
     def __init__(self):
         self.path = os.path.dirname(os.path.abspath(__file__))
         # GUI initialization
-        self.builder = gtk.Builder()
+        self.builder = Gtk.Builder()
         self.builder.add_from_file(os.path.join(
                                    os.path.dirname(os.path.abspath(__file__)) +
                                    "/untouchedTasks.ui"))
@@ -60,7 +58,7 @@ class pluginUntouchedTasks:
             self.on_preferences_ok,
         }
         self.builder.connect_signals(SIGNAL_CONNECTIONS_DIC)
-        self.menu_item = gtk.MenuItem("Add @untouched tag")
+        self.menu_item = Gtk.MenuItem("Add @untouched tag")
         self.menu_item.connect('activate', self.add_untouched_tag)
 
     def activate(self, plugin_api):

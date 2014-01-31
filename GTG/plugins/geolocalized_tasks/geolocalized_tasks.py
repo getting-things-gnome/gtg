@@ -14,16 +14,21 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import gtk
+from gi.repository import Gtk, GdkPixbuf, GtkClutter
 import os
 
 import Geoclue
 
-import cluttergtk
-import clutter
+from gi.repository import Clutter
 import champlain
 
 from GTG.plugins.geolocalized_tasks.marker import MarkerLayer
+
+# Attention!!! FIXME
+# FIXME During porting GTG into GTK3/PyGObject was geolocalized.glade converted
+# to GtkBuilder format together with other glade XMLs.
+# FIXME Since this plugin is broken, I am not going to replace galde mentions
+# to GtkBuilder, it's your job ;)
 
 
 class geolocalizedTasks:
@@ -33,10 +38,10 @@ class geolocalizedTasks:
         self.geoclue.connect(self.location_changed)
 
         self.plugin_path = os.path.dirname(os.path.abspath(__file__))
-        self.glade_file = os.path.join(self.plugin_path, "geolocalized.glade")
+        self.glade_file = os.path.join(self.plugin_path, "geolocalized.ui")
 
         # the preference menu for the plugin
-        self.menu_item = gtk.MenuItem("Geolocalized-tasks Preferences")
+        self.menu_item = Gtk.MenuItem("Geolocalized-tasks Preferences")
 
         self.PROXIMITY_FACTOR = 5  # 5 km
         self.LOCATION_DETERMINATION_METHOD = []
@@ -55,7 +60,7 @@ class geolocalizedTasks:
                     self.LOCATION_DETERMINATION_METHOD.append("cellphone")
 
         self.location_filter = []
-        self.task_separator = gtk.SeparatorToolItem()
+        self.task_separator = Gtk.SeparatorToolItem()
 
     def activate(self, plugin_api):
         self.plugin_api = plugin_api
@@ -66,15 +71,15 @@ class geolocalizedTasks:
         image_assign_location_path = os.path.join(self.plugin_path,
                                                   "icons/hicolor/16x16/assign\
                                                   -location.png")
-        pixbug_assign_location = gtk.gdk.pixbuf_new_from_file_at_size(
+        pixbug_assign_location = GdkPixbuf.Pixbuf.new_from_file_at_size(
             image_assign_location_path, 16, 16)
 
-        image_assign_location = gtk.Image()
+        image_assign_location = Gtk.Image()
         image_assign_location.set_from_pixbuf(pixbug_assign_location)
         image_assign_location.show()
 
         # the menu intem for the tag context
-        self.context_item = gtk.ImageMenuItem("Assign a location to this tag")
+        self.context_item = Gtk.ImageMenuItem("Assign a location to this tag")
         self.context_item.set_image(image_assign_location)
         # TODO: add a short cut to the menu
 
@@ -198,23 +203,23 @@ class geolocalizedTasks:
         image_geolocalization_path = os.path.join(self.plugin_path,
                                                   "icons/hicolor/24x24/\
                                                   geolocalization.png")
-        pixbuf_geolocalization = gtk.gdk.pixbuf_new_from_file_at_size(
+        pixbuf_geolocalization = GdkPixbuf.Pixbuf.new_from_file_at_size(
             image_geolocalization_path, 24, 24)
 
         # create the image and associate the pixbuf
-        icon_geolocalization = gtk.Image()
+        icon_geolocalization = Gtk.Image()
         icon_geolocalization.set_from_pixbuf(pixbuf_geolocalization)
         icon_geolocalization.show()
 
         # toolbar button for the location_view
-        btn_location_view = gtk.ToggleToolButton()
+        btn_location_view = Gtk.ToggleToolButton()
         btn_location_view.set_icon_widget(icon_geolocalization)
         btn_location_view.set_label("Location View")
 
         self.task_separator = plugin_api.add_task_toolbar_item(
-            gtk.SeparatorToolItem())
+            Gtk.SeparatorToolItem())
 
-        btn_set_location = gtk.ToolButton()
+        btn_set_location = Gtk.ToolButton()
         btn_set_location.set_icon_widget(icon_geolocalization)
         btn_set_location.set_label("Set/View location")
         btn_set_location.connect('clicked', self.set_task_location, plugin_api)
@@ -263,7 +268,7 @@ class geolocalizedTasks:
 
     #=== GEOLOCALIZED PREFERENCES=============================================
     def on_geolocalized_preferences(self):
-        wTree = gtk.glade.XML(self.glade_file, "Preferences")
+        wTree = Gtk.glade.XML(self.glade_file, "Preferences")
         dialog = wTree.get_widget("Preferences")
         dialog.connect("response", self.preferences_close)
 
@@ -361,7 +366,7 @@ class geolocalizedTasks:
         self.tmp_proximityfactor = spinbutton.get_value()
 
     def preferences_close(self, dialog, response=None):
-        if response == gtk.RESPONSE_OK:
+        if response == Gtk.ResponseType.OK:
             self.PROXIMITY_FACTOR = float(self.tmp_proximityfactor)
             dialog.destroy()
         else:
@@ -371,7 +376,7 @@ class geolocalizedTasks:
 
     #=== SET TASK LOCATION ====================================================
     def set_task_location(self, widget, plugin_api, location=None):
-        wTree = gtk.glade.XML(self.glade_file, "SetTaskLocation")
+        wTree = Gtk.glade.XML(self.glade_file, "SetTaskLocation")
         dialog = wTree.get_widget("SetTaskLocation")
         plugin_api.set_parent_window(dialog)
 
@@ -416,7 +421,7 @@ class geolocalizedTasks:
         # checks if there is one tag with a location
         task_has_location = False
         for tag in tag_list:
-            for key, item in tag.items():
+            for key, item in list(tag.items()):
                 if key == "location":
                     task_has_location = True
                     break
@@ -427,7 +432,7 @@ class geolocalizedTasks:
         self.marker_list = []
         if task_has_location:
             for tag in tag_list:
-                for key, item in tag.items():
+                for key, item in list(tag.items()):
                     if key == "location":
                         color = None
                         try:
@@ -454,7 +459,7 @@ class geolocalizedTasks:
 
         champlain_view.add_layer(layer)
 
-        embed = cluttergtk.Embed()
+        embed = GtkClutter.Embed()
         embed.set_size_request(400, 300)
 
         if not task_has_location:
@@ -498,7 +503,7 @@ class geolocalizedTasks:
         if not task_has_location:
             self.location_defined = False
             if len(plugin_api.get_tags()) > 0:
-                liststore = gtk.ListStore(str)
+                liststore = Gtk.ListStore(str)
                 self.cmb_existing_tag.set_model(liststore)
                 for tag in plugin_api.get_tags():
                     liststore.append([tag.get_attribute("name")])
@@ -509,7 +514,7 @@ class geolocalizedTasks:
                 tabela.remove(self.radiobutton1)
                 tabela.remove(self.radiobutton2)
                 tabela.remove(self.cmb_existing_tag)
-                label = gtk.Label()
+                label = Gtk.Label()
                 label.set_text("Associate with new tag: ")
                 tabela.attach(label, 0, 1, 0, 1)
                 label.show()
@@ -536,7 +541,7 @@ class geolocalizedTasks:
         dialog.destroy()
 
     def set_task_location_close(self, dialog, response=None, plugin_api=None):
-        if response == gtk.RESPONSE_OK:
+        if response == Gtk.ResponseType.OK:
             # ok
             # tries to get the radiobuttons value, witch may not exist
             if not self.location_defined:
@@ -594,7 +599,7 @@ class geolocalizedTasks:
 
     #=== TAG VIEW CONTEXT MENU ================================================
     def on_contextmenu_tag_location(self, widget, plugin_api):
-        wTree = gtk.glade.XML(self.glade_file, "TagLocation")
+        wTree = Gtk.glade.XML(self.glade_file, "TagLocation")
         dialog = wTree.get_widget("TagLocation")
         plugin_api.set_parent_window(dialog)
 
@@ -641,7 +646,7 @@ class geolocalizedTasks:
 
         champlain_view.add_layer(layer)
 
-        embed = cluttergtk.Embed()
+        embed = GtkClutter.Embed()
         embed.set_size_request(400, 300)
 
         champlain_view.set_reactive(True)
@@ -692,7 +697,7 @@ class geolocalizedTasks:
         marker.set_position(latitude, longitude)
 
     def tag_location_close(self, dialog, response=None, tag=None, marker=None):
-        if response == gtk.RESPONSE_OK:
+        if response == Gtk.ResponseType.OK:
             tag_location = str((marker.get_property('latitude'),
                                 marker.get_property('longitude')))
             tag.set_attribute("location", tag_location)
@@ -719,4 +724,4 @@ class geolocalizedTasks:
                 "input #%s is not in #RRGGBB format" % colorstring)
         r, g, b = colorstring[:2], colorstring[2:4], colorstring[4:]
         r, g, b = [int(n, 16) for n in (r, g, b)]
-        return clutter.Color(r, g, b)
+        return Clutter.Color(r, g, b)

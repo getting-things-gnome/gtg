@@ -18,7 +18,7 @@
 # -----------------------------------------------------------------------------
 
 
-import gtk
+from gi.repository import Gtk
 
 from GTG import _, ngettext
 from GTG.gtk import ViewConfig
@@ -34,8 +34,8 @@ class DeletionUI():
         # Tags which must be updated
         self.update_tags = []
         # Load window tree
-        self.builder = gtk.Builder()
-        self.builder.add_from_file(ViewConfig.DELETE_GLADE_FILE)
+        self.builder = Gtk.Builder()
+        self.builder.add_from_file(ViewConfig.DELETE_UI_FILE)
         signals = {"on_delete_confirm": self.on_delete_confirm,
                    "on_delete_cancel": lambda x: x.hide, }
         self.builder.connect_signals(signals)

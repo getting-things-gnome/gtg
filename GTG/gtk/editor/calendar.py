@@ -19,31 +19,29 @@
 
 import datetime
 
-import gobject
-import gtk
-from gtk import gdk
+from gi.repository import GObject, Gdk
 
 from GTG.tools.dates import Date
 
 
-class GTGCalendar(gobject.GObject):
-    """ Wrapper around gtk.Calendar object """
+class GTGCalendar(GObject.GObject):
+    """ Wrapper around Gtk.Calendar object """
 
     # CONSTANTS
     DATE_KIND_DUE = "due"
     DATE_KIND_START = "start"
     DATE_KIND_CLOSED = "closed"
 
-    # Gobject signal description
-    __signal_type__ = (gobject.SIGNAL_RUN_FIRST,
-                       gobject.TYPE_NONE,
+    #Gobject signal description
+    __signal_type__ = (GObject.SignalFlags.RUN_FIRST,
+                       None,
                        [])
 
     __gsignals__ = {'date-changed': __signal_type__, }
 
-    def __init__(self, gtk_builder):
+    def __init__(self, Gtk_builder):
         super(GTGCalendar, self).__init__()
-        self.__builder = gtk_builder
+        self.__builder = Gtk_builder
         self.__date_kind = None
         self.__date = Date.no_date()
         self.__init_gtk__()
@@ -106,13 +104,13 @@ class GTGCalendar(gobject.GObject):
         else:
             # If marked day is 31th, and the next month does not have 31th day,
             # unmark_day raises a warning. Clear_marks() is clever way how
-            # to let PyGTK solve it's bussiness.
+            # to let GTK solve it's bussiness.
             self.__calendar.clear_marks()
 
     def move_calendar_inside(self, width, height, x, y):
         """ This method moves the calender inside the screen whenever part of
         it is displayed outside the screen """
-        screen_width = gtk.gdk.screen_width()
+        screen_width = Gdk.Screen.width()
         # To display calendar inside the screen when editor window is
         # outside leftside of the screen
         if x < width:
@@ -132,32 +130,49 @@ class GTGCalendar(gobject.GObject):
         # ones? question by invernizzi)
         self.move_calendar_inside(width, height, x, y)
         self.__window.grab_add()
-        # We grab the pointer in the calendar
-        gdk.pointer_grab(self.__window.window, True,
-                         gdk.BUTTON1_MASK | gdk.MOD2_MASK)
+
+        #We grab the pointer in the calendar
+        #Gdk.pointer_grab(
+            #self.__window.get_window(),
+            #True,
+            #Gdk.ModifierType.BUTTON1_MASK | Gdk.ModifierType.MOD2_MASK
+        #)
+#FIXME THIS DOES NOT WORK!!!!!!!
+        Gdk.pointer_grab(
+            self.get_window(),
+            True,
+            #Gdk.ModifierType.BUTTON1_MASK | Gdk.ModifierType.MOD2_MASK,
+#FIXME!!!! JUST GUESSING THE TYPE
+            Gdk.EventMask.ALL_EVENTS_MASK,
+            None,
+            None,
+            0,
+        )
+
         self.__window.connect('button-press-event', self.__focus_out)
         self.__sigid = self.__calendar.connect("day-selected",
                                                self.__day_selected,
-                                               "RealDate")
+                                               "RealDate",)
+
         self.__sigid_month = self.__calendar.connect("month-changed",
                                                      self.__month_changed)
-        # Problem: gtk.Calendar does not tell you directly if the
-        #         "day-selected" signal was caused by the user clicking on
-        #         a date, or just browsing the calendar.
+        # Problem: Gtk.Calendar does not tell you directly if the
+        #          "day-selected" signal was caused by the user clicking on
+        #          a date, or just browsing the calendar.
         # Solution: we track that in a variable
         self.__is_user_just_browsing_the_calendar = False
         self.__mark_today_in_bold()
 
     def __focus_out(self, w=None, e=None):
         # We should only close if the pointer click is out of the calendar !
-        p = self.__window.window.get_pointer()
+        p = self.__window.get_window().get_pointer()
         s = self.__window.get_size()
         if not(0 <= p[0] <= s[0] and 0 <= p[1] <= s[1]):
             self.close_calendar()
 
     def close_calendar(self, widget=None, e=None):
         self.__window.hide()
-        gtk.gdk.pointer_ungrab()
+        Gdk.pointer_ungrab(0)
         self.__window.grab_remove()
         if self.__sigid is not None:
             self.__calendar.disconnect(self.__sigid)
@@ -181,11 +196,11 @@ class GTGCalendar(gobject.GObject):
         else:
             # inform the Editor that the date has changed
             self.close_calendar()
-            gobject.idle_add(self.emit, "date-changed")
+            GObject.idle_add(self.emit, "date-changed")
 
     def __from_calendar_date_to_datetime(self, calendar_date):
         '''
-        gtk.Calendar uses a 0-based convention for counting months.
+        Gtk.Calendar uses a 0-based convention for counting months.
         The rest of the world, including the datetime module, starts from 1.
         This is a converter between the two. GTG follows the datetime
         convention.

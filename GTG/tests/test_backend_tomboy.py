@@ -25,7 +25,7 @@ import dbus
 import dbus.glib
 import dbus.service
 import errno
-import gobject
+from gi.repository import GObject
 import math
 import os
 import random
@@ -91,7 +91,7 @@ class TestBackendTomboy(unittest.TestCase):
                 try:
                     fd = os.open(lockfile_path,
                                  os.O_CREAT | os.O_EXCL | os.O_RDWR)
-                except OSError, e:
+                except OSError as e:
                     if e.errno != errno.EEXIST:
                         raise
                     time.sleep(0.3)
@@ -264,7 +264,7 @@ class TestBackendTomboy(unittest.TestCase):
     def TEST_multiple_task_same_title(self):
         self.backend.set_attached_tags(['@a'])
         how_many_tasks = int(math.ceil(20 * random.random()))
-        for iteration in xrange(0, how_many_tasks):
+        for iteration in range(0, how_many_tasks):
             task = self.datastore.requester.new_task()
             task.set_title("title")
             task.add_tag('@a')
@@ -372,9 +372,9 @@ class FakeTomboy(dbus.service.Object):
         self.notes[note]['changed'] = time.mktime(datetime.now().timetuple())
 
     def fake_main_loop(self):
-        gobject.threads_init()
+        GObject.threads_init()
         dbus.glib.init_threads()
-        self.main_loop = gobject.MainLoop()
+        self.main_loop = GObject.MainLoop()
         self.main_loop.run()
 
     @dbus.service.method(BUS_INTERFACE)

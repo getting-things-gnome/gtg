@@ -136,11 +136,11 @@ def openxmlfile(zefile, root):
                 sys.exit(1)
             return _try_openxmlfile(zefile, root)
 
-    except IOError, msg:
-        print msg
+    except IOError as msg:
+        print(msg)
         sys.exit(1)
 
-    except xml.parsers.expat.ExpatError, msg:
+    except xml.parsers.expat.ExpatError as msg:
         errormsg = "Error parsing XML file %s: %s" % (zefile, msg)
         Log.error(errormsg)
         if os.path.exists(tmpfile):
@@ -149,7 +149,7 @@ def openxmlfile(zefile, root):
             # Ok, try one more time now
             try:
                 return _try_openxmlfile(zefile, root)
-            except Exception, msg:
+            except Exception as msg:
                 Log.warning('Failed with reason: %s' % msg)
 
         # Try to revert to backup
@@ -160,7 +160,7 @@ def openxmlfile(zefile, root):
                 Log.info("Trying to restore backup file %s" % backup_file)
                 try:
                     return _try_openxmlfile(backup_file, root)
-                except Exception, msg:
+                except Exception as msg:
                     Log.warning('Failed with reason: %s' % msg)
 
         Log.info("No suitable backup was found")
@@ -189,18 +189,18 @@ def savexml(zefile, doc, backup=False):
         try:
             os.makedirs(backup_dir)
         except IOError as error:
-            print "Error while creating backup/ directory:", error
+            print("Error while creating backup/ directory:", error)
             return False
 
     try:
         if os.path.exists(zefile):
             os.rename(zefile, tmpfile)
         f = open(zefile, mode='w+')
-        pretty = doc.toprettyxml(tab, enter).encode("utf-8")
+        pretty = doc.toprettyxml(tab, enter)
         if f and pretty:
-            bwritten = os.write(f.fileno(), pretty)
+            bwritten = os.write(f.fileno(), bytes(pretty, 'utf8'))
             if bwritten != len(pretty):
-                print "error writing file %s" % zefile
+                print("error writing file %s" % zefile)
                 f.close()
                 return False
             f.close()
@@ -231,8 +231,8 @@ def savexml(zefile, doc, backup=False):
                     shutil.copy(zefile, daily_backup)
             return True
         else:
-            print "no file %s or no pretty xml" % zefile
+            print("no file %s or no pretty xml" % zefile)
             return False
-    except IOError, msg:
-        print msg
+    except IOError as msg:
+        print(msg)
         return False

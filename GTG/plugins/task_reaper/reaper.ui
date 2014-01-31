@@ -1,7 +1,6 @@
 <?xml version="1.0"?>
 <interface>
-  <requires lib="gtk+" version="2.16"/>
-  <!-- interface-naming-policy toplevel-contextual -->
+  <!-- interface-requires gtk+ 3.0 -->
   <object class="GtkAccelGroup" id="accelgroup1"/>
   <object class="GtkWindow" id="preferences_dialog">
     <property name="border_width">10</property>
@@ -9,16 +8,16 @@
     <property name="type_hint">dialog</property>
     <signal name="delete_event" handler="on_preferences_dialog_delete_event"/>
     <child>
-      <object class="GtkVBox" id="vbox1">
+      <object class="GtkBox" id="vbox1">
         <property name="visible">True</property>
         <property name="orientation">vertical</property>
         <child>
-          <object class="GtkVBox" id="vbox2">
+          <object class="GtkBox" id="vbox2">
             <property name="visible">True</property>
             <property name="orientation">vertical</property>
             <property name="spacing">12</property>
             <child>
-              <object class="GtkHBox" id="hbox2">
+              <object class="GtkBox" id="box2">
                 <property name="visible">True</property>
                 <child>
                   <object class="GtkLabel" id="label2">
@@ -91,7 +90,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkHBox" id="hbox1">
+          <object class="GtkBox" id="box1">
             <property name="height_request">30</property>
             <property name="visible">True</property>
             <property name="spacing">50</property>

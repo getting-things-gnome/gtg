@@ -17,10 +17,9 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-""" Dialog for configuring plugins """
+""" Dialog for loading plugins """
 
-import gtk
-import pango
+from gi.repository import Gtk, Pango
 
 from GTG import _
 from GTG import info
@@ -36,7 +35,7 @@ PLUGINS_COL_SHORT_DESC = 3
 PLUGINS_COL_ACTIVATABLE = 4
 
 
-def plugin_icon(column, cell, store, iterator):
+def plugin_icon(column, cell, store, iterator, data):
     """ Callback to set the content of a PluginTree cell.
 
     See PluginsDialog._init_plugin_tree().
@@ -135,8 +134,8 @@ class PluginsDialog:
     def __init__(self, config_obj):
         self.config_obj = config_obj
         self.config = self.config_obj.get_subconfig("plugins")
-        builder = gtk.Builder()
-        builder.add_from_file(ViewConfig.PLUGINS_GLADE_FILE)
+        builder = Gtk.Builder()
+        builder.add_from_file(ViewConfig.PLUGINS_UI_FILE)
 
         self.dialog = builder.get_object("PluginsDialog")
         self.dialog.set_title(_("Plugins - %s" % info.NAME))
@@ -154,7 +153,7 @@ class PluginsDialog:
                 [p.module_name for p in self.pengine.get_plugins("enabled")])
 
         # see constants PLUGINS_COL_* for column meanings
-        self.plugin_store = gtk.ListStore(str, bool, str, str, bool)
+        self.plugin_store = Gtk.ListStore(str, bool, str, str, bool)
 
         builder.connect_signals({
                                 'on_plugins_help':
@@ -174,37 +173,37 @@ class PluginsDialog:
                                 })
 
     def _init_plugin_tree(self):
-        """ Initialize the PluginTree gtk.TreeView.
+        """ Initialize the PluginTree Gtk.TreeView.
 
         The format is modelled after the one used in gedit; see
         http://git.gnome.org/browse/gedit/tree/gedit/gedit-plugin-mapnager.c
         """
-        # force creation of the gtk.ListStore so we can reference it
+        # force creation of the Gtk.ListStore so we can reference it
         self._refresh_plugin_store()
 
         # renderer for the toggle column
-        renderer = gtk.CellRendererToggle()
+        renderer = Gtk.CellRendererToggle()
         renderer.set_property('xpad', 6)
         renderer.connect('toggled', self.on_plugin_toggle)
         # toggle column
-        column = gtk.TreeViewColumn(None, renderer, active=PLUGINS_COL_ENABLED,
+        column = Gtk.TreeViewColumn(None, renderer, active=PLUGINS_COL_ENABLED,
                                     activatable=PLUGINS_COL_ACTIVATABLE,
                                     sensitive=PLUGINS_COL_ACTIVATABLE)
         self.plugin_tree.append_column(column)
 
         # plugin name column
-        column = gtk.TreeViewColumn()
+        column = Gtk.TreeViewColumn()
         column.set_spacing(6)
         # icon renderer for the plugin name column
-        icon_renderer = gtk.CellRendererPixbuf()
-        icon_renderer.set_property('stock-size', gtk.ICON_SIZE_SMALL_TOOLBAR)
+        icon_renderer = Gtk.CellRendererPixbuf()
+        icon_renderer.set_property('stock-size', Gtk.IconSize.SMALL_TOOLBAR)
         icon_renderer.set_property('xpad', 3)
-        column.pack_start(icon_renderer, expand=False)
+        column.pack_start(icon_renderer, False)
         column.set_cell_data_func(icon_renderer, plugin_icon)
         # text renderer for the plugin name column
-        name_renderer = gtk.CellRendererText()
-        name_renderer.set_property('ellipsize', pango.ELLIPSIZE_END)
-        column.pack_start(name_renderer)
+        name_renderer = Gtk.CellRendererText()
+        name_renderer.set_property('ellipsize', Pango.EllipsizeMode.END)
+        column.pack_start(name_renderer, True)
         column.set_cell_data_func(name_renderer, plugin_markup, self)
 
         self.plugin_tree.append_column(column)
@@ -214,10 +213,10 @@ class PluginsDialog:
         self.plugin_tree.set_search_column(2)
 
     def _refresh_plugin_store(self):
-        """ Refresh status of plugins and put it in a gtk.ListStore """
+        """ Refresh status of plugins and put it in a Gtk.ListStore """
         self.plugin_store.clear()
         self.pengine.recheck_plugin_errors(True)
-        for name, plugin in self.pengine.plugins.iteritems():
+        for name, plugin in self.pengine.plugins.items():
             # activateable if there is no error
             self.plugin_store.append((name, plugin.enabled, plugin.full_name,
                                       plugin.short_description,
@@ -300,7 +299,12 @@ class PluginsDialog:
         plugin_id = self.plugin_store.get_value(iterator, PLUGINS_COL_ID)
         plugin = self.pengine.get_plugin(plugin_id)
 
-        self.plugin_about.set_name(plugin.full_name)
+        #FIXME About plugin dialog looks much more different than
+        #it is in the current trunk
+        #FIXME repair it!
+        #FIXME Author is not usually set and is preserved from
+        #previous plugin... :/
+        self.plugin_about.set_program_name(plugin.full_name)
         self.plugin_about.set_version(plugin.version)
         authors = plugin.authors
         if isinstance(authors, str):

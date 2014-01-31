@@ -14,15 +14,15 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import gobject
+from gi.repository import GObject
 import re
 import threading
-import xmlrpclib
-from urlparse import urlparse
+import xmlrpc.client
+from urllib.parse import urlparse
 
-from services import BugzillaServiceFactory
-from services import BugzillaServiceNotExist
-from notification import send_notification
+from .services import BugzillaServiceFactory
+from .services import BugzillaServiceNotExist
+from .notification import send_notification
 
 __all__ = ('pluginBugzilla', )
 
@@ -67,7 +67,7 @@ class GetBugInformationTask(threading.Thread):
 
         try:
             bug = bugzillaService.getBug(bug_id)
-        except xmlrpclib.Fault, err:
+        except xmlrpc.client.Fault as err:
             code = err.faultCode
             if code == 100:  # invalid bug ID
                 title = 'Invalid bug ID #%s' % bug_id
@@ -79,18 +79,18 @@ class GetBugInformationTask(threading.Thread):
                 title = err.faultString
 
             send_notification(bugzillaService.name, title)
-        except Exception, err:
+        except Exception as err:
             send_notification(bugzillaService.name, err.message)
         else:
             title = '#%s: %s' % (bug_id, bug.summary)
-            gobject.idle_add(self.task.set_title, title)
+            GObject.idle_add(self.task.set_title, title)
             text = "%s\n\n%s" % (bug_url, bug.description)
-            gobject.idle_add(self.task.set_text, text)
+            GObject.idle_add(self.task.set_text, text)
 
             tags = bugzillaService.getTags(bug)
             if tags is not None and tags:
                 for tag in tags:
-                    gobject.idle_add(self.task.add_tag, '@%s' % tag)
+                    GObject.idle_add(self.task.add_tag, '@%s' % tag)
 
 
 class pluginBugzilla:

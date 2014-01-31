@@ -47,7 +47,7 @@ class Task(TreeNode):
         TreeNode.__init__(self, ze_id)
         # the id of this task in the project should be set
         # tid is a string ! (we have to choose a type and stick to it)
-        assert(isinstance(ze_id, str) or isinstance(ze_id, unicode))
+        assert(isinstance(ze_id, str) or isinstance(ze_id, str))
         self.tid = str(ze_id)
         self.set_uuid(uuid.uuid4())
         self.remote_ids = {}
@@ -128,8 +128,6 @@ class Task(TreeNode):
         # We should check for other task with the same title
         # In that case, we should add a number (like Tomboy does)
         old_title = self.title
-        if isinstance(title, str):
-            title = title.decode('utf8')
         if title:
             self.title = title.strip('\t\n')
         else:
@@ -360,7 +358,8 @@ class Task(TreeNode):
         return self.due_date
 
     def get_urgent_date(self):
-        """Returns the most urgent due date among the task and it's subtasks"""
+        """ Returns the most urgent due date among the tasks and its subtasks
+        """
         urg_date = self.due_date
         for sub in self.get_subtasks():
             sub_urg_date = sub.get_urgent_date()
@@ -568,7 +567,7 @@ class Task(TreeNode):
     #        (Lionel)
     # Agreed. it's only used by the "add tag to all subtasks" widget.
     def get_self_and_all_subtasks(self, active_only=False, tasks=[]):
-        print "DEPRECATED FUNCTION: get_self_and_all_subtasks"
+        print("DEPRECATED FUNCTION: get_self_and_all_subtasks")
         tasks.append(self)
         for tid in self.get_children():
             i = self.req.get_task(tid)
@@ -579,7 +578,7 @@ class Task(TreeNode):
 
     def get_subtask(self, tid):
         # FIXME : remove this function. This is not useful
-        print "DEPRECATED: get_subtask"
+        print("DEPRECATED: get_subtask")
         """Return the task corresponding to a given ID.
 
         @param tid: the ID of the task to return.
@@ -605,7 +604,7 @@ class Task(TreeNode):
         @param att_value: The value of the attribute. Will be converted to a
             string.
         """
-        val = unicode(str(att_value), "UTF-8")
+        val = str(att_value)
         self.attributes[(namespace, att_name)] = val
         self.sync()
 
@@ -662,18 +661,17 @@ class Task(TreeNode):
         """
         Adds a tag. Does not add '@tag' to the contents. See add_tag
         """
-        t = tagname.encode("UTF-8")
         # Do not add the same tag twice
-        if not t in self.tags:
-            self.tags.append(t)
+        if not tagname in self.tags:
+            self.tags.append(tagname)
             if self.is_loaded():
                 for child in self.get_subtasks():
                     if child.can_be_deleted:
-                        child.add_tag(t)
+                        child.add_tag(tagname)
 
-                tag = self.req.get_tag(t)
+                tag = self.req.get_tag(tagname)
                 if not tag:
-                    tag = self.req.new_tag(t)
+                    tag = self.req.new_tag(tagname)
                 tag.modified()
             return True
 

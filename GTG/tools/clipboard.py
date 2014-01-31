@@ -30,7 +30,7 @@ class TaskClipboard():
         self.content = []
         self.req = req
 
-    """"take two gtk.TextIter as parameter and copy the
+    """"take two Gtk.TextIter as parameter and copy the
     """
 
     def copy(self, start, stop, bullet=None):
@@ -54,9 +54,9 @@ class TaskClipboard():
             tags = end_line.get_tags() + end_line.get_toggled_tags(False)
             is_subtask = False
             for ta in tags:
-                if (ta.get_data('is_subtask')):
+                if hasattr(ta, 'is_subtask'):
                     is_subtask = True
-                    tid = ta.get_data('child')
+                    tid = ta.child
                     tas = self.req.get_task(tid)
                     tas.set_to_keep()
                     tas.sync()

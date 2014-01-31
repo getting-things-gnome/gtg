@@ -153,7 +153,7 @@ def task_to_xml(doc, task):
     remote_ids_element = doc.createElement("task-remote-ids")
     t_xml.appendChild(remote_ids_element)
     remote_ids_dict = task.get_remote_ids()
-    for backend_id, task_id in remote_ids_dict.iteritems():
+    for backend_id, task_id in remote_ids_dict.items():
         backend_element = doc.createElement('backend')
         remote_ids_element.appendChild(backend_element)
         backend_element.appendChild(doc.createTextNode(backend_id))

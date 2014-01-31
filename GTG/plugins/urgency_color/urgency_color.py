@@ -15,7 +15,8 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from math import ceil
-import gtk
+from gi.repository import Gtk
+from gi.repository import Gdk
 import os
 
 from GTG.tools.dates import Date
@@ -60,17 +61,17 @@ class pluginUrgencyColor:
             return None
 
     def _get_gradient_color(self, color1, color2, position):
-        """This function returns a gtk.gdk.Color which corresponds to the
+        """This function returns a Gdk.Color which corresponds to the
         position (a float value from 0 to 1) in the gradient formed by the
-        colors color1 and color2, both of type gtk.gdk.Color"""
-        color1 = gtk.gdk.color_parse(color1)
-        color2 = gtk.gdk.color_parse(color2)
+        colors color1 and color2, both of type Gdk.Color"""
+        color1 = Gdk.color_parse(color1)
+        color2 = Gdk.color_parse(color2)
         R1, G1, B1 = color1.red, color1.green, color1.blue
         R2, G2, B2 = color2.red, color2.green, color2.blue
         R = R1 + (R2 - R1) * position
         G = G1 + (G2 - G1) * position
         B = B1 + (B2 - B1) * position
-        return gtk.gdk.Color(int(R), int(G), int(B))
+        return Gdk.Color(int(R), int(G), int(B))
 
     def get_node_bgcolor(self, node):
         """ This method checks the urgency of a node (task) and returns its
@@ -197,7 +198,7 @@ class pluginUrgencyColor:
         pass
 
     def prefs_init(self):
-        self.builder = gtk.Builder()
+        self.builder = Gtk.Builder()
         self.builder.add_from_file(os.path.join(
             os.path.dirname(os.path.abspath(__file__)),
             'preferences.ui'))
@@ -259,16 +260,16 @@ class pluginUrgencyColor:
         self.spinbutton_reddays.set_value(self._pref_data['reddays'])
         # Colorbutton - OVERDUE
         self.colorbutton_overdue.set_color(
-            gtk.gdk.color_parse(self._pref_data['color_overdue']))
+            Gdk.color_parse(self._pref_data['color_overdue']))
         # Colorbutton - HIGH
         self.colorbutton_high.set_color(
-            gtk.gdk.color_parse(self._pref_data['color_high']))
+            Gdk.color_parse(self._pref_data['color_high']))
         # Colorbutton - NORMAL
         self.colorbutton_normal.set_color(
-            gtk.gdk.color_parse(self._pref_data['color_normal']))
+            Gdk.color_parse(self._pref_data['color_normal']))
         # Colorbutton - LOW
         self.colorbutton_low.set_color(
-            gtk.gdk.color_parse(self._pref_data['color_low']))
+            Gdk.color_parse(self._pref_data['color_low']))
 
     def on_prefs_cancel(self, widget=None, data=None):
         self.prefs_update_widgets()
@@ -296,7 +297,7 @@ class pluginUrgencyColor:
         # distant future, when nobody has "red", "yellow" or "green"
         # settings
         namepairs = {'red': 'high', 'yellow': 'normal', 'green': 'low'}
-        for oldname, newname in namepairs.iteritems():
+        for oldname, newname in namepairs.items():
             old_key, new_key = "color_" + oldname, "color_" + newname
             if old_key in self._pref_data:
                 self._pref_data[new_key] = self._pref_data.pop(old_key)

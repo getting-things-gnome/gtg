@@ -19,15 +19,9 @@
 """
 Manager loads the prefs and launches the gtk main loop
 """
-try:
-    import pygtk
-    pygtk.require('2.0')
-except:
-    raise SystemExit(1)
 
-import gtk
-import gobject
-import ConfigParser
+from gi.repository import GObject, Gtk
+import configparser
 
 import GTG
 from GTG.gtk.delete_dialog import DeletionUI
@@ -45,19 +39,19 @@ from GTG.backends.backendsignals import BackendSignals
 from GTG.gtk.browser.tag_editor import TagEditor
 
 
-class Manager(gobject.GObject):
+class Manager(GObject.GObject):
 
-    __object_signal__ = (gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE,
-                         (gobject.TYPE_PYOBJECT,))
-    __object_string_signal__ = (gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE,
-                                (gobject.TYPE_PYOBJECT, gobject.TYPE_STRING, ))
+    __object_signal__ = (GObject.SIGNAL_RUN_FIRST, GObject.TYPE_NONE,
+                         (GObject.TYPE_PYOBJECT,))
+    __object_string_signal__ = (GObject.SIGNAL_RUN_FIRST, GObject.TYPE_NONE,
+                                (GObject.TYPE_PYOBJECT, GObject.TYPE_STRING, ))
     __gsignals__ = {'tasks-deleted': __object_signal__,
                     'task-status-changed': __object_string_signal__,
                     }
 
     ############## init #####################################################
     def __init__(self, req):
-        gobject.GObject.__init__(self)
+        GObject.GObject.__init__(self)
         self.req = req
         self.config_obj = self.req.get_global_config()
         self.browser_config = self.config_obj.get_subconfig("browser")
@@ -112,7 +106,7 @@ class Manager(gobject.GObject):
         # checks the conf for user settings
         try:
             plugins_enabled = self.plugins_config.get("enabled")
-        except ConfigParser.Error:
+        except configparser.Error:
             plugins_enabled = []
         for plugin in self.pengine.get_plugins():
             plugin.enabled = plugin.module_name in plugins_enabled
@@ -248,7 +242,7 @@ class Manager(gobject.GObject):
         for t in finallist:
             if t.get_id() in self.opened_task:
                 self.close_task(t.get_id())
-        gobject.idle_add(self.emit, "tasks-deleted", finallist)
+        GObject.idle_add(self.emit, "tasks-deleted", finallist)
         return finallist
 
     def open_tag_editor(self, tag):
@@ -270,7 +264,7 @@ class Manager(gobject.GObject):
         and the new status as second parameter
         '''
         task.set_status(new_status)
-        gobject.idle_add(self.emit, "task-status-changed", task, new_status)
+        GObject.idle_add(self.emit, "task-status-changed", task, new_status)
 
 ### URIS ###################################################################
     def open_uri_list(self, unused, uri_list):
@@ -294,19 +288,19 @@ class Manager(gobject.GObject):
                                      uri_list)
         else:
             self.open_browser()
-        gobject.threads_init()
+        GObject.threads_init()
         if not self.gtk_terminate:
             if once_thru:
-                gtk.main_iteration()
+                Gtk.main_iteration()
             else:
-                gtk.main()
+                Gtk.main()
         return 0
 
     def quit(self, sender=None):
-        gtk.main_quit()
+        Gtk.main_quit()
         # save opened tasks and their positions.
         open_task = []
-        for otid in self.opened_task.keys():
+        for otid in list(self.opened_task.keys()):
             open_task.append(otid)
             self.opened_task[otid].close()
         self.browser_config.set("opened_tasks", open_task)

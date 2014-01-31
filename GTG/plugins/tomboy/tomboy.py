@@ -16,15 +16,8 @@
 
 import dbus
 import os
-import sys
 
-try:
-    import pygtk
-    pygtk.require("2.0")
-except:
-    sys.exit(1)
-
-import gtk
+from gi.repository import Gtk, Gdk, GdkPixbuf
 
 from GTG import _
 from GTG.plugins.tomboy.combobox_enhanced import smartifyComboboxEntry
@@ -58,7 +51,7 @@ class pluginTomboy:
 
     # Function called upon plug-in activation
     def activate(self, plugin_api):
-        self.builder = gtk.Builder()
+        self.builder = Gtk.Builder()
 
     # Returns true is Tomboy/Gnote is present, otherwise shows a dialog
     #(only once)  and returns False
@@ -67,13 +60,13 @@ class pluginTomboy:
             self.activated = self.findTomboyIconPath()
             # The notification to disable the plug-in to the user will be
             # showed only once
-            dialog_destroy_with_parent = gtk.DIALOG_DESTROY_WITH_PARENT
+            DIALOG_DESTROY_WITH_PARENT = Gtk.DialogFlags.DESTROY_WITH_PARENT
             if not self.activated:
-                dialog = gtk.MessageDialog(parent=self.plugin_api.get_ui().
+                dialog = Gtk.MessageDialog(parent=self.plugin_api.get_ui().
                                            get_window(),
-                                           flags=dialog_destroy_with_parent,
-                                           type=gtk.MESSAGE_ERROR,
-                                           buttons=gtk.BUTTONS_OK,
+                                           flags=DIALOG_DESTROY_WITH_PARENT,
+                                           type=Gtk.MessageType.ERROR,
+                                           buttons=Gtk.ButtonsType.OK,
                                            message_format=_("Tomboy/Gnote "
                                            "not found. Please install it or "
                                            "disable the Tomboy/Gnote plugin"
@@ -112,12 +105,12 @@ class pluginTomboy:
     def addButtonToToolbar(self, plugin_api):
         if not self.checkTomboyPresent():
             return
-        tb_Taskbutton_image = gtk.Image()
+        tb_Taskbutton_image = Gtk.Image()
         tb_Taskbutton_image_path = self.tomboy_icon_path
-        tb_Taskbutton_pixbuf = gtk.gdk.\
-            pixbuf_new_from_file_at_size(tb_Taskbutton_image_path, 16, 16)
+        tb_Taskbutton_pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(
+            tb_Taskbutton_image_path, 16, 16)
         tb_Taskbutton_image.set_from_pixbuf(tb_Taskbutton_pixbuf)
-        self.tb_Taskbutton = gtk.ToolButton(tb_Taskbutton_image)
+        self.tb_Taskbutton = Gtk.ToolButton(tb_Taskbutton_image)
         self.tb_Taskbutton.set_label(_("Add Tomboy note"))
         self.tb_Taskbutton.connect('clicked', self.onTbTaskButton,
                                    self.plugin_api)
@@ -129,7 +122,7 @@ class pluginTomboy:
         self.anchors = []
         start_iter = self.textview.buff.get_start_iter()
         end_iter = self.textview.buff.get_end_iter()
-        text = self.textview.buff.get_slice(start_iter, end_iter)
+        text = self.textview.buff.get_slice(start_iter, end_iter, True)
         text_offset = 0
         token_position = text.find(self.token_start)
         token_ending = text.find(self.token_end, token_position)
@@ -184,13 +177,13 @@ class pluginTomboy:
             obj = bus.get_object("org.gnome.Tomboy",
                                  "/org/gnome/Tomboy/RemoteControl")
         except dbus.DBusException:
-            DIALOG_DESTROY_WITH_PARENT = gtk.DIALOG_DESTROY_WITH_PARENT
+            DIALOG_DESTROY_WITH_PARENT = Gtk.DialogFlags.DESTROY_WITH_PARENT
             if not hasattr(self, "disable_flag"):
-                dialog = gtk.MessageDialog(parent=self.plugin_api.get_ui().
+                dialog = Gtk.MessageDialog(parent=self.plugin_api.get_ui().
                                            get_window(),
                                            flags=DIALOG_DESTROY_WITH_PARENT,
-                                           type=gtk.MESSAGE_ERROR,
-                                           buttons=gtk.BUTTONS_OK,
+                                           type=Gtk.MessageType.ERROR,
+                                           buttons=Gtk.ButtonsType.OK,
                                            message_format=_("%s seems to be "
                                            "installed on your system, but it "
                                            "does not provide a DBus interface"
@@ -208,8 +201,7 @@ class pluginTomboy:
         tomboy = self.getTomboyObject()
         if tomboy is None:
             return None
-        return map(lambda note: str(tomboy.GetNoteTitle(note)),
-                   tomboy.ListAllNotes())
+        return [str(tomboy.GetNoteTitle(note)) for note in tomboy.ListAllNotes()]
 
     def onTbTaskButton(self, widget, plugin_api):
         title_list = self.getTomboyNoteTitleList()
@@ -238,18 +230,18 @@ class pluginTomboy:
         if tomboy is None:
             return
         supposed_title = self.combobox_entry.get_text()
-        if filter(lambda x: tomboy.GetNoteTitle(x) == supposed_title,
-                  tomboy.ListAllNotes()) == []:
+        if [x for x in tomboy.ListAllNotes() if tomboy.GetNoteTitle(x) == supposed_title] == []:
             self.label_caption.set_text(_("That note does not exist!"))
-            dialog = gtk.MessageDialog(parent=self.dialog,
-                                       flags=gtk.DIALOG_DESTROY_WITH_PARENT,
-                                       type=gtk.MESSAGE_QUESTION,
-                                       buttons=gtk.BUTTONS_YES_NO,
+            DIALOG_DESTROY_WITH_PARENT = Gtk.DialogFlags.DESTROY_WITH_PARENT
+            dialog = Gtk.MessageDialog(parent=self.dialog,
+                                       flags=DIALOG_DESTROY_WITH_PARENT,
+                                       type=Gtk.MessageType.QUESTION,
+                                       buttons=Gtk.ButtonsType.YES_NO,
                                        message_format=_("That note does not \
 exist. Do you want to create a new one?"))
             response = dialog.run()
             dialog.destroy()
-            if response == gtk.RESPONSE_YES:
+            if response == Gtk.ResponseType.YES:
                 tomboy.CreateNamedNote(supposed_title)
             else:
                 return
@@ -268,17 +260,18 @@ exist. Do you want to create a new one?"))
             return
         note = tomboy.FindNote(widget.tomboy_note_title)
         if str(note) == "":
-            dialog = gtk.MessageDialog(parent=self.
-                                       plugin_api.get_ui().get_window(),
-                                       flags=gtk.DIALOG_DESTROY_WITH_PARENT,
-                                       type=gtk.MESSAGE_WARNING,
-                                       buttons=gtk.BUTTONS_YES_NO,
+            DIALOG_DESTROY_WITH_PARENT = Gtk.DialogFlags.DESTROY_WITH_PARENT
+            dialog = Gtk.MessageDialog(parent=self.plugin_api.get_ui().
+                                       get_window(),
+                                       flags=DIALOG_DESTROY_WITH_PARENT,
+                                       type=Gtk.MessageType.WARNING,
+                                       buttons=Gtk.ButtonsType.YES_NO,
                                        message_format=(_("This Tomboy note \
                                        does not exist anymore. Do you want to\
                                         create it?")))
             response = dialog.run()
             dialog.destroy()
-            if response == gtk.RESPONSE_YES:
+            if response == Gtk.ResponseType.YES:
                 tomboy.CreateNamedNote(widget.tomboy_note_title)
                 tomboy.DisplayNote(note)
         else:
@@ -293,49 +286,48 @@ exist. Do you want to create a new one?"))
 
     # creates the tomboy widget
     def widgetCreate(self, tomboy_note_title):
-        image = gtk.Image()
+        image = Gtk.Image()
         window = self.plugin_api.get_ui().get_window()
         window.realize()
-        window_style = window.get_style()
-        pixbuf = gtk.gdk.\
-            pixbuf_new_from_file_at_size(self.tomboy_icon_path, 16, 16)
+        pixbuf = Gdk.pixbuf_new_from_file_at_size(
+            self.tomboy_icon_path, 16, 16)
         image.show()
         image.set_from_pixbuf(pixbuf)
         image.set_alignment(0.5, 1.0)
-        label = gtk.Label()
-        color = str(window_style.text[gtk.STATE_PRELIGHT])
+        label = Gtk.Label()
+        window_style = window.get_style_context()
+        color = window_style.get_color(
+            Gtk.StateType.PRELIGHT).to_color().to_string()
         title = tomboy_note_title
         label.set_markup("<span underline='low' color='%s'>%s</span>" % (color,
                                                                          title)
                          )
         label.show()
         label.set_alignment(0.5, 1.0)
-        eventbox = gtk.EventBox()
-        eventbox.set_events(gtk.gdk.BUTTON_PRESS_MASK)
+        eventbox = Gtk.EventBox()
+        eventbox.set_events(Gdk.EventMask.BUTTON_PRESS_MASK)
         eventbox.connect('button_press_event', self.tomboyDisplayNote)
-        hbox = gtk.HBox()
-        hbox.show()
-        hbox.add(image)
-        hbox.add(label)
-        eventbox.add(hbox)
-        # the eventbox should follow the colours of the textview to blend in
-        # properly
-        textview_style = self.textview.get_style()
-        eventbox_style = eventbox.get_style().copy()
-        for state in (gtk.STATE_NORMAL, gtk.STATE_PRELIGHT, gtk.STATE_ACTIVE,
-                      gtk.STATE_SELECTED, gtk.STATE_INSENSITIVE):
-            eventbox_style.base[state] = textview_style.base[state]
-            eventbox_style.bg[state] = textview_style.bg[state]
-            eventbox_style.fg[state] = textview_style.fg[state]
-            eventbox_style.text[state] = textview_style.text[state]
-        eventbox_style.bg[gtk.STATE_NORMAL] = \
-            textview_style.base[gtk.STATE_NORMAL]
-        eventbox.set_style(eventbox_style)
+        box = Gtk.Box()
+        box.show()
+        box.add(image)
+        box.add(label)
+        eventbox.add(box)
+        #the eventbox should follow the colours of the textview to blend in
+        #properly
+        textview_style = self.textview.get_style_context()
+        for state in (Gtk.StateType.NORMAL, Gtk.StateType.PRELIGHT,
+                      Gtk.StateType.ACTIVE, Gtk.StateType.SELECTED,
+                      Gtk.StateType.INSENSITIVE):
+            fg_color = textview_style.get_color(state)
+            eventbox.override_color(state, fg_color)
+
+            bg_color = textview_style.get_background_color(state)
+            eventbox.override_background_color(state, bg_color)
         eventbox.show()
         eventbox.tomboy_note_title = tomboy_note_title
         # cursor changes to a hand
 
         def realize_callback(widget):
-            eventbox.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.HAND2))
+            eventbox.window.set_cursor(Gdk.Cursor.new(Gdk.HAND2))
         eventbox.connect("realize", realize_callback)
         return eventbox

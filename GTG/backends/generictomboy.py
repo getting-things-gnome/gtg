@@ -126,7 +126,7 @@ class GenericTomboy(GenericBackend):
             while True:
                 try:
                     [key, timer] = \
-                        self._tomboy_setting_timers.iteritems().next()
+                        next(iter(self._tomboy_setting_timers.items()))
                 except StopIteration:
                     break
                 timer.cancel()
@@ -416,12 +416,12 @@ class GenericTomboy(GenericBackend):
         try:
             end_of_title = content.index('\n')
         except ValueError:
-            return content, unicode("")
+            return content, str("")
         title = content[: end_of_title]
         if len(content) > end_of_title:
             return title, content[end_of_title + 1:]
         else:
-            return title, unicode("")
+            return title, str("")
 
     def _populate_task(self, task, note):
         '''
@@ -438,10 +438,10 @@ class GenericTomboy(GenericBackend):
         # update the tags list
         task.set_only_these_tags(extract_tags_from_text(content))
         # extract title and text
-        [title, text] = self._tomboy_split_title_and_text(unicode(content))
+        [title, text] = self._tomboy_split_title_and_text(str(content))
         # Tomboy speaks unicode, we don't
-        title = unicodedata.normalize('NFKD', title).encode('ascii', 'ignore')
-        text = unicodedata.normalize('NFKD', text).encode('ascii', 'ignore')
+        title = unicodedata.normalize('NFKD', title)
+        text = unicodedata.normalize('NFKD', text)
         task.set_title(title)
         task.set_text(text)
         task.add_remote_id(self.get_id(), note)
@@ -467,7 +467,7 @@ class GenericTomboy(GenericBackend):
         # tomboy passes Dbus.String objects, which are not pickable. We convert
         # those to unicode
         if "remote_id" in kwargs:
-            kwargs["remote_id"] = unicode(kwargs["remote_id"])
+            kwargs["remote_id"] = str(kwargs["remote_id"])
         try:
             self.sync_engine.break_relationship(*args, **kwargs)
             # we try to save the state at each change in the sync_engine:
@@ -485,7 +485,7 @@ class GenericTomboy(GenericBackend):
         # tomboy passes Dbus.String objects, which are not pickable. We convert
         # those to unicode
         if "remote_id" in kwargs:
-            kwargs["remote_id"] = unicode(kwargs["remote_id"])
+            kwargs["remote_id"] = str(kwargs["remote_id"])
 
         self.sync_engine.record_relationship(*args, **kwargs)
         # we try to save the state at each change in the sync_engine:

@@ -28,6 +28,7 @@ import xml.sax.saxutils as saxutils
 
 from GTG.core import CoreConfig
 from liblarch import TreeNode
+from functools import reduce
 
 
 class Tag(TreeNode):
@@ -54,7 +55,7 @@ class Tag(TreeNode):
         self.req = req
         self._save = None
         self._attributes = {'name': self._name}
-        for key, value in attributes.iteritems():
+        for key, value in attributes.items():
             self.set_attribute(key, value)
 
         self.viewcount = None
@@ -126,7 +127,7 @@ class Tag(TreeNode):
             modified = True
         else:
             # Attributes should all be strings.
-            val = unicode(str(att_value), "UTF-8")
+            val = str(att_value)
             self._attributes[att_name] = val
             if self._save:
                 self._save()
@@ -174,7 +175,7 @@ class Tag(TreeNode):
             names.
         @param withparent: If True, the "parent" attribute is attached
         """
-        attributes = self._attributes.keys()
+        attributes = list(self._attributes.keys())
         if butname:
             attributes.remove('name')
         if withparent:

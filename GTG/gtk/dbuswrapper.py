@@ -38,7 +38,7 @@ def dsanitize(data):
     so these need to be converted into blank values D-Bus accepts.
     @return: Cleaned up dictionary
     """
-    for k, v in data.items():
+    for k, v in list(data.items()):
         # Manually specify an arbitrary content type for empty Python arrays
         # because D-Bus can't handle the type conversion for empty arrays
         if not v and isinstance(v, list):

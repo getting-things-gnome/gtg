@@ -1,3 +1,4 @@
+from functools import reduce
 # -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
 # Getting Things GNOME! - a personal organizer for the GNOME desktop
@@ -107,4 +108,4 @@ class BiDict(object):
         '''
         return reduce(lambda text, keys:
                       str(text) + str(keys),
-                      self._first_to_second.iteritems())
+                      iter(self._first_to_second.items()))

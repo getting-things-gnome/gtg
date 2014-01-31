@@ -19,7 +19,7 @@
 
 """ Tag completion which is connected to LibLarch """
 
-import gtk
+from gi.repository import Gtk
 import unicodedata
 
 FILTER_NAME = '@@TagCompletion'
@@ -38,7 +38,7 @@ def tag_filter(tag, parameters=None):
 def normalize_unicode(string):
     """ Unicode characters with diacritic could have more than just one
     representation. We force them to be in just one of them."""
-    return unicodedata.normalize('NFC', unicode(string))
+    return unicodedata.normalize('NFC', str(string))
 
 
 def tag_match(completion, key, iterator, column):
@@ -57,7 +57,7 @@ def tag_match(completion, key, iterator, column):
     return text.startswith(key)
 
 
-class TagCompletion(gtk.EntryCompletion):
+class TagCompletion(Gtk.EntryCompletion):
     """ Tag completion which allows to enter 4 representation of a '@tag':
        ['@tag', '!@tag', 'tag', '!tag']
 
@@ -71,9 +71,9 @@ class TagCompletion(gtk.EntryCompletion):
 
         Create a list store which is connected to a LibLarch and
         kept updated. """
-        gtk.EntryCompletion.__init__(self)
+        Gtk.EntryCompletion.__init__(self)
 
-        self.tags = gtk.ListStore(str)
+        self.tags = Gtk.ListStore(str)
 
         tree = tree.get_basetree()
         tree.add_filter(FILTER_NAME, tag_filter, {'flat': True})
