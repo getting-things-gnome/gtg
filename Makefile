@@ -16,6 +16,9 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
+PEP8=pep8
+PYFLAKES=pyflakes
+PYDOCTOR=pydoctor
 
 check: tests pep8 pyflakes
 
@@ -33,21 +36,21 @@ clean:
 
 # Check for common & easily catchable Python mistakes.
 pyflakes:
-	pyflakes gtg gtcli gtg_new_task GTG
+	$(PYFLAKES) gtg gtcli gtg_new_task GTG
 
 # Check for coding standard violations.
 pep8:
-	pep8 --statistics --count gtg gtcli gtg_new_task GTG
+	$(PEP8) --statistics --count gtg gtcli gtg_new_task GTG
 
 # Build API documentation.
 apidocs:
-	pydoctor --add-package GTG --make-html --html-output=doc/api \
+	$(PYDOCTOR) --add-package GTG --make-html --html-output=doc/api \
 		--project-name=GTG --project-url=http://gtg.fritalk.com/
 
 edit-apidocs:
-	pydoctor --add-package GTG --make-html --html-output=doc/api \
+	$(PYDOCTOR) --add-package GTG --make-html --html-output=doc/api \
 		--project-name=GTG --project-url=http://gtg.fritalk.com/ \
-	        --verbose-about=epydoc2stan2 --verbose-about=epydoc2stan2 \
+		--verbose-about=epydoc2stan2 --verbose-about=epydoc2stan2 \
 		--verbose-about=server --verbose-about=server --local-only \
 		--server --edit
 

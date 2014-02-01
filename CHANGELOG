@@ -9,6 +9,7 @@
     * Added Appdata file
     * Merged the python3 and gtk3 port with GTG trunk
     * Fix for bug #1275195: Popup menu of notification plugin does work after porting to gtk+ 3, by Parin Porecha
+    * Fix for bug #1275226: Port `make lint` to Python 3, by Chenxiong Qi
 
 2013-11-24 Getting Things GNOME! 0.3.1
     * Fix for bug #1024473: Have 'Show Main Window' in notification area, by Antonio Roquentin
