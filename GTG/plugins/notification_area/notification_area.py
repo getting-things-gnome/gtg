@@ -127,8 +127,8 @@ class IconIndicator:
     def _on_icon_popup(self, icon, button, timestamp):
         """ Show the menu on right click on the icon """
         if not self._indicator:
-            self._menu.popup(None, None, Gtk.status_icon_position_menu,
-                             button, timestamp, icon)
+            self._menu.popup(None, None, Gtk.StatusIcon.position_menu,
+                             icon, button, timestamp)
 
 
 def _due_within(task, danger_zone):
@@ -277,12 +277,12 @@ class NotificationArea:
 
         # add "new task"
         # FIXME test this label... is it needed? play with it a little
-        menuItem = Gtk.MenuItem(label=_('Add _New Task'))
+        menuItem = Gtk.MenuItem(label=_('Add New Task'))
         menuItem.connect('activate', self.__open_task)
         menu.append(menuItem)
 
         # Show Main Window
-        show_browser = Gtk.MenuItem(label=_('_Show Main Window'))
+        show_browser = Gtk.MenuItem(label=_('Show Main Window'))
         show_browser.connect('activate', self.__show_browser)
         menu.append(show_browser)
 
@@ -295,7 +295,7 @@ class NotificationArea:
         menu.append(Gtk.SeparatorMenuItem())
 
         # quit item
-        menuItem = Gtk.MenuItem(label=_('_Quit'))
+        menuItem = Gtk.MenuItem(label=_('Quit'))
         menuItem.connect('activate', self.__view_manager.close_browser)
         menu.append(menuItem)
 
