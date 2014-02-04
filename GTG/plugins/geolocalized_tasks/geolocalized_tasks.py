@@ -51,6 +51,8 @@ class geolocalizedTasks:
         self.marker_to_be_deleted = None
         self.delete = False
         self.marker_last_location = None
+        self.tags = None
+        self.plugin_api = None
 
         self.factory = Champlain.MapSourceFactory.dup_default()
         self.context = None
@@ -452,6 +454,7 @@ class geolocalizedTasks:
     def update_location_name(self, reverse, res, marker):
         place = reverse.resolve_finish(res)
         marker.set_text(place.get_name())
+        print (marker)
 
     def on_im_here (self, widget, position):
         [latitude, longitude] = position
@@ -472,6 +475,27 @@ class geolocalizedTasks:
         self.locations.remove(self.marker_to_be_deleted)
         self.marker_to_be_deleted = None
 
+    #for edit
+    def on_edit (self, widget, data):
+        builder = self._get_builder_from_file("edit_task.ui")
+        dialog2 = builder.get_object("EditTask")
+
+        entry1 = builder.get_object("entry1")
+        task_name = self.marker_to_be_deleted.get_text()
+        entry1.set_text(task_name)
+        dialog2.show_all()
+
+        box = builder.get_object("box1")
+        self.show_tags = self.plugin_api.get_selected().get_tags_name()
+        print ("DEBBUG | ", self.show_tags)
+
+        print ("DEBBUG | ", entry1.get_text())
+        btn = builder.get_object("btn_ok2")
+        btn.connect('clicked', self.ok_edit, entry1)
+
+        btn = builder.get_object("cancel")
+        btn.connect('clicked', self.cancel_edit, widget)
+
     def on_context_menu(self, widget, event, data):
         if (event.button == 3):
             if (self.context is not None):
@@ -484,14 +508,22 @@ class geolocalizedTasks:
             context = Gtk.Menu()
 
             mi = Gtk.MenuItem()
-            mi.set_label("I am here!")
+            mi.set_label("Add Location")
             mi.connect ("activate", self.on_im_here, [latitude, longitude])
             context.attach(mi, 0, 1, 0, 1)
 
             mi = Gtk.MenuItem()
-            mi.set_label("Delete")
-            mi.connect("activate", self.on_delete, None)
+            mi.set_label("Edit Location")
+            mi.connect("activate", self.on_edit, data)
             context.attach(mi, 0, 1, 1, 2)
+
+            if self.delete is False:
+                mi.set_sensitive(False)
+
+            mi = Gtk.MenuItem()
+            mi.set_label("Remove Location")
+            mi.connect("activate", self.on_delete, [latitude, longitude])
+            context.attach(mi, 0, 1, 2, 3)
 
             context.show_all()
 
@@ -502,6 +534,7 @@ class geolocalizedTasks:
                 mi.set_sensitive(False)
             else:
                 self.delete = False
+
         return True
 
     def on_marker(self, widget, event, marker):
@@ -510,9 +543,11 @@ class geolocalizedTasks:
 
         self.marker_to_be_deleted = marker
         self.delete = True
+
         return False
 
     def set_task_location(self, widget, plugin_api, location=None):
+        self.plugin_api = plugin_api
         self.task_id = plugin_api.get_selected().get_uuid()
         builder = self._get_builder_from_file("set_task_location.ui")
         dialog = builder.get_object("SetTaskLocation")
@@ -937,14 +972,23 @@ class geolocalizedTasks:
     def zoom_out(self, widget, view):
         view.zoom_out()
 
-    def close(self, widget, dialog):
+    def close(self, widget, data):
         data_path = os.path.join('plugins/geolocalized_tasks', self.task_id)
         locations = []
         for location in self.locations:
             locations.append([location.get_text(), location.get_latitude(), location.get_longitude()])
         store_pickled_file (data_path, locations)
-        dialog.destroy()
+
+        widget.get_parent_window().destroy()
         self.clean_up()
+
+    def ok_edit (self, widget, entry):
+        print (widget)
+        self.marker_to_be_deleted.set_text(entry.get_text())
+        widget.get_parent_window().destroy()
+
+    def cancel_edit (self, widget, data):
+        widget.get_parent_window().destroy()
 
     def clean_up(self):
         self.locations = []
