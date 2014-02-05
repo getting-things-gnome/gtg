@@ -4,10 +4,10 @@ Priority: optional
 Maintainer: Luca Falavigna <dktrkranz@debian.org>
 Uploaders: Python Applications Packaging Team <python-apps-team@lists.alioth.debian.org>, Izidor Matušov <izidor.matusov@gmail.com>
 Build-Depends: debhelper (>= 9~)
-Build-Depends-Indep: python (>= 2.6.6-3~)
+Build-Depends-Indep: python (>= 3.0)
 Standards-Version: 3.9.4
-X-Python-Version: >= 2.6
-Homepage: http://gtg.fritalk.com/
+X-Python-Version: >= 3.0
+Homepage: http://gtgnome.net/
 Vcs-Svn: svn://svn.debian.org/python-apps/packages/gtg/trunk/
 Vcs-Browser: http://svn.debian.org/viewsvn/python-apps/packages/gtg/trunk/
 
@@ -15,12 +15,12 @@ Package: gtg
 Architecture: all
 Depends: ${python:Depends},
  ${misc:Depends},
- python-gtk2 (>= 2.14),
  python-glade2,
- python-dbus,
+ python3-dbus,
  python-xdg,
  python-configobj,
- python-liblarch (>= 2.1.0)
+ python-liblarch (>= 2.1.0),
+ python3-gi
 Recommends: python-simplejson,
  yelp
 Suggests: bugz,
