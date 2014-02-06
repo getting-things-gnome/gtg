@@ -54,7 +54,7 @@ class geolocalizedTasks:
         self.tags = None
         self.plugin_api = None
 
-        self.factory = Champlain.MapSourceFactory.dup_default()
+#        self.factory = Champlain.MapSourceFactory.dup_default()
         self.context = None
         self.locations = []
         self.task_id = ""
@@ -475,26 +475,47 @@ class geolocalizedTasks:
         self.locations.remove(self.marker_to_be_deleted)
         self.marker_to_be_deleted = None
 
+    #just for verify what is happening with the click
+    def check_clicked (self, widget, data):
+        if widget.get_active() is True:
+            print ("DEBUG | ATIVADO")
+        else:
+            print ("DEBUG | DESATIVADO")
+
     #for edit
     def on_edit (self, widget, data):
         builder = self._get_builder_from_file("edit_task.ui")
-        dialog2 = builder.get_object("EditTask")
+        dialog1 = builder.get_object("window1")
 
         entry1 = builder.get_object("entry1")
         task_name = self.marker_to_be_deleted.get_text()
         entry1.set_text(task_name)
-        dialog2.show_all()
+#        dialog1.show_all()
 
-        box = builder.get_object("box1")
+#        box = builder.get_object("grid3")
         self.show_tags = self.plugin_api.get_selected().get_tags_name()
-        print ("DEBBUG | ", self.show_tags)
 
-        print ("DEBBUG | ", entry1.get_text())
-        btn = builder.get_object("btn_ok2")
+        print ("DEBUG | ", entry1.get_text())
+        btn = builder.get_object("button1")
         btn.connect('clicked', self.ok_edit, entry1)
 
-        btn = builder.get_object("cancel")
+        btn = builder.get_object("button2")
         btn.connect('clicked', self.cancel_edit, widget)
+
+        scrolled_window = builder.get_object("scrolledwindow1")
+        grid = Gtk.Grid()
+        scrolled_window.add(grid)
+
+        i = 0
+        for tag in self.show_tags:
+            check = Gtk.CheckButton(tag)
+            check.connect("toggled", self.check_clicked, tag)
+            grid.attach(check, (i/(len(self.show_tags)/2)), (i%(len(self.show_tags)/2)), 1, 1)
+            i += 1
+            print ("DEBUG | ", tag)
+
+        scrolled_window.show_all()
+        dialog1.show_all()
 
     def on_context_menu(self, widget, event, data):
         if (event.button == 3):
@@ -551,7 +572,7 @@ class geolocalizedTasks:
         self.task_id = plugin_api.get_selected().get_uuid()
         builder = self._get_builder_from_file("set_task_location.ui")
         dialog = builder.get_object("SetTaskLocation")
-        self.factory = Champlain.MapSourceFactory.dup_default()
+#        self.factory = Champlain.MapSourceFactory.dup_default()
 
         map = GtkChamplain.Embed()
         champlain_view = map.get_view()
@@ -559,8 +580,8 @@ class geolocalizedTasks:
         champlain_view.set_reactive(True)
 
         #Factory
-        source = self.factory.create_cached_source(Champlain.MAP_SOURCE_OSM_MAPQUEST)
-        champlain_view.set_map_source(source)
+#        source = self.factory.create_cached_source(Champlain.MAP_SOURCE_OSM_MAPQUEST)
+#        champlain_view.set_map_source(source)
 
         layer = Champlain.MarkerLayer()
 
