@@ -58,6 +58,7 @@ class geolocalizedTasks:
         self.context = None
         self.locations = []
         self.task_id = ""
+        self.dict = {}
 #        self.geoclue = Geoclue.DiscoverLocation()
 #        self.geoclue.connect(self.location_changed)
 #
@@ -475,12 +476,15 @@ class geolocalizedTasks:
         self.locations.remove(self.marker_to_be_deleted)
         self.marker_to_be_deleted = None
 
-    #just for verify what is happening with the click
-    def check_clicked (self, widget, data):
+    def check_clicked (self, widget, tag):
         if widget.get_active() is True:
-            print ("DEBUG | ATIVADO")
+            location_tag = [self.marker_to_be_deleted.get_text(), self.marker_to_be_deleted.get_latitude(), self.marker_to_be_deleted.get_longitude()]
+            self.dict[tag] = [location_tag]
+            self.plugin_api.get_selected().add_tag(tag)
+            print (self.dict)
         else:
-            print ("DEBUG | DESATIVADO")
+            del self.dict[tag]
+            self.plugin_api.get_selected().remove_tag(tag)
 
     #for edit
     def on_edit (self, widget, data):
@@ -490,10 +494,8 @@ class geolocalizedTasks:
         entry1 = builder.get_object("entry1")
         task_name = self.marker_to_be_deleted.get_text()
         entry1.set_text(task_name)
-#        dialog1.show_all()
 
-#        box = builder.get_object("grid3")
-        self.show_tags = self.plugin_api.get_selected().get_tags_name()
+        self.show_tags = self.plugin_api.get_requester().get_all_tags()
 
         print ("DEBUG | ", entry1.get_text())
         btn = builder.get_object("button1")
@@ -506,13 +508,20 @@ class geolocalizedTasks:
         grid = Gtk.Grid()
         scrolled_window.add(grid)
 
+        tag_location_data_path = os.path.join('plugins/geolocalized_tasks', "tag_locations")
+        self.dict = load_pickled_file(tag_location_data_path, None)
+
+        existent_tags = self.plugin_api.get_selected().get_tags_name()
+
         i = 0
         for tag in self.show_tags:
-            check = Gtk.CheckButton(tag)
-            check.connect("toggled", self.check_clicked, tag)
-            grid.attach(check, (i/(len(self.show_tags)/2)), (i%(len(self.show_tags)/2)), 1, 1)
-            i += 1
-            print ("DEBUG | ", tag)
+            if tag.startswith("@"):
+                check = Gtk.CheckButton(tag)
+                if self.dict is not None and tag in self.dict:
+                    check.set_active(True)
+                check.connect("toggled", self.check_clicked, tag)
+                grid.attach(check, (i/(len(self.show_tags)/2)), (i%(len(self.show_tags)/2)), 1, 1)
+                i += 1
 
         scrolled_window.show_all()
         dialog1.show_all()
@@ -1004,7 +1013,8 @@ class geolocalizedTasks:
         self.clean_up()
 
     def ok_edit (self, widget, entry):
-        print (widget)
+        tag_location_data_path = os.path.join('plugins/geolocalized_tasks', "tag_locations")
+        store_pickled_file(tag_location_data_path, self.dict)
         self.marker_to_be_deleted.set_text(entry.get_text())
         widget.get_parent_window().destroy()
 
