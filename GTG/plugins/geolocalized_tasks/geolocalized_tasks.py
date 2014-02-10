@@ -481,7 +481,6 @@ class geolocalizedTasks:
             location_tag = [self.marker_to_be_deleted.get_text(), self.marker_to_be_deleted.get_latitude(), self.marker_to_be_deleted.get_longitude()]
             self.dict[tag] = [location_tag]
             self.plugin_api.get_selected().add_tag(tag)
-            print (self.dict)
         else:
             del self.dict[tag]
             self.plugin_api.get_selected().remove_tag(tag)
@@ -497,7 +496,6 @@ class geolocalizedTasks:
 
         self.show_tags = self.plugin_api.get_requester().get_all_tags()
 
-        print ("DEBUG | ", entry1.get_text())
         btn = builder.get_object("button1")
         btn.connect('clicked', self.ok_edit, entry1)
 
@@ -510,15 +508,21 @@ class geolocalizedTasks:
 
         tag_location_data_path = os.path.join('plugins/geolocalized_tasks', "tag_locations")
         self.dict = load_pickled_file(tag_location_data_path, None)
+        print ('DEBUG LOAD PICLED |self.dict', self.dict)
 
         existent_tags = self.plugin_api.get_selected().get_tags_name()
 
         i = 0
         for tag in self.show_tags:
             if tag.startswith("@"):
+                print ("TAG:", tag)
                 check = Gtk.CheckButton(tag)
                 if self.dict is not None and tag in self.dict:
-                    check.set_active(True)
+                    list_tag = [self.marker_to_be_deleted.get_text(), self.marker_to_be_deleted.get_latitude(), self.marker_to_be_deleted.get_longitude()]
+                    values = self.dict[tag]
+                    if list_tag in values:
+                        print ("HAS MARKER AS VALUE")
+                        check.set_active(True)
                 check.connect("toggled", self.check_clicked, tag)
                 grid.attach(check, (i/(len(self.show_tags)/2)), (i%(len(self.show_tags)/2)), 1, 1)
                 i += 1
