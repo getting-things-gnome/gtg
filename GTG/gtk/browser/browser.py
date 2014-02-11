@@ -428,6 +428,9 @@ class TaskBrowser(GObject.GObject):
     def quit(self, widget=None, data=None):
         self.vmanager.close_browser()
 
+    def get_tag_context_menu(self):
+        return self.tagpopup
+
     def on_window_state_event(self, widget, event, data=None):
         """ This event checks for the window state: maximized?
         and stores the state in self.config.max

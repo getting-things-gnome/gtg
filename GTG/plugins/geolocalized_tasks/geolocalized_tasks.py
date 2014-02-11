@@ -94,7 +94,18 @@ class geolocalizedTasks:
         self.latitude = location_properties.Get(self.where.LOCATION_INTERFACE_NAME, "Latitude")
         self.longitude = location_properties.Get(self.where.LOCATION_INTERFACE_NAME, "Longitude")
 
-#    def activate(self, plugin_api):
+    def activate(self, plugin_api):
+        mi = Gtk.MenuItem()
+        mi.set_label("Add Location")
+        plugin_api.add_item_to_tag_menu(mi)
+        mi.show_all()
+#        browser = plugin_api.get_browser()
+#        print (browser.tagpopup)
+#        mi = Gtk.MenuItem()
+#        mi.set_label("Poronga")
+#        browser.tagpopup.append(mi)
+#        print (browser.tagpopup)
+#        browser.tagpopup.show_all()
 #        pass
 #        self.plugin_api = plugin_api
 #
@@ -212,6 +223,7 @@ class geolocalizedTasks:
         self.where.client.Stop()
         try:
             plugin_api.remove_toolbar_item(self.btn_set_location)
+            plugin_api.remove_item_from_tag_menu(mi)
         except:
                 pass
 #        try:
@@ -262,6 +274,7 @@ class geolocalizedTasks:
         self.btn_set_location.show_all()
 
         plugin_api.add_toolbar_item(self.btn_set_location)
+
 #        pass
 #        image_geolocalization_path = os.path.join(self.plugin_path,
 #                                                  "icons/hicolor/24x24/\
@@ -488,21 +501,22 @@ class geolocalizedTasks:
     #for edit
     def on_edit (self, widget, data):
         builder = self._get_builder_from_file("edit_task.ui")
-        dialog1 = builder.get_object("window1")
+        dialog1 = builder.get_object("dialog")
+#        dialog1.set_transient_for(parent)
 
-        entry1 = builder.get_object("entry1")
+        entry1 = builder.get_object("entry")
         task_name = self.marker_to_be_deleted.get_text()
         entry1.set_text(task_name)
 
         self.show_tags = self.plugin_api.get_requester().get_all_tags()
 
-        btn = builder.get_object("button1")
+        btn = builder.get_object("button_ok")
         btn.connect('clicked', self.ok_edit, entry1)
 
-        btn = builder.get_object("button2")
+        btn = builder.get_object("button_cancel")
         btn.connect('clicked', self.cancel_edit, widget)
 
-        scrolled_window = builder.get_object("scrolledwindow1")
+        scrolled_window = builder.get_object("scrolledwindow")
         grid = Gtk.Grid()
         scrolled_window.add(grid)
 
@@ -521,7 +535,6 @@ class geolocalizedTasks:
                     list_tag = [self.marker_to_be_deleted.get_text(), self.marker_to_be_deleted.get_latitude(), self.marker_to_be_deleted.get_longitude()]
                     values = self.dict[tag]
                     if list_tag in values:
-                        print ("HAS MARKER AS VALUE")
                         check.set_active(True)
                 check.connect("toggled", self.check_clicked, tag)
                 grid.attach(check, (i/(len(self.show_tags)/2)), (i%(len(self.show_tags)/2)), 1, 1)
@@ -544,12 +557,12 @@ class geolocalizedTasks:
             mi = Gtk.MenuItem()
             mi.set_label("Add Location")
             mi.connect ("activate", self.on_im_here, [latitude, longitude])
-            context.attach(mi, 0, 1, 0, 1)
+            context.append(mi)
 
             mi = Gtk.MenuItem()
             mi.set_label("Edit Location")
-            mi.connect("activate", self.on_edit, data)
-            context.attach(mi, 0, 1, 1, 2)
+            mi.connect("activate", self.on_edit, None)
+            context.append(mi)
 
             if self.delete is False:
                 mi.set_sensitive(False)
@@ -557,7 +570,7 @@ class geolocalizedTasks:
             mi = Gtk.MenuItem()
             mi.set_label("Remove Location")
             mi.connect("activate", self.on_delete, [latitude, longitude])
-            context.attach(mi, 0, 1, 2, 3)
+            context.append(mi)
 
             context.show_all()
 
