@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.16.0 on Fri Feb  7 16:55:50 2014 -->
+<!-- Generated with glade 3.16.0 on Tue Feb 11 22:06:20 2014 -->
 <interface>
   <!-- interface-requires gtk+ 3.10 -->
-  <object class="GtkWindow" id="window1">
+  <object class="GtkDialog" id="dialog">
+    <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="title" translatable="yes">Task Edition</property>
-    <property name="resizable">False</property>
-    <child>
+    <property name="type_hint">dialog</property>
+    <child internal-child="vbox">
       <object class="GtkBox" id="box1">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
@@ -30,7 +31,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkEntry" id="entry1">
+              <object class="GtkEntry" id="entry">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="halign">center</property>
@@ -51,14 +52,25 @@
             <property name="position">0</property>
           </packing>
         </child>
+        <child internal-child="action_area">
+          <object class="GtkButtonBox" id="dialog-action_area1">
+            <property name="can_focus">False</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="pack_type">end</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
         <child>
-          <object class="GtkScrolledWindow" id="scrolledwindow1">
+          <object class="GtkScrolledWindow" id="scrolledwindow">
+            <property name="width_request">400</property>
+            <property name="height_request">200</property>
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="vexpand">True</property>
             <property name="shadow_type">in</property>
-            <property name="width_request">400</property>
-            <property name="height_request">200</property>
             <child>
               <placeholder/>
             </child>
@@ -77,7 +89,7 @@
             <property name="spacing">9</property>
             <property name="layout_style">end</property>
             <child>
-              <object class="GtkButton" id="button2">
+              <object class="GtkButton" id="button_cancel">
                 <property name="label" translatable="yes">Cancel</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
@@ -90,7 +102,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkButton" id="button1">
+              <object class="GtkButton" id="button_ok">
                 <property name="label" translatable="yes">Ok</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
