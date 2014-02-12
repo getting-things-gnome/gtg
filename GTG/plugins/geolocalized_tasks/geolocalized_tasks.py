@@ -95,17 +95,7 @@ class geolocalizedTasks:
         self.longitude = location_properties.Get(self.where.LOCATION_INTERFACE_NAME, "Longitude")
 
     def activate(self, plugin_api):
-        mi = Gtk.MenuItem()
-        mi.set_label("Add Location")
-        plugin_api.add_item_to_tag_menu(mi)
-        mi.show_all()
-#        browser = plugin_api.get_browser()
-#        print (browser.tagpopup)
-#        mi = Gtk.MenuItem()
-#        mi.set_label("Poronga")
-#        browser.tagpopup.append(mi)
-#        print (browser.tagpopup)
-#        browser.tagpopup.show_all()
+        self.mi = plugin_api.add_item_to_tag_menu("Add Location", self.set_task_location, plugin_api)
 #        pass
 #        self.plugin_api = plugin_api
 #
@@ -498,6 +488,8 @@ class geolocalizedTasks:
             del self.dict[tag]
             self.plugin_api.get_selected().remove_tag(tag)
 
+    def on_printei (self, widget, data):
+        print ("CallBack sendo chamada")
     #for edit
     def on_edit (self, widget, data):
         builder = self._get_builder_from_file("edit_task.ui")
@@ -524,7 +516,8 @@ class geolocalizedTasks:
         self.dict = load_pickled_file(tag_location_data_path, None)
         print ('DEBUG LOAD PICLED |self.dict', self.dict)
 
-        existent_tags = self.plugin_api.get_selected().get_tags_name()
+#        existent_tags = self.plugin_api.get_selected().get_tags_name()
+#        existent_tags = '@test, @test1, @test2'
 
         i = 0
         for tag in self.show_tags:
@@ -595,7 +588,8 @@ class geolocalizedTasks:
 
     def set_task_location(self, widget, plugin_api, location=None):
         self.plugin_api = plugin_api
-        self.task_id = plugin_api.get_selected().get_uuid()
+        self.task_id = '123'
+#        self.task_id = plugin_api.get_selected().get_uuid()
         builder = self._get_builder_from_file("set_task_location.ui")
         dialog = builder.get_object("SetTaskLocation")
 #        self.factory = Champlain.MapSourceFactory.dup_default()
