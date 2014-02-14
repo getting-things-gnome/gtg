@@ -95,9 +95,9 @@ class geolocalizedTasks:
         self.longitude = location_properties.Get(self.where.LOCATION_INTERFACE_NAME, "Longitude")
 
     def activate(self, plugin_api):
-        self.mi = plugin_api.add_item_to_tag_menu("Add Location", self.set_task_location, plugin_api)
+        self.plugin_api = plugin_api
+        self.mi = plugin_api.add_item_to_tag_menu("Add Location", self.set_tag_location)
 #        pass
-#        self.plugin_api = plugin_api
 #
 #        # toolbar button for the new Location view
 #        # create the pixbuf with the icon and it's size.
@@ -458,7 +458,6 @@ class geolocalizedTasks:
     def update_location_name(self, reverse, res, marker):
         place = reverse.resolve_finish(res)
         marker.set_text(place.get_name())
-        print (marker)
 
     def on_im_here (self, widget, position):
         [latitude, longitude] = position
@@ -482,19 +481,17 @@ class geolocalizedTasks:
     def check_clicked (self, widget, tag):
         if widget.get_active() is True:
             location_tag = [self.marker_to_be_deleted.get_text(), self.marker_to_be_deleted.get_latitude(), self.marker_to_be_deleted.get_longitude()]
-            self.dict[tag] = [location_tag]
-            self.plugin_api.get_selected().add_tag(tag)
+            if tag in self.dict:
+                self.dict[tag].append(location_tag)
+            else:
+                self.dict[tag] = [location_tag]
         else:
             del self.dict[tag]
-            self.plugin_api.get_selected().remove_tag(tag)
 
-    def on_printei (self, widget, data):
-        print ("CallBack sendo chamada")
     #for edit
     def on_edit (self, widget, data):
         builder = self._get_builder_from_file("edit_task.ui")
         dialog1 = builder.get_object("dialog")
-#        dialog1.set_transient_for(parent)
 
         entry1 = builder.get_object("entry")
         task_name = self.marker_to_be_deleted.get_text()
@@ -513,18 +510,14 @@ class geolocalizedTasks:
         scrolled_window.add(grid)
 
         tag_location_data_path = os.path.join('plugins/geolocalized_tasks', "tag_locations")
-        self.dict = load_pickled_file(tag_location_data_path, None)
-        print ('DEBUG LOAD PICLED |self.dict', self.dict)
-
+        self.dict = load_pickled_file(tag_location_data_path, {})
 #        existent_tags = self.plugin_api.get_selected().get_tags_name()
-#        existent_tags = '@test, @test1, @test2'
 
         i = 0
         for tag in self.show_tags:
             if tag.startswith("@"):
-                print ("TAG:", tag)
                 check = Gtk.CheckButton(tag)
-                if self.dict is not None and tag in self.dict:
+                if tag in self.dict:
                     list_tag = [self.marker_to_be_deleted.get_text(), self.marker_to_be_deleted.get_latitude(), self.marker_to_be_deleted.get_longitude()]
                     values = self.dict[tag]
                     if list_tag in values:
@@ -586,10 +579,26 @@ class geolocalizedTasks:
 
         return False
 
-    def set_task_location(self, widget, plugin_api, location=None):
-        self.plugin_api = plugin_api
-        self.task_id = '123'
-#        self.task_id = plugin_api.get_selected().get_uuid()
+    def get_tag_stored_locations(self, tag):
+        tag_location_data_path = os.path.join('plugins/geolocalized_tasks', "tag_locations")
+        dict = load_pickled_file(tag_location_data_path, {})
+        if tag in dict:
+            return dict[tag]
+        return []
+
+    def get_task_stored_locations(self, task_id):
+        data_path = os.path.join('plugins/geolocalized_tasks', task_id)
+        return load_pickled_file(data_path, [])
+
+    def set_task_location(self, widget, plugin_api):
+        task_id = plugin_api.get_selected().get_uuid()
+        self.create_location_window(self.get_task_stored_locations, self.close_task, self.cancel_task, task_id, task_id)
+
+    def set_tag_location(self, widget, tag):
+        tag_name = tag.get_name()
+        self.create_location_window(self.get_tag_stored_locations, self.close_tag, self.cancel_tag, tag_name, tag_name)
+
+    def create_location_window(self, get_locations_fn, close_cb, cancel_cb, get_locations_data=None, close_data=None, cancel_data=None):
         builder = self._get_builder_from_file("set_task_location.ui")
         dialog = builder.get_object("SetTaskLocation")
 #        self.factory = Champlain.MapSourceFactory.dup_default()
@@ -648,8 +657,7 @@ class geolocalizedTasks:
             btn = builder.get_object("btn_zoom_out")
             btn.connect('clicked', self.zoom_out, champlain_view)
 
-        data_path = os.path.join('plugins/geolocalized_tasks', self.task_id)
-        locations = load_pickled_file (data_path, [])
+        locations = get_locations_fn(get_locations_data)
         for location in locations:
             [text, latitude, longitude] = location
             marker = Champlain.Label()
@@ -664,10 +672,10 @@ class geolocalizedTasks:
         layer.show_all()
 
         btn = builder.get_object("btn_cancel")
-        btn.connect('clicked', self.close, dialog)
+        btn.connect('clicked', cancel_cb, cancel_data)
 
         btn = builder.get_object("btn_ok")
-        btn.connect('clicked', self.close, dialog)
+        btn.connect('clicked', close_cb, close_data)
 
         dialog.show_all()
 
@@ -1013,13 +1021,31 @@ class geolocalizedTasks:
     def zoom_out(self, widget, view):
         view.zoom_out()
 
-    def close(self, widget, data):
-        data_path = os.path.join('plugins/geolocalized_tasks', self.task_id)
+    def close_task(self, widget, task_id):
+        data_path = os.path.join('plugins/geolocalized_tasks', task_id)
         locations = []
         for location in self.locations:
             locations.append([location.get_text(), location.get_latitude(), location.get_longitude()])
         store_pickled_file (data_path, locations)
+        widget.get_parent_window().destroy()
+        self.clean_up()
 
+    def close_tag(self, widget, tag):
+        data_path = os.path.join('plugins/geolocalized_tasks', 'tag_locations')
+        locations = []
+        for location in self.locations:
+            locations.append([location.get_text(), location.get_latitude(), location.get_longitude()])
+        self.dict[tag] = locations
+        store_pickled_file (data_path, self.dict)
+
+        widget.get_parent_window().destroy()
+        self.clean_up()
+
+    def cancel_task(self, widget, data):
+        widget.get_parent_window().destroy()
+        self.clean_up()
+
+    def cancel_tag(self, widget, data):
         widget.get_parent_window().destroy()
         self.clean_up()
 
@@ -1034,7 +1060,6 @@ class geolocalizedTasks:
 
     def clean_up(self):
         self.locations = []
-        self.task_id = ""
 
     # http://code.activestate.com/recipes/266466/
     # original by Paul Winkler
