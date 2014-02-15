@@ -339,6 +339,8 @@ class geolocalizedTasks:
     #=== GEOLOCALIZED PREFERENCES=============================================
     def on_geolocalized_preferences(self):
         pass
+#        builder = self._get_builder_from_file("preferencesEliane.ui")
+#        dialog1 = builder.get_object("dialog1")
 #        wTree = Gtk.glade.XML(self.glade_file, "Preferences")
 #        dialog = wTree.get_widget("Preferences")
 #        dialog.connect("response", self.preferences_close)
@@ -523,7 +525,7 @@ class geolocalizedTasks:
                     if list_tag in values:
                         check.set_active(True)
                 check.connect("toggled", self.check_clicked, tag)
-                grid.attach(check, (i/(len(self.show_tags)/2)), (i%(len(self.show_tags)/2)), 1, 1)
+                grid.attach(check, i%4, i/4, 1, 1)
                 i += 1
 
         scrolled_window.show_all()

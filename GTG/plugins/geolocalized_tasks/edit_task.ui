@@ -1,12 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.16.0 on Wed Feb 12 00:42:37 2014 -->
+<!-- Generated with glade 3.16.0 on Sat Feb 15 23:35:52 2014 -->
 <interface>
   <!-- interface-requires gtk+ 3.10 -->
   <object class="GtkDialog" id="dialog">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="title" translatable="yes">Location Name Edition</property>
+    <property name="resizable">False</property>
+    <property name="window_position">center</property>
+    <property name="destroy_with_parent">True</property>
     <property name="type_hint">dialog</property>
+    <property name="deletable">False</property>
+    <property name="has_resize_grip">False</property>
     <child internal-child="vbox">
       <object class="GtkBox" id="box1">
         <property name="visible">True</property>
@@ -20,11 +25,13 @@
               <object class="GtkLabel" id="label1">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="margin_left">2</property>
                 <property name="label" translatable="yes">Location Name</property>
               </object>
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">True</property>
+                <property name="padding">4</property>
                 <property name="position">0</property>
               </packing>
             </child>
@@ -32,8 +39,9 @@
               <object class="GtkEntry" id="entry">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
+                <property name="has_focus">True</property>
                 <property name="margin_left">5</property>
-                <property name="margin_right">4</property>
+                <property name="margin_right">6</property>
               </object>
               <packing>
                 <property name="expand">True</property>
@@ -45,6 +53,7 @@
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
+            <property name="padding">5</property>
             <property name="position">0</property>
           </packing>
         </child>
@@ -70,19 +79,6 @@
         <child internal-child="action_area">
           <object class="GtkButtonBox" id="dialog-action_area1">
             <property name="can_focus">False</property>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="pack_type">end</property>
-            <property name="position">2</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkButtonBox" id="buttonbox2">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="spacing">9</property>
             <property name="layout_style">end</property>
             <child>
               <object class="GtkButton" id="button_cancel">
@@ -93,16 +89,18 @@
               </object>
               <packing>
                 <property name="expand">False</property>
-                <property name="fill">True</property>
+                <property name="fill">False</property>
+                <property name="padding">1</property>
                 <property name="position">0</property>
               </packing>
             </child>
             <child>
               <object class="GtkButton" id="button_ok">
-                <property name="label" translatable="yes">Ok</property>
+                <property name="label">gtk-ok</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
+                <property name="use_stock">True</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -114,10 +112,12 @@
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="padding">5</property>
             <property name="pack_type">end</property>
-            <property name="position">3</property>
+            <property name="position">2</property>
           </packing>
+        </child>
+        <child>
+          <placeholder/>
         </child>
       </object>
     </child>
