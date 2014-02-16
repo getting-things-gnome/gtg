@@ -43,205 +43,213 @@ class geolocalizedTasks:
 
     def __init__(self):
         Clutter.init([])
-        self.latitude = None
-        self.longitude = None
-        self.where = Geoclue()
-        self.where.client.connect_to_signal('LocationUpdated', self._location_updated)
-        self.where.client.Start()
-        self.marker_to_be_deleted = None
-        self.delete = False
-        self.marker_last_location = None
-        self.tags = None
-        self.plugin_api = None
+        self.__latitude = None
+        self.__longitude = None
+        self.__selected_marker = None
+        self.__active_sensitive = False
+        self.__marker_last_location = None
 
-#        self.factory = Champlain.MapSourceFactory.dup_default()
-        self.context = None
-        self.locations = []
-        self.task_id = ""
-        self.dict = {}
-#        self.geoclue = Geoclue.DiscoverLocation()
-#        self.geoclue.connect(self.location_changed)
-#
-#        self.plugin_path = os.path.dirname(os.path.abspath(__file__))
-#        self.glade_file = os.path.join(self.plugin_path, "geolocalized.ui")
-#
-#        # the preference menu for the plugin
-#        self.menu_item = Gtk.MenuItem("Geolocalized-tasks Preferences")
-#
-#        self.PROXIMITY_FACTOR = 5  # 5 km
-#        self.LOCATION_DETERMINATION_METHOD = []
-#            # "network", "gps", "cellphone"
-#
-#        for provider in self.geoclue.get_available_providers():
-#            status = self.geoclue.provider_status(provider['object'])
-#            if provider['name'].lower() == "hostip":
-#                if status in ["available", "acquiring"]:
-#                    self.LOCATION_DETERMINATION_METHOD.append("network")
-#            elif provider['name'].lower() in ["gpsd", "gypsy"]:
-#                if status in ["available", "acquiring"]:
-#                    self.LOCATION_DETERMINATION_METHOD.append("gps")
-#            elif provider['name'].lower() == "gsmloc":
-#                if status in ["available", "acquiring"]:
-#                    self.LOCATION_DETERMINATION_METHOD.append("cellphone")
-#
-#        self.location_filter = []
-#        self.task_separator = Gtk.SeparatorToolItem()
+        self.__factory = Champlain.MapSourceFactory.dup_default()
+        self.__set_location_context_menu = None
+        self.__locations = []
+        self.__task_locations = {}
+        self.__tag_locations = {}
+        self.__view = None
+        self.__current_layer = None
+        self.__menu_item_tag_sidebar = None
+
+        self.__where = Geoclue()
+        self.__where.client.connect_to_signal('LocationUpdated', self._location_updated)
+        self.__where.client.Start()
+
+    def _get_where (self):
+        return self.__where
+
+    def _get_user_position(self):
+        return [self.__latitude, self.__longitude]
+
+    def _set_user_position(self, position):
+        [latitude, longitude] = position
+        self.__latitude = latitude
+        self.__longitude = longitude
+
+    def _get_factory(self):
+        return self.__factory
+
+    def _get_selected_marker(self):
+        return self.__selected_marker
+
+    def _set_selected_marker(self, marker):
+        self.__selected_marker = marker
+
+    def _get_active_sensitive(self):
+        return self.__active_sensitive
+
+    def _set_active_sensitive(self, active_sensitive):
+        self.__active_sensitive = active_sensitive
+
+    def _get_marker_last_location(self):
+        return self.__marker_last_location
+
+    def _set_marker_last_location(self, marker):
+        self.__marker_last_location = marker
+
+    def _create_context_menu(self, event, plugin_api):
+        if self.__set_location_context_menu is not None:
+            self.__set_location_context_menu.popdown()
+            self.__set_location_context_menu = None
+
+        view = self._get_view()
+        longitude = view.x_to_longitude(event.x)
+        latitude = view.y_to_latitude(event.y)
+
+        context_menu = Gtk.Menu()
+
+        mi = Gtk.MenuItem()
+        mi.set_label("Add Location")
+        mi.connect ("activate", self._on_im_here, [latitude, longitude])
+        context_menu.append(mi)
+
+        mi = Gtk.MenuItem()
+        mi.set_label("Edit Location")
+        mi.connect("activate", self._on_edit, plugin_api)
+        context_menu.append(mi)
+
+        if self._get_active_sensitive() is False:
+            mi.set_sensitive(False)
+
+        mi = Gtk.MenuItem()
+        mi.set_label("Remove Location")
+        mi.connect("activate", self._on_delete, [latitude, longitude])
+        context_menu.append(mi)
+
+        if self._get_active_sensitive() is False:
+            mi.set_sensitive(False)
+        else:
+            self._set_active_sensitive(False)
+
+        context_menu.show_all()
+
+        context_menu.popup(None, None, None, None, event.button, event.time)
+        self.__set_location_context_menu = context_menu
+
+    def _get_locations(self):
+        return self.__locations
+
+    def _set_locations(self, locations):
+        self.__locations = locations
+
+    def _add_to_locations(self, marker):
+        self.__locations.append(marker)
+
+    def _remove_from_locations(self, marker):
+        if marker in self.__locations:
+            self.__locations.remove(marker)
+
+    def _get_task_locations(self):
+        return self.__task_locations
+
+    def _set_task_locations(self, task_locations_dict):
+        self.__task_locations = task_locations_dict
+
+    def _add_location_to_task_locations(self, task_id, location):
+        if task_id not in self.__task_locations:
+            self.__task_locations[task_id] = []
+
+        self.__task_locations[task_id].append(location)
+
+    def _remove_location_from_task_locations(self, task_id, location):
+        if task_id not in self.__task_locations:
+            return
+
+        if location not in self.__task_locations[task_id]:
+            return
+
+        self.__task_locations[task_id].remove(location)
+
+        if self.__task_locations[task_id] is []:
+            del self.__task_locations[task_id]
+
+    def _get_tag_locations(self):
+        return self.__tag_locations
+
+    def _set_tag_locations(self, tag_locations_dict):
+        self.__tag_locations = tag_locations_dict
+
+    def _add_location_to_tag_locations(self, tag_name, location):
+        if tag_name not in self.__tag_locations:
+            self.__tag_locations[tag_name] = []
+
+        self.__tag_locations[tag_name].append(location)
+
+    def _remove_location_from_tag_location(self, tag_name, location):
+        if tag_name not in self.__tag_locations:
+            return
+
+        if location not in self.__tag_locations[tag_name]:
+            return
+
+        self.__tag_locations[tag_name].remove(location)
+
+        if self.__tag_locations[tag_name] is []:
+            del self.__tag_locations[tag_name]
+
+    def _get_view(self):
+        return self.__view
+
+    def _set_view(self, view):
+        self.__view = view
+
+    def _get_current_layer(self):
+        return self.__current_layer
+
+    def _set_current_layer(self, layer):
+        self.__current_layer = layer
+
+    def _get_menu_item_tag_sidebar(self):
+        return self.__menu_item_tag_sidebar
+
+    def _set_menu_item_tag_sidebar(self, mi):
+        self.__menu_item_tag_sidebar = mi
+
+    def _get_toolbutton_task_toolbar(self):
+        return self.__get_toolbutton_task_toolbar
+
+    def _set_toolbutton_task_toolbar(self, btn):
+        self._toolbutton_task_toolbar = btn
 
     def _location_updated(self, old_path, new_path):
-        system_bus = self.where._system_bus
-        location_object =  system_bus.get_object(self.where.GEOCLUE2_BUS_NAME, new_path)
-        location_properties = dbus.Interface(location_object, self.where.PROPERTIES_INTERFACE_NAME)
-        self.latitude = location_properties.Get(self.where.LOCATION_INTERFACE_NAME, "Latitude")
-        self.longitude = location_properties.Get(self.where.LOCATION_INTERFACE_NAME, "Longitude")
+        where = self._get_where()
+        system_bus = where._system_bus
+        location_object =  system_bus.get_object(where.GEOCLUE2_BUS_NAME, new_path)
+        location_properties = dbus.Interface(location_object, where.PROPERTIES_INTERFACE_NAME)
+        latitude = location_properties.Get(where.LOCATION_INTERFACE_NAME, "Latitude")
+        longitude = location_properties.Get(where.LOCATION_INTERFACE_NAME, "Longitude")
+        self._set_user_position([latitude, longitude])
 
     def activate(self, plugin_api):
-        self.plugin_api = plugin_api
-        self.mi = plugin_api.add_item_to_tag_menu("Add Location", self.set_tag_location)
-#        pass
-#
-#        # toolbar button for the new Location view
-#        # create the pixbuf with the icon and it's size.
-#        # 24,24 is the TaskEditor's toolbar icon size
-#        image_assign_location_path = os.path.join(self.plugin_path,
-#                                                  "icons/hicolor/16x16/assign\
-#                                                  -location.png")
-#        pixbug_assign_location = GdkPixbuf.Pixbuf.new_from_file_at_size(
-#            image_assign_location_path, 16, 16)
-#
-#        image_assign_location = Gtk.Image()
-#        image_assign_location.set_from_pixbuf(pixbug_assign_location)
-#        image_assign_location.show()
-#
-#        # the menu intem for the tag context
-#        self.context_item = Gtk.ImageMenuItem("Assign a location to this tag")
-#        self.context_item.set_image(image_assign_location)
-#        # TODO: add a short cut to the menu
-#
-#        self.context_item.connect('activate',
-#                                  self.on_contextmenu_tag_location, plugin_api)
-#        plugin_api.add_menu_tagpopup(self.context_item)
-#
-#        # get the user settings from the config file
-#        self.config = plugin_api.get_config()
-#        if "geolocalized-tasks" in self.config.has_key:
-#            if "proximity_factor" in self.config["geolocalized-tasks"]:
-#                value = self.config["geolocalized-tasks"]["proximity_factor"]
-#                self.PROXIMITY_FACTOR = value
-#
-#            if "location_determination_method" in\
-#                    self.config["geolocalized-tasks"]:
-#                self.LOCATION_DETERMINATION_METHOD =\
-#                    self.config["geolocalized-tasks"]["location_determination\
-#                                                                     _method"]
-#
-#        providers = self.geoclue.get_available_providers()
-#        provider_name_list = []
-#
-#        for provider in providers:
-#            provider_name_list.append(provider['name'].lower())
-#
-#        # verify the location determination method
-#        for method in self.LOCATION_DETERMINATION_METHOD:
-#            if method == "network":
-#                if "hostip" in provider_name_list:
-#                    for provider in providers:
-#                        if provider['name'].lower() == "hostip":
-#                            status = self.geoclue.provider_status(
-#                                provider['object'])
-#                            if status in ["error", "unavailable"]:
-#                                if "network" in\
-#                                        self.LOCATION_DETERMINATION_METHOD:
-#                                    self.LOCATION_DETERMINATION_METHOD.remove(
-#                                        "network")
-#                                    break
-#                else:
-#                    self.LOCATION_DETERMINATION_METHOD.remove("network")
-#            elif method == "gps":
-#                if "gpsd" in provider_name_list or\
-#                        "gypsy" in provider_name_list:
-#                    for provider in providers:
-#                        if provider['name'].lower() in ["gpsd", "gypsy"]:
-#                            status = self.geoclue.provider_status(
-#                                provider['object'])
-#                            if status in ["error", "unavailable"]:
-#                                if "gps" in self.LOCATION_DETERMINATION_METHOD:
-#                                    self.LOCATION_DETERMINATION_METHOD.remove(
-#                                        "gps")
-#                                    break
-#                else:
-#                    self.LOCATION_DETERMINATION_METHOD.remove("gps")
-#            elif method == "cellphone":
-#                if "gsmloc" in provider_name_list:
-#                    for provider in providers:
-#                        if provider['name'].lower() == "gsmloc":
-#                            status = self.geoclue.provider_status(
-#                                provider['object'])
-#                            if status in ["error", "unavailable"]:
-#                                if "cellphone" in\
-#                                        self.LOCATION_DETERMINATION_METHOD:
-#                                    self.LOCATION_DETERMINATION_METHOD.remove(
-#                                        "cellphone")
-#                                    break
-#                else:
-#                    self.LOCATION_DETERMINATION_METHOD.remove("cellphone")
-#
-#        try:
-#            if len(self.LOCATION_DETERMINATION_METHOD) == 1 and\
-#                    "network" in self.LOCATION_DETERMINATION_METHOD:
-#                self.geoclue.init()
-#            elif len(self.LOCATION_DETERMINATION_METHOD) == 1 and\
-#                    "cellphone" in self.LOCATION_DETERMINATION_METHOD:
-#                self.geoclue.init(resource=(1 << 1))
-#            elif len(self.LOCATION_DETERMINATION_METHOD) == 1 and\
-#                    "gps" in self.LOCATION_DETERMINATION_METHOD:
-#                self.geoclue.init(resource=(1 << 2))
-#            else:
-#                self.geoclue.init(resource=((1 << 10) - 1))
-#        except Exception:
-#            self.geoclue.init(resource=0)
-#
-#        self.location = self.geoclue.get_location_info()
-#
-#        # registers the filter callback method
-#        plugin_api.register_filter_cb(self.task_location_filter)
+        """
+        Activates the plugin.
+        """
+        mi = plugin_api.add_item_to_tag_menu("Add Location", self._set_tag_location, plugin_api)
+        self._set_menu_item_tag_sidebar(mi)
 
     def deactivate(self, plugin_api):
         """
         Desactivates the plugin.
         """
         # everything should be removed, in case a task is currently opened
-        self.where.client.Stop()
+        where = self._get_where()
+        where.client.Stop()
+
         try:
-            plugin_api.remove_toolbar_item(self.btn_set_location)
+            mi = self._get_menu_item_tag_sidebar()
             plugin_api.remove_item_from_tag_menu(mi)
+
+            tb = self._get_toolbutton_task_toolbar()
+            plugin_api.remove_toolbar_item(tb)
         except:
-                pass
-#        try:
-#            if self.context_item:
-#                plugin_api.remove_menu_tagpopup(self.context_item)
-#        except:
-#            pass
-#
-#        try:
-#            if self.config:
-#                self.config["geolocalized-tasks"] = {
-#                    "proximity_factor": self.PROXIMITY_FACTOR,
-#                    "location_determination_method":
-#                    self.LOCATION_DETERMINATION_METHOD,
-#                }
-#        except:
-#            pass
-#
-#        # remove the filters
-#        for tid in self.location_filter:
-#            plugin_api.remove_task_from_filter(tid)
-#
-#        # unregister the filter callback
-#        plugin_api.unregister_filter_cb(self.task_location_filter)
-#
-#        # remove the toolbar buttons
-#        plugin_api.remove_task_toolbar_item(self.task_separator)
-#        plugin_api.remove_task_toolbar_item(self.btn_set_location)
+            pass
 
     def onTaskOpened(self, plugin_api):
         """
@@ -257,40 +265,14 @@ class geolocalizedTasks:
         icon_geolocalization.set_from_pixbuf(pixbuf_geolocalization)
         icon_geolocalization.show()
 
-        self.btn_set_location = Gtk.ToolButton()
-        self.btn_set_location.set_icon_widget(icon_geolocalization)
-        self.btn_set_location.set_label("Set/View location")
-        self.btn_set_location.connect('clicked', self.set_task_location, plugin_api)
-        self.btn_set_location.show_all()
+        btn = Gtk.ToolButton()
+        btn.set_icon_widget(icon_geolocalization)
+        btn.set_label("Set/View location")
+        btn.connect('clicked', self._set_task_location, plugin_api)
+        btn.show_all()
 
-        plugin_api.add_toolbar_item(self.btn_set_location)
-
-#        pass
-#        image_geolocalization_path = os.path.join(self.plugin_path,
-#                                                  "icons/hicolor/24x24/\
-#                                                  geolocalization.png")
-#        pixbuf_geolocalization = GdkPixbuf.Pixbuf.new_from_file_at_size(
-#            image_geolocalization_path, 24, 24)
-#
-#        # create the image and associate the pixbuf
-#        icon_geolocalization = Gtk.Image()
-#        icon_geolocalization.set_from_pixbuf(pixbuf_geolocalization)
-#        icon_geolocalization.show()
-#
-#        # toolbar button for the location_view
-#        btn_location_view = Gtk.ToggleToolButton()
-#        btn_location_view.set_icon_widget(icon_geolocalization)
-#        btn_location_view.set_label("Location View")
-#
-#        self.task_separator = plugin_api.add_task_toolbar_item(
-#            Gtk.SeparatorToolItem())
-#
-#        btn_set_location = Gtk.ToolButton()
-#        btn_set_location.set_icon_widget(icon_geolocalization)
-#        btn_set_location.set_label("Set/View location")
-#        btn_set_location.connect('clicked', self.set_task_location, plugin_api)
-#        self.btn_set_location = plugin_api.add_task_toolbar_item(
-#            btn_set_location)
+        plugin_api.add_toolbar_item(btn)
+        self._set_toolbutton_task_toolbar(btn)
 
     def is_configurable(self):
         pass
@@ -299,14 +281,6 @@ class geolocalizedTasks:
     def configure_dialog(self, manager_dialog):
         pass
 #        self.on_geolocalized_preferences()
-
-    def location_changed(self):
-        pass
-#        # TODO: This should refresh the task ang tag list
-#        # update the location
-#        self.location = self.geoclue.get_location_info()
-#        # reset the filters
-#        self.location_filter = []
 
     def task_location_filter(self, tid):
         pass
@@ -457,207 +431,177 @@ class geolocalizedTasks:
         builder.add_from_file(ui_file_path)
         return builder
 
-    def update_location_name(self, reverse, res, marker):
+    def _update_location_name(self, reverse, res, marker):
         place = reverse.resolve_finish(res)
         marker.set_text(place.get_name())
 
-    def on_im_here (self, widget, position):
+    def _on_im_here (self, widget, position):
         [latitude, longitude] = position
 
         marker = Champlain.Label()
         marker.set_text("...")
         marker.set_location(latitude, longitude)
-        self.layer.add_marker(marker)
-        marker.connect('button-press-event', self.on_marker, marker)
-        self.locations.append(marker)
+        layer = self._get_current_layer()
+        layer.add_marker(marker)
+        marker.connect('button-press-event', self._on_marker, marker)
+        self._add_to_locations(marker)
 
         geocodeLocation = Geocode.Location.new(latitude, longitude, Geocode.LOCATION_ACCURACY_STREET)
         reverse = Geocode.Reverse.new_for_location (geocodeLocation)
-        reverse.resolve_async(None, self.update_location_name, marker)
+        reverse.resolve_async(None, self._update_location_name, marker)
 
-    def on_delete (self, widget, data):
-        self.layer.remove_marker(self.marker_to_be_deleted)
-        self.locations.remove(self.marker_to_be_deleted)
-        self.marker_to_be_deleted = None
+    def _on_delete (self, widget, data):
+        marker = self._get_selected_marker()
+        layer = self._get_current_layer()
+        layer.remove_marker(marker)
+        self._remove_from_locations(marker)
+        self._set_selected_marker(None)
 
-    def check_clicked (self, widget, tag):
+    def _check_clicked (self, widget, tag_name):
+        marker = self._get_selected_marker()
+        location = [marker.get_text(), marker.get_latitude(),marker.get_longitude()]
         if widget.get_active() is True:
-            location_tag = [self.marker_to_be_deleted.get_text(), self.marker_to_be_deleted.get_latitude(), self.marker_to_be_deleted.get_longitude()]
-            if tag in self.dict:
-                self.dict[tag].append(location_tag)
-            else:
-                self.dict[tag] = [location_tag]
+            self._add_location_to_tag_locations(tag_name, location)
         else:
-            del self.dict[tag]
+            self._remove_location_from_tag_location(tag_name, location)
 
     #for edit
-    def on_edit (self, widget, data):
-        builder = self._get_builder_from_file("edit_task.ui")
-        dialog1 = builder.get_object("dialog")
+    def _on_edit (self, widget, plugin_api):
+        builder = self._get_builder_from_file("edit_location.ui")
+        dialog = builder.get_object("dialog")
 
-        entry1 = builder.get_object("entry")
-        task_name = self.marker_to_be_deleted.get_text()
-        entry1.set_text(task_name)
+        entry = builder.get_object("entry")
+        marker = self._get_selected_marker()
+        location_name = marker.get_text()
+        entry.set_text(location_name)
 
-        self.show_tags = self.plugin_api.get_requester().get_all_tags()
+        all_tags = plugin_api.get_requester().get_all_tags()
 
         btn = builder.get_object("button_ok")
-        btn.connect('clicked', self.ok_edit, entry1)
+        btn.connect('clicked', self._ok_edit, entry)
 
         btn = builder.get_object("button_cancel")
-        btn.connect('clicked', self.cancel_edit, widget)
+        btn.connect('clicked', self._cancel_edit, widget)
 
         scrolled_window = builder.get_object("scrolledwindow")
         grid = Gtk.Grid()
         scrolled_window.add(grid)
 
         tag_location_data_path = os.path.join('plugins/geolocalized_tasks', "tag_locations")
-        self.dict = load_pickled_file(tag_location_data_path, {})
-#        existent_tags = self.plugin_api.get_selected().get_tags_name()
+        loaded_dict = load_pickled_file(tag_location_data_path, {})
+        self._set_tag_locations(loaded_dict)
 
         i = 0
-        for tag in self.show_tags:
-            if tag.startswith("@"):
-                check = Gtk.CheckButton(tag)
-                if tag in self.dict:
-                    list_tag = [self.marker_to_be_deleted.get_text(), self.marker_to_be_deleted.get_latitude(), self.marker_to_be_deleted.get_longitude()]
-                    values = self.dict[tag]
-                    if list_tag in values:
+        for tag_name in all_tags:
+            if tag_name.startswith("@"):
+                check = Gtk.CheckButton(tag_name)
+                if tag_name in loaded_dict:
+                    location = [marker.get_text(), marker.get_latitude(), marker.get_longitude()]
+                    locations = loaded_dict[tag_name]
+                    if location in locations:
                         check.set_active(True)
-                check.connect("toggled", self.check_clicked, tag)
+                check.connect("toggled", self._check_clicked, tag_name)
                 grid.attach(check, i%4, i/4, 1, 1)
                 i += 1
 
         scrolled_window.show_all()
-        dialog1.show_all()
+        dialog.show_all()
 
-    def on_context_menu(self, widget, event, data):
+    def _on_context_menu(self, widget, event, plugin_api):
         if (event.button == 3):
-            if (self.context is not None):
-                self.context.popdown()
-                self.context = None
-
-            longitude = self.view.x_to_longitude (event.x)
-            latitude = self.view.y_to_latitude (event.y)
-
-            context = Gtk.Menu()
-
-            mi = Gtk.MenuItem()
-            mi.set_label("Add Location")
-            mi.connect ("activate", self.on_im_here, [latitude, longitude])
-            context.append(mi)
-
-            mi = Gtk.MenuItem()
-            mi.set_label("Edit Location")
-            mi.connect("activate", self.on_edit, None)
-            context.append(mi)
-
-            if self.delete is False:
-                mi.set_sensitive(False)
-
-            mi = Gtk.MenuItem()
-            mi.set_label("Remove Location")
-            mi.connect("activate", self.on_delete, [latitude, longitude])
-            context.append(mi)
-
-            context.show_all()
-
-            context.popup(None, None, None, None, event.button, event.time)
-            self.context = context
-
-            if self.delete is False:
-                mi.set_sensitive(False)
-            else:
-                self.delete = False
+            self._create_context_menu(event, plugin_api)
 
         return True
 
-    def on_marker(self, widget, event, marker):
-        if marker is self.marker_last_location:
+    def _on_marker(self, widget, event, marker):
+        if marker is self._get_marker_last_location():
             return False
 
-        self.marker_to_be_deleted = marker
-        self.delete = True
+        self._set_selected_marker(marker)
+        self._set_active_sensitive(True)
 
         return False
 
-    def get_tag_stored_locations(self, tag):
-        tag_location_data_path = os.path.join('plugins/geolocalized_tasks', "tag_locations")
-        dict = load_pickled_file(tag_location_data_path, {})
-        if tag in dict:
-            return dict[tag]
+    def _get_stored_locations(self, data_path, key):
+        locations_dict = load_pickled_file(data_path, {})
+        if key in locations_dict:
+            return locations_dict[key]
         return []
 
-    def get_task_stored_locations(self, task_id):
-        data_path = os.path.join('plugins/geolocalized_tasks', task_id)
-        return load_pickled_file(data_path, [])
+    def _get_tag_stored_locations(self, tag_name):
+        data_path = os.path.join('plugins/geolocalized_tasks', "tag_locations")
+        return self._get_stored_locations(data_path, tag_name)
 
-    def set_task_location(self, widget, plugin_api):
-        task_id = plugin_api.get_selected().get_uuid()
-        self.create_location_window(self.get_task_stored_locations, self.close_task, self.cancel_task, task_id, task_id)
-
-    def set_tag_location(self, widget, tag):
+    def _set_tag_location(self, widget, tag, plugin_api):
         tag_name = tag.get_name()
-        self.create_location_window(self.get_tag_stored_locations, self.close_tag, self.cancel_tag, tag_name, tag_name)
+        self._create_location_window(plugin_api, self._get_tag_stored_locations, self._close_tag, self._cancel, tag_name, tag_name)
 
-    def create_location_window(self, get_locations_fn, close_cb, cancel_cb, get_locations_data=None, close_data=None, cancel_data=None):
-        builder = self._get_builder_from_file("set_task_location.ui")
+    def _get_task_stored_locations(self, task_id):
+        data_path = os.path.join('plugins/geolocalized_tasks', "task_locations")
+        return self._get_stored_locations(data_path, task_id)
+
+    def _set_task_location(self, widget, plugin_api):
+        task_id = plugin_api.get_selected().get_uuid()
+        self._create_location_window(plugin_api, self._get_task_stored_locations, self._close_task, self._cancel, task_id, task_id)
+
+    def _create_location_window(self, plugin_api, get_locations_fn, close_cb, cancel_cb, get_locations_data=None, close_data=None, cancel_data=None):
+        builder = self._get_builder_from_file("set_locations.ui")
         dialog = builder.get_object("SetTaskLocation")
-#        self.factory = Champlain.MapSourceFactory.dup_default()
-
-        map = GtkChamplain.Embed()
-        champlain_view = map.get_view()
-        champlain_view.set_property("zoom-level", 10)
-        champlain_view.set_reactive(True)
-
-        #Factory
-#        source = self.factory.create_cached_source(Champlain.MAP_SOURCE_OSM_MAPQUEST)
-#        champlain_view.set_map_source(source)
-
-        layer = Champlain.MarkerLayer()
 
         vbox_map = builder.get_object("vbox_map")
-        vbox_map.pack_start(map, True, True, 1)
-        champlain_view.connect('button-release-event', self.on_context_menu, vbox_map)
 
-        self.view = champlain_view
-        champlain_view.add_layer(layer)
-        self.layer = layer
+        map = GtkChamplain.Embed()
+        vbox_map.add(map)
+
+        view = map.get_view()
+        view.set_property("zoom-level", 10)
+        view.set_reactive(True)
+
+        #Factory
+        source = self._get_factory().create_cached_source(Champlain.MAP_SOURCE_OSM_MAPQUEST)
+        view.set_map_source(source)
+
+        layer = Champlain.MarkerLayer()
+        self._set_current_layer(layer)
+        view.add_layer(layer)
+
+        view.connect('button-release-event', self._on_context_menu, plugin_api)
+
+        self._set_view(view)
 
         btn = builder.get_object("btn_zoom_in")
-        btn.connect('clicked', self.zoom_in, champlain_view)
+        btn.connect('clicked', self._zoom_in, view)
 
         btn = builder.get_object("btn_zoom_out")
-        btn.connect('clicked', self.zoom_out, champlain_view)
+        btn.connect('clicked', self._zoom_out, view)
 
         last_location_data_path = os.path.join('plugins/geolocalized_tasks', "last_location")
-        if self.latitude is None and self.longitude is None:
-            [self.latitude, self.longitude] = load_pickled_file(last_location_data_path, [None, None])
+        [user_latitude, user_longitude] = self._get_user_position()
+        if user_latitude is None and user_longitude is None:
+            [user_latitude, user_longitude] = load_pickled_file(last_location_data_path, [None, None])
+            self._set_user_position([user_latitude, user_longitude])
 
-        if self.latitude is not None and self.longitude is not None:
+        if user_latitude is not None and user_longitude is not None:
             red = Clutter.Color.new(0xff, 0x00, 0x00, 0xbb)
-            champlain_view.center_on(self.latitude, self.longitude)
-            store_pickled_file(last_location_data_path, [self.latitude, self.longitude])
+            view.center_on(user_latitude, user_longitude)
+            store_pickled_file(last_location_data_path, [user_latitude, user_longitude])
 
             #Set current user location
             marker = Champlain.Label()
             marker.set_color(red)
             marker.set_text("I am here!")
-            marker.set_location(self.latitude, self.longitude)
+            marker.set_location(user_latitude, user_longitude)
             layer.add_marker(marker)
             marker.set_use_markup(True)
             self.marker_last_location = marker
 
-            vbox_map = builder.get_object("vbox_map")
-            vbox_map.pack_start(map, True, True, 1)
-
-            marker.connect('button-press-event', self.on_marker, marker)
+            marker.connect('button-press-event', self._on_marker, marker)
 
             btn = builder.get_object("btn_zoom_in")
-            btn.connect('clicked', self.zoom_in, champlain_view)
+            btn.connect('clicked', self._zoom_in, view)
 
             btn = builder.get_object("btn_zoom_out")
-            btn.connect('clicked', self.zoom_out, champlain_view)
+            btn.connect('clicked', self._zoom_out, view)
 
         locations = get_locations_fn(get_locations_data)
         for location in locations:
@@ -665,11 +609,9 @@ class geolocalizedTasks:
             marker = Champlain.Label()
             marker.set_text(text)
             marker.set_location(latitude, longitude)
-            self.layer.add_marker(marker)
-            marker.connect('button-press-event', self.on_marker, marker)
-            self.locations.append(marker)
-
             layer.add_marker(marker)
+            marker.connect('button-press-event', self._on_marker, marker)
+            self._add_to_locations(marker)
 
         layer.show_all()
 
@@ -681,399 +623,68 @@ class geolocalizedTasks:
 
         dialog.show_all()
 
-#        wTree = Gtk.glade.XML(self.glade_file, "SetTaskLocation")
-#        dialog = wTree.get_widget("SetTaskLocation")
-#        plugin_api.set_parent_window(dialog)
-#
-#        btn_zoom_in = wTree.get_widget("btn_zoom_in")
-#        btn_zoom_out = wTree.get_widget("btn_zoom_out")
-#
-#        dialog_action_area_btn = wTree.get_widget("dialog_action_area_btn")
-#        btn_ok = wTree.get_widget("btn_ok")
-#        btn_cancel = wTree.get_widget("btn_cancel")
-#        btn_close = wTree.get_widget("btn_close")
-#
-#        self.radiobutton1 = wTree.get_widget("radiobutton1")
-#        self.radiobutton2 = wTree.get_widget("radiobutton2")
-#        self.txt_new_tag = wTree.get_widget("txt_new_tag")
-#        self.cmb_existing_tag = wTree.get_widget("cmb_existing_tag")
-#
-#        tabela = wTree.get_widget("tabela_set_task")
-#
-#        vbox_map = wTree.get_widget("vbox_map")
-#        vbox_opt = wTree.get_widget("vbox_opt")
-#
-#        champlain_view = champlain.View()
-#        champlain_view.set_property("scroll-mode",
-#                                    champlain.SCROLL_MODE_KINETIC)
-#        # champlain_view.set_property("zoom-on-double-click", False)
-#
-#        # create a list of the tags and their attributes
-#        tag_list = []
-#        for tag in plugin_api.get_tags():
-#            tmp_tag = {}
-#            for attr in tag.get_all_attributes():
-#                if attr == "color":
-#                    color = self.HTMLColorToRGB(tag.get_attribute(attr))
-#                    tmp_tag[attr] = color
-#                    tmp_tag['has_color'] = "yes"
-#                elif attr == "location":
-#                    tmp_tag[attr] = eval(tag.get_attribute(attr))
-#                else:
-#                    tmp_tag[attr] = tag.get_attribute(attr)
-#            tag_list.append(tmp_tag)
-#
-#        # checks if there is one tag with a location
-#        task_has_location = False
-#        for tag in tag_list:
-#            for key, item in list(tag.items()):
-#                if key == "location":
-#                    task_has_location = True
-#                    break
-#
-#        # set the markers
-#        layer = MarkerLayer()
-#
-#        self.marker_list = []
-#        if task_has_location:
-#            for tag in tag_list:
-#                for key, item in list(tag.items()):
-#                    if key == "location":
-#                        color = None
-#                        try:
-#                            if tag['has_color'] == "yes":
-#                                color = tag['color']
-#                        except:
-#                            # PROBLEM: the tag doesn't have color
-#                            # Possibility, use a color from another tag
-#                            pass
-#
-#                        self.marker_list.append(layer.add_marker(
-#                            plugin_api.get_task_title(), tag['location'][0],
-#                            tag['location'][1], color))
-#        else:
-#            try:
-#                if self.location['longitude'] and self.location['latitude']:
-#                    self.marker_list.append(layer.add_marker(
-#                        plugin_api.get_task_title(),
-#                        self.location['latitude'],
-#                        self.location['longitude']))
-#            except:
-#                self.marker_list.append(layer.add_marker(
-#                    plugin_api.get_task_title(), None, None))
-#
-#        champlain_view.add_layer(layer)
-#
-#        embed = GtkClutter.Embed()
-#        embed.set_size_request(400, 300)
-#
-#        if not task_has_location:
-#            # method that will change the marker's position
-#            champlain_view.set_reactive(True)
-#            champlain_view.connect("button-release-event",
-#                                   self.champlain_change_marker,
-#                                   champlain_view)
-#
-#        layer.show_all()
-#
-#        if task_has_location:
-#            champlain_view.set_property("zoom-level", 9)
-#        elif self.location:
-#            champlain_view.set_property("zoom-level", 5)
-#        else:
-#            champlain_view.set_property("zoom-level", 1)
-#
-#        vbox_map.add(embed)
-#
-#        embed.realize()
-#        stage = embed.get_stage()
-#        champlain_view.set_size(400, 300)
-#        stage.add(champlain_view)
-#
-#        # connect the toolbar buttons for zoom
-#        btn_zoom_in.connect("clicked", self.zoom_in, champlain_view)
-#        btn_zoom_out.connect("clicked", self.zoom_out, champlain_view)
-#
-#        if task_has_location:
-#            dialog_action_area_btn.remove(btn_ok)
-#            dialog_action_area_btn.remove(btn_cancel)
-#            dialog.connect("response", self.task_location_close)
-#        else:
-#            dialog_action_area_btn.remove(btn_close)
-#            # show a close button or the ok/cancel
-#            dialog.connect("response", self.set_task_location_close,
-#                           plugin_api)
-#
-#        # if there is no location set, we want to set it
-#        if not task_has_location:
-#            self.location_defined = False
-#            if len(plugin_api.get_tags()) > 0:
-#                liststore = Gtk.ListStore(str)
-#                self.cmb_existing_tag.set_model(liststore)
-#                for tag in plugin_api.get_tags():
-#                    liststore.append([tag.get_attribute("name")])
-#                self.cmb_existing_tag.set_text_column(0)
-#                self.cmb_existing_tag.set_active(0)
-#            else:
-#                # remove radiobutton2 and the comboboxentry
-#                tabela.remove(self.radiobutton1)
-#                tabela.remove(self.radiobutton2)
-#                tabela.remove(self.cmb_existing_tag)
-#                label = Gtk.Label()
-#                label.set_text("Associate with new tag: ")
-#                tabela.attach(label, 0, 1, 0, 1)
-#                label.show()
-#        else:
-#            self.location_defined = True
-#            vbox_opt.remove(tabela)
-#            dialog.set_title("View the task's location")
-#
-#        dialog.show_all()
-#
-#        if task_has_location:
-#            champlain_view.center_on(
-#                self.marker_list[0].get_property('latitude'),
-#                self.marker_list[0].get_property('longitude'))
-#        else:
-#            try:
-#                if self.location['longitude'] and self.location['latitude']:
-#                    champlain_view.center_on(self.location['latitude'],
-#                                             self.location['longitude'])
-#            except:
-#                pass
-
-    def task_location_close(self, dialog, response=None):
-        pass
-#        dialog.destroy()
-
-    def set_task_location_close(self, dialog, response=None, plugin_api=None):
-        pass
-#        if response == Gtk.ResponseType.OK:
-#            # ok
-#            # tries to get the radiobuttons value, witch may not exist
-#            if not self.location_defined:
-#                if self.radiobutton1.get_active():
-#                    # radiobutton1
-#                    if self.txt_new_tag.get_text().strip() != "":
-#                        marker_position = (
-#                            self.marker_list[0].get_property('latitude'),
-#                            self.marker_list[0].get_property('longitude'))
-#
-#                        # because users sometimes make mistakes,
-#                        # I'll check if the tag exists
-#                        tmp_tag = ""
-#                        tag_name = self.txt_new_tag.get_text().replace("@",
-#                                                                       "")
-#                        tag_name = "@" + tag_name
-#                        for tag in plugin_api.get_tags():
-#                            if tag.get_attribute("name") == tag_name:
-#                                tmp_tag = tag_name
-#                        if tmp_tag:
-#                            plugin_api.add_tag_attribute(tag_name,
-#                                                         "location",
-#                                                         marker_position)
-#                        else:
-#                            plugin_api.insert_tag(tag_name[1:])
-#                            plugin_api.add_tag_attribute(tag_name,
-#                                                         "location",
-#                                                         marker_position)
-#                        dialog.destroy()
-#                    else:
-#                        # does nothing, no tag set.
-#                        pass
-#                else:
-#                    # radiobutton2
-#                    marker_position = (
-#                        self.marker_list[0].get_property('latitude'),
-#                        self.marker_list[0].get_property('longitude'))
-#                    index = self.cmb_existing_tag.get_active()
-#                    model = self.cmb_existing_tag.get_model()
-#                    plugin_api.add_tag_attribute(model[index][0],
-#                                                 "location", marker_position)
-#                    dialog.destroy()
-#        else:
-#            # cancel
-#            dialog.destroy()
-
-    def champlain_change_marker(self, widget, event, view):
-        pass
-#        if event.button != 1 or event.click_count > 1:
-#            return False
-#
-#        (latitude, longitude) = view.get_coords_at(int(event.x), int(event.y))
-#        self.marker_list[0].set_position(latitude, longitude)
-
-    #=== SET TASK LOCATION ====================================================
-
-    #=== TAG VIEW CONTEXT MENU ================================================
-    def on_contextmenu_tag_location(self, widget, plugin_api):
-        pass
-#        wTree = Gtk.glade.XML(self.glade_file, "TagLocation")
-#        dialog = wTree.get_widget("TagLocation")
-#        plugin_api.set_parent_window(dialog)
-#
-#        btn_zoom_in = wTree.get_widget("btn_zoom_in")
-#        btn_zoom_out = wTree.get_widget("btn_zoom_out")
-#        vbox_map = wTree.get_widget("vbox_map")
-#
-#        tag = plugin_api.get_tagpopup_tag()
-#        dialog.set_title(tag.get_attribute("name") + "'s Location")
-#
-#        # get the tag's location
-#        try:
-#            tag_location = eval(tag.get_attribute("location"))
-#        except:
-#            tag_location = None
-#
-#        # get the tag's color
-#        try:
-#            tag_color = self.HTMLColorToRGB(tag.get_attribute("color"))
-#        except:
-#            tag_color = None
-#
-#        champlain_view = champlain.View()
-#        champlain_view.set_property("scroll-mode",
-#                                    champlain.SCROLL_MODE_KINETIC)
-#
-#        layer = MarkerLayer()
-#
-#        marker_tag = None
-#        if tag_location:
-#            marker_tag = layer.add_marker(tag.get_attribute("name"),
-#                                          tag_location[0], tag_location[1],
-#                                          tag_color)
-#        else:
-#            try:
-#                if self.location['longitude'] and self.location['latitude']:
-#                    marker_tag = layer.add_marker(tag.get_attribute("name"),
-#                                                  self.location['latitude'],
-#                                                  self.location['longitude'],
-#                                                  tag_color)
-#            except:
-#                marker_tag = layer.add_marker(tag.get_attribute("name"),
-#                                              None, None)
-#
-#        champlain_view.add_layer(layer)
-#
-#        embed = GtkClutter.Embed()
-#        embed.set_size_request(400, 300)
-#
-#        champlain_view.set_reactive(True)
-#        champlain_view.connect("button-release-event",
-#                               self.champlain__tag_change_marker,
-#                               champlain_view, marker_tag)
-#
-#        layer.show_all()
-#
-#        if tag_location:
-#            champlain_view.set_property("zoom-level", 9)
-#        elif self.location:
-#            champlain_view.set_property("zoom-level", 5)
-#        else:
-#            champlain_view.set_property("zoom-level", 1)
-#
-#        vbox_map.add(embed)
-#
-#        embed.realize()
-#        stage = embed.get_stage()
-#        champlain_view.set_size(400, 300)
-#        stage.add(champlain_view)
-#
-#        # connect the toolbar buttons for zoom
-#        btn_zoom_in.connect("clicked", self.zoom_in, champlain_view)
-#        btn_zoom_out.connect("clicked", self.zoom_out, champlain_view)
-#        dialog.connect("response", self.tag_location_close, tag, marker_tag)
-#
-#        dialog.show_all()
-#
-#        if tag_location:
-#            champlain_view.center_on(
-#                marker_tag.get_property('latitude'),
-#                marker_tag.get_property('longitude'))
-#        else:
-#            try:
-#                if self.location['longitude'] and self.location['latitude']:
-#                    champlain_view.center_on(self.location['latitude'],
-#                                             self.location['longitude'])
-#            except:
-#                pass
-
-    def champlain__tag_change_marker(self, widget, event, view, marker):
-        pass
-#        if event.button != 1 or event.click_count > 1:
-#            return False
-#
-#        (latitude, longitude) = view.get_coords_at(int(event.x), int(event.y))
-#        marker.set_position(latitude, longitude)
-
-    def tag_location_close(self, dialog, response=None, tag=None, marker=None):
-        pass
-#        if response == Gtk.ResponseType.OK:
-#            tag_location = str((marker.get_property('latitude'),
-#                                marker.get_property('longitude')))
-#            tag.set_attribute("location", tag_location)
-#            dialog.destroy()
-#        else:
-#            dialog.destroy()
-
-    #=== TAG VIEW CONTEXT MENU ================================================
-    def zoom_in(self, widget, view):
+    def _zoom_in(self, widget, view):
         view.zoom_in()
 
-    def zoom_out(self, widget, view):
+    def _zoom_out(self, widget, view):
         view.zoom_out()
 
-    def close_task(self, widget, task_id):
-        data_path = os.path.join('plugins/geolocalized_tasks', task_id)
+    def _close(self, widget, data_path, dict, key):
         locations = []
-        for location in self.locations:
+        for location in self._get_locations():
             locations.append([location.get_text(), location.get_latitude(), location.get_longitude()])
-        store_pickled_file (data_path, locations)
-        widget.get_parent_window().destroy()
-        self.clean_up()
+        dict[key] = locations
+        store_pickled_file (data_path, dict)
 
-    def close_tag(self, widget, tag):
+        widget.get_parent_window().destroy()
+        self._clean_up()
+
+    def _close_task(self, widget, task_id):
+        data_path = os.path.join('plugins/geolocalized_tasks', 'task_locations')
+        task_locations_dict = self._get_task_locations()
+        self._close(widget, data_path, task_locations_dict, task_id)
+
+    def _close_tag(self, widget, tag_name):
         data_path = os.path.join('plugins/geolocalized_tasks', 'tag_locations')
-        locations = []
-        for location in self.locations:
-            locations.append([location.get_text(), location.get_latitude(), location.get_longitude()])
-        self.dict[tag] = locations
-        store_pickled_file (data_path, self.dict)
+        tag_locations_dict = self._get_tag_locations()
+        self._close(widget, data_path, tag_locations_dict, tag_name)
 
+    def _cancel(self, widget, data):
         widget.get_parent_window().destroy()
-        self.clean_up()
+        self._clean_up()
 
-    def cancel_task(self, widget, data):
-        widget.get_parent_window().destroy()
-        self.clean_up()
+#    def _cancel_task(self, widget, data):
+#        widget.get_parent_window().destroy()
+#        self._clean_up()
 
-    def cancel_tag(self, widget, data):
-        widget.get_parent_window().destroy()
-        self.clean_up()
+#    def _cancel_tag(self, widget, data):
+#        widget.get_parent_window().destroy()
+#        self._clean_up()
 
-    def ok_edit (self, widget, entry):
+    def _ok_edit (self, widget, entry):
+        marker = self._get_selected_marker()
+        old_name = marker.get_text()
+        new_name = entry.get_text()
+
+        if old_name != new_name:
+            marker.set_text(entry.get_text())
+            old_location = [old_name, marker.get_latitude(), marker.get_longitude()]
+            new_location = [new_name, marker.get_latitude(), marker.get_longitude()]
+
+            tag_locations = self._get_tag_locations()
+            for key in tag_locations.keys():
+                if old_location in tag_locations[key]:
+                    self._remove_location_from_tag_location(key, old_location)
+                    self._add_location_to_tag_locations(key, new_location)
+
         tag_location_data_path = os.path.join('plugins/geolocalized_tasks', "tag_locations")
-        store_pickled_file(tag_location_data_path, self.dict)
-        self.marker_to_be_deleted.set_text(entry.get_text())
+        store_pickled_file(tag_location_data_path, self._get_tag_locations())
         widget.get_parent_window().destroy()
 
-    def cancel_edit (self, widget, data):
+    def _cancel_edit (self, widget, data):
         widget.get_parent_window().destroy()
 
-    def clean_up(self):
-        self.locations = []
-
-    # http://code.activestate.com/recipes/266466/
-    # original by Paul Winkler
-    def HTMLColorToRGB(self, colorstring):
-        pass
-#        """ convert #RRGGBB to a clutter color var """
-#        colorstring = colorstring.strip()
-#        if colorstring[0] == '#':
-#            colorstring = colorstring[1:]
-#        if len(colorstring) != 6:
-#            raise ValueError(
-#                "input #%s is not in #RRGGBB format" % colorstring)
-#        r, g, b = colorstring[:2], colorstring[2:4], colorstring[4:]
-#        r, g, b = [int(n, 16) for n in (r, g, b)]
-#        return Clutter.Color(r, g, b)
+    def _clean_up(self):
+        self._set_current_layer(None)
+        self._set_view(None)
+        self._set_locations([])

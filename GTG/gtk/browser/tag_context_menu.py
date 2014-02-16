@@ -77,10 +77,10 @@ class TagContextMenu(Gtk.Menu):
         self.tag = tag
         self.__build_menu()
 
-    def add_custom_menuitem(self, label, callback):
+    def add_custom_menuitem(self, label, callback, callback_data):
         custom_mi = Gtk.MenuItem()
         custom_mi.set_label(_(label))
-        custom_mi.connect('activate', self.on_custom_menu_item, callback)
+        custom_mi.connect('activate', self.on_custom_menu_item, [callback, callback_data])
         self.custom_menuitems.append(custom_mi)
         return custom_mi
 
@@ -88,8 +88,9 @@ class TagContextMenu(Gtk.Menu):
         self.custom_menuitems.remove(custom_mi)
 
     ### CALLBACKS #############################################################
-    def on_custom_menu_item (self, widget, callback):
-        callback (widget, self.tag)
+    def on_custom_menu_item (self, widget, caller_data):
+        [callback, callback_data] = caller_data
+        callback (widget, self.tag, callback_data)
 
     def on_mi_cc_activate(self, widget):
         """Callback: show the tag editor upon request"""

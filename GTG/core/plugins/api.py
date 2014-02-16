@@ -159,9 +159,9 @@ class PluginAPI:
                 menu.hide()
 
     #Methods to add and remove tag context menu_item
-    def add_item_to_tag_menu(self, label, callback):
+    def add_item_to_tag_menu(self, label, callback, callback_data):
         context_menu = self.__view_manager.browser.get_tag_context_menu()
-        return context_menu.add_custom_menuitem(label, callback)
+        return context_menu.add_custom_menuitem(label, callback, callback_data)
 
     def remove_item_from_tag_menu(self, item):
         context_menu = self.__view_manager.browser.get_tag_context_menu()
