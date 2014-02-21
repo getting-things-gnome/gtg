@@ -167,7 +167,6 @@ class GTGCalendar(GObject.GObject):
         # We should only close if the pointer click is out of the calendar !
         p = self.__window.get_window().get_pointer()
         s = self.__window.get_size()
-
         if not(0 <= p[1] <= s[0] and 0 <= p[2] <= s[1]):
             self.close_calendar()
 
