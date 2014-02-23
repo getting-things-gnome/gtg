@@ -38,6 +38,7 @@ import dbus
 # FIXME Since this plugin is broken, I am not going to replace galde mentions
 # to GtkBuilder, it's your job ;)
 
+FILTER_NAME = '@@GeolocalizedTasks'
 
 class geolocalizedTasks:
 
@@ -61,6 +62,12 @@ class geolocalizedTasks:
         self.__where = Geoclue()
         self.__where.client.connect_to_signal('LocationUpdated', self._location_updated)
         self.__where.client.Start()
+        self.__distance = 15
+
+
+#        self.__tag_locations_data_path = 
+#        self.__task_locations_data_path =
+#        self.__last_location_data_path = 
 
     def _get_where (self):
         return self.__where
@@ -147,6 +154,10 @@ class geolocalizedTasks:
             self.__locations.remove(marker)
 
     def _get_task_locations(self):
+
+        if not self.__task_locations:
+            data_path = os.path.join('plugins/geolocalized_tasks', "task_locations")
+            self.__task_locations = load_pickled_file(data_path, {})
         return self.__task_locations
 
     def _set_task_locations(self, task_locations_dict):
@@ -171,6 +182,9 @@ class geolocalizedTasks:
             del self.__task_locations[task_id]
 
     def _get_tag_locations(self):
+        if not self.__tag_locations:
+            data_path = os.path.join('plugins/geolocalized_tasks', "tag_locations")
+            self.__tag_locations = load_pickled_file(data_path, {})
         return self.__tag_locations
 
     def _set_tag_locations(self, tag_locations_dict):
@@ -193,6 +207,22 @@ class geolocalizedTasks:
 
         if self.__tag_locations[tag_name] is []:
             del self.__tag_locations[tag_name]
+
+    def _get_all_locations(self):
+        tag_locations_dict = self._get_tag_locations()
+        final_list_locations = []
+        for tag in tag_locations_dict:
+            locations = tag_locations_dict[tag]
+            for location in locations:
+                if location not in final_list_locations:
+                    final_list_locations.append(location)
+        task_locations_dict = self._get_task_locations()
+        for task in task_locations_dict:
+            locations = task_locations_dict[task]
+            for location in locations:
+                if location not in final_list_locations:
+                    final_list_locations.append(location)
+        return final_list_locations
 
     def _get_view(self):
         return self.__view
@@ -233,6 +263,12 @@ class geolocalizedTasks:
         """
         mi = plugin_api.add_item_to_tag_menu("Add Location", self._set_tag_location, plugin_api)
         self._set_menu_item_tag_sidebar(mi)
+        #Filter
+        builder = self._get_builder_from_file("preferences2.ui")
+        self.__spin = builder.get_object("spin_proximityfactor")
+        requester = plugin_api.get_requester()
+        requester.add_filter(FILTER_NAME, self._filter_work_view)
+        self.__requester = requester
 
     def deactivate(self, plugin_api):
         """
@@ -248,6 +284,8 @@ class geolocalizedTasks:
 
             tb = self._get_toolbutton_task_toolbar()
             plugin_api.remove_toolbar_item(tb)
+            requester = plugin_api.get_requester()
+            requester.remove_filter(FILTER_NAME)
         except:
             pass
 
@@ -275,12 +313,10 @@ class geolocalizedTasks:
         self._set_toolbutton_task_toolbar(btn)
 
     def is_configurable(self):
-        pass
-#        return True
+        return True
 
     def configure_dialog(self, manager_dialog):
-        pass
-#        self.on_geolocalized_preferences()
+        self.on_geolocalized_preferences()
 
     def task_location_filter(self, tid):
         pass
@@ -311,10 +347,85 @@ class geolocalizedTasks:
 #        return True
 
     #=== GEOLOCALIZED PREFERENCES=============================================
+
+    def _check_set_pref(self, widget, spin):
+        if widget.get_active() is True:
+            spin.set_sensitive(True)
+        else:
+            spin.set_sensitive(False)
+
+    def _spin_value_changed(self, widget, data):
+        self.__distance = widget.get_value()
+
     def on_geolocalized_preferences(self):
-        pass
-#        builder = self._get_builder_from_file("preferencesEliane.ui")
-#        dialog1 = builder.get_object("dialog1")
+        builder = self._get_builder_from_file("preferences2.ui")
+        dialog = builder.get_object("dialog")
+
+        spin = builder.get_object("spin_proximityfactor")
+        spin.set_sensitive(False)
+        spin.set_range(15.00, 1000.00)
+
+        adjust = Gtk.Adjustment(self.__distance, 1, 100, 1, 1, 1)
+        spin.configure(adjust, 1, 0)
+        spin_v = spin.get_value()
+        spin_value = spin.set_value(spin_v)
+
+        spin.connect("value-changed", self._spin_value_changed, None)
+
+        check_set = builder.get_object("checkbutton")
+        check_set.connect("toggled", self._check_set_pref, spin)
+
+        btn = builder.get_object("button_ok")
+        btn.connect('clicked', self._ok_preferences, check_set)
+
+        dialog.show_all()
+
+    def _filter_work_view(self, task):
+        data_path = os.path.join('plugins/geolocalized_tasks', "last_location")
+        [user_latitude, user_longitude] = load_pickled_file(data_path, [])
+
+        user_location = Geocode.Location.new(user_latitude, user_longitude, Geocode.LOCATION_ACCURACY_STREET)
+
+        locations = []
+        final_list_locations = []
+
+        task_id = task.get_uuid()
+        tasks_dict = self._get_task_locations()
+        if task_id in tasks_dict:
+            locations = tasks_dict[task_id]
+
+        for location in locations:
+            final_list_locations.append(location)
+
+        tags_dict = self._get_tag_locations()
+        tags_name_list = task.get_tags_name()
+        for tag_name in tags_name_list:
+            if tag_name in tags_dict:
+                locations = tags_dict[tag_name]
+                for location in locations:
+                    if location not in final_list_locations:
+                        final_list_locations.append(location)
+
+        for location in final_list_locations:
+            [name, latitude, longitude] = location
+            geocode_location = Geocode.Location.new(latitude, longitude, Geocode.LOCATION_ACCURACY_STREET)
+            dist = Geocode.Location.get_distance_from(user_location, geocode_location)
+            if (dist <= self.__distance):
+                return True
+        return False
+
+#        print ("DEBUG | user location", user_location)
+#        locations = self._get_all_locations()
+#        print ("DEBUG | locations_list", locations)
+#        final_dict = {}
+#        for location in locations:
+#            [name, latitude, longitude] = location
+#            print ("DEBUG | locations_list 1", location)
+#            geocode_location = Geocode.Location.new(latitude, longitude, Geocode.LOCATION_ACCURACY_STREET)
+#            dist = Geocode.Location.get_distance_from(user_location, geocode_location)
+#            print("Eliane | distance is", dist)
+#            final_dict[geocode_location] = dist
+
 #        wTree = Gtk.glade.XML(self.glade_file, "Preferences")
 #        dialog = wTree.get_widget("Preferences")
 #        dialog.connect("response", self.preferences_close)
@@ -530,6 +641,8 @@ class geolocalizedTasks:
 
     def _get_tag_stored_locations(self, tag_name):
         data_path = os.path.join('plugins/geolocalized_tasks', "tag_locations")
+        locations_dict = load_pickled_file(data_path, {})
+        self._set_tag_locations(locations_dict)
         return self._get_stored_locations(data_path, tag_name)
 
     def _set_tag_location(self, widget, tag, plugin_api):
@@ -538,6 +651,8 @@ class geolocalizedTasks:
 
     def _get_task_stored_locations(self, task_id):
         data_path = os.path.join('plugins/geolocalized_tasks', "task_locations")
+        locations_dict = load_pickled_file(data_path, {})
+        self._set_task_locations(locations_dict)
         return self._get_stored_locations(data_path, task_id)
 
     def _set_task_location(self, widget, plugin_api):
@@ -593,7 +708,7 @@ class geolocalizedTasks:
             marker.set_location(user_latitude, user_longitude)
             layer.add_marker(marker)
             marker.set_use_markup(True)
-            self.marker_last_location = marker
+            self._set_marker_last_location(marker)
 
             marker.connect('button-press-event', self._on_marker, marker)
 
@@ -634,6 +749,9 @@ class geolocalizedTasks:
         for location in self._get_locations():
             locations.append([location.get_text(), location.get_latitude(), location.get_longitude()])
         dict[key] = locations
+        print(dict.keys())
+        for k in dict.keys():
+            print(dict[k])
         store_pickled_file (data_path, dict)
 
         widget.get_parent_window().destroy()
@@ -682,6 +800,14 @@ class geolocalizedTasks:
         widget.get_parent_window().destroy()
 
     def _cancel_edit (self, widget, data):
+        widget.get_parent_window().destroy()
+
+    def _ok_preferences (self, widget, check):
+        tasks_tree = self.__requester.get_tasks_tree()
+        if check.get_active():
+            self.__requester.apply_global_filter(tasks_tree, FILTER_NAME)
+        else:
+            self.__requester.unapply_global_filter(tasks_tree, FILTER_NAME)
         widget.get_parent_window().destroy()
 
     def _clean_up(self):

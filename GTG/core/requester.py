@@ -79,8 +79,8 @@ class Requester(GObject.GObject):
     # Add a filter to the filter bank
     # Return True if the filter was added
     # Return False if the filter_name was already in the bank
-    def add_filter(self, filter_name, filter_func):
-        return self.__basetree.add_filter(filter_name, filter_func)
+    def add_filter(self, filter_name, filter_func, parameter=None):
+        return self.__basetree.add_filter(filter_name, filter_func, parameter)
 
     # Remove a filter from the bank.
     # Only custom filters that were added here can be removed
