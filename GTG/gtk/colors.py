@@ -19,7 +19,7 @@
 
 from gi.repository import Gdk
 from functools import reduce
-
+import random
 # Take list of Tags and give the background color that should be applied
 # The returned color might be None (in which case, the default is used)
 
@@ -90,4 +90,11 @@ def get_colored_tags_markup(req, tag_names):
         tags_txt = reduce(lambda a, b: a + ", " + b, tag_markups)
     return tags_txt
 
+def generate_tag_color():
+    maxvalue=65535
+    red=random.randint(0,maxvalue)
+    green=random.randint(0,maxvalue)
+    blue=random.randint(0,maxvalue)
+    my_color=Gdk.Color(red, green, blue).to_string()
+    return my_color
 # -----------------------------------------------------------------------------
