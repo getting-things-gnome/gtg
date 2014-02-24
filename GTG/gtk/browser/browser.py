@@ -821,18 +821,21 @@ class TaskBrowser(GObject.GObject):
             # wait for its tid to show up (invernizzi)
             def select_next_added_task_in_browser(treemodelsort, path,
                                                   iter, self):
+                # copy() is required because boxed structures are not copied
+                # when passed in a callback without transfer
+                # See https://bugzilla.gnome.org/show_bug.cgi?id=722899
+                iter = iter.copy()
 
                 def selecter(treemodelsort, path, iter, self):
                     self.__last_quick_added_tid_event.wait()
                     treeview = self.vtree_panes['active']
-                    tid = self.activetree.get_node_for_path(path)
-                    if self.__last_quick_added_tid == tid:
-                        # this is the correct task
-                        treemodelsort.disconnect(
-                            self.__quick_add_select_handle)
-                        selection = treeview.get_selection()
-                        selection.unselect_all()
-                        selection.select_path(path)
+                    treemodelsort.disconnect(
+                        self.__quick_add_select_handle)
+                    selection = treeview.get_selection()
+                    selection.unselect_all()
+                    # Since we use iter for selection,
+                    # the task selected is bound to be correct
+                    selection.select_iter(iter)
 
                 # It cannot be another thread than the main gtk thread !
                 GObject.idle_add(selecter, treemodelsort, path, iter, self)
