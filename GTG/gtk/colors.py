@@ -23,6 +23,7 @@ import random
 # Take list of Tags and give the background color that should be applied
 # The returned color might be None (in which case, the default is used)
 
+used_color=[]
 
 def background_color(tags, bgcolor=None):
     if not bgcolor:
@@ -92,9 +93,21 @@ def get_colored_tags_markup(req, tag_names):
 
 def generate_tag_color():
     maxvalue=65535
-    red=random.randint(0,maxvalue)
-    green=random.randint(0,maxvalue)
-    blue=random.randint(0,maxvalue)
-    my_color=Gdk.Color(red, green, blue).to_string()
+    flag=0;
+    while(flag==0):
+        red=random.randint(0,maxvalue)
+        green=random.randint(0,maxvalue)
+        blue=random.randint(0,maxvalue)
+        my_color=Gdk.Color(red, green, blue).to_string()
+        if my_color not in used_color:
+            flag=1
+    used_color.append(my_color)  
     return my_color
+
+def color_add(present_color):
+    used_color.append(present_color)   
+
+def color_remove(present_color):
+    if present_color in used_color:
+        used_color.remove(present_color) 
 # -----------------------------------------------------------------------------

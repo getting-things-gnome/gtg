@@ -32,7 +32,7 @@ from gi.repository import GObject, Gtk, Gdk, GdkPixbuf
 from GTG import _
 from GTG.gtk.browser.simple_color_selector import SimpleColorSelector
 from GTG.tools.logger import Log
-
+from GTG.gtk.colors import color_add,color_remove
 
 class TagIconSelector(Gtk.Window):
     """
@@ -468,10 +468,21 @@ class TagEditor(Gtk.Window):
     def on_tc_colsel_changed(self, widget):
         """Callback: update the tag color depending on the current color
         selection"""
+        
         color = self.tc_cc_colsel.get_selected_color()
+        if (color==None):
+                #print("My present color is:",self.tag.get_attribute('color'))
+                color_remove(self.tag.get_attribute('color'))
+                my_color=color
+        else:
+                my_color = Gdk.color_parse(color)
+                my_color=Gdk.Color(my_color.red, my_color.green, my_color.blue).to_string()
+                color_add(my_color)      
+                #print(my_color)
+        
         if self.tag is not None:
             if color is not None:
-                self.tag.set_attribute('color', color)
+                self.tag.set_attribute('color', my_color)
             else:
                 self.tag.del_attribute('color')
 

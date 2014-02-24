@@ -27,7 +27,7 @@ like a color picker)
 """
 
 from gi.repository import Gtk
-from GTG.gtk.colors import generate_tag_color
+from GTG.gtk.colors import generate_tag_color,color_add,color_remove
 from GTG import _
 
 
@@ -80,7 +80,11 @@ class TagContextMenu(Gtk.Menu):
     
     def on_mi_ctag_activate(self, widget):
         my_color=generate_tag_color()  
-        self.tag.set_attribute('color',my_color) 
+        previous_color=self.tag.get_attribute('color')
+        if(previous_color!=None):
+                color_remove(previous_color)    
+        self.tag.set_attribute('color',my_color)
+        color_add(my_color) 
 
     def on_mi_del_activate(self, widget):
         """ delete a selected search """
