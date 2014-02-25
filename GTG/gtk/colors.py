@@ -36,6 +36,8 @@ def background_color(tags, bgcolor=None):
     blue = 0
     for my_tag in tags:
         my_color_str = my_tag.get_attribute("color")
+        if my_color_str!=None and my_color_str not in used_color:
+                 used_color.append(my_color_str)     
         if my_color_str:
             my_color = Gdk.color_parse(my_color_str)
             color_count = color_count + 1
@@ -105,7 +107,8 @@ def generate_tag_color():
     return my_color
 
 def color_add(present_color):
-    used_color.append(present_color)   
+    if present_color not in used_color:
+        used_color.append(present_color)   
 
 def color_remove(present_color):
     if present_color in used_color:

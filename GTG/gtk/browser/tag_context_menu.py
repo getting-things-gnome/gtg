@@ -80,9 +80,9 @@ class TagContextMenu(Gtk.Menu):
     
     def on_mi_ctag_activate(self, widget):
         my_color=generate_tag_color()  
-        previous_color=self.tag.get_attribute('color')
-        if(previous_color!=None):
-                color_remove(previous_color)    
+        present_color=self.tag.get_attribute('color')
+        if(present_color!=None):
+                color_remove(present_color)    
         self.tag.set_attribute('color',my_color)
         color_add(my_color) 
 
