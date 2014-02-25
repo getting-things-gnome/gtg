@@ -39,7 +39,7 @@ class GnomeConfig:
     MARK_DONE = _("Mark as Done")
     MARK_DONE_TOOLTIP = _("Mark the selected task as done")
     MARK_UNDONE = _("Mark as not Done")
-    MARK_UNDONE_TOOLTIP = _("Mark the selected task as to be done")
+    MARK_UNDONE_TOOLTIP = _("Mark the selected task as not done")
     MARK_DISMISS = _("Dismiss")
     MARK_DISMISS_TOOLTIP = _("Mark the task as not to be done anymore")
     MARK_UNDISMISS = _("Undismiss")
