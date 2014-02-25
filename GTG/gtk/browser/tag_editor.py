@@ -370,8 +370,10 @@ class TagEditor(Gtk.Window):
             # Update entry
             if tag.is_search_tag():
                 name = tag.get_name()
+                
             else:
                 name = tag.get_name()[1:]
+            
             self.tn_entry.set_text(name)
             # Update visibility in Work View
             s_hidden_in_wv = (self.tag.get_attribute("nonworkview") == "True")
@@ -469,20 +471,17 @@ class TagEditor(Gtk.Window):
         """Callback: update the tag color depending on the current color
         selection"""
         
-        color = self.tc_cc_colsel.get_selected_color()
+        color = self.tc_cc_colsel.get_selected_color()        
         if (color==None):
-                #print("My present color is:",self.tag.get_attribute('color'))
                 color_remove(self.tag.get_attribute('color'))
-                my_color=color
         else:
                 my_color = Gdk.color_parse(color)
-                my_color=Gdk.Color(my_color.red, my_color.green, my_color.blue).to_string()
-                color_add(my_color)      
-                #print(my_color)
-        
+                color=Gdk.Color(my_color.red, my_color.green, my_color.blue).to_string()
+                color_add(color)      
+                        
         if self.tag is not None:
             if color is not None:
-                self.tag.set_attribute('color', my_color)
+                self.tag.set_attribute('color', color)
             else:
                 self.tag.del_attribute('color')
 

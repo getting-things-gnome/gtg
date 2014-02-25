@@ -41,6 +41,7 @@
     * Fix for bug #1242384: send-email: toolbar item is not removed from an opened task, by Fabiano Fidencio
     * Fix for bug #1029342: Give an option to remove tag color, by kpytang
     * Fixed Hamster Plugin: bugs #487582, #487585, #1236066, #1242083 and #1242279, by Parin Porecha
+    * Fix for bug #644993 : Automatic generation of tag color, by Atit Anand
 
 2012-11-06 Getting Things GNOME! 0.3
     * Hide tasks with due date someday, #931376
