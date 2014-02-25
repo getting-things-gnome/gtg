@@ -13,6 +13,7 @@
     * Fix for bug #1275628: Error when add task in Quick Add Entry, by Parin Porecha
     * Fix for bug #1248185: due label in task editor says "Due for" should say "Due on", by Pawan Hegde
     * Fix for bug #1282955: Clicking out side the calender widget should close the widget by Sagar Ghuge
+    * Fix for bug #1033268: Mouseover String Incorrect, by Sushant Raikar
 
 2013-11-24 Getting Things GNOME! 0.3.1
     * Fix for bug #1024473: Have 'Show Main Window' in notification area, by Antonio Roquentin
