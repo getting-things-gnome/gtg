@@ -19,10 +19,12 @@
 
 from gi.repository import Gdk
 from functools import reduce
+import random
 
 # Take list of Tags and give the background color that should be applied
 # The returned color might be None (in which case, the default is used)
 
+used_color = []
 
 def background_color(tags, bgcolor=None):
     if not bgcolor:
@@ -35,6 +37,8 @@ def background_color(tags, bgcolor=None):
     blue = 0
     for my_tag in tags:
         my_color_str = my_tag.get_attribute("color")
+        if my_color_str is not None and my_color_str not in used_color:
+            used_color.append(my_color_str)
         if my_color_str:
             my_color = Gdk.color_parse(my_color_str)
             color_count = color_count + 1
@@ -90,4 +94,30 @@ def get_colored_tags_markup(req, tag_names):
         tags_txt = reduce(lambda a, b: a + ", " + b, tag_markups)
     return tags_txt
 
+
+def generate_tag_color():
+
+    maxvalue = 65535
+    flag = 0
+    while(flag == 0):
+        red = random.randint(0, maxvalue)
+        green = random.randint(0, maxvalue)
+        blue = random.randint(0, maxvalue)
+        my_color = Gdk.Color(red, green, blue).to_string()
+        if my_color not in used_color:
+            flag = 1
+    used_color.append(my_color)
+    return my_color
+
+
+def color_add(present_color):
+
+    if present_color not in used_color:
+        used_color.append(present_color)
+
+
+def color_remove(present_color):
+
+    if present_color in used_color:
+        used_color.remove(present_color)
 # -----------------------------------------------------------------------------

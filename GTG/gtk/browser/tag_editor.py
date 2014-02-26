@@ -32,6 +32,7 @@ from gi.repository import GObject, Gtk, Gdk, GdkPixbuf
 from GTG import _
 from GTG.gtk.browser.simple_color_selector import SimpleColorSelector
 from GTG.tools.logger import Log
+from GTG.gtk.colors import color_add, color_remove
 
 
 class TagIconSelector(Gtk.Window):
@@ -471,8 +472,12 @@ class TagEditor(Gtk.Window):
         color = self.tc_cc_colsel.get_selected_color()
         if self.tag is not None:
             if color is not None:
+                my_color = Gdk.color_parse(color)
+                color = Gdk.Color(my_color.red, my_color.green, my_color.blue).to_string()
+                color_add(color)
                 self.tag.set_attribute('color', color)
             else:
+                color_remove(self.tag.get_attribute('color'))
                 self.tag.del_attribute('color')
 
     def on_tc_colsel_activated(self, widget, color):
