@@ -77,9 +77,7 @@ class TreeviewFactory():
         search_parent = self.req.get_tag(CoreConfig.SEARCH_TAG)
         for search_tag in search_parent.get_children():
             tag = self.req.get_tag(search_tag)
-            match = search_filter(node,
-                                  parse_search_query(
-                                  tag.get_attribute('query')))
+            match = search_filter(node, parse_search_query(tag.get_attribute('query')))
             if match and search_tag not in tags:
                 tags.append(tag)
 
