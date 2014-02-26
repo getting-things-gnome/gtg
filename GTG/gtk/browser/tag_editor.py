@@ -32,7 +32,8 @@ from gi.repository import GObject, Gtk, Gdk, GdkPixbuf
 from GTG import _
 from GTG.gtk.browser.simple_color_selector import SimpleColorSelector
 from GTG.tools.logger import Log
-from GTG.gtk.colors import color_add,color_remove
+from GTG.gtk.colors import color_add, color_remove
+
 
 class TagIconSelector(Gtk.Window):
     """
@@ -370,10 +371,8 @@ class TagEditor(Gtk.Window):
             # Update entry
             if tag.is_search_tag():
                 name = tag.get_name()
-                
             else:
                 name = tag.get_name()[1:]
-            
             self.tn_entry.set_text(name)
             # Update visibility in Work View
             s_hidden_in_wv = (self.tag.get_attribute("nonworkview") == "True")
@@ -470,15 +469,14 @@ class TagEditor(Gtk.Window):
     def on_tc_colsel_changed(self, widget):
         """Callback: update the tag color depending on the current color
         selection"""
-        
-        color = self.tc_cc_colsel.get_selected_color()        
-        if (color==None):
+        color = self.tc_cc_colsel.get_selected_color()
+        if (color is None):
                 color_remove(self.tag.get_attribute('color'))
         else:
                 my_color = Gdk.color_parse(color)
-                color=Gdk.Color(my_color.red, my_color.green, my_color.blue).to_string()
-                color_add(color)      
-                        
+                color = Gdk.Color(my_color.red, my_color.green, my_color.blue).to_string()
+                color_add(color)
+
         if self.tag is not None:
             if color is not None:
                 self.tag.set_attribute('color', color)
