@@ -470,17 +470,14 @@ class TagEditor(Gtk.Window):
         """Callback: update the tag color depending on the current color
         selection"""
         color = self.tc_cc_colsel.get_selected_color()
-        if (color is None):
-                color_remove(self.tag.get_attribute('color'))
-        else:
+        if self.tag is not None:
+            if color is not None:
                 my_color = Gdk.color_parse(color)
                 color = Gdk.Color(my_color.red, my_color.green, my_color.blue).to_string()
                 color_add(color)
-
-        if self.tag is not None:
-            if color is not None:
                 self.tag.set_attribute('color', color)
             else:
+                color_remove(self.tag.get_attribute('color'))
                 self.tag.del_attribute('color')
 
     def on_tc_colsel_activated(self, widget, color):

@@ -20,11 +20,11 @@
 from gi.repository import Gdk
 from functools import reduce
 import random
+
 # Take list of Tags and give the background color that should be applied
 # The returned color might be None (in which case, the default is used)
 
 used_color = []
-
 
 def background_color(tags, bgcolor=None):
     if not bgcolor:
