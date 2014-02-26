@@ -27,7 +27,7 @@ like a color picker)
 """
 
 from gi.repository import Gtk
-
+from GTG.gtk.colors import generate_tag_color, color_add, color_remove
 from GTG import _
 
 
@@ -53,8 +53,12 @@ class TagContextMenu(Gtk.Menu):
             # Color chooser FIXME: SHOULD BECOME A COLOR PICKER
             self.mi_cc = Gtk.MenuItem()
             self.mi_cc.set_label(_("Edit Tag..."))
+            self.mi_ctag = Gtk.MenuItem()
+            self.mi_ctag.set_label(_("Generate Color"))
             self.append(self.mi_cc)
+            self.append(self.mi_ctag)
             self.mi_cc.connect('activate', self.on_mi_cc_activate)
+            self.mi_ctag.connect('activate', self.on_mi_ctag_activate)
             if self.tag.is_search_tag():
                 self.mi_del = Gtk.MenuItem()
                 self.mi_del.set_label(_("Delete"))
@@ -73,6 +77,14 @@ class TagContextMenu(Gtk.Menu):
     def on_mi_cc_activate(self, widget):
         """Callback: show the tag editor upon request"""
         self.vmanager.open_tag_editor(self.tag)
+
+    def on_mi_ctag_activate(self, widget):
+        random_color = generate_tag_color()
+        present_color = self.tag.get_attribute('color')
+        if(present_color is not None):
+                color_remove(present_color)
+        self.tag.set_attribute('color', random_color)
+        color_add(random_color)
 
     def on_mi_del_activate(self, widget):
         """ delete a selected search """

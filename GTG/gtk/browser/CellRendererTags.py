@@ -61,7 +61,6 @@ class CellRendererTags(Gtk.CellRenderer):
     def __count_viewable_tags(self):
 
         count = 0
-
         if self.tag_list is not None:
             for my_tag in self.tag_list:
                 my_tag_color = my_tag.get_attribute("color")
