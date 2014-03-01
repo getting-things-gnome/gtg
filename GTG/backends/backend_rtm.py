@@ -28,7 +28,6 @@ import time
 import threading
 import datetime
 import subprocess
-import exceptions
 from dateutil.tz import tzutc, tzlocal
 
 from GTG.backends.genericbackend import GenericBackend
@@ -577,7 +576,7 @@ class RTMProxy(object):
             try:
                 if self._login():
                     self.authenticated.set()
-            except exceptions.IOError:
+            except IOError:
                 BackendSignals().backend_failed(self.get_id(),
                                                 BackendSignals.ERRNO_NETWORK)
 
