@@ -314,7 +314,7 @@ class TreeviewFactory():
 
     def active_tasks_treeview(self, tree):
         # Build the title/label/tags columns
-        desc = self.common_desc_for_tasks(tree)
+        desc = self.common_desc_for_tasks(tree, "Tasks")
 
         # "startdate" column
         col_name = 'startdate'
@@ -345,7 +345,7 @@ class TreeviewFactory():
 
     def closed_tasks_treeview(self, tree):
         # Build the title/label/tags columns
-        desc = self.common_desc_for_tasks(tree)
+        desc = self.common_desc_for_tasks(tree, "Closed Tasks")
 
         # "startdate" column
         col_name = 'closeddate'
@@ -365,7 +365,7 @@ class TreeviewFactory():
 
     # This build the first tag/title columns, common
     # to both active and closed tasks treeview
-    def common_desc_for_tasks(self, tree):
+    def common_desc_for_tasks(self, tree, title_label):
         desc = {}
 
         # invisible 'task_id' column
@@ -411,7 +411,7 @@ class TreeviewFactory():
         # "label" column
         col_name = 'label'
         col = {}
-        col['title'] = _("Title")
+        col['title'] = _(title_label)
         render_text = Gtk.CellRendererText()
         render_text.set_property("ellipsize", Pango.EllipsizeMode.END)
         col['renderer'] = ['markup', render_text]
