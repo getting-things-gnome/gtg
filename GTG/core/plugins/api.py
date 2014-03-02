@@ -246,7 +246,7 @@ class PluginAPI:
         if os.path.isdir(dirname):
             if os.path.isfile(path):
                 try:
-                    with open(path, 'r') as file:
+                    with open(path, 'rb') as file:
                         item = pickle.load(file)
                         config.update(item)
                 except:
