@@ -15,6 +15,7 @@
     * Fix for bug #1282955: Clicking out side the calender widget should close the widget by Sagar Ghuge
     * Fix for bug #1033268: Mouseover String Incorrect, by Sushant Raikar
     * Fix for bug #644993 : Automatic generation of tag color, by Atit Anand
+    * Fix for bug #1286491 : RTM sync backend fails to load, by Pawan Hegde
 
 2013-11-24 Getting Things GNOME! 0.3.1
     * Fix for bug #1024473: Have 'Show Main Window' in notification area, by Antonio Roquentin
