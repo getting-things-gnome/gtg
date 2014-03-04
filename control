@@ -6,7 +6,7 @@ Uploaders: Python Applications Packaging Team <python-apps-team@lists.alioth.deb
 Build-Depends: debhelper (>= 9~)
 Build-Depends-Indep: python3 (>= 3.0)
 Standards-Version: 3.9.4
-X-Python-Version: >= 3.0
+X-Python3-Version: >= 3.0
 Homepage: http://gtgnome.net/
 Vcs-Svn: svn://svn.debian.org/python-apps/packages/gtg/trunk/
 Vcs-Browser: http://svn.debian.org/viewsvn/python-apps/packages/gtg/trunk/
