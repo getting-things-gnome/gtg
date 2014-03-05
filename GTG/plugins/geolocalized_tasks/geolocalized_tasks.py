@@ -56,6 +56,8 @@ class geolocalizedTasks:
         self.__task_locations = {}
         self.__tag_locations = {}
         self.__view = None
+        self.__vbox_map = None
+        self.__map = None
         self.__current_layer = None
         self.__menu_item_tag_sidebar = None
 
@@ -664,9 +666,11 @@ class geolocalizedTasks:
         dialog = builder.get_object("SetTaskLocation")
 
         vbox_map = builder.get_object("vbox_map")
+        self.__vbox_map = vbox_map
 
         map = GtkChamplain.Embed()
         vbox_map.add(map)
+        self.__map = map
 
         view = map.get_view()
         view.set_property("zoom-level", 10)
@@ -814,3 +818,4 @@ class geolocalizedTasks:
         self._set_current_layer(None)
         self._set_view(None)
         self._set_locations([])
+        self.__vbox_map.remove(self.__map)
