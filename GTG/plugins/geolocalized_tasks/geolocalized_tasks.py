@@ -42,6 +42,9 @@ FILTER_NAME = '@@GeolocalizedTasks'
 
 class geolocalizedTasks:
 
+    PLUGIN_NAMESPACE = 'Geolocalized Tasks'
+    DEFAULT_PREFERENCES = {'apply_filter': False, 'distance_filter':15}
+
     def __init__(self):
         Clutter.init([])
         self.__latitude = None
@@ -60,16 +63,14 @@ class geolocalizedTasks:
         self.__map = None
         self.__current_layer = None
         self.__menu_item_tag_sidebar = None
+        self.__plugin_api = None
 
         self.__where = Geoclue()
         self.__where.client.connect_to_signal('LocationUpdated', self._location_updated)
         self.__where.client.Start()
         self.__distance = 15
 
-
-#        self.__tag_locations_data_path = 
-#        self.__task_locations_data_path =
-#        self.__last_location_data_path = 
+        self.__preferences = None
 
     def _get_where (self):
         return self.__where
@@ -265,12 +266,20 @@ class geolocalizedTasks:
         """
         mi = plugin_api.add_item_to_tag_menu("Add Location", self._set_tag_location, plugin_api)
         self._set_menu_item_tag_sidebar(mi)
-        #Filter
         builder = self._get_builder_from_file("preferences2.ui")
         self.__spin = builder.get_object("spin_proximityfactor")
         requester = plugin_api.get_requester()
         requester.add_filter(FILTER_NAME, self._filter_work_view)
         self.__requester = requester
+        self.__plugin_api = plugin_api
+        self._preferences_load(plugin_api)
+        self.__distance = self.__preferences['distance_filter']
+        self.__apply_filter = self.__preferences['apply_filter']
+        tasks_tree = self.__requester.get_tasks_tree()
+        if self.__apply_filter is True:
+            self.__requester.apply_global_filter(tasks_tree, FILTER_NAME)
+        else:
+            self.__requester.unapply_global_filter(tasks_tree, FILTER_NAME)
 
     def deactivate(self, plugin_api):
         """
@@ -355,17 +364,18 @@ class geolocalizedTasks:
             spin.set_sensitive(True)
         else:
             spin.set_sensitive(False)
+        self.__apply_filter = widget.get_active()
 
     def _spin_value_changed(self, widget, data):
         self.__distance = widget.get_value()
 
     def on_geolocalized_preferences(self):
-        builder = self._get_builder_from_file("preferences2.ui")
-        dialog = builder.get_object("dialog")
+        self.builder = self._get_builder_from_file("preferences2.ui")
+        dialog = self.builder.get_object("dialog")
 
-        spin = builder.get_object("spin_proximityfactor")
-        spin.set_sensitive(False)
-        spin.set_range(15.00, 1000.00)
+        spin = self.builder.get_object("spin_proximityfactor")
+        spin.set_sensitive(self.__apply_filter)
+        spin.set_range(self.__distance, 1000.00)
 
         adjust = Gtk.Adjustment(self.__distance, 1, 100, 1, 1, 1)
         spin.configure(adjust, 1, 0)
@@ -374,10 +384,11 @@ class geolocalizedTasks:
 
         spin.connect("value-changed", self._spin_value_changed, None)
 
-        check_set = builder.get_object("checkbutton")
+        check_set = self.builder.get_object("checkbutton")
+        check_set.set_active(self.__apply_filter)
         check_set.connect("toggled", self._check_set_pref, spin)
 
-        btn = builder.get_object("button_ok")
+        btn = self.builder.get_object("button_ok")
         btn.connect('clicked', self._ok_preferences, check_set)
 
         dialog.show_all()
@@ -416,17 +427,11 @@ class geolocalizedTasks:
                 return True
         return False
 
-#        print ("DEBUG | user location", user_location)
-#        locations = self._get_all_locations()
-#        print ("DEBUG | locations_list", locations)
-#        final_dict = {}
-#        for location in locations:
-#            [name, latitude, longitude] = location
-#            print ("DEBUG | locations_list 1", location)
-#            geocode_location = Geocode.Location.new(latitude, longitude, Geocode.LOCATION_ACCURACY_STREET)
-#            dist = Geocode.Location.get_distance_from(user_location, geocode_location)
-#            print("Eliane | distance is", dist)
-#            final_dict[geocode_location] = dist
+    def _preferences_load(self, plugin_api):
+        self.__preferences = self.__plugin_api.load_configuration_object(self.PLUGIN_NAMESPACE, "preferences", default_values=self.DEFAULT_PREFERENCES)
+
+    def _preferences_store(self, plugin_api):
+        self.__plugin_api.save_configuration_object(self.PLUGIN_NAMESPACE, "preferences", self.__preferences)
 
 #        wTree = Gtk.glade.XML(self.glade_file, "Preferences")
 #        dialog = wTree.get_widget("Preferences")
@@ -556,6 +561,7 @@ class geolocalizedTasks:
         marker.set_location(latitude, longitude)
         layer = self._get_current_layer()
         layer.add_marker(marker)
+        print("DEBUG | COGL | layer:", layer)
         marker.connect('button-press-event', self._on_marker, marker)
         self._add_to_locations(marker)
 
@@ -673,6 +679,7 @@ class geolocalizedTasks:
         self.__map = map
 
         view = map.get_view()
+        print("DEBUG | COGL | view:", view)
         view.set_property("zoom-level", 10)
         view.set_reactive(True)
 
@@ -681,6 +688,7 @@ class geolocalizedTasks:
         view.set_map_source(source)
 
         layer = Champlain.MarkerLayer()
+        print("DEBUG | COGL | layer:", layer)
         self._set_current_layer(layer)
         view.add_layer(layer)
 
@@ -753,9 +761,6 @@ class geolocalizedTasks:
         for location in self._get_locations():
             locations.append([location.get_text(), location.get_latitude(), location.get_longitude()])
         dict[key] = locations
-        print(dict.keys())
-        for k in dict.keys():
-            print(dict[k])
         store_pickled_file (data_path, dict)
 
         widget.get_parent_window().destroy()
@@ -813,6 +818,10 @@ class geolocalizedTasks:
         else:
             self.__requester.unapply_global_filter(tasks_tree, FILTER_NAME)
         widget.get_parent_window().destroy()
+
+        self.__preferences["apply_filter"] = check.get_active()
+        self.__preferences["distance_filter"] = self.__distance
+        self._preferences_store(self.__plugin_api)
 
     def _clean_up(self):
         self._set_current_layer(None)
