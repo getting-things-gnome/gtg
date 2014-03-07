@@ -18,6 +18,7 @@
     * Fix for bug #1286491 : RTM sync backend fails to load, by Pawan Hegde
     * Fix for bug #1286493 : GTG cannot connect to RTM, by Pawan Hegde
     * Fix for bug #1288011 : More intuitive title label for tasks, by Sara Ribeiro
+    * Fix for bug #316922 : Have a link to the parent(s) in the task editor, by Parth Panchal
 
 2013-11-24 Getting Things GNOME! 0.3.1
     * Fix for bug #1024473: Have 'Show Main Window' in notification area, by Antonio Roquentin
