@@ -27,6 +27,8 @@ from GTG.core.plugins import GnomeConfig
 from GTG.core.plugins.engine import PluginEngine
 from GTG.gtk import ViewConfig
 
+from webbrowser import open as openurl
+
 # columns in PluginsDialog.plugin_store
 PLUGINS_COL_ID = 0
 PLUGINS_COL_ENABLED = 1
@@ -172,6 +174,15 @@ class PluginsDialog:
                                 self.on_plugin_about_close,
                                 })
 
+        # allow F1 for help
+        agr = Gtk.AccelGroup()
+        self.dialog.add_accel_group(agr)
+
+        widget = builder.get_object("plugins_help")
+        key, mod = Gtk.accelerator_parse("F1")
+        widget.add_accelerator("activate", agr, key, mod,
+                                       Gtk.AccelFlags.VISIBLE)
+
     def _init_plugin_tree(self):
         """ Initialize the PluginTree Gtk.TreeView.
 
@@ -237,7 +248,8 @@ class PluginsDialog:
 
     @classmethod
     def on_help(cls, widget):
-        """ In future, this will open help for plugins """
+        """ Open help for plugins """
+        openurl("help:gtg/gtg-plugins")
         return True
 
     def on_plugin_toggle(self, widget, path):
