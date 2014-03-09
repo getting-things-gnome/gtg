@@ -25,13 +25,12 @@ check: tests pep8 pyflakes
 tests:
 	./run-tests
 
-# Get rid of stale files or files made during testing.
+# Remove all temporary files
 clean:
 	rm -rf tmp
-	rm -rf doc/api
-	find . -name '*.pyc' -print0 | xargs -0 rm -f
-	find . -name '*~' -print0 | xargs -0 rm -f
-	find . -name '.*.swp' -print0 | xargs -0 rm -f
+	find -type f -name '*~' -or -name '.*.sw*' -print | xargs rm -f
+	find -type f -name '*.pyc' -print | xargs rm -f
+	find -type d -name '__pycache__' -print | xargs rm -rf
 
 # Check for common & easily catchable Python mistakes.
 pyflakes:

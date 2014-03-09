@@ -18,5 +18,12 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
+import sys
 import nose
-nose.main('--with-specplugin')
+
+if __name__ == "__main__":
+    # By default, use spec plugin
+    if len(sys.argv) == 1:
+        sys.argv.append('--with-specplugin')
+
+    nose.main()
