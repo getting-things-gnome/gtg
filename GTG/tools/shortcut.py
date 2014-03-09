@@ -50,6 +50,7 @@ GCONF_SET = "gconftool-2 --type string --set /desktop/gnome/keybindings/custom"
 def is_gsettings_present():
     return bool(call_subprocess(CHECK_GSETTINGS_PRESENCE))
 
+
 def get_saved_binding():
     """ Get the current shortcut if the task exists """
     list_keys = call_subprocess(CHECK_VERSION).splitlines()

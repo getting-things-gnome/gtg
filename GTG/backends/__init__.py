@@ -55,10 +55,7 @@ class BackendFactory(Borg):
             # This object has already been constructed
             return
         self.backend_modules = {}
-        # Look for backends in the GTG/backends dir
-        this_dir = os.path.dirname(__file__)
-        backend_files = [f for f in os.listdir(this_dir) if f.endswith(".py") and
-                               f.startswith(self.BACKEND_PREFIX)]
+        backend_files = self._find_backend_files()
         # Create module names
         module_names = [f.replace(".py", "") for f in backend_files]
         Log.debug("Backends found: " + str(module_names))
@@ -80,6 +77,15 @@ class BackendFactory(Borg):
 
             self.backend_modules[module_name] = \
                 sys.modules[extended_module_name]
+
+    def _find_backend_files(self):
+        # Look for backends in the GTG/backends dir
+        this_dir = os.path.dirname(__file__)
+        for filename in os.listdir(this_dir):
+            is_python = filename.endswith(".py")
+            has_prefix = filename.startswith(self.BACKEND_PREFIX)
+            if is_python and has_prefix:
+                yield filename
 
     def get_backend(self, backend_name):
         '''

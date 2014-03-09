@@ -62,15 +62,15 @@ class pluginTomboy:
             # showed only once
             DIALOG_DESTROY_WITH_PARENT = Gtk.DialogFlags.DESTROY_WITH_PARENT
             if not self.activated:
-                dialog = Gtk.MessageDialog(parent=self.plugin_api.get_ui().
-                                           get_window(),
-                                           flags=DIALOG_DESTROY_WITH_PARENT,
-                                           type=Gtk.MessageType.ERROR,
-                                           buttons=Gtk.ButtonsType.OK,
-                                           message_format=_("Tomboy/Gnote "
-                                           "not found. Please install it or "
-                                           "disable the Tomboy/Gnote plugin"
-                                           " in GTG"))
+                message = _("Tomboy/Gnote not found. Please install it or "
+                            "disable the Tomboy/Gnote plugin in GTG")
+                dialog = Gtk.MessageDialog(
+                    parent=self.plugin_api.get_ui().get_window(),
+                    flags=DIALOG_DESTROY_WITH_PARENT,
+                    type=Gtk.MessageType.ERROR,
+                    buttons=Gtk.ButtonsType.OK,
+                    message_format=message,
+                )
                 dialog.run()
                 dialog.destroy()
         return self.activated
@@ -179,17 +179,17 @@ class pluginTomboy:
         except dbus.DBusException:
             DIALOG_DESTROY_WITH_PARENT = Gtk.DialogFlags.DESTROY_WITH_PARENT
             if not hasattr(self, "disable_flag"):
-                dialog = Gtk.MessageDialog(parent=self.plugin_api.get_ui().
-                                           get_window(),
-                                           flags=DIALOG_DESTROY_WITH_PARENT,
-                                           type=Gtk.MessageType.ERROR,
-                                           buttons=Gtk.ButtonsType.OK,
-                                           message_format=_("%s seems to be "
-                                           "installed on your system, but it "
-                                           "does not provide a DBus interface"
-                                           " which is required by the "
-                                           "Tomboy/Gnote plugin in GTG.") %
-                                           self.software.title())
+                message = _(
+                    "%s seems to be installed on your system, but it does "
+                    "not provide a DBus interface which is required by the "
+                    "Tomboy/Gnote plugin in GTG.") % self.software.title()
+                dialog = Gtk.MessageDialog(
+                    parent=self.plugin_api.get_ui().get_window(),
+                    flags=DIALOG_DESTROY_WITH_PARENT,
+                    type=Gtk.MessageType.ERROR,
+                    buttons=Gtk.ButtonsType.OK,
+                    message_format=message,
+                )
                 dialog.run()
                 dialog.destroy()
                 self.disable_flag = True
@@ -201,7 +201,8 @@ class pluginTomboy:
         tomboy = self.getTomboyObject()
         if tomboy is None:
             return None
-        return [str(tomboy.GetNoteTitle(note)) for note in tomboy.ListAllNotes()]
+        return [
+            str(tomboy.GetNoteTitle(note)) for note in tomboy.ListAllNotes()]
 
     def onTbTaskButton(self, widget, plugin_api):
         title_list = self.getTomboyNoteTitleList()
@@ -223,6 +224,12 @@ class pluginTomboy:
                                                     self.noteChosen)
         self.dialog.show_all()
 
+    def _node_exist(self, tomboy, title):
+        for note in tomboy.ListAllNotes():
+            if tomboy.GetNoteTitle(note) == title:
+                return True
+        return False
+
     # A title has been chosen by the user. If the note exists, it will be
     # linked, otherwise the user will have the option to create the note.
     def noteChosen(self, widget=None, data=None):
@@ -230,15 +237,18 @@ class pluginTomboy:
         if tomboy is None:
             return
         supposed_title = self.combobox_entry.get_text()
-        if [x for x in tomboy.ListAllNotes() if tomboy.GetNoteTitle(x) == supposed_title] == []:
+        if not self._node_exist(tomboy, supposed_title):
             self.label_caption.set_text(_("That note does not exist!"))
             DIALOG_DESTROY_WITH_PARENT = Gtk.DialogFlags.DESTROY_WITH_PARENT
-            dialog = Gtk.MessageDialog(parent=self.dialog,
-                                       flags=DIALOG_DESTROY_WITH_PARENT,
-                                       type=Gtk.MessageType.QUESTION,
-                                       buttons=Gtk.ButtonsType.YES_NO,
-                                       message_format=_("That note does not \
-exist. Do you want to create a new one?"))
+            message = _(
+                "That note does not exist. Do you want to create a new one?")
+            dialog = Gtk.MessageDialog(
+                parent=self.dialog,
+                flags=DIALOG_DESTROY_WITH_PARENT,
+                type=Gtk.MessageType.QUESTION,
+                buttons=Gtk.ButtonsType.YES_NO,
+                message_format=message,
+            )
             response = dialog.run()
             dialog.destroy()
             if response == Gtk.ResponseType.YES:

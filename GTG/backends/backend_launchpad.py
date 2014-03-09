@@ -26,12 +26,9 @@ import os
 import uuid
 import datetime
 from xdg.BaseDirectory import xdg_cache_home
-from launchpadlib.launchpad import Launchpad, \
-    STAGING_SERVICE_ROOT, \
-    EDGE_SERVICE_ROOT
+from launchpadlib.launchpad import Launchpad, EDGE_SERVICE_ROOT
 
 from GTG.core.task import Task
-from GTG.tools.testingmode import TestingMode
 from GTG import _
 from GTG.backends.genericbackend import GenericBackend
 from GTG.backends.backendsignals import BackendSignals
@@ -122,15 +119,10 @@ class Backend(PeriodicImportBackend):
         # Connecting to Launchpad
         CACHE_DIR = os.path.join(xdg_cache_home, 'gtg/backends/',
                                  self.get_id())
-        if TestingMode().get_testing_mode():
-            SERVICE_ROOT = STAGING_SERVICE_ROOT
-        else:
-            SERVICE_ROOT = EDGE_SERVICE_ROOT
         try:
             self.cancellation_point()
-            self.launchpad = Launchpad.login_anonymously(GTG_NAME,
-                                                         SERVICE_ROOT,
-                                                         CACHE_DIR)
+            self.launchpad = Launchpad.login_anonymously(
+                GTG_NAME, EDGE_SERVICE_ROOT, CACHE_DIR)
         except:
             # The connection is not working (the exception type can be
             # anything)
@@ -211,13 +203,13 @@ class Backend(PeriodicImportBackend):
                 tid = str(uuid.uuid4())
                 task = self.datastore.task_factory(tid)
                 self._populate_task(task, bug_dic)
-                self.sync_engine.record_relationship(local_id=tid,
-                                                     remote_id=str(
-                                                     bug_dic['self_link']),
-                                                     meme=SyncMeme(
-                                                     task.get_modified(),
-                                                     bug_dic['modified'],
-                                                     self.get_id()))
+                meme = SyncMeme(
+                    task.get_modified(), bug_dic['modified'], self.get_id())
+                self.sync_engine.record_relationship(
+                    local_id=tid,
+                    remote_id=str(bug_dic['self_link']),
+                    meme=meme,
+                )
                 self.datastore.push_task(task)
 
             elif action == SyncEngine.UPDATE:

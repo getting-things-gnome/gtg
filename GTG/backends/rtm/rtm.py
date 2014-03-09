@@ -8,7 +8,9 @@ __all__ = (
 )
 
 
-import urllib.request, urllib.parse, urllib.error
+import urllib.request
+import urllib.parse
+import urllib.error
 from hashlib import md5
 
 from GTG import _
@@ -242,75 +244,53 @@ API = {
         [('frob',), ()]
     },
     'contacts': {
-        'add':
-    [('timeline', 'contact'), ()],
-        'delete':
-    [('timeline', 'contact_id'), ()],
-        'getList':
-    [(), ()]
+        'add': [('timeline', 'contact'), ()],
+        'delete': [('timeline', 'contact_id'), ()],
+        'getList': [(), ()]
     },
     'groups': {
-        'add':
-    [('timeline', 'group'), ()],
-        'addContact':
-    [('timeline', 'group_id', 'contact_id'), ()],
-        'delete':
-    [('timeline', 'group_id'), ()],
-        'getList':
-    [(), ()],
-        'removeContact':
-    [('timeline', 'group_id', 'contact_id'), ()],
+        'add': [('timeline', 'group'), ()],
+        'addContact': [('timeline', 'group_id', 'contact_id'), ()],
+        'delete': [('timeline', 'group_id'), ()],
+        'getList': [(), ()],
+        'removeContact': [('timeline', 'group_id', 'contact_id'), ()],
     },
     'lists': {
-        'add':
-    [('timeline', 'name',), ('filter',)],
-        'archive':
-    [('timeline', 'list_id'), ()],
-        'delete':
-    [('timeline', 'list_id'), ()],
-        'getList':
-    [(), ()],
-        'setDefaultList':
-    [('timeline'), ('list_id')],
-        'setName':
-    [('timeline', 'list_id', 'name'), ()],
-        'unarchive':
-    [('timeline',), ('list_id',)]
+        'add': [('timeline', 'name',), ('filter',)],
+        'archive': [('timeline', 'list_id'), ()],
+        'delete': [('timeline', 'list_id'), ()],
+        'getList': [(), ()],
+        'setDefaultList': [('timeline'), ('list_id')],
+        'setName': [('timeline', 'list_id', 'name'), ()],
+        'unarchive': [('timeline',), ('list_id',)]
     },
     'locations': {
-        'getList':
-    [(), ()]
+        'getList': [(), ()]
     },
     'reflection': {
-        'getMethodInfo':
-    [('methodName',), ()],
-        'getMethods':
-    [(), ()]
+        'getMethodInfo': [('methodName',), ()],
+        'getMethods': [(), ()]
     },
     'settings': {
-        'getList':
-    [(), ()]
+        'getList': [(), ()]
     },
     'tasks': {
-        'add':
-    [('timeline', 'name',), ('list_id', 'parse',)],
-        'addTags':
-    [('timeline', 'list_id', 'taskseries_id', 'task_id', 'tags'),
-     ()],
-        'complete':
-    [('timeline', 'list_id', 'taskseries_id', 'task_id',), ()],
-        'delete':
-    [('timeline', 'list_id', 'taskseries_id', 'task_id'), ()],
-        'getList':
-    [(),
-     ('list_id', 'filter', 'last_sync')],
-        'movePriority':
-    [('timeline', 'list_id', 'taskseries_id', 'task_id', 'direction'),
-     ()],
-        'moveTo':
-    [(
-    'timeline', 'from_list_id', 'to_list_id', 'taskseries_id', 'task_id'),
-        ()],
+        'add': [('timeline', 'name',), ('list_id', 'parse',)],
+        'addTags': [
+            ('timeline', 'list_id', 'taskseries_id', 'task_id', 'tags'), (),
+        ],
+        'complete': [('timeline', 'list_id', 'taskseries_id', 'task_id',), ()],
+        'delete': [('timeline', 'list_id', 'taskseries_id', 'task_id'), ()],
+        'getList': [(), ('list_id', 'filter', 'last_sync')],
+        'movePriority': [
+            ('timeline', 'list_id', 'taskseries_id', 'task_id', 'direction'),
+            (),
+        ],
+        'moveTo': [
+            ('timeline', 'from_list_id', 'to_list_id',
+             'taskseries_id', 'task_id'),
+            (),
+        ],
         'postpone':
         [('timeline', 'list_id', 'taskseries_id', 'task_id'),
          ()],
@@ -346,37 +326,29 @@ API = {
          ()],
     },
     'tasksNotes': {
-        'add':
-    [('timeline', 'list_id', 'taskseries_id',
-      'task_id', 'note_title', 'note_text'), ()],
-        'delete':
-    [('timeline', 'note_id'), ()],
-        'edit':
-    [('timeline', 'note_id', 'note_title', 'note_text'), ()]
+        'add': [
+            ('timeline', 'list_id', 'taskseries_id', 'task_id',
+             'note_title', 'note_text'), ()],
+        'delete': [('timeline', 'note_id'), ()],
+        'edit': [('timeline', 'note_id', 'note_title', 'note_text'), ()]
     },
     'test': {
-        'echo':
-    [(), ()],
-        'login':
-    [(), ()]
+        'echo': [(), ()],
+        'login': [(), ()]
     },
     'time': {
-        'convert':
-    [('to_timezone',), ('from_timezone', 'to_timezone', 'time')],
-        'parse':
-    [('text',), ('timezone', 'dateformat')]
+        'convert': [
+            ('to_timezone',), ('from_timezone', 'to_timezone', 'time')],
+        'parse': [('text',), ('timezone', 'dateformat')]
     },
     'timelines': {
-        'create':
-    [(), ()]
+        'create': [(), ()]
     },
     'timezones': {
-        'getList':
-    [(), ()]
+        'getList': [(), ()]
     },
     'transactions': {
-        'undo':
-    [('timeline', 'transaction_id'), ()]
+        'undo': [('timeline', 'transaction_id'), ()]
     },
 }
 
