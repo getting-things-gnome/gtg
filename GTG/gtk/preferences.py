@@ -21,6 +21,7 @@
 
 import os
 import shutil
+from webbrowser import open as openurl
 
 from gi.repository import Gtk
 from xdg.BaseDirectory import xdg_config_home
@@ -100,6 +101,12 @@ class PreferencesDialog:
             editor_font = font.to_string()
         self.fontbutton.set_font_name(editor_font)
 
+        # F1 shows help
+        agr = Gtk.AccelGroup()
+        self.dialog.add_accel_group(agr)
+        key, modifier = Gtk.accelerator_parse('F1')
+        agr.connect(key, modifier, Gtk.AccelFlags.VISIBLE, self.on_help)
+
         builder.connect_signals({
                                 'on_pref_autostart_toggled':
                                 self.on_autostart_toggled,
@@ -148,8 +155,10 @@ class PreferencesDialog:
         return True
 
     @classmethod
-    def on_help(cls, widget):
-        """ In future, this will open help for preferences """
+    # We define dummy variable for when on_help is called from a callback
+    def on_help(self, window=None, a=None, b=None, c=None):
+        """ Open help for preferences """
+        openurl(info.HELP_URI)
         return True
 
     @classmethod

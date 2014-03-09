@@ -19,6 +19,8 @@
 
 """ Dialog for loading plugins """
 
+from webbrowser import open as openurl
+
 from gi.repository import Gtk, Pango
 
 from GTG import _
@@ -26,8 +28,6 @@ from GTG import info
 from GTG.core.plugins import GnomeConfig
 from GTG.core.plugins.engine import PluginEngine
 from GTG.gtk import ViewConfig
-
-from webbrowser import open as openurl
 
 # columns in PluginsDialog.plugin_store
 PLUGINS_COL_ID = 0
@@ -177,7 +177,6 @@ class PluginsDialog:
         # allow F1 for help
         agr = Gtk.AccelGroup()
         self.dialog.add_accel_group(agr)
-
         widget = builder.get_object("plugins_help")
         key, mod = Gtk.accelerator_parse("F1")
         widget.add_accelerator("activate", agr, key, mod,
