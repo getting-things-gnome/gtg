@@ -361,14 +361,14 @@ class TaskEditor(object):
                 menu.append(mi)
         if tag_count > 0:
             self.inserttag_button.set_menu(menu)
-            
+
         # Refreshing the parent list in open_parent_button
         menu = Gtk.Menu()
         parents = self.task.get_parents()
         if len(parents) > 0:
             for parent in self.task.get_parents():
                 task = self.req.get_task(parent)
-                mi = Gtk.MenuItem(label = task.get_title(), use_underline=False)
+                mi = Gtk.MenuItem(label=task.get_title(), use_underline=False)
                 mi.connect("activate", self.open_parent, parent)
                 mi.show()
                 menu.append(mi)
@@ -519,10 +519,10 @@ class TaskEditor(object):
     def inserttag(self, widget, tag):
         self.textview.insert_tags([tag])
         self.textview.grab_focus()
-        
+
     def open_parent_clicked(self, widget):
         self.vmanager.open_task(self.task.get_parents()[0])
-    
+
     # On click handler for open_parent_button's menu items
     def open_parent(self, widget, tid):
         self.vmanager.open_task(tid)

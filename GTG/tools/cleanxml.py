@@ -224,9 +224,8 @@ def savexml(zefile, doc, backup=False):
                 current = "%s.bak.0" % backup_name
                 shutil.copy(zefile, current)
 
-                daily_backup = "%s.%s.bak" % (backup_name,
-                                              datetime.date.today().strftime(
-                                              "%Y-%m-%d"))
+                daily_backup = "%s.%s.bak" % (
+                    backup_name, datetime.date.today().strftime("%Y-%m-%d"))
                 if not os.path.exists(daily_backup):
                     shutil.copy(zefile, daily_backup)
             return True
