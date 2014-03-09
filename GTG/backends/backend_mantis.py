@@ -177,13 +177,13 @@ class Backend(PeriodicImportBackend):
                 tid = str(uuid.uuid4())
                 task = self.datastore.task_factory(tid)
                 self._populate_task(task, issue_dic)
-                self.sync_engine.record_relationship(local_id=tid,
-                                                     remote_id=str(
-                                                     issue_dic['number']),
-                                                     meme=SyncMeme(
-                                                     task.get_modified(),
-                                                     issue_dic['modified'],
-                                                     self.get_id()))
+                meme = SyncMeme(
+                    task.get_modified(), issue_dic['modified'], self.get_id())
+                self.sync_engine.record_relationship(
+                    local_id=tid,
+                    remote_id=str(issue_dic['number']),
+                    meme=meme
+                )
                 self.datastore.push_task(task)
 
             elif action == SyncEngine.UPDATE:

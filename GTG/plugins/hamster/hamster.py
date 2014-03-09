@@ -19,7 +19,7 @@
 
 from calendar import timegm
 import dbus
-from gi.repository import Gtk, Gdk, GdkPixbuf
+from gi.repository import Gtk, GdkPixbuf
 import os
 import re
 import time
@@ -317,7 +317,7 @@ class hamsterPlugin:
             for offset, i in enumerate(records):
                 t = calc_duration(i)
                 total += t
-                add(inner_table, format_date(i), format_duration(t),
+                add(inner_grid, format_date(i), format_duration(t),
                     offset, i[0] == active_id)
 
             add(outer_grid, "<big><b>Total</b></big>",
