@@ -31,7 +31,3 @@ class TestNetworkManager(unittest.TestCase):
         """ is_connection_up() returns a boolean value and
         don't throw any exception """
         self.assertIn(is_connection_up(), [True, False])
-
-
-def test_suite():
-    return unittest.TestLoader().loadTestsFromName(__name__)

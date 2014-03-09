@@ -63,7 +63,3 @@ class TestBiDict(unittest.TestCase):
             missing_second += 1
         self.assertEqual(missing_first, 2)
         self.assertEqual(missing_second, 2)
-
-
-def test_suite():
-    return unittest.TestLoader().loadTestsFromTestCase(TestBiDict)

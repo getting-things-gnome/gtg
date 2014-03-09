@@ -207,7 +207,3 @@ class TestSearchFilter(unittest.TestCase):
                                       {'q': [("soon", True)]}))
         self.assertTrue(search_filter(FakeTask(due_date="someday"),
                                       {'q': [("someday", True)]}))
-
-
-def test_suite():
-    return unittest.TestLoader().loadTestsFromName(__name__)

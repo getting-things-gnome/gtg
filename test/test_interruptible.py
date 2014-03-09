@@ -51,7 +51,3 @@ class TestInterruptible(unittest.TestCase):
             time.sleep(0.1)
             countdown -= 1
         self.assertFalse(thread.is_alive())
-
-
-def test_suite():
-    return unittest.TestLoader().loadTestsFromTestCase(TestInterruptible)

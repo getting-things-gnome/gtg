@@ -64,7 +64,3 @@ class TestExtractTags(unittest.TestCase):
                  @:dot/s:, with @com,mas"),
             ["@tag", "@my:tag", "@do:this:today", "@co:l-on/s", "@:dot/s",
              "@com"])
-
-
-def test_suite():
-    return unittest.TestLoader().loadTestsFromName(__name__)

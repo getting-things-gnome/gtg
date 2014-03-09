@@ -277,10 +277,6 @@ class TestDatastore(unittest.TestCase):
         self.assertEqual(new_backend_stored_tids, new_datastore_stored_tids)
 
 
-def test_suite():
-    return unittest.TestLoader().loadTestsFromTestCase(TestDatastore)
-
-
 class FakeBackend(unittest.TestCase):
     '''
     Mimics the behavior of a simple backend. Just used for testing

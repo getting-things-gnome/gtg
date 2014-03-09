@@ -201,7 +201,3 @@ class TestSearchQuery(unittest.TestCase):
                          {'q': [('today', False)]})
         self.assertEqual(parse('word !today'),
                          {'q': [('word', True, 'word'), ('today', True)]})
-
-
-def test_suite():
-    return unittest.TestLoader().loadTestsFromName(__name__)

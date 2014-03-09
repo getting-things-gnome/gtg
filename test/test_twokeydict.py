@@ -92,7 +92,3 @@ class TestTwoKeyDict(unittest.TestCase):
         self.assertRaises(KeyError, tw_dict._get_secondary_key, remote_id)
         tw_dict.add((local_id, remote_id, value))
         self.assertEqual(remote_id, tw_dict._get_secondary_key(local_id))
-
-
-def test_suite():
-    return unittest.TestLoader().loadTestsFromTestCase(TestTwoKeyDict)

@@ -133,7 +133,3 @@ class GtgBackendsUniTests(unittest.TestCase):
         self.datapath = os.path.join(self.testdir, self.datafile)
         open(self.taskpath, 'w').writelines(tasks)
         open(self.datapath, 'w').writelines(data)
-
-
-def test_suite():
-    return unittest.TestLoader().loadTestsFromName(__name__)

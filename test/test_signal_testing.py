@@ -54,7 +54,3 @@ class FakeGobject(GObject.GObject):
 
     def emit_signal(self, signal_name, argument):
         GObject.idle_add(self.emit, signal_name, argument)
-
-
-def test_suite():
-    return unittest.TestLoader().loadTestsFromTestCase(TestSignalTesting)

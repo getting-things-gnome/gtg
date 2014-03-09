@@ -76,7 +76,3 @@ class TestToolTags(unittest.TestCase):
                          [("@remove", False), ("@add", True)])
         self.assertEqual(ptl("!@remove @add"),
                          [("@remove", False), ("@add", True)])
-
-
-def test_suite():
-    return unittest.TestLoader().loadTestsFromTestCase(TestToolTags)

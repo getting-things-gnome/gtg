@@ -134,8 +134,3 @@ class TestDates(unittest.TestCase):
         """ A day represented in GTG Date must be still the same """
         aday = date.today()
         self.assertEqual(Date(aday), aday)
-
-
-def test_suite():
-    """ Return unittests """
-    return unittest.TestLoader().loadTestsFromTestCase(TestDates)
