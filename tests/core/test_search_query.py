@@ -78,22 +78,32 @@ class TestSearchQuery(TestCase):
                          {'q': [("word", False, '@gtg')]})
 
     def test_or(self):
-        self.assertEqual(parse("@gtg !or @gtd"),
-                         {'q': [("or", True, [("tag", True, "@gtg"),
-                        ("tag", True, "@gtd")])]})
+        parsed = {'q': [
+            ("or", True, [("tag", True, "@gtg"), ("tag", True, "@gtd")]),
+        ]}
+        self.assertEqual(parse("@gtg !or @gtd"), parsed)
 
     def test_or_or(self):
-        self.assertEqual(parse("@gtg !or @gtd !or @a"),
-                         {'q': [("or", True, [("tag", True, "@gtg"),
-                        ("tag", True, "@gtd"), ("tag", True, "@a")])]})
+        parsed = {'q': [
+            ("or", True, [
+                ("tag", True, "@gtg"),
+                ("tag", True, "@gtd"),
+                ("tag", True, "@a"),
+            ]),
+        ]}
+        self.assertEqual(parse("@gtg !or @gtd !or @a"), parsed)
 
     def test_or_or_or_or_or(self):
-        self.assertEqual(parse("@gtg !or @gtd !or @a !or @b !or @c"),
-                         {'q': [("or", True, [
-                                 ("tag", True, "@gtg"), ("tag", True, "@gtd"),
-                        ("tag", True, "@a"), ("tag", True, "@b"),
-                             ("tag", True, "@c"),
-                         ])]})
+        parsed = {'q': [
+            ("or", True, [
+                ("tag", True, "@gtg"),
+                ("tag", True, "@gtd"),
+                ("tag", True, "@a"),
+                ("tag", True, "@b"),
+                ("tag", True, "@c"),
+            ])
+        ]}
+        self.assertEqual(parse("@gtg !or @gtd !or @a !or @b !or @c"), parsed)
 
     def test_not_or(self):
         self.assertRaises(InvalidQuery, parse, '!not !or')
@@ -160,19 +170,30 @@ class TestSearchQuery(TestCase):
                          {'q': [('before', True, d('next month'))]})
 
         # Test other things as well
-        self.assertEqual(parse("@gtg !before tomorrow @gtg"),
-                         {'q': [('tag', True, '@gtg'),
-                                ('before', True, d('tomorrow')),
-                        ('tag', True, '@gtg')]})
-        self.assertEqual(parse("!before tomorrow !not @gtg"),
-                         {'q': [('before', True, d('tomorrow')),
-                                ('tag', False, '@gtg')]})
-        self.assertEqual(parse("!before tomorrow mytask"),
-                         {'q': [('before', True, d('tomorrow')),
-                                ('word', True, 'mytask')]})
-        self.assertEqual(parse("!before tomorrow !not mytask"),
-                         {'q': [('before', True, d('tomorrow')),
-                        ('word', False, 'mytask')]})
+        parsed = {'q': [
+            ('tag', True, '@gtg'),
+            ('before', True, d('tomorrow')),
+            ('tag', True, '@gtg'),
+        ]}
+        self.assertEqual(parse("@gtg !before tomorrow @gtg"), parsed)
+
+        parsed = {'q': [
+            ('before', True, d('tomorrow')),
+            ('tag', False, '@gtg'),
+        ]}
+        self.assertEqual(parse("!before tomorrow !not @gtg"), parsed)
+
+        parsed = {'q': [
+            ('before', True, d('tomorrow')),
+            ('word', True, 'mytask'),
+        ]}
+        self.assertEqual(parse("!before tomorrow mytask"), parsed)
+
+        parsed = {'q': [
+            ('before', True, d('tomorrow')),
+            ('word', False, 'mytask'),
+        ]}
+        self.assertEqual(parse("!before tomorrow !not mytask"), parsed)
 
         # Test whitespace
         self.assertEqual(parse("!before                        today       "),
