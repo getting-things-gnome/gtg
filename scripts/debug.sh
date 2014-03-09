@@ -37,7 +37,7 @@ done
 if [  $dataset != "default" -a ! -d "./tmp/$dataset" ]
 then
     echo "Copying $dataset dataset to ./tmp/"
-    cp -r test/data/$dataset tmp/
+    cp -r data/test-data/$dataset tmp/
 fi
 
 echo "Setting XDG vars to use $dataset dataset."
