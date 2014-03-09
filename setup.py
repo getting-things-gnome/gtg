@@ -64,7 +64,6 @@ def create_userdoc_list():
                 newroot = ""
             newroot = os.path.join(HELP_DIR, comps[2], "gtg", newroot)
             fileList.append((newroot, dirList))
-    fileList.append('doc/release_notes/0.3.1.txt')
     return fileList
 
 
@@ -88,16 +87,16 @@ def create_data_files():
     helpfiles = create_userdoc_list()
     data_files.extend(helpfiles)
     # misc
-    data_files.append(('share/applications', ['gtg.desktop']))
-    data_files.append(('share/dbus-1/services', ['org.gnome.GTG.service']))
-    data_files.append(('share/man/man1',
-                       ['doc/gtg.1', 'doc/gtcli.1', 'doc/gtg_new_task.1']))
+    data_files.append(('share/applications', ['data/gtg.desktop']))
+    data_files.append(('share/dbus-1/services', ['data/org.gnome.GTG.service']))
+    #data_files.append(('share/man/man1',
+                       #['doc/gtg.1', 'doc/gtcli.1', 'doc/gtg_new_task.1']))
 
     # bash completion
-    data_files.append(('share/gtg/', ['gtcli_bash_completion']))
+    data_files.append(('share/gtg/', ['data/gtcli_bash_completion']))
 
     # appdata file
-    data_files.append(('share/appdata/', ['gtg.appdata.xml']))
+    data_files.append(('share/appdata/', ['data/gtg.appdata.xml']))
     return data_files
 
 
@@ -234,6 +233,6 @@ setup(
     'GTG.plugins.untouched_tasks': ['untouchedTasks.ui'],
    },
   data_files = create_data_files(),
-  scripts=['gtg', 'gtcli', 'gtg_new_task'],
+  scripts=['GTG/gtg', 'GTG/gtcli', 'GTG/gtg_new_task'],
   cmdclass={'install_data': InstallData},
 )
