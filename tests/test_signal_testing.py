@@ -21,7 +21,7 @@ from gi.repository import GObject
 import unittest
 import uuid
 
-from test.signals_testing import SignalCatcher, GobjectSignalsManager
+from tests.signals_testing import SignalCatcher, GobjectSignalsManager
 
 
 class TestSignalTesting(unittest.TestCase):
