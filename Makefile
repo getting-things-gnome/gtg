@@ -21,6 +21,9 @@ PYFLAKES=pyflakes
 
 check: tests pep8 pyflakes
 
+install:
+	pip3 install -r requirements.txt
+
 # Run all of the tests.
 tests:
 	./run-tests
@@ -43,4 +46,4 @@ pep8:
 # Check for coding standard violations & flakes.
 lint: pyflakes pep8
 
-.PHONY: tests check lint pyflakes pep8 clean
+.PHONY: install tests check lint pyflakes pep8 clean
