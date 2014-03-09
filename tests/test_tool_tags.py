@@ -17,13 +17,13 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-import unittest
+from unittest import TestCase
 
 from GTG.tools.tags import extract_tags_from_text
 from GTG.tools.tags import parse_tag_list
 
 
-class TestToolTags(unittest.TestCase):
+class TestToolTags(TestCase):
 
     def test_extract_tags_from_text(self):
         """ Test for extracting tags from a string """

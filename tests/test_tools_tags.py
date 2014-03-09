@@ -17,11 +17,11 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-import unittest
+from unittest import TestCase
 from GTG.tools.tags import extract_tags_from_text as tags
 
 
-class TestExtractTags(unittest.TestCase):
+class TestExtractTags(TestCase):
     """ extract_tags_from_text """
 
     def test_empty(self):

@@ -17,7 +17,7 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-import unittest
+from unittest import TestCase
 
 from GTG.core.search import search_filter
 from GTG.tools.dates import Date
@@ -46,7 +46,7 @@ class FakeTask(object):
         return self.due_date
 
 
-class TestSearchFilter(unittest.TestCase):
+class TestSearchFilter(TestCase):
 
     def test_empty(self):
         self.assertFalse(search_filter(FakeTask()))

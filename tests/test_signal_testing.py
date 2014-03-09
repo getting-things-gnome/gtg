@@ -18,13 +18,13 @@
 # -----------------------------------------------------------------------------
 
 from gi.repository import GObject
-import unittest
+from unittest import TestCase
 import uuid
 
 from tests.signals_testing import SignalCatcher, GobjectSignalsManager
 
 
-class TestSignalTesting(unittest.TestCase):
+class TestSignalTesting(TestCase):
 
     def setUp(self):
         self.gobject_signal_manager = GobjectSignalsManager()

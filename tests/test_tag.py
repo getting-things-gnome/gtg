@@ -17,7 +17,7 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-import unittest
+from unittest import TestCase
 
 from GTG.core.tag import Tag, Set_Name_Attribute_Error
 from GTG.core.datastore import DataStore
@@ -25,7 +25,7 @@ from GTG.core.datastore import DataStore
 #from GTG.tests.signals_testing import GobjectSignalsManager
 
 
-class TestTag(unittest.TestCase):
+class TestTag(TestCase):
 
     def setUp(self):
         ds = DataStore()
