@@ -43,7 +43,6 @@ from xdg.BaseDirectory import xdg_data_home, xdg_config_home, xdg_data_dirs
 import os
 
 from GTG.tools.borg import Borg
-from GTG.tools.testingmode import TestingMode
 import GTG
 
 DEFAULTS = {
@@ -219,13 +218,8 @@ class CoreConfig(Borg):
         if hasattr(self, 'data_dir'):
             # Borg has already been initialized
             return
-        if TestingMode().get_testing_mode():
-            # we avoid running tests in the user data dir
-            self.data_dir = '/tmp/GTG_TESTS/data'
-            self.conf_dir = '/tmp/GTG_TESTS/conf'
-        else:
-            self.data_dir = os.path.join(xdg_data_home, 'gtg/')
-            self.conf_dir = os.path.join(xdg_config_home, 'gtg/')
+        self.data_dir = os.path.join(xdg_data_home, 'gtg/')
+        self.conf_dir = os.path.join(xdg_config_home, 'gtg/')
         if not os.path.exists(self.conf_dir):
             os.makedirs(self.conf_dir)
         if not os.path.exists(self.data_dir):

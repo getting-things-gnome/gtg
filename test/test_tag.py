@@ -24,7 +24,7 @@ import unittest
 from GTG.core.tag import Tag, Set_Name_Attribute_Error
 from GTG.core.datastore import DataStore
 
-from GTG.tests.signals_testing import GobjectSignalsManager
+#from GTG.tests.signals_testing import GobjectSignalsManager
 
 
 class TestTag(unittest.TestCase):
@@ -34,8 +34,8 @@ class TestTag(unittest.TestCase):
         ds = DataStore()
         self.req = ds.get_requester()
         # initalize gobject signaling system
-        self.gobject_signal_manager = GobjectSignalsManager()
-        self.gobject_signal_manager.init_signals()
+        #self.gobject_signal_manager = GobjectSignalsManager()
+        #self.gobject_signal_manager.init_signals()
         # refresh the viewtree for tasks
         tt = self.req.get_tasks_tree()
         tt.reset_filters()
@@ -43,7 +43,8 @@ class TestTag(unittest.TestCase):
     def tearDown(self):
 #        finally:
         # stopping gobject main loop
-        self.gobject_signal_manager.terminate_signals()
+        #self.gobject_signal_manager.terminate_signals()
+        pass
 
     def test_name(self):
         # The first argument to the Tag constructor is the name, which you can
