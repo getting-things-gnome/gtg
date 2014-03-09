@@ -116,8 +116,13 @@ class geolocalizedTasks:
         context_menu = Gtk.Menu()
 
         mi = Gtk.MenuItem()
-        mi.set_label("Add Location")
+        mi.set_label("I'm here")
         mi.connect ("activate", self._on_im_here, [latitude, longitude])
+        context_menu.append(mi)
+
+        mi = Gtk.MenuItem()
+        mi.set_label("Add Location")
+        mi.connect ("activate", self._on_add_location, [latitude, longitude])
         context_menu.append(mi)
 
         mi = Gtk.MenuItem()
@@ -395,7 +400,13 @@ class geolocalizedTasks:
 
     def _filter_work_view(self, task):
         data_path = os.path.join('plugins/geolocalized_tasks', "last_location")
-        [user_latitude, user_longitude] = load_pickled_file(data_path, [])
+        
+        [user_latitude, user_longitude] = self._get_user_position()
+        if user_latitude is None or user_longitude is None:
+            [user_latitude, user_longitude] = load_pickled_file(data_path, [])
+
+        if user_latitude is None or user_longitude is None:
+            return True
 
         user_location = Geocode.Location.new(user_latitude, user_longitude, Geocode.LOCATION_ACCURACY_STREET)
 
@@ -554,6 +565,13 @@ class geolocalizedTasks:
         marker.set_text(place.get_name())
 
     def _on_im_here (self, widget, position):
+        [latitude, longitude] = position
+        marker = self._get_marker_last_location()
+        marker.set_location(latitude, longitude)
+        self._set_user_position(position)
+        self._set_marker_last_location(marker)
+
+    def _on_add_location (self, widget, position):
         [latitude, longitude] = position
 
         marker = Champlain.Label()
