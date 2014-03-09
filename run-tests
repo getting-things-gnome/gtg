@@ -22,8 +22,9 @@ import sys
 import nose
 
 if __name__ == "__main__":
-    # By default, use spec plugin
+    # By default, use spec plugin on tests folder
     if len(sys.argv) == 1:
+        sys.argv.append('tests')
         sys.argv.append('--with-specplugin')
 
     nose.main()
