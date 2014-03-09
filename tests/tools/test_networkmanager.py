@@ -17,17 +17,12 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-""" Tests for Network Manager """
-
-import unittest
+from unittest import TestCase
 
 from GTG.tools.networkmanager import is_connection_up
 
 
-class TestNetworkManager(unittest.TestCase):
-    """ Test network manager tool code """
+class TestNetworkManager(TestCase):
 
-    def test_is_connection_up_dont_throw_exception(self):
-        """ is_connection_up() returns a boolean value and
-        don't throw any exception """
+    def test_is_connection_up_and_doesnt_throw_exception(self):
         self.assertIn(is_connection_up(), [True, False])

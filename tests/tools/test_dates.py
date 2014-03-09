@@ -17,11 +17,7 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-'''
-Tests for the various Date classes
-'''
-
-import unittest
+from unittest import TestCase
 from datetime import date, timedelta
 
 from GTG import _
@@ -42,18 +38,21 @@ def next_month(aday, day=None):
         return aday.replace(day=day, month=aday.month + 1)
 
 
-class TestDates(unittest.TestCase):
-    """ Tests for the various Date classes """
+class TestDates(TestCase):
 
-    def test_parse_dates(self):
-        """ Parse common numeric date """
+    def test_parses_common_formats(self):
         self.assertEqual(str(Date.parse("1985-03-29")), "1985-03-29")
         self.assertEqual(str(Date.parse("19850329")), "1985-03-29")
         self.assertEqual(str(Date.parse("1985/03/29")), "1985-03-29")
 
+    def test_parses_todays_month_day_format(self):
         today = date.today()
         parse_string = "%02d%02d" % (today.month, today.day)
         self.assertEqual(Date.parse(parse_string), today)
+
+    def test_parses_today_as_today(self):
+        today = date.today()
+        self.assertEqual(Date(today), today)
 
     def test_parse_fuzzy_dates(self):
         """ Parse fuzzy dates like now, soon, later, someday """
@@ -129,8 +128,3 @@ class TestDates(unittest.TestCase):
                 aday = aday.replace(day=i)
 
             self.assertEqual(Date.parse(str(i)), aday)
-
-    def test_prevent_regression(self):
-        """ A day represented in GTG Date must be still the same """
-        aday = date.today()
-        self.assertEqual(Date(aday), aday)

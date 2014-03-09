@@ -17,8 +17,6 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-""" Tests for the SyncEngine class """
-
 import unittest
 import uuid
 
@@ -26,7 +24,7 @@ from GTG.backends.syncengine import SyncEngine
 
 
 class TestSyncEngine(unittest.TestCase):
-    """ Tests for the SyncEngine object. """
+    """ SyncEngine """
 
     def setUp(self):
         self.ftp_local = FakeTaskProvider()

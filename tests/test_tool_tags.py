@@ -16,7 +16,6 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-""" Tests for the tags utilities """
 
 import unittest
 
@@ -25,7 +24,6 @@ from GTG.tools.tags import parse_tag_list
 
 
 class TestToolTags(unittest.TestCase):
-    """ Tests for the tags utilities """
 
     def test_extract_tags_from_text(self):
         """ Test for extracting tags from a string """
