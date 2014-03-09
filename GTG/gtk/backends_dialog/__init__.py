@@ -72,7 +72,6 @@ class BackendsDialog(object):
         self._load_widgets_from_builder(builder)
         # Load and setup other widgets
         self.dialog.set_title(_("Synchronization Services - %s" % info.NAME))
-
         self._create_widgets_for_add_panel()
         self._create_widgets_for_conf_panel()
         self._setup_signal_connections(builder)
@@ -205,7 +204,8 @@ class BackendsDialog(object):
         self.dialog.add_accel_group(agr)
         widget = builder.get_object("sync_help")
         key, modifier = Gtk.accelerator_parse('F1')
-        widget.add_accelerator("activate", agr, key, modifier, Gtk.AccelFlags.VISIBLE)
+        widget.add_accelerator("activate", agr, key, modifier,
+                               Gtk.AccelFlags.VISIBLE)
 
     def _configure_icon_theme(self):
         '''
