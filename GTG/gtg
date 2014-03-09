@@ -50,9 +50,13 @@ import sys
 import logging
 import dbus
 
+from optparse import OptionParser
+from gi.repository.Gdk import Screen
+
 # our own imports
-from GTG.backends import BackendFactory
 from GTG import _
+from GTG import info
+from GTG.backends import BackendFactory
 from GTG.core import CoreConfig
 from GTG.core.datastore import DataStore
 from GTG.gtk.manager import Manager
@@ -111,13 +115,58 @@ def remove_pidfile(directory):
         # Ignore missing PID file
         pass
 
+
+def x_is_running():
+    """ Return True if GTG could be displayed on the current XServer """
+    try:
+        if Screen().get_default().get_display():
+            return True
+    except RuntimeError as exc:
+        print(exc)
+    return False
+
 #=== MAIN CLASS ===============================================================
 
 
-def main(options=None, args=None):
+def parse_args():
+    """ Parse arguments """
+    parser = OptionParser()
+    parser.add_option('-b', '--boot-test', action='store_true',
+                      dest='boot_test',
+                      help="Exit after completing boot-up actions",
+                      default=False)
+    parser.add_option('-c', '--no-crash-handler', action='store_true',
+                      dest='no_crash_handler',
+                      help="Disable the automatic crash handler",
+                      default=False)
+    parser.add_option('-d', '--debug', action='store_true', dest='debug',
+                      help="Enable debug output", default=False)
+    parser.add_option('-t', '--title', action='store',
+                      help="Use special title for windows' title")
+    parser.add_option('-v', '--version', action='store_true',
+                      dest='print_version', help="Print GTG's version number",
+                      default=False)
+    return parser.parse_args()
+
+
+def main():
     '''
-    Calling this starts the full GTG experience  ( :-D )
+    Calling this starts the full GTG experience
     '''
+    options, args = parse_args()
+    if options.print_version:
+        print("GTG (Getting Things GNOME!)", info.VERSION)
+        print()
+        print("For more information:", info.URL)
+        sys.exit(0)
+
+    elif not x_is_running():
+        print("Could not open X display")
+        sys.exit(1)
+
+    if options.title is not None:
+        info.NAME = options.title
+
     ds, req = core_main_init(options, args)
     # Launch task browser
     manager = Manager(req)
@@ -180,4 +229,7 @@ def core_main_quit(req, ds):
 #=== EXECUTION ================================================================
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except KeyboardInterrupt:
+        sys.exit(1)

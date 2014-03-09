@@ -28,11 +28,6 @@ Although if you're thinking of contributing more than one patch, you might want 
 This will share revision data between branches, reducing storage costs & network time.
 
 
-Launch gtg::
-
-    $ cd trunk
-    $ ./gtg
-
 Launch gtg with debugging data (so it doesn't mess with your data)::
 
     $ cd trunk
