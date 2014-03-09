@@ -1,0 +1,37 @@
+v0.1: "Just 5 minutes more"
+===========================
+
+Hi, everyone!
+
+The first official release of Getting Things Gnome!, GTG "Just 5
+minutes more" 0.1, is out!
+
+GTG is a personal organizer for the GNOME desktop environment, it
+focuses on ease of use and flexibility, while keeping things simple.
+
+This release is our first. So far GTG supports:
+
+ - task edition using a text editor, almost no form fields!
+ - fast consecutive tasks creation
+ - tags to sort tasks
+ - color for tags, to easily differenciate tagged tasks
+
+There are very few differences with the release candidate we published
+last week.
+
+The software is still a bit in a proof-of-concept state, since in the
+future we want to test a lot of different functionalities. We'd really
+like to know what you like and dislike in GTG, so we can organize
+future work and do what's the most important: provide a program that
+people love to use because it makes their life better ;-)
+
+Tarballs with the source code are available on our launchpad project
+page: https://launchpad.net/gtg/+download
+Packages for Ubuntu are also available on our PPA:
+https://launchpad.net/~gtg/+archive/ppa
+
+Now, grab it and tell us what you think! Don't hesitate to discuss
+with us on our mailing-lists, on IRC (#gtg on GimpNET), or to post
+bugs on launchpad!
+
+Enjoy!
