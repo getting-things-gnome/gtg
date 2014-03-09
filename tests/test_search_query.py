@@ -17,7 +17,7 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-import unittest
+from unittest import TestCase
 from GTG.core.search import parse_search_query, InvalidQuery
 from GTG.tools.dates import Date
 
@@ -25,7 +25,7 @@ parse = parse_search_query
 d = Date.parse
 
 
-class TestSearchQuery(unittest.TestCase):
+class TestSearchQuery(TestCase):
 
     def test_word_query(self):
         self.assertEqual(parse("query"),

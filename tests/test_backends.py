@@ -24,7 +24,7 @@ xdg.BaseDirectory.xdg_data_home/gtg directory.
 """
 
 # Standard imports
-import unittest
+from unittest import TestCase
 import os
 import xdg
 
@@ -34,11 +34,11 @@ from GTG.tools import cleanxml
 from GTG.core import CoreConfig
 
 
-class GtgBackendsUniTests(unittest.TestCase):
+class GtgBackendsUniTests(TestCase):
     """Tests for GTG backends."""
 
     def __init__(self, test):
-        unittest.TestCase.__init__(self, test)
+        TestCase.__init__(self, test)
         self.taskfile = ''
         self.datafile = ''
         self.taskpath = ''

@@ -17,7 +17,7 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-import unittest
+from unittest import TestCase
 import uuid
 import time
 from random import randint
@@ -39,7 +39,7 @@ def sleep_within_loop(duration):
     main_loop.run()
 
 
-class TestDatastore(unittest.TestCase):
+class TestDatastore(TestCase):
     """ DataStore """
 
     def setUp(self):
@@ -274,7 +274,7 @@ class TestDatastore(unittest.TestCase):
         self.assertEqual(new_backend_stored_tids, new_datastore_stored_tids)
 
 
-class FakeBackend(unittest.TestCase):
+class FakeBackend(TestCase):
     '''
     Mimics the behavior of a simple backend. Just used for testing
     '''
