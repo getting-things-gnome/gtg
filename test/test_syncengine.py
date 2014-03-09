@@ -180,10 +180,6 @@ class TestSyncEngine(unittest.TestCase):
                          (None, None))
 
 
-def test_suite():
-    return unittest.TestLoader().loadTestsFromTestCase(TestSyncEngine)
-
-
 class FakeTaskProvider(object):
 
     def __init__(self):

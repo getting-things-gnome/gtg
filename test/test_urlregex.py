@@ -30,7 +30,3 @@ class TestURLRegex(unittest.TestCase):
         """ Reproducer for bug #1023555 """
         url = "http://test.com/#hi&there"
         self.assertEqual(match(url).group(0), url)
-
-
-def test_suite():
-    return unittest.TestLoader().loadTestsFromName(__name__)

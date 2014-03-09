@@ -49,7 +49,3 @@ class TestSyncMeme(unittest.TestCase):
         self.assertEqual(
             meme.which_is_newest(local_modified, remote_modified),
             'remote')
-
-
-def test_suite():
-    return unittest.TestLoader().loadTestsFromTestCase(TestSyncMeme)

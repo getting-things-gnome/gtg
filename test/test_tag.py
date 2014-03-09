@@ -144,7 +144,3 @@ class TestTag(unittest.TestCase):
         tag2 = self.req.get_tag('@test')
         self.assertEqual(tag2.get_active_tasks_count(), 1)
         self.assertEqual(tag.get_active_tasks_count(), 0)
-
-
-def test_suite():
-    return unittest.TestLoader().loadTestsFromTestCase(TestTag)

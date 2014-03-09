@@ -275,10 +275,6 @@ class TestBackendTomboy(unittest.TestCase):
         return datetime.fromtimestamp(modified_string)
 
 
-def test_suite():
-    return unittest.TestLoader().loadTestsFromTestCase(TestBackendTomboy)
-
-
 class FakeTomboy(dbus.service.Object):
     """
     D-Bus service object that mimics TOMBOY
