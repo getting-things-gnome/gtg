@@ -37,7 +37,7 @@ done
 if [  $dataset != "default" -a ! -d "./tmp/$dataset" ]
 then
     echo "Copying $dataset dataset to ./tmp/"
-    cp -r test/data/$dataset tmp/
+    cp -r data/test-data/$dataset tmp/
 fi
 
 echo "Setting XDG vars to use $dataset dataset."
@@ -73,7 +73,6 @@ if [ $norun -eq 0 ]; then
         python -m cProfile -o gtg.prof ./gtg $args -t "$title"
         python ./scripts/profile_interpret.sh
     else
-	./gtg $args -t "$title"
+    ./gtg $args -t "$title"
     fi
 fi
-

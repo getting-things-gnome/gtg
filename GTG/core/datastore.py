@@ -137,7 +137,6 @@ class DataStore(object):
                        (query, e.message))
             return None
 
-
         # Create own copy of attributes and add special attributes label, query
         init_attr = dict(attributes)
         init_attr["label"] = name
