@@ -32,7 +32,7 @@ SUBST_DICT = {
     "pre": r'(?:[^/"\':!=]|^|\:)',
     "domain": r'([\.-]|[^\s_\!\.\/])+\.[a-z]{2,}(?::[0-9]+)?',
     "path": r'(?:[\.,]?[%s!\*\'\(\);:&=\+\$/%s#\[\]\-_,~@])' % (
-    UTF_CHARS, '%'),
+        UTF_CHARS, '%'),
     "query": r'[a-z0-9!\*\'\(\);:&=\+\$/%#\[\]\-_\.,~]',
     # Valid end-of-path characters (so /foo. does not gobble the period).
     "path_end": r'[%s\)=#/]' % UTF_CHARS,

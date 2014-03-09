@@ -174,17 +174,17 @@ class TestBackendTomboy(unittest.TestCase):
         # no-one updated, nothing should happen
         self.backend.set_task(task)
         self.assertEqual(gtg_modified, task.get_modified())
-        self.assertEqual(tomboy_modified,
-                         self._modified_string_to_datetime(
-                         self.tomboy.GetNoteChangeDate(note)))
+        actual_modified = self._modified_string_to_datetime(
+            self.tomboy.GetNoteChangeDate(note))
+        self.assertEqual(tomboy_modified, actual_modified)
         # we update the GTG task
         UPDATED_GTG_TITLE = "UPDATED_GTG_TITLE"
         task.set_title(UPDATED_GTG_TITLE)
         self.backend.set_task(task)
         self.assertTrue(gtg_modified < task.get_modified())
-        self.assertTrue(tomboy_modified <=
-                        self._modified_string_to_datetime(
-                        self.tomboy.GetNoteChangeDate(note)))
+        actual_modified = self._modified_string_to_datetime(
+            self.tomboy.GetNoteChangeDate(note))
+        self.assertTrue(tomboy_modified <= actual_modified)
         self.assertEqual(task.get_title(), UPDATED_GTG_TITLE)
         self.assertEqual(self.tomboy.GetNoteTitle(note), UPDATED_GTG_TITLE)
         gtg_modified = task.get_modified()
@@ -199,9 +199,9 @@ class TestBackendTomboy(unittest.TestCase):
         self.tomboy.SetNoteContents(note, UPDATED_TOMBOY_TITLE)
         self.backend._process_tomboy_note(note)
         self.assertTrue(gtg_modified <= task.get_modified())
-        self.assertTrue(tomboy_modified <=
-                        self._modified_string_to_datetime(
-                        self.tomboy.GetNoteChangeDate(note)))
+        actual_modified = self._modified_string_to_datetime(
+            self.tomboy.GetNoteChangeDate(note))
+        self.assertTrue(tomboy_modified <= actual_modified)
         self.assertEqual(task.get_title(), UPDATED_TOMBOY_TITLE)
         self.assertEqual(self.tomboy.GetNoteTitle(note), UPDATED_TOMBOY_TITLE)
 

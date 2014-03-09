@@ -890,7 +890,7 @@ class RTMTask(object):
             return ""
         else:
             note_list = self.__getattr_the_rtm_way(notes, 'note')
-            return "".join(["%s\n" % getattr(note, '$t') for note in note_list])
+            return "".join("%s\n" % getattr(note, '$t') for note in note_list)
 
     def set_text(self, text, transaction_ids=[]):
         '''

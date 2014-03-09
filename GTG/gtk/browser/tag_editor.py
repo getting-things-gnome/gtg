@@ -473,7 +473,8 @@ class TagEditor(Gtk.Window):
         if self.tag is not None:
             if color is not None:
                 my_color = Gdk.color_parse(color)
-                color = Gdk.Color(my_color.red, my_color.green, my_color.blue).to_string()
+                color = Gdk.Color(
+                    my_color.red, my_color.green, my_color.blue).to_string()
                 color_add(color)
                 self.tag.set_attribute('color', color)
             else:
