@@ -18,7 +18,6 @@
 
 PEP8=pep8
 PYFLAKES=pyflakes
-PYDOCTOR=pydoctor
 
 check: tests pep8 pyflakes
 
@@ -42,19 +41,7 @@ pyflakes:
 pep8:
 	$(PEP8) --statistics --count gtg gtcli gtg_new_task GTG
 
-# Build API documentation.
-apidocs:
-	$(PYDOCTOR) --add-package GTG --make-html --html-output=doc/api \
-		--project-name=GTG --project-url=http://gtg.fritalk.com/
-
-edit-apidocs:
-	$(PYDOCTOR) --add-package GTG --make-html --html-output=doc/api \
-		--project-name=GTG --project-url=http://gtg.fritalk.com/ \
-		--verbose-about=epydoc2stan2 --verbose-about=epydoc2stan2 \
-		--verbose-about=server --verbose-about=server --local-only \
-		--server --edit
-
 # Check for coding standard violations & flakes.
 lint: pyflakes pep8
 
-.PHONY: tests check lint pyflakes pep8 apidocs edit-apidocs clean
+.PHONY: tests check lint pyflakes pep8 clean
