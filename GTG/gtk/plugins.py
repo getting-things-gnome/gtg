@@ -20,7 +20,6 @@
 """ Dialog for loading plugins """
 
 from webbrowser import open as openurl
-
 from gi.repository import Gtk, Pango
 
 from GTG import _
@@ -180,7 +179,7 @@ class PluginsDialog:
         widget = builder.get_object("plugins_help")
         key, mod = Gtk.accelerator_parse("F1")
         widget.add_accelerator("activate", agr, key, mod,
-                                       Gtk.AccelFlags.VISIBLE)
+                               Gtk.AccelFlags.VISIBLE)
 
     def _init_plugin_tree(self):
         """ Initialize the PluginTree Gtk.TreeView.
