@@ -174,7 +174,7 @@ class PluginsDialog:
                                 self.on_plugin_about_close,
                                 })
 
-        # allow F1 for help
+        # adding F1 as a shortcut for Help
         agr = Gtk.AccelGroup()
         self.dialog.add_accel_group(agr)
         widget = builder.get_object("plugins_help")

@@ -200,7 +200,7 @@ class BackendsDialog(object):
         }
         builder.connect_signals(signals)
 
-        # allow F1 for help
+        # adding F1 as a shortcut for Help
         agr = Gtk.AccelGroup()
         self.dialog.add_accel_group(agr)
         widget = builder.get_object("sync_help")

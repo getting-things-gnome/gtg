@@ -24,10 +24,12 @@ The main text widget is a home-made TextView called TaskView (see taskview.py)
 The rest is the logic of the widget: date changing widgets, buttons, ...
 """
 import time
+from webbrowser import open as openurl
 
 from gi.repository import Gtk, Gdk, Pango
 
 from GTG import _, ngettext
+from GTG import info
 from GTG.gtk.editor import GnomeConfig
 from GTG.gtk.editor.taskview import TaskView
 from GTG.core.plugins.engine import PluginEngine
@@ -200,6 +202,10 @@ class TaskEditor(object):
 
         key, modifier = Gtk.accelerator_parse('<Control>w')
         agr.connect(key, modifier, Gtk.AccelFlags.VISIBLE, self.close)
+
+        # F1 shows help
+        key, modifier = Gtk.accelerator_parse('F1')
+        agr.connect(key, modifier, Gtk.AccelFlags.VISIBLE, self.show_help)
 
         # Ctrl-N creates a new task
         key, modifier = Gtk.accelerator_parse('<Control>n')
@@ -572,6 +578,12 @@ class TaskEditor(object):
                 self.config.add_section(tid)
             self.config.set(tid, "position", self.get_position())
             self.config.set(tid, "size", self.window.get_size())
+
+    # We define dummy variable for when show_help is called from a callback
+    def show_help(self, window=None, a=None, b=None, c=None):
+        """ Open help """
+        openurl(info.HELP_URI)
+        return True
 
     # We define dummy variable for when close is called from a callback
     def close(self, window=None, a=None, b=None, c=None):
