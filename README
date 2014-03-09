@@ -20,8 +20,6 @@ GTG depends on the following packages:
  * python-liblarch 
  * yelp (to read GTG documentation)
 
-To generate the API documentation, you'll also need to install 'pydoctor'.
-
 Please refer to your system documentation for information on how to install
 these modules if they're not currently available.
 
@@ -29,9 +27,6 @@ To install the all the required packages providing the basic features on
 Debian-based systems, execute the following command:
     $ sudo apt-get install python-support python-gtk2 python-gnome2 \
          python-glade2 python-xdg python-dbus python-liblarch yelp
-
-To enable API documentation generation, execute this command:
-    $ sudo apt-get install python-pydoctor
 
 There are additional plugins (modules for extending the user interface) and
 synchronization services (modules for importing/exporting tasks from/to
