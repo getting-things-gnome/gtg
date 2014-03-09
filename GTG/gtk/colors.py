@@ -26,6 +26,7 @@ import random
 
 used_color = []
 
+
 def background_color(tags, bgcolor=None):
     if not bgcolor:
         bgcolor = Gdk.color_parse("#FFFFFF")

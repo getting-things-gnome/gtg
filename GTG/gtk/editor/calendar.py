@@ -50,23 +50,14 @@ class GTGCalendar(GObject.GObject):
         self.__window = self.__builder.get_object("calendar")
         self.__calendar = self.__builder.get_object("calendar1")
         self.__fuzzydate_btns = self.__builder.get_object("fuzzydate_btns")
-        self.__builder.get_object("button_clear").connect("clicked",
-                                                          lambda w:
-                                                          self.__day_selected(
-                                                          w, ""))
-        self.__builder.get_object("button_now").connect("clicked",
-                                                        lambda w:
-                                                        self.__day_selected(
-                                                        w, "now"))
-        self.__builder.get_object("button_soon").connect("clicked",
-                                                         lambda w:
-                                                         self.__day_selected(
-                                                         w, "soon"))
-        self.__builder.get_object("button_someday").connect("clicked",
-                                                            lambda w:
-                                                            self.
-                                                            __day_selected(w,
-                                                            "someday"))
+        self.__builder.get_object("button_clear").connect(
+            "clicked", lambda w: self.__day_selected(w, ""))
+        self.__builder.get_object("button_now").connect(
+            "clicked", lambda w: self.__day_selected(w, "now"))
+        self.__builder.get_object("button_soon").connect(
+            "clicked", lambda w: self.__day_selected(w, "soon"))
+        self.__builder.get_object("button_someday").connect(
+            "clicked", lambda w: self.  __day_selected(w, "someday"))
 
     def set_date(self, date, date_kind):
         self.__date_kind = date_kind
@@ -137,12 +128,12 @@ class GTGCalendar(GObject.GObject):
             #True,
             #Gdk.ModifierType.BUTTON1_MASK | Gdk.ModifierType.MOD2_MASK
         #)
-#FIXME THIS DOES NOT WORK!!!!!!!
+        #FIXME THIS DOES NOT WORK!!!!!!!
         Gdk.pointer_grab(
             self.get_window(),
             True,
             #Gdk.ModifierType.BUTTON1_MASK | Gdk.ModifierType.MOD2_MASK,
-#FIXME!!!! JUST GUESSING THE TYPE
+            #FIXME!!!! JUST GUESSING THE TYPE
             Gdk.EventMask.ALL_EVENTS_MASK,
             None,
             None,
