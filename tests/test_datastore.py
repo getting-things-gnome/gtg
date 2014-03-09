@@ -17,8 +17,6 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-""" Tests for the datastore """
-
 import unittest
 import uuid
 import time
@@ -42,12 +40,11 @@ def sleep_within_loop(duration):
 
 
 class TestDatastore(unittest.TestCase):
-    """ Tests for the DataStore object.  """
+    """ DataStore """
 
     def setUp(self):
         """
         Creates the environment for the tests
-        @returns: None
         """
         self.datastore = DataStore()
         self.requester = self.datastore.get_requester()

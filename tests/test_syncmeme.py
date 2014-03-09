@@ -17,8 +17,6 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-""" Tests for the SyncMeme class """
-
 import unittest
 import datetime
 
@@ -26,7 +24,7 @@ from GTG.backends.syncengine import SyncMeme
 
 
 class TestSyncMeme(unittest.TestCase):
-    """ Tests for the SyncEngine object. """
+    """ SyncMeme """
 
     def test_which_is_newest(self):
         """ test the which_is_newest function """

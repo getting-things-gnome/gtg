@@ -17,8 +17,6 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-""" Tests for the BiDict class """
-
 import unittest
 import uuid
 
@@ -26,7 +24,7 @@ from GTG.tools.bidict import BiDict
 
 
 class TestBiDict(unittest.TestCase):
-    """ Tests for the BiDict object."""
+    """ BiDict """
 
     def test_add_and_gets(self):
         """ Test for the __init__, _get_by_first, _get_by_second function """

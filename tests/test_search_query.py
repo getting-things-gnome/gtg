@@ -17,8 +17,6 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-""" Tests for parsing searching query """
-
 import unittest
 from GTG.core.search import parse_search_query, InvalidQuery
 from GTG.tools.dates import Date

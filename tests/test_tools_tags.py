@@ -17,13 +17,12 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-""" Tests for extract_tags_from_text """
-
 import unittest
 from GTG.tools.tags import extract_tags_from_text as tags
 
 
 class TestExtractTags(unittest.TestCase):
+    """ extract_tags_from_text """
 
     def test_empty(self):
         self.assertEqual(tags(""), [])

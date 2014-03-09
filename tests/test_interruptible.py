@@ -27,7 +27,6 @@ from GTG.tools.interruptible import interruptible, _cancellation_point
 
 
 class TestInterruptible(unittest.TestCase):
-    """ Tests for interrupting cooperative threads """
 
     def test_interruptible_decorator(self):
         """ Tests for the @interruptible decorator. """

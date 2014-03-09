@@ -17,8 +17,6 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-"""Tests for the tags"""
-
 import unittest
 
 from GTG.core.tag import Tag, Set_Name_Attribute_Error
@@ -28,7 +26,6 @@ from GTG.core.datastore import DataStore
 
 
 class TestTag(unittest.TestCase):
-    """Tests for `Tag`."""
 
     def setUp(self):
         ds = DataStore()

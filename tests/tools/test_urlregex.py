@@ -17,16 +17,16 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-""" Tests for URL regex """
+from unittest import TestCase
 
-import unittest
 from GTG.tools.urlregex import match
 
 
-class TestURLRegex(unittest.TestCase):
-    """ Test extractor of URL from text """
+class TestURLRegex(TestCase):
+    """ URL Regex """
 
-    def test_anchor_amperstand(self):
-        """ Reproducer for bug #1023555 """
+    def test_allows_ampersand_in_anchor(self):
+        # Reproducer for https://bugs.launchpad.net/gtg/+bug/1023555
         url = "http://test.com/#hi&there"
-        self.assertEqual(match(url).group(0), url)
+        matched_url = match(url).group(0)
+        self.assertEqual(url, matched_url)

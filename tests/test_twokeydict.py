@@ -17,8 +17,6 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-""" Tests for the TwoKeyDict class """
-
 import unittest
 import uuid
 
@@ -26,7 +24,7 @@ from GTG.tools.twokeydict import TwoKeyDict
 
 
 class TestTwoKeyDict(unittest.TestCase):
-    """ Tests for the TwoKeyDict object. """
+    """ TwoKeyDict """
 
     def test_add_and_gets(self):
         """ Test for the __init__, _get_by_first, _get_by_second function """

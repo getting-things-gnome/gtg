@@ -17,16 +17,15 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-""" Tests for search filter """
-
 import unittest
+
 from GTG.core.search import search_filter
 from GTG.tools.dates import Date
 
 d = Date.parse
 
 
-class FakeTask:
+class FakeTask(object):
 
     def __init__(self, title="", body="", tags=[], due_date=""):
         self.title = title
