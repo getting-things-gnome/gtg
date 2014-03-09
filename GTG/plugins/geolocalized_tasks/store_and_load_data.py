@@ -36,7 +36,6 @@ def store_pickled_file(path, data):
     @param data: the object
     '''
     path = os.path.join(CoreConfig().get_data_dir(), path)
-    print (path)
     # mkdir -p
     try:
         os.makedirs(os.path.dirname(path))
@@ -75,12 +74,10 @@ def load_pickled_file(path, default_value=None):
     @returns object: the needed object, or default_value
     '''
     path = os.path.join(CoreConfig().get_data_dir(), path)
-    print (path)
     if not os.path.exists(path):
         return default_value
 
     with open(path, 'rb') as file:
-        print (file)
         try:
             return pickle.load(file)
         except Exception:

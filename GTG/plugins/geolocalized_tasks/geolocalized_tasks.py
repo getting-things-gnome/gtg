@@ -561,7 +561,6 @@ class geolocalizedTasks:
         marker.set_location(latitude, longitude)
         layer = self._get_current_layer()
         layer.add_marker(marker)
-        print("DEBUG | COGL | layer:", layer)
         marker.connect('button-press-event', self._on_marker, marker)
         self._add_to_locations(marker)
 
@@ -679,7 +678,6 @@ class geolocalizedTasks:
         self.__map = map
 
         view = map.get_view()
-        print("DEBUG | COGL | view:", view)
         view.set_property("zoom-level", 10)
         view.set_reactive(True)
 
@@ -688,7 +686,6 @@ class geolocalizedTasks:
         view.set_map_source(source)
 
         layer = Champlain.MarkerLayer()
-        print("DEBUG | COGL | layer:", layer)
         self._set_current_layer(layer)
         view.add_layer(layer)
 
