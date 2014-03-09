@@ -19,7 +19,7 @@
 
 from unittest import TestCase
 
-from GTG.core.tag import Tag, Set_Name_Attribute_Error
+from GTG.core.tag import Tag
 
 
 class TestTag(TestCase):
@@ -62,7 +62,7 @@ class TestTag(TestCase):
     def test_name_cannot_be_changed(self):
         self.assertEqual('foo', self.tag.get_name())
 
-        with self.assertRaises(Set_Name_Attribute_Error):
+        with self.assertRaises(KeyError):
             self.tag.set_attribute('name', 'new')
 
         self.assertEqual('foo', self.tag.get_name())
