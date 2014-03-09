@@ -18,7 +18,6 @@
 # -----------------------------------------------------------------------------
 import imp
 import os
-import types
 import configparser
 
 import dbus
