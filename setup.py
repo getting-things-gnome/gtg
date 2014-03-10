@@ -18,221 +18,174 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-from distutils.core     import setup
-from distutils.command.install_data import install_data
+from distutils.core import setup
+from glob import glob
 from subprocess import call
-
-import glob
 import os
+import sys
 
 from GTG import info
 
-### CONSTANTS ################################################################
 
-HELP_DIR = "share/help"
-GLOBAL_ICON_DIR = "share/icons"
-
-### TOOLS ####################################################################
-
-def create_icon_list():
-    fileList = []
-    rootdir = "data/icons"
-    for root, subFolders, files in os.walk(rootdir):
-        dirList = []
-        for file in files:
-            if file.endswith(".png") or file.endswith(".svg"):
-                dirList.append(os.path.join(root, file))
-        if len(dirList)!=0:
-            newroot = root.replace(rootdir + "/", "")
-            fileList.append((os.path.join(GLOBAL_ICON_DIR, newroot), dirList))
-    return fileList
+def find_packages():
+    """ Generate list of all packages """
+    packages = []
+    for package, __, files in os.walk('GTG'):
+        # Package has to have init file
+        if '__init__.py' not in files:
+            continue
+        # Convert filepath to package name
+        package = package.replace(os.path.sep, '.')
+        packages.append(package)
+    return packages
 
 
-def create_userdoc_list():
-    fileList = []
-    rootdir = "doc/userdoc"
-    for root, subFolders, files in os.walk(rootdir):
-        dirList = []
-        for file in files:
-            dirList.append(os.path.join(root, file))
-        if len(dirList)!=0:
-            comps = root.split(os.sep)
-            prefix = os.path.join(comps[0], comps[1], comps[2])+os.sep
-            if root != prefix[:-1]:
-                newroot = root.replace(prefix, "")
+def find_package_data():
+    """ Generate list of data files within a package """
+    packages = {
+        package.replace('.', os.path.sep) for package in find_packages()}
+    package_data = {}
+
+    for folder, __, files in os.walk('GTG'):
+        # Find package
+        closest_package = folder
+        while closest_package and closest_package not in packages:
+            # Try one level up
+            closest_package = os.path.dirname(closest_package)
+
+        if not closest_package:
+            continue
+
+        allowed_extensions = [
+            '', '.gtg-plugin', '.png', '.svg', '.ui', '.html', '.tex', '.txt']
+        is_this_package = folder == closest_package
+        if not is_this_package:
+            allowed_extensions.append('.py')
+
+        for filename in files:
+            ext = os.path.splitext(filename)[-1]
+            if ext not in allowed_extensions:
+                continue
+
+            # Find path relative to package
+            filename = os.path.join(folder, filename)
+            assert filename.startswith(closest_package)
+            filename = filename[len(closest_package + os.path.sep):]
+
+            # Assign data file to package name
+            package_name = closest_package.replace(os.path.sep, '.')
+            if package_name in package_data:
+                package_data[package_name].append(filename)
             else:
-                newroot = ""
-            newroot = os.path.join(HELP_DIR, comps[2], "gtg", newroot)
-            fileList.append((newroot, dirList))
-    return fileList
+                package_data[package_name] = [filename]
+
+    return package_data
 
 
-def create_data_files():
+def compile_mo_files():
+    """ Compile all .po files into .mo files """
+    mo_files = []
+    mo_dir = os.path.join('build', 'po')
+    for po_file in glob('po/*.po'):
+        lang = os.path.splitext(os.path.basename(po_file))[0]
+        mo_file = os.path.join(mo_dir, lang, 'gtg.mo')
+        target_dir = os.path.dirname(mo_file)
+        if not os.path.isdir(target_dir):
+            os.makedirs(target_dir)
+
+        try:
+            return_code = call(['msgfmt', '-o', mo_file, po_file])
+        except OSError:
+            sys.stderr.write(
+                'Translation not available, please install gettext\n')
+            break
+
+        if return_code:
+            raise Warning('Error when building locales')
+            continue
+
+        install_folder = os.path.join('share', 'locale', lang, 'LC_MESSAGES')
+        mo_files.append((install_folder, [mo_file]))
+
+    return mo_files
+
+
+def find_icons(src_folder, dest_folder, allowed_extensions):
+    """ Find all icons in the folder """
+    data_list = []
+
+    for folder, __, files in os.walk(src_folder):
+        assert folder.startswith(src_folder)
+        install_folder = dest_folder + folder[len(src_folder):]
+        file_list = []
+        for filename in files:
+            ext = os.path.splitext(filename)[-1]
+            if ext in allowed_extensions:
+                filename = os.path.join(folder, filename)
+                file_list.append(filename)
+
+        if file_list:
+            data_list.append((install_folder, file_list))
+
+    return data_list
+
+
+def find_user_help():
+    """ Find all files for user help """
+    help_files = []
+
+    for folder, __, files in os.walk('docs/userdoc'):
+        folders = folder.split(os.path.sep)[2:]
+        if not folders:
+            continue
+        folders.insert(1, 'gtg')
+        install_folder = os.path.join('share', 'help', *folders)
+
+        help_files.append((
+            install_folder,
+            [os.path.join(folder, filename) for filename in files],
+        ))
+
+    return help_files
+
+
+def find_data_files():
+    """ Generate list of data files for installing in share folder """
     data_files = []
-    # icons
-    icons = create_icon_list()
-    data_files.extend(icons)
-    # gtg .desktop icon
-    data_files.append(('share/icons/hicolor/16x16/apps',
-                       ['data/icons/hicolor/16x16/apps/gtg.png']))
-    data_files.append(('share/icons/hicolor/22x22/apps',
-                       ['data/icons/hicolor/22x22/apps/gtg.png']))
-    data_files.append(('share/icons/hicolor/24x24/apps',
-                       ['data/icons/hicolor/24x24/apps/gtg.png']))
-    data_files.append(('share/icons/hicolor/32x32/apps',
-                       ['data/icons/hicolor/32x32/apps/gtg.png']))
-    data_files.append(('share/icons/hicolor/scalable/apps',
-                       ['data/icons/hicolor/scalable/apps/gtg.svg']))
-    # documentation
-    helpfiles = create_userdoc_list()
-    data_files.extend(helpfiles)
-    # misc
-    data_files.append(('share/applications', ['data/gtg.desktop']))
-    data_files.append(('share/dbus-1/services', ['data/org.gnome.GTG.service']))
-    #data_files.append(('share/man/man1',
-                       #['doc/gtg.1', 'doc/gtcli.1', 'doc/gtg_new_task.1']))
 
-    # bash completion
-    data_files.append(('share/gtg/', ['data/gtcli_bash_completion']))
+    # .mo files
+    data_files.extend(compile_mo_files())
 
-    # appdata file
-    data_files.append(('share/appdata/', ['data/gtg.appdata.xml']))
+    # Icons
+    data_files.extend(
+        find_icons('data/icons', 'share/icons', ['.png', '.svg']))
+
+    # User docs
+    data_files.extend(find_user_help())
+
+    # Generate man files and include them
+    os.system('sphinx-build -b man docs/source build/docs')
+    data_files.append(('share/man/man1', glob('build/docs/*.1')))
+
+    # Misc files
+    data_files.extend([
+        ('share/applications', ['data/gtg.desktop']),
+        ('share/appdata/', ['data/gtg.appdata.xml']),
+        ('share/dbus-1/services', ['data/org.gnome.GTG.service']),
+        ('share/gtg/', ['data/gtcli_bash_completion']),
+    ])
+
     return data_files
 
 
-#### TRANSLATIONS(from pyroom setup.py) ######################################
-
-PO_DIR = 'po'
-MO_DIR = os.path.join('build', 'po')
-
-for po in glob.glob(os.path.join(PO_DIR, '*.po')):
-    lang = os.path.basename(po[:-3])
-    mo = os.path.join(MO_DIR, lang, 'gtg.mo')
-    target_dir = os.path.dirname(mo)
-    if not os.path.isdir(target_dir):
-        os.makedirs(target_dir)
-    try:
-        return_code = call(['msgfmt', '-o', mo, po])
-    except OSError:
-        print('Translation not available, please install gettext')
-        break
-    if return_code:
-        raise Warning('Error when building locales')
-
-
-class InstallData(install_data):
-
-    def run(self):
-        self.data_files.extend(self.find_mo_files())
-        install_data.run(self)
-
-    def find_mo_files(self):
-        data_files = []
-        for mo in glob.glob(os.path.join(MO_DIR, '*', 'gtg.mo')):
-            lang = os.path.basename(os.path.dirname(mo))
-            dest = os.path.join('share', 'locale', lang, 'LC_MESSAGES')
-            data_files.append((dest, [mo]))
-        return data_files
-
-### SETUP SCRIPT ##############################################################
-
-author = 'The GTG Team'
-
 setup(
-  name = 'gtg',
-  version = info.VERSION,
-  url = info.URL,
-  author = author,
-  author_email = info.EMAIL,
-  description = info.SHORT_DESCRIPTION,
-  packages = [
-    'GTG',
-    'GTG.backends',
-    'GTG.backends.rtm',
-    'GTG.core',
-    'GTG.core.plugins',
-    'GTG.gtk',
-    'GTG.gtk.editor',
-    'GTG.gtk.browser',
-    'GTG.gtk.backends_dialog',
-    'GTG.gtk.backends_dialog.parameters_ui',
-    'GTG.tools',
-    'GTG.plugins',
-    'GTG.plugins.bugzilla',
-    'GTG.plugins.export',
-    'GTG.plugins.geolocalized_tasks',
-    'GTG.plugins.hamster',
-    'GTG.plugins.notification_area',
-    'GTG.plugins.task_reaper',
-    'GTG.plugins.send_email',
-    'GTG.plugins.tomboy',
-    'GTG.plugins.urgency_color',
-    'GTG.plugins.untouched_tasks',
-    'GTG.plugins.not_today',
-    ],
-  package_data = {
-    'GTG.core.plugins': ['pluginmanager.ui'],
-    'GTG.gtk': [
-        'preferences.ui',
-        'plugins.ui',
-        'deletion.ui',
-        'backends_dialog.ui',
-        ],
-    'GTG.gtk.browser': ['taskbrowser.ui', 'modifytags_dialog.ui'],
-    'GTG.gtk.editor': ['taskeditor.ui'],
-    'GTG.plugins': [
-        'bugzilla.gtg-plugin',
-        'export.gtg-plugin',
-        'geolocalized-tasks.gtg-plugin',
-        'hamster.gtg-plugin',
-        'notification-area.gtg-plugin',
-        'task-reaper.gtg-plugin',
-        'send-email.gtg-plugin',
-        'tomboy.gtg-plugin',
-        'urgency-color.gtg-plugin',
-        'not-today.gtg-plugin',
-        'untouched-tasks.gtg-plugin',
-        ],
-    'GTG.plugins.export': ['export.ui',
-                          './export_templates/description_pocketmod.py',
-                          './export_templates/description_sexy.py',
-                          './export_templates/description_simple.py',
-                          './export_templates/description_statusrpt.py',
-                          './export_templates/description_textual.py',
-                          './export_templates/graphics_pocketmod.svg',
-                          './export_templates/script_pocketmod',
-                          './export_templates/template_pocketmod.tex',
-                          './export_templates/template_sexy.html',
-                          './export_templates/template_simple.html',
-                          './export_templates/template_statusrpt.txt',
-                          './export_templates/template_textual.txt',
-                          './export_templates/thumbnail_pocketmod.png',
-                          './export_templates/thumbnail_sexy.png',
-                          './export_templates/thumbnail_simple.png',
-                          './export_templates/thumbnail_statusrpt.png',
-                          './export_templates/thumbnail_textual.png',
-                          ],
-    'GTG.plugins.geolocalized_tasks': ['geolocalized.ui',
-                          'icons/hicolor/24x24/geolocalization.png',
-                          'icons/hicolor/16x16/assign-location.png',
-                          'icons/hicolor/svg/assign-location.svg',
-                          'icons/hicolor/svg/geolocalization.svg'],
-    'GTG.plugins.tomboy': ['tomboy.ui'],
-    'GTG.plugins.hamster': ['prefs.ui',
-                            'icons/hicolor/32x32/hamster-activity-start.png',
-                            'icons/hicolor/32x32/hamster-activity-stop.png',
-                            'icons/hicolor/svg/hamster-activity-start.svg',
-                            'icons/hicolor/svg/hamster-activity-stop.svg'],
-    'GTG.plugins.task_reaper': ['reaper.ui'],
-    'GTG.plugins.notification_area': ['notification_area.ui',
-                     './data/icons/hicolor/22x22/apps/gtg_need_attention.png',
-            './data/icons/ubuntu-mono-dark/22x22/apps/gtg_need_attention.svg',
-           './data/icons/ubuntu-mono-light/22x22/apps/gtg_need_attention.svg',
-                            ],
-    'GTG.plugins.urgency_color': ['preferences.ui'],
-    'GTG.plugins.untouched_tasks': ['untouchedTasks.ui'],
-   },
-  data_files = create_data_files(),
-  scripts=['GTG/gtg', 'GTG/gtcli', 'GTG/gtg_new_task'],
-  cmdclass={'install_data': InstallData},
+    name='gtg',
+    version=info.VERSION,
+    url=info.URL,
+    author='The GTG Team',
+    author_email=info.EMAIL,
+    description=info.SHORT_DESCRIPTION,
+    packages=find_packages(),
+    scripts=['GTG/gtg', 'GTG/gtcli', 'GTG/gtg_new_task'],
+    data_files=find_data_files(),
 )
