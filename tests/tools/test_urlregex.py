@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
 # Getting Things GNOME! - a personal organizer for the GNOME desktop
-# Copyright (c) 2008-2013 - Lionel Dricot & Bertrand Rousseau
+# Copyright (c) 2008-2014 - Lionel Dricot & Bertrand Rousseau
 #
 # This program is free software: you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -17,20 +17,16 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-""" Tests for URL regex """
+from unittest import TestCase
 
-import unittest
 from GTG.tools.urlregex import match
 
 
-class TestURLRegex(unittest.TestCase):
-    """ Test extractor of URL from text """
+class TestURLRegex(TestCase):
+    """ URL Regex """
 
-    def test_anchor_amperstand(self):
-        """ Reproducer for bug #1023555 """
+    def test_allows_ampersand_in_anchor(self):
+        # Reproducer for https://bugs.launchpad.net/gtg/+bug/1023555
         url = "http://test.com/#hi&there"
-        self.assertEqual(match(url).group(0), url)
-
-
-def test_suite():
-    return unittest.TestLoader().loadTestsFromName(__name__)
+        matched_url = match(url).group(0)
+        self.assertEqual(url, matched_url)
