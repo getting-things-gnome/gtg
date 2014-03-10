@@ -30,7 +30,6 @@ import dbus
 import datetime
 import unicodedata
 
-from GTG.tools.testingmode import TestingMode
 from GTG.tools.borg import Borg
 from GTG.backends.genericbackend import GenericBackend
 from GTG.backends.backendsignals import BackendSignals
@@ -57,14 +56,6 @@ class GenericTomboy(GenericBackend):
                                       "sync_engine-" + self.get_id())
         self.sync_engine = self._load_pickled_file(self.data_path,
                                                    SyncEngine())
-        # if the backend is being tested, we connect to a different DBus
-        # interface to avoid clashing with a running instance of Tomboy
-        if TestingMode().get_testing_mode():
-            # just used for testing purposes
-            self.BUS_ADDRESS = \
-                self._parameters["use this fake connection instead"]
-        else:
-            self.BUS_ADDRESS = self._BUS_ADDRESS
         # we let some time pass before considering a tomboy task for importing,
         # as the user may still be editing it. Here, we store the Timer objects
         # that will execute after some time after each tomboy signal.

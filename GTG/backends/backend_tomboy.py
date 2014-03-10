@@ -53,6 +53,6 @@ class Backend(GenericTomboy):
             GenericBackend.PARAM_DEFAULT_VALUE: ["@GTG-Tomboy"]},
     }
 
-    _BUS_ADDRESS = ("org.gnome.Tomboy",
-                    "/org/gnome/Tomboy/RemoteControl",
-                    "org.gnome.Tomboy.RemoteControl")
+    BUS_ADDRESS = ("org.gnome.Tomboy",
+                   "/org/gnome/Tomboy/RemoteControl",
+                   "org.gnome.Tomboy.RemoteControl")

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
 # Getting Things GNOME! - a personal organizer for the GNOME desktop
-# Copyright (c) 2008-2013 - Lionel Dricot & Bertrand Rousseau
+# Copyright (c) 2008-2014 - Lionel Dricot & Bertrand Rousseau
 #
 # This program is free software: you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -17,9 +17,7 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-""" Tests for parsing searching query """
-
-import unittest
+from unittest import TestCase
 from GTG.core.search import parse_search_query, InvalidQuery
 from GTG.tools.dates import Date
 
@@ -27,7 +25,7 @@ parse = parse_search_query
 d = Date.parse
 
 
-class TestSearchQuery(unittest.TestCase):
+class TestSearchQuery(TestCase):
 
     def test_word_query(self):
         self.assertEqual(parse("query"),
@@ -222,7 +220,3 @@ class TestSearchQuery(unittest.TestCase):
                          {'q': [('today', False)]})
         self.assertEqual(parse('word !today'),
                          {'q': [('word', True, 'word'), ('today', True)]})
-
-
-def test_suite():
-    return unittest.TestLoader().loadTestsFromName(__name__)
