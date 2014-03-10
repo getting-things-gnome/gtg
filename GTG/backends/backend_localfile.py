@@ -29,6 +29,7 @@ import os
 
 from GTG import _
 from GTG.backends.genericbackend import GenericBackend
+from GTG.backends.backendsignals import BackendSignals
 from GTG.core import CoreConfig
 from GTG.tools import cleanxml, taskxml
 
@@ -96,6 +97,11 @@ class Backend(GenericBackend):
 
         self.doc, self.xmlproj = cleanxml.openxmlfile(
             self.get_path(), "project")
+
+        # status if backup was used while trying to open xml file
+        self._used_backup = cleanxml.used_backup()
+        self._backup_file_info = cleanxml.backup_file_info()
+
         # Make safety daily backup after loading
         cleanxml.savexml(self.get_path(), self.doc, backup=True)
 
@@ -130,6 +136,7 @@ class Backend(GenericBackend):
         cleanxml.savexml(self.get_path(), xml)
         self.doc, self.xmlproj = cleanxml.openxmlfile(
             self.get_path(), "project")
+        self._used_backup = False
 
     def start_get_tasks(self):
         """ This function starts submitting the tasks from the XML file into
@@ -197,3 +204,32 @@ class Backend(GenericBackend):
         # We save the XML file only if it's necessary
         if modified:
             cleanxml.savexml(self.get_path(), self.doc, backup=True)
+
+    def used_backup(self):
+        """ This functions return a boolean value telling if backup files
+        were used when instantiating Backend class.
+        """
+        return self._used_backup
+
+    def backup_file_info(self):
+        """This functions returns status of the attempt to recover
+        gtg_tasks.xml
+        """
+        return self._backup_file_info
+
+    def notify_user_about_backup(self):
+        """ This function causes the inforbar to show up with the message
+        about file recovery.
+        """
+        message = _(
+            "Oops, something unexpected happened! "
+            "GTG tried to recover your tasks from backups. \n"
+        ) + self.backup_file_info()
+        BackendSignals().interaction_requested(
+            self.get_id(), message,
+            BackendSignals().INTERACTION_INFORM, "on_continue_clicked")
+
+    def on_continue_clicked(self, *args):
+        """ Callback when the user clicks continue in the infobar
+        """
+        pass

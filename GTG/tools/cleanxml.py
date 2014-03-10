@@ -30,6 +30,8 @@ from GTG.tools.logger import Log
 tab = "\t"
 enter = "\n"
 BACKUP_NBR = 7
+_USED_BACKUP = False
+_BACKUP_FILE_INFO = ""
 
 # Those two functions are there only to be able to read prettyXML
 # Source: http://yumenokaze.free.fr/?/Informatique/Snipplet/Python/cleandom
@@ -119,6 +121,11 @@ def openxmlfile(zefile, root):
 
     If file doesn't exist, create a new file """
 
+    #reset _USED_BACKUP and _BACKUP_FILE_INFO
+    global _USED_BACKUP
+    global _BACKUP_FILE_INFO
+    _USED_BACKUP = False
+    _BACKUP_FILE_INFO = ""
     tmpfile = zefile + '__'
     try:
         if os.path.exists(zefile):
@@ -126,14 +133,10 @@ def openxmlfile(zefile, root):
         elif os.path.exists(tmpfile):
             Log.warning("Something happened to %s. Using backup" % zefile)
             os.rename(tmpfile, zefile)
-            return _try_openxmlfile(zefile, root)
-        else:
-            # Creating empty file
-            doc, xmlproject = emptydoc(root)
-            newfile = savexml(zefile, doc)
-            if not newfile:
-                Log.error("Could not create a new file %s" % zefile)
-                sys.exit(1)
+            _USED_BACKUP = True
+            _BACKUP_FILE_INFO = "Recovered from backup made on: " + \
+                datetime.datetime.fromtimestamp(
+                    os.path.getmtime(tmpfile)).strftime('%Y-%m-%d')
             return _try_openxmlfile(zefile, root)
 
     except IOError as msg:
@@ -146,25 +149,46 @@ def openxmlfile(zefile, root):
         if os.path.exists(tmpfile):
             Log.warning("Something happened to %s. Using backup" % zefile)
             os.rename(tmpfile, zefile)
+            _USED_BACKUP = True
+            _BACKUP_FILE_INFO = "Recovered from backup made on: " + \
+                datetime.datetime.fromtimestamp(
+                    os.path.getmtime(tmpfile)).strftime('%Y-%m-%d')
             # Ok, try one more time now
             try:
                 return _try_openxmlfile(zefile, root)
             except Exception as msg:
                 Log.warning('Failed with reason: %s' % msg)
 
-        # Try to revert to backup
-        backup_name = _get_backup_name(zefile)
-        for i in range(BACKUP_NBR):
-            backup_file = "%s.bak.%d" % (backup_name, i)
-            if os.path.exists(backup_file):
-                Log.info("Trying to restore backup file %s" % backup_file)
-                try:
-                    return _try_openxmlfile(backup_file, root)
-                except Exception as msg:
-                    Log.warning('Failed with reason: %s' % msg)
+    # Try to revert to backup
+    backup_name = _get_backup_name(zefile)
+    for i in range(BACKUP_NBR):
+        backup_file = "%s.bak.%d" % (backup_name, i)
+        if os.path.exists(backup_file):
+            Log.info("Trying to restore backup file %s" % backup_file)
+            _USED_BACKUP = True
+            _BACKUP_FILE_INFO = "Recovered from backup made on: " + \
+                datetime.datetime.fromtimestamp(
+                    os.path.getmtime(backup_file)).strftime('%Y-%m-%d')
+            try:
+                return _try_openxmlfile(backup_file, root)
+            except Exception as msg:
+                Log.warning('Failed with reason: %s' % msg)
 
-        Log.info("No suitable backup was found")
+    Log.info("No suitable backup was found")
+
+    # Creating empty file
+    doc, xmlproject = emptydoc(root)
+    newfile = savexml(zefile, doc)
+    if not newfile:
+        Log.error("Could not create a new file %s" % zefile)
         sys.exit(1)
+    # set _USED_BACKUP even if there's a failure to notify about the same
+    _USED_BACKUP = True
+    _BACKUP_FILE_INFO = "No backups found. Created a new file"
+    return _try_openxmlfile(zefile, root)
+
+    # exit if execution reached this statement
+    sys.exit(1)
 
 
 # Return a doc element with only one root element of the name "root"
@@ -235,3 +259,15 @@ def savexml(zefile, doc, backup=False):
     except IOError as msg:
         print(msg)
         return False
+
+
+def used_backup():
+    """ This function returns true if a call to openxml used saved backup file
+    """
+    return _USED_BACKUP
+
+
+def backup_file_info():
+    """ Return information about the status of automatic backup file recovery
+    """
+    return _BACKUP_FILE_INFO

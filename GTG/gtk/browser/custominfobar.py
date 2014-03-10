@@ -140,6 +140,8 @@ class CustomInfoBar(Gtk.InfoBar):
             self.add_button(_('Confirm'), Gtk.ResponseType.ACCEPT)
         elif interaction_type == BackendSignals().INTERACTION_TEXT:
             self.add_button(_('Continue'), Gtk.ResponseType.ACCEPT)
+        elif interaction_type == BackendSignals().INTERACTION_INFORM:
+            self.add_button(_('OK'), Gtk.ResponseType.ACCEPT)
         self.show_all()
 
     def _on_interaction_response(self, widget, event):
@@ -153,11 +155,12 @@ class CustomInfoBar(Gtk.InfoBar):
         if event == Gtk.ResponseType.ACCEPT:
             if self.interaction_type == BackendSignals().INTERACTION_TEXT:
                 self._prepare_textual_interaction()
-                print("done")
             elif self.interaction_type == BackendSignals().INTERACTION_CONFIRM:
                 self.hide()
                 threading.Thread(target=getattr(self.backend,
                                                 self.callback)).start()
+            else:
+                self.hide()
 
     def _prepare_textual_interaction(self):
         '''

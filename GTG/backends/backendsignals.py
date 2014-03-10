@@ -82,6 +82,7 @@ class _BackendSignalsGObject(GObject.GObject):
 
     INTERACTION_CONFIRM = 'confirm'
     INTERACTION_TEXT = 'text'
+    INTERACTION_INFORM = 'inform'
 
     __gsignals__ = {BACKEND_STATE_TOGGLED: signal_type_factory(str),
                     BACKEND_RENAMED: signal_type_factory(str),
