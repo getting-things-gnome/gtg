@@ -117,6 +117,12 @@ class Manager(GObject.GObject):
     def open_browser(self):
         if not self.browser:
             self.browser = TaskBrowser(self.req, self)
+        # notify user if backup was used
+        backend_dic = self.req.get_all_backends()
+        for backend in backend_dic:
+            if backend.get_name() == "backend_localfile" and \
+                    backend.used_backup():
+                backend.notify_user_about_backup()
         Log.debug("Browser is open")
 
     # FIXME : the browser should not be the center of the universe.
