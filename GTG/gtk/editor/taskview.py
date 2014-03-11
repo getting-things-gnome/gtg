@@ -182,7 +182,7 @@ class TaskView(Gtk.TextView):
         """ After drag and drop just insert it and refresh the editor
 
         Example usage: drag and drop of file links """
-        self.buff.insert_at_cursor(selection.data)
+        self.buff.insert_at_cursor(selection.get_text())
         self.modified(full=True)
         self.stop_emission('drag-data-received')
 
