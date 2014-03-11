@@ -19,7 +19,6 @@
 
 """ Dialog for loading plugins """
 
-from webbrowser import open as openurl
 from gi.repository import Gtk, Pango
 
 from GTG import _
@@ -27,6 +26,7 @@ from GTG import info
 from GTG.core.plugins import GnomeConfig
 from GTG.core.plugins.engine import PluginEngine
 from GTG.gtk import ViewConfig
+from GTG.gtk import help
 
 # columns in PluginsDialog.plugin_store
 PLUGINS_COL_ID = 0
@@ -145,6 +145,8 @@ class PluginsDialog:
         self.plugin_about = builder.get_object("PluginAboutDialog")
         self.plugin_depends = builder.get_object('PluginDepends')
 
+        help.add_help_shortcut(self.dialog, "plugins")
+
         self.pengine = PluginEngine()
         # plugin config initiation
         if self.pengine.get_plugins():
@@ -176,14 +178,6 @@ class PluginsDialog:
                                 'on_PluginAboutDialog_close':
                                 self.on_plugin_about_close,
                                 })
-
-        # adding F1 as a shortcut for Help
-        agr = Gtk.AccelGroup()
-        self.dialog.add_accel_group(agr)
-        widget = builder.get_object("plugins_help")
-        key, mod = Gtk.accelerator_parse("F1")
-        widget.add_accelerator("activate", agr, key, mod,
-                               Gtk.AccelFlags.VISIBLE)
 
     def _init_plugin_tree(self):
         """ Initialize the PluginTree Gtk.TreeView.
@@ -251,7 +245,7 @@ class PluginsDialog:
     @classmethod
     def on_help(cls, widget):
         """ Open help for plugins """
-        openurl("help:gtg/gtg-plugins")
+        help.show_help("plugins")
         return True
 
     def on_plugin_toggle(self, widget, path):
