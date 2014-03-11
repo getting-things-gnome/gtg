@@ -28,8 +28,6 @@ This window is divided in two:
 
 from gi.repository import Gtk
 
-from webbrowser import open as openurl
-
 from GTG.gtk import ViewConfig
 from GTG.core import CoreConfig
 from GTG.gtk.backends_dialog.backendstree import BackendsTree
@@ -40,6 +38,7 @@ from GTG.tools.logger import Log
 from GTG import _
 from GTG.backends.genericbackend import GenericBackend
 from GTG import info
+from GTG.gtk import help
 
 
 class BackendsDialog(object):
@@ -76,6 +75,7 @@ class BackendsDialog(object):
         self._create_widgets_for_conf_panel()
         self._setup_signal_connections(builder)
         self._create_widgets_for_treeview()
+        help.add_help_shortcut(self.dialog, "sync")
 
 ########################################
 ### INTERFACE WITH THE VIEWMANAGER #####
@@ -194,18 +194,10 @@ class BackendsDialog(object):
             'on_BackendsDialog_delete_event': self.on_close,
             'on_close_button_clicked': self.on_close,
             'on_remove_button_clicked': self.on_remove_button,
-            'on_help_button_clicked': lambda w:
-            openurl("help:gtg/gtg-add-sync"),
+            'on_help_button_clicked': self.on_help,
         }
         builder.connect_signals(signals)
 
-        # adding F1 as a shortcut for Help
-        agr = Gtk.AccelGroup()
-        self.dialog.add_accel_group(agr)
-        widget = builder.get_object("sync_help")
-        key, modifier = Gtk.accelerator_parse('F1')
-        widget.add_accelerator("activate", agr, key, modifier,
-                               Gtk.AccelFlags.VISIBLE)
 
     def _configure_icon_theme(self):
         '''
@@ -235,6 +227,11 @@ class BackendsDialog(object):
 ########################################
 ### EVENT HANDLING #####################
 ########################################
+    def on_help(cls, widget):
+        """ Open help for syncronization services """
+        help.show_help("sync")
+        return True
+
     def on_backend_selected(self, backend_id):
         '''
         When a backend in the treeview gets selected, show

@@ -21,7 +21,6 @@
 
 import os
 import shutil
-from webbrowser import open as openurl
 
 from gi.repository import Gtk
 from xdg.BaseDirectory import xdg_config_home
@@ -30,6 +29,7 @@ import GTG.tools.shortcut as shortcut
 from GTG import _
 from GTG import info
 from GTG.gtk import ViewConfig
+from GTG.gtk import help
 
 AUTOSTART_DIRECTORY = os.path.join(xdg_config_home, "autostart")
 AUTOSTART_FILE = "gtg.desktop"
@@ -92,6 +92,7 @@ class PreferencesDialog:
         self.shortcut_button = builder.get_object("shortcut_button")
 
         self.shortcut = ShortcutWidget(builder)
+        help.add_help_shortcut(self.dialog, "preferences")
 
         self.fontbutton = builder.get_object("fontbutton")
         editor_font = self.config.get("font_name")
@@ -101,11 +102,6 @@ class PreferencesDialog:
             editor_font = font.to_string()
         self.fontbutton.set_font_name(editor_font)
 
-        # F1 shows help
-        agr = Gtk.AccelGroup()
-        self.dialog.add_accel_group(agr)
-        key, modifier = Gtk.accelerator_parse('F1')
-        agr.connect(key, modifier, Gtk.AccelFlags.VISIBLE, self.on_help)
 
         builder.connect_signals({
                                 'on_pref_autostart_toggled':
@@ -155,10 +151,9 @@ class PreferencesDialog:
         return True
 
     @classmethod
-    # We define dummy variable for when on_help is called from a callback
-    def on_help(self, window=None, a=None, b=None, c=None):
+    def on_help(cls, widget):
         """ Open help for preferences """
-        openurl(info.HELP_URI)
+        help.show_help("preferences")
         return True
 
     @classmethod
