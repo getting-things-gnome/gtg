@@ -280,11 +280,24 @@ class geolocalizedTasks:
         self._preferences_load(plugin_api)
         self.__distance = self.__preferences['distance_filter']
         self.__apply_filter = self.__preferences['apply_filter']
-        tasks_tree = self.__requester.get_tasks_tree()
-        if self.__apply_filter is True:
-            self.__requester.apply_global_filter(tasks_tree, FILTER_NAME)
-        else:
-            self.__requester.unapply_global_filter(tasks_tree, FILTER_NAME)
+
+        toggled_button = plugin_api.get_browser().toggle_workview
+        toggled_button.connect("toggled", self.toggled_workview, None)
+
+        activetree = self.__requester.get_tasks_tree()
+        if self.__plugin_api.get_browser().config.get('view') == 'workview':
+            if self.__apply_filter is True:
+                self.__requester.apply_global_filter(activetree, FILTER_NAME)
+            else:
+                self.__requester.unapply_global_filter(activetree, FILTER_NAME)
+
+    def toggled_workview(self, toggle, data):
+        activetree = self.__requester.get_tasks_tree()
+        if toggle.get_active() is True and self.__apply_filter is True:
+            self.__requester.apply_global_filter(activetree, FILTER_NAME)
+
+        if toggle.get_active() is False and self.__apply_filter is True:
+            self.__requester.unapply_global_filter(activetree, FILTER_NAME)
 
     def deactivate(self, plugin_api):
         """
@@ -400,7 +413,7 @@ class geolocalizedTasks:
 
     def _filter_work_view(self, task):
         data_path = os.path.join('plugins/geolocalized_tasks', "last_location")
-        
+
         [user_latitude, user_longitude] = self._get_user_position()
         if user_latitude is None or user_longitude is None:
             [user_latitude, user_longitude] = load_pickled_file(data_path, [])
@@ -437,6 +450,7 @@ class geolocalizedTasks:
             if (dist <= self.__distance):
                 return True
         return False
+        
 
     def _preferences_load(self, plugin_api):
         self.__preferences = self.__plugin_api.load_configuration_object(self.PLUGIN_NAMESPACE, "preferences", default_values=self.DEFAULT_PREFERENCES)
@@ -827,11 +841,12 @@ class geolocalizedTasks:
         widget.get_parent_window().destroy()
 
     def _ok_preferences (self, widget, check):
-        tasks_tree = self.__requester.get_tasks_tree()
-        if check.get_active():
-            self.__requester.apply_global_filter(tasks_tree, FILTER_NAME)
-        else:
-            self.__requester.unapply_global_filter(tasks_tree, FILTER_NAME)
+        activetree = self.__requester.get_tasks_tree()
+        if self.__plugin_api.get_browser().config.get('view') == 'workview':
+            if check.get_active() is True:
+                self.__requester.apply_global_filter(activetree, FILTER_NAME)
+            else:
+                self.__requester.unapply_global_filter(activetree, FILTER_NAME)
         widget.get_parent_window().destroy()
 
         self.__preferences["apply_filter"] = check.get_active()
