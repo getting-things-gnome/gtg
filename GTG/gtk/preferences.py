@@ -102,7 +102,6 @@ class PreferencesDialog:
             editor_font = font.to_string()
         self.fontbutton.set_font_name(editor_font)
 
-
         builder.connect_signals({
                                 'on_pref_autostart_toggled':
                                 self.on_autostart_toggled,

@@ -198,7 +198,6 @@ class BackendsDialog(object):
         }
         builder.connect_signals(signals)
 
-
     def _configure_icon_theme(self):
         '''
         Inform gtk on the location of the backends icons (which is in
