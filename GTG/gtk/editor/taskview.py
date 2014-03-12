@@ -30,7 +30,7 @@ It was in Japanese and I didn't understand anything but the code.
 
 
 import os
-import chardet 
+
 from gi.repository import GObject, Gtk, Gdk, Pango
 
 from webbrowser import open as openurl
