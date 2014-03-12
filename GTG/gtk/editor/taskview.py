@@ -30,7 +30,7 @@ It was in Japanese and I didn't understand anything but the code.
 
 
 import os
-
+import chardet 
 from gi.repository import GObject, Gtk, Gdk, Pango
 
 from webbrowser import open as openurl
@@ -133,8 +133,8 @@ class TaskView(Gtk.TextView):
         self.connect('copy-clipboard', self.copy_clipboard, "copy")
         self.connect('cut-clipboard', self.copy_clipboard, "cut")
         self.connect('paste-clipboard', self.paste_clipboard)
-
-        self.connect('drag-data-received', self.drag_receive)
+        
+        self.connect_after('drag-data-received', self.drag_receive)
 
         # All the typical properties of our textview
         self.set_wrap_mode(Gtk.WrapMode.WORD)
@@ -182,7 +182,8 @@ class TaskView(Gtk.TextView):
         """ After drag and drop just insert it and refresh the editor
 
         Example usage: drag and drop of file links """
-        self.buff.insert_at_cursor(selection.get_text())
+        start, end = self.buff.get_bounds()
+        self.buff.insert_at_cursor(self.buff.get_text(start, end, True))
         self.modified(full=True)
         self.stop_emission('drag-data-received')
 
