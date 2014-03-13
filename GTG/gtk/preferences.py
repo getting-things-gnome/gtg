@@ -29,6 +29,7 @@ import GTG.tools.shortcut as shortcut
 from GTG import _
 from GTG import info
 from GTG.gtk import ViewConfig
+from GTG.gtk import help
 
 AUTOSTART_DIRECTORY = os.path.join(xdg_config_home, "autostart")
 AUTOSTART_FILE = "gtg.desktop"
@@ -91,6 +92,7 @@ class PreferencesDialog:
         self.shortcut_button = builder.get_object("shortcut_button")
 
         self.shortcut = ShortcutWidget(builder)
+        help.add_help_shortcut(self.dialog, "preferences")
 
         self.fontbutton = builder.get_object("fontbutton")
         editor_font = self.config.get("font_name")
@@ -149,7 +151,8 @@ class PreferencesDialog:
 
     @classmethod
     def on_help(cls, widget):
-        """ In future, this will open help for preferences """
+        """ Open help for preferences """
+        help.show_help("preferences")
         return True
 
     @classmethod

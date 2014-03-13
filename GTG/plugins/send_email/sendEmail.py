@@ -21,7 +21,9 @@
 
 from gi.repository import Gio
 from gi.repository import Gtk
-import urllib.request, urllib.parse, urllib.error
+import urllib.request
+import urllib.parse
+import urllib.error
 
 from GTG import _
 

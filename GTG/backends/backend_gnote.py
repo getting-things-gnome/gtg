@@ -54,6 +54,6 @@ class Backend(GenericTomboy):
             GenericBackend.PARAM_DEFAULT_VALUE: ["@GTG-Gnote"]},
     }
 
-    _BUS_ADDRESS = ("org.gnome.Gnote",
-                    "/org/gnome/Gnote/RemoteControl",
-                    "org.gnome.Gnote.RemoteControl")
+    BUS_ADDRESS = ("org.gnome.Gnote",
+                   "/org/gnome/Gnote/RemoteControl",
+                   "org.gnome.Gnote.RemoteControl")

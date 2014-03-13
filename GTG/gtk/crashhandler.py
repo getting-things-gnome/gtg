@@ -44,7 +44,7 @@ from GTG import info
 try:
     from gi.repository import GObject, Gtk, Pango
 except Exception:
-    print("gtkcrashhandler could not load GTK 3.0", file=sys.stderr)
+    sys.stderr.write("gtkcrashhandler could not load GTK 3.0\n")
     _gtk_initialized = False
 else:
     _gtk_initialized = True
@@ -97,7 +97,8 @@ def _replacement_excepthook(type, value, tracebk, thread=None):
     if thread:
         if not isinstance(thread, threading._MainThread):
             tb = "Exception in thread %s:\n%s" % (thread.getName(), tb)
-    print(tb, file=sys.stderr)
+
+    sys.stderr.write(tb + '\n')
 
     # determine whether to add a "Report problem..." button
     add_apport_button = False
@@ -206,7 +207,8 @@ def show_error_window(error_string, add_apport_button=False):
     try:
         textview.override_font(Pango.FontDescription("monospace 8"))
     except Exception:
-        print("gtkcrashhandler: override_font raised an exception", file=sys.stderr)
+        sys.stderr.write(
+            "gtkcrashhandler: override_font raised an exception\n")
 
     # allow scrolling of textview
     scrolled = Gtk.ScrolledWindow()
@@ -329,8 +331,10 @@ def signal_catcher(callback):
     yield
 
 initialize(app_name="Getting Things GNOME!",
-           message="GTG" + info.VERSION +
-           _(" has crashed. Please report the bug on <a href=\""
-           "http://bugs.edge.launchpad.net/gtg\">our Launchpad page</a>."
-             " If you have Apport installed, it will be started for you."),
+           message=_(
+               'GTG %s has crashed. Please report the bug on '
+               '<a href="http://bugs.edge.launchpad.net/gtg">'
+               'our Launchpad page</a>. '
+               'If you have Apport installed, it will be started for you.'
+           ) % info.VERSION,
            use_apport=True)

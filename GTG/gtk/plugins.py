@@ -26,6 +26,7 @@ from GTG import info
 from GTG.core.plugins import GnomeConfig
 from GTG.core.plugins.engine import PluginEngine
 from GTG.gtk import ViewConfig
+from GTG.gtk import help
 
 # columns in PluginsDialog.plugin_store
 PLUGINS_COL_ID = 0
@@ -144,13 +145,19 @@ class PluginsDialog:
         self.plugin_about = builder.get_object("PluginAboutDialog")
         self.plugin_depends = builder.get_object('PluginDepends')
 
+        help.add_help_shortcut(self.dialog, "plugins")
+
         self.pengine = PluginEngine()
         # plugin config initiation
         if self.pengine.get_plugins():
-            self.config.set("disabled",
-                [p.module_name for p in self.pengine.get_plugins("disabled")])
-            self.config.set("enabled",
-                [p.module_name for p in self.pengine.get_plugins("enabled")])
+            self.config.set(
+                "disabled",
+                [p.module_name for p in self.pengine.get_plugins("disabled")],
+            )
+            self.config.set(
+                "enabled",
+                [p.module_name for p in self.pengine.get_plugins("enabled")],
+            )
 
         # see constants PLUGINS_COL_* for column meanings
         self.plugin_store = Gtk.ListStore(str, bool, str, str, bool)
@@ -237,7 +244,8 @@ class PluginsDialog:
 
     @classmethod
     def on_help(cls, widget):
-        """ In future, this will open help for plugins """
+        """ Open help for plugins """
+        help.show_help("plugins")
         return True
 
     def on_plugin_toggle(self, widget, path):

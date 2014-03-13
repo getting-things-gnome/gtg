@@ -18,21 +18,22 @@
 
 PEP8=pep8
 PYFLAKES=pyflakes
-PYDOCTOR=pydoctor
 
 check: tests pep8 pyflakes
+
+install:
+	pip3 install -r requirements.txt
 
 # Run all of the tests.
 tests:
 	./run-tests
 
-# Get rid of stale files or files made during testing.
+# Remove all temporary files
 clean:
 	rm -rf tmp
-	rm -rf doc/api
-	find . -name '*.pyc' -print0 | xargs -0 rm -f
-	find . -name '*~' -print0 | xargs -0 rm -f
-	find . -name '.*.swp' -print0 | xargs -0 rm -f
+	find -type f -name '*~' -or -name '.*.sw*' -print | xargs rm -f
+	find -type f -name '*.pyc' -print | xargs rm -f
+	find -type d -name '__pycache__' -print | xargs rm -rf
 
 # Check for common & easily catchable Python mistakes.
 pyflakes:
@@ -42,19 +43,7 @@ pyflakes:
 pep8:
 	$(PEP8) --statistics --count gtg gtcli gtg_new_task GTG
 
-# Build API documentation.
-apidocs:
-	$(PYDOCTOR) --add-package GTG --make-html --html-output=doc/api \
-		--project-name=GTG --project-url=http://gtg.fritalk.com/
-
-edit-apidocs:
-	$(PYDOCTOR) --add-package GTG --make-html --html-output=doc/api \
-		--project-name=GTG --project-url=http://gtg.fritalk.com/ \
-		--verbose-about=epydoc2stan2 --verbose-about=epydoc2stan2 \
-		--verbose-about=server --verbose-about=server --local-only \
-		--server --edit
-
 # Check for coding standard violations & flakes.
 lint: pyflakes pep8
 
-.PHONY: tests check lint pyflakes pep8 apidocs edit-apidocs clean
+.PHONY: install tests check lint pyflakes pep8 clean
