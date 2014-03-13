@@ -4,7 +4,7 @@
   <object class="GtkWindow" id="TaskEditor">
     <property name="can_focus">False</property>
     <property name="title" translatable="yes">Task</property>
-    <property name="default_width">450</property>
+    <property name="default_width">500</property>
     <property name="default_height">400</property>
     <signal name="configure-event" handler="on_move" swapped="no"/>
     <child>
@@ -86,6 +86,36 @@
                 <property name="label" translatable="yes">Insert tag</property>
                 <property name="icon_name">gtg-tag-new</property>
                 <signal name="clicked" handler="on_inserttag_clicked" swapped="no"/>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="homogeneous">True</property>
+              </packing>
+            </child>
+            <child>
+                <object class="GtkSeparatorToolItem" id="toolbutton2">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                </object>
+                <packing>
+                    <property name="expand">False</property>
+                    <property name="homogeneous">True</property>
+                </packing>
+            </child>
+            <child>
+              <object class="GtkMenuToolButton" id="open_parents">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">Open parent task</property>
+                <property name="stock_id">gtk-go-up</property>
+                <accelerator key="p" signal="clicked" modifiers="GDK_CONTROL_MASK"/>
+                <child internal-child="accessible">
+                  <object class="AtkObject" id="open_parents-atkobject">
+                    <property name="AtkObject::accessible-name" translatable="yes">Open parent task</property>
+                    <property name="AtkObject::accessible-description" translatable="yes">Opens parent task of this task</property>
+                  </object>
+                </child>
+                <signal name="clicked" handler="on_open_parent_clicked" swapped="no"/>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -186,7 +216,7 @@
                     <property name="invisible_char">●</property>
                     <property name="width_chars">10</property>
                     <signal name="changed" handler="startingdate_changed" swapped="no"/>
-                    <signal name="focus-out-event" handler="startdate_focus_out"/>
+                    <signal name="focus-out-event" handler="startdate_focus_out" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -249,7 +279,7 @@
                     <property name="invisible_char">●</property>
                     <property name="width_chars">10</property>
                     <signal name="changed" handler="duedate_changed" swapped="no"/>
-                    <signal name="focus-out-event" handler="duedate_focus_out"/>
+                    <signal name="focus-out-event" handler="duedate_focus_out" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -312,7 +342,7 @@
                     <property name="invisible_char">●</property>
                     <property name="width_chars">10</property>
                     <signal name="changed" handler="closeddate_changed" swapped="no"/>
-                    <signal name="focus-out-event" handler="closeddate_focus_out"/>
+                    <signal name="focus-out-event" handler="closeddate_focus_out" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>

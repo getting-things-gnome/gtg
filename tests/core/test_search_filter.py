@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
 # Getting Things GNOME! - a personal organizer for the GNOME desktop
-# Copyright (c) 2008-2013 - Lionel Dricot & Bertrand Rousseau
+# Copyright (c) 2008-2014 - Lionel Dricot & Bertrand Rousseau
 #
 # This program is free software: you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -17,16 +17,15 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-""" Tests for search filter """
+from unittest import TestCase
 
-import unittest
 from GTG.core.search import search_filter
 from GTG.tools.dates import Date
 
 d = Date.parse
 
 
-class FakeTask:
+class FakeTask(object):
 
     def __init__(self, title="", body="", tags=[], due_date=""):
         self.title = title
@@ -47,7 +46,7 @@ class FakeTask:
         return self.due_date
 
 
-class TestSearchFilter(unittest.TestCase):
+class TestSearchFilter(TestCase):
 
     def test_empty(self):
         self.assertFalse(search_filter(FakeTask()))
@@ -207,7 +206,3 @@ class TestSearchFilter(unittest.TestCase):
                                       {'q': [("soon", True)]}))
         self.assertTrue(search_filter(FakeTask(due_date="someday"),
                                       {'q': [("someday", True)]}))
-
-
-def test_suite():
-    return unittest.TestLoader().loadTestsFromName(__name__)
