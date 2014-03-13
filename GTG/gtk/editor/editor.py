@@ -35,6 +35,7 @@ from GTG.core.plugins.api import PluginAPI
 from GTG.core.task import Task
 from GTG.tools.dates import Date
 from GTG.gtk.editor.calendar import GTGCalendar
+from GTG.gtk.help import add_help_shortcut
 
 
 class TaskEditor(object):
@@ -200,6 +201,9 @@ class TaskEditor(object):
 
         key, modifier = Gtk.accelerator_parse('<Control>w')
         agr.connect(key, modifier, Gtk.AccelFlags.VISIBLE, self.close)
+
+        # F1 shows help
+        add_help_shortcut(self.window, "editor")
 
         # Ctrl-N creates a new task
         key, modifier = Gtk.accelerator_parse('<Control>n')
