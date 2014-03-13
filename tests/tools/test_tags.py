@@ -71,6 +71,9 @@ class TestExtractTags(TestCase):
     def ignore_colon_at_end(self):
         self.assertTags("@:a:b:c:", ["@:a:b:c"])
 
+    def test_accepts_ampersand_in_tag(self):
+        self.assertTags("@home&work", ["@home&work"])
+
 
 class TestParseTagList(TestCase):
     """ parse_tag_list """
