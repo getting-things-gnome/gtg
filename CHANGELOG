@@ -22,6 +22,7 @@
     * Fix for bug #1287259 : pep8ify the codebase, by Izidor Matušov
     * Rework of test-suite, by Izidor Matušov
     * Fix for bug #1027604: Deeper integeration of userdoc, by Sara Ribeiro
+    * Fix for bug #1288560 : Parsing error when creating a task (via quick add entry) that contains a tag with "&" in it, by Sara Ribeiro
 
 2013-11-24 Getting Things GNOME! 0.3.1
     * Fix for bug #1024473: Have 'Show Main Window' in notification area, by Antonio Roquentin
