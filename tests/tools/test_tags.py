@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
 # Getting Things GNOME! - a personal organizer for the GNOME desktop
-# Copyright (c) 2008-2013 - Lionel Dricot & Bertrand Rousseau
+# Copyright (c) 2008-2014 - Lionel Dricot & Bertrand Rousseau
 #
 # This program is free software: you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -70,6 +70,9 @@ class TestExtractTags(TestCase):
 
     def ignore_colon_at_end(self):
         self.assertTags("@:a:b:c:", ["@:a:b:c"])
+
+    def test_accepts_ampersand_in_tag(self):
+        self.assertTags("@home&work", ["@home&work"])
 
 
 class TestParseTagList(TestCase):
