@@ -24,6 +24,8 @@
     * Fix for bug #1027604: Deeper integeration of userdoc, by Sara Ribeiro
     * Fix for bug #1288560 : Parsing error when creating a task (via quick add entry) that contains a tag with "&" in it, by Sara Ribeiro
     * Fix for Python3 compatibility and unable to close on Clicking on close button, by Fabiano Fidencio
+    * Fix for bug ##1042419 : Gtg-0.2.9.tar.gz file has 'gtg' and 'GTG', by Izidor Matušov
+    * Moving to Sphinx for documentation and improving the scripts, by Izidor Matušov
 
 2013-11-24 Getting Things GNOME! 0.3.1
     * Fix for bug #1024473: Have 'Show Main Window' in notification area, by Antonio Roquentin

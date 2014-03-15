@@ -1,0 +1,16 @@
+v0.2.2: Protector
+=================
+
+After just one month since the last release, the GTG development team is
+pleased to announce the release of Getting things GNOME! 0.2.2, codename
+"Protector". This one is the last of the 0.2.X serie: we have already started
+breaking everything to make GTG faster and better.
+
+Aside from the tons of bug fixes that ship with every release, this one
+features a brand new preference dialog and integration with Docky.
+
+On the new plug-ins side, you'll get one to send tasks via email, another that
+can import tasks from JSON, and the last one that can delete old closed tasks
+automatically (which makes GTG faster if you have a huge amount of tasks).  The
+RememberTheMilk plugin is now stable and features tags synchronization.
+Finally, we support the libindicator library, making GTG "Ubuntu Lucid" ready.

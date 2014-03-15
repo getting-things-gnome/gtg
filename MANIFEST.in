@@ -1,16 +1,15 @@
-recursive-include GTG *.glade
 recursive-include GTG *.ui
 recursive-include GTG *.gtg-plugin
 recursive-include GTG *.png
 recursive-include GTG *.svg
-include gtg.desktop
+recursive-include GTG/plugins/export *
 include CHANGELOG
 include README
 include LICENSE
 include AUTHORS
-include org.gnome.GTG.service
-recursive-include data/icons *.png
-recursive-include data/icons *.svg
-include doc/*.1
-recursive-include GTG/plugins/export *
+include requirements.txt
+recursive-include data *
 recursive-include po *.po
+include docs/Makefile
+recursive-include docs/source *
+recursive-include docs/userdoc *
