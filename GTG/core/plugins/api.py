@@ -127,7 +127,7 @@ class PluginAPI:
 
     def remove_active_selection_changed_callback(self, plugin_class):
         new_list = [func for func in self.selection_changed_callback_listeners
-                    if func.im_class != plugin_class]
+                    if func.__class__ != plugin_class]
         self.selection_changed_callback_listeners = new_list
 
 #=== Changing the UI =========================================================
