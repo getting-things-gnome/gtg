@@ -635,13 +635,13 @@ class geolocalizedTasks:
 
         scrolled_window = builder.get_object("scrolledwindow")
         grid = Gtk.Grid()
-        scrolled_window.add(grid)
 
         tag_location_data_path = os.path.join('plugins/geolocalized_tasks', "tag_locations")
         loaded_dict = load_pickled_file(tag_location_data_path, {})
         self._set_tag_locations(loaded_dict)
 
         i = 0
+        tag_added = False
         for tag_name in all_tags:
             if tag_name.startswith("@"):
                 check = Gtk.CheckButton(tag_name)
@@ -653,6 +653,18 @@ class geolocalizedTasks:
                 check.connect("toggled", self._check_clicked, tag_name)
                 grid.attach(check, i%4, i/4, 1, 1)
                 i += 1
+                tag_added = True
+
+   
+        if tag_added is True:
+            scrolled_window.add(grid)
+        else:
+            box = Gtk.Box()
+            box.set_homogeneous(True)
+            label = Gtk.Label("No Tags")
+            label.set_justify(Gtk.Justification.CENTER)
+            box.add(label)
+            scrolled_window.add(box)
 
         scrolled_window.show_all()
         dialog.show_all()
