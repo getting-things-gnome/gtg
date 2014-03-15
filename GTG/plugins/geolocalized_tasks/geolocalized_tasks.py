@@ -271,7 +271,7 @@ class geolocalizedTasks:
         """
         mi = plugin_api.add_item_to_tag_menu("Add Location", self._set_tag_location, plugin_api)
         self._set_menu_item_tag_sidebar(mi)
-        builder = self._get_builder_from_file("preferences2.ui")
+        builder = self._get_builder_from_file("preferences.ui")
         self.__spin = builder.get_object("spin_proximityfactor")
         requester = plugin_api.get_requester()
         requester.add_filter(FILTER_NAME, self._filter_work_view)
@@ -388,7 +388,7 @@ class geolocalizedTasks:
         self.__distance = widget.get_value()
 
     def on_geolocalized_preferences(self):
-        self.builder = self._get_builder_from_file("preferences2.ui")
+        self.builder = self._get_builder_from_file("preferences.ui")
         dialog = self.builder.get_object("dialog")
 
         spin = self.builder.get_object("spin_proximityfactor")
