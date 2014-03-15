@@ -237,7 +237,7 @@ class PluginEngine(Borg):
                 for api in self.plugin_apis:
                     if hasattr(plugin.instance, "deactivate"):
                         plugin.instance.deactivate(api)
-                        classname = plugin.instance.deactivate.im_class
+                        classname = plugin.instance.deactivate.__class__
                         api.remove_active_selection_changed_callback(classname)
                     if api.is_editor():
                         if hasattr(plugin.instance, "onTaskClosed"):
