@@ -349,31 +349,6 @@ class geolocalizedTasks:
 
     def task_location_filter(self, tid):
         pass
-#        """filters by location only one task"""
-#        has_location = False
-#        task = self.plugin_api.get_task(tid)
-#        if task.get_status() == "Active":
-#            if task.is_workable():
-#                tags = task.get_tags()
-#
-#                # check if it has the location set
-#                for tag in tags:
-#                    if "location" in tag.get_all_attributes():
-#                        has_location = True
-#
-#                if has_location:
-#                    # do the actual filter
-#                    for tag in tags:
-#                            if tag.get_attribute("location"):
-#                                position = eval(tag.get_attribute("location"))
-#                                if not self.geoclue.compare_position(
-#                                        position[0], position[1],
-#                                        float(self.PROXIMITY_FACTOR)):
-#                                    self.plugin_api.add_task_to_filter(tid)
-#                                    if tid not in self.location_filter:
-#                                        self.location_filter.append(tid)
-#                                    return False
-#        return True
 
     #=== GEOLOCALIZED PREFERENCES=============================================
 
@@ -458,111 +433,11 @@ class geolocalizedTasks:
     def _preferences_store(self, plugin_api):
         self.__plugin_api.save_configuration_object(self.PLUGIN_NAMESPACE, "preferences", self.__preferences)
 
-#        wTree = Gtk.glade.XML(self.glade_file, "Preferences")
-#        dialog = wTree.get_widget("Preferences")
-#        dialog.connect("response", self.preferences_close)
-#
-#        check_network = wTree.get_widget("check_network")
-#        check_cellphone = wTree.get_widget("check_cellphone")
-#        check_gps = wTree.get_widget("check_gps")
-#
-#        providers = self.geoclue.get_available_providers()
-#        provider_name_list = []
-#
-#        for provider in providers:
-#            provider_name_list.append(provider['name'].lower())
-#
-#        if "hostip" not in provider_name_list:
-#            check_network.set_active(False)
-#            check_network.set_sensitive(False)
-#        else:
-#            if "network" in self.LOCATION_DETERMINATION_METHOD:
-#                for provider in providers:
-#                    status = self.geoclue.provider_status(provider['object'])
-#                    if provider['name'].lower() == "hostip":
-#                        if status in ["available", "acquiring"]:
-#                            check_network.set_active(True)
-#                            break
-#                        else:
-#                            check_network.set_active(False)
-#                            check_network.set_sensitive(False)
-#                            break
-#            else:
-#                for provider in providers:
-#                    status = self.geoclue.provider_status(provider['object'])
-#                    if provider['name'].lower() == "hostip" and\
-#                            status in ["error", "unavailable"]:
-#                        check_network.set_active(False)
-#                        check_network.set_sensitive(False)
-#                        break
-#
-#        if "gsmloc" not in provider_name_list:
-#            check_cellphone.set_active(False)
-#            check_cellphone.set_sensitive(False)
-#        else:
-#            if "cellphone" in self.LOCATION_DETERMINATION_METHOD:
-#                for provider in providers:
-#                    status = self.geoclue.provider_status(provider['object'])
-#                    if provider['name'].lower() == "gsmloc":
-#                        if status in ["available", "acquiring"]:
-#                            check_cellphone.set_active(True)
-#                        else:
-#                            check_cellphone.set_active(False)
-#                            check_cellphone.set_sensitive(False)
-#                        break
-#            else:
-#                for provider in providers:
-#                    status = self.geoclue.provider_status(provider['object'])
-#                    if provider['name'].lower() == "gsmloc" and\
-#                            status in ["error", "unavailable"]:
-#                        check_cellphone.set_active(False)
-#                        check_cellphone.set_sensitive(False)
-#                        break
-#
-#        # TODO: separate gypsy from gpsd
-#        if "gpsd" not in provider_name_list:
-#            if "gypsy" not in provider_name_list:
-#                check_gps.set_active(False)
-#                check_gps.set_sensitive(False)
-#        else:
-#            if "gps" in self.LOCATION_DETERMINATION_METHOD:
-#                for provider in providers:
-#                    status = self.geoclue.provider_status(provider['object'])
-#                    if provider['name'].lower() in ["gpsd", "gypsy"]:
-#                        if status in ["available", "acquiring"]:
-#                            check_gps.set_active(True)
-#                        else:
-#                            check_gps.set_active(False)
-#                            check_gps.set_sensitive(False)
-#                        break
-#            else:
-#                for provider in providers:
-#                    status = self.geoclue.provider_status(provider['object'])
-#                    if provider['name'].lower() in ["gpsd", "gypsy"] and\
-#                            status in ["error", "unavailable"]:
-#                        check_gps.set_active(False)
-#                        check_gps.set_sensitive(False)
-#                        break
-#
-#        spin_proximityfactor = wTree.get_widget("spin_proximityfactor")
-#        spin_proximityfactor.set_value(float(self.PROXIMITY_FACTOR))
-#        spin_proximityfactor.connect("changed",
-#                                     self.spin_proximityfactor_changed)
-#        self.tmp_proximityfactor = float(self.PROXIMITY_FACTOR)
-#
-#        dialog.show_all()
-
     def spin_proximityfactor_changed(self, spinbutton):
         pass
-#        self.tmp_proximityfactor = spinbutton.get_value()
 
     def preferences_close(self, dialog, response=None):
         pass
-#        if response == Gtk.ResponseType.OK:
-#            self.PROXIMITY_FACTOR = float(self.tmp_proximityfactor)
-#            dialog.destroy()
-#        else:
-#            dialog.destroy()
 
     #=== GEOLOCALIZED PREFERENCES==============================================
 
