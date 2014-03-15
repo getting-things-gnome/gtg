@@ -351,6 +351,7 @@ class TaskBrowser(GObject.GObject):
 
         # When destroying this window, quit GTG
         self.window.connect("destroy", self.quit)
+        self.window.connect("delete-event", self.quit)
 
         # Active tasks TreeView
         self.vtree_panes['active'].connect('row-activated',
@@ -418,7 +419,7 @@ class TaskBrowser(GObject.GObject):
     def open_edit_backends(self, widget):
         self.vmanager.open_edit_backends()
 
-    def quit(self, widget=None):
+    def quit(self, widget=None, data=None):
         self.vmanager.close_browser()
 
     def on_window_state_event(self, widget, event, data=None):
