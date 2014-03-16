@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
 # Getting Things GNOME! - a personal organizer for the GNOME desktop
-# Copyright (c) 2008-2013 - Lionel Dricot & Bertrand Rousseau
+# Copyright (c) 2008-2014 - Lionel Dricot & Bertrand Rousseau
 #
 # This program is free software: you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -133,7 +133,7 @@ class TaskView(Gtk.TextView):
         self.connect('copy-clipboard', self.copy_clipboard, "copy")
         self.connect('cut-clipboard', self.copy_clipboard, "cut")
         self.connect('paste-clipboard', self.paste_clipboard)
-        
+
         self.connect_after('drag-data-received', self.drag_receive)
 
         # All the typical properties of our textview
@@ -247,7 +247,7 @@ class TaskView(Gtk.TextView):
     # Buffer related functions
     # Those functions are higly related and should always be symetrical
     # See also the serializing functions
- #### The "Set text" group ########
+    #### The "Set text" group ########
     # This set the text of the buffer (and replace any existing one)
     # without deserializing (used for the title)
     def set_text(self, stri):
