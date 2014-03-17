@@ -4,7 +4,7 @@
       id="gtg-workview">
 
   <info>
-    <link type="guide" xref="index#gtg-task-management"/>
+    <link type="guide" xref="index#gtg-task-management" group="fourth"/>
       
       <revision pkgversion="1301" date="2013-06-18" status="candidate"/>
    <credit type="author copyright">
