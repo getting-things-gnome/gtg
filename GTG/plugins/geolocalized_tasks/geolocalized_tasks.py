@@ -265,6 +265,60 @@ class geolocalizedTasks:
         longitude = location_properties.Get(where.LOCATION_INTERFACE_NAME, "Longitude")
         self._set_user_position([latitude, longitude])
 
+    def _get_spin(self):
+        return self.__spin
+
+    def _set_spin(self, spin):
+        self.__spin = spin
+
+    def _get_requester(self):
+        return self.__requester
+
+    def _set_requester(self, requester):
+        self.__requester = requester
+
+    def _get_plugin_api(self):
+        return self.__plugin_api
+
+    def _set_plugin_api(self, plugin_api):
+        self.__plugin_api = plugin_api
+
+    def _get_distance(self):
+        return self.__distance
+
+    def _set_distance(self, distance):
+        self.__distance = distance
+
+    def _get_apply_filter(self):
+        return self.__apply_filter
+
+    def _set_apply_filter(self, apply_filter):
+        self.__apply_filter = apply_filter
+
+    def _get_preferences(self):
+        return self.__preferences
+
+    def _set_preferences(self, preferences):
+        self.__preferences = preferences
+
+    def _get_builder(self):
+        return self.__builder
+
+    def _set_builder(self, builder):
+        self.__builder = builder
+
+    def _get_vbox_map(self):
+        return self.__vbox_map
+
+    def _set_vbox_map(self, vbox_map):
+        self.__vbox_map = vbox_map
+
+    def _get_map(self):
+        return self.__map
+
+    def _set_map(self, map):
+        self.__map = map
+
     def activate(self, plugin_api):
         """
         Activates the plugin.
@@ -272,32 +326,35 @@ class geolocalizedTasks:
         mi = plugin_api.add_item_to_tag_menu("Add Location", self._set_tag_location, plugin_api)
         self._set_menu_item_tag_sidebar(mi)
         builder = self._get_builder_from_file("preferences.ui")
-        self.__spin = builder.get_object("spin_proximityfactor")
+        self._set_spin(builder.get_object("spin_proximityfactor"))
         requester = plugin_api.get_requester()
         requester.add_filter(FILTER_NAME, self._filter_work_view)
-        self.__requester = requester
-        self.__plugin_api = plugin_api
+        self._set_requester(requester)
+        self._set_plugin_api(plugin_api)
         self._preferences_load(plugin_api)
-        self.__distance = self.__preferences['distance_filter']
-        self.__apply_filter = self.__preferences['apply_filter']
+        preferences = self._get_preferences()
+        self._set_distance(preferences['distance_filter'])
+        self._set_apply_filter(preferences['apply_filter'])
 
         toggled_button = plugin_api.get_browser().toggle_workview
         toggled_button.connect("toggled", self.toggled_workview, None)
 
-        activetree = self.__requester.get_tasks_tree()
-        if self.__plugin_api.get_browser().config.get('view') == 'workview':
-            if self.__apply_filter is True:
-                self.__requester.apply_global_filter(activetree, FILTER_NAME)
+        activetree = requester.get_tasks_tree()
+        if plugin_api.get_browser().config.get('view') == 'workview':
+            if apply_filter is True:
+                requester.apply_global_filter(activetree, FILTER_NAME)
             else:
-                self.__requester.unapply_global_filter(activetree, FILTER_NAME)
+                requester.unapply_global_filter(activetree, FILTER_NAME)
 
     def toggled_workview(self, toggle, data):
-        activetree = self.__requester.get_tasks_tree()
-        if toggle.get_active() is True and self.__apply_filter is True:
-            self.__requester.apply_global_filter(activetree, FILTER_NAME)
+        requester = self._get_requester()
+        apply_filter = self._get_apply_filter()
+        activetree = requester.get_tasks_tree()
+        if toggle.get_active() is True and apply_filter is True:
+            requester.apply_global_filter(activetree, FILTER_NAME)
 
-        if toggle.get_active() is False and self.__apply_filter is True:
-            self.__requester.unapply_global_filter(activetree, FILTER_NAME)
+        if toggle.get_active() is False and apply_filter is True:
+            requester.unapply_global_filter(activetree, FILTER_NAME)
 
     def deactivate(self, plugin_api):
         """
@@ -357,31 +414,34 @@ class geolocalizedTasks:
             spin.set_sensitive(True)
         else:
             spin.set_sensitive(False)
-        self.__apply_filter = widget.get_active()
+        self._set_apply_filter(widget.get_active())
 
     def _spin_value_changed(self, widget, data):
-        self.__distance = widget.get_value()
+        self._set_distance(widget.get_value())
 
     def on_geolocalized_preferences(self):
-        self.builder = self._get_builder_from_file("preferences.ui")
-        dialog = self.builder.get_object("dialog")
+        apply_filter = self._get_apply_filter()
+        distance = self._get_distance()
+        builder = self._get_builder_from_file("preferences.ui")
+        self._set_builder(builder)
+        dialog = builder.get_object("dialog")
 
-        spin = self.builder.get_object("spin_proximityfactor")
-        spin.set_sensitive(self.__apply_filter)
-        spin.set_range(self.__distance, 1000.00)
+        spin = builder.get_object("spin_proximityfactor")
+        spin.set_sensitive(apply_filter)
+        spin.set_range(distance, 1000.00)
 
-        adjust = Gtk.Adjustment(self.__distance, 1, 100, 1, 1, 1)
+        adjust = Gtk.Adjustment(distance, 1, 100, 1, 1, 1)
         spin.configure(adjust, 1, 0)
         spin_v = spin.get_value()
         spin_value = spin.set_value(spin_v)
 
         spin.connect("value-changed", self._spin_value_changed, None)
 
-        check_set = self.builder.get_object("checkbutton")
-        check_set.set_active(self.__apply_filter)
+        check_set = builder.get_object("checkbutton")
+        check_set.set_active(apply_filter)
         check_set.connect("toggled", self._check_set_pref, spin)
 
-        btn = self.builder.get_object("button_ok")
+        btn = builder.get_object("button_ok")
         btn.connect('clicked', self._ok_preferences, check_set)
 
         dialog.show_all()
@@ -395,6 +455,8 @@ class geolocalizedTasks:
 
         if user_latitude is None or user_longitude is None:
             return True
+
+        distance = self._get_distance()
 
         user_location = Geocode.Location.new(user_latitude, user_longitude, Geocode.LOCATION_ACCURACY_STREET)
 
@@ -422,16 +484,19 @@ class geolocalizedTasks:
             [name, latitude, longitude] = location
             geocode_location = Geocode.Location.new(latitude, longitude, Geocode.LOCATION_ACCURACY_STREET)
             dist = Geocode.Location.get_distance_from(user_location, geocode_location)
-            if (dist <= self.__distance):
+            if (dist <= distance):
                 return True
         return False
         
 
     def _preferences_load(self, plugin_api):
-        self.__preferences = self.__plugin_api.load_configuration_object(self.PLUGIN_NAMESPACE, "preferences", default_values=self.DEFAULT_PREFERENCES)
+        preferences = self._get_preferences()
+        preferences = plugin_api.load_configuration_object(self.PLUGIN_NAMESPACE, "preferences", default_values=self.DEFAULT_PREFERENCES)
+        self._set_preferences(preferences)
 
     def _preferences_store(self, plugin_api):
-        self.__plugin_api.save_configuration_object(self.PLUGIN_NAMESPACE, "preferences", self.__preferences)
+        preferences = self._get_preferences()
+        plugin_api.save_configuration_object(self.PLUGIN_NAMESPACE, "preferences", preferences)
 
     def spin_proximityfactor_changed(self, spinbutton):
         pass
@@ -590,11 +655,11 @@ class geolocalizedTasks:
         dialog = builder.get_object("SetTaskLocation")
 
         vbox_map = builder.get_object("vbox_map")
-        self.__vbox_map = vbox_map
+        self._set_vbox_map(vbox_map)
 
         map = GtkChamplain.Embed()
         vbox_map.add(map)
-        self.__map = map
+        self._set_map(map)
 
         view = map.get_view()
         view.set_property("zoom-level", 10)
@@ -728,20 +793,27 @@ class geolocalizedTasks:
         widget.get_parent_window().destroy()
 
     def _ok_preferences (self, widget, check):
-        activetree = self.__requester.get_tasks_tree()
-        if self.__plugin_api.get_browser().config.get('view') == 'workview':
+        requester = self._get_requester()
+        plugin_api = self._get_plugin_api()
+        preferences = self._get_preferences()
+        distance = self._get_distance()
+
+        activetree = requester.get_tasks_tree()
+        if plugin_api.get_browser().config.get('view') == 'workview':
             if check.get_active() is True:
-                self.__requester.apply_global_filter(activetree, FILTER_NAME)
+                requester.apply_global_filter(activetree, FILTER_NAME)
             else:
-                self.__requester.unapply_global_filter(activetree, FILTER_NAME)
+                requester.unapply_global_filter(activetree, FILTER_NAME)
         widget.get_parent_window().destroy()
 
-        self.__preferences["apply_filter"] = check.get_active()
-        self.__preferences["distance_filter"] = self.__distance
-        self._preferences_store(self.__plugin_api)
+        preferences["apply_filter"] = check.get_active()
+        preferences["distance_filter"] = distance
+        self._preferences_store(plugin_api)
 
     def _clean_up(self):
+        vbox_map = self._get_vbox_map()
+        map = self._get_map()
         self._set_current_layer(None)
         self._set_view(None)
         self._set_locations([])
-        self.__vbox_map.remove(self.__map)
+        vbox_map.remove(map)
