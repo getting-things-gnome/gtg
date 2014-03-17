@@ -5,7 +5,7 @@
       id="gtg-search-syntax">
 
   <info>
-    <link type="guide" xref="index#gtg-search" group="first"/>
+    <link type="guide" xref="index#gtg-search" group="second"/>
     <revision pkgversion="0.1" version="0.1" date="2012-07-03" status="candidate" />
     <credit type="author">
       <name>Bertrand Rousseau</name>
