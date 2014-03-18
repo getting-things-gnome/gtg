@@ -5,7 +5,7 @@
       id="gtg-search-syntax">
 
   <info>
-    <link type="guide" xref="index#gtg-search" group="first"/>
+    <link type="guide" xref="index#gtg-search" group="second"/>
     <revision pkgversion="0.1" version="0.1" date="2012-07-03" status="candidate" />
     <credit type="author">
       <name>Bertrand Rousseau</name>
@@ -15,7 +15,7 @@
 
   <title>GTG Search Syntax</title>
 
-<p>When typing your search request in the Quick Add Entry, you can also use
+<p>When typing your search request in the <gui>Quick Add Entry</gui>, you can also use
 special keywords to refine your request. The table below describes those keywords.</p>
 
 <table rules="rows" frame="top bottom" ui:expanded="yes">
@@ -99,7 +99,7 @@ one) or today, tomorrow or a weekday name (due:monday means due next Monday).
 </p>
 
 <p>All elements of the query must be true for the query to be true. In other words,
-the search feature behave like it add an implicit logical 'AND' between each element.</p>
+the search feature behaves like it adds an implicit logical 'AND' between each element.</p>
 
 <p>Examples of queries:</p>
 

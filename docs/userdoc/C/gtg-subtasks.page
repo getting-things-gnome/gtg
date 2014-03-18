@@ -4,7 +4,7 @@
       id="gtg-subtasks">
 
   <info>
-    <link type="guide" xref="index#gtg-task-management" group="second"/>
+    <link type="guide" xref="index#gtg-task-management" group="third"/>
       
       <revision pkgversion="1301" date="2013-06-18" status="candidate"/>
    <credit type="author copyright">
@@ -52,6 +52,6 @@
   <section id="gtg-edit-delete-subtask">
    <title>Edit, Dismiss and Delete Subtasks</title>
 
-  <p>Follow the same steps as for Tasks.</p>
+  <p>Follow the same steps as for <link xref="gtg-tasks">Tasks</link>.</p>
     </section>
 </page>
