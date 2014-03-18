@@ -15,7 +15,7 @@
 
   <title>Add Dates and Tags to Tasks using the Quick Add Entry</title>
 
-    <p>You can also create a task in the Quick Add Entry and at the same time specify its tags, due and defer date. Follow these format rules:</p>
+    <p>You can also create a task in the Quick Add Entry and at the same time specify its tags, due and defer date. The defer date allows you to set a date on which you intend to start the task. Follow these format rules:</p>
 
     <p><em style="strong">tags:tag1,tag2,tag3</em></p>
 
