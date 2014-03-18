@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
 # Getting Things GNOME! - a personal organizer for the GNOME desktop
-# Copyright (c) 2008-2013 - Lionel Dricot & Bertrand Rousseau
+# Copyright (c) 2008-2014 - Lionel Dricot & Bertrand Rousseau
 #
 # This program is free software: you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -134,7 +134,7 @@ class TaskView(Gtk.TextView):
         self.connect('cut-clipboard', self.copy_clipboard, "cut")
         self.connect('paste-clipboard', self.paste_clipboard)
 
-        self.connect('drag-data-received', self.drag_receive)
+        self.connect_after('drag-data-received', self.drag_receive)
 
         # All the typical properties of our textview
         self.set_wrap_mode(Gtk.WrapMode.WORD)
@@ -182,7 +182,6 @@ class TaskView(Gtk.TextView):
         """ After drag and drop just insert it and refresh the editor
 
         Example usage: drag and drop of file links """
-        self.buff.insert_at_cursor(selection.data)
         self.modified(full=True)
         self.stop_emission('drag-data-received')
 
@@ -248,7 +247,7 @@ class TaskView(Gtk.TextView):
     # Buffer related functions
     # Those functions are higly related and should always be symetrical
     # See also the serializing functions
- #### The "Set text" group ########
+    #### The "Set text" group ########
     # This set the text of the buffer (and replace any existing one)
     # without deserializing (used for the title)
     def set_text(self, stri):
