@@ -15,7 +15,7 @@
 
   <title>GTG Search Syntax</title>
 
-<p>When typing your search request in the Quick Add Entry, you can also use
+<p>When typing your search request in the <gui>Quick Add Entry</gui>, you can also use
 special keywords to refine your request. The table below describes those keywords.</p>
 
 <table rules="rows" frame="top bottom" ui:expanded="yes">

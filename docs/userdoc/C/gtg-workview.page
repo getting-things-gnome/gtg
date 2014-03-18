@@ -42,7 +42,7 @@
 
 <p>This way the <gui>Work View</gui> will only show you the tasks you can do right now.</p>
 
-<p>If you use tags, you can right click on a tag in the sidebar and choose to hide tasks tagged with it in the <gui>Work View</gui>. This option is very useful if you have a tag like "someday" that you use for tasks you would like to do but are not particularly urgent.</p>
+<p>If you use <link xref="gtg-tags">tags</link>, you can right click on a tag in the sidebar and choose to hide tasks tagged with it in the <gui>Work View</gui>. This option is very useful if you have a tag like "someday" that you use for tasks you would like to do but are not particularly urgent.</p>
  
  
   

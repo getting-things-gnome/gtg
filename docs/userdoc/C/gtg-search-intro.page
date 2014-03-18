@@ -18,7 +18,7 @@
 for tasks based on their content.</p>
 
 <p>Searching for tasks is really easy: just type the words you are looking for 
-in the Quick Add Entry, and select &quot;Search&quot; in the menu that
+in the <gui>Quick Add Entry</gui>, and select &quot;Search&quot; in the menu that
 will appear automatically.</p>
 
 <p>GTG stores your searches in the sidebar, under the &quot;Search&quot;
@@ -27,8 +27,7 @@ need it. Search results are updated automatically, so you always get
 all the tasks matching your search request.</p>
 
 <p>GTG also saves all the search requests you have made until you explicitely
-delete them (which you can do by right-clicking on them and selecting
-&quot;Delete&quot;). That allows you to safely quit GTG without loosing your
+delete them (which you can do by right-clicking on them and selecting <gui>Delete</gui>). That allows you to safely quit GTG without loosing your
 search requests. This can be very useful when you use the search features
 to identify specific tasks regularly!</p>
 
