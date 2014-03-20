@@ -37,11 +37,11 @@ clean:
 
 # Check for common & easily catchable Python mistakes.
 pyflakes:
-	$(PYFLAKES) gtg gtcli gtg_new_task GTG
+	$(PYFLAKES) GTG
 
 # Check for coding standard violations.
 pep8:
-	$(PEP8) --statistics --count gtg gtcli gtg_new_task GTG
+	$(PEP8) --statistics --count GTG
 
 # Check for coding standard violations & flakes.
 lint: pyflakes pep8
