@@ -12,7 +12,7 @@ from small tasks to large projects.
 
 GTG depends on the following packages:
 
- * Python, version 2.6 or above
+ * Python, version 3.0 or above
  * PyGTK
  * python-support
  * python-xdg
@@ -157,7 +157,7 @@ If you have installed gtg, you can access those by executing:
 
 ===== Want to know more? =====
 
- * GTG Website: http://gtg.fritalk.com/
+ * GTG Website: http://gtgnome.net/
  * GTG project page on Launchpad: https://launchpad.net/gtg
  * GTG Wiki: http://live.gnome.org/gtg/
 
