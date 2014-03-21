@@ -341,7 +341,7 @@ class geolocalizedTasks:
 
         activetree = requester.get_tasks_tree()
         if plugin_api.get_browser().config.get('view') == 'workview':
-            if apply_filter is True:
+            if self._get_apply_filter() is True:
                 requester.apply_global_filter(activetree, FILTER_NAME)
             else:
                 requester.unapply_global_filter(activetree, FILTER_NAME)
