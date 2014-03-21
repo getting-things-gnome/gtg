@@ -757,9 +757,13 @@ class Task(TreeNode):
                 toreturn = True
             else:
                 tag = self.req.get_tag(tagname)
-                for tagc_name in tag.get_children():
-                    if not toreturn:
-                        toreturn = children_tag(tagc_name)
+#                for tagc_name in tag.get_children():
+#                    if not toreturn:
+#                        toreturn = children_tag(tagc_name)
+                if tag is not None:
+                    for tagc_name in tag.get_children():
+                        if not toreturn:
+                            toreturn = children_tag(tagc_name)
             return toreturn
 
         # We want to see if the task has no tags
