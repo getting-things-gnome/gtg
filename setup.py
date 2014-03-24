@@ -186,6 +186,7 @@ setup(
     author_email=info.EMAIL,
     description=info.SHORT_DESCRIPTION,
     packages=find_packages(),
+    package_data=find_package_data(),
     scripts=['GTG/gtg', 'GTG/gtcli', 'GTG/gtg_new_task'],
     data_files=find_data_files(),
 )
