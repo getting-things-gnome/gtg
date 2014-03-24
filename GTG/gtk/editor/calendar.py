@@ -19,8 +19,9 @@
 
 import datetime
 
-from gi.repository import GObject, Gdk
+from gi.repository import GObject, Gdk, Gtk
 
+from GTG.gtk.editor import GnomeConfig
 from GTG.tools.dates import Date
 
 
@@ -39,9 +40,10 @@ class GTGCalendar(GObject.GObject):
 
     __gsignals__ = {'date-changed': __signal_type__, }
 
-    def __init__(self, Gtk_builder):
+    def __init__(self):
         super(GTGCalendar, self).__init__()
-        self.__builder = Gtk_builder
+        self.__builder = Gtk.Builder()
+        self.__builder.add_from_file(GnomeConfig.CALENDAR_UI_FILE)
         self.__date_kind = None
         self.__date = Date.no_date()
         self.__init_gtk__()
@@ -117,9 +119,6 @@ class GTGCalendar(GObject.GObject):
         width, height = self.__window.get_size()
         self.move_calendar_inside(width, height, x, y)
         self.__window.show()
-        # some window managers ignore move before you show a window. (which
-        # ones? question by invernizzi)
-        self.move_calendar_inside(width, height, x, y)
         self.__window.grab_add()
 
         #We grab the pointer in the calendar
@@ -140,7 +139,10 @@ class GTGCalendar(GObject.GObject):
             0,
         )
 
-        self.__window.connect('button-press-event', self.__focus_out)
+        if self.get_decorated():
+            self.__window.connect("delete-event", self.close_calendar)
+        else:
+            self.__window.connect('button-press-event', self.__focus_out)
         self.__sigid = self.__calendar.connect("day-selected",
                                                self.__day_selected,
                                                "RealDate",)
@@ -172,6 +174,7 @@ class GTGCalendar(GObject.GObject):
         if self.__sigid_month is not None:
             self.__calendar.disconnect(self.__sigid_month)
             self.__sigid_month = None
+        return True
 
     def __day_selected(self, widget, date_type):
         if date_type == "RealDate":

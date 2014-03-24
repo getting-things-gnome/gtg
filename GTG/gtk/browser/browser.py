@@ -39,6 +39,7 @@ from GTG.gtk.browser.custominfobar import CustomInfoBar
 from GTG.gtk.browser.modifytags_dialog import ModifyTagsDialog
 from GTG.gtk.browser.tag_context_menu import TagContextMenu
 from GTG.gtk.browser.treeview_factory import TreeviewFactory
+from GTG.gtk.editor.calendar import GTGCalendar
 from GTG.tools.dates import Date
 from GTG.tools.logger import Log
 
@@ -180,12 +181,15 @@ class TaskBrowser(GObject.GObject):
 
     def _init_ui_widget(self):
         """ Sets the main pane with the tree with active tasks and
-        create ModifyTagsDialog """
+        create ModifyTagsDialog & Calendar """
         # The Active tasks treeview
         self.main_pane.add(self.vtree_panes['active'])
 
         tag_completion = TagCompletion(self.req.get_tag_tree())
         self.modifytags_dialog = ModifyTagsDialog(tag_completion, self.req)
+        self.calendar = GTGCalendar()
+        self.calendar.set_transient_for(self.window)
+        self.calendar.connect("date-changed", self.on_date_changed)
 
     def init_tags_sidebar(self):
         """
@@ -276,6 +280,8 @@ class TaskBrowser(GObject.GObject):
             self.on_start_for_next_month,
             "on_start_for_next_year":
             self.on_start_for_next_year,
+            "on_start_for_specific_date":
+            self.on_start_for_specific_date,
             "on_start_clear":
             self.on_start_clear,
             "on_set_due_today":
@@ -288,12 +294,12 @@ class TaskBrowser(GObject.GObject):
             self.on_set_due_next_month,
             "on_set_due_next_year":
             self.on_set_due_next_year,
-            "on_set_due_now":
-            self.on_set_due_now,
             "on_set_due_soon":
             self.on_set_due_soon,
             "on_set_due_someday":
             self.on_set_due_someday,
+            "on_set_due_for_specific_date":
+            self.on_set_due_for_specific_date,
             "on_set_due_clear":
             self.on_set_due_clear,
             "on_dismiss_task":
@@ -1095,9 +1101,6 @@ class TaskBrowser(GObject.GObject):
     def on_set_due_next_year(self, widget):
         self.update_due_date(widget, "next year")
 
-    def on_set_due_now(self, widget):
-        self.update_due_date(widget, "now")
-
     def on_set_due_soon(self, widget):
         self.update_due_date(widget, "soon")
 
@@ -1106,6 +1109,46 @@ class TaskBrowser(GObject.GObject):
 
     def on_set_due_clear(self, widget):
         self.update_due_date(widget, None)
+
+    def on_start_for_specific_date(self, widget):
+        """ Display Calendar to set start date of selected tasks """
+        self.calendar.set_title("Set Start Date")
+        # Get task from task name
+        task = self.req.get_task(self.get_selected_tasks()[0])
+        date = task.get_start_date()
+        self.calendar.set_date(date, GTGCalendar.DATE_KIND_START)
+        # Shows the calendar just above the mouse on widget's line of symmetry
+        rect = widget.get_allocation()
+        result, x, y = widget.get_window().get_origin()
+        self.calendar.show_at_position(x + rect.x + rect.width,
+                                       y + rect.y)
+
+    def on_set_due_for_specific_date(self, widget):
+        """ Display Calendar to set due date of selected tasks """
+        self.calendar.set_title("Set Due Date")
+        # Get task from task name
+        task = self.req.get_task(self.get_selected_tasks()[0])
+        if not task.get_due_date():
+            date = task.get_start_date()
+        else:
+            date = task.get_due_date()
+        self.calendar.set_date(date, GTGCalendar.DATE_KIND_DUE)
+        # Shows the calendar just above the mouse on widget's line of symmetry
+        rect = widget.get_allocation()
+        result, x, y = widget.get_window().get_origin()
+        self.calendar.show_at_position(x + rect.x + rect.width,
+                                       y + rect.y)
+
+    def on_date_changed(self, calendar):
+        # Get tasks' list from task names' list
+        tasks = [self.req.get_task(task) for task in self.get_selected_tasks()]
+        date, date_kind = calendar.get_selected_date()
+        if date_kind == GTGCalendar.DATE_KIND_DUE:
+            for task in tasks:
+                task.set_due_date(date)
+        elif date_kind == GTGCalendar.DATE_KIND_START:
+            for task in tasks:
+                task.set_start_date(date)
 
     def on_modify_tags(self, widget):
         """ Run Modify Tags dialog on selected tasks """

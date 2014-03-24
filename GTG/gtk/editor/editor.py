@@ -119,7 +119,9 @@ class TaskEditor(object):
         if conf_font_value != "":
             self.textview.override_font(Pango.FontDescription(conf_font_value))
         # Voila! it's done
-        self.calendar = GTGCalendar(self.builder)
+        self.calendar = GTGCalendar()
+        self.calendar.set_transient_for(self.window)
+        self.calendar.set_decorated(False)
         self.duedate_widget = self.builder.get_object("duedate_entry")
         self.startdate_widget = self.builder.get_object("startdate_entry")
         self.closeddate_widget = self.builder.get_object("closeddate_entry")
