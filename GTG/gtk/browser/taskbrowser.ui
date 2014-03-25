@@ -1059,6 +1059,16 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
               </object>
             </child>
             <child>
+              <object class="GtkImageMenuItem" id="tcm_start_for_specific_date">
+                <property name="label" translatable="yes">Pick a date...</property>
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="use_underline">True</property>
+                <property name="use_stock">False</property>
+                <signal name="activate" handler="on_start_for_specific_date" swapped="no"/>
+              </object>
+            </child>
+            <child>
               <object class="GtkSeparatorMenuItem" id="menuitem1">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
@@ -1140,19 +1150,19 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
               </object>
             </child>
             <child>
-              <object class="GtkSeparatorMenuItem" id="menuitem2">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-              </object>
-            </child>
-            <child>
-              <object class="GtkImageMenuItem" id="tcm_due_now">
-                <property name="label" translatable="yes">_Now</property>
+              <object class="GtkImageMenuItem" id="tcm_due_specific_date">
+                <property name="label" translatable="yes">Pick a date...</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="use_underline">True</property>
                 <property name="use_stock">False</property>
-                <signal name="activate" handler="on_set_due_now" swapped="no"/>
+                <signal name="activate" handler="on_set_due_for_specific_date" swapped="no"/>
+              </object>
+            </child>
+            <child>
+              <object class="GtkSeparatorMenuItem" id="menuitem2">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
               </object>
             </child>
             <child>
