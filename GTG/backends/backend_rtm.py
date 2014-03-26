@@ -95,6 +95,7 @@ class Backend(PeriodicImportBackend):
         """
         super(Backend, self).initialize()
         self.rtm_proxy = RTMProxy(self._ask_user_to_confirm_authentication,
+                                  self._on_successful_authentication,
                                   self.token)
 
     def save_state(self):
@@ -141,9 +142,6 @@ class Backend(PeriodicImportBackend):
         stored_rtm_task_ids = self.sync_engine.get_all_remote()
         current_rtm_task_ids = [tid for tid in
                                 self.rtm_proxy.get_rtm_tasks_dict().keys()]
-
-        if self._this_is_the_first_loop:
-            self._on_successful_authentication()
 
         # If it's the very first time the backend is run, it's possible that
         # the user already synced his tasks in some way (but we don't know
@@ -514,8 +512,10 @@ class RTMProxy(object):
 
     def __init__(self,
                  auth_confirm_fun,
+                 on_auth_fun,
                  token=None):
         self.auth_confirm = auth_confirm_fun
+        self.on_auth = on_auth_fun
         self.token = token
         self.authenticated = threading.Event()
         self.login_event = threading.Event()
@@ -576,6 +576,7 @@ class RTMProxy(object):
             try:
                 if self._login():
                     self.authenticated.set()
+                    self.on_auth()
             except IOError:
                 BackendSignals().backend_failed(self.get_id(),
                                                 BackendSignals.ERRNO_NETWORK)
@@ -655,8 +656,7 @@ class RTMProxy(object):
         http://www.rememberthemilk.com/services/api/tasks.rtm
         '''
         list_object_wrapper = self.rtm.tasks.getList(list_id=list_id,
-                                                     filter='includeArchived\
-                                                     :true').tasks
+                                                     filter='includeArchived:true').tasks
         list_object_list = self.__getattr_the_rtm_way(
             list_object_wrapper, 'list')
         if not list_object_list:
