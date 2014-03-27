@@ -54,7 +54,7 @@ class TagContextMenu(Gtk.Menu):
             self.mi_cc = Gtk.MenuItem()
             self.mi_cc.set_label(_("Edit Tag..."))
             self.mi_ctag = Gtk.MenuItem()
-            self.mi_ctag.set_label(_("Generate Color"))
+            self.mi_ctag.set_label(_("Yeah U can do it"))
             self.append(self.mi_cc)
             self.append(self.mi_ctag)
             self.mi_cc.connect('activate', self.on_mi_cc_activate)
