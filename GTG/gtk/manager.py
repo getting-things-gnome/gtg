@@ -37,6 +37,7 @@ from GTG.tools.logger import Log
 from GTG.gtk.backends_dialog import BackendsDialog
 from GTG.backends.backendsignals import BackendSignals
 from GTG.gtk.browser.tag_editor import TagEditor
+from GTG.core.timer import Timer
 
 
 class Manager(GObject.GObject):
@@ -74,6 +75,10 @@ class Manager(GObject.GObject):
         # Shared clipboard
         self.clipboard = clipboard.TaskClipboard(self.req)
 
+        # Initialize Timer
+        self.config = self.req.get_config('browser')
+        self.timer = Timer(self.config)
+
         # Browser (still hidden)
         self.browser = TaskBrowser(self.req, self)
 
@@ -87,7 +92,7 @@ class Manager(GObject.GObject):
 
         # Preferences and Backends windows
         # Initialize  dialogs
-        self.preferences = PreferencesDialog(self.req)
+        self.preferences = PreferencesDialog(self.req, self)
         self.plugins = PluginsDialog(self.config_obj)
         self.edit_backends_dialog = None
 

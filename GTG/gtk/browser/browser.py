@@ -44,18 +44,6 @@ from GTG.tools.dates import Date
 from GTG.tools.logger import Log
 
 
-class Timer:
-
-    def __init__(self, name):
-        self.name = name
-
-    def __enter__(self):
-        self.start = time.time()
-
-    def __exit__(self, *args):
-        print(("{0} : {1}".format(self.name, time.time() - self.start)))
-
-
 class TaskBrowser(GObject.GObject):
     """ The UI for browsing open and closed tasks,
     and listing tags in a tree """
@@ -131,6 +119,7 @@ class TaskBrowser(GObject.GObject):
         self.activetree.register_cllbck('node-deleted-inview',
                                         self._update_window_title)
         self._update_window_title()
+        vmanager.timer.connect('refresh', self.refresh_workview)
 
 ### INIT HELPER FUNCTIONS #####################################################
 #
@@ -570,6 +559,10 @@ class TaskBrowser(GObject.GObject):
             self.set_view('workview')
 
         self.in_toggle_workview = False
+
+    def refresh_workview(self, timer):
+        task_tree = self.req.get_tasks_tree(name='active', refresh=False)
+        task_tree.refresh_all()
 
     def set_view(self, viewname):
         if viewname == 'default':
