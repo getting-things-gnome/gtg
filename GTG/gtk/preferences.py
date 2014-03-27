@@ -24,6 +24,7 @@ import shutil
 
 from gi.repository import Gtk
 from xdg.BaseDirectory import xdg_config_home
+from gi.repository.Gdk import Color
 
 import GTG.tools.shortcut as shortcut
 from GTG import _
@@ -77,7 +78,7 @@ def disable_gtg_autostart():
 class PreferencesDialog:
     """ Show preference dialog """
 
-    def __init__(self, req):
+    def __init__(self, req, vmanager):
         self.req = req
         self.config = self.req.get_config('browser')
         builder = Gtk.Builder()
@@ -95,6 +96,10 @@ class PreferencesDialog:
         help.add_help_shortcut(self.dialog, "preferences")
 
         self.fontbutton = builder.get_object("fontbutton")
+        self.timer = vmanager.timer
+        self.color_invalid = Color(50000, 0, 0)
+        self.refresh_hour = builder.get_object("hour")
+        self.refresh_mins = builder.get_object("min")
         editor_font = self.config.get("font_name")
         if editor_font == "":
             font = self.dialog.get_style_context().get_font(
@@ -119,6 +124,8 @@ class PreferencesDialog:
                                 self.on_font_change,
                                 'on_shortcut_button_toggled':
                                 self.shortcut.on_shortcut_toggled,
+                                'on_valid_check':
+                                self.valid_check,
                                 })
 
     def _refresh_preferences_store(self):
@@ -133,6 +140,9 @@ class PreferencesDialog:
 
         bg_color = self.config.get("bg_color_enable")
         self.bg_color_enable.set_active(bg_color)
+        refresh_hour, refresh_mins = self.timer.get_configuration()
+        self.refresh_hour.set_text(refresh_hour)
+        self.refresh_mins.set_text(refresh_mins)
 
     def _refresh_task_browser(self):
         """ Refresh tasks in task browser """
@@ -144,8 +154,21 @@ class PreferencesDialog:
         self._refresh_preferences_store()
         self.dialog.show_all()
 
+    def valid_check(self, widget):
+        try:
+            self.timer.set_configuration(self.refresh_hour.get_text(),
+                                         self.refresh_mins.get_text())
+            color = None
+        except (ValueError, TypeError):
+            color = self.color_invalid
+
+        self.refresh_hour.modify_fg(Gtk.StateFlags.NORMAL, color)
+        self.refresh_mins.modify_fg(Gtk.StateFlags.NORMAL, color)
+
     def on_close(self, widget, data=None):
         """ Close the preferences dialog."""
+        self.valid_check(widget)
+        self.timer.time_changed()
         self.dialog.hide()
         return True
 
