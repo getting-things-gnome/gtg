@@ -21,15 +21,18 @@
 
 import os
 import shutil
+import datetime
 
 from gi.repository import Gtk
 from xdg.BaseDirectory import xdg_config_home
+from gi.repository.Gdk import Color
 
 import GTG.tools.shortcut as shortcut
 from GTG import _
 from GTG import info
 from GTG.gtk import ViewConfig
 from GTG.gtk import help
+from GTG.gtk.browser.browser import Timer
 
 AUTOSTART_DIRECTORY = os.path.join(xdg_config_home, "autostart")
 AUTOSTART_FILE = "gtg.desktop"
@@ -77,7 +80,7 @@ def disable_gtg_autostart():
 class PreferencesDialog:
     """ Show preference dialog """
 
-    def __init__(self, req):
+    def __init__(self, req, vmanager):
         self.req = req
         self.config = self.req.get_config('browser')
         builder = Gtk.Builder()
@@ -95,6 +98,11 @@ class PreferencesDialog:
         help.add_help_shortcut(self.dialog, "preferences")
 
         self.fontbutton = builder.get_object("fontbutton")
+        self.browser = vmanager.get_browser()
+        self.refresh_hour = builder.get_object("hour")
+        self.refresh_mins = builder.get_object("min")
+        self.refresh_hour.set_max_length(2)
+        self.refresh_mins.set_max_length(2)
         editor_font = self.config.get("font_name")
         if editor_font == "":
             font = self.dialog.get_style_context().get_font(
@@ -119,6 +127,10 @@ class PreferencesDialog:
                                 self.on_font_change,
                                 'on_shortcut_button_toggled':
                                 self.shortcut.on_shortcut_toggled,
+                                'on_valid_check':
+                                self.valid_check,
+                                'on_interval_check':
+                                self.interval_check,
                                 })
 
     def _refresh_preferences_store(self):
@@ -133,6 +145,10 @@ class PreferencesDialog:
 
         bg_color = self.config.get("bg_color_enable")
         self.bg_color_enable.set_active(bg_color)
+        refresh_hour = self.config.get('hour')
+        refresh_mins = self.config.get('min')
+        self.refresh_hour.set_text(refresh_hour)
+        self.refresh_mins.set_text(refresh_mins)
 
     def _refresh_task_browser(self):
         """ Refresh tasks in task browser """
@@ -144,8 +160,47 @@ class PreferencesDialog:
         self._refresh_preferences_store()
         self.dialog.show_all()
 
+    def valid_check(self, widget):
+        COLOR_INVALID = Color(50000, 0, 0)
+        refresh_hour = self.refresh_hour.get_text()
+        refresh_min = self.refresh_mins.get_text()
+        try:
+            d = datetime.time(int(refresh_hour), int(refresh_min), 00)
+            self.refresh_hour.modify_fg(Gtk.StateFlags.NORMAL, None)
+            self.refresh_mins.modify_fg(Gtk.StateFlags.NORMAL, None)
+        except (ValueError, TypeError):
+            self.refresh_hour.modify_fg(Gtk.StateFlags.NORMAL, COLOR_INVALID)
+            self.refresh_mins.modify_fg(Gtk.StateFlags.NORMAL, COLOR_INVALID)
+
+    def interval_check(self, widget):
+        COLOR_INVALID = Color(50000, 0, 0)
+        refresh_interval = self.refresh_interval.get_text()
+        try:
+            d = datetime.time(int(refresh_interval), 0, 0)
+            self.refresh_interval.modify_fg(Gtk.StateFlags.NORMAL, None)
+        except (ValueError, TypeError):
+            self.refresh_interval.modify_fg(Gtk.StateFlags.NORMAL,
+                                            COLOR_INVALID)
+
     def on_close(self, widget, data=None):
         """ Close the preferences dialog."""
+        COLOR_INVALID = Color(50000, 0, 0)
+        refresh_hour = self.refresh_hour.get_text()
+        refresh_min = self.refresh_mins.get_text()
+        refresh_time = datetime.time(0,0,0)
+        try:
+            refresh_time = datetime.time(int(refresh_hour),
+                                         int(refresh_min), 00)
+            self.refresh_hour.modify_fg(Gtk.StateFlags.NORMAL, None)
+            self.refresh_mins.modify_fg(Gtk.StateFlags.NORMAL, None)
+            self.config.set('hour', refresh_hour)
+            self.config.set('min', refresh_min)
+        except (ValueError, TypeError):
+            self.refresh_hour.set_text("00")
+            self.refresh_mins.set_text("00")
+            self.config.set('hour', "00")
+            self.config.set('min', "00")
+        self.browser.custom_refresh(refresh_time)
         self.dialog.hide()
         return True
 
