@@ -17,7 +17,7 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-""" General class for representing time and periodic time intervals in GTG"""
+""" General class for representing time and periodic time intervals in GTG """
 
 import datetime
 
