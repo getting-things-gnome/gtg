@@ -187,7 +187,7 @@ class PreferencesDialog:
         COLOR_INVALID = Color(50000, 0, 0)
         refresh_hour = self.refresh_hour.get_text()
         refresh_min = self.refresh_mins.get_text()
-        refresh_time = datetime.time(0,0,0)
+        refresh_time = datetime.time(0, 0, 0)
         try:
             refresh_time = datetime.time(int(refresh_hour),
                                          int(refresh_min), 00)
