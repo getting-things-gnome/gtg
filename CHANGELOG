@@ -30,7 +30,9 @@
     * Fixes #1 : Searching for something and then clicking on any place in the tag sidebar doesn't clear the quick-add bar text, by Parth Panchal
     * Fix for bug #931904 : Scheduling many task, by Parth Panchal
     * Fix for bug #1289284 : Date gets dragged from calendar widget when its date is already set, by Parth Panchal
-
+    * Fix for bug #1286495 : Backends ask for authentication every time, by Pawan Hegde
+    * Fix for bug #932732  : Synchronizying twice with RTM removes all tasks, by Pawan Hegde  
+    
 2013-11-24 Getting Things GNOME! 0.3.1
     * Fix for bug #1024473: Have 'Show Main Window' in notification area, by Antonio Roquentin
     * Fix for bug #1043457: gtcli search returns closed tasks, by Nimit Shah
