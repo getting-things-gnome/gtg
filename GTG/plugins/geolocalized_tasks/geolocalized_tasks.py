@@ -116,11 +116,6 @@ class geolocalizedTasks:
         context_menu = Gtk.Menu()
 
         mi = Gtk.MenuItem()
-        mi.set_label("I'm here")
-        mi.connect ("activate", self._on_im_here, [latitude, longitude])
-        context_menu.append(mi)
-
-        mi = Gtk.MenuItem()
         mi.set_label("Add Location")
         mi.connect ("activate", self._on_add_location, [latitude, longitude])
         context_menu.append(mi)
@@ -142,6 +137,11 @@ class geolocalizedTasks:
             mi.set_sensitive(False)
         else:
             self._set_active_sensitive(False)
+
+        mi = Gtk.MenuItem()
+        mi.set_label("I'm here")
+        mi.connect ("activate", self._on_im_here, [latitude, longitude])
+        context_menu.append(mi)
 
         context_menu.show_all()
 
