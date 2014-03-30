@@ -22,6 +22,7 @@
 #=== IMPORT ===================================================================
 # system imports
 import time
+import datetime
 import threading
 from webbrowser import open as openurl
 
@@ -42,18 +43,7 @@ from GTG.gtk.browser.treeview_factory import TreeviewFactory
 from GTG.gtk.editor.calendar import GTGCalendar
 from GTG.tools.dates import Date
 from GTG.tools.logger import Log
-
-
-class Timer:
-
-    def __init__(self, name):
-        self.name = name
-
-    def __enter__(self):
-        self.start = time.time()
-
-    def __exit__(self, *args):
-        print(("{0} : {1}".format(self.name, time.time() - self.start)))
+from GTG.tools.timer import Timer
 
 
 class TaskBrowser(GObject.GObject):
@@ -131,6 +121,22 @@ class TaskBrowser(GObject.GObject):
         self.activetree.register_cllbck('node-deleted-inview',
                                         self._update_window_title)
         self._update_window_title()
+        now = datetime.datetime.now()
+        refresh_time = datetime.datetime(now.year, now.month, now.day, 0, 0, 0)
+        self.refresh = Timer()
+        secs_to_refresh = self.refresh.seconds_before(refresh_time)
+        self.refresh.add_gobject_timeout(secs_to_refresh,
+                                         self.refresh_workview)
+        refresh_hour = self.config.get('hour')
+        refresh_min = self.config.get('min')
+        self.periodic_interval = self.config.get('interval')
+        if refresh_hour and refresh_min is not "00":
+            refresh_time = datetime.datetime(now.year, now.month, now.day,
+                                             int(refresh_hour),
+                                             int(refresh_min), 00)
+            secs_to_refresh = self.refresh.seconds_before(refresh_time)
+            self.refresh.add_gobject_timeout(secs_to_refresh,
+                                             self.refresh_workview)
 
 ### INIT HELPER FUNCTIONS #####################################################
 #
@@ -564,6 +570,17 @@ class TaskBrowser(GObject.GObject):
             self.set_view('workview')
 
         self.in_toggle_workview = False
+
+    def refresh_workview(self):
+        task_tree = self.req.get_tasks_tree(name='active', refresh=False)
+        task_tree.refresh_all()
+        self.refresh.add_gobject_timeout(86400, self.refresh_workview)
+        return False
+
+    def periodic_refresh(self):
+        task_tree = self.req.get_tasks_tree(name='active', refresh=False)
+        task_tree.refresh_all()
+        return True
 
     def set_view(self, viewname):
         if viewname == 'default':

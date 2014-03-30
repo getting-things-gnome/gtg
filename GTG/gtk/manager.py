@@ -87,7 +87,7 @@ class Manager(GObject.GObject):
 
         # Preferences and Backends windows
         # Initialize  dialogs
-        self.preferences = PreferencesDialog(self.req)
+        self.preferences = PreferencesDialog(self.req, self)
         self.plugins = PluginsDialog(self.config_obj)
         self.edit_backends_dialog = None
 
