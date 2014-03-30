@@ -1,6 +1,5 @@
 build
 dist
-doc/api
 po/**/
 tmp
 .pydevproject
