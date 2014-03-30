@@ -8,7 +8,7 @@ before_install:
   - sudo apt-get install -qq python3-gi gir1.2-gtk-3.0
 
 install:
-  - pip install -e https://github.com/getting-things-gnome/liblarch.git
+  - pip install -e git+ssh://git@github.com/getting-things-gnome/liblarch.git#egg=liblarch
   - pip install -r requirements.txt
 
 script:
