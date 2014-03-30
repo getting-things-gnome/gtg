@@ -1,0 +1,37 @@
+<page xmlns="http://projectmallard.org/1.0/" type="topic" style="task" id="gtg-create-new-task" xml:lang="ru">
+
+<info>
+  <link type="guide" xref="gtg-tasks" group="first"/>
+  <link type="seealso" xref="gtg-edit-task"/>
+  <link type="seealso" xref="gtg-dismiss-task"/>
+  <link type="seealso" xref="gtg-delete-task"/>
+  <link type="seealso" xref="gtg-set-task-date"/>
+  <revision pkgversion="0.1" version="0.1" date="2012-07-03" status="candidate"/>
+  <credit type="author">
+    <name>Radina Matic</name>
+    <email>radina.matic@gmail.com</email>
+  </credit>
+<mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator">
+  <mal:name>Dmitry Drozdov</mal:name>
+</mal:credit>
+</info>
+
+<title>Создание новой задачи</title>
+
+<p>В <app>GTG</app> есть три способа для создания новой задачи:</p>
+
+<list>
+  <item><p>Команда <guiseq><gui>Задачи</gui><gui>Новая задача</gui></guiseq> главного меню.</p></item>
+  <item><p>Щелчок по кнопке <gui>Новая задача</gui> инструментальной панели.</p></item>
+  <item><p>Комбинация <keyseq><key>Ctrl</key><key>N</key></keyseq>.</p></item>
+</list>
+
+<!-- Insert Image Here -->
+
+<p>Новая задача будет открыта в отдельном окне редактирования поверх основного окна <app>GTG</app> и других открытых задач.</p>
+
+</page>
+
+
+
+

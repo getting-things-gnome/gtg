@@ -1,0 +1,43 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      xmlns:its="http://www.w3.org/2005/11/its"
+      type="topic" style="task"
+      id="gtg-tag-color">
+
+  <info>
+    <link type="guide" xref="gtg-tags" group="third"/>
+    <link type="seealso" xref="gtg-add-tag"/>
+    <link type="seealso" xref="gtg-add-subtag"/>
+      
+      <revision pkgversion="1301" date="2013-06-18" status="candidate"/>
+   <credit type="author copyright">
+      <name>Radina Matic</name>
+      <email its:translate="no">radina.matic@gmail.com</email>
+      <years>2013</years>
+    </credit>
+    <credit type="copyright editor">
+      <name></name>
+      <email its:translate="no"></email>
+      <years></years>
+    </credit>
+
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+
+  </info>
+
+  <title>Edit Tag Properties</title>
+
+<p>You can easily edit tag name, color, or set a specific tag icon, by right-clicking the tag in the tags sidebar and selecting <gui>Edit Tag</gui> from the contextual menu:</p>
+
+<list>
+      <item><p>To change the tag name edit the field <gui>Name</gui>.</p></item>
+      <item><p>Choose one of the predefined colors or press the <gui>Add custom color</gui> button. Select the desired color in the <gui>Choose color</gui> window and press the <gui>OK</gui> button to confirm.</p></item>
+      <item><p>Press the <gui>Click to set icon</gui> button and choose the icon you wish to use as a tag icon.</p></item>  
+</list>
+
+<figure>
+  <title>Edit Tag</title>
+  <desc> </desc>
+ <media type="image" mime="image/png" src="figures/edit_tag.png"/>
+</figure>  
+ 
+</page>

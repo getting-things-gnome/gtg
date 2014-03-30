@@ -1,0 +1,33 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      xmlns:its="http://www.w3.org/2005/11/its"
+      type="topic" style="task"
+      id="gtg-join-users">
+
+  <info>
+    <link type="guide" xref="index#gtg-get-involved"/>
+    <link type="seealso" xref="gtg-report-problem"/>
+    <link type="seealso" xref="gtg-translate"/>
+
+      
+      <revision pkgversion="1301" date="2013-06-18" status="candidate"/>
+   <credit type="author copyright">
+      <name>Radina Matic</name>
+      <email its:translate="no">radina.matic@gmail.com</email>
+      <years>2013</years>
+    </credit>
+    <credit type="copyright editor">
+      <name></name>
+      <email its:translate="no"></email>
+      <years></years>
+    </credit>
+
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+
+  </info>
+
+  <title>Join the GTG Users Group</title>
+
+<p>To join our user group go to <link href="https://launchpad.net/~gtg-user/+join">GTG User Group on Launchpad</link>. You will also have the possibility to subscribe to the user's mailing list.</p>
+
+</page>
+

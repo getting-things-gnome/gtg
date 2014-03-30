@@ -1,0 +1,37 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      xmlns:its="http://www.w3.org/2005/11/its"
+      type="topic" style="task"
+      id="gtg-quickadd-new-task">
+
+  <info>
+    <link type="guide" xref="gtg-quickadd" group="fourth"/>
+    <link type="seealso" xref="gtg-quickadd-tags"/>
+    <link type="seealso" xref="gtg-quickadd-dates"/>
+      
+      <revision pkgversion="1301" date="2013-06-18" status="candidate"/>
+   <credit type="author copyright">
+      <name>Radina Matic</name>
+      <email its:translate="no">radina.matic@gmail.com</email>
+      <years>2013</years>
+    </credit>
+    <credit type="copyright editor">
+      <name></name>
+      <email its:translate="no"></email>
+      <years></years>
+    </credit>
+
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+
+  </info>
+
+  <title>Create a New Task using the Quick Add Entry</title>
+
+    <p>To add a task simply type its title in the entry and press <gui>Enter</gui>. The task will be created and selected in the task browser. If a tag is selected in the <gui>Tags Sidebar</gui>, it will be applied to the task you created. </p>
+
+<figure>
+  <title>Quick Add Entry</title>
+  <desc> </desc>
+ <media type="image" mime="image/png" src="figures/quick_tag_entry.png"/>
+</figure> 
+
+</page>

@@ -1,0 +1,11 @@
+[GTG Plugin]
+module=tomboy
+name=Tomboy/Gnote plugin
+short-description=Enable linking to Tomboy/GNote notes.
+description=This plugin lets you add a link to a Tomboy (or Gnote)
+    note in your tasks, or create a new one
+authors=Luca Invernizzi <invernizzi.l@gmail.com>
+version=0.1.9
+enabled=False
+#dbus-dependencies=org.gnome.Tomboy:/org/gnome/Tomboy
+dependencies=dbus,

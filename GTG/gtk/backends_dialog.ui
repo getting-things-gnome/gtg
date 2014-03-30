@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <!-- interface-requires gtk+ 3.0 -->
+  <object class="GtkAdjustment" id="adjustment1">
+    <property name="upper">100</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+    <property name="page_size">10</property>
+  </object>
+  <object class="GtkWindow" id="backends_dialog">
+    <property name="can_focus">False</property>
+    <property name="window_position">mouse</property>
+    <signal name="delete_event" handler="on_BackendsDialog_delete_event"/>
+    <child>
+      <object class="GtkAlignment" id="alignment1">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="top_padding">10</property>
+        <property name="bottom_padding">10</property>
+        <property name="left_padding">10</property>
+        <property name="right_padding">10</property>
+        <child>
+          <object class="GtkBox" id="vbox1">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="spacing">10</property>
+            <property name="orientation">vertical</property>
+            <child>
+              <object class="GtkBox" id="big_central_box">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="spacing">10</property>
+                <child>
+                  <object class="GtkBox" id="vbox2">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="orientation">vertical</property>
+                    <child>
+                      <object class="GtkViewport" id="treeview_window">
+                        <property name="height_request">400</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <child>
+                          <placeholder/>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkAlignment" id="alignment2">
+                        <property name="height_request">30</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="yalign">1</property>
+                        <property name="top_padding">20</property>
+                        <property name="bottom_padding">10</property>
+                        <property name="left_padding">10</property>
+                        <property name="right_padding">10</property>
+                        <child>
+                          <object class="GtkButtonBox" id="hbuttonbox3">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="spacing">10</property>
+                            <property name="homogeneous">True</property>
+                            <child>
+                              <object class="GtkButton" id="add_button">
+                                <property name="label">gtk-add</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">True</property>
+                                <property name="use_action_appearance">False</property>
+                                <property name="use_stock">True</property>
+                                <signal name="clicked" handler="on_add_button_clicked" swapped="no"/>
+                              </object>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">False</property>
+                                <property name="position">0</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkButton" id="remove_button">
+                                <property name="label">gtk-remove</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">True</property>
+                                <property name="use_action_appearance">False</property>
+                                <property name="use_stock">True</property>
+                                <signal name="clicked" handler="on_remove_button_clicked" swapped="no"/>
+                              </object>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">False</property>
+                                <property name="position">1</property>
+                              </packing>
+                            </child>
+                          </object>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">False</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkScrolledWindow" id="central_pane_window">
+                    <property name="width_request">480</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="vadjustment">adjustment1</property>
+                    <property name="hscrollbar_policy">automatic</property>
+                    <property name="vscrollbar_policy">automatic</property>
+                    <child>
+                      <object class="GtkViewport" id="central_pane">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <child>
+                          <placeholder/>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButtonBox" id="hbuttonbox2">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="layout_style">edge</property>
+                <child>
+                  <object class="GtkButton" id="sync_help">
+                    <property name="label">gtk-help</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="use_action_appearance">False</property>
+                    <property name="use_stock">True</property>
+                    <signal name="clicked" handler="on_help_button_clicked" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkButton" id="close_button">
+                    <property name="label">gtk-close</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="use_action_appearance">False</property>
+                    <property name="use_stock">True</property>
+                    <signal name="clicked" handler="on_close_button_clicked" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>

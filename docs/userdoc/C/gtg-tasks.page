@@ -1,0 +1,31 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      xmlns:its="http://www.w3.org/2005/11/its"
+      type="guide" style="task 2column"
+      id="gtg-tasks">
+
+  <info>
+    <link type="guide" xref="index#gtg-task-management" group="first"/>
+      
+      <revision pkgversion="1301" date="2013-06-18" status="candidate"/>
+   <credit type="author copyright">
+      <name>Radina Matic</name>
+      <email its:translate="no">radina.matic@gmail.com</email>
+      <years>2013</years>
+    </credit>
+    <credit type="copyright editor">
+      <name></name>
+      <email its:translate="no"></email>
+      <years></years>
+    </credit>
+
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+
+  </info>
+
+  <title>Working with Tasks</title>
+
+<media type="image" mime="image/png" src="figures/task-management.png"/>
+
+  <p>In <app>GTG</app>, everything is a task. From building a bridge over the Pacific Ocean to changing a light bulb or organizing a party.</p>
+  <links type="topic" groups="first second third fourth fifth sixth" style="2column"/>
+</page>

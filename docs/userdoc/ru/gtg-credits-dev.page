@@ -1,0 +1,30 @@
+<page xmlns="http://projectmallard.org/1.0/" type="topic" style="task" id="gtg-credits-dev" xml:lang="ru">
+
+<info>
+  <link type="guide" xref="index#gtg-credits"/>
+  <link type="seealso" xref="gtg-credits-design"/>
+  <link type="seealso" xref="gtg-credits-trans"/>
+  <link type="seealso" xref="gtg-credits-collab"/>
+  <revision pkgversion="0.1" version="0.1" date="2012-07-03" status="candidate"/>
+  <credit type="author">
+    <name>Radina Matic</name>
+    <email>radina.matic@gmail.com</email>
+  </credit>
+<mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator">
+  <mal:name>Dmitry Drozdov</mal:name>
+</mal:credit>
+</info>
+
+<title>Разработчики GTG</title>
+
+<p>Lionel Dricot - <email>ploum@ploum.net</email></p>
+<p>Bertrand Rousseau - <email>bertrand.rousseau@gmail.com</email></p>
+<p>Paulo Cabido - <email>paulo.cabido@gmail.com</email></p>
+<p>Luca Invernizzi - <email>invernizzi.l@gmail.com</email></p>
+<p>Kevin Mehall - <email>km@kevinmehall.net</email></p>
+<p>Luca Falavigna - <email>dktrkranz@debian.org</email></p>
+<p>Izidor Matušov - <email>izidor.matusov@gmail.com</email></p>
+
+
+</page>
+

@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" width="24" height="24" id="svg2" sodipodi:version="0.32" inkscape:version="0.46" sodipodi:docname="geolocalization.svg" inkscape:output_extension="org.inkscape.output.svg.inkscape" version="1.0" inkscape:export-filename="/home/kj/Dropbox/Public/geolocalization.png" inkscape:export-xdpi="90" inkscape:export-ydpi="90">
+  <defs id="defs4">
+    <linearGradient inkscape:collect="always" id="linearGradient7943">
+      <stop style="stop-color: rgb(249, 166, 166); stop-opacity: 1;" offset="0" id="stop7945"/>
+      <stop style="stop-color: rgb(243, 156, 156); stop-opacity: 1;" offset="1" id="stop7947"/>
+    </linearGradient>
+    <linearGradient inkscape:collect="always" id="linearGradient7935">
+      <stop style="stop-color: rgb(132, 0, 0); stop-opacity: 1;" offset="0" id="stop7937"/>
+      <stop style="stop-color: rgb(203, 0, 0); stop-opacity: 1;" offset="1" id="stop7939"/>
+    </linearGradient>
+    <linearGradient inkscape:collect="always" id="linearGradient7874">
+      <stop style="stop-color: rgb(182, 178, 140); stop-opacity: 0.941785;" offset="0" id="stop7876"/>
+      <stop style="stop-color: rgb(145, 140, 92); stop-opacity: 1;" offset="1" id="stop7878"/>
+    </linearGradient>
+    <linearGradient id="linearGradient7838" inkscape:collect="always">
+      <stop id="stop7840" offset="0" style="stop-color: rgb(250, 173, 173); stop-opacity: 1;"/>
+      <stop id="stop7842" offset="1" style="stop-color: rgb(204, 0, 0); stop-opacity: 1;"/>
+    </linearGradient>
+    <linearGradient id="linearGradient7765" inkscape:collect="always">
+      <stop id="stop7767" offset="0" style="stop-color: rgb(238, 238, 236); stop-opacity: 1;"/>
+      <stop id="stop7769" offset="1" style="stop-color: rgb(173, 173, 173); stop-opacity: 1;"/>
+    </linearGradient>
+    <linearGradient id="linearGradient7757" inkscape:collect="always">
+      <stop id="stop7759" offset="0" style="stop-color: rgb(85, 87, 83); stop-opacity: 1;"/>
+      <stop id="stop7761" offset="1" style="stop-color: rgb(146, 148, 144); stop-opacity: 1;"/>
+    </linearGradient>
+    <linearGradient inkscape:collect="always" id="linearGradient7741">
+      <stop style="stop-color: rgb(254, 244, 164); stop-opacity: 1;" offset="0" id="stop7743"/>
+      <stop style="stop-color: rgb(255, 252, 225); stop-opacity: 1;" offset="1" id="stop7745"/>
+    </linearGradient>
+    <linearGradient inkscape:collect="always" id="linearGradient7081">
+      <stop style="stop-color: rgb(182, 178, 140); stop-opacity: 1;" offset="0" id="stop7083"/>
+      <stop style="stop-color: rgb(145, 140, 92); stop-opacity: 1;" offset="1" id="stop7085"/>
+    </linearGradient>
+    <linearGradient inkscape:collect="always" id="linearGradient7013">
+      <stop style="stop-color: rgb(125, 0, 0); stop-opacity: 1;" offset="0" id="stop7015"/>
+      <stop style="stop-color: rgb(204, 0, 0); stop-opacity: 1;" offset="1" id="stop7017"/>
+    </linearGradient>
+    <linearGradient inkscape:collect="always" id="linearGradient7003">
+      <stop style="stop-color: rgb(255, 255, 255); stop-opacity: 1;" offset="0" id="stop7005"/>
+      <stop style="stop-color: rgb(255, 255, 255); stop-opacity: 0;" offset="1" id="stop7007"/>
+    </linearGradient>
+    <inkscape:perspective sodipodi:type="inkscape:persp3d" inkscape:vp_x="0 : 526.18109 : 1" inkscape:vp_y="0 : 1000 : 0" inkscape:vp_z="744.09448 : 526.18109 : 1" inkscape:persp3d-origin="372.04724 : 350.78739 : 1" id="perspective10"/>
+    <filter inkscape:collect="always" id="filter7386" x="-0.18793105" width="1.3758621" y="-0.26054078" height="1.5210816">
+      <feGaussianBlur inkscape:collect="always" stdDeviation="0.59707262" id="feGaussianBlur7388"/>
+    </filter>
+    <inkscape:perspective id="perspective7482" inkscape:persp3d-origin="372.04724 : 350.78739 : 1" inkscape:vp_z="744.09448 : 526.18109 : 1" inkscape:vp_y="0 : 1000 : 0" inkscape:vp_x="0 : 526.18109 : 1" sodipodi:type="inkscape:persp3d"/>
+    <filter inkscape:collect="always" id="filter7589" x="-0.077992738" width="1.1559855" y="-0.38996369" height="1.7799274">
+      <feGaussianBlur inkscape:collect="always" stdDeviation="0.64993949" id="feGaussianBlur7591"/>
+    </filter>
+    <inkscape:perspective id="perspective7600" inkscape:persp3d-origin="372.04724 : 350.78739 : 1" inkscape:vp_z="744.09448 : 526.18109 : 1" inkscape:vp_y="0 : 1000 : 0" inkscape:vp_x="0 : 526.18109 : 1" sodipodi:type="inkscape:persp3d"/>
+    <linearGradient inkscape:collect="always" xlink:href="#linearGradient7081" id="linearGradient7707" gradientUnits="userSpaceOnUse" gradientTransform="matrix(0.904762, 0, 0, 1, 1.14286, 0)" x1="5.2149124" y1="15.558913" x2="6.9804454" y2="22"/>
+    <linearGradient inkscape:collect="always" xlink:href="#linearGradient7741" id="linearGradient7747" x1="-25.013903" y1="4" x2="-18" y2="17.119036" gradientUnits="userSpaceOnUse" gradientTransform="translate(30)"/>
+    <linearGradient inkscape:collect="always" xlink:href="#linearGradient7765" id="linearGradient7828" gradientUnits="userSpaceOnUse" gradientTransform="translate(20, 3)" x1="13.866498" y1="13.029231" x2="15.55635" y2="5.924583"/>
+    <linearGradient inkscape:collect="always" xlink:href="#linearGradient7757" id="linearGradient7830" gradientUnits="userSpaceOnUse" gradientTransform="translate(20, 3)" x1="15.642897" y1="9.4588156" x2="13.90625" y2="8.4726801"/>
+    <radialGradient inkscape:collect="always" xlink:href="#linearGradient7838" id="radialGradient7832" gradientUnits="userSpaceOnUse" gradientTransform="matrix(0.088672, 0.799838, -1.00097, 0.100044, 17.8398, -9.21998)" cx="14.825197" cy="3.6196058" fx="14.825197" fy="3.6196058" r="3.524409"/>
+    <linearGradient inkscape:collect="always" xlink:href="#linearGradient7013" id="linearGradient7834" gradientUnits="userSpaceOnUse" x1="16.304688" y1="8.2946424" x2="14.868303" y2="4.9375"/>
+    <linearGradient inkscape:collect="always" xlink:href="#linearGradient7003" id="linearGradient7836" gradientUnits="userSpaceOnUse" x1="14.844542" y1="9.349679" x2="18.449074" y2="0.33173633"/>
+    <linearGradient inkscape:collect="always" xlink:href="#linearGradient7874" id="linearGradient7880" x1="44.812893" y1="7.2946024" x2="52.456104" y2="21.549175" gradientUnits="userSpaceOnUse"/>
+    <linearGradient inkscape:collect="always" xlink:href="#linearGradient7741" id="linearGradient7903" gradientUnits="userSpaceOnUse" gradientTransform="translate(30)" x1="15.727029" y1="6.9999995" x2="23.542524" y2="14.983313"/>
+    <linearGradient inkscape:collect="always" xlink:href="#linearGradient7874" id="linearGradient7923" gradientUnits="userSpaceOnUse" x1="44.812893" y1="7.2946024" x2="54.206104" y2="20.549175"/>
+    <linearGradient inkscape:collect="always" xlink:href="#linearGradient7935" id="linearGradient7941" x1="57.438805" y1="14.430664" x2="54.385418" y2="9.703125" gradientUnits="userSpaceOnUse"/>
+    <linearGradient inkscape:collect="always" xlink:href="#linearGradient7943" id="linearGradient7949" x1="55.795582" y1="10.903276" x2="55.84375" y2="14.84375" gradientUnits="userSpaceOnUse"/>
+  </defs>
+  <sodipodi:namedview id="base" pagecolor="#ffffff" bordercolor="#666666" borderopacity="1.0" gridtolerance="10000" guidetolerance="10" objecttolerance="10" inkscape:pageopacity="0.0" inkscape:pageshadow="2" inkscape:zoom="1" inkscape:cx="44.238097" inkscape:cy="9.3925275" inkscape:document-units="px" inkscape:current-layer="layer1" showgrid="false" inkscape:snap-bbox="true" inkscape:snap-nodes="false" inkscape:window-width="1440" inkscape:window-height="794" inkscape:window-x="0" inkscape:window-y="25" showborder="false">
+    <inkscape:grid type="xygrid" id="grid6922" visible="true" enabled="true"/>
+  </sodipodi:namedview>
+  <metadata id="metadata7">
+    <rdf:RDF>
+      <cc:Work rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g inkscape:label="Layer 1" inkscape:groupmode="layer" id="layer1">
+    <rect style="overflow: visible; marker: none; opacity: 0.191589; fill: rgb(0, 0, 0); fill-opacity: 1; fill-rule: nonzero; stroke: none; stroke-width: 1px; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 4; stroke-dasharray: none; stroke-dashoffset: 0pt; stroke-opacity: 1; visibility: visible; display: inline; filter: url(#filter7589);" id="rect7089" width="20" height="4" x="2" y="19" rx="2.1022727" ry="1.5416666" transform="matrix(1.1, 0, 0, 1.5, -1.2, -11.5)"/>
+    <rect style="overflow: visible; marker: none; fill: url(#linearGradient7747) rgb(0, 0, 0); fill-opacity: 1; fill-rule: nonzero; stroke: none; stroke-width: 1px; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 4; stroke-dasharray: none; stroke-dashoffset: 0pt; stroke-opacity: 1; visibility: visible; display: inline;" id="rect6924" width="18" height="17" x="3" y="4" rx="0" ry="0"/>
+    <rect style="overflow: visible; marker: none; fill: rgb(255, 253, 236); fill-opacity: 1; fill-rule: nonzero; stroke: rgb(193, 190, 157); stroke-width: 1px; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 4; stroke-dasharray: none; stroke-dashoffset: 0pt; stroke-opacity: 1; visibility: visible; display: inline;" id="rect6943" width="19" height="3" x="2.5" y="5.5" rx="0" ry="0"/>
+    <rect ry="0" rx="0" y="-9.5" x="11.5" height="2" width="9.9999981" id="rect6945" style="overflow: visible; marker: none; fill: rgb(255, 253, 236); fill-opacity: 1; fill-rule: nonzero; stroke: rgb(193, 190, 157); stroke-width: 1px; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 4; stroke-dasharray: none; stroke-dashoffset: 0pt; stroke-opacity: 1; visibility: visible; display: inline;" transform="matrix(0, 1, -1, 0, 0, 0)"/>
+    <rect ry="0" rx="0" y="12.5" x="2.4999998" height="2" width="15.999999" id="rect7488" style="overflow: visible; marker: none; fill: rgb(255, 253, 236); fill-opacity: 1; fill-rule: nonzero; stroke: rgb(193, 190, 157); stroke-width: 1px; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 4; stroke-dasharray: none; stroke-dashoffset: 0pt; stroke-opacity: 1; visibility: visible; display: inline;"/>
+    <rect transform="matrix(0, 1, -1, 0, 0, 0)" style="overflow: visible; marker: none; fill: rgb(255, 253, 236); fill-opacity: 1; fill-rule: nonzero; stroke: rgb(193, 190, 157); stroke-width: 1px; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 4; stroke-dasharray: none; stroke-dashoffset: 0pt; stroke-opacity: 1; visibility: visible; display: inline;" id="rect6949" width="12.000001" height="2" x="9.5" y="-19.5" rx="0" ry="0"/>
+    <rect style="overflow: visible; marker: none; fill: rgb(255, 253, 236); fill-opacity: 1; fill-rule: nonzero; stroke: none; stroke-width: 1px; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 4; stroke-dasharray: none; stroke-dashoffset: 0pt; stroke-opacity: 1; visibility: visible; display: inline;" id="rect7509" width="1" height="7" x="8" y="13"/>
+    <rect ry="0.92807764" rx="0.92807764" y="3.5" x="2.5" height="18" width="19" id="rect6969" style="overflow: visible; marker: none; fill: none; fill-opacity: 1; fill-rule: nonzero; stroke: url(#linearGradient7707) rgb(0, 0, 0); stroke-width: 1px; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 4; stroke-dasharray: none; stroke-dashoffset: 0pt; stroke-opacity: 1; visibility: visible; display: inline;"/>
+    <rect ry="0.16215134" rx="0.16215134" y="4.5" x="3.5" height="16.000002" width="16.999998" id="rect6967" style="overflow: visible; marker: none; opacity: 0.266355; fill: none; fill-opacity: 1; fill-rule: nonzero; stroke: rgb(255, 255, 255); stroke-width: 1px; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 4; stroke-dasharray: none; stroke-dashoffset: 0pt; stroke-opacity: 1; visibility: visible; display: inline;"/>
+    <rect y="13" x="17" height="1" width="1" id="rect7781" style="overflow: visible; marker: none; fill: rgb(255, 253, 236); fill-opacity: 1; fill-rule: nonzero; stroke: none; stroke-width: 1px; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 4; stroke-dasharray: none; stroke-dashoffset: 0pt; stroke-opacity: 1; visibility: visible; display: inline;"/>
+    <g id="g7820" transform="translate(-19, -1)">
+      <path sodipodi:nodetypes="ccccc" transform="matrix(1.18033, 0, 0, 1.09091, 18.0164, 1)" id="path7135" d="M 10.947049,16.958333 C 14.13631,17.001634 16.454712,14.258591 17.969243,11.734888 L 17.760387,11.041703 L 11.189471,14.412416 L 10.947049,16.958333 z" style="opacity: 0.420561; fill: rgb(0, 0, 0); fill-rule: evenodd; stroke: none; stroke-width: 1px; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; filter: url(#filter7386);"/>
+      <path sodipodi:nodetypes="cccccc" id="path6955" d="M 35.558846,7.5 L 31.53125,16.562501 L 31.553739,18.537462 L 33.477077,17.548192 L 37.40625,8.3643436 L 35.558846,7.5 z" style="fill: url(#linearGradient7828) rgb(0, 0, 0); fill-opacity: 1; fill-rule: evenodd; stroke: url(#linearGradient7830) rgb(0, 0, 0); stroke-width: 1px; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1;"/>
+      <path style="opacity: 0.257009; fill: rgb(0, 0, 0); fill-rule: evenodd; stroke: none; stroke-width: 1px; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1;" d="M 33.481904,10.990773 C 34.207813,11.574681 34.893276,11.98175 36.351844,12 L 37.081048,10.464566 L 34.318912,9 L 33.481904,10.990773 z" id="path7771" sodipodi:nodetypes="ccccc"/>
+      <path transform="matrix(1.29293, 0, 0, 1.3617, 17.4192, -0.223404)" d="M 18.625,4.9375 A 3.09375,2.9375 0 1 1 12.4375,4.9375 A 3.09375,2.9375 0 1 1 18.625,4.9375 z" sodipodi:ry="2.9375" sodipodi:rx="3.09375" sodipodi:cy="4.9375" sodipodi:cx="15.53125" id="path6953" style="overflow: visible; marker: none; fill: url(#radialGradient7832) rgb(0, 0, 0); fill-opacity: 1; fill-rule: nonzero; stroke: url(#linearGradient7834) rgb(0, 0, 0); stroke-width: 0.753653px; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 4; stroke-dasharray: none; stroke-dashoffset: 0pt; stroke-opacity: 1; visibility: visible; display: inline;" sodipodi:type="arc"/>
+      <path sodipodi:type="arc" style="overflow: visible; marker: none; opacity: 0.429907; fill: none; fill-opacity: 1; fill-rule: nonzero; stroke: url(#linearGradient7836) rgb(0, 0, 0); stroke-width: 1.00487px; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 4; stroke-dasharray: none; stroke-dashoffset: 0pt; stroke-opacity: 1; visibility: visible; display: inline;" id="path6979" sodipodi:cx="15.53125" sodipodi:cy="4.9375" sodipodi:rx="3.09375" sodipodi:ry="2.9375" d="M 18.625,4.9375 A 3.09375,2.9375 0 1 1 12.4375,4.9375 A 3.09375,2.9375 0 1 1 18.625,4.9375 z" transform="matrix(0.969697, 0, 0, 1.02128, 22.4394, 1.45745)"/>
+    </g>
+    <rect style="overflow: visible; marker: none; fill: rgb(255, 253, 236); fill-opacity: 1; fill-rule: nonzero; stroke: none; stroke-width: 1px; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 4; stroke-dasharray: none; stroke-dashoffset: 0pt; stroke-opacity: 1; visibility: visible; display: inline;" id="rect7854" width="8.8817842e-16" height="3" x="5" y="11"/>
+    <rect ry="0" rx="0" y="-9.5" x="9.5" height="2" width="5" id="rect7864" style="overflow: visible; marker: none; fill: rgb(255, 253, 236); fill-opacity: 1; fill-rule: nonzero; stroke: rgb(193, 190, 157); stroke-width: 1px; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 4; stroke-dasharray: none; stroke-dashoffset: 0pt; stroke-opacity: 1; visibility: visible; display: inline;" transform="matrix(0, 1, -1, 0, 0, 0)"/>
+    <rect style="overflow: visible; marker: none; fill: rgb(255, 253, 236); fill-opacity: 1; fill-rule: nonzero; stroke: none; stroke-width: 1px; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 4; stroke-dasharray: none; stroke-dashoffset: 0pt; stroke-opacity: 1; visibility: visible; display: inline;" id="rect7866" width="1" height="8" x="8" y="7"/>
+    <rect style="overflow: visible; marker: none; fill: rgb(255, 253, 236); fill-opacity: 1; fill-rule: nonzero; stroke: none; stroke-width: 1px; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 4; stroke-dasharray: none; stroke-dashoffset: 0pt; stroke-opacity: 1; visibility: visible; display: inline;" id="rect7490" width="6" height="1" x="5" y="13"/>
+  </g>
+</svg>

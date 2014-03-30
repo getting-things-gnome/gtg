@@ -1,0 +1,76 @@
+<?xml version="1.0" ?>
+<tagstore>
+	<tag color="#767BDC" name="@miro" parent="@software"/>
+	<tag name="@ashentain" parent="@house"/>
+	<tag color="#FF8BD7" name="@terri" parent="@personal"/>
+	<tag color="#B9FAFE" name="@touchscreen" parent="@x"/>
+	<tag color="#1F1A7F" name="@audacious" parent="@software"/>
+	<tag color="#C91EE0" name="@finance" parent="@office"/>
+	<tag color="#D80202" name="@survival" parent="@personal"/>
+	<tag color="#C43ADA" name="@laptop-salisbury" parent="@house"/>
+	<tag color="#F3DD86" name="@upstreamer" parent="@launchpad"/>
+	<tag color="#C9E2E6" name="@quidgets" parent="@ubuntu"/>
+	<tag color="#F8B72B" name="@ubuntu" parent="@Work"/>
+	<tag color="#0008FF" name="@google-x" parent="@x"/>
+	<tag color="#5689C5" name="@pioneers" parent="@games"/>
+	<tag color="#E2A87A" name="@laptop-ashentain" parent="@workshop"/>
+	<tag color="#E25334" name="@crucible" parent="@ubuntu"/>
+	<tag color="#EDFF00" name="@goal-attribution" parent="@goals"/>
+	<tag color="#4F2395" name="@Work"/>
+	<tag color="#622D6E" name="@webserver" parent="@office"/>
+	<tag color="#3A8BDA" name="@intel" parent="@x"/>
+	<tag color="#55418B" name="@fibfab" parent="@games"/>
+	<tag color="#9ADDEE" name="@vga_over_usb" parent="@x"/>
+	<tag color="#AFAFAF" name="@files_cleanup" parent="@personal"/>
+	<tag color="#616694" name="@hwsetup" parent="@Work"/>
+	<tag color="#ED4C4C" name="@nouveau" parent="@x"/>
+	<tag color="#736F6F" name="@garage" parent="@personal"/>
+	<tag color="#191463" name="@dell_mini" parent="@x"/>
+	<tag color="#DDD62D" name="@goal-game-dev" parent="@goals"/>
+	<tag color="#96B1C4" name="@nvidia" parent="@x"/>
+	<tag name="@rootless-x" parent="@x"/>
+	<tag color="#E3D006" name="@goal-x-meta" parent="@goals"/>
+	<tag color="#C4F9FD" name="@dutch" parent="@personal"/>
+	<tag color="#088AFF" name="@x" parent="@ubuntu"/>
+	<tag color="#C1F3FF" name="@radeon-driver" parent="@x"/>
+	<tag color="#C1F3FF" name="@radeon" parent="@x"/>
+	<tag color="#09DBFF" name="@quickly" parent="@ubuntu"/>
+	<tag color="#4348A6" name="@arsenal" parent="@ubuntu"/>
+	<tag name="@testing" parent="@gtg"/>
+	<tag color="#DAD6EF" name="@ubuntu-extras" parent="@Work"/>
+	<tag color="#673182" name="@office" parent="@personal"/>
+	<tag color="#54045D" name="@house" parent="@personal"/>
+	<tag color="#00FF01" name="@games" parent="@personal"/>
+	<tag color="#471EBF" name="@displaylink" parent="@x"/>
+	<tag color="#A49FC8" name="@bughugger" parent="@ubuntu"/>
+	<tag color="#FFE53C" name="@goal-x-tech-depth" parent="@goals"/>
+	<tag color="#D72C2C" name="@testing-tasks" parent="@gtg"/>
+	<tag color="#FFEC00" name="@goals" parent="@personal"/>
+	<tag color="#FFCD08" name="@freeciv" parent="@games"/>
+	<tag color="#8EAE48" name="@chimera" parent="@games"/>
+	<tag color="#B9ECFF" name="@xdiagnose" parent="@x"/>
+	<tag color="#0018FF" name="@inkscape" parent="@software"/>
+	<tag color="#7A79A9" name="@gtg" parent="@software"/>
+	<tag color="#3A8BDA" name="@intel-driver" parent="@x"/>
+	<tag color="#CD1919" name="@test tasks" parent="@gtg"/>
+	<tag name="@blumonc" parent="@ubuntu"/>
+	<tag color="#F6F30B" name="@launchpad" parent="@Work"/>
+	<tag color="#00BF00" name="@bugboard" parent="@gtg"/>
+	<tag color="#FFDA22" name="@objectives-canonical" parent="@goals"/>
+	<tag color="#000000" name="@personal"/>
+	<tag color="#CBAD3D" name="@travel" parent="@ubuntu"/>
+	<tag color="#D6D6D6" name="@denali" parent="@personal"/>
+	<tag color="#FF0000" name="@actions-today"/>
+	<tag color="#B708DD" name="@2009-taxes" parent="@office"/>
+	<tag color="#DF79F8" name="@blog" parent="@office"/>
+	<tag color="#884920" name="@workshop" parent="@personal"/>
+	<tag color="#CFD9FA" name="@multitouch" parent="@x"/>
+	<tag color="#FDFEC1" name="@apidocs" parent="@launchpad"/>
+	<tag color="#B33FFD" name="@emacs" parent="@ubuntu"/>
+	<tag color="#F2FF00" name="@goal-x-community" parent="@goals"/>
+	<tag color="#2F4E60" name="@spacecastle" parent="@software"/>
+	<tag color="#CAECFF" name="@nouveau-driver" parent="@x"/>
+	<tag color="#F60487" name="@mom" parent="@personal"/>
+	<tag color="#73DDD9" name="@wayland" parent="@ubuntu"/>
+	<tag color="#191836" name="@software" parent="@personal"/>
+</tagstore>

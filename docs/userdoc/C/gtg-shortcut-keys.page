@@ -1,0 +1,119 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      xmlns:ui="http://projectmallard.org/experimental/ui/"
+      xmlns:its="http://www.w3.org/2005/11/its"
+      type="guide" style="tip"
+      id="gtg-shortcut-keys">
+
+  <info>
+    <link type="guide" xref="index"/>
+    <link type="seealso" xref="gtg-quickstart"/>
+    <link type="seealso" xref="gtg-main-window"/>
+      
+      <revision pkgversion="1301" date="2013-06-18" status="candidate"/>
+   <credit type="author copyright">
+      <name>Radina Matic</name>
+      <email its:translate="no">radina.matic@gmail.com</email>
+      <years>2013</years>
+    </credit>
+    <credit type="copyright editor">
+      <name></name>
+      <email its:translate="no"></email>
+      <years></years>
+    </credit>
+
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+
+  </info>
+
+  <title>Shortcut keys</title>
+
+  <p>Use keyboard <gui>shortcut keys</gui> to perform common tasks faster than
+  with the mouse and menus. The following table lists all of <app>GTG's</app> shortcut keys.</p>
+<br />
+
+ <table rules="rows" frame="top bottom" ui:expanded="yes">
+    <title>GTG window related shortcuts</title>
+      <thead>
+        <tr>
+          <td><p><em style="strong">To Do This</em></p></td>  <td><p><em style="strong">Press This</em></p></td>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><p>Show Task Editor Window</p></td>  <td><p>ENTER</p></td>
+        </tr>
+        <tr>
+          <td><p>Hide Task Editor Window</p></td>  <td><p>ESC</p></td>
+        </tr>
+	<tr>
+          <td><p>Move one Task Up in Task List</p></td>  <td><p>Up Arrow</p></td>
+        </tr>
+	<tr>
+          <td><p>Move one Task Down in Task List</p></td>  <td><p>Down Arrow</p></td>
+        </tr>
+        <tr>
+          <td><p>Place Focus on QuickAdd Entry Field</p></td>  <td><p>Ctrl + L</p></td>
+        </tr>
+        <tr>
+          <td><p>Toggle Sidebar</p></td> <td><p>F9</p></td>
+        </tr>
+        <tr>
+          <td><p>Toggle Closed Tasks Pane</p></td>  <td><p>Ctrl + F9</p></td>
+        </tr>
+        <tr>
+          <td><p>Redo</p></td>  <td><p>Ctrl + Y</p></td>
+        </tr>
+        <tr>
+          <td><p>Undo</p></td>  <td><p>Ctrl + Z</p></td>
+        </tr>
+        <tr>
+          <td><p>Quit</p></td>  <td><p>Ctrl + Q</p></td>
+        </tr>
+      </tbody>
+    </table>
+
+<br/><br/>
+    <table rules="rows" frame="top bottom" ui:expanded="yes">
+    <title>Task related shortcuts</title>
+      <thead>
+        <tr>
+          <td><p><em style="strong">To Do This</em></p></td>  <td><p><em style="strong">Press This</em></p></td>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><p>New Task</p></td> <td><p>Ctrl + N</p></td>
+        </tr>
+        <tr>
+          <td><p>Mark Task as Done</p></td>  <td><p>Ctrl + D</p></td>
+        </tr>
+        <tr>
+          <td><p>Dismiss Task</p></td>  <td><p>Ctrl + I</p></td>
+        </tr>
+        <tr>
+          <td><p>Delete Task</p></td>  <td><p>DEL</p></td>
+        </tr>
+        <tr>
+          <td><p>New Subtask</p></td>  <td><p>Ctrl+Shift+N</p></td>
+        </tr>
+      </tbody>
+    </table>
+
+<p>       </p><p>       </p>
+
+    <table rules="rows" frame="top bottom"  ui:expanded="yes">
+    <title>Tag related shortcuts</title>
+      <thead>
+        <tr>
+          <td><p><em style="strong">To Do This</em></p></td>  <td><p><em style="strong">Press This</em></p></td>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><p>Add/Modify Tag</p></td>  <td><p>Ctrl + T</p></td>
+        </tr>
+      </tbody>
+    </table>
+
+   
+</page>

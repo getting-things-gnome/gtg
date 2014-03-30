@@ -1,0 +1,13 @@
+build
+dist
+po/**/
+tmp
+.pydevproject
+.project
+.settings
+**/**.glade.h
+**/**.gladep
+**/**.gladep.bak
+MANIFEST
+**.patch
+gtg.prof

@@ -1,0 +1,53 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      xmlns:its="http://www.w3.org/2005/11/its"
+      type="topic" style="task"
+      id="gtg-ppa">
+
+  <info>
+    <link type="guide" xref="index#gtg-advanced" group="first"/>
+   <link type="seealso" xref="gtg-create-sync"/>
+    <link type="seealso" xref="gtg-create-plugin"/>
+  <link type="seealso" xref="gtg-join-developers"/>
+
+      
+      <revision pkgversion="1301" date="2013-06-18" status="candidate"/>
+   <credit type="author copyright">
+      <name>Radina Matic</name>
+      <email its:translate="no">radina.matic@gmail.com</email>
+      <years>2013</years>
+    </credit>
+    <credit type="copyright editor">
+      <name></name>
+      <email its:translate="no"></email>
+      <years></years>
+    </credit>
+
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+
+  </info>
+ 
+  <title>Install GTG Daily PPA</title>
+
+<p>If you want to work with the development version of <app>Getting things GNOME!</app> you can install the daily Personal Package Archive (PPA) from the development repository.</p> 
+
+<p><app>GTG</app> Development Team is trying to keep it stable for daily usage (they also use this repository), but you will be the first to encounter bugs. Please report any bugs you find on <link href="https://bugs.launchpad.net/gtg/+filebug">GTG Launchpad bugtracker</link>.</p> 
+
+<p>To add this PPA in Ubuntu, use the command line:</p>
+  <p><cmd>sudo add-apt-repository ppa:gtg/gtg-daily</cmd></p>
+
+<p>If you're more comfortable with the mouse, in Ubuntu Oneiric (11.10) go to 
+	   <guiseq>
+		<gui>Main Ubuntu Menu</gui>
+		<gui>System</gui>
+		<gui>Administration</gui>
+		<gui>Software Sources</gui>:
+	   </guiseq>.
+	</p>
+    <steps>
+    <item><p>Open the tab <gui>Other software</gui>. </p></item>
+    <item><p>Press the <gui>Add</gui> button. </p></item>
+    <item><p>Paste the "ppa:gtg/gtg-daily" and close both windows to confirm the change. </p></item>
+    <item><p>When the <gui>Software Sources</gui> window reloads you will see the GTG PPA available for download.</p></item>
+</steps>
+</page>
+

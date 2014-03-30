@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <!-- interface-requires gtk+ 3.0 -->
+  <object class="GtkWindow" id="calendar">
+    <property name="can_focus">False</property>
+    <property name="events">GDK_STRUCTURE_MASK | GDK_PROXIMITY_OUT_MASK</property>
+    <property name="resizable">False</property>
+    <property name="modal">True</property>
+    <property name="destroy_with_parent">True</property>
+    <property name="skip_taskbar_hint">True</property>
+    <property name="skip_pager_hint">True</property>
+    <child>
+      <object class="GtkBox" id="vbox5">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="orientation">vertical</property>
+        <child>
+          <object class="GtkCalendar" id="calendar1">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkBox" id="fuzzydate_btns">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="homogeneous">True</property>
+            <child>
+              <object class="GtkButton" id="button_now">
+                <property name="label" translatable="yes">Now</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="button_soon">
+                <property name="label" translatable="yes">Soon</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="button_someday">
+                <property name="label" translatable="yes">Someday</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">2</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="button_clear">
+            <property name="label">gtk-clear</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="use_stock">True</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
+            <property name="position">2</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>

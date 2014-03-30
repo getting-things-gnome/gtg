@@ -1,0 +1,60 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      xmlns:its="http://www.w3.org/2005/11/its"
+      type="topic" style="task"
+      id="gtg-faq">
+
+  <info>
+    <link type="guide" xref="index#gtg-faq"/>
+
+      
+      <revision pkgversion="1301" date="2013-06-18" status="candidate"/>
+   <credit type="author copyright">
+      <name>Radina Matic</name>
+      <email its:translate="no">radina.matic@gmail.com</email>
+      <years>2013</years>
+    </credit>
+    <credit type="copyright editor">
+      <name></name>
+      <email its:translate="no"></email>
+      <years></years>
+    </credit>
+
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+
+  </info>
+
+  <title>Frequently Asked Questions</title>
+
+
+<list type="numbered">
+
+<item><p><em>How do I save the changes to the task that I just edited?</em></p>
+<p>You do not need to save the changes to the task as <app>GTG</app> does that automatically while you write.</p>
+</item> 
+
+<item><p><em>I cannot activate some of the GTG plugins.</em></p>
+<p>Sometimes there are missing dependencies that impede the activation of the plugin. <app>GTG</app> will try to identify and list all the missing dependencies in bold below the deactivated plugin description, so you can install them.</p>
+</item> 
+
+<item><p><em>Is there a way to setup a "waiting task" (in cases I am waiting for somebody/something else to happen before I can proceed with the task?</em></p>
+<p>Here is a possible workflow:</p>
+<list>
+      <item><p>Set the <gui>start date</gui> in the future taking in consideration how long do you want to wait.</p></item>
+      <item><p>Create a special tag like @wait, @delegate and edit the properties of this tag so the tasks with it do not appear in the <gui>Work View</gui>.</p></item> 
+      <item><p>Set the <gui>due date</gui> to <gui>sometimes</gui>.</p></item>
+</list>
+
+</item> 
+
+
+<item><p><em>Can I make a backup of my tasks in case of the computer crash?</em></p>
+
+<p>GTG makes an automatic backup of yours tasks and in the latest release it even detects a faulty tasks database and automatically restores the latest version from backup. For the manual procedure check this wiki page:</p>
+<p><link href="https://live.gnome.org/gtg/FAQ">Backup your GTG Tasks</link></p>
+</item> 
+
+</list>
+
+
+</page>
+

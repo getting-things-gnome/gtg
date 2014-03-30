@@ -1,0 +1,38 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      xmlns:its="http://www.w3.org/2005/11/its"
+      type="topic" style="task"
+      id="gtg-create-sync">
+
+  <info>
+    <link type="guide" xref="index#gtg-advanced"/>
+    <link type="seealso" xref="gtg-ppa"/>
+    <link type="seealso" xref="gtg-create-plugin"/>
+    <link type="seealso" xref="gtg-join-developers"/>
+
+      
+      <revision pkgversion="1301" date="2013-06-18" status="candidate"/>
+   <credit type="author copyright">
+      <name>Radina Matic</name>
+      <email its:translate="no">radina.matic@gmail.com</email>
+      <years>2013</years>
+    </credit>
+    <credit type="copyright editor">
+      <name></name>
+      <email its:translate="no"></email>
+      <years></years>
+    </credit>
+
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+
+  </info>
+ 
+  <title>Create your own Sync Service</title>
+
+<p>Here are some resources in case you are interested in making your own Sync Service for <app>GTG</app>:</p>
+
+<p><link href="https://live.gnome.org/gtg/Backends">Sync Services (Backends)</link></p>
+
+<p><link href="https://live.gnome.org/gtg/dbus">DBus</link></p>
+
+</page>
+

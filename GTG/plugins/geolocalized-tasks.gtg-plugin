@@ -1,0 +1,10 @@
+[GTG Plugin]
+module=geolocalized_tasks
+name=Geolocalized Tasks
+short-description=This plugin adds geolocalized tasks to GTG!.
+description=This plugin adds geolocalized tasks to GTG!.
+    WARNING: This plugin is still under heavy development.
+authors=Paulo Cabido <paulo.cabido@gmail.com>
+version=0.1.1
+dependencies=Geoclue,clutter,cluttergtk,champlain,champlaingtk
+enabled=False

@@ -1,0 +1,30 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      xmlns:its="http://www.w3.org/2005/11/its"
+      type="guide" style="task 2column"
+      id="gtg-quickadd">
+
+  <info>
+    <link type="guide" xref="index#gtg-task-management" group="second"/>
+      
+      <revision pkgversion="1301" date="2013-06-18" status="candidate"/>
+   <credit type="author copyright">
+      <name>Radina Matic</name>
+      <email its:translate="no">radina.matic@gmail.com</email>
+      <years>2013</years>
+    </credit>
+    <credit type="copyright editor">
+      <name></name>
+      <email its:translate="no"></email>
+      <years></years>
+    </credit>
+
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+
+  </info>
+
+  <title>Quick Add Entry</title>
+
+  <p>The Quick Add Entry is the fastest way to create a new task. To enable and disable the entry field in the main <app>GTG</app> menu go to <guiseq><gui>View</gui><gui>Quick Add Entry</gui></guiseq>.</p> 
+  
+  <links type="topic" groups="first second third fourth fifth sixth" style="2column"/>
+</page>

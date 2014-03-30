@@ -1,0 +1,36 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      xmlns:its="http://www.w3.org/2005/11/its"
+      type="topic" style="task"
+      id="gtg-report-problem">
+
+  <info>
+    <link type="guide" xref="index#gtg-get-involved" group="first"/>
+    <link type="seealso" xref="gtg-join-users"/>
+    <link type="seealso" xref="gtg-translate"/>
+
+      
+      <revision pkgversion="1301" date="2013-06-18" status="candidate"/>
+   <credit type="author copyright">
+      <name>Radina Matic</name>
+      <email its:translate="no">radina.matic@gmail.com</email>
+      <years>2013</years>
+    </credit>
+    <credit type="copyright editor">
+      <name></name>
+      <email its:translate="no"></email>
+      <years></years>
+    </credit>
+
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+
+  </info>
+
+  <title>Report a Problem</title>
+
+<p>Help us make <app>GTG</app> better! In case you find a bug, report it here:</p>
+
+
+<p><link href="https://bugs.launchpad.net/gtg/+filebug">GTG Lauchpad bug tracker</link></p>
+
+</page>
+

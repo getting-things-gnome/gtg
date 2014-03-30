@@ -1,0 +1,84 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      xmlns:e="http://projectmallard.org/experimental/"
+      xmlns:its="http://www.w3.org/2005/11/its"
+      type="guide" style="2column"
+      id="index">
+
+ <info>
+	<title type="link">Getting Things GNOME! task management</title>
+    	<title type="text">Getting Things GNOME! task management</title>
+
+      
+      <revision pkgversion="1301" date="2013-06-18" status="candidate"/>
+   <credit type="author copyright">
+      <name>Radina Matic</name>
+      <email its:translate="no">radina.matic@gmail.com</email>
+      <years>2013</years>
+    </credit>
+    <credit type="copyright editor">
+      <name></name>
+      <email its:translate="no"></email>
+      <years></years>
+    </credit>
+
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+
+</info>  
+
+ <title>
+    <media type="image" mime="image/png" src="figures/gtg-icon.png">
+     gtg logo
+    </media>
+    Getting Things GNOME!
+ </title>
+
+<p>Welcome to the <app>Getting Things GNOME!</app> user documentation.</p> <p><app>Getting Things GNOME! (GTG)</app> is the task manager and organizer for the GNOME desktop environment – it focuses on usability and simplicity. Main GTG objective is to provide a simple and yet flexible organization tool for life and work.</p>
+
+<links type="topic" style="mouseovers">
+  <e:mouseover src="figures/mover1.png"/>
+  <e:mouseover match="gtg-quickstart" src="figures/mover2.png"/>
+  <e:mouseover match="gtg-shortcut-keys" src="figures/mover3.png"/>
+  <e:mouseover match="gtg-main-window" src="figures/mover4.png"/>
+</links>
+
+  <p>For a quick introduction into both <app>GTG's</app> most basic features, as well as some advanced keyboard shortcuts, see the <link xref="gtg-quickstart">Get started</link> and <link xref="gtg-shortcut-keys">Shortcut keys</link> pages. For details about the <app>GTG's</app> interface check the <link xref="gtg-main-window">Understand GTG Main Window</link>.</p>
+
+ <p>Other help topics are grouped together into sections below. Enjoy using <app>Getting Things GNOME!</app></p>
+
+ <section id="gtg-task-management" style="2column">
+    <title>Task Management</title>
+ </section>
+
+ <section id="gtg-search" style="2column">
+    <title>Search For Tasks</title>
+ </section>
+
+ <section id="gtg-sync" style="2column">
+    <title>Sync Services</title>
+ </section>
+
+ <section id="gtg-plugins" style="2column">
+    <title>Plugins</title>
+ </section>
+
+ <section id="gtg-faq" style="2column">
+    <title>FAQ</title>
+ </section>
+
+ <section id="gtg-get-involved" style="2column">
+    <title>Get Involved</title>
+ </section>
+ 
+ <section id="gtg-advanced" style="2column">
+    <title>Advanced Topics</title>
+    
+    <p>If you are willing to dive even deeper into the  <app>GTG</app> world, here are some topics to get you started:</p>
+    
+ </section>
+
+  <section id="gtg-credits" style="2column">
+    <title>Credits</title>
+    <p>These are the people that made <app>GTG</app> possible over the years:</p>
+ </section>
+
+</page>

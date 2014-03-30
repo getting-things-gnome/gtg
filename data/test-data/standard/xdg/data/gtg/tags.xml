@@ -1,0 +1,14 @@
+<?xml version="1.0" ?>
+<tagstore>
+	<tag name="@stuff2sell" parent="@stuff2do"/>
+	<tag color="#F9BED8" name="@hacking"/>
+	<tag name="@stuff2read" parent="@stuff2do"/>
+	<tag name="@stuff2buy" parent="@stuff2do"/>
+	<tag color="#44A32D" name="@people"/>
+	<tag color="#000000" name="@money"/>
+	<tag name="@stuff2book" parent="@stuff2do"/>
+	<tag color="#DB2424" name="@stuff2pay" parent="@stuff2do"/>
+	<tag color="#FFCC1A" name="@gtg" parent="@hacking"/>
+	<tag color="#8AA3CA" name="@music"/>
+	<tag color="#3D3BB4" name="@travels"/>
+</tagstore>

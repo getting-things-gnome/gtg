@@ -1,0 +1,471 @@
+#!/usr/bin/env python3
+# -*- coding:utf-8 -*-
+# -----------------------------------------------------------------------------
+# Command line user interface for manipulating tasks in gtg.
+#
+# Copyright (C) 2010 Bryce W. Harrington
+#
+# This program is free software; you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by the
+# Free Software Foundation; either version 2 of the License, or (at your
+# option) any later version.  See http://www.gnu.org/copyleft/gpl.html for
+# the full text of the license.
+# -----------------------------------------------------------------------------
+
+""" Command line user interface for manipulating tasks in gtg. """
+
+import re
+import sys
+import os
+import dbus
+import cgi
+import getopt
+import textwrap
+from datetime import datetime, date, timedelta
+
+from GTG import _
+
+MSG_ERROR_TASK_ID_INVALID = '[Error] Task ID Invalid'
+
+
+def usage():
+    """ Print usage info """
+    spaces = "  %-30s %s\n"
+
+    text = _("gtcli -- a command line interface to gtg\n")
+    text += "\n"
+
+    text += _("Options:\n")
+    text += spaces % ("-h, --help", _("This help"))
+    text += "\n"
+
+    text += _("Basic commands:\n")
+    text += spaces % ("gtcli new", _("Create a new task"))
+    text += spaces % ("gtcli show <tid>",
+                      _("Display detailed information on given task id"))
+    text += spaces % ("gtcli edit <tid>",
+                      _("Opens the GUI editor for the given task id"))
+    text += spaces % ("gtcli delete <tid>",
+                      _("Removes task identified by tid"))
+    text += spaces % ("gtcli list [all|today|<filter>|<tag>]...",
+                      _("List tasks"))
+    text += spaces % ("gtcli search <expression>", _("Search tasks"))
+    text += spaces % ("gtcli count [all|today|<filter>|<tag>]...",
+                      _("Number of tasks"))
+    text += spaces % ("gtcli summary [all|today|<filter>|<tag>]...",
+                      _("Report how many tasks starting/due each day"))
+    text += spaces % ("gtcli overview <count of days>",
+                      _("Report which tasks are scheduled on each day, \
+                        default 7 days"))
+    text += spaces % ("gtcli postpone <tid> <date>",
+                      _("Updates the start date of task"))
+    text += spaces % ("gtcli close <tid>",
+                      _("Sets state of task identified by tid to closed"))
+    text += spaces % ("gtcli browser [hide|show]",
+                      _("Hides or shows the task browser window"))
+
+    text += "\n"
+    text += "http://gtg.fritalk.com/\n"
+    sys.stderr.write(text)
+
+
+def connect_to_gtg():
+    """ Connect and return GTG DBus interface.
+
+    This function handles possible errors while connecting to GTG """
+    try:
+        bus = dbus.SessionBus()
+    except dbus.exceptions.DBusException as err:
+        if "X11 initialization failed" in err.get_dbus_message():
+            os.environ['DISPLAY'] = ":0"
+            bus = dbus.SessionBus()
+        else:
+            print("dbus exception: '%s'" % err)
+            raise
+
+    proxy = bus.get_object("org.gnome.GTG", "/org/gnome/GTG")
+    return dbus.Interface(proxy, "org.gnome.GTG")
+
+
+def new_task(title):
+    """ Create a new task with given title
+
+    Body of the new task is read from stdin. If it contains Subject:,
+    add it to the title.
+    (It is handy, when forwarding e-mail to this script). """
+
+    subject_regex = re.compile("^Subject: (.*)$", re.M | re.I)
+    body = sys.stdin.read()
+    if subject_regex.search(body):
+        subject = subject_regex.findall(body)[0]
+        title = title + ": " + subject
+
+    gtg = connect_to_gtg()
+    task = gtg.NewTask("Active", title, '', '', '', [], cgi.escape(body), [])
+    if task:
+        print(_("New task created with id %s") % task['id'])
+    else:
+        print(_("New task could not be created"))
+        sys.exit(1)
+
+
+def delete_tasks(task_ids):
+    """ Delete tasks from GTG """
+    gtg = connect_to_gtg()
+    for task_id in task_ids.split():
+        if gtg.GetTask(task_id):
+            task = gtg.GetTask(task_id)
+            gtg.DeleteTask(task_id)
+            if gtg.GetTask(task_id):
+                print(_("Task %s could not be deleted") % (task['title']))
+            else:
+                print(_("Task %s deleted") % (task['title']))
+        else:
+            print(MSG_ERROR_TASK_ID_INVALID)
+            sys.exit(1)
+
+
+def close_tasks(task_ids):
+    """ Marks tasks as closed """
+    gtg = connect_to_gtg()
+    for task_id in task_ids.split():
+        task = gtg.GetTask(task_id)
+        if task:
+            task['status'] = "Done"
+            gtg.ModifyTask(task_id, task)
+            task = gtg.GetTask(task_id)
+            if task['status'] == "Done":
+                print(_("Task %s marked as done") % (task['title']))
+            else:
+                print(_("Task %s could not be marked as done") % task['title'])
+                sys.exit(1)
+        else:
+            print(MSG_ERROR_TASK_ID_INVALID)
+            sys.exit(1)
+
+
+def show_tasks(task_ids):
+    """ Displays information about tasks """
+    gtg = connect_to_gtg()
+    for task_id in task_ids.split():
+        task = gtg.GetTask(task_id)
+        if task:
+            content_regex = re.compile(r"<content>(.+)</content>", re.DOTALL)
+
+            content = task['text'] + "\n(unknown)"
+            decoration = content_regex.match(task['text'])
+            if decoration:
+                content = decoration.group(1)
+
+            print(task['title'])
+            if len(task['tags']) > 0:
+                print(" %-12s %s" % ('tags:', task['tags'][0]))
+            for k in ['id', 'startdate', 'duedate', 'status']:
+                print(" %-12s %s" % (k + ":", task[k]))
+            if len(task['parents']) > 0:
+                print(" %-12s %s" % ('parents:', task['parents'][0]))
+            print()
+            print(content)
+            print()
+        else:
+            print(MSG_ERROR_TASK_ID_INVALID)
+            sys.exit(1)
+
+
+def postpone(args):
+    """ Change the start date of a task """
+    gtg = connect_to_gtg()
+    identifier, startdate = args.split()[:2]
+
+    tasks = []
+    if identifier[0] == '@':
+        filters = _criteria_to_filters(identifier)
+        filters.extend(['active', 'workview'])
+        gtg = connect_to_gtg()
+        tasks = gtg.GetTasksFiltered(filters)
+    else:
+        tasks = [gtg.GetTask(identifier)]
+
+    for task in tasks:
+        if task:
+            task['startdate'] = startdate
+            tags = ", ".join(task['tags'])
+            print("%-12s %-20s %s" % (task['id'], tags, task['title']))
+            gtg.ModifyTask(task['id'], task)
+        else:
+            print(MSG_ERROR_TASK_ID_INVALID)
+            sys.exit(1)
+
+
+def edit_tasks(task_ids):
+    """ Open tasks in the task editor GUI """
+    gtg = connect_to_gtg()
+    for task in task_ids.split():
+        if gtg.GetTask(task):
+            gtg.OpenTaskEditor(task)
+        else:
+            print(MSG_ERROR_TASK_ID_INVALID)
+            sys.exit(1)
+
+
+def toggle_browser_visibility(state):
+    """ Cause the task browser to be displayed """
+    gtg = connect_to_gtg()
+    if state == "hide":
+        gtg.HideTaskBrowser()
+    elif state in ["minimize", "iconify"]:
+        if not gtg.IsTaskBrowserVisible():
+            gtg.ShowTaskBrowser()
+        gtg.IconifyTaskBrowser()
+    else:
+        gtg.ShowTaskBrowser()
+
+
+def _criteria_to_filters(criteria):
+    """ Convert user input for filtering into GTG filters """
+    criteria = criteria
+    if criteria in ['', 'all']:
+        filters = ['active']
+    else:
+        filters = criteria.split()
+
+    # Special case 'today' filter
+    if 'today' in filters:
+        filters.extend(['active', 'workview'])
+        filters.remove('today')
+
+    return filters
+
+
+def count_tasks(criteria):
+    """ Print a simple count of tasks matching criteria """
+    filters = _criteria_to_filters(criteria)
+    gtg = connect_to_gtg()
+    tasks = gtg.GetTasksFiltered(filters)
+
+    total = 0
+    for task in tasks:
+        if 'title' not in task:
+            continue
+        total += 1
+
+    print(total)
+    return total
+
+
+def summary_of_tasks(criteria):
+    """ Print report showing number of tasks starting and due each day """
+    if criteria in ['', 'all']:
+        criteria = 'workable'
+
+    filters = _criteria_to_filters(criteria)
+    filters.append('active')
+    gtg = connect_to_gtg()
+    tasks = gtg.GetTasksFiltered(filters)
+
+    report = {}
+    for task in tasks:
+        if not task['startdate']:
+            startdate = 'unscheduled'
+        else:
+            startdate = task['startdate']
+            if datetime.strptime(startdate, "%Y-%m-%d") < datetime.today():
+                startdate = date.today().strftime("%Y-%m-%d")
+
+        if startdate not in report:
+            report[startdate] = {'starting': 0, 'due': 0}
+        report[startdate]['starting'] += 1
+
+        duedate = task['duedate'] or 'never'
+        if duedate not in report:
+            report[duedate] = {'starting': 0, 'due': 0}
+        report[duedate]['due'] += 1
+
+    print("%-20s %5s %5s" % ("", "Start", "Due"))
+    if 'unscheduled' in report:
+        print("%-20s %5d %5d" % ('unscheduled',
+                                 report['unscheduled']['starting'],
+                                 report['unscheduled']['due']))
+    num_days = 22
+    fmt = "%a  %-m-%-d"
+    if 'today' in criteria:
+        num_days = 1
+    for i in range(0, num_days):
+        day = date.today() + timedelta(i)
+        sday = str(day)
+        if sday in report:
+            print("%-20s %5d %5d" % (day.strftime(fmt),
+                                     report[sday]['starting'],
+                                     report[sday]['due']))
+        else:
+            print("%-20s %5d %5d" % (day.strftime(fmt), 0, 0))
+
+
+def list_tasks(criteria):
+    """ Display a listing of tasks
+
+    Accepts any filter or combination of filters or tags to limit the
+    set of tasks shown.  If multiple tags specified, it lists only tasks
+    that have all the tags.  If no filters or tags are specified,
+    defaults to showing all active tasks.
+    """
+
+    filters = _criteria_to_filters(criteria)
+    gtg = connect_to_gtg()
+    tasks = gtg.GetTasksFiltered(filters)
+
+    tasks_tree = {}
+    notag = '@__notag'
+    for task in tasks:
+        if 'title' not in task:
+            continue
+        if not task['tags'] or len(task['tags']) == 0:
+            if notag not in tasks_tree:
+                tasks_tree[notag] = []
+            tasks_tree[notag].append(task)
+        else:
+            tags = []
+            for tag in list(task['tags']):
+                tags.append(tag)
+                if tag not in tasks_tree:
+                    tasks_tree[tag] = []
+                tasks_tree[tag].append(task)
+
+    # If any tags were specified, use only those as the categories
+    keys = [fname for fname in filters if fname.startswith('@')]
+    if not keys:
+        keys = list(tasks_tree.keys())
+        keys.sort()
+
+    for key in keys:
+        if key not in tasks_tree:
+            continue
+        if key != notag:
+            print("%s:" % (key[1:]))
+        for task in tasks_tree[key]:
+            text = textwrap.fill(task['title'],
+                                 initial_indent='',
+                                 subsequent_indent=' ' * 40)
+            print("  %-36s  %s" % (task['id'], text))
+
+
+def search_tasks(expression):
+    """ Search Tasks according to expression"""
+    gtg = connect_to_gtg()
+    tasks = gtg.SearchTasks(expression)
+    for task in tasks:
+        if task['status'] == 'Active':
+            text = textwrap.fill(task['title'],
+                                 initial_indent='',
+                                 subsequent_indent=' ' * 40)
+            print("  %-36s  %s" % (task['id'], text))
+
+
+def overview(expression):
+    """ Print calendar overview for couple next days """
+
+    def to_date(s):
+        """ Convert string representation into date """
+        try:
+            dt = datetime.strptime(s, "%Y-%m-%d")
+            return date(dt.year, dt.month, dt.day)
+        except ValueError:
+            return None
+
+    try:
+        overview_length = int(expression)
+    except ValueError:
+        overview_length = 7
+
+    gtg = connect_to_gtg()
+    tasks = gtg.GetActiveTasks([])
+
+    for i in range(0, overview_length):
+        day = date.today() + timedelta(days=i)
+
+        today_tasks = []
+        for task in tasks:
+            # skip tasks without start and due date
+            if not task['startdate'] and not task['duedate']:
+                continue
+
+            # due date is not eligible
+            if task['duedate'] == 'someday':
+                continue
+
+            # eliminate tasks after due date
+            duedate = to_date(task['duedate'])
+            if duedate and day > duedate:
+                continue
+
+            # eliminate tasks before start dates
+            startdate = to_date(task['startdate'])
+            if startdate and day < startdate:
+                continue
+
+            today_tasks.append(task['title'])
+
+        day_str = day.strftime("%A  %-m-%-d")
+        if i > 0:
+            print("")
+        print("%s (%d tasks)" % (day_str, len(today_tasks)))
+        for task in sorted(today_tasks):
+            print(" - %s" % task)
+
+
+def run_command(args):
+    """ Run command and check for its minimal required arguments """
+
+    def minimal_args(count):
+        """ Check the minimal required arguments """
+        if len(args) < count + 1:
+            usage()
+            sys.exit(1)
+
+    minimal_args(0)
+    commands = [
+        (("new", "add"), 0, new_task),
+        (("list"), 0, list_tasks),
+        (("count"), 0, count_tasks),
+        (("summary"), 0, summary_of_tasks),
+        (("rm", "delete"), 1, delete_tasks),
+        (("close"), 1, close_tasks),
+        (("postpone"), 2, postpone),
+        (("show"), 1, show_tasks),
+        (("edit"), 1, edit_tasks),
+        (("browser"), 0, toggle_browser_visibility),
+        (("search"), 1, search_tasks),
+        (("overview"), 0, overview),
+    ]
+
+    for aliases, min_args, command in commands:
+        if args[0] in aliases:
+            minimal_args(min_args)
+            criteria = " ".join(args[1:]).strip()
+            return command(criteria)
+
+    sys.stderr.write("Unknown command '%s'\n" % args[0])
+    usage()
+    sys.exit(1)
+
+
+def main():
+    """ Parse arguments and launch command """
+    try:
+        opts, args = getopt.gnu_getopt(sys.argv[1:], "h", ["help"])
+    except getopt.GetoptError as err:
+        sys.stderr.write("Error: " + str(err) + "\n\n")
+        usage()
+        sys.exit(2)
+    for opt, arg in opts:
+        if opt in ("-h", "--help"):
+            usage()
+            sys.exit(0)
+        else:
+            assert False, "unhandled option %s=%s" % (opt, arg)
+
+    run_command(args)
+
+
+if __name__ == '__main__':
+    main()

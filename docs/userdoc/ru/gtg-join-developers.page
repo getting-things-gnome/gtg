@@ -1,0 +1,27 @@
+<page xmlns="http://projectmallard.org/1.0/" type="topic" style="task" id="gtg-join-developers" xml:lang="ru">
+
+<info>
+  <link type="guide" xref="index#gtg-advanced" group="second"/>
+  <link type="seealso" xref="gtg-ppa"/>
+  <link type="seealso" xref="gtg-create-sync"/>
+  <link type="seealso" xref="gtg-create-plugin"/>
+  <revision pkgversion="0.1" version="0.1" date="2012-07-03" status="candidate"/>
+  <credit type="author">
+    <name>Radina Matic</name>
+    <email>radina.matic@gmail.com</email>
+  </credit>
+<mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator">
+  <mal:name>Dmitry Drozdov</mal:name>
+</mal:credit>
+</info>
+
+<title>Присоединяйтесь к команде разработчиков GTG</title>
+
+<p>Готовы к интересным приключениям? Хотите влиться в команду разработчиков? Начните отсюда:</p>
+
+<p><link href="https://live.gnome.org/gtg/contributing/">Вклад в GTG</link></p>
+
+<p><link href="https://live.gnome.org/gtg/becoming%20a%20gtg%20developer/">Становись разработчиком GTG</link></p>
+
+</page>
+
