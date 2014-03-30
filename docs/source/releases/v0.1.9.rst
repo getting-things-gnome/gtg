@@ -1,0 +1,49 @@
+v0.1.9: "Five curtain calls"
+============================
+
+The whole GTG development team is pleased to announce that after months of hard
+work, we've just released a new version of Getting Things GNOME!, codenamed
+"Five curtain calls". Don't even hesitate, rush on our Launchpad project page
+and download the archive or, if you prefer, download the packaged version for
+Debian and Ubuntu from our PPA!
+
+The GTG 0.1.9 release is a beta release for the upcoming 0.2, which is due very
+soon. It packs a *huge amount* of new features, among them:
+
+* support for plugins, thanks to Paulo Cabido's Google Summer of Code
+* already 6 plugins available:
+
+  - Remember the milk synchronization
+  - hamster integration
+  - bugzilla
+  - geolocation
+  - tomboy
+  - notification area
+
+* improved performances
+* support for tag groups
+* improved editor UI
+* fuzzy due dates
+
+The 0.2 release will also fixes not less than 99 bugs! Thanks to our new GTG
+developers (Paulo Cabido, Luca Invernizzi and Kevin Mehall), a terrific work
+has been achieved for 0.1.9!
+
+As this is a beta release, we kindly ask every adventurous testers to help us
+make the soon-to-come 0.2 a great release by reporting any unnoticed bug to our
+project page.
+
+Unfortunately, this release also comes with 2 unresolved bugs that worth mentioning:
+
+* A bug with intel GPU drivers in Ubuntu 9.10 distributions may prevent tag
+  color squares from appearing. It seems that upgrading to a newest version of
+  those drivers fixes that. More info on the bug page.
+* A GTK bug causes some errors to show on standard output if you run GTG from a
+  terminal, this bug has been reported upstream.
+
+Those 2 bugs are caused by upstream bugs and will only be corrected once the
+related apps will be fixed, which should happen anytime.
+
+Anyway, we'll soon come back with a new, shiny, a full-featured 0.2 release
+that will sure rock. Until then, we hope you'll like GTG 0.1.9 as much as we
+do!

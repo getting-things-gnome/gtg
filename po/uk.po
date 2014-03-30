@@ -1,0 +1,2512 @@
+# Ukrainian translation for gtg
+# Copyright (c) 2009 Rosetta Contributors and Canonical Ltd 2009
+# This file is distributed under the same license as the gtg package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2009.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gtg\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2013-04-28 17:02+0200\n"
+"PO-Revision-Date: 2013-10-01 19:17+0000\n"
+"Last-Translator: alex <Unknown>\n"
+"Language-Team: Ukrainian <uk@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"X-Launchpad-Export-Date: 2013-10-02 05:18+0000\n"
+"X-Generator: Launchpad (build 16774)\n"
+
+#: GTG/gtk/backends_dialog/__init__.py:75
+#, python-format
+msgid "Synchronization Services - %s"
+msgstr "Сервіси синхронізації - %s"
+
+#: GTG/gtk/backends_dialog/__init__.py:293
+#, python-format
+msgid "Do you really want to remove the '%s' synchronization service?"
+msgstr "Ви дійсно бажаєте видалити сервіс '%s'?"
+
+#: GTG/gtk/backends_dialog/configurepanel.py:145
+msgid "Disable syncing"
+msgstr "Вимкнути синхронізацію"
+
+#: GTG/gtk/backends_dialog/configurepanel.py:147
+msgid "Enable syncing"
+msgstr "Увімкнути синхронізацію"
+
+#: GTG/gtk/backends_dialog/configurepanel.py:155
+msgid "This is the default synchronization service"
+msgstr "Це послуга синхронізації за замовчуванням"
+
+#: GTG/gtk/backends_dialog/configurepanel.py:158
+msgid "Syncing is enabled."
+msgstr "Синхронізація увімкнута"
+
+#: GTG/gtk/backends_dialog/configurepanel.py:160
+msgid "Syncing is <span color=\"red\">disabled</span>."
+msgstr "Синхронізація <span color=\"red\">вимкнута</span>."
+
+#: GTG/gtk/backends_dialog/parameters_ui/__init__.py:61
+msgid "Import tags"
+msgstr "Імпортувати мітки"
+
+#: GTG/gtk/backends_dialog/parameters_ui/__init__.py:62
+msgid "All tags"
+msgstr "Всі мітки"
+
+#: GTG/gtk/backends_dialog/parameters_ui/__init__.py:63
+msgid ""
+"Just these                                                                   "
+"    tags:"
+msgstr "Лише ці мітки:"
+
+#: GTG/gtk/backends_dialog/parameters_ui/__init__.py:68
+msgid "Tags to sync"
+msgstr "Синхронізувати мітки"
+
+#: GTG/gtk/backends_dialog/parameters_ui/__init__.py:69
+#: GTG/core/treefactory.py:79
+msgid "All tasks"
+msgstr "Всі завдання"
+
+#: GTG/gtk/backends_dialog/parameters_ui/__init__.py:70
+msgid ""
+"Tasks with                                                                 "
+"these tags:"
+msgstr "Завдання з цими мітками:"
+
+#: GTG/gtk/backends_dialog/parameters_ui/__init__.py:76
+msgid "Username"
+msgstr "Користувач"
+
+#: GTG/gtk/backends_dialog/parameters_ui/__init__.py:81
+msgid "Service URL"
+msgstr "Адреса URL служби"
+
+#: GTG/gtk/backends_dialog/parameters_ui/__init__.py:86
+msgid ""
+"Import tasks                                                         from @ "
+"replies "
+msgstr "Імпортувати завдання з @ відповідей "
+
+#: GTG/gtk/backends_dialog/parameters_ui/__init__.py:94
+msgid "Import tasks from direct messages"
+msgstr "Імпортувати завдання з прямих повідомлень"
+
+#: GTG/gtk/backends_dialog/parameters_ui/__init__.py:102
+msgid ""
+"Import                                                                  "
+"tasks from                                                                  "
+"your tweets"
+msgstr "Імпортувати завдання з ваших твітів"
+
+#: GTG/gtk/backends_dialog/parameters_ui/__init__.py:109
+msgid "Tag your GTG tasks with the bug tags"
+msgstr "Позначити ваші завдання GTG мітками багів."
+
+#: GTG/gtk/backends_dialog/parameters_ui/__init__.py:116
+msgid "Tag your GTG tasks with the project targeted by the bug"
+msgstr "Позначити ваші завдання GTG цільовим проектом стосовно бага."
+
+#: GTG/gtk/backends_dialog/parameters_ui/periodui.py:49
+msgid "Check for new tasks every"
+msgstr "Перевіряти на нові завдання кожні"
+
+#: GTG/gtk/backends_dialog/parameters_ui/periodui.py:95
+msgid " minute"
+msgid_plural " minutes"
+msgstr[0] " хвилина"
+msgstr[1] " хвилина"
+msgstr[2] " хвилин"
+
+#: GTG/gtk/backends_dialog/parameters_ui/passwordui.py:48
+msgid "Password:"
+msgstr "Пароль:"
+
+#: GTG/gtk/backends_dialog/parameters_ui/pathui.py:49
+msgid "Filename:"
+msgstr "Назва файлу:"
+
+#: GTG/gtk/backends_dialog/addpanel.py:68
+msgid "Select synchronization service:"
+msgstr "Вибрати сервіс синхронізації:"
+
+#: GTG/gtk/backends_dialog/addpanel.py:177
+msgid "Author"
+msgid_plural "Authors"
+msgstr[0] "Автор"
+msgstr[1] "Автор"
+msgstr[2] "Автори"
+
+#: GTG/gtk/preferences.glade.h:1
+msgid "Start Getting Things GNOME! on every login"
+msgstr "Запускати Getting Things GNOME! при кожному вході в систему"
+
+#: GTG/gtk/preferences.glade.h:2
+msgid "New Task Shortcut :"
+msgstr "Закладка нового завдання"
+
+#: GTG/gtk/preferences.glade.h:3
+msgid "<b>System</b>"
+msgstr "<b>Система</b>"
+
+#: GTG/gtk/preferences.glade.h:4
+msgid "Enable colored backgrounds in the task list"
+msgstr "Увімкнути кольорові фони в списку завдань"
+
+#: GTG/gtk/preferences.glade.h:5
+msgid "Show description preview in the task list."
+msgstr "Показати попередній перегляд опису в списку завдань"
+
+#: GTG/gtk/preferences.glade.h:6
+msgid "<b>Task Browser</b>"
+msgstr "<b>Переглядач завдань</b>"
+
+#: GTG/gtk/preferences.glade.h:7
+msgid "Font :"
+msgstr "Шрифт :"
+
+#: GTG/gtk/preferences.glade.h:8
+msgid "<b>Editor</b>"
+msgstr "<b>Редактор</b>"
+
+#: GTG/gtk/preferences.glade.h:9
+msgid "page 1"
+msgstr "сторінка 1"
+
+#: GTG/gtk/preferences.glade.h:10
+msgid "page 2"
+msgstr "сторінка 2"
+
+#: GTG/gtk/preferences.glade.h:11
+msgid "page 3"
+msgstr "сторінка 3"
+
+#: GTG/gtk/deletion.glade.h:1
+msgid "Confirm task deletion"
+msgstr "Підтвердити видалення завдання"
+
+#: GTG/gtk/preferences.py:88
+#, python-format
+msgid "Preferences - %s"
+msgstr "Налаштування - %s"
+
+#: GTG/gtk/preferences.py:249
+msgid "Warning"
+msgstr "Попередження"
+
+#: GTG/gtk/preferences.py:263
+#, python-format
+msgid ""
+"The shortcut \"%s\" cannot be used because it will become impossible to type "
+"using this key.\n"
+"Please try with a key such as Control, Alt or Shift at the same time."
+msgstr ""
+"Скорочення \"%s\" не можна використовувати, оскільки використання цієї "
+"клавіші для звичайного вводу стане неможливим.\n"
+"Будь ласка, спробуйте з такими клавішами, як Control, Alt чи Shift одночасно."
+
+#: GTG/gtk/browser/__init__.py:37 GTG/gtk/browser/taskbrowser.glade.h:25
+#: GTG/gtk/editor/__init__.py:31
+msgid "Mark as Done"
+msgstr "Відмітити як виконане"
+
+#: GTG/gtk/browser/__init__.py:38
+msgid "Mark the selected task as done"
+msgstr "Відмітити, що виділене завдання виконане"
+
+#: GTG/gtk/browser/__init__.py:39 GTG/gtk/editor/__init__.py:32
+msgid "Mark as not Done"
+msgstr "Позначити як не виконане"
+
+#: GTG/gtk/browser/__init__.py:40 GTG/gtk/browser/__init__.py:44
+msgid "Mark the selected task as to be done"
+msgstr "Відмітити, що виділене завдання вимагає виконання"
+
+#: GTG/gtk/browser/__init__.py:41 GTG/gtk/browser/taskbrowser.glade.h:26
+#: GTG/gtk/editor/__init__.py:33 GTG/gtk/editor/taskeditor.glade.h:3
+msgid "Dismiss"
+msgstr "Відхилити"
+
+#: GTG/gtk/browser/__init__.py:42
+msgid "Mark the task as not to be done anymore"
+msgstr "Відмітити, що виділене завдання не потребує більше виконання"
+
+#: GTG/gtk/browser/__init__.py:43 GTG/gtk/editor/__init__.py:34
+msgid "Undismiss"
+msgstr "Відновити"
+
+#: GTG/gtk/browser/__init__.py:45
+msgid "Permanently remove the selected task"
+msgstr "Назавжди видалити виділене завдання"
+
+#: GTG/gtk/browser/__init__.py:46
+msgid "Edit the selected task"
+msgstr "Редагувати виділене завдання"
+
+#: GTG/gtk/browser/__init__.py:47 GTG/gtk/browser/taskbrowser.glade.h:4
+msgid "Create a new task"
+msgstr "Створити нове завдання"
+
+#: GTG/gtk/browser/__init__.py:48
+msgid "Create a new subtask"
+msgstr "Створити нове підзавдання"
+
+#: GTG/gtk/browser/__init__.py:49
+msgid "Display only the currently actionable tasks"
+msgstr "Показати тільки завдання, що доступні для виконання"
+
+#: GTG/gtk/browser/__init__.py:50
+msgid "Hide this tag from the workview"
+msgstr "Приховати цю мітку в Робочому режимі"
+
+#: GTG/gtk/browser/__init__.py:51
+msgid "Show this tag in the workview"
+msgstr "Показати цю мітку в Робочому режимі"
+
+#: GTG/gtk/browser/__init__.py:53
+msgid "You can create, open or filter your tasks here"
+msgstr "Ви можете створювати, відкривати або фільтрувати ваші завдання тут"
+
+#: GTG/gtk/browser/__init__.py:54
+msgid "Clear"
+msgstr "Очистити"
+
+#: GTG/gtk/browser/custominfobar.py:34
+#, python-format
+msgid ""
+"The <b>%s</b> synchronization service cannot login with the  supplied "
+"authentication data and has been disabled. To retry the login, re-enable the "
+"service."
+msgstr ""
+"Сервіс синхронізації <b>%s</b> не зміг автентикуватися з уведеними даними і "
+"був вимкнений. Для повторного входу, знову ввімкніть сервіс."
+
+#: GTG/gtk/browser/custominfobar.py:39
+#, python-format
+msgid ""
+"Due to a network problem, I cannot contact the <b>%s</b> synchronization "
+"service."
+msgstr ""
+"Через неполадки в мережі, я не можу зв'язатися з сервісом синхронізації "
+"<b>%s</b>."
+
+#: GTG/gtk/browser/custominfobar.py:42
+#, python-format
+msgid ""
+"Cannot connect to DBus, I've disabled the <b>%s</b> synchronization service."
+msgstr ""
+"Неможливо під'єднатися до DBus, сервіс синхронізації <b>%s</b> був вимкнений."
+
+#: GTG/gtk/browser/custominfobar.py:104
+msgid "Configure synchronization service"
+msgstr "Налаштувати сервіс синхронізації"
+
+#: GTG/gtk/browser/custominfobar.py:106
+msgid "Ignore"
+msgstr "Ігнорувати"
+
+#: GTG/gtk/browser/custominfobar.py:114 GTG/gtk/browser/custominfobar.py:119
+msgid "Ok"
+msgstr "Гаразд"
+
+#: GTG/gtk/browser/custominfobar.py:140
+msgid "Confirm"
+msgstr "Підтвердити"
+
+#: GTG/gtk/browser/custominfobar.py:142
+msgid "Continue"
+msgstr "Продовжити"
+
+#: GTG/gtk/browser/modifytags_dialog.glade.h:1
+msgid "Modify Tags"
+msgstr "Змінити мітки"
+
+#: GTG/gtk/browser/modifytags_dialog.glade.h:2
+msgid "Add/Remove Tags"
+msgstr "Додати/видалити мітки"
+
+#: GTG/gtk/browser/modifytags_dialog.glade.h:3
+msgid "Cancel"
+msgstr "Скасувати"
+
+#: GTG/gtk/browser/modifytags_dialog.glade.h:4
+msgid "Enter the name of the tag(s) you wish to add or remove:"
+msgstr "Введіть ім’я мітки/міток, які ви бажаєте додати чи видалити"
+
+#: GTG/gtk/browser/modifytags_dialog.glade.h:5
+msgid "TagName"
+msgstr "Ім’яМітки"
+
+#: GTG/gtk/browser/modifytags_dialog.glade.h:6
+msgid ""
+"Hint: you can add several tags by separating them with\n"
+"space. Place '!' before tags you want to remove."
+msgstr ""
+"Підказка: ви можете додати декілька міток, розділяючи їх\n"
+"пробілом. Поставте ’!’ перед мітками, які ви бажаєте видалити."
+
+#: GTG/gtk/browser/modifytags_dialog.glade.h:8
+msgid "Apply to subtasks"
+msgstr "Застосувати до підзавдань"
+
+#: GTG/gtk/browser/simple_color_selector.py:236
+msgid "Add custom color"
+msgstr "Додати користувацький колір"
+
+#: GTG/gtk/browser/simple_color_selector.py:264
+msgid "Choose a color"
+msgstr "Оберіть колір"
+
+#: GTG/gtk/browser/treeview_factory.py:277
+#: GTG/gtk/browser/taskbrowser.glade.h:29
+msgid "Tags"
+msgstr "Мітки"
+
+#: GTG/gtk/browser/treeview_factory.py:320
+msgid "Start date"
+msgstr "Дата початку"
+
+#: GTG/gtk/browser/treeview_factory.py:331
+msgid "Due"
+msgstr "Термін"
+
+#: GTG/gtk/browser/treeview_factory.py:351
+msgid "Closed date"
+msgstr "Дата закриття"
+
+#: GTG/gtk/browser/treeview_factory.py:412
+msgid "Title"
+msgstr "Заголовок"
+
+#: GTG/gtk/browser/tag_editor.py:87
+msgid "Remove selected icon"
+msgstr "Видалити обрані іконки"
+
+#: GTG/gtk/browser/tag_editor.py:233
+msgid "Name : "
+msgstr "Ім’я: "
+
+#: GTG/gtk/browser/tag_editor.py:240
+msgid "Show Tag in Work View :"
+msgstr "Показати мітку в Робочому режимі"
+
+#: GTG/gtk/browser/tag_editor.py:253
+msgid "Select Tag Color:"
+msgstr "Оберіть колір мітки"
+
+#: GTG/gtk/browser/tag_editor.py:293
+msgid ""
+"Click To\n"
+"Set Icon"
+msgstr ""
+"Натисніть, щоб\n"
+"встановити значок"
+
+#: GTG/gtk/browser/tag_editor.py:303
+msgid "Enter tag name here"
+msgstr "Введіть ім'я мітки тут"
+
+#: GTG/gtk/browser/modifytags_dialog.py:38
+msgid "NewTag"
+msgstr "Нова мітка"
+
+#: GTG/gtk/browser/browser.py:586
+msgid "no active tasks"
+msgstr "активні завдання відсутні"
+
+#: GTG/gtk/browser/browser.py:588
+#, python-format
+msgid "%(tasks)d active task"
+msgid_plural "%(tasks)d active tasks"
+msgstr[0] "%(tasks)d активне завдання"
+msgstr[1] "%(tasks)d активних завдання"
+msgstr[2] "%(tasks)d активних завдань"
+
+#: GTG/gtk/browser/browser.py:1545
+msgid "Add Task"
+msgstr "Додати завдання"
+
+#: GTG/gtk/browser/browser.py:1546
+msgid "Open Task"
+msgstr "Відкрити завдання"
+
+#: GTG/gtk/browser/browser.py:1547 GTG/core/treefactory.py:102
+msgid "Search"
+msgstr "Знайти"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:1
+msgid "Getting Things GNOME!"
+msgstr "Getting Things GNOME!"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:2
+msgid "_Tasks"
+msgstr "_Завдання"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:3
+msgid "New _Task"
+msgstr "Нове _завдання"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:5
+msgid "New _Subtask"
+msgstr "Нове _підзавдання"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:6
+msgid "Mark as _Done"
+msgstr "Відмітити як _виконане"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:7
+msgid "D_ismiss"
+msgstr "_Відхилити"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:8
+msgid "_Edit"
+msgstr "_Правка"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:9
+msgid "_View"
+msgstr "_Вигляд"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:10
+msgid "_Work View"
+msgstr "_Робочий план"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:11
+msgid "_Tags Sidebar"
+msgstr "Панель _міток"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:12
+msgid "_Closed Tasks Pane"
+msgstr "_Виконані завдання"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:13
+msgid "T_oolbar"
+msgstr "_Панель інструментів"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:14
+msgid "_Quick Add Entry"
+msgstr "_Швидке додавання"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:15
+msgid "_Plugins"
+msgstr "_Додатки"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:16
+msgid "_Help"
+msgstr "_Довідка"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:17
+msgid "Open GTG help"
+msgstr "Відкрити довідку GTG"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:18
+msgid "Help to translate GTG into your language"
+msgstr "Допоможіть перекласти GTG вашою мовою"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:19
+msgid "Report a problem to GTG developers"
+msgstr "Повідомити про проблему розробників GTG"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:20
+msgid "New Task"
+msgstr "Нове завдання"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:21
+msgid "New Subtask"
+msgstr "Нове підзавдання"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:22
+msgid "Edit"
+msgstr "Правка"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:23
+msgid "Undo"
+msgstr "Відмінити"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:24
+msgid "Redo"
+msgstr "Зробити знову"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:27
+#: GTG/gtk/browser/tag_context_menu.py:63 GTG/gtk/editor/taskeditor.glade.h:4
+msgid "Delete"
+msgstr "Видалити"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:28
+msgid "Work View"
+msgstr "Робочий план"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:30
+msgid "Tasks"
+msgstr "Завдання"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:31
+msgid "About GTG!"
+msgstr "Про GTG!"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:32
+msgid "Copyright © 2008-2013 Lionel Dricot, Bertrand Rousseau"
+msgstr "Copyright © 2008-2013 Lionel Dricot, Bertrand Rousseau"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:33
+msgid ""
+"GTG is a personal tasks and TODO-list items organizer for the GNOME desktop "
+"environment."
+msgstr ""
+"GTG - Ваш персональний органайзер завдань та списків для середовища GNOME."
+
+#: GTG/gtk/browser/taskbrowser.glade.h:34
+msgid "GTG website"
+msgstr "Вебсайт GTG"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:35
+msgid ""
+"Getting Things GNOME! is free software; you can redistribute it and/or "
+"modify it under the terms of the GNU General Public License as published by "
+"the Free Software Foundation; either version 3 of the License, or (at your "
+"option) any later version.\n"
+"\n"
+"Getting Things GNOME! is distributed in the hope that it will be useful, but "
+"WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY "
+"or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for "
+"more details.\n"
+"\n"
+"You should have received a copy of the GNU General Public License along with "
+"Getting Things GNOME!; if not, write to the Free Software Foundation, Inc., "
+"51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA."
+msgstr ""
+"Getting Things GNOME! - вільне програмне забезпечення; ви можете поширювати "
+"та/або змінювати його згідно умов ліцензії GNU General Public License, "
+"опублікованої Free Software Foundation; версії 3 або будь-якої пізнішої "
+"версії (на Ваш вибір).\n"
+"\n"
+"Getting Things GNOME! поширюється з надією, що програма буде корисною, але "
+"БЕЗ ЖОДНИХ ГАРАНТІЙ; навіть без неявної гарантії КОМЕРЦІЙНОЇ ЦІННОСТІ чи "
+"ПРИДАТНОСТІ ДЛЯ КОНКРЕТНИХ ЦІЛЕЙ. Детальніше дивіться GNU General Public "
+"License.\n"
+"\n"
+"Ви мали отримати копію GNU General Public License разом з Getting Things "
+"GNOME!; якщо ні, напишіть в Free Software Foundation, Inc., 51 Franklin "
+"Street, Fifth Floor, Boston, MA 02110-1301, USA."
+
+#: GTG/gtk/browser/taskbrowser.glade.h:40
+msgid "Mark as Not Done"
+msgstr "Відмітити як не виконане"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:41
+msgid "Und_ismiss"
+msgstr "_Відновити"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:42
+msgid "Add a subtask"
+msgstr "Додати підзавдання"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:43
+msgid "_Set Start Date"
+msgstr "_Встановити дату початку"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:44
+msgid "T_oday"
+msgstr "С_ьогодні"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:45
+msgid "_Tomorrow"
+msgstr "_Завтра"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:46
+msgid "Next _Week"
+msgstr "Наступного_тижня"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:47
+msgid "Next _Month"
+msgstr "Наступного_місяця"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:48
+msgid "Next _Year"
+msgstr "Наступного_року"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:49
+msgid "_Clear Start Date"
+msgstr "_Очистити дату початку"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:50
+msgid "Set Due Date"
+msgstr "Встановити дату завершення"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:51
+msgid "_Now"
+msgstr "_Зараз"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:52
+msgid "_Soon"
+msgstr "_Скоро"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:53
+msgid "_Someday"
+msgstr "_Коли-небудь"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:54
+msgid "_Clear Due Date"
+msgstr "_Очистити дату завершення"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:55
+msgid "Modify Tags..."
+msgstr "Змінити мітки..."
+
+#: GTG/gtk/browser/tag_context_menu.py:58
+msgid "Edit Tag..."
+msgstr "Змінити мітку..."
+
+#: GTG/gtk/editor/__init__.py:36
+msgid "Mark this task as done"
+msgstr "Відмітити це завдання як виконане"
+
+#: GTG/gtk/editor/__init__.py:37 GTG/gtk/editor/__init__.py:39
+msgid "Mark this task as to be done"
+msgstr "Відмітити це завдання для виконання"
+
+#: GTG/gtk/editor/__init__.py:38
+msgid "Mark this task as not to be done anymore"
+msgstr "Відмітити це завдання як непотрібне"
+
+#: GTG/gtk/editor/__init__.py:40
+msgid "Permanently remove this task"
+msgstr "Видалити це завдання безповоротно"
+
+#: GTG/gtk/editor/__init__.py:41
+msgid "Insert a subtask in this task"
+msgstr "Додати підзавдання до цього"
+
+#: GTG/gtk/editor/__init__.py:42
+msgid "Insert a tag in this task"
+msgstr "Додати мітку до цього завдання"
+
+#: GTG/gtk/editor/editor.py:319
+#, python-format
+msgid "Completed %(days)d day late"
+msgid_plural "Completed %(days)d days late"
+msgstr[0] "Прострочено на %(days)d день"
+msgstr[1] "Прострочено на %(days)d дні"
+msgstr[2] "Прострочено на %(days)d днів"
+
+#: GTG/gtk/editor/editor.py:324
+#, python-format
+msgid "Completed %(days)d day early"
+msgid_plural "Completed %(days)d days early"
+msgstr[0] "Виконано за %(days)d день до терміну"
+msgstr[1] "Виконано за %(days)d дні до терміну"
+msgstr[2] "Виконано за %(days)d днів до терміну"
+
+#: GTG/gtk/editor/editor.py:333
+#, python-format
+msgid "Due tomorrow!"
+msgid_plural "%(days)d days left"
+msgstr[0] "Залишився %(days)d день"
+msgstr[1] "Залишилось %(days)d дні"
+msgstr[2] "Залишилось %(days)d днів"
+
+#: GTG/gtk/editor/editor.py:336
+msgid "Due today!"
+msgstr "На сьогодні!"
+
+#: GTG/gtk/editor/editor.py:339
+#, python-format
+msgid "Due yesterday!"
+msgid_plural "Was %(days)d days ago"
+msgstr[0] "%(days)d день тому"
+msgstr[1] "%(days)d дні тому"
+msgstr[2] "%(days)d днів тому"
+
+#: GTG/gtk/editor/taskeditor.glade.h:1
+msgid "Task"
+msgstr "Завдання"
+
+#: GTG/gtk/editor/taskeditor.glade.h:2
+msgid "Mark Done"
+msgstr "Відмітити завершені"
+
+#: GTG/gtk/editor/taskeditor.glade.h:5
+msgid "Insert subtask"
+msgstr "Додати підзавдання"
+
+#: GTG/gtk/editor/taskeditor.glade.h:6
+msgid "Insert tag"
+msgstr "Додати мітку"
+
+#: GTG/gtk/editor/taskeditor.glade.h:7
+msgid "Starting on"
+msgstr "Дата початку"
+
+#: GTG/gtk/editor/taskeditor.glade.h:8
+msgid "Due for"
+msgstr "Термін"
+
+#: GTG/gtk/editor/taskeditor.glade.h:9
+msgid "Closed on"
+msgstr "Виконано"
+
+#: GTG/gtk/editor/taskeditor.glade.h:10
+msgid "Now"
+msgstr "Зараз"
+
+#: GTG/gtk/editor/taskeditor.glade.h:11
+msgid "Soon"
+msgstr "Незабаром"
+
+#: GTG/gtk/editor/taskeditor.glade.h:12
+msgid "Someday"
+msgstr "Коли-небудь"
+
+#: GTG/gtk/delete_dialog.py:92
+msgid ""
+"Deleting a task cannot be undone, and will delete the following task: "
+msgid_plural ""
+"Deleting a task cannot be undone, and will delete the following tasks: "
+msgstr[0] ""
+"Видалення завдання не може бути скасоване і спричинить також видалення "
+"наступного завдання: "
+msgstr[1] ""
+"Видалення завдання не може бути скасоване і спричинить також видалення "
+"наступного завдання: "
+msgstr[2] ""
+"Видалення завдання не може бути скасоване і спричинить також видалення "
+"наступних завдань: "
+
+#: GTG/gtk/delete_dialog.py:97
+msgid "Are you sure you want to delete this task?"
+msgid_plural "Are you sure you want to delete these tasks?"
+msgstr[0] "Ви впевнені, що бажаєте видалити це завдання?"
+msgstr[1] "Ви впевнені, що бажаєте видалити це завдання?"
+msgstr[2] "Ви впевнені, що бажаєте видалити ці завдання?"
+
+#: GTG/gtk/delete_dialog.py:103
+msgid "Keep selected task"
+msgid_plural "Keep selected tasks"
+msgstr[0] "Залишити виділене завдання"
+msgstr[1] "Залишити виділене завдання"
+msgstr[2] "Залишити виділені завдання"
+
+#: GTG/gtk/delete_dialog.py:106
+msgid "Permanently remove task"
+msgid_plural "Permanently remove tasks"
+msgstr[0] "Видалити завдання назавжди"
+msgstr[1] "Видалити завдання назавжди"
+msgstr[2] "Видалити всі завдання назавжди"
+
+#: GTG/gtk/delete_dialog.py:117
+#, python-format
+msgid ""
+"\n"
+"And %d more tasks"
+msgstr ""
+"\n"
+"і ще %d завдання"
+
+#: GTG/gtk/crashhandler.py:57
+msgid ""
+"We're terribly sorry. Could you help us fix the problem by reporting the "
+"crash?"
+msgstr ""
+"Нам дуже шкода. Чи не могли б ви допомогти виправити помилку повідомивши про "
+"збій?"
+
+#: GTG/gtk/crashhandler.py:170
+msgid "An error has occurred"
+msgstr "Виникла помилка"
+
+#: GTG/gtk/crashhandler.py:183
+msgid "It looks like an error has occurred."
+msgstr "Схоже на те, що виникла помилка"
+
+#: GTG/gtk/crashhandler.py:219
+msgid "_Details"
+msgstr "_Докладніше"
+
+#: GTG/gtk/crashhandler.py:226
+msgid "_Report this problem..."
+msgstr "_Повідомити про цю помилку..."
+
+#: GTG/gtk/crashhandler.py:230
+msgid "_Ignore the error"
+msgstr "_Ігнорувати цю помилку"
+
+#: GTG/gtk/crashhandler.py:335
+msgid ""
+" has crashed. Please report the bug on <a "
+"href=\"http://bugs.edge.launchpad.net/gtg\">our Launchpad page</a>. If you "
+"have Apport installed, it will be started for you."
+msgstr ""
+" завершилась зі збоєм. Будь ласка, повідомте про помилку на <a "
+"href=\"http://bugs.edge.launchpad.net/gtg\">нашій сторінці Launchpad</a>. "
+"Якщо у вас встановлено Apport він буде запущений."
+
+#: GTG/gtk/plugins.glade.h:1
+msgid "<b>Dependencies</b>"
+msgstr "<b>Залежності</b>"
+
+#: GTG/gtk/plugins.glade.h:2
+msgid "_About Plugin"
+msgstr "_Про додаток"
+
+#: GTG/gtk/plugins.py:142
+#, python-format
+msgid "Plugins - %s"
+msgstr "Додатки - %s"
+
+#: GTG/info.py:34
+msgid "GTG is a personal tasks and TODO-list items organizer for the GNOME."
+msgstr "GTG - персональний органайзер завдань та списків для GNOME."
+
+#: GTG/plugins/not_today/not_today.py:59
+msgid "Do it tomorrow"
+msgstr "Зробити завтра"
+
+#: GTG/plugins/send_email/sendEmail.py:44
+msgid "Send via email"
+msgstr "Надіслати за допомогою email"
+
+#: GTG/plugins/send_email/sendEmail.py:68
+#, python-format
+msgid "Status: %s"
+msgstr "Стан: %s"
+
+#: GTG/plugins/send_email/sendEmail.py:69
+#, python-format
+msgid ""
+"\n"
+"Tags: %s"
+msgstr ""
+"\n"
+"Мітки: %s"
+
+#: GTG/plugins/send_email/sendEmail.py:70
+#, python-format
+msgid ""
+"\n"
+"Subtasks:\n"
+"%s"
+msgstr ""
+"\n"
+"Підзавдання:\n"
+"%s"
+
+#: GTG/plugins/send_email/sendEmail.py:72
+#, python-format
+msgid ""
+"\n"
+"Task content:\n"
+"%s"
+msgstr ""
+"\n"
+"Завдання:\n"
+"%s"
+
+#: GTG/plugins/send_email/sendEmail.py:75
+#, python-format
+msgid "Task: %(task_title)s"
+msgstr "Завдання: %(task_title)s"
+
+#: GTG/plugins/notification_area/notification_area.py:279
+msgid "Add _New Task"
+msgstr "Додати _Нове Завдання"
+
+#: GTG/plugins/notification_area/notification_area.py:284
+msgid "_Show Main Window"
+msgstr "_Показати головне вікно"
+
+#: GTG/plugins/notification_area/notification_area.py:297
+msgid "_Quit"
+msgstr "_Вийти"
+
+#: GTG/plugins/export/export_templates/description_textual.py:21
+msgid "Text-only"
+msgstr "Лише текст"
+
+#: GTG/plugins/export/export_templates/description_textual.py:22
+msgid "A template to create a simple text file with some tasks."
+msgstr "Шаблон для створення простого текстового файлу з деякими завданнями."
+
+#: GTG/plugins/export/export_templates/description_pocketmod.py:18
+msgid "Foldable booklet (PDF)"
+msgstr "Складний буклет"
+
+#: GTG/plugins/export/export_templates/description_pocketmod.py:19
+msgid ""
+"A template to create\n"
+"<a href=\"http://www.pocketmod.com\">PocketMod</a>, which is a small "
+"foldable\n"
+"booklet. Packages <b>pdflatex</b>, <b>pdftk</b> and <b>pdfjam</b>\n"
+"are required."
+msgstr ""
+"Шаблон для створення\n"
+"<a href=\"http://www.pocketmod.com\">PocketMod</a>, що є малим складеним\n"
+"буклетом. Необхідні додаткові пакунки: <b>pdflatex</b>, <b>pdftk</b> і\n"
+"<b>pdfjam</b>."
+
+#: GTG/plugins/export/export_templates/description_sexy.py:18
+msgid "A professional-looking HTML page"
+msgstr "HTML-сторінка, що професійно виглядає"
+
+#: GTG/plugins/export/export_templates/description_sexy.py:19
+msgid ""
+"A template to create a HTML page with some tasks and tags. Tags colors are "
+"also displayed."
+msgstr ""
+"Шаблон для створення HTML-сторінки з деякими завданнями та мітками. Кольори "
+"міток також показані."
+
+#: GTG/plugins/export/export_templates/description_statusrpt.py:18
+msgid "Status report"
+msgstr "Звіт про стан"
+
+#: GTG/plugins/export/export_templates/description_statusrpt.py:19
+msgid "A template to create a compact text file listing only task titles."
+msgstr ""
+"Шаблон для створення компактного текстового файлу з переліком лише "
+"заголовків завдань."
+
+#: GTG/plugins/export/export_templates/description_simple.py:18
+msgid "A simple Web page that can be easily printed."
+msgstr "Проста веб-сторінка, що може бути легко віддрукована."
+
+#: GTG/plugins/export/export_templates/description_simple.py:19
+msgid ""
+"A template to create a simple HTML page with some tasks that can be easily "
+"printed."
+msgstr ""
+"Шаблон для створення HTML-сторінки з деякими завданнями, що може бути легко "
+"віддрукована."
+
+#: GTG/plugins/export/export.py:119
+msgid "No task matches your criteria. Empty report can't be generated."
+msgstr ""
+"Немає завдань, які відповідають вашим критеріям. Пустий звіт не може бути "
+"створений."
+
+#: GTG/plugins/export/export.py:137
+#, python-format
+msgid "GTG could not generate the document: %s"
+msgstr "GTG не може створити документ: %s"
+
+#: GTG/plugins/export/export.py:182
+msgid "Export the tasks currently listed"
+msgstr "Експортувати завдання з поточного переліку"
+
+#: GTG/plugins/export/export.py:323
+msgid "Choose where to save your list"
+msgstr "Виберіть де зберегти ваш список"
+
+#: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:1
+msgid "Set the task's location"
+msgstr "Задати місце для завдання"
+
+#: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:2
+msgid "Associate with new tag"
+msgstr "Призначити нову мітку"
+
+#: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:3
+msgid "Associate with existing tag"
+msgstr "Призначити існуючу мітку"
+
+#: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:4
+msgid "Geolocalized-tasks Preferences"
+msgstr "Налаштування Геолокованих завдань"
+
+#: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:5
+msgid "Use network"
+msgstr "Використовувати мережу"
+
+#: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:6
+msgid "Use cellphone"
+msgstr "Використовувати мобільний телефон"
+
+#: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:7
+msgid "Use gps"
+msgstr "Використовувати GPS"
+
+#: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:8
+msgid "<b>Location Determination Method</b>"
+msgstr "<b>Метод визначення місцезнаходження</b>"
+
+#: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:9
+msgid ""
+"<small>Distance in kilometers from \n"
+"the current location.</small>"
+msgstr ""
+"<small>Відстань у кілометрах \n"
+"від поточного місцезнаходження.</small>"
+
+#: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:11
+msgid "<b>Proximity Factor</b>"
+msgstr "<b>Фактор Наближення</b>"
+
+#: GTG/plugins/hamster/hamster.py:38
+msgid "Start a new activity in Hamster Time Tracker "
+msgstr "Почати нову активність в Hamster Time Tracker "
+
+#: GTG/plugins/hamster/hamster.py:174
+msgid "Start task in Hamster"
+msgstr "Почати завдання у Hamster"
+
+#: GTG/plugins/hamster/hamster.py:179
+msgid "Start in Hamster"
+msgstr "Почати у Hamster"
+
+#: GTG/plugins/tomboy/tomboy.py:77
+msgid ""
+"Tomboy/Gnote not found. Please install it or disable the Tomboy/Gnote plugin "
+"in GTG"
+msgstr ""
+"Tomboy/Gnote не знайдений. Будь-ласка встановіть його або вимкніть додаток "
+"Tomboy/Gnote у GTG"
+
+#: GTG/plugins/tomboy/tomboy.py:121
+msgid "Add Tomboy note"
+msgstr "Додати замітку Tomboy"
+
+#: GTG/plugins/tomboy/tomboy.py:194
+#, python-format
+msgid ""
+"%s seems to be installed on your system, but it does not provide a DBus "
+"interface which is required by the Tomboy/Gnote plugin in GTG."
+msgstr ""
+"Здається, %s встановлено на вашій системі, але не забезпечує інтерфейс DBus, "
+"який необхідний для додатку Tomboy/Gnote."
+
+#: GTG/plugins/tomboy/tomboy.py:243
+msgid "That note does not exist!"
+msgstr "Така замітка не існує!"
+
+#: GTG/plugins/tomboy/tomboy.py:248
+msgid "That note does not exist. Do you want to create a new one?"
+msgstr "Така замітка не існує. Бажаєте створити нову?"
+
+#: GTG/plugins/tomboy/tomboy.py:276
+msgid ""
+"This Tomboy note                                        does not exist "
+"anymore. Do you want to                                        create it?"
+msgstr "Ця замітка в Tomboy більше не існує. Ви бажаєте створити її?"
+
+#: GTG/gtg.py:85
+msgid "gtg is already running!"
+msgstr "gtg вже запущена!"
+
+#: GTG/core/treefactory.py:90
+msgid "Tasks with no tags"
+msgstr "Завдання без міток"
+
+#: GTG/core/search.py:87
+msgid "not"
+msgstr "не"
+
+#: GTG/core/search.py:88
+msgid "or"
+msgstr "або"
+
+#: GTG/core/search.py:89
+msgid "after"
+msgstr "після"
+
+#: GTG/core/search.py:90
+msgid "before"
+msgstr "перед"
+
+#: GTG/core/search.py:91 GTG/tools/dates.py:305
+msgid "today"
+msgstr "сьогодні"
+
+#: GTG/core/search.py:92 GTG/tools/dates.py:307
+msgid "tomorrow"
+msgstr "завтра"
+
+#: GTG/core/search.py:93
+msgid "nodate"
+msgstr "без_дати"
+
+#: GTG/core/search.py:94 GTG/tools/dates.py:45 GTG/tools/dates.py:53
+#: GTG/tests/test_dates.py:68 GTG/tests/test_dates.py:76
+msgid "now"
+msgstr "зараз"
+
+#: GTG/core/search.py:95 GTG/tools/dates.py:46 GTG/tools/dates.py:55
+#: GTG/tests/test_dates.py:69 GTG/tests/test_dates.py:77
+msgid "soon"
+msgstr "незабаром"
+
+#: GTG/core/search.py:96 GTG/tools/dates.py:47 GTG/tools/dates.py:59
+#: GTG/tests/test_dates.py:71 GTG/tests/test_dates.py:78
+#: GTG/tests/test_dates.py:79
+msgid "someday"
+msgstr "коли-небудь"
+
+#: GTG/core/search.py:97
+msgid "notag"
+msgstr "без_мітки"
+
+#: GTG/core/firstrun_tasks.py:35
+msgid "Getting Started With GTG"
+msgstr "Починайте роботу з GTG"
+
+#: GTG/core/firstrun_tasks.py:37
+msgid ""
+"Welcome to Getting Things GNOME!, your new task manager! In Getting Things "
+"GNOME! (GTG), everything is a task. From building a bridge over the Pacific "
+"Ocean to changing a light bulb or organizing a party!\n"
+"\n"
+"If you are new to GTG, please take the time to read this, as it will provide "
+"you useful information about how to use GTG to organize your everyday life.\n"
+"\n"
+"Creating and editing tasks:\n"
+"\n"
+"Using GTG is easy: you organize what you have to do by creating new tasks. "
+"To do this, simply press the &quot;New Task&quot; button, edit the task by "
+"describing it, set some parameters, and that's it! Once a task done, you can "
+"close it by pressing the &quot;Mark As Done&quot; button.\n"
+"\n"
+"In GTG, a task is automatically saved while you are editing it. No need to "
+"press any &quot;Save&quot; button! Try it: add some text to this task, close "
+"the window, and reopen it: your changes are still there!\n"
+"\n"
+"About subtasks:\n"
+"\n"
+"In life, you often get more things done by refining them in smaller, more "
+"operational tasks. GTG helps to do just this by defining  "
+"&quot;subtasks&quot;. In GTG, those subtasks are considered as prerequisites "
+"that must be completed before being able to close their parent task.\n"
+"\n"
+"Therefore, in GTG, a task might host one or several subtasks. Those appear "
+"as links in the task description, just like the link below. To open and edit "
+"a subtask, simply click on its link! Try it yourself: open the following "
+"subtask:\n"
+"<subtask>1@1</subtask>\n"
+"\n"
+"Closing a task:\n"
+"\n"
+"In GTG, once you are done with a task, you can close it by pushing either "
+"the &quot;Mark as Done&quot; or the &quot;Dismiss&quot; button. Use the "
+"first one if the task is done, and the latter if you want to close it "
+"because it is not relevant anymore. Want to try it? Try to close the subtask "
+"above for instance!\n"
+"\n"
+"When you close a task, you will notice that all its subtasks will be "
+"automatically closed too! Indeed, GTG considers that if you have completed a "
+"given task, then you don't need to do its subtasks anymore (they were "
+"prerequisites, after all).\n"
+"\n"
+"Note that the tasks that you have marked as done or dismissed are listed in "
+"the &quot;Closed Tasks Pane&quot; which is hidden by default, but you can "
+"easily show it using the View menu.\n"
+"\n"
+"Learn more about GTG:\n"
+"\n"
+"If you are interested in knowing more about GTG's other features, you will "
+"find more information here:\n"
+"<subtask>2@1</subtask>\n"
+"<subtask>3@1</subtask>\n"
+"<subtask>4@1</subtask>\n"
+"<subtask>5@1</subtask>\n"
+"<subtask>6@1</subtask>\n"
+"<subtask>7@1</subtask>\n"
+"<subtask>8@1</subtask>\n"
+"\n"
+"You can also browse GTG documentation by pressing F1 or opening it using the "
+"Help menu.\n"
+"\n"
+"We sincerely hope you will enjoy using GTG, and thank you for trying it out! "
+"Please send us bug reports and ideas for improvement using this web page: "
+"https://bugs.launchpad.net/gtg/+filebug If you want to get tips for using "
+"GTG or be informed about the newest features, also visit our blog at "
+"http://gtg.fritalk.com\n"
+"\n"
+"The GTG team."
+msgstr ""
+
+#: GTG/core/firstrun_tasks.py:114
+msgid "Learn How To Use Subtasks"
+msgstr "Дізнайтеся як користуватися підзавданнями"
+
+#: GTG/core/firstrun_tasks.py:116
+msgid ""
+"A &quot;Subtask&quot; is something that you need to do first before being "
+"able to accomplish your task. In GTG, the purpose of subtasks is to cut down "
+"a task in smaller subtasks that are easier to achieve and to track down.\n"
+"\n"
+"To insert a subtask in the task description (this window, for instance), "
+"begin a line with &quot;-&quot;, then write the subtask title and press "
+"Enter.\n"
+"\n"
+"Try inserting one subtask below. Type &quot;- This is my first "
+"subtask!&quot;, for instance, and press Enter:\n"
+"\n"
+"\n"
+"\n"
+"Alternatively, you can also use the &quot;Insert Subtask&quot; button.\n"
+"\n"
+"Note that subtasks obey to some rules: first, a subtask's due date can never "
+"happen after its parent's due date and, second, when you mark a parent task "
+"as done, its subtasks will also be marked as done.\n"
+"\n"
+"And if you are not happy with your current tasks/subtasks organization, you "
+"can always change it by drag-and-dropping tasks on each other in the tasks "
+"list."
+msgstr ""
+"&quot;Підзавдання&quot; - це те, що ви маєте виконати перед завершенням "
+"основного завдання. Підзавдання в GTG призначені для розбивки великих "
+"завдань на менші, які легше виконати.\n"
+"\n"
+"Щоб додати підзавдання в описі завдання (наприклад, в цьому вікні), почніть "
+"рядок з &quot;-&quot;, потім напишіть заголовок підзавдання і натисніть "
+"Enter.\n"
+"\n"
+"Спробуйте додати одне підзавдання нижче. Введіть &quot;- Це моє перше "
+"підзавдання!&quot;, наприклад і натисніть Enter:\n"
+"\n"
+"\n"
+"\n"
+"Також, ви можете скористатися кнопкою &quot;Додати підзавдання&quot;.\n"
+"\n"
+"Зазначте, що підзавдання підпорядковуються певним правилам: по-перше, дата "
+"завершення підзавдання не може бути після дати завершення основного "
+"завдання, і, по-друге, коли ви позначаєте основне завдання як виконане, всі "
+"його підзавдання також будуть позначені як виконані.\n"
+"\n"
+"І якщо ви незадоволені поточною організацією ваших завдань/підзавдань, ви "
+"завжди можете змінити її перетягуванням завдань одне на одне в списку "
+"завдань."
+
+#: GTG/core/firstrun_tasks.py:142
+msgid "Learn How To Use Tags"
+msgstr "Дізнайтеся як користуватися мітками"
+
+#: GTG/core/firstrun_tasks.py:144
+msgid ""
+"In GTG, you use tags to sort your tasks. A tag is a simple word that begins "
+"with &quot;@&quot;.\n"
+"\n"
+"Try to type a word beginning with &quot;@&quot; here:\n"
+"\n"
+"Once it becomes yellow, it is a tag! And this tag is now linked to the "
+"task!\n"
+"\n"
+"Using the View menu, you can enable a sidebar which displays all the tags "
+"you are using. This allows you to easily see all tasks associated to a given "
+"tag.\n"
+"\n"
+"If you right-click on a tag in the sidebar, you can also edit it. It allows "
+"you to assign it a color or an icon for instance. This is handy if you want "
+"to quickly identify the tasks associated to a given tag in the task list!\n"
+"\n"
+"New tags are always added exclusively to the currently edited task, and "
+"never to its subtasks. However, when you create a new subtask, it will "
+"inherit its parent's tags.\n"
+"\n"
+"If you need a more advanced task organization, you can also create a "
+"hierarchy of tags by drag-and-dropping a tag onto another. This is useful "
+"when you want to regroup several tags together and see all related tasks "
+"easily. For instance, if you have two tags @money and @to_pay, and you drag "
+"@to_pay on @money, every task tagged with @to_pay will also appear when you "
+"select @money."
+msgstr ""
+"Мітки в GTG призначені для сортування завдань. Мітка - це звичайне слово, що "
+"починається з &quot;@&quot;.\n"
+"\n"
+"Спробуйте написати слово, яке починається з &quot;@&quot; тут:\n"
+"\n"
+"Коли слово зафарбувалося жовтим - воно стало міткою! І ця мітка тепер "
+"сполучена із завданням!\n"
+"\n"
+"Користуючись Меню перегляду, ви можете увімкнути панель, де показуються всі "
+"мітки, які ви використовуєте. Це дозволяє з легкістю переглянути всі "
+"завдання, позначені вибраною міткою.\n"
+"\n"
+"Якщо ви натиснете правою кнопкою миші над міткою на панелі, ви можете її "
+"змінити. Це дозволяє вам вибрати колір або піктограму для мітки. Це зручно, "
+"якщо ви бажаєте швидко розпізнавати завдання, позначені відповідними мітками "
+"в списку завдань!\n"
+"\n"
+"Нові мітки завжди додаються до поточного змінюваного завдання і ніколи до "
+"його підзавдань. Однак, якщо ви створюєте нове підзавдання, воно успадкує "
+"всі мітки основного завдання.\n"
+"\n"
+"Якщо ви бажаєте більш досконалої організації завдань, ви можете створити "
+"ієрархію міток перетягуванням їх мишкою на інші. Це корисно у випадку, якщо "
+"ви хочете перегрупувати декілька міток і легко переглянути всі пов’язані "
+"завдання. Наприклад, якщо ви маєте дві мітки @гроші і @заплатити і ви "
+"перетягуєте мітку @заплатити на @гроші, кожне завдання позначене як "
+"@заплатити буде також з’являтися, якщо ви переглядаєте завдання під міткою "
+"@гроші."
+
+#: GTG/core/firstrun_tasks.py:174
+msgid "Learn How To Use The Work View"
+msgstr "Дізнайтеся як користуватися Робочим режимом"
+
+#: GTG/core/firstrun_tasks.py:176
+msgid ""
+"If you press the &quot;Work View&quot; button, only actionable tasks will be "
+"displayed in your list.\n"
+"\n"
+"What is an actionable task? It's a task you can do directly, right now.\n"
+"\n"
+"It's a task that is already &quot;start-able&quot;, i.e. the start date is "
+"already over.\n"
+"\n"
+"It's a task that doesn't have open subtasks, i.e. you can do the task itself "
+"directly.\n"
+"\n"
+"It's a task that has a due date different than &quot;Someday&quot;, since "
+"this kind of date is reserved for things that needs more thoughts before "
+"being actionable.\n"
+"\n"
+"Thus, in short, the Work View shows you tasks that you can do right now. "
+"It's very useful when you want to get things done and to focus on the "
+"relevant tasks!\n"
+"\n"
+"If you use tags, you can right click on a tag in the sidebar and choose to "
+"hide tasks assigned to this particular tag in the Work View. It is very "
+"useful if you have a tag like &quot;@wait&quot; that you use for tasks "
+"blocked by some external event (i.e. a phone call you wait to receive).\n"
+"\n"
+"And finally, an important note regarding the Work View: since the Work View "
+"is updated instantaneously, if you edit your task while using the Work View, "
+"this task might disappear due to the change you just made (e.g. adding a "
+"subtask, adding a tag hidden in the Work View, etc.). To avoid this, it's "
+"better not to edit your task while using the Work View. "
+msgstr ""
+"Якщо ви натиснете кнопку &quot;Робочий режим&quot;, то в списку будуть "
+"показані лише активні завдання, які слід виконати.\n"
+"\n"
+"Що таке активне завдання? Це завдання, яке ви можете виконати прямо зараз.\n"
+"\n"
+"Це завдання, час початку якого вже настав.\n"
+"\n"
+"Це завдання, яке не має відкритих підзавдань, тобто ви можете виконати "
+"безпосередньо саме завдання.\n"
+"\n"
+"Це завдання, час завершення якого не встановлено як \"колись\", адже такий "
+"тип дати призначений для завдань, над якими ще слід подумати перед "
+"виконанням.\n"
+"\n"
+"Таким чином, загалом, Робочий режим показує завдання, які ви можете виконати "
+"негайно. Це дуже корисно, якщо ви хочете досягти мети і сфокусуватися на "
+"актуальних завданнях!\n"
+"\n"
+"Якщо ви використовуєте мітки, ви можете натиснути праву кнопку миші над "
+"міткою на боковій панелі міток і примусити приховати в Робочому режимі "
+"завдання, позначені даною міткою. Це дуже корисно, якщо ви маєте мітку "
+"назразок &quot;@почекати&quot;, яку ви використовуєте для завдань, які "
+"заблоковані якоюсь зовнішньою подією (наприклад, телефонним дзвінком, який "
+"ви очікуєте).\n"
+"\n"
+"І нарешті, важливе зауваження щодо Робочого режиму: так як Робочий режим "
+"оновлюється миттєво, якщо ви редагуєте ваше завдання з увімкненим Робочим "
+"режимом, це завдання може зникнути через зміни, які ви щойно зробили "
+"(наприклад, додали підзавдання, приховану мітку тощо). Щоб запобігти цього, "
+"краще не редагуйте завдання із увімкненим Робочим режимом. "
+
+#: GTG/core/firstrun_tasks.py:210
+msgid "Learn How To Use Plugins"
+msgstr "Дізнайтеся як користуватися додатками"
+
+#: GTG/core/firstrun_tasks.py:212
+msgid ""
+"GTG has the ability to add plugins to extend its core functionality.\n"
+"\n"
+"Some examples of the currently available plugins are the notification icon "
+"which displays a handy shortcut to GTG in your notification space, or the "
+"closed tasks remover which automatically deletes old tasks from your closed "
+"tasks list.\n"
+"\n"
+"You can find the Plugin Manager by selecting Edit in the Menu Bar, then "
+"clicking Plugins."
+msgstr ""
+"GTG має багато додатків які розширюють базову функціональність.\n"
+"\n"
+"Деякі приклади нині доступних додатків: значок на панелі сповіщень, який "
+"можна використовувати для швидкого доступу до GTG або додаток для видалення "
+"завершених завдань, який автоматично видаляє старі завдання з списку "
+"завершених завдань.\n"
+"\n"
+"Ви можете знайти Менеджер додатків, вибравши Редагувати в Меню програми і "
+"натиснувши Додатки."
+
+#: GTG/core/firstrun_tasks.py:225
+msgid "Reporting Bugs"
+msgstr "Звітування про помилки"
+
+#: GTG/core/firstrun_tasks.py:227
+msgid ""
+"GTG is still beta software. We like it and use it everyday but you will "
+"probably encounter some bugs will you do.\n"
+"\n"
+"Please, help us improving GTG by reporting them on our Launchpad "
+"page:https://bugs.launchpad.net/gtg/+filebug\n"
+"\n"
+"We need you to make this software better. Any contribution, any idea is "
+"welcome!\n"
+"\n"
+"If you have some trouble with GTG, we might be able to help you or to solve "
+"your problem really quickly."
+msgstr ""
+
+#: GTG/core/firstrun_tasks.py:242
+msgid "Learn How To Use The Quick Add Entry"
+msgstr "Дізнайтеся як користуватися функцією швидкого додавання"
+
+#: GTG/core/firstrun_tasks.py:244
+msgid ""
+"The Quick Add Entry is the fastest way to create a new task. Use the check "
+"box in the View menu to enable and disable the entry field.\n"
+"\n"
+"To add a task simply type its title in the entry and press Enter. The task "
+"will be created and selected in the task browser. If a tag is selected in "
+"the Tags Sidebar, it will be applied to the task you created.\n"
+"\n"
+"You can also create a task in the Quick Add Entry and at the same time "
+"specify its tags, due and defer date. Follow these format rules:\n"
+"\n"
+"tags:tag1,tag2,tag3\n"
+"\n"
+"Using this you can apply as many tags as you wish using comma as separator. "
+"Note that any word in the title that begins with &quot;@&quot; will also be "
+"interpreted as a tag!\n"
+"\n"
+"due:date\n"
+"defer:date\n"
+"\n"
+"Using this you can apply a due date or a defer date. Dates can be formated "
+"as per your locale or yyyy-mm-dd (for example 2012-04-01) or yyyymmdd "
+"(20120401) or mmdd (0401 - the year being implicitly the current one) or "
+"today, tomorrow or a weekday name (due:monday means due next Monday). Dates "
+"which are added in this way will not appear in the task title.\n"
+"\n"
+"Examples:\n"
+"\n"
+"buy stationary tags:purchases,office due:20120330 defer:tuesday\n"
+"\n"
+"The above example tells GTG to create a new task with the title &quot;buy "
+"stationary&quot;, under the tags &quot;purchases&quot; and "
+"&quot;office&quot;, with the due date March 30, 2012 and the start date next "
+"Tuesday.\n"
+"\n"
+"call mum tags:family,calls due:sunday defer:tomorrow\n"
+"\n"
+"The above example tells GTG to create a new task with the title &quot;call "
+"mum&quot;, under the tags &quot;family&quot; and &quot;calls&quot;, with the "
+"due date next Sunday and the start date tomorrow."
+msgstr ""
+
+#: GTG/core/firstrun_tasks.py:289
+msgid "Learn How To Use Synchronization Services"
+msgstr "Дізнайтеся як користуватися сервісами синхронізації"
+
+#: GTG/core/firstrun_tasks.py:291
+msgid ""
+"Synchronization Services allow GTG to synchronize (meaning to have access or "
+"to import) tasks, notes or bugs from other sites or services like Launchpad, "
+"Remember the Milk, Tomboy, etc.\n"
+"\n"
+"This can incredibly useful if, for instance, you want to access your tasks "
+"on several instances of GTG running on separate computers, or if you want to "
+"edit your tasks using an online service. GTG can also import tasks from "
+"specific sites like launchpad for instance, which allows you to manage the "
+"bug reports you're working on in GTG!\n"
+"\n"
+"To use Synchronization Services, use the Edit menu, and select "
+"&quot;Synchronization Services&quot;. You will then have the possibility to "
+"select among several online or local services from/to where you can import "
+"or export your tasks.\n"
+"\n"
+"If you want to know more about Synchronization Services, you can read more "
+"about them by in the dedicated documentation in GTG's help (use the Help "
+"menu or press F1 to get access to it)."
+msgstr ""
+
+#: GTG/core/firstrun_tasks.py:313
+msgid "Learn How To Search For Tasks"
+msgstr "Дізнайтеся як шукати завдання"
+
+#: GTG/core/firstrun_tasks.py:315
+msgid ""
+"To help you to find specific tasks more easily, GTG allows you to search for "
+"tasks based on their content.\n"
+"\n"
+"Searching for tasks is really easy: just type the words you are looking for "
+"in the Quick Add Entry, and select &quot;Search&quot; in the menu that will "
+"appear automatically.\n"
+"\n"
+"GTG stores your searches in the sidebar, under the &quot;Search&quot; "
+"section. You can thus always go back to a previous search need it. Search "
+"results are updated automatically, so you always get all the tasks matching "
+"your search request.\n"
+"\n"
+"GTG also saves all the search requests you have made until you explicitely "
+"delete them (which you can do by right-clicking on them and selecting "
+"&quot;Delete&quot;). That allows you to safely quit GTG without loosing your "
+"search requests. This can be very useful when you use the search features to "
+"identify specific tasks regularly!\n"
+"\n"
+"GTG search feature is really powerful and accept many parameters that allows "
+"you to search for very specific tasks. For instance, using the search query "
+"&quot;@errands !today&quot;, you can search for tasks with the @errands tag "
+"that must be done today. To learn more about those search query parameters, "
+"you can read the documentation available in GTG's help (press F1 or use the "
+"Help menu to get access to it)."
+msgstr ""
+
+#: GTG/core/task.py:55
+msgid "My new task"
+msgstr "Моє нове завдання"
+
+#: GTG/core/task.py:159
+msgid "tags"
+msgstr "мітки"
+
+#: GTG/core/task.py:159
+msgid "tag"
+msgstr "мітка"
+
+#: GTG/core/task.py:164
+msgid "defer"
+msgstr "відкласти"
+
+#: GTG/core/task.py:165
+msgid "start"
+msgstr "початок"
+
+#: GTG/core/task.py:171
+msgid "due"
+msgstr "до"
+
+#: GTG/core/plugins/__init__.py:33
+msgid "Everything necessary to run this plugin is available."
+msgstr "Є все необхідне для запуску цього додатку."
+
+#: GTG/core/plugins/__init__.py:34
+msgid "The plugin can not be loaded"
+msgstr "Неможливо завантажити цей додаток."
+
+#: GTG/core/plugins/__init__.py:35
+msgid "Some python modules are missing"
+msgstr "Не вистачає деяких модулей з python."
+
+#: GTG/core/plugins/__init__.py:36
+msgid "Please install the following python modules:"
+msgstr "Будь ласка встановіть наступні модулі з python:"
+
+#: GTG/core/plugins/__init__.py:38
+msgid "Some remote dbus objects are missing."
+msgstr "Не вистачає деяких об'єктів dbus."
+
+#: GTG/core/plugins/__init__.py:39
+msgid "Please start the following applications:"
+msgstr "Запустіть, будь ласка, наступні програми:"
+
+#: GTG/core/plugins/__init__.py:41
+msgid "Some modules and remote dbus objects are missing."
+msgstr "Не вистачає деяких модулей і об'єктів dbus."
+
+#: GTG/core/plugins/__init__.py:42
+msgid "Please install or start the following components:"
+msgstr "Будь ласка, встановіть або запустіть наступні компоненти:"
+
+#: GTG/core/plugins/__init__.py:44
+msgid "Unknown error while loading the plugin."
+msgstr "Невідома помилка при завантаженні додатку."
+
+#: GTG/core/plugins/__init__.py:45
+msgid "Very helpful message, isn't it? Please report a bug."
+msgstr ""
+"Правда ж дуже корисне повідомлення? Будь ласка, повідомте про помилку."
+
+#: GTG/backends/backend_launchpad.py:53
+msgid "Launchpad"
+msgstr "Launchpad"
+
+#: GTG/backends/backend_launchpad.py:57
+msgid ""
+"This synchronization service lets you import the bugs assigned to you (or "
+"someone else) on Launchpad in GTG. As the bug state changes in Launchpad, "
+"the GTG task is  updated.\n"
+"Please note that this is a read only synchronization service, which means "
+"that if you open one of the imported tasks and  change one of the:\n"
+"  - title\n"
+"  - description\n"
+"  - tags\n"
+"Your changes <b>will</b> be reverted when the associated bug is modified. "
+"Apart from those, you are free to set  any other field (start/due dates, "
+"subtasks...): your  changes will be preserved. This is useful to add  "
+"personal annotations to bug"
+msgstr ""
+
+#: GTG/backends/backend_launchpad.py:246
+msgid "Bug"
+msgstr "Вада"
+
+#: GTG/backends/backend_launchpad.py:328 GTG/backends/backend_mantis.py:257
+msgid "Reported by: "
+msgstr "Повідомлено (ким): "
+
+#: GTG/backends/backend_launchpad.py:332
+msgid "Link to bug: "
+msgstr "Посилання на ваду: "
+
+#: GTG/backends/backend_tomboy.py:39
+msgid "Tomboy"
+msgstr "Tomboy"
+
+#: GTG/backends/backend_tomboy.py:43
+msgid ""
+"This synchronization service can synchronize all or part of your Tomboy "
+"notes in GTG. If you decide it would be handy to have one of your notes in "
+"your TODO list, just tag it with the tag you have chosen (you'll configure "
+"it later), and it will appear in GTG."
+msgstr ""
+"Цей сервіс синхронізації може синхронізувати всі або частину ваших нотаток "
+"Tomboy в GTG. Якщо ви вирішите, що було б зручно мати одну з ваших нотаток у "
+"вашому списку виконання, позначте її обраною вами міткою (оберете пізніше), "
+"і вона з’явиться в GTG."
+
+#: GTG/backends/backend_gnote.py:40
+msgid "Gnote"
+msgstr "Gnote"
+
+#: GTG/backends/backend_gnote.py:44
+msgid ""
+"This service can synchronize all or part of your Gnote notes in GTG. If you "
+"decide it would be handy to have one of your notes in your TODO list, just "
+"tag it with the tag you have chosen (you'll configure it later), and it will "
+"appear in GTG."
+msgstr ""
+"Цей сервіс може синхронізувати всі або частину ваших нотаток Gnote в GTG. "
+"Якщо ви вирішите, що було б зручно мати одну з ваших нотаток у вашому списку "
+"виконання, позначте її обраною вами міткою (оберете пізніше), і вона "
+"з’явиться в GTG."
+
+#: GTG/backends/backend_mantis.py:44
+msgid "MantisBT"
+msgstr "MantisBT"
+
+#: GTG/backends/backend_mantis.py:48
+msgid ""
+"This synchronization service lets you import the issues found on Mantis "
+"using a prestablished filter called 'gtg'. As the issue state changes in "
+"Mantis, the GTG task is  updated.\n"
+"Please note that this is a read only synchronization service, which means "
+"that if you open one of the imported tasks and  change one of the:\n"
+"  - title\n"
+"  - description\n"
+"  - tags\n"
+"Your changes <b>will</b> be reverted when the associated issue is modified. "
+"Apart from those, you are free to set  any other field (start/due dates, "
+"subtasks...): your  changes will be preserved. This is useful to add  "
+"personal annotations to issue"
+msgstr ""
+
+#: GTG/backends/backend_mantis.py:237
+msgid "Iss."
+msgstr "Iss."
+
+#: GTG/backends/backend_mantis.py:258
+msgid "Link to issue: "
+msgstr "Посилання на питання: "
+
+#: GTG/backends/backend_evolution.py:67
+msgid "Evolution tasks"
+msgstr "Завдання Evolution"
+
+#: GTG/backends/backend_evolution.py:71
+msgid "Lets you synchronize your GTG tasks with Evolution tasks"
+msgstr "Дозволяє синхронізувати ваші GTG завдання з завданнями Evolution."
+
+#: GTG/backends/rtm/rtm.py:63
+msgid "Invalid state"
+msgstr "Недопустимий стан"
+
+#: GTG/backends/backend_rtm.py:50
+msgid "Remember The Milk"
+msgstr "Remember The Milk"
+
+#: GTG/backends/backend_rtm.py:54
+msgid ""
+"This service synchronizes your tasks with the web service RememberTheMilk:\n"
+"\t\thttp://rememberthemilk.com\n"
+"\n"
+"Note: This product uses the Remember The Milk API but is not endorsed or "
+"certified by Remember The Milk"
+msgstr ""
+"Цей сервіс синхронізує ваші завдання з веб-сервісом RememberTheMilk:\n"
+"\t\thttp://rememberthemilk.com\n"
+"\n"
+"Примітка: Цей продукт використовує API Remember The Milk, але не схвалений "
+"або сертифікований Remember The Milk."
+
+#: GTG/backends/backend_localfile.py:57
+msgid "Local File"
+msgstr "Локальний файл"
+
+#: GTG/backends/backend_localfile.py:62
+msgid "Your tasks are saved in a text file (XML format). "
+msgstr "Ваші завдання були збережені в текстовому файлі (формат XML). "
+
+#: GTG/tools/dates.py:57 GTG/tests/test_dates.py:70
+msgid "later"
+msgstr "пізніше"
+
+#: GTG/tools/dates.py:309
+msgid "next week"
+msgstr "наступний тиждень"
+
+#: GTG/tools/dates.py:311
+msgid "next month"
+msgstr "наступний місяць"
+
+#: GTG/tools/dates.py:313
+msgid "next year"
+msgstr "наступний рік"
+
+#: GTG/tools/dates.py:318
+msgid "Monday"
+msgstr "Понеділок"
+
+#: GTG/tools/dates.py:319
+msgid "Tuesday"
+msgstr "Вівторок"
+
+#: GTG/tools/dates.py:320
+msgid "Wednesday"
+msgstr "Середа"
+
+#: GTG/tools/dates.py:321
+msgid "Thursday"
+msgstr "Четвер"
+
+#: GTG/tools/dates.py:322
+msgid "Friday"
+msgstr "П’ятниця"
+
+#: GTG/tools/dates.py:323
+msgid "Saturday"
+msgstr "Субота"
+
+#: GTG/tools/dates.py:324
+msgid "Sunday"
+msgstr "Неділя"
+
+#: GTG/tools/dates.py:383
+msgid "Today"
+msgstr "Сьогодні"
+
+#: GTG/tools/dates.py:386
+#, python-format
+msgid "Yesterday"
+msgid_plural "%(days)d days ago"
+msgstr[0] "Вчора"
+msgstr[1] "%(days)d дні тому"
+msgstr[2] "%(days)d днів тому"
+
+#: GTG/tools/dates.py:389
+#, python-format
+msgid "Tomorrow"
+msgid_plural "In %(days)d days"
+msgstr[0] "За %(days)d день"
+msgstr[1] "За %(days)d дні"
+msgstr[2] "За %(days)d днів"
+
+#~ msgid "Later"
+#~ msgstr "Пізніше"
+
+#~ msgid "Behaviour"
+#~ msgstr "Поведінка"
+
+#~ msgid "Active _Plugins:"
+#~ msgstr "Активні _модулі:"
+
+#~ msgid "Copyrights&#xA9; 2008, 2009 Lionel Dricot, Bertrand Rousseau"
+#~ msgstr "Copyrights&#xA9; 2008, 2009 Lionel Dricot, Bertrand Rousseau"
+
+#~ msgid "Plugins"
+#~ msgstr "Модулі"
+
+#~ msgid "New Note"
+#~ msgstr "Нова нотатка"
+
+#~ msgid "_tomorrow"
+#~ msgstr "_завтра"
+
+#~ msgid "monday"
+#~ msgstr "понеділок"
+
+#~ msgid "tuesday"
+#~ msgstr "вівторок"
+
+#~ msgid "wednesday"
+#~ msgstr "середа"
+
+#~ msgid "thursday"
+#~ msgstr "четвер"
+
+#~ msgid "friday"
+#~ msgstr "п'ятниця"
+
+#~ msgid "saturday"
+#~ msgstr "субота"
+
+#~ msgid "sunday"
+#~ msgstr "неділя"
+
+#, python-format
+#~ msgid "%(days)d day left"
+#~ msgid_plural "%(days)d days left"
+#~ msgstr[0] "%(days)d день залишився"
+#~ msgstr[1] "%(days)d дня залишилось"
+#~ msgstr[2] "%(days)d днів залишилось"
+
+#~ msgid "Due tomorrow !"
+#~ msgstr "Зробити завтра !"
+
+#~ msgid "Keep as Note"
+#~ msgstr "Залишити як замітку"
+
+#~ msgid "Due today !"
+#~ msgstr "Зробити сьогодні !"
+
+#~ msgid "Due yesterday"
+#~ msgstr "Потрібно було зробити вчора"
+
+#, python-format
+#~ msgid "Was %(days)d day ago"
+#~ msgid_plural "Was %(days)d days ago"
+#~ msgstr[0] "%(days)d день назад"
+#~ msgstr[1] "%(days)d дні назад"
+#~ msgstr[2] "%(days)d днів назад"
+
+#~ msgid "<b>General</b>"
+#~ msgstr "<b>Загальні</b>"
+
+#~ msgid ""
+#~ "\n"
+#~ "Getting Things Gnome! is an organizer for the GNOME desktop environment."
+#~ msgstr ""
+#~ "\n"
+#~ "Getting Things Gnome! - це персональний органайзер для GNOME."
+
+#~ msgid "Add Tag..."
+#~ msgstr "Додати мітку..."
+
+#~ msgid "Add Tag"
+#~ msgstr "Додати мітку"
+
+#~ msgid "Add a Tag..."
+#~ msgstr "Додати мітку..."
+
+#~ msgid "Enter the name of the tag(s) you wish to add:"
+#~ msgstr "Введіть ім’я мітки, яку ви хочете додати:"
+
+#~ msgid "Getting Things Gnome!"
+#~ msgstr "Getting Things Gnome!"
+
+#~ msgid "Getting Things GNOME! Preferences"
+#~ msgstr "Параметри Getting Things GNOME!"
+
+#~ msgid ""
+#~ "Hint: you can add several tags by separating them with\n"
+#~ "commas."
+#~ msgstr "Порада: ви можете додати декілька міток розділивши їх комою"
+
+#~ msgid "Reset Color"
+#~ msgstr "Скинути колір"
+
+#~ msgid "View Notes"
+#~ msgstr "Переглянути замітки"
+
+#~ msgid "Tag is displayed in the workview"
+#~ msgstr "Відображати в робочому плані"
+
+#~ msgid "_Background Colors"
+#~ msgstr "_Фонові кольори"
+
+#~ msgid "_Schedule for..."
+#~ msgstr "_Запланувати на..."
+
+#~ msgid "t_oday"
+#~ msgstr "сь_огодні"
+
+#~ msgid "next _month"
+#~ msgstr "наступний _місяць"
+
+#~ msgid "next _week"
+#~ msgstr "наступний _тиждень"
+
+#~ msgid "next _year"
+#~ msgstr "наступний _рік"
+
+#~ msgid "Are you sure you want to delete these tasks?"
+#~ msgstr "Ви дійсно бажаєте видалити ці завдання?"
+
+#~ msgid ""
+#~ "Deleting a task cannot be undone, and will delete the following tasks: "
+#~ msgstr ""
+#~ "Видалення завдання не може бути скасоване і спричинить також до видалення "
+#~ "наступних завдань: "
+
+#~ msgid "Keep selected tasks"
+#~ msgstr "Залишити виділені завдання"
+
+#~ msgid ""
+#~ "In GTG, everything is a task. From building a bridge over the Pacific Ocean "
+#~ "to changing a light bulb or organizing a party. When you edit a task, it is "
+#~ "automatically saved."
+#~ msgstr ""
+#~ "У GTG все є завдання. Від спорудження моста через Тихий Океан до зміни "
+#~ "лампочки або організації вечірки. Коли ви редагуєте завдання, воно відразу ж "
+#~ "зберігається."
+
+#~ msgid "Welcome to Getting Things Gnome!, your new task manager."
+#~ msgstr ""
+#~ "Ласкаво просимо до Getting Things Gnome!, ваш новий менеджер завданнь."
+
+#~ msgid "Permanently remove tasks"
+#~ msgstr "Видалити завдання назавжди"
+
+#~ msgid "Getting started with GTG"
+#~ msgstr "Початок роботи з GTG"
+
+#~ msgid "Closing date"
+#~ msgstr "Дата закриття"
+
+#~ msgid ""
+#~ "Once you've read the above subtask, mark it as Done. If you don't want to do "
+#~ "the task, mark it as dismissed. Done and Dismissed tasks are kept in the "
+#~ "closed tasks pane, hidden by default but you can easily enable it in the "
+#~ "View menu."
+#~ msgstr ""
+#~ "Як тільки ви ознайомитеся з вищеописаною підзадачею, позначте її як "
+#~ "виконанну. Якщо ви не маєте наміру виконувати завдання, скасуйте її. "
+#~ "Виконані та скасовані завдання зберігаються на панелі виконаних завдань, що "
+#~ "за умовчанням прихована. Однак ви в будь-який момент можете включити її в "
+#~ "меню Вигляд."
+
+#~ msgid "Thank you for trying out GTG :-)"
+#~ msgstr "Благодарим за использование GTG :-)"
+
+#~ msgid ""
+#~ "Once a task is done, you can push the &quot;Mark as done&quot; button. If "
+#~ "the task is not relevant any-more, simply press &quot;Dismiss&quot;."
+#~ msgstr ""
+#~ "Коли завдання виконано, ви можете натиснути кнопку \"Відзначити як "
+#~ "виконано\". Якщо завданнє більше неактуальне, просто натисніть \"Відмінити\"."
+
+#~ msgid ""
+#~ "In the task description (this window), if you begin a line with &quot;-"
+#~ "&quot;, it will be considered as a &quot;subtask&quot;, something that needs "
+#~ "to be done in order to accomplish your task. Just try to write &quot;- test "
+#~ "subtask&quot; on the next line and press enter."
+#~ msgstr ""
+#~ "В описі завдання (це вікно), ви можете почати рядок з \"-\", тоді він буде "
+#~ "вважатися підзадачою, чимось що має бути зроблено для виконання поточного "
+#~ "завдання. Просто спробуйте написати \"- перевірка підзадач\" на наступному "
+#~ "рядку та натисніть Enter."
+
+#~ msgid "You can also use the &quot;insert subtask&quot; button."
+#~ msgstr "Також ви можете використовувати кнопку &quot;Додати підзадачу&quot;."
+
+#~ msgid "Other stuff you should read:"
+#~ msgstr "Що ще слід прочитати:"
+
+#~ msgid ""
+#~ "We hope that you will appreciate GTG. Please send us bug reports and ideas "
+#~ "for improvement using: "
+#~ msgstr ""
+#~ "Ми сподіваємося, вам сподобається GTG. Будь ласка, надсилайте нам "
+#~ "повідомлення про помилки та ідеї щодо покращення: "
+
+#~ msgid ""
+#~ "A task might be composed of multiple subtasks that appear as links in the "
+#~ "description. Simply click on the following link:"
+#~ msgstr ""
+#~ "Завдання може складатися з декількох підзадач, які видно як посилання в "
+#~ "описі. Просто натисніть на посилання:"
+
+#~ msgid ""
+#~ "If you choose to close this current task, subtasks will be automatically "
+#~ "closed too. We indeed consider that, if you achieve a given task, you don't "
+#~ "need to do the subtask anymore."
+#~ msgstr ""
+#~ "Якщо ви закриєте поточне завдання, підзадачі також будуть закриті. Ми дійсно "
+#~ "вважаємо, що, якщо ви виконали це завдання, вам не треба більше виконувати "
+#~ "її підзадачі"
+
+#~ msgid ""
+#~ "Tasks and subtasks can be re-organized by drag-n-drop in the tasks list."
+#~ msgstr ""
+#~ "Завдання і підзадачі можна сортувати, просто перетягуючи їх у списку."
+
+#~ msgid ""
+#~ "Some concepts come with subtasks: for example, a subtask's due date can "
+#~ "never be after its parent's due date."
+#~ msgstr ""
+#~ "З підзадачами пов'язані деякі правила, наприклад: дата закінчення виконання "
+#~ "підзадачі не може бути пізніше дати виконання \"батьківського\" завдання."
+
+#~ msgid "Learn how to use tags"
+#~ msgstr "Навчитись використовувати мітки"
+
+#~ msgid "A tag is a simple word that begins with &quot;@&quot;."
+#~ msgstr "Мітка - це просто слово, що починається з \"@\"."
+
+#~ msgid ""
+#~ "If you right click on a tag in the sidebar you can also set its color. It "
+#~ "will allow you to have a more colorful list of tasks, if you want it that "
+#~ "way."
+#~ msgstr ""
+#~ "При клацанні правою кнопкою на мітці в бічній панелі, ви також можете "
+#~ "вибрати її колір. Це дозволить вам зробити список завдань більш наочним."
+
+#~ msgid ""
+#~ "You can drag-n-drop a tag onto another to create \"subtags\". As an example, "
+#~ "if you drag the tag @to_pay onto the tag @money, every task tagged with "
+#~ "@to_pay will also appear in the view of @money (but the @money tag is not "
+#~ "added to the task)."
+#~ msgstr ""
+#~ "Ви можете перетягнути одну мітку на іншу для створення їх ієрархії. "
+#~ "Наприклад, якщо ви перетягнете мітку @ to_pay на мітку @ money, кожне "
+#~ "завдання з міткою @ to_pay також з'явиться в списку завдань з міткою @money "
+#~ "(але при цьому сама мітка @money не буде додана в завдання)"
+
+#~ msgid ""
+#~ "Tags are useful to sort your tasks. In the view menu, you can enable a "
+#~ "sidebar which displays all the tags you are using so you can easily see "
+#~ "tasks assigned to a given tag. There's no limit to the number of tags a task "
+#~ "can have."
+#~ msgstr ""
+#~ "Мітки корисні для сортування ваших завдань. У меню Вигляд ви можете "
+#~ "активізувати Панель міток, на якій відображені усі використані вами мітки, "
+#~ "так що ви можете з легкістю бачити завдання, призначені заданій мітці. Число "
+#~ "міток, які може мати завдання, необмежена."
+
+#~ msgid "It becomes yellow, it's a tag."
+#~ msgstr "Воно стане жовтим, це мітка."
+
+#~ msgid "Try to type a word beginning with @ here:"
+#~ msgstr "Спробуйте ввести тут слово, розпочавши його з @:"
+
+#~ msgid "Also, marking a parent as done will mark all the subtasks as done."
+#~ msgstr ""
+#~ "Також, виконання батьківського завдання відзначить виконання всіх підзадач."
+
+#~ msgid ""
+#~ "GTG is still very alpha software. We like it and use it everyday but you "
+#~ "will encounter some bugs.\n"
+#~ "\n"
+#~ "Please, report them on our Launchpad page:\n"
+#~ "https://bugs.launchpad.net/gtg\n"
+#~ "\n"
+#~ "We need you to make this software better. Any contribution, any idea is "
+#~ "welcome.\n"
+#~ "\n"
+#~ "If you have some trouble with GTG, we might be able to help you or to solve "
+#~ "your problem really quickly."
+#~ msgstr ""
+#~ "GTG усе ще в дуже початковому стані. Вона нам подобається і ми користуємось "
+#~ "нею повсякдень, але вам можуть трапитись деякі помилки.\n"
+#~ "\n"
+#~ "Повідомте, будь ласка, про них на нашій сторінці Launchpad:\n"
+#~ "https://bugs.launchpad.net/gtg\n"
+#~ "\n"
+#~ "Якщо у вас виникли проблеми з GTG можливо ми здатні вам допомогти або "
+#~ "справді швидко виправити їх."
+
+#~ msgid "Learn how to use the QuickAdd Entry"
+#~ msgstr "Навчитись користуватись Швидким Додаванням"
+
+#~ msgid "_View Main Window"
+#~ msgstr "_Показати Головне Вікно"
+
+#~ msgid "This Tomboy note does not exist anymore. Do you want to create it?"
+#~ msgstr "Ця Tomboy-замітка більше не існує. Бажаєте її створити?"
+
+#~ msgid "Synchronize with Evolution"
+#~ msgstr "Синхронізувати з Evolution"
+
+#~ msgid "Synchronize with RTM"
+#~ msgstr "Синхронізація з RTM"
+
+#~ msgid "Template not found"
+#~ msgstr "Шаблон не знайдено"
+
+#~ msgid "Can't load the template file"
+#~ msgstr "Неможливо завантажити файл шаблону"
+
+#~ msgid "Start a new activity in Hamster Time"
+#~ msgstr "Розпочати нову дію у Hamster Time"
+
+#~ msgid "Start a new activity in Hamster Time "
+#~ msgstr "Розпочати нову дію у Hamster Time "
+
+#~ msgid "Please retry."
+#~ msgstr "Будь ласка, спробуйте ще раз."
+
+#~ msgid "Couldn't connect to Remember The Milk"
+#~ msgstr "Неможливо з'єднатись з Remember The Milk"
+
+#~ msgid "Trying to access, please stand by..."
+#~ msgstr "Пробуємо з'єднатись, будь ласка зачекайте..."
+
+#~ msgid "saving critical object failed"
+#~ msgstr "помилка збереження критичного об'єкта"
+
+#~ msgid "Synchronization started"
+#~ msgstr "Почато синхронізацію"
+
+#~ msgid "Downloading task list..."
+#~ msgstr "Отримання списку завдань..."
+
+#~ msgid "Adding tasks to rtm.."
+#~ msgstr "Додання завдань у RTM..."
+
+#~ msgid ""
+#~ "Please authenticate to Remember The Milk in the browser that is being opened "
+#~ "now. When done, press OK"
+#~ msgstr ""
+#~ "Будь ласка, аутентифікуйтесь у Remember The Milk у браузері, який зараз "
+#~ "запуститься. Після цього натисніть ОК."
+
+#~ msgid "Downloading..."
+#~ msgstr "Завантаження..."
+
+#~ msgid "Authentication failed."
+#~ msgstr "Помилка аутентифікації."
+
+#~ msgid "Adding tasks to gtg.."
+#~ msgstr "Додання завдань у GTG..."
+
+#~ msgid "Adding "
+#~ msgstr "Додання "
+
+#~ msgid "Updating changed tasks.."
+#~ msgstr "Оновлення змінених завдань..."
+
+#~ msgid "Synchronization completed."
+#~ msgstr "Синхронізацію завершено."
+
+#~ msgid "Closing in one second"
+#~ msgstr "Завершення за секунду"
+
+#~ msgid "Deleting tasks from gtg.."
+#~ msgstr "Видалення завдань з GTG..."
+
+#~ msgid "Updating "
+#~ msgstr "Оновлення "
+
+#~ msgid "Deleting tasks from rtm.."
+#~ msgstr "Видалення завдань з RTM..."
+
+#~ msgid "Deleting "
+#~ msgstr "Видалення "
+
+#~ msgid "Learn how to use the Workview"
+#~ msgstr "Навчитись користуватись Робочим планом"
+
+#~ msgid ""
+#~ "GTG has the ability to add plugins to extend it's core functionality.\n"
+#~ "\n"
+#~ "Some examples of the current plugins are Syncing with Remember the Milk and "
+#~ "Evolution, Tomboy/Gnote integration and Geolocalized Tasks.\n"
+#~ "You can find the Plugin Manager by selecting Edit in the Menu Bar, then "
+#~ "clicking Preferences. You will then see a tab labeled Plugins."
+#~ msgstr ""
+#~ "Функціональність GTG можна розширити за допомогою модулів.\n"
+#~ "\n"
+#~ "Наприклад поточними модулями є синхронізація з Remember the Milk і "
+#~ "Evolution, інтеграція з Tomboy/Gnote та Геолоковані завдання.\n"
+#~ "Ви можете знайти Менеджер Модулів натиснувши Параметри у меню Правка. Там ви "
+#~ "знайдете вкладку з назвою Модулі."
+
+#~ msgid "Make a Task"
+#~ msgstr "Створити завдання"
+
+#~ msgid "Mark as not done"
+#~ msgstr "Відмітити як не виконане"
+
+#~ msgid "Mark as done"
+#~ msgstr "Відмітити як виконане"
+
+#~ msgid ""
+#~ "We hope that you will appreciate GTG. Please send us bug reports and ideas "
+#~ "for improvement using:\n"
+#~ "    https://bugs.launchpad.net/gtg\n"
+#~ "\n"
+#~ "Thank you for trying out GTG :-)"
+#~ msgstr ""
+#~ "Ми сподіваємось вам сподобається GTG. Будь ласка, надсилайте повідомлення "
+#~ "про помилки та ідеї щодо покращення на:\n"
+#~ "    https://bugs.launchpad.net/gtg\n"
+#~ "\n"
+#~ "Дякуємо, що ви обрали GTG :-)"
+
+#~ msgid "Reporting bugs"
+#~ msgstr "Як повідомляти про помилки"
+
+#~ msgid "Learn how to use Plugins"
+#~ msgstr "Навчитись користуватись Модулями"
+
+#~ msgid ""
+#~ " was found on the system, but it doesn't provide a dbus interface. the "
+#~ "Tomboy/Gnote plugin will not work with it."
+#~ msgstr ""
+#~ " був знайдений у системі, але без dbus інтерфейсу. Tomboy/Gnote модуль не "
+#~ "може ним скористатись."
+
+#~ msgid "Saving current state.."
+#~ msgstr "Збереження поточного стану..."
+
+#~ msgid ""
+#~ "Getting Things Gnome! is free software; you can redistribute it and/or "
+#~ "modify it under the terms of the GNU General Public License as published by "
+#~ "the Free Software Foundation; either version 3 of the License, or (at your "
+#~ "option) any later version.\n"
+#~ "\n"
+#~ "Getting Things Gnome! is distributed in the hope that it will be useful, but "
+#~ "WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY "
+#~ "or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for "
+#~ "more details.\n"
+#~ "\n"
+#~ "You should have received a copy of the GNU General Public License along with "
+#~ "Getting Things Gnome!; if not, write to the Free Software Foundation, Inc., "
+#~ "51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA."
+#~ msgstr ""
+#~ "Getting Things Gnome! вільна програма, ви можете розповсюджувати її та/або "
+#~ "змінювати у межах третьої або (на ваш вибір) будь якої наступної версії GNU "
+#~ "General Public License опублікованої Free Software Foundation.\n"
+#~ "\n"
+#~ "Getting Things Gnome! розповсюджується зі сподіваннями на корисність, але "
+#~ "БЕЗ БУДЬ ЯКОЇ ГАРАНТІЇ, навіть без самих собою зрозумілих гарантій "
+#~ "КОМЕРЦІЙНОЇ ВАРТОСТІ або ПРИДАТНОСТІ ДЛЯ ПЕВНОЇ ЦІЛІ. Зверніться до GNU "
+#~ "General Public License за подробицями.\n"
+#~ "\n"
+#~ "Ви вже мали отримати копію GNU General Public License разом з Getting Things "
+#~ "Gnome!, в іншому разі напишіть до  Free Software Foundation, Inc., 51 "
+#~ "Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA, США."
+
+#~ msgid ""
+#~ "A tag is a simple word that begins with &quot;@&quot;.\n"
+#~ "\n"
+#~ "Try to type a word beginning with @ here:\n"
+#~ "\n"
+#~ "It becomes yellow, it's a tag.\n"
+#~ "\n"
+#~ "Tags are useful to sort your tasks. In the view menu, you can enable a "
+#~ "sidebar which displays all the tags you are using so you can easily see "
+#~ "tasks assigned to a given tag. There's no limit to the number of tags a task "
+#~ "can have.\n"
+#~ "\n"
+#~ "You can drag-n-drop a tag onto another to create \"subtags\". As an example, "
+#~ "if you drag the tag @to_pay onto the tag @money, every task tagged with "
+#~ "@to_pay will also appear in the view of @money (but the @money tag is not "
+#~ "added to the task).\n"
+#~ "\n"
+#~ "If you right click on a tag in the sidebar you can also set its color. It "
+#~ "will allow you to have a more colorful list of tasks, if you want it that "
+#~ "way.\n"
+#~ "\n"
+#~ "A new tag is only added to the current task. There's no recursion and the "
+#~ "tag is not applied to subtasks. But when you create a new subtask, this "
+#~ "subtask will inherit the tags of its parent as a good primary default (it "
+#~ "will also be the case if you add a tag to a parent just after creating a "
+#~ "subtask). Of course, you can modify at any time the tags of this particular "
+#~ "subtask. It will never be changed by the parent."
+#~ msgstr ""
+#~ "Мітка - це просте слово почате з символу &quot;@&quot;.\n"
+#~ "\n"
+#~ "Спробуйте написати слово що починається з @ тут:\n"
+#~ "\n"
+#~ "Воно стане жовтим, це і є мітка.\n"
+#~ "\n"
+#~ "Мітки корисні при сортуванні завдань. Ви можете увімкнути панель з усіма "
+#~ "використаними мітками у меню вигляд, де легко побачити всі завдання з певною "
+#~ "міткою. Завдання може мати необмежену кількість міток.\n"
+#~ "\n"
+#~ "Можна створювати підмітки перетягуючи їх одна на одну. Наприклад, якщо ви "
+#~ "перетягнете мітку @до_сплати на мітку @гроші, то всі завдання помічені "
+#~ "@до_сплати будуть відображатись і при виборі мітки @гроші (але завдання не "
+#~ "буде помічене @гроші).\n"
+#~ "\n"
+#~ "Якщо клацнути правою кнопкою на мітці в панелі то ви зможете задати її "
+#~ "колір. Таким чином ви можете розфарбувати свій список завдань, якщо "
+#~ "забажаєте.\n"
+#~ "\n"
+#~ "При створенні нової мітки вона додається лише до поточного завдання. "
+#~ "Рекурсії нема, тому підзавдання при цьому не помічаються. Проте при "
+#~ "створенні нового підзавдання воно унаслідує всі мітки основного завдання як "
+#~ "гарний початок для редагування (це також трапиться у випадку помічення "
+#~ "основного завдання одразу після створення підзавдання). Звичайно, ви можете "
+#~ "змінити мітки певного підзавдання у будь який момент і зміни основного "
+#~ "завдання більше не впливатимуть на нього."
+
+#~ msgid ""
+#~ "If you press the &quot;Workview&quot; button, only actionable tasks will be "
+#~ "displayed.\n"
+#~ "\n"
+#~ "What is an actionable task? It's a task you can do directly, right now.\n"
+#~ "\n"
+#~ "It's a task that is already &quot;start-able&quot;, i.e. the start date is "
+#~ "already over.\n"
+#~ "\n"
+#~ "It's a task that doesn't have open subtasks, i.e. you can do the task itself "
+#~ "directly.\n"
+#~ "\n"
+#~ "Thus, the workview will only show you tasks you should do right now.\n"
+#~ "\n"
+#~ "If you use tags, you can right click on a tag in the sidebar and choose to "
+#~ "hide tasks assigned to this particular tag in the workview. It's very useful "
+#~ "if you have a tag like &quot;someday&quot; that you use for tasks you would "
+#~ "like to do but are not particularly urgent."
+#~ msgstr ""
+#~ "Якщо ви натиснете кнопку &quot;Робочий план&quot; то відобразяться дієздатні "
+#~ "завдання.\n"
+#~ "\n"
+#~ "Що таке дієздатне завдання? Це завдання яке ви можете виконувати одразу, "
+#~ "прямо зараз.\n"
+#~ "\n"
+#~ "Це вже &quot;готове-до-початку&quot; завдання, тобто дата початку вже "
+#~ "пройшла.\n"
+#~ "\n"
+#~ "Це завдання без відкритих підзавдань, тобто ви одразу можете виконувати "
+#~ "основне завдання.\n"
+#~ "\n"
+#~ "Таким чином робочий план відобразить завдання, які варто зробити прямо "
+#~ "зараз.\n"
+#~ "\n"
+#~ "Якщо ви використовуєте мітки, то можна клацнути правою кнопкою на мітці в "
+#~ "панелі і приховати завдання в робочому плані з певною міткою. Це дуже зручно "
+#~ "коли у вас є мітка на зразок &quot;колись&quot; для завдань, які б ви хотіли "
+#~ "зробити, але зовсім не термінових."
+
+#~ msgid "Learn how to use subtasks"
+#~ msgstr "Навчитись користуватись підзавданнями"
+
+#~ msgid ""
+#~ "GTG is still very alpha software. We like it and use it everyday but you "
+#~ "will encounter some bugs."
+#~ msgstr ""
+#~ "GTG все ще \"сира\" програма. Нам хотілося б, щоб ви користувались нею "
+#~ "кожного дня, проте ви можете стикнутись з різними проблемами."
+
+#~ msgid ""
+#~ "The quickadd entry is the quickest way to create a new task. You can show or "
+#~ "hide it in the View menu."
+#~ msgstr ""
+#~ "Поле для швидкого додавання — це найшвидший спосіб створення завдання. Його "
+#~ "можна сховати чи показати в меню «Вигляд»."
+
+#~ msgid "Please, report them on our Launchpad page:"
+#~ msgstr "Будь-ласка, звітуйте про них на нашій сторінці на Launchpad:"
+
+#~ msgid ""
+#~ "We need you to make this software better. Any contribution, any idea is "
+#~ "welcome."
+#~ msgstr ""
+#~ "Ми потребуємо вашої допомоги в покращенні ції прогами. Будемо вдячні за будь-"
+#~ "якудопомогу та ідеї."
+
+#~ msgid "If a word begins with @, it is interpreted as a tag."
+#~ msgstr "Якщо слово починається символом @, то воно сприймається як мітка."
+
+#~ msgid ""
+#~ "Attributes which are added in this way apply but do not appear in the title."
+#~ msgstr ""
+#~ "Додані таким чином атрибути буде задіяно, проте їх не буде відображено в "
+#~ "заголовку."
+
+#~ msgid ""
+#~ "If you press the &quot;Workview&quot; button, only actionable tasks will be "
+#~ "displayed."
+#~ msgstr ""
+#~ "Якщо натиснути на кнопку &laquo;Робочий план&raquo;, то буде відображено "
+#~ "тільки &laquo;реальні&raquo; завдання."
+
+#~ msgid ""
+#~ "If you have some trouble with GTG, we might be able to help you or to solve "
+#~ "your problem really quickly."
+#~ msgstr ""
+#~ "Якщо у Вас виникли проблеми з GTG, ми можемо швидко допомогти вам з її "
+#~ "вирішенням чи її усунуненням."
+
+#~ msgid "Thus, the workview will only show you tasks you should do right now."
+#~ msgstr ""
+#~ "Таким чином, робочий план буде показувати тільки ті задачі, які можна "
+#~ "розпочинати прямо зараз."
+
+#~ msgid ""
+#~ "What is an actionable task? It's a task you can do directly, right now."
+#~ msgstr "Що таке активні задачі? Це задачі, які можна виконувати прямо зараз."
+
+#~ msgid ""
+#~ "It's a task that is already &quot;start-able&quot;, i.e. the start date is "
+#~ "already over."
+#~ msgstr ""
+#~ "Це задача яку вже &quot;можна розпочинати&quot;, тобто дата початку вже "
+#~ "настала."
+
+#~ msgid "For that the syntax is :"
+#~ msgstr "Синтаксис для цього:"
+
+#~ msgid ""
+#~ "It's a task that doesn't have open subtasks, i.e. you can do the task itself "
+#~ "directly."
+#~ msgstr ""
+#~ "Ця задача не має відкритих підзадач, тобто ви можете працювати безпосередньо "
+#~ "у цій задачі."
+
+#~ msgid ""
+#~ "tags:tag1,tag2,tag3 : This way you can apply as many tags as you wish using "
+#~ "comma as separator"
+#~ msgstr ""
+#~ "tags:tag1,tag2,tag3 : Таким чином можна додати скільки завгодно міток, "
+#~ "розділяючи їх комами."
+
+#~ msgid ""
+#~ "You can also create a task with attributes like tags, due date or defer date "
+#~ "in the quickadd entry."
+#~ msgstr ""
+#~ "Окрім того, у стічці швидкого додавання можна створювати задачі з такими "
+#~ "атрибутами як мітки, дати виконання на відстрочки виконання."
+
+#~ msgid "GTG has the ability to add plugins to extend it's core functionality."
+#~ msgstr "Додавання модулів розширює можливості GTG"
+
+#~ msgid ""
+#~ "For adding a task you just have to type its title in the entry and press "
+#~ "return. The task will be created and selected in the task browser. If a tag "
+#~ "is selected in the tag panel, this tag is applied to the task you create."
+#~ msgstr ""
+#~ "Для додавання задачі, просто введіть її назву та натисніть ввод. Задача буде "
+#~ "створена та стане вибраною у вікні перегляду задач. Якщо в момент створення "
+#~ "задачі, у панелі міток була вибрана яка-небудь мітка, то вона застосується "
+#~ "до щойно створеної задачі."
+
+#~ msgid ""
+#~ "A new tag is only added to the current task. There's no recursion and the "
+#~ "tag is not applied to subtasks. But when you create a new subtask, this "
+#~ "subtask will inherit the tags of its parent as a good primary default (it "
+#~ "will also be the case if you add a tag to a parent just after creating a "
+#~ "subtask). Of course, you can modify at any time the tags of this particular "
+#~ "subtask. It will never be changed by the parent."
+#~ msgstr ""
+#~ "Нова мітка додається тільки до поточної задачі. Рекурсії тут немає та мітка "
+#~ "не застосовується до наявних підзадач. Однак, коли ви створюєте нову "
+#~ "підзадачу, вона по замовчуванню наслідує мітки батьківської задачі (це "
+#~ "відбудеться також у випадку, якщо ви додасте мітку до батьківської задачі "
+#~ "після створення підзадачі). Безперечно, ви можете змінити мітки даної задачі "
+#~ "в будь-який момент. Вони ніколи не зміняться батьківською задачею."
+
+#~ msgid ""
+#~ "Some examples of the current plugins are Syncing with Remember the Milk and "
+#~ "Evolution, Tomboy/Gnote integration and Geolocalized Tasks."
+#~ msgstr ""
+#~ "Деякі із існуючих розширень включають модулі синхронізації за Remember the "
+#~ "Milk та Evolution, інтеграцію з Tomboy/Gnote  та розширення для задач, які "
+#~ "прив’язані до місцини (Geolocalized Tasks)."

@@ -1,0 +1,35 @@
+#!/bin/sh
+#
+# Copyright (c) 2009 - Jan Girlich <vollkorn@freenet.de>, Luca Invernizzi <invernizzi.l@gmail.com>
+#
+# This program is free software: you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation, either version 3 of the License, or (at your option) any later
+# version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+# details.
+#
+# You should have received a copy of the GNU General Public License along with
+# this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# Script to create a pocketmod form a latex source file
+#
+# Note that the GTG export plugin passes the script the path of the source file
+# and expects to be given the path of the generated file in the standard output
+
+TMPFOLDER=`mktemp -d /tmp/pocketmod.XXXXXXXXXX`
+OUTFILE=`mktemp /tmp/pockemod.XXXXXXXXXXXXX`.pdf
+SOURCEFILE=$1
+pdflatex -interaction nonstopmode -output-directory $TMPFOLDER -jobname temp $SOURCEFILE  1>&2
+PDFFILE=$TMPFOLDER/temp.pdf
+pdftk $PDFFILE cat 6 7 8 1 output $TMPFOLDER/seite6781.pdf   1>&2
+pdftk $PDFFILE cat 5 4 3 2 output $TMPFOLDER/seite5432.pdf   1>&2
+pdf90 $TMPFOLDER/seite5432.pdf --outfile $TMPFOLDER/seite5432-r.pdf      1>&2
+pdf90 $TMPFOLDER/seite5432-r.pdf --outfile $TMPFOLDER/seite5432-r2.pdf      1>&2
+pdftk $TMPFOLDER/seite6781.pdf $TMPFOLDER/seite5432-r2.pdf cat output $TMPFOLDER/gesamt.pdf      1>&2
+pdfnup $TMPFOLDER/gesamt.pdf --nup 4x2 --landscape --outfile $OUTFILE      1>&2
+rm -rf $TMPFOLDER      1>&2
+echo -n $OUTFILE

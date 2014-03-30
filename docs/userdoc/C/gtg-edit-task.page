@@ -1,0 +1,44 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      xmlns:its="http://www.w3.org/2005/11/its"
+      type="topic" style="task"
+      id="gtg-edit-task">
+
+  <info>
+    <link type="guide" xref="gtg-tasks" group="second"/>
+    <link type="seealso" xref="gtg-create-new-task"/>
+    <link type="seealso" xref="gtg-dismiss-task"/>
+    <link type="seealso" xref="gtg-delete-task"/>
+    <link type="seealso" xref="gtg-set-task-date"/>
+      
+      <revision pkgversion="1301" date="2013-06-18" status="candidate"/>
+   <credit type="author copyright">
+      <name>Radina Matic</name>
+      <email its:translate="no">radina.matic@gmail.com</email>
+      <years>2013</years>
+    </credit>
+    <credit type="copyright editor">
+      <name></name>
+      <email its:translate="no"></email>
+      <years></years>
+    </credit>
+
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+
+  </info>
+
+  <title>Edit Task</title>
+
+<p>To open and edit an already created task:</p>
+
+ <list>
+      <item><p>Select the task in the task browser and double-click it or press <gui>ENTER</gui>.</p></item>
+      <item><p>Go to <guiseq><gui>Tasks</gui><gui>Edit</gui></guiseq> in the main menu.</p></item>
+      <item><p> Right-click the task and select <gui>Edit</gui> from the contextual menu.</p></item>  
+</list>
+
+<p>Write the desired task content in the task editor window. You can paste links, add tags (start with the sign “@”) and subtasks (start with “-”) inside the task editor. See the <link xref="gtg-subtasks">Subtasks</link> and <link xref="gtg-tags">Tags</link> sections for more details about the syntax.</p>
+
+
+<p>Remember that you do not need to save the changes to the task as GTG does that automatically while you write.</p>
+
+</page>

@@ -1,0 +1,21 @@
+[Desktop Entry]
+Version=1.0
+Name=Getting Things GNOME!
+GenericName=Task Manager
+GenericName[sk]=Správca pracovných úloh
+Comment=Personal tasks and TODO-list items organizer for the GNOME desktop environment.
+Comment[sk]=Osobný správca pracovných úloh pre prostredie GNOME
+Icon=gtg
+Exec=gtg %U
+Terminal=false
+Type=Application
+Categories=Office;ProjectManagement;
+Keywords=Organizer;Task;Activity;Plan;Time;
+MimeType=x-scheme-handler/gtg;
+StartupNotify=true
+X-Ayatana-Desktop-Shortcuts=NewTask
+
+[NewTask Shortcut Group]
+Name=New Task
+Exec=gtg_new_task
+TargetEnvironment=Unity

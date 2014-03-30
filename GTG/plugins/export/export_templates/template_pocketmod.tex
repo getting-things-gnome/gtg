@@ -1,0 +1,57 @@
+\documentclass[a6paper]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage[ngerman]{babel}
+\usepackage{wasysym}
+\usepackage[margin=0.2cm]{geometry}
+\usepackage{mdwlist}
+\begin{document}
+
+\pagestyle{empty}
+\thispagestyle{empty}
+
+\begin{itemize*}
+	#for $task in $tasks:
+		$task_template($task)
+	#end for
+\end{itemize*}
+
+#def task_template($task)
+\item[\Square]
+	#if $task.has_title
+	\textbf{$task.title.replace('_', '\_')}
+		#if $task.has_tags
+			#for $tag in $task.tags:
+				\textit{$tag.replace('_', '\_')}
+			#end for
+		#end if
+	#end if
+
+	#if $task.has_due_date
+		\textit{Due: $task.due_date}\\ 
+	#end if
+
+	#if $task.has_subtasks
+	\begin{itemize*}
+		#for $subtask in $task.subtasks:
+			$task_template($subtask)
+		#end for
+	\end{itemize*}
+	#end if
+#end def
+\newpage
+.
+\newpage
+.
+\newpage
+.
+\newpage
+.
+\newpage
+.
+\newpage
+.
+\newpage
+.
+\end{document}

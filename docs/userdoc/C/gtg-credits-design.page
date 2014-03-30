@@ -1,0 +1,33 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      xmlns:its="http://www.w3.org/2005/11/its"
+      type="topic" style="task"
+      id="gtg-credits-design">
+
+  <info>
+    <link type="guide" xref="index#gtg-credits"/>
+    <link type="seealso" xref="gtg-credits-dev"/>
+    <link type="seealso" xref="gtg-credits-trans"/>
+    <link type="seealso" xref="gtg-credits-collab"/>
+      
+      <revision pkgversion="1301" date="2013-06-18" status="candidate"/>
+   <credit type="author copyright">
+      <name>Radina Matic</name>
+      <email its:translate="no">radina.matic@gmail.com</email>
+      <years>2013</years>
+    </credit>
+    <credit type="copyright editor">
+      <name></name>
+      <email its:translate="no"></email>
+      <years></years>
+    </credit>
+
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+
+  </info>
+
+  <title>GTG Design</title>
+
+<p>Bertrand Rousseau - <email>bertrand.rousseau@gmail.com</email></p>
+<p>Kalle Persson - <email>kalle@kallepersson.se</email></p>
+</page>
+

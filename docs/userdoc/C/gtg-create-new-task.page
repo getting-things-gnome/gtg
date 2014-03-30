@@ -1,0 +1,47 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      xmlns:its="http://www.w3.org/2005/11/its"
+      type="topic" style="task"
+      id="gtg-create-new-task">
+
+  <info>
+    <link type="guide" xref="gtg-tasks" group="first"/>
+    <link type="seealso" xref="gtg-edit-task"/>
+    <link type="seealso" xref="gtg-dismiss-task"/>
+    <link type="seealso" xref="gtg-delete-task"/>
+    <link type="seealso" xref="gtg-set-task-date"/>
+      
+      <revision pkgversion="1301" date="2013-06-18" status="candidate"/>
+   <credit type="author copyright">
+      <name>Radina Matic</name>
+      <email its:translate="no">radina.matic@gmail.com</email>
+      <years>2013</years>
+    </credit>
+    <credit type="copyright editor">
+      <name></name>
+      <email its:translate="no"></email>
+      <years></years>
+    </credit>
+
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+
+  </info>
+
+  <title>Create a New Task</title>
+
+  <p>There are three ways to create a new task in <app>GTG</app>:</p>
+
+<list>
+  <item><p>Go to <guiseq><gui>Tasks</gui><gui>New Task</gui></guiseq> in the main menu.</p></item>
+  <item><p>Click the <gui>New Task</gui> button in the toolbar.</p></item>
+  <item><p>Use the <keyseq><key>Ctrl</key><key>N</key></keyseq> shortcut.</p></item>
+</list>
+
+  <!-- Insert Image Here -->
+
+  <p>The new task will open on top of the <app>GTG</app> main window, or any other tasks that you may have opened.</p>
+
+</page>
+
+
+
+

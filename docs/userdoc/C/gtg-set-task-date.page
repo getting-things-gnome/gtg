@@ -1,0 +1,49 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      xmlns:its="http://www.w3.org/2005/11/its"
+      type="topic" style="task"
+      id="gtg-set-task-date">
+
+  <info>
+    <link type="guide" xref="gtg-tasks" group="second"/>
+    <link type="seealso" xref="gtg-create-new-task"/>
+    <link type="seealso" xref="gtg-edit-task"/>
+    <link type="seealso" xref="gtg-delete-task"/>
+    <link type="seealso" xref="gtg-dismiss-task"/>
+      
+      <revision pkgversion="1301" date="2013-06-18" status="candidate"/>
+   <credit type="author copyright">
+      <name>Radina Matic</name>
+      <email its:translate="no">radina.matic@gmail.com</email>
+      <years>2013</years>
+    </credit>
+    <credit type="copyright editor">
+      <name></name>
+      <email its:translate="no"></email>
+      <years></years>
+    </credit>
+
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+
+  </info>
+
+  <title>Set Task Start and Due Date</title>
+
+<p>To set the start and due date for the task from the task browser in the GTG main window, right-click the task and select the desired days from the <gui>Set start date</gui> or <gui>Set due date</gui> options in the contextual menu.</p>
+
+<figure>
+  <title>Set Dates Task Browser</title>
+  <desc> </desc>
+ <media type="image" mime="image/png" src="figures/set_date_task_browser.png"/>
+</figure>
+
+<p>To set the start and due date for the task that is already opened, press the upward arrowhead icon in the status bar to open the calendar widget and set the dates.</p>
+
+<figure>
+  <title>Set Dates Open Task</title>
+  <desc> </desc>
+ <media type="image" mime="image/png" src="figures/set_date_task_open.png"/>
+</figure>
+
+
+
+</page>

@@ -1,0 +1,38 @@
+<page xmlns="http://projectmallard.org/1.0/" type="topic" style="task" id="gtg-add-sync" xml:lang="ru">
+<info>
+  <link type="guide" xref="index#gtg-sync"/>
+  <link type="seealso" xref="gtg-sync"/>
+  <link type="seealso" xref="gtg-remove-sync"/>
+
+  <revision pkgversion="0.1" version="0.1" date="2012-07-03" status="candidate"/>
+  <credit type="author">
+    <name>Radina Matic</name>
+    <email>radina.matic@gmail.com</email>
+  </credit>
+<mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator">
+  <mal:name>Dmitry Drozdov</mal:name>
+</mal:credit>
+</info>
+
+<title>Включение и отключение сервисов синхронизации</title>
+
+<p>Чтобы включить либо отключить сервисы синхронизации выполните команды главного меню GTG <guiseq><gui>Правка</gui><gui>Сервисы синхронизации</gui></guiseq>. Щелкните по кнопке <gui>Добавить</gui> и выберите подходящий сервис синхронизации из списка справа.</p>
+
+<figure>
+<title>Включение сервиса синхронизации</title>
+<desc> </desc>
+<media type="image" mime="image/png" src="figures/select-sync.png"/>
+</figure>
+
+<p>Для каждого включенного сервиса синхронизации нужно настроить некоторые параметры, такие как имя пользователя и пароль (если они требуются для доступа к этому сервису). После этого щелкните по кнопке <gui>Разрешить синхронизацию</gui>.</p>
+
+<p>Для выключения сервиса синхронизации щелкните по кнопке <gui>Отключить синхронизацию</gui>.</p>
+
+<figure>
+<title>Настройка сервиса синхронизации</title>
+<desc> </desc>
+<media type="image" mime="image/png" src="figures/configure-sync.png"/>
+</figure>
+
+</page>
+

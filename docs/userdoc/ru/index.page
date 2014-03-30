@@ -1,0 +1,76 @@
+<page xmlns="http://projectmallard.org/1.0/" xmlns:e="http://projectmallard.org/experimental/" type="guide" style="2column" id="index" xml:lang="ru">
+<info>
+    <title type="link">Getting Things GNOME! task management</title>
+    <title type="text">Getting Things GNOME! task management</title>
+    <revision pkgversion="0.1" version="0.2" date="2012-07-03" status="candidate"/>
+    <credit type="author">
+     <name>Radina Matic</name>
+     <email>radina.matic@gmail.com</email>
+    </credit>
+  
+<!--  
+  <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude" />
+-->
+<mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator">
+  <mal:name>Dmitry Drozdov</mal:name>
+</mal:credit>
+</info>
+
+ <title>
+    <media type="image" mime="image/png" src="figures/gtg-icon.png">
+     gtg logo
+    </media>
+    Getting Things GNOME!
+ </title>
+
+<p>Добро пожаловать в документацию к программе <app>Getting Things GNOME!</app>.</p>
+<p><app>Getting Things GNOME! (GTG)</app> - менеджер задач и органайзер для рабочей среды Gnome. Основые достоинства GTG – простота и функциональность, а галаная цель GTG - дать простой и в то же время гибкий инструмент для организации работы и жизни.</p>
+
+<links type="topic" style="mouseovers">
+  <e:mouseover src="figures/mover1.png"/>
+  <e:mouseover match="gtg-quickstart" src="figures/mover2.png"/>
+  <e:mouseover match="gtg-shortcut-keys" src="figures/mover3.png"/>
+  <e:mouseover match="gtg-main-window" src="figures/mover4.png"/>
+</links>
+
+  <p>Хотите быстро ознакомиться с основными функциями <app>GTG</app> и некоторыми клавиатурными комбинациями? Перейдите по ссылкам <link xref="gtg-quickstart">Начиная работу</link> и <link xref="gtg-shortcut-keys">Клавиатурные комбинации</link> . А детальное описание главного окна <app>GTG</app> приведено тут: <link xref="gtg-main-window">Основное окно GTG</link>.</p>
+
+ <p>Более подробная информация доступна по ссылкам ниже. Приятного использования <app>Getting Things GNOME!</app></p>
+
+ <section id="gtg-task-management" style="2column">
+    <title>Управление задачами</title>
+ </section>
+
+ <section id="gtg-search" style="2column">
+    <title>Поиск задач</title>
+ </section>
+
+ <section id="gtg-sync" style="2column">
+    <title>Сервисы синхронизации</title>
+ </section>
+
+ <section id="gtg-plugins" style="2column">
+    <title>Дополнения</title>
+ </section>
+
+ <section id="gtg-faq" style="2column">
+    <title>FAQ - вопросы и ответы</title>
+ </section>
+
+ <section id="gtg-get-involved" style="2column">
+    <title>Вливайся в работу!</title>
+ </section>
+ 
+ <section id="gtg-advanced" style="2column">
+    <title>Дополнительная информация</title>
+    
+    <p>Если у Вас есть желание помочь разработке <app>GTG</app>, ниже есть дополнительная информация для начала такой работы:</p>
+    
+ </section>
+
+  <section id="gtg-credits" style="2column">
+    <title>Благодарности</title>
+    <p>Эти люди на протяжении нескольких лет делали <app>GTG</app> доступным для Вас:</p>
+ </section>
+
+</page>

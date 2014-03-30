@@ -1,0 +1,15 @@
+recursive-include GTG *.ui
+recursive-include GTG *.gtg-plugin
+recursive-include GTG *.png
+recursive-include GTG *.svg
+recursive-include GTG/plugins/export *
+include CHANGELOG
+include README
+include LICENSE
+include AUTHORS
+include requirements.txt
+recursive-include data *
+recursive-include po *.po
+include docs/Makefile
+recursive-include docs/source *
+recursive-include docs/userdoc *

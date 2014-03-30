@@ -1,0 +1,53 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      xmlns:its="http://www.w3.org/2005/11/its"
+      type="topic" style="task"
+      id="gtg-credits-trans">
+
+  <info>
+    <link type="guide" xref="index#gtg-credits"/>
+    <link type="seealso" xref="gtg-credits-dev"/>
+    <link type="seealso" xref="gtg-credits-design"/>
+    <link type="seealso" xref="gtg-credits-collab"/>
+      
+      <revision pkgversion="1301" date="2013-06-18" status="candidate"/>
+   <credit type="author copyright">
+      <name>Radina Matic</name>
+      <email its:translate="no">radina.matic@gmail.com</email>
+      <years>2013</years>
+    </credit>
+    <credit type="copyright editor">
+      <name></name>
+      <email its:translate="no"></email>
+      <years></years>
+    </credit>
+
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+
+  </info>
+
+  <title>GTG Translators</title>
+
+<p>Afrikaans: Walter Leibbrandt</p>
+<p>Belarusian: Egor Kuryanovich, Iryna Nikanchuk</p>
+<p>Catalan: Siegfried Gevatter, Radina Matic</p>
+<p>Czech: Hýroumen, Ladislav Prskavec</p>
+<p>Danish: Peter Skov</p>
+<p>Dutch: puccha</p>
+<p>Finnish: Mika Tapojärvi</p>
+<p>French: Lionel Dricot, Rafik Ouerchefani, Bertrand Rousseau, Pititjo</p>
+<p>German: Philip Stewart, Thomas Pitlik</p>
+<p>Italian: Luca Falavigna, Luca Invernizzi, Radina Matic</p>
+<p>Malay: melayubuntu</p>
+<p>Polish: Tomasz Maciejewski</p>
+<p>Portuguese: Paulo Cabido</p>
+<p>Russian: Alexey Kostyuk, Alexey Nedilko, a220, mrk, wiz</p>
+<p>Simplified Chinese: Harold.luo</p>
+<p>Slovak: Slavko (linux-slavino)</p>
+<p>Spanish: David Prieto, DiegoJ, Pititjo, Radina Matic</p>
+<p>Swedish: Christian Widell, Daniel Holm, Kalle Persson, Petri Rosenström</p>
+<p>Traditional Chinese: Rex Tsai</p>
+<p>Turkish: Murat Güneş</p>
+
+
+</page>
+

@@ -1,0 +1,11 @@
+[GTG Plugin]
+module=export
+name=Export and print
+short-description=Exports the tasks in the current view into a variety of formats.
+description=Exports the tasks in the current view into
+    a variety of formats. You can also personalize the format
+    of your tasks by writing your own template
+authors=Luca Invernizzi <invernizzi.l@gmail.com>, Izidor Matušov <izidor.matusov@gmail.com>
+version=0.2
+enabled=False
+dependencies=Cheetah,pdflatex,pdftk,pdfjam

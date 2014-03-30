@@ -1,0 +1,3 @@
+[D-BUS Service]
+Name=org.gnome.GTG
+Exec=/usr/bin/gtg

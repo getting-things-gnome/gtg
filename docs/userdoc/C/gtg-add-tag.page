@@ -1,0 +1,47 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      xmlns:its="http://www.w3.org/2005/11/its"
+      type="topic" style="task"
+      id="gtg-add-tag">
+
+  <info>
+    <link type="guide" xref="gtg-tags" group="third"/>
+    <link type="seealso" xref="gtg-tag-color"/>
+    <link type="seealso" xref="gtg-add-subtag"/>
+      
+      <revision pkgversion="1301" date="2013-06-18" status="candidate"/>
+   <credit type="author copyright">
+      <name>Radina Matic</name>
+      <email its:translate="no">radina.matic@gmail.com</email>
+      <years>2013</years>
+    </credit>
+    <credit type="copyright editor">
+      <name></name>
+      <email its:translate="no"></email>
+      <years></years>
+    </credit>
+
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+
+  </info>
+
+  <title>Add or Modify Tags</title>
+
+    <p>To add a new tag or modify those already assigned to a selected task in the main <app>GTG</app> window, you can:</p>
+  
+  <list>
+      <item><p>Use the <keyseq><key>Ctrl</key><key>T</key></keyseq> keyboard shortcut.</p></item>
+      <item><p>Right-click the task and select <gui>Modify Tag...</gui> from the contextual menu.</p></item>
+  </list> 
+
+<p>Pop-up window will appear and allow you to add new tags separated by space. To remove an already assigned tag place the “!” sign in front of it.</p>
+
+<figure>
+  <title>Modify Tags</title>
+ <media type="image" mime="image/png" src="figures/modify-tag.png"/>
+</figure>
+  
+   <p>To add a new tag to an open <app>GTG</app> task, click the <gui>Add Tag</gui> button in the task toolbar.  This will insert a "@" sign into the task after which you can write the name of the new tag. As soon as you start writing after the "@", the new tag will be highlighted yellow and appear on the list of tags in the <app>GTG</app> sidebar.</p>
+
+   <p>To add an already existing tag to an open <app>GTG</app> task, click the downward arrow beside the <gui>Add Tag</gui> button in the task toolbar. This will open a dropdown list with all the available tags that you can add to the task.</p>
+
+</page>

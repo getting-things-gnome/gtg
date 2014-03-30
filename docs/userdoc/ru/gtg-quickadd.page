@@ -1,0 +1,21 @@
+<page xmlns="http://projectmallard.org/1.0/" type="guide" style="task 2column" id="gtg-quickadd" xml:lang="ru">
+
+<info>
+  <link type="guide" xref="index#gtg-task-management" group="fourth"/>
+  <revision pkgversion="0.1" version="0.1" date="2012-07-03" status="candidate"/>
+  <credit type="author">
+    <name>Radina Matic</name>
+    <email>radina.matic@gmail.com</email>
+  </credit>
+<mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator">
+  <mal:name>Dmitry Drozdov</mal:name>
+</mal:credit>
+</info>
+
+<title>Быстрый ввод задач</title>
+
+<p>Поле быстрого ввода - самый быстрый и простой способ создания новой задачи. Чтобы вывести или отключить поле быстрого ввода, выполните команду главного меню <app>GTG</app> <guiseq><gui>Вид</gui><gui>Быстрый ввод</gui></guiseq>.</p> 
+
+<links type="topic" groups="first second third fourth fifth sixth" style="2column"/>
+
+</page>

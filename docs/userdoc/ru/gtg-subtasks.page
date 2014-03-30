@@ -1,0 +1,46 @@
+<page xmlns="http://projectmallard.org/1.0/" type="guide" style="task 2column" id="gtg-subtasks" xml:lang="ru">
+
+<info>
+  <link type="guide" xref="index#gtg-task-management" group="second"/>
+  <revision pkgversion="0.1" version="0.1" date="2012-07-03" status="candidate"/>
+  <credit type="author">
+    <name>Radina Matic</name>
+    <email>radina.matic@gmail.com</email>
+  </credit>
+<mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator">
+  <mal:name>Dmitry Drozdov</mal:name>
+</mal:credit>
+</info>
+
+<title>Подзадачи</title>
+
+<p>Даже самый большой проект является просто списком задач. Очень часто, чтобы выполнить какую-то задачу, вначале нужно выполнить другую задачу. В <app>GTG</app> такие <em>задачи-предпосылки</em> называются <em style="strong">подзадачами</em>. В каждой задаче может быть сколько угодно подзадач.</p>
+
+<section id="gtg-create-new-subtask">
+<title>Ввод новой подзадачи</title>
+
+<p>Для создания новой подзадачи у открытой в редакторе задачи можно:</p>
+
+<list>
+  <item><p>Начать новую строку с символа &quot;-&quot; и ввести заголовок подзадачи.</p></item>
+  <item><p>Щелкнуть по кнопке <gui>Вставить подзадачу</gui> в панели инструментов редактора.</p></item>
+  <item><p>Использовать комбинацию <keyseq><key>Ctrl</key><key>Shift</key><key>N</key></keyseq>.</p></item>
+</list>
+
+<p>Заголовок подзадачи будет помечен стрелочкой и станет ссылкой: если кликнуть по ней, то подзадача откроется в отдельном окне редактора.</p>
+
+<figure>
+<title>Добавление подзадач</title>
+<desc> </desc>
+<media type="image" mime="image/png" src="figures/subtasks2.png"/>
+</figure>
+
+<p>Чтобы создать удобную последовательность или иерархию задач и подзадач, их можно просто перетащить мышью в списке. При этом стоит иметь в виду, что подзадачи должны отвечать простым правилам. Например, дата выполнения подзадачи никогда не может быть позже даны выполнения основной задачи. Кроме этого, если закрыть родительскую задачу (выполнить, отменить, или удалить), все ее подзадачи тоже будут помечены аналогично.</p>
+
+</section>
+<section id="gtg-edit-delete-subtask">
+<title>Редактирование, отмена и удаления подзадач</title>
+<p>Делается также, как и для задач.</p>
+</section>
+
+</page>

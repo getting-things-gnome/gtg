@@ -1,0 +1,10 @@
+[GTG Plugin]
+module=hamster
+name=Hamster Time Tracker Integration
+short-description=Track time of GTG task with Hamster applet.
+description=Adds the ability to send a task to
+    the Hamster time tracking applet
+authors=Kevin Mehall <km@kevinmehall.net>
+version=0.3
+dbus-dependencies=org.gnome.Hamster:/org/gnome/Hamster
+enabled=False
