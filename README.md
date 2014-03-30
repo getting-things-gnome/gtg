@@ -1,4 +1,4 @@
-====== Getting Things GNOME! ======
+# Getting Things GNOME!
 
 Getting Things GNOME! (GTG) is a personal tasks and TODO list items organizer
 for the GNOME desktop environment inspired by the Getting Things Done (GTD)
@@ -8,7 +8,7 @@ in mind so it can be used as more than just GTD software.
 GTG is intended to help you track everything you need to do and need to know,
 from small tasks to large projects.
 
-===== Dependencies =====
+## Dependencies
 
 GTG depends on the following packages:
 
@@ -32,7 +32,7 @@ There are additional plugins (modules for extending the user interface) and
 synchronization services (modules for importing/exporting tasks from/to
 external services) which needs additional packages to work correctly.
 
-=== Dependencies for Plugins ===
+### Dependencies for Plugins
 
 "Bugzilla" plugin dependencies:
   * python-bugz
@@ -69,7 +69,7 @@ python-dbus
 
 "Urgency Color" plugin does not have any external dependencies.
 
-=== Dependencies for Synchronization Services ===
+### Dependencies for Synchronization Services
 
 Evolution synchronization service has dependencies:
   * python-evolution
@@ -94,7 +94,7 @@ Remember the Milk synchronization service is shipped with a library for RTM api.
 
 Remember the Milk is not maintained for a long time and might be potentially harmful.
 
-===== Installing and Running =====
+## Installing and Running
 
 To install GTG, either unpack the tarball:
 
@@ -116,7 +116,7 @@ or install it system-wide (must install as root to install system-wide):
     $ sudo python setup.py install # must be root to install system-wide
     $ gtg
 
-==== How To Use GTG? ====
+### How To Use GTG?
 
 Please refer to our documentation to get a thorough explanation on how GTG
 works.
@@ -137,7 +137,7 @@ this command (from the source root dir):
 
     $ yelp doc/userdoc/C/index.page
 
-==== Using GTG from the command line ====
+### Using GTG from the command line
 
 GTG provides two command line tools that allows to interact with GTG:
 
@@ -155,11 +155,12 @@ If you have installed gtg, you can access those by executing:
     $ man gtcli
     $ man gtg_new_task
 
-===== Want to know more? =====
+## Want to know more?
 
  * GTG Website: http://gtgnome.net/
  * GTG project page on Launchpad: https://launchpad.net/gtg
  * GTG Wiki: http://live.gnome.org/gtg/
+ * GTG developer's documentation: http://gtg.readthedocs.org/en/latest/index.html
 
 Feel free to join our user mailing-list to receive news about GTG. You can
 register on this mailing-list from this page: https://launchpad.net/~gtg-user
