@@ -1,5 +1,7 @@
 # Getting Things GNOME!
 
+[![Build Status](https://travis-ci.org/getting-things-gnome/gtg.svg?branch=master)](https://travis-ci.org/getting-things-gnome/gtg)
+
 Getting Things GNOME! (GTG) is a personal tasks and TODO list items organizer
 for the GNOME desktop environment inspired by the Getting Things Done (GTD)
 methodology. GTG is designed with flexibility, adaptability, and ease of use
