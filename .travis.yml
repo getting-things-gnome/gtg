@@ -4,7 +4,7 @@ python:
   - '3.3'
 
 install:
-  - apt-get install -y python3-gi gir1.2-gtk-3.0
+  - apt-get install -y python3-gi gir1.2-gtk-3.0 python-liblarch
   - pip install -r requirements.txt
 
 script:
