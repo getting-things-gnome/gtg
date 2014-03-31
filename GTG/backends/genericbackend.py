@@ -576,7 +576,7 @@ class GenericBackend(object):
         if not os.path.exists(path):
             return default_value
 
-        with open(path, 'r') as file:
+        with open(path, 'rb') as file:
             try:
                 return pickle.load(file)
             except Exception:
@@ -587,7 +587,7 @@ class GenericBackend(object):
         for i in range(1, PICKLE_BACKUP_NBR + 1):
             backup_file = "%s.bak.%d" % (path, i)
             if os.path.exists(backup_file):
-                with open(backup_file, 'r') as file:
+                with open(backup_file, 'rb') as file:
                     try:
                         data = pickle.load(file)
                         Log.info("Succesfully restored backup #%d for '%s'" %
