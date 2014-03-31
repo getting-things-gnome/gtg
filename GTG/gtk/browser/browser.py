@@ -446,7 +446,10 @@ class TaskBrowser(GObject.GObject):
                 path += (p, )
             if path[-1] == '':
                 path = path[:-1]
-            self.vtree_panes['active'].collapse_node(path)
+            try:
+                self.vtree_panes['active'].collapse_node(path)
+            except IndexError:
+                print("Invalid liblarch path {0}".format(path))
 
     def restore_state_from_conf(self):
 
