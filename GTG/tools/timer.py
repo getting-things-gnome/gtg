@@ -26,22 +26,16 @@ class timer:
 
     def __init__(self):
         self.now = datetime.datetime.now()
-        self.now = datetime.time(self.now.hour,
-                                 self.now.minute, self.now.second)
 
     def seconds_before(self, time):
         """Returns number of seconds remaining before next refresh"""
-        start = self.now.strftime("%H:%M:%S")
-        end = time.strftime("%H:%M:%S")
-        start_dt = datetime.datetime.strptime(start, '%H:%M:%S')
-        end_dt = datetime.datetime.strptime(end, '%H:%M:%S')
-        diff = (end_dt - start_dt)
-        secs_to_refresh = diff.seconds
-        return secs_to_refresh
+        secs_to_refresh = (time-self.now).seconds
+        return (secs_to_refresh+1)
 
     def interval_to_time(self, interval):
         """Convert user given periodic interval to time"""
         refresh_hour = self.now.hour + int(interval)
-        refresh_time = datetime.time(refresh_hour,
-                                     self.now.minute, self.now.second)
+        refresh_time = datetime.datetime(self.now.year, self.now.month,
+                                         self.now.day, refresh_hour,
+                                         self.now.minute, self.now.second)
         return refresh_time

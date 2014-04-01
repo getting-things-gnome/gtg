@@ -133,14 +133,16 @@ class TaskBrowser(GObject.GObject):
         self.activetree.register_cllbck('node-deleted-inview',
                                         self._update_window_title)
         self._update_window_title()
-        refresh_time = datetime.time(0, 0, 0)
+        now = datetime.datetime.now()
+        refresh_time = datetime.datetime(now.year, now.month, now.day, 0, 0, 0)
         self.custom_refresh(refresh_time)
         refresh_hour = self.config.get('hour')
         refresh_min = self.config.get('min')
         self.periodic_interval = self.config.get('interval')
         if refresh_hour and refresh_min is not "00":
-            refresh_time = datetime.time(int(refresh_hour),
-                                         int(refresh_min), 00)
+            refresh_time = datetime.datetime(now.year, now.month, now.day,
+                                             int(refresh_hour),
+                                             int(refresh_min), 00)
 
 ### INIT HELPER FUNCTIONS #####################################################
 #
@@ -576,7 +578,6 @@ class TaskBrowser(GObject.GObject):
         self.in_toggle_workview = False
 
     def refresh_workview(self):
-        refresh = timer()
         task_tree = self.req.get_tasks_tree(name='active', refresh=False)
         task_tree.refresh_all()
         GObject.timeout_add_seconds(86400,
@@ -586,7 +587,7 @@ class TaskBrowser(GObject.GObject):
     def interval_refresh(self, interval):
         refresh = timer()
         refresh_time = refresh.interval_to_time(interval)
-        GObject.timeout_add_seconds(refresh.seconds_before(refresh_time),
+        GObject.timeout_add_seconds(int(refresh.seconds_before(refresh_time)),
                                     self.periodic_refresh)
 
     def periodic_refresh(self):
@@ -596,7 +597,7 @@ class TaskBrowser(GObject.GObject):
 
     def custom_refresh(self, time):
         refresh = timer()
-        GObject.timeout_add_seconds(refresh.seconds_before(time),
+        GObject.timeout_add_seconds(int(refresh.seconds_before(time)),
                                     self.refresh_workview)
 
     def set_view(self, viewname):

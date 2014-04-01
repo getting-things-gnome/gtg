@@ -164,8 +164,11 @@ class PreferencesDialog:
         COLOR_INVALID = Color(50000, 0, 0)
         refresh_hour = self.refresh_hour.get_text()
         refresh_min = self.refresh_mins.get_text()
+        now = datetime.datetime.now()
         try:
-            d = datetime.time(int(refresh_hour), int(refresh_min), 00)
+            d = datetime.datetime(now.year, now.month, now.day,
+                                  int(refresh_hour),
+                                  int(refresh_min), 00)
             self.refresh_hour.modify_fg(Gtk.StateFlags.NORMAL, None)
             self.refresh_mins.modify_fg(Gtk.StateFlags.NORMAL, None)
         except (ValueError, TypeError):
@@ -175,8 +178,10 @@ class PreferencesDialog:
     def interval_check(self, widget):
         COLOR_INVALID = Color(50000, 0, 0)
         refresh_interval = self.refresh_interval.get_text()
+        now = datetime.datetime.now()
         try:
-            d = datetime.time(int(refresh_interval), 0, 0)
+            d = datetime.datetime(now.year, now.month, now.day,
+                                  int(refresh_interval), 0, 0)
             self.refresh_interval.modify_fg(Gtk.StateFlags.NORMAL, None)
         except (ValueError, TypeError):
             self.refresh_interval.modify_fg(Gtk.StateFlags.NORMAL,
@@ -187,10 +192,12 @@ class PreferencesDialog:
         COLOR_INVALID = Color(50000, 0, 0)
         refresh_hour = self.refresh_hour.get_text()
         refresh_min = self.refresh_mins.get_text()
-        refresh_time = datetime.time(0, 0, 0)
+        now = datetime.datetime.now()
+        refresh_time = datetime.datetime(now.year, now.month, now.day, 0, 0, 0)
         try:
-            refresh_time = datetime.time(int(refresh_hour),
-                                         int(refresh_min), 00)
+            refresh_time = datetime.datetime(now.year, now.month, now.day,
+                                             int(refresh_hour),
+                                             int(refresh_min), 00)
             self.refresh_hour.modify_fg(Gtk.StateFlags.NORMAL, None)
             self.refresh_mins.modify_fg(Gtk.StateFlags.NORMAL, None)
             self.config.set('hour', refresh_hour)
