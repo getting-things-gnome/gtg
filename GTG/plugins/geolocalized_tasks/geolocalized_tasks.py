@@ -43,7 +43,7 @@ FILTER_NAME = '@@GeolocalizedTasks'
 class geolocalizedTasks:
 
     PLUGIN_NAMESPACE = 'Geolocalized Tasks'
-    DEFAULT_PREFERENCES = {'apply_filter': False, 'distance_filter':15}
+    DEFAULT_PREFERENCES = {'apply_filter':False, 'distance_filter':15, 'user_changed_location':False}
 
     def __init__(self):
         Clutter.init([])
@@ -490,7 +490,6 @@ class geolocalizedTasks:
         
 
     def _preferences_load(self, plugin_api):
-        preferences = self._get_preferences()
         preferences = plugin_api.load_configuration_object(self.PLUGIN_NAMESPACE, "preferences", default_values=self.DEFAULT_PREFERENCES)
         self._set_preferences(preferences)
 
@@ -524,6 +523,13 @@ class geolocalizedTasks:
         marker.set_location(latitude, longitude)
         self._set_user_position(position)
         self._set_marker_last_location(marker)
+
+        last_location_data_path = os.path.join('plugins/geolocalized_tasks', "last_location")
+        store_pickled_file(last_location_data_path, position)
+
+        preferences = self._get_preferences()
+        preferences['user_changed_location'] = True
+        self._set_preferences(preferences)
 
     def _on_add_location (self, widget, position):
         [latitude, longitude] = position
@@ -683,9 +689,12 @@ class geolocalizedTasks:
         btn = builder.get_object("btn_zoom_out")
         btn.connect('clicked', self._zoom_out, view)
 
+        preferences = self._get_preferences()
+        user_changed_location = preferences['user_changed_location']
+
         last_location_data_path = os.path.join('plugins/geolocalized_tasks', "last_location")
         [user_latitude, user_longitude] = self._get_user_position()
-        if user_latitude is None and user_longitude is None:
+        if (user_changed_location is True) or (user_latitude is None and user_longitude is None):
             [user_latitude, user_longitude] = load_pickled_file(last_location_data_path, [None, None])
             self._set_user_position([user_latitude, user_longitude])
 
@@ -744,6 +753,9 @@ class geolocalizedTasks:
         dict[key] = locations
         store_pickled_file (data_path, dict)
 
+        plugin_api = self._get_plugin_api()
+        self._preferences_store(plugin_api)
+
         widget.get_parent_window().destroy()
         self._clean_up()
 
@@ -787,6 +799,7 @@ class geolocalizedTasks:
 
         tag_location_data_path = os.path.join('plugins/geolocalized_tasks', "tag_locations")
         store_pickled_file(tag_location_data_path, self._get_tag_locations())
+
         widget.get_parent_window().destroy()
 
     def _cancel_edit (self, widget, data):
