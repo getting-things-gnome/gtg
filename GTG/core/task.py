@@ -712,6 +712,7 @@ class Task(TreeNode):
                 if child.can_be_deleted:
                     child.remove_tag(tagname)
         self.content = self._strip_tag(self.content, tagname)
+        self.sync()
         if modified:
             tag = self.req.get_tag(tagname)
             # The ViewCount of the tag still doesn't know that
@@ -734,18 +735,19 @@ class Task(TreeNode):
             self.add_tag(tag)
 
     def _strip_tag(self, text, tagname, newtag=''):
+        inline_tag = tagname[1:]
         return (text
                 .replace('<tag>%s</tag>\n\n' % (tagname), newtag)  # trail \n
                 # trail comma
                 .replace('<tag>%s</tag>, ' % (tagname), newtag)
-                .replace('<tag>%s</tag>,' % (tagname), newtag)
-                .replace('<tag>%s</tag>' % (tagname), newtag)
+                .replace('<tag>%s</tag>,' % (tagname), inline_tag)
+                .replace('<tag>%s</tag>' % (tagname), inline_tag)
                 # in case XML is missing (bug #504899)
                 .replace('%s\n\n' % (tagname), newtag)
                 .replace('%s, ' % (tagname), newtag)
-                .replace('%s,' % (tagname), newtag)
+                .replace('%s,' % (tagname), inline_tag)
                 # don't forget a space a the end
-                .replace('%s ' % (tagname), newtag))
+                .replace('%s' % (tagname), inline_tag))
 
     # tag_list is a list of tags names
     # return true if at least one of the list is in the task

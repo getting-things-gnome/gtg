@@ -944,6 +944,9 @@ class TaskBrowser(GObject.GObject):
             else:
                 self.reset_cursor()
             return True
+        if keyname == "Delete":
+            self.vmanager.on_delete_key_press(event)
+            return True
 
     def on_task_treeview_button_press_event(self, treeview, event):
         """ Pop up context menu on right mouse click in the main
