@@ -945,7 +945,7 @@ class TaskBrowser(GObject.GObject):
                 self.reset_cursor()
             return True
         if keyname == "Delete":
-            self.vmanager.on_delete_key_press(event)
+            self.vmanager.on_delete_tag(event)
             return True
 
     def on_task_treeview_button_press_event(self, treeview, event):
