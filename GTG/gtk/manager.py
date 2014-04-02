@@ -326,7 +326,7 @@ class Manager(GObject.GObject):
         # plugins are deactivated
         self.pengine.deactivate_plugins()
 
-    def on_delete_key_press(self, event):
+    def on_delete_tag(self, event):
         tags = self.browser.get_selected_tags()
         for tag in tags:
             my_tag = self.req.get_tag(tag)
