@@ -755,7 +755,6 @@ class TaskView(Gtk.TextView):
         for t in old_tags:
             if not t in new_tags:
                 self.remove_tag_callback(t)
-                self.req.remove_tag(t)
 
     def is_at_title(self, buff, itera):
         to_return = False
