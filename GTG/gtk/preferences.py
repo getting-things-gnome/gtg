@@ -101,6 +101,7 @@ class PreferencesDialog:
         self.fontbutton = builder.get_object("fontbutton")
         self.browser = self.vmanager.get_browser()
         self.refresh = Timer()
+        self.color_invalid = Color(50000, 0, 0)
         self.refresh_hour = builder.get_object("hour")
         self.refresh_mins = builder.get_object("min")
         self.refresh_hour.set_max_length(2)
@@ -163,7 +164,6 @@ class PreferencesDialog:
         self.dialog.show_all()
 
     def valid_check(self, widget):
-        COLOR_INVALID = Color(50000, 0, 0)
         refresh_hour = self.refresh_hour.get_text()
         refresh_min = self.refresh_mins.get_text()
         now = datetime.datetime.now()
@@ -173,12 +173,19 @@ class PreferencesDialog:
                                   int(refresh_min), 00)
             self.refresh_hour.modify_fg(Gtk.StateFlags.NORMAL, None)
             self.refresh_mins.modify_fg(Gtk.StateFlags.NORMAL, None)
+            self.config.set('hour', refresh_hour)
+            self.config.set('min', refresh_min)
+            return True
         except (ValueError, TypeError):
-            self.refresh_hour.modify_fg(Gtk.StateFlags.NORMAL, COLOR_INVALID)
-            self.refresh_mins.modify_fg(Gtk.StateFlags.NORMAL, COLOR_INVALID)
+            self.refresh_hour.modify_fg(Gtk.StateFlags.NORMAL,
+                                        self.color_invalid)
+            self.refresh_mins.modify_fg(Gtk.StateFlags.NORMAL,
+                                        self.color_invalid)
+            self.config.set('hour', "00")
+            self.config.set('min', "00")
+            return False
 
     def interval_check(self, widget):
-        COLOR_INVALID = Color(50000, 0, 0)
         refresh_interval = self.refresh_interval.get_text()
         now = datetime.datetime.now()
         try:
@@ -187,28 +194,20 @@ class PreferencesDialog:
             self.refresh_interval.modify_fg(Gtk.StateFlags.NORMAL, None)
         except (ValueError, TypeError):
             self.refresh_interval.modify_fg(Gtk.StateFlags.NORMAL,
-                                            COLOR_INVALID)
+                                            self.color_invalid)
 
     def on_close(self, widget, data=None):
         """ Close the preferences dialog."""
-        COLOR_INVALID = Color(50000, 0, 0)
         refresh_hour = self.refresh_hour.get_text()
         refresh_min = self.refresh_mins.get_text()
         now = datetime.datetime.now()
-        refresh_time = datetime.datetime(now.year, now.month, now.day, 0, 0, 0)
-        try:
+        if self.valid_check(widget) is True:
             refresh_time = datetime.datetime(now.year, now.month, now.day,
                                              int(refresh_hour),
                                              int(refresh_min), 00)
-            self.refresh_hour.modify_fg(Gtk.StateFlags.NORMAL, None)
-            self.refresh_mins.modify_fg(Gtk.StateFlags.NORMAL, None)
-            self.config.set('hour', refresh_hour)
-            self.config.set('min', refresh_min)
-        except (ValueError, TypeError):
-            self.refresh_hour.set_text("00")
-            self.refresh_mins.set_text("00")
-            self.config.set('hour', "00")
-            self.config.set('min', "00")
+        else:
+            refresh_time = datetime.datetime(now.year, now.month,
+                                             now.day, 0, 0, 0)
         secs_to_refresh = self.refresh.seconds_before(refresh_time)
         self.refresh.add_gobject_timeout(secs_to_refresh,
                                          self.browser.refresh_workview)
