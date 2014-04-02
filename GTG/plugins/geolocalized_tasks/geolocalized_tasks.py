@@ -571,7 +571,7 @@ class geolocalizedTasks:
         location_name = marker.get_text()
         entry.set_text(location_name)
 
-        all_tags = plugin_api.get_requester().get_all_tags()
+        used_tags = plugin_api.get_requester().get_used_tags()
 
         btn = builder.get_object("button_ok")
         btn.connect('clicked', self._ok_edit, entry)
@@ -588,20 +588,18 @@ class geolocalizedTasks:
 
         i = 0
         tag_added = False
-        for tag_name in all_tags:
-            if tag_name.startswith("@"):
-                check = Gtk.CheckButton(tag_name)
-                if tag_name in loaded_dict:
-                    location = [marker.get_text(), marker.get_latitude(), marker.get_longitude()]
-                    locations = loaded_dict[tag_name]
-                    if location in locations:
-                        check.set_active(True)
-                check.connect("toggled", self._check_clicked, tag_name)
-                grid.attach(check, i%4, i/4, 1, 1)
-                i += 1
-                tag_added = True
+        for tag_name in used_tags:
+            check = Gtk.CheckButton(tag_name)
+            if tag_name in loaded_dict:
+                location = [marker.get_text(), marker.get_latitude(), marker.get_longitude()]
+                locations = loaded_dict[tag_name]
+                if location in locations:
+                    check.set_active(True)
+            check.connect("toggled", self._check_clicked, tag_name)
+            grid.attach(check, i%4, i/4, 1, 1)
+            i += 1
+            tag_added = True
 
-   
         if tag_added is True:
             scrolled_window.add(grid)
         else:
