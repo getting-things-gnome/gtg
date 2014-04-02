@@ -329,11 +329,6 @@ class Manager(GObject.GObject):
     def on_delete_tag(self, event):
         tags = self.browser.get_selected_tags()
         for tag in tags:
-            my_tag = self.req.get_tag(tag)
-            vtree = self.req.get_tasks_tree()
-            taskid_list = vtree.get_nodes(withfilters=['active'])
-            for item in taskid_list:
-                task = self.req.get_task(item)
-                task.remove_tag(my_tag.get_name())
-            self.browser.tagtreeview.set_cursor(0)
-            self.browser.on_select_tag()
+            self.req.delete_tag(tag)
+        self.browser.tagtreeview.set_cursor(0)
+        self.browser.on_select_tag()
