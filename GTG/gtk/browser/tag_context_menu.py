@@ -55,8 +55,13 @@ class TagContextMenu(Gtk.Menu):
             self.mi_cc.set_label(_("Edit Tag..."))
             self.mi_ctag = Gtk.MenuItem()
             self.mi_ctag.set_label(_("Generate Color"))
+            self.mi_del_tag = Gtk.MenuItem()
+            self.mi_del_tag.set_label(_("Delete Tag"))
             self.append(self.mi_cc)
             self.append(self.mi_ctag)
+            self.append(self.mi_del_tag)
+            self.mi_del_tag.connect('activate',
+                                    self.vmanager.on_delete_tag)
             self.mi_cc.connect('activate', self.on_mi_cc_activate)
             self.mi_ctag.connect('activate', self.on_mi_ctag_activate)
             if self.tag.is_search_tag():
