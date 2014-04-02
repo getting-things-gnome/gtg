@@ -34,7 +34,6 @@
     * Fix for bug #1286495 : Backends ask for authentication every time, by Pawan Hegde
     * Fix for bug #932732  : Synchronizying twice with RTM removes all tasks, by Pawan Hegde  
     
->>>>>>> 1781a73a33fd0258e154381a0f4e8b8be5dbccce
 2013-11-24 Getting Things GNOME! 0.3.1
     * Fix for bug #1024473: Have 'Show Main Window' in notification area, by Antonio Roquentin
     * Fix for bug #1043457: gtcli search returns closed tasks, by Nimit Shah
