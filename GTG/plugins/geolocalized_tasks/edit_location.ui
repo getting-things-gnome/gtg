@@ -60,7 +60,7 @@
         <child>
           <object class="GtkScrolledWindow" id="scrolledwindow">
             <property name="width_request">400</property>
-            <property name="height_request">200</property>
+            <property name="height_request">100</property>
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="vexpand">True</property>

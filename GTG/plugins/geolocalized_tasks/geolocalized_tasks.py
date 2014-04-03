@@ -581,6 +581,8 @@ class geolocalizedTasks:
 
         scrolled_window = builder.get_object("scrolledwindow")
         grid = Gtk.Grid()
+        grid.set_row_homogeneous(True)
+        grid.set_column_homogeneous(True)
 
         tag_location_data_path = os.path.join('plugins/geolocalized_tasks', "tag_locations")
         loaded_dict = load_pickled_file(tag_location_data_path, {})
@@ -590,6 +592,7 @@ class geolocalizedTasks:
         tag_added = False
         for tag_name in used_tags:
             check = Gtk.CheckButton(tag_name)
+            check.set_halign(Gtk.Align.CENTER)
             if tag_name in loaded_dict:
                 location = [marker.get_text(), marker.get_latitude(), marker.get_longitude()]
                 locations = loaded_dict[tag_name]
