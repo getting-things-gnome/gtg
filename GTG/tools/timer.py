@@ -21,11 +21,14 @@
 
 import datetime
 
+from gi.repository import GObject
 
-class timer:
 
-    def __init__(self):
+class Timer:
+
+    def __init__(self, vmanager):
         self.now = datetime.datetime.now()
+        self.browser = vmanager.get_browser()
 
     def seconds_before(self, time):
         """Returns number of seconds remaining before next refresh"""
@@ -39,3 +42,17 @@ class timer:
                                          self.now.day, refresh_hour,
                                          self.now.minute, self.now.second)
         return refresh_time
+
+    def add_gobject_timeout(self, refresh_value, value):
+        if value == 0:
+            GObject.timeout_add_seconds(86400,
+                                        self.browser.refresh_workview)
+        if value == 1:
+            refresh_time = self.interval_to_time(refresh_value)
+            secs_to_refresh = self.seconds_before(refresh_time)
+            GObject.timeout_add_seconds(secs_to_refresh,
+                                        self.browser.periodic_refresh)
+        if value == 2:
+            secs_to_refresh = self.seconds_before(refresh_value)
+            GObject.timeout_add_seconds(secs_to_refresh,
+                                        self.browser.refresh_workview)

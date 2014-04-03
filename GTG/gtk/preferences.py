@@ -32,7 +32,7 @@ from GTG import _
 from GTG import info
 from GTG.gtk import ViewConfig
 from GTG.gtk import help
-from GTG.gtk.browser.browser import Timer
+from GTG.tools.timer import Timer
 
 AUTOSTART_DIRECTORY = os.path.join(xdg_config_home, "autostart")
 AUTOSTART_FILE = "gtg.desktop"
@@ -82,6 +82,7 @@ class PreferencesDialog:
 
     def __init__(self, req, vmanager):
         self.req = req
+        self.vmanager = vmanager
         self.config = self.req.get_config('browser')
         builder = Gtk.Builder()
         builder.add_from_file(ViewConfig.PREFERENCES_UI_FILE)
@@ -98,7 +99,7 @@ class PreferencesDialog:
         help.add_help_shortcut(self.dialog, "preferences")
 
         self.fontbutton = builder.get_object("fontbutton")
-        self.browser = vmanager.get_browser()
+        self.browser = self.vmanager.get_browser()
         self.refresh_hour = builder.get_object("hour")
         self.refresh_mins = builder.get_object("min")
         self.refresh_hour.set_max_length(2)
@@ -207,7 +208,8 @@ class PreferencesDialog:
             self.refresh_mins.set_text("00")
             self.config.set('hour', "00")
             self.config.set('min', "00")
-        self.browser.custom_refresh(refresh_time)
+        refresh = Timer(self.vmanager)
+        refresh.add_gobject_timeout(refresh_time, 2)
         self.dialog.hide()
         return True
 
