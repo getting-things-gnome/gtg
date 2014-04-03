@@ -30,6 +30,8 @@ from GTG.plugins.geolocalized_tasks.geoclue import Geoclue
 from GTG.plugins.geolocalized_tasks.store_and_load_data import store_pickled_file
 from GTG.plugins.geolocalized_tasks.store_and_load_data import load_pickled_file
 
+from GTG import _
+
 import dbus
 
 FILTER_NAME = '@@GeolocalizedTasks'
@@ -110,12 +112,12 @@ class geolocalizedTasks:
         context_menu = Gtk.Menu()
 
         mi = Gtk.MenuItem()
-        mi.set_label("Add Location")
+        mi.set_label(_("Add Location"))
         mi.connect ("activate", self._on_add_location, [latitude, longitude])
         context_menu.append(mi)
 
         mi = Gtk.MenuItem()
-        mi.set_label("Edit Location")
+        mi.set_label(_("Edit Location"))
         mi.connect("activate", self._on_edit, plugin_api)
         context_menu.append(mi)
 
@@ -123,7 +125,7 @@ class geolocalizedTasks:
             mi.set_sensitive(False)
 
         mi = Gtk.MenuItem()
-        mi.set_label("Remove Location")
+        mi.set_label(_("Remove Location"))
         mi.connect("activate", self._on_delete, [latitude, longitude])
         context_menu.append(mi)
 
@@ -133,7 +135,7 @@ class geolocalizedTasks:
             self._set_active_sensitive(False)
 
         mi = Gtk.MenuItem()
-        mi.set_label("I'm here!")
+        mi.set_label(_("I'm here!"))
         mi.connect ("activate", self._on_im_here, [latitude, longitude])
         context_menu.append(mi)
 
@@ -316,7 +318,7 @@ class geolocalizedTasks:
         """
         Activates the plugin.
         """
-        mi = plugin_api.add_item_to_tag_menu("Add Location", self._set_tag_location, plugin_api)
+        mi = plugin_api.add_item_to_tag_menu(_("Add Location"), self._set_tag_location, plugin_api)
         self._set_menu_item_tag_sidebar(mi)
         builder = self._get_builder_from_file("preferences.ui")
         self._set_spin(builder.get_object("spin_proximityfactor"))
@@ -384,7 +386,7 @@ class geolocalizedTasks:
 
         btn = Gtk.ToolButton()
         btn.set_icon_widget(icon_geolocalization)
-        btn.set_label("Set/View location")
+        btn.set_label(_("Set/View location"))
         btn.connect('clicked', self._set_task_location, plugin_api)
         btn.show_all()
 
@@ -585,7 +587,7 @@ class geolocalizedTasks:
         else:
             box = Gtk.Box()
             box.set_homogeneous(True)
-            label = Gtk.Label("No Tags")
+            label = Gtk.Label(_("No Tags"))
             label.set_justify(Gtk.Justification.CENTER)
             box.add(label)
             scrolled_window.add(box)
@@ -683,7 +685,7 @@ class geolocalizedTasks:
             #Set current user location
             marker = Champlain.Label()
             marker.set_color(red)
-            marker.set_text("I'm here!")
+            marker.set_text(_("I'm here!"))
             marker.set_location(user_latitude, user_longitude)
             layer.add_marker(marker)
             marker.set_use_markup(True)
