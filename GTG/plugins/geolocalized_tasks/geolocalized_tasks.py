@@ -27,7 +27,6 @@ from gi.repository import GtkChamplain
 from gi.repository import GtkClutter
 from gi.repository import GeocodeGlib as Geocode
 
-from GTG.plugins.geolocalized_tasks.marker import MarkerLayer
 from GTG.plugins.geolocalized_tasks.geoclue import Geoclue
 from GTG.plugins.geolocalized_tasks.store_and_load_data import store_pickled_file
 from GTG.plugins.geolocalized_tasks.store_and_load_data import load_pickled_file
