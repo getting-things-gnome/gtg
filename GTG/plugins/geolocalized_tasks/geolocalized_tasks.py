@@ -32,12 +32,6 @@ from GTG.plugins.geolocalized_tasks.store_and_load_data import load_pickled_file
 
 import dbus
 
-# Attention!!! FIXME
-# FIXME During porting GTG into GTK3/PyGObject was geolocalized.glade converted
-# to GtkBuilder format together with other glade XMLs.
-# FIXME Since this plugin is broken, I am not going to replace galde mentions
-# to GtkBuilder, it's your job ;)
-
 FILTER_NAME = '@@GeolocalizedTasks'
 
 class geolocalizedTasks:
@@ -139,7 +133,7 @@ class geolocalizedTasks:
             self._set_active_sensitive(False)
 
         mi = Gtk.MenuItem()
-        mi.set_label("I'm here")
+        mi.set_label("I'm here!")
         mi.connect ("activate", self._on_im_here, [latitude, longitude])
         context_menu.append(mi)
 
@@ -162,7 +156,6 @@ class geolocalizedTasks:
             self.__locations.remove(marker)
 
     def _get_task_locations(self):
-
         if not self.__task_locations:
             data_path = os.path.join('plugins/geolocalized_tasks', "task_locations")
             self.__task_locations = load_pickled_file(data_path, {})
@@ -404,11 +397,6 @@ class geolocalizedTasks:
     def configure_dialog(self, manager_dialog):
         self.on_geolocalized_preferences()
 
-    def task_location_filter(self, tid):
-        pass
-
-    #=== GEOLOCALIZED PREFERENCES=============================================
-
     def _check_set_pref(self, widget, spin):
         if widget.get_active() is True:
             spin.set_sensitive(True)
@@ -487,7 +475,6 @@ class geolocalizedTasks:
             if (dist <= distance):
                 return True
         return False
-        
 
     def _preferences_load(self, plugin_api):
         preferences = plugin_api.load_configuration_object(self.PLUGIN_NAMESPACE, "preferences", default_values=self.DEFAULT_PREFERENCES)
@@ -497,15 +484,6 @@ class geolocalizedTasks:
         preferences = self._get_preferences()
         plugin_api.save_configuration_object(self.PLUGIN_NAMESPACE, "preferences", preferences)
 
-    def spin_proximityfactor_changed(self, spinbutton):
-        pass
-
-    def preferences_close(self, dialog, response=None):
-        pass
-
-    #=== GEOLOCALIZED PREFERENCES==============================================
-
-    #=== SET TASK LOCATION ====================================================
     def _get_builder_from_file(self, filename):
         builder = Gtk.Builder()
         plugin_path = os.path.dirname(os.path.abspath(__file__))
@@ -561,7 +539,6 @@ class geolocalizedTasks:
         else:
             self._remove_location_from_tag_location(tag_name, location)
 
-    #for edit
     def _on_edit (self, widget, plugin_api):
         builder = self._get_builder_from_file("edit_location.ui")
         dialog = builder.get_object("dialog")
@@ -672,7 +649,6 @@ class geolocalizedTasks:
         view.set_property("zoom-level", 10)
         view.set_reactive(True)
 
-        #Factory
         source = self._get_factory().create_cached_source(Champlain.MAP_SOURCE_OSM_MAPQUEST)
         view.set_map_source(source)
 
@@ -707,7 +683,7 @@ class geolocalizedTasks:
             #Set current user location
             marker = Champlain.Label()
             marker.set_color(red)
-            marker.set_text("I am here!")
+            marker.set_text("I'm here!")
             marker.set_location(user_latitude, user_longitude)
             layer.add_marker(marker)
             marker.set_use_markup(True)
@@ -773,14 +749,6 @@ class geolocalizedTasks:
     def _cancel(self, widget, data):
         widget.get_parent_window().destroy()
         self._clean_up()
-
-#    def _cancel_task(self, widget, data):
-#        widget.get_parent_window().destroy()
-#        self._clean_up()
-
-#    def _cancel_tag(self, widget, data):
-#        widget.get_parent_window().destroy()
-#        self._clean_up()
 
     def _ok_edit (self, widget, entry):
         marker = self._get_selected_marker()
