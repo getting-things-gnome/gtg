@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 # Copyright (c) 2009 - Paulo Cabido <paulo.cabido@gmail.com>
+# Copyright (c) 2013. 2014 - Eliane Ramos <elianerpereira@gmail.com>
+# Copyright (c) 2013, 2014 - Parin Porecha <parinporecha@gmail.com>
 #
 # This program is free software: you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
