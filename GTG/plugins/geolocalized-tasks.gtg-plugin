@@ -4,6 +4,6 @@ name=Geolocalized Tasks
 short-description=This plugin adds geolocalized tasks to GTG!.
 description=This plugin adds geolocalized tasks to GTG!.
 authors=Paulo Cabido <paulo.cabido@gmail.com>, Eliane Ramos <elianerpereira@gmail.com>, Parin Porecha <parinporecha@gmail.com>
-version=0.1.1
+version=0.2.0
 dependencies=dbus,Champlain,Clutter,GtkChamplain,GtkClutter,GeocodeGlib
 enabled=False
