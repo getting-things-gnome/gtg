@@ -32,7 +32,8 @@
     * Fix for bug #1289284 : Date gets dragged from calendar widget when its date is already set, by Parth Panchal
     * Fix for bug #971651:  Inform about automatic recovery. Also made to use backup files on gtg_tasks.xml missing
     * Fix for bug #1286495 : Backends ask for authentication every time, by Pawan Hegde
-    * Fix for bug #932732  : Synchronizying twice with RTM removes all tasks, by Pawan Hegde  
+    * Fix for bug #932732  : Synchronizying twice with RTM removes all tasks, by Pawan Hegde
+    * Fixes #10 : Travis build fails, by Parth Panchal
     
 2013-11-24 Getting Things GNOME! 0.3.1
     * Fix for bug #1024473: Have 'Show Main Window' in notification area, by Antonio Roquentin
