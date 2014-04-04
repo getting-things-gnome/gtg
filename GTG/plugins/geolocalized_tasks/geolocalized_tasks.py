@@ -28,8 +28,10 @@ from gi.repository import GtkClutter
 from gi.repository import GeocodeGlib as Geocode
 
 from GTG.plugins.geolocalized_tasks.geoclue import Geoclue
-from GTG.plugins.geolocalized_tasks.store_and_load_data import store_pickled_file
-from GTG.plugins.geolocalized_tasks.store_and_load_data import load_pickled_file
+from GTG.plugins.geolocalized_tasks.store_and_load_data \
+    import store_pickled_file
+from GTG.plugins.geolocalized_tasks.store_and_load_data \
+    import load_pickled_file
 
 from GTG import _
 
@@ -37,10 +39,15 @@ import dbus
 
 FILTER_NAME = '@@GeolocalizedTasks'
 
+
 class geolocalizedTasks:
 
     PLUGIN_NAMESPACE = 'Geolocalized Tasks'
-    DEFAULT_PREFERENCES = {'apply_filter':False, 'distance_filter':15, 'user_changed_location':False}
+    DEFAULT_PREFERENCES = {
+        'apply_filter': False,
+        'distance_filter': 15,
+        'user_changed_location': False
+    }
 
     def __init__(self):
         Clutter.init([])
@@ -63,13 +70,15 @@ class geolocalizedTasks:
         self.__plugin_api = None
 
         self.__where = Geoclue()
-        self.__where.client.connect_to_signal('LocationUpdated', self._location_updated)
+        self.__where.client.connect_to_signal(
+            'LocationUpdated', self._location_updated
+        )
         self.__where.client.Start()
         self.__distance = 15
 
         self.__preferences = None
 
-    def _get_where (self):
+    def _get_where(self):
         return self.__where
 
     def _get_user_position(self):
@@ -114,7 +123,7 @@ class geolocalizedTasks:
 
         mi = Gtk.MenuItem()
         mi.set_label(_("Add Location"))
-        mi.connect ("activate", self._on_add_location, [latitude, longitude])
+        mi.connect("activate", self._on_add_location, [latitude, longitude])
         context_menu.append(mi)
 
         mi = Gtk.MenuItem()
@@ -137,7 +146,7 @@ class geolocalizedTasks:
 
         mi = Gtk.MenuItem()
         mi.set_label(_("I'm here!"))
-        mi.connect ("activate", self._on_im_here, [latitude, longitude])
+        mi.connect("activate", self._on_im_here, [latitude, longitude])
         context_menu.append(mi)
 
         context_menu.show_all()
@@ -160,7 +169,9 @@ class geolocalizedTasks:
 
     def _get_task_locations(self):
         if not self.__task_locations:
-            data_path = os.path.join('plugins/geolocalized_tasks', "task_locations")
+            data_path = os.path.join(
+                'plugins/geolocalized_tasks', "task_locations"
+            )
             self.__task_locations = load_pickled_file(data_path, {})
         return self.__task_locations
 
@@ -187,7 +198,9 @@ class geolocalizedTasks:
 
     def _get_tag_locations(self):
         if not self.__tag_locations:
-            data_path = os.path.join('plugins/geolocalized_tasks', "tag_locations")
+            data_path = os.path.join(
+                'plugins/geolocalized_tasks', "tag_locations"
+            )
             self.__tag_locations = load_pickled_file(data_path, {})
         return self.__tag_locations
 
@@ -255,10 +268,18 @@ class geolocalizedTasks:
     def _location_updated(self, old_path, new_path):
         where = self._get_where()
         system_bus = where._system_bus
-        location_object =  system_bus.get_object(where.GEOCLUE2_BUS_NAME, new_path)
-        location_properties = dbus.Interface(location_object, where.PROPERTIES_INTERFACE_NAME)
-        latitude = location_properties.Get(where.LOCATION_INTERFACE_NAME, "Latitude")
-        longitude = location_properties.Get(where.LOCATION_INTERFACE_NAME, "Longitude")
+        location_object = system_bus.get_object(
+            where.GEOCLUE2_BUS_NAME, new_path
+        )
+        location_properties = dbus.Interface(
+            location_object, where.PROPERTIES_INTERFACE_NAME
+        )
+        latitude = location_properties.Get(
+            where.LOCATION_INTERFACE_NAME, "Latitude"
+        )
+        longitude = location_properties.Get(
+            where.LOCATION_INTERFACE_NAME, "Longitude"
+        )
         self._set_user_position([latitude, longitude])
 
     def _get_spin(self):
@@ -319,7 +340,9 @@ class geolocalizedTasks:
         """
         Activates the plugin.
         """
-        mi = plugin_api.add_item_to_tag_menu(_("Add Location"), self._set_tag_location, plugin_api)
+        mi = plugin_api.add_item_to_tag_menu(
+            _("Add Location"), self._set_tag_location, plugin_api
+        )
         self._set_menu_item_tag_sidebar(mi)
         builder = self._get_builder_from_file("preferences.ui")
         self._set_spin(builder.get_object("spin_proximityfactor"))
@@ -377,8 +400,11 @@ class geolocalizedTasks:
         """
         plugin_path = os.path.dirname(os.path.abspath(__file__))
 
-        image_geolocalization_path = os.path.join(plugin_path, "icons/hicolor/24x24/geolocalization.png")
-        pixbuf_geolocalization = GdkPixbuf.Pixbuf.new_from_file_at_size(image_geolocalization_path, 24, 24)
+        image_geolocalization_path = os.path.join(
+            plugin_path, "icons/hicolor/24x24/geolocalization.png")
+        pixbuf_geolocalization = GdkPixbuf.Pixbuf.new_from_file_at_size(
+            image_geolocalization_path, 24, 24
+        )
 
         # create the image and associate the pixbuf
         icon_geolocalization = Gtk.Image()
@@ -449,7 +475,9 @@ class geolocalizedTasks:
 
         distance = self._get_distance()
 
-        user_location = Geocode.Location.new(user_latitude, user_longitude, Geocode.LOCATION_ACCURACY_STREET)
+        user_location = Geocode.Location.new(
+            user_latitude, user_longitude, Geocode.LOCATION_ACCURACY_STREET
+        )
 
         locations = []
         final_list_locations = []
@@ -473,19 +501,29 @@ class geolocalizedTasks:
 
         for location in final_list_locations:
             [name, latitude, longitude] = location
-            geocode_location = Geocode.Location.new(latitude, longitude, Geocode.LOCATION_ACCURACY_STREET)
-            dist = Geocode.Location.get_distance_from(user_location, geocode_location)
+            geocode_location = Geocode.Location.new(
+                latitude, longitude, Geocode.LOCATION_ACCURACY_STREET
+            )
+            dist = Geocode.Location.get_distance_from(
+                user_location, geocode_location
+            )
             if (dist <= distance):
                 return True
         return False
 
     def _preferences_load(self, plugin_api):
-        preferences = plugin_api.load_configuration_object(self.PLUGIN_NAMESPACE, "preferences", default_values=self.DEFAULT_PREFERENCES)
+        preferences = plugin_api.load_configuration_object(
+            self.PLUGIN_NAMESPACE,
+            "preferences",
+            default_values=self.DEFAULT_PREFERENCES
+        )
         self._set_preferences(preferences)
 
     def _preferences_store(self, plugin_api):
         preferences = self._get_preferences()
-        plugin_api.save_configuration_object(self.PLUGIN_NAMESPACE, "preferences", preferences)
+        plugin_api.save_configuration_object(
+            self.PLUGIN_NAMESPACE, "preferences", preferences
+        )
 
     def _get_builder_from_file(self, filename):
         builder = Gtk.Builder()
@@ -498,21 +536,23 @@ class geolocalizedTasks:
         place = reverse.resolve_finish(res)
         marker.set_text(place.get_name())
 
-    def _on_im_here (self, widget, position):
+    def _on_im_here(self, widget, position):
         [latitude, longitude] = position
         marker = self._get_marker_last_location()
         marker.set_location(latitude, longitude)
         self._set_user_position(position)
         self._set_marker_last_location(marker)
 
-        last_location_data_path = os.path.join('plugins/geolocalized_tasks', "last_location")
+        last_location_data_path = os.path.join(
+            'plugins/geolocalized_tasks', "last_location"
+        )
         store_pickled_file(last_location_data_path, position)
 
         preferences = self._get_preferences()
         preferences['user_changed_location'] = True
         self._set_preferences(preferences)
 
-    def _on_add_location (self, widget, position):
+    def _on_add_location(self, widget, position):
         [latitude, longitude] = position
 
         marker = Champlain.Label()
@@ -523,26 +563,30 @@ class geolocalizedTasks:
         marker.connect('button-press-event', self._on_marker, marker)
         self._add_to_locations(marker)
 
-        geocodeLocation = Geocode.Location.new(latitude, longitude, Geocode.LOCATION_ACCURACY_STREET)
-        reverse = Geocode.Reverse.new_for_location (geocodeLocation)
+        geocodeLocation = Geocode.Location.new(
+            latitude, longitude, Geocode.LOCATION_ACCURACY_STREET
+        )
+        reverse = Geocode.Reverse.new_for_location(geocodeLocation)
         reverse.resolve_async(None, self._update_location_name, marker)
 
-    def _on_delete (self, widget, data):
+    def _on_delete(self, widget, data):
         marker = self._get_selected_marker()
         layer = self._get_current_layer()
         layer.remove_marker(marker)
         self._remove_from_locations(marker)
         self._set_selected_marker(None)
 
-    def _check_clicked (self, widget, tag_name):
+    def _check_clicked(self, widget, tag_name):
         marker = self._get_selected_marker()
-        location = [marker.get_text(), marker.get_latitude(),marker.get_longitude()]
+        location = [
+            marker.get_text(), marker.get_latitude(), marker.get_longitude()
+        ]
         if widget.get_active() is True:
             self._add_location_to_tag_locations(tag_name, location)
         else:
             self._remove_location_from_tag_location(tag_name, location)
 
-    def _on_edit (self, widget, plugin_api):
+    def _on_edit(self, widget, plugin_api):
         builder = self._get_builder_from_file("edit_location.ui")
         dialog = builder.get_object("dialog")
 
@@ -564,7 +608,9 @@ class geolocalizedTasks:
         grid.set_row_homogeneous(True)
         grid.set_column_homogeneous(True)
 
-        tag_location_data_path = os.path.join('plugins/geolocalized_tasks', "tag_locations")
+        tag_location_data_path = os.path.join(
+            'plugins/geolocalized_tasks', "tag_locations"
+        )
         loaded_dict = load_pickled_file(tag_location_data_path, {})
         self._set_tag_locations(loaded_dict)
 
@@ -574,12 +620,16 @@ class geolocalizedTasks:
             check = Gtk.CheckButton(tag_name)
             check.set_halign(Gtk.Align.CENTER)
             if tag_name in loaded_dict:
-                location = [marker.get_text(), marker.get_latitude(), marker.get_longitude()]
+                location = [
+                    marker.get_text(),
+                    marker.get_latitude(),
+                    marker.get_longitude()
+                ]
                 locations = loaded_dict[tag_name]
                 if location in locations:
                     check.set_active(True)
             check.connect("toggled", self._check_clicked, tag_name)
-            grid.attach(check, i%4, i/4, 1, 1)
+            grid.attach(check, i % 4, i/4, 1, 1)
             i += 1
             tag_added = True
 
@@ -625,19 +675,39 @@ class geolocalizedTasks:
 
     def _set_tag_location(self, widget, tag, plugin_api):
         tag_name = tag.get_name()
-        self._create_location_window(plugin_api, self._get_tag_stored_locations, self._close_tag, self._cancel, tag_name, tag_name)
+        self._create_location_window(
+            plugin_api,
+            self._get_tag_stored_locations,
+            self._close_tag,
+            self._cancel,
+            tag_name,
+            tag_name
+        )
 
     def _get_task_stored_locations(self, task_id):
-        data_path = os.path.join('plugins/geolocalized_tasks', "task_locations")
+        data_path = os.path.join(
+            'plugins/geolocalized_tasks', "task_locations"
+        )
         locations_dict = load_pickled_file(data_path, {})
         self._set_task_locations(locations_dict)
         return self._get_stored_locations(data_path, task_id)
 
     def _set_task_location(self, widget, plugin_api):
         task_id = plugin_api.get_selected().get_uuid()
-        self._create_location_window(plugin_api, self._get_task_stored_locations, self._close_task, self._cancel, task_id, task_id)
+        self._create_location_window(
+            plugin_api,
+            self._get_task_stored_locations,
+            self._close_task,
+            self._cancel,
+            task_id,
+            task_id
+        )
 
-    def _create_location_window(self, plugin_api, get_locations_fn, close_cb, cancel_cb, get_locations_data=None, close_data=None, cancel_data=None):
+    def _create_location_window(self, plugin_api, get_locations_fn,
+                                close_cb, cancel_cb,
+                                get_locations_data=None,
+                                close_data=None,
+                                cancel_data=None):
         builder = self._get_builder_from_file("set_locations.ui")
         dialog = builder.get_object("SetTaskLocation")
 
@@ -652,7 +722,9 @@ class geolocalizedTasks:
         view.set_property("zoom-level", 10)
         view.set_reactive(True)
 
-        source = self._get_factory().create_cached_source(Champlain.MAP_SOURCE_OSM_MAPQUEST)
+        source = self._get_factory().create_cached_source(
+            Champlain.MAP_SOURCE_OSM_MAPQUEST
+        )
         view.set_map_source(source)
 
         layer = Champlain.MarkerLayer()
@@ -672,16 +744,23 @@ class geolocalizedTasks:
         preferences = self._get_preferences()
         user_changed_location = preferences['user_changed_location']
 
-        last_location_data_path = os.path.join('plugins/geolocalized_tasks', "last_location")
+        last_location_data_path = os.path.join(
+            'plugins/geolocalized_tasks', "last_location"
+        )
         [user_latitude, user_longitude] = self._get_user_position()
-        if (user_changed_location is True) or (user_latitude is None and user_longitude is None):
-            [user_latitude, user_longitude] = load_pickled_file(last_location_data_path, [None, None])
+        if (user_changed_location is True) or \
+           (user_latitude is None and user_longitude is None):
+            [user_latitude, user_longitude] = load_pickled_file(
+                last_location_data_path, [None, None]
+            )
             self._set_user_position([user_latitude, user_longitude])
 
         if user_latitude is not None and user_longitude is not None:
             red = Clutter.Color.new(0xff, 0x00, 0x00, 0xbb)
             view.center_on(user_latitude, user_longitude)
-            store_pickled_file(last_location_data_path, [user_latitude, user_longitude])
+            store_pickled_file(
+                last_location_data_path, [user_latitude, user_longitude]
+            )
 
             #Set current user location
             marker = Champlain.Label()
@@ -729,9 +808,13 @@ class geolocalizedTasks:
     def _close(self, widget, data_path, dict, key):
         locations = []
         for location in self._get_locations():
-            locations.append([location.get_text(), location.get_latitude(), location.get_longitude()])
+            locations.append([
+                location.get_text(),
+                location.get_latitude(),
+                location.get_longitude()
+            ])
         dict[key] = locations
-        store_pickled_file (data_path, dict)
+        store_pickled_file(data_path, dict)
 
         plugin_api = self._get_plugin_api()
         self._preferences_store(plugin_api)
@@ -740,7 +823,9 @@ class geolocalizedTasks:
         self._clean_up()
 
     def _close_task(self, widget, task_id):
-        data_path = os.path.join('plugins/geolocalized_tasks', 'task_locations')
+        data_path = os.path.join(
+            'plugins/geolocalized_tasks', 'task_locations'
+        )
         task_locations_dict = self._get_task_locations()
         self._close(widget, data_path, task_locations_dict, task_id)
 
@@ -753,15 +838,19 @@ class geolocalizedTasks:
         widget.get_parent_window().destroy()
         self._clean_up()
 
-    def _ok_edit (self, widget, entry):
+    def _ok_edit(self, widget, entry):
         marker = self._get_selected_marker()
         old_name = marker.get_text()
         new_name = entry.get_text()
 
         if old_name != new_name:
             marker.set_text(entry.get_text())
-            old_location = [old_name, marker.get_latitude(), marker.get_longitude()]
-            new_location = [new_name, marker.get_latitude(), marker.get_longitude()]
+            old_location = [
+                old_name, marker.get_latitude(), marker.get_longitude()
+            ]
+            new_location = [
+                new_name, marker.get_latitude(), marker.get_longitude()
+            ]
 
             tag_locations = self._get_tag_locations()
             for key in tag_locations.keys():
@@ -769,15 +858,17 @@ class geolocalizedTasks:
                     self._remove_location_from_tag_location(key, old_location)
                     self._add_location_to_tag_locations(key, new_location)
 
-        tag_location_data_path = os.path.join('plugins/geolocalized_tasks', "tag_locations")
+        tag_location_data_path = os.path.join(
+            'plugins/geolocalized_tasks', "tag_locations"
+        )
         store_pickled_file(tag_location_data_path, self._get_tag_locations())
 
         widget.get_parent_window().destroy()
 
-    def _cancel_edit (self, widget, data):
+    def _cancel_edit(self, widget, data):
         widget.get_parent_window().destroy()
 
-    def _ok_preferences (self, widget, check):
+    def _ok_preferences(self, widget, check):
         requester = self._get_requester()
         plugin_api = self._get_plugin_api()
         preferences = self._get_preferences()

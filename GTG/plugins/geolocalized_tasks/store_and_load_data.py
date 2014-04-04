@@ -27,6 +27,7 @@ from GTG.tools.logger import Log
 
 PICKLE_BACKUP_NBR = 2
 
+
 def store_pickled_file(path, data):
     '''
     A helper function to save some object in a file.
@@ -63,6 +64,7 @@ def store_pickled_file(path, data):
     # saving
     with open(path, 'wb') as file:
             pickle.dump(data, file)
+
 
 def load_pickled_file(path, default_value=None):
     '''
