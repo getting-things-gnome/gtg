@@ -26,8 +26,12 @@ from gi.repository import GObject
 
 class Timer:
 
-    def __init__(self):
+    def __init__(self, vmanager):
         self.now = datetime.datetime.now()
+        self.vmanager = vmanager
+        self.browser = self.vmanager.get_browser()
+        self.midnight = datetime.datetime(self.now.year, self.now.month,
+                                          self.now.day, 0, 0, 0)
 
     def seconds_before(self, time):
         """Returns number of seconds remaining before next refresh"""
@@ -47,3 +51,29 @@ class Timer:
 
     def add_gobject_timeout(self, time, callback):
         return GObject.timeout_add_seconds(time, callback)
+
+    def refresh_after_suspend(self, refresh_time):
+        self.now = datetime.datetime.now()
+        self.refresh = refresh_time
+        self.add_gobject_timeout(60, self.after_suspend)
+
+    def after_suspend(self):
+        self.now = datetime.datetime.now()
+        self.browser = self.vmanager.get_browser()
+        if self.now >= self.refresh:
+            self.browser.refresh_workview()
+            self.refresh = datetime.datetime(self.refresh.year,
+                                             self.refresh.month,
+                                             self.refresh.day+1,
+                                             self.refresh.hour,
+                                             self.refresh.minute,
+                                             self.refresh.second)
+        if self.now >= self.midnight:
+            self.browser.refresh_workview()
+            self.midnight = datetime.datetime(self.midnight.year,
+                                              self.midnight.month,
+                                              self.midnight.day+1,
+                                              self.midnight.hour,
+                                              self.midnight.minute,
+                                              self.midnight.second)
+        return True

@@ -100,7 +100,7 @@ class PreferencesDialog:
 
         self.fontbutton = builder.get_object("fontbutton")
         self.browser = self.vmanager.get_browser()
-        self.refresh = Timer()
+        self.refresh = Timer(self.vmanager)
         self.color_invalid = Color(50000, 0, 0)
         self.refresh_hour = builder.get_object("hour")
         self.refresh_mins = builder.get_object("min")
@@ -211,6 +211,7 @@ class PreferencesDialog:
         secs_to_refresh = self.refresh.seconds_before(refresh_time)
         self.refresh.add_gobject_timeout(secs_to_refresh,
                                          self.browser.refresh_workview)
+        self.refresh.refresh_after_suspend(refresh_time)
         self.dialog.hide()
         return True
 

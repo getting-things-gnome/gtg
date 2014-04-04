@@ -123,7 +123,7 @@ class TaskBrowser(GObject.GObject):
         self._update_window_title()
         now = datetime.datetime.now()
         refresh_time = datetime.datetime(now.year, now.month, now.day, 0, 0, 0)
-        self.refresh = Timer()
+        self.refresh = Timer(self.vmanager)
         secs_to_refresh = self.refresh.seconds_before(refresh_time)
         self.refresh.add_gobject_timeout(secs_to_refresh,
                                          self.refresh_workview)
@@ -137,6 +137,7 @@ class TaskBrowser(GObject.GObject):
             secs_to_refresh = self.refresh.seconds_before(refresh_time)
             self.refresh.add_gobject_timeout(secs_to_refresh,
                                              self.refresh_workview)
+            self.refresh.refresh_after_suspend(refresh_time)
 
 ### INIT HELPER FUNCTIONS #####################################################
 #
