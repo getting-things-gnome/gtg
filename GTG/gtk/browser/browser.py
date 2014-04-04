@@ -137,7 +137,6 @@ class TaskBrowser(GObject.GObject):
             secs_to_refresh = self.refresh.seconds_before(refresh_time)
             self.refresh.add_gobject_timeout(secs_to_refresh,
                                              self.refresh_workview)
-            self.refresh.refresh_after_suspend(refresh_time)
 
 ### INIT HELPER FUNCTIONS #####################################################
 #

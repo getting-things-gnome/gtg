@@ -211,7 +211,6 @@ class PreferencesDialog:
         secs_to_refresh = self.refresh.seconds_before(refresh_time)
         self.refresh.add_gobject_timeout(secs_to_refresh,
                                          self.browser.refresh_workview)
-        self.refresh.refresh_after_suspend(refresh_time)
         self.dialog.hide()
         return True
 
