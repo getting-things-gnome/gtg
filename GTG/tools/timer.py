@@ -42,18 +42,16 @@ class Timer:
     def seconds_before(self, time):
         """Returns number of seconds remaining before next refresh"""
         self.now = datetime.datetime.now()
-        secs_to_refresh = (time-self.now).total_seconds()
-        if secs_to_refresh < 0:
-            secs_to_refresh = 86400 + int(secs_to_refresh)
-        return secs_to_refresh
+        secs_to_refresh = (time-self.now)
+        if secs_to_refresh.total_seconds() < 0:
+            secs_to_refresh += datetime.timedelta(days=1)
+        return secs_to_refresh.total_seconds()
 
     def interval_to_time(self, interval):
         """Convert user given periodic interval to time"""
         self.now = datetime.datetime.now()
-        refresh_hour = self.now.hour + int(interval)
-        return datetime.datetime(self.now.year, self.now.month,
-                                 self.now.day, refresh_hour,
-                                 self.now.minute, self.now.second)
+        self.now += datetime.timedelta(hours= int(interval))
+        return self.now
 
     def add_gobject_timeout(self, time, callback):
         return GObject.timeout_add_seconds(time, callback)
