@@ -121,7 +121,7 @@ class TaskBrowser(GObject.GObject):
         self.activetree.register_cllbck('node-deleted-inview',
                                         self._update_window_title)
         self._update_window_title()
-        self.timer = Timer(self.req, self.vmanager)
+        self.timer = Timer(self.config, self.vmanager)
         self.timer.connect('refresh', self.refresh_workview)
 
 ### INIT HELPER FUNCTIONS #####################################################

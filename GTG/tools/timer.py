@@ -34,15 +34,12 @@ class Timer(GObject.GObject):
     __gsignals__ = {'refresh': __signal_type__,
                     'time-changed': __signal_type__, }
 
-    def __init__(self, requester, vmanager):
+    def __init__(self, config, vmanager):
         self.vmanager = vmanager
-        self.req = requester
-        self.config = self.req.get_config('browser')
-        self.browser = self.vmanager.get_browser()
-
+        self.config = config
         GObject.GObject.__init__(self)
         bus = dbus.SystemBus()
-        bus.add_signal_receiver(self.handle_resume_callback,
+        bus.add_signal_receiver(self.emit_refresh,
                                 'Resuming',
                                 'org.freedesktop.UPower',
                                 'org.freedesktop.UPower')
@@ -82,15 +79,13 @@ class Timer(GObject.GObject):
         """Wrapper Function for GObject.timeout_add_seconds()"""
         return GObject.timeout_add_seconds(time, callback)
 
-    def handle_resume_callback(self):
-        self.browser = self.vmanager.get_browser()
-        self.browser.refresh_workview()
-
     def emit_refresh(self):
         """Emit Signal for workview to refresh"""
-        GObject.idle_add(self.emit, "refresh")
+        self.emit("refresh")
+        return False
 
     def time_changed(self, Timer):
+        self.browser = self.vmanager.get_browser()
         refresh_hour = self.config.get('hour')
         refresh_min = self.config.get('min')
         now = datetime.datetime.now()
@@ -100,3 +95,16 @@ class Timer(GObject.GObject):
         secs_to_refresh = self.seconds_before(refresh_time)
         self.add_gobject_timeout(secs_to_refresh,
                                  self.browser.refresh_workview)
+
+    def set_configuration(self, refresh_hour, refresh_min):
+        now = datetime.datetime.now()
+        try: 
+            d = datetime.datetime(now.year, now.month, now.day,
+                                  int(refresh_hour),
+                                  int(refresh_min), 00)
+            self.config.set('hour', refresh_hour)
+            self.config.set('min', refresh_min)
+        except (ValueError, TypeError):
+            self.config.set('hour', "00")
+            self.config.set('min', "00")
+            raise ValueError

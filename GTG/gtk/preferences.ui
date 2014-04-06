@@ -182,6 +182,7 @@
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="width_chars">2</property>
+                         <property name="max_length">2</property>
                         <signal name="changed" handler="on_valid_check" swapped="no"/>
                          </object>
                       <packing>
@@ -213,6 +214,7 @@
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="width_chars">2</property>
+                        <property name="max_length">2</property>
                         <signal name="changed" handler="on_valid_check" swapped="no"/>
                                                                   
                          </object>
