@@ -123,9 +123,10 @@ class TaskBrowser(GObject.GObject):
         self._update_window_title()
         now = datetime.datetime.now()
         refresh_time = datetime.datetime(now.year, now.month, now.day, 0, 0, 0)
-        refresh = Timer(self.vmanager)
-        GObject.timeout_add_seconds(refresh.seconds_before(refresh_time),
-                                    self.refresh_workview)
+        self.refresh = Timer()
+        secs_to_refresh = self.refresh.seconds_before(refresh_time)
+        self.refresh.add_gobject_timeout(secs_to_refresh,
+                                         self.refresh_workview)
         refresh_hour = self.config.get('hour')
         refresh_min = self.config.get('min')
         self.periodic_interval = self.config.get('interval')
@@ -133,8 +134,9 @@ class TaskBrowser(GObject.GObject):
             refresh_time = datetime.datetime(now.year, now.month, now.day,
                                              int(refresh_hour),
                                              int(refresh_min), 00)
-            GObject.timeout_add_seconds(refresh.seconds_before(refresh_time),
-                                        self.refresh_workview)
+            secs_to_refresh = self.refresh.seconds_before(refresh_time)
+            self.refresh.add_gobject_timeout(secs_to_refresh,
+                                             self.refresh_workview)
 
 ### INIT HELPER FUNCTIONS #####################################################
 #
@@ -570,10 +572,9 @@ class TaskBrowser(GObject.GObject):
         self.in_toggle_workview = False
 
     def refresh_workview(self):
-        refresh = Timer(self.vmanager)
         task_tree = self.req.get_tasks_tree(name='active', refresh=False)
         task_tree.refresh_all()
-        refresh.add_gobject_timeout(None, 0)
+        self.refresh.add_gobject_timeout(86400, self.refresh_workview)
         return False
 
     def periodic_refresh(self):

@@ -26,33 +26,24 @@ from gi.repository import GObject
 
 class Timer:
 
-    def __init__(self, vmanager):
+    def __init__(self):
         self.now = datetime.datetime.now()
-        self.browser = vmanager.get_browser()
 
     def seconds_before(self, time):
         """Returns number of seconds remaining before next refresh"""
-        secs_to_refresh = (time-self.now).seconds
-        return (secs_to_refresh+1)
+        self.now = datetime.datetime.now()
+        secs_to_refresh = (time-self.now).total_seconds()
+        if secs_to_refresh < 0:
+            secs_to_refresh = 86400 + int(secs_to_refresh)
+        return secs_to_refresh
 
     def interval_to_time(self, interval):
         """Convert user given periodic interval to time"""
+        self.now = datetime.datetime.now()
         refresh_hour = self.now.hour + int(interval)
-        refresh_time = datetime.datetime(self.now.year, self.now.month,
-                                         self.now.day, refresh_hour,
-                                         self.now.minute, self.now.second)
-        return refresh_time
+        return datetime.datetime(self.now.year, self.now.month,
+                                 self.now.day, refresh_hour,
+                                 self.now.minute, self.now.second)
 
-    def add_gobject_timeout(self, refresh_value, value):
-        if value == 0:
-            GObject.timeout_add_seconds(86400,
-                                        self.browser.refresh_workview)
-        if value == 1:
-            refresh_time = self.interval_to_time(refresh_value)
-            secs_to_refresh = self.seconds_before(refresh_time)
-            GObject.timeout_add_seconds(secs_to_refresh,
-                                        self.browser.periodic_refresh)
-        if value == 2:
-            secs_to_refresh = self.seconds_before(refresh_value)
-            GObject.timeout_add_seconds(secs_to_refresh,
-                                        self.browser.refresh_workview)
+    def add_gobject_timeout(self, time, callback):
+        return GObject.timeout_add_seconds(time, callback)
