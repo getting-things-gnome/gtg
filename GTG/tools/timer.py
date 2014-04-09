@@ -26,36 +26,77 @@ from gi.repository import GObject
 from dbus.mainloop.glib import DBusGMainLoop
 
 
-class Timer:
+class Timer(GObject.GObject):
+    __signal_type__ = (GObject.SignalFlags.RUN_FIRST,
+                       None,
+                       ())
 
-    def __init__(self, vmanager):
-        self.now = datetime.datetime.now()
+    __gsignals__ = {'refresh': __signal_type__,
+                    'time-changed': __signal_type__, }
+
+    def __init__(self, requester, vmanager):
         self.vmanager = vmanager
+        self.req = requester
+        self.config = self.req.get_config('browser')
         self.browser = self.vmanager.get_browser()
-        DBusGMainLoop(set_as_default=True)
+
+        GObject.GObject.__init__(self)
         bus = dbus.SystemBus()
         bus.add_signal_receiver(self.handle_resume_callback,
                                 'Resuming',
                                 'org.freedesktop.UPower',
                                 'org.freedesktop.UPower')
+        self.__init__signals()
+        self.connect('time-changed', self.time_changed)
+
+    def __init__signals(self):
+        """initializes the signals to refresh the workview when GTG starts"""
+        refresh_hour = self.config.get('hour')
+        refresh_min = self.config.get('min')
+        now = datetime.datetime.now()
+        refresh_time = datetime.datetime(now.year, now.month, now.day,
+                                         0, 0, 0)
+        secs_to_refresh = self.seconds_before(refresh_time)
+        self.add_gobject_timeout(secs_to_refresh, self.emit_refresh)
+        refresh_time = datetime.datetime(now.year, now.month, now.day,
+                                         int(refresh_hour),
+                                         int(refresh_min), 0)
+        secs_to_refresh = self.seconds_before(refresh_time)
+        self.add_gobject_timeout(secs_to_refresh, self.emit_refresh)
 
     def seconds_before(self, time):
         """Returns number of seconds remaining before next refresh"""
-        self.now = datetime.datetime.now()
-        secs_to_refresh = (time-self.now)
+        now = datetime.datetime.now()
+        secs_to_refresh = (time-now)
         if secs_to_refresh.total_seconds() < 0:
             secs_to_refresh += datetime.timedelta(days=1)
         return secs_to_refresh.total_seconds()
 
     def interval_to_time(self, interval):
         """Convert user given periodic interval to time"""
-        self.now = datetime.datetime.now()
-        self.now += datetime.timedelta(hours= int(interval))
-        return self.now
+        now = datetime.datetime.now()
+        now += datetime.timedelta(hours=int(interval))
+        return now
 
     def add_gobject_timeout(self, time, callback):
+        """Wrapper Function for GObject.timeout_add_seconds()"""
         return GObject.timeout_add_seconds(time, callback)
 
     def handle_resume_callback(self):
         self.browser = self.vmanager.get_browser()
         self.browser.refresh_workview()
+
+    def emit_refresh(self):
+        """Emit Signal for workview to refresh"""
+        GObject.idle_add(self.emit, "refresh")
+
+    def time_changed(self, Timer):
+        refresh_hour = self.config.get('hour')
+        refresh_min = self.config.get('min')
+        now = datetime.datetime.now()
+        refresh_time = datetime.datetime(now.year, now.month, now.day,
+                                         int(refresh_hour),
+                                         int(refresh_min), 0)
+        secs_to_refresh = self.seconds_before(refresh_time)
+        self.add_gobject_timeout(secs_to_refresh,
+                                 self.browser.refresh_workview)

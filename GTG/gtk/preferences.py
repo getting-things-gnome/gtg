@@ -33,6 +33,7 @@ from GTG import info
 from GTG.gtk import ViewConfig
 from GTG.gtk import help
 from GTG.tools.timer import Timer
+from gi.repository import GObject
 
 AUTOSTART_DIRECTORY = os.path.join(xdg_config_home, "autostart")
 AUTOSTART_FILE = "gtg.desktop"
@@ -100,7 +101,7 @@ class PreferencesDialog:
 
         self.fontbutton = builder.get_object("fontbutton")
         self.browser = self.vmanager.get_browser()
-        self.refresh = Timer(self.vmanager)
+        self.timer = Timer(self.req, self.vmanager)
         self.color_invalid = Color(50000, 0, 0)
         self.refresh_hour = builder.get_object("hour")
         self.refresh_mins = builder.get_object("min")
@@ -175,7 +176,6 @@ class PreferencesDialog:
             self.refresh_mins.modify_fg(Gtk.StateFlags.NORMAL, None)
             self.config.set('hour', refresh_hour)
             self.config.set('min', refresh_min)
-            return True
         except (ValueError, TypeError):
             self.refresh_hour.modify_fg(Gtk.StateFlags.NORMAL,
                                         self.color_invalid)
@@ -183,7 +183,6 @@ class PreferencesDialog:
                                         self.color_invalid)
             self.config.set('hour', "00")
             self.config.set('min', "00")
-            return False
 
     def interval_check(self, widget):
         refresh_interval = self.refresh_interval.get_text()
@@ -198,19 +197,8 @@ class PreferencesDialog:
 
     def on_close(self, widget, data=None):
         """ Close the preferences dialog."""
-        refresh_hour = self.refresh_hour.get_text()
-        refresh_min = self.refresh_mins.get_text()
-        now = datetime.datetime.now()
-        if self.valid_check(widget) is True:
-            refresh_time = datetime.datetime(now.year, now.month, now.day,
-                                             int(refresh_hour),
-                                             int(refresh_min), 00)
-        else:
-            refresh_time = datetime.datetime(now.year, now.month,
-                                             now.day, 0, 0, 0)
-        secs_to_refresh = self.refresh.seconds_before(refresh_time)
-        self.refresh.add_gobject_timeout(secs_to_refresh,
-                                         self.browser.refresh_workview)
+        self.valid_check(widget)
+        GObject.idle_add(self.timer.emit, "time-changed")
         self.dialog.hide()
         return True
 
