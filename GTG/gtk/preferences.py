@@ -185,7 +185,7 @@ class PreferencesDialog:
     def on_close(self, widget, data=None):
         """ Close the preferences dialog."""
         self.valid_check(widget)
-        self.timer.emit("time-changed")
+        self.timer.time_changed()
         self.dialog.hide()
         return True
 

@@ -560,7 +560,6 @@ class TaskBrowser(GObject.GObject):
     def refresh_workview(self, timer=True):
         task_tree = self.req.get_tasks_tree(name='active', refresh=False)
         task_tree.refresh_all()
-        self.timer.add_gobject_timeout(86400, self.refresh_workview)
         return False
 
     def periodic_refresh(self):

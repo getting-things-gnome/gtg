@@ -31,8 +31,7 @@ class Timer(GObject.GObject):
                        None,
                        ())
 
-    __gsignals__ = {'refresh': __signal_type__,
-                    'time-changed': __signal_type__, }
+    __gsignals__ = {'refresh': __signal_type__,}
 
     def __init__(self, config, vmanager):
         self.vmanager = vmanager
@@ -44,8 +43,7 @@ class Timer(GObject.GObject):
                                 'org.freedesktop.UPower',
                                 'org.freedesktop.UPower')
         self.__init__signals()
-        self.connect('time-changed', self.time_changed)
-
+        
     def __init__signals(self):
         """initializes the signals to refresh the workview when GTG starts"""
         refresh_hour = self.config.get('hour')
@@ -55,12 +53,13 @@ class Timer(GObject.GObject):
                                          0, 0, 0)
         secs_to_refresh = self.seconds_before(refresh_time)
         self.add_gobject_timeout(secs_to_refresh, self.emit_refresh)
+        self.add_gobject_timeout(86400, self.day_starts)
         refresh_time = datetime.datetime(now.year, now.month, now.day,
                                          int(refresh_hour),
                                          int(refresh_min), 0)
         secs_to_refresh = self.seconds_before(refresh_time)
         self.add_gobject_timeout(secs_to_refresh, self.emit_refresh)
-
+                
     def seconds_before(self, time):
         """Returns number of seconds remaining before next refresh"""
         now = datetime.datetime.now()
@@ -76,15 +75,19 @@ class Timer(GObject.GObject):
         return now
 
     def add_gobject_timeout(self, time, callback):
-        """Wrapper Function for GObject.timeout_add_seconds()"""
         return GObject.timeout_add_seconds(time, callback)
 
     def emit_refresh(self):
         """Emit Signal for workview to refresh"""
         self.emit("refresh")
         return False
+ 
+    def day_starts(self):
+        """Emit signal when day starts""" 
+        self.emit("refresh")
+        return True
 
-    def time_changed(self, Timer):
+    def time_changed(self):
         self.browser = self.vmanager.get_browser()
         refresh_hour = self.config.get('hour')
         refresh_min = self.config.get('min')
@@ -93,6 +96,7 @@ class Timer(GObject.GObject):
                                          int(refresh_hour),
                                          int(refresh_min), 0)
         secs_to_refresh = self.seconds_before(refresh_time)
+        print(secs_to_refresh)
         self.add_gobject_timeout(secs_to_refresh,
                                  self.browser.refresh_workview)
 
