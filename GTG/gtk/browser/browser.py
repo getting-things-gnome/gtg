@@ -22,7 +22,6 @@
 #=== IMPORT ===================================================================
 # system imports
 import time
-import datetime
 import threading
 from webbrowser import open as openurl
 
@@ -43,7 +42,6 @@ from GTG.gtk.browser.treeview_factory import TreeviewFactory
 from GTG.gtk.editor.calendar import GTGCalendar
 from GTG.tools.dates import Date
 from GTG.tools.logger import Log
-from GTG.tools.timer import Timer
 
 
 class TaskBrowser(GObject.GObject):
@@ -56,7 +54,7 @@ class TaskBrowser(GObject.GObject):
                     'visibility-toggled': __none_signal__,
                     }
 
-    def __init__(self, requester, vmanager, Timer):
+    def __init__(self, requester, vmanager):
         GObject.GObject.__init__(self)
         # Object prime variables
         self.req = requester
@@ -121,7 +119,7 @@ class TaskBrowser(GObject.GObject):
         self.activetree.register_cllbck('node-deleted-inview',
                                         self._update_window_title)
         self._update_window_title()
-        self.timer = Timer
+        self.timer = vmanager.timer
         self.timer.connect('refresh', self.refresh_workview)
 
 ### INIT HELPER FUNCTIONS #####################################################
@@ -557,10 +555,9 @@ class TaskBrowser(GObject.GObject):
 
         self.in_toggle_workview = False
 
-    def refresh_workview(self, timer=True):
+    def refresh_workview(self, timer):
         task_tree = self.req.get_tasks_tree(name='active', refresh=False)
         task_tree.refresh_all()
-        return True
 
     def set_view(self, viewname):
         if viewname == 'default':

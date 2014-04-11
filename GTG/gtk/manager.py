@@ -80,7 +80,7 @@ class Manager(GObject.GObject):
         self.timer = Timer(self.config)
 
         # Browser (still hidden)
-        self.browser = TaskBrowser(self.req, self, self.timer)
+        self.browser = TaskBrowser(self.req, self)
 
         self.__init_plugin_engine()
 
@@ -92,7 +92,7 @@ class Manager(GObject.GObject):
 
         # Preferences and Backends windows
         # Initialize  dialogs
-        self.preferences = PreferencesDialog(self.req, self.timer)
+        self.preferences = PreferencesDialog(self.req, self)
         self.plugins = PluginsDialog(self.config_obj)
         self.edit_backends_dialog = None
 

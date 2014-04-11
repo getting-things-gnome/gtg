@@ -21,7 +21,6 @@
 
 import os
 import shutil
-import datetime
 
 from gi.repository import Gtk
 from xdg.BaseDirectory import xdg_config_home
@@ -32,7 +31,6 @@ from GTG import _
 from GTG import info
 from GTG.gtk import ViewConfig
 from GTG.gtk import help
-from GTG.tools.timer import Timer
 from gi.repository import GObject
 
 AUTOSTART_DIRECTORY = os.path.join(xdg_config_home, "autostart")
@@ -81,7 +79,7 @@ def disable_gtg_autostart():
 class PreferencesDialog:
     """ Show preference dialog """
 
-    def __init__(self, req, Timer):
+    def __init__(self, req, vmanager):
         self.req = req
         self.config = self.req.get_config('browser')
         builder = Gtk.Builder()
@@ -99,7 +97,7 @@ class PreferencesDialog:
         help.add_help_shortcut(self.dialog, "preferences")
 
         self.fontbutton = builder.get_object("fontbutton")
-        self.timer = Timer
+        self.timer = vmanager.timer
         self.color_invalid = Color(50000, 0, 0)
         self.refresh_hour = builder.get_object("hour")
         self.refresh_mins = builder.get_object("min")

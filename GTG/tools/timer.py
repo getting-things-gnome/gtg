@@ -63,6 +63,7 @@ class Timer(GObject.GObject):
     def emit_refresh(self):
         """Emit Signal for workview to refresh"""
         self.emit("refresh")
+        self.add_gobject_timeout(86400, self.day_starts)
         return False
 
     def day_starts(self):
@@ -79,7 +80,6 @@ class Timer(GObject.GObject):
         secs_to_refresh = self.seconds_until(refresh_time)
         self.add_gobject_timeout(secs_to_refresh,
                                  self.emit_refresh)
-        self.add_gobject_timeout(86400, self.day_starts)
 
     def set_configuration(self, refresh_hour, refresh_min):
         now = datetime.datetime.now()
