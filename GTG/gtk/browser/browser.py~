@@ -951,7 +951,7 @@ class TaskBrowser(GObject.GObject):
     def on_delete_tag(self, event):
         tags = self.get_selected_tags()
         for tag in tags:
-            self.req.delete_tag(tag)
+            self.vmanager.req.delete_tag(tag)
         self.tagtreeview.set_cursor(0)
         self.on_select_tag()
         
