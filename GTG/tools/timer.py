@@ -57,19 +57,11 @@ class Timer(GObject.GObject):
         now += datetime.timedelta(hours=int(interval))
         return now
 
-    def add_gobject_timeout(self, time, callback):
-        return GObject.timeout_add_seconds(time, callback)
-
     def emit_refresh(self):
         """Emit Signal for workview to refresh"""
         self.emit("refresh")
-        self.add_gobject_timeout(86400, self.day_starts)
+        self.time_changed()
         return False
-
-    def day_starts(self):
-        """Emit signal when day starts"""
-        self.emit("refresh")
-        return True
 
     def time_changed(self):
         refresh_hour, refresh_mins = self.get_configuration()
@@ -78,8 +70,7 @@ class Timer(GObject.GObject):
                                          int(refresh_hour),
                                          int(refresh_mins), 0)
         secs_to_refresh = self.seconds_until(refresh_time)
-        self.add_gobject_timeout(secs_to_refresh,
-                                 self.emit_refresh)
+        GObject.timeout_add_seconds(secs_to_refresh, self.emit_refresh)
 
     def set_configuration(self, refresh_hour, refresh_min):
         now = datetime.datetime.now()
