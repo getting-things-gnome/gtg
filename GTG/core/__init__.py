@@ -69,6 +69,7 @@ DEFAULTS = {
         "font_name": "",
         'hour': "00",
         'min': "00",
+#       'interval': "0",
     },
     'tag_editor': {
         "custom_colors": [],
