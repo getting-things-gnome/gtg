@@ -81,9 +81,8 @@ def disable_gtg_autostart():
 class PreferencesDialog:
     """ Show preference dialog """
 
-    def __init__(self, req, vmanager):
+    def __init__(self, req, Timer):
         self.req = req
-        self.vmanager = vmanager
         self.config = self.req.get_config('browser')
         builder = Gtk.Builder()
         builder.add_from_file(ViewConfig.PREFERENCES_UI_FILE)
@@ -100,8 +99,7 @@ class PreferencesDialog:
         help.add_help_shortcut(self.dialog, "preferences")
 
         self.fontbutton = builder.get_object("fontbutton")
-        self.browser = self.vmanager.get_browser()
-        self.timer = Timer(self.config, self.vmanager)
+        self.timer = Timer
         self.color_invalid = Color(50000, 0, 0)
         self.refresh_hour = builder.get_object("hour")
         self.refresh_mins = builder.get_object("min")
@@ -147,8 +145,7 @@ class PreferencesDialog:
 
         bg_color = self.config.get("bg_color_enable")
         self.bg_color_enable.set_active(bg_color)
-        refresh_hour = self.config.get('hour')
-        refresh_mins = self.config.get('min')
+        refresh_hour, refresh_mins = self.timer.get_configuration()
         self.refresh_hour.set_text(refresh_hour)
         self.refresh_mins.set_text(refresh_mins)
 

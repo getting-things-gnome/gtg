@@ -56,7 +56,7 @@ class TaskBrowser(GObject.GObject):
                     'visibility-toggled': __none_signal__,
                     }
 
-    def __init__(self, requester, vmanager):
+    def __init__(self, requester, vmanager, Timer):
         GObject.GObject.__init__(self)
         # Object prime variables
         self.req = requester
@@ -121,7 +121,7 @@ class TaskBrowser(GObject.GObject):
         self.activetree.register_cllbck('node-deleted-inview',
                                         self._update_window_title)
         self._update_window_title()
-        self.timer = Timer(self.config, self.vmanager)
+        self.timer = Timer
         self.timer.connect('refresh', self.refresh_workview)
 
 ### INIT HELPER FUNCTIONS #####################################################
@@ -558,11 +558,6 @@ class TaskBrowser(GObject.GObject):
         self.in_toggle_workview = False
 
     def refresh_workview(self, timer=True):
-        task_tree = self.req.get_tasks_tree(name='active', refresh=False)
-        task_tree.refresh_all()
-        return False
-
-    def periodic_refresh(self):
         task_tree = self.req.get_tasks_tree(name='active', refresh=False)
         task_tree.refresh_all()
         return True

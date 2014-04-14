@@ -29,12 +29,11 @@ from dbus.mainloop.glib import DBusGMainLoop
 class Timer(GObject.GObject):
     __signal_type__ = (GObject.SignalFlags.RUN_FIRST,
                        None,
-                       ())
+                       [])
 
-    __gsignals__ = {'refresh': __signal_type__,}
+    __gsignals__ = {'refresh': __signal_type__, }
 
-    def __init__(self, config, vmanager):
-        self.vmanager = vmanager
+    def __init__(self, config):
         self.config = config
         GObject.GObject.__init__(self)
         bus = dbus.SystemBus()
@@ -42,31 +41,15 @@ class Timer(GObject.GObject):
                                 'Resuming',
                                 'org.freedesktop.UPower',
                                 'org.freedesktop.UPower')
-        self.__init__signals()
-        
-    def __init__signals(self):
-        """initializes the signals to refresh the workview when GTG starts"""
-        refresh_hour = self.config.get('hour')
-        refresh_min = self.config.get('min')
-        now = datetime.datetime.now()
-        refresh_time = datetime.datetime(now.year, now.month, now.day,
-                                         0, 0, 0)
-        secs_to_refresh = self.seconds_before(refresh_time)
-        self.add_gobject_timeout(secs_to_refresh, self.emit_refresh)
-        self.add_gobject_timeout(86400, self.day_starts)
-        refresh_time = datetime.datetime(now.year, now.month, now.day,
-                                         int(refresh_hour),
-                                         int(refresh_min), 0)
-        secs_to_refresh = self.seconds_before(refresh_time)
-        self.add_gobject_timeout(secs_to_refresh, self.emit_refresh)
-                
-    def seconds_before(self, time):
+        self.time_changed()
+
+    def seconds_until(self, time):
         """Returns number of seconds remaining before next refresh"""
         now = datetime.datetime.now()
-        secs_to_refresh = (time-now)
+        secs_to_refresh = time-now
         if secs_to_refresh.total_seconds() < 0:
             secs_to_refresh += datetime.timedelta(days=1)
-        return secs_to_refresh.total_seconds()
+        return secs_to_refresh.total_seconds() + 1
 
     def interval_to_time(self, interval):
         """Convert user given periodic interval to time"""
@@ -81,28 +64,26 @@ class Timer(GObject.GObject):
         """Emit Signal for workview to refresh"""
         self.emit("refresh")
         return False
- 
+
     def day_starts(self):
-        """Emit signal when day starts""" 
+        """Emit signal when day starts"""
         self.emit("refresh")
         return True
 
     def time_changed(self):
-        self.browser = self.vmanager.get_browser()
-        refresh_hour = self.config.get('hour')
-        refresh_min = self.config.get('min')
+        refresh_hour, refresh_mins = self.get_configuration()
         now = datetime.datetime.now()
         refresh_time = datetime.datetime(now.year, now.month, now.day,
                                          int(refresh_hour),
-                                         int(refresh_min), 0)
-        secs_to_refresh = self.seconds_before(refresh_time)
-        print(secs_to_refresh)
+                                         int(refresh_mins), 0)
+        secs_to_refresh = self.seconds_until(refresh_time)
         self.add_gobject_timeout(secs_to_refresh,
-                                 self.browser.refresh_workview)
+                                 self.emit_refresh)
+        self.add_gobject_timeout(86400, self.day_starts)
 
     def set_configuration(self, refresh_hour, refresh_min):
         now = datetime.datetime.now()
-        try: 
+        try:
             d = datetime.datetime(now.year, now.month, now.day,
                                   int(refresh_hour),
                                   int(refresh_min), 00)
@@ -112,3 +93,6 @@ class Timer(GObject.GObject):
             self.config.set('hour', "00")
             self.config.set('min', "00")
             raise ValueError
+
+    def get_configuration(self):
+        return self.config.get('hour'), self.config.get('min')
