@@ -23,7 +23,6 @@ import datetime
 import dbus
 
 from gi.repository import GObject
-from dbus.mainloop.glib import DBusGMainLoop
 
 
 class Timer(GObject.GObject):
@@ -31,10 +30,11 @@ class Timer(GObject.GObject):
                        None,
                        [])
 
-    __gsignals__ = {'refresh': __signal_type__, }
+    __gsignals__ = {'refresh': __signal_type__}
 
     def __init__(self, config):
         self.config = config
+        self.timeout_source = None
         GObject.GObject.__init__(self)
         bus = dbus.SystemBus()
         bus.add_signal_receiver(self.emit_refresh,
@@ -70,20 +70,21 @@ class Timer(GObject.GObject):
                                          int(refresh_hour),
                                          int(refresh_mins), 0)
         secs_to_refresh = self.seconds_until(refresh_time)
-        GObject.timeout_add_seconds(secs_to_refresh, self.emit_refresh)
+        if self.timeout_source:
+            GObject.source_remove(self.timeout_source)
+
+        self.timeout_source = GObject.timeout_add_seconds(secs_to_refresh,
+                                                          self.emit_refresh)
 
     def set_configuration(self, refresh_hour, refresh_min):
         now = datetime.datetime.now()
         try:
-            d = datetime.datetime(now.year, now.month, now.day,
-                                  int(refresh_hour),
-                                  int(refresh_min), 00)
-            self.config.set('hour', refresh_hour)
-            self.config.set('min', refresh_min)
+            datetime.time(int(refresh_hour), int(refresh_min))
         except (ValueError, TypeError):
-            self.config.set('hour', "00")
-            self.config.set('min', "00")
-            raise ValueError
+            raise ValueError("{}:{} is not a valid time".format(refresh_hour,
+                                                                refresh_min))
+        self.config.set('hour', refresh_hour)
+        self.config.set('min', refresh_min)
 
     def get_configuration(self):
         return self.config.get('hour'), self.config.get('min')

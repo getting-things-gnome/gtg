@@ -31,7 +31,6 @@ from GTG import _
 from GTG import info
 from GTG.gtk import ViewConfig
 from GTG.gtk import help
-from gi.repository import GObject
 
 AUTOSTART_DIRECTORY = os.path.join(xdg_config_home, "autostart")
 AUTOSTART_FILE = "gtg.desktop"
@@ -127,8 +126,6 @@ class PreferencesDialog:
                                 self.shortcut.on_shortcut_toggled,
                                 'on_valid_check':
                                 self.valid_check,
-                                'on_interval_check':
-                                self.interval_check,
                                 })
 
     def _refresh_preferences_store(self):
@@ -167,15 +164,6 @@ class PreferencesDialog:
 
         self.refresh_hour.modify_fg(Gtk.StateFlags.NORMAL, color)
         self.refresh_mins.modify_fg(Gtk.StateFlags.NORMAL, color)
-
-    def interval_check(self, widget):
-        try:
-            self.timer.set_configuration(self.refresh_interval.get_text(), 0)
-            color = None
-        except (ValueError, TypeError):
-            color = self.color_invalid
-
-        self.refresh_interval.modify_fg(Gtk.StateFlags.NORMAL, color)
 
     def on_close(self, widget, data=None):
         """ Close the preferences dialog."""
