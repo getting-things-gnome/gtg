@@ -51,12 +51,6 @@ class Timer(GObject.GObject):
             secs_to_refresh += datetime.timedelta(days=1)
         return secs_to_refresh.total_seconds() + 1
 
-    def interval_to_time(self, interval):
-        """Convert user given periodic interval to time"""
-        now = datetime.datetime.now()
-        now += datetime.timedelta(hours=int(interval))
-        return now
-
     def emit_refresh(self):
         """Emit Signal for workview to refresh"""
         self.emit("refresh")
@@ -77,7 +71,6 @@ class Timer(GObject.GObject):
                                                           self.emit_refresh)
 
     def set_configuration(self, refresh_hour, refresh_min):
-        now = datetime.datetime.now()
         try:
             datetime.time(int(refresh_hour), int(refresh_min))
         except (ValueError, TypeError):
