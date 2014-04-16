@@ -75,7 +75,8 @@ class Timer(GObject.GObject):
             datetime.time(int(refresh_hour), int(refresh_min))
         except (ValueError, TypeError):
             raise ValueError("{}:{} is not a valid time".format(refresh_hour,
-                                                                refresh_min))
+                                                                refresh_min))     
+        
         self.config.set('hour', refresh_hour)
         self.config.set('min', refresh_min)
 
