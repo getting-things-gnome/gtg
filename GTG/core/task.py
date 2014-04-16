@@ -747,7 +747,7 @@ class Task(TreeNode):
                 .replace('%s, ' % (tagname), newtag)
                 .replace('%s,' % (tagname), inline_tag)
                 # don't forget a space a the end
-                .replace('%s' % (tagname), inline_tag))
+                .replace('%s ' % (tagname), inline_tag))
 
     # tag_list is a list of tags names
     # return true if at least one of the list is in the task
