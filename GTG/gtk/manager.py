@@ -37,7 +37,7 @@ from GTG.tools.logger import Log
 from GTG.gtk.backends_dialog import BackendsDialog
 from GTG.backends.backendsignals import BackendSignals
 from GTG.gtk.browser.tag_editor import TagEditor
-from GTG.tools.timer import Timer
+from GTG.core.timer import Timer
 
 
 class Manager(GObject.GObject):
