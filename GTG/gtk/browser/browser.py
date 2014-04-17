@@ -437,6 +437,20 @@ class TaskBrowser(GObject.GObject):
         is_maximized = widget.get_window().get_state() & mask == mask
         self.config.set("max", is_maximized)
 
+    def restore_collapsed_tasks(self):
+        for path_s in self.config.get("collapsed_tasks"):
+            # the tuple was stored as a string. we have to reconstruct it
+            path = ()
+            for p in path_s[1:-1].split(","):
+                p = p.strip(" '")
+                path += (p, )
+            if path[-1] == '':
+                path = path[:-1]
+            try:
+                self.vtree_panes['active'].collapse_node(path)
+            except IndexError:
+                print("Invalid liblarch path {0}".format(path))
+
     def restore_state_from_conf(self):
 
 #        # Extract state from configuration dictionary
@@ -512,15 +526,7 @@ class TaskBrowser(GObject.GObject):
             sort_column, sort_order = int(sort_column), int(sort_order)
             model.set_sort_column_id(sort_column, sort_order)
 
-        for path_s in self.config.get("collapsed_tasks"):
-            # the tuple was stored as a string. we have to reconstruct it
-            path = ()
-            for p in path_s[1:-1].split(","):
-                p = p.strip(" '")
-                path += (p, )
-            if path[-1] == '':
-                path = path[:-1]
-            self.vtree_panes['active'].collapse_node(path)
+        self.restore_collapsed_tasks()
 
         self.set_view(self.config.get("view"))
 
