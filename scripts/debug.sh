@@ -51,5 +51,5 @@ then
 fi
 
 if [ $norun -eq 0 ]; then
-    ./GTG/gtg $args -t "$title"
+    PYTHONPATH=`pwd` ./GTG/gtg $args -t "$title"
 fi
