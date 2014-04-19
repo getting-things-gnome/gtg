@@ -950,6 +950,25 @@ class TaskBrowser(GObject.GObject):
             else:
                 self.reset_cursor()
             return True
+        if keyname == "Delete":
+            self.on_delete_tag(event)
+            return True
+
+    def on_delete_tag(self, event):
+        tags = self.get_selected_tags()
+        for tag in tags:
+            self.req.delete_tag(tag)
+            for t in self.vmanager.get_opened_editors():
+                task = self.req.get_task(t)
+                textview = self.vmanager.opened_task[t].textview
+                task_text = task.get_text()
+                task_title = task.get_title()
+                textview.set_text("%s\n" % task_title)
+                if task_text:
+                    textview.insert("%s" % task_text)
+                textview.modified(full=True)
+        self.tagtreeview.set_cursor(0)
+        self.on_select_tag()
 
     def on_task_treeview_button_press_event(self, treeview, event):
         """ Pop up context menu on right mouse click in the main
