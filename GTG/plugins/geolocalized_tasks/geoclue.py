@@ -11,6 +11,7 @@ class Geoclue:
     CLIENT_INTERFACE_NAME = 'org.freedesktop.GeoClue2.Client'
     LOCATION_INTERFACE_NAME = 'org.freedesktop.GeoClue2.Location'
     PROPERTIES_INTERFACE_NAME = 'org.freedesktop.DBus.Properties'
+    DESKTOP_ID = 'gtg'
 
     def __init__(self):
         dbus_loop = DBusGMainLoop(set_as_default=True)
@@ -34,6 +35,11 @@ class Geoclue:
             self.CLIENT_INTERFACE_NAME,
             'DistanceThreshold',
             dbus.UInt32(100)
+        )
+        client_properties.Set(
+            self.CLIENT_INTERFACE_NAME,
+            'DesktopId',
+            self.DESKTOP_ID
         )
         self.client = dbus.Interface(client_object, self.CLIENT_INTERFACE_NAME)
         self._system_bus = system_bus
