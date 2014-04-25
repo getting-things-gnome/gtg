@@ -168,6 +168,18 @@ class Manager(GObject.GObject):
         '''
         return self.opened_task
 
+    #This will delete tags of open tasks
+    def reload_editor(self):
+        for t in self.get_opened_editors():
+            task = self.req.get_task(t)
+            textview = self.opened_task[t].textview
+            task_text = task.get_text()
+            task_title = task.get_title()
+            textview.set_text("%s\n" % task_title)
+            if task_text:
+                textview.insert("%s" % task_text)
+            textview.modified(full=True)
+        
     def open_task(self, uid, thisisnew=False):
         """Open the task identified by 'uid'.
 
