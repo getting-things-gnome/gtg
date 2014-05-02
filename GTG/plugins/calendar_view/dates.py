@@ -113,3 +113,21 @@ class Date(object):
             return FUNCS[self._fuzzy]
         else:
             return self._real_date
+
+    def to_readable_string(self):
+        """ Return nice representation of date.
+
+        Fuzzy dates => localized version
+        Close dates => Today, Tomorrow, In X days
+        Other => with locale dateformat, stripping year for this year
+        """
+        if self._fuzzy is not None:
+            return STRINGS[self._fuzzy]
+
+        locale_format = locale.nl_langinfo(locale.D_FMT)
+        if calendar.isleap(datetime.date.today().year):
+            year_len = 366
+        else:
+            year_len = 365
+            locale_format = locale_format.replace('.%Y', '.')
+        return self._real_date.strftime(locale_format)

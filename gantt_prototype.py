@@ -1,85 +1,117 @@
 from gi.repository import Gtk
 import cairo
 import datetime
+import random
 from tasks import Task
 from datastore import DataStore
+from dates import Date
+from requester import Requester
 
 def date_generator(start, end = None, numdays = None):
     """ 
-    Generates a tuple (days, weekdays), such that days is a list of strings in
-    the format ' %m/%d', and weekdays is a list of strings in the format '%a'.
-    Both tuples have a specific size, so that they represent the days starting
+    Generates a list of tuples (day, weekday), such that day is a string in
+    the format ' %m/%d', and weekday is a string in the format '%a'.
+    The list has a specific size, so that it represents the days starting
     from @start.
-    The lists will either end on a given @end date, or will have size @numdays.
-    If the end date is specified, the numdays parameter is ignored - unless end
-    is before start. If neither parameter is specified, the list will have size
-    7 (a week).
+    The list will either end on a given @end date, or will have size @numdays.
+    If the end date is specified, the @numdays parameter is ignored.
+    If neither parameter is specified, the list will have size 7 (a week).
 
     @param start: must be a datetime object, first date to be included in the list
-    @param end: must be a datetime object, last date in the list. Default = None
-    @param numdays: size of the list. Only considered if @end is not given. Default = 7 days
-    @return days: list of strings containing dates in the format '%m/%d'
-    @return weekdays: list of strings containing abbreviated weekdays for the dates in @days
+    @param end: must be a datetime object and greater than start, last date in the list. Default = None
+    @param numdays: integer, size of the list. Only considered if @end is not given. Default = 7 days
+    @return days: list of tuples, each containing a date in the format '%m/%d', and also an
+    abbreviated weekday for the given date
     """
-    #base = datetime.datetime.strptime(start, '%Y-%m-%d')
-    if end and end > start:
+    if end: 
+        assert(end > start)
         numdays = (end - start).days + 1
     elif not numdays:
         numdays = 7
     date_list = [start + datetime.timedelta(days=x) for x in range(numdays)]
-    days = [x.strftime("%m/%d") for x in date_list]
-    weekdays = [x.strftime("%a") for x in date_list]
-    return days, weekdays
+    days = [(x.strftime("%m/%d"), x.strftime("%a")) for x in date_list]
+    return days
     
 class Calendar(Gtk.DrawingArea):
+    """
+    This class creates a visualization for all the tasks in a 
+    datastore, given a period of time.
+    """
+    def __init__(self, parent, datastore): 
+        """
+        Initializes a Calendar, given a datastore containing the
+        tasks to be visualized.
 
-    def __init__(self, parent, ex_tasks = None):
+        @param datastore: a DataStore object, contains the tasks that
+        can be visualized
+        """
         self.par = parent
         super(Calendar, self).__init__()
 
-        # DataStore object
-        self.data = DataStore()
-        if ex_tasks:
-            self.data.populate(ex_tasks) #hard-coded tasks
+        self.ds = datastore
+        self.req = datastore.get_requester()
 
         self.view_start_day = self.view_end_day = self.numdays = None
-        self.view_start_day = min([t.get_start_date().date() for t in self.data.get_all_tasks()])
-        #self.view_end_day = max([t.get_due_date().date() for t in self.data.get_all_tasks()])
+        
+        task_ids = self.req.get_tasks_tree()
+        tasks = [self.req.get_task(t) for t in task_ids]
+        start_day = min([t.get_start_date().date() for t in tasks])
+        #end_day = max([t.get_due_date().date() for t in tasks])
+        self.set_view_days(start_day) #, end_day)
 
-        #only for tests:
-        #self.view_start_day = self.view_start_day - datetime.timedelta(days=2)
-        #self.view_end_day = self.view_end_day + datetime.timedelta(days=1) 
-        #if not self.view_end_day:
-        #    self.numdays = 10
-
-        (self.days, self.week_days) = date_generator(self.view_start_day, self.view_end_day, self.numdays)
-        self.numdays = len(self.days)
+        #test:
+        #self.set_view_days(self.view_start_day - datetime.timedelta(days=2), self.view_end_day + datetime.timedelta(days=1)) #test
  
-        #self.set_size_request(-1, 30)
         self.connect("draw", self.draw)
+        
+    def set_view_days(self, start_day, end_day = None):
+        """
+        Set the first and the last day the calendar view will show.
+
+        @param start_day: must be a datetime object, first day to be 
+        shown in the calendar view
+        @param end_day: must be a datetime object, last day to be 
+        shown in the calendar view
+        """
+        assert(isinstance(start_day, datetime.date))
+        self.view_start_day = start_day
+        if end_day:
+            assert(isinstance(end_day, datetime.date))
+            self.view_end_day = end_day
+        self.days = date_generator(self.view_start_day, self.view_end_day, self.numdays)
+        self.numdays = len(self.days)
     
     def print_header(self, ctx):
+        """
+        Draws the header of the calendar view (days and weekdays).
+
+        @param ctx: a Cairo context
+        """
         ctx.set_source_rgb(0.35, 0.31, 0.24) 
-        for i in range(0, len(self.week_days)):
+        for i in range(0, len(self.days)+1):
             ctx.move_to(i*self.step, 5)
             ctx.line_to(i*self.step, 35)
             ctx.stroke()
 
-            (x, y, w, h, dx, dy) = ctx.text_extents(self.week_days[i])
+        for i in range(0, len(self.days)):
+            (x, y, w, h, dx, dy) = ctx.text_extents(self.days[i][1])
             ctx.move_to(i*self.step - (w-self.step)/2.0, 15) 
-            ctx.text_path(self.week_days[i])
+            ctx.text_path(self.days[i][1])
             ctx.stroke()
 
-            (x, y, w, h, dx, dy) = ctx.text_extents(self.days[i])
+            (x, y, w, h, dx, dy) = ctx.text_extents(self.days[i][0])
             ctx.move_to(i*self.step - (w-self.step)/2.0, 30) 
-            ctx.text_path(self.days[i])
+            ctx.text_path(self.days[i][0])
             ctx.stroke()
-
-        ctx.move_to(len(self.week_days)*self.step, 5)
-        ctx.line_to(len(self.week_days)*self.step, 35)
-        ctx.stroke()
         
-    def draw_task(self, ctx, task, t):
+    def draw_task(self, ctx, task, pos):
+        """
+        Draws a given @task in a relative postion @pos.
+
+        @param ctx: a Cairo context
+        @param task: a Task object to be drawn
+        @param pos: the relative order the task should appear (starting from 0)
+        """
         label = task.get_title()
         start = (task.get_start_date().date() - self.view_start_day).days
         end = (task.get_due_date().date() - self.view_start_day).days + 1
@@ -97,20 +129,24 @@ class Calendar(Gtk.DrawingArea):
 
         # drawing rectangle for task duration 
         ctx.set_source_rgba(0.5, start/6.0, end/6.0, alpha)
-        ctx.rectangle(start*self.step, self.header_size+t*self.task_width, duration * self.step, self.task_width)
+        ctx.rectangle(start*self.step, 
+                      self.header_size + pos*self.task_width, 
+                      duration * self.step, 
+                      self.task_width)
         ctx.fill()
 
         # printing task label
         ctx.set_source_rgba(1, 1, 1, alpha)
         (x, y, w, h, dx, dy) = ctx.text_extents(label)
-        ctx.move_to((start+duration/2.0)*self.step-w/2.0, self.header_size+(t+1)*self.task_width-h/2.0)
+        ctx.move_to((start+duration/2.0) * self.step - w/2.0, 
+                    self.header_size+(pos+1) * self.task_width - h/2.0)
         ctx.text_path(label)
         ctx.stroke()
 
     def draw(self, widget, ctx): 
         ctx.set_line_width(0.8)
         ctx.select_font_face("Courier", cairo.FONT_SLANT_NORMAL, 
-                            cairo.FONT_WEIGHT_NORMAL)
+                             cairo.FONT_WEIGHT_NORMAL)
         ctx.set_font_size(11)
 
         rect = self.get_allocation()
@@ -122,21 +158,62 @@ class Calendar(Gtk.DrawingArea):
         self.print_header(ctx)
 
         # drawing all tasks
-        for t, task in enumerate(self.data.get_all_tasks()):
-            self.draw_task(ctx, task, t)
+        for pos, task in enumerate([self.req.get_task(id) for id in
+                                    self.req.get_tasks_tree()]):
+            self.draw_task(ctx, task, pos)
         
+class TaskView(Gtk.Dialog):
+    """
+    This class is a dialog for creating/editing a task.
+    It receives a task as parameter, and has four editable entries:
+    title, start and due dates, and a checkbox to mark the task as done.
+    """
+    def __init__(self, parent, task = None):
+        Gtk.Dialog.__init__(self, "Editing task", parent, 0,
+                 (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
+                  Gtk.STOCK_OK, Gtk.ResponseType.OK))
+        box = self.get_content_area()
+        vbox = Gtk.VBox(False, 4)
+        box.add(vbox)
+
+        box.pack_start(Gtk.Label("Title"), False, False, 0)
+        self.title = Gtk.Entry()
+        box.pack_start(self.title, True, True, 0)
+        if task:
+            self.title.set_text(task.get_title())
+
+        box.pack_start(Gtk.Label("Start Date"), False, False, 0)
+        self.start_date = Gtk.Entry()
+        box.pack_start(self.start_date, True, True, 0)
+        if task:
+            self.start_date.set_text(task.get_start_date().to_readable_string())
+
+        box.pack_start(Gtk.Label("Due Date"), False, False, 0)
+        self.due_date = Gtk.Entry()
+        box.pack_start(self.due_date, True, True, 0)
+        if task:
+            self.due_date.set_text(task.get_due_date().to_readable_string())
+
+        self.done = Gtk.CheckButton("Mark as done")
+        box.pack_start(self.done, True, True, 0)
+        if not task: 
+            self.done.set_sensitive(False)
+        elif(task.get_status() == Task.STA_DONE):
+            self.done.set_active(True)
+        self.show_all()
+
  
-class PyApp(Gtk.Window): 
+class CalendarPlugin(Gtk.Window): 
 
     def __init__(self):
-        super(PyApp, self).__init__()
+        super(CalendarPlugin, self).__init__()
         
         self.set_title("Gantt Chart View")
         self.set_size_request(350, 280)        
         self.set_position(Gtk.WindowPosition.CENTER)
         self.connect("destroy", Gtk.main_quit)
        
-        vbox = Gtk.VBox(False, 2)
+        vbox = Gtk.VBox(False, 3)
 
         # hard coded tasks to populate calendar view
         # (title, start_date, due_date, done?)
@@ -149,10 +226,30 @@ class PyApp(Gtk.Window):
                     ("task7", "2014-03-22", "2014-03-24", False)
                    ]
 
-        self.calendar = Calendar(self, ex_tasks)
+        # DataStore object
+        self.ds = DataStore()
+        self.req = Requester(self.ds)
+        self.ds.populate(ex_tasks) #hard-coded tasks
+
+        # Calendar object
+        self.calendar = Calendar(self, self.ds) 
         vbox.pack_start(self.calendar, True, True, 0)
 
-        # for use in the future
+        hbox = Gtk.Box(spacing=6)
+        vbox.pack_start(hbox, False, False, 0)
+
+        button = Gtk.Button("Add", stock=Gtk.STOCK_ADD)
+        button.connect("clicked", self.on_add_clicked)
+        hbox.pack_start(button, True, True, 0)
+
+        button = Gtk.Button("Edit", stock=Gtk.STOCK_EDIT)
+        button.connect("clicked", self.on_edit_clicked)
+        hbox.pack_start(button, True, True, 0)
+
+        button = Gtk.Button("Remove", stock=Gtk.STOCK_DELETE)
+        button.connect("clicked", self.on_remove_clicked)
+        hbox.pack_start(button, True, True, 0)
+
         self.label = Gtk.Label("...")
         fix = Gtk.Fixed()
         fix.put(self.label, 40, 10)
@@ -160,7 +257,80 @@ class PyApp(Gtk.Window):
 
         self.add(vbox)
         self.show_all()
-    
 
-PyApp()
+    def on_add_clicked(self, button):
+        """ 
+        Adds a new task, with the help of a pop-up dialog
+        for entering the task title, start and due dates.
+        Redraw the calendar view after the changes.
+        """
+        # only to make testing easier
+        tests = False
+        if tests: 
+            new_task = self.req.new_task() 
+            start = random.choice(range(17,23))
+            end = random.choice([start,23])
+            new_task.set_start_date("2014-03-"+str(start))
+            new_task.set_due_date("2014-03-"+str(end))
+            dialog = TaskView(self, new_task)
+        else: 
+            dialog = TaskView(self)
+        response = dialog.run()
+        if response == Gtk.ResponseType.OK:
+            if not tests:
+                new_task = self.req.new_task() 
+            self.label.set_text("Added task: %s" % 
+                                new_task.get_title())
+            new_task.set_title(dialog.title.get_text())
+            new_task.set_start_date(dialog.start_date.get_text())
+            new_task.set_due_date(dialog.due_date.get_text())
+            self.calendar.queue_draw()
+        else:
+            if tests:
+                self.req.delete_task(task.get_id()) 
+            self.label.set_text("...") 
+        dialog.destroy()
+
+    def on_edit_clicked(self, button):
+        """ 
+        Edits a random task, with the help of a pop-up dialog
+        for modifying the task title, start and due dates.
+        Redraw the calendar view after the changes.
+        """
+        task_id = self.req.get_random_task()
+        if task_id:
+            task = self.req.get_task(task_id)
+
+            dialog = TaskView(self, task)
+            response = dialog.run()
+            if response == Gtk.ResponseType.OK:
+                self.label.set_text("Edited task: %s" % 
+                                    task.get_title())
+                task.set_title(dialog.title.get_text())
+                task.set_start_date(dialog.start_date.get_text())
+                task.set_due_date(dialog.due_date.get_text())
+                if dialog.done.get_active():
+                    task.set_status(Task.STA_DONE)
+                else:
+                    task.set_status(Task.STA_ACTIVE)
+                self.calendar.queue_draw()
+            else:
+                self.label.set_text("...") 
+            dialog.destroy()
+
+    def on_remove_clicked(self, button):
+        """ 
+        Removes a random task from the datastore and redraw the 
+        calendar view.
+        """
+        task_id = self.req.get_random_task()
+        if task_id:
+            self.label.set_text("Deleted task: %s" % 
+                                self.req.get_task(task_id).get_title())
+            self.req.delete_task(task_id)
+            self.calendar.queue_draw()
+        else:
+            self.label.set_text("...") 
+
+CalendarPlugin()
 Gtk.main()
