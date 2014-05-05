@@ -179,6 +179,7 @@ class Manager(GObject.GObject):
             if task_text:
                 textview.insert("%s" % task_text)
             textview.modified(full=True)
+            task.set_title(task_title)
 
     def open_task(self, uid, thisisnew=False):
         """Open the task identified by 'uid'.
