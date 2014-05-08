@@ -1373,7 +1373,7 @@ class TaskView(Gtk.TextView):
             return
         elif _type in [Gdk.EventType.BUTTON_PRESS,
                        Gdk.EventType.BUTTON_RELEASE]:
-            button = ev.button
+            button = ev.button.button
             cursor = Gdk.Cursor.new(Gdk.CursorType.HAND2)
             if _type == Gdk.EventType.BUTTON_RELEASE:
                 if typ == "subtask":
