@@ -37,6 +37,7 @@ from GTG.gtk.tag_completion import TagCompletion
 from GTG.gtk.browser import GnomeConfig
 from GTG.gtk.browser.custominfobar import CustomInfoBar
 from GTG.gtk.browser.modifytags_dialog import ModifyTagsDialog
+from GTG.gtk.browser.deletetags_dialog import DeleteTagsDialog
 from GTG.gtk.browser.tag_context_menu import TagContextMenu
 from GTG.gtk.browser.treeview_factory import TreeviewFactory
 from GTG.gtk.editor.calendar import GTGCalendar
@@ -187,6 +188,7 @@ class TaskBrowser(GObject.GObject):
 
         tag_completion = TagCompletion(self.req.get_tag_tree())
         self.modifytags_dialog = ModifyTagsDialog(tag_completion, self.req)
+        self.deletetags_dialog = DeleteTagsDialog(self.req, self)
         self.calendar = GTGCalendar()
         self.calendar.set_transient_for(self.window)
         self.calendar.connect("date-changed", self.on_date_changed)
@@ -951,14 +953,21 @@ class TaskBrowser(GObject.GObject):
                 self.reset_cursor()
             return True
         if keyname == "Delete":
-            self.on_delete_tag(event)
+            self.on_delete_tag_activate(event)
             return True
+
+    def on_delete_tag_activate(self, event):
+        tags = self.get_selected_tags()
+        self.deletetags_dialog.delete_tags(tags)
 
     def on_delete_tag(self, event):
         tags = self.get_selected_tags()
         for tag in tags:
+            open_tasklist = self.vmanager.get_opened_editors()
+            related_tasklist = self.req.get_tag(tag).get_related_tasks()
+            tasklist = list(set(open_tasklist).intersection(related_tasklist))
             self.req.delete_tag(tag)
-            self.vmanager.reload_editor()
+            self.vmanager.reload_editor(tasklist)
         self.tagtreeview.set_cursor(0)
         self.on_select_tag()
 

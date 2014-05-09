@@ -31,9 +31,12 @@ class GnomeConfig:
     current_rep = os.path.dirname(os.path.abspath(__file__))
     BROWSER_UI_FILE = os.path.join(current_rep, "taskbrowser.ui")
     MODIFYTAGS_UI_FILE = os.path.join(current_rep, "modifytags_dialog.ui")
+    DELETETAGS_UI_FILE = os.path.join(current_rep, "deletetags_dialog.ui")
     GLADE_FILE = os.path.join(current_rep, "taskbrowser.glade")
     MODIFYTAGS_GLADE_FILE = os.path.join(current_rep,
                                          "modifytags_dialog.glade")
+    DELETETAGS_GLADE_FILE = os.path.join(current_rep,
+                                         "deletetags_dialog.glade")
     TAGEDITOR_GLADE_FILE = os.path.join(current_rep, "tageditor.glade")
 
     MARK_DONE = _("Mark as Done")

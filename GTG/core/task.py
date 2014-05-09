@@ -739,8 +739,8 @@ class Task(TreeNode):
                 .replace('<tag>%s</tag>\n\n' % (tagname), newtag)  # trail \n
                 # trail comma
                 .replace('<tag>%s</tag>, ' % (tagname), newtag)
-                .replace('<tag>%s</tag>,' % (tagname), inline_tag)
-                .replace('<tag>%s</tag>' % (tagname), inline_tag)
+                .replace('<tag>%s</tag>,' % (tagname), newtag)
+                .replace('<tag>%s</tag>' % (tagname), newtag)
                 # in case XML is missing (bug #504899)
                 .replace('%s\n\n' % (tagname), newtag)
                 .replace('%s, ' % (tagname), newtag)

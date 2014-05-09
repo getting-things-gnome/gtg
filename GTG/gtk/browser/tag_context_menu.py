@@ -60,8 +60,8 @@ class TagContextMenu(Gtk.Menu):
             self.append(self.mi_cc)
             self.append(self.mi_ctag)
             self.append(self.mi_del_tag)
-            self.mi_del_tag.connect('activate',
-                                    self.vmanager.browser.on_delete_tag)
+            self.mi_del_tag.connect(
+                'activate', self.vmanager.browser.on_delete_tag_activate)
             self.mi_cc.connect('activate', self.on_mi_cc_activate)
             self.mi_ctag.connect('activate', self.on_mi_ctag_activate)
             if self.tag.is_search_tag():
