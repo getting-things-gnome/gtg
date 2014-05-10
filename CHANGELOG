@@ -36,6 +36,7 @@
     * Fixes #10 : Travis build fails, by Parth Panchal
     * Fixes #15 : Sendmail plugin fails, by Nimit Shah
     * Fix for bug ##514926 : Work view should refresh itself periodically, by Atit Anand
+    * Fix for bug #18: Links aren't opened on click, by Àlex Magaz Graça
 
 2013-11-24 Getting Things GNOME! 0.3.1
     * Fix for bug #1024473: Have 'Show Main Window' in notification area, by Antonio Roquentin
