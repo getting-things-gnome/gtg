@@ -962,12 +962,10 @@ class TaskBrowser(GObject.GObject):
 
     def on_delete_tag(self, event):
         tags = self.get_selected_tags()
-        for tag in tags:
-            open_tasklist = self.vmanager.get_opened_editors()
-            related_tasklist = self.req.get_tag(tag).get_related_tasks()
-            tasklist = list(set(open_tasklist).intersection(related_tasklist))
-            self.req.delete_tag(tag)
-            self.vmanager.reload_editor(tasklist)
+        for tagname in tags:
+            self.req.delete_tag(tagname)
+            tag = self.req.get_tag(tagname)
+            self.vmanager.reload_opened_editors(tag.get_related_tasks())
         self.tagtreeview.set_cursor(0)
         self.on_select_tag()
 
