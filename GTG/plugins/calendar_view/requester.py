@@ -26,15 +26,11 @@ class Requester(GObject.GObject):
         task = self.ds.get_task(tid)
         return task
 
-    def new_task(self, tags=None, newtask=True):
+    def new_task(self):
         """Create a new task.
         Note: this modifies the datastore.
         """
         task = self.ds.new_task()
-        if tags:
-            for t in tags:
-                assert(not isinstance(t, Tag))
-                task.tag_added(t)
         return task
 
     def delete_task(self, tid):

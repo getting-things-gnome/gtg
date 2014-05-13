@@ -7,6 +7,8 @@ from datastore import DataStore
 from dates import Date
 from requester import Requester
 
+tests = True
+
 def date_generator(start, end = None, numdays = None):
     """ 
     Generates a list of tuples (day, weekday), such that day is a string in
@@ -80,6 +82,8 @@ class Calendar(Gtk.DrawingArea):
             self.view_end_day = end_day
         self.days = date_generator(self.view_start_day, self.view_end_day, self.numdays)
         self.numdays = len(self.days)
+        if not end_day:
+            self.view_end_day = self.view_start_day + datetime.timedelta(days=self.numdays)
     
     def print_header(self, ctx):
         """
@@ -130,7 +134,7 @@ class Calendar(Gtk.DrawingArea):
         # drawing rectangle for task duration 
         ctx.set_source_rgba(0.5, start/6.0, end/6.0, alpha)
         ctx.rectangle(start*self.step, 
-                      self.header_size + pos*self.task_width, 
+                      self.header_size + pos * (self.padding + self.task_width),
                       duration * self.step, 
                       self.task_width)
         ctx.fill()
@@ -139,7 +143,8 @@ class Calendar(Gtk.DrawingArea):
         ctx.set_source_rgba(1, 1, 1, alpha)
         (x, y, w, h, dx, dy) = ctx.text_extents(label)
         ctx.move_to((start+duration/2.0) * self.step - w/2.0, 
-                    self.header_size+(pos+1) * self.task_width - h/2.0)
+                    self.header_size + pos*self.padding + 
+                    (pos+1)*self.task_width - h/2.0)
         ctx.text_path(label)
         ctx.stroke()
 
@@ -149,17 +154,33 @@ class Calendar(Gtk.DrawingArea):
                              cairo.FONT_WEIGHT_NORMAL)
         ctx.set_font_size(11)
 
-        rect = self.get_allocation()
-        self.step = round(rect.width / float(self.numdays))
+        alloc = self.get_allocation()
+        self.step = round(alloc.width / float(self.numdays))
         self.header_size = 40
         self.task_width = 20
+        self.padding = 3
+        self.footer = 10
+
+        task_ids = self.req.get_tasks_tree()
+        tasks = [self.req.get_task(t) for t in task_ids]
+
+        # resizes vertical area according to number of tasks
+        self.set_size_request(350, len(tasks)*(self.task_width+self.padding) + self.header_size + self.footer)
+        # FIXME: if I use the code below, it creates an infinite loop that 
+        # keeps resizing the drawable area, even if nothing is being done:
+        #self.set_size_request(350, alloc.height+self.task_width+self.padding) 
+
+        # resizes horizontal area according to number of days
+        #start_day = min([t.get_start_date().date() for t in tasks])
+        #end_day = max([t.get_due_date().date() for t in tasks])
+        #self.set_view_days(start_day, end_day)
+        #self.set_size_request(self.numdays*self.step, len(tasks)*(self.task_width+self.padding) + self.header_size + self.footer)
 
         # printing header
         self.print_header(ctx)
 
         # drawing all tasks
-        for pos, task in enumerate([self.req.get_task(id) for id in
-                                    self.req.get_tasks_tree()]):
+        for pos, task in enumerate(tasks):
             self.draw_task(ctx, task, pos)
         
 class TaskView(Gtk.Dialog):
@@ -169,9 +190,12 @@ class TaskView(Gtk.Dialog):
     title, start and due dates, and a checkbox to mark the task as done.
     """
     def __init__(self, parent, task = None):
-        Gtk.Dialog.__init__(self, "Editing task", parent, 0,
+        Gtk.Dialog.__init__(self, "Edit Task", parent, 0,
                  (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
                   Gtk.STOCK_OK, Gtk.ResponseType.OK))
+        # makes the OK button be the default, and the "Enter" key activates it
+        self.get_widget_for_response(Gtk.ResponseType.OK).grab_focus()
+
         box = self.get_content_area()
         vbox = Gtk.VBox(False, 4)
         box.add(vbox)
@@ -179,27 +203,28 @@ class TaskView(Gtk.Dialog):
         box.pack_start(Gtk.Label("Title"), False, False, 0)
         self.title = Gtk.Entry()
         box.pack_start(self.title, True, True, 0)
-        if task:
-            self.title.set_text(task.get_title())
 
         box.pack_start(Gtk.Label("Start Date"), False, False, 0)
         self.start_date = Gtk.Entry()
         box.pack_start(self.start_date, True, True, 0)
-        if task:
-            self.start_date.set_text(task.get_start_date().to_readable_string())
 
         box.pack_start(Gtk.Label("Due Date"), False, False, 0)
         self.due_date = Gtk.Entry()
         box.pack_start(self.due_date, True, True, 0)
-        if task:
-            self.due_date.set_text(task.get_due_date().to_readable_string())
 
         self.done = Gtk.CheckButton("Mark as done")
         box.pack_start(self.done, True, True, 0)
-        if not task: 
+
+        if task:
+            self.title.set_text(task.get_title())
+            self.start_date.set_text(task.get_start_date().to_readable_string())
+            self.due_date.set_text(task.get_due_date().to_readable_string())
+            if(task.get_status() == Task.STA_DONE):
+                self.done.set_active(True)
+        else:
+            self.set_title("New Task")
             self.done.set_sensitive(False)
-        elif(task.get_status() == Task.STA_DONE):
-            self.done.set_active(True)
+
         self.show_all()
 
  
@@ -209,11 +234,17 @@ class CalendarPlugin(Gtk.Window):
         super(CalendarPlugin, self).__init__()
         
         self.set_title("Gantt Chart View")
-        self.set_size_request(350, 280)        
+        self.set_size_request(380, 280)        
         self.set_position(Gtk.WindowPosition.CENTER)
+        self.set_border_width(5)
         self.connect("destroy", Gtk.main_quit)
-       
+
         vbox = Gtk.VBox(False, 3)
+
+        # Scrolled Window
+        scroll = Gtk.ScrolledWindow()
+        scroll.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
+        vbox.pack_start(scroll, True, True, 0)
 
         # hard coded tasks to populate calendar view
         # (title, start_date, due_date, done?)
@@ -231,9 +262,9 @@ class CalendarPlugin(Gtk.Window):
         self.req = Requester(self.ds)
         self.ds.populate(ex_tasks) #hard-coded tasks
 
-        # Calendar object
+        # Pack the Calendar object inside the scrolled window
         self.calendar = Calendar(self, self.ds) 
-        vbox.pack_start(self.calendar, True, True, 0)
+        scroll.add_with_viewport(self.calendar)
 
         hbox = Gtk.Box(spacing=6)
         vbox.pack_start(hbox, False, False, 0)
@@ -265,7 +296,6 @@ class CalendarPlugin(Gtk.Window):
         Redraw the calendar view after the changes.
         """
         # only to make testing easier
-        tests = False
         if tests: 
             new_task = self.req.new_task() 
             start = random.choice(range(17,23))
@@ -287,9 +317,9 @@ class CalendarPlugin(Gtk.Window):
             self.calendar.queue_draw()
         else:
             if tests:
-                self.req.delete_task(task.get_id()) 
+                self.req.delete_task(new_task.get_id()) 
             self.label.set_text("...") 
-        dialog.destroy()
+        dialog.hide()
 
     def on_edit_clicked(self, button):
         """ 
@@ -316,7 +346,7 @@ class CalendarPlugin(Gtk.Window):
                 self.calendar.queue_draw()
             else:
                 self.label.set_text("...") 
-            dialog.destroy()
+            dialog.hide()
 
     def on_remove_clicked(self, button):
         """ 
