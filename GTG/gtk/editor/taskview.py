@@ -36,6 +36,7 @@ from gi.repository import GObject, Gtk, Gdk, Pango
 from webbrowser import open as openurl
 from GTG.gtk.editor import taskviewserial
 from GTG.tools import urlregex
+from GTG import _
 
 separators = [' ', ',', '\n', '\t', '!', '?', ';', '\0', '(', ')']
 # those separators are only separators if followed by a space. Else, they
@@ -120,6 +121,8 @@ class TaskView(Gtk.TextView):
         self.__tags = []
         # This is a simple stack used by the serialization
         self.__tag_stack = {}
+
+        self.__clicked_link = ""
 
         # Signals
         self.connect('motion-notify-event', self._motion)
@@ -1387,9 +1390,12 @@ class TaskView(Gtk.TextView):
                 self.emit('anchor-clicked', text, anchor, button)
                 self.__set_anchor(ev.window, tag, cursor,
                                   self.get_property('hover'))
-            elif button in [1, 2]:
-                self.__set_anchor(ev.window, tag, cursor,
-                                  self.get_property('active'))
+            else:  # _type == Gdk.EventType.BUTTON_PRESS
+                if button in [1, 2]:
+                    self.__set_anchor(ev.window, tag, cursor,
+                                      self.get_property('active'))
+                elif button == 3:
+                    self.__clicked_link = anchor
 
     def __tag_reset(self, tag, window):
         if hasattr(tag, 'is_anchor'):
@@ -1409,6 +1415,37 @@ class TaskView(Gtk.TextView):
         window.set_cursor(cursor)
         for key, val in prop.items():
             tag.set_property(key, val)
+
+    def do_populate_popup(self, popup):
+        """
+        Adds link-related options to the context menu.
+        """
+        if self.__clicked_link:
+            item_separator = Gtk.MenuItem()
+            popup.prepend(item_separator)
+
+            item_open_link = Gtk.MenuItem()
+            item_open_link.set_label(_("Open Link"))
+            item_open_link.connect("activate", self.__open_link,
+                                   self.__clicked_link)
+            popup.prepend(item_open_link)
+
+            item_copy_link = Gtk.MenuItem()
+            item_copy_link.set_label(_("Copy Link to Clipboard"))
+            item_copy_link.connect("activate", self.__copy_link,
+                                   self.__clicked_link)
+            popup.prepend(item_copy_link)
+
+            popup.show_all()
+            self.__clicked_link = ""
+
+    def __open_link(self, menu_item, anchor):
+        openurl(anchor)
+
+    def __copy_link(self, menu_item, anchor):
+        clipboard = Gtk.Clipboard.get(Gdk.SELECTION_CLIPBOARD)
+        clipboard.set_text(anchor, -1)
+        clipboard.store()
 
 
 GObject.type_register(TaskView)
