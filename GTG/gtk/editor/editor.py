@@ -392,10 +392,10 @@ class TaskEditor(object):
         textview = self.textview
         task_text = task.get_text()
         task_title = task.get_title()
-        task.set_title(task_title)
         textview.set_text("%s\n" % task_title)
         if task_text:
             textview.insert("%s" % task_text)
+        task.set_title(task_title)
         textview.modified(full=True)
 
     def date_changed(self, widget, data):
