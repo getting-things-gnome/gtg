@@ -80,7 +80,7 @@ class Calendar(Gtk.DrawingArea):
         if end_day:
             assert(isinstance(end_day, datetime.date))
             self.view_end_day = end_day
-        self.days = date_generator(self.view_start_day, self.view_end_day, self.numdays)
+        self.days = date_generator(start_day, end_day) #, self.numdays)
         self.numdays = len(self.days)
         if not end_day:
             self.view_end_day = self.view_start_day + datetime.timedelta(days=self.numdays)
@@ -241,10 +241,21 @@ class CalendarPlugin(Gtk.Window):
 
         vbox = Gtk.VBox(False, 3)
 
+        hbox = Gtk.HBox(False, 3)
+        vbox.pack_start(hbox, True, True, 0)
+
+        button = Gtk.Button("<")#"Prev", stock=Gtk.STOCK_GO_BACK)
+        button.connect("clicked", self.on_previous_clicked)
+        hbox.pack_start(button, False, False, 0)
+
+        button = Gtk.Button(">")#"Next", stock=Gtk.STOCK_GO_FORWARD)
+        button.connect("clicked", self.on_next_clicked)
+        hbox.pack_end(button, False, True, 0)
+
         # Scrolled Window
-        scroll = Gtk.ScrolledWindow()
-        scroll.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
-        vbox.pack_start(scroll, True, True, 0)
+        self.scroll = Gtk.ScrolledWindow()
+        self.scroll.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
+        hbox.pack_start(self.scroll, True, True, 0)
 
         # hard coded tasks to populate calendar view
         # (title, start_date, due_date, done?)
@@ -264,7 +275,7 @@ class CalendarPlugin(Gtk.Window):
 
         # Pack the Calendar object inside the scrolled window
         self.calendar = Calendar(self, self.ds) 
-        scroll.add_with_viewport(self.calendar)
+        self.scroll.add_with_viewport(self.calendar)
 
         hbox = Gtk.Box(spacing=6)
         vbox.pack_start(hbox, False, False, 0)
@@ -298,8 +309,8 @@ class CalendarPlugin(Gtk.Window):
         # only to make testing easier
         if tests: 
             new_task = self.req.new_task() 
-            start = random.choice(range(17,23))
-            end = random.choice([start,23])
+            start = random.choice(range(1,30))
+            end = random.choice([start,30])
             new_task.set_start_date("2014-03-"+str(start))
             new_task.set_due_date("2014-03-"+str(end))
             dialog = TaskView(self, new_task)
@@ -361,6 +372,14 @@ class CalendarPlugin(Gtk.Window):
             self.calendar.queue_draw()
         else:
             self.label.set_text("...") 
+
+    def on_next_clicked(self, button):
+        self.calendar.set_view_days(self.calendar.view_start_day + datetime.timedelta(days=7))
+        self.calendar.queue_draw()
+
+    def on_previous_clicked(self, button):
+        self.calendar.set_view_days(self.calendar.view_start_day - datetime.timedelta(days=7))
+        self.calendar.queue_draw()
 
 CalendarPlugin()
 Gtk.main()
