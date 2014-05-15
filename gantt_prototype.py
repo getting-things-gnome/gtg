@@ -1,4 +1,4 @@
-from gi.repository import Gtk
+from gi.repository import Gtk, GObject
 import cairo
 import datetime
 import random
@@ -228,34 +228,33 @@ class TaskView(Gtk.Dialog):
         self.show_all()
 
  
-class CalendarPlugin(Gtk.Window): 
+class CalendarPlugin(GObject.GObject):
 
     def __init__(self):
         super(CalendarPlugin, self).__init__()
+
+        builder = Gtk.Builder()
+        builder.add_from_file("calendar_view.glade")
+        handlers = {
+            "on_window_destroy": Gtk.main_quit,
+            "on_add_clicked": self.on_add_clicked,
+            "on_edit_clicked": self.on_edit_clicked,
+            "on_remove_clicked": self.on_remove_clicked,
+            "on_next_clicked": self.on_next_clicked,
+            "on_previous_clicked": self.on_previous_clicked,
+            "on_statusbar_text_pushed": self.on_statusbar_text_pushed
+        }
+        builder.connect_signals(handlers)
         
-        self.set_title("Gantt Chart View")
-        self.set_size_request(380, 280)        
-        self.set_position(Gtk.WindowPosition.CENTER)
-        self.set_border_width(5)
-        self.connect("destroy", Gtk.main_quit)
+        self.window = builder.get_object("window")
+        self.window.__init__()
+        self.window.set_title("Gantt Chart View")
+        self.window.connect("destroy", Gtk.main_quit)
 
-        vbox = Gtk.VBox(False, 3)
-
-        hbox = Gtk.HBox(False, 3)
-        vbox.pack_start(hbox, True, True, 0)
-
-        button = Gtk.Button("<")#"Prev", stock=Gtk.STOCK_GO_BACK)
-        button.connect("clicked", self.on_previous_clicked)
-        hbox.pack_start(button, False, False, 0)
-
-        button = Gtk.Button(">")#"Next", stock=Gtk.STOCK_GO_FORWARD)
-        button.connect("clicked", self.on_next_clicked)
-        hbox.pack_end(button, False, True, 0)
+        self.statusbar = builder.get_object("statusbar")
 
         # Scrolled Window
-        self.scroll = Gtk.ScrolledWindow()
-        self.scroll.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
-        hbox.pack_start(self.scroll, True, True, 0)
+        self.scroll = builder.get_object("scrolledwindow")
 
         # hard coded tasks to populate calendar view
         # (title, start_date, due_date, done?)
@@ -277,28 +276,13 @@ class CalendarPlugin(Gtk.Window):
         self.calendar = Calendar(self, self.ds) 
         self.scroll.add_with_viewport(self.calendar)
 
-        hbox = Gtk.Box(spacing=6)
-        vbox.pack_start(hbox, False, False, 0)
+        self.label = builder.get_object("label")
+        self.window.show_all()
 
-        button = Gtk.Button("Add", stock=Gtk.STOCK_ADD)
-        button.connect("clicked", self.on_add_clicked)
-        hbox.pack_start(button, True, True, 0)
 
-        button = Gtk.Button("Edit", stock=Gtk.STOCK_EDIT)
-        button.connect("clicked", self.on_edit_clicked)
-        hbox.pack_start(button, True, True, 0)
-
-        button = Gtk.Button("Remove", stock=Gtk.STOCK_DELETE)
-        button.connect("clicked", self.on_remove_clicked)
-        hbox.pack_start(button, True, True, 0)
-
-        self.label = Gtk.Label("...")
-        fix = Gtk.Fixed()
-        fix.put(self.label, 40, 10)
-        vbox.pack_end(fix, False, False, 0)
-
-        self.add(vbox)
-        self.show_all()
+    def on_statusbar_text_pushed(self, text):
+        self.label.set_text(text)
+        #self.statusbar.push(0, text)
 
     def on_add_clicked(self, button):
         """ 
@@ -313,15 +297,14 @@ class CalendarPlugin(Gtk.Window):
             end = random.choice([start,30])
             new_task.set_start_date("2014-03-"+str(start))
             new_task.set_due_date("2014-03-"+str(end))
-            dialog = TaskView(self, new_task)
+            dialog = TaskView(self.window, new_task)
         else: 
-            dialog = TaskView(self)
+            dialog = TaskView(self.window)
         response = dialog.run()
         if response == Gtk.ResponseType.OK:
             if not tests:
                 new_task = self.req.new_task() 
-            self.label.set_text("Added task: %s" % 
-                                new_task.get_title())
+            self.on_statusbar_text_pushed("Added task: %s" % new_task.get_title())
             new_task.set_title(dialog.title.get_text())
             new_task.set_start_date(dialog.start_date.get_text())
             new_task.set_due_date(dialog.due_date.get_text())
@@ -329,7 +312,7 @@ class CalendarPlugin(Gtk.Window):
         else:
             if tests:
                 self.req.delete_task(new_task.get_id()) 
-            self.label.set_text("...") 
+            self.on_statusbar_text_pushed("...")
         dialog.hide()
 
     def on_edit_clicked(self, button):
@@ -342,11 +325,10 @@ class CalendarPlugin(Gtk.Window):
         if task_id:
             task = self.req.get_task(task_id)
 
-            dialog = TaskView(self, task)
+            dialog = TaskView(self.window, task)
             response = dialog.run()
             if response == Gtk.ResponseType.OK:
-                self.label.set_text("Edited task: %s" % 
-                                    task.get_title())
+                self.on_statusbar_text_pushed("Edited task: %s" % task.get_title())
                 task.set_title(dialog.title.get_text())
                 task.set_start_date(dialog.start_date.get_text())
                 task.set_due_date(dialog.due_date.get_text())
@@ -356,7 +338,7 @@ class CalendarPlugin(Gtk.Window):
                     task.set_status(Task.STA_ACTIVE)
                 self.calendar.queue_draw()
             else:
-                self.label.set_text("...") 
+                self.on_statusbar_text_pushed("...")
             dialog.hide()
 
     def on_remove_clicked(self, button):
@@ -366,12 +348,11 @@ class CalendarPlugin(Gtk.Window):
         """
         task_id = self.req.get_random_task()
         if task_id:
-            self.label.set_text("Deleted task: %s" % 
-                                self.req.get_task(task_id).get_title())
+            self.on_statusbar_text_pushed("Deleted task: %s" % self.req.get_task(task_id).get_title())
             self.req.delete_task(task_id)
             self.calendar.queue_draw()
         else:
-            self.label.set_text("...") 
+            self.on_statusbar_text_pushed("...")
 
     def on_next_clicked(self, button):
         self.calendar.set_view_days(self.calendar.view_start_day + datetime.timedelta(days=7))
