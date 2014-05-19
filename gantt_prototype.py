@@ -1,4 +1,4 @@
-from gi.repository import Gtk, GObject
+from gi.repository import Gtk, Gdk, GObject
 import cairo
 import datetime
 import random
@@ -66,6 +66,21 @@ class Calendar(Gtk.DrawingArea):
  
         self.connect("draw", self.draw)
         
+        # drag-and-drop support
+        self.add_events(Gdk.EventMask.BUTTON_PRESS_MASK | Gdk.EventMask.BUTTON_RELEASE_MASK | Gdk.EventMask.BUTTON1_MOTION_MASK)
+        self.connect("button-press-event", self.dnd_start)
+        self.connect("motion-notify-event", self.dnd_notify)
+        self.connect("button-release-event", self.dnd_stop)
+
+    def dnd_start(self, widget, event):
+        print("dnd start %s, %s" % (event.x, event.y))
+
+    def dnd_notify(self, widget, event):
+        print("dnd notify %s, %s" % (event.x, event.y))
+
+    def dnd_stop(self, widget, event):
+        print("dnd stop %s, %s" % (event.x, event.y))
+
     def set_view_days(self, start_day, end_day = None):
         """
         Set the first and the last day the calendar view will show.
