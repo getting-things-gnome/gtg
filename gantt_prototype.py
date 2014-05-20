@@ -105,6 +105,29 @@ class Calendar(Gtk.DrawingArea):
 
     def dnd_stop(self, widget, event):
         """ User released a button, stopping drag and drop """
+        if not self.selected_task:
+          return
+
+        rect = self.get_allocation()
+        if not self.header_size < event.y < rect.height:
+          # do something in the future
+          pass
+        else:
+          event_x = event.x + self.moved_task[3] # offset
+          event_y = event.y
+          weekday = int(event_x / self.step)
+
+          task = self.req.get_task(self.selected_task)
+          start = (task.get_start_date().date() - self.view_start_day).days
+          end = (task.get_due_date().date() - self.view_start_day).days 
+          duration = end - start
+
+          new_start_day = self.view_start_day + datetime.timedelta(days = weekday)
+          new_due_date = new_start_day + datetime.timedelta(days = duration)
+
+          task.set_start_date(new_start_day)
+          task.set_due_date(new_due_date)
+
         self.moved_task = None
         self.selected_task = None
         self.queue_draw()
@@ -243,7 +266,6 @@ class Calendar(Gtk.DrawingArea):
 
         event_x += offset
 
-        num_tasks = len(self.req.get_tasks_tree())
         x = int(event_x / self.step) * self.step
         y = self.header_size + int( (event_y - self.header_size)/ self.task_height) * self.task_height
         h = self.task_height
@@ -256,8 +278,8 @@ class Calendar(Gtk.DrawingArea):
 
 
     def _draw(self, ctx):
-        alloc = self.get_allocation()
-        self.step = round(alloc.width / float(self.numdays))
+        rect = self.get_allocation()
+        self.step = round(rect.width / float(self.numdays))
         self.header_size = 40
         self.task_height = 25
         self.padding = 5
