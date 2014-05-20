@@ -9,26 +9,20 @@ from requester import Requester
 
 tests = True
 
-def date_generator(start, end = None, numdays = None):
+def date_generator(start, numdays = None):
     """ 
     Generates a list of tuples (day, weekday), such that day is a string in
     the format ' %m/%d', and weekday is a string in the format '%a'.
-    The list has a specific size, so that it represents the days starting
-    from @start.
-    The list will either end on a given @end date, or will have size @numdays.
-    If the end date is specified, the @numdays parameter is ignored.
+    The list has a specific size @numdays, so that it represents the days
+    starting from @start.
     If neither parameter is specified, the list will have size 7 (a week).
 
     @param start: must be a datetime object, first date to be included in the list
-    @param end: must be a datetime object and greater than start, last date in the list. Default = None
-    @param numdays: integer, size of the list. Only considered if @end is not given. Default = 7 days
+    @param numdays: integer, size of the list. Default = 7 days
     @return days: list of tuples, each containing a date in the format '%m/%d', and also an
     abbreviated weekday for the given date
     """
-    if end: 
-        assert(end > start)
-        numdays = (end - start).days + 1
-    elif not numdays:
+    if not numdays:
         numdays = 7
     date_list = [start + datetime.timedelta(days=x) for x in range(numdays)]
     days = [(x.strftime("%m/%d"), x.strftime("%a")) for x in date_list]
@@ -60,13 +54,9 @@ class Calendar(Gtk.DrawingArea):
         self.moved_task = None
         self.selected_task = None
 
-        self.view_start_day = self.view_end_day = self.numdays = None
+        self.view_start_day = self.numdays = None
         start_day = min([t.get_start_date().date() for t in tasks])
-        #end_day = max([t.get_due_date().date() for t in tasks])
-        self.set_view_days(start_day) #, end_day)
-
-        #test:
-        #self.set_view_days(self.view_start_day - datetime.timedelta(days=2), self.view_end_day + datetime.timedelta(days=1)) #test
+        self.set_view_days(start_day)
  
         self.connect("draw", self.draw)
 
@@ -132,24 +122,17 @@ class Calendar(Gtk.DrawingArea):
         self.selected_task = None
         self.queue_draw()
 
-    def set_view_days(self, start_day, end_day = None):
+    def set_view_days(self, start_day):
         """
         Set the first and the last day the calendar view will show.
 
         @param start_day: must be a datetime object, first day to be 
         shown in the calendar view
-        @param end_day: must be a datetime object, last day to be 
-        shown in the calendar view
         """
         assert(isinstance(start_day, datetime.date))
         self.view_start_day = start_day
-        if end_day:
-            assert(isinstance(end_day, datetime.date))
-            self.view_end_day = end_day
-        self.days = date_generator(start_day, end_day) #, self.numdays)
+        self.days = date_generator(start_day)
         self.numdays = len(self.days)
-        if not end_day:
-            self.view_end_day = self.view_start_day + datetime.timedelta(days=self.numdays)
     
     def print_header(self, ctx):
         """
@@ -283,13 +266,12 @@ class Calendar(Gtk.DrawingArea):
         self.header_size = 40
         self.task_height = 25
         self.padding = 5
-        self.footer = 10
 
         task_ids = self.req.get_tasks_tree()
         tasks = [self.req.get_task(t) for t in task_ids]
 
         # resizes vertical area according to number of tasks
-        self.set_size_request(350, len(tasks) * self.task_height + self.header_size + self.footer)
+        self.set_size_request(350, len(tasks) * self.task_height + self.header_size)
 
         # printing header
         self.print_header(ctx)
