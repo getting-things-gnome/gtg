@@ -53,10 +53,14 @@ class Calendar(Gtk.DrawingArea):
         self.ds = datastore
         self.req = datastore.get_requester()
 
-        self.view_start_day = self.view_end_day = self.numdays = None
-        
         task_ids = self.req.get_tasks_tree()
         tasks = [self.req.get_task(t) for t in task_ids]
+
+        self.task_positions = {}
+        self.moved_task = None
+        self.selected_task = None
+
+        self.view_start_day = self.view_end_day = self.numdays = None
         start_day = min([t.get_start_date().date() for t in tasks])
         #end_day = max([t.get_due_date().date() for t in tasks])
         self.set_view_days(start_day) #, end_day)
@@ -65,21 +69,45 @@ class Calendar(Gtk.DrawingArea):
         #self.set_view_days(self.view_start_day - datetime.timedelta(days=2), self.view_end_day + datetime.timedelta(days=1)) #test
  
         self.connect("draw", self.draw)
-        
+
         # drag-and-drop support
         self.add_events(Gdk.EventMask.BUTTON_PRESS_MASK | Gdk.EventMask.BUTTON_RELEASE_MASK | Gdk.EventMask.BUTTON1_MOTION_MASK)
         self.connect("button-press-event", self.dnd_start)
-        self.connect("motion-notify-event", self.dnd_notify)
+        self.connect("motion-notify-event", self.motion_notify)
         self.connect("button-release-event", self.dnd_stop)
 
-    def dnd_start(self, widget, event):
-        print("dnd start %s, %s" % (event.x, event.y))
+    def get_clicked_task_id(self, event):
+        for task_id, (x, y, w, h) in self.task_positions.items():
+          if x <= event.x <= (x + w) and y <= event.y <= (y + h):
+            return task_id
+        return None
 
-    def dnd_notify(self, widget, event):
-        print("dnd notify %s, %s" % (event.x, event.y))
+    def dnd_start(self, widget, event):
+        """ User clicked the mouse button, starting drag and drop """
+        # find which task was clicked, if any
+        self.selected_task = self.get_clicked_task_id(event)
+
+        if self.selected_task:
+          task = self.req.get_task(self.selected_task)
+          start = (task.get_start_date().date() - self.view_start_day).days
+          end = (task.get_due_date().date() - self.view_start_day).days + 1
+          offset = start * self.step - event.x
+          #offset_y = self.header_size + pos * self.task_height - event.y
+          self.moved_task = [event.x, event.y, end-start, offset]
+          self.queue_draw()
+
+    def motion_notify(self, widget, event):
+        """ User moved mouse over widget """
+        if self.moved_task:
+          self.moved_task[0] = event.x
+          self.moved_task[1] = event.y
+          self.queue_draw()
 
     def dnd_stop(self, widget, event):
-        print("dnd stop %s, %s" % (event.x, event.y))
+        """ User released a button, stopping drag and drop """
+        self.moved_task = None
+        self.selected_task = None
+        self.queue_draw()
 
     def set_view_days(self, start_day, end_day = None):
         """
@@ -147,49 +175,91 @@ class Calendar(Gtk.DrawingArea):
             alpha = 1
 
         # drawing rectangle for task duration 
-        ctx.set_source_rgba(0.5, start/6.0, end/6.0, alpha)
-        ctx.rectangle(start*self.step, 
-                      self.header_size + pos * (self.padding + self.task_width),
-                      duration * self.step, 
-                      self.task_width)
+        base_x = start * self.step
+        base_y = self.header_size + pos * self.task_height
+        width = duration * self.step
+        height = self.task_height
+        height -= self.padding
+
+        ctx.save()
+        ctx.rectangle(base_x, base_y, width, height)
+        ctx.clip()
+
+        # keep record of positions for discovering task when using drag and drop
+        self.task_positions[task.get_id()] = (base_x, base_y, width, height)
+
+        color = [0.5, start/6.0, end/6.0]
+
+        # selected task in yellow
+        if self.selected_task == task.get_id():
+          color = [0.8, 0.8, 0]
+
+        # solid color
+        ctx.set_source_rgba(color[0], color[1], color[2], alpha)
         ctx.fill()
 
         # printing task label
         ctx.set_source_rgba(1, 1, 1, alpha)
         (x, y, w, h, dx, dy) = ctx.text_extents(label)
-        ctx.move_to((start+duration/2.0) * self.step - w/2.0, 
-                    self.header_size + pos*self.padding + 
-                    (pos+1)*self.task_width - h/2.0)
+        base_x = (start+duration/2.0) * self.step - w/2.0
+        base_y = self.header_size + (pos+1)*self.task_height - h/2.0
+        base_y -= self.padding
+        ctx.move_to(base_x, base_y)
         ctx.text_path(label)
         ctx.stroke()
 
-    def draw(self, widget, ctx): 
+        # restore old context
+        ctx.restore()
+
+    def draw(self, widget, ctx, event=None):
         ctx.set_line_width(0.8)
         ctx.select_font_face("Courier", cairo.FONT_SLANT_NORMAL, 
                              cairo.FONT_WEIGHT_NORMAL)
         ctx.set_font_size(11)
+        if event:
+          ctx.rectangle(event.area.x, event.area.y, event.area.width, event.area.height)
+          ctx.clip()
+        self._draw(ctx)
 
+    def _draw_moved_event(self, ctx):
+        if not self.moved_task:
+          return
+
+        event_x, event_y, event_w, offset = self.moved_task
+
+        # don't draw on header
+        rect = self.get_allocation()
+        #if event_y < self.header_size:
+        if not self.header_size < event_y < rect.height:
+          return
+
+        event_x += offset
+
+        num_tasks = len(self.req.get_tasks_tree())
+        x = int(event_x / self.step) * self.step
+        y = self.header_size + int( (event_y - self.header_size)/ self.task_height) * self.task_height
+        h = self.task_height
+        w = event_w * self.step
+        h -= self.padding
+
+        ctx.set_source_rgba(0, 0, 0, 1)
+        ctx.rectangle(x, y, w, h)
+        ctx.fill()
+
+
+    def _draw(self, ctx):
         alloc = self.get_allocation()
         self.step = round(alloc.width / float(self.numdays))
         self.header_size = 40
-        self.task_width = 20
-        self.padding = 3
+        self.task_height = 25
+        self.padding = 5
         self.footer = 10
 
         task_ids = self.req.get_tasks_tree()
         tasks = [self.req.get_task(t) for t in task_ids]
 
         # resizes vertical area according to number of tasks
-        self.set_size_request(350, len(tasks)*(self.task_width+self.padding) + self.header_size + self.footer)
-        # FIXME: if I use the code below, it creates an infinite loop that 
-        # keeps resizing the drawable area, even if nothing is being done:
-        #self.set_size_request(350, alloc.height+self.task_width+self.padding) 
-
-        # resizes horizontal area according to number of days
-        #start_day = min([t.get_start_date().date() for t in tasks])
-        #end_day = max([t.get_due_date().date() for t in tasks])
-        #self.set_view_days(start_day, end_day)
-        #self.set_size_request(self.numdays*self.step, len(tasks)*(self.task_width+self.padding) + self.header_size + self.footer)
+        self.set_size_request(350, len(tasks) * self.task_height + self.header_size + self.footer)
 
         # printing header
         self.print_header(ctx)
@@ -197,6 +267,8 @@ class Calendar(Gtk.DrawingArea):
         # drawing all tasks
         for pos, task in enumerate(tasks):
             self.draw_task(ctx, task, pos)
+
+        self._draw_moved_event(ctx)
         
 class TaskView(Gtk.Dialog):
     """
