@@ -194,9 +194,17 @@ class Calendar(Gtk.DrawingArea):
         if self.selected_task == task.get_id():
           color = [0.8, 0.8, 0]
 
-        # solid color
-        ctx.set_source_rgba(color[0], color[1], color[2], alpha)
-        ctx.fill()
+        # create gradient
+        grad = cairo.LinearGradient(base_x, base_y, base_x, base_y+height)
+        c = [x + 0.1 for x in color]
+        grad.add_color_stop_rgba(0, c[0], c[1], c[2], alpha)
+        grad.add_color_stop_rgba(0.2, color[0], color[1], color[2], alpha)
+        grad.add_color_stop_rgba(0.8, color[0], color[1], color[2], alpha)
+        grad.add_color_stop_rgba(1, c[0], c[1], c[2], alpha)
+
+        # background
+        ctx.set_source(grad)
+        ctx.paint()
 
         # printing task label
         ctx.set_source_rgba(1, 1, 1, alpha)
