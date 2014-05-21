@@ -488,6 +488,7 @@ class CalendarPlugin(GObject.GObject):
         if task_id:
             self.on_statusbar_text_pushed("Deleted task: %s" % self.req.get_task(task_id).get_title())
             self.req.delete_task(task_id)
+            del self.calendar.task_positions[task_id]
             self.calendar.queue_draw()
         else:
             self.on_statusbar_text_pushed("...")
