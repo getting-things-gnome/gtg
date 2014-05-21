@@ -69,28 +69,34 @@ class Calendar(Gtk.DrawingArea):
         self.drag_action = None
         self.task_positions = {}
 
-    def identify_pointed_object(self, event):
+    def identify_pointed_object(self, event, clicked=False):
         const = 10
+        cursor = Gdk.Cursor.new(Gdk.CursorType.ARROW)
         for task_id, (x, y, w, h) in self.task_positions.items():
           if not y < event.y < (y + h):
             continue
           if x <= event.x <= x + const:
             self.drag_action = "expand_left"
+            cursor = Gdk.Cursor.new(Gdk.CursorType.LEFT_SIDE)
           elif (x + w) - const <= event.x <= (x + w):
             self.drag_action = "expand_right"
+            cursor = Gdk.Cursor.new(Gdk.CursorType.RIGHT_SIDE)
           elif x <= event.x <= (x + w):
             self.drag_action = "move"
+            if clicked:
+              cursor = Gdk.Cursor.new(Gdk.CursorType.FLEUR)
           else:
             continue
-          return task_id
-        return None
+          return task_id, cursor
+        return None, cursor
 
     def dnd_start(self, widget, event):
         """ User clicked the mouse button, starting drag and drop """
         # find which task was clicked, if any
-        self.selected_task = self.identify_pointed_object(event)
+        (self.selected_task, cursor) = self.identify_pointed_object(event, clicked=True)
 
         if self.selected_task:
+          widget.get_window().set_cursor(cursor)
           task = self.req.get_task(self.selected_task)
           start = (task.get_start_date().date() - self.view_start_day).days
           end = (task.get_due_date().date() - self.view_start_day).days + 1
@@ -142,6 +148,10 @@ class Calendar(Gtk.DrawingArea):
 
           self.queue_draw()
 
+        else: # mouse hover
+          (t_id, cursor) = self.identify_pointed_object(event)
+          widget.get_window().set_cursor(cursor)
+
 
     def dnd_stop(self, widget, event):
         """ User released a button, stopping drag and drop """
@@ -172,6 +182,7 @@ class Calendar(Gtk.DrawingArea):
           if not self.drag_action == "expand_left" and new_due_day >= start:
               task.set_due_date(new_due_day)
 
+        widget.get_window().set_cursor(Gdk.Cursor.new(Gdk.CursorType.ARROW))
         self.drag_offset = None
         self.selected_task = None
         self.queue_draw()
