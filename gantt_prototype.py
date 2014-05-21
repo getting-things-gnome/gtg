@@ -50,10 +50,6 @@ class Calendar(Gtk.DrawingArea):
         task_ids = self.req.get_tasks_tree()
         tasks = [self.req.get_task(t) for t in task_ids]
 
-        self.task_positions = {}
-        self.moved_task = None
-        self.selected_task = None
-
         self.view_start_day = self.numdays = None
         start_day = min([t.get_start_date().date() for t in tasks])
         self.set_view_days(start_day)
@@ -61,37 +57,91 @@ class Calendar(Gtk.DrawingArea):
         self.connect("draw", self.draw)
 
         # drag-and-drop support
-        self.add_events(Gdk.EventMask.BUTTON_PRESS_MASK | Gdk.EventMask.BUTTON_RELEASE_MASK | Gdk.EventMask.BUTTON1_MOTION_MASK)
+        self.add_events(Gdk.EventMask.BUTTON_PRESS_MASK
+                        | Gdk.EventMask.BUTTON_RELEASE_MASK
+                        | Gdk.EventMask.BUTTON1_MOTION_MASK
+                        | Gdk.EventMask.POINTER_MOTION_MASK)
         self.connect("button-press-event", self.dnd_start)
         self.connect("motion-notify-event", self.motion_notify)
         self.connect("button-release-event", self.dnd_stop)
+        self.selected_task = None
+        self.drag_offset = None
+        self.drag_action = None
+        self.task_positions = {}
 
-    def get_clicked_task_id(self, event):
+    def identify_pointed_object(self, event):
+        const = 10
         for task_id, (x, y, w, h) in self.task_positions.items():
-          if x <= event.x <= (x + w) and y <= event.y <= (y + h):
-            return task_id
+          if not y < event.y < (y + h):
+            continue
+          if x <= event.x <= x + const:
+            self.drag_action = "expand_left"
+          elif (x + w) - const <= event.x <= (x + w):
+            self.drag_action = "expand_right"
+          elif x <= event.x <= (x + w):
+            self.drag_action = "move"
+          else:
+            continue
+          return task_id
         return None
 
     def dnd_start(self, widget, event):
         """ User clicked the mouse button, starting drag and drop """
         # find which task was clicked, if any
-        self.selected_task = self.get_clicked_task_id(event)
+        self.selected_task = self.identify_pointed_object(event)
 
         if self.selected_task:
           task = self.req.get_task(self.selected_task)
           start = (task.get_start_date().date() - self.view_start_day).days
           end = (task.get_due_date().date() - self.view_start_day).days + 1
-          offset = start * self.step - event.x
+          duration = end - start
+
+          offset = (start * self.step) - event.x
           #offset_y = self.header_size + pos * self.task_height - event.y
-          self.moved_task = [event.x, event.y, end-start, offset]
+          if self.drag_action == "expand_right":
+            offset += duration * self.step
+          self.drag_offset = offset
+
           self.queue_draw()
+
 
     def motion_notify(self, widget, event):
         """ User moved mouse over widget """
-        if self.moved_task:
-          self.moved_task[0] = event.x
-          self.moved_task[1] = event.y
+        if self.selected_task: # a task was clicked
+          task = self.req.get_task(self.selected_task)
+          start_date = task.get_start_date().date()
+          end_date = task.get_due_date().date()
+          duration = (end_date - start_date).days
+
+          offset = self.drag_offset
+          event_x = event.x + offset
+          event_y = event.y
+
+          weekday = int(event_x / self.step)
+          day = self.view_start_day + datetime.timedelta(weekday)
+
+          if self.drag_action == "expand_left":
+            diff = start_date - day
+            new_start_day = start_date - diff
+            if new_start_day <= end_date:
+              task.set_start_date(new_start_day)
+            pass
+
+          elif self.drag_action == "expand_right":
+            diff = end_date - day
+            new_due_day = end_date - diff
+            if new_due_day >= start_date:
+              task.set_due_date(new_due_day)
+            pass
+
+          else:
+            new_start_day = self.view_start_day + datetime.timedelta(days = weekday)
+            new_due_day = new_start_day + datetime.timedelta(days = duration)
+            task.set_start_date(new_start_day)
+            task.set_due_date(new_due_day)
+
           self.queue_draw()
+
 
     def dnd_stop(self, widget, event):
         """ User released a button, stopping drag and drop """
@@ -103,22 +153,26 @@ class Calendar(Gtk.DrawingArea):
           # do something in the future
           pass
         else:
-          event_x = event.x + self.moved_task[3] # offset
+          event_x = event.x + self.drag_offset
           event_y = event.y
           weekday = int(event_x / self.step)
 
           task = self.req.get_task(self.selected_task)
-          start = (task.get_start_date().date() - self.view_start_day).days
-          end = (task.get_due_date().date() - self.view_start_day).days 
-          duration = end - start
+          start = task.get_start_date().date()
+          end = task.get_due_date().date()
+          duration = (end - start).days
 
           new_start_day = self.view_start_day + datetime.timedelta(days = weekday)
-          new_due_date = new_start_day + datetime.timedelta(days = duration)
+          if self.drag_action == "expand_right":
+            new_start_day = task.get_start_date().date()
+          new_due_day = new_start_day + datetime.timedelta(days = duration)
 
-          task.set_start_date(new_start_day)
-          task.set_due_date(new_due_date)
+          if not self.drag_action == "expand_right" and new_start_day <= end:
+              task.set_start_date(new_start_day)
+          if not self.drag_action == "expand_left" and new_due_day >= start:
+              task.set_due_date(new_due_day)
 
-        self.moved_task = None
+        self.drag_offset = None
         self.selected_task = None
         self.queue_draw()
 
@@ -167,9 +221,9 @@ class Calendar(Gtk.DrawingArea):
         """
         label = task.get_title()
         start = (task.get_start_date().date() - self.view_start_day).days
-        end = (task.get_due_date().date() - self.view_start_day).days + 1
+        end = (task.get_due_date().date() - self.view_start_day).days
         complete = task.get_status()
-        duration = end - start
+        duration = end - start + 1
 
         if len(label) > duration * self.step/10 + 2:
             crop_at = int(duration*(self.step/10))
@@ -235,30 +289,6 @@ class Calendar(Gtk.DrawingArea):
           ctx.clip()
         self._draw(ctx)
 
-    def _draw_moved_event(self, ctx):
-        if not self.moved_task:
-          return
-
-        event_x, event_y, event_w, offset = self.moved_task
-
-        # don't draw on header
-        rect = self.get_allocation()
-        #if event_y < self.header_size:
-        if not self.header_size < event_y < rect.height:
-          return
-
-        event_x += offset
-
-        x = int(event_x / self.step) * self.step
-        y = self.header_size + int( (event_y - self.header_size)/ self.task_height) * self.task_height
-        h = self.task_height
-        w = event_w * self.step
-        h -= self.padding
-
-        ctx.set_source_rgba(0, 0, 0, 1)
-        ctx.rectangle(x, y, w, h)
-        ctx.fill()
-
 
     def _draw(self, ctx):
         rect = self.get_allocation()
@@ -279,8 +309,6 @@ class Calendar(Gtk.DrawingArea):
         # drawing all tasks
         for pos, task in enumerate(tasks):
             self.draw_task(ctx, task, pos)
-
-        self._draw_moved_event(ctx)
         
 class TaskView(Gtk.Dialog):
     """
