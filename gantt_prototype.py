@@ -266,6 +266,11 @@ class Calendar(Gtk.DrawingArea):
         #self.selected_task = None
         self.queue_draw()
 
+    def get_current_year(self):
+        if self.view_start_day.year != self.view_end_day.year:
+          return ("%s / %s" % (self.view_start_day.year, self.view_end_day.year))
+        return str(self.view_start_day.year)
+
     def set_view_days(self, start_day):
         """
         Set the first and the last day the calendar view will show.
@@ -407,10 +412,7 @@ class Calendar(Gtk.DrawingArea):
         if event:
           ctx.rectangle(event.area.x, event.area.y, event.area.width, event.area.height)
           ctx.clip()
-        self._draw(ctx)
 
-
-    def _draw(self, ctx):
         rect = self.get_allocation()
         self.step = round(rect.width / float(self.numdays))
 
@@ -498,8 +500,6 @@ class CalendarPlugin(GObject.GObject):
         self.window.set_title("Gantt Chart View")
         self.window.connect("destroy", Gtk.main_quit)
 
-        self.statusbar = builder.get_object("statusbar")
-
         # Scrolled Window
         self.scroll = builder.get_object("scrolledwindow")
         self.scroll.add_events(Gdk.EventMask.SCROLL_MASK)
@@ -525,7 +525,12 @@ class CalendarPlugin(GObject.GObject):
         self.calendar = Calendar(self, self.ds) 
         self.scroll.add_with_viewport(self.calendar)
 
+        self.header = builder.get_object("header")
+        self.header.set_text(self.calendar.get_current_year())
+
+        self.statusbar = builder.get_object("statusbar")
         self.label = builder.get_object("label")
+
         self.window.show_all()
 
     def on_scroll(self, widget, event):
@@ -626,6 +631,7 @@ class CalendarPlugin(GObject.GObject):
             days = self.calendar.numdays - start.weekday()
 
         self.calendar.set_view_days(start + datetime.timedelta(days=days))
+        self.header.set_text(self.calendar.get_current_year())
         self.calendar.queue_draw()
 
     def on_previous_clicked(self, button, days=None):
@@ -638,6 +644,7 @@ class CalendarPlugin(GObject.GObject):
             days = start.weekday()
 
         self.calendar.set_view_days(start - datetime.timedelta(days=days))
+        self.header.set_text(self.calendar.get_current_year())
         self.calendar.queue_draw()
 
 CalendarPlugin()
