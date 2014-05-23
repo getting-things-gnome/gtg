@@ -405,6 +405,9 @@ class Calendar(Gtk.DrawingArea):
         task_ids = self.req.get_tasks_tree()
         tasks = [self.req.get_task(t) for t in task_ids]
 
+        # clear previous allocated positions of tasks
+        self.task_positions = {}
+
         # resizes vertical area according to number of tasks
         self.set_size_request(350, len(tasks) * self.task_height + self.header_size)
 
@@ -582,7 +585,6 @@ class CalendarPlugin(GObject.GObject):
         if task_id:
             self.on_statusbar_text_pushed("Deleted task: %s" % self.req.get_task(task_id).get_title())
             self.req.delete_task(task_id)
-            del self.calendar.task_positions[task_id]
             self.calendar.queue_draw()
         else:
             self.on_statusbar_text_pushed("...")
