@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 from gi.repository import Gtk, Gdk, GObject
 import cairo
 import datetime
@@ -8,6 +9,66 @@ from dates import Date
 from requester import Requester
 
 tests = True
+
+def rounded_rectangle(ctx, x, y, w, h, r=10):
+  """
+  Draws a rounded rectangle
+  This is just one of the samples from
+  http://www.cairographics.org/cookbook/roundedrectangles/
+    A****BQ    @param ctx: a Cairo context
+   H      C    @param x: the left most x coordinate of the bounding box
+   *      *    @param y: the left most y coordinate of the bounding box
+   G      D    @param w: the width of the bounding box
+    F****E     @param h: the height of the bounding box
+               @param r: the radius of the rounded edges. Default = 10
+  """
+  ctx.move_to(x+r,y)                      # Move to A
+  ctx.line_to(x+w-r,y)                    # Straight line to B
+  ctx.curve_to(x+w,y,x+w,y,x+w,y+r)       # Curve to C, Control points are both at Q
+  ctx.line_to(x+w,y+h-r)                  # Move to D
+  ctx.curve_to(x+w,y+h,x+w,y+h,x+w-r,y+h) # Curve to E
+  ctx.line_to(x+r,y+h)                    # Line to F
+  ctx.curve_to(x,y+h,x,y+h,x,y+h-r)       # Curve to G
+  ctx.line_to(x,y+r)                      # Line to H
+  ctx.curve_to(x,y,x,y,x+r,y)             # Curve to A
+
+def right_pointy_rectangle(ctx, x, y, w, h, r=10, p=5):
+  """
+  Draws a rounded rectangle, with a pointy 'arrow' to the right
+   A****B     @param ctx: a Cairo context
+  H      *    @param x: the left most x coordinate of the bounding box
+  *       K   @param y: the left most y coordinate of the bounding box
+  G      *    @param w: the width of the bounding box
+   F****E     @param h: the height of the bounding box
+              @param r: the radius of the rounded edges. Default = 10
+  """
+  ctx.move_to(x+r,y)                      # Move to A
+  ctx.line_to(x+w-r,y)                    # Straight line to B
+  ctx.line_to(x+w, y+h/2)                 # Straight line to K
+  ctx.line_to(x+w-r, y+h)                 # Straight line to E
+  ctx.line_to(x+r,y+h)                    # Line to F
+  ctx.curve_to(x,y+h,x,y+h,x,y+h-r)       # Curve to G
+  ctx.line_to(x,y+r)                      # Line to H
+  ctx.curve_to(x,y,x,y,x+r,y)             # Curve to A
+
+def left_pointy_rectangle(ctx, x, y, w, h, r=10):
+  """
+  Draws a rounded rectangle, with a pointy 'arrow' to the left
+    A****BQ      @param ctx: a Cairo context
+   *      C      @param x: the left most x coordinate of the bounding box
+  K       *      @param y: the left most y coordinate of the bounding box
+   *      D      @param w: the width of the bounding box
+    F****E       @param h: the height of the bounding box
+                 @param r: the radius of the rounded edges. Default = 10
+  """
+  ctx.move_to(x+r,y)                      # Move to A
+  ctx.line_to(x+w-r,y)                    # Straight line to B
+  ctx.curve_to(x+w,y,x+w,y,x+w,y+r)       # Curve to C, Control points are both at Q
+  ctx.line_to(x+w,y+h-r)                  # Move to D
+  ctx.curve_to(x+w,y+h,x+w,y+h,x+w-r,y+h) # Curve to E
+  ctx.line_to(x+r,y+h)                    # Line to F
+  ctx.line_to(x, y+h/2)                   # Straight line to K
+  ctx.line_to(x+r, y)                     # Straight line to A
 
 def date_generator(start, numdays = None):
     """ 
@@ -33,6 +94,9 @@ class Calendar(Gtk.DrawingArea):
     This class creates a visualization for all the tasks in a 
     datastore, given a period of time.
     """
+    PADDING = 5
+    FONT = "Courier"
+
     def __init__(self, parent, datastore): 
         """
         Initializes a Calendar, given a datastore containing the
@@ -50,10 +114,13 @@ class Calendar(Gtk.DrawingArea):
         task_ids = self.req.get_tasks_tree()
         tasks = [self.req.get_task(t) for t in task_ids]
 
-        self.view_start_day = self.numdays = None
+        self.view_start_day = self.view_end_day = self.numdays = None
         start_day = min([t.get_start_date().date() for t in tasks])
         self.set_view_days(start_day)
  
+        self.header_size = 40
+        self.task_height = 30
+
         self.connect("draw", self.draw)
 
         # drag-and-drop support
@@ -198,6 +265,7 @@ class Calendar(Gtk.DrawingArea):
         self.view_start_day = start_day
         self.days = date_generator(start_day)
         self.numdays = len(self.days)
+        self.view_end_day = start_day + datetime.timedelta(days=self.numdays-1)
     
     def print_header(self, ctx):
         """
@@ -221,7 +289,17 @@ class Calendar(Gtk.DrawingArea):
             ctx.move_to(i*self.step - (w-self.step)/2.0, 30) 
             ctx.text_path(self.days[i][0])
             ctx.stroke()
-        
+
+    def is_in_this_view_range(self, task):
+        """
+        Returns true if the given @task should be drawn in the current view
+        (i.e. either the start or due days are between the start and end day views)
+
+        @ param task: a Task object
+        """
+        return (task.get_due_date().date() >= self.view_start_day) \
+           and (task.get_start_date().date() <= self.view_end_day)
+
     def draw_task(self, ctx, task, pos):
         """
         Draws a given @task in a relative postion @pos.
@@ -230,11 +308,21 @@ class Calendar(Gtk.DrawingArea):
         @param task: a Task object to be drawn
         @param pos: the relative order the task should appear (starting from 0)
         """
-        label = task.get_title()
-        start = (task.get_start_date().date() - self.view_start_day).days
-        end = (task.get_due_date().date() - self.view_start_day).days
-        complete = task.get_status()
+        if not self.is_in_this_view_range(task):
+          return
+
+        # avoid tasks overflowing to/from next/previous weeks
+        overflow_l = overflow_r = False
+        if task.get_start_date().date() < self.view_start_day:
+          overflow_l = True
+        if task.get_due_date().date() > self.view_end_day:
+          overflow_r = True
+
+        start = (max(task.get_start_date().date(), self.view_start_day) - self.view_start_day).days
+        end = (min(task.get_due_date().date(), self.view_end_day) - self.view_start_day).days
         duration = end - start + 1
+        label = task.get_title()
+        complete = task.get_status()
 
         if len(label) > duration * self.step/10 + 2:
             crop_at = int(duration*(self.step/10))
@@ -245,16 +333,25 @@ class Calendar(Gtk.DrawingArea):
         else:
             alpha = 1
 
-        # drawing rectangle for task duration 
+        # getting bounding box rectangle for task duration
         base_x = start * self.step
         base_y = self.header_size + pos * self.task_height
         width = duration * self.step
         height = self.task_height
-        height -= self.padding
+        height -= self.PADDING
 
+        # restrict drawing to exposed area, so that no unnecessary drawing is done
         ctx.save()
         ctx.rectangle(base_x, base_y, width, height)
         ctx.clip()
+
+        # draw the task
+        if overflow_l:
+          left_pointy_rectangle(ctx, base_x, base_y, width, height)
+        if overflow_r:
+          right_pointy_rectangle(ctx, base_x, base_y, width, height)
+        if not overflow_l and not overflow_r:
+          rounded_rectangle(ctx, base_x, base_y, width, height)
 
         # keep record of positions for discovering task when using drag and drop
         self.task_positions[task.get_id()] = (base_x, base_y, width, height)
@@ -275,14 +372,14 @@ class Calendar(Gtk.DrawingArea):
 
         # background
         ctx.set_source(grad)
-        ctx.paint()
+        ctx.fill()
 
         # printing task label
         ctx.set_source_rgba(1, 1, 1, alpha)
         (x, y, w, h, dx, dy) = ctx.text_extents(label)
         base_x = (start+duration/2.0) * self.step - w/2.0
-        base_y = self.header_size + (pos+1)*self.task_height - h/2.0
-        base_y -= self.padding
+        base_y = self.header_size + pos*self.task_height + (self.task_height)/2.0 + h
+        base_y -= self.PADDING
         ctx.move_to(base_x, base_y)
         ctx.text_path(label)
         ctx.stroke()
@@ -292,9 +389,9 @@ class Calendar(Gtk.DrawingArea):
 
     def draw(self, widget, ctx, event=None):
         ctx.set_line_width(0.8)
-        ctx.select_font_face("Courier", cairo.FONT_SLANT_NORMAL, 
+        ctx.select_font_face(self.FONT, cairo.FONT_SLANT_NORMAL,
                              cairo.FONT_WEIGHT_NORMAL)
-        ctx.set_font_size(11)
+        ctx.set_font_size(12)
         if event:
           ctx.rectangle(event.area.x, event.area.y, event.area.width, event.area.height)
           ctx.clip()
@@ -304,9 +401,6 @@ class Calendar(Gtk.DrawingArea):
     def _draw(self, ctx):
         rect = self.get_allocation()
         self.step = round(rect.width / float(self.numdays))
-        self.header_size = 40
-        self.task_height = 25
-        self.padding = 5
 
         task_ids = self.req.get_tasks_tree()
         tasks = [self.req.get_task(t) for t in task_ids]
@@ -459,7 +553,7 @@ class CalendarPlugin(GObject.GObject):
         for modifying the task title, start and due dates.
         Redraw the calendar view after the changes.
         """
-        task_id = self.req.get_random_task()
+        task_id = req.get_random_task()
         if task_id:
             task = self.req.get_task(task_id)
 
@@ -481,7 +575,7 @@ class CalendarPlugin(GObject.GObject):
 
     def on_remove_clicked(self, button):
         """ 
-        Removes a random task from the datastore and redraw the 
+        Removes a random task from the datastore and redraw the
         calendar view.
         """
         task_id = self.req.get_random_task()
@@ -494,11 +588,11 @@ class CalendarPlugin(GObject.GObject):
             self.on_statusbar_text_pushed("...")
 
     def on_next_clicked(self, button):
-        self.calendar.set_view_days(self.calendar.view_start_day + datetime.timedelta(days=7))
+        self.calendar.set_view_days(self.calendar.view_start_day + datetime.timedelta(days=self.calendar.numdays))
         self.calendar.queue_draw()
 
     def on_previous_clicked(self, button):
-        self.calendar.set_view_days(self.calendar.view_start_day - datetime.timedelta(days=7))
+        self.calendar.set_view_days(self.calendar.view_start_day - datetime.timedelta(days=self.calendar.numdays))
         self.calendar.queue_draw()
 
 CalendarPlugin()
