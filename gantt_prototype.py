@@ -616,17 +616,28 @@ class CalendarPlugin(GObject.GObject):
             self.on_statusbar_text_pushed("...")
 
     def on_next_clicked(self, button, days=None):
+        start = self.calendar.view_start_day
         if not days:
           days = self.calendar.numdays
 
-        self.calendar.set_view_days(self.calendar.view_start_day + datetime.timedelta(days=days))
+          # if the current first view day is not Monday, advances to the
+          # beginning of next week instead of advancing @numdays
+          if start.weekday() != 0:
+            days = self.calendar.numdays - start.weekday()
+
+        self.calendar.set_view_days(start + datetime.timedelta(days=days))
         self.calendar.queue_draw()
 
     def on_previous_clicked(self, button, days=None):
+        start = self.calendar.view_start_day
         if not days:
           days = self.calendar.numdays
+          # if the current first view day is not Monday, goes back to the
+          # beginning of the current week one instead of regressing @numdays
+          if start.weekday() != 0:
+            days = start.weekday()
 
-        self.calendar.set_view_days(self.calendar.view_start_day - datetime.timedelta(days=days))
+        self.calendar.set_view_days(start - datetime.timedelta(days=days))
         self.calendar.queue_draw()
 
 CalendarPlugin()
