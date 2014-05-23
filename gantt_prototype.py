@@ -502,6 +502,8 @@ class CalendarPlugin(GObject.GObject):
 
         # Scrolled Window
         self.scroll = builder.get_object("scrolledwindow")
+        self.scroll.add_events(Gdk.EventMask.SCROLL_MASK)
+        self.scroll.connect("scroll-event", self.on_scroll)
 
         # hard coded tasks to populate calendar view
         # (title, start_date, due_date, done?)
@@ -526,6 +528,17 @@ class CalendarPlugin(GObject.GObject):
         self.label = builder.get_object("label")
         self.window.show_all()
 
+    def on_scroll(self, widget, event):
+        # scroll right
+        if event.get_scroll_deltas()[1] > 0:
+          self.on_next_clicked(widget, days=1)
+        # scroll left
+        elif event.get_scroll_deltas()[1] < 0:
+          self.on_previous_clicked(widget, days=1)
+        # scroll up or down
+        else:
+          return False # propagates signal to scroll window normally
+        return True
 
     def on_statusbar_text_pushed(self, text):
         self.label.set_text(text)
@@ -602,12 +615,18 @@ class CalendarPlugin(GObject.GObject):
         else:
             self.on_statusbar_text_pushed("...")
 
-    def on_next_clicked(self, button):
-        self.calendar.set_view_days(self.calendar.view_start_day + datetime.timedelta(days=self.calendar.numdays))
+    def on_next_clicked(self, button, days=None):
+        if not days:
+          days = self.calendar.numdays
+
+        self.calendar.set_view_days(self.calendar.view_start_day + datetime.timedelta(days=days))
         self.calendar.queue_draw()
 
-    def on_previous_clicked(self, button):
-        self.calendar.set_view_days(self.calendar.view_start_day - datetime.timedelta(days=self.calendar.numdays))
+    def on_previous_clicked(self, button, days=None):
+        if not days:
+          days = self.calendar.numdays
+
+        self.calendar.set_view_days(self.calendar.view_start_day - datetime.timedelta(days=days))
         self.calendar.queue_draw()
 
 CalendarPlugin()
