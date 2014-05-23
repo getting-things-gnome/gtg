@@ -134,6 +134,7 @@ class Calendar(Gtk.DrawingArea):
         self.selected_task = None
         self.drag_offset = None
         self.drag_action = None
+        self.drag = None
         self.task_positions = {}
 
     def identify_pointed_object(self, event, clicked=False):
@@ -163,6 +164,10 @@ class Calendar(Gtk.DrawingArea):
         (self.selected_task, cursor) = self.identify_pointed_object(event, clicked=True)
 
         if self.selected_task:
+          # double-click
+          if event.type == Gdk.EventType._2BUTTON_PRESS:
+            print(event.type)
+          self.drag = True
           widget.get_window().set_cursor(cursor)
           task = self.req.get_task(self.selected_task)
           start = (task.get_start_date().date() - self.view_start_day).days
@@ -180,7 +185,7 @@ class Calendar(Gtk.DrawingArea):
 
     def motion_notify(self, widget, event):
         """ User moved mouse over widget """
-        if self.selected_task: # a task was clicked
+        if self.selected_task and self.drag: # a task was clicked
           task = self.req.get_task(self.selected_task)
           start_date = task.get_start_date().date()
           end_date = task.get_due_date().date()
@@ -221,8 +226,14 @@ class Calendar(Gtk.DrawingArea):
 
 
     def dnd_stop(self, widget, event):
-        """ User released a button, stopping drag and drop """
+        """
+        User released a button, stopping drag and drop.
+        Selected task, if any, will still have the focus.
+        """
+        # user didn't click on a task - redraw to 'unselect' task
         if not self.selected_task:
+          self.drag = None
+          self.queue_draw()
           return
 
         rect = self.get_allocation()
@@ -251,7 +262,8 @@ class Calendar(Gtk.DrawingArea):
 
         widget.get_window().set_cursor(Gdk.Cursor.new(Gdk.CursorType.ARROW))
         self.drag_offset = None
-        self.selected_task = None
+        self.drag = None
+        #self.selected_task = None
         self.queue_draw()
 
     def set_view_days(self, start_day):
@@ -552,11 +564,11 @@ class CalendarPlugin(GObject.GObject):
 
     def on_edit_clicked(self, button):
         """ 
-        Edits a random task, with the help of a pop-up dialog
+        Edits the selected task, with the help of a pop-up dialog
         for modifying the task title, start and due dates.
         Redraw the calendar view after the changes.
         """
-        task_id = req.get_random_task()
+        task_id = self.calendar.selected_task
         if task_id:
             task = self.req.get_task(task_id)
 
@@ -578,13 +590,14 @@ class CalendarPlugin(GObject.GObject):
 
     def on_remove_clicked(self, button):
         """ 
-        Removes a random task from the datastore and redraw the
+        Removes the selected task from the datastore and redraw the
         calendar view.
         """
-        task_id = self.req.get_random_task()
+        task_id = self.calendar.selected_task
         if task_id:
             self.on_statusbar_text_pushed("Deleted task: %s" % self.req.get_task(task_id).get_title())
             self.req.delete_task(task_id)
+            self.calendar.selected_task = None
             self.calendar.queue_draw()
         else:
             self.on_statusbar_text_pushed("...")
