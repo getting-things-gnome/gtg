@@ -9,6 +9,20 @@ from dates import Date
 from requester import Requester
 
 tests = True
+mix = (0, 0.5, 0.5)
+
+def random_color(mix):
+  """
+  Generates a random color based on the color @mix given as parameter.
+  If the @mix color is the same every time, all the colors generated
+  will be as from the same color pallete.
+
+  param @mix: triple of floats, a color in the format (red, green, blue)
+  """
+  red = (random.random() + mix[0])/2
+  green = (random.random() + mix[1])/2
+  blue = (random.random() + mix[2])/2
+  return (red, green, blue)
 
 def rounded_rectangle(ctx, x, y, w, h, r=10):
   """
@@ -373,11 +387,11 @@ class Calendar(Gtk.DrawingArea):
         # keep record of positions for discovering task when using drag and drop
         self.task_positions[task.get_id()] = (base_x, base_y, width, height)
 
-        color = [0.5, start/6.0, end/6.0]
+        color = task.get_color()
 
         # selected task in yellow
         if self.selected_task == task.get_id():
-          color = [0.8, 0.8, 0]
+          color = (0.8, 0.8, 0)
 
         # create gradient
         grad = cairo.LinearGradient(base_x, base_y, base_x, base_y+height)
@@ -506,14 +520,14 @@ class CalendarPlugin(GObject.GObject):
         self.scroll.connect("scroll-event", self.on_scroll)
 
         # hard coded tasks to populate calendar view
-        # (title, start_date, due_date, done?)
-        ex_tasks = [("task1", "2014-03-17", "2014-03-17", True), 
-                    ("task2", "2014-03-22", "2014-03-22", False), 
-                    ("task3", "2014-03-18", "2014-03-20", False),
-                    ("task4", "2014-03-20", "2014-03-21", True),
-                    ("task5", "2014-03-17", "2014-03-23", False),
-                    ("task6: very very long task", "2014-03-19", "2014-03-20", False),
-                    ("task7", "2014-03-22", "2014-03-24", False)
+        # (title, start_date, due_date, done?, color)
+        ex_tasks = [("task1", "2014-03-17", "2014-03-17", True, random_color(mix)),
+                    ("task2", "2014-03-22", "2014-03-22", False, random_color(mix)),
+                    ("task3", "2014-03-18", "2014-03-20", False, random_color(mix)),
+                    ("task4", "2014-03-20", "2014-03-21", True, random_color(mix)),
+                    ("task5", "2014-03-17", "2014-03-23", False, random_color(mix)),
+                    ("task6: very long title", "2014-03-19", "2014-03-20", False, random_color(mix)),
+                    ("task7", "2014-03-22", "2014-03-24", False, random_color(mix))
                    ]
 
         # DataStore object
@@ -562,6 +576,7 @@ class CalendarPlugin(GObject.GObject):
             end = random.choice([start,30])
             new_task.set_start_date("2014-03-"+str(start))
             new_task.set_due_date("2014-03-"+str(end))
+            new_task.set_color(random_color(mix))
             dialog = TaskView(self.window, new_task)
         else: 
             dialog = TaskView(self.window)
@@ -573,6 +588,8 @@ class CalendarPlugin(GObject.GObject):
             new_task.set_title(dialog.title.get_text())
             new_task.set_start_date(dialog.start_date.get_text())
             new_task.set_due_date(dialog.due_date.get_text())
+            color = random_color(mix)
+            new_task.set_color(color)
             self.calendar.queue_draw()
         else:
             if tests:

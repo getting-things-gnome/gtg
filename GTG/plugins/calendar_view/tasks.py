@@ -27,6 +27,7 @@ class Task(object): #TreeNode):
         #self.req = requester
         #self.attributes = {}
         #self._modified_update()
+        self.color = None
 
     def get_id(self):
         return str(self.tid)
@@ -118,6 +119,12 @@ class Task(object): #TreeNode):
     def get_tags_name(self):
         # Return a copy of the list of tags. Not the original object.
         return list(self.tags)
+
+    def set_color(self, color=(0.5,0.5,0.5)):
+        self.color = color
+
+    def get_color(self):
+        return self.color
 
     def __str__(self):
         s = ""

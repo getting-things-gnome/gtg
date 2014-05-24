@@ -66,6 +66,7 @@ class DataStore(object):
             new_task.set_due_date(ex_tasks[i][2])
             if ex_tasks[i][3]:
                 new_task.set_status(Task.STA_DONE)
+            new_task.set_color(ex_tasks[i][4])
             #print(new_task)
 
     def get_random_task(self):
