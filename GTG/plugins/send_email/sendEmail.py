@@ -80,4 +80,4 @@ class pluginSendEmail:
         parameters = parameters.replace('+', '%20')
 
         Gio.app_info_get_default_for_uri_scheme('mailto').launch_uris(
-            ['mailto:' + 'gtg@example.com?' + parameters],None)
+            ['mailto:' + 'gtg@example.com?' + parameters], None)
