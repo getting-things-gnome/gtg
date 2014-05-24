@@ -24,65 +24,38 @@ def random_color(mix):
   blue = (random.random() + mix[2])/2
   return (red, green, blue)
 
-def rounded_rectangle(ctx, x, y, w, h, r=10):
+def rounded_edges_or_pointed_ends_rectangle(ctx, x, y, w, h, r=8, arrow_right=False,
+                                            arrow_left=False):
   """
-  Draws a rounded rectangle
-  This is just one of the samples from
-  http://www.cairographics.org/cookbook/roundedrectangles/
-    A****BQ    @param ctx: a Cairo context
-   H      C    @param x: the left most x coordinate of the bounding box
-   *      *    @param y: the left most y coordinate of the bounding box
-   G      D    @param w: the width of the bounding box
-    F****E     @param h: the height of the bounding box
-               @param r: the radius of the rounded edges. Default = 10
-  """
-  ctx.move_to(x+r,y)                      # Move to A
-  ctx.line_to(x+w-r,y)                    # Straight line to B
-  ctx.curve_to(x+w,y,x+w,y,x+w,y+r)       # Curve to C, Control points are both at Q
-  ctx.line_to(x+w,y+h-r)                  # Move to D
-  ctx.curve_to(x+w,y+h,x+w,y+h,x+w-r,y+h) # Curve to E
-  ctx.line_to(x+r,y+h)                    # Line to F
-  ctx.curve_to(x,y+h,x,y+h,x,y+h-r)       # Curve to G
-  ctx.line_to(x,y+r)                      # Line to H
-  ctx.curve_to(x,y,x,y,x+r,y)             # Curve to A
+  Draws a rectangle with either rounded edges, or with right and/or left pointed
+  ends. The non-pointed end, if any, will have rounded edges as well.
 
-def right_pointy_rectangle(ctx, x, y, w, h, r=10, p=5):
+    x      w   @param ctx: a Cairo context
+    v      v   @param x: the leftmost x coordinate of the bounding box
+  y> A****BQ   @param y: the topmost y coordinate of the bounding box
+    H      C   @param w: the width of the bounding box
+    J      K   @param h: the height of the bounding box
+    G      D   @param r: the radius of the rounded edges. Default = 8
+  h> F****E    @param arrow_right: bool, whether there should be an arrow to the right
+               @param arrow_left: bool, whether there should be an arrow to the left
   """
-  Draws a rounded rectangle, with a pointy 'arrow' to the right
-   A****B     @param ctx: a Cairo context
-  H      *    @param x: the left most x coordinate of the bounding box
-  *       K   @param y: the left most y coordinate of the bounding box
-  G      *    @param w: the width of the bounding box
-   F****E     @param h: the height of the bounding box
-              @param r: the radius of the rounded edges. Default = 10
-  """
-  ctx.move_to(x+r,y)                      # Move to A
-  ctx.line_to(x+w-r,y)                    # Straight line to B
-  ctx.line_to(x+w, y+h/2)                 # Straight line to K
-  ctx.line_to(x+w-r, y+h)                 # Straight line to E
-  ctx.line_to(x+r,y+h)                    # Line to F
-  ctx.curve_to(x,y+h,x,y+h,x,y+h-r)       # Curve to G
-  ctx.line_to(x,y+r)                      # Line to H
-  ctx.curve_to(x,y,x,y,x+r,y)             # Curve to A
-
-def left_pointy_rectangle(ctx, x, y, w, h, r=10):
-  """
-  Draws a rounded rectangle, with a pointy 'arrow' to the left
-    A****BQ      @param ctx: a Cairo context
-   *      C      @param x: the left most x coordinate of the bounding box
-  K       *      @param y: the left most y coordinate of the bounding box
-   *      D      @param w: the width of the bounding box
-    F****E       @param h: the height of the bounding box
-                 @param r: the radius of the rounded edges. Default = 10
-  """
-  ctx.move_to(x+r,y)                      # Move to A
-  ctx.line_to(x+w-r,y)                    # Straight line to B
-  ctx.curve_to(x+w,y,x+w,y,x+w,y+r)       # Curve to C, Control points are both at Q
-  ctx.line_to(x+w,y+h-r)                  # Move to D
-  ctx.curve_to(x+w,y+h,x+w,y+h,x+w-r,y+h) # Curve to E
-  ctx.line_to(x+r,y+h)                    # Line to F
-  ctx.line_to(x, y+h/2)                   # Straight line to K
-  ctx.line_to(x+r, y)                     # Straight line to A
+  ctx.move_to(x+r,y)                        # Move to A
+  ctx.line_to(x+w-r,y)                      # Straight line to B
+  if arrow_right:
+    ctx.line_to(x+w, y+h/2)                 # Straight line to K
+    ctx.line_to(x+w-r, y+h)                 # Straight line to E
+  else:
+    ctx.curve_to(x+w,y,x+w,y,x+w,y+r)       # Curve to C, Control points are both at Q
+    ctx.line_to(x+w,y+h-r)                  # Move to D
+    ctx.curve_to(x+w,y+h,x+w,y+h,x+w-r,y+h) # Curve to E
+  ctx.line_to(x+r,y+h)                      # Line to F
+  if arrow_left:
+    ctx.line_to(x, y+h/2)                   # Straight line to J
+    ctx.line_to(x+r, y)                     # Straight line to A
+  else:
+    ctx.curve_to(x,y+h,x,y+h,x,y+h-r)       # Curve to G
+    ctx.line_to(x,y+r)                      # Line to H
+    ctx.curve_to(x,y,x,y,x+r,y)             # Curve to A
 
 def date_generator(start, numdays = None):
     """ 
@@ -377,12 +350,8 @@ class Calendar(Gtk.DrawingArea):
         ctx.clip()
 
         # draw the task
-        if overflow_l:
-          left_pointy_rectangle(ctx, base_x, base_y, width, height)
-        if overflow_r:
-          right_pointy_rectangle(ctx, base_x, base_y, width, height)
-        if not overflow_l and not overflow_r:
-          rounded_rectangle(ctx, base_x, base_y, width, height)
+        rounded_edges_or_pointed_ends_rectangle(ctx, base_x, base_y, width, height,
+                                                arrow_right=overflow_r, arrow_left=overflow_l)
 
         # keep record of positions for discovering task when using drag and drop
         self.task_positions[task.get_id()] = (base_x, base_y, width, height)
@@ -419,6 +388,7 @@ class Calendar(Gtk.DrawingArea):
         ctx.restore()
 
     def draw(self, widget, ctx, event=None):
+
         ctx.set_line_width(0.8)
         ctx.select_font_face(self.FONT, cairo.FONT_SLANT_NORMAL,
                              cairo.FONT_WEIGHT_NORMAL)
@@ -511,7 +481,7 @@ class CalendarPlugin(GObject.GObject):
         
         self.window = builder.get_object("window")
         self.window.__init__()
-        self.window.set_title("Gantt Chart View")
+        self.window.set_title("GTG - Calendar View")
         self.window.connect("destroy", Gtk.main_quit)
 
         # Scrolled Window
@@ -521,13 +491,13 @@ class CalendarPlugin(GObject.GObject):
 
         # hard coded tasks to populate calendar view
         # (title, start_date, due_date, done?, color)
-        ex_tasks = [("task1", "2014-03-17", "2014-03-17", True, random_color(mix)),
-                    ("task2", "2014-03-22", "2014-03-22", False, random_color(mix)),
-                    ("task3", "2014-03-18", "2014-03-20", False, random_color(mix)),
-                    ("task4", "2014-03-20", "2014-03-21", True, random_color(mix)),
-                    ("task5", "2014-03-17", "2014-03-23", False, random_color(mix)),
-                    ("task6: very long title", "2014-03-19", "2014-03-20", False, random_color(mix)),
-                    ("task7", "2014-03-22", "2014-03-24", False, random_color(mix))
+        ex_tasks = [("task1", "2014-05-17", "2014-05-17", True, random_color(mix)),
+                    ("task2", "2014-05-22", "2014-05-22", False, random_color(mix)),
+                    ("task3", "2014-05-18", "2014-05-20", False, random_color(mix)),
+                    ("task4", "2014-05-20", "2014-05-21", True, random_color(mix)),
+                    ("task5", "2014-05-16", "2014-05-24", False, random_color(mix)),
+                    ("task6: very long title", "2014-05-19", "2014-05-20", False, random_color(mix)),
+                    ("task7", "2014-05-22", "2014-05-24", False, random_color(mix))
                    ]
 
         # DataStore object
