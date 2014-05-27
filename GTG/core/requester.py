@@ -212,7 +212,8 @@ class Requester(GObject.GObject):
         for task_id in my_tag.get_related_tasks():
             my_task = self.get_task(task_id)
             my_task.remove_tag(tagname)
-
+            my_task.sync()
+ 
     ############## Backends #######################
     ###############################################
     def get_all_backends(self, disabled=False):
