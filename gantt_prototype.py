@@ -57,21 +57,18 @@ def rounded_edges_or_pointed_ends_rectangle(ctx, x, y, w, h, r=8, arrow_right=Fa
     ctx.line_to(x,y+r)                      # Line to H
     ctx.curve_to(x,y,x,y,x+r,y)             # Curve to A
 
-def date_generator(start, numdays = None):
+def date_generator(start, numdays):
     """ 
     Generates a list of tuples (day, weekday), such that day is a string in
     the format ' %m/%d', and weekday is a string in the format '%a'.
     The list has a specific size @numdays, so that it represents the days
     starting from @start.
-    If neither parameter is specified, the list will have size 7 (a week).
 
     @param start: must be a datetime object, first date to be included in the list
-    @param numdays: integer, size of the list. Default = 7 days
+    @param numdays: integer, size of the list
     @return days: list of tuples, each containing a date in the format '%m/%d', and also an
     abbreviated weekday for the given date
     """
-    if not numdays:
-        numdays = 7
     date_list = [start + datetime.timedelta(days=x) for x in range(numdays)]
     days = [(x.strftime("%m/%d"), x.strftime("%a")) for x in date_list]
     return days
@@ -84,7 +81,7 @@ class Calendar(Gtk.DrawingArea):
     PADDING = 5
     FONT = "Courier"
 
-    def __init__(self, parent, datastore): 
+    def __init__(self, parent, datastore, view_type):
         """
         Initializes a Calendar, given a datastore containing the
         tasks to be visualized.
@@ -101,12 +98,17 @@ class Calendar(Gtk.DrawingArea):
         task_ids = self.req.get_tasks_tree()
         tasks = [self.req.get_task(t) for t in task_ids]
 
-        self.view_start_day = self.view_end_day = self.numdays = None
+        self.set_view_type(view_type)
+
         start_day = min([t.get_start_date().date() for t in tasks])
-        self.set_view_days(start_day)
+        self.set_view_days(start_day, self.numdays)
  
         self.header_size = 40
         self.task_height = 30
+
+        # help on the control of resizing the main window (parent)
+        #FIXME: hard-coded
+        self.resize_main = True
 
         self.connect("draw", self.draw)
 
@@ -123,6 +125,51 @@ class Calendar(Gtk.DrawingArea):
         self.drag_action = None
         self.drag = None
         self.task_positions = {}
+
+    def set_view_type(self, view_type):
+        """
+        Set what kind of view will be displayed. This will determine the number of
+        days to show, as well as the minimum width of each day to be drawn.
+
+        @param view_type: string, indicates the view to be displayed.
+        It can be either "week", "2weeks" or "month"
+        """
+        if view_type == "week":
+          self.set_numdays(7)
+          self.min_day_width = 60
+        elif view_type == "2weeks":
+          self.set_numdays(14)
+          self.min_day_width = 50
+        elif view_type == "month":
+          self.set_numdays(31)
+          self.min_day_width = 40
+        else: # error check
+          exit(-1)
+
+    def compute_size(self, ctx):
+        """
+        Compute and request right size for the drawing area.
+
+        @param ctx: a Cairo context
+        """
+        rect = self.par.window.get_allocation()
+        sidebar = 25
+        rect.width -= sidebar
+        self.day_width = self.min_day_width
+
+        if self.min_day_width * self.numdays < rect.width:
+          self.day_width = rect.width / float(self.numdays)
+
+        num_tasks = len(self.req.get_tasks_tree())
+
+        width = self.numdays * self.day_width
+        height = num_tasks * self.task_height + self.header_size
+
+        self.set_size_request(width, height)
+        if self.resize_main:
+          self.par.window.set_size_request(width + sidebar, height)
+          self.resize_main = False
+
 
     def identify_pointed_object(self, event, clicked=False):
         const = 10
@@ -161,10 +208,10 @@ class Calendar(Gtk.DrawingArea):
           end = (task.get_due_date().date() - self.view_start_day).days + 1
           duration = end - start
 
-          offset = (start * self.step) - event.x
+          offset = (start * self.day_width) - event.x
           #offset_y = self.header_size + pos * self.task_height - event.y
           if self.drag_action == "expand_right":
-            offset += duration * self.step
+            offset += duration * self.day_width
           self.drag_offset = offset
 
           self.queue_draw()
@@ -182,7 +229,7 @@ class Calendar(Gtk.DrawingArea):
           event_x = event.x + offset
           event_y = event.y
 
-          weekday = int(event_x / self.step)
+          weekday = int(event_x / self.day_width)
           day = self.view_start_day + datetime.timedelta(weekday)
 
           if self.drag_action == "expand_left":
@@ -230,7 +277,7 @@ class Calendar(Gtk.DrawingArea):
         else:
           event_x = event.x + self.drag_offset
           event_y = event.y
-          weekday = int(event_x / self.step)
+          weekday = int(event_x / self.day_width)
 
           task = self.req.get_task(self.selected_task)
           start = task.get_start_date().date()
@@ -258,17 +305,24 @@ class Calendar(Gtk.DrawingArea):
           return ("%s / %s" % (self.view_start_day.year, self.view_end_day.year))
         return str(self.view_start_day.year)
 
-    def set_view_days(self, start_day):
+    def set_numdays(self, numdays):
+        """ Set the number of days to be displayed in the calendar view """
+        self.numdays = numdays
+
+    def set_view_days(self, start_day, numdays=None):
         """
         Set the first and the last day the calendar view will show.
 
         @param start_day: must be a datetime object, first day to be 
         shown in the calendar view
+        @param numdays: integer, number of days to be shown. If none is given,
+        the default self.numdays will be used.
         """
+        if not numdays:
+          numdays = self.numdays
         assert(isinstance(start_day, datetime.date))
         self.view_start_day = start_day
-        self.days = date_generator(start_day)
-        self.numdays = len(self.days)
+        self.days = date_generator(start_day, numdays)
         self.view_end_day = start_day + datetime.timedelta(days=self.numdays-1)
     
     def print_header(self, ctx):
@@ -279,18 +333,18 @@ class Calendar(Gtk.DrawingArea):
         """
         ctx.set_source_rgb(0.35, 0.31, 0.24) 
         for i in range(0, len(self.days)+1):
-            ctx.move_to(i*self.step, 5)
-            ctx.line_to(i*self.step, 35)
+            ctx.move_to(i*self.day_width, 5)
+            ctx.line_to(i*self.day_width, 35)
             ctx.stroke()
 
         for i in range(0, len(self.days)):
             (x, y, w, h, dx, dy) = ctx.text_extents(self.days[i][1])
-            ctx.move_to(i*self.step - (w-self.step)/2.0, 15) 
+            ctx.move_to(i*self.day_width - (w-self.day_width)/2.0, 15)
             ctx.text_path(self.days[i][1])
             ctx.stroke()
 
             (x, y, w, h, dx, dy) = ctx.text_extents(self.days[i][0])
-            ctx.move_to(i*self.step - (w-self.step)/2.0, 30) 
+            ctx.move_to(i*self.day_width - (w-self.day_width)/2.0, 30)
             ctx.text_path(self.days[i][0])
             ctx.stroke()
 
@@ -328,8 +382,8 @@ class Calendar(Gtk.DrawingArea):
         label = task.get_title()
         complete = task.get_status()
 
-        if len(label) > duration * self.step/10 + 2:
-            crop_at = int(duration*(self.step/10))
+        if len(label) > duration * self.day_width/12 + 2:
+            crop_at = int(duration*(self.day_width/12))
             label = label[:crop_at] + "..."
 
         if complete == Task.STA_DONE:
@@ -338,9 +392,9 @@ class Calendar(Gtk.DrawingArea):
             alpha = 1
 
         # getting bounding box rectangle for task duration
-        base_x = start * self.step
+        base_x = start * self.day_width
         base_y = self.header_size + pos * self.task_height
-        width = duration * self.step
+        width = duration * self.day_width
         height = self.task_height
         height -= self.PADDING
 
@@ -377,7 +431,7 @@ class Calendar(Gtk.DrawingArea):
         # printing task label
         ctx.set_source_rgba(1, 1, 1, alpha)
         (x, y, w, h, dx, dy) = ctx.text_extents(label)
-        base_x = (start+duration/2.0) * self.step - w/2.0
+        base_x = (start+duration/2.0) * self.day_width - w/2.0
         base_y = self.header_size + pos*self.task_height + (self.task_height)/2.0 + h
         base_y -= self.PADDING
         ctx.move_to(base_x, base_y)
@@ -397,22 +451,18 @@ class Calendar(Gtk.DrawingArea):
           ctx.rectangle(event.area.x, event.area.y, event.area.width, event.area.height)
           ctx.clip()
 
-        rect = self.get_allocation()
-        self.step = round(rect.width / float(self.numdays))
-
-        task_ids = self.req.get_tasks_tree()
-        tasks = [self.req.get_task(t) for t in task_ids]
+        # resize drawing area
+        self.compute_size(ctx)
 
         # clear previous allocated positions of tasks
         self.task_positions = {}
-
-        # resizes vertical area according to number of tasks
-        self.set_size_request(350, len(tasks) * self.task_height + self.header_size)
 
         # printing header
         self.print_header(ctx)
 
         # drawing all tasks
+        task_ids = self.req.get_tasks_tree()
+        tasks = [self.req.get_task(t) for t in task_ids]
         for pos, task in enumerate(tasks):
             self.draw_task(ctx, task, pos)
         
@@ -463,7 +513,7 @@ class TaskView(Gtk.Dialog):
  
 class CalendarPlugin(GObject.GObject):
 
-    def __init__(self):
+    def __init__(self, view_type="2weeks"):
         super(CalendarPlugin, self).__init__()
 
         builder = Gtk.Builder()
@@ -506,7 +556,7 @@ class CalendarPlugin(GObject.GObject):
         self.ds.populate(ex_tasks) #hard-coded tasks
 
         # Pack the Calendar object inside the scrolled window
-        self.calendar = Calendar(self, self.ds) 
+        self.calendar = Calendar(self, self.ds, view_type)
         self.scroll.add_with_viewport(self.calendar)
 
         self.header = builder.get_object("header")
