@@ -2,16 +2,17 @@
 from gi.repository import Gtk, Gdk, GObject
 import cairo
 import datetime
+from calendar import monthrange
 import random
 from tasks import Task
 from datastore import DataStore
 from dates import Date
 from requester import Requester
 
+random.seed(7) # to generate same colors/dates every time
 tests = True
-mix = (0, 0.5, 0.5)
 
-def random_color(mix):
+def random_color(mix=(0, 0.5, 0.5)):
   """
   Generates a random color based on the color @mix given as parameter.
   If the @mix color is the same every time, all the colors generated
@@ -101,10 +102,8 @@ class Calendar(Gtk.DrawingArea):
         task_ids = self.req.get_tasks_tree()
         tasks = [self.req.get_task(t) for t in task_ids]
 
+        self.view_start_day = self.view_end_day = self.numdays = None
         self.set_view_type(view_type)
-
-        start_day = min([t.get_start_date().date() for t in tasks])
-        self.set_view_days(start_day, self.numdays)
  
         self.header_size = 40
         self.task_height = 30
@@ -137,17 +136,26 @@ class Calendar(Gtk.DrawingArea):
         @param view_type: string, indicates the view to be displayed.
         It can be either "week", "2weeks" or "month"
         """
+        if not self.view_start_day:
+          start_day = datetime.date.today()
+        else:
+          start_day = self.view_start_day
+
         if view_type == "week":
+          start_day -= datetime.timedelta(days=start_day.weekday())
           self.set_numdays(7)
           self.min_day_width = 60
         elif view_type == "2weeks":
+          start_day -= datetime.timedelta(days=start_day.weekday())
           self.set_numdays(14)
           self.min_day_width = 50
         elif view_type == "month":
-          self.set_numdays(31)
+          self.set_numdays(monthrange(start_day.year, start_day.month)[1])
+          start_day -= datetime.timedelta(days=start_day.day-1)
           self.min_day_width = 40
         else: # error check
           exit(-1)
+        self.set_view_days(start_day, self.numdays)
 
     def compute_size(self, ctx):
         """
@@ -556,13 +564,14 @@ class CalendarPlugin(GObject.GObject):
 
         # hard coded tasks to populate calendar view
         # (title, start_date, due_date, done?, color)
-        ex_tasks = [("task1", "2014-05-17", "2014-05-17", True, random_color(mix)),
-                    ("task2", "2014-05-22", "2014-05-22", False, random_color(mix)),
-                    ("task3", "2014-05-18", "2014-05-20", False, random_color(mix)),
-                    ("task4", "2014-05-20", "2014-05-21", True, random_color(mix)),
-                    ("task5", "2014-05-16", "2014-05-24", False, random_color(mix)),
-                    ("task6: very long title", "2014-05-19", "2014-05-20", False, random_color(mix)),
-                    ("task7", "2014-05-22", "2014-05-24", False, random_color(mix))
+        today = datetime.date.today()
+        ex_tasks = [("task1", today, today, True, random_color()),
+                    ("task2", today + datetime.timedelta(days=5), today + datetime.timedelta(days=5), False, random_color()),
+                    ("task3", today + datetime.timedelta(days=1), today + datetime.timedelta(days=3), False, random_color()),
+                    ("task4", today + datetime.timedelta(days=3), today + datetime.timedelta(days=4), True, random_color()),
+                    ("task5", today - datetime.timedelta(days=1), today + datetime.timedelta(days=8), False, random_color()),
+                    ("task6: very long title", today + datetime.timedelta(days=2), today + datetime.timedelta(days=3), False, random_color()),
+                    ("task7", today + datetime.timedelta(days=5), today + datetime.timedelta(days=15), False, random_color())
                    ]
 
         # DataStore object
@@ -613,11 +622,12 @@ class CalendarPlugin(GObject.GObject):
         # only to make testing easier
         if tests: 
             new_task = self.req.new_task() 
-            start = random.choice(range(1,30))
+            today = datetime.date.today()
+            start = random.choice(range(today.day,30))
             end = random.choice([start,30])
-            new_task.set_start_date("2014-03-"+str(start))
-            new_task.set_due_date("2014-03-"+str(end))
-            new_task.set_color(random_color(mix))
+            new_task.set_start_date(str(today.year)+"-"+str(today.month)+"-"+str(start))
+            new_task.set_due_date(str(today.year)+"-"+str(today.month)+"-"+str(end))
+            new_task.set_color(random_color())
             dialog = TaskView(self.window, new_task)
         else: 
             dialog = TaskView(self.window)
@@ -629,7 +639,7 @@ class CalendarPlugin(GObject.GObject):
             new_task.set_title(dialog.title.get_text())
             new_task.set_start_date(dialog.start_date.get_text())
             new_task.set_due_date(dialog.due_date.get_text())
-            color = random_color(mix)
+            color = random_color()
             new_task.set_color(color)
             self.calendar.queue_draw()
         else:
@@ -679,7 +689,7 @@ class CalendarPlugin(GObject.GObject):
             self.on_statusbar_text_pushed("...")
 
     def on_next_clicked(self, button, days=None):
-        """ Advances the dates beying displayed by a given number of @days """
+        """ Advances the dates being displayed by a given number of @days """
         start = self.calendar.view_start_day
         if not days:
           days = self.calendar.numdays
@@ -694,7 +704,7 @@ class CalendarPlugin(GObject.GObject):
         self.calendar.queue_draw()
 
     def on_previous_clicked(self, button, days=None):
-        """ Regresses the dates beying displayed by a given number of @days """
+        """ Regresses the dates being displayed by a given number of @days """
         start = self.calendar.view_start_day
         if not days:
           days = self.calendar.numdays
