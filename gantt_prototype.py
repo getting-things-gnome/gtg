@@ -84,10 +84,13 @@ class Calendar(Gtk.DrawingArea):
     def __init__(self, parent, datastore, view_type):
         """
         Initializes a Calendar, given a datastore containing the
-        tasks to be visualized.
+        tasks to be visualized, and a view_type to indicate the view
+        to be displayed.
 
         @param datastore: a DataStore object, contains the tasks that
         can be visualized
+        @param view_type: string, indicates the view to be displayed.
+        It can be either "week", "2weeks" or "month"
         """
         self.par = parent
         super(Calendar, self).__init__()
@@ -172,6 +175,14 @@ class Calendar(Gtk.DrawingArea):
 
 
     def identify_pointed_object(self, event, clicked=False):
+        """
+        Identify the object inside drawing area that is being pointed by the mouse.
+        Also points out which mouse cursor should be used in result.
+
+        @param event: a Gdk event
+        @param clicked: bool, indicates whether or not the user clicked on the
+        object being pointed
+        """
         const = 10
         cursor = Gdk.Cursor.new(Gdk.CursorType.ARROW)
         for task_id, (x, y, w, h) in self.task_positions.items():
@@ -301,17 +312,18 @@ class Calendar(Gtk.DrawingArea):
         self.queue_draw()
 
     def get_current_year(self):
+        """ Gets the correspondent year of the days being displayed in the calendar view """
         if self.view_start_day.year != self.view_end_day.year:
           return ("%s / %s" % (self.view_start_day.year, self.view_end_day.year))
         return str(self.view_start_day.year)
 
     def set_numdays(self, numdays):
-        """ Set the number of days to be displayed in the calendar view """
+        """ Sets the number of days to be displayed in the calendar view """
         self.numdays = numdays
 
     def set_view_days(self, start_day, numdays=None):
         """
-        Set the first and the last day the calendar view will show.
+        Sets the first and the last day the calendar view will show.
 
         @param start_day: must be a datetime object, first day to be 
         shown in the calendar view
@@ -442,7 +454,7 @@ class Calendar(Gtk.DrawingArea):
         ctx.restore()
 
     def draw(self, widget, ctx, event=None):
-
+        """ Draws everything inside the DrawingArea """
         ctx.set_line_width(0.8)
         ctx.select_font_face(self.FONT, cairo.FONT_SLANT_NORMAL,
                              cairo.FONT_WEIGHT_NORMAL)
@@ -512,7 +524,10 @@ class TaskView(Gtk.Dialog):
 
  
 class CalendarPlugin(GObject.GObject):
-
+    """
+    This class is a plugin to display tasks into a dedicated view, where tasks
+    can be selected, edited, moved around by dragging and dropping, etc.
+    """
     def __init__(self, view_type="2weeks"):
         super(CalendarPlugin, self).__init__()
 
@@ -568,6 +583,11 @@ class CalendarPlugin(GObject.GObject):
         self.window.show_all()
 
     def on_scroll(self, widget, event):
+        """
+        Callback function to deal with scrolling the drawing area window.
+        If scroll right or left, change the days displayed in the calendar view.
+        If scroll up or down, propagates the signal to scroll window normally.
+        """
         # scroll right
         if event.get_scroll_deltas()[1] > 0:
           self.on_next_clicked(widget, days=1)
@@ -580,6 +600,7 @@ class CalendarPlugin(GObject.GObject):
         return True
 
     def on_statusbar_text_pushed(self, text):
+        """ Adds the @text to the statusbar """
         self.label.set_text(text)
         #self.statusbar.push(0, text)
 
@@ -658,6 +679,7 @@ class CalendarPlugin(GObject.GObject):
             self.on_statusbar_text_pushed("...")
 
     def on_next_clicked(self, button, days=None):
+        """ Advances the dates beying displayed by a given number of @days """
         start = self.calendar.view_start_day
         if not days:
           days = self.calendar.numdays
@@ -672,6 +694,7 @@ class CalendarPlugin(GObject.GObject):
         self.calendar.queue_draw()
 
     def on_previous_clicked(self, button, days=None):
+        """ Regresses the dates beying displayed by a given number of @days """
         start = self.calendar.view_start_day
         if not days:
           days = self.calendar.numdays
