@@ -136,6 +136,7 @@ class Calendar(Gtk.DrawingArea):
         @param view_type: string, indicates the view to be displayed.
         It can be either "week", "2weeks" or "month"
         """
+        self.view_type = view_type
         if not self.view_start_day:
           start_day = datetime.date.today()
         else:
@@ -155,6 +156,7 @@ class Calendar(Gtk.DrawingArea):
           self.min_day_width = 40
         else: # error check
           exit(-1)
+        self.resize_main = True #FIXME: allow resize back
         self.set_view_days(start_day, self.numdays)
 
     def compute_size(self, ctx):
@@ -543,6 +545,10 @@ class CalendarPlugin(GObject.GObject):
         builder.add_from_file("calendar_view.glade")
         handlers = {
             "on_window_destroy": Gtk.main_quit,
+            "on_today_clicked": self.on_today_clicked,
+            "on_week_clicked": self.on_week_clicked,
+            "on_2weeks_clicked": self.on_2weeks_clicked,
+            "on_month_clicked": self.on_month_clicked,
             "on_add_clicked": self.on_add_clicked,
             "on_edit_clicked": self.on_edit_clicked,
             "on_remove_clicked": self.on_remove_clicked,
@@ -696,6 +702,7 @@ class CalendarPlugin(GObject.GObject):
 
           # if the current first view day is not Monday, advances to the
           # beginning of next week instead of advancing @numdays
+          # FIXME: do the same for month view
           if start.weekday() != 0:
             days = self.calendar.numdays - start.weekday()
 
@@ -710,10 +717,36 @@ class CalendarPlugin(GObject.GObject):
           days = self.calendar.numdays
           # if the current first view day is not Monday, goes back to the
           # beginning of the current week one instead of regressing @numdays
+          # FIXME: do the same for month view
           if start.weekday() != 0:
             days = start.weekday()
 
         self.calendar.set_view_days(start - datetime.timedelta(days=days))
+        self.header.set_text(self.calendar.get_current_year())
+        self.calendar.queue_draw()
+
+    def on_today_clicked(self, button):
+        #button.set_sensitive(False)
+        start_day = datetime.date.today()
+        if self.calendar.view_type == "month":
+          start_day -= datetime.timedelta(days=start_day.day-1)
+        else:
+          start_day -= datetime.timedelta(days=start_day.weekday())
+        self.calendar.set_view_days(start_day)
+        self.calendar.queue_draw()
+
+    def on_week_clicked(self, button):
+        self.calendar.set_view_type("week")
+        self.header.set_text(self.calendar.get_current_year())
+        self.calendar.queue_draw()
+
+    def on_2weeks_clicked(self, button):
+        self.calendar.set_view_type("2weeks")
+        self.header.set_text(self.calendar.get_current_year())
+        self.calendar.queue_draw()
+
+    def on_month_clicked(self, button):
+        self.calendar.set_view_type("month")
         self.header.set_text(self.calendar.get_current_year())
         self.calendar.queue_draw()
 
