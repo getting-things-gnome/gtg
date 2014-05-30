@@ -4,45 +4,12 @@ import cairo
 import datetime
 from calendar import monthrange
 from tasks import Task
+from drawtask import DrawTask
 from datastore import DataStore
 from dates import Date
 from requester import Requester
 from utils import date_generator
 
-
-def rounded_edges_or_pointed_ends_rectangle(ctx, x, y, w, h, r=8, arrow_right=False,
-                                            arrow_left=False):
-  """
-  Draws a rectangle with either rounded edges, or with right and/or left pointed
-  ends. The non-pointed end, if any, will have rounded edges as well.
-
-    x      w   @param ctx: a Cairo context
-    v      v   @param x: the leftmost x coordinate of the bounding box
-  y> A****BQ   @param y: the topmost y coordinate of the bounding box
-    H      C   @param w: the width of the bounding box
-    J      K   @param h: the height of the bounding box
-    G      D   @param r: the radius of the rounded edges. Default = 8
-  h> F****E    @param arrow_right: bool, whether there should be an arrow to the right
-               @param arrow_left: bool, whether there should be an arrow to the left
-  """
-  ctx.move_to(x+r,y)                        # Move to A
-  ctx.line_to(x+w-r,y)                      # Straight line to B
-  if arrow_right:
-    ctx.line_to(x+w, y+h/2)                 # Straight line to K
-    ctx.line_to(x+w-r, y+h)                 # Straight line to E
-  else:
-    ctx.curve_to(x+w,y,x+w,y,x+w,y+r)       # Curve to C, Control points are both at Q
-    ctx.line_to(x+w,y+h-r)                  # Move to D
-    ctx.curve_to(x+w,y+h,x+w,y+h,x+w-r,y+h) # Curve to E
-  ctx.line_to(x+r,y+h)                      # Line to F
-  if arrow_left:
-    ctx.line_to(x, y+h/2)                   # Straight line to J
-    ctx.line_to(x+r, y)                     # Straight line to A
-  else:
-    ctx.curve_to(x,y+h,x,y+h,x,y+h-r)       # Curve to G
-    ctx.line_to(x,y+r)                      # Line to H
-    ctx.curve_to(x,y,x,y,x+r,y)             # Curve to A
-    
 class Background:
     """
     A simple background that draws a white rectangle the size of the area.
@@ -52,7 +19,6 @@ class Background:
                       area.width, area.height)
         #ctx.set_source_rgb(1, 1, 1) # white
         #ctx.fill()
-
     
 class Header:
     def __init__(self, days=None, day_width=None):
@@ -89,112 +55,6 @@ class Header:
             ctx.text_path(self.days[i][0])
             ctx.stroke()
 
-class DrawTask():
-    def __init__(self, task):
-        #super(Task, self).__init__()
-        self.task = task
-        self.position = (None, None, None, None)
-        self.selected = False
-        self.PADDING = 5
-        self.task_height = 30
-        self.header_size = 40
-        self.day_width = 50 #FIXME
-        self.view_start_day = datetime.date.today() - datetime.timedelta(days=datetime.date.today().weekday())
-        self.view_end_day = datetime.date.today() + datetime.timedelta(days=14)
-
-    def set_day_width(self, day_width):
-        self.day_width = day_width
-
-    def set_selected(self, selected=True):
-        self.selected = selected
-
-    def set_postion(self, x, y, w, h):
-        self.position = (x, y, w, h)
-
-    def get_postion(self):
-        return self.position
-
-    def draw(self, ctx, pos): #area):
-    #def draw_task(self, ctx, task, pos):
-        """
-        Draws a given @task in a relative postion @pos.
-
-        @param ctx: a Cairo context
-        """
-        # avoid tasks overflowing to/from next/previous weeks
-        overflow_l = overflow_r = False
-        if self.task.get_start_date().date() < self.view_start_day:
-          overflow_l = True
-        if self.task.get_due_date().date() > self.view_end_day:
-          overflow_r = True
-
-        start = (max(self.task.get_start_date().date(), self.view_start_day) - self.view_start_day).days
-        end = (min(self.task.get_due_date().date(), self.view_end_day) - self.view_start_day).days
-        duration = end - start + 1
-        label = self.task.get_title()
-        complete = self.task.get_status()
-
-        if len(label) > duration * self.day_width/12 + 2:
-            crop_at = int(duration*(self.day_width/12))
-            label = label[:crop_at] + "..."
-
-        if complete == Task.STA_DONE:
-            alpha = 0.5
-        else:
-            alpha = 1
-
-        # getting bounding box rectangle for task duration
-        base_x = start * self.day_width
-        base_y = self.header_size + pos * self.task_height
-        width = duration * self.day_width
-        height = self.task_height
-        height -= self.PADDING
-
-        # restrict drawing to exposed area, so that no unnecessary drawing is done
-        ctx.save()
-        ctx.rectangle(base_x, base_y, width, height)
-        ctx.clip()
-
-        # draw the task
-        rounded_edges_or_pointed_ends_rectangle(ctx, base_x, base_y, width, height,
-                                                arrow_right=overflow_r, arrow_left=overflow_l)
-
-        # keep record of positions for discovering task when using drag and drop
-        #self.task_positions[task.get_id()] = (base_x, base_y, width, height)
-        self.set_postion(base_x, base_y, width, height)
-
-        color = self.task.get_color()
-
-        # selected task in yellow
-        if self.selected:
-        #if self.selected_task == self.get_id():
-          color = (0.8, 0.8, 0)
-
-        # create gradient
-        grad = cairo.LinearGradient(base_x, base_y, base_x, base_y+height)
-        c = [x + 0.1 for x in color]
-        grad.add_color_stop_rgba(0, c[0], c[1], c[2], alpha)
-        grad.add_color_stop_rgba(0.2, color[0], color[1], color[2], alpha)
-        grad.add_color_stop_rgba(0.8, color[0], color[1], color[2], alpha)
-        grad.add_color_stop_rgba(1, c[0], c[1], c[2], alpha)
-
-        # background
-        ctx.set_source(grad)
-        ctx.fill()
-
-        # printing task label
-        ctx.set_source_rgba(1, 1, 1, alpha)
-        (x, y, w, h, dx, dy) = ctx.text_extents(label)
-        base_x = (start+duration/2.0) * self.day_width - w/2.0
-        base_y = self.header_size + pos*self.task_height + (self.task_height)/2.0 + h
-        base_y -= self.PADDING
-        ctx.move_to(base_x, base_y)
-        ctx.text_path(label)
-        ctx.stroke()
-
-        # restore old context
-        ctx.restore()
-
 class Drawing(Gtk.DrawingArea):
     """
     This class creates a visualization for all the tasks in a 
@@ -202,7 +62,7 @@ class Drawing(Gtk.DrawingArea):
     """
     FONT = "Courier"
 
-    def __init__(self, parent, tasks, view_type):
+    def __init__(self, parent, tasks):
         """
         Initializes a Drawing, given a datastore containing the
         tasks to be visualized, and a view_type to indicate the view
@@ -210,8 +70,6 @@ class Drawing(Gtk.DrawingArea):
 
         @param datastore: a DataStore object, contains the tasks that
         can be visualized
-        @param view_type: string, indicates the view to be displayed.
-        It can be either "week", "2weeks" or "month"
         """
         self.par = parent
         super(Drawing, self).__init__()
@@ -224,11 +82,15 @@ class Drawing(Gtk.DrawingArea):
 
         #task_ids = self.req.get_tasks_tree()
         #tasks = [self.req.get_task(t) for t in task_ids]
-        tasks = [DrawTask(t) for t in tasks]
-        self.tasks = tasks
+        #self.view_start_day = datetime.date.today() - datetime.timedelta(days=datetime.date.today().weekday())
+        #self.view_end_day = datetime.date.today() + datetime.timedelta(days=14)
 
-        self.view_start_day = self.view_end_day = self.numdays = None
-        self.set_view_type(view_type)
+        self.set_tasks_to_show(tasks)
+
+        #self.view_start_day = self.view_end_day = self.numdays = None
+        #self.set_view_type(view_type)
+        #self.view_start_day = start
+        #self.view_end_day = end
  
         self.header_size = 40
         self.task_height = 30
@@ -253,36 +115,21 @@ class Drawing(Gtk.DrawingArea):
         self.drag = None
         self.task_positions = {}
 
-    def set_view_type(self, view_type):
-        """
-        Set what kind of view will be displayed. This will determine the number of
-        days to show, as well as the minimum width of each day to be drawn.
+    def set_day_width(self, day_width):
+        self.day_width = day_width
 
-        @param view_type: string, indicates the view to be displayed.
-        It can be either "week", "2weeks" or "month"
-        """
-        self.view_type = view_type
-        if not self.view_start_day:
-          start_day = datetime.date.today()
-        else:
-          start_day = self.view_start_day
+    def set_view_days(self, start, numdays):
+        self.view_start_day = start
+        self.numdays = numdays
+        self.view_end_day = start + datetime.timedelta(days=numdays)
 
-        if view_type == "week":
-          start_day -= datetime.timedelta(days=start_day.weekday())
-          self.set_numdays(7)
-          self.min_day_width = 60
-        elif view_type == "2weeks":
-          start_day -= datetime.timedelta(days=start_day.weekday())
-          self.set_numdays(14)
-          self.min_day_width = 50
-        elif view_type == "month":
-          self.set_numdays(monthrange(start_day.year, start_day.month)[1])
-          start_day -= datetime.timedelta(days=start_day.day-1)
-          self.min_day_width = 40
-        else: # error check
-          exit(-1)
-        self.resize_main = True #FIXME: allow resize back
-        self.set_view_days(start_day, self.numdays)
+    def set_days(self, days):
+        self.days = days
+        self.header.set_days(days)
+
+    def set_tasks_to_show(self, tasks):
+        tasks = [DrawTask(t) for t in tasks]
+        self.tasks = tasks
 
     def compute_size(self, ctx):
         """
@@ -290,13 +137,7 @@ class Drawing(Gtk.DrawingArea):
 
         @param ctx: a Cairo context
         """
-        rect = self.par.window.get_allocation()
         sidebar = 25
-        rect.width -= sidebar
-        self.day_width = self.min_day_width
-
-        if self.min_day_width * self.numdays < rect.width:
-          self.day_width = rect.width / float(self.numdays)
 
         #num_tasks = len(self.req.get_tasks_tree())
         num_tasks = len(self.tasks)
@@ -322,7 +163,7 @@ class Drawing(Gtk.DrawingArea):
         const = 10
         cursor = Gdk.Cursor.new(Gdk.CursorType.ARROW)
         for task in self.tasks:
-          (x, y, w, h) = task.get_postion()
+          (x, y, w, h) = task.get_position()
         #for task_id, (x, y, w, h) in self.task_positions.items():
           if not y < event.y < (y + h):
             continue
@@ -455,32 +296,6 @@ class Drawing(Gtk.DrawingArea):
         #self.selected_task = None
         self.queue_draw()
 
-    def get_current_year(self):
-        """ Gets the correspondent year of the days being displayed in the calendar view """
-        if self.view_start_day.year != self.view_end_day.year:
-          return ("%s / %s" % (self.view_start_day.year, self.view_end_day.year))
-        return str(self.view_start_day.year)
-
-    def set_numdays(self, numdays):
-        """ Sets the number of days to be displayed in the calendar view """
-        self.numdays = numdays
-
-    def set_view_days(self, start_day, numdays=None):
-        """
-        Sets the first and the last day the calendar view will show.
-
-        @param start_day: must be a datetime object, first day to be 
-        shown in the calendar view
-        @param numdays: integer, number of days to be shown. If none is given,
-        the default self.numdays will be used.
-        """
-        if not numdays:
-          numdays = self.numdays
-        assert(isinstance(start_day, datetime.date))
-        self.view_start_day = start_day
-        self.days = date_generator(start_day, numdays)
-        self.view_end_day = start_day + datetime.timedelta(days=self.numdays-1)
-
     def draw(self, widget, ctx, event=None):
         """ Draws everything inside the DrawingArea """
         ctx.set_line_width(0.8)
@@ -501,7 +316,7 @@ class Drawing(Gtk.DrawingArea):
         # printing header
         #self.print_header(ctx)
         self.header.set_day_width(self.day_width)
-        self.header.set_days(self.days)
+        #self.header.set_days(self.days)
         self.header.draw(ctx)
 
         # drawing all tasks
@@ -510,5 +325,5 @@ class Drawing(Gtk.DrawingArea):
         #for pos, task in enumerate(self.tasks):
         for pos, task in enumerate(self.tasks):
             task.set_day_width(self.day_width)
-            task.draw(ctx, pos)
+            task.draw(ctx, pos, self.view_start_day, self.view_end_day)
             #self.draw_task(ctx, task, pos)
