@@ -97,7 +97,7 @@ class Drawing(Gtk.DrawingArea):
 
         # help on the control of resizing the main window (parent)
         #FIXME: hard-coded
-        self.resize_main = True
+        #self.resize_main = True
 
         self.connect("draw", self.draw)
 
@@ -113,7 +113,6 @@ class Drawing(Gtk.DrawingArea):
         self.drag_offset = None
         self.drag_action = None
         self.drag = None
-        self.task_positions = {}
 
     def set_day_width(self, day_width):
         self.day_width = day_width
@@ -121,7 +120,7 @@ class Drawing(Gtk.DrawingArea):
     def set_view_days(self, start, numdays):
         self.view_start_day = start
         self.numdays = numdays
-        self.view_end_day = start + datetime.timedelta(days=numdays)
+        self.view_end_day = start + datetime.timedelta(days=numdays-1)
 
     def set_days(self, days):
         self.days = days
@@ -131,7 +130,7 @@ class Drawing(Gtk.DrawingArea):
         tasks = [DrawTask(t) for t in tasks]
         self.tasks = tasks
 
-    def compute_size(self, ctx):
+    def compute_size(self):#, ctx):
         """
         Compute and request right size for the drawing area.
 
@@ -146,9 +145,6 @@ class Drawing(Gtk.DrawingArea):
         height = num_tasks * self.task_height + self.header_size
 
         self.set_size_request(width, height)
-        if self.resize_main:
-          self.par.window.set_size_request(width + sidebar, height)
-          self.resize_main = False
 
 
     def identify_pointed_object(self, event, clicked=False):
@@ -164,7 +160,6 @@ class Drawing(Gtk.DrawingArea):
         cursor = Gdk.Cursor.new(Gdk.CursorType.ARROW)
         for task in self.tasks:
           (x, y, w, h) = task.get_position()
-        #for task_id, (x, y, w, h) in self.task_positions.items():
           if not y < event.y < (y + h):
             continue
           if x <= event.x <= x + const:
@@ -307,10 +302,7 @@ class Drawing(Gtk.DrawingArea):
           ctx.clip()
 
         # resize drawing area
-        self.compute_size(ctx)
-
-        # clear previous allocated positions of tasks
-        self.task_positions = {}
+        self.compute_size()#ctx)
 
         self.background.draw(ctx, self.get_allocation())
         # printing header
@@ -323,7 +315,12 @@ class Drawing(Gtk.DrawingArea):
         #task_ids = self.req.get_tasks_tree()
         #tasks = [self.req.get_task(t) for t in task_ids]
         #for pos, task in enumerate(self.tasks):
-        for pos, task in enumerate(self.tasks):
-            task.set_day_width(self.day_width)
-            task.draw(ctx, pos, self.view_start_day, self.view_end_day)
+        for pos, drawtask in enumerate(self.tasks):
+            if self.selected_task \
+            and self.selected_task.get_id() == drawtask.get_id():
+              selected = True
+            else:
+              selected = False
+            drawtask.set_day_width(self.day_width)
+            drawtask.draw(ctx, pos, self.view_start_day, self.view_end_day, selected)
             #self.draw_task(ctx, task, pos)

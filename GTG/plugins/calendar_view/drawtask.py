@@ -46,11 +46,11 @@ class DrawTask():
         self.task_height = 30
         self.header_size = 40
 
+    def get_id(self):
+        return self.task.get_id()
+
     def set_day_width(self, day_width):
         self.day_width = day_width
-
-    def set_selected(self, selected=True):
-        self.selected = selected
 
     def set_position(self, x, y, w, h):
         self.position = (x, y, w, h)
@@ -58,7 +58,7 @@ class DrawTask():
     def get_position(self):
         return self.position
 
-    def draw(self, ctx, pos, start_day, end_day): #area):
+    def draw(self, ctx, pos, start_day, end_day, selected=False): #area):
     #def draw_task(self, ctx, task, pos):
         """
         Draws a given @task in a relative postion @pos.
@@ -66,17 +66,17 @@ class DrawTask():
         @param ctx: a Cairo context
         """
         # avoid tasks overflowing to/from next/previous weeks
-        self.view_start_day = start_day
-        self.view_end_day = end_day
+        view_start_day = start_day
+        view_end_day = end_day
 
         overflow_l = overflow_r = False
-        if self.task.get_start_date().date() < self.view_start_day:
+        if self.task.get_start_date().date() < view_start_day:
           overflow_l = True
-        if self.task.get_due_date().date() > self.view_end_day:
+        if self.task.get_due_date().date() > view_end_day:
           overflow_r = True
 
-        start = (max(self.task.get_start_date().date(), self.view_start_day) - self.view_start_day).days
-        end = (min(self.task.get_due_date().date(), self.view_end_day) - self.view_start_day).days
+        start = (max(self.task.get_start_date().date(), view_start_day) - view_start_day).days
+        end = (min(self.task.get_due_date().date(), view_end_day) - view_start_day).days
         duration = end - start + 1
         label = self.task.get_title()
         complete = self.task.get_status()
@@ -113,7 +113,7 @@ class DrawTask():
         color = self.task.get_color()
 
         # selected task in yellow
-        if self.selected:
+        if selected:
         #if self.selected_task == self.get_id():
           color = (0.8, 0.8, 0)
 

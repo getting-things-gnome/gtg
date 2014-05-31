@@ -70,6 +70,7 @@ class CalendarPlugin(GObject.GObject):
         builder.add_from_file("calendar_view.glade")
         handlers = {
             "on_window_destroy": Gtk.main_quit,
+            "on_window_size_allocate": self.on_window_size_allocate,
             "on_today_clicked": self.on_today_clicked,
             "on_week_clicked": self.on_week_clicked,
             "on_2weeks_clicked": self.on_2weeks_clicked,
@@ -116,16 +117,15 @@ class CalendarPlugin(GObject.GObject):
         #self.drawing.set_view_days(self.view_start_day, self.view_end_day)
         #self.drawing = Drawing(self, self.ds, view_type)
 
-        self.view_start_day = self.view_end_day = self.numdays = None
-        self.set_view_type(view_type)
-
-        self.scroll.add_with_viewport(self.drawing)
-
         self.header = builder.get_object("header")
-        self.header.set_text(self.get_current_year())
 
         self.statusbar = builder.get_object("statusbar")
         self.label = builder.get_object("label")
+
+        self.scroll.add_with_viewport(self.drawing)
+
+        self.view_start_day = self.view_end_day = self.numdays = None
+        self.set_view_type(view_type)
 
         self.window.show_all()
 
@@ -135,14 +135,19 @@ class CalendarPlugin(GObject.GObject):
           return ("%s / %s" % (self.view_start_day.year, self.view_end_day.year))
         return str(self.view_start_day.year)
 
+    def is_in_this_view_range(self, task):
+        """
+        Returns true if the given @task should be drawn in the current view
+        (i.e. either the start or due days are between the start and end day views)
+
+        @ param task: a Task object
+        """
+        return (task.get_due_date().date() >= self.view_start_day) \
+           and (task.get_start_date().date() <= self.view_end_day)
+
     def set_numdays(self, numdays):
         """ Sets the number of days to be displayed in the calendar view """
         self.numdays = numdays
-
-    def update_tasks_to_show(self):
-        tasks = [self.req.get_task(t) for t in self.req.get_tasks_tree()]
-        tasks = [t for t in tasks if self.is_in_this_view_range(t)]
-        self.drawing.set_tasks_to_show(tasks)
 
     def set_view_days(self, start_day, numdays=None):
         """
@@ -159,21 +164,7 @@ class CalendarPlugin(GObject.GObject):
         self.view_start_day = start_day
         self.days = date_generator(start_day, numdays)
         self.view_end_day = start_day + datetime.timedelta(days=self.numdays-1)
-
-        self.update_tasks_to_show()
-
-        self.drawing.set_days(self.days)
-        self.drawing.set_view_days(self.view_start_day, self.numdays)
-
-    def is_in_this_view_range(self, task):
-        """
-        Returns true if the given @task should be drawn in the current view
-        (i.e. either the start or due days are between the start and end day views)
-
-        @ param task: a Task object
-        """
-        return (task.get_due_date().date() >= self.view_start_day) \
-           and (task.get_start_date().date() <= self.view_end_day)
+        self.update_content_to_draw()
 
     def set_view_type(self, view_type):
         """
@@ -203,15 +194,41 @@ class CalendarPlugin(GObject.GObject):
           self.min_day_width = 40
         else: # error check
           exit(-1)
-        self.resize_main = True #FIXME: allow resize back
-        self.set_view_days(start_day, self.numdays)
+        #self.resize_main = True #FIXME: allow resize back
 
+        self.set_view_days(start_day, self.numdays)
+        #self.on_window_size_allocate()
+
+    def update_tasks_to_show(self):
+        tasks = [self.req.get_task(t) for t in self.req.get_tasks_tree()]
+        tasks = [t for t in tasks if self.is_in_this_view_range(t)]
+        self.drawing.set_tasks_to_show(tasks)
+
+    def update_content_to_draw(self):
+        """ Update dates and tasks to be drawn """
+        self.header.set_text(self.get_current_year())
+        self.drawing.set_days(self.days)
+        self.drawing.set_view_days(self.view_start_day, self.numdays)
+        self.update_tasks_to_show()
+
+    def on_window_size_allocate(self, widget=None, event=None):
+        """
+        Compute and request right size for the drawing area.
+        """
         rect = self.window.get_allocation()
         sidebar = 25
         rect.width -= sidebar
         self.day_width = self.min_day_width
         if self.min_day_width * self.numdays < rect.width:
           self.day_width = rect.width / float(self.numdays)
+
+        width = self.numdays * self.day_width
+        height = rect.height #* len(self.req.get_tasks_tree())
+
+        self.window.set_size_request(width, height)
+
+        #self.update_format_to_draw():
+        #self.drawing.set_size(width, height)
         self.drawing.set_day_width(self.day_width)
 
     def on_scroll(self, widget, event):
@@ -246,8 +263,8 @@ class CalendarPlugin(GObject.GObject):
         if tests: 
             new_task = self.req.new_task() 
             today = datetime.date.today()
-            start = random.choice(range(today.day,30))
-            end = random.choice([start,30])
+            start = random.choice(range(today.day,31))
+            end = random.choice(range(start,31))
             new_task.set_start_date(str(today.year)+"-"+str(today.month)+"-"+str(start))
             new_task.set_due_date(str(today.year)+"-"+str(today.month)+"-"+str(end))
             new_task.set_color(random_color())
@@ -265,7 +282,7 @@ class CalendarPlugin(GObject.GObject):
             color = random_color()
             new_task.set_color(color)
             self.update_tasks_to_show()
-            self.drawing.queue_draw()
+            self.update()
         else:
             if tests:
                 self.req.delete_task(new_task.get_id()) 
@@ -293,7 +310,7 @@ class CalendarPlugin(GObject.GObject):
                     task.set_status(Task.STA_DONE)
                 else:
                     task.set_status(Task.STA_ACTIVE)
-                self.drawing.queue_draw()
+                self.update()
             else:
                 self.on_statusbar_text_pushed("...")
             dialog.hide()
@@ -309,7 +326,7 @@ class CalendarPlugin(GObject.GObject):
             self.req.delete_task(task.get_id())
             self.drawing.selected_task = None
             self.update_tasks_to_show()
-            self.drawing.queue_draw()
+            self.update()
         else:
             self.on_statusbar_text_pushed("...")
 
@@ -325,8 +342,7 @@ class CalendarPlugin(GObject.GObject):
           if start.weekday() != 0:
             days = self.numdays - start.weekday()
         self.set_view_days(start + datetime.timedelta(days=days))
-        self.header.set_text(self.get_current_year())
-        self.drawing.queue_draw()
+        self.update()
 
     def on_previous_clicked(self, button, days=None):
         """ Regresses the dates being displayed by a given number of @days """
@@ -343,8 +359,7 @@ class CalendarPlugin(GObject.GObject):
         #tasks = [t for t in tasks if self.is_in_this_view_range(t)]
         #self.drawing.set_tasks_to_show(tasks)
         self.set_view_days(start - datetime.timedelta(days=days))
-        self.header.set_text(self.get_current_year())
-        self.drawing.queue_draw()
+        self.update()
 
     def on_today_clicked(self, button):
         #button.set_sensitive(False)
@@ -354,22 +369,23 @@ class CalendarPlugin(GObject.GObject):
         else:
           start_day -= datetime.timedelta(days=start_day.weekday())
         self.set_view_days(start_day)
-        self.drawing.queue_draw()
+        self.update()
 
     def on_week_clicked(self, button):
         self.set_view_type("week")
-        self.header.set_text(self.get_current_year())
-        self.drawing.queue_draw()
+        self.update()
 
     def on_2weeks_clicked(self, button):
         self.set_view_type("2weeks")
-        self.header.set_text(self.get_current_year())
-        self.drawing.queue_draw()
+        self.update()
 
     def on_month_clicked(self, button):
         self.set_view_type("month")
-        self.header.set_text(self.get_current_year())
+        self.update()
+
+    def update(self):
         self.drawing.queue_draw()
+
 
 CalendarPlugin()
 Gtk.main()

@@ -10,6 +10,7 @@
     <property name="default_height">280</property>
     <property name="destroy_with_parent">True</property>
     <signal name="destroy" handler="on_window_destroy" swapped="no"/>
+    <signal name="size-allocate" handler="on_window_size_allocate" swapped="no"/>
     <child>
       <object class="GtkVBox" id="vbox">
         <property name="width_request">380</property>
@@ -149,8 +150,8 @@
           <object class="GtkScrolledWindow" id="scrolledwindow">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
-            <property name="vscrollbar_policy">always</property>
             <property name="hscrollbar_policy">never</property>
+            <property name="vscrollbar_policy">always</property>
             <child>
               <placeholder/>
             </child>
