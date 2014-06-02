@@ -4,7 +4,6 @@ import cairo
 import datetime
 from calendar import monthrange
 from tasks import Task
-from drawtask import DrawTask, TASK_HEIGHT
 from datastore import DataStore
 from dates import Date
 from requester import Requester
@@ -12,15 +11,19 @@ from utils import date_generator
 
 HEADER_SIZE = 40
 
+from drawtask import DrawTask, TASK_HEIGHT
+
 class Background:
     """
-    A simple background that draws a white rectangle the size of the area.
+    A class to draw everything regarding the background, such as
+    the color, the grid, highlighted portion, etc.
     """
     def __init__(self):
         self.draw_grid = True
+        self.column_width = None
 
-    def set_day_width(self, day_width):
-        self.day_width = day_width
+    def set_column_width(self, column_width):
+        self.column_width = column_width
 
     def draw(self, ctx, area, highlight_col=3):
         #ctx.rectangle(area.x, area.y, area.width, area.height)
@@ -30,7 +33,7 @@ class Background:
         # column to be highlighted has a different color
         if highlight_col is not None:
           ctx.set_source_rgba(1, 1, 1, 0.5) # white
-          ctx.rectangle(self.day_width*highlight_col, area.y, self.day_width, area.height)
+          ctx.rectangle(self.column_width*highlight_col, area.y, self.column_width, area.height)
           ctx.fill()
 
         if self.draw_grid:
@@ -45,9 +48,9 @@ class Background:
           ctx.stroke()
 
           ctx.set_source_rgba(0.35, 0.31, 0.24, 0.15)
-          for i in range(0, 31):
-              ctx.move_to(i*self.day_width, HEADER_SIZE)
-              ctx.line_to(i*self.day_width, area.width)
+          for i in range(0, int(area.width/self.column_width)):
+              ctx.move_to(i*self.column_width, HEADER_SIZE)
+              ctx.line_to(i*self.column_width, area.width)
               ctx.stroke()
     
 class Header:
@@ -94,12 +97,9 @@ class Drawing(Gtk.DrawingArea):
 
     def __init__(self, parent, tasks):
         """
-        Initializes a Drawing, given a datastore containing the
-        tasks to be visualized, and a view_type to indicate the view
-        to be displayed.
-
-        @param datastore: a DataStore object, contains the tasks that
-        can be visualized
+        Initializes a Drawing, given the tasks to be visualized.
+        @param tasks: a Task list, contains the tasks that
+        will be drawn
         """
         self.par = parent
         super(Drawing, self).__init__()
@@ -107,24 +107,14 @@ class Drawing(Gtk.DrawingArea):
         self.header = Header()
         self.background = Background()
 
-        #self.ds = datastore
-        #self.req = datastore.get_requester()
-
-        #task_ids = self.req.get_tasks_tree()
-        #tasks = [self.req.get_task(t) for t in task_ids]
-        #self.view_start_day = datetime.date.today() - datetime.timedelta(days=datetime.date.today().weekday())
-        #self.view_end_day = datetime.date.today() + datetime.timedelta(days=14)
+        self.today_column = None
+        self.day_width = None
+        self.first_day = None
+        self.numdays = None
+        self.last_day = None
+        self.tasks = None
 
         self.set_tasks_to_show(tasks)
-
-        #self.view_start_day = self.view_end_day = self.numdays = None
-        #self.set_view_type(view_type)
-        #self.view_start_day = start
-        #self.view_end_day = end
- 
-        # help on the control of resizing the main window (parent)
-        #FIXME: hard-coded
-        #self.resize_main = True
 
         self.connect("draw", self.draw)
 
@@ -145,10 +135,10 @@ class Drawing(Gtk.DrawingArea):
         self.day_width = day_width
 
     def set_view_days(self, start, numdays):
-        self.view_start_day = start
+        self.first_day = start
         self.numdays = numdays
-        self.view_end_day = start + datetime.timedelta(days=numdays-1)
-        self.today_column = (datetime.date.today() - self.view_start_day).days
+        self.last_day = start + datetime.timedelta(days=numdays-1)
+        self.today_column = (datetime.date.today() - self.first_day).days
 
 
     def set_days(self, days):
@@ -159,20 +149,13 @@ class Drawing(Gtk.DrawingArea):
         tasks = [DrawTask(t) for t in tasks]
         self.tasks = tasks
 
-    def compute_size(self):#, ctx):
+    def compute_size(self):
         """
         Compute and request right size for the drawing area.
-
-        @param ctx: a Cairo context
         """
-        sidebar = 25
-
-        #num_tasks = len(self.req.get_tasks_tree())
         num_tasks = len(self.tasks)
-
         width = self.numdays * self.day_width
         height = num_tasks * TASK_HEIGHT + HEADER_SIZE
-
         self.set_size_request(width, height)
 
 
@@ -214,14 +197,12 @@ class Drawing(Gtk.DrawingArea):
         if self.selected_task:
           # double-click
           if event.type == Gdk.EventType._2BUTTON_PRESS:
-            print(event.type)
+            pass # open task to edit in future
           self.drag = True
           widget.get_window().set_cursor(cursor)
           task = self.selected_task.task
-          #task.set_selected(True)
-          #task = self.req.get_task(self.selected_task)
-          start = (task.get_start_date().date() - self.view_start_day).days
-          end = (task.get_due_date().date() - self.view_start_day).days + 1
+          start = (task.get_start_date().date() - self.first_day).days
+          end = (task.get_due_date().date() - self.first_day).days + 1
           duration = end - start
 
           offset = (start * self.day_width) - event.x
@@ -237,8 +218,6 @@ class Drawing(Gtk.DrawingArea):
         """ User moved mouse over widget """
         if self.selected_task and self.drag: # a task was clicked
           task = self.selected_task.task
-          #task.set_selected(True)
-          #task = self.req.get_task(self.selected_task)
           start_date = task.get_start_date().date()
           end_date = task.get_due_date().date()
           duration = (end_date - start_date).days
@@ -248,7 +227,7 @@ class Drawing(Gtk.DrawingArea):
           event_y = event.y
 
           weekday = int(event_x / self.day_width)
-          day = self.view_start_day + datetime.timedelta(weekday)
+          day = self.first_day + datetime.timedelta(weekday)
 
           if self.drag_action == "expand_left":
             diff = start_date - day
@@ -265,7 +244,7 @@ class Drawing(Gtk.DrawingArea):
             pass
 
           else:
-            new_start_day = self.view_start_day + datetime.timedelta(days = weekday)
+            new_start_day = self.first_day + datetime.timedelta(days = weekday)
             new_due_day = new_start_day + datetime.timedelta(days = duration)
             task.set_start_date(new_start_day)
             task.set_due_date(new_due_day)
@@ -297,14 +276,12 @@ class Drawing(Gtk.DrawingArea):
           event_y = event.y
           weekday = int(event_x / self.day_width)
 
-          #task = self.req.get_task(self.selected_task)
           task = self.selected_task.task
-          #task.set_selected(True)
           start = task.get_start_date().date()
           end = task.get_due_date().date()
           duration = (end - start).days
 
-          new_start_day = self.view_start_day + datetime.timedelta(days = weekday)
+          new_start_day = self.first_day + datetime.timedelta(days = weekday)
           if self.drag_action == "expand_right":
             new_start_day = task.get_start_date().date()
           new_due_day = new_start_day + datetime.timedelta(days = duration)
@@ -331,20 +308,16 @@ class Drawing(Gtk.DrawingArea):
           ctx.clip()
 
         # resize drawing area
-        self.compute_size()#ctx)
+        self.compute_size()
 
-        self.background.set_day_width(self.day_width)
+        self.background.set_column_width(self.day_width)
         self.background.draw(ctx, self.get_allocation(), highlight_col=self.today_column)
+
         # printing header
-        #self.print_header(ctx)
         self.header.set_day_width(self.day_width)
-        #self.header.set_days(self.days)
         self.header.draw(ctx)
 
         # drawing all tasks
-        #task_ids = self.req.get_tasks_tree()
-        #tasks = [self.req.get_task(t) for t in task_ids]
-        #for pos, task in enumerate(self.tasks):
         for pos, drawtask in enumerate(self.tasks):
             if self.selected_task \
             and self.selected_task.get_id() == drawtask.get_id():
@@ -352,5 +325,4 @@ class Drawing(Gtk.DrawingArea):
             else:
               selected = False
             drawtask.set_day_width(self.day_width)
-            drawtask.draw(ctx, pos, self.view_start_day, self.view_end_day, selected)
-            #self.draw_task(ctx, task, pos)
+            drawtask.draw(ctx, pos, self.first_day, self.last_day, selected)

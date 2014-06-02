@@ -2,6 +2,7 @@
 import cairo
 import datetime
 from tasks import Task
+from drawing import HEADER_SIZE
 
 TASK_HEIGHT = 30
 
@@ -40,12 +41,10 @@ def rounded_edges_or_pointed_ends_rectangle(ctx, x, y, w, h, r=8, arrow_right=Fa
 
 class DrawTask():
     def __init__(self, task):
-        #super(Task, self).__init__()
         self.task = task
         self.position = (None, None, None, None)
         self.selected = False
         self.PADDING = 5
-        self.header_size = 40
 
     def get_id(self):
         return self.task.get_id()
@@ -59,25 +58,24 @@ class DrawTask():
     def get_position(self):
         return self.position
 
-    def draw(self, ctx, pos, start_day, end_day, selected=False): #area):
-    #def draw_task(self, ctx, task, pos):
+    def draw(self, ctx, pos, start_day, end_day, selected=False):
         """
         Draws a given @task in a relative postion @pos.
 
         @param ctx: a Cairo context
         """
         # avoid tasks overflowing to/from next/previous weeks
-        view_start_day = start_day
-        view_end_day = end_day
+        first_day = start_day
+        last_day = end_day
 
         overflow_l = overflow_r = False
-        if self.task.get_start_date().date() < view_start_day:
+        if self.task.get_start_date().date() < first_day:
           overflow_l = True
-        if self.task.get_due_date().date() > view_end_day:
+        if self.task.get_due_date().date() > last_day:
           overflow_r = True
 
-        start = (max(self.task.get_start_date().date(), view_start_day) - view_start_day).days
-        end = (min(self.task.get_due_date().date(), view_end_day) - view_start_day).days
+        start = (max(self.task.get_start_date().date(), first_day) - first_day).days
+        end = (min(self.task.get_due_date().date(), last_day) - first_day).days
         duration = end - start + 1
         label = self.task.get_title()
         complete = self.task.get_status()
@@ -93,7 +91,7 @@ class DrawTask():
 
         # getting bounding box rectangle for task duration
         base_x = start * self.day_width
-        base_y = self.header_size + pos * TASK_HEIGHT
+        base_y = HEADER_SIZE + pos * TASK_HEIGHT
         width = duration * self.day_width
         height = TASK_HEIGHT
         base_y += self.PADDING
@@ -109,14 +107,12 @@ class DrawTask():
                                                 arrow_right=overflow_r, arrow_left=overflow_l)
 
         # keep record of positions for discovering task when using drag and drop
-        #self.task_positions[task.get_id()] = (base_x, base_y, width, height)
         self.set_position(base_x, base_y, width, height)
 
         color = self.task.get_color()
 
         # selected task in yellow
         if selected:
-        #if self.selected_task == self.get_id():
           color = (0.8, 0.8, 0)
 
         # create gradient
@@ -135,7 +131,7 @@ class DrawTask():
         ctx.set_source_rgba(1, 1, 1, alpha)
         (x, y, w, h, dx, dy) = ctx.text_extents(label)
         base_x = (start+duration/2.0) * self.day_width - w/2.0
-        base_y = self.header_size + pos*TASK_HEIGHT + (TASK_HEIGHT)/2.0 + h
+        base_y = HEADER_SIZE + pos*TASK_HEIGHT + (TASK_HEIGHT)/2.0 + h
         #base_y += self.PADDING
         ctx.move_to(base_x, base_y)
         ctx.text_path(label)
