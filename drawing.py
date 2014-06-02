@@ -4,26 +4,55 @@ import cairo
 import datetime
 from calendar import monthrange
 from tasks import Task
-from drawtask import DrawTask
+from drawtask import DrawTask, TASK_HEIGHT
 from datastore import DataStore
 from dates import Date
 from requester import Requester
 from utils import date_generator
 
+HEADER_SIZE = 40
+
 class Background:
     """
     A simple background that draws a white rectangle the size of the area.
     """
-    def draw(self, ctx, area):
-        ctx.rectangle(area.x, area.y,
-                      area.width, area.height)
+    def __init__(self):
+        self.draw_grid = True
+
+    def set_day_width(self, day_width):
+        self.day_width = day_width
+
+    def draw(self, ctx, area, highlight_col=3):
+        #ctx.rectangle(area.x, area.y, area.width, area.height)
         #ctx.set_source_rgb(1, 1, 1) # white
         #ctx.fill()
+
+        # column to be highlighted has a different color
+        if highlight_col is not None:
+          ctx.set_source_rgba(1, 1, 1, 0.5) # white
+          ctx.rectangle(self.day_width*highlight_col, area.y, self.day_width, area.height)
+          ctx.fill()
+
+        if self.draw_grid:
+
+          ctx.set_source_rgb(0.35, 0.31, 0.24)
+          ctx.move_to(0, HEADER_SIZE)
+          ctx.line_to(area.width, HEADER_SIZE)
+          ctx.stroke()
+
+          ctx.move_to(0, 0)
+          ctx.line_to(area.width, 0)
+          ctx.stroke()
+
+          ctx.set_source_rgba(0.35, 0.31, 0.24, 0.15)
+          for i in range(0, 31):
+              ctx.move_to(i*self.day_width, HEADER_SIZE)
+              ctx.line_to(i*self.day_width, area.width)
+              ctx.stroke()
     
 class Header:
     def __init__(self, days=None, day_width=None):
         self.days = days
-        self.header_size = 40
         self.day_width = day_width
 
     def set_day_width(self, day_width):
@@ -38,12 +67,13 @@ class Header:
 
         @param ctx: a Cairo context
         """
-        ctx.set_source_rgb(0.35, 0.31, 0.24) 
+        ctx.set_source_rgba(0.35, 0.31, 0.24)
         for i in range(0, len(self.days)+1):
-            ctx.move_to(i*self.day_width, 5)
-            ctx.line_to(i*self.day_width, 35)
+            ctx.move_to(i*self.day_width, 0)
+            ctx.line_to(i*self.day_width, HEADER_SIZE)
             ctx.stroke()
 
+        ctx.set_source_rgb(0.35, 0.31, 0.24)
         for i in range(0, len(self.days)):
             (x, y, w, h, dx, dy) = ctx.text_extents(self.days[i][1])
             ctx.move_to(i*self.day_width - (w-self.day_width)/2.0, 15)
@@ -92,9 +122,6 @@ class Drawing(Gtk.DrawingArea):
         #self.view_start_day = start
         #self.view_end_day = end
  
-        self.header_size = 40
-        self.task_height = 30
-
         # help on the control of resizing the main window (parent)
         #FIXME: hard-coded
         #self.resize_main = True
@@ -121,6 +148,8 @@ class Drawing(Gtk.DrawingArea):
         self.view_start_day = start
         self.numdays = numdays
         self.view_end_day = start + datetime.timedelta(days=numdays-1)
+        self.today_column = (datetime.date.today() - self.view_start_day).days
+
 
     def set_days(self, days):
         self.days = days
@@ -142,7 +171,7 @@ class Drawing(Gtk.DrawingArea):
         num_tasks = len(self.tasks)
 
         width = self.numdays * self.day_width
-        height = num_tasks * self.task_height + self.header_size
+        height = num_tasks * TASK_HEIGHT + HEADER_SIZE
 
         self.set_size_request(width, height)
 
@@ -196,7 +225,7 @@ class Drawing(Gtk.DrawingArea):
           duration = end - start
 
           offset = (start * self.day_width) - event.x
-          #offset_y = self.header_size + pos * self.task_height - event.y
+          #offset_y = HEADER_SIZE + pos * TASK_HEIGHT - event.y
           if self.drag_action == "expand_right":
             offset += duration * self.day_width
           self.drag_offset = offset
@@ -260,7 +289,7 @@ class Drawing(Gtk.DrawingArea):
           return
 
         rect = self.get_allocation()
-        if not self.header_size < event.y < rect.height:
+        if not HEADER_SIZE < event.y < rect.height:
           # do something in the future
           pass
         else:
@@ -304,7 +333,8 @@ class Drawing(Gtk.DrawingArea):
         # resize drawing area
         self.compute_size()#ctx)
 
-        self.background.draw(ctx, self.get_allocation())
+        self.background.set_day_width(self.day_width)
+        self.background.draw(ctx, self.get_allocation(), highlight_col=self.today_column)
         # printing header
         #self.print_header(ctx)
         self.header.set_day_width(self.day_width)

@@ -3,6 +3,8 @@ import cairo
 import datetime
 from tasks import Task
 
+TASK_HEIGHT = 30
+
 def rounded_edges_or_pointed_ends_rectangle(ctx, x, y, w, h, r=8, arrow_right=False,
                                             arrow_left=False):
   """
@@ -43,7 +45,6 @@ class DrawTask():
         self.position = (None, None, None, None)
         self.selected = False
         self.PADDING = 5
-        self.task_height = 30
         self.header_size = 40
 
     def get_id(self):
@@ -92,9 +93,10 @@ class DrawTask():
 
         # getting bounding box rectangle for task duration
         base_x = start * self.day_width
-        base_y = self.header_size + pos * self.task_height
+        base_y = self.header_size + pos * TASK_HEIGHT
         width = duration * self.day_width
-        height = self.task_height
+        height = TASK_HEIGHT
+        base_y += self.PADDING
         height -= self.PADDING
 
         # restrict drawing to exposed area, so that no unnecessary drawing is done
@@ -133,8 +135,8 @@ class DrawTask():
         ctx.set_source_rgba(1, 1, 1, alpha)
         (x, y, w, h, dx, dy) = ctx.text_extents(label)
         base_x = (start+duration/2.0) * self.day_width - w/2.0
-        base_y = self.header_size + pos*self.task_height + (self.task_height)/2.0 + h
-        base_y -= self.PADDING
+        base_y = self.header_size + pos*TASK_HEIGHT + (TASK_HEIGHT)/2.0 + h
+        #base_y += self.PADDING
         ctx.move_to(base_x, base_y)
         ctx.text_path(label)
         ctx.stroke()

@@ -116,6 +116,7 @@ class CalendarPlugin(GObject.GObject):
         #self.drawing.set_view_days(self.view_start_day, self.view_end_day)
         #self.drawing = Drawing(self, self.ds, view_type)
 
+        self.today_button = builder.get_object("today")
         self.header = builder.get_object("header")
         self.combobox = builder.get_object("combobox")
         self.combobox.set_active(1)
@@ -134,6 +135,15 @@ class CalendarPlugin(GObject.GObject):
         if self.view_start_day.year != self.view_end_day.year:
           return ("%s / %s" % (self.view_start_day.year, self.view_end_day.year))
         return str(self.view_start_day.year)
+
+    def is_today_being_shown(self):
+        """
+        Returns true if the date for today is being
+        shown in the current view
+        """
+        today = datetime.date.today()
+        return today >= self.view_start_day \
+           and today <= self.view_end_day
 
     def is_in_this_view_range(self, task):
         """
@@ -165,6 +175,7 @@ class CalendarPlugin(GObject.GObject):
         self.days = date_generator(start_day, numdays)
         self.view_end_day = start_day + datetime.timedelta(days=self.numdays-1)
         self.update_content_to_draw()
+        self.today_button.set_sensitive(not self.is_today_being_shown())
 
     def set_view_type(self, view_type):
         """
