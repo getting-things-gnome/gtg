@@ -17,6 +17,7 @@
         <property name="height_request">280</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
+        <property name="spacing">5</property>
         <child>
           <object class="GtkHBox" id="hbox">
             <property name="visible">True</property>
@@ -79,58 +80,16 @@
               </packing>
             </child>
             <child>
-              <object class="GtkHButtonBox" id="hbuttonbox_views">
+              <object class="GtkComboBoxText" id="combobox">
+                <property name="width_request">100</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="spacing">1</property>
-                <property name="homogeneous">True</property>
-                <child>
-                  <object class="GtkButton" id="week">
-                    <property name="label">Week</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="can_default">True</property>
-                    <property name="has_default">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="use_action_appearance">False</property>
-                    <signal name="clicked" handler="on_week_clicked" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">False</property>
-                    <property name="position">0</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkButton" id="2weeks">
-                    <property name="label">2 Weeks</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="use_action_appearance">False</property>
-                    <signal name="clicked" handler="on_2weeks_clicked" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">False</property>
-                    <property name="position">1</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkButton" id="month">
-                    <property name="label">Month</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="use_action_appearance">False</property>
-                    <signal name="clicked" handler="on_month_clicked" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">False</property>
-                    <property name="position">2</property>
-                  </packing>
-                </child>
+                <signal name="changed" handler="on_combobox_changed" swapped="no"/>
+                <items>
+                  <item translatable="yes" id="week">Week</item>
+                  <item translatable="yes" id="2weeks">2 Weeks</item>
+                  <item translatable="yes" id="month">Month</item>
+                </items>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -150,8 +109,8 @@
           <object class="GtkScrolledWindow" id="scrolledwindow">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
-            <property name="hscrollbar_policy">never</property>
             <property name="vscrollbar_policy">always</property>
+            <property name="hscrollbar_policy">never</property>
             <child>
               <placeholder/>
             </child>

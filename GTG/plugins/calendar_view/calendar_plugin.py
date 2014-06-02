@@ -63,8 +63,9 @@ class CalendarPlugin(GObject.GObject):
     This class is a plugin to display tasks into a dedicated view, where tasks
     can be selected, edited, moved around by dragging and dropping, etc.
     """
-    def __init__(self, view_type="2weeks"):
+    def __init__(self, view_type="2 Weeks"):
         super(CalendarPlugin, self).__init__()
+        self.view_start_day = self.view_end_day = self.numdays = None
 
         builder = Gtk.Builder()
         builder.add_from_file("calendar_view.glade")
@@ -72,9 +73,7 @@ class CalendarPlugin(GObject.GObject):
             "on_window_destroy": Gtk.main_quit,
             "on_window_size_allocate": self.on_window_size_allocate,
             "on_today_clicked": self.on_today_clicked,
-            "on_week_clicked": self.on_week_clicked,
-            "on_2weeks_clicked": self.on_2weeks_clicked,
-            "on_month_clicked": self.on_month_clicked,
+            "on_combobox_changed": self.on_combobox_changed,
             "on_add_clicked": self.on_add_clicked,
             "on_edit_clicked": self.on_edit_clicked,
             "on_remove_clicked": self.on_remove_clicked,
@@ -118,13 +117,14 @@ class CalendarPlugin(GObject.GObject):
         #self.drawing = Drawing(self, self.ds, view_type)
 
         self.header = builder.get_object("header")
+        self.combobox = builder.get_object("combobox")
+        self.combobox.set_active(1)
 
         self.statusbar = builder.get_object("statusbar")
         self.label = builder.get_object("label")
 
         self.scroll.add_with_viewport(self.drawing)
 
-        self.view_start_day = self.view_end_day = self.numdays = None
         self.set_view_type(view_type)
 
         self.window.show_all()
@@ -172,7 +172,7 @@ class CalendarPlugin(GObject.GObject):
         days to show, as well as the minimum width of each day to be drawn.
 
         @param view_type: string, indicates the view to be displayed.
-        It can be either "week", "2weeks" or "month"
+        It can be either "Week", "2 Weeks" or "Month"
         """
         self.view_type = view_type
         if not self.view_start_day:
@@ -180,15 +180,15 @@ class CalendarPlugin(GObject.GObject):
         else:
           start_day = self.view_start_day
 
-        if view_type == "week":
+        if view_type == "Week":
           start_day -= datetime.timedelta(days=start_day.weekday())
           self.set_numdays(7)
           self.min_day_width = 60
-        elif view_type == "2weeks":
+        elif view_type == "2 Weeks":
           start_day -= datetime.timedelta(days=start_day.weekday())
           self.set_numdays(14)
           self.min_day_width = 50
-        elif view_type == "month":
+        elif view_type == "Month":
           self.set_numdays(monthrange(start_day.year, start_day.month)[1])
           start_day -= datetime.timedelta(days=start_day.day-1)
           self.min_day_width = 40
@@ -364,23 +364,16 @@ class CalendarPlugin(GObject.GObject):
     def on_today_clicked(self, button):
         #button.set_sensitive(False)
         start_day = datetime.date.today()
-        if self.view_type == "month":
+        if self.view_type == "Month":
           start_day -= datetime.timedelta(days=start_day.day-1)
         else:
           start_day -= datetime.timedelta(days=start_day.weekday())
         self.set_view_days(start_day)
         self.update()
 
-    def on_week_clicked(self, button):
-        self.set_view_type("week")
-        self.update()
-
-    def on_2weeks_clicked(self, button):
-        self.set_view_type("2weeks")
-        self.update()
-
-    def on_month_clicked(self, button):
-        self.set_view_type("month")
+    def on_combobox_changed(self, combo):
+        view_type = combo.get_active_text()
+        self.set_view_type(view_type)
         self.update()
 
     def update(self):
