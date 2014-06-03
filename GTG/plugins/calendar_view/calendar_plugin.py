@@ -198,15 +198,12 @@ class CalendarPlugin(GObject.GObject):
           self.set_numdays(14)
           self.min_day_width = 50
         elif view_type == "Month":
-          self.set_numdays(monthrange(start_day.year, start_day.month)[1])
+          self.set_numdays(31) #monthrange(start_day.year, start_day.month)[1])
           start_day -= datetime.timedelta(days=start_day.day-1)
           self.min_day_width = 40
         else: # error check
           exit(-1)
-        #self.resize_main = True #FIXME: allow resize back
-
         self.set_view_days(start_day, self.numdays)
-        #self.on_window_size_allocate()
 
     def update_tasks_to_show(self):
         tasks = [self.req.get_task(t) for t in self.req.get_tasks_tree()]
@@ -224,6 +221,7 @@ class CalendarPlugin(GObject.GObject):
         """
         Compute and request right size for the drawing area.
         """
+        #FIXME: not working properly
         rect = self.window.get_allocation()
         sidebar = 25
         rect.width -= sidebar
@@ -341,24 +339,34 @@ class CalendarPlugin(GObject.GObject):
         if not days:
           days = self.numdays
 
-          # if the current first view day is not Monday, advances to the
-          # beginning of next week instead of advancing @numdays
-          # FIXME: do the same for month view
-          if start.weekday() != 0:
-            days = self.numdays - start.weekday()
+        # if no days were given, and we are not at the beginning of a week/month
+        # advances to the beginning of the next one isntead of advancing @numdays
+          if self.view_type == "Month":
+            if start.day != 1:
+              #FIXME: months should have different numdays
+              numdays = monthrange(self.first_day.year, self.first_day.month)[1]
+              days = numdays - start.day + 1
+          else: #weeks
+            if start.weekday() != 0:
+              days = self.numdays - start.weekday()
+
         self.set_view_days(start + datetime.timedelta(days=days))
         self.update()
 
     def on_previous_clicked(self, button, days=None):
         """ Regresses the dates being displayed by a given number of @days """
         start = self.first_day
+        # if no days were given, and we are not at the beginning of a week/month
+        # goes back to the beginning of it isntead of going back @numdays
         if not days:
           days = self.numdays
-          # if the current first view day is not Monday, goes back to the
-          # beginning of the current week one instead of regressing @numdays
-          # FIXME: do the same for month view
-          if start.weekday() != 0:
-            days = start.weekday()
+          if self.view_type == "Month":
+            #FIXME: months should have different numdays
+            if start.day != 1:
+              days = start.day - 1
+          else: #weeks
+            if start.weekday() != 0:
+              days = start.weekday()
 
         self.set_view_days(start - datetime.timedelta(days=days))
         self.update()
