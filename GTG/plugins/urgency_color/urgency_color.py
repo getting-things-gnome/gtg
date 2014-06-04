@@ -61,9 +61,9 @@ class pluginUrgencyColor:
             return None
 
     def _get_gradient_color(self, color1, color2, position):
-        """This function returns a string in the hexadecimal form of Gdk.Color 
-        which corresponds to the position (a float value from 0 to 1) in the 
-        gradient formed by the colors color1 and color2, both of type Gdk.Color"""
+        """This function returns a string in the hexadecimal form of Gdk.Color
+        which corresponds to the position (a float value from 0 to 1) in the
+        gradient formed by color1 & color2, both of type Gdk.Color"""
         color1 = Gdk.color_parse(color1)
         color2 = Gdk.color_parse(color2)
         R1, G1, B1 = color1.red, color1.green, color1.blue
