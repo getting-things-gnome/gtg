@@ -1,11 +1,12 @@
 from gi.repository import GObject
 
+
 class Requester(GObject.GObject):
-    """ 
+    """
     A view on a GTG datastore.
     L{Requester} is a stateless object that simply provides a nice
     API for user interfaces to use for datastore operations.
-    """ 
+    """
 
     def __init__(self, datastore):
         """Construct a L{Requester}."""

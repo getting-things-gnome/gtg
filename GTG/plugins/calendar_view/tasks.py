@@ -1,41 +1,39 @@
-#from datetime import datetime
 import cgi
-import re
-import uuid
 import xml.dom.minidom
 
 from dates import Date
 
-class Task(object): #TreeNode):
+
+class Task(object):  # TreeNode):
     STA_ACTIVE = "Active"
     STA_DISMISSED = "Dismiss"
     STA_DONE = "Done"
 
-    def __init__(self, ze_id, newtask=False): #, requester, newtask=False):
-        #TreeNode.__init__(self, ze_id)
+    def __init__(self, ze_id, newtask=False):  # , requester, newtask=False):
+        # TreeNode.__init__(self, ze_id)
         assert(isinstance(ze_id, str) or isinstance(ze_id, str))
         self.tid = str(ze_id)
-        #self.set_uuid(uuid.uuid4())
+        # self.set_uuid(uuid.uuid4())
         self.content = ""
         self.title = ("My new task")
         self.status = self.STA_ACTIVE
         self.closed_date = Date.no_date()
         self.due_date = Date.no_date()
         self.start_date = Date.no_date()
-        #self.can_be_deleted = newtask
+        # self.can_be_deleted = newtask
         self.tags = []
-        #self.req = requester
-        #self.attributes = {}
-        #self._modified_update()
+        # self.req = requester
+        # self.attributes = {}
+        # self._modified_update()
         self.color = None
 
     def get_id(self):
         return str(self.tid)
 
-    #def set_uuid(self, value):
+    # def set_uuid(self, value):
     #    self.uuid = str(value)
 
-    #def get_uuid(self):
+    # def get_uuid(self):
     #    if self.uuid == "":
     #        self.set_uuid(uuid.uuid4())
     #    return str(self.uuid)
@@ -64,14 +62,14 @@ class Task(object): #TreeNode):
     def set_due_date(self, new_duedate):
         new_duedate_obj = Date(new_duedate)  # caching the conversion
         self.due_date = new_duedate_obj
-        
+
     def get_due_date(self):
         return self.due_date
 
     def set_start_date(self, fulldate):
         self.start_date = Date(fulldate)
-        #if Date(fulldate) > self.due_date:
-            #self.set_due_date(fulldate)
+        # if Date(fulldate) > self.due_date:
+        #     self.set_due_date(fulldate)
 
     def get_start_date(self):
         return self.start_date
@@ -120,7 +118,7 @@ class Task(object): #TreeNode):
         # Return a copy of the list of tags. Not the original object.
         return list(self.tags)
 
-    def set_color(self, color=(0.5,0.5,0.5)):
+    def set_color(self, color):
         self.color = color
 
     def get_color(self):

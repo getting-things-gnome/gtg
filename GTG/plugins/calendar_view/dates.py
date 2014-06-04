@@ -44,8 +44,10 @@ ISODATE = '%Y-%m-%d'
 # get date format from locale
 locale_format = locale.nl_langinfo(locale.D_FMT)
 
+
 def convert_datetime_to_date(aday):
     return datetime.date(aday.year, aday.month, aday.day)
+
 
 class Date(object):
     _real_date = None
@@ -95,6 +97,7 @@ class Date(object):
     def tomorrow(cls):
         """ Return date for tomorrow """
         return Date(datetime.date.today() + datetime.timedelta(1))
+
     @classmethod
     def no_date(cls):
         """ Return date representing no (set) date """

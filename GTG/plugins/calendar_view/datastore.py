@@ -1,9 +1,9 @@
-import re
 import uuid
 import random
 
 from tasks import Task
 from requester import Requester
+
 
 class DataStore(object):
     def __init__(self):
@@ -19,13 +19,11 @@ class DataStore(object):
         return self.requester
 
     def get_tasks_tree(self):
-        #return list(self._tasks.values())
         return self._tasks
 
     def get_all_tasks(self):
         """ Returns a list of strings: tasks ids """
         return list(self._tasks.keys())
-        #return list(self._tasks.values())
 
     def get_task(self, tid):
         if self.has_task(tid):
@@ -51,26 +49,24 @@ class DataStore(object):
 
     def request_task_deletion(self, tid):
         self.requester.delete_task(tid)
-        #if self.has_task(tid):
+        # if self.has_task(tid):
         #    del self._tasks[tid]
         #    return True
-        #else:
+        # else:
         #    return False
 
     def populate(self, ex_tasks):
         # ex_tasks[] = [title, start_date, due_date, done?]
         for i in range(0, len(ex_tasks)):
-            new_task = self.new_task() 
+            new_task = self.new_task()
             new_task.set_title(ex_tasks[i][0])
             new_task.set_start_date(ex_tasks[i][1])
             new_task.set_due_date(ex_tasks[i][2])
             if ex_tasks[i][3]:
                 new_task.set_status(Task.STA_DONE)
             new_task.set_color(ex_tasks[i][4])
-            #print(new_task)
 
     def get_random_task(self):
         if self._tasks:
             return random.choice(list(self._tasks.keys()))
         return None
-
