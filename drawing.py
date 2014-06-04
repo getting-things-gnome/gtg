@@ -13,6 +13,11 @@ HEADER_SIZE = 40
 
 from drawtask import DrawTask, TASK_HEIGHT
 
+def convert_coordinates_to_grid(pos_x, pos_y, width, height, header_x=0.0, header_y=0.0):
+  grid_x = (pos_x - header_x) / width
+  grid_y = (pos_y - header_y) / height
+  return int(grid_x), int(grid_y)
+
 class Background:
     """
     A class to draw everything regarding the background, such as
@@ -25,7 +30,7 @@ class Background:
     def set_column_width(self, column_width):
         self.column_width = column_width
 
-    def draw(self, ctx, area, highlight_col=3):
+    def draw(self, ctx, area, highlight_col=None):
         #ctx.rectangle(area.x, area.y, area.width, area.height)
         #ctx.set_source_rgb(1, 1, 1) # white
         #ctx.fill()
@@ -117,6 +122,7 @@ class Drawing(Gtk.DrawingArea):
         self.set_tasks_to_show(tasks)
 
         self.connect("draw", self.draw)
+        self.connect("size-allocate", self.on_size_allocate)
 
         # drag-and-drop support
         self.add_events(Gdk.EventMask.BUTTON_PRESS_MASK
@@ -130,6 +136,17 @@ class Drawing(Gtk.DrawingArea):
         self.drag_offset = None
         self.drag_action = None
         self.drag = None
+
+    def set_view_type(self, view_type):
+        if view_type == "Week":
+          self.min_day_width = 60
+        elif view_type == "2 Weeks":
+          self.min_day_width = 50
+        elif view_type == "Month":
+          self.min_day_width = 40
+        width = self.min_day_width*self.numdays
+        height = TASK_HEIGHT*len(self.tasks)+HEADER_SIZE
+        self.set_size_request(width, height)
 
     def set_day_width(self, day_width):
         self.day_width = day_width
@@ -149,14 +166,22 @@ class Drawing(Gtk.DrawingArea):
         tasks = [DrawTask(t) for t in tasks]
         self.tasks = tasks
 
-    def compute_size(self):
+    def on_size_allocate(self, widget=None, event=None):
         """
-        Compute and request right size for the drawing area.
+        Calculates new day_width and area for drawingarea
+        when window is resized
         """
+        rect = self.get_allocation()
+        self.day_width = self.min_day_width
+        if self.min_day_width * self.numdays < rect.width:
+          self.day_width = rect.width / float(self.numdays)
+
         num_tasks = len(self.tasks)
         width = self.numdays * self.day_width
         height = num_tasks * TASK_HEIGHT + HEADER_SIZE
-        self.set_size_request(width, height)
+
+        self.set_day_width(self.day_width)
+        #return(rect.x, rect.y, width, height)
 
 
     def identify_pointed_object(self, event, clicked=False):
@@ -168,6 +193,7 @@ class Drawing(Gtk.DrawingArea):
         @param clicked: bool, indicates whether or not the user clicked on the
         object being pointed
         """
+        #print(event.x, event.y, convert_coordinates_to_grid(event.x, event.y, self.day_width, TASK_HEIGHT, header_y=HEADER_SIZE))
         const = 10
         cursor = Gdk.Cursor.new(Gdk.CursorType.ARROW)
         for task in self.tasks:
@@ -297,18 +323,12 @@ class Drawing(Gtk.DrawingArea):
         #self.selected_task = None
         self.queue_draw()
 
-    def draw(self, widget, ctx, event=None):
+    def draw(self, widget, ctx):
         """ Draws everything inside the DrawingArea """
         ctx.set_line_width(0.8)
         ctx.select_font_face(self.FONT, cairo.FONT_SLANT_NORMAL,
                              cairo.FONT_WEIGHT_NORMAL)
         ctx.set_font_size(12)
-        if event:
-          ctx.rectangle(event.area.x, event.area.y, event.area.width, event.area.height)
-          ctx.clip()
-
-        # resize drawing area
-        self.compute_size()
 
         self.background.set_column_width(self.day_width)
         self.background.draw(ctx, self.get_allocation(), highlight_col=self.today_column)

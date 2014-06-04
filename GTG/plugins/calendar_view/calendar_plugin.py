@@ -63,7 +63,7 @@ class CalendarPlugin(GObject.GObject):
     This class is a plugin to display tasks into a dedicated view, where tasks
     can be selected, edited, moved around by dragging and dropping, etc.
     """
-    def __init__(self, view_type="2 Weeks"):
+    def __init__(self):
         super(CalendarPlugin, self).__init__()
         self.first_day = self.last_day = self.numdays = None
 
@@ -71,7 +71,6 @@ class CalendarPlugin(GObject.GObject):
         builder.add_from_file("calendar_view.glade")
         handlers = {
             "on_window_destroy": Gtk.main_quit,
-            "on_window_size_allocate": self.on_window_size_allocate,
             "on_today_clicked": self.on_today_clicked,
             "on_combobox_changed": self.on_combobox_changed,
             "on_add_clicked": self.on_add_clicked,
@@ -117,7 +116,8 @@ class CalendarPlugin(GObject.GObject):
         self.today_button = builder.get_object("today")
         self.header = builder.get_object("header")
         self.combobox = builder.get_object("combobox")
-        self.combobox.set_active(1)
+        self.combobox.set_active(0)
+        view_type = self.combobox.get_active_text()
 
         self.statusbar = builder.get_object("statusbar")
         self.label = builder.get_object("label")
@@ -204,6 +204,7 @@ class CalendarPlugin(GObject.GObject):
         else: # error check
           exit(-1)
         self.set_view_days(start_day, self.numdays)
+        self.drawing.set_view_type(view_type)
 
     def update_tasks_to_show(self):
         tasks = [self.req.get_task(t) for t in self.req.get_tasks_tree()]
@@ -216,25 +217,6 @@ class CalendarPlugin(GObject.GObject):
         self.drawing.set_days(self.days)
         self.drawing.set_view_days(self.first_day, self.numdays)
         self.update_tasks_to_show()
-
-    def on_window_size_allocate(self, widget=None, event=None):
-        """
-        Compute and request right size for the drawing area.
-        """
-        #FIXME: not working properly
-        rect = self.window.get_allocation()
-        sidebar = 25
-        rect.width -= sidebar
-        self.day_width = self.min_day_width
-        if self.min_day_width * self.numdays < rect.width:
-          self.day_width = rect.width / float(self.numdays)
-
-        width = self.numdays * self.day_width
-        height = rect.height
-
-        self.window.set_size_request(width, height)
-
-        self.drawing.set_day_width(self.day_width)
 
     def on_scroll(self, widget, event):
         """
