@@ -80,15 +80,15 @@ class pluginUrgencyColor:
         ddate = node.get_due_date()
         daysleft = ddate.days_left()
 
-        # Dates undefined (Fix to bug #1039655)
+        # Dates undefined
         if (ddate == Date.today()):
             return self._get_color(2)  # High urgency
-        elif (daysleft < 0 and ddate != Date.no_date()):
-            return self._get_color(3)  # Overdue
-        elif (sdate == Date.no_date()  # Has no start date
-                and ddate != Date.no_date()  # and a due date
-                and not ddate.is_fuzzy()):  # which is not fuzzy, is fixed
-            return self._get_color(1)  # Normal
+        elif ddate != Date.no_date():  # Has a due date
+            if daysleft < 0:
+                return self._get_color(3)  # Overdue
+            elif (sdate == Date.no_date()  # Has no start date
+                    and not ddate.is_fuzzy()):  # Due date is not fuzzy
+                return self._get_color(1)  # Normal
 
         # Fuzzy dates (now, soon, someday)
         # These can ignore the start date
