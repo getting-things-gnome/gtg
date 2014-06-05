@@ -3,10 +3,10 @@ from gi.repository import Gtk, Gdk, GObject
 import datetime
 from calendar import monthrange
 import random
+
 from tasks import Task
 from datastore import DataStore
 from requester import Requester
-
 from utils import random_color, date_generator
 from drawing import Drawing
 
@@ -387,6 +387,7 @@ class CalendarPlugin(GObject.GObject):
         self.update()
 
     def update(self):
+        self.drawing.compute_size()
         self.drawing.queue_draw()
 
 CalendarPlugin()
