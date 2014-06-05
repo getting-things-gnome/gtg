@@ -1,6 +1,6 @@
 Calendar Plugin for GTG
 =======================
-A plugin to display a calendar view for Getting Things GNOME!
+A plugin to display a calendar view for [Getting Things GNOME!](http://gtgnome.net/)
 
 !["Screenshot"](screenshot.png)
 
@@ -37,7 +37,7 @@ Make sure you have execute permission, and then run it. Use the following comman
 Authors
 -------
 
-[Sara Ribeiro](http://www.dcc.ufmg.br/~sara") is developing this plugin as an
+[Sara Ribeiro](http://www.dcc.ufmg.br/~sara) is developing this plugin as an
 intern of the GNOME Outreach Program for Women, having Izidor Matušov as the
 mentor of the project.
 
