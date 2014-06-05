@@ -66,6 +66,16 @@
                       </object>
                     </child>
                     <child>
+                      <object class="GtkMenuItem" id="import_task_mi">
+                        <property name="label" translatable="yes">Import _Task</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="tooltip_text" translatable="yes">Create a new task</property>
+                        <property name="use_underline">True</property>
+                        <signal name="activate" handler="on_import_task" swapped="no"/>
+                      </object>
+                    </child>
+                    <child>
                       <object class="GtkSeparatorMenuItem" id="separator_1">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
