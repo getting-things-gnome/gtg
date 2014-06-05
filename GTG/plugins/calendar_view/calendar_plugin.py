@@ -1,13 +1,12 @@
 #!/usr/bin/python3
 from gi.repository import Gtk, Gdk, GObject
 import datetime
-from calendar import monthrange
 import random
 
 from tasks import Task
 from datastore import DataStore
 from requester import Requester
-from utils import random_color, date_generator
+from utils import random_color
 from drawing import Drawing
 
 tests = True
@@ -117,116 +116,19 @@ class CalendarPlugin(GObject.GObject):
         self.req = Requester(self.ds)
         self.ds.populate(ex_tasks)  # hard-coded tasks
 
-        # Pack the Drawing object inside the scrolled window
-        tasks = [self.req.get_task(t) for t in self.req.get_tasks_tree()]
-        self.drawing = Drawing(self, tasks)
+        self.drawing = Drawing(self, self.req)
 
         self.today_button = builder.get_object("today")
         self.header = builder.get_object("header")
         self.combobox = builder.get_object("combobox")
         self.combobox.set_active(0)
-        view_type = self.combobox.get_active_text()
 
         self.statusbar = builder.get_object("statusbar")
         self.label = builder.get_object("label")
 
         self.scroll.add_with_viewport(self.drawing)
 
-        self.set_view_type(view_type)
-
         self.window.show_all()
-
-    def get_current_year(self):
-        """
-        Gets the correspondent year of the days
-        being displayed in the calendar view
-        """
-        if self.first_day.year != self.last_day.year:
-            return ("%s / %s" % (self.first_day.year, self.last_day.year))
-        return str(self.first_day.year)
-
-    def is_today_being_shown(self):
-        """
-        Returns true if the date for today is being
-        shown in the current view
-        """
-        today = datetime.date.today()
-        return today >= self.first_day and today <= self.last_day
-
-    def is_in_this_view_range(self, task):
-        """
-        Returns true if the given @task should be drawn in the current view
-        (either the start or due days are between the start and end day views)
-
-        @ param task: a Task object
-        """
-        return (task.get_due_date().date() >= self.first_day) and \
-               (task.get_start_date().date() <= self.last_day)
-
-    def set_numdays(self, numdays):
-        """ Sets the number of days to be displayed in the calendar view """
-        self.numdays = numdays
-
-    def set_view_days(self, start_day, numdays=None):
-        """
-        Sets the first and the last day the calendar view will show.
-
-        @param start_day: must be a datetime object, first day to be
-        shown in the calendar view
-        @param numdays: integer, number of days to be shown. If none is given,
-        the default self.numdays will be used.
-        """
-        if not numdays:
-            numdays = self.numdays
-        assert(isinstance(start_day, datetime.date))
-        self.first_day = start_day
-        self.days = date_generator(start_day, numdays)
-        self.last_day = start_day + datetime.timedelta(days=self.numdays-1)
-        self.update_content_to_draw()
-        self.today_button.set_sensitive(not self.is_today_being_shown())
-
-    def set_view_type(self, view_type):
-        """
-        Set what kind of view will be displayed. This will determine the number
-        of days to show, as well as the minimum width of each day to be drawn.
-
-        @param view_type: string, indicates the view to be displayed.
-        It can be either "Week", "2 Weeks" or "Month"
-        """
-        self.view_type = view_type
-        if not self.first_day:
-            start_day = datetime.date.today()
-        else:
-            start_day = self.first_day
-
-        if view_type == "Week":
-            start_day -= datetime.timedelta(days=start_day.weekday())
-            self.set_numdays(7)
-            self.min_day_width = 60
-        elif view_type == "2 Weeks":
-            start_day -= datetime.timedelta(days=start_day.weekday())
-            self.set_numdays(14)
-            self.min_day_width = 50
-        elif view_type == "Month":
-            self.set_numdays(31)
-            start_day -= datetime.timedelta(days=start_day.day-1)
-            self.min_day_width = 40
-        else:  # error check
-            exit(-1)
-        self.set_view_days(start_day, self.numdays)
-        self.drawing.set_view_type(view_type)
-
-    def update_tasks_to_show(self):
-        tasks = [self.req.get_task(t) for t in self.req.get_tasks_tree()]
-        tasks = [t for t in tasks if self.is_in_this_view_range(t)]
-        self.drawing.set_tasks_to_show(tasks)
-
-    def update_content_to_draw(self):
-        """ Update dates and tasks to be drawn """
-        self.header.set_text(self.get_current_year())
-        self.drawing.set_days(self.days)
-        self.drawing.set_view_days(self.first_day, self.numdays)
-        self.update_tasks_to_show()
 
     def on_scroll(self, widget, event):
         """
@@ -282,8 +184,7 @@ class CalendarPlugin(GObject.GObject):
             new_task.set_due_date(dialog.due_date.get_text())
             color = random_color()
             new_task.set_color(color)
-            self.update_tasks_to_show()
-            self.update()
+            self.content_update()
         else:
             if tests:
                 self.req.delete_task(new_task.get_id())
@@ -296,7 +197,7 @@ class CalendarPlugin(GObject.GObject):
         for modifying the task title, start and due dates.
         Redraw the calendar view after the changes.
         """
-        task = self.drawing.selected_task.task
+        task = self.drawing.get_selected_task()
         if task:
             dialog = TaskView(self.window, task)
             response = dialog.run()
@@ -310,7 +211,7 @@ class CalendarPlugin(GObject.GObject):
                     task.set_status(Task.STA_DONE)
                 else:
                     task.set_status(Task.STA_ACTIVE)
-                self.update()
+                self.content_update()
             else:
                 self.on_statusbar_text_pushed("...")
             dialog.hide()
@@ -320,75 +221,45 @@ class CalendarPlugin(GObject.GObject):
         Removes the selected task from the datastore and redraw the
         calendar view.
         """
-        task = self.drawing.selected_task.task
+        task = self.drawing.get_selected_task()
         if task:
             self.on_statusbar_text_pushed("Deleted task: %s" %
                                           task.get_title())
             self.req.delete_task(task.get_id())
-            self.drawing.selected_task = None
-            self.update_tasks_to_show()
-            self.update()
+            self.drawing.unselect_task()
+            self.content_update()
         else:
             self.on_statusbar_text_pushed("...")
 
     def on_next_clicked(self, button, days=None):
         """ Advances the dates being displayed by a given number of @days """
-        start = self.first_day
-        if not days:
-            days = self.numdays
-
-        # if no days were given, and we are not at the beginning of a
-        # week/month, advances to the beginning of the next one instead of
-        # advancing @numdays
-            if self.view_type == "Month":
-                if start.day != 1:
-                    # FIXME: months should have different numdays
-                    numdays = monthrange(self.first_day.year,
-                                         self.first_day.month)[1]
-                    days = numdays - start.day + 1
-            else:  # weeks
-                if start.weekday() != 0:
-                    days = self.numdays - start.weekday()
-
-        self.set_view_days(start + datetime.timedelta(days=days))
-        self.update()
+        self.drawing.next(days)
+        self.content_update()
 
     def on_previous_clicked(self, button, days=None):
         """ Regresses the dates being displayed by a given number of @days """
-        start = self.first_day
-        # if no days were given, and we are not at the beginning of a
-        # week/month, goes back to the beginning of it isntead of going back
-        # @numdays
-        if not days:
-            days = self.numdays
-            if self.view_type == "Month":
-                # FIXME: months should have different numdays
-                if start.day != 1:
-                    days = start.day - 1
-            else:  # weeks
-                if start.weekday() != 0:
-                    days = start.weekday()
-
-        self.set_view_days(start - datetime.timedelta(days=days))
-        self.update()
+        self.drawing.previous(days)
+        self.content_update()
 
     def on_today_clicked(self, button):
-        start_day = datetime.date.today()
-        if self.view_type == "Month":
-            start_day -= datetime.timedelta(days=start_day.day-1)
-        else:
-            start_day -= datetime.timedelta(days=start_day.weekday())
-        self.set_view_days(start_day)
-        self.update()
+        """ Show the day corresponding to today """
+        self.drawing.show_today()
+        self.content_update()
 
     def on_combobox_changed(self, combo):
+        """
+        User chose a combobox entry: change the view_type according to it
+        """
         view_type = combo.get_active_text()
-        self.set_view_type(view_type)
-        self.update()
+        self.drawing.set_view_type(view_type)
+        self.content_update()
 
-    def update(self):
-        self.drawing.compute_size()
-        self.drawing.queue_draw()
+    def content_update(self):
+        """ Performs all that is needed to update the content displayed """
+        self.header.set_text(self.drawing.get_current_year())
+        self.today_button.set_sensitive(
+            not self.drawing.is_today_being_shown())
+        self.drawing.update()
 
 CalendarPlugin()
 Gtk.main()
