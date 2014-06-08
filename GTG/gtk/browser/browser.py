@@ -933,7 +933,7 @@ class TaskBrowser(GObject.GObject):
             # popup menu for searches
             if selected_search is not None:
                 self.tagpopup.set_tag(selected_search)
-                self.tagpopup.popup(None, None, None, 0, event.time)
+                self.tagpopup.popup(None, None, None, None, 0, event.time)
             elif len(selected_tags) > 0:
                 # Then we are looking at single, normal tag rather than
                 # the special 'All tags' or 'Tasks without tags'. We only
@@ -977,7 +977,7 @@ class TaskBrowser(GObject.GObject):
             self.on_delete_tasks()
             return True
         elif is_shift_f10 or keyname == "Menu":
-            self.taskpopup.popup(None, None, None, 0, event.time)
+            self.taskpopup.popup(None, None, None, None, 0, event.time)
             return True
 
     def on_closed_task_treeview_button_press_event(self, treeview, event):
@@ -990,7 +990,8 @@ class TaskBrowser(GObject.GObject):
                 path, col, cellx, celly = pthinfo
                 treeview.grab_focus()
                 treeview.set_cursor(path, col, 0)
-                self.ctaskpopup.popup(None, None, None, None, event.button, time)
+                self.ctaskpopup.popup(None, None, None, None, event.button,
+                                      time)
             return True
 
     def on_closed_task_treeview_key_press_event(self, treeview, event):
