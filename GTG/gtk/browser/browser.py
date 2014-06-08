@@ -989,7 +989,7 @@ class TaskBrowser(GObject.GObject):
                 path, col, cellx, celly = pthinfo
                 treeview.grab_focus()
                 treeview.set_cursor(path, col, 0)
-                self.ctaskpopup.popup(None, None, None, event.button, time)
+                self.ctaskpopup.popup(None, None, None, None, event.button, time)
             return True
 
     def on_closed_task_treeview_key_press_event(self, treeview, event):
@@ -1001,7 +1001,7 @@ class TaskBrowser(GObject.GObject):
             self.on_delete_tasks()
             return True
         elif is_shift_f10 or keyname == "Menu":
-            self.ctaskpopup.popup(None, None, None, 0, event.time)
+            self.ctaskpopup.popup(None, None, None, None, 0, event.time)
             return True
 
     def on_add_task(self, widget, status=None):
