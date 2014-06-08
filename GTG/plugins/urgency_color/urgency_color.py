@@ -61,9 +61,9 @@ class pluginUrgencyColor:
             return None
 
     def _get_gradient_color(self, color1, color2, position):
-        """This function returns a Gdk.Color which corresponds to the
-        position (a float value from 0 to 1) in the gradient formed by the
-        colors color1 and color2, both of type Gdk.Color"""
+        """This function returns a string in the hexadecimal form of Gdk.Color
+        which corresponds to the position (a float value from 0 to 1) in the
+        gradient formed by color1 & color2, both of type Gdk.Color"""
         color1 = Gdk.color_parse(color1)
         color2 = Gdk.color_parse(color2)
         R1, G1, B1 = color1.red, color1.green, color1.blue
@@ -71,7 +71,7 @@ class pluginUrgencyColor:
         R = R1 + (R2 - R1) * position
         G = G1 + (G2 - G1) * position
         B = B1 + (B2 - B1) * position
-        return Gdk.Color(int(R), int(G), int(B))
+        return Gdk.Color.to_string(Gdk.Color(int(R), int(G), int(B)))
 
     def get_node_bgcolor(self, node):
         """ This method checks the urgency of a node (task) and returns its
@@ -80,15 +80,15 @@ class pluginUrgencyColor:
         ddate = node.get_due_date()
         daysleft = ddate.days_left()
 
-        # Dates undefined (Fix to bug #1039655)
+        # Dates undefined
         if (ddate == Date.today()):
             return self._get_color(2)  # High urgency
-        elif (daysleft < 0 and ddate != Date.no_date()):
-            return self._get_color(3)  # Overdue
-        elif (sdate == Date.no_date()  # Has no start date
-                and ddate != Date.no_date()  # and a due date
-                and not ddate.is_fuzzy()):  # which is not fuzzy, is fixed
-            return self._get_color(1)  # Normal
+        elif ddate != Date.no_date():  # Has a due date
+            if daysleft < 0:
+                return self._get_color(3)  # Overdue
+            elif (sdate == Date.no_date()  # Has no start date
+                    and not ddate.is_fuzzy()):  # Due date is not fuzzy
+                return self._get_color(1)  # Normal
 
         # Fuzzy dates (now, soon, someday)
         # These can ignore the start date
