@@ -40,6 +40,7 @@
     * Fix for bug #961393: Context menu on an URL should have a "Copy Link Location" command, by Àlex Magaz Graça
     * Fixes #22 : Plugin "Urgency Color" throws TypeError & ValueError, by Parth Panchal
     * Fixes #24 : TypeError : popup() missing 1 required positional argument, by Nimit Shah 
+    * Fixing the TypeError : popup() missing 1 required positional argument, by Sagar Ghuge 
 
 2013-11-24 Getting Things GNOME! 0.3.1
     * Fix for bug #1024473: Have 'Show Main Window' in notification area, by Antonio Roquentin
