@@ -1013,7 +1013,7 @@ class TaskBrowser(GObject.GObject):
         if status:
             self.vmanager.ask_set_task_status(task, status)
         self.vmanager.open_task(uid, thisisnew=True)
-        
+
     def on_import_task(self, widget, status=None):
         print("Hello world!")
 
