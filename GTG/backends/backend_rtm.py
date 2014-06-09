@@ -655,8 +655,9 @@ class RTMProxy(object):
         For an explenation of what are those, see
         http://www.rememberthemilk.com/services/api/tasks.rtm
         '''
-        list_object_wrapper = self.rtm.tasks.getList(list_id=list_id,
-                                                     filter='includeArchived:true').tasks
+        list_object_wrapper = self.rtm.tasks.getList(
+            list_id=list_id,
+            filter='includeArchived:true').tasks
         list_object_list = self.__getattr_the_rtm_way(
             list_object_wrapper, 'list')
         if not list_object_list:
