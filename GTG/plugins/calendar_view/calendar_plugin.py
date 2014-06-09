@@ -7,7 +7,7 @@ from tasks import Task
 from datastore import DataStore
 from requester import Requester
 from utils import random_color
-from drawing import Drawing
+from week_view import WeekView
 
 tests = True
 
@@ -116,7 +116,7 @@ class CalendarPlugin(GObject.GObject):
         self.req = Requester(self.ds)
         self.ds.populate(ex_tasks)  # hard-coded tasks
 
-        self.drawing = Drawing(self, self.req)
+        self.drawing = WeekView(self, self.req)
 
         self.today_button = builder.get_object("today")
         self.header = builder.get_object("header")
@@ -250,9 +250,11 @@ class CalendarPlugin(GObject.GObject):
         """
         User chose a combobox entry: change the view_type according to it
         """
-        view_type = combo.get_active_text()
-        self.drawing.set_view_type(view_type)
-        self.content_update()
+        # FIXME: change between different subclasses: try Gtk.Stack for this
+        # view_type = combo.get_active_text()
+        # self.drawing.set_view_type(view_type)
+        # self.content_update()
+        pass
 
     def content_update(self):
         """ Performs all that is needed to update the content displayed """
