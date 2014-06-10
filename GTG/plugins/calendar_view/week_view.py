@@ -199,9 +199,11 @@ class WeekView(ViewBase, Gtk.DrawingArea):
             event, clicked=True)
 
         if self.selected_task:
-            # double-click
+            # double-click opens task to edit
             if event.type == Gdk.EventType._2BUTTON_PRESS:
-                pass  # open task to edit in future
+                self.par.on_edit_clicked()
+                self.unselect_task()
+                return
             self.drag = True
             widget.get_window().set_cursor(cursor)
             task = self.selected_task.task

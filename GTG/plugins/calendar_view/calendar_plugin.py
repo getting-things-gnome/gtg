@@ -153,7 +153,7 @@ class CalendarPlugin(GObject.GObject):
         self.label.set_text(text)
         # self.statusbar.push(0, text)
 
-    def on_add_clicked(self, button):
+    def on_add_clicked(self, button=None):
         """
         Adds a new task, with the help of a pop-up dialog
         for entering the task title, start and due dates.
@@ -191,7 +191,7 @@ class CalendarPlugin(GObject.GObject):
             self.on_statusbar_text_pushed("...")
         dialog.hide()
 
-    def on_edit_clicked(self, button):
+    def on_edit_clicked(self, button=None):
         """
         Edits the selected task, with the help of a pop-up dialog
         for modifying the task title, start and due dates.
@@ -216,7 +216,7 @@ class CalendarPlugin(GObject.GObject):
                 self.on_statusbar_text_pushed("...")
             dialog.hide()
 
-    def on_remove_clicked(self, button):
+    def on_remove_clicked(self, button=None):
         """
         Removes the selected task from the datastore and redraw the
         calendar view.
