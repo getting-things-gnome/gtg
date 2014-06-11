@@ -332,3 +332,21 @@ class WeekView(ViewBase, Gtk.DrawingArea):
                 selected = False
             drawtask.set_day_width(self.day_width)
             drawtask.draw(ctx, pos, self.first_day, self.last_day, selected)
+
+
+class TwoWeeksView(WeekView):
+    def __init__(self, parent, requester, numdays=14):
+        super(TwoWeeksView, self).__init__(parent, requester)
+        self.numdays = numdays
+        self.min_day_width = 50
+        self.show_today()
+        self.compute_size()
+
+
+class MonthView(WeekView):
+    def __init__(self, parent, requester, numdays=31):
+        super(MonthView, self).__init__(parent, requester)
+        self.numdays = numdays
+        self.min_day_width = 40
+        self.show_today()
+        self.compute_size()

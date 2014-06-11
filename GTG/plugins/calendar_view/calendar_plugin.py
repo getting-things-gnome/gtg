@@ -7,7 +7,9 @@ from tasks import Task
 from datastore import DataStore
 from requester import Requester
 from utils import random_color
-from week_view import WeekView
+from view import ViewBase
+from week_view import WeekView, TwoWeeksView, MonthView
+from controller import Controller
 
 tests = True
 
@@ -116,7 +118,10 @@ class CalendarPlugin(GObject.GObject):
         self.req = Requester(self.ds)
         self.ds.populate(ex_tasks)  # hard-coded tasks
 
-        self.drawing = WeekView(self, self.req)
+        # FIXME: controller drawing content is not working
+        # self.controller = Controller(self, self.req)
+        # using weekview object instead for now:
+        self.controller = WeekView(self, self.req)
 
         self.today_button = builder.get_object("today")
         self.header = builder.get_object("header")
@@ -126,7 +131,7 @@ class CalendarPlugin(GObject.GObject):
         self.statusbar = builder.get_object("statusbar")
         self.label = builder.get_object("label")
 
-        self.scroll.add_with_viewport(self.drawing)
+        self.scroll.add_with_viewport(self.controller)
 
         self.window.show_all()
 
@@ -197,7 +202,7 @@ class CalendarPlugin(GObject.GObject):
         for modifying the task title, start and due dates.
         Redraw the calendar view after the changes.
         """
-        task = self.drawing.get_selected_task()
+        task = self.controller.get_selected_task()
         if task:
             dialog = TaskView(self.window, task)
             response = dialog.run()
@@ -221,47 +226,48 @@ class CalendarPlugin(GObject.GObject):
         Removes the selected task from the datastore and redraw the
         calendar view.
         """
-        task = self.drawing.get_selected_task()
+        task = self.controller.get_selected_task()
         if task:
             self.on_statusbar_text_pushed("Deleted task: %s" %
                                           task.get_title())
             self.req.delete_task(task.get_id())
-            self.drawing.unselect_task()
+            self.controller.unselect_task()
             self.content_update()
         else:
             self.on_statusbar_text_pushed("...")
 
     def on_next_clicked(self, button, days=None):
         """ Advances the dates being displayed by a given number of @days """
-        self.drawing.next(days)
+        self.controller.next(days)
         self.content_update()
 
     def on_previous_clicked(self, button, days=None):
         """ Regresses the dates being displayed by a given number of @days """
-        self.drawing.previous(days)
+        self.controller.previous(days)
         self.content_update()
 
     def on_today_clicked(self, button):
         """ Show the day corresponding to today """
-        self.drawing.show_today()
+        self.controller.show_today()
         self.content_update()
 
     def on_combobox_changed(self, combo):
         """
         User chose a combobox entry: change the view_type according to it
         """
-        # FIXME: change between different subclasses: try Gtk.Stack for this
-        # view_type = combo.get_active_text()
-        # self.drawing.set_view_type(view_type)
-        # self.content_update()
-        pass
+        view_type = combo.get_active_text()
+        # FIXME: view switch is not working, even thought objects exist
+        # try Gtk.Stack for this -> needs Gnome 3.10
+        # self.controller.on_view_changed(view_type)
+        print("Ignoring view change for now")
+        self.content_update()
 
     def content_update(self):
         """ Performs all that is needed to update the content displayed """
-        self.header.set_text(self.drawing.get_current_year())
+        self.header.set_text(self.controller.get_current_year())
         self.today_button.set_sensitive(
-            not self.drawing.is_today_being_shown())
-        self.drawing.update()
+            not self.controller.is_today_being_shown())
+        self.controller.update()
 
 CalendarPlugin()
 Gtk.main()
