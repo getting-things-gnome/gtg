@@ -13,8 +13,6 @@ class ViewBase:
         self.header = None
         self.background = None
 
-        self.first_day = None
-        self.last_day = None
         self.numdays = None
         self.selected_task = None
 
@@ -26,6 +24,16 @@ class ViewBase:
     def unselect_task(self):
         """ Unselects the task that was selected before. """
         self.selected_task = None
+
+    @abc.abstractmethod
+    def first_day(self):
+        """ Returns the first day of the view being displayed """
+        return
+
+    @abc.abstractmethod
+    def last_day(self):
+        """ Returns the last day of the view being displayed """
+        return
 
     @abc.abstractmethod
     def next(self, days=None):
@@ -61,19 +69,19 @@ class ViewBase:
         between the current first and last day being displayed.
         Useful to know if @task should be drawn in the current screen.
 
-        @ param task: a Task object
+        @param task: a Task object
         """
-        return (task.get_due_date().date() >= self.first_day) and \
-               (task.get_start_date().date() <= self.last_day)
+        return (task.get_due_date().date() >= self.first_day()) and \
+               (task.get_start_date().date() <= self.last_day())
 
     def get_current_year(self):
         """
         Gets the correspondent year of the days
         being displayed in the calendar view
         """
-        if self.first_day.year != self.last_day.year:
-            return ("%s / %s" % (self.first_day.year, self.last_day.year))
-        return str(self.first_day.year)
+        if self.first_day().year != self.last_day().year:
+            return ("%s / %s" % (self.first_day().year, self.last_day().year))
+        return str(self.first_day().year)
 
     def is_today_being_shown(self):
         """
@@ -81,7 +89,7 @@ class ViewBase:
         shown in the current view
         """
         today = datetime.date.today()
-        return today >= self.first_day and today <= self.last_day
+        return today >= self.first_day() and today <= self.last_day()
 
     @abc.abstractmethod
     def dnd_start(self, widget, event):

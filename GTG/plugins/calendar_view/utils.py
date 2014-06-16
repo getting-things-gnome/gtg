@@ -20,16 +20,12 @@ def random_color(mix=(0, 0.5, 0.5)):
 
 def date_generator(start, numdays):
     """
-    Generates a list of tuples (day, weekday), such that day is a string in
-    the format ' %m/%d', and weekday is a string in the format '%a'.
-    The list has a specific size @numdays, so that it represents the days
-    starting from @start.
+    Generates a list of dates (datetime objects) with a specific size @numdays,
+    so that it represents the days starting from @start.
 
     @param start: a datetime object, first date to be included in the list
     @param numdays: integer, size of the list
-    @return days: list of tuples, each containing a date in the format '%m/%d'
-     and also an abbreviated weekday for the given date
+    @return days: list of datetime objects, each containing a date
     """
     date_list = [start + datetime.timedelta(days=x) for x in range(numdays)]
-    days = [(x.strftime("%m/%d"), x.strftime("%a")) for x in date_list]
-    return days
+    return date_list
