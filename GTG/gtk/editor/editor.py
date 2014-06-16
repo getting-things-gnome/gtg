@@ -287,31 +287,15 @@ class TaskEditor(object):
 
         # refreshing the start date field
         startdate = self.task.get_start_date()
-        try:
-            prevdate = Date.parse(self.startdate_widget.get_text())
-            update_date = startdate != prevdate
-        except ValueError:
-            update_date = True
-
-        if update_date:
-            self.startdate_widget.set_text(str(startdate))
+        self.refresh_date_field(startdate, self.startdate_widget)
 
         # refreshing the due date field
         duedate = self.task.get_due_date()
-        try:
-            prevdate = Date.parse(self.duedate_widget.get_text())
-            update_date = duedate != prevdate
-        except ValueError:
-            update_date = True
-
-        if update_date:
-            self.duedate_widget.set_text(str(duedate))
+        self.refresh_date_field(duedate, self.duedate_widget)
 
         # refreshing the closed date field
         closeddate = self.task.get_closed_date()
-        prevcldate = Date.parse(self.closeddate_widget.get_text())
-        if closeddate != prevcldate:
-            self.closeddate_widget.set_text(str(closeddate))
+        self.refresh_date_field(closeddate, self.closeddate_widget)
 
         # refreshing the day left label
         # If the task is marked as done, we display the delay between the
@@ -386,6 +370,15 @@ class TaskEditor(object):
             self.textview.modified(refresheditor=False)
         if to_save:
             self.light_save()
+
+    def refresh_date_field(self, date, field):
+        try:
+            prevdate = Date.parse(field.get_text())
+            update_date = date != prevdate
+        except ValueError:
+            update_date = True
+        if update_date:
+            field.set_text(str(date))
 
     def date_changed(self, widget, data):
         try:
