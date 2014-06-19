@@ -1,4 +1,5 @@
 ????-??-?? Getting Things GNOME! 0.3.2
+    * Fix for bug #28: plugin preferences were not being read, by Amy Chan
     * Fix for bug #1261456: Adding a tag with '&' causes ExpatError, by Parin Porecha
     * Fix for bug #1222976: Can't clear a search, by Nimit Shah
     * Fix for bug #1264846: GTG crashes on exit when bugzilla plugin is enabled and pynotify is not installed, by Parin Porecha
