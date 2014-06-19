@@ -90,7 +90,7 @@ class hamsterPlugin:
 
         category = ""
         if self.preferences['category'] == 'auto_tag':
-            hamster_activities = dict([(str(x[0]), unicode(x[1]))
+            hamster_activities = dict([(str(x[0]), x[1])
                                        for x in
                                        self.hamster.GetActivities('')])
             if (gtg_title in hamster_activities

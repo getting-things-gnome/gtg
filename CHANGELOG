@@ -41,6 +41,7 @@
     * Fixes #22 : Plugin "Urgency Color" throws TypeError & ValueError, by Parth Panchal
     * Fixes #24 : TypeError : popup() missing 1 required positional argument, by Nimit Shah 
     * Fixing the TypeError : popup() missing 1 required positional argument, by Sagar Ghuge 
+    * Fix for bug #29: Python3 compatibility: call to unicode() in hamster plugin, by Amy Chan
 
 2013-11-24 Getting Things GNOME! 0.3.1
     * Fix for bug #1024473: Have 'Show Main Window' in notification area, by Antonio Roquentin
