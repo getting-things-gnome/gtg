@@ -1,5 +1,6 @@
 from gi.repository import Gtk, Gdk, GObject
-from week_view import WeekView, TwoWeeksView, MonthView
+from week_view import WeekView, TwoWeeksView
+from month_view import MonthView
 
 class Controller(Gtk.DrawingArea):
     WEEK, TWO_WEEKS, MONTH = ["Week", "2 Weeks", "Month"]

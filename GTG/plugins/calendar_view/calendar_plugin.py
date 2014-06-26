@@ -7,9 +7,8 @@ from tasks import Task
 from datastore import DataStore
 from requester import Requester
 from utils import random_color
-from view import ViewBase
-from week_view import WeekView, TwoWeeksView, MonthView
-from controller import Controller
+from week_view import WeekView
+# from controller import Controller
 
 tests = True
 
@@ -90,6 +89,7 @@ class CalendarPlugin(GObject.GObject):
         self.window.connect("destroy", Gtk.main_quit)
 
         # Scrolled Window
+        # FIXME: put this inside weekview, and not here on main window
         self.scroll = builder.get_object("scrolledwindow")
         self.scroll.add_events(Gdk.EventMask.SCROLL_MASK)
         self.scroll.connect("scroll-event", self.on_scroll)
@@ -123,15 +123,20 @@ class CalendarPlugin(GObject.GObject):
         # using weekview object instead for now:
         self.controller = WeekView(self, self.req)
 
+        # FIXME: put this inside weekview, and not here on main window
+        box = builder.get_object("box_header")
+        box.add(self.controller.header)
+
         self.today_button = builder.get_object("today")
         self.header = builder.get_object("header")
+
         self.combobox = builder.get_object("combobox")
         self.combobox.set_active(0)
 
         self.statusbar = builder.get_object("statusbar")
         self.label = builder.get_object("label")
 
-        self.scroll.add_with_viewport(self.controller)
+        self.scroll.add_with_viewport(self.controller.all_day_tasks)
 
         self.window.show_all()
 
@@ -176,23 +181,21 @@ class CalendarPlugin(GObject.GObject):
                                   "-" + str(end))
             new_task.set_color(random_color())
             dialog = TaskView(self.window, new_task)
+        ####
         else:
             dialog = TaskView(self.window)
         response = dialog.run()
+        if tests:
+            self.req.delete_task(new_task.get_id())
         if response == Gtk.ResponseType.OK:
-            if not tests:
-                new_task = self.req.new_task()
-            self.on_statusbar_text_pushed("Added task: %s" %
-                                          new_task.get_title())
-            new_task.set_title(dialog.title.get_text())
-            new_task.set_start_date(dialog.start_date.get_text())
-            new_task.set_due_date(dialog.due_date.get_text())
+            title = dialog.title.get_text()
+            start_date = dialog.start_date.get_text()
+            due_date = dialog.due_date.get_text()
             color = random_color()
-            new_task.set_color(color)
+            self.controller.add_new_task(title, start_date, due_date, color)
             self.content_update()
+            self.on_statusbar_text_pushed("Added task: %s" % title)
         else:
-            if tests:
-                self.req.delete_task(new_task.get_id())
             self.on_statusbar_text_pushed("...")
         dialog.hide()
 
@@ -207,16 +210,14 @@ class CalendarPlugin(GObject.GObject):
             dialog = TaskView(self.window, task)
             response = dialog.run()
             if response == Gtk.ResponseType.OK:
-                self.on_statusbar_text_pushed("Edited task: %s" %
-                                              task.get_title())
-                task.set_title(dialog.title.get_text())
-                task.set_start_date(dialog.start_date.get_text())
-                task.set_due_date(dialog.due_date.get_text())
-                if dialog.done.get_active():
-                    task.set_status(Task.STA_DONE)
-                else:
-                    task.set_status(Task.STA_ACTIVE)
+                title = dialog.title.get_text()
+                start_date = dialog.start_date.get_text()
+                due_date = dialog.due_date.get_text()
+                is_done = dialog.done.get_active()
+                self.controller.edit_task(task.get_id(), title,
+                                          start_date, due_date, is_done)
                 self.content_update()
+                self.on_statusbar_text_pushed("Edited task: %s" % title)
             else:
                 self.on_statusbar_text_pushed("...")
             dialog.hide()
@@ -228,11 +229,10 @@ class CalendarPlugin(GObject.GObject):
         """
         task = self.controller.get_selected_task()
         if task:
+            self.controller.delete_task(task.get_id())
+            self.content_update()
             self.on_statusbar_text_pushed("Deleted task: %s" %
                                           task.get_title())
-            self.req.delete_task(task.get_id())
-            self.controller.unselect_task()
-            self.content_update()
         else:
             self.on_statusbar_text_pushed("...")
 

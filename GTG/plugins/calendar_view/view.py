@@ -1,10 +1,10 @@
 import abc
 import datetime
+from tasks import Task
 
 
 class ViewBase:
     __metaclass__ = abc.ABCMeta  # marks methods of this class as abstract
-    FONT = "Courier"
 
     def __init__(self, parent, requester):
         self.par = parent
@@ -106,15 +106,28 @@ class ViewBase:
         """ User released a button, stopping drag and drop. """
         return
 
-    @abc.abstractmethod
-    def draw(self, widget, ctx):
-        """ Draws everything inside the DrawingArea """
-        return
+    def add_new_task(self, title, start_date, due_date, color):
+        new_task = self.req.new_task()
+        new_task.set_title(title)
+        new_task.set_start_date(start_date)
+        new_task.set_due_date(due_date)
+        new_task.set_color(color)
 
-    @abc.abstractmethod
-    def identify_pointed_object(self, event, clicked=False):
-        """
-        Identify the object inside drawing area that is being pointed by the
-        mouse. Also points out which mouse cursor should be used in result.
-        """
-        return
+    def edit_task(self, tid, new_title=None, new_start_date=None,
+                  new_due_date=None, is_done=False):
+        task = self.req.get_task(tid)
+        if new_title:
+            task.set_title(new_title)
+        if new_start_date:
+            task.set_start_date(new_start_date)
+        if new_due_date:
+            task.set_due_date(new_due_date)
+        if is_done is not None:
+            if is_done:
+                task.set_status(Task.STA_DONE)
+            else:
+                task.set_status(Task.STA_ACTIVE)
+
+    def delete_task(self, tid):
+        self.req.delete_task(tid)
+        self.unselect_task()

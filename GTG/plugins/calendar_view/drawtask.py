@@ -1,60 +1,30 @@
-import cairo
 from tasks import Task
-from drawing import HEADER_SIZE
+import utils
 
 TASK_HEIGHT = 30
 
 
-def rounded_edges_or_pointed_ends_rectangle(ctx, x, y, w, h, r=8,
-                                            arrow_right=False,
-                                            arrow_left=False):
-    """
-    Draws a rectangle with either rounded edges, or with right and/or left
-    pointed ends. The non-pointed end, if any, will have rounded edges as
-    well.
-
-      x      w   @param ctx: a Cairo context
-      v      v   @param x: the leftmost x coordinate of the bounding box
-    y> A****BQ   @param y: the topmost y coordinate of the bounding box
-      H      C   @param w: the width of the bounding box
-      J      K   @param h: the height of the bounding box
-      G      D   @param r: the radius of the rounded edges. Default = 8
-    h> F****E    @param arrow_right: bool, whether there should be an arrow
-                  to the right
-                 @param arrow_left: bool, whether there should be an arrow to
-                  the left
-    """
-    ctx.move_to(x+r, y)                               # Move to A
-    ctx.line_to(x+w-r, y)                             # Straight line to B
-    if arrow_right:
-        ctx.line_to(x+w, y+h/2)                       # Straight line to K
-        ctx.line_to(x+w-r, y+h)                       # Straight line to E
-    else:
-        ctx.curve_to(x+w, y, x+w, y, x+w, y+r)  # Curve to C: 2 ctrl pts at Q
-        ctx.line_to(x+w, y+h-r)                       # Move to D
-        ctx.curve_to(x+w, y+h, x+w, y+h, x+w-r, y+h)  # Curve to E
-    ctx.line_to(x+r, y+h)                             # Line to F
-    if arrow_left:
-        ctx.line_to(x, y+h/2)                         # Straight line to J
-        ctx.line_to(x+r, y)                           # Straight line to A
-    else:
-        ctx.curve_to(x, y+h, x, y+h, x, y+h-r)        # Curve to G
-        ctx.line_to(x, y+r)                           # Line to H
-        ctx.curve_to(x, y, x, y, x+r, y)              # Curve to A
-
-
-class DrawTask():
+class DrawTask:
     def __init__(self, task):
         self.task = task
         self.position = (None, None, None, None)
-        self.selected = False
-        self.PADDING = 5
+        self.overflow_R = False
+        self.overflow_L = False
 
     def get_id(self):
         return self.task.get_id()
 
-    def set_day_width(self, day_width):
-        self.day_width = day_width
+    def get_label(self):
+        return self.task.get_title()
+
+    def get_color(self, selected=False):
+        # if task is selected, use yellow
+        if selected:
+            return (0.8, 0.8, 0)
+        return self.task.get_color()
+
+    def set_font(self, font):
+        self.font = font
 
     def set_position(self, x, y, w, h):
         self.position = (x, y, w, h)
@@ -62,88 +32,57 @@ class DrawTask():
     def get_position(self):
         return self.position
 
-    def draw(self, ctx, pos, start_day, end_day, selected=False):
-        """
-        Draws a given @task in a relative postion @pos.
+    def is_overflowing_R(self):
+        return self.overflow_R
 
-        @param ctx: a Cairo context
-        """
-        # avoid tasks overflowing to/from next/previous weeks
-        first_day = start_day
-        last_day = end_day
+    def is_overflowing_L(self):
+        return self.overflow_L
 
-        overflow_l = overflow_r = False
-        if self.task.get_start_date().date() < first_day:
-            overflow_l = True
-        if self.task.get_due_date().date() > last_day:
-            overflow_r = True
+    def set_overflowing_R(self, last_day):
+        self.overflow_R = self.task.get_due_date().date() > last_day
 
-        start = (max(self.task.get_start_date().date(), first_day) -
-                 first_day).days
-        end = (min(self.task.get_due_date().date(), last_day) -
-               first_day).days
-        duration = end - start + 1
-        label = self.task.get_title()
-        complete = self.task.get_status()
+    def set_overflowing_L(self, first_day):
+        self.overflow_L = self.task.get_start_date().date() < first_day
 
-        if len(label) > duration * self.day_width/12 + 2:
-            crop_at = int(duration*(self.day_width/12))
-            label = label[:crop_at] + "..."
+    def is_done(self):
+        return self.task.get_status() == Task.STA_DONE
 
-        if complete == Task.STA_DONE:
+    def draw(self, ctx, grid_width, padding=0, selected=False):
+        task_x, task_y, task_w, task_h = self.get_position()
+        pos = self.get_position()
+
+        base_x, base_y, width, height = utils.convert_grid_to_screen_coord(
+            grid_width, TASK_HEIGHT, task_x, task_y, task_w, task_h, padding)
+
+        # restrict drawing to exposed area: no unnecessary drawing is done
+        ctx.rectangle(base_x, base_y, width, height)
+        ctx.clip()
+
+        # create path to draw task
+        utils.rounded_edges_or_pointed_ends_rectangle(ctx, base_x, base_y,
+                                                      width, height,
+                                                      self.overflow_R,
+                                                      self.overflow_L)
+
+        # task color
+        color = self.get_color(selected)
+        if self.is_done():
             alpha = 0.5
         else:
             alpha = 1
 
-        # getting bounding box rectangle for task duration
-        base_x = start * self.day_width
-        base_y = HEADER_SIZE + pos * TASK_HEIGHT
-        width = duration * self.day_width
-        height = TASK_HEIGHT
-        base_y += self.PADDING
-        height -= self.PADDING
-
-        # restrict drawing to exposed area: no unnecessary drawing is done
-        ctx.save()
-        ctx.rectangle(base_x, base_y, width, height)
-        ctx.clip()
-
-        # draw the task
-        rounded_edges_or_pointed_ends_rectangle(ctx, base_x, base_y,
-                                                width, height,
-                                                arrow_right=overflow_r,
-                                                arrow_left=overflow_l)
-
-        # keep record of positions for discovering task when using drag'n'drop
-        self.set_position(base_x, base_y, width, height)
-
-        color = self.task.get_color()
-
-        # selected task in yellow
-        if selected:
-            color = (0.8, 0.8, 0)
-
-        # create gradient
-        grad = cairo.LinearGradient(base_x, base_y, base_x, base_y+height)
-        c = [x + 0.1 for x in color]
-        grad.add_color_stop_rgba(0, c[0], c[1], c[2], alpha)
-        grad.add_color_stop_rgba(0.2, color[0], color[1], color[2], alpha)
-        grad.add_color_stop_rgba(0.8, color[0], color[1], color[2], alpha)
-        grad.add_color_stop_rgba(1, c[0], c[1], c[2], alpha)
-
         # background
+        grad = utils.create_vertical_gradient(base_x, base_y, height,
+                                              color, alpha)
         ctx.set_source(grad)
         ctx.fill()
 
-        # printing task label
-        ctx.set_source_rgba(1, 1, 1, alpha)
-        (x, y, w, h, dx, dy) = ctx.text_extents(label)
-        base_x = (start+duration/2.0) * self.day_width - w/2.0
-        base_y = HEADER_SIZE + pos*TASK_HEIGHT + (TASK_HEIGHT)/2.0 + h
-        # base_y += self.PADDING
+        # task label
+        label = self.get_label()
+        pos = (base_x, base_y, width, height)
+        label, base_x, base_y = utils.center_text_on_rect(ctx, label, *pos,
+                                                          crop=True)
         ctx.move_to(base_x, base_y)
+        ctx.set_source_rgba(1, 1, 1, alpha)
         ctx.text_path(label)
         ctx.stroke()
-
-        # restore old context
-        ctx.restore()
