@@ -36,6 +36,11 @@ class ViewBase:
         return
 
     @abc.abstractmethod
+    def update(self):
+        """ Updates all the content whenever a change is required. """
+        return
+
+    @abc.abstractmethod
     def next(self, days=None):
         """
         Advances the dates being displayed by a given number of @days.
@@ -112,6 +117,7 @@ class ViewBase:
         new_task.set_start_date(start_date)
         new_task.set_due_date(due_date)
         new_task.set_color(color)
+        self.update()
 
     def edit_task(self, tid, new_title=None, new_start_date=None,
                   new_due_date=None, is_done=False):
@@ -127,7 +133,9 @@ class ViewBase:
                 task.set_status(Task.STA_DONE)
             else:
                 task.set_status(Task.STA_ACTIVE)
+        self.update()
 
     def delete_task(self, tid):
         self.req.delete_task(tid)
         self.unselect_task()
+        self.update()

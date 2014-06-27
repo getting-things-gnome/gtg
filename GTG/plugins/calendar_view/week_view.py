@@ -22,7 +22,6 @@ class WeekView(ViewBase, Gtk.Container):
         self.all_day_tasks = AllDayTasks(self)
         self.header = Header()
 
-        self.today_column = None
         self.min_day_width = 60
         self.show_today()
 
@@ -31,7 +30,7 @@ class WeekView(ViewBase, Gtk.Container):
         self.drag_action = None
         self.is_dragging = False
 
-        self.connect("size-allocate", self.compute_size)
+        self.connect("size-allocate", self.on_size_allocate)
 
     def unselect_task(self):
         """ Unselects the task that was selected before. """
@@ -87,7 +86,14 @@ class WeekView(ViewBase, Gtk.Container):
 
     def update_header(self, format="%a %m/%d"):
         """
-        Update the header label of the days to be drawn.
+        Updates the header label of the days to be drawn given a specific
+        strftime @format, and then redraws the header. If more than one line is
+        wanted to display each labels, the format must separate the content
+        inteded for each line by a space.
+
+        @param format: string, must follow the strftime convention.
+         Default: "%a %m/%d" - abbrev weekday in first line,
+         month/day_of_month as decimal numbers in second line.
         """
         days = self.week.label(format)
         days = [d.split() for d in days]
@@ -95,6 +101,11 @@ class WeekView(ViewBase, Gtk.Container):
         self.header.queue_draw()
 
     def set_task_drawing_position(self, dtask):
+        """
+        Calculates and sets the position of a @dtask.
+
+        @param dtask: a DrawingTask object.
+        """
         task = self.req.get_task(dtask.get_id())
 
         start = max(task.get_start_date().date(), self.first_day())
@@ -109,9 +120,16 @@ class WeekView(ViewBase, Gtk.Container):
         dtask.set_overflowing_L(self.first_day())
         dtask.set_overflowing_R(self.last_day())
 
-    def update_tasks(self, tasks=None):
+    def update_tasks(self):
+        """ Updates and redraws everything related to the tasks """
+        self.update_drawtasks()
+        self.compute_size()
+        self.all_day_tasks.queue_draw()
+
+    def update_drawtasks(self, tasks=None):
         """
-        Updates the tasks to be drawn
+        Updates the drawtasks and calculates the position of where each one of
+        them should be drawn.
 
         @param tasks: a Task list, containing the tasks to be drawn.
          If none is given, the tasks will be retrieved from the requester.
@@ -131,7 +149,8 @@ class WeekView(ViewBase, Gtk.Container):
             self.unselect_task()
         self.all_day_tasks.selected_task = self.selected_task
 
-    def set_today_position(self):
+    def highlight_today_cell(self):
+        """ Highlights the cell equivalent to today."""
         row = 0
         col = utils.date_to_col_coord(datetime.date.today(), self.first_day())
         self.all_day_tasks.set_highlight_cell(row, col)
@@ -142,11 +161,10 @@ class WeekView(ViewBase, Gtk.Container):
         Updates the header, the content to be drawn (tasks), recalculates the
         size needed and then redraws everything.
         """
-        self.update_header()
-        self.today_column = (datetime.date.today() - self.first_day()).days
-        self.update_tasks()
+        self.update_drawtasks()
         self.compute_size()
-        self.set_today_position()
+        self.highlight_today_cell()
+        self.update_header()
         self.all_day_tasks.queue_draw()
 
     def next(self, days=None):
@@ -208,7 +226,6 @@ class WeekView(ViewBase, Gtk.Container):
             self.drag_offset = offset
 
             self.update_tasks()
-            self.all_day_tasks.queue_draw()
 
     def motion_notify(self, widget, event):
         """ User moved mouse over widget """
@@ -246,8 +263,7 @@ class WeekView(ViewBase, Gtk.Container):
                 task.set_start_date(new_start_day)
                 task.set_due_date(new_due_day)
 
-            self.update_tasks()
-            self.all_day_tasks.queue_draw()
+            self.update()
 
         else:  # mouse hover
             t_id, self.drag_action, cursor = \
@@ -297,4 +313,3 @@ class WeekView(ViewBase, Gtk.Container):
         self.is_dragging = False
         # self.selected_task = None
         self.update_tasks()
-        self.all_day_tasks.queue_draw()

@@ -147,7 +147,6 @@ class CalendarPlugin(GObject.GObject):
             due_date = dialog.get_due_date()
             color = random_color()
             self.controller.add_new_task(title, start_date, due_date, color)
-            self.content_update()
             self.on_statusbar_text_pushed("Added task: %s" % title)
         else:
             self.on_statusbar_text_pushed("...")
@@ -170,7 +169,6 @@ class CalendarPlugin(GObject.GObject):
                 is_done = dialog.get_active()
                 self.controller.edit_task(task.get_id(), title,
                                           start_date, due_date, is_done)
-                self.content_update()
                 self.on_statusbar_text_pushed("Edited task: %s" % title)
             else:
                 self.on_statusbar_text_pushed("...")
@@ -184,7 +182,6 @@ class CalendarPlugin(GObject.GObject):
         task = self.controller.get_selected_task()
         if task:
             self.controller.delete_task(task.get_id())
-            self.content_update()
             self.on_statusbar_text_pushed("Deleted task: %s" %
                                           task.get_title())
         else:
