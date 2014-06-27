@@ -3,60 +3,14 @@ from gi.repository import Gtk, Gdk, GObject
 import datetime
 import random
 
-from tasks import Task
 from datastore import DataStore
 from requester import Requester
 from utils import random_color
 from week_view import WeekView
 # from controller import Controller
+from taskview import TaskView
 
 tests = True
-
-
-class TaskView(Gtk.Dialog):
-    """
-    This class is a dialog for creating/editing a task.
-    It receives a task as parameter, and has four editable entries:
-    title, start and due dates, and a checkbox to mark the task as done.
-    """
-    def __init__(self, parent, task=None):
-        Gtk.Dialog.__init__(self, "Edit Task", parent, 0,
-                            (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
-                             Gtk.STOCK_OK, Gtk.ResponseType.OK))
-        # makes the OK button be the default, and the "Enter" key activates it
-        self.get_widget_for_response(Gtk.ResponseType.OK).grab_focus()
-
-        box = self.get_content_area()
-        vbox = Gtk.VBox(False, 4)
-        box.add(vbox)
-
-        box.pack_start(Gtk.Label("Title"), False, False, 0)
-        self.title = Gtk.Entry()
-        box.pack_start(self.title, True, True, 0)
-
-        box.pack_start(Gtk.Label("Start Date"), False, False, 0)
-        self.start_date = Gtk.Entry()
-        box.pack_start(self.start_date, True, True, 0)
-
-        box.pack_start(Gtk.Label("Due Date"), False, False, 0)
-        self.due_date = Gtk.Entry()
-        box.pack_start(self.due_date, True, True, 0)
-
-        self.done = Gtk.CheckButton("Mark as done")
-        box.pack_start(self.done, True, True, 0)
-
-        if task:
-            self.title.set_text(task.get_title())
-            start = task.get_start_date().to_readable_string()
-            self.start_date.set_text(start)
-            self.due_date.set_text(task.get_due_date().to_readable_string())
-            if(task.get_status() == Task.STA_DONE):
-                self.done.set_active(True)
-        else:
-            self.set_title("New Task")
-            self.done.set_sensitive(False)
-
-        self.show_all()
 
 
 class CalendarPlugin(GObject.GObject):
@@ -188,9 +142,9 @@ class CalendarPlugin(GObject.GObject):
         if tests:
             self.req.delete_task(new_task.get_id())
         if response == Gtk.ResponseType.OK:
-            title = dialog.title.get_text()
-            start_date = dialog.start_date.get_text()
-            due_date = dialog.due_date.get_text()
+            title = dialog.get_title()
+            start_date = dialog.get_start_date()
+            due_date = dialog.get_due_date()
             color = random_color()
             self.controller.add_new_task(title, start_date, due_date, color)
             self.content_update()
@@ -210,10 +164,10 @@ class CalendarPlugin(GObject.GObject):
             dialog = TaskView(self.window, task)
             response = dialog.run()
             if response == Gtk.ResponseType.OK:
-                title = dialog.title.get_text()
-                start_date = dialog.start_date.get_text()
-                due_date = dialog.due_date.get_text()
-                is_done = dialog.done.get_active()
+                title = dialog.get_title()
+                start_date = dialog.get_start_date()
+                due_date = dialog.get_due_date()
+                is_done = dialog.get_active()
                 self.controller.edit_task(task.get_id(), title,
                                           start_date, due_date, is_done)
                 self.content_update()
