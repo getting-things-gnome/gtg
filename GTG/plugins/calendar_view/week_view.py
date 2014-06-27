@@ -47,7 +47,7 @@ class WeekView(ViewBase, Gtk.Container):
 
     def get_day_width(self):
         """ Returns the day/column width in pixels """
-        return self.all_day_tasks.get_day_width()
+        return round(self.all_day_tasks.get_day_width(), 3)
 
     def show_today(self):
         """
@@ -235,7 +235,7 @@ class WeekView(ViewBase, Gtk.Container):
             end_date = task.get_due_date().date()
             duration = (end_date - start_date).days
 
-            event_x = event.x + self.drag_offset
+            event_x = round(event.x + self.drag_offset, 3)
             # event_y = event.y
 
             day_width = self.get_day_width()
@@ -283,13 +283,11 @@ class WeekView(ViewBase, Gtk.Container):
             self.all_day_tasks.queue_draw()
             return
 
-        event_x = event.x + self.drag_offset
+        event_x = round(event.x + self.drag_offset, 3)
         # event_y = event.y
+
         day_width = self.get_day_width()
-        # FIXME: weekday sometimes has weird values, but it should be the same
-        # regardless of where inside the task we click
         weekday = utils.convert_coordinates_to_col(event_x, day_width)
-        # print event_x, day_width, weekday
 
         task = self.selected_task.task
         start = task.get_start_date().date()
