@@ -103,7 +103,7 @@ def center_text_on_rect(ctx, text, base_x, base_y, width, height, crop=False):
             text = text[:crop_at] + "..."
             (x, y, w, h, dx, dy) = ctx.text_extents(text)
     base_x = base_x + width/2.0 - w/2.0
-    base_y = base_y + height/2.0 + h
+    base_y = base_y + height/2.0 + h/2.0
     return text, base_x, base_y
 
 

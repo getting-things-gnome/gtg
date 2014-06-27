@@ -1,6 +1,7 @@
 from gi.repository import Gtk
 from background import Background
 import cairo
+import utils
 
 
 class Header(Gtk.DrawingArea):
@@ -38,7 +39,13 @@ class Header(Gtk.DrawingArea):
         self.background.set_background_color(color)
 
     def get_height(self):
-        return self.get_allocation().height
+        try:
+            line_height = self.get_allocation().height / len(self.labels[0])
+        except ZeroDivisionError:
+            print("List of labels in object Header not initialized!")
+            raise
+        else:
+            return line_height
 
     def get_col_width(self):
         try:
@@ -78,7 +85,6 @@ class Header(Gtk.DrawingArea):
 
         self.background.draw(ctx, alloc, vgrid=False, hgrid=True)
 
-        col_width = self.get_col_width()
         color = self.font_color
         ctx.set_source_rgb(color[0], color[1], color[2])
 
@@ -86,11 +92,15 @@ class Header(Gtk.DrawingArea):
         ctx.select_font_face(self.font, cairo.FONT_SLANT_NORMAL,
                              cairo.FONT_WEIGHT_NORMAL)
 
-        # FIXME: print dates in one line and weekday in another
+        # print labels: use multiple lines if necessary
+        col_width = self.get_col_width()
+        line_height = self.get_height()
         for i in range(0, len(self.labels)):
-            (x, y, w, h, dx, dy) = ctx.text_extents(self.labels[i])
-            base_x = (i * col_width) - ((w - col_width) / 2.0)
-            base_y = self.get_height()/2.0 + h
-            ctx.move_to(base_x, base_y)
-            ctx.text_path(self.labels[i])
-            ctx.stroke()
+            for j in range(0, len(self.labels[i])):
+                label, base_x, base_y = utils.center_text_on_rect(
+                    ctx, self.labels[i][j],
+                    (i * col_width), (j * line_height),
+                    col_width, line_height)
+                ctx.move_to(base_x, base_y)
+                ctx.text_path(label)
+                ctx.stroke()

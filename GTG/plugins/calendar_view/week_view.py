@@ -1,4 +1,4 @@
-from gi.repository import Gdk
+from gi.repository import Gtk, Gdk
 import datetime
 
 from week import Week
@@ -10,9 +10,10 @@ import utils
 from view import ViewBase
 
 
-class WeekView(ViewBase):
+class WeekView(ViewBase, Gtk.Container):
     def __init__(self, parent, requester, numdays=7):
         super(WeekView, self).__init__(parent, requester)
+        super(Gtk.Container, self).__init__()
 
         self.numdays = numdays
         self.grid = Grid(1, self.numdays)
@@ -29,6 +30,8 @@ class WeekView(ViewBase):
         self.drag_offset = None
         self.drag_action = None
         self.is_dragging = False
+
+        self.connect("size-allocate", self.compute_size)
 
     def unselect_task(self):
         """ Unselects the task that was selected before. """
@@ -55,9 +58,13 @@ class WeekView(ViewBase):
         self.week.week_containing_day(datetime.date.today())
         self.update()
 
+    def on_size_allocate(self, widget=None, event=None):
+        """ Calculates new day_width when window is resized """
+        pass
+
     def compute_size(self):
         """ Computes and requests the size needed to draw everything. """
-        width = self.min_day_width*self.numdays
+        width = self.min_day_width * self.numdays
         height = TASK_HEIGHT * self.grid.num_rows
         self.all_day_tasks.set_size_request(width, height)
 
@@ -78,11 +85,12 @@ class WeekView(ViewBase):
         """
         self.week.set_week_starting_on(start)
 
-    def update_header(self, format="%m/%d-%a"):
+    def update_header(self, format="%a %m/%d"):
         """
         Update the header label of the days to be drawn.
         """
         days = self.week.label(format)
+        days = [d.split() for d in days]
         self.header.set_labels(days)
         self.header.queue_draw()
 
