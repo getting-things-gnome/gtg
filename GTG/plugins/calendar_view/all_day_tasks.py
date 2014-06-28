@@ -29,9 +29,10 @@ class AllDayTasks(Gtk.DrawingArea):
                         | Gdk.EventMask.BUTTON_RELEASE_MASK
                         | Gdk.EventMask.BUTTON1_MOTION_MASK
                         | Gdk.EventMask.POINTER_MOTION_MASK)
-        self.connect("button-press-event", self.dnd_start)
-        self.connect("motion-notify-event", self.motion_notify)
-        self.connect("button-release-event", self.dnd_stop)
+        # let the parent widget handle the DnD events
+        self.connect("button-press-event", self.par.dnd_start)
+        self.connect("motion-notify-event", self.par.motion_notify)
+        self.connect("button-release-event", self.par.dnd_stop)
 
     def set_font(self, font):
         self.font = font
@@ -118,16 +119,3 @@ class AllDayTasks(Gtk.DrawingArea):
                 continue
             return task, drag_action, cursor
         return None, None, cursor
-
-    def dnd_start(self, widget, event):
-        """ User clicked the mouse button, starting drag and drop """
-        # row, col = utils.convert_coordinates_to_grid(event.x, event.y, self.get_day_width(), TASK_HEIGHT)
-        self.par.dnd_start(widget, event)
-
-    def motion_notify(self, widget, event):
-        """ User moved mouse over widget """
-        self.par.motion_notify(widget, event)
-
-    def dnd_stop(self, widget, event):
-        """ User released a button, stopping drag and drop.  """
-        self.par.dnd_stop(widget, event)
