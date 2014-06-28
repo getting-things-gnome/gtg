@@ -48,29 +48,10 @@ class CalendarPlugin(GObject.GObject):
         self.scroll.add_events(Gdk.EventMask.SCROLL_MASK)
         self.scroll.connect("scroll-event", self.on_scroll)
 
-        # hard coded tasks to populate calendar view
-        # (title, start_date, due_date, done?, color)
-        today = datetime.date.today()
-        ex_tasks = [("task1", today, today, True, random_color()),
-                    ("task2", today + datetime.timedelta(days=5),
-                    today + datetime.timedelta(days=5), False, random_color()),
-                    ("task3", today + datetime.timedelta(days=1),
-                    today + datetime.timedelta(days=3), False, random_color()),
-                    ("task4", today + datetime.timedelta(days=3),
-                    today + datetime.timedelta(days=4), True, random_color()),
-                    ("task5", today - datetime.timedelta(days=1),
-                    today + datetime.timedelta(days=8), False, random_color()),
-                    ("task6: very long title",
-                    today + datetime.timedelta(days=2),
-                    today + datetime.timedelta(days=3), False, random_color()),
-                    ("task7", today + datetime.timedelta(days=5),
-                    today + datetime.timedelta(days=15), False, random_color())
-                    ]
-
         # DataStore object
         self.ds = DataStore()
         self.req = Requester(self.ds)
-        self.ds.populate(ex_tasks)  # hard-coded tasks
+        self.ds.populate()  # hard-coded tasks
 
         # FIXME: controller drawing content is not working
         # self.controller = Controller(self, self.req)
