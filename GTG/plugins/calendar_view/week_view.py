@@ -1,4 +1,4 @@
-from gi.repository import Gtk, Gdk
+from gi.repository import Gtk, Gdk, GObject
 import datetime
 
 from week import Week
@@ -11,6 +11,9 @@ from view import ViewBase
 
 
 class WeekView(ViewBase, Gtk.Container):
+    __signal_type__ = (GObject.SignalFlags.RUN_FIRST, None, (str, ))
+    __gsignals__ = {'on_edit_clicked': __signal_type__}
+
     def __init__(self, parent, requester, numdays=7):
         super(WeekView, self).__init__(parent, requester)
         super(Gtk.Container, self).__init__()
@@ -29,6 +32,11 @@ class WeekView(ViewBase, Gtk.Container):
         self.drag_offset = None
         self.drag_action = None
         self.is_dragging = False
+
+        # handle the AllDayTasks DnD events
+        self.all_day_tasks.connect("button-press-event", self.dnd_start)
+        self.all_day_tasks.connect("motion-notify-event", self.motion_notify)
+        self.all_day_tasks.connect("button-release-event", self.dnd_stop)
 
         self.connect("size-allocate", self.on_size_allocate)
 
@@ -208,7 +216,7 @@ class WeekView(ViewBase, Gtk.Container):
         if self.selected_task:
             # double-click opens task to edit
             if event.type == Gdk.EventType._2BUTTON_PRESS:
-                self.par.on_edit_clicked()
+                GObject.idle_add(self.emit, 'on_edit_clicked', self.selected_task.get_id())
                 self.unselect_task()
                 return
             self.is_dragging = True

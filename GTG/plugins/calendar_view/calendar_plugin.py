@@ -57,6 +57,7 @@ class CalendarPlugin(GObject.GObject):
         # self.controller = Controller(self, self.req)
         # using weekview object instead for now:
         self.controller = WeekView(self, self.req)
+        self.controller.connect("on_edit_clicked", self.on_edit_clicked)
 
         # FIXME: put this inside weekview, and not here on main window
         box = builder.get_object("box_header")
@@ -133,13 +134,15 @@ class CalendarPlugin(GObject.GObject):
             self.on_statusbar_text_pushed("...")
         dialog.hide()
 
-    def on_edit_clicked(self, button=None):
+    def on_edit_clicked(self, button=None, task_id=None):
         """
         Edits the selected task, with the help of a pop-up dialog
         for modifying the task title, start and due dates.
         Redraw the calendar view after the changes.
         """
-        task = self.controller.get_selected_task()
+        if not task_id:
+          task_id = self.controller.get_selected_task().get_id()
+        task = self.req.get_task(task_id)
         if task:
             dialog = TaskView(self.window, task)
             response = dialog.run()

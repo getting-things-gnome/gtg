@@ -29,10 +29,6 @@ class AllDayTasks(Gtk.DrawingArea):
                         | Gdk.EventMask.BUTTON_RELEASE_MASK
                         | Gdk.EventMask.BUTTON1_MOTION_MASK
                         | Gdk.EventMask.POINTER_MOTION_MASK)
-        # let the parent widget handle the DnD events
-        self.connect("button-press-event", self.par.dnd_start)
-        self.connect("motion-notify-event", self.par.motion_notify)
-        self.connect("button-release-event", self.par.dnd_stop)
 
     def set_font(self, font):
         self.font = font
