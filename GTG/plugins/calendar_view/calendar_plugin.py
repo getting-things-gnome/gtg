@@ -42,57 +42,33 @@ class CalendarPlugin(GObject.GObject):
         self.window.set_title("GTG - Calendar View")
         self.window.connect("destroy", Gtk.main_quit)
 
-        # Scrolled Window
-        # FIXME: put this inside weekview, and not here on main window
-        self.scroll = builder.get_object("scrolledwindow")
-        self.scroll.add_events(Gdk.EventMask.SCROLL_MASK)
-        self.scroll.connect("scroll-event", self.on_scroll)
-
         # DataStore object
         self.ds = DataStore()
         self.req = Requester(self.ds)
         self.ds.populate()  # hard-coded tasks
+
+        self.today_button = builder.get_object("today")
+        self.header = builder.get_object("header")
+
+        self.combobox = builder.get_object("combobox")
 
         # FIXME: controller drawing content is not working
         # self.controller = Controller(self, self.req)
         # using weekview object instead for now:
         self.controller = WeekView(self, self.req)
         self.controller.connect("on_edit_clicked", self.on_edit_clicked)
+        self.controller.connect("dates-changed", self.on_dates_changed)
 
-        # FIXME: put this inside weekview, and not here on main window
-        box = builder.get_object("box_header")
-        box.add(self.controller.header)
-
-        self.today_button = builder.get_object("today")
-        self.header = builder.get_object("header")
-
-        self.combobox = builder.get_object("combobox")
-        self.combobox.set_active(0)
+        vbox = builder.get_object("vbox")
+        vbox.add(self.controller)
+        vbox.reorder_child(self.controller, 1)
 
         self.statusbar = builder.get_object("statusbar")
         self.label = builder.get_object("label")
 
-        self.scroll.add_with_viewport(self.controller.all_day_tasks)
-
+        self.controller.show_today()
+        self.combobox.set_active(0)
         self.window.show_all()
-
-    def on_scroll(self, widget, event):
-        """
-        Callback function to deal with scrolling the drawing area window.
-        If scroll right or left, change the days displayed in the calendar
-        view. If scroll up or down, propagates the signal to scroll window
-        normally.
-        """
-        # scroll right
-        if event.get_scroll_deltas()[1] > 0:
-            self.on_next_clicked(widget, days=1)
-        # scroll left
-        elif event.get_scroll_deltas()[1] < 0:
-            self.on_previous_clicked(widget, days=1)
-        # scroll up or down
-        else:
-            return False  # propagates signal to scroll window normally
-        return True
 
     def on_statusbar_text_pushed(self, text):
         """ Adds the @text to the statusbar """
@@ -175,11 +151,13 @@ class CalendarPlugin(GObject.GObject):
         """ Advances the dates being displayed by a given number of @days """
         self.controller.next(days)
         self.content_update()
+        self.controller.update()
 
     def on_previous_clicked(self, button, days=None):
         """ Regresses the dates being displayed by a given number of @days """
         self.controller.previous(days)
         self.content_update()
+        self.controller.update()
 
     def on_today_clicked(self, button):
         """ Show the day corresponding to today """
@@ -197,11 +175,15 @@ class CalendarPlugin(GObject.GObject):
         print("Ignoring view change for now")
         self.content_update()
 
-    def content_update(self):
-        """ Performs all that is needed to update the content displayed """
+    def on_dates_changed(self, widget=None):
+        """ Callback to update date-related objects in main window """
         self.header.set_text(self.controller.get_current_year())
         self.today_button.set_sensitive(
             not self.controller.is_today_being_shown())
+
+    def content_update(self):
+        """ Performs all that is needed to update the content displayed """
+        self.on_dates_changed()
         self.controller.update()
 
 CalendarPlugin()

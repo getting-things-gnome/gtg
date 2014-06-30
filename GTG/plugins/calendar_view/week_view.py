@@ -10,23 +10,39 @@ import utils
 from view import ViewBase
 
 
-class WeekView(ViewBase, Gtk.Container):
-    __signal_type__ = (GObject.SignalFlags.RUN_FIRST, None, (str, ))
-    __gsignals__ = {'on_edit_clicked': __signal_type__}
+class WeekView(ViewBase, Gtk.VBox):
+    __string_signal__ = (GObject.SignalFlags.RUN_FIRST, None, (str, ))
+    __none_signal__ = (GObject.SignalFlags.RUN_FIRST, None, tuple())
+    __gsignals__ = {'on_edit_clicked': __string_signal__,
+                    'dates-changed': __none_signal__,
+                   }
 
     def __init__(self, parent, requester, numdays=7):
         super(WeekView, self).__init__(parent, requester)
-        super(Gtk.Container, self).__init__()
+        super(Gtk.VBox, self).__init__()
 
         self.numdays = numdays
+        self.min_day_width = 60
         self.grid = Grid(1, self.numdays)
         self.week = Week()
 
-        self.all_day_tasks = AllDayTasks(self)
+        # Header
         self.header = Header()
+        self.header.set_size_request(-1, 35)
+        self.pack_start(self.header, False, False, 0)
 
-        self.min_day_width = 60
-        self.show_today()
+        # Scrolled Window
+        self.scroll = Gtk.ScrolledWindow(None, None)
+        self.scroll.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
+        self.scroll.add_events(Gdk.EventMask.SCROLL_MASK)
+        self.scroll.connect("scroll-event", self.on_scroll)
+        self.pack_start(self.scroll, True, True, 0)
+
+        # AllDayTasks widget
+        self.all_day_tasks = AllDayTasks(self)
+        self.scroll.add_with_viewport(self.all_day_tasks)
+
+        #self.show_today()
 
         # drag-and-drop support
         self.drag_offset = None
@@ -39,6 +55,24 @@ class WeekView(ViewBase, Gtk.Container):
         self.all_day_tasks.connect("button-release-event", self.dnd_stop)
 
         self.connect("size-allocate", self.on_size_allocate)
+
+    def on_scroll(self, widget, event):
+        """
+        Callback function to deal with scrolling the drawing area window.
+        If scroll right or left, change the days displayed in the calendar
+        view. If scroll up or down, propagates the signal to scroll window
+        normally.
+        """
+        # scroll right
+        if event.get_scroll_deltas()[1] > 0:
+            self.next(days=1)
+        # scroll left
+        elif event.get_scroll_deltas()[1] < 0:
+            self.previous(days=1)
+        # scroll up or down
+        else:
+            return False  # propagates signal to scroll window normally
+        return True
 
     def unselect_task(self):
         """ Unselects the task that was selected before. """
@@ -107,6 +141,7 @@ class WeekView(ViewBase, Gtk.Container):
         days = [d.split() for d in days]
         self.header.set_labels(days)
         self.header.queue_draw()
+        self.emit('dates-changed')
 
     def set_task_drawing_position(self, dtask):
         """
