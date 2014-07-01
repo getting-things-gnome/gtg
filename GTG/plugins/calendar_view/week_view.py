@@ -29,7 +29,7 @@ class WeekView(ViewBase, Gtk.VBox):
         self.week = Week()
 
         # Header
-        self.header = Header()
+        self.header = Header(self.numdays)
         self.header.set_size_request(-1, 35)
         self.pack_start(self.header, False, False, 0)
 
@@ -43,7 +43,7 @@ class WeekView(ViewBase, Gtk.VBox):
         self.vadjustment.connect('changed', self.on_vadjustment_changed)
 
         # AllDayTasks widget
-        self.all_day_tasks = AllDayTasks(self)
+        self.all_day_tasks = AllDayTasks(self, cols=self.numdays)
         self.scroll.add_with_viewport(self.all_day_tasks)
 
         # drag-and-drop support

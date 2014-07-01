@@ -6,8 +6,7 @@ import random
 from datastore import DataStore
 from requester import Requester
 from utils import random_color
-from week_view import WeekView
-# from controller import Controller
+from controller import Controller
 from taskview import TaskView
 
 tests = True
@@ -50,15 +49,7 @@ class CalendarPlugin(GObject.GObject):
         self.today_button = builder.get_object("today")
         self.header = builder.get_object("header")
 
-        # FIXME: controller drawing content is not working
-        # self.controller = Controller(self, self.req)
-        # using weekview object instead for now:
-        self.controller = WeekView(self, self.req)
-        self.controller.connect("on_edit_task", self.on_edit_clicked)
-        self.controller.connect("on_add_task", self.on_add_clicked)
-        self.controller.connect("dates-changed", self.on_dates_changed)
-        self.controller.show_today()
-
+        self.controller = Controller(self, self.req)
         vbox = builder.get_object("vbox")
         vbox.add(self.controller)
         vbox.reorder_child(self.controller, 1)
@@ -168,10 +159,17 @@ class CalendarPlugin(GObject.GObject):
         User chose a combobox entry: change the view_type according to it
         """
         view_type = combo.get_active_text()
-        # FIXME: view switch is not working, even thought objects exist
-        # try Gtk.Stack for this -> needs Gnome 3.10
-        # self.controller.on_view_changed(view_type)
-        print("Ignoring view change for now")
+        self.controller.on_view_changed(view_type)
+        # connect new view signals
+        # FIXME: it seems that signals are being emitted multiple times
+        # when change views back and forth and try to edit a task, multiple
+        # TaskView editors appear
+        self.controller.get_visible_view().connect("on_edit_task",
+                                                   self.on_edit_clicked)
+        self.controller.get_visible_view().connect("on_add_task",
+                                                   self.on_add_clicked)
+        self.controller.get_visible_view().connect("dates-changed",
+                                                   self.on_dates_changed)
         self.content_update()
 
     def on_dates_changed(self, widget=None):

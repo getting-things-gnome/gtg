@@ -5,10 +5,10 @@ import utils
 
 
 class Header(Gtk.DrawingArea):
-    def __init__(self):
+    def __init__(self, cols=7):
         super(Header, self).__init__()
         self.labels = []
-        self.background = Background(1, 7)
+        self.background = Background(1, cols)
         self.sidebar = 0
         self.font = "Courier"
         self.font_size = 12

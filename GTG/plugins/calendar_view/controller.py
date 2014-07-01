@@ -1,29 +1,30 @@
-from gi.repository import Gtk, Gdk, GObject
-from week_view import WeekView, TwoWeeksView
-from month_view import MonthView
+from gi.repository import Gtk
+from week_view import WeekView
+# from month_view import MonthView
 
-class Controller(Gtk.DrawingArea):
+
+class Controller(Gtk.Box):
     WEEK, TWO_WEEKS, MONTH = ["Week", "2 Weeks", "Month"]
 
     def __init__(self, parent, requester):
-        super(Controller, self).__init__()
+        super(Gtk.Box, self).__init__()
         self.req = requester
-        
+
         self.week_view = WeekView(parent, self.req)
-        self.two_weeks_view = TwoWeeksView(parent, self.req)
-        self.month_view = MonthView(parent, self.req)
+        # FIXME: 2weeks not working properly since it uses Week object (7days)
+        self.two_weeks_view = WeekView(parent, self.req, numdays=14)
+        # self.month_view = MonthView(parent, self.req)
 
-        # Needs GNOME 3.10
-        # self.view_stack = Gtk.Stack()
-        # self.view_stack.add_titled(week_view, 0, self.WEEK)
-        # self.view_stack.add_titled(month_view, 1, self.MONTH)
-        # self.view_stack.connect("visible-child", self.on_view_changed)
+        self.week_view.show_today()
+        self.two_weeks_view.show_today()
+        self.current_view = None
 
-        # To call the Controller:
-        # controller = Controller(self, requester)
-        # self.view_switcher = Gtk.StackSwitcher()
-        # self.view_switcher.set_stack(view_stack) OR
-        # self.view_switcher.set_stack(controller.get_views())
+        self.notebook = Gtk.Notebook()
+        self.notebook.append_page(self.week_view, None)
+        self.notebook.append_page(self.two_weeks_view, None)
+        self.notebook.set_show_tabs(False)
+        self.add(self.notebook)
+        self.show_all()
 
     def get_selected_task(self):
         """ Returns which task is being selected. """
@@ -48,33 +49,25 @@ class Controller(Gtk.DrawingArea):
         elif view_type == self.MONTH:
             self.on_view_month()
         else:
-            raise ValueError("\'%s\' is not a valid value for View Type." % view_type)
+            raise ValueError("\'%s\' is not a valid value for View Type."
+                             % view_type)
             return
-        self.view_type = view_type
+        page_num = self.notebook.page_num(self.current_view)
+        self.notebook.set_current_page(page_num)
 
     def get_visible_view(self):
-        #return self.view_stack.get_visible_child()
-        if self.view_type == self.WEEK:
-            return self.on_view_week()
-        if self.view_type == self.TWO_WEEKS:
-            return self.on_view_2weeks()
-        elif self.view_type == self.MONTH:
-            return self.on_view_month()
-
-    #def get_views(self):
-    #    return self.view_stack
+        return self.current_view
 
     def on_view_week(self):
-        #self.view_stack.set_visible_child(self.week_view)
+        self.current_view = self.week_view
         return self.week_view
 
     def on_view_2weeks(self):
-        #self.view_stack.set_visible_child(self.two_week_view)
+        self.current_view = self.two_weeks_view
         return self.two_weeks_view
 
-
     def on_view_month(self):
-        #self.view_stack.set_visible_child(self.month_view)
+        self.current_view = self.month_view
         return self.month_view
 
     def update(self):
@@ -94,3 +87,12 @@ class Controller(Gtk.DrawingArea):
 
     def get_current_year(self):
         return self.get_visible_view().get_current_year()
+
+    def edit_task(self, *args):
+        return self.get_visible_view().edit_task(*args)
+
+    def add_new_task(self, *args):
+        return self.get_visible_view().add_new_task(*args)
+
+    def delete_task(self, *args):
+        return self.get_visible_view().delete_task(*args)
