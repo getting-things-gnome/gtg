@@ -54,7 +54,8 @@ class CalendarPlugin(GObject.GObject):
         # self.controller = Controller(self, self.req)
         # using weekview object instead for now:
         self.controller = WeekView(self, self.req)
-        self.controller.connect("on_edit_clicked", self.on_edit_clicked)
+        self.controller.connect("edit_task", self.on_edit_clicked)
+        self.controller.connect("add_task", self.on_add_clicked)
         self.controller.connect("dates-changed", self.on_dates_changed)
         self.controller.show_today()
 
@@ -75,14 +76,18 @@ class CalendarPlugin(GObject.GObject):
         self.label.set_text(text)
         # self.statusbar.push(0, text)
 
-    def on_add_clicked(self, button=None):
+    def on_add_clicked(self, button=None, task_id=None):
         """
         Adds a new task, with the help of a pop-up dialog
         for entering the task title, start and due dates.
         Redraw the calendar view after the changes.
         """
+        if task_id:
+            new_task = self.req.get_task(task_id)
+            dialog = TaskView(self.window, new_task, new=True)
+            self.req.delete_task(new_task.get_id())
         # only to make testing easier
-        if tests:
+        elif tests:
             new_task = self.req.new_task()
             today = datetime.date.today()
             start = random.choice(range(today.day, 31))
@@ -92,13 +97,13 @@ class CalendarPlugin(GObject.GObject):
             new_task.set_due_date(str(today.year) + "-" + str(today.month) +
                                   "-" + str(end))
             new_task.set_color(random_color())
-            dialog = TaskView(self.window, new_task)
+            dialog = TaskView(self.window, new_task, new=True)
+            self.req.delete_task(new_task.get_id())
         ####
         else:
-            dialog = TaskView(self.window)
+            dialog = TaskView(self.window, new=True)
+
         response = dialog.run()
-        if tests:
-            self.req.delete_task(new_task.get_id())
         if response == Gtk.ResponseType.OK:
             title = dialog.get_title()
             start_date = dialog.get_start_date()

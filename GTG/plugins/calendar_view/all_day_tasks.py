@@ -21,6 +21,7 @@ class AllDayTasks(Gtk.DrawingArea):
         self.font_color = (0.35, 0.31, 0.24)
         self.highlight_cell = (None, None)
         self.selected_task = None
+        self.cells = []
 
         self.connect("draw", self.draw)
 
@@ -54,6 +55,16 @@ class AllDayTasks(Gtk.DrawingArea):
     def set_tasks_to_draw(self, drawtasks):
         self.drawtasks = drawtasks
 
+    def highlight_cells(self, ctx, cells, color):
+        alloc = self.get_allocation()
+        for cell in cells:
+            row, col = cell
+            if 0 <= row < self.num_rows and 0 <= col < self.num_columns:
+                ctx.save()
+                self.background.highlight_cell(ctx, row, col, alloc,
+                                               color, alpha=0.15)
+                ctx.restore()
+
     def set_highlight_cell(self, row, col):
         if 0 <= row < self.num_rows and 0 <= col < self.num_columns:
             self.highlight_cell = (row, col)
@@ -83,6 +94,10 @@ class AllDayTasks(Gtk.DrawingArea):
             ctx.save()
             dtask.draw(ctx, self.get_day_width(), self.padding, selected)
             ctx.restore()
+
+        # FIXME: remove this from draw() and make function callable directly
+        # need a ctx to draw the highlight cells
+        self.highlight_cells(ctx, self.cells, color=(0.8, 0.8, 0))
 
     def identify_pointed_object(self, event, clicked=False):
         """

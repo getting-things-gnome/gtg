@@ -13,7 +13,8 @@ from view import ViewBase
 class WeekView(ViewBase, Gtk.VBox):
     __string_signal__ = (GObject.SignalFlags.RUN_FIRST, None, (str, ))
     __none_signal__ = (GObject.SignalFlags.RUN_FIRST, None, tuple())
-    __gsignals__ = {'on_edit_clicked': __string_signal__,
+    __gsignals__ = {'edit_task': __string_signal__,
+                    'add_task': __string_signal__,
                     'dates-changed': __none_signal__,
                     }
 
@@ -250,7 +251,7 @@ class WeekView(ViewBase, Gtk.VBox):
         if self.selected_task:
             # double-click opens task to edit
             if event.type == Gdk.EventType._2BUTTON_PRESS:
-                GObject.idle_add(self.emit, 'on_edit_clicked',
+                GObject.idle_add(self.emit, 'edit_task',
                                  self.selected_task)
                 self.unselect_task()
                 return
@@ -269,9 +270,36 @@ class WeekView(ViewBase, Gtk.VBox):
             self.drag_offset = offset
 
             self.update_tasks()
+        # if no task is selected, save mouse location in case the user wants
+        # to create a new task using DnD
+        else:
+            self.drag_offset = event.x
 
     def motion_notify(self, widget, event):
         """ User moved mouse over widget """
+        # dragging with no task selected: new task will be created
+        if not self.selected_task and self.drag_offset:
+            self.is_dragging = True
+            day_width = self.get_day_width()
+            curr_col = utils.convert_coordinates_to_col(event.x, day_width)
+            start_col = utils.convert_coordinates_to_col(self.drag_offset,
+                                                         day_width)
+            if curr_col < start_col:
+                temp = curr_col
+                curr_col = start_col
+                start_col = temp
+            cells = []
+            for i in range(curr_col - start_col + 1):
+                row = 0
+                col = start_col + i
+                cells.append((row, col))
+            # FIXME: call highlight_cells directly instead of
+            # setting cells and redrawing
+            self.all_day_tasks.cells = cells
+            self.all_day_tasks.queue_draw()
+            # self.all_day_tasks.highlight_cells(cells, color=(0.8, 0.8, 0))
+            return
+
         if self.selected_task and self.is_dragging:  # a task was clicked
             task = self.req.get_task(self.selected_task)
             start_date = task.get_start_date().date()
@@ -318,6 +346,36 @@ class WeekView(ViewBase, Gtk.VBox):
         User released a button, stopping drag and drop.
         Selected task, if any, will still have the focus.
         """
+        # dragging with no task selected: new task will be created
+        if not self.selected_task and self.is_dragging:
+            day_width = self.get_day_width()
+            start = utils.convert_coordinates_to_col(self.drag_offset,
+                                                     day_width)
+
+            event_x = round(event.x, 3)
+            end = utils.convert_coordinates_to_col(event_x, day_width)
+            if start > end:
+                temp = start
+                start = end
+                end = temp
+            start_date = self.first_day() + datetime.timedelta(days=start)
+            due_date = self.first_day() + datetime.timedelta(days=end)
+
+            new_task = self.req.new_task()
+            new_task.set_start_date(start_date)
+            new_task.set_due_date(due_date)
+            new_task.set_color(utils.random_color())
+            GObject.idle_add(self.emit, 'add_task', new_task.get_id())
+            self.is_dragging = False
+            self.drag_offset = None
+            self.all_day_tasks.queue_draw()
+
+            self.all_day_tasks.cells = []
+            # FIXME: not working since TaskView deletes the task and creates
+            # a new one
+            self.selected_task = new_task.get_id()
+            return
+
         # user didn't click on a task - redraw to 'unselect' task
         if not self.selected_task:
             self.is_dragging = False

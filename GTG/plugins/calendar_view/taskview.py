@@ -8,7 +8,7 @@ class TaskView(Gtk.Dialog):
     It receives a task as parameter, and has four editable entries:
     title, start and due dates, and a checkbox to mark the task as done.
     """
-    def __init__(self, parent, task=None):
+    def __init__(self, parent, task=None, new=False):
         Gtk.Dialog.__init__(self, "Edit Task", parent, 0,
                             (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
                              Gtk.STOCK_OK, Gtk.ResponseType.OK))
@@ -41,7 +41,7 @@ class TaskView(Gtk.Dialog):
             self.due_date.set_text(task.get_due_date().to_readable_string())
             if(task.get_status() == Task.STA_DONE):
                 self.done.set_active(True)
-        else:
+        if new:
             self.set_title("New Task")
             self.done.set_sensitive(False)
 
