@@ -37,6 +37,8 @@ class WeekView(ViewBase, Gtk.VBox):
         self.scroll.add_events(Gdk.EventMask.SCROLL_MASK)
         self.scroll.connect("scroll-event", self.on_scroll)
         self.pack_start(self.scroll, True, True, 0)
+        self.vadjustment = self.scroll.get_vadjustment()
+        self.vadjustment.connect('changed', self.on_vadjustment_changed)
 
         # AllDayTasks widget
         self.all_day_tasks = AllDayTasks(self)
@@ -103,20 +105,18 @@ class WeekView(ViewBase, Gtk.VBox):
         """ Calculates new day_width when window is resized """
         pass
 
+    def on_vadjustment_changed(self, a):
+        """ Verify if the scrollbar is needed, and notifies header of that """
+        if (self.vadjustment.get_page_size() == self.vadjustment.get_upper()):
+            self.header.set_sidebar_size(0)
+        else:
+            self.header.set_sidebar_size(15)
+
     def compute_size(self):
         """ Computes and requests the size needed to draw everything. """
         width = self.min_day_width * self.numdays
         height = TASK_HEIGHT * self.grid.num_rows
         self.all_day_tasks.set_size_request(width, height)
-
-        # verify if the scrollbar is present, and notifies header of that
-        # FIXME: not working when removing one task (but scrollbar continues)
-        # if removes task but the scrollbar disappears -> works properly
-        alloc = self.all_day_tasks.get_allocation()
-        if alloc.height > 1 and height >= alloc.height:
-            self.header.set_sidebar_size(15)
-        else:
-            self.header.set_sidebar_size(0)
 
     def set_week_from(self, start):
         """
