@@ -185,9 +185,10 @@ class WeekView(ViewBase, Gtk.VBox):
         self.all_day_tasks.set_tasks_to_draw(self.tasks)
 
         # clears selected_task if it is not being showed
-        if self.selected_task and \
-           not self.is_in_days_range(self.get_selected_task()):
-            self.unselect_task()
+        if self.selected_task:
+            task = self.req.get_task(self.get_selected_task)
+            if task and not self.is_in_days_range(task):
+                self.unselect_task()
         self.all_day_tasks.selected_task = self.selected_task
 
     def highlight_today_cell(self):
@@ -250,12 +251,12 @@ class WeekView(ViewBase, Gtk.VBox):
             # double-click opens task to edit
             if event.type == Gdk.EventType._2BUTTON_PRESS:
                 GObject.idle_add(self.emit, 'on_edit_clicked',
-                                 self.selected_task.get_id())
+                                 self.selected_task)
                 self.unselect_task()
                 return
             self.is_dragging = True
             widget.get_window().set_cursor(cursor)
-            task = self.selected_task.task
+            task = self.req.get_task(self.selected_task)
             start = (task.get_start_date().date() - self.first_day()).days
             end = (task.get_due_date().date() - self.first_day()).days + 1
             duration = end - start
@@ -272,7 +273,7 @@ class WeekView(ViewBase, Gtk.VBox):
     def motion_notify(self, widget, event):
         """ User moved mouse over widget """
         if self.selected_task and self.is_dragging:  # a task was clicked
-            task = self.selected_task.task
+            task = self.req.get_task(self.selected_task)
             start_date = task.get_start_date().date()
             end_date = task.get_due_date().date()
             duration = (end_date - start_date).days
@@ -331,7 +332,7 @@ class WeekView(ViewBase, Gtk.VBox):
         day_width = self.get_day_width()
         weekday = utils.convert_coordinates_to_col(event_x, day_width)
 
-        task = self.selected_task.task
+        task = self.req.get_task(self.selected_task)
         start = task.get_start_date().date()
         end = task.get_due_date().date()
         duration = (end - start).days

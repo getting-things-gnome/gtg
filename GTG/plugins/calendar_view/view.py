@@ -18,8 +18,7 @@ class ViewBase:
 
     def get_selected_task(self):
         """ Returns which task is being selected. """
-        if self.selected_task:
-            return self.selected_task.task
+        return self.selected_task
 
     def unselect_task(self):
         """ Unselects the task that was selected before. """

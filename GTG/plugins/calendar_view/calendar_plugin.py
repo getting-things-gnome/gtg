@@ -117,7 +117,7 @@ class CalendarPlugin(GObject.GObject):
         Redraw the calendar view after the changes.
         """
         if not task_id:
-            task_id = self.controller.get_selected_task().get_id()
+            task_id = self.controller.get_selected_task()
         task = self.req.get_task(task_id)
         if task:
             dialog = TaskView(self.window, task)
@@ -139,7 +139,7 @@ class CalendarPlugin(GObject.GObject):
         Removes the selected task from the datastore and redraw the
         calendar view.
         """
-        task = self.controller.get_selected_task()
+        task = self.req.get_task(self.controller.get_selected_task())
         if task:
             self.controller.delete_task(task.get_id())
             self.on_statusbar_text_pushed("Deleted task: %s" %

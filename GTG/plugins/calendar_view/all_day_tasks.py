@@ -79,7 +79,7 @@ class AllDayTasks(Gtk.DrawingArea):
         # then draw all tasks
         for dtask in self.drawtasks:
             selected = self.selected_task and \
-                (dtask.get_id() == self.selected_task.get_id())
+                (dtask.get_id() == self.selected_task)
             ctx.save()
             dtask.draw(ctx, self.get_day_width(), self.padding, selected)
             ctx.restore()
@@ -113,5 +113,5 @@ class AllDayTasks(Gtk.DrawingArea):
                     cursor = Gdk.Cursor.new(Gdk.CursorType.FLEUR)
             else:
                 continue
-            return task, drag_action, cursor
+            return task.get_id(), drag_action, cursor
         return None, None, cursor
