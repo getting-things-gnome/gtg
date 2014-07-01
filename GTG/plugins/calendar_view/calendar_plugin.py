@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-from gi.repository import Gtk, Gdk, GObject
+from gi.repository import Gtk, GObject
 import datetime
 import random
 
@@ -50,24 +50,24 @@ class CalendarPlugin(GObject.GObject):
         self.today_button = builder.get_object("today")
         self.header = builder.get_object("header")
 
-        self.combobox = builder.get_object("combobox")
-
         # FIXME: controller drawing content is not working
         # self.controller = Controller(self, self.req)
         # using weekview object instead for now:
         self.controller = WeekView(self, self.req)
         self.controller.connect("on_edit_clicked", self.on_edit_clicked)
         self.controller.connect("dates-changed", self.on_dates_changed)
+        self.controller.show_today()
 
         vbox = builder.get_object("vbox")
         vbox.add(self.controller)
         vbox.reorder_child(self.controller, 1)
 
+        self.combobox = builder.get_object("combobox")
+        self.combobox.set_active(0)
+
         self.statusbar = builder.get_object("statusbar")
         self.label = builder.get_object("label")
 
-        self.controller.show_today()
-        self.combobox.set_active(0)
         self.window.show_all()
 
     def on_statusbar_text_pushed(self, text):
@@ -117,7 +117,7 @@ class CalendarPlugin(GObject.GObject):
         Redraw the calendar view after the changes.
         """
         if not task_id:
-          task_id = self.controller.get_selected_task().get_id()
+            task_id = self.controller.get_selected_task().get_id()
         task = self.req.get_task(task_id)
         if task:
             dialog = TaskView(self.window, task)

@@ -15,7 +15,7 @@ class WeekView(ViewBase, Gtk.VBox):
     __none_signal__ = (GObject.SignalFlags.RUN_FIRST, None, tuple())
     __gsignals__ = {'on_edit_clicked': __string_signal__,
                     'dates-changed': __none_signal__,
-                   }
+                    }
 
     def __init__(self, parent, requester, numdays=7):
         super(WeekView, self).__init__(parent, requester)
@@ -43,8 +43,6 @@ class WeekView(ViewBase, Gtk.VBox):
         # AllDayTasks widget
         self.all_day_tasks = AllDayTasks(self)
         self.scroll.add_with_viewport(self.all_day_tasks)
-
-        #self.show_today()
 
         # drag-and-drop support
         self.drag_offset = None
@@ -251,7 +249,8 @@ class WeekView(ViewBase, Gtk.VBox):
         if self.selected_task:
             # double-click opens task to edit
             if event.type == Gdk.EventType._2BUTTON_PRESS:
-                GObject.idle_add(self.emit, 'on_edit_clicked', self.selected_task.get_id())
+                GObject.idle_add(self.emit, 'on_edit_clicked',
+                                 self.selected_task.get_id())
                 self.unselect_task()
                 return
             self.is_dragging = True
