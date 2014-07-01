@@ -12,9 +12,10 @@ from view import ViewBase
 
 class WeekView(ViewBase, Gtk.VBox):
     __string_signal__ = (GObject.SignalFlags.RUN_FIRST, None, (str, ))
+    __2string_signal__ = (GObject.SignalFlags.RUN_FIRST, None, (str, str,))
     __none_signal__ = (GObject.SignalFlags.RUN_FIRST, None, tuple())
-    __gsignals__ = {'edit_task': __string_signal__,
-                    'add_task': __string_signal__,
+    __gsignals__ = {'on_edit_task': __string_signal__,
+                    'on_add_task': __2string_signal__,
                     'dates-changed': __none_signal__,
                     }
 
@@ -251,9 +252,11 @@ class WeekView(ViewBase, Gtk.VBox):
         if self.selected_task:
             # double-click opens task to edit
             if event.type == Gdk.EventType._2BUTTON_PRESS:
-                GObject.idle_add(self.emit, 'edit_task',
+                GObject.idle_add(self.emit, 'on_edit_task',
                                  self.selected_task)
                 self.unselect_task()
+                self.is_dragging = False
+                self.drag_offset = None
                 return
             self.is_dragging = True
             widget.get_window().set_cursor(cursor)
@@ -361,19 +364,12 @@ class WeekView(ViewBase, Gtk.VBox):
             start_date = self.first_day() + datetime.timedelta(days=start)
             due_date = self.first_day() + datetime.timedelta(days=end)
 
-            new_task = self.req.new_task()
-            new_task.set_start_date(start_date)
-            new_task.set_due_date(due_date)
-            new_task.set_color(utils.random_color())
-            GObject.idle_add(self.emit, 'add_task', new_task.get_id())
+            GObject.idle_add(self.emit, 'on_add_task', start_date, due_date)
             self.is_dragging = False
             self.drag_offset = None
             self.all_day_tasks.queue_draw()
 
             self.all_day_tasks.cells = []
-            # FIXME: not working since TaskView deletes the task and creates
-            # a new one
-            self.selected_task = new_task.get_id()
             return
 
         # user didn't click on a task - redraw to 'unselect' task

@@ -116,6 +116,7 @@ class ViewBase:
         new_task.set_start_date(start_date)
         new_task.set_due_date(due_date)
         new_task.set_color(color)
+        self.selected_task = new_task.get_id()
         self.update()
 
     def edit_task(self, tid, new_title=None, new_start_date=None,

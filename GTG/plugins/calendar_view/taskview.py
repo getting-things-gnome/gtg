@@ -59,4 +59,13 @@ class TaskView(Gtk.Dialog):
     def get_active(self):
         return self.done.get_active()
 
+    def set_task_title(self, title):
+        self.title.set_text(title)
+
+    def set_start_date(self, start):
+        self.start_date.set_text(start)
+
+    def set_due_date(self, end):
+        self.due_date.set_text(end)
+
 GObject.type_register(TaskView)

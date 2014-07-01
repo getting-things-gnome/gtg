@@ -54,8 +54,8 @@ class CalendarPlugin(GObject.GObject):
         # self.controller = Controller(self, self.req)
         # using weekview object instead for now:
         self.controller = WeekView(self, self.req)
-        self.controller.connect("edit_task", self.on_edit_clicked)
-        self.controller.connect("add_task", self.on_add_clicked)
+        self.controller.connect("on_edit_task", self.on_edit_clicked)
+        self.controller.connect("on_add_task", self.on_add_clicked)
         self.controller.connect("dates-changed", self.on_dates_changed)
         self.controller.show_today()
 
@@ -76,32 +76,26 @@ class CalendarPlugin(GObject.GObject):
         self.label.set_text(text)
         # self.statusbar.push(0, text)
 
-    def on_add_clicked(self, button=None, task_id=None):
+    def on_add_clicked(self, button=None, start_date=None, due_date=None):
         """
         Adds a new task, with the help of a pop-up dialog
         for entering the task title, start and due dates.
         Redraw the calendar view after the changes.
         """
-        if task_id:
-            new_task = self.req.get_task(task_id)
-            dialog = TaskView(self.window, new_task, new=True)
-            self.req.delete_task(new_task.get_id())
         # only to make testing easier
-        elif tests:
-            new_task = self.req.new_task()
+        if tests and not start_date and not due_date:
             today = datetime.date.today()
             start = random.choice(range(today.day, 31))
             end = random.choice(range(start, 31))
-            new_task.set_start_date(str(today.year) + "-" + str(today.month) +
-                                    "-" + str(start))
-            new_task.set_due_date(str(today.year) + "-" + str(today.month) +
-                                  "-" + str(end))
-            new_task.set_color(random_color())
-            dialog = TaskView(self.window, new_task, new=True)
-            self.req.delete_task(new_task.get_id())
+            start_date = str(today.year) + "-" + str(today.month) + "-" + str(start)
+            due_date = str(today.year) + "-" + str(today.month) + "-" + str(end)
         ####
-        else:
-            dialog = TaskView(self.window, new=True)
+        dialog = TaskView(self.window, new=True)
+        dialog.set_task_title("My New Task")
+        if start_date:
+            dialog.set_start_date(start_date)
+        if due_date:
+            dialog.set_due_date(due_date)
 
         response = dialog.run()
         if response == Gtk.ResponseType.OK:
