@@ -254,11 +254,9 @@ class WeekView(ViewBase, Gtk.VBox):
             if event.type == Gdk.EventType._2BUTTON_PRESS:
                 GObject.idle_add(self.emit, 'on_edit_task',
                                  self.selected_task)
-                self.unselect_task()
                 self.is_dragging = False
                 self.drag_offset = None
                 return
-            self.is_dragging = True
             widget.get_window().set_cursor(cursor)
             task = self.req.get_task(self.selected_task)
             start = (task.get_start_date().date() - self.first_day()).days
@@ -303,7 +301,8 @@ class WeekView(ViewBase, Gtk.VBox):
             # self.all_day_tasks.highlight_cells(cells, color=(0.8, 0.8, 0))
             return
 
-        if self.selected_task and self.is_dragging:  # a task was clicked
+        if self.selected_task and self.drag_offset:  # a task was clicked
+            self.is_dragging = True
             task = self.req.get_task(self.selected_task)
             start_date = task.get_start_date().date()
             end_date = task.get_due_date().date()
@@ -365,46 +364,41 @@ class WeekView(ViewBase, Gtk.VBox):
             due_date = self.first_day() + datetime.timedelta(days=end)
 
             GObject.idle_add(self.emit, 'on_add_task', start_date, due_date)
-            self.is_dragging = False
-            self.drag_offset = None
             self.all_day_tasks.queue_draw()
-
             self.all_day_tasks.cells = []
-            return
 
         # user didn't click on a task - redraw to 'unselect' task
-        if not self.selected_task:
-            self.is_dragging = False
-            self.drag_offset = None
+        elif not self.selected_task:
             self.unselect_task()
             self.all_day_tasks.queue_draw()
-            return
 
-        event_x = round(event.x + self.drag_offset, 3)
-        # event_y = event.y
+        # only changes selected task if any form of dragging ocurred
+        elif self.is_dragging:
+            event_x = round(event.x + self.drag_offset, 3)
+            # event_y = event.y
 
-        day_width = self.get_day_width()
-        weekday = utils.convert_coordinates_to_col(event_x, day_width)
+            day_width = self.get_day_width()
+            weekday = utils.convert_coordinates_to_col(event_x, day_width)
 
-        task = self.req.get_task(self.selected_task)
-        start = task.get_start_date().date()
-        end = task.get_due_date().date()
-        duration = (end - start).days
+            task = self.req.get_task(self.selected_task)
+            start = task.get_start_date().date()
+            end = task.get_due_date().date()
+            duration = (end - start).days
 
-        new_start_day = self.first_day() + datetime.timedelta(days=weekday)
-        if self.drag_action == "expand_right":
-            new_start_day = task.get_start_date().date()
-        new_due_day = new_start_day + datetime.timedelta(days=duration)
+            new_start_day = self.first_day() + datetime.timedelta(days=weekday)
+            if self.drag_action == "expand_right":
+                new_start_day = task.get_start_date().date()
+            new_due_day = new_start_day + datetime.timedelta(days=duration)
 
-        if not self.drag_action == "expand_right" \
-           and new_start_day <= end:
-            task.set_start_date(new_start_day)
-        if not self.drag_action == "expand_left" \
-           and new_due_day >= start:
-            task.set_due_date(new_due_day)
+            if not self.drag_action == "expand_right" \
+               and new_start_day <= end:
+                task.set_start_date(new_start_day)
+            if not self.drag_action == "expand_left" \
+               and new_due_day >= start:
+                task.set_due_date(new_due_day)
+            self.unselect_task()
+            self.update_tasks()
 
         widget.get_window().set_cursor(Gdk.Cursor.new(Gdk.CursorType.ARROW))
         self.drag_offset = None
         self.is_dragging = False
-        # self.selected_task = None
-        self.update_tasks()
