@@ -46,7 +46,9 @@ GETTEXT_DOMAIN = 'gtg'
 LOCALE_PATH = gettext.bindtextdomain(GETTEXT_DOMAIN)
 
 gettext.bindtextdomain(GETTEXT_DOMAIN, LOCALE_PATH)
+locale.bindtextdomain(GETTEXT_DOMAIN, LOCALE_PATH)
 gettext.textdomain(GETTEXT_DOMAIN)
+locale.textdomain(GETTEXT_DOMAIN)
 # FIXME set translation for Builder as well!
 
 translation = gettext.translation(GETTEXT_DOMAIN, LOCALE_PATH, fallback=True)
