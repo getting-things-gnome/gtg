@@ -58,7 +58,10 @@ class CalendarPlugin(GObject.GObject):
 
         self.today_button = builder.get_object("today")
         self.header = builder.get_object("header")
+        self.edit_button = builder.get_object("edit")
+        self.remove_button = builder.get_object("remove")
 
+        self.controller.connect('selection-changed', self.update_buttons_sensitivity)
         self.controller.connect("dates-changed", self.on_dates_changed)
         self.controller.show_today()
 
@@ -147,6 +150,17 @@ class CalendarPlugin(GObject.GObject):
         self.header.set_text(self.controller.get_current_year())
         self.today_button.set_sensitive(
             not self.controller.is_today_being_shown())
+
+    def update_buttons_sensitivity(self, widget=None, selected_task=None):
+        """
+        Updates Edit and Remove buttons sensitivity, depeding on wheter or not
+        there is a @selected_task
+
+        @param selected_task: a string, the selected task id or None
+        """
+        enable = (selected_task is not None)
+        self.edit_button.set_sensitive(enable)
+        self.remove_button.set_sensitive(enable)
 
     def content_update(self):
         """ Performs all that is needed to update the content displayed """

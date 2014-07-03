@@ -11,8 +11,10 @@ from GTG.plugins.calendar_view.view import ViewBase
 
 
 class WeekView(ViewBase, Gtk.VBox):
+    __string_signal__ = (GObject.SignalFlags.RUN_FIRST, None, (str, ))
     __none_signal__ = (GObject.SignalFlags.RUN_FIRST, None, tuple())
-    __gsignals__ = {'dates-changed': __none_signal__,
+    __gsignals__ = {'selection-changed': __string_signal__,
+                    'dates-changed': __none_signal__,
                     }
 
     def __init__(self, parent, requester, numdays=7):
@@ -76,11 +78,13 @@ class WeekView(ViewBase, Gtk.VBox):
         """ Unselects the task that was selected before. """
         self.selected_task = None
         self.all_day_tasks.selected_task = None
+        self.emit('selection_changed', None)
 
     def set_selected_task(self, tid):
         """ Returns which task is being selected. """
         self.selected_task = tid
         self.all_day_tasks.selected_task = tid
+        self.emit('selection_changed', tid)
 
     def first_day(self):
         """ Returns the first day of the view being displayed """
