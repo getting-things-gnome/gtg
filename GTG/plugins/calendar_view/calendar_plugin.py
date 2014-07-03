@@ -20,18 +20,21 @@ class CalendarPlugin(GObject.GObject):
     This class is a plugin to display tasks into a dedicated view, where tasks
     can be selected, edited, moved around by dragging and dropping, etc.
     """
-    __string_signal__ = (GObject.SignalFlags.RUN_FIRST, None, (str, ))
-    __gsignals__ = {'on_delete_task': __string_signal__,
-                    }
-
-    def __init__(self, requester):
+    def __init__(self, requester, vmanager):
         super(CalendarPlugin, self).__init__()
 
         self.req = requester
+        self.vmanager = vmanager
+        self.vmanager.connect('tasks-deleted', self.on_tasks_deleted)
+
         self.first_day = self.last_day = self.numdays = None
 
         self.plugin_path = os.path.dirname(os.path.abspath(__file__))
         self.glade_file = os.path.join(self.plugin_path, "calendar_view.ui")
+
+        # FIXME: controller drawing content is not working
+        # using weekview object instead for now:
+        self.controller = WeekView(self, self.req)
 
         builder = Gtk.Builder()
         builder.add_from_file(self.glade_file)
@@ -56,12 +59,6 @@ class CalendarPlugin(GObject.GObject):
         self.today_button = builder.get_object("today")
         self.header = builder.get_object("header")
 
-        # FIXME: controller drawing content is not working
-        # self.controller = Controller(self, self.req)
-        # using weekview object instead for now:
-        self.controller = WeekView(self, self.req)
-        #self.controller.connect("on_edit_task", self.on_edit_clicked)
-        #self.controller.connect("on_add_task", self.on_add_clicked)
         self.controller.connect("dates-changed", self.on_dates_changed)
         self.controller.show_today()
 
@@ -87,76 +84,33 @@ class CalendarPlugin(GObject.GObject):
         self.label.set_text(text)
         # self.statusbar.push(0, text)
 
-    def on_add_clicked(self, button=None, start_date=None, due_date=None):
-        """
-        Adds a new task, with the help of a pop-up dialog
-        for entering the task title, start and due dates.
-        Redraw the calendar view after the changes.
-        """
-        # only to make testing easier
-        if tests and not start_date and not due_date:
-            today = datetime.date.today()
-            start = random.choice(range(today.day, 31))
-            end = random.choice(range(start, 31))
-            start_date = (str(today.year) + "-" + str(today.month)
-                          + "-" + str(start))
-            due_date = (str(today.year) + "-" + str(today.month)
-                        + "-" + str(end))
-        ####
-        dialog = TaskView(self.window, new=True)
-        dialog.set_task_title("My New Task")
-        if start_date:
-            dialog.set_start_date(start_date)
-        if due_date:
-            dialog.set_due_date(due_date)
+    def on_add_clicked(self, button=None):
+        """ Asks the controller to add a new task. """
+        self.controller.add_new_task()
+        #task = self.req.get_task(self.controller.get_selected_task())
+        #self.on_statusbar_text_pushed("Added task: %s" % task.get_title())
 
-        response = dialog.run()
-        dialog.hide()
-        if response == Gtk.ResponseType.OK:
-            title = dialog.get_title()
-            start_date = Date(dialog.get_start_date())
-            due_date = Date(dialog.get_due_date())
-            color = random_color()
-            self.controller.add_new_task(title, start_date, due_date, color)
-            self.on_statusbar_text_pushed("Added task: %s" % title)
-        else:
-            self.on_statusbar_text_pushed("...")
-
-    def on_edit_clicked(self, button=None, task_id=None):
-        """
-        Edits the selected task, with the help of a pop-up dialog
-        for modifying the task title, start and due dates.
-        Redraw the calendar view after the changes.
-        """
-        if not task_id:
-            task_id = self.controller.get_selected_task()
-        task = self.req.get_task(task_id)
-        if task:
-            dialog = TaskView(self.window, task)
-            response = dialog.run()
-            dialog.hide()
-            if response == Gtk.ResponseType.OK:
-                title = dialog.get_title()
-                start_date = dialog.get_start_date()
-                due_date = dialog.get_due_date()
-                is_done = dialog.get_active()
-                self.controller.edit_task(task.get_id(), title,
-                                          start_date, due_date, is_done)
-                self.on_statusbar_text_pushed("Edited task: %s" % title)
-            else:
-                self.on_statusbar_text_pushed("...")
+    def on_edit_clicked(self, button=None):
+        """ Asks the controller to edit the selected task. """
+        task_id = self.controller.get_selected_task()
+        if task_id:
+            self.controller.ask_edit_task(task_id)
+            title = self.req.get_task(task_id).get_title()
+            self.on_statusbar_text_pushed("Edited task: %s" % title)
 
     def on_remove_clicked(self, button=None):
         """
-        Removes the selected task from the datastore and redraw the
-        calendar view.
+        Asks the controller to remove the selected task from the datastore.
         """
-        task = self.req.get_task(self.controller.get_selected_task())
-        if task:
-            GObject.idle_add(self.emit, 'on_delete_task',
-                                 task.get_id())
+        task_id = self.controller.get_selected_task()
+        if task_id:
+            self.controller.ask_delete_task(task_id)
+
+    def on_tasks_deleted(self, widget, tids):
+        if tids:
             self.on_statusbar_text_pushed("Deleted task: %s" %
-                                          task.get_title())
+   ", ".join([t.get_title() for t in tids]))
+            self.controller.update()
         else:
             self.on_statusbar_text_pushed("...")
 

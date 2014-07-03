@@ -16,9 +16,18 @@ class ViewBase:
         self.numdays = None
         self.selected_task = None
 
+        # callbacks to set
+        self.edit_task = None
+        self.add_new_task  = None
+        self.delete_task = None
+
     def get_selected_task(self):
         """ Returns which task is being selected. """
         return self.selected_task
+
+    def set_selected_task(self, task_id):
+        """ Sets which task is the selected task. """
+        self.selected_task = task_id
 
     def unselect_task(self):
         """ Unselects the task that was selected before. """
@@ -110,32 +119,59 @@ class ViewBase:
         """ User released a button, stopping drag and drop. """
         return
 
-    def add_new_task(self, title, start_date, due_date, color):
+    def edit_task_callback(self, func):
+        """
+        Callback function to edit a task
+
+        @param func: the function to be called in order to edit the task
+        """
+        self.edit_task = func
+
+    def new_task_callback(self, func):
+        """
+        Callback function to add a new task
+
+        @param func: the function to be called in order to add the new task
+        """
+        self.add_new_task = func
+
+    def delete_task_callback(self, func):
+        """
+        Callback function to delete a task
+
+        @param func: the function to be called to perform the deletion
+        """
+        self.delete_task = func
+
+    def ask_add_new_task(self, start_date, due_date):
+        """
+        Adds a new task with @start_date and @due_date, and updates the View.
+
+        @param start_date: datetime object, the start date of the new Task
+        @param due_date: datetime object, the due date of the new Task
+        """
         new_task = self.req.new_task()
-        new_task.set_title(title)
         new_task.set_start_date(start_date)
         new_task.set_due_date(due_date)
-        new_task.set_color(color)
-        self.selected_task = new_task.get_id()
+        self.add_new_task(new_task.get_id())
+        self.set_selected_task(new_task.get_id())
         self.update()
 
-    def edit_task(self, tid, new_title=None, new_start_date=None,
-                  new_due_date=None, is_done=False):
-        task = self.req.get_task(tid)
-        if new_title:
-            task.set_title(new_title)
-        if new_start_date:
-            task.set_start_date(new_start_date)
-        if new_due_date:
-            task.set_due_date(new_due_date)
-        if is_done is not None:
-            if is_done:
-                task.set_status(Task.STA_DONE)
-            else:
-                task.set_status(Task.STA_ACTIVE)
+    def ask_edit_task(self, task_id):
+        """
+        Edits a task given by @task_id and updates the View.
+
+        @param task_id: str, the id of a Task to be edited
+        """
+        self.edit_task(task_id)
         self.update()
 
-    def delete_task(self, tid):
-        self.req.delete_task(tid)
+    def ask_delete_task(self, task_id):
+        """
+        Deletes a task given by @task_id and updates the View.
+
+        @param task_id: str, the id of a Task to be deleted
+        """
+        self.delete_task(task_id=task_id)
         self.unselect_task()
         self.update()

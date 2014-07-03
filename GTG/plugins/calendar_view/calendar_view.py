@@ -29,11 +29,21 @@ class calendarView:
         self.plugin_api = plugin_api
         self.req = self.plugin_api.get_requester()
         self.view_manager = plugin_api.get_view_manager()
+        self.calendar = None
         self._init_gtk()
 
         self.plugin_api.set_active_selection_changed_callback(
             self.selection_changed)
-        self.calendar = None
+        self._init_calendar()
+
+    def _init_calendar(self):
+        if not self.calendar:
+            self.calendar = CalendarPlugin(self.req, self.view_manager)
+        self.calendar.controller.new_task_callback(self.open_task)
+        self.calendar.controller.edit_task_callback(self.open_task)
+        self.calendar.controller.delete_task_callback(self.delete_task)
+        self.view_manager.timer.connect('refresh', self.calendar.controller.update)
+        self.calendar.window.hide()
 
     def deactivate(self, plugin_api):
         """ Removes the gtk widgets before quitting """
@@ -43,13 +53,8 @@ class calendarView:
         if not self.calendar:
             self.calendar = CalendarPlugin(self.req)
         self.calendar.window.show()
-        self.calendar.controller.connect("on_edit_task", self.open_task)
-        self.calendar.controller.connect("on_add_task", self.open_task)
-        self.calendar.connect("on_delete_task", self.delete_task)
 
-        self.view_manager.connect('tasks-deleted', self.calendar.controller.update)
-
-    def delete_task(self, widget, task_id):
+    def delete_task(self, task_id, widget=None):
         self.view_manager.ask_delete_tasks([task_id])
 
     def selection_changed(self, selection):
@@ -59,7 +64,7 @@ class calendarView:
         # else:
         #     self.tb_button.set_sensitive(False)
 
-    def open_task(self, widget, task_id=None):
+    def open_task(self, task_id=None):
         """
         Opens a task in the TaskEditor, if it's not currently opened.
         If task_id is None, it creates a new task and opens it

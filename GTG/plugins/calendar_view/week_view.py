@@ -11,12 +11,8 @@ from GTG.plugins.calendar_view.view import ViewBase
 
 
 class WeekView(ViewBase, Gtk.VBox):
-    __string_signal__ = (GObject.SignalFlags.RUN_FIRST, None, (str, ))
-    __2string_signal__ = (GObject.SignalFlags.RUN_FIRST, None, (str, str,))
     __none_signal__ = (GObject.SignalFlags.RUN_FIRST, None, tuple())
-    __gsignals__ = {'on_edit_task': __string_signal__,
-                    'on_add_task': __2string_signal__,
-                    'dates-changed': __none_signal__,
+    __gsignals__ = {'dates-changed': __none_signal__,
                     }
 
     def __init__(self, parent, requester, numdays=7):
@@ -80,6 +76,11 @@ class WeekView(ViewBase, Gtk.VBox):
         """ Unselects the task that was selected before. """
         self.selected_task = None
         self.all_day_tasks.selected_task = None
+
+    def set_selected_task(self, tid):
+        """ Returns which task is being selected. """
+        self.selected_task = tid
+        self.all_day_tasks.selected_task = tid
 
     def first_day(self):
         """ Returns the first day of the view being displayed """
@@ -188,10 +189,9 @@ class WeekView(ViewBase, Gtk.VBox):
 
         # clears selected_task if it is not being showed
         if self.selected_task:
-            task = self.req.get_task(self.get_selected_task)
+            task = self.req.get_task(self.selected_task)
             if task and not self.is_in_days_range(task):
                 self.unselect_task()
-        self.all_day_tasks.selected_task = self.selected_task
 
     def highlight_today_cell(self):
         """ Highlights the cell equivalent to today."""
@@ -246,14 +246,14 @@ class WeekView(ViewBase, Gtk.VBox):
     def dnd_start(self, widget, event):
         """ User clicked the mouse button, starting drag and drop """
         # find which task was clicked, if any
-        self.selected_task, self.drag_action, cursor = \
+        task_id, self.drag_action, cursor = \
             self.all_day_tasks.identify_pointed_object(event, clicked=True)
+        self.set_selected_task(task_id)
 
         if self.selected_task:
             # double-click opens task to edit
             if event.type == Gdk.EventType._2BUTTON_PRESS:
-                GObject.idle_add(self.emit, 'on_edit_task',
-                                 self.selected_task)
+                self.ask_edit_task(self.selected_task)
                 self.is_dragging = False
                 self.drag_offset = None
                 return
@@ -363,7 +363,7 @@ class WeekView(ViewBase, Gtk.VBox):
             start_date = self.first_day() + datetime.timedelta(days=start)
             due_date = self.first_day() + datetime.timedelta(days=end)
 
-            GObject.idle_add(self.emit, 'on_add_task', start_date, due_date)
+            self.ask_add_new_task(start_date, due_date)
             self.all_day_tasks.queue_draw()
             self.all_day_tasks.cells = []
 
