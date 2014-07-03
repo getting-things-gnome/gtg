@@ -28,16 +28,29 @@ class calendarView:
     def activate(self, plugin_api):
         self.plugin_api = plugin_api
         self.req = self.plugin_api.get_requester()
+        self.view_manager = plugin_api.get_view_manager()
         self._init_gtk()
+
         self.plugin_api.set_active_selection_changed_callback(
             self.selection_changed)
+        self.calendar = None
 
     def deactivate(self, plugin_api):
         """ Removes the gtk widgets before quitting """
         self._gtk_deactivate()
 
     def show_calendar(self, button):
-        self.calendar = CalendarPlugin(self.req)
+        if not self.calendar:
+            self.calendar = CalendarPlugin(self.req)
+        self.calendar.window.show()
+        self.calendar.controller.connect("on_edit_task", self.open_task)
+        self.calendar.controller.connect("on_add_task", self.open_task)
+        self.calendar.connect("on_delete_task", self.delete_task)
+
+        self.view_manager.connect('tasks-deleted', self.calendar.controller.update)
+
+    def delete_task(self, widget, task_id):
+        self.view_manager.ask_delete_tasks([task_id])
 
     def selection_changed(self, selection):
         pass
@@ -46,6 +59,19 @@ class calendarView:
         # else:
         #     self.tb_button.set_sensitive(False)
 
+    def open_task(self, widget, task_id=None):
+        """
+        Opens a task in the TaskEditor, if it's not currently opened.
+        If task_id is None, it creates a new task and opens it
+        """
+        if task_id is None:
+            task_id = self.req.new_task().get_id()
+            new_task = True
+        else:
+            new_task = False
+        self.view_manager.open_task(task_id, thisisnew=new_task)
+        self.calendar.controller.update()
+
 # GTK FUNCTIONS ##############################################################
     def _init_gtk(self):
         """ Initialize all the GTK widgets """
@@ -53,7 +79,7 @@ class calendarView:
         self.tb_button = Gtk.ToolButton()
         self.tb_button.set_icon_name("x-office-calendar")  # -symbolic")
         self.tb_button.set_is_important(True)
-        self.tb_button.set_label(_("View tasks in calendar"))
+        self.tb_button.set_label(_("View as calendar"))
         self.tb_button.connect('clicked', self.show_calendar)
         self.tb_button.show()
         self.plugin_api.add_toolbar_item(self.tb_button)

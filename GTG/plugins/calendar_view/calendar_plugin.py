@@ -4,11 +4,13 @@ import datetime
 import random
 import os
 
+from GTG.gtk.editor.editor import TaskEditor
+from GTG.tools.dates import Date
+
 from GTG.plugins.calendar_view.utils import random_color
 from GTG.plugins.calendar_view.week_view import WeekView
 # from GTG.plugin.calendar_view.controller import Controller
 from GTG.plugins.calendar_view.taskview import TaskView
-from GTG.gtk.editor.editor import TaskEditor
 
 tests = True
 
@@ -18,6 +20,10 @@ class CalendarPlugin(GObject.GObject):
     This class is a plugin to display tasks into a dedicated view, where tasks
     can be selected, edited, moved around by dragging and dropping, etc.
     """
+    __string_signal__ = (GObject.SignalFlags.RUN_FIRST, None, (str, ))
+    __gsignals__ = {'on_delete_task': __string_signal__,
+                    }
+
     def __init__(self, requester):
         super(CalendarPlugin, self).__init__()
 
@@ -30,7 +36,7 @@ class CalendarPlugin(GObject.GObject):
         builder = Gtk.Builder()
         builder.add_from_file(self.glade_file)
         handlers = {
-            "on_window_destroy": Gtk.main_quit,
+            "on_window_destroy": self.close_window,
             "on_today_clicked": self.on_today_clicked,
             "on_combobox_changed": self.on_combobox_changed,
             "on_add_clicked": self.on_add_clicked,
@@ -54,8 +60,8 @@ class CalendarPlugin(GObject.GObject):
         # self.controller = Controller(self, self.req)
         # using weekview object instead for now:
         self.controller = WeekView(self, self.req)
-        self.controller.connect("on_edit_task", self.on_edit_clicked)
-        self.controller.connect("on_add_task", self.on_add_clicked)
+        #self.controller.connect("on_edit_task", self.on_edit_clicked)
+        #self.controller.connect("on_add_task", self.on_add_clicked)
         self.controller.connect("dates-changed", self.on_dates_changed)
         self.controller.show_today()
 
@@ -70,6 +76,11 @@ class CalendarPlugin(GObject.GObject):
         self.label = builder.get_object("label")
 
         self.window.show_all()
+
+    def close_window(self, arg):
+        # FIXME: not working, still closes GTG main window
+        self.window.hide()
+        return True  # do not destroy window
 
     def on_statusbar_text_pushed(self, text):
         """ Adds the @text to the statusbar """
@@ -103,8 +114,8 @@ class CalendarPlugin(GObject.GObject):
         dialog.hide()
         if response == Gtk.ResponseType.OK:
             title = dialog.get_title()
-            start_date = dialog.get_start_date()
-            due_date = dialog.get_due_date()
+            start_date = Date(dialog.get_start_date())
+            due_date = Date(dialog.get_due_date())
             color = random_color()
             self.controller.add_new_task(title, start_date, due_date, color)
             self.on_statusbar_text_pushed("Added task: %s" % title)
@@ -142,7 +153,8 @@ class CalendarPlugin(GObject.GObject):
         """
         task = self.req.get_task(self.controller.get_selected_task())
         if task:
-            self.controller.delete_task(task.get_id())
+            GObject.idle_add(self.emit, 'on_delete_task',
+                                 task.get_id())
             self.on_statusbar_text_pushed("Deleted task: %s" %
                                           task.get_title())
         else:
