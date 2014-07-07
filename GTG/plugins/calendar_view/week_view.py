@@ -105,7 +105,7 @@ class WeekView(ViewBase, Gtk.VBox):
         corresponding to today among it.
         """
         self.week.week_containing_day(datetime.date.today())
-        self.update()
+        self.refresh()
 
     def on_size_allocate(self, widget=None, event=None):
         """ Calculates new day_width when window is resized """
@@ -206,7 +206,7 @@ class WeekView(ViewBase, Gtk.VBox):
         self.all_day_tasks.set_highlight_cell(row, col)
         self.header.set_highlight_cell(0, col)
 
-    def update(self, widget=None, dummy=None):
+    def refresh(self, widget=None, dummy=None):
         """
         Updates the header, the content to be drawn (tasks), recalculates the
         size needed and then redraws everything.
@@ -231,7 +231,7 @@ class WeekView(ViewBase, Gtk.VBox):
         if not days:
             days = self.numdays - self.first_day().weekday()
         self.week.adjust(days)
-        self.update()
+        self.refresh()
 
     def previous(self, days=None):
         """
@@ -247,7 +247,7 @@ class WeekView(ViewBase, Gtk.VBox):
         if not days:
             days = self.first_day().weekday() or self.numdays
         self.week.adjust(-days)
-        self.update()
+        self.refresh()
 
     def dnd_start(self, widget, event):
         """ User clicked the mouse button, starting drag and drop """
@@ -341,7 +341,7 @@ class WeekView(ViewBase, Gtk.VBox):
                 task.set_start_date(new_start_day)
                 task.set_due_date(new_due_day)
 
-            self.update()
+            self.refresh()
 
         else:  # mouse hover
             t_id, self.drag_action, cursor = \

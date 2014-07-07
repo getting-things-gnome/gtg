@@ -5,8 +5,6 @@ import os
 from GTG.plugins.calendar_view.week_view import WeekView
 # from GTG.plugin.calendar_view.controller import Controller
 
-tests = True
-
 
 class CalendarPlugin(GObject.GObject):
     """
@@ -107,26 +105,26 @@ class CalendarPlugin(GObject.GObject):
         if tids:
             self.on_statusbar_text_pushed(
                 "Deleted task: %s" % ", ".join([t.get_title() for t in tids]))
-            self.controller.update()
+            self.controller.refresh()
         else:
             self.on_statusbar_text_pushed("...")
 
     def on_next_clicked(self, button, days=None):
         """ Advances the dates being displayed by a given number of @days """
         self.controller.next(days)
-        self.content_update()
-        self.controller.update()
+        self.content_refresh()
+        self.controller.refresh()
 
     def on_previous_clicked(self, button, days=None):
         """ Regresses the dates being displayed by a given number of @days """
         self.controller.previous(days)
-        self.content_update()
-        self.controller.update()
+        self.content_refresh()
+        self.controller.refresh()
 
     def on_today_clicked(self, button):
         """ Show the day corresponding to today """
         self.controller.show_today()
-        self.content_update()
+        self.content_refresh()
 
     def on_combobox_changed(self, combo):
         """
@@ -137,7 +135,7 @@ class CalendarPlugin(GObject.GObject):
         # try Gtk.Stack for this -> needs Gnome 3.10
         # self.controller.on_view_changed(view_type)
         print("Ignoring view change for now")
-        self.content_update()
+        self.content_refresh()
 
     def on_dates_changed(self, widget=None):
         """ Callback to update date-related objects in main window """
@@ -156,14 +154,16 @@ class CalendarPlugin(GObject.GObject):
         self.edit_button.set_sensitive(enable)
         self.remove_button.set_sensitive(enable)
 
-    def content_update(self):
+    def content_refresh(self):
         """ Performs all that is needed to update the content displayed """
         self.on_dates_changed()
-        self.controller.update()
+        self.controller.refresh()
 
 # If we want to test only the Plugin (outside GTG):
-# from GTG.core.datastore import DataStore
-# ds = DataStore()
-# ds.populate()  # hard-coded tasks
-# CalendarPlugin(ds.get_requester())
-# Gtk.main()
+tests = False
+if tests:
+    from GTG.core.datastore import DataStore
+    ds = DataStore()
+    ds.populate()  # hard-coded tasks
+    CalendarPlugin(ds.get_requester())
+    Gtk.main()

@@ -43,7 +43,7 @@ class calendarView:
         self.calendar.controller.edit_task_callback(self.open_task)
         self.calendar.controller.delete_task_callback(self.delete_task)
         self.view_manager.timer.connect('refresh',
-                                        self.calendar.controller.update)
+                                        self.calendar.controller.update_tasks)
         self.calendar.window.hide()
 
     def deactivate(self, plugin_api):
@@ -76,7 +76,7 @@ class calendarView:
         else:
             new_task = False
         self.view_manager.open_task(task_id, thisisnew=new_task)
-        self.calendar.controller.update()
+        self.calendar.controller.refresh()
 
 # GTK FUNCTIONS ##############################################################
     def _init_gtk(self):

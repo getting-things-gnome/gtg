@@ -43,8 +43,8 @@ class ViewBase:
         return
 
     @abc.abstractmethod
-    def update(self):
-        """ Updates all the content whenever a change is required. """
+    def refresh(self):
+        """ Refreshes all the content whenever a change is required. """
         return
 
     @abc.abstractmethod
@@ -144,7 +144,7 @@ class ViewBase:
 
     def ask_add_new_task(self, start_date, due_date):
         """
-        Adds a new task with @start_date and @due_date, and updates the View.
+        Adds a new task with @start_date and @due_date, and refreshes the View.
 
         @param start_date: datetime object, the start date of the new Task
         @param due_date: datetime object, the due date of the new Task
@@ -154,23 +154,23 @@ class ViewBase:
         new_task.set_due_date(due_date)
         self.add_new_task(new_task.get_id())
         self.set_selected_task(new_task.get_id())
-        self.update()
+        self.refresh()
 
     def ask_edit_task(self, task_id):
         """
-        Edits a task given by @task_id and updates the View.
+        Edits a task given by @task_id and refreshes the View.
 
         @param task_id: str, the id of a Task to be edited
         """
         self.edit_task(task_id)
-        self.update()
+        self.refresh()
 
     def ask_delete_task(self, task_id):
         """
-        Deletes a task given by @task_id and updates the View.
+        Deletes a task given by @task_id and refreshes the View.
 
         @param task_id: str, the id of a Task to be deleted
         """
         self.delete_task(task_id=task_id)
         self.unselect_task()
-        self.update()
+        self.refresh()
