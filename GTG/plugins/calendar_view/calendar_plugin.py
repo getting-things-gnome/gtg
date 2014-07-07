@@ -1,16 +1,9 @@
 #!/usr/bin/python3
 from gi.repository import Gtk, GObject
-import datetime
-import random
 import os
 
-from GTG.gtk.editor.editor import TaskEditor
-from GTG.tools.dates import Date
-
-from GTG.plugins.calendar_view.utils import random_color
 from GTG.plugins.calendar_view.week_view import WeekView
 # from GTG.plugin.calendar_view.controller import Controller
-from GTG.plugins.calendar_view.taskview import TaskView
 
 tests = True
 
@@ -61,7 +54,8 @@ class CalendarPlugin(GObject.GObject):
         self.edit_button = builder.get_object("edit")
         self.remove_button = builder.get_object("remove")
 
-        self.controller.connect('selection-changed', self.update_buttons_sensitivity)
+        self.controller.connect('selection-changed',
+                                self.update_buttons_sensitivity)
         self.controller.connect("dates-changed", self.on_dates_changed)
         self.controller.show_today()
 
@@ -90,8 +84,8 @@ class CalendarPlugin(GObject.GObject):
     def on_add_clicked(self, button=None):
         """ Asks the controller to add a new task. """
         self.controller.add_new_task()
-        #task = self.req.get_task(self.controller.get_selected_task())
-        #self.on_statusbar_text_pushed("Added task: %s" % task.get_title())
+        # task = self.req.get_task(self.controller.get_selected_task())
+        # self.on_statusbar_text_pushed("Added task: %s" % task.get_title())
 
     def on_edit_clicked(self, button=None):
         """ Asks the controller to edit the selected task. """
@@ -111,8 +105,8 @@ class CalendarPlugin(GObject.GObject):
 
     def on_tasks_deleted(self, widget, tids):
         if tids:
-            self.on_statusbar_text_pushed("Deleted task: %s" %
-   ", ".join([t.get_title() for t in tids]))
+            self.on_statusbar_text_pushed(
+                "Deleted task: %s" % ", ".join([t.get_title() for t in tids]))
             self.controller.update()
         else:
             self.on_statusbar_text_pushed("...")

@@ -6,7 +6,8 @@ from GTG.plugins.calendar_view.drawtask import DrawTask, TASK_HEIGHT
 from GTG.plugins.calendar_view.all_day_tasks import AllDayTasks
 from GTG.plugins.calendar_view.header import Header
 from GTG.plugins.calendar_view.grid import Grid
-from GTG.plugins.calendar_view.utils import date_to_col_coord, convert_coordinates_to_col
+from GTG.plugins.calendar_view.utils import date_to_col_coord, \
+    convert_coordinates_to_col
 from GTG.plugins.calendar_view.view import ViewBase
 
 
@@ -183,7 +184,8 @@ class WeekView(ViewBase, Gtk.VBox):
          If none is given, the tasks will be retrieved from the requester.
         """
         if not tasks:
-            tasks = [self.req.get_task(t) for t in self.req.get_tasks_tree('active', False).get_all_nodes()]
+            tasks = [self.req.get_task(t) for t in
+                     self.req.get_tasks_tree('active', False).get_all_nodes()]
         self.tasks = [DrawTask(t) for t in tasks if self.is_in_days_range(t)]
 
         self.grid.clear_rows()
@@ -287,8 +289,7 @@ class WeekView(ViewBase, Gtk.VBox):
             self.is_dragging = True
             day_width = self.get_day_width()
             curr_col = convert_coordinates_to_col(event.x, day_width)
-            start_col = convert_coordinates_to_col(self.drag_offset,
-                                                         day_width)
+            start_col = convert_coordinates_to_col(self.drag_offset, day_width)
             if curr_col < start_col:
                 temp = curr_col
                 curr_col = start_col
@@ -355,8 +356,7 @@ class WeekView(ViewBase, Gtk.VBox):
         # dragging with no task selected: new task will be created
         if not self.selected_task and self.is_dragging:
             day_width = self.get_day_width()
-            start = convert_coordinates_to_col(self.drag_offset,
-                                                     day_width)
+            start = convert_coordinates_to_col(self.drag_offset, day_width)
 
             event_x = round(event.x, 3)
             end = convert_coordinates_to_col(event_x, day_width)
@@ -394,11 +394,9 @@ class WeekView(ViewBase, Gtk.VBox):
                 new_start_day = task.get_start_date().date()
             new_due_day = new_start_day + datetime.timedelta(days=duration)
 
-            if not self.drag_action == "expand_right" \
-               and new_start_day <= end:
+            if not self.drag_action == "expand_right" and new_start_day <= end:
                 task.set_start_date(new_start_day)
-            if not self.drag_action == "expand_left" \
-               and new_due_day >= start:
+            if not self.drag_action == "expand_left" and new_due_day >= start:
                 task.set_due_date(new_due_day)
             self.unselect_task()
             self.update_tasks()

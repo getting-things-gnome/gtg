@@ -1,6 +1,5 @@
 import abc
 import datetime
-from GTG.core.task import Task
 
 
 class ViewBase:
@@ -18,7 +17,7 @@ class ViewBase:
 
         # callbacks to set
         self.edit_task = None
-        self.add_new_task  = None
+        self.add_new_task = None
         self.delete_task = None
 
     def get_selected_task(self):

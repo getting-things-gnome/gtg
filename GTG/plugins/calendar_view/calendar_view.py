@@ -42,7 +42,8 @@ class calendarView:
         self.calendar.controller.new_task_callback(self.open_task)
         self.calendar.controller.edit_task_callback(self.open_task)
         self.calendar.controller.delete_task_callback(self.delete_task)
-        self.view_manager.timer.connect('refresh', self.calendar.controller.update)
+        self.view_manager.timer.connect('refresh',
+                                        self.calendar.controller.update)
         self.calendar.window.hide()
 
     def deactivate(self, plugin_api):
