@@ -42,8 +42,8 @@ class calendarView:
         self.calendar.controller.new_task_callback(self.open_task)
         self.calendar.controller.edit_task_callback(self.open_task)
         self.calendar.controller.delete_task_callback(self.delete_task)
-        self.view_manager.timer.connect('refresh',
-                                        self.calendar.controller.update_tasks)
+        #self.view_manager.timer.connect('refresh',
+        #                                self.calendar.controller.update_tasks)
         self.calendar.window.hide()
 
     def deactivate(self, plugin_api):
@@ -65,17 +65,14 @@ class calendarView:
         # else:
         #     self.tb_button.set_sensitive(False)
 
-    def open_task(self, task_id=None):
+    def open_task(self, task_id=None, thisisnew=False):
         """
         Opens a task in the TaskEditor, if it's not currently opened.
         If task_id is None, it creates a new task and opens it
         """
         if task_id is None:
             task_id = self.req.new_task().get_id()
-            new_task = True
-        else:
-            new_task = False
-        self.view_manager.open_task(task_id, thisisnew=new_task)
+        self.view_manager.open_task(task_id, thisisnew=thisisnew)
         self.calendar.controller.refresh()
 
 # GTK FUNCTIONS ##############################################################

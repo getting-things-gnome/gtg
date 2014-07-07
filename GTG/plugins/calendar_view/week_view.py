@@ -163,7 +163,7 @@ class WeekView(ViewBase, Gtk.VBox):
 
         x = date_to_col_coord(start, self.first_day())
         w = duration
-        x, y, w, h = self.grid.add_to_grid(x, w, id=dtask.get_label()[4])
+        x, y, w, h = self.grid.add_to_grid(x, w)
 
         dtask.set_position(x, y, w, h)
         dtask.set_overflowing_L(self.first_day())

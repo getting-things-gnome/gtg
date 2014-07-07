@@ -152,7 +152,7 @@ class ViewBase:
         new_task = self.req.new_task()
         new_task.set_start_date(start_date)
         new_task.set_due_date(due_date)
-        self.add_new_task(new_task.get_id())
+        self.add_new_task(new_task.get_id(), thisisnew=True)
         self.set_selected_task(new_task.get_id())
         self.refresh()
 
