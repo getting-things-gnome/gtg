@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-from gi.repository import Gtk, GObject
+from gi.repository import Gtk, Gdk, GObject
 import os
 
 from GTG.plugins.calendar_view.week_view import WeekView
@@ -68,6 +68,8 @@ class CalendarPlugin(GObject.GObject):
         self.label = builder.get_object("label")
 
         self.window.show_all()
+        self.window.add_events(Gdk.EventMask.FOCUS_CHANGE_MASK)
+        self.window.connect("focus-in-event", self.controller.update_tasks)
 
     def close_window(self, arg):
         # FIXME: not working, still closes GTG main window
