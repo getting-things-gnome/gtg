@@ -195,8 +195,11 @@ class WeekView(ViewBase, Gtk.VBox):
 
         # clears selected_task if it is not being showed
         if self.selected_task:
-            task = self.req.get_task(self.selected_task)
-            if task and not self.is_in_days_range(task):
+            if self.req.has_task(self.selected_task):
+                task = self.req.get_task(self.selected_task)
+                if not self.is_in_days_range(task):
+                    self.unselect_task()
+            else:
                 self.unselect_task()
 
     def highlight_today_cell(self):
@@ -374,7 +377,6 @@ class WeekView(ViewBase, Gtk.VBox):
         # user didn't click on a task - redraw to 'unselect' task
         elif not self.selected_task:
             self.unselect_task()
-            self.all_day_tasks.queue_draw()
 
         # only changes selected task if any form of dragging ocurred
         elif self.is_dragging:

@@ -90,7 +90,7 @@ class CalendarPlugin(GObject.GObject):
     def on_edit_clicked(self, button=None):
         """ Asks the controller to edit the selected task. """
         task_id = self.controller.get_selected_task()
-        if task_id:
+        if task_id and self.controller.req.has_task(task_id):
             self.controller.ask_edit_task(task_id)
             title = self.req.get_task(task_id).get_title()
             self.on_statusbar_text_pushed("Edited task: %s" % title)
@@ -100,7 +100,7 @@ class CalendarPlugin(GObject.GObject):
         Asks the controller to remove the selected task from the datastore.
         """
         task_id = self.controller.get_selected_task()
-        if task_id:
+        if task_id and self.controller.req.has_task(task_id):
             self.controller.ask_delete_task(task_id)
 
     def on_tasks_deleted(self, widget, tids):
