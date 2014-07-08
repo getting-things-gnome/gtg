@@ -151,11 +151,19 @@ class CalendarPlugin(GObject.GObject):
         User chose a combobox entry: change the view_type according to it
         """
         view_type = combo.get_active_text()
+
+        # diconnect signals from previous view
+        if self.controller.get_visible_view():
+            self.controller.get_visible_view().disconnect_by_func(
+                self.on_edit_clicked)
+            self.controller.get_visible_view().disconnect_by_func(
+                self.on_add_clicked)
+            self.controller.get_visible_view().disconnect_by_func(
+                self.on_dates_changed)
+
         self.controller.on_view_changed(view_type)
+
         # connect new view signals
-        # FIXME: it seems that signals are being emitted multiple times
-        # when change views back and forth and try to edit a task, multiple
-        # TaskView editors appear
         self.controller.get_visible_view().connect("on_edit_task",
                                                    self.on_edit_clicked)
         self.controller.get_visible_view().connect("on_add_task",
