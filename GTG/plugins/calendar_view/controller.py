@@ -26,14 +26,6 @@ class Controller(Gtk.Box):
         self.add(self.notebook)
         self.show_all()
 
-    def get_selected_task(self):
-        """ Returns which task is being selected. """
-        return self.get_visible_view().get_selected_task()
-
-    def unselect_task(self):
-        """ Unselects the task that was selected before. """
-        self.get_visible_view().unselect_task()
-
     def on_view_changed(self, view_type):
         """
         Set what kind of view that will be displayed.
@@ -69,30 +61,3 @@ class Controller(Gtk.Box):
     def on_view_month(self):
         self.current_view = self.month_view
         return self.month_view
-
-    def update(self):
-        self.get_visible_view().update()
-
-    def next(self, days):
-        self.get_visible_view().next(days)
-
-    def previous(self, days):
-        self.get_visible_view().previous(days)
-
-    def is_today_being_shown(self):
-        return self.get_visible_view().is_today_being_shown()
-
-    def show_today(self):
-        self.get_visible_view().show_today()
-
-    def get_current_year(self):
-        return self.get_visible_view().get_current_year()
-
-    def edit_task(self, *args):
-        return self.get_visible_view().edit_task(*args)
-
-    def add_new_task(self, *args):
-        return self.get_visible_view().add_new_task(*args)
-
-    def delete_task(self, *args):
-        return self.get_visible_view().delete_task(*args)

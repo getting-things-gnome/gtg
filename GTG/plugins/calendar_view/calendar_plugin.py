@@ -53,6 +53,7 @@ class CalendarPlugin(GObject.GObject):
         vbox.add(self.controller)
         vbox.reorder_child(self.controller, 1)
 
+        self.current_view = None
         self.combobox = builder.get_object("combobox")
         self.combobox.set_active(0)
 
@@ -87,7 +88,7 @@ class CalendarPlugin(GObject.GObject):
             start_date = dialog.get_start_date()
             due_date = dialog.get_due_date()
             color = random_color()
-            self.controller.add_new_task(title, start_date, due_date, color)
+            self.current_view.add_new_task(title, start_date, due_date, color)
             self.statusbar.push(0, "Added task: %s" % title)
         else:
             self.statusbar.pop(0)
@@ -100,7 +101,7 @@ class CalendarPlugin(GObject.GObject):
         Redraw the calendar view after the changes.
         """
         if not task_id:
-            task_id = self.controller.get_selected_task()
+            task_id = self.current_view.get_selected_task()
         task = self.req.get_task(task_id)
         if task:
             dialog = TaskView(self.window, task)
@@ -110,8 +111,8 @@ class CalendarPlugin(GObject.GObject):
                 start_date = dialog.get_start_date()
                 due_date = dialog.get_due_date()
                 is_done = dialog.get_active()
-                self.controller.edit_task(task.get_id(), title,
-                                          start_date, due_date, is_done)
+                self.current_view.edit_task(task.get_id(), title,
+                                            start_date, due_date, is_done)
                 self.statusbar.push(0, "Edited task: %s" % title)
             else:
                 self.statusbar.pop(0)
@@ -122,28 +123,28 @@ class CalendarPlugin(GObject.GObject):
         Removes the selected task from the datastore and redraw the
         calendar view.
         """
-        task = self.req.get_task(self.controller.get_selected_task())
+        task = self.req.get_task(self.current_view.get_selected_task())
         if task:
-            self.controller.delete_task(task.get_id())
+            self.current_view.delete_task(task.get_id())
             self.statusbar.push(0, "Deleted task: %s" % task.get_title())
         else:
             self.statusbar.pop(0)
 
     def on_next_clicked(self, button, days=None):
         """ Advances the dates being displayed by a given number of @days """
-        self.controller.next(days)
+        self.current_view.next(days)
         self.content_update()
-        self.controller.update()
+        self.current_view.update()
 
     def on_previous_clicked(self, button, days=None):
         """ Regresses the dates being displayed by a given number of @days """
-        self.controller.previous(days)
+        self.current_view.previous(days)
         self.content_update()
-        self.controller.update()
+        self.current_view.update()
 
     def on_today_clicked(self, button):
         """ Show the day corresponding to today """
-        self.controller.show_today()
+        self.current_view.show_today()
         self.content_update()
 
     def on_combobox_changed(self, combo):
@@ -151,37 +152,34 @@ class CalendarPlugin(GObject.GObject):
         User chose a combobox entry: change the view_type according to it
         """
         view_type = combo.get_active_text()
-
-        # diconnect signals from previous view
-        if self.controller.get_visible_view():
-            self.controller.get_visible_view().disconnect_by_func(
-                self.on_edit_clicked)
-            self.controller.get_visible_view().disconnect_by_func(
-                self.on_add_clicked)
-            self.controller.get_visible_view().disconnect_by_func(
-                self.on_dates_changed)
-
         self.controller.on_view_changed(view_type)
 
-        # connect new view signals
-        self.controller.get_visible_view().connect("on_edit_task",
-                                                   self.on_edit_clicked)
-        self.controller.get_visible_view().connect("on_add_task",
-                                                   self.on_add_clicked)
-        self.controller.get_visible_view().connect("dates-changed",
-                                                   self.on_dates_changed)
+        if self.current_view != self.controller.get_visible_view():
+            # diconnect signals from previous view
+            if self.current_view is not None:
+                self.current_view.disconnect_by_func(self.on_edit_clicked)
+                self.current_view.disconnect_by_func(self.on_add_clicked)
+                self.current_view.disconnect_by_func(self.on_dates_changed)
+
+            self.current_view = self.controller.get_visible_view()
+
+            # connect new view signals
+            self.current_view.connect("on_edit_task", self.on_edit_clicked)
+            self.current_view.connect("on_add_task", self.on_add_clicked)
+            self.current_view.connect("dates-changed", self.on_dates_changed)
+
         self.content_update()
 
     def on_dates_changed(self, widget=None):
         """ Callback to update date-related objects in main window """
-        self.header.set_text(self.controller.get_current_year())
+        self.header.set_text(self.current_view.get_current_year())
         self.today_button.set_sensitive(
-            not self.controller.is_today_being_shown())
+            not self.current_view.is_today_being_shown())
 
     def content_update(self):
         """ Performs all that is needed to update the content displayed """
         self.on_dates_changed()
-        self.controller.update()
+        self.current_view.update()
 
 CalendarPlugin()
 Gtk.main()
