@@ -32,7 +32,6 @@ class CalendarPlugin(GObject.GObject):
             "on_remove_clicked": self.on_remove_clicked,
             "on_next_clicked": self.on_next_clicked,
             "on_previous_clicked": self.on_previous_clicked,
-            "on_statusbar_text_pushed": self.on_statusbar_text_pushed
         }
         builder.connect_signals(handlers)
 
@@ -58,14 +57,8 @@ class CalendarPlugin(GObject.GObject):
         self.combobox.set_active(0)
 
         self.statusbar = builder.get_object("statusbar")
-        self.label = builder.get_object("label")
 
         self.window.show_all()
-
-    def on_statusbar_text_pushed(self, text):
-        """ Adds the @text to the statusbar """
-        self.label.set_text(text)
-        # self.statusbar.push(0, text)
 
     def on_add_clicked(self, button=None, start_date=None, due_date=None):
         """
@@ -95,9 +88,9 @@ class CalendarPlugin(GObject.GObject):
             due_date = dialog.get_due_date()
             color = random_color()
             self.controller.add_new_task(title, start_date, due_date, color)
-            self.on_statusbar_text_pushed("Added task: %s" % title)
+            self.statusbar.push(0, "Added task: %s" % title)
         else:
-            self.on_statusbar_text_pushed("...")
+            self.statusbar.pop(0)
         dialog.hide()
 
     def on_edit_clicked(self, button=None, task_id=None):
@@ -119,9 +112,9 @@ class CalendarPlugin(GObject.GObject):
                 is_done = dialog.get_active()
                 self.controller.edit_task(task.get_id(), title,
                                           start_date, due_date, is_done)
-                self.on_statusbar_text_pushed("Edited task: %s" % title)
+                self.statusbar.push(0, "Edited task: %s" % title)
             else:
-                self.on_statusbar_text_pushed("...")
+                self.statusbar.pop(0)
             dialog.hide()
 
     def on_remove_clicked(self, button=None):
@@ -132,10 +125,9 @@ class CalendarPlugin(GObject.GObject):
         task = self.req.get_task(self.controller.get_selected_task())
         if task:
             self.controller.delete_task(task.get_id())
-            self.on_statusbar_text_pushed("Deleted task: %s" %
-                                          task.get_title())
+            self.statusbar.push(0, "Deleted task: %s" % task.get_title())
         else:
-            self.on_statusbar_text_pushed("...")
+            self.statusbar.pop(0)
 
     def on_next_clicked(self, button, days=None):
         """ Advances the dates being displayed by a given number of @days """
