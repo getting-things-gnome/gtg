@@ -77,7 +77,6 @@ class calendarView:
         if task_id is None:
             task_id = self.req.new_task().get_id()
         self.view_manager.open_task(task_id, thisisnew=thisisnew)
-        self.calendar.controller.refresh()
 
 # GTK FUNCTIONS ##############################################################
     def _init_gtk(self):

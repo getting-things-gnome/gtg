@@ -107,7 +107,6 @@ class CalendarPlugin(GObject.GObject):
         if tids:
             self.on_statusbar_text_pushed(
                 "Deleted task: %s" % ", ".join([t.get_title() for t in tids]))
-            self.controller.refresh()
         else:
             self.on_statusbar_text_pushed("...")
 
@@ -115,13 +114,11 @@ class CalendarPlugin(GObject.GObject):
         """ Advances the dates being displayed by a given number of @days """
         self.controller.next(days)
         self.content_refresh()
-        self.controller.refresh()
 
     def on_previous_clicked(self, button, days=None):
         """ Regresses the dates being displayed by a given number of @days """
         self.controller.previous(days)
         self.content_refresh()
-        self.controller.refresh()
 
     def on_today_clicked(self, button):
         """ Show the day corresponding to today """
@@ -138,6 +135,7 @@ class CalendarPlugin(GObject.GObject):
         # self.controller.on_view_changed(view_type)
         print("Ignoring view change for now")
         self.content_refresh()
+        self.controller.refresh()
 
     def on_dates_changed(self, widget=None):
         """ Callback to update date-related objects in main window """
@@ -159,7 +157,6 @@ class CalendarPlugin(GObject.GObject):
     def content_refresh(self):
         """ Performs all that is needed to update the content displayed """
         self.on_dates_changed()
-        self.controller.refresh()
 
 # If we want to test only the Plugin (outside GTG):
 tests = False

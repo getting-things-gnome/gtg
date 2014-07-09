@@ -258,6 +258,7 @@ class WeekView(ViewBase, Gtk.VBox):
         task_id, self.drag_action, cursor = \
             self.all_day_tasks.identify_pointed_object(event, clicked=True)
         self.set_selected_task(task_id)
+        self.all_day_tasks.queue_draw()
 
         if self.selected_task:
             # double-click opens task to edit
@@ -279,7 +280,6 @@ class WeekView(ViewBase, Gtk.VBox):
                 offset += duration * day_width
             self.drag_offset = offset
 
-            self.update_tasks()
         # if no task is selected, save mouse location in case the user wants
         # to create a new task using DnD
         else:
@@ -344,8 +344,6 @@ class WeekView(ViewBase, Gtk.VBox):
                 task.set_start_date(new_start_day)
                 task.set_due_date(new_due_day)
 
-            self.refresh()
-
         else:  # mouse hover
             t_id, self.drag_action, cursor = \
                 self.all_day_tasks.identify_pointed_object(event)
@@ -358,6 +356,7 @@ class WeekView(ViewBase, Gtk.VBox):
         """
         # dragging with no task selected: new task will be created
         if not self.selected_task and self.is_dragging:
+            self.all_day_tasks.cells = []
             day_width = self.get_day_width()
             start = convert_coordinates_to_col(self.drag_offset, day_width)
 
@@ -371,12 +370,11 @@ class WeekView(ViewBase, Gtk.VBox):
             due_date = self.first_day() + datetime.timedelta(days=end)
 
             self.ask_add_new_task(start_date, due_date)
-            self.all_day_tasks.queue_draw()
-            self.all_day_tasks.cells = []
 
         # user didn't click on a task - redraw to 'unselect' task
         elif not self.selected_task:
             self.unselect_task()
+            self.all_day_tasks.queue_draw()
 
         # only changes selected task if any form of dragging ocurred
         elif self.is_dragging:
@@ -401,7 +399,7 @@ class WeekView(ViewBase, Gtk.VBox):
             if not self.drag_action == "expand_left" and new_due_day >= start:
                 task.set_due_date(new_due_day)
             self.unselect_task()
-            self.update_tasks()
+            self.all_day_tasks.queue_draw()
 
         widget.get_window().set_cursor(Gdk.Cursor.new(Gdk.CursorType.ARROW))
         self.drag_offset = None
