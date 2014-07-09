@@ -25,6 +25,10 @@ class calendarView:
         self.plugin_api = None
         self.tb_button = None
 
+        self.add_task_handle = None
+        self.set_task_handle = None
+        self.remove_task_handle = None
+
     def activate(self, plugin_api):
         self.plugin_api = plugin_api
         self.req = self.plugin_api.get_requester()
@@ -42,17 +46,17 @@ class calendarView:
         self.calendar.controller.new_task_callback(self.open_task)
         self.calendar.controller.edit_task_callback(self.open_task)
         self.calendar.controller.delete_task_callback(self.delete_task)
-        #self.view_manager.timer.connect('refresh',
-        #                                self.calendar.controller.update_tasks)
         self.calendar.window.hide()
 
     def deactivate(self, plugin_api):
         """ Removes the gtk widgets before quitting """
+        self._disconnect_signals()
         self._gtk_deactivate()
 
     def show_calendar(self, button):
         if not self.calendar:
             self.calendar = CalendarPlugin(self.req)
+        self._connect_signals()
         self.calendar.window.show()
 
     def delete_task(self, task_id, widget=None):
@@ -92,3 +96,38 @@ class calendarView:
         if self.tb_button:
             self.plugin_api.remove_toolbar_item(self.tb_button)
             self.tb_button = False
+
+# TREE CALLBACKS #############################################################
+    def _connect_signals(self):
+        """
+        Helper function to connect signals
+        """
+        if not self.add_task_handle:
+            self.add_task_handle = self.req.get_main_view().register_cllbck(
+                'node-added',
+                lambda tid, _: self.calendar.controller.update_tasks())
+        if not self.set_task_handle:
+            self.set_task_handle = self.req.get_main_view().register_cllbck(
+                'node-modified',
+                lambda tid, _: self.calendar.controller.update_tasks())
+        if not self.remove_task_handle:
+            self.remove_task_handle = self.req.get_main_view().register_cllbck(
+                'node-deleted',
+                lambda tid, _: self.calendar.controller.update_tasks())
+
+    def _disconnect_signals(self):
+        """
+        Helper function to disconnect signals
+        """
+        if self.add_task_handle:
+            self.req.get_main_view().deregister_cllbck('node-added',
+                                                       self.add_task_handle)
+            self.add_task_handle = None
+        if self.set_task_handle:
+            self.req.get_main_view().deregister_cllbck('node-modified',
+                                                       self.set_task_handle)
+            self.set_task_handle = None
+        if self.remove_task_handle:
+            self.req.get_main_view().deregister_cllbck('node-deleted',
+                                                       self.remove_task_handle)
+            self.remove_task_handle = None
