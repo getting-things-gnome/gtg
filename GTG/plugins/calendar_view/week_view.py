@@ -186,7 +186,7 @@ class WeekView(ViewBase, Gtk.VBox):
         if not tasks:
             tasks = [self.req.get_task(t) for t in
                      self.req.get_tasks_tree('active', False).get_all_nodes()]
-        self.tasks = [DrawTask(t) for t in tasks if self.is_in_days_range(t)]
+        self.tasks = [DrawTask(t) for t in tasks if t is not None and self.is_in_days_range(t)]
 
         self.grid.clear_rows()
         for t in self.tasks:
