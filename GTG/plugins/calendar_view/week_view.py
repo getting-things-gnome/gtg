@@ -175,7 +175,7 @@ class WeekView(ViewBase, Gtk.VBox):
         self.compute_size()
         self.all_day_tasks.queue_draw()
 
-    def update_drawtasks(self, tasks=None):
+    def update_drawtasks(self, tasks=None, display_closed_tasks=True):
         """
         Updates the drawtasks and calculates the position of where each one of
         them should be drawn.
@@ -186,6 +186,9 @@ class WeekView(ViewBase, Gtk.VBox):
         if not tasks:
             tasks = [self.req.get_task(t) for t in
                      self.req.get_tasks_tree('active', True).get_all_nodes()]
+            if display_closed_tasks:
+                tasks += [self.req.get_task(t) for t in
+                          self.req.get_tasks_tree('closed', True).get_all_nodes()]
         self.tasks = [DrawTask(t) for t in tasks if t is not None and self.is_in_days_range(t)]
 
         self.grid.clear_rows()
