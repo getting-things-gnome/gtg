@@ -69,7 +69,9 @@ class CalendarPlugin(GObject.GObject):
 
         self.window.show_all()
         self.window.add_events(Gdk.EventMask.FOCUS_CHANGE_MASK)
-        self.window.connect("focus-in-event", self.controller.update_tasks)
+        # self.window.connect("focus-in-event", self.controller.update_tasks)
+        self.vmanager.connect('task-status-changed',
+                              self.controller.update_tasks)
 
     def close_window(self, arg):
         # FIXME: not working, still closes GTG main window

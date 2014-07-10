@@ -169,7 +169,7 @@ class WeekView(ViewBase, Gtk.VBox):
         dtask.set_overflowing_L(self.first_day())
         dtask.set_overflowing_R(self.last_day())
 
-    def update_tasks(self, widget=None, dummy=None):
+    def update_tasks(self, widget=None, dummy1=None, dummy2=None):
         """ Updates and redraws everything related to the tasks """
         self.update_drawtasks()
         self.compute_size()
@@ -185,7 +185,7 @@ class WeekView(ViewBase, Gtk.VBox):
         """
         if not tasks:
             tasks = [self.req.get_task(t) for t in
-                     self.req.get_tasks_tree('active', False).get_all_nodes()]
+                     self.req.get_tasks_tree('active', True).get_all_nodes()]
         self.tasks = [DrawTask(t) for t in tasks if t is not None and self.is_in_days_range(t)]
 
         self.grid.clear_rows()
