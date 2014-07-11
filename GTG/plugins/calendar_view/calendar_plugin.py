@@ -3,7 +3,7 @@ from gi.repository import Gtk, Gdk, GObject
 import os
 
 from GTG.plugins.calendar_view.week_view import WeekView
-# from GTG.plugin.calendar_view.controller import Controller
+from GTG.plugins.calendar_view.controller import Controller
 
 
 class CalendarPlugin(GObject.GObject):
@@ -22,10 +22,6 @@ class CalendarPlugin(GObject.GObject):
 
         self.plugin_path = os.path.dirname(os.path.abspath(__file__))
         self.glade_file = os.path.join(self.plugin_path, "calendar_view.ui")
-
-        # FIXME: controller drawing content is not working
-        # using weekview object instead for now:
-        self.controller = WeekView(self, self.req)
 
         builder = Gtk.Builder()
         builder.add_from_file(self.glade_file)
@@ -52,15 +48,12 @@ class CalendarPlugin(GObject.GObject):
         self.edit_button = builder.get_object("edit")
         self.remove_button = builder.get_object("remove")
 
-        self.controller.connect('selection-changed',
-                                self.update_buttons_sensitivity)
-        self.controller.connect("dates-changed", self.on_dates_changed)
-        self.controller.show_today()
-
+        self.controller = Controller(self, self.req)
         vbox = builder.get_object("vbox")
         vbox.add(self.controller)
         vbox.reorder_child(self.controller, 1)
 
+        self.current_view = None
         self.combobox = builder.get_object("combobox")
         self.combobox.set_active(0)
 
@@ -85,15 +78,15 @@ class CalendarPlugin(GObject.GObject):
 
     def on_add_clicked(self, button=None):
         """ Asks the controller to add a new task. """
-        self.controller.add_new_task()
-        # task = self.req.get_task(self.controller.get_selected_task())
+        self.current_view.add_new_task()
+        # task = self.req.get_task(self.current_view.get_selected_task())
         # self.on_statusbar_text_pushed("Added task: %s" % task.get_title())
 
     def on_edit_clicked(self, button=None):
         """ Asks the controller to edit the selected task. """
-        task_id = self.controller.get_selected_task()
-        if task_id and self.controller.req.has_task(task_id):
-            self.controller.ask_edit_task(task_id)
+        task_id = self.current_view.get_selected_task()
+        if task_id and self.current_view.req.has_task(task_id):
+            self.current_view.ask_edit_task(task_id)
             title = self.req.get_task(task_id).get_title()
             self.on_statusbar_text_pushed("Edited task: %s" % title)
 
@@ -101,9 +94,9 @@ class CalendarPlugin(GObject.GObject):
         """
         Asks the controller to remove the selected task from the datastore.
         """
-        task_id = self.controller.get_selected_task()
-        if task_id and self.controller.req.has_task(task_id):
-            self.controller.ask_delete_task(task_id)
+        task_id = self.current_view.get_selected_task()
+        if task_id and self.current_view.req.has_task(task_id):
+            self.current_view.ask_delete_task(task_id)
 
     def on_tasks_deleted(self, widget, tids):
         if tids:
@@ -114,17 +107,17 @@ class CalendarPlugin(GObject.GObject):
 
     def on_next_clicked(self, button, days=None):
         """ Advances the dates being displayed by a given number of @days """
-        self.controller.next(days)
+        self.current_view.next(days)
         self.content_refresh()
 
     def on_previous_clicked(self, button, days=None):
         """ Regresses the dates being displayed by a given number of @days """
-        self.controller.previous(days)
+        self.current_view.previous(days)
         self.content_refresh()
 
     def on_today_clicked(self, button):
         """ Show the day corresponding to today """
-        self.controller.show_today()
+        self.current_view.show_today()
         self.content_refresh()
 
     def on_combobox_changed(self, combo):
@@ -132,18 +125,25 @@ class CalendarPlugin(GObject.GObject):
         User chose a combobox entry: change the view_type according to it
         """
         view_type = combo.get_active_text()
-        # FIXME: view switch is not working, even thought objects exist
-        # try Gtk.Stack for this -> needs Gnome 3.10
-        # self.controller.on_view_changed(view_type)
-        print("Ignoring view change for now")
+        self.controller.on_view_changed(view_type)
+
+        if self.current_view != self.controller.get_visible_view():
+            # diconnect signals from previous view
+            if self.current_view is not None:
+                self._disconnect_view_signals()
+
+            self.current_view = self.controller.get_visible_view()
+
+            # start listening signals from the new view
+            self._connect_view_signals()
+
         self.content_refresh()
-        self.controller.refresh()
 
     def on_dates_changed(self, widget=None):
         """ Callback to update date-related objects in main window """
-        self.header.set_text(self.controller.get_current_year())
+        self.header.set_text(self.current_view.get_current_year())
         self.today_button.set_sensitive(
-            not self.controller.is_today_being_shown())
+            not self.current_view.is_today_being_shown())
 
     def update_buttons_sensitivity(self, widget=None, selected_task=None):
         """
@@ -159,6 +159,27 @@ class CalendarPlugin(GObject.GObject):
     def content_refresh(self):
         """ Performs all that is needed to update the content displayed """
         self.on_dates_changed()
+
+    def _connect_view_signals(self):
+        """
+        Connect to signals emitted from current view to add/edit a task or when
+        dates displayed changed
+        """
+        # self.current_view.connect("on_edit_task", self.on_edit_clicked)
+        # self.current_view.connect("on_add_task", self.on_add_clicked)
+        # self.current_view.connect("dates-changed", self.on_dates_changed)
+        self.current_view.connect('selection-changed',
+                                  self.update_buttons_sensitivity)
+
+    def _disconnect_view_signals(self):
+        """
+        Disconnect signals emitted from current view to add/edit a task or
+        when dates displayed changed
+        """
+        # self.current_view.disconnect_by_func(self.on_edit_clicked)
+        # self.current_view.disconnect_by_func(self.on_add_clicked)
+        # self.current_view.disconnect_by_func(self.on_dates_changed)
+        self.current_view.disconnect_by_func(self.update_buttons_sensitivity)
 
 # If we want to test only the Plugin (outside GTG):
 tests = False
