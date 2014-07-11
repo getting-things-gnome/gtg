@@ -2,11 +2,12 @@ import datetime
 from utils import date_generator
 
 
-class Week():
+class WeekSpan():
 
     numdays = 7
 
-    def __init__(self, start=None):
+    def __init__(self, numweeks=1, start=None):
+        self.numweeks = numweeks
         self.start_date = start
         if start:
             self.set_week_starting_on(start)
@@ -42,7 +43,8 @@ class Week():
         @param num_days: integer, the number of days to adjust.
         """
         self.start_date += datetime.timedelta(days=num_days)
-        self.days = date_generator(self.start_date, self.numdays)
+        self.days = date_generator(self.start_date,
+                                   self.numdays * self.numweeks)
         self.end_date = self.days[-1]
         return self.start_date
 
@@ -50,7 +52,7 @@ class Week():
         """
         Compare one week to another, to see which one starts earlier.
 
-        @param other_week: a Week object, the other week to be compared to.
+        @param other_week: a WeekSpan object, the other week to be compared to.
         """
         if self == other_week:
             return 0
@@ -60,7 +62,7 @@ class Week():
         """
         Returns True if weeks cover the same period of date.
 
-        @param other_week: a Week object, the other week to be compared to.
+        @param other_week: a WeekSpan object, the other week to be compared to.
         """
         return self.compare_to(week) == 0
 
@@ -68,7 +70,7 @@ class Week():
         """
         Returns the number of days this week differs from the @other week.
 
-        @param other_week: a Week object, the other week to be compared to.
+        @param other_week: a WeekSpan object, the other week to be compared to.
         @return diff: integer, num of days the weeks differ from each other.
         """
         if self.equal_to(other_week):
@@ -89,5 +91,5 @@ class Week():
         return labels
 
     def __str__(self):
-        """ Prints a Week """
+        """ Prints a WeekSpan """
         return " - ".join(self.label(format="%D %a"))

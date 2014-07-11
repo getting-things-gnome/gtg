@@ -1,7 +1,7 @@
 from gi.repository import Gtk, Gdk, GObject
 import datetime
 
-from week import Week
+from week import WeekSpan
 from drawtask import DrawTask, TASK_HEIGHT
 from all_day_tasks import AllDayTasks
 from header import Header
@@ -26,7 +26,8 @@ class WeekView(ViewBase, Gtk.VBox):
         self.numdays = numdays
         self.min_day_width = 60
         self.grid = Grid(1, self.numdays)
-        self.week = Week()
+        numweeks = int(self.numdays/7)
+        self.week = WeekSpan(numweeks)
 
         # Header
         self.header = Header(self.numdays)
