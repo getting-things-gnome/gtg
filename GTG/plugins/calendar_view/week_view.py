@@ -170,7 +170,7 @@ class WeekView(ViewBase, Gtk.VBox):
         dtask.set_overflowing_L(self.first_day())
         dtask.set_overflowing_R(self.last_day())
 
-    def update_tasks(self, widget=None, dummy1=None, dummy2=None):
+    def update_tasks(self):
         """ Updates and redraws everything related to the tasks """
         self.update_drawtasks()
         self.compute_size()

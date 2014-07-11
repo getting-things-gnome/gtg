@@ -8,24 +8,30 @@ class Controller(Gtk.Box):
 
     def __init__(self, parent, requester):
         super(Gtk.Box, self).__init__()
-        self.req = requester
 
-        self.week_view = WeekView(parent, self.req)
-        self.two_weeks_view = WeekView(parent, self.req, numdays=14)
-        # self.month_view = MonthView(parent, self.req)
+        week_view = WeekView(parent, requester)
+        two_weeks_view = WeekView(parent, requester, numdays=14)
+        # month_view = MonthView(parent, requester)
 
-        self.week_view.show_today()
-        self.two_weeks_view.show_today()
-        # self.month_view.show_today()
+        self.views = []
         self.current_view = None
 
         self.notebook = Gtk.Notebook()
-        self.notebook.append_page(self.week_view, None)
-        self.notebook.append_page(self.two_weeks_view, None)
-        # self.notebook.append_page(self.month_view, None)
+        self.add_view(week_view, self.WEEK)
+        self.add_view(two_weeks_view, self.TWO_WEEKS)
+        # self.add_view(month_view, self.MONTH)
+
         self.notebook.set_show_tabs(False)
         self.pack_start(self.notebook, True, True, 0)
         self.show_all()
+
+    def add_view(self, view, label):
+        self.notebook.append_page(view, None)
+        self.views.append((view, label))
+        view.show_today()
+
+    def get_view_labels(self):
+        return [v[1] for v in self.views]
 
     def on_view_changed(self, view_type):
         """
@@ -35,12 +41,12 @@ class Controller(Gtk.Box):
         @param view_type: string, indicates the view to be displayed.
          It can be either "Week", "2 Weeks" or "Month"
         """
-        if view_type == self.WEEK:
-            self.on_view_week()
-        elif view_type == self.TWO_WEEKS:
-            self.on_view_2weeks()
-        elif view_type == self.MONTH:
-            self.on_view_month()
+        if view_type in self.get_view_labels():
+            for view, label in self.views:
+                if view_type == label:
+                    self.current_view = view
+                    self.current_view.update_tasks()
+                    break
         else:
             raise ValueError("\'%s\' is not a valid value for View Type."
                              % view_type)
@@ -51,19 +57,7 @@ class Controller(Gtk.Box):
     def get_visible_view(self):
         return self.current_view
 
-    def on_view_week(self):
-        self.current_view = self.week_view
-        return self.week_view
-
-    def on_view_2weeks(self):
-        self.current_view = self.two_weeks_view
-        return self.two_weeks_view
-
-    def on_view_month(self):
-        self.current_view = self.month_view
-        return self.month_view
-
-    def update_tasks(self):
+    def update_tasks(self, widget=None, dummy1=None, dummy2=None):
         self.current_view.update_tasks()
 
     def new_task_callback(self, func):
