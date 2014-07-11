@@ -23,7 +23,7 @@ class Controller(Gtk.Box):
         self.notebook.append_page(self.week_view, None)
         self.notebook.append_page(self.two_weeks_view, None)
         self.notebook.set_show_tabs(False)
-        self.add(self.notebook)
+        self.pack_start(self.notebook, True, True, 0)
         self.show_all()
 
     def on_view_changed(self, view_type):
