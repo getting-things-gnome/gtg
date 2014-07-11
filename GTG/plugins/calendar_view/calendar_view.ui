@@ -84,11 +84,6 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <signal name="changed" handler="on_combobox_changed" swapped="no"/>
-                <items>
-                  <item translatable="yes" id="week">Week</item>
-                  <item translatable="yes" id="2weeks">2 Weeks</item>
-                  <item translatable="yes" id="month">Month</item>
-                </items>
               </object>
               <packing>
                 <property name="expand">False</property>

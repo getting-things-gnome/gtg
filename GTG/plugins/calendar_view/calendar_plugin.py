@@ -55,6 +55,9 @@ class CalendarPlugin(GObject.GObject):
 
         self.current_view = None
         self.combobox = builder.get_object("combobox")
+        # get combobox content from available views
+        for label in self.controller.get_view_labels():
+            self.combobox.append_text(label)
         self.combobox.set_active(0)
 
         self.statusbar = builder.get_object("statusbar")
@@ -131,12 +134,9 @@ class CalendarPlugin(GObject.GObject):
             # diconnect signals from previous view
             if self.current_view is not None:
                 self._disconnect_view_signals()
-
             self.current_view = self.controller.get_visible_view()
-
             # start listening signals from the new view
             self._connect_view_signals()
-
         self.content_refresh()
 
     def on_dates_changed(self, widget=None):
