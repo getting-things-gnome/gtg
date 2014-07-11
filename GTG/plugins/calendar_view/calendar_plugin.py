@@ -157,16 +157,12 @@ class CalendarPlugin(GObject.GObject):
         if self.current_view != self.controller.get_visible_view():
             # diconnect signals from previous view
             if self.current_view is not None:
-                self.current_view.disconnect_by_func(self.on_edit_clicked)
-                self.current_view.disconnect_by_func(self.on_add_clicked)
-                self.current_view.disconnect_by_func(self.on_dates_changed)
+                self._disconnect_view_signals()
 
             self.current_view = self.controller.get_visible_view()
 
-            # connect new view signals
-            self.current_view.connect("on_edit_task", self.on_edit_clicked)
-            self.current_view.connect("on_add_task", self.on_add_clicked)
-            self.current_view.connect("dates-changed", self.on_dates_changed)
+            # start listening signals from the new view
+            self._connect_view_signals()
 
         self.content_update()
 
@@ -180,6 +176,24 @@ class CalendarPlugin(GObject.GObject):
         """ Performs all that is needed to update the content displayed """
         self.on_dates_changed()
         self.current_view.update()
+
+    def _connect_view_signals(self):
+        """
+        Connect to signals emitted from current view to add/edit a task or when
+        dates displayed changed
+        """
+        self.current_view.connect("on_edit_task", self.on_edit_clicked)
+        self.current_view.connect("on_add_task", self.on_add_clicked)
+        self.current_view.connect("dates-changed", self.on_dates_changed)
+
+    def _disconnect_view_signals(self):
+        """
+        Disconnect signals emitted from current view to add/edit a task or
+        when dates displayed changed
+        """
+        self.current_view.disconnect_by_func(self.on_edit_clicked)
+        self.current_view.disconnect_by_func(self.on_add_clicked)
+        self.current_view.disconnect_by_func(self.on_dates_changed)
 
 CalendarPlugin()
 Gtk.main()
