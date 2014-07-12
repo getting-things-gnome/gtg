@@ -9,7 +9,7 @@
     <property name="default_width">420</property>
     <property name="default_height">280</property>
     <property name="destroy_with_parent">True</property>
-    <signal name="destroy" handler="on_window_destroy" swapped="no"/>
+    <signal name="delete-event" handler="on_window_destroy" swapped="no"/>
     <child>
       <object class="GtkVBox" id="vbox">
         <property name="width_request">380</property>
