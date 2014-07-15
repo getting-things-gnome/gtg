@@ -229,6 +229,10 @@ class TaskEditor(object):
         dismiss_editor.add_accelerator('clicked', agr, key, mod,
                                        Gtk.AccelFlags.VISIBLE)
 
+        # Ctrl-Q quits GTG
+        key, modifier = Gtk.accelerator_parse('<Control>q')
+        agr.connect(key, modifier, Gtk.AccelFlags.VISIBLE, self.quit)
+
     # Can be called at any time to reflect the status of the Task
     # Refresh should never interfere with the TaskView.
     # If a title is passed as a parameter, it will become
@@ -617,5 +621,10 @@ class TaskEditor(object):
 
     def get_window(self):
         return self.window
+
+    def quit(self, accel_group=None, acceleratable=None, keyval=None,
+             modifier=None):
+        """Handles the accelerator for quitting GTG."""
+        self.vmanager.quit()
 
 # -----------------------------------------------------------------------------
