@@ -266,6 +266,39 @@ class MonthView(ViewBase, Gtk.VBox):
                 self.unselect_task()
         self.all_day_tasks.selected_task = self.selected_task
 
+    def fade_days_not_in_this_month(self):
+        """
+        Fade the days at beginnig and/or the end of the view that do not belong
+        to the current month being displayed.
+        """
+        # get date in middle of month to know which month we are in
+        this_month = (self.first_day() + datetime.timedelta(days=7)).month
+        cells = []
+
+        # cells to fade from days in previous month
+        row = 0
+        col = 0
+        for day in self.weeks[0]['dates'].days:
+            if day.month != this_month:
+                cells.append((row, col))
+                col += 1
+            else:
+                break
+
+        # cells to fade from days in next month
+        row = self.numweeks - 1
+        col = self.numdays - 1
+        for day in reversed(self.weeks[-1]['dates'].days):
+            if day.month != this_month:
+                cells.append((row, col))
+                col -= 1
+            else:
+                break
+        self.all_day_tasks.cells = cells
+        # FIXME: when function is callable directly, change to:
+        # self.all_day_tasks.highlight_cells(ctx, cells,
+        #                                    color=(0.8, 0.8, 0.8), alpha=0.5)
+
     def highlight_today_cell(self):
         """ Highlights the cell equivalent to today."""
         if self.is_today_being_shown():
@@ -289,6 +322,7 @@ class MonthView(ViewBase, Gtk.VBox):
         self.update_drawtasks()
         self.compute_size()
         self.highlight_today_cell()
+        self.fade_days_not_in_this_month()
         self.update_header()
         self.update_days_label()
         self.all_day_tasks.queue_draw()

@@ -70,7 +70,7 @@ class AllDayTasks(Gtk.DrawingArea):
             if 0 <= row < self.num_rows and 0 <= col < self.num_columns:
                 ctx.save()
                 self.background.highlight_cell(ctx, row, col, alloc,
-                                               color, alpha=0.15)
+                                               color, alpha=0.5)
                 ctx.restore()
 
     def set_highlight_cell(self, row, col):
@@ -120,7 +120,7 @@ class AllDayTasks(Gtk.DrawingArea):
 
         # FIXME: remove this from draw() and make function callable directly
         # need a ctx to draw the highlight cells
-        self.highlight_cells(ctx, self.cells, color=(0.8, 0.8, 0))
+        self.highlight_cells(ctx, self.cells, color=(0.8, 0.8, 0.8))
 
     def identify_pointed_object(self, event, clicked=False):
         """
