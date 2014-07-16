@@ -108,6 +108,10 @@ class MonthView(ViewBase, Gtk.VBox):
         """ Returns the day/column width in pixels """
         return round(self.all_day_tasks.get_day_width(), 3)
 
+    def get_week_height(self):
+        """ Returns the week/row height in pixels """
+        return round(self.all_day_tasks.get_week_height(), 3)
+
     def show_today(self):
         """
         Shows the range of dates in the current view with the date
@@ -343,3 +347,146 @@ class MonthView(ViewBase, Gtk.VBox):
         day_in_prev_month = self.first_day() - datetime.timedelta(days=1)
         self.update_weeks(day_in_prev_month.year, day_in_prev_month.month)
         self.update()
+
+    def dnd_start(self, widget, event):
+        """ User clicked the mouse button, starting drag and drop """
+        # find which task was clicked, if any
+        self.selected_task, self.drag_action, cursor = \
+            self.all_day_tasks.identify_pointed_object(event, clicked=True)
+
+        if self.selected_task:
+            # double-click opens task to edit
+            if event.type == Gdk.EventType._2BUTTON_PRESS:
+                GObject.idle_add(self.emit, 'on_edit_task',
+                                 self.selected_task)
+                self.is_dragging = False
+                self.drag_offset = None
+                return
+            widget.get_window().set_cursor(cursor)
+            task = self.req.get_task(self.selected_task)
+            start = (task.get_start_date().date() - self.first_day()).days
+            end = (task.get_due_date().date() - self.first_day()).days + 1
+            duration = end - start
+
+            day_width = self.get_day_width()
+            offset = (start * day_width) - event.x
+            # offset_y = pos * TASK_HEIGHT - event.y
+            if self.drag_action == "expand_right":
+                offset += duration * day_width
+            self.drag_offset = (offset, 0)
+
+            self.update_tasks()
+        # if no task is selected, save mouse location in case the user wants
+        # to create a new task using DnD
+        else:
+            event_x = round(event.x, 3)
+            event_y = round(event.y, 3)
+            self.drag_offset = (event_x, event_y)
+
+    def total_days_between_cells(self, cell_a, cell_b):
+        """
+        Returns the total of days elapsed between two grid cells of a month
+        calendar. If the dates are the same, it returns 0.
+
+        @param cell_a: tuple (int, int), contains (row, col) of first cell.
+        @param cell_b: tuple (int, int), contains (row, col) of sencond cell.
+        @return total_days: integer, the number of days between the two cells,
+        returning 0 if they are the same.
+        """
+        # get dates correspoding for each cell
+        start = self.weeks[cell_a[0]]['dates'].days[cell_a[1]]
+        end = self.weeks[cell_b[0]]['dates'].days[cell_b[1]]
+        return (end - start).days
+
+    def motion_notify(self, widget, event):
+        """ User moved mouse over widget """
+        # dragging with no task selected: new task will be created
+        if not self.selected_task and self.drag_offset:
+            self.is_dragging = True
+            day_width = self.get_day_width()
+            week_height = self.get_week_height()
+            curr_row, curr_col = utils.convert_coordinates_to_grid(event.x,
+                event.y, day_width, week_height)
+            start_row, start_col = utils.convert_coordinates_to_grid(
+                self.drag_offset[0], self.drag_offset[1], 
+                day_width, week_height)
+
+            # invert cols/rows in case user started dragging from the end date
+            if curr_row < start_row:  # multiple rows
+                curr_row, start_row = start_row, curr_row
+                curr_col, start_col = start_col, curr_col
+            elif curr_row == start_row and curr_col < start_col:  # single row
+                curr_col, start_col = start_col, curr_col
+
+            total_days = self.total_days_between_cells((start_row, start_col),
+                (curr_row, curr_col)) + 1
+
+            # highlight cells while moving mouse
+            cells = []
+            for row in range(start_row, (curr_row - start_row + 1) + 1):
+                for col in range(start_col, 
+                               min(start_col+total_days, self.numdays)):
+                    cells.append((row, col))
+                total_days -= (self.numdays - start_col)
+                start_col = 0
+
+            # FIXME: call highlight_cells directly instead of
+            # setting cells and redrawing
+            self.all_day_tasks.cells = cells
+            self.all_day_tasks.queue_draw()
+            # self.all_day_tasks.highlight_cells(cells, color=(0.8, 0.8, 0))
+            return
+
+        if self.selected_task and self.drag_offset:  # a task was clicked
+            return
+
+        else:  # mouse hover
+            t_id, self.drag_action, cursor = \
+                self.all_day_tasks.identify_pointed_object(event)
+            widget.get_window().set_cursor(cursor)
+
+    def dnd_stop(self, widget, event):
+        """
+        User released a button, stopping drag and drop.
+        Selected task, if any, will still have the focus.
+        """
+        # dragging with no task selected: new task will be created
+        if not self.selected_task and self.is_dragging:
+            day_width = self.get_day_width()
+            week_height = self.get_week_height()
+            start_row, start_col = utils.convert_coordinates_to_grid(
+                self.drag_offset[0], self.drag_offset[1], 
+                day_width, week_height)
+
+            event_x = round(event.x, 3)
+            event_y = round(event.y, 3)
+            end_row, end_col = utils.convert_coordinates_to_grid(event_x,
+                event_y, day_width, week_height)
+
+            # invert cols/rows in case user started dragging from the end date
+            if end_row < start_row:  # multiple rows
+                end_row, start_row = start_row, end_row
+                end_col, start_col = start_col, end_col
+            elif end_row == start_row and end_col < start_col:  # single row
+                end_col, start_col = start_col, end_col
+
+            total_days = self.total_days_between_cells((start_row, start_col), (end_row, end_col))
+            start_date = self.first_day() + datetime.timedelta(days=(start_row*self.numdays)+start_col)
+            due_date = start_date + datetime.timedelta(days=total_days)
+
+            GObject.idle_add(self.emit, 'on_add_task', start_date, due_date)
+            self.all_day_tasks.queue_draw()
+            self.all_day_tasks.cells = []
+
+        # user didn't click on a task - redraw to 'unselect' task
+        elif not self.selected_task:
+            self.unselect_task()
+            self.all_day_tasks.queue_draw()
+
+        # only changes selected task if any form of dragging ocurred
+        elif self.is_dragging:
+            pass
+
+        widget.get_window().set_cursor(Gdk.Cursor.new(Gdk.CursorType.ARROW))
+        self.drag_offset = None
+        self.is_dragging = False

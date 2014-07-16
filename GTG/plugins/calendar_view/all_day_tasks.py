@@ -137,6 +137,11 @@ class AllDayTasks(Gtk.DrawingArea):
             (x, y, w, h) = utils.convert_grid_to_screen_coord(
                 self.get_day_width(), TASK_HEIGHT, *task.get_position(),
                 padding=self.padding)
+
+            # calculating week position when in month view
+            if task.get_week_num() is not None:
+                y += task.get_week_num() * self.get_week_height() + 15
+
             if not y < event.y < (y + h):
                 continue
             if x <= event.x <= x + expand_border:

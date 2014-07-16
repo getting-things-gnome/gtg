@@ -55,7 +55,7 @@ class CalendarPlugin(GObject.GObject):
 
         self.current_view = None
         self.combobox = builder.get_object("combobox")
-        self.combobox.set_active(0)
+        self.combobox.set_active(2)
 
         self.statusbar = builder.get_object("statusbar")
 

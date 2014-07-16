@@ -33,6 +33,9 @@ class DrawTask:
     def set_week_num(self, week_num):
         self.week_num = week_num
 
+    def get_week_num(self):
+        return self.week_num
+
     def get_position(self):
         return self.position
 
