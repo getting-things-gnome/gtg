@@ -1,6 +1,6 @@
 from gi.repository import Gtk
 from week_view import WeekView
-# from month_view import MonthView
+from month_view import MonthView
 
 
 class Controller(Gtk.Box):
@@ -11,17 +11,18 @@ class Controller(Gtk.Box):
         self.req = requester
 
         self.week_view = WeekView(parent, self.req)
-        # FIXME: 2weeks not working properly since it uses Week object (7days)
         self.two_weeks_view = WeekView(parent, self.req, numdays=14)
-        # self.month_view = MonthView(parent, self.req)
+        self.month_view = MonthView(parent, self.req)
 
         self.week_view.show_today()
         self.two_weeks_view.show_today()
+        self.month_view.show_today()
         self.current_view = None
 
         self.notebook = Gtk.Notebook()
         self.notebook.append_page(self.week_view, None)
         self.notebook.append_page(self.two_weeks_view, None)
+        self.notebook.append_page(self.month_view, None)
         self.notebook.set_show_tabs(False)
         self.pack_start(self.notebook, True, True, 0)
         self.show_all()

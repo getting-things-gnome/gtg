@@ -74,14 +74,24 @@ def convert_grid_to_screen_coord(col_width, line_height, x, y, w, h,
 
 
 def date_to_row_coord(date, start):
-    day = date.day
-    week = 0
-    while(day - 7 > 0):
-        day -= 7
-        week += 1
-    if day > date.weekday() + 1:
-        week += 1
-    return week
+    # date is in previous month than start
+    if date.month + 1 == start.month:
+        return 0
+    # date is in next month than start
+    elif date.month - 1 == start.month:
+        return -1
+    # two dates in same month
+    elif date.month == start.month:
+        day = date.day
+        week = 0
+        while(day - 7 > 0):
+            day -= 7
+            week += 1
+        if day > date.weekday() + 1:
+            week += 1
+        return week
+    raise ValueError("Dates %d and %d are not valid combinations." %
+                     (date, start))
 
 
 def date_to_col_coord(date, start):

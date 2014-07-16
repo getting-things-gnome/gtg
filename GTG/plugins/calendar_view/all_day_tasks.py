@@ -22,6 +22,7 @@ class AllDayTasks(Gtk.DrawingArea):
         self.highlight_cell = (None, None)
         self.selected_task = None
         self.cells = []
+        self.labels = None
 
         self.connect("draw", self.draw)
 
@@ -30,6 +31,13 @@ class AllDayTasks(Gtk.DrawingArea):
                         | Gdk.EventMask.BUTTON_RELEASE_MASK
                         | Gdk.EventMask.BUTTON1_MOTION_MASK
                         | Gdk.EventMask.POINTER_MOTION_MASK)
+
+    def set_labels(self, labels):
+        self.labels = labels
+
+    def set_num_rows(self, rows):
+        self.num_rows = rows
+        self.background.set_num_rows(rows)
 
     def set_font(self, font):
         self.font = font
@@ -87,12 +95,27 @@ class AllDayTasks(Gtk.DrawingArea):
         self.background.draw(ctx, alloc, vgrid=True, hgrid=True)
         ctx.restore()
 
+        # then draw labels, if any (used only on month_view)
+        if self.labels:
+            ctx.save()
+            color = self.font_color
+            ctx.set_source_rgb(color[0], color[1], color[2])
+            for j, week in enumerate(self.labels):
+                for i, day in enumerate(week):
+                    base_x = i * self.get_day_width() + self.padding
+                    base_y = j * self.get_week_height() + self.font_size
+                    ctx.move_to(base_x, base_y)
+                    ctx.text_path(day)
+                    ctx.stroke()
+            ctx.restore()
+
         # then draw all tasks
         for dtask in self.drawtasks:
             selected = self.selected_task and \
                 (dtask.get_id() == self.selected_task)
             ctx.save()
-            dtask.draw(ctx, self.get_day_width(), self.padding, selected)
+            dtask.draw(ctx, self.get_day_width(), self.padding, selected,
+                       self.get_week_height())
             ctx.restore()
 
         # FIXME: remove this from draw() and make function callable directly
