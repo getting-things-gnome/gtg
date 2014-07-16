@@ -27,8 +27,6 @@ class MonthView(ViewBase, Gtk.VBox):
         self.numdays = numdays
         self.min_day_width = 60
         self.min_week_height = 80
-        today = datetime.date.today()
-        self.numweeks = self.calculate_number_of_weeks(today.year, today.month)
 
         # Header
         self.header = Header(self.numdays)
@@ -43,8 +41,7 @@ class MonthView(ViewBase, Gtk.VBox):
         self.pack_start(self.scroll, True, True, 0)
 
         # AllDayTasks widget
-        self.all_day_tasks = AllDayTasks(self, rows=self.numweeks,
-                                         cols=self.numdays)
+        self.all_day_tasks = AllDayTasks(self, cols=self.numdays)
         # self.pack_start(self.all_day_tasks, True, True, 0)
         self.scroll.add_with_viewport(self.all_day_tasks)
 
@@ -148,6 +145,8 @@ class MonthView(ViewBase, Gtk.VBox):
         @param year: integer, a valid year in the format YYYY.
         @param month: integer, a month (should be between 1 and 12)
         """
+        self.year = year
+        self.month = month
         self.numweeks = self.calculate_number_of_weeks(year, month)
         self.init_weeks(self.numweeks)
         first_day = datetime.date(year, month, 1)
@@ -215,8 +214,8 @@ class MonthView(ViewBase, Gtk.VBox):
         Gets the correspondent year of the days
         being displayed in the calendar view
         """
-        date_middle_month = self.first_day() + datetime.timedelta(days=7)
-        return date_middle_month.strftime("%B / %Y")
+        date_this_month = datetime.date(self.year, self.month, 1)
+        return date_this_month.strftime("%B / %Y")
 
     def update_tasks(self):
         """ Updates and redraws everything related to the tasks """
@@ -271,15 +270,13 @@ class MonthView(ViewBase, Gtk.VBox):
         Fade the days at beginnig and/or the end of the view that do not belong
         to the current month being displayed.
         """
-        # get date in middle of month to know which month we are in
-        this_month = (self.first_day() + datetime.timedelta(days=7)).month
         cells = []
 
         # cells to fade from days in previous month
         row = 0
         col = 0
         for day in self.weeks[0]['dates'].days:
-            if day.month != this_month:
+            if day.month != self.month:
                 cells.append((row, col))
                 col += 1
             else:
@@ -289,7 +286,7 @@ class MonthView(ViewBase, Gtk.VBox):
         row = self.numweeks - 1
         col = self.numdays - 1
         for day in reversed(self.weeks[-1]['dates'].days):
-            if day.month != this_month:
+            if day.month != self.month:
                 cells.append((row, col))
                 col -= 1
             else:
