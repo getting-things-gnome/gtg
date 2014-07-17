@@ -348,6 +348,21 @@ class MonthView(ViewBase, Gtk.VBox):
         self.update_weeks(day_in_prev_month.year, day_in_prev_month.month)
         self.update()
 
+    def total_days_between_cells(self, cell_a, cell_b):
+        """
+        Returns the total of days elapsed between two grid cells of a month
+        calendar. If the dates are the same, it returns 0.
+
+        @param cell_a: tuple (int, int), contains (row, col) of first cell.
+        @param cell_b: tuple (int, int), contains (row, col) of sencond cell.
+        @return total_days: integer, the number of days between the two cells,
+        returning 0 if they are the same.
+        """
+        # get dates correspoding for each cell
+        start = self.weeks[cell_a[0]]['dates'].days[cell_a[1]]
+        end = self.weeks[cell_b[0]]['dates'].days[cell_b[1]]
+        return (end - start).days
+
     def dnd_start(self, widget, event):
         """ User clicked the mouse button, starting drag and drop """
         # find which task was clicked, if any
@@ -386,21 +401,6 @@ class MonthView(ViewBase, Gtk.VBox):
             event_x = round(event.x, 3)
             event_y = round(event.y, 3)
             self.drag_offset = (event_x, event_y)
-
-    def total_days_between_cells(self, cell_a, cell_b):
-        """
-        Returns the total of days elapsed between two grid cells of a month
-        calendar. If the dates are the same, it returns 0.
-
-        @param cell_a: tuple (int, int), contains (row, col) of first cell.
-        @param cell_b: tuple (int, int), contains (row, col) of sencond cell.
-        @return total_days: integer, the number of days between the two cells,
-        returning 0 if they are the same.
-        """
-        # get dates correspoding for each cell
-        start = self.weeks[cell_a[0]]['dates'].days[cell_a[1]]
-        end = self.weeks[cell_b[0]]['dates'].days[cell_b[1]]
-        return (end - start).days
 
     def motion_notify(self, widget, event):
         """ User moved mouse over widget """
