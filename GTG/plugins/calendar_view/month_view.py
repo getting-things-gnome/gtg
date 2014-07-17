@@ -398,19 +398,15 @@ class MonthView(ViewBase, Gtk.VBox):
             # from beggining of task (if task spans multiple columns)
             day_width = self.get_day_width()
             clicked_col = utils.convert_coordinates_to_col(event.x, day_width)
-            start_col_in_clicked_row = utils.date_to_col_coord(
-                task.get_start_date().date(),
-                self.weeks[clicked_row]['dates'].start_date)
-            end_col_in_clicked_row = utils.date_to_col_coord(
-                task.get_due_date().date(),
-                self.weeks[clicked_row]['dates'].start_date)
-            col_duration = end_col_in_clicked_row - start_col_in_clicked_row+1
+            start_col_in_clicked_row = task.get_start_date().date().weekday()
+            col_diff = clicked_col - start_col_in_clicked_row
 
-            offset_x = (start_col_in_clicked_row - clicked_col) * day_width
+            offset_x = (start_col_in_clicked_row-clicked_col) * day_width
             if self.drag_action == "expand_right":
-                offset_x += col_duration * day_width
-            self.drag_offset = (offset_x, offset_y)
+                offset_x += col_diff * day_width
+                offset_y = 0
 
+            self.drag_offset = (offset_x, offset_y)
             self.update_tasks()
         # if no task is selected, save mouse location in case the user wants
         # to create a new task using DnD
@@ -475,7 +471,6 @@ class MonthView(ViewBase, Gtk.VBox):
             col = utils.convert_coordinates_to_row(event_x, day_width)
             if row >= self.numweeks or col >= self.numdays:
                 return
-            print(row, col)
             day = self.weeks[row]['dates'].days[col]
 
             if self.drag_action == "expand_left":
