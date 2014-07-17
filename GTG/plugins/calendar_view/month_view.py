@@ -363,6 +363,29 @@ class MonthView(ViewBase, Gtk.VBox):
         end = self.weeks[cell_b[0]]['dates'].days[cell_b[1]]
         return (end - start).days
 
+    def get_right_order(self, start_row, start_col, end_row, end_col):
+        """
+        Gets the right order two cells (@start_row, @start_col) and
+        (@end_row, @end_col) should have, inverting them in case the @end cell
+        starts before the @start. The result will always return the one most
+        at the most top-left as @start, and the other as @end.
+
+        @param start_row: integer, the row where the user started dragging
+        @param start_col: integer, the col where the user started dragging
+        @param end_row: integer, the row where the user finished dragging
+        @param end_col: integer, the col where the user finished dragging
+
+        @return start_row, start_col, end_row, end_col: a 4-tuple of integers,
+                containing the row and col for the cell at the most top-left,
+                and then the row and col of the other one.
+        """
+        if end_row < start_row:  # multiple rows
+            end_row, start_row = start_row, end_row
+            end_col, start_col = start_col, end_col
+        elif end_row == start_row and end_col < start_col:  # single row
+            end_col, start_col = start_col, end_col
+        return start_row, start_col, end_row, end_col
+
     def dnd_start(self, widget, event):
         """ User clicked the mouse button, starting drag and drop """
         # find which task was clicked, if any
@@ -429,11 +452,8 @@ class MonthView(ViewBase, Gtk.VBox):
                 day_width, week_height)
 
             # invert cols/rows in case user started dragging from the end date
-            if curr_row < start_row:  # multiple rows
-                curr_row, start_row = start_row, curr_row
-                curr_col, start_col = start_col, curr_col
-            elif curr_row == start_row and curr_col < start_col:  # single row
-                curr_col, start_col = start_col, curr_col
+            start_row, start_col, curr_row, curr_col = self.get_right_order(
+                start_row, start_col, curr_row, curr_col)
 
             total_days = self.total_days_between_cells((start_row, start_col),
                                                        (curr_row, curr_col))+1
@@ -523,11 +543,8 @@ class MonthView(ViewBase, Gtk.VBox):
                 event_x, event_y, day_width, week_height)
 
             # invert cols/rows in case user started dragging from the end date
-            if end_row < start_row:  # multiple rows
-                end_row, start_row = start_row, end_row
-                end_col, start_col = start_col, end_col
-            elif end_row == start_row and end_col < start_col:  # single row
-                end_col, start_col = start_col, end_col
+            start_row, start_col, end_row, end_col = self.get_right_order(
+                start_row, start_col, end_row, end_col)
 
             total_days = self.total_days_between_cells(
                 (start_row, start_col), (end_row, end_col))
