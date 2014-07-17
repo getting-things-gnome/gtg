@@ -461,6 +461,12 @@ class MonthView(ViewBase, Gtk.VBox):
             end_date = task.get_due_date().date()
             duration = (end_date - start_date).days
 
+            # don't do any action beyond delimeted area
+            alloc = self.get_allocation()
+            if (event.x < 0 or event.x > alloc.width or
+                    event.y < 0 or event.y > alloc.height):
+                return
+
             event_x = round(event.x + self.drag_offset[0], 3)
             event_y = round(event.y + self.drag_offset[1], 3)
 
@@ -469,7 +475,7 @@ class MonthView(ViewBase, Gtk.VBox):
 
             row = utils.convert_coordinates_to_row(event_y, week_height)
             col = utils.convert_coordinates_to_row(event_x, day_width)
-            if row >= self.numweeks or col >= self.numdays:
+            if row < 0 or row >= self.numweeks or col < 0 or col >= self.numdays:
                 return
             day = self.weeks[row]['dates'].days[col]
 
