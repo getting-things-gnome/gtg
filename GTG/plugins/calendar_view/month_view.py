@@ -460,10 +460,10 @@ class MonthView(ViewBase, Gtk.VBox):
 
             # highlight cells while moving mouse
             cells = []
-            for row in range(start_row, (curr_row - start_row + 1) + 1):
+            for i in range((curr_row - start_row + 1) + 1):
                 for col in range(start_col,
                                  min(start_col+total_days, self.numdays)):
-                    cells.append((row, col))
+                    cells.append((start_row + i, col))
                 total_days -= (self.numdays - start_col)
                 start_col = 0
 
