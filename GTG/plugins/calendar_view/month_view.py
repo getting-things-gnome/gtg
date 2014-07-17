@@ -364,16 +364,20 @@ class MonthView(ViewBase, Gtk.VBox):
                 return
             widget.get_window().set_cursor(cursor)
             task = self.req.get_task(self.selected_task)
-            start = (task.get_start_date().date() - self.first_day()).days
-            end = (task.get_due_date().date() - self.first_day()).days + 1
+            week_height = self.get_week_height()
+            row = utils.convert_coordinates_to_row(event.y, week_height)
+            start = (task.get_start_date().date() -
+                     self.weeks[row]['dates'].start_date).days
+            end = (task.get_due_date().date() -
+                   self.weeks[row]['dates'].start_date).days + 1
             duration = end - start
 
             day_width = self.get_day_width()
-            offset = (start * day_width) - event.x
-            # offset_y = pos * TASK_HEIGHT - event.y
+            offset_x = (start * day_width) - event.x
+            offset_y = (row * week_height) - event.y  # FIXME:make sure of this
             if self.drag_action == "expand_right":
-                offset += duration * day_width
-            self.drag_offset = (offset, 0)
+                offset_x += duration * day_width
+            self.drag_offset = (offset_x, offset_y)
 
             self.update_tasks()
         # if no task is selected, save mouse location in case the user wants
@@ -405,10 +409,10 @@ class MonthView(ViewBase, Gtk.VBox):
             self.is_dragging = True
             day_width = self.get_day_width()
             week_height = self.get_week_height()
-            curr_row, curr_col = utils.convert_coordinates_to_grid(event.x,
-                event.y, day_width, week_height)
+            curr_row, curr_col = utils.convert_coordinates_to_grid(
+                event.x, event.y, day_width, week_height)
             start_row, start_col = utils.convert_coordinates_to_grid(
-                self.drag_offset[0], self.drag_offset[1], 
+                self.drag_offset[0], self.drag_offset[1],
                 day_width, week_height)
 
             # invert cols/rows in case user started dragging from the end date
@@ -419,13 +423,13 @@ class MonthView(ViewBase, Gtk.VBox):
                 curr_col, start_col = start_col, curr_col
 
             total_days = self.total_days_between_cells((start_row, start_col),
-                (curr_row, curr_col)) + 1
+                                                       (curr_row, curr_col))+1
 
             # highlight cells while moving mouse
             cells = []
             for row in range(start_row, (curr_row - start_row + 1) + 1):
-                for col in range(start_col, 
-                               min(start_col+total_days, self.numdays)):
+                for col in range(start_col,
+                                 min(start_col+total_days, self.numdays)):
                     cells.append((row, col))
                 total_days -= (self.numdays - start_col)
                 start_col = 0
@@ -438,7 +442,43 @@ class MonthView(ViewBase, Gtk.VBox):
             return
 
         if self.selected_task and self.drag_offset:  # a task was clicked
-            return
+            self.is_dragging = True
+            task = self.req.get_task(self.selected_task)
+            start_date = task.get_start_date().date()
+            end_date = task.get_due_date().date()
+            duration = (end_date - start_date).days
+
+            event_x = round(event.x + self.drag_offset[0], 3)
+            event_y = round(event.y + self.drag_offset[1], 3)
+
+            day_width = self.get_day_width()
+            week_height = self.get_week_height()
+
+            row = utils.convert_coordinates_to_row(event_y, week_height)
+            col = utils.convert_coordinates_to_row(event_x, day_width)
+            if row >= self.numweeks or col >= self.numdays:
+                return
+            day = self.weeks[row]['dates'].days[col]
+
+            if self.drag_action == "expand_left":
+                diff = start_date - day
+                new_start_day = start_date - diff
+                if new_start_day <= end_date:
+                    task.set_start_date(new_start_day)
+
+            elif self.drag_action == "expand_right":
+                diff = end_date - day
+                new_due_day = end_date - diff
+                if new_due_day >= start_date:
+                    task.set_due_date(new_due_day)
+
+            else:
+                new_start_day = day
+                new_due_day = new_start_day + datetime.timedelta(days=duration)
+                task.set_start_date(new_start_day)
+                task.set_due_date(new_due_day)
+
+            self.update()
 
         else:  # mouse hover
             t_id, self.drag_action, cursor = \
@@ -455,13 +495,13 @@ class MonthView(ViewBase, Gtk.VBox):
             day_width = self.get_day_width()
             week_height = self.get_week_height()
             start_row, start_col = utils.convert_coordinates_to_grid(
-                self.drag_offset[0], self.drag_offset[1], 
+                self.drag_offset[0], self.drag_offset[1],
                 day_width, week_height)
 
             event_x = round(event.x, 3)
             event_y = round(event.y, 3)
-            end_row, end_col = utils.convert_coordinates_to_grid(event_x,
-                event_y, day_width, week_height)
+            end_row, end_col = utils.convert_coordinates_to_grid(
+                event_x, event_y, day_width, week_height)
 
             # invert cols/rows in case user started dragging from the end date
             if end_row < start_row:  # multiple rows
@@ -470,8 +510,9 @@ class MonthView(ViewBase, Gtk.VBox):
             elif end_row == start_row and end_col < start_col:  # single row
                 end_col, start_col = start_col, end_col
 
-            total_days = self.total_days_between_cells((start_row, start_col), (end_row, end_col))
-            start_date = self.first_day() + datetime.timedelta(days=(start_row*self.numdays)+start_col)
+            total_days = self.total_days_between_cells(
+                (start_row, start_col), (end_row, end_col))
+            start_date = self.weeks[start_row]['dates'].days[start_col]
             due_date = start_date + datetime.timedelta(days=total_days)
 
             GObject.idle_add(self.emit, 'on_add_task', start_date, due_date)
@@ -485,7 +526,33 @@ class MonthView(ViewBase, Gtk.VBox):
 
         # only changes selected task if any form of dragging ocurred
         elif self.is_dragging:
-            pass
+            event_x = round(event.x + self.drag_offset[0], 3)
+            event_y = round(event.y + self.drag_offset[1], 3)
+
+            day_width = self.get_day_width()
+            week_height = self.get_week_height()
+            weekday = utils.convert_coordinates_to_col(event_x, day_width)
+            row = utils.convert_coordinates_to_row(event_y, week_height)
+
+            task = self.req.get_task(self.selected_task)
+            start = task.get_start_date().date()
+            end = task.get_due_date().date()
+            duration = (end - start).days
+
+            new_start_day = self.weeks[row]['dates'].days[weekday]
+
+            if self.drag_action == "expand_right":
+                new_start_day = task.get_start_date().date()
+            new_due_day = new_start_day + datetime.timedelta(days=duration)
+
+            if not self.drag_action == "expand_right" \
+               and new_start_day <= end:
+                task.set_start_date(new_start_day)
+            if not self.drag_action == "expand_left" \
+               and new_due_day >= start:
+                task.set_due_date(new_due_day)
+            self.unselect_task()
+            self.update_tasks()
 
         widget.get_window().set_cursor(Gdk.Cursor.new(Gdk.CursorType.ARROW))
         self.drag_offset = None
