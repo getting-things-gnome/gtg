@@ -377,21 +377,38 @@ class MonthView(ViewBase, Gtk.VBox):
                 self.is_dragging = False
                 self.drag_offset = None
                 return
+
             widget.get_window().set_cursor(cursor)
             task = self.req.get_task(self.selected_task)
-            week_height = self.get_week_height()
-            row = utils.convert_coordinates_to_row(event.y, week_height)
-            start = (task.get_start_date().date() -
-                     self.weeks[row]['dates'].start_date).days
-            end = (task.get_due_date().date() -
-                   self.weeks[row]['dates'].start_date).days + 1
-            duration = end - start
 
+            # calculate vertical offset so we can drag not only
+            # from beggining of task (if it spans multiple rows)
+            week_height = self.get_week_height()
+            clicked_row = utils.convert_coordinates_to_row(event.y,
+                                                           week_height)
+            # start_row points to row where task starts, or to first row if
+            # it starts in date previous to what is being shown at this view
+            start_row = clicked_row
+            while (start_row > 0 and task.get_start_date().date() <
+                   self.weeks[start_row]['dates'].start_date):
+                start_row -= 1
+            offset_y = (start_row - clicked_row) * week_height
+
+            # calculate horizontal offset so we can drag not only
+            # from beggining of task (if task spans multiple columns)
             day_width = self.get_day_width()
-            offset_x = (start * day_width) - event.x
-            offset_y = (row * week_height) - event.y  # FIXME:make sure of this
+            clicked_col = utils.convert_coordinates_to_col(event.x, day_width)
+            start_col_in_clicked_row = utils.date_to_col_coord(
+                task.get_start_date().date(),
+                self.weeks[clicked_row]['dates'].start_date)
+            end_col_in_clicked_row = utils.date_to_col_coord(
+                task.get_due_date().date(),
+                self.weeks[clicked_row]['dates'].start_date)
+            col_duration = end_col_in_clicked_row - start_col_in_clicked_row+1
+
+            offset_x = (start_col_in_clicked_row - clicked_col) * day_width
             if self.drag_action == "expand_right":
-                offset_x += duration * day_width
+                offset_x += col_duration * day_width
             self.drag_offset = (offset_x, offset_y)
 
             self.update_tasks()
@@ -458,6 +475,7 @@ class MonthView(ViewBase, Gtk.VBox):
             col = utils.convert_coordinates_to_row(event_x, day_width)
             if row >= self.numweeks or col >= self.numdays:
                 return
+            print(row, col)
             day = self.weeks[row]['dates'].days[col]
 
             if self.drag_action == "expand_left":
