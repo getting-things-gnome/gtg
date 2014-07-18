@@ -386,6 +386,45 @@ class MonthView(ViewBase, Gtk.VBox):
             end_col, start_col = start_col, end_col
         return start_row, start_col, end_row, end_col
 
+    def calculate_offset(self, task_id, event):
+        """
+        Calculates the vertical and horizontal offsets, so a user can drag not
+        only from the beggining of a task (in case it spans multiple rows
+        and/or columns). The offsets will be calculated using the task
+        represented by @task_id as reference.
+
+        @param task_id: string, the id of the Task object we want to use as
+                        reference.
+        @param event: GdkEvent object, contains the pointer coordinates.
+        @return offset_x: float, horizontal offset.
+        @return offset_y: float, vertical offset.
+        """
+        task = self.req.get_task(task_id)
+
+        # calculate vertical offset
+        week_height = self.get_week_height()
+        clicked_row = utils.convert_coordinates_to_row(event.y,
+                                                       week_height)
+        # start_row points to row where task starts, or to first row if
+        # it starts in date previous to what is being shown at this view
+        start_row = clicked_row
+        while (start_row > 0 and task.get_start_date().date() <
+               self.weeks[start_row]['dates'].start_date):
+            start_row -= 1
+        offset_y = (start_row - clicked_row) * week_height
+
+        # calculate horizontal offset
+        day_width = self.get_day_width()
+        clicked_col = utils.convert_coordinates_to_col(event.x, day_width)
+        start_col_in_clicked_row = task.get_start_date().date().weekday()
+        col_diff = clicked_col - start_col_in_clicked_row
+
+        offset_x = (start_col_in_clicked_row-clicked_col) * day_width
+        if self.drag_action == "expand_right":
+            offset_x += col_diff * day_width
+            offset_y = 0
+        return offset_x, offset_y
+
     def dnd_start(self, widget, event):
         """ User clicked the mouse button, starting drag and drop """
         # find which task was clicked, if any
@@ -402,34 +441,8 @@ class MonthView(ViewBase, Gtk.VBox):
                 return
 
             widget.get_window().set_cursor(cursor)
-            task = self.req.get_task(self.selected_task)
 
-            # calculate vertical offset so we can drag not only
-            # from beggining of task (if it spans multiple rows)
-            week_height = self.get_week_height()
-            clicked_row = utils.convert_coordinates_to_row(event.y,
-                                                           week_height)
-            # start_row points to row where task starts, or to first row if
-            # it starts in date previous to what is being shown at this view
-            start_row = clicked_row
-            while (start_row > 0 and task.get_start_date().date() <
-                   self.weeks[start_row]['dates'].start_date):
-                start_row -= 1
-            offset_y = (start_row - clicked_row) * week_height
-
-            # calculate horizontal offset so we can drag not only
-            # from beggining of task (if task spans multiple columns)
-            day_width = self.get_day_width()
-            clicked_col = utils.convert_coordinates_to_col(event.x, day_width)
-            start_col_in_clicked_row = task.get_start_date().date().weekday()
-            col_diff = clicked_col - start_col_in_clicked_row
-
-            offset_x = (start_col_in_clicked_row-clicked_col) * day_width
-            if self.drag_action == "expand_right":
-                offset_x += col_diff * day_width
-                offset_y = 0
-
-            self.drag_offset = (offset_x, offset_y)
+            self.drag_offset = self.calculate_offset(self.selected_task, event)
             self.update_tasks()
         # if no task is selected, save mouse location in case the user wants
         # to create a new task using DnD
