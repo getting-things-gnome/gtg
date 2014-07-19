@@ -494,7 +494,7 @@ class MonthView(ViewBase, Gtk.VBox):
             end_date = task.get_due_date().date()
             duration = (end_date - start_date).days
 
-            # don't do any action beyond delimeted area
+            # don't do any action beyond delimited area
             alloc = self.get_allocation()
             if (event.x < 0 or event.x > alloc.width or
                     event.y < 0 or event.y > alloc.height):
@@ -510,22 +510,19 @@ class MonthView(ViewBase, Gtk.VBox):
             col = utils.convert_coordinates_to_row(event_x, day_width)
             if row < 0 or row >= self.numweeks or col < 0 or col >= self.numdays:
                 return
-            day = self.weeks[row]['dates'].days[col]
 
             if self.drag_action == "expand_left":
-                diff = start_date - day
-                new_start_day = start_date - diff
+                new_start_day = self.weeks[row]['dates'].days[col]
                 if new_start_day <= end_date:
                     task.set_start_date(new_start_day)
 
             elif self.drag_action == "expand_right":
-                diff = end_date - day
-                new_due_day = end_date - diff
+                new_due_day = self.weeks[row]['dates'].days[col]
                 if new_due_day >= start_date:
                     task.set_due_date(new_due_day)
 
             else:
-                new_start_day = day
+                new_start_day = self.weeks[row]['dates'].days[col]
                 new_due_day = new_start_day + datetime.timedelta(days=duration)
                 task.set_start_date(new_start_day)
                 task.set_due_date(new_due_day)
