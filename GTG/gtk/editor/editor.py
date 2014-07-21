@@ -70,6 +70,8 @@ class TaskEditor(object):
         self.inserttag_button = self.builder.get_object("inserttag")
         self.inserttag_button.set_tooltip_text(GnomeConfig.TAG_TOOLTIP)
         self.open_parents_button = self.builder.get_object("open_parents")
+        self.open_parents_button.set_tooltip_text(
+            GnomeConfig.OPEN_PARENT_TOOLTIP)
 
         # Create our dictionary and connect it
         dic = {
