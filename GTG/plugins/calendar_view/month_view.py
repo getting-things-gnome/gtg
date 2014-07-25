@@ -121,6 +121,20 @@ class MonthView(ViewBase, Gtk.VBox):
         self.update_weeks(today.year, today.month)
         self.update()
 
+    def total_rows_needed_in_calendar_cell(self, row, col):
+        """
+        Gets the total number of rows needed to display the content in a
+        specific calendar cell given by @row and @col.
+
+        @param row: integer, the row index of the cell, corresponding to the
+                    week we are looking at.
+        @param col: integer, the col index of the cell.
+        @return: integer, the total number of rows needed in order to display
+                 all the content in this specific cell.
+        """
+        grid = self.weeks[row]['grid']  # grid correspondent to this week/row
+        return grid.num_occupied_rows_in_col(col)
+
     def compute_size(self):
         """ Computes and requests the size needed to draw everything. """
         width = self.min_day_width * self.numdays

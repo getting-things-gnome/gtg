@@ -87,6 +87,16 @@ class Grid():
                 return False
         return True
 
+    def num_occupied_rows_in_col(self, col):
+        # find last occupied row index inside this col
+        if self.num_rows == 0:
+            return 0
+        last_row = self.num_rows - 1
+        while(last_row >= 0 and self.grid[last_row][col].is_free()):
+            last_row -= 1
+        total_rows = last_row + 1
+        return total_rows
+
     def clear_cols(self):
         while self.num_cols > 0:
             self.remove_col(0)
