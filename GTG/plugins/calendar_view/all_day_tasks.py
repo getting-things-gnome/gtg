@@ -23,6 +23,7 @@ class AllDayTasks(Gtk.DrawingArea):
         self.selected_task = None
         self.cells = []
         self.labels = None
+        self.label_height = self.font_size
 
         self.connect("draw", self.draw)
 
@@ -31,6 +32,11 @@ class AllDayTasks(Gtk.DrawingArea):
                         | Gdk.EventMask.BUTTON_RELEASE_MASK
                         | Gdk.EventMask.BUTTON1_MOTION_MASK
                         | Gdk.EventMask.POINTER_MOTION_MASK)
+
+    def get_label_height(self):
+        if self.labels:
+          return self.label_height
+        return 0
 
     def set_labels(self, labels):
         self.labels = labels
@@ -103,7 +109,7 @@ class AllDayTasks(Gtk.DrawingArea):
             for j, week in enumerate(self.labels):
                 for i, day in enumerate(week):
                     base_x = i * self.get_day_width() + self.padding
-                    base_y = j * self.get_week_height() + self.font_size
+                    base_y = j * self.get_week_height() + self.label_height
                     ctx.move_to(base_x, base_y)
                     ctx.text_path(day)
                     ctx.stroke()
