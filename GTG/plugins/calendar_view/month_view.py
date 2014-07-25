@@ -3,7 +3,7 @@ import datetime
 import calendar
 
 from week import WeekSpan
-from drawtask import DrawTask
+from drawtask import DrawTask, TASK_HEIGHT
 from all_day_tasks import AllDayTasks
 from header import Header
 from grid import Grid
@@ -112,6 +112,9 @@ class MonthView(ViewBase, Gtk.VBox):
         """ Returns the week/row height in pixels """
         return round(self.all_day_tasks.get_week_height(), 3)
 
+    def get_task_height(self):
+        return TASK_HEIGHT  # self.all_day_tasks.task_height
+
     def show_today(self):
         """
         Shows the range of dates in the current view with the date
@@ -133,7 +136,8 @@ class MonthView(ViewBase, Gtk.VBox):
                  all the content in this specific cell.
         """
         grid = self.weeks[row]['grid']  # grid correspondent to this week/row
-        return grid.num_occupied_rows_in_col(col)
+        last_row_index = grid.last_occupied_row_in_col(col)
+        return last_row_index + 1
 
     def compute_size(self):
         """ Computes and requests the size needed to draw everything. """
@@ -220,7 +224,7 @@ class MonthView(ViewBase, Gtk.VBox):
 
         x = utils.date_to_col_coord(start, week.start_date)
         w = duration
-        x, y, w, h = grid.add_to_grid(x, w, id=dtask.get_label()[4])
+        x, y, w, h = grid.add_to_grid(x, w, id=dtask.get_id())
 
         dtask.set_position(x, y, w, h)  # position inside this grid
         dtask.set_week_num(num_week)  # which week this task is in
@@ -252,6 +256,11 @@ class MonthView(ViewBase, Gtk.VBox):
         return (task.get_due_date().date() >= week.start_date) and \
                (task.get_start_date().date() <= week.end_date)
 
+    def get_maximum_tasks_per_week(self):
+        tasks_available_area = (self.get_week_height() -
+                                self.all_day_tasks.get_label_height())
+        return tasks_available_area // self.get_task_height()
+
     def update_drawtasks(self, tasks=None):
         """
         Updates the drawtasks and calculates the position of where each one of
@@ -279,6 +288,19 @@ class MonthView(ViewBase, Gtk.VBox):
                 self.set_task_drawing_position(t, week['dates'],
                                                week['grid'], i)
         self.all_day_tasks.set_tasks_to_draw(dtasks)
+
+        # deals with when we have more tasks than available lines in a same day
+        visible_rows = self.get_maximum_tasks_per_week()
+        for week_index in range(self.numweeks):
+            if self.weeks[week_index]['grid'].num_rows > visible_rows:
+                for col in range(self.numdays):
+                    needed_rows = self.total_rows_needed_in_calendar_cell(
+                        week_index, col)
+                    # if can't fit, hide last tasks and create link to them
+                    if needed_rows > visible_rows:
+                        # print(week_index, col, visible_rows, needed_rows)
+                        # print('+%d more' % (needed_rows - visible_rows + 1))
+                        pass
 
         # clears selected_task if it is not being showed
         if self.selected_task:
