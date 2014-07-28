@@ -42,8 +42,9 @@ class pluginSendEmail:
         tb_Taskicon = Gtk.Image()
         tb_Taskicon.set_from_icon_name('mail-send', 32)
 
-        self.tb_Taskbutton = Gtk.ToolButton(tb_Taskicon)
+        self.tb_Taskbutton = Gtk.ToolButton.new(tb_Taskicon)
         self.tb_Taskbutton.set_label(_("Send via email"))
+        self.tb_Taskbutton.set_tooltip_text("Send via email")
         self.tb_Taskbutton.connect('clicked', self.onTbTaskButton, plugin_api)
         self.tb_Taskbutton.show_all()
 
