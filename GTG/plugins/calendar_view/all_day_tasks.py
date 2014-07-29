@@ -19,8 +19,9 @@ class AllDayTasks(Gtk.DrawingArea):
         self.font = "Courier"
         self.font_size = 12
         self.font_color = (0.35, 0.31, 0.24)
-        self.highlight_cell = (None, None)
+        self.today_cell = (None, None)
         self.selected_task = None
+        self.faded_cells = []
         self.cells = []
         self.labels = None
         self.label_height = self.font_size
@@ -69,21 +70,21 @@ class AllDayTasks(Gtk.DrawingArea):
     def set_tasks_to_draw(self, drawtasks):
         self.drawtasks = drawtasks
 
-    def highlight_cells(self, ctx, cells, color):
+    def highlight_cells(self, ctx, cells, color, alpha=0.5):
         alloc = self.get_allocation()
         for cell in cells:
             row, col = cell
             if 0 <= row < self.num_rows and 0 <= col < self.num_columns:
                 ctx.save()
                 self.background.highlight_cell(ctx, row, col, alloc,
-                                               color, alpha=0.5)
+                                               color, alpha)
                 ctx.restore()
 
-    def set_highlight_cell(self, row, col):
+    def set_today_cell(self, row, col):
         if 0 <= row < self.num_rows and 0 <= col < self.num_columns:
-            self.highlight_cell = (row, col)
+            self.today_cell = (row, col)
         else:
-            self.highlight_cell = (None, None)
+            self.today_cell = (None, None)
 
     def draw(self, widget, ctx):
         ctx.set_line_width(0.8)
@@ -95,7 +96,7 @@ class AllDayTasks(Gtk.DrawingArea):
         ctx.save()
         alloc = self.get_allocation()
         self.set_line_color(color=(0.35, 0.31, 0.24, 0.15))
-        row, col = self.highlight_cell
+        row, col = self.today_cell
         if row is not None and col is not None and row >= 0 and col >= 0:
             self.background.highlight_cell(ctx, row, col, alloc)
         self.background.draw(ctx, alloc, vgrid=True, hgrid=True)
@@ -115,6 +116,10 @@ class AllDayTasks(Gtk.DrawingArea):
                     ctx.stroke()
             ctx.restore()
 
+        # fade days not in current month
+        if self.faded_cells:
+            self.highlight_cells(ctx, self.faded_cells, color=(0.8, 0.8, 0.8))
+
         # then draw all tasks
         for dtask in self.drawtasks:
             selected = self.selected_task and \
@@ -124,9 +129,10 @@ class AllDayTasks(Gtk.DrawingArea):
                        self.get_week_height())
             ctx.restore()
 
-        # FIXME: remove this from draw() and make function callable directly
-        # need a ctx to draw the highlight cells
-        self.highlight_cells(ctx, self.cells, color=(0.8, 0.8, 0.8))
+        # if dragging cells to create new task, highlight them now
+        if self.cells:
+            self.highlight_cells(ctx, self.cells, color=(0.8, 0.8, 0),
+                alpha=0.1)
 
     def identify_pointed_object(self, event, clicked=False):
         """

@@ -335,10 +335,7 @@ class MonthView(ViewBase, Gtk.VBox):
                 col -= 1
             else:
                 break
-        self.all_day_tasks.cells = cells
-        # FIXME: when function is callable directly, change to:
-        # self.all_day_tasks.highlight_cells(ctx, cells,
-        #                                    color=(0.8, 0.8, 0.8), alpha=0.5)
+        self.all_day_tasks.faded_cells = cells
 
     def highlight_today_cell(self):
         """ Highlights the cell equivalent to today."""
@@ -352,7 +349,7 @@ class MonthView(ViewBase, Gtk.VBox):
         else:
             row = -1
             col = -1
-        self.all_day_tasks.set_highlight_cell(row, col)
+        self.all_day_tasks.set_today_cell(row, col)
         # self.header.set_highlight_cell(0, col)
 
     def update(self):
@@ -520,11 +517,8 @@ class MonthView(ViewBase, Gtk.VBox):
                 total_days -= (self.numdays - start_col)
                 start_col = 0
 
-            # FIXME: call highlight_cells directly instead of
-            # setting cells and redrawing
             self.all_day_tasks.cells = cells
             self.all_day_tasks.queue_draw()
-            # self.all_day_tasks.highlight_cells(cells, color=(0.8, 0.8, 0))
             return
 
         if self.selected_task and self.drag_offset:  # a task was clicked
