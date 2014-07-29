@@ -342,7 +342,7 @@ class MonthView(ViewBase, Gtk.VBox):
         if self.is_today_being_shown():
             today = datetime.date.today()
             row = utils.date_to_row_coord(
-                today, datetime.date(today.year, today.month, 1))
+                today, datetime.date(self.year, self.month, 1))
             if row == -1:
                 row = self.numweeks
             col = datetime.date.today().weekday()
