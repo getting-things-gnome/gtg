@@ -28,6 +28,8 @@ class MonthView(ViewBase, Gtk.VBox):
         self.numdays = numdays
         self.min_day_width = 60
         self.min_week_height = 80
+        self.font_size = 7
+        self.fixed = None
 
         # Header
         self.header = Header(self.numdays)
@@ -69,7 +71,6 @@ class MonthView(ViewBase, Gtk.VBox):
 
         @param numweeks: integer, the number of weeks
         """
-        self.fixed = Gtk.Fixed()
         self.weeks = []
         for w in range(numweeks):
             week = {}
@@ -261,7 +262,7 @@ class MonthView(ViewBase, Gtk.VBox):
     def get_maximum_tasks_per_week(self):
         tasks_available_area = (self.get_week_height() -
                                 self.all_day_tasks.get_label_height())
-        return int(tasks_available_area // self.get_task_height())
+        return max(int(tasks_available_area // self.get_task_height()), 4)  # FIXME
 
     def on_show_more_tasks(self, label, day):
         appears_in_day = lambda t: \
@@ -283,7 +284,8 @@ class MonthView(ViewBase, Gtk.VBox):
 
     def create_label(self, date, count):
         label = Gtk.Label()
-        label.set_markup('<a href="%s">+%d more</a>' % (date, count))
+        label.set_markup('<a href="%s"><span font_desc="%d">+%d more</span></a>'
+                         % (date, self.font_size, count))
         label.add_events(Gdk.EventMask.BUTTON_PRESS_MASK)
         label.connect('activate-link', self.on_show_more_tasks)
         return label
@@ -292,7 +294,7 @@ class MonthView(ViewBase, Gtk.VBox):
         grid = self.weeks[row]['grid']
         to_hide = []
         if needed_rows >= visible_rows:  # grid.num_rows:
-            for i in range(visible_rows - 1, needed_rows):
+            for i in range(visible_rows, needed_rows):
                 cell = grid[i][col]
                 if not cell.is_free():
                     to_hide.append(str(cell))
@@ -327,7 +329,11 @@ class MonthView(ViewBase, Gtk.VBox):
         self.all_day_tasks.set_tasks_to_draw(dtasks)
 
         # deals with when we have more tasks than available lines in a same day
-        visible_rows = max(self.get_maximum_tasks_per_week(), 4)  # FIXME
+        if self.fixed:
+            self.remove(self.fixed)
+        self.fixed = Gtk.Fixed()
+        self.add(self.fixed)
+        visible_rows = self.get_maximum_tasks_per_week()
         for row, week in enumerate(self.weeks):
             if week['grid'].num_rows > visible_rows:
                 for col in range(self.numdays):
@@ -339,22 +345,22 @@ class MonthView(ViewBase, Gtk.VBox):
                                                      needed_rows)
                         num_hidden_tasks = len(to_hide)
 
-                        # FIXME: hide last #num_hidden_tasks from cell
+                        # hide overflowing tasks from cell
                         for dtask in week['tasks']:
                             if dtask.get_id() in to_hide:
-                                dtask.set_position(None, None, None, None)
+                                dtask.set_position(-1, -1, -1, -1)
 
                         # create label to link to hidden tasks
                         day = week['dates'].days[col]
                         label = self.create_label(day, num_hidden_tasks)
-                        print(label.get_label())
-                        # add label after first (visible_rows - 1) tasks
-                        x = col * self.get_day_width()  # + self.padding
-                        y = row * self.get_week_height() + \
-                            self.all_day_tasks.get_label_height() + \
-                            (visible_rows-1) * self.get_task_height()
-                        self.fixed.put(label, x, y)  # FIXME: not working
-                        self.on_show_more_tasks(label, str(day))
+
+                        # add label at the top of the cell, next to day number
+                        x = (col+1) * self.get_day_width() - \
+                            len(label.get_text()) * self.font_size
+                        y = row * self.get_week_height()
+                        # FIXME: not overlapping with DrawingArea as it should
+                        self.fixed.put(label, x, y)
+                        self.show_all()
 
         # clears selected_task if it is not being showed
         if self.selected_task:
