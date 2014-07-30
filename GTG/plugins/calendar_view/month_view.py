@@ -9,6 +9,7 @@ from header import Header
 from grid import Grid
 import utils
 from view import ViewBase
+from day_cell import DayCell
 
 
 class MonthView(ViewBase, Gtk.VBox):
@@ -290,17 +291,28 @@ class MonthView(ViewBase, Gtk.VBox):
         self.all_day_tasks.set_tasks_to_draw(dtasks)
 
         # deals with when we have more tasks than available lines in a same day
-        visible_rows = self.get_maximum_tasks_per_week()
-        for week_index in range(self.numweeks):
-            if self.weeks[week_index]['grid'].num_rows > visible_rows:
+        visible_rows = max(self.get_maximum_tasks_per_week(), 4)  # FIXME
+        for row, week in enumerate(self.weeks):
+            if week['grid'].num_rows > visible_rows:
                 for col in range(self.numdays):
                     needed_rows = self.total_rows_needed_in_calendar_cell(
-                        week_index, col)
+                        row, col)
                     # if can't fit, hide last tasks and create link to them
                     if needed_rows > visible_rows:
                         # print(week_index, col, visible_rows, needed_rows)
                         # print('+%d more' % (needed_rows - visible_rows + 1))
-                        pass
+
+                        day = week['dates'].days[col]
+                        appears_in_day = lambda t: \
+                            (t.task.get_due_date().date() >= day) and \
+                            (t.task.get_start_date().date() <= day)
+                        tasks = [t.task for t in week['tasks'] if
+                                 appears_in_day(t)]
+
+                        # FIXME: create popover also (check if GNOME >= 3.12)
+                        popup = DayCell(self.get_window(), day, tasks)
+                        popup.run()
+                        popup.destroy()
 
         # clears selected_task if it is not being showed
         if self.selected_task:
