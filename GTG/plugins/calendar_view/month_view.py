@@ -288,18 +288,15 @@ class MonthView(ViewBase, Gtk.VBox):
         label.connect('activate-link', self.on_show_more_tasks)
         return label
 
-    def num_tasks_to_hide(self, row, col, visible_rows, needed_rows):
+    def tasks_to_hide(self, row, col, visible_rows, needed_rows):
         grid = self.weeks[row]['grid']
-        if needed_rows <= visible_rows:
-            return 0
-        if needed_rows >= grid.num_rows:
-            to_hide = 0
+        to_hide = []
+        if needed_rows >= visible_rows:  # grid.num_rows:
             for i in range(visible_rows - 1, needed_rows):
-                if not grid[i][col].is_free():
-                    to_hide += 1
-            return to_hide
-        else:
-            return 0
+                cell = grid[i][col]
+                if not cell.is_free():
+                    to_hide.append(str(cell))
+        return to_hide
 
     def update_drawtasks(self, tasks=None):
         """
@@ -338,10 +335,16 @@ class MonthView(ViewBase, Gtk.VBox):
                         row, col)
                     # if can't fit, hide last tasks and create link to them
                     if needed_rows > visible_rows:
-                        # print(week_index, col, visible_rows, needed_rows)
-                        # print('+%d more' % (needed_rows - visible_rows + 1))
-                        num_hidden_tasks = self.num_tasks_to_hide(row, col,
-                            visible_rows, needed_rows)
+                        to_hide = self.tasks_to_hide(row, col, visible_rows,
+                                                     needed_rows)
+                        num_hidden_tasks = len(to_hide)
+
+                        # FIXME: hide last #num_hidden_tasks from cell
+                        for dtask in week['tasks']:
+                            if dtask.get_id() in to_hide:
+                                dtask.set_position(None, None, None, None)
+
+                        # create label to link to hidden tasks
                         day = week['dates'].days[col]
                         label = self.create_label(day, num_hidden_tasks)
                         print(label.get_label())
@@ -350,11 +353,8 @@ class MonthView(ViewBase, Gtk.VBox):
                         y = row * self.get_week_height() + \
                             self.all_day_tasks.get_label_height() + \
                             (visible_rows-1) * self.get_task_height()
-                            #(needed_rows-num_hidden_tasks) * self.get_task_height()
                         self.fixed.put(label, x, y)  # FIXME: not working
                         self.on_show_more_tasks(label, str(day))
-
-                        # FIXME: hide last #num_hidden_tasks from cell
 
         # clears selected_task if it is not being showed
         if self.selected_task:
