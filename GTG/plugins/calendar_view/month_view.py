@@ -69,6 +69,7 @@ class MonthView(ViewBase, Gtk.VBox):
 
         @param numweeks: integer, the number of weeks
         """
+        self.fixed = Gtk.Fixed()
         self.weeks = []
         for w in range(numweeks):
             week = {}
@@ -260,7 +261,45 @@ class MonthView(ViewBase, Gtk.VBox):
     def get_maximum_tasks_per_week(self):
         tasks_available_area = (self.get_week_height() -
                                 self.all_day_tasks.get_label_height())
-        return tasks_available_area // self.get_task_height()
+        return int(tasks_available_area // self.get_task_height())
+
+    def on_show_more_tasks(self, label, day):
+        appears_in_day = lambda t: \
+            (t.task.get_due_date().date() >= day) and \
+            (t.task.get_start_date().date() <= day)
+
+        year, month, day = map(int, day.split('-'))
+        day = datetime.date(year, month, day)
+        row = utils.date_to_row_coord(day, datetime.date(self.year, self.month, 1))
+        week = self.weeks[row]
+        tasks = [t.task for t in week['tasks'] if
+                 appears_in_day(t)]
+
+        # FIXME: create popover also (check if GNOME >= 3.12)
+        popup = DayCell(self.get_toplevel(), day, tasks)
+        popup.run()
+        popup.destroy()
+        return True
+
+    def create_label(self, date, count):
+        label = Gtk.Label()
+        label.set_markup('<a href="%s">+%d more</a>' % (date, count))
+        label.add_events(Gdk.EventMask.BUTTON_PRESS_MASK)
+        label.connect('activate-link', self.on_show_more_tasks)
+        return label
+
+    def num_tasks_to_hide(self, row, col, visible_rows, needed_rows):
+        grid = self.weeks[row]['grid']
+        if needed_rows <= visible_rows:
+            return 0
+        if needed_rows >= grid.num_rows:
+            to_hide = 0
+            for i in range(visible_rows - 1, needed_rows):
+                if not grid[i][col].is_free():
+                    to_hide += 1
+            return to_hide
+        else:
+            return 0
 
     def update_drawtasks(self, tasks=None):
         """
@@ -301,18 +340,21 @@ class MonthView(ViewBase, Gtk.VBox):
                     if needed_rows > visible_rows:
                         # print(week_index, col, visible_rows, needed_rows)
                         # print('+%d more' % (needed_rows - visible_rows + 1))
-
+                        num_hidden_tasks = self.num_tasks_to_hide(row, col,
+                            visible_rows, needed_rows)
                         day = week['dates'].days[col]
-                        appears_in_day = lambda t: \
-                            (t.task.get_due_date().date() >= day) and \
-                            (t.task.get_start_date().date() <= day)
-                        tasks = [t.task for t in week['tasks'] if
-                                 appears_in_day(t)]
+                        label = self.create_label(day, num_hidden_tasks)
+                        print(label.get_label())
+                        # add label after first (visible_rows - 1) tasks
+                        x = col * self.get_day_width()  # + self.padding
+                        y = row * self.get_week_height() + \
+                            self.all_day_tasks.get_label_height() + \
+                            (visible_rows-1) * self.get_task_height()
+                            #(needed_rows-num_hidden_tasks) * self.get_task_height()
+                        self.fixed.put(label, x, y)  # FIXME: not working
+                        self.on_show_more_tasks(label, str(day))
 
-                        # FIXME: create popover also (check if GNOME >= 3.12)
-                        popup = DayCell(self.get_window(), day, tasks)
-                        popup.run()
-                        popup.destroy()
+                        # FIXME: hide last #num_hidden_tasks from cell
 
         # clears selected_task if it is not being showed
         if self.selected_task:
