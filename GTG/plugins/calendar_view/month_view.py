@@ -109,11 +109,11 @@ class MonthView(ViewBase, Gtk.VBox):
 
     def get_day_width(self):
         """ Returns the day/column width in pixels """
-        return round(self.all_day_tasks.get_day_width(), 3)
+        return self.all_day_tasks.get_day_width()
 
     def get_week_height(self):
         """ Returns the week/row height in pixels """
-        return round(self.all_day_tasks.get_week_height(), 3)
+        return self.all_day_tasks.get_week_height()
 
     def get_task_height(self):
         return TASK_HEIGHT  # self.all_day_tasks.task_height
@@ -496,14 +496,21 @@ class MonthView(ViewBase, Gtk.VBox):
 
         # calculate horizontal offset
         day_width = self.get_day_width()
-        clicked_col = utils.convert_coordinates_to_col(event.x, day_width)
-        start_col_in_clicked_row = task.get_start_date().date().weekday()
+        clicked_col = utils.convert_coordinates_to_col(event.x,
+                                                       day_width)
+        #start_col = task.get_start_date().date().weekday()
+        start_col_in_clicked_row = max(task.get_start_date().date(),
+            self.weeks[clicked_row]['dates'].start_date).weekday()
         col_diff = clicked_col - start_col_in_clicked_row
 
-        offset_x = (start_col_in_clicked_row-clicked_col) * day_width
+        offset_x = (start_col_in_clicked_row - clicked_col) * day_width
         if self.drag_action == "expand_right":
             offset_x += col_diff * day_width
             offset_y = 0
+        elif self.drag_action == "move":
+            offset_x = clicked_col * day_width
+            offset_y = clicked_row * week_height
+
         return offset_x, offset_y
 
     def dnd_start(self, widget, event):
@@ -528,8 +535,8 @@ class MonthView(ViewBase, Gtk.VBox):
         # if no task is selected, save mouse location in case the user wants
         # to create a new task using DnD
         else:
-            event_x = round(event.x, 3)
-            event_y = round(event.y, 3)
+            event_x = event.x
+            event_y = event.y
             self.drag_offset = (event_x, event_y)
 
     def motion_notify(self, widget, event):
@@ -578,14 +585,14 @@ class MonthView(ViewBase, Gtk.VBox):
                     event.y < 0 or event.y > alloc.height):
                 return
 
-            event_x = round(event.x + self.drag_offset[0], 3)
-            event_y = round(event.y + self.drag_offset[1], 3)
+            event_x = event.x
+            event_y = event.y
 
             day_width = self.get_day_width()
             week_height = self.get_week_height()
 
             row = utils.convert_coordinates_to_row(event_y, week_height)
-            col = utils.convert_coordinates_to_row(event_x, day_width)
+            col = utils.convert_coordinates_to_col(event_x, day_width)
             if row < 0 or row >= self.numweeks or col < 0 or col >= self.numdays:
                 return
 
@@ -600,10 +607,19 @@ class MonthView(ViewBase, Gtk.VBox):
                     task.set_due_date(new_due_day)
 
             else:
-                new_start_day = self.weeks[row]['dates'].days[col]
-                new_due_day = new_start_day + datetime.timedelta(days=duration)
-                task.set_start_date(new_start_day)
-                task.set_due_date(new_due_day)
+                offset_x = self.drag_offset[0]
+                offset_y = self.drag_offset[1]
+                previous_row, previous_col = utils.convert_coordinates_to_grid(
+                    offset_x, offset_y, day_width, week_height)
+                diff = self.total_days_between_cells(
+                    (previous_row, previous_col), (row, col))
+
+                if diff != 0:  # new_start_day != start_date:
+                    new_start_day = start_date + datetime.timedelta(days=diff)
+                    new_due_day = new_start_day + datetime.timedelta(days=duration)
+                    task.set_start_date(new_start_day)
+                    task.set_due_date(new_due_day)
+                    self.drag_offset = self.calculate_offset(self.selected_task, event)
 
             self.update()
 
@@ -625,8 +641,8 @@ class MonthView(ViewBase, Gtk.VBox):
                 self.drag_offset[0], self.drag_offset[1],
                 day_width, week_height)
 
-            event_x = round(event.x, 3)
-            event_y = round(event.y, 3)
+            event_x = event.x
+            event_y = event.y
             end_row, end_col = utils.convert_coordinates_to_grid(
                 event_x, event_y, day_width, week_height)
 
