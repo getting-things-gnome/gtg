@@ -262,15 +262,14 @@ class MonthView(ViewBase, Gtk.VBox):
     def get_maximum_tasks_per_week(self):
         tasks_available_area = (self.get_week_height() -
                                 self.all_day_tasks.get_label_height())
-        return max(int(tasks_available_area // self.get_task_height()), 4)  # FIXME
+        # FIXME: remove max(4)
+        return max(int(tasks_available_area // self.get_task_height()), 4)
 
-    def on_show_more_tasks(self, label, day):
+    def on_show_more_tasks(self, day):
         appears_in_day = lambda t: \
             (t.task.get_due_date().date() >= day) and \
             (t.task.get_start_date().date() <= day)
 
-        year, month, day = map(int, day.split('-'))
-        day = datetime.date(year, month, day)
         row = utils.date_to_row_coord(day, datetime.date(self.year, self.month, 1))
         week = self.weeks[row]
         tasks = [t.task for t in week['tasks'] if
@@ -282,13 +281,9 @@ class MonthView(ViewBase, Gtk.VBox):
         popup.destroy()
         return True
 
-    def create_label(self, date, count):
-        label = Gtk.Label()
-        label.set_markup('<a href="%s"><span font_desc="%d">+%d more</span></a>'
-                         % (date, self.font_size, count))
-        label.add_events(Gdk.EventMask.BUTTON_PRESS_MASK)
-        label.connect('activate-link', self.on_show_more_tasks)
-        return label
+    def create_label(self, row, col, count):
+        label = '+%d more' % count
+        self.overflow_links.append((label, row, col))
 
     def tasks_to_hide(self, row, col, visible_rows, needed_rows):
         grid = self.weeks[row]['grid']
@@ -329,10 +324,7 @@ class MonthView(ViewBase, Gtk.VBox):
         self.all_day_tasks.set_tasks_to_draw(dtasks)
 
         # deals with when we have more tasks than available lines in a same day
-        if self.fixed:
-            self.remove(self.fixed)
-        self.fixed = Gtk.Fixed()
-        self.add(self.fixed)
+        self.overflow_links = []  # clear previous links, if any
         visible_rows = self.get_maximum_tasks_per_week()
         for row, week in enumerate(self.weeks):
             if week['grid'].num_rows > visible_rows:
@@ -351,16 +343,8 @@ class MonthView(ViewBase, Gtk.VBox):
                                 dtask.set_position(-1, -1, -1, -1)
 
                         # create label to link to hidden tasks
-                        day = week['dates'].days[col]
-                        label = self.create_label(day, num_hidden_tasks)
-
-                        # add label at the top of the cell, next to day number
-                        x = (col+1) * self.get_day_width() - \
-                            len(label.get_text()) * self.font_size
-                        y = row * self.get_week_height()
-                        # FIXME: not overlapping with DrawingArea as it should
-                        self.fixed.put(label, x, y)
-                        self.show_all()
+                        self.create_label(row, col, num_hidden_tasks)
+        self.all_day_tasks.overflow_links = self.overflow_links
 
         # clears selected_task if it is not being showed
         if self.selected_task:
@@ -665,6 +649,15 @@ class MonthView(ViewBase, Gtk.VBox):
             self.unselect_task()
             self.all_day_tasks.queue_draw()
 
+        # clicked on link to show hidden tasks
+        if self.drag_action == 'click_link':
+            row, col = utils.convert_coordinates_to_grid(
+                event.x, event.y, self.get_day_width(), self.get_week_height())
+            day = self.weeks[row]['dates'].days[col]
+            self.on_show_more_tasks(day)
+            self.drag_action = None
+
         widget.get_window().set_cursor(Gdk.Cursor.new(Gdk.CursorType.ARROW))
         self.drag_offset = None
         self.is_dragging = False
+        self.drag_action = None

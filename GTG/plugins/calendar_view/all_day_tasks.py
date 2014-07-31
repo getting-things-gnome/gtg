@@ -19,12 +19,14 @@ class AllDayTasks(Gtk.DrawingArea):
         self.font = "Courier"
         self.font_size = 12
         self.font_color = (0.35, 0.31, 0.24)
+        self.link_color = (0, 0, 255, 0.5)  # default blue link color
         self.today_cell = (None, None)
         self.selected_task = None
         self.faded_cells = []
         self.cells = []
         self.labels = None
         self.label_height = self.font_size
+        self.overflow_links = []
 
         self.connect("draw", self.draw)
 
@@ -120,6 +122,25 @@ class AllDayTasks(Gtk.DrawingArea):
         if self.faded_cells:
             self.highlight_cells(ctx, self.faded_cells, color=(0.8, 0.8, 0.8))
 
+        # then draw links when there is overflowing tasks (only in month_view)
+        if self.overflow_links:
+            ctx.save()
+            color = self.link_color
+            ctx.set_source_rgba(color[0], color[1], color[2], color[3])
+            for link in self.overflow_links:
+                (text, row, col) = link
+                w = ctx.text_extents(text)[2]
+                base_x = (col+1) * self.get_day_width() - w - 3*self.padding
+                base_y = row * self.get_week_height() + self.label_height
+                ctx.move_to(base_x, base_y)
+                ctx.text_path(text)
+                # underline
+                y = base_y + 2
+                ctx.move_to(base_x, y)
+                ctx.line_to(base_x + w, y)
+                ctx.stroke()
+            ctx.restore()
+
         # then draw all tasks
         for dtask in self.drawtasks:
             selected = self.selected_task and \
@@ -145,6 +166,22 @@ class AllDayTasks(Gtk.DrawingArea):
         """
         expand_border = 10
         cursor = Gdk.Cursor.new(Gdk.CursorType.ARROW)
+        drag_action = None
+
+        if self.overflow_links:
+            for link in self.overflow_links:
+                (text, row, col) = link
+                # h, w = ctx.text_extents(text)[1:3]
+                # FIXME: more generic values for h and w
+                h = self.font_size
+                w = self.font_size/2 * len(text)
+                base_x = (col+1) * self.get_day_width() - w - 3*self.padding
+                base_y = row * self.get_week_height() + self.label_height
+                if base_x <= event.x <= base_x + w and \
+                   base_y - h <= event.y <= base_y:
+                    drag_action = "click_link"
+                    cursor = Gdk.Cursor.new(Gdk.CursorType.HAND1)
+
         for task in self.drawtasks:
             (x, y, w, h) = utils.convert_grid_to_screen_coord(
                 self.get_day_width(), TASK_HEIGHT, *task.get_position(),
@@ -169,4 +206,4 @@ class AllDayTasks(Gtk.DrawingArea):
             else:
                 continue
             return task.get_id(), drag_action, cursor
-        return None, None, cursor
+        return None, drag_action, cursor
