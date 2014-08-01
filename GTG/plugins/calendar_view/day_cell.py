@@ -16,6 +16,8 @@ class DayCell(Gtk.Dialog):
         title = day.strftime("%a, %b %d %Y")
 
         Gtk.Dialog.__init__(self, title, parent, 0)
+        # dialog is placed at the current mouse position
+        self.set_position(Gtk.WindowPosition.MOUSE)
 
         self.all_day_tasks = AllDayTasks(self, rows=1, cols=1)
         self.all_day_tasks.connect("button-press-event", self.dnd_start)
@@ -55,7 +57,7 @@ class DayCell(Gtk.Dialog):
 
     def compute_size(self):
         """ Computes and requests the size needed to draw everything. """
-        width = 160
+        width = 165
         height = len(self.drawtasks) * TASK_HEIGHT
         self.all_day_tasks.set_size_request(width, height)
 
