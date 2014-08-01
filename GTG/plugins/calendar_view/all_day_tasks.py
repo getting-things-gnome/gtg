@@ -168,6 +168,9 @@ class AllDayTasks(Gtk.DrawingArea):
         cursor = Gdk.Cursor.new(Gdk.CursorType.ARROW)
         drag_action = None
 
+        if clicked:
+            cursor = Gdk.Cursor.new(Gdk.CursorType.HAND1)
+
         if self.overflow_links:
             for link in self.overflow_links:
                 (text, row, col) = link

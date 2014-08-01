@@ -528,8 +528,6 @@ class MonthView(ViewBase, Gtk.VBox):
                 self.drag_offset = None
                 return
 
-            widget.get_window().set_cursor(cursor)
-
             self.drag_offset = self.calculate_offset(self.selected_task, event)
             self.update_tasks()
         # if no task is selected, save mouse location in case the user wants
@@ -538,6 +536,8 @@ class MonthView(ViewBase, Gtk.VBox):
             event_x = event.x
             event_y = event.y
             self.drag_offset = (event_x, event_y)
+
+        widget.get_window().set_cursor(cursor)
 
     def motion_notify(self, widget, event):
         """ User moved mouse over widget """
