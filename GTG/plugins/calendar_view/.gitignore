@@ -1,4 +1,7 @@
 __pycache__/
+new/
+old/
 *.pyc
 baks/
 *.txt
+.*.sw*

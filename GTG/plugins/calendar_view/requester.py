@@ -38,7 +38,7 @@ class Requester(GObject.GObject):
         """Delete the task 'tid'.
         Note: this modifies the datastore."""
         if self.has_task(tid):
-            del self.ds._tasks[tid]
+            del self.__basetree[tid]
             return True
         else:
             return False
