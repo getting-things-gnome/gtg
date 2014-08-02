@@ -43,20 +43,20 @@ def create_vertical_gradient(x, y, h, color, alpha):
 
 
 def convert_coordinates_to_col(pos_x, width, header_x=0):
-    grid_x = (pos_x - header_x) / width
-    return int(grid_x)
+    col = (pos_x - header_x) / width
+    return int(col)
 
 
 def convert_coordinates_to_row(pos_y, height, header_y=0):
-    grid_y = (pos_y - header_y) / height
-    return int(grid_y)
+    row = (pos_y - header_y) / height
+    return int(row)
 
 
 def convert_coordinates_to_grid(pos_x, pos_y, width, height,
                                 header_x=0.0, header_y=0.0):
-    grid_x = convert_coordinates_to_col(pos_x, width, header_x)
-    grid_y = convert_coordinates_to_col(pos_y, height, header_y)
-    return grid_x, grid_y
+    col = convert_coordinates_to_col(pos_x, width, header_x)
+    row = convert_coordinates_to_row(pos_y, height, header_y)
+    return row, col
 
 
 def convert_grid_to_screen_coord(col_width, line_height, x, y, w, h,
@@ -74,14 +74,24 @@ def convert_grid_to_screen_coord(col_width, line_height, x, y, w, h,
 
 
 def date_to_row_coord(date, start):
-    day = date.day
-    week = 0
-    while(day - 7 > 0):
-        day -= 7
-        week += 1
-    if day > date.weekday() + 1:
-        week += 1
-    return week
+    # date is in previous month than start
+    if date.month + 1 == start.month:
+        return 0
+    # date is in next month than start
+    elif date.month - 1 == start.month:
+        return -1
+    # two dates in same month
+    elif date.month == start.month:
+        day = date.day
+        week = 0
+        while(day - 7 > 0):
+            day -= 7
+            week += 1
+        if day > date.weekday() + 1:
+            week += 1
+        return week
+    raise ValueError("Dates %d and %d are not valid combinations." %
+                     (date, start))
 
 
 def date_to_col_coord(date, start):

@@ -210,7 +210,7 @@ class WeekView(ViewBase, Gtk.VBox):
         """ Highlights the cell equivalent to today."""
         row = 0
         col = date_to_col_coord(datetime.date.today(), self.first_day())
-        self.all_day_tasks.set_highlight_cell(row, col)
+        self.all_day_tasks.set_today_cell(row, col)
         self.header.set_highlight_cell(0, col)
 
     def refresh(self, widget=None, dummy=None):
@@ -306,11 +306,8 @@ class WeekView(ViewBase, Gtk.VBox):
                 row = 0
                 col = start_col + i
                 cells.append((row, col))
-            # FIXME: call highlight_cells directly instead of
-            # setting cells and redrawing
             self.all_day_tasks.cells = cells
             self.all_day_tasks.queue_draw()
-            # self.all_day_tasks.highlight_cells(cells, color=(0.8, 0.8, 0))
             return
 
         if self.selected_task and self.drag_offset:  # a task was clicked

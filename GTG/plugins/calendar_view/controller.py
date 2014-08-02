@@ -1,6 +1,6 @@
 from gi.repository import Gtk
 from GTG.plugins.calendar_view.week_view import WeekView
-#from GTG.plugins.calendar_view.month_view import MonthView
+from GTG.plugins.calendar_view.month_view import MonthView
 
 
 class Controller(Gtk.Box):
@@ -11,7 +11,7 @@ class Controller(Gtk.Box):
 
         week_view = WeekView(parent, requester)
         two_weeks_view = WeekView(parent, requester, numdays=14)
-        # month_view = MonthView(parent, requester)
+        month_view = MonthView(parent, requester)
 
         self.views = []
         self.current_view = None
@@ -19,7 +19,7 @@ class Controller(Gtk.Box):
         self.notebook = Gtk.Notebook()
         self.add_view(week_view, self.WEEK)
         self.add_view(two_weeks_view, self.TWO_WEEKS)
-        # self.add_view(month_view, self.MONTH)
+        self.add_view(month_view, self.MONTH)
 
         self.notebook.set_show_tabs(False)
         self.pack_start(self.notebook, True, True, 0)

@@ -57,7 +57,7 @@ class CalendarPlugin(GObject.GObject):
         # get combobox content from available views
         for label in self.controller.get_view_labels():
             self.combobox.append_text(label)
-        self.combobox.set_active(0)
+        self.combobox.set_active(2)
 
         self.statusbar = builder.get_object("statusbar")
 
