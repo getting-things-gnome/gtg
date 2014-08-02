@@ -1,21 +1,20 @@
 from gi.repository import Gtk, Gdk, GObject
 import datetime
 
-from week import WeekSpan
-from drawtask import DrawTask, TASK_HEIGHT
-from all_day_tasks import AllDayTasks
-from header import Header
-from grid import Grid
-import utils
-from view import ViewBase
+from GTG.plugins.calendar_view.week import WeekSpan
+from GTG.plugins.calendar_view.drawtask import DrawTask, TASK_HEIGHT
+from GTG.plugins.calendar_view.all_day_tasks import AllDayTasks
+from GTG.plugins.calendar_view.header import Header
+from GTG.plugins.calendar_view.grid import Grid
+from GTG.plugins.calendar_view.utils import date_to_col_coord, \
+    convert_coordinates_to_col
+from GTG.plugins.calendar_view.view import ViewBase
 
 
 class WeekView(ViewBase, Gtk.VBox):
     __string_signal__ = (GObject.SignalFlags.RUN_FIRST, None, (str, ))
-    __2string_signal__ = (GObject.SignalFlags.RUN_FIRST, None, (str, str,))
     __none_signal__ = (GObject.SignalFlags.RUN_FIRST, None, tuple())
-    __gsignals__ = {'on_edit_task': __string_signal__,
-                    'on_add_task': __2string_signal__,
+    __gsignals__ = {'selection-changed': __string_signal__,
                     'dates-changed': __none_signal__,
                     }
 
@@ -81,6 +80,13 @@ class WeekView(ViewBase, Gtk.VBox):
         """ Unselects the task that was selected before. """
         self.selected_task = None
         self.all_day_tasks.selected_task = None
+        self.emit('selection_changed', None)
+
+    def set_selected_task(self, tid):
+        """ Returns which task is being selected. """
+        self.selected_task = tid
+        self.all_day_tasks.selected_task = tid
+        self.emit('selection_changed', tid)
 
     def first_day(self):
         """ Returns the first day of the view being displayed """
@@ -100,7 +106,7 @@ class WeekView(ViewBase, Gtk.VBox):
         corresponding to today among it.
         """
         self.week.week_containing_day(datetime.date.today())
-        self.update()
+        self.refresh()
 
     def on_size_allocate(self, widget=None, event=None):
         """ Calculates new day_width when window is resized """
@@ -156,9 +162,9 @@ class WeekView(ViewBase, Gtk.VBox):
         end = min(task.get_due_date().date(), self.last_day())
         duration = (end - start).days + 1
 
-        x = utils.date_to_col_coord(start, self.first_day())
+        x = date_to_col_coord(start, self.first_day())
         w = duration
-        x, y, w, h = self.grid.add_to_grid(x, w, id=dtask.get_label()[4])
+        x, y, w, h = self.grid.add_to_grid(x, w)
 
         dtask.set_position(x, y, w, h)
         dtask.set_overflowing_L(self.first_day())
@@ -170,7 +176,7 @@ class WeekView(ViewBase, Gtk.VBox):
         self.compute_size()
         self.all_day_tasks.queue_draw()
 
-    def update_drawtasks(self, tasks=None):
+    def update_drawtasks(self, tasks=None, display_closed_tasks=True):
         """
         Updates the drawtasks and calculates the position of where each one of
         them should be drawn.
@@ -179,8 +185,12 @@ class WeekView(ViewBase, Gtk.VBox):
          If none is given, the tasks will be retrieved from the requester.
         """
         if not tasks:
-            tasks = [self.req.get_task(t) for t in self.req.get_tasks_tree()]
-        self.tasks = [DrawTask(t) for t in tasks if self.is_in_days_range(t)]
+            tasks = [self.req.get_task(t) for t in
+                     self.req.get_tasks_tree('active', True).get_all_nodes()]
+            if display_closed_tasks:
+                tasks += [self.req.get_task(t) for t in
+                          self.req.get_tasks_tree('closed', True).get_all_nodes()]
+        self.tasks = [DrawTask(t) for t in tasks if t is not None and self.is_in_days_range(t)]
 
         self.grid.clear_rows()
         for t in self.tasks:
@@ -189,19 +199,21 @@ class WeekView(ViewBase, Gtk.VBox):
 
         # clears selected_task if it is not being showed
         if self.selected_task:
-            task = self.req.get_task(self.get_selected_task)
-            if task and not self.is_in_days_range(task):
+            if self.req.has_task(self.selected_task):
+                task = self.req.get_task(self.selected_task)
+                if not self.is_in_days_range(task):
+                    self.unselect_task()
+            else:
                 self.unselect_task()
-        self.all_day_tasks.selected_task = self.selected_task
 
     def highlight_today_cell(self):
         """ Highlights the cell equivalent to today."""
         row = 0
-        col = utils.date_to_col_coord(datetime.date.today(), self.first_day())
+        col = date_to_col_coord(datetime.date.today(), self.first_day())
         self.all_day_tasks.set_highlight_cell(row, col)
         self.header.set_highlight_cell(0, col)
 
-    def update(self):
+    def refresh(self, widget=None, dummy=None):
         """
         Updates the header, the content to be drawn (tasks), recalculates the
         size needed and then redraws everything.
@@ -226,7 +238,7 @@ class WeekView(ViewBase, Gtk.VBox):
         if not days:
             days = self.numdays - self.first_day().weekday()
         self.week.adjust(days)
-        self.update()
+        self.refresh()
 
     def previous(self, days=None):
         """
@@ -242,19 +254,20 @@ class WeekView(ViewBase, Gtk.VBox):
         if not days:
             days = self.first_day().weekday() or self.numdays
         self.week.adjust(-days)
-        self.update()
+        self.refresh()
 
     def dnd_start(self, widget, event):
         """ User clicked the mouse button, starting drag and drop """
         # find which task was clicked, if any
-        self.selected_task, self.drag_action, cursor = \
+        task_id, self.drag_action, cursor = \
             self.all_day_tasks.identify_pointed_object(event, clicked=True)
+        self.set_selected_task(task_id)
+        self.all_day_tasks.queue_draw()
 
         if self.selected_task:
             # double-click opens task to edit
             if event.type == Gdk.EventType._2BUTTON_PRESS:
-                GObject.idle_add(self.emit, 'on_edit_task',
-                                 self.selected_task)
+                self.ask_edit_task(self.selected_task)
                 self.is_dragging = False
                 self.drag_offset = None
                 return
@@ -271,7 +284,6 @@ class WeekView(ViewBase, Gtk.VBox):
                 offset += duration * day_width
             self.drag_offset = offset
 
-            self.update_tasks()
         # if no task is selected, save mouse location in case the user wants
         # to create a new task using DnD
         else:
@@ -283,9 +295,8 @@ class WeekView(ViewBase, Gtk.VBox):
         if not self.selected_task and self.drag_offset:
             self.is_dragging = True
             day_width = self.get_day_width()
-            curr_col = utils.convert_coordinates_to_col(event.x, day_width)
-            start_col = utils.convert_coordinates_to_col(self.drag_offset,
-                                                         day_width)
+            curr_col = convert_coordinates_to_col(event.x, day_width)
+            start_col = convert_coordinates_to_col(self.drag_offset, day_width)
             if curr_col < start_col:
                 temp = curr_col
                 curr_col = start_col
@@ -313,7 +324,7 @@ class WeekView(ViewBase, Gtk.VBox):
             # event_y = event.y
 
             day_width = self.get_day_width()
-            weekday = utils.convert_coordinates_to_col(event_x, day_width)
+            weekday = convert_coordinates_to_col(event_x, day_width)
             day = self.first_day() + datetime.timedelta(weekday)
 
             if self.drag_action == "expand_left":
@@ -337,8 +348,6 @@ class WeekView(ViewBase, Gtk.VBox):
                 task.set_start_date(new_start_day)
                 task.set_due_date(new_due_day)
 
-            self.update()
-
         else:  # mouse hover
             t_id, self.drag_action, cursor = \
                 self.all_day_tasks.identify_pointed_object(event)
@@ -351,12 +360,12 @@ class WeekView(ViewBase, Gtk.VBox):
         """
         # dragging with no task selected: new task will be created
         if not self.selected_task and self.is_dragging:
+            self.all_day_tasks.cells = []
             day_width = self.get_day_width()
-            start = utils.convert_coordinates_to_col(self.drag_offset,
-                                                     day_width)
+            start = convert_coordinates_to_col(self.drag_offset, day_width)
 
             event_x = round(event.x, 3)
-            end = utils.convert_coordinates_to_col(event_x, day_width)
+            end = convert_coordinates_to_col(event_x, day_width)
             if start > end:
                 temp = start
                 start = end
@@ -364,9 +373,7 @@ class WeekView(ViewBase, Gtk.VBox):
             start_date = self.first_day() + datetime.timedelta(days=start)
             due_date = self.first_day() + datetime.timedelta(days=end)
 
-            GObject.idle_add(self.emit, 'on_add_task', start_date, due_date)
-            self.all_day_tasks.queue_draw()
-            self.all_day_tasks.cells = []
+            self.ask_add_new_task(start_date, due_date)
 
         # user didn't click on a task - redraw to 'unselect' task
         elif not self.selected_task:
@@ -379,7 +386,7 @@ class WeekView(ViewBase, Gtk.VBox):
             # event_y = event.y
 
             day_width = self.get_day_width()
-            weekday = utils.convert_coordinates_to_col(event_x, day_width)
+            weekday = convert_coordinates_to_col(event_x, day_width)
 
             task = self.req.get_task(self.selected_task)
             start = task.get_start_date().date()
@@ -391,14 +398,12 @@ class WeekView(ViewBase, Gtk.VBox):
                 new_start_day = task.get_start_date().date()
             new_due_day = new_start_day + datetime.timedelta(days=duration)
 
-            if not self.drag_action == "expand_right" \
-               and new_start_day <= end:
+            if not self.drag_action == "expand_right" and new_start_day <= end:
                 task.set_start_date(new_start_day)
-            if not self.drag_action == "expand_left" \
-               and new_due_day >= start:
+            if not self.drag_action == "expand_left" and new_due_day >= start:
                 task.set_due_date(new_due_day)
             self.unselect_task()
-            self.update_tasks()
+            self.all_day_tasks.queue_draw()
 
         widget.get_window().set_cursor(Gdk.Cursor.new(Gdk.CursorType.ARROW))
         self.drag_offset = None

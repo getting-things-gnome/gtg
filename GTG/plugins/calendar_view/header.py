@@ -1,7 +1,8 @@
 from gi.repository import Gtk
-from background import Background
 import cairo
-import utils
+
+from GTG.plugins.calendar_view.background import Background
+from GTG.plugins.calendar_view.utils import center_text_on_rect
 
 
 class Header(Gtk.DrawingArea):
@@ -97,7 +98,7 @@ class Header(Gtk.DrawingArea):
         line_height = self.get_height()
         for i in range(0, len(self.labels)):
             for j in range(0, len(self.labels[i])):
-                label, base_x, base_y = utils.center_text_on_rect(
+                label, base_x, base_y = center_text_on_rect(
                     ctx, self.labels[i][j],
                     (i * col_width), (j * line_height),
                     col_width, line_height)

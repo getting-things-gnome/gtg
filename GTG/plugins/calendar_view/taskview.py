@@ -1,5 +1,5 @@
 from gi.repository import Gtk, GObject
-from tasks import Task
+from GTG.core.task import Task
 
 
 class TaskView(Gtk.Dialog):

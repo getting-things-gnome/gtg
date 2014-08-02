@@ -33,6 +33,16 @@ from GTG.tools.logger import Log
 from liblarch import TreeNode
 from GTG.tools.tags import extract_tags_from_text
 
+# FIXME SARA: delete ##########
+import random
+random.seed(7)
+
+def random_color(mix=(0, 0.5, 0.5)):
+    red = (random.random() + mix[0])/2
+    green = (random.random() + mix[1])/2
+    blue = (random.random() + mix[2])/2
+    return (red, green, blue)
+###############################
 
 class Task(TreeNode):
     """ This class represent a task in GTG.
@@ -70,6 +80,9 @@ class Task(TreeNode):
 #            self.req._task_loaded(self.tid)
         self.attributes = {}
         self._modified_update()
+
+        # FIXME SARA: delete #############
+        self.color = None
 
     def is_loaded(self):
         return self.loaded
@@ -778,6 +791,16 @@ class Task(TreeNode):
             # Well, if we don't filter on tags or notag, it's true, of course
             toreturn = True
         return toreturn
+
+    # FIXME SARA: delete #############
+    def set_color(self, color):
+        self.color = color
+
+    def get_color(self):
+        if not self.color:
+            self.color = random_color()
+        return self.color
+    ##################################
 
     def __str__(self):
         s = ""

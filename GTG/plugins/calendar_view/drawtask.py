@@ -1,5 +1,7 @@
-from tasks import Task
-import utils
+from GTG.core.task import Task
+from GTG.plugins.calendar_view.utils import convert_grid_to_screen_coord, \
+    rounded_edges_or_pointed_ends_rectangle, create_vertical_gradient, \
+    center_text_on_rect
 
 TASK_HEIGHT = 30
 
@@ -51,7 +53,7 @@ class DrawTask:
         task_x, task_y, task_w, task_h = self.get_position()
         pos = self.get_position()
 
-        base_x, base_y, width, height = utils.convert_grid_to_screen_coord(
+        base_x, base_y, width, height = convert_grid_to_screen_coord(
             grid_width, TASK_HEIGHT, task_x, task_y, task_w, task_h, padding)
 
         # restrict drawing to exposed area: no unnecessary drawing is done
@@ -59,10 +61,10 @@ class DrawTask:
         ctx.clip()
 
         # create path to draw task
-        utils.rounded_edges_or_pointed_ends_rectangle(ctx, base_x, base_y,
-                                                      width, height,
-                                                      self.overflow_R,
-                                                      self.overflow_L)
+        rounded_edges_or_pointed_ends_rectangle(ctx, base_x, base_y,
+                                                width, height,
+                                                self.overflow_R,
+                                                self.overflow_L)
 
         # task color
         color = self.get_color(selected)
@@ -72,16 +74,15 @@ class DrawTask:
             alpha = 1
 
         # background
-        grad = utils.create_vertical_gradient(base_x, base_y, height,
-                                              color, alpha)
+        grad = create_vertical_gradient(base_x, base_y, height, color, alpha)
         ctx.set_source(grad)
         ctx.fill()
 
         # task label
         label = self.get_label()
         pos = (base_x, base_y, width, height)
-        label, base_x, base_y = utils.center_text_on_rect(ctx, label, *pos,
-                                                          crop=True)
+        label, base_x, base_y = center_text_on_rect(ctx, label, *pos,
+                                                    crop=True)
         ctx.move_to(base_x, base_y)
         ctx.set_source_rgba(1, 1, 1, alpha)
         ctx.text_path(label)

@@ -1,9 +1,9 @@
 from gi.repository import Gtk, Gdk
 import cairo
-import utils
 
-from drawtask import TASK_HEIGHT
-from background import Background
+from GTG.plugins.calendar_view.utils import convert_grid_to_screen_coord
+from GTG.plugins.calendar_view.drawtask import TASK_HEIGHT
+from GTG.plugins.calendar_view.background import Background
 
 
 class AllDayTasks(Gtk.DrawingArea):
@@ -111,7 +111,7 @@ class AllDayTasks(Gtk.DrawingArea):
         expand_border = 10
         cursor = Gdk.Cursor.new(Gdk.CursorType.ARROW)
         for task in self.drawtasks:
-            (x, y, w, h) = utils.convert_grid_to_screen_coord(
+            (x, y, w, h) = convert_grid_to_screen_coord(
                 self.get_day_width(), TASK_HEIGHT, *task.get_position(),
                 padding=self.padding)
             if not y < event.y < (y + h):
