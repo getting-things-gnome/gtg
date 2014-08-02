@@ -1,7 +1,7 @@
 from gi.repository import Gtk, Gdk
 
-from drawtask import DrawTask, TASK_HEIGHT
-from all_day_tasks import AllDayTasks
+from GTG.plugins.calendar_view.drawtask import DrawTask, TASK_HEIGHT
+from GTG.plugins.calendar_view.all_day_tasks import AllDayTasks
 
 
 class DayCell(Gtk.Dialog):

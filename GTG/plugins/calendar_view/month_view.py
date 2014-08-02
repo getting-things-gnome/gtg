@@ -2,22 +2,22 @@ from gi.repository import Gtk, Gdk, GObject
 import datetime
 import calendar
 
-from week import WeekSpan
-from drawtask import DrawTask, TASK_HEIGHT
-from all_day_tasks import AllDayTasks
-from header import Header
-from grid import Grid
-import utils
-from view import ViewBase
-from day_cell import DayCell
+from GTG.plugins.calendar_view.week import WeekSpan
+from GTG.plugins.calendar_view.drawtask import DrawTask, TASK_HEIGHT
+from GTG.plugins.calendar_view.all_day_tasks import AllDayTasks
+from GTG.plugins.calendar_view.header import Header
+from GTG.plugins.calendar_view.grid import Grid
+from GTG.plugins.calendar_view.utils import convert_coordinates_to_grid, \
+    date_to_col_coord, date_to_row_coord, \
+    convert_coordinates_to_col, convert_coordinates_to_row
+from GTG.plugins.calendar_view.view import ViewBase
+from GTG.plugins.calendar_view.day_cell import DayCell
 
 
 class MonthView(ViewBase, Gtk.VBox):
     __string_signal__ = (GObject.SignalFlags.RUN_FIRST, None, (str, ))
-    __2string_signal__ = (GObject.SignalFlags.RUN_FIRST, None, (str, str,))
     __none_signal__ = (GObject.SignalFlags.RUN_FIRST, None, tuple())
-    __gsignals__ = {'on_edit_task': __string_signal__,
-                    'on_add_task': __2string_signal__,
+    __gsignals__ = {'selection-changed': __string_signal__,
                     'dates-changed': __none_signal__,
                     }
 
@@ -98,6 +98,13 @@ class MonthView(ViewBase, Gtk.VBox):
         """ Unselects the task that was selected before. """
         self.selected_task = None
         self.all_day_tasks.selected_task = None
+        self.emit('selection_changed', None)
+
+    def set_selected_task(self, tid):
+        """ Returns which task is being selected. """
+        self.selected_task = tid
+        self.all_day_tasks.selected_task = tid
+        self.emit('selection_changed', tid)
 
     def first_day(self):
         """ Returns the first day of the view being displayed """
@@ -158,7 +165,7 @@ class MonthView(ViewBase, Gtk.VBox):
         num_days_in_month = calendar.monthrange(year, month)[1]
         first_day = datetime.date(year, month, 1)
         last_day = datetime.date(year, month, num_days_in_month)
-        total_weeks = utils.date_to_row_coord(last_day, first_day) + 1
+        total_weeks = date_to_row_coord(last_day, first_day) + 1
         return total_weeks
 
     def update_weeks(self, year, month):
@@ -225,7 +232,7 @@ class MonthView(ViewBase, Gtk.VBox):
         end = min(task.get_due_date().date(), week.end_date)
         duration = (end - start).days + 1
 
-        x = utils.date_to_col_coord(start, week.start_date)
+        x = date_to_col_coord(start, week.start_date)
         w = duration
         x, y, w, h = grid.add_to_grid(x, w, id=dtask.get_id())
 
@@ -270,7 +277,7 @@ class MonthView(ViewBase, Gtk.VBox):
             (t.task.get_due_date().date() >= day) and \
             (t.task.get_start_date().date() <= day)
 
-        row = utils.date_to_row_coord(day, datetime.date(self.year, self.month, 1))
+        row = date_to_row_coord(day, datetime.date(self.year, self.month, 1))
         week = self.weeks[row]
         tasks = [t.task for t in week['tasks'] if
                  appears_in_day(t)]
@@ -295,7 +302,7 @@ class MonthView(ViewBase, Gtk.VBox):
                     to_hide.append(str(cell))
         return to_hide
 
-    def update_drawtasks(self, tasks=None):
+    def update_drawtasks(self, tasks=None, display_closed_tasks=True):
         """
         Updates the drawtasks and calculates the position of where each one of
         them should be drawn.
@@ -307,7 +314,11 @@ class MonthView(ViewBase, Gtk.VBox):
             return (task.get_due_date().date() - task.get_start_date().date()).days
 
         if not tasks:
-            tasks = [self.req.get_task(t) for t in self.req.get_tasks_tree()]
+            tasks = [self.req.get_task(t) for t in
+                     self.req.get_tasks_tree('active', True).get_all_nodes()]
+            if display_closed_tasks:
+                tasks += [self.req.get_task(t) for t in
+                          self.req.get_tasks_tree('closed', True).get_all_nodes()]
             tasks.sort(key=lambda t: duration(t), reverse=True)
         self.tasks = [t for t in tasks if self.is_in_days_range(t)]
 
@@ -385,7 +396,7 @@ class MonthView(ViewBase, Gtk.VBox):
         """ Highlights the cell equivalent to today."""
         if self.is_today_being_shown():
             today = datetime.date.today()
-            row = utils.date_to_row_coord(
+            row = date_to_row_coord(
                 today, datetime.date(self.year, self.month, 1))
             if row == -1:
                 row = self.numweeks
@@ -484,8 +495,7 @@ class MonthView(ViewBase, Gtk.VBox):
 
         # calculate vertical offset
         week_height = self.get_week_height()
-        clicked_row = utils.convert_coordinates_to_row(event.y,
-                                                       week_height)
+        clicked_row = convert_coordinates_to_row(event.y, week_height)
         # start_row points to row where task starts, or to first row if
         # it starts in date previous to what is being shown at this view
         start_row = clicked_row
@@ -496,8 +506,7 @@ class MonthView(ViewBase, Gtk.VBox):
 
         # calculate horizontal offset
         day_width = self.get_day_width()
-        clicked_col = utils.convert_coordinates_to_col(event.x,
-                                                       day_width)
+        clicked_col = convert_coordinates_to_col(event.x, day_width)
         #start_col = task.get_start_date().date().weekday()
         start_col_in_clicked_row = max(task.get_start_date().date(),
             self.weeks[clicked_row]['dates'].start_date).weekday()
@@ -516,14 +525,15 @@ class MonthView(ViewBase, Gtk.VBox):
     def dnd_start(self, widget, event):
         """ User clicked the mouse button, starting drag and drop """
         # find which task was clicked, if any
-        self.selected_task, self.drag_action, cursor = \
+        task_id, self.drag_action, cursor = \
             self.all_day_tasks.identify_pointed_object(event, clicked=True)
+        self.set_selected_task(task_id)
+        self.all_day_tasks.queue_draw()
 
         if self.selected_task:
             # double-click opens task to edit
             if event.type == Gdk.EventType._2BUTTON_PRESS:
-                GObject.idle_add(self.emit, 'on_edit_task',
-                                 self.selected_task)
+                self.ask_edit_task(self.selected_task)
                 self.is_dragging = False
                 self.drag_offset = None
                 return
@@ -546,9 +556,9 @@ class MonthView(ViewBase, Gtk.VBox):
             self.is_dragging = True
             day_width = self.get_day_width()
             week_height = self.get_week_height()
-            curr_row, curr_col = utils.convert_coordinates_to_grid(
+            curr_row, curr_col = convert_coordinates_to_grid(
                 event.x, event.y, day_width, week_height)
-            start_row, start_col = utils.convert_coordinates_to_grid(
+            start_row, start_col = convert_coordinates_to_grid(
                 self.drag_offset[0], self.drag_offset[1],
                 day_width, week_height)
 
@@ -591,8 +601,8 @@ class MonthView(ViewBase, Gtk.VBox):
             day_width = self.get_day_width()
             week_height = self.get_week_height()
 
-            row = utils.convert_coordinates_to_row(event_y, week_height)
-            col = utils.convert_coordinates_to_col(event_x, day_width)
+            row = convert_coordinates_to_row(event_y, week_height)
+            col = convert_coordinates_to_col(event_x, day_width)
             if row < 0 or row >= self.numweeks or col < 0 or col >= self.numdays:
                 return
 
@@ -609,7 +619,7 @@ class MonthView(ViewBase, Gtk.VBox):
             else:
                 offset_x = self.drag_offset[0]
                 offset_y = self.drag_offset[1]
-                previous_row, previous_col = utils.convert_coordinates_to_grid(
+                previous_row, previous_col = convert_coordinates_to_grid(
                     offset_x, offset_y, day_width, week_height)
                 diff = self.total_days_between_cells(
                     (previous_row, previous_col), (row, col))
@@ -637,13 +647,13 @@ class MonthView(ViewBase, Gtk.VBox):
         if not self.selected_task and self.is_dragging:
             day_width = self.get_day_width()
             week_height = self.get_week_height()
-            start_row, start_col = utils.convert_coordinates_to_grid(
+            start_row, start_col = convert_coordinates_to_grid(
                 self.drag_offset[0], self.drag_offset[1],
                 day_width, week_height)
 
             event_x = event.x
             event_y = event.y
-            end_row, end_col = utils.convert_coordinates_to_grid(
+            end_row, end_col = convert_coordinates_to_grid(
                 event_x, event_y, day_width, week_height)
 
             # invert cols/rows in case user started dragging from the end date
@@ -655,7 +665,7 @@ class MonthView(ViewBase, Gtk.VBox):
             start_date = self.weeks[start_row]['dates'].days[start_col]
             due_date = start_date + datetime.timedelta(days=total_days)
 
-            GObject.idle_add(self.emit, 'on_add_task', start_date, due_date)
+            self.ask_add_new_task(start_date, due_date)
             self.all_day_tasks.queue_draw()
             self.all_day_tasks.cells = []
 
@@ -667,8 +677,9 @@ class MonthView(ViewBase, Gtk.VBox):
 
         # clicked on link to show hidden tasks
         if self.drag_action == 'click_link':
-            row, col = utils.convert_coordinates_to_grid(
-                event.x, event.y, self.get_day_width(), self.get_week_height())
+            row, col = convert_coordinates_to_grid(event.x, event.y,
+                                                   self.get_day_width(),
+                                                   self.get_week_height())
             day = self.weeks[row]['dates'].days[col]
             self.on_show_more_tasks(day)
             self.drag_action = None
