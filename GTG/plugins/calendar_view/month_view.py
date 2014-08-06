@@ -316,8 +316,8 @@ class MonthView(ViewBase, Gtk.VBox):
         if not tasks:
             tasks = [self.req.get_task(t) for t in
                      self.tasktree.get_all_nodes()]
-            tasks.sort(key=lambda t: duration(t), reverse=True)
-        self.tasks = [t for t in tasks if self.is_in_days_range(t)]
+        self.tasks = [t for t in tasks if t is not None and self.is_in_days_range(t)]
+        self.tasks.sort(key=lambda t: duration(t), reverse=True)
 
         dtasks = []
         for i, week in enumerate(self.weeks):
