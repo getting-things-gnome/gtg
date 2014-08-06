@@ -160,7 +160,7 @@ class CalendarPlugin(GObject.GObject):
         """
         # self.current_view.connect("on_edit_task", self.on_edit_clicked)
         # self.current_view.connect("on_add_task", self.on_add_clicked)
-        # self.current_view.connect("dates-changed", self.on_dates_changed)
+        self.current_view.connect("dates-changed", self.on_dates_changed)
         self.current_view.connect('selection-changed',
                                   self.update_buttons_sensitivity)
 
@@ -171,7 +171,7 @@ class CalendarPlugin(GObject.GObject):
         """
         # self.current_view.disconnect_by_func(self.on_edit_clicked)
         # self.current_view.disconnect_by_func(self.on_add_clicked)
-        # self.current_view.disconnect_by_func(self.on_dates_changed)
+        self.current_view.disconnect_by_func(self.on_dates_changed)
         self.current_view.disconnect_by_func(self.update_buttons_sensitivity)
 
 # If we want to test only the Plugin (outside GTG):

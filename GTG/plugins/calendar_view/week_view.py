@@ -80,13 +80,13 @@ class WeekView(ViewBase, Gtk.VBox):
         """ Unselects the task that was selected before. """
         self.selected_task = None
         self.all_day_tasks.selected_task = None
-        self.emit('selection_changed', None)
+        self.emit('selection-changed', None)
 
     def set_selected_task(self, tid):
         """ Returns which task is being selected. """
         self.selected_task = tid
         self.all_day_tasks.selected_task = tid
-        self.emit('selection_changed', tid)
+        self.emit('selection-changed', tid)
 
     def first_day(self):
         """ Returns the first day of the view being displayed """
