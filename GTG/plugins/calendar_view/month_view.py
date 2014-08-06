@@ -283,7 +283,7 @@ class MonthView(ViewBase, Gtk.VBox):
                  appears_in_day(t)]
 
         # FIXME: create popover also (check if GNOME >= 3.12)
-        popup = DayCell(self.get_toplevel(), day, tasks)
+        popup = DayCell(self.get_toplevel(), day, tasks, self.edit_task)
         popup.run()
         popup.destroy()
         return True

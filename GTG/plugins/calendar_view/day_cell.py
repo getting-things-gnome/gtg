@@ -11,9 +11,10 @@ class DayCell(Gtk.Dialog):
     fits on the cell height.
     """
 
-    def __init__(self, parent, day, tasks):
+    def __init__(self, parent, day, tasks, edit_func):
         self.day = day
         title = day.strftime("%a, %b %d %Y")
+        self.edit_task = edit_func
 
         Gtk.Dialog.__init__(self, title, parent, 0)
         # dialog is placed at the current mouse position
@@ -70,5 +71,5 @@ class DayCell(Gtk.Dialog):
         if selected_task:
             # double-click opens task to edit
             if event.type == Gdk.EventType._2BUTTON_PRESS:
-                # FIXME: open TaskEditor
-                print('Open \'%s\' to edit' % selected_task)
+                self.destroy()
+                self.edit_task(selected_task)
