@@ -302,7 +302,7 @@ class MonthView(ViewBase, Gtk.VBox):
                     to_hide.append(str(cell))
         return to_hide
 
-    def update_drawtasks(self, tasks=None, display_closed_tasks=True):
+    def update_drawtasks(self, tasks=None):
         """
         Updates the drawtasks and calculates the position of where each one of
         them should be drawn.
@@ -315,10 +315,7 @@ class MonthView(ViewBase, Gtk.VBox):
 
         if not tasks:
             tasks = [self.req.get_task(t) for t in
-                     self.req.get_tasks_tree('active', True).get_all_nodes()]
-            if display_closed_tasks:
-                tasks += [self.req.get_task(t) for t in
-                          self.req.get_tasks_tree('closed', True).get_all_nodes()]
+                     self.tasktree.get_all_nodes()]
             tasks.sort(key=lambda t: duration(t), reverse=True)
         self.tasks = [t for t in tasks if self.is_in_days_range(t)]
 

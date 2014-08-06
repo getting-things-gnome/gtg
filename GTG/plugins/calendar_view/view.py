@@ -15,6 +15,10 @@ class ViewBase:
         self.numdays = None
         self.selected_task = None
 
+        self.tasktree = self.req.get_tasks_tree(
+            name='calendar_view', refresh=False)
+        self.req.apply_global_filter(self.tasktree, 'calendar_view')
+
         # callbacks to set
         self.edit_task = None
         self.add_new_task = None
