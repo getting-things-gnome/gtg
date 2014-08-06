@@ -132,7 +132,7 @@ class MonthView(ViewBase, Gtk.VBox):
         """
         today = datetime.date.today()
         self.update_weeks(today.year, today.month)
-        self.update()
+        self.refresh()
 
     def total_rows_needed_in_calendar_cell(self, row, col):
         """
@@ -359,10 +359,12 @@ class MonthView(ViewBase, Gtk.VBox):
 
         # clears selected_task if it is not being showed
         if self.selected_task:
-            task = self.req.get_task(self.get_selected_task)
-            if task and not self.is_in_days_range(task):
+            if self.req.has_task(self.selected_task):
+                task = self.req.get_task(self.selected_task)
+                if not self.is_in_days_range(task):
+                    self.unselect_task()
+            else:
                 self.unselect_task()
-        self.all_day_tasks.selected_task = self.selected_task
 
     def fade_days_not_in_this_month(self):
         """
@@ -407,7 +409,7 @@ class MonthView(ViewBase, Gtk.VBox):
         self.all_day_tasks.set_today_cell(row, col)
         # self.header.set_highlight_cell(0, col)
 
-    def update(self):
+    def refresh(self):
         """
         Updates the header, the content to be drawn (tasks), recalculates the
         size needed and then redraws everything.
@@ -428,7 +430,7 @@ class MonthView(ViewBase, Gtk.VBox):
         """
         day_in_next_month = self.last_day() + datetime.timedelta(days=1)
         self.update_weeks(day_in_next_month.year, day_in_next_month.month)
-        self.update()
+        self.refresh()
 
     def previous(self, months=1):
         """
@@ -438,7 +440,7 @@ class MonthView(ViewBase, Gtk.VBox):
         """
         day_in_prev_month = self.first_day() - datetime.timedelta(days=1)
         self.update_weeks(day_in_prev_month.year, day_in_prev_month.month)
-        self.update()
+        self.refresh()
 
     def total_days_between_cells(self, cell_a, cell_b):
         """
@@ -631,7 +633,7 @@ class MonthView(ViewBase, Gtk.VBox):
                     task.set_due_date(new_due_day)
                     self.drag_offset = self.calculate_offset(self.selected_task, event)
 
-            self.update()
+            self.refresh()
 
         else:  # mouse hover
             t_id, self.drag_action, cursor = \
