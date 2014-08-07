@@ -273,10 +273,7 @@ class WeekView(ViewBase):
             widget.get_window().set_cursor(cursor)
 
     def dnd_stop(self, widget, event):
-        """
-        User released a button, stopping drag and drop.
-        Selected task, if any, will still have the focus.
-        """
+        """ User released a button, stopping drag and drop. """
         # dragging with no task selected: new task will be created
         if not self.selected_task and self.is_dragging:
             day_width = self.get_day_width()

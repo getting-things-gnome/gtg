@@ -60,6 +60,7 @@ class MonthView(ViewBase):
         return self.all_day_tasks.get_week_height()
 
     def get_task_height(self):
+        """ Returns the height that the tasks should be drawn. """
         return TASK_HEIGHT  # self.all_day_tasks.task_height
 
     def show_today(self):
@@ -97,7 +98,8 @@ class MonthView(ViewBase):
         Calculates the number of weeks the given @month of a @year has.
 
         @param year: integer, a valid year in the format YYYY.
-        @param month: integer, a month (should be between 1 and 12)
+        @param month: integer, a month (should be between 1 and 12).
+        @return total_weeks: integer, the number of weeks @month has.
         """
         num_days_in_month = calendar.monthrange(year, month)[1]
         first_day = datetime.date(year, month, 1)
@@ -162,6 +164,8 @@ class MonthView(ViewBase):
         @param dtask: a DrawingTask object.
         @param week: a WeekSpan object.
         @param grid: a Grid object.
+        @param num_week: integer, the number of the week the task should be
+                         drawn.
         """
         task = self.req.get_task(dtask.get_id())
 
@@ -191,19 +195,28 @@ class MonthView(ViewBase):
         Returns true if the given @task have either the start or due days
         between the start and end day of @week.
 
-        @param task: a Task object
-        @param week: a WeekSpan object
+        @param task: a Task object.
+        @param week: a WeekSpan object.
         """
         return (task.get_due_date().date() >= week.start_date) and \
                (task.get_start_date().date() <= week.end_date)
 
     def get_maximum_tasks_per_week(self):
+        """ Returns the maximum number of tasks a single cell can hold. """
         tasks_available_area = (self.get_week_height() -
                                 self.all_day_tasks.get_label_height())
         # FIXME: remove max(4)
         return max(int(tasks_available_area // self.get_task_height()), 4)
 
     def on_show_more_tasks(self, day):
+        """
+        Callback function to show the hidden tasks from a @day cell. This
+        function is called after a label '+x more' is clicked.
+        It will display a popup dialog containing all the tasks for a
+        specific @day (including the hidden ones).
+
+        @param day: a datetime object, corresponds to the clicked day.
+        """
         appears_in_day = lambda t: \
             (t.task.get_due_date().date() >= day) and \
             (t.task.get_start_date().date() <= day)
@@ -217,16 +230,37 @@ class MonthView(ViewBase):
         popup = DayCell(self.get_toplevel(), day, tasks, self.edit_task)
         popup.run()
         popup.destroy()
-        return True
 
     def create_label(self, row, col, count):
+        """
+        Creates a label inside a day cell given by (@row, @col) with @count
+        overflowing tasks.
+
+        @param row: integer, the row corresponding to the cell.
+        @param col: integer, the col corresponding to the cell.
+        @param count: integer, the number of tasks hidden in this cell.
+        """
         label = '+%d more' % count
         self.overflow_links.append((label, row, col))
 
     def tasks_to_hide(self, row, col, visible_rows, needed_rows):
+        """
+        Returns the tasks that should be hidden inside a day cell given
+        by (@row, @col). It receives the number of @visible_rows the cell
+        can hold, and the total of @needed_rows that would be necessary to
+        display all tasks in this cell (without hiding any).
+
+        @param row: integer, the row corresponding to the cell.
+        @param col: integer, the col corresponding to the cell.
+        @param visible_rows: integer, the number of rows a cell can hold.
+        @param needed_rows: integer, the number of rows needed to display all
+                            the tasks inside the given cell.
+        @return to_hide: list of strings, contains the ids of the tasks that
+                         will be hidden in this cell.
+        """
         grid = self.weeks[row]['grid']
         to_hide = []
-        if needed_rows >= visible_rows:  # grid.num_rows:
+        if needed_rows >= visible_rows:
             for i in range(visible_rows, needed_rows):
                 cell = grid[i][col]
                 if not cell.is_free():
@@ -571,10 +605,7 @@ class MonthView(ViewBase):
             widget.get_window().set_cursor(cursor)
 
     def dnd_stop(self, widget, event):
-        """
-        User released a button, stopping drag and drop.
-        Selected task, if any, will still have the focus.
-        """
+        """ User released a button, stopping drag and drop. """
         # dragging with no task selected: new task will be created
         if not self.selected_task and self.is_dragging:
             day_width = self.get_day_width()

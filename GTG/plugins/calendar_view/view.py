@@ -64,7 +64,11 @@ class ViewBase(Gtk.VBox):
         return self.selected_task
 
     def set_selected_task(self, tid):
-        """ Returns which task is being selected. """
+        """
+        Sets task with id @tid as the selected_task.
+
+        @param tid: str, the id of a Task to be edited.
+        """
         self.selected_task = tid
         self.all_day_tasks.selected_task = tid
         self.emit('selection-changed', tid)
