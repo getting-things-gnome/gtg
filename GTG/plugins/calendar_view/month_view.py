@@ -182,10 +182,10 @@ class MonthView(ViewBase):
         dtask.set_overflowing_L(week.start_date)
         dtask.set_overflowing_R(week.end_date)
 
-    def get_current_year(self):
+    def date_range_to_string(self):
         """
-        Gets the correspondent year of the days
-        being displayed in the calendar view
+        Returns the string correspoding to the days being displayed in this
+        view.
         """
         date_this_month = datetime.date(self.year, self.month, 1)
         return date_this_month.strftime("%B / %Y")

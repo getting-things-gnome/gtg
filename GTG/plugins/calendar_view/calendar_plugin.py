@@ -133,7 +133,7 @@ class CalendarPlugin(GObject.GObject):
 
     def on_dates_changed(self, widget=None):
         """ Callback to update date-related objects in main window """
-        self.header.set_text(self.current_view.get_current_year())
+        self.header.set_text(self.current_view.date_range_to_string())
         self.today_button.set_sensitive(
             not self.current_view.is_today_being_shown())
 

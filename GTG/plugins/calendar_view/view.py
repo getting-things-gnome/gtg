@@ -149,6 +149,14 @@ class ViewBase(Gtk.VBox):
         """
         return
 
+    @abc.abstractmethod
+    def date_range_to_string(self):
+        """
+        Returns the string correspoding to the days being displayed in this
+        view.
+        """
+        return
+
     def is_in_days_range(self, task):
         """
         Returns true if the given @task have either the start or due days
@@ -159,15 +167,6 @@ class ViewBase(Gtk.VBox):
         """
         return (task.get_due_date().date() >= self.first_day()) and \
                (task.get_start_date().date() <= self.last_day())
-
-    def get_current_year(self):
-        """
-        Gets the correspondent year of the days
-        being displayed in the calendar view
-        """
-        if self.first_day().year != self.last_day().year:
-            return ("%s / %s" % (self.first_day().year, self.last_day().year))
-        return str(self.first_day().year)
 
     def is_today_being_shown(self):
         """

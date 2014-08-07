@@ -98,6 +98,22 @@ class WeekView(ViewBase):
         dtask.set_overflowing_L(self.first_day())
         dtask.set_overflowing_R(self.last_day())
 
+    def date_range_to_string(self):
+        """
+        Returns the string correspoding to the days being displayed in this
+        view.
+        """
+        start = self.first_day()
+        end = self.last_day()
+        start_format = "%b %d"
+        end_format = "%d, %Y"
+        if start.month != end.month:
+            end_format = "%b " + end_format
+            if start.year != end.year:
+                start_format += ", %Y"
+        return "%s - %s" % (start.strftime(start_format),
+                            end.strftime(end_format))
+
     def update_drawtasks(self, tasks=None):
         """
         Updates the drawtasks and calculates the position of where each one of
