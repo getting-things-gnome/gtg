@@ -106,10 +106,14 @@ class WeekView(ViewBase):
         @param tasks: a Task list, containing the tasks to be drawn.
          If none is given, the tasks will be retrieved from the requester.
         """
+        def duration(task):
+            return (task.get_due_date().date() - task.get_start_date().date()).days
+
         if not tasks:
             tasks = [self.req.get_task(t) for t in
                      self.tasktree.get_all_nodes()]
         self.tasks = [DrawTask(t) for t in tasks if t is not None and self.is_in_days_range(t)]
+        self.tasks.sort(key=lambda t: duration(t.task), reverse=True)
 
         self.grid.clear_rows()
         for t in self.tasks:
