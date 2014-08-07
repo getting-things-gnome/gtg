@@ -291,36 +291,13 @@ class WeekView(ViewBase):
 
             self.ask_add_new_task(start_date, due_date)
 
-        # user didn't click on a task - redraw to 'unselect' task
-        elif not self.selected_task:
-            self.unselect_task()
-            self.all_day_tasks.queue_draw()
-
-        # only changes selected task if any form of dragging ocurred
-        elif self.is_dragging:
-            event_x = round(event.x + self.drag_offset, 3)
-            # event_y = event.y
-
-            day_width = self.get_day_width()
-            weekday = convert_coordinates_to_col(event_x, day_width)
-
-            task = self.req.get_task(self.selected_task)
-            start = task.get_start_date().date()
-            end = task.get_due_date().date()
-            duration = (end - start).days
-
-            new_start_day = self.first_day() + datetime.timedelta(days=weekday)
-            if self.drag_action == "expand_right":
-                new_start_day = task.get_start_date().date()
-            new_due_day = new_start_day + datetime.timedelta(days=duration)
-
-            if not self.drag_action == "expand_right" and new_start_day <= end:
-                task.set_start_date(new_start_day)
-            if not self.drag_action == "expand_left" and new_due_day >= start:
-                task.set_due_date(new_due_day)
+        # user didn't click on a task or just finished dragging task
+        # in both cases, redraw to 'unselect' task
+        elif not self.selected_task or self.is_dragging:
             self.unselect_task()
             self.all_day_tasks.queue_draw()
 
         widget.get_window().set_cursor(Gdk.Cursor.new(Gdk.CursorType.ARROW))
         self.drag_offset = None
         self.is_dragging = False
+        self.drag_action = None
