@@ -1,4 +1,4 @@
-from gi.repository import Gtk, Gdk, GObject
+from gi.repository import Gtk, Gdk
 import datetime
 
 from GTG.plugins.calendar_view.week import WeekSpan
@@ -107,12 +107,13 @@ class WeekView(ViewBase):
          If none is given, the tasks will be retrieved from the requester.
         """
         def duration(task):
-            return (task.get_due_date().date() - task.get_start_date().date()).days
+            return (task.get_due_date() - task.get_start_date()).days
 
         if not tasks:
             tasks = [self.req.get_task(t) for t in
                      self.tasktree.get_all_nodes()]
-        self.tasks = [DrawTask(t) for t in tasks if t is not None and self.is_in_days_range(t)]
+        self.tasks = [DrawTask(t) for t in tasks if t is not None and
+                      self.is_in_days_range(t)]
         self.tasks.sort(key=lambda t: duration(t.task), reverse=True)
 
         self.grid.clear_rows()
@@ -194,7 +195,6 @@ class WeekView(ViewBase):
                 self.is_dragging = False
                 self.drag_offset = None
                 return
-            widget.get_window().set_cursor(cursor)
             task = self.req.get_task(self.selected_task)
             start = (task.get_start_date().date() - self.first_day()).days
             end = (task.get_due_date().date() - self.first_day()).days + 1
@@ -212,6 +212,8 @@ class WeekView(ViewBase):
         else:
             self.drag_offset = event.x
 
+        widget.get_window().set_cursor(cursor)
+
     def motion_notify(self, widget, event):
         """ User moved mouse over widget """
         # dragging with no task selected: new task will be created
@@ -220,6 +222,8 @@ class WeekView(ViewBase):
             day_width = self.get_day_width()
             curr_col = convert_coordinates_to_col(event.x, day_width)
             start_col = convert_coordinates_to_col(self.drag_offset, day_width)
+
+            # invert cols in case user started dragging from the end date
             if curr_col < start_col:
                 temp = curr_col
                 curr_col = start_col
@@ -240,30 +244,25 @@ class WeekView(ViewBase):
             end_date = task.get_due_date().date()
             duration = (end_date - start_date).days
 
-            event_x = round(event.x + self.drag_offset, 3)
+            event_x = event.x + self.drag_offset
             # event_y = event.y
 
             day_width = self.get_day_width()
-            weekday = convert_coordinates_to_col(event_x, day_width)
-            day = self.first_day() + datetime.timedelta(weekday)
+            col = convert_coordinates_to_col(event_x, day_width)
+            day = self.first_day() + datetime.timedelta(col)
 
             if self.drag_action == "expand_left":
-                diff = start_date - day
-                new_start_day = start_date - diff
+                new_start_day = day
                 if new_start_day <= end_date:
                     task.set_start_date(new_start_day)
-                pass
 
             elif self.drag_action == "expand_right":
-                diff = end_date - day
-                new_due_day = end_date - diff
+                new_due_day = day
                 if new_due_day >= start_date:
                     task.set_due_date(new_due_day)
-                pass
 
             else:
-                new_start_day = self.first_day() + \
-                    datetime.timedelta(days=weekday)
+                new_start_day = day
                 new_due_day = new_start_day + datetime.timedelta(days=duration)
                 task.set_start_date(new_start_day)
                 task.set_due_date(new_due_day)
@@ -280,20 +279,21 @@ class WeekView(ViewBase):
         """
         # dragging with no task selected: new task will be created
         if not self.selected_task and self.is_dragging:
-            self.all_day_tasks.cells = []
             day_width = self.get_day_width()
             start = convert_coordinates_to_col(self.drag_offset, day_width)
+            end = convert_coordinates_to_col(event.x, day_width)
 
-            event_x = round(event.x, 3)
-            end = convert_coordinates_to_col(event_x, day_width)
+            # invert cols in case user started dragging from the end date
             if start > end:
                 temp = start
                 start = end
                 end = temp
+
             start_date = self.first_day() + datetime.timedelta(days=start)
             due_date = self.first_day() + datetime.timedelta(days=end)
 
             self.ask_add_new_task(start_date, due_date)
+            self.all_day_tasks.cells = []
 
         # user didn't click on a task or just finished dragging task
         # in both cases, redraw to 'unselect' task

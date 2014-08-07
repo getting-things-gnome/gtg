@@ -1,4 +1,4 @@
-from gi.repository import Gtk, Gdk, GObject
+from gi.repository import Gtk, Gdk
 import datetime
 import calendar
 
@@ -242,12 +242,13 @@ class MonthView(ViewBase):
          If none is given, the tasks will be retrieved from the requester.
         """
         def duration(task):
-            return (task.get_due_date().date() - task.get_start_date().date()).days
+            return (task.get_due_date() - task.get_start_date()).days
 
         if not tasks:
             tasks = [self.req.get_task(t) for t in
                      self.tasktree.get_all_nodes()]
-        self.tasks = [t for t in tasks if t is not None and self.is_in_days_range(t)]
+        self.tasks = [t for t in tasks if t is not None and
+                      self.is_in_days_range(t)]
         self.tasks.sort(key=lambda t: duration(t), reverse=True)
 
         dtasks = []
@@ -437,9 +438,10 @@ class MonthView(ViewBase):
         # calculate horizontal offset
         day_width = self.get_day_width()
         clicked_col = convert_coordinates_to_col(event.x, day_width)
-        #start_col = task.get_start_date().date().weekday()
-        start_col_in_clicked_row = max(task.get_start_date().date(),
-            self.weeks[clicked_row]['dates'].start_date).weekday()
+        start_col_in_clicked_row = max(
+            task.get_start_date().date(),
+            self.weeks[clicked_row]['dates'].start_date
+            ).weekday()
         col_diff = clicked_col - start_col_in_clicked_row
 
         offset_x = (start_col_in_clicked_row - clicked_col) * day_width
@@ -469,7 +471,6 @@ class MonthView(ViewBase):
                 return
 
             self.drag_offset = self.calculate_offset(self.selected_task, event)
-            self.update_tasks()
         # if no task is selected, save mouse location in case the user wants
         # to create a new task using DnD
         else:
@@ -555,11 +556,12 @@ class MonthView(ViewBase):
                     (previous_row, previous_col), (row, col))
 
                 if diff != 0:  # new_start_day != start_date:
-                    new_start_day = start_date + datetime.timedelta(days=diff)
-                    new_due_day = new_start_day + datetime.timedelta(days=duration)
+                    new_start_day = start_date + datetime.timedelta(diff)
+                    new_due_day = new_start_day + datetime.timedelta(duration)
                     task.set_start_date(new_start_day)
                     task.set_due_date(new_due_day)
-                    self.drag_offset = self.calculate_offset(self.selected_task, event)
+                    self.drag_offset = self.calculate_offset(
+                        self.selected_task, event)
 
             self.refresh()
 
@@ -596,7 +598,6 @@ class MonthView(ViewBase):
             due_date = start_date + datetime.timedelta(days=total_days)
 
             self.ask_add_new_task(start_date, due_date)
-            self.all_day_tasks.queue_draw()
             self.all_day_tasks.cells = []
 
         # user didn't click on a task or just finished dragging task

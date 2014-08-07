@@ -5,6 +5,7 @@ import datetime
 from GTG.plugins.calendar_view.header import Header
 from GTG.plugins.calendar_view.all_day_tasks import AllDayTasks
 
+
 class ViewBase(Gtk.VBox):
     __metaclass__ = abc.ABCMeta  # marks methods of this class as abstract
     __string_signal__ = (GObject.SignalFlags.RUN_FIRST, None, (str, ))
