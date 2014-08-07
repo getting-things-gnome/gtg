@@ -2,7 +2,6 @@
 from gi.repository import Gtk, Gdk, GObject
 import os
 
-from GTG.plugins.calendar_view.week_view import WeekView
 from GTG.plugins.calendar_view.controller import Controller
 
 
