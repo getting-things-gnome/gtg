@@ -4,8 +4,6 @@ import calendar
 
 from GTG.plugins.calendar_view.week import WeekSpan
 from GTG.plugins.calendar_view.drawtask import DrawTask, TASK_HEIGHT
-from GTG.plugins.calendar_view.all_day_tasks import AllDayTasks
-from GTG.plugins.calendar_view.header import Header
 from GTG.plugins.calendar_view.grid import Grid
 from GTG.plugins.calendar_view.utils import convert_coordinates_to_grid, \
     date_to_col_coord, date_to_row_coord, \
@@ -14,49 +12,18 @@ from GTG.plugins.calendar_view.view import ViewBase
 from GTG.plugins.calendar_view.day_cell import DayCell
 
 
-class MonthView(ViewBase, Gtk.VBox):
-    __string_signal__ = (GObject.SignalFlags.RUN_FIRST, None, (str, ))
-    __none_signal__ = (GObject.SignalFlags.RUN_FIRST, None, tuple())
-    __gsignals__ = {'selection-changed': __string_signal__,
-                    'dates-changed': __none_signal__,
-                    }
+class MonthView(ViewBase):
 
     def __init__(self, parent, requester, numdays=7):
-        super(MonthView, self).__init__(parent, requester)
-        super(Gtk.VBox, self).__init__()
+        super(MonthView, self).__init__(parent, requester, numdays)
 
-        self.numdays = numdays
         self.min_day_width = 60
         self.min_week_height = 80
         self.font_size = 7
         self.fixed = None
 
-        # Header
-        self.header = Header(self.numdays)
-        self.header.set_size_request(-1, 35)
-        self.pack_start(self.header, False, False, 0)
-
-        # Scrolled Window
-        self.scroll = Gtk.ScrolledWindow(None, None)
+        # Scrolled Window options
         self.scroll.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.NEVER)
-        self.scroll.add_events(Gdk.EventMask.SCROLL_MASK)
-        self.scroll.connect("scroll-event", self.on_scroll)
-        self.pack_start(self.scroll, True, True, 0)
-
-        # AllDayTasks widget
-        self.all_day_tasks = AllDayTasks(self, cols=self.numdays)
-        # self.pack_start(self.all_day_tasks, True, True, 0)
-        self.scroll.add_with_viewport(self.all_day_tasks)
-
-        # drag-and-drop support
-        self.drag_offset = None
-        self.drag_action = None
-        self.is_dragging = False
-
-        # handle the AllDayTasks DnD events
-        self.all_day_tasks.connect("button-press-event", self.dnd_start)
-        self.all_day_tasks.connect("motion-notify-event", self.motion_notify)
-        self.all_day_tasks.connect("button-release-event", self.dnd_stop)
 
     def init_weeks(self, numweeks):
         """
@@ -80,32 +47,6 @@ class MonthView(ViewBase, Gtk.VBox):
             self.weeks.append(week)
         self.all_day_tasks.set_num_rows(numweeks)
 
-    def on_scroll(self, widget, event):
-        """
-        Callback function to deal with scrolling the drawing area window.
-        If scroll right or left, change the days displayed in the calendar
-        view.
-        """
-        # scroll right
-        if event.get_scroll_deltas()[1] > 0:
-            self.next(months=1)
-        # scroll left
-        elif event.get_scroll_deltas()[1] < 0:
-            self.previous(months=1)
-        return True
-
-    def unselect_task(self):
-        """ Unselects the task that was selected before. """
-        self.selected_task = None
-        self.all_day_tasks.selected_task = None
-        self.emit('selection-changed', None)
-
-    def set_selected_task(self, tid):
-        """ Returns which task is being selected. """
-        self.selected_task = tid
-        self.all_day_tasks.selected_task = tid
-        self.emit('selection-changed', tid)
-
     def first_day(self):
         """ Returns the first day of the view being displayed """
         return self.weeks[0]['dates'].start_date
@@ -113,10 +54,6 @@ class MonthView(ViewBase, Gtk.VBox):
     def last_day(self):
         """ Returns the last day of the view being displayed """
         return self.weeks[-1]['dates'].end_date
-
-    def get_day_width(self):
-        """ Returns the day/column width in pixels """
-        return self.all_day_tasks.get_day_width()
 
     def get_week_height(self):
         """ Returns the week/row height in pixels """
@@ -248,12 +185,6 @@ class MonthView(ViewBase, Gtk.VBox):
         """
         date_this_month = datetime.date(self.year, self.month, 1)
         return date_this_month.strftime("%B / %Y")
-
-    def update_tasks(self):
-        """ Updates and redraws everything related to the tasks """
-        self.update_drawtasks()
-        self.compute_size()
-        self.all_day_tasks.queue_draw()
 
     def is_in_week_range(self, task, week):
         """

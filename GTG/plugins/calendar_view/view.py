@@ -1,23 +1,57 @@
+from gi.repository import Gtk, Gdk, GObject
 import abc
 import datetime
 
+from GTG.plugins.calendar_view.header import Header
+from GTG.plugins.calendar_view.all_day_tasks import AllDayTasks
 
-class ViewBase:
+class ViewBase(Gtk.VBox):
     __metaclass__ = abc.ABCMeta  # marks methods of this class as abstract
+    __string_signal__ = (GObject.SignalFlags.RUN_FIRST, None, (str, ))
+    __none_signal__ = (GObject.SignalFlags.RUN_FIRST, None, tuple())
+    __gsignals__ = {'selection-changed': __string_signal__,
+                    'dates-changed': __none_signal__,
+                    }
 
-    def __init__(self, parent, requester):
+    def __init__(self, parent, requester, numdays):
+        super(Gtk.VBox, self).__init__()
         self.par = parent
         self.req = requester
 
         self.header = None
         self.background = None
 
-        self.numdays = None
+        self.numdays = numdays
         self.selected_task = None
 
         self.tasktree = self.req.get_tasks_tree(
             name='calendar_view', refresh=False)
         self.req.apply_global_filter(self.tasktree, 'calendar_view')
+
+        # Header
+        self.header = Header(self.numdays)
+        self.header.set_size_request(-1, 35)
+        self.pack_start(self.header, False, False, 0)
+
+        # Scrolled Window
+        self.scroll = Gtk.ScrolledWindow(None, None)
+        self.scroll.add_events(Gdk.EventMask.SCROLL_MASK)
+        self.scroll.connect("scroll-event", self.on_scroll)
+        self.pack_start(self.scroll, True, True, 0)
+
+        # AllDayTasks widget
+        self.all_day_tasks = AllDayTasks(self, cols=self.numdays)
+        self.scroll.add_with_viewport(self.all_day_tasks)
+
+        # drag-and-drop support
+        self.drag_offset = None
+        self.drag_action = None
+        self.is_dragging = False
+
+        # handle the AllDayTasks DnD events
+        self.all_day_tasks.connect("button-press-event", self.dnd_start)
+        self.all_day_tasks.connect("motion-notify-event", self.motion_notify)
+        self.all_day_tasks.connect("button-release-event", self.dnd_stop)
 
         # callbacks to set
         self.edit_task = None
@@ -28,13 +62,44 @@ class ViewBase:
         """ Returns which task is being selected. """
         return self.selected_task
 
-    def set_selected_task(self, task_id):
-        """ Sets which task is the selected task. """
-        self.selected_task = task_id
+    def set_selected_task(self, tid):
+        """ Returns which task is being selected. """
+        self.selected_task = tid
+        self.all_day_tasks.selected_task = tid
+        self.emit('selection-changed', tid)
 
     def unselect_task(self):
         """ Unselects the task that was selected before. """
         self.selected_task = None
+        self.all_day_tasks.selected_task = None
+        self.emit('selection-changed', None)
+
+    def on_scroll(self, widget, event):
+        """
+        Callback function to deal with scrolling the drawing area window.
+        If scroll right or left, change the days displayed in the calendar
+        view. If scroll up or down, propagates the signal to scroll window
+        normally.
+        """
+        # scroll right
+        if event.get_scroll_deltas()[1] > 0:
+            self.next(1)
+        # scroll left
+        elif event.get_scroll_deltas()[1] < 0:
+            self.previous(1)
+        # scroll up or down
+        else:
+            return False  # propagates signal to scroll window normally
+
+    def get_day_width(self):
+        """ Returns the day/column width in pixels """
+        return self.all_day_tasks.get_day_width()
+
+    def update_tasks(self):
+        """ Updates and redraws everything related to the tasks """
+        self.update_drawtasks()
+        self.compute_size()
+        self.all_day_tasks.queue_draw()
 
     @abc.abstractmethod
     def first_day(self):
