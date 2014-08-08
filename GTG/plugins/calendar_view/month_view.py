@@ -498,6 +498,42 @@ class MonthView(ViewBase):
 
         return offset_x, offset_y
 
+    def track_cells_to_create_new_task(self, event):
+        """
+        Keeps track of the range of cells between the start of the dragging
+        (mouse click) and where the mouse is at the moment, in order to create
+        a new task when the mouse button is released. In the meantime, the
+        cells will be highlighted to show where the task will be created.
+
+        @param event: GdkEvent object, contains the pointer coordinates.
+        """
+        day_width = self.get_day_width()
+        week_height = self.get_week_height()
+        curr_row, curr_col = convert_coordinates_to_grid(
+            event.x, event.y, day_width, week_height)
+        start_row, start_col = convert_coordinates_to_grid(
+            self.drag_offset[0], self.drag_offset[1],
+            day_width, week_height)
+
+        # invert cols/rows in case user started dragging from the end date
+        start_row, start_col, curr_row, curr_col = self.get_right_order(
+            start_row, start_col, curr_row, curr_col)
+
+        total_days = self.total_days_between_cells((start_row, start_col),
+                                                   (curr_row, curr_col))+1
+
+        # highlight cells while moving mouse
+        cells = []
+        for i in range((curr_row - start_row + 1) + 1):
+            for col in range(start_col,
+                             min(start_col+total_days, self.numdays)):
+                cells.append((start_row + i, col))
+            total_days -= (self.numdays - start_col)
+            start_col = 0
+
+        self.all_day_tasks.cells = cells
+        self.all_day_tasks.queue_draw()
+
     def dnd_start(self, widget, event):
         """ User clicked the mouse button, starting drag and drop """
         # find which task was clicked, if any
@@ -529,32 +565,7 @@ class MonthView(ViewBase):
         # dragging with no task selected: new task will be created
         if not self.selected_task and self.drag_offset:
             self.is_dragging = True
-            day_width = self.get_day_width()
-            week_height = self.get_week_height()
-            curr_row, curr_col = convert_coordinates_to_grid(
-                event.x, event.y, day_width, week_height)
-            start_row, start_col = convert_coordinates_to_grid(
-                self.drag_offset[0], self.drag_offset[1],
-                day_width, week_height)
-
-            # invert cols/rows in case user started dragging from the end date
-            start_row, start_col, curr_row, curr_col = self.get_right_order(
-                start_row, start_col, curr_row, curr_col)
-
-            total_days = self.total_days_between_cells((start_row, start_col),
-                                                       (curr_row, curr_col))+1
-
-            # highlight cells while moving mouse
-            cells = []
-            for i in range((curr_row - start_row + 1) + 1):
-                for col in range(start_col,
-                                 min(start_col+total_days, self.numdays)):
-                    cells.append((start_row + i, col))
-                total_days -= (self.numdays - start_col)
-                start_col = 0
-
-            self.all_day_tasks.cells = cells
-            self.all_day_tasks.queue_draw()
+            self.track_cells_to_create_new_task(event)
             return
 
         if self.selected_task and self.drag_offset:  # a task was clicked
@@ -606,8 +617,6 @@ class MonthView(ViewBase):
                     task.set_due_date(new_due_day)
                     self.drag_offset = self.calculate_offset(
                         self.selected_task, event)
-
-            self.refresh()
 
         else:  # mouse hover
             t_id, self.drag_action, cursor = \

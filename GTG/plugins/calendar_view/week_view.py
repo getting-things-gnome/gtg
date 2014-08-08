@@ -196,6 +196,32 @@ class WeekView(ViewBase):
         self.week.adjust(-days)
         self.refresh()
 
+    def track_cells_to_create_new_task(self, event):
+        """
+        Keeps track of the range of cells between the start of the dragging
+        (mouse click) and where the mouse is at the moment, in order to create
+        a new task when the mouse button is released. In the meantime, the
+        cells will be highlighted to show where the task will be created.
+
+        @param event: GdkEvent object, contains the pointer coordinates.
+        """
+        day_width = self.get_day_width()
+        curr_col = convert_coordinates_to_col(event.x, day_width)
+        start_col = convert_coordinates_to_col(self.drag_offset, day_width)
+
+        # invert cols in case user started dragging from the end date
+        if curr_col < start_col:
+            temp = curr_col
+            curr_col = start_col
+            start_col = temp
+        cells = []
+        for i in range(curr_col - start_col + 1):
+            row = 0
+            col = start_col + i
+            cells.append((row, col))
+        self.all_day_tasks.cells = cells
+        self.all_day_tasks.queue_draw()
+
     def dnd_start(self, widget, event):
         """ User clicked the mouse button, starting drag and drop """
         # find which task was clicked, if any
@@ -235,22 +261,7 @@ class WeekView(ViewBase):
         # dragging with no task selected: new task will be created
         if not self.selected_task and self.drag_offset:
             self.is_dragging = True
-            day_width = self.get_day_width()
-            curr_col = convert_coordinates_to_col(event.x, day_width)
-            start_col = convert_coordinates_to_col(self.drag_offset, day_width)
-
-            # invert cols in case user started dragging from the end date
-            if curr_col < start_col:
-                temp = curr_col
-                curr_col = start_col
-                start_col = temp
-            cells = []
-            for i in range(curr_col - start_col + 1):
-                row = 0
-                col = start_col + i
-                cells.append((row, col))
-            self.all_day_tasks.cells = cells
-            self.all_day_tasks.queue_draw()
+            self.track_cells_to_create_new_task(event)
             return
 
         if self.selected_task and self.drag_offset:  # a task was clicked
