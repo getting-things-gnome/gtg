@@ -265,12 +265,6 @@ class WeekView(ViewBase):
         end_date = task.get_due_date().date()
         duration = (end_date - start_date).days
 
-        # don't do any action beyond delimited area
-        alloc = self.get_allocation()
-        if (event.x < 0 or event.x > alloc.width or
-                event.y < 0 or event.y > alloc.height):
-            return
-
         day_width = self.get_day_width()
         col = convert_coordinates_to_col(event.x, day_width)
         day = self.first_day() + datetime.timedelta(col)
@@ -326,6 +320,12 @@ class WeekView(ViewBase):
 
     def motion_notify(self, widget, event):
         """ User moved mouse over widget """
+        # don't do any action beyond delimited area
+        alloc = self.get_allocation()
+        if (event.x < 0 or event.x > alloc.width or
+                event.y < 0 or event.y > alloc.height):
+            return
+
         # dragging with no task selected: new task will be created
         if not self.selected_task and self.drag_offset is not None:
             self.is_dragging = True
@@ -348,6 +348,7 @@ class WeekView(ViewBase):
         if not self.selected_task and self.is_dragging:
             day_width = self.get_day_width()
             start = convert_coordinates_to_col(self.drag_offset, day_width)
+            event = self.fit_event_in_boundaries(event)
             end = convert_coordinates_to_col(event.x, day_width)
 
             # invert cols in case user started dragging from the end date

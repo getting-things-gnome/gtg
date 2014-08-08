@@ -59,6 +59,26 @@ class ViewBase(Gtk.VBox):
         self.add_new_task = None
         self.delete_task = None
 
+    def get_allocation(self):
+        """ Returns drawable area allocation. Overrides default method. """
+        return self.all_day_tasks.get_allocation()
+
+    def fit_event_in_boundaries(self, event):
+        """
+        Checks if event coordinates are inside the delimited area and if not,
+        modify them to the maximum allowed value in order to fit the area.
+
+        @param event: GdkEvent object, contains the pointer coordinates.
+        @return event: GdkEvent object, containing the new x and y coordinates.
+        """
+        alloc = self.get_allocation()
+        event.x = min(event.x, alloc.width - 1)
+        event.x = max(event.x, 0)
+
+        event.y = min(event.y, alloc.height - 1)
+        event.y = max(event.y, 0)
+        return event
+
     def get_selected_task(self):
         """ Returns which task is being selected. """
         return self.selected_task
