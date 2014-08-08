@@ -196,6 +196,29 @@ class WeekView(ViewBase):
         self.week.adjust(-days)
         self.refresh()
 
+    def calculate_offset(self, task_id, event):
+        """
+        Calculates the horizontal offset, so a user can drag not
+        only from the beggining of a task (in case it spans multiple columns).
+        The offsets will be calculated using the task
+        represented by @task_id as reference.
+
+        @param task_id: string, the id of the Task object we want to use as
+                        reference.
+        @param event: GdkEvent object, contains the pointer coordinates.
+        @return offset_x: float, horizontal offset.
+        """
+        task = self.req.get_task(task_id)
+        start = (task.get_start_date().date() - self.first_day()).days
+        end = (task.get_due_date().date() - self.first_day()).days + 1
+        duration = end - start
+
+        day_width = self.get_day_width()
+        offset = (start * day_width) - event.x
+        if self.drag_action == "expand_right":
+            offset += duration * day_width
+        return offset
+
     def track_cells_to_create_new_task(self, event):
         """
         Keeps track of the range of cells between the start of the dragging
@@ -273,18 +296,8 @@ class WeekView(ViewBase):
                 self.is_dragging = False
                 self.drag_offset = None
                 return
-            task = self.req.get_task(self.selected_task)
-            start = (task.get_start_date().date() - self.first_day()).days
-            end = (task.get_due_date().date() - self.first_day()).days + 1
-            duration = end - start
 
-            day_width = self.get_day_width()
-            offset = (start * day_width) - event.x
-            # offset_y = pos * TASK_HEIGHT - event.y
-            if self.drag_action == "expand_right":
-                offset += duration * day_width
-            self.drag_offset = offset
-
+            self.drag_offset = self.calculate_offset(self.selected_task, event)
         # if no task is selected, save mouse location in case the user wants
         # to create a new task using DnD
         else:

@@ -611,9 +611,7 @@ class MonthView(ViewBase):
         # if no task is selected, save mouse location in case the user wants
         # to create a new task using DnD
         else:
-            event_x = event.x
-            event_y = event.y
-            self.drag_offset = (event_x, event_y)
+            self.drag_offset = (event.x, event.y)
 
         widget.get_window().set_cursor(cursor)
 
