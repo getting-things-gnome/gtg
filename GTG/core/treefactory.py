@@ -53,6 +53,7 @@ class TreeFactory:
             'worktostart': [self.worktostart],
             'worklate': [self.worklate],
             'no_disabled_tag': [self.no_disabled_tag],
+            'calendar_view': [self.display_in_calendar],
         }
 
         for f in f_dic:
@@ -232,3 +233,14 @@ class TreeFactory:
             if t.get_attribute("nonworkview") == "True":
                 toreturn = False
         return toreturn
+
+    def display_in_calendar(self, task, parameters=None):
+        """
+        Filter for tasks to be displayed in the calendar view plugin.
+        Only tasks with start and due date will be shown,
+        with status being either active or done (no dismissed tasks).
+        """
+        ret = (task.get_status() in [Task.STA_ACTIVE, Task.STA_DONE] and
+               task.get_due_date() not in [Date.someday(), Date.no_date()] and
+               task.get_start_date() not in [Date.someday(), Date.no_date()])
+        return ret

@@ -9,7 +9,7 @@
     <property name="default_width">420</property>
     <property name="default_height">280</property>
     <property name="destroy_with_parent">True</property>
-    <signal name="destroy" handler="on_window_destroy" swapped="no"/>
+    <signal name="delete-event" handler="on_window_destroy" swapped="no"/>
     <child>
       <object class="GtkVBox" id="vbox">
         <property name="width_request">380</property>
@@ -84,11 +84,6 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <signal name="changed" handler="on_combobox_changed" swapped="no"/>
-                <items>
-                  <item translatable="yes" id="week">Week</item>
-                  <item translatable="yes" id="2weeks">2 Weeks</item>
-                  <item translatable="yes" id="month">Month</item>
-                </items>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -146,6 +141,7 @@
               <object class="GtkButton" id="edit">
                 <property name="label">gtk-edit</property>
                 <property name="visible">True</property>
+                <property name="sensitive">False</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="use_action_appearance">False</property>
@@ -162,6 +158,7 @@
               <object class="GtkButton" id="remove">
                 <property name="label">gtk-remove</property>
                 <property name="visible">True</property>
+                <property name="sensitive">False</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="use_action_appearance">False</property>

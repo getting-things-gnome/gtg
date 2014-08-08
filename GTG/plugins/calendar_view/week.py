@@ -1,5 +1,5 @@
 import datetime
-from utils import date_generator
+from GTG.plugins.calendar_view.utils import date_generator
 
 
 class WeekSpan():
