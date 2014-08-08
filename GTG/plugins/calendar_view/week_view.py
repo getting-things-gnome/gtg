@@ -209,15 +209,21 @@ class WeekView(ViewBase):
         @return offset_x: float, horizontal offset.
         """
         task = self.req.get_task(task_id)
-        start = (task.get_start_date().date() - self.first_day()).days
-        end = (task.get_due_date().date() - self.first_day()).days + 1
-        duration = end - start
 
+        # calculate horizontal offset
         day_width = self.get_day_width()
-        offset = (start * day_width) - event.x
+        clicked_col = convert_coordinates_to_col(event.x, day_width)
+        start_col = max(task.get_start_date().date(),
+                        self.first_day()).weekday()
+        col_diff = clicked_col - start_col
+
+        offset_x = (start_col - clicked_col) * day_width
         if self.drag_action == "expand_right":
-            offset += duration * day_width
-        return offset
+            offset_x += col_diff * day_width
+        elif self.drag_action == "move":
+            offset_x = clicked_col * day_width
+
+        return offset_x
 
     def track_cells_to_create_new_task(self, event):
         """
@@ -259,11 +265,17 @@ class WeekView(ViewBase):
         end_date = task.get_due_date().date()
         duration = (end_date - start_date).days
 
-        event_x = event.x + self.drag_offset
+        # don't do any action beyond delimited area
+        alloc = self.get_allocation()
+        if (event.x < 0 or event.x > alloc.width or
+                event.y < 0 or event.y > alloc.height):
+            return
 
         day_width = self.get_day_width()
-        col = convert_coordinates_to_col(event_x, day_width)
+        col = convert_coordinates_to_col(event.x, day_width)
         day = self.first_day() + datetime.timedelta(col)
+        if col < 0 or col >= self.numdays:
+            return
 
         if self.drag_action == "expand_left":
             new_start_day = day
@@ -276,10 +288,17 @@ class WeekView(ViewBase):
                 task.set_due_date(new_due_day)
 
         else:
-            new_start_day = day
-            new_due_day = new_start_day + datetime.timedelta(days=duration)
-            task.set_start_date(new_start_day)
-            task.set_due_date(new_due_day)
+            offset_x = self.drag_offset
+            previous_col = convert_coordinates_to_col(offset_x, day_width)
+            diff = col - previous_col
+
+            if diff != 0:  # new_start_day != start_date:
+                new_start_day = start_date + datetime.timedelta(diff)
+                new_due_day = new_start_day + datetime.timedelta(duration)
+                task.set_start_date(new_start_day)
+                task.set_due_date(new_due_day)
+                self.drag_offset = self.calculate_offset(
+                    self.selected_task, event)
 
     def dnd_start(self, widget, event):
         """ User clicked the mouse button, starting drag and drop """
@@ -308,12 +327,13 @@ class WeekView(ViewBase):
     def motion_notify(self, widget, event):
         """ User moved mouse over widget """
         # dragging with no task selected: new task will be created
-        if not self.selected_task and self.drag_offset:
+        if not self.selected_task and self.drag_offset is not None:
             self.is_dragging = True
             self.track_cells_to_create_new_task(event)
             return
 
-        if self.selected_task and self.drag_offset:  # a task was clicked
+        # a task was clicked
+        if self.selected_task and self.drag_offset is not None:
             self.is_dragging = True
             self.modify_task_using_dnd(self.selected_task, event)
 

@@ -554,14 +554,11 @@ class MonthView(ViewBase):
                 event.y < 0 or event.y > alloc.height):
             return
 
-        event_x = event.x
-        event_y = event.y
-
         day_width = self.get_day_width()
         week_height = self.get_week_height()
 
-        row = convert_coordinates_to_row(event_y, week_height)
-        col = convert_coordinates_to_col(event_x, day_width)
+        row = convert_coordinates_to_row(event.y, week_height)
+        col = convert_coordinates_to_col(event.x, day_width)
         if row < 0 or row >= self.numweeks or col < 0 or col >= self.numdays:
             return
 
@@ -618,13 +615,14 @@ class MonthView(ViewBase):
     def motion_notify(self, widget, event):
         """ User moved mouse over widget """
         # dragging with no task selected: new task will be created
-        if not self.selected_task and self.drag_offset:
+        if not self.selected_task and self.drag_offset is not None:
             self.is_dragging = True
             self.drag_action = None  # in case action was 'click_link'
             self.track_cells_to_create_new_task(event)
             return
 
-        if self.selected_task and self.drag_offset:  # a task was clicked
+        # a task was clicked
+        if self.selected_task and self.drag_offset is not None:
             self.is_dragging = True
             self.modify_task_using_dnd(self.selected_task, event)
 
@@ -643,10 +641,8 @@ class MonthView(ViewBase):
                 self.drag_offset[0], self.drag_offset[1],
                 day_width, week_height)
 
-            event_x = event.x
-            event_y = event.y
             end_row, end_col = convert_coordinates_to_grid(
-                event_x, event_y, day_width, week_height)
+                event.x, event.y, day_width, week_height)
 
             # invert cols/rows in case user started dragging from the end date
             start_row, start_col, end_row, end_col = self.get_right_order(
