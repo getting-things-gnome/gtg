@@ -38,7 +38,7 @@ class AllDayTasks(Gtk.DrawingArea):
 
     def get_label_height(self):
         if self.labels:
-          return self.label_height
+            return self.label_height
         return 0
 
     def set_labels(self, labels):
@@ -153,7 +153,7 @@ class AllDayTasks(Gtk.DrawingArea):
         # if dragging cells to create new task, highlight them now
         if self.cells:
             self.highlight_cells(ctx, self.cells, color=(0.8, 0.8, 0),
-                alpha=0.1)
+                                 alpha=0.1)
 
     def identify_pointed_object(self, event, clicked=False):
         """
