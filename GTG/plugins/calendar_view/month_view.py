@@ -620,6 +620,7 @@ class MonthView(ViewBase):
         # dragging with no task selected: new task will be created
         if not self.selected_task and self.drag_offset:
             self.is_dragging = True
+            self.drag_action = None  # in case action was 'click_link'
             self.track_cells_to_create_new_task(event)
             return
 
