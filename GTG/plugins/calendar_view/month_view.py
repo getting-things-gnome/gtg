@@ -241,7 +241,7 @@ class MonthView(ViewBase):
         @param count: integer, the number of tasks hidden in this cell.
         """
         label = '+%d more' % count
-        self.overflow_links.append((label, row, col))
+        return (label, row, col)
 
     def tasks_to_hide(self, row, col, visible_rows, needed_rows):
         """
@@ -266,6 +266,36 @@ class MonthView(ViewBase):
                 if not cell.is_free():
                     to_hide.append(str(cell))
         return to_hide
+
+    def solve_overflowing_tasks_problem(self):
+        """
+        Solves the case where we have more tasks than available space to draw
+        in a single cell/day. If a cell has overflowing tasks, they will be
+        hidden and a label indicating so will be created where the user will
+        be able to click and see the hidden tasks.
+        """
+        overflow_links = []
+        visible_rows = self.get_maximum_tasks_per_week()
+        for row, week in enumerate(self.weeks):
+            if week['grid'].num_rows > visible_rows:
+                for col in range(self.numdays):
+                    needed_rows = self.total_rows_needed_in_calendar_cell(
+                        row, col)
+                    # not enough space to draw all tasks in this day
+                    if needed_rows > visible_rows:
+                        to_hide = self.tasks_to_hide(row, col, visible_rows,
+                                                     needed_rows)
+                        num_hidden_tasks = len(to_hide)
+
+                        # hide overflowing tasks from cell
+                        for dtask in week['tasks']:
+                            if dtask.get_id() in to_hide:
+                                dtask.set_position(-1, -1, -1, -1)
+
+                        # create label to link to hidden tasks
+                        label = self.create_label(row, col, num_hidden_tasks)
+                        overflow_links.append(label)
+        self.all_day_tasks.overflow_links = overflow_links
 
     def update_drawtasks(self, tasks=None):
         """
@@ -297,28 +327,8 @@ class MonthView(ViewBase):
                                                week['grid'], i)
         self.all_day_tasks.set_tasks_to_draw(dtasks)
 
-        # deals with when we have more tasks than available lines in a same day
-        self.overflow_links = []  # clear previous links, if any
-        visible_rows = self.get_maximum_tasks_per_week()
-        for row, week in enumerate(self.weeks):
-            if week['grid'].num_rows > visible_rows:
-                for col in range(self.numdays):
-                    needed_rows = self.total_rows_needed_in_calendar_cell(
-                        row, col)
-                    # if can't fit, hide last tasks and create link to them
-                    if needed_rows > visible_rows:
-                        to_hide = self.tasks_to_hide(row, col, visible_rows,
-                                                     needed_rows)
-                        num_hidden_tasks = len(to_hide)
-
-                        # hide overflowing tasks from cell
-                        for dtask in week['tasks']:
-                            if dtask.get_id() in to_hide:
-                                dtask.set_position(-1, -1, -1, -1)
-
-                        # create label to link to hidden tasks
-                        self.create_label(row, col, num_hidden_tasks)
-        self.all_day_tasks.overflow_links = self.overflow_links
+        # solve case where there is not enough space to draw all tasks in a day
+        self.solve_overflowing_tasks_problem()
 
         # clears selected_task if it is not being showed
         if self.selected_task:
