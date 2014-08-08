@@ -534,6 +534,63 @@ class MonthView(ViewBase):
         self.all_day_tasks.cells = cells
         self.all_day_tasks.queue_draw()
 
+    def modify_task_using_dnd(self, task_id, event):
+        """
+        Modifies a @task using drag and drop according to the pointer
+        corrdinates given by @event. The task can be moved, expanded or shrunk
+        depending on the dragging action.
+
+        @param task_id: string, the id of the Task object we want to modify.
+        @param event: GdkEvent object, contains the pointer coordinates.
+        """
+        task = self.req.get_task(task_id)
+        start_date = task.get_start_date().date()
+        end_date = task.get_due_date().date()
+        duration = (end_date - start_date).days
+
+        # don't do any action beyond delimited area
+        alloc = self.get_allocation()
+        if (event.x < 0 or event.x > alloc.width or
+                event.y < 0 or event.y > alloc.height):
+            return
+
+        event_x = event.x
+        event_y = event.y
+
+        day_width = self.get_day_width()
+        week_height = self.get_week_height()
+
+        row = convert_coordinates_to_row(event_y, week_height)
+        col = convert_coordinates_to_col(event_x, day_width)
+        if row < 0 or row >= self.numweeks or col < 0 or col >= self.numdays:
+            return
+
+        if self.drag_action == "expand_left":
+            new_start_day = self.weeks[row]['dates'].days[col]
+            if new_start_day <= end_date:
+                task.set_start_date(new_start_day)
+
+        elif self.drag_action == "expand_right":
+            new_due_day = self.weeks[row]['dates'].days[col]
+            if new_due_day >= start_date:
+                task.set_due_date(new_due_day)
+
+        else:
+            offset_x = self.drag_offset[0]
+            offset_y = self.drag_offset[1]
+            previous_row, previous_col = convert_coordinates_to_grid(
+                offset_x, offset_y, day_width, week_height)
+            diff = self.total_days_between_cells(
+                (previous_row, previous_col), (row, col))
+
+            if diff != 0:  # new_start_day != start_date:
+                new_start_day = start_date + datetime.timedelta(diff)
+                new_due_day = new_start_day + datetime.timedelta(duration)
+                task.set_start_date(new_start_day)
+                task.set_due_date(new_due_day)
+                self.drag_offset = self.calculate_offset(
+                    self.selected_task, event)
+
     def dnd_start(self, widget, event):
         """ User clicked the mouse button, starting drag and drop """
         # find which task was clicked, if any
@@ -570,53 +627,7 @@ class MonthView(ViewBase):
 
         if self.selected_task and self.drag_offset:  # a task was clicked
             self.is_dragging = True
-            task = self.req.get_task(self.selected_task)
-            start_date = task.get_start_date().date()
-            end_date = task.get_due_date().date()
-            duration = (end_date - start_date).days
-
-            # don't do any action beyond delimited area
-            alloc = self.get_allocation()
-            if (event.x < 0 or event.x > alloc.width or
-                    event.y < 0 or event.y > alloc.height):
-                return
-
-            event_x = event.x
-            event_y = event.y
-
-            day_width = self.get_day_width()
-            week_height = self.get_week_height()
-
-            row = convert_coordinates_to_row(event_y, week_height)
-            col = convert_coordinates_to_col(event_x, day_width)
-            if row < 0 or row >= self.numweeks or col < 0 or col >= self.numdays:
-                return
-
-            if self.drag_action == "expand_left":
-                new_start_day = self.weeks[row]['dates'].days[col]
-                if new_start_day <= end_date:
-                    task.set_start_date(new_start_day)
-
-            elif self.drag_action == "expand_right":
-                new_due_day = self.weeks[row]['dates'].days[col]
-                if new_due_day >= start_date:
-                    task.set_due_date(new_due_day)
-
-            else:
-                offset_x = self.drag_offset[0]
-                offset_y = self.drag_offset[1]
-                previous_row, previous_col = convert_coordinates_to_grid(
-                    offset_x, offset_y, day_width, week_height)
-                diff = self.total_days_between_cells(
-                    (previous_row, previous_col), (row, col))
-
-                if diff != 0:  # new_start_day != start_date:
-                    new_start_day = start_date + datetime.timedelta(diff)
-                    new_due_day = new_start_day + datetime.timedelta(duration)
-                    task.set_start_date(new_start_day)
-                    task.set_due_date(new_due_day)
-                    self.drag_offset = self.calculate_offset(
-                        self.selected_task, event)
+            self.modify_task_using_dnd(self.selected_task, event)
 
         else:  # mouse hover
             t_id, self.drag_action, cursor = \

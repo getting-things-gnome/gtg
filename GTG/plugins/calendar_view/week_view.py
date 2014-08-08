@@ -222,6 +222,42 @@ class WeekView(ViewBase):
         self.all_day_tasks.cells = cells
         self.all_day_tasks.queue_draw()
 
+    def modify_task_using_dnd(self, task_id, event):
+        """
+        Modifies a @task using drag and drop according to the pointer
+        corrdinates given by @event. The task can be moved, expanded or shrunk
+        depending on the dragging action.
+
+        @param task_id: string, the id of the Task object we want to modify.
+        @param event: GdkEvent object, contains the pointer coordinates.
+        """
+        task = self.req.get_task(task_id)
+        start_date = task.get_start_date().date()
+        end_date = task.get_due_date().date()
+        duration = (end_date - start_date).days
+
+        event_x = event.x + self.drag_offset
+
+        day_width = self.get_day_width()
+        col = convert_coordinates_to_col(event_x, day_width)
+        day = self.first_day() + datetime.timedelta(col)
+
+        if self.drag_action == "expand_left":
+            new_start_day = day
+            if new_start_day <= end_date:
+                task.set_start_date(new_start_day)
+
+        elif self.drag_action == "expand_right":
+            new_due_day = day
+            if new_due_day >= start_date:
+                task.set_due_date(new_due_day)
+
+        else:
+            new_start_day = day
+            new_due_day = new_start_day + datetime.timedelta(days=duration)
+            task.set_start_date(new_start_day)
+            task.set_due_date(new_due_day)
+
     def dnd_start(self, widget, event):
         """ User clicked the mouse button, starting drag and drop """
         # find which task was clicked, if any
@@ -266,33 +302,7 @@ class WeekView(ViewBase):
 
         if self.selected_task and self.drag_offset:  # a task was clicked
             self.is_dragging = True
-            task = self.req.get_task(self.selected_task)
-            start_date = task.get_start_date().date()
-            end_date = task.get_due_date().date()
-            duration = (end_date - start_date).days
-
-            event_x = event.x + self.drag_offset
-            # event_y = event.y
-
-            day_width = self.get_day_width()
-            col = convert_coordinates_to_col(event_x, day_width)
-            day = self.first_day() + datetime.timedelta(col)
-
-            if self.drag_action == "expand_left":
-                new_start_day = day
-                if new_start_day <= end_date:
-                    task.set_start_date(new_start_day)
-
-            elif self.drag_action == "expand_right":
-                new_due_day = day
-                if new_due_day >= start_date:
-                    task.set_due_date(new_due_day)
-
-            else:
-                new_start_day = day
-                new_due_day = new_start_day + datetime.timedelta(days=duration)
-                task.set_start_date(new_start_day)
-                task.set_due_date(new_due_day)
+            self.modify_task_using_dnd(self.selected_task, event)
 
         else:  # mouse hover
             t_id, self.drag_action, cursor = \
