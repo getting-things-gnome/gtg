@@ -2,7 +2,6 @@
 from gi.repository import Gtk, Gdk, GObject
 import os
 
-from GTG.plugins.calendar_view.week_view import WeekView
 from GTG.plugins.calendar_view.controller import Controller
 
 
@@ -57,7 +56,7 @@ class CalendarPlugin(GObject.GObject):
         # get combobox content from available views
         for label in self.controller.get_view_labels():
             self.combobox.append_text(label)
-        self.combobox.set_active(0)
+        self.combobox.set_active(2)
 
         self.statusbar = builder.get_object("statusbar")
 
@@ -134,7 +133,7 @@ class CalendarPlugin(GObject.GObject):
 
     def on_dates_changed(self, widget=None):
         """ Callback to update date-related objects in main window """
-        self.header.set_text(self.current_view.get_current_year())
+        self.header.set_text(self.current_view.date_range_to_string())
         self.today_button.set_sensitive(
             not self.current_view.is_today_being_shown())
 
@@ -160,7 +159,7 @@ class CalendarPlugin(GObject.GObject):
         """
         # self.current_view.connect("on_edit_task", self.on_edit_clicked)
         # self.current_view.connect("on_add_task", self.on_add_clicked)
-        # self.current_view.connect("dates-changed", self.on_dates_changed)
+        self.current_view.connect("dates-changed", self.on_dates_changed)
         self.current_view.connect('selection-changed',
                                   self.update_buttons_sensitivity)
 
@@ -171,7 +170,7 @@ class CalendarPlugin(GObject.GObject):
         """
         # self.current_view.disconnect_by_func(self.on_edit_clicked)
         # self.current_view.disconnect_by_func(self.on_add_clicked)
-        # self.current_view.disconnect_by_func(self.on_dates_changed)
+        self.current_view.disconnect_by_func(self.on_dates_changed)
         self.current_view.disconnect_by_func(self.update_buttons_sensitivity)
 
 # If we want to test only the Plugin (outside GTG):

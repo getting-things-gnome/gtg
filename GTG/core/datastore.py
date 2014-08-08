@@ -40,18 +40,7 @@ from GTG.core.treefactory import TreeFactory
 from GTG.tools import cleanxml
 from GTG.tools.borg import Borg
 from GTG.tools.logger import Log
-
-# FIXME SARA: delete ##########
-import datetime
-import random
-random.seed(7)
-
-def random_color(mix=(0, 0.5, 0.5)):
-    red = (random.random() + mix[0])/2
-    green = (random.random() + mix[1])/2
-    blue = (random.random() + mix[2])/2
-    return (red, green, blue)
-###############################
+from GTG.plugins.calendar_view.utils import random_color
 
 
 class DataStore(object):
@@ -619,8 +608,6 @@ class DataStore(object):
     def populate(self):
         # hard coded tasks to populate calendar view
         # (title, start_date, due_date, done?, color)
-
-      
         today = datetime.date.today()
         ex_tasks = [("task1", today, today, True, random_color()),
                     ("task2", today + datetime.timedelta(days=5),

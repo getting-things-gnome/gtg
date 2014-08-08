@@ -10,6 +10,9 @@ class Background(Gtk.DrawingArea):
         self.line_color = (0.35, 0.31, 0.24, 1)
         self.connect("draw", self.draw)
 
+    def set_num_rows(self, rows):
+        self.num_rows = rows
+
     def get_row_height(self, area):
         return area.height / float(self.num_rows)
 

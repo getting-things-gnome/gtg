@@ -3,7 +3,7 @@ from GTG.plugins.calendar_view.utils import convert_grid_to_screen_coord, \
     rounded_edges_or_pointed_ends_rectangle, create_vertical_gradient, \
     center_text_on_rect
 
-TASK_HEIGHT = 30
+TASK_HEIGHT = 15
 
 
 class DrawTask:
@@ -12,6 +12,7 @@ class DrawTask:
         self.position = (None, None, None, None)
         self.overflow_R = False
         self.overflow_L = False
+        self.week_num = None
 
     def get_id(self):
         return self.task.get_id()
@@ -31,6 +32,12 @@ class DrawTask:
     def set_position(self, x, y, w, h):
         self.position = (x, y, w, h)
 
+    def set_week_num(self, week_num):
+        self.week_num = week_num
+
+    def get_week_num(self):
+        return self.week_num
+
     def get_position(self):
         return self.position
 
@@ -49,12 +56,17 @@ class DrawTask:
     def is_done(self):
         return self.task.get_status() == Task.STA_DONE
 
-    def draw(self, ctx, grid_width, padding=0, selected=False):
+    def draw(self, ctx, grid_width, padding=0,
+             selected=False, week_height=None):
         task_x, task_y, task_w, task_h = self.get_position()
         pos = self.get_position()
 
         base_x, base_y, width, height = convert_grid_to_screen_coord(
             grid_width, TASK_HEIGHT, task_x, task_y, task_w, task_h, padding)
+
+        # calculating week position when in month view
+        if self.week_num is not None:
+            base_y += self.week_num * week_height + 15
 
         # restrict drawing to exposed area: no unnecessary drawing is done
         ctx.rectangle(base_x, base_y, width, height)
