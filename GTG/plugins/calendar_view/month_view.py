@@ -3,7 +3,7 @@ import datetime
 import calendar
 
 from GTG.plugins.calendar_view.week import WeekSpan
-from GTG.plugins.calendar_view.drawtask import DrawTask, TASK_HEIGHT
+from GTG.plugins.calendar_view.drawtask import DrawTask
 from GTG.plugins.calendar_view.grid import Grid
 from GTG.plugins.calendar_view.utils import convert_coordinates_to_grid, \
     date_to_col_coord, date_to_row_coord, \
@@ -17,13 +17,19 @@ class MonthView(ViewBase):
     def __init__(self, parent, requester, numdays=7):
         super(MonthView, self).__init__(parent, requester, numdays)
 
-        self.min_day_width = 60
-        self.min_week_height = 80
-        self.font_size = 7
-        self.fixed = None
+        self.config.min_day_width = 60
+        self.config.min_week_height = 80
+        self.config.task_height = 15
+        self.update_config()
+
+        self.weeks = []
 
         # Scrolled Window options
         self.scroll.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.NEVER)
+
+    def update_config(self):
+        self.all_day_tasks.add_configurations(self.config)
+        self.header.add_configurations(self.config)
 
     def init_weeks(self, numweeks):
         """
@@ -59,10 +65,6 @@ class MonthView(ViewBase):
         """ Returns the week/row height in pixels """
         return self.all_day_tasks.get_week_height()
 
-    def get_task_height(self):
-        """ Returns the height that the tasks should be drawn. """
-        return TASK_HEIGHT  # self.all_day_tasks.task_height
-
     def show_today(self):
         """
         Shows the range of dates in the current view with the date
@@ -89,8 +91,8 @@ class MonthView(ViewBase):
 
     def compute_size(self):
         """ Computes and requests the size needed to draw everything. """
-        width = self.min_day_width * self.numdays
-        height = self.min_week_height * self.numweeks
+        width = self.config.min_day_width * self.numdays
+        height = self.config.min_week_height * self.numweeks
         self.all_day_tasks.set_size_request(width, height)
 
     def calculate_number_of_weeks(self, year, month):
@@ -206,7 +208,7 @@ class MonthView(ViewBase):
         tasks_available_area = (self.get_week_height() -
                                 self.all_day_tasks.get_label_height())
         # FIXME: remove max(4)
-        return max(int(tasks_available_area // self.get_task_height()), 4)
+        return max(int(tasks_available_area // self.config.task_height), 4)
 
     def on_show_more_tasks(self, day):
         """

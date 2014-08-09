@@ -6,6 +6,31 @@ from GTG.plugins.calendar_view.header import Header
 from GTG.plugins.calendar_view.all_day_tasks import AllDayTasks
 
 
+class ViewConfig:
+        font = "Courier"
+        font_size = 12
+        font_color = (0.35, 0.31, 0.24)
+
+        line_color = (0.35, 0.31, 0.24, 0.15)
+        line_width = 0.8
+        vgrid = True
+        hgrid = True
+
+        bg_color = None
+        faded_cells_color = (0.8, 0.8, 0.8, 0.6)  # light gray
+        highlight_cells_color = (0.8, 0.8, 0, 0.1)  # light yellow
+        today_cell_color = (1, 1, 1, 0.7)  # white
+
+        link_color = (0, 0, 255, 0.5)  # default blue link color
+        label_height = 15
+
+        header_height = 35
+        min_day_width = 60
+        min_week_height = 80
+        task_height = 20
+        padding = 1.5
+
+
 class ViewBase(Gtk.VBox):
     __metaclass__ = abc.ABCMeta  # marks methods of this class as abstract
     __string_signal__ = (GObject.SignalFlags.RUN_FIRST, None, (str, ))
@@ -25,13 +50,15 @@ class ViewBase(Gtk.VBox):
         self.numdays = numdays
         self.selected_task = None
 
+        self.config = ViewConfig()
+
         self.tasktree = self.req.get_tasks_tree(
             name='calendar_view', refresh=False)
         self.req.apply_global_filter(self.tasktree, 'calendar_view')
 
         # Header
         self.header = Header(self.numdays)
-        self.header.set_size_request(-1, 35)
+        self.header.set_size_request(-1, self.config.header_height)
         self.pack_start(self.header, False, False, 0)
 
         # Scrolled Window
