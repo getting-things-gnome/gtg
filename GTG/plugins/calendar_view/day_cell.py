@@ -26,8 +26,10 @@ class DayCell(Gtk.Dialog):
 
         self.config = ViewConfig()
         self.config.task_height = 15
+        self.config.min_day_width = 170
         self.config.vgrid = False
         self.config.hgrid = False
+        self.config.bg_color = None
         self.all_day_tasks.add_configurations(self.config)
 
         self.create_drawtasks(tasks)
@@ -66,7 +68,7 @@ class DayCell(Gtk.Dialog):
 
     def compute_size(self):
         """ Computes and requests the size needed to draw everything. """
-        width = 165
+        width = self.config.min_day_width
         height = len(self.drawtasks) * self.config.task_height
         self.all_day_tasks.set_size_request(width, height)
 

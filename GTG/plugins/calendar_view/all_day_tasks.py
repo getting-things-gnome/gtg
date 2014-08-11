@@ -85,10 +85,11 @@ class AllDayTasks(Gtk.DrawingArea):
         alloc = self.get_allocation()
         self.set_line_color(self.config.line_color)
         row, col = self.today_cell
+        self.set_background_color(self.config.bg_color)
+        self.background.draw(ctx, alloc, self.config.vgrid, self.config.hgrid)
         if row is not None and col is not None and row >= 0 and col >= 0:
             self.background.highlight_cell(ctx, row, col, alloc,
                                            self.config.today_cell_color)
-        self.background.draw(ctx, alloc, self.config.vgrid, self.config.hgrid)
         ctx.restore()
 
         # then draw labels, if any (used only on month_view)
@@ -125,8 +126,7 @@ class AllDayTasks(Gtk.DrawingArea):
                 (dtask.get_id() == self.selected_task)
             ctx.save()
             dtask.draw(ctx, self.get_day_width(), self.config.task_height,
-                       self.config.padding, selected, self.get_week_height(),
-                       self.get_label_height())
+                       self.config, selected, self.get_week_height())
             ctx.restore()
 
         # if dragging cells to create new task, highlight them now

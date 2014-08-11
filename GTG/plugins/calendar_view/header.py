@@ -69,19 +69,19 @@ class Header(Gtk.DrawingArea):
         alloc.x = 0
         alloc.y = 0
 
-        ctx.set_line_width(0.8)
+        ctx.set_line_width(self.config.line_width)
+        self.set_line_color(self.config.line_color)
+        self.set_background_color(self.config.bg_color)
+        self.background.draw(ctx, alloc, vgrid=False, hgrid=True)
+
         row, col = self.highlight_cell
         if row is not None and col is not None:
             # print "header", alloc.x, alloc.y, alloc.width, alloc.height
             self.background.highlight_cell(ctx, row, col, alloc,
                                            self.config.today_cell_color)
 
-        self.set_line_color(self.config.line_color)
-        self.background.draw(ctx, alloc, vgrid=False, hgrid=True)
-
         color = self.config.font_color
         ctx.set_source_rgb(color[0], color[1], color[2])
-
         ctx.set_font_size(self.config.font_size)
         ctx.select_font_face(self.config.font, cairo.FONT_SLANT_NORMAL,
                              cairo.FONT_WEIGHT_NORMAL)

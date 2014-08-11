@@ -10,6 +10,7 @@ class ViewConfig:
         font = "Courier"
         font_size = 12
         font_color = (0.35, 0.31, 0.24)
+        task_font_color = (1, 1, 1)  # white
 
         line_color = (0.35, 0.31, 0.24, 0.15)
         line_width = 0.8
