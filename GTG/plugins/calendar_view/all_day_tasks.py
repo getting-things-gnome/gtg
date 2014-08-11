@@ -114,22 +114,9 @@ class AllDayTasks(Gtk.DrawingArea):
         # then draw links when there is overflowing tasks (only in month_view)
         if self.overflow_links:
             ctx.save()
-            color = self.config.link_color
-            ctx.set_source_rgba(color[0], color[1], color[2], color[3])
             for link in self.overflow_links:
-                (text, row, col) = link
-                w = ctx.text_extents(text)[2]
-                base_x = (col+1) * self.get_day_width() - w - \
-                    3*self.config.padding
-                base_y = row * self.get_week_height()
-                base_y += self.get_label_height() - 2*self.config.padding
-                ctx.move_to(base_x, base_y)
-                ctx.text_path(text)
-                # underline
-                y = base_y + 2
-                ctx.move_to(base_x, y)
-                ctx.line_to(base_x + w, y)
-                ctx.stroke()
+                link.draw(ctx, self.get_day_width(), self.get_week_height(),
+                          self.config)
             ctx.restore()
 
         # then draw all tasks
@@ -165,15 +152,7 @@ class AllDayTasks(Gtk.DrawingArea):
 
         if self.overflow_links:
             for link in self.overflow_links:
-                (text, row, col) = link
-                # h, w = ctx.text_extents(text)[1:3]
-                # FIXME: more generic values for h and w
-                h = self.config.font_size
-                w = self.config.font_size/2 * len(text)
-                base_x = (col+1) * self.get_day_width() - w - \
-                    3*self.config.padding
-                base_y = row * self.get_week_height()
-                base_y += self.get_label_height() - 2*self.config.padding
+                base_x, base_y, w, h = link.get_position()
                 if base_x <= event.x <= base_x + w and \
                    base_y - h <= event.y <= base_y:
                     drag_action = "click_link"

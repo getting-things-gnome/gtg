@@ -10,6 +10,7 @@ from GTG.plugins.calendar_view.utils import convert_coordinates_to_grid, \
     convert_coordinates_to_col, convert_coordinates_to_row
 from GTG.plugins.calendar_view.view import ViewBase
 from GTG.plugins.calendar_view.day_cell import DayCell
+from GTG.plugins.calendar_view.link_label import LinkLabel
 
 
 class MonthView(ViewBase):
@@ -233,17 +234,18 @@ class MonthView(ViewBase):
         popup.run()
         popup.destroy()
 
-    def create_label(self, row, col, count):
+    def create_link(self, row, col, count):
         """
-        Creates a label inside a day cell given by (@row, @col) with @count
-        overflowing tasks.
+        Creates a link to the hidden tasks inside a day cell given by (@row,
+        @col) with @count overflowing tasks.
 
         @param row: integer, the row corresponding to the cell.
         @param col: integer, the col corresponding to the cell.
         @param count: integer, the number of tasks hidden in this cell.
+        @return link: a LinkLabel object.
         """
-        label = '+%d more' % count
-        return (label, row, col)
+        link = LinkLabel(count, row, col)
+        return link
 
     def tasks_to_hide(self, row, col, visible_rows, needed_rows):
         """
@@ -294,9 +296,9 @@ class MonthView(ViewBase):
                             if dtask.get_id() in to_hide:
                                 dtask.set_position(-1, -1, -1, -1)
 
-                        # create label to link to hidden tasks
-                        label = self.create_label(row, col, num_hidden_tasks)
-                        overflow_links.append(label)
+                        # create link to hidden tasks
+                        link = self.create_link(row, col, num_hidden_tasks)
+                        overflow_links.append(link)
         self.all_day_tasks.overflow_links = overflow_links
 
     def update_drawtasks(self, tasks=None):
