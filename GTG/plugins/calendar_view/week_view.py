@@ -28,10 +28,6 @@ class WeekView(ViewBase):
         self.vadjustment = self.scroll.get_vadjustment()
         self.vadjustment.connect('changed', self.on_vadjustment_changed)
 
-    def update_config(self):
-        self.all_day_tasks.add_configurations(self.config)
-        self.header.add_configurations(self.config)
-
     def first_day(self):
         """ Returns the first day of the view being displayed """
         return self.week.start_date

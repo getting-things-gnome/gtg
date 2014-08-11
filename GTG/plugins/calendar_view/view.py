@@ -93,6 +93,11 @@ class ViewBase(Gtk.VBox):
         """ Handles window resizing event. """
         pass
 
+    def update_config(self):
+        """ Updates general design configurations. """
+        self.all_day_tasks.add_configurations(self.config)
+        self.header.add_configurations(self.config)
+
     def get_allocation(self):
         """ Returns drawable area allocation. Overrides default method. """
         return self.all_day_tasks.get_allocation()

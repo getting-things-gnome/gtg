@@ -28,6 +28,8 @@ class MonthView(ViewBase):
         # Scrolled Window options
         self.scroll.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.NEVER)
 
+        self.connect("size-allocate", self.on_size_allocate)
+
     def update_config(self):
         self.all_day_tasks.add_configurations(self.config)
         self.header.add_configurations(self.config)
