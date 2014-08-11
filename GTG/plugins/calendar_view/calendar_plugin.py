@@ -55,7 +55,7 @@ class CalendarPlugin(GObject.GObject):
         # get combobox content from available views
         for label in self.controller.get_view_labels():
             self.combobox.append_text(label)
-        self.combobox.set_active(2)
+        self.combobox.set_active(0)
 
         self.window.show_all()
         self.window.add_events(Gdk.EventMask.FOCUS_CHANGE_MASK)

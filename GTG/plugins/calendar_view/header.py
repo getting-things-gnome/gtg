@@ -50,7 +50,7 @@ class Header(Gtk.DrawingArea):
             return col_width
 
     def set_highlight_cell(self, row, col):
-        if row == 0 and 0 <= col < len(self.labels):
+        if row == 0 and 0 <= col < self.background.num_columns:
             self.highlight_cell = (row, col)
         else:
             self.highlight_cell = (None, None)
