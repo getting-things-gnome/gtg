@@ -32,6 +32,10 @@ class MonthView(ViewBase):
         self.all_day_tasks.add_configurations(self.config)
         self.header.add_configurations(self.config)
 
+    def on_size_allocate(self, widget=None, event=None):
+        """ Refreshes content when window is resized """
+        self.refresh()
+
     def init_weeks(self, numweeks):
         """
         Initializates the structure needed to manage dates, tasks and task
@@ -208,8 +212,7 @@ class MonthView(ViewBase):
         """ Returns the maximum number of tasks a single cell can hold. """
         tasks_available_area = (self.get_week_height() -
                                 self.all_day_tasks.get_label_height())
-        # FIXME: remove max(4)
-        return max(int(tasks_available_area // self.config.task_height), 4)
+        return int(tasks_available_area // self.config.task_height)
 
     def on_show_more_tasks(self, day):
         """

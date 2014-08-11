@@ -68,6 +68,8 @@ class ViewBase(Gtk.VBox):
         self.scroll.connect("scroll-event", self.on_scroll)
         self.pack_start(self.scroll, True, True, 0)
 
+        self.connect("size-allocate", self.on_size_allocate)
+
         # AllDayTasks widget
         self.all_day_tasks = AllDayTasks(self, cols=self.numdays)
         self.scroll.add_with_viewport(self.all_day_tasks)
@@ -86,6 +88,10 @@ class ViewBase(Gtk.VBox):
         self.edit_task = None
         self.add_new_task = None
         self.delete_task = None
+
+    def on_size_allocate(self, widget=None, event=None):
+        """ Handles window resizing event. """
+        pass
 
     def get_allocation(self):
         """ Returns drawable area allocation. Overrides default method. """
