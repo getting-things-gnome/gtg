@@ -83,9 +83,10 @@ class calendarView:
         """ Initialize all the GTK widgets """
 
         self.tb_button = Gtk.ToolButton()
-        self.tb_button.set_icon_name("x-office-calendar")  # -symbolic")
+        self.tb_button.set_icon_name("x-office-calendar")
         self.tb_button.set_is_important(True)
         self.tb_button.set_label(_("View as calendar"))
+        self.tb_button.set_tooltip_text(_("Display tasks with start and due dates in a calendar view"))
         self.tb_button.connect('clicked', self.show_calendar)
         self.tb_button.show()
         self.plugin_api.add_toolbar_item(self.tb_button)

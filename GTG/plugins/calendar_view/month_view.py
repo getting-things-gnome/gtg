@@ -3,13 +3,14 @@ import datetime
 import calendar
 
 from GTG.plugins.calendar_view.week import WeekSpan
-from GTG.plugins.calendar_view.drawtask import DrawTask, TASK_HEIGHT
+from GTG.plugins.calendar_view.drawtask import DrawTask
 from GTG.plugins.calendar_view.grid import Grid
 from GTG.plugins.calendar_view.utils import convert_coordinates_to_grid, \
     date_to_col_coord, date_to_row_coord, \
     convert_coordinates_to_col, convert_coordinates_to_row
 from GTG.plugins.calendar_view.view import ViewBase
 from GTG.plugins.calendar_view.day_cell import DayCell
+from GTG.plugins.calendar_view.link_label import LinkLabel
 
 
 class MonthView(ViewBase):
@@ -17,13 +18,25 @@ class MonthView(ViewBase):
     def __init__(self, parent, requester, numdays=7):
         super(MonthView, self).__init__(parent, requester, numdays)
 
-        self.min_day_width = 60
-        self.min_week_height = 80
-        self.font_size = 7
-        self.fixed = None
+        self.config.min_day_width = 60
+        self.config.min_week_height = 80
+        self.config.task_height = 15
+        self.update_config()
+
+        self.weeks = []
 
         # Scrolled Window options
         self.scroll.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.NEVER)
+
+        self.connect("size-allocate", self.on_size_allocate)
+
+    def update_config(self):
+        self.all_day_tasks.add_configurations(self.config)
+        self.header.add_configurations(self.config)
+
+    def on_size_allocate(self, widget=None, event=None):
+        """ Refreshes content when window is resized """
+        self.refresh()
 
     def init_weeks(self, numweeks):
         """
@@ -59,10 +72,6 @@ class MonthView(ViewBase):
         """ Returns the week/row height in pixels """
         return self.all_day_tasks.get_week_height()
 
-    def get_task_height(self):
-        """ Returns the height that the tasks should be drawn. """
-        return TASK_HEIGHT  # self.all_day_tasks.task_height
-
     def show_today(self):
         """
         Shows the range of dates in the current view with the date
@@ -89,8 +98,8 @@ class MonthView(ViewBase):
 
     def compute_size(self):
         """ Computes and requests the size needed to draw everything. """
-        width = self.min_day_width * self.numdays
-        height = self.min_week_height * self.numweeks
+        width = self.config.min_day_width * self.numdays
+        height = self.config.min_week_height * self.numweeks
         self.all_day_tasks.set_size_request(width, height)
 
     def calculate_number_of_weeks(self, year, month):
@@ -205,8 +214,7 @@ class MonthView(ViewBase):
         """ Returns the maximum number of tasks a single cell can hold. """
         tasks_available_area = (self.get_week_height() -
                                 self.all_day_tasks.get_label_height())
-        # FIXME: remove max(4)
-        return max(int(tasks_available_area // self.get_task_height()), 4)
+        return int(tasks_available_area // self.config.task_height)
 
     def on_show_more_tasks(self, day):
         """
@@ -231,17 +239,18 @@ class MonthView(ViewBase):
         popup.run()
         popup.destroy()
 
-    def create_label(self, row, col, count):
+    def create_link(self, row, col, count):
         """
-        Creates a label inside a day cell given by (@row, @col) with @count
-        overflowing tasks.
+        Creates a link to the hidden tasks inside a day cell given by (@row,
+        @col) with @count overflowing tasks.
 
         @param row: integer, the row corresponding to the cell.
         @param col: integer, the col corresponding to the cell.
         @param count: integer, the number of tasks hidden in this cell.
+        @return link: a LinkLabel object.
         """
-        label = '+%d more' % count
-        return (label, row, col)
+        link = LinkLabel(count, row, col)
+        return link
 
     def tasks_to_hide(self, row, col, visible_rows, needed_rows):
         """
@@ -292,9 +301,9 @@ class MonthView(ViewBase):
                             if dtask.get_id() in to_hide:
                                 dtask.set_position(-1, -1, -1, -1)
 
-                        # create label to link to hidden tasks
-                        label = self.create_label(row, col, num_hidden_tasks)
-                        overflow_links.append(label)
+                        # create link to hidden tasks
+                        link = self.create_link(row, col, num_hidden_tasks)
+                        overflow_links.append(link)
         self.all_day_tasks.overflow_links = overflow_links
 
     def update_drawtasks(self, tasks=None):

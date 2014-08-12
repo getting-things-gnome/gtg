@@ -3,8 +3,6 @@ from GTG.plugins.calendar_view.utils import convert_grid_to_screen_coord, \
     rounded_edges_or_pointed_ends_rectangle, create_vertical_gradient, \
     center_text_on_rect
 
-TASK_HEIGHT = 15
-
 
 class DrawTask:
     def __init__(self, task):
@@ -56,17 +54,18 @@ class DrawTask:
     def is_done(self):
         return self.task.get_status() == Task.STA_DONE
 
-    def draw(self, ctx, grid_width, padding=0,
-             selected=False, week_height=None):
+    def draw(self, ctx, grid_width, task_height, config, selected=False,
+             week_height=None):
         task_x, task_y, task_w, task_h = self.get_position()
         pos = self.get_position()
 
         base_x, base_y, width, height = convert_grid_to_screen_coord(
-            grid_width, TASK_HEIGHT, task_x, task_y, task_w, task_h, padding)
+            grid_width, config.task_height, task_x, task_y, task_w, task_h,
+            config.padding)
 
         # calculating week position when in month view
         if self.week_num is not None:
-            base_y += self.week_num * week_height + 15
+            base_y += self.week_num * week_height + config.label_height
 
         # restrict drawing to exposed area: no unnecessary drawing is done
         ctx.rectangle(base_x, base_y, width, height)
@@ -96,6 +95,7 @@ class DrawTask:
         label, base_x, base_y = center_text_on_rect(ctx, label, *pos,
                                                     crop=True)
         ctx.move_to(base_x, base_y)
-        ctx.set_source_rgba(1, 1, 1, alpha)
+        c = config.task_font_color
+        ctx.set_source_rgba(c[0], c[1], c[2], alpha)
         ctx.text_path(label)
         ctx.stroke()

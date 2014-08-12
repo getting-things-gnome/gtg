@@ -2,7 +2,7 @@ from gi.repository import Gtk, Gdk
 import datetime
 
 from GTG.plugins.calendar_view.week import WeekSpan
-from GTG.plugins.calendar_view.drawtask import DrawTask, TASK_HEIGHT
+from GTG.plugins.calendar_view.drawtask import DrawTask
 from GTG.plugins.calendar_view.grid import Grid
 from GTG.plugins.calendar_view.utils import date_to_col_coord, \
     convert_coordinates_to_col
@@ -14,7 +14,11 @@ class WeekView(ViewBase):
     def __init__(self, parent, requester, numdays=7):
         super(WeekView, self).__init__(parent, requester, numdays)
 
-        self.min_day_width = 60
+        self.config.min_day_width = 60
+        self.config.task_height = 25
+        self.config.padding = 2
+        self.update_config()
+
         self.grid = Grid(1, self.numdays)
         numweeks = int(self.numdays/7)
         self.week = WeekSpan(numweeks)
@@ -49,8 +53,8 @@ class WeekView(ViewBase):
 
     def compute_size(self):
         """ Computes and requests the size needed to draw everything. """
-        width = self.min_day_width * self.numdays
-        height = TASK_HEIGHT * self.grid.num_rows
+        width = self.config.min_day_width * self.numdays
+        height = self.config.task_height * self.grid.num_rows
         self.all_day_tasks.set_size_request(width, height)
 
     def set_week_from(self, start):

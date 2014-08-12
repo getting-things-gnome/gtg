@@ -11,27 +11,18 @@ class Header(Gtk.DrawingArea):
         self.labels = []
         self.background = Background(1, cols)
         self.sidebar = 0
-        self.font = "Courier"
-        self.font_size = 12
-        self.font_color = (0.35, 0.31, 0.24)
         self.highlight_cell = (None, None)
 
         self.connect("draw", self.draw)
+
+    def add_configurations(self, config):
+        self.config = config
 
     def set_sidebar_size(self, size):
         self.sidebar = size
 
     def set_labels(self, labels):
         self.labels = labels
-
-    def set_font(self, font):
-        self.font = font
-
-    def set_font_size(self, size):
-        self.font_size = size
-
-    def set_font_color(self, color):
-        self.font_color = color
 
     def set_line_color(self, color):
         self.background.set_line_color(color)
@@ -59,7 +50,7 @@ class Header(Gtk.DrawingArea):
             return col_width
 
     def set_highlight_cell(self, row, col):
-        if row == 0 and 0 <= col < len(self.labels):
+        if row == 0 and 0 <= col < self.background.num_columns:
             self.highlight_cell = (row, col)
         else:
             self.highlight_cell = (None, None)
@@ -78,19 +69,21 @@ class Header(Gtk.DrawingArea):
         alloc.x = 0
         alloc.y = 0
 
-        ctx.set_line_width(0.8)
+        ctx.set_line_width(self.config.line_width)
+        self.set_line_color(self.config.line_color)
+        self.set_background_color(self.config.bg_color)
+        self.background.draw(ctx, alloc, vgrid=False, hgrid=True)
+
         row, col = self.highlight_cell
         if row is not None and col is not None:
             # print "header", alloc.x, alloc.y, alloc.width, alloc.height
-            self.background.highlight_cell(ctx, row, col, alloc)
+            self.background.highlight_cell(ctx, row, col, alloc,
+                                           self.config.today_cell_color)
 
-        self.background.draw(ctx, alloc, vgrid=False, hgrid=True)
-
-        color = self.font_color
+        color = self.config.font_color
         ctx.set_source_rgb(color[0], color[1], color[2])
-
-        ctx.set_font_size(self.font_size)
-        ctx.select_font_face(self.font, cairo.FONT_SLANT_NORMAL,
+        ctx.set_font_size(self.config.font_size)
+        ctx.select_font_face(self.config.font, cairo.FONT_SLANT_NORMAL,
                              cairo.FONT_WEIGHT_NORMAL)
 
         # print labels: use multiple lines if necessary

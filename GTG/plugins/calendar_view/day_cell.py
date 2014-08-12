@@ -1,7 +1,8 @@
 from gi.repository import Gtk, Gdk
 
-from GTG.plugins.calendar_view.drawtask import DrawTask, TASK_HEIGHT
+from GTG.plugins.calendar_view.drawtask import DrawTask
 from GTG.plugins.calendar_view.all_day_tasks import AllDayTasks
+from GTG.plugins.calendar_view.view import ViewConfig
 
 
 class DayCell(Gtk.Dialog):
@@ -22,6 +23,15 @@ class DayCell(Gtk.Dialog):
 
         self.all_day_tasks = AllDayTasks(self, rows=1, cols=1)
         self.all_day_tasks.connect("button-press-event", self.dnd_start)
+
+        self.config = ViewConfig()
+        self.config.task_height = 15
+        self.config.min_day_width = 170
+        self.config.vgrid = False
+        self.config.hgrid = False
+        self.config.bg_color = None
+        self.all_day_tasks.add_configurations(self.config)
+
         self.create_drawtasks(tasks)
 
         self.set_resizable(False)
@@ -58,8 +68,8 @@ class DayCell(Gtk.Dialog):
 
     def compute_size(self):
         """ Computes and requests the size needed to draw everything. """
-        width = 165
-        height = len(self.drawtasks) * TASK_HEIGHT
+        width = self.config.min_day_width
+        height = len(self.drawtasks) * self.config.task_height
         self.all_day_tasks.set_size_request(width, height)
 
     def dnd_start(self, widget, event):

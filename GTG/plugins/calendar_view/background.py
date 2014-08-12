@@ -7,7 +7,7 @@ class Background(Gtk.DrawingArea):
         self.num_rows = rows
         self.num_columns = cols
         self.bg_color = None
-        self.line_color = (0.35, 0.31, 0.24, 1)
+        self.line_color = None
         self.connect("draw", self.draw)
 
     def set_num_rows(self, rows):
@@ -53,14 +53,14 @@ class Background(Gtk.DrawingArea):
                 ctx.line_to(area.width, i*row_height)
                 ctx.stroke()
 
-    def highlight_cell(self, ctx, row, col, area, color=(1, 1, 1), alpha=0.5):
+    def highlight_cell(self, ctx, row, col, area, color):
         # print "highlt", area.x, area.y, area.width, area.height
         if row >= self.num_rows or row < 0 or \
            col >= self.num_columns or col < 0:
             raise ValueError("Cell is out of index!")
         col_width = self.get_col_width(area)
         row_height = self.get_row_height(area)
-        ctx.set_source_rgba(color[0], color[1], color[2], alpha)
+        ctx.set_source_rgba(color[0], color[1], color[2], color[3])
         ctx.rectangle(col * col_width,
                       row * row_height,
                       col_width,

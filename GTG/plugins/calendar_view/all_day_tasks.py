@@ -2,7 +2,6 @@ from gi.repository import Gtk, Gdk
 import cairo
 
 from GTG.plugins.calendar_view.utils import convert_grid_to_screen_coord
-from GTG.plugins.calendar_view.drawtask import TASK_HEIGHT
 from GTG.plugins.calendar_view.background import Background
 
 
@@ -15,17 +14,11 @@ class AllDayTasks(Gtk.DrawingArea):
         self.num_columns = cols
         self.background = Background(rows, cols)
 
-        self.padding = 1.5
-        self.font = "Courier"
-        self.font_size = 12
-        self.font_color = (0.35, 0.31, 0.24)
-        self.link_color = (0, 0, 255, 0.5)  # default blue link color
         self.today_cell = (None, None)
         self.selected_task = None
         self.faded_cells = []
         self.cells = []
         self.labels = None
-        self.label_height = self.font_size
         self.overflow_links = []
 
         self.connect("draw", self.draw)
@@ -36,9 +29,12 @@ class AllDayTasks(Gtk.DrawingArea):
                         | Gdk.EventMask.BUTTON1_MOTION_MASK
                         | Gdk.EventMask.POINTER_MOTION_MASK)
 
+    def add_configurations(self, config):
+        self.config = config
+
     def get_label_height(self):
         if self.labels:
-            return self.label_height
+            return self.config.label_height
         return 0
 
     def set_labels(self, labels):
@@ -47,15 +43,6 @@ class AllDayTasks(Gtk.DrawingArea):
     def set_num_rows(self, rows):
         self.num_rows = rows
         self.background.set_num_rows(rows)
-
-    def set_font(self, font):
-        self.font = font
-
-    def set_font_size(self, size):
-        self.font_size = size
-
-    def set_font_color(self, color):
-        self.font_color = color
 
     def set_line_color(self, color):
         self.background.set_line_color(color)
@@ -72,14 +59,13 @@ class AllDayTasks(Gtk.DrawingArea):
     def set_tasks_to_draw(self, drawtasks):
         self.drawtasks = drawtasks
 
-    def highlight_cells(self, ctx, cells, color, alpha=0.5):
+    def highlight_cells(self, ctx, cells, color):
         alloc = self.get_allocation()
         for cell in cells:
             row, col = cell
             if 0 <= row < self.num_rows and 0 <= col < self.num_columns:
                 ctx.save()
-                self.background.highlight_cell(ctx, row, col, alloc,
-                                               color, alpha)
+                self.background.highlight_cell(ctx, row, col, alloc, color)
                 ctx.restore()
 
     def set_today_cell(self, row, col):
@@ -89,30 +75,33 @@ class AllDayTasks(Gtk.DrawingArea):
             self.today_cell = (None, None)
 
     def draw(self, widget, ctx):
-        ctx.set_line_width(0.8)
-        ctx.set_font_size(self.font_size)
-        ctx.select_font_face(self.font, cairo.FONT_SLANT_NORMAL,
+        ctx.set_line_width(self.config.line_width)
+        ctx.set_font_size(self.config.font_size)
+        ctx.select_font_face(self.config.font, cairo.FONT_SLANT_NORMAL,
                              cairo.FONT_WEIGHT_NORMAL)
 
         # first draw background
         ctx.save()
         alloc = self.get_allocation()
-        self.set_line_color(color=(0.35, 0.31, 0.24, 0.15))
+        self.set_line_color(self.config.line_color)
         row, col = self.today_cell
+        self.set_background_color(self.config.bg_color)
+        self.background.draw(ctx, alloc, self.config.vgrid, self.config.hgrid)
         if row is not None and col is not None and row >= 0 and col >= 0:
-            self.background.highlight_cell(ctx, row, col, alloc)
-        self.background.draw(ctx, alloc, vgrid=True, hgrid=True)
+            self.background.highlight_cell(ctx, row, col, alloc,
+                                           self.config.today_cell_color)
         ctx.restore()
 
         # then draw labels, if any (used only on month_view)
         if self.labels:
             ctx.save()
-            color = self.font_color
+            color = self.config.font_color
             ctx.set_source_rgb(color[0], color[1], color[2])
             for j, week in enumerate(self.labels):
                 for i, day in enumerate(week):
-                    base_x = i * self.get_day_width() + self.padding
-                    base_y = j * self.get_week_height() + self.label_height
+                    base_x = i * self.get_day_width() + self.config.padding
+                    base_y = j * self.get_week_height()
+                    base_y += self.get_label_height() - 2*self.config.padding
                     ctx.move_to(base_x, base_y)
                     ctx.text_path(day)
                     ctx.stroke()
@@ -120,25 +109,15 @@ class AllDayTasks(Gtk.DrawingArea):
 
         # fade days not in current month
         if self.faded_cells:
-            self.highlight_cells(ctx, self.faded_cells, color=(0.8, 0.8, 0.8))
+            self.highlight_cells(ctx, self.faded_cells,
+                                 self.config.faded_cells_color)
 
         # then draw links when there is overflowing tasks (only in month_view)
         if self.overflow_links:
             ctx.save()
-            color = self.link_color
-            ctx.set_source_rgba(color[0], color[1], color[2], color[3])
             for link in self.overflow_links:
-                (text, row, col) = link
-                w = ctx.text_extents(text)[2]
-                base_x = (col+1) * self.get_day_width() - w - 3*self.padding
-                base_y = row * self.get_week_height() + self.label_height
-                ctx.move_to(base_x, base_y)
-                ctx.text_path(text)
-                # underline
-                y = base_y + 2
-                ctx.move_to(base_x, y)
-                ctx.line_to(base_x + w, y)
-                ctx.stroke()
+                link.draw(ctx, self.get_day_width(), self.get_week_height(),
+                          self.config)
             ctx.restore()
 
         # then draw all tasks
@@ -146,14 +125,14 @@ class AllDayTasks(Gtk.DrawingArea):
             selected = self.selected_task and \
                 (dtask.get_id() == self.selected_task)
             ctx.save()
-            dtask.draw(ctx, self.get_day_width(), self.padding, selected,
-                       self.get_week_height())
+            dtask.draw(ctx, self.get_day_width(), self.config.task_height,
+                       self.config, selected, self.get_week_height())
             ctx.restore()
 
         # if dragging cells to create new task, highlight them now
         if self.cells:
-            self.highlight_cells(ctx, self.cells, color=(0.8, 0.8, 0),
-                                 alpha=0.1)
+            self.highlight_cells(ctx, self.cells,
+                                 self.config.highlight_cells_color)
 
     def identify_pointed_object(self, event, clicked=False):
         """
@@ -173,13 +152,7 @@ class AllDayTasks(Gtk.DrawingArea):
 
         if self.overflow_links:
             for link in self.overflow_links:
-                (text, row, col) = link
-                # h, w = ctx.text_extents(text)[1:3]
-                # FIXME: more generic values for h and w
-                h = self.font_size
-                w = self.font_size/2 * len(text)
-                base_x = (col+1) * self.get_day_width() - w - 3*self.padding
-                base_y = row * self.get_week_height() + self.label_height
+                base_x, base_y, w, h = link.get_position()
                 if base_x <= event.x <= base_x + w and \
                    base_y - h <= event.y <= base_y:
                     drag_action = "click_link"
@@ -187,12 +160,13 @@ class AllDayTasks(Gtk.DrawingArea):
 
         for task in self.drawtasks:
             (x, y, w, h) = convert_grid_to_screen_coord(
-                self.get_day_width(), TASK_HEIGHT, *task.get_position(),
-                padding=self.padding)
+                self.get_day_width(), self.config.task_height,
+                *task.get_position(), padding=self.config.padding)
 
             # calculating week position when in month view
             if task.get_week_num() is not None:
-                y += task.get_week_num() * self.get_week_height() + 15
+                y += task.get_week_num() * self.get_week_height() + \
+                    self.get_label_height()
 
             if not y < event.y < (y + h):
                 continue

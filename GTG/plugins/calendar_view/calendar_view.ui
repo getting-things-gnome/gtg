@@ -4,7 +4,6 @@
   <!-- interface-naming-policy project-wide -->
   <object class="GtkWindow" id="window">
     <property name="can_focus">False</property>
-    <property name="border_width">5</property>
     <property name="window_position">center</property>
     <property name="default_width">420</property>
     <property name="default_height">280</property>
@@ -16,7 +15,7 @@
         <property name="height_request">280</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="spacing">5</property>
+        <property name="spacing">2</property>
         <child>
           <object class="GtkHBox" id="hbox">
             <property name="visible">True</property>
@@ -114,61 +113,54 @@
           </packing>
         </child>
         <child>
-          <object class="GtkHButtonBox" id="hbuttonbox">
+          <object class="GtkToolbar" id="task_toolbar">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="spacing">1</property>
-            <property name="homogeneous">True</property>
             <child>
-              <object class="GtkButton" id="add">
-                <property name="label">gtk-add</property>
+              <object class="GtkToolButton" id="add">
                 <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="can_default">True</property>
-                <property name="has_default">True</property>
-                <property name="receives_default">True</property>
-                <property name="use_action_appearance">False</property>
-                <property name="use_stock">True</property>
+                <property name="can_focus">False</property>
+                <property name="is_important">True</property>
+                <property name="label" translatable="yes">New Task</property>
+                <property name="tooltip_text" translatable="yes">Create a new task</property>
+                <property name="icon_name">gtg-task-new</property>
                 <signal name="clicked" handler="on_add_clicked" swapped="no"/>
               </object>
               <packing>
-                <property name="expand">True</property>
-                <property name="fill">True</property>
-                <property name="position">0</property>
+                <property name="expand">False</property>
+                <property name="homogeneous">True</property>
               </packing>
             </child>
             <child>
-              <object class="GtkButton" id="edit">
-                <property name="label">gtk-edit</property>
+              <object class="GtkToolButton" id="edit">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
                 <property name="sensitive">False</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
-                <property name="use_action_appearance">False</property>
-                <property name="use_stock">True</property>
+                <property name="is_important">True</property>
+                <property name="label" translatable="yes">Edit</property>
+                <property name="stock_id">gtk-edit</property>
+                <property name="tooltip_text" translatable="yes">Edit selected task</property>
                 <signal name="clicked" handler="on_edit_clicked" swapped="no"/>
               </object>
               <packing>
-                <property name="expand">True</property>
-                <property name="fill">True</property>
-                <property name="position">1</property>
+                <property name="expand">False</property>
+                <property name="homogeneous">True</property>
               </packing>
             </child>
             <child>
-              <object class="GtkButton" id="remove">
-                <property name="label">gtk-remove</property>
+              <object class="GtkToolButton" id="remove">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
                 <property name="sensitive">False</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
-                <property name="use_action_appearance">False</property>
-                <property name="use_stock">True</property>
+                <property name="is_important">True</property>
+                <property name="label" translatable="yes">Delete</property>
+                <property name="tooltip_text" translatable="yes">Permanently remove selected task</property>
+                <property name="icon_name">edit-delete</property>
                 <signal name="clicked" handler="on_remove_clicked" swapped="no"/>
               </object>
               <packing>
-                <property name="expand">True</property>
-                <property name="fill">True</property>
-                <property name="position">2</property>
+                <property name="expand">False</property>
+                <property name="homogeneous">True</property>
               </packing>
             </child>
           </object>
@@ -176,17 +168,6 @@
             <property name="expand">False</property>
             <property name="fill">False</property>
             <property name="position">2</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkStatusbar" id="statusbar">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">4</property>
           </packing>
         </child>
       </object>

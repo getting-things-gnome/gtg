@@ -15,7 +15,6 @@ class CalendarPlugin(GObject.GObject):
 
         self.req = requester
         self.vmanager = vmanager
-        self.vmanager.connect('tasks-deleted', self.on_tasks_deleted)
 
         self.first_day = self.last_day = self.numdays = None
 
@@ -56,9 +55,7 @@ class CalendarPlugin(GObject.GObject):
         # get combobox content from available views
         for label in self.controller.get_view_labels():
             self.combobox.append_text(label)
-        self.combobox.set_active(2)
-
-        self.statusbar = builder.get_object("statusbar")
+        self.combobox.set_active(0)
 
         self.window.show_all()
         self.window.add_events(Gdk.EventMask.FOCUS_CHANGE_MASK)
@@ -74,16 +71,12 @@ class CalendarPlugin(GObject.GObject):
     def on_add_clicked(self, button=None):
         """ Asks the controller to add a new task. """
         self.current_view.add_new_task()
-        # task = self.req.get_task(self.current_view.get_selected_task())
-        # self.statusbar.push(0, "Added task: %s" % task.get_title())
 
     def on_edit_clicked(self, button=None):
         """ Asks the controller to edit the selected task. """
         task_id = self.current_view.get_selected_task()
         if task_id and self.current_view.req.has_task(task_id):
             self.current_view.ask_edit_task(task_id)
-            title = self.req.get_task(task_id).get_title()
-            self.statusbar.push(0, "Edited task: %s" % title)
 
     def on_remove_clicked(self, button=None):
         """
@@ -92,13 +85,6 @@ class CalendarPlugin(GObject.GObject):
         task_id = self.current_view.get_selected_task()
         if task_id and self.current_view.req.has_task(task_id):
             self.current_view.ask_delete_task(task_id)
-
-    def on_tasks_deleted(self, widget, tids):
-        if tids:
-            self.statusbar.push(0, "Deleted task: %s" %
-                                ", ".join([t.get_title() for t in tids]))
-        else:
-            self.statusbar.pop(0)
 
     def on_next_clicked(self, button, days=None):
         """ Advances the dates being displayed by a given number of @days """
