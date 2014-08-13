@@ -30,6 +30,7 @@ class calendarView:
         self.remove_task_handle = None
 
     def activate(self, plugin_api):
+        """ Activates the plugin """
         self.plugin_api = plugin_api
         self.req = self.plugin_api.get_requester()
         self.view_manager = plugin_api.get_view_manager()
@@ -38,9 +39,9 @@ class calendarView:
 
         self.plugin_api.set_active_selection_changed_callback(
             self.selection_changed)
-        self._init_calendar()
 
     def _init_calendar(self):
+        """ Creates and initializes a calendar, but don't show it yet """
         if not self.calendar:
             self.calendar = CalendarPlugin(self.req, self.view_manager)
         self.calendar.controller.new_task_callback(self.open_task)
@@ -49,25 +50,25 @@ class calendarView:
         self.calendar.window.hide()
 
     def deactivate(self, plugin_api):
-        """ Removes the gtk widgets before quitting """
+        """ Removes the gtk widgets and distroy calendar before quitting """
         self._disconnect_signals()
         self._gtk_deactivate()
+        del self.calendar
 
     def show_calendar(self, button):
+        """ User clicked to open calendar plugin, so show it """
         if not self.calendar:
-            self.calendar = CalendarPlugin(self.req)
+            self._init_calendar()
         self._connect_signals()
         self.calendar.window.show()
 
     def delete_task(self, task_id, widget=None):
+        """ Use view manager dialog to ask to delete task """
         self.view_manager.ask_delete_tasks([task_id])
 
     def selection_changed(self, selection):
+        """ Callback for when task selection changes """
         pass
-        # if selection.count_selected_rows() > 0:
-        #     self.tb_button.set_sensitive(True)
-        # else:
-        #     self.tb_button.set_sensitive(False)
 
     def open_task(self, task_id=None, thisisnew=False):
         """

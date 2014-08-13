@@ -46,7 +46,6 @@ class ViewBase(Gtk.VBox):
         self.req = requester
 
         self.header = None
-        self.background = None
 
         self.numdays = numdays
         self.selected_task = None
