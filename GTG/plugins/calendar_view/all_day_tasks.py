@@ -6,6 +6,13 @@ from GTG.plugins.calendar_view.background import Background
 
 
 class AllDayTasks(Gtk.DrawingArea):
+    """
+    This class represents the part of the View responsible for drawing the
+    tasks that have as duration 'all day' (or even more than one single day).
+    Currently, this is the only available class related to drawing tasks.
+    However, if a daily planner was created in the future, the tasks that have
+    only some hours of duration woudn't be displayed here.
+    """
     def __init__(self, parent, rows=1, cols=7):
         super(Gtk.DrawingArea, self).__init__()
 
@@ -30,36 +37,89 @@ class AllDayTasks(Gtk.DrawingArea):
                         | Gdk.EventMask.POINTER_MOTION_MASK)
 
     def add_configurations(self, config):
+        """
+        Adds the configurations to be used while drawing in this class, such as
+        the colors to be used for each component, the font, etc.
+
+        @param config: a ViewConfig object.
+        """
         self.config = config
 
     def get_label_height(self):
+        """
+        Returns the height of the labels in pixels.
+        See set_labels for details.
+
+        @return label_height: float, the height of a single label.
+        """
         if self.labels:
             return self.config.label_height
         return 0
 
     def set_labels(self, labels):
+        """
+        Updates the label of the days to be drawn inside each cell of the grid.
+        Only used by MonthView.
+
+        @param labels: list of string, contains the day number to be drawn in
+                       each cell of the grid.
+        """
         self.labels = labels
 
     def set_num_rows(self, rows):
+        """
+        Sets the number of rows the class will display when drawing. This will
+        be passed to the Background object whitin this class.
+        Used by MonthView to set the number of weeks in a month.
+
+        @param rows: int, the number of rows the background will have.
+        """
         self.num_rows = rows
         self.background.set_num_rows(rows)
 
     def set_line_color(self, color):
+        """
+        Sets the @color of the grid lines.
+
+        @param color: a 4-tuple of floats, a color in the format (red, green,
+                      blue, alpha).
+        """
         self.background.set_line_color(color)
 
     def set_background_color(self, color):
+        """
+        Sets the color the background of all cells should be painted.
+
+        @param color: triple of floats, color in the format (red, green, blue).
+        """
         self.background.set_background_color(color)
 
     def get_day_width(self):
+        """ Returns the day/column width in pixels """
         return self.get_allocation().width / float(self.num_columns)
 
     def get_week_height(self):
+        """ Returns the week/row height in pixels """
         return self.get_allocation().height / float(self.num_rows)
 
     def set_tasks_to_draw(self, drawtasks):
+        """
+        Sets which tasks will be drawn.
+
+        @param drawtasks: a DrawTask list, containing the tasks to be drawn.
+        """
         self.drawtasks = drawtasks
 
     def highlight_cells(self, ctx, cells, color):
+        """
+        Highlights the background of the given @cells using @color.
+
+        @param ctx: a Cairo context.
+        @param cells: a list of tuple of ints, containing the cells to be
+                      highlighted. Each tuple is in the format (row, col).
+        @param color: a 4-tuple of floats, a color in the format (red, green,
+                      blue, alpha).
+        """
         alloc = self.get_allocation()
         for cell in cells:
             row, col = cell
@@ -69,12 +129,24 @@ class AllDayTasks(Gtk.DrawingArea):
                 ctx.restore()
 
     def set_today_cell(self, row, col):
+        """
+        Sets a cell given by @row, @col to the one that corresponds to
+        'today'. This cell will be highlighted when the content is drawn.
+
+        @param row: integer, the row index of the cell corresponding to today.
+        @param col: integer, the col index of the cell corresponding to today.
+        """
         if 0 <= row < self.num_rows and 0 <= col < self.num_columns:
             self.today_cell = (row, col)
         else:
             self.today_cell = (None, None)
 
     def draw(self, widget, ctx):
+        """
+        Draws everything inside this class and all its objects.
+
+        @param ctx: a Cairo context.
+        """
         ctx.set_line_width(self.config.line_width)
         ctx.set_font_size(self.config.font_size)
         ctx.select_font_face(self.config.font, cairo.FONT_SLANT_NORMAL,
@@ -139,9 +211,9 @@ class AllDayTasks(Gtk.DrawingArea):
         Identify the object inside drawing area that is being pointed by the
         mouse. Also points out which mouse cursor should be used in result.
 
-        @param event: a Gdk event
+        @param event: a Gdk event, containing the mouse coordinates.
         @param clicked: bool, indicates whether or not the user clicked on the
-        object being pointed
+                        object being pointed.
         """
         expand_border = 10
         cursor = Gdk.Cursor.new(Gdk.CursorType.ARROW)
