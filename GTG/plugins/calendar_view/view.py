@@ -7,33 +7,48 @@ from GTG.plugins.calendar_view.all_day_tasks import AllDayTasks
 
 
 class ViewConfig:
-        font = "Courier"
-        font_size = 12
-        font_color = (0.35, 0.31, 0.24)
-        task_font_color = (1, 1, 1)  # white
+    """
+    This class contains design related configurations, such as text, lines and
+    background colors, task and header sizes, font faces, etc.
+    """
+    font = "Courier"
+    font_size = 12
+    font_color = (0.35, 0.31, 0.24)
+    task_font_color = (1, 1, 1)  # white
 
-        line_color = (0.35, 0.31, 0.24, 0.15)
-        line_width = 0.8
-        vgrid = True
-        hgrid = True
+    line_color = (0.35, 0.31, 0.24, 0.15)
+    line_width = 0.8
+    vgrid = True
+    hgrid = True
 
-        bg_color = None
-        faded_cells_color = (0.8, 0.8, 0.8, 0.6)  # light gray
-        highlight_cells_color = (0.8, 0.8, 0, 0.1)  # light yellow
-        today_cell_color = (1, 1, 1, 0.7)  # white
-        selected_task_color = (0.8, 0.8, 0)  # yellow
+    bg_color = None
+    faded_cells_color = (0.8, 0.8, 0.8, 0.6)  # light gray
+    highlight_cells_color = (0.8, 0.8, 0, 0.1)  # light yellow
+    today_cell_color = (1, 1, 1, 0.7)  # white
+    selected_task_color = (0.8, 0.8, 0)  # yellow
 
-        link_color = (0, 0, 255, 0.5)  # default blue link color
-        label_height = 15
+    link_color = (0, 0, 255, 0.5)  # default blue link color
+    label_height = 15
 
-        header_height = 35
-        min_day_width = 60
-        min_week_height = 80
-        task_height = 20
-        padding = 1.5
+    header_height = 35
+    min_day_width = 60
+    min_week_height = 80
+    task_height = 20
+    padding = 1.5
 
 
 class ViewBase(Gtk.VBox):
+    """
+    The class is an abstract class to represent a calendar view and is where
+    the core work of what is being showed on the screen happens.
+    This class is responsible for managing the drawing of everything inside it.
+    It calculates the days and tasks to be shown, the appropriate position of
+    each task, what is the selected task, etc. Multiple Views can exist at the
+    same time.
+    Since View is an abstract class, it can not be instantiated. Rather than
+    instantiating it, a subclass needs to be created and implement all the
+    abstract functions of the this base class.
+    """
     __metaclass__ = abc.ABCMeta  # marks methods of this class as abstract
     __string_signal__ = (GObject.SignalFlags.RUN_FIRST, None, (str, ))
     __none_signal__ = (GObject.SignalFlags.RUN_FIRST, None, tuple())
