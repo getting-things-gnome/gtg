@@ -14,7 +14,17 @@ from GTG.plugins.calendar_view.link_label import LinkLabel
 
 
 class MonthView(ViewBase):
-
+    """
+    This is a subclass of View that displays the tasks as a month calendar.
+    This class displays tasks in multiple weeks (each representing by a row),
+    and has a limited space that fits in each cell (since there is no
+    scroll-down).
+    For each week of the displayed month, this class will have a separate
+    WeekSpan, a Grid and a list of DrawTask objects. They are all managed using
+    a list of dictionaries (see init_weeks funciton for details).
+    This class may also contain multiple LinkLabel and DayCell objects, if
+    needed - when there are month cells that contain overflowing tasks.
+    """
     def __init__(self, parent, requester, numdays=7):
         super(MonthView, self).__init__(parent, requester, numdays)
 
@@ -30,10 +40,6 @@ class MonthView(ViewBase):
 
         self.connect("size-allocate", self.on_size_allocate)
 
-    def update_config(self):
-        self.all_day_tasks.add_configurations(self.config)
-        self.header.add_configurations(self.config)
-
     def on_size_allocate(self, widget=None, event=None):
         """ Refreshes content when window is resized """
         self.refresh()
@@ -45,8 +51,8 @@ class MonthView(ViewBase):
         Structure self.weeks is a list of size @numweeks, where each position
         manages the dates corresponding to a week, being actually a dictionary
         with entries:
-            'grid': contains Grid object.
-            'dates': contains WeekSpan object.
+            'grid': contains a Grid object.
+            'dates': contains a WeekSpan object.
             'tasks': is an empty list, will keep track of list of DrawTask.
 
         @param numweeks: integer, the number of weeks
