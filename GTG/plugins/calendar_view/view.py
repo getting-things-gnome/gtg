@@ -21,6 +21,7 @@ class ViewConfig:
         faded_cells_color = (0.8, 0.8, 0.8, 0.6)  # light gray
         highlight_cells_color = (0.8, 0.8, 0, 0.1)  # light yellow
         today_cell_color = (1, 1, 1, 0.7)  # white
+        selected_task_color = (0.8, 0.8, 0)  # yellow
 
         link_color = (0, 0, 255, 0.5)  # default blue link color
         label_height = 15

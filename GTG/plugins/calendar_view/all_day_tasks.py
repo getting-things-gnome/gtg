@@ -125,8 +125,8 @@ class AllDayTasks(Gtk.DrawingArea):
             selected = self.selected_task and \
                 (dtask.get_id() == self.selected_task)
             ctx.save()
-            dtask.draw(ctx, self.get_day_width(), self.config.task_height,
-                       self.config, selected, self.get_week_height())
+            dtask.draw(ctx, self.get_day_width(), self.config, selected,
+                       self.get_week_height())
             ctx.restore()
 
         # if dragging cells to create new task, highlight them now
