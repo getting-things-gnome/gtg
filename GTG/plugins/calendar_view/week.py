@@ -3,6 +3,10 @@ from GTG.plugins.calendar_view.utils import date_generator
 
 
 class WeekSpan():
+    """
+    This class is responsible for managing the dates to be showed in each View.
+    It holds one or more COMPLETE weeks, always starting on Monday.
+    """
 
     numdays = 7
 
