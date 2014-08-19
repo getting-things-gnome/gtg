@@ -62,8 +62,8 @@ class DrawTask:
         the week_num is needed.
         However, the DrawTask object has no notion of any of that.
 
-        @param x: integer, the initial row inside a grid.
-        @param y: integer, the initial col inside a grid.
+        @param x: integer, the initial col inside a grid.
+        @param y: integer, the initial row inside a grid.
         @param w: integer, the width in grid cells.
         @param h: integer, the height in grid cells.
         """
