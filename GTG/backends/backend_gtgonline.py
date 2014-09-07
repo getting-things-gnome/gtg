@@ -71,6 +71,10 @@ class Backend(PeriodicImportBackend):
     }
 
     _static_parameters = {
+        "service-url": {
+            GenericBackend.PARAM_TYPE: GenericBackend.TYPE_STRING,
+            GenericBackend.PARAM_DEFAULT_VALUE:
+                'http://gtgonline-parinporecha.rhcloud.com/', },
         "username": {
             GenericBackend.PARAM_TYPE: GenericBackend.TYPE_STRING,
             GenericBackend.PARAM_DEFAULT_VALUE:
@@ -88,7 +92,7 @@ class Backend(PeriodicImportBackend):
     
     IS_REQUESTS_LATEST = True
     
-    BASE_URL = "http://gtgonline-parinporecha.rhcloud.com/"
+    BASE_URL = "/"
     URLS = {
         'auth': BASE_URL + 'user/auth_gtg/',
         'tasks': {
@@ -156,7 +160,7 @@ class Backend(PeriodicImportBackend):
         """
         params = {"email": self._parameters["username"],
                   "password": self._parameters["password"],}
-        auth_response = requests.post(self.URLS['auth'], params)
+        auth_response = requests.post("%s%s" % (self._parameters["service-url"], self.URLS['auth']), params)
         if auth_response.status_code != 200:
             self.error_caught_abort(BackendSignals.ERRNO_NETWORK)
         if auth_response.text != '1':
@@ -205,7 +209,7 @@ class Backend(PeriodicImportBackend):
         #print "Fetching tasks started ..."
         params = {"email": self._parameters["username"],
                   "password": self._parameters["password"],}
-        tasks = requests.post(self.URLS['tasks']['get'], params)
+        tasks = requests.post("%s%s" % (self._parameters["service-url"], self.URLS['tasks']['get']), params)
         #print "response received = " + str(tasks.json)
         if tasks.status_code == 200:
             #print "json = " + str(tasks.json())
@@ -333,7 +337,7 @@ class Backend(PeriodicImportBackend):
             "password": self._parameters["password"],
             "task_list": json.dumps(task_list),
         }
-        ids = requests.post(self.URLS['tasks']['new'], \
+        ids = requests.post("%s%s" % (self._parameters["service-url"], self.URLS['tasks']['new']), \
                             data = { key: str(value) for key, value in list(params.items()) })
         #print "ids received = " + str(ids.json)
         if not self.IS_REQUESTS_LATEST:
@@ -435,7 +439,7 @@ class Backend(PeriodicImportBackend):
             "task_list": json.dumps(task_list),
             "origin": "gtg",
         }
-        response = requests.post(self.URLS['tasks']['update'], params)
+        response = requests.post("%s%s" % (self._parameters["service-url"], self.URLS['tasks']['update']), params)
         
         #print "Update response = " + str(response.json)
         return
@@ -561,13 +565,13 @@ class Backend(PeriodicImportBackend):
         params = {"email": self._parameters["username"],
                   "password": self._parameters["password"],
                   "task_id_list": json.dumps(web_id_list), "origin": "gtg",}
-        tags = requests.post(self.URLS['tasks']['delete'], params)
+        tags = requests.post("%s%s" % (self._parameters["service-url"], self.URLS['tasks']['delete']), params)
     
     def fetch_tags_from_server(self, ):
         #print "Fetching tags started ..."
         params = {"email": self._parameters["username"],
                   "password": self._parameters["password"],}
-        tags = requests.post(self.URLS['tags'], params)
+        tags = requests.post("%s%s" % (self._parameters["service-url"], self.URLS['tags']), params)
         #print "response received = " + str(tags.json)
         return tags.json()
     
