@@ -668,4 +668,4 @@ class Backend(PeriodicImportBackend):
             in_str += self.convert_date_to_str(task.get_due_date().date())
             in_str += task.get_status()
             in_str += str(len(task.get_subtasks()))
-        return md5(in_str).hexdigest()
+        return md5(in_str.encode('utf-8')).hexdigest()
