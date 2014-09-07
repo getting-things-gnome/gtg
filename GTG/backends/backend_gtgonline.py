@@ -28,12 +28,12 @@ import time
 import threading
 import datetime
 import subprocess
-import exceptions
+#import exceptions
 import requests
 import json
 import http.cookiejar
 
-import pynotify
+#import pynotify
 
 #from dateutil.tz import tzutc, tzlocal
 from lxml import html
@@ -146,7 +146,7 @@ class Backend(PeriodicImportBackend):
                 Please update it (pip install requests)")
                 self.error_caught_abort(BackendSignals.ERRNO_NETWORK)
         
-        pynotify.init("started")
+        #pynotify.init("started")
         self.try_auth()
         #print "returned here"
             
@@ -179,7 +179,7 @@ class Backend(PeriodicImportBackend):
         #tags = self.fetch_tags_from_server()
         #self.process_tags(tags)
         self.save_state()
-        pynotify.Notification("Sync Done", "Added: 5 tasks\nUpdated: 9 tasks\nDeleted: 2 tasks\n(^^This isn't real, just a representation)", "dialog-info").show()
+        #pynotify.Notification("Sync Done", "Added: 5 tasks\nUpdated: 9 tasks\nDeleted: 2 tasks\n(^^This isn't real, just a representation)", "dialog-info").show()
         
     def save_state(self):
         '''Saves the state of the synchronization'''
