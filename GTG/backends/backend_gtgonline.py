@@ -94,14 +94,14 @@ class Backend(PeriodicImportBackend):
     
     BASE_URL = "/"
     URLS = {
-        'auth': BASE_URL + 'user/auth_gtg/',
+        'auth': BASE_URL + 'api/v1/user/auth/',
         'tasks': {
-            'get': BASE_URL + 'tasks/serial/',
-            'new': BASE_URL + 'tasks/new/',
-            'update': BASE_URL + 'tasks/bulk_update/',
-            'delete': BASE_URL + 'tasks/delete/',
+            'get': BASE_URL + 'api/v1/tasks/get/',
+            'new': BASE_URL + 'api/v1/tasks/new/',
+            'update': BASE_URL + 'api/v1/tasks/update/',
+            'delete': BASE_URL + 'api/v1/tasks/delete/',
         },
-        'tags': BASE_URL + 'tags/all/',
+        'tags': BASE_URL + 'api/v1/tags/get/',
     }
     
     CONVERT_24_HR = '%d/%m/%y'
@@ -163,8 +163,7 @@ class Backend(PeriodicImportBackend):
         auth_response = requests.post("%s%s" % (self._parameters["service-url"], self.URLS['auth']), params)
         if auth_response.status_code != 200:
             self.error_caught_abort(BackendSignals.ERRNO_NETWORK)
-        if auth_response.text != '1':
-            self.error_caught_abort(BackendSignals.ERRNO_AUTHENTICATION)
+        self.api_key = auth_response.json()
     
     def error_caught_abort(self, error):
         """
@@ -207,8 +206,7 @@ class Backend(PeriodicImportBackend):
         The server gives a JSON response which is then sent for parsing
         """
         #print "Fetching tasks started ..."
-        params = {"email": self._parameters["username"],
-                  "password": self._parameters["password"],}
+        params = {"api_key": self.api_key}
         tasks = requests.post("%s%s" % (self._parameters["service-url"], self.URLS['tasks']['get']), params)
         #print "response received = " + str(tasks.json)
         if tasks.status_code == 200:
@@ -333,8 +331,7 @@ class Backend(PeriodicImportBackend):
         #print "Adding tasks started ..."
         #print "Task list to send = " + json.dumps(task_list)
         params = {
-            "email": self._parameters["username"],
-            "password": self._parameters["password"],
+            "api_key": self.api_key,
             "task_list": json.dumps(task_list),
         }
         ids = requests.post("%s%s" % (self._parameters["service-url"], self.URLS['tasks']['new']), \
@@ -434,12 +431,10 @@ class Backend(PeriodicImportBackend):
             }
         ]
         params = {
-            "email": self._parameters["username"],
-            "password": self._parameters["password"],
+            "api_key": self.api_key,
             "task_list": json.dumps(task_list),
-            "origin": "gtg",
         }
-        response = requests.post("%s%s" % (self._parameters["service-url"], self.URLS['tasks']['update']), params)
+        response = requests.put(self.URLS['tasks']['update'], params)
         
         #print "Update response = " + str(response.json)
         return
@@ -562,15 +557,13 @@ class Backend(PeriodicImportBackend):
     
     def remote_delete_task(self, web_id_list):
         #print "Deleting remote tasks started ..." + str(web_id_list)
-        params = {"email": self._parameters["username"],
-                  "password": self._parameters["password"],
+        params = {"api_key": self.api_key,
                   "task_id_list": json.dumps(web_id_list), "origin": "gtg",}
-        tags = requests.post("%s%s" % (self._parameters["service-url"], self.URLS['tasks']['delete']), params)
+        tags = requests.delete(self.URLS['tasks']['delete'], data = params)
     
     def fetch_tags_from_server(self, ):
         #print "Fetching tags started ..."
-        params = {"email": self._parameters["username"],
-                  "password": self._parameters["password"],}
+        params = {"api_key": self.api_key}
         tags = requests.post("%s%s" % (self._parameters["service-url"], self.URLS['tags']), params)
         #print "response received = " + str(tags.json)
         return tags.json()
