@@ -31,7 +31,7 @@ import subprocess
 import exceptions
 import requests
 import json
-import cookielib
+import http.cookiejar
 
 import pynotify
 
@@ -141,9 +141,9 @@ class Backend(PeriodicImportBackend):
             #print "Using requests 0.x"
             self.IS_REQUESTS_LATEST = False
             if requests.__version__[:4] != '0.14':
-                print "Backend GTGOnline! has been disabled \
+                print( "Backend GTGOnline! has been disabled \
                 because the requests module you're using is very old. \
-                Please update it (pip install requests)"
+                Please update it (pip install requests)")
                 self.error_caught_abort(BackendSignals.ERRNO_NETWORK)
         
         pynotify.init("started")
@@ -262,7 +262,7 @@ class Backend(PeriodicImportBackend):
         self.add_remote_id_to_sync_details(id_dict)
         #print "Id dict = " + str(id_dict)
         
-        remote_ids_in_hash_dict = [i[1] for i in self.hash_dict.values()]
+        remote_ids_in_hash_dict = [i[1] for i in list(self.hash_dict.values())]
         
         new_remote_tasks = list(set(server_id_dict.keys()) - \
                                 set(remote_ids_in_hash_dict))
@@ -274,7 +274,7 @@ class Backend(PeriodicImportBackend):
             sync_details = self.hash_dict.get(gtg_task.get_id(), [None, None])
             remote_id = sync_details[1]
             remote_ids_list.append(remote_id)
-            if remote_id in server_id_dict.keys():
+            if remote_id in list(server_id_dict.keys()):
                 #print "Sending task to update scenario"
                 self.process_update_scenario(gtg_task, \
                                              server_id_dict[remote_id], \
@@ -334,7 +334,7 @@ class Backend(PeriodicImportBackend):
             "task_list": json.dumps(task_list),
         }
         ids = requests.post(self.URLS['tasks']['new'], \
-                            data = { key: str(value) for key, value in params.items() })
+                            data = { key: str(value) for key, value in list(params.items()) })
         #print "ids received = " + str(ids.json)
         if not self.IS_REQUESTS_LATEST:
             return ids.json
@@ -345,7 +345,7 @@ class Backend(PeriodicImportBackend):
         For a newly created task on server, this method adds it's remote id
         to the task element in hash dictionary
         """
-        for key, value in id_dict.iteritems():
+        for key, value in id_dict.items():
             
             self.hash_dict[key][1] = value
             
@@ -504,7 +504,7 @@ class Backend(PeriodicImportBackend):
         #print "Remote_subtasks = " + str(remote_subtasks)
         remote_subtask_local_id = []
         
-        for key, value in self.hash_dict.iteritems():
+        for key, value in self.hash_dict.items():
             if value[1] in remote_subtasks:
                 remote_subtask_local_id.append(key)
         
@@ -535,7 +535,7 @@ class Backend(PeriodicImportBackend):
             local_tasks_dict[web_id] = local_task
         
         #print "Local Tasks Dict = " + str(local_tasks_dict)
-        for key, value in local_tasks_dict.iteritems():
+        for key, value in local_tasks_dict.items():
             remote_subtask_ids = remote_task_dict[key]["subtasks"]
             #print "Remote subtask Ids = " + str(remote_subtask_ids)
             local_subtask_ids = [local_tasks_dict[str(task_id)].get_id() \
@@ -572,7 +572,7 @@ class Backend(PeriodicImportBackend):
         return tags.json()
     
     def process_tags(self, tags):
-        print "Tags = " + str(tags)
+        print(("Tags = " + str(tags)))
         
     def strip_xml_tags(self, text):
         """
