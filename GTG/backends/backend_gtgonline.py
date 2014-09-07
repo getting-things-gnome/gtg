@@ -559,7 +559,7 @@ class Backend(PeriodicImportBackend):
         #print "Deleting remote tasks started ..." + str(web_id_list)
         params = {"api_key": self.api_key,
                   "task_id_list": json.dumps(web_id_list), "origin": "gtg",}
-        tags = requests.delete(self.URLS['tasks']['delete'], data = params)
+        tags = requests.delete("%s%s" % (self._parameters["service-url"], self.URLS['tasks']['delete']), data = params)
     
     def fetch_tags_from_server(self, ):
         #print "Fetching tags started ..."
