@@ -434,7 +434,7 @@ class Backend(PeriodicImportBackend):
             "api_key": self.api_key,
             "task_list": json.dumps(task_list),
         }
-        response = requests.put(self.URLS['tasks']['update'], params)
+        response = requests.put("%s%s" % (self._parameters["service-url"], self.URLS['tasks']['update']), params)
         
         #print "Update response = " + str(response.json)
         return
