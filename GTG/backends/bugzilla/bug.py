@@ -18,28 +18,20 @@ __all__ = ('BugFactory',)
 
 
 class Bug(object):
+    '''Represent a bug object'''
 
     def __init__(self, bug):
-        ''' Initialize Bug object using bug object retrieved via Bugzilla
-            service XMLRPC
+        '''
+        Initialize Bug object using bug object retrieved via Bugzilla service
+        XMLRPC
         '''
         self.bug = bug
 
-    @property
-    def summary(self):
-        return self.bug['summary']
-
-    @property
-    def product(self):
-        return self.bug['product']
-
-    @property
-    def description(self):
-        return self.bug['summary']
-
-    @property
-    def component(self):
-        return self.bug['component']
+    def __getattr__(self, name):
+        value = self.bug.get(name, None)
+        if value is None:
+            raise AttributeError('Bug does not have attribute %s' % name)
+        return value
 
 
 class GnomeBug(Bug):
@@ -77,6 +69,20 @@ bugs = {
 
 
 class BugFactory(object):
+    '''Factory to create a concrete Bug object'''
+
     @staticmethod
-    def create(serviceDomain, bug):
-        return bugs[serviceDomain](bug)
+    def create(bug_cls_key, bug):
+        '''
+        Create a concrete Bug object
+
+        @param bug_cls_key: the key to determine the specific Bug class
+        @param bug: a dictionary object parsed from the JSON representing a bug
+                    returned from related Bugzilla service
+        @return: the Bug object. None if no specific Bug class is found
+        '''
+        bug_cls = bugs.get(bug_cls_key, None)
+        if bug_cls is None:
+            return None
+        else:
+            return bug_cls(bug)

@@ -62,6 +62,9 @@ class TaskBrowser(GObject.GObject):
         self.tag_active = False
         self.applied_tags = []
 
+        # Sync for showing infobar
+        self.infobar_lock = threading.Lock()
+
         # treeviews handlers
         self.vtree_panes = {}
         self.tv_factory = TreeviewFactory(self.req, self.config)
@@ -1523,7 +1526,7 @@ class TaskBrowser(GObject.GObject):
         return self.browser_shown
 
 ## BACKENDS RELATED METHODS ##################################################
-    def on_backend_failed(self, sender, backend_id, error_code):
+    def on_backend_failed(self, sender, backend_id, error_code, data=None):
         """
         Signal callback.
         When a backend fails to work, loads a Gtk.Infobar to alert the user
@@ -1532,9 +1535,11 @@ class TaskBrowser(GObject.GObject):
         @param backend_id: the id of the failing backend
         @param error_code: a backend error code, as specified
             in BackendsSignals
+        @param data: data for failed event
         """
-        infobar = self._new_infobar(backend_id)
-        infobar.set_error_code(error_code)
+        with self.infobar_lock:
+            infobar = self._new_infobar(backend_id, data=data)
+            infobar.set_error_code(error_code)
 
     def on_backend_needing_interaction(self, sender, backend_id, description,
                                        interaction_type, callback):
@@ -1586,11 +1591,12 @@ class TaskBrowser(GObject.GObject):
                 self.vbox_toolbars.foreach(self.__remove_backend_infobar,
                                            backend_id)
 
-    def _new_infobar(self, backend_id):
+    def _new_infobar(self, backend_id, data=None):
         '''
         Helper function to create a new infobar for a backend
 
         @param backend_id: the backend for which we're creating the infobar
+        @param data: data to construct information bar
         @returns Gtk.Infobar: the created infobar
         '''
         # remove old infobar related to backend_id, if any
@@ -1598,7 +1604,8 @@ class TaskBrowser(GObject.GObject):
             return
         self.vbox_toolbars.foreach(self.__remove_backend_infobar, backend_id)
         # add a new one
-        infobar = CustomInfoBar(self.req, self, self.vmanager, backend_id)
+        infobar = CustomInfoBar(self.req, self, self.vmanager, backend_id,
+                                data=data)
         self.vbox_toolbars.pack_start(infobar, True, True, 0)
         return infobar
 

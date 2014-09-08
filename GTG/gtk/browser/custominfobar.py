@@ -24,6 +24,12 @@ from GTG import _
 from GTG.backends.backendsignals import BackendSignals
 from GTG.tools.networkmanager import is_connection_up
 
+from GTG.backends.bugzilla.exceptions import ERRNO_BUGZILLA_BUG_SYNC_FAIL
+from GTG.backends.bugzilla.exceptions import ERRNO_BUGZILLA_INVALID
+from GTG.backends.bugzilla.exceptions import ERRNO_BUGZILLA_NO_PERM
+from GTG.backends.bugzilla.exceptions import ERRNO_BUGZILLA_NOT_EXIST
+from GTG.backends.bugzilla.exceptions import ERRNO_BUGZILLA_UNKNOWN
+
 
 class CustomInfoBar(Gtk.InfoBar):
     '''
@@ -42,7 +48,7 @@ class CustomInfoBar(Gtk.InfoBar):
     DBUS_MESSAGE = _("Cannot connect to DBus, I've disabled "
                      "the <b>%s</b> synchronization service.")
 
-    def __init__(self, req, browser, vmanager, backend_id):
+    def __init__(self, req, browser, vmanager, backend_id, data=None):
         '''
         Constructor, Prepares the infobar.
 
@@ -50,6 +56,7 @@ class CustomInfoBar(Gtk.InfoBar):
         @param browser: a TaskBrowser object
         @param vmanager: a ViewManager object
         @param backend_id: the id of the backend linked to the infobar
+        @param data: data for formatting specific event message
         '''
         super(CustomInfoBar, self).__init__()
         self.req = req
@@ -57,6 +64,7 @@ class CustomInfoBar(Gtk.InfoBar):
         self.vmanager = vmanager
         self.backend_id = backend_id
         self.backend = self.req.get_backend(backend_id)
+        self.data = data
 
     def get_backend_id(self):
         '''
@@ -87,6 +95,21 @@ class CustomInfoBar(Gtk.InfoBar):
         if event == Gtk.ResponseType.ACCEPT:
             self.vmanager.configure_backend(backend_id=self.backend_id)
 
+    def _show_message(self, message_type, message, buttons):
+        '''
+        Show message in the info bar
+ 
+        @param message_type: type of message, should be any of gtk.MESSAGE_*
+        @param message: message to show
+        @param buttons: tuple of 2-element tuples, each of which consist of
+                        button text and response id.
+        '''
+        self.set_message_type(message_type)
+        self.label.set_markup(message)
+        for button_text, response_id in buttons:
+            self.add_button(button_text, response_id)
+
+    # TODO: lock this method
     def set_error_code(self, error_code):
         '''
         Sets this infobar to show an error to the user
@@ -117,6 +140,14 @@ class CustomInfoBar(Gtk.InfoBar):
             self.set_message_type(Gtk.MessageType.WARNING)
             self.label.set_markup(self.DBUS_MESSAGE % backend_name)
             self.add_button(_('Ok'), Gtk.ResponseType.CLOSE)
+
+        elif error_code in (ERRNO_BUGZILLA_BUG_SYNC_FAIL,
+                            ERRNO_BUGZILLA_INVALID,
+                            ERRNO_BUGZILLA_NO_PERM,
+                            ERRNO_BUGZILLA_NOT_EXIST):
+            self._show_message(Gtk.MessageType.WARNING,
+                               self.data['message'],
+                               ((_('Ok'), Gtk.ResponseType.CLOSE),))
 
         self.show_all()
 

@@ -91,7 +91,8 @@ class _BackendSignalsGObject(GObject.GObject):
                     BACKEND_SYNC_STARTED: signal_type_factory(str),
                     BACKEND_SYNC_ENDED: signal_type_factory(str),
                     DEFAULT_BACKEND_LOADED: signal_type_factory(),
-                    BACKEND_FAILED: signal_type_factory(str, str),
+                    BACKEND_FAILED: signal_type_factory(str, str,
+                                                        GObject.TYPE_PYOBJECT),
                     INTERACTION_REQUESTED: signal_type_factory(str, str,
                                                                str, str)}
 
@@ -121,9 +122,9 @@ class _BackendSignalsGObject(GObject.GObject):
     def default_backend_loaded(self):
         GObject.idle_add(self.emit, self.DEFAULT_BACKEND_LOADED)
 
-    def backend_failed(self, backend_id, error_code):
+    def backend_failed(self, backend_id, error_code, data=None):
         GObject.idle_add(self.emit, self.BACKEND_FAILED, backend_id,
-                         error_code)
+                         error_code, data)
 
     def interaction_requested(self, backend_id, description,
                               interaction_type, callback_str):

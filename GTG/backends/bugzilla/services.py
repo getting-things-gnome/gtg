@@ -1,10 +1,28 @@
 # -*- coding: utf-8 -*-
+# Copyright (c) 2009 - Guillaume Desmottes <gdesmott@gnome.org>
+#
+# This program is free software: you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation, either version 3 of the License, or (at your option) any later
+# version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+# details.
+#
+# You should have received a copy of the GNU General Public License along with
+# this program.  If not, see <http://www.gnu.org/licenses/>.
+
 
 # Remove dependence of bugz due to that plugin just needs get action and
 # it is done by Python xmlrpclib simply enough.
 from xmlrpc.client import ServerProxy
 
-from .bug import BugFactory
+from GTG.backends.bugzilla.bug import BugFactory
+from GTG.backends.bugzilla.exceptions import BugzillaServiceDisabled
+from GTG.backends.bugzilla.exceptions import BugzillaServiceNotExist
+
 
 __all__ = ('BugzillaServiceFactory',)
 
@@ -14,13 +32,13 @@ class BugzillaService(object):
     enabled = True
     tag_from = 'component'
 
-    def __init__(self, scheme, domain):
+    def __init__(self, scheme, net_location):
         self.scheme = scheme
-        self.domain = domain
+        self.netloc = net_location
 
     def buildXmlRpcServerUrl(self):
-        return '%(scheme)s://%(domain)s/xmlrpc.cgi' % {
-            'scheme': self.scheme, 'domain': self.domain,
+        return '%(scheme)s://%(net_location)s/xmlrpc.cgi' % {
+            'scheme': self.scheme, 'net_location': self.netloc,
         }
 
     def getProxy(self, server_url):
@@ -30,7 +48,7 @@ class BugzillaService(object):
         server_url = self.buildXmlRpcServerUrl()
         proxy = self.getProxy(server_url)
         bugs = proxy.Bug.get({'ids': [bug_id, ]})
-        return BugFactory.create(self.domain, bugs['bugs'][0])
+        return BugFactory.create(self.netloc, bugs['bugs'][0])
 
     def getTags(self, bug):
         ''' Get a list of tags due to some bug attribute contains list rather
@@ -91,27 +109,26 @@ services = {
 }
 
 
-class BugzillaServiceNotExist(Exception):
-    pass
-
-
-class BugzillaServiceDisabled(Exception):
-    ''' Bugzilla service is disabled by user. '''
-
-    def __init__(self, domain, *args, **kwargs):
-        self.message = '%s is disabled.' % domain
-        super(BugzillaServiceDisabled, self).__init__(*args, **kwargs)
-
-
 class BugzillaServiceFactory(object):
     ''' Create a Bugzilla service using scheme and domain '''
 
     @staticmethod
-    def create(scheme, domain):
-        if domain in services:
-            service = services[domain]
-            if not service.enabled:
-                raise BugzillaServiceDisabled(domain)
-            return services[domain](scheme, domain)
-        else:
-            raise BugzillaServiceNotExist(domain)
+    def create(scheme, net_location):
+        '''
+        Fatory method to create a new Bugzilla service
+
+        @param scheme: the scheme part of bug URL
+        @param net_location: consists of hostname and port, that is the key to
+                             determine a concrete Bugzilla service
+        @return: the instance of determined Bugzilla service
+        @raises BugzillaServiceDisabled: when requested Bugzilla service is
+                                         disabled now.
+        @raises BugzillaServiceNotExist: when requested Bugzilla service does
+                                         not exist.
+        '''
+        bz_service_cls = services.get(net_location, None)
+        if bz_service_cls is None:
+            raise BugzillaServiceNotExist(net_location)
+        if not bz_service_cls.enabled:
+            raise BugzillaServiceDisabled(net_location)
+        return bz_service_cls(scheme, net_location)
