@@ -486,7 +486,7 @@ class GenericBackend(object):
 
     def is_default(self):
         '''
-        Returns if the backend is enabled
+        Returns if the backend is default
 
         @returns: bool
         '''
