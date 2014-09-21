@@ -20,12 +20,15 @@
 from gi.repository import Gtk
 
 from GTG import _
+from GTG.gtk.backends_dialog.parameters_ui.ui_widget import ParameterUIWidget
+
+__all__ = ('PasswordUI',)
 
 
 class PasswordUI(Gtk.Box):
     '''Widget displaying a gtk.Label and a textbox to input a password'''
 
-    def __init__(self, req, backend, width):
+    def __init__(self, req, backend, width, parameter_name):
         '''Creates the gtk widgets and loads the current password in the text
         field
 
@@ -33,12 +36,8 @@ class PasswordUI(Gtk.Box):
         @param backend: a backend object
         @param width: the width of the Gtk.Label object
         '''
-        super(PasswordUI, self).__init__()
-        self.backend = backend
-        self.req = req
-        self._populate_gtk(width)
+        super(PasswordUI, self).__init__(req, backend, width, parameter_name)
         self._load_password()
-        self._connect_signals()
 
     def _populate_gtk(self, width):
         '''Creates the text box and the related label
@@ -64,19 +63,7 @@ class PasswordUI(Gtk.Box):
 
     def _connect_signals(self):
         '''Connects the gtk signals'''
-        self.password_textbox.connect('changed', self.on_password_modified)
+        self.password_textbox.connect('changed', self.disable_backend_on_event)
 
-    def commit_changes(self):
-        '''Saves the changes to the backend parameter ('password')'''
-        password = self.password_textbox.get_text()
-        self.backend.set_parameter('password', password)
-
-    def on_password_modified(self, sender):
-        ''' Signal callback, executed when the user edits the password.
-        Disables the backend. The user will re-enable it to confirm the changes
-        (s)he made.
-
-        @param sender: not used, only here for signal compatibility
-        '''
-        if self.backend.is_enabled() and not self.backend.is_default():
-            self.req.set_backend_enabled(self.backend.get_id(), False)
+    def get_value(self):
+        return self.password_textbox.get_text()

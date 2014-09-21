@@ -19,14 +19,18 @@
 
 from gi.repository import Gtk
 
+from GTG.gtk.backends_dialog.parameters_ui.ui_widget import ParameterUIWidget
 
-class CheckBoxUI(Gtk.Box):
+__all__ = ('CheckBoxUI',)
+
+
+class CheckBoxUI(ParameterUIWidget):
     '''
     It's a widget displaying a simple checkbox, with some text to explain its
     meaning
     '''
 
-    def __init__(self, req, backend, width, text, parameter):
+    def __init__(self, req, backend, width, text, parameter_name):
         '''
         Creates the checkbox and the related label.
 
@@ -36,12 +40,8 @@ class CheckBoxUI(Gtk.Box):
         @param parameter: the backend parameter this checkbox should display
                            and modify
         '''
-        super(CheckBoxUI, self).__init__()
-        self.backend = backend
-        self.req = req
         self.text = text
-        self.parameter = parameter
-        self._populate_gtk(width)
+        super(CheckBoxUI, self).__init__(req, backend, width, parameter_name)
 
     def _populate_gtk(self, width):
         '''Creates the checkbox and the related label
@@ -49,22 +49,10 @@ class CheckBoxUI(Gtk.Box):
         @param width: the width of the Gtk.Label object
         '''
         self.checkbutton = Gtk.CheckButton(label=self.text)
-        backend_parameters = self.backend.get_parameters()[self.parameter]
+        backend_parameters = self.backend.get_parameters()[self.parameter_name]
         self.checkbutton.set_active(backend_parameters)
-        self.checkbutton.connect("toggled", self.on_modified)
+        self.checkbutton.connect("toggled", self.disable_backend_on_event)
         self.pack_start(self.checkbutton, False, True, 0)
 
-    def commit_changes(self):
-        '''Saves the changes to the backend parameter'''
-        self.backend.set_parameter(self.parameter,
-                                   self.checkbutton.get_active())
-
-    def on_modified(self, sender=None):
-        ''' Signal callback, executed when the user clicks on the checkbox.
-        Disables the backend. The user will re-enable it to confirm the changes
-        (s)he made.
-
-        @param sender: not used, only here for signal compatibility
-        '''
-        if self.backend.is_enabled() and not self.backend.is_default():
-            self.req.set_backend_enabled(self.backend.get_id(), False)
+    def get_value(self):
+        return self.checkbutton.get_active()

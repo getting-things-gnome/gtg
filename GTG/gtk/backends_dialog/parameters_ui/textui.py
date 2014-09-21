@@ -19,8 +19,12 @@
 
 from gi.repository import Gtk
 
+from GTG.gtk.backends_dialog.parameters_ui.ui_widget import ParameterUIWidget
 
-class TextUI(Gtk.Box):
+__all__ = ('TextUI',)
+
+
+class TextUI(ParameterUIWidget):
     '''A widget to display a simple textbox and a label to describe its content
     '''
 
@@ -33,12 +37,8 @@ class TextUI(Gtk.Box):
         @param backend: a backend object
         @param width: the width of the Gtk.Label object
         '''
-        super(TextUI, self).__init__()
-        self.backend = backend
-        self.req = req
-        self.parameter_name = parameter_name
         self.description = description
-        self._populate_gtk(width)
+        super(TextUI, self).__init__(req, backend, width, parameter_name)
 
     def _populate_gtk(self, width):
         '''Creates the gtk widgets
@@ -56,20 +56,8 @@ class TextUI(Gtk.Box):
         self.textbox = Gtk.Entry()
         backend_parameters = self.backend.get_parameters()[self.parameter_name]
         self.textbox.set_text(backend_parameters)
-        self.textbox.connect('changed', self.on_text_modified)
+        self.textbox.connect('changed', self.disable_backend_on_event)
         align.add(self.textbox)
 
-    def commit_changes(self):
-        '''Saves the changes to the backend parameter'''
-        self.backend.set_parameter(self.parameter_name,
-                                   self.textbox.get_text())
-
-    def on_text_modified(self, sender):
-        ''' Signal callback, executed when the user changes the text.
-        Disables the backend. The user will re-enable it to confirm the changes
-        (s)he made.
-
-        @param sender: not used, only here for signal compatibility
-        '''
-        if self.backend.is_enabled() and not self.backend.is_default():
-            self.req.set_backend_enabled(self.backend.get_id(), False)
+    def get_value(self):
+        return self.textbox.get_text()

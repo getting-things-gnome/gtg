@@ -17,13 +17,17 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
+from functools import reduce
+
 from gi.repository import Gtk
 
 from GTG.backends.genericbackend import GenericBackend
-from functools import reduce
+from GTG.gtk.backends_dialog.parameters_ui.ui_widget import ParameterUIWidget
+
+__all__ = ('ImportTagsUI',)
 
 
-class ImportTagsUI(Gtk.Box):
+class ImportTagsUI(ParameterUIWidget):
     '''
     It's a widget displaying a couple of radio buttons, a label and a textbox
     to let the user change the attached tags (or imported)
@@ -43,17 +47,14 @@ class ImportTagsUI(Gtk.Box):
                              radio button
         @param parameter_name: the backend parameter this widget should modify
         '''
-        super(ImportTagsUI, self).__init__(
-            orientation=Gtk.Orientation.VERTICAL)
-        self.backend = backend
-        self.req = req
         self.title = title
         self.anybox_text = anybox_text
         self.somebox_text = somebox_text
-        self.parameter_name = parameter_name
-        self._populate_gtk(width)
+        super(ImportTagsUI, self).__init__(
+            req, backend, width, parameter_name, gtk_kwargs={
+                'orientation': Gtk.Orientation.VERTICAL
+            })
         self._refresh_tags()
-        self._connect_signals()
 
     def _populate_gtk(self, width):
         '''
@@ -91,11 +92,10 @@ class ImportTagsUI(Gtk.Box):
         @param data: not used, only here for signal compatibility
         '''
         # every change in the config disables the backend
-        self.req.set_backend_enabled(self.backend.get_id(), False)
+        self.disable_backend()
         self._refresh_textbox_state()
 
-    def commit_changes(self):
-        '''Saves the changes to the backend parameter'''
+    def get_value(self):
         if self.all_tags_radio.get_active():
             tags = [GenericBackend.ALLTASKS_TAG]
         else:
@@ -104,8 +104,7 @@ class ImportTagsUI(Gtk.Box):
             tags = [t.strip() for t in tags]
             # removing empty tags
             tags = [t for t in tags if t]
-
-        self.backend.set_parameter(self.parameter_name, tags)
+        return tags
 
     def _refresh_textbox_state(self):
         '''Refreshes the content of the textbox'''

@@ -21,25 +21,15 @@ from gi.repository import Gtk
 import os.path
 
 from GTG import _
+from GTG.gtk.backends_dialog.parameters_ui.ui_widget import ParameterUIWidget
+
+__all__ = ('PathUI',)
 
 
-class PathUI(Gtk.Box):
+class PathUI(ParameterUIWidget):
     '''Gtk widgets to show a path in a textbox, and a button to bring up a
     filesystem explorer to modify that path (also, a label to describe those)
     '''
-
-    def __init__(self, req, backend, width):
-        '''
-        Creates the textbox, the button and loads the current path.
-
-        @param req: a Requester
-        @param backend: a backend object
-        @param width: the width of the Gtk.Label object
-        '''
-        super(PathUI, self).__init__()
-        self.backend = backend
-        self.req = req
-        self._populate_gtk(width)
 
     def _populate_gtk(self, width):
         '''Creates the Gtk.Label, the textbox and the button
@@ -56,25 +46,14 @@ class PathUI(Gtk.Box):
         self.pack_start(align, True, True, 0)
         self.textbox = Gtk.Entry()
         self.textbox.set_text(self.backend.get_parameters()['path'])
-        self.textbox.connect('changed', self.on_path_modified)
+        self.textbox.connect('changed', self.disable_backend_on_event)
         align.add(self.textbox)
         self.button = Gtk.Button(stock=Gtk.STOCK_EDIT)
         self.button.connect('clicked', self.on_button_clicked)
         self.pack_start(self.button, False, True, 0)
 
-    def commit_changes(self):
-        '''Saves the changes to the backend parameter'''
-        self.backend.set_parameter('path', self.textbox.get_text())
-
-    def on_path_modified(self, sender):
-        ''' Signal callback, executed when the user edits the path.
-        Disables the backend. The user will re-enable it to confirm the changes
-        (s)he made.
-
-        @param sender: not used, only here for signal compatibility
-        '''
-        if self.backend.is_enabled() and not self.backend.is_default():
-            self.req.set_backend_enabled(self.backend.get_id(), False)
+    def get_value(self):
+        return self.textbox.get_text()
 
     def on_button_clicked(self, sender):
         '''Shows the filesystem explorer to choose a new file

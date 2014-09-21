@@ -20,26 +20,13 @@
 from gi.repository import Gtk
 
 from GTG import _, ngettext
+from GTG.gtk.backends_dialog.parameters_ui.ui_widget import ParameterUIWidget
+
+__all__ = ('PeriodUI',)
 
 
-class PeriodUI(Gtk.Box):
-    '''A widget to change the frequency of a backend synchronization
-    '''
-
-    def __init__(self, req, backend, width):
-        '''
-        Creates the Gtk.Adjustment and the related label. Loads the current
-        period.
-
-        @param req: a Requester
-        @param backend: a backend object
-        @param width: the width of the Gtk.Label object
-        '''
-        super(PeriodUI, self).__init__()
-        self.backend = backend
-        self.req = req
-        self._populate_gtk(width)
-        self._connect_signals()
+class PeriodUI(ParameterUIWidget):
+    '''A widget to change the frequency of a backend synchronization'''
 
     def _populate_gtk(self, width):
         '''Creates the gtk widgets
@@ -75,9 +62,8 @@ class PeriodUI(Gtk.Box):
         '''Connects the gtk signals'''
         self.period_spin.connect('changed', self.on_spin_changed)
 
-    def commit_changes(self):
-        '''Saves the changes to the backend parameter'''
-        self.backend.set_parameter('period', int(self.adjustment.get_value()))
+    def get_value(self):
+        return int(self.adjustment.get_value())
 
     def on_spin_changed(self, sender):
         ''' Signal callback, executed when the user changes the period.
@@ -87,8 +73,7 @@ class PeriodUI(Gtk.Box):
         @param sender: not used, only here for signal compatibility
         '''
         self.update_minutes_label()
-        if self.backend.is_enabled() and not self.backend.is_default():
-            self.req.set_backend_enabled(self.backend.get_id(), False)
+        self.disable_backend()
 
     def update_minutes_label(self):
         adjustment = int(self.adjustment.get_value())
