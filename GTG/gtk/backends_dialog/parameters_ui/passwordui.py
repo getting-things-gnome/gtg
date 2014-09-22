@@ -25,7 +25,7 @@ from GTG.gtk.backends_dialog.parameters_ui.ui_widget import ParameterUIWidget
 __all__ = ('PasswordUI',)
 
 
-class PasswordUI(Gtk.Box):
+class PasswordUI(ParameterUIWidget):
     '''Widget displaying a gtk.Label and a textbox to input a password'''
 
     def __init__(self, req, backend, width, parameter_name):
