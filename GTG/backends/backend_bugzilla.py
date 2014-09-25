@@ -23,8 +23,8 @@ to a normal task automatically.
 '''
 
 from GTG import _
+from GTG.backends.bugzilla.bugzilla import BugInformationSyncTask
 from GTG.backends.genericbackend import GenericBackend
-from GTG.backends.bugzilla.bugzilla import GetBugInformationTask
 
 __all__ = ('Backend',)
 
@@ -48,12 +48,33 @@ class Backend(GenericBackend):
         GenericBackend.BACKEND_DESCRIPTION: BACKEND_DESCRIPTION
     }
 
-    _static_parameters = {}
+    _static_parameters = {
+        'bugzilla-tag-use-priority': {
+            GenericBackend.PARAM_TYPE: GenericBackend.TYPE_BOOL,
+            GenericBackend.PARAM_DEFAULT_VALUE: False,
+        },
+        'bugzilla-tag-use-severity': {
+            GenericBackend.PARAM_TYPE: GenericBackend.TYPE_BOOL,
+            GenericBackend.PARAM_DEFAULT_VALUE: False,
+        },
+        'bugzilla-tag-use-component': {
+            GenericBackend.PARAM_TYPE: GenericBackend.TYPE_BOOL,
+            GenericBackend.PARAM_DEFAULT_VALUE: False,
+        },
+        'bugzilla-tag-customized': {
+            GenericBackend.PARAM_TYPE: GenericBackend.TYPE_STRING,
+            GenericBackend.PARAM_DEFAULT_VALUE: 'Bug',
+        },
+        'bugzilla-add-comment': {
+            GenericBackend.PARAM_TYPE: GenericBackend.TYPE_BOOL,
+            GenericBackend.PARAM_DEFAULT_VALUE: False,
+        },
+    }
 
     def set_task(self, task):
         if not self.is_initialized():
             return
 
-        bugTask = GetBugInformationTask(task, self)
+        bugTask = BugInformationSyncTask(task, self)
         bugTask.daemon = True
         bugTask.start()

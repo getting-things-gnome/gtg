@@ -11,3 +11,7 @@ tmp
 MANIFEST
 **.patch
 gtg.prof
+tags
+__pycache__
+*~
+*.swp

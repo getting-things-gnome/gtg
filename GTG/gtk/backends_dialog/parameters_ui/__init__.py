@@ -71,37 +71,63 @@ class ParametersUI(Gtk.Box):
                 "somebox_text": _("Tasks with these tags:"),
                 "parameter_name": "attached-tags",
             })),
-            ("path", self.UI_generator(PathUI)),
+            ("path", self.UI_generator(PathUI, {"parameter_name": "path"})),
             ("username", self.UI_generator(TextUI, {
                 "description": _("Username"),
                 "parameter_name": "username",
             })),
-            ("password", self.UI_generator(PasswordUI)),
-            ("period", self.UI_generator(PeriodUI)),
+            ("password", self.UI_generator(PasswordUI, {
+                "parameter_name": "password",
+            })),
+            ("period", self.UI_generator(PeriodUI, {
+                "parameter_name": "period",
+            })),
             ("service-url", self.UI_generator(TextUI, {
                 "description": _("Service URL"),
                 "parameter_name": "service-url",
             })),
             ("import-from-replies", self.UI_generator(CheckBoxUI, {
                 "text": _("Import tasks from @ replies directed to you"),
-                "parameter": "import-from-replies",
+                "parameter_name": "import-from-replies",
             })),
             ("import-from-direct-messages", self.UI_generator(CheckBoxUI, {
                 "text": _("Import tasks from direct messages"),
-                "parameter": "import-from-direct-messages",
+                "parameter_name": "import-from-direct-messages",
             })),
             ("import-from-my-tweets", self.UI_generator(CheckBoxUI, {
                 "text": _("Import tasks from your tweets"),
-                "parameter": "import-from-my-tweets",
+                "parameter_name": "import-from-my-tweets",
             })),
             ("import-bug-tags", self.UI_generator(CheckBoxUI, {
                 "text": _("Tag your GTG tasks with the bug tags"),
-                "parameter": "import-bug-tags",
+                "parameter_name": "import-bug-tags",
             })),
             ("tag-with-project-name", self.UI_generator(CheckBoxUI, {
                 "text": _("Tag your GTG tasks with the project "
                           "targeted by the bug"),
-                "parameter": "tag-with-project-name",
+                "parameter_name": "tag-with-project-name",
+            })),
+
+            # Backend Bugzilla
+            ("bugzilla-tag-use-priority", self.UI_generator(CheckBoxUI, {
+                "text": _("Use Priority as tag"),
+                "parameter_name": "bugzilla-tag-use-priority",
+            })),
+            ("bugzilla-tag-use-severity", self.UI_generator(CheckBoxUI, {
+                "text": _("Use Severity as tag"),
+                "parameter_name": "bugzilla-tag-use-severity",
+            })),
+            ("bugzilla-tag-use-component", self.UI_generator(CheckBoxUI, {
+                "text": _("Use Component as tag"),
+                "parameter_name": "bugzilla-tag-use-component",
+            })),
+            ("bugzilla-tag-customized", self.UI_generator(TextUI, {
+                "description": _("Specify own tags"),
+                "parameter_name": "bugzilla-tag-customized",
+            })),
+            ("bugzilla-add-comment", self.UI_generator(CheckBoxUI, {
+                "text": _("First comment as task content"),
+                "parameter_name": "bugzilla-add-comment",
             })),
         )
 

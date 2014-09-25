@@ -81,13 +81,61 @@ def get_bug_sync_task_info(bug_url):
                            bug_id=bug_id)
 
 
-class GetBugInformationTask(threading.Thread):
+def tag_conv(value):
+    if isinstance(value, (list, tuple)):
+        return list(value)
+    else:
+        return [value]
+
+
+class BugInformationSyncTask(threading.Thread):
 
     def __init__(self, task, backend, **kwargs):
         ''' Initialize task data, where task is the GTG task object. '''
         self.task = task
         self.backend = backend
-        super(GetBugInformationTask, self).__init__(**kwargs)
+        super(BugInformationSyncTask, self).__init__(**kwargs)
+
+    def _collect_tags(self, bug):
+        tags = []
+        parameters = self.backend.get_parameters()
+
+        if parameters['bugzilla-tag-use-priority']:
+            tags += tag_conv(bug.priority)
+
+        if parameters['bugzilla-tag-use-severity']:
+            tags += tag_conv(bug.severity)
+
+        if parameters['bugzilla-tag-use-component']:
+            tags += tag_conv(bug.component)
+
+        custom_tags = parameters['bugzilla-tag-customized']
+        tags += custom_tags.split(',')
+
+        return [tag.replace(' ', '_') for tag in tags]
+
+    def add_tags(self, bug, bugzilla_service):
+        '''Add tags to task
+
+        Tags are determined from the configuration configured by user
+
+        @param task: the task being synchronized
+        @type: L{Task}
+        @param bugzilla_service: instance of Bugzilla service
+        @type: L{bugzillaService}
+        '''
+        tags = self._collect_tags(bug)
+        if tags is not None and tags:
+            for tag in tags:
+                GObject.idle_add(self.task.add_tag, '@' + tag)
+
+    def append_comment(self, bug, bug_url, bugzilla_service):
+        '''Append comment to task content if user configured'''
+        if self.backend.get_parameters()['bugzilla-add-comment']:
+            text = bug.gtg_cf_comments[0]['text']
+        else:
+            text = "{0}\n\n{1}".format(bug_url, bug.summary)
+        GObject.idle_add(self.task.set_text, text)
 
     def run(self):
         bug_url = self.task.get_title()
@@ -138,10 +186,6 @@ class GetBugInformationTask(threading.Thread):
         else:
             title = '#%s: %s' % (task_info.bug_id, bug.summary)
             GObject.idle_add(self.task.set_title, title)
-            text = "%s\n\n%s" % (bug_url, bug.summary)
-            GObject.idle_add(self.task.set_text, text)
 
-            tags = bugzillaService.getTags(bug)
-            if tags is not None and tags:
-                for tag in tags:
-                    GObject.idle_add(self.task.add_tag, '@%s' % tag)
+            self.append_comment(bug, bug_url, bugzillaService)
+            self.add_tags(bug, bugzillaService)

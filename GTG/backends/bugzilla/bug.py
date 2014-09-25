@@ -21,10 +21,6 @@ class Bug(object):
     '''Represent a bug object'''
 
     def __init__(self, bug):
-        '''
-        Initialize Bug object using bug object retrieved via Bugzilla service
-        XMLRPC
-        '''
         self.bug = bug
 
     def __getattr__(self, name):

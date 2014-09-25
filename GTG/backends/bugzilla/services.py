@@ -47,19 +47,11 @@ class BugzillaService(object):
     def getBug(self, bug_id):
         server_url = self.buildXmlRpcServerUrl()
         proxy = self.getProxy(server_url)
-        bugs = proxy.Bug.get({'ids': [bug_id, ]})
-        return BugFactory.create(self.netloc, bugs['bugs'][0])
-
-    def getTags(self, bug):
-        ''' Get a list of tags due to some bug attribute contains list rather
-            than a string in some bugzilla service.
-        '''
-        tag_names = getattr(bug, self.tag_from, None)
-        if tag_names is None:
-            return []
-        if not isinstance(tag_names, list):
-            return [tag_names]
-        return tag_names
+        bugs = proxy.Bug.get({'ids': [bug_id]})
+        comments = proxy.Bug.comments({'ids': [bug_id]})
+        bug_data = bugs['bugs'][0]
+        bug_data['gtg_cf_comments'] = comments['bugs'][str(bug_id)]['comments']
+        return BugFactory.create(self.netloc, bug_data)
 
 
 class GnomeBugzilla(BugzillaService):
