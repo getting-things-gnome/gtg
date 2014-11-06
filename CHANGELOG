@@ -43,6 +43,7 @@
     * Fixing the TypeError : popup() missing 1 required positional argument, by Sagar Ghuge 
     * Fix for bug #28: plugin preferences were not being read, by Amy Chan
     * Fixing the send mail icon and tooltip, Pratyush Kulwal
+    * Fixing the Tooltip for open parent, by Sagar Ghuge
 
 2013-11-24 Getting Things GNOME! 0.3.1
     * Fix for bug #1024473: Have 'Show Main Window' in notification area, by Antonio Roquentin
