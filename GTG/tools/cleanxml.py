@@ -222,7 +222,8 @@ def savexml(zefile, doc, backup=False):
         f = open(zefile, mode='w+')
         pretty = doc.toprettyxml(tab, enter)
         if f and pretty:
-            bwritten = os.write(f.fileno(), bytes(pretty, 'utf8'))
+            pretty = bytes(pretty, 'utf8')
+            bwritten = os.write(f.fileno(), pretty)
             if bwritten != len(pretty):
                 print("error writing file %s" % zefile)
                 f.close()
