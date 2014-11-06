@@ -68,8 +68,11 @@ class BackendsCombo(Gtk.ComboBox):
         Populates the combo box with the available backends
         '''
         self.liststore.clear()
-        backend_types = BackendFactory().get_all_backends()
-        for name, module in backend_types.items():
+        backend_types = self._get_unused_backends()
+        ordered_backend_types = sorted(
+            backend_types.items(),
+            key=lambda btype: btype[1].Backend.get_human_default_name())
+        for name, module in ordered_backend_types:
             # FIXME: Disable adding another localfile backend.
             # It just produce many warnings, provides no use case
             # See LP bug #940917 (Izidor)
@@ -94,3 +97,13 @@ class BackendsCombo(Gtk.ComboBox):
             return self.liststore.get_value(selected_iter, column_name)
         else:
             return None
+
+    def _get_unused_backends(self):
+        '''Exclude those backends that are already being used'''
+        used_backends_names = [
+            backend.get_name()
+            for backend in self.dialog.req.get_all_backends(disabled=True)]
+        return dict(
+            (name, module)
+            for name, module in BackendFactory().get_all_backends().items()
+            if module.Backend.get_name() not in used_backends_names)

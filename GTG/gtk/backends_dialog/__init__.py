@@ -50,7 +50,7 @@ class BackendsDialog(object):
         - the backend adding view
     '''
 
-    def __init__(self, req):
+    def __init__(self, req, parent_window):
         '''
         Initializes the gtk objects and signals.
         @param req: a Requester object
@@ -59,6 +59,7 @@ class BackendsDialog(object):
         self.icon_theme = None
         self._configure_icon_theme()
         # Declare subsequently loaded widget
+        self.parent_window = parent_window
         self.dialog = None
         self.treeview_window = None
         self.central_pane = None
@@ -182,6 +183,8 @@ class BackendsDialog(object):
         }
         for attr, widget in widgets.items():
             setattr(self, attr, builder.get_object(widget))
+
+        self.dialog.set_transient_for(self.parent_window)
 
     def _setup_signal_connections(self, builder):
         '''
