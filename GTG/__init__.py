@@ -45,9 +45,9 @@ LOCAL_ROOTDIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 GETTEXT_DOMAIN = 'gtg'
 LOCALE_PATH = gettext.bindtextdomain(GETTEXT_DOMAIN)
 
-gettext.bindtextdomain(GETTEXT_DOMAIN, LOCALE_PATH)
-gettext.textdomain(GETTEXT_DOMAIN)
-# FIXME set translation for Builder as well!
+for module in locale, gettext:
+    module.bindtextdomain(GETTEXT_DOMAIN, LOCALE_PATH)
+    module.textdomain(GETTEXT_DOMAIN)
 
 translation = gettext.translation(GETTEXT_DOMAIN, LOCALE_PATH, fallback=True)
 
