@@ -28,10 +28,11 @@ class BackendsCombo(Gtk.ComboBox):
     A combobox listing all the available backends types
     '''
 
-    COLUMN_NAME = 0  # unique name for the backend type. It's never
-                            # displayed, it's used to find which backend has
-                            # been selected
-    COLUMN_HUMAN_NAME = 1  # human friendly name (which is localized).
+    # unique name for the backend type. It's never displayed,
+    # it's used to find which backend has been selected
+    COLUMN_NAME = 0
+    # human friendly name (which is localized).
+    COLUMN_HUMAN_NAME = 1
     COLUMN_ICON = 2
 
     def __init__(self, backends_dialog):

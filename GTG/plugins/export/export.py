@@ -103,7 +103,7 @@ class PluginExport:
         """ Removes the gtk widgets before quitting """
         self._gtk_deactivate()
 
-## CALLBACK AND CORE FUNCTIONS ################################################
+# CALLBACK AND CORE FUNCTIONS #################################################
     def on_export_start(self, saving):
         """ Start generating a document.
         If saving == True, ask user where to store the document. Otherwise,
@@ -172,7 +172,7 @@ class PluginExport:
 
         return get_task_wrappers(tree, timespan)
 
-## GTK FUNCTIONS ##############################################################
+# GTK FUNCTIONS ###############################################################
     def _init_gtk(self):
         """ Initialize all the GTK widgets """
         self.menu_entry = False
@@ -334,7 +334,7 @@ class PluginExport:
         else:
             return None
 
-## Preferences methods ########################################################
+# Preferences methods #########################################################
     @classmethod
     def is_configurable(cls):
         """A configurable plugin should have this method and return True"""

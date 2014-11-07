@@ -23,8 +23,8 @@ import xml.dom.minidom
 # The following functions are used by the Gtk.TextBuffer to serialize
 # the content of the task
 
-########### Serializing functions ##############
-### Serialize the task : transform it's content in something
+# Serializing functions ########################
+# Serialize the task : transform it's content in something
 # we can store. This function signature is defined in PyGTK
 
 class Serializer(object):
@@ -140,8 +140,8 @@ class Serializer(object):
         return parent
 
 
-######################## Deserializing ##################################
-### Deserialize : put all in the TextBuffer
+# Deserializing #########################################################
+# Deserialize : put all in the TextBuffer
 # This function signature is defined in PyGTK
 
 class Unserializer:

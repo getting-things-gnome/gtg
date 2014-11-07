@@ -157,7 +157,7 @@ class Tag(TreeNode):
     def del_attribute(self, att_name):
         """Deletes the attribute C{att_name}.
         """
-        if not att_name in self._attributes:
+        if att_name not in self._attributes:
             return
         elif att_name in ['name', 'parent']:
             return
@@ -184,7 +184,7 @@ class Tag(TreeNode):
                 attributes.append("parent")
         return attributes
 
-    ### TASK relation ####
+    # TASK relation ####
     def get_active_tasks_count(self):
         count = self.__get_count()
         return count

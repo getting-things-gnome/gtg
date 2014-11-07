@@ -78,7 +78,7 @@ class BackendsDialog(object):
         help.add_help_shortcut(self.dialog, "sync")
 
 ########################################
-### INTERFACE WITH THE VIEWMANAGER #####
+# INTERFACE WITH THE VIEWMANAGER #######
 ########################################
     def activate(self):
         '''Shows this window, refreshing the current view'''
@@ -99,7 +99,7 @@ class BackendsDialog(object):
         return True
 
 ########################################
-### HELPER FUNCTIONS ###################
+# HELPER FUNCTIONS #####################
 ########################################
     def get_requester(self):
         '''
@@ -149,7 +149,7 @@ class BackendsDialog(object):
         # NOTE: self.central_pane is the Gtk.Container in which we load panels
         if panel_to_remove in self.central_pane:
             self.central_pane.remove(panel_to_remove)
-        if not panel_to_add in self.central_pane:
+        if panel_to_add not in self.central_pane:
             self.central_pane.add(panel_to_add)
         self.central_pane.show_all()
         # Side treeview
@@ -164,7 +164,7 @@ class BackendsDialog(object):
             pass
 
 ########################################
-### WIDGETS AND SIGNALS ################
+# WIDGETS AND SIGNALS ##################
 ########################################
     def _load_widgets_from_builder(self, builder):
         '''
@@ -224,7 +224,7 @@ class BackendsDialog(object):
         self.add_panel = AddPanel(self)
 
 ########################################
-### EVENT HANDLING #####################
+# EVENT HANDLING #######################
 ########################################
     def on_help(cls, widget):
         """ Open help for syncronization services """

@@ -104,7 +104,7 @@ class pluginBugzilla:
     def task_added_cb(self, sender, task_id):
         # this is a gobject callback that will block the Browser.
         # decoupling with a thread. All interaction with task and tags objects
-        #(anything in a Tree) must be done with gobject.idle_add (invernizzi)
+        # (anything in a Tree) must be done with gobject.idle_add (invernizzi)
 
         task = self.plugin_api.get_requester().get_task(task_id)
         bugTask = GetBugInformationTask(task)

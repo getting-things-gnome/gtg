@@ -50,7 +50,7 @@ class Manager(GObject.GObject):
                     'task-status-changed': __object_string_signal__,
                     }
 
-    ############## init #####################################################
+    # init ##################################################################
     def __init__(self, req):
         GObject.GObject.__init__(self)
         self.req = req
@@ -60,9 +60,9 @@ class Manager(GObject.GObject):
         self.task_config = self.config_obj.get_taskconfig()
 
         # Editors
-        self.opened_task = {}   # This is the list of tasks that are already
-                                 # opened in an editor of course it's empty
-                                 # right now
+        # This is the list of tasks that are already opened in an editor
+        # of course it's empty right now
+        self.opened_task = {}
 
         self.browser = None
         self.__start_browser_hidden = False
@@ -118,7 +118,7 @@ class Manager(GObject.GObject):
         # initializes and activates each plugin (that is enabled)
         self.pengine.activate_plugins()
 
-    ############## Browser #################################################
+    # Browser ##############################################################
     def open_browser(self):
         if not self.browser:
             self.browser = TaskBrowser(self.req, self)
@@ -165,7 +165,7 @@ class Manager(GObject.GObject):
         last closed window quits GTG """
         self.daemon_mode = in_daemon_mode
 
-################# Task Editor ############################################
+# Task Editor ############################################################
     def get_opened_editors(self):
         '''
         Returns a dict of task_uid -> TaskEditor, one for each opened editor
@@ -229,7 +229,7 @@ class Manager(GObject.GObject):
             # no need to live"
             self.quit()
 
-################ Others dialog ############################################
+# Others dialog ###########################################################
     def open_edit_backends(self, sender=None, backend_id=None):
         if not self.edit_backends_dialog:
             self.edit_backends_dialog = BackendsDialog(self.req)
@@ -267,7 +267,7 @@ class Manager(GObject.GObject):
     def close_tag_editor(self):
         self.tag_editor_dialog.hide()
 
-### STATUS ###################################################################
+# STATUS #####################################################################
     def ask_set_task_status(self, task, new_status):
         '''
         Both browser and editor have to use this central method to set
@@ -277,7 +277,7 @@ class Manager(GObject.GObject):
         task.set_status(new_status)
         GObject.idle_add(self.emit, "task-status-changed", task, new_status)
 
-### URIS ###################################################################
+# URIS #####################################################################
     def open_uri_list(self, unused, uri_list):
         '''
         Open the Editor windows of the tasks associated with the uris given.
@@ -289,7 +289,7 @@ class Manager(GObject.GObject):
         # if no window was opened, we just quit
         self.check_quit_condition()
 
-### MAIN ###################################################################
+# MAIN #####################################################################
     def main(self, once_thru=False, uri_list=[]):
         if uri_list:
             # before opening the requested tasks, we make sure that all of them
