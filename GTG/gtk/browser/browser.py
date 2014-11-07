@@ -36,6 +36,7 @@ from GTG.gtk.tag_completion import TagCompletion
 from GTG.gtk.browser import GnomeConfig
 from GTG.gtk.browser.custominfobar import CustomInfoBar
 from GTG.gtk.browser.modifytags_dialog import ModifyTagsDialog
+from GTG.gtk.browser.deletetags_dialog import DeleteTagsDialog
 from GTG.gtk.browser.tag_context_menu import TagContextMenu
 from GTG.gtk.browser.treeview_factory import TreeviewFactory
 from GTG.gtk.editor.calendar import GTGCalendar
@@ -175,6 +176,7 @@ class TaskBrowser(GObject.GObject):
 
         tag_completion = TagCompletion(self.req.get_tag_tree())
         self.modifytags_dialog = ModifyTagsDialog(tag_completion, self.req)
+        self.deletetags_dialog = DeleteTagsDialog(self.req, self)
         self.calendar = GTGCalendar()
         self.calendar.set_transient_for(self.window)
         self.calendar.connect("date-changed", self.on_date_changed)
@@ -944,6 +946,22 @@ class TaskBrowser(GObject.GObject):
             else:
                 self.reset_cursor()
             return True
+        if keyname == "Delete":
+            self.on_delete_tag_activate(event)
+            return True
+
+    def on_delete_tag_activate(self, event):
+        tags = self.get_selected_tags()
+        self.deletetags_dialog.delete_tags(tags)
+
+    def on_delete_tag(self, event):
+        tags = self.get_selected_tags()
+        for tagname in tags:
+            self.req.delete_tag(tagname)
+            tag = self.req.get_tag(tagname)
+            self.vmanager.reload_opened_editors(tag.get_related_tasks())
+        self.tagtreeview.set_cursor(0)
+        self.on_select_tag()
 
     def on_task_treeview_button_press_event(self, treeview, event):
         """ Pop up context menu on right mouse click in the main
