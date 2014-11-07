@@ -67,12 +67,12 @@ class BackendFactory(Borg):
             except ImportError as exception:
                 # Something is wrong with this backend, skipping
                 Log.warning("Backend %s could not be loaded: %s" %
-                           (module_name, str(exception)))
+                            (module_name, str(exception)))
                 continue
             except Exception as exception:
                 # Other exception log as errors
                 Log.error("Malformated backend %s: %s" %
-                         (module_name, str(exception)))
+                          (module_name, str(exception)))
                 continue
 
             self.backend_modules[module_name] = \
@@ -137,7 +137,7 @@ class BackendFactory(Borg):
 
         Returns the backend instance, or None is something goes wrong
         '''
-        if not "module" in dic or not "xmlobject" in dic:
+        if "module" not in dic or "xmlobject" not in dic:
             Log.debug("Malformed backend configuration found! %s" %
                       dic)
         module = self.get_backend(dic["module"])

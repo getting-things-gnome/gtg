@@ -67,7 +67,7 @@ class Backend(PeriodicImportBackend):
     }
 
 ###############################################################################
-### Backend standard methods ##################################################
+# Backend standard methods ####################################################
 ###############################################################################
 
     def __init__(self, parameters):
@@ -109,17 +109,14 @@ class Backend(PeriodicImportBackend):
         Calls for a user interaction during authentication
         '''
         self.login_event.clear()
-        BackendSignals().interaction_requested(self.get_id(),
-                                               "You need to authenticate to"
-                                               " Remember The Milk. A browser"
-                                               " is opening with a login page."
-                                               "\n When you have  logged in "
-                                               "and given GTG the requested "
-                                               "permissions,\n"
-                                               " press the 'Confirm' button",
-                                               BackendSignals(
-                                               ).INTERACTION_CONFIRM,
-                                               "on_login")
+        BackendSignals().interaction_requested(
+            self.get_id(),
+            "You need to authenticate to Remember The Milk. A browser "
+            "is opening with a login page.\n When you have logged in "
+            "and given GTG the requested permissions,\n "
+            "press the 'Confirm' button",
+            BackendSignals().INTERACTION_CONFIRM,
+            "on_login")
         self.login_event.wait()
 
     def on_login(self):
@@ -129,7 +126,7 @@ class Backend(PeriodicImportBackend):
         self.login_event.set()
 
 ###############################################################################
-### TWO WAY SYNC ##############################################################
+# TWO WAY SYNC ################################################################
 ###############################################################################
 
     def do_periodic_import(self):
@@ -233,7 +230,7 @@ class Backend(PeriodicImportBackend):
                 pass
 
 ###############################################################################
-### Process tasks #############################################################
+# Process tasks ###############################################################
 ###############################################################################
     @interruptible
     def set_task(self, task):
@@ -400,7 +397,7 @@ class Backend(PeriodicImportBackend):
         self.save_state()
 
 ###############################################################################
-### Helper methods ############################################################
+# Helper methods ##############################################################
 ###############################################################################
 
     def _populate_task(self, task, rtm_task):
@@ -494,7 +491,7 @@ class Backend(PeriodicImportBackend):
         return False
 
 ###############################################################################
-### RTM PROXY #################################################################
+# RTM PROXY ###################################################################
 ###############################################################################
 
 
@@ -523,7 +520,7 @@ class RTMProxy(object):
         self.is_not_refreshing.set()
 
     ##########################################################################
-    ### AUTHENTICATION #######################################################
+    # AUTHENTICATION #########################################################
     ##########################################################################
 
     def start_authentication(self):
@@ -595,7 +592,7 @@ class RTMProxy(object):
         return False
 
     ##########################################################################
-    ### RTM TASKS HANDLING ###################################################
+    # RTM TASKS HANDLING #####################################################
     ##########################################################################
 
     def unroll_changes(self, transaction_ids):
@@ -751,7 +748,7 @@ class RTMProxy(object):
 
 
 ###############################################################################
-### RTM TASK ##################################################################
+# RTM TASK ####################################################################
 ###############################################################################
 # dictionaries to translate a RTM status into a GTG one (and back)
 GTG_TO_RTM_STATUS = {Task.STA_ACTIVE: True,

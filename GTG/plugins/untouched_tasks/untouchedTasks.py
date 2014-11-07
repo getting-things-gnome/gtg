@@ -82,11 +82,11 @@ class pluginUntouchedTasks:
         except:
             pass
 
-## HELPER FUNCTIONS ###########################################################
+# HELPER FUNCTIONS ############################################################
     def __log(self, message):
         Log.debug(message)
 
-## CORE FUNCTIONS #############################################################
+# CORE FUNCTIONS ##############################################################
     def schedule_autopurge(self):
         self.timer = Timer(self.TIME_BETWEEN_PURGES,
                            self.add_untouched_tag)
@@ -131,7 +131,7 @@ class pluginUntouchedTasks:
         if self.is_automatic:
             self.schedule_autopurge()
 
-## Preferences methods ########################################################
+# Preferences methods #########################################################
     def is_configurable(self):
         """A configurable plugin should have this method and return True"""
         return True

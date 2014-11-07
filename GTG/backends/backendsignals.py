@@ -48,7 +48,7 @@ class BackendSignals(Borg):
         From outside the class, there should be no difference between self's
         attributes and self._gobject's attributes.
         '''
-        if attr == "_gobject" and not "_gobject" in self.__dict__:
+        if attr == "_gobject" and "_gobject" not in self.__dict__:
             raise AttributeError
         return getattr(self._gobject, attr)
 
@@ -65,17 +65,18 @@ def signal_type_factory(*args):
 class _BackendSignalsGObject(GObject.GObject):
 
     # signal name constants
-    BACKEND_STATE_TOGGLED = 'backend-state-toggled'  # emitted when a
-                                                    # backend is
-                                                    # enabled or disabled
-    BACKEND_RENAMED = 'backend-renamed'  # emitted when a backend is renamed
+
+    # emitted when a backend is enabled or disabled
+    BACKEND_STATE_TOGGLED = 'backend-state-toggled'
+    # emitted when a backend is renamed
+    BACKEND_RENAMED = 'backend-renamed'
     BACKEND_ADDED = 'backend-added'
-    BACKEND_REMOVED = 'backend-added'  # when a backend is deleted
-    DEFAULT_BACKEND_LOADED = 'default-backend-loaded'  # emitted after all
-                                                     # tasks have been
-                                                     # loaded from the
-                                                     # default backend
-    BACKEND_FAILED = 'backend-failed'  # something went wrong with a backend
+    # when a backend is deleted
+    BACKEND_REMOVED = 'backend-added'
+    # emitted after all tasks have been loaded from the default backend
+    DEFAULT_BACKEND_LOADED = 'default-backend-loaded'
+    # something went wrong with a backend
+    BACKEND_FAILED = 'backend-failed'
     BACKEND_SYNC_STARTED = 'backend-sync-started'
     BACKEND_SYNC_ENDED = 'backend-sync-ended'
     INTERACTION_REQUESTED = 'user-interaction-requested'
@@ -99,7 +100,7 @@ class _BackendSignalsGObject(GObject.GObject):
         super(_BackendSignalsGObject, self).__init__()
         self.backends_currently_syncing = []
 
-    ############# Signals #########
+    # Signals ###############################################################
     # connecting to signals is fine, but keep an eye if you should emit them.
     # As a general rule, signals should only be emitted in the GenericBackend
     # class

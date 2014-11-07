@@ -44,7 +44,7 @@ class Requester(GObject.GObject):
         self.__config = global_conf
         self.__basetree = self.ds.get_tasks_tree()
 
-    ############ Tasks Tree ######################
+    # Tasks Tree ######################
     # By default, we return the task tree of the main window
     def get_tasks_tree(self, name='active', refresh=True):
         return self.__basetree.get_viewtree(name=name, refresh=refresh)
@@ -71,7 +71,7 @@ class Requester(GObject.GObject):
             ta = self.get_tag(t)
             ta.unapply_filter(filtername)
 
-    ######### Filters bank #######################
+    # Filters bank #######################
     # List, by name, all available filters
     def list_filters(self):
         return self.__basetree.list_filters()
@@ -88,8 +88,7 @@ class Requester(GObject.GObject):
     def remove_filter(self, filter_name):
         return self.__basetree.remove_filter(filter_name)
 
-    ############## Tasks ##########################
-    ###############################################
+    # Tasks ##########################
     def has_task(self, tid):
         """Does the task 'tid' exist?"""
         return self.ds.has_task(tid)
@@ -153,8 +152,7 @@ class Requester(GObject.GObject):
 
         return None
 
-    ############### Tags ##########################
-    ###############################################
+    # Tags ##########################
     def get_tag_tree(self):
         return self.ds.get_tagstore().get_viewtree(name='activetags')
 
@@ -207,8 +205,7 @@ class Requester(GObject.GObject):
         """
         return self.ds.get_tagstore().get_main_view().get_all_nodes()
 
-    ############## Backends #######################
-    ###############################################
+    # Backends #######################
     def get_all_backends(self, disabled=False):
         return self.ds.get_all_backends(disabled)
 
@@ -233,8 +230,7 @@ class Requester(GObject.GObject):
     def save_datastore(self):
         return self.ds.save()
 
-    ############## Config ############################
-    ##################################################
+    # Config ############################
     def get_global_config(self):
         return self.__config
 

@@ -48,7 +48,6 @@ class notToday:
         else:
             self.tb_button.set_sensitive(False)
 
-## GTK FUNCTIONS ##############################################################
     def _init_gtk(self):
         """ Initialize all the GTK widgets """
 
