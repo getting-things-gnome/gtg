@@ -39,7 +39,7 @@ from GTG.backends.bugzilla.bugzilla import GetBugInformationTask
 from GTG.backends.bugzilla.exceptions import BugzillaServiceDisabled
 from GTG.backends.bugzilla.exceptions import BugzillaServiceNotExist
 from GTG.backends.bugzilla.services import BugzillaService
-from GTG.backends.bugzilla.services import BugzillaServiceFactory
+from GTG.backends.bugzilla.services import create_bugzilla_service
 from GTG.backends.bugzilla.services import services as bz_services
 from GTG.core import CoreConfig
 from GTG.core.datastore import DataStore
@@ -79,22 +79,22 @@ class TestBugzillaServiceFactory(unittest.TestCase):
 
     def test_create(self):
         self.assertRaises(BugzillaServiceNotExist,
-                          BugzillaServiceFactory.create,
+                          create_bugzilla_service,
                           'https', 'bugs.mozilla.org')
         self.assertRaises(BugzillaServiceDisabled,
-                          BugzillaServiceFactory.create,
+                          create_bugzilla_service,
                           'https', 'bugzilla.mozilla.org')
         self.assertRaises(BugzillaServiceNotExist,
-                          BugzillaServiceFactory.create,
+                          create_bugzilla_service,
                           'http', 'xxxx')
         self.assertRaises(BugzillaServiceNotExist,
-                          BugzillaServiceFactory.create,
+                          create_bugzilla_service,
                           'https', '')
 
         cls_bz_service = bz_services['bugs.freedesktop.org']
         sample_service = cls_bz_service('https', 'bugs.freedesktop.org')
 
-        service = BugzillaServiceFactory.create('https',
+        service = create_bugzilla_service('https',
                                                 'bugs.freedesktop.org')
         self.assertEqual(service.scheme, sample_service.scheme)
         self.assertEqual(service.netloc, sample_service.netloc)
@@ -143,7 +143,7 @@ class TestBugzillaService(unittest.TestCase,
 
         self.install_fake_bugzilla_service()
 
-        self.local_bz_service = BugzillaServiceFactory.create(
+        self.local_bz_service = create_bugzilla_service(
             'http', self.bz_service_keyname)
 
     def tearDown(self):

@@ -21,8 +21,6 @@ from gi.repository import Gtk
 
 from GTG.gtk.backends_dialog.parameters_ui.ui_widget import ParameterUIWidget
 
-__all__ = ('TextUI',)
-
 
 class TextUI(ParameterUIWidget):
     '''A widget to display a simple textbox and a label to describe its content

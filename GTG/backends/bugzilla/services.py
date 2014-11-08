@@ -19,12 +19,11 @@
 # it is done by Python xmlrpclib simply enough.
 from xmlrpc.client import ServerProxy
 
-from GTG.backends.bugzilla.bug import BugFactory
-from GTG.backends.bugzilla.exceptions import BugzillaServiceDisabled
-from GTG.backends.bugzilla.exceptions import BugzillaServiceNotExist
+from GTG.backends.bugzilla.bug import create_bug
+from GTG.backends.bugzilla import exceptions
 
 
-__all__ = ('BugzillaServiceFactory',)
+__all__ = ('create_bugzilla_service',)
 
 
 class BugzillaService(object):
@@ -51,7 +50,7 @@ class BugzillaService(object):
         comments = proxy.Bug.comments({'ids': [bug_id]})
         bug_data = bugs['bugs'][0]
         bug_data['gtg_cf_comments'] = comments['bugs'][str(bug_id)]['comments']
-        return BugFactory.create(self.netloc, bug_data)
+        return create_bug(self.netloc, bug_data)
 
 
 class GnomeBugzilla(BugzillaService):
@@ -80,7 +79,6 @@ class MozillaBugzilla(BugzillaService):
 class SambaBugzilla(BugzillaService):
     ''' Bugzilla service of Samba project '''
 
-    enabled = False
     name = 'Samba Bugzilla Service'
 
 
@@ -101,26 +99,22 @@ services = {
 }
 
 
-class BugzillaServiceFactory(object):
-    ''' Create a Bugzilla service using scheme and domain '''
+def create_bugzilla_service(scheme, net_location):
+    '''
+    Fatory method to create a new Bugzilla service
 
-    @staticmethod
-    def create(scheme, net_location):
-        '''
-        Fatory method to create a new Bugzilla service
-
-        @param scheme: the scheme part of bug URL
-        @param net_location: consists of hostname and port, that is the key to
-                             determine a concrete Bugzilla service
-        @return: the instance of determined Bugzilla service
-        @raises BugzillaServiceDisabled: when requested Bugzilla service is
-                                         disabled now.
-        @raises BugzillaServiceNotExist: when requested Bugzilla service does
-                                         not exist.
-        '''
-        bz_service_cls = services.get(net_location, None)
-        if bz_service_cls is None:
-            raise BugzillaServiceNotExist(net_location)
-        if not bz_service_cls.enabled:
-            raise BugzillaServiceDisabled(net_location)
-        return bz_service_cls(scheme, net_location)
+    @param scheme: the scheme part of bug URL
+    @param net_location: consists of hostname and port, that is the key to
+                         determine a concrete Bugzilla service
+    @return: the instance of determined Bugzilla service
+    @raises BugzillaServiceDisabled: when requested Bugzilla service is
+                                     disabled now.
+    @raises BugzillaServiceNotExist: when requested Bugzilla service does
+                                     not exist.
+    '''
+    bz_service_cls = services.get(net_location, None)
+    if bz_service_cls is None:
+        raise exceptions.BugzillaServiceNotExist(net_location)
+    if not bz_service_cls.enabled:
+        raise exceptions.BugzillaServiceDisabled(net_location)
+    return bz_service_cls(scheme, net_location)

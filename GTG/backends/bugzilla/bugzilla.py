@@ -28,21 +28,15 @@ from gi.repository import GObject
 from GTG import _
 from GTG.tools.logger import Log
 
-from GTG.backends.bugzilla.exceptions import BugzillaServiceDisabled
-from GTG.backends.bugzilla.exceptions import BugzillaServiceNotExist
-from GTG.backends.bugzilla.exceptions import ERRNO_BUGZILLA_BUG_SYNC_FAIL
-from GTG.backends.bugzilla.exceptions import ERRNO_BUGZILLA_INVALID
-from GTG.backends.bugzilla.exceptions import ERRNO_BUGZILLA_NO_PERM
-from GTG.backends.bugzilla.exceptions import ERRNO_BUGZILLA_NOT_EXIST
-from GTG.backends.bugzilla.exceptions import ERRNO_BUGZILLA_UNKNOWN
+from GTG.backends.bugzilla import exceptions
 from GTG.backends.bugzilla.notification import send_notification
-from GTG.backends.bugzilla.services import BugzillaServiceFactory
+from GTG.backends.bugzilla.services import create_bugzilla_service
 
-__all__ = ('GetBugInformationTask',)
+__all__ = ('BugInformationSyncTask',)
 
 BugSyncTaskInfo = namedtuple('BugSyncTaskInfo',
                              ['scheme', 'net_location', 'bug_id'])
-bugURLPattern = re.compile('^(https?)://(.+)/show_bug\.cgi\?id=(\d+)$')
+BUG_URL_PATTERN = re.compile(r'^(https?)://(.+)/show_bug\.cgi\?id=(\d+)$')
 
 BUGZILLA_NO_PERM_MESSAGE = _("You have no permission to read bug <b>%s</b>.")
 BUGZILLA_INVALID_MESSAGE = _("Bug ID <b>%s</b> is invalid")
@@ -51,7 +45,7 @@ BUGZILLA_BUG_SYNC_FAIL_MESSAGE = _("Failed to synchronize information for "
                                    "bug <b>%s</b> due to some unknown reason.")
 
 
-def parseBugUrl(url):
+def parse_bug_url(url):
     '''
     Extract URL data
 
@@ -64,24 +58,7 @@ def parseBugUrl(url):
     return r.scheme, r.netloc, queries
 
 
-def get_bug_sync_task_info(bug_url):
-    '''
-    Get synchronization information from task's title
-
-    @param bug_url: the URL from task's title
-    @return: an object representing task information. None if the URL is not
-             valid.
-    '''
-    if bugURLPattern.match(bug_url) is None:
-        return None
-    scheme, netloc, queries = parseBugUrl(bug_url)
-    bug_id = queries.get('id', None)
-    return BugSyncTaskInfo(scheme=scheme,
-                           net_location=netloc,
-                           bug_id=bug_id)
-
-
-def tag_conv(value):
+def convert_to_list(value):
     if isinstance(value, (list, tuple)):
         return list(value)
     else:
@@ -101,13 +78,13 @@ class BugInformationSyncTask(threading.Thread):
         parameters = self.backend.get_parameters()
 
         if parameters['bugzilla-tag-use-priority']:
-            tags += tag_conv(bug.priority)
+            tags += convert_to_list(bug.priority)
 
         if parameters['bugzilla-tag-use-severity']:
-            tags += tag_conv(bug.severity)
+            tags += convert_to_list(bug.severity)
 
         if parameters['bugzilla-tag-use-component']:
-            tags += tag_conv(bug.component)
+            tags += convert_to_list(bug.component)
 
         custom_tags = parameters['bugzilla-tag-customized']
         tags += custom_tags.split(',')
@@ -137,16 +114,34 @@ class BugInformationSyncTask(threading.Thread):
             text = "{0}\n\n{1}".format(bug_url, bug.summary)
         GObject.idle_add(self.task.set_text, text)
 
+    @classmethod
+    def get_bug_sync_task_info(cls, bug_url):
+        '''
+        Get synchronization information from task's title
+
+        @param bug_url: the URL from task's title
+        @return: an object representing task information. None if the URL is not
+                 valid.
+        '''
+        if BUG_URL_PATTERN.match(bug_url) is None:
+            return None
+        scheme, netloc, queries = parse_bug_url(bug_url)
+        bug_id = queries.get('id', None)
+        return BugSyncTaskInfo(scheme=scheme,
+                               net_location=netloc,
+                               bug_id=bug_id)
+
     def run(self):
         bug_url = self.task.get_title()
-        task_info = get_bug_sync_task_info(bug_url)
+        task_info = self.get_bug_sync_task_info(bug_url)
         if task_info is None:
             return
 
         try:
-            bugzillaService = BugzillaServiceFactory.create(
+            bugzillaService = create_bugzilla_service(
                 task_info.scheme, task_info.net_location)
-        except (BugzillaServiceNotExist, BugzillaServiceDisabled):
+        except (exceptions.BugzillaServiceNotExist,
+                exceptions.BugzillaServiceDisabled):
             # Stop quietly when bugzilla cannot be found. Currently, I don't
             # assume that user enters a wrong hostname or just an unkown
             # bugzilla service.
@@ -157,16 +152,16 @@ class BugInformationSyncTask(threading.Thread):
         except XmlrpcFault as err:
             err_no = err.faultCode
             if err_no == 100:
-                error_no = ERRNO_BUGZILLA_INVALID
+                error_no = exceptions.ERRNO_BUGZILLA_INVALID
                 error_message = BUGZILLA_INVALID_MESSAGE % task_info.bug_id
             elif err_no == 101:
-                error_no = ERRNO_BUGZILLA_NOT_EXIST
+                error_no = exceptions.ERRNO_BUGZILLA_NOT_EXIST
                 error_message = BUGZILLA_NOT_EXIST_MESSAGE % task_info.bug_id
             elif err_no == 102:
-                error_no = ERRNO_BUGZILLA_NO_PERM
+                error_no = exceptions.ERRNO_BUGZILLA_NO_PERM
                 error_message = BUGZILLA_NO_PERM_MESSAGE % task_info.bug_id
             else:
-                error_no = ERRNO_BUGZILLA_UNKNOWN
+                error_no = exceptions.ERRNO_BUGZILLA_UNKNOWN
                 error_message = err.faultString
 
             send_notification(self.backend, error_no, error_message)
@@ -177,7 +172,7 @@ class BugInformationSyncTask(threading.Thread):
         except Exception as err:
             error_message = BUGZILLA_BUG_SYNC_FAIL_MESSAGE % task_info.bug_id
             send_notification(self.backend,
-                              ERRNO_BUGZILLA_BUG_SYNC_FAIL,
+                              exceptions.ERRNO_BUGZILLA_BUG_SYNC_FAIL,
                               error_message)
             Log.error('Failed to synchronize information of bug {0} from {1}. '
                       'Server error message "{2}"'.format(task_info.bug_id,
@@ -189,3 +184,18 @@ class BugInformationSyncTask(threading.Thread):
 
             self.append_comment(bug, bug_url, bugzillaService)
             self.add_tags(bug, bugzillaService)
+
+
+def sync_bug_info(task, backend):
+    '''Synchronize bug information according to URL in task title
+
+    This is the entry point to Bugzilla backend. Anyone who wants to
+    synchronize a bug information according to a task's title, calls this
+    method instead of initiating BugInformationSyncTask directly.
+
+    Implementation of synchronization would be changed. Call this method is
+    safe without any affection by the changes.
+    '''
+    task = BugInformationSyncTask(task, backend)
+    task.daemon = True
+    task.start()

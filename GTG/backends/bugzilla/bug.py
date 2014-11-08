@@ -14,7 +14,7 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 
-__all__ = ('BugFactory',)
+__all__ = ('create_bug',)
 
 
 class Bug(object):
@@ -64,21 +64,17 @@ bugs = {
 }
 
 
-class BugFactory(object):
-    '''Factory to create a concrete Bug object'''
+def create_bug(service_domain, bug):
+    '''
+    Create a concrete Bug object
 
-    @staticmethod
-    def create(bug_cls_key, bug):
-        '''
-        Create a concrete Bug object
-
-        @param bug_cls_key: the key to determine the specific Bug class
-        @param bug: a dictionary object parsed from the JSON representing a bug
-                    returned from related Bugzilla service
-        @return: the Bug object. None if no specific Bug class is found
-        '''
-        bug_cls = bugs.get(bug_cls_key, None)
-        if bug_cls is None:
-            return None
-        else:
-            return bug_cls(bug)
+    @param service_domain: the key to determine the specific Bug class
+    @param bug: a dictionary object parsed from the JSON representing a bug
+                returned from related Bugzilla service
+    @return: the Bug object. None if no specific Bug class is found
+    '''
+    bug_cls = bugs.get(service_domain, None)
+    if bug_cls is None:
+        return None
+    else:
+        return bug_cls(bug)

@@ -23,7 +23,7 @@ to a normal task automatically.
 '''
 
 from GTG import _
-from GTG.backends.bugzilla.bugzilla import BugInformationSyncTask
+from GTG.backends.bugzilla.bugzilla import sync_bug_info
 from GTG.backends.genericbackend import GenericBackend
 
 __all__ = ('Backend',)
@@ -75,6 +75,4 @@ class Backend(GenericBackend):
         if not self.is_initialized():
             return
 
-        bugTask = BugInformationSyncTask(task, self)
-        bugTask.daemon = True
-        bugTask.start()
+        sync_bug_info(task, self)

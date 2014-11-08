@@ -62,9 +62,6 @@ class TaskBrowser(GObject.GObject):
         self.tag_active = False
         self.applied_tags = []
 
-        # Sync for showing infobar
-        self.infobar_lock = threading.Lock()
-
         # treeviews handlers
         self.vtree_panes = {}
         self.tv_factory = TreeviewFactory(self.req, self.config)
@@ -1537,9 +1534,8 @@ class TaskBrowser(GObject.GObject):
             in BackendsSignals
         @param data: data for failed event
         """
-        with self.infobar_lock:
-            infobar = self._new_infobar(backend_id, data=data)
-            infobar.set_error_code(error_code)
+        infobar = self._new_infobar(backend_id, data=data)
+        infobar.set_error_code(error_code)
 
     def on_backend_needing_interaction(self, sender, backend_id, description,
                                        interaction_type, callback):

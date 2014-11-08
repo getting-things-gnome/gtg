@@ -1,6 +1,0 @@
-TODO
-====
-
-- The ability to configure Bugzilla sync backend
-  - Default tag name for synced bugs, user input or use bug property, such as
-	component
