@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
 # Getting Things GNOME! - a personal organizer for the GNOME desktop
-# Copyright (c) 2008-2013 - Lionel Dricot & Bertrand Rousseau
+# Copyright (c) 2008-2014 - Sagar Ghuge
 #
 # This program is free software: you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -75,11 +75,11 @@ class DeleteTagsDialog():
             # we don't want to end with just one task that doesn't fit the
             # screen and a line saying "And one more task", so we go a
             # little over our limit
-            missing_tags_count = len(self.tags_todelete) \
-                - self.MAXIMUM_TAGS_TO_SHOW
+            tags_count = len(self.tags_todelete)
+            missing_tags_count = tags_count - self.MAXIMUM_TAGS_TO_SHOW
             if missing_tags_count >= 2:
-                tagslist = self.tags_todelete[: self.MAXIMUM_TAGS_TO_SHOW]
-                titles_suffix = _("\nAnd %d more tags" % missing_tags_count)
+                tagslist = self.tags_todelete[:self.MAXIMUM_TAGS_TO_SHOW]
+                titles_suffix = _("\nAnd %d more tags") % missing_tags_count
             else:
                 tagslist = self.tags_todelete
                 titles_suffix = ""
