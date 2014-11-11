@@ -362,6 +362,8 @@ class Task(TreeNode):
         """
         urg_date = self.due_date
         for sub in self.get_subtasks():
+            if sub.get_closed_date() != Date.no_date():
+                continue
             sub_urg_date = sub.get_urgent_date()
             if urg_date >= sub_urg_date:
                 urg_date = sub_urg_date
