@@ -15,8 +15,6 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-# Remove dependence of bugz due to that plugin just needs get action and
-# it is done by Python xmlrpclib simply enough.
 from xmlrpc.client import ServerProxy
 
 from GTG.backends.bugzilla.bug import create_bug
