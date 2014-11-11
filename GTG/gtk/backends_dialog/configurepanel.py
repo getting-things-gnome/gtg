@@ -84,7 +84,7 @@ class ConfigurePanel(Gtk.Box):
         self.human_name_label = Gtk.Label()
         self.human_name_label.set_alignment(xalign=0, yalign=0.5)
 
-        #FIXME in the newer versions of GTK3 there always be Spinner!
+        # FIXME in the newer versions of GTK3 there always be Spinner!
         try:
             self.spinner = Gtk.Spinner()
         except AttributeError:

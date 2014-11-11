@@ -67,13 +67,13 @@ class TagContextMenu(Gtk.Menu):
         # Make it visible
         self.show_all()
 
-    ### PUBLIC API ############################################################
+    # PUBLIC API ##############################################################
     def set_tag(self, tag):
         """Update the context menu items using the tag attributes."""
         self.tag = tag
         self.__build_menu()
 
-    ### CALLBACKS #############################################################
+    # CALLBACKS ###############################################################
     def on_mi_cc_activate(self, widget):
         """Callback: show the tag editor upon request"""
         self.vmanager.open_tag_editor(self.tag)

@@ -102,7 +102,7 @@ class Backend(PeriodicImportBackend):
         try:
             self.cancellation_point()
             client = Client('%s/api/soap/mantisconnect.php?wsdl' %
-                           (self._parameters['service-url']))
+                            self._parameters['service-url'])
         except KeyError:
             self.quit(disable=True)
             BackendSignals().backend_failed(self.get_id(),
@@ -146,7 +146,7 @@ class Backend(PeriodicImportBackend):
         return
 
 ###############################################################################
-### Process tasks #############################################################
+# Process tasks ###############################################################
 ###############################################################################
     def _process_mantis_issue(self, issue):
         '''

@@ -70,6 +70,8 @@ class TaskEditor(object):
         self.inserttag_button = self.builder.get_object("inserttag")
         self.inserttag_button.set_tooltip_text(GnomeConfig.TAG_TOOLTIP)
         self.open_parents_button = self.builder.get_object("open_parents")
+        self.open_parents_button.set_tooltip_text(
+            GnomeConfig.OPEN_PARENT_TOOLTIP)
 
         # Create our dictionary and connect it
         dic = {
@@ -229,12 +231,16 @@ class TaskEditor(object):
         dismiss_editor.add_accelerator('clicked', agr, key, mod,
                                        Gtk.AccelFlags.VISIBLE)
 
+        # Ctrl-Q quits GTG
+        key, modifier = Gtk.accelerator_parse('<Control>q')
+        agr.connect(key, modifier, Gtk.AccelFlags.VISIBLE, self.quit)
+
     # Can be called at any time to reflect the status of the Task
     # Refresh should never interfere with the TaskView.
     # If a title is passed as a parameter, it will become
     # the new window title. If not, we will look for the task title.
     # Refreshtext is whether or not we should refresh the TaskView
-    #(doing it all the time is dangerous if the task is empty)
+    # (doing it all the time is dangerous if the task is empty)
     def refresh_editor(self, title=None, refreshtext=False):
         if self.window is None:
             return
@@ -400,7 +406,7 @@ class TaskEditor(object):
             widget.override_color(Gtk.StateType.NORMAL, None)
             widget.override_background_color(Gtk.StateType.NORMAL, None)
         else:
-            #We should write in red in the entry if the date is not valid
+            # We should write in red in the entry if the date is not valid
             text_color = Gdk.RGBA()
             text_color.parse("#F00")
             widget.override_color(Gtk.StateType.NORMAL, text_color)
@@ -489,7 +495,7 @@ class TaskEditor(object):
     def delete_task(self, widget):
         # this triggers the closing of the window in the view manager
         if self.task.is_new():
-#            self.req.delete_task(self.task.get_id())
+            # self.req.delete_task(self.task.get_id())
             self.vmanager.close_task(self.task.get_id())
         else:
             self.vmanager.ask_delete_tasks([self.task.get_id()])
@@ -617,5 +623,10 @@ class TaskEditor(object):
 
     def get_window(self):
         return self.window
+
+    def quit(self, accel_group=None, acceleratable=None, keyval=None,
+             modifier=None):
+        """Handles the accelerator for quitting GTG."""
+        self.vmanager.quit()
 
 # -----------------------------------------------------------------------------

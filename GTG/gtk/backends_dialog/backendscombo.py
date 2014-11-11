@@ -28,10 +28,11 @@ class BackendsCombo(Gtk.ComboBox):
     A combobox listing all the available backends types
     '''
 
-    COLUMN_NAME = 0  # unique name for the backend type. It's never
-                            # displayed, it's used to find which backend has
-                            # been selected
-    COLUMN_HUMAN_NAME = 1  # human friendly name (which is localized).
+    # unique name for the backend type. It's never displayed,
+    # it's used to find which backend has been selected
+    COLUMN_NAME = 0
+    # human friendly name (which is localized).
+    COLUMN_HUMAN_NAME = 1
     COLUMN_ICON = 2
 
     def __init__(self, backends_dialog):
@@ -69,7 +70,10 @@ class BackendsCombo(Gtk.ComboBox):
         '''
         self.liststore.clear()
         backend_types = BackendFactory().get_all_backends()
-        for name, module in backend_types.items():
+        ordered_backend_types = sorted(
+            backend_types.items(),
+            key=lambda btype: btype[1].Backend.get_human_default_name())
+        for name, module in ordered_backend_types:
             # FIXME: Disable adding another localfile backend.
             # It just produce many warnings, provides no use case
             # See LP bug #940917 (Izidor)

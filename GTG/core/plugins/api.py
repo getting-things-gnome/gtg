@@ -69,7 +69,7 @@ class PluginAPI:
         for func in self.selection_changed_callback_listeners:
             func(selection)
 
-#=== Accessor methods ========================================================
+# Accessor methods ============================================================
     def is_editor(self):
         """
         Returns true if this is an Editor API
@@ -130,7 +130,7 @@ class PluginAPI:
                     if func.__class__ != plugin_class]
         self.selection_changed_callback_listeners = new_list
 
-#=== Changing the UI =========================================================
+# Changing the UI ===========================================================
     def add_menu_item(self, item):
         """Adds a menu entry to the Plugin Menu of the Main Window
         (task browser).
@@ -165,7 +165,7 @@ class PluginAPI:
         @param widget: The Gtk.ToolButton that is going to be added to the
         toolbar.
         """
-        #-1 means "append to the end"
+        # -1 means "append to the end"
         self.__toolbar.insert(widget, -1)
 
     def remove_toolbar_item(self, widget):
@@ -223,7 +223,7 @@ class PluginAPI:
             pane.set_bg_color(func, 'bg_color')
             pane.basetree.get_basetree().refresh_all()
 
-#=== file saving/loading =====================================================
+# file saving/loading =======================================================
     def load_configuration_object(self, plugin_name, filename,
                                   basedir=xdg_config_home,
                                   default_values=None):

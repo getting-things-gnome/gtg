@@ -60,7 +60,6 @@ class pluginSendEmail:
         except:
             pass
 
-## CORE FUNCTIONS #############################################################
     def onTbTaskButton(self, widget, plugin_api):
         """
         When the user presses the button.
