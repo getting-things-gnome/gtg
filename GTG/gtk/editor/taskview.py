@@ -1290,8 +1290,9 @@ class TaskView(Gtk.TextView):
             cursor_mark = buff.get_insert()
             cursor_iter = buff.get_iter_at_mark(cursor_mark)
             local_start = cursor_iter.copy()
+            tags = local_start.get_tags() + local_start.get_toggled_tags(False)
 
-            for tag in local_start.get_tags():
+            for tag in tags:
                 anchor = tag.link
                 typ = tag.type
                 if(anchor):
