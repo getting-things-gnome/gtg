@@ -1290,6 +1290,14 @@ class TaskView(Gtk.TextView):
             cursor_mark = buff.get_insert()
             cursor_iter = buff.get_iter_at_mark(cursor_mark)
             local_start = cursor_iter.copy()
+
+            # If we are at a task indent arrow, prepare the iterator for the
+            # next loop to get the link
+            for tag in local_start.get_tags():
+                if hasattr(tag, 'is_indent'):
+                    local_start.forward_to_line_end()
+                    break
+
             tags = local_start.get_tags() + local_start.get_toggled_tags(False)
 
             for tag in tags:
