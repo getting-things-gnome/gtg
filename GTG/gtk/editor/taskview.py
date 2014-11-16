@@ -1301,13 +1301,14 @@ class TaskView(Gtk.TextView):
             tags = local_start.get_tags() + local_start.get_toggled_tags(False)
 
             for tag in tags:
-                anchor = tag.link
-                typ = tag.type
-                if(anchor):
-                    if typ == "subtask":
-                        self.open_task(anchor)
-                    elif typ == "http" and self.check_link(anchor):
-                        openurl(anchor)
+                if hasattr(tag, 'link'):
+                    anchor = tag.link
+                    typ = tag.type
+                    if(anchor):
+                        if typ == "subtask":
+                            self.open_task(anchor)
+                        elif typ == "http" and self.check_link(anchor):
+                            openurl(anchor)
 
             return True
 
