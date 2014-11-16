@@ -47,6 +47,7 @@
     * Fix for bug #1078306: Not all interface can be localized, by Àlex Magaz Graça
     * Fix for bug #33: Ctrl-Q doesn't work from task windows, by Àlex Magaz Graça
     * Fixing the Tooltip for open parent, by Sagar Ghuge
+    * Fix for bug #71: Ctrl-Enter doesn't work in some corner cases, by Àlex Magaz Graça
 
 2013-11-24 Getting Things GNOME! 0.3.1
     * Fix for bug #1024473: Have 'Show Main Window' in notification area, by Antonio Roquentin
