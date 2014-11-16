@@ -1299,7 +1299,7 @@ class TaskView(Gtk.TextView):
             tags = local_start.get_tags() + local_start.get_toggled_tags(False)
 
             for tag in tags:
-                if(hasattr(tag, 'link')):
+                if hasattr(tag, 'link'):
                     anchor = tag.link
                     typ = tag.type
                     if(anchor):
