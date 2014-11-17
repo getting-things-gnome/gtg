@@ -67,7 +67,7 @@ class hamsterPlugin:
         return icon
 
     # Interaction with Hamster ###
-    def sendTask(self, task):
+    def send_task(self, task):
         """Send a gtg task to hamster-applet"""
         if task is None:
             return
@@ -336,19 +336,25 @@ class hamsterPlugin:
     def browser_cb(self, widget, plugin_api):
         task_id = plugin_api.get_browser().get_selected_task()
         task = plugin_api.get_requester().get_task(task_id)
-        self.decide_start_or_stop_activity(task, widget)
+        self.decide_start_or_stop_activity(task)
 
     def task_cb(self, widget, plugin_api):
         task = plugin_api.get_ui().get_task()
-        self.decide_start_or_stop_activity(task, widget)
+        self.decide_start_or_stop_activity(task)
 
-    def decide_start_or_stop_activity(self, task, widget):
+    def decide_start_or_stop_activity(self, task):
+        task_button = getattr(self, 'taskbutton', None)
         if self.is_task_active(task):
-            self.change_button_to_start_activity(widget)
+            self.change_button_to_start_activity(self.button)
+            if task_button is not None:
+                self.change_button_to_start_activity(task_button)
             self.stop_task(task)
+
         elif task.get_status() == Task.STA_ACTIVE:
-            self.change_button_to_stop_activity(widget)
-            self.sendTask(task)
+            self.change_button_to_stop_activity(self.button)
+            if task_button is not None:
+                self.change_button_to_stop_activity(task_button)
+            self.send_task(task)
 
     def selection_changed(self, selection):
         if selection.count_selected_rows() == 1:
@@ -370,13 +376,13 @@ class hamsterPlugin:
 
     def change_button_to_start_activity(self, button):
         self.menu_item.set_label(self.START_ACTIVITY_LABEL)
-        self.button.set_icon_widget(self.get_icon_widget(self.IMG_START_PATH))
-        self.button.set_tooltip_text(self.TOOLTIP_TEXT_START_ACTIVITY)
+        button.set_icon_widget(self.get_icon_widget(self.IMG_START_PATH))
+        button.set_tooltip_text(self.TOOLTIP_TEXT_START_ACTIVITY)
 
     def change_button_to_stop_activity(self, button):
         self.menu_item.set_label(self.STOP_ACTIVITY_LABEL)
-        self.button.set_icon_widget(self.get_icon_widget(self.IMG_STOP_PATH))
-        self.button.set_tooltip_text(self.TOOLTIP_TEXT_STOP_ACTIVITY)
+        button.set_icon_widget(self.get_icon_widget(self.IMG_STOP_PATH))
+        button.set_tooltip_text(self.TOOLTIP_TEXT_STOP_ACTIVITY)
 
     # Preference Handling ###
     def is_configurable(self):
