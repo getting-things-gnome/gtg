@@ -1,23 +1,21 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2014 - Sara Ribeiro <sara.rmgr@gmail.com>
+#
+# This program is free software: you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation, either version 3 of the License, or (at your option) any later
+# version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+# details.
+#
+# You should have received a copy of the GNU General Public License along with
+# this program.  If not, see <http://www.gnu.org/licenses/>.
+
 import cairo
 import datetime
-import random
-
-random.seed(7)  # to generate same colors/dates every time
-
-
-def random_color(mix=(0, 0.5, 0.5)):
-    """
-    Generates a random color based on the color @mix given as parameter.
-    If the @mix color is the same every time, all the colors generated
-    will be as from the same color pallete.
-
-    @param mix: triple of floats, a color in the format (red, green, blue).
-    @return color: triple of floats, a newly generated color in the format RGB.
-    """
-    red = (random.random() + mix[0])/2
-    green = (random.random() + mix[1])/2
-    blue = (random.random() + mix[2])/2
-    return (red, green, blue)
 
 
 def date_generator(start, numdays):
@@ -173,10 +171,10 @@ def date_to_row_coord(date, start):
     @return row: int, the corresponding row for the date.
     """
     # date is in previous month than start
-    if date.month + 1 == start.month:
+    if (date.month + 1) % 12 == start.month:
         return 0
     # date is in next month than start
-    elif date.month - 1 == start.month:
+    elif (date.month - 1) % 12 == start.month:
         return -1
     # two dates in same month
     elif date.month == start.month:

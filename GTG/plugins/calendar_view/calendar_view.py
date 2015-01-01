@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright (c) 2014 - Sara Ribeiro <sara.rmgr@gmail.com>
-
+#
 # This program is free software: you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
 # Foundation, either version 3 of the License, or (at your option) any later
@@ -14,12 +14,13 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 
+
 from gi.repository import Gtk
 from GTG import _
 from GTG.plugins.calendar_view.calendar_plugin import CalendarPlugin
 
 
-class calendarView:
+class CalendarView:
 
     def __init__(self):
         self.plugin_api = None

@@ -32,17 +32,8 @@ from GTG.tools.dates import Date
 from GTG.tools.logger import Log
 from liblarch import TreeNode
 from GTG.tools.tags import extract_tags_from_text
+from GTG.gtk.colors import random_color
 
-# FIXME SARA: delete ##########
-import random
-random.seed(7)
-
-def random_color(mix=(0, 0.5, 0.5)):
-    red = (random.random() + mix[0])/2
-    green = (random.random() + mix[1])/2
-    blue = (random.random() + mix[2])/2
-    return (red, green, blue)
-###############################
 
 class Task(TreeNode):
     """ This class represent a task in GTG.
@@ -81,7 +72,7 @@ class Task(TreeNode):
         self.attributes = {}
         self._modified_update()
 
-        # FIXME SARA: delete #############
+        # used for calendar_view plugin
         self.color = None
 
     def is_loaded(self):
@@ -792,7 +783,10 @@ class Task(TreeNode):
             toreturn = True
         return toreturn
 
-    # FIXME SARA: delete #############
+    # used for displaying task in calendar_view plugin
+    # TODO: save color to file as a task attribute so it will always have
+    # the same color.
+    # TODO: create dialog where user can pick task color.
     def set_color(self, color):
         self.color = color
 
@@ -800,7 +794,6 @@ class Task(TreeNode):
         if not self.color:
             self.color = random_color()
         return self.color
-    ##################################
 
     def __str__(self):
         s = ""

@@ -1,4 +1,19 @@
-#!/usr/bin/python3
+# -*- coding: utf-8 -*-
+# Copyright (c) 2014 - Sara Ribeiro <sara.rmgr@gmail.com>
+#
+# This program is free software: you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation, either version 3 of the License, or (at your option) any later
+# version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+# details.
+#
+# You should have received a copy of the GNU General Public License along with
+# this program.  If not, see <http://www.gnu.org/licenses/>.
+
 from gi.repository import Gtk, Gdk, GObject
 import os
 
@@ -158,12 +173,3 @@ class CalendarPlugin(GObject.GObject):
         # self.current_view.disconnect_by_func(self.on_add_clicked)
         self.current_view.disconnect_by_func(self.on_dates_changed)
         self.current_view.disconnect_by_func(self.update_buttons_sensitivity)
-
-# If we want to test only the Plugin (outside GTG):
-tests = False
-if tests:
-    from GTG.core.datastore import DataStore
-    ds = DataStore()
-    ds.populate()  # hard-coded tasks
-    CalendarPlugin(ds.get_requester())
-    Gtk.main()

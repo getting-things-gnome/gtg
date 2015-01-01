@@ -1,4 +1,21 @@
-class Rect():
+# -*- coding: utf-8 -*-
+# Copyright (c) 2014 - Sara Ribeiro <sara.rmgr@gmail.com>
+#
+# This program is free software: you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation, either version 3 of the License, or (at your option) any later
+# version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+# details.
+#
+# You should have received a copy of the GNU General Public License along with
+# this program.  If not, see <http://www.gnu.org/licenses/>.
+
+
+class Rect(object):
     """
     Class representing a rectangle, where:
     - x is the initial horizontal position of the rect (col inside a grid).
@@ -17,7 +34,7 @@ class Rect():
         return "%s %s %s %s" % (self.x, self.y, self.width, self.height)
 
 
-class Cell():
+class Cell(object):
     """ This class represents a single cell of a Grid. """
     def __init__(self, x, y, obj_id=0):
         x = x
@@ -48,7 +65,7 @@ class Cell():
         return str(self.object_id)
 
 
-class Grid():
+class Grid(object):
     """
     This class contains rows and columns forming a grid, where rectangles can
     be added into it.

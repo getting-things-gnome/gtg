@@ -1,3 +1,19 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2014 - Sara Ribeiro <sara.rmgr@gmail.com>
+#
+# This program is free software: you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation, either version 3 of the License, or (at your option) any later
+# version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+# details.
+#
+# You should have received a copy of the GNU General Public License along with
+# this program.  If not, see <http://www.gnu.org/licenses/>.
+
 from gi.repository import Gtk, Gdk
 import datetime
 import calendar
@@ -240,7 +256,7 @@ class MonthView(ViewBase):
         tasks = [t.task for t in week['tasks'] if
                  appears_in_day(t)]
 
-        # FIXME: create popover also (check if GNOME >= 3.12)
+        # TODO: create popover instead of dialog (check if GNOME >= 3.12)
         popup = DayCell(self.get_toplevel(), day, tasks, self.edit_task)
         popup.run()
         popup.destroy()

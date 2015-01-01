@@ -1,8 +1,24 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2014 - Sara Ribeiro <sara.rmgr@gmail.com>
+#
+# This program is free software: you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation, either version 3 of the License, or (at your option) any later
+# version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+# details.
+#
+# You should have received a copy of the GNU General Public License along with
+# this program.  If not, see <http://www.gnu.org/licenses/>.
+
 import datetime
 from GTG.plugins.calendar_view.utils import date_generator
 
 
-class WeekSpan():
+class WeekSpan(object):
     """
     This class is responsible for managing the dates to be showed in each View.
     It holds one or more COMPLETE weeks, always starting on Monday.
@@ -13,7 +29,7 @@ class WeekSpan():
     def __init__(self, numweeks=1, start=None):
         self.numweeks = numweeks
         self.start_date = start
-        if start:
+        if start is not None:
             self.set_week_starting_on(start)
 
     def set_week_starting_on(self, date):

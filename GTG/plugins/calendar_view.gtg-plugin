@@ -6,4 +6,4 @@ description=Display a calendar with all your tasks, where you can add or edit th
 authors=Sara Ribeiro <sara.rmgr@gmail.com>
 version=0.1
 enabled=False
-dependencies=
+dependencies=cairo

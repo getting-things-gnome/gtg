@@ -122,3 +122,20 @@ def color_remove(present_color):
     if present_color in used_color:
         used_color.remove(present_color)
 # -----------------------------------------------------------------------------
+
+
+# Used in calendar_view plugin
+def random_color(mix=(0, 0.5, 0.5)):
+    """
+    Generates a random color based on the color @mix given as parameter.
+    If the @mix color is the same every time, all the colors generated
+    will be as from the same color pallete.
+
+    @param mix: triple of floats, a color in the format (red, green, blue).
+    @return color: triple of floats, a newly generated color in the format
+GB.
+    """
+    red = (random.random() + mix[0])/2
+    green = (random.random() + mix[1])/2
+    blue = (random.random() + mix[2])/2
+    return (red, green, blue)

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright (c) 2014 - Sara Ribeiro <sara.rmgr@gmail.com>
-
+#
 # This program is free software: you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
 # Foundation, either version 3 of the License, or (at your option) any later
@@ -16,8 +16,8 @@
 
 """ Calendar View pluging"""
 
-from GTG.plugins.calendar_view.calendar_view import calendarView
+from GTG.plugins.calendar_view.calendar_view import CalendarView
 
 # suppress pyflakes warning (given by make lint)
 if False:
-    calendarView()
+    CalendarView()
