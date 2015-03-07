@@ -137,7 +137,7 @@ command:
 If you want to read the documentation directly from the source code, use
 this command (from the source root dir):
 
-    $ yelp doc/userdoc/C/index.page
+    $ yelp docs/userdoc/C/index.page
 
 ### Using GTG from the command line
 
