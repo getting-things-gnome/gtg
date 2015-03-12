@@ -39,7 +39,8 @@ class pluginSendEmail:
         """
         self.plugin_api = None
         self.tb_Managerbutton = None
-        self.tb_Taskbutton= None
+        self.tb_Taskbutton = None
+        self.button = None
 
     def activate(self, plugin_api):
         """
@@ -47,7 +48,11 @@ class pluginSendEmail:
         """
         self.plugin_api = plugin_api
         self.req = self.plugin_api.get_requester()
-        self._init_gtk(plugin_api)
+        self.newButton(plugin_api)
+        self.tb_Managerbutton = self.button
+        self.tb_Managerbutton.connect('clicked', self.onTbManagerButton, plugin_api)
+        self.tb_Managerbutton.show()
+        self.plugin_api.add_toolbar_item(self.tb_Managerbutton)
         self.plugin_api.set_active_selection_changed_callback(
             self.selection_changed)
 
@@ -57,15 +62,11 @@ class pluginSendEmail:
         """
         self.plugin_api = plugin_api
         # add a item (button) to the ToolBar
-        tb_Taskicon = Gtk.Image()
-        tb_Taskicon.set_from_icon_name('mail-send', 32)
-        self.tb_Taskbutton= True
-        self.tb_Taskbutton = Gtk.ToolButton.new(tb_Taskicon)
-        self.tb_Taskbutton.set_label(_("Send via email"))
-        self.tb_Taskbutton.set_tooltip_text("Send via email")
+        self.newButton(plugin_api)
+        self.button.set_sensitive(True)
+        self.tb_Taskbutton = self.button
         self.tb_Taskbutton.connect('clicked', self.onTbTaskButton, plugin_api)
-        self.tb_Taskbutton.show_all()
-
+        self.tb_Taskbutton.show()
         plugin_api.add_toolbar_item(self.tb_Taskbutton)
 
     def deactivate(self, plugin_api):
@@ -96,26 +97,35 @@ class pluginSendEmail:
         else:
             self.tb_Managerbutton.set_sensitive(False)
 
-    def _init_gtk(self, plugin_api):
+    def newButton(self, plugin_api):
         """ Initialize all the GTK widgets """
-        self.tb_Managerbutton = True
-        self.tb_Managerbutton = Gtk.ToolButton()
-        self.tb_Managerbutton.set_sensitive(False)
-        self.tb_Managerbutton.set_icon_name('mail-send')
-        self.tb_Managerbutton.set_is_important(True)
-        self.tb_Managerbutton.set_label(_("Send via email"))
-        self.tb_Managerbutton.connect('clicked', self.onTbManagerButton, plugin_api)
-        self.tb_Managerbutton.show()
-        self.plugin_api.add_toolbar_item(self.tb_Managerbutton)
-
+        self.button = True
+        self.button = Gtk.ToolButton()
+        self.button.set_sensitive(False)
+        self.button.set_icon_name('mail-send')
+        self.button.set_is_important(True)
+        self.button.set_label(_("Send via email"))
 
     def onTbTaskButton(self, widget, plugin_api):
         """
         When the user presses the button in task view.
         """
         task = plugin_api.get_ui().get_task()
+        self.sendEmail(task)
 
+    def onTbManagerButton(self, widget, plugin_api):
+        """
+        When the user presses the button in manager.
+        """
+        for tid in self.plugin_api.get_selected():
+            task = self.req.get_task(tid)
+            self.sendEmail(task)
+
+
+    def sendEmail(self, task):
+        """
         # Body contains Status Tags, Subtasks and Content.
+        """
         body = _("Status: %s") % (task.get_status()) + \
             _("\nTags: %s") % (", ".join(task.get_tags_name())) + \
             _("\nSubtasks:\n%s") % (
@@ -130,26 +140,3 @@ class pluginSendEmail:
 
         Gio.app_info_get_default_for_uri_scheme('mailto').launch_uris(
             ['mailto:' + 'gtg@example.com?' + parameters], None)
-
-    def onTbManagerButton(self, widget, plugin_api):
-        """
-        When the user presses the button in manager.
-        """
-        for tid in self.plugin_api.get_selected():
-            task = self.req.get_task(tid)
-
-        # Body contains Status Tags, Subtasks and Content.
-            body = _("Status: %s") % (task.get_status()) + \
-                _("\nTags: %s") % (", ".join(task.get_tags_name())) + \
-                _("\nSubtasks:\n%s") % (
-                    "\n - ".join([i.get_title() for i in task.get_subtasks()])) + \
-                _("\nTask content:\n%s") % (task.get_excerpt())
-
-            # Title contains the title and the start and due dates.
-            title = _("Task: %(task_title)s") % {'task_title': task.get_title()}
-
-            parameters = urllib.parse.urlencode({'subject': title, 'body': body})
-            parameters = parameters.replace('+', '%20')
-
-            Gio.app_info_get_default_for_uri_scheme('mailto').launch_uris(
-                ['mailto:' + 'gtg@example.com?' + parameters], None)
