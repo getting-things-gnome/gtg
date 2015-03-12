@@ -121,7 +121,7 @@ def openxmlfile(zefile, root):
 
     If file doesn't exist, create a new file """
 
-    #reset _USED_BACKUP and _BACKUP_FILE_INFO
+    # reset _USED_BACKUP and _BACKUP_FILE_INFO
     global _USED_BACKUP
     global _BACKUP_FILE_INFO
     _USED_BACKUP = False
@@ -203,7 +203,6 @@ def emptydoc(root):
 
 
 def savexml(zefile, doc, backup=False):
-#    print "writing %s file" %(zefile)
     tmpfile = zefile + '__'
     backup_name = _get_backup_name(zefile)
 
@@ -222,7 +221,8 @@ def savexml(zefile, doc, backup=False):
         f = open(zefile, mode='w+')
         pretty = doc.toprettyxml(tab, enter)
         if f and pretty:
-            bwritten = os.write(f.fileno(), bytes(pretty, 'utf8'))
+            pretty = bytes(pretty, 'utf8')
+            bwritten = os.write(f.fileno(), pretty)
             if bwritten != len(pretty):
                 print("error writing file %s" % zefile)
                 f.close()

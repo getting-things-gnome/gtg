@@ -50,20 +50,20 @@ class SimpleColorSelectorPaletteItem(Gtk.DrawingArea):
         self.selected = False
         self.add_events(Gdk.EventMask.BUTTON_PRESS_MASK)
         # Connect callbacks
-        #FIXME
-        #self.connect("expose-event", self.on_expose)
+        # FIXME
+        # self.connect("expose-event", self.on_expose)
         self.connect("draw", self.on_expose)
         self.connect("configure_event", self.on_configure)
 
     def __draw(self, cr):
         """Draws the widget"""
         alloc = self.get_allocation()
-        #FIXME - why to use a special variables?
+        # FIXME - why to use a special variables?
         alloc_w, alloc_h = alloc.width, alloc.height
         # Drawing context
-        #cr_ctxt    = Gdk.cairo_create(self.window) # pylint: disable-msg=E1101
-        #gdkcontext = Gdk.CairoContext(cr_ctxt)
-        #FIXME
+        # cr_ctxt    = Gdk.cairo_create(self.window)
+        # gdkcontext = Gdk.CairoContext(cr_ctxt)
+        # FIXME
         gdkcontext = cr
 
         # Draw rectangle
@@ -81,7 +81,7 @@ class SimpleColorSelectorPaletteItem(Gtk.DrawingArea):
         gdkcontext.rectangle(0, 0, alloc_w, alloc_h)
         gdkcontext.stroke()
 
-          # If selected draw a symbol
+        # If selected draw a symbol
         if(self.selected):
             size = alloc_h * 0.50 - 3
             pos_x = math.floor((alloc_w - size) / 2)
@@ -103,17 +103,17 @@ class SimpleColorSelectorPaletteItem(Gtk.DrawingArea):
             gdkcontext.line_to(pos_x + size, pos_y)
             gdkcontext.stroke()
 
-    ### callbacks ###
+    # callbacks #####
     def on_expose(self, widget, cr):
         """Callback: redraws the widget when it is exposed"""
         self.__draw(cr)
 
     def on_configure(self, widget, params):
         """Callback: redraws the widget when it is exposed"""
-        #FIXME - missing cairo context
-        #self.__draw(cr)
+        # FIXME - missing cairo context
+        # self.__draw(cr)
 
-    ### PUBLIC IF ###
+    # PUBLIC IF #####
     def set_color(self, color):
         """Defines the widget color"""
         self.color = color
@@ -288,7 +288,7 @@ class SimpleColorSelector(Gtk.Box):
         """Callback: when adding a new color, show the color definition
         window, update the model, notifies the parent."""
         color_dialog = Gtk.ColorSelectionDialog(_('Choose a color'))
-#FIXME
+        # FIXME
         colorsel = color_dialog.get_color_selection()
         if self.selected_col is not None:
             color = Gdk.color_parse(self.selected_col.color)
@@ -297,8 +297,8 @@ class SimpleColorSelector(Gtk.Box):
         new_color = colorsel.get_current_color()
         # Check response_id and set color if required
         if response == Gtk.ResponseType.OK and new_color:
-#FIXME
-            #strcolor = Gtk.color_selection_palette_to_string([new_color])
+            # FIXME
+            # strcolor = Gtk.color_selection_palette_to_string([new_color])
             strcolor = new_color.to_string()
             # Add the color to the palette and notify
             if strcolor not in self.colors:

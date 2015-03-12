@@ -53,9 +53,9 @@ class pluginTomboy:
     def activate(self, plugin_api):
         self.builder = Gtk.Builder()
 
-    # Returns true is Tomboy/Gnote is present, otherwise shows a dialog
-    #(only once)  and returns False
     def checkTomboyPresent(self):
+        """ Returns true is Tomboy/Gnote is present, otherwise shows a dialog
+        (only once) and returns False """
         if not hasattr(self, 'activated'):
             self.activated = self.findTomboyIconPath()
             # The notification to disable the plug-in to the user will be
@@ -82,7 +82,7 @@ class pluginTomboy:
 
     # Converts all tomboy note widgets in the  equivalent text
     def onTaskClosed(self, plugin_api):
-        if not hasattr(self, "activated") or not self.activated is True:
+        if not hasattr(self, "activated") or not self.activated:
             # plugin has not been properly activated, (bug 475877 )
             # closing without executing onTaskClosed
             return
@@ -322,8 +322,8 @@ class pluginTomboy:
         box.add(image)
         box.add(label)
         eventbox.add(box)
-        #the eventbox should follow the colours of the textview to blend in
-        #properly
+        # the eventbox should follow the colours of the textview to blend in
+        # properly
         textview_style = self.textview.get_style_context()
         for state in (Gtk.StateType.NORMAL, Gtk.StateType.PRELIGHT,
                       Gtk.StateType.ACTIVE, Gtk.StateType.SELECTED,

@@ -71,7 +71,6 @@ class TreeFactory:
         '''
         tagtree = Tree()
 
-        ### building the initial tags
         # Build the "all tasks tag"
         alltag = Tag(CoreConfig.ALLTASKS_TAG, req=req)
         alltag.set_attribute("special", "all")
@@ -113,7 +112,7 @@ class TreeFactory:
         sep_tag.set_attribute("order", 3)
         tagtree.add_node(sep_tag)
 
-        #### Filters
+        # Filters
         tagtree.add_filter('activetag', self.actively_used_tag)
         tagtree.add_filter('usedtag', self.used_tag)
 
@@ -128,7 +127,7 @@ class TreeFactory:
         self.tagtree_loaded = True
         return tagtree
 
-    ################# Tag Filters ##########################################
+    # Tag Filters ##########################################
 
     # filter to display only tags with active tasks
     def actively_used_tag(self, node, parameters=None):
@@ -138,7 +137,7 @@ class TreeFactory:
     def used_tag(self, node, parameters=None):
         return node.is_used()
 
-    ################# Task Filters #########################################
+    # Task Filters #########################################
     # That one is used to filters tag. Is it built dynamically each times
     # a tag is added to the tagstore
     def tag_filter(self, node, parameters):

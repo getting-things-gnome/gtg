@@ -139,7 +139,7 @@ class Task(TreeNode):
         else:
             return False
 
-    # TODO : should we merge this function with set_title ?
+    # TODO: should we merge this function with set_title ?
     def set_complex_title(self, text, tags=[]):
         if tags:
             assert(isinstance(tags[0], str))
@@ -514,8 +514,7 @@ class Task(TreeNode):
         else:
             self.content = ''
 
-    ### SUBTASKS #############################################################
-    #
+    # SUBTASKS ###############################################################
     def new_subtask(self):
         """Add a newly created subtask to this task. Return the task added as
         a subtask
@@ -563,7 +562,7 @@ class Task(TreeNode):
         tree = self.get_tree()
         return [tree.get_node(node_id) for node_id in self.get_children()]
 
-    # FIXME : why is this function used ? It's higly specific. Remove it?
+    # FIXME: why is this function used ? It's higly specific. Remove it?
     #        (Lionel)
     # Agreed. it's only used by the "add tag to all subtasks" widget.
     def get_self_and_all_subtasks(self, active_only=False, tasks=[]):
@@ -577,7 +576,7 @@ class Task(TreeNode):
         return tasks
 
     def get_subtask(self, tid):
-        # FIXME : remove this function. This is not useful
+        # FIXME: remove this function. This is not useful
         print("DEPRECATED: get_subtask")
         """Return the task corresponding to a given ID.
 
@@ -630,8 +629,7 @@ class Task(TreeNode):
         '''
         self.last_modified = datetime.now()
 
-### TAG FUNCTIONS ############################################################
-#
+# TAG FUNCTIONS ##############################################################
     def get_tags_name(self):
         # Return a copy of the list of tags. Not the original object.
         return list(self.tags)
@@ -662,7 +660,7 @@ class Task(TreeNode):
         Adds a tag. Does not add '@tag' to the contents. See add_tag
         """
         # Do not add the same tag twice
-        if not tagname in self.tags:
+        if tagname not in self.tags:
             self.tags.append(tagname)
             if self.is_loaded():
                 for child in self.get_subtasks():

@@ -271,7 +271,7 @@ class NotificationArea:
         self.__tree = None
         self.__liblarch_callbacks = []
 
-## Helper methods #############################################################
+# Helper methods ##############################################################
     def __init_gtk(self):
         menu = Gtk.Menu()
 
@@ -388,7 +388,7 @@ class NotificationArea:
             short_title = short_title.strip() + "..."
         return short_title
 
-### Preferences methods #######################################################
+# Preferences methods #########################################################
     def preferences_load(self):
         self.preferences = self.__plugin_api.load_configuration_object(
             self.PLUGIN_NAME, "preferences",
@@ -444,7 +444,7 @@ class NotificationArea:
         self.preferences_store()
         self.preferences_dialog.hide()
 
-### Browser methods ###########################################################
+# Browser methods #############################################################
     def __on_browser_minimize(self, widget=None, plugin_api=None):
         self.__view_manager.hide_browser()
         return True

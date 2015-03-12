@@ -193,9 +193,9 @@ class PluginEngine(Borg):
 
         def filter_fun(plugin):
             return ((kind_of_plugins == "active" and plugin.active) or
-                   (kind_of_plugins == "inactive" and not plugin.active) or
-                   (kind_of_plugins == "enabled" and plugin.enabled) or
-                   (kind_of_plugins == "disabled" and not plugin.enabled))
+                    (kind_of_plugins == "inactive" and not plugin.active) or
+                    (kind_of_plugins == "enabled" and plugin.enabled) or
+                    (kind_of_plugins == "disabled" and not plugin.enabled))
         return list(filter(filter_fun, all_plugins))
 
     def register_api(self, api):

@@ -33,7 +33,7 @@ class GTGCalendar(GObject.GObject):
     DATE_KIND_START = "start"
     DATE_KIND_CLOSED = "closed"
 
-    #Gobject signal description
+    # Gobject signal description
     __signal_type__ = (GObject.SignalFlags.RUN_FIRST,
                        None,
                        [])
@@ -121,18 +121,18 @@ class GTGCalendar(GObject.GObject):
         self.__window.show()
         self.__window.grab_add()
 
-        #We grab the pointer in the calendar
-        #Gdk.pointer_grab(
-            #self.__window.get_window(),
-            #True,
-            #Gdk.ModifierType.BUTTON1_MASK | Gdk.ModifierType.MOD2_MASK
-        #)
-        #FIXME THIS DOES NOT WORK!!!!!!!
+        # We grab the pointer in the calendar
+        # Gdk.pointer_grab(
+        #   self.__window.get_window(),
+        #   True,
+        #   Gdk.ModifierType.BUTTON1_MASK | Gdk.ModifierType.MOD2_MASK
+        # )
+        # FIXME THIS DOES NOT WORK!!!!!!!
         Gdk.pointer_grab(
             self.get_window(),
             True,
-            #Gdk.ModifierType.BUTTON1_MASK | Gdk.ModifierType.MOD2_MASK,
-            #FIXME!!!! JUST GUESSING THE TYPE
+            # Gdk.ModifierType.BUTTON1_MASK | Gdk.ModifierType.MOD2_MASK,
+            # FIXME!!!! JUST GUESSING THE TYPE
             Gdk.EventMask.ALL_EVENTS_MASK,
             None,
             None,

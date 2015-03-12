@@ -11,3 +11,4 @@ tmp
 MANIFEST
 **.patch
 gtg.prof
+__pycache__

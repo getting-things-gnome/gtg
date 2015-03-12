@@ -41,6 +41,7 @@ class GnomeConfig:
     DELETE_TOOLTIP = _("Permanently remove this task")
     SUBTASK_TOOLTIP = _("Insert a subtask in this task")
     TAG_TOOLTIP = _("Insert a tag in this task")
+    OPEN_PARENT_TOOLTIP = _("Open parent task")
 
     # Number of second between to save in the task editor
     SAVETIME = 7

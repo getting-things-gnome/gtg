@@ -19,7 +19,6 @@
 
 """ The main window for GTG, listing tags, and open and closed tasks """
 
-#=== IMPORT ===================================================================
 # system imports
 import threading
 from webbrowser import open as openurl
@@ -69,7 +68,7 @@ class TaskBrowser(GObject.GObject):
         self.vtree_panes['active'] = \
             self.tv_factory.active_tasks_treeview(self.activetree)
 
-        ### YOU CAN DEFINE YOUR INTERNAL MECHANICS VARIABLES BELOW
+        # YOU CAN DEFINE YOUR INTERNAL MECHANICS VARIABLES BELOW
         self.in_toggle_workview = False
 
         # Setup GTG icon theme
@@ -120,8 +119,7 @@ class TaskBrowser(GObject.GObject):
         self._update_window_title()
         vmanager.timer.connect('refresh', self.refresh_workview)
 
-### INIT HELPER FUNCTIONS #####################################################
-#
+# INIT HELPER FUNCTIONS #######################################################
     def _init_icon_theme(self):
         """
         sets the deafault theme for icon and its directory
@@ -405,7 +403,7 @@ class TaskBrowser(GObject.GObject):
         quickadd_field.add_accelerator("grab-focus", agr, key, mod,
                                        Gtk.AccelFlags.VISIBLE)
 
-### HELPER FUNCTIONS ########################################################
+# HELPER FUNCTIONS ##########################################################
     def open_preferences(self, widget):
         self.vmanager.open_preferences(self.config)
 
@@ -442,13 +440,12 @@ class TaskBrowser(GObject.GObject):
                 print("Invalid liblarch path {0}".format(path))
 
     def restore_state_from_conf(self):
-
-#        # Extract state from configuration dictionary
-#        if not "browser" in self.config:
-#            #necessary to have the minimum width of the tag pane
-#            # inferior to the "first run" width
-#            self.builder.get_object("hpaned1").set_position(250)
-#            return
+        # Extract state from configuration dictionary
+        # if "browser" not in self.config:
+        #     #necessary to have the minimum width of the tag pane
+        #     # inferior to the "first run" width
+        #     self.builder.get_object("hpaned1").set_position(250)
+        #     return
 
         width = self.config.get('width')
         height = self.config.get('height')
@@ -612,9 +609,8 @@ class TaskBrowser(GObject.GObject):
         elif notebook.get_n_pages() == 0:
             notebook.hide()
 
-### SIGNAL CALLBACKS ##########################################################
+# SIGNAL CALLBACKS ############################################################
 # Typically, reaction to user input & interactions with the GUI
-#
     def on_sort_column_changed(self, model):
         sort_column, sort_order = model.get_sort_column_id()
 
@@ -687,11 +683,11 @@ class TaskBrowser(GObject.GObject):
 
     def show_closed_pane(self):
         # The done/dismissed tasks treeview
-        if not 'closed' in self.vtree_panes:
+        if 'closed' not in self.vtree_panes:
             ctree = self.__create_closed_tree()
             self.vtree_panes['closed'] = \
                 self.tv_factory.closed_tasks_treeview(ctree)
-                    # Closed tasks TreeView
+            # Closed tasks TreeView
             self.vtree_panes['closed'].connect('row-activated',
                                                self.on_edit_done_task)
             # I did not want to break the variable and there was no other
@@ -728,9 +724,9 @@ class TaskBrowser(GObject.GObject):
         # I let this code commented for now because it might be useful
         # for performance reason, to really destroy the view when we don't
         # display it. (Lionel, 17092010)
-#        if self.vtree_panes.has_key('closed'):
-#            self.vtree_panes['closed'].set_model(None)
-#            del self.vtree_panes['closed']
+        # if self.vtree_panes.has_key('closed'):
+        #     self.vtree_panes['closed'].set_model(None)
+        #     del self.vtree_panes['closed']
         self.remove_page_from_accessory_notebook(self.closed_pane)
         self.builder.get_object("view_closed").set_active(False)
         self.config.set('closed_task_pane', False)
@@ -1338,7 +1334,7 @@ class TaskBrowser(GObject.GObject):
         self.dismissbutton.set_sensitive(enable)
         self.deletebutton.set_sensitive(enable)
 
-### PUBLIC METHODS #########################################################
+# PUBLIC METHODS ###########################################################
     def get_selected_task(self, tv=None):
         """
         Returns the'uid' of the selected task, if any.
@@ -1522,7 +1518,7 @@ class TaskBrowser(GObject.GObject):
     def is_shown(self):
         return self.browser_shown
 
-## BACKENDS RELATED METHODS ##################################################
+# BACKENDS RELATED METHODS ###################################################
     def on_backend_failed(self, sender, backend_id, error_code):
         """
         Signal callback.
@@ -1602,7 +1598,7 @@ class TaskBrowser(GObject.GObject):
         self.vbox_toolbars.pack_start(infobar, True, True, 0)
         return infobar
 
-#### SEARCH RELATED STUFF #####################################################
+# SEARCH RELATED STUFF ########################################################
     def get_selected_search(self):
         """ return just one selected view """
         if self.tagtreeview:

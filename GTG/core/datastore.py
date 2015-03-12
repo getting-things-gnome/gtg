@@ -77,7 +77,7 @@ class DataStore(object):
         self.filtered_datastore = FilteredDataStore(self)
         self._backend_mutex = threading.Lock()
 
-    ### Accessor to embedded objects in DataStore ############################
+    # Accessor to embedded objects in DataStore ##############################
     def get_tagstore(self):
         """
         Return the Tagstore associated with this DataStore
@@ -103,7 +103,7 @@ class DataStore(object):
         """
         return self._tasks
 
-    ### Tags functions ########################################################
+    # Tags functions ##########################################################
     def _add_new_tag(self, name, tag, filter_func, parameters, parent_id=None):
         """ Add tag into a tree """
         if self._tagstore.has_node(name):
@@ -134,7 +134,7 @@ class DataStore(object):
             parameters = parse_search_query(query)
         except InvalidQuery as e:
             Log.warning("Problem with parsing query '%s' (skipping): %s" %
-                       (query, e.message))
+                        (query, e.message))
             return None
 
         # Create own copy of attributes and add special attributes label, query
@@ -262,7 +262,7 @@ class DataStore(object):
 
         cleanxml.savexml(self.tagfile, doc, backup=True)
 
-    ### Tasks functions #######################################################
+    # Tasks functions #########################################################
     def get_all_tasks(self):
         """
         Returns list of all keys of active tasks
@@ -345,7 +345,7 @@ class DataStore(object):
             return True
 
     ##########################################################################
-    ### Backends functions
+    # Backends functions
     ##########################################################################
     def get_all_backends(self, disabled=False):
         """
@@ -404,9 +404,9 @@ class DataStore(object):
             # saving the backend in the correct dictionary (backends for
             # enabled backends, disabled_backends for the disabled ones)
             # this is useful for retro-compatibility
-            if not GenericBackend.KEY_ENABLED in backend_dic:
+            if GenericBackend.KEY_ENABLED not in backend_dic:
                 source.set_parameter(GenericBackend.KEY_ENABLED, True)
-            if not GenericBackend.KEY_DEFAULT_BACKEND in backend_dic:
+            if GenericBackend.KEY_DEFAULT_BACKEND not in backend_dic:
                 source.set_parameter(GenericBackend.KEY_DEFAULT_BACKEND, True)
             # if it's enabled, we initialize it
             if source.is_enabled() and \

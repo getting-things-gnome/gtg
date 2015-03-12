@@ -130,7 +130,7 @@ class TreeviewFactory():
         if node.get_due_date() == Date.no_date():
             return node.get_due_date_constraint().to_readable_string()
         else:
-        # Other tasks show their due date (which *can* be fuzzy)
+            # Other tasks show their due date (which *can* be fuzzy)
             return node.get_due_date().to_readable_string()
 
     def task_cdate_column(self, node):
@@ -189,7 +189,7 @@ class TreeviewFactory():
                 return -1 * s
 
         if sort == 0:
-        # Group tasks with the same tag together for visual cleanness
+            # Group tasks with the same tag together for visual cleanness
             t1_tags = task1.get_tags_name()
             t1_tags.sort()
             t2_tags = task2.get_tags_name()
@@ -197,7 +197,8 @@ class TreeviewFactory():
             cmp_tags = (t1_tags > t2_tags) - (t1_tags < t2_tags)
             sort = reverse_if_descending(cmp_tags)
 
-        if sort == 0:  # Break ties by sorting by title
+        if sort == 0:
+            # Break ties by sorting by title
             t1_title = task1.get_title()
             t2_title = task2.get_title()
             t1_title = locale.strxfrm(t1_title)
@@ -257,7 +258,7 @@ class TreeviewFactory():
         task.modified()
 
     ############################################
-    ######## The Factory #######################
+    # The Factory ##############################
     ############################################
     def tags_treeview(self, tree):
         desc = {}
@@ -432,7 +433,7 @@ class TreeviewFactory():
         treeview.set_dnd_name('gtg/task-iter-str')
         # Background colors
         treeview.set_bg_color(self.task_bg_color, 'bg_color')
-         # Global treeview properties
+        # Global treeview properties
         treeview.set_property("enable-tree-lines", False)
         treeview.set_rules_hint(False)
         treeview.set_multiple_selection(True)

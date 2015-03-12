@@ -92,7 +92,7 @@ class Backend(GenericBackend):
         # We convert "filename" to "path and we forget about "filename "
         if "need_conversion" in parameters:
             parameters["path"] = parameters.pop("need_conversion")
-        if not self.KEY_DEFAULT_BACKEND in parameters:
+        if self.KEY_DEFAULT_BACKEND not in parameters:
             parameters[self.KEY_DEFAULT_BACKEND] = True
 
         self.doc, self.xmlproj = cleanxml.openxmlfile(

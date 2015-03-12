@@ -85,7 +85,7 @@ class pluginSendEmail:
             self.tb_Managerbutton = False
 
 
-## CORE FUNCTIONS #############################################################
+
     def selection_changed(self, selection):
         """
         To select multiple tasks in manager
@@ -107,6 +107,7 @@ class pluginSendEmail:
         self.tb_Managerbutton.connect('clicked', self.onTbManagerButton, plugin_api)
         self.tb_Managerbutton.show()
         self.plugin_api.add_toolbar_item(self.tb_Managerbutton)
+
 
     def onTbTaskButton(self, widget, plugin_api):
         """

@@ -35,7 +35,6 @@ If you want to display only a subset of tasks, you can either:
    tasks pane is built currently)
 """
 
-#=== IMPORT ===================================================================
 from re import findall
 import configparser
 

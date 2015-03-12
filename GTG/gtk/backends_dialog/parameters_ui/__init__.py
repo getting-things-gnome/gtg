@@ -139,7 +139,7 @@ class ParametersUI(Gtk.Box):
             return
         for parameter_name, widget in self.parameter_widgets:
             if parameter_name in backend_parameters:
-                #FIXME I am not 100% about this change
+                # FIXME I am not 100% about this change
                 self.pack_start(widget(backend), True, True, 0)
         self.show_all()
 

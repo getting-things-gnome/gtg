@@ -66,7 +66,7 @@ class hamsterPlugin:
 
         return icon
 
-    #### Interaction with Hamster
+    # Interaction with Hamster ###
     def sendTask(self, task):
         """Send a gtg task to hamster-applet"""
         if task is None:
@@ -90,7 +90,7 @@ class hamsterPlugin:
 
         category = ""
         if self.preferences['category'] == 'auto_tag':
-            hamster_activities = dict([(str(x[0]), unicode(x[1]))
+            hamster_activities = dict([(str(x[0]), x[1])
                                        for x in
                                        self.hamster.GetActivities('')])
             if (gtg_title in hamster_activities
@@ -188,7 +188,7 @@ class hamsterPlugin:
             # some buffer secs from now
             self.hamster.StopTracking(now + self.BUFFER_TIME)
 
-    #### Datastore
+    # Datastore ###
     def get_hamster_ids(self, task):
         a = task.get_attribute("id-list", namespace=self.PLUGIN_NAMESPACE)
         if not a:
@@ -229,7 +229,7 @@ class hamsterPlugin:
             for task in all_my_children:
                 self.stop_task(task)
 
-    #### Plugin api methods
+    # Plugin api methods ###
     def activate(self, plugin_api):
         self.plugin_api = plugin_api
         self.hamster = dbus.SessionBus().get_object('org.gnome.Hamster',
@@ -378,7 +378,7 @@ class hamsterPlugin:
         self.button.set_icon_widget(self.get_icon_widget(self.IMG_STOP_PATH))
         self.button.set_tooltip_text(self.TOOLTIP_TEXT_STOP_ACTIVITY)
 
-    #### Preference Handling
+    # Preference Handling ###
     def is_configurable(self):
         """A configurable plugin should have this method and return True"""
         return True
@@ -434,8 +434,6 @@ class hamsterPlugin:
             "prefs_close": self.on_preferences_close,
         }
         self.builder.connect_signals(SIGNAL_CONNECTIONS_DIC)
-
-#### Helper Functions
 
 
 def format_date(task):
