@@ -1249,24 +1249,24 @@ class TaskBrowser(GObject.GObject):
         """
         settings_done = {"label": GnomeConfig.MARK_DONE,
                          "tooltip": GnomeConfig.MARK_DONE_TOOLTIP,
-                         "icon-name": "gtg-task-done"}
+                         "icon_name": Gtk.STOCK_APPLY}
         settings_undone = {"label": GnomeConfig.MARK_UNDONE,
                            "tooltip": GnomeConfig.MARK_UNDONE_TOOLTIP,
-                           "icon-name": "gtg-task-undone"}
+                           "icon_name": Gtk.STOCK_REFRESH}
         settings_dismiss = {"label": GnomeConfig.MARK_DISMISS,
                             "tooltip": GnomeConfig.MARK_DISMISS_TOOLTIP,
-                            "icon-name": "gtg-task-dismiss"}
+                            "icon_name": Gtk.STOCK_CANCEL}
         settings_undismiss = {"label": GnomeConfig.MARK_UNDISMISS,
                               "tooltip": GnomeConfig.MARK_UNDISMISS_TOOLTIP,
-                              "icon-name": "gtg-task-undismiss"}
+                              "icon_name": Gtk.STOCK_PASTE}
 
         def update_button(button, settings):
-            button.set_icon_name(settings["icon-name"])
+            button.set_stock_id(settings["icon_name"])
             button.set_label(settings["label"])
             button.set_tooltip_text(settings["tooltip"])
 
         def update_menu_item(menu_item, settings):
-            image = Gtk.Image.new_from_icon_name(settings["icon-name"], 16)
+            image = Gtk.Image.new_from_icon_name(settings["icon_name"], 16)
             image.set_pixel_size(16)
             image.show()
             menu_item.set_image(image)
@@ -1305,8 +1305,8 @@ class TaskBrowser(GObject.GObject):
         """
         # We unselect all in the closed task view
         # Only if something is selected in the active task list
-        self.donebutton.set_icon_name("gtg-task-done")
-        self.dismissbutton.set_icon_name("gtg-task-dismiss")
+        self.donebutton.set_icon_name(Gtk.STOCK_APPLY)
+        self.dismissbutton.set_icon_name(Gtk.STOCK_CANCEL)
         if selection.count_selected_rows() > 0:
             if 'closed' in self.vtree_panes:
                 self.vtree_panes['closed'].get_selection().unselect_all()
