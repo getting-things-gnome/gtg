@@ -397,7 +397,7 @@
                   <object class="GtkToolButton" id="new_subtask_b">
                     <property name="can_focus">False</property>
                     <property name="label" translatable="yes">New Subtask</property>
-                    <property name="icon_name">gtg-task-new</property>
+                    <property name="icon_name">Gtk.STOCK_NEW</property>
                     <signal name="clicked" handler="on_add_subtask" swapped="no"/>
                   </object>
                   <packing>
@@ -482,7 +482,7 @@
                     <property name="sensitive">False</property>
                     <property name="can_focus">False</property>
                     <property name="label" translatable="yes">Dismiss</property>
-                    <property name="stock_id">gtk-cancel</property>
+                    <property name="stock_id">gtk-close</property>
                     <signal name="clicked" handler="on_dismiss_task" swapped="no"/>
                   </object>
                   <packing>
@@ -809,25 +809,25 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="pixel_size">16</property>
-    <property name="icon_name">gtg-task-dismiss</property>
+    <property name="icon_name">Gtk.STOCK_CLOSE</property>
   </object>
   <object class="GtkImage" id="bm_img_done">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="pixel_size">16</property>
-    <property name="icon_name">gtg-task-done</property>
+    <property name="icon_name">Gtk.STOCK_APPLY</property>
   </object>
   <object class="GtkImage" id="bm_img_subtask">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="pixel_size">16</property>
-    <property name="icon_name">gtg-task-new</property>
+    <property name="icon_name">Gtk.STOCK_NEW</property>
   </object>
   <object class="GtkImage" id="bm_img_task">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="pixel_size">16</property>
-    <property name="icon_name">gtg-task-new</property>
+    <property name="icon_name">Gtk.STOCK_NEW</property>
   </object>
   <object class="GtkMenu" id="closed_task_context_menu">
     <property name="visible">True</property>
@@ -1242,7 +1242,7 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="pixel_size">16</property>
-    <property name="icon_name">gtk-cancel</property>
+    <property name="icon_name">gtk-close</property>
   </object>
   <object class="GtkImage" id="tcm_img_mark_done">
     <property name="visible">True</property>
@@ -1255,6 +1255,6 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="pixel_size">16</property>
-    <property name="icon_name">gtk-paste</property>
+    <property name="icon_name">gtk-refresh</property>
   </object>
 </interface>

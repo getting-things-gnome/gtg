@@ -35,7 +35,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="label" translatable="yes">Dismiss</property>
-                <property name="stock_id">gtk-cancel</property>
+                <property name="stock_id">gtk-close</property>
                 <signal name="clicked" handler="on_dismiss" swapped="no"/>
               </object>
               <packing>

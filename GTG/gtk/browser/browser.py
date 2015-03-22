@@ -1255,10 +1255,10 @@ class TaskBrowser(GObject.GObject):
                            "icon_name": Gtk.STOCK_REFRESH}
         settings_dismiss = {"label": GnomeConfig.MARK_DISMISS,
                             "tooltip": GnomeConfig.MARK_DISMISS_TOOLTIP,
-                            "icon_name": Gtk.STOCK_CANCEL}
+                            "icon_name": Gtk.STOCK_CLOSE}
         settings_undismiss = {"label": GnomeConfig.MARK_UNDISMISS,
                               "tooltip": GnomeConfig.MARK_UNDISMISS_TOOLTIP,
-                              "icon_name": Gtk.STOCK_PASTE}
+                              "icon_name": Gtk.STOCK_REFRESH}
 
         def update_button(button, settings):
             button.set_stock_id(settings["icon_name"])
@@ -1306,7 +1306,7 @@ class TaskBrowser(GObject.GObject):
         # We unselect all in the closed task view
         # Only if something is selected in the active task list
         self.donebutton.set_icon_name(Gtk.STOCK_APPLY)
-        self.dismissbutton.set_icon_name(Gtk.STOCK_CANCEL)
+        self.dismissbutton.set_icon_name(Gtk.STOCK_CLOSE)
         if selection.count_selected_rows() > 0:
             if 'closed' in self.vtree_panes:
                 self.vtree_panes['closed'].get_selection().unselect_all()
