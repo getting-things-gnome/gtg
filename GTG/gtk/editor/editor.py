@@ -258,7 +258,7 @@ class TaskEditor(object):
         if status == Task.STA_DISMISSED:
             self.donebutton.set_label(GnomeConfig.MARK_DONE)
             self.donebutton.set_tooltip_text(GnomeConfig.MARK_DONE_TOOLTIP)
-            self.donebutton.set_icon_name(Gtk.STOCK_APPLY)
+            self.donebutton.set_stock_id(Gtk.STOCK_APPLY)
             self.dismissbutton.set_label(GnomeConfig.MARK_UNDISMISS)
             self.dismissbutton.set_tooltip_text(undismiss_tooltip)
             self.dismissbutton.set_stock_id(Gtk.STOCK_REFRESH)
@@ -268,14 +268,14 @@ class TaskEditor(object):
             self.donebutton.set_stock_id(Gtk.STOCK_REFRESH)
             self.dismissbutton.set_label(GnomeConfig.MARK_DISMISS)
             self.dismissbutton.set_tooltip_text(dismiss_tooltip)
-            self.dismissbutton.set_icon_name(Gtk.STOCK_CLOSE)
+            self.dismissbutton.set_stock_id(Gtk.STOCK_CLOSE)
         else:
             self.donebutton.set_label(GnomeConfig.MARK_DONE)
             self.donebutton.set_tooltip_text(GnomeConfig.MARK_DONE_TOOLTIP)
-            self.donebutton.set_icon_name(Gtk.STOCK_APPLY)
+            self.donebutton.set_stock_id(Gtk.STOCK_APPLY)
             self.dismissbutton.set_label(GnomeConfig.MARK_DISMISS)
             self.dismissbutton.set_tooltip_text(dismiss_tooltip)
-            self.dismissbutton.set_icon_name(Gtk.STOCK_CLOSE)
+            self.dismissbutton.set_stock_id(Gtk.STOCK_CLOSE)
         self.donebutton.show()
         self.tasksidebar.show()
 

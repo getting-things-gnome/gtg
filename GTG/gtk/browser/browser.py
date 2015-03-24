@@ -1305,8 +1305,8 @@ class TaskBrowser(GObject.GObject):
         """
         # We unselect all in the closed task view
         # Only if something is selected in the active task list
-        self.donebutton.set_icon_name(Gtk.STOCK_APPLY)
-        self.dismissbutton.set_icon_name(Gtk.STOCK_CLOSE)
+        self.donebutton.set_stock_id(Gtk.STOCK_APPLY)
+        self.dismissbutton.set_stock_id(Gtk.STOCK_CLOSE)
         if selection.count_selected_rows() > 0:
             if 'closed' in self.vtree_panes:
                 self.vtree_panes['closed'].get_selection().unselect_all()

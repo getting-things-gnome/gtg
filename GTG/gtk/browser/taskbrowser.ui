@@ -397,7 +397,7 @@
                   <object class="GtkToolButton" id="new_subtask_b">
                     <property name="can_focus">False</property>
                     <property name="label" translatable="yes">New Subtask</property>
-                    <property name="icon_name">Gtk.STOCK_NEW</property>
+                    <property name="icon_name">gtk-new</property>
                     <signal name="clicked" handler="on_add_subtask" swapped="no"/>
                   </object>
                   <packing>
@@ -809,25 +809,25 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="pixel_size">16</property>
-    <property name="icon_name">Gtk.STOCK_CLOSE</property>
+    <property name="icon_name">gtk-close</property>
   </object>
   <object class="GtkImage" id="bm_img_done">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="pixel_size">16</property>
-    <property name="icon_name">Gtk.STOCK_APPLY</property>
+    <property name="icon_name">gtk-apply</property>
   </object>
   <object class="GtkImage" id="bm_img_subtask">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="pixel_size">16</property>
-    <property name="icon_name">Gtk.STOCK_NEW</property>
+    <property name="icon_name">gtk-new</property>
   </object>
   <object class="GtkImage" id="bm_img_task">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="pixel_size">16</property>
-    <property name="icon_name">Gtk.STOCK_NEW</property>
+    <property name="icon_name">gtk-new</property>
   </object>
   <object class="GtkMenu" id="closed_task_context_menu">
     <property name="visible">True</property>
