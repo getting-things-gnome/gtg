@@ -700,8 +700,8 @@ class TaskBrowser(GObject.GObject):
                                                clsd_tsk_key_prs)
 
             self.closed_selection = self.vtree_panes['closed'].get_selection()
-            self.closed_selection.connect("changed",
-                                          self.on_taskdone_cursor_changed)
+            self.closed_selection.connect(
+                "changed", self.on_taskdone_cursor_changed)
             ctree.apply_filter(self.get_selected_tags()[0], refresh=True)
         if not self.closed_pane:
             self.closed_pane = Gtk.ScrolledWindow()
@@ -1242,11 +1242,39 @@ class TaskBrowser(GObject.GObject):
 
         self.applied_tags = new_taglist
 
-    def on_taskdone_cursor_changed(self, selection=None):
-        """Called when selection changes in closed task view.
+    def on_task_cursor_changed(self, selection):
+        """If there is an active task selected, unselect all the closed tasks
+        and set the status of the selected active task to STA_ACTIVE.
+        If no tasks at all are selected, set status to STA_ACTIVE"""
 
-        Changes the way the selected task is displayed.
+        if selection.count_selected_rows() > 0 and
+        'closed' in self.vtree_panes:
+            self.vtree_panes['closed'].get_selection().unselect_all()
+            self.update_task_status(Task.STA_ACTIVE)
+        if self.get_selected_task() is None:
+            self.update_task_status(Task.STA_ACTIVE)
+
+    def on_taskdone_cursor_changed(self, selection):
+        """If a closed task is selected, unselect all the active tasks.
+        Get the task id of the newly selected closed task and
+        update the status according to the task - STA_DONE or STA_DISMISSED.
+        If no tasks at all are selected, set status to STA_ACTIVE"""
+        if selection.count_selected_rows() > 0:
+            self.vtree_panes['active'].get_selection().unselect_all()
+            task_id = self.vtree_panes['closed'].get_selected_nodes()[0]
+            task = self.req.get_task(task_id)
+            self.update_task_status(task.get_status())
+        if self.get_selected_task() is None:
+            self.update_task_status(Task.STA_ACTIVE)
+
+    def update_task_status(self, status):
+        """Changes the way the selected task is displayed.
+        Called when selection changes within task browser.
+        If a closed task is selected, set buttons and menu items
+        according to status - DONE or DISMISSED. Otherwise
+        set the buttons and menu items as if the task is ACTIVE.
         """
+
         settings_done = {"label": GnomeConfig.MARK_DONE,
                          "tooltip": GnomeConfig.MARK_DONE_TOOLTIP,
                          "icon_name": Gtk.STOCK_APPLY}
@@ -1272,59 +1300,26 @@ class TaskBrowser(GObject.GObject):
             menu_item.set_image(image)
             menu_item.set_label(settings["label"])
 
-        # We unselect all in the active task view
-        # Only if something is selected in the closed task list
-        # And we change the status of the Done/dismiss button
-        update_button(self.donebutton, settings_done)
-        update_menu_item(self.done_mi, settings_done)
-        update_button(self.dismissbutton, settings_dismiss)
-        update_menu_item(self.dismiss_mi, settings_dismiss)
-        if selection.count_selected_rows() > 0:
-            tid = self.get_selected_task('closed')
-            task = self.req.get_task(tid)
-            self.vtree_panes['active'].get_selection().unselect_all()
-            if task.get_status() == "Dismiss":
-                self.builder.get_object(
-                    "ctcm_mark_as_not_done").set_sensitive(False)
-                self.builder.get_object("ctcm_undismiss").set_sensitive(True)
-                update_button(self.dismissbutton, settings_undismiss)
-                update_menu_item(self.dismiss_mi, settings_undismiss)
-            else:
-                self.builder.get_object(
-                    "ctcm_mark_as_not_done").set_sensitive(True)
-                self.builder.get_object(
-                    "ctcm_undismiss").set_sensitive(False)
-                update_button(self.donebutton, settings_undone)
-                update_menu_item(self.done_mi, settings_undone)
-        self.update_buttons_sensitivity()
+        if status == Task.STA_DONE:
+            update_button(self.donebutton, settings_undone)
+            update_menu_item(self.done_mi, settings_undone)
+        else:
+            update_button(self.donebutton, settings_done)
+            update_menu_item(self.done_mi, settings_done)
 
-    def on_task_cursor_changed(self, selection=None):
-        """Called when selection changes in the active task view.
+        if status == Task.STA_DISMISSED:
+            update_button(self.dismissbutton, settings_undismiss)
+            update_menu_item(self.dismiss_mi, settings_undismiss)
+        else:
+            update_button(self.dismissbutton, settings_dismiss)
+            update_menu_item(self.dismiss_mi, settings_dismiss)
 
-        Changes the way the selected task is displayed.
-        """
-        # We unselect all in the closed task view
-        # Only if something is selected in the active task list
-        self.donebutton.set_stock_id(Gtk.STOCK_APPLY)
-        self.dismissbutton.set_stock_id(Gtk.STOCK_CLOSE)
-        if selection.count_selected_rows() > 0:
-            if 'closed' in self.vtree_panes:
-                self.vtree_panes['closed'].get_selection().unselect_all()
-            self.donebutton.set_label(GnomeConfig.MARK_DONE)
-            self.donebutton.set_tooltip_text(GnomeConfig.MARK_DONE_TOOLTIP)
-            self.dismissbutton.set_label(GnomeConfig.MARK_DISMISS)
-        self.update_buttons_sensitivity()
+        self.builder.get_object("ctcm_mark_as_not_done").set_sensitive(
+            status == Task.STA_DONE)
+        self.builder.get_object("ctcm_undismiss").set_sensitive(
+            status == Task.STA_DISMISSED)
 
-    def on_close(self, widget=None):
-        """Closing the window."""
-        # Saving is now done in main.py
-        self.quit()
-
-    # using dummy parameters that are given by the signal
-    def update_buttons_sensitivity(self, a=None, b=None, c=None):
-        enable = self.selection.count_selected_rows()
-        if 'closed' in self.vtree_panes:
-            enable += self.closed_selection.count_selected_rows() > 0
+        enable = self.get_selected_task() is not None
         self.edit_mi.set_sensitive(enable)
         self.new_subtask_mi.set_sensitive(enable)
         self.done_mi.set_sensitive(enable)
@@ -1333,6 +1328,11 @@ class TaskBrowser(GObject.GObject):
         self.donebutton.set_sensitive(enable)
         self.dismissbutton.set_sensitive(enable)
         self.deletebutton.set_sensitive(enable)
+
+    def on_close(self, widget=None):
+        """Closing the window."""
+        # Saving is now done in main.py
+        self.quit()
 
 # PUBLIC METHODS ###########################################################
     def get_selected_task(self, tv=None):
