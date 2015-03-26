@@ -1243,22 +1243,19 @@ class TaskBrowser(GObject.GObject):
         self.applied_tags = new_taglist
 
     def on_task_cursor_changed(self, selection):
-        """If there is an active task selected, unselect all the closed tasks
-        and set the status of the selected active task to STA_ACTIVE.
-        If no tasks at all are selected, set status to STA_ACTIVE"""
+        """Updates the status of the selection in active tasks.
+        Unselects all closed tasks."""
 
         if selection.count_selected_rows() > 0 and
-        'closed' in self.vtree_panes:
+        		'closed' in self.vtree_panes:
             self.vtree_panes['closed'].get_selection().unselect_all()
             self.update_task_status(Task.STA_ACTIVE)
         if self.get_selected_task() is None:
             self.update_task_status(Task.STA_ACTIVE)
 
     def on_taskdone_cursor_changed(self, selection):
-        """If a closed task is selected, unselect all the active tasks.
-        Get the task id of the newly selected closed task and
-        update the status according to the task - STA_DONE or STA_DISMISSED.
-        If no tasks at all are selected, set status to STA_ACTIVE"""
+        """Updates the status of the selection in closed tasks.
+        Unselects all active tasks."""
         if selection.count_selected_rows() > 0:
             self.vtree_panes['active'].get_selection().unselect_all()
             task_id = self.vtree_panes['closed'].get_selected_nodes()[0]
@@ -1268,12 +1265,8 @@ class TaskBrowser(GObject.GObject):
             self.update_task_status(Task.STA_ACTIVE)
 
     def update_task_status(self, status):
-        """Changes the way the selected task is displayed.
-        Called when selection changes within task browser.
-        If a closed task is selected, set buttons and menu items
-        according to status - DONE or DISMISSED. Otherwise
-        set the buttons and menu items as if the task is ACTIVE.
-        """
+        """Changes the way buttons for the selected task are displayed.
+        Called when selection changes within task browser."""
 
         settings_done = {"label": GnomeConfig.MARK_DONE,
                          "tooltip": GnomeConfig.MARK_DONE_TOOLTIP,
