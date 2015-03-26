@@ -1,3 +1,4 @@
 nose
 spec
 pyxdg
+-e git+git://github.com/getting-things-gnome/liblarch.git#egg=liblarch

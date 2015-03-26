@@ -2,49 +2,37 @@
 Contributing to GTG
 ===================
 
-GTG uses Bazaar_ for versioning. It might be useful to read `Bazaar's tutorial`_ first.
+GTG uses Git_ for versioning. It might be useful to take a look at this `Git tutorial`_ first.
 
-.. _Bazaar: http://bazaar.canonical.com/
-.. _`Bazaar's tutorial`: http://doc.bazaar.canonical.com/latest/en/mini-tutorial/
+.. _Git: https://git-scm.com/
+.. _`Git tutorial`: https://learnxinyminutes.com/docs/git/
 
-Dependencies
-============
-
-You need to have python-configobj installed
 
 Getting the code
 ================
 
-Get the latest version of the code on Launchpad_::
+Get the latest version of the code on GitHub_. We suggest forking the master branch at first.
+Then clone the forked master to your local::
 
-    $ bzr branch lp:gtg trunk
+    $ git clone https://github.com/YOUR_GITHUB_USERNAME/gtg.git
 
-Although if you're thinking of contributing more than one patch, you might want to do::
+Launch GTG with debugging data (so it doesn't mess with your data)::
 
-    $ bzr init-repo gtg
-    $ cd gtg
-    $ bzr branch lp:gtg trunk
+    $ cd path/to/gtg
+    $ ./gtg.sh
 
-This will share revision data between branches, reducing storage costs & network time.
-
-
-Launch gtg with debugging data (so it doesn't mess with your data)::
-
-    $ cd trunk
-    $ ./scripts/debug.sh
-
-.. _Launchpad: https://launchpad.net
+.. _GitHub: https://github.com/getting-things-gnome/gtg
 
 Choosing a feature to work on
 =============================
 
 If you are a happy user of GTG and nothing bothers you but you would like to contribute you can:
 
-* choose a `LOVE bug`_ which are easier to solve
+* choose a bug from our `Love bugs list`_ and try to solve
 * ask people on IRC channel #gtg on irc://irc.gimp.org/#gtg
 * ask on our `mailing list`_
 
-.. _`LOVE bug`: https://bugs.launchpad.net/gtg/+bugs?field.status%3Alist=NEW&field.status%3Alist=CONFIRMED&field.status%3Alist=TRIAGED&field.status%3Alist=INPROGRESS&assignee_option=none&field.tag=love
+.. _`Love bugs list`: https://github.com/getting-things-gnome/gtg/labels/love
 .. _`mailing list`: https://launchpad.net/~gtg-user
 
 
@@ -54,17 +42,16 @@ Working on the feature in a branch
 You have your local copy of the code (see "Getting the code"). Now, create a
 local branch of your local branch (yes, it is)::
 
-    $ cd ..
-    $ bzr branch trunk cool-new-feature
+    $ cd path/to/gtg
+    $ git checkout -b cool-new-feature
 
-(your *trunk* folder is branched in a new *cool-new-feature* folder)
+When working with GitHub, it's a good idea to keep your local *master* branch as
+a pristine copy of master on GitHub.
 
-When working with Bazaar, it's a good idea to keep your local *trunk* branch as
-a pristine copy of trunk on Launchpad.
+Hack, add and commit your changes::
 
-Hack and commit your changes::
-
-    bzr commit -m "description of my change"
+    $ git add names_of_changed_files
+    $ git commit -m "description of your changes"
 
 Repeat as much as you want. Don't hesitate to abuse the local commits. Think of
 *commit* like *quick save* in a video game :)
@@ -82,59 +69,36 @@ Run the units tests to see if all is fine::
 Modify CHANGELOG to reflect your changes. If it's your first contribution, add
 yourself in the AUTHORS file with your email address.
 
-If the trunk has been updated while you were hacking, you should update your
-local trunk branch, and merge modification in **your** branch::
+If the master has been updated while you were hacking, you should update your
+local master branch, and merge modification in **your** branch::
 
-    $ cd ../trunk
-    $ bzr pull trunk
-    $ cd ../cool-new-feature
-    $ bzr merge ../trunk
+    $ git checkout master
+    $ git pull origin master
+    $ git checkout cool-new-feature
+    $ git merge master
 
-If you have conflicts, you must solve them. Refer to `conflicts guide`_.
 
-.. _`conflicts guide`: http://doc.bazaar.canonical.com/bzr.0.92/en/user-guide/conflicts.html
+When you have done some changes or solved a bug, add and commit the changes.
+Afterwards, you need to push your work to your own fork on GitHub (where cool-new-feature
+is the name of your local branch which you changed.)::
 
-Once you don't have any conflict anymore, you must commit the changes related
-to the merge. Use a clear commit message, like::
+    $ git push origin cool-new-feature
 
-    Updating branch by merging the last trunk version.
+If you have made changes and pushed them to your forked master branch on GitHub,
+you can do a pull request to merge your work with the original GTG master.
+To do this, go to your account on GitHub and click on "New Pull Request".
 
-Pushing your work to your own branch on Launchpad (where *ploum* is your
-Launchpad username)::
-
-    $ bzr push lp:~ploum/gtg/cool-new-feature
-
-Alternatively, if you want other gtg users to be able to write to your branch,
-push it in the gtg-user group (you have to be part of it)::
-
-    $ bzr push lp:~gtg-user/gtg/ploum_branch
-
-Ask for a merge request and comment on the corresponding bug. (Open one if
-there is none). Add the tag *toreview* to the bug in Launchpad. This is very
+Create a pull request and comment on the corresponding bug. (Open one if
+there is none). Add the tag *toreview* to the bug in GitHub. This is very
 important and ensures we are not letting a patch rotting.
 
-You can file a bug at https://bugs.launchpad.net/gtg/+filebug.
+You can file a bug at https://github.com/getting-things-gnome/gtg/issues/new
 
-To ask for a merge request, run::
-
-$ cd cool-new-feature
-$ bzr lp-open
-
-This will open the branch's web page on Launchpad. From there, click *Propose for merging*.
-
-If your branch is solving specific reported bugs, please also register your
-branch to these bugs (there is an link for that in each bug report page). It
-allows to link together all related resources (which in turn is useful to dig
-out precious information from all the discussions that happened around those
-bugs).
+If your branch is solving specific reported issue, please include the number of the issue
+in the commit message or the pull request description. This will enable others to 
+quickly navigate to the issue being solved.
 
 For more detailed information, see the `HACKING`_ guide included in the GTG code.
 
-.. _`HACKING`: http://bazaar.launchpad.net/~gtg/gtg/trunk/annotate/head%3A/HACKING
+.. _`HACKING`: https://github.com/getting-things-gnome/gtg/blob/master/HACKING
 
-Troubleshooting
-===============
-
-If you have a problem with SSH keys while uploading to Launchpad, look at this `SuperUser question`_.
-
-.. _`SuperUser question`: http://superuser.com/questions/161337/big-ssh-problem
