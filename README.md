@@ -1,7 +1,5 @@
 # Getting Things GNOME!
 
-[![Build Status](https://travis-ci.org/getting-things-gnome/gtg.svg?branch=master)](https://travis-ci.org/getting-things-gnome/gtg)
-
 Getting Things GNOME! (GTG) is a personal tasks and TODO list items organizer
 for the GNOME desktop environment inspired by the Getting Things Done (GTD)
 methodology. GTG is designed with flexibility, adaptability, and ease of use
@@ -10,31 +8,51 @@ in mind so it can be used as more than just GTD software.
 GTG is intended to help you track everything you need to do and need to know,
 from small tasks to large projects.
 
-## Dependencies
+## INSTALLING AND RUNNING
 
-GTG depends on the following packages:
+In order to download and run GTG Developer Version, do the following steps 
+(Debian-based systems):
 
- * Python, version 3.0 or above
- * PyGTK
- * python-support
- * python-xdg
- * python-dbus
- * python-liblarch 
- * yelp (to read GTG documentation)
+DOWNLOAD: 
+Execute this command to get the latest Developer package:
 
-Please refer to your system documentation for information on how to install
-these modules if they're not currently available.
+	$ git clone https://github.com/getting-things-gnome/gtg.git
 
-To install the all the required packages providing the basic features on
-Debian-based systems, execute the following command:
-    $ sudo apt-get install python-support python-gtk2 python-gnome2 \
-         python-glade2 python-xdg python-dbus python-liblarch yelp
+RUNNING: 
+At first, install python3 dependencies by typing the following command:
+ 
+	$ sudo apt-get install python3-pip
+
+Running of this developer version of GTG will not be possible without installing 
+liblarch at first so clone and install liblarch:
+
+	$ git clone https://github.com/getting-things-gnome/liblarch.git
+
+	$ cd path/to/liblarch
+
+	$ sudo python3 setup.py install
+
+RUN:
+In order to run GTG from this Developers repository, you need to launch the debug.sh script:
+
+	$ cd path/to/gtg
+
+	$ ./scripts/debug.sh
+
+Getting Things GNOME launches.
+
+If prompted, you may be required to install also python-xdg and python-dbus packages manually. Simply write a command:
+
+	$ sudo apt-get install python-xdg python-dbus
+
+Run the script again.
+
 
 There are additional plugins (modules for extending the user interface) and
 synchronization services (modules for importing/exporting tasks from/to
 external services) which needs additional packages to work correctly.
 
-### Dependencies for Plugins
+### DEPENDENCIES FOR PLUGINS
 
 "Bugzilla" plugin dependencies:
   * python-bugz
@@ -46,7 +64,7 @@ external services) which needs additional packages to work correctly.
   * pdfjam
 
 Installable on Debian-based system via
-    $ sudo apt-get install python-cheetah pdftk pdfjam texlive-latex-base
+    	$ sudo apt-get install python-cheetah pdftk pdfjam texlive-latex-base
 
 "Geolocalized tasks" plugin is not maintained for a long time and needs to be
 rewritten from scratch. Dependencies:
@@ -71,7 +89,7 @@ python-dbus
 
 "Urgency Color" plugin does not have any external dependencies.
 
-### Dependencies for Synchronization Services
+### DEPENDENCIES FOR SYNCHRONIZATION SERVICES
 
 Evolution synchronization service has dependencies:
   * python-evolution
@@ -96,29 +114,7 @@ Remember the Milk synchronization service is shipped with a library for RTM api.
 
 Remember the Milk is not maintained for a long time and might be potentially harmful.
 
-## Installing and Running
-
-To install GTG, either unpack the tarball:
-
-    $ tar xzvf gtg.tar.gz
-
-or check out our bazaar branch for a development version (we try to keep those
-unbroken and ready for production use):
-
-    $ bzr branch lp:gtg
-
-To run GTG, either execute it directly from the source folder:
-
-    $ cd gtg/
-    $ ./gtg
-
-or install it system-wide (must install as root to install system-wide):
-
-    $ cd gtg
-    $ sudo python setup.py install # must be root to install system-wide
-    $ gtg
-
-### How To Use GTG?
+### HOW TO USE GTG?
 
 Please refer to our documentation to get a thorough explanation on how GTG
 works.
@@ -139,7 +135,7 @@ this command (from the source root dir):
 
     $ yelp docs/userdoc/C/index.page
 
-### Using GTG from the command line
+### USING GTG FROM COMMAND LINE
 
 GTG provides two command line tools that allows to interact with GTG:
 
@@ -157,14 +153,15 @@ If you have installed gtg, you can access those by executing:
     $ man gtcli
     $ man gtg_new_task
 
-## Want to know more?
+## WANT TO KNOW MORE?
 
  * GTG Website: http://gtgnome.net/
+ * GTG GitHub latest repository: https://github.com/getting-things-gnome/gtg
  * GTG project page on Launchpad: https://launchpad.net/gtg
  * GTG Wiki: http://live.gnome.org/gtg/
  * GTG developer's documentation: http://gtg.readthedocs.org/en/latest/index.html
 
 Feel free to join our user mailing-list to receive news about GTG. You can
-register on this mailing-list from this page: https://launchpad.net/~gtg-user
+register to our mailing-list from this page: https://launchpad.net/~gtg-user
 
 Thanks for using GTG!
