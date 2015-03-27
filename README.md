@@ -19,7 +19,6 @@ DOWNLOAD:
 Execute this command to get the latest Developer package and then move to that directory:
 
 	$ git clone https://github.com/getting-things-gnome/gtg.git
-
   $ cd gtg
 
 RUNNING: 
@@ -75,7 +74,7 @@ which supports indicators:
 "Closed tasks remover" plugin does not have any external dependencies.
 
 "Tomboy/Gnote" plugin needs a running instance of Tomboy or Gnote.
-python3-dbus
+  * python3-dbus
 
 "Urgency Color" plugin does not have any external dependencies.
 

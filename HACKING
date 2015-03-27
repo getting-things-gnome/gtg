@@ -24,11 +24,8 @@ Coding style
 
 In general, follow PEP 8 <http://www.python.org/dev/peps/pep-0008/>.
 
-Not all code in GTG currently follows PEP 8. If you are changing a section of
-code, please update it to follow PEP 8.
-
 You should also avoid adding any 'flakes', simple Python mistakes caught by
-Pyflakes <http://www.divmod.org/trac/wiki/DivmodPyflakes>.
+Pyflakes <https://pypi.python.org/pypi/pyflakes>.
 
 To check the complete cleanliness of your code, run::
 
@@ -93,18 +90,18 @@ codebase by either commenting why it's disabled, or remove it.
 
 API Style
 ---------
-Whereever possible, prefer using tid/tagname instead of passing task/tag
+Whenever possible, prefer using task_id/tagname instead of passing task/tag
 objects directly.  In experimentation it's been found that passing and
 using the objects directly is very expensive.  Looking in a list of
 objects is *much* slower than looking in a list of Strings.
 
-If you create a method, try that that method take a tid/tagname as
-argument and return a tid/tagname. (of course, don't apply this
+If you create a method, try that that method take a task_id/tagname as
+argument and return a task_id/tagname. (of course, don't apply this
 blindly).
 
 As a rule of thumb, if you put objects in a list for whatever purpose,
 it should light a big warning sign ! It probably means than you have to
-use the tid/tagname instead.
+use the task_id/tagname instead.
 
 The req.get_task/get_tag methods are pretty cheap (access to a
 dictionary with Strings as keys) and, anyway, I discovered that a lot of
@@ -145,7 +142,7 @@ Submitting Patches
 ------------------
 
 For information about contributing code to GTG, see
-<http://live.gnome.org/gtg/contributing>.
+<http://gtg.readthedocs.org/en/latest/contributing.html>.
 
 
 Landing Branches
@@ -155,13 +152,10 @@ Landing Branches
 
   2. Run the tests, ``make check``.
 
-  3. Run ``make lint``, check that the number of PEP 8 warnings is lower than
-     trunk and that there are no new pyflakes warnings.
+  3. Launch GTG with debugging data, just in case, ``./gtg.sh``.
 
-  4. Launch GTG with debugging data, just in case, ``./gtg.sh``.
+  4. Update ``CHANGELOG`` if it isn't already.
 
-  5. Update ``CHANGELOG`` if it isn't already.
+  5. Update ``AUTHORS`` if the patch author is not already in there.
 
-  6. Update ``AUTHORS`` if the patch author is not already in there.
-
-  7. Commit your changes and propose a merge request.
+  6. Commit your changes and propose a merge request.
