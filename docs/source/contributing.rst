@@ -2,17 +2,11 @@
 Contributing to GTG
 ===================
 
-GTG uses GitHub_ for versioning. It might be useful to read `GitHub's Guide`_ first.
+GTG uses Git_ for versioning. It might be useful to take a look at this `Git tutorial`_ first.
 
-.. _GitHub: https://github.com/
-.. _`GitHub's Guide`: https://guides.github.com/
+.. _Git: https://git-scm.com/
+.. _`Git tutorial`: https://learnxinyminutes.com/docs/git/
 
-Dependencies
-============
-
-You need to have python3 installed. For complete info look at README_.
-
-.. _README: https://github.com/getting-things-gnome/gtg/blob/master/README.md
 
 Getting the code
 ================
@@ -34,11 +28,11 @@ Choosing a feature to work on
 
 If you are a happy user of GTG and nothing bothers you but you would like to contribute you can:
 
-* choose a bug from our `Bugs list`_ and try to solve
+* choose a bug from our `Love bugs list`_ and try to solve
 * ask people on IRC channel #gtg on irc://irc.gimp.org/#gtg
 * ask on our `mailing list`_
 
-.. _`Bugs list`: https://github.com/getting-things-gnome/gtg/issues
+.. _`Love bugs list`: https://github.com/getting-things-gnome/gtg/labels/love
 .. _`mailing list`: https://launchpad.net/~gtg-user
 
 
@@ -50,8 +44,6 @@ local branch of your local branch (yes, it is)::
 
     $ cd path/to/gtg
     $ git checkout -b cool-new-feature
-
-(your *master* folder is branched in a new *cool-new-feature* folder)
 
 When working with GitHub, it's a good idea to keep your local *master* branch as
 a pristine copy of master on GitHub.
@@ -102,10 +94,9 @@ important and ensures we are not letting a patch rotting.
 
 You can file a bug at https://github.com/getting-things-gnome/gtg/issues/new
 
-If your branch is solving specific reported bugs, please also register your
-branch to these bugs. It allows to link together all related resources (which 
-in turn is useful to dig out precious information from all the discussions that 
-happened around those bugs).
+If your branch is solving specific reported issue, please include the number of the issue
+in the commit message or the pull request description. This will enable others to 
+quickly navigate to the issue being solved.
 
 For more detailed information, see the `HACKING`_ guide included in the GTG code.
 

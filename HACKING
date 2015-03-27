@@ -9,9 +9,6 @@ You can run the unit tests for GTG with::
 
   make check
 
-If you are so inclined and have the right software installed, you can also run
-the tests with ``trial GTG``.
-
 You can also manually test your changes with debugging data with::
 
   ./gtg.sh
@@ -19,36 +16,7 @@ You can also manually test your changes with debugging data with::
 Using ``gtg.sh`` will prevent GTG from messing with your real data. Instead,
 the debug GTG will store data in ``./tmp/default/``.
 
-Unit tests live in ``GTG/tests/``, and are all named ``test_foo``. When you
-add a new test module, make sure it has a ``test_suite()`` method that returns
-the suite of all the tests in that module. Also make sure that the new module
-is imported in ``GTG.tests`` and returned from the ``test_suite()`` function
-there.
-
-For example, GTG/tests/test_newthing.py::
-
-  import unittest
-
-  class TestNewThing(unittest.TestCase):
-      # ...
-
-  def test_suite():
-      return unittest.TestLoader().loadTestsFromName(__name__)
-
-
-And GTG/tests/__init__.py::
-
-  import unittest
-
-  from GTG.tests import test_backends, test_newthing
-
-  def test_suite():
-      return unittest.TestSuite([
-          test_backends.test_suite(),
-          test_newthing.test_suite(),
-          ])
-
-When in doubt, copy from an existing test module!
+Unit tests live in ``tests/``.
 
 
 Coding style
@@ -62,23 +30,18 @@ code, please update it to follow PEP 8.
 You should also avoid adding any 'flakes', simple Python mistakes caught by
 Pyflakes <http://www.divmod.org/trac/wiki/DivmodPyflakes>.
 
-To check the cleanliness of your code, run::
+To check the complete cleanliness of your code, run::
 
-  make lint
+  $ make check
 
-The ``make`` will fail if Pyflakes emits any warnings. You can the Pyflakes
-checker separately using ``make pyflakes`` and the PEP 8 checker using ``make
-pep8``. If you wish to find all PEP 8 violations in a particular file, use::
-
-  ./scripts/pep8.py --repeat FILENAME
 
 
 Commenting-out Code
 -------------------
-Try to avoid leaving commented out code in the codebase.  Or at least,
-if some code must be left commented out, also include a comment
-or TODO or FIXME explaining why it was disabled.  If possible include a
-bug lp#.
+Try to avoid leaving commented out code in the codebase. 
+IT IS NOT A GOOD PRACTICE! 
+Or at least, if some code must be left commented out, also include a comment
+or TODO or FIXME explaining why it was disabled.  
 
 Some common reasons why one might create commented code are:
 
@@ -93,7 +56,7 @@ Obviously none of these are great situations to be in, but it happens.
 
 Ideally, commenting out a line of code should be a signal to yourself
 that one of these things has happened, and that you probably should ask
-for help before merging it to trunk, and it should stay in a branch for
+for help before merging it to master, and it should stay in a branch for
 now.
 
 But that may not always be possible.  So more practically, when

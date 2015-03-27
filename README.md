@@ -16,9 +16,11 @@ In order to download and run GTG Developer Version, do the following steps
 (Debian-based systems):
 
 DOWNLOAD: 
-Execute this command to get the latest Developer package:
+Execute this command to get the latest Developer package and then move to that directory:
 
 	$ git clone https://github.com/getting-things-gnome/gtg.git
+
+  $ cd gtg
 
 RUNNING: 
 At first, install python3 dependencies by typing the following command:
@@ -32,8 +34,6 @@ liblarch at first so clone and install liblarch:
 
 RUN:
 In order to run GTG from this Developers repository, you need to launch the debug.sh script:
-
-	$ cd path/to/gtg
 
 	$ ./gtg.sh
 
@@ -63,14 +63,6 @@ external services) which needs additional packages to work correctly.
 
 Installable on Debian-based system via
     	$ sudo apt-get install python3-cheetah pdftk pdfjam texlive-latex-base
-
-"Geolocalized tasks" plugin is not maintained for a long time and needs to be
-rewritten from scratch. Dependencies:
-  * python3-geoclue
-  * python3-clutter
-  * python3-clutter-gtk
-  * python3-champlain
-  * python3-champlain-gtk
 
 "Hamster Time Tracker Integration" plugin needs a running instance of Hamster.
 
