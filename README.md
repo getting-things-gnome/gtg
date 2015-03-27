@@ -18,29 +18,29 @@ In order to download and run GTG Developer Version, do the following steps
 DOWNLOAD: 
 Execute this command to get the latest Developer package and then move to that directory:
 
-	$ git clone https://github.com/getting-things-gnome/gtg.git
-  $ cd gtg
+    $ git clone https://github.com/getting-things-gnome/gtg.git
+    $ cd gtg
 
 RUNNING: 
 At first, install python3 dependencies by typing the following command:
  
-	$ sudo apt-get install python3-pip
+    $ sudo apt-get install python3-pip
 
 Running of this developer version of GTG will not be possible without installing 
 liblarch at first so clone and install liblarch:
 
-	$ pip3 install -r requirements.txt
+    $ pip3 install -r requirements.txt
 
 RUN:
 In order to run GTG from this Developers repository, you need to launch the debug.sh script:
 
-	$ ./gtg.sh
+    $ ./gtg.sh
 
 Getting Things GNOME launches.
 
 If prompted, you may be required to install also python3-xdg and python3-dbus packages manually. Simply write a command:
 
-	$ sudo apt-get install python3-xdg python3-dbus
+    $ sudo apt-get install python3-xdg python3-dbus
 
 Run the script again.
 
@@ -61,7 +61,8 @@ external services) which needs additional packages to work correctly.
   * pdfjam
 
 Installable on Debian-based system via
-    	$ sudo apt-get install python3-cheetah pdftk pdfjam texlive-latex-base
+    
+    $ sudo apt-get install python3-cheetah pdftk pdfjam texlive-latex-base
 
 "Hamster Time Tracker Integration" plugin needs a running instance of Hamster.
 
