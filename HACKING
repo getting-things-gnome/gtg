@@ -14,9 +14,9 @@ the tests with ``trial GTG``.
 
 You can also manually test your changes with debugging data with::
 
-  ./scripts/debug.sh
+  ./gtg.sh
 
-Using ``debug.sh`` will prevent GTG from messing with your real data. Instead,
+Using ``gtg.sh`` will prevent GTG from messing with your real data. Instead,
 the debug GTG will store data in ``./tmp/default/``.
 
 Unit tests live in ``GTG/tests/``, and are all named ``test_foo``. When you
@@ -195,7 +195,7 @@ Landing Branches
   3. Run ``make lint``, check that the number of PEP 8 warnings is lower than
      trunk and that there are no new pyflakes warnings.
 
-  4. Launch GTG with debugging data, just in case, ``./scripts/debug.sh``.
+  4. Launch GTG with debugging data, just in case, ``./gtg.sh``.
 
   5. Update ``CHANGELOG`` if it isn't already.
 

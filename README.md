@@ -1,5 +1,7 @@
 # Getting Things GNOME!
 
+[![Build Status](https://travis-ci.org/getting-things-gnome/gtg.svg?branch=master)](https://travis-ci.org/getting-things-gnome/gtg)
+
 Getting Things GNOME! (GTG) is a personal tasks and TODO list items organizer
 for the GNOME desktop environment inspired by the Getting Things Done (GTD)
 methodology. GTG is designed with flexibility, adaptability, and ease of use
@@ -26,24 +28,20 @@ At first, install python3 dependencies by typing the following command:
 Running of this developer version of GTG will not be possible without installing 
 liblarch at first so clone and install liblarch:
 
-	$ git clone https://github.com/getting-things-gnome/liblarch.git
-
-	$ cd path/to/liblarch
-
-	$ sudo python3 setup.py install
+	$ pip3 install -r requirements.txt
 
 RUN:
 In order to run GTG from this Developers repository, you need to launch the debug.sh script:
 
 	$ cd path/to/gtg
 
-	$ ./scripts/debug.sh
+	$ ./gtg.sh
 
 Getting Things GNOME launches.
 
-If prompted, you may be required to install also python-xdg and python-dbus packages manually. Simply write a command:
+If prompted, you may be required to install also python3-xdg and python3-dbus packages manually. Simply write a command:
 
-	$ sudo apt-get install python-xdg python-dbus
+	$ sudo apt-get install python3-xdg python3-dbus
 
 Run the script again.
 
@@ -55,54 +53,54 @@ external services) which needs additional packages to work correctly.
 ### DEPENDENCIES FOR PLUGINS
 
 "Bugzilla" plugin dependencies:
-  * python-bugz
+  * python3-bugz
 
 "Export and print" plugin dependencies:
-  * python-cheetah
+  * python3-cheetah
   * pdflatex
   * pdftk
   * pdfjam
 
 Installable on Debian-based system via
-    	$ sudo apt-get install python-cheetah pdftk pdfjam texlive-latex-base
+    	$ sudo apt-get install python3-cheetah pdftk pdfjam texlive-latex-base
 
 "Geolocalized tasks" plugin is not maintained for a long time and needs to be
 rewritten from scratch. Dependencies:
-  * python-geoclue
-  * python-clutter
-  * python-clutter-gtk
-  * python-champlain
-  * python-champlain-gtk
+  * python3-geoclue
+  * python3-clutter
+  * python3-clutter-gtk
+  * python3-champlain
+  * python3-champlain-gtk
 
 "Hamster Time Tracker Integration" plugin needs a running instance of Hamster.
 
 "Notification area" plugin has only an optional dependence for systems
 which supports indicators:
-  * python-appindicator
+  * python3-appindicator
 
 "Send task via email" plugin does not have any external dependencies.
 
 "Closed tasks remover" plugin does not have any external dependencies.
 
 "Tomboy/Gnote" plugin needs a running instance of Tomboy or Gnote.
-python-dbus
+python3-dbus
 
 "Urgency Color" plugin does not have any external dependencies.
 
 ### DEPENDENCIES FOR SYNCHRONIZATION SERVICES
 
 Evolution synchronization service has dependencies:
-  * python-evolution
-  * python-dateutil
+  * python3-evolution
+  * python3-dateutil
 
 Because of a bug in PyGTK (see https://bugs.launchpad.net/gtg/+bug/936183),
 the synchronization service freezes GTG and the synchronization service can't be used.
 
 MantisBT synchronization service has a dependency:
-  * python-suds
+  * python3-suds
 
 Launchpad synchronization service has a dependency:
-  * python-launchpadlib
+  * python3-launchpadlib
 
 Gnote and Tomboy synchronization services has no external dependency.
 
@@ -110,7 +108,7 @@ Identica and Twitter synchronization services are shipped with the local
 version of Tweety library.
 
 Remember the Milk synchronization service is shipped with a library for RTM api. It has an external dependency:
-  * python-dateutil
+  * python3-dateutil
 
 Remember the Milk is not maintained for a long time and might be potentially harmful.
 
