@@ -14,4 +14,4 @@ install:
   - pip3 install -r requirements.txt
 
 script:
-  - ./run-tests
+  - make check

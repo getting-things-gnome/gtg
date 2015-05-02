@@ -21,13 +21,10 @@ Contains the Datastore object, which is the manager of all the active backends
 (both enabled and disabled ones)
 """
 
-TAG_XMLFILE = "tags.xml"
-TAG_XMLROOT = "tagstore"
-
+from collections import deque
+import os.path
 import threading
 import uuid
-import os.path
-from collections import deque
 
 from GTG.backends.backendsignals import BackendSignals
 from GTG.backends.genericbackend import GenericBackend
@@ -40,6 +37,9 @@ from GTG.core.treefactory import TreeFactory
 from GTG.tools import cleanxml
 from GTG.tools.borg import Borg
 from GTG.tools.logger import Log
+
+TAG_XMLFILE = "tags.xml"
+TAG_XMLROOT = "tagstore"
 
 
 class DataStore(object):

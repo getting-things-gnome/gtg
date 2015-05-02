@@ -234,8 +234,8 @@ class Backend(PeriodicImportBackend):
         else:
             task.set_status(Task.STA_ACTIVE)
         if task.get_title() != issue_dic['title']:
-            task.set_title(_("Iss.") + " %s: " % issue_dic["number"]
-                           + issue_dic['title'])
+            task.set_title("{} {}: {}".format(
+                _("Iss."), issue_dic["number"], issue_dic['title']))
         text = self._build_issue_text(issue_dic)
         if task.get_excerpt() != text:
             task.set_text(text)

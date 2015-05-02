@@ -1242,7 +1242,7 @@ class TaskBrowser(GObject.GObject):
         Unselects all closed tasks."""
 
         if selection.count_selected_rows() > 0 and \
-            'closed' in self.vtree_panes:
+                'closed' in self.vtree_panes:
             self.vtree_panes['closed'].get_selection().unselect_all()
             self.update_task_status(Task.STA_ACTIVE)
         if self.get_selected_task() is None:

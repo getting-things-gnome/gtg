@@ -93,22 +93,22 @@ class TestSearchFilter(TestCase):
     def test_simple_tag_or(self):
         task = FakeTask(tags=['@a', '@b'])
 
-        self.assertTrue(search_filter(task,
-                                      {"q": [('or', True,
-                                            [("tag", True, "@a"),
-                                             ("tag", True, "@b")])]}))
-        self.assertTrue(search_filter(task,
-                                      {"q": [('or', True,
-                                            [("tag", True, "@a"),
-                                             ("tag", True, "@n")])]}))
-        self.assertTrue(search_filter(task,
-                                      {"q": [('or', True,
-                                            [("tag", True, "@n"),
-                                             ("tag", True, "@b")])]}))
-        self.assertFalse(search_filter(task,
-                                       {"q": [('or', True,
-                                             [("tag", True, "@n"),
-                                              ("tag", True, "@n")])]}))
+        self.assertTrue(search_filter(
+            task,
+            {"q":
+                [('or', True, [("tag", True, "@a"), ("tag", True, "@b")])]}))
+        self.assertTrue(search_filter(
+            task,
+            {"q":
+                [('or', True, [("tag", True, "@a"), ("tag", True, "@n")])]}))
+        self.assertTrue(search_filter(
+            task,
+            {"q":
+                [('or', True, [("tag", True, "@n"), ("tag", True, "@b")])]}))
+        self.assertFalse(search_filter(
+            task,
+            {"q":
+                [('or', True, [("tag", True, "@n"), ("tag", True, "@n")])]}))
 
     def test_simple_word_in_title(self):
         task = FakeTask(title="GTG is the best ToDo manager for GNOME")

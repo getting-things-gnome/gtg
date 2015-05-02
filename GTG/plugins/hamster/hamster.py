@@ -93,8 +93,8 @@ class hamsterPlugin:
             hamster_activities = dict([(str(x[0]), x[1])
                                        for x in
                                        self.hamster.GetActivities('')])
-            if (gtg_title in hamster_activities
-                    or gtg_title.replace(",", "") in hamster_activities):
+            if (gtg_title in hamster_activities or
+                    gtg_title.replace(",", "") in hamster_activities):
                     category = "%s" % hamster_activities[gtg_title]
 
         if (self.preferences['category'] == 'tag' or
