@@ -610,8 +610,7 @@ class TaskView(Gtk.TextView):
         # Now we add the tag URL
         it = start.copy()
         prev = start.copy()
-        while (it.get_offset() < end.get_offset()) and (it.get_char() != '\0'):
-            it.forward_word_end()
+        while it.forward_word_end():
             prev = it.copy()
             prev.backward_word_start()
             text = buff.get_text(prev, it, True)
