@@ -261,14 +261,3 @@ class CoreConfig(Borg):
 
     def get_data_dir(self):
         return self.data_dir
-
-    def set_data_dir(self, path):
-        self.data_dir = path
-
-    def get_conf_dir(self):
-        return self.conf_dir
-
-    def set_conf_dir(self, path):
-        self.conf_dir = path
-        self.conf_path = os.path.join(self.conf_dir, self.CONF_FILE)
-        self.task_conf_path = os.path.join(self.conf_dir, self.TASK_CONF_FILE)
