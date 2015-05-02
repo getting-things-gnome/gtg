@@ -233,7 +233,7 @@ class CoreConfig(Borg):
             open(self.task_conf_path, "w").close()
         for conf_file in [self.conf_path, self.task_conf_path]:
             if not os.access(conf_file, os.R_OK | os.W_OK):
-                raise Exception("File " + file +
+                raise Exception("File " + conf_file +
                                 " is a configuration file for gtg, but it "
                                 "cannot be read or written. Please check it")
         self._conf = self.check_config_file(self.conf_path)
