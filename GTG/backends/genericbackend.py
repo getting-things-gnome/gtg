@@ -282,8 +282,8 @@ class GenericBackend(object):
         # default backends should get all the tasks
         if parameters[self.KEY_DEFAULT_BACKEND] or \
                 (self.KEY_ATTACHED_TAGS not in parameters and
-                 self._general_description[self.BACKEND_TYPE]
-                 == self.TYPE_READWRITE):
+                 self._general_description[self.BACKEND_TYPE] ==
+                    self.TYPE_READWRITE):
             parameters[self.KEY_ATTACHED_TAGS] = [self.ALLTASKS_TAG]
         self._parameters = parameters
         self._signal_manager = BackendSignals()

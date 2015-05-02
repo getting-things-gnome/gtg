@@ -32,16 +32,15 @@ tests:
 clean:
 	rm -rf tmp
 	find -type f -name '*~' -or -name '.*.sw*' -print | xargs rm -f
-	find -type f -name '*.pyc' -print | xargs rm -f
 	find -type d -name '__pycache__' -print | xargs rm -rf
 
 # Check for common & easily catchable Python mistakes.
 pyflakes:
-	$(PYFLAKES) GTG
+	$(PYFLAKES) GTG tests scripts run-tests setup.py
 
 # Check for coding standard violations.
 pep8:
-	$(PEP8) --statistics --count GTG
+	$(PEP8) --statistics --count GTG tests scripts run-tests setup.py
 
 # Check for coding standard violations & flakes.
 lint: pyflakes pep8
