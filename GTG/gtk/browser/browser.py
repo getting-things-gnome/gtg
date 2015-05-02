@@ -19,25 +19,25 @@
 
 """ The main window for GTG, listing tags, and open and closed tasks """
 
-# system imports
-import threading
 from webbrowser import open as openurl
+import threading
 
 from gi.repository import GObject, Gtk, Gdk
 
-# our own imports
-from GTG import _, info, ngettext
+from GTG import info
 from GTG.backends.backendsignals import BackendSignals
-from GTG.core import CoreConfig
+from GTG.core.dirs import ICONS_DIR
 from GTG.core.search import parse_search_query, SEARCH_COMMANDS, InvalidQuery
+from GTG.core.tag import SEARCH_TAG, ALLTASKS_TAG
 from GTG.core.task import Task
-from GTG.gtk.tag_completion import TagCompletion
+from GTG.core.translations import _, ngettext
 from GTG.gtk.browser import GnomeConfig
 from GTG.gtk.browser.custominfobar import CustomInfoBar
 from GTG.gtk.browser.modifytags_dialog import ModifyTagsDialog
 from GTG.gtk.browser.tag_context_menu import TagContextMenu
 from GTG.gtk.browser.treeview_factory import TreeviewFactory
 from GTG.gtk.editor.calendar import GTGCalendar
+from GTG.gtk.tag_completion import TagCompletion
 from GTG.tools.dates import Date
 from GTG.tools.logger import Log
 
@@ -124,10 +124,10 @@ class TaskBrowser(GObject.GObject):
         """
         sets the deafault theme for icon and its directory
         """
-        icon_dirs = CoreConfig().get_icons_directories()
-        for i in icon_dirs:
-            Gtk.IconTheme.get_default().prepend_search_path(i)
-            Gtk.Window.set_default_icon_name("gtg")
+        # TODO(izidor): Add icon dirs on app level
+        Gtk.IconTheme.get_default().prepend_search_path(ICONS_DIR)
+        # TODO(izidor): Set it outside browser as it applies to every window
+        Gtk.Window.set_default_icon_name("gtg")
 
     def _init_widget_aliases(self):
         """
@@ -1640,7 +1640,7 @@ class TaskBrowser(GObject.GObject):
                 tag = self.req.get_tag(tag_id)
                 if tag.is_search_tag() and tag_id in filters:
                     self.req.remove_tag(tag_id)
-                    self.apply_filter_on_panes(CoreConfig.ALLTASKS_TAG)
+                    self.apply_filter_on_panes(ALLTASKS_TAG)
                     return
 
         if query:
@@ -1668,14 +1668,14 @@ class TaskBrowser(GObject.GObject):
                 tag = self.req.get_tag(tag_id)
                 if tag.is_search_tag() and tag_id in filters:
                     self.req.remove_tag(tag_id)
-                    self.apply_filter_on_panes(CoreConfig.ALLTASKS_TAG)
+                    self.apply_filter_on_panes(ALLTASKS_TAG)
 
     def expand_search_tag(self):
         """ For some unknown reason, search tag is not expanded correctly and
         it must be done manually """
         if self.tagtreeview is not None:
             model = self.tagtreeview.get_model()
-            search_iter = model.my_get_iter((CoreConfig.SEARCH_TAG, ))
+            search_iter = model.my_get_iter((SEARCH_TAG, ))
             search_path = model.get_path(search_iter)
             self.tagtreeview.expand_row(search_path, False)
 

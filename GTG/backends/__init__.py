@@ -31,8 +31,8 @@ from GTG.tools.logger import Log
 from GTG.tools.borg import Borg
 from GTG.backends.genericbackend import GenericBackend
 from GTG.core import firstrun_tasks
+from GTG.core.dirs import PROJECTS_XMLFILE
 from GTG.tools import cleanxml
-from GTG.core import CoreConfig
 
 
 class BackendFactory(Borg):
@@ -195,9 +195,7 @@ class BackendFactory(Borg):
          - the name of the backend under "module"
         '''
         # Read configuration file, if it does not exist, create one
-        datafile = os.path.join(CoreConfig().get_data_dir(),
-                                CoreConfig.DATA_FILE)
-        doc, configxml = cleanxml.openxmlfile(datafile, "config")
+        doc, configxml = cleanxml.openxmlfile(PROJECTS_XMLFILE, "config")
         xmlproject = doc.getElementsByTagName("backend")
         # collect configured backends
         return [{"xmlobject": xp,

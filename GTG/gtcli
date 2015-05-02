@@ -23,7 +23,7 @@ import getopt
 import textwrap
 from datetime import datetime, date, timedelta
 
-from GTG import _
+from GTG.core.translations import _
 
 MSG_ERROR_TASK_ID_INVALID = '[Error] Task ID Invalid'
 

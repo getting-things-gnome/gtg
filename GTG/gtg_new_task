@@ -27,7 +27,7 @@ import sys
 
 from optparse import OptionParser
 
-from GTG import _
+from GTG.core.translations import _
 
 
 def new_task(title, body):

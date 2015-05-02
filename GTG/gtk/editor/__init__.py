@@ -21,7 +21,7 @@ The task editing GUI
 """
 import os
 
-from GTG import _
+from GTG.core.translations import _
 
 
 class GnomeConfig:

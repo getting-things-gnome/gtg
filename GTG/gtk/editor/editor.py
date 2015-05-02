@@ -27,15 +27,15 @@ import time
 
 from gi.repository import Gtk, Gdk, Pango
 
-from GTG import _, ngettext
-from GTG.gtk.editor import GnomeConfig
-from GTG.gtk.editor.taskview import TaskView
-from GTG.core.plugins.engine import PluginEngine
 from GTG.core.plugins.api import PluginAPI
+from GTG.core.plugins.engine import PluginEngine
 from GTG.core.task import Task
-from GTG.tools.dates import Date
+from GTG.core.translations import _, ngettext
+from GTG.gtk.editor import GnomeConfig
 from GTG.gtk.editor.calendar import GTGCalendar
+from GTG.gtk.editor.taskview import TaskView
 from GTG.gtk.help import add_help_shortcut
+from GTG.tools.dates import Date
 
 
 class TaskEditor(object):

@@ -15,10 +15,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import os
 import sys
+
 from xml.dom.minidom import parse
-from xdg.BaseDirectory import xdg_data_home
+
+from GTG.core.dirs import PROJECTS_XMLFILE
 
 
 def anonymize(filename, outputfile):
@@ -82,11 +83,7 @@ def main():
         xmlfile = sys.argv[1]
     else:
         try:
-            # Or use CoreConfig().get_data_dir() . CoreConfig.???
-            # which needs 'from GTG.core import import CoreConfig'
-            data_dir = os.path.join(xdg_data_home, "gtg")
-            project_filepath = os.path.join(data_dir, "projects.xml")
-            dom = parse(project_filepath)
+            dom = parse(PROJECTS_XMLFILE)
             xmlproject = dom.getElementsByTagName("backend")[0]
             xmlfile = str(xmlproject.getAttribute("path"))
 

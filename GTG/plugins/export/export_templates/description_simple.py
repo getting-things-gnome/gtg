@@ -14,7 +14,8 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from GTG import _
+from GTG.core.translations import _
+
 title = _("A simple Web page that can be easily printed.")
 description = _("A template to create a simple HTML page with some tasks "
                 "that can be easily printed.")

@@ -27,11 +27,11 @@ import uuid
 import xml.dom.minidom
 import xml.sax.saxutils as saxutils
 
-from GTG import _
+from GTG.core.translations import _
 from GTG.tools.dates import Date
 from GTG.tools.logger import Log
-from liblarch import TreeNode
 from GTG.tools.tags import extract_tags_from_text
+from liblarch import TreeNode
 
 
 class Task(TreeNode):

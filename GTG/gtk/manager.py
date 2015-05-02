@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
 # Getting Things GNOME! - a personal organizer for the GNOME desktop
-# Copyright (c) 2008-2013 - Lionel Dricot & Bertrand Rousseau
+# Copyright (c) 2008-2015 - Lionel Dricot & Bertrand Rousseau
 #
 # This program is free software: you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -19,11 +19,9 @@
 """
 Manager loads the prefs and launches the gtk main loop
 """
-
 from gi.repository import GObject, Gtk
 import configparser
 
-import GTG
 from GTG.gtk.delete_dialog import DeletionUI
 from GTG.gtk.browser.browser import TaskBrowser
 from GTG.gtk.editor.editor import TaskEditor
@@ -95,7 +93,7 @@ class Manager(object):
         Log.debug("Manager initialization finished")
 
     def __init_plugin_engine(self):
-        self.pengine = PluginEngine(GTG.PLUGIN_DIR)
+        self.pengine = PluginEngine()
         # initializes the plugin api class
         self.plugin_api = PluginAPI(self.req, self)
         self.pengine.register_api(self.plugin_api)

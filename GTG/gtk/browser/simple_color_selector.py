@@ -22,11 +22,11 @@ simple_color_selector: a module defining a widget allowing to pick a color
 from a palette. The widget also allows to define and add new colors.
 """
 
-from gi.repository import GObject, Gtk, Gdk
-
 import math
 
-from GTG import _
+from gi.repository import GObject, Gtk, Gdk
+
+from GTG.core.translations import _
 
 DEFAULT_PALETTE = [
     "#EF2929", "#AD7FA8", "#729FCF", "#8AE234", "#E9B96E",

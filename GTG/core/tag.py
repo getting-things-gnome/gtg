@@ -26,9 +26,14 @@ easier.  See the end of this file for the Tag object implementation.
 
 import xml.sax.saxutils as saxutils
 
-from GTG.core import CoreConfig
 from liblarch import TreeNode
 from functools import reduce
+
+# Tags with special meaning
+ALLTASKS_TAG = "gtg-tags-all"
+NOTAG_TAG = "gtg-tags-none"
+SEP_TAG = "gtg-tags-sep"
+SEARCH_TAG = "search"
 
 
 class Tag(TreeNode):
@@ -235,7 +240,7 @@ class Tag(TreeNode):
         return bool(self.get_attribute('special'))
 
     def is_search_tag(self):
-        return CoreConfig.SEARCH_TAG in self.get_parents()
+        return SEARCH_TAG in self.get_parents()
 
     def is_used(self):
         return self.get_total_tasks_count() > 0

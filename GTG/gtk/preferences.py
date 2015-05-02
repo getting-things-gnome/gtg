@@ -23,14 +23,14 @@ import os
 import shutil
 
 from gi.repository import Gtk
-from xdg.BaseDirectory import xdg_config_home
 from gi.repository.Gdk import Color
+from xdg.BaseDirectory import xdg_config_home
 
-import GTG.tools.shortcut as shortcut
-from GTG import _
 from GTG import info
+from GTG.core.translations import _
 from GTG.gtk import ViewConfig
 from GTG.gtk import help
+from GTG.tools import shortcut
 
 AUTOSTART_DIRECTORY = os.path.join(xdg_config_home, "autostart")
 AUTOSTART_FILE = "gtg.desktop"

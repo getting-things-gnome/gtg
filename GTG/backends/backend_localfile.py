@@ -27,10 +27,10 @@ wants to write a backend.
 
 import os
 
-from GTG import _
-from GTG.backends.genericbackend import GenericBackend
 from GTG.backends.backendsignals import BackendSignals
-from GTG.core import CoreConfig
+from GTG.backends.genericbackend import GenericBackend
+from GTG.core.dirs import DATA_DIR
+from GTG.core.translations import _
 from GTG.tools import cleanxml, taskxml
 
 # Ignore all other elements but this one
@@ -113,9 +113,8 @@ class Backend(GenericBackend):
         """
         path = self._parameters["path"]
         if os.sep not in path:
-            # Local path
-            data_dir = CoreConfig().get_data_dir()
-            path = os.path.join(data_dir, path)
+            # This is local path, convert it to absolute path
+            path = os.path.join(DATA_DIR, path)
         return os.path.abspath(path)
 
     def initialize(self):

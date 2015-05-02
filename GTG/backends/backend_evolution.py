@@ -21,20 +21,22 @@
 Backend for storing/loading tasks in Evolution Tasks
 '''
 
+from dateutil.tz import tzutc, tzlocal
+import datetime
 import os
 import time
 import uuid
-import datetime
-import evolution
-from dateutil.tz import tzutc, tzlocal
 
-from GTG import _
+import evolution
+
 from GTG.backends.genericbackend import GenericBackend
 from GTG.backends.periodicimportbackend import PeriodicImportBackend
 from GTG.backends.syncengine import SyncEngine, SyncMeme
+from GTG.core.tag import ALLTASKS_TAG
 from GTG.core.task import Task
-from GTG.tools.interruptible import interruptible
+from GTG.core.translations import _
 from GTG.tools.dates import Date
+from GTG.tools.interruptible import interruptible
 from GTG.tools.logger import Log
 from GTG.tools.tags import extract_tags_from_text
 
@@ -90,8 +92,8 @@ class Backend(PeriodicImportBackend):
         '''
         super(Backend, self).__init__(parameters)
         # loading the saved state of the synchronization, if any
-        self.sync_engine_path = os.path.join('backends/evolution/',
-                                             "sync_engine-" + self.get_id())
+        self.sync_engine_path = os.path.join(
+            'evolution', 'sync_engine-' + self.get_id())
         self.sync_engine = self._load_pickled_file(self.sync_engine_path,
                                                    SyncEngine())
         # sets up the connection to the evolution api
@@ -375,7 +377,7 @@ class Backend(PeriodicImportBackend):
         @returns Boolean
         '''
         attached_tags = set(self.get_attached_tags())
-        if GenericBackend.ALLTASKS_TAG in attached_tags:
+        if ALLTASKS_TAG in attached_tags:
             return True
         return evo_task.is_disjoint(attached_tags)
 
