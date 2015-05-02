@@ -17,14 +17,15 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import os
+
 from gi.repository import Gtk
 try:
     from gi.repository import AppIndicator3 as appindicator
 except:
     pass
 
-from GTG import _
-from GTG import DATA_DIR
+from GTG.core.tools import ICONS_DIR
+from GTG.core.translations import _
 from GTG.tools.borg import Borg
 from GTG.tools.dates import Date
 
@@ -73,9 +74,8 @@ class IconIndicator:
         self._menu = menu
 
         if self._indicator:
-            # Show the icon even when runing ./scripts/debug.sh
-            theme_path = os.path.join(DATA_DIR, 'icons')
-            self._indicator.set_icon_theme_path(theme_path)
+            # Show the icon even when runing dev version
+            self._indicator.set_icon_theme_path(ICONS_DIR)
 
             self._indicator.set_icon("gtg-panel")
             self._indicator.set_attention_icon(self.ATTENTION_ICON)

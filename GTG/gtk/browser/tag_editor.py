@@ -29,10 +29,10 @@ for a tag.
 
 from gi.repository import GObject, Gtk, Gdk, GdkPixbuf
 
-from GTG import _
+from GTG.core.translations import _
 from GTG.gtk.browser.simple_color_selector import SimpleColorSelector
-from GTG.tools.logger import Log
 from GTG.gtk.colors import color_add, color_remove
+from GTG.tools.logger import Log
 
 
 class TagIconSelector(Gtk.Window):

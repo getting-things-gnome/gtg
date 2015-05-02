@@ -14,7 +14,8 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from GTG import _
+from GTG.core.translations import _
+
 title = _("Foldable booklet (PDF)")
 description = _("""A template to create
 <a href="http://www.pocketmod.com">PocketMod</a>, which is a small foldable

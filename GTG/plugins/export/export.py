@@ -20,13 +20,13 @@ Plugin for exporting into nice lists in TXT, HTML or PDF """
 
 import os
 import shutil
-import webbrowser
 import subprocess
+import webbrowser
 
-from xdg.BaseDirectory import xdg_config_home
 from gi.repository import GObject, Gtk, GdkPixbuf
+from xdg.BaseDirectory import xdg_config_home
 
-from GTG import _
+from GTG.core.translations import _
 from GTG.plugins.export.task_str import get_task_wrappers
 from GTG.plugins.export.templates import Template, get_templates_paths
 

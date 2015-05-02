@@ -19,7 +19,7 @@
 
 from gi.repository import Gtk
 
-from GTG import _
+from GTG.core.translations import _
 
 
 class PasswordUI(Gtk.Box):

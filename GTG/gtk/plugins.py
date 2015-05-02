@@ -21,10 +21,10 @@
 
 from gi.repository import Gtk, Pango
 
-from GTG import _
 from GTG import info
 from GTG.core.plugins import GnomeConfig
 from GTG.core.plugins.engine import PluginEngine
+from GTG.core.translations import _
 from GTG.gtk import ViewConfig
 from GTG.gtk import help
 

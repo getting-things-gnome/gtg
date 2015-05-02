@@ -18,15 +18,16 @@
 # -----------------------------------------------------------------------------
 
 from calendar import timegm
+import datetime
 import dbus
-from gi.repository import Gtk, GdkPixbuf
 import os
 import re
 import time
-import datetime
 
-from GTG import _
+from gi.repository import Gtk, GdkPixbuf
+
 from GTG.core.task import Task
+from GTG.core.translations import _
 from GTG.tools.logger import Log
 
 

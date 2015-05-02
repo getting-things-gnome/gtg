@@ -24,17 +24,18 @@ built for them: it should play along the lines of the separation between GTG
 server and client
 '''
 
-from gi.repository import Gtk
 import functools
 
-from GTG import _
+from gi.repository import Gtk
+
 from GTG.backends.genericbackend import GenericBackend
-from GTG.gtk.backends_dialog.parameters_ui.importtagsui import ImportTagsUI
-from GTG.gtk.backends_dialog.parameters_ui.textui import TextUI
-from GTG.gtk.backends_dialog.parameters_ui.passwordui import PasswordUI
-from GTG.gtk.backends_dialog.parameters_ui.periodui import PeriodUI
+from GTG.core.translations import _
 from GTG.gtk.backends_dialog.parameters_ui.checkboxui import CheckBoxUI
+from GTG.gtk.backends_dialog.parameters_ui.importtagsui import ImportTagsUI
+from GTG.gtk.backends_dialog.parameters_ui.passwordui import PasswordUI
 from GTG.gtk.backends_dialog.parameters_ui.pathui import PathUI
+from GTG.gtk.backends_dialog.parameters_ui.periodui import PeriodUI
+from GTG.gtk.backends_dialog.parameters_ui.textui import TextUI
 
 
 class ParametersUI(Gtk.Box):

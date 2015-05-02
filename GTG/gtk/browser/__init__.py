@@ -24,7 +24,7 @@ simple, HIG compliant and well integrated with Gnome.
 """
 import os
 
-from GTG import _
+from GTG.core.translations import _
 
 
 class GnomeConfig:

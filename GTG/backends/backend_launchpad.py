@@ -25,17 +25,18 @@ Backend for importing launchpad bugs in GTG
 import os
 import uuid
 import datetime
-from xdg.BaseDirectory import xdg_cache_home
+
 from launchpadlib.launchpad import Launchpad, EDGE_SERVICE_ROOT
 
-from GTG.core.task import Task
-from GTG import _
-from GTG.backends.genericbackend import GenericBackend
 from GTG.backends.backendsignals import BackendSignals
-from GTG.backends.syncengine import SyncEngine, SyncMeme
-from GTG.tools.logger import Log
-from GTG.info import NAME as GTG_NAME
+from GTG.backends.genericbackend import GenericBackend
 from GTG.backends.periodicimportbackend import PeriodicImportBackend
+from GTG.backends.syncengine import SyncEngine, SyncMeme
+from GTG.core.dirs import SYNC_CACHE_DIR
+from GTG.core.task import Task
+from GTG.core.translations import _
+from GTG.info import NAME as GTG_NAME
+from GTG.tools.logger import Log
 
 # Uncomment this to see each http request
 # import httplib2
@@ -93,8 +94,8 @@ class Backend(PeriodicImportBackend):
         '''
         super(Backend, self).__init__(parameters)
         # loading the saved state of the synchronization, if any
-        self.data_path = os.path.join('backends/launchpad/',
-                                      "sync_engine-" + self.get_id())
+        self.data_path = os.path.join(
+            'launchpad', 'sync_engine-' + self.get_id())
         self.sync_engine = self._load_pickled_file(self.data_path,
                                                    SyncEngine())
 
@@ -117,8 +118,7 @@ class Backend(PeriodicImportBackend):
         # different projects), we use the bug self_link for indexing the tasks.
 
         # Connecting to Launchpad
-        CACHE_DIR = os.path.join(xdg_cache_home, 'gtg/backends/',
-                                 self.get_id())
+        CACHE_DIR = os.path.join(SYNC_CACHE_DIR, self.get_id())
         try:
             self.cancellation_point()
             self.launchpad = Launchpad.login_anonymously(

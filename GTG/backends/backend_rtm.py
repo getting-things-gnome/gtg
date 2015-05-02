@@ -21,26 +21,28 @@
 Remember the milk backend
 '''
 
-import os
+from functools import reduce
 import cgi
-import uuid
-import time
-import threading
 import datetime
+import os
 import subprocess
+import threading
+import time
+import uuid
+
 from dateutil.tz import tzutc, tzlocal
 
-from GTG.backends.genericbackend import GenericBackend
-from GTG import _
 from GTG.backends.backendsignals import BackendSignals
-from GTG.backends.syncengine import SyncEngine, SyncMeme
-from GTG.backends.rtm.rtm import createRTM, RTMError, RTMAPIError
+from GTG.backends.genericbackend import GenericBackend
 from GTG.backends.periodicimportbackend import PeriodicImportBackend
-from GTG.tools.dates import Date
+from GTG.backends.rtm.rtm import createRTM, RTMError, RTMAPIError
+from GTG.backends.syncengine import SyncEngine, SyncMeme
+from GTG.core.tag import ALLTASKS_TAG
 from GTG.core.task import Task
+from GTG.core.translations import _
+from GTG.tools.dates import Date
 from GTG.tools.interruptible import interruptible
 from GTG.tools.logger import Log
-from functools import reduce
 
 
 class Backend(PeriodicImportBackend):
@@ -77,13 +79,13 @@ class Backend(PeriodicImportBackend):
         '''
         super(Backend, self).__init__(parameters)
         # loading the saved state of the synchronization, if any
-        self.sync_engine_path = os.path.join('backends/rtm/',
-                                             "sync_engine-" + self.get_id())
+        self.sync_engine_path = os.path.join(
+            'rtm', 'sync_engine-' + self.get_id())
         self.sync_engine = self._load_pickled_file(self.sync_engine_path,
                                                    SyncEngine())
         # reloading the oauth authentication token, if any
-        self.token_path = os.path.join('backends/rtm/',
-                                       "auth_token-" + self.get_id())
+        self.token_path = os.path.join(
+            'rtm', 'auth_token-' + self.get_id())
         self.token = self._load_pickled_file(self.token_path, None)
         self.enqueued_start_get_task = False
         self.login_event = threading.Event()
@@ -483,7 +485,7 @@ class Backend(PeriodicImportBackend):
         @returns bool: True if the task should be synced
         '''
         attached_tags = self.get_attached_tags()
-        if GenericBackend.ALLTASKS_TAG in attached_tags:
+        if ALLTASKS_TAG in attached_tags:
             return True
         for tag in rtm_task.get_tags():
             if "@" + tag in attached_tags:

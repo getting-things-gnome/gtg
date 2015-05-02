@@ -19,7 +19,7 @@
 
 from gi.repository import Gtk
 
-from GTG import _
+from GTG.core.translations import _
 from GTG.gtk.backends_dialog.parameters_ui import ParametersUI
 from GTG.backends.backendsignals import BackendSignals
 

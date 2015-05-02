@@ -29,14 +29,14 @@ It was in Japanese and I didn't understand anything but the code.
 """
 
 
+from webbrowser import open as openurl
 import os
 
 from gi.repository import GObject, Gtk, Gdk, Pango
 
-from webbrowser import open as openurl
+from GTG.core.translations import _
 from GTG.gtk.editor import taskviewserial
 from GTG.tools import urlregex
-from GTG import _
 
 separators = [' ', ',', '\n', '\t', '!', '?', ';', '\0', '(', ')']
 # those separators are only separators if followed by a space. Else, they
