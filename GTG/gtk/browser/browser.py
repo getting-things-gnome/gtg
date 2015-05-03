@@ -246,8 +246,6 @@ class TaskBrowser(GObject.GObject):
         SIGNAL_CONNECTIONS_DIC = {
             "on_add_task":
             self.on_add_task,
-            "on_import_task":
-            self.on_import_task,
             "on_edit_active_task":
             self.on_edit_active_task,
             "on_edit_done_task":
@@ -1009,9 +1007,6 @@ class TaskBrowser(GObject.GObject):
         if status:
             self.vmanager.ask_set_task_status(task, status)
         self.vmanager.open_task(uid, thisisnew=True)
-
-    def on_import_task(self, widget, status=None):
-        print("Hello world!")
 
     def on_add_subtask(self, widget):
         uid = self.get_selected_task()
