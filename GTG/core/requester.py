@@ -41,7 +41,7 @@ class Requester(GObject.GObject):
         """Construct a L{Requester}."""
         GObject.GObject.__init__(self)
         self.ds = datastore
-        self.__config = global_conf
+        self._config = global_conf
         self.__basetree = self.ds.get_tasks_tree()
 
     # Tasks Tree ######################
@@ -231,11 +231,10 @@ class Requester(GObject.GObject):
         return self.ds.save()
 
     # Config ############################
-    def get_global_config(self):
-        return self.__config
+    def get_config(self, system):
+        """ Returns configuration object for subsytem, e.g. browser """
+        return self._config.get_subconfig(system)
 
-    def get_config(self, name):
-        return self.__config.get_subconfig(name)
-
-    def save_config(self):
-        self.__config.save()
+    def get_task_config(self, task_id):
+        """ Returns configuration object for task """
+        return self._config.get_task_config(task_id)
