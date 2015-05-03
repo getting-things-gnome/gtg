@@ -1000,12 +1000,10 @@ class TaskBrowser(GObject.GObject):
             self.ctaskpopup.popup(None, None, None, None, 0, event.time)
             return True
 
-    def on_add_task(self, widget, status=None):
+    def on_add_task(self, widget):
         tags = [tag for tag in self.get_selected_tags() if tag.startswith('@')]
         task = self.req.new_task(tags=tags, newtask=True)
         uid = task.get_id()
-        if status:
-            self.vmanager.ask_set_task_status(task, status)
         self.vmanager.open_task(uid, thisisnew=True)
 
     def on_add_subtask(self, widget):
@@ -1175,14 +1173,14 @@ class TaskBrowser(GObject.GObject):
         for uid, task, status in zip(tasks_uid, tasks, tasks_status):
             if status == Task.STA_DONE:
                 # Marking as undone
-                self.vmanager.ask_set_task_status(task, Task.STA_ACTIVE)
+                task.set_status(Task.STA_ACTIVE)
                 # Parents of that task must be updated - not to be shown
                 # in workview, update children count, etc.
                 for parent_id in task.get_parents():
                     parent = self.req.get_task(parent_id)
                     parent.modified()
             else:
-                self.vmanager.ask_set_task_status(task, Task.STA_DONE)
+                task.set_status(Task.STA_DONE)
                 self.close_all_task_editors(uid)
 
     def on_dismiss_task(self, widget):
@@ -1194,9 +1192,9 @@ class TaskBrowser(GObject.GObject):
         tasks_status = [task.get_status() for task in tasks]
         for uid, task, status in zip(tasks_uid, tasks, tasks_status):
             if status == Task.STA_DISMISSED:
-                self.vmanager.ask_set_task_status(task, Task.STA_ACTIVE)
+                task.set_status(Task.STA_ACTIVE)
             else:
-                self.vmanager.ask_set_task_status(task, Task.STA_DISMISSED)
+                task.set_status(Task.STA_DISMISSED)
                 self.close_all_task_editors(uid)
 
     def apply_filter_on_panes(self, filter_name, refresh=True):
