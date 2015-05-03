@@ -21,12 +21,11 @@
 Classes responsible for handling user configuration
 """
 
-from re import findall
 import configparser
 import os
+import re
 
 from GTG.core.dirs import CONFIG_DIR
-from GTG.tools.borg import Borg
 from GTG.tools.logger import Log
 
 DEFAULTS = {
@@ -60,117 +59,12 @@ DEFAULTS = {
     'plugins': {
         "enabled": [],
         "disabled": [],
-    }
+    },
+    'task': {
+        'position': [],
+        'size': [],
+    },
 }
-
-
-# Instead of accessing directly the ConfigParser, each module will have
-# one SubConfig object. (one SubConfig object always match one first level
-# element of the ConfigParser directory)
-#
-# The goal of the SubConfig object is to handle default value and converting
-# String to Bool and Int when needed.
-#
-# Each GTG component using config should be ported to SubConfig and, for each
-# setting, a default value should be written in the DEFAULTS above.
-#
-# Currently done : browser
-# Todo : editor, plugins
-
-class SubConfig():
-
-    def __init__(self, section, conf, conf_path):
-        self._section = section
-        self._conf = conf
-        self._conf_path = conf_path
-
-    # This return the value of the setting (or the default one)
-    #
-    # If a default value exists and is a Int or a Bool, the returned
-    # value is converted to that type.
-    def get(self, option):
-        if self._conf.has_option(self._section, option):
-            toreturn = self._conf.get(self._section, option)
-            # Converting to the good type
-            if option in DEFAULTS[self._section]:
-                ntype = type(DEFAULTS[self._section][option])
-                if ntype == int:
-                    toreturn = int(toreturn)
-                elif ntype == list:
-                    # All list config should be saved in ','.join(list) pattern
-                    # This is just for backward compatibility
-                    if toreturn and toreturn[0] == '[' and toreturn[-1] == ']':
-                        toreturn = toreturn[1:-1]
-
-                    # Splitting by ',' caused bugs #1218093 and #1216807.
-                    # Parsing the below way
-                    # does not split "('string1', 'string2', ... )" further
-                    toreturn_backup_str = toreturn
-                    toreturn = findall(r'\(.*?\)', toreturn)
-                    if not toreturn:
-                        toreturn = toreturn_backup_str.split(',')
-                    while toreturn and toreturn[-1] == '':
-                        toreturn = toreturn[:-1]
-                elif ntype == bool and type(toreturn) == str:
-                    toreturn = toreturn.lower() == "true"
-        elif option in DEFAULTS[self._section]:
-            toreturn = DEFAULTS[self._section][option]
-            self.set(option, toreturn)
-        else:
-            print("Warning : no default conf value for %s in %s" % (
-                option, self._section))
-            toreturn = None
-        return toreturn
-
-    def clear(self):
-        for option in self._conf.options(self._section):
-            self._conf.remove_option(self._section, option)
-
-    def save(self):
-        self._conf.write(open(self._conf_path, 'w'))
-
-    def set(self, option, value):
-        if type(value) == list:
-            value = ','.join(value)
-        self._conf.set(self._section, option, str(value))
-        # Save immediately
-        self.save()
-
-
-class TaskConfig():
-    """ TaskConfig is used to save the position and size of each task, both of
-    value are one tuple with two numbers, so set and get will use join and
-    split"""
-
-    def __init__(self, conf, conf_path):
-        self._conf = conf
-        self._conf_path = conf_path
-
-    def has_section(self, section):
-        return self._conf.has_section(section)
-
-    def has_option(self, section, option):
-        return self._conf.has_option(section, option)
-
-    def add_section(self, section):
-        self._conf.add_section(section)
-
-    def get(self, tid, option):
-        value = self._conf.get(tid, option)
-        # Check single quote for backward compatibility
-        if value[0] == '(' and value[-1] == ')':
-            value = value[1:-1]
-        # Remove all whitespaces, tabs, newlines and then split by ','
-        value_without_spaces = ''.join(value.split())
-        return value_without_spaces.split(',')
-
-    def set(self, tid, option, value):
-        value = ','.join(str(x) for x in value)
-        self._conf.set(tid, option, value)
-        self.save()
-
-    def save(self):
-        self._conf.write(open(self._conf_path, 'w'))
 
 
 def open_config_file(config_file):
@@ -197,28 +91,130 @@ def open_config_file(config_file):
     return config
 
 
-class CoreConfig(Borg):
+class SectionConfig(object):
+    """ Configuration only for a section (system or a task) """
 
-    def __init__(self):
-        if hasattr(self, '_conf'):
-            # Borg has already been initialized
-            return
+    def __init__(self, section_name, section, defaults, save_function):
+        """ Initiatizes section config:
 
-        self.conf_path = os.path.join(CONFIG_DIR, 'gtg.conf')
-        self._conf = open_config_file(self.conf_path)
+         - section_name: name for writing error logs
+         - section: section of the config handled by this object
+         - defaults: dictionary of default values
+         - save_function: function to be called to save changes (this function
+                          needs to save the whole config)
+        """
+        self._section_name = section_name
+        self._section = section
+        self._defaults = defaults
+        self._save_function = save_function
 
-        self.task_conf_path = os.path.join(CONFIG_DIR, 'tasks.conf')
-        self._task_conf = open_config_file(self.task_conf_path)
+    def _getlist(self, option):
+        """ Parses string representation of list from configuration
+
+        List can't contain an empty value as those are skipped over,
+        e.g. "a, ,b" is parsed as ['a', 'b'].
+
+        Accepted formats:
+         - "('a', 'b'),('c','d','e')" => ["('a', 'b')", "('c','d','e')"]
+         - "a, b" => ['a', 'b']
+        """
+        raw = self._section.get(option)
+        if not raw:
+            return None
+
+        # Match tuples in format "('string1', 'string2', ...)"
+        values = re.findall(r'\(.*?\)', raw)
+        if not values:
+            # It only normal list
+            values = raw.split(',')
+
+        return [item.strip() for item in values if item]
+
+    def _type_function(self, default_value):
+        """ Returns function that returns correct type of value """
+        default_type = type(default_value)
+        if default_type in (list, tuple):
+            return self._getlist
+        elif default_type == int:
+            return self._section.getint
+        elif default_type == bool:
+            return self._section.getboolean
+        else:
+            return self._section.get
+
+    def get(self, option):
+        """ Get option from configuration.
+
+        If the option is not specified in the configuration or is of invalid
+        type, return default value. If there is no default value,
+        None is returned
+        """
+        default_value = self._defaults.get(option)
+        if default_value is None:
+            Log.warning(
+                'No default value for %s in %s', option, self._section_name)
+
+        get_function = self._type_function(default_value)
+
+        try:
+            value = get_function(option)
+        except ValueError as e:
+            value = None
+            Log.warning(
+                'Invalid configuration value "%s" for %s in %s: %s',
+                self._section.get(option), option, self._section_name, e)
+
+        if value is None and default_value is None:
+            raise ValueError(
+                'No valid configuration value or default value was '
+                'found for %s in %s'.format(option, self._section_name))
+        elif value is None:
+            return default_value
+        else:
+            return value
+
+    def set(self, option, value):
+        if type(value) in (list, tuple):
+            value = ','.join(str(item) for item in value)
+        else:
+            value = str(value)
+        self._section[option] = value
+        # Immediately save the configuration
+        self.save()
 
     def save(self):
-        ''' Saves the configuration of CoreConfig '''
-        self._conf.write(open(self.conf_path, 'w'))
-        self._task_conf.write(open(self.task_conf_path, 'w'))
+        self._save_function()
 
-    def get_subconfig(self, section):
-        if not self._conf.has_section(section):
-            self._conf.add_section(section)
-        return SubConfig(section, self._conf, self.conf_path)
 
-    def get_taskconfig(self):
-        return TaskConfig(self._task_conf, self.task_conf_path)
+class CoreConfig(object):
+    """ Class holding configuration to all systems and tasks """
+
+    def __init__(self):
+        self._conf_path = os.path.join(CONFIG_DIR, 'gtg.conf')
+        self._conf = open_config_file(self._conf_path)
+
+        self._task_conf_path = os.path.join(CONFIG_DIR, 'tasks.conf')
+        self._task_conf = open_config_file(self._task_conf_path)
+
+    def save_gtg_config(self):
+        self._conf.write(open(self._conf_path, 'w'))
+
+    def save_task_config(self):
+        self._task_conf.write(open(self._task_conf_path, 'w'))
+
+    def get_subconfig(self, name):
+        """ Returns configuration object for special section of config """
+        if name not in self._conf:
+            self._conf.add_section(name)
+        defaults = DEFAULTS.get(name, dict())
+        return SectionConfig(
+            name, self._conf[name], defaults, self.save_gtg_config)
+
+    def get_task_config(self, task_id):
+        if task_id not in self._task_conf:
+            self._task_conf.add_section(task_id)
+        return SectionConfig(
+            'Task {}'.format(task_id),
+            self._task_conf[task_id],
+            DEFAULTS['task'],
+            self.save_task_config)

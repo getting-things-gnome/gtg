@@ -43,10 +43,8 @@ class Manager(object):
     # init ##################################################################
     def __init__(self, req):
         self.req = req
-        self.config_obj = self.req.get_global_config()
-        self.browser_config = self.config_obj.get_subconfig("browser")
-        self.plugins_config = self.config_obj.get_subconfig("plugins")
-        self.task_config = self.config_obj.get_taskconfig()
+        self.browser_config = self.req.get_config("browser")
+        self.plugins_config = self.req.get_config("plugins")
 
         # Editors
         # This is the list of tasks that are already opened in an editor
@@ -82,7 +80,7 @@ class Manager(object):
         # Preferences and Backends windows
         # Initialize  dialogs
         self.preferences = PreferencesDialog(self.req, self)
-        self.plugins = PluginsDialog(self.config_obj)
+        self.plugins = PluginsDialog(self.req)
         self.edit_backends_dialog = None
 
         # Tag Editor
@@ -178,7 +176,6 @@ class Manager(object):
                 requester=self.req,
                 vmanager=self,
                 task=t,
-                taskconfig=self.task_config,
                 thisisnew=thisisnew,
                 clipboard=self.clipboard)
             tv.present()
@@ -296,7 +293,6 @@ class Manager(object):
         # adds the plugin settings to the conf
         # FIXME: this code is replicated in the preference window.
         if len(self.pengine.plugins) > 0:
-            self.plugins_config.clear()
             self.plugins_config.set(
                 "disabled",
                 [p.module_name for p in self.pengine.get_plugins("disabled")],

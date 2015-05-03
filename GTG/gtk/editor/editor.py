@@ -36,6 +36,7 @@ from GTG.gtk.editor.calendar import GTGCalendar
 from GTG.gtk.editor.taskview import TaskView
 from GTG.gtk.help import add_help_shortcut
 from GTG.tools.dates import Date
+from GTG.tools.logger import Log
 
 
 class TaskEditor(object):
@@ -44,19 +45,17 @@ class TaskEditor(object):
                  requester,
                  vmanager,
                  task,
-                 taskconfig=None,
                  thisisnew=False,
                  clipboard=None):
         '''
         req is the requester
         vmanager is the view manager
-        taskconfig is a ConfigParser to save infos about tasks
         thisisnew is True when a new task is created and opened
         '''
         self.req = requester
-        self.browser_config = self.req.get_config('browser')
         self.vmanager = vmanager
-        self.config = taskconfig
+        self.browser_config = self.req.get_config('browser')
+        self.config = self.req.get_task_config(task.get_id())
         self.time = None
         self.clipboard = clipboard
         self.builder = Gtk.Builder()
@@ -178,16 +177,7 @@ class TaskEditor(object):
         self.refresh_editor()
         self.textview.grab_focus()
 
-        # restoring size and position, spatial tasks
-        if self.config is not None:
-            tid = self.task.get_id()
-            if self.config.has_section(tid):
-                if self.config.has_option(tid, "position"):
-                    pos_x, pos_y = self.config.get(tid, "position")
-                    self.move(int(pos_x), int(pos_y))
-                if self.config.has_option(tid, "size"):
-                    width, height = self.config.get(tid, "size")
-                    self.window.resize(int(width), int(height))
+        self.init_dimensions()
 
         self.textview.set_editable(True)
         self.window.show()
@@ -234,6 +224,26 @@ class TaskEditor(object):
         # Ctrl-Q quits GTG
         key, modifier = Gtk.accelerator_parse('<Control>q')
         agr.connect(key, modifier, Gtk.AccelFlags.VISIBLE, self.quit)
+
+    def init_dimensions(self):
+        """ Restores position and size of task if possible """
+        position = self.config.get('position')
+        if position and len(position) == 2:
+            try:
+                self.window.move(int(position[0]), int(position[1]))
+            except ValueError:
+                Log.warning(
+                    'Invalid position configuration for task %s: %s',
+                    self.task.get_id(), position)
+
+        size = self.config.get('size')
+        if size and len(size) == 2:
+            try:
+                self.window.resize(int(size[0]), int(size[1]))
+            except ValueError:
+                Log.warning(
+                    'Invalid size configuration for task %s: %s',
+                    self.task.get_id(), size)
 
     # Can be called at any time to reflect the status of the Task
     # Refresh should never interfere with the TaskView.
@@ -565,25 +575,13 @@ class TaskEditor(object):
     def present(self):
         self.window.present()
 
-    def move(self, x, y):
-        try:
-            xx = int(x)
-            yy = int(y)
-            self.window.move(xx, yy)
-        except:
-            pass
-
     def get_position(self):
         return self.window.get_position()
 
     def on_move(self, widget, event):
-        # saving the position
-        if self.config is not None:
-            tid = self.task.get_id()
-            if not self.config.has_section(tid):
-                self.config.add_section(tid)
-            self.config.set(tid, "position", self.get_position())
-            self.config.set(tid, "size", self.window.get_size())
+        """ Save position and size of window """
+        self.config.set('position', self.window.get_position())
+        self.config.set('size', self.window.get_size())
 
     # We define dummy variable for when close is called from a callback
     def close(self, window=None, a=None, b=None, c=None):
