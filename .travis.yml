@@ -17,9 +17,6 @@ sudo: false
 cache:
     - pip
 
-virtualenv:
-  system_site_packages: true
-
 install:
   - pip3 install -r requirements.txt
 
