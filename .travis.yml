@@ -1,9 +1,10 @@
 language: python
 
 python:
-  - '3.3'
-  - '3.4'
-  - 'nightly'
+  - "3.2_with_system_site_packages"
+#  - '3.3'
+#  - '3.4'
+#  - 'nightly'
 
 addons:
     apt:
