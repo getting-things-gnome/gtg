@@ -1,7 +1,9 @@
 language: python
 
 python:
-  - '3.2'
+  - '3.3'
+  - '3.4'
+  - 'nightly'
 
 before_install:
   - sudo apt-get update
