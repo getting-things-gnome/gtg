@@ -24,7 +24,7 @@ from GTG.core.translations import _, ngettext
 from GTG.gtk import ViewConfig
 
 
-class DeletionUI():
+class DeletionUI(object):
 
     MAXIMUM_TIDS_TO_SHOW = 5
 

@@ -27,7 +27,7 @@ from GTG.tools.dates import Date
 from liblarch import Tree
 
 
-class TreeFactory:
+class TreeFactory(object):
 
     def __init__(self):
         # Keep the tree in memory jus in case we have to use it for filters.

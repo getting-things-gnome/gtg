@@ -14,10 +14,5 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 
-""" Not today pluging"""
-
-from GTG.plugins.not_today.not_today import notToday
-
-# suppress pyflakes warning (given by make lint)
-if False:
-    notToday()
+from GTG.plugins.not_today.not_today import NotTodayPlugin
+assert NotTodayPlugin

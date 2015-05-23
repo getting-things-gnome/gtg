@@ -23,7 +23,7 @@ from GTG.tools.logger import Log
 from GTG.tools.dates import Date
 
 
-class pluginReaper:
+class ReaperPlugin(object):
 
     DEFAULT_PREFERENCES = {'max_days': 30,
                            'is_automatic': False,

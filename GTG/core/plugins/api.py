@@ -24,7 +24,7 @@ from GTG.core.dirs import plugin_configuration_dir
 from GTG.tools.logger import Log
 
 
-class PluginAPI:
+class PluginAPI(object):
     """The plugin engine's API.
 
     L{PluginAPI} is a object that provides a nice API for

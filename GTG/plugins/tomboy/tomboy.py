@@ -23,7 +23,7 @@ from GTG.core.translations import _
 from GTG.plugins.tomboy.combobox_enhanced import smartifyComboboxEntry
 
 
-class pluginTomboy:
+class TomboyPlugin(object):
 
     def __init__(self):
         # These tokens are used to identify the beginning and the end of the

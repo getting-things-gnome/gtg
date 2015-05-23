@@ -24,7 +24,7 @@
 from GTG.core.translations import _
 
 
-class GnomeConfig:
+class GnomeConfig(object):
     CANLOAD = _("Everything necessary to run this plugin is available.")
     CANNOTLOAD = _("The plugin can not be loaded")
     miss1 = _("Some python modules are missing")

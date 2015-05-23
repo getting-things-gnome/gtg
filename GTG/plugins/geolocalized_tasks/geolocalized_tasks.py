@@ -31,7 +31,7 @@ from GTG.plugins.geolocalized_tasks.marker import MarkerLayer
 # to GtkBuilder, it's your job ;)
 
 
-class geolocalizedTasks:
+class GeolocalizedTasks(object):
 
     def __init__(self):
         self.geoclue = Geoclue.DiscoverLocation()

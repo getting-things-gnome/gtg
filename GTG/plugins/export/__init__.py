@@ -15,10 +15,5 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 
-""" Initialize export pugin """
-
-from GTG.plugins.export.export import PluginExport
-
-# Make pyflakes happy
-if False:
-    PluginExport()
+from GTG.plugins.export.export import ExportPlugin
+assert ExportPlugin

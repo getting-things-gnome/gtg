@@ -140,7 +140,7 @@ class RTM(object):
         return rsp.auth.token
 
 
-class RTMAPICategory:
+class RTMAPICategory(object):
     "See the `API` structure and `RTM.__init__`"
 
     def __init__(self, rtm, prefix, methods):

@@ -14,8 +14,5 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from GTG.plugins.task_reaper.reaper import pluginReaper
-
-# suppress pyflakes warning (given by make lint)
-if False is True:
-    pluginReaper()
+from GTG.plugins.task_reaper.reaper import ReaperPlugin
+assert ReaperPlugin

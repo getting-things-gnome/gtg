@@ -23,7 +23,7 @@ taskeditors, preserving subtasks
 """
 
 
-class TaskClipboard():
+class TaskClipboard(object):
 
     def __init__(self, req):
         self.description = None

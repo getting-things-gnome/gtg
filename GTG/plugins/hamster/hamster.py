@@ -31,7 +31,7 @@ from GTG.core.translations import _
 from GTG.tools.logger import Log
 
 
-class hamsterPlugin:
+class HamsterPlugin(object):
     PLUGIN_NAMESPACE = 'hamster-plugin'
     DEFAULT_PREFERENCES = {
         "activity": "title",
