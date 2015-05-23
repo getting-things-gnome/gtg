@@ -32,7 +32,7 @@ from GTG.tools.dates import Date
 from liblarch_gtk import TreeView
 
 
-class TreeviewFactory():
+class TreeviewFactory(object):
 
     def __init__(self, requester, config):
         self.req = requester

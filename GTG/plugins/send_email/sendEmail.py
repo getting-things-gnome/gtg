@@ -28,10 +28,7 @@ import urllib.error
 from GTG.core.translations import _
 
 
-class pluginSendEmail:
-    """
-    The plugin.
-    """
+class SendEmailPlugin(object):
 
     def onTaskOpened(self, plugin_api):
         """

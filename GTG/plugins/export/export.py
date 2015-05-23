@@ -74,7 +74,7 @@ def get_desktop_dir():
         return os.path.expanduser('~')
 
 
-class PluginExport:
+class ExportPlugin(object):
     """ Export plugin - handle UI and trigger exporting tasks """
 
     # Allow initilization outside __init__() and don't complain

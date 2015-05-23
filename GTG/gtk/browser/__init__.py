@@ -27,7 +27,7 @@ import os
 from GTG.core.translations import _
 
 
-class GnomeConfig:
+class GnomeConfig(object):
     current_rep = os.path.dirname(os.path.abspath(__file__))
     BROWSER_UI_FILE = os.path.join(current_rep, "taskbrowser.ui")
     MODIFYTAGS_UI_FILE = os.path.join(current_rep, "modifytags_dialog.ui")

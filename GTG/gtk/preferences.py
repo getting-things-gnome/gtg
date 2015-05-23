@@ -75,7 +75,7 @@ def disable_gtg_autostart():
         os.remove(AUTOSTART_PATH)
 
 
-class PreferencesDialog:
+class PreferencesDialog(object):
     """ Show preference dialog """
 
     def __init__(self, req, vmanager):
@@ -205,7 +205,7 @@ class PreferencesDialog:
         self.config.set("font_name", self.fontbutton.get_font_name())
 
 
-class ShortcutWidget:
+class ShortcutWidget(object):
     """ Show Shortcut Accelerator Widget """
 
     def __init__(self, builder):

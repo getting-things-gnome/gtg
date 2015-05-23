@@ -20,7 +20,7 @@ from GTG.core.translations import _
 from GTG.tools.dates import Date
 
 
-class notToday:
+class NotTodayPlugin(object):
 
     def __init__(self):
         self.plugin_api = None

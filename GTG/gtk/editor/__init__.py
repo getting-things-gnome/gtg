@@ -24,7 +24,7 @@ import os
 from GTG.core.translations import _
 
 
-class GnomeConfig:
+class GnomeConfig(object):
     current_rep = os.path.dirname(os.path.abspath(__file__))
     EDITOR_UI_FILE = os.path.join(current_rep, "taskeditor.ui")
     CALENDAR_UI_FILE = os.path.join(current_rep, "calendar.ui")

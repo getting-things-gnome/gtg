@@ -14,9 +14,5 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from GTG.plugins.hamster.hamster import hamsterPlugin
-
-
-# suppress pyflakes warning (given by make lint)
-if False is True:
-    hamsterPlugin()
+from GTG.plugins.hamster.hamster import HamsterPlugin
+assert HamsterPlugin

@@ -600,7 +600,7 @@ class DataStore(object):
         return self._backend_mutex
 
 
-class TaskSource():
+class TaskSource(object):
     """
     Transparent interface between the real backend and the DataStore.
     Is in charge of connecting and disconnecting to signals

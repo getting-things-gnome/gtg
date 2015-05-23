@@ -81,7 +81,6 @@ class TaskView(Gtk.TextView):
         else:
             raise AttributeError('unknown property %s' % prop.name)
 
-    # Yes, we want to redefine the buffer. Disabling pylint on that error.
     def __init__(self, requester, clipboard):
         super().__init__()
         self.buff = self.get_buffer()
