@@ -358,14 +358,14 @@ class Task(TreeNode):
         return self.due_date
 
     def get_urgent_date(self):
-        """ Returns the most urgent due date among the tasks and its subtasks
         """
-        urg_date = self.due_date
-        for sub in self.get_subtasks():
-            sub_urg_date = sub.get_urgent_date()
-            if urg_date >= sub_urg_date:
-                urg_date = sub_urg_date
-        return urg_date
+        Returns the most urgent due date among the task and its active subtasks
+        """
+        urgent_date = self.get_due_date()
+        for subtask in self.get_subtasks():
+            if subtask.get_status() == self.STA_ACTIVE:
+                urgent_date = min(urgent_date, subtask.get_urgent_date())
+        return urgent_date
 
     def get_due_date_constraint(self):
         """ Returns the most urgent due date constraint, following
