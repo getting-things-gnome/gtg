@@ -50,7 +50,7 @@ class BackendFactory(Borg):
         """
          Creates a dictionary of the currently available backend modules
         """
-        Borg.__init__(self)
+        super().__init__()
         if hasattr(self, "backend_modules"):
             # This object has already been constructed
             return

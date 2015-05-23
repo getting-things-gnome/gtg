@@ -51,7 +51,7 @@ class GenericTomboy(GenericBackend):
         """
         See GenericBackend for an explanation of this function.
         """
-        super(GenericTomboy, self).__init__(parameters)
+        super().__init__(parameters)
         # loading the saved state of the synchronization, if any
         self.data_path = os.path.join(
             'tomboy', 'sync_engine-' + self.get_id())
@@ -511,7 +511,7 @@ class GenericTomboy(GenericBackend):
             @param bus_path: the DBus path of Tomboy RemoteControl
             @param bus_interface: the DBus address of Tomboy RemoteControl
             '''
-            super(GenericTomboy.TomboyConnection, self).__init__()
+            super().__init__()
             if hasattr(self, "tomboy_connection_is_ok") and \
                     self.tomboy_connection_is_ok:
                 return
@@ -574,8 +574,9 @@ class GenericTomboy(GenericBackend):
             @param backend: a Backend object
             '''
             self.backend = backend
-            super(GenericTomboy.DbusWatchdog, self).__init__(
-                3, self._when_taking_too_long)
+            super().__init__(
+                timeout=3,
+                error_function=self._when_taking_too_long)
 
         def _when_taking_too_long(self):
             '''

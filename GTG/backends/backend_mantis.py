@@ -86,7 +86,7 @@ class Backend(PeriodicImportBackend):
         See GenericBackend for an explanation of this function.
         Re-loads the saved state of the synchronization
         '''
-        super(Backend, self).__init__(parameters)
+        super().__init__(parameters)
         # loading the saved state of the synchronization, if any
         self.data_path = os.path.join(
             'mantis', 'sync_engine-' + self.get_id())

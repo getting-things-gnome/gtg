@@ -36,8 +36,7 @@ class ConfigurePanel(Gtk.Box):
         @param backends_dialog: a reference to the dialog in which this is
         loaded
         '''
-        super(ConfigurePanel, self).__init__(
-            orientation=Gtk.Orientation.VERTICAL)
+        super().__init__(orientation=Gtk.Orientation.VERTICAL)
         self.dialog = backends_dialog
         self.should_spinner_be_shown = False
         self.task_deleted_handle = None

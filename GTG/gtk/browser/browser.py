@@ -53,7 +53,7 @@ class TaskBrowser(GObject.GObject):
                     }
 
     def __init__(self, requester, vmanager):
-        GObject.GObject.__init__(self)
+        super().__init__()
         # Object prime variables
         self.req = requester
         self.vmanager = vmanager

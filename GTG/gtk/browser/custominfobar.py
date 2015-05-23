@@ -52,7 +52,7 @@ class CustomInfoBar(Gtk.InfoBar):
         @param vmanager: a ViewManager object
         @param backend_id: the id of the backend linked to the infobar
         '''
-        super(CustomInfoBar, self).__init__()
+        super().__init__()
         self.req = req
         self.browser = browser
         self.vmanager = vmanager

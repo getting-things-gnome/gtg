@@ -154,7 +154,7 @@ class PluginEngine(Borg):
     def __init__(self):
         """Initialize the plugin engine.
         """
-        super(PluginEngine, self).__init__()
+        super().__init__()
         if hasattr(self, "plugins"):
             # Borg has already been initialized, skip
             return

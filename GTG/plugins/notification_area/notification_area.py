@@ -40,7 +40,7 @@ class TheIndicator(Borg):
     """
 
     def __init__(self):
-        super(TheIndicator, self).__init__()
+        super().__init__()
         if not hasattr(self, "_indicator"):
             try:
                 self._indicator = appindicator.Indicator(

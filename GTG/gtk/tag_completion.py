@@ -71,7 +71,7 @@ class TagCompletion(Gtk.EntryCompletion):
 
         Create a list store which is connected to a LibLarch and
         kept updated. """
-        Gtk.EntryCompletion.__init__(self)
+        super().__init__()
 
         self.tags = Gtk.ListStore(str)
 

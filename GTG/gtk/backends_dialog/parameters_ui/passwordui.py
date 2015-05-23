@@ -33,7 +33,7 @@ class PasswordUI(Gtk.Box):
         @param backend: a backend object
         @param width: the width of the Gtk.Label object
         '''
-        super(PasswordUI, self).__init__()
+        super().__init__()
         self.backend = backend
         self.req = req
         self._populate_gtk(width)

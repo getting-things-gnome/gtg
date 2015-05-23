@@ -52,8 +52,7 @@ class ParametersUI(Gtk.Box):
 
         @param requester: a GTG.core.requester.Requester object
         '''
-        super(ParametersUI, self).__init__(
-            False, orientation=Gtk.Orientation.VERTICAL)
+        super().__init__(orientation=Gtk.Orientation.VERTICAL)
         self.req = requester
         self.set_spacing(10)
 

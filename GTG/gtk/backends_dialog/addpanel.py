@@ -39,7 +39,7 @@ class AddPanel(Gtk.Box):
         @param backends_dialog: a reference to the dialog in which this is
         loaded
         '''
-        super(AddPanel, self).__init__(orientation=Gtk.Orientation.VERTICAL)
+        super().__init__(orientation=Gtk.Orientation.VERTICAL)
         self.dialog = backends_dialog
         self._create_widgets()
 

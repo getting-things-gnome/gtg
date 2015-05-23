@@ -43,12 +43,12 @@ class Task(TreeNode):
     STA_DISMISSED = "Dismiss"
     STA_DONE = "Done"
 
-    def __init__(self, ze_id, requester, newtask=False):
-        TreeNode.__init__(self, ze_id)
+    def __init__(self, task_id, requester, newtask=False):
+        super().__init__(task_id)
         # the id of this task in the project should be set
         # tid is a string ! (we have to choose a type and stick to it)
-        assert(isinstance(ze_id, str) or isinstance(ze_id, str))
-        self.tid = str(ze_id)
+        assert(isinstance(task_id, str) or isinstance(task_id, str))
+        self.tid = str(task_id)
         self.set_uuid(uuid.uuid4())
         self.remote_ids = {}
         self.content = ""

@@ -77,7 +77,7 @@ class Backend(PeriodicImportBackend):
         See GenericBackend for an explanation of this function.
         Loads the saved state of the sync, if any
         '''
-        super(Backend, self).__init__(parameters)
+        super().__init__(parameters)
         # loading the saved state of the synchronization, if any
         self.sync_engine_path = os.path.join(
             'rtm', 'sync_engine-' + self.get_id())
