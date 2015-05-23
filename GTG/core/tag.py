@@ -55,7 +55,7 @@ class Tag(TreeNode):
         @param attributes: Allow having initial set of attributes without
             calling _save callback
         """
-        TreeNode.__init__(self, name)
+        super().__init__(name)
         self._name = saxutils.unescape(str(name))
         self.req = req
         self._save = None

@@ -35,7 +35,7 @@ class GetBugInformationTask(threading.Thread):
     def __init__(self, task, **kwargs):
         ''' Initialize task data, where task is the GTG task object. '''
         self.task = task
-        super(GetBugInformationTask, self).__init__(**kwargs)
+        super().__init__(**kwargs)
 
     def parseBugUrl(self, url):
         r = urlparse(url)

@@ -86,7 +86,7 @@ class Backend(GenericBackend):
         The backend should take care if one expected value is None or
         does not exist in the dictionary.
         """
-        super(Backend, self).__init__(parameters)
+        super().__init__(parameters)
         # RETROCOMPATIBILIY
         # NOTE: retrocompatibility from the 0.2 series to 0.3.
         # We convert "filename" to "path and we forget about "filename "

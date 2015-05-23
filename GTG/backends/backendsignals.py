@@ -38,7 +38,7 @@ class BackendSignals(Borg):
     def __init__(self):
         '''Checks that this is the only instance, and instantiates the
         gobject'''
-        super(BackendSignals, self).__init__()
+        super().__init__()
         if hasattr(self, "_gobject"):
             return
         self._gobject = _BackendSignalsGObject()
@@ -97,7 +97,7 @@ class _BackendSignalsGObject(GObject.GObject):
                                                                str, str)}
 
     def __init__(self):
-        super(_BackendSignalsGObject, self).__init__()
+        super().__init__()
         self.backends_currently_syncing = []
 
     # Signals ###############################################################

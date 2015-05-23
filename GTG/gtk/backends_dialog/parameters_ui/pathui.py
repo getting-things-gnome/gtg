@@ -37,7 +37,7 @@ class PathUI(Gtk.Box):
         @param backend: a backend object
         @param width: the width of the Gtk.Label object
         '''
-        super(PathUI, self).__init__()
+        super().__init__()
         self.backend = backend
         self.req = req
         self._populate_gtk(width)

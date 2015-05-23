@@ -72,7 +72,7 @@ class CellRendererTags(Gtk.CellRenderer):
 
     # Class methods
     def __init__(self):
-        Gtk.CellRenderer.__init__(self)
+        super().__init__()
         self.tag_list = None
         self.tag = None
         self.xpad = 1

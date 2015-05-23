@@ -42,11 +42,7 @@ class TagIconSelector(Gtk.Window):
     """
 
     def __init__(self):
-        # FIXME
-        # self.__gobject_init__(type=Gtk.WindowType.POPUP)
-        # GObject.GObject.__init__(self)
-        Gtk.Window.__init__(self)
-
+        super().__init__()
         self.loaded = False
         self.selected_icon = None
         self.symbol_model = None
@@ -192,7 +188,7 @@ class TagEditor(Gtk.Window):
     """Window allowing to edit a tag's properties."""
 
     def __init__(self, req, vmanager, tag=None):
-        Gtk.Window.__init__(self)
+        super().__init__()
 
         self.req = req
         self.vmanager = vmanager

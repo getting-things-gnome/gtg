@@ -41,7 +41,7 @@ class GTGCalendar(GObject.GObject):
     __gsignals__ = {'date-changed': __signal_type__, }
 
     def __init__(self):
-        super(GTGCalendar, self).__init__()
+        super().__init__()
         self.__builder = Gtk.Builder()
         self.__builder.add_from_file(GnomeConfig.CALENDAR_UI_FILE)
         self.__date_kind = None

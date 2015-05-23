@@ -80,7 +80,7 @@ class DBusTaskWrapper(dbus.service.Object):
         # Attach the object to D-Bus
         self.bus = dbus.SessionBus()
         bus_name = dbus.service.BusName(BUSNAME, bus=self.bus)
-        dbus.service.Object.__init__(self, bus_name, BUSINTERFACE)
+        super().__init__(bus_name, BUSINTERFACE)
         self.req = req
         self.view_manager = view_manager
 

@@ -42,7 +42,7 @@ class BackendsTree(Gtk.TreeView):
         @param backends_dialog: a reference to the dialog in which this is
         loaded
         '''
-        super(BackendsTree, self).__init__()
+        super().__init__()
         self.dialog = backendsdialog
         self.req = backendsdialog.get_requester()
         self._init_liststore()

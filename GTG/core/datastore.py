@@ -841,7 +841,7 @@ class FilteredDataStore(Borg):
     """
 
     def __init__(self, datastore):
-        super(FilteredDataStore, self).__init__()
+        super().__init__()
         self.datastore = datastore
 
     def __getattr__(self, attr):

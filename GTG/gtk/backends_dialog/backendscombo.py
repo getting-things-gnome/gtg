@@ -41,7 +41,7 @@ class BackendsCombo(Gtk.ComboBox):
         @param backends_dialog: reference to the dialog in which this combo is
                                 loaded.
         '''
-        Gtk.ComboBox.__init__(self)
+        super().__init__()
         self.dialog = backends_dialog
         self._liststore_init()
         self._renderers_init()

@@ -83,7 +83,7 @@ class TaskView(Gtk.TextView):
 
     # Yes, we want to redefine the buffer. Disabling pylint on that error.
     def __init__(self, requester, clipboard):
-        Gtk.TextView.__init__(self)
+        super().__init__()
         self.buff = self.get_buffer()
         self.req = requester
         # Buffer init

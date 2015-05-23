@@ -33,9 +33,9 @@ class Timer(GObject.GObject):
     __gsignals__ = {'refresh': __signal_type__}
 
     def __init__(self, config):
+        super().__init__()
         self.config = config
         self.timeout_source = None
-        GObject.GObject.__init__(self)
         bus = dbus.SystemBus()
         bus.add_signal_receiver(self.emit_refresh,
                                 'Resuming',

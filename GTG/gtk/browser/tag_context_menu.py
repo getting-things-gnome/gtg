@@ -36,7 +36,7 @@ class TagContextMenu(Gtk.Menu):
     """Context menu fo the tag i the sidebar"""
 
     def __init__(self, req, vmanager, tag=None):
-        Gtk.Menu.__init__(self)
+        super().__init__()
         self.req = req
         self.vmanager = vmanager
         self.tag = tag

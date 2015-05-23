@@ -45,7 +45,7 @@ class SimpleColorSelectorPaletteItem(Gtk.DrawingArea):
     """An item of the color selecctor palette"""
 
     def __init__(self, color=None):
-        Gtk.DrawingArea.__init__(self)
+        super().__init__()
         self.color = color
         self.selected = False
         self.add_events(Gdk.EventMask.BUTTON_PRESS_MASK)
@@ -133,7 +133,7 @@ class SimpleColorSelector(Gtk.Box):
      to define new colors."""
 
     def __init__(self, width=9, colors=None, custom_colors=None):
-        Gtk.Box.__init__(self, orientation=Gtk.Orientation.VERTICAL)
+        super().__init__(orientation=Gtk.Orientation.VERTICAL)
         self.width = width
         # widget model
         if colors is None:

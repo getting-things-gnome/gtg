@@ -33,7 +33,7 @@ class BiDict(object):
 
         @param pairs: optional. A list of pairs to add to the dictionary
         '''
-        super(BiDict, self).__init__()
+        super().__init__()
         self._first_to_second = {}
         self._second_to_first = {}
         for pair in pairs:

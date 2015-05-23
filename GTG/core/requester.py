@@ -39,7 +39,7 @@ class Requester(GObject.GObject):
 
     def __init__(self, datastore, global_conf):
         """Construct a L{Requester}."""
-        GObject.GObject.__init__(self)
+        super().__init__()
         self.ds = datastore
         self._config = global_conf
         self.__basetree = self.ds.get_tasks_tree()
