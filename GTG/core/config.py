@@ -29,6 +29,8 @@ from GTG.core.dirs import CONFIG_DIR
 from GTG.tools.logger import Log
 
 DEFAULTS = {
+    # TODO: Remove toolbar and quick_add options from configuration
+    # They won't be used in GTG 0.4
     'browser': {
         "bg_color_enable": True,
         "contents_preview_enable": False,
