@@ -91,7 +91,7 @@ class TaskBrowser(GObject.GObject):
         # Init non-GtkBuilder widgets
         self._init_ui_widget()
 
-        # Set the tooltip for the toolbar buttons
+        # Initialize tooltip for GtkEntry button
         self._init_toolbar_tooltips()
 
         # Initialize "About" dialog
@@ -137,23 +137,11 @@ class TaskBrowser(GObject.GObject):
         self.taskpopup = self.builder.get_object("task_context_menu")
         self.defertopopup = self.builder.get_object("defer_to_context_menu")
         self.ctaskpopup = self.builder.get_object("closed_task_context_menu")
-        self.editbutton = self.builder.get_object("edit_b")
-        self.edit_mi = self.builder.get_object("edit_mi")
-        self.donebutton = self.builder.get_object("done_b")
-        self.done_mi = self.builder.get_object("done_mi")
-        self.deletebutton = self.builder.get_object("delete_b")
-        self.delete_mi = self.builder.get_object("delete_mi")
-        self.newtask = self.builder.get_object("new_task_b")
-        self.newsubtask = self.builder.get_object("new_subtask_b")
-        self.new_subtask_mi = self.builder.get_object("new_subtask_mi")
-        self.dismissbutton = self.builder.get_object("dismiss_b")
-        self.dismiss_mi = self.builder.get_object("dismiss_mi")
         self.about = self.builder.get_object("about_dialog")
         self.main_pane = self.builder.get_object("main_pane")
         self.menu_view_workview = self.builder.get_object("view_workview")
         self.toggle_workview = self.builder.get_object("workview_toggle")
         self.quickadd_entry = self.builder.get_object("quickadd_field")
-        self.toolbar = self.builder.get_object("task_toolbar")
         self.quickadd_pane = self.builder.get_object("quickadd_pane")
         self.sidebar = self.builder.get_object("sidebar_vbox")
         self.sidebar_container = self.builder.get_object("sidebar-scroll")
@@ -212,20 +200,10 @@ class TaskBrowser(GObject.GObject):
 
     def _init_toolbar_tooltips(self):
         """
-        sets tooltips for widgets on toolbars
+        Sets tooltips for widgets which cannot be setup in .ui yet
         """
-        self.donebutton.set_tooltip_text(GnomeConfig.MARK_DONE_TOOLTIP)
-        self.editbutton.set_tooltip_text(GnomeConfig.EDIT_TOOLTIP)
-        self.dismissbutton.set_tooltip_text(GnomeConfig.MARK_DISMISS_TOOLTIP)
-        self.newtask.set_tooltip_text(GnomeConfig.NEW_TASK_TOOLTIP)
-        self.newsubtask.set_tooltip_text(GnomeConfig.NEW_SUBTASK_TOOLTIP)
-        self.toggle_workview.set_tooltip_text(
-            GnomeConfig.WORKVIEW_TOGGLE_TOOLTIP)
-        self.quickadd_entry.set_tooltip_text(
-            GnomeConfig.QUICKADD_ENTRY_TOOLTIP)
-        quickadd_icon_tooltip = GnomeConfig.QUICKADD_ICON_TOOLTIP
-        self.quickadd_entry.set_icon_tooltip_text(1,
-                                                  quickadd_icon_tooltip)
+        quick_add_icon_tooltip = GnomeConfig.QUICKADD_ICON_TOOLTIP
+        self.quickadd_entry.set_icon_tooltip_text(1, quick_add_icon_tooltip)
 
     def _init_about_dialog(self):
         """
@@ -338,6 +316,13 @@ class TaskBrowser(GObject.GObject):
             self.open_plugins,
             "on_edit_backends_activate":
             self.open_edit_backends,
+            # temporary connections to ensure functionality
+            "temporary_search":
+            self.temporary_search,
+            "temp_active_view":
+            self.temp_active_view,
+            "temp_workview":
+            self.temp_workview,
         }
         self.builder.connect_signals(SIGNAL_CONNECTIONS_DIC)
 
@@ -365,9 +350,7 @@ class TaskBrowser(GObject.GObject):
                           self.remove_backend_infobar)
         b_signals.connect(b_signals.INTERACTION_REQUESTED,
                           self.on_backend_needing_interaction)
-        # Selection changes
         self.selection = self.vtree_panes['active'].get_selection()
-        self.selection.connect("changed", self.on_task_cursor_changed)
 
     def _add_accelerator_for_widget(self, agr, name, accel):
         widget = self.builder.get_object(name)
@@ -382,19 +365,17 @@ class TaskBrowser(GObject.GObject):
         agr = Gtk.AccelGroup()
         self.builder.get_object("MainWindow").add_accel_group(agr)
 
-        self._add_accelerator_for_widget(agr, "view_sidebar", "F9")
-        self._add_accelerator_for_widget(agr, "file_quit", "<Control>q")
-        self._add_accelerator_for_widget(agr, "edit_undo", "<Control>z")
-        self._add_accelerator_for_widget(agr, "edit_redo", "<Control>y")
-        self._add_accelerator_for_widget(agr, "new_task_mi", "<Control>n")
-        self._add_accelerator_for_widget(agr, "new_subtask_mi",
+        self._add_accelerator_for_widget(agr, "tags", "F9")
+        # self._add_accelerator_for_widget(agr, "file_quit", "<Control>q")
+        self._add_accelerator_for_widget(agr, "new_task", "<Control>n")
+        self._add_accelerator_for_widget(agr, "tcm_add_subtask",
                                          "<Control><Shift>n")
-        self._add_accelerator_for_widget(agr, "edit_mi", "Return")
-        self._add_accelerator_for_widget(agr, "done_mi", "<Control>d")
-        self._add_accelerator_for_widget(agr, "dismiss_mi", "<Control>i")
+        self._add_accelerator_for_widget(agr, "tcm_edit", "<Control>e")
+        self._add_accelerator_for_widget(agr, "tcm_mark_as_done", "<Control>d")
+        self._add_accelerator_for_widget(agr, "tcm_dismiss", "<Control>i")
         self._add_accelerator_for_widget(agr, "tcm_modifytags", "<Control>t")
-        self._add_accelerator_for_widget(agr, "view_closed", "<Control>F9")
-        self._add_accelerator_for_widget(agr, "help_contents", "F1")
+        self._add_accelerator_for_widget(agr, "closed_tasks", "<Control>F9")
+        # self._add_accelerator_for_widget(agr, "help_contents", "F1")
 
         quickadd_field = self.builder.get_object("quickadd_field")
         key, mod = Gtk.accelerator_parse("<Control>l")
@@ -402,6 +383,15 @@ class TaskBrowser(GObject.GObject):
                                        Gtk.AccelFlags.VISIBLE)
 
 # HELPER FUNCTIONS ##########################################################
+    def temp_active_view(self, widget):
+        self.set_view('default')
+
+    def temp_workview(self, widget):
+        self.set_view('workview')
+
+    def temporary_search(self, widget):
+        self.quickadd_entry.grab_focus()
+
     def open_preferences(self, widget):
         self.vmanager.open_preferences(self.config)
 
@@ -462,10 +452,10 @@ class TaskBrowser(GObject.GObject):
 
         tag_pane = self.config.get("tag_pane")
         if not tag_pane:
-            self.builder.get_object("view_sidebar").set_active(False)
+            self.builder.get_object("tags").set_active(False)
             self.sidebar.hide()
         else:
-            self.builder.get_object("view_sidebar").set_active(True)
+            self.builder.get_object("tags").set_active(True)
             if not self.tagtreeview:
                 self.init_tags_sidebar()
             self.sidebar.show()
@@ -486,20 +476,6 @@ class TaskBrowser(GObject.GObject):
         on_bottom_pan_position = self.on_bottom_pane_position
         self.builder.get_object("vpaned1").connect('notify::position',
                                                    on_bottom_pan_position)
-
-        toolbar = self.config.get("toolbar")
-        if toolbar:
-            self.builder.get_object("view_toolbar").set_active(1)
-        else:
-            self.toolbar.hide()
-            self.builder.get_object("view_toolbar").set_active(False)
-
-        quickadd_pane = self.config.get("quick_add")
-        if quickadd_pane:
-            self.builder.get_object("view_quickadd").set_active(True)
-        else:
-            self.quickadd_pane.hide()
-            self.builder.get_object("view_quickadd").set_active(False)
 
         # Callbacks for sorting and restoring previous state
         model = self.vtree_panes['active'].get_model()
@@ -569,8 +545,6 @@ class TaskBrowser(GObject.GObject):
             workview = True
         else:
             raise Exception('Cannot set the view %s' % viewname)
-        self.menu_view_workview.set_active(workview)
-        self.toggle_workview.set_active(workview)
         # The config_set has to be after the toggle, else you will have a loop
         self.config.set('view', viewname)
         self.vtree_panes['active'].set_col_visible('startdate', not workview)
@@ -656,13 +630,13 @@ class TaskBrowser(GObject.GObject):
         self.do_toggle_workview()
 
     def on_sidebar_toggled(self, widget):
-        view_sidebar = self.builder.get_object("view_sidebar")
+        tags = self.builder.get_object("tags")
         if self.sidebar.get_property("visible"):
-            view_sidebar.set_active(False)
+            tags.set_active(False)
             self.config.set("tag_pane", False)
             self.sidebar.hide()
         else:
-            view_sidebar.set_active(True)
+            tags.set_active(True)
             if not self.tagtreeview:
                 self.init_tags_sidebar()
             self.sidebar.show()
@@ -696,10 +670,6 @@ class TaskBrowser(GObject.GObject):
             clsd_tsk_key_prs = self.on_closed_task_treeview_key_press_event
             self.vtree_panes['closed'].connect('key-press-event',
                                                clsd_tsk_key_prs)
-
-            self.closed_selection = self.vtree_panes['closed'].get_selection()
-            self.closed_selection.connect(
-                "changed", self.on_taskdone_cursor_changed)
             ctree.apply_filter(self.get_selected_tags()[0], refresh=True)
         if not self.closed_pane:
             self.closed_pane = Gtk.ScrolledWindow()
@@ -713,7 +683,6 @@ class TaskBrowser(GObject.GObject):
             return
 
         self.add_page_to_accessory_notebook("Closed", self.closed_pane)
-        self.builder.get_object("view_closed").set_active(True)
         self.config.set('closed_task_pane', True)
 
     def hide_closed_pane(self):
@@ -726,7 +695,6 @@ class TaskBrowser(GObject.GObject):
         #     self.vtree_panes['closed'].set_model(None)
         #     del self.vtree_panes['closed']
         self.remove_page_from_accessory_notebook(self.closed_pane)
-        self.builder.get_object("view_closed").set_active(False)
         self.config.set('closed_task_pane', False)
 
     def on_toolbar_toggled(self, widget):
@@ -1234,86 +1202,6 @@ class TaskBrowser(GObject.GObject):
                     self.quickadd_entry.set_text(tag.get_attribute("query"))
 
         self.applied_tags = new_taglist
-
-    def on_task_cursor_changed(self, selection):
-        """Updates the status of the selection in active tasks.
-        Unselects all closed tasks."""
-
-        if selection.count_selected_rows() > 0 and \
-                'closed' in self.vtree_panes:
-            self.vtree_panes['closed'].get_selection().unselect_all()
-            self.update_task_status(Task.STA_ACTIVE)
-        if self.get_selected_task() is None:
-            self.update_task_status(Task.STA_ACTIVE)
-
-    def on_taskdone_cursor_changed(self, selection):
-        """Updates the status of the selection in closed tasks.
-        Unselects all active tasks."""
-        if selection.count_selected_rows() > 0:
-            self.vtree_panes['active'].get_selection().unselect_all()
-            task_id = self.vtree_panes['closed'].get_selected_nodes()[0]
-            task = self.req.get_task(task_id)
-            self.update_task_status(task.get_status())
-        if self.get_selected_task() is None:
-            self.update_task_status(Task.STA_ACTIVE)
-
-    def update_task_status(self, status):
-        """Changes the way buttons for the selected task are displayed.
-        Called when selection changes within task browser."""
-
-        settings_done = {"label": GnomeConfig.MARK_DONE,
-                         "tooltip": GnomeConfig.MARK_DONE_TOOLTIP,
-                         "icon_name": Gtk.STOCK_APPLY}
-        settings_undone = {"label": GnomeConfig.MARK_UNDONE,
-                           "tooltip": GnomeConfig.MARK_UNDONE_TOOLTIP,
-                           "icon_name": Gtk.STOCK_REFRESH}
-        settings_dismiss = {"label": GnomeConfig.MARK_DISMISS,
-                            "tooltip": GnomeConfig.MARK_DISMISS_TOOLTIP,
-                            "icon_name": Gtk.STOCK_CLOSE}
-        settings_undismiss = {"label": GnomeConfig.MARK_UNDISMISS,
-                              "tooltip": GnomeConfig.MARK_UNDISMISS_TOOLTIP,
-                              "icon_name": Gtk.STOCK_REFRESH}
-
-        def update_button(button, settings):
-            button.set_stock_id(settings["icon_name"])
-            button.set_label(settings["label"])
-            button.set_tooltip_text(settings["tooltip"])
-
-        def update_menu_item(menu_item, settings):
-            image = Gtk.Image.new_from_icon_name(settings["icon_name"], 16)
-            image.set_pixel_size(16)
-            image.show()
-            menu_item.set_image(image)
-            menu_item.set_label(settings["label"])
-
-        if status == Task.STA_DONE:
-            update_button(self.donebutton, settings_undone)
-            update_menu_item(self.done_mi, settings_undone)
-        else:
-            update_button(self.donebutton, settings_done)
-            update_menu_item(self.done_mi, settings_done)
-
-        if status == Task.STA_DISMISSED:
-            update_button(self.dismissbutton, settings_undismiss)
-            update_menu_item(self.dismiss_mi, settings_undismiss)
-        else:
-            update_button(self.dismissbutton, settings_dismiss)
-            update_menu_item(self.dismiss_mi, settings_dismiss)
-
-        self.builder.get_object("ctcm_mark_as_not_done").set_sensitive(
-            status == Task.STA_DONE)
-        self.builder.get_object("ctcm_undismiss").set_sensitive(
-            status == Task.STA_DISMISSED)
-
-        enable = self.get_selected_task() is not None
-        self.edit_mi.set_sensitive(enable)
-        self.new_subtask_mi.set_sensitive(enable)
-        self.done_mi.set_sensitive(enable)
-        self.dismiss_mi.set_sensitive(enable)
-        self.delete_mi.set_sensitive(enable)
-        self.donebutton.set_sensitive(enable)
-        self.dismissbutton.set_sensitive(enable)
-        self.deletebutton.set_sensitive(enable)
 
     def on_close(self, widget=None):
         """Closing the window."""
