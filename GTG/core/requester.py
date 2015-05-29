@@ -58,14 +58,20 @@ class Requester(GObject.GObject):
     def get_basetree(self):
         return self.__basetree
 
-    # this method also update the viewcount of tags
     def apply_global_filter(self, tree, filtername):
+        """
+        This method also update the viewcount of tags
+        TODO(jakubbrindza): Evaluate if this is used somewhere before release
+        """
         tree.apply_filter(filtername)
         for t in self.get_all_tags():
             ta = self.get_tag(t)
             ta.apply_filter(filtername)
 
     def unapply_global_filter(self, tree, filtername):
+        """
+        TODO(jakubbrindza): Evaluate if this is used somewhere before release
+        """
         tree.unapply_filter(filtername)
         for t in self.get_all_tags():
             ta = self.get_tag(t)
