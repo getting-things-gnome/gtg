@@ -15,11 +15,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import os
 import sys
 
 from xml.dom.minidom import parse
-
-from GTG.core.dirs import PROJECTS_XMLFILE
+from xdg.BaseDirectory import xdg_data_home
 
 
 def anonymize(filename, outputfile):
@@ -83,9 +83,12 @@ def main():
         xmlfile = sys.argv[1]
     else:
         try:
-            dom = parse(PROJECTS_XMLFILE)
+            data_dir = os.path.join(xdg_data_home, "gtg")
+            project_filepath = os.path.join(data_dir, "projects.xml")
+            dom = parse(project_filepath)
             xmlproject = dom.getElementsByTagName("backend")[0]
             xmlfile = str(xmlproject.getAttribute("path"))
+            xmlfile = os.path.join(data_dir, xmlfile)
 
             print("Reading tasks from %s" % (xmlfile))
         except:
