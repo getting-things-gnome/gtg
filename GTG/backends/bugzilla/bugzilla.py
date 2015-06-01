@@ -25,7 +25,7 @@ from urllib.parse import urlparse
 
 from gi.repository import GObject
 
-from GTG import _
+from GTG.core.translations import _
 from GTG.tools.logger import Log
 
 from GTG.backends.bugzilla import exceptions

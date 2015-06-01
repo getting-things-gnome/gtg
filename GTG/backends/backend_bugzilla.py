@@ -22,7 +22,7 @@ Bugzilla backend allows user to add remote Bugzilla service to convert bug link
 to a normal task automatically.
 '''
 
-from GTG import _
+from GTG.core.translations import _
 from GTG.backends.bugzilla.bugzilla import sync_bug_info
 from GTG.backends.genericbackend import GenericBackend
 
