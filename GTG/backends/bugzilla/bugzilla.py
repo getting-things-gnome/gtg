@@ -71,7 +71,7 @@ class BugInformationSyncTask(threading.Thread):
         ''' Initialize task data, where task is the GTG task object. '''
         self.task = task
         self.backend = backend
-        super(BugInformationSyncTask, self).__init__(**kwargs)
+        super().__init__(**kwargs)
 
     def _collect_tags(self, bug):
         tags = []

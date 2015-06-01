@@ -33,4 +33,4 @@ class BugzillaServiceDisabled(Exception):
 
     def __init__(self, domain, *args, **kwargs):
         self.message = '%s is disabled.' % domain
-        super(BugzillaServiceDisabled, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
