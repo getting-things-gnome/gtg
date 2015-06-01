@@ -120,8 +120,8 @@ class BugInformationSyncTask(threading.Thread):
         Get synchronization information from task's title
 
         @param bug_url: the URL from task's title
-        @return: an object representing task information. None if the URL is not
-                 valid.
+        @return: an object representing task information. None if the URL is
+        not valid.
         '''
         if BUG_URL_PATTERN.match(bug_url) is None:
             return None

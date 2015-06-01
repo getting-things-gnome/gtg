@@ -1392,7 +1392,7 @@ class TaskBrowser(GObject.GObject):
     def is_shown(self):
         return self.browser_shown
 
-## BACKENDS RELATED METHODS ##################################################
+# BACKENDS RELATED METHODS ##################################################
     def on_backend_failed(self, sender, backend_id, error_code, data=None):
         """
         Signal callback.

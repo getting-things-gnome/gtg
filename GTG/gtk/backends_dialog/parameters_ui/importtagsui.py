@@ -20,7 +20,6 @@ from functools import reduce
 
 from gi.repository import Gtk
 
-from GTG.backends.genericbackend import GenericBackend
 from GTG.core.tag import ALLTASKS_TAG
 from GTG.gtk.backends_dialog.parameters_ui.ui_widget import ParameterUIWidget
 

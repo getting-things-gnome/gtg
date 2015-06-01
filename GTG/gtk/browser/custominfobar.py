@@ -29,7 +29,6 @@ from GTG.backends.bugzilla.exceptions import ERRNO_BUGZILLA_BUG_SYNC_FAIL
 from GTG.backends.bugzilla.exceptions import ERRNO_BUGZILLA_INVALID
 from GTG.backends.bugzilla.exceptions import ERRNO_BUGZILLA_NO_PERM
 from GTG.backends.bugzilla.exceptions import ERRNO_BUGZILLA_NOT_EXIST
-from GTG.backends.bugzilla.exceptions import ERRNO_BUGZILLA_UNKNOWN
 
 
 class CustomInfoBar(Gtk.InfoBar):
@@ -99,7 +98,7 @@ class CustomInfoBar(Gtk.InfoBar):
     def _show_message(self, message_type, message, buttons):
         '''
         Show message in the info bar
- 
+
         @param message_type: type of message, should be any of gtk.MESSAGE_*
         @param message: message to show
         @param buttons: tuple of 2-element tuples, each of which consist of

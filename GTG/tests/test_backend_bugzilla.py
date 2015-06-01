@@ -94,8 +94,7 @@ class TestBugzillaServiceFactory(unittest.TestCase):
         cls_bz_service = bz_services['bugs.freedesktop.org']
         sample_service = cls_bz_service('https', 'bugs.freedesktop.org')
 
-        service = create_bugzilla_service('https',
-                                                'bugs.freedesktop.org')
+        service = create_bugzilla_service('https', 'bugs.freedesktop.org')
         self.assertEqual(service.scheme, sample_service.scheme)
         self.assertEqual(service.netloc, sample_service.netloc)
 
