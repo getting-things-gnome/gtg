@@ -17,18 +17,19 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-from gi.repository import GObject, Gtk, Pango
-import xml.sax.saxutils as saxutils
 import locale
+import xml.sax.saxutils as saxutils
 
-from GTG import _
-from GTG.core import CoreConfig
-from GTG.core.task import Task
+from gi.repository import GObject, Gtk, Pango
+
 from GTG.core.search import parse_search_query, search_filter
-from GTG.gtk.browser.CellRendererTags import CellRendererTags
-from liblarch_gtk import TreeView
+from GTG.core.tag import SEARCH_TAG
+from GTG.core.task import Task
+from GTG.core.translations import _
 from GTG.gtk import colors
+from GTG.gtk.browser.CellRendererTags import CellRendererTags
 from GTG.tools.dates import Date
+from liblarch_gtk import TreeView
 
 
 class TreeviewFactory():
@@ -74,7 +75,7 @@ class TreeviewFactory():
     def task_tags_column(self, node):
         tags = node.get_tags()
 
-        search_parent = self.req.get_tag(CoreConfig.SEARCH_TAG)
+        search_parent = self.req.get_tag(SEARCH_TAG)
         for search_tag in search_parent.get_children():
             tag = self.req.get_tag(search_tag)
             match = search_filter(

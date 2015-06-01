@@ -14,4 +14,7 @@ gtg.prof
 tags
 __pycache__
 *~
-*.swp
+.*.sw*
+
+# src/ usually has development version of liblarch
+src/

@@ -19,8 +19,8 @@
 
 import os
 import pickle
-from xdg.BaseDirectory import xdg_config_home
 
+from GTG.core.dirs import plugin_configuration_dir
 from GTG.tools.logger import Log
 
 
@@ -225,30 +225,26 @@ class PluginAPI:
 
 # file saving/loading =======================================================
     def load_configuration_object(self, plugin_name, filename,
-                                  basedir=xdg_config_home,
                                   default_values=None):
         if default_values is not None:
             config = dict(default_values)
         else:
             config = dict()
 
-        dirname = os.path.join(basedir, 'gtg/plugins', plugin_name)
+        dirname = plugin_configuration_dir(plugin_name)
         path = os.path.join(dirname, filename)
-        if os.path.isdir(dirname):
-            if os.path.isfile(path):
-                try:
-                    with open(path, 'rb') as file:
-                        item = pickle.load(file)
-                        config.update(item)
-                except:
-                    pass
-        else:
-            os.makedirs(dirname)
+        try:
+            with open(path, 'rb') as file:
+                item = pickle.load(file)
+                config.update(item)
+        except:
+            pass
         return config
 
-    def save_configuration_object(self, plugin_name, filename, item,
-                                  basedir=xdg_config_home):
-        dirname = os.path.join(basedir, 'gtg/plugins', plugin_name)
+    def save_configuration_object(self, plugin_name, filename, item):
+        dirname = plugin_configuration_dir(plugin_name)
+        if not os.path.isdir(dirname):
+            os.makedirs(dirname)
         path = os.path.join(dirname, filename)
         with open(path, 'wb') as file:
             pickle.dump(item, file)

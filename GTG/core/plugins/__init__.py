@@ -21,7 +21,7 @@
 # This is the tool package. It contains some useful function and tool
 # that could be useful for any part of GTG.
 
-from GTG import _
+from GTG.core.translations import _
 
 
 class GnomeConfig:

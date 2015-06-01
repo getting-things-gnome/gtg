@@ -17,11 +17,12 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-from gi.repository import Gtk
 import threading
 
-from GTG import _
+from gi.repository import Gtk
+
 from GTG.backends.backendsignals import BackendSignals
+from GTG.core.translations import _
 from GTG.tools.networkmanager import is_connection_up
 
 from GTG.backends.bugzilla.exceptions import ERRNO_BUGZILLA_BUG_SYNC_FAIL

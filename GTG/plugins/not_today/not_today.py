@@ -15,8 +15,9 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from gi.repository import Gtk
+
+from GTG.core.translations import _
 from GTG.tools.dates import Date
-from GTG import _
 
 
 class notToday:

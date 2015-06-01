@@ -19,7 +19,7 @@
 
 from gi.repository import Gtk
 
-from GTG import _
+from GTG.core.translations import _
 from GTG.gtk.backends_dialog.parameters_ui.ui_widget import ParameterUIWidget
 
 __all__ = ('PasswordUI',)

@@ -27,11 +27,11 @@ import uuid
 import xml.dom.minidom
 import xml.sax.saxutils as saxutils
 
-from GTG import _
+from GTG.core.translations import _
 from GTG.tools.dates import Date
 from GTG.tools.logger import Log
-from liblarch import TreeNode
 from GTG.tools.tags import extract_tags_from_text
+from liblarch import TreeNode
 
 
 class Task(TreeNode):
@@ -358,14 +358,14 @@ class Task(TreeNode):
         return self.due_date
 
     def get_urgent_date(self):
-        """ Returns the most urgent due date among the tasks and its subtasks
         """
-        urg_date = self.due_date
-        for sub in self.get_subtasks():
-            sub_urg_date = sub.get_urgent_date()
-            if urg_date >= sub_urg_date:
-                urg_date = sub_urg_date
-        return urg_date
+        Returns the most urgent due date among the task and its active subtasks
+        """
+        urgent_date = self.get_due_date()
+        for subtask in self.get_subtasks():
+            if subtask.get_status() == self.STA_ACTIVE:
+                urgent_date = min(urgent_date, subtask.get_urgent_date())
+        return urgent_date
 
     def get_due_date_constraint(self):
         """ Returns the most urgent due date constraint, following

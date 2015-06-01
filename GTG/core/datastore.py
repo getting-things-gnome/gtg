@@ -21,25 +21,24 @@ Contains the Datastore object, which is the manager of all the active backends
 (both enabled and disabled ones)
 """
 
-TAG_XMLFILE = "tags.xml"
-TAG_XMLROOT = "tagstore"
-
+from collections import deque
 import threading
 import uuid
-import os.path
-from collections import deque
 
 from GTG.backends.backendsignals import BackendSignals
 from GTG.backends.genericbackend import GenericBackend
-from GTG.core import CoreConfig
+from GTG.core.config import CoreConfig
 from GTG.core import requester
+from GTG.core.dirs import PROJECTS_XMLFILE, TAGS_XMLFILE
 from GTG.core.search import parse_search_query, search_filter, InvalidQuery
-from GTG.core.tag import Tag
+from GTG.core.tag import Tag, SEARCH_TAG
 from GTG.core.task import Task
 from GTG.core.treefactory import TreeFactory
 from GTG.tools import cleanxml
 from GTG.tools.borg import Borg
 from GTG.tools.logger import Log
+
+TAG_XMLROOT = "tagstore"
 
 
 class DataStore(object):
@@ -60,7 +59,7 @@ class DataStore(object):
         self.treefactory = TreeFactory()
         self._tasks = self.treefactory.get_tasks_tree()
         self.requester = requester.Requester(self, global_conf)
-        self.tagfile = None
+        self.tagfile_loaded = False
         self._tagstore = self.treefactory.get_tags_tree(self.requester)
         self.load_tag_tree()
         self._backend_signals = BackendSignals()
@@ -144,7 +143,7 @@ class DataStore(object):
 
         tag = Tag(name, req=self.requester, attributes=init_attr)
         self._add_new_tag(name, tag, search_filter, parameters,
-                          parent_id=CoreConfig.SEARCH_TAG)
+                          parent_id=SEARCH_TAG)
         self.save_tagtree()
         return tag
 
@@ -204,8 +203,7 @@ class DataStore(object):
         """
         Loads the tag tree from a xml file
         """
-        tagfile = os.path.join(CoreConfig().get_data_dir(), TAG_XMLFILE)
-        doc, xmlstore = cleanxml.openxmlfile(tagfile, TAG_XMLROOT)
+        doc, xmlstore = cleanxml.openxmlfile(TAGS_XMLFILE, TAG_XMLROOT)
         for t in xmlstore.childNodes:
             tagname = t.getAttribute("name")
             parent = t.getAttribute("parent")
@@ -218,7 +216,7 @@ class DataStore(object):
                     at_val = t.getAttribute(at_name)
                     tag_attr[at_name] = at_val
 
-            if parent == CoreConfig.SEARCH_TAG:
+            if parent == SEARCH_TAG:
                 query = t.getAttribute("query")
                 tag = self.new_search_tag(tagname, query, tag_attr)
             else:
@@ -226,11 +224,11 @@ class DataStore(object):
                 if parent:
                     tag.set_parent(parent)
 
-        self.tagfile = tagfile
+        self.tagfile_loaded = True
 
     def save_tagtree(self):
         """ Saves the tag tree to an XML file """
-        if not self.tagfile:
+        if not self.tagfile_loaded:
             return
 
         doc, xmlroot = cleanxml.emptydoc(TAG_XMLROOT)
@@ -260,7 +258,7 @@ class DataStore(object):
             xmlroot.appendChild(t_xml)
             already_saved.append(tagname)
 
-        cleanxml.savexml(self.tagfile, doc, backup=True)
+        cleanxml.savexml(TAGS_XMLFILE, doc, backup=True)
 
     # Tasks functions #########################################################
     def get_all_tasks(self):
@@ -580,9 +578,7 @@ class DataStore(object):
                 t_xml.setAttribute(str(key), value)
             # Saving all the projects at close
             xmlconfig.appendChild(t_xml)
-        datadir = CoreConfig().get_data_dir()
-        datafile = os.path.join(datadir, CoreConfig.DATA_FILE)
-        cleanxml.savexml(datafile, doc, backup=True)
+        cleanxml.savexml(PROJECTS_XMLFILE, doc, backup=True)
         # Saving the tagstore
         self.save_tagtree()
 

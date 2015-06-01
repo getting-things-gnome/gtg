@@ -27,15 +27,16 @@ import time
 
 from gi.repository import Gtk, Gdk, Pango
 
-from GTG import _, ngettext
-from GTG.gtk.editor import GnomeConfig
-from GTG.gtk.editor.taskview import TaskView
-from GTG.core.plugins.engine import PluginEngine
 from GTG.core.plugins.api import PluginAPI
+from GTG.core.plugins.engine import PluginEngine
 from GTG.core.task import Task
-from GTG.tools.dates import Date
+from GTG.core.translations import _, ngettext
+from GTG.gtk.editor import GnomeConfig
 from GTG.gtk.editor.calendar import GTGCalendar
+from GTG.gtk.editor.taskview import TaskView
 from GTG.gtk.help import add_help_shortcut
+from GTG.tools.dates import Date
+from GTG.tools.logger import Log
 
 
 class TaskEditor(object):
@@ -44,19 +45,17 @@ class TaskEditor(object):
                  requester,
                  vmanager,
                  task,
-                 taskconfig=None,
                  thisisnew=False,
                  clipboard=None):
         '''
         req is the requester
         vmanager is the view manager
-        taskconfig is a ConfigParser to save infos about tasks
         thisisnew is True when a new task is created and opened
         '''
         self.req = requester
-        self.browser_config = self.req.get_config('browser')
         self.vmanager = vmanager
-        self.config = taskconfig
+        self.browser_config = self.req.get_config('browser')
+        self.config = self.req.get_task_config(task.get_id())
         self.time = None
         self.clipboard = clipboard
         self.builder = Gtk.Builder()
@@ -178,16 +177,7 @@ class TaskEditor(object):
         self.refresh_editor()
         self.textview.grab_focus()
 
-        # restoring size and position, spatial tasks
-        if self.config is not None:
-            tid = self.task.get_id()
-            if self.config.has_section(tid):
-                if self.config.has_option(tid, "position"):
-                    pos_x, pos_y = self.config.get(tid, "position")
-                    self.move(int(pos_x), int(pos_y))
-                if self.config.has_option(tid, "size"):
-                    width, height = self.config.get(tid, "size")
-                    self.window.resize(int(width), int(height))
+        self.init_dimensions()
 
         self.textview.set_editable(True)
         self.window.show()
@@ -235,6 +225,26 @@ class TaskEditor(object):
         key, modifier = Gtk.accelerator_parse('<Control>q')
         agr.connect(key, modifier, Gtk.AccelFlags.VISIBLE, self.quit)
 
+    def init_dimensions(self):
+        """ Restores position and size of task if possible """
+        position = self.config.get('position')
+        if position and len(position) == 2:
+            try:
+                self.window.move(int(position[0]), int(position[1]))
+            except ValueError:
+                Log.warning(
+                    'Invalid position configuration for task %s: %s',
+                    self.task.get_id(), position)
+
+        size = self.config.get('size')
+        if size and len(size) == 2:
+            try:
+                self.window.resize(int(size[0]), int(size[1]))
+            except ValueError:
+                Log.warning(
+                    'Invalid size configuration for task %s: %s',
+                    self.task.get_id(), size)
+
     # Can be called at any time to reflect the status of the Task
     # Refresh should never interfere with the TaskView.
     # If a title is passed as a parameter, it will become
@@ -258,24 +268,24 @@ class TaskEditor(object):
         if status == Task.STA_DISMISSED:
             self.donebutton.set_label(GnomeConfig.MARK_DONE)
             self.donebutton.set_tooltip_text(GnomeConfig.MARK_DONE_TOOLTIP)
-            self.donebutton.set_icon_name("gtg-task-done")
+            self.donebutton.set_stock_id(Gtk.STOCK_APPLY)
             self.dismissbutton.set_label(GnomeConfig.MARK_UNDISMISS)
             self.dismissbutton.set_tooltip_text(undismiss_tooltip)
-            self.dismissbutton.set_icon_name("gtg-task-undismiss")
+            self.dismissbutton.set_stock_id(Gtk.STOCK_REFRESH)
         elif status == Task.STA_DONE:
             self.donebutton.set_label(GnomeConfig.MARK_UNDONE)
             self.donebutton.set_tooltip_text(GnomeConfig.MARK_UNDONE_TOOLTIP)
-            self.donebutton.set_icon_name("gtg-task-undone")
+            self.donebutton.set_stock_id(Gtk.STOCK_REFRESH)
             self.dismissbutton.set_label(GnomeConfig.MARK_DISMISS)
             self.dismissbutton.set_tooltip_text(dismiss_tooltip)
-            self.dismissbutton.set_icon_name("gtg-task-dismiss")
+            self.dismissbutton.set_stock_id(Gtk.STOCK_CLOSE)
         else:
             self.donebutton.set_label(GnomeConfig.MARK_DONE)
             self.donebutton.set_tooltip_text(GnomeConfig.MARK_DONE_TOOLTIP)
-            self.donebutton.set_icon_name("gtg-task-done")
+            self.donebutton.set_stock_id(Gtk.STOCK_APPLY)
             self.dismissbutton.set_label(GnomeConfig.MARK_DISMISS)
             self.dismissbutton.set_tooltip_text(dismiss_tooltip)
-            self.dismissbutton.set_icon_name("gtg-task-dismiss")
+            self.dismissbutton.set_stock_id(Gtk.STOCK_CLOSE)
         self.donebutton.show()
         self.tasksidebar.show()
 
@@ -475,20 +485,20 @@ class TaskEditor(object):
     def dismiss(self, widget):
         stat = self.task.get_status()
         if stat == Task.STA_DISMISSED:
-            self.vmanager.ask_set_task_status(self.task, Task.STA_ACTIVE)
+            self.task.set_status(Task.STA_ACTIVE)
             self.refresh_editor()
         else:
-            self.vmanager.ask_set_task_status(self.task, Task.STA_DISMISSED)
+            self.task.set_status(Task.STA_DISMISSED)
             self.close_all_subtasks()
             self.close(None)
 
     def change_status(self, widget):
         stat = self.task.get_status()
         if stat == Task.STA_DONE:
-            self.vmanager.ask_set_task_status(self.task, Task.STA_ACTIVE)
+            self.task.set_status(Task.STA_ACTIVE)
             self.refresh_editor()
         else:
-            self.vmanager.ask_set_task_status(self.task, Task.STA_DONE)
+            self.task.set_status(Task.STA_DONE)
             self.close_all_subtasks()
             self.close(None)
 
@@ -565,25 +575,13 @@ class TaskEditor(object):
     def present(self):
         self.window.present()
 
-    def move(self, x, y):
-        try:
-            xx = int(x)
-            yy = int(y)
-            self.window.move(xx, yy)
-        except:
-            pass
-
     def get_position(self):
         return self.window.get_position()
 
     def on_move(self, widget, event):
-        # saving the position
-        if self.config is not None:
-            tid = self.task.get_id()
-            if not self.config.has_section(tid):
-                self.config.add_section(tid)
-            self.config.set(tid, "position", self.get_position())
-            self.config.set(tid, "size", self.window.get_size())
+        """ Save position and size of window """
+        self.config.set('position', self.window.get_position())
+        self.config.set('size', self.window.get_size())
 
     # We define dummy variable for when close is called from a callback
     def close(self, window=None, a=None, b=None, c=None):

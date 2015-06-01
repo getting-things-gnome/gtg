@@ -20,7 +20,7 @@
 
 from gi.repository import Gtk
 
-from GTG import _, ngettext
+from GTG.core.translations import _, ngettext
 from GTG.gtk import ViewConfig
 
 

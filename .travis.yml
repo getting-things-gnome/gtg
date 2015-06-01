@@ -11,8 +11,7 @@ virtualenv:
   system_site_packages: true
 
 install:
-  - pip install -e git+git://github.com/getting-things-gnome/liblarch.git#egg=liblarch
-  - pip install -r requirements.txt
+  - pip3 install -r requirements.txt
 
 script:
-  - ./run-tests
+  - make check

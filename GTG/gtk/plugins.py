@@ -21,10 +21,10 @@
 
 from gi.repository import Gtk, Pango
 
-from GTG import _
 from GTG import info
 from GTG.core.plugins import GnomeConfig
 from GTG.core.plugins.engine import PluginEngine
+from GTG.core.translations import _
 from GTG.gtk import ViewConfig
 from GTG.gtk import help
 
@@ -132,9 +132,9 @@ def plugin_markup(column, cell, store, iterator, self):
 class PluginsDialog:
     """ Dialog for Plugins configuration """
 
-    def __init__(self, config_obj):
-        self.config_obj = config_obj
-        self.config = self.config_obj.get_subconfig("plugins")
+    def __init__(self, requester):
+        self.req = requester
+        self.config = self.req.get_config("plugins")
         builder = Gtk.Builder()
         builder.add_from_file(ViewConfig.PLUGINS_UI_FILE)
 
@@ -272,8 +272,6 @@ class PluginsDialog:
         self.plugin_store.set_value(iterator, PLUGINS_COL_ENABLED,
                                     plugin.enabled)
         self._update_plugin_configure(plugin)
-
-        self.config_obj.save()
 
     def on_plugin_select(self, plugin_tree):
         """ Callback when user select/unselect a plugin

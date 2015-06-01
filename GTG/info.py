@@ -21,7 +21,7 @@
 
 Contains the information displayed in GTG's Credits."""
 
-from GTG import _
+from GTG.core.translations import _
 
 NAME = "Getting Things GNOME!"
 URL = "http://gtgnome.net"

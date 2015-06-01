@@ -9,46 +9,14 @@ You can run the unit tests for GTG with::
 
   make check
 
-If you are so inclined and have the right software installed, you can also run
-the tests with ``trial GTG``.
-
 You can also manually test your changes with debugging data with::
 
-  ./scripts/debug.sh
+  ./gtg.sh
 
-Using ``debug.sh`` will prevent GTG from messing with your real data. Instead,
+Using ``gtg.sh`` will prevent GTG from messing with your real data. Instead,
 the debug GTG will store data in ``./tmp/default/``.
 
-Unit tests live in ``GTG/tests/``, and are all named ``test_foo``. When you
-add a new test module, make sure it has a ``test_suite()`` method that returns
-the suite of all the tests in that module. Also make sure that the new module
-is imported in ``GTG.tests`` and returned from the ``test_suite()`` function
-there.
-
-For example, GTG/tests/test_newthing.py::
-
-  import unittest
-
-  class TestNewThing(unittest.TestCase):
-      # ...
-
-  def test_suite():
-      return unittest.TestLoader().loadTestsFromName(__name__)
-
-
-And GTG/tests/__init__.py::
-
-  import unittest
-
-  from GTG.tests import test_backends, test_newthing
-
-  def test_suite():
-      return unittest.TestSuite([
-          test_backends.test_suite(),
-          test_newthing.test_suite(),
-          ])
-
-When in doubt, copy from an existing test module!
+Unit tests live in ``tests/``.
 
 
 Coding style
@@ -56,29 +24,21 @@ Coding style
 
 In general, follow PEP 8 <http://www.python.org/dev/peps/pep-0008/>.
 
-Not all code in GTG currently follows PEP 8. If you are changing a section of
-code, please update it to follow PEP 8.
-
 You should also avoid adding any 'flakes', simple Python mistakes caught by
-Pyflakes <http://www.divmod.org/trac/wiki/DivmodPyflakes>.
+Pyflakes <https://pypi.python.org/pypi/pyflakes>.
 
-To check the cleanliness of your code, run::
+To check the complete cleanliness of your code, run::
 
-  make lint
+  $ make check
 
-The ``make`` will fail if Pyflakes emits any warnings. You can the Pyflakes
-checker separately using ``make pyflakes`` and the PEP 8 checker using ``make
-pep8``. If you wish to find all PEP 8 violations in a particular file, use::
-
-  ./scripts/pep8.py --repeat FILENAME
 
 
 Commenting-out Code
 -------------------
-Try to avoid leaving commented out code in the codebase.  Or at least,
-if some code must be left commented out, also include a comment
-or TODO or FIXME explaining why it was disabled.  If possible include a
-bug lp#.
+Try to avoid leaving commented out code in the codebase. 
+IT IS NOT A GOOD PRACTICE! 
+Or at least, if some code must be left commented out, also include a comment
+or TODO or FIXME explaining why it was disabled.  
 
 Some common reasons why one might create commented code are:
 
@@ -93,7 +53,7 @@ Obviously none of these are great situations to be in, but it happens.
 
 Ideally, commenting out a line of code should be a signal to yourself
 that one of these things has happened, and that you probably should ask
-for help before merging it to trunk, and it should stay in a branch for
+for help before merging it to master, and it should stay in a branch for
 now.
 
 But that may not always be possible.  So more practically, when
@@ -130,18 +90,18 @@ codebase by either commenting why it's disabled, or remove it.
 
 API Style
 ---------
-Whereever possible, prefer using tid/tagname instead of passing task/tag
+Whenever possible, prefer using task_id/tagname instead of passing task/tag
 objects directly.  In experimentation it's been found that passing and
 using the objects directly is very expensive.  Looking in a list of
 objects is *much* slower than looking in a list of Strings.
 
-If you create a method, try that that method take a tid/tagname as
-argument and return a tid/tagname. (of course, don't apply this
+If you create a method, try that that method take a task_id/tagname as
+argument and return a task_id/tagname. (of course, don't apply this
 blindly).
 
 As a rule of thumb, if you put objects in a list for whatever purpose,
 it should light a big warning sign ! It probably means than you have to
-use the tid/tagname instead.
+use the task_id/tagname instead.
 
 The req.get_task/get_tag methods are pretty cheap (access to a
 dictionary with Strings as keys) and, anyway, I discovered that a lot of
@@ -182,7 +142,7 @@ Submitting Patches
 ------------------
 
 For information about contributing code to GTG, see
-<http://live.gnome.org/gtg/contributing>.
+<http://gtg.readthedocs.org/en/latest/contributing.html>.
 
 
 Landing Branches
@@ -192,13 +152,10 @@ Landing Branches
 
   2. Run the tests, ``make check``.
 
-  3. Run ``make lint``, check that the number of PEP 8 warnings is lower than
-     trunk and that there are no new pyflakes warnings.
+  3. Launch GTG with debugging data, just in case, ``./gtg.sh``.
 
-  4. Launch GTG with debugging data, just in case, ``./scripts/debug.sh``.
+  4. Update ``CHANGELOG`` if it isn't already.
 
-  5. Update ``CHANGELOG`` if it isn't already.
+  5. Update ``AUTHORS`` if the patch author is not already in there.
 
-  6. Update ``AUTHORS`` if the patch author is not already in there.
-
-  7. Commit your changes and propose a merge request.
+  6. Commit your changes and propose a merge request.

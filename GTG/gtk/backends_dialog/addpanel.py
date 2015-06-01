@@ -17,12 +17,13 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
+from functools import reduce
+
 from gi.repository import Gtk
 
 from GTG.gtk.backends_dialog.backendscombo import BackendsCombo
 from GTG.backends import BackendFactory
-from GTG import _, ngettext
-from functools import reduce
+from GTG.core.translations import _, ngettext
 
 
 class AddPanel(Gtk.Box):

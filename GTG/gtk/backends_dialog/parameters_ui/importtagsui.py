@@ -16,12 +16,12 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-
 from functools import reduce
 
 from gi.repository import Gtk
 
 from GTG.backends.genericbackend import GenericBackend
+from GTG.core.tag import ALLTASKS_TAG
 from GTG.gtk.backends_dialog.parameters_ui.ui_widget import ParameterUIWidget
 
 __all__ = ('ImportTagsUI',)
@@ -97,7 +97,7 @@ class ImportTagsUI(ParameterUIWidget):
 
     def get_value(self):
         if self.all_tags_radio.get_active():
-            tags = [GenericBackend.ALLTASKS_TAG]
+            tags = [ALLTASKS_TAG]
         else:
             tags = self.tags_entry.get_text().split(",")
             # stripping spaces
@@ -116,7 +116,7 @@ class ImportTagsUI(ParameterUIWidget):
         the correct radio button
         '''
         tags_list = self.backend.get_parameters()[self.parameter_name]
-        has_all_tasks = GenericBackend.ALLTASKS_TAG in tags_list
+        has_all_tasks = ALLTASKS_TAG in tags_list
         self.all_tags_radio.set_active(has_all_tasks)
         self.some_tags_radio.set_active(not has_all_tasks)
         self._refresh_textbox_state()

@@ -17,10 +17,11 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-from gi.repository import Gtk
 import os.path
 
-from GTG import _
+from gi.repository import Gtk
+
+from GTG.core.translations import _
 from GTG.gtk.backends_dialog.parameters_ui.ui_widget import ParameterUIWidget
 
 __all__ = ('PathUI',)

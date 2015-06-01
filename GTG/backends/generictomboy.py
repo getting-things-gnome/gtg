@@ -34,6 +34,7 @@ from GTG.tools.borg import Borg
 from GTG.backends.genericbackend import GenericBackend
 from GTG.backends.backendsignals import BackendSignals
 from GTG.backends.syncengine import SyncEngine, SyncMeme
+from GTG.core.tag import ALLTASKS_TAG
 from GTG.tools.logger import Log
 from GTG.tools.watchdog import Watchdog
 from GTG.tools.interruptible import interruptible
@@ -52,8 +53,8 @@ class GenericTomboy(GenericBackend):
         """
         super(GenericTomboy, self).__init__(parameters)
         # loading the saved state of the synchronization, if any
-        self.data_path = os.path.join('backends/tomboy/',
-                                      "sync_engine-" + self.get_id())
+        self.data_path = os.path.join(
+            'tomboy', 'sync_engine-' + self.get_id())
         self.sync_engine = self._load_pickled_file(self.data_path,
                                                    SyncEngine())
         # we let some time pass before considering a tomboy task for importing,
@@ -355,7 +356,7 @@ class GenericTomboy(GenericBackend):
         @returns Boolean
         '''
         attached_tags = self.get_attached_tags()
-        if GenericBackend.ALLTASKS_TAG in attached_tags:
+        if ALLTASKS_TAG in attached_tags:
             return True
         with self.TomboyConnection(self, *self.BUS_ADDRESS) as tomboy:
             with self.DbusWatchdog(self):

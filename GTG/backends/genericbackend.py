@@ -22,18 +22,19 @@ This file contains the most generic representation of a backend,
 the GenericBackend class
 """
 
-import os
+from collections import deque
+from functools import reduce
 import errno
+import os
 import pickle
 import threading
-from collections import deque
 
 from GTG.backends.backendsignals import BackendSignals
-from GTG.tools.keyring import Keyring
-from GTG.core import CoreConfig
-from GTG.tools.logger import Log
+from GTG.core.tag import ALLTASKS_TAG
+from GTG.core.dirs import SYNC_DATA_DIR
 from GTG.tools.interruptible import _cancellation_point
-from functools import reduce
+from GTG.tools.keyring import Keyring
+from GTG.tools.logger import Log
 
 PICKLE_BACKUP_NBR = 2
 
@@ -213,10 +214,6 @@ class GenericBackend(object):
     KEY_ATTACHED_TAGS = "attached-tags"
     KEY_USER = "user"
     KEY_PID = "pid"
-    # NOTE: this has been moved here to avoid circular imports.
-    # It's the same as in the CoreConfig class, because it's the same thing
-    # conceptually. It doesn't matter it the naming diverges.
-    ALLTASKS_TAG = "gtg-tags-all"
 
     _static_parameters_obligatory = {
         KEY_DEFAULT_BACKEND: {
@@ -282,9 +279,9 @@ class GenericBackend(object):
         # default backends should get all the tasks
         if parameters[self.KEY_DEFAULT_BACKEND] or \
                 (self.KEY_ATTACHED_TAGS not in parameters and
-                 self._general_description[self.BACKEND_TYPE]
-                 == self.TYPE_READWRITE):
-            parameters[self.KEY_ATTACHED_TAGS] = [self.ALLTASKS_TAG]
+                 self._general_description[self.BACKEND_TYPE] ==
+                    self.TYPE_READWRITE):
+            parameters[self.KEY_ATTACHED_TAGS] = [ALLTASKS_TAG]
         self._parameters = parameters
         self._signal_manager = BackendSignals()
         self._is_initialized = False
@@ -311,7 +308,7 @@ class GenericBackend(object):
             # default backends should get all the tasks
             # NOTE: this shouldn't be needed, but it doesn't cost anything and
             #      it could avoid potential tasks losses.
-            return [self.ALLTASKS_TAG]
+            return [ALLTASKS_TAG]
         try:
             return self._parameters[self.KEY_ATTACHED_TAGS]
         except:
@@ -535,7 +532,7 @@ class GenericBackend(object):
         "backend_name/object_name"
         @param data: the object
         '''
-        path = os.path.join(CoreConfig().get_data_dir(), path)
+        path = os.path.join(SYNC_DATA_DIR, path)
         # mkdir -p
         try:
             os.makedirs(os.path.dirname(path))
@@ -573,7 +570,7 @@ class GenericBackend(object):
         corrupt
         @returns object: the needed object, or default_value
         '''
-        path = os.path.join(CoreConfig().get_data_dir(), path)
+        path = os.path.join(SYNC_DATA_DIR, path)
         if not os.path.exists(path):
             return default_value
 
@@ -613,7 +610,7 @@ class GenericBackend(object):
         @returns bool: True if the task should be synced
         '''
         attached_tags = self.get_attached_tags()
-        if GenericBackend.ALLTASKS_TAG in attached_tags:
+        if ALLTASKS_TAG in attached_tags:
             return True
         for tag in task.get_tags_name():
             if tag in attached_tags:

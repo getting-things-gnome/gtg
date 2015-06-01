@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
 # Getting Things GNOME! - a personal organizer for the GNOME desktop
-# Copyright (c) 2008-2013 - Lionel Dricot & Bertrand Rousseau
+# Copyright (c) 2008-2015 - Lionel Dricot & Bertrand Rousseau
 #
 # This program is free software: you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -19,11 +19,9 @@
 """
 Manager loads the prefs and launches the gtk main loop
 """
-
 from gi.repository import GObject, Gtk
 import configparser
 
-import GTG
 from GTG.gtk.delete_dialog import DeletionUI
 from GTG.gtk.browser.browser import TaskBrowser
 from GTG.gtk.editor.editor import TaskEditor
@@ -40,24 +38,13 @@ from GTG.gtk.browser.tag_editor import TagEditor
 from GTG.core.timer import Timer
 
 
-class Manager(GObject.GObject):
-
-    __object_signal__ = (GObject.SIGNAL_RUN_FIRST, GObject.TYPE_NONE,
-                         (GObject.TYPE_PYOBJECT,))
-    __object_string_signal__ = (GObject.SIGNAL_RUN_FIRST, GObject.TYPE_NONE,
-                                (GObject.TYPE_PYOBJECT, GObject.TYPE_STRING, ))
-    __gsignals__ = {'tasks-deleted': __object_signal__,
-                    'task-status-changed': __object_string_signal__,
-                    }
+class Manager(object):
 
     # init ##################################################################
     def __init__(self, req):
-        GObject.GObject.__init__(self)
         self.req = req
-        self.config_obj = self.req.get_global_config()
-        self.browser_config = self.config_obj.get_subconfig("browser")
-        self.plugins_config = self.config_obj.get_subconfig("plugins")
-        self.task_config = self.config_obj.get_taskconfig()
+        self.browser_config = self.req.get_config("browser")
+        self.plugins_config = self.req.get_config("plugins")
 
         # Editors
         # This is the list of tasks that are already opened in an editor
@@ -93,7 +80,7 @@ class Manager(GObject.GObject):
         # Preferences and Backends windows
         # Initialize  dialogs
         self.preferences = PreferencesDialog(self.req, self)
-        self.plugins = PluginsDialog(self.config_obj)
+        self.plugins = PluginsDialog(self.req)
         self.edit_backends_dialog = None
 
         # Tag Editor
@@ -104,7 +91,7 @@ class Manager(GObject.GObject):
         Log.debug("Manager initialization finished")
 
     def __init_plugin_engine(self):
-        self.pengine = PluginEngine(GTG.PLUGIN_DIR)
+        self.pengine = PluginEngine()
         # initializes the plugin api class
         self.plugin_api = PluginAPI(self.req, self)
         self.pengine.register_api(self.plugin_api)
@@ -189,7 +176,6 @@ class Manager(GObject.GObject):
                 requester=self.req,
                 vmanager=self,
                 task=t,
-                taskconfig=self.task_config,
                 thisisnew=thisisnew,
                 clipboard=self.clipboard)
             tv.present()
@@ -253,8 +239,6 @@ class Manager(GObject.GObject):
         for t in finallist:
             if t.get_id() in self.opened_task:
                 self.close_task(t.get_id())
-        GObject.idle_add(self.emit, "tasks-deleted", finallist)
-        return finallist
 
     def open_tag_editor(self, tag):
         if not self.tag_editor_dialog:
@@ -266,16 +250,6 @@ class Manager(GObject.GObject):
 
     def close_tag_editor(self):
         self.tag_editor_dialog.hide()
-
-# STATUS #####################################################################
-    def ask_set_task_status(self, task, new_status):
-        '''
-        Both browser and editor have to use this central method to set
-        task status. It also emits a signal with the task instance as first
-        and the new status as second parameter
-        '''
-        task.set_status(new_status)
-        GObject.idle_add(self.emit, "task-status-changed", task, new_status)
 
 # URIS #####################################################################
     def open_uri_list(self, unused, uri_list):
@@ -319,7 +293,6 @@ class Manager(GObject.GObject):
         # adds the plugin settings to the conf
         # FIXME: this code is replicated in the preference window.
         if len(self.pengine.plugins) > 0:
-            self.plugins_config.clear()
             self.plugins_config.set(
                 "disabled",
                 [p.module_name for p in self.pengine.get_plugins("disabled")],

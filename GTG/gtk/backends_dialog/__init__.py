@@ -28,17 +28,16 @@ This window is divided in two:
 
 from gi.repository import Gtk
 
-from GTG.gtk import ViewConfig
-from GTG.core import CoreConfig
-from GTG.gtk.backends_dialog.backendstree import BackendsTree
-from GTG.gtk.backends_dialog.addpanel import AddPanel
-from GTG.gtk.backends_dialog.configurepanel import ConfigurePanel
-from GTG.backends import BackendFactory
-from GTG.tools.logger import Log
-from GTG import _
-from GTG.backends.genericbackend import GenericBackend
 from GTG import info
+from GTG.backends import BackendFactory
+from GTG.backends.genericbackend import GenericBackend
+from GTG.core.translations import _
+from GTG.gtk import ViewConfig
 from GTG.gtk import help
+from GTG.gtk.backends_dialog.addpanel import AddPanel
+from GTG.gtk.backends_dialog.backendstree import BackendsTree
+from GTG.gtk.backends_dialog.configurepanel import ConfigurePanel
+from GTG.tools.logger import Log
 
 
 class BackendsDialog(object):
@@ -56,8 +55,6 @@ class BackendsDialog(object):
         @param req: a Requester object
         '''
         self.req = req
-        self.icon_theme = None
-        self._configure_icon_theme()
         # Declare subsequently loaded widget
         self.dialog = None
         self.treeview_window = None
@@ -121,11 +118,7 @@ class BackendsDialog(object):
         @returns GdkPixbuf: a pixbuf containing the wanted icon, or None
         (if the icon is not present)
         '''
-        icon_info = self.icon_theme.lookup_icon(name, height, 0)
-        if icon_info is None:
-            return None
-        else:
-            return Gtk.IconTheme.get_default().load_icon(name, height, 0)
+        return Gtk.IconTheme.get_default().load_icon(name, height, 0)
 
     def _show_panel(self, panel_name):
         '''
@@ -197,15 +190,6 @@ class BackendsDialog(object):
             'on_help_button_clicked': self.on_help,
         }
         builder.connect_signals(signals)
-
-    def _configure_icon_theme(self):
-        '''
-        Inform gtk on the location of the backends icons (which is in
-        the GTG directory tree, and not in the default location for icons
-        '''
-        self.icon_theme = Gtk.IconTheme.get_default()
-        for directory in CoreConfig().get_icons_directories():
-            self.icon_theme.prepend_search_path(directory)
 
     def _create_widgets_for_treeview(self):
         '''

@@ -27,8 +27,9 @@ like a color picker)
 """
 
 from gi.repository import Gtk
+
+from GTG.core.translations import _
 from GTG.gtk.colors import generate_tag_color, color_add, color_remove
-from GTG import _
 
 
 class TagContextMenu(Gtk.Menu):

@@ -1,6 +1,7 @@
+# -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
 # Getting Things GNOME! - a personal organizer for the GNOME desktop
-# Copyright (c) 2008-2013 - Lionel Dricot & Bertrand Rousseau
+# Copyright (c) 2008-2015 - Lionel Dricot & Bertrand Rousseau
 #
 # This program is free software: you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -15,34 +16,26 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
+""" Initializes support for translations """
 
-PEP8=pep8
-PYFLAKES=pyflakes
+import locale
+import gettext
 
-check: tests pep8 pyflakes
+# Fallback to LANG C if unsupported locale
+try:
+    locale.setlocale(locale.LC_ALL, '')
+except:
+    locale.setlocale(locale.LC_ALL, 'C')
 
-install:
-	pip3 install -r requirements.txt
+GETTEXT_DOMAIN = 'gtg'
+LOCALE_PATH = gettext.bindtextdomain(GETTEXT_DOMAIN)
 
-# Run all of the tests.
-tests:
-	./run-tests
+gettext.bindtextdomain(GETTEXT_DOMAIN, LOCALE_PATH)
+locale.bindtextdomain(GETTEXT_DOMAIN, LOCALE_PATH)
+gettext.textdomain(GETTEXT_DOMAIN)
+locale.textdomain(GETTEXT_DOMAIN)
 
-# Remove all temporary files
-clean:
-	rm -rf tmp
-	find -type f -name '*~' -or -name '.*.sw*' -print | xargs rm -f
-	find -type d -name '__pycache__' -print | xargs rm -rf
+translation = gettext.translation(GETTEXT_DOMAIN, LOCALE_PATH, fallback=True)
 
-# Check for common & easily catchable Python mistakes.
-pyflakes:
-	$(PYFLAKES) GTG tests scripts run-tests setup.py
-
-# Check for coding standard violations.
-pep8:
-	$(PEP8) --statistics --count GTG tests scripts run-tests setup.py
-
-# Check for coding standard violations & flakes.
-lint: pyflakes pep8
-
-.PHONY: install tests check lint pyflakes pep8 clean
+_ = translation.gettext
+ngettext = translation.ngettext
