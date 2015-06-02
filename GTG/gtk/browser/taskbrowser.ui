@@ -37,22 +37,6 @@
             <property name="is_focus">False</property>
             <property name="spacing">1</property>
             <child>
-              <object class="GtkButton" id="settings">
-                <property name="visible">True</property>
-                <property name="label">Settings</property>
-                <property name="sensitive">True</property>
-                <property name="tooltip_text" translatable="yes">Settings/Preferences</property>
-                <signal handler="on_preferences_activate" name="clicked" swapped="no"/>
-                <property name="valign">center</property>
-              </object>
-              <style>
-                <class name="text-button"/>
-              </style>
-              <packing>
-                <property name="pack_type">start</property>
-              </packing>
-            </child>
-            <child>
               <object class="GtkToggleButton" id="tags">
                 <property name="visible">True</property>
                 <property name="label">Tags</property>
@@ -63,6 +47,28 @@
               </object>
               <style>
                 <class name="text-button"/>
+              </style>
+              <packing>
+                <property name="pack_type">start</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="settings">
+                <property name="visible">True</property>
+                <property name="sensitive">True</property>
+                <property name="tooltip_text" translatable="yes">Preferences</property>
+                <signal handler="on_preferences_activate" name="clicked" swapped="no"/>
+                <property name="valign">center</property>
+                <child>
+                  <object class="GtkImage" id="settings_icon">
+                    <property name="visible">True</property>
+                    <property name="icon-name">preferences-system-symbolic</property>
+                    <property name="icon-size">1</property>
+                  </object>
+                </child>
+              </object>
+              <style>
+                <class name="image-button"/>
               </style>
               <packing>
                 <property name="pack_type">start</property>
