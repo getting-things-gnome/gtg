@@ -52,6 +52,8 @@ USER_PLUGINS_DIR = os.path.join(CONFIG_DIR, 'plugins')
 if os.path.exists(USER_PLUGINS_DIR):
     PLUGIN_DIRS.append(USER_PLUGINS_DIR)
 
+UI_DIR = os.path.join(local_rootdir, 'GTG', 'gtk', 'ui')
+
 
 def plugin_configuration_dir(plugin_name):
     """ Returns the directory for plugin configuration. """

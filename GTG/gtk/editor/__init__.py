@@ -21,27 +21,10 @@ The task editing GUI
 """
 import os
 
-from GTG.core.translations import _
-
 
 class GnomeConfig(object):
     current_rep = os.path.dirname(os.path.abspath(__file__))
-    EDITOR_UI_FILE = os.path.join(current_rep, "taskeditor.ui")
     CALENDAR_UI_FILE = os.path.join(current_rep, "calendar.ui")
-
-    MARK_DONE = _("Mark as Done")
-    MARK_UNDONE = _("Mark as not Done")
-    MARK_DISMISS = _("Dismiss")
-    MARK_UNDISMISS = _("Undismiss")
-
-    MARK_DONE_TOOLTIP = _("Mark this task as done")
-    MARK_UNDONE_TOOLTIP = _("Mark this task as to be done")
-    MARK_DISMISS_TOOLTIP = _("Mark this task as not to be done anymore")
-    MARK_UNDISMISS_TOOLTIP = _("Mark this task as to be done")
-    DELETE_TOOLTIP = _("Permanently remove this task")
-    SUBTASK_TOOLTIP = _("Insert a subtask in this task")
-    TAG_TOOLTIP = _("Insert a tag in this task")
-    OPEN_PARENT_TOOLTIP = _("Open parent task")
 
     # Number of second between to save in the task editor
     SAVETIME = 7
