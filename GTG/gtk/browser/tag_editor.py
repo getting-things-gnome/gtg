@@ -80,10 +80,7 @@ class TagIconSelector(Gtk.Window):
         scld_win.set_size_request(*SIZE_REQUEST)
         scld_win.add(self.symbol_iv)
         # icon remove button
-        img = Gtk.Image()
-        img.set_from_stock(Gtk.STOCK_REMOVE, Gtk.IconSize.BUTTON)
         self.remove_bt = Gtk.Button()
-        self.remove_bt.set_image(img)
         self.remove_bt.set_label(_("Remove selected icon"))
         vbox.pack_start(self.remove_bt, False, False, 0)
         # set the callbacks
@@ -317,8 +314,8 @@ class TagEditor(Gtk.Window):
         self.tn_cb.set_active(True)
         # Name entry
         self.tn_entry.set_text(_("Enter tag name here"))
-        self.tn_entry.set_icon_from_stock(Gtk.EntryIconPosition.SECONDARY,
-                                          None)
+        self.tn_entry.set_icon_from_icon_name(Gtk.EntryIconPosition.SECONDARY,
+                                              None)
         # Color selection
         # FIXME
         self.tc_cc_colsel.unselect_color()
@@ -440,10 +437,10 @@ class TagEditor(Gtk.Window):
         self.tn_entry_last_recorded_value = self.tn_entry.get_text()
         # check validity
         if self.tn_entry_last_recorded_value.strip() == "":
-            self.tn_entry.set_icon_from_stock(Gtk.EntryIconPosition.SECONDARY,
-                                              Gtk.STOCK_DIALOG_ERROR)
+            self.tn_entry.set_icon_from_icon_name(
+                Gtk.EntryIconPosition.SECONDARY, Gtk.STOCK_DIALOG_ERROR)
         else:
-            self.tn_entry.set_icon_from_stock(
+            self.tn_entry.set_icon_from_icon_name(
                 Gtk.EntryIconPosition.SECONDARY, None)
         # filter out change requests to reduce commit overhead
         if self.tn_entry_watch_id is None:

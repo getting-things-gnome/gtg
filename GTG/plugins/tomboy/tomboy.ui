@@ -40,7 +40,6 @@
                 <property name="can_focus">True</property>
                 <property name="can_default">True</property>
                 <property name="receives_default">False</property>
-                <property name="use_stock">True</property>
                 <signal name="clicked" handler="on_btn_cancel_clicked"/>
               </object>
               <packing>
@@ -56,7 +55,6 @@
                 <property name="can_focus">True</property>
                 <property name="can_default">True</property>
                 <property name="receives_default">False</property>
-                <property name="use_stock">True</property>
                 <signal name="clicked" handler="on_btn_add_clicked"/>
               </object>
               <packing>
