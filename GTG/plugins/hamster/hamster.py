@@ -305,13 +305,15 @@ class HamsterPlugin(object):
 
                 dateLabel = Gtk.Label(label=a)
                 dateLabel.set_use_markup(True)
-                dateLabel.set_alignment(xalign=0.0, yalign=0.5)
+                dateLabel.set_alignment(halign=Gtk.Align.START,
+                                        valign=Gtk.Align.CENTER)
                 dateLabel.set_size_request(200, -1)
                 w.attach(dateLabel, 0, offset, 1, 1)
 
                 durLabel = Gtk.Label(label=b)
                 durLabel.set_use_markup(True)
-                durLabel.set_alignment(xalign=0.0, yalign=0.5)
+                durLabel.set_alignment(halign=Gtk.Align.START,
+                                       valign=Gtk.Align.CENTER)
                 w.attach(durLabel, 1, offset, 1, 1)
 
             active_id = self.get_active_id()

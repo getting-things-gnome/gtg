@@ -305,7 +305,7 @@ class TreeviewFactory(object):
         render_text = Gtk.CellRendererText()
         render_text.set_property('xpad', 3)
         render_text.set_property('ypad', 3)
-        render_text.set_property('xalign', 1.0)
+        render_text.set_property('xalign', 1)
         col['renderer'] = ['markup', render_text]
         col['value'] = [str, self.get_tag_count]
         col['expandable'] = False

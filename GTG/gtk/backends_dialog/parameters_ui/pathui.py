@@ -59,7 +59,8 @@ class PathUI(Gtk.Box):
         self.textbox.set_text(self.backend.get_parameters()['path'])
         self.textbox.connect('changed', self.on_path_modified)
         align.add(self.textbox)
-        self.button = Gtk.Button(stock=Gtk.STOCK_EDIT)
+        self.button = Gtk.Button()
+        self.button.set_label("Edit")
         self.button.connect('clicked', self.on_button_clicked)
         self.pack_start(self.button, False, True, 0)
 

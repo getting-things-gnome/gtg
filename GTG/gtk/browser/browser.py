@@ -492,15 +492,15 @@ class TaskBrowser(GObject.GObject):
             self.sidebar.show()
 
         sidebar_width = self.config.get("sidebar_width")
-        self.builder.get_object("hpaned1").set_position(sidebar_width)
-        self.builder.get_object("hpaned1").connect('notify::position',
-                                                   self.on_sidebar_width)
+        self.builder.get_object("main_hpanes").set_position(sidebar_width)
+        self.builder.get_object("main_hpanes").connect('notify::position',
+                                                       self.on_sidebar_width)
 
         botpos = self.config.get("bottom_pane_position")
-        self.builder.get_object("vpaned1").set_position(botpos)
+        self.builder.get_object("main_vpanes").set_position(botpos)
         on_bottom_pan_position = self.on_bottom_pane_position
-        self.builder.get_object("vpaned1").connect('notify::position',
-                                                   on_bottom_pan_position)
+        self.builder.get_object("main_vpanes").connect('notify::position',
+                                                       on_bottom_pan_position)
 
         # Callbacks for sorting and restoring previous state
         model = self.vtree_panes['active'].get_model()
