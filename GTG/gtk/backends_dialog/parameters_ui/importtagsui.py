@@ -49,10 +49,8 @@ class ImportTagsUI(ParameterUIWidget):
         self.title = title
         self.anybox_text = anybox_text
         self.somebox_text = somebox_text
-        super(ImportTagsUI, self).__init__(
-            req, backend, width, parameter_name, gtk_kwargs={
-                'orientation': Gtk.Orientation.VERTICAL
-            })
+        super().__init__(req, backend, width, parameter_name,
+                         orientation=Gtk.Orientation.VERTICAL)
         self._refresh_tags()
 
     def _populate_gtk(self, width):

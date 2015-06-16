@@ -17,20 +17,18 @@
 import re
 import threading
 import socket
-
-from xmlrpc.client import Fault as XmlrpcFault
+import urllib
 
 from collections import namedtuple
-from urllib.parse import urlparse
+from xmlrpc.client import Fault as XmlrpcFault
 
 from gi.repository import GObject
-
-from GTG.core.translations import _
-from GTG.tools.logger import Log
 
 from GTG.backends.bugzilla import exceptions
 from GTG.backends.bugzilla.notification import send_notification
 from GTG.backends.bugzilla.services import create_bugzilla_service
+from GTG.core.translations import _
+from GTG.tools.logger import Log
 
 __all__ = ('BugInformationSyncTask',)
 
@@ -53,9 +51,8 @@ def parse_bug_url(url):
     @return: a tuple containing scheme, hostname, and a list of key-value
              queries
     '''
-    r = urlparse(url)
-    queries = dict([item.split('=') for item in r.query.split('&')])
-    return r.scheme, r.netloc, queries
+    r = urllib.parse.urlparse(url)
+    return r.scheme, r.netloc, urllib.parse.parse_qs(r.query)
 
 
 def convert_to_list(value):
@@ -127,6 +124,8 @@ class BugInformationSyncTask(threading.Thread):
             return None
         scheme, netloc, queries = parse_bug_url(bug_url)
         bug_id = queries.get('id', None)
+        if bug_id is not None:
+            bug_id = bug_id[0]
         return BugSyncTaskInfo(scheme=scheme,
                                net_location=netloc,
                                bug_id=bug_id)
@@ -138,13 +137,15 @@ class BugInformationSyncTask(threading.Thread):
             return
 
         try:
-            bugzillaService = create_bugzilla_service(
-                task_info.scheme, task_info.net_location)
-        except (exceptions.BugzillaServiceNotExist,
-                exceptions.BugzillaServiceDisabled):
-            # Stop quietly when bugzilla cannot be found. Currently, I don't
-            # assume that user enters a wrong hostname or just an unkown
-            # bugzilla service.
+            bugzillaService = create_bugzilla_service(task_info.scheme,
+                                                      task_info.net_location)
+        except exceptions.BugzillaServiceNotExist:
+            Log.warning('GTG does not support this bugzilla service yet.'
+                        ' {0}'.format(task_info.net_location))
+            return
+        except exceptions.BugzillaServiceDisabled:
+            Log.warning('Bugzilla service {0} is disabled now.'.format(
+                task_info.net_location))
             return
 
         try:

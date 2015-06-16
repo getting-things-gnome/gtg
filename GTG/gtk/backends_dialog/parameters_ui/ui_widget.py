@@ -25,8 +25,7 @@ __all__ = ('ParameterUIWidget',)
 class ParameterUIWidget(Gtk.Box):
     '''Base class for definition of possible paramter UI'''
 
-    def __init__(self, req, backend, width,
-                 parameter_name, gtk_kwargs={}):
+    def __init__(self, req, backend, width, parameter_name, **gtk_kwargs):
         super().__init__(**gtk_kwargs)
         self.req = req
         self.backend = backend
