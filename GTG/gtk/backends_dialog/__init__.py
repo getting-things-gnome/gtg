@@ -210,6 +210,7 @@ class BackendsDialog(object):
 ########################################
 # EVENT HANDLING #######################
 ########################################
+    @classmethod
     def on_help(cls, widget):
         """ Open help for syncronization services """
         help.show_help("sync")

@@ -24,7 +24,7 @@ try:
 except:
     pass
 
-from GTG.core.tools import ICONS_DIR
+from GTG.core.dirs import ICONS_DIR
 from GTG.core.translations import _
 from GTG.tools.borg import Borg
 from GTG.tools.dates import Date
