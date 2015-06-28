@@ -32,6 +32,8 @@ from GTG.tools.dates import Date
 from liblarch_gtk import TreeView
 
 
+from datetime import datetime
+
 class TreeviewFactory():
 
     def __init__(self, requester, config):
@@ -183,6 +185,14 @@ class TreeviewFactory():
             elif para == 'added':
                 t1 = task1.get_added_date()
                 t2 = task2.get_added_date()
+
+                # Convert both times to datetimes (accurate comparison)
+                if isinstance(t1, Date):
+                    d = t1.date()
+                    t1 = datetime(year=d.year, month=d.month, day=d.day)
+                if isinstance(t2, Date):
+                    d = t2.date()
+                    t2 = datetime(year=d.year, month=d.month, day=d.day)
             else:
                 raise ValueError(
                     'invalid date comparison parameter: %s') % para
