@@ -55,6 +55,10 @@ class Task(TreeNode):
         self.title = _("My new task")
         # available status are: Active - Done - Dismiss - Note
         self.status = self.STA_ACTIVE
+        self.added_date = Date.no_date()
+        if newtask:
+            self.added_date = datetime.now()
+
         self.closed_date = Date.no_date()
         self.due_date = Date.no_date()
         self.start_date = Date.no_date()
@@ -70,6 +74,18 @@ class Task(TreeNode):
 #            self.req._task_loaded(self.tid)
         self.attributes = {}
         self._modified_update()
+
+    def get_added_date(self):
+        return self.added_date
+
+    def get_added_date_string(self):
+        return self.added_date.strftime("%Y-%m-%dT%H:%M:%S")
+
+    def get_added_date_simple(self):
+        return self.added_date.strftime("%Y/%m/%d") if self.added_date else ""
+
+    def set_added_date(self, date):
+        self.added_date = date
 
     def is_loaded(self):
         return self.loaded
@@ -783,5 +799,6 @@ class Task(TreeNode):
         s = s + "Title:  " + self.title + "\n"
         s = s + "Id:     " + self.tid + "\n"
         s = s + "Status: " + self.status + "\n"
-        s = s + "Tags:   " + str(self.tags)
+        s = s + "Tags:   " + str(self.tags) + "\n"
+        s = s + "Added date: " + str(self.added_date)
         return s
