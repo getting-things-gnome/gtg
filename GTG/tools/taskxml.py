@@ -43,6 +43,7 @@ def read_node(xmlnode, name):
 
 # Take an empty task, an XML node and return a Task.
 
+# FIXME: This should use reflection to figure out the fields
 def task_from_xml(task, xmlnode):
     # print "********************************"
     # print xmlnode.toprettyxml()
@@ -54,6 +55,7 @@ def task_from_xml(task, xmlnode):
     donedate = Date.parse(read_node(xmlnode, "donedate"))
     task.set_status(status, donedate=donedate)
 
+
     duedate = Date(read_node(xmlnode, "duedate"))
     task.set_due_date(duedate)
 
@@ -64,6 +66,11 @@ def task_from_xml(task, xmlnode):
     if modified != "":
         modified = datetime.strptime(modified, "%Y-%m-%dT%H:%M:%S")
         task.set_modified(modified)
+
+    added = read_node(xmlnode, "addeddate")
+    if added:
+        added = datetime.strptime(added, "%Y-%m-%dT%H:%M:%S")
+        task.set_added_date(added)
 
     tags = xmlnode.getAttribute("tags").replace(' ', '')
     tags = (tag for tag in tags.split(',') if tag.strip() != "")
@@ -120,6 +127,7 @@ def task_to_xml(doc, task):
         tags_str = tags_str + saxutils.escape(str(tag)) + ","
     t_xml.setAttribute("tags", tags_str[:-1])
     cleanxml.addTextNode(doc, t_xml, "title", task.get_title())
+    cleanxml.addTextNode(doc, t_xml, "addeddate", task.get_added_date_string())
     cleanxml.addTextNode(doc, t_xml, "duedate", task.get_due_date().xml_str())
     cleanxml.addTextNode(doc, t_xml, "modified", task.get_modified_string())
     cleanxml.addTextNode(doc, t_xml, "startdate",
