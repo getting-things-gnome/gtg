@@ -55,7 +55,6 @@ def task_from_xml(task, xmlnode):
     donedate = Date.parse(read_node(xmlnode, "donedate"))
     task.set_status(status, donedate=donedate)
 
-
     duedate = Date(read_node(xmlnode, "duedate"))
     task.set_due_date(duedate)
 
