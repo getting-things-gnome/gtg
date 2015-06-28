@@ -126,6 +126,9 @@ class TreeviewFactory(object):
     def task_sdate_column(self, node):
         return node.get_start_date().to_readable_string()
 
+    def task_adate_column(self, node):
+        return node.get_added_date_simple()
+
     def task_duedate_column(self, node):
         # We show the most constraining due date for task with no due dates.
         if node.get_due_date() == Date.no_date():
@@ -139,6 +142,10 @@ class TreeviewFactory(object):
 
     def start_date_sorting(self, task1, task2, order):
         sort = self.__date_comp(task1, task2, 'start', order)
+        return sort
+
+    def added_date_sorting(self, task1, task2, order):
+        sort = self.__date_comp(task1, task2, 'added', order)
         return sort
 
     def due_date_sorting(self, task1, task2, order):
@@ -173,6 +180,9 @@ class TreeviewFactory(object):
             elif para == 'closed':
                 t1 = task1.get_closed_date()
                 t2 = task2.get_closed_date()
+            elif para == 'added':
+                t1 = task1.get_added_date()
+                t2 = task2.get_added_date()
             else:
                 raise ValueError(
                     'invalid date comparison parameter: %s') % para
@@ -318,6 +328,17 @@ class TreeviewFactory(object):
     def active_tasks_treeview(self, tree):
         # Build the title/label/tags columns
         desc = self.common_desc_for_tasks(tree, "Tasks")
+
+        # "startdate" column
+        col_name = 'Added'
+        col = {}
+        col['title'] = _("Added date")
+        col['expandable'] = False
+        col['resizable'] = True
+        col['value'] = [str, self.task_adate_column]
+        col['order'] = 3
+        col['sorting_func'] = self.added_date_sorting
+        desc[col_name] = col
 
         # "startdate" column
         col_name = 'startdate'

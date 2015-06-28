@@ -30,6 +30,7 @@ class TaskStr(object):
         self.text = str(task.get_text())
         self.status = task.get_status()
         self.modified = str(task.get_modified_string())
+        self.added_date = str(task.get_added_date())
         self.due_date = str(task.get_due_date())
         self.closed_date = str(task.get_closed_date())
         self.start_date = str(task.get_start_date())
