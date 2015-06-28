@@ -18,6 +18,7 @@
 # -----------------------------------------------------------------------------
 
 import locale
+from datetime import datetime
 import xml.sax.saxutils as saxutils
 
 from gi.repository import GObject, Gtk, Pango
@@ -31,8 +32,6 @@ from GTG.gtk.browser.CellRendererTags import CellRendererTags
 from GTG.tools.dates import Date
 from liblarch_gtk import TreeView
 
-
-from datetime import datetime
 
 class TreeviewFactory():
 
