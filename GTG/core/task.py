@@ -794,11 +794,9 @@ class Task(TreeNode):
         return toreturn
 
     def __str__(self):
-        s = ""
-        s = s + "Task Object\n"
-        s = s + "Title:  " + self.title + "\n"
-        s = s + "Id:     " + self.tid + "\n"
-        s = s + "Status: " + self.status + "\n"
-        s = s + "Tags:   " + str(self.tags) + "\n"
-        s = s + "Added date: " + str(self.added_date)
-        return s
+        return '<Task title="%s" id="%s" status="%s" tags="%s" added="%s">' % (
+                self.title,
+                self.tid,
+                self.status,
+                str(self.tags),
+                str(self.added_date))
