@@ -25,7 +25,7 @@ import configparser
 from GTG.gtk.delete_dialog import DeletionUI
 from GTG.gtk.browser.browser import TaskBrowser
 from GTG.gtk.editor.editor import TaskEditor
-from GTG.gtk.preferences import PreferencesDialog
+from GTG.gtk.preferences import Preferences
 from GTG.gtk.plugins import PluginsDialog
 from GTG.gtk.dbuswrapper import DBusTaskWrapper
 from GTG.tools import clipboard
@@ -79,7 +79,7 @@ class Manager(object):
 
         # Preferences and Backends windows
         # Initialize  dialogs
-        self.preferences = PreferencesDialog(self.req, self)
+        self.preferences = Preferences(self.req, self)
         self.plugins = PluginsDialog(self.req)
         self.edit_backends_dialog = None
 

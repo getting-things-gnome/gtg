@@ -1,0 +1,391 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <object class="GtkScrolledWindow" id="general_pref_window">
+    <property name="min-content-height">470</property>
+    <property name="hscrollbar-policy">never</property>
+    <property name="visible">True</property>
+    <child>
+      <object class="GtkBox">
+        <property name="visible">True</property>
+        <property name="orientation">vertical</property>
+        <child>
+          <object class="GtkLabel" id="system_label">
+            <property name="visible">True</property>
+            <property name="label" translatable="yes">System</property>
+            <property name="xalign">0.0</property>
+            <property name="margin-start">10</property>
+            <property name="margin-top">6</property>
+            <style>
+              <class name="dim-label"/>
+            </style>
+            <attributes>
+              <attribute name="weight" value="bold"/>
+            </attributes>
+          </object>
+        </child>
+        <child>
+          <object class="GtkBox" id="autostart_box">
+            <property name="visible">True</property>
+            <property name="margin-start">40</property>
+            <property name="margin-end">20</property>
+            <property name="margin-top">10</property>
+            <property name="homogeneous">False</property>
+            <child>
+              <object class="GtkSwitch" id="autostart_button">
+                <property name="visible">True</property>
+                <property name="valign">center</property>
+                <signal handler="on_autostart_toggled" name="state-set" swapped="no"/>
+              </object>
+            </child>
+            <child>
+              <object class="GtkBox">
+                <property name="orientation">vertical</property>
+                <property name="visible">True</property>
+                <property name="margin-start">10</property>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="label" translatable="yes">Start GTG on start-up</property>
+                    <property name="visible">True</property>
+                    <property name="xalign">0.0</property>
+                    <attributes>
+                      <attribute name="weight" value="bold"/>
+                    </attributes>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="label" translatable="yes">Launch Getting Things GNOME! automatically everytime you log in</property>
+                    <property name="visible">True</property>
+                    <property name="single-line-mode">True</property>
+                    <style>
+                      <class name="dim-label"/>
+                    </style>
+                    <attributes>
+                      <attribute name="scale" value="0.833333"/>
+                    </attributes>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="GtkBox" id="shortcut_box">
+            <property name="visible">True</property>
+            <property name="margin">20</property>
+            <property name="margin-start">40</property>
+            <child>
+              <object class="GtkSwitch" id="shortcut_button">
+                <property name="visible">True</property>
+                <property name="valign">center</property>
+                <signal handler="on_shortcut_toggled" name="state-set" swapped="no"/>
+              </object>
+              <packing>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkBox">
+                <property name="orientation">vertical</property>
+                <property name="valign">center</property>
+                <property name="vexpand">false</property>
+                <property name="visible">True</property>
+                <property name="margin-start">10</property>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="label" translatable="yes">Add new task by pressing </property>
+                    <property name="visible">True</property>
+                    <property name="xalign">0.0</property>
+                    <attributes>
+                      <attribute name="weight" value="bold"/>
+                    </attributes>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="label" translatable="yes">System-wide shortcut that opens a new task from anywhere</property>
+                    <property name="visible">True</property>
+                    <property name="xalign">0.0</property>
+                    <style>
+                      <class name="dim-label"/>
+                    </style>
+                    <attributes>
+                      <attribute name="scale" value="0.833333"/>
+                    </attributes>
+                  </object>
+                </child>
+              </object>
+              <packing>
+                <property name="position">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="set_shortcut">
+                <property name="visible">True</property>
+                <property name="valign">center</property>
+                <property name="margin-end">20</property>
+                <signal handler="on_shortcut_popover" name="clicked" swapped="no"/>
+                <child>
+                  <object class="GtkImage">
+                    <property name="visible">True</property>
+                    <property name="icon_name">applications-system-symbolic</property>
+                  </object>
+                </child>
+              </object>
+              <packing>
+                <property name="position">2</property>
+                <property name="pack_type">end</property>
+              </packing>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="GtkLabel" id="browser_label">
+            <property name="visible">True</property>
+            <property name="label" translatable="yes">Task Browser</property>
+            <property name="xalign">0.0</property>
+            <property name="margin-start">10</property>
+            <property name="margin-top">6</property>
+            <style>
+              <class name="dim-label"/>
+            </style>
+            <attributes>
+              <attribute name="weight" value="bold"/>
+            </attributes>
+          </object>
+        </child>
+        <child>
+          <object class="GtkBox" id="preview_box">
+            <property name="visible">True</property>
+            <property name="margin-start">40</property>
+            <property name="margin-end">20</property>
+            <property name="margin-top">10</property>                        
+            <child>
+              <object class="GtkSwitch" id="preview_button">
+                <property name="visible">True</property>
+                <property name="valign">center</property>
+                <signal handler="on_preview_toggled" name="state-set" swapped="no"/>
+              </object>
+            </child>
+            <child>
+              <object class="GtkBox">
+                <property name="orientation">vertical</property>
+                <property name="valign">center</property>
+                <property name="vexpand">false</property>
+                <property name="visible">True</property>
+                <property name="margin-start">10</property>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="label" translatable="yes">Show description preview</property>
+                    <property name="visible">True</property>
+                    <property name="xalign">0.0</property>
+                    <attributes>
+                      <attribute name="weight" value="bold"/>
+                    </attributes>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="label" translatable="yes">Show a task excerpt next to each task in Task Browser</property>
+                    <property name="visible">True</property>
+                    <property name="xalign">0.0</property>
+                    <style>
+                      <class name="dim-label"/>
+                    </style>
+                    <attributes>
+                      <attribute name="scale" value="0.833333"/>
+                    </attributes>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="GtkBox" id="bg_color_box">
+            <property name="visible">True</property>
+            <property name="margin">20</property>
+            <property name="margin-start">40</property>
+            <child>
+              <object class="GtkSwitch" id="bg_color_button">
+                <property name="visible">True</property>
+                <property name="valign">center</property>
+                <signal handler="on_bg_color_toggled" name="state-set" swapped="no"/>
+              </object>
+            </child>
+            <child>
+              <object class="GtkBox">
+                <property name="orientation">vertical</property>
+                <property name="valign">center</property>
+                <property name="vexpand">False</property>
+                <property name="visible">True</property>
+                <property name="margin-start">10</property>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="label" translatable="yes">Enable coloured backgrounds</property>
+                    <property name="visible">True</property>
+                    <property name="xalign">0.0</property>
+                    <attributes>
+                      <attribute name="weight" value="bold"/>
+                    </attributes>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="label" translatable="yes">Show coloured backgrounds for a task based on the colours of its tags</property>
+                    <property name="visible">True</property>
+                    <property name="xalign">0.0</property>
+                    <style>
+                      <class name="dim-label"/>
+                    </style>
+                    <attributes>
+                      <attribute name="scale" value="0.833333"/>
+                    </attributes>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="GtkBox" id="time_box">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="margin-bottom">20</property>
+            <property name="margin-start">40</property>
+            <child>
+              <object class="GtkEntry" id="time_entry">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="width_chars">8</property>
+                <property name="max-width-chars">8</property>
+                <property name="max_length">8</property>
+                <property name="xalign">0.5</property>
+                <signal name="changed" handler="on_valid_time_check" swapped="no"/>
+                <signal name="focus-out-event" handler="on_leave_time_entry" swapped="no"/>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkBox">
+                <property name="orientation">vertical</property>
+                <property name="valign">center</property>
+                <property name="vexpand">false</property>
+                <property name="visible">True</property>
+                <property name="margin-start">10</property>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="xalign">0.0</property>
+                    <property name="label" translatable="yes">Start of the day</property>
+                    <attributes>
+                      <attribute name="weight" value="bold"/>
+                    </attributes>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="label" translatable="yes">Automatically refreshes the task list and adjusts WorkView</property>
+                    <property name="visible">True</property>
+                    <property name="xalign">0.0</property>
+                    <style>
+                      <class name="dim-label"/>
+                    </style>
+                    <attributes>
+                      <attribute name="scale" value="0.833333"/>
+                    </attributes>
+                  </object>
+                </child>
+              </object>
+              <packing>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="editor_label">
+            <property name="visible">True</property>
+            <property name="label" translatable="yes">Task Editor Font</property>
+            <property name="xalign">0.0</property>
+            <property name="margin-start">10</property>
+            <property name="margin-top">6</property>
+            <style>
+              <class name="dim-label"/>
+            </style>
+            <attributes>
+              <attribute name="weight" value="bold"/>
+            </attributes>
+          </object>
+        </child>
+        <child>
+          <object class="GtkFontButton" id="font_button">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="valign">center</property>
+            <property name="receives_default">False</property>
+            <property name="margin-start">40</property>
+            <property name="margin-end">40</property>
+            <property name="margin-top">10</property>
+            <signal name="font-set" handler="on_font_change" swapped="no"/>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+  <object class="GtkPopover" id="shortcut_popover">
+    <property name="position">GTK_POS_BOTTOM</property>
+    <property name="relative_to">set_shortcut</property>
+    <property name="border-width">0</property>
+    <property name="width_request">300</property>
+    <property name="height_request">100</property> 
+    <child>
+      <object class="GtkBox">
+        <property name="orientation">vertical</property>
+        <property name="visible">True</property>
+        <child>
+          <object class="GtkLabel">
+            <property name="visible">True</property>
+            <property name="label">Press new shortcut for adding a task</property>
+            <property name="margin">10</property>
+            <attributes>
+              <attribute name="weight" value="bold"/>
+            </attributes>
+          </object>
+        </child>
+        <child>
+          <object class="GtkLabel" id="shortcut_value">
+            <property name="visible">False</property>
+            <property name="margin">10</property>
+            <property name="label">Ctrl + F12</property>
+            <attributes>
+              <attribute name="weight" value="bold"/>
+            </attributes>
+          </object>
+        </child>
+        <child>
+          <object class="GtkLabel" id="shortcut_warning">
+            <property name="visible">False</property>
+            <property name="margin-top">10</property>
+            <property name="wrap">True</property>
+            <property name="max-width-chars">10</property>
+            <property name="label"></property>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>
