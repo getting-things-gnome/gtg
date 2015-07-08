@@ -5,7 +5,7 @@ python:
 
 before_install:
   - sudo apt-get update
-  - sudo apt-get install -qq python3-gi gir1.2-gtk-3.0 gir1.2-networkmanager-1.0
+  - sudo apt-get install -qq python3-gi gir1.2-gtk-3.0 gir1.2-networkmanager-1.0 python3-dbus
 
 virtualenv:
   system_site_packages: true

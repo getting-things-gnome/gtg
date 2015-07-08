@@ -327,53 +327,6 @@
       </object>
     </child>
   </object>
-  <object class="GtkPopover" id="date_popover">
-    <child>
-      <object class="GtkBox" id="date_box">
-        <property name="visible">True</property>
-        <property name="orientation">vertical</property>
-        <child>
-          <object class="GtkCalendar" id="calendar">
-            <property name="visible">True</property>
-          </object>
-        </child>
-        <child>
-          <object class="GtkBox" id="fuzzy_btns">
-            <property name="visible">True</property>
-            <property name="orientation">vertical</property>
-            <child>
-              <object class="GtkModelButton" id="button_now">
-                <property name="visible">True</property>
-                <property name="halign">fill</property>
-                <property name="text" translatable="yes">Now</property>
-              </object>
-            </child>
-            <child>
-              <object class="GtkModelButton" id="button_soon">
-                <property name="visible">True</property>
-                <property name="halign">fill</property>
-                <property name="text" translatable="yes">Soon</property>
-              </object>
-            </child>
-            <child>
-              <object class="GtkModelButton" id="button_someday">
-                <property name="visible">True</property>
-                <property name="halign">fill</property>
-                <property name="text" translatable="yes">Someday</property>
-              </object>
-            </child>
-            <child>
-              <object class="GtkModelButton" id="clear_button">
-                <property name="visible">True</property>
-                <property name="halign">fill</property>
-                <property name="text" translatable="yes">Clear due date</property>
-              </object>
-            </child>
-          </object>
-        </child>
-      </object>
-    </child>
-  </object>
   <object class="GtkPopover" id="closed_popover">
     <child>
       <object class="GtkBox" id="closeddate_box">

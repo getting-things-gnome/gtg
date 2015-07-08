@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <!-- interface-requires gtk+ 3.10 -->
+  <object class="GtkWindow" id="Preferences">
+    <property name="can_focus">False</property>
+    <property name="default_width">900</property>
+    <property name="default_height">500</property>
+    <signal name="delete-event" handler="on_close" swapped="no"/>
+    <child type="titlebar">
+      <object class="GtkBox" id="titlebar_box">
+        <property name="visible">True</property>
+        <property name="expand">True</property>
+        <property name="orientation">horizontal</property>
+        <child>
+          <object class="GtkHeaderBar" id="left_header_bar">
+            <property name="visible">True</property>
+            <property name="title" translatable="yes">Preferences</property>
+            <property name="show-close-button">True</property>
+            <property name="decoration_layout">menu</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkSeparator">
+            <property name="orientation">vertical</property>
+            <property name="visible">True</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkHeaderBar" id="right_header_bar">
+            <property name="visible">True</property>
+            <property name="expand">True</property>
+            <property name="title" translatable="yes"></property>
+            <property name="show-close-button">True</property>
+            <property name="decoration_layout">:close</property>
+          </object>
+        </child>
+      </object>
+    </child>
+    <child>
+      <object class="GtkBox" id="main_window_box">
+        <property name="expand">True</property>
+        <property name="visible">True</property>
+        <property name="orientation">horizontal</property>
+        <child>
+          <object class="GtkBox">
+            <property name="hexpand">False</property>
+            <property name="orientation">vertical</property>
+            <property name="visible">True</property>
+            <child>
+              <object class="GtkStackSidebar" id="sidebar">
+                <property name="visible">True</property>
+                <property name="vexpand">True</property>
+                <property name="stack">stack</property>
+                <signal handler="on_sidebar_change" name="button-release-event" swapped="no"/>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="GtkSeparator">
+            <property name="orientation">vertical</property>
+            <property name="visible">True</property>
+            <property name="expand">False</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkStack" id="stack">
+            <property name="visible">True</property>
+            <property name="expand">True</property>
+            <property name="transition-type">GTK_STACK_TRANSITION_TYPE_CROSSFADE</property>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+  <object class="GtkSizeGroup">
+    <property name="mode">GTK_SIZE_GROUP_HORIZONTAL</property>
+    <widgets>
+      <widget name="left_header_bar"/>
+      <widget name="sidebar"/>
+    </widgets>
+  </object>
+</interface>
