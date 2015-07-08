@@ -17,19 +17,16 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-""" The Preferences Dialog for configuring GTG """
+""" The Preferences Window for configuring GTG """
 
 import os
 import shutil
 
-from gi.repository import Gtk
-from gi.repository.Gdk import Color
+from gi.repository import Gtk, Gdk
 from xdg.BaseDirectory import xdg_config_home
 
-from GTG import info
+from GTG.core.dirs import UI_DIR
 from GTG.core.translations import _
-from GTG.gtk import ViewConfig
-from GTG.gtk import help
 from GTG.tools import shortcut
 
 AUTOSTART_DIRECTORY = os.path.join(xdg_config_home, "autostart")
@@ -75,74 +72,64 @@ def disable_gtg_autostart():
         os.remove(AUTOSTART_PATH)
 
 
-class PreferencesDialog(object):
-    """ Show preference dialog """
+class Preferences(object):
+    """ Show preference window """
+
+    PREFERENCES_UI_FILE = os.path.join(UI_DIR, "preferences.ui")
+    INVALID_COLOR = Gdk.Color(50000, 0, 0)
 
     def __init__(self, req, vmanager):
         self.req = req
         self.config = self.req.get_config('browser')
         builder = Gtk.Builder()
-        builder.add_from_file(ViewConfig.PREFERENCES_UI_FILE)
+        builder.add_from_file(self.PREFERENCES_UI_FILE)
 
-        self.dialog = builder.get_object("PreferencesDialog")
-        self.dialog.set_title(_("Preferences - %s" % info.NAME))
-        self.pref_autostart = builder.get_object("pref_autostart")
-        self.pref_show_preview = builder.get_object("pref_show_preview")
-        self.bg_color_enable = builder.get_object("bg_color_enable")
-        self.hbox1 = builder.get_object("hbox1")
+        self.window = builder.get_object("Preferences")
+        self.autostart_button = builder.get_object("autostart_button")
+        self.preview_button = builder.get_object("preview_button")
+        self.bg_color_button = builder.get_object("bg_color_button")
         self.shortcut_button = builder.get_object("shortcut_button")
+        self.font_button = builder.get_object("font_button")
+        self.shortcut_popover = builder.get_object("shortcut_popover")
+        self.set_shortcut = builder.get_object("set_shortcut")
 
         self.shortcut = ShortcutWidget(builder)
-        help.add_help_shortcut(self.dialog, "preferences")
 
-        self.fontbutton = builder.get_object("fontbutton")
         self.timer = vmanager.timer
-        self.color_invalid = Color(50000, 0, 0)
-        self.refresh_hour = builder.get_object("hour")
-        self.refresh_mins = builder.get_object("min")
+        self.refresh_time = builder.get_object("time_entry")
         editor_font = self.config.get("font_name")
         if editor_font == "":
-            font = self.dialog.get_style_context().get_font(
+            font = self.window.get_style_context().get_font(
                 Gtk.StateFlags.NORMAL)
             editor_font = font.to_string()
-        self.fontbutton.set_font_name(editor_font)
+        self.font_button.set_font_name(editor_font)
 
-        builder.connect_signals({
-                                'on_pref_autostart_toggled':
-                                self.on_autostart_toggled,
-                                'on_pref_show_preview_toggled':
-                                self.toggle_preview,
-                                'on_bg_color_toggled':
-                                self.on_bg_color_toggled,
-                                'on_prefs_help':
-                                self.on_help,
-                                'on_prefs_close':
-                                self.on_close,
-                                'on_PreferencesDialog_delete_event':
-                                self.on_close,
-                                'on_fontbutton_font_set':
-                                self.on_font_change,
-                                'on_shortcut_button_toggled':
-                                self.shortcut.on_shortcut_toggled,
-                                'on_valid_check':
-                                self.valid_check,
-                                })
+        builder.connect_signals(self)
+
+        self.headerbar = builder.get_object("right_header_bar")
+        self.general = builder.get_object("general_pref_window")
+        self.plugins = builder.get_object("plugins")
+        self.stack = builder.get_object("stack")
+
+    def on_shortcut_popover(self, widget):
+        self.shortcut_popover.set_relative_to(self.set_shortcut)
+        self.shortcut_popover.show_all()
 
     def _refresh_preferences_store(self):
         """ Sets the correct value in the preferences checkboxes """
         has_autostart = os.path.isfile(AUTOSTART_PATH)
-        self.pref_autostart.set_active(has_autostart)
+        self.autostart_button.set_active(has_autostart)
 
         self.shortcut.refresh_accel()
 
         show_preview = self.config.get("contents_preview_enable")
-        self.pref_show_preview.set_active(show_preview)
+        self.preview_button.set_active(show_preview)
 
         bg_color = self.config.get("bg_color_enable")
-        self.bg_color_enable.set_active(bg_color)
-        refresh_hour, refresh_mins = self.timer.get_configuration()
-        self.refresh_hour.set_text(refresh_hour)
-        self.refresh_mins.set_text(refresh_mins)
+        self.bg_color_button.set_active(bg_color)
+        refresh_hour = self.timer.get_configuration()
+        self.refresh_time.set_text(str(refresh_hour[0]) + ":" +
+                                   str(refresh_hour[1]))
 
     def _refresh_task_browser(self):
         """ Refresh tasks in task browser """
@@ -150,59 +137,54 @@ class PreferencesDialog(object):
         task_tree.refresh_all()
 
     def activate(self):
-        """ Activate the preferences dialog."""
+        """ Activate the preferences window."""
         self._refresh_preferences_store()
-        self.dialog.show_all()
+        self.window.show_all()
 
-    def valid_check(self, widget):
+    def on_valid_check(self, widget):
         try:
-            self.timer.set_configuration(self.refresh_hour.get_text(),
-                                         self.refresh_mins.get_text())
+            self.timer.set_configuration(self.refresh_time.get_text())
             color = None
         except (ValueError, TypeError):
-            color = self.color_invalid
+            color = self.INVALID_COLOR
 
-        self.refresh_hour.modify_fg(Gtk.StateFlags.NORMAL, color)
-        self.refresh_mins.modify_fg(Gtk.StateFlags.NORMAL, color)
+        self.refresh_time.modify_fg(Gtk.StateFlags.NORMAL, color)
 
     def on_close(self, widget, data=None):
         """ Close the preferences dialog."""
-        self.valid_check(widget)
+        self.on_valid_check(widget)
         self.timer.time_changed()
-        self.dialog.hide()
+        self.window.hide()
         return True
 
-    @classmethod
-    def on_help(cls, widget):
-        """ Open help for preferences """
-        help.show_help("preferences")
-        return True
-
-    @classmethod
-    def on_autostart_toggled(cls, widget):
+    def on_autostart_toggled(self, widget, state):
         """ Toggle GTG autostarting with the GNOME desktop """
-        if widget.get_active():
+        if self.autostart_button.get_active():
             enable_gtg_autostart()
         else:
             disable_gtg_autostart()
 
-    def toggle_preview(self, widget):
+    def on_shortcut_toggled(self, widget, state):
+        self.shortcut.on_shortcut_toggled(widget, state)
+        pass
+
+    def on_preview_toggled(self, widget, state):
         """ Toggle previews in the task view on or off."""
         curstate = self.config.get("contents_preview_enable")
-        if curstate != widget.get_active():
+        if curstate != self.preview_button.get_active():
             self.config.set("contents_preview_enable", not curstate)
             self._refresh_task_browser()
 
-    def on_bg_color_toggled(self, widget):
+    def on_bg_color_toggled(self, widget, state):
         """ Save configuration and refresh nodes to apply the change """
         curstate = self.config.get("bg_color_enable")
-        if curstate != widget.get_active():
+        if curstate != self.bg_color_button.get_active():
             self.config.set("bg_color_enable", not curstate)
             self._refresh_task_browser()
 
     def on_font_change(self, widget):
         """ Set a new font for editor """
-        self.config.set("font_name", self.fontbutton.get_font_name())
+        self.config.set("font_name", self.font_button.get_font_name())
 
 
 class ShortcutWidget(object):
@@ -210,11 +192,11 @@ class ShortcutWidget(object):
 
     def __init__(self, builder):
         self.builder = builder
-        self.dialog = builder.get_object("PreferencesDialog")
+        self.window = builder.get_object("MainWindow")
         self.button = builder.get_object("shortcut_button")
-        hbox1 = builder.get_object("hbox1")
+        # shortcut_box = builder.get_object("shortcut_box")
         self.new_task_default_binding = "<Primary>F12"
-        self.gsettings_install_label_shown = False
+        self.gsettings_install_label_shown = True
 
         self.liststore = Gtk.ListStore(str, str)
         self.liststore.append(["", ""])
@@ -223,16 +205,17 @@ class ShortcutWidget(object):
         treeview.append_column(column_accel)
         treeview.set_headers_visible(False)
 
-        cell = Gtk.CellRendererAccel()
-        cell.set_alignment(0.0, 1.0)
-        cell.set_fixed_size(-1, 18)
-        cell.set_property("accel-mode", Gtk.CellRendererAccelMode.OTHER)
-        cell.connect("accel-edited", self._cellAccelEdit, self.liststore)
-        cell.connect("accel-cleared", self._accel_cleared, self.liststore)
-        self.cell = cell
-        column_accel.pack_start(cell, True)
-        column_accel.add_attribute(cell, "text", 1)
-        hbox1.add(treeview)
+        # cell = Gtk.CellRendererAccel()
+        # cell.set_alignment(0.0, 1.0)
+        # cell.set_fixed_size(-1, 18)
+        # cell.set_property("accel-mode", Gtk.CellRendererAccelMode.OTHER)
+        # cell.connect("accel-edited", self._cellAccelEdit, self.liststore)
+        # cell.connect("accel-cleared", self._accel_cleared, self.liststore)
+        # self.cell = cell
+        # column_accel.pack_start(cell, True)
+        # column_accel.add_attribute(cell, "text", 1)
+        # treeview.set_valign(Gtk.Align.START)
+        # shortcut_box.add(treeview)
 
     def refresh_accel(self):
         """ Refreshes the accelerator """
@@ -268,7 +251,7 @@ class ShortcutWidget(object):
         self.show_input = Gtk.accelerator_get_label(accel_key, accel_mods)
         self.liststore.set_value(iter1, 1, self.show_input)
 
-    def on_shortcut_toggled(self, widget):
+    def on_shortcut_toggled(self, widget, state):
         """ New task shortcut checkbox is toggled """
         if widget.get_active():
             self.new_task_binding = self.binding_backup
@@ -311,7 +294,7 @@ class ShortcutWidget(object):
                  "it will become impossible to type using this key.\n"
                  "Please try with a key such as "
                  "Control, Alt or Shift at the same time.") % input_str
-        dialog = Gtk.MessageDialog(self.dialog,
+        dialog = Gtk.MessageDialog(self.window,
                                    Gtk.DialogFlags.DESTROY_WITH_PARENT,
                                    Gtk.MessageType.WARNING,
                                    Gtk.ButtonsType.OK,
