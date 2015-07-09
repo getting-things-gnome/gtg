@@ -79,8 +79,7 @@ class GeolocalizedTasks(object):
         image_assign_location.show()
 
         # the menu intem for the tag context
-        self.context_item = Gtk.ImageMenuItem("Assign a location to this tag")
-        self.context_item.set_image(image_assign_location)
+        self.context_item = Gtk.MenuItem("Assign a location to this tag")
         # TODO: add a short cut to the menu
 
         self.context_item.connect('activate',
