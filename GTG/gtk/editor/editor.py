@@ -26,7 +26,7 @@ The rest is the logic of the widget: date changing widgets, buttons, ...
 import time
 import os
 
-from gi.repository import Gtk, Gdk, Pango
+from gi.repository import Gdk, Gtk, Pango
 
 from GTG.core.dirs import UI_DIR
 from GTG.core.plugins.api import PluginAPI
@@ -74,6 +74,7 @@ class TaskEditor(object):
         self.undismissbutton = self.builder.get_object("undismiss")
         self.add_subtask = self.builder.get_object("add_subtask")
         self.tag_store = self.builder.get_object("tag_store")
+        self.parent_button = self.builder.get_object("parent")
 
         # Create our dictionary and connect it
         dic = {
@@ -348,6 +349,10 @@ class TaskEditor(object):
             self.dismissbutton.show()
             self.undismissbutton.hide()
 
+        # Refreshing the the parent button
+        has_parents = len(self.task.get_parents()) > 0
+        self.parent_button.set_sensitive(has_parents)
+
         # Refreshing the status bar labels and date boxes
         if status in [Task.STA_DISMISSED, Task.STA_DONE]:
             self.builder.get_object("start_box").hide()
@@ -572,18 +577,32 @@ class TaskEditor(object):
 
     def on_parent_select(self, widget):
         parents = self.task.get_parents()
+
         if len(parents) == 1:
             self.vmanager.open_task(parents[0])
-        elif len(self.task.get_parents()) > 1:
-            '''
-            TODO (jakubbrindza): If there is more than 1 parent,open a popover
-            with their names and allow choosing which one to open.
-            '''
-            pass
+        elif len(parents) > 1:
+            self.show_multiple_parent_popover(parents)
+
+    def show_multiple_parent_popover(self, parent_ids):
+        parent_box = Gtk.Box.new(Gtk.Orientation.VERTICAL, 0)
+        for parent in parent_ids:
+            parent_name = self.req.get_task(parent).get_title()
+            button = Gtk.ToolButton.new(None, parent_name)
+            button.connect("clicked", self.on_parent_item_clicked, parent)
+            parent_box.add(button)
+
+        self.parent_popover = Gtk.Popover.new(self.parent_button)
+        self.parent_popover.add(parent_box)
+        self.parent_popover.set_property("border-width", 0)
+        self.parent_popover.set_position(Gtk.PositionType.BOTTOM)
+        self.parent_popover.set_transitions_enabled(True)
+        self.parent_popover.show_all()
 
     # On click handler for open_parent_button's menu items
-    def open_parent(self, widget, tid):
-        self.vmanager.open_task(tid)
+    def on_parent_item_clicked(self, widget, parent_id):
+        self.vmanager.open_task(parent_id)
+        if self.parent_popover.get_visible():
+            self.parent_popover.hide()
 
     def save(self):
         self.task.set_title(self.textview.get_title())
