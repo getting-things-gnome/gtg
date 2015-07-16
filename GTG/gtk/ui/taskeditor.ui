@@ -166,7 +166,6 @@
                     <child>
                       <object class="GtkButton" id="parent">
                         <property name="visible">True</property>
-                        <property name="can_focus">True</property>
                         <property name="tooltip_text">Open the parent task</property>
                         <signal handler="on_parent_select" name="clicked" swapped="yes"/>
                         <child>
