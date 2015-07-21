@@ -92,11 +92,11 @@
           </object>
         </child>
         <child>
-          <object class="GtkButton" id="search">
+          <object class="GtkToggleButton" id="search_button">
             <property name="visible">True</property>
             <property name="sensitive">True</property>
             <property name="tooltip_text" translatable="yes">Activate Search Entry</property>
-            <signal handler="temporary_search" name="clicked" swapped="no"/>
+            <signal handler="on_search_activate" name="clicked" swapped="no"/>
             <property name="valign">center</property>
             <child>
               <object class="GtkImage" id="search_icon">
@@ -142,7 +142,7 @@
                 <property name="label">Synchronisation</property>
                 <property name="sensitive">True</property>
                 <property name="tooltip_text" translatable="yes">Synchronisation Services
-                     </property>
+                </property>
                 <signal handler="on_edit_backends_activate" name="clicked" swapped="no"/>
                 <property name="valign">center</property>
               </object>
@@ -241,36 +241,55 @@
                 <property name="can_focus">False</property>
                 <property name="orientation">vertical</property>
                 <child>
-                  <object class="GtkBox" id="quickadd_pane">
+                  <object class="GtkSearchBar" id="searchbar">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
+                    <property name="can_focus">True</property>
+                    <property name="has_focus">True</property>
+                    <property name="is_focus">True</property>
+                    <property name="search-mode-enabled">False</property>
+                    <property name="show_close_button">False</property>
+                    <property name="valign">center</property>
                     <child>
-                      <object class="GtkEntry" id="quickadd_field">
+                      <object class="GtkBox" id="searchbox">
                         <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="has_focus">True</property>
-                        <property name="is_focus">True</property>
-                        <property name="can_default">True</property>
-                        <property name="tooltip_text">You can create, open or filter your tasks here</property>
-                        <property name="secondary_icon_name">edit-clear</property>
-                        <property name="secondary_icon_sensitive">True</property>
-                        <property name="secondary_icon_activatable">True</property>
-                        <property name="primary_icon_activatable">False</property>
-                        <signal handler="on_quickadd_field_changed" name="changed" swapped="no"/>
-                        <signal handler="on_quickadd_field_activate" name="activate" swapped="no"/>
-                        <signal handler="on_quickadd_field_icon_press" name="icon-press" swapped="no"/>
+                        <property name="can_focus">False</property>
+                        <property name="has_focus">False</property>
+                        <property name="is_focus">False</property>
+                        <property name="spacing">6</property>
+                        <child>
+                          <object class="GtkSearchEntry" id="search_entry">
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="has_focus">True</property>
+                            <property name="is_focus">True</property>
+                            <property name="can_default">True</property>
+                            <property name="max-width-chars">40</property>
+                            <property name="primary_icon_activatable">False</property>
+                            <property name="placeholder-text">Search here</property>
+                            <signal handler="on_search" name="key-release-event" swapped="no"/>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkButton" id="save_search">
+                            <property name="visible">True</property>
+                            <property name="label">Save Search</property>
+                            <signal handler="on_save_search" name="clicked" swapped="no"/>
+                          </object>
+                        </child>
                       </object>
                       <packing>
-                        <property name="expand">True</property>
-                        <property name="fill">True</property>
+                        <property name="expand">False</property>
+                        <property name="fill">False</property>
+                        <property name="padding">2</property>
                         <property name="position">0</property>
                       </packing>
                     </child>
                   </object>
                   <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">False</property>
-                    <property name="padding">2</property>
                     <property name="position">0</property>
                   </packing>
                 </child>
@@ -334,6 +353,37 @@
                     <property name="position">1</property>
                   </packing>
                 </child>
+                <child>
+                  <object class="GtkBox" id="quickadd_pane">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <child>
+                      <object class="GtkEntry" id="quickadd_field">
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="has_focus">True</property>
+                        <property name="is_focus">True</property>
+                        <property name="can_default">True</property>
+                        <property name="placeholder-text">Quickly create tasks here</property>
+                        <property name="tooltip_text">You can create your tasks here</property>
+                        <property name="primary_icon_activatable">False</property>
+                        <signal handler="on_quickadd_field_activate" name="activate" swapped="no"/>
+                        <signal handler="on_quickadd_field_icon_press" name="icon-press" swapped="no"/>
+                      </object>
+                      <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="padding">2</property>
+                    <property name="position">2</property>
+                  </packing>
+                </child>
               </object>
               <packing>
                 <property name="resize">True</property>
@@ -344,7 +394,7 @@
           <packing>
             <property name="expand">True</property>
             <property name="fill">True</property>
-            <property name="position">2</property>
+            <property name="position">1</property>
           </packing>
         </child>
       </object>
@@ -360,15 +410,15 @@
     <property name="program_name">Getting Things GNOME!</property>
     <property name="copyright" translatable="yes">Copyright © 2008-2013 Lionel Dricot, Bertrand Rousseau</property>
     <property name="comments" translatable="yes">GTG is a personal tasks and TODO-list items
-organizer for the GNOME desktop environment.</property>
+    organizer for the GNOME desktop environment.</property>
     <property name="website_label" translatable="yes">GTG website</property>
     <property name="license" translatable="yes">Getting Things GNOME! is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 3 of the License, or (at your option) any later version.
 
-Getting Things GNOME! is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+    Getting Things GNOME! is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License along with Getting Things GNOME!; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.</property>
+    You should have received a copy of the GNU General Public License along with Getting Things GNOME!; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.</property>
     <property name="authors">Lionel Dricot (ploum@ploum.net),
-Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
+    Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
     <property name="logo_icon_name">gtg</property>
     <property name="wrap_license">True</property>
     <signal handler="on_about_delete" name="delete-event" swapped="no"/>
@@ -439,10 +489,6 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
         <signal handler="on_delete_task" name="activate" swapped="no"/>
       </object>
     </child>
-  </object>
-  <object class="GtkEntryCompletion" id="quickadd_entrycompletion">
-    <property name="popup_set_width">False</property>
-    <signal handler="on_quickadd_entrycompletion_action_activated" name="action-activated" swapped="no"/>
   </object>
   <object class="GtkMenu" id="task_context_menu">
     <property name="visible">True</property>

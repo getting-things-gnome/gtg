@@ -27,8 +27,8 @@ from gi.repository import GObject, Gtk, Gdk
 from GTG import info
 from GTG.backends.backendsignals import BackendSignals
 from GTG.core.dirs import ICONS_DIR
-from GTG.core.search import parse_search_query, SEARCH_COMMANDS, InvalidQuery
-from GTG.core.tag import SEARCH_TAG, ALLTASKS_TAG
+from GTG.core.search import parse_search_query, InvalidQuery
+from GTG.core.tag import SEARCH_TAG
 from GTG.core.task import Task
 from GTG.core.translations import _, ngettext
 from GTG.gtk.browser import GnomeConfig
@@ -115,9 +115,6 @@ class TaskBrowser(GObject.GObject):
         # Define accelerator keys
         self._init_accelerators()
 
-        # Initialize search completion
-        self._init_search_completion()
-
         self.restore_state_from_conf()
 
         self.on_select_tag()
@@ -155,6 +152,9 @@ class TaskBrowser(GObject.GObject):
         self.closed_pane = self.builder.get_object("closed_pane")
         self.menu_view_workview = self.builder.get_object("view_workview")
         self.toggle_workview = self.builder.get_object("workview_toggle")
+        self.search_entry = self.builder.get_object("search_entry")
+        self.searchbar = self.builder.get_object("searchbar")
+        self.search_button = self.builder.get_object("search_button")
         self.quickadd_entry = self.builder.get_object("quickadd_field")
         self.quickadd_pane = self.builder.get_object("quickadd_pane")
         self.sidebar = self.builder.get_object("sidebar_vbox")
@@ -300,10 +300,6 @@ class TaskBrowser(GObject.GObject):
             self.on_quickadd_activate,
             "on_quickadd_field_icon_press":
             self.on_quickadd_iconpress,
-            "on_quickadd_field_changed":
-            self.on_quickadd_changed,
-            "on_quickadd_entrycompletion_action_activated":
-            self.on_entrycompletion_action_activated,
             "on_view_quickadd_toggled":
             self.on_toggle_quickadd,
             "on_about_clicked":
@@ -324,9 +320,12 @@ class TaskBrowser(GObject.GObject):
             self.open_plugins,
             "on_edit_backends_activate":
             self.open_edit_backends,
-            # temporary connections to ensure functionality
-            "temporary_search":
-            self.temporary_search,
+            "on_search_activate":
+            self.on_search_toggled,
+            "on_save_search":
+            self.on_save_search,
+            "on_search":
+            self.on_search,
         }
         self.builder.connect_signals(SIGNAL_CONNECTIONS_DIC)
 
@@ -420,8 +419,58 @@ class TaskBrowser(GObject.GObject):
                                        Gtk.AccelFlags.VISIBLE)
 
 # HELPER FUNCTIONS ##########################################################
-    def temporary_search(self, widget):
-        self.quickadd_entry.grab_focus()
+
+    def on_search_toggled(self, widget):
+        if self.searchbar.get_search_mode():
+            self.search_button.set_active(False)
+            self.searchbar.set_search_mode(False)
+        else:
+            self.search_button.set_active(True)
+            self.searchbar.set_search_mode(True)
+            self.search_entry.grab_focus()
+
+    def on_search(self, key, widget):
+        query = self.search_entry.get_text()
+        Log.debug("Searching for '%s'", query)
+
+        try:
+            parsed_query = parse_search_query(query)
+        except InvalidQuery as e:
+            Log.warning("Invalid query '%s' : '%s'", query, e)
+            return
+
+        self.apply_filter_on_panes(SEARCH_TAG, parameters=parsed_query)
+
+    def on_save_search(self, widget):
+        query = self.search_entry.get_text()
+
+        # Try if this is a new search tag and save it correctly
+        tag_id = self.req.new_search_tag(query)
+
+        # Apply new search right now
+        if self.tagtreeview is not None:
+            self.select_search_tag(tag_id)
+        else:
+            self.apply_filter_on_panes(tag_id)
+
+    def select_search_tag(self, tag_id):
+        tag = self.req.get_tag(tag_id)
+        """Select new search in tagsidebar and apply it"""
+
+        # Make sure search tag parent is expanded
+        # (otherwise selection does not work)
+        self.expand_search_tag()
+
+        # Get iterator for new search tag
+        model = self.tagtreeview.get_model()
+        path = self.tagtree.get_paths_for_node(tag.get_id())[0]
+        tag_iter = model.my_get_iter(path)
+
+        # Select only it and apply filters on top of that
+        selection = self.tagtreeview.get_selection()
+        selection.unselect_all()
+        selection.select_iter(tag_iter)
+        self.on_select_tag()
 
     def open_preferences(self, widget):
         self.vmanager.open_preferences(self.config)
@@ -1066,13 +1115,15 @@ class TaskBrowser(GObject.GObject):
                 task.set_status(Task.STA_DISMISSED)
                 self.close_all_task_editors(uid)
 
-    def apply_filter_on_panes(self, filter_name, refresh=True):
+    def apply_filter_on_panes(self, filter_name, refresh=True,
+                              parameters=None):
         """ Apply filters for every pane: active tasks, closed tasks """
         # Reset quickadd_entry if another filter is applied
         self.quickadd_entry.set_text("")
         for pane in self.vtree_panes:
             vtree = self.req.get_tasks_tree(name=pane, refresh=False)
-            vtree.apply_filter(filter_name, refresh=refresh)
+            vtree.apply_filter(filter_name, refresh=refresh,
+                               parameters=parameters)
 
     def unapply_filter_on_panes(self, filter_name, refresh=True):
         """ Apply filters for every pane: active tasks, closed tasks """
@@ -1351,81 +1402,6 @@ class TaskBrowser(GObject.GObject):
                     return tags[0]
         return None
 
-    def _init_search_completion(self):
-        """ Initialize search completion """
-        self.search_completion = self.builder.get_object(
-            "quickadd_entrycompletion")
-        self.quickadd_entry.set_completion(self.search_completion)
-
-        self.search_possible_actions = {
-            'add': _("Add Task"),
-            'open': _("Open Task"),
-            'search': _("Search"),
-        }
-
-        self.search_actions = []
-
-        self.search_complete_store = Gtk.ListStore(str)
-        for tagname in self.req.get_all_tags():
-            # only for regular tags
-            if tagname.startswith("@"):
-                self.search_complete_store.append([tagname])
-
-        for command in SEARCH_COMMANDS:
-            self.search_complete_store.append([command])
-
-        self.search_completion.set_model(self.search_complete_store)
-        self.search_completion.set_text_column(0)
-
-    def on_quickadd_changed(self, editable):
-        """ Decide which actions are allowed with the current query """
-        # delete old actions
-        for i in range(len(self.search_actions)):
-            self.search_completion.delete_action(0)
-
-        self.search_actions = []
-        new_actions = []
-        query = self.quickadd_entry.get_text()
-        query = query.strip()
-
-        # If the tag pane is hidden, reset search filter when query is empty
-        if query == '' and not self.config.get("tag_pane"):
-            tree = self.req.get_tasks_tree(refresh=False)
-            filters = tree.list_applied_filters()
-            for tag_id in self.req.get_all_tags():
-                tag = self.req.get_tag(tag_id)
-                if tag.is_search_tag() and tag_id in filters:
-                    self.req.remove_tag(tag_id)
-                    self.apply_filter_on_panes(ALLTASKS_TAG)
-                    return
-
-        if query:
-            if self.req.get_task_id(query) is not None:
-                new_actions.append('open')
-            else:
-                new_actions.append('add')
-
-            # Is query parsable?
-            try:
-                parse_search_query(query)
-                new_actions.append('search')
-            except InvalidQuery:
-                pass
-
-            # Add new order of actions
-            for aid, name in enumerate(new_actions):
-                action = self.search_possible_actions[name]
-                self.search_completion.insert_action_markup(aid, action)
-                self.search_actions.append(name)
-        else:
-            tree = self.req.get_tasks_tree(refresh=False)
-            filters = tree.list_applied_filters()
-            for tag_id in self.req.get_all_tags():
-                tag = self.req.get_tag(tag_id)
-                if tag.is_search_tag() and tag_id in filters:
-                    self.req.remove_tag(tag_id)
-                    self.apply_filter_on_panes(ALLTASKS_TAG)
-
     def expand_search_tag(self):
         """ For some unknown reason, search tag is not expanded correctly and
         it must be done manually """
@@ -1434,61 +1410,3 @@ class TaskBrowser(GObject.GObject):
             search_iter = model.my_get_iter((SEARCH_TAG, ))
             search_path = model.get_path(search_iter)
             self.tagtreeview.expand_row(search_path, False)
-
-    def on_entrycompletion_action_activated(self, completion, index):
-        """ Executes action from completition of quickadd toolbar """
-        action = self.search_actions[index]
-        if action == 'add':
-            self.on_quickadd_activate(None)
-        elif action == 'open':
-            task_title = self.quickadd_entry.get_text()
-            task_id = self.req.get_task_id(task_title)
-            self.vmanager.open_task(task_id)
-            self.quickadd_entry.set_text('')
-        elif action == 'search':
-            query = self.quickadd_entry.get_text()
-            # ! at the beginning is reserved keyword for liblarch
-            if query.startswith('!'):
-                label = '_' + query
-            else:
-                label = query
-
-            # find possible name collisions
-            name, number = label, 1
-            already_search = False
-            while True:
-                tag = self.req.get_tag(name)
-                if tag is None:
-                    break
-
-                if tag.is_search_tag() and tag.get_attribute("query") == query:
-                    already_search = True
-                    break
-
-                # this name is used, adding number
-                number += 1
-                name = label + ' ' + str(number)
-
-            if not already_search:
-                tag = self.req.new_search_tag(name, query)
-
-            # Apply new search right now
-            if self.tagtreeview is not None:
-                # Select new search in tagsidebar and apply it
-
-                # Make sure search tag parent is expanded
-                # (otherwise selection does not work)
-                self.expand_search_tag()
-
-                # Get iterator for new search tag
-                model = self.tagtreeview.get_model()
-                path = self.tagtree.get_paths_for_node(tag.get_id())[0]
-                tag_iter = model.my_get_iter(path)
-
-                # Select only it and apply filters on top of that
-                selection = self.tagtreeview.get_selection()
-                selection.unselect_all()
-                selection.select_iter(tag_iter)
-                self.on_select_tag()
-            else:
-                self.apply_filter_on_panes(name)
