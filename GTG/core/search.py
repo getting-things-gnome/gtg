@@ -105,14 +105,6 @@ for key in KEYWORDS:
         possible_words = [key.lower()]
     KEYWORDS[key] = possible_words
 
-# Generate list of possible commands
-SEARCH_COMMANDS = []
-for key in KEYWORDS:
-    for key_command in KEYWORDS[key]:
-        key_command = '!' + key_command
-        if key_command not in SEARCH_COMMANDS:
-            SEARCH_COMMANDS.append(key_command)
-
 
 class InvalidQuery(Exception):
     """ Exception which is raised during parsing of

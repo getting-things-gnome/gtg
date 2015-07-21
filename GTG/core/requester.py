@@ -172,17 +172,41 @@ class Requester(GObject.GObject):
         """
         return self.ds.new_tag(tagname)
 
-    def new_search_tag(self, name, query):
+    def new_search_tag(self, query):
         """
         Create a new search tag from search query
 
         Note: this modifies the datastore.
 
-        @param name:  name of the new search tag
         @param query: Query will be parsed using search parser
-        @return:      new tag
+        @return:      tag_id
         """
-        return self.ds.new_search_tag(name, query)
+        # ! at the beginning is reserved keyword for liblarch
+        if query.startswith('!'):
+            label = '_' + query
+        else:
+            label = query
+
+        # find possible name collisions
+        name, number = label, 1
+        already_search = False
+        while True:
+            tag = self.get_tag(name)
+            if tag is None:
+                break
+
+            if tag.is_search_tag() and tag.get_attribute("query") == query:
+                already_search = True
+                break
+
+            # this name is used, adding number
+            number += 1
+            name = label + ' ' + str(number)
+
+        if not already_search:
+            tag = self.ds.new_search_tag(name, query)
+
+        return name
 
     def remove_tag(self, name):
         """ calls datastore to remove a given tag """
