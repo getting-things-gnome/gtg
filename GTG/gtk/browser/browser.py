@@ -30,7 +30,7 @@ from GTG.core.dirs import ICONS_DIR
 from GTG.core.search import parse_search_query, SEARCH_COMMANDS, InvalidQuery
 from GTG.core.tag import SEARCH_TAG, ALLTASKS_TAG
 from GTG.core.task import Task
-from GTG.core.translations import _, ngettext
+from GTG.core.translations import _
 from GTG.gtk.browser import GnomeConfig
 from GTG.gtk.browser.custominfobar import CustomInfoBar
 from GTG.gtk.browser.modifytags_dialog import ModifyTagsDialog
@@ -124,11 +124,6 @@ class TaskBrowser(GObject.GObject):
         self.browser_shown = False
 
         # Update the title when a task change
-        self.activetree.register_cllbck('node-added-inview',
-                                        self._update_window_title)
-        self.activetree.register_cllbck('node-deleted-inview',
-                                        self._update_window_title)
-        self._update_window_title()
         vmanager.timer.connect('refresh', self.refresh_all_views)
 
 # INIT HELPER FUNCTIONS #######################################################
@@ -534,18 +529,6 @@ class TaskBrowser(GObject.GObject):
 
         closed_tree = self.req.get_tasks_tree(name='closed', refresh=False)
         closed_tree.refresh_all()
-
-    def _update_window_title(self, nid=None, path=None, state_id=None):
-        count = self.activetree.get_n_nodes()
-        # Set the title of the window:
-        parenthesis = ""
-        if count == 0:
-            parenthesis = _("no active tasks")
-        else:
-            parenthesis = ngettext("%(tasks)d active task",
-                                   "%(tasks)d active tasks",
-                                   count) % {'tasks': count}
-        self.window.set_title("%s - " % parenthesis + info.NAME)
 
 
 # SIGNAL CALLBACKS ############################################################
