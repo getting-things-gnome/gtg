@@ -30,7 +30,6 @@ from GTG.core.dirs import ICONS_DIR
 from GTG.core.search import parse_search_query, InvalidQuery
 from GTG.core.tag import SEARCH_TAG
 from GTG.core.task import Task
-from GTG.core.translations import _
 from GTG.gtk.browser import GnomeConfig
 from GTG.gtk.browser.custominfobar import CustomInfoBar
 from GTG.gtk.browser.modifytags_dialog import ModifyTagsDialog
@@ -400,6 +399,7 @@ class TaskBrowser(GObject.GObject):
         self._add_accelerator_for_widget(agr, "tcm_mark_as_done", "<Control>d")
         self._add_accelerator_for_widget(agr, "tcm_dismiss", "<Control>i")
         self._add_accelerator_for_widget(agr, "tcm_modifytags", "<Control>t")
+        self._add_accelerator_for_widget(agr, "search_button", "<Control>f")
         # TODO(jakubbrindza): We cannot apply this function to closed_pane
         # widget since it yields the following issue:
         # widget `GtkScrolledWindow' has no activatable signal "activate"
