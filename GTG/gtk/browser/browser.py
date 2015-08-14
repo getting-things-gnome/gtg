@@ -120,7 +120,6 @@ class TaskBrowser(GObject.GObject):
         self.on_select_tag()
         self.browser_shown = False
 
-        # Update the title when a task change
         vmanager.timer.connect('refresh', self.refresh_all_views)
 
 # INIT HELPER FUNCTIONS #######################################################
