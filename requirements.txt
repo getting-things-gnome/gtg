@@ -4,4 +4,4 @@ pyxdg
 pyflakes
 pep8
 mock
--e git+git://github.com/getting-things-gnome/liblarch.git#egg=liblarch
+-e git+http://github.com/getting-things-gnome/liblarch.git#egg=liblarch
