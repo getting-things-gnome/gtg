@@ -24,9 +24,6 @@
           <packing>
             <property name="pack_type">start</property>
           </packing>
-          <style>
-            <class name="text-button"/>
-          </style>
         </child>
         <child>
           <object class="GtkButton" id="mark_as_undone">
@@ -40,9 +37,6 @@
           <packing>
             <property name="pack_type">start</property>
           </packing>
-          <style>
-            <class name="text-button"/>
-          </style>
         </child>
         <child>
           <object class="GtkMenuButton" id="editor_menu">
@@ -62,9 +56,6 @@
           <packing>
             <property name="pack_type">end</property>
           </packing>
-          <style>
-            <class name="image-button"/>
-          </style>
         </child>
       </object>
     </child>
@@ -378,9 +369,6 @@
             <property name="tooltip_text">Permanently remove this task</property>
             <signal handler="delete_clicked" name="clicked" swapped="no"/>
           </object>
-          <style>
-            <class name="text-button"/>
-          </style>
         </child>
       </object>
     </child>
