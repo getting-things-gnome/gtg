@@ -25,9 +25,6 @@
           <packing>
             <property name="pack_type">start</property>
           </packing>
-          <style>
-            <class name="text-button"/>
-          </style>
         </child>
         <child>
           <object class="GtkBox" id="customisation_box">
@@ -45,9 +42,6 @@
                 <signal handler="on_view_sidebar_toggled" name="clicked" swapped="no"/>
                 <property name="valign">center</property>
               </object>
-              <style>
-                <class name="text-button"/>
-              </style>
               <packing>
                 <property name="pack_type">start</property>
               </packing>
@@ -67,9 +61,6 @@
                   </object>
                 </child>
               </object>
-              <style>
-                <class name="image-button"/>
-              </style>
               <packing>
                 <property name="pack_type">start</property>
               </packing>
@@ -109,9 +100,6 @@
           <packing>
             <property name="pack_type">end</property>
           </packing>
-          <style>
-            <class name="image-button"/>
-          </style>
         </child>
         <child>
           <object class="GtkBox" id="extras_box">
@@ -129,9 +117,6 @@
                 <signal handler="on_edit_plugins_activate" name="clicked" swapped="no"/>
                 <property name="valign">center</property>
               </object>
-              <style>
-                <class name="text-button"/>
-              </style>
               <packing>
                 <property name="pack_type">start</property>
               </packing>
@@ -146,9 +131,6 @@
                 <signal handler="on_edit_backends_activate" name="clicked" swapped="no"/>
                 <property name="valign">center</property>
               </object>
-              <style>
-                <class name="text-button"/>
-              </style>
               <packing>
                 <property name="pack_type">start</property>
               </packing>
