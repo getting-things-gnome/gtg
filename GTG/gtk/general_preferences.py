@@ -161,17 +161,17 @@ class GeneralPreferences(object):
             cssProvider.load_from_path("gtk-dark.css")
             screen = Gdk.Screen.get_default()
             styleContext = Gtk.StyleContext()
-            styleContext.add_provider_for_screen(screen, cssProvider, Gtk.STYLE_PROVIDER_PRIORITY_USER)
+            styleContext.add_provider_for_screen(
+                screen, cssProvider, Gtk.STYLE_PROVIDER_PRIORITY_USER)
             self._refresh_task_browser()
         else:
             cssProvider = Gtk.CssProvider()
             cssProvider.load_from_path("gtk.css")
             screen = Gdk.Screen.get_default()
             styleContext = Gtk.StyleContext()
-            styleContext.add_provider_for_screen(screen, cssProvider, Gtk.STYLE_PROVIDER_PRIORITY_USER)
+            styleContext.add_provider_for_screen(
+                screen, cssProvider, Gtk.STYLE_PROVIDER_PRIORITY_USER)
             self._refresh_task_browser()
-
-
 
     def on_shortcut_toggled(self, widget, state):
         self.shortcut.on_shortcut_toggled(widget, state)

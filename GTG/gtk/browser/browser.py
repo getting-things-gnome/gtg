@@ -144,8 +144,9 @@ class TaskBrowser(GObject.GObject):
             cssProvider.load_from_path("gtk-dark.css")
             screen = Gdk.Screen.get_default()
             styleContext = Gtk.StyleContext()
-            styleContext.add_provider_for_screen(screen, cssProvider, Gtk.STYLE_PROVIDER_PRIORITY_USER)
-        
+            styleContext.add_provider_for_screen(
+                screen, cssProvider, Gtk.STYLE_PROVIDER_PRIORITY_USER)
+
     def _init_widget_aliases(self):
         """
         defines aliases for UI elements found in the glide file
