@@ -421,6 +421,7 @@ class TaskBrowser(GObject.GObject):
         # release and shortcuts for active/workview and closed will be added.
         # self._add_accelerator_for_widget(agr, "closed_pane", "<Control>F9")
         # self._add_accelerator_for_widget(agr, "help_contents", "F1")
+        self._add_accelerator_for_widget(agr, "settings", "<Control>p")
 
         quickadd_field = self.builder.get_object("quickadd_field")
         key, mod = Gtk.accelerator_parse("<Control>l")
