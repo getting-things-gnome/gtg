@@ -96,6 +96,9 @@ class TaskBrowser(GObject.GObject):
         self.builder = Gtk.Builder()
         self.builder.add_from_file(GnomeConfig.BROWSER_UI_FILE)
 
+        # Set Theme
+        self._init_gtk_theme()
+
         # Define aliases for specific widgets
         self._init_widget_aliases()
 
@@ -130,6 +133,14 @@ class TaskBrowser(GObject.GObject):
         Gtk.IconTheme.get_default().prepend_search_path(ICONS_DIR)
         # TODO(izidor): Set it outside browser as it applies to every window
         Gtk.Window.set_default_icon_name("gtg")
+
+    def _init_gtk_theme(self):
+        """
+        sets gtk theme to dark or light depending on the configuration
+        """
+        theme_state = self.config.get("dark_theme_enable")
+        Gtk.Settings.get_default().set_property(
+            'gtk-application-prefer-dark-theme', theme_state)
 
     def _init_widget_aliases(self):
         """
@@ -405,7 +416,7 @@ class TaskBrowser(GObject.GObject):
         # release and shortcuts for active/workview and closed will be added.
         # self._add_accelerator_for_widget(agr, "closed_pane", "<Control>F9")
         # self._add_accelerator_for_widget(agr, "help_contents", "F1")
-
+        self._add_accelerator_for_widget(agr, "settings", "<Control>p")
         quickadd_field = self.builder.get_object("quickadd_field")
         key, mod = Gtk.accelerator_parse("<Control>l")
         quickadd_field.add_accelerator("grab-focus", agr, key, mod,

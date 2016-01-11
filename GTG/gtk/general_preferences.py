@@ -50,6 +50,7 @@ class GeneralPreferences(object):
         self.font_button = builder.get_object("font_button")
         self.shortcut_popover = builder.get_object("shortcut_popover")
         self.set_shortcut = builder.get_object("set_shortcut")
+        self.theme_button = builder.get_object("theme_button")
 
         self.shortcut = ShortcutWidget(builder)
 
@@ -101,6 +102,9 @@ class GeneralPreferences(object):
         bg_color = self.config.get("bg_color_enable")
         self.bg_color_button.set_active(bg_color)
 
+        dark_theme = self.config.get("dark_theme_enable")
+        self.theme_button.set_active(dark_theme)
+
         self.refresh_time.set_text(self.timer.get_formatted_time())
         self.refresh_time.modify_fg(Gtk.StateFlags.NORMAL, None)
 
@@ -146,6 +150,19 @@ class GeneralPreferences(object):
             autostart.enable()
         else:
             autostart.disable()
+
+    def on_theme_toggled(self, widget, state):
+        """Toggle GTK dark Theme"""
+        curstate = self.config.get("dark_theme_enable")
+        settings = Gtk.Settings.get_default()
+        if curstate != self.theme_button.get_active():
+            self.config.set("dark_theme_enable", not curstate)
+        if self.theme_button.get_active():
+            settings.set_property('gtk-application-prefer-dark-theme', True)
+            self._refresh_task_browser()
+        else:
+            settings.set_property('gtk-application-prefer-dark-theme', False)
+            self._refresh_task_browser()
 
     def on_shortcut_toggled(self, widget, state):
         self.shortcut.on_shortcut_toggled(widget, state)
