@@ -343,6 +343,69 @@
             <property name="fill">True</property>
           </packing>
         </child>
+        <!-- -->
+        <child>
+          <object class="GtkLabel" id="theme_label">
+            <property name="visible">True</property>
+            <property name="label" translatable="yes">Theme</property>
+            <property name="xalign">0.0</property>
+            <property name="margin-start">10</property>
+            <property name="margin-top">6</property>
+            <style>
+              <class name="dim-label"/>
+            </style>
+            <attributes>
+              <attribute name="weight" value="bold"/>
+            </attributes>
+          </object>
+        </child>
+        <child>
+          <object class="GtkBox" id="theme_box">
+            <property name="visible">True</property>
+            <property name="margin-start">40</property>
+            <property name="margin-end">20</property>
+            <property name="margin-top">10</property>
+            <property name="homogeneous">False</property>
+            <child>
+              <object class="GtkSwitch" id="theme_button">
+                <property name="visible">True</property>
+                <property name="valign">center</property>
+                <signal handler="on_theme_toggled" name="state-set" swapped="no"/>
+              </object>
+            </child>
+            <child>
+              <object class="GtkBox">
+                <property name="orientation">vertical</property>
+                <property name="visible">True</property>
+                <property name="margin-start">10</property>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="label" translatable="yes">Change theme to dark</property>
+                    <property name="visible">True</property>
+                    <property name="xalign">0.0</property>
+                    <attributes>
+                      <attribute name="weight" value="bold"/>
+                    </attributes>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="label" translatable="yes">Change Getting Things GNOME! to GTK dark theme</property>
+                    <property name="visible">True</property>
+                    <property name="single-line-mode">True</property>
+                    <style>
+                      <class name="dim-label"/>
+                    </style>
+                    <attributes>
+                      <attribute name="scale" value="0.833333"/>
+                    </attributes>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+        <!-- -->
       </object>
     </child>
   </object>

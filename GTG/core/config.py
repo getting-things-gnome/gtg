@@ -32,6 +32,7 @@ DEFAULTS = {
     # TODO: Remove toolbar and quick_add options from configuration
     # They won't be used in GTG 0.4
     'browser': {
+        "dark_theme_enable": False,
         "bg_color_enable": True,
         "contents_preview_enable": False,
         'tag_pane': False,
@@ -54,6 +55,7 @@ DEFAULTS = {
         "font_name": "",
         'hour': "00",
         'min': "00",
+
     },
     'tag_editor': {
         "custom_colors": [],
