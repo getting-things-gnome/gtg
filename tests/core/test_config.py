@@ -46,7 +46,7 @@ class TestOpenConfigFile(TestCase):
         self.mock_parser.side_effect = configparser.Error()
         open_config_file('gtg.conf')
         self.mock_parser.assert_called_once_with('gtg.conf')
-        mock_log.warning.assert_called()
+        self.assertTrue(mock_log.warning.called)
 
     def test_creates_config_folder_when_missing(self):
         self.mock_path.exists.return_value = False
