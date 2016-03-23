@@ -39,8 +39,8 @@
     * Fix for bug #18: Links aren't opened on click, by Àlex Magaz Graça
     * Fix for bug #961393: Context menu on an URL should have a "Copy Link Location" command, by Àlex Magaz Graça
     * Fixes #22 : Plugin "Urgency Color" throws TypeError & ValueError, by Parth Panchal
-    * Fixes #24 : TypeError : popup() missing 1 required positional argument, by Nimit Shah 
-    * Fixing the TypeError : popup() missing 1 required positional argument, by Sagar Ghuge 
+    * Fixes #24 : TypeError : popup() missing 1 required positional argument, by Nimit Shah
+    * Fixing the TypeError : popup() missing 1 required positional argument, by Sagar Ghuge
     * Fix for bug #28: plugin preferences were not being read, by Amy Chan
     * Fixing the send mail icon and tooltip, Pratyush Kulwal
     * Fix for bug #29: Python3 compatibility: call to unicode() in hamster plugin, by Amy Chan
@@ -50,7 +50,7 @@
     * Fix for bug #83: Closed tasks remover imposes a too low limit for the days period option, by Àlex Magaz Graça
     * Fix for bug #177 'TextTag' object has no attribute 'link', by Sagar Ghuge
     * Fix for bug #1044639  : Implement "Delete tag", by Sagar Ghuge
-
+    * Fix for bug #189 Help not accessible from main window, by Sagar Ghuge
 
 2013-11-24 Getting Things GNOME! 0.3.1
     * Fix for bug #1024473: Have 'Show Main Window' in notification area, by Antonio Roquentin
@@ -195,7 +195,7 @@
     * Automatic cleanup of closed task, plugin by Luca Invernizzi
     * Allow to change dismissed date of tasks by Luca Invernizzi
     * Docky applet support, by Luca Invernizzi
-    * Allow to change closed date of tasks, by Lionel Montrieux, bug #502111 
+    * Allow to change closed date of tasks, by Lionel Montrieux, bug #502111
     * notification area plugin updated to support appindicate by Luca Invernizzi and Jono Bacon
     * gtg_new task now supports command switches by Luca Invernizzi
     * Fix bug #511651, white space around title, by mrk
@@ -233,7 +233,7 @@
     * GNOME bugzilla plugin by Guillaume Desmottes
     * Handle tasks spatially (remember position & size)
     * Opened tasks on quit are reopened on start
-    * Remove the "File" menu. We have no files, we have tasks!    
+    * Remove the "File" menu. We have no files, we have tasks!
     * Patch from mrk to improve compatibility with non GNU systems
     * Close date selector widget on single click
     * The toolbar can now be hidden by Mikkel Kjær Jensen
@@ -241,12 +241,12 @@
     * lot of bug fixed in the editor while playing with subtasks
     * Works well with the "text besides icon" GNOME option
     * Merge RTM plugin branch from Luca Invernizzi
-    * i18n: fixed window title in GTG/taskbrowser/browser.py, by Dario Bertini 
+    * i18n: fixed window title in GTG/taskbrowser/browser.py, by Dario Bertini
     * Patch from Luca Invernizzi to add XDG_CACHE redefinition in script/debug.sh
     * Patch from Luca Invernizzi to remove unsued get_closed_date
     * Added filtering capabilities by Paulo Cabido
       - Filter callbacks were added to the task browser
-      - Filters were also added to the requester 
+      - Filters were also added to the requester
     * Fixed #406851, incorrect behaviour marking a dismissed task as done by Patrick Coleman
     * Added accelerators to the task editor by Patrick Coleman
     * Plugin for integration with the Hamster Time Tracker by Kevin Mehall
@@ -258,13 +258,13 @@
     * DBus interface by Ryan Paul
     * Remove the 'Delete' button from the toolbar by Jonathan Lange
     * Fix a spelling mistake in the manpage by Jonathan Lange
-    * Allow quickadd of capitalized date by remy@frerebeau.org 
+    * Allow quickadd of capitalized date by remy@frerebeau.org
     * Added tomboy plugin by Luca Invernizzi
     * Added export function with templates by Luca Invernizzi
 
 2009-07-04 Getting Things GNOME! 0.1.2
     * Available in 18 languages, with 12 languages being more than 99% translated
-    * Shadows around the listview widgets, by Jean-François Fortin Tam  
+    * Shadows around the listview widgets, by Jean-François Fortin Tam
     * Fixes package dependencies
     * Tooltips for button
     * Automatically select title in task editor
@@ -275,7 +275,7 @@
     * HTTP link parsing by Ben Dowling
     * Update README by Michael Vogt
     * Update XML files sooner by Michael Vogt
-    * Remember color (by Zach Sheperd)   
+    * Remember color (by Zach Sheperd)
     * URLs can now include ';' characters. Fixes bug 360969
     * Added support for opening subtasks and links with the keyboard: Fixes bug 369272, by Ben Dowling
     * Add polish translation by Tomasz Maciejewski
@@ -294,7 +294,7 @@
           - Shortcut for sidebar (F9): fixes bug #339710
 	  - Some UI love for the sidebar and the tag icons, shamelessy copied from f-spot
 	  - Hotkeys goodness (patches from Antons Rebguns)
-	  - Edit buttons : patches from Antons Rebguns 
+	  - Edit buttons : patches from Antons Rebguns
 	  - Bug #339583, Bug #336314 : patches delete key and
 	* Bug fixes :
 	  - Calendar open at the correct date
