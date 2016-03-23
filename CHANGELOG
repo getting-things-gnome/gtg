@@ -49,6 +49,7 @@
     * Fixing the Tooltip for open parent, by Sagar Ghuge
     * Fix for bug #83: Closed tasks remover imposes a too low limit for the days period option, by Àlex Magaz Graça
     * Fix for bug #177 'TextTag' object has no attribute 'link', by Sagar Ghuge
+    * Fix for bug #189 Help not accessible from main window, by Sagar Ghuge
 
 2013-11-24 Getting Things GNOME! 0.3.1
     * Fix for bug #1024473: Have 'Show Main Window' in notification area, by Antonio Roquentin
