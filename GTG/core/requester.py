@@ -39,12 +39,12 @@ class Requester(GObject.GObject):
 
     def __init__(self, datastore, global_conf):
         """Construct a L{Requester}."""
-        GObject.GObject.__init__(self)
+        super().__init__()
         self.ds = datastore
-        self.__config = global_conf
+        self._config = global_conf
         self.__basetree = self.ds.get_tasks_tree()
 
-    ############ Tasks Tree ######################
+    # Tasks Tree ######################
     # By default, we return the task tree of the main window
     def get_tasks_tree(self, name='active', refresh=True):
         return self.__basetree.get_viewtree(name=name, refresh=refresh)
@@ -58,20 +58,26 @@ class Requester(GObject.GObject):
     def get_basetree(self):
         return self.__basetree
 
-    # this method also update the viewcount of tags
     def apply_global_filter(self, tree, filtername):
+        """
+        This method also update the viewcount of tags
+        TODO(jakubbrindza): Evaluate if this is used somewhere before release
+        """
         tree.apply_filter(filtername)
         for t in self.get_all_tags():
             ta = self.get_tag(t)
             ta.apply_filter(filtername)
 
     def unapply_global_filter(self, tree, filtername):
+        """
+        TODO(jakubbrindza): Evaluate if this is used somewhere before release
+        """
         tree.unapply_filter(filtername)
         for t in self.get_all_tags():
             ta = self.get_tag(t)
             ta.unapply_filter(filtername)
 
-    ######### Filters bank #######################
+    # Filters bank #######################
     # List, by name, all available filters
     def list_filters(self):
         return self.__basetree.list_filters()
@@ -88,8 +94,7 @@ class Requester(GObject.GObject):
     def remove_filter(self, filter_name):
         return self.__basetree.remove_filter(filter_name)
 
-    ############## Tasks ##########################
-    ###############################################
+    # Tasks ##########################
     def has_task(self, tid):
         """Does the task 'tid' exist?"""
         return self.ds.has_task(tid)
@@ -153,8 +158,7 @@ class Requester(GObject.GObject):
 
         return None
 
-    ############### Tags ##########################
-    ###############################################
+    # Tags ##########################
     def get_tag_tree(self):
         return self.ds.get_tagstore().get_viewtree(name='activetags')
 
@@ -168,17 +172,41 @@ class Requester(GObject.GObject):
         """
         return self.ds.new_tag(tagname)
 
-    def new_search_tag(self, name, query):
+    def new_search_tag(self, query):
         """
         Create a new search tag from search query
 
         Note: this modifies the datastore.
 
-        @param name:  name of the new search tag
         @param query: Query will be parsed using search parser
-        @return:      new tag
+        @return:      tag_id
         """
-        return self.ds.new_search_tag(name, query)
+        # ! at the beginning is reserved keyword for liblarch
+        if query.startswith('!'):
+            label = '_' + query
+        else:
+            label = query
+
+        # find possible name collisions
+        name, number = label, 1
+        already_search = False
+        while True:
+            tag = self.get_tag(name)
+            if tag is None:
+                break
+
+            if tag.is_search_tag() and tag.get_attribute("query") == query:
+                already_search = True
+                break
+
+            # this name is used, adding number
+            number += 1
+            name = label + ' ' + str(number)
+
+        if not already_search:
+            tag = self.ds.new_search_tag(name, query)
+
+        return name
 
     def remove_tag(self, name):
         """ calls datastore to remove a given tag """
@@ -214,8 +242,7 @@ class Requester(GObject.GObject):
             my_task.remove_tag(tagname)
             my_task.sync()
  
-    ############## Backends #######################
-    ###############################################
+    # Backends #######################
     def get_all_backends(self, disabled=False):
         return self.ds.get_all_backends(disabled)
 
@@ -240,13 +267,11 @@ class Requester(GObject.GObject):
     def save_datastore(self):
         return self.ds.save()
 
-    ############## Config ############################
-    ##################################################
-    def get_global_config(self):
-        return self.__config
+    # Config ############################
+    def get_config(self, system):
+        """ Returns configuration object for subsytem, e.g. browser """
+        return self._config.get_subconfig(system)
 
-    def get_config(self, name):
-        return self.__config.get_subconfig(name)
-
-    def save_config(self):
-        self.__config.save()
+    def get_task_config(self, task_id):
+        """ Returns configuration object for task """
+        return self._config.get_task_config(task_id)

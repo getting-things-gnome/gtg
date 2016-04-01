@@ -19,7 +19,7 @@
 
 from gi.repository import Gtk
 
-from GTG import _, ngettext
+from GTG.core.translations import _, ngettext
 
 
 class PeriodUI(Gtk.Box):
@@ -35,7 +35,7 @@ class PeriodUI(Gtk.Box):
         @param backend: a backend object
         @param width: the width of the Gtk.Label object
         '''
-        super(PeriodUI, self).__init__()
+        super().__init__()
         self.backend = backend
         self.req = req
         self._populate_gtk(width)

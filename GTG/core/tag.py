@@ -26,9 +26,14 @@ easier.  See the end of this file for the Tag object implementation.
 
 import xml.sax.saxutils as saxutils
 
-from GTG.core import CoreConfig
 from liblarch import TreeNode
 from functools import reduce
+
+# Tags with special meaning
+ALLTASKS_TAG = "gtg-tags-all"
+NOTAG_TAG = "gtg-tags-none"
+SEP_TAG = "gtg-tags-sep"
+SEARCH_TAG = "search"
 
 
 class Tag(TreeNode):
@@ -50,7 +55,7 @@ class Tag(TreeNode):
         @param attributes: Allow having initial set of attributes without
             calling _save callback
         """
-        TreeNode.__init__(self, name)
+        super().__init__(name)
         self._name = saxutils.unescape(str(name))
         self.req = req
         self._save = None
@@ -157,7 +162,7 @@ class Tag(TreeNode):
     def del_attribute(self, att_name):
         """Deletes the attribute C{att_name}.
         """
-        if not att_name in self._attributes:
+        if att_name not in self._attributes:
             return
         elif att_name in ['name', 'parent']:
             return
@@ -184,7 +189,7 @@ class Tag(TreeNode):
                 attributes.append("parent")
         return attributes
 
-    ### TASK relation ####
+    # TASK relation ####
     def get_active_tasks_count(self):
         count = self.__get_count()
         return count
@@ -235,7 +240,7 @@ class Tag(TreeNode):
         return bool(self.get_attribute('special'))
 
     def is_search_tag(self):
-        return CoreConfig.SEARCH_TAG in self.get_parents()
+        return SEARCH_TAG in self.get_parents()
 
     def is_used(self):
         return self.get_total_tasks_count() > 0

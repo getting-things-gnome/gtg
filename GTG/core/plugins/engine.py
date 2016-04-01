@@ -22,6 +22,7 @@ import configparser
 
 import dbus
 
+from GTG.core.dirs import PLUGIN_DIRS
 from GTG.tools.borg import Borg
 from GTG.tools.logger import Log
 
@@ -40,7 +41,7 @@ class Plugin(object):
     missing_modules = []
     missing_dbus = []
 
-    def __init__(self, info, module_path):
+    def __init__(self, info, module_paths):
         """Initialize the Plugin using a ConfigParser."""
         info_fields = {
             'module_name': 'module',
@@ -67,7 +68,7 @@ class Plugin(object):
         # ensure the dbus dependencies are a list
         if isinstance(self.dbus_depends, str):
             self.dbus_depends = [self.dbus_depends]
-        self._load_module(module_path)
+        self._load_module(module_paths)
         self._check_dbus_depends()
 
     # 'active' property
@@ -114,11 +115,11 @@ class Plugin(object):
         return self.instance and hasattr(self.instance, 'is_configurable') and\
             self.instance.is_configurable()
 
-    def _load_module(self, module_path):
+    def _load_module(self, module_paths):
         """Load the module containing this plugin."""
         try:
             # import the module containing the plugin
-            f, pathname, desc = imp.find_module(self.module_name, module_path)
+            f, pathname, desc = imp.find_module(self.module_name, module_paths)
             module = imp.load_module(self.module_name, f, pathname, desc)
             # find the class object for the actual plugin
             for key, item in module.__dict__.items():
@@ -139,9 +140,9 @@ class Plugin(object):
             Log.error(e)
             self.error = True
 
-    def reload(self, module_path):
+    def reload(self, module_paths):
         if not self.active:
-            self._load_module(module_path)
+            self._load_module(module_paths)
             self._check_dbus_depends()
 
 
@@ -150,28 +151,27 @@ class PluginEngine(Borg):
     A class to manage plugins. Only one can exist.
     """
 
-    def __init__(self, plugin_path=None):
+    def __init__(self):
         """Initialize the plugin engine.
         """
-        super(PluginEngine, self).__init__()
-        if hasattr(self, "plugin_path"):
+        super().__init__()
+        if hasattr(self, "plugins"):
             # Borg has already been initialized, skip
             return
 
-        self.plugin_path = plugin_path
         self.initialized_plugins = []
         self.plugins = {}
         self.plugin_apis = []
 
         # find all plugin info files (*.gtg-plugin)
-        for path in self.plugin_path:
+        for path in PLUGIN_DIRS:
             for f in os.listdir(path):
                 info_file = os.path.join(path, f)
                 if os.path.isfile(info_file) and f.endswith('.gtg-plugin'):
                     info = configparser.ConfigParser()
                     info.read(info_file)
                     info = dict(info.items("GTG Plugin", True))
-                    p = Plugin(info, self.plugin_path)
+                    p = Plugin(info, PLUGIN_DIRS)
                     self.plugins[p.module_name] = p
 
     def get_plugin(self, module_name):
@@ -193,9 +193,9 @@ class PluginEngine(Borg):
 
         def filter_fun(plugin):
             return ((kind_of_plugins == "active" and plugin.active) or
-                   (kind_of_plugins == "inactive" and not plugin.active) or
-                   (kind_of_plugins == "enabled" and plugin.enabled) or
-                   (kind_of_plugins == "disabled" and not plugin.enabled))
+                    (kind_of_plugins == "inactive" and not plugin.active) or
+                    (kind_of_plugins == "enabled" and plugin.enabled) or
+                    (kind_of_plugins == "disabled" and not plugin.enabled))
         return list(filter(filter_fun, all_plugins))
 
     def register_api(self, api):
@@ -293,4 +293,4 @@ class PluginEngine(Borg):
         """Attempt a reload of plugins with errors, or all plugins."""
         for plugin in self.get_plugins():
             if check_all or plugin.error:
-                plugin.reload(self.plugin_path)
+                plugin.reload(PLUGIN_DIRS)

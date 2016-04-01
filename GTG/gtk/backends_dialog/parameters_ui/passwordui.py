@@ -19,7 +19,7 @@
 
 from gi.repository import Gtk
 
-from GTG import _
+from GTG.core.translations import _
 
 
 class PasswordUI(Gtk.Box):
@@ -33,7 +33,7 @@ class PasswordUI(Gtk.Box):
         @param backend: a backend object
         @param width: the width of the Gtk.Label object
         '''
-        super(PasswordUI, self).__init__()
+        super().__init__()
         self.backend = backend
         self.req = req
         self._populate_gtk(width)
@@ -46,7 +46,7 @@ class PasswordUI(Gtk.Box):
         @param width: the width of the Gtk.Label object
         '''
         password_label = Gtk.Label(label=_("Password:"))
-        password_label.set_alignment(xalign=0, yalign=0.5)
+        password_label.set_alignment(xalign=0, yalign=0)
         password_label.set_size_request(width=width, height=-1)
         self.pack_start(password_label, False, True, 0)
         align = Gtk.Alignment.new(0, 0.5, 1, 0)

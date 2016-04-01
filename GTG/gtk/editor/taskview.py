@@ -29,14 +29,14 @@ It was in Japanese and I didn't understand anything but the code.
 """
 
 
+from webbrowser import open as openurl
 import os
 
 from gi.repository import GObject, Gtk, Gdk, Pango
 
-from webbrowser import open as openurl
+from GTG.core.translations import _
 from GTG.gtk.editor import taskviewserial
 from GTG.tools import urlregex
-from GTG import _
 
 separators = [' ', ',', '\n', '\t', '!', '?', ';', '\0', '(', ')']
 # those separators are only separators if followed by a space. Else, they
@@ -81,9 +81,8 @@ class TaskView(Gtk.TextView):
         else:
             raise AttributeError('unknown property %s' % prop.name)
 
-    # Yes, we want to redefine the buffer. Disabling pylint on that error.
     def __init__(self, requester, clipboard):
-        Gtk.TextView.__init__(self)
+        super().__init__()
         self.buff = self.get_buffer()
         self.req = requester
         # Buffer init
@@ -102,7 +101,7 @@ class TaskView(Gtk.TextView):
         self.indent = {'scale': 1.4, 'editable': False, 'left-margin': 10,
                        "accumulative-margin": True}
 
-        ###### Tag we will use ######
+        # Tag we will use ###########
         # We use the tag table (tag are defined here
         # but set in self.modified)
         self.table = self.buff.get_tag_table()
@@ -250,7 +249,7 @@ class TaskView(Gtk.TextView):
     # Buffer related functions
     # Those functions are higly related and should always be symetrical
     # See also the serializing functions
-    #### The "Set text" group ########
+    # The "Set text" group ###########
     # This set the text of the buffer (and replace any existing one)
     # without deserializing (used for the title)
     def set_text(self, stri):
@@ -470,7 +469,7 @@ class TaskView(Gtk.TextView):
         stop.forward_to_line_end()
         self.buff.select_range(start, stop)
 
- ##### The "Get text" group #########
+    # The "Get text" group #############
     # Get the complete serialized text
     # But without the title
     def get_text(self):
@@ -508,7 +507,7 @@ class TaskView(Gtk.TextView):
         stripped = title.strip(' \n\t')
         return stripped
 
-    ### PRIVATE FUNCTIONS #####################################################
+    # PRIVATE FUNCTIONS #######################################################
     # This function is called so frequently that we should optimize it more.
     def modified(self, buff=None, full=False, refresheditor=True):
         """Called when the buffer has been modified.
@@ -610,8 +609,7 @@ class TaskView(Gtk.TextView):
         # Now we add the tag URL
         it = start.copy()
         prev = start.copy()
-        while (it.get_offset() < end.get_offset()) and (it.get_char() != '\0'):
-            it.forward_word_end()
+        while it.forward_word_end():
             prev = it.copy()
             prev.backward_word_start()
             text = buff.get_text(prev, it, True)
@@ -756,7 +754,7 @@ class TaskView(Gtk.TextView):
         # Update tags in model:
         # we remove tags that are not in the description anymore
         for t in old_tags:
-            if not t in new_tags:
+            if t not in new_tags:
                 self.remove_tag_callback(t)
 
     def is_at_title(self, buff, itera):
@@ -777,11 +775,11 @@ class TaskView(Gtk.TextView):
     # When the user removes a selection, we remove subtasks and @tags
     # from this selection
     def _delete_range(self, buff, start, end):
-#        #If we are at the beginning of a mark, put this mark at the end
-#        marks = start.get_marks()
-#        for m in marks:
-#            print m.get_name()
-#            buff.move_mark(m, end)
+        # If we are at the beginning of a mark, put this mark at the end
+        # marks = start.get_marks()
+        # for m in marks:
+        #     print m.get_name()
+        #     buff.move_mark(m, end)
         # If the begining of the selection is in the middle of an indent
         # We want to start at the begining
         tags = start.get_tags() + start.get_toggled_tags(False)
@@ -852,8 +850,7 @@ class TaskView(Gtk.TextView):
         line_nbr = 1
         linecount = buff.get_line_count()
 
-        # Apply the title tag on the first line
-        #---------------------------------------
+        # Apply the title tag on the first line ###############################
 
         # Determine the iterators for title
         title_start = start.copy()
@@ -1293,13 +1290,14 @@ class TaskView(Gtk.TextView):
             local_start = cursor_iter.copy()
 
             for tag in local_start.get_tags():
-                anchor = tag.link
-                typ = tag.type
-                if(anchor):
-                    if typ == "subtask":
-                        self.open_task(anchor)
-                    elif typ == "http" and self.check_link(anchor):
-                        openurl(anchor)
+                if(hasattr(tag, 'link')):
+                    anchor = tag.link
+                    typ = tag.type
+                    if(anchor):
+                        if typ == "subtask":
+                            self.open_task(anchor)
+                        elif typ == "http" and self.check_link(anchor):
+                            openurl(anchor)
 
             return True
 
@@ -1351,7 +1349,7 @@ class TaskView(Gtk.TextView):
     # link
     def _motion(self, view, ev):
         window = ev.window
-        _, x, y, _ = window.get_pointer()
+        __, x, y, __ = window.get_pointer()
         x, y = view.window_to_buffer_coords(Gtk.TextWindowType.TEXT, x, y)
         tags = view.get_iter_at_location(x, y).get_tags()
         for tag in tags:

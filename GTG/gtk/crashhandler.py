@@ -56,8 +56,8 @@ MESSAGE = _("We're terribly sorry. Could you help us fix the problem by "
             "reporting the crash?")
 USE_APPORT = False
 
-_old_sys_excepthook = None  # None means that initialize() has not been called
-                           # yet.
+# None means that initialize() has not been called yet.
+_old_sys_excepthook = None
 
 dialog = None
 
@@ -78,7 +78,7 @@ def initialize(app_name=None, message=None, use_apport=False):
     global APP_NAME, MESSAGE, USE_APPORT, _gtk_initialized, _old_sys_excepthook
     if app_name:
         APP_NAME = _(app_name)
-    if not message is None:
+    if message is not None:
         MESSAGE = _(message)
     if use_apport:
         USE_APPORT = use_apport
@@ -285,13 +285,12 @@ def gtkcrashhandler_thread(run):
                     _replacement_excepthook(ee.__class__, ee, tb,
                                             thread=thread))
             else:
-                time.sleep(0.1)  # ugly hack, seems like threads that are
-                                # started before running Gtk.main() cause
-                                # this one to crash.
-                                # This delay allows Gtk.main() to initialize
-                                # properly.
-                                # My advice: run Gtk.main() before starting
-                                # any threads or don't run Gtk.main() at all
+                # ugly hack, seems like threads that are started before
+                # running Gtk.main() cause this one to crash.
+                # This delay allows Gtk.main() to initialize properly.
+                # My advice: run Gtk.main() before starting any threads or
+                # don't run Gtk.main() at all
+                time.sleep(0.1)
                 _replacement_excepthook(ee.__class__, ee, tb,
                                         thread=threading.currentThread())
             lock.release()
@@ -318,7 +317,7 @@ if __name__ == "__main__":
     raise DoNotRunException()
 
 
-## We handle initialization directly here, since this module will be used as a
+#  We handle initialization directly here, since this module will be used as a
 #  singleton
 # we listen for signals from the system in order to save our configuration
 # if GTG is forcefully terminated (e.g.: on shutdown).

@@ -19,7 +19,6 @@
 # documentation: https://edge.launchpad.net/+apidoc/#bug_task
 
 import os
-import re
 import sys
 from re import findall
 from urllib.request import urlopen
@@ -68,14 +67,14 @@ data = urlopen('https://launchpad.net/gtg/+milestone/%s' % sys.argv[1]).read()
 bugs = findall('<a href="\S+/bugs/(\d+)">', data)
 launchpad = lp_login()
 
-if not 'gtg' in [e.name for e in launchpad.people[launchpad.me].super_teams]:
+if 'gtg' not in [e.name for e in launchpad.people[launchpad.me].super_teams]:
     print('You are not a GTG developer, exiting.')
     sys.exit(0)
 
 for bugno in bugs:
     try:
         process_bug(launchpad.bugs[bugno])
-        print("Bug #%s marked as Fix Released: " \
-            "https://bugs.edge.launchpad.net/gtg/+bug/%s" % (bugno, bugno))
+        print("Bug #%s marked as Fix Released: "
+              "https://bugs.edge.launchpad.net/gtg/+bug/%s" % (bugno, bugno))
     except:
         print("UNABLE TO PROCESS BUG #%s" % bugno)

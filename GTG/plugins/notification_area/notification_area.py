@@ -17,14 +17,15 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import os
+
 from gi.repository import Gtk
 try:
     from gi.repository import AppIndicator3 as appindicator
 except:
     pass
 
-from GTG import _
-from GTG import DATA_DIR
+from GTG.core.dirs import ICONS_DIR
+from GTG.core.translations import _
 from GTG.tools.borg import Borg
 from GTG.tools.dates import Date
 
@@ -39,7 +40,7 @@ class TheIndicator(Borg):
     """
 
     def __init__(self):
-        super(TheIndicator, self).__init__()
+        super().__init__()
         if not hasattr(self, "_indicator"):
             try:
                 self._indicator = appindicator.Indicator(
@@ -53,7 +54,7 @@ class TheIndicator(Borg):
         return self._indicator
 
 
-class IconIndicator:
+class IconIndicator(object):
     """
     A common interface to an app indicator and a status icon
     """
@@ -73,9 +74,8 @@ class IconIndicator:
         self._menu = menu
 
         if self._indicator:
-            # Show the icon even when runing ./scripts/debug.sh
-            theme_path = os.path.join(DATA_DIR, 'icons')
-            self._indicator.set_icon_theme_path(theme_path)
+            # Show the icon even when runing dev version
+            self._indicator.set_icon_theme_path(ICONS_DIR)
 
             self._indicator.set_icon("gtg-panel")
             self._indicator.set_attention_icon(self.ATTENTION_ICON)
@@ -143,7 +143,7 @@ def _due_within(task, danger_zone):
     return False
 
 
-class _Attention:
+class _Attention(object):
 
     """
     Define need attention state depending on whether there
@@ -196,7 +196,7 @@ class _Attention:
         self._update_indicator()
 
 
-class NotificationArea:
+class NotificationArea(object):
     """
     Plugin that display a notification area widget or an indicator
     to quickly access tasks.
@@ -271,7 +271,7 @@ class NotificationArea:
         self.__tree = None
         self.__liblarch_callbacks = []
 
-## Helper methods #############################################################
+# Helper methods ##############################################################
     def __init_gtk(self):
         menu = Gtk.Menu()
 
@@ -388,7 +388,7 @@ class NotificationArea:
             short_title = short_title.strip() + "..."
         return short_title
 
-### Preferences methods #######################################################
+# Preferences methods #########################################################
     def preferences_load(self):
         self.preferences = self.__plugin_api.load_configuration_object(
             self.PLUGIN_NAME, "preferences",
@@ -444,7 +444,7 @@ class NotificationArea:
         self.preferences_store()
         self.preferences_dialog.hide()
 
-### Browser methods ###########################################################
+# Browser methods #############################################################
     def __on_browser_minimize(self, widget=None, plugin_api=None):
         self.__view_manager.hide_browser()
         return True
@@ -467,7 +467,7 @@ class NotificationArea:
                 "delete-event", method)
 
 
-class SortedLimitedMenu:
+class SortedLimitedMenu(object):
     """ Sorted GTK Menu which shows only first N elements """
 
     def __init__(self, max_items, gtk_menu, offset):

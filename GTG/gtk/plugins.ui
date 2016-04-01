@@ -34,20 +34,15 @@
             <property name="can_focus">False</property>
             <property name="label_xalign">0</property>
             <property name="shadow_type">none</property>
-            <child>
-              <object class="GtkAlignment" id="pa-alignment1">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="left_padding">12</property>
+
                 <child>
                   <object class="GtkLabel" id="PluginDepends">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="use_markup">True</property>
+                    <property name="margin-start">12</property>
                   </object>
                 </child>
-              </object>
-            </child>
             <child type="label">
               <object class="GtkLabel" id="pa-label1">
                 <property name="visible">True</property>
@@ -86,12 +81,11 @@
             <property name="layout_style">edge</property>
             <child>
               <object class="GtkButton" id="plugins_help">
-                <property name="label">gtk-help</property>
+                <property name="label">Help</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="visible">True</property>
                 <property name="use_action_appearance">False</property>
-                <property name="use_stock">True</property>
                 <signal name="clicked" handler="on_plugins_help" swapped="no"/>
               </object>
               <packing>
@@ -102,12 +96,11 @@
             </child>
             <child>
               <object class="GtkButton" id="plugins_close">
-                <property name="label">gtk-close</property>
+                <property name="label">Close</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="use_action_appearance">False</property>
-                <property name="use_stock">True</property>
                 <signal name="released" handler="on_plugins_close" swapped="no"/>
               </object>
               <packing>
@@ -143,7 +136,6 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="headers_visible">False</property>
-                    <property name="rules_hint">True</property>
                     <property name="show_expanders">False</property>
                     <signal name="cursor-changed" handler="on_PluginTree_cursor_changed" swapped="no"/>
                   </object>
@@ -168,7 +160,6 @@
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
                     <property name="use_action_appearance">False</property>
-                    <property name="image">img_plugin_about</property>
                     <property name="use_underline">True</property>
                     <signal name="released" handler="on_plugin_about" swapped="no"/>
                   </object>
@@ -185,7 +176,6 @@
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
                     <property name="use_action_appearance">False</property>
-                    <property name="image">img_plugin_conf</property>
                     <property name="use_underline">True</property>
                     <signal name="released" handler="on_plugin_configure" swapped="no"/>
                   </object>
@@ -215,15 +205,5 @@
       <action-widget response="0">plugins_help</action-widget>
       <action-widget response="0">plugins_close</action-widget>
     </action-widgets>
-  </object>
-  <object class="GtkImage" id="img_plugin_about">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="stock">gtk-about</property>
-  </object>
-  <object class="GtkImage" id="img_plugin_conf">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="stock">gtk-preferences</property>
   </object>
 </interface>

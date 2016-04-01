@@ -21,10 +21,10 @@
 
 from gi.repository import Gtk, Pango
 
-from GTG import _
 from GTG import info
 from GTG.core.plugins import GnomeConfig
 from GTG.core.plugins.engine import PluginEngine
+from GTG.core.translations import _
 from GTG.gtk import ViewConfig
 from GTG.gtk import help
 
@@ -129,12 +129,12 @@ def plugin_markup(column, cell, store, iterator, self):
                       store.get_value(iterator, PLUGINS_COL_ACTIVATABLE))
 
 
-class PluginsDialog:
+class PluginsDialog(object):
     """ Dialog for Plugins configuration """
 
-    def __init__(self, config_obj):
-        self.config_obj = config_obj
-        self.config = self.config_obj.get_subconfig("plugins")
+    def __init__(self, requester):
+        self.req = requester
+        self.config = self.req.get_config("plugins")
         builder = Gtk.Builder()
         builder.add_from_file(ViewConfig.PLUGINS_UI_FILE)
 
@@ -273,8 +273,6 @@ class PluginsDialog:
                                     plugin.enabled)
         self._update_plugin_configure(plugin)
 
-        self.config_obj.save()
-
     def on_plugin_select(self, plugin_tree):
         """ Callback when user select/unselect a plugin
 
@@ -307,11 +305,11 @@ class PluginsDialog:
         plugin_id = self.plugin_store.get_value(iterator, PLUGINS_COL_ID)
         plugin = self.pengine.get_plugin(plugin_id)
 
-        #FIXME About plugin dialog looks much more different than
-        #it is in the current trunk
-        #FIXME repair it!
-        #FIXME Author is not usually set and is preserved from
-        #previous plugin... :/
+        # FIXME About plugin dialog looks much more different than
+        # it is in the current trunk
+        # FIXME repair it!
+        # FIXME Author is not usually set and is preserved from
+        # previous plugin... :/
         self.plugin_about.set_program_name(plugin.full_name)
         self.plugin_about.set_version(plugin.version)
         authors = plugin.authors

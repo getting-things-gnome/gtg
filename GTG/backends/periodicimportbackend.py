@@ -45,7 +45,7 @@ class PeriodicImportBackend(GenericBackend):
     '''
 
     def __init__(self, parameters):
-        super(PeriodicImportBackend, self).__init__(parameters)
+        super().__init__(parameters)
         self.running_iteration = False
         self.urgent_iteration = False
 

@@ -17,21 +17,22 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-from gi.repository import GObject, Gtk, Pango
-import xml.sax.saxutils as saxutils
 import locale
+import xml.sax.saxutils as saxutils
 
-from GTG import _
-from GTG.core import CoreConfig
-from GTG.core.task import Task
+from gi.repository import GObject, Gtk, Pango
+
 from GTG.core.search import parse_search_query, search_filter
-from GTG.gtk.browser.CellRendererTags import CellRendererTags
-from liblarch_gtk import TreeView
+from GTG.core.tag import SEARCH_TAG
+from GTG.core.task import Task
+from GTG.core.translations import _
 from GTG.gtk import colors
+from GTG.gtk.browser.CellRendererTags import CellRendererTags
 from GTG.tools.dates import Date
+from liblarch_gtk import TreeView
 
 
-class TreeviewFactory():
+class TreeviewFactory(object):
 
     def __init__(self, requester, config):
         self.req = requester
@@ -74,7 +75,7 @@ class TreeviewFactory():
     def task_tags_column(self, node):
         tags = node.get_tags()
 
-        search_parent = self.req.get_tag(CoreConfig.SEARCH_TAG)
+        search_parent = self.req.get_tag(SEARCH_TAG)
         for search_tag in search_parent.get_children():
             tag = self.req.get_tag(search_tag)
             match = search_filter(
@@ -130,7 +131,7 @@ class TreeviewFactory():
         if node.get_due_date() == Date.no_date():
             return node.get_due_date_constraint().to_readable_string()
         else:
-        # Other tasks show their due date (which *can* be fuzzy)
+            # Other tasks show their due date (which *can* be fuzzy)
             return node.get_due_date().to_readable_string()
 
     def task_cdate_column(self, node):
@@ -189,7 +190,7 @@ class TreeviewFactory():
                 return -1 * s
 
         if sort == 0:
-        # Group tasks with the same tag together for visual cleanness
+            # Group tasks with the same tag together for visual cleanness
             t1_tags = task1.get_tags_name()
             t1_tags.sort()
             t2_tags = task2.get_tags_name()
@@ -197,7 +198,8 @@ class TreeviewFactory():
             cmp_tags = (t1_tags > t2_tags) - (t1_tags < t2_tags)
             sort = reverse_if_descending(cmp_tags)
 
-        if sort == 0:  # Break ties by sorting by title
+        if sort == 0:
+            # Break ties by sorting by title
             t1_title = task1.get_title()
             t2_title = task2.get_title()
             t1_title = locale.strxfrm(t1_title)
@@ -257,7 +259,7 @@ class TreeviewFactory():
         task.modified()
 
     ############################################
-    ######## The Factory #######################
+    # The Factory ##############################
     ############################################
     def tags_treeview(self, tree):
         desc = {}
@@ -303,7 +305,7 @@ class TreeviewFactory():
         render_text = Gtk.CellRendererText()
         render_text.set_property('xpad', 3)
         render_text.set_property('ypad', 3)
-        render_text.set_property('xalign', 1.0)
+        render_text.set_property('xalign', 1)
         col['renderer'] = ['markup', render_text]
         col['value'] = [str, self.get_tag_count]
         col['expandable'] = False
@@ -432,7 +434,7 @@ class TreeviewFactory():
         treeview.set_dnd_name('gtg/task-iter-str')
         # Background colors
         treeview.set_bg_color(self.task_bg_color, 'bg_color')
-         # Global treeview properties
+        # Global treeview properties
         treeview.set_property("enable-tree-lines", False)
         treeview.set_rules_hint(False)
         treeview.set_multiple_selection(True)

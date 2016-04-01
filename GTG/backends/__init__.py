@@ -31,8 +31,8 @@ from GTG.tools.logger import Log
 from GTG.tools.borg import Borg
 from GTG.backends.genericbackend import GenericBackend
 from GTG.core import firstrun_tasks
+from GTG.core.dirs import PROJECTS_XMLFILE
 from GTG.tools import cleanxml
-from GTG.core import CoreConfig
 
 
 class BackendFactory(Borg):
@@ -50,7 +50,7 @@ class BackendFactory(Borg):
         """
          Creates a dictionary of the currently available backend modules
         """
-        Borg.__init__(self)
+        super().__init__()
         if hasattr(self, "backend_modules"):
             # This object has already been constructed
             return
@@ -67,12 +67,12 @@ class BackendFactory(Borg):
             except ImportError as exception:
                 # Something is wrong with this backend, skipping
                 Log.warning("Backend %s could not be loaded: %s" %
-                           (module_name, str(exception)))
+                            (module_name, str(exception)))
                 continue
             except Exception as exception:
                 # Other exception log as errors
                 Log.error("Malformated backend %s: %s" %
-                         (module_name, str(exception)))
+                          (module_name, str(exception)))
                 continue
 
             self.backend_modules[module_name] = \
@@ -137,7 +137,7 @@ class BackendFactory(Borg):
 
         Returns the backend instance, or None is something goes wrong
         '''
-        if not "module" in dic or not "xmlobject" in dic:
+        if "module" not in dic or "xmlobject" not in dic:
             Log.debug("Malformed backend configuration found! %s" %
                       dic)
         module = self.get_backend(dic["module"])
@@ -195,9 +195,7 @@ class BackendFactory(Borg):
          - the name of the backend under "module"
         '''
         # Read configuration file, if it does not exist, create one
-        datafile = os.path.join(CoreConfig().get_data_dir(),
-                                CoreConfig.DATA_FILE)
-        doc, configxml = cleanxml.openxmlfile(datafile, "config")
+        doc, configxml = cleanxml.openxmlfile(PROJECTS_XMLFILE, "config")
         xmlproject = doc.getElementsByTagName("backend")
         # collect configured backends
         return [{"xmlobject": xp,

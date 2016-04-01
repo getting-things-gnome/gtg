@@ -27,11 +27,11 @@ import uuid
 import xml.dom.minidom
 import xml.sax.saxutils as saxutils
 
-from GTG import _
+from GTG.core.translations import _
 from GTG.tools.dates import Date
 from GTG.tools.logger import Log
-from liblarch import TreeNode
 from GTG.tools.tags import extract_tags_from_text
+from liblarch import TreeNode
 
 
 class Task(TreeNode):
@@ -43,12 +43,12 @@ class Task(TreeNode):
     STA_DISMISSED = "Dismiss"
     STA_DONE = "Done"
 
-    def __init__(self, ze_id, requester, newtask=False):
-        TreeNode.__init__(self, ze_id)
+    def __init__(self, task_id, requester, newtask=False):
+        super().__init__(task_id)
         # the id of this task in the project should be set
         # tid is a string ! (we have to choose a type and stick to it)
-        assert(isinstance(ze_id, str) or isinstance(ze_id, str))
-        self.tid = str(ze_id)
+        assert(isinstance(task_id, str) or isinstance(task_id, str))
+        self.tid = str(task_id)
         self.set_uuid(uuid.uuid4())
         self.remote_ids = {}
         self.content = ""
@@ -139,7 +139,7 @@ class Task(TreeNode):
         else:
             return False
 
-    # TODO : should we merge this function with set_title ?
+    # TODO: should we merge this function with set_title ?
     def set_complex_title(self, text, tags=[]):
         if tags:
             assert(isinstance(tags[0], str))
@@ -358,14 +358,14 @@ class Task(TreeNode):
         return self.due_date
 
     def get_urgent_date(self):
-        """ Returns the most urgent due date among the tasks and its subtasks
         """
-        urg_date = self.due_date
-        for sub in self.get_subtasks():
-            sub_urg_date = sub.get_urgent_date()
-            if urg_date >= sub_urg_date:
-                urg_date = sub_urg_date
-        return urg_date
+        Returns the most urgent due date among the task and its active subtasks
+        """
+        urgent_date = self.get_due_date()
+        for subtask in self.get_subtasks():
+            if subtask.get_status() == self.STA_ACTIVE:
+                urgent_date = min(urgent_date, subtask.get_urgent_date())
+        return urgent_date
 
     def get_due_date_constraint(self):
         """ Returns the most urgent due date constraint, following
@@ -514,8 +514,7 @@ class Task(TreeNode):
         else:
             self.content = ''
 
-    ### SUBTASKS #############################################################
-    #
+    # SUBTASKS ###############################################################
     def new_subtask(self):
         """Add a newly created subtask to this task. Return the task added as
         a subtask
@@ -563,7 +562,7 @@ class Task(TreeNode):
         tree = self.get_tree()
         return [tree.get_node(node_id) for node_id in self.get_children()]
 
-    # FIXME : why is this function used ? It's higly specific. Remove it?
+    # FIXME: why is this function used ? It's higly specific. Remove it?
     #        (Lionel)
     # Agreed. it's only used by the "add tag to all subtasks" widget.
     def get_self_and_all_subtasks(self, active_only=False, tasks=[]):
@@ -577,7 +576,7 @@ class Task(TreeNode):
         return tasks
 
     def get_subtask(self, tid):
-        # FIXME : remove this function. This is not useful
+        # FIXME: remove this function. This is not useful
         print("DEPRECATED: get_subtask")
         """Return the task corresponding to a given ID.
 
@@ -630,8 +629,7 @@ class Task(TreeNode):
         '''
         self.last_modified = datetime.now()
 
-### TAG FUNCTIONS ############################################################
-#
+# TAG FUNCTIONS ##############################################################
     def get_tags_name(self):
         # Return a copy of the list of tags. Not the original object.
         return list(self.tags)
@@ -662,7 +660,7 @@ class Task(TreeNode):
         Adds a tag. Does not add '@tag' to the contents. See add_tag
         """
         # Do not add the same tag twice
-        if not tagname in self.tags:
+        if tagname not in self.tags:
             self.tags.append(tagname)
             if self.is_loaded():
                 for child in self.get_subtasks():

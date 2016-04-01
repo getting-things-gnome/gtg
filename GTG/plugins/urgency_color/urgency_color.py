@@ -22,7 +22,7 @@ import os
 from GTG.tools.dates import Date
 
 
-class pluginUrgencyColor:
+class UrgencyColorPlugin(object):
 
     PLUGIN_NAME = 'Urgency Color'
     DEFAULT_PREFS = {
@@ -86,8 +86,8 @@ class pluginUrgencyColor:
         elif ddate != Date.no_date():  # Has a due date
             if daysleft < 0:
                 return self._get_color(3)  # Overdue
-            elif (sdate == Date.no_date()  # Has no start date
-                    and not ddate.is_fuzzy()):  # Due date is not fuzzy
+            elif (sdate == Date.no_date() and  # Has no start date
+                    not ddate.is_fuzzy()):  # Due date is not fuzzy
                 return self._get_color(1)  # Normal
 
         # Fuzzy dates (now, soon, someday)

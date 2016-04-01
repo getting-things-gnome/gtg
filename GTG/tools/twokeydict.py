@@ -44,7 +44,7 @@ class TwoKeyDict(object):
         @param triplets: tuples for populating the TwoKeyDict. Format:
                          ((key1, key2, data_to_store), ...)
         '''
-        super(TwoKeyDict, self).__init__()
+        super().__init__()
         self._key_to_key_bidict = BiDict()
         self._primary_to_value = {}
         for triplet in triplets:

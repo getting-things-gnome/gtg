@@ -25,13 +25,10 @@ import urllib.request
 import urllib.parse
 import urllib.error
 
-from GTG import _
+from GTG.core.translations import _
 
 
-class pluginSendEmail:
-    """
-    The plugin.
-    """
+class SendEmailPlugin(object):
 
     def onTaskOpened(self, plugin_api):
         """
@@ -60,7 +57,6 @@ class pluginSendEmail:
         except:
             pass
 
-## CORE FUNCTIONS #############################################################
     def onTbTaskButton(self, widget, plugin_api):
         """
         When the user presses the button.

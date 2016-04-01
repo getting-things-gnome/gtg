@@ -24,8 +24,6 @@ from .services import BugzillaServiceFactory
 from .services import BugzillaServiceNotExist
 from .notification import send_notification
 
-__all__ = ('pluginBugzilla', )
-
 bugIdPattern = re.compile('^\d+$')
 bugURLPattern = re.compile('^(https?)://(.+)/show_bug\.cgi\?id=(\d+)$')
 
@@ -35,7 +33,7 @@ class GetBugInformationTask(threading.Thread):
     def __init__(self, task, **kwargs):
         ''' Initialize task data, where task is the GTG task object. '''
         self.task = task
-        super(GetBugInformationTask, self).__init__(**kwargs)
+        super().__init__(**kwargs)
 
     def parseBugUrl(self, url):
         r = urlparse(url)
@@ -93,7 +91,7 @@ class GetBugInformationTask(threading.Thread):
                     GObject.idle_add(self.task.add_tag, '@%s' % tag)
 
 
-class pluginBugzilla:
+class BugzillaPlugin(object):
 
     def activate(self, plugin_api):
         self.plugin_api = plugin_api
@@ -104,7 +102,7 @@ class pluginBugzilla:
     def task_added_cb(self, sender, task_id):
         # this is a gobject callback that will block the Browser.
         # decoupling with a thread. All interaction with task and tags objects
-        #(anything in a Tree) must be done with gobject.idle_add (invernizzi)
+        # (anything in a Tree) must be done with gobject.idle_add (invernizzi)
 
         task = self.plugin_api.get_requester().get_task(task_id)
         bugTask = GetBugInformationTask(task)

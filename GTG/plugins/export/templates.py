@@ -24,12 +24,13 @@ import sys
 import tempfile
 import threading
 
+from GTG.core.dirs import plugin_configuration_dir
+
 from Cheetah.Template import Template as CheetahTemplate
-from xdg.BaseDirectory import xdg_config_home
 from gi.repository import GObject
 
 TEMPLATE_PATHS = [
-    os.path.join(xdg_config_home, "gtg/plugins/export/export_templates"),
+    os.path.join(plugin_configuration_dir('export'), "export_templates"),
     os.path.join(
         os.path.dirname(os.path.abspath(__file__)), "export_templates"),
 ]
@@ -44,7 +45,7 @@ def get_templates_paths():
     return template_list
 
 
-class Template:
+class Template(object):
     """ Representation of a template """
 
     def __init__(self, path):

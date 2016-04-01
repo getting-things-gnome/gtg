@@ -15,11 +15,12 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from gi.repository import Gtk
+
+from GTG.core.translations import _
 from GTG.tools.dates import Date
-from GTG import _
 
 
-class notToday:
+class NotTodayPlugin(object):
 
     def __init__(self):
         self.plugin_api = None
@@ -48,7 +49,6 @@ class notToday:
         else:
             self.tb_button.set_sensitive(False)
 
-## GTK FUNCTIONS ##############################################################
     def _init_gtk(self):
         """ Initialize all the GTK widgets """
 

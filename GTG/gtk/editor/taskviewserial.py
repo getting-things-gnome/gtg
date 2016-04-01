@@ -23,12 +23,11 @@ import xml.dom.minidom
 # The following functions are used by the Gtk.TextBuffer to serialize
 # the content of the task
 
-########### Serializing functions ##############
-### Serialize the task : transform it's content in something
+# Serializing functions ########################
+# Serialize the task : transform it's content in something
 # we can store. This function signature is defined in PyGTK
 
 class Serializer(object):
-    # Disabling pylint argument usage since we know we are not using all args
     def serialize(self, register_buf, content_buf, start, end, length, udata):
         # Currently we serialize in XML
         its = start.copy()
@@ -140,18 +139,17 @@ class Serializer(object):
         return parent
 
 
-######################## Deserializing ##################################
-### Deserialize : put all in the TextBuffer
+# Deserializing #########################################################
+# Deserialize : put all in the TextBuffer
 # This function signature is defined in PyGTK
 
-class Unserializer:
+class Unserializer(object):
 
     def __init__(self, taskview):
         # We keep a reference to the original taskview
         # Not very pretty but convenient
         self.tv = taskview
 
-    # Disabling pylint argument usage since we know we are not using all args
     def unserialize(self, register_buf, content_buf, ite, length,
                     data, cr_tags, udata):
         if data:

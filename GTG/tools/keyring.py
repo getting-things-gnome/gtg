@@ -29,7 +29,7 @@ from GTG.tools.logger import Log
 class GNOMEKeyring(Borg):
 
     def __init__(self):
-        super(Keyring, self).__init__()
+        super().__init__()
         if not hasattr(self, "keyring"):
             result, self.keyring = GnomeKeyring.get_default_keyring_sync()
             if result != GnomeKeyring.Result.OK:
@@ -63,7 +63,7 @@ class GNOMEKeyring(Borg):
 class FallbackKeyring(Borg):
 
     def __init__(self):
-        super(Keyring, self).__init__()
+        super().__init__()
         if not hasattr(self, "keyring"):
             self.keyring = {}
             self.max_key = 1

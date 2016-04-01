@@ -20,13 +20,13 @@ Plugin for exporting into nice lists in TXT, HTML or PDF """
 
 import os
 import shutil
-import webbrowser
 import subprocess
+import webbrowser
 
-from xdg.BaseDirectory import xdg_config_home
 from gi.repository import GObject, Gtk, GdkPixbuf
+from xdg.BaseDirectory import xdg_config_home
 
-from GTG import _
+from GTG.core.translations import _
 from GTG.plugins.export.task_str import get_task_wrappers
 from GTG.plugins.export.templates import Template, get_templates_paths
 
@@ -74,7 +74,7 @@ def get_desktop_dir():
         return os.path.expanduser('~')
 
 
-class PluginExport:
+class ExportPlugin(object):
     """ Export plugin - handle UI and trigger exporting tasks """
 
     # Allow initilization outside __init__() and don't complain
@@ -103,7 +103,7 @@ class PluginExport:
         """ Removes the gtk widgets before quitting """
         self._gtk_deactivate()
 
-## CALLBACK AND CORE FUNCTIONS ################################################
+# CALLBACK AND CORE FUNCTIONS #################################################
     def on_export_start(self, saving):
         """ Start generating a document.
         If saving == True, ask user where to store the document. Otherwise,
@@ -172,7 +172,7 @@ class PluginExport:
 
         return get_task_wrappers(tree, timespan)
 
-## GTK FUNCTIONS ##############################################################
+# GTK FUNCTIONS ###############################################################
     def _init_gtk(self):
         """ Initialize all the GTK widgets """
         self.menu_entry = False
@@ -334,7 +334,7 @@ class PluginExport:
         else:
             return None
 
-## Preferences methods ########################################################
+# Preferences methods #########################################################
     @classmethod
     def is_configurable(cls):
         """A configurable plugin should have this method and return True"""
