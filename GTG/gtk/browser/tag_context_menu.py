@@ -27,15 +27,16 @@ like a color picker)
 """
 
 from gi.repository import Gtk
+
+from GTG.core.translations import _
 from GTG.gtk.colors import generate_tag_color, color_add, color_remove
-from GTG import _
 
 
 class TagContextMenu(Gtk.Menu):
     """Context menu fo the tag i the sidebar"""
 
     def __init__(self, req, vmanager, tag=None):
-        Gtk.Menu.__init__(self)
+        super().__init__()
         self.req = req
         self.vmanager = vmanager
         self.tag = tag
@@ -72,13 +73,13 @@ class TagContextMenu(Gtk.Menu):
         # Make it visible
         self.show_all()
 
-    ### PUBLIC API ############################################################
+    # PUBLIC API ##############################################################
     def set_tag(self, tag):
         """Update the context menu items using the tag attributes."""
         self.tag = tag
         self.__build_menu()
 
-    ### CALLBACKS #############################################################
+    # CALLBACKS ###############################################################
     def on_mi_cc_activate(self, widget):
         """Callback: show the tag editor upon request"""
         self.vmanager.open_tag_editor(self.tag)

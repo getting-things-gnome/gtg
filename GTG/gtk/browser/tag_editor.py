@@ -29,10 +29,10 @@ for a tag.
 
 from gi.repository import GObject, Gtk, Gdk, GdkPixbuf
 
-from GTG import _
+from GTG.core.translations import _
 from GTG.gtk.browser.simple_color_selector import SimpleColorSelector
-from GTG.tools.logger import Log
 from GTG.gtk.colors import color_add, color_remove
+from GTG.tools.logger import Log
 
 
 class TagIconSelector(Gtk.Window):
@@ -42,18 +42,14 @@ class TagIconSelector(Gtk.Window):
     """
 
     def __init__(self):
-        # FIXME
-        #self.__gobject_init__(type=Gtk.WindowType.POPUP)
-        #GObject.GObject.__init__(self)
-        Gtk.Window.__init__(self)
-
+        super().__init__()
         self.loaded = False
         self.selected_icon = None
         self.symbol_model = None
         # Build up the window
         self.__build_window()
         # Make it visible
-        #self.hide_all()
+        # self.hide_all()
         # FIXME
         self.hide()
 
@@ -84,10 +80,7 @@ class TagIconSelector(Gtk.Window):
         scld_win.set_size_request(*SIZE_REQUEST)
         scld_win.add(self.symbol_iv)
         # icon remove button
-        img = Gtk.Image()
-        img.set_from_stock(Gtk.STOCK_REMOVE, Gtk.IconSize.BUTTON)
         self.remove_bt = Gtk.Button()
-        self.remove_bt.set_image(img)
         self.remove_bt.set_label(_("Remove selected icon"))
         vbox.pack_start(self.remove_bt, False, False, 0)
         # set the callbacks
@@ -120,12 +113,12 @@ class TagIconSelector(Gtk.Window):
         self.symbol_iv.set_model(self.symbol_model)
         self.loaded = True
 
-    ### PUBLIC IF ###
+    # PUBLIC IF #####
     def set_remove_enabled(self, enable):
         """Disable/enable the remove button"""
         self.remove_bt.set_sensitive(enable)
 
-    ### callbacks ###
+    # callbacks #####
     def on_selection_changed(self, widget):
         """Callback: update the model according to the selected icon. Also
         notifies the parent widget."""
@@ -144,7 +137,7 @@ class TagIconSelector(Gtk.Window):
         self.emit('selection-changed')
         self.close_selector()
 
-    ### PUBLIC IF ###
+    # PUBLIC IF #####
     def show_at_position(self, pos_x, pos_y):
         """Displays the window at a specific point on the screen"""
         if not self.loaded:
@@ -156,7 +149,7 @@ class TagIconSelector(Gtk.Window):
         self.move(pos_x, pos_y)
         self.grab_add()
         # We grab the pointer in the calendar
-# FIXME THIS DOES NOT WORK!!!!!!!
+        # FIXME THIS DOES NOT WORK!!!!!!!
         Gdk.pointer_grab(self.get_window(), True,
                          # Gdk.ModifierType.BUTTON1_MASK |
                          # Gdk.ModifierType.MOD2_MASK,
@@ -170,7 +163,7 @@ class TagIconSelector(Gtk.Window):
     def close_selector(self):
         """Hides the window"""
         self.hide()
-#FIXME!!!
+        # FIXME!!!
         Gdk.pointer_ungrab(0)
         self.grab_remove()
 
@@ -192,7 +185,7 @@ class TagEditor(Gtk.Window):
     """Window allowing to edit a tag's properties."""
 
     def __init__(self, req, vmanager, tag=None):
-        Gtk.Window.__init__(self)
+        super().__init__()
 
         self.req = req
         self.vmanager = vmanager
@@ -221,7 +214,7 @@ class TagEditor(Gtk.Window):
         self.top_vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         self.add(self.top_vbox)
         # header line: icon, grid with name and "hide in wv"
-        #FIXME
+        # FIXME
         self.hdr_align = Gtk.Alignment()
         self.top_vbox.pack_start(self.hdr_align, True, True, 0)
         self.hdr_align.set_padding(0, 25, 0, 0)
@@ -270,7 +263,7 @@ class TagEditor(Gtk.Window):
         self.tc_vbox.pack_start(self.tc_cc_align, True, True, 0)
         self.tc_cc_align.set_padding(15, 15, 10, 10)
         self.tc_cc_colsel = SimpleColorSelector()
-        #self.tc_cc_colsel = Gtk.ColorChooserWidget()
+        # self.tc_cc_colsel = Gtk.ColorChooserWidget()
         self.tc_cc_align.add(self.tc_cc_colsel)
         # Icon selector
         self.tag_icon_selector = TagIconSelector()
@@ -286,15 +279,15 @@ class TagEditor(Gtk.Window):
             self.tn_entry.connect('changed', self.on_tn_entry_changed)
         self.tn_cb_clicked_hid = self.tn_cb.connect('clicked',
                                                     self.on_tn_cb_clicked)
-        #FIXME
+        # FIXME
         self.tc_cc_colsel.connect('color-changed', self.on_tc_colsel_changed)
         self.tc_cc_colsel.connect('color-added', self.on_tc_colsel_added)
-        #self.tc_cc_colsel.connect('color-activated',
-         #                         self.on_tc_colsel_activated)
+        # self.tc_cc_colsel.connect('color-activated',
+        #                           self.on_tc_colsel_activated)
         self.connect('delete-event', self.on_close)
 
         # allow fast closing by Escape key
-        #FIXME
+        # FIXME
         '''
         agr = Gtk.AccelGroup()
         self.add_accel_group(agr)
@@ -321,13 +314,13 @@ class TagEditor(Gtk.Window):
         self.tn_cb.set_active(True)
         # Name entry
         self.tn_entry.set_text(_("Enter tag name here"))
-        self.tn_entry.set_icon_from_stock(Gtk.EntryIconPosition.SECONDARY,
-                                          None)
+        self.tn_entry.set_icon_from_icon_name(Gtk.EntryIconPosition.SECONDARY,
+                                              None)
         # Color selection
-        #FIXME
+        # FIXME
         self.tc_cc_colsel.unselect_color()
-        #self.tc_cc_colsel.set_use_alpha(False)
-        #self.tc_cc_colsel.set_rgba(self.tc_cc_colsel, None)
+        # self.tc_cc_colsel.set_use_alpha(False)
+        # self.tc_cc_colsel.set_rgba(self.tc_cc_colsel, None)
         # Custom colors
         self.custom_colors = self.config.get('custom_colors')
         if len(self.custom_colors) > 0:
@@ -354,7 +347,7 @@ class TagEditor(Gtk.Window):
                 self.ti_bt.remove(i)
             self.ti_bt.add(self.ti_bt_label)
 
-    ### PUBLIC API ###
+    # PUBLIC API #####
     def set_tag(self, tag):
         """Update the context menu items using the tag attributes."""
         # set_active emit the 'toggle' signal, so we have to disable
@@ -391,7 +384,7 @@ class TagEditor(Gtk.Window):
             self.tn_cb.handler_unblock(self.tn_cb_clicked_hid)
             self.tn_entry.handler_unblock(self.tn_entry_clicked_hid)
 
-    ### CALLBACKS ###
+    # CALLBACKS #####
     def watch_tn_entry_changes(self):
         """Monitors the value changes in the tag name entry. If no updates have
         been noticed after 1 second, request an update."""
@@ -426,10 +419,10 @@ class TagEditor(Gtk.Window):
         to the button."""
         rect = self.ti_bt.get_allocation()
         # print self.ti_bt.get_window().get_origin()
-#FIXME
+        # FIXME
         result, pos_x, pos_y = \
             self.ti_bt.get_window().get_origin()
-            # self.ti_bt.window.get_origin()
+        #   self.ti_bt.window.get_origin()
         self.tag_icon_selector.show_at_position(
             pos_x + rect.x + rect.width + 2,
             pos_y + rect.y)
@@ -444,10 +437,10 @@ class TagEditor(Gtk.Window):
         self.tn_entry_last_recorded_value = self.tn_entry.get_text()
         # check validity
         if self.tn_entry_last_recorded_value.strip() == "":
-            self.tn_entry.set_icon_from_stock(Gtk.EntryIconPosition.SECONDARY,
-                                              Gtk.STOCK_DIALOG_ERROR)
+            self.tn_entry.set_icon_from_icon_name(
+                Gtk.EntryIconPosition.SECONDARY, Gtk.STOCK_DIALOG_ERROR)
         else:
-            self.tn_entry.set_icon_from_stock(
+            self.tn_entry.set_icon_from_icon_name(
                 Gtk.EntryIconPosition.SECONDARY, None)
         # filter out change requests to reduce commit overhead
         if self.tn_entry_watch_id is None:
@@ -486,7 +479,7 @@ class TagEditor(Gtk.Window):
         selection"""
         print("activated", widget, color, " <--- ignoring for now")
         return
-        #color = self.tc_cc_colsel.get_rgba().to_color()
+        # color = self.tc_cc_colsel.get_rgba().to_color()
         color = color.to_color()
         if self.tag is not None:
             if color is not None:

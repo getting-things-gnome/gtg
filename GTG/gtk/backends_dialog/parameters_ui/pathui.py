@@ -17,10 +17,11 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-from gi.repository import Gtk
 import os.path
 
-from GTG import _
+from gi.repository import Gtk
+
+from GTG.core.translations import _
 
 
 class PathUI(Gtk.Box):
@@ -36,7 +37,7 @@ class PathUI(Gtk.Box):
         @param backend: a backend object
         @param width: the width of the Gtk.Label object
         '''
-        super(PathUI, self).__init__()
+        super().__init__()
         self.backend = backend
         self.req = req
         self._populate_gtk(width)
@@ -58,7 +59,8 @@ class PathUI(Gtk.Box):
         self.textbox.set_text(self.backend.get_parameters()['path'])
         self.textbox.connect('changed', self.on_path_modified)
         align.add(self.textbox)
-        self.button = Gtk.Button(stock=Gtk.STOCK_EDIT)
+        self.button = Gtk.Button()
+        self.button.set_label("Edit")
         self.button.connect('clicked', self.on_button_clicked)
         self.pack_start(self.button, False, True, 0)
 

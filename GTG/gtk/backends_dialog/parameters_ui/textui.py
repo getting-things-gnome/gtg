@@ -33,7 +33,7 @@ class TextUI(Gtk.Box):
         @param backend: a backend object
         @param width: the width of the Gtk.Label object
         '''
-        super(TextUI, self).__init__()
+        super().__init__()
         self.backend = backend
         self.req = req
         self.parameter_name = parameter_name

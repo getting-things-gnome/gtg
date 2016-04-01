@@ -22,11 +22,11 @@ simple_color_selector: a module defining a widget allowing to pick a color
 from a palette. The widget also allows to define and add new colors.
 """
 
-from gi.repository import GObject, Gtk, Gdk
-
 import math
 
-from GTG import _
+from gi.repository import GObject, Gtk, Gdk
+
+from GTG.core.translations import _
 
 DEFAULT_PALETTE = [
     "#EF2929", "#AD7FA8", "#729FCF", "#8AE234", "#E9B96E",
@@ -45,25 +45,25 @@ class SimpleColorSelectorPaletteItem(Gtk.DrawingArea):
     """An item of the color selecctor palette"""
 
     def __init__(self, color=None):
-        Gtk.DrawingArea.__init__(self)
+        super().__init__()
         self.color = color
         self.selected = False
         self.add_events(Gdk.EventMask.BUTTON_PRESS_MASK)
         # Connect callbacks
-        #FIXME
-        #self.connect("expose-event", self.on_expose)
+        # FIXME
+        # self.connect("expose-event", self.on_expose)
         self.connect("draw", self.on_expose)
         self.connect("configure_event", self.on_configure)
 
     def __draw(self, cr):
         """Draws the widget"""
         alloc = self.get_allocation()
-        #FIXME - why to use a special variables?
+        # FIXME - why to use a special variables?
         alloc_w, alloc_h = alloc.width, alloc.height
         # Drawing context
-        #cr_ctxt    = Gdk.cairo_create(self.window) # pylint: disable-msg=E1101
-        #gdkcontext = Gdk.CairoContext(cr_ctxt)
-        #FIXME
+        # cr_ctxt    = Gdk.cairo_create(self.window)
+        # gdkcontext = Gdk.CairoContext(cr_ctxt)
+        # FIXME
         gdkcontext = cr
 
         # Draw rectangle
@@ -81,7 +81,7 @@ class SimpleColorSelectorPaletteItem(Gtk.DrawingArea):
         gdkcontext.rectangle(0, 0, alloc_w, alloc_h)
         gdkcontext.stroke()
 
-          # If selected draw a symbol
+        # If selected draw a symbol
         if(self.selected):
             size = alloc_h * 0.50 - 3
             pos_x = math.floor((alloc_w - size) / 2)
@@ -103,17 +103,17 @@ class SimpleColorSelectorPaletteItem(Gtk.DrawingArea):
             gdkcontext.line_to(pos_x + size, pos_y)
             gdkcontext.stroke()
 
-    ### callbacks ###
+    # callbacks #####
     def on_expose(self, widget, cr):
         """Callback: redraws the widget when it is exposed"""
         self.__draw(cr)
 
     def on_configure(self, widget, params):
         """Callback: redraws the widget when it is exposed"""
-        #FIXME - missing cairo context
-        #self.__draw(cr)
+        # FIXME - missing cairo context
+        # self.__draw(cr)
 
-    ### PUBLIC IF ###
+    # PUBLIC IF #####
     def set_color(self, color):
         """Defines the widget color"""
         self.color = color
@@ -133,7 +133,7 @@ class SimpleColorSelector(Gtk.Box):
      to define new colors."""
 
     def __init__(self, width=9, colors=None, custom_colors=None):
-        Gtk.Box.__init__(self, orientation=Gtk.Orientation.VERTICAL)
+        super().__init__(orientation=Gtk.Orientation.VERTICAL)
         self.width = width
         # widget model
         if colors is None:
@@ -234,18 +234,12 @@ class SimpleColorSelector(Gtk.Box):
         # Draw the add button
         buttons_hbox = Gtk.Box()
         cc_vbox.pack_start(buttons_hbox, True, True, 0)
-        img = Gtk.Image()
-        img.set_from_stock(Gtk.STOCK_ADD, Gtk.IconSize.BUTTON)
         self.add_button = Gtk.Button()
-        self.add_button.set_image(img)
-        self.add_button.set_label(_("Add custom color"))
+        self.add_button.set_label("Add custom color")
         buttons_hbox.pack_start(self.add_button, True, False, 0)
         self.add_button.connect("clicked", self.on_color_add)
         # Draw the clear selected color button
-        img = Gtk.Image()
-        img.set_from_stock(Gtk.STOCK_REMOVE, Gtk.IconSize.BUTTON)
         self.clear_button = Gtk.Button()
-        self.clear_button.set_image(img)
         self.clear_button.set_label(_("Clear selected color"))
         buttons_hbox.pack_start(self.clear_button, True, False, 0)
         self.clear_button.connect("clicked", self.on_color_clear)
@@ -288,7 +282,7 @@ class SimpleColorSelector(Gtk.Box):
         """Callback: when adding a new color, show the color definition
         window, update the model, notifies the parent."""
         color_dialog = Gtk.ColorSelectionDialog(_('Choose a color'))
-#FIXME
+        # FIXME
         colorsel = color_dialog.get_color_selection()
         if self.selected_col is not None:
             color = Gdk.color_parse(self.selected_col.color)
@@ -297,8 +291,8 @@ class SimpleColorSelector(Gtk.Box):
         new_color = colorsel.get_current_color()
         # Check response_id and set color if required
         if response == Gtk.ResponseType.OK and new_color:
-#FIXME
-            #strcolor = Gtk.color_selection_palette_to_string([new_color])
+            # FIXME
+            # strcolor = Gtk.color_selection_palette_to_string([new_color])
             strcolor = new_color.to_string()
             # Add the color to the palette and notify
             if strcolor not in self.colors:

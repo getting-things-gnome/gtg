@@ -33,7 +33,7 @@ class GTGCalendar(GObject.GObject):
     DATE_KIND_START = "start"
     DATE_KIND_CLOSED = "closed"
 
-    #Gobject signal description
+    # Gobject signal description
     __signal_type__ = (GObject.SignalFlags.RUN_FIRST,
                        None,
                        [])
@@ -41,7 +41,7 @@ class GTGCalendar(GObject.GObject):
     __gsignals__ = {'date-changed': __signal_type__, }
 
     def __init__(self):
-        super(GTGCalendar, self).__init__()
+        super().__init__()
         self.__builder = Gtk.Builder()
         self.__builder.add_from_file(GnomeConfig.CALENDAR_UI_FILE)
         self.__date_kind = None
@@ -121,18 +121,18 @@ class GTGCalendar(GObject.GObject):
         self.__window.show()
         self.__window.grab_add()
 
-        #We grab the pointer in the calendar
-        #Gdk.pointer_grab(
-            #self.__window.get_window(),
-            #True,
-            #Gdk.ModifierType.BUTTON1_MASK | Gdk.ModifierType.MOD2_MASK
-        #)
-        #FIXME THIS DOES NOT WORK!!!!!!!
+        # We grab the pointer in the calendar
+        # Gdk.pointer_grab(
+        #   self.__window.get_window(),
+        #   True,
+        #   Gdk.ModifierType.BUTTON1_MASK | Gdk.ModifierType.MOD2_MASK
+        # )
+        # FIXME THIS DOES NOT WORK!!!!!!!
         Gdk.pointer_grab(
             self.get_window(),
             True,
-            #Gdk.ModifierType.BUTTON1_MASK | Gdk.ModifierType.MOD2_MASK,
-            #FIXME!!!! JUST GUESSING THE TYPE
+            # Gdk.ModifierType.BUTTON1_MASK | Gdk.ModifierType.MOD2_MASK,
+            # FIXME!!!! JUST GUESSING THE TYPE
             Gdk.EventMask.ALL_EVENTS_MASK,
             None,
             None,

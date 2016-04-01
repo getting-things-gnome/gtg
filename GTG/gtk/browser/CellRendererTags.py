@@ -17,14 +17,10 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-#=== IMPORT ===================================================================
-
-# system imports
 from gi.repository import GObject, GLib, Gtk, Gdk
 import cairo
-from GTG.tools.logger import Log
 
-#=== MAIN CLASS ===============================================================
+from GTG.tools.logger import Log
 
 
 class CellRendererTags(Gtk.CellRenderer):
@@ -76,7 +72,7 @@ class CellRendererTags(Gtk.CellRenderer):
 
     # Class methods
     def __init__(self):
-        Gtk.CellRenderer.__init__(self)
+        super().__init__()
         self.tag_list = None
         self.tag = None
         self.xpad = 1
@@ -109,8 +105,6 @@ class CellRendererTags(Gtk.CellRenderer):
             return
 
         # Drawing context
-        #cr         = window.cairo_create()
-        #gdkcontext = Gdk.CairoContext(cr)
         gdkcontext = cr
         gdkcontext.set_antialias(cairo.ANTIALIAS_NONE)
 

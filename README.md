@@ -10,81 +10,89 @@ in mind so it can be used as more than just GTD software.
 GTG is intended to help you track everything you need to do and need to know,
 from small tasks to large projects.
 
-## Dependencies
+## INSTALLING AND RUNNING
 
-GTG depends on the following packages:
+In order to download and run GTG Developer Version, do the following steps 
+(Debian-based systems):
 
- * Python, version 3.0 or above
- * PyGTK
- * python-support
- * python-xdg
- * python-dbus
- * python-liblarch 
- * yelp (to read GTG documentation)
+DOWNLOAD: 
+Execute this command to get the latest Developer package and then move to that directory:
 
-Please refer to your system documentation for information on how to install
-these modules if they're not currently available.
+    $ git clone https://github.com/getting-things-gnome/gtg.git
+    $ cd gtg
 
-To install the all the required packages providing the basic features on
-Debian-based systems, execute the following command:
-    $ sudo apt-get install python-support python-gtk2 python-gnome2 \
-         python-glade2 python-xdg python-dbus python-liblarch yelp
+RUNNING: 
+At first, install python3 dependencies by typing the following command:
+ 
+    $ sudo apt-get install python3-pip
+
+Running of this developer version of GTG will not be possible without installing 
+liblarch at first so clone and install liblarch:
+
+    $ pip3 install -r requirements.txt
+
+RUN:
+In order to run GTG from this Developers repository, you need to launch the debug.sh script:
+
+    $ ./gtg.sh
+
+Getting Things GNOME launches.
+
+If prompted, you may be required to install also python3-xdg and python3-dbus packages manually. Simply write a command:
+
+    $ sudo apt-get install python3-xdg python3-dbus
+
+Run the script again.
+
 
 There are additional plugins (modules for extending the user interface) and
 synchronization services (modules for importing/exporting tasks from/to
 external services) which needs additional packages to work correctly.
 
-### Dependencies for Plugins
+### DEPENDENCIES FOR PLUGINS
 
 "Bugzilla" plugin dependencies:
-  * python-bugz
+  * python3-bugz
 
 "Export and print" plugin dependencies:
-  * python-cheetah
+  * python3-cheetah
   * pdflatex
   * pdftk
   * pdfjam
 
 Installable on Debian-based system via
-    $ sudo apt-get install python-cheetah pdftk pdfjam texlive-latex-base
-
-"Geolocalized tasks" plugin is not maintained for a long time and needs to be
-rewritten from scratch. Dependencies:
-  * python-geoclue
-  * python-clutter
-  * python-clutter-gtk
-  * python-champlain
-  * python-champlain-gtk
+    
+    $ sudo apt-get install python3-cheetah pdftk pdfjam texlive-latex-base
 
 "Hamster Time Tracker Integration" plugin needs a running instance of Hamster.
 
 "Notification area" plugin has only an optional dependence for systems
 which supports indicators:
-  * python-appindicator
+  * python3-appindicator
 
 "Send task via email" plugin does not have any external dependencies.
 
 "Closed tasks remover" plugin does not have any external dependencies.
 
 "Tomboy/Gnote" plugin needs a running instance of Tomboy or Gnote.
-python-dbus
+  * python3-dbus
 
 "Urgency Color" plugin does not have any external dependencies.
 
-### Dependencies for Synchronization Services
+### DEPENDENCIES FOR SYNCHRONIZATION SERVICES
 
 Evolution synchronization service has dependencies:
-  * python-evolution
-  * python-dateutil
+  * python3-evolution
+  * python3-dateutil
 
 Because of a bug in PyGTK (see https://bugs.launchpad.net/gtg/+bug/936183),
 the synchronization service freezes GTG and the synchronization service can't be used.
 
 MantisBT synchronization service has a dependency:
-  * python-suds
+  * python3-suds
 
 Launchpad synchronization service has a dependency:
-  * python-launchpadlib
+  * python3-launchpadlib
 
 Gnote and Tomboy synchronization services has no external dependency.
 
@@ -92,33 +100,11 @@ Identica and Twitter synchronization services are shipped with the local
 version of Tweety library.
 
 Remember the Milk synchronization service is shipped with a library for RTM api. It has an external dependency:
-  * python-dateutil
+  * python3-dateutil
 
 Remember the Milk is not maintained for a long time and might be potentially harmful.
 
-## Installing and Running
-
-To install GTG, either unpack the tarball:
-
-    $ tar xzvf gtg.tar.gz
-
-or check out our bazaar branch for a development version (we try to keep those
-unbroken and ready for production use):
-
-    $ bzr branch lp:gtg
-
-To run GTG, either execute it directly from the source folder:
-
-    $ cd gtg/
-    $ ./gtg
-
-or install it system-wide (must install as root to install system-wide):
-
-    $ cd gtg
-    $ sudo python setup.py install # must be root to install system-wide
-    $ gtg
-
-### How To Use GTG?
+### HOW TO USE GTG?
 
 Please refer to our documentation to get a thorough explanation on how GTG
 works.
@@ -137,9 +123,9 @@ command:
 If you want to read the documentation directly from the source code, use
 this command (from the source root dir):
 
-    $ yelp doc/userdoc/C/index.page
+    $ yelp docs/userdoc/C/index.page
 
-### Using GTG from the command line
+### USING GTG FROM COMMAND LINE
 
 GTG provides two command line tools that allows to interact with GTG:
 
@@ -157,14 +143,15 @@ If you have installed gtg, you can access those by executing:
     $ man gtcli
     $ man gtg_new_task
 
-## Want to know more?
+## WANT TO KNOW MORE?
 
  * GTG Website: http://gtgnome.net/
+ * GTG GitHub latest repository: https://github.com/getting-things-gnome/gtg
  * GTG project page on Launchpad: https://launchpad.net/gtg
  * GTG Wiki: http://live.gnome.org/gtg/
  * GTG developer's documentation: http://gtg.readthedocs.org/en/latest/index.html
 
 Feel free to join our user mailing-list to receive news about GTG. You can
-register on this mailing-list from this page: https://launchpad.net/~gtg-user
+register to our mailing-list from this page: https://launchpad.net/~gtg-user
 
 Thanks for using GTG!

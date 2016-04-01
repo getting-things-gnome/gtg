@@ -21,7 +21,7 @@ import champlain
 class MarkerLayer(champlain.Layer):
 
     def __init__(self):
-        champlain.Layer.__init__(self)
+        super().__init__()
         # a marker can also be set in RGB with ints
         self.gray = Clutter.Color(51, 51, 51)
 

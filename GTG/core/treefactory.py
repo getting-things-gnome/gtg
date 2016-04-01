@@ -19,16 +19,15 @@
 
 from datetime import datetime
 
-from GTG import _
-from liblarch import Tree
-from GTG.core.task import Task
-from GTG.core.tag import Tag
-from GTG.core import CoreConfig
 from GTG.core.search import search_filter
+from GTG.core import tag
+from GTG.core.task import Task
+from GTG.core.translations import _
 from GTG.tools.dates import Date
+from liblarch import Tree
 
 
-class TreeFactory:
+class TreeFactory(object):
 
     def __init__(self):
         # Keep the tree in memory jus in case we have to use it for filters.
@@ -71,9 +70,8 @@ class TreeFactory:
         '''
         tagtree = Tree()
 
-        ### building the initial tags
         # Build the "all tasks tag"
-        alltag = Tag(CoreConfig.ALLTASKS_TAG, req=req)
+        alltag = tag.Tag(tag.ALLTASKS_TAG, req=req)
         alltag.set_attribute("special", "all")
         alltag.set_attribute("label", "<span weight='bold'>%s</span>"
                              % _("All tasks"))
@@ -81,10 +79,10 @@ class TreeFactory:
         alltag.set_attribute("order", 0)
         tagtree.add_node(alltag)
         p = {}
-        self.tasktree.add_filter(CoreConfig.ALLTASKS_TAG,
+        self.tasktree.add_filter(tag.ALLTASKS_TAG,
                                  self.alltag, parameters=p)
         # Build the "without tag tag"
-        notag_tag = Tag(CoreConfig.NOTAG_TAG, req=req)
+        notag_tag = tag.Tag(tag.NOTAG_TAG, req=req)
         notag_tag.set_attribute("special", "notag")
         notag_tag.set_attribute("label", "<span weight='bold'>%s</span>"
                                 % _("Tasks with no tags"))
@@ -92,11 +90,11 @@ class TreeFactory:
         notag_tag.set_attribute("order", 2)
         tagtree.add_node(notag_tag)
         p = {}
-        self.tasktree.add_filter(CoreConfig.NOTAG_TAG,
+        self.tasktree.add_filter(tag.NOTAG_TAG,
                                  self.notag, parameters=p)
 
         # Build the search tag
-        search_tag = Tag(CoreConfig.SEARCH_TAG, req=req)
+        search_tag = tag.Tag(tag.SEARCH_TAG, req=req)
         search_tag.set_attribute("special", "search")
         search_tag.set_attribute("label",
                                  "<span weight='bold'>%s</span>" % _("Search"))
@@ -104,16 +102,16 @@ class TreeFactory:
         search_tag.set_attribute("order", 1)
         tagtree.add_node(search_tag)
         p = {}
-        self.tasktree.add_filter(CoreConfig.SEARCH_TAG,
+        self.tasktree.add_filter(tag.SEARCH_TAG,
                                  search_filter, parameters=p)
 
         # Build the separator
-        sep_tag = Tag(CoreConfig.SEP_TAG, req=req)
+        sep_tag = tag.Tag(tag.SEP_TAG, req=req)
         sep_tag.set_attribute("special", "sep")
         sep_tag.set_attribute("order", 3)
         tagtree.add_node(sep_tag)
 
-        #### Filters
+        # Filters
         tagtree.add_filter('activetag', self.actively_used_tag)
         tagtree.add_filter('usedtag', self.used_tag)
 
@@ -128,7 +126,7 @@ class TreeFactory:
         self.tagtree_loaded = True
         return tagtree
 
-    ################# Tag Filters ##########################################
+    # Tag Filters ##########################################
 
     # filter to display only tags with active tasks
     def actively_used_tag(self, node, parameters=None):
@@ -138,7 +136,7 @@ class TreeFactory:
     def used_tag(self, node, parameters=None):
         return node.is_used()
 
-    ################# Task Filters #########################################
+    # Task Filters #########################################
     # That one is used to filters tag. Is it built dynamically each times
     # a tag is added to the tagstore
     def tag_filter(self, node, parameters):

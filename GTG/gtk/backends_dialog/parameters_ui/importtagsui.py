@@ -16,11 +16,11 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
+from functools import reduce
 
 from gi.repository import Gtk
 
-from GTG.backends.genericbackend import GenericBackend
-from functools import reduce
+from GTG.core.tag import ALLTASKS_TAG
 
 
 class ImportTagsUI(Gtk.Box):
@@ -43,8 +43,7 @@ class ImportTagsUI(Gtk.Box):
                              radio button
         @param parameter_name: the backend parameter this widget should modify
         '''
-        super(ImportTagsUI, self).__init__(
-            orientation=Gtk.Orientation.VERTICAL)
+        super().__init__(orientation=Gtk.Orientation.VERTICAL)
         self.backend = backend
         self.req = req
         self.title = title
@@ -97,7 +96,7 @@ class ImportTagsUI(Gtk.Box):
     def commit_changes(self):
         '''Saves the changes to the backend parameter'''
         if self.all_tags_radio.get_active():
-            tags = [GenericBackend.ALLTASKS_TAG]
+            tags = [ALLTASKS_TAG]
         else:
             tags = self.tags_entry.get_text().split(",")
             # stripping spaces
@@ -117,7 +116,7 @@ class ImportTagsUI(Gtk.Box):
         the correct radio button
         '''
         tags_list = self.backend.get_parameters()[self.parameter_name]
-        has_all_tasks = GenericBackend.ALLTASKS_TAG in tags_list
+        has_all_tasks = ALLTASKS_TAG in tags_list
         self.all_tags_radio.set_active(has_all_tasks)
         self.some_tags_radio.set_active(not has_all_tasks)
         self._refresh_textbox_state()

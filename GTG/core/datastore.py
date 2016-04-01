@@ -21,25 +21,24 @@ Contains the Datastore object, which is the manager of all the active backends
 (both enabled and disabled ones)
 """
 
-TAG_XMLFILE = "tags.xml"
-TAG_XMLROOT = "tagstore"
-
+from collections import deque
 import threading
 import uuid
-import os.path
-from collections import deque
 
 from GTG.backends.backendsignals import BackendSignals
 from GTG.backends.genericbackend import GenericBackend
-from GTG.core import CoreConfig
+from GTG.core.config import CoreConfig
 from GTG.core import requester
+from GTG.core.dirs import PROJECTS_XMLFILE, TAGS_XMLFILE
 from GTG.core.search import parse_search_query, search_filter, InvalidQuery
-from GTG.core.tag import Tag
+from GTG.core.tag import Tag, SEARCH_TAG
 from GTG.core.task import Task
 from GTG.core.treefactory import TreeFactory
 from GTG.tools import cleanxml
 from GTG.tools.borg import Borg
 from GTG.tools.logger import Log
+
+TAG_XMLROOT = "tagstore"
 
 
 class DataStore(object):
@@ -60,7 +59,7 @@ class DataStore(object):
         self.treefactory = TreeFactory()
         self._tasks = self.treefactory.get_tasks_tree()
         self.requester = requester.Requester(self, global_conf)
-        self.tagfile = None
+        self.tagfile_loaded = False
         self._tagstore = self.treefactory.get_tags_tree(self.requester)
         self.load_tag_tree()
         self._backend_signals = BackendSignals()
@@ -77,7 +76,7 @@ class DataStore(object):
         self.filtered_datastore = FilteredDataStore(self)
         self._backend_mutex = threading.Lock()
 
-    ### Accessor to embedded objects in DataStore ############################
+    # Accessor to embedded objects in DataStore ##############################
     def get_tagstore(self):
         """
         Return the Tagstore associated with this DataStore
@@ -103,7 +102,7 @@ class DataStore(object):
         """
         return self._tasks
 
-    ### Tags functions ########################################################
+    # Tags functions ##########################################################
     def _add_new_tag(self, name, tag, filter_func, parameters, parent_id=None):
         """ Add tag into a tree """
         if self._tagstore.has_node(name):
@@ -134,7 +133,7 @@ class DataStore(object):
             parameters = parse_search_query(query)
         except InvalidQuery as e:
             Log.warning("Problem with parsing query '%s' (skipping): %s" %
-                       (query, e.message))
+                        (query, e.message))
             return None
 
         # Create own copy of attributes and add special attributes label, query
@@ -144,7 +143,7 @@ class DataStore(object):
 
         tag = Tag(name, req=self.requester, attributes=init_attr)
         self._add_new_tag(name, tag, search_filter, parameters,
-                          parent_id=CoreConfig.SEARCH_TAG)
+                          parent_id=SEARCH_TAG)
         self.save_tagtree()
         return tag
 
@@ -204,8 +203,7 @@ class DataStore(object):
         """
         Loads the tag tree from a xml file
         """
-        tagfile = os.path.join(CoreConfig().get_data_dir(), TAG_XMLFILE)
-        doc, xmlstore = cleanxml.openxmlfile(tagfile, TAG_XMLROOT)
+        doc, xmlstore = cleanxml.openxmlfile(TAGS_XMLFILE, TAG_XMLROOT)
         for t in xmlstore.childNodes:
             tagname = t.getAttribute("name")
             parent = t.getAttribute("parent")
@@ -218,7 +216,7 @@ class DataStore(object):
                     at_val = t.getAttribute(at_name)
                     tag_attr[at_name] = at_val
 
-            if parent == CoreConfig.SEARCH_TAG:
+            if parent == SEARCH_TAG:
                 query = t.getAttribute("query")
                 tag = self.new_search_tag(tagname, query, tag_attr)
             else:
@@ -226,11 +224,11 @@ class DataStore(object):
                 if parent:
                     tag.set_parent(parent)
 
-        self.tagfile = tagfile
+        self.tagfile_loaded = True
 
     def save_tagtree(self):
         """ Saves the tag tree to an XML file """
-        if not self.tagfile:
+        if not self.tagfile_loaded:
             return
 
         doc, xmlroot = cleanxml.emptydoc(TAG_XMLROOT)
@@ -260,9 +258,9 @@ class DataStore(object):
             xmlroot.appendChild(t_xml)
             already_saved.append(tagname)
 
-        cleanxml.savexml(self.tagfile, doc, backup=True)
+        cleanxml.savexml(TAGS_XMLFILE, doc, backup=True)
 
-    ### Tasks functions #######################################################
+    # Tasks functions #########################################################
     def get_all_tasks(self):
         """
         Returns list of all keys of active tasks
@@ -345,7 +343,7 @@ class DataStore(object):
             return True
 
     ##########################################################################
-    ### Backends functions
+    # Backends functions
     ##########################################################################
     def get_all_backends(self, disabled=False):
         """
@@ -404,9 +402,9 @@ class DataStore(object):
             # saving the backend in the correct dictionary (backends for
             # enabled backends, disabled_backends for the disabled ones)
             # this is useful for retro-compatibility
-            if not GenericBackend.KEY_ENABLED in backend_dic:
+            if GenericBackend.KEY_ENABLED not in backend_dic:
                 source.set_parameter(GenericBackend.KEY_ENABLED, True)
-            if not GenericBackend.KEY_DEFAULT_BACKEND in backend_dic:
+            if GenericBackend.KEY_DEFAULT_BACKEND not in backend_dic:
                 source.set_parameter(GenericBackend.KEY_DEFAULT_BACKEND, True)
             # if it's enabled, we initialize it
             if source.is_enabled() and \
@@ -580,9 +578,7 @@ class DataStore(object):
                 t_xml.setAttribute(str(key), value)
             # Saving all the projects at close
             xmlconfig.appendChild(t_xml)
-        datadir = CoreConfig().get_data_dir()
-        datafile = os.path.join(datadir, CoreConfig.DATA_FILE)
-        cleanxml.savexml(datafile, doc, backup=True)
+        cleanxml.savexml(PROJECTS_XMLFILE, doc, backup=True)
         # Saving the tagstore
         self.save_tagtree()
 
@@ -604,7 +600,7 @@ class DataStore(object):
         return self._backend_mutex
 
 
-class TaskSource():
+class TaskSource(object):
     """
     Transparent interface between the real backend and the DataStore.
     Is in charge of connecting and disconnecting to signals
@@ -845,7 +841,7 @@ class FilteredDataStore(Borg):
     """
 
     def __init__(self, datastore):
-        super(FilteredDataStore, self).__init__()
+        super().__init__()
         self.datastore = datastore
 
     def __getattr__(self, attr):

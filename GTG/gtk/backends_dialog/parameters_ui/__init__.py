@@ -24,17 +24,18 @@ built for them: it should play along the lines of the separation between GTG
 server and client
 '''
 
-from gi.repository import Gtk
 import functools
 
-from GTG import _
+from gi.repository import Gtk
+
 from GTG.backends.genericbackend import GenericBackend
-from GTG.gtk.backends_dialog.parameters_ui.importtagsui import ImportTagsUI
-from GTG.gtk.backends_dialog.parameters_ui.textui import TextUI
-from GTG.gtk.backends_dialog.parameters_ui.passwordui import PasswordUI
-from GTG.gtk.backends_dialog.parameters_ui.periodui import PeriodUI
+from GTG.core.translations import _
 from GTG.gtk.backends_dialog.parameters_ui.checkboxui import CheckBoxUI
+from GTG.gtk.backends_dialog.parameters_ui.importtagsui import ImportTagsUI
+from GTG.gtk.backends_dialog.parameters_ui.passwordui import PasswordUI
 from GTG.gtk.backends_dialog.parameters_ui.pathui import PathUI
+from GTG.gtk.backends_dialog.parameters_ui.periodui import PeriodUI
+from GTG.gtk.backends_dialog.parameters_ui.textui import TextUI
 
 
 class ParametersUI(Gtk.Box):
@@ -51,8 +52,7 @@ class ParametersUI(Gtk.Box):
 
         @param requester: a GTG.core.requester.Requester object
         '''
-        super(ParametersUI, self).__init__(
-            False, orientation=Gtk.Orientation.VERTICAL)
+        super().__init__(orientation=Gtk.Orientation.VERTICAL)
         self.req = requester
         self.set_spacing(10)
 
@@ -139,7 +139,7 @@ class ParametersUI(Gtk.Box):
             return
         for parameter_name, widget in self.parameter_widgets:
             if parameter_name in backend_parameters:
-                #FIXME I am not 100% about this change
+                # FIXME I am not 100% about this change
                 self.pack_start(widget(backend), True, True, 0)
         self.show_all()
 

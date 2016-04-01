@@ -31,7 +31,7 @@ from GTG.plugins.geolocalized_tasks.marker import MarkerLayer
 # to GtkBuilder, it's your job ;)
 
 
-class geolocalizedTasks:
+class GeolocalizedTasks(object):
 
     def __init__(self):
         self.geoclue = Geoclue.DiscoverLocation()
@@ -45,7 +45,7 @@ class geolocalizedTasks:
 
         self.PROXIMITY_FACTOR = 5  # 5 km
         self.LOCATION_DETERMINATION_METHOD = []
-            # "network", "gps", "cellphone"
+        # "network", "gps", "cellphone"
 
         for provider in self.geoclue.get_available_providers():
             status = self.geoclue.provider_status(provider['object'])
@@ -79,8 +79,7 @@ class geolocalizedTasks:
         image_assign_location.show()
 
         # the menu intem for the tag context
-        self.context_item = Gtk.ImageMenuItem("Assign a location to this tag")
-        self.context_item.set_image(image_assign_location)
+        self.context_item = Gtk.MenuItem("Assign a location to this tag")
         # TODO: add a short cut to the menu
 
         self.context_item.connect('activate',
@@ -266,7 +265,7 @@ class geolocalizedTasks:
                                     return False
         return True
 
-    #=== GEOLOCALIZED PREFERENCES=============================================
+    # GEOLOCALIZED PREFERENCES===============================================
     def on_geolocalized_preferences(self):
         wTree = Gtk.glade.XML(self.glade_file, "Preferences")
         dialog = wTree.get_widget("Preferences")
@@ -372,9 +371,9 @@ class geolocalizedTasks:
         else:
             dialog.destroy()
 
-    #=== GEOLOCALIZED PREFERENCES==============================================
+    # GEOLOCALIZED PREFERENCES================================================
 
-    #=== SET TASK LOCATION ====================================================
+    # SET TASK LOCATION ======================================================
     def set_task_location(self, widget, plugin_api, location=None):
         wTree = Gtk.glade.XML(self.glade_file, "SetTaskLocation")
         dialog = wTree.get_widget("SetTaskLocation")
@@ -595,9 +594,9 @@ class geolocalizedTasks:
         (latitude, longitude) = view.get_coords_at(int(event.x), int(event.y))
         self.marker_list[0].set_position(latitude, longitude)
 
-    #=== SET TASK LOCATION ====================================================
+    # SET TASK LOCATION ======================================================
 
-    #=== TAG VIEW CONTEXT MENU ================================================
+    # TAG VIEW CONTEXT MENU ==================================================
     def on_contextmenu_tag_location(self, widget, plugin_api):
         wTree = Gtk.glade.XML(self.glade_file, "TagLocation")
         dialog = wTree.get_widget("TagLocation")
@@ -705,7 +704,7 @@ class geolocalizedTasks:
         else:
             dialog.destroy()
 
-    #=== TAG VIEW CONTEXT MENU ================================================
+    # TAG VIEW CONTEXT MENU ==================================================
     def zoom_in(self, widget, view):
         view.zoom_in()
 

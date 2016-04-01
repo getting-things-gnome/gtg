@@ -20,11 +20,11 @@
 
 from gi.repository import Gtk
 
-from GTG import _, ngettext
+from GTG.core.translations import _, ngettext
 from GTG.gtk import ViewConfig
 
 
-class DeletionUI():
+class DeletionUI(object):
 
     MAXIMUM_TIDS_TO_SHOW = 5
 
@@ -85,9 +85,9 @@ class DeletionUI():
             # of tasks to delete
             label = self.builder.get_object("label1")
             label_text = label.get_text()
-            cdlabel2 = self.builder.get_object("cd-label2")
-            cdlabel3 = self.builder.get_object("cd-label3")
-            cdlabel4 = self.builder.get_object("cd-label4")
+            cdlabel2 = self.builder.get_object("cd_question_label")
+            cdlabel3 = self.builder.get_object("cd_cancel_label")
+            cdlabel4 = self.builder.get_object("cd_delete_label")
             singular = len(tasklist)
             label_text = ngettext("Deleting a task cannot be undone, "
                                   "and will delete the following task: ",

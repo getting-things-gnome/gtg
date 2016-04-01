@@ -17,10 +17,10 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-from unittest import TestCase
 from datetime import date, timedelta
+from unittest import TestCase
 
-from GTG import _
+from GTG.core.translations import _
 from GTG.tools.dates import Date
 
 

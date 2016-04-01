@@ -34,6 +34,7 @@ from GTG.tools.borg import Borg
 from GTG.backends.genericbackend import GenericBackend
 from GTG.backends.backendsignals import BackendSignals
 from GTG.backends.syncengine import SyncEngine, SyncMeme
+from GTG.core.tag import ALLTASKS_TAG
 from GTG.tools.logger import Log
 from GTG.tools.watchdog import Watchdog
 from GTG.tools.interruptible import interruptible
@@ -44,16 +45,16 @@ class GenericTomboy(GenericBackend):
     '''Backend class for Tomboy/Gnote'''
 
 ###############################################################################
-### Backend standard methods ##################################################
+# Backend standard methods ####################################################
 ###############################################################################
     def __init__(self, parameters):
         """
         See GenericBackend for an explanation of this function.
         """
-        super(GenericTomboy, self).__init__(parameters)
+        super().__init__(parameters)
         # loading the saved state of the synchronization, if any
-        self.data_path = os.path.join('backends/tomboy/',
-                                      "sync_engine-" + self.get_id())
+        self.data_path = os.path.join(
+            'tomboy', 'sync_engine-' + self.get_id())
         self.sync_engine = self._load_pickled_file(self.data_path,
                                                    SyncEngine())
         # we let some time pass before considering a tomboy task for importing,
@@ -126,7 +127,7 @@ class GenericTomboy(GenericBackend):
         super(GenericTomboy, self).quit(disable)
 
 ###############################################################################
-### Something got removed #####################################################
+# Something got removed #######################################################
 ###############################################################################
     @interruptible
     def on_note_deleted(self, note, something):
@@ -186,7 +187,7 @@ class GenericTomboy(GenericBackend):
             self.datastore.request_task_deletion(tid)
 
 ###############################################################################
-### Process tasks #############################################################
+# Process tasks ###############################################################
 ###############################################################################
     def _process_tomboy_note(self, note):
         '''
@@ -313,7 +314,7 @@ class GenericTomboy(GenericBackend):
                     self._exec_lost_syncability(tid, note)
 
 ###############################################################################
-### Helper methods ############################################################
+# Helper methods ##############################################################
 ###############################################################################
     @interruptible
     def on_note_saved(self, note):
@@ -355,7 +356,7 @@ class GenericTomboy(GenericBackend):
         @returns Boolean
         '''
         attached_tags = self.get_attached_tags()
-        if GenericBackend.ALLTASKS_TAG in attached_tags:
+        if ALLTASKS_TAG in attached_tags:
             return True
         with self.TomboyConnection(self, *self.BUS_ADDRESS) as tomboy:
             with self.DbusWatchdog(self):
@@ -485,7 +486,7 @@ class GenericTomboy(GenericBackend):
         self.save_state()
 
 ###############################################################################
-### Connection handling #######################################################
+# Connection handling #########################################################
 ###############################################################################
     class TomboyConnection(Borg):
         '''
@@ -510,7 +511,7 @@ class GenericTomboy(GenericBackend):
             @param bus_path: the DBus path of Tomboy RemoteControl
             @param bus_interface: the DBus address of Tomboy RemoteControl
             '''
-            super(GenericTomboy.TomboyConnection, self).__init__()
+            super().__init__()
             if hasattr(self, "tomboy_connection_is_ok") and \
                     self.tomboy_connection_is_ok:
                 return
@@ -573,8 +574,9 @@ class GenericTomboy(GenericBackend):
             @param backend: a Backend object
             '''
             self.backend = backend
-            super(GenericTomboy.DbusWatchdog, self).__init__(
-                3, self._when_taking_too_long)
+            super().__init__(
+                timeout=3,
+                error_function=self._when_taking_too_long)
 
         def _when_taking_too_long(self):
             '''

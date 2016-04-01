@@ -17,11 +17,12 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-from gi.repository import Gtk
 import threading
 
-from GTG import _
+from gi.repository import Gtk
+
 from GTG.backends.backendsignals import BackendSignals
+from GTG.core.translations import _
 from GTG.tools.networkmanager import is_connection_up
 
 
@@ -51,7 +52,7 @@ class CustomInfoBar(Gtk.InfoBar):
         @param vmanager: a ViewManager object
         @param backend_id: the id of the backend linked to the infobar
         '''
-        super(CustomInfoBar, self).__init__()
+        super().__init__()
         self.req = req
         self.browser = browser
         self.vmanager = vmanager
@@ -110,7 +111,7 @@ class CustomInfoBar(Gtk.InfoBar):
                 return
             self.set_message_type(Gtk.MessageType.WARNING)
             self.label.set_markup(self.NETWORK_MESSAGE % backend_name)
-            # FIXME: use gtk stock button instead
+            # FIXME: use icon-name button instead
             self.add_button(_('Ok'), Gtk.ResponseType.CLOSE)
 
         elif error_code == BackendSignals.ERRNO_DBUS:
@@ -193,7 +194,8 @@ class CustomInfoBar(Gtk.InfoBar):
         align.set_padding(20, 20, 20, 20)
         align.add(self.text_box)
         vbox.pack_start(align, True, True, 0)
-        button = Gtk.Button(stock=Gtk.STOCK_OK)
+        button = Gtk.Button()
+        button.set_label("OK")
         button.connect("clicked", self._on_text_confirmed)
         button.set_size_request(-1, 40)
         vbox.pack_start(button, False, True, 0)

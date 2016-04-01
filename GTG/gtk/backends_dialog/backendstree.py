@@ -20,8 +20,8 @@
 from gi.repository import Gtk
 from gi.repository import GdkPixbuf
 
+from GTG.core.tag import ALLTASKS_TAG
 from GTG.gtk.colors import get_colored_tags_markup
-from GTG.backends.genericbackend import GenericBackend
 from GTG.backends.backendsignals import BackendSignals
 
 
@@ -42,7 +42,7 @@ class BackendsTree(Gtk.TreeView):
         @param backends_dialog: a reference to the dialog in which this is
         loaded
         '''
-        super(BackendsTree, self).__init__()
+        super().__init__()
         self.dialog = backendsdialog
         self.req = backendsdialog.get_requester()
         self._init_liststore()
@@ -118,9 +118,9 @@ class BackendsTree(Gtk.TreeView):
             if backend.is_enabled():
                 text = backend_name
             else:
-                #FIXME This snippet is on more than 2 places!!!
-                #FIXME create a function which takes a widget and
-                #flag and returns color as #RRGGBB
+                # FIXME This snippet is on more than 2 places!!!
+                # FIXME create a function which takes a widget and
+                # flag and returns color as #RRGGBB
                 style_context = self.get_style_context()
                 color = style_context.get_color(Gtk.StateFlags.INSENSITIVE)
                 color = color.to_color().to_string()
@@ -139,7 +139,7 @@ class BackendsTree(Gtk.TreeView):
         @param tag_names: the list of the tags (strings)
         @return str: the pango markup string
         '''
-        if GenericBackend.ALLTASKS_TAG in tag_names:
+        if ALLTASKS_TAG in tag_names:
             tags_txt = ""
         else:
             tags_txt = get_colored_tags_markup(self.req, tag_names)

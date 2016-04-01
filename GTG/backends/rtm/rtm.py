@@ -1,19 +1,11 @@
 # Python library for Remember The Milk API
 
-__author__ = 'Sridhar Ratnakumar <http://nearfar.org/>'
-__all__ = (
-    'API',
-    'createRTM',
-    'set_log_level',
-)
-
-
 import urllib.request
 import urllib.parse
 import urllib.error
 from hashlib import md5
 
-from GTG import _
+from GTG.core.translations import _
 from GTG.tools.logger import Log
 
 _use_jsonlib = False
@@ -38,6 +30,13 @@ if not _use_jsonlib:
                 "falling back to the internal JSON parser. "
                 "Please consider installing the simplejson module from "
                 "http://pypi.python.org/pypi/simplejson.")
+
+__author__ = 'Sridhar Ratnakumar <http://nearfar.org/>'
+__all__ = (
+    'API',
+    'createRTM',
+    'set_log_level',
+)
 
 SERVICE_URL = 'http://api.rememberthemilk.com/services/rest/'
 AUTH_SERVICE_URL = 'http://www.rememberthemilk.com/services/auth/'
@@ -141,7 +140,7 @@ class RTM(object):
         return rsp.auth.token
 
 
-class RTMAPICategory:
+class RTMAPICategory(object):
     "See the `API` structure and `RTM.__init__`"
 
     def __init__(self, rtm, prefix, methods):

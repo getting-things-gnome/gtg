@@ -78,7 +78,7 @@ For more information see unittests:
 
 import re
 
-from GTG import _
+from GTG.core.translations import _
 from GTG.tools.dates import Date
 
 # Generate keywords and their possible translations
@@ -104,14 +104,6 @@ for key in KEYWORDS:
     else:
         possible_words = [key.lower()]
     KEYWORDS[key] = possible_words
-
-# Generate list of possible commands
-SEARCH_COMMANDS = []
-for key in KEYWORDS:
-    for key_command in KEYWORDS[key]:
-        key_command = '!' + key_command
-        if key_command not in SEARCH_COMMANDS:
-            SEARCH_COMMANDS.append(key_command)
 
 
 class InvalidQuery(Exception):

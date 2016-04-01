@@ -15,7 +15,4 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from GTG.plugins.notification_area.notification_area import NotificationArea
-
-# suppress pyflakes warning (given by make lint)
-if False is True:
-    NotificationArea()
+assert NotificationArea

@@ -27,10 +27,10 @@ wants to write a backend.
 
 import os
 
-from GTG import _
-from GTG.backends.genericbackend import GenericBackend
 from GTG.backends.backendsignals import BackendSignals
-from GTG.core import CoreConfig
+from GTG.backends.genericbackend import GenericBackend
+from GTG.core.dirs import DATA_DIR
+from GTG.core.translations import _
 from GTG.tools import cleanxml, taskxml
 
 # Ignore all other elements but this one
@@ -86,13 +86,13 @@ class Backend(GenericBackend):
         The backend should take care if one expected value is None or
         does not exist in the dictionary.
         """
-        super(Backend, self).__init__(parameters)
+        super().__init__(parameters)
         # RETROCOMPATIBILIY
         # NOTE: retrocompatibility from the 0.2 series to 0.3.
         # We convert "filename" to "path and we forget about "filename "
         if "need_conversion" in parameters:
             parameters["path"] = parameters.pop("need_conversion")
-        if not self.KEY_DEFAULT_BACKEND in parameters:
+        if self.KEY_DEFAULT_BACKEND not in parameters:
             parameters[self.KEY_DEFAULT_BACKEND] = True
 
         self.doc, self.xmlproj = cleanxml.openxmlfile(
@@ -113,9 +113,8 @@ class Backend(GenericBackend):
         """
         path = self._parameters["path"]
         if os.sep not in path:
-            # Local path
-            data_dir = CoreConfig().get_data_dir()
-            path = os.path.join(data_dir, path)
+            # This is local path, convert it to absolute path
+            path = os.path.join(DATA_DIR, path)
         return os.path.abspath(path)
 
     def initialize(self):

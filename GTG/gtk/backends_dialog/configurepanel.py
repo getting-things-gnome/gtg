@@ -19,7 +19,7 @@
 
 from gi.repository import Gtk
 
-from GTG import _
+from GTG.core.translations import _
 from GTG.gtk.backends_dialog.parameters_ui import ParametersUI
 from GTG.backends.backendsignals import BackendSignals
 
@@ -36,8 +36,7 @@ class ConfigurePanel(Gtk.Box):
         @param backends_dialog: a reference to the dialog in which this is
         loaded
         '''
-        super(ConfigurePanel, self).__init__(
-            orientation=Gtk.Orientation.VERTICAL)
+        super().__init__(orientation=Gtk.Orientation.VERTICAL)
         self.dialog = backends_dialog
         self.should_spinner_be_shown = False
         self.task_deleted_handle = None
@@ -84,7 +83,7 @@ class ConfigurePanel(Gtk.Box):
         self.human_name_label = Gtk.Label()
         self.human_name_label.set_alignment(xalign=0, yalign=0.5)
 
-        #FIXME in the newer versions of GTK3 there always be Spinner!
+        # FIXME in the newer versions of GTK3 there always be Spinner!
         try:
             self.spinner = Gtk.Spinner()
         except AttributeError:

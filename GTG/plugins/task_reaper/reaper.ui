@@ -32,7 +32,7 @@
                   <object class="GtkSpinButton" id="pref_spinbtn_max_days">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="max_length">3</property>
+                    <property name="max_length">4</property>
                     <property name="invisible_char">&#x2022;</property>
                     <property name="adjustment">adjustment1</property>
                     <property name="climb_rate">0.5</property>
@@ -100,7 +100,6 @@
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <property name="use_stock">True</property>
                 <signal name="clicked" handler="on_btn_preferences_cancel_clicked"/>
               </object>
               <packing>
@@ -113,7 +112,6 @@
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <property name="use_stock">True</property>
                 <signal name="clicked" handler="on_btn_preferences_ok_clicked"/>
               </object>
               <packing>
@@ -130,7 +128,7 @@
   </object>
   <object class="GtkAdjustment" id="adjustment1">
     <property name="lower">1</property>
-    <property name="upper">100</property>
+    <property name="upper">9999</property>
     <property name="step_increment">1</property>
     <property name="page_increment">10</property>
   </object>

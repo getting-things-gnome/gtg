@@ -21,26 +21,28 @@
 Remember the milk backend
 '''
 
-import os
+from functools import reduce
 import cgi
-import uuid
-import time
-import threading
 import datetime
+import os
 import subprocess
+import threading
+import time
+import uuid
+
 from dateutil.tz import tzutc, tzlocal
 
-from GTG.backends.genericbackend import GenericBackend
-from GTG import _
 from GTG.backends.backendsignals import BackendSignals
-from GTG.backends.syncengine import SyncEngine, SyncMeme
-from GTG.backends.rtm.rtm import createRTM, RTMError, RTMAPIError
+from GTG.backends.genericbackend import GenericBackend
 from GTG.backends.periodicimportbackend import PeriodicImportBackend
-from GTG.tools.dates import Date
+from GTG.backends.rtm.rtm import createRTM, RTMError, RTMAPIError
+from GTG.backends.syncengine import SyncEngine, SyncMeme
+from GTG.core.tag import ALLTASKS_TAG
 from GTG.core.task import Task
+from GTG.core.translations import _
+from GTG.tools.dates import Date
 from GTG.tools.interruptible import interruptible
 from GTG.tools.logger import Log
-from functools import reduce
 
 
 class Backend(PeriodicImportBackend):
@@ -67,7 +69,7 @@ class Backend(PeriodicImportBackend):
     }
 
 ###############################################################################
-### Backend standard methods ##################################################
+# Backend standard methods ####################################################
 ###############################################################################
 
     def __init__(self, parameters):
@@ -75,15 +77,15 @@ class Backend(PeriodicImportBackend):
         See GenericBackend for an explanation of this function.
         Loads the saved state of the sync, if any
         '''
-        super(Backend, self).__init__(parameters)
+        super().__init__(parameters)
         # loading the saved state of the synchronization, if any
-        self.sync_engine_path = os.path.join('backends/rtm/',
-                                             "sync_engine-" + self.get_id())
+        self.sync_engine_path = os.path.join(
+            'rtm', 'sync_engine-' + self.get_id())
         self.sync_engine = self._load_pickled_file(self.sync_engine_path,
                                                    SyncEngine())
         # reloading the oauth authentication token, if any
-        self.token_path = os.path.join('backends/rtm/',
-                                       "auth_token-" + self.get_id())
+        self.token_path = os.path.join(
+            'rtm', 'auth_token-' + self.get_id())
         self.token = self._load_pickled_file(self.token_path, None)
         self.enqueued_start_get_task = False
         self.login_event = threading.Event()
@@ -109,17 +111,14 @@ class Backend(PeriodicImportBackend):
         Calls for a user interaction during authentication
         '''
         self.login_event.clear()
-        BackendSignals().interaction_requested(self.get_id(),
-                                               "You need to authenticate to"
-                                               " Remember The Milk. A browser"
-                                               " is opening with a login page."
-                                               "\n When you have  logged in "
-                                               "and given GTG the requested "
-                                               "permissions,\n"
-                                               " press the 'Confirm' button",
-                                               BackendSignals(
-                                               ).INTERACTION_CONFIRM,
-                                               "on_login")
+        BackendSignals().interaction_requested(
+            self.get_id(),
+            "You need to authenticate to Remember The Milk. A browser "
+            "is opening with a login page.\n When you have logged in "
+            "and given GTG the requested permissions,\n "
+            "press the 'Confirm' button",
+            BackendSignals().INTERACTION_CONFIRM,
+            "on_login")
         self.login_event.wait()
 
     def on_login(self):
@@ -129,7 +128,7 @@ class Backend(PeriodicImportBackend):
         self.login_event.set()
 
 ###############################################################################
-### TWO WAY SYNC ##############################################################
+# TWO WAY SYNC ################################################################
 ###############################################################################
 
     def do_periodic_import(self):
@@ -233,7 +232,7 @@ class Backend(PeriodicImportBackend):
                 pass
 
 ###############################################################################
-### Process tasks #############################################################
+# Process tasks ###############################################################
 ###############################################################################
     @interruptible
     def set_task(self, task):
@@ -400,7 +399,7 @@ class Backend(PeriodicImportBackend):
         self.save_state()
 
 ###############################################################################
-### Helper methods ############################################################
+# Helper methods ##############################################################
 ###############################################################################
 
     def _populate_task(self, task, rtm_task):
@@ -486,7 +485,7 @@ class Backend(PeriodicImportBackend):
         @returns bool: True if the task should be synced
         '''
         attached_tags = self.get_attached_tags()
-        if GenericBackend.ALLTASKS_TAG in attached_tags:
+        if ALLTASKS_TAG in attached_tags:
             return True
         for tag in rtm_task.get_tags():
             if "@" + tag in attached_tags:
@@ -494,7 +493,7 @@ class Backend(PeriodicImportBackend):
         return False
 
 ###############################################################################
-### RTM PROXY #################################################################
+# RTM PROXY ###################################################################
 ###############################################################################
 
 
@@ -523,7 +522,7 @@ class RTMProxy(object):
         self.is_not_refreshing.set()
 
     ##########################################################################
-    ### AUTHENTICATION #######################################################
+    # AUTHENTICATION #########################################################
     ##########################################################################
 
     def start_authentication(self):
@@ -595,7 +594,7 @@ class RTMProxy(object):
         return False
 
     ##########################################################################
-    ### RTM TASKS HANDLING ###################################################
+    # RTM TASKS HANDLING #####################################################
     ##########################################################################
 
     def unroll_changes(self, transaction_ids):
@@ -751,7 +750,7 @@ class RTMProxy(object):
 
 
 ###############################################################################
-### RTM TASK ##################################################################
+# RTM TASK ####################################################################
 ###############################################################################
 # dictionaries to translate a RTM status into a GTG one (and back)
 GTG_TO_RTM_STATUS = {Task.STA_ACTIVE: True,

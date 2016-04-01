@@ -39,9 +39,8 @@ class TestInterruptibleDecorator(TestCase):
 
     def test_interruptible_decorator(self):
         """ Tests for the @interruptible decorator. """
-        cancellation_point = lambda: _cancellation_point(
-            lambda: self.quit_condition)
-        thread = Thread(target=self.never_ending, args=(cancellation_point,))
+        thread = Thread(target=self.never_ending, args=(
+            lambda: _cancellation_point(lambda: self.quit_condition),))
         thread.start()
 
         # Wait until thread comes to live

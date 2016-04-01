@@ -22,18 +22,19 @@ This file contains the most generic representation of a backend,
 the GenericBackend class
 """
 
-import os
+from collections import deque
+from functools import reduce
 import errno
+import os
 import pickle
 import threading
-from collections import deque
 
 from GTG.backends.backendsignals import BackendSignals
-from GTG.tools.keyring import Keyring
-from GTG.core import CoreConfig
-from GTG.tools.logger import Log
+from GTG.core.tag import ALLTASKS_TAG
+from GTG.core.dirs import SYNC_DATA_DIR
 from GTG.tools.interruptible import _cancellation_point
-from functools import reduce
+from GTG.tools.keyring import Keyring
+from GTG.tools.logger import Log
 
 PICKLE_BACKUP_NBR = 2
 
@@ -46,9 +47,9 @@ class GenericBackend(object):
     A particular backend should redefine all the methods marked as such.
     '''
 
-   ###########################################################################
-   ### BACKEND INTERFACE #####################################################
-   ###########################################################################
+    ###########################################################################
+    # BACKEND INTERFACE #######################################################
+    ###########################################################################
     # General description of the backend: these parameters are used
     # to show a description of the backend to the user when s/he is
     # considering adding it.
@@ -161,17 +162,19 @@ class GenericBackend(object):
         pass
 
 ###############################################################################
-###### You don't need to reimplement the functions below this line ############
+# You don't need to reimplement the functions below this line #################
 ###############################################################################
 
-   ###########################################################################
-   ### CONSTANTS #############################################################
-   ###########################################################################
+    ###########################################################################
+    # CONSTANTS ###############################################################
+    ###########################################################################
     # BACKEND TYPE DESCRIPTION
     # Each backend must have a "_general_description" attribute, which
     # is a dictionary that holds the values for the following keys.
-    BACKEND_NAME = "name"  # the backend gtg internal name (doesn't change in
-                          # translations, *must be unique*)
+
+    # the backend gtg internal name
+    # (doesn't change in translations, *must be unique*)
+    BACKEND_NAME = "name"
     BACKEND_HUMAN_NAME = "human-friendly-name"  # The name shown to the user
     BACKEND_DESCRIPTION = "description"  # A short description of the backend
     BACKEND_AUTHORS = "authors"  # a list of strings
@@ -182,7 +185,7 @@ class GenericBackend(object):
     TYPE_IMPORT = "import"
     TYPE_EXPORT = "export"
 
-    #"static_parameters" is a dictionary of dictionaries, each of which
+    # "static_parameters" is a dictionary of dictionaries, each of which
     # are a description of a parameter needed to configure the backend and
     # is identified in the outer dictionary by a key which is the name of the
     # parameter.
@@ -192,14 +195,14 @@ class GenericBackend(object):
     PARAM_TYPE = "type"
     # PARAM_TYPE is one of the following (changing this changes the way
     # the user can configure the parameter)
-    TYPE_PASSWORD = "password"  # the real password is stored in the GNOME
-                               # keyring
-                               # This is just a key to find it there
+    # the real password is stored in the GNOME keyring
+    # This is just a key to find it there
+    TYPE_PASSWORD = "password"
     TYPE_STRING = "string"  # generic string, nothing fancy is done
     TYPE_INT = "int"  # edit box can contain only integers
     TYPE_BOOL = "bool"  # checkbox is shown
-    TYPE_LIST_OF_STRINGS = "liststring"  # list of strings. the "," character
-                                         # is prohibited in strings
+    # list of strings. the "," character is prohibited in strings
+    TYPE_LIST_OF_STRINGS = "liststring"
 
     # These parameters are common to all backends and necessary.
     # They will be added automatically to your _static_parameters list
@@ -211,11 +214,6 @@ class GenericBackend(object):
     KEY_ATTACHED_TAGS = "attached-tags"
     KEY_USER = "user"
     KEY_PID = "pid"
-    ALLTASKS_TAG = "gtg-tags-all"  # NOTE: this has been moved here to avoid
-                                  #    circular imports. It's the same as in
-                                  #    the CoreConfig class, because it's the
-                                  #    same thing conceptually. It doesn't
-                                  #    matter it the naming diverges.
 
     _static_parameters_obligatory = {
         KEY_DEFAULT_BACKEND: {
@@ -276,14 +274,14 @@ class GenericBackend(object):
         """
         if self.KEY_DEFAULT_BACKEND not in parameters:
             # if it's not specified, then this is the default backend
-            #(for retro-compatibility with the GTG 0.2 series)
+            # (for retro-compatibility with the GTG 0.2 series)
             parameters[self.KEY_DEFAULT_BACKEND] = True
         # default backends should get all the tasks
         if parameters[self.KEY_DEFAULT_BACKEND] or \
-                (not self.KEY_ATTACHED_TAGS in parameters and
-                 self._general_description[self.BACKEND_TYPE]
-                 == self.TYPE_READWRITE):
-            parameters[self.KEY_ATTACHED_TAGS] = [self.ALLTASKS_TAG]
+                (self.KEY_ATTACHED_TAGS not in parameters and
+                 self._general_description[self.BACKEND_TYPE] ==
+                    self.TYPE_READWRITE):
+            parameters[self.KEY_ATTACHED_TAGS] = [ALLTASKS_TAG]
         self._parameters = parameters
         self._signal_manager = BackendSignals()
         self._is_initialized = False
@@ -310,7 +308,7 @@ class GenericBackend(object):
             # default backends should get all the tasks
             # NOTE: this shouldn't be needed, but it doesn't cost anything and
             #      it could avoid potential tasks losses.
-            return [self.ALLTASKS_TAG]
+            return [ALLTASKS_TAG]
         try:
             return self._parameters[self.KEY_ATTACHED_TAGS]
         except:
@@ -524,7 +522,7 @@ class GenericBackend(object):
         self.datastore = datastore
 
 ###############################################################################
-### HELPER FUNCTIONS ##########################################################
+# HELPER FUNCTIONS ############################################################
 ###############################################################################
     def _store_pickled_file(self, path, data):
         '''
@@ -534,7 +532,7 @@ class GenericBackend(object):
         "backend_name/object_name"
         @param data: the object
         '''
-        path = os.path.join(CoreConfig().get_data_dir(), path)
+        path = os.path.join(SYNC_DATA_DIR, path)
         # mkdir -p
         try:
             os.makedirs(os.path.dirname(path))
@@ -572,7 +570,7 @@ class GenericBackend(object):
         corrupt
         @returns object: the needed object, or default_value
         '''
-        path = os.path.join(CoreConfig().get_data_dir(), path)
+        path = os.path.join(SYNC_DATA_DIR, path)
         if not os.path.exists(path):
             return default_value
 
@@ -591,11 +589,11 @@ class GenericBackend(object):
                     try:
                         data = pickle.load(file)
                         Log.info("Succesfully restored backup #%d for '%s'" %
-                                (i, self.get_name()))
+                                 (i, self.get_name()))
                         return data
                     except Exception:
                         Log.error("Backup #%d for '%s' is damaged as well" %
-                                 (i, self.get_name()))
+                                  (i, self.get_name()))
 
         # Data could not be loaded, degrade to default data
         Log.error("There is no suitable backup for '%s', "
@@ -612,7 +610,7 @@ class GenericBackend(object):
         @returns bool: True if the task should be synced
         '''
         attached_tags = self.get_attached_tags()
-        if GenericBackend.ALLTASKS_TAG in attached_tags:
+        if ALLTASKS_TAG in attached_tags:
             return True
         for tag in task.get_tags_name():
             if tag in attached_tags:
@@ -620,7 +618,7 @@ class GenericBackend(object):
         return False
 
 ###############################################################################
-### THREADING #################################################################
+# THREADING ###################################################################
 ###############################################################################
     def __try_launch_setting_thread(self):
         '''

@@ -99,8 +99,8 @@ class BugzillaServiceDisabled(Exception):
     ''' Bugzilla service is disabled by user. '''
 
     def __init__(self, domain, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.message = '%s is disabled.' % domain
-        super(BugzillaServiceDisabled, self).__init__(*args, **kwargs)
 
 
 class BugzillaServiceFactory(object):

@@ -24,8 +24,8 @@ shared with the tomboy backend.
 # To introspect tomboy: qdbus org.gnome.Tomboy /org/gnome/Tomboy/RemoteControl
 
 from GTG.backends.genericbackend import GenericBackend
-from GTG import _
 from GTG.backends.generictomboy import GenericTomboy
+from GTG.core.translations import _
 
 
 class Backend(GenericTomboy):

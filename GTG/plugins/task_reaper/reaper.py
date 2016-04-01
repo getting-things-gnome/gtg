@@ -23,7 +23,7 @@ from GTG.tools.logger import Log
 from GTG.tools.dates import Date
 
 
-class pluginReaper:
+class ReaperPlugin(object):
 
     DEFAULT_PREFERENCES = {'max_days': 30,
                            'is_automatic': False,
@@ -86,11 +86,11 @@ class pluginReaper:
         if self.menu_item_is_shown is True:
             plugin_api.remove_menu_item(self.menu_item)
 
-## HELPER FUNCTIONS ###########################################################
+# HELPER FUNCTIONS ############################################################
     def __log(self, message):
         Log.debug(message)
 
-## CORE FUNCTIONS #############################################################
+# CORE FUNCTIONS ##############################################################
     def schedule_autopurge(self):
         self.timer = Timer(self.TIME_BETWEEN_PURGES,
                            self.delete_old_closed_tasks)
@@ -122,7 +122,7 @@ class pluginReaper:
         if self.is_automatic:
             self.schedule_autopurge()
 
-## Preferences methods ########################################################
+# Preferences methods #########################################################
     def is_configurable(self):
         """A configurable plugin should have this method and return True"""
         return True

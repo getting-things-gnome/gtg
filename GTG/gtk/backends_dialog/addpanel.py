@@ -17,12 +17,13 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
+from functools import reduce
+
 from gi.repository import Gtk
 
 from GTG.gtk.backends_dialog.backendscombo import BackendsCombo
 from GTG.backends import BackendFactory
-from GTG import _, ngettext
-from functools import reduce
+from GTG.core.translations import _, ngettext
 
 
 class AddPanel(Gtk.Box):
@@ -38,7 +39,7 @@ class AddPanel(Gtk.Box):
         @param backends_dialog: a reference to the dialog in which this is
         loaded
         '''
-        super(AddPanel, self).__init__(orientation=Gtk.Orientation.VERTICAL)
+        super().__init__(orientation=Gtk.Orientation.VERTICAL)
         self.dialog = backends_dialog
         self._create_widgets()
 
@@ -70,8 +71,9 @@ class AddPanel(Gtk.Box):
         label = Gtk.Label(label=_("Select synchronization service:"))
         label.set_alignment(0, 0.5)
         self.combo_types = BackendsCombo(self.dialog)
-        #FIXME
-        #self.combo_types.get_child().connect('changed', self.on_combo_changed)
+        # FIXME
+        # self.combo_types.get_child().connect(
+        #     'changed', self.on_combo_changed)
         self.combo_types.connect('changed', self.on_combo_changed)
         box.pack_start(label, False, True, 0)
         box.pack_start(self.combo_types, False, True, 0)
@@ -119,9 +121,11 @@ class AddPanel(Gtk.Box):
 
         @param box: the Gtk.Box to fill
         '''
-        cancel_button = Gtk.Button(stock=Gtk.STOCK_CANCEL)
+        cancel_button = Gtk.Button()
+        cancel_button.set_label("Cancel")
         cancel_button.connect('clicked', self.on_cancel)
-        self.ok_button = Gtk.Button(stock=Gtk.STOCK_OK)
+        self.ok_button = Gtk.Button()
+        self.ok_button.set_label("OK")
         self.ok_button.connect('clicked', self.on_confirm)
         align = Gtk.Alignment.new(0.5, 1, 1, 0)
         align.set_padding(0, 10, 0, 0)

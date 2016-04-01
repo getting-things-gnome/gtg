@@ -20,14 +20,14 @@
 import os
 import uuid
 
-from GTG import _
-from GTG.backends.genericbackend import GenericBackend
 from GTG.backends.backendsignals import BackendSignals
+from GTG.backends.genericbackend import GenericBackend
 from GTG.backends.periodicimportbackend import PeriodicImportBackend
 from GTG.backends.syncengine import SyncEngine, SyncMeme
+from GTG.core.task import Task
+from GTG.core.translations import _
 from GTG.tools.logger import Log
 
-from GTG.core.task import Task
 from suds.client import Client
 
 '''
@@ -86,10 +86,10 @@ class Backend(PeriodicImportBackend):
         See GenericBackend for an explanation of this function.
         Re-loads the saved state of the synchronization
         '''
-        super(Backend, self).__init__(parameters)
+        super().__init__(parameters)
         # loading the saved state of the synchronization, if any
-        self.data_path = os.path.join('backends/mantis/',
-                                      "sync_engine-" + self.get_id())
+        self.data_path = os.path.join(
+            'mantis', 'sync_engine-' + self.get_id())
         self.sync_engine = self._load_pickled_file(self.data_path,
                                                    SyncEngine())
 
@@ -102,7 +102,7 @@ class Backend(PeriodicImportBackend):
         try:
             self.cancellation_point()
             client = Client('%s/api/soap/mantisconnect.php?wsdl' %
-                           (self._parameters['service-url']))
+                            self._parameters['service-url'])
         except KeyError:
             self.quit(disable=True)
             BackendSignals().backend_failed(self.get_id(),
@@ -146,7 +146,7 @@ class Backend(PeriodicImportBackend):
         return
 
 ###############################################################################
-### Process tasks #############################################################
+# Process tasks ###############################################################
 ###############################################################################
     def _process_mantis_issue(self, issue):
         '''
@@ -234,8 +234,8 @@ class Backend(PeriodicImportBackend):
         else:
             task.set_status(Task.STA_ACTIVE)
         if task.get_title() != issue_dic['title']:
-            task.set_title(_("Iss.") + " %s: " % issue_dic["number"]
-                           + issue_dic['title'])
+            task.set_title("{} {}: {}".format(
+                _("Iss."), issue_dic["number"], issue_dic['title']))
         text = self._build_issue_text(issue_dic)
         if task.get_excerpt() != text:
             task.set_text(text)

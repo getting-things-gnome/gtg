@@ -36,7 +36,7 @@ class CheckBoxUI(Gtk.Box):
         @param parameter: the backend parameter this checkbox should display
                            and modify
         '''
-        super(CheckBoxUI, self).__init__()
+        super().__init__()
         self.backend = backend
         self.req = req
         self.text = text

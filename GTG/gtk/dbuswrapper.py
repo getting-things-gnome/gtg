@@ -22,13 +22,12 @@ import dbus
 import dbus.glib
 import dbus.service
 
-from GTG.core import CoreConfig
 from GTG.tools.dates import Date
 from GTG.core.search import InvalidQuery
 from GTG.core.search import parse_search_query
 
-BUSNAME = CoreConfig.BUSNAME
-BUSFACE = CoreConfig.BUSINTERFACE
+BUSNAME = "org.gnome.GTG"
+BUSINTERFACE = "/org/gnome/GTG"
 
 
 def dsanitize(data):
@@ -81,7 +80,7 @@ class DBusTaskWrapper(dbus.service.Object):
         # Attach the object to D-Bus
         self.bus = dbus.SessionBus()
         bus_name = dbus.service.BusName(BUSNAME, bus=self.bus)
-        dbus.service.Object.__init__(self, bus_name, BUSFACE)
+        super().__init__(bus_name, BUSINTERFACE)
         self.req = req
         self.view_manager = view_manager
 

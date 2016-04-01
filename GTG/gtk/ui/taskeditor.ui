@@ -1,0 +1,437 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <!-- interface-requires gtk+ 3.0 -->
+  <object class="GtkWindow" id="TaskEditor">
+    <property name="can_focus">False</property>
+    <property name="title" translatable="yes">Task</property>
+    <property name="default_width">500</property>
+    <property name="default_height">400</property>
+    <signal name="configure-event" handler="on_move" swapped="no"/>
+    <child type="titlebar">
+      <object class="GtkHeaderBar" id="headerbar">
+        <property name="visible">True</property>
+        <property name="show_close_button">True</property>
+        <property name="title" translatable="yes">Task</property>
+        <child>
+          <object class="GtkButton" id="mark_as_done">
+            <property name="visible">False</property>
+            <property name="sensitive">True</property>
+            <property name="label" translatable="yes">Mark as Done</property>
+            <property name="tooltip_text" translatable="yes">Mark the task as done</property>
+            <property name="valign">center</property>
+            <signal handler="on_mark_as_done" name="clicked" swapped="no"/>
+          </object>
+          <packing>
+            <property name="pack_type">start</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="mark_as_undone">
+            <property name="visible">False</property>
+            <property name="sensitive">True</property>
+            <property name="label" translatable="yes">Mark as not Done</property>
+            <property name="tooltip_text" translatable="yes">Mark the task as to be done</property>
+            <property name="valign">center</property>
+            <signal handler="on_mark_as_done" name="clicked" swapped="no"/>
+          </object>
+          <packing>
+            <property name="pack_type">start</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkMenuButton" id="editor_menu">
+            <property name="visible">True</property>
+            <property name="sensitive">True</property>
+            <property name="tooltip_text" translatable="yes">Task action menu</property>
+            <property name="valign">center</property>
+            <property name="popover">editor_menu_popover</property>
+            <child>
+              <object class="GtkImage" id="menu-icon">
+                <property name="visible">True</property>
+                <property name="icon-name">open-menu-symbolic</property>
+                <property name="icon-size">1</property>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="pack_type">end</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+    <child>
+      <object class="GtkBox" id="main_box">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="orientation">vertical</property>
+        <child>
+          <object class="GtkBox">
+            <property name="margin">3</property>
+            <property name="visible">True</property>
+            <child>
+              <object class="GtkBox" id="task_toolbar_box">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="spacing">5</property>
+                <child>
+                  <object class="GtkBox" id="text_formatting">
+                    <property name="visible">True</property>
+                    <style>
+                      <class name="linked"/>
+                    </style>
+                    <child>
+                      <object class="GtkButton" id="bold">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="tooltip_text">Bold</property>
+                        <child>
+                          <object class="GtkImage" id="bold_image">
+                            <property name="visible">True</property>
+                            <property name="icon-name">format-text-bold-symbolic</property>
+                            <property name="icon-size">2</property>
+                          </object>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">False</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkButton" id="italic">
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="tooltip_text">Italic</property>
+                        <child>
+                          <object class="GtkImage" id="italic_image">
+                            <property name="visible">True</property>
+                            <property name="icon-name">format-text-italic-symbolic</property>
+                            <property name="icon-size">2</property>
+                          </object>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">False</property>
+                      </packing>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkBox" id="task_options">
+                    <property name="visible">True</property>
+                    <style>
+                      <class name="linked"/>
+                    </style>
+                    <child>
+                      <object class="GtkButton" id="add_subtask">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="tooltip_text">Add subtask to current task</property>
+                        <signal handler="on_insert_subtask_clicked" name="clicked" swapped="no"/>
+                        <child>
+                          <object class="GtkImage" id="subtask_image">
+                            <property name="visible">True</property>
+                            <property name="icon-name">format-indent-more-symbolic</property>
+                            <property name="icon-size">2</property>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkMenuButton" id="tags">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="tooltip_text">Add tags to the task</property>
+                        <property name="popover">tags_popover</property>
+                        <signal handler="on_tags_popover" name="clicked" swapped="no"/>
+                        <child>
+                          <object class="GtkImage" id="tags_image">
+                            <property name="visible">True</property>
+                            <property name="icon-name">user-bookmarks-symbolic</property>
+                            <property name="icon-size">2</property>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkButton" id="parent">
+                        <property name="visible">True</property>
+                        <property name="tooltip_text">Open the parent task</property>
+                        <signal handler="on_parent_select" name="clicked" swapped="yes"/>
+                        <child>
+                          <object class="GtkImage" id="parent_image">
+                            <property name="visible">True</property>
+                            <property name="icon-name">go-up-symbolic</property>
+                            <property name="icon-size">2</property>
+                          </object>
+                        </child>
+                      </object>
+                    </child> 
+                  </object>
+                </child>                 
+                <child>
+                  <object class="GtkBox" id="start_box">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <child>
+                      <object class="GtkLabel" id="start_label">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="xalign">0</property>
+                        <property name="label" translatable="yes">Starts on</property>
+                        <attributes>
+                          <attribute name="weight" value="bold"/>
+                        </attributes>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="padding">10</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkEntry" id="startdate_entry">
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="width_chars">10</property>
+                        <signal name="changed" handler="startingdate_changed" swapped="no"/>
+                        <signal name="focus-out-event" handler="startdate_focus_out" swapped="no"/>
+                        <signal name="focus-in-event" handler="show_popover_start" swapped="no"/>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">False</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkBox" id="end_box">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <child>
+                      <object class="GtkLabel" id="end_label">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="xalign">0</property>
+                        <property name="label" translatable="yes">Due on</property>
+                        <attributes>
+                          <attribute name="weight" value="bold"/>
+                        </attributes>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">False</property>
+                        <property name="padding">10</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkEntry" id="duedate_entry">
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="width_chars">10</property>
+                        <signal name="changed" handler="duedate_changed" swapped="no"/>
+                        <signal name="focus-out-event" handler="duedate_focus_out" swapped="no"/>
+                        <signal name="focus-in-event" handler="show_popover_due" swapped="no"/>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">False</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkBox" id="closed_box">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <child>
+                      <object class="GtkLabel" id="closed_label">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="xalign">0</property>
+                        <property name="label" translatable="yes">Closed on</property>
+                        <attributes>
+                          <attribute name="weight" value="bold"/>
+                        </attributes>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">False</property>
+                        <property name="padding">10</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkEntry" id="closeddate_entry">
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="width_chars">10</property>
+                        <signal name="changed" handler="closeddate_changed" swapped="no"/>
+                        <signal name="focus-out-event" handler="closeddate_focus_out" swapped="no"/>
+                        <signal name="focus-in-event" handler="show_popover_closed" swapped="no"/>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">False</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                  </object>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="GtkScrolledWindow" id="scrolledtask">
+            <property name="width_request">400</property>
+            <property name="height_request">300</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <child>
+              <object class="GtkTextView" id="textview">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="wrap_mode">word</property>
+                <property name="left_margin">5</property>
+                <property name="right_margin">5</property>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+  <object class="GtkPopover" id="closed_popover">
+    <child>
+      <object class="GtkBox" id="closeddate_box">
+        <property name="visible">True</property>
+        <property name="orientation">vertical</property>
+        <child>
+          <object class="GtkCalendar" id="calendar_closed">
+            <property name="visible">True</property>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+  <object class="GtkPopoverMenu" id="editor_menu_popover">
+    <child>
+      <object class="GtkBox" id="menu_box">
+        <property name="border-width">8</property>
+        <property name="visible">True</property>
+        <property name="orientation">vertical</property>
+        <child>
+          <object class="GtkModelButton" id="dismiss">
+            <property name="visible">False</property>
+            <property name="centered">True</property>
+            <property name="text" translatable="yes">Dismiss Task</property>
+            <property name="tooltip_text">Mark this task as not to be done anymore</property>
+            <signal handler="on_dismiss" name="clicked" swapped="no"/>
+          </object>
+        </child>
+        <child>
+          <object class="GtkModelButton" id="undismiss">
+            <property name="visible">False</property>
+            <property name="centered">True</property>
+            <property name="text" translatable="yes">Undismiss Task</property>
+            <property name="tooltip_text">Mark this task as to be done</property>
+            <signal handler="on_dismiss" name="clicked" swapped="no"/>
+          </object>
+        </child>
+        <child>
+          <object class="GtkSeparatorMenuItem">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkModelButton" id="delete">
+            <property name="visible">True</property>
+            <property name="centered">True</property>
+            <property name="text" translatable="yes">Delete Task</property>
+            <property name="tooltip_text">Permanently remove this task</property>
+            <signal handler="delete_clicked" name="clicked" swapped="no"/>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+  <object class="GtkPopoverMenu" id="tags_popover">
+    <property name="relative-to">tags</property>
+    <child>
+      <object class="GtkBox" id="tags_box">
+        <property name="border-width">8</property>
+        <property name="visible">True</property>
+        <property name="orientation">vertical</property>
+        <child>
+          <object class="GtkEntry" id="tags_entry">
+            <property name="visible">True</property>
+            <property name="has_focus">True</property>
+            <property name="can_focus">True</property>
+            <property name="is_focus">True</property>
+            <property name="max-width-chars">-1</property>
+            <property name="placeholder-text" translatable="yes">Search / Add</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkTreeView" id="tags_tree">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="headers-visible">False</property>
+            <property name="show-expanders">False</property>
+            <property name="model">tag_store</property>
+            <child>
+              <object class="GtkTreeViewColumn" id="bool_column">
+                <property name="title">Toggle</property>
+                <property name="sort_column_id">0</property>
+                <child>
+                  <object class="GtkCellRendererToggle" id="renderer_toggle">
+                    <signal handler="on_tag_toggled" name="toggled"/>
+                  </object>
+                  <attributes>
+                    <attribute name="active">0</attribute>
+                  </attributes>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="GtkTreeViewColumn" id="tagname_column">
+                <property name="title">Toggle</property>
+                <property name="sort_column_id">1</property>
+                <child>
+                  <object class="GtkCellRendererText" id="renderer_text"/>
+                  <attributes>
+                    <attribute name="text">1</attribute>
+                  </attributes>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+  <object class="GtkListStore" id="tag_store">
+    <columns>
+      <column type="gboolean"/>
+      <column type="gchararray"/>      
+    </columns>
+  </object>
+</interface>
