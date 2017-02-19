@@ -45,6 +45,11 @@ If prompted, you may be required to install also python3-xdg and python3-dbus pa
 Run the script again.
 
 
+To install the all the required packages providing the basic features on
+Fedora 20, execute the following command:
+
+  sudo yum install python-cheetah python-markdown python3-nose python3-pyxdg
+
 There are additional plugins (modules for extending the user interface) and
 synchronization services (modules for importing/exporting tasks from/to
 external services) which needs additional packages to work correctly.
