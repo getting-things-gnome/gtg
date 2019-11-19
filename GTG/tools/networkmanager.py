@@ -20,7 +20,7 @@
 
 """ Communicate with Network Manager """
 
-from gi.repository import NetworkManager, NMClient
+from gi.repository import NM
 
 
 def is_connection_up():
