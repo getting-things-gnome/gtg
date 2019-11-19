@@ -1351,7 +1351,8 @@ class TaskView(Gtk.TextView):
         window = ev.window
         __, x, y, __ = window.get_pointer()
         x, y = view.window_to_buffer_coords(Gtk.TextWindowType.TEXT, x, y)
-        tags = view.get_iter_at_location(x, y).get_tags()
+        #view.get_iter return a tuple (false,gtk.textiter)
+        tags = view.get_iter_at_location(x, y)[1].get_tags()
         for tag in tags:
             if hasattr(tag, 'is_anchor'):
                 for t in set(self.__tags) - set([tag]):
