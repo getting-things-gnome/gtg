@@ -278,7 +278,7 @@ class TreeviewFactory(object):
         col_name = 'color'
         col = {}
         render_tags = CellRendererTags()
-        render_tags.set_property('ypad', 3)
+        render_tags.set_property('ypad', 4)
         col['title'] = _("Tags")
         col['renderer'] = ['tag', render_tags]
         col['value'] = [GObject.TYPE_PYOBJECT, lambda node: node]
@@ -291,7 +291,7 @@ class TreeviewFactory(object):
         col_name = 'tagname'
         col = {}
         render_text = Gtk.CellRendererText()
-        render_text.set_property('ypad', 3)
+        render_text.set_property('ypad', 4)
         col['renderer'] = ['markup', render_text]
         col['value'] = [str, self.tag_name]
         col['expandable'] = True
@@ -303,8 +303,8 @@ class TreeviewFactory(object):
         col_name = 'tagcount'
         col = {}
         render_text = Gtk.CellRendererText()
-        render_text.set_property('xpad', 3)
-        render_text.set_property('ypad', 3)
+        render_text.set_property('xpad', 16)
+        render_text.set_property('ypad', 4)
         render_text.set_property('xalign', 1)
         col['renderer'] = ['markup', render_text]
         col['value'] = [str, self.get_tag_count]
