@@ -75,7 +75,7 @@ class TreeFactory(object):
         alltag.set_attribute("special", "all")
         alltag.set_attribute("label", "%s"
                              % _("All tasks"))
-        alltag.set_attribute("icon", "gtg-tags-all")
+        alltag.set_attribute("icon", "emblem-documents-symbolic")
         alltag.set_attribute("order", 0)
         tagtree.add_node(alltag)
         p = {}
@@ -86,7 +86,7 @@ class TreeFactory(object):
         notag_tag.set_attribute("special", "notag")
         notag_tag.set_attribute("label", "%s"
                                 % _("Tasks with no tags"))
-        notag_tag.set_attribute("icon", "gtg-tags-none")
+        notag_tag.set_attribute("icon", "task-past-due-symbolic")
         notag_tag.set_attribute("order", 2)
         tagtree.add_node(notag_tag)
         p = {}
@@ -98,7 +98,7 @@ class TreeFactory(object):
         search_tag.set_attribute("special", "search")
         search_tag.set_attribute("label",
                                  "%s" % _("Search"))
-        search_tag.set_attribute("icon", "search")
+        search_tag.set_attribute("icon", "system-search-symbolic")
         search_tag.set_attribute("order", 1)
         tagtree.add_node(search_tag)
         p = {}
