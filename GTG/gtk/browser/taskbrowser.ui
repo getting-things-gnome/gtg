@@ -425,7 +425,7 @@
                           </object>
                           <packing>
                             <property name="name">active_view</property>
-                            <property name="title">Active Tasks</property>
+                            <property name="title">Active</property>
                           </packing>
                         </child>
                         <child>
@@ -439,7 +439,7 @@
                           </object>
                           <packing>
                             <property name="name">work_view</property>
-                            <property name="title">Workview Tasks</property>
+                            <property name="title">Workview</property>
                             <property name="position">1</property>
                           </packing>
                         </child>
@@ -454,7 +454,7 @@
                           </object>
                           <packing>
                             <property name="name">closed_view</property>
-                            <property name="title">Closed Tasks</property>
+                            <property name="title">Closed</property>
                             <property name="position">2</property>
                           </packing>
                         </child>
