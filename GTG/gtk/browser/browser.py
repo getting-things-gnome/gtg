@@ -527,10 +527,8 @@ class TaskBrowser(GObject.GObject):
 
         tag_pane = self.config.get("tag_pane")
         if not tag_pane:
-            self.builder.get_object("tags").set_active(False)
             self.sidebar.hide()
         else:
-            self.builder.get_object("tags").set_active(True)
             if not self.tagtreeview:
                 self.init_tags_sidebar()
             self.sidebar.show()
@@ -628,11 +626,9 @@ class TaskBrowser(GObject.GObject):
     def on_sidebar_toggled(self, widget):
         tags = self.builder.get_object("tags")
         if self.sidebar.get_property("visible"):
-            tags.set_active(False)
             self.config.set("tag_pane", False)
             self.sidebar.hide()
         else:
-            tags.set_active(True)
             if not self.tagtreeview:
                 self.init_tags_sidebar()
             self.sidebar.show()

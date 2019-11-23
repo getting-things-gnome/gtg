@@ -2,6 +2,223 @@
 <!-- Generated with glade 3.22.1 -->
 <interface>
   <requires lib="gtk+" version="3.20"/>
+  <object class="GtkAboutDialog" id="about_dialog">
+    <property name="can_focus">False</property>
+    <property name="border_width">5</property>
+    <property name="title" translatable="yes">About GTG!</property>
+    <property name="resizable">False</property>
+    <property name="window_position">center-on-parent</property>
+    <property name="type_hint">dialog</property>
+    <property name="program_name">Getting Things GNOME!</property>
+    <property name="copyright" translatable="yes">Copyright © 2008-2013 Lionel Dricot, Bertrand Rousseau</property>
+    <property name="comments" translatable="yes">GTG is a personal tasks and TODO-list items
+    organizer for the GNOME desktop environment.</property>
+    <property name="website_label" translatable="yes">GTG website</property>
+    <property name="license" translatable="yes">Getting Things GNOME! is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 3 of the License, or (at your option) any later version.
+
+    Getting Things GNOME! is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License along with Getting Things GNOME!; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.</property>
+    <property name="authors">Lionel Dricot (ploum@ploum.net),
+    Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
+    <property name="logo_icon_name">gtg</property>
+    <property name="wrap_license">True</property>
+    <signal name="delete-event" handler="on_about_delete" swapped="no"/>
+    <signal name="response" handler="on_about_close" swapped="no"/>
+    <child>
+      <placeholder/>
+    </child>
+    <child internal-child="vbox">
+      <object class="GtkBox" id="about_dialog_vbox">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="orientation">vertical</property>
+        <property name="spacing">2</property>
+        <child internal-child="action_area">
+          <object class="GtkButtonBox" id="dialog-action_area2">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="layout_style">end</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="pack_type">end</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+  <object class="GtkMenu" id="closed_task_context_menu">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <child>
+      <object class="GtkMenuItem" id="ctcm_edit">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="label">Edit</property>
+        <property name="use_underline">True</property>
+        <signal name="activate" handler="on_edit_done_task" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkSeparatorMenuItem" id="separator_1">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkMenuItem" id="ctcm_mark_as_not_done">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="label" translatable="yes">Mark as Not Done</property>
+        <property name="use_underline">True</property>
+        <signal name="activate" handler="on_mark_as_done" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkMenuItem" id="ctcm_undismiss">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="label" translatable="yes">Und_ismiss</property>
+        <property name="use_underline">True</property>
+        <signal name="activate" handler="on_dismiss_task" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkMenuItem" id="ctcm_delete">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="label">Delete</property>
+        <property name="use_underline">True</property>
+        <signal name="activate" handler="on_delete_task" swapped="no"/>
+      </object>
+    </child>
+  </object>
+  <object class="GtkPopoverMenu" id="main_menu">
+    <property name="can_focus">False</property>
+    <child>
+      <object class="GtkBox">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="margin_left">12</property>
+        <property name="margin_right">12</property>
+        <property name="margin_top">8</property>
+        <property name="margin_bottom">8</property>
+        <property name="orientation">vertical</property>
+        <child>
+          <object class="GtkModelButton" id="tags">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="text" translatable="yes">Tags sidebar</property>
+            <signal name="clicked" handler="on_view_sidebar_toggled" swapped="no"/>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkSeparator">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkModelButton" id="plugins">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="text" translatable="yes">Plugins</property>
+            <signal name="clicked" handler="on_edit_plugins_activate" swapped="no"/>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">2</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkModelButton" id="synchronization">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="text" translatable="yes">Synchronization</property>
+            <signal name="clicked" handler="on_edit_backends_activate" swapped="no"/>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">3</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkSeparator">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">4</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkModelButton" id="preferences">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="text" translatable="yes">Preferences</property>
+            <signal name="clicked" handler="on_preferences_activate" swapped="no"/>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">5</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkModelButton" id="help">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="text" translatable="yes">Help</property>
+            <signal name="clicked" handler="on_documentation_clicked" swapped="no"/>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">7</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkModelButton" id="about">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="text" translatable="yes">About GTG</property>
+            <signal name="clicked" handler="on_about_clicked" swapped="no"/>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">8</property>
+          </packing>
+        </child>
+      </object>
+      <packing>
+        <property name="submenu">main</property>
+      </packing>
+    </child>
+  </object>
   <object class="GtkWindow" id="MainWindow">
     <property name="can_focus">False</property>
     <property name="title" translatable="yes">Getting Things GNOME!</property>
@@ -13,7 +230,6 @@
       <object class="GtkHeaderBar" id="browser_headerbar">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="title" translatable="yes">Tasks</property>
         <property name="show_close_button">True</property>
         <child>
           <object class="GtkButton" id="new_task">
@@ -26,73 +242,31 @@
             <signal name="clicked" handler="on_add_task" swapped="no"/>
           </object>
         </child>
-        <child>
-          <object class="GtkBox" id="customisation_box">
+        <child type="title">
+          <object class="GtkStackSwitcher" id="stack_switcher">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="spacing">1</property>
+            <property name="stack">stack</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkMenuButton" id="main_menu_btn">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="popover">main_menu</property>
             <child>
-              <object class="GtkToggleButton" id="tags">
-                <property name="label">Tags</property>
+              <object class="GtkImage" id="main_menu_icon">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="receives_default">False</property>
-                <property name="tooltip_text" translatable="yes">Tags Sidebar</property>
-                <property name="valign">center</property>
-                <signal name="clicked" handler="on_view_sidebar_toggled" swapped="no"/>
+                <property name="icon_name">open-menu-symbolic</property>
               </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">0</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkButton" id="settings">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="receives_default">False</property>
-                <property name="tooltip_text" translatable="yes">Preferences</property>
-                <property name="valign">center</property>
-                <signal name="clicked" handler="on_preferences_activate" swapped="no"/>
-                <child>
-                  <object class="GtkImage" id="settings_icon">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="icon_name">preferences-system-symbolic</property>
-                    <property name="icon_size">2</property>
-                  </object>
-                </child>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">1</property>
-              </packing>
             </child>
           </object>
           <packing>
+            <property name="pack_type">end</property>
             <property name="position">1</property>
           </packing>
-        </child>
-        <child type="title">
-          <object class="GtkBox" id="stack_switcher_box">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="spacing">1</property>
-            <child>
-              <object class="GtkStackSwitcher" id="stack_switcher">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="stack">stack</property>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">0</property>
-              </packing>
-            </child>
-          </object>
         </child>
         <child>
           <object class="GtkToggleButton" id="search_button">
@@ -109,50 +283,6 @@
                 <property name="icon_name">edit-find-symbolic</property>
                 <property name="icon_size">1</property>
               </object>
-            </child>
-          </object>
-          <packing>
-            <property name="pack_type">end</property>
-            <property name="position">2</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkBox" id="extras_box">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="spacing">1</property>
-            <child>
-              <object class="GtkButton" id="plugins">
-                <property name="label">Plugins</property>
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="receives_default">False</property>
-                <property name="tooltip_text" translatable="yes">Add plugins</property>
-                <property name="valign">center</property>
-                <signal name="clicked" handler="on_edit_plugins_activate" swapped="no"/>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">0</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkButton" id="synchronisation">
-                <property name="label">Synchronisation</property>
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="receives_default">False</property>
-                <property name="tooltip_text" translatable="yes">Synchronisation Services
-                </property>
-                <property name="valign">center</property>
-                <signal name="clicked" handler="on_edit_backends_activate" swapped="no"/>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">1</property>
-              </packing>
             </child>
           </object>
           <packing>
@@ -387,100 +517,6 @@
             <property name="position">1</property>
           </packing>
         </child>
-      </object>
-    </child>
-  </object>
-  <object class="GtkAboutDialog" id="about_dialog">
-    <property name="can_focus">False</property>
-    <property name="border_width">5</property>
-    <property name="title" translatable="yes">About GTG!</property>
-    <property name="resizable">False</property>
-    <property name="window_position">center-on-parent</property>
-    <property name="type_hint">dialog</property>
-    <property name="program_name">Getting Things GNOME!</property>
-    <property name="copyright" translatable="yes">Copyright © 2008-2013 Lionel Dricot, Bertrand Rousseau</property>
-    <property name="comments" translatable="yes">GTG is a personal tasks and TODO-list items
-    organizer for the GNOME desktop environment.</property>
-    <property name="website_label" translatable="yes">GTG website</property>
-    <property name="license" translatable="yes">Getting Things GNOME! is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 3 of the License, or (at your option) any later version.
-
-    Getting Things GNOME! is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License along with Getting Things GNOME!; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.</property>
-    <property name="authors">Lionel Dricot (ploum@ploum.net),
-    Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
-    <property name="logo_icon_name">gtg</property>
-    <property name="wrap_license">True</property>
-    <signal name="delete-event" handler="on_about_delete" swapped="no"/>
-    <signal name="response" handler="on_about_close" swapped="no"/>
-    <child>
-      <placeholder/>
-    </child>
-    <child internal-child="vbox">
-      <object class="GtkBox" id="about_dialog_vbox">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="orientation">vertical</property>
-        <property name="spacing">2</property>
-        <child internal-child="action_area">
-          <object class="GtkButtonBox" id="dialog-action_area2">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="layout_style">end</property>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="pack_type">end</property>
-            <property name="position">0</property>
-          </packing>
-        </child>
-      </object>
-    </child>
-  </object>
-  <object class="GtkMenu" id="closed_task_context_menu">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <child>
-      <object class="GtkMenuItem" id="ctcm_edit">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="label">Edit</property>
-        <property name="use_underline">True</property>
-        <signal name="activate" handler="on_edit_done_task" swapped="no"/>
-      </object>
-    </child>
-    <child>
-      <object class="GtkSeparatorMenuItem" id="separator_1">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-      </object>
-    </child>
-    <child>
-      <object class="GtkMenuItem" id="ctcm_mark_as_not_done">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="label" translatable="yes">Mark as Not Done</property>
-        <property name="use_underline">True</property>
-        <signal name="activate" handler="on_mark_as_done" swapped="no"/>
-      </object>
-    </child>
-    <child>
-      <object class="GtkMenuItem" id="ctcm_undismiss">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="label" translatable="yes">Und_ismiss</property>
-        <property name="use_underline">True</property>
-        <signal name="activate" handler="on_dismiss_task" swapped="no"/>
-      </object>
-    </child>
-    <child>
-      <object class="GtkMenuItem" id="ctcm_delete">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="label">Delete</property>
-        <property name="use_underline">True</property>
-        <signal name="activate" handler="on_delete_task" swapped="no"/>
       </object>
     </child>
   </object>
