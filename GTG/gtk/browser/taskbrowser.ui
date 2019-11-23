@@ -110,9 +110,9 @@
         <child>
           <object class="GtkModelButton" id="tags">
             <property name="visible">True</property>
-            <property name="can_focus">True</property>
+            <property name="can_focus">False</property>
             <property name="receives_default">True</property>
-            <property name="text" translatable="yes">Tags sidebar</property>
+            <property name="text" translatable="yes">Show Sidebar</property>
             <signal name="clicked" handler="on_view_sidebar_toggled" swapped="no"/>
           </object>
           <packing>
@@ -135,7 +135,7 @@
         <child>
           <object class="GtkModelButton" id="plugins">
             <property name="visible">True</property>
-            <property name="can_focus">True</property>
+            <property name="can_focus">False</property>
             <property name="receives_default">True</property>
             <property name="text" translatable="yes">Plugins</property>
             <signal name="clicked" handler="on_edit_plugins_activate" swapped="no"/>
@@ -149,7 +149,7 @@
         <child>
           <object class="GtkModelButton" id="synchronization">
             <property name="visible">True</property>
-            <property name="can_focus">True</property>
+            <property name="can_focus">False</property>
             <property name="receives_default">True</property>
             <property name="text" translatable="yes">Synchronization</property>
             <signal name="clicked" handler="on_edit_backends_activate" swapped="no"/>
@@ -174,7 +174,7 @@
         <child>
           <object class="GtkModelButton" id="preferences">
             <property name="visible">True</property>
-            <property name="can_focus">True</property>
+            <property name="can_focus">False</property>
             <property name="receives_default">True</property>
             <property name="text" translatable="yes">Preferences</property>
             <signal name="clicked" handler="on_preferences_activate" swapped="no"/>
@@ -188,7 +188,7 @@
         <child>
           <object class="GtkModelButton" id="help">
             <property name="visible">True</property>
-            <property name="can_focus">True</property>
+            <property name="can_focus">False</property>
             <property name="receives_default">True</property>
             <property name="text" translatable="yes">Help</property>
             <signal name="clicked" handler="on_documentation_clicked" swapped="no"/>
@@ -202,7 +202,7 @@
         <child>
           <object class="GtkModelButton" id="about">
             <property name="visible">True</property>
-            <property name="can_focus">True</property>
+            <property name="can_focus">False</property>
             <property name="receives_default">True</property>
             <property name="text" translatable="yes">About GTG</property>
             <signal name="clicked" handler="on_about_clicked" swapped="no"/>
