@@ -482,6 +482,10 @@
                         <property name="is_focus">True</property>
                         <property name="can_default">True</property>
                         <property name="tooltip_text">You can create your tasks here</property>
+                        <property name="margin_left">10</property>
+                        <property name="margin_right">10</property>
+                        <property name="margin_top">7</property>
+                        <property name="margin_bottom">7</property>
                         <property name="primary_icon_activatable">False</property>
                         <property name="placeholder_text">Quickly create tasks here</property>
                         <property name="input_hints">GTK_INPUT_HINT_SPELLCHECK | GTK_INPUT_HINT_NONE</property>
