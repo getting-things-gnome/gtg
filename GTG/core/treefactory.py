@@ -73,7 +73,7 @@ class TreeFactory(object):
         # Build the "all tasks tag"
         alltag = tag.Tag(tag.ALLTASKS_TAG, req=req)
         alltag.set_attribute("special", "all")
-        alltag.set_attribute("label", "<span weight='bold'>%s</span>"
+        alltag.set_attribute("label", "%s"
                              % _("All tasks"))
         alltag.set_attribute("icon", "gtg-tags-all")
         alltag.set_attribute("order", 0)
@@ -84,7 +84,7 @@ class TreeFactory(object):
         # Build the "without tag tag"
         notag_tag = tag.Tag(tag.NOTAG_TAG, req=req)
         notag_tag.set_attribute("special", "notag")
-        notag_tag.set_attribute("label", "<span weight='bold'>%s</span>"
+        notag_tag.set_attribute("label", "%s"
                                 % _("Tasks with no tags"))
         notag_tag.set_attribute("icon", "gtg-tags-none")
         notag_tag.set_attribute("order", 2)
@@ -97,7 +97,7 @@ class TreeFactory(object):
         search_tag = tag.Tag(tag.SEARCH_TAG, req=req)
         search_tag.set_attribute("special", "search")
         search_tag.set_attribute("label",
-                                 "<span weight='bold'>%s</span>" % _("Search"))
+                                 "%s" % _("Search"))
         search_tag.set_attribute("icon", "search")
         search_tag.set_attribute("order", 1)
         tagtree.add_node(search_tag)
