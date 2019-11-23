@@ -216,6 +216,7 @@
       </object>
       <packing>
         <property name="submenu">main</property>
+        <property name="position">1</property>
       </packing>
     </child>
   </object>
@@ -252,7 +253,7 @@
         <child>
           <object class="GtkMenuButton" id="main_menu_btn">
             <property name="visible">True</property>
-            <property name="can_focus">True</property>
+            <property name="can_focus">False</property>
             <property name="receives_default">True</property>
             <property name="popover">main_menu</property>
             <child>
