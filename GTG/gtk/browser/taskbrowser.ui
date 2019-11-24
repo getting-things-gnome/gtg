@@ -316,6 +316,8 @@
                   <object class="GtkNotebook" id="sidebar_notebook">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
+                    <property name="margin_top">10</property>
+                    <property name="margin_bottom">10</property>
                     <property name="tab_pos">bottom</property>
                     <property name="show_tabs">False</property>
                     <property name="show_border">False</property>
@@ -326,6 +328,9 @@
                         <child>
                           <placeholder/>
                         </child>
+                        <style>
+                          <class name="sidebar"/>
+                        </style>
                       </object>
                     </child>
                     <child type="tab">
@@ -345,6 +350,9 @@
                     <property name="position">1</property>
                   </packing>
                 </child>
+                <style>
+                  <class name="sidebar"/>
+                </style>
               </object>
               <packing>
                 <property name="resize">False</property>
