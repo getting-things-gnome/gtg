@@ -97,13 +97,14 @@
     </child>
   </object>
   <object class="GtkPopoverMenu" id="main_menu">
+    <property name="name">main_menu</property>
     <property name="can_focus">False</property>
     <child>
       <object class="GtkBox">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="margin_left">12</property>
-        <property name="margin_right">12</property>
+        <property name="margin_left">14</property>
+        <property name="margin_right">14</property>
         <property name="margin_top">8</property>
         <property name="margin_bottom">8</property>
         <property name="orientation">vertical</property>
@@ -125,6 +126,8 @@
           <object class="GtkSeparator">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
+            <property name="margin_top">6</property>
+            <property name="margin_bottom">6</property>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -164,6 +167,8 @@
           <object class="GtkSeparator">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
+            <property name="margin_top">6</property>
+            <property name="margin_bottom">6</property>
           </object>
           <packing>
             <property name="expand">False</property>
