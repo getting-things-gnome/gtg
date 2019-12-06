@@ -421,6 +421,7 @@ class TaskBrowser(GObject.GObject):
         if self.searchbar.get_search_mode():
             self.search_button.set_active(False)
             self.searchbar.set_search_mode(False)
+            self.search_entry.set_text('')
         else:
             self.search_button.set_active(True)
             self.searchbar.set_search_mode(True)
