@@ -416,7 +416,7 @@ class TaskBrowser(GObject.GObject):
 
 # HELPER FUNCTIONS ##########################################################
 
-    def on_search_toggled(self, widget):
+    def on_search_toggled(self, widget=None):
         if self.searchbar.get_search_mode():
             self.search_button.set_active(False)
             self.searchbar.set_search_mode(False)
@@ -433,6 +433,11 @@ class TaskBrowser(GObject.GObject):
         try:
             parsed_query = parse_search_query(query)
         except InvalidQuery as e:
+            # If we get an invalid query (eg. empty) cancel out of
+            # search mode and remove the filter
+            self.on_search_toggled()
+            self.unapply_filter_on_panes(SEARCH_TAG, refresh=True)
+
             Log.warning("Invalid query '%s' : '%s'", query, e)
             return
 
