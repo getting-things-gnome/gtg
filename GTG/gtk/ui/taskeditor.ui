@@ -442,11 +442,12 @@
         <property name="border_width">8</property>
         <property name="orientation">vertical</property>
         <child>
-          <object class="GtkEntry" id="tags_entry">
+          <object class="GtkSearchEntry">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
-            <property name="has_focus">True</property>
-            <property name="is_focus">True</property>
+            <property name="primary_icon_name">edit-find-symbolic</property>
+            <property name="primary_icon_activatable">False</property>
+            <property name="primary_icon_sensitive">False</property>
             <property name="placeholder_text" translatable="yes">Search / Add</property>
           </object>
           <packing>
