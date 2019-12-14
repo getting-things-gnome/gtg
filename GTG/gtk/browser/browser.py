@@ -401,6 +401,7 @@ class TaskBrowser(GObject.GObject):
         self._add_accelerator_for_widget(agr, "tcm_mark_as_done", "<Control>d")
         self._add_accelerator_for_widget(agr, "tcm_dismiss", "<Control>i")
         self._add_accelerator_for_widget(agr, "tcm_modifytags", "<Control>t")
+        self._add_accelerator_for_widget(agr, "search_button", "<Control>f")
         # TODO(jakubbrindza): We cannot apply this function to closed_pane
         # widget since it yields the following issue:
         # widget `GtkScrolledWindow' has no activatable signal "activate"
@@ -416,10 +417,11 @@ class TaskBrowser(GObject.GObject):
 
 # HELPER FUNCTIONS ##########################################################
 
-    def on_search_toggled(self, widget):
+    def on_search_toggled(self, widget=None):
         if self.searchbar.get_search_mode():
             self.search_button.set_active(False)
             self.searchbar.set_search_mode(False)
+            self.search_entry.set_text('')
         else:
             self.search_button.set_active(True)
             self.searchbar.set_search_mode(True)
@@ -432,6 +434,11 @@ class TaskBrowser(GObject.GObject):
         try:
             parsed_query = parse_search_query(query)
         except InvalidQuery as e:
+            # If we get an invalid query (eg. empty) cancel out of
+            # search mode and remove the filter
+            self.on_search_toggled()
+            self.unapply_filter_on_panes(SEARCH_TAG, refresh=True)
+
             Log.warning("Invalid query '%s' : '%s'", query, e)
             return
 
