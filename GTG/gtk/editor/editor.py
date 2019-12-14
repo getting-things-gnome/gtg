@@ -283,7 +283,7 @@ class TaskEditor(object):
                 alphabetically
                 '''
 
-    def on_tag_toggled(self, widget, path):
+    def on_tag_toggled(self, widget, path, column):
         """We toggle by tag_row variable. tag_row is
         meant to be a tuple (is_used, tagname)"""
         tag_row = self.tag_store[path]
