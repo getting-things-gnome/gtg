@@ -175,6 +175,10 @@
               <object class="GtkBox" id="task_toolbar_box">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="margin_left">10</property>
+                <property name="margin_right">10</property>
+                <property name="margin_top">5</property>
+                <property name="margin_bottom">5</property>
                 <property name="spacing">5</property>
                 <child>
                   <object class="GtkBox" id="task_options">
