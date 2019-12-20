@@ -243,10 +243,10 @@ class Manager(object):
     def configure_plugins(self):
         self.plugins.activate()
 
-    def ask_delete_tasks(self, tids):
+    def ask_delete_tasks(self, tids, window):
         if not self.delete_dialog:
-            self.delete_dialog = DeletionUI(self.req)
-        finallist = self.delete_dialog.delete_tasks(tids)
+            self.delete_dialog = DeletionUI(self.req, window)
+        finallist = self.delete_dialog.show(tids)
         for t in finallist:
             if t.get_id() in self.opened_task:
                 self.close_task(t.get_id())
