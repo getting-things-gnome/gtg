@@ -975,7 +975,7 @@ class TaskBrowser(GObject.GObject):
         else:
             tids_todelete = [tid]
         Log.debug("going to delete %s" % tids_todelete)
-        self.vmanager.ask_delete_tasks(tids_todelete)
+        self.vmanager.ask_delete_tasks(tids_todelete, self.window)
 
     def update_start_date(self, widget, new_start_date):
         tasks = [self.req.get_task(uid)
