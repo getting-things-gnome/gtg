@@ -24,52 +24,6 @@
           </object>
         </child>
         <child>
-          <object class="GtkBox" id="autostart_box">
-            <property name="visible">True</property>
-            <property name="margin-start">40</property>
-            <property name="margin-end">20</property>
-            <property name="margin-top">10</property>
-            <property name="homogeneous">False</property>
-            <child>
-              <object class="GtkSwitch" id="autostart_button">
-                <property name="visible">True</property>
-                <property name="valign">center</property>
-                <signal handler="on_autostart_toggled" name="state-set" swapped="no"/>
-              </object>
-            </child>
-            <child>
-              <object class="GtkBox">
-                <property name="orientation">vertical</property>
-                <property name="visible">True</property>
-                <property name="margin-start">10</property>
-                <child>
-                  <object class="GtkLabel">
-                    <property name="label" translatable="yes">Start GTG on start-up</property>
-                    <property name="visible">True</property>
-                    <property name="xalign">0.0</property>
-                    <attributes>
-                      <attribute name="weight" value="bold"/>
-                    </attributes>
-                  </object>
-                </child>
-                <child>
-                  <object class="GtkLabel">
-                    <property name="label" translatable="yes">Launch Getting Things GNOME! automatically everytime you log in</property>
-                    <property name="visible">True</property>
-                    <property name="single-line-mode">True</property>
-                    <style>
-                      <class name="dim-label"/>
-                    </style>
-                    <attributes>
-                      <attribute name="scale" value="0.833333"/>
-                    </attributes>
-                  </object>
-                </child>
-              </object>
-            </child>
-          </object>
-        </child>
-        <child>
           <object class="GtkBox" id="shortcut_box">
             <property name="visible">True</property>
             <property name="margin">20</property>
