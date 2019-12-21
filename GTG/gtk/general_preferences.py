@@ -27,7 +27,6 @@ from gi.repository import Gtk, Gdk
 
 from GTG.core.dirs import UI_DIR
 from GTG.core.translations import _
-from GTG.tools import autostart
 from GTG.tools import shortcut
 
 
@@ -43,7 +42,6 @@ class GeneralPreferences(object):
         builder.add_from_file(self.GENERAL_PREFERENCES_UI)
 
         self.ui_widget = builder.get_object("general_pref_window")
-        self.autostart_button = builder.get_object("autostart_button")
         self.preview_button = builder.get_object("preview_button")
         self.bg_color_button = builder.get_object("bg_color_button")
         self.shortcut_button = builder.get_object("shortcut_button")
@@ -91,7 +89,6 @@ class GeneralPreferences(object):
 
     def _refresh_preferences_store(self):
         """ Sets the correct value in the preferences checkboxes """
-        self.autostart_button.set_active(autostart.is_enabled())
 
         self.shortcut.refresh_accel()
 
@@ -139,13 +136,6 @@ class GeneralPreferences(object):
             pass
 
         self._refresh_preferences_store()
-
-    def on_autostart_toggled(self, widget, state):
-        """ Toggle GTG autostarting with the GNOME desktop """
-        if self.autostart_button.get_active():
-            autostart.enable()
-        else:
-            autostart.disable()
 
     def on_shortcut_toggled(self, widget, state):
         self.shortcut.on_shortcut_toggled(widget, state)
