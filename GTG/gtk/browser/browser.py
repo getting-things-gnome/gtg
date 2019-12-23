@@ -159,6 +159,7 @@ class TaskBrowser(GObject.GObject):
         self.main_notebook = self.builder.get_object("main_notebook")
         self.accessory_notebook = self.builder.get_object("accessory_notebook")
         self.vbox_toolbars = self.builder.get_object("vbox_toolbars")
+        self.stack_switcher = self.builder.get_object("stack_switcher")
 
         self.tagpopup = TagContextMenu(self.req, self.vmanager)
 
@@ -1163,6 +1164,19 @@ class TaskBrowser(GObject.GObject):
         self.quit()
 
 # PUBLIC METHODS ###########################################################
+    def get_selected_pane(self):
+        """ Get the selected pane in the stack switcher """
+
+        current = self.stack_switcher.get_stack().get_visible_child_name()
+        names = {
+            'closed_view': 'closed',
+            'active_view': 'active',
+            'work_view': 'workview'
+        }
+
+        return names[current]
+
+
     def get_selected_task(self, tv=None):
         """
         Returns the'uid' of the selected task, if any.
@@ -1187,13 +1201,13 @@ class TaskBrowser(GObject.GObject):
         @param tv: The tree view to find the selected task in. Defaults to
             the task_tview.
         """
-        # FIXME Why we have active as back case? is that so? Study this code
+
         selected = []
         if tv:
             selected = self.vtree_panes[tv].get_selected_nodes()
         else:
-            if 'active' in self.vtree_panes:
-                selected = self.vtree_panes['active'].get_selected_nodes()
+            current_pane = self.get_selected_pane()
+            selected = self.vtree_panes[current_pane].get_selected_nodes()
             for i in self.vtree_panes:
                 if len(selected) == 0:
                     selected = self.vtree_panes[i].get_selected_nodes()
