@@ -65,7 +65,7 @@ class GeneralPreferences(object):
         return 'general'
 
     def get_title(self):
-        return _('General Preferences')
+        return _('General')
 
     def get_ui(self):
         '''
