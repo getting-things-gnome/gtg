@@ -1,83 +1,83 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.22.1 -->
 <interface>
-  <!-- interface-requires gtk+ 3.10 -->
+  <requires lib="gtk+" version="3.20"/>
   <object class="GtkWindow" id="Preferences">
     <property name="can_focus">False</property>
-    <property name="default_width">900</property>
+    <property name="default_width">700</property>
     <property name="default_height">500</property>
+    <property name="type_hint">dialog</property>
     <signal name="delete-event" handler="on_close" swapped="no"/>
     <child type="titlebar">
-      <object class="GtkBox" id="titlebar_box">
+      <object class="GtkHeaderBar" id="header_bar">
         <property name="visible">True</property>
-        <property name="expand">True</property>
-        <property name="orientation">horizontal</property>
-        <child>
-          <object class="GtkHeaderBar" id="left_header_bar">
-            <property name="visible">True</property>
-            <property name="title" translatable="yes">Preferences</property>
-            <property name="show-close-button">True</property>
-            <property name="decoration_layout">menu</property>
-          </object>
-        </child>
-        <child>
-          <object class="GtkSeparator">
-            <property name="orientation">vertical</property>
-            <property name="visible">True</property>
-          </object>
-        </child>
-        <child>
-          <object class="GtkHeaderBar" id="right_header_bar">
-            <property name="visible">True</property>
-            <property name="expand">True</property>
-            <property name="title" translatable="yes"></property>
-            <property name="show-close-button">True</property>
-            <property name="decoration_layout">:close</property>
-          </object>
-        </child>
+        <property name="can_focus">False</property>
+        <property name="title" translatable="yes">Preferences</property>
+        <property name="has_subtitle">False</property>
+        <property name="spacing">0</property>
+        <property name="show_close_button">True</property>
       </object>
     </child>
     <child>
       <object class="GtkBox" id="main_window_box">
-        <property name="expand">True</property>
         <property name="visible">True</property>
-        <property name="orientation">horizontal</property>
+        <property name="can_focus">False</property>
         <child>
           <object class="GtkBox">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
             <property name="hexpand">False</property>
             <property name="orientation">vertical</property>
-            <property name="visible">True</property>
             <child>
               <object class="GtkStackSidebar" id="sidebar">
+                <property name="width_request">150</property>
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
                 <property name="vexpand">True</property>
                 <property name="stack">stack</property>
-                <signal handler="on_sidebar_change" name="button-release-event" swapped="no"/>
               </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
             </child>
           </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
         </child>
         <child>
           <object class="GtkSeparator">
-            <property name="orientation">vertical</property>
             <property name="visible">True</property>
-            <property name="expand">False</property>
+            <property name="can_focus">False</property>
+            <property name="orientation">vertical</property>
           </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
         </child>
         <child>
           <object class="GtkStack" id="stack">
             <property name="visible">True</property>
-            <property name="expand">True</property>
-            <property name="transition-type">GTK_STACK_TRANSITION_TYPE_CROSSFADE</property>
+            <property name="can_focus">False</property>
+            <property name="transition_type">crossfade</property>
+            <child>
+              <placeholder/>
+            </child>
           </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">2</property>
+          </packing>
         </child>
       </object>
     </child>
   </object>
-  <object class="GtkSizeGroup">
-    <property name="mode">GTK_SIZE_GROUP_HORIZONTAL</property>
-    <widgets>
-      <widget name="left_header_bar"/>
-      <widget name="sidebar"/>
-    </widgets>
-  </object>
+  <object class="GtkSizeGroup"/>
 </interface>
