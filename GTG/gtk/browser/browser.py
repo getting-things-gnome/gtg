@@ -675,6 +675,16 @@ class TaskBrowser(GObject.GObject):
         #main_menu GtkModelButton {
             padding: 10 5;
         }
+
+        .prefs_list {
+            border: 1px solid alpha(currentColor, 0.2);
+            border-radius: 3px;
+            margin: 4px;
+        }
+
+        .prefs_list row {
+            border-bottom: solid 1px alpha(currentColor, 0.1);
+        }
         """
 
         style_provider.load_from_data(css);
