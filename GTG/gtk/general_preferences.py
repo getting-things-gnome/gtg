@@ -27,7 +27,6 @@ from gi.repository import Gtk, Gdk
 
 from GTG.core.dirs import UI_DIR
 from GTG.core.translations import _
-from GTG.tools import shortcut
 
 
 class GeneralPreferences(object):
@@ -44,12 +43,7 @@ class GeneralPreferences(object):
         self.ui_widget = builder.get_object("general_pref_window")
         self.preview_button = builder.get_object("preview_button")
         self.bg_color_button = builder.get_object("bg_color_button")
-        self.shortcut_button = builder.get_object("shortcut_button")
         self.font_button = builder.get_object("font_button")
-        self.shortcut_popover = builder.get_object("shortcut_popover")
-        self.set_shortcut = builder.get_object("set_shortcut")
-
-        self.shortcut = ShortcutWidget(builder)
 
         self.timer = vmanager.timer
         self.refresh_time = builder.get_object("time_entry")
@@ -76,9 +70,6 @@ class GeneralPreferences(object):
     def activate(self):
         self._refresh_preferences_store()
 
-    def on_shortcut_popover(self, widget):
-        self.shortcut_popover.show()
-
     def get_default_editor_font(self):
         editor_font = self.config.get("font_name")
         if editor_font == "":
@@ -89,8 +80,6 @@ class GeneralPreferences(object):
 
     def _refresh_preferences_store(self):
         """ Sets the correct value in the preferences checkboxes """
-
-        self.shortcut.refresh_accel()
 
         show_preview = self.config.get("contents_preview_enable")
         self.preview_button.set_active(show_preview)
@@ -137,9 +126,6 @@ class GeneralPreferences(object):
 
         self._refresh_preferences_store()
 
-    def on_shortcut_toggled(self, widget, state):
-        self.shortcut.on_shortcut_toggled(widget, state)
-
     def on_preview_toggled(self, widget, state):
         """ Toggle previews in the task view on or off."""
         curstate = self.config.get("contents_preview_enable")
@@ -159,104 +145,3 @@ class GeneralPreferences(object):
         self.config.set("font_name", self.font_button.get_font_name())
 
 
-class ShortcutWidget(object):
-    """ Show Shortcut Accelerator Widget """
-
-    def __init__(self, builder):
-        self.builder = builder
-        self.ui_widget = builder.get_object("general_pref_window")
-        self.button = builder.get_object("shortcut_button")
-        self.new_task_default_binding = "<Primary>F12"
-        self.gsettings_install_label_shown = True
-
-        self.liststore = Gtk.ListStore(str, str)
-        self.liststore.append(["", ""])
-        treeview = Gtk.TreeView(self.liststore)
-        column_accel = Gtk.TreeViewColumn()
-        treeview.append_column(column_accel)
-        treeview.set_headers_visible(False)
-
-    def refresh_accel(self):
-        """ Refreshes the accelerator """
-
-        if not shortcut.is_gsettings_present():
-            self.button.set_sensitive(False)
-            iter1 = self.liststore.get_iter_first()
-            self.liststore.set_value(iter1, 1, "Disabled")
-            self.cell.set_sensitive(False)
-
-            if not self.gsettings_install_label_shown:
-                self._show_gsettings_install_label()
-                self.gsettings_install_label_shown = True
-            return
-
-        iter1 = self.liststore.get_iter_first()
-        self.new_task_binding = shortcut.get_saved_binding()
-        self.binding_backup = self.new_task_binding
-        if self.new_task_binding == "":
-            # User had set a shortcut, but has now disabled it
-            self.button.set_active(False)
-            self.liststore.set_value(iter1, 1, "Disabled")
-            return
-        elif self.new_task_binding is None:
-            # User hasn't set a shortcut ever
-            self.button.set_active(False)
-            self.new_task_binding = self.new_task_default_binding
-            self.binding_backup = self.new_task_binding
-        else:
-            # There exists a shortcut
-            self.button.set_active(True)
-        (accel_key, accel_mods) = Gtk.accelerator_parse(self.new_task_binding)
-        self.show_input = Gtk.accelerator_get_label(accel_key, accel_mods)
-        self.liststore.set_value(iter1, 1, self.show_input)
-
-    def on_shortcut_toggled(self, widget, state):
-        """ New task shortcut checkbox is toggled """
-        if widget.get_active():
-            self.new_task_binding = self.binding_backup
-            shortcut.save_new_binding(self.new_task_binding, True)
-            self.cell.set_property("editable", True)
-        else:
-            self.new_task_binding = ""
-            shortcut.save_new_binding(self.new_task_binding, True)
-            self.cell.set_property("editable", False)
-
-    def _cellAccelEdit(self, cell, path, accel_key, accel_mods, code, model):
-        """ Accelerator is modified """
-        self.show_input = Gtk.accelerator_get_label(accel_key, accel_mods)
-        self.new_task_binding = Gtk.accelerator_name(accel_key, accel_mods)
-        if shortcut.check_invalidity(self.new_task_binding, accel_key,
-                                     accel_mods):
-            self._show_warning(self.show_input)
-            return
-        self.binding_backup = self.new_task_binding
-        iter = model.get_iter(path)
-        model.set_value(iter, 1, self.show_input)
-        shortcut.save_new_binding(self.new_task_binding,
-                                  self.button.get_active())
-
-    def _accel_cleared(self, widget, path, model):
-        """ Clear the accelerator """
-        iter = model.get_iter(path)
-        model.set_value(iter, 1, None)
-
-    def _show_gsettings_install_label(self):
-        vbox = self.builder.get_object("prefs-vbox7")
-        label = Gtk.Label()
-        label.set_markup(_("<small>Please install <i><b>gsettings</b></i> "
-                           "to enable New task shortcut</small>"))
-        vbox.add(label)
-
-    def _show_warning(self, input_str):
-        """ Show warning when user enters inappropriate accelerator """
-        show = _("The shortcut \"%s\" cannot be used because "
-                 "it will become impossible to type using this key.\n"
-                 "Please try with a key such as "
-                 "Control, Alt or Shift at the same time.") % input_str
-        dialog = Gtk.MessageDialog(self.ui_widget,
-                                   Gtk.DialogFlags.DESTROY_WITH_PARENT,
-                                   Gtk.MessageType.WARNING,
-                                   Gtk.ButtonsType.OK,
-                                   show)
-        dialog.run()
-        dialog.hide()
