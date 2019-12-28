@@ -83,6 +83,7 @@
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="valign">center</property>
+                        <signal name="state-set" handler="on_preview_toggled" swapped="no"/>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -234,6 +235,8 @@
                         <property name="width_chars">8</property>
                         <property name="max_width_chars">8</property>
                         <property name="xalign">0.5</property>
+                        <signal name="changed" handler="on_valid_time_check" swapped="no"/>
+                        <signal name="focus-out-event" handler="on_leave_time_entry" swapped="no"/>
                       </object>
                       <packing>
                         <property name="expand">False</property>
