@@ -295,8 +295,6 @@ class TaskBrowser(GObject.GObject):
             self.on_sidebar_toggled,
             "on_quickadd_field_activate":
             self.on_quickadd_activate,
-            "on_quickadd_field_icon_press":
-            self.on_quickadd_iconpress,
             "on_view_quickadd_toggled":
             self.on_toggle_quickadd,
             "on_about_clicked":
@@ -791,11 +789,6 @@ class TaskBrowser(GObject.GObject):
             nids = self.vtree_panes['active'].get_selected_nodes()
             for nid in nids:
                 self.vmanager.open_task(nid)
-
-    def on_quickadd_iconpress(self, widget, icon, event):
-        """ Clear the text in quickadd field by clicking on 'clear' icon """
-        if icon == Gtk.EntryIconPosition.SECONDARY:
-            self.quickadd_entry.set_text('')
 
     def on_tag_treeview_button_press_event(self, treeview, event):
         """
