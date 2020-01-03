@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.22.1 -->
 <interface>
-  <!-- interface-requires gtk+ 3.0 -->
+  <requires lib="gtk+" version="3.20"/>
   <object class="GtkWindow" id="calendar">
     <property name="can_focus">False</property>
     <property name="events">GDK_STRUCTURE_MASK | GDK_PROXIMITY_OUT_MASK</property>
@@ -10,9 +11,16 @@
     <property name="skip_taskbar_hint">True</property>
     <property name="skip_pager_hint">True</property>
     <child>
+      <placeholder/>
+    </child>
+    <child>
       <object class="GtkBox" id="vbox5">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
+        <property name="margin_left">12</property>
+        <property name="margin_right">12</property>
+        <property name="margin_top">12</property>
+        <property name="margin_bottom">12</property>
         <property name="orientation">vertical</property>
         <child>
           <object class="GtkCalendar" id="calendar1">
@@ -29,6 +37,7 @@
           <object class="GtkBox" id="fuzzydate_btns">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
+            <property name="margin_top">8</property>
             <property name="homogeneous">True</property>
             <child>
               <object class="GtkButton" id="button_now">
@@ -69,6 +78,9 @@
                 <property name="position">2</property>
               </packing>
             </child>
+            <style>
+              <class name="linked"/>
+            </style>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -82,6 +94,7 @@
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
+            <property name="margin_top">8</property>
           </object>
           <packing>
             <property name="expand">False</property>
