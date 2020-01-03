@@ -48,8 +48,6 @@ class Preferences(object):
         self.pages = {}
         self.add_page(GeneralPreferences(req, vmanager))
 
-        self.on_sidebar_change(self.stack)
-
     def activate(self):
         """ Activate the preferences window."""
         self.pages['general'].activate()
@@ -67,8 +65,3 @@ class Preferences(object):
         self.pages[page_name] = page
         self.stack.add_titled(page.get_ui(), page_name, page.get_title())
 
-    def on_sidebar_change(self, widget, data=None):
-        '''Setting the correct headerbar title based on
-        visible child of stack'''
-        visible_page = self.pages[self.stack.get_visible_child_name()]
-        self.headerbar.set_title(visible_page.get_title())
