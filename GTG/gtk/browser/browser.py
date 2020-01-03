@@ -1142,8 +1142,7 @@ class TaskBrowser(GObject.GObject):
     def apply_filter_on_panes(self, filter_name, refresh=True,
                               parameters=None):
         """ Apply filters for every pane: active tasks, closed tasks """
-        # Reset quickadd_entry if another filter is applied
-        self.quickadd_entry.set_text("")
+
         for pane in self.vtree_panes:
             vtree = self.req.get_tasks_tree(name=pane, refresh=False)
             vtree.apply_filter(filter_name, refresh=refresh,
