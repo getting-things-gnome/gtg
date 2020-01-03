@@ -82,6 +82,11 @@ class TaskEditor(object):
         self.closed_entry = self.builder.get_object("closeddate_entry")
         self.closed_calendar = self.builder.get_object("calendar_closed")
 
+        # Start date
+        self.start_popover = self.builder.get_object("start_popover")
+        self.start_entry = self.builder.get_object("startdate_entry")
+        self.start_calendar = self.builder.get_object("calendar_start")
+
         # Create our dictionary and connect it
         dic = {
             "on_mark_as_done": self.change_status,
@@ -94,6 +99,10 @@ class TaskEditor(object):
                 w, GTGCalendar.DATE_KIND_START),
             "on_closeddate_pressed": lambda w: self.on_date_pressed(
                 w, GTGCalendar.DATE_KIND_CLOSED),
+            "startdate_selected": lambda c: self.on_date_selected(
+                c, GTGCalendar.DATE_KIND_START),
+            "startdate_cleared": lambda w: self.on_date_cleared(
+                w, GTGCalendar.DATE_KIND_START),
             "duedate_changed": lambda w: self.date_changed(
                 w, GTGCalendar.DATE_KIND_DUE),
             "duedate_focus_out": lambda w, e: self.date_focus_out(
@@ -140,7 +149,6 @@ class TaskEditor(object):
         self.calendar.set_transient_for(self.window)
         self.calendar.set_decorated(False)
         self.duedate_widget = self.builder.get_object("duedate_entry")
-        self.startdate_widget = self.builder.get_object("startdate_entry")
         '''
         TODO(jakubbrindza): Once all the functionality in editor is back and
         working, bring back also the accelerators! Dayleft_label needs to be
@@ -255,10 +263,9 @@ class TaskEditor(object):
     '''
 
     def show_popover_start(self, widget, event):
-        popover = self.builder.get_object("date_popover")
-        popover.set_relative_to(self.startdate_widget)
-        popover.set_modal(False)
-        popover.show_all()
+        """Open the start date calendar popup."""
+
+        self.start_popover.popup()
 
     def show_popover_due(self, widget, popover):
         popover = self.builder.get_object("date_popover")
@@ -370,13 +377,13 @@ class TaskEditor(object):
         # refreshing the start date field
         startdate = self.task.get_start_date()
         try:
-            prevdate = Date.parse(self.startdate_widget.get_text())
+            prevdate = Date.parse(self.start_entry.get_text())
             update_date = startdate != prevdate
         except ValueError:
             update_date = True
 
         if update_date:
-            self.startdate_widget.set_text(str(startdate))
+            self.start_entry.set_text(str(startdate))
 
         # refreshing the due date field
         duedate = self.task.get_due_date()
@@ -490,6 +497,7 @@ class TaskEditor(object):
         if datetoset is not None:
             if date_kind == GTGCalendar.DATE_KIND_START:
                 self.task.set_start_date(datetoset)
+                self.start_popover.popdown()
 
             elif date_kind == GTGCalendar.DATE_KIND_DUE:
                 self.task.set_due_date(datetoset)
@@ -529,11 +537,23 @@ class TaskEditor(object):
         year, month, day = calendar.get_date()
         return datetime.date(year, month + 1, day)
 
+    def on_date_cleared(self, widget, kind):
+        """ Callback when a date is cleared through the popups. """
+
+        if kind == GTGCalendar.DATE_KIND_START:
+            self.task.set_start_date(Date.no_date())
+            self.start_entry.set_text('')
+
     def on_date_selected(self, calendar, kind):
         """ Callback when a day is selected in the calendars."""
 
+        date = self.calendar_to_datetime(calendar)
+
+        if kind == GTGCalendar.DATE_KIND_START:
+            self.task.set_start_date(Date(date))
+            self.start_entry.set_text(str(Date(date)))
+
         if kind == GTGCalendar.DATE_KIND_CLOSED:
-            date = self.calendar_to_datetime(calendar)
             self.task.set_closed_date(Date(date))
             self.closed_entry.set_text(str(Date(date)))
 
