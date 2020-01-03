@@ -297,8 +297,6 @@ class TaskBrowser(GObject.GObject):
             self.on_sidebar_toggled,
             "on_quickadd_field_activate":
             self.on_quickadd_activate,
-            "on_view_quickadd_toggled":
-            self.on_toggle_quickadd,
             "on_about_clicked":
             self.on_about_clicked,
             "on_about_delete":
@@ -411,9 +409,8 @@ class TaskBrowser(GObject.GObject):
         # self._add_accelerator_for_widget(agr, "closed_pane", "<Control>F9")
         # self._add_accelerator_for_widget(agr, "help_contents", "F1")
 
-        quickadd_field = self.builder.get_object("quickadd_field")
         key, mod = Gtk.accelerator_parse("<Control>l")
-        quickadd_field.add_accelerator("grab-focus", agr, key, mod,
+        self.quickadd_entry.add_accelerator("grab-focus", agr, key, mod,
                                        Gtk.AccelFlags.VISIBLE)
 
 # HELPER FUNCTIONS ##########################################################
@@ -642,14 +639,6 @@ class TaskBrowser(GObject.GObject):
                 self.init_tags_sidebar()
             self.sidebar.show()
             self.config.set("tag_pane", True)
-
-    def on_toggle_quickadd(self, widget):
-        if widget.get_active():
-            self.quickadd_pane.show()
-            self.config.set('quick_add', True)
-        else:
-            self.quickadd_pane.hide()
-            self.config.set('quick_add', False)
 
     def _expand_not_collapsed(self, model, path, iter, colt):
         """ Expand all not collapsed nodes
