@@ -24,6 +24,7 @@ The main text widget is a home-made TextView called TaskView (see taskview.py)
 The rest is the logic of the widget: date changing widgets, buttons, ...
 """
 import time
+import datetime
 import os
 
 from gi.repository import Gdk, Gtk, Pango
@@ -76,6 +77,11 @@ class TaskEditor(object):
         self.tag_store = self.builder.get_object("tag_store")
         self.parent_button = self.builder.get_object("parent")
 
+        # Closed date
+        self.closed_popover = self.builder.get_object("closed_popover")
+        self.closed_entry = self.builder.get_object("closeddate_entry")
+        self.closed_calendar = self.builder.get_object("calendar_closed")
+
         # Create our dictionary and connect it
         dic = {
             "on_mark_as_done": self.change_status,
@@ -100,6 +106,8 @@ class TaskEditor(object):
                 w, GTGCalendar.DATE_KIND_CLOSED),
             "closeddate_focus_out": lambda w, e: self.date_focus_out(
                 w, e, GTGCalendar.DATE_KIND_CLOSED),
+            "closeddate_selected": lambda c: self.on_date_selected(
+                c, GTGCalendar.DATE_KIND_CLOSED),
             "on_insert_subtask_clicked": self.insert_subtask,
             "on_inserttag_clicked": self.inserttag_clicked,
             "on_parent_select": self.on_parent_select,
@@ -133,7 +141,6 @@ class TaskEditor(object):
         self.calendar.set_decorated(False)
         self.duedate_widget = self.builder.get_object("duedate_entry")
         self.startdate_widget = self.builder.get_object("startdate_entry")
-        self.closeddate_widget = self.builder.get_object("closeddate_entry")
         '''
         TODO(jakubbrindza): Once all the functionality in editor is back and
         working, bring back also the accelerators! Dayleft_label needs to be
@@ -260,10 +267,9 @@ class TaskEditor(object):
         popover.show_all()
 
     def show_popover_closed(self, widget, popover):
-        closed_popover = self.builder.get_object("closed_popover")
-        closed_popover.set_relative_to(self.closeddate_widget)
-        closed_popover.set_modal(False)
-        closed_popover.show_all()
+        """Open the closed date calendar popup."""
+
+        self.closed_popover.popup()
 
     def open_tags_popover(self, widget):
         self.tag_store.clear()
@@ -385,9 +391,9 @@ class TaskEditor(object):
 
         # refreshing the closed date field
         closeddate = self.task.get_closed_date()
-        prevcldate = Date.parse(self.closeddate_widget.get_text())
+        prevcldate = Date.parse(self.closed_entry.get_text())
         if closeddate != prevcldate:
-            self.closeddate_widget.set_text(str(closeddate))
+            self.closed_entry.set_text(str(closeddate))
 
         # refreshing the day left label
         '''
@@ -473,10 +479,14 @@ class TaskEditor(object):
         if datetoset is not None:
             if date_kind == GTGCalendar.DATE_KIND_START:
                 self.task.set_start_date(datetoset)
+
             elif date_kind == GTGCalendar.DATE_KIND_DUE:
                 self.task.set_due_date(datetoset)
+
             elif date_kind == GTGCalendar.DATE_KIND_CLOSED:
                 self.task.set_closed_date(datetoset)
+                self.closed_popover.popdown()
+
             self.refresh_editor()
 
     def on_date_pressed(self, widget, date_kind):
@@ -496,6 +506,27 @@ class TaskEditor(object):
         result, x, y = widget.get_window().get_origin()
         self.calendar.show_at_position(x + rect.x + rect.width,
                                        y + rect.y)
+
+    def calendar_to_datetime(self, calendar):
+        '''
+        Gtk.Calendar uses a 0-based convention for counting months.
+        The rest of the world, including the datetime module, starts from 1.
+        This is a converter between the two. GTG follows the datetime
+        convention.
+        '''
+
+        year, month, day = calendar.get_date()
+        return datetime.date(year, month + 1, day)
+
+    def on_date_selected(self, calendar, kind):
+        """ Callback when a day is selected in the calendars."""
+
+        if kind == GTGCalendar.DATE_KIND_CLOSED:
+            date = self.calendar_to_datetime(calendar)
+            self.task.set_closed_date(Date(date))
+            self.closed_entry.set_text(str(Date(date)))
+
+
 
     def on_date_changed(self, calendar):
         date, date_kind = calendar.get_selected_date()
