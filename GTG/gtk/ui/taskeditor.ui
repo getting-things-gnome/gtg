@@ -2,27 +2,6 @@
 <!-- Generated with glade 3.22.1 -->
 <interface>
   <requires lib="gtk+" version="3.20"/>
-  <object class="GtkPopover" id="closed_popover">
-    <property name="can_focus">False</property>
-    <child>
-      <object class="GtkBox" id="closeddate_box">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="orientation">vertical</property>
-        <child>
-          <object class="GtkCalendar" id="calendar_closed">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">0</property>
-          </packing>
-        </child>
-      </object>
-    </child>
-  </object>
   <object class="GtkPopoverMenu" id="editor_menu_popover">
     <property name="can_focus">False</property>
     <child>
@@ -427,6 +406,34 @@
             <property name="expand">True</property>
             <property name="fill">True</property>
             <property name="position">1</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+  <object class="GtkPopover" id="closed_popover">
+    <property name="can_focus">False</property>
+    <property name="relative_to">closeddate_entry</property>
+    <property name="modal">False</property>
+    <child>
+      <object class="GtkBox" id="closeddate_box">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="margin_left">12</property>
+        <property name="margin_right">12</property>
+        <property name="margin_top">12</property>
+        <property name="margin_bottom">12</property>
+        <property name="orientation">vertical</property>
+        <child>
+          <object class="GtkCalendar" id="calendar_closed">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <signal name="day-selected" handler="closeddate_selected" swapped="no"/>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
           </packing>
         </child>
       </object>
