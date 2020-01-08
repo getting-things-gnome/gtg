@@ -437,8 +437,8 @@
                             </child>
                           </object>
                           <packing>
-                            <property name="name">active_view</property>
-                            <property name="title">Active</property>
+                            <property name="name">open_view</property>
+                            <property name="title">Open</property>
                           </packing>
                         </child>
                         <child>
@@ -451,8 +451,8 @@
                             </child>
                           </object>
                           <packing>
-                            <property name="name">work_view</property>
-                            <property name="title">Workview</property>
+                            <property name="name">actionable_view</property>
+                            <property name="title">Actionable</property>
                             <property name="position">1</property>
                           </packing>
                         </child>
