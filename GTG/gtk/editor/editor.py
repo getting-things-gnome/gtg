@@ -204,6 +204,13 @@ class TaskEditor(object):
         self.textview.modified(full=True)
         self.window.connect("destroy", self.destruction)
 
+        # Connect search field to tags popup
+        self.tags_entry = self.builder.get_object("tags_entry")
+        self.tags_tree = self.builder.get_object("tags_tree")
+
+        self.tags_tree.set_search_entry(self.tags_entry)
+        self.tags_tree.set_search_equal_func(self.search_function, None)
+
         # plugins
         self.pengine = PluginEngine()
         self.plugin_api = PluginAPI(self.req, self.vmanager, self)
@@ -308,6 +315,16 @@ class TaskEditor(object):
         '''
         TODO(jakubbrindza): Add else case that will remove tag.
         '''
+
+    def search_function(self, model, column, key, iter, *search_data):
+        """Callback when searching in the tags popup."""
+
+        if not key.startswith('@'):
+            key = f'@{key}'
+
+        # The return value is reversed. False if it matches, True
+        # otherwise.
+        return not model.get(iter, column)[0].startswith(key)
 
     def init_dimensions(self):
         """ Restores position and size of task if possible """
