@@ -70,6 +70,15 @@ from GTG.tools.logger import Log
 # we allow one instance of gtg by data directory.
 
 
+def write_pid_file(pidfile):
+    """Write file with pid for the gtg process."""
+
+    with open(pidfile, "w") as f:
+        f.write(repr(os.getpid()))
+
+    os.chmod(pidfile, 0o600)
+
+
 def check_instance(directory, uri_list=[]):
     """
     Check if gtg is already running.
@@ -77,34 +86,49 @@ def check_instance(directory, uri_list=[]):
     """
     if not os.path.exists(directory):
         os.makedirs(directory)
-    pidfile = os.path.join(directory, "gtg.pid")
-    if not os.path.exists(pidfile):
-        open(pidfile, "w").close()
-        os.chmod(pidfile, 0o600)
 
-    # see if gtg is already running
-    pid = open(pidfile, "r").readline()
-    if pid:
-        p = os.system("/bin/ps %s >/dev/null" % pid)
-        p_name = os.popen("/bin/ps -f %s" % pid).read()
-        if p == 0 and "gtg" in p_name:
-            print(_("gtg is already running!"))
+    pidfile = os.path.join(directory, "gtg.pid")
+
+    try:
+        with open(pidfile, "r") as pid_data:
+            pid = pid_data.readline()
+            procfile = os.path.join("proc", pid, "comm")
+
+    # There's no pid file, so write one
+    except FileNotFoundError:
+        write_pid_file(pidfile)
+        return
+
+    try:
+        with open(procfile, "r") as proc_data:
+            if "gtg" in procfile:
+                print(_("gtg is already running!"))
+
             try:
                 d = dbus.SessionBus().get_object(BUSNAME, BUSINTERFACE)
                 d.ShowTaskBrowser()
+
                 # if the user has specified a task to open, do that
                 for uri in uri_list:
                     if uri.startswith("gtg://"):
                         d.OpenTaskEditor(uri[6:])
+
                 raise SystemExit
+
             except dbus.exceptions.DBusException:
                 # If we cant't connect to the interface (e.g. changed interface
                 # between GTG versions), we won't do anything more
-                raise SystemExit
+                raise SystemExit(_("Can't connect to gtg dbus interface!"))
 
-    # write the pid file
-    with open(pidfile, "w") as f:
-        f.write(repr(os.getpid()))
+            # There is a process for that pid but it's not gtg
+            else:
+                write_pid_file(pidfile)
+                return
+
+    # The process for that pid is not running
+    except FileNotFoundError:
+        write_pid_file(pidfile)
+        return
 
 
 def remove_pidfile(directory):
