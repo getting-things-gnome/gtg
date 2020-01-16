@@ -419,6 +419,7 @@ class TaskBrowser(GObject.GObject):
 # HELPER FUNCTIONS ##########################################################
 
     def on_search_toggled(self, widget=None):
+
         if self.searchbar.get_search_mode():
             self.search_button.set_active(False)
             self.searchbar.set_search_mode(False)
@@ -586,6 +587,22 @@ class TaskBrowser(GObject.GObject):
         closed_tree = self.req.get_tasks_tree(name='closed', refresh=False)
         closed_tree.refresh_all()
 
+    def find_value_in_treestore(self, store, treeiter, value):
+        """Search for value in tree store recursively."""
+
+        while treeiter is not None:
+            if store[treeiter][1] == value:
+                return(treeiter)
+                break
+
+            if store.iter_has_child(treeiter):
+                childiter = store.iter_children(treeiter)
+                ret = self.find_value_in_treestore(store, childiter, value)
+
+                if ret is not None:
+                    return ret
+
+            treeiter = store.iter_next(treeiter)
 
 # SIGNAL CALLBACKS ############################################################
 # Typically, reaction to user input & interactions with the GUI
@@ -1241,6 +1258,16 @@ class TaskBrowser(GObject.GObject):
                 if not t.startswith('@'):
                     taglist.remove(t)
         return taglist
+
+    def select_on_sidebar(self, value):
+        """Select a row in the tag treeview (by value)."""
+
+        selection = self.tagtreeview.get_selection()
+        model = self.tagtreeview.get_model()
+        tree_iter = model.get_iter_first()
+
+        result = self.find_value_in_treestore(model, tree_iter, value)
+        selection.select_iter(result)
 
     def reset_cursor(self):
         """ Returns the cursor to the tag that was selected prior
