@@ -168,10 +168,28 @@ class DataStore(object):
 
         Have a fun with implementing it!
         """
+
         tag = self.get_tag(oldname)
 
         if not tag.is_search_tag():
-            print("Tag renaming not implemented yet")
+            for task_id in tag.get_related_tasks():
+
+                # Store old tag attributes
+                color = tag.get_attribute("color")
+                icon = tag.get_attribute("icon")
+
+                my_task = self.get_task(task_id)
+                my_task.rename_tag(oldname, newname)
+
+                # Restore attributes on tag
+                new_tag = self.get_tag(newname)
+
+                if color:
+                    new_tag.set_attribute("color", color)
+
+                if icon:
+                    new_tag.set_attribute("icon", icon)
+
             return None
 
         query = tag.get_attribute("query")
