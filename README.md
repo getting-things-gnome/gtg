@@ -51,9 +51,6 @@ external services) which needs additional packages to work correctly.
 
 ### DEPENDENCIES FOR PLUGINS
 
-"Bugzilla" plugin dependencies:
-  * python3-bugz
-
 "Export and print" plugin dependencies:
   * python3-cheetah
   * pdflatex
@@ -64,45 +61,6 @@ Installable on Debian-based system via
     
     $ sudo apt-get install python3-cheetah pdftk pdfjam texlive-latex-base
 
-"Hamster Time Tracker Integration" plugin needs a running instance of Hamster.
-
-"Notification area" plugin has only an optional dependence for systems
-which supports indicators:
-  * python3-appindicator
-
-"Send task via email" plugin does not have any external dependencies.
-
-"Closed tasks remover" plugin does not have any external dependencies.
-
-"Tomboy/Gnote" plugin needs a running instance of Tomboy or Gnote.
-  * python3-dbus
-
-"Urgency Color" plugin does not have any external dependencies.
-
-### DEPENDENCIES FOR SYNCHRONIZATION SERVICES
-
-Evolution synchronization service has dependencies:
-  * python3-evolution
-  * python3-dateutil
-
-Because of a bug in PyGTK (see https://bugs.launchpad.net/gtg/+bug/936183),
-the synchronization service freezes GTG and the synchronization service can't be used.
-
-MantisBT synchronization service has a dependency:
-  * python3-suds
-
-Launchpad synchronization service has a dependency:
-  * python3-launchpadlib
-
-Gnote and Tomboy synchronization services has no external dependency.
-
-Identica and Twitter synchronization services are shipped with the local
-version of Tweety library.
-
-Remember the Milk synchronization service is shipped with a library for RTM api. It has an external dependency:
-  * python3-dateutil
-
-Remember the Milk is not maintained for a long time and might be potentially harmful.
 
 ### HOW TO USE GTG?
 
