@@ -100,7 +100,7 @@
     <property name="name">main_menu</property>
     <property name="can_focus">False</property>
     <child>
-      <object class="GtkBox">
+      <object class="GtkBox" id="menu_box">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="margin_left">14</property>
