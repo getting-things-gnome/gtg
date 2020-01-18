@@ -35,27 +35,17 @@ class SendEmailPlugin(object):
         Adds the button when a task is opened.
         """
         self.plugin_api = plugin_api
-        # add a item (button) to the ToolBar
-        tb_Taskicon = Gtk.Image()
-        tb_Taskicon.set_from_icon_name('mail-send', 32)
 
-        self.tb_Taskbutton = Gtk.ToolButton.new(tb_Taskicon)
-        self.tb_Taskbutton.set_label(_("Send via email"))
-        self.tb_Taskbutton.set_tooltip_text("Send via email")
-        self.tb_Taskbutton.connect('clicked', self.onTbTaskButton, plugin_api)
-        self.tb_Taskbutton.show_all()
-
-        plugin_api.add_toolbar_item(self.tb_Taskbutton)
+        self.menu_item = Gtk.ModelButton.new()
+        self.menu_item.set_label(_("Send via email"))
+        self.menu_item.connect("clicked", self.onTbTaskButton, plugin_api)
+        self.plugin_api.add_menu_item(self.menu_item)
 
     def deactivate(self, plugin_api):
         """
         Desactivates the plugin.
         """
-        # everything should be removed, in case a task is currently opened
-        try:
-            self.plugin_api.remove_toolbar_item(self.tb_Taskbutton)
-        except:
-            pass
+        pass
 
     def onTbTaskButton(self, widget, plugin_api):
         """
