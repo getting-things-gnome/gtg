@@ -148,14 +148,9 @@ class PluginAPI(object):
         @return: Returns C{True} if the operation has sucess or c{False} if it
         fails.
         """
-        menu = self.__builder.get_object('plugin_mi')
-        submenu = menu.get_submenu()
-        try:
-            submenu.remove(item)
-        except:
-            pass
-        if not submenu.get_children():
-                menu.hide()
+
+        menu_box = self.__builder.get_object('menu_box')
+        menu_box.remove(item)
 
     def add_widget_to_taskeditor(self, widget):
         """Adds a widget to the bottom of the task editor dialog
