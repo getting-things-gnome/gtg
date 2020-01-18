@@ -165,8 +165,6 @@ class PluginsDialog(object):
         builder.connect_signals({
                                 'on_plugins_help':
                                 self.on_help,
-                                'on_plugins_close':
-                                self.on_close,
                                 'on_PluginsDialog_delete_event':
                                 self.on_close,
                                 'on_PluginTree_cursor_changed':
