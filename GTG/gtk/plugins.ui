@@ -7,7 +7,7 @@
     <property name="border_width">5</property>
     <property name="window_position">mouse</property>
     <property name="type_hint">dialog</property>
-    <property name="logo_icon_name">image-missing</property>
+    <property name="logo_icon_name">system-run-symbolic</property>
     <signal name="close" handler="on_PluginAboutDialog_close" swapped="no"/>
     <signal name="delete-event" handler="on_PluginAboutDialog_close" swapped="no"/>
     <signal name="response" handler="on_PluginAboutDialog_close" swapped="no"/>
