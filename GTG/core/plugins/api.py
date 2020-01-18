@@ -137,9 +137,10 @@ class PluginAPI(object):
 
         @param item: The Gtk.MenuItem that is going to be added.
         """
-        widget = self.__builder.get_object('plugin_mi')
-        widget.get_submenu().append(item)
-        widget.show_all()
+        menu_box = self.__builder.get_object('menu_box')
+        menu_box.add(item)
+        menu_box.reorder_child(item, 1)
+        menu_box.show_all()
 
     def remove_menu_item(self, item):
         """Removes a menu entry from the Plugin Menu of the Main Window
