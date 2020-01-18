@@ -40,7 +40,6 @@
             <property name="receives_default">False</property>
             <property name="tooltip_text">Mark this task as not to be done anymore</property>
             <property name="text" translatable="yes">Dismiss Task</property>
-            <property name="centered">True</property>
             <signal name="clicked" handler="on_dismiss" swapped="no"/>
           </object>
           <packing>
@@ -55,7 +54,6 @@
             <property name="receives_default">False</property>
             <property name="tooltip_text">Mark this task as to be done</property>
             <property name="text" translatable="yes">Undismiss Task</property>
-            <property name="centered">True</property>
             <signal name="clicked" handler="on_dismiss" swapped="no"/>
           </object>
           <packing>
@@ -68,6 +66,8 @@
           <object class="GtkSeparatorMenuItem">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
+            <property name="margin_top">6</property>
+            <property name="margin_bottom">6</property>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -82,7 +82,6 @@
             <property name="receives_default">False</property>
             <property name="tooltip_text">Permanently remove this task</property>
             <property name="text" translatable="yes">Delete Task</property>
-            <property name="centered">True</property>
             <signal name="clicked" handler="delete_clicked" swapped="no"/>
           </object>
           <packing>
