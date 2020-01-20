@@ -106,10 +106,12 @@ class TaskView(Gtk.TextView):
         # but set in self.modified)
         self.table = self.buff.get_tag_table()
         # Tag for title
-        self.title_tag = self.buff.create_tag("title", foreground="#007bff",
-                                              scale=1.6, underline=1)
-        self.title_tag.set_property("pixels-above-lines", 10)
-        self.title_tag.set_property("pixels-below-lines", 10)
+        self.title_tag = self.buff.create_tag("title",
+                                              weight=Pango.Weight.ULTRABOLD,
+                                              size_points=20,
+                                              pixels_above_lines=10,
+                                              pixels_below_lines=20)
+
         # Tag for highlight (tags are automatically added to the tag table)
         self.buff.create_tag("fluo", background="#F0F")
         # Tag for bullets
