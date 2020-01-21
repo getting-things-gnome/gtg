@@ -42,8 +42,8 @@ separators = [' ', ',', '\n', '\t', '!', '?', ';', '\0', '(', ')']
 # are part of the word
 specials_separators = ['.', '/']
 
-bullet1_ltr = '→'
-bullet1_rtl = '←'
+bullet1_ltr = '→  '
+bullet1_rtl = '  ←'
 
 
 class TaskView(Gtk.TextView):
@@ -97,8 +97,8 @@ class TaskView(Gtk.TextView):
                        'underline': Pango.Underline.SINGLE}
         self.hover = {'background': 'light gray'}
         self.tag = {'background': "#FFea00", 'foreground': 'black'}
-        self.indent = {'scale': 1.4, 'editable': False, 'left-margin': 10,
-                       "accumulative-margin": True}
+        self.indent = {'scale': 1, 'editable': False,
+                       "weight": Pango.Weight.ULTRABOLD }
 
         # Tag we will use ###########
         # We use the tag table (tag are defined here
@@ -108,8 +108,8 @@ class TaskView(Gtk.TextView):
         self.title_tag = self.buff.create_tag("title",
                                               weight=Pango.Weight.ULTRABOLD,
                                               size_points=20,
-                                              pixels_above_lines=10,
-                                              pixels_below_lines=20)
+                                              pixels_above_lines=15,
+                                              pixels_below_lines=30)
 
         # Tag for highlight (tags are automatically added to the tag table)
         self.buff.create_tag("fluo", background="#F0F")
