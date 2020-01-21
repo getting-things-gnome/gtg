@@ -147,8 +147,8 @@ class TaskEditor():
         self.textview.show()
         self.textview.set_subtask_callback(self.new_subtask)
         self.textview.open_task_callback(self.app.open_task)
-        self.textview.set_left_margin(7)
-        self.textview.set_right_margin(5)
+        self.textview.set_left_margin(20)
+        self.textview.set_right_margin(20)
         scrolled.add(self.textview)
         conf_font_value = self.browser_config.get("font_name")
         if conf_font_value != "":
