@@ -126,6 +126,9 @@
             <property name="tooltip_text" translatable="yes">Mark the task as done</property>
             <property name="valign">center</property>
             <signal name="clicked" handler="on_mark_as_done" swapped="no"/>
+            <style>
+              <class name="suggested-action"/>
+            </style>
           </object>
         </child>
         <child>
