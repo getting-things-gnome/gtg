@@ -39,7 +39,7 @@ from GTG.gtk.editor.calendar import GTGCalendar
 from GTG.gtk.tag_completion import TagCompletion
 from GTG.tools.dates import Date
 from GTG.tools.logger import Log
-
+from GTG.gtk.help import add_help_shortcut
 
 class TaskBrowser(GObject.GObject):
     """ The UI for browsing open and closed tasks,
@@ -115,6 +115,9 @@ class TaskBrowser(GObject.GObject):
         self._init_accelerators()
 
         self.restore_state_from_conf()
+
+        # F1 shows help
+        add_help_shortcut(self.window, "browser")
 
         self.on_select_tag()
         self.browser_shown = False
