@@ -506,7 +506,6 @@
                         <property name="show_emoji_icon">True</property>
                         <property name="enable_emoji_completion">True</property>
                         <signal name="activate" handler="on_quickadd_field_activate" swapped="no"/>
-                        <signal name="icon-press" handler="on_quickadd_field_icon_press" swapped="no"/>
                       </object>
                       <packing>
                         <property name="expand">True</property>

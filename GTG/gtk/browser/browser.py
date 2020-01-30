@@ -295,10 +295,6 @@ class TaskBrowser(GObject.GObject):
             self.on_sidebar_toggled,
             "on_quickadd_field_activate":
             self.on_quickadd_activate,
-            "on_quickadd_field_icon_press":
-            self.on_quickadd_iconpress,
-            "on_view_quickadd_toggled":
-            self.on_toggle_quickadd,
             "on_about_clicked":
             self.on_about_clicked,
             "on_about_delete":
@@ -411,9 +407,8 @@ class TaskBrowser(GObject.GObject):
         # self._add_accelerator_for_widget(agr, "closed_pane", "<Control>F9")
         # self._add_accelerator_for_widget(agr, "help_contents", "F1")
 
-        quickadd_field = self.builder.get_object("quickadd_field")
         key, mod = Gtk.accelerator_parse("<Control>l")
-        quickadd_field.add_accelerator("grab-focus", agr, key, mod,
+        self.quickadd_entry.add_accelerator("grab-focus", agr, key, mod,
                                        Gtk.AccelFlags.VISIBLE)
 
 # HELPER FUNCTIONS ##########################################################
@@ -643,14 +638,6 @@ class TaskBrowser(GObject.GObject):
             self.sidebar.show()
             self.config.set("tag_pane", True)
 
-    def on_toggle_quickadd(self, widget):
-        if widget.get_active():
-            self.quickadd_pane.show()
-            self.config.set('quick_add', True)
-        else:
-            self.quickadd_pane.hide()
-            self.config.set('quick_add', False)
-
     def _expand_not_collapsed(self, model, path, iter, colt):
         """ Expand all not collapsed nodes
 
@@ -791,11 +778,6 @@ class TaskBrowser(GObject.GObject):
             nids = self.vtree_panes['active'].get_selected_nodes()
             for nid in nids:
                 self.vmanager.open_task(nid)
-
-    def on_quickadd_iconpress(self, widget, icon, event):
-        """ Clear the text in quickadd field by clicking on 'clear' icon """
-        if icon == Gtk.EntryIconPosition.SECONDARY:
-            self.quickadd_entry.set_text('')
 
     def on_tag_treeview_button_press_event(self, treeview, event):
         """
@@ -1131,8 +1113,7 @@ class TaskBrowser(GObject.GObject):
     def apply_filter_on_panes(self, filter_name, refresh=True,
                               parameters=None):
         """ Apply filters for every pane: active tasks, closed tasks """
-        # Reset quickadd_entry if another filter is applied
-        self.quickadd_entry.set_text("")
+
         for pane in self.vtree_panes:
             vtree = self.req.get_tasks_tree(name=pane, refresh=False)
             vtree.apply_filter(filter_name, refresh=refresh,
