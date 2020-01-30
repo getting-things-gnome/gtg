@@ -57,9 +57,11 @@ class UntouchedTasksPlugin(object):
             "on_btn_preferences_ok_clicked":
             self.on_preferences_ok,
         }
+
         self.builder.connect_signals(SIGNAL_CONNECTIONS_DIC)
-        self.menu_item = Gtk.MenuItem("Add @untouched tag")
-        self.menu_item.connect('activate', self.add_untouched_tag)
+        self.menu_item = Gtk.ModelButton.new()
+        self.menu_item.set_label("Add @untouched tag")
+        self.menu_item.connect("clicked", self.add_untouched_tag)
 
     def activate(self, plugin_api):
         self.plugin_api = plugin_api
@@ -76,11 +78,6 @@ class UntouchedTasksPlugin(object):
         Deactivates the plugin.
         """
         plugin_api.remove_menu_item(self.menu_item)
-        # everything should be removed, in case a task is currently opened
-        try:
-            self.plugin_api.remove_task_toolbar_item(self.tb_Taskbutton)
-        except:
-            pass
 
 # HELPER FUNCTIONS ############################################################
     def __log(self, message):

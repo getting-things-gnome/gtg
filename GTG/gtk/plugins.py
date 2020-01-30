@@ -36,16 +36,6 @@ PLUGINS_COL_SHORT_DESC = 3
 PLUGINS_COL_ACTIVATABLE = 4
 
 
-def plugin_icon(column, cell, store, iterator, data):
-    """ Callback to set the content of a PluginTree cell.
-
-    See PluginsDialog._init_plugin_tree().
-    """
-    cell.set_property('icon-name', 'gtg-plugin')
-    cell.set_property('sensitive',
-                      store.get_value(iterator, PLUGINS_COL_ACTIVATABLE))
-
-
 def plugin_error_short_text(plugin):
     """ Return small version of description of missing module dependencies
     for displaying in plugin markup """
@@ -165,8 +155,6 @@ class PluginsDialog(object):
         builder.connect_signals({
                                 'on_plugins_help':
                                 self.on_help,
-                                'on_plugins_close':
-                                self.on_close,
                                 'on_PluginsDialog_delete_event':
                                 self.on_close,
                                 'on_PluginTree_cursor_changed':
@@ -201,12 +189,6 @@ class PluginsDialog(object):
         # plugin name column
         column = Gtk.TreeViewColumn()
         column.set_spacing(6)
-        # icon renderer for the plugin name column
-        icon_renderer = Gtk.CellRendererPixbuf()
-        icon_renderer.set_property('stock-size', Gtk.IconSize.SMALL_TOOLBAR)
-        icon_renderer.set_property('xpad', 3)
-        column.pack_start(icon_renderer, False)
-        column.set_cell_data_func(icon_renderer, plugin_icon)
         # text renderer for the plugin name column
         name_renderer = Gtk.CellRendererText()
         name_renderer.set_property('ellipsize', Pango.EllipsizeMode.END)
