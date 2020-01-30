@@ -24,6 +24,7 @@ The main text widget is a home-made TextView called TaskView (see taskview.py)
 The rest is the logic of the widget: date changing widgets, buttons, ...
 """
 import time
+import datetime
 import os
 
 from gi.repository import Gdk, Gtk, Pango
@@ -76,39 +77,70 @@ class TaskEditor(object):
         self.tag_store = self.builder.get_object("tag_store")
         self.parent_button = self.builder.get_object("parent")
 
+        # Closed date
+        self.closed_popover = self.builder.get_object("closed_popover")
+        self.closed_entry = self.builder.get_object("closeddate_entry")
+        self.closed_calendar = self.builder.get_object("calendar_closed")
+
+        # Start date
+        self.start_popover = self.builder.get_object("start_popover")
+        self.start_entry = self.builder.get_object("startdate_entry")
+        self.start_calendar = self.builder.get_object("calendar_start")
+
+        # Due date
+        self.due_popover = self.builder.get_object("due_popover")
+        self.due_entry = self.builder.get_object("duedate_entry")
+        self.due_calendar = self.builder.get_object("calendar_due")
+
+
         # Create our dictionary and connect it
         dic = {
             "on_mark_as_done": self.change_status,
             "on_dismiss": self.dismiss,
             "delete_clicked": self.delete_task,
-            "on_duedate_pressed": lambda w: self.on_date_pressed(
-                w, GTGCalendar.DATE_KIND_DUE),
+
             "on_tags_popover": self.open_tags_popover,
-            "on_startdate_pressed": lambda w: self.on_date_pressed(
-                w, GTGCalendar.DATE_KIND_START),
-            "on_closeddate_pressed": lambda w: self.on_date_pressed(
-                w, GTGCalendar.DATE_KIND_CLOSED),
-            "duedate_changed": lambda w: self.date_changed(
-                w, GTGCalendar.DATE_KIND_DUE),
-            "duedate_focus_out": lambda w, e: self.date_focus_out(
-                w, e, GTGCalendar.DATE_KIND_DUE),
+            "on_tag_toggled": self.on_tag_toggled,
+
+            "on_insert_subtask_clicked": self.insert_subtask,
+            "on_parent_select": self.on_parent_select,
+            "on_move": self.on_move,
+
+            "show_popover_start": self.show_popover_start,
+            "startdate_selected": lambda c: self.on_date_selected(
+                c, GTGCalendar.DATE_KIND_START),
             "startingdate_changed": lambda w: self.date_changed(
+                w, GTGCalendar.DATE_KIND_START),
+            "startdate_cleared": lambda w: self.on_date_cleared(
                 w, GTGCalendar.DATE_KIND_START),
             "startdate_focus_out": lambda w, e: self.date_focus_out(
                 w, e, GTGCalendar.DATE_KIND_START),
+
+            "show_popover_due": self.show_popover_due,
+            "duedate_selected": lambda c: self.on_date_selected(
+                c, GTGCalendar.DATE_KIND_DUE),
+            "duedate_changed": lambda w: self.date_changed(
+                w, GTGCalendar.DATE_KIND_DUE),
+            "duedate_now_selected": lambda w: self.on_duedate_fuzzy(
+                w, Date.now()),
+            "duedate_soon_selected": lambda w: self.on_duedate_fuzzy(
+                w, Date.soon()),
+            "duedate_someday_selected": lambda w: self.on_duedate_fuzzy(
+                w, Date.someday()),
+            "duedate_cleared": lambda w: self.on_date_cleared(
+                w, GTGCalendar.DATE_KIND_DUE),
+            "duedate_focus_out": lambda w, e: self.date_focus_out(
+                w, e, GTGCalendar.DATE_KIND_DUE),
+
+            "show_popover_closed": self.show_popover_closed,
             "closeddate_changed": lambda w: self.date_changed(
                 w, GTGCalendar.DATE_KIND_CLOSED),
+            "closeddate_selected": lambda c: self.on_date_selected(
+                c, GTGCalendar.DATE_KIND_CLOSED),
             "closeddate_focus_out": lambda w, e: self.date_focus_out(
                 w, e, GTGCalendar.DATE_KIND_CLOSED),
-            "on_insert_subtask_clicked": self.insert_subtask,
-            "on_inserttag_clicked": self.inserttag_clicked,
-            "on_parent_select": self.on_parent_select,
-            "on_move": self.on_move,
-            "show_popover_start": self.show_popover_start,
-            "show_popover_due": self.show_popover_due,
-            "show_popover_closed": self.show_popover_closed,
-            "on_tag_toggled": self.on_tag_toggled,
         }
+
         self.builder.connect_signals(dic)
         self.window = self.builder.get_object("TaskEditor")
         # Removing the Normal textview to replace it by our own
@@ -128,12 +160,7 @@ class TaskEditor(object):
         if conf_font_value != "":
             self.textview.override_font(Pango.FontDescription(conf_font_value))
         # Voila! it's done
-        self.calendar = GTGCalendar()
-        self.calendar.set_transient_for(self.window)
-        self.calendar.set_decorated(False)
-        self.duedate_widget = self.builder.get_object("duedate_entry")
-        self.startdate_widget = self.builder.get_object("startdate_entry")
-        self.closeddate_widget = self.builder.get_object("closeddate_entry")
+
         '''
         TODO(jakubbrindza): Once all the functionality in editor is back and
         working, bring back also the accelerators! Dayleft_label needs to be
@@ -176,11 +203,6 @@ class TaskEditor(object):
             self.task.set_to_keep()
         self.textview.modified(full=True)
         self.window.connect("destroy", self.destruction)
-        '''
-        TODO(jakubbrindza): make on_date_changed work alongside
-        the new popover calendar
-        '''
-        # self.calendar.connect("date-changed", self.on_date_changed)
 
         # plugins
         self.pengine = PluginEngine()
@@ -242,28 +264,20 @@ class TaskEditor(object):
         key, modifier = Gtk.accelerator_parse('<Control>q')
         agr.connect(key, modifier, Gtk.AccelFlags.VISIBLE, self.quit)
 
-    '''
-    TODO(jakubbrindza): Add the functionality to the existing calendar widgets.
-    This will require ammending and re-factoring the entire calendar.py.
-    '''
-
     def show_popover_start(self, widget, event):
-        popover = self.builder.get_object("date_popover")
-        popover.set_relative_to(self.startdate_widget)
-        popover.set_modal(False)
-        popover.show_all()
+        """Open the start date calendar popup."""
+
+        self.start_popover.popup()
 
     def show_popover_due(self, widget, popover):
-        popover = self.builder.get_object("date_popover")
-        popover.set_relative_to(self.duedate_widget)
-        popover.set_modal(False)
-        popover.show_all()
+        """Open the due date calendar popup."""
+
+        self.due_popover.popup()
 
     def show_popover_closed(self, widget, popover):
-        closed_popover = self.builder.get_object("closed_popover")
-        closed_popover.set_relative_to(self.closeddate_widget)
-        closed_popover.set_modal(False)
-        closed_popover.show_all()
+        """Open the closed date calendar popup."""
+
+        self.closed_popover.popup()
 
     def open_tags_popover(self, widget):
         self.tag_store.clear()
@@ -364,30 +378,30 @@ class TaskEditor(object):
         # refreshing the start date field
         startdate = self.task.get_start_date()
         try:
-            prevdate = Date.parse(self.startdate_widget.get_text())
+            prevdate = Date.parse(self.start_entry.get_text())
             update_date = startdate != prevdate
         except ValueError:
             update_date = True
 
         if update_date:
-            self.startdate_widget.set_text(str(startdate))
+            self.start_entry.set_text(str(startdate))
 
         # refreshing the due date field
         duedate = self.task.get_due_date()
         try:
-            prevdate = Date.parse(self.duedate_widget.get_text())
+            prevdate = Date.parse(self.due_entry.get_text())
             update_date = duedate != prevdate
         except ValueError:
             update_date = True
 
         if update_date:
-            self.duedate_widget.set_text(str(duedate))
+            self.due_entry.set_text(str(duedate))
 
         # refreshing the closed date field
         closeddate = self.task.get_closed_date()
-        prevcldate = Date.parse(self.closeddate_widget.get_text())
+        prevcldate = Date.parse(self.closed_entry.get_text())
         if closeddate != prevcldate:
-            self.closeddate_widget.set_text(str(closeddate))
+            self.closed_entry.set_text(str(closeddate))
 
         # refreshing the day left label
         '''
@@ -473,29 +487,65 @@ class TaskEditor(object):
         if datetoset is not None:
             if date_kind == GTGCalendar.DATE_KIND_START:
                 self.task.set_start_date(datetoset)
+                self.start_popover.popdown()
+
             elif date_kind == GTGCalendar.DATE_KIND_DUE:
                 self.task.set_due_date(datetoset)
+                self.due_popover.popdown()
+
             elif date_kind == GTGCalendar.DATE_KIND_CLOSED:
                 self.task.set_closed_date(datetoset)
+                self.closed_popover.popdown()
+
             self.refresh_editor()
 
-    def on_date_pressed(self, widget, date_kind):
-        """Called when a date-changing button is clicked."""
-        if date_kind == GTGCalendar.DATE_KIND_DUE:
-            if not self.task.get_due_date():
-                date = self.task.get_start_date()
-            else:
-                date = self.task.get_due_date()
-        elif date_kind == GTGCalendar.DATE_KIND_START:
-            date = self.task.get_start_date()
-        elif date_kind == GTGCalendar.DATE_KIND_CLOSED:
-            date = self.task.get_closed_date()
-        self.calendar.set_date(date, date_kind)
-        # we show the calendar at the right position
-        rect = widget.get_allocation()
-        result, x, y = widget.get_window().get_origin()
-        self.calendar.show_at_position(x + rect.x + rect.width,
-                                       y + rect.y)
+
+    def calendar_to_datetime(self, calendar):
+        '''
+        Gtk.Calendar uses a 0-based convention for counting months.
+        The rest of the world, including the datetime module, starts from 1.
+        This is a converter between the two. GTG follows the datetime
+        convention.
+        '''
+
+        year, month, day = calendar.get_date()
+        return datetime.date(year, month + 1, day)
+
+    def on_duedate_fuzzy(self, widget, date):
+        """ Callback when a fuzzy date is selected through the popup. """
+
+        self.task.set_due_date(date)
+        self.due_entry.set_text(str(date))
+
+    def on_date_cleared(self, widget, kind):
+        """ Callback when a date is cleared through the popups. """
+
+        if kind == GTGCalendar.DATE_KIND_START:
+            self.task.set_start_date(Date.no_date())
+            self.start_entry.set_text('')
+
+        elif kind == GTGCalendar.DATE_KIND_DUE:
+            self.task.set_due_date(Date.no_date())
+            self.due_entry.set_text('')
+
+    def on_date_selected(self, calendar, kind):
+        """ Callback when a day is selected in the calendars."""
+
+        date = self.calendar_to_datetime(calendar)
+
+        if kind == GTGCalendar.DATE_KIND_START:
+            self.task.set_start_date(Date(date))
+            self.start_entry.set_text(str(Date(date)))
+
+        elif kind == GTGCalendar.DATE_KIND_DUE:
+            self.task.set_due_date(Date(date))
+            self.due_entry.set_text(str(Date(date)))
+
+        elif kind == GTGCalendar.DATE_KIND_CLOSED:
+            self.task.set_closed_date(Date(date))
+            self.closed_entry.set_text(str(Date(date)))
+
+
 
     def on_date_changed(self, calendar):
         date, date_kind = calendar.get_selected_date()
