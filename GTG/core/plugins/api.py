@@ -53,12 +53,10 @@ class PluginAPI(object):
         if taskeditor:
             self.__ui = taskeditor
             self.__builder = self.__ui.get_builder()
-            self.__toolbar = self.__builder.get_object('task_tb1')
             self.__task_id = taskeditor.get_task()
         else:
             self.__ui = self.__view_manager.get_browser()
             self.__builder = self.__ui.get_builder()
-            self.__toolbar = self.__builder.get_object('task_toolbar')
             self.__task_id = None
             self.__view_manager.browser.selection.connect(
                 "changed", self.__selection_changed)
@@ -132,50 +130,25 @@ class PluginAPI(object):
 
 # Changing the UI ===========================================================
     def add_menu_item(self, item):
-        """Adds a menu entry to the Plugin Menu of the Main Window
-        (task browser).
+        """Adds a menu entry to the menu of the Task Browser or Task Editor.
 
         @param item: The Gtk.MenuItem that is going to be added.
         """
-        widget = self.__builder.get_object('plugin_mi')
-        widget.get_submenu().append(item)
-        widget.show_all()
+        menu_box = self.__builder.get_object('menu_box')
+        menu_box.add(item)
+        menu_box.reorder_child(item, 1)
+        menu_box.show_all()
 
     def remove_menu_item(self, item):
-        """Removes a menu entry from the Plugin Menu of the Main Window
-        (task browser).
+        """Adds a menu entry to the menu of the Task Browser or Task Editor.
 
         @param item: The Gtk.MenuItem that is going to be removed.
         @return: Returns C{True} if the operation has sucess or c{False} if it
         fails.
         """
-        menu = self.__builder.get_object('plugin_mi')
-        submenu = menu.get_submenu()
-        try:
-            submenu.remove(item)
-        except:
-            pass
-        if not submenu.get_children():
-                menu.hide()
 
-    def add_toolbar_item(self, widget):
-        """Adds a button to the task browser's toolbar or the task editor
-        toolbar, depending on which plugin api it's being used.
-
-        @param widget: The Gtk.ToolButton that is going to be added to the
-        toolbar.
-        """
-        # -1 means "append to the end"
-        self.__toolbar.insert(widget, -1)
-
-    def remove_toolbar_item(self, widget):
-        """
-        Remove a widget from the toolbar.
-        """
-        try:
-            self.__toolbar.remove(widget)
-        except Exception as e:
-            print("Error removing the toolbar item in the TaskEditor: %s" % e)
+        menu_box = self.__builder.get_object('menu_box')
+        menu_box.remove(item)
 
     def add_widget_to_taskeditor(self, widget):
         """Adds a widget to the bottom of the task editor dialog
