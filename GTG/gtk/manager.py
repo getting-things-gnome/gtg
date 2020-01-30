@@ -19,8 +19,9 @@
 """
 Manager loads the prefs and launches the gtk main loop
 """
-from gi.repository import GObject, Gtk
+from gi.repository import GObject, Gtk, Gdk
 import configparser
+import os
 
 from GTG.gtk.delete_dialog import DeletionUI
 from GTG.gtk.browser.browser import TaskBrowser
@@ -66,6 +67,9 @@ class Manager(object):
         self.config = self.req.get_config('browser')
         self.timer = Timer(self.config)
 
+        # Load custom css
+        self.__init_css()
+
         # Browser (still hidden)
         self.browser = TaskBrowser(self.req, self)
 
@@ -104,6 +108,20 @@ class Manager(object):
             plugin.enabled = plugin.module_name in plugins_enabled
         # initializes and activates each plugin (that is enabled)
         self.pengine.activate_plugins()
+
+    def __init_css(self):
+        """Load the application's CSS file."""
+
+        screen = Gdk.Screen.get_default()
+        provider = Gtk.CssProvider()
+        base_dir = os.path.dirname(os.path.realpath(__file__))
+        css_path = os.path.join(base_dir, '..', '..', 'data', 'gtg.css')
+
+        provider.load_from_path(css_path)
+        Gtk.StyleContext.add_provider_for_screen(screen, provider,
+                                                 Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
+
+
 
     # Browser ##############################################################
     def open_browser(self):

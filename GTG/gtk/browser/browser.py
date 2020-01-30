@@ -114,9 +114,6 @@ class TaskBrowser(GObject.GObject):
         # Define accelerator keys
         self._init_accelerators()
 
-        # Initalize custom CSS
-        self._init_css()
-
         self.restore_state_from_conf()
 
         self.on_select_tag()
@@ -654,31 +651,6 @@ class TaskBrowser(GObject.GObject):
         # expand if the node was not stored as collapsed
         if tid not in colt:
             self.vtree_panes['active'].expand_row(path, False)
-
-    def _init_css(self):
-        style_provider = Gtk.CssProvider()
-
-        css = b"""
-        #main_menu GtkModelButton {
-            padding: 10 5;
-        }
-
-        .prefs_list {
-            border: 1px solid alpha(currentColor, 0.2);
-            border-radius: 3px;
-            margin: 4px;
-        }
-
-        .prefs_list row {
-            border-bottom: solid 1px alpha(currentColor, 0.1);
-        }
-        """
-
-        style_provider.load_from_data(css);
-
-        Gtk.StyleContext.add_provider_for_screen(Gdk.Screen.get_default(),
-                                                 style_provider,
-                                                 Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION);
 
     def on_task_expanded(self, sender, tid):
         colt = self.config.get("collapsed_tasks")
