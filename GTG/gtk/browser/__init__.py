@@ -31,6 +31,7 @@ class GnomeConfig(object):
     current_rep = os.path.dirname(os.path.abspath(__file__))
     BROWSER_UI_FILE = os.path.join(current_rep, "taskbrowser.ui")
     MODIFYTAGS_UI_FILE = os.path.join(current_rep, "modifytags_dialog.ui")
+    DELETETAGS_UI_FILE = os.path.join(current_rep, "deletetags_dialog.ui")
 
     MARK_DONE = _("Mark as Done")
     MARK_DONE_TOOLTIP = _("Mark the selected task as done")
