@@ -406,9 +406,20 @@
             <property name="fill">True</property>
             <property name="position">1</property>
           </packing>
+
         </child>
+        <child>
+            <object class="GtkBox" id='pluginbox'>
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="orientation">vertical</property>
+          </object>
+        </child>
+
       </object>
     </child>
+
+
   </object>
   <object class="GtkPopover" id="closed_popover">
     <property name="can_focus">False</property>
