@@ -155,7 +155,7 @@ class PluginAPI(object):
 
         @param widget: The Gtk.Widget that is going to be added.
         """
-        vbox = self.__builder.get_object('vbox4')
+        vbox = self.__builder.get_object('pluginbox')
         if vbox:
             vbox.pack_start(widget, True, True, 0)
             vbox.reorder_child(widget, -2)
