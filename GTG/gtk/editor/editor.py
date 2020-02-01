@@ -473,6 +473,17 @@ class TaskEditor(object):
         self.dayleft_label.set_markup(
             "<span color='%s'>%s</span>" % (color.to_string(), txt))
 
+    def reload_editor(self):
+        task = self.task
+        textview = self.textview
+        task_text = task.get_text()
+        task_title = task.get_title()
+        textview.set_text("%s\n" % task_title)
+        if task_text:
+            textview.insert("%s" % task_text)
+        task.set_title(task_title)
+        textview.modified(full=True)
+
     def date_changed(self, widget, data):
         try:
             Date.parse(widget.get_text())
