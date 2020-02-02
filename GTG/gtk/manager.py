@@ -115,7 +115,7 @@ class Manager(object):
 
         screen = Gdk.Screen.get_default()
         provider = Gtk.CssProvider()
-        css_path = os.path.join(CSS_DIR, 'gtg.css')
+        css_path = os.path.join(CSS_DIR, 'style.css')
 
         provider.load_from_path(css_path)
         Gtk.StyleContext.add_provider_for_screen(screen, provider,
