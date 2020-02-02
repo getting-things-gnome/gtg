@@ -56,8 +56,8 @@ def find_package_data():
         if not closest_package:
             continue
 
-        allowed_extensions = [
-            '', '.gtg-plugin', '.png', '.svg', '.ui', '.html', '.tex', '.txt']
+        allowed_extensions = ['', '.gtg-plugin', '.png', '.svg', '.ui',
+                              '.css', '.html', '.tex', '.txt']
         is_this_package = folder == closest_package
         if not is_this_package:
             allowed_extensions.append('.py')
