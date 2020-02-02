@@ -20,13 +20,15 @@
 
 """ Communicate with Network Manager """
 
-from gi.repository import NM
+from gi.repository import Gio
 
 
 def is_connection_up():
     """ Returns True if GTG can access the Internet """
-    state = NMClient.Client().get_state()
-    return state == NetworkManager.State.CONNECTED_GLOBAL
+
+    network_monitor = Gio.NetworkMonitor.get_default()
+    return network_monitor.get_network_available()
+
 
 if __name__ == "__main__":
     print("is_connection_up() == %s" % is_connection_up())
