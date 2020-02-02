@@ -32,6 +32,7 @@ from GTG.gtk.dbuswrapper import DBusTaskWrapper
 from GTG.tools import clipboard
 from GTG.core.plugins.engine import PluginEngine
 from GTG.core.plugins.api import PluginAPI
+from GTG.core.dirs import CSS_DIR
 from GTG.tools.logger import Log
 from GTG.gtk.backends_dialog import BackendsDialog
 from GTG.backends.backendsignals import BackendSignals
@@ -114,8 +115,7 @@ class Manager(object):
 
         screen = Gdk.Screen.get_default()
         provider = Gtk.CssProvider()
-        base_dir = os.path.dirname(os.path.realpath(__file__))
-        css_path = os.path.join(base_dir, '..', '..', 'data', 'gtg.css')
+        css_path = os.path.join(CSS_DIR, 'gtg.css')
 
         provider.load_from_path(css_path)
         Gtk.StyleContext.add_provider_for_screen(screen, provider,
