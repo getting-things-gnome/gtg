@@ -3,6 +3,7 @@ spec
 pyxdg
 pyflakes
 pep8
+pycodestyle
 mock
 -e git+http://github.com/getting-things-gnome/liblarch.git#egg=liblarch
 dbus-python
