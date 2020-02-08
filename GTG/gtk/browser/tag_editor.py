@@ -401,7 +401,14 @@ class TagEditor(Gtk.Window):
                     new_name = cur_value
                 else:
                     new_name = "@" + cur_value
+
                 self.req.rename_tag(self.tag.get_name(), new_name)
+                self.tag = self.req.get_tag(new_name)
+
+                # Select on sidebar and update values
+                self.vmanager.browser.select_on_sidebar(new_name)
+                self.vmanager.browser.apply_filter_on_panes(new_name)
+
             return False
 
     def on_tis_selection_changed(self, widget):

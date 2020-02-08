@@ -591,15 +591,6 @@ class Task(TreeNode):
                     i.get_self_and_all_subtasks(active_only, tasks)
         return tasks
 
-    def get_subtask(self, tid):
-        # FIXME: remove this function. This is not useful
-        print("DEPRECATED: get_subtask")
-        """Return the task corresponding to a given ID.
-
-        @param tid: the ID of the task to return.
-        """
-        return self.req.get_task(tid)
-
     def set_parent(self, parent_id):
         """Update the task's parent. Refresh due date constraints."""
         TreeNode.set_parent(self, parent_id)
