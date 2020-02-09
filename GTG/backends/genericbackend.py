@@ -613,7 +613,7 @@ class GenericBackend(object):
         if ALLTASKS_TAG in attached_tags:
             return True
         for tag in task.get_tags_name():
-            if tag in attached_tags:
+            if "@" + tag in attached_tags:
                 return True
         return False
 
