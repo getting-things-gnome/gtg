@@ -34,6 +34,7 @@ from GTG.core.plugins.engine import PluginEngine
 from GTG.core.plugins.api import PluginAPI
 from GTG.core.dirs import CSS_DIR
 from GTG.tools.logger import Log
+from GTG.tools.dates import Date
 from GTG.gtk.backends_dialog import BackendsDialog
 from GTG.backends.backendsignals import BackendSignals
 from GTG.gtk.browser.tag_editor import TagEditor
@@ -169,6 +170,23 @@ class Manager(object):
         """ Used by notification area plugin to override the behavior:
         last closed window quits GTG """
         self.daemon_mode = in_daemon_mode
+
+    def purge_old_tasks(self, widget=None):
+        Log.debug("Deleting old tasks")
+
+        today = Date.today()
+        max_days = 30
+        closed_tree = self.req.get_tasks_tree(name='inactive')
+
+        closed_tasks = [self.req.get_task(tid) for tid in
+                        closed_tree.get_all_nodes()]
+
+        to_remove = [t for t in closed_tasks
+                     if (today - t.get_closed_date()).days > max_days]
+
+        [self.req.delete_task(task.get_id())
+         for task in to_remove
+         if self.req.has_task(task.get_id())]
 
 # Task Editor ############################################################
     def get_opened_editors(self):
