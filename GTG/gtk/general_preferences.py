@@ -45,6 +45,7 @@ class GeneralPreferences(object):
         self.bg_color_button = builder.get_object("bg_color_button")
         self.font_button = builder.get_object("font_button")
 
+        self.vmanager = vmanager
         self.timer = vmanager.timer
         self.refresh_time = builder.get_object("time_entry")
 
@@ -144,4 +145,7 @@ class GeneralPreferences(object):
         """ Set a new font for editor """
         self.config.set("font_name", self.font_button.get_font_name())
 
+    def on_purge_clicked(self, widget):
+        """Purge old tasks immediately."""
 
+        self.vmanager.purge_old_tasks(widget)
