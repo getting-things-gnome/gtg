@@ -54,6 +54,8 @@ DEFAULTS = {
         "font_name": "",
         'hour': "00",
         'min': "00",
+        'autoclean': True,
+        'autoclean_days': 30,
     },
     'tag_editor': {
         "custom_colors": [],
