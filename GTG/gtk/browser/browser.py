@@ -103,9 +103,6 @@ class TaskBrowser(GObject.GObject):
         # Init non-GtkBuilder widgets
         self._init_ui_widget()
 
-        # Initialize tooltip for GtkEntry button
-        self._init_toolbar_tooltips()
-
         # Initialize "About" dialog
         self._init_about_dialog()
 
@@ -213,12 +210,6 @@ class TaskBrowser(GObject.GObject):
         # expanding search tag does not work automatically, request it
         self.expand_search_tag()
 
-    def _init_toolbar_tooltips(self):
-        """
-        Sets tooltips for widgets which cannot be setup in .ui yet
-        """
-        quick_add_icon_tooltip = GnomeConfig.QUICKADD_ICON_TOOLTIP
-        self.quickadd_entry.set_icon_tooltip_text(1, quick_add_icon_tooltip)
 
     def _init_about_dialog(self):
         """
