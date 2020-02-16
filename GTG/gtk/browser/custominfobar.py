@@ -27,10 +27,10 @@ from GTG.tools.networkmanager import is_connection_up
 
 
 class CustomInfoBar(Gtk.InfoBar):
-    '''
+    """
     A Gtk.InfoBar specialized for displaying errors and requests for
     interaction coming from the backends
-    '''
+    """
 
     AUTHENTICATION_MESSAGE = _("The <b>%s</b> synchronization service cannot "
                                "login with the  supplied authentication data "
@@ -44,14 +44,14 @@ class CustomInfoBar(Gtk.InfoBar):
                      "the <b>%s</b> synchronization service.")
 
     def __init__(self, req, browser, vmanager, backend_id):
-        '''
+        """
         Constructor, Prepares the infobar.
 
         @param req: a Requester object
         @param browser: a TaskBrowser object
         @param vmanager: a ViewManager object
         @param backend_id: the id of the backend linked to the infobar
-        '''
+        """
         super().__init__()
         self.req = req
         self.browser = browser
@@ -60,14 +60,14 @@ class CustomInfoBar(Gtk.InfoBar):
         self.backend = self.req.get_backend(backend_id)
 
     def get_backend_id(self):
-        '''
+        """
         Getter function to return the id of the backend for which this
         Gtk.InfoBar was created
-        '''
+        """
         return self.backend_id
 
     def _populate(self):
-        '''Setting up gtk widgets'''
+        """Setting up gtk widgets"""
         content_box = self.get_content_area()
         content_box.set_homogeneous(False)
         self.label = Gtk.Label()
@@ -77,24 +77,24 @@ class CustomInfoBar(Gtk.InfoBar):
         content_box.pack_start(self.label, True, True, 0)
 
     def _on_error_response(self, widget, event):
-        '''
+        """
         Signal callback executed when the user acknowledges the error displayed
         in the infobar
 
         @param widget: not used, here for compatibility with signals callbacks
         @param event: the code of the gtk response
-        '''
+        """
         self.hide()
         if event == Gtk.ResponseType.ACCEPT:
             self.vmanager.configure_backend(backend_id=self.backend_id)
 
     def set_error_code(self, error_code):
-        '''
+        """
         Sets this infobar to show an error to the user
 
         @param error_code: the code of the error to show. Error codes are
                            listed in BackendSignals
-        '''
+        """
         self._populate()
         self.connect("response", self._on_error_response)
         backend_name = self.backend.get_human_name()
@@ -122,7 +122,7 @@ class CustomInfoBar(Gtk.InfoBar):
         self.show_all()
 
     def set_interaction_request(self, description, interaction_type, callback):
-        '''
+        """
         Sets this infobar to request an interaction from the user
 
         @param description: a string describing the interaction needed
@@ -130,7 +130,7 @@ class CustomInfoBar(Gtk.InfoBar):
                                  (yes/no, only confirm, ok/cancel...)
         @param callback: the function to call when the user provides the
                          feedback
-        '''
+        """
         self._populate()
         self.callback = callback
         self.set_message_type(Gtk.MessageType.INFO)
@@ -146,13 +146,13 @@ class CustomInfoBar(Gtk.InfoBar):
         self.show_all()
 
     def _on_interaction_response(self, widget, event):
-        '''
+        """
         Signal callback executed when the user gives the feedback for a
         requested interaction
 
         @param widget: not used, here for compatibility with signals callbacks
         @param event: the code of the gtk response
-        '''
+        """
         if event == Gtk.ResponseType.ACCEPT:
             if self.interaction_type == BackendSignals().INTERACTION_TEXT:
                 self._prepare_textual_interaction()
@@ -164,10 +164,10 @@ class CustomInfoBar(Gtk.InfoBar):
                 self.hide()
 
     def _prepare_textual_interaction(self):
-        '''
+        """
         Helper function. gtk calls to populate the infobar in the case of
         interaction request
-        '''
+        """
         title, description\
             = getattr(self.backend,
                       self.callback)("get_ui_dialog_text")
@@ -203,12 +203,12 @@ class CustomInfoBar(Gtk.InfoBar):
         self.hide()
 
     def _on_text_confirmed(self, widget):
-        '''
+        """
         Signal callback, used when the interaction needs a textual input to be
         completed (e.g, the twitter OAuth, requesting a pin)
 
         @param widget: not used, here for signal callback compatibility
-        '''
+        """
         text = self.text_box.get_text()
         self.dialog.destroy()
         threading.Thread(target=getattr(self.backend, self.callback),

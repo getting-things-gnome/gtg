@@ -27,26 +27,26 @@ from GTG.core.translations import _, ngettext
 
 
 class AddPanel(Gtk.Box):
-    '''
+    """
     A vertical Box filled with gtk widgets to let the user choose a new
     backend.
-    '''
+    """
 
     def __init__(self, backends_dialog):
-        '''
+        """
         Constructor, just initializes the gtk widgets
 
         @param backends_dialog: a reference to the dialog in which this is
         loaded
-        '''
+        """
         super().__init__(orientation=Gtk.Orientation.VERTICAL)
         self.dialog = backends_dialog
         self._create_widgets()
 
     def _create_widgets(self):
-        '''
+        """
         gtk widgets initialization
-        '''
+        """
         # Division of the available space in three segments:
         # top, middle and bottom.
         top = Gtk.Box()
@@ -62,12 +62,12 @@ class AddPanel(Gtk.Box):
         self.set_border_width(12)
 
     def _fill_top_box(self, box):
-        '''
+        """
         Helper function to fill and box with a combobox that lists the
         available backends and a Gtk.Label.
 
         @param box: the Gtk.Box to fill
-        '''
+        """
         label = Gtk.Label(label=_("Select synchronization service:"))
         label.set_alignment(0, 0.5)
         self.combo_types = BackendsCombo(self.dialog)
@@ -79,12 +79,12 @@ class AddPanel(Gtk.Box):
         box.pack_start(self.combo_types, False, True, 0)
 
     def _fill_middle_box(self, box):
-        '''
+        """
         Helper function to fill an box with a label describing the backend
         and a Gtk.Image (that loads the backend image)
 
         @param box: the Gtk.Box to fill
-        '''
+        """
         self.label_name = Gtk.Label(label="name")
         self.label_name.set_alignment(xalign=0.5, yalign=1)
         self.label_description = Gtk.Label()
@@ -115,12 +115,12 @@ class AddPanel(Gtk.Box):
         box.pack_start(vbox, True, True, 0)
 
     def _fill_bottom_box(self, box):
-        '''
+        """
         Helper function to fill and box with a buttonbox, featuring
         and ok and cancel buttons.
 
         @param box: the Gtk.Box to fill
-        '''
+        """
         cancel_button = Gtk.Button()
         cancel_button.set_label("Cancel")
         cancel_button.connect('clicked', self.on_cancel)
@@ -138,37 +138,37 @@ class AddPanel(Gtk.Box):
         box.pack_start(align, True, True, 0)
 
     def refresh_backends(self):
-        '''Populates the combo box containing the available backends'''
+        """Populates the combo box containing the available backends"""
         self.combo_types.refresh()
 
     def on_confirm(self, widget=None):
-        '''
+        """
         Notifies the dialog holding this Box that a backend has been
         chosen
 
         @param widget: just to make this function usable as a signal callback.
                        Not used.
-        '''
+        """
         backend_name = self.combo_types.get_selected()
         self.dialog.on_backend_added(backend_name)
 
     def on_cancel(self, widget=None):
-        '''
+        """
         Aborts the addition of a new backend. Shows the configuration panel
         previously loaded.
 
         @param widget: just to make this function usable as a signal callback.
                        Not used.
-        '''
+        """
         self.dialog.show_config_for_backend(None)
 
     def on_combo_changed(self, widget=None):
-        '''
+        """
         Updates the backend description and icon.
 
         @param widget: just to make this function usable as a signal callback.
                        Not used.
-        '''
+        """
         backend_name = self.combo_types.get_selected()
         if backend_name is None:
             return

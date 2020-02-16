@@ -41,9 +41,9 @@ from GTG.gtk.help import add_help_shortcut
 from GTG.gtk.tag_completion import tag_filter
 from GTG.tools.dates import Date
 from GTG.tools.logger import Log
-'''
+"""
 TODO (jakubbrindza): re-factor tag_filter into a separate module
-'''
+"""
 
 
 class TaskEditor():
@@ -56,11 +56,11 @@ class TaskEditor():
                  task,
                  thisisnew=False,
                  clipboard=None):
-        '''
+        """
         req is the requester
         vmanager is the view manager
         thisisnew is True when a new task is created and opened
-        '''
+        """
         self.req = requester
         self.vmanager = vmanager
         self.browser_config = self.req.get_config('browser')
@@ -161,11 +161,11 @@ class TaskEditor():
             self.textview.override_font(Pango.FontDescription(conf_font_value))
         # Voila! it's done
 
-        '''
+        """
         TODO(jakubbrindza): Once all the functionality in editor is back and
         working, bring back also the accelerators! Dayleft_label needs to be
         brought back, however its position is unsure.
-        '''
+        """
         # self.dayleft_label = self.builder.get_object("dayleft")
         # Define accelerator keys
         self.init_accelerators()
@@ -228,11 +228,11 @@ class TaskEditor():
         self.window.show()
 
     # Define accelerator-keys for this dialog
-    '''
+    """
     TODO: undo/redo
     + RE-enable all the features so that they work properly.
     + new shortcuts for bold and italic once implemented.
-    '''
+    """
     def init_accelerators(self):
         agr = Gtk.AccelGroup()
         self.window.add_accel_group(agr)
@@ -298,11 +298,11 @@ class TaskEditor():
             if tag_filter(tag):
                 is_used = tag in used_tags
                 self.tag_store.append([is_used, tagname])
-                '''
+                """
                 TODO(jakubbrindza): add sorting of the tags based on
                 True | False and within each sub-group arrange them
                 alphabetically
-                '''
+                """
 
     def on_tag_toggled(self, widget, path, column):
         """We toggle by tag_row variable. tag_row is
@@ -312,9 +312,9 @@ class TaskEditor():
 
         if tag_row[0]:
             self.textview.insert_tags([tag_row[1]])
-        '''
+        """
         TODO(jakubbrindza): Add else case that will remove tag.
-        '''
+        """
 
     def search_function(self, model, column, key, iter, *search_data):
         """Callback when searching in the tags popup."""
@@ -421,11 +421,11 @@ class TaskEditor():
             self.closed_entry.set_text(str(closeddate))
 
         # refreshing the day left label
-        '''
+        """
         TODO(jakubbrindza): re-enable refreshing the day left.
         We need to come up how and where this information is viewed
         in the editor window.
-        '''
+        """
         # self.refresh_day_left()
 
         if refreshtext:
@@ -529,12 +529,12 @@ class TaskEditor():
 
 
     def calendar_to_datetime(self, calendar):
-        '''
+        """
         Gtk.Calendar uses a 0-based convention for counting months.
         The rest of the world, including the datetime module, starts from 1.
         This is a converter between the two. GTG follows the datetime
         convention.
-        '''
+        """
 
         year, month, day = calendar.get_date()
         return datetime.date(year, month + 1, day)

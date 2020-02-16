@@ -65,9 +65,9 @@ class GeneralPreferences():
         return _('General')
 
     def get_ui(self):
-        '''
+        """
         This method returns widget displayed in Preferences window.
-        '''
+        """
         return self.ui_widget
 
     def activate(self):
@@ -107,10 +107,10 @@ class GeneralPreferences():
         task_tree.refresh_all()
 
     def on_valid_time_check(self, widget):
-        '''
+        """
         This function checks for validity of the user input with
         every new key-stroke from the user by parsing the input.
-        '''
+        """
         try:
             input_time = self.refresh_time.get_text()
             self.timer.parse_time(input_time)
@@ -121,11 +121,11 @@ class GeneralPreferences():
         self.refresh_time.modify_fg(Gtk.StateFlags.NORMAL, color)
 
     def on_leave_time_entry(self, widget, data=None):
-        '''
+        """
         This function not only parses the user input, but is
         called only when the time entry is focused out. It also
         sets the time value for the widget.
-        '''
+        """
         try:
             input_time = self.refresh_time.get_text()
             correct_time = self.timer.parse_time(input_time)

@@ -21,18 +21,18 @@ from gi.repository import Gtk
 
 
 class TextUI(Gtk.Box):
-    '''A widget to display a simple textbox and a label to describe its content
-    '''
+    """A widget to display a simple textbox and a label to describe its content
+    """
 
     def __init__(self, req, backend, width, description, parameter_name):
-        '''
+        """
         Creates the textbox and the related label. Loads the current
         content.
 
         @param req: a Requester
         @param backend: a backend object
         @param width: the width of the Gtk.Label object
-        '''
+        """
         super().__init__()
         self.backend = backend
         self.req = req
@@ -41,10 +41,10 @@ class TextUI(Gtk.Box):
         self._populate_gtk(width)
 
     def _populate_gtk(self, width):
-        '''Creates the gtk widgets
+        """Creates the gtk widgets
 
         @param width: the width of the Gtk.Label object
-        '''
+        """
         label = Gtk.Label(label="%s:" % self.description)
         label.set_line_wrap(True)
         label.set_alignment(xalign=0, yalign=0.5)
@@ -60,16 +60,16 @@ class TextUI(Gtk.Box):
         align.add(self.textbox)
 
     def commit_changes(self):
-        '''Saves the changes to the backend parameter'''
+        """Saves the changes to the backend parameter"""
         self.backend.set_parameter(self.parameter_name,
                                    self.textbox.get_text())
 
     def on_text_modified(self, sender):
-        ''' Signal callback, executed when the user changes the text.
+        """ Signal callback, executed when the user changes the text.
         Disables the backend. The user will re-enable it to confirm the changes
         (s)he made.
 
         @param sender: not used, only here for signal compatibility
-        '''
+        """
         if self.backend.is_enabled() and not self.backend.is_default():
             self.req.set_backend_enabled(self.backend.get_id(), False)

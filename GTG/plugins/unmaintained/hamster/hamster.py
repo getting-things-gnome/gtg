@@ -450,9 +450,9 @@ def format_date(task):
 
 
 def calc_duration(fact):
-    '''
+    """
     returns minutes
-    '''
+    """
     start = fact[1]
     end = fact[2]
     if end == 0:

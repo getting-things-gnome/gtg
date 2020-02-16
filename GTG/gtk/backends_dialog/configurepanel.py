@@ -25,17 +25,17 @@ from GTG.backends.backendsignals import BackendSignals
 
 
 class ConfigurePanel(Gtk.Box):
-    '''
+    """
     A vertical Box that lets you configure a backend
-    '''
+    """
 
     def __init__(self, backends_dialog):
-        '''
+        """
         Constructor, creating all the gtk widgets
 
         @param backends_dialog: a reference to the dialog in which this is
         loaded
-        '''
+        """
         super().__init__(orientation=Gtk.Orientation.VERTICAL)
         self.dialog = backends_dialog
         self.should_spinner_be_shown = False
@@ -46,7 +46,7 @@ class ConfigurePanel(Gtk.Box):
         self._connect_signals()
 
     def _connect_signals(self):
-        ''' Connects the backends generated signals '''
+        """ Connects the backends generated signals """
         _signals = BackendSignals()
         _signals.connect(_signals.BACKEND_RENAMED, self.refresh_title)
         _signals.connect(_signals.BACKEND_STATE_TOGGLED,
@@ -55,9 +55,9 @@ class ConfigurePanel(Gtk.Box):
         _signals.connect(_signals.BACKEND_SYNC_ENDED, self.on_sync_ended)
 
     def _create_widgets(self):
-        '''
+        """
         This function fills this box with widgets
-        '''
+        """
         # Division of the available space in three segments:
         # top, middle and bottom
         top = Gtk.Box()
@@ -100,11 +100,11 @@ class ConfigurePanel(Gtk.Box):
         box.pack_start(align_spin, False, True, 0)
 
     def _fill_middle_box(self, box):
-        '''
+        """
         Helper function to fill an box with a label and a button
 
         @param box: the Gtk.Box to fill
-        '''
+        """
         self.sync_status_label = Gtk.Label()
         self.sync_status_label.set_alignment(xalign=0.8, yalign=0.5)
         self.sync_button = Gtk.Button()
@@ -113,10 +113,10 @@ class ConfigurePanel(Gtk.Box):
         box.pack_start(self.sync_button, True, True, 0)
 
     def set_backend(self, backend_id):
-        '''Changes the backend to configure, refreshing this view.
+        """Changes the backend to configure, refreshing this view.
 
         @param backend_id: the id of the backend to configure
-        '''
+        """
         self.backend = self.dialog.get_requester().get_backend(backend_id)
         self.refresh_title()
         self.refresh_sync_status()
@@ -125,21 +125,21 @@ class ConfigurePanel(Gtk.Box):
                                         self.backend.get_name(), 48))
 
     def refresh_title(self, sender=None, data=None):
-        '''
+        """
         Callback for the signal that notifies backends name changes. It changes
         the title of this view
 
         @param sender: not used, here only for signal callback compatibility
         @param data: not used, here only for signal callback compatibility
-        '''
+        """
         markup = "<big><big><big><b>%s</b></big></big></big>" % \
             self.backend.get_human_name()
         self.human_name_label.set_markup(markup)
 
     def refresh_sync_button(self):
-        '''
+        """
         Refreshes the state of the button that enables the backend
-        '''
+        """
         self.sync_button.set_sensitive(not self.backend.is_default())
         if self.backend.is_enabled():
             label = _("Disable syncing")
@@ -148,9 +148,9 @@ class ConfigurePanel(Gtk.Box):
         self.sync_button.set_label(label)
 
     def refresh_sync_status_label(self):
-        '''
+        """
         Refreshes the Gtk.Label that shows the current state of this backend
-        '''
+        """
         if self.backend.is_default():
             label = _("This is the default synchronization service")
         else:
@@ -161,66 +161,66 @@ class ConfigurePanel(Gtk.Box):
         self.sync_status_label.set_markup(label)
 
     def refresh_sync_status(self, sender=False, data=False):
-        '''Signal callback function, called when a backend state
+        """Signal callback function, called when a backend state
         (enabled/disabled) changes. Refreshes this view.
 
         @param sender: not used, here only for signal callback compatibility
         @param data: not used, here only for signal callback compatibility
-        '''
+        """
         self.refresh_sync_button()
         self.refresh_sync_status_label()
 
     def on_sync_button_clicked(self, sender):
-        '''
+        """
         Signal callback when a backend is enabled/disabled via the UI button
 
         @param sender: not used, here only for signal callback compatibility
-        '''
+        """
         self.parameters_ui.commit_changes()
         self.req.set_backend_enabled(self.backend.get_id(),
                                      not self.backend.is_enabled())
 
     def on_sync_started(self, sender, backend_id):
-        '''
+        """
         If the backend has started syncing tasks, update the state of the
         Gtk.Spinner
 
         @param sender: not used, here only for signal callback compatibility
         @param backend_id: the id of the backend that emitted this signal
-        '''
+        """
         if backend_id == self.backend.get_id():
             self.spinner_set_active(True)
 
     def on_sync_ended(self, sender, backend_id):
-        '''
+        """
         If the backend has stopped syncing tasks, update the state of the
         Gtk.Spinner
 
         @param sender: not used, here only for signal callback compatibility
         @param backend_id: the id of the backend that emitted this signal
-        '''
+        """
 
         if backend_id == self.backend.get_id():
             self.spinner_set_active(False)
 
     def on_spinner_show(self, sender):
-        '''This signal callback hides the spinner if it's not supposed to be
+        """This signal callback hides the spinner if it's not supposed to be
         seen. It's a workaround to let us call show_all on the whole window
         while keeping this hidden (it's the only widget that requires special
         attention)
 
         @param sender: not used, here only for signal callback compatibility
-        '''
+        """
         if not self.should_spinner_be_shown:
             self.spinner.hide()
 
     def spinner_set_active(self, active):
-        '''
+        """
         Enables/disables the Gtk.Spinner, while showing/hiding it at the same
         time
 
         @param active: True if the spinner should spin
-        '''
+        """
         self.should_spinner_be_shown = active
         if active:
             if isinstance(self.spinner, Gtk.Spinner):

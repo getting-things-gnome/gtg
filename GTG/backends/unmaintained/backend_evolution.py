@@ -17,9 +17,9 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-'''
+"""
 Backend for storing/loading tasks in Evolution Tasks
-'''
+"""
 
 from dateutil.tz import tzutc, tzlocal
 import datetime
@@ -60,9 +60,9 @@ _EVOLUTION_TO_GTG_STATUS = \
 
 
 class Backend(PeriodicImportBackend):
-    '''
+    """
     Evolution backend
-    '''
+    """
 
     _general_description = {
         GenericBackend.BACKEND_NAME: "backend_evolution",
@@ -86,10 +86,10 @@ class Backend(PeriodicImportBackend):
 # Backend standard methods ####################################################
 ###############################################################################
     def __init__(self, parameters):
-        '''
+        """
         See GenericBackend for an explanation of this function.
         Loads the saved state of the sync, if any
-        '''
+        """
         super().__init__(parameters)
         # loading the saved state of the synchronization, if any
         self.sync_engine_path = os.path.join(
@@ -162,9 +162,9 @@ class Backend(PeriodicImportBackend):
                 pass
 
     def save_state(self):
-        '''
+        """
         See GenericBackend for an explanation of this function.
-        '''
+        """
         self._store_pickled_file(self.sync_engine_path, self.sync_engine)
 
 ###############################################################################
@@ -172,9 +172,9 @@ class Backend(PeriodicImportBackend):
 ###############################################################################
     @interruptible
     def remove_task(self, tid):
-        '''
+        """
         See GenericBackend for an explanation of this function.
-        '''
+        """
         try:
             evo_task_id = self.sync_engine.get_remote_id(tid)
             self._delete_evolution_task(self._evo_get_task(evo_task_id))
@@ -187,9 +187,9 @@ class Backend(PeriodicImportBackend):
 
     @interruptible
     def set_task(self, task):
-        '''
+        """
         See GenericBackend for an explanation of this function.
-        '''
+        """
         tid = task.get_id()
         is_syncable = self._gtg_task_is_syncable_per_attached_tags(task)
         action, evo_task_id = self.sync_engine.analyze_local_id(
@@ -243,10 +243,10 @@ class Backend(PeriodicImportBackend):
         self.save_state()
 
     def _process_evo_task(self, evo_task_id):
-        '''
+        """
         Takes an evolution task id and carries out the necessary operations to
         refresh the sync state
-        '''
+        """
         self.cancellation_point()
         evo_task = self._evo_get_task(evo_task_id)
         is_syncable = self._evo_task_is_syncable(evo_task)
@@ -299,27 +299,27 @@ class Backend(PeriodicImportBackend):
 # Helper methods ##############################################################
 ###############################################################################
     def _evo_has_task(self, evo_task_id):
-        '''Returns true if Evolution has that task'''
+        """Returns true if Evolution has that task"""
         return bool(self._evo_get_task(evo_task_id))
 
     def _evo_get_task(self, evo_task_id):
-        '''Returns an Evolution task, given its uid'''
+        """Returns an Evolution task, given its uid"""
         return self._evolution_tasks.get_object(evo_task_id, "")
 
     def _evo_get_modified(self, evo_task):
-        '''Returns the modified time of an Evolution task'''
+        """Returns the modified time of an Evolution task"""
         return datetime.datetime.fromtimestamp(evo_task.get_modified())
 
     def _delete_evolution_task(self, evo_task):
-        '''Deletes an Evolution task, given the task object'''
+        """Deletes an Evolution task, given the task object"""
         self._evolution_tasks.remove_object(evo_task)
         self._evolution_tasks.update_object(evo_task)
 
     def _populate_task(self, task, evo_task):
-        '''
+        """
         Updates the attributes of a GTG task copying the ones of an Evolution
         task
-        '''
+        """
         task.set_title(evo_task.get_summary())
         text = evo_task.get_description()
         if text is None:
@@ -355,12 +355,12 @@ class Backend(PeriodicImportBackend):
         self._evolution_tasks.update_object(evo_task)
 
     def _exec_lost_syncability(self, tid, evo_task):
-        '''
+        """
         Executed when a relationship between tasks loses its syncability
         property. See SyncEngine for an explanation of that.
         This function finds out which object is the original one
         and which is the copy, and deletes the copy.
-        '''
+        """
         meme = self.sync_engine.get_meme_from_local_id(tid)
         self.sync_engine.break_relationship(local_id=tid)
         if meme.get_origin() == "GTG":
@@ -370,12 +370,12 @@ class Backend(PeriodicImportBackend):
             self.datastore.request_task_deletion(tid)
 
     def _evo_task_is_syncable(self, evo_task):
-        '''
+        """
         Returns True if this Evolution task should be synced into GTG tasks.
 
         @param evo_task: an Evolution task
         @returns Boolean
-        '''
+        """
         attached_tags = set(self.get_attached_tags())
         if ALLTASKS_TAG in attached_tags:
             return True

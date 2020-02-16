@@ -24,14 +24,14 @@ from GTG.core.tag import ALLTASKS_TAG
 
 
 class ImportTagsUI(Gtk.Box):
-    '''
+    """
     It's a widget displaying a couple of radio buttons, a label and a textbox
     to let the user change the attached tags (or imported)
-    '''
+    """
 
     def __init__(self, req, backend, width, title, anybox_text, somebox_text,
                  parameter_name):
-        '''Populates the widgets and refresh the tags to display
+        """Populates the widgets and refresh the tags to display
 
         @param req: a requester
         @param backend: the backend to configure
@@ -42,7 +42,7 @@ class ImportTagsUI(Gtk.Box):
         @param somebox_text: the text for the "only this set of tags matches"
                              radio button
         @param parameter_name: the backend parameter this widget should modify
-        '''
+        """
         super().__init__(orientation=Gtk.Orientation.VERTICAL)
         self.backend = backend
         self.req = req
@@ -55,11 +55,11 @@ class ImportTagsUI(Gtk.Box):
         self._connect_signals()
 
     def _populate_gtk(self, width):
-        '''
+        """
         Populates the widgets
 
         @param width: the length of the radio buttons
-        '''
+        """
         title_label = Gtk.Label()
         title_label.set_alignment(xalign=0, yalign=0)
         title_label.set_markup("<big><b>%s</b></big>" % self.title)
@@ -82,19 +82,19 @@ class ImportTagsUI(Gtk.Box):
         box.pack_start(self.tags_entry, True, True, 0)
 
     def on_changed(self, radio, data=None):
-        ''' Signal callback, executed when the user modifies something.
+        """ Signal callback, executed when the user modifies something.
         Disables the backend. The user will re-enable it to confirm the changes
         (s)he made.
 
         @param sender: not used, only here for signal compatibility
         @param data: not used, only here for signal compatibility
-        '''
+        """
         # every change in the config disables the backend
         self.req.set_backend_enabled(self.backend.get_id(), False)
         self._refresh_textbox_state()
 
     def commit_changes(self):
-        '''Saves the changes to the backend parameter'''
+        """Saves the changes to the backend parameter"""
         if self.all_tags_radio.get_active():
             tags = [ALLTASKS_TAG]
         else:
@@ -107,14 +107,14 @@ class ImportTagsUI(Gtk.Box):
         self.backend.set_parameter(self.parameter_name, tags)
 
     def _refresh_textbox_state(self):
-        '''Refreshes the content of the textbox'''
+        """Refreshes the content of the textbox"""
         self.tags_entry.set_sensitive(self.some_tags_radio.get_active())
 
     def _refresh_tags(self):
-        '''
+        """
         Refreshes the list of tags to display in the textbox, and selects
         the correct radio button
-        '''
+        """
         tags_list = self.backend.get_parameters()[self.parameter_name]
         has_all_tasks = ALLTASKS_TAG in tags_list
         self.all_tags_radio.set_active(has_all_tasks)
@@ -127,7 +127,7 @@ class ImportTagsUI(Gtk.Box):
             self.tags_entry.set_text(tags_text)
 
     def _connect_signals(self):
-        '''Connects the gtk signals'''
+        """Connects the gtk signals"""
         self.some_tags_radio.connect("toggled", self.on_changed)
         self.all_tags_radio.connect("toggled", self.on_changed)
         self.tags_entry.connect("changed", self.on_changed)

@@ -30,12 +30,12 @@ from GTG.tools.logger import Log
 
 from suds.client import Client
 
-'''
+"""
 Backend for importing mantis issues in GTG
 
 Dependencies:
   * python-suds
-'''
+"""
 
 
 class Backend(PeriodicImportBackend):
@@ -82,10 +82,10 @@ class Backend(PeriodicImportBackend):
     }
 
     def __init__(self, parameters):
-        '''
+        """
         See GenericBackend for an explanation of this function.
         Re-loads the saved state of the synchronization
-        '''
+        """
         super().__init__(parameters)
         # loading the saved state of the synchronization, if any
         self.data_path = os.path.join(
@@ -94,7 +94,7 @@ class Backend(PeriodicImportBackend):
                                                    SyncEngine())
 
     def save_state(self):
-        '''Saves the state of the synchronization'''
+        """Saves the state of the synchronization"""
         self._store_pickled_file(self.data_path, self.sync_engine)
 
     def do_periodic_import(self):
@@ -149,14 +149,14 @@ class Backend(PeriodicImportBackend):
 # Process tasks ###############################################################
 ###############################################################################
     def _process_mantis_issue(self, issue):
-        '''
+        """
         Given a issue object, finds out if it must be synced to a GTG note and,
         if so, it carries out the synchronization (by creating or
         updating a GTG task, or deleting itself if the related task has
         been deleted)
 
         @param note: a mantis issue
-        '''
+        """
         has_task = self.datastore.has_task
         action, tid = self.sync_engine.analyze_remote_id(str(issue['id']),
                                                          has_task,
@@ -196,13 +196,13 @@ class Backend(PeriodicImportBackend):
         self.save_state()
 
     def _prefetch_issue_data(self, mantis_issue):
-        '''
+        """
         We fetch all the necessary info that we need from the mantis_issue to
         populate a task beforehand (these will be used in _populate_task).
 
         @param mantis_issue: a mantis issue
         @returns dict: a dictionary containing the relevant issue attributes
-        '''
+        """
         issue_dic = {'title': mantis_issue['summary'],
                      'text': mantis_issue['description'],
                      'reporter': mantis_issue['reporter'].name,
@@ -221,13 +221,13 @@ class Backend(PeriodicImportBackend):
         return issue_dic
 
     def _populate_task(self, task, issue_dic):
-        '''
+        """
         Fills a GTG task with the data from a mantis issue.
 
         @param task: a Task
         @param issue_dic: a mantis issue
 
-        '''
+        """
         # set task status
         if issue_dic["completed"]:
             task.set_status(Task.STA_DONE)
@@ -251,9 +251,9 @@ class Backend(PeriodicImportBackend):
         task.add_remote_id(self.get_id(), issue_dic['number'])
 
     def _build_issue_text(self, issue_dic):
-        '''
+        """
         Creates the text that describes a issue
-        '''
+        """
         text = _("Reported by: ") + issue_dic["reporter"] + '\n'
         text += _("Link to issue: ") + \
             self._parameters['service-url'] + '/view.php?id=%s' % \

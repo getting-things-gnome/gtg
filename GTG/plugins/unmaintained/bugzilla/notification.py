@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-'''
+"""
 Notification is used to show messages to GTG users.
-'''
+"""
 
 import subprocess
 
@@ -50,10 +50,10 @@ except ImportError:
 
 
 def send_notification(title, message):
-    ''' A proxy to send notification
+    """ A proxy to send notification
 
     When no notification utility is available, just keep silent.
-    '''
+    """
 
     if _notify_handler is not None:
         _notify_handler(title, message)

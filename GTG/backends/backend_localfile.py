@@ -17,13 +17,13 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-'''
+"""
 Localfile is a read/write backend that will store your tasks in an XML file
 This file will be in your $XDG_DATA_DIR/gtg folder.
 
 This backend contains comments that are meant as a reference, in case someone
 wants to write a backend.
-'''
+"""
 
 import os
 

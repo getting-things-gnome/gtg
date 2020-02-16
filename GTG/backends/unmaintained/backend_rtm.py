@@ -17,9 +17,9 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-'''
+"""
 Remember the milk backend
-'''
+"""
 
 from functools import reduce
 import cgi
@@ -73,10 +73,10 @@ class Backend(PeriodicImportBackend):
 ###############################################################################
 
     def __init__(self, parameters):
-        '''
+        """
         See GenericBackend for an explanation of this function.
         Loads the saved state of the sync, if any
-        '''
+        """
         super().__init__(parameters)
         # loading the saved state of the synchronization, if any
         self.sync_engine_path = os.path.join(
@@ -107,9 +107,9 @@ class Backend(PeriodicImportBackend):
         self._store_pickled_file(self.sync_engine_path, self.sync_engine)
 
     def _ask_user_to_confirm_authentication(self):
-        '''
+        """
         Calls for a user interaction during authentication
-        '''
+        """
         self.login_event.clear()
         BackendSignals().interaction_requested(
             self.get_id(),
@@ -122,9 +122,9 @@ class Backend(PeriodicImportBackend):
         self.login_event.wait()
 
     def on_login(self):
-        '''
+        """
         Called when the user confirms the login
-        '''
+        """
         self.login_event.set()
 
 ###############################################################################
@@ -196,9 +196,9 @@ class Backend(PeriodicImportBackend):
                     pass
 
     def _on_successful_authentication(self):
-        '''
+        """
         Saves the token and requests a full flush on first autentication
-        '''
+        """
         self._this_is_the_first_loop = False
         self._store_pickled_file(self.token_path,
                                  self.rtm_proxy.get_auth_token())
@@ -318,13 +318,13 @@ class Backend(PeriodicImportBackend):
             self.save_state()
 
     def _exec_lost_syncability(self, tid, rtm_task):
-        '''
+        """
         Executed when a relationship between tasks loses its syncability
         property. See SyncEngine for an explanation of that.
 
         @param tid: a GTG task tid
         @param note: a RTM task
-        '''
+        """
         self.cancellation_point()
         meme = self.sync_engine.get_meme_from_local_id(tid)
         # First of all, the relationship is lost
@@ -335,10 +335,10 @@ class Backend(PeriodicImportBackend):
             self.datastore.request_task_deletion(tid)
 
     def _process_rtm_task(self, rtm_task_id):
-        '''
+        """
         Takes a rtm task id and carries out the necessary operations to
         refresh the sync state
-        '''
+        """
         self.cancellation_point()
         if not self.rtm_proxy.is_authenticated():
             return
@@ -403,9 +403,9 @@ class Backend(PeriodicImportBackend):
 ###############################################################################
 
     def _populate_task(self, task, rtm_task):
-        '''
+        """
         Copies the content of a RTMTask in a Task
-        '''
+        """
         task.set_title(rtm_task.get_title())
         task.set_text(rtm_task.get_text())
         task.set_due_date(rtm_task.get_due_date())
@@ -427,13 +427,13 @@ class Backend(PeriodicImportBackend):
             task.add_tag(tag)
 
     def _populate_rtm_task(self, task, rtm_task, transaction_ids=[]):
-        '''
+        """
         Copies the content of a Task into a RTMTask
 
         @param task: a GTG Task
         @param rtm_task: an RTMTask
         @param transaction_ids: a list to fill with transaction ids
-        '''
+        """
         # Get methods of an rtm_task are fast, set are slow: therefore,
         # we try to use set as rarely as possible
 
@@ -463,10 +463,10 @@ class Backend(PeriodicImportBackend):
                                  transaction_ids)
 
     def __call_or_retry(self, fun, *args):
-        '''
+        """
         This function cannot stand the call "fun" to fail, so it retries
         three times before giving up.
-        '''
+        """
         MAX_ATTEMPTS = 3
         for i in range(MAX_ATTEMPTS):
             try:
@@ -476,14 +476,14 @@ class Backend(PeriodicImportBackend):
                     raise
 
     def _rtm_task_is_syncable_per_attached_tags(self, rtm_task):
-        '''
+        """
         Helper function which checks if the given task satisfies the filtering
         imposed by the tags attached to the backend.
         That means, if a user wants a backend to sync only tasks tagged @works,
         this function should be used to check if that is verified.
 
         @returns bool: True if the task should be synced
-        '''
+        """
         attached_tags = self.get_attached_tags()
         if ALLTASKS_TAG in attached_tags:
             return True
@@ -498,13 +498,13 @@ class Backend(PeriodicImportBackend):
 
 
 class RTMProxy():
-    '''
+    """
     The purpose of this class is producing an updated list of RTMTasks.
     To do that, it handles:
         - authentication to RTM
         - keeping the list fresh
         - downloading the list
-    '''
+    """
 
     PUBLIC_KEY = "2a440fdfe9d890c343c25a91afd84c7e"
     PRIVATE_KEY = "ca078fee48d0bbfa"
@@ -526,38 +526,38 @@ class RTMProxy():
     ##########################################################################
 
     def start_authentication(self):
-        '''
+        """
         Launches the authentication process
-        '''
+        """
         initialize_thread = threading.Thread(target=self._authenticate)
         initialize_thread.setDaemon(True)
         initialize_thread.start()
 
     def is_authenticated(self):
-        '''
+        """
         Returns true if we've autheticated to RTM
-        '''
+        """
         return self.authenticated.isSet()
 
     def wait_for_authentication(self):
-        '''
+        """
         Inhibits the thread until authentication occours
-        '''
+        """
         self.authenticated.wait()
 
     def get_auth_token(self):
-        '''
+        """
         Returns the oauth token, or none
-        '''
+        """
         try:
             return self.token
         except:
             return None
 
     def _authenticate(self):
-        '''
+        """
         authentication main function
-        '''
+        """
         self.authenticated.clear()
         while not self.authenticated.isSet():
             if not self.token:
@@ -581,10 +581,10 @@ class RTMProxy():
                                                 BackendSignals.ERRNO_NETWORK)
 
     def _login(self):
-        '''
+        """
         Tries to establish a connection to rtm with a token got from the
         authentication process
-        '''
+        """
         try:
             self.rtm = createRTM(self.PUBLIC_KEY, self.PRIVATE_KEY, self.token)
             self.timeline = self.rtm.timelines.create().timeline
@@ -598,18 +598,18 @@ class RTMProxy():
     ##########################################################################
 
     def unroll_changes(self, transaction_ids):
-        '''
+        """
         Roll backs the changes tracked by the list of transaction_ids given
-        '''
+        """
         for transaction_id in transaction_ids:
             self.rtm.transactions.undo(timeline=self.timeline,
                                        transaction_id=transaction_id)
 
     def get_rtm_tasks_dict(self):
-        '''
+        """
         Returns a dict of RTMtasks. It will start authetication if necessary.
         The dict is kept updated automatically.
-        '''
+        """
         if not hasattr(self, '_rtm_task_dict'):
             self.refresh_rtm_tasks_dict()
         else:
@@ -620,14 +620,14 @@ class RTMProxy():
         return self._rtm_task_dict.copy()
 
     def __getattr_the_rtm_way(self, an_object, attribute):
-        '''
+        """
         RTM, to compress the XML file they send to you, cuts out all the
         unnecessary stuff.
         Because of that, getting an attribute from an object must check if one
         of those optimizations has been used.
         This function always returns a list wrapping the objects found
         (if any).
-        '''
+        """
         try:
             list_or_object = getattr(an_object, attribute)
         except AttributeError:
@@ -639,9 +639,9 @@ class RTMProxy():
             return [list_or_object]
 
     def __get_rtm_lists(self):
-        '''
+        """
         Gets the list of the RTM Lists (the tabs on the top of rtm website)
-        '''
+        """
         # Here's the attributes of RTM lists. For the list of them, see
         # http://www.rememberthemilk.com/services/api/methods/
         # rtm.lists.getList.rtm
@@ -649,11 +649,11 @@ class RTMProxy():
                                           'list')
 
     def __get_rtm_taskseries_in_list(self, list_id):
-        '''
+        """
         Gets the list of "taskseries" objects in a rtm list.
         For an explenation of what are those, see
         http://www.rememberthemilk.com/services/api/tasks.rtm
-        '''
+        """
         list_object_wrapper = self.rtm.tasks.getList(
             list_id=list_id,
             filter='includeArchived:true').tasks
@@ -669,9 +669,9 @@ class RTMProxy():
         return self.__getattr_the_rtm_way(list_object, 'taskseries')
 
     def refresh_rtm_tasks_dict(self):
-        '''
+        """
         Builds a list of RTMTasks fetched from RTM
-        '''
+        """
         if not self.is_authenticated():
             self.start_authentication()
             self.wait_for_authentication()
@@ -717,9 +717,9 @@ class RTMProxy():
         self.is_not_refreshing.set()
 
     def has_rtm_task(self, rtm_task_id):
-        '''
+        """
         Returns True if we have seen that task id
-        '''
+        """
         cache_result = rtm_task_id in self.get_rtm_tasks_dict()
         return cache_result
         # it may happen that the rtm_task is on the website but we haven't
@@ -730,9 +730,9 @@ class RTMProxy():
         # return rtm_task_id in self.get_rtm_tasks_dict()
 
     def create_new_rtm_task(self, title, transaction_ids=[]):
-        '''
+        """
         Creates a new rtm task
-        '''
+        """
         result = self.rtm.tasks.add(timeline=self.timeline, name=title)
         rtm_task = RTMTask(result.list.taskseries.task,
                            result.list.taskseries,
@@ -762,7 +762,7 @@ RTM_TO_GTG_STATUS = {True: Task.STA_ACTIVE,
 
 
 class RTMTask():
-    '''
+    """
     A proxy object that encapsulates a RTM task, giving an easier API to access
     and modify its attributes.
     This backend already uses a library to interact with RTM, but that is just
@@ -770,10 +770,10 @@ class RTMTask():
     The meaning of all "special words"
 
     http://www.rememberthemilk.com/services/api/tasks.rtm
-    '''
+    """
 
     def __init__(self, rtm_task, rtm_taskseries, rtm_list, rtm, timeline):
-        '''
+        """
         sets up the various parameters needed to interact with a task.
 
         @param task: the task object given by the underlying library
@@ -795,7 +795,7 @@ class RTMTask():
         @param timeline: a "timeline" is a series of operations rtm can undo in
                          bulk. We are free of requesting new timelines as we
                          please, with the obvious drawback of being slower.
-        '''
+        """
         self.rtm_task = rtm_task
         self.rtm_list = rtm_list
         self.rtm_taskseries = rtm_taskseries
@@ -803,11 +803,11 @@ class RTMTask():
         self.timeline = timeline
 
     def get_title(self):
-        '''Returns the title of the task, if any'''
+        """Returns the title of the task, if any"""
         return self.rtm_taskseries.name
 
     def set_title(self, title, transaction_ids=[]):
-        '''Sets the task title'''
+        """Sets the task title"""
         title = cgi.escape(title)
         result = self.rtm.tasks.setName(timeline=self.timeline,
                                         list_id=self.rtm_list.id,
@@ -817,15 +817,15 @@ class RTMTask():
         transaction_ids.append(result.transaction.id)
 
     def get_id(self):
-        '''Return the task id. The taskseries id is *different*'''
+        """Return the task id. The taskseries id is *different*"""
         return self.rtm_task.id
 
     def get_status(self):
-        '''Returns the task status, in GTG terminology'''
+        """Returns the task status, in GTG terminology"""
         return RTM_TO_GTG_STATUS[self.rtm_task.completed == ""]
 
     def set_status(self, gtg_status, transaction_ids=[]):
-        '''Sets the task status, in GTG terminology'''
+        """Sets the task status, in GTG terminology"""
         status = GTG_TO_RTM_STATUS[gtg_status]
         if status is True:
             api_call = self.rtm.tasks.uncomplete
@@ -838,7 +838,7 @@ class RTMTask():
         transaction_ids.append(result.transaction.id)
 
     def get_tags(self):
-        '''Returns the task tags'''
+        """Returns the task tags"""
         tags = self.rtm_taskseries.tags
         if not tags:
             return []
@@ -846,14 +846,14 @@ class RTMTask():
             return self.__getattr_the_rtm_way(tags, 'tag')
 
     def __getattr_the_rtm_way(self, an_object, attribute):
-        '''
+        """
         RTM, to compress the XML file they send to you, cuts out all the
         unnecessary stuff.
         Because of that, getting an attribute from an object must check if one
         of those optimizations has been used.
         This function always returns a list wrapping the objects found
         (if any).
-        '''
+        """
         try:
             list_or_object = getattr(an_object, attribute)
         except AttributeError:
@@ -864,9 +864,9 @@ class RTMTask():
             return [list_or_object]
 
     def set_tags(self, tags, transaction_ids=[]):
-        '''
+        """
         Sets a new set of tags to a task. Old tags are deleted.
-        '''
+        """
         # RTM accept tags without "@" as prefix,  and lowercase
         tags = [tag[1:].lower() for tag in tags]
         # formatting them in a comma-separated string
@@ -882,9 +882,9 @@ class RTMTask():
         transaction_ids.append(result.transaction.id)
 
     def get_text(self):
-        '''
+        """
         Gets the content of RTM notes, aggregated in a single string
-        '''
+        """
         notes = self.rtm_taskseries.notes
         if not notes:
             return ""
@@ -893,10 +893,10 @@ class RTMTask():
             return "".join("%s\n" % getattr(note, '$t') for note in note_list)
 
     def set_text(self, text, transaction_ids=[]):
-        '''
+        """
         deletes all the old notes in a task and sets a single note with the
         given text
-        '''
+        """
         # delete old notes
         notes = self.rtm_taskseries.notes
         if notes:
@@ -934,9 +934,9 @@ class RTMTask():
             text_cursor_end = text_cursor_start - 1
 
     def get_due_date(self):
-        '''
+        """
         Gets the task due date
-        '''
+        """
         due = self.rtm_task.due
         if due == "":
             return Date.no_date()
@@ -944,9 +944,9 @@ class RTMTask():
         return Date(date)
 
     def set_due_date(self, due, transaction_ids=[]):
-        '''
+        """
         Sets the task due date
-        '''
+        """
         kwargs = {'timeline': self.timeline,
                   'list_id': self.rtm_list.id,
                   'taskseries_id': self.rtm_taskseries.id,
@@ -958,9 +958,9 @@ class RTMTask():
         transaction_ids.append(result.transaction.id)
 
     def get_modified(self):
-        '''
+        """
         Gets the task modified time, in local time
-        '''
+        """
         # RTM does not set a "modified" attribute in a new note because it uses
         # a "added" attribute. We need to check for both.
         if hasattr(self.rtm_task, 'modified'):

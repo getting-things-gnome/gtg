@@ -16,13 +16,13 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-'''
+"""
 This module reads a bakcn configuration and generates a series of widgets to
 let the user see the configuration and modify it.
 In this manner, backends do not need to know anything about their UI since it's
 built for them: it should play along the lines of the separation between GTG
 server and client
-'''
+"""
 
 import functools
 
@@ -39,19 +39,19 @@ from GTG.gtk.backends_dialog.parameters_ui.textui import TextUI
 
 
 class ParametersUI(Gtk.Box):
-    '''
+    """
     Given a bakcend, this vertical Gtk.Box populates itself with all the
     necessary
     widgets to view and edit a backend configuration
-    '''
+    """
 
     COMMON_WIDTH = 170
 
     def __init__(self, requester):
-        '''Constructs the list of the possible widgets.
+        """Constructs the list of the possible widgets.
 
         @param requester: a GTG.core.requester.Requester object
-        '''
+        """
         super().__init__(orientation=Gtk.Orientation.VERTICAL)
         self.req = requester
         self.set_spacing(10)
@@ -106,7 +106,7 @@ class ParametersUI(Gtk.Box):
         )
 
     def UI_generator(self, param_type, special_arguments={}):
-        '''A helper function to build a widget type from a template.
+        """A helper function to build a widget type from a template.
         It passes to the created widget generator a series of common
          parameters, plus the ones needed to specialize the given template
 
@@ -116,18 +116,18 @@ class ParametersUI(Gtk.Box):
 
         @return function: return a widget generator, not a widget. the widget
                            can be obtained by calling widget_generator(backend)
-        '''
+        """
         return lambda backend: param_type(req=self.req,
                                           backend=backend,
                                           width=self.COMMON_WIDTH,
                                           **special_arguments)
 
     def refresh(self, backend):
-        '''Builds the widgets necessary to configure the backend. If it doesn't
+        """Builds the widgets necessary to configure the backend. If it doesn't
         know how to render a widget, it simply skips it.
 
         @param backend: the backend that is being configured
-        '''
+        """
         # remove the old parameters UIs
         def _remove_child(self, child, data=None):
             self.remove(child)
@@ -144,10 +144,10 @@ class ParametersUI(Gtk.Box):
         self.show_all()
 
     def commit_changes(self):
-        '''
+        """
         Saves all the parameters at their current state (the user may have
         modified them)
-        '''
+        """
 
         def _commit_changes(child, data=None):
             child.commit_changes()

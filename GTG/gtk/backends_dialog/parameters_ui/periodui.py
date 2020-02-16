@@ -23,18 +23,18 @@ from GTG.core.translations import _, ngettext
 
 
 class PeriodUI(Gtk.Box):
-    '''A widget to change the frequency of a backend synchronization
-    '''
+    """A widget to change the frequency of a backend synchronization
+    """
 
     def __init__(self, req, backend, width):
-        '''
+        """
         Creates the Gtk.Adjustment and the related label. Loads the current
         period.
 
         @param req: a Requester
         @param backend: a backend object
         @param width: the width of the Gtk.Label object
-        '''
+        """
         super().__init__()
         self.backend = backend
         self.req = req
@@ -42,10 +42,10 @@ class PeriodUI(Gtk.Box):
         self._connect_signals()
 
     def _populate_gtk(self, width):
-        '''Creates the gtk widgets
+        """Creates the gtk widgets
 
         @param width: the width of the Gtk.Label object
-        '''
+        """
         period_label = Gtk.Label(label=_("Check for new tasks every"))
         period_label.set_alignment(xalign=0, yalign=0.5)
         period_label.set_line_wrap(True)
@@ -72,20 +72,20 @@ class PeriodUI(Gtk.Box):
         self.show_all()
 
     def _connect_signals(self):
-        '''Connects the gtk signals'''
+        """Connects the gtk signals"""
         self.period_spin.connect('changed', self.on_spin_changed)
 
     def commit_changes(self):
-        '''Saves the changes to the backend parameter'''
+        """Saves the changes to the backend parameter"""
         self.backend.set_parameter('period', int(self.adjustment.get_value()))
 
     def on_spin_changed(self, sender):
-        ''' Signal callback, executed when the user changes the period.
+        """ Signal callback, executed when the user changes the period.
         Disables the backend. The user will re-enable it to confirm the changes
         (s)he made.
 
         @param sender: not used, only here for signal compatibility
-        '''
+        """
         self.update_minutes_label()
         if self.backend.is_enabled() and not self.backend.is_default():
             self.req.set_backend_enabled(self.backend.get_id(), False)

@@ -198,10 +198,10 @@ class Manager():
 
 # Task Editor ############################################################
     def get_opened_editors(self):
-        '''
+        """
         Returns a dict of task_uid -> TaskEditor, one for each opened editor
         window
-        '''
+        """
         return self.opened_task
 
     def reload_opened_editors(self, task_uid_list=None):
@@ -262,9 +262,9 @@ class Manager():
         self.check_quit_condition()
 
     def check_quit_condition(self):
-        '''
+        """
         checking if we need to shut down the whole GTG (if no window is open)
-        '''
+        """
         if not self.daemon_mode and not self.is_browser_visible() and \
                 not self.opened_task:
             # no need to live"
@@ -308,10 +308,10 @@ class Manager():
 
 # URIS #####################################################################
     def open_uri_list(self, unused, uri_list):
-        '''
+        """
         Open the Editor windows of the tasks associated with the uris given.
         Uris are of the form gtg://<taskid>
-        '''
+        """
         for uri in uri_list:
             if uri.startswith("gtg://"):
                 self.open_task(uri[6:])

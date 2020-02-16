@@ -125,10 +125,10 @@ class Timer(GObject.GObject):
             return datetime.datetime.strptime(time, '%X')
 
     def get_formatted_time(self):
-        '''
+        """
         This function sets the correct, uncluttered format and is used
         in general preferences' time setting for the time widget.
-        '''
+        """
         formatted_time = self.get_configuration().strftime("%X")
         # We use comparison to a regular expression to attempt for
         # valid substring of the format HH:MM.

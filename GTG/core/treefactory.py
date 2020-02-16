@@ -35,10 +35,10 @@ class TreeFactory():
         self.tagtree = None
 
     def get_tasks_tree(self):
-        '''This create a liblarch tree suitable for tasks,
+        """This create a liblarch tree suitable for tasks,
         including default filters
         For tags, filter are dynamically created at Tag insertion.
-        '''
+        """
         tasktree = Tree()
         f_dic = {
             'workview': [self.workview],
@@ -65,9 +65,9 @@ class TreeFactory():
         return tasktree
 
     def get_tags_tree(self, req):
-        '''This create a liblarch tree suitable for tags,
+        """This create a liblarch tree suitable for tags,
         including the all_tags_tag and notag_tag.
-        '''
+        """
         tagtree = Tree()
 
         # Build the "all tasks tag"
@@ -189,27 +189,27 @@ class TreeFactory():
         return wv
 
     def workdue(self, task):
-        ''' Filter for tasks due within the next day '''
+        """ Filter for tasks due within the next day """
         wv = (self.workview(task) and
               task.get_due_date() and
               task.get_days_left() < 2)
         return wv
 
     def worklate(self, task):
-        ''' Filter for tasks due within the next day '''
+        """ Filter for tasks due within the next day """
         wv = (self.workview(task) and
               task.get_due_date() and
               task.get_days_late() > 0)
         return wv
 
     def workstarted(self, task):
-        ''' Filter for workable tasks with a start date specified '''
+        """ Filter for workable tasks with a start date specified """
         wv = self.workview(task) and \
             task.start_date
         return wv
 
     def worktostart(self, task):
-        ''' Filter for workable tasks without a start date specified '''
+        """ Filter for workable tasks without a start date specified """
         wv = self.workview(task) and \
             not task.start_date
         return wv

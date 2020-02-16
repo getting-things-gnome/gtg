@@ -17,7 +17,7 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-'''
+"""
 This library deals with synchronizing two sets of objects.
 It works like this:
  - We have two sets of generic objects (local and remote)
@@ -25,7 +25,7 @@ It works like this:
  the state of its synchronization
  - the library will tell us if we need to add a clone object in the other set,
    update it or, if the other one has been removed, remove also this one
-'''
+"""
 from GTG.tools.twokeydict import TwoKeyDict
 
 
@@ -34,13 +34,13 @@ TYPE_REMOTE = "remote"
 
 
 class SyncMeme():
-    '''
+    """
     A SyncMeme is the object storing the data needed to keep track of the state
     of two objects synchronization.
     This basic version, that can be expanded as needed by the code using the
     SyncEngine, just stores the modified date and time of the last
     synchronization for both objects (local and remote)
-    '''
+    """
     # NOTE: Checking objects CRCs would make this check nicer, as we could know
     #      if the object was really changed, or it has just updated its
     #      modified time (invernizzi)
@@ -48,7 +48,7 @@ class SyncMeme():
                  local_modified=None,
                  remote_modified=None,
                  origin=None):
-        '''
+        """
         Creates a new SyncMeme, updating the modified times for both the
         local and remote objects, and sets the given origin.
         If any of the parameters is set to None, it's ignored.
@@ -58,7 +58,7 @@ class SyncMeme():
         @param origin: an object that identifies whether the local or the
                        remote is the original object, the other one being a
                        copy.
-        '''
+        """
         if local_modified is not None:
             self.set_local_last_modified(local_modified)
         if remote_modified is not None:
@@ -67,35 +67,35 @@ class SyncMeme():
             self.set_origin(origin)
 
     def set_local_last_modified(self, modified_datetime):
-        '''
+        """
         Setter function for the local object modified datetime.
 
         @param modified_datetime: the local object modified datetime
-        '''
+        """
         self.local_last_modified = modified_datetime
 
     def get_local_last_modified(self):
-        '''
+        """
         Getter function for the local object modified datetime.
-        '''
+        """
         return self.local_last_modified
 
     def set_remote_last_modified(self, modified_datetime):
-        '''
+        """
         Setter function for the remote object modified datetime.
 
         @param modified_datetime: the remote object modified datetime
-        '''
+        """
         self.remote_last_modified = modified_datetime
 
     def get_remote_last_modified(self):
-        '''
+        """
         Getter function for the remote object modified datetime.
-        '''
+        """
         return self.remote_last_modified
 
     def which_is_newest(self, local_modified, remote_modified):
-        '''
+        """
         Given the updated modified time for both the local and the remote
         objects, it checks them against the stored modified times and
         then against each other.
@@ -105,7 +105,7 @@ class SyncMeme():
                          "remote" - the same for the remote object
                          None - if no object modified time is newer than the
                          stored one (the objects have not been modified)
-        '''
+        """
         if local_modified <= self.local_last_modified and \
                 remote_modified <= self.remote_last_modified:
             return None
@@ -115,30 +115,30 @@ class SyncMeme():
             return "remote"
 
     def get_origin(self):
-        '''
+        """
         Returns the name of the source that firstly presented the object
-        '''
+        """
         return self.origin
 
     def set_origin(self, origin):
-        '''
+        """
         Sets the source that presented the object for the first time. This
         source holds the original object, while the other holds the copy.
         This can be useful in the case of "lost syncability" (see the
         SyncEngine for an explaination).
 
         @param origin: object representing the source
-        '''
+        """
         self.origin = origin
 
 
 class SyncMemes(TwoKeyDict):
-    '''
+    """
     A TwoKeyDict, with just the names changed to be better understandable.
     The meaning of these names is explained in the SyncEngine class
     description. It's used to store a set of SyncMeme objects, each one keeping
     storing all the data needed to keep track of a single relationship.
-    '''
+    """
 
     get_remote_id = TwoKeyDict._get_secondary_key
     get_local_id = TwoKeyDict._get_primary_key
@@ -151,7 +151,7 @@ class SyncMemes(TwoKeyDict):
 
 
 class SyncEngine():
-    '''
+    """
     The SyncEngine is an object useful in keeping two sets of objects
     synchronized.
     One set is called the Local set, the other is the Remote one.
@@ -161,7 +161,7 @@ class SyncEngine():
     the sync and, if not, which one must be updated.
 
     It stores the state of each relationship in a series of SyncMeme.
-    '''
+    """
 
     UPDATE = "update"
     REMOVE = "remove"
@@ -169,9 +169,9 @@ class SyncEngine():
     LOST_SYNCABILITY = "lost syncability"
 
     def __init__(self):
-        '''
+        """
         Initializes the storage of object relationships.
-        '''
+        """
         self.sync_memes = SyncMemes()
 
     def _analyze_element(self,
@@ -180,7 +180,7 @@ class SyncEngine():
                          has_local,
                          has_remote,
                          is_syncable=True):
-        '''
+        """
         Given an object that should be synced with another one,
         it finds out about the related object, and decides whether:
             - the other object hasn't been created yet (thus must be added)
@@ -204,7 +204,7 @@ class SyncEngine():
         @param is_syncable: explained above
         @returns string: one of self.UPDATE, self.ADD, self.REMOVE,
                          self.LOST_SYNCABILITY
-        '''
+        """
         if is_local:
             get_other_id = self.sync_memes.get_remote_id
             is_task_present = has_remote
@@ -227,50 +227,50 @@ class SyncEngine():
             return None, None
 
     def analyze_local_id(self, element_id, *other_args):
-        '''
+        """
         Shortcut to call _analyze_element for a local element
-        '''
+        """
         return self._analyze_element(element_id, True, *other_args)
 
     def analyze_remote_id(self, element_id, *other_args):
-        '''
+        """
         Shortcut to call _analyze_element for a remote element
-        '''
+        """
         return self._analyze_element(element_id, False, *other_args)
 
     def record_relationship(self, local_id, remote_id, meme):
-        '''
+        """
         Records that an object from the local set is related with one a remote
         set.
 
         @param local_id: the id of the local task
         @param remote_id: the id of the remote task
         @param meme: the SyncMeme that keeps track of the relationship
-        '''
+        """
         triplet = (local_id, remote_id, meme)
         self.sync_memes.add(triplet)
 
     def break_relationship(self, local_id=None, remote_id=None):
-        '''
+        """
         breaks a relationship between two objects.
         Only one of the two parameters is necessary to identify the
         relationship.
 
         @param local_id: the id of the local task
         @param remote_id: the id of the remote task
-        '''
+        """
         if local_id:
             self.sync_memes.remove_local_id(local_id)
         elif remote_id:
             self.sync_memes.remove_remote_id(remote_id)
 
     def __getattr__(self, attr):
-        '''
+        """
         The functions listed here are passed directly to the SyncMeme object
 
         @param attr: a function name among the ones listed here
         @returns object: the function return object.
-        '''
+        """
         if attr in ['get_remote_id',
                     'get_local_id',
                     'get_meme_from_local_id',

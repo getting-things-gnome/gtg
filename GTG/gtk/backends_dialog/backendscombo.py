@@ -24,9 +24,9 @@ from GTG.backends import BackendFactory
 
 
 class BackendsCombo(Gtk.ComboBox):
-    '''
+    """
     A combobox listing all the available backends types
-    '''
+    """
 
     # unique name for the backend type. It's never displayed,
     # it's used to find which backend has been selected
@@ -36,11 +36,11 @@ class BackendsCombo(Gtk.ComboBox):
     COLUMN_ICON = 2
 
     def __init__(self, backends_dialog):
-        '''
+        """
         Constructor, itializes gtk widgets.
         @param backends_dialog: reference to the dialog in which this combo is
                                 loaded.
-        '''
+        """
         super().__init__()
         self.dialog = backends_dialog
         self._liststore_init()
@@ -49,12 +49,12 @@ class BackendsCombo(Gtk.ComboBox):
         self.show_all()
 
     def _liststore_init(self):
-        '''Setup the Gtk.ListStore'''
+        """Setup the Gtk.ListStore"""
         self.liststore = Gtk.ListStore(str, str, GdkPixbuf.Pixbuf)
         self.set_model(self.liststore)
 
     def _renderers_init(self):
-        '''Configure the cell renderers'''
+        """Configure the cell renderers"""
         # Text renderer
         text_cell = Gtk.CellRendererText()
         self.pack_start(text_cell, False)
@@ -65,9 +65,9 @@ class BackendsCombo(Gtk.ComboBox):
         self.add_attribute(pixbuf_cell, "pixbuf", self.COLUMN_ICON)
 
     def refresh(self):
-        '''
+        """
         Populates the combo box with the available backends
-        '''
+        """
         self.liststore.clear()
         backend_types = BackendFactory().get_all_backends()
         ordered_backend_types = sorted(
@@ -89,9 +89,9 @@ class BackendsCombo(Gtk.ComboBox):
             self.set_active(0)
 
     def get_selected(self):
-        '''
+        """
         Returns the name of the selected backend, or None
-        '''
+        """
         selected_iter = self.get_active_iter()
         if selected_iter:
             column_name = BackendsCombo.COLUMN_NAME
