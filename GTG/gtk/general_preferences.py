@@ -45,8 +45,11 @@ class GeneralPreferences(object):
         self.bg_color_button = builder.get_object("bg_color_button")
         self.font_button = builder.get_object("font_button")
 
+        self.vmanager = vmanager
         self.timer = vmanager.timer
         self.refresh_time = builder.get_object("time_entry")
+        self.autoclean_enable = builder.get_object("autoclean_enable")
+        self.autoclean_days = builder.get_object("autoclean_days")
 
         builder.connect_signals(self)
 
@@ -91,6 +94,12 @@ class GeneralPreferences(object):
         self.refresh_time.modify_fg(Gtk.StateFlags.NORMAL, None)
 
         self.font_button.set_font_name(self.get_default_editor_font())
+
+        enable_autoclean = self.config.get("autoclean")
+        self.autoclean_enable.set_active(enable_autoclean)
+
+        autoclean_days = self.config.get("autoclean_days")
+        self.autoclean_days.set_value(autoclean_days)
 
     def _refresh_task_browser(self):
         """ Refresh tasks in task browser """
@@ -144,4 +153,18 @@ class GeneralPreferences(object):
         """ Set a new font for editor """
         self.config.set("font_name", self.font_button.get_font_name())
 
+    def on_autoclean_toggled(self, widget, state):
+        """Toggle automatic deletion of old closed tasks."""
 
+        self.config.set("autoclean", state)
+        self.autoclean_days.set_sensitive(state)
+
+    def on_autoclean_days_changed(self, widget):
+        """Update value for maximum days before removing a task."""
+
+        self.config.set("autoclean_days", int(widget.get_value()))
+
+    def on_purge_clicked(self, widget):
+        """Purge old tasks immediately."""
+
+        self.vmanager.purge_old_tasks(widget)
