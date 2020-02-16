@@ -40,7 +40,7 @@ from GTG.gtk.editor.taskview import TaskView
 from GTG.gtk.help import add_help_shortcut
 from GTG.gtk.tag_completion import tag_filter
 from GTG.tools.dates import Date
-from GTG.tools.logger import Log
+from GTG.tools.logger import log
 """
 TODO (jakubbrindza): re-factor tag_filter into a separate module
 """
@@ -333,7 +333,7 @@ class TaskEditor():
             try:
                 self.window.move(int(position[0]), int(position[1]))
             except ValueError:
-                Log.warning(
+                log.warning(
                     'Invalid position configuration for task %s: %s',
                     self.task.get_id(), position)
 
@@ -342,7 +342,7 @@ class TaskEditor():
             try:
                 self.window.resize(int(size[0]), int(size[1]))
             except ValueError:
-                Log.warning(
+                log.warning(
                     'Invalid size configuration for task %s: %s',
                     self.task.get_id(), size)
 

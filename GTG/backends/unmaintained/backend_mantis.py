@@ -26,7 +26,7 @@ from GTG.backends.periodicimportbackend import PeriodicImportBackend
 from GTG.backends.syncengine import SyncEngine, SyncMeme
 from GTG.core.task import Task
 from GTG.core.translations import _
-from GTG.tools.logger import Log
+from GTG.tools.logger import log
 
 from suds.client import Client
 
@@ -161,7 +161,7 @@ class Backend(PeriodicImportBackend):
         action, tid = self.sync_engine.analyze_remote_id(str(issue['id']),
                                                          has_task,
                                                          lambda b: True)
-        Log.debug("processing mantis (%s)" % (action))
+        log.debug("processing mantis (%s)" % (action))
 
         if action is None:
             return

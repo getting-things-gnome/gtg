@@ -32,7 +32,7 @@ from gi.repository import GObject, Gtk, Gdk, GdkPixbuf
 from GTG.core.translations import _
 from GTG.gtk.browser.simple_color_selector import SimpleColorSelector
 from GTG.gtk.colors import color_add, color_remove
-from GTG.tools.logger import Log
+from GTG.tools.logger import log
 
 
 class TagIconSelector(Gtk.Window):
@@ -109,7 +109,7 @@ class TagIconSelector(Gtk.Window):
                 img = Gtk.IconTheme.get_default().load_icon(icon, 16, 0)
                 self.symbol_model.append([img, icon])
             except GObject.GError:
-                Log.error("Failed to load icon '%s'" % icon)
+                log.error("Failed to load icon '%s'" % icon)
         self.symbol_iv.set_model(self.symbol_model)
         self.loaded = True
 

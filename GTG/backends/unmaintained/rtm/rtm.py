@@ -6,7 +6,7 @@ import urllib.error
 from hashlib import md5
 
 from GTG.core.translations import _
-from GTG.tools.logger import Log
+from GTG.tools.logger import log
 
 _use_jsonlib = False
 try:
@@ -26,7 +26,7 @@ except ImportError:
             pass
 
 if not _use_jsonlib:
-    Log.warning("simplejson module is not available, "
+    log.warning("simplejson module is not available, "
                 "falling back to the internal JSON parser. "
                 "Please consider installing the simplejson module from "
                 "http://pypi.python.org/pypi/simplejson.")
@@ -169,7 +169,7 @@ class RTMAPICategory():
 
         for param in params:
             if param not in rargs + oargs:
-                Log.error('Invalid parameter (%s)' % param)
+                log.error('Invalid parameter (%s)' % param)
 
         return self.rtm.get(method=aname,
                             auth_token=self.rtm.authInfo.get('token'),

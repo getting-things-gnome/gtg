@@ -29,7 +29,7 @@ import xml.sax.saxutils as saxutils
 
 from GTG.core.translations import _
 from GTG.tools.dates import Date
-from GTG.tools.logger import Log
+from GTG.tools.logger import log
 from GTG.tools.tags import extract_tags_from_text
 from liblarch import TreeNode
 
@@ -545,7 +545,7 @@ class Task(TreeNode):
 
         @param child: the added task
         """
-        Log.debug("adding child %s to task %s" % (tid, self.get_id()))
+        log.debug("adding child %s to task %s" % (tid, self.get_id()))
         self.can_be_deleted = False
         # the core of the method is in the TreeNode object
         TreeNode.add_child(self, tid)

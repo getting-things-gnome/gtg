@@ -28,7 +28,7 @@ from gi.repository import Gtk, GdkPixbuf
 
 from GTG.core.task import Task
 from GTG.core.translations import _
-from GTG.tools.logger import Log
+from GTG.tools.logger import log
 
 
 class HamsterPlugin():
@@ -208,12 +208,12 @@ class HamsterPlugin():
 
     def on_task_deleted(self, task_id, path):
         """ Stop tracking a deleted task if it is being tracked """
-        Log.info('Hamster: task deleted %s', task_id)
+        log.info('Hamster: task deleted %s', task_id)
         self.stop_task(task_id)
 
     def on_task_modified(self, task_id, path):
         """ Stop task if it is tracked and it is Done/Dismissed """
-        Log.debug('Hamster: task modified %s', task_id)
+        log.debug('Hamster: task modified %s', task_id)
         task = self.plugin_api.get_requester().get_task(task_id)
         if not task:
             return

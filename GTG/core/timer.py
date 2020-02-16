@@ -24,7 +24,7 @@ import dbus
 import re
 
 from gi.repository import GObject
-from GTG.tools.logger import Log
+from GTG.tools.logger import log
 
 
 class Timer(GObject.GObject):
@@ -81,7 +81,7 @@ class Timer(GObject.GObject):
             return datetime.time(int(self.config.get('hour')),
                                  int(self.config.get('min')))
         except(ValueError):
-            Log.error("Invalid time values: %s:%s", self.config.get('hour'),
+            log.error("Invalid time values: %s:%s", self.config.get('hour'),
                       self.config.get('min'))
             return datetime.time(0, 0)
 

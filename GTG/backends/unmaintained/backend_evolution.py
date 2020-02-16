@@ -37,7 +37,7 @@ from GTG.core.task import Task
 from GTG.core.translations import _
 from GTG.tools.dates import Date
 from GTG.tools.interruptible import interruptible
-from GTG.tools.logger import Log
+from GTG.tools.logger import log
 from GTG.tools.tags import extract_tags_from_text
 
 # Dictionaries to translate GTG tasks in Evolution ones
@@ -197,7 +197,7 @@ class Backend(PeriodicImportBackend):
             self.datastore.has_task,
             self._evo_has_task,
             is_syncable)
-        Log.debug('GTG->Evo set task (%s, %s)' % (action, is_syncable))
+        log.debug('GTG->Evo set task (%s, %s)' % (action, is_syncable))
 
         if action is None:
             return
@@ -255,7 +255,7 @@ class Backend(PeriodicImportBackend):
             self.datastore.has_task,
             self._evo_has_task,
             is_syncable)
-        Log.debug('GTG<-Evo set task (%s, %s)' % (action, is_syncable))
+        log.debug('GTG<-Evo set task (%s, %s)' % (action, is_syncable))
 
         if action == SyncEngine.ADD:
             with self.datastore.get_backend_mutex():

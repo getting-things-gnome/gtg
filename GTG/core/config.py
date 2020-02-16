@@ -26,7 +26,7 @@ import os
 import re
 
 from GTG.core.dirs import CONFIG_DIR
-from GTG.tools.logger import Log
+from GTG.tools.logger import log
 
 DEFAULTS = {
     # TODO: Remove toolbar and quick_add options from configuration
@@ -91,7 +91,7 @@ def open_config_file(config_file):
     try:
         config.read(config_file)
     except configparser.Error as e:
-        Log.warning("Problem with opening file %s: %s", config_file, e)
+        log.warning("Problem with opening file %s: %s", config_file, e)
     return config
 
 
@@ -155,7 +155,7 @@ class SectionConfig():
         """
         default_value = self._defaults.get(option)
         if default_value is None:
-            Log.warning(
+            log.warning(
                 'No default value for %s in %s', option, self._section_name)
 
         get_function = self._type_function(default_value)
@@ -164,7 +164,7 @@ class SectionConfig():
             value = get_function(option)
         except ValueError as e:
             value = None
-            Log.warning(
+            log.warning(
                 'Invalid configuration value "%s" for %s in %s: %s',
                 self._section.get(option), option, self._section_name, e)
 

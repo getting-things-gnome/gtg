@@ -60,7 +60,7 @@ from GTG.core.dirs import DATA_DIR
 from GTG.core.translations import _
 from GTG.gtk.dbuswrapper import BUSNAME, BUSINTERFACE
 from GTG.gtk.manager import Manager
-from GTG.tools.logger import Log
+from GTG.tools.logger import log
 
 #=== OBJECTS ==================================================================
 
@@ -213,11 +213,10 @@ def core_main_init(options=None, args=None):
     """
     # Debugging subsystem initialization
     if options.debug:
-        Log.setLevel(logging.DEBUG)
-        Log.debug("Debug output enabled.")
+        log.setLevel(logging.DEBUG)
+        log.debug("Debug output enabled.")
     else:
-        Log.setLevel(logging.INFO)
-    Log.set_debugging_mode(options.debug)
+        log.setLevel(logging.INFO)
     check_instance(DATA_DIR, args)
     backends_list = BackendFactory().get_saved_backends_list()
     # Load data store

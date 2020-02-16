@@ -37,7 +37,7 @@ from GTG.gtk import help
 from GTG.gtk.backends_dialog.addpanel import AddPanel
 from GTG.gtk.backends_dialog.backendstree import BackendsTree
 from GTG.gtk.backends_dialog.configurepanel import ConfigurePanel
-from GTG.tools.logger import Log
+from GTG.tools.logger import log
 
 
 class BackendsDialog():
@@ -136,7 +136,7 @@ class BackendsDialog():
             panel_to_add = self.add_panel
             side_is_enabled = False
         else:
-            Log.error("panel name unknown")
+            log.error("panel name unknown")
             return
         # Central pane
         # NOTE: self.central_pane is the Gtk.Container in which we load panels

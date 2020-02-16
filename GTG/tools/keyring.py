@@ -23,7 +23,7 @@ except ImportError:
     GnomeKeyring = None
 
 from GTG.tools.borg import Borg
-from GTG.tools.logger import Log
+from GTG.tools.logger import log
 
 
 class GNOMEKeyring(Borg):
@@ -85,6 +85,6 @@ class FallbackKeyring(Borg):
 if GnomeKeyring is not None:
     Keyring = GNOMEKeyring
 else:
-    Log.info("GNOME keyring was not found, passwords will be not stored after\
+    log.info("GNOME keyring was not found, passwords will be not stored after\
                                                               restart of GTG")
     Keyring = FallbackKeyring

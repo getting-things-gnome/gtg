@@ -42,7 +42,7 @@ from GTG.core.task import Task
 from GTG.core.translations import _
 from GTG.tools.dates import Date
 from GTG.tools.interruptible import interruptible
-from GTG.tools.logger import Log
+from GTG.tools.logger import log
 
 
 class Backend(PeriodicImportBackend):
@@ -222,7 +222,7 @@ class Backend(PeriodicImportBackend):
                 self.rtm_proxy.refresh_rtm_tasks_dict()
             rtm_task = self.rtm_proxy.get_rtm_tasks_dict()[rtm_task_id]
             rtm_task.delete()
-            Log.debug("removing task %s from RTM" % rtm_task_id)
+            log.debug("removing task %s from RTM" % rtm_task_id)
         except KeyError:
             pass
             try:
@@ -249,7 +249,7 @@ class Backend(PeriodicImportBackend):
             self.datastore.has_task,
             self.rtm_proxy.has_rtm_task,
             is_syncable)
-        Log.debug("GTG->RTM set task (%s, %s)" % (action, is_syncable))
+        log.debug("GTG->RTM set task (%s, %s)" % (action, is_syncable))
 
         if action is None:
             return
@@ -349,7 +349,7 @@ class Backend(PeriodicImportBackend):
             self.datastore.has_task,
             self.rtm_proxy.has_rtm_task,
             is_syncable)
-        Log.debug("GTG<-RTM set task (%s, %s)" % (action, is_syncable))
+        log.debug("GTG<-RTM set task (%s, %s)" % (action, is_syncable))
 
         if action is None:
             return
@@ -590,7 +590,7 @@ class RTMProxy():
             self.timeline = self.rtm.timelines.create().timeline
             return True
         except (RTMError, RTMAPIError) as e:
-            Log.error("RTM ERROR" + str(e))
+            log.error("RTM ERROR" + str(e))
         return False
 
     ##########################################################################
@@ -682,7 +682,7 @@ class RTMProxy():
             self.is_not_refreshing.wait()
             return
         self.is_not_refreshing.clear()
-        Log.debug('refreshing rtm')
+        log.debug('refreshing rtm')
 
         # To understand what this function does, here's a sample output of the
         # plain getLists() from RTM api:

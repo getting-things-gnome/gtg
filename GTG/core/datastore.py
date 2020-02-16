@@ -36,7 +36,7 @@ from GTG.core.task import Task
 from GTG.core.treefactory import TreeFactory
 from GTG.tools import cleanxml
 from GTG.tools.borg import Borg
-from GTG.tools.logger import Log
+from GTG.tools.logger import log, log_debug_enabled
 
 TAG_XMLROOT = "tagstore"
 
@@ -132,7 +132,7 @@ class DataStore():
         try:
             parameters = parse_search_query(query)
         except InvalidQuery as e:
-            Log.warning("Problem with parsing query '%s' (skipping): %s" %
+            log.warning("Problem with parsing query '%s' (skipping): %s" %
                         (query, e.message))
             return None
 
@@ -309,7 +309,7 @@ class DataStore():
         if self.has_task(tid):
             return self._tasks.get_node(tid)
         else:
-            # Log.error("requested non-existent task %s" % tid)
+            # log.error("requested non-existent task %s" % tid)
             # This is not an error: it is normal to request a task which
             # might not exist yet.
             return None
@@ -402,12 +402,12 @@ class DataStore():
         """
         if "backend" in backend_dic:
             if "pid" not in backend_dic:
-                Log.error("registering a backend without pid.")
+                log.error("registering a backend without pid.")
                 return None
             backend = backend_dic["backend"]
             # Checking that is a new backend
             if backend.get_id() in self.backends:
-                Log.error("registering already registered backend")
+                log.error("registering already registered backend")
                 return None
             # creating the TaskSource which will wrap the backend,
             # filtering the tasks that should hit the backend.
@@ -434,7 +434,7 @@ class DataStore():
                 source.start_get_tasks()
             return source
         else:
-            Log.error("Tried to register a backend without a  pid")
+            log.error("Tried to register a backend without a  pid")
 
     def _activate_non_default_backends(self, sender=None):
         """
@@ -445,7 +445,7 @@ class DataStore():
         @param sender: not used, just here for signal compatibility
         """
         if self.is_default_backend_loaded:
-            Log.debug("spurious call")
+            log.debug("spurious call")
             return
 
         self.is_default_backend_loaded = True
@@ -581,7 +581,7 @@ class DataStore():
                 # after 20 seconds, we give up
                 thread.join(20)
                 if thread.isAlive():
-                    Log.error("The %s backend stalled while quitting",
+                    log.error("The %s backend stalled while quitting",
                               backend_id)
         # we save the parameters
         for b in self.get_all_backends(disabled=True):
@@ -640,7 +640,7 @@ class TaskSource():
         self.to_remove = deque()
         self.please_quit = False
         self.task_filter = self.get_task_filter_for_backend()
-        if Log.is_debugging_mode():
+        if log_debug_enabled():
             self.timer_timestep = 5
         else:
             self.timer_timestep = 1

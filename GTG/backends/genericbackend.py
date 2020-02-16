@@ -34,7 +34,7 @@ from GTG.core.tag import ALLTASKS_TAG
 from GTG.core.dirs import SYNC_DATA_DIR
 from GTG.tools.interruptible import _cancellation_point
 from GTG.tools.keyring import Keyring
-from GTG.tools.logger import Log
+from GTG.tools.logger import log, log_debug_enabled
 
 PICKLE_BACKUP_NBR = 2
 
@@ -288,7 +288,7 @@ class GenericBackend():
         # if debugging mode is enabled, tasks should be saved as soon as
         # they're marked as modified. If in normal mode, we prefer speed over
         # easier debugging.
-        if Log.is_debugging_mode():
+        if log_debug_enabled():
             self.timer_timestep = 5
         else:
             self.timer_timestep = 1
@@ -578,7 +578,7 @@ class GenericBackend():
             try:
                 return pickle.load(file)
             except Exception:
-                Log.error("Pickle file for backend '%s' is damaged" %
+                log.error("Pickle file for backend '%s' is damaged" %
                           self.get_name())
 
         # Loading file failed, trying backups
@@ -588,15 +588,15 @@ class GenericBackend():
                 with open(backup_file, 'rb') as file:
                     try:
                         data = pickle.load(file)
-                        Log.info("Succesfully restored backup #%d for '%s'" %
+                        log.info("Succesfully restored backup #%d for '%s'" %
                                  (i, self.get_name()))
                         return data
                     except Exception:
-                        Log.error("Backup #%d for '%s' is damaged as well" %
+                        log.error("Backup #%d for '%s' is damaged as well" %
                                   (i, self.get_name()))
 
         # Data could not be loaded, degrade to default data
-        Log.error("There is no suitable backup for '%s', "
+        log.error("There is no suitable backup for '%s', "
                   "loading default data" % self.get_name())
         return default_value
 
