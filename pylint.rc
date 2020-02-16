@@ -1,0 +1,54 @@
+[MASTER]
+
+# Python code to execute
+init-hook='import gi; gi.require_version("Gtk", "3.0");'
+
+# Use multiple processes to speed up Pylint. Specifying 0 will auto-detect the
+# number of processors available to use.
+jobs=0
+
+# Control the amount of potential inferred values when inferring a single
+# object. This can help the performance when dealing with large functions or
+# complex, nested conditions.
+limit-inference-results=100
+
+[MESSAGES CONTROL]
+
+# Disable the message, report, category or checker with the given id(s). You
+# can either give multiple identifiers separated by comma (,) or put this
+# option multiple times (only on the command line, not in the configuration
+# file where it should appear only once). You can also use "--disable=all" to
+# disable everything first and then reenable specific checks. For example, if
+# you want to run only the similarities checker, you can use "--disable=all
+# --enable=similarities". If you want to run only the classes checker, but have
+# no Warning level messages displayed, use "--disable=all --enable=classes
+# --disable=W".
+disable=access-member-before-definition,
+        arguments-differ, # Pylint fails at this with the Gtk do_* methods
+        no-else-return, # Looks better in some cases.
+        too-few-public-methods,
+
+
+# checks for:
+# * warning notes in the code like FIXME, XXX
+# * PEP 263: source code with non ascii character but no encoding declaration
+#
+[MISCELLANEOUS]
+
+# List of note/comment tags to disallow, separated by a comma.
+notes=XXX, FIXME, TODO
+
+
+# checks for :
+# * unauthorized constructions
+# * strict indentation
+# * line length
+# * use of <> instead of !=
+#
+[FORMAT]
+
+# Maximum number of characters on a single line.
+max-line-length=120
+
+# Maximum number of lines in a module
+max-module-lines=2000
