@@ -79,7 +79,7 @@ def convert_datetime_to_date(aday):
     return datetime.date(aday.year, aday.month, aday.day)
 
 
-class Date(object):
+class Date():
     """A date class that supports fuzzy dates.
 
     Date supports all the methods of the standard datetime.date class. A Date

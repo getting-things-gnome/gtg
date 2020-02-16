@@ -17,7 +17,7 @@
 __all__ = ('BugFactory',)
 
 
-class Bug(object):
+class Bug():
 
     def __init__(self, bug):
         ''' Initialize Bug object using bug object retrieved via Bugzilla
@@ -76,7 +76,7 @@ bugs = {
 }
 
 
-class BugFactory(object):
+class BugFactory():
     @staticmethod
     def create(serviceDomain, bug):
         return bugs[serviceDomain](bug)

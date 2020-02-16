@@ -40,7 +40,7 @@ from GTG.gtk.backends_dialog.configurepanel import ConfigurePanel
 from GTG.tools.logger import Log
 
 
-class BackendsDialog(object):
+class BackendsDialog():
     '''
     BackendsDialog manages a window that lets you manage and configure
     synchronization service.

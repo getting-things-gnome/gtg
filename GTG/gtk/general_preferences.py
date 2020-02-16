@@ -29,7 +29,7 @@ from GTG.core.dirs import UI_DIR
 from GTG.core.translations import _
 
 
-class GeneralPreferences(object):
+class GeneralPreferences():
 
     GENERAL_PREFERENCES_UI = os.path.join(UI_DIR, "general_preferences.ui")
     INVALID_COLOR = Gdk.Color(50000, 0, 0)

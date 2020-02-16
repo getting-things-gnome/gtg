@@ -91,7 +91,7 @@ class GetBugInformationTask(threading.Thread):
                     GObject.idle_add(self.task.add_tag, '@%s' % tag)
 
 
-class BugzillaPlugin(object):
+class BugzillaPlugin():
 
     def activate(self, plugin_api):
         self.plugin_api = plugin_api

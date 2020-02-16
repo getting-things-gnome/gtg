@@ -95,7 +95,7 @@ def open_config_file(config_file):
     return config
 
 
-class SectionConfig(object):
+class SectionConfig():
     """ Configuration only for a section (system or a task) """
 
     def __init__(self, section_name, section, defaults, save_function):
@@ -190,7 +190,7 @@ class SectionConfig(object):
         self._save_function()
 
 
-class CoreConfig(object):
+class CoreConfig():
     """ Class holding configuration to all systems and tasks """
 
     def __init__(self):

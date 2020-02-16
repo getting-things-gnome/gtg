@@ -25,7 +25,7 @@ from unittest import TestCase
 from GTG.core.timer import Timer
 
 
-class Config(object):
+class Config():
     """Creating a mock Config
     to be able to create a Timer object later
     """

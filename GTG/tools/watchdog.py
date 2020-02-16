@@ -20,7 +20,7 @@
 import threading
 
 
-class Watchdog(object):
+class Watchdog():
     '''
     a simple thread-safe watchdog.
     usage::

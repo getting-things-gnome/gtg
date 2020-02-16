@@ -41,7 +41,7 @@ from GTG.gtk.browser.tag_editor import TagEditor
 from GTG.core.timer import Timer
 
 
-class Manager(object):
+class Manager():
 
     # init ##################################################################
     def __init__(self, req):

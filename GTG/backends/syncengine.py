@@ -33,7 +33,7 @@ TYPE_LOCAL = "local"
 TYPE_REMOTE = "remote"
 
 
-class SyncMeme(object):
+class SyncMeme():
     '''
     A SyncMeme is the object storing the data needed to keep track of the state
     of two objects synchronization.
@@ -150,7 +150,7 @@ class SyncMemes(TwoKeyDict):
     get_all_remote = TwoKeyDict._get_all_secondary_keys
 
 
-class SyncEngine(object):
+class SyncEngine():
     '''
     The SyncEngine is an object useful in keeping two sets of objects
     synchronized.

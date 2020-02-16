@@ -25,7 +25,7 @@ from GTG.core.dirs import UI_DIR
 from GTG.gtk.general_preferences import GeneralPreferences
 
 
-class Preferences(object):
+class Preferences():
     """Preferences is a framework for diplaying and switching
     between indivitual parts of preferences: general, plugins
     and synchronisation. These will be accessed via get_ui() method"""

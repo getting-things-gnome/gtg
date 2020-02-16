@@ -39,7 +39,7 @@ from GTG.tools.logger import Log
 PICKLE_BACKUP_NBR = 2
 
 
-class GenericBackend(object):
+class GenericBackend():
     '''
     Base class for every backend.
     It defines the interface a backend must have and takes care of all the

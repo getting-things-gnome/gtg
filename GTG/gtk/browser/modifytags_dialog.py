@@ -25,7 +25,7 @@ from GTG.gtk.browser import GnomeConfig
 from GTG.tools.tags import parse_tag_list
 
 
-class ModifyTagsDialog(object):
+class ModifyTagsDialog():
     """
     Dialog for batch adding/removal of tags
     """

@@ -30,7 +30,7 @@ GTG modules and plugins that wish to use logging should import the Log object::
 import logging
 
 
-class Debug(object):
+class Debug():
     """Singleton class that acts as interface for GTG's logger"""
 
     def __init__(self):

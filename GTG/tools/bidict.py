@@ -19,7 +19,7 @@ from functools import reduce
 # -----------------------------------------------------------------------------
 
 
-class BiDict(object):
+class BiDict():
     '''
     Bidirectional dictionary: the pairs stored can be accessed using either the
     first or the second element as key (named key1 and key2).

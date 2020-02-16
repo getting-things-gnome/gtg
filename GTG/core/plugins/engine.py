@@ -27,7 +27,7 @@ from GTG.tools.borg import Borg
 from GTG.tools.logger import Log
 
 
-class Plugin(object):
+class Plugin():
     """A class to represent a plugin."""
 
     # A reference to an instance of the plugin class

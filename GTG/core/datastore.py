@@ -41,7 +41,7 @@ from GTG.tools.logger import Log
 TAG_XMLROOT = "tagstore"
 
 
-class DataStore(object):
+class DataStore():
     """
     A wrapper around all backends that is responsible for keeping the backend
     instances. It can enable, disable, register and destroy backends, and acts
@@ -618,7 +618,7 @@ class DataStore(object):
         return self._backend_mutex
 
 
-class TaskSource(object):
+class TaskSource():
     """
     Transparent interface between the real backend and the DataStore.
     Is in charge of connecting and disconnecting to signals

@@ -27,7 +27,7 @@ import xml.dom.minidom
 # Serialize the task : transform it's content in something
 # we can store. This function signature is defined in PyGTK
 
-class Serializer(object):
+class Serializer():
     def serialize(self, register_buf, content_buf, start, end, length, udata):
         # Currently we serialize in XML
         its = start.copy()
@@ -143,7 +143,7 @@ class Serializer(object):
 # Deserialize : put all in the TextBuffer
 # This function signature is defined in PyGTK
 
-class Unserializer(object):
+class Unserializer():
 
     def __init__(self, taskview):
         # We keep a reference to the original taskview

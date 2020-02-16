@@ -46,7 +46,7 @@ TODO (jakubbrindza): re-factor tag_filter into a separate module
 '''
 
 
-class TaskEditor(object):
+class TaskEditor():
 
     EDITOR_UI_FILE = os.path.join(UI_DIR, "taskeditor.ui")
 

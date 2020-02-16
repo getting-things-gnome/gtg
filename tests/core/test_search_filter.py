@@ -25,7 +25,7 @@ from GTG.tools.dates import Date
 d = Date.parse
 
 
-class FakeTask(object):
+class FakeTask():
 
     def __init__(self, title="", body="", tags=[], due_date=""):
         self.title = title
