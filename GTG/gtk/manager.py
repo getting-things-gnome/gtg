@@ -68,6 +68,7 @@ class Manager(object):
         # Initialize Timer
         self.config = self.req.get_config('browser')
         self.timer = Timer(self.config)
+        self.timer.connect('refresh', self.autoclean)
 
         # Load custom css
         self.__init_css()
@@ -175,7 +176,7 @@ class Manager(object):
         Log.debug("Deleting old tasks")
 
         today = Date.today()
-        max_days = 30
+        max_days = self.config.get('autoclean_days')
         closed_tree = self.req.get_tasks_tree(name='inactive')
 
         closed_tasks = [self.req.get_task(tid) for tid in
@@ -187,6 +188,13 @@ class Manager(object):
         [self.req.delete_task(task.get_id())
          for task in to_remove
          if self.req.has_task(task.get_id())]
+
+    def autoclean(self, timer):
+        """Run Automatic cleanup of old tasks."""
+
+        if self.config.get('autoclean'):
+            self.purge_old_tasks()
+
 
 # Task Editor ############################################################
     def get_opened_editors(self):
