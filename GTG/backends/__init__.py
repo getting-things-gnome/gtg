@@ -36,13 +36,13 @@ from GTG.tools import cleanxml
 
 
 class BackendFactory(Borg):
-    '''
+    """
     This class holds the information about the backend types.
     Since it's about types, all information is static. The instantiated
     backends are handled in the Datastore.
     It is a Borg for what matters its only state (_backend_modules),
     since it makes no sense of keeping multiple instances of this.
-    '''
+    """
 
     BACKEND_PREFIX = "backend_"
 
@@ -88,10 +88,10 @@ class BackendFactory(Borg):
                 yield filename
 
     def get_backend(self, backend_name):
-        '''
+        """
         Returns the backend module for the backend matching
         backend_name. Else, returns none
-        '''
+        """
         if backend_name in self.backend_modules:
             return self.backend_modules[backend_name]
         else:
@@ -99,17 +99,17 @@ class BackendFactory(Borg):
             return None
 
     def get_all_backends(self):
-        '''
+        """
         Returns a dictionary containing all the backends types
-        '''
+        """
         return self.backend_modules
 
     def get_new_backend_dict(self, backend_name, additional_parameters={}):
-        '''
+        """
         Constructs a new backend initialization dictionary. In more
         exact terms, creates a dictionary, containing all the necessary
         entries to initialize a backend.
-        '''
+        """
         if backend_name not in self.backend_modules:
             return None
         dic = {}
@@ -128,7 +128,7 @@ class BackendFactory(Borg):
         return dic
 
     def restore_backend_from_xml(self, dic):
-        '''
+        """
         Function restoring a backend from its xml description.
         dic should be a dictionary containing at least the key
             - "module", with the module name
@@ -136,7 +136,7 @@ class BackendFactory(Borg):
         Every other key is passed as-is to the backend, as parameter.
 
         Returns the backend instance, or None is something goes wrong
-        '''
+        """
         if "module" not in dic or "xmlobject" not in dic:
             Log.debug("Malformed backend configuration found! %s" %
                       dic)
@@ -187,13 +187,13 @@ class BackendFactory(Borg):
         return backends_dic
 
     def _read_backend_configuration_file(self):
-        '''
+        """
         Reads the file describing the current backend configuration
         (project.xml) and returns a list of dictionaries, each containing:
          - the xml object defining the backend characteristics under
               "xmlobject"
          - the name of the backend under "module"
-        '''
+        """
         # Read configuration file, if it does not exist, create one
         doc, configxml = cleanxml.openxmlfile(PROJECTS_XMLFILE, "config")
         xmlproject = doc.getElementsByTagName("backend")

@@ -193,12 +193,12 @@ class GTGCalendar(GObject.GObject):
             GObject.idle_add(self.emit, "date-changed")
 
     def __from_calendar_date_to_datetime(self, calendar_date):
-        '''
+        """
         Gtk.Calendar uses a 0-based convention for counting months.
         The rest of the world, including the datetime module, starts from 1.
         This is a converter between the two. GTG follows the datetime
         convention.
-        '''
+        """
         year, month, day = calendar_date
         return datetime.date(year, month + 1, day)
 

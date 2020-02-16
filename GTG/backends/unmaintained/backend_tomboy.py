@@ -17,10 +17,10 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-'''
+"""
 The tomboy backend. The actual backend is all in GenericTomboy, since it's
 shared with the Gnote backend.
-'''
+"""
 
 from GTG.backends.genericbackend import GenericBackend
 from GTG.backends.generictomboy import GenericTomboy
@@ -28,11 +28,11 @@ from GTG.core.translations import _
 
 
 class Backend(GenericTomboy):
-    '''
+    """
     A simple class that adds some description to the GenericTomboy class.
     It's done this way since Tomboy and Gnote backends have different
     descriptions and Dbus addresses but the same backend behind them.
-    '''
+    """
 
     _general_description = {
         GenericBackend.BACKEND_NAME: "backend_tomboy",

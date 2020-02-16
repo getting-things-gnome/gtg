@@ -1354,7 +1354,7 @@ class TaskBrowser(GObject.GObject):
 
     def on_backend_needing_interaction(self, sender, backend_id, description,
                                        interaction_type, callback):
-        '''
+        """
         Signal callback.
         When a backend needs some kind of feedback from the user,
         loads a Gtk.Infobar to alert the user.
@@ -1368,33 +1368,33 @@ class TaskBrowser(GObject.GObject):
                                  (yes/no, only confirm, ok/cancel...)
         @param callback: the function to call when the user provides the
                          feedback
-        '''
+        """
         infobar = self._new_infobar(backend_id)
         infobar.set_interaction_request(description, interaction_type,
                                         callback)
 
     def __remove_backend_infobar(self, child, backend_id):
-        '''
+        """
         Helper function to remove an Gtk.Infobar related to a backend
 
         @param child: a Gtk.Infobar
         @param backend_id: the id of the backend which Gtk.Infobar should be
                             removed.
-        '''
+        """
         if isinstance(child, CustomInfoBar) and\
                 child.get_backend_id() == backend_id:
             if self.vbox_toolbars:
                 self.vbox_toolbars.remove(child)
 
     def remove_backend_infobar(self, sender, backend_id):
-        '''
+        """
         Signal callback.
         Deletes the Gtk.Infobars related to a backend
 
         @param sender: not used, only here for signal compatibility
         @param backend_id: the id of the backend which Gtk.Infobar should be
                             removed.
-        '''
+        """
         backend = self.req.get_backend(backend_id)
         if not backend or (backend and backend.is_enabled()):
             # remove old infobar related to backend_id, if any
@@ -1403,12 +1403,12 @@ class TaskBrowser(GObject.GObject):
                                            backend_id)
 
     def _new_infobar(self, backend_id):
-        '''
+        """
         Helper function to create a new infobar for a backend
 
         @param backend_id: the backend for which we're creating the infobar
         @returns Gtk.Infobar: the created infobar
-        '''
+        """
         # remove old infobar related to backend_id, if any
         if not self.vbox_toolbars:
             return

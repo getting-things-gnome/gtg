@@ -376,11 +376,11 @@ def test(apiKey, secret, token=None):
 
 
 def set_log_level(level):
-    '''Sets the log level of the logger used by the module.
+    """Sets the log level of the logger used by the module.
 
     >>> import rtm
     >>> import logging
     >>> rtm.set_log_level(logging.INFO)
-    '''
+    """
 
     # LOG.setLevel(level)

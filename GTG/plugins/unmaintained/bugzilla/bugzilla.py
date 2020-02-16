@@ -31,7 +31,7 @@ bugURLPattern = re.compile('^(https?)://(.+)/show_bug\.cgi\?id=(\d+)$')
 class GetBugInformationTask(threading.Thread):
 
     def __init__(self, task, **kwargs):
-        ''' Initialize task data, where task is the GTG task object. '''
+        """ Initialize task data, where task is the GTG task object. """
         self.task = task
         super().__init__(**kwargs)
 

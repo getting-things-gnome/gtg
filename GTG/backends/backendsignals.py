@@ -23,12 +23,12 @@ from GTG.tools.borg import Borg
 
 
 class BackendSignals(Borg):
-    '''
+    """
     This class handles the signals that involve backends.
     In particular, it's a wrapper Borg class around a _BackendSignalsGObject
     class, and all method of the wrapped class can be used as if they were part
     of this class
-    '''
+    """
 
     # error codes to send along with the BACKEND_FAILED signal
     ERRNO_AUTHENTICATION = "authentication failed"
@@ -36,29 +36,29 @@ class BackendSignals(Borg):
     ERRNO_DBUS = "DBus interface cannot be connected"
 
     def __init__(self):
-        '''Checks that this is the only instance, and instantiates the
-        gobject'''
+        """Checks that this is the only instance, and instantiates the
+        gobject"""
         super().__init__()
         if hasattr(self, "_gobject"):
             return
         self._gobject = _BackendSignalsGObject()
 
     def __getattr__(self, attr):
-        '''
+        """
         From outside the class, there should be no difference between self's
         attributes and self._gobject's attributes.
-        '''
+        """
         if attr == "_gobject" and "_gobject" not in self.__dict__:
             raise AttributeError
         return getattr(self._gobject, attr)
 
 
 def signal_type_factory(*args):
-    '''
+    """
     Simply returns a gobject signal type
 
     @returns: tuple
-    '''
+    """
     return (GObject.SignalFlags.RUN_FIRST, None, args)
 
 

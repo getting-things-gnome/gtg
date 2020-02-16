@@ -33,9 +33,9 @@ class BugzillaService():
         return BugFactory.create(self.domain, bugs['bugs'][0])
 
     def getTags(self, bug):
-        ''' Get a list of tags due to some bug attribute contains list rather
+        """ Get a list of tags due to some bug attribute contains list rather
             than a string in some bugzilla service.
-        '''
+        """
         tag_names = getattr(bug, self.tag_from, None)
         if tag_names is None:
             return []
@@ -50,32 +50,32 @@ class GnomeBugzilla(BugzillaService):
 
 
 class FreedesktopBugzilla(BugzillaService):
-    ''' Bugzilla service of Freedesktop projects '''
+    """ Bugzilla service of Freedesktop projects """
 
     name = 'Freedesktop Bugzilla Service'
 
 
 class GentooBugzilla(BugzillaService):
-    ''' Bugzilla service of Gentoo project '''
+    """ Bugzilla service of Gentoo project """
 
     name = 'Gentoo Bugzilla Service'
 
 
 class MozillaBugzilla(BugzillaService):
-    ''' Bugzilla service of Mozilla products '''
+    """ Bugzilla service of Mozilla products """
 
     name = 'Mozilla Bugzilla Service'
 
 
 class SambaBugzilla(BugzillaService):
-    ''' Bugzilla service of Samba project '''
+    """ Bugzilla service of Samba project """
 
     enabled = False
     name = 'Samba Bugzilla Service'
 
 
 class RedHatBugzilla(BugzillaService):
-    ''' Bugzilla service provided by Red Hat '''
+    """ Bugzilla service provided by Red Hat """
 
     name = 'Red Hat Bugzilla Service'
 
@@ -96,7 +96,7 @@ class BugzillaServiceNotExist(Exception):
 
 
 class BugzillaServiceDisabled(Exception):
-    ''' Bugzilla service is disabled by user. '''
+    """ Bugzilla service is disabled by user. """
 
     def __init__(self, domain, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -104,7 +104,7 @@ class BugzillaServiceDisabled(Exception):
 
 
 class BugzillaServiceFactory():
-    ''' Create a Bugzilla service using scheme and domain '''
+    """ Create a Bugzilla service using scheme and domain """
 
     @staticmethod
     def create(scheme, domain):

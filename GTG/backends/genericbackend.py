@@ -40,12 +40,12 @@ PICKLE_BACKUP_NBR = 2
 
 
 class GenericBackend():
-    '''
+    """
     Base class for every backend.
     It defines the interface a backend must have and takes care of all the
     operations common to all backends.
     A particular backend should redefine all the methods marked as such.
-    '''
+    """
 
     ###########################################################################
     # BACKEND INTERFACE #######################################################
@@ -84,49 +84,49 @@ class GenericBackend():
     _static_parameters = {}
 
     def initialize(self):
-        '''
+        """
         Called each time it is enabled (including on backend creation).
         Please note that a class instance for each disabled backend *is*
         created, but it's not initialized.
         Optional.
         NOTE: make sure to call super().initialize()
-        '''
+        """
         self._parameters[self.KEY_ENABLED] = True
         self._is_initialized = True
         # we signal that the backend has been enabled
         self._signal_manager.backend_state_changed(self.get_id())
 
     def start_get_tasks(self):
-        '''
+        """
         This function starts submitting the tasks from the backend into GTG
         core.
         It's run as a separate thread.
 
         @return: start_get_tasks() might not return or finish
-        '''
+        """
         return
 
     def set_task(self, task):
-        '''
+        """
         This function is called from GTG core whenever a task should be
         saved, either because it's a new one or it has been modified.
         If the task id is new for the backend, then a new task must be
         created. No special notification that the task is a new one is given.
 
         @param task: the task object to save
-        '''
+        """
         pass
 
     def remove_task(self, tid):
-        ''' This function is called from GTG core whenever a task must be
+        """ This function is called from GTG core whenever a task must be
         removed from the backend. Note that the task could be not present here.
 
         @param tid: the id of the task to delete
-        '''
+        """
         pass
 
     def this_is_the_first_run(self, xml):
-        '''
+        """
         Optional, and almost surely not needed.
         Called upon the very first GTG startup.
         This function is needed only in the default backend (XML localfile,
@@ -134,16 +134,16 @@ class GenericBackend():
         The xml parameter is an object containing GTG default tasks.
 
         @param xml: an xml object containing the default tasks.
-        '''
+        """
         pass
 
     def quit(self, disable=False):
-        '''
+        """
         Called when GTG quits or the user wants to disable the backend.
 
         @param disable: If disable is True, the backend won't
                         be automatically loaded when GTG starts
-        '''
+        """
         if self._parameters[self.KEY_ENABLED]:
             self._is_initialized = False
             if disable:
@@ -154,11 +154,11 @@ class GenericBackend():
             threading.Thread(target=self.sync).run()
 
     def save_state(self):
-        '''
+        """
         It's the last function executed on a quitting backend, after the
         pending actions have been done.
         Useful to ensure that the state is saved in a consistent manner
-        '''
+        """
         pass
 
 ###############################################################################
@@ -250,12 +250,12 @@ class GenericBackend():
 
     @classmethod
     def _get_static_parameters(cls):
-        '''
+        """
         Helper method, used to obtain the full list of the static_parameters
         (user configured and default ones)
 
         @returns dict: the dict containing all the static parameters
-        '''
+        """
         temp_dic = cls._static_parameters_obligatory.copy()
         if cls._general_description[cls.BACKEND_TYPE] == \
                 cls.TYPE_READWRITE:
@@ -300,9 +300,9 @@ class GenericBackend():
         self.to_remove = deque()
 
     def get_attached_tags(self):
-        '''
+        """
         Returns the list of tags which are handled by this backend
-        '''
+        """
         if hasattr(self._parameters, self.KEY_DEFAULT_BACKEND) and \
                 self._parameters[self.KEY_DEFAULT_BACKEND]:
             # default backends should get all the tasks
@@ -315,11 +315,11 @@ class GenericBackend():
             return []
 
     def set_attached_tags(self, tags):
-        '''
+        """
         Changes the set of attached tags
 
         @param tags: the new attached_tags set
-        '''
+        """
         self._parameters[self.KEY_ATTACHED_TAGS] = tags
 
     @classmethod
@@ -336,12 +336,12 @@ class GenericBackend():
         return self._parameters
 
     def set_parameter(self, parameter, value):
-        '''
+        """
         Change a parameter for this backend
 
         @param parameter: the parameter name
         @param value: the new value
-        '''
+        """
         self._parameters[parameter] = value
 
     @classmethod
@@ -363,23 +363,23 @@ class GenericBackend():
 
     @classmethod
     def get_authors(cls):
-        '''
+        """
         returns the backend author(s)
-        '''
+        """
         return cls._get_from_general_description(cls.BACKEND_AUTHORS)
 
     @classmethod
     def _get_from_general_description(cls, key):
-        '''
+        """
         Helper method to extract values from cls._general_description.
 
         @param key: the key to extract
-        '''
+        """
         return cls._general_description[key]
 
     @classmethod
     def cast_param_type_from_string(cls, param_value, param_type):
-        '''
+        """
         Parameters are saved in a text format, so we have to cast them to the
         appropriate type on loading. This function does exactly that.
 
@@ -387,7 +387,7 @@ class GenericBackend():
                             format
         @param param_type: the wanted type
         @returns something: the casted param_value
-        '''
+        """
         if param_type in cls._type_converter:
             return cls._type_converter[param_type](param_value)
         elif param_type == cls.TYPE_BOOL:
@@ -412,13 +412,13 @@ class GenericBackend():
                                  param_type)
 
     def cast_param_type_to_string(self, param_type, param_value):
-        '''
+        """
         Inverse of cast_param_type_from_string
 
         @param param_value: the actual value of the parameter
         @param param_type: the type of the parameter (password...)
         @returns something: param_value casted to string
-        '''
+        """
         if param_type == GenericBackend.TYPE_PASSWORD:
             if param_value is None:
                 return str(-1)
@@ -433,30 +433,30 @@ class GenericBackend():
             return str(param_value)
 
     def get_id(self):
-        '''
+        """
         returns the backends id, used in the datastore for indexing backends
 
         @returns string: the backend id
-        '''
+        """
         return self.get_name() + "@" + self._parameters["pid"]
 
     @classmethod
     def get_human_default_name(cls):
-        '''
+        """
         returns the user friendly default backend name, without eventual user
         modifications.
 
         @returns string: the default "human name"
-        '''
+        """
         return cls._general_description[cls.BACKEND_HUMAN_NAME]
 
     def get_human_name(self):
-        '''
+        """
         returns the user customized backend name. If the user hasn't
         customized it, returns the default one.
 
         @returns string: the "human name" of this backend
-        '''
+        """
         if self.KEY_HUMAN_NAME in self._parameters and \
                 self._parameters[self.KEY_HUMAN_NAME] != "":
             return self._parameters[self.KEY_HUMAN_NAME]
@@ -464,74 +464,74 @@ class GenericBackend():
             return self.get_human_default_name()
 
     def set_human_name(self, name):
-        '''
+        """
         sets a custom name for the backend
 
         @param name: the new name
-        '''
+        """
         self._parameters[self.KEY_HUMAN_NAME] = name
         # we signal the change
         self._signal_manager.backend_renamed(self.get_id())
 
     def is_enabled(self):
-        '''
+        """
         Returns if the backend is enabled
 
         @returns: bool
-        '''
+        """
         return self.get_parameters()[GenericBackend.KEY_ENABLED] or \
             self.is_default()
 
     def is_default(self):
-        '''
+        """
         Returns if the backend is default
 
         @returns: bool
-        '''
+        """
         return self.get_parameters()[GenericBackend.KEY_DEFAULT_BACKEND]
 
     def is_initialized(self):
-        '''
+        """
         Returns if the backend is up and running
 
         @returns: is_initialized
-        '''
+        """
         return self._is_initialized
 
     def get_parameter_type(self, param_name):
-        '''
+        """
         Given the name of a parameter, returns its type. If the parameter is
          one of the default ones, it does not have a type: in that case, it
         returns None
 
         @param param_name: the name of the parameter
         @returns string: the type, or None
-        '''
+        """
         try:
             return self.get_static_parameters()[param_name][self.PARAM_TYPE]
         except:
             return None
 
     def register_datastore(self, datastore):
-        '''
+        """
         Setter function to inform the backend about the datastore that's
         loading it.
 
         @param datastore: a Datastore
-        '''
+        """
         self.datastore = datastore
 
 ###############################################################################
 # HELPER FUNCTIONS ############################################################
 ###############################################################################
     def _store_pickled_file(self, path, data):
-        '''
+        """
         A helper function to save some object in a file.
 
         @param path: a relative path. A good choice is
         "backend_name/object_name"
         @param data: the object
-        '''
+        """
         path = os.path.join(SYNC_DATA_DIR, path)
         # mkdir -p
         try:
@@ -562,14 +562,14 @@ class GenericBackend():
                 pickle.dump(data, file)
 
     def _load_pickled_file(self, path, default_value=None):
-        '''
+        """
         A helper function to load some object from a file.
 
         @param path: the relative path of the file
         @param default_value: the value to return if the file is missing or
         corrupt
         @returns object: the needed object, or default_value
-        '''
+        """
         path = os.path.join(SYNC_DATA_DIR, path)
         if not os.path.exists(path):
             return default_value
@@ -601,14 +601,14 @@ class GenericBackend():
         return default_value
 
     def _gtg_task_is_syncable_per_attached_tags(self, task):
-        '''
+        """
         Helper function which checks if the given task satisfies the filtering
         imposed by the tags attached to the backend.
         That means, if a user wants a backend to sync only tasks tagged @works,
         this function should be used to check if that is verified.
 
         @returns bool: True if the task should be synced
-        '''
+        """
         attached_tags = self.get_attached_tags()
         if ALLTASKS_TAG in attached_tags:
             return True
@@ -621,16 +621,16 @@ class GenericBackend():
 # THREADING ###################################################################
 ###############################################################################
     def __try_launch_setting_thread(self):
-        '''
+        """
         Helper function to launch the setting thread, if it's not running.
-        '''
+        """
         if self.to_set_timer is None and self.is_enabled():
             self.to_set_timer = threading.Timer(self.timer_timestep,
                                                 self.launch_setting_thread)
             self.to_set_timer.start()
 
     def launch_setting_thread(self, bypass_quit_request=False):
-        '''
+        """
         This function is launched as a separate thread. Its job is to perform
         the changes that have been issued from GTG core.
         In particular, for each task in the self.to_set queue, a task
@@ -641,7 +641,7 @@ class GenericBackend():
                                     even if asked by self.please_quit = True.
                                     It's used when the backend quits, to finish
                                     syncing all pending tasks
-        '''
+        """
         while not self.please_quit or bypass_quit_request:
             try:
                 task = self.to_set.pop()
@@ -661,35 +661,35 @@ class GenericBackend():
         self.to_set_timer = None
 
     def queue_set_task(self, task):
-        ''' Save the task in the backend. In particular, it just enqueues the
+        """ Save the task in the backend. In particular, it just enqueues the
         task in the self.to_set queue. A thread will shortly run to apply the
         requested changes.
 
         @param task: the task that should be saved
-        '''
+        """
         tid = task.get_id()
         if task not in self.to_set and tid not in self.to_remove:
             self.to_set.appendleft(task)
             self.__try_launch_setting_thread()
 
     def queue_remove_task(self, tid):
-        '''
+        """
         Queues task to be removed. In particular, it just enqueues the
         task in the self.to_remove queue. A thread will shortly run to apply
         the requested changes.
 
         @param tid: The Task ID of the task to be removed
-        '''
+        """
         if tid not in self.to_remove:
             self.to_remove.appendleft(tid)
             self.__try_launch_setting_thread()
             return None
 
     def sync(self):
-        '''
+        """
         Helper method. Forces the backend to perform all the pending changes.
         It is usually called upon quitting the backend.
-        '''
+        """
         if self.to_set_timer is not None:
             self.please_quit = True
             try:

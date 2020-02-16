@@ -101,7 +101,7 @@ def task_from_xml(task, xmlnode):
     # FIXME if so => rework them into a more usable structure!!!
     #                (like attributes)
     # REMOTE TASK IDS
-    '''
+    """
     remote_ids_list = xmlnode.getElementsByTagName("task-remote-ids")
     for remote_id in remote_ids_list:
         if remote_id.childNodes:
@@ -109,7 +109,7 @@ def task_from_xml(task, xmlnode):
             backend_id = node.firstChild.nodeValue
             remote_task_id = node.childNodes[1].firstChild.nodeValue
             task.add_remote_id(backend_id, remote_task_id)
-            '''
+            """
 
     return task
 

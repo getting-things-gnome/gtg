@@ -199,7 +199,7 @@ class PluginEngine(Borg):
         return list(filter(filter_fun, all_plugins))
 
     def register_api(self, api):
-        '''Adds a plugin api to the list of currently loaded apis'''
+        """Adds a plugin api to the list of currently loaded apis"""
         self.plugin_apis.append(api)
 
     def remove_api(self, api):

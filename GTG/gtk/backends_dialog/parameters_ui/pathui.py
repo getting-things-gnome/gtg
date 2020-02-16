@@ -25,28 +25,28 @@ from GTG.core.translations import _
 
 
 class PathUI(Gtk.Box):
-    '''Gtk widgets to show a path in a textbox, and a button to bring up a
+    """Gtk widgets to show a path in a textbox, and a button to bring up a
     filesystem explorer to modify that path (also, a label to describe those)
-    '''
+    """
 
     def __init__(self, req, backend, width):
-        '''
+        """
         Creates the textbox, the button and loads the current path.
 
         @param req: a Requester
         @param backend: a backend object
         @param width: the width of the Gtk.Label object
-        '''
+        """
         super().__init__()
         self.backend = backend
         self.req = req
         self._populate_gtk(width)
 
     def _populate_gtk(self, width):
-        '''Creates the Gtk.Label, the textbox and the button
+        """Creates the Gtk.Label, the textbox and the button
 
         @param width: the width of the Gtk.Label object
-        '''
+        """
         label = Gtk.Label(label=_("Filename:"))
         label.set_line_wrap(True)
         label.set_alignment(xalign=0, yalign=0.5)
@@ -65,24 +65,24 @@ class PathUI(Gtk.Box):
         self.pack_start(self.button, False, True, 0)
 
     def commit_changes(self):
-        '''Saves the changes to the backend parameter'''
+        """Saves the changes to the backend parameter"""
         self.backend.set_parameter('path', self.textbox.get_text())
 
     def on_path_modified(self, sender):
-        ''' Signal callback, executed when the user edits the path.
+        """ Signal callback, executed when the user edits the path.
         Disables the backend. The user will re-enable it to confirm the changes
         (s)he made.
 
         @param sender: not used, only here for signal compatibility
-        '''
+        """
         if self.backend.is_enabled() and not self.backend.is_default():
             self.req.set_backend_enabled(self.backend.get_id(), False)
 
     def on_button_clicked(self, sender):
-        '''Shows the filesystem explorer to choose a new file
+        """Shows the filesystem explorer to choose a new file
 
         @param sender: not used, only here for signal compatibility
-        '''
+        """
         self.chooser = Gtk.FileChooserDialog(
             title=None,
             action=Gtk.FileChooserAction.SAVE,

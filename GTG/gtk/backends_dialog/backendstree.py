@@ -26,9 +26,9 @@ from GTG.backends.backendsignals import BackendSignals
 
 
 class BackendsTree(Gtk.TreeView):
-    '''
+    """
     Gtk.TreeView that shows the currently loaded backends.
-    '''
+    """
 
     COLUMN_BACKEND_ID = 0  # never shown, used for internal lookup.
     COLUMN_ICON = 1
@@ -36,12 +36,12 @@ class BackendsTree(Gtk.TreeView):
     COLUMN_TAGS = 3
 
     def __init__(self, backendsdialog):
-        '''
+        """
         Constructor, just initializes the gtk widgets
 
         @param backends_dialog: a reference to the dialog in which this is
         loaded
-        '''
+        """
         super().__init__()
         self.dialog = backendsdialog
         self.req = backendsdialog.get_requester()
@@ -51,7 +51,7 @@ class BackendsTree(Gtk.TreeView):
         self.refresh()
 
     def refresh(self):
-        '''refreshes the Gtk.Liststore'''
+        """refreshes the Gtk.Liststore"""
         self.backendid_to_iter = {}
         self.liststore.clear()
 
@@ -68,13 +68,13 @@ class BackendsTree(Gtk.TreeView):
             self.on_backend_state_changed(None, backend.get_id())
 
     def on_backend_added(self, sender, backend_id):
-        '''
+        """
         Signal callback executed when a new backend is loaded
 
         @param sender: not used, only here to let this function be used as a
                        callback
         @param backend_id: the id of the backend to add
-        '''
+        """
         # Add
         backend = self.req.get_backend(backend_id)
         if not backend:
@@ -87,11 +87,11 @@ class BackendsTree(Gtk.TreeView):
         self.on_backend_state_changed(None, backend.get_id())
 
     def add_backend(self, backend):
-        '''
+        """
         Adds a new backend to the list
 
         @param backend_id: the id of the backend to add
-        '''
+        """
         if backend:
             backend_iter = self.liststore.append([
                 backend.get_id(),
@@ -103,13 +103,13 @@ class BackendsTree(Gtk.TreeView):
             self.backendid_to_iter[backend.get_id()] = backend_iter
 
     def on_backend_state_changed(self, sender, backend_id):
-        '''
+        """
         Signal callback executed when a backend is enabled/disabled.
 
         @param sender: not used, only here to let this function be used as a
                        callback
         @param backend_id: the id of the backend to add
-        '''
+        """
         if backend_id in self.backendid_to_iter:
             b_iter = self.backendid_to_iter[backend_id]
             b_path = self.liststore.get_path(b_iter)
@@ -133,12 +133,12 @@ class BackendsTree(Gtk.TreeView):
             self.liststore[b_path][self.COLUMN_TAGS] = new_tags
 
     def _get_markup_for_tags(self, tag_names):
-        '''Given a list of tags names, generates the pango markup to render
+        """Given a list of tags names, generates the pango markup to render
          that list with the tag colors used in GTG
 
         @param tag_names: the list of the tags (strings)
         @return str: the pango markup string
-        '''
+        """
         if ALLTASKS_TAG in tag_names:
             tags_txt = ""
         else:
@@ -146,23 +146,23 @@ class BackendsTree(Gtk.TreeView):
         return "<small>" + tags_txt + "</small>"
 
     def remove_backend(self, backend_id):
-        ''' Removes a backend from the treeview, and selects the first (to show
+        """ Removes a backend from the treeview, and selects the first (to show
         something in the configuration panel
 
         @param backend_id: the id of the backend to remove
-        '''
+        """
         if backend_id in self.backendid_to_iter:
             self.liststore.remove(self.backendid_to_iter[backend_id])
             del self.backendid_to_iter[backend_id]
             self.select_backend()
 
     def _init_liststore(self):
-        '''Creates the liststore'''
+        """Creates the liststore"""
         self.liststore = Gtk.ListStore(object, GdkPixbuf.Pixbuf, str, str)
         self.set_model(self.liststore)
 
     def _init_renderers(self):
-        '''Initializes the cell renderers'''
+        """Initializes the cell renderers"""
         # We hide the columns headers
         self.set_headers_visible(False)
         # For the backend icon
@@ -184,13 +184,13 @@ class BackendsTree(Gtk.TreeView):
         self.append_column(tvcolumn_tags)
 
     def cell_edited_callback(self, text_cell, path, new_text):
-        '''If a backend name is changed, it saves the changes in the Backend
+        """If a backend name is changed, it saves the changes in the Backend
 
         @param text_cell: not used. The Gtk.CellRendererText that emitted the
                           signal. Only here because it's passed by the signal
         @param path: the Gtk.TreePath of the edited cell
         @param new_text: the new name of the backend
-        '''
+        """
         # we strip everything not permitted in backend names
         new_text = ''.join(c for c in new_text if (c.isalnum() or
                                                    c in [" ", "-", "_"]))
@@ -205,7 +205,7 @@ class BackendsTree(Gtk.TreeView):
             self.liststore.set(selected_iter, self.COLUMN_TEXT, new_text)
 
     def _init_signals(self):
-        '''Initializes the backends and gtk signals '''
+        """Initializes the backends and gtk signals """
         self.connect("cursor-changed", self.on_select_row)
         _signals = BackendSignals()
         _signals.connect(_signals.BACKEND_ADDED, self.on_backend_added)
@@ -213,19 +213,19 @@ class BackendsTree(Gtk.TreeView):
                          self.on_backend_state_changed)
 
     def on_select_row(self, treeview=None):
-        '''When a row is selected, displays the corresponding editing panel
+        """When a row is selected, displays the corresponding editing panel
 
         @var treeview: not used
-        '''
+        """
         self.dialog.on_backend_selected(self.get_selected_backend_id())
 
     def _get_selected_path(self):
-        '''
+        """
         Helper function to get the selected path
 
         @return Gtk.TreePath : returns exactly one path for the selected object
                                or None
-        '''
+        """
         selection = self.get_selection()
         if selection:
             model, selected_paths = self.get_selection().get_selected_rows()
@@ -234,12 +234,12 @@ class BackendsTree(Gtk.TreeView):
         return None
 
     def select_backend(self, backend_id=None):
-        '''
+        """
         Selects the backend corresponding to backend_id.
         If backend_id is none, refreshes the current configuration panel.
 
         @param backend_id: the id of the backend to select
-        '''
+        """
         selection = self.get_selection()
         if backend_id in self.backendid_to_iter:
             backend_iter = self.backendid_to_iter[backend_id]
@@ -256,11 +256,11 @@ class BackendsTree(Gtk.TreeView):
         self.dialog.on_backend_selected(self.get_selected_backend_id())
 
     def get_selected_backend_id(self):
-        '''
+        """
         returns the selected backend id, or none
 
         @return string: the selected backend id (or None)
-        '''
+        """
         selected_path = self._get_selected_path()
         if not selected_path:
             return None

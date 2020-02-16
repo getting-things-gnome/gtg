@@ -99,21 +99,21 @@ class PluginAPI():
         return self.__builder
 
     def get_ui(self):
-        '''
+        """
         Returns a Browser or an Editor
-        '''
+        """
         return self.__ui
 
     def get_browser(self):
-        '''
+        """
         Returns a Browser
-        '''
+        """
         return self.__view_manager.get_browser()
 
     def get_selected(self):
-        '''
+        """
         Returns the selected tasks in the browser or the task ID if the editor
-        '''
+        """
         if self.is_editor():
             return self.__task_id
         else:

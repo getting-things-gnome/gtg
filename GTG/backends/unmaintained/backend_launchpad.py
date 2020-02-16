@@ -17,9 +17,9 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-'''
+"""
 Backend for importing launchpad bugs in GTG
-'''
+"""
 # Documentation on launchapadlib: https://help.launchpad.net/API/launchpadlib
 
 import os
@@ -44,7 +44,7 @@ from GTG.tools.logger import Log
 
 
 class Backend(PeriodicImportBackend):
-    '''Launchpad backend, capable of importing launchpad bugs in GTG.'''
+    """Launchpad backend, capable of importing launchpad bugs in GTG."""
 
     _general_description = {
         GenericBackend.BACKEND_NAME: "backend_launchpad",
@@ -88,10 +88,10 @@ class Backend(PeriodicImportBackend):
 # Backend standard methods ####################################################
 ###############################################################################
     def __init__(self, parameters):
-        '''
+        """
         See GenericBackend for an explanation of this function.
         Re-loads the saved state of the synchronization
-        '''
+        """
         super().__init__(parameters)
         # loading the saved state of the synchronization, if any
         self.data_path = os.path.join(
@@ -100,11 +100,11 @@ class Backend(PeriodicImportBackend):
                                                    SyncEngine())
 
     def do_periodic_import(self):
-        '''
+        """
         See GenericBackend for an explanation of this function.
         Connect to launchpad and updates the state of GTG tasks to reflect the
         bugs on launchpad.
-        '''
+        """
 
         # IMPORTANT NOTE!
         # Bugs can be splitted in bug tasks (such as, you can assign a single
@@ -168,21 +168,21 @@ class Backend(PeriodicImportBackend):
                     pass
 
     def save_state(self):
-        '''Saves the state of the synchronization'''
+        """Saves the state of the synchronization"""
         self._store_pickled_file(self.data_path, self.sync_engine)
 
 ###############################################################################
 # Process tasks ###############################################################
 ###############################################################################
     def _process_launchpad_bug(self, bug):
-        '''
+        """
         Given a bug object, finds out if it must be synced to a GTG note and,
         if so, it carries out the synchronization (by creating or
         updating a GTG task, or deleting itself if the related task has
         been deleted)
 
         @param note: a launchpad bug
-        '''
+        """
         has_task = self.datastore.has_task
         action, tid = self.sync_engine.analyze_remote_id(bug.self_link,
                                                          has_task,
@@ -222,13 +222,13 @@ class Backend(PeriodicImportBackend):
         self.save_state()
 
     def _populate_task(self, task, bug_dic):
-        '''
+        """
         Fills a GTG task with the data from a launchpad bug.
 
         @param task: a Task
         @param bug: a launchpad bug dictionary, generated with
                     _prefetch_bug_data
-        '''
+        """
         # set task status
         if bug_dic["completed"]:
             task.set_status(Task.STA_DONE)
@@ -257,11 +257,11 @@ class Backend(PeriodicImportBackend):
         task.add_remote_id(self.get_id(), bug_dic['self_link'])
 
     def _get_bug_modified_datetime(self, bug):
-        '''
+        """
         Given a bug, returns its modification datetime
 
         @param bug: a launchpad bug
-        '''
+        """
         # NOTE: giving directly bug.date_last_updated fails for a reason I
         #      couldn't find. (invernizzi)
         return datetime.datetime.strptime(
@@ -269,7 +269,7 @@ class Backend(PeriodicImportBackend):
             "YYYY-MM-DDTHH:MM:SS.mmmmmm")
 
     def _prefetch_bug_data(self, bug_task):
-        '''
+        """
         We fetch all the necessary info that we need from the bug to populate a
         task beforehand (these will be used in _populate_task).
         This function takes a long time to complete (all access to bug data are
@@ -278,7 +278,7 @@ class Backend(PeriodicImportBackend):
 
         @param bug: a launchpad bug task
         @returns dict: a dictionary containing the relevant bug attributes
-        '''
+        """
         bug = bug_task.bug
         # We need to use original link, not from bug object
         self_link = bug_task.self_link
@@ -314,9 +314,9 @@ class Backend(PeriodicImportBackend):
         return bug_dic
 
     def _build_bug_text(self, bug_dic):
-        '''
+        """
         Creates the text that describes a bug
-        '''
+        """
         text = _("Reported by: ") + '%s(karma: %s)' % \
             (bug_dic["owner"], bug_dic["owner_karma"]) + '\n'
         # one link is enough, since they're all alias

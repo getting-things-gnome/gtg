@@ -17,10 +17,10 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-'''
+"""
 Contains PeriodicImportBackend, a GenericBackend specialized for checking the
 remote backend in polling.
-'''
+"""
 
 import threading
 
@@ -30,7 +30,7 @@ from GTG.tools.interruptible import interruptible
 
 
 class PeriodicImportBackend(GenericBackend):
-    '''
+    """
     This class can be used in place of GenericBackend when a periodic import is
     necessary, as the remote service providing tasks does not signals the
     changes.
@@ -42,7 +42,7 @@ class PeriodicImportBackend(GenericBackend):
                 GenericBackend.PARAM_DEFAULT_VALUE: 2, },
           This specifies the time that must pass between consecutive imports
           (in minutes)
-    '''
+    """
 
     def __init__(self, parameters):
         super().__init__(parameters)
@@ -51,10 +51,10 @@ class PeriodicImportBackend(GenericBackend):
 
     @interruptible
     def start_get_tasks(self):
-        '''
+        """
         This function launches the first periodic import, and schedules the
         next ones.
-        '''
+        """
         self.cancellation_point()
         # if we're already importing, we queue a "urgent" import cycle after
         # this one. The feeling of responsiveness of the backend is improved.
@@ -91,18 +91,18 @@ class PeriodicImportBackend(GenericBackend):
             self.urgent_iteration = True
 
     def _start_get_tasks(self):
-        '''
+        """
         This function executes an imports and schedules the next
-        '''
+        """
         self.cancellation_point()
         BackendSignals().backend_sync_started(self.get_id())
         self.do_periodic_import()
         BackendSignals().backend_sync_ended(self.get_id())
 
     def quit(self, disable=False):
-        '''
+        """
         Called when GTG quits or disconnects the backend.
-        '''
+        """
         super(PeriodicImportBackend, self).quit(disable)
         try:
             self.import_timer.cancel()

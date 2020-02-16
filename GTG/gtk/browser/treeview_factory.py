@@ -163,10 +163,10 @@ class TreeviewFactory():
         return (t1 > t2) - (t1 < t2)
 
     def __date_comp(self, task1, task2, para, order):
-        '''This is a quite complex method to sort tasks by date,
+        """This is a quite complex method to sort tasks by date,
         handling fuzzy date and complex situation.
         Return -1 if nid1 is before nid2, return 1 otherwise
-        '''
+        """
         if task1 and task2:
             if para == 'start':
                 t1 = task1.get_start_date()
