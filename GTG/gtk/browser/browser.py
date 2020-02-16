@@ -39,7 +39,7 @@ from GTG.gtk.browser.treeview_factory import TreeviewFactory
 from GTG.gtk.editor.calendar import GTGCalendar
 from GTG.gtk.tag_completion import TagCompletion
 from GTG.tools.dates import Date
-from GTG.tools.logger import Log
+from GTG.tools.logger import log
 from GTG.gtk.help import add_help_shortcut
 
 class TaskBrowser(GObject.GObject):
@@ -428,7 +428,7 @@ class TaskBrowser(GObject.GObject):
 
     def on_search(self, key, widget):
         query = self.search_entry.get_text()
-        Log.debug("Searching for '%s'", query)
+        log.debug("Searching for '%s'", query)
 
         try:
             parsed_query = parse_search_query(query)
@@ -438,7 +438,7 @@ class TaskBrowser(GObject.GObject):
             self.on_search_toggled()
             self.unapply_filter_on_panes(SEARCH_TAG, refresh=True)
 
-            Log.warning("Invalid query '%s' : '%s'", query, e)
+            log.warning("Invalid query '%s' : '%s'", query, e)
             return
 
         self.apply_filter_on_panes(SEARCH_TAG, parameters=parsed_query)
@@ -777,7 +777,7 @@ class TaskBrowser(GObject.GObject):
         """
         deals with mouse click event on the tag tree
         """
-        Log.debug("Received button event #%d at %d, %d" % (
+        log.debug("Received button event #%d at %d, %d" % (
             event.button, event.x, event.y))
         if event.button == 3:
             x = int(event.x)
@@ -865,7 +865,7 @@ class TaskBrowser(GObject.GObject):
     def on_task_treeview_button_press_event(self, treeview, event):
         """ Pop up context menu on right mouse click in the main
         task tree view """
-        Log.debug("Received button event #%d at %d,%d" % (
+        log.debug("Received button event #%d at %d,%d" % (
             event.button, event.x, event.y))
         if event.button == 3:
             x = int(event.x)
@@ -959,7 +959,7 @@ class TaskBrowser(GObject.GObject):
                 return
         else:
             tids_todelete = [tid]
-        Log.debug("going to delete %s" % tids_todelete)
+        log.debug("going to delete %s" % tids_todelete)
         self.vmanager.ask_delete_tasks(tids_todelete, self.window)
 
     def update_start_date(self, widget, new_start_date):

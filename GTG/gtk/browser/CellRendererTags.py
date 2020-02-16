@@ -20,7 +20,7 @@
 from gi.repository import GObject, GLib, Gtk, Gdk
 import cairo
 
-from GTG.tools.logger import Log
+from GTG.tools.logger import log
 
 
 class CellRendererTags(Gtk.CellRenderer):
@@ -137,7 +137,7 @@ class CellRendererTags(Gtk.CellRenderer):
                     # In some rare cases an icon could not be found
                     # (e.g. wrong set icon path, missing icon)
                     # Raising an exception breaks UI and signal catcher badly
-                    Log.error("Can't load icon '%s'" % my_tag_icon)
+                    log.error("Can't load icon '%s'" % my_tag_icon)
 
             elif my_tag_color:
 

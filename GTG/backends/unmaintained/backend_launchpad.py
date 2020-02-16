@@ -36,7 +36,7 @@ from GTG.core.dirs import SYNC_CACHE_DIR
 from GTG.core.task import Task
 from GTG.core.translations import _
 from GTG.info import NAME as GTG_NAME
-from GTG.tools.logger import Log
+from GTG.tools.logger import log
 
 # Uncomment this to see each http request
 # import httplib2
@@ -187,7 +187,7 @@ class Backend(PeriodicImportBackend):
         action, tid = self.sync_engine.analyze_remote_id(bug.self_link,
                                                          has_task,
                                                          lambda b: True)
-        Log.debug("processing launchpad (%s)" % (action))
+        log.debug("processing launchpad (%s)" % (action))
 
         if action is None:
             return

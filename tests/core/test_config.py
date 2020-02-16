@@ -41,7 +41,7 @@ class TestOpenConfigFile(TestCase):
         open_config_file('gtg.conf')
         self.mock_parser.assert_called_once_with('gtg.conf')
 
-    @patch('GTG.core.config.Log')
+    @patch('GTG.core.config.log')
     def test_falls_back_when_there_is_config_error(self, mock_log):
         self.mock_parser.side_effect = configparser.Error()
         open_config_file('gtg.conf')
@@ -72,7 +72,7 @@ class TestSectionConfig(TestCase):
         config.read_dict({'section': config_dict})
         return config['section']
 
-    @patch('GTG.core.config.Log')
+    @patch('GTG.core.config.log')
     def test_warns_when_no_default_value_is_provided(self, mock_log):
         config = self.make_section_config({'option': '1'})
         section = SectionConfig('Name', config, {}, Mock())
@@ -80,7 +80,7 @@ class TestSectionConfig(TestCase):
         self.assertTrue(mock_log.warning.called)
         self.assertEqual('1', value)
 
-    @patch('GTG.core.config.Log')
+    @patch('GTG.core.config.log')
     def test_warns_when_value_is_wrong_type(self, mock_log):
         config = self.make_section_config({'option': 'text'})
         section = SectionConfig('Name', config, {'option': 42}, Mock())
@@ -151,7 +151,7 @@ class TestSectionConfig(TestCase):
             ["('0@1', '6@1')", "('0@1', '8@1', '3@1', '5@1')"],
             value)
 
-    @patch('GTG.core.config.Log')
+    @patch('GTG.core.config.log')
     def test_raises_an_error_when_no_value_and_no_default_value(
             self, mock_log):
         config = self.make_section_config({})

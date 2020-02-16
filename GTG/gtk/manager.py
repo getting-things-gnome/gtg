@@ -33,7 +33,7 @@ from GTG.tools import clipboard
 from GTG.core.plugins.engine import PluginEngine
 from GTG.core.plugins.api import PluginAPI
 from GTG.core.dirs import CSS_DIR
-from GTG.tools.logger import Log
+from GTG.tools.logger import log
 from GTG.tools.dates import Date
 from GTG.gtk.backends_dialog import BackendsDialog
 from GTG.backends.backendsignals import BackendSignals
@@ -95,7 +95,7 @@ class Manager():
 
         # DBus
         DBusTaskWrapper(self.req, self)
-        Log.debug("Manager initialization finished")
+        log.debug("Manager initialization finished")
 
     def __init_plugin_engine(self):
         self.pengine = PluginEngine()
@@ -135,7 +135,7 @@ class Manager():
             if backend.get_name() == "backend_localfile" and \
                     backend.used_backup():
                 backend.notify_user_about_backup()
-        Log.debug("Browser is open")
+        log.debug("Browser is open")
 
     # FIXME : the browser should not be the center of the universe.
     # In fact, we should build a system where view can register themselves
@@ -173,7 +173,7 @@ class Manager():
         self.daemon_mode = in_daemon_mode
 
     def purge_old_tasks(self, widget=None):
-        Log.debug("Deleting old tasks")
+        log.debug("Deleting old tasks")
 
         today = Date.today()
         max_days = self.config.get('autoclean_days')

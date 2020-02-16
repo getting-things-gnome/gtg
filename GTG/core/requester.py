@@ -24,7 +24,7 @@ A nice general purpose interface for the datastore and tagstore
 from gi.repository import GObject
 
 from GTG.core.tag import Tag
-from GTG.tools.logger import Log
+from GTG.tools.logger import log
 
 
 class Requester(GObject.GObject):
@@ -140,7 +140,7 @@ class Requester(GObject.GObject):
         @param tid: The id of the task to be deleted.
         """
         # send the signal before actually deleting the task !
-        Log.debug("deleting task %s" % tid)
+        log.debug("deleting task %s" % tid)
         return self.__basetree.del_node(tid, recursive=recursive)
 
     def get_task_id(self, task_title):
@@ -241,7 +241,7 @@ class Requester(GObject.GObject):
             my_task = self.get_task(task_id)
             my_task.remove_tag(tagname)
             my_task.sync()
- 
+
     # Backends #######################
     def get_all_backends(self, disabled=False):
         return self.ds.get_all_backends(disabled)

@@ -20,7 +20,7 @@ import os
 
 from gi.repository import Gtk
 
-from GTG.tools.logger import Log
+from GTG.tools.logger import log
 
 
 class UntouchedTasksPlugin():
@@ -81,7 +81,7 @@ class UntouchedTasksPlugin():
 
 # HELPER FUNCTIONS ############################################################
     def __log(self, message):
-        Log.debug(message)
+        log.debug(message)
 
 # CORE FUNCTIONS ##############################################################
     def schedule_autopurge(self):

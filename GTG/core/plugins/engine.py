@@ -24,7 +24,7 @@ import dbus
 
 from GTG.core.dirs import PLUGIN_DIRS
 from GTG.tools.borg import Borg
-from GTG.tools.logger import Log
+from GTG.tools.logger import log
 
 
 class Plugin():
@@ -137,7 +137,7 @@ class Plugin():
             self.error = True
         except Exception as e:
             # load_module() failed for some other reason
-            Log.error(e)
+            log.error(e)
             self.error = True
 
     def reload(self, module_paths):

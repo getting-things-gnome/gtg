@@ -35,7 +35,7 @@ from GTG.backends.genericbackend import GenericBackend
 from GTG.backends.backendsignals import BackendSignals
 from GTG.backends.syncengine import SyncEngine, SyncMeme
 from GTG.core.tag import ALLTASKS_TAG
-from GTG.tools.logger import Log
+from GTG.tools.logger import log
 from GTG.tools.watchdog import Watchdog
 from GTG.tools.interruptible import interruptible
 from GTG.tools.tags import extract_tags_from_text
@@ -207,7 +207,7 @@ class GenericTomboy(GenericBackend):
                                                                  has_task,
                                                                  note_exists,
                                                                  is_syncable)
-            Log.debug("processing tomboy (%s, %s)" % (action, is_syncable))
+            log.debug("processing tomboy (%s, %s)" % (action, is_syncable))
 
             if action == SyncEngine.ADD:
                 tid = str(uuid.uuid4())
@@ -263,7 +263,7 @@ class GenericTomboy(GenericBackend):
                                                                      has_task,
                                                                      has_note,
                                                                      can_sync)
-                Log.debug("processing gtg (%s, %d)" % (action, is_syncable))
+                log.debug("processing gtg (%s, %d)" % (action, is_syncable))
 
                 if action == SyncEngine.ADD:
                     # GTG allows multiple tasks with the same name,
@@ -583,7 +583,7 @@ class GenericTomboy(GenericBackend):
             Function that is executed when the Dbus connection seems to be
             hanging. It disables the backend and signals the error to the user.
             """
-            Log.error("Dbus connection is taking too long for the Tomboy/Gnote"
+            log.error("Dbus connection is taking too long for the Tomboy/Gnote"
                       "backend!")
             BackendSignals().backend_failed(self.backend.get_id(),
                                             BackendSignals.ERRNO_DBUS)

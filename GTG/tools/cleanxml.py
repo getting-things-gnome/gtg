@@ -24,7 +24,7 @@ import sys
 import re
 import datetime
 
-from GTG.tools.logger import Log
+from GTG.tools.logger import log
 
 # This is for the awful pretty xml things
 tab = "\t"
@@ -131,7 +131,7 @@ def openxmlfile(zefile, root):
         if os.path.exists(zefile):
             return _try_openxmlfile(zefile, root)
         elif os.path.exists(tmpfile):
-            Log.warning("Something happened to %s. Using backup" % zefile)
+            log.warning("Something happened to %s. Using backup" % zefile)
             os.rename(tmpfile, zefile)
             _USED_BACKUP = True
             _BACKUP_FILE_INFO = "Recovered from backup made on: " + \
@@ -145,9 +145,9 @@ def openxmlfile(zefile, root):
 
     except xml.parsers.expat.ExpatError as msg:
         errormsg = "Error parsing XML file %s: %s" % (zefile, msg)
-        Log.error(errormsg)
+        log.error(errormsg)
         if os.path.exists(tmpfile):
-            Log.warning("Something happened to %s. Using backup" % zefile)
+            log.warning("Something happened to %s. Using backup" % zefile)
             os.rename(tmpfile, zefile)
             _USED_BACKUP = True
             _BACKUP_FILE_INFO = "Recovered from backup made on: " + \
@@ -157,14 +157,14 @@ def openxmlfile(zefile, root):
             try:
                 return _try_openxmlfile(zefile, root)
             except Exception as msg:
-                Log.warning('Failed with reason: %s' % msg)
+                log.warning('Failed with reason: %s' % msg)
 
     # Try to revert to backup
     backup_name = _get_backup_name(zefile)
     for i in range(BACKUP_NBR):
         backup_file = "%s.bak.%d" % (backup_name, i)
         if os.path.exists(backup_file):
-            Log.info("Trying to restore backup file %s" % backup_file)
+            log.info("Trying to restore backup file %s" % backup_file)
             _USED_BACKUP = True
             _BACKUP_FILE_INFO = "Recovered from backup made on: " + \
                 datetime.datetime.fromtimestamp(
@@ -172,15 +172,15 @@ def openxmlfile(zefile, root):
             try:
                 return _try_openxmlfile(backup_file, root)
             except Exception as msg:
-                Log.warning('Failed with reason: %s' % msg)
+                log.warning('Failed with reason: %s' % msg)
 
-    Log.info("No suitable backup was found")
+    log.info("No suitable backup was found")
 
     # Creating empty file
     doc, xmlproject = emptydoc(root)
     newfile = savexml(zefile, doc)
     if not newfile:
-        Log.error("Could not create a new file %s" % zefile)
+        log.error("Could not create a new file %s" % zefile)
         sys.exit(1)
     # set _USED_BACKUP even if there's a failure to notify about the same
     _USED_BACKUP = True

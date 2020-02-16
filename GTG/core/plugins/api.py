@@ -21,7 +21,7 @@ import os
 import pickle
 
 from GTG.core.dirs import plugin_configuration_dir
-from GTG.tools.logger import Log
+from GTG.tools.logger import log
 
 
 class PluginAPI():
@@ -177,7 +177,7 @@ class PluginAPI():
                 if wi and widg_id in self.taskwidget_widg:
                     wi.remove(self.taskwidget_widg.pop(widg_id))
             except Exception as e:
-                Log.debug("Error removing the toolbar item in the TaskEditor:"
+                log.debug("Error removing the toolbar item in the TaskEditor:"
                           "%s" % e)
 
     def set_bgcolor_func(self, func=None):
