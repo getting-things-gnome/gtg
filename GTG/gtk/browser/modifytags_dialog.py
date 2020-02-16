@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
 # Getting Things GNOME! - a personal organizer for the GNOME desktop
 # Copyright (c) 2008-2013 - Lionel Dricot & Bertrand Rousseau
@@ -100,5 +99,4 @@ class ModifyTagsDialog():
         # Rember the last actions
         self.last_tag_entry = self.tag_entry.get_text()
         self.last_apply_to_subtasks = self.apply_to_subtasks.get_active()
-
 # -----------------------------------------------------------------------------

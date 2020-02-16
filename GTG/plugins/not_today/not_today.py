@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 # Copyright (c) 2012 - Lionel Dricot <lionel@ploum.net>
 
 # This program is free software: you can redistribute it and/or modify it under

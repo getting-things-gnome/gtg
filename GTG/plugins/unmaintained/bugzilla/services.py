@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 
 # Remove dependence of bugz due to that plugin just needs get action and
 # it is done by Python xmlrpclib simply enough.

@@ -1,4 +1,4 @@
-#### -*- coding: utf-8 -*-
+###
 ## -----------------------------------------------------------------------------
 ## Getting Things GNOME! - a personal organizer for the GNOME desktop
 ## Copyright (c) 2008-2013 - Lionel Dricot & Bertrand Rousseau
@@ -18,7 +18,7 @@
 ## -----------------------------------------------------------------------------
 ##
 ##So you want to write your own template for Getting things GNOME?
-## Read template_simple.html for a quick tutorial, this one is a bit 
+## Read template_simple.html for a quick tutorial, this one is a bit
 ## harder to understand, as it cannot be indented
 ##
 ##

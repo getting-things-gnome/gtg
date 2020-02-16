@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
 # Getting Things GNOME! - a personal organizer for the GNOME desktop
 # Copyright (c) 2014-2015 - Sagar Ghuge

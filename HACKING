@@ -118,7 +118,6 @@ Copyright
 
 All modules should begin with the following header::
 
-# -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
 # Gettings Things Gnome! - a personal organizer for the GNOME desktop
 # Copyright (c) 2008-2014 - Lionel Dricot & Bertrand Rousseau
