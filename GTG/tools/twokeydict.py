@@ -24,7 +24,7 @@ Contains TwoKeyDict, a Dictionary which also has a secondary key
 from GTG.tools.bidict import BiDict
 
 
-class TwoKeyDict(object):
+class TwoKeyDict():
     '''
     It's a standard Dictionary with a secondary key.
     For example, you can add an element ('2', 'II', two'), where the

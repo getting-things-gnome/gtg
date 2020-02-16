@@ -22,7 +22,7 @@ The task editing GUI
 import os
 
 
-class GnomeConfig(object):
+class GnomeConfig():
     current_rep = os.path.dirname(os.path.abspath(__file__))
     CALENDAR_UI_FILE = os.path.join(current_rep, "calendar.ui")
 

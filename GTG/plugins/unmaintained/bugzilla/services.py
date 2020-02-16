@@ -9,7 +9,7 @@ from .bug import BugFactory
 __all__ = ('BugzillaServiceFactory',)
 
 
-class BugzillaService(object):
+class BugzillaService():
     name = 'Bugzilla Service'
     enabled = True
     tag_from = 'component'
@@ -103,7 +103,7 @@ class BugzillaServiceDisabled(Exception):
         self.message = '%s is disabled.' % domain
 
 
-class BugzillaServiceFactory(object):
+class BugzillaServiceFactory():
     ''' Create a Bugzilla service using scheme and domain '''
 
     @staticmethod

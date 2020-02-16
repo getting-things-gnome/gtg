@@ -18,7 +18,7 @@
 """ Text representation of GTG task for easier work in templates """
 
 
-class TaskStr(object):
+class TaskStr():
     """ Wrapper around GTG Task.
     It provides access to the task various attributes directly via python
     attributes instead of method calls and makes writing Cheetah

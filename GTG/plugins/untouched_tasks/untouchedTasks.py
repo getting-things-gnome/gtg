@@ -23,7 +23,7 @@ from gi.repository import Gtk
 from GTG.tools.logger import Log
 
 
-class UntouchedTasksPlugin(object):
+class UntouchedTasksPlugin():
 
     DEFAULT_PREFERENCES = {'max_days': 30,
                            'is_automatic': False,

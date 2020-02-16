@@ -18,7 +18,7 @@
 # -----------------------------------------------------------------------------
 
 
-class Borg(object):
+class Borg():
     """
     This pattern ensures that all instances of a particular class share
     the same state (just inherit this class to have it working)

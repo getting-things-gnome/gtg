@@ -54,7 +54,7 @@ class TheIndicator(Borg):
         return self._indicator
 
 
-class IconIndicator(object):
+class IconIndicator():
     """
     A common interface to an app indicator and a status icon
     """
@@ -143,7 +143,7 @@ def _due_within(task, danger_zone):
     return False
 
 
-class _Attention(object):
+class _Attention():
 
     """
     Define need attention state depending on whether there
@@ -196,7 +196,7 @@ class _Attention(object):
         self._update_indicator()
 
 
-class NotificationArea(object):
+class NotificationArea():
     """
     Plugin that display a notification area widget or an indicator
     to quickly access tasks.
@@ -467,7 +467,7 @@ class NotificationArea(object):
                 "delete-event", method)
 
 
-class SortedLimitedMenu(object):
+class SortedLimitedMenu():
     """ Sorted GTK Menu which shows only first N elements """
 
     def __init__(self, max_items, gtk_menu, offset):

@@ -45,7 +45,7 @@ def get_templates_paths():
     return template_list
 
 
-class Template(object):
+class Template():
     """ Representation of a template """
 
     def __init__(self, path):

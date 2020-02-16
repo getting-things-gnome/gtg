@@ -22,7 +22,7 @@ import os
 from GTG.tools.dates import Date
 
 
-class UrgencyColorPlugin(object):
+class UrgencyColorPlugin():
 
     PLUGIN_NAME = 'Urgency Color'
     DEFAULT_PREFS = {

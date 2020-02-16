@@ -497,7 +497,7 @@ class Backend(PeriodicImportBackend):
 ###############################################################################
 
 
-class RTMProxy(object):
+class RTMProxy():
     '''
     The purpose of this class is producing an updated list of RTMTasks.
     To do that, it handles:
@@ -761,7 +761,7 @@ RTM_TO_GTG_STATUS = {True: Task.STA_ACTIVE,
                      False: Task.STA_DONE}
 
 
-class RTMTask(object):
+class RTMTask():
     '''
     A proxy object that encapsulates a RTM task, giving an easier API to access
     and modify its attributes.

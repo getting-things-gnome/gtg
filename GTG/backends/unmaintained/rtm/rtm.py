@@ -50,7 +50,7 @@ class RTMAPIError(RTMError):
     pass
 
 
-class AuthStateMachine(object):
+class AuthStateMachine():
 
     class NoData(RTMError):
         pass
@@ -73,7 +73,7 @@ class AuthStateMachine(object):
             raise AuthStateMachine.NoData('No data for <%s>' % state)
 
 
-class RTM(object):
+class RTM():
 
     def __init__(self, apiKey, secret, token=None):
         self.apiKey = apiKey
@@ -140,7 +140,7 @@ class RTM(object):
         return rsp.auth.token
 
 
-class RTMAPICategory(object):
+class RTMAPICategory():
     "See the `API` structure and `RTM.__init__`"
 
     def __init__(self, rtm, prefix, methods):
@@ -192,7 +192,7 @@ def openURL(url, queryArgs=None):
     return urllib.request.urlopen(url)
 
 
-class dottedDict(object):
+class dottedDict():
     """Make dictionary items accessible via the object-dot notation."""
 
     def __init__(self, name, dictionary):

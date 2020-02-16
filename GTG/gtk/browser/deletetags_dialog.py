@@ -24,7 +24,7 @@ from GTG.core.translations import _, ngettext
 from GTG.gtk.browser import GnomeConfig
 
 
-class DeleteTagsDialog(object):
+class DeleteTagsDialog():
 
     MAXIMUM_TAGS_TO_SHOW = 5
 
