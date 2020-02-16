@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 # Copyright (c) 2010 - Luca Invernizzi <invernizzi.l@gmail.com>
 #               2012 - Izidor Matušov <izidor.matusov@gmail.com>
 #

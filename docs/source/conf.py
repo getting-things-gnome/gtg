@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
+
 
 import os
 import sys
@@ -27,7 +27,6 @@ source_suffix = '.rst'
 
 exclude_patterns = []
 pygments_style = 'sphinx'
-
 # -- Options for HTML output ----------------------------------------------
 on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
 if on_rtd:
@@ -36,7 +35,6 @@ else:
     html_theme = 'nature'
 
 html_show_sphinx = False
-
 # -- Options for LaTeX output ---------------------------------------------
 
 # Grouping the document tree into LaTeX files. List of tuples
@@ -49,7 +47,6 @@ latex_documents = [(
     'The GTG Team',
     'manual',
 )]
-
 # -- Options for manual page output ---------------------------------------
 
 # One entry per manual page. List of tuples

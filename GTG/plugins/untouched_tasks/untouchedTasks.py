@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 # Copyright (c) 2012 - Tom Kadwill <tomkadwill@gmail.com>
 #
 # This program is free software: you can redistribute it and/or modify it under

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
 # Hamster Task Tracker Plugin for Getting Things GNOME!
 # Copyright (c) 2009 Kevin Mehall

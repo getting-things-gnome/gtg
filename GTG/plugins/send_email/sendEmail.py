@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 # Copyright (c) 2009 - Luca Invernizzi <invernizzi.l@gmail.com>
 #
 # This program is free software: you can redistribute it and/or modify it under
