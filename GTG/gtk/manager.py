@@ -249,7 +249,15 @@ class Manager():
             if tid in opened_tasks:
                 opened_tasks.remove(tid)
             self.browser_config.set("opened_tasks", opened_tasks)
-        self.quit()
+        self.check_quit_condition()
+
+    def check_quit_condition(self):
+        """
+        checking if we need to shut down the whole GTG (if no window is open)
+        """
+
+        if not self.is_browser_visible() and not self.opened_task:
+            self.quit()
 
 # Others dialog ###########################################################
     def open_edit_backends(self, sender=None, backend_id=None):
