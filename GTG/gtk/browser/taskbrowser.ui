@@ -504,7 +504,6 @@
                         <property name="placeholder_text">Quickly create tasks here</property>
                         <property name="input_hints">GTK_INPUT_HINT_SPELLCHECK | GTK_INPUT_HINT_NONE</property>
                         <property name="show_emoji_icon">True</property>
-                        <property name="enable_emoji_completion">True</property>
                         <signal name="activate" handler="on_quickadd_field_activate" swapped="no"/>
                       </object>
                       <packing>
