@@ -42,10 +42,10 @@ class Timer(GObject.GObject):
 
     def connect_to_dbus(self):
         bus = dbus.SystemBus()
-        bus.add_signal_receiver(self.emit_refresh,
-                                'Resuming',
-                                'org.freedesktop.UPower',
-                                'org.freedesktop.UPower')
+        bus.add_signal_receiver(self.on_prepare_for_sleep,
+                                'PrepareForSleep',
+                                'org.freedesktop.login1.Manager',
+                                'org.freedesktop.login1')
 
     def seconds_until(self, time):
         """Returns number of seconds remaining before next refresh"""
@@ -55,8 +55,17 @@ class Timer(GObject.GObject):
             secs_to_refresh += datetime.timedelta(days=1)
         return int(secs_to_refresh.total_seconds()) + 1
 
+    def on_prepare_for_sleep(self, sleeping):
+        """Handle dbus prepare for sleep signal."""
+
+        # Only emit the signal if we are resuming from suspend,
+        # not preparing for it.
+        if not sleeping:
+            self.emit_refresh()
+
     def emit_refresh(self):
         """Emit Signal for workview to refresh"""
+
         self.emit("refresh")
         self.time_changed()
         return False
