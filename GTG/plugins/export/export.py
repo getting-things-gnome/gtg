@@ -27,15 +27,19 @@ from gi.repository import GObject, Gtk, GdkPixbuf
 from xdg.BaseDirectory import xdg_config_home
 
 from GTG.core.translations import _
+from GTG.tools.logger import log
 from GTG.plugins.export.task_str import get_task_wrappers
 from GTG.plugins.export.templates import Template, get_templates_paths
 
 
 # Enforce external dependencies
 for dependence in "pdflatex", "pdftk", "pdfjam":
-    retval = subprocess.call(["which", dependence], stdout=subprocess.PIPE)
+    retval = subprocess.call(["which", dependence],
+                             stdout=subprocess.PIPE,
+                             stderr=subprocess.DEVNULL,)
     if retval != 0:
-        raise ImportError("Missing command %s" % dependence)
+        log.debug(f'Missing command "{dependence}"')
+        raise ImportError(f'Missing command "{dependence}"')
 
 
 def get_user_dir(key):
