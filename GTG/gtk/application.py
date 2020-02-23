@@ -43,10 +43,13 @@ from GTG.gtk.browser.tag_editor import TagEditor
 from GTG.core.timer import Timer
 
 
-class Manager():
+class Application(Gtk.Application):
 
     # init ##################################################################
-    def __init__(self, req):
+    def __init__(self, req, **kwargs):
+
+        super().__init__(**kwargs)
+
         self.req = req
         self.browser_config = self.req.get_config("browser")
         self.plugins_config = self.req.get_config("plugins")
