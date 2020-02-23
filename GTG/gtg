@@ -61,7 +61,7 @@ from GTG.core.datastore import DataStore
 from GTG.core.dirs import DATA_DIR
 from GTG.core.translations import _
 from GTG.gtk.dbuswrapper import BUSNAME, BUSINTERFACE
-from GTG.gtk.manager import Manager
+from GTG.gtk.application import Manager
 from GTG.tools.logger import log
 
 #=== OBJECTS ==================================================================
