@@ -61,7 +61,7 @@ from GTG.core.datastore import DataStore
 from GTG.core.dirs import DATA_DIR
 from GTG.core.translations import _
 from GTG.gtk.dbuswrapper import BUSNAME, BUSINTERFACE
-from GTG.gtk.application import Manager
+from GTG.gtk.application import Application
 from GTG.tools.logger import log
 
 #=== OBJECTS ==================================================================
@@ -196,7 +196,7 @@ def main():
 
     ds, req = core_main_init(options, args)
     # Launch task browser
-    manager = Manager(req)
+    manager = Application(req)
     # main loop
     # To be more user friendly and get the logs of crashes, we show an apport
     # hooked window upon crashes
