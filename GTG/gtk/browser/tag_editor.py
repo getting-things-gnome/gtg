@@ -183,11 +183,11 @@ GObject.signal_new("selection-changed", TagIconSelector,
 class TagEditor(Gtk.Window):
     """Window allowing to edit a tag's properties."""
 
-    def __init__(self, req, vmanager, tag=None):
+    def __init__(self, req, app, tag=None):
         super().__init__()
 
         self.req = req
-        self.vmanager = vmanager
+        self.app = app
         self.tag = tag
         self.config = self.req.get_config('tag_editor')
         self.custom_colors = None
@@ -405,8 +405,8 @@ class TagEditor(Gtk.Window):
                 self.tag = self.req.get_tag(new_name)
 
                 # Select on sidebar and update values
-                self.vmanager.browser.select_on_sidebar(new_name)
-                self.vmanager.browser.apply_filter_on_panes(new_name)
+                self.app.browser.select_on_sidebar(new_name)
+                self.app.browser.apply_filter_on_panes(new_name)
 
             return False
 
@@ -505,5 +505,5 @@ class TagEditor(Gtk.Window):
         Arguments arg1-arg3 are needed to satisfy callback when closing
         by Escape
         """
-        self.vmanager.close_tag_editor()
+        self.app.close_tag_editor()
         return True

@@ -31,7 +31,7 @@ class Preferences():
 
     PREFERENCES_UI_FILE = os.path.join(UI_DIR, "preferences.ui")
 
-    def __init__(self, req, vmanager):
+    def __init__(self, req, app):
         self.req = req
         self.config = self.req.get_config('browser')
         builder = Gtk.Builder()
@@ -45,7 +45,7 @@ class Preferences():
         self.stack = builder.get_object("stack")
 
         self.pages = {}
-        self.add_page(GeneralPreferences(req, vmanager))
+        self.add_page(GeneralPreferences(req, app))
 
     def activate(self):
         """ Activate the preferences window."""

@@ -225,7 +225,7 @@ class Application(Gtk.Application):
         elif t:
             tv = TaskEditor(
                 requester=self.req,
-                vmanager=self,
+                app=self,
                 task=t,
                 thisisnew=thisisnew,
                 clipboard=self.clipboard)
