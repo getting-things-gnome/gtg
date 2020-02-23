@@ -51,11 +51,11 @@ class TaskBrowser(GObject.GObject):
                     'visibility-toggled': __none_signal__,
                     }
 
-    def __init__(self, requester, vmanager):
+    def __init__(self, requester, app):
         super().__init__()
         # Object prime variables
         self.req = requester
-        self.vmanager = vmanager
+        self.app = app
         self.config = self.req.get_config('browser')
         self.tag_active = False
         self.applied_tags = []
@@ -119,7 +119,7 @@ class TaskBrowser(GObject.GObject):
         self.on_select_tag()
         self.browser_shown = False
 
-        vmanager.timer.connect('refresh', self.refresh_all_views)
+        app.timer.connect('refresh', self.refresh_all_views)
 
 # INIT HELPER FUNCTIONS #######################################################
     def _init_icon_theme(self):
@@ -158,7 +158,7 @@ class TaskBrowser(GObject.GObject):
         self.vbox_toolbars = self.builder.get_object("vbox_toolbars")
         self.stack_switcher = self.builder.get_object("stack_switcher")
 
-        self.tagpopup = TagContextMenu(self.req, self.vmanager)
+        self.tagpopup = TagContextMenu(self.req, self.app)
 
     def _init_ui_widget(self):
         """ Sets the main pane with three trees for active tasks,
@@ -465,16 +465,16 @@ class TaskBrowser(GObject.GObject):
         self.on_select_tag()
 
     def open_preferences(self, widget):
-        self.vmanager.open_preferences(self.config)
+        self.app.open_preferences(self.config)
 
     def open_plugins(self, widget):
-        self.vmanager.configure_plugins()
+        self.app.configure_plugins()
 
     def open_edit_backends(self, widget):
-        self.vmanager.open_edit_backends()
+        self.app.open_edit_backends()
 
     def quit(self, widget=None, data=None):
-        self.vmanager.close_browser()
+        self.app.close_browser()
 
     def on_window_state_event(self, widget, event, data=None):
         """ This event checks for the window state: maximized?
@@ -550,7 +550,7 @@ class TaskBrowser(GObject.GObject):
         def open_task(req, t):
             """ Open the task if loaded. Otherwise ask for next iteration """
             if req.has_task(t):
-                self.vmanager.open_task(t)
+                self.app.open_task(t)
                 return False
             else:
                 return True
@@ -752,7 +752,7 @@ class TaskBrowser(GObject.GObject):
             # if no text is selected, we open the currently selected task
             nids = self.vtree_panes['active'].get_selected_nodes()
             for nid in nids:
-                self.vmanager.open_task(nid)
+                self.app.open_task(nid)
 
     def on_tag_treeview_button_press_event(self, treeview, event):
         """
@@ -839,7 +839,7 @@ class TaskBrowser(GObject.GObject):
         for tagname in tags:
             self.req.delete_tag(tagname)
             tag = self.req.get_tag(tagname)
-            self.vmanager.reload_opened_editors(tag.get_related_tasks())
+            self.app.reload_opened_editors(tag.get_related_tasks())
         self.tagtreeview.set_cursor(0)
         self.on_select_tag()
 
@@ -908,7 +908,7 @@ class TaskBrowser(GObject.GObject):
         tags = [tag for tag in self.get_selected_tags() if tag.startswith('@')]
         task = self.req.new_task(tags=tags, newtask=True)
         uid = task.get_id()
-        self.vmanager.open_task(uid, thisisnew=True)
+        self.app.open_task(uid, thisisnew=True)
 
     def on_add_subtask(self, widget):
         uid = self.get_selected_task()
@@ -918,17 +918,17 @@ class TaskBrowser(GObject.GObject):
             task = self.req.new_task(tags=tags, newtask=True)
             # task.add_parent(uid)
             zetask.add_child(task.get_id())
-            self.vmanager.open_task(task.get_id(), thisisnew=True)
+            self.app.open_task(task.get_id(), thisisnew=True)
 
     def on_edit_active_task(self, widget, row=None, col=None):
         tid = self.get_selected_task()
         if tid:
-            self.vmanager.open_task(tid)
+            self.app.open_task(tid)
 
     def on_edit_done_task(self, widget, row=None, col=None):
         tid = self.get_selected_task('closed')
         if tid:
-            self.vmanager.open_task(tid)
+            self.app.open_task(tid)
 
     def on_delete_tasks(self, widget=None, tid=None):
         # If we don't have a parameter, then take the selection in the
@@ -941,7 +941,7 @@ class TaskBrowser(GObject.GObject):
         else:
             tids_todelete = [tid]
         log.debug("going to delete %s" % tids_todelete)
-        self.vmanager.ask_delete_tasks(tids_todelete, self.window)
+        self.app.ask_delete_tasks(tids_todelete, self.window)
 
     def update_start_date(self, widget, new_start_date):
         tasks = [self.req.get_task(uid)
@@ -1065,7 +1065,7 @@ class TaskBrowser(GObject.GObject):
         trace_subtasks(self.req.get_task(task_id))
 
         for task in all_subtasks:
-            self.vmanager.close_task(task.get_id())
+            self.app.close_task(task.get_id())
 
     def on_mark_as_done(self, widget):
         tasks_uid = [uid for uid in self.get_selected_tasks()
@@ -1395,7 +1395,7 @@ class TaskBrowser(GObject.GObject):
             return
         self.vbox_toolbars.foreach(self.__remove_backend_infobar, backend_id)
         # add a new one
-        infobar = CustomInfoBar(self.req, self, self.vmanager, backend_id)
+        infobar = CustomInfoBar(self.req, self, self.app, backend_id)
         self.vbox_toolbars.pack_start(infobar, True, True, 0)
         return infobar
 

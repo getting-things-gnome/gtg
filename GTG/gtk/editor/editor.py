@@ -51,17 +51,17 @@ class TaskEditor():
 
     def __init__(self,
                  requester,
-                 vmanager,
+                 app,
                  task,
                  thisisnew=False,
                  clipboard=None):
         """
         req is the requester
-        vmanager is the view manager
+        app is the view manager
         thisisnew is True when a new task is created and opened
         """
         self.req = requester
-        self.vmanager = vmanager
+        self.app = app
         self.browser_config = self.req.get_config('browser')
         self.config = self.req.get_task_config(task.get_id())
         self.time = None
@@ -151,7 +151,7 @@ class TaskEditor():
         self.textview = TaskView(self.req, self.clipboard)
         self.textview.show()
         self.textview.set_subtask_callback(self.new_subtask)
-        self.textview.open_task_callback(self.vmanager.open_task)
+        self.textview.open_task_callback(self.app.open_task)
         self.textview.set_left_margin(7)
         self.textview.set_right_margin(5)
         scrolled.add(self.textview)
@@ -212,7 +212,7 @@ class TaskEditor():
 
         # plugins
         self.pengine = PluginEngine()
-        self.plugin_api = PluginAPI(self.req, self.vmanager, self)
+        self.plugin_api = PluginAPI(self.req, self.app, self)
         self.pengine.register_api(self.plugin_api)
         self.pengine.onTaskLoad(self.plugin_api)
 
@@ -596,7 +596,7 @@ class TaskEditor():
         trace_subtasks(self.task)
 
         for task in all_subtasks:
-            self.vmanager.close_task(task.get_id())
+            self.app.close_task(task.get_id())
 
     def dismiss(self, widget):
         stat = self.task.get_status()
@@ -621,9 +621,9 @@ class TaskEditor():
     def delete_task(self, widget):
         # this triggers the closing of the window in the view manager
         if self.task.is_new():
-            self.vmanager.close_task(self.task.get_id())
+            self.app.close_task(self.task.get_id())
         else:
-            self.vmanager.ask_delete_tasks([self.task.get_id()])
+            self.app.ask_delete_tasks([self.task.get_id()])
 
     # Take the title as argument and return the subtask ID
     def new_subtask(self, title=None, tid=None):
@@ -639,7 +639,7 @@ class TaskEditor():
     def new_task(self, *args):
         task = self.req.new_task(newtask=True)
         task_id = task.get_id()
-        self.vmanager.open_task(task_id)
+        self.app.open_task(task_id)
 
     def insert_subtask(self, widget):
         self.textview.insert_newtask()
@@ -656,7 +656,7 @@ class TaskEditor():
         parents = self.task.get_parents()
 
         if len(parents) == 1:
-            self.vmanager.open_task(parents[0])
+            self.app.open_task(parents[0])
         elif len(parents) > 1:
             self.show_multiple_parent_popover(parents)
 
@@ -677,7 +677,7 @@ class TaskEditor():
 
     # On click handler for open_parent_button's menu items
     def on_parent_item_clicked(self, widget, parent_id):
-        self.vmanager.open_task(parent_id)
+        self.app.open_task(parent_id)
         if self.parent_popover.get_visible():
             self.parent_popover.hide()
 
@@ -740,7 +740,7 @@ class TaskEditor():
             for i in self.task.get_subtasks():
                 if i:
                     i.set_to_keep()
-        self.vmanager.close_task(tid)
+        self.app.close_task(tid)
 
     def get_builder(self):
         return self.builder
@@ -757,5 +757,5 @@ class TaskEditor():
     def quit(self, accel_group=None, acceleratable=None, keyval=None,
              modifier=None):
         """Handles the accelerator for quitting GTG."""
-        self.vmanager.quit()
+        self.app.quit()
 # -----------------------------------------------------------------------------

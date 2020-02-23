@@ -34,10 +34,10 @@ from GTG.gtk.colors import generate_tag_color, color_add, color_remove
 class TagContextMenu(Gtk.Menu):
     """Context menu fo the tag i the sidebar"""
 
-    def __init__(self, req, vmanager, tag=None):
+    def __init__(self, req, app, tag=None):
         super().__init__()
         self.req = req
-        self.vmanager = vmanager
+        self.app = app
         self.tag = tag
         # Build up the menu
         self.set_tag(tag)
@@ -61,7 +61,7 @@ class TagContextMenu(Gtk.Menu):
             self.append(self.mi_ctag)
             self.append(self.mi_del_tag)
             self.mi_del_tag.connect(
-                'activate', self.vmanager.browser.on_delete_tag_activate)
+                'activate', self.app.browser.on_delete_tag_activate)
             self.mi_cc.connect('activate', self.on_mi_cc_activate)
             self.mi_ctag.connect('activate', self.on_mi_ctag_activate)
             if self.tag.is_search_tag():
@@ -81,7 +81,7 @@ class TagContextMenu(Gtk.Menu):
     # CALLBACKS ###############################################################
     def on_mi_cc_activate(self, widget):
         """Callback: show the tag editor upon request"""
-        self.vmanager.open_tag_editor(self.tag)
+        self.app.open_tag_editor(self.tag)
 
     def on_mi_ctag_activate(self, widget):
         random_color = generate_tag_color()
