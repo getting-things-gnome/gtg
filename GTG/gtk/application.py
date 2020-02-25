@@ -74,30 +74,6 @@ class Application(Gtk.Application):
         # Load custom css
         self.__init_css()
 
-        # Browser (still hidden)
-        self.browser = TaskBrowser(self.req, self)
-
-        self.__init_plugin_engine()
-
-        if not self.__start_browser_hidden:
-            self.show_browser()
-
-        # Deletion UI
-        self.delete_dialog = None
-
-        # Preferences and Backends windows
-        # Initialize  dialogs
-        self.preferences = Preferences(self.req, self)
-        self.plugins = PluginsDialog(self.req)
-        self.edit_backends_dialog = None
-
-        # Tag Editor
-        self.tag_editor_dialog = None
-
-        # DBus
-        DBusTaskWrapper(self.req, self)
-        log.debug("Manager initialization finished")
-
     def __init_plugin_engine(self):
         self.pengine = PluginEngine()
         # initializes the plugin api class
@@ -147,7 +123,7 @@ class Application(Gtk.Application):
     def close_browser(self, sender=None):
         self.hide_browser()
         # may take a while to quit
-        self.quit()
+        self.quit_app()
 
     def hide_browser(self, sender=None):
         self.browser.hide()
@@ -263,7 +239,7 @@ class Application(Gtk.Application):
         """
 
         if not self.is_browser_visible() and not self.opened_task:
-            self.quit()
+            self.quit_app()
 
 # Others dialog ###########################################################
     def open_edit_backends(self, sender=None, backend_id=None):
@@ -331,8 +307,38 @@ class Application(Gtk.Application):
                 Gtk.main()
         return 0
 
-    def quit(self, sender=None):
-        Gtk.main_quit()
+    def do_startup(self):
+        Gtk.Application.do_startup(self)
+        GObject.threads_init()
+
+    def do_activate(self):
+        # Browser (still hidden)
+        self.browser = TaskBrowser(self.req, self)
+
+        self.__init_plugin_engine()
+
+        if not self.__start_browser_hidden:
+            self.show_browser()
+
+        # Deletion UI
+        self.delete_dialog = None
+
+        # Preferences and Backends windows
+        # Initialize  dialogs
+        self.preferences = Preferences(self.req, self)
+        self.plugins = PluginsDialog(self.req)
+        self.edit_backends_dialog = None
+
+        # Tag Editor
+        self.tag_editor_dialog = None
+
+        # DBus
+        DBusTaskWrapper(self.req, self)
+        log.debug("Manager initialization finished")
+
+
+    def quit_app(self, sender=None):
+        self.quit()
         # save opened tasks and their positions.
         open_task = []
         for otid in list(self.opened_task.keys()):

@@ -41,7 +41,7 @@ from GTG.tools.dates import Date
 from GTG.tools.logger import log
 from GTG.gtk.help import add_help_shortcut
 
-class TaskBrowser(GObject.GObject):
+class TaskBrowser(Gtk.ApplicationWindow):
     """ The UI for browsing open and closed tasks,
     and listing tags in a tree """
 
@@ -52,7 +52,8 @@ class TaskBrowser(GObject.GObject):
                     }
 
     def __init__(self, requester, app):
-        super().__init__()
+        super().__init__(application=app)
+
         # Object prime variables
         self.req = requester
         self.app = app
