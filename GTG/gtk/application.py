@@ -72,7 +72,7 @@ class Application(Gtk.Application):
         self.timer.connect('refresh', self.autoclean)
 
         # Load custom css
-        self.__init_css()
+        self._init_style()
 
     def __init_plugin_engine(self):
         self.pengine = PluginEngine()
@@ -89,7 +89,7 @@ class Application(Gtk.Application):
         # initializes and activates each plugin (that is enabled)
         self.pengine.activate_plugins()
 
-    def __init_css(self):
+    def _init_style(self):
         """Load the application's CSS file."""
 
         screen = Gdk.Screen.get_default()
