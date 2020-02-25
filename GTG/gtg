@@ -196,16 +196,17 @@ def main():
 
     ds, req = core_main_init(options, args)
     # Launch task browser
-    manager = Application(req)
+    application = Application(req)
     # main loop
     # To be more user friendly and get the logs of crashes, we show an apport
     # hooked window upon crashes
     if not options.no_crash_handler:
         from GTG.gtk.crashhandler import signal_catcher
-        with signal_catcher(manager.close_browser):
-            manager.main(once_thru=options.boot_test, uri_list=args)
+        with signal_catcher(application.close_browser):
+            application.main(once_thru=options.boot_test, uri_list=args)
     else:
-        manager.main(once_thru=options.boot_test, uri_list=args)
+        # manager.main(once_thru=options.boot_test, uri_list=args)
+        application.run()
     core_main_quit(ds)
 
 
