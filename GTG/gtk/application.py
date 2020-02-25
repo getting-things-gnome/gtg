@@ -60,7 +60,6 @@ class Application(Gtk.Application):
         self.opened_task = {}
 
         self.browser = None
-        self.__start_browser_hidden = False
         self.gtk_terminate = False  # if true, the gtk main is not started
 
         # Shared clipboard
@@ -140,9 +139,6 @@ class Application(Gtk.Application):
     def get_browser(self):
         # used by the plugin api to hook in the browser
         return self.browser
-
-    def start_browser_hidden(self):
-        self.__start_browser_hidden = True
 
     def purge_old_tasks(self, widget=None):
         log.debug("Deleting old tasks")
@@ -320,9 +316,7 @@ class Application(Gtk.Application):
         self.browser = TaskBrowser(self.req, self)
 
         self.__init_plugin_engine()
-
-        if not self.__start_browser_hidden:
-            self.show_browser()
+        self.show_browser()
 
         # Deletion UI
         self.delete_dialog = None
