@@ -70,6 +70,20 @@ class Application(Gtk.Application):
         self.timer = Timer(self.config)
         self.timer.connect('refresh', self.autoclean)
 
+        # Deletion UI
+        self.delete_dialog = None
+
+        # Tag Editor
+        self.tag_editor_dialog = None
+
+        # Backends Editor
+        self.edit_backends_dialog = None
+
+        # Preferences and Backends windows
+        # Initialize  dialogs
+        self.preferences = Preferences(self.req, self)
+        self.plugins = PluginsDialog(self.req)
+
         # Load custom css
         self._init_style()
 
@@ -318,21 +332,9 @@ class Application(Gtk.Application):
         self.__init_plugin_engine()
         self.show_browser()
 
-        # Deletion UI
-        self.delete_dialog = None
-
-        # Preferences and Backends windows
-        # Initialize  dialogs
-        self.preferences = Preferences(self.req, self)
-        self.plugins = PluginsDialog(self.req)
-        self.edit_backends_dialog = None
-
-        # Tag Editor
-        self.tag_editor_dialog = None
-
         # DBus
         DBusTaskWrapper(self.req, self)
-        log.debug("Manager initialization finished")
+        log.debug("Application activation finished")
 
     def _save_tasks(self):
         """Save opened tasks and their positions."""
