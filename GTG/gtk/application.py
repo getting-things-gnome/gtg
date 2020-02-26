@@ -241,15 +241,6 @@ class Application(Gtk.Application):
             if tid in opened_tasks:
                 opened_tasks.remove(tid)
             self.browser_config.set("opened_tasks", opened_tasks)
-        self.check_quit_condition()
-
-    def check_quit_condition(self):
-        """
-        checking if we need to shut down the whole GTG (if no window is open)
-        """
-
-        if not self.is_browser_visible() and not self.opened_task:
-            self.quit_app()
 
 # Others dialog ###########################################################
     def open_edit_backends(self, sender=None, backend_id=None):
@@ -296,8 +287,10 @@ class Application(Gtk.Application):
         for uri in uri_list:
             if uri.startswith("gtg://"):
                 self.open_task(uri[6:])
+
         # if no window was opened, we just quit
-        self.check_quit_condition()
+        if not self.is_browser_visible() and not self.opened_task:
+            self.quit_app()
 
 # MAIN #####################################################################
     def main(self, once_thru=False, uri_list=[]):
