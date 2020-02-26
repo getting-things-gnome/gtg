@@ -345,14 +345,10 @@ class Application(Gtk.Application):
 
         self.browser_config.set("opened_tasks", open_task)
 
-    def quit_app(self, sender=None):
-        self.quit()
-        # save opened tasks and their positions.
-        self._save_tasks()
+    def _save_plugin_settings(self):
+        """Save plugin settings to configuration."""
 
-        # adds the plugin settings to the conf
-        # FIXME: this code is replicated in the preference window.
-        if len(self.pengine.plugins) > 0:
+        if self.pengine.plugins:
             self.plugins_config.set(
                 "disabled",
                 [p.module_name for p in self.pengine.get_plugins("disabled")],
@@ -361,5 +357,11 @@ class Application(Gtk.Application):
                 "enabled",
                 [p.module_name for p in self.pengine.get_plugins("enabled")],
             )
-        # plugins are deactivated
+
         self.pengine.deactivate_plugins()
+
+    def quit_app(self, sender=None):
+        self._save_tasks()
+        self._save_plugin_settings()
+
+        self.quit()
