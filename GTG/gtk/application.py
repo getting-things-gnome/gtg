@@ -48,7 +48,7 @@ class Application(Gtk.Application):
     # init ##################################################################
     def __init__(self, req, **kwargs):
 
-        super().__init__(**kwargs)
+        super().__init__(application_id='org.gnome.GTGDevel')
 
         self.req = req
         self.browser_config = self.req.get_config("browser")
@@ -86,6 +86,8 @@ class Application(Gtk.Application):
 
         # Load custom css
         self._init_style()
+
+        DBusTaskWrapper(self.req, self)
 
     def __init_plugin_engine(self):
         self.pengine = PluginEngine()
@@ -316,17 +318,17 @@ class Application(Gtk.Application):
         Gtk.Application.do_startup(self)
         GObject.threads_init()
 
+
     def do_activate(self):
         """Callback when launched from the desktop."""
 
         # Browser (still hidden)
-        self.browser = TaskBrowser(self.req, self)
+        if not self.browser:
+            self.browser = TaskBrowser(self.req, self)
 
         self.__init_plugin_engine()
         self.show_browser()
 
-        # DBus
-        DBusTaskWrapper(self.req, self)
         log.debug("Application activation finished")
 
     def _save_tasks(self):
