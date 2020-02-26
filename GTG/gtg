@@ -143,15 +143,6 @@ def remove_pidfile(directory):
         pass
 
 
-def x_is_running():
-    """ Return True if GTG could be displayed on the current XServer """
-    try:
-        if Screen().get_default().get_display():
-            return True
-    except RuntimeError as exc:
-        print(exc)
-    return False
-
 #=== MAIN CLASS ===============================================================
 
 
@@ -186,10 +177,6 @@ def main():
         print()
         print("For more information:", info.URL)
         sys.exit(0)
-
-    elif not x_is_running():
-        print("Could not open X display")
-        sys.exit(1)
 
     if options.title is not None:
         info.NAME = options.title
