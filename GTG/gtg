@@ -64,87 +64,8 @@ from GTG.gtk.dbuswrapper import BUSNAME, BUSINTERFACE
 from GTG.gtk.application import Application
 from GTG.tools.logger import log
 
-#=== OBJECTS ==================================================================
-
-# code borrowed from Specto. Avoid having multiples instances of gtg
-# reading the same tasks
-# that's why we put the pid file in the data directory :
-# we allow one instance of gtg by data directory.
-
-
-def write_pid_file(pidfile):
-    """Write file with pid for the gtg process."""
-
-    with open(pidfile, "w") as f:
-        f.write(repr(os.getpid()))
-
-    os.chmod(pidfile, 0o600)
-
-
-def check_instance(directory, uri_list=[]):
-    """
-    Check if gtg is already running.
-    If so, open the tasks whose ids are in the uri_list
-    """
-    if not os.path.exists(directory):
-        os.makedirs(directory)
-
-    pidfile = os.path.join(directory, "gtg.pid")
-
-    try:
-        with open(pidfile, "r") as pid_data:
-            pid = pid_data.readline()
-            procfile = os.path.join("proc", pid, "comm")
-
-    # There's no pid file, so write one
-    except FileNotFoundError:
-        write_pid_file(pidfile)
-        return
-
-    try:
-        with open(procfile, "r") as proc_data:
-            if "gtg" in procfile:
-                print(_("gtg is already running!"))
-
-            try:
-                d = dbus.SessionBus().get_object(BUSNAME, BUSINTERFACE)
-                d.ShowTaskBrowser()
-
-                # if the user has specified a task to open, do that
-                for uri in uri_list:
-                    if uri.startswith("gtg://"):
-                        d.OpenTaskEditor(uri[6:])
-
-                raise SystemExit
-
-            except dbus.exceptions.DBusException:
-                # If we cant't connect to the interface (e.g. changed interface
-                # between GTG versions), we won't do anything more
-                raise SystemExit(_("Can't connect to gtg dbus interface!"))
-
-            # There is a process for that pid but it's not gtg
-            else:
-                write_pid_file(pidfile)
-                return
-
-    # The process for that pid is not running
-    except FileNotFoundError:
-        write_pid_file(pidfile)
-        return
-
-
-def remove_pidfile(directory):
-    """ Remove the pid file """
-    pidfile = os.path.join(directory, "gtg.pid")
-    try:
-        os.remove(pidfile)
-    except OSError:
-        # Ignore missing PID file
-        pass
-
 
 #=== MAIN CLASS ===============================================================
-
 
 def parse_args():
     """ Parse arguments """
@@ -206,7 +127,6 @@ def core_main_init(options=None, args=None):
         log.debug("Debug output enabled.")
     else:
         log.setLevel(logging.INFO)
-    check_instance(DATA_DIR, args)
     backends_list = BackendFactory().get_saved_backends_list()
     # Load data store
     ds = DataStore()
