@@ -207,7 +207,6 @@ def main():
     else:
         # manager.main(once_thru=options.boot_test, uri_list=args)
         application.run()
-    core_main_quit(ds)
 
 
 def core_main_init(options=None, args=None):
@@ -233,17 +232,6 @@ def core_main_init(options=None, args=None):
     # Launch task browser
     req = ds.get_requester()
     return ds, req
-
-
-def core_main_quit(ds):
-    """
-    Last bits of code executed in GTG, after the UI has been shut off.
-    Currently, it's just saving everything.
-    """
-    # Ending the application: we save configuration
-    ds.save(quit=True)
-    remove_pidfile(DATA_DIR)
-    sys.exit(0)
 
 
 #=== EXECUTION ================================================================

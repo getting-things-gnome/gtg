@@ -364,4 +364,7 @@ class Application(Gtk.Application):
         self._save_tasks()
         self._save_plugin_settings()
 
+        # Save data and shutdown datastore backends
+        self.req.save_datastore(quit=True)
+
         self.quit()
