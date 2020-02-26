@@ -334,15 +334,21 @@ class Application(Gtk.Application):
         DBusTaskWrapper(self.req, self)
         log.debug("Manager initialization finished")
 
+    def _save_tasks(self):
+        """Save opened tasks and their positions."""
+
+        open_task = []
+
+        for otid in list(self.opened_task.keys()):
+            open_task.append(otid)
+            self.opened_task[otid].close()
+
+        self.browser_config.set("opened_tasks", open_task)
 
     def quit_app(self, sender=None):
         self.quit()
         # save opened tasks and their positions.
-        open_task = []
-        for otid in list(self.opened_task.keys()):
-            open_task.append(otid)
-            self.opened_task[otid].close()
-        self.browser_config.set("opened_tasks", open_task)
+        self._save_tasks()
 
         # adds the plugin settings to the conf
         # FIXME: this code is replicated in the preference window.
