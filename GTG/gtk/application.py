@@ -24,6 +24,7 @@ gi.require_version('Gtk', '3.0')
 from gi.repository import GObject, Gtk, Gdk
 import configparser
 import os
+import logging
 
 from GTG.gtk.delete_dialog import DeletionUI
 from GTG.gtk.browser.browser import TaskBrowser
@@ -34,6 +35,8 @@ from GTG.gtk.dbuswrapper import DBusTaskWrapper
 from GTG.tools import clipboard
 from GTG.core.plugins.engine import PluginEngine
 from GTG.core.plugins.api import PluginAPI
+from GTG.backends import BackendFactory
+from GTG.core.datastore import DataStore
 from GTG.core.dirs import CSS_DIR
 from GTG.tools.logger import log
 from GTG.tools.dates import Date
@@ -46,11 +49,27 @@ from GTG.core.timer import Timer
 class Application(Gtk.Application):
 
     # init ##################################################################
-    def __init__(self, req, **kwargs):
+    def __init__(self, debug, **kwargs):
 
         super().__init__(application_id='org.gnome.GTGDevel')
 
-        self.req = req
+        if debug:
+            log.setLevel(logging.DEBUG)
+            log.debug("Debug output enabled.")
+        else:
+            log.setLevel(logging.INFO)
+
+        self.ds = DataStore()
+
+        # Register backends
+        [self.ds.register_backend(backend_dic)
+         for backend_dic in BackendFactory().get_saved_backends_list()]
+
+        # Save the backends directly to be sure projects.xml is written
+        self.ds.save(quit=False)
+
+        self.req = self.ds.get_requester()
+
         self.browser_config = self.req.get_config("browser")
         self.plugins_config = self.req.get_config("plugins")
 
