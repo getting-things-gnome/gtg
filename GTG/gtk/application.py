@@ -311,13 +311,6 @@ class Application(Gtk.Application):
                 Gtk.main()
         return 0
 
-    def do_startup(self):
-        """Callback to setup the application when it first starts."""
-
-        Gtk.Application.do_startup(self)
-        GObject.threads_init()
-
-
     def do_activate(self):
         """Callback when launched from the desktop."""
 
