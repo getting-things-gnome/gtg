@@ -102,44 +102,20 @@ def main():
     if options.title is not None:
         info.NAME = options.title
 
-    ds, req = core_main_init(options, args)
+    # ds, req = core_main_init(options, args)
     # Launch task browser
-    application = Application(req)
+    application = Application(options.debug)
     # main loop
     # To be more user friendly and get the logs of crashes, we show an apport
     # hooked window upon crashes
     if not options.no_crash_handler:
         from GTG.gtk.crashhandler import signal_catcher
         with signal_catcher(application.close_browser):
-            application.main(once_thru=options.boot_test, uri_list=args)
+            # application.main(once_thru=options.boot_test, uri_list=args)
+            pass
     else:
         # manager.main(once_thru=options.boot_test, uri_list=args)
         application.run()
-
-
-def core_main_init(options=None, args=None):
-    """
-    Part of the main function prior to the UI initialization.
-    """
-    # Debugging subsystem initialization
-    if options.debug:
-        log.setLevel(logging.DEBUG)
-        log.debug("Debug output enabled.")
-    else:
-        log.setLevel(logging.INFO)
-    backends_list = BackendFactory().get_saved_backends_list()
-    # Load data store
-    ds = DataStore()
-    # Register backends
-    for backend_dic in backends_list:
-        ds.register_backend(backend_dic)
-    # save the backends directly to be sure projects.xml is written
-    ds.save(quit=False)
-
-    # Launch task browser
-    req = ds.get_requester()
-    return ds, req
-
 
 #=== EXECUTION ================================================================
 
