@@ -137,8 +137,7 @@ class Application(Gtk.Application):
     # Currently, the browser is our only "stay_alive" view.
     def close_browser(self, sender=None):
         self.hide_browser()
-        # may take a while to quit
-        self.quit_app()
+        self.quit()
 
     def hide_browser(self, sender=None):
         self.browser.hide()
@@ -292,7 +291,7 @@ class Application(Gtk.Application):
 
         # if no window was opened, we just quit
         if not self.is_browser_visible() and not self.opened_task:
-            self.quit_app()
+            self.quit()
 
 # MAIN #####################################################################
     def main(self, once_thru=False, uri_list=[]):
@@ -357,11 +356,13 @@ class Application(Gtk.Application):
 
         self.pengine.deactivate_plugins()
 
-    def quit_app(self, sender=None):
+    def do_shutdown(self):
+        """Callback when GTG is closed."""
+
         self._save_tasks()
         self._save_plugin_settings()
 
         # Save data and shutdown datastore backends
         self.req.save_datastore(quit=True)
 
-        self.quit()
+        Gtk.Application.do_shutdown(self)
