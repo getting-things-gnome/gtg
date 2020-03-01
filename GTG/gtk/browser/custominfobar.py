@@ -47,7 +47,7 @@ class CustomInfoBar(Gtk.InfoBar):
         Constructor, Prepares the infobar.
 
         @param req: a Requester object
-        @param browser: a TaskBrowser object
+        @param browser: a MainWindow object
         @param app: a ViewManager object
         @param backend_id: the id of the backend linked to the infobar
         """

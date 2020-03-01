@@ -25,7 +25,7 @@ import os
 import logging
 
 from GTG.gtk.delete_dialog import DeletionUI
-from GTG.gtk.browser.browser import TaskBrowser
+from GTG.gtk.browser.main_window import MainWindow
 from GTG.gtk.editor.editor import TaskEditor
 from GTG.gtk.preferences import Preferences
 from GTG.gtk.plugins import PluginsDialog
@@ -153,7 +153,7 @@ class Application(Gtk.Application):
     # Browser ##############################################################
     def open_browser(self):
         if not self.browser:
-            self.browser = TaskBrowser(self.req, self)
+            self.browser = MainWindow(self.req, self)
         # notify user if backup was used
         backend_dic = self.req.get_all_backends()
         for backend in backend_dic:
@@ -339,7 +339,7 @@ class Application(Gtk.Application):
 
         # Browser (still hidden)
         if not self.browser:
-            self.browser = TaskBrowser(self.req, self)
+            self.browser = MainWindow(self.req, self)
 
         self._set_actions()
         self.__init_plugin_engine()

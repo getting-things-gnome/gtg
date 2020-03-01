@@ -415,26 +415,26 @@ msgstr "Entrer le nom de l'étiquette ici"
 msgid "NewTag"
 msgstr "NouvelleÉtiquette"
 
-#: GTG/gtk/browser/browser.py:586
+#: GTG.gtk.browser.main_window.py:586
 msgid "no active tasks"
 msgstr "aucune tâche active"
 
-#: GTG/gtk/browser/browser.py:588
+#: GTG.gtk.browser.main_window.py:588
 #, python-format
 msgid "%(tasks)d active task"
 msgid_plural "%(tasks)d active tasks"
 msgstr[0] "%(tasks)d tâche active"
 msgstr[1] "%(tasks)d tâches actives"
 
-#: GTG/gtk/browser/browser.py:1545
+#: GTG.gtk.browser.main_window.py:1545
 msgid "Add Task"
 msgstr "Ajouter une tâche"
 
-#: GTG/gtk/browser/browser.py:1546
+#: GTG.gtk.browser.main_window.py:1546
 msgid "Open Task"
 msgstr "Ouvrir une tâche"
 
-#: GTG/gtk/browser/browser.py:1547 GTG/core/treefactory.py:102
+#: GTG.gtk.browser.main_window.py:1547 GTG/core/treefactory.py:102
 msgid "Search"
 msgstr "Rechercher"
 
@@ -1628,7 +1628,7 @@ msgid ""
 msgstr ""
 "Les services de synchronisations permettent à GTG de synchroniser (c'est à dire "
 "d'avoir accès ou d'importer) les tâches, les notes ou les bugs avec d'autres "
-"sites ou services tels que Launchpad, Remember the Milk, Tomboy, etc.\n" 
+"sites ou services tels que Launchpad, Remember the Milk, Tomboy, etc.\n"
 "\n"
 "C'est incroyablement utile si, par exemple, vous voulez accéder à vos tâches "
 "sur plusieurs instances de GTG s'exécutant sur différents ordinateurs, ou si "
@@ -1875,7 +1875,7 @@ msgstr ""
 "vos modifications <b>seront</b> écrasées quand l'anomalie associée est modifiée. "
 "Mise à part ces champs, vous avez toute liberté de renseigner les autres champs "
 "(dates de début/d'échéance, sous-tâches ...): vos modifications seront préservées. "
-"Ceci est utile pour ajouter des annotations personnelles à l'anomalie" 
+"Ceci est utile pour ajouter des annotations personnelles à l'anomalie"
 
 #: GTG/backends/backend_mantis.py:237
 msgid "Iss."

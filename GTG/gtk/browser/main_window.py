@@ -41,7 +41,7 @@ from GTG.tools.dates import Date
 from GTG.tools.logger import log
 from GTG.gtk.help import add_help_shortcut
 
-class TaskBrowser(Gtk.ApplicationWindow):
+class MainWindow(Gtk.ApplicationWindow):
     """ The UI for browsing open and closed tasks,
     and listing tags in a tree """
 
@@ -1288,7 +1288,7 @@ class TaskBrowser(Gtk.ApplicationWindow):
         GObject.idle_add(self.emit, "visibility-toggled")
 
     def show(self):
-        """ Unhides the TaskBrowser """
+        """ Unhides the MainWindow """
         self.browser_shown = True
         # redraws the GDK window, bringing it to front
         self.show()
@@ -1298,7 +1298,7 @@ class TaskBrowser(Gtk.ApplicationWindow):
         GObject.idle_add(self.emit, "visibility-toggled")
 
     def iconify(self):
-        """ Minimizes the TaskBrowser """
+        """ Minimizes the MainWindow """
         self.iconify()
 
     def is_visible(self):
