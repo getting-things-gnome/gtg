@@ -411,26 +411,26 @@ msgstr "Gib den Schlagwortnamen hier ein"
 msgid "NewTag"
 msgstr "Neues Schlagwort"
 
-#: GTG/gtk/browser/browser.py:586
+#: GTG.gtk.browser.main_window.py:586
 msgid "no active tasks"
 msgstr "keine aktiven Aufgaben"
 
-#: GTG/gtk/browser/browser.py:588
+#: GTG.gtk.browser.main_window.py:588
 #, python-format
 msgid "%(tasks)d active task"
 msgid_plural "%(tasks)d active tasks"
 msgstr[0] "(Aufgaben) aktive Aufgabe"
 msgstr[1] "Aufgaben) aktive Aufgaben"
 
-#: GTG/gtk/browser/browser.py:1545
+#: GTG.gtk.browser.main_window.py:1545
 msgid "Add Task"
 msgstr "Aufgabe hinzufügen"
 
-#: GTG/gtk/browser/browser.py:1546
+#: GTG.gtk.browser.main_window.py:1546
 msgid "Open Task"
 msgstr "Öffne Aufgabe"
 
-#: GTG/gtk/browser/browser.py:1547 GTG/core/treefactory.py:102
+#: GTG.gtk.browser.main_window.py:1547 GTG/core/treefactory.py:102
 msgid "Search"
 msgstr "Suche"
 

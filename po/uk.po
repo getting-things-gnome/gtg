@@ -414,11 +414,11 @@ msgstr "Введіть ім'я мітки тут"
 msgid "NewTag"
 msgstr "Нова мітка"
 
-#: GTG/gtk/browser/browser.py:586
+#: GTG.gtk.browser.main_window.py:586
 msgid "no active tasks"
 msgstr "активні завдання відсутні"
 
-#: GTG/gtk/browser/browser.py:588
+#: GTG.gtk.browser.main_window.py:588
 #, python-format
 msgid "%(tasks)d active task"
 msgid_plural "%(tasks)d active tasks"
@@ -426,15 +426,15 @@ msgstr[0] "%(tasks)d активне завдання"
 msgstr[1] "%(tasks)d активних завдання"
 msgstr[2] "%(tasks)d активних завдань"
 
-#: GTG/gtk/browser/browser.py:1545
+#: GTG.gtk.browser.main_window.py:1545
 msgid "Add Task"
 msgstr "Додати завдання"
 
-#: GTG/gtk/browser/browser.py:1546
+#: GTG.gtk.browser.main_window.py:1546
 msgid "Open Task"
 msgstr "Відкрити завдання"
 
-#: GTG/gtk/browser/browser.py:1547 GTG/core/treefactory.py:102
+#: GTG.gtk.browser.main_window.py:1547 GTG/core/treefactory.py:102
 msgid "Search"
 msgstr "Знайти"
 
