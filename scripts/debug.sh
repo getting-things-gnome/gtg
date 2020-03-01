@@ -22,7 +22,7 @@ do  case "$o" in
     n)   norun=1;;
     s)   dataset="$OPTARG";;
     t)   title="$OPTARG";;
-    [?]) echo >&2 "Usage: $0 [-s dataset] [-t title] [-b] [-d] [-l] [-n]"
+    [?]) echo >&2 "Usage: $0 [-s dataset] [-t title] [-b] [-d] [-n]"
          exit 1;;
     esac
 done
