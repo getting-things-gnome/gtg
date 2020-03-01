@@ -115,7 +115,7 @@ class TaskBrowser(Gtk.ApplicationWindow):
         self.restore_state_from_conf()
 
         # F1 shows help
-        add_help_shortcut(self.window, "browser")
+        add_help_shortcut(self, "browser")
 
         self.on_select_tag()
         self.browser_shown = False
@@ -136,7 +136,7 @@ class TaskBrowser(Gtk.ApplicationWindow):
         """
         defines aliases for UI elements found in the glide file
         """
-        self.window = self.builder.get_object("MainWindow")
+
         self.taskpopup = self.builder.get_object("task_context_menu")
         self.defertopopup = self.builder.get_object("defer_to_context_menu")
         self.ctaskpopup = self.builder.get_object("closed_task_context_menu")
@@ -158,8 +158,14 @@ class TaskBrowser(Gtk.ApplicationWindow):
         self.accessory_notebook = self.builder.get_object("accessory_notebook")
         self.vbox_toolbars = self.builder.get_object("vbox_toolbars")
         self.stack_switcher = self.builder.get_object("stack_switcher")
+        self.headerbar = self.builder.get_object("browser_headerbar")
+        self.main_box = self.builder.get_object("main_view_box")
 
         self.tagpopup = TagContextMenu(self.req, self.app)
+
+        self.set_titlebar(self.headerbar)
+        self.add(self.main_box)
+
 
     def _init_ui_widget(self):
         """ Sets the main pane with three trees for active tasks,
@@ -174,7 +180,7 @@ class TaskBrowser(Gtk.ApplicationWindow):
         self.modifytags_dialog = ModifyTagsDialog(tag_completion, self.req)
         self.deletetags_dialog = DeleteTagsDialog(self.req, self)
         self.calendar = GTGCalendar()
-        self.calendar.set_transient_for(self.window)
+        self.calendar.set_transient_for(self)
         self.calendar.connect("date-changed", self.on_date_changed)
 
     def init_tags_sidebar(self):
@@ -377,7 +383,7 @@ class TaskBrowser(Gtk.ApplicationWindow):
         initialize gtk accelerators for different interface elements
         """
         agr = Gtk.AccelGroup()
-        self.builder.get_object("MainWindow").add_accel_group(agr)
+        self.add_accel_group(agr)
 
         self._add_accelerator_for_widget(agr, "tags", "F9")
         # self._add_accelerator_for_widget(agr, "file_quit", "<Control>q")
@@ -508,17 +514,17 @@ class TaskBrowser(Gtk.ApplicationWindow):
         width = self.config.get('width')
         height = self.config.get('height')
         if width and height:
-            self.window.resize(width, height)
+            self.resize(width, height)
 
         # checks for maximum size of window
-        self.window.connect('window-state-event', self.on_window_state_event)
+        self.connect('window-state-event', self.on_window_state_event)
         if self.config.get("max"):
-            self.window.maximize()
+            self.maximize()
 
         xpos = self.config.get("x_pos")
         ypos = self.config.get("y_pos")
         if ypos and xpos:
-            self.window.move(xpos, ypos)
+            self.move(xpos, ypos)
 
         tag_pane = self.config.get("tag_pane")
         if not tag_pane:
@@ -597,12 +603,12 @@ class TaskBrowser(Gtk.ApplicationWindow):
         self.config.set('tasklist_sort_order', sort_order)
 
     def on_move(self, widget=None, data=None):
-        xpos, ypos = self.window.get_position()
+        xpos, ypos = self.get_position()
         self.config.set('x_pos', xpos)
         self.config.set('y_pos', ypos)
 
     def on_size_allocate(self, widget=None, data=None):
-        width, height = self.window.get_size()
+        width, height = self.get_size()
         self.config.set('width', width)
         self.config.set('height', height)
 
@@ -939,7 +945,7 @@ class TaskBrowser(Gtk.ApplicationWindow):
         else:
             tids_todelete = [tid]
         log.debug("going to delete %s" % tids_todelete)
-        self.app.ask_delete_tasks(tids_todelete, self.window)
+        self.app.ask_delete_tasks(tids_todelete, self)
 
     def update_start_date(self, widget, new_start_date):
         tasks = [self.req.get_task(uid)
@@ -1278,36 +1284,36 @@ class TaskBrowser(Gtk.ApplicationWindow):
     def hide(self):
         """ Hides the task browser """
         self.browser_shown = False
-        self.window.hide()
+        self.hide()
         GObject.idle_add(self.emit, "visibility-toggled")
 
     def show(self):
         """ Unhides the TaskBrowser """
         self.browser_shown = True
         # redraws the GDK window, bringing it to front
-        self.window.show()
-        self.window.present()
-        self.window.grab_focus()
+        self.show()
+        self.present()
+        self.grab_focus()
         self.quickadd_entry.grab_focus()
         GObject.idle_add(self.emit, "visibility-toggled")
 
     def iconify(self):
         """ Minimizes the TaskBrowser """
-        self.window.iconify()
+        self.iconify()
 
     def is_visible(self):
         """ Returns true if window is shown or false if hidden. """
-        return self.window.get_property("visible")
+        return self.get_property("visible")
 
     def is_active(self):
         """ Returns true if window is the currently active window """
-        return self.window.get_property("is-active")
+        return self.get_property("is-active")
 
     def get_builder(self):
         return self.builder
 
     def get_window(self):
-        return self.window
+        return self
 
     def is_shown(self):
         return self.browser_shown
