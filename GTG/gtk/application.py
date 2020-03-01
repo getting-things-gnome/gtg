@@ -153,7 +153,7 @@ class Application(Gtk.Application):
         self.browser.iconify()
 
     def show_browser(self, sender=None):
-        self.browser.show()
+        self.browser.present()
 
     def is_browser_visible(self, sender=None):
         return self.browser.is_visible()
