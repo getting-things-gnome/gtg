@@ -19,7 +19,7 @@
 Manager loads the prefs and launches the gtk main loop
 """
 
-from gi.repository import GObject, Gtk, Gdk
+from gi.repository import GObject, Gtk, Gdk, Gio
 import configparser
 import os
 import logging
@@ -47,7 +47,7 @@ from GTG.core.timer import Timer
 class Application(Gtk.Application):
 
     # init ##################################################################
-    def __init__(self, debug, **kwargs):
+    def __init__(self, debug):
 
         super().__init__(application_id='org.gnome.GTGDevel')
 
@@ -132,6 +132,22 @@ class Application(Gtk.Application):
         Gtk.StyleContext.add_provider_for_screen(screen, provider,
                                                  Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
 
+    def _set_actions(self):
+        """Setup actions."""
+
+        action_entries = [
+            ('quit', lambda a, p: self.quit(), ('app.quit', ['<ctrl>Q']))
+        ]
+
+        for action, callback, accel in action_entries:
+            simple_action = Gio.SimpleAction.new(action, None)
+            simple_action.connect('activate', callback)
+            simple_action.set_enabled(True)
+
+            self.add_action(simple_action)
+
+            if accel is not None:
+                self.set_accels_for_action(*accel)
 
 
     # Browser ##############################################################
@@ -325,6 +341,7 @@ class Application(Gtk.Application):
         if not self.browser:
             self.browser = TaskBrowser(self.req, self)
 
+        self._set_actions()
         self.__init_plugin_engine()
         self.show_browser()
 
