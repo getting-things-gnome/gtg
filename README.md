@@ -103,13 +103,9 @@ If you have installed gtg, you can access those by executing:
 
 ## WANT TO KNOW MORE?
 
- * GTG Website: http://gtgnome.net/
  * GTG GitHub latest repository: https://github.com/getting-things-gnome/gtg
- * GTG project page on Launchpad: https://launchpad.net/gtg
  * GTG Wiki: http://live.gnome.org/gtg/
  * GTG developer's documentation: http://gtg.readthedocs.org/en/latest/index.html
 
-Feel free to join our user mailing-list to receive news about GTG. You can
-register to our mailing-list from this page: https://launchpad.net/~gtg-user
 
 Thanks for using GTG!
