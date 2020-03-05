@@ -16,12 +16,12 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-try:
-    import gi
-    gi.require_version('GnomeKeyring', '1.0')
+import gi
 
+try:
+    gi.require_version('GnomeKeyring', '1.0')
     from gi.repository import GnomeKeyring
-except ImportError:
+except (ValueError, ImportError):
     GnomeKeyring = None
 
 from GTG.tools.borg import Borg
