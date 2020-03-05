@@ -181,8 +181,8 @@
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="receives_default">True</property>
+            <property name="action_name">app.open_preferences</property>
             <property name="text" translatable="yes">Preferences</property>
-            <signal name="clicked" handler="on_preferences_activate" swapped="no"/>
           </object>
           <packing>
             <property name="expand">False</property>

@@ -136,7 +136,9 @@ class Application(Gtk.Application):
         """Setup actions."""
 
         action_entries = [
-            ('quit', lambda a, p: self.quit(), ('app.quit', ['<ctrl>Q']))
+            ('quit', lambda a, p: self.quit(), ('app.quit', ['<ctrl>Q'])),
+            ('open_preferences', self.open_preferences,
+                ('app.open_preferences', ['<ctrl>P'])),
         ]
 
         for action, callback, accel in action_entries:
@@ -277,7 +279,7 @@ class Application(Gtk.Application):
     def configure_backend(self, backend_id):
         self.open_edit_backends(None, backend_id)
 
-    def open_preferences(self, config_priv):
+    def open_preferences(self, action, param):
         self.preferences.activate()
 
     def configure_plugins(self):

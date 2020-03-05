@@ -304,8 +304,6 @@ class MainWindow(Gtk.ApplicationWindow):
             lambda w: openurl(info.TRANSLATE_URL),
             "on_report_bug_clicked":
             lambda w: openurl(info.REPORT_BUG_URL),
-            "on_preferences_activate":
-            self.open_preferences,
             "on_edit_plugins_activate":
             self.open_plugins,
             "on_edit_backends_activate":
