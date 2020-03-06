@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.22.1 -->
 <interface>
-  <!-- interface-requires gtk+ 3.0 -->
+  <requires lib="gtk+" version="3.20"/>
   <object class="GtkAdjustment" id="adjustment1">
     <property name="upper">100</property>
     <property name="step_increment">1</property>
@@ -10,14 +11,16 @@
   <object class="GtkWindow" id="backends_dialog">
     <property name="can_focus">False</property>
     <property name="window_position">mouse</property>
-    <signal name="delete_event" handler="on_BackendsDialog_delete_event"/>
+    <signal name="delete-event" handler="on_BackendsDialog_delete_event" swapped="no"/>
+    <child>
+      <placeholder/>
+    </child>
     <child>
       <object class="GtkBox" id="vbox1">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="spacing">18</property>
         <property name="orientation">vertical</property>
-        <property name="margin">18</property>
+        <property name="spacing">18</property>
         <child>
           <object class="GtkBox" id="big_central_box">
             <property name="visible">True</property>
@@ -30,8 +33,8 @@
                 <property name="orientation">vertical</property>
                 <child>
                   <object class="GtkViewport" id="treeview_window">
-                    <property name="height_request">400</property>
                     <property name="width_request">210</property>
+                    <property name="height_request">400</property>
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <child>
@@ -80,7 +83,7 @@
                       </packing>
                     </child>
                     <style>
-                      <class name="inline-toolbar" />
+                      <class name="inline-toolbar"/>
                     </style>
                   </object>
                   <packing>
@@ -135,7 +138,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <signal name="clicked" handler="on_help_button_clicked" swapped="no"/>
+                <property name="action_name">app.open_help</property>
               </object>
               <packing>
                 <property name="expand">False</property>

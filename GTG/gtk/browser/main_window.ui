@@ -195,8 +195,8 @@
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="receives_default">True</property>
+            <property name="action_name">app.open_help</property>
             <property name="text" translatable="yes">Help</property>
-            <signal name="clicked" handler="on_documentation_clicked" swapped="no"/>
           </object>
           <packing>
             <property name="expand">False</property>
