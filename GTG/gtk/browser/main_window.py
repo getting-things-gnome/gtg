@@ -292,8 +292,6 @@ class MainWindow(Gtk.ApplicationWindow):
             self.on_sidebar_toggled,
             "on_quickadd_field_activate":
             self.on_quickadd_activate,
-            "on_about_clicked":
-            self.on_about_clicked,
             "on_about_delete":
             self.on_about_close,
             "on_about_close":

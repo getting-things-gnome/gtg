@@ -137,6 +137,7 @@ class Application(Gtk.Application):
 
         action_entries = [
             ('quit', lambda a, p: self.quit(), ('app.quit', ['<ctrl>Q'])),
+            ('open_about', self.open_about, None),
             ('open_preferences', self.open_preferences,
                 ('app.open_preferences', ['<ctrl>P'])),
         ]
@@ -269,6 +270,9 @@ class Application(Gtk.Application):
             self.browser_config.set("opened_tasks", opened_tasks)
 
 # Others dialog ###########################################################
+    def open_about(self, action, param):
+        self.browser.about.show()
+
     def open_edit_backends(self, sender=None, backend_id=None):
         if not self.edit_backends_dialog:
             self.edit_backends_dialog = BackendsDialog(self.req)
