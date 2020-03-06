@@ -36,7 +36,6 @@ from GTG.core.translations import _, ngettext
 from GTG.gtk.editor import GnomeConfig
 from GTG.gtk.editor.calendar import GTGCalendar
 from GTG.gtk.editor.taskview import TaskView
-from GTG.gtk.help import add_help_shortcut
 from GTG.gtk.tag_completion import tag_filter
 from GTG.tools.dates import Date
 from GTG.tools.logger import log
@@ -243,9 +242,6 @@ class TaskEditor():
 
         key, modifier = Gtk.accelerator_parse('<Control>w')
         agr.connect(key, modifier, Gtk.AccelFlags.VISIBLE, self.close)
-
-        # F1 shows help
-        add_help_shortcut(self.window, "editor")
 
         # Ctrl-N creates a new task
         key, modifier = Gtk.accelerator_parse('<Control>n')

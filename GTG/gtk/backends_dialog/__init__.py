@@ -32,7 +32,6 @@ from GTG.backends import BackendFactory
 from GTG.backends.genericbackend import GenericBackend
 from GTG.core.translations import _
 from GTG.gtk import ViewConfig
-from GTG.gtk import help
 from GTG.gtk.backends_dialog.addpanel import AddPanel
 from GTG.gtk.backends_dialog.backendstree import BackendsTree
 from GTG.gtk.backends_dialog.configurepanel import ConfigurePanel
@@ -71,7 +70,6 @@ class BackendsDialog():
         self._create_widgets_for_conf_panel()
         self._setup_signal_connections(builder)
         self._create_widgets_for_treeview()
-        help.add_help_shortcut(self.dialog, "sync")
 
 ########################################
 # INTERFACE WITH THE VIEWMANAGER #######
@@ -184,7 +182,6 @@ class BackendsDialog():
         signals = {
             'on_add_button_clicked': self.on_add_button,
             'on_remove_button_clicked': self.on_remove_button,
-            'on_help_button_clicked': self.on_help,
         }
         builder.connect_signals(signals)
 
@@ -207,12 +204,6 @@ class BackendsDialog():
 ########################################
 # EVENT HANDLING #######################
 ########################################
-    @classmethod
-    def on_help(cls, widget):
-        """ Open help for syncronization services """
-        help.show_help("sync")
-        return True
-
     def on_backend_selected(self, backend_id):
         """
         When a backend in the treeview gets selected, show

@@ -29,6 +29,8 @@ from GTG.gtk.browser.main_window import MainWindow
 from GTG.gtk.editor.editor import TaskEditor
 from GTG.gtk.preferences import Preferences
 from GTG.gtk.plugins import PluginsDialog
+from webbrowser import open as openurl
+from GTG import info
 from GTG.gtk.dbuswrapper import DBusTaskWrapper
 from GTG.tools import clipboard
 from GTG.core.plugins.engine import PluginEngine
@@ -138,6 +140,7 @@ class Application(Gtk.Application):
         action_entries = [
             ('quit', lambda a, p: self.quit(), ('app.quit', ['<ctrl>Q'])),
             ('open_about', self.open_about, None),
+            ('open_help', self.open_help, ('app.open_help', ['F1'])),
             ('open_preferences', self.open_preferences,
                 ('app.open_preferences', ['<ctrl>P'])),
         ]
@@ -307,6 +310,11 @@ class Application(Gtk.Application):
 
     def close_tag_editor(self):
         self.tag_editor_dialog.hide()
+
+    def open_help(self, action, param):
+        """Open help callback."""
+
+        openurl(info.HELP_URI)
 
 # URIS #####################################################################
     def open_uri_list(self, unused, uri_list):
