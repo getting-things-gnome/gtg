@@ -390,9 +390,6 @@ class MainWindow(Gtk.ApplicationWindow):
         agr = Gtk.AccelGroup()
         self.add_accel_group(agr)
 
-        # self._add_accelerator_for_widget(agr, "tags", "F9")
-        # self._add_accelerator_for_widget(agr, "file_quit", "<Control>q")
-        self._add_accelerator_for_widget(agr, "new_task", "<Control>n")
         self._add_accelerator_for_widget(agr, "tcm_add_subtask",
                                          "<Control><Shift>n")
         self._add_accelerator_for_widget(agr, "tcm_edit", "<Control>e")
