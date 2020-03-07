@@ -141,6 +141,7 @@ class Application(Gtk.Application):
             ('quit', lambda a, p: self.quit(), ('app.quit', ['<ctrl>Q'])),
             ('open_about', self.open_about, None),
             ('open_plugins', self.open_plugins_manager, None),
+            ('new_task', self.new_task, ('app.new_task', ['<ctrl>N'])),
             ('open_backends', self.open_backends_manager, None),
             ('open_help', self.open_help, ('app.open_help', ['F1'])),
             ('open_preferences', self.open_preferences,
@@ -209,6 +210,10 @@ class Application(Gtk.Application):
         if self.config.get('autoclean'):
             self.purge_old_tasks()
 
+    def new_task(self, param, action):
+        """Callback to add a new task."""
+
+        self.browser.on_add_task()
 
 # Task Editor ############################################################
     def get_opened_editors(self):
