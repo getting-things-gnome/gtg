@@ -131,6 +131,8 @@ class MainWindow(Gtk.ApplicationWindow):
             ('change_tags', self.on_modify_tags,
              ('win.change_tags', ['<ctrl>T'])),
             ('search', self.toggle_search, ('win.search', ['<ctrl>F'])),
+            ('focus_quickentry', self.focus_quickentry,
+             ('win.focus_quickentry', ['<ctrl>L'])),
         ]
 
         for action, callback, accel in action_entries:
@@ -399,9 +401,6 @@ class MainWindow(Gtk.ApplicationWindow):
         # self._add_accelerator_for_widget(agr, "closed_pane", "<Control>F9")
         # self._add_accelerator_for_widget(agr, "help_contents", "F1")
 
-        key, mod = Gtk.accelerator_parse("<Control>l")
-        self.quickadd_entry.add_accelerator("grab-focus", agr, key, mod,
-                                       Gtk.AccelFlags.VISIBLE)
 
 # HELPER FUNCTIONS ##########################################################
 
@@ -697,6 +696,11 @@ class MainWindow(Gtk.ApplicationWindow):
         # expanded (unwanted situation)
         colt = [colt_tag for colt_tag in colt if tag[1:-1] not in colt_tag]
         self.config.set("expanded_tags", colt)
+
+    def focus_quickentry(self, action, param):
+        """Callback to focus the quick entry widget."""
+
+        self.quickadd_entry.grab_focus()
 
     def on_quickadd_activate(self, widget):
         """ Add a new task from quickadd toolbar """
