@@ -130,6 +130,11 @@ class MainWindow(Gtk.ApplicationWindow):
             ('search', self.toggle_search, ('win.search', ['<ctrl>F'])),
             ('focus_quickentry', self.focus_quickentry,
              ('win.focus_quickentry', ['<ctrl>L'])),
+            ('delete_task', self.on_delete_tasks,
+             ('win.delete_task', ['Delete'])),
+            ('mark_as_started', self.on_mark_as_started, None),
+            ('start_tomorrow', self.on_start_for_tomorrow, None),
+            ('start_next_week', self.on_start_for_next_week, None),
         ]
 
         for action, callback, accel in action_entries:
@@ -255,16 +260,8 @@ class MainWindow(Gtk.ApplicationWindow):
         SIGNAL_CONNECTIONS_DIC = {
             "on_edit_done_task":
             self.on_edit_done_task,
-            "on_delete_task":
-            self.on_delete_tasks,
             "on_mark_as_done":
             self.on_mark_as_done,
-            "on_mark_as_started":
-            self.on_mark_as_started,
-            "on_start_for_tomorrow":
-            self.on_start_for_tomorrow,
-            "on_start_for_next_week":
-            self.on_start_for_next_week,
             "on_start_for_next_month":
             self.on_start_for_next_month,
             "on_start_for_next_year":
@@ -851,10 +848,7 @@ class MainWindow(Gtk.ApplicationWindow):
         is_shift_f10 = (keyname == "F10" and
                         event.get_state() & Gdk.ModifierType.SHIFT_MASK)
 
-        if keyname == "Delete":
-            self.on_delete_tasks()
-            return True
-        elif is_shift_f10 or keyname == "Menu":
+        if is_shift_f10 or keyname == "Menu":
             self.taskpopup.popup_at_pointer(event)
             return True
 
@@ -877,10 +871,7 @@ class MainWindow(Gtk.ApplicationWindow):
         is_shift_f10 = (keyname == "F10" and
                         event.get_state() & Gdk.ModifierType.SHIFT_MASK)
 
-        if keyname == "Delete":
-            self.on_delete_tasks()
-            return True
-        elif is_shift_f10 or keyname == "Menu":
+        if is_shift_f10 or keyname == "Menu":
             self.ctaskpopup.popup(None, None, None, None, 0, event.time)
             return True
 
@@ -920,6 +911,7 @@ class MainWindow(Gtk.ApplicationWindow):
                 return
         else:
             tids_todelete = [tid]
+
         log.debug("going to delete %s" % tids_todelete)
         self.app.ask_delete_tasks(tids_todelete, self)
 
@@ -934,14 +926,14 @@ class MainWindow(Gtk.ApplicationWindow):
         for task in tasks:
             task.set_start_date(start_date)
 
-    def on_mark_as_started(self, widget):
-        self.update_start_date(widget, "today")
+    def on_mark_as_started(self, action, param):
+        self.update_start_date(None, "today")
 
-    def on_start_for_tomorrow(self, widget):
-        self.update_start_date(widget, "tomorrow")
+    def on_start_for_tomorrow(self, action, param):
+        self.update_start_date(None, "tomorrow")
 
-    def on_start_for_next_week(self, widget):
-        self.update_start_date(widget, "next week")
+    def on_start_for_next_week(self, action, param):
+        self.update_start_date(None, "next week")
 
     def on_start_for_next_month(self, widget):
         self.update_start_date(widget, "next month")

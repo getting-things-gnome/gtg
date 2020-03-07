@@ -573,9 +573,9 @@
       <object class="GtkMenuItem" id="tcm_delete">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
+        <property name="action_name">win.delete_task</property>
         <property name="label">Delete</property>
         <property name="use_underline">True</property>
-        <signal name="activate" handler="on_delete_task" swapped="no"/>
       </object>
     </child>
     <child>
@@ -598,27 +598,27 @@
               <object class="GtkMenuItem" id="tcm_mark_as_started">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="action_name">win.mark_as_started</property>
                 <property name="label" translatable="yes">T_oday</property>
                 <property name="use_underline">True</property>
-                <signal name="activate" handler="on_mark_as_started" swapped="no"/>
               </object>
             </child>
             <child>
               <object class="GtkMenuItem" id="tcm_start_for_tomorrow">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="action_name">win.start_tomorrow</property>
                 <property name="label" translatable="yes">_Tomorrow</property>
                 <property name="use_underline">True</property>
-                <signal name="activate" handler="on_start_for_tomorrow" swapped="no"/>
               </object>
             </child>
             <child>
               <object class="GtkMenuItem" id="tcm_start_for_next_week">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="action_name">win.start_next_week</property>
                 <property name="label" translatable="yes">Next _Week</property>
                 <property name="use_underline">True</property>
-                <signal name="activate" handler="on_start_for_next_week" swapped="no"/>
               </object>
             </child>
             <child>
