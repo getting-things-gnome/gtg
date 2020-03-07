@@ -142,6 +142,9 @@ class Application(Gtk.Application):
             ('open_about', self.open_about, None),
             ('open_plugins', self.open_plugins_manager, None),
             ('new_task', self.new_task, ('app.new_task', ['<ctrl>N'])),
+            ('new_subtask', self.new_subtask,
+             ('app.new_subtask', ['<ctrl><shift>N'])),
+            ('edit_task', self.edit_task, ('app.edit_task', ['<ctrl>E'])),
             ('open_backends', self.open_backends_manager, None),
             ('open_help', self.open_help, ('app.open_help', ['F1'])),
             ('open_preferences', self.open_preferences,
@@ -214,6 +217,17 @@ class Application(Gtk.Application):
         """Callback to add a new task."""
 
         self.browser.on_add_task()
+
+    def new_subtask(self, param, action):
+        """Callback to add a new subtask."""
+
+        self.browser.on_add_subtask()
+
+    def edit_task(self, param, action):
+        """Callback to edit a task."""
+
+        self.browser.on_edit_active_task()
+
 
 # Task Editor ############################################################
     def get_opened_editors(self):

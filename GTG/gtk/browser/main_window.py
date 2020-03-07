@@ -390,9 +390,6 @@ class MainWindow(Gtk.ApplicationWindow):
         agr = Gtk.AccelGroup()
         self.add_accel_group(agr)
 
-        self._add_accelerator_for_widget(agr, "tcm_add_subtask",
-                                         "<Control><Shift>n")
-        self._add_accelerator_for_widget(agr, "tcm_edit", "<Control>e")
         self._add_accelerator_for_widget(agr, "tcm_mark_as_done", "<Control>d")
         self._add_accelerator_for_widget(agr, "tcm_dismiss", "<Control>i")
         self._add_accelerator_for_widget(agr, "tcm_modifytags", "<Control>t")
@@ -910,7 +907,7 @@ class MainWindow(Gtk.ApplicationWindow):
         uid = task.get_id()
         self.app.open_task(uid, thisisnew=True)
 
-    def on_add_subtask(self, widget):
+    def on_add_subtask(self, widget=None):
         uid = self.get_selected_task()
         if uid:
             zetask = self.req.get_task(uid)
@@ -920,7 +917,7 @@ class MainWindow(Gtk.ApplicationWindow):
             zetask.add_child(task.get_id())
             self.app.open_task(task.get_id(), thisisnew=True)
 
-    def on_edit_active_task(self, widget, row=None, col=None):
+    def on_edit_active_task(self, widget=None, row=None, col=None):
         tid = self.get_selected_task()
         if tid:
             self.app.open_task(tid)
