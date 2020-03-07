@@ -140,8 +140,8 @@
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="receives_default">True</property>
+            <property name="action_name">app.open_plugins</property>
             <property name="text" translatable="yes">Plugins</property>
-            <signal name="clicked" handler="on_edit_plugins_activate" swapped="no"/>
           </object>
           <packing>
             <property name="expand">False</property>
