@@ -140,6 +140,7 @@ class Application(Gtk.Application):
         action_entries = [
             ('quit', lambda a, p: self.quit(), ('app.quit', ['<ctrl>Q'])),
             ('open_about', self.open_about, None),
+            ('open_plugins', self.open_plugins_manager, None),
             ('open_help', self.open_help, ('app.open_help', ['F1'])),
             ('open_preferences', self.open_preferences,
                 ('app.open_preferences', ['<ctrl>P'])),
@@ -289,7 +290,9 @@ class Application(Gtk.Application):
     def open_preferences(self, action, param):
         self.preferences.activate()
 
-    def configure_plugins(self):
+    def open_plugins_manager(self, action, params):
+        """Callback to open the plugins manager dialog."""
+
         self.plugins.activate()
 
     def ask_delete_tasks(self, tids, window):

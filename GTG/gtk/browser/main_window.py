@@ -317,8 +317,6 @@ class MainWindow(Gtk.ApplicationWindow):
             lambda w: openurl(info.TRANSLATE_URL),
             "on_report_bug_clicked":
             lambda w: openurl(info.REPORT_BUG_URL),
-            "on_edit_plugins_activate":
-            self.open_plugins,
             "on_edit_backends_activate":
             self.open_edit_backends,
             "on_search_activate":
@@ -481,9 +479,6 @@ class MainWindow(Gtk.ApplicationWindow):
 
     def open_preferences(self, widget):
         self.app.open_preferences(self.config)
-
-    def open_plugins(self, widget):
-        self.app.configure_plugins()
 
     def open_edit_backends(self, widget):
         self.app.open_edit_backends()
