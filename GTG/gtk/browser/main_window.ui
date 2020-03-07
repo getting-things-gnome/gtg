@@ -531,18 +531,18 @@
       <object class="GtkMenuItem" id="tcm_add_subtask">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
+        <property name="action_name">app.new_subtaskaaa</property>
         <property name="label" translatable="yes">Add a subtask</property>
         <property name="use_underline">True</property>
-        <signal name="activate" handler="on_add_subtask" swapped="no"/>
       </object>
     </child>
     <child>
       <object class="GtkMenuItem" id="tcm_edit">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
+        <property name="action_name">app.edit_task</property>
         <property name="label">Edit</property>
         <property name="use_underline">True</property>
-        <signal name="activate" handler="on_edit_active_task" swapped="no"/>
       </object>
     </child>
     <child>
