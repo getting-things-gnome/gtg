@@ -21,7 +21,7 @@
 from webbrowser import open as openurl
 import threading
 
-from gi.repository import GObject, Gtk, Gdk
+from gi.repository import GObject, Gtk, Gdk, Gio
 
 from GTG import info
 from GTG.backends.backendsignals import BackendSignals
@@ -88,6 +88,9 @@ class MainWindow(Gtk.ApplicationWindow):
         # Setup GTG icon theme
         self._init_icon_theme()
 
+        # Init Actions
+        self._set_actions()
+
         # Tags
         self.tagtree = None
         self.tagtreeview = None
@@ -119,6 +122,24 @@ class MainWindow(Gtk.ApplicationWindow):
         app.timer.connect('refresh', self.refresh_all_views)
 
 # INIT HELPER FUNCTIONS #######################################################
+    def _set_actions(self):
+        """Setup actions."""
+
+        action_entries = [
+            ('toggle_sidebar', self.on_sidebar_toggled,
+             ('win.toggle_sidebar', ['F9'])),
+        ]
+
+        for action, callback, accel in action_entries:
+            simple_action = Gio.SimpleAction.new(action, None)
+            simple_action.connect('activate', callback)
+            simple_action.set_enabled(True)
+
+            self.add_action(simple_action)
+
+            if accel is not None:
+                self.app.set_accels_for_action(*accel)
+
     def _init_icon_theme(self):
         """
         sets the deafault theme for icon and its directory
@@ -284,8 +305,6 @@ class MainWindow(Gtk.ApplicationWindow):
             self.on_add_subtask,
             "on_tagcontext_deactivate":
             self.on_tagcontext_deactivate,
-            "on_view_sidebar_toggled":
-            self.on_sidebar_toggled,
             "on_quickadd_field_activate":
             self.on_quickadd_activate,
             "on_about_delete":
@@ -377,7 +396,7 @@ class MainWindow(Gtk.ApplicationWindow):
         agr = Gtk.AccelGroup()
         self.add_accel_group(agr)
 
-        self._add_accelerator_for_widget(agr, "tags", "F9")
+        # self._add_accelerator_for_widget(agr, "tags", "F9")
         # self._add_accelerator_for_widget(agr, "file_quit", "<Control>q")
         self._add_accelerator_for_widget(agr, "new_task", "<Control>n")
         self._add_accelerator_for_widget(agr, "tcm_add_subtask",
@@ -623,14 +642,18 @@ class MainWindow(Gtk.ApplicationWindow):
     def on_tagcontext_deactivate(self, menushell):
         self.reset_cursor()
 
-    def on_sidebar_toggled(self, widget):
+    def on_sidebar_toggled(self, action, param):
+        """Toggle tags sidebar."""
+
         tags = self.builder.get_object("tags")
+
         if self.sidebar.get_property("visible"):
             self.config.set("tag_pane", False)
             self.sidebar.hide()
         else:
             if not self.tagtreeview:
                 self.init_tags_sidebar()
+
             self.sidebar.show()
             self.config.set("tag_pane", True)
 
