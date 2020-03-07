@@ -317,8 +317,6 @@ class MainWindow(Gtk.ApplicationWindow):
             lambda w: openurl(info.TRANSLATE_URL),
             "on_report_bug_clicked":
             lambda w: openurl(info.REPORT_BUG_URL),
-            "on_edit_backends_activate":
-            self.open_edit_backends,
             "on_search_activate":
             self.on_search_toggled,
             "on_save_search":
@@ -476,9 +474,6 @@ class MainWindow(Gtk.ApplicationWindow):
         selection.unselect_all()
         selection.select_iter(tag_iter)
         self.on_select_tag()
-
-    def open_edit_backends(self, widget):
-        self.app.open_edit_backends()
 
     def quit(self, widget=None, data=None):
         self.app.quit()
