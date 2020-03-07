@@ -472,7 +472,7 @@
         <property name="receives_default">False</property>
         <property name="tooltip_text" translatable="yes">Create a new task</property>
         <property name="valign">center</property>
-        <signal name="clicked" handler="on_add_task" swapped="no"/>
+        <property name="action_name">app.new_task</property>
       </object>
     </child>
     <child type="title">

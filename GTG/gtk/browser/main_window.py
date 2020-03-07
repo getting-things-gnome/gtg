@@ -251,8 +251,6 @@ class MainWindow(Gtk.ApplicationWindow):
         connects signals on UI elements
         """
         SIGNAL_CONNECTIONS_DIC = {
-            "on_add_task":
-            self.on_add_task,
             "on_edit_active_task":
             self.on_edit_active_task,
             "on_edit_done_task":
@@ -910,7 +908,7 @@ class MainWindow(Gtk.ApplicationWindow):
             self.ctaskpopup.popup(None, None, None, None, 0, event.time)
             return True
 
-    def on_add_task(self, widget):
+    def on_add_task(self, widget=None):
         tags = [tag for tag in self.get_selected_tags() if tag.startswith('@')]
         task = self.req.new_task(tags=tags, newtask=True)
         uid = task.get_id()
