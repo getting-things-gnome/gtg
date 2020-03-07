@@ -477,9 +477,6 @@ class MainWindow(Gtk.ApplicationWindow):
         selection.select_iter(tag_iter)
         self.on_select_tag()
 
-    def open_preferences(self, widget):
-        self.app.open_preferences(self.config)
-
     def open_edit_backends(self, widget):
         self.app.open_edit_backends()
 
