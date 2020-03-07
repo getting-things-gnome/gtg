@@ -141,6 +141,7 @@ class Application(Gtk.Application):
             ('quit', lambda a, p: self.quit(), ('app.quit', ['<ctrl>Q'])),
             ('open_about', self.open_about, None),
             ('open_plugins', self.open_plugins_manager, None),
+            ('open_backends', self.open_backends_manager, None),
             ('open_help', self.open_help, ('app.open_help', ['F1'])),
             ('open_preferences', self.open_preferences,
                 ('app.open_preferences', ['<ctrl>P'])),
@@ -286,6 +287,11 @@ class Application(Gtk.Application):
 
     def configure_backend(self, backend_id):
         self.open_edit_backends(None, backend_id)
+
+    def open_backends_manager(self, action, param):
+        """Callback to open the backends manager dialog."""
+
+        self.open_edit_backends()
 
     def open_preferences(self, action, param):
         self.preferences.activate()

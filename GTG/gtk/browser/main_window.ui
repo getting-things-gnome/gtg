@@ -154,8 +154,8 @@
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="receives_default">True</property>
+            <property name="action_name">app.open_backends</property>
             <property name="text" translatable="yes">Synchronization</property>
-            <signal name="clicked" handler="on_edit_backends_activate" swapped="no"/>
           </object>
           <packing>
             <property name="expand">False</property>
