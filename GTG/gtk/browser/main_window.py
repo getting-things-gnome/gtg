@@ -128,6 +128,8 @@ class MainWindow(Gtk.ApplicationWindow):
         action_entries = [
             ('toggle_sidebar', self.on_sidebar_toggled,
              ('win.toggle_sidebar', ['F9'])),
+            ('change_tags', self.on_modify_tags,
+             ('win.change_tags', ['<ctrl>T'])),
         ]
 
         for action, callback, accel in action_entries:
@@ -390,7 +392,6 @@ class MainWindow(Gtk.ApplicationWindow):
         agr = Gtk.AccelGroup()
         self.add_accel_group(agr)
 
-        self._add_accelerator_for_widget(agr, "tcm_modifytags", "<Control>t")
         self._add_accelerator_for_widget(agr, "search_button", "<Control>f")
         # TODO(jakubbrindza): We cannot apply this function to closed_pane
         # widget since it yields the following issue:
@@ -1042,8 +1043,9 @@ class MainWindow(Gtk.ApplicationWindow):
             for task in tasks:
                 task.set_start_date(date)
 
-    def on_modify_tags(self, widget):
-        """ Run Modify Tags dialog on selected tasks """
+    def on_modify_tags(self, action, params):
+        """Open modify tags dialog for selected tasks."""
+
         tasks = self.get_selected_tasks()
         self.modifytags_dialog.modify_tags(tasks)
 

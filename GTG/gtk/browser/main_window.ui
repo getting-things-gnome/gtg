@@ -784,8 +784,8 @@
       <object class="GtkMenuItem" id="tcm_modifytags">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
+        <property name="action_name">win.change_tags</property>
         <property name="label" translatable="yes">Modify Tags...</property>
-        <signal name="activate" handler="on_modify_tags" swapped="no"/>
       </object>
     </child>
   </object>
