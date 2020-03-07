@@ -390,8 +390,6 @@ class MainWindow(Gtk.ApplicationWindow):
         agr = Gtk.AccelGroup()
         self.add_accel_group(agr)
 
-        self._add_accelerator_for_widget(agr, "tcm_mark_as_done", "<Control>d")
-        self._add_accelerator_for_widget(agr, "tcm_dismiss", "<Control>i")
         self._add_accelerator_for_widget(agr, "tcm_modifytags", "<Control>t")
         self._add_accelerator_for_widget(agr, "search_button", "<Control>f")
         # TODO(jakubbrindza): We cannot apply this function to closed_pane
@@ -1064,7 +1062,7 @@ class MainWindow(Gtk.ApplicationWindow):
         for task in all_subtasks:
             self.app.close_task(task.get_id())
 
-    def on_mark_as_done(self, widget):
+    def on_mark_as_done(self, widget=None):
         tasks_uid = [uid for uid in self.get_selected_tasks()
                      if uid is not None]
         if len(tasks_uid) == 0:
@@ -1084,7 +1082,7 @@ class MainWindow(Gtk.ApplicationWindow):
                 task.set_status(Task.STA_DONE)
                 self.close_all_task_editors(uid)
 
-    def on_dismiss_task(self, widget):
+    def on_dismiss_task(self, widget=None):
         tasks_uid = [uid for uid in self.get_selected_tasks()
                      if uid is not None]
         if len(tasks_uid) == 0:

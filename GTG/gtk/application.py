@@ -145,6 +145,9 @@ class Application(Gtk.Application):
             ('new_subtask', self.new_subtask,
              ('app.new_subtask', ['<ctrl><shift>N'])),
             ('edit_task', self.edit_task, ('app.edit_task', ['<ctrl>E'])),
+            ('mark_as_done', self.mark_as_done,
+             ('app.mark_as_done', ['<ctrl>D'])),
+            ('dismiss', self.dismiss, ('app.dismiss', ['<ctrl>I'])),
             ('open_backends', self.open_backends_manager, None),
             ('open_help', self.open_help, ('app.open_help', ['F1'])),
             ('open_preferences', self.open_preferences,
@@ -227,6 +230,16 @@ class Application(Gtk.Application):
         """Callback to edit a task."""
 
         self.browser.on_edit_active_task()
+
+    def mark_as_done(self, param, action):
+        """Callback to mark a task as done."""
+
+        self.browser.on_mark_as_done()
+
+    def dismiss(self, param, action):
+        """Callback to mark a task as done."""
+
+        self.browser.on_dismiss_task()
 
 
 # Task Editor ############################################################
