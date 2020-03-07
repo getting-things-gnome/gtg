@@ -130,6 +130,7 @@ class MainWindow(Gtk.ApplicationWindow):
              ('win.toggle_sidebar', ['F9'])),
             ('change_tags', self.on_modify_tags,
              ('win.change_tags', ['<ctrl>T'])),
+            ('search', self.toggle_search, ('win.search', ['<ctrl>F'])),
         ]
 
         for action, callback, accel in action_entries:
@@ -317,8 +318,6 @@ class MainWindow(Gtk.ApplicationWindow):
             lambda w: openurl(info.TRANSLATE_URL),
             "on_report_bug_clicked":
             lambda w: openurl(info.REPORT_BUG_URL),
-            "on_search_activate":
-            self.on_search_toggled,
             "on_save_search":
             self.on_save_search,
             "on_search":
@@ -392,7 +391,6 @@ class MainWindow(Gtk.ApplicationWindow):
         agr = Gtk.AccelGroup()
         self.add_accel_group(agr)
 
-        self._add_accelerator_for_widget(agr, "search_button", "<Control>f")
         # TODO(jakubbrindza): We cannot apply this function to closed_pane
         # widget since it yields the following issue:
         # widget `GtkScrolledWindow' has no activatable signal "activate"
@@ -406,6 +404,11 @@ class MainWindow(Gtk.ApplicationWindow):
                                        Gtk.AccelFlags.VISIBLE)
 
 # HELPER FUNCTIONS ##########################################################
+
+    def toggle_search(self, action, param):
+        """Callback to toggle search bar."""
+
+        self.on_search_toggled()
 
     def on_search_toggled(self, widget=None):
 

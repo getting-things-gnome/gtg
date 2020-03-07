@@ -508,7 +508,7 @@
         <property name="receives_default">False</property>
         <property name="tooltip_text" translatable="yes">Activate Search Entry</property>
         <property name="valign">center</property>
-        <signal name="clicked" handler="on_search_activate" swapped="no"/>
+        <property name="action_name">win.search</property>
         <child>
           <object class="GtkImage" id="search_icon">
             <property name="visible">True</property>
