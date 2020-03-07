@@ -111,9 +111,6 @@ class MainWindow(Gtk.ApplicationWindow):
         # Create our dictionary and connect it
         self._init_signal_connections()
 
-        # Define accelerator keys
-        self._init_accelerators()
-
         self.restore_state_from_conf()
 
         self.on_select_tag()
@@ -256,14 +253,10 @@ class MainWindow(Gtk.ApplicationWindow):
         connects signals on UI elements
         """
         SIGNAL_CONNECTIONS_DIC = {
-            "on_edit_active_task":
-            self.on_edit_active_task,
             "on_edit_done_task":
             self.on_edit_done_task,
             "on_delete_task":
             self.on_delete_tasks,
-            "on_modify_tags":
-            self.on_modify_tags,
             "on_mark_as_done":
             self.on_mark_as_done,
             "on_mark_as_started":
@@ -385,22 +378,6 @@ class MainWindow(Gtk.ApplicationWindow):
         key, mod = Gtk.accelerator_parse(accel)
         widget.add_accelerator("activate", agr, key, mod,
                                Gtk.AccelFlags.VISIBLE)
-
-    def _init_accelerators(self):
-        """
-        initialize gtk accelerators for different interface elements
-        """
-        agr = Gtk.AccelGroup()
-        self.add_accel_group(agr)
-
-        # TODO(jakubbrindza): We cannot apply this function to closed_pane
-        # widget since it yields the following issue:
-        # widget `GtkScrolledWindow' has no activatable signal "activate"
-        # without arguments. This will be handled before 0.4
-        # release and shortcuts for active/workview and closed will be added.
-        # self._add_accelerator_for_widget(agr, "closed_pane", "<Control>F9")
-        # self._add_accelerator_for_widget(agr, "help_contents", "F1")
-
 
 # HELPER FUNCTIONS ##########################################################
 
