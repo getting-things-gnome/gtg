@@ -852,7 +852,6 @@ class MainWindow(Gtk.ApplicationWindow):
         if event.button == 3:
             x = int(event.x)
             y = int(event.y)
-            time = event.time
             pthinfo = treeview.get_path_at_pos(x, y)
             if pthinfo is not None:
                 path, col, cellx, celly = pthinfo
@@ -863,8 +862,8 @@ class MainWindow(Gtk.ApplicationWindow):
                 else:
                     treeview.set_cursor(path, col, 0)
                 treeview.grab_focus()
-                self.taskpopup.popup(None, None, None, None, event.button,
-                                     time)
+                self.taskpopup.popup_at_pointer(event)
+
             return True
 
     def on_task_treeview_key_press_event(self, treeview, event):
@@ -876,7 +875,7 @@ class MainWindow(Gtk.ApplicationWindow):
             self.on_delete_tasks()
             return True
         elif is_shift_f10 or keyname == "Menu":
-            self.taskpopup.popup(None, None, None, None, 0, event.time)
+            self.taskpopup.popup_at_pointer(event)
             return True
 
     def on_closed_task_treeview_button_press_event(self, treeview, event):
