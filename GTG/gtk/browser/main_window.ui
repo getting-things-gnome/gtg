@@ -90,9 +90,9 @@
       <object class="GtkMenuItem" id="ctcm_delete">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
+        <property name="action_name">win.delete_task</property>
         <property name="label">Delete</property>
         <property name="use_underline">True</property>
-        <signal name="activate" handler="on_delete_task" swapped="no"/>
       </object>
     </child>
   </object>
