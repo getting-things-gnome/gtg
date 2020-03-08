@@ -136,6 +136,7 @@ class MainWindow(Gtk.ApplicationWindow):
             ('start_tomorrow', self.on_start_for_tomorrow, None),
             ('start_next_week', self.on_start_for_next_week, None),
             ('start_next_month', self.on_start_for_next_month, None),
+            ('start_next_year', self.on_start_for_next_year, None),
         ]
 
         for action, callback, accel in action_entries:
@@ -263,8 +264,6 @@ class MainWindow(Gtk.ApplicationWindow):
             self.on_edit_done_task,
             "on_mark_as_done":
             self.on_mark_as_done,
-            "on_start_for_next_year":
-            self.on_start_for_next_year,
             "on_start_for_specific_date":
             self.on_start_for_specific_date,
             "on_start_clear":
@@ -937,8 +936,8 @@ class MainWindow(Gtk.ApplicationWindow):
     def on_start_for_next_month(self, action, param):
         self.update_start_date(None, "next month")
 
-    def on_start_for_next_year(self, widget):
-        self.update_start_date(widget, "next year")
+    def on_start_for_next_year(self, action, param):
+        self.update_start_date(None, "next year")
 
     def on_start_clear(self, widget):
         self.update_start_date(widget, None)
