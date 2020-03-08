@@ -138,6 +138,13 @@ class MainWindow(Gtk.ApplicationWindow):
             ('start_next_month', self.on_start_for_next_month, None),
             ('start_next_year', self.on_start_for_next_year, None),
             ('start_clear', self.on_start_clear, None),
+            ('due_tomorrow', self.on_set_due_tomorrow, None),
+            ('due_next_week', self.on_set_due_next_week, None),
+            ('due_next_month', self.on_set_due_next_month, None),
+            ('due_next_year', self.on_set_due_next_year, None),
+            ('due_clear', self.on_set_due_clear, None),
+            ('due_soon', self.on_set_due_soon, None),
+            ('due_someday', self.on_set_due_someday, None),
         ]
 
         for action, callback, accel in action_entries:
@@ -265,24 +272,8 @@ class MainWindow(Gtk.ApplicationWindow):
             self.on_edit_done_task,
             "on_start_for_specific_date":
             self.on_start_for_specific_date,
-            "on_set_due_today":
-            self.on_set_due_today,
-            "on_set_due_tomorrow":
-            self.on_set_due_tomorrow,
-            "on_set_due_next_week":
-            self.on_set_due_next_week,
-            "on_set_due_next_month":
-            self.on_set_due_next_month,
-            "on_set_due_next_year":
-            self.on_set_due_next_year,
-            "on_set_due_soon":
-            self.on_set_due_soon,
-            "on_set_due_someday":
-            self.on_set_due_someday,
             "on_set_due_for_specific_date":
             self.on_set_due_for_specific_date,
-            "on_set_due_clear":
-            self.on_set_due_clear,
             "on_move":
             self.on_move,
             "on_size_allocate":
@@ -942,29 +933,29 @@ class MainWindow(Gtk.ApplicationWindow):
         for task in tasks:
             task.set_due_date(due_date)
 
-    def on_set_due_today(self, widget):
-        self.update_due_date(widget, "today")
+    def on_set_due_today(self, action, param):
+        self.update_due_date(None, "today")
 
-    def on_set_due_tomorrow(self, widget):
-        self.update_due_date(widget, "tomorrow")
+    def on_set_due_tomorrow(self, action, param):
+        self.update_due_date(None, "tomorrow")
 
-    def on_set_due_next_week(self, widget):
-        self.update_due_date(widget, "next week")
+    def on_set_due_next_week(self, action, param):
+        self.update_due_date(None, "next week")
 
-    def on_set_due_next_month(self, widget):
-        self.update_due_date(widget, "next month")
+    def on_set_due_next_month(self, action, param):
+        self.update_due_date(None, "next month")
 
-    def on_set_due_next_year(self, widget):
-        self.update_due_date(widget, "next year")
+    def on_set_due_next_year(self, action, param):
+        self.update_due_date(None, "next year")
 
-    def on_set_due_soon(self, widget):
-        self.update_due_date(widget, "soon")
+    def on_set_due_soon(self, action, param):
+        self.update_due_date(None, "soon")
 
-    def on_set_due_someday(self, widget):
-        self.update_due_date(widget, "someday")
+    def on_set_due_someday(self, action, param):
+        self.update_due_date(None, "someday")
 
-    def on_set_due_clear(self, widget):
-        self.update_due_date(widget, None)
+    def on_set_due_clear(self, action, param):
+        self.update_due_date(None, None)
 
     def on_start_for_specific_date(self, widget):
         """ Display Calendar to set start date of selected tasks """
