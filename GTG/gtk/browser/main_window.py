@@ -145,6 +145,7 @@ class MainWindow(Gtk.ApplicationWindow):
             ('due_clear', self.on_set_due_clear, None),
             ('due_soon', self.on_set_due_soon, None),
             ('due_someday', self.on_set_due_someday, None),
+            ('save_search', self.on_save_search, None),
         ]
 
         for action, callback, accel in action_entries:
@@ -288,8 +289,6 @@ class MainWindow(Gtk.ApplicationWindow):
             self.on_about_close,
             "on_about_close":
             self.on_about_close,
-            "on_save_search":
-            self.on_save_search,
             "on_search":
             self.on_search,
         }
@@ -389,7 +388,7 @@ class MainWindow(Gtk.ApplicationWindow):
 
         self.apply_filter_on_panes(SEARCH_TAG, parameters=parsed_query)
 
-    def on_save_search(self, widget):
+    def on_save_search(self, action, param):
         query = self.search_entry.get_text()
 
         # Try if this is a new search tag and save it correctly
