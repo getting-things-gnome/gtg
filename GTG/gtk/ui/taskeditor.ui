@@ -103,7 +103,7 @@
             <property name="receives_default">False</property>
             <property name="tooltip_text" translatable="yes">Mark the task as done</property>
             <property name="valign">center</property>
-            <signal name="clicked" handler="on_mark_as_done" swapped="no"/>
+            <property name="action_name">app.mark_as_done</property>
           </object>
         </child>
         <child>
@@ -113,7 +113,7 @@
             <property name="receives_default">False</property>
             <property name="tooltip_text" translatable="yes">Mark the task as to be done</property>
             <property name="valign">center</property>
-            <signal name="clicked" handler="on_mark_as_done" swapped="no"/>
+            <property name="action_name">app.mark_as_done</property>
           </object>
           <packing>
             <property name="position">1</property>
@@ -406,20 +406,21 @@
             <property name="fill">True</property>
             <property name="position">1</property>
           </packing>
-
         </child>
         <child>
-            <object class="GtkBox" id='pluginbox'>
+          <object class="GtkBox" id="pluginbox">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="orientation">vertical</property>
           </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">2</property>
+          </packing>
         </child>
-
       </object>
     </child>
-
-
   </object>
   <object class="GtkPopover" id="closed_popover">
     <property name="can_focus">False</property>

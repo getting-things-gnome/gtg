@@ -263,8 +263,6 @@ class MainWindow(Gtk.ApplicationWindow):
         SIGNAL_CONNECTIONS_DIC = {
             "on_edit_done_task":
             self.on_edit_done_task,
-            "on_mark_as_done":
-            self.on_mark_as_done,
             "on_start_for_specific_date":
             self.on_start_for_specific_date,
             "on_set_due_today":
