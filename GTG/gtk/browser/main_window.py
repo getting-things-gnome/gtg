@@ -285,8 +285,6 @@ class MainWindow(Gtk.ApplicationWindow):
             self.on_set_due_for_specific_date,
             "on_set_due_clear":
             self.on_set_due_clear,
-            "on_dismiss_task":
-            self.on_dismiss_task,
             "on_move":
             self.on_move,
             "on_size_allocate":
@@ -301,12 +299,6 @@ class MainWindow(Gtk.ApplicationWindow):
             self.on_about_close,
             "on_about_close":
             self.on_about_close,
-            "on_documentation_clicked":
-            lambda w: openurl(info.HELP_URI),
-            "on_translate_clicked":
-            lambda w: openurl(info.TRANSLATE_URL),
-            "on_report_bug_clicked":
-            lambda w: openurl(info.REPORT_BUG_URL),
             "on_save_search":
             self.on_save_search,
             "on_search":
