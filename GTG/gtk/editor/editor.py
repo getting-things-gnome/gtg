@@ -223,6 +223,7 @@ class TaskEditor():
         self.init_dimensions()
 
         self.window.insert_action_group('app', app)
+        self.window.insert_action_group('win', app.browser)
 
         self.textview.set_editable(True)
         self.window.show()
