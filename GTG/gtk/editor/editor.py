@@ -141,6 +141,8 @@ class TaskEditor():
 
         self.builder.connect_signals(dic)
         self.window = self.builder.get_object("TaskEditor")
+        self.window.set_application(app)
+
         # Removing the Normal textview to replace it by our own
         # So don't try to change anything with glade, this is a home-made
         # widget
