@@ -213,6 +213,13 @@ class Application(Gtk.Application):
          for task in to_remove
          if self.req.has_task(task.get_id())]
 
+    def get_active_editor(self):
+        """Get focused task editor window."""
+
+        for editor in self.opened_task.values():
+            if editor.window.is_active():
+                return editor
+
     def autoclean(self, timer):
         """Run Automatic cleanup of old tasks."""
 
@@ -227,7 +234,10 @@ class Application(Gtk.Application):
     def new_subtask(self, param, action):
         """Callback to add a new subtask."""
 
-        self.browser.on_add_subtask()
+        if self.browser.is_active():
+            self.browser.on_add_subtask()
+        else:
+            self.get_active_editor().insert_subtask()
 
     def edit_task(self, param, action):
         """Callback to edit a task."""
@@ -237,12 +247,18 @@ class Application(Gtk.Application):
     def mark_as_done(self, param, action):
         """Callback to mark a task as done."""
 
-        self.browser.on_mark_as_done()
+        if self.browser.is_active():
+            self.browser.on_mark_as_done()
+        else:
+            self.get_active_editor().change_status()
 
     def dismiss(self, param, action):
         """Callback to mark a task as done."""
 
-        self.browser.on_dismiss_task()
+        if self.browser.is_active():
+            self.browser.on_dismiss_task()
+        else:
+            self.get_active_editor().dismiss()
 
 
 # Task Editor ############################################################
