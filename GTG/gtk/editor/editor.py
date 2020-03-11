@@ -230,6 +230,7 @@ class TaskEditor():
             ('editor.close', self.close,
              ('app.editor.close', ['Escape', '<ctrl>w'])),
             ('editor.show_parent', self.on_parent_select, None),
+            ('editor.delete', self.delete_task, None),
             ('editor.open_tags_popup', self.open_tags_popover, None),
         ]
 
@@ -594,9 +595,9 @@ class TaskEditor():
     def delete_task(self, action, param):
         # this triggers the closing of the window in the view manager
         if self.task.is_new():
-            self.app.close_task(self.task.get_id())
+            self.app.close_task(self.task.get_id(), self.window)
         else:
-            self.app.ask_delete_tasks([self.task.get_id()])
+            self.app.ask_delete_tasks([self.task.get_id()], self.window)
 
     # Take the title as argument and return the subtask ID
     def new_subtask(self, title=None, tid=None):
