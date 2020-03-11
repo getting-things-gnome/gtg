@@ -347,11 +347,6 @@ class MainWindow(Gtk.ApplicationWindow):
                           self.on_backend_needing_interaction)
         self.selection = self.vtree_panes['active'].get_selection()
 
-    def _add_accelerator_for_widget(self, agr, name, accel):
-        widget = self.builder.get_object(name)
-        key, mod = Gtk.accelerator_parse(accel)
-        widget.add_accelerator("activate", agr, key, mod,
-                               Gtk.AccelFlags.VISIBLE)
 
 # HELPER FUNCTIONS ##########################################################
 
