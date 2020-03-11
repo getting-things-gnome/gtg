@@ -171,7 +171,7 @@
                         <property name="can_focus">False</property>
                         <property name="receives_default">False</property>
                         <property name="tooltip_text">Add subtask to current task</property>
-                        <signal name="clicked" handler="on_insert_subtask_clicked" swapped="no"/>
+                        <property name="action_name">app.new_subtask</property>
                         <child>
                           <object class="GtkImage" id="subtask_image">
                             <property name="visible">True</property>
@@ -193,8 +193,8 @@
                         <property name="can_focus">False</property>
                         <property name="receives_default">False</property>
                         <property name="tooltip_text">Add tags to the task</property>
+                        <property name="action_name">app.editor.open_tags_popup</property>
                         <property name="popover">tags_popover</property>
-                        <signal name="clicked" handler="on_tags_popover" swapped="no"/>
                         <child>
                           <object class="GtkImage" id="tags_image">
                             <property name="visible">True</property>
@@ -216,7 +216,7 @@
                         <property name="can_focus">False</property>
                         <property name="receives_default">False</property>
                         <property name="tooltip_text">Open the parent task</property>
-                        <signal name="clicked" handler="on_parent_select" swapped="yes"/>
+                        <property name="action_name">app.editor.show_parent</property>
                         <child>
                           <object class="GtkImage" id="parent_image">
                             <property name="visible">True</property>

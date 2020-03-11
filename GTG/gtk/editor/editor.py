@@ -26,7 +26,7 @@ import time
 import datetime
 import os
 
-from gi.repository import Gdk, Gtk, Pango
+from gi.repository import Gdk, Gtk, Pango, Gio
 
 from GTG.core.dirs import UI_DIR
 from GTG.core.plugins.api import PluginAPI
@@ -93,15 +93,9 @@ class TaskEditor():
 
         # Create our dictionary and connect it
         dic = {
-            "on_mark_as_done": self.change_status,
-            "on_dismiss": self.dismiss,
-            "delete_clicked": self.delete_task,
-
             "on_tags_popover": self.open_tags_popover,
             "on_tag_toggled": self.on_tag_toggled,
 
-            "on_insert_subtask_clicked": self.insert_subtask,
-            "on_parent_select": self.on_parent_select,
             "on_move": self.on_move,
 
             "show_popover_start": self.show_popover_start,
@@ -167,8 +161,6 @@ class TaskEditor():
         brought back, however its position is unsure.
         """
         # self.dayleft_label = self.builder.get_object("dayleft")
-        # Define accelerator keys
-        self.init_accelerators()
 
         self.task = task
         tags = task.get_tags()
@@ -226,50 +218,30 @@ class TaskEditor():
 
         self.window.insert_action_group('app', app)
         self.window.insert_action_group('win', app.browser)
+        self._set_actions()
 
         self.textview.set_editable(True)
         self.window.show()
 
-    # Define accelerator-keys for this dialog
-    """
-    TODO: undo/redo
-    + RE-enable all the features so that they work properly.
-    + new shortcuts for bold and italic once implemented.
-    """
-    def init_accelerators(self):
-        agr = Gtk.AccelGroup()
-        self.window.add_accel_group(agr)
+    def _set_actions(self):
+        """Setup actions."""
 
-        # Escape and Ctrl-W close the dialog. It's faster to call close
-        # directly, rather than use the close button widget
-        key, modifier = Gtk.accelerator_parse('Escape')
-        agr.connect(key, modifier, Gtk.AccelFlags.VISIBLE, self.close)
+        action_entries = [
+            ('editor.close', self.close,
+             ('app.editor.close', ['Escape', '<ctrl>w'])),
+            ('editor.show_parent', self.on_parent_select, None),
+            ('editor.open_tags_popup', self.open_tags_popover, None),
+        ]
 
-        key, modifier = Gtk.accelerator_parse('<Control>w')
-        agr.connect(key, modifier, Gtk.AccelFlags.VISIBLE, self.close)
+        for action, callback, accel in action_entries:
+            simple_action = Gio.SimpleAction.new(action, None)
+            simple_action.connect('activate', callback)
+            simple_action.set_enabled(True)
 
-        # Ctrl-N creates a new task
-        key, modifier = Gtk.accelerator_parse('<Control>n')
-        agr.connect(key, modifier, Gtk.AccelFlags.VISIBLE, self.new_task)
+            self.app.add_action(simple_action)
 
-        # Ctrl-Shift-N creates a new subtask
-        key, mod = Gtk.accelerator_parse("<Control><Shift>n")
-        self.add_subtask.add_accelerator('clicked', agr, key, mod,
-                                         Gtk.AccelFlags.VISIBLE)
-
-        # Ctrl-D marks task as done
-        key, mod = Gtk.accelerator_parse('<Control>d')
-        self.donebutton.add_accelerator('clicked', agr, key, mod,
-                                        Gtk.AccelFlags.VISIBLE)
-
-        # Ctrl-I marks task as dismissed
-        key, mod = Gtk.accelerator_parse('<Control>i')
-        self.dismissbutton.add_accelerator('clicked', agr, key, mod,
-                                           Gtk.AccelFlags.VISIBLE)
-
-        # Ctrl-Q quits GTG
-        key, modifier = Gtk.accelerator_parse('<Control>q')
-        agr.connect(key, modifier, Gtk.AccelFlags.VISIBLE, self.quit)
+            if accel is not None:
+                self.app.set_accels_for_action(*accel)
 
     def show_popover_start(self, widget, event):
         """Open the start date calendar popup."""
@@ -286,7 +258,7 @@ class TaskEditor():
 
         self.closed_popover.popup()
 
-    def open_tags_popover(self, widget):
+    def open_tags_popover(self, action, param):
         self.tag_store.clear()
 
         tags = self.req.get_tag_tree().get_all_nodes()
@@ -599,7 +571,7 @@ class TaskEditor():
         for task in all_subtasks:
             self.app.close_task(task.get_id())
 
-    def dismiss(self, widget):
+    def dismiss(self):
         stat = self.task.get_status()
         if stat == Task.STA_DISMISSED:
             self.task.set_status(Task.STA_ACTIVE)
@@ -609,7 +581,7 @@ class TaskEditor():
             self.close_all_subtasks()
             self.close(None)
 
-    def change_status(self, widget):
+    def change_status(self):
         stat = self.task.get_status()
         if stat == Task.STA_DONE:
             self.task.set_status(Task.STA_ACTIVE)
@@ -619,7 +591,7 @@ class TaskEditor():
             self.close_all_subtasks()
             self.close(None)
 
-    def delete_task(self, widget):
+    def delete_task(self, action, param):
         # this triggers the closing of the window in the view manager
         if self.task.is_new():
             self.app.close_task(self.task.get_id())
@@ -636,13 +608,7 @@ class TaskEditor():
             tid = subt.get_id()
         return tid
 
-    # Create a new task
-    def new_task(self, *args):
-        task = self.req.new_task(newtask=True)
-        task_id = task.get_id()
-        self.app.open_task(task_id)
-
-    def insert_subtask(self, widget):
+    def insert_subtask(self, action=None, param=None):
         self.textview.insert_newtask()
         self.textview.grab_focus()
 
@@ -653,7 +619,7 @@ class TaskEditor():
         else:
             self.textview.insert_text(" @", itera)
 
-    def on_parent_select(self, widget):
+    def on_parent_select(self, action, param):
         parents = self.task.get_parents()
 
         if len(parents) == 1:
@@ -717,7 +683,7 @@ class TaskEditor():
         self.config.set('size', self.window.get_size())
 
     # We define dummy variable for when close is called from a callback
-    def close(self, window=None, a=None, b=None, c=None):
+    def close(self, action=None, param=None):
 
         # We should also destroy the whole taskeditor object.
         if self.window:
@@ -754,9 +720,4 @@ class TaskEditor():
 
     def get_window(self):
         return self.window
-
-    def quit(self, accel_group=None, acceleratable=None, keyval=None,
-             modifier=None):
-        """Handles the accelerator for quitting GTG."""
-        self.app.quit()
 # -----------------------------------------------------------------------------
