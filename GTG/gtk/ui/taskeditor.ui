@@ -60,7 +60,7 @@
             <property name="can_focus">False</property>
             <property name="receives_default">False</property>
             <property name="tooltip_text">Permanently remove this task</property>
-            <property name="action_name">win.delete_task</property>
+            <property name="action_name">app.editor.delete</property>
             <property name="text" translatable="yes">Delete Task</property>
           </object>
           <packing>
