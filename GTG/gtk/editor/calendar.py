@@ -114,9 +114,8 @@ class GTGCalendar(GObject.GObject):
         else:
             self.__window.move(x - width, y - height)
 
-    def show_at_position(self, x, y):
+    def show(self):
         width, height = self.__window.get_size()
-        self.move_calendar_inside(width, height, x, y)
         self.__window.show()
         self.__window.grab_add()
 

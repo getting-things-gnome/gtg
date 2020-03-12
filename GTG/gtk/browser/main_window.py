@@ -137,6 +137,7 @@ class MainWindow(Gtk.ApplicationWindow):
             ('start_next_week', self.on_start_for_next_week, None),
             ('start_next_month', self.on_start_for_next_month, None),
             ('start_next_year', self.on_start_for_next_year, None),
+            ('start_custom', self.on_start_for_specific_date, None),
             ('start_clear', self.on_start_clear, None),
             ('due_tomorrow', self.on_set_due_tomorrow, None),
             ('due_next_week', self.on_set_due_next_week, None),
@@ -144,6 +145,7 @@ class MainWindow(Gtk.ApplicationWindow):
             ('due_next_year', self.on_set_due_next_year, None),
             ('due_clear', self.on_set_due_clear, None),
             ('due_soon', self.on_set_due_soon, None),
+            ('due_custom', self.on_set_due_for_specific_date, None),
             ('due_someday', self.on_set_due_someday, None),
             ('save_search', self.on_save_search, None),
         ]
@@ -271,10 +273,6 @@ class MainWindow(Gtk.ApplicationWindow):
         SIGNAL_CONNECTIONS_DIC = {
             "on_edit_done_task":
             self.on_edit_done_task,
-            "on_start_for_specific_date":
-            self.on_start_for_specific_date,
-            "on_set_due_for_specific_date":
-            self.on_set_due_for_specific_date,
             "on_move":
             self.on_move,
             "on_size_allocate":
@@ -951,34 +949,32 @@ class MainWindow(Gtk.ApplicationWindow):
     def on_set_due_clear(self, action, param):
         self.update_due_date(None, None)
 
-    def on_start_for_specific_date(self, widget):
+    def on_start_for_specific_date(self, action, param):
         """ Display Calendar to set start date of selected tasks """
+
         self.calendar.set_title("Set Start Date")
+
         # Get task from task name
         task = self.req.get_task(self.get_selected_tasks()[0])
         date = task.get_start_date()
         self.calendar.set_date(date, GTGCalendar.DATE_KIND_START)
-        # Shows the calendar just above the mouse on widget's line of symmetry
-        rect = widget.get_allocation()
-        result, x, y = widget.get_window().get_origin()
-        self.calendar.show_at_position(x + rect.x + rect.width,
-                                       y + rect.y)
+        self.calendar.show()
 
-    def on_set_due_for_specific_date(self, widget):
+    def on_set_due_for_specific_date(self, action, param):
         """ Display Calendar to set due date of selected tasks """
+
         self.calendar.set_title("Set Due Date")
+
         # Get task from task name
         task = self.req.get_task(self.get_selected_tasks()[0])
+
         if not task.get_due_date():
             date = task.get_start_date()
         else:
             date = task.get_due_date()
+
         self.calendar.set_date(date, GTGCalendar.DATE_KIND_DUE)
-        # Shows the calendar just above the mouse on widget's line of symmetry
-        rect = widget.get_allocation()
-        result, x, y = widget.get_window().get_origin()
-        self.calendar.show_at_position(x + rect.x + rect.width,
-                                       y + rect.y)
+        self.calendar.show()
 
     def on_date_changed(self, calendar):
         # Get tasks' list from task names' list
