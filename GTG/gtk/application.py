@@ -48,6 +48,9 @@ from GTG.core.timer import Timer
 
 class Application(Gtk.Application):
 
+    # List of Task URIs to open
+    uri_list = NotImplemented
+
     # init ##################################################################
     def __init__(self, debug):
 
@@ -378,13 +381,17 @@ class Application(Gtk.Application):
         openurl(info.HELP_URI)
 
 # URIS #####################################################################
-    def open_uri_list(self, unused, uri_list):
+    def open_uri_list(self):
         """
         Open the Editor windows of the tasks associated with the uris given.
         Uris are of the form gtg://<taskid>
         """
-        for uri in uri_list:
-            if uri.startswith("gtg://"):
+
+        log.debug(f'Received {len(self.uri_list)} Task URIs')
+
+        for uri in self.uri_list:
+            if uri.startswith('gtg://'):
+                log.debug(f'Opening task {uri[6:]}')
                 self.open_task(uri[6:])
 
         # if no window was opened, we just quit
@@ -419,6 +426,7 @@ class Application(Gtk.Application):
         self._set_actions()
         self.__init_plugin_engine()
         self.show_browser()
+        self.open_uri_list()
 
         log.debug("Application activation finished")
 
