@@ -104,6 +104,7 @@ class MainWindow(Gtk.ApplicationWindow):
 
         # Init non-GtkBuilder widgets
         self._init_ui_widget()
+        self._init_context_menus()
 
         # Initialize "About" dialog
         self._init_about_dialog()
@@ -119,6 +120,19 @@ class MainWindow(Gtk.ApplicationWindow):
         app.timer.connect('refresh', self.refresh_all_views)
 
 # INIT HELPER FUNCTIONS #######################################################
+    def _init_context_menus(self):
+        builder = Gtk.Builder()
+        builder.add_from_file(GnomeConfig.MENUS_UI_FILE)
+
+        closed_menu_model = builder.get_object('closed_task_menu')
+        self.closed_menu = Gtk.Menu.new_from_model(closed_menu_model)
+        self.closed_menu.attach_to_widget(self.main_box)
+
+        open_menu_model = builder.get_object('task_menu')
+        self.open_menu = Gtk.Menu.new_from_model(open_menu_model)
+        self.open_menu.attach_to_widget(self.main_box)
+
+
     def _set_actions(self):
         """Setup actions."""
 
@@ -809,7 +823,7 @@ class MainWindow(Gtk.ApplicationWindow):
                 else:
                     treeview.set_cursor(path, col, 0)
                 treeview.grab_focus()
-                self.taskpopup.popup_at_pointer(event)
+                self.open_menu.popup_at_pointer(event)
 
             return True
 
@@ -819,21 +833,21 @@ class MainWindow(Gtk.ApplicationWindow):
                         event.get_state() & Gdk.ModifierType.SHIFT_MASK)
 
         if is_shift_f10 or keyname == "Menu":
-            self.taskpopup.popup_at_pointer(event)
+            self.open_menu.popup_at_pointer(event)
             return True
 
     def on_closed_task_treeview_button_press_event(self, treeview, event):
         if event.button == 3:
             x = int(event.x)
             y = int(event.y)
-            time = event.time
             pthinfo = treeview.get_path_at_pos(x, y)
+
             if pthinfo is not None:
                 path, col, cellx, celly = pthinfo
                 treeview.grab_focus()
                 treeview.set_cursor(path, col, 0)
-                self.ctaskpopup.popup(None, None, None, None, event.button,
-                                      time)
+                self.closed_menu.popup_at_pointer(event)
+
             return True
 
     def on_closed_task_treeview_key_press_event(self, treeview, event):
@@ -842,7 +856,7 @@ class MainWindow(Gtk.ApplicationWindow):
                         event.get_state() & Gdk.ModifierType.SHIFT_MASK)
 
         if is_shift_f10 or keyname == "Menu":
-            self.ctaskpopup.popup(None, None, None, None, 0, event.time)
+            self.closed_menu.popup_at_pointer(event)
             return True
 
     def on_add_task(self, widget=None):
@@ -1244,7 +1258,8 @@ class MainWindow(Gtk.ApplicationWindow):
 
     def is_active(self):
         """ Returns true if window is the currently active window """
-        return self.get_property("is-active")
+
+        return self.get_property("is-active") or self.menu.is_visible()
 
     def get_builder(self):
         return self.builder
