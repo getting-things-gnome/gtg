@@ -5,6 +5,7 @@ tmp
 .pydevproject
 .project
 .settings
+.tox
 **/**.glade.h
 **/**.gladep
 **/**.gladep.bak
