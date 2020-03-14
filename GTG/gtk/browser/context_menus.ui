@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <requires lib="gtk+" version="3.20"/>
+
+  <menu id="closed_task_menu">
+    <section>
+      <item>
+        <attribute name="label" translatable="yes">Edit</attribute>
+        <attribute name="action">app.edit_task</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
+        <attribute name="label" translatable="yes">Mark as not done</attribute>
+        <attribute name="action">app.mark_as_done</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">Undismiss</attribute>
+        <attribute name="action">app.dismiss</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">Delete</attribute>
+        <attribute name="action">win.delete</attribute>
+      </item>
+    </section>
+  </menu>
+
+  <menu id="task_menu">
+    <section>
+      <item>
+        <attribute name="label" translatable="yes">Add a subtask</attribute>
+        <attribute name="action">app.new_subtask</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">Edit</attribute>
+        <attribute name="action">app.edit_task</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
+        <attribute name="label" translatable="yes">Mark as done</attribute>
+        <attribute name="action">app.mark_as_done</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">Dismiss</attribute>
+        <attribute name="action">app.dismiss</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">Delete</attribute>
+        <attribute name="action">win.delete_task</attribute>
+      </item>
+    </section>
+    <section>
+
+    <submenu>
+      <attribute name="label" translatable="yes">Set Start Date</attribute>
+
+      <item>
+        <attribute name="label" translatable="yes">Tomorrow</attribute>
+        <attribute name="action">win.start_tomorrow</attribute>
+      </item>
+
+      <item>
+        <attribute name="label" translatable="yes">Next Week</attribute>
+        <attribute name="action">win.start_next_week</attribute>
+      </item>
+
+      <item>
+        <attribute name="label" translatable="yes">Next Month</attribute>
+        <attribute name="action">win.start_next_month</attribute>
+      </item>
+
+      <item>
+        <attribute name="label" translatable="yes">Next Year</attribute>
+        <attribute name="action">win.start_next_year</attribute>
+      </item>
+
+      <item>
+        <attribute name="label" translatable="yes">Pick a date...</attribute>
+        <attribute name="action">win.start_custom</attribute>
+      </item>
+
+      <section>
+        <item>
+          <attribute name="label" translatable="yes">Clear Start date</attribute>
+          <attribute name="action">win.start_clear</attribute>
+        </item>
+      </section>
+    </submenu>
+
+    <submenu>
+      <attribute name="label" translatable="yes">Set Due Date</attribute>
+
+      <item>
+        <attribute name="label" translatable="yes">Tomorrow</attribute>
+        <attribute name="action">win.due_tomorrow</attribute>
+      </item>
+
+      <item>
+        <attribute name="label" translatable="yes">Next Week</attribute>
+        <attribute name="action">win.due_next_week</attribute>
+      </item>
+
+      <item>
+        <attribute name="label" translatable="yes">Next Month</attribute>
+        <attribute name="action">win.due_next_month</attribute>
+      </item>
+
+      <item>
+        <attribute name="label" translatable="yes">Next Year</attribute>
+        <attribute name="action">win.due_next_year</attribute>
+      </item>
+
+      <item>
+        <attribute name="label" translatable="yes">Pick a date...</attribute>
+        <attribute name="action">win.due_custom</attribute>
+      </item>
+
+      <section>
+        <item>
+          <attribute name="label" translatable="yes">Soon</attribute>
+          <attribute name="action">win.due_soon</attribute>
+        </item>
+
+        <item>
+          <attribute name="label" translatable="yes">Someday</attribute>
+          <attribute name="action">win.due_someday</attribute>
+        </item>
+      </section>
+
+      <section>
+        <item>
+          <attribute name="label" translatable="yes">Clear Due date</attribute>
+          <attribute name="action">win.due_clear</attribute>
+        </item>
+      </section>
+    </submenu>
+
+    <section>
+        <item>
+          <attribute name="label" translatable="yes">Modify Tags...</attribute>
+          <attribute name="action">win.change_tags</attribute>
+        </item>
+    </section>
+
+    </section>
+  </menu>
+
+</interface>
