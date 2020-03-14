@@ -33,7 +33,7 @@ class GeneralPreferences():
     GENERAL_PREFERENCES_UI = os.path.join(UI_DIR, "general_preferences.ui")
     INVALID_COLOR = Gdk.Color(50000, 0, 0)
 
-    def __init__(self, req, vmanager):
+    def __init__(self, req, app):
         self.req = req
         self.config = self.req.get_config('browser')
         builder = Gtk.Builder()
@@ -44,8 +44,8 @@ class GeneralPreferences():
         self.bg_color_button = builder.get_object("bg_color_button")
         self.font_button = builder.get_object("font_button")
 
-        self.vmanager = vmanager
-        self.timer = vmanager.timer
+        self.app = app
+        self.timer = app.timer
         self.refresh_time = builder.get_object("time_entry")
         self.autoclean_enable = builder.get_object("autoclean_enable")
         self.autoclean_days = builder.get_object("autoclean_days")
@@ -166,4 +166,4 @@ class GeneralPreferences():
     def on_purge_clicked(self, widget):
         """Purge old tasks immediately."""
 
-        self.vmanager.purge_old_tasks(widget)
+        self.app.purge_old_tasks(widget)

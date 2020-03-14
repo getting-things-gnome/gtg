@@ -415,11 +415,11 @@ msgstr "Tu zadajte názov značky"
 msgid "NewTag"
 msgstr "NováZnačka"
 
-#: GTG/gtk/browser/browser.py:586
+#: GTG.gtk.browser.main_window.py:586
 msgid "no active tasks"
 msgstr "žiadne aktívne úlohy"
 
-#: GTG/gtk/browser/browser.py:588
+#: GTG.gtk.browser.main_window.py:588
 #, python-format
 msgid "%(tasks)d active task"
 msgid_plural "%(tasks)d active tasks"
@@ -427,15 +427,15 @@ msgstr[0] "%(tasks)d aktívne úlohy"
 msgstr[1] "%(tasks)d aktívnych úloh"
 msgstr[2] "Žiadna aktívny úloha"
 
-#: GTG/gtk/browser/browser.py:1545
+#: GTG.gtk.browser.main_window.py:1545
 msgid "Add Task"
 msgstr "Pridať úlohu"
 
-#: GTG/gtk/browser/browser.py:1546
+#: GTG.gtk.browser.main_window.py:1546
 msgid "Open Task"
 msgstr "Otvoriť úlohu"
 
-#: GTG/gtk/browser/browser.py:1547 GTG/core/treefactory.py:102
+#: GTG.gtk.browser.main_window.py:1547 GTG/core/treefactory.py:102
 msgid "Search"
 msgstr "Hľadať"
 

@@ -397,25 +397,25 @@ msgstr ""
 msgid "NewTag"
 msgstr ""
 
-#: GTG/gtk/browser/browser.py:586
+#: GTG.gtk.browser.main_window.py:586
 msgid "no active tasks"
 msgstr "没有活动任务"
 
-#: GTG/gtk/browser/browser.py:588
+#: GTG.gtk.browser.main_window.py:588
 #, python-format
 msgid "%(tasks)d active task"
 msgid_plural "%(tasks)d active tasks"
 msgstr[0] "%(tasks)d 个进行中的任务"
 
-#: GTG/gtk/browser/browser.py:1545
+#: GTG.gtk.browser.main_window.py:1545
 msgid "Add Task"
 msgstr ""
 
-#: GTG/gtk/browser/browser.py:1546
+#: GTG.gtk.browser.main_window.py:1546
 msgid "Open Task"
 msgstr ""
 
-#: GTG/gtk/browser/browser.py:1547 GTG/core/treefactory.py:102
+#: GTG.gtk.browser.main_window.py:1547 GTG/core/treefactory.py:102
 msgid "Search"
 msgstr "查询"
 

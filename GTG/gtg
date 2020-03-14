@@ -44,211 +44,53 @@
 """This is the top-level exec script for running GTG"""
 
 #=== IMPORT ===================================================================
-import os
 import sys
-import logging
-import dbus
+import argparse
 
 import gi
 gi.require_version('Gdk', '3.0')
-
-from optparse import OptionParser
-from gi.repository.Gdk import Screen
+gi.require_version('Gtk', '3.0')
 
 from GTG import info
-from GTG.backends import BackendFactory
-from GTG.core.datastore import DataStore
-from GTG.core.dirs import DATA_DIR
-from GTG.core.translations import _
-from GTG.gtk.dbuswrapper import BUSNAME, BUSINTERFACE
-from GTG.gtk.manager import Manager
-from GTG.tools.logger import log
-
-#=== OBJECTS ==================================================================
-
-# code borrowed from Specto. Avoid having multiples instances of gtg
-# reading the same tasks
-# that's why we put the pid file in the data directory :
-# we allow one instance of gtg by data directory.
-
-
-def write_pid_file(pidfile):
-    """Write file with pid for the gtg process."""
-
-    with open(pidfile, "w") as f:
-        f.write(repr(os.getpid()))
-
-    os.chmod(pidfile, 0o600)
-
-
-def check_instance(directory, uri_list=[]):
-    """
-    Check if gtg is already running.
-    If so, open the tasks whose ids are in the uri_list
-    """
-    if not os.path.exists(directory):
-        os.makedirs(directory)
-
-    pidfile = os.path.join(directory, "gtg.pid")
-
-    try:
-        with open(pidfile, "r") as pid_data:
-            pid = pid_data.readline()
-            procfile = os.path.join("proc", pid, "comm")
-
-    # There's no pid file, so write one
-    except FileNotFoundError:
-        write_pid_file(pidfile)
-        return
-
-    try:
-        with open(procfile, "r") as proc_data:
-            if "gtg" in procfile:
-                print(_("gtg is already running!"))
-
-            try:
-                d = dbus.SessionBus().get_object(BUSNAME, BUSINTERFACE)
-                d.ShowTaskBrowser()
-
-                # if the user has specified a task to open, do that
-                for uri in uri_list:
-                    if uri.startswith("gtg://"):
-                        d.OpenTaskEditor(uri[6:])
-
-                raise SystemExit
-
-            except dbus.exceptions.DBusException:
-                # If we cant't connect to the interface (e.g. changed interface
-                # between GTG versions), we won't do anything more
-                raise SystemExit(_("Can't connect to gtg dbus interface!"))
-
-            # There is a process for that pid but it's not gtg
-            else:
-                write_pid_file(pidfile)
-                return
-
-    # The process for that pid is not running
-    except FileNotFoundError:
-        write_pid_file(pidfile)
-        return
-
-
-def remove_pidfile(directory):
-    """ Remove the pid file """
-    pidfile = os.path.join(directory, "gtg.pid")
-    try:
-        os.remove(pidfile)
-    except OSError:
-        # Ignore missing PID file
-        pass
-
-
-def x_is_running():
-    """ Return True if GTG could be displayed on the current XServer """
-    try:
-        if Screen().get_default().get_display():
-            return True
-    except RuntimeError as exc:
-        print(exc)
-    return False
-
-#=== MAIN CLASS ===============================================================
+from GTG.gtk.application import Application
 
 
 def parse_args():
-    """ Parse arguments """
-    parser = OptionParser()
-    parser.add_option('-b', '--boot-test', action='store_true',
-                      dest='boot_test',
-                      help="Exit after completing boot-up actions",
-                      default=False)
-    parser.add_option('-c', '--no-crash-handler', action='store_true',
-                      dest='no_crash_handler',
-                      help="Disable the automatic crash handler",
-                      default=False)
-    parser.add_option('-d', '--debug', action='store_true', dest='debug',
-                      help="Enable debug output", default=False)
-    parser.add_option('-t', '--title', action='store',
-                      help="Use special title for windows' title")
-    parser.add_option('-v', '--version', action='store_true',
-                      dest='print_version', help="Print GTG's version number",
-                      default=False)
+    """Parse arguments from the command line."""
+
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument('-v', '--version', help='Show program version',
+                        action="store_true")
+
+    parser.add_argument('-d', '--debug', help='Enable debug output',
+                        action='store_true')
+
+    parser.add_argument('-t', '--title',
+                        help='Use special title for windows\' title')
+
+    parser.add_argument('task_uri', default='', nargs='*', type=str,
+                        help='Open a specific task via URI')
+
     return parser.parse_args()
 
 
-def main():
-    """
-    Calling this starts the full GTG experience
-    """
-    options, args = parse_args()
-    if options.print_version:
-        print("GTG (Getting Things GNOME!)", info.VERSION)
-        print()
-        print("For more information:", info.URL)
-        sys.exit(0)
-
-    elif not x_is_running():
-        print("Could not open X display")
-        sys.exit(1)
-
-    if options.title is not None:
-        info.NAME = options.title
-
-    ds, req = core_main_init(options, args)
-    # Launch task browser
-    manager = Manager(req)
-    # main loop
-    # To be more user friendly and get the logs of crashes, we show an apport
-    # hooked window upon crashes
-    if not options.no_crash_handler:
-        from GTG.gtk.crashhandler import signal_catcher
-        with signal_catcher(manager.close_browser):
-            manager.main(once_thru=options.boot_test, uri_list=args)
-    else:
-        manager.main(once_thru=options.boot_test, uri_list=args)
-    core_main_quit(ds)
-
-
-def core_main_init(options=None, args=None):
-    """
-    Part of the main function prior to the UI initialization.
-    """
-    # Debugging subsystem initialization
-    if options.debug:
-        log.setLevel(logging.DEBUG)
-        log.debug("Debug output enabled.")
-    else:
-        log.setLevel(logging.INFO)
-    check_instance(DATA_DIR, args)
-    backends_list = BackendFactory().get_saved_backends_list()
-    # Load data store
-    ds = DataStore()
-    # Register backends
-    for backend_dic in backends_list:
-        ds.register_backend(backend_dic)
-    # save the backends directly to be sure projects.xml is written
-    ds.save(quit=False)
-
-    # Launch task browser
-    req = ds.get_requester()
-    return ds, req
-
-
-def core_main_quit(ds):
-    """
-    Last bits of code executed in GTG, after the UI has been shut off.
-    Currently, it's just saving everything.
-    """
-    # Ending the application: we save configuration
-    ds.save(quit=True)
-    remove_pidfile(DATA_DIR)
-    sys.exit(0)
-
-
-#=== EXECUTION ================================================================
-
 if __name__ == "__main__":
     try:
-        main()
+        args = parse_args()
+
+        if args.version:
+            print("GTG (Getting Things GNOME!)", info.VERSION)
+            print()
+            print("For more information:", info.URL)
+            sys.exit(0)
+
+        if args.title is not None:
+            info.NAME = args.title
+
+        application = Application(args.debug)
+        application.uri_list = args.task_uri
+        application.run()
+
     except KeyboardInterrupt:
         sys.exit(1)
