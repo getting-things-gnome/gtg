@@ -146,16 +146,6 @@ class Application(Gtk.Application):
                 backend.notify_user_about_backup()
         log.debug("Browser is open")
 
-    # FIXME : the browser should not be the center of the universe.
-    # In fact, we should build a system where view can register themselves
-    # as "stay_alive" views. As long as at least one "stay_alive" view
-    # is registered, gtg keeps running. It quit only when the last
-    # "stay_alive view" is closed (and then unregistered).
-    # Currently, the browser is our only "stay_alive" view.
-    def close_browser(self, sender=None):
-        self.hide_browser()
-        self.quit()
-
     def hide_browser(self, sender=None):
         self.browser.hide()
 
