@@ -45,12 +45,11 @@
 
 #=== IMPORT ===================================================================
 import sys
+import argparse
 
 import gi
 gi.require_version('Gdk', '3.0')
 gi.require_version('Gtk', '3.0')
-
-from optparse import OptionParser
 
 from GTG import info
 from GTG.gtk.application import Application
@@ -60,18 +59,22 @@ from GTG.gtk.application import Application
 
 def parse_args():
     """ Parse arguments """
-    parser = OptionParser()
-    parser.add_option('-c', '--no-crash-handler', action='store_true',
-                      dest='no_crash_handler',
-                      help="Disable the automatic crash handler",
-                      default=False)
-    parser.add_option('-d', '--debug', action='store_true', dest='debug',
-                      help="Enable debug output", default=False)
-    parser.add_option('-t', '--title', action='store',
-                      help="Use special title for windows' title")
-    parser.add_option('-v', '--version', action='store_true',
-                      dest='print_version', help="Print GTG's version number",
-                      default=False)
+
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument('-v', '--version', help='Show program version',
+                        action="store_true")
+
+    parser.add_argument('-c', '--no-crash-handler',
+                        help='Disable crash handler',
+                        action='store_true')
+
+    parser.add_argument('-d', '--debug', help='Enable debug output',
+                        action='store_true')
+
+    parser.add_argument('-t', '--title',
+                        help='Use special title for windows\' title')
+
     return parser.parse_args()
 
 
@@ -79,27 +82,27 @@ def main():
     """
     Calling this starts the full GTG experience
     """
-    options, args = parse_args()
-    if options.print_version:
+    args = parse_args()
+
+    if args.version:
         print("GTG (Getting Things GNOME!)", info.VERSION)
         print()
         print("For more information:", info.URL)
         sys.exit(0)
 
-    if options.title is not None:
-        info.NAME = options.title
+    if args.title is not None:
+        info.NAME = args.title
 
     # ds, req = core_main_init(options, args)
     # Launch task browser
-    application = Application(options.debug)
+    application = Application(args.debug)
     # main loop
     # To be more user friendly and get the logs of crashes, we show an apport
     # hooked window upon crashes
-    if not options.no_crash_handler:
+    if not args.no_crash_handler:
         from GTG.gtk.crashhandler import signal_catcher
-        with signal_catcher(application.close_browser):
-            # application.main(once_thru=options.boot_test, uri_list=args)
-            pass
+        with signal_catcher(application.quit):
+            application.run()
     else:
         # manager.main(once_thru=options.boot_test, uri_list=args)
         application.run()
