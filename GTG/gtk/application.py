@@ -234,10 +234,10 @@ class Application(Gtk.Application):
     def new_subtask(self, param, action):
         """Callback to add a new subtask."""
 
-        if self.browser.is_active():
-            self.browser.on_add_subtask()
-        else:
+        try:
             self.get_active_editor().insert_subtask()
+        except AttributeError:
+            self.browser.on_add_subtask()
 
     def edit_task(self, param, action):
         """Callback to edit a task."""
@@ -246,19 +246,18 @@ class Application(Gtk.Application):
 
     def mark_as_done(self, param, action):
         """Callback to mark a task as done."""
-
-        if self.browser.is_active():
-            self.browser.on_mark_as_done()
-        else:
+        try:
             self.get_active_editor().change_status()
+        except AttributeError:
+            self.browser.on_mark_as_done()
 
     def dismiss(self, param, action):
         """Callback to mark a task as done."""
 
-        if self.browser.is_active():
-            self.browser.on_dismiss_task()
-        else:
+        try:
             self.get_active_editor().dismiss()
+        except AttributeError:
+            self.browser.on_dismiss_task()
 
 
 # Task Editor ############################################################
