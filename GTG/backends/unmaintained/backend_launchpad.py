@@ -186,7 +186,7 @@ class Backend(PeriodicImportBackend):
         action, tid = self.sync_engine.analyze_remote_id(bug.self_link,
                                                          has_task,
                                                          lambda b: True)
-        log.debug("processing launchpad (%s)" % (action))
+        log.debug(f"processing launchpad ({action})")
 
         if action is None:
             return
@@ -234,8 +234,7 @@ class Backend(PeriodicImportBackend):
         else:
             task.set_status(Task.STA_ACTIVE)
         if task.get_title() != bug_dic['title']:
-            task.set_title("{} {}: {}".format(
-                _("Bug"), bug_dic["number"], bug_dic['title']))
+            task.set_title(f"{_('Bug')} {bug_dic['number']}: {bug_dic['title']}")
         text = self._build_bug_text(bug_dic)
         if task.get_excerpt() != text:
             task.set_text(text)

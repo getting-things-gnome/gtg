@@ -139,7 +139,7 @@ class Requester(GObject.GObject):
         @param tid: The id of the task to be deleted.
         """
         # send the signal before actually deleting the task !
-        log.debug("deleting task %s" % tid)
+        log.debug(f"deleting task {tid}")
         return self.__basetree.del_node(tid, recursive=recursive)
 
     def get_task_id(self, task_title):

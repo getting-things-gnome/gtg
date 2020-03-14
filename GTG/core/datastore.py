@@ -105,7 +105,7 @@ class DataStore():
     def _add_new_tag(self, name, tag, filter_func, parameters, parent_id=None):
         """ Add tag into a tree """
         if self._tagstore.has_node(name):
-            raise IndexError('tag %s was already in the datastore' % name)
+            raise IndexError(f'tag {name} was already in the datastore')
 
         self._tasks.add_filter(name, filter_func, parameters=parameters)
         self._tagstore.add_node(tag, parent_id=parent_id)
@@ -131,8 +131,7 @@ class DataStore():
         try:
             parameters = parse_search_query(query)
         except InvalidQuery as e:
-            log.warning("Problem with parsing query '%s' (skipping): %s" %
-                        (query, e.message))
+            log.warning(f"Problem with parsing query '{query}' (skipping): {e.message}")
             return None
 
         # Create own copy of attributes and add special attributes label, query
@@ -152,7 +151,7 @@ class DataStore():
             self._tagstore.del_node(name)
             self.save_tagtree()
         else:
-            raise IndexError("There is no tag %s" % name)
+            raise IndexError(f"There is no tag {name}")
 
     def rename_tag(self, oldname, newname):
         """ Give a tag a new name
@@ -875,4 +874,4 @@ class FilteredDataStore(Borg):
         elif attr in ['get_all_tags']:
             return self.datastore.requester.get_all_tags
         else:
-            raise AttributeError("No attribute %s" % attr)
+            raise AttributeError(f"No attribute {attr}")

@@ -108,7 +108,7 @@ class TagIconSelector(Gtk.Window):
                 img = Gtk.IconTheme.get_default().load_icon(icon, 16, 0)
                 self.symbol_model.append([img, icon])
             except GObject.GError:
-                log.error("Failed to load icon '%s'" % icon)
+                log.error(f"Failed to load icon '{icon}'")
         self.symbol_iv.set_model(self.symbol_model)
         self.loaded = True
 

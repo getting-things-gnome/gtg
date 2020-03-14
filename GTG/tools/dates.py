@@ -119,12 +119,11 @@ class Date():
                         value = str(value.lower())
                         self._parse_init_value(LOOKUP[value])
                     except KeyError:
-                        raise ValueError("Unknown value for date: '%s'"
-                                         % value)
+                        raise ValueError(f"Unknown value for date: '{value}'")
         elif isinstance(value, int):
             self._fuzzy = value
         else:
-            raise ValueError("Unknown value for date: '%s'" % value)
+            raise ValueError(f"Unknown value for date: '{value}'")
 
     def date(self):
         """ Map date into real date, i.e. convert fuzzy dates """
@@ -433,7 +432,7 @@ class Date():
         if result is not None:
             return Date(result)
         else:
-            raise ValueError("Can't parse date '%s'" % string)
+            raise ValueError(f"Can't parse date '{string}'")
 
     def to_readable_string(self):
         """ Return nice representation of date.

@@ -136,7 +136,7 @@ class CellRendererTags(Gtk.CellRenderer):
                     # In some rare cases an icon could not be found
                     # (e.g. wrong set icon path, missing icon)
                     # Raising an exception breaks UI and signal catcher badly
-                    log.error("Can't load icon '%s'" % my_tag_icon)
+                    log.error(f"Can't load icon '{my_tag_icon}'")
 
             elif my_tag_color:
 

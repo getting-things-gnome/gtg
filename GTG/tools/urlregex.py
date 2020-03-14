@@ -40,9 +40,9 @@ SUBST_DICT = {
 
 HTTP_URI = '((%(pre)s)((https?://|www\\.)(%(domain)s)(\/%(path)s*' \
     '%(path_end)s?)?(\?%(query)s*%(query_end)s)?))' % SUBST_DICT
-FILE_URI = '(file:///(%(path)s*%(path_end)s?)?)' % SUBST_DICT
+FILE_URI = f"(file:///({SUBST_DICT['path']}*{SUBST_DICT['path_end']}?)?)"
 
-URL_REGEX = re.compile('%s|%s' % (HTTP_URI, FILE_URI), re.IGNORECASE)
+URL_REGEX = re.compile(f'{HTTP_URI}|{FILE_URI}', re.IGNORECASE)
 
 
 def match(text):

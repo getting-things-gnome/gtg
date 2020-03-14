@@ -70,7 +70,7 @@ class AuthStateMachine():
         if state in self.data:
             return self.data[state]
         else:
-            raise AuthStateMachine.NoData('No data for <%s>' % state)
+            raise AuthStateMachine.NoData(f'No data for <{state}>')
 
 
 class RTM():
@@ -109,8 +109,7 @@ class RTM():
         rsp = data.rsp
 
         if rsp.stat == 'fail':
-            raise RTMAPIError('API call failed - %s (%s)' % (
-                rsp.err.msg, rsp.err.code))
+            raise RTMAPIError(f'API call failed - {rsp.err.msg} ({rsp.err.code})')
         else:
             return rsp
 
@@ -152,24 +151,24 @@ class RTMAPICategory():
         if attr in self.methods:
             rargs, oargs = self.methods[attr]
             if self.prefix == 'tasksNotes':
-                aname = 'rtm.tasks.notes.%s' % attr
+                aname = f'rtm.tasks.notes.{attr}'
             else:
-                aname = 'rtm.%s.%s' % (self.prefix, attr)
+                aname = f'rtm.{self.prefix}.{attr}'
             return lambda **params: self.callMethod(
                 aname, rargs, oargs, **params)
         else:
-            raise AttributeError('No such attribute: %s' % attr)
+            raise AttributeError(f'No such attribute: {attr}')
 
     def callMethod(self, aname, rargs, oargs, **params):
         # Sanity checks
         for requiredArg in rargs:
             if requiredArg not in params:
                 raise TypeError(
-                    'Required parameter (%s) missing' % requiredArg)
+                    f'Required parameter ({requiredArg}) missing')
 
         for param in params:
             if param not in rargs + oargs:
-                log.error('Invalid parameter (%s)' % param)
+                log.error(f'Invalid parameter ({param})')
 
         return self.rtm.get(method=aname,
                             auth_token=self.rtm.authInfo.get('token'),
@@ -203,11 +202,11 @@ class dottedDict():
                 if type(value) is dict:
                     value = dottedDict(key, value)
                 elif type(value) in (list, tuple) and key != 'tag':
-                    value = [dottedDict('%s_%d' % (key, i), item)
+                    value = [dottedDict(f'{key}_{i:d}', item)
                              for i, item in indexed(value)]
                 setattr(self, key, value)
         else:
-            raise ValueError('not a dict: %s' % dictionary)
+            raise ValueError(f'not a dict: {dictionary}')
 
     def __repr__(self):
         children = [c for c in dir(self) if not c.startswith('_')]

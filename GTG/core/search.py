@@ -164,14 +164,13 @@ def parse_search_query(query):
 
         if require_date:
             if token not in ['date', 'word', 'literal']:
-                raise InvalidQuery("Unexpected token '%s' after '%s'" % (
-                    token, require_date))
+                raise InvalidQuery(f"Unexpected token '{token}' after '{require_date}'")
 
             value = value.strip('"')
             try:
                 date = Date.parse(value)
             except ValueError:
-                raise InvalidQuery("Date '%s' in wrong format" % (value))
+                raise InvalidQuery(f"Date '{value}' in wrong format")
 
             cmd = (require_date, not_count % 2 == 0, date)
             require_date = None
@@ -205,7 +204,7 @@ def parse_search_query(query):
                 found = True
                 break
             if not found:
-                raise InvalidQuery("Unknown command !%s" % value)
+                raise InvalidQuery(f"Unknown command !{value}")
 
         elif token == 'tag':
             cmd = (token, not_count % 2 == 0, value)
@@ -227,7 +226,7 @@ def parse_search_query(query):
         raise InvalidQuery("Or is not allowed at the end of query")
 
     if require_date:
-        raise InvalidQuery("Required date after '%s'" % require_date)
+        raise InvalidQuery(f"Required date after '{require_date}'")
 
     return {'q': commands}
 

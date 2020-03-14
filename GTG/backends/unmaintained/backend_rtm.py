@@ -221,7 +221,7 @@ class Backend(PeriodicImportBackend):
                 self.rtm_proxy.refresh_rtm_tasks_dict()
             rtm_task = self.rtm_proxy.get_rtm_tasks_dict()[rtm_task_id]
             rtm_task.delete()
-            log.debug("removing task %s from RTM" % rtm_task_id)
+            log.debug(f"removing task {rtm_task_id} from RTM")
         except KeyError:
             pass
             try:
@@ -248,7 +248,7 @@ class Backend(PeriodicImportBackend):
             self.datastore.has_task,
             self.rtm_proxy.has_rtm_task,
             is_syncable)
-        log.debug("GTG->RTM set task (%s, %s)" % (action, is_syncable))
+        log.debug(f"GTG->RTM set task ({action}, {is_syncable})")
 
         if action is None:
             return
@@ -348,7 +348,7 @@ class Backend(PeriodicImportBackend):
             self.datastore.has_task,
             self.rtm_proxy.has_rtm_task,
             is_syncable)
-        log.debug("GTG<-RTM set task (%s, %s)" % (action, is_syncable))
+        log.debug(f"GTG<-RTM set task ({action}, {is_syncable})")
 
         if action is None:
             return
@@ -412,7 +412,7 @@ class Backend(PeriodicImportBackend):
         if GTG_TO_RTM_STATUS[task.get_status()] != status:
             task.set_status(rtm_task.get_status())
         # tags
-        tags = set(['@%s' % tag for tag in rtm_task.get_tags()])
+        tags = set([f'@{tag}' for tag in rtm_task.get_tags()])
         gtg_tags_lower = set([t.get_name().lower() for t in task.get_tags()])
         # tags to remove
         for tag in gtg_tags_lower.difference(tags):
@@ -1017,4 +1017,4 @@ class RTMTask():
         return timeobject.strftime("%Y-%m-%d")
 
     def __str__(self):
-        return "Task %s (%s)" % (self.get_title(), self.get_id())
+        return f"Task {self.get_title()} ({self.get_id()})"

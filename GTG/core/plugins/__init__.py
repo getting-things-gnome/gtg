@@ -28,13 +28,13 @@ class GnomeConfig():
     CANNOTLOAD = _("The plugin can not be loaded")
     miss1 = _("Some python modules are missing")
     miss2 = _("Please install the following python modules:")
-    MODULEMISSING = "%s \n%s" % (miss1, miss2)
+    MODULEMISSING = f"{miss1} \n{miss2}"
     dmiss1 = _("Some remote dbus objects are missing.")
     dmiss2 = _("Please start the following applications:")
-    DBUSMISSING = "%s \n%s" % (dmiss1, dmiss2)
+    DBUSMISSING = f"{dmiss1} \n{dmiss2}"
     bmiss1 = _("Some modules and remote dbus objects are missing.")
     bmiss2 = _("Please install or start the following components:")
-    MODULANDDBUS = "%s \n%s" % (bmiss1, bmiss2)
+    MODULANDDBUS = f"{bmiss1} \n{bmiss2}"
     umiss1 = _("Unknown error while loading the plugin.")
     umiss2 = _("Very helpful message, isn't it? Please report a bug.")
-    UNKNOWN = "%s \n%s" % (umiss1, umiss2)
+    UNKNOWN = f"{umiss1} \n{umiss2}"

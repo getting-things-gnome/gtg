@@ -100,7 +100,7 @@ class HamsterPlugin():
                                        self.hamster.GetActivities('')])
             if (gtg_title in hamster_activities or
                     gtg_title.replace(",", "") in hamster_activities):
-                    category = "%s" % hamster_activities[gtg_title]
+                    category = f"{hamster_activities[gtg_title]}"
 
         if (self.preferences['category'] == 'tag' or
            (self.preferences['category'] == 'auto_tag' and not category)):
@@ -110,7 +110,7 @@ class HamsterPlugin():
             lower_gtg_tags = set([x.lower() for x in gtg_tags])
             intersection = set(categories.keys()).intersection(lower_gtg_tags)
             if len(intersection) > 0:
-                category = "%s" % categories[intersection.pop()]
+                category = f"{categories[intersection.pop()]}"
             elif len(gtg_tags) > 0:
                 # Force category if not found
                 category = gtg_tags[0]
@@ -139,8 +139,8 @@ class HamsterPlugin():
         # `[-]start_time[-end_time] activity@category, description #tag1 #tag2`
         fact = activity
         if category:
-            fact += "@%s" % category
-        fact += ",%s%s" % (description, tag_str)
+            fact += f"@{category}"
+        fact += f",{description}{tag_str}"
         start_time = timegm(datetime.datetime.now().timetuple())
         hamster_id = self.hamster.AddFact(fact, start_time, 0, False)
 
@@ -299,8 +299,8 @@ class HamsterPlugin():
 
             def add(w, a, b, offset, active=False):
                 if active:
-                    a = "<span color='red'>%s</span>" % a
-                    b = "<span color='red'>%s</span>" % b
+                    a = f"<span color='red'>{a}</span>"
+                    b = f"<span color='red'>{b}</span>"
 
                 dateLabel = Gtk.Label(label=a)
                 dateLabel.set_use_markup(True)
@@ -472,7 +472,7 @@ def format_duration(minutes):
 
     if minutes % 60 == 0:
         # duration in round hours
-        formatted_duration += "%dh" % (hours)
+        formatted_duration += f"{hours:d}h"
     elif hours == 0:
         # duration less than hour
         formatted_duration += "%dmin" % (minutes % 60.0)

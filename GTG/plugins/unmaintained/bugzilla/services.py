@@ -19,9 +19,7 @@ class BugzillaService():
         self.domain = domain
 
     def buildXmlRpcServerUrl(self):
-        return '%(scheme)s://%(domain)s/xmlrpc.cgi' % {
-            'scheme': self.scheme, 'domain': self.domain,
-        }
+        return f'{self.scheme}://{self.domain}/xmlrpc.cgi'
 
     def getProxy(self, server_url):
         return ServerProxy(server_url)
@@ -100,7 +98,7 @@ class BugzillaServiceDisabled(Exception):
 
     def __init__(self, domain, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.message = '%s is disabled.' % domain
+        self.message = f'{domain} is disabled.'
 
 
 class BugzillaServiceFactory():

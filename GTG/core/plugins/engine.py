@@ -286,7 +286,7 @@ class PluginEngine(Borg):
                     else:
                         self.activate_plguins(self.plugin_apis, [plugin])
             except Exception as e:
-                print("Error: %s" % e)
+                print(f"Error: {e}")
 
     def recheck_plugin_errors(self, check_all=False):
         """Attempt a reload of plugins with errors, or all plugins."""

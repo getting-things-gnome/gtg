@@ -68,11 +68,11 @@ class GetBugInformationTask(threading.Thread):
         except xmlrpc.client.Fault as err:
             code = err.faultCode
             if code == 100:  # invalid bug ID
-                title = 'Invalid bug ID #%s' % bug_id
+                title = f'Invalid bug ID #{bug_id}'
             elif code == 101:  # bug ID not exist
-                title = 'Bug #%s does not exist.' % bug_id
+                title = f'Bug #{bug_id} does not exist.'
             elif code == 102:  # Access denied
-                title = 'Access denied to bug %s' % bug_url
+                title = f'Access denied to bug {bug_url}'
             else:  # unrecoganized error code currently
                 title = err.faultString
 
@@ -80,15 +80,15 @@ class GetBugInformationTask(threading.Thread):
         except Exception as err:
             send_notification(bugzillaService.name, err.message)
         else:
-            title = '#%s: %s' % (bug_id, bug.summary)
+            title = f'#{bug_id}: {bug.summary}'
             GObject.idle_add(self.task.set_title, title)
-            text = "%s\n\n%s" % (bug_url, bug.description)
+            text = f"{bug_url}\n\n{bug.description}"
             GObject.idle_add(self.task.set_text, text)
 
             tags = bugzillaService.getTags(bug)
             if tags is not None and tags:
                 for tag in tags:
-                    GObject.idle_add(self.task.add_tag, '@%s' % tag)
+                    GObject.idle_add(self.task.add_tag, f'@{tag}')
 
 
 class BugzillaPlugin():

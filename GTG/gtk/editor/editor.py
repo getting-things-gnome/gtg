@@ -174,10 +174,10 @@ class TaskEditor():
         texte = self.task.get_text()
         title = self.task.get_title()
         # the first line is the title
-        self.textview.set_text("%s\n" % title)
+        self.textview.set_text(f"{title}\n")
         # we insert the rest of the task
         if texte:
-            self.textview.insert("%s" % texte)
+            self.textview.insert(f"{texte}")
         else:
             # If not text, we insert tags
             if tags:
@@ -444,16 +444,16 @@ class TaskEditor():
         style_context = self.window.get_style_context()
         color = style_context.get_color(Gtk.StateFlags.INSENSITIVE).to_color()
         self.dayleft_label.set_markup(
-            "<span color='%s'>%s</span>" % (color.to_string(), txt))
+            f"<span color='{color.to_string()}'>{txt}</span>")
 
     def reload_editor(self):
         task = self.task
         textview = self.textview
         task_text = task.get_text()
         task_title = task.get_title()
-        textview.set_text("%s\n" % task_title)
+        textview.set_text(f"{task_title}\n")
         if task_text:
-            textview.insert("%s" % task_text)
+            textview.insert(f"{task_text}")
         task.set_title(task_title)
         textview.modified(full=True)
 
