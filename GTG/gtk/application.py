@@ -448,10 +448,19 @@ class Application(Gtk.Application):
 
         self.pengine.deactivate_plugins()
 
+    def quit(self):
+        """Quit the application."""
+
+        # This is needed to avoid warnings when closing the browser
+        # with editor windows open, because of the "win"
+        # group of actions.
+
+        self._save_tasks()
+        Gtk.Application.quit(self)
+
     def do_shutdown(self):
         """Callback when GTG is closed."""
 
-        self._save_tasks()
         self._save_plugin_settings()
 
         # Save data and shutdown datastore backends
