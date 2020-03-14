@@ -16,7 +16,7 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-PEP8=pep8
+PEP8=pycodestyle
 PYFLAKES=pyflakes
 
 check: tests pep8 pyflakes
