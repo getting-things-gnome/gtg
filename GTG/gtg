@@ -55,19 +55,13 @@ from GTG import info
 from GTG.gtk.application import Application
 
 
-#=== MAIN CLASS ===============================================================
-
 def parse_args():
-    """ Parse arguments """
+    """Parse arguments from the command line."""
 
     parser = argparse.ArgumentParser()
 
     parser.add_argument('-v', '--version', help='Show program version',
                         action="store_true")
-
-    parser.add_argument('-c', '--no-crash-handler',
-                        help='Disable crash handler',
-                        action='store_true')
 
     parser.add_argument('-d', '--debug', help='Enable debug output',
                         action='store_true')
@@ -78,39 +72,21 @@ def parse_args():
     return parser.parse_args()
 
 
-def main():
-    """
-    Calling this starts the full GTG experience
-    """
-    args = parse_args()
-
-    if args.version:
-        print("GTG (Getting Things GNOME!)", info.VERSION)
-        print()
-        print("For more information:", info.URL)
-        sys.exit(0)
-
-    if args.title is not None:
-        info.NAME = args.title
-
-    # ds, req = core_main_init(options, args)
-    # Launch task browser
-    application = Application(args.debug)
-    # main loop
-    # To be more user friendly and get the logs of crashes, we show an apport
-    # hooked window upon crashes
-    if not args.no_crash_handler:
-        from GTG.gtk.crashhandler import signal_catcher
-        with signal_catcher(application.quit):
-            application.run()
-    else:
-        # manager.main(once_thru=options.boot_test, uri_list=args)
-        application.run()
-
-#=== EXECUTION ================================================================
-
 if __name__ == "__main__":
     try:
-        main()
+        args = parse_args()
+
+        if args.version:
+            print("GTG (Getting Things GNOME!)", info.VERSION)
+            print()
+            print("For more information:", info.URL)
+            sys.exit(0)
+
+        if args.title is not None:
+            info.NAME = args.title
+
+        application = Application(args.debug)
+        application.run()
+
     except KeyboardInterrupt:
         sys.exit(1)
