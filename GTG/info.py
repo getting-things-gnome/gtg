@@ -23,12 +23,12 @@ Contains the information displayed in GTG's Credits."""
 from GTG.core.translations import _
 
 NAME = "Getting Things GNOME!"
-URL = "http://gtgnome.net"
+URL = "https://github.com/getting-things-gnome/gtg/"
 HELP_URI = "help:gtg"
-TRANSLATE_URL = "https://translations.launchpad.net/gtg"
-REPORT_BUG_URL = "https://bugs.launchpad.net/gtg/+filebug"
+TRANSLATE_URL = "https://github.com/getting-things-gnome/gtg/"
+REPORT_BUG_URL = "https://github.com/getting-things-gnome/gtg/issues/new"
 EMAIL = "gtg-contributors@lists.launchpad.net"
-VERSION = '0.3.1'
+VERSION = '0.4.0'
 
 SHORT_DESCRIPTION = \
     _('GTG is a personal tasks and TODO-list items organizer for the GNOME.')

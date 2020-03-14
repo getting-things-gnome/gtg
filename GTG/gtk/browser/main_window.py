@@ -21,7 +21,7 @@
 from webbrowser import open as openurl
 import threading
 
-from gi.repository import GObject, Gtk, Gdk
+from gi.repository import GObject, Gtk, Gdk, Gio
 
 from GTG import info
 from GTG.backends.backendsignals import BackendSignals
@@ -39,9 +39,8 @@ from GTG.gtk.editor.calendar import GTGCalendar
 from GTG.gtk.tag_completion import TagCompletion
 from GTG.tools.dates import Date
 from GTG.tools.logger import log
-from GTG.gtk.help import add_help_shortcut
 
-class TaskBrowser(GObject.GObject):
+class MainWindow(Gtk.ApplicationWindow):
     """ The UI for browsing open and closed tasks,
     and listing tags in a tree """
 
@@ -51,11 +50,12 @@ class TaskBrowser(GObject.GObject):
                     'visibility-toggled': __none_signal__,
                     }
 
-    def __init__(self, requester, vmanager):
-        super().__init__()
+    def __init__(self, requester, app):
+        super().__init__(application=app)
+
         # Object prime variables
         self.req = requester
-        self.vmanager = vmanager
+        self.app = app
         self.config = self.req.get_config('browser')
         self.tag_active = False
         self.applied_tags = []
@@ -88,6 +88,9 @@ class TaskBrowser(GObject.GObject):
         # Setup GTG icon theme
         self._init_icon_theme()
 
+        # Init Actions
+        self._set_actions()
+
         # Tags
         self.tagtree = None
         self.tagtreeview = None
@@ -101,6 +104,7 @@ class TaskBrowser(GObject.GObject):
 
         # Init non-GtkBuilder widgets
         self._init_ui_widget()
+        self._init_context_menus()
 
         # Initialize "About" dialog
         self._init_about_dialog()
@@ -108,20 +112,68 @@ class TaskBrowser(GObject.GObject):
         # Create our dictionary and connect it
         self._init_signal_connections()
 
-        # Define accelerator keys
-        self._init_accelerators()
-
         self.restore_state_from_conf()
-
-        # F1 shows help
-        add_help_shortcut(self.window, "browser")
 
         self.on_select_tag()
         self.browser_shown = False
 
-        vmanager.timer.connect('refresh', self.refresh_all_views)
+        app.timer.connect('refresh', self.refresh_all_views)
 
 # INIT HELPER FUNCTIONS #######################################################
+    def _init_context_menus(self):
+        builder = Gtk.Builder()
+        builder.add_from_file(GnomeConfig.MENUS_UI_FILE)
+
+        closed_menu_model = builder.get_object('closed_task_menu')
+        self.closed_menu = Gtk.Menu.new_from_model(closed_menu_model)
+        self.closed_menu.attach_to_widget(self.main_box)
+
+        open_menu_model = builder.get_object('task_menu')
+        self.open_menu = Gtk.Menu.new_from_model(open_menu_model)
+        self.open_menu.attach_to_widget(self.main_box)
+
+
+    def _set_actions(self):
+        """Setup actions."""
+
+        action_entries = [
+            ('toggle_sidebar', self.on_sidebar_toggled,
+             ('win.toggle_sidebar', ['F9'])),
+            ('change_tags', self.on_modify_tags,
+             ('win.change_tags', ['<ctrl>T'])),
+            ('search', self.toggle_search, ('win.search', ['<ctrl>F'])),
+            ('focus_quickentry', self.focus_quickentry,
+             ('win.focus_quickentry', ['<ctrl>L'])),
+            ('delete_task', self.on_delete_tasks,
+             ('win.delete_task', ['Delete'])),
+            ('mark_as_started', self.on_mark_as_started, None),
+            ('start_tomorrow', self.on_start_for_tomorrow, None),
+            ('start_next_week', self.on_start_for_next_week, None),
+            ('start_next_month', self.on_start_for_next_month, None),
+            ('start_next_year', self.on_start_for_next_year, None),
+            ('start_custom', self.on_start_for_specific_date, None),
+            ('start_clear', self.on_start_clear, None),
+            ('due_tomorrow', self.on_set_due_tomorrow, None),
+            ('due_next_week', self.on_set_due_next_week, None),
+            ('due_next_month', self.on_set_due_next_month, None),
+            ('due_next_year', self.on_set_due_next_year, None),
+            ('due_clear', self.on_set_due_clear, None),
+            ('due_soon', self.on_set_due_soon, None),
+            ('due_custom', self.on_set_due_for_specific_date, None),
+            ('due_someday', self.on_set_due_someday, None),
+            ('save_search', self.on_save_search, None),
+        ]
+
+        for action, callback, accel in action_entries:
+            simple_action = Gio.SimpleAction.new(action, None)
+            simple_action.connect('activate', callback)
+            simple_action.set_enabled(True)
+
+            self.add_action(simple_action)
+
+            if accel is not None:
+                self.app.set_accels_for_action(*accel)
+
     def _init_icon_theme(self):
         """
         sets the deafault theme for icon and its directory
@@ -135,7 +187,7 @@ class TaskBrowser(GObject.GObject):
         """
         defines aliases for UI elements found in the glide file
         """
-        self.window = self.builder.get_object("MainWindow")
+
         self.taskpopup = self.builder.get_object("task_context_menu")
         self.defertopopup = self.builder.get_object("defer_to_context_menu")
         self.ctaskpopup = self.builder.get_object("closed_task_context_menu")
@@ -157,8 +209,14 @@ class TaskBrowser(GObject.GObject):
         self.accessory_notebook = self.builder.get_object("accessory_notebook")
         self.vbox_toolbars = self.builder.get_object("vbox_toolbars")
         self.stack_switcher = self.builder.get_object("stack_switcher")
+        self.headerbar = self.builder.get_object("browser_headerbar")
+        self.main_box = self.builder.get_object("main_view_box")
 
-        self.tagpopup = TagContextMenu(self.req, self.vmanager)
+        self.tagpopup = TagContextMenu(self.req, self.app)
+
+        self.set_titlebar(self.headerbar)
+        self.add(self.main_box)
+
 
     def _init_ui_widget(self):
         """ Sets the main pane with three trees for active tasks,
@@ -173,7 +231,7 @@ class TaskBrowser(GObject.GObject):
         self.modifytags_dialog = ModifyTagsDialog(tag_completion, self.req)
         self.deletetags_dialog = DeleteTagsDialog(self.req, self)
         self.calendar = GTGCalendar()
-        self.calendar.set_transient_for(self.window)
+        self.calendar.set_transient_for(self)
         self.calendar.connect("date-changed", self.on_date_changed)
 
     def init_tags_sidebar(self):
@@ -227,96 +285,29 @@ class TaskBrowser(GObject.GObject):
         connects signals on UI elements
         """
         SIGNAL_CONNECTIONS_DIC = {
-            "on_add_task":
-            self.on_add_task,
-            "on_edit_active_task":
-            self.on_edit_active_task,
             "on_edit_done_task":
             self.on_edit_done_task,
-            "on_delete_task":
-            self.on_delete_tasks,
-            "on_modify_tags":
-            self.on_modify_tags,
-            "on_mark_as_done":
-            self.on_mark_as_done,
-            "on_mark_as_started":
-            self.on_mark_as_started,
-            "on_start_for_tomorrow":
-            self.on_start_for_tomorrow,
-            "on_start_for_next_week":
-            self.on_start_for_next_week,
-            "on_start_for_next_month":
-            self.on_start_for_next_month,
-            "on_start_for_next_year":
-            self.on_start_for_next_year,
-            "on_start_for_specific_date":
-            self.on_start_for_specific_date,
-            "on_start_clear":
-            self.on_start_clear,
-            "on_set_due_today":
-            self.on_set_due_today,
-            "on_set_due_tomorrow":
-            self.on_set_due_tomorrow,
-            "on_set_due_next_week":
-            self.on_set_due_next_week,
-            "on_set_due_next_month":
-            self.on_set_due_next_month,
-            "on_set_due_next_year":
-            self.on_set_due_next_year,
-            "on_set_due_soon":
-            self.on_set_due_soon,
-            "on_set_due_someday":
-            self.on_set_due_someday,
-            "on_set_due_for_specific_date":
-            self.on_set_due_for_specific_date,
-            "on_set_due_clear":
-            self.on_set_due_clear,
-            "on_dismiss_task":
-            self.on_dismiss_task,
             "on_move":
             self.on_move,
             "on_size_allocate":
             self.on_size_allocate,
-            "gtk_main_quit":
-            self.on_close,
             "on_add_subtask":
             self.on_add_subtask,
             "on_tagcontext_deactivate":
             self.on_tagcontext_deactivate,
-            "on_view_sidebar_toggled":
-            self.on_sidebar_toggled,
             "on_quickadd_field_activate":
             self.on_quickadd_activate,
-            "on_about_clicked":
-            self.on_about_clicked,
             "on_about_delete":
             self.on_about_close,
             "on_about_close":
             self.on_about_close,
-            "on_documentation_clicked":
-            lambda w: openurl(info.HELP_URI),
-            "on_translate_clicked":
-            lambda w: openurl(info.TRANSLATE_URL),
-            "on_report_bug_clicked":
-            lambda w: openurl(info.REPORT_BUG_URL),
-            "on_preferences_activate":
-            self.open_preferences,
-            "on_edit_plugins_activate":
-            self.open_plugins,
-            "on_edit_backends_activate":
-            self.open_edit_backends,
-            "on_search_activate":
-            self.on_search_toggled,
-            "on_save_search":
-            self.on_save_search,
             "on_search":
             self.on_search,
         }
         self.builder.connect_signals(SIGNAL_CONNECTIONS_DIC)
 
         # When destroying this window, quit GTG
-        self.window.connect("destroy", self.quit)
-        self.window.connect("delete-event", self.quit)
+        self.connect("destroy", self.quit)
 
         # Active tasks TreeView
         self.vtree_panes['active'].connect('row-activated',
@@ -368,42 +359,13 @@ class TaskBrowser(GObject.GObject):
                           self.on_backend_needing_interaction)
         self.selection = self.vtree_panes['active'].get_selection()
 
-    def _add_accelerator_for_widget(self, agr, name, accel):
-        widget = self.builder.get_object(name)
-        key, mod = Gtk.accelerator_parse(accel)
-        widget.add_accelerator("activate", agr, key, mod,
-                               Gtk.AccelFlags.VISIBLE)
-
-    def _init_accelerators(self):
-        """
-        initialize gtk accelerators for different interface elements
-        """
-        agr = Gtk.AccelGroup()
-        self.builder.get_object("MainWindow").add_accel_group(agr)
-
-        self._add_accelerator_for_widget(agr, "tags", "F9")
-        # self._add_accelerator_for_widget(agr, "file_quit", "<Control>q")
-        self._add_accelerator_for_widget(agr, "new_task", "<Control>n")
-        self._add_accelerator_for_widget(agr, "tcm_add_subtask",
-                                         "<Control><Shift>n")
-        self._add_accelerator_for_widget(agr, "tcm_edit", "<Control>e")
-        self._add_accelerator_for_widget(agr, "tcm_mark_as_done", "<Control>d")
-        self._add_accelerator_for_widget(agr, "tcm_dismiss", "<Control>i")
-        self._add_accelerator_for_widget(agr, "tcm_modifytags", "<Control>t")
-        self._add_accelerator_for_widget(agr, "search_button", "<Control>f")
-        # TODO(jakubbrindza): We cannot apply this function to closed_pane
-        # widget since it yields the following issue:
-        # widget `GtkScrolledWindow' has no activatable signal "activate"
-        # without arguments. This will be handled before 0.4
-        # release and shortcuts for active/workview and closed will be added.
-        # self._add_accelerator_for_widget(agr, "closed_pane", "<Control>F9")
-        # self._add_accelerator_for_widget(agr, "help_contents", "F1")
-
-        key, mod = Gtk.accelerator_parse("<Control>l")
-        self.quickadd_entry.add_accelerator("grab-focus", agr, key, mod,
-                                       Gtk.AccelFlags.VISIBLE)
 
 # HELPER FUNCTIONS ##########################################################
+
+    def toggle_search(self, action, param):
+        """Callback to toggle search bar."""
+
+        self.on_search_toggled()
 
     def on_search_toggled(self, widget=None):
 
@@ -433,7 +395,7 @@ class TaskBrowser(GObject.GObject):
 
         self.apply_filter_on_panes(SEARCH_TAG, parameters=parsed_query)
 
-    def on_save_search(self, widget):
+    def on_save_search(self, action, param):
         query = self.search_entry.get_text()
 
         # Try if this is a new search tag and save it correctly
@@ -464,17 +426,8 @@ class TaskBrowser(GObject.GObject):
         selection.select_iter(tag_iter)
         self.on_select_tag()
 
-    def open_preferences(self, widget):
-        self.vmanager.open_preferences(self.config)
-
-    def open_plugins(self, widget):
-        self.vmanager.configure_plugins()
-
-    def open_edit_backends(self, widget):
-        self.vmanager.open_edit_backends()
-
     def quit(self, widget=None, data=None):
-        self.vmanager.close_browser()
+        self.app.quit()
 
     def on_window_state_event(self, widget, event, data=None):
         """ This event checks for the window state: maximized?
@@ -510,17 +463,17 @@ class TaskBrowser(GObject.GObject):
         width = self.config.get('width')
         height = self.config.get('height')
         if width and height:
-            self.window.resize(width, height)
+            self.resize(width, height)
 
         # checks for maximum size of window
-        self.window.connect('window-state-event', self.on_window_state_event)
+        self.connect('window-state-event', self.on_window_state_event)
         if self.config.get("max"):
-            self.window.maximize()
+            self.maximize()
 
         xpos = self.config.get("x_pos")
         ypos = self.config.get("y_pos")
         if ypos and xpos:
-            self.window.move(xpos, ypos)
+            self.move(xpos, ypos)
 
         tag_pane = self.config.get("tag_pane")
         if not tag_pane:
@@ -550,7 +503,7 @@ class TaskBrowser(GObject.GObject):
         def open_task(req, t):
             """ Open the task if loaded. Otherwise ask for next iteration """
             if req.has_task(t):
-                self.vmanager.open_task(t)
+                self.app.open_task(t)
                 return False
             else:
                 return True
@@ -599,12 +552,12 @@ class TaskBrowser(GObject.GObject):
         self.config.set('tasklist_sort_order', sort_order)
 
     def on_move(self, widget=None, data=None):
-        xpos, ypos = self.window.get_position()
+        xpos, ypos = self.get_position()
         self.config.set('x_pos', xpos)
         self.config.set('y_pos', ypos)
 
     def on_size_allocate(self, widget=None, data=None):
-        width, height = self.window.get_size()
+        width, height = self.get_size()
         self.config.set('width', width)
         self.config.set('height', height)
 
@@ -627,14 +580,18 @@ class TaskBrowser(GObject.GObject):
     def on_tagcontext_deactivate(self, menushell):
         self.reset_cursor()
 
-    def on_sidebar_toggled(self, widget):
+    def on_sidebar_toggled(self, action, param):
+        """Toggle tags sidebar."""
+
         tags = self.builder.get_object("tags")
+
         if self.sidebar.get_property("visible"):
             self.config.set("tag_pane", False)
             self.sidebar.hide()
         else:
             if not self.tagtreeview:
                 self.init_tags_sidebar()
+
             self.sidebar.show()
             self.config.set("tag_pane", True)
 
@@ -698,6 +655,11 @@ class TaskBrowser(GObject.GObject):
         colt = [colt_tag for colt_tag in colt if tag[1:-1] not in colt_tag]
         self.config.set("expanded_tags", colt)
 
+    def focus_quickentry(self, action, param):
+        """Callback to focus the quick entry widget."""
+
+        self.quickadd_entry.grab_focus()
+
     def on_quickadd_activate(self, widget):
         """ Add a new task from quickadd toolbar """
         text = str(self.quickadd_entry.get_text())
@@ -752,7 +714,7 @@ class TaskBrowser(GObject.GObject):
             # if no text is selected, we open the currently selected task
             nids = self.vtree_panes['active'].get_selected_nodes()
             for nid in nids:
-                self.vmanager.open_task(nid)
+                self.app.open_task(nid)
 
     def on_tag_treeview_button_press_event(self, treeview, event):
         """
@@ -839,7 +801,7 @@ class TaskBrowser(GObject.GObject):
         for tagname in tags:
             self.req.delete_tag(tagname)
             tag = self.req.get_tag(tagname)
-            self.vmanager.reload_opened_editors(tag.get_related_tasks())
+            self.app.reload_opened_editors(tag.get_related_tasks())
         self.tagtreeview.set_cursor(0)
         self.on_select_tag()
 
@@ -851,7 +813,6 @@ class TaskBrowser(GObject.GObject):
         if event.button == 3:
             x = int(event.x)
             y = int(event.y)
-            time = event.time
             pthinfo = treeview.get_path_at_pos(x, y)
             if pthinfo is not None:
                 path, col, cellx, celly = pthinfo
@@ -862,8 +823,8 @@ class TaskBrowser(GObject.GObject):
                 else:
                     treeview.set_cursor(path, col, 0)
                 treeview.grab_focus()
-                self.taskpopup.popup(None, None, None, None, event.button,
-                                     time)
+                self.open_menu.popup_at_pointer(event)
+
             return True
 
     def on_task_treeview_key_press_event(self, treeview, event):
@@ -871,25 +832,22 @@ class TaskBrowser(GObject.GObject):
         is_shift_f10 = (keyname == "F10" and
                         event.get_state() & Gdk.ModifierType.SHIFT_MASK)
 
-        if keyname == "Delete":
-            self.on_delete_tasks()
-            return True
-        elif is_shift_f10 or keyname == "Menu":
-            self.taskpopup.popup(None, None, None, None, 0, event.time)
+        if is_shift_f10 or keyname == "Menu":
+            self.open_menu.popup_at_pointer(event)
             return True
 
     def on_closed_task_treeview_button_press_event(self, treeview, event):
         if event.button == 3:
             x = int(event.x)
             y = int(event.y)
-            time = event.time
             pthinfo = treeview.get_path_at_pos(x, y)
+
             if pthinfo is not None:
                 path, col, cellx, celly = pthinfo
                 treeview.grab_focus()
                 treeview.set_cursor(path, col, 0)
-                self.ctaskpopup.popup(None, None, None, None, event.button,
-                                      time)
+                self.closed_menu.popup_at_pointer(event)
+
             return True
 
     def on_closed_task_treeview_key_press_event(self, treeview, event):
@@ -897,20 +855,17 @@ class TaskBrowser(GObject.GObject):
         is_shift_f10 = (keyname == "F10" and
                         event.get_state() & Gdk.ModifierType.SHIFT_MASK)
 
-        if keyname == "Delete":
-            self.on_delete_tasks()
-            return True
-        elif is_shift_f10 or keyname == "Menu":
-            self.ctaskpopup.popup(None, None, None, None, 0, event.time)
+        if is_shift_f10 or keyname == "Menu":
+            self.closed_menu.popup_at_pointer(event)
             return True
 
-    def on_add_task(self, widget):
+    def on_add_task(self, widget=None):
         tags = [tag for tag in self.get_selected_tags() if tag.startswith('@')]
         task = self.req.new_task(tags=tags, newtask=True)
         uid = task.get_id()
-        self.vmanager.open_task(uid, thisisnew=True)
+        self.app.open_task(uid, thisisnew=True)
 
-    def on_add_subtask(self, widget):
+    def on_add_subtask(self, widget=None):
         uid = self.get_selected_task()
         if uid:
             zetask = self.req.get_task(uid)
@@ -918,17 +873,17 @@ class TaskBrowser(GObject.GObject):
             task = self.req.new_task(tags=tags, newtask=True)
             # task.add_parent(uid)
             zetask.add_child(task.get_id())
-            self.vmanager.open_task(task.get_id(), thisisnew=True)
+            self.app.open_task(task.get_id(), thisisnew=True)
 
-    def on_edit_active_task(self, widget, row=None, col=None):
+    def on_edit_active_task(self, widget=None, row=None, col=None):
         tid = self.get_selected_task()
         if tid:
-            self.vmanager.open_task(tid)
+            self.app.open_task(tid)
 
     def on_edit_done_task(self, widget, row=None, col=None):
         tid = self.get_selected_task('closed')
         if tid:
-            self.vmanager.open_task(tid)
+            self.app.open_task(tid)
 
     def on_delete_tasks(self, widget=None, tid=None):
         # If we don't have a parameter, then take the selection in the
@@ -940,8 +895,9 @@ class TaskBrowser(GObject.GObject):
                 return
         else:
             tids_todelete = [tid]
+
         log.debug("going to delete %s" % tids_todelete)
-        self.vmanager.ask_delete_tasks(tids_todelete, self.window)
+        self.app.ask_delete_tasks(tids_todelete, self)
 
     def update_start_date(self, widget, new_start_date):
         tasks = [self.req.get_task(uid)
@@ -954,23 +910,23 @@ class TaskBrowser(GObject.GObject):
         for task in tasks:
             task.set_start_date(start_date)
 
-    def on_mark_as_started(self, widget):
-        self.update_start_date(widget, "today")
+    def on_mark_as_started(self, action, param):
+        self.update_start_date(None, "today")
 
-    def on_start_for_tomorrow(self, widget):
-        self.update_start_date(widget, "tomorrow")
+    def on_start_for_tomorrow(self, action, param):
+        self.update_start_date(None, "tomorrow")
 
-    def on_start_for_next_week(self, widget):
-        self.update_start_date(widget, "next week")
+    def on_start_for_next_week(self, action, param):
+        self.update_start_date(None, "next week")
 
-    def on_start_for_next_month(self, widget):
-        self.update_start_date(widget, "next month")
+    def on_start_for_next_month(self, action, param):
+        self.update_start_date(None, "next month")
 
-    def on_start_for_next_year(self, widget):
-        self.update_start_date(widget, "next year")
+    def on_start_for_next_year(self, action, param):
+        self.update_start_date(None, "next year")
 
-    def on_start_clear(self, widget):
-        self.update_start_date(widget, None)
+    def on_start_clear(self, action, param):
+        self.update_start_date(None, None)
 
     def update_due_date(self, widget, new_due_date):
         tasks = [self.req.get_task(uid)
@@ -983,58 +939,56 @@ class TaskBrowser(GObject.GObject):
         for task in tasks:
             task.set_due_date(due_date)
 
-    def on_set_due_today(self, widget):
-        self.update_due_date(widget, "today")
+    def on_set_due_today(self, action, param):
+        self.update_due_date(None, "today")
 
-    def on_set_due_tomorrow(self, widget):
-        self.update_due_date(widget, "tomorrow")
+    def on_set_due_tomorrow(self, action, param):
+        self.update_due_date(None, "tomorrow")
 
-    def on_set_due_next_week(self, widget):
-        self.update_due_date(widget, "next week")
+    def on_set_due_next_week(self, action, param):
+        self.update_due_date(None, "next week")
 
-    def on_set_due_next_month(self, widget):
-        self.update_due_date(widget, "next month")
+    def on_set_due_next_month(self, action, param):
+        self.update_due_date(None, "next month")
 
-    def on_set_due_next_year(self, widget):
-        self.update_due_date(widget, "next year")
+    def on_set_due_next_year(self, action, param):
+        self.update_due_date(None, "next year")
 
-    def on_set_due_soon(self, widget):
-        self.update_due_date(widget, "soon")
+    def on_set_due_soon(self, action, param):
+        self.update_due_date(None, "soon")
 
-    def on_set_due_someday(self, widget):
-        self.update_due_date(widget, "someday")
+    def on_set_due_someday(self, action, param):
+        self.update_due_date(None, "someday")
 
-    def on_set_due_clear(self, widget):
-        self.update_due_date(widget, None)
+    def on_set_due_clear(self, action, param):
+        self.update_due_date(None, None)
 
-    def on_start_for_specific_date(self, widget):
+    def on_start_for_specific_date(self, action, param):
         """ Display Calendar to set start date of selected tasks """
+
         self.calendar.set_title("Set Start Date")
+
         # Get task from task name
         task = self.req.get_task(self.get_selected_tasks()[0])
         date = task.get_start_date()
         self.calendar.set_date(date, GTGCalendar.DATE_KIND_START)
-        # Shows the calendar just above the mouse on widget's line of symmetry
-        rect = widget.get_allocation()
-        result, x, y = widget.get_window().get_origin()
-        self.calendar.show_at_position(x + rect.x + rect.width,
-                                       y + rect.y)
+        self.calendar.show()
 
-    def on_set_due_for_specific_date(self, widget):
+    def on_set_due_for_specific_date(self, action, param):
         """ Display Calendar to set due date of selected tasks """
+
         self.calendar.set_title("Set Due Date")
+
         # Get task from task name
         task = self.req.get_task(self.get_selected_tasks()[0])
+
         if not task.get_due_date():
             date = task.get_start_date()
         else:
             date = task.get_due_date()
+
         self.calendar.set_date(date, GTGCalendar.DATE_KIND_DUE)
-        # Shows the calendar just above the mouse on widget's line of symmetry
-        rect = widget.get_allocation()
-        result, x, y = widget.get_window().get_origin()
-        self.calendar.show_at_position(x + rect.x + rect.width,
-                                       y + rect.y)
+        self.calendar.show()
 
     def on_date_changed(self, calendar):
         # Get tasks' list from task names' list
@@ -1047,8 +1001,9 @@ class TaskBrowser(GObject.GObject):
             for task in tasks:
                 task.set_start_date(date)
 
-    def on_modify_tags(self, widget):
-        """ Run Modify Tags dialog on selected tasks """
+    def on_modify_tags(self, action, params):
+        """Open modify tags dialog for selected tasks."""
+
         tasks = self.get_selected_tasks()
         self.modifytags_dialog.modify_tags(tasks)
 
@@ -1065,9 +1020,9 @@ class TaskBrowser(GObject.GObject):
         trace_subtasks(self.req.get_task(task_id))
 
         for task in all_subtasks:
-            self.vmanager.close_task(task.get_id())
+            self.app.close_task(task.get_id())
 
-    def on_mark_as_done(self, widget):
+    def on_mark_as_done(self, widget=None):
         tasks_uid = [uid for uid in self.get_selected_tasks()
                      if uid is not None]
         if len(tasks_uid) == 0:
@@ -1087,7 +1042,7 @@ class TaskBrowser(GObject.GObject):
                 task.set_status(Task.STA_DONE)
                 self.close_all_task_editors(uid)
 
-    def on_dismiss_task(self, widget):
+    def on_dismiss_task(self, widget=None):
         tasks_uid = [uid for uid in self.get_selected_tasks()
                      if uid is not None]
         if len(tasks_uid) == 0:
@@ -1139,11 +1094,6 @@ class TaskBrowser(GObject.GObject):
                     self.quickadd_entry.set_text(tag.get_attribute("query"))
 
         self.applied_tags = new_taglist
-
-    def on_close(self, widget=None):
-        """Closing the window."""
-        # Saving is now done in main.py
-        self.quit()
 
 # PUBLIC METHODS ###########################################################
     def get_selected_pane(self):
@@ -1285,36 +1235,37 @@ class TaskBrowser(GObject.GObject):
     def hide(self):
         """ Hides the task browser """
         self.browser_shown = False
-        self.window.hide()
+        self.hide()
         GObject.idle_add(self.emit, "visibility-toggled")
 
     def show(self):
-        """ Unhides the TaskBrowser """
+        """ Unhides the MainWindow """
         self.browser_shown = True
         # redraws the GDK window, bringing it to front
-        self.window.show()
-        self.window.present()
-        self.window.grab_focus()
+        self.show()
+        self.present()
+        self.grab_focus()
         self.quickadd_entry.grab_focus()
         GObject.idle_add(self.emit, "visibility-toggled")
 
     def iconify(self):
-        """ Minimizes the TaskBrowser """
-        self.window.iconify()
+        """ Minimizes the MainWindow """
+        self.iconify()
 
     def is_visible(self):
         """ Returns true if window is shown or false if hidden. """
-        return self.window.get_property("visible")
+        return self.get_property("visible")
 
     def is_active(self):
         """ Returns true if window is the currently active window """
-        return self.window.get_property("is-active")
+
+        return self.get_property("is-active") or self.menu.is_visible()
 
     def get_builder(self):
         return self.builder
 
     def get_window(self):
-        return self.window
+        return self
 
     def is_shown(self):
         return self.browser_shown
@@ -1395,7 +1346,7 @@ class TaskBrowser(GObject.GObject):
             return
         self.vbox_toolbars.foreach(self.__remove_backend_infobar, backend_id)
         # add a new one
-        infobar = CustomInfoBar(self.req, self, self.vmanager, backend_id)
+        infobar = CustomInfoBar(self.req, self, self.app, backend_id)
         self.vbox_toolbars.pack_start(infobar, True, True, 0)
         return infobar
 

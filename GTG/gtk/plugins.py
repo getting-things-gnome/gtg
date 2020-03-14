@@ -25,7 +25,6 @@ from GTG.core.plugins import GnomeConfig
 from GTG.core.plugins.engine import PluginEngine
 from GTG.core.translations import _
 from GTG.gtk import ViewConfig
-from GTG.gtk import help
 
 # columns in PluginsDialog.plugin_store
 PLUGINS_COL_ID = 0
@@ -125,6 +124,7 @@ class PluginsDialog():
         self.req = requester
         self.config = self.req.get_config("plugins")
         builder = Gtk.Builder()
+
         builder.add_from_file(ViewConfig.PLUGINS_UI_FILE)
 
         self.dialog = builder.get_object("PluginsDialog")
@@ -133,8 +133,6 @@ class PluginsDialog():
         self.plugin_configure = builder.get_object("plugin_configure")
         self.plugin_about = builder.get_object("PluginAboutDialog")
         self.plugin_depends = builder.get_object('PluginDepends')
-
-        help.add_help_shortcut(self.dialog, "plugins")
 
         self.pengine = PluginEngine()
         # plugin config initiation
@@ -152,8 +150,6 @@ class PluginsDialog():
         self.plugin_store = Gtk.ListStore(str, bool, str, str, bool)
 
         builder.connect_signals({
-                                'on_plugins_help':
-                                self.on_help,
                                 'on_PluginsDialog_delete_event':
                                 self.on_close,
                                 'on_PluginTree_cursor_changed':
@@ -221,12 +217,6 @@ class PluginsDialog():
     def on_close(self, widget, data=None):
         """ Close the plugins dialog."""
         self.dialog.hide()
-        return True
-
-    @classmethod
-    def on_help(cls, widget):
-        """ Open help for plugins """
-        help.show_help("plugins")
         return True
 
     def on_plugin_toggle(self, widget, path):

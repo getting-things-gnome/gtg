@@ -6,7 +6,7 @@ if [ $UID -eq 0 ]; then
     exit
 fi
 
-args="--no-crash-handler"
+args=""
 dataset="default"
 norun=0
 title=""
