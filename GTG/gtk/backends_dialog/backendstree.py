@@ -123,8 +123,7 @@ class BackendsTree(Gtk.TreeView):
                 style_context = self.get_style_context()
                 color = style_context.get_color(Gtk.StateFlags.INSENSITIVE)
                 color = color.to_color().to_string()
-                text = "<span color='%s'>%s</span>" % \
-                    (color, backend_name)
+                text = f"<span color='{color}'>{backend_name}</span>"
             self.liststore[b_path][self.COLUMN_TEXT] = text
 
             # Also refresh the tags

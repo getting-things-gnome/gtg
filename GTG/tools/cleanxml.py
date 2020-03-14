@@ -130,7 +130,7 @@ def openxmlfile(zefile, root):
         if os.path.exists(zefile):
             return _try_openxmlfile(zefile, root)
         elif os.path.exists(tmpfile):
-            log.warning("Something happened to %s. Using backup" % zefile)
+            log.warning(f"Something happened to {zefile}. Using backup")
             os.rename(tmpfile, zefile)
             _USED_BACKUP = True
             _BACKUP_FILE_INFO = "Recovered from backup made on: " + \
@@ -143,10 +143,10 @@ def openxmlfile(zefile, root):
         sys.exit(1)
 
     except xml.parsers.expat.ExpatError as msg:
-        errormsg = "Error parsing XML file %s: %s" % (zefile, msg)
+        errormsg = f"Error parsing XML file {zefile}: {msg}"
         log.error(errormsg)
         if os.path.exists(tmpfile):
-            log.warning("Something happened to %s. Using backup" % zefile)
+            log.warning(f"Something happened to {zefile}. Using backup")
             os.rename(tmpfile, zefile)
             _USED_BACKUP = True
             _BACKUP_FILE_INFO = "Recovered from backup made on: " + \
@@ -156,14 +156,14 @@ def openxmlfile(zefile, root):
             try:
                 return _try_openxmlfile(zefile, root)
             except Exception as msg:
-                log.warning('Failed with reason: %s' % msg)
+                log.warning(f'Failed with reason: {msg}')
 
     # Try to revert to backup
     backup_name = _get_backup_name(zefile)
     for i in range(BACKUP_NBR):
-        backup_file = "%s.bak.%d" % (backup_name, i)
+        backup_file = f"{backup_name}.bak.{i:d}"
         if os.path.exists(backup_file):
-            log.info("Trying to restore backup file %s" % backup_file)
+            log.info(f"Trying to restore backup file {backup_file}")
             _USED_BACKUP = True
             _BACKUP_FILE_INFO = "Recovered from backup made on: " + \
                 datetime.datetime.fromtimestamp(
@@ -171,7 +171,7 @@ def openxmlfile(zefile, root):
             try:
                 return _try_openxmlfile(backup_file, root)
             except Exception as msg:
-                log.warning('Failed with reason: %s' % msg)
+                log.warning(f'Failed with reason: {msg}')
 
     log.info("No suitable backup was found")
 
@@ -179,7 +179,7 @@ def openxmlfile(zefile, root):
     doc, xmlproject = emptydoc(root)
     newfile = savexml(zefile, doc)
     if not newfile:
-        log.error("Could not create a new file %s" % zefile)
+        log.error(f"Could not create a new file {zefile}")
         sys.exit(1)
     # set _USED_BACKUP even if there's a failure to notify about the same
     _USED_BACKUP = True
@@ -223,7 +223,7 @@ def savexml(zefile, doc, backup=False):
             pretty = bytes(pretty, 'utf8')
             bwritten = os.write(f.fileno(), pretty)
             if bwritten != len(pretty):
-                print("error writing file %s" % zefile)
+                print(f"error writing file {zefile}")
                 f.close()
                 return False
             f.close()
@@ -237,14 +237,14 @@ def savexml(zefile, doc, backup=False):
                 # We keep BACKUP_NBR versions of the file
                 # The 0 is the youngest one
                 while backup_nbr > 0:
-                    older = "%s.bak.%s" % (backup_name, backup_nbr)
+                    older = f"{backup_name}.bak.{backup_nbr}"
                     backup_nbr -= 1
-                    newer = "%s.bak.%s" % (backup_name, backup_nbr)
+                    newer = f"{backup_name}.bak.{backup_nbr}"
                     if os.path.exists(newer):
                         shutil.move(newer, older)
                 # The bak.0 is always a fresh copy of the closed file
                 # So that it's not touched in case of bad opening next time
-                current = "%s.bak.0" % backup_name
+                current = f"{backup_name}.bak.0"
                 shutil.copy(zefile, current)
 
                 daily_backup = "%s.%s.bak" % (
@@ -253,7 +253,7 @@ def savexml(zefile, doc, backup=False):
                     shutil.copy(zefile, daily_backup)
             return True
         else:
-            print("no file %s or no pretty xml" % zefile)
+            print(f"no file {zefile} or no pretty xml")
             return False
     except IOError as msg:
         print(msg)

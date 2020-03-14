@@ -72,13 +72,13 @@ class TaskView(Gtk.TextView):
         try:
             return getattr(self, prop.name)
         except AttributeError:
-            raise AttributeError('unknown property %s' % prop.name)
+            raise AttributeError(f'unknown property {prop.name}')
 
     def do_set_property(self, prop, val):
         if prop.name in list(self.__gproperties__.keys()):
             setattr(self, prop.name, val)
         else:
-            raise AttributeError('unknown property %s' % prop.name)
+            raise AttributeError(f'unknown property {prop.name}')
 
     def __init__(self, requester, clipboard):
         super().__init__()
@@ -571,7 +571,7 @@ class TaskView(Gtk.TextView):
                 start_i = buff.get_iter_at_mark(start_mark)
                 if self._get_indent_level(start_i) > 0:
                     start_i.forward_to_line_end()
-                    end_mark = buff.create_mark("/%s" % s, start_i, False)
+                    end_mark = buff.create_mark(f"/{s}", start_i, False)
                     self.apply_subtask_tag(buff, s, start_mark, end_mark)
                 else:
                     self.remove_subtask(s)
@@ -579,7 +579,7 @@ class TaskView(Gtk.TextView):
         # Now we apply the tag tag to the marks
         for t in self.get_tagslist():
             start_mark = buff.get_mark(t)
-            end_mark = buff.get_mark("/%s" % t)
+            end_mark = buff.get_mark(f"/{t}")
             # "applying %s to %s - %s"%(t, start_mark, end_mark)
             if start_mark and end_mark:
                 self.apply_tag_tag(buff, t, start_mark, end_mark)
@@ -638,16 +638,15 @@ class TaskView(Gtk.TextView):
                     nbr = url.split("#")[1]
                     topoint = None
                     if url.startswith("bug #") or url.startswith("lp #"):
-                        topoint = "https://launchpad.net/bugs/%s" % nbr
+                        topoint = f"https://launchpad.net/bugs/{nbr}"
                     elif url.startswith("bgo #"):
                         topoint = "http://bugzilla.gnome.org/" + \
-                            "show_bug.cgi?id=%s" % nbr
+                            f"show_bug.cgi?id={nbr}"
                     elif url.startswith("bko #"):
-                        topoint = "https://bugs.kde.org/show_bug.cgi?id=%s" \
-                            % nbr
+                        topoint = f"https://bugs.kde.org/show_bug.cgi?id={nbr}"
                     elif url.startswith("fdo #"):
                         topoint = "http://bugs.freedesktop.org/" + \
-                            "show_bug.cgi?id=%s" % nbr
+                            f"show_bug.cgi?id={nbr}"
                     if topoint:
                         texttag = self.create_anchor_tag(buff,
                                                          topoint, text=None,
@@ -681,12 +680,12 @@ class TaskView(Gtk.TextView):
                             if start.get_offset() <= offset1 <= \
                                     end.get_offset():
                                 buff.delete_mark_by_name(tagname)
-                        mark2 = buff.get_mark("/%s" % tagname)
+                        mark2 = buff.get_mark(f"/{tagname}")
                         if mark2:
                             offset2 = buff.get_iter_at_mark(mark2).get_offset()
                             if start.get_offset() <= offset2 <= \
                                     end.get_offset():
-                                buff.delete_mark_by_name("/%s" % tagname)
+                                buff.delete_mark_by_name(f"/{tagname}")
             it.forward_char()
 
         # Set iterators for word
@@ -732,7 +731,7 @@ class TaskView(Gtk.TextView):
                         #   word_end)
                         # We will add mark where tag should be applied
                         buff.create_mark(my_word, word_start, True)
-                        buff.create_mark("/%s" % my_word, word_end, False)
+                        buff.create_mark(f"/{my_word}", word_end, False)
                         # adding tag to a local list
                         new_tags.append(my_word)
                         # adding tag to the model
@@ -808,8 +807,8 @@ class TaskView(Gtk.TextView):
                         self.remove_tag_callback(tagname)
                         if buff.get_mark(tagname):
                             buff.delete_mark_by_name(tagname)
-                        if buff.get_mark("/%s" % tagname):
-                            buff.delete_mark_by_name("/%s" % tagname)
+                        if buff.get_mark(f"/{tagname}"):
+                            buff.delete_mark_by_name(f"/{tagname}")
                     if hasattr(ta, 'is_indent'):
                         # Because the indent tag is read only
                         # we will remove it
@@ -929,7 +928,7 @@ class TaskView(Gtk.TextView):
         # Putting the subtask marks around the title
         self.insert_at_mark(buff, end, newline)
         end_i = buff.get_iter_at_mark(end)
-        endm = buff.create_mark("/%s" % anchor, end_i, False)
+        endm = buff.create_mark(f"/{anchor}", end_i, False)
         # put the tag on the marks
         self.apply_subtask_tag(buff, anchor, startm, endm)
         # buff.delete_mark(start)
@@ -1016,7 +1015,7 @@ class TaskView(Gtk.TextView):
         # Moving the end of subtask mark to the position of the temp mark
         if stag:
             itera = buff.get_iter_at_mark(temp_mark)
-            buff.move_mark_by_name("/%s" % subtid, itera)
+            buff.move_mark_by_name(f"/{subtid}", itera)
         buff.delete_mark(temp_mark)
         # The mark has right gravity but because we put it on the left
         # of the newly inserted \n, it will not move anymore.
@@ -1033,7 +1032,7 @@ class TaskView(Gtk.TextView):
         indentation = indentation + (level - 1) * spaces
         # adding the symbol
         if level == 1:
-            indentation = "%s%s " % (indentation, self.bullet1)
+            indentation = f"{indentation}{self.bullet1} "
         buff.insert(itera, indentation)
         indenttag = self.create_indent_tag(buff, level)
         self.__apply_tag_to_mark(start, end, tag=indenttag)
@@ -1215,7 +1214,7 @@ class TaskView(Gtk.TextView):
                     # Then, if indent > 0, we increment it
                     # First step: we preserve it.
                     else:
-                        if not line.lstrip("%s " % self.bullet1):
+                        if not line.lstrip(f"{self.bullet1} "):
                             # if we didn't write a task, we remove the indent
                             # we check if the iterator is well at the end of
                             # the line
@@ -1240,7 +1239,7 @@ class TaskView(Gtk.TextView):
                     if closed_tag:
                         insert_mark = self.buff.get_mark("insert_point")
                         insert_iter = self.buff.get_iter_at_mark(insert_mark)
-                        self.buff.move_mark_by_name("/%s" % closed_tag,
+                        self.buff.move_mark_by_name(f"/{closed_tag}",
                                                     insert_iter)
                         self.buff.delete_mark(insert_mark)
                         if cutting_subtask:
@@ -1252,7 +1251,7 @@ class TaskView(Gtk.TextView):
                             text = self.buff.get_text(cursor, endl, True)
                             anchor = self.new_subtask_callback(text)
                             self.buff.create_mark(anchor, cursor, True)
-                            self.buff.create_mark("/%s" % anchor, endl, False)
+                            self.buff.create_mark(f"/{anchor}", endl, False)
                         self.modified(full=True)
             # The user entered something else than \n
             elif tex:
@@ -1273,7 +1272,7 @@ class TaskView(Gtk.TextView):
                         #   level=current_indent)
                         anchor = self.new_subtask_callback(tex)
                         self.buff.create_mark(anchor, itera, True)
-                        self.buff.create_mark("/%s" % anchor, itera, False)
+                        self.buff.create_mark(f"/{anchor}", itera, False)
             self.insert_sigid = self.buff.connect('insert-text',
                                                   self._insert_at_cursor)
             self.connect('key_press_event', self._keypress)
@@ -1393,7 +1392,7 @@ class TaskView(Gtk.TextView):
                             not self.buff.get_has_selection():
                         openurl(anchor)
                 else:
-                    print("Unknown link type for %s" % anchor)
+                    print(f"Unknown link type for {anchor}")
                 self.emit('anchor-clicked', text, anchor, button)
                 self.__set_anchor(ev.window, tag, cursor,
                                   self.get_property('hover'))

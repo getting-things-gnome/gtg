@@ -102,17 +102,16 @@ class TreeviewFactory():
             if days_left is not None and days_left <= 0:
                 str_format = "<b>%s</b>"
             if self._has_hidden_subtask(node):
-                str_format = "<span color='%s'>%s</span>"\
-                    % (self.unactive_color, str_format)
+                str_format = f"<span color='{self.unactive_color}'>{str_format}</span>"
 
         title = str_format % saxutils.escape(node.get_title())
         if node.get_status() == Task.STA_ACTIVE:
             count = self.mainview.node_n_children(node.get_id(),
                                                   recursive=True)
             if count != 0:
-                title += " (%s)" % count
+                title += f" ({count})"
         elif node.get_status() == Task.STA_DISMISSED:
-            title = "<span color='%s'>%s</span>" % (self.unactive_color, title)
+            title = f"<span color='{self.unactive_color}'>{title}</span>"
 
         if self.config.get("contents_preview_enable"):
             excerpt = saxutils.escape(node.get_excerpt(lines=1,
@@ -236,7 +235,7 @@ class TreeviewFactory():
             label = label[1:]
 
         if node.get_attribute("nonworkview") == "True":
-            return "<span color='%s'>%s</span>" % (self.unactive_color, label)
+            return f"<span color='{self.unactive_color}'>{label}</span>"
         else:
             return label
 
@@ -245,8 +244,7 @@ class TreeviewFactory():
             return ""
         else:
             toreturn = node.get_active_tasks_count()
-            return "<span color='%s'>%s</span>" % (self.unactive_color,
-                                                   toreturn)
+            return f"<span color='{self.unactive_color}'>{toreturn}</span>"
 
     def is_tag_separator_filter(self, tag):
         return tag.get_attribute('special') == 'sep'

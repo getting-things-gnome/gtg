@@ -309,8 +309,7 @@ class TomboyPlugin():
         color = window_style.get_color(
             Gtk.StateType.PRELIGHT).to_color().to_string()
         title = tomboy_note_title
-        label.set_markup("<span underline='low' color='%s'>%s</span>" % (color,
-                                                                         title)
+        label.set_markup(f"<span underline='low' color='{color}'>{title}</span>"
                          )
         label.show()
         label.set_alignment(0.5, 1.0)

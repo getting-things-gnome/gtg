@@ -206,7 +206,7 @@ class GenericTomboy(GenericBackend):
                                                                  has_task,
                                                                  note_exists,
                                                                  is_syncable)
-            log.debug("processing tomboy (%s, %s)" % (action, is_syncable))
+            log.debug(f"processing tomboy ({action}, {is_syncable})")
 
             if action == SyncEngine.ADD:
                 tid = str(uuid.uuid4())
@@ -262,7 +262,7 @@ class GenericTomboy(GenericBackend):
                                                                      has_task,
                                                                      has_note,
                                                                      can_sync)
-                log.debug("processing gtg (%s, %d)" % (action, is_syncable))
+                log.debug(f"processing gtg ({action}, {is_syncable:d})")
 
                 if action == SyncEngine.ADD:
                     # GTG allows multiple tasks with the same name,
@@ -279,7 +279,7 @@ class GenericTomboy(GenericBackend):
                     if duplicate_counter != 1:
                         # if we needed to rename, we have to rename also
                         # the gtg task
-                        task.set_title(title + " (%d)" % duplicate_counter)
+                        task.set_title(title + f" ({duplicate_counter:d})")
 
                     self._populate_note(note, task)
                     self.record_relationship(

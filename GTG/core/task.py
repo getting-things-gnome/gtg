@@ -194,7 +194,7 @@ class Task(TreeNode):
                 if valid_attribute:
                     # remove valid attribute from the task title
                     text = \
-                        text.replace("%s%s:%s" % (spaces, attribute, args), "")
+                        text.replace(f"{spaces}{attribute}:{args}", "")
 
             for t in tags:
                 self.add_tag(t)
@@ -522,9 +522,9 @@ class Task(TreeNode):
             # defensive programmation to filter bad formatted tasks
             if not texte.startswith("<content>"):
                 texte = cgi.escape(texte, quote=True)
-                texte = "<content>%s" % texte
+                texte = f"<content>{texte}"
             if not texte.endswith("</content>"):
-                texte = "%s</content>" % texte
+                texte = f"{texte}</content>"
             self.content = str(texte)
         else:
             self.content = ''
@@ -544,7 +544,7 @@ class Task(TreeNode):
 
         @param child: the added task
         """
-        log.debug("adding child %s to task %s" % (tid, self.get_id()))
+        log.debug(f"adding child {tid} to task {self.get_id()}")
         self.can_be_deleted = False
         # the core of the method is in the TreeNode object
         TreeNode.add_child(self, tid)
@@ -740,17 +740,17 @@ class Task(TreeNode):
     def _strip_tag(self, text, tagname, newtag=''):
         inline_tag = tagname[1:]
         return (text
-                .replace('<tag>%s</tag>\n\n' % (tagname), newtag)  # trail \n
+                .replace(f'<tag>{tagname}</tag>\n\n', newtag)  # trail \n
                 # trail comma
-                .replace('<tag>%s</tag>, ' % (tagname), newtag)
-                .replace('<tag>%s</tag>,' % (tagname), newtag)
-                .replace('<tag>%s</tag>' % (tagname), newtag)
+                .replace(f'<tag>{tagname}</tag>, ', newtag)
+                .replace(f'<tag>{tagname}</tag>,', newtag)
+                .replace(f'<tag>{tagname}</tag>', newtag)
                 # in case XML is missing (bug #504899)
-                .replace('%s\n\n' % (tagname), newtag)
-                .replace('%s, ' % (tagname), newtag)
-                .replace('%s,' % (tagname), inline_tag)
+                .replace(f'{tagname}\n\n', newtag)
+                .replace(f'{tagname}, ', newtag)
+                .replace(f'{tagname},', inline_tag)
                 # don't forget a space a the end
-                .replace('%s' % (tagname), inline_tag))
+                .replace(f'{tagname}', inline_tag))
 
     # tag_list is a list of tags names
     # return true if at least one of the list is in the task

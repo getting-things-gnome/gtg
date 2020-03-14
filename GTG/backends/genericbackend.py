@@ -395,8 +395,7 @@ class GenericBackend():
             elif param_value == "False":
                 return False
             else:
-                raise Exception("Unrecognized bool value '%s'" %
-                                param_type)
+                raise Exception(f"Unrecognized bool value '{param_type}'")
         elif param_type == cls.TYPE_PASSWORD:
             if param_value == -1:
                 return None
@@ -407,8 +406,7 @@ class GenericBackend():
                 the_list = [the_list]
             return the_list
         else:
-            raise NotImplemented("I don't know what type is '%s'" %
-                                 param_type)
+            raise NotImplemented(f"I don't know what type is '{param_type}'")
 
     def cast_param_type_to_string(self, param_type, param_value):
         """
@@ -541,8 +539,8 @@ class GenericBackend():
 
         # Shift backups
         for i in range(PICKLE_BACKUP_NBR, 1, -1):
-            destination = "%s.bak.%d" % (path, i)
-            source = "%s.bak.%d" % (path, i - 1)
+            destination = f"{path}.bak.{i:d}"
+            source = f"{path}.bak.{i - 1}"
 
             if os.path.exists(destination):
                 os.unlink(destination)
@@ -552,7 +550,7 @@ class GenericBackend():
 
         # Backup main file
         if PICKLE_BACKUP_NBR > 0:
-            destination = "%s.bak.1" % path
+            destination = f"{path}.bak.1"
             if os.path.exists(path):
                 os.rename(path, destination)
 
@@ -582,7 +580,7 @@ class GenericBackend():
 
         # Loading file failed, trying backups
         for i in range(1, PICKLE_BACKUP_NBR + 1):
-            backup_file = "%s.bak.%d" % (path, i)
+            backup_file = f"{path}.bak.{i:d}"
             if os.path.exists(backup_file):
                 with open(backup_file, 'rb') as file:
                     try:
@@ -595,8 +593,8 @@ class GenericBackend():
                                   (i, self.get_name()))
 
         # Data could not be loaded, degrade to default data
-        log.error("There is no suitable backup for '%s', "
-                  "loading default data" % self.get_name())
+        log.error(f"There is no suitable backup for '{self.get_name()}', "
+                  "loading default data")
         return default_value
 
     def _gtg_task_is_syncable_per_attached_tags(self, task):

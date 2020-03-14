@@ -196,7 +196,7 @@ class Backend(PeriodicImportBackend):
             self.datastore.has_task,
             self._evo_has_task,
             is_syncable)
-        log.debug('GTG->Evo set task (%s, %s)' % (action, is_syncable))
+        log.debug(f'GTG->Evo set task ({action}, {is_syncable})')
 
         if action is None:
             return
@@ -254,7 +254,7 @@ class Backend(PeriodicImportBackend):
             self.datastore.has_task,
             self._evo_has_task,
             is_syncable)
-        log.debug('GTG<-Evo set task (%s, %s)' % (action, is_syncable))
+        log.debug(f'GTG<-Evo set task ({action}, {is_syncable})')
 
         if action == SyncEngine.ADD:
             with self.datastore.get_backend_mutex():

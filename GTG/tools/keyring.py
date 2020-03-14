@@ -35,7 +35,7 @@ class GNOMEKeyring(Borg):
         if not hasattr(self, "keyring"):
             result, self.keyring = GnomeKeyring.get_default_keyring_sync()
             if result != GnomeKeyring.Result.OK:
-                raise Exception("Can't get default keyring, error=%s" % result)
+                raise Exception(f"Can't get default keyring, error={result}")
 
     def set_password(self, name, password, userid=""):
         attrs = GnomeKeyring.Attribute.list_new()
@@ -49,7 +49,7 @@ class GNOMEKeyring(Borg):
             True)
 
         if result != GnomeKeyring.Result.OK:
-            raise Exception("Can't create a new password, error=%s" % result)
+            raise Exception(f"Can't create a new password, error={result}")
 
         return password_id
 

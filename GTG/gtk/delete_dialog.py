@@ -106,7 +106,7 @@ class DeletionUI():
 
         if missing_titles_count >= 2:
             tasks = tasklist[: self.MAXIMUM_TIDS_TO_SHOW]
-            titles_suffix = _("\nAnd %d more tasks" % missing_titles_count)
+            titles_suffix = _(f"\nAnd {missing_titles_count:d} more tasks")
         else:
             tasks = tasklist
             titles_suffix = ""

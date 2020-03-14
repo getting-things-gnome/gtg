@@ -48,7 +48,7 @@ def plugin_error_short_text(plugin):
     if modules:
         modules = "<small><b>%s</b></small>" % ', '.join(modules)
     if dbus:
-        ifaces = ["%s:%s" % (a, b) for (a, b) in dbus]
+        ifaces = [f"{a}:{b}" for (a, b) in dbus]
         dbus = "<small><b>%s</b></small>" % ', '.join(ifaces)
 
     # combine
@@ -70,7 +70,7 @@ def plugin_error_text(plugin):
         return GnomeConfig.CANLOAD
 
     # describe missing dependencies
-    text = "<b>%s</b>. \n" % GnomeConfig.CANNOTLOAD
+    text = f"<b>{GnomeConfig.CANNOTLOAD}</b>. \n"
     # get lists
     modules = plugin.missing_modules
     dbus = plugin.missing_dbus
@@ -79,7 +79,7 @@ def plugin_error_text(plugin):
     if modules:
         modules = "<small><b>%s</b></small>" % ', '.join(modules)
     if dbus:
-        ifaces = ["%s:%s" % (a, b) for (a, b) in dbus]
+        ifaces = [f"{a}:{b}" for (a, b) in dbus]
         dbus = "<small><b>%s</b></small>" % ', '.join(ifaces)
 
     # combine
@@ -108,9 +108,9 @@ def plugin_markup(column, cell, store, iterator, self):
     plugin = self.pengine.get_plugin(plugin_id)
     error_text = plugin_error_short_text(plugin)
     if error_text != "":
-        text = "<b>%s</b>\n%s\n<i>%s</i>" % (name, desc, error_text)
+        text = f"<b>{name}</b>\n{desc}\n<i>{error_text}</i>"
     else:
-        text = "<b>%s</b>\n%s" % (name, desc)
+        text = f"<b>{name}</b>\n{desc}"
 
     cell.set_property('markup', text)
     cell.set_property('sensitive',
@@ -128,7 +128,7 @@ class PluginsDialog():
         builder.add_from_file(ViewConfig.PLUGINS_UI_FILE)
 
         self.dialog = builder.get_object("PluginsDialog")
-        self.dialog.set_title(_("Plugins - %s" % info.NAME))
+        self.dialog.set_title(_(f"Plugins - {info.NAME}"))
         self.plugin_tree = builder.get_object("PluginTree")
         self.plugin_configure = builder.get_object("plugin_configure")
         self.plugin_about = builder.get_object("PluginAboutDialog")

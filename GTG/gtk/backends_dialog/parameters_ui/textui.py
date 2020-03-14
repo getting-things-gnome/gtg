@@ -44,7 +44,7 @@ class TextUI(Gtk.Box):
 
         @param width: the width of the Gtk.Label object
         """
-        label = Gtk.Label(label="%s:" % self.description)
+        label = Gtk.Label(label=f"{self.description}:")
         label.set_line_wrap(True)
         label.set_alignment(xalign=0, yalign=0.5)
         label.set_size_request(width=width, height=-1)

@@ -70,8 +70,7 @@ class BackendFactory(Borg):
                 continue
             except Exception as exception:
                 # Other exception log as errors
-                log.error("Malformated backend %s: %s" %
-                          (module_name, str(exception)))
+                log.error(f"Malformated backend {module_name}: {str(exception)}")
                 continue
 
             self.backend_modules[module_name] = \
@@ -94,7 +93,7 @@ class BackendFactory(Borg):
         if backend_name in self.backend_modules:
             return self.backend_modules[backend_name]
         else:
-            log.debug("Trying to load backend %s, but failed!" % backend_name)
+            log.debug(f"Trying to load backend {backend_name}, but failed!")
             return None
 
     def get_all_backends(self):
@@ -137,12 +136,10 @@ class BackendFactory(Borg):
         Returns the backend instance, or None is something goes wrong
         """
         if "module" not in dic or "xmlobject" not in dic:
-            log.debug("Malformed backend configuration found! %s" %
-                      dic)
+            log.debug(f"Malformed backend configuration found! {dic}")
         module = self.get_backend(dic["module"])
         if module is None:
-            log.debug("could not load module for backend %s" %
-                      dic["module"])
+            log.debug(f"could not load module for backend {dic['module']}")
             return None
         # we pop the xml object, as it will be redundant when the parameters
         # are set directly in the dict

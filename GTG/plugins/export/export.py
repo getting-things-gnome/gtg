@@ -302,7 +302,7 @@ class ExportPlugin():
             self.export_image.set_from_pixbuf(pixbuf)
         else:
             self.export_image.clear()
-        self.description_label.set_markup("<i>%s</i>" % description)
+        self.description_label.set_markup(f"<i>{description}</i>")
 
         # Remember the last selected path
         self.preferences["last_template"] = model[active][0]

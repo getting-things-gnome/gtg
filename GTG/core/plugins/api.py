@@ -176,8 +176,7 @@ class PluginAPI():
                 if wi and widg_id in self.taskwidget_widg:
                     wi.remove(self.taskwidget_widg.pop(widg_id))
             except Exception as e:
-                log.debug("Error removing the toolbar item in the TaskEditor:"
-                          "%s" % e)
+                log.debug(f"Error removing the toolbar item in the TaskEditor:{e}")
 
     def set_bgcolor_func(self, func=None):
         """ Set a function which defines a background color for each task

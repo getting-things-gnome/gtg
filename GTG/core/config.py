@@ -212,7 +212,7 @@ class CoreConfig():
         if task_id not in self._task_conf:
             self._task_conf.add_section(task_id)
         return SectionConfig(
-            'Task {}'.format(task_id),
+            f'Task {task_id}',
             self._task_conf[task_id],
             DEFAULTS['task'],
             self.save_task_config)

@@ -450,7 +450,7 @@ class MainWindow(Gtk.ApplicationWindow):
             try:
                 self.vtree_panes['active'].collapse_node(path)
             except IndexError:
-                print("Invalid liblarch path {0}".format(path))
+                print(f"Invalid liblarch path {path}")
 
     def restore_state_from_conf(self):
         # Extract state from configuration dictionary
@@ -808,8 +808,7 @@ class MainWindow(Gtk.ApplicationWindow):
     def on_task_treeview_button_press_event(self, treeview, event):
         """ Pop up context menu on right mouse click in the main
         task tree view """
-        log.debug("Received button event #%d at %d,%d" % (
-            event.button, event.x, event.y))
+        log.debug(f"Received button event #{event.button} at {event.x},{event.y}")
         if event.button == 3:
             x = int(event.x)
             y = int(event.y)
@@ -896,7 +895,7 @@ class MainWindow(Gtk.ApplicationWindow):
         else:
             tids_todelete = [tid]
 
-        log.debug("going to delete %s" % tids_todelete)
+        log.debug(f"going to delete {tids_todelete}")
         self.app.ask_delete_tasks(tids_todelete, self)
 
     def update_start_date(self, widget, new_start_date):

@@ -80,7 +80,7 @@ def task_from_xml(task, xmlnode):
     # FIXME why we need to convert that through an XML?
     content = read_node(xmlnode, "content")
     if content != "":
-        content = "<content>%s</content>" % content
+        content = f"<content>{content}</content>"
         content = minidom.parseString(content).firstChild.toxml()
         task.set_text(content)
 

@@ -160,7 +160,7 @@ class Backend(PeriodicImportBackend):
         action, tid = self.sync_engine.analyze_remote_id(str(issue['id']),
                                                          has_task,
                                                          lambda b: True)
-        log.debug("processing mantis (%s)" % (action))
+        log.debug(f"processing mantis ({action})")
 
         if action is None:
             return
@@ -233,8 +233,7 @@ class Backend(PeriodicImportBackend):
         else:
             task.set_status(Task.STA_ACTIVE)
         if task.get_title() != issue_dic['title']:
-            task.set_title("{} {}: {}".format(
-                _("Iss."), issue_dic["number"], issue_dic['title']))
+            task.set_title(f"{_('Iss.')} {issue_dic['number']}: {issue_dic['title']}")
         text = self._build_issue_text(issue_dic)
         if task.get_excerpt() != text:
             task.set_text(text)

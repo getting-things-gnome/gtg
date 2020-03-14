@@ -61,7 +61,7 @@ class ImportTagsUI(Gtk.Box):
         """
         title_label = Gtk.Label()
         title_label.set_alignment(xalign=0, yalign=0)
-        title_label.set_markup("<big><b>%s</b></big>" % self.title)
+        title_label.set_markup(f"<big><b>{self.title}</b></big>")
         self.pack_start(title_label, True, True, 0)
         align = Gtk.Alignment.new(0, 0, 1, 0)
         align.set_padding(0, 0, 10, 0)
