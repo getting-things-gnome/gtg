@@ -44,26 +44,16 @@
 """This is the top-level exec script for running GTG"""
 
 #=== IMPORT ===================================================================
-import os
 import sys
-import logging
-import dbus
 
 import gi
 gi.require_version('Gdk', '3.0')
 gi.require_version('Gtk', '3.0')
 
 from optparse import OptionParser
-from gi.repository.Gdk import Screen
 
 from GTG import info
-from GTG.backends import BackendFactory
-from GTG.core.datastore import DataStore
-from GTG.core.dirs import DATA_DIR
-from GTG.core.translations import _
-from GTG.gtk.dbuswrapper import BUSNAME, BUSINTERFACE
 from GTG.gtk.application import Application
-from GTG.tools.logger import log
 
 
 #=== MAIN CLASS ===============================================================
