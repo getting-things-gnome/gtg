@@ -278,8 +278,6 @@ class TaskBrowser(Gtk.ApplicationWindow):
             self.on_move,
             "on_size_allocate":
             self.on_size_allocate,
-            "gtk_main_quit":
-            self.on_close,
             "on_add_subtask":
             self.on_add_subtask,
             "on_tagcontext_deactivate":
@@ -316,8 +314,7 @@ class TaskBrowser(Gtk.ApplicationWindow):
         self.builder.connect_signals(SIGNAL_CONNECTIONS_DIC)
 
         # When destroying this window, quit GTG
-        self.window.connect("destroy", self.quit)
-        self.window.connect("delete-event", self.quit)
+        self.connect("destroy", self.quit)
 
         # Active tasks TreeView
         self.vtree_panes['active'].connect('row-activated',
@@ -475,7 +472,7 @@ class TaskBrowser(Gtk.ApplicationWindow):
         self.app.open_edit_backends()
 
     def quit(self, widget=None, data=None):
-        self.app.close_browser()
+        self.app.quit()
 
     def on_window_state_event(self, widget, event, data=None):
         """ This event checks for the window state: maximized?
@@ -1140,11 +1137,6 @@ class TaskBrowser(Gtk.ApplicationWindow):
                     self.quickadd_entry.set_text(tag.get_attribute("query"))
 
         self.applied_tags = new_taglist
-
-    def on_close(self, widget=None):
-        """Closing the window."""
-        # Saving is now done in main.py
-        self.quit()
 
 # PUBLIC METHODS ###########################################################
     def get_selected_pane(self):
