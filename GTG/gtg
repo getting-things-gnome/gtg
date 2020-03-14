@@ -69,6 +69,9 @@ def parse_args():
     parser.add_argument('-t', '--title',
                         help='Use special title for windows\' title')
 
+    parser.add_argument('task_uri', default='', nargs='*', type=str,
+                        help='Open a specific task via URI')
+
     return parser.parse_args()
 
 
@@ -86,6 +89,7 @@ if __name__ == "__main__":
             info.NAME = args.title
 
         application = Application(args.debug)
+        application.uri_list = args.task_uri
         application.run()
 
     except KeyboardInterrupt:
