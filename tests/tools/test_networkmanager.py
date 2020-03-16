@@ -18,7 +18,7 @@
 
 from unittest import TestCase
 
-from GTG.tools.networkmanager import is_connection_up
+from GTG.core.networkmanager import is_connection_up
 
 
 class TestNetworkManager(TestCase):

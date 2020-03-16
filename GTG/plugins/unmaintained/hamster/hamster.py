@@ -27,7 +27,7 @@ from gi.repository import Gtk, GdkPixbuf
 
 from GTG.core.task import Task
 from GTG.core.translations import _
-from GTG.tools.logger import log
+from GTG.core.logger import log
 
 
 class HamsterPlugin():

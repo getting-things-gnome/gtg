@@ -35,7 +35,7 @@ from gi.repository import GObject, Gtk, Gdk, Pango
 
 from GTG.core.translations import _
 from GTG.gtk.editor import taskviewserial
-from GTG.tools import urlregex
+from GTG.core import urlregex
 
 separators = [' ', ',', '\n', '\t', '!', '?', ';', '\0', '(', ')']
 # those separators are only separators if followed by a space. Else, they

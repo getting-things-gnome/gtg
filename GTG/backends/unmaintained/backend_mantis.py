@@ -25,7 +25,7 @@ from GTG.backends.periodicimportbackend import PeriodicImportBackend
 from GTG.backends.syncengine import SyncEngine, SyncMeme
 from GTG.core.task import Task
 from GTG.core.translations import _
-from GTG.tools.logger import log
+from GTG.core.logger import log
 
 from suds.client import Client
 

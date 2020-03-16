@@ -29,14 +29,14 @@ import dbus
 import datetime
 import unicodedata
 
-from GTG.tools.borg import Borg
+from GTG.core.borg import Borg
 from GTG.backends.genericbackend import GenericBackend
 from GTG.backends.backendsignals import BackendSignals
 from GTG.backends.syncengine import SyncEngine, SyncMeme
 from GTG.core.tag import ALLTASKS_TAG
-from GTG.tools.logger import log
-from GTG.tools.watchdog import Watchdog
-from GTG.tools.interruptible import interruptible
+from GTG.core.logger import log
+from GTG.core.watchdog import Watchdog
+from GTG.core.interruptible import interruptible
 from GTG.core.tag import extract_tags_from_text
 
 

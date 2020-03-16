@@ -30,7 +30,7 @@ from GTG.backends.backendsignals import BackendSignals
 from GTG.backends.genericbackend import GenericBackend
 from GTG.core.dirs import DATA_DIR
 from GTG.core.translations import _
-from GTG.tools import cleanxml, taskxml
+from GTG.core import cleanxml, taskxml
 
 # Ignore all other elements but this one
 TASK_NODE = "task"

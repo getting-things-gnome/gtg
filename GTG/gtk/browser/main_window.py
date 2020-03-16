@@ -38,7 +38,7 @@ from GTG.gtk.browser.treeview_factory import TreeviewFactory
 from GTG.gtk.editor.calendar import GTGCalendar
 from GTG.gtk.tag_completion import TagCompletion
 from GTG.core.dates import Date
-from GTG.tools.logger import log
+from GTG.core.logger import log
 
 class MainWindow(Gtk.ApplicationWindow):
     """ The UI for browsing open and closed tasks,

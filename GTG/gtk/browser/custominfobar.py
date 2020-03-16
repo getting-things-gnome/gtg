@@ -22,7 +22,7 @@ from gi.repository import Gtk
 
 from GTG.backends.backendsignals import BackendSignals
 from GTG.core.translations import _
-from GTG.tools.networkmanager import is_connection_up
+from GTG.core.networkmanager import is_connection_up
 
 
 class CustomInfoBar(Gtk.InfoBar):
