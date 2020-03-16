@@ -7,7 +7,7 @@ import sys
 # Use local version of GTG
 sys.path.insert(0, '../..')
 
-from GTG import info
+from GTG.core import info
 
 extensions = [
     'sphinx.ext.autodoc',

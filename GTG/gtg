@@ -51,7 +51,7 @@ import gi
 gi.require_version('Gdk', '3.0')
 gi.require_version('Gtk', '3.0')
 
-from GTG import info
+from GTG.core import info
 from GTG.gtk.application import Application
 
 

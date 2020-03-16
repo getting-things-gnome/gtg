@@ -27,7 +27,7 @@ This window is divided in two:
 
 from gi.repository import Gtk
 
-from GTG import info
+from GTG.core import info
 from GTG.backends import BackendFactory
 from GTG.backends.genericbackend import GenericBackend
 from GTG.core.translations import _
