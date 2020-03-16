@@ -22,7 +22,7 @@ Tasks should serve as a quick tutorial how GTG works """
 
 from GTG.core.translations import _
 from GTG.tools import cleanxml
-from GTG.tools.tags import extract_tags_from_text
+from GTG.core.tag import extract_tags_from_text
 
 
 def populate():
