@@ -24,8 +24,8 @@ try:
 except (ValueError, ImportError):
     GnomeKeyring = None
 
-from GTG.tools.borg import Borg
-from GTG.tools.logger import log
+from GTG.core.borg import Borg
+from GTG.core.logger import log
 
 
 class GNOMEKeyring(Borg):

@@ -35,7 +35,7 @@ from GTG.gtk import ViewConfig
 from GTG.gtk.backends_dialog.addpanel import AddPanel
 from GTG.gtk.backends_dialog.backendstree import BackendsTree
 from GTG.gtk.backends_dialog.configurepanel import ConfigurePanel
-from GTG.tools.logger import log
+from GTG.core.logger import log
 
 
 class BackendsDialog():

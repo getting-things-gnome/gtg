@@ -25,7 +25,7 @@ import threading
 
 from GTG.backends.genericbackend import GenericBackend
 from GTG.backends.backendsignals import BackendSignals
-from GTG.tools.interruptible import interruptible
+from GTG.core.interruptible import interruptible
 
 
 class PeriodicImportBackend(GenericBackend):

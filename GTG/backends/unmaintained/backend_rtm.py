@@ -40,8 +40,8 @@ from GTG.core.tag import ALLTASKS_TAG
 from GTG.core.task import Task
 from GTG.core.translations import _
 from GTG.core.dates import Date
-from GTG.tools.interruptible import interruptible
-from GTG.tools.logger import log
+from GTG.core.interruptible import interruptible
+from GTG.core.logger import log
 
 
 class Backend(PeriodicImportBackend):

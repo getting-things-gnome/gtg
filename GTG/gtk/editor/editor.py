@@ -38,7 +38,7 @@ from GTG.gtk.editor.calendar import GTGCalendar
 from GTG.gtk.editor.taskview import TaskView
 from GTG.gtk.tag_completion import tag_filter
 from GTG.core.dates import Date
-from GTG.tools.logger import log
+from GTG.core.logger import log
 """
 TODO (jakubbrindza): re-factor tag_filter into a separate module
 """

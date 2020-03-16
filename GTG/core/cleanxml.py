@@ -23,7 +23,7 @@ import sys
 import re
 import datetime
 
-from GTG.tools.logger import log
+from GTG.core.logger import log
 
 # This is for the awful pretty xml things
 tab = "\t"

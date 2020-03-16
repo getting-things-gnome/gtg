@@ -20,7 +20,7 @@
 Contains TwoKeyDict, a Dictionary which also has a secondary key
 """
 
-from GTG.tools.bidict import BiDict
+from GTG.core.bidict import BiDict
 
 
 class TwoKeyDict():

@@ -18,7 +18,7 @@
 
 from gi.repository import GObject
 
-from GTG.tools.borg import Borg
+from GTG.core.borg import Borg
 
 
 class BackendSignals(Borg):

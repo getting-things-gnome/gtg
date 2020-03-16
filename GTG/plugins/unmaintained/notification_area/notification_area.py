@@ -26,7 +26,7 @@ except:
 
 from GTG.core.dirs import ICONS_DIR
 from GTG.core.translations import _
-from GTG.tools.borg import Borg
+from GTG.core.borg import Borg
 from GTG.core.dates import Date
 
 

@@ -35,7 +35,7 @@ from GTG.core.dirs import SYNC_CACHE_DIR
 from GTG.core.task import Task
 from GTG.core.translations import _
 from GTG.info import NAME as GTG_NAME
-from GTG.tools.logger import log
+from GTG.core.logger import log
 
 # Uncomment this to see each http request
 # import httplib2

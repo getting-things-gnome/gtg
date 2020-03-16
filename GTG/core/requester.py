@@ -23,7 +23,7 @@ A nice general purpose interface for the datastore and tagstore
 from gi.repository import GObject
 
 from GTG.core.tag import Tag
-from GTG.tools.logger import log
+from GTG.core.logger import log
 
 
 class Requester(GObject.GObject):

@@ -25,7 +25,7 @@ import os
 import re
 
 from GTG.core.dirs import CONFIG_DIR
-from GTG.tools.logger import log
+from GTG.core.logger import log
 
 DEFAULTS = {
     'browser': {

@@ -32,13 +32,13 @@ from GTG.gtk.plugins import PluginsDialog
 from webbrowser import open as openurl
 from GTG import info
 from GTG.gtk.dbuswrapper import DBusTaskWrapper
-from GTG.tools import clipboard
+from GTG.core import clipboard
 from GTG.core.plugins.engine import PluginEngine
 from GTG.core.plugins.api import PluginAPI
 from GTG.backends import BackendFactory
 from GTG.core.datastore import DataStore
 from GTG.core.dirs import CSS_DIR
-from GTG.tools.logger import log
+from GTG.core.logger import log
 from GTG.core.dates import Date
 from GTG.gtk.backends_dialog import BackendsDialog
 from GTG.backends.backendsignals import BackendSignals

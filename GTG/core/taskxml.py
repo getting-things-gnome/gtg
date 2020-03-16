@@ -21,7 +21,7 @@ import xml.dom.minidom as minidom
 import xml.sax.saxutils as saxutils
 from datetime import datetime
 
-from GTG.tools import cleanxml
+from GTG.core import cleanxml
 from GTG.core.dates import Date
 
 

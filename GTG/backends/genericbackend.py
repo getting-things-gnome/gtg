@@ -31,9 +31,9 @@ import threading
 from GTG.backends.backendsignals import BackendSignals
 from GTG.core.tag import ALLTASKS_TAG
 from GTG.core.dirs import SYNC_DATA_DIR
-from GTG.tools.interruptible import _cancellation_point
-from GTG.tools.keyring import Keyring
-from GTG.tools.logger import log, log_debug_enabled
+from GTG.core.interruptible import _cancellation_point
+from GTG.core.keyring import Keyring
+from GTG.core.logger import log, log_debug_enabled
 
 PICKLE_BACKUP_NBR = 2
 
