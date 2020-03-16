@@ -27,7 +27,7 @@ import xml.dom.minidom
 import xml.sax.saxutils as saxutils
 
 from GTG.core.translations import _
-from GTG.tools.dates import Date
+from GTG.core.dates import Date
 from GTG.tools.logger import log
 from GTG.tools.tags import extract_tags_from_text
 from liblarch import TreeNode

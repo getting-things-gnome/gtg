@@ -22,7 +22,7 @@ import xml.sax.saxutils as saxutils
 from datetime import datetime
 
 from GTG.tools import cleanxml
-from GTG.tools.dates import Date
+from GTG.core.dates import Date
 
 
 def get_text(node):

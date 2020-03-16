@@ -17,7 +17,7 @@
 from gi.repository import Gtk
 
 from GTG.core.translations import _
-from GTG.tools.dates import Date
+from GTG.core.dates import Date
 
 
 class NotTodayPlugin():
