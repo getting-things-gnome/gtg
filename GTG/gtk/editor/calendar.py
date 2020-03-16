@@ -21,7 +21,7 @@ import datetime
 from gi.repository import GObject, Gdk, Gtk
 
 from GTG.gtk.editor import GnomeConfig
-from GTG.tools.dates import Date
+from GTG.core.dates import Date
 
 
 class GTGCalendar(GObject.GObject):

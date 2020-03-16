@@ -39,7 +39,7 @@ from GTG.backends import BackendFactory
 from GTG.core.datastore import DataStore
 from GTG.core.dirs import CSS_DIR
 from GTG.tools.logger import log
-from GTG.tools.dates import Date
+from GTG.core.dates import Date
 from GTG.gtk.backends_dialog import BackendsDialog
 from GTG.backends.backendsignals import BackendSignals
 from GTG.gtk.browser.tag_editor import TagEditor

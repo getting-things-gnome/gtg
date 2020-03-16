@@ -37,7 +37,7 @@ from GTG.gtk.browser.tag_context_menu import TagContextMenu
 from GTG.gtk.browser.treeview_factory import TreeviewFactory
 from GTG.gtk.editor.calendar import GTGCalendar
 from GTG.gtk.tag_completion import TagCompletion
-from GTG.tools.dates import Date
+from GTG.core.dates import Date
 from GTG.tools.logger import log
 
 class MainWindow(Gtk.ApplicationWindow):

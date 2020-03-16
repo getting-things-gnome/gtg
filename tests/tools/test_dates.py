@@ -20,7 +20,7 @@ from datetime import date, timedelta
 from unittest import TestCase
 
 from GTG.core.translations import _
-from GTG.tools.dates import Date
+from GTG.core.dates import Date
 
 
 def next_month(aday, day=None):

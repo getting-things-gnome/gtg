@@ -19,7 +19,7 @@
 from unittest import TestCase
 
 from GTG.core.search import search_filter
-from GTG.tools.dates import Date
+from GTG.core.dates import Date
 
 d = Date.parse
 

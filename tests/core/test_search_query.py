@@ -18,7 +18,7 @@
 
 from unittest import TestCase
 from GTG.core.search import parse_search_query, InvalidQuery
-from GTG.tools.dates import Date
+from GTG.core.dates import Date
 
 parse = parse_search_query
 d = Date.parse
