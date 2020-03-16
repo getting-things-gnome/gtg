@@ -23,7 +23,7 @@ from subprocess import call
 import os
 import sys
 
-from GTG import info
+from GTG.core import info
 
 
 def find_packages():
