@@ -18,7 +18,7 @@
 
 from unittest import TestCase
 
-from GTG.tools.tags import extract_tags_from_text, parse_tag_list
+from GTG.core.tag import extract_tags_from_text, parse_tag_list
 
 
 class TestExtractTags(TestCase):

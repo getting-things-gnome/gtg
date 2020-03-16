@@ -37,7 +37,7 @@ from GTG.core.tag import ALLTASKS_TAG
 from GTG.tools.logger import log
 from GTG.tools.watchdog import Watchdog
 from GTG.tools.interruptible import interruptible
-from GTG.tools.tags import extract_tags_from_text
+from GTG.core.tag import extract_tags_from_text
 
 
 class GenericTomboy(GenericBackend):

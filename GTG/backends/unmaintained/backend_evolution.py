@@ -37,7 +37,7 @@ from GTG.core.translations import _
 from GTG.core.dates import Date
 from GTG.tools.interruptible import interruptible
 from GTG.tools.logger import log
-from GTG.tools.tags import extract_tags_from_text
+from GTG.core.tag import extract_tags_from_text
 
 # Dictionaries to translate GTG tasks in Evolution ones
 _GTG_TO_EVOLUTION_STATUS = \
