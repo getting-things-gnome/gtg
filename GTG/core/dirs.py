@@ -38,7 +38,7 @@ local_rootdir = os.path.abspath(
 
 # Icons from local folder
 ICONS_DIR = os.path.join(local_rootdir, 'data', 'icons')
-CSS_DIR = os.path.join(local_rootdir, 'GTG', 'gtk')
+CSS_DIR = os.path.join(local_rootdir, 'GTG', 'gtk', 'data')
 
 # Where data & cache for synchronization services is stored
 SYNC_DATA_DIR = os.path.join(DATA_DIR, 'backends')
