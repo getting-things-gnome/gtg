@@ -23,6 +23,7 @@ import os
 
 class ViewConfig():
     current_rep = os.path.dirname(os.path.abspath(__file__))
-    DELETE_UI_FILE = os.path.join(current_rep, "deletion.ui")
-    PLUGINS_UI_FILE = os.path.join(current_rep, "plugins.ui")
-    BACKENDS_UI_FILE = os.path.join(current_rep, "backends_dialog.ui")
+    data = os.path.join(current_rep, 'data')
+    DELETE_UI_FILE = os.path.join(data, "deletion.ui")
+    PLUGINS_UI_FILE = os.path.join(data, "plugins.ui")
+    BACKENDS_UI_FILE = os.path.join(data, "backends_dialog.ui")

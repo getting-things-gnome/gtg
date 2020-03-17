@@ -28,10 +28,10 @@ from GTG.core.translations import _
 
 class GnomeConfig():
     current_rep = os.path.dirname(os.path.abspath(__file__))
-    BROWSER_UI_FILE = os.path.join(current_rep, "main_window.ui")
-    MENUS_UI_FILE = os.path.join(current_rep, "context_menus.ui")
-    MODIFYTAGS_UI_FILE = os.path.join(current_rep, "modifytags_dialog.ui")
-    DELETETAGS_UI_FILE = os.path.join(current_rep, "deletetags_dialog.ui")
+    data = os.path.join(current_rep, '..', 'data')
+    BROWSER_UI_FILE = os.path.join(data, "main_window.ui")
+    MENUS_UI_FILE = os.path.join(data, "context_menus.ui")
+    MODIFYTAGS_UI_FILE = os.path.join(data, "modifytags_dialog.ui")
 
     MARK_DONE = _("Mark as Done")
     MARK_DONE_TOOLTIP = _("Mark the selected task as done")
