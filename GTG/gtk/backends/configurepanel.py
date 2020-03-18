@@ -20,7 +20,7 @@ from gi.repository import Gtk
 
 from GTG.core.translations import _
 from GTG.gtk.backends.parameters_ui import ParametersUI
-from GTG.backends.backendsignals import BackendSignals
+from GTG.backends.backend_signals import BackendSignals
 
 
 class ConfigurePanel(Gtk.Box):

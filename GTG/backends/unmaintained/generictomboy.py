@@ -30,9 +30,9 @@ import datetime
 import unicodedata
 
 from GTG.core.borg import Borg
-from GTG.backends.genericbackend import GenericBackend
-from GTG.backends.backendsignals import BackendSignals
-from GTG.backends.syncengine import SyncEngine, SyncMeme
+from GTG.backends.generic_backend import GenericBackend
+from GTG.backends.backend_signals import BackendSignals
+from GTG.backends.sync_engine import SyncEngine, SyncMeme
 from GTG.core.tag import ALLTASKS_TAG
 from GTG.core.logger import log
 from GTG.core.watchdog import Watchdog

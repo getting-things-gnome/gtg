@@ -28,7 +28,7 @@ import os.path
 
 from GTG.core.logger import log
 from GTG.core.borg import Borg
-from GTG.backends.genericbackend import GenericBackend
+from GTG.backends.generic_backend import GenericBackend
 from GTG.core import firstrun_tasks
 from GTG.core.dirs import PROJECTS_XMLFILE
 from GTG.core import cleanxml

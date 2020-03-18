@@ -21,7 +21,7 @@ from gi.repository import GdkPixbuf
 
 from GTG.core.tag import ALLTASKS_TAG
 from GTG.gtk.colors import get_colored_tags_markup
-from GTG.backends.backendsignals import BackendSignals
+from GTG.backends.backend_signals import BackendSignals
 
 
 class BackendsTree(Gtk.TreeView):

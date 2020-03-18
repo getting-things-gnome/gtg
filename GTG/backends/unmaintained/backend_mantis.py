@@ -19,10 +19,10 @@
 import os
 import uuid
 
-from GTG.backends.backendsignals import BackendSignals
-from GTG.backends.genericbackend import GenericBackend
-from GTG.backends.periodicimportbackend import PeriodicImportBackend
-from GTG.backends.syncengine import SyncEngine, SyncMeme
+from GTG.backends.backend_signals import BackendSignals
+from GTG.backends.generic_backend import GenericBackend
+from GTG.backends.periodic_import_backend import PeriodicImportBackend
+from GTG.backends.sync_engine import SyncEngine, SyncMeme
 from GTG.core.task import Task
 from GTG.core.translations import _
 from GTG.core.logger import log
