@@ -19,7 +19,7 @@
 from gi.repository import Gtk
 
 from GTG.core.translations import _
-from GTG.gtk.backends_dialog.parameters_ui import ParametersUI
+from GTG.gtk.backends.parameters_ui import ParametersUI
 from GTG.backends.backendsignals import BackendSignals
 
 
@@ -28,19 +28,19 @@ class ConfigurePanel(Gtk.Box):
     A vertical Box that lets you configure a backend
     """
 
-    def __init__(self, backends_dialog):
+    def __init__(self, backends):
         """
         Constructor, creating all the gtk widgets
 
-        @param backends_dialog: a reference to the dialog in which this is
+        @param backends: a reference to the dialog in which this is
         loaded
         """
         super().__init__(orientation=Gtk.Orientation.VERTICAL)
-        self.dialog = backends_dialog
+        self.dialog = backends
         self.should_spinner_be_shown = False
         self.task_deleted_handle = None
         self.task_added_handle = None
-        self.req = backends_dialog.get_requester()
+        self.req = backends.get_requester()
         self._create_widgets()
         self._connect_signals()
 

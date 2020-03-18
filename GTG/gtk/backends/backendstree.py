@@ -38,7 +38,7 @@ class BackendsTree(Gtk.TreeView):
         """
         Constructor, just initializes the gtk widgets
 
-        @param backends_dialog: a reference to the dialog in which this is
+        @param backends: a reference to the dialog in which this is
         loaded
         """
         super().__init__()

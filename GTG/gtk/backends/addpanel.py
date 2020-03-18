@@ -20,7 +20,7 @@ from functools import reduce
 
 from gi.repository import Gtk
 
-from GTG.gtk.backends_dialog.backendscombo import BackendsCombo
+from GTG.gtk.backends.backendscombo import BackendsCombo
 from GTG.backends import BackendFactory
 from GTG.core.translations import _, ngettext
 
@@ -31,15 +31,15 @@ class AddPanel(Gtk.Box):
     backend.
     """
 
-    def __init__(self, backends_dialog):
+    def __init__(self, backends):
         """
         Constructor, just initializes the gtk widgets
 
-        @param backends_dialog: a reference to the dialog in which this is
+        @param backends: a reference to the dialog in which this is
         loaded
         """
         super().__init__(orientation=Gtk.Orientation.VERTICAL)
-        self.dialog = backends_dialog
+        self.dialog = backends
         self._create_widgets()
 
     def _create_widgets(self):
