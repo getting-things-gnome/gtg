@@ -26,8 +26,8 @@ wants to write a backend.
 
 import os
 
-from GTG.backends.backendsignals import BackendSignals
-from GTG.backends.genericbackend import GenericBackend
+from GTG.backends.backend_signals import BackendSignals
+from GTG.backends.generic_backend import GenericBackend
 from GTG.core.dirs import DATA_DIR
 from GTG.core.translations import _
 from GTG.core import cleanxml, taskxml

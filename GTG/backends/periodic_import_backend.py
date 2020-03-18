@@ -23,8 +23,8 @@ remote backend in polling.
 
 import threading
 
-from GTG.backends.genericbackend import GenericBackend
-from GTG.backends.backendsignals import BackendSignals
+from GTG.backends.generic_backend import GenericBackend
+from GTG.backends.backend_signals import BackendSignals
 from GTG.core.interruptible import interruptible
 
 

@@ -24,8 +24,8 @@ from collections import deque
 import threading
 import uuid
 
-from GTG.backends.backendsignals import BackendSignals
-from GTG.backends.genericbackend import GenericBackend
+from GTG.backends.backend_signals import BackendSignals
+from GTG.backends.generic_backend import GenericBackend
 from GTG.core.config import CoreConfig
 from GTG.core import requester
 from GTG.core.dirs import PROJECTS_XMLFILE, TAGS_XMLFILE

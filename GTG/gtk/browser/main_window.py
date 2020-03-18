@@ -24,7 +24,7 @@ import threading
 from gi.repository import GObject, Gtk, Gdk, Gio
 
 from GTG.core import info
-from GTG.backends.backendsignals import BackendSignals
+from GTG.backends.backend_signals import BackendSignals
 from GTG.core.dirs import ICONS_DIR
 from GTG.core.search import parse_search_query, InvalidQuery
 from GTG.core.tag import SEARCH_TAG

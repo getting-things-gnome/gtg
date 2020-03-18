@@ -20,7 +20,7 @@ import threading
 
 from gi.repository import Gtk
 
-from GTG.backends.backendsignals import BackendSignals
+from GTG.backends.backend_signals import BackendSignals
 from GTG.core.translations import _
 from GTG.core.networkmanager import is_connection_up
 

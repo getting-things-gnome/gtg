@@ -28,9 +28,9 @@ import uuid
 
 import evolution
 
-from GTG.backends.genericbackend import GenericBackend
-from GTG.backends.periodicimportbackend import PeriodicImportBackend
-from GTG.backends.syncengine import SyncEngine, SyncMeme
+from GTG.backends.generic_backend import GenericBackend
+from GTG.backends.periodic_import_backend import PeriodicImportBackend
+from GTG.backends.sync_engine import SyncEngine, SyncMeme
 from GTG.core.tag import ALLTASKS_TAG
 from GTG.core.task import Task
 from GTG.core.translations import _
