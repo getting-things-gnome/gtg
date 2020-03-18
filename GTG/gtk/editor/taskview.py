@@ -34,7 +34,7 @@ import os
 from gi.repository import GObject, Gtk, Gdk, Pango
 
 from GTG.core.translations import _
-from GTG.gtk.editor import taskviewserial
+from GTG.gtk.editor import serialize
 from GTG.core import urlregex
 
 separators = [' ', ',', '\n', '\t', '!', '?', ';', '\0', '(', ')']
@@ -144,9 +144,9 @@ class TaskView(Gtk.TextView):
         self.buff.set_modified(False)
 
         # Let's try with serializing
-        serializer = taskviewserial.Serializer()
+        serializer = serialize.Serializer()
         self.serializer = serializer
-        unserializer = taskviewserial.Unserializer(self)
+        unserializer = serialize.Unserializer(self)
         self.unserializer = unserializer
         # FIXME after discussion with Lionel remove those functions
         # and simplify the code
