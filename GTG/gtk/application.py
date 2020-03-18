@@ -31,7 +31,7 @@ from GTG.gtk.preferences import Preferences
 from GTG.gtk.plugins import PluginsDialog
 from webbrowser import open as openurl
 from GTG.core import info
-from GTG.gtk.dbuswrapper import DBusTaskWrapper
+from GTG.gtk.dbus import DBusTaskWrapper
 from GTG.core import clipboard
 from GTG.core.plugins.engine import PluginEngine
 from GTG.core.plugins.api import PluginAPI
