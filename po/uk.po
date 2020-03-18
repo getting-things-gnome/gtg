@@ -19,122 +19,122 @@ msgstr ""
 "X-Launchpad-Export-Date: 2013-10-02 05:18+0000\n"
 "X-Generator: Launchpad (build 16774)\n"
 
-#: GTG/gtk/backends_dialog/__init__.py:75
+#: GTG/gtk/backends/__init__.py:75
 #, python-format
 msgid "Synchronization Services - %s"
 msgstr "Сервіси синхронізації - %s"
 
-#: GTG/gtk/backends_dialog/__init__.py:293
+#: GTG/gtk/backends/__init__.py:293
 #, python-format
 msgid "Do you really want to remove the '%s' synchronization service?"
 msgstr "Ви дійсно бажаєте видалити сервіс '%s'?"
 
-#: GTG/gtk/backends_dialog/configurepanel.py:145
+#: GTG/gtk/backends/configurepanel.py:145
 msgid "Disable syncing"
 msgstr "Вимкнути синхронізацію"
 
-#: GTG/gtk/backends_dialog/configurepanel.py:147
+#: GTG/gtk/backends/configurepanel.py:147
 msgid "Enable syncing"
 msgstr "Увімкнути синхронізацію"
 
-#: GTG/gtk/backends_dialog/configurepanel.py:155
+#: GTG/gtk/backends/configurepanel.py:155
 msgid "This is the default synchronization service"
 msgstr "Це послуга синхронізації за замовчуванням"
 
-#: GTG/gtk/backends_dialog/configurepanel.py:158
+#: GTG/gtk/backends/configurepanel.py:158
 msgid "Syncing is enabled."
 msgstr "Синхронізація увімкнута"
 
-#: GTG/gtk/backends_dialog/configurepanel.py:160
+#: GTG/gtk/backends/configurepanel.py:160
 msgid "Syncing is <span color=\"red\">disabled</span>."
 msgstr "Синхронізація <span color=\"red\">вимкнута</span>."
 
-#: GTG/gtk/backends_dialog/parameters_ui/__init__.py:61
+#: GTG/gtk/backends/parameters_ui/__init__.py:61
 msgid "Import tags"
 msgstr "Імпортувати мітки"
 
-#: GTG/gtk/backends_dialog/parameters_ui/__init__.py:62
+#: GTG/gtk/backends/parameters_ui/__init__.py:62
 msgid "All tags"
 msgstr "Всі мітки"
 
-#: GTG/gtk/backends_dialog/parameters_ui/__init__.py:63
+#: GTG/gtk/backends/parameters_ui/__init__.py:63
 msgid ""
 "Just these                                                                   "
 "    tags:"
 msgstr "Лише ці мітки:"
 
-#: GTG/gtk/backends_dialog/parameters_ui/__init__.py:68
+#: GTG/gtk/backends/parameters_ui/__init__.py:68
 msgid "Tags to sync"
 msgstr "Синхронізувати мітки"
 
-#: GTG/gtk/backends_dialog/parameters_ui/__init__.py:69
+#: GTG/gtk/backends/parameters_ui/__init__.py:69
 #: GTG/core/treefactory.py:79
 msgid "All tasks"
 msgstr "Всі завдання"
 
-#: GTG/gtk/backends_dialog/parameters_ui/__init__.py:70
+#: GTG/gtk/backends/parameters_ui/__init__.py:70
 msgid ""
 "Tasks with                                                                 "
 "these tags:"
 msgstr "Завдання з цими мітками:"
 
-#: GTG/gtk/backends_dialog/parameters_ui/__init__.py:76
+#: GTG/gtk/backends/parameters_ui/__init__.py:76
 msgid "Username"
 msgstr "Користувач"
 
-#: GTG/gtk/backends_dialog/parameters_ui/__init__.py:81
+#: GTG/gtk/backends/parameters_ui/__init__.py:81
 msgid "Service URL"
 msgstr "Адреса URL служби"
 
-#: GTG/gtk/backends_dialog/parameters_ui/__init__.py:86
+#: GTG/gtk/backends/parameters_ui/__init__.py:86
 msgid ""
 "Import tasks                                                         from @ "
 "replies "
 msgstr "Імпортувати завдання з @ відповідей "
 
-#: GTG/gtk/backends_dialog/parameters_ui/__init__.py:94
+#: GTG/gtk/backends/parameters_ui/__init__.py:94
 msgid "Import tasks from direct messages"
 msgstr "Імпортувати завдання з прямих повідомлень"
 
-#: GTG/gtk/backends_dialog/parameters_ui/__init__.py:102
+#: GTG/gtk/backends/parameters_ui/__init__.py:102
 msgid ""
 "Import                                                                  "
 "tasks from                                                                  "
 "your tweets"
 msgstr "Імпортувати завдання з ваших твітів"
 
-#: GTG/gtk/backends_dialog/parameters_ui/__init__.py:109
+#: GTG/gtk/backends/parameters_ui/__init__.py:109
 msgid "Tag your GTG tasks with the bug tags"
 msgstr "Позначити ваші завдання GTG мітками багів."
 
-#: GTG/gtk/backends_dialog/parameters_ui/__init__.py:116
+#: GTG/gtk/backends/parameters_ui/__init__.py:116
 msgid "Tag your GTG tasks with the project targeted by the bug"
 msgstr "Позначити ваші завдання GTG цільовим проектом стосовно бага."
 
-#: GTG/gtk/backends_dialog/parameters_ui/periodui.py:49
+#: GTG/gtk/backends/parameters_ui/period.py:49
 msgid "Check for new tasks every"
 msgstr "Перевіряти на нові завдання кожні"
 
-#: GTG/gtk/backends_dialog/parameters_ui/periodui.py:95
+#: GTG/gtk/backends/parameters_ui/period.py:95
 msgid " minute"
 msgid_plural " minutes"
 msgstr[0] " хвилина"
 msgstr[1] " хвилина"
 msgstr[2] " хвилин"
 
-#: GTG/gtk/backends_dialog/parameters_ui/passwordui.py:48
+#: GTG/gtk/backends/parameters_ui/password.py:48
 msgid "Password:"
 msgstr "Пароль:"
 
-#: GTG/gtk/backends_dialog/parameters_ui/pathui.py:49
+#: GTG/gtk/backends/parameters_ui/path.py:49
 msgid "Filename:"
 msgstr "Назва файлу:"
 
-#: GTG/gtk/backends_dialog/addpanel.py:68
+#: GTG/gtk/backends/addpanel.py:68
 msgid "Select synchronization service:"
 msgstr "Вибрати сервіс синхронізації:"
 
-#: GTG/gtk/backends_dialog/addpanel.py:177
+#: GTG/gtk/backends/addpanel.py:177
 msgid "Author"
 msgid_plural "Authors"
 msgstr[0] "Автор"

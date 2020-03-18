@@ -34,14 +34,14 @@ class BackendsCombo(Gtk.ComboBox):
     COLUMN_HUMAN_NAME = 1
     COLUMN_ICON = 2
 
-    def __init__(self, backends_dialog):
+    def __init__(self, backends):
         """
         Constructor, itializes gtk widgets.
-        @param backends_dialog: reference to the dialog in which this combo is
+        @param backends: reference to the dialog in which this combo is
                                 loaded.
         """
         super().__init__()
-        self.dialog = backends_dialog
+        self.dialog = backends
         self._liststore_init()
         self._renderers_init()
         self.set_size_request(-1, 30)

@@ -18,121 +18,121 @@ msgstr ""
 "X-Launchpad-Export-Date: 2013-10-26 05:47+0000\n"
 "X-Generator: Launchpad (build 16810)\n"
 
-#: GTG/gtk/backends_dialog/__init__.py:75
+#: GTG/gtk/backends/__init__.py:75
 #, python-format
 msgid "Synchronization Services - %s"
 msgstr "Eşitleme Servisleri - %s"
 
-#: GTG/gtk/backends_dialog/__init__.py:293
+#: GTG/gtk/backends/__init__.py:293
 #, python-format
 msgid "Do you really want to remove the '%s' synchronization service?"
 msgstr "Gerçekten '%s' eşitleme servisini kaldırmak istiyırmusunuz?"
 
-#: GTG/gtk/backends_dialog/configurepanel.py:145
+#: GTG/gtk/backends/configurepanel.py:145
 msgid "Disable syncing"
 msgstr "Eşitlemeyi etkisizleştir"
 
-#: GTG/gtk/backends_dialog/configurepanel.py:147
+#: GTG/gtk/backends/configurepanel.py:147
 msgid "Enable syncing"
 msgstr "Eşitlemeyi etkinleştir"
 
-#: GTG/gtk/backends_dialog/configurepanel.py:155
+#: GTG/gtk/backends/configurepanel.py:155
 msgid "This is the default synchronization service"
 msgstr "Bu varsayılan eşitleme servisidir"
 
-#: GTG/gtk/backends_dialog/configurepanel.py:158
+#: GTG/gtk/backends/configurepanel.py:158
 msgid "Syncing is enabled."
 msgstr "Eşitleme etkinleştirildi"
 
-#: GTG/gtk/backends_dialog/configurepanel.py:160
+#: GTG/gtk/backends/configurepanel.py:160
 msgid "Syncing is <span color=\"red\">disabled</span>."
 msgstr "Eşitleme  <span color=\"red\">etkisizleştirildi</span>."
 
-#: GTG/gtk/backends_dialog/parameters_ui/__init__.py:61
+#: GTG/gtk/backends/parameters_ui/__init__.py:61
 msgid "Import tags"
 msgstr "Etiketleri içe aktar"
 
-#: GTG/gtk/backends_dialog/parameters_ui/__init__.py:62
+#: GTG/gtk/backends/parameters_ui/__init__.py:62
 msgid "All tags"
 msgstr "Tüm etiketler"
 
-#: GTG/gtk/backends_dialog/parameters_ui/__init__.py:63
+#: GTG/gtk/backends/parameters_ui/__init__.py:63
 msgid ""
 "Just these                                                                   "
 "    tags:"
 msgstr "Sadece şu etiketler:"
 
-#: GTG/gtk/backends_dialog/parameters_ui/__init__.py:68
+#: GTG/gtk/backends/parameters_ui/__init__.py:68
 msgid "Tags to sync"
 msgstr "Eşitlenecek etiketler"
 
-#: GTG/gtk/backends_dialog/parameters_ui/__init__.py:69
+#: GTG/gtk/backends/parameters_ui/__init__.py:69
 #: GTG/core/treefactory.py:79
 msgid "All tasks"
 msgstr "Tüm görevler"
 
-#: GTG/gtk/backends_dialog/parameters_ui/__init__.py:70
+#: GTG/gtk/backends/parameters_ui/__init__.py:70
 msgid ""
 "Tasks with                                                                 "
 "these tags:"
 msgstr "Bu etikete sahip görevler:"
 
-#: GTG/gtk/backends_dialog/parameters_ui/__init__.py:76
+#: GTG/gtk/backends/parameters_ui/__init__.py:76
 msgid "Username"
 msgstr "Kullanıcı adı"
 
-#: GTG/gtk/backends_dialog/parameters_ui/__init__.py:81
+#: GTG/gtk/backends/parameters_ui/__init__.py:81
 msgid "Service URL"
 msgstr "Servis adresi"
 
-#: GTG/gtk/backends_dialog/parameters_ui/__init__.py:86
+#: GTG/gtk/backends/parameters_ui/__init__.py:86
 msgid ""
 "Import tasks                                                         from @ "
 "replies "
 msgstr ""
 
-#: GTG/gtk/backends_dialog/parameters_ui/__init__.py:94
+#: GTG/gtk/backends/parameters_ui/__init__.py:94
 msgid "Import tasks from direct messages"
 msgstr "Görevleri direkt mesajlardan içe aktar"
 
-#: GTG/gtk/backends_dialog/parameters_ui/__init__.py:102
+#: GTG/gtk/backends/parameters_ui/__init__.py:102
 msgid ""
 "Import                                                                  "
 "tasks from                                                                  "
 "your tweets"
 msgstr "Görevleri tweetlerinden içe aktar"
 
-#: GTG/gtk/backends_dialog/parameters_ui/__init__.py:109
+#: GTG/gtk/backends/parameters_ui/__init__.py:109
 msgid "Tag your GTG tasks with the bug tags"
 msgstr "GTG görevlerini hata etiketleri ile etiketle"
 
-#: GTG/gtk/backends_dialog/parameters_ui/__init__.py:116
+#: GTG/gtk/backends/parameters_ui/__init__.py:116
 msgid "Tag your GTG tasks with the project targeted by the bug"
 msgstr "GTG görevlerini hatanın işaret ettiği proje ile etiketle"
 
-#: GTG/gtk/backends_dialog/parameters_ui/periodui.py:49
+#: GTG/gtk/backends/parameters_ui/period.py:49
 msgid "Check for new tasks every"
 msgstr "Yeni görevleri bu sıklıkla kontrol et"
 
-#: GTG/gtk/backends_dialog/parameters_ui/periodui.py:95
+#: GTG/gtk/backends/parameters_ui/period.py:95
 msgid " minute"
 msgid_plural " minutes"
 msgstr[0] " dakika"
 msgstr[1] " dakika"
 
-#: GTG/gtk/backends_dialog/parameters_ui/passwordui.py:48
+#: GTG/gtk/backends/parameters_ui/password.py:48
 msgid "Password:"
 msgstr "Parola:"
 
-#: GTG/gtk/backends_dialog/parameters_ui/pathui.py:49
+#: GTG/gtk/backends/parameters_ui/path.py:49
 msgid "Filename:"
 msgstr "Dosya adı:"
 
-#: GTG/gtk/backends_dialog/addpanel.py:68
+#: GTG/gtk/backends/addpanel.py:68
 msgid "Select synchronization service:"
 msgstr "Eşitleme servisini seç:"
 
-#: GTG/gtk/backends_dialog/addpanel.py:177
+#: GTG/gtk/backends/addpanel.py:177
 msgid "Author"
 msgid_plural "Authors"
 msgstr[0] "Yazar"

@@ -18,121 +18,121 @@ msgstr ""
 "X-Launchpad-Export-Date: 2013-07-10 05:27+0000\n"
 "X-Generator: Launchpad (build 16696)\n"
 
-#: GTG/gtk/backends_dialog/__init__.py:75
+#: GTG/gtk/backends/__init__.py:75
 #, python-format
 msgid "Synchronization Services - %s"
 msgstr "Synchronisations-Dienste- %s"
 
-#: GTG/gtk/backends_dialog/__init__.py:293
+#: GTG/gtk/backends/__init__.py:293
 #, python-format
 msgid "Do you really want to remove the '%s' synchronization service?"
 msgstr "Willst du wirklich den '%s' Synchronisations-Dienst entfernen?"
 
-#: GTG/gtk/backends_dialog/configurepanel.py:145
+#: GTG/gtk/backends/configurepanel.py:145
 msgid "Disable syncing"
 msgstr "Deaktiviere Synchronisieren"
 
-#: GTG/gtk/backends_dialog/configurepanel.py:147
+#: GTG/gtk/backends/configurepanel.py:147
 msgid "Enable syncing"
 msgstr "Aktiviere Synchronisieren"
 
-#: GTG/gtk/backends_dialog/configurepanel.py:155
+#: GTG/gtk/backends/configurepanel.py:155
 msgid "This is the default synchronization service"
 msgstr "Das ist der benutzerdefinierte Synchronisations-Dienst"
 
-#: GTG/gtk/backends_dialog/configurepanel.py:158
+#: GTG/gtk/backends/configurepanel.py:158
 msgid "Syncing is enabled."
 msgstr "Synchronisieren ist aktiviert."
 
-#: GTG/gtk/backends_dialog/configurepanel.py:160
+#: GTG/gtk/backends/configurepanel.py:160
 msgid "Syncing is <span color=\"red\">disabled</span>."
 msgstr "Synchronisieren ist <span color=\"red\">deaktiviert</span>."
 
-#: GTG/gtk/backends_dialog/parameters_ui/__init__.py:61
+#: GTG/gtk/backends/parameters_ui/__init__.py:61
 msgid "Import tags"
 msgstr "Importiere Schlagwörter"
 
-#: GTG/gtk/backends_dialog/parameters_ui/__init__.py:62
+#: GTG/gtk/backends/parameters_ui/__init__.py:62
 msgid "All tags"
 msgstr "Alle Schlagwörter"
 
-#: GTG/gtk/backends_dialog/parameters_ui/__init__.py:63
+#: GTG/gtk/backends/parameters_ui/__init__.py:63
 msgid ""
 "Just these                                                                   "
 "    tags:"
 msgstr ""
 
-#: GTG/gtk/backends_dialog/parameters_ui/__init__.py:68
+#: GTG/gtk/backends/parameters_ui/__init__.py:68
 msgid "Tags to sync"
 msgstr "Schlagwörter zum  Synchronisieren"
 
-#: GTG/gtk/backends_dialog/parameters_ui/__init__.py:69
+#: GTG/gtk/backends/parameters_ui/__init__.py:69
 #: GTG/core/treefactory.py:79
 msgid "All tasks"
 msgstr "Alle Aufgaben"
 
-#: GTG/gtk/backends_dialog/parameters_ui/__init__.py:70
+#: GTG/gtk/backends/parameters_ui/__init__.py:70
 msgid ""
 "Tasks with                                                                 "
 "these tags:"
 msgstr "Aufgaben mit diesen Schlagworten:"
 
-#: GTG/gtk/backends_dialog/parameters_ui/__init__.py:76
+#: GTG/gtk/backends/parameters_ui/__init__.py:76
 msgid "Username"
 msgstr "Benutzername"
 
-#: GTG/gtk/backends_dialog/parameters_ui/__init__.py:81
+#: GTG/gtk/backends/parameters_ui/__init__.py:81
 msgid "Service URL"
 msgstr "Dienst URL"
 
-#: GTG/gtk/backends_dialog/parameters_ui/__init__.py:86
+#: GTG/gtk/backends/parameters_ui/__init__.py:86
 msgid ""
 "Import tasks                                                         from @ "
 "replies "
 msgstr ""
 
-#: GTG/gtk/backends_dialog/parameters_ui/__init__.py:94
+#: GTG/gtk/backends/parameters_ui/__init__.py:94
 msgid "Import tasks from direct messages"
 msgstr "Importiere Aufgaben von direkten Nachrichten"
 
-#: GTG/gtk/backends_dialog/parameters_ui/__init__.py:102
+#: GTG/gtk/backends/parameters_ui/__init__.py:102
 msgid ""
 "Import                                                                  "
 "tasks from                                                                  "
 "your tweets"
 msgstr "Importiere Aufgaben von deinen Tweets"
 
-#: GTG/gtk/backends_dialog/parameters_ui/__init__.py:109
+#: GTG/gtk/backends/parameters_ui/__init__.py:109
 msgid "Tag your GTG tasks with the bug tags"
 msgstr "Markiere Deine GTG Aufgaben mit den Fehlern Stichwörtern"
 
-#: GTG/gtk/backends_dialog/parameters_ui/__init__.py:116
+#: GTG/gtk/backends/parameters_ui/__init__.py:116
 msgid "Tag your GTG tasks with the project targeted by the bug"
 msgstr "Markiere deine GTG Aufgaben mit markierten Fehlern von dem Projekt"
 
-#: GTG/gtk/backends_dialog/parameters_ui/periodui.py:49
+#: GTG/gtk/backends/parameters_ui/period.py:49
 msgid "Check for new tasks every"
 msgstr "Überprüfe auf neue Aufgaben jeden"
 
-#: GTG/gtk/backends_dialog/parameters_ui/periodui.py:95
+#: GTG/gtk/backends/parameters_ui/period.py:95
 msgid " minute"
 msgid_plural " minutes"
 msgstr[0] " Minute"
 msgstr[1] " Minuten"
 
-#: GTG/gtk/backends_dialog/parameters_ui/passwordui.py:48
+#: GTG/gtk/backends/parameters_ui/password.py:48
 msgid "Password:"
 msgstr "Passwort:"
 
-#: GTG/gtk/backends_dialog/parameters_ui/pathui.py:49
+#: GTG/gtk/backends/parameters_ui/path.py:49
 msgid "Filename:"
 msgstr "Dateiname:"
 
-#: GTG/gtk/backends_dialog/addpanel.py:68
+#: GTG/gtk/backends/addpanel.py:68
 msgid "Select synchronization service:"
 msgstr "Wähle Synchronisations-Dienst"
 
-#: GTG/gtk/backends_dialog/addpanel.py:177
+#: GTG/gtk/backends/addpanel.py:177
 msgid "Author"
 msgid_plural "Authors"
 msgstr[0] "Autor"
