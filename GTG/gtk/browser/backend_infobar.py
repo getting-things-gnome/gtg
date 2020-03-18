@@ -25,7 +25,7 @@ from GTG.core.translations import _
 from GTG.core.networkmanager import is_connection_up
 
 
-class CustomInfoBar(Gtk.InfoBar):
+class BackendInfoBar(Gtk.InfoBar):
     """
     A Gtk.InfoBar specialized for displaying errors and requests for
     interaction coming from the backends
