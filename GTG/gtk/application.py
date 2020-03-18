@@ -24,7 +24,7 @@ import configparser
 import os
 import logging
 
-from GTG.gtk.delete_dialog import DeletionUI
+from GTG.gtk.browser.delete_task import DeletionUI
 from GTG.gtk.browser.main_window import MainWindow
 from GTG.gtk.editor.editor import TaskEditor
 from GTG.gtk.preferences import Preferences
