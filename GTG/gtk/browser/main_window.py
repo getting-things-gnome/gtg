@@ -31,7 +31,7 @@ from GTG.core.tag import SEARCH_TAG
 from GTG.core.task import Task
 from GTG.gtk.browser import GnomeConfig
 from GTG.gtk.browser.custominfobar import CustomInfoBar
-from GTG.gtk.browser.modifytags_dialog import ModifyTagsDialog
+from GTG.gtk.browser.modify_tags import ModifyTagsDialog
 from GTG.gtk.browser.delete_tag import DeleteTagsDialog
 from GTG.gtk.browser.tag_context_menu import TagContextMenu
 from GTG.gtk.browser.treeview_factory import TreeviewFactory
