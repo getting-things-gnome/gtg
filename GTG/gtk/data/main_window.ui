@@ -308,7 +308,7 @@
                     <property name="can_focus">False</property>
                     <property name="transition_type">crossfade</property>
                     <child>
-                      <object class="GtkScrolledWindow" id="main_pane">
+                      <object class="GtkScrolledWindow" id="open_pane">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="hscrollbar_policy">never</property>
@@ -317,12 +317,12 @@
                         </child>
                       </object>
                       <packing>
-                        <property name="name">active_view</property>
-                        <property name="title">Active</property>
+                        <property name="name">open_view</property>
+                        <property name="title">Open</property>
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkScrolledWindow" id="workview_pane">
+                      <object class="GtkScrolledWindow" id="actionable_pane">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="hscrollbar_policy">never</property>
@@ -331,8 +331,8 @@
                         </child>
                       </object>
                       <packing>
-                        <property name="name">work_view</property>
-                        <property name="title">Workview</property>
+                        <property name="name">actionable_view</property>
+                        <property name="title">Actionable</property>
                         <property name="position">1</property>
                       </packing>
                     </child>
