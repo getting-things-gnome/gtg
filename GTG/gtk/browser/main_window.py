@@ -192,8 +192,8 @@ class MainWindow(Gtk.ApplicationWindow):
         self.defertopopup = self.builder.get_object("defer_to_context_menu")
         self.ctaskpopup = self.builder.get_object("closed_task_context_menu")
         self.about = self.builder.get_object("about_dialog")
-        self.main_pane = self.builder.get_object("main_pane")
-        self.workview_pane = self.builder.get_object("workview_pane")
+        self.open_pane = self.builder.get_object("open_pane")
+        self.actionable_pane = self.builder.get_object("actionable_pane")
         self.closed_pane = self.builder.get_object("closed_pane")
         self.menu_view_workview = self.builder.get_object("view_workview")
         self.toggle_workview = self.builder.get_object("workview_toggle")
@@ -223,8 +223,8 @@ class MainWindow(Gtk.ApplicationWindow):
         actionable tasks (workview), closed tasks and creates
         ModifyTagsDialog & Calendar """
         # Tasks treeviews
-        self.main_pane.add(self.vtree_panes['active'])
-        self.workview_pane.add(self.vtree_panes['workview'])
+        self.open_pane.add(self.vtree_panes['active'])
+        self.actionable_pane.add(self.vtree_panes['workview'])
         self.closed_pane.add(self.vtree_panes['closed'])
 
         tag_completion = TagCompletion(self.req.get_tag_tree())
@@ -1101,8 +1101,8 @@ class MainWindow(Gtk.ApplicationWindow):
         current = self.stack_switcher.get_stack().get_visible_child_name()
         names = {
             'closed_view': 'closed',
-            'active_view': 'active',
-            'work_view': 'workview'
+            'open_view': 'active',
+            'actionable_view': 'workview'
         }
 
         return names[current]
