@@ -21,123 +21,123 @@ msgstr ""
 "X-Generator: Launchpad (build 16667)\n"
 "X-POFile-SpellExtra: tasktitle\n"
 
-#: GTG/gtk/backends_dialog/__init__.py:75
+#: GTG/gtk/backends/__init__.py:75
 #, python-format
 msgid "Synchronization Services - %s"
 msgstr "Synchronizačné služby – %s"
 
-#: GTG/gtk/backends_dialog/__init__.py:293
+#: GTG/gtk/backends/__init__.py:293
 #, python-format
 msgid "Do you really want to remove the '%s' synchronization service?"
 msgstr "Naozaj chcete odstrániť synchronizačnú službu „%s”?"
 
-#: GTG/gtk/backends_dialog/configurepanel.py:145
+#: GTG/gtk/backends/configurepanel.py:145
 msgid "Disable syncing"
 msgstr "Vypnúť synchronizáciu"
 
-#: GTG/gtk/backends_dialog/configurepanel.py:147
+#: GTG/gtk/backends/configurepanel.py:147
 msgid "Enable syncing"
 msgstr "Zapnúť synchronizáciu"
 
-#: GTG/gtk/backends_dialog/configurepanel.py:155
+#: GTG/gtk/backends/configurepanel.py:155
 msgid "This is the default synchronization service"
 msgstr "Toto je predvolená synchronizačná služba"
 
-#: GTG/gtk/backends_dialog/configurepanel.py:158
+#: GTG/gtk/backends/configurepanel.py:158
 msgid "Syncing is enabled."
 msgstr "Synchronizácia je zapnutá."
 
-#: GTG/gtk/backends_dialog/configurepanel.py:160
+#: GTG/gtk/backends/configurepanel.py:160
 msgid "Syncing is <span color=\"red\">disabled</span>."
 msgstr "Synchronizácia je <span color=\"red\">vypnutá</span>."
 
-#: GTG/gtk/backends_dialog/parameters_ui/__init__.py:61
+#: GTG/gtk/backends/parameters_ui/__init__.py:61
 msgid "Import tags"
 msgstr "Importovať značky"
 
-#: GTG/gtk/backends_dialog/parameters_ui/__init__.py:62
+#: GTG/gtk/backends/parameters_ui/__init__.py:62
 msgid "All tags"
 msgstr "Všetky značky"
 
-#: GTG/gtk/backends_dialog/parameters_ui/__init__.py:63
+#: GTG/gtk/backends/parameters_ui/__init__.py:63
 msgid ""
 "Just "
 "these                                                                       "
 "tags:"
 msgstr "Len tieto značky:"
 
-#: GTG/gtk/backends_dialog/parameters_ui/__init__.py:68
+#: GTG/gtk/backends/parameters_ui/__init__.py:68
 msgid "Tags to sync"
 msgstr "Značky na synchronizáciu"
 
-#: GTG/gtk/backends_dialog/parameters_ui/__init__.py:69
+#: GTG/gtk/backends/parameters_ui/__init__.py:69
 #: GTG/core/treefactory.py:79
 msgid "All tasks"
 msgstr "Všetky úlohy"
 
-#: GTG/gtk/backends_dialog/parameters_ui/__init__.py:70
+#: GTG/gtk/backends/parameters_ui/__init__.py:70
 msgid ""
 "Tasks with                                                                 "
 "these tags:"
 msgstr "Úlohy s týmito značkami:"
 
-#: GTG/gtk/backends_dialog/parameters_ui/__init__.py:76
+#: GTG/gtk/backends/parameters_ui/__init__.py:76
 msgid "Username"
 msgstr "Používateľské meno"
 
-#: GTG/gtk/backends_dialog/parameters_ui/__init__.py:81
+#: GTG/gtk/backends/parameters_ui/__init__.py:81
 msgid "Service URL"
 msgstr "URL služby"
 
-#: GTG/gtk/backends_dialog/parameters_ui/__init__.py:86
+#: GTG/gtk/backends/parameters_ui/__init__.py:86
 msgid ""
 "Import tasks                                                         from @ "
 "replies "
 msgstr "Importovať úlohy z @ odpovedí "
 
-#: GTG/gtk/backends_dialog/parameters_ui/__init__.py:94
+#: GTG/gtk/backends/parameters_ui/__init__.py:94
 msgid "Import tasks from direct messages"
 msgstr "Importovať úlohy z priamych správ"
 
-#: GTG/gtk/backends_dialog/parameters_ui/__init__.py:102
+#: GTG/gtk/backends/parameters_ui/__init__.py:102
 msgid ""
 "Import                                                                  "
 "tasks from                                                                  "
 "your tweets"
 msgstr "Importovať úlohy zo svojich tweetov"
 
-#: GTG/gtk/backends_dialog/parameters_ui/__init__.py:109
+#: GTG/gtk/backends/parameters_ui/__init__.py:109
 msgid "Tag your GTG tasks with the bug tags"
 msgstr "Označiť úlohy GTG značkami chyby"
 
-#: GTG/gtk/backends_dialog/parameters_ui/__init__.py:116
+#: GTG/gtk/backends/parameters_ui/__init__.py:116
 msgid "Tag your GTG tasks with the project targeted by the bug"
 msgstr "Označiť úlohy GTG projektom, ktorému chyba patrí"
 
-#: GTG/gtk/backends_dialog/parameters_ui/periodui.py:49
+#: GTG/gtk/backends/parameters_ui/period.py:49
 msgid "Check for new tasks every"
 msgstr "Kontrolovať nové úlohy každých"
 
-#: GTG/gtk/backends_dialog/parameters_ui/periodui.py:95
+#: GTG/gtk/backends/parameters_ui/period.py:95
 msgid " minute"
 msgid_plural " minutes"
 msgstr[0] " minút"
 msgstr[1] " minúta"
 msgstr[2] " minúty"
 
-#: GTG/gtk/backends_dialog/parameters_ui/passwordui.py:48
+#: GTG/gtk/backends/parameters_ui/password.py:48
 msgid "Password:"
 msgstr "Heslo:"
 
-#: GTG/gtk/backends_dialog/parameters_ui/pathui.py:49
+#: GTG/gtk/backends/parameters_ui/path.py:49
 msgid "Filename:"
 msgstr "Meno súboru:"
 
-#: GTG/gtk/backends_dialog/addpanel.py:68
+#: GTG/gtk/backends/addpanel.py:68
 msgid "Select synchronization service:"
 msgstr "vyberte synchronizačnú službu:"
 
-#: GTG/gtk/backends_dialog/addpanel.py:177
+#: GTG/gtk/backends/addpanel.py:177
 msgid "Author"
 msgid_plural "Authors"
 msgstr[0] "Autori"

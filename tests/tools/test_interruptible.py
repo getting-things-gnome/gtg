@@ -20,7 +20,7 @@ from threading import Thread, Event
 from unittest import TestCase
 import time
 
-from GTG.tools.interruptible import interruptible, _cancellation_point
+from GTG.core.interruptible import interruptible, _cancellation_point
 
 
 class TestInterruptibleDecorator(TestCase):

@@ -27,15 +27,15 @@ This window is divided in two:
 
 from gi.repository import Gtk
 
-from GTG import info
+from GTG.core import info
 from GTG.backends import BackendFactory
-from GTG.backends.genericbackend import GenericBackend
+from GTG.backends.generic_backend import GenericBackend
 from GTG.core.translations import _
 from GTG.gtk import ViewConfig
-from GTG.gtk.backends_dialog.addpanel import AddPanel
-from GTG.gtk.backends_dialog.backendstree import BackendsTree
-from GTG.gtk.backends_dialog.configurepanel import ConfigurePanel
-from GTG.tools.logger import log
+from GTG.gtk.backends.addpanel import AddPanel
+from GTG.gtk.backends.backendstree import BackendsTree
+from GTG.gtk.backends.configurepanel import ConfigurePanel
+from GTG.core.logger import log
 
 
 class BackendsDialog():
@@ -164,7 +164,7 @@ class BackendsDialog():
         """
         builder.add_from_file(ViewConfig.BACKENDS_UI_FILE)
         widgets = {
-            'dialog': 'backends_dialog',
+            'dialog': 'backends',
             'treeview_window': 'treeview_window',
             'central_pane': 'central_pane',
             'add_button': 'add_button',

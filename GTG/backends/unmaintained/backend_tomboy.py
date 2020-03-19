@@ -21,7 +21,7 @@ The tomboy backend. The actual backend is all in GenericTomboy, since it's
 shared with the Gnote backend.
 """
 
-from GTG.backends.genericbackend import GenericBackend
+from GTG.backends.generic_backend import GenericBackend
 from GTG.backends.generictomboy import GenericTomboy
 from GTG.core.translations import _
 

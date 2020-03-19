@@ -78,7 +78,7 @@ For more information see unittests:
 import re
 
 from GTG.core.translations import _
-from GTG.tools.dates import Date
+from GTG.core.dates import Date
 
 # Generate keywords and their possible translations
 # They must be listed because of gettext

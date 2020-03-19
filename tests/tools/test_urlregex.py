@@ -18,7 +18,7 @@
 
 from unittest import TestCase
 
-from GTG.tools.urlregex import match
+from GTG.core.urlregex import match
 
 
 class TestURLRegex(TestCase):

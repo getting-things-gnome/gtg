@@ -6,7 +6,7 @@ import urllib.error
 from hashlib import md5
 
 from GTG.core.translations import _
-from GTG.tools.logger import log
+from GTG.core.logger import log
 
 _use_jsonlib = False
 try:

@@ -22,8 +22,8 @@ import configparser
 import dbus
 
 from GTG.core.dirs import PLUGIN_DIRS
-from GTG.tools.borg import Borg
-from GTG.tools.logger import log
+from GTG.core.borg import Borg
+from GTG.core.logger import log
 
 
 class Plugin():

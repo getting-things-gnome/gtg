@@ -19,7 +19,7 @@ from gi.repository import Gtk
 from gi.repository import Gdk
 import os
 
-from GTG.tools.dates import Date
+from GTG.core.dates import Date
 
 
 class UrgencyColorPlugin():

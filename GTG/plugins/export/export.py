@@ -27,7 +27,7 @@ from gi.repository import GObject, Gtk, GdkPixbuf
 from xdg.BaseDirectory import xdg_config_home
 
 from GTG.core.translations import _
-from GTG.tools.logger import log
+from GTG.core.logger import log
 from GTG.plugins.export.task_str import get_task_wrappers
 from GTG.plugins.export.templates import Template, get_templates_paths
 

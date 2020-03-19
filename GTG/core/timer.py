@@ -23,7 +23,7 @@ import dbus
 import re
 
 from gi.repository import GObject
-from GTG.tools.logger import log
+from GTG.core.logger import log
 
 
 class Timer(GObject.GObject):

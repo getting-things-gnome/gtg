@@ -23,22 +23,22 @@ import threading
 
 from gi.repository import GObject, Gtk, Gdk, Gio
 
-from GTG import info
-from GTG.backends.backendsignals import BackendSignals
+from GTG.core import info
+from GTG.backends.backend_signals import BackendSignals
 from GTG.core.dirs import ICONS_DIR
 from GTG.core.search import parse_search_query, InvalidQuery
 from GTG.core.tag import SEARCH_TAG
 from GTG.core.task import Task
 from GTG.gtk.browser import GnomeConfig
-from GTG.gtk.browser.custominfobar import CustomInfoBar
-from GTG.gtk.browser.modifytags_dialog import ModifyTagsDialog
-from GTG.gtk.browser.deletetags_dialog import DeleteTagsDialog
+from GTG.gtk.browser.backend_infobar import BackendInfoBar
+from GTG.gtk.browser.modify_tags import ModifyTagsDialog
+from GTG.gtk.browser.delete_tag import DeleteTagsDialog
 from GTG.gtk.browser.tag_context_menu import TagContextMenu
 from GTG.gtk.browser.treeview_factory import TreeviewFactory
 from GTG.gtk.editor.calendar import GTGCalendar
 from GTG.gtk.tag_completion import TagCompletion
-from GTG.tools.dates import Date
-from GTG.tools.logger import log
+from GTG.core.dates import Date
+from GTG.core.logger import log
 
 class MainWindow(Gtk.ApplicationWindow):
     """ The UI for browsing open and closed tasks,
@@ -1312,7 +1312,7 @@ class MainWindow(Gtk.ApplicationWindow):
         @param backend_id: the id of the backend which Gtk.Infobar should be
                             removed.
         """
-        if isinstance(child, CustomInfoBar) and\
+        if isinstance(child, BackendInfoBar) and\
                 child.get_backend_id() == backend_id:
             if self.vbox_toolbars:
                 self.vbox_toolbars.remove(child)
@@ -1345,7 +1345,7 @@ class MainWindow(Gtk.ApplicationWindow):
             return
         self.vbox_toolbars.foreach(self.__remove_backend_infobar, backend_id)
         # add a new one
-        infobar = CustomInfoBar(self.req, self, self.app, backend_id)
+        infobar = BackendInfoBar(self.req, self, self.app, backend_id)
         self.vbox_toolbars.pack_start(infobar, True, True, 0)
         return infobar
 

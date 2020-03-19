@@ -27,15 +27,15 @@ import datetime
 
 from launchpadlib.launchpad import Launchpad, EDGE_SERVICE_ROOT
 
-from GTG.backends.backendsignals import BackendSignals
-from GTG.backends.genericbackend import GenericBackend
-from GTG.backends.periodicimportbackend import PeriodicImportBackend
-from GTG.backends.syncengine import SyncEngine, SyncMeme
+from GTG.backends.backend_signals import BackendSignals
+from GTG.backends.generic_backend import GenericBackend
+from GTG.backends.periodic_import_backend import PeriodicImportBackend
+from GTG.backends.sync_engine import SyncEngine, SyncMeme
 from GTG.core.dirs import SYNC_CACHE_DIR
 from GTG.core.task import Task
 from GTG.core.translations import _
 from GTG.info import NAME as GTG_NAME
-from GTG.tools.logger import log
+from GTG.core.logger import log
 
 # Uncomment this to see each http request
 # import httplib2

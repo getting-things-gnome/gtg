@@ -20,12 +20,12 @@ import threading
 
 from gi.repository import Gtk
 
-from GTG.backends.backendsignals import BackendSignals
+from GTG.backends.backend_signals import BackendSignals
 from GTG.core.translations import _
-from GTG.tools.networkmanager import is_connection_up
+from GTG.core.networkmanager import is_connection_up
 
 
-class CustomInfoBar(Gtk.InfoBar):
+class BackendInfoBar(Gtk.InfoBar):
     """
     A Gtk.InfoBar specialized for displaying errors and requests for
     interaction coming from the backends
