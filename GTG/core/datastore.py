@@ -24,8 +24,8 @@ from collections import deque
 import threading
 import uuid
 
-from GTG.backends.backendsignals import BackendSignals
-from GTG.backends.genericbackend import GenericBackend
+from GTG.backends.backend_signals import BackendSignals
+from GTG.backends.generic_backend import GenericBackend
 from GTG.core.config import CoreConfig
 from GTG.core import requester
 from GTG.core.dirs import PROJECTS_XMLFILE, TAGS_XMLFILE
@@ -33,9 +33,9 @@ from GTG.core.search import parse_search_query, search_filter, InvalidQuery
 from GTG.core.tag import Tag, SEARCH_TAG
 from GTG.core.task import Task
 from GTG.core.treefactory import TreeFactory
-from GTG.tools import cleanxml
-from GTG.tools.borg import Borg
-from GTG.tools.logger import log, log_debug_enabled
+from GTG.core import cleanxml
+from GTG.core.borg import Borg
+from GTG.core.logger import log, log_debug_enabled
 
 TAG_XMLROOT = "tagstore"
 

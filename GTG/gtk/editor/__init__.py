@@ -23,7 +23,8 @@ import os
 
 class GnomeConfig():
     current_rep = os.path.dirname(os.path.abspath(__file__))
-    CALENDAR_UI_FILE = os.path.join(current_rep, "calendar.ui")
+    data = os.path.join(current_rep, "..", "data")
+    CALENDAR_UI_FILE = os.path.join(data, "calendar.ui")
 
     # Number of second between to save in the task editor
     SAVETIME = 7

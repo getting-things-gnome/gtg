@@ -20,7 +20,7 @@ import os
 import pickle
 
 from GTG.core.dirs import plugin_configuration_dir
-from GTG.tools.logger import log
+from GTG.core.logger import log
 
 
 class PluginAPI():

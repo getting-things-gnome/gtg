@@ -28,16 +28,16 @@ import uuid
 
 import evolution
 
-from GTG.backends.genericbackend import GenericBackend
-from GTG.backends.periodicimportbackend import PeriodicImportBackend
-from GTG.backends.syncengine import SyncEngine, SyncMeme
+from GTG.backends.generic_backend import GenericBackend
+from GTG.backends.periodic_import_backend import PeriodicImportBackend
+from GTG.backends.sync_engine import SyncEngine, SyncMeme
 from GTG.core.tag import ALLTASKS_TAG
 from GTG.core.task import Task
 from GTG.core.translations import _
-from GTG.tools.dates import Date
-from GTG.tools.interruptible import interruptible
-from GTG.tools.logger import log
-from GTG.tools.tags import extract_tags_from_text
+from GTG.core.dates import Date
+from GTG.core.interruptible import interruptible
+from GTG.core.logger import log
+from GTG.core.tag import extract_tags_from_text
 
 # Dictionaries to translate GTG tasks in Evolution ones
 _GTG_TO_EVOLUTION_STATUS = \

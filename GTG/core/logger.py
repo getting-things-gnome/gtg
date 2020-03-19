@@ -19,7 +19,7 @@
 
 GTG modules and plugins that wish to use logging should import the log object::
 
-  from GTG.tools.logger import log
+  from GTG.core.logger import log
 
 ...and target it with debug or info messages::
 

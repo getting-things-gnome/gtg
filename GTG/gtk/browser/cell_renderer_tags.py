@@ -19,7 +19,7 @@
 from gi.repository import GObject, GLib, Gtk, Gdk
 import cairo
 
-from GTG.tools.logger import log
+from GTG.core.logger import log
 
 
 class CellRendererTags(Gtk.CellRenderer):

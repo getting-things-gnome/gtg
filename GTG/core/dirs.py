@@ -38,7 +38,7 @@ local_rootdir = os.path.abspath(
 
 # Icons from local folder
 ICONS_DIR = os.path.join(local_rootdir, 'data', 'icons')
-CSS_DIR = os.path.join(local_rootdir, 'GTG', 'gtk')
+CSS_DIR = os.path.join(local_rootdir, 'GTG', 'gtk', 'data')
 
 # Where data & cache for synchronization services is stored
 SYNC_DATA_DIR = os.path.join(DATA_DIR, 'backends')
@@ -52,7 +52,7 @@ USER_PLUGINS_DIR = os.path.join(CONFIG_DIR, 'plugins')
 if os.path.exists(USER_PLUGINS_DIR):
     PLUGIN_DIRS.append(USER_PLUGINS_DIR)
 
-UI_DIR = os.path.join(local_rootdir, 'GTG', 'gtk', 'ui')
+UI_DIR = os.path.join(local_rootdir, 'GTG', 'gtk', 'data')
 
 
 def plugin_configuration_dir(plugin_name):

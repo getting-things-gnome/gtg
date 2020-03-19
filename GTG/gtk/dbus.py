@@ -21,7 +21,7 @@ import dbus
 import dbus.glib
 import dbus.service
 
-from GTG.tools.dates import Date
+from GTG.core.dates import Date
 from GTG.core.search import InvalidQuery
 from GTG.core.search import parse_search_query
 

@@ -31,17 +31,17 @@ import uuid
 
 from dateutil.tz import tzutc, tzlocal
 
-from GTG.backends.backendsignals import BackendSignals
-from GTG.backends.genericbackend import GenericBackend
-from GTG.backends.periodicimportbackend import PeriodicImportBackend
+from GTG.backends.backend_signals import BackendSignals
+from GTG.backends.generic_backend import GenericBackend
+from GTG.backends.periodic_import_backend import PeriodicImportBackend
 from GTG.backends.rtm.rtm import createRTM, RTMError, RTMAPIError
-from GTG.backends.syncengine import SyncEngine, SyncMeme
+from GTG.backends.sync_engine import SyncEngine, SyncMeme
 from GTG.core.tag import ALLTASKS_TAG
 from GTG.core.task import Task
 from GTG.core.translations import _
-from GTG.tools.dates import Date
-from GTG.tools.interruptible import interruptible
-from GTG.tools.logger import log
+from GTG.core.dates import Date
+from GTG.core.interruptible import interruptible
+from GTG.core.logger import log
 
 
 class Backend(PeriodicImportBackend):

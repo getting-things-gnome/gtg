@@ -25,7 +25,7 @@ It works like this:
  - the library will tell us if we need to add a clone object in the other set,
    update it or, if the other one has been removed, remove also this one
 """
-from GTG.tools.twokeydict import TwoKeyDict
+from GTG.core.twokeydict import TwoKeyDict
 
 
 TYPE_LOCAL = "local"

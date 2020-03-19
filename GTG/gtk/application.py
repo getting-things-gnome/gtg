@@ -24,24 +24,24 @@ import configparser
 import os
 import logging
 
-from GTG.gtk.delete_dialog import DeletionUI
+from GTG.gtk.browser.delete_task import DeletionUI
 from GTG.gtk.browser.main_window import MainWindow
 from GTG.gtk.editor.editor import TaskEditor
 from GTG.gtk.preferences import Preferences
 from GTG.gtk.plugins import PluginsDialog
 from webbrowser import open as openurl
-from GTG import info
-from GTG.gtk.dbuswrapper import DBusTaskWrapper
-from GTG.tools import clipboard
+from GTG.core import info
+from GTG.gtk.dbus import DBusTaskWrapper
+from GTG.core import clipboard
 from GTG.core.plugins.engine import PluginEngine
 from GTG.core.plugins.api import PluginAPI
 from GTG.backends import BackendFactory
 from GTG.core.datastore import DataStore
 from GTG.core.dirs import CSS_DIR
-from GTG.tools.logger import log
-from GTG.tools.dates import Date
-from GTG.gtk.backends_dialog import BackendsDialog
-from GTG.backends.backendsignals import BackendSignals
+from GTG.core.logger import log
+from GTG.core.dates import Date
+from GTG.gtk.backends import BackendsDialog
+from GTG.backends.backend_signals import BackendSignals
 from GTG.gtk.browser.tag_editor import TagEditor
 from GTG.core.timer import Timer
 

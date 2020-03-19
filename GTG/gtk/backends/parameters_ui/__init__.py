@@ -27,14 +27,14 @@ import functools
 
 from gi.repository import Gtk
 
-from GTG.backends.genericbackend import GenericBackend
+from GTG.backends.generic_backend import GenericBackend
 from GTG.core.translations import _
-from GTG.gtk.backends_dialog.parameters_ui.checkboxui import CheckBoxUI
-from GTG.gtk.backends_dialog.parameters_ui.importtagsui import ImportTagsUI
-from GTG.gtk.backends_dialog.parameters_ui.passwordui import PasswordUI
-from GTG.gtk.backends_dialog.parameters_ui.pathui import PathUI
-from GTG.gtk.backends_dialog.parameters_ui.periodui import PeriodUI
-from GTG.gtk.backends_dialog.parameters_ui.textui import TextUI
+from GTG.gtk.backends.parameters_ui.checkbox import CheckBoxUI
+from GTG.gtk.backends.parameters_ui.import_tags import ImportTagsUI
+from GTG.gtk.backends.parameters_ui.password import PasswordUI
+from GTG.gtk.backends.parameters_ui.path import PathUI
+from GTG.gtk.backends.parameters_ui.period import PeriodUI
+from GTG.gtk.backends.parameters_ui.text import TextUI
 
 
 class ParametersUI(Gtk.Box):

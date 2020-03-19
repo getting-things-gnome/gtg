@@ -20,7 +20,7 @@ import os
 
 from gi.repository import Gtk
 
-from GTG.tools.logger import log
+from GTG.core.logger import log
 
 
 class UntouchedTasksPlugin():
