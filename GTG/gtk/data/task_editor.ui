@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.22.1 -->
+<!-- Generated with glade 3.22.2 -->
 <interface>
   <requires lib="gtk+" version="3.20"/>
   <object class="GtkPopoverMenu" id="editor_menu_popover">
@@ -104,6 +104,9 @@
             <property name="tooltip_text" translatable="yes">Mark the task as done</property>
             <property name="valign">center</property>
             <property name="action_name">app.mark_as_done</property>
+            <style>
+              <class name="suggested-action"/>
+            </style>
           </object>
         </child>
         <child>
