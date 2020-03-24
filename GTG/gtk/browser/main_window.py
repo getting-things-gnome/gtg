@@ -145,7 +145,7 @@ class MainWindow(Gtk.ApplicationWindow):
             ('focus_quickentry', self.focus_quickentry,
              ('win.focus_quickentry', ['<ctrl>L'])),
             ('delete_task', self.on_delete_tasks,
-             ('win.delete_task', ['Delete'])),
+             ('win.delete_task', ['<ctrl>Delete'])),
             ('mark_as_started', self.on_mark_as_started, None),
             ('start_tomorrow', self.on_start_for_tomorrow, None),
             ('start_next_week', self.on_start_for_next_week, None),
