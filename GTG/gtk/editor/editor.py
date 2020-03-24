@@ -247,15 +247,36 @@ class TaskEditor():
     def show_popover_start(self, widget, event):
         """Open the start date calendar popup."""
 
+        start_date = self.task.get_start_date() or Date.today()
+
+        self.start_calendar.select_day(start_date.day)
+        self.start_calendar.select_month(start_date.month - 1,
+                                         start_date.year)
+
         self.start_popover.popup()
 
     def show_popover_due(self, widget, popover):
         """Open the due date calendar popup."""
 
+        due_date = self.task.get_due_date()
+
+        if not due_date or due_date.is_fuzzy():
+            due_date = Date.today()
+
+        self.due_calendar.select_day(due_date.day)
+        self.due_calendar.select_month(due_date.month - 1,
+                                       due_date.year)
+
         self.due_popover.popup()
 
     def show_popover_closed(self, widget, popover):
         """Open the closed date calendar popup."""
+
+        closed_date = self.task.get_closed_date()
+
+        self.closed_calendar.select_day(closed_date.day)
+        self.closed_calendar.select_month(closed_date.month - 1,
+                                          closed_date.year)
 
         self.closed_popover.popup()
 
