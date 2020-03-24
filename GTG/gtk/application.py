@@ -155,7 +155,7 @@ class Application(Gtk.Application):
             ('open_backends', self.open_backends_manager, None),
             ('open_help', self.open_help, ('app.open_help', ['F1'])),
             ('open_preferences', self.open_preferences,
-                ('app.open_preferences', ['<ctrl>P'])),
+                ('app.open_preferences', ['<ctrl>comma'])),
         ]
 
         for action, callback, accel in action_entries:
