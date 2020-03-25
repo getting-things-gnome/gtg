@@ -373,6 +373,7 @@ class MainWindow(Gtk.ApplicationWindow):
             self.search_button.set_active(False)
             self.searchbar.set_search_mode(False)
             self.search_entry.set_text('')
+            self.unapply_filter_on_panes(SEARCH_TAG, refresh=True)
         else:
             self.search_button.set_active(True)
             self.searchbar.set_search_mode(True)
@@ -388,7 +389,6 @@ class MainWindow(Gtk.ApplicationWindow):
             # If we get an invalid query (eg. empty) cancel out of
             # search mode and remove the filter
             self.on_search_toggled()
-            self.unapply_filter_on_panes(SEARCH_TAG, refresh=True)
 
             log.debug(f"Invalid query '{query}' : '{e}'")
             return
