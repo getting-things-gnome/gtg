@@ -380,7 +380,7 @@ class MainWindow(Gtk.ApplicationWindow):
 
     def on_search(self, key, widget):
         query = self.search_entry.get_text()
-        log.debug("Searching for '%s'", query)
+        log.debug(f"Searching for '{query}'")
 
         try:
             parsed_query = parse_search_query(query)
@@ -390,7 +390,7 @@ class MainWindow(Gtk.ApplicationWindow):
             self.on_search_toggled()
             self.unapply_filter_on_panes(SEARCH_TAG, refresh=True)
 
-            log.warning("Invalid query '%s' : '%s'", query, e)
+            log.debug(f"Invalid query '{query}' : '{e}'")
             return
 
         self.apply_filter_on_panes(SEARCH_TAG, parameters=parsed_query)
