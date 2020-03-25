@@ -50,6 +50,171 @@
       </object>
     </child>
   </object>
+  <object class="GtkPopoverMenu" id="defer_menu">
+    <property name="name">main_menu</property>
+    <property name="can_focus">False</property>
+    <child>
+      <object class="GtkBox" id="defer_menu_box">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="margin_left">14</property>
+        <property name="margin_right">14</property>
+        <property name="margin_top">8</property>
+        <property name="margin_bottom">8</property>
+        <property name="orientation">vertical</property>
+        <child>
+          <object class="GtkModelButton" id="defer_0_btn">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="receives_default">True</property>
+            <property name="tooltip_text" translatable="yes">Start Today</property>
+            <property name="action_name">win.start_today</property>
+            <property name="text" translatable="yes">Today</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkSeparator">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="margin_top">6</property>
+            <property name="margin_bottom">6</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkModelButton" id="defer_2_btn">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="receives_default">True</property>
+            <property name="tooltip_text" translatable="yes">Start 2 days from now</property>
+            <property name="action_name">win.start_next_day_2</property>
+            <property name="text" translatable="yes">Tuesday</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">2</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkModelButton" id="defer_3_btn">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="receives_default">True</property>
+            <property name="tooltip_text" translatable="yes">Start 3 days from now</property>
+            <property name="action_name">win.start_next_day_3</property>
+            <property name="text" translatable="yes">Wednesday</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">3</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkModelButton" id="defer_4_btn">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="receives_default">True</property>
+            <property name="tooltip_text" translatable="yes">Start 4 days from now</property>
+            <property name="action_name">win.start_next_day_4</property>
+            <property name="text" translatable="yes">Thursday</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">4</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkModelButton" id="defer_5_btn">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="receives_default">True</property>
+            <property name="tooltip_text" translatable="yes">Start 5 days from now</property>
+            <property name="action_name">win.start_next_day_5</property>
+            <property name="text" translatable="yes">Friday</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">5</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkModelButton" id="defer_6_btn">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="receives_default">True</property>
+            <property name="tooltip_text" translatable="yes">Start 6 days from now</property>
+            <property name="action_name">win.start_next_day_6</property>
+            <property name="text" translatable="yes">Saturday</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">6</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkModelButton" id="start_another_date">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="receives_default">True</property>
+            <property name="tooltip_text" translatable="yes">Start in another date</property>
+            <property name="action_name">win.start_custom</property>
+            <property name="text" translatable="yes">Another Date…</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">8</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkSeparator">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="margin_top">6</property>
+            <property name="margin_bottom">6</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">9</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkModelButton" id="due_clear_button">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="receives_default">True</property>
+            <property name="tooltip_text" translatable="yes">Clear start date</property>
+            <property name="action_name">win.start_clear</property>
+            <property name="text" translatable="yes">Clear Date</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">10</property>
+          </packing>
+        </child>
+      </object>
+      <packing>
+        <property name="submenu">main</property>
+        <property name="position">1</property>
+      </packing>
+    </child>
+  </object>
   <object class="GtkPopoverMenu" id="main_menu">
     <property name="name">main_menu</property>
     <property name="can_focus">False</property>
@@ -420,14 +585,78 @@
     <property name="show_close_button">True</property>
     <child>
       <object class="GtkButton" id="new_task">
-        <property name="label" translatable="yes">New Task</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="receives_default">False</property>
         <property name="tooltip_text" translatable="yes">Create a new task</property>
         <property name="valign">center</property>
         <property name="action_name">app.new_task</property>
+        <child>
+          <object class="GtkImage" id="search_icon1">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="icon_name">list-add-symbolic</property>
+            <property name="icon_size">1</property>
+          </object>
+        </child>
       </object>
+    </child>
+    <child>
+      <object class="GtkBox" id="defer_task_box">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="halign">start</property>
+        <child>
+          <object class="GtkButton" id="defer_task_button">
+            <property name="label" translatable="yes">Start Tomorrow</property>
+            <property name="visible">True</property>
+            <property name="sensitive">False</property>
+            <property name="can_focus">False</property>
+            <property name="receives_default">True</property>
+            <property name="tooltip_text" translatable="yes">Start selected task(s) tomorrow</property>
+            <property name="action_name">win.start_tomorrow</property>
+          </object>
+          <packing>
+            <property name="expand">True</property>
+            <property name="fill">False</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkMenuButton" id="defer_menu_btn">
+            <property name="visible">True</property>
+            <property name="sensitive">False</property>
+            <property name="can_focus">False</property>
+            <property name="receives_default">True</property>
+            <property name="popover">defer_menu</property>
+            <child>
+              <object class="GtkImage" id="defer_menu_icon">
+                <property name="visible">True</property>
+                <property name="sensitive">False</property>
+                <property name="can_focus">False</property>
+                <property name="halign">start</property>
+                <property name="icon_name">pan-down-symbolic</property>
+                <property name="icon_size">1</property>
+              </object>
+            </child>
+            <style>
+              <class name="image-button"/>
+              <class name="menu-disclose"/>
+            </style>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <style>
+          <class name="linked"/>
+        </style>
+      </object>
+      <packing>
+        <property name="position">4</property>
+      </packing>
     </child>
     <child type="title">
       <object class="GtkStackSwitcher" id="stack_switcher">
