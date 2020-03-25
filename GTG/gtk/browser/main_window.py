@@ -20,6 +20,7 @@
 
 from webbrowser import open as openurl
 import threading
+import datetime
 
 from gi.repository import GObject, Gtk, Gdk, Gio
 
@@ -115,9 +116,15 @@ class MainWindow(Gtk.ApplicationWindow):
         self.restore_state_from_conf()
 
         self.on_select_tag()
+        self._set_defer_days()
         self.browser_shown = False
 
         app.timer.connect('refresh', self.refresh_all_views)
+        app.timer.connect('refresh', self._set_defer_days)
+
+        # This needs to be called again after setting everything up,
+        # so the buttons start disabled
+        self.on_cursor_changed()
 
 # INIT HELPER FUNCTIONS #######################################################
     def _init_context_menus(self):
@@ -147,7 +154,13 @@ class MainWindow(Gtk.ApplicationWindow):
             ('delete_task', self.on_delete_tasks,
              ('win.delete_task', ['<ctrl>Delete'])),
             ('mark_as_started', self.on_mark_as_started, None),
+            ('start_today', self.on_start_for_today, None),
             ('start_tomorrow', self.on_start_for_tomorrow, None),
+            ('start_next_day_2', self.on_start_for_next_day_2, None),
+            ('start_next_day_3', self.on_start_for_next_day_3, None),
+            ('start_next_day_4', self.on_start_for_next_day_4, None),
+            ('start_next_day_5', self.on_start_for_next_day_5, None),
+            ('start_next_day_6', self.on_start_for_next_day_6, None),
             ('start_next_week', self.on_start_for_next_week, None),
             ('start_next_month', self.on_start_for_next_month, None),
             ('start_next_year', self.on_start_for_next_year, None),
@@ -211,6 +224,8 @@ class MainWindow(Gtk.ApplicationWindow):
         self.stack_switcher = self.builder.get_object("stack_switcher")
         self.headerbar = self.builder.get_object("browser_headerbar")
         self.main_box = self.builder.get_object("main_view_box")
+        self.defer_btn = self.builder.get_object("defer_task_button")
+        self.defer_menu_btn = self.builder.get_object("defer_menu_btn")
 
         self.tagpopup = TagContextMenu(self.req, self.app)
 
@@ -233,6 +248,19 @@ class MainWindow(Gtk.ApplicationWindow):
         self.calendar = GTGCalendar()
         self.calendar.set_transient_for(self)
         self.calendar.connect("date-changed", self.on_date_changed)
+
+    def _set_defer_days(self, timer=None):
+        """Set days for the defer task menu."""
+
+        # Today is day 0, tomorrow is day 1. We don't need
+        # to calculate the weekday for those.
+
+        today = datetime.datetime.today()
+
+        for i in range(2, 7):
+            defer_btn = self.builder.get_object(f"defer_{i}_btn")
+            name = (today + datetime.timedelta(days=i)).strftime('%A')
+            defer_btn.props.text = name
 
     def init_tags_sidebar(self):
         """
@@ -312,6 +340,9 @@ class MainWindow(Gtk.ApplicationWindow):
         # Active tasks TreeView
         self.vtree_panes['active'].connect('row-activated',
                                            self.on_edit_active_task)
+        self.vtree_panes['active'].connect('cursor-changed',
+                                           self.on_cursor_changed)
+
         tsk_treeview_btn_press = self.on_task_treeview_button_press_event
         self.vtree_panes['active'].connect('button-press-event',
                                            tsk_treeview_btn_press)
@@ -326,6 +357,10 @@ class MainWindow(Gtk.ApplicationWindow):
         # Workview tasks TreeView
         self.vtree_panes['workview'].connect('row-activated',
                                              self.on_edit_active_task)
+
+        self.vtree_panes['workview'].connect('cursor-changed',
+                                             self.on_cursor_changed)
+
         tsk_treeview_btn_press = self.on_task_treeview_button_press_event
         self.vtree_panes['workview'].connect('button-press-event',
                                              tsk_treeview_btn_press)
@@ -349,6 +384,10 @@ class MainWindow(Gtk.ApplicationWindow):
         clsd_tsk_key_prs = self.on_closed_task_treeview_key_press_event
         self.vtree_panes['closed'].connect('key-press-event',
                                            clsd_tsk_key_prs)
+
+        self.vtree_panes['closed'].connect('cursor-changed',
+                                            self.on_cursor_changed)
+
         self.closedtree.apply_filter(self.get_selected_tags()[0], refresh=True)
 
         b_signals = BackendSignals()
@@ -576,6 +615,16 @@ class MainWindow(Gtk.ApplicationWindow):
         """
         self.about.hide()
         return True
+
+    def on_cursor_changed(self, widget=None):
+        """Callback when the treeview's cursor changes."""
+
+        if self.has_any_selection():
+            self.defer_btn.set_sensitive(True)
+            self.defer_menu_btn.set_sensitive(True)
+        else:
+            self.defer_btn.set_sensitive(False)
+            self.defer_menu_btn.set_sensitive(False)
 
     def on_tagcontext_deactivate(self, menushell):
         self.reset_cursor()
@@ -909,11 +958,56 @@ class MainWindow(Gtk.ApplicationWindow):
         for task in tasks:
             task.set_start_date(start_date)
 
+    def update_start_to_next_day(self, day_number):
+        """Update start date to N days from today."""
+
+        tasks = [self.req.get_task(uid)
+                 for uid in self.get_selected_tasks()
+                 if uid is not None]
+
+
+        next_day = Date.today() + datetime.timedelta(days=day_number)
+
+        for task in tasks:
+            task.set_start_date(next_day)
+
     def on_mark_as_started(self, action, param):
         self.update_start_date(None, "today")
 
+    def on_start_for_today(self, action, param):
+        """Set a task to start today."""
+
+        self.update_start_date(None, "today")
+
     def on_start_for_tomorrow(self, action, param):
+        """Set a task to start tomorrow."""
+
         self.update_start_date(None, "tomorrow")
+
+    def on_start_for_next_day_2(self, action, param):
+        """Set a task to start two days from today."""
+
+        self.update_start_to_next_day(2)
+
+    def on_start_for_next_day_3(self, action, param):
+        """Set a task to start three days from today."""
+
+        self.update_start_to_next_day(3)
+
+    def on_start_for_next_day_4(self, action, param):
+        """Set a task to start four days from today."""
+
+        self.update_start_to_next_day(4)
+
+    def on_start_for_next_day_5(self, action, param):
+        """Set a task to start five days from today."""
+
+        self.update_start_to_next_day(5)
+
+    def on_start_for_next_day_6(self, action, param):
+        """Set a task to start six days from today."""
+
+        self.update_start_to_next_day(6)
 
     def on_start_for_next_week(self, action, param):
         self.update_start_date(None, "next week")
@@ -1095,6 +1189,14 @@ class MainWindow(Gtk.ApplicationWindow):
         self.applied_tags = new_taglist
 
 # PUBLIC METHODS ###########################################################
+    def has_any_selection(self):
+        """Determine if the current pane has any task selected."""
+
+        current_pane = self.get_selected_pane()
+        selected = self.vtree_panes[current_pane].get_selected_nodes()
+
+        return bool(selected)
+
     def get_selected_pane(self):
         """ Get the selected pane in the stack switcher """
 
