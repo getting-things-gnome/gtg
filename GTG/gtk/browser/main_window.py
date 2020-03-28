@@ -476,12 +476,16 @@ class MainWindow(Gtk.ApplicationWindow):
             self.move(xpos, ypos)
 
         tag_pane = self.config.get("tag_pane")
+
         if not tag_pane:
             self.sidebar.hide()
         else:
             if not self.tagtreeview:
                 self.init_tags_sidebar()
+
             self.sidebar.show()
+
+        self.switch_sidebar_name(tag_pane)
 
         sidebar_width = self.config.get("sidebar_width")
         self.builder.get_object("main_hpanes").set_position(sidebar_width)
@@ -580,12 +584,18 @@ class MainWindow(Gtk.ApplicationWindow):
     def on_tagcontext_deactivate(self, menushell):
         self.reset_cursor()
 
+    def switch_sidebar_name(self, visible):
+        """Change text on sidebar button."""
+
+        button = self.builder.get_object('toggle_sidebar_button')
+        button.props.text = f'{"Hide" if visible else "Show"} Sidebar'
+
     def on_sidebar_toggled(self, action, param):
         """Toggle tags sidebar."""
 
-        tags = self.builder.get_object("tags")
+        visible = self.sidebar.get_property("visible")
 
-        if self.sidebar.get_property("visible"):
+        if visible:
             self.config.set("tag_pane", False)
             self.sidebar.hide()
         else:
@@ -594,6 +604,8 @@ class MainWindow(Gtk.ApplicationWindow):
 
             self.sidebar.show()
             self.config.set("tag_pane", True)
+
+        self.switch_sidebar_name(not visible)
 
     def _expand_not_collapsed(self, model, path, iter, colt):
         """ Expand all not collapsed nodes

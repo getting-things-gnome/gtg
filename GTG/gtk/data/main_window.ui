@@ -63,12 +63,12 @@
         <property name="margin_bottom">8</property>
         <property name="orientation">vertical</property>
         <child>
-          <object class="GtkModelButton" id="tags">
+          <object class="GtkModelButton" id="toggle_sidebar_button">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="receives_default">True</property>
             <property name="action_name">win.toggle_sidebar</property>
-            <property name="text" translatable="yes">Show Sidebar</property>
+            <property name="text" translatable="yes">Toggle Sidebar</property>
           </object>
           <packing>
             <property name="expand">False</property>
