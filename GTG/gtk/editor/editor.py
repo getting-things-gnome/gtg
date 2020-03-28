@@ -27,6 +27,7 @@ import datetime
 import os
 
 from gi.repository import Gdk, Gtk, Pango, Gio
+from gi.repository.GObject import signal_handler_block
 
 from GTG.core.dirs import UI_DIR
 from GTG.core.plugins.api import PluginAPI
@@ -99,8 +100,6 @@ class TaskEditor():
             "on_move": self.on_move,
 
             "show_popover_start": self.show_popover_start,
-            "startdate_selected": lambda c: self.on_date_selected(
-                c, GTGCalendar.DATE_KIND_START),
             "startingdate_changed": lambda w: self.date_changed(
                 w, GTGCalendar.DATE_KIND_START),
             "startdate_cleared": lambda w: self.on_date_cleared(
@@ -109,8 +108,6 @@ class TaskEditor():
                 w, e, GTGCalendar.DATE_KIND_START),
 
             "show_popover_due": self.show_popover_due,
-            "duedate_selected": lambda c: self.on_date_selected(
-                c, GTGCalendar.DATE_KIND_DUE),
             "duedate_changed": lambda w: self.date_changed(
                 w, GTGCalendar.DATE_KIND_DUE),
             "duedate_now_selected": lambda w: self.on_duedate_fuzzy(
@@ -127,8 +124,6 @@ class TaskEditor():
             "show_popover_closed": self.show_popover_closed,
             "closeddate_changed": lambda w: self.date_changed(
                 w, GTGCalendar.DATE_KIND_CLOSED),
-            "closeddate_selected": lambda c: self.on_date_selected(
-                c, GTGCalendar.DATE_KIND_CLOSED),
             "closeddate_focus_out": lambda w, e: self.date_focus_out(
                 w, e, GTGCalendar.DATE_KIND_CLOSED),
         }
@@ -136,6 +131,16 @@ class TaskEditor():
         self.builder.connect_signals(dic)
         self.window = self.builder.get_object("TaskEditor")
         self.window.set_application(app)
+
+        # Connect signals for the calendar
+        self.start_handle = self.start_calendar.connect('day-selected',
+                                                        lambda c: self.on_date_selected(c, GTGCalendar.DATE_KIND_START))
+
+        self.due_handle = self.due_calendar.connect('day-selected',
+                                                    lambda c: self.on_date_selected(c, GTGCalendar.DATE_KIND_DUE))
+
+        self.closed_handle = self.closed_calendar.connect('day-selected',
+                                                          lambda c: self.on_date_selected(c, GTGCalendar.DATE_KIND_CLOSED))
 
         # Removing the Normal textview to replace it by our own
         # So don't try to change anything with glade, this is a home-made
@@ -249,9 +254,10 @@ class TaskEditor():
 
         start_date = self.task.get_start_date() or Date.today()
 
-        self.start_calendar.select_day(start_date.day)
-        self.start_calendar.select_month(start_date.month - 1,
-                                         start_date.year)
+        with signal_handler_block(self.start_calendar, self.start_handle):
+            self.start_calendar.select_day(start_date.day)
+            self.start_calendar.select_month(start_date.month - 1,
+                                             start_date.year)
 
         self.start_popover.popup()
 
@@ -263,9 +269,10 @@ class TaskEditor():
         if not due_date or due_date.is_fuzzy():
             due_date = Date.today()
 
-        self.due_calendar.select_day(due_date.day)
-        self.due_calendar.select_month(due_date.month - 1,
-                                       due_date.year)
+        with signal_handler_block(self.due_calendar, self.due_handle):
+            self.due_calendar.select_day(due_date.day)
+            self.due_calendar.select_month(due_date.month - 1,
+                                           due_date.year)
 
         self.due_popover.popup()
 
@@ -274,9 +281,10 @@ class TaskEditor():
 
         closed_date = self.task.get_closed_date()
 
-        self.closed_calendar.select_day(closed_date.day)
-        self.closed_calendar.select_month(closed_date.month - 1,
-                                          closed_date.year)
+        with signal_handler_block(self.closed_calendar, self.closed_handle):
+            self.closed_calendar.select_day(closed_date.day)
+            self.closed_calendar.select_month(closed_date.month - 1,
+                                              closed_date.year)
 
         self.closed_popover.popup()
 

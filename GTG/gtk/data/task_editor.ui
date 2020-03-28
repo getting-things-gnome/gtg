@@ -442,7 +442,6 @@
           <object class="GtkCalendar" id="calendar_closed">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <signal name="day-selected" handler="closeddate_selected" swapped="no"/>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -475,7 +474,6 @@
             <property name="can_focus">True</property>
             <property name="year">2020</property>
             <property name="day">2</property>
-            <signal name="day-selected" handler="duedate_selected" swapped="no"/>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -578,7 +576,6 @@
             <property name="can_focus">True</property>
             <property name="year">2020</property>
             <property name="day">2</property>
-            <signal name="day-selected" handler="startdate_selected" swapped="no"/>
           </object>
           <packing>
             <property name="expand">False</property>
