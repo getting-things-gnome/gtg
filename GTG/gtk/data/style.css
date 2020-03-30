@@ -1,11 +1,15 @@
 /* --------------------------------------------------------------------------------
- * MAIN MENU
+ * MAIN WINDOW
  * --------------------------------------------------------------------------------
  */
-#main_menu GtkModelButton {
+#main_menu GtkModelButton,
+#defer_menu GtkModelButton {
     padding: 10px 5px;
 }
 
+.menu-disclose {
+    min-width: 16px;
+}
 
 /* --------------------------------------------------------------------------------
  * PREFERENCES
@@ -20,4 +24,3 @@
 .prefs_list row {
     border-bottom: solid 1px alpha(currentColor, 0.1);
 }
-
