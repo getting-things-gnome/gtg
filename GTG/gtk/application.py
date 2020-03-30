@@ -423,6 +423,9 @@ class Application(Gtk.Application):
         if not self.browser:
             self.browser = MainWindow(self.req, self)
 
+        if log.isEnabledFor(logging.DEBUG):
+            self.browser.get_style_context().add_class('devel')
+
         self._set_actions()
         self.__init_plugin_engine()
         self.show_browser()
