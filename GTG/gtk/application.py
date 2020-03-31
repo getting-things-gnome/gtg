@@ -229,7 +229,7 @@ class Application(Gtk.Application):
         if self.config.get('autoclean'):
             self.purge_old_tasks()
 
-    def new_task(self, param, action):
+    def new_task(self, param=None, action=None):
         """Callback to add a new task."""
 
         self.browser.on_add_task()

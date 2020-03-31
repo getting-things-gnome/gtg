@@ -652,8 +652,18 @@ class TaskEditor():
     def on_parent_select(self, action, param):
         parents = self.task.get_parents()
 
-        if len(parents) == 1:
+        if not parents:
+            tags = [t.get_name() for t in self.task.get_tags()]
+            parent = self.req.new_task(tags=tags, newtask=True)
+            parent_id = parent.get_id()
+
+            self.task.set_parent(parent_id)
+            self.app.open_task(parent_id)
+
+        elif len(parents) == 1:
+            print(parents[0])
             self.app.open_task(parents[0])
+
         elif len(parents) > 1:
             self.show_multiple_parent_popover(parents)
 
