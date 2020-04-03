@@ -27,6 +27,9 @@ import xml.dom.minidom
 # we can store. This function signature is defined in PyGTK
 
 class Serializer():
+
+    known_tags = ('is_subtask', 'is_indent', 'is_tag')
+
     def serialize(self, register_buf, content_buf, start, end, length, udata):
         # Currently we serialize in XML
         its = start.copy()
@@ -36,12 +39,10 @@ class Serializer():
         doc = xml.dom.minidom.Document()
         parent = doc.createElement("content")
         doc.appendChild(self.parse_buffer(content_buf, its, ite, parent, doc))
+
         # We don't want the whole doc with the XML declaration
         # we only take the first node (the "content" one)
-        node = doc.firstChild
-        # print "********************"
-        # print node.toxml()
-        return node.toxml()
+        return doc.firstChild.toxml()
 
     def parse_buffer(self, buff, start, end, parent, doc, done=[]):
         """
@@ -53,38 +54,34 @@ class Serializer():
             @var done : the list of parsed tags
         """
 
-        def is_known_tag(tag):
-            """ Determine if "tag" is a known tag. Must be a Gtk.TextTag."""
-
-            known_tags = ('is_subtask', 'is_indent', 'is_tag')
-            return tag in known_tags
-
         it = start.copy()
         tag = None
         start_it = start.copy()
         end_it = start.copy()
-
         buffer_end = False
+
         while not buffer_end:
-            if tag is None:
+            if not tag:
                 # We are not in a tag context
                 # Get list of know tags which begin here
                 # and are not already process
                 tags = []
                 for ta in it.get_tags():
-                    if it.begins_tag(ta) and ta not in done and \
-                            is_known_tag(ta):
+                    if (it.begins_tag(ta) and ta not in done
+                       and ta in self.known_tags):
                         tags.append(ta)
-                if it.begins_tag() and len(tags) > 0:
-                    # We enter in a tag context
+
+                if it.begins_tag() and tags:
+                    # We enter a tag context
                     tag = tags.pop()
                     done.append(tag)
                     start_it = it.copy()
-                else:
-                    # We stay out of a tag context
-                    # We write the char in the xml node
-                    if it.get_char() != "":
-                        parent.appendChild(doc.createTextNode(it.get_char()))
+
+                # We stay out of a tag context
+                # We write the char in the xml node
+                elif it.get_char() != "":
+                    parent.appendChild(doc.createTextNode(it.get_char()))
+
             else:
                 # We are in a tag context
                 if it.ends_tag(tag) or it.equal(end):
@@ -92,6 +89,7 @@ class Serializer():
                     # We process the tag
                     end_it = it.copy()
                     end_it.backward_char()
+
                     if hasattr(tag, 'is_tag'):
                         # The current gtkTextTag is a tag
                         # Recursive call
@@ -99,25 +97,30 @@ class Serializer():
                         child = self.parse_buffer(buff, start_it, end_it,
                                                   nparent, doc, done=done)
                         parent.appendChild(child)
+
                     elif hasattr(ta, 'is_subtask'):
                         # The current gtkTextTag is a subtask
-                        tagname = "subtask"
-                        subt = doc.createElement(tagname)
+                        subt = doc.createElement('subtask')
                         target = ta.child
                         subt.appendChild(doc.createTextNode(target))
                         parent.appendChild(subt)
                         parent.appendChild(doc.createTextNode("\n"))
                         it.forward_line()
+
                     elif hasattr(ta, 'is_indent'):
                         # The current gtkTextTag is a indent
                         indent = buff.get_text(start_it, end_it, True)
+
                         if '\n' in indent:
                             parent.appendChild(doc.createTextNode('\n'))
+
                         it = end_it
+
                     # We go out the tag context
                     tag = None
                     if not it.equal(end):
                         it.backward_char()
+
             if it.equal(end):
                 buffer_end = True
             else:
@@ -127,9 +130,11 @@ class Serializer():
         if parent.localName == "content":
             last_val = parent.lastChild
             # We add a \n only if needed (= we don't have a "\n" at the end)
-            if last_val and last_val.nodeType == 3 and \
-                    last_val.nodeValue[-1] != '\n':
+            if (last_val and last_val.nodeType == 3
+               and last_val.nodeValue[-1] != '\n'):
+
                 parent.appendChild(doc.createTextNode('\n'))
+
         # This function concatenates all the adjacent text node of the XML
         parent.normalize()
         return parent
