@@ -100,9 +100,8 @@ def populate():
         "\n"
         "We sincerely hope you will enjoy using GTG, and thank you for trying"
         " it out! Please send us bug reports and ideas for improvement using"
-        " this web page: https://bugs.launchpad.net/gtg/+filebug If you want "
-        "to get tips for using GTG or be informed about the newest features, "
-        "also visit our blog at http://gtg.fritalk.com\n"
+        " this web page: https://github.com/getting-things-gnome/gtg/issues/new If you want "
+        "to get tips for using GTG or be informed about the newest features."
         "\n"
         "The GTG team.")
     task1 = addtask(doc, "0@1", title1, text1,
@@ -169,10 +168,10 @@ def populate():
     task3 = addtask(doc, "2@1", title3, text3, [])
     root.appendChild(task3)
 
-    # Task 3@1: Using the Workview
-    title4 = _("Learn How To Use The Work View")
+    # Task 3@1: Using the Actionable tab
+    title4 = _("Learn How To Use The Actionable tab")
     text4 = _(
-        "If you press the &quot;Work View&quot; button, only actionable tasks"
+        "If you press the &quot;Actionable&quot; tab, only actionable tasks"
         " will be displayed in your list.\n"
         "\n"
         "What is an actionable task? It's a task you can do directly, right "
@@ -187,21 +186,21 @@ def populate():
         "since this kind of date is reserved for things that needs more "
         "thoughts before being actionable.\n"
         "\n"
-        "Thus, in short, the Work View shows you tasks that you can do right "
+        "Thus, in short, the Actionable Tab shows you tasks that you can do right "
         "now. It's very useful when you want to get things done and to focus "
         "on the relevant tasks!\n"
         "\n"
         "If you use tags, you can right click on a tag in the sidebar and "
-        "choose to hide tasks assigned to this particular tag in the Work "
-        "View. It is very useful if you have a tag like &quot;@wait&quot; "
+        "choose to hide tasks assigned to this particular tag in the Actionable "
+        "tab. It is very useful if you have a tag like &quot;@wait&quot; "
         "that you use for tasks blocked by some external event (i.e. a phone "
         "call you wait to receive).\n\n"
-        "And finally, an important note regarding the Work View: since the "
-        "Work View is updated instantaneously, if you edit your task while "
-        "using the Work View, this task might disappear due to the change you"
-        " just made (e.g. adding a subtask, adding a tag hidden in the Work "
-        "View, etc.). To avoid this, it's better not to edit your task while "
-        "using the Work View. ")
+        "And finally, an important note regarding the Actionable tab: since the "
+        "Actionable tab is updated instantaneously, if you edit your task while "
+        "using the Actionable tab, this task might disappear due to the change you"
+        " just made (e.g. adding a subtask, adding a tag hidden in the Actionable "
+        "tab, etc.). To avoid this, it's better not to edit your task while "
+        "using the Actionable tab. ")
     task4 = addtask(doc, "3@1", title4, text4, [])
     root.appendChild(task4)
 
@@ -226,8 +225,8 @@ def populate():
         "GTG is still beta software. We like it and use it everyday but you "
         "will probably encounter some bugs will you do.\n"
         "\n"
-        "Please, help us improving GTG by reporting them on our Launchpad "
-        "page:https://bugs.launchpad.net/gtg/+filebug\n"
+        "Please, help us improving GTG by reporting them on our tracker "
+        "page:https://github.com/getting-things-gnome/gtg/issues/new\n"
         "\n"
         "We need you to make this software better. Any contribution, any "
         "idea is welcome!\n"
