@@ -399,23 +399,6 @@ class Application(Gtk.Application):
             self.quit()
 
 # MAIN #####################################################################
-    def main(self, once_thru=False, uri_list=[]):
-        if uri_list:
-            # before opening the requested tasks, we make sure that all of them
-            # are loaded.
-            BackendSignals().connect('default-backend-loaded',
-                                     self.open_uri_list,
-                                     uri_list)
-        else:
-            self.open_browser()
-        GObject.threads_init()
-        if not self.gtk_terminate:
-            if once_thru:
-                Gtk.main_iteration()
-            else:
-                Gtk.main()
-        return 0
-
     def do_activate(self):
         """Callback when launched from the desktop."""
 
