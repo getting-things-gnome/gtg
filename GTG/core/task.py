@@ -20,7 +20,7 @@
 task.py contains the Task class which represents (guess what) a task
 """
 from datetime import datetime
-import cgi
+import html
 import re
 import uuid
 import xml.dom.minidom
@@ -524,7 +524,7 @@ class Task(TreeNode):
         if texte != "<content/>":
             # defensive programmation to filter bad formatted tasks
             if not texte.startswith("<content>"):
-                texte = cgi.escape(texte, quote=True)
+                texte = html.escape(texte, quote=True)
                 texte = f"<content>{texte}"
             if not texte.endswith("</content>"):
                 texte = f"{texte}</content>"
@@ -704,7 +704,7 @@ class Task(TreeNode):
                 sep = '\n\n'
 
             self.content = "<content><tag>%s</tag>%s%s</content>" % (
-                cgi.escape(tagname), sep, c)
+                html.escape(tagname), sep, c)
             # we modify the task internal state, thus we have to call for a
             # sync
             self.sync()
