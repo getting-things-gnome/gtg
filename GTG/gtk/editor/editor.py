@@ -226,6 +226,7 @@ class TaskEditor():
         self._set_actions()
 
         self.textview.set_editable(True)
+        self.window.set_transient_for(self.app.browser)
         self.window.show()
 
     def _set_actions(self):

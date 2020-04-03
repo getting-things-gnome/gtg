@@ -89,6 +89,7 @@
     <property name="title" translatable="yes">Task</property>
     <property name="default_width">500</property>
     <property name="default_height">400</property>
+    <property name="type_hint">utility</property>
     <signal name="configure-event" handler="on_move" swapped="no"/>
     <child type="titlebar">
       <object class="GtkHeaderBar" id="headerbar">
