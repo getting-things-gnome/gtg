@@ -431,7 +431,7 @@
                         <property name="max_width_chars">40</property>
                         <property name="primary_icon_activatable">False</property>
                         <property name="placeholder_text">Search here</property>
-                        <signal name="key-release-event" handler="on_search" swapped="no"/>
+                        <signal name="search-changed" handler="on_search" swapped="no"/>
                       </object>
                       <packing>
                         <property name="expand">True</property>

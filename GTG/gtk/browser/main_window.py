@@ -418,7 +418,7 @@ class MainWindow(Gtk.ApplicationWindow):
             self.searchbar.set_search_mode(True)
             self.search_entry.grab_focus()
 
-    def on_search(self, key, widget):
+    def on_search(self, data):
         query = self.search_entry.get_text()
         log.debug(f"Searching for '{query}'")
 
