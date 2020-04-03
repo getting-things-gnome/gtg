@@ -21,7 +21,7 @@ Remember the milk backend
 """
 
 from functools import reduce
-import cgi
+import html
 import datetime
 import os
 import subprocess
@@ -807,7 +807,7 @@ class RTMTask():
 
     def set_title(self, title, transaction_ids=[]):
         """Sets the task title"""
-        title = cgi.escape(title)
+        title = html.escape(title)
         result = self.rtm.tasks.setName(timeline=self.timeline,
                                         list_id=self.rtm_list.id,
                                         taskseries_id=self.rtm_taskseries.id,
@@ -907,7 +907,7 @@ class RTMTask():
 
         if text == "":
             return
-        text = cgi.escape(text)
+        text = html.escape(text)
 
         # RTM does not support well long notes (that is, it denies the request)
         # Thus, we split long text in chunks. To make them show in the correct
