@@ -18,7 +18,6 @@
 
 """ The main window for GTG, listing tags, and open and closed tasks """
 
-from webbrowser import open as openurl
 import threading
 import datetime
 
