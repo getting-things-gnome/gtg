@@ -53,15 +53,12 @@ class Serializer():
             @var done : the list of parsed tags
         """
 
-        def is_know_tag(tag):
-            """
-            Return True if "tag" is a know tag. "tag" must be a Gtk.TextTag.
-            """
-            know_tags = ["is_subtask", "is_indent", "is_tag"]
-            for know in know_tags:
-                if hasattr(tag, know):
-                    return True
-            return False
+        def is_known_tag(tag):
+            """ Determine if "tag" is a known tag. Must be a Gtk.TextTag."""
+
+            known_tags = ('is_subtask', 'is_indent', 'is_tag')
+            return tag in known_tags
+
         it = start.copy()
         tag = None
         start_it = start.copy()
@@ -76,7 +73,7 @@ class Serializer():
                 tags = []
                 for ta in it.get_tags():
                     if it.begins_tag(ta) and ta not in done and \
-                            is_know_tag(ta):
+                            is_known_tag(ta):
                         tags.append(ta)
                 if it.begins_tag() and len(tags) > 0:
                     # We enter in a tag context
