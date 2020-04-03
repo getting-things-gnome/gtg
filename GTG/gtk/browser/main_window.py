@@ -424,15 +424,10 @@ class MainWindow(Gtk.ApplicationWindow):
 
         try:
             parsed_query = parse_search_query(query)
+            self.apply_filter_on_panes(SEARCH_TAG, parameters=parsed_query)
         except InvalidQuery as e:
-            # If we get an invalid query (eg. empty) cancel out of
-            # search mode and remove the filter
-            self.on_search_toggled()
-
+            self.unapply_filter_on_panes(SEARCH_TAG, refresh=True)
             log.debug(f"Invalid query '{query}' : '{e}'")
-            return
-
-        self.apply_filter_on_panes(SEARCH_TAG, parameters=parsed_query)
 
     def on_save_search(self, action, param):
         query = self.search_entry.get_text()
