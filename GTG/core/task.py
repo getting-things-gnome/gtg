@@ -78,10 +78,12 @@ class Task(TreeNode):
         return self.added_date
 
     def get_added_date_string(self):
+        FORMAT = '%Y-%m-%dT%H:%M:%S'
+
         if self.added_date:
-            return self.added_date.strftime("%Y-%m-%dT%H:%M:%S")
+            return self.added_date.strftime(FORMAT)
         else:
-            return Date.now()
+            return datetime.now().strftime(FORMAT)
 
     def get_added_date_simple(self):
         return self.added_date.strftime("%Y/%m/%d") if self.added_date else ""
