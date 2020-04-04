@@ -314,10 +314,6 @@ class MainWindow(Gtk.ApplicationWindow):
         SIGNAL_CONNECTIONS_DIC = {
             "on_edit_done_task":
             self.on_edit_done_task,
-            "on_move":
-            self.on_move,
-            "on_size_allocate":
-            self.on_size_allocate,
             "on_add_subtask":
             self.on_add_subtask,
             "on_tagcontext_deactivate":
@@ -335,6 +331,12 @@ class MainWindow(Gtk.ApplicationWindow):
 
         # When destroying this window, quit GTG
         self.connect("destroy", self.quit)
+
+        # Store window position
+        self.connect('configure-event', self.on_move)
+
+        # Store window position
+        self.connect('size-allocate', self.on_size_allocate)
 
         # Active tasks TreeView
         self.vtree_panes['active'].connect('row-activated',
