@@ -20,7 +20,7 @@
 
 """ This script creates a new task and launches the editor to display it. """
 
-import cgi
+import html
 import dbus
 import re
 import sys
@@ -56,7 +56,7 @@ def main():
             title = title + ": " + subject
     else:
         body = ""
-    new_task(title, cgi.escape(body))
+    new_task(title, html.escape(body))
 
 if __name__ == "__main__":
     main()
