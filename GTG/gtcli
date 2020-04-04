@@ -18,7 +18,7 @@ import re
 import sys
 import os
 import dbus
-import cgi
+import html
 import getopt
 import textwrap
 from datetime import datetime, date, timedelta
@@ -101,7 +101,7 @@ def new_task(title):
         title = title + ": " + subject
 
     gtg = connect_to_gtg()
-    task = gtg.NewTask("Active", title, '', '', '', [], cgi.escape(body), [])
+    task = gtg.NewTask("Active", title, '', '', '', [], html.escape(body), [])
     if task:
         print(_("New task created with id %s") % task['id'])
     else:
