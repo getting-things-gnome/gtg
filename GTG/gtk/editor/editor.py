@@ -331,6 +331,7 @@ class TaskEditor():
 
     def init_dimensions(self):
         """ Restores position and size of task if possible """
+
         position = self.config.get('position')
         if position and len(position) == 2:
             try:
@@ -720,8 +721,9 @@ class TaskEditor():
 
     def on_move(self, widget, event):
         """ Save position and size of window """
-        self.config.set('position', self.window.get_position())
-        self.config.set('size', self.window.get_size())
+
+        self.config.set('position', list(self.window.get_position()))
+        self.config.set('size', list(self.window.get_size()))
 
     # We define dummy variable for when close is called from a callback
     def close(self, action=None, param=None):
