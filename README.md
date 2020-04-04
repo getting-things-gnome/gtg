@@ -104,7 +104,7 @@ If you have installed gtg, you can access those by executing:
 ## WANT TO KNOW MORE?
 
  * GTG GitHub latest repository: https://github.com/getting-things-gnome/gtg
- * GTG Wiki: http://live.gnome.org/gtg/
+ * GTG Wiki: https://wiki.gnome.org/Apps/GTG
  * GTG developer's documentation: http://gtg.readthedocs.org/en/latest/index.html
 
 
