@@ -54,7 +54,8 @@ class Application(Gtk.Application):
     # init ##################################################################
     def __init__(self, debug):
 
-        super().__init__(application_id='org.gnome.GTGDevel')
+        app_id = f'org.gnome.GTG{"devel" if debug else ""}'
+        super().__init__(application_id=app_id)
 
         if debug:
             log.setLevel(logging.DEBUG)
