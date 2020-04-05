@@ -98,9 +98,13 @@ class MainWindow(Gtk.ApplicationWindow):
         # Load window tree
         self.builder = Gtk.Builder()
         self.builder.add_from_file(GnomeConfig.BROWSER_UI_FILE)
+        self.builder.add_from_file(GnomeConfig.HELP_OVERLAY_UI_FILE)
 
         # Define aliases for specific widgets
         self._init_widget_aliases()
+
+        # Setup help overlay (shortcuts window)
+        self.set_help_overlay(self.help_overlay)
 
         # Init non-GtkBuilder widgets
         self._init_ui_widget()
@@ -225,6 +229,7 @@ class MainWindow(Gtk.ApplicationWindow):
         self.main_box = self.builder.get_object("main_view_box")
         self.defer_btn = self.builder.get_object("defer_task_button")
         self.defer_menu_btn = self.builder.get_object("defer_menu_btn")
+        self.help_overlay = self.builder.get_object("shortcuts")
 
         self.tagpopup = TagContextMenu(self.req, self.app)
 
