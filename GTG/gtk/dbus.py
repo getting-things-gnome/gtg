@@ -25,8 +25,8 @@ from GTG.core.dates import Date
 from GTG.core.search import InvalidQuery
 from GTG.core.search import parse_search_query
 
-BUSNAME = "org.gnome.GTG"
-BUSINTERFACE = "/org/gnome/GTG"
+BUSNAME = "org.gnome.GTGTasks"
+BUSINTERFACE = "/org/gnome/GTGTasks"
 
 
 def dsanitize(data):
