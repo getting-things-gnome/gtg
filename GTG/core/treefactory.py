@@ -95,7 +95,7 @@ class TreeFactory():
         # Build the search tag
         search_tag = tag.Tag(tag.SEARCH_TAG, req=req)
         search_tag.set_attribute("special", "search")
-        search_tag.set_attribute("label", _("Search"))
+        search_tag.set_attribute("label", _("Saved searches"))
         search_tag.set_attribute("icon", "system-search-symbolic")
         search_tag.set_attribute("order", 1)
         tagtree.add_node(search_tag)
