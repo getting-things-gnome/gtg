@@ -226,6 +226,8 @@ class TreeviewFactory():
 
         if node.get_attribute("nonworkview") == "True":
             return f"<span color='{self.unactive_color}'>{label}</span>"
+        elif node.get_id() == 'search' and not node.get_children():
+            return f"<span color='{self.unactive_color}'>{label}</span>"
         else:
             return label
 
