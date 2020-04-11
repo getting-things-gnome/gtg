@@ -663,7 +663,6 @@ class TaskEditor():
             self.app.open_task(parent_id)
 
         elif len(parents) == 1:
-            print(parents[0])
             self.app.open_task(parents[0])
 
         elif len(parents) > 1:
