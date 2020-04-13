@@ -55,10 +55,38 @@
     <submenu>
       <attribute name="label" translatable="yes">Set Start Date</attribute>
 
+      <section>
       <item>
         <attribute name="label" translatable="yes">Tomorrow</attribute>
         <attribute name="action">win.start_tomorrow</attribute>
       </item>
+
+      <item>
+        <attribute name="label" translatable="yes">In 2 days</attribute>
+        <attribute name="action">win.start_next_day_2</attribute>
+      </item>
+
+      <item>
+        <attribute name="label" translatable="yes">In 3 days</attribute>
+        <attribute name="action">win.start_next_day_3</attribute>
+      </item>
+
+      <item>
+        <attribute name="label" translatable="yes">In 4 days</attribute>
+        <attribute name="action">win.start_next_day_4</attribute>
+      </item>
+
+      <item>
+        <attribute name="label" translatable="yes">In 5 days</attribute>
+        <attribute name="action">win.start_next_day_5</attribute>
+      </item>
+
+      <item>
+        <attribute name="label" translatable="yes">In 6 days</attribute>
+        <attribute name="action">win.start_next_day_6</attribute>
+      </item>
+      </section>
+      <section>
 
       <item>
         <attribute name="label" translatable="yes">Next Week</attribute>
@@ -79,6 +107,7 @@
         <attribute name="label" translatable="yes">Pick a date...</attribute>
         <attribute name="action">win.start_custom</attribute>
       </item>
+      </section>
 
       <section>
         <item>
