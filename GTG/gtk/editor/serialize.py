@@ -28,7 +28,12 @@ import xml.dom.minidom
 
 class Serializer():
 
-    known_tags = ('is_subtask', 'is_indent', 'is_tag')
+    KNOWN_TAGS = ('is_subtask', 'is_indent', 'is_tag')
+
+    def __init__(self):
+
+        # List of parsed tags
+        self.done = []
 
     def serialize(self, register_buf, content_buf, start, end, length, udata):
         # Currently we serialize in XML
@@ -44,14 +49,22 @@ class Serializer():
         # we only take the first node (the "content" one)
         return doc.firstChild.toxml()
 
-    def parse_buffer(self, buff, start, end, parent, doc, done=[]):
+    def is_known_tag(self, tag):
+        """Detect if 'tag' is one of our task tags."""
+
+        for known_tag in self.KNOWN_TAGS:
+            if hasattr(tag, known_tag):
+                return True
+
+        return False
+
+    def parse_buffer(self, buff, start, end, parent, doc):
         """
         Parse the buffer and output an XML representation.
 
             @var buff, start, end  : the buffer to parse from start to end
             @var parent, doc: the XML element to add data and doc is
                                 the XML dom
-            @var done : the list of parsed tags
         """
 
         it = start.copy()
@@ -61,20 +74,21 @@ class Serializer():
         buffer_end = False
 
         while not buffer_end:
-            if not tag:
+
+            if tag is None:
                 # We are not in a tag context
                 # Get list of know tags which begin here
-                # and are not already process
+                # and are not already processed
                 tags = []
                 for ta in it.get_tags():
-                    if (it.begins_tag(ta) and ta not in done
-                       and ta in self.known_tags):
+                    if (it.begins_tag(ta) and ta not in self.done
+                       and self.is_known_tag(ta)):
                         tags.append(ta)
 
                 if it.begins_tag() and tags:
                     # We enter a tag context
                     tag = tags.pop()
-                    done.append(tag)
+                    self.done.append(tag)
                     start_it = it.copy()
 
                 # We stay out of a tag context
@@ -95,7 +109,8 @@ class Serializer():
                         # Recursive call
                         nparent = doc.createElement("tag")
                         child = self.parse_buffer(buff, start_it, end_it,
-                                                  nparent, doc, done=done)
+                                                  nparent, doc)
+
                         parent.appendChild(child)
 
                     elif hasattr(ta, 'is_subtask'):
