@@ -340,6 +340,11 @@ class TaskEditor():
                 log.warning(
                     'Invalid position configuration for task %s: %s',
                     self.task.get_id(), position)
+        else:
+            device_manager = Gdk.Display.get_default().get_device_manager()
+            pointer = device_manager.get_client_pointer()
+            screen, x, y = pointer.get_position()
+            self.window.move(x, y)
 
         size = self.config.get('size')
         if size and len(size) == 2:
