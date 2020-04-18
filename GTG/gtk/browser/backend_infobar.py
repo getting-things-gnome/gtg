@@ -85,7 +85,7 @@ class BackendInfoBar(Gtk.InfoBar):
         """
         self.hide()
         if event == Gtk.ResponseType.ACCEPT:
-            self.app.configure_backend(backend_id=self.backend_id)
+            self.app.open_edit_backends(backend_id=self.backend_id)
 
     def set_error_code(self, error_code):
         """
