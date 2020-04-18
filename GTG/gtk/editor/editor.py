@@ -223,32 +223,10 @@ class TaskEditor():
 
         self.window.insert_action_group('app', app)
         self.window.insert_action_group('win', app.browser)
-        self._set_actions()
 
         self.textview.set_editable(True)
         self.window.set_transient_for(self.app.browser)
         self.window.show()
-
-    def _set_actions(self):
-        """Setup actions."""
-
-        action_entries = [
-            ('editor.close', self.close,
-             ('app.editor.close', ['Escape', '<ctrl>w'])),
-            ('editor.show_parent', self.on_parent_select, None),
-            ('editor.delete', self.delete_task, None),
-            ('editor.open_tags_popup', self.open_tags_popover, None),
-        ]
-
-        for action, callback, accel in action_entries:
-            simple_action = Gio.SimpleAction.new(action, None)
-            simple_action.connect('activate', callback)
-            simple_action.set_enabled(True)
-
-            self.app.add_action(simple_action)
-
-            if accel is not None:
-                self.app.set_accels_for_action(*accel)
 
     def show_popover_start(self, widget, event):
         """Open the start date calendar popup."""
@@ -289,7 +267,7 @@ class TaskEditor():
 
         self.closed_popover.popup()
 
-    def open_tags_popover(self, action, param):
+    def open_tags_popover(self):
         self.tag_store.clear()
 
         tags = self.req.get_tag_tree().get_all_nodes()
@@ -628,13 +606,6 @@ class TaskEditor():
             self.close_all_subtasks()
             self.close(None)
 
-    def delete_task(self, action, param):
-        # this triggers the closing of the window in the view manager
-        if self.task.is_new():
-            self.app.close_task(self.task.get_id(), self.window)
-        else:
-            self.app.delete_tasks([self.task.get_id()], self.window)
-
     # Take the title as argument and return the subtask ID
     def new_subtask(self, title=None, tid=None):
         if tid:
@@ -656,7 +627,9 @@ class TaskEditor():
         else:
             self.textview.insert_text(" @", itera)
 
-    def on_parent_select(self, action, param):
+    def open_parent(self):
+        """Open the parent task (create it if none)."""
+
         parents = self.task.get_parents()
 
         if not parents:
