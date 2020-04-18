@@ -633,7 +633,7 @@ class TaskEditor():
         if self.task.is_new():
             self.app.close_task(self.task.get_id(), self.window)
         else:
-            self.app.ask_delete_tasks([self.task.get_id()], self.window)
+            self.app.delete_tasks([self.task.get_id()], self.window)
 
     # Take the title as argument and return the subtask ID
     def new_subtask(self, title=None, tid=None):

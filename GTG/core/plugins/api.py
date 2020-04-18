@@ -54,7 +54,7 @@ class PluginAPI():
             self.__builder = self.__ui.get_builder()
             self.__task_id = taskeditor.get_task()
         else:
-            self.__ui = self.__view_manager.get_browser()
+            self.__ui = self.__view_manager.browser
             self.__builder = self.__ui.get_builder()
             self.__task_id = None
             self.__view_manager.browser.selection.connect(
@@ -107,7 +107,7 @@ class PluginAPI():
         """
         Returns a Browser
         """
-        return self.__view_manager.get_browser()
+        return self.__view_manager.browser
 
     def get_selected(self):
         """

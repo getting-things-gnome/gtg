@@ -15,11 +15,10 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-"""
-Manager loads the prefs and launches the gtk main loop
-"""
 
-from gi.repository import GObject, Gtk, Gdk, Gio
+"""Main class of GTG."""
+
+from gi.repository import Gtk, Gdk, Gio
 import configparser
 import os
 import logging
@@ -41,18 +40,48 @@ from GTG.core.dirs import CSS_DIR
 from GTG.core.logger import log
 from GTG.core.dates import Date
 from GTG.gtk.backends import BackendsDialog
-from GTG.backends.backend_signals import BackendSignals
 from GTG.gtk.browser.tag_editor import TagEditor
 from GTG.core.timer import Timer
 
 
 class Application(Gtk.Application):
 
-    # List of Task URIs to open
-    uri_list = NotImplemented
+    # Requester
+    req = None
 
-    # init ##################################################################
+    # List of Task URIs to open
+    uri_list = None
+
+    # List of opened tasks (task editor windows). Task IDs are keys,
+    # while the editors are their values.
+    open_tasks = {}
+
+    # The main window (AKA Task Browser)
+    browser = None
+
+    # Configuration sections
+    config = None
+    config_plugins = None
+
+    # Shared clipboard
+    clipboard = None
+
+    # Timer to refresh views and purge tasks
+    timer = None
+
+    # Plugin Engine instance
+    plugin_engine = None
+
+    # Dialogs
+    preferences_dialog = None
+    plugins_dialog = None
+    backends_dialog = None
+    delete_task_dialog = None
+    edit_tag_dialog = None
+
+
     def __init__(self, debug):
+        """Setup Application."""
 
         app_id = f'org.gnome.GTG{"devel" if debug else ""}'
         super().__init__(application_id=app_id)
@@ -63,83 +92,83 @@ class Application(Gtk.Application):
         else:
             log.setLevel(logging.INFO)
 
-        self.ds = DataStore()
-
         # Register backends
-        [self.ds.register_backend(backend_dic)
+        datastore = DataStore()
+
+        [datastore.register_backend(backend_dic)
          for backend_dic in BackendFactory().get_saved_backends_list()]
 
         # Save the backends directly to be sure projects.xml is written
-        self.ds.save(quit=False)
+        datastore.save(quit=False)
 
-        self.req = self.ds.get_requester()
+        self.req = datastore.get_requester()
 
-        self.browser_config = self.req.get_config("browser")
-        self.plugins_config = self.req.get_config("plugins")
+        self.config = self.req.get_config("browser")
+        self.config_plugins = self.req.get_config("plugins")
 
-        # Editors
-        # This is the list of tasks that are already opened in an editor
-        # of course it's empty right now
-        self.opened_task = {}
-
-        self.browser = None
-        self.gtk_terminate = False  # if true, the gtk main is not started
-
-        # Shared clipboard
         self.clipboard = clipboard.TaskClipboard(self.req)
 
-        # Initialize Timer
-        self.config = self.req.get_config('browser')
         self.timer = Timer(self.config)
         self.timer.connect('refresh', self.autoclean)
 
-        # Deletion UI
-        self.delete_dialog = None
+        self.preferences_dialog = Preferences(self.req, self)
+        self.plugins_dialog = PluginsDialog(self.req)
 
-        # Tag Editor
-        self.tag_editor_dialog = None
-
-        # Backends Editor
-        self.edit_backends_dialog = None
-
-        # Preferences and Backends windows
-        self.preferences = Preferences(self.req, self)
-
-        # Initialize  dialogs
-        self.plugins = PluginsDialog(self.req)
-
-        # Load custom css
-        self._init_style()
+        self.init_style()
 
         DBusTaskWrapper(self.req, self)
 
-    def __init_plugin_engine(self):
-        self.pengine = PluginEngine()
-        # initializes the plugin api class
-        self.plugin_api = PluginAPI(self.req, self)
-        self.pengine.register_api(self.plugin_api)
-        # checks the conf for user settings
-        try:
-            plugins_enabled = self.plugins_config.get("enabled")
-        except configparser.Error:
-            plugins_enabled = []
-        for plugin in self.pengine.get_plugins():
-            plugin.enabled = plugin.module_name in plugins_enabled
-        # initializes and activates each plugin (that is enabled)
-        self.pengine.activate_plugins()
+    # --------------------------------------------------------------------------
+    # INIT
+    # --------------------------------------------------------------------------
 
-    def _init_style(self):
+    def do_activate(self):
+        """Callback when launched from the desktop."""
+
+        # Browser (still hidden)
+        if not self.browser:
+            self.browser = MainWindow(self.req, self)
+
+        if log.isEnabledFor(logging.DEBUG):
+            self.browser.get_style_context().add_class('devel')
+
+        self.init_actions()
+        self.init_plugin_engine()
+        self.browser.present()
+        self.open_uri_list()
+
+        log.debug("Application activation finished")
+
+    def init_plugin_engine(self):
+        """Setup the plugin engine."""
+
+        self.plugin_engine = PluginEngine()
+
+        plugin_api = PluginAPI(self.req, self)
+        self.plugin_engine.register_api(plugin_api)
+
+        try:
+            enabled_plugins = self.config_plugins.get("enabled")
+        except configparser.Error:
+            enabled_plugins = []
+
+        for plugin in self.plugin_engine.get_plugins():
+            plugin.enabled = plugin.module_name in enabled_plugins
+
+        self.plugin_engine.activate_plugins()
+
+    def init_style(self):
         """Load the application's CSS file."""
 
         screen = Gdk.Screen.get_default()
         provider = Gtk.CssProvider()
+        add_provider = Gtk.StyleContext.add_provider_for_screen
         css_path = os.path.join(CSS_DIR, 'style.css')
 
         provider.load_from_path(css_path)
-        Gtk.StyleContext.add_provider_for_screen(screen, provider,
-                                                 Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
+        add_provider(screen, provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
 
-    def _set_actions(self):
+    def init_actions(self):
         """Setup actions."""
 
         action_entries = [
@@ -169,66 +198,27 @@ class Application(Gtk.Application):
             if accel is not None:
                 self.set_accels_for_action(*accel)
 
-        self.plugins.dialog.insert_action_group('app', self)
+        self.plugins_dialog.dialog.insert_action_group('app', self)
 
+    def open_uri_list(self):
+        """Open the Editor windows of the tasks associated with the uris given.
+           Uris are of the form gtg://<taskid>
+        """
 
-    # Browser ##############################################################
-    def open_browser(self):
-        if not self.browser:
-            self.browser = MainWindow(self.req, self)
-        # notify user if backup was used
-        backend_dic = self.req.get_all_backends()
-        for backend in backend_dic:
-            if backend.get_name() == "backend_localfile" and \
-                    backend.used_backup():
-                backend.notify_user_about_backup()
-        log.debug("Browser is open")
+        log.debug(f'Received {len(self.uri_list)} Task URIs')
 
-    def hide_browser(self, sender=None):
-        self.browser.hide()
+        for uri in self.uri_list:
+            if uri.startswith('gtg://'):
+                log.debug(f'Opening task {uri[6:]}')
+                self.open_task(uri[6:])
 
-    def iconify_browser(self, sender=None):
-        self.browser.iconify()
+        # if no window was opened, we just quit
+        if not self.browser.is_visible() and not self.open_tasks:
+            self.quit()
 
-    def show_browser(self, sender=None):
-        self.browser.present()
-
-    def is_browser_visible(self, sender=None):
-        return self.browser.is_visible()
-
-    def get_browser(self):
-        # used by the plugin api to hook in the browser
-        return self.browser
-
-    def purge_old_tasks(self, widget=None):
-        log.debug("Deleting old tasks")
-
-        today = Date.today()
-        max_days = self.config.get('autoclean_days')
-        closed_tree = self.req.get_tasks_tree(name='inactive')
-
-        closed_tasks = [self.req.get_task(tid) for tid in
-                        closed_tree.get_all_nodes()]
-
-        to_remove = [t for t in closed_tasks
-                     if (today - t.get_closed_date()).days > max_days]
-
-        [self.req.delete_task(task.get_id())
-         for task in to_remove
-         if self.req.has_task(task.get_id())]
-
-    def get_active_editor(self):
-        """Get focused task editor window."""
-
-        for editor in self.opened_task.values():
-            if editor.window.is_active():
-                return editor
-
-    def autoclean(self, timer):
-        """Run Automatic cleanup of old tasks."""
-
-        if self.config.get('autoclean'):
-            self.purge_old_tasks()
+    # --------------------------------------------------------------------------
+    # ACTIONS
+    # --------------------------------------------------------------------------
 
     def new_task(self, param=None, action=None):
         """Callback to add a new task."""
@@ -263,86 +253,10 @@ class Application(Gtk.Application):
         except AttributeError:
             self.browser.on_dismiss_task()
 
+    def open_help(self, action, param):
+        """Open help callback."""
 
-# Task Editor ############################################################
-    def get_opened_editors(self):
-        """
-        Returns a dict of task_uid -> TaskEditor, one for each opened editor
-        window
-        """
-        return self.opened_task
-
-    def reload_opened_editors(self, task_uid_list=None):
-        """Reloads all the opened editors passed in the list 'task_uid_list'.
-
-        If 'task_uid_list' is not passed or None, we reload all the opened editors.
-        Else, we reload the editors of tasks in 'task_uid_list' only.
-        """
-        opened_editors = self.get_opened_editors()
-        for t in opened_editors:
-            if not task_uid_list or t in task_uid_list:
-                opened_editors[t].reload_editor()
-
-    def open_task(self, uid, thisisnew=False):
-        """Open the task identified by 'uid'.
-
-        If a Task editor is already opened for a given task, we present it.
-        Else, we create a new one.
-        """
-        t = self.req.get_task(uid)
-        tv = None
-        if uid in self.opened_task:
-            tv = self.opened_task[uid]
-            tv.present()
-        elif t:
-            tv = TaskEditor(
-                requester=self.req,
-                app=self,
-                task=t,
-                thisisnew=thisisnew,
-                clipboard=self.clipboard)
-            tv.present()
-            # registering as opened
-            self.opened_task[uid] = tv
-            # save that we opened this task
-            opened_tasks = self.browser_config.get("opened_tasks")
-            if uid not in opened_tasks:
-                opened_tasks.append(uid)
-            self.browser_config.set("opened_tasks", opened_tasks)
-        return tv
-
-    def close_task(self, tid):
-        # When an editor is closed, it should de-register itself.
-        if tid in self.opened_task:
-            # the following line has the side effect of removing the
-            # tid key in the opened_task dictionary.
-            editor = self.opened_task[tid]
-            if editor:
-                del self.opened_task[tid]
-                # we have to remove the tid from opened_task first
-                # else, it close_task would be called once again
-                # by editor.close
-                editor.close()
-            opened_tasks = self.browser_config.get("opened_tasks")
-            if tid in opened_tasks:
-                opened_tasks.remove(tid)
-            self.browser_config.set("opened_tasks", opened_tasks)
-
-# Others dialog ###########################################################
-    def open_about(self, action, param):
-        self.browser.about.show()
-
-    def open_edit_backends(self, sender=None, backend_id=None):
-        self.edit_backends_dialog = BackendsDialog(self.req)
-        self.edit_backends_dialog.dialog.insert_action_group('app', self)
-
-        self.edit_backends_dialog.activate()
-
-        if backend_id:
-            self.edit_backends_dialog.show_config_for_backend(backend_id)
-
-    def configure_backend(self, backend_id):
-        self.open_edit_backends(None, backend_id)
+        openurl(info.HELP_URI)
 
     def open_backends_manager(self, action, param):
         """Callback to open the backends manager dialog."""
@@ -350,98 +264,200 @@ class Application(Gtk.Application):
         self.open_edit_backends()
 
     def open_preferences(self, action, param):
+        """Callback to open the preferences dialog."""
+
         self.preferences.activate()
+
+    def open_about(self, action, param):
+        """Callback to open the about dialog."""
+
+        self.browser.about.show()
 
     def open_plugins_manager(self, action, params):
         """Callback to open the plugins manager dialog."""
 
-        self.plugins.activate()
+        self.plugins_dialog.activate()
 
-    def ask_delete_tasks(self, tids, window):
-        if not self.delete_dialog:
-            self.delete_dialog = DeletionUI(self.req, window)
-        finallist = self.delete_dialog.show(tids)
-        for t in finallist:
-            if t.get_id() in self.opened_task:
-                self.close_task(t.get_id())
+    # --------------------------------------------------------------------------
+    # TASKS AUTOCLEANING
+    # --------------------------------------------------------------------------
+
+    def purge_old_tasks(self, widget=None):
+        """Remove closed tasks older than N days."""
+
+        log.debug("Deleting old tasks")
+
+        today = Date.today()
+        max_days = self.config.get('autoclean_days')
+        closed_tree = self.req.get_tasks_tree(name='inactive')
+
+        closed_tasks = [self.req.get_task(tid) for tid in
+                        closed_tree.get_all_nodes()]
+
+        to_remove = [t for t in closed_tasks
+                     if (today - t.get_closed_date()).days > max_days]
+
+        [self.req.delete_task(task.get_id())
+         for task in to_remove
+         if self.req.has_task(task.get_id())]
+
+    def autoclean(self, timer):
+        """Run Automatic cleanup of old tasks."""
+
+        if self.config.get('autoclean'):
+            self.purge_old_tasks()
+
+    # --------------------------------------------------------------------------
+    # TASK BROWSER API
+    # --------------------------------------------------------------------------
+
+    def open_edit_backends(self, sender=None, backend_id=None):
+        """Open the backends dialog."""
+
+        self.backends_dialog = BackendsDialog(self.req)
+        self.backends_dialog.dialog.insert_action_group('app', self)
+
+        self.backends_dialog.activate()
+
+        if backend_id:
+            self.backends_dialog.show_config_for_backend(backend_id)
+
+
+    def delete_tasks(self, tids, window):
+        """Present the delete task confirmation dialog."""
+
+        if not self.delete_task_dialog:
+            self.delete_task_dialog = DeletionUI(self.req, window)
+
+        tags_to_delete = self.delete_task_dialog.show(tids)
+
+        [self.close_task(task.get_id()) for task in tags_to_delete
+         if task.get_id() in self.open_tasks]
 
     def open_tag_editor(self, tag):
-        if not self.tag_editor_dialog:
-            self.tag_editor_dialog = TagEditor(self.req, self, tag)
+        """Open Tag editor dialog."""
+
+        if not self.edit_tag_dialog:
+            self.edit_tag_dialog = TagEditor(self.req, self, tag)
         else:
-            self.tag_editor_dialog.set_tag(tag)
-        self.tag_editor_dialog.show()
-        self.tag_editor_dialog.present()
+            self.edit_tag_dialog.set_tag(tag)
+
+        self.edit_tag_dialog.present()
 
     def close_tag_editor(self):
-        self.tag_editor_dialog.hide()
+        """Close tag editor dialog."""
 
-    def open_help(self, action, param):
-        """Open help callback."""
+        self.edit_tag_dialog.hide()
 
-        openurl(info.HELP_URI)
+    # --------------------------------------------------------------------------
+    # TASK EDITOR API
+    # --------------------------------------------------------------------------
 
-# URIS #####################################################################
-    def open_uri_list(self):
+    def reload_opened_editors(self, task_uid_list=None):
+        """Reloads all the opened editors passed in the list 'task_uid_list'.
+
+        If 'task_uid_list' is not passed or None, we reload all the opened
+        editors.
         """
-        Open the Editor windows of the tasks associated with the uris given.
-        Uris are of the form gtg://<taskid>
+
+        if task_uid_list:
+            [self.open_tasks[tid].reload_editor() for tid in self.open_tasks
+             if tid in task_uid_list]
+        else:
+            [task.reload_editor() for task in self.open_tasks]
+
+    def open_task(self, uid, new=False):
+        """Open the task identified by 'uid'.
+
+            If a Task editor is already opened for a given task, we present it.
+            Otherwise, we create a new one.
         """
 
-        log.debug(f'Received {len(self.uri_list)} Task URIs')
+        if uid in self.open_tasks:
+            editor = self.open_tasks[uid]
+            editor.present()
 
-        for uri in self.uri_list:
-            if uri.startswith('gtg://'):
-                log.debug(f'Opening task {uri[6:]}')
-                self.open_task(uri[6:])
+        else:
+            task = self.req.get_task(uid)
+            editor = None
 
-        # if no window was opened, we just quit
-        if not self.is_browser_visible() and not self.opened_task:
-            self.quit()
+            if task:
+                editor = TaskEditor(requester=self.req, app=self, task=task,
+                                    thisisnew=new, clipboard=self.clipboard)
 
-# MAIN #####################################################################
-    def do_activate(self):
-        """Callback when launched from the desktop."""
+                editor.present()
+                self.open_tasks[uid] = editor
 
-        # Browser (still hidden)
-        if not self.browser:
-            self.browser = MainWindow(self.req, self)
+                # Save open tasks to config
+                open_tasks = self.config.get("opened_tasks")
 
-        if log.isEnabledFor(logging.DEBUG):
-            self.browser.get_style_context().add_class('devel')
+                if uid not in open_tasks:
+                    open_tasks.append(uid)
 
-        self._set_actions()
-        self.__init_plugin_engine()
-        self.show_browser()
-        self.open_uri_list()
+                self.config.set("opened_tasks", open_tasks)
 
-        log.debug("Application activation finished")
+            else:
+                log.error(f'Task {uid} could not be found!')
 
-    def _save_tasks(self):
+        return editor
+
+    def get_active_editor(self):
+        """Get focused task editor window."""
+
+        for editor in self.open_tasks.values():
+            if editor.window.is_active():
+                return editor
+
+    def close_task(self, tid):
+        """Close a task editor window."""
+
+        if tid in self.open_tasks:
+            editor = self.open_tasks[tid]
+
+            # We have to remove the tid first, otherwise
+            # close_task would be called once again
+            # by editor.close
+            del self.open_tasks[tid]
+
+            editor.close()
+
+        open_tasks = self.config.get("opened_tasks")
+
+        if tid in open_tasks:
+            open_tasks.remove(tid)
+
+        self.config.set("opened_tasks", open_tasks)
+
+    # --------------------------------------------------------------------------
+    # SHUTDOWN
+    # --------------------------------------------------------------------------
+
+    def save_tasks(self):
         """Save opened tasks and their positions."""
 
         open_task = []
 
-        for otid in list(self.opened_task.keys()):
+        for otid in list(self.open_tasks.keys()):
             open_task.append(otid)
-            self.opened_task[otid].close()
+            self.open_tasks[otid].close()
 
-        self.browser_config.set("opened_tasks", open_task)
+        self.config.set("opened_tasks", open_task)
 
-    def _save_plugin_settings(self):
+    def save_plugin_settings(self):
         """Save plugin settings to configuration."""
 
-        if self.pengine.plugins:
-            self.plugins_config.set(
-                "disabled",
-                [p.module_name for p in self.pengine.get_plugins("disabled")],
-            )
-            self.plugins_config.set(
-                "enabled",
-                [p.module_name for p in self.pengine.get_plugins("enabled")],
-            )
+        if self.plugin_engine.plugins:
+            self.config_plugins.set(
+                'disabled',
+                [p.module_name
+                 for p in self.plugin_engine.get_plugins('disabled')])
 
-        self.pengine.deactivate_plugins()
+            self.config_plugins.set(
+                'enabled',
+                [p.module_name
+                 for p in self.plugin_engine.get_plugins('enabled')])
+
+        self.plugin_engine.deactivate_plugins()
 
     def quit(self):
         """Quit the application."""
@@ -450,13 +466,13 @@ class Application(Gtk.Application):
         # with editor windows open, because of the "win"
         # group of actions.
 
-        self._save_tasks()
+        self.save_tasks()
         Gtk.Application.quit(self)
 
     def do_shutdown(self):
         """Callback when GTG is closed."""
 
-        self._save_plugin_settings()
+        self.save_plugin_settings()
 
         # Save data and shutdown datastore backends
         self.req.save_datastore(quit=True)

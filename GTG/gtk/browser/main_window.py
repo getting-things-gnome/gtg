@@ -958,7 +958,7 @@ class MainWindow(Gtk.ApplicationWindow):
             tids_todelete = [tid]
 
         log.debug(f"going to delete {tids_todelete}")
-        self.app.ask_delete_tasks(tids_todelete, self)
+        self.app.delete_tasks(tids_todelete, self)
 
     def update_start_date(self, widget, new_start_date):
         tasks = [self.req.get_task(uid)
