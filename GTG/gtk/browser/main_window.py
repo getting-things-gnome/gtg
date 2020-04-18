@@ -924,7 +924,7 @@ class MainWindow(Gtk.ApplicationWindow):
         tags = [tag for tag in self.get_selected_tags() if tag.startswith('@')]
         task = self.req.new_task(tags=tags, newtask=True)
         uid = task.get_id()
-        self.app.open_task(uid, thisisnew=True)
+        self.app.open_task(uid, new=True)
 
     def on_add_subtask(self, widget=None):
         uid = self.get_selected_task()
@@ -934,7 +934,7 @@ class MainWindow(Gtk.ApplicationWindow):
             task = self.req.new_task(tags=tags, newtask=True)
             # task.add_parent(uid)
             zetask.add_child(task.get_id())
-            self.app.open_task(task.get_id(), thisisnew=True)
+            self.app.open_task(task.get_id(), new=True)
 
     def on_edit_active_task(self, widget=None, row=None, col=None):
         tid = self.get_selected_task()

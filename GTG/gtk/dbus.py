@@ -251,7 +251,7 @@ class DBusTaskWrapper(dbus.service.Object):
         if description != "":
             new_task.set_text(description)
         task_id = new_task.get_id()
-        self.view_manager.open_task(task_id, thisisnew=True)
+        self.view_manager.open_task(task_id, new=True)
 
     @dbus.service.method(BUSNAME)
     def HideTaskBrowser(self):

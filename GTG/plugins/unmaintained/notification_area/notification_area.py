@@ -332,7 +332,7 @@ class NotificationArea():
         else:
             new_task = False
 
-        self.__view_manager.open_task(task_id, thisisnew=new_task)
+        self.__view_manager.open_task(task_id, new=new_task)
 
     def __connect_to_tree(self, signal_cllbck):
         """ Return a new view tree """
