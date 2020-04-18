@@ -186,6 +186,11 @@ class Application(Gtk.Application):
             ('open_help', self.open_help, ('app.open_help', ['F1'])),
             ('open_preferences', self.open_preferences,
                 ('app.open_preferences', ['<ctrl>comma'])),
+            ('editor.close', self.close_focused_task,
+             ('app.editor.close', ['Escape', '<ctrl>w'])),
+            ('editor.show_parent', self.open_parent_task, None),
+            ('editor.delete', self.delete_editor_task, None),
+            ('editor.open_tags_popup', self.open_tags_popup_in_editor, None),
         ]
 
         for action, callback, accel in action_entries:
@@ -277,6 +282,36 @@ class Application(Gtk.Application):
         """Callback to open the plugins manager dialog."""
 
         self.plugins_dialog.activate()
+
+    def close_focused_task(self, action, params):
+        """Callback to close currently focused task editor."""
+
+        if self.open_tasks:
+            tid = self.get_active_editor().task.get_id()
+            self.close_task(tid)
+
+    def delete_editor_task(self, action, params):
+        """Callback to delete the task currently open."""
+
+        editor = self.get_active_editor()
+        task = editor.task
+
+        if task.is_new():
+            self.close_task(task.get_id(), editor.window)
+        else:
+            self.delete_tasks([task.get_id()], editor.window)
+
+    def open_tags_popup_in_editor(self, action, params):
+        """Callback to open the tags popup in the focused task editor."""
+
+        editor = self.get_active_editor()
+        editor.open_tags_popover()
+
+    def open_parent_task(self, action, params):
+        """Callback to open the parent of the currently open task."""
+
+        editor = self.get_active_editor()
+        editor.open_parent()
 
     # --------------------------------------------------------------------------
     # TASKS AUTOCLEANING
@@ -421,12 +456,15 @@ class Application(Gtk.Application):
 
             editor.close()
 
-        open_tasks = self.config.get("opened_tasks")
+            open_tasks = self.config.get("opened_tasks")
 
-        if tid in open_tasks:
-            open_tasks.remove(tid)
+            if tid in open_tasks:
+                open_tasks.remove(tid)
 
-        self.config.set("opened_tasks", open_tasks)
+            self.config.set("opened_tasks", open_tasks)
+
+        else:
+            log.warn(f'Tried to close tid {tid} but it is not open')
 
     # --------------------------------------------------------------------------
     # SHUTDOWN
