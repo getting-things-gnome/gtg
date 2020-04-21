@@ -26,7 +26,7 @@ import time
 import datetime
 import os
 
-from gi.repository import Gdk, Gtk, Pango, Gio
+from gi.repository import Gdk, Gtk, Pango
 from gi.repository.GObject import signal_handler_block
 
 from GTG.core.dirs import UI_DIR
