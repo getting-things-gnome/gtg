@@ -34,7 +34,9 @@ then
     cp -r data/test-data/$dataset tmp/
 fi
 
-echo "Setting XDG vars to use $dataset dataset."
+echo "Running the development/debug version - using separate user directories"
+echo "Your data is in the 'tmp' subdirectory with the '$dataset' dataset."
+echo "-----------------------------------------------------------------------"
 export XDG_DATA_HOME="./tmp/$dataset/xdg/data"
 export XDG_CACHE_HOME="./tmp/$dataset/xdg/cache"
 export XDG_CONFIG_HOME="./tmp/$dataset/xdg/config"
