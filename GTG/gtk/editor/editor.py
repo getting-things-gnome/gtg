@@ -132,6 +132,11 @@ class TaskEditor():
         self.window = self.builder.get_object("TaskEditor")
         self.window.set_application(app)
 
+        if task.has_parent():
+            self.parent_button.set_label(_('Open Parent'))
+        else:
+            self.parent_button.set_label(_('Add Parent'))
+
         # Connect signals for the calendar
         self.start_handle = self.start_calendar.connect('day-selected',
                                                         lambda c: self.on_date_selected(c, GTGCalendar.DATE_KIND_START))
@@ -368,8 +373,10 @@ class TaskEditor():
             self.undismissbutton.hide()
 
         # Refreshing the the parent button
-        has_parents = len(self.task.get_parents()) > 0
-        self.parent_button.set_sensitive(has_parents)
+        if self.task.has_parent():
+            self.parent_button.set_label(_('Open Parent'))
+        else:
+            self.parent_button.set_label(_('Add Parent'))
 
         # Refreshing the status bar labels and date boxes
         if status in [Task.STA_DISMISSED, Task.STA_DONE]:
@@ -638,6 +645,7 @@ class TaskEditor():
             parent_id = parent.get_id()
 
             self.task.set_parent(parent_id)
+            self.parent_button.set_label(_('Open Parent'))
             self.app.open_task(parent_id)
 
         elif len(parents) == 1:

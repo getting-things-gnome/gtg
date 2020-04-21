@@ -166,6 +166,21 @@
                 <property name="margin_bottom">5</property>
                 <property name="spacing">5</property>
                 <child>
+                  <object class="GtkButton" id="parent">
+                    <property name="label" translatable="yes">Open Parent</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="receives_default">False</property>
+                    <property name="tooltip_text">Open the parent task (creating a parent if it doesn't have one)</property>
+                    <property name="action_name">app.editor.show_parent</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
                   <object class="GtkBox" id="task_options">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
@@ -212,28 +227,6 @@
                         <property name="expand">False</property>
                         <property name="fill">True</property>
                         <property name="position">1</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkButton" id="parent">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="receives_default">False</property>
-                        <property name="tooltip_text">Open the parent task (creating a parent if it doesn't have one)</property>
-                        <property name="action_name">app.editor.show_parent</property>
-                        <child>
-                          <object class="GtkImage" id="parent_image">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="icon_name">go-up-symbolic</property>
-                            <property name="icon_size">2</property>
-                          </object>
-                        </child>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">2</property>
                       </packing>
                     </child>
                     <style>
