@@ -271,7 +271,7 @@ class Application(Gtk.Application):
     def open_preferences(self, action, param):
         """Callback to open the preferences dialog."""
 
-        self.preferences.activate()
+        self.preferences_dialog.activate()
 
     def open_about(self, action, param):
         """Callback to open the about dialog."""
