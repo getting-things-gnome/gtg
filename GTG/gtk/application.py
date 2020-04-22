@@ -286,9 +286,10 @@ class Application(Gtk.Application):
     def close_focused_task(self, action, params):
         """Callback to close currently focused task editor."""
 
-        if self.open_tasks:
-            tid = self.get_active_editor().task.get_id()
-            self.close_task(tid)
+        editor = self.get_active_editor()
+
+        if editor:
+            self.close_task(editor.task.get_id())
 
     def delete_editor_task(self, action, params):
         """Callback to delete the task currently open."""
@@ -446,14 +447,8 @@ class Application(Gtk.Application):
     def close_task(self, tid):
         """Close a task editor window."""
 
-        if tid in self.open_tasks:
+        try:
             editor = self.open_tasks[tid]
-
-            # We have to remove the tid first, otherwise
-            # close_task would be called once again
-            # by editor.close
-            del self.open_tasks[tid]
-
             editor.close()
 
             open_tasks = self.config.get("opened_tasks")
@@ -463,8 +458,8 @@ class Application(Gtk.Application):
 
             self.config.set("opened_tasks", open_tasks)
 
-        else:
-            log.warn(f'Tried to close tid {tid} but it is not open')
+        except KeyError:
+            log.debug(f'Tried to close tid {tid} but it is not open')
 
     # --------------------------------------------------------------------------
     # SHUTDOWN

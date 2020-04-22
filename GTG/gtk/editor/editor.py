@@ -718,24 +718,25 @@ class TaskEditor():
             self.window.destroy()
             self.window = None
 
-    # The destroy signal is linked to the "close" button. So if we call
-    # destroy in the close function, this will cause the close to be called
-    # twice
-    # To solve that, close will just call "destroy" and the destroy signal
-    # Will be linked to this destruction method that will save the task
-    def destruction(self, a=None):
+    def destruction(self, _=None):
+        """Callback when destroying the window."""
+
         # Save should be also called when buffer is modified
         self.pengine.onTaskClose(self.plugin_api)
         self.pengine.remove_api(self.plugin_api)
+
         tid = self.task.get_id()
+
         if self.task.is_new():
             self.req.delete_task(tid)
         else:
             self.save()
-            for i in self.task.get_subtasks():
-                if i:
-                    i.set_to_keep()
-        self.app.close_task(tid)
+            [sub.set_to_keep() for sub in self.task.get_subtasks() if sub]
+
+        try:
+            del self.app.open_tasks[tid]
+        except KeyError:
+            log.debug(f'Task {tid} was already removed from the open list')
 
     def get_builder(self):
         return self.builder
