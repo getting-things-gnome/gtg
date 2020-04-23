@@ -98,7 +98,7 @@ If your branch is solving specific reported issue, please include the number of 
 in the commit message or the pull request description. This will enable others to 
 quickly navigate to the issue being solved.
 
-For more detailed information, see the `HACKING`_ guide included in the GTG code.
+For more detailed information, see the `coding guide`_ included in the GTG code.
 
-.. _`HACKING`: https://github.com/getting-things-gnome/gtg/blob/master/HACKING
+.. _`coding guide`: https://github.com/getting-things-gnome/gtg/blob/master/docs/contributors/coding_guide.rst
 
