@@ -90,7 +90,7 @@ When installed system-wide, you can then view the user manual either by accessin
 
 If you want to read the documentation directly from the source code, run this command (from the source root directory):
 
-    yelp docs/userdoc/C/index.page
+    yelp docs/user_manual/C/index.page
 
 # Interacting with GTG from the command line
 
