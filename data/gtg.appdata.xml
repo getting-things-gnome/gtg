@@ -1,23 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<application>
-<id type="desktop">gtg.desktop</id>
-<licence>CC0</licence>
-<description>
-<p>
-Getting Things Gnome is a personal tasks and ToDo list organizer for inspired by
-the Getting Things Done (GTD) methodology.
-</p>
-<p>
-GTG is intended to help you track everything you need to do and need to know,
-from small tasks to large projects.
-</p>
-</description>
-<url type="homepage">http://gtgnome.net/</url>
-<screenshots>
-<screenshot type="default">http://gtgnome.net/wp-content/uploads/2013/01/gtg-0.3-browser-1024x640.png</screenshot>
-<screenshot>http://gtgnome.net/wp-content/uploads/2013/01/gtg-0.3-browser-tasks-bgcolor-desc-1024x640.png</screenshot>
-<screenshot>http://gtgnome.net/wp-content/uploads/2013/01/gtg-0.3-tag-editor.png</screenshot>
-<screenshot>http://gtgnome.net/wp-content/uploads/2013/01/gtg-0.3-user-help-1024x640.png</screenshot>
-</screenshots>
-<updatecontact>gtg@lists.launchpad.net</updatecontact>
-</application>
+<component type="desktop">
+    <id>org.gnome.GTG</id>
+    <launchable type="desktop-id">org.gnome.GTG.desktop</launchable>
+
+    <metadata_license>CC-BY-3.0</metadata_license>
+    <project_license>GPL-3.0</project_license>
+    <description>
+        <p>"Getting Things GNOME" (GTG) is a personal tasks and ToDo list organizer inspired by the "Getting Things Done" (GTD) methodology.</p>
+        <p>GTG is intended to help you track everything you need to do and need to know, from small tasks to large projects. GTG's user interface is designed to accommodate many workflows, with features such as:</p>
+        <ul>
+          <li>a very flexible tagging and searching system;</li>
+          <li>natural language parsing and a free-form task text editor;</li>
+          <li>projects/task dependencies (infinite sub-tasks), start dates and due dates;</li>
+          <li>an "Actionable" tasks view mode to help you stay focused during your work;</li>
+          <li>the ability to effortlessly defer tasks to common upcoming days, or to a custom date.</li>
+        </ul>
+    </description>
+
+    <url type="homepage">https://wiki.gnome.org/Apps/GTG</url>
+    <url type="bugtracker">https://github.com/getting-things-gnome/gtg/issues</url>
+    <url type="translate">https://wiki.gnome.org/TranslationProject#How_can_I_help.3F</url>
+
+    <screenshots>
+        <screenshot type="default">http://gtgnome.net/wp-content/uploads/2013/01/gtg-0.3-browser-1024x640.png</screenshot>
+        <screenshot>http://gtgnome.net/wp-content/uploads/2013/01/gtg-0.3-browser-tasks-bgcolor-desc-1024x640.png</screenshot>
+        <screenshot>http://gtgnome.net/wp-content/uploads/2013/01/gtg-0.3-tag-editor.png</screenshot>
+        <screenshot>http://gtgnome.net/wp-content/uploads/2013/01/gtg-0.3-user-help-1024x640.png</screenshot>
+    </screenshots>
+
+    <kudos>
+        <kudo>UserDocs</kudo>
+        <kudo>ModernToolkit</kudo>
+    </kudos>
+
+    <project_group>GNOME</project_group>
+    <developer_name>The GTG team</developer_name>
+    <updatecontact>nekohayo+gtg@gmail.com</updatecontact>
+</component>
