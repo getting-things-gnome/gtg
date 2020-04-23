@@ -18,11 +18,11 @@ ALLSPHINXOPTS   = -d $(BUILDDIR)/doctrees $(PAPEROPT_$(PAPER)) $(SPHINXOPTS) sou
 # the i18n builder cannot share the environment and doctrees with the others
 I18NSPHINXOPTS  = $(PAPEROPT_$(PAPER)) $(SPHINXOPTS) source
 
-.PHONY: help clean userhtml html singlehtml latex latexpdf man linkcheck
+.PHONY: help clean user_manual_html html singlehtml latex latexpdf man linkcheck
 
 help:
 	@echo "Please use \`make <target>' where <target> is one of"
-	@echo "  userhtml   to make HTML files from user level documentation"
+	@echo "  user_manual_html   to make HTML files from user level documentation"
 	@echo "  html       to make standalone HTML files"
 	@echo "  singlehtml to make a single large HTML file"
 	@echo "  latex      to make LaTeX files, you can set PAPER=a4 or PAPER=letter"
@@ -34,11 +34,11 @@ clean:
 	rm -rf $(BUILDDIR)/*
 	rm -f *.1
 
-userhtml:
-	mkdir -p $(BUILDDIR)/userhtml
-	yelp-build html -o $(BUILDDIR)/userhtml userdoc/C/*.page
+user_manual_html:
+	mkdir -p $(BUILDDIR)/user_manual_html
+	yelp-build html -o $(BUILDDIR)/user_manual_html user_manual/C/*.page
 	@echo
-	@echo "Build finished. User HTML pages are in $(BUILDDIR)/userhtml."
+	@echo "Build finished. User HTML pages are in $(BUILDDIR)/user_manual_html."
 
 
 html:

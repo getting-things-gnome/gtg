@@ -133,7 +133,7 @@ def find_user_help():
     """ Find all files for user help """
     help_files = []
 
-    for folder, __, files in os.walk('docs/userdoc'):
+    for folder, __, files in os.walk('docs/user_manual'):
         folders = folder.split(os.path.sep)[2:]
         if not folders:
             continue

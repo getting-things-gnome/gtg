@@ -13,7 +13,7 @@ from small tasks to large projects.
 Contents
 ========
 
-* `User level documentation: <http://www.gtgnome.net/html/userdoc/index.html>`_
+* `User level documentation: <http://www.gtgnome.net/html/user_manual/>`_
 * `Documentation for developers: <https://github.com/getting-things-gnome/gtg/tree/master/docs/contributors/>`_
 
 Man pages

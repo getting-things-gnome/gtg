@@ -21,7 +21,7 @@
     * Fix for bug #316922 : Have a link to the parent(s) in the task editor, by Parth Panchal
     * Fix for bug #1287259 : pep8ify the codebase, by Izidor Matušov
     * Rework of test-suite, by Izidor Matušov
-    * Fix for bug #1027604: Deeper integeration of userdoc, by Sara Ribeiro
+    * Fix for bug #1027604: Deeper user manual integration, by Sara Ribeiro
     * Fix for bug #1288560 : Parsing error when creating a task (via quick add entry) that contains a tag with "&" in it, by Sara Ribeiro
     * Fix for Python3 compatibility and unable to close on Clicking on close button, by Fabiano Fidencio
     * Fix for bug ##1042419 : Gtg-0.2.9.tar.gz file has 'gtg' and 'GTG', by Izidor Matušov

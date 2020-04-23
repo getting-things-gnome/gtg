@@ -14,6 +14,7 @@ MANIFEST
 gtg.prof
 __pycache__
 .*.sw*
+docs/user_manual_html/
 
 # src/ usually has development version of liblarch
 src/
