@@ -13,15 +13,8 @@ from small tasks to large projects.
 Contents
 ========
 
-* `User level documentation <http://www.gtgnome.net/html/userdoc/index.html>`_
-
-
-Documentation for developers:
-
-.. toctree::
-   :maxdepth: 1
-
-   contributing
+* `User level documentation: <http://www.gtgnome.net/html/userdoc/index.html>`_
+* `Documentation for developers: <https://github.com/getting-things-gnome/gtg/tree/master/docs/contributors/>`_
 
 Man pages
 =========

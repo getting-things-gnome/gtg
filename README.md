@@ -108,7 +108,6 @@ If you want to know more about how to use these tools, please refer to the tools
 
 * Our wiki serves as our website: https://wiki.gnome.org/Apps/GTG
 * Check out the docs/ folder in the main repository at: https://github.com/getting-things-gnome/gtg/docs/
-* Other developer documentation: http://gtg.readthedocs.org
 
 ## Test suite status
 
