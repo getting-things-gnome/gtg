@@ -1,7 +1,6 @@
 gtg_core_sources = [
   '__init__.py',
   'borg.py',
-  'cleanxml.py',
   'clipboard.py',
   'config.py',
   'datastore.py',
@@ -17,7 +16,7 @@ gtg_core_sources = [
   'search.py',
   'tag.py',
   'task.py',
-  'taskxml.py',
+  'xml.py',
   'timer.py',
   'treefactory.py',
   'twokeydict.py',
