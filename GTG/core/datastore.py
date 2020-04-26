@@ -33,9 +33,12 @@ from GTG.core.search import parse_search_query, search_filter, InvalidQuery
 from GTG.core.tag import Tag, SEARCH_TAG
 from GTG.core.task import Task
 from GTG.core.treefactory import TreeFactory
-from GTG.core import cleanxml
+from GTG.core import xml
 from GTG.core.borg import Borg
 from GTG.core.logger import log, log_debug_enabled
+
+from lxml import etree
+
 
 TAG_XMLROOT = "tagstore"
 
@@ -219,21 +222,20 @@ class DataStore():
         """
         Loads the tag tree from a xml file
         """
-        doc, xmlstore = cleanxml.openxmlfile(TAGS_XMLFILE, TAG_XMLROOT)
-        for t in xmlstore.childNodes:
-            tagname = t.getAttribute("name")
-            parent = t.getAttribute("parent")
+        xmlstore = xml.open_file(TAGS_XMLFILE, TAG_XMLROOT)
+
+        for t in xmlstore.getroot():
+            tagname = t.get('name')
+            parent = t.get('parent')
 
             tag_attr = {}
-            attr = t.attributes
-            for i in range(attr.length):
-                at_name = attr.item(i).name
-                if at_name not in ["name", "parent"]:
-                    at_val = t.getAttribute(at_name)
-                    tag_attr[at_name] = at_val
+
+            for key, value in t.attrib.items():
+                if key not in ('name', 'parent'):
+                    tag_attr[key] = value
 
             if parent == SEARCH_TAG:
-                query = t.getAttribute("query")
+                query = t.attrib.get('query')
                 tag = self.new_search_tag(tagname, query, tag_attr)
             else:
                 tag = self.new_tag(tagname, tag_attr)
@@ -247,7 +249,7 @@ class DataStore():
         if not self.tagfile_loaded:
             return
 
-        doc, xmlroot = cleanxml.emptydoc(TAG_XMLROOT)
+        xmlroot = etree.Element(TAG_XMLROOT)
         tags = self._tagstore.get_main_view().get_all_nodes()
         already_saved = []
 
@@ -260,21 +262,24 @@ class DataStore():
             if "special" in attributes or len(attributes) == 0:
                 continue
 
-            t_xml = doc.createElement("tag")
-            t_xml.setAttribute("name", tagname)
+            t_xml = etree.SubElement(xmlroot, 'tag')
+            t_xml.set('name', tagname)
+
             for attr in attributes:
                 # skip labels for search tags
                 if tag.is_search_tag() and attr == 'label':
                     continue
 
                 value = tag.get_attribute(attr)
-                if value:
-                    t_xml.setAttribute(attr, value)
 
-            xmlroot.appendChild(t_xml)
+                if value:
+                    t_xml.set(attr, value)
+
+            xmlroot.append(t_xml)
             already_saved.append(tagname)
 
-        cleanxml.savexml(TAGS_XMLFILE, doc, backup=True)
+        xml.save_file(TAGS_XMLFILE, etree.ElementTree(xmlroot))
+        xml.write_backups(TAGS_XMLFILE)
 
     # Tasks functions #########################################################
     def get_all_tasks(self):
@@ -562,40 +567,52 @@ class DataStore():
 
         @param quit: If quit is true, backends are shut down
         """
+
         try:
             self.start_get_tasks_thread.join()
         except Exception:
             pass
-        doc, xmlconfig = cleanxml.emptydoc("config")
+
+        doc = etree.Element('config')
+
         # we ask all the backends to quit first.
         if quit:
             # we quit backends in parallel
             threads_dic = {}
+
             for b in self.get_all_backends():
                 thread = threading.Thread(target=b.quit)
                 threads_dic[b.get_id()] = thread
                 thread.start()
+
             for backend_id, thread in threads_dic.items():
                 # after 20 seconds, we give up
                 thread.join(20)
                 if thread.isAlive():
                     log.error("The %s backend stalled while quitting",
                               backend_id)
+
         # we save the parameters
         for b in self.get_all_backends(disabled=True):
-            t_xml = doc.createElement("backend")
+            t_xml = etree.SubElement(doc, 'backend')
+
             for key, value in b.get_parameters().items():
                 if key in ["backend", "xmlobject"]:
                     # We don't want parameters, backend, xmlobject:
                     # we'll create them at next startup
                     continue
+
                 param_type = b.get_parameter_type(key)
                 value = b.cast_param_type_to_string(param_type, value)
-                t_xml.setAttribute(str(key), value)
+                t_xml.set(str(key), value)
+
             # Saving all the projects at close
-            xmlconfig.appendChild(t_xml)
-        cleanxml.savexml(PROJECTS_XMLFILE, doc, backup=True)
-        # Saving the tagstore
+            doc.append(t_xml)
+
+        xml.save_file(PROJECTS_XMLFILE, etree.ElementTree(doc))
+        xml.write_backups(PROJECTS_XMLFILE)
+
+        #  Saving the tagstore
         self.save_tagtree()
 
     def request_task_deletion(self, tid):

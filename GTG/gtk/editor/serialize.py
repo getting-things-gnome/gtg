@@ -17,7 +17,8 @@
 # -----------------------------------------------------------------------------
 
 import xml.dom.minidom
-
+import re
+import xml.sax.saxutils as saxutils
 
 # The following functions are used by the Gtk.TextBuffer to serialize
 # the content of the task
@@ -230,7 +231,7 @@ class Unserializer():
                         s = buf.get_iter_at_mark(start)
                         e = buf.get_iter_at_mark(end)
                         if n.nodeName == "link":
-                            anchor = n.getAttribute("target")
+                            anchor = n.get("target")
                             tag = self.tv.create_anchor_tag(buf, anchor, None)
                             buf.apply_tag(tag, s, e)
                         else:

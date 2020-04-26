@@ -29,9 +29,8 @@ import os.path
 from GTG.core.logger import log
 from GTG.core.borg import Borg
 from GTG.backends.generic_backend import GenericBackend
-from GTG.core import firstrun_tasks
 from GTG.core.dirs import PROJECTS_XMLFILE
-from GTG.core import cleanxml
+from GTG.core import xml
 
 
 class BackendFactory(Borg):
@@ -146,14 +145,14 @@ class BackendFactory(Borg):
         xp = dic.pop("xmlobject")
         # Building the dictionary
         parameters_specs = module.Backend.get_static_parameters()
-        dic["pid"] = str(xp.getAttribute("pid"))
+        dic["pid"] = str(xp.get("pid"))
         for param_name, param_dic in parameters_specs.items():
-            if xp.hasAttribute(param_name):
+            if xp.get(param_name):
                 # we need to convert the parameter to the right format.
                 # we fetch the format from the static_parameters
                 param_type = param_dic[GenericBackend.PARAM_TYPE]
                 param_value = GenericBackend.cast_param_type_from_string(
-                    xp.getAttribute(param_name), param_type)
+                    xp.get(param_name), param_type)
                 dic[param_name] = param_value
         # We put the backend itself in the dict
         dic["backend"] = module.Backend(dic)
@@ -168,7 +167,7 @@ class BackendFactory(Borg):
                 dic["module"] = "backend_localfile"
                 dic["pid"] = str(uuid.uuid4())
                 dic["need_conversion"] = \
-                    dic["xmlobject"].getAttribute("filename")
+                    dic["xmlobject"].get("filename")
 
         # Now that the backend list is build, we will construct them
         for dic in backends_dic:
@@ -178,7 +177,7 @@ class BackendFactory(Borg):
         if len(backends_dic) == 0:
             dic = BackendFactory().get_new_backend_dict(
                 "backend_localfile")
-            dic["backend"].this_is_the_first_run(firstrun_tasks.populate())
+            dic["backend"].this_is_the_first_run(None)
             backends_dic.append(dic)
         return backends_dic
 
@@ -191,8 +190,10 @@ class BackendFactory(Borg):
          - the name of the backend under "module"
         """
         # Read configuration file, if it does not exist, create one
-        doc, configxml = cleanxml.openxmlfile(PROJECTS_XMLFILE, "config")
-        xmlproject = doc.getElementsByTagName("backend")
+        doc = xml.open_file(PROJECTS_XMLFILE, "config")
+        xmlproject = doc.xpath('//backend')
+
         # collect configured backends
-        return [{"xmlobject": xp,
-                 "module": xp.getAttribute("module")} for xp in xmlproject]
+        return [{'xmlobject': xp,
+                 'module': xp.attrib['module']}
+                for xp in xmlproject]

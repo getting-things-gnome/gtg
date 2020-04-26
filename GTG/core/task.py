@@ -489,7 +489,20 @@ class Task(TreeNode):
             if strip_tags:
                 for tag in self.get_tags_name():
                     txt = self._strip_tag(txt, tag)
-            element = xml.dom.minidom.parseString(txt)
+
+            # Prevent issues with & in content
+            regex = re.compile(r"&(?!amp;|lt;|gt;)")
+            escaped_txt = regex.sub("&amp;", txt)
+
+            # Remove content
+            escaped_txt = escaped_txt.replace('</content>', '')
+            escaped_txt = escaped_txt.replace('<content>', '')
+
+            # Escape
+            escaped_txt = saxutils.escape(escaped_txt)
+            escaped_txt = f'<content>{escaped_txt}</content>'
+
+            element = xml.dom.minidom.parseString(escaped_txt)
             txt = self.__strip_content(element, strip_subtasks=strip_subtasks)
             txt = txt.strip()
             # We keep the desired number of lines
