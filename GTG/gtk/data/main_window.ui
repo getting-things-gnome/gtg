@@ -4,25 +4,11 @@
   <requires lib="gtk+" version="3.20"/>
   <object class="GtkAboutDialog" id="about_dialog">
     <property name="can_focus">False</property>
-    <property name="border_width">5</property>
-    <property name="title" translatable="yes">About GTG!</property>
-    <property name="resizable">False</property>
+    <property name="border_width">6</property>
     <property name="window_position">center-on-parent</property>
     <property name="type_hint">dialog</property>
-    <property name="program_name">Getting Things GNOME!</property>
     <property name="copyright" translatable="yes">Copyright © 2008-2013 Lionel Dricot, Bertrand Rousseau</property>
-    <property name="comments" translatable="yes">GTG is a personal tasks and TODO-list items
-    organizer for the GNOME desktop environment.</property>
-    <property name="website_label" translatable="yes">GTG website</property>
-    <property name="license" translatable="yes">Getting Things GNOME! is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 3 of the License, or (at your option) any later version.
-
-    Getting Things GNOME! is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License along with Getting Things GNOME!; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.</property>
-    <property name="authors">Lionel Dricot (ploum@ploum.net),
-    Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
     <property name="logo_icon_name">gtg</property>
-    <property name="wrap_license">True</property>
     <signal name="delete-event" handler="on_about_delete" swapped="no"/>
     <signal name="response" handler="on_about_close" swapped="no"/>
     <child type="titlebar">

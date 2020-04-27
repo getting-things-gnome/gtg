@@ -29,6 +29,7 @@ from GTG.core.dirs import ICONS_DIR
 from GTG.core.search import parse_search_query, InvalidQuery
 from GTG.core.tag import SEARCH_TAG
 from GTG.core.task import Task
+from GTG.core.translations import _
 from GTG.gtk.browser import GnomeConfig
 from GTG.gtk.browser.backend_infobar import BackendInfoBar
 from GTG.gtk.browser.modify_tags import ModifyTagsDialog
@@ -293,9 +294,13 @@ class MainWindow(Gtk.ApplicationWindow):
         """
         Show the about dialog
         """
+        self.about.set_program_name(info.NAME)
         self.about.set_website(info.URL)
-        self.about.set_website_label(info.URL)
+        self.about.set_website_label(_("GTG website"))
         self.about.set_version(info.VERSION)
+        self.about.set_comments(info.SHORT_DESCRIPTION)
+        self.about.set_license_type(Gtk.License.GPL_3_0)
+
         self.about.set_authors(info.AUTHORS)
         self.about.set_artists(info.ARTISTS)
         self.about.set_documenters(info.DOCUMENTERS)

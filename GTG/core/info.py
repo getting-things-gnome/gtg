@@ -16,22 +16,24 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-"""Various information about GTG. Should be updated for every release.
 
-Contains the information displayed in GTG's Credits."""
+"""
+Contains the info shown in GTG's About/Credits dialog.
+
+Should be updated for every release.
+"""
 
 from GTG.core.translations import _
 
+# These variables get used by main_window.py to set the About dialog's metadata.
 NAME = "Getting Things GNOME!"
-URL = "https://github.com/getting-things-gnome/gtg/"
-HELP_URI = "help:gtg"
+SHORT_DESCRIPTION = _("""A personal productivity tool for GNOME,
+inspired by the GTD methodology.""") # A manual line break looks better in the About dialog.
+URL = "https://wiki.gnome.org/Apps/GTG"
 TRANSLATE_URL = "https://github.com/getting-things-gnome/gtg/"
 REPORT_BUG_URL = "https://github.com/getting-things-gnome/gtg/issues/new"
 EMAIL = "gtg-contributors@lists.launchpad.net"
 VERSION = '0.4.0'
-
-SHORT_DESCRIPTION = \
-    _('GTG is a personal tasks and TODO-list items organizer for the GNOME.')
 
 # CREDITS
 AUTHORS = ["Main developers:",
