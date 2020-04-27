@@ -100,8 +100,11 @@ class MainWindow(Gtk.ApplicationWindow):
         self.builder.add_from_file(GnomeConfig.BROWSER_UI_FILE)
         self.builder.add_from_file(GnomeConfig.HELP_OVERLAY_UI_FILE)
 
-        # Define aliases for specific widgets
+        # Define aliases for specific widgets to reuse them easily in the code
         self._init_widget_aliases()
+
+        self.set_titlebar(self.headerbar)
+        self.add(self.main_box)
 
         # Setup help overlay (shortcuts window)
         self.set_help_overlay(self.help_overlay)
@@ -228,9 +231,6 @@ class MainWindow(Gtk.ApplicationWindow):
         self.help_overlay = self.builder.get_object("shortcuts")
 
         self.tagpopup = TagContextMenu(self.req, self.app)
-
-        self.set_titlebar(self.headerbar)
-        self.add(self.main_box)
 
 
     def _init_ui_widget(self):
