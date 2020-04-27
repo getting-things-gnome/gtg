@@ -7,6 +7,8 @@ Due to limited resources (time and people/energy), and because GTG is already a 
 
 If it's not targetted to a milestone, and it has the "patch-or-wont-happen" label, don't "expect" it to happen in any particular timeframe, unless someone steps forward to contribute the code for that feature.
 
+For a better understanding of why we are taking this approach, you may read be interested in [this blog post](https://fortintam.com/blog/reducing-our-core-apps-software-inventory/). Our ability to focus and to deliver releases without ending up in [development hell](https://en.wikipedia.org/wiki/Development_hell) is strongly tied to being realistic and _not_ promising to do "everything" ourselves. That means we have to make really hard choices about what constitutes the absolute most critical issues we _must_ solve for a release to happen. There can always be more releases.
+
 # Ways you can help
 
 We are always looking for new people to help fix bugs (if any), improve the quality of the code, and refine the UI and performance. Your contributions make all the difference. We can't implement every feature requested by ourselves, or we would never be able to make releases in a timely manner. This is also why we have "low-hanging fruit" issues available for newcomers to tackle. So please contribute patches for the issues you care the most about.
