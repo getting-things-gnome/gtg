@@ -79,7 +79,6 @@ class Application(Gtk.Application):
     delete_task_dialog = None
     edit_tag_dialog = None
 
-
     def __init__(self, debug):
         """Setup Application."""
 
@@ -143,7 +142,6 @@ class Application(Gtk.Application):
         """Setup the plugin engine."""
 
         self.plugin_engine = PluginEngine()
-
         plugin_api = PluginAPI(self.req, self)
         self.plugin_engine.register_api(plugin_api)
 
@@ -176,18 +174,14 @@ class Application(Gtk.Application):
             ('open_about', self.open_about, None),
             ('open_plugins', self.open_plugins_manager, None),
             ('new_task', self.new_task, ('app.new_task', ['<ctrl>N'])),
-            ('new_subtask', self.new_subtask,
-             ('app.new_subtask', ['<ctrl><shift>N'])),
+            ('new_subtask', self.new_subtask, ('app.new_subtask', ['<ctrl><shift>N'])),
             ('edit_task', self.edit_task, ('app.edit_task', ['<ctrl>E'])),
-            ('mark_as_done', self.mark_as_done,
-             ('app.mark_as_done', ['<ctrl>D'])),
+            ('mark_as_done', self.mark_as_done, ('app.mark_as_done', ['<ctrl>D'])),
             ('dismiss', self.dismiss, ('app.dismiss', ['<ctrl>I'])),
             ('open_backends', self.open_backends_manager, None),
             ('open_help', self.open_help, ('app.open_help', ['F1'])),
-            ('open_preferences', self.open_preferences,
-                ('app.open_preferences', ['<ctrl>comma'])),
-            ('editor.close', self.close_focused_task,
-             ('app.editor.close', ['Escape', '<ctrl>w'])),
+            ('open_preferences', self.open_preferences, ('app.open_preferences', ['<ctrl>comma'])),
+            ('editor.close', self.close_focused_task, ('app.editor.close', ['Escape', '<ctrl>w'])),
             ('editor.show_parent', self.open_parent_task, None),
             ('editor.delete', self.delete_editor_task, None),
             ('editor.open_tags_popup', self.open_tags_popup_in_editor, None),
@@ -357,7 +351,6 @@ class Application(Gtk.Application):
 
         if backend_id:
             self.backends_dialog.show_config_for_backend(backend_id)
-
 
     def delete_tasks(self, tids, window):
         """Present the delete task confirmation dialog."""

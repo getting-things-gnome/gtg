@@ -84,9 +84,9 @@ class FallbackKeyring(Borg):
     def get_password(self, key):
         return self.keyring.get(key, "")
 
+
 if GnomeKeyring is not None:
     Keyring = GNOMEKeyring
 else:
-    log.info("GNOME keyring was not found, passwords will be not stored after\
-                                                              restart of GTG")
+    log.info("GNOME keyring not found, passwords will be not stored after restarting GTG")
     Keyring = FallbackKeyring
