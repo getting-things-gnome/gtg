@@ -255,7 +255,7 @@ class Application(Gtk.Application):
     def open_help(self, action, param):
         """Open help callback."""
 
-        openurl(info.HELP_URI)
+        openurl("help:gtg")
 
     def open_backends_manager(self, action, param):
         """Callback to open the backends manager dialog."""
