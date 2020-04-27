@@ -156,8 +156,7 @@ def find_data_files():
     data_files.extend(compile_mo_files())
 
     # Icons
-    data_files.extend(
-        find_icons('data/icons', 'share/icons', ['.png', '.svg']))
+    data_files.extend(find_icons('data/icons', 'share/icons', ['.png', '.svg']))
 
     # User docs
     data_files.extend(find_user_help())

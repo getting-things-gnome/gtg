@@ -114,7 +114,7 @@ class Timer(GObject.GObject):
             am_pm = match.group('am_pm')
 
             if am_pm == 'am' and int(hour) == 12:
-                    hour = 0
+                hour = 0
             elif am_pm == 'pm':
                 if 0 < int(hour) < 12:
                     hour = hour + 12

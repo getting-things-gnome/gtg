@@ -110,6 +110,7 @@ class InvalidQuery(Exception):
     search query if it is invalid """
     pass
 
+
 TOKENS_RE = re.compile(r"""
             (?P<command>!\S+(?=\s)?) |
             (?P<tag>@\S+(?=\s)?) |

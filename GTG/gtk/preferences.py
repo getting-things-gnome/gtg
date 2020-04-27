@@ -63,4 +63,3 @@ class Preferences():
         page_name = page.get_name()
         self.pages[page_name] = page
         self.stack.add_titled(page.get_ui(), page_name, page.get_title())
-

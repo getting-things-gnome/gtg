@@ -115,7 +115,6 @@ class BiDict():
                       iter(self._first_to_second.items()))
 
 
-
 class TwoKeyDict():
     """
     It's a standard Dictionary with a secondary key.

@@ -147,15 +147,11 @@ class MainWindow(Gtk.ApplicationWindow):
         """Setup actions."""
 
         action_entries = [
-            ('toggle_sidebar', self.on_sidebar_toggled,
-             ('win.toggle_sidebar', ['F9'])),
-            ('change_tags', self.on_modify_tags,
-             ('win.change_tags', ['<ctrl>T'])),
+            ('toggle_sidebar', self.on_sidebar_toggled, ('win.toggle_sidebar', ['F9'])),
+            ('change_tags', self.on_modify_tags, ('win.change_tags', ['<ctrl>T'])),
             ('search', self.toggle_search, ('win.search', ['<ctrl>F'])),
-            ('focus_quickentry', self.focus_quickentry,
-             ('win.focus_quickentry', ['<ctrl>L'])),
-            ('delete_task', self.on_delete_tasks,
-             ('win.delete_task', ['<ctrl>Delete'])),
+            ('focus_quickentry', self.focus_quickentry, ('win.focus_quickentry', ['<ctrl>L'])),
+            ('delete_task', self.on_delete_tasks, ('win.delete_task', ['<ctrl>Delete'])),
             ('mark_as_started', self.on_mark_as_started, None),
             ('start_today', self.on_start_for_today, None),
             ('start_tomorrow', self.on_start_for_tomorrow, None),
@@ -201,7 +197,7 @@ class MainWindow(Gtk.ApplicationWindow):
 
     def _init_widget_aliases(self):
         """
-        defines aliases for UI elements found in the glide file
+        Defines aliases for UI elements found in the GtkBuilder file
         """
 
         self.taskpopup = self.builder.get_object("task_context_menu")
@@ -270,20 +266,13 @@ class MainWindow(Gtk.ApplicationWindow):
         """
         initializes the tagtree (left area with tags and searches)
         """
-        # The tags treeview
         self.tagtree = self.req.get_tag_tree()
         self.tagtreeview = self.tv_factory.tags_treeview(self.tagtree)
-        # Tags treeview
-        self.tagtreeview.get_selection().connect('changed',
-                                                 self.on_select_tag)
-        self.tagtreeview.connect('button-press-event',
-                                 self.on_tag_treeview_button_press_event)
-        self.tagtreeview.connect('key-press-event',
-                                 self.on_tag_treeview_key_press_event)
-        self.tagtreeview.connect('node-expanded',
-                                 self.on_tag_expanded)
-        self.tagtreeview.connect('node-collapsed',
-                                 self.on_tag_collapsed)
+        self.tagtreeview.get_selection().connect('changed', self.on_select_tag)
+        self.tagtreeview.connect('button-press-event', self.on_tag_treeview_button_press_event)
+        self.tagtreeview.connect('key-press-event', self.on_tag_treeview_key_press_event)
+        self.tagtreeview.connect('node-expanded', self.on_tag_expanded)
+        self.tagtreeview.connect('node-collapsed', self.on_tag_collapsed)
         self.sidebar_container.add(self.tagtreeview)
 
         for path_t in self.config.get("expanded_tags"):
@@ -317,20 +306,13 @@ class MainWindow(Gtk.ApplicationWindow):
         connects signals on UI elements
         """
         SIGNAL_CONNECTIONS_DIC = {
-            "on_edit_done_task":
-            self.on_edit_done_task,
-            "on_add_subtask":
-            self.on_add_subtask,
-            "on_tagcontext_deactivate":
-            self.on_tagcontext_deactivate,
-            "on_quickadd_field_activate":
-            self.on_quickadd_activate,
-            "on_about_delete":
-            self.on_about_close,
-            "on_about_close":
-            self.on_about_close,
-            "on_search":
-            self.on_search,
+            "on_edit_done_task": self.on_edit_done_task,
+            "on_add_subtask": self.on_add_subtask,
+            "on_tagcontext_deactivate": self.on_tagcontext_deactivate,
+            "on_quickadd_field_activate": self.on_quickadd_activate,
+            "on_about_delete": self.on_about_close,
+            "on_about_close": self.on_about_close,
+            "on_search": self.on_search,
         }
         self.builder.connect_signals(SIGNAL_CONNECTIONS_DIC)
 
@@ -344,64 +326,44 @@ class MainWindow(Gtk.ApplicationWindow):
         self.connect('size-allocate', self.on_size_allocate)
 
         # Active tasks TreeView
-        self.vtree_panes['active'].connect('row-activated',
-                                           self.on_edit_active_task)
-        self.vtree_panes['active'].connect('cursor-changed',
-                                           self.on_cursor_changed)
+        self.vtree_panes['active'].connect('row-activated', self.on_edit_active_task)
+        self.vtree_panes['active'].connect('cursor-changed', self.on_cursor_changed)
 
         tsk_treeview_btn_press = self.on_task_treeview_button_press_event
-        self.vtree_panes['active'].connect('button-press-event',
-                                           tsk_treeview_btn_press)
+        self.vtree_panes['active'].connect('button-press-event', tsk_treeview_btn_press)
         task_treeview_key_press = self.on_task_treeview_key_press_event
-        self.vtree_panes['active'].connect('key-press-event',
-                                           task_treeview_key_press)
-        self.vtree_panes['active'].connect('node-expanded',
-                                           self.on_task_expanded)
-        self.vtree_panes['active'].connect('node-collapsed',
-                                           self.on_task_collapsed)
+        self.vtree_panes['active'].connect('key-press-event', task_treeview_key_press)
+        self.vtree_panes['active'].connect('node-expanded', self.on_task_expanded)
+        self.vtree_panes['active'].connect('node-collapsed', self.on_task_collapsed)
 
         # Workview tasks TreeView
-        self.vtree_panes['workview'].connect('row-activated',
-                                             self.on_edit_active_task)
-
-        self.vtree_panes['workview'].connect('cursor-changed',
-                                             self.on_cursor_changed)
+        self.vtree_panes['workview'].connect('row-activated', self.on_edit_active_task)
+        self.vtree_panes['workview'].connect('cursor-changed', self.on_cursor_changed)
 
         tsk_treeview_btn_press = self.on_task_treeview_button_press_event
-        self.vtree_panes['workview'].connect('button-press-event',
-                                             tsk_treeview_btn_press)
+        self.vtree_panes['workview'].connect('button-press-event', tsk_treeview_btn_press)
         task_treeview_key_press = self.on_task_treeview_key_press_event
-        self.vtree_panes['workview'].connect('key-press-event',
-                                             task_treeview_key_press)
-        self.vtree_panes['workview'].connect('node-expanded',
-                                             self.on_task_expanded)
-        self.vtree_panes['workview'].connect('node-collapsed',
-                                             self.on_task_collapsed)
+        self.vtree_panes['workview'].connect('key-press-event', task_treeview_key_press)
+        self.vtree_panes['workview'].connect('node-expanded', self.on_task_expanded)
+        self.vtree_panes['workview'].connect('node-collapsed', self.on_task_collapsed)
         self.vtree_panes['workview'].set_col_visible('startdate', False)
 
         # Closed tasks Treeview
-        self.vtree_panes['closed'].connect('row-activated',
-                                           self.on_edit_done_task)
+        self.vtree_panes['closed'].connect('row-activated', self.on_edit_done_task)
         # I did not want to break the variable and there was no other
         # option except this name:(Nimit)
         clsd_tsk_btn_prs = self.on_closed_task_treeview_button_press_event
-        self.vtree_panes['closed'].connect('button-press-event',
-                                           clsd_tsk_btn_prs)
+        self.vtree_panes['closed'].connect('button-press-event', clsd_tsk_btn_prs)
         clsd_tsk_key_prs = self.on_closed_task_treeview_key_press_event
-        self.vtree_panes['closed'].connect('key-press-event',
-                                           clsd_tsk_key_prs)
-
-        self.vtree_panes['closed'].connect('cursor-changed',
-                                            self.on_cursor_changed)
+        self.vtree_panes['closed'].connect('key-press-event', clsd_tsk_key_prs)
+        self.vtree_panes['closed'].connect('cursor-changed', self.on_cursor_changed)
 
         self.closedtree.apply_filter(self.get_selected_tags()[0], refresh=True)
 
         b_signals = BackendSignals()
         b_signals.connect(b_signals.BACKEND_FAILED, self.on_backend_failed)
-        b_signals.connect(b_signals.BACKEND_STATE_TOGGLED,
-                          self.remove_backend_infobar)
-        b_signals.connect(b_signals.INTERACTION_REQUESTED,
-                          self.on_backend_needing_interaction)
+        b_signals.connect(b_signals.BACKEND_STATE_TOGGLED, self.remove_backend_infobar)
+        b_signals.connect(b_signals.INTERACTION_REQUESTED, self.on_backend_needing_interaction)
         self.selection = self.vtree_panes['active'].get_selection()
 
 
@@ -737,8 +699,7 @@ class MainWindow(Gtk.ApplicationWindow):
             # We have to verify that that row belongs to the task we should
             # select. So, we have to wait for the task to be created, and then
             # wait for its tid to show up (invernizzi)
-            def select_next_added_task_in_browser(treemodelsort, path,
-                                                  iter, self):
+            def select_next_added_task_in_browser(treemodelsort, path, iter, self):
                 # copy() is required because boxed structures are not copied
                 # when passed in a callback without transfer
                 # See https://bugzilla.gnome.org/show_bug.cgi?id=722899
@@ -747,8 +708,7 @@ class MainWindow(Gtk.ApplicationWindow):
                 def selecter(treemodelsort, path, iter, self):
                     self.__last_quick_added_tid_event.wait()
                     treeview = self.vtree_panes['active']
-                    treemodelsort.disconnect(
-                        self.__quick_add_select_handle)
+                    treemodelsort.disconnect(self.__quick_add_select_handle)
                     selection = treeview.get_selection()
                     selection.unselect_all()
                     # Since we use iter for selection,
@@ -770,8 +730,7 @@ class MainWindow(Gtk.ApplicationWindow):
             self.quickadd_entry.set_text('')
 
             # signal the event for the plugins to catch
-            GObject.idle_add(self.emit, "task-added-via-quick-add",
-                             task.get_id())
+            GObject.idle_add(self.emit, "task-added-via-quick-add", task.get_id())
         else:
             # if no text is selected, we open the currently selected task
             nids = self.vtree_panes['active'].get_selected_nodes()
@@ -813,16 +772,14 @@ class MainWindow(Gtk.ApplicationWindow):
                 if selected_search is not None:
                     my_tag = self.req.get_tag(selected_search)
                     self.tagpopup.set_tag(my_tag)
-                    self.tagpopup.popup(None, None, None, None, event.button,
-                                        time)
+                    self.tagpopup.popup(None, None, None, None, event.button, time)
                 elif len(selected_tags) > 0:
                     # Then we are looking at single, normal tag rather than
                     # the special 'All tags' or 'Tasks without tags'. We only
                     # want to popup the menu for normal tags.
                     my_tag = self.req.get_tag(selected_tags[0])
                     self.tagpopup.set_tag(my_tag)
-                    self.tagpopup.popup(None, None, None, None, event.button,
-                                        time)
+                    self.tagpopup.popup(None, None, None, None, event.button, time)
                 else:
                     self.reset_cursor()
             return True
@@ -1162,14 +1119,12 @@ class MainWindow(Gtk.ApplicationWindow):
                 task.set_status(Task.STA_DISMISSED)
                 self.close_all_task_editors(uid)
 
-    def apply_filter_on_panes(self, filter_name, refresh=True,
-                              parameters=None):
+    def apply_filter_on_panes(self, filter_name, refresh=True, parameters=None):
         """ Apply filters for every pane: active tasks, closed tasks """
 
         for pane in self.vtree_panes:
             vtree = self.req.get_tasks_tree(name=pane, refresh=False)
-            vtree.apply_filter(filter_name, refresh=refresh,
-                               parameters=parameters)
+            vtree.apply_filter(filter_name, refresh=refresh, parameters=parameters)
 
     def unapply_filter_on_panes(self, filter_name, refresh=True):
         """ Apply filters for every pane: active tasks, closed tasks """
@@ -1416,8 +1371,7 @@ class MainWindow(Gtk.ApplicationWindow):
                          feedback
         """
         infobar = self._new_infobar(backend_id)
-        infobar.set_interaction_request(description, interaction_type,
-                                        callback)
+        infobar.set_interaction_request(description, interaction_type, callback)
 
     def __remove_backend_infobar(self, child, backend_id):
         """
@@ -1445,8 +1399,7 @@ class MainWindow(Gtk.ApplicationWindow):
         if not backend or (backend and backend.is_enabled()):
             # remove old infobar related to backend_id, if any
             if self.vbox_toolbars:
-                self.vbox_toolbars.foreach(self.__remove_backend_infobar,
-                                           backend_id)
+                self.vbox_toolbars.foreach(self.__remove_backend_infobar, backend_id)
 
     def _new_infobar(self, backend_id):
         """
