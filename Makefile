@@ -16,6 +16,7 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
+# Name of the executables used:
 PEP8=pycodestyle
 PYFLAKES=pyflakes
 
@@ -40,7 +41,7 @@ pyflakes:
 
 # Check for coding standard violations.
 pep8:
-	$(PEP8) --statistics --count GTG tests scripts run-tests setup.py
+	$(PEP8) --statistics --count --repeat --max-line-length=100 --ignore=E128 GTG tests scripts run-tests setup.py
 
 # Check for coding standard violations & flakes.
 lint: pyflakes pep8
