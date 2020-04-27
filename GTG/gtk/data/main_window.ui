@@ -7,7 +7,6 @@
     <property name="border_width">6</property>
     <property name="window_position">center-on-parent</property>
     <property name="type_hint">dialog</property>
-    <property name="copyright" translatable="yes">Copyright © 2008-2013 Lionel Dricot, Bertrand Rousseau</property>
     <property name="logo_icon_name">gtg</property>
     <signal name="delete-event" handler="on_about_delete" swapped="no"/>
     <signal name="response" handler="on_about_close" swapped="no"/>

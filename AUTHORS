@@ -1,140 +1,35 @@
-AUTHORS
-========
+# Current maintainers / project administrators
 
-The GTG Team:
-=============
+* Diego Garcia Gangl
+* Jean-François Fortin Tam
+* Lionel Dricot
 
-* Lionel Dricot <ploum@ploum.net>
-* Bertrand Rousseau <bertrand.rousseau@gmail.com>
-* Paulo Cabido <paulo.cabido@gmail.com>
-* Kevin Mehall <km@kevinmehall.net>
-* Luca Invernizzi <invernizzi.l@gmail.com>
-* Luca Falavigna <dktrkranz@debian.org>
-* Izidor Matušov <izidor.matusov@gmail.com>, <izidor@google.com>, Google, Inc.
-* Nimit Shah <nimit.svnit@gmail.com>
-* Parin Porecha <parinporecha@gmail.com>
+# Previous maintainers, 2011-2015 era
 
-Thanks to the contributors!
-===========================
+* Izidor Matušov
+* Nimit Shah
+* Parin Porecha
 
-For 0.1.1:
-----------
-* Gérôme Fournier <>
-* Antons Rebguns  <arebgun@gmail.com>
-* Carl Chenet <chaica@ohmytux.com>
-* Jérôme Guelfucci <jerome.guelfucci@gmail.com>
-* Luca Falavigna <dktrkranz@debian.org>
-* Kalle Persson <kalle@kallepersson.se>
-* Jonathan Barnoud <jonathan@barnoud.net>
+# Previous maintainers, 2008-2010 era
 
-For 0.1.2:
-----------
-* Brian Kennedy <ekspiulo@gmail.com>
-* Michael Vogt <michael.vogt@ubuntu.com>
-* Ben Dowling <ben.m.dowling@gmail.com>
-* Zach Shepherd <eightball1989@gmail.com>
-* Anton Rebguns <arebgun@gmail.com>
-* Jean-François Fortin Tam <nekohayo@gmail.com>
+* Lionel Dricot
+* Luca Invernizzi
+* Bryce Harrington
+* Bertrand Rousseau
+* Kevin Mehall
+* Jonathan Lange
+* Paulo Cabido
+* Luca Falavigna
 
-For 0.2:
-------------
-* Ryan Paul <segphault@arstechnica.com>
-* Jonathan Lange <jml@mumak.net>
-* Patrick Coleman <blinken@gmail.com>
-* Mikkel Kjær Jensen <kjmikkel@gmail.com>
-* Henning Eggers <henning@ubuntu.com>
-* Paulo Cabido <paulo.cabido@gmail.com>
-* Kevin Mehall <km@kevinmehall.net>
-* Luca Falavigna <dktrkranz@debian.org>
+For the list of recent contributors who made the latest release possible,
+see GTG/core/info.py (the content that shows up in the GUI's About dialog).
 
-For 0.2.1:
-----------
-* Matthew Rasmus <tareth.ml@gmail.com>
-* Bryce Harrington <bryce@bryceharrington.org>
+A handwritten list here would be too long, be frequently outdated,
+and would not give contributors their relative merit.
+So we point you instead to:
 
-For 0.2.2:
-----------
-* Chris Johnston <chrisjohnston@ubuntu.com>
-* Tom Van Braeckel <tomvanbraeckel@gmail.com>
-* Lionel Montrieux <lmontrieux@spancircle.be>
-* Paul Kishimoto <mail@paul.kishimoto.name>
-
-For 0.2.4:
-----------
-* David Planella <david.planella@jabber.org>
-* Ronan Jouchet <ronan@jouchet.fr>
-
-For 0.2.5:
-----------
-* Izidor Matušov <izidor.matusov@gmail.com>
-
-For 0.2.9:
-----------
-* Alayn Gortazar <zutoin@gmail.com>
-* Andrew Starr-Bochicchio <andrewsomething@ubuntu.com>
-* Daniel Neel <dneelyep@gmail.com>
-* Erin McLaughlin <emclaughlin1215@gmail.com>
-* Fabio Prina <fabio@nimsh.com>
-* François Boulogne <fboulogne@april.org>
-* Ivan Evtukhovich <evtuhovich@gmail.com>
-* Jean-François Fortin Tam <nekohayo@gmail.com>
-* Jeff Oliver <kaiserfro@gmail.com>
-* João Ascenso <joaoricardoascenso@gmail.com>
-* Jonathan Barnoud <jonathan@barnoud.net>
-* Kees Cook <kees@ubuntu.com>
-* Madhumitha Viswanathan <madhuvishy@gmail.com>
-* Marcos Lenharo <https://launchpad.net/~lenharo-h> (no email provided)
-* Marko Kevac <marko@kevac.org>
-* Nicolas Maître <nimai@skynet.be>
-* Richard Klein <kleinric@gmail.com>
-* Thibault Fevry <ThibaultFevry@gmail.com>
-* Viktor Nagy <viktor.nagy@toolpart.hu>
-* Volodymyr Floreskul <exufer@gmail.com>
-* Zimin Huang <ienjoycoding@gmail.com>
-
-For 0.3:
---------
-* dAnjou <mail@danjou.de>
-* Paul Kishimoto <mail@paul.kishimoto.name>
-* Wolter Hellmund <wolterh6@gmail.com>
-* huxuan <i@huxuan.org>
-* Nimit Shah <nimit.svnit@gmail.com>
-* Abdul Rauf <abdulraufhaseeb@gmail.com>
-* Radina Matic <radina.matic@gmail.com>
-* Steve Scheel <nmu.sscheel@gmail.com>
-* Anant Gupta <anant718@hotmail.com>
-* Marta Maria Casetti <mmcasetti@gmail.com>
-* Song Yangyu <flyfy1@gmail.com>
-* Saurabh Anand <saurabhanandiit@gmail.com>
-* Antonio Roquentin <https://launchpad.net/~antonio-roquentin> (no email provided)
-* Nicolas Maître <nimai@skynet.be>
-* Abhiram <abhiram.ampabathina@gmail.com>
-* Alan Gomes <alangalvino@gmail.com>
-* Stefan Handschuh <https://launchpad.net/~handschuh> (no email provided)
-
-For 0.3.1:
-----------
-* Joe R. Nassimian <nassimian.joseph@gmail.com>
-* Antonio Roquentin <https://launchpad.net/~antonio-roquentin> (no email provided)
-* Codee <kmhpfoss@gmail.com>
-* Sebastian Dyroff <sebastian@dyroff.org>
-* Tom Kadwill <tomkadwill@gmail.com>
-* Parin Porecha <parinporecha@gmail.com>
-* Nimit Shah <nimit.svnit@gmail.com>
-* DmDr <cardioexp@gmail.com>
-* Chenxiong Qi <qcxhome@gmail.com>
-* Fabiano Fidencio <fabiano@fidencio.org>
-* kpytang <https://launchpad.net/~kpytang> (no email provided)
-
-For 0.4:
-----------
-* Pawan Hegde <h.pawan@gmail.com>
-* Sagar Ghuge <ghugesss@gmail.com>
-* Sushant Raikar <sushantthecoder@gmail.com>
-* Atit Anand <atit.anand.cs@gmail.com>
-* Parth P. Panchal <parthpanchl@gmail.com>
-* Sara Ribeiro <sara.rmgr@gmail.com>
-* Narendra Joshi <narendraj9@gmail.com>
-* Àlex Magaz Graça <rivaldi8@gmail.com>
-* Amy Chan <mathematical.coffee@gmail.com>
-* Pratyush Kulwal <jaipurchamp@gmail.com>
+* git shortlog -s -n  # for the all-time hall of fame
+* git shortlog -s -n v0.3.1..HEAD # for the list of top contributors from the 0.3.1 release until now
+* git blame the_file_you_are_interested_in
+* https://www.openhub.net/p/gtg/contributors
+* https://github.com/getting-things-gnome/gtg/graphs/contributors

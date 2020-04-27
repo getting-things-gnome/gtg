@@ -299,12 +299,17 @@ class MainWindow(Gtk.ApplicationWindow):
         self.about.set_website_label(_("GTG website"))
         self.about.set_version(info.VERSION)
         self.about.set_comments(info.SHORT_DESCRIPTION)
+        self.about.set_copyright(info.APP_COPYRIGHT)
         self.about.set_license_type(Gtk.License.GPL_3_0)
 
         self.about.set_authors(info.AUTHORS)
         self.about.set_artists(info.ARTISTS)
         self.about.set_documenters(info.DOCUMENTERS)
-        self.about.set_translator_credits(info.TRANSLATORS)
+
+        # Translators for a particular language should put their names here.
+        # Please keep the width at 80 chars max, as GTK3's About dialog won't wrap text.
+        # GtkAboutDialog will detect if “translator-credits” is untranslated and auto-hide the tab.
+        self.about.set_translator_credits(_("translator-credits"))
 
     def _init_signal_connections(self):
         """
