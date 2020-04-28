@@ -106,8 +106,8 @@ class TaskView(Gtk.TextView):
         self.table = self.buff.get_tag_table()
         # Tag for title
         self.title_tag = self.buff.create_tag("title",
-                                              weight=Pango.Weight.ULTRABOLD,
-                                              size_points=20,
+                                              weight=Pango.Weight.BOLD,
+                                              size_points=16,
                                               pixels_above_lines=15,
                                               pixels_below_lines=30)
 
