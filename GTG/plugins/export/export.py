@@ -88,7 +88,6 @@ class ExportPlugin():
 
     DEFAULT_PREFERENCES = {
         "menu_entry": True,
-        "toolbar_entry": True,
         "last_template": None,
     }
 
@@ -180,15 +179,10 @@ class ExportPlugin():
     def _init_gtk(self):
         """ Initialize all the GTK widgets """
         self.menu_entry = False
-        self.toolbar_entry = False
 
         self.menu_item = Gtk.MenuItem(_("Export the tasks currently listed"))
         self.menu_item.connect('activate', self.show_dialog)
         self.menu_item.show()
-
-        self.tb_button = Gtk.ToolButton(Gtk.STOCK_PRINT)
-        self.tb_button.connect('clicked', self.show_dialog)
-        self.tb_button.show()
 
         builder = Gtk.Builder()
         cur_dir = os.path.dirname(os.path.abspath(__file__))
@@ -208,7 +202,6 @@ class ExportPlugin():
         self.export_image = builder.get_object("export_image")
         self.preferences_dialog = builder.get_object("preferences_dialog")
         self.pref_menu = builder.get_object("pref_chbox_menu")
-        self.pref_toolbar = builder.get_object("pref_chbox_toolbar")
         self.description_label = builder.get_object("label_description")
         self.save_button = builder.get_object("export_btn_save")
         self.open_button = builder.get_object("export_btn_open")
@@ -239,14 +232,10 @@ class ExportPlugin():
         })
 
     def _gtk_deactivate(self):
-        """ Remove Toolbar Button and Menu item for this plugin """
+        """ Remove Menu item for this plugin """
         if self.menu_entry:
             self.plugin_api.remove_menu_item(self.menu_item)
             self.menu_entry = False
-
-        if self.toolbar_entry:
-            self.plugin_api.remove_toolbar_item(self.tb_button)
-            self.toolbar_entry = False
 
     def show_dialog(self, widget):
         """ Show dialog with options for export """
@@ -349,7 +338,6 @@ class ExportPlugin():
         self._preferences_load()
         self.preferences_dialog.set_transient_for(manager_dialog)
         self.pref_menu.set_active(self.preferences["menu_entry"])
-        self.pref_toolbar.set_active(self.preferences["toolbar_entry"])
         self.preferences_dialog.show_all()
 
     def on_preferences_cancel(self, widget, data=None):
@@ -361,7 +349,6 @@ class ExportPlugin():
     def on_preferences_ok(self, widget):
         """ Apply and store new preferences """
         self.preferences["menu_entry"] = self.pref_menu.get_active()
-        self.preferences["toolbar_entry"] = self.pref_toolbar.get_active()
         self.preferences_dialog.hide()
 
         self._preferences_apply()
@@ -379,17 +366,11 @@ class ExportPlugin():
             self.PLUGIN_NAME, "preferences", self.preferences)
 
     def _preferences_apply(self):
-        """ Add/remove menu entry/toolbar entry """
+        """ Add/remove menu entry """
         if self.preferences["menu_entry"] and not self.menu_entry:
             self.plugin_api.add_menu_item(self.menu_item)
             self.menu_entry = True
+
         elif not self.preferences["menu_entry"] and self.menu_entry:
             self.plugin_api.remove_menu_item(self.menu_item)
             self.menu_entry = False
-
-        if self.preferences["toolbar_entry"] and not self.toolbar_entry:
-            self.plugin_api.add_toolbar_item(self.tb_button)
-            self.toolbar_entry = True
-        elif not self.preferences["toolbar_entry"] and self.toolbar_entry:
-            self.plugin_api.remove_toolbar_item(self.tb_button)
-            self.toolbar_entry = False
