@@ -168,7 +168,7 @@ def find_data_files():
     # Misc files
     data_files.extend([
         ('share/applications', ['data/org.gnome.GTG.desktop']),
-        ('share/appdata/', ['data/gtg.appdata.xml']),
+        ('share/appdata/', ['data/org.gnome.GTG.appdata.xml']),
         ('share/dbus-1/services', ['data/org.gnome.GTG.service']),
         ('share/gtg/', ['data/gtcli_bash_completion']),
     ])
