@@ -90,8 +90,8 @@ class TagContextMenu(Gtk.Menu):
     def on_mi_ctag_activate(self, widget):
         random_color = generate_tag_color()
         present_color = self.tag.get_attribute('color')
-        if(present_color is not None):
-                color_remove(present_color)
+        if present_color is not None:
+            color_remove(present_color)
         self.tag.set_attribute('color', random_color)
         color_add(random_color)
 
