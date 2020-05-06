@@ -310,7 +310,7 @@ class ExportPlugin():
 
     def choose_file(self):
         """ Let user choose a file to save and return its path """
-        chooser = Gtk.FileChooserDialog(
+        chooser = Gtk.NativeFileChooser(
             title=_("Choose where to save your list"),
             parent=self.export_dialog,
             action=Gtk.FileChooserAction.SAVE,
