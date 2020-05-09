@@ -68,7 +68,6 @@ class Plugin():
         if isinstance(self.dbus_depends, str):
             self.dbus_depends = [self.dbus_depends]
         self._load_module(module_paths)
-        self._check_dbus_depends()
 
     # 'active' property
     def _get_active(self):
@@ -82,22 +81,6 @@ class Plugin():
         self._active = value
 
     active = property(_get_active, _set_active)
-
-    def _check_dbus_depends(self):
-        """Check the availability of DBus interfaces this plugin depends on."""
-        self.missing_dbus = []
-        for dbobj in self.dbus_depends:
-            if dbobj.find(':'):
-                bus, obj_path = dbobj.split(':')
-                try:
-                    dbus.SessionBus().get_object(bus, obj_path)
-                except Exception:
-                    self.missing_dbus.append(dbobj.split(':'))
-                    self.error = True
-            else:
-                if dbobj:
-                    self.missing_dbus.append(dbobj)
-                    self.error = True
 
     def _check_module_depends(self):
         """Check the availability of modules this plugin depends on."""
@@ -142,7 +125,6 @@ class Plugin():
     def reload(self, module_paths):
         if not self.active:
             self._load_module(module_paths)
-            self._check_dbus_depends()
 
 
 class PluginEngine(Borg):
