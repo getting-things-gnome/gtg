@@ -25,6 +25,8 @@ import re
 from gi.repository import GObject
 from GTG.core.logger import log
 
+from dbus.mainloop.glib import DBusGMainLoop
+
 
 class Timer(GObject.GObject):
     __signal_type__ = (GObject.SignalFlags.RUN_FIRST,
@@ -41,6 +43,7 @@ class Timer(GObject.GObject):
         self.time_changed()
 
     def connect_to_dbus(self):
+        DBusGMainLoop(set_as_default=True)
         bus = dbus.SystemBus()
         bus.add_signal_receiver(self.on_prepare_for_sleep,
                                 'PrepareForSleep',
