@@ -36,8 +36,8 @@ from GTG.core.task import Task
 from gettext import gettext as _, ngettext
 from GTG.gtk.editor import GnomeConfig
 from GTG.gtk.editor.calendar import GTGCalendar
-from GTG.gtk.editor.taskview import TaskView
 from GTG.gtk.editor.recurring_menu import RecurringMenu
+from GTG.gtk.editor.taskview2 import TaskView
 from GTG.gtk.tag_completion import tag_filter
 from GTG.core.dates import Date
 from GTG.core.logger import log
@@ -102,7 +102,7 @@ class TaskEditor():
 
             "on_move": self.on_move,
 
-            "set_recurring_term_every_day": self.set_recurring_term_every_day, 
+            "set_recurring_term_every_day": self.set_recurring_term_every_day,
             "set_recurring_term_every_otherday": self.set_recurring_term_every_otherday,
             "set_recurring_term_every_week": self.set_recurring_term_every_week,
             "set_recurring_term_every_month": self.set_recurring_term_every_month,
@@ -169,10 +169,10 @@ class TaskEditor():
         scrolled.remove(textview)
         self.textview = TaskView(self.req, self.clipboard)
         self.textview.show()
-        self.textview.set_subtask_callback(self.new_subtask)
-        self.textview.open_task_callback(self.app.open_task)
-        self.textview.set_left_margin(20)
-        self.textview.set_right_margin(20)
+        # self.textview.set_subtask_callback(self.new_subtask)
+        # self.textview.open_task_callback(self.app.open_task)
+        # self.textview.set_left_margin(20)
+        # self.textview.set_right_margin(20)
         scrolled.add(self.textview)
         conf_font_value = self.browser_config.get("font_name")
         if conf_font_value != "":
@@ -188,38 +188,38 @@ class TaskEditor():
 
         self.task = task
         tags = task.get_tags()
-        self.textview.subtasks_callback(task.get_children)
-        self.textview.removesubtask_callback(task.remove_child)
-        self.textview.set_get_tagslist_callback(task.get_tags_name)
-        self.textview.set_add_tag_callback(task.add_tag)
-        self.textview.set_remove_tag_callback(task.remove_tag)
-        self.textview.save_task_callback(self.light_save)
-        self.textview.connect('focus-in-event', self.on_textview_focus_in)
-        self.textview.connect('focus-out-event', self.on_textview_focus_out)
+        # self.textview.subtasks_callback(task.get_children)
+        # self.textview.removesubtask_callback(task.remove_child)
+        # self.textview.set_get_tagslist_callback(task.get_tags_name)
+        # self.textview.set_add_tag_callback(task.add_tag)
+        # self.textview.set_remove_tag_callback(task.remove_tag)
+        # self.textview.save_task_callback(self.light_save)
+        # self.textview.connect('focus-in-event', self.on_textview_focus_in)
+        # self.textview.connect('focus-out-event', self.on_textview_focus_out)
 
         texte = self.task.get_text()
         title = self.task.get_title()
         # the first line is the title
-        self.textview.set_text(f"{title}\n")
+        # self.textview.set_text(f"{title}\n")
         # we insert the rest of the task
-        if texte:
-            self.textview.insert(f"{texte}")
-        else:
-            # If not text, we insert tags
-            if tags:
-                for t in tags:
-                    self.textview.insert_text("%s, " % t.get_name())
-                self.textview.insert_text("\n")
-            # If we don't have text, we still need to insert subtasks if any
-            subtasks = task.get_children()
-            if subtasks:
-                self.textview.insert_subtasks(subtasks)
+        # if texte:
+        #     self.textview.insert(f"{texte}")
+        # else:
+        #     # If not text, we insert tags
+        #     if tags:
+        #         for t in tags:
+        #             self.textview.insert_text("%s, " % t.get_name())
+        #         self.textview.insert_text("\n")
+        #     # If we don't have text, we still need to insert subtasks if any
+        #     subtasks = task.get_children()
+        #     if subtasks:
+        #         self.textview.insert_subtasks(subtasks)
         # We select the title if it's a new task
-        if thisisnew:
-            self.textview.select_title()
-        else:
-            self.task.set_to_keep()
-        self.textview.modified(full=True)
+        # if thisisnew:
+        #     self.textview.select_title()
+        # else:
+        #     self.task.set_to_keep()
+        # self.textview.modified(full=True)
         self.window.connect("destroy", self.destruction)
 
         # Connect search field to tags popup
@@ -236,7 +236,7 @@ class TaskEditor():
         self.pengine.onTaskLoad(self.plugin_api)
 
         # Putting the refresh callback at the end make the start a lot faster
-        self.textview.refresh_callback(self.refresh_editor)
+        # self.textview.refresh_callback(self.refresh_editor)
         self.refresh_editor()
         self.textview.grab_focus()
 
@@ -316,8 +316,8 @@ class TaskEditor():
             self.textview.insert_tags([tag_row[1]])
         """
         TODO(jakubbrindza): Add else case that will remove tag.
-        """   
-        
+        """
+
     def on_repeat_icon_toggled(self, widget):
         """ Reset popup stack to the first page every time you open it """
         if widget.get_active():
@@ -331,7 +331,7 @@ class TaskEditor():
         self.recurring_menu.set_selected_term('day')
         self.recurring_menu.update_term()
         self.refresh_editor()
-        
+
     def set_recurring_term_every_otherday(self, widget):
         self.recurring_menu.set_selected_term('other-day')
         self.recurring_menu.update_term()
