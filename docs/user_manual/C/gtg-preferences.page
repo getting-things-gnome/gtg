@@ -1,0 +1,53 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      xmlns:its="http://www.w3.org/2005/11/its"
+      type="topic" style="task"
+      id="gtg-preferences">
+
+  <info>
+    <link type="guide" xref="index#gtg-customization"/>
+     
+      
+      <revision pkgversion="1401" date="2020-05-10" status="candidate"/>
+   <credit type="author copyright">
+      <name>Danielle Vansia</name>
+      <email its:translate="no">danielle.vansia@gmail.com</email>
+      <years>2020</years>
+    </credit>
+   
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+
+  </info>
+
+  <title>Preferences</title>
+
+<p><app>GTG</app> user preferences allow you to personalize the application.</p>
+
+<p>To access this window, go to the Main Menu and select <gui>Preferences</gui>.</p>
+
+<p>Options in Preferences:</p>
+
+<p><em>Show description preview</em></p>
+<p>Show an excerpt next to each task in the Task Browser. Click the <gui>ON/OFF</gui> toggle to activate or deactivate this option.</p>
+
+<p><em>Enable colored backgrounds</em></p>
+<p>This option allows you to show a colored background for a task bosed on the color of its tags</p>
+
+<p><em>Start of the day</em></p>
+<p>Set the time for when the day starts. The Task Browser and view modes are refreshed at this time.</p>
+
+<p><em>Task editor font</em></p>
+<p>Change the default font style and font size for the task editor</p>
+
+<p><em>Clean up options</em></p>
+<p>You can use this option to automatically remove old, closed tasks as well as set the number of days before performing this operation</p>
+
+
+
+<figure>
+  <title>User Preferences</title>
+  <desc> </desc>
+ <media type="image" mime="image/png" src="figures/preferences.png"/>
+</figure>
+
+</page>
+

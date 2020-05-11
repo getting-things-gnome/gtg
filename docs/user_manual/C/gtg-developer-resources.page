@@ -1,0 +1,38 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      xmlns:its="http://www.w3.org/2005/11/its"
+      type="topic" style="task"
+      id="gtg-developer-resources">
+
+  <info>
+    <link type="guide" xref="index#gtg-advanced"/>
+    
+      
+      <revision pkgversion="1401" date="2020-05-10" status="candidate"/>
+   <credit type="author copyright">
+      <name>Danielle Vansiac</name>
+      <email its:translate="no">danielle.vansia@gmail.com</email>
+      <years>2020</years>
+    </credit>
+    <credit type="copyright editor">
+      <name></name>
+      <email its:translate="no"></email>
+      <years></years>
+    </credit>
+
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+
+  </info>
+
+  <title>Developer Resources</title>
+
+<p>Here are some resources for if you are interested in learning more about <app>GTG</app>:</p>
+
+<p>If you want more information on associated application dependencies, running <app>GTG</app> from the command line, or running the development version, visit our <link href="https://github.com/getting-things-gnome/gtg">GitHub Repository</link>. You can also report bugs/issues. Ensure that you read the <link href="https://github.com/getting-things-gnome/gtg/blob/master/docs/contributors/bug%20reporting%20and%20triaging.md">Bug Reporting and Triaging</link> documentation.</p>
+
+<p>If you are interested in contributing to <app>GTG</app> to fix bugs or code, view our <link href="https://github.com/getting-things-gnome/gtg/blob/master/CONTRIBUTING.md">Contributer Documentation</link>.</p>
+
+
+
+
+</page>
+

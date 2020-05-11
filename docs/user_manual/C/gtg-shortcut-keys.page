@@ -9,30 +9,29 @@
     <link type="seealso" xref="gtg-quickstart"/>
     <link type="seealso" xref="gtg-main-window"/>
       
-      <revision pkgversion="1301" date="2013-06-18" status="candidate"/>
+      <revision pkgversion="1401" date="2020-05-10" status="candidate"/>
    <credit type="author copyright">
       <name>Radina Matic</name>
       <email its:translate="no">radina.matic@gmail.com</email>
       <years>2013</years>
     </credit>
-    <credit type="copyright editor">
-      <name></name>
-      <email its:translate="no"></email>
-      <years></years>
+    <credit type="editor copyright">
+      <name>Danielle Vansia</name>
+      <email its:translate="no">danielle.vansia@gmail.com</email>
+      <years>2020</years>
     </credit>
 
     <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
 
   </info>
 
-  <title>Shortcut keys</title>
+  <title>Shortcut Keys</title>
 
-  <p>Use keyboard <gui>shortcut keys</gui> to perform common tasks faster than
-  with the mouse and menus. The following table lists all of <app>GTG's</app> shortcut keys.</p>
+  <p>Use keyboard <gui>shortcut keys</gui> to perform common tasks faster than with the mouse and menus. The following table lists all of <app>GTG's</app> shortcut keys.</p>
 <br />
 
- <table rules="rows" frame="top bottom" ui:expanded="yes">
-    <title>GTG window related shortcuts</title>
+ <table rules="rows" frame="top bottom" ui:expanded="true">
+    <title>GTG Window-Related shortcuts</title>
       <thead>
         <tr>
           <td><p><em style="strong">To Do This</em></p></td>  <td><p><em style="strong">Press This</em></p></td>
@@ -46,19 +45,16 @@
           <td><p>Hide Task Editor Window</p></td>  <td><p>ESC</p></td>
         </tr>
 	<tr>
-          <td><p>Move one Task Up in Task List</p></td>  <td><p>Up Arrow</p></td>
+          <td><p>Move One Task Up in Task List</p></td>  <td><p>Up Arrow</p></td>
         </tr>
 	<tr>
-          <td><p>Move one Task Down in Task List</p></td>  <td><p>Down Arrow</p></td>
+          <td><p>Move One Task Down in Task List</p></td>  <td><p>Down Arrow</p></td>
         </tr>
         <tr>
-          <td><p>Place Focus on QuickAdd Entry Field</p></td>  <td><p>Ctrl + L</p></td>
+          <td><p>Place Focus on Quick Add Task Entry Field</p></td>  <td><p>Ctrl + L</p></td>
         </tr>
         <tr>
           <td><p>Toggle Sidebar</p></td> <td><p>F9</p></td>
-        </tr>
-        <tr>
-          <td><p>Toggle Closed Tasks Pane</p></td>  <td><p>Ctrl + F9</p></td>
         </tr>
         <tr>
           <td><p>Redo</p></td>  <td><p>Ctrl + Y</p></td>
@@ -73,8 +69,8 @@
     </table>
 
 <br/><br/>
-    <table rules="rows" frame="top bottom" ui:expanded="yes">
-    <title>Task related shortcuts</title>
+    <table rules="rows" frame="top bottom" ui:expanded="true">
+    <title>Task-Related Shortcuts</title>
       <thead>
         <tr>
           <td><p><em style="strong">To Do This</em></p></td>  <td><p><em style="strong">Press This</em></p></td>
@@ -101,8 +97,8 @@
 
 <p>       </p><p>       </p>
 
-    <table rules="rows" frame="top bottom"  ui:expanded="yes">
-    <title>Tag related shortcuts</title>
+    <table rules="rows" frame="top bottom"  ui:expanded="true">
+    <title>Tag-Related Shortcuts</title>
       <thead>
         <tr>
           <td><p><em style="strong">To Do This</em></p></td>  <td><p><em style="strong">Press This</em></p></td>
