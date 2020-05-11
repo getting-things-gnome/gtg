@@ -47,3 +47,7 @@ URL_REGEX = re.compile(f'{HTTP_URI}|{FILE_URI}', re.IGNORECASE)
 
 def match(text):
     return re.match(URL_REGEX, text)
+
+
+def search(text):
+    return re.finditer(URL_REGEX, text)
