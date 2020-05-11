@@ -1,15 +1,15 @@
 <page xmlns="http://projectmallard.org/1.0/"
       xmlns:its="http://www.w3.org/2005/11/its"
       type="topic" style="task"
-      id="gtg-join-users">
+      id="gtg-credits-design">
 
   <info>
-    <link type="guide" xref="index#gtg-get-involved"/>
-    <link type="seealso" xref="gtg-report-problem"/>
-    <link type="seealso" xref="gtg-translate"/>
-
+    <link type="guide" xref="index#gtg-credits"/>
+    <link type="seealso" xref="gtg-credits-dev"/>
+    <link type="seealso" xref="gtg-credits-trans"/>
+    <link type="seealso" xref="gtg-credits-collab"/>
       
-      <revision pkgversion="1301" date="2013-06-18" status="candidate"/>
+      <revision pkgversion="1401" date="2020-05-10" status="outdated"/>
    <credit type="author copyright">
       <name>Radina Matic</name>
       <email its:translate="no">radina.matic@gmail.com</email>
@@ -25,9 +25,9 @@
 
   </info>
 
-  <title>Join the GTG Users Group</title>
+  <title>GTG Design</title>
 
-<p>To join our user group go to <link href="https://launchpad.net/~gtg-user/+join">GTG User Group on Launchpad</link>. You will also have the possibility to subscribe to the user's mailing list.</p>
-
+<p>Bertrand Rousseau - <email>bertrand.rousseau@gmail.com</email></p>
+<p>Kalle Persson - <email>kalle@kallepersson.se</email></p>
 </page>
 
