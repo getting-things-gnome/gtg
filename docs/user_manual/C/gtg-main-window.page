@@ -9,16 +9,16 @@
     <link type="seealso" xref="gtg-quickstart"/>
     
       
-      <revision pkgversion="1301" date="2013-06-18" status="candidate"/>
+      <revision pkgversion="1401" date="2020-05-10" status="candidate"/>
    <credit type="author copyright">
       <name>Radina Matic</name>
       <email its:translate="no">radina.matic@gmail.com</email>
       <years>2013</years>
     </credit>
-    <credit type="copyright editor">
-      <name></name>
-      <email its:translate="no"></email>
-      <years></years>
+    <credit type="editor copyright">
+      <name>Danielle Vansia</name>
+      <email its:translate="no">danielle.vansia@gmail.com</email>
+      <years>2020</years>
     </credit>
 
     <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
@@ -26,53 +26,47 @@
   </info>
 
   <title>Understand GTG Main Window</title>
-
-
-  <p>Watch the video to become more familiar with various parts of the <app>GTG</app> main window.</p>
-
-<media type="video" src="videos/GetStarted.ogg">
- <tt:tt xmlns:tt="http://www.w3.org/ns/ttml">
-        <tt:body>
-          <tt:div begin="1s" end="16s">
-            <tt:p>
-              The GTG Main Menu has the following items: Tasks, Edit, View, Plugins and Help.
-            </tt:p>
-          </tt:div>
-          <tt:div begin="16s" end="23s">
-            <tt:p>
-              Bellow the menu there is the <em style="strong">Toolbar</em>.
-            </tt:p>
-          </tt:div>
-          <tt:div begin="23s" end="36s">
-            <tt:p>
-               <em style="strong">Tag Sidebar</em> is on the right side of the window.
-            </tt:p>
-          </tt:div>
-          <tt:div begin="36s" end="53s">
-            <tt:p>
-             Use the <em style="strong">Quick Add Entry</em> as the fastest way to create a new task.
-            </tt:p>
-          </tt:div>
-          <tt:div begin="53s" end="61s">
-            <tt:p>
-              All the tasks are listed in the <em style="strong">GTG Task Browser</em>.
-            </tt:p>
-          </tt:div>
-          <tt:div begin="61s" end="77s">
-            <tt:p>
-          You can show and hide the <em style="strong">Closed Task Pane</em> from the View menu.
-            </tt:p>
-          </tt:div>
-        </tt:body>
-      </tt:tt>
-
+  <p>Create, view, and maintain your tasks from the Main Window. Window sections and elements are described below.</p> 
 <figure>
   <title>GTG Main Window</title>
   <desc> </desc>
- <media type="image" mime="image/png" src="figures/Understand-GTG-main-window.png"/>
+ <media type="image" mime="image/png" src="figures/main_window.png"/>
 </figure>
 
-</media>
+<terms>
+<br></br>
+  <title>GTG Main Window</title>
+  <item>
+    <title><em>Main Menu</em></title>
+    <p>Access the <gui>Sidebar</gui>, <link xref="gtg-plugins"><gui>Plugins</gui></link>, <gui>Preferences</gui>, <link xref="gtg-shortcut-keys"><gui>Keyboard Shortcuts</gui></link>, <gui>Help</gui>, and <gui>About</gui> options.</p>
+  </item>
+  <item>
+    <title><em>Quick Add Task Entry</em></title>
+    <p>Quickly create a task from this field. See <link xref="gtg-quickadd">Quick Add</link>.</p>
+  </item>
+  <item>
+    <title><em>Search</em></title>
+    <p>Search for tasks using <app>GTG's</app> <link xref="gtg-search-syntax">Search Syntax</link>. Enable the search field by selecting the <figure> <media type="image" mime="image/png" src="figures/search-icon.png"/>
+</figure> icon from the Toolbar. You can also save search queries.</p>
+  </item>
+  <item>
+    <title><em>Sidebar</em></title>
+    <p>Enable the Sidebar from the <gui>Main Menu</gui>. The Sidebar allows you to view all tasks, saved searches, tasks with no tags, and tasks by individual tag. Select an option and the results are displayed in the Task Browser.</p>
+  </item>
+  <item>
+    <title><em>Task Browser</em></title>
+    <p>Manage your tasks within the Task Browser. Tasks are displayed based on the selected <gui>View mode</gui>. You can sort tasks by <gui>Start date</gui> and <gui>Due</gui> date by clicking the column titles at the top of the browser. Right-click a selected task to view quick-edit options. Double-click a task to open the Task Editor window.</p>
+  </item>
+  <item>
+    <title><em>Toolbar</em></title>
+    <p>From the Toolbar you can create a new task, quickly change a task's due date, and access the Open, Actionable, and Closed View modes. You can also enable the search option and access the Main Menu.</p>
+  </item>
+  <item>
+    <title><em>View Modes</em></title>
+    <p>Tasks are viewable from three different modes: <gui>Open</gui>, <gui>Actionable</gui>, and <gui>Closed</gui>. All tasks are displayed in the <gui>Open</gui> view mode. Tasks that you can work on right now, without a future start date, are displayed in the <gui>Actionable</gui> view mode. Task that are marked as done are displayed in the <gui>Closed</gui> view mode.</p>
+  </item>
+  </terms>
+  
 
 </page>
 
