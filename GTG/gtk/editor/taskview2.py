@@ -19,6 +19,33 @@
 from gi.repository import Gtk, Pango, GLib
 
 from GTG.core.logger import log
+import GTG.core.urlregex as url_regex
+
+from enum import Enum
+
+
+class TagType(Enum):
+    """Custom Text tags for GTG."""
+
+    LINK = 'Link'
+    TASKTAG = 'Task Tag'
+    TITLE = 'Title'
+
+
+class LinkTag(Gtk.TextTag):
+    """Link Text tag (for urls)."""
+
+    TYPE = TagType.LINK
+
+    def __init__(self, url: str) -> None:
+        super().__init__()
+
+        self.url = url
+
+        self.set_property('background', 'white')
+        self.set_property('foreground', '#007bff')
+        self.set_property('underline', Pango.Underline.SINGLE)
+        self.set_property('strikethrough', False)
 
 
 class TaskView(Gtk.TextView):
@@ -87,7 +114,38 @@ class TaskView(Gtk.TextView):
 
         log.debug(f'Processing text buffer after {self.PROCESSING_DELAY} ms')
 
-        self.apply_title()
+        start = self.apply_title()
+        start.forward_line()
+
+        # Parse the text line by line until the end of the buffer
+        while not start.is_end():
+            end = start.copy()
+            end.forward_to_line_end()
+            text = self.buffer.get_text(start, end, True)
+
+            # Avoid empty new lines
+            if text.startswith('\n'):
+                start.forward_line()
+                continue
+
+            # Find all matches
+            result = url_regex.search(text)
+
+            # Go through each with its own iterator and tag 'em
+            for f in result:
+                url_start = start.copy()
+                url_end = start.copy()
+
+                url_start.forward_chars(f.start())
+                url_end.forward_chars(f.end())
+
+                url_tag = LinkTag(f.group(0))
+                table = self.buffer.get_tag_table()
+                table.add(url_tag)
+                self.buffer.apply_tag(url_tag, url_start, url_end)
+
+            start.forward_line()
+
 
         # Return False to only run the function once,
         # and clear the handle for next time.
