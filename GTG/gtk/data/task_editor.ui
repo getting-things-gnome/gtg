@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.22.2 -->
+<!-- Generated with glade 3.36.0 -->
 <interface>
-  <requires lib="gtk+" version="3.20"/>
+  <requires lib="gtk+" version="3.22"/>
   <object class="GtkPopoverMenu" id="editor_menu_popover">
     <property name="can_focus">False</property>
     <child>
@@ -91,62 +91,6 @@
     <property name="default_height">400</property>
     <property name="type_hint">utility</property>
     <signal name="configure-event" handler="on_move" swapped="no"/>
-    <child type="titlebar">
-      <object class="GtkHeaderBar" id="headerbar">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="title" translatable="yes">Task</property>
-        <property name="show_close_button">True</property>
-        <child>
-          <object class="GtkButton" id="mark_as_done">
-            <property name="label" translatable="yes">Mark as Done</property>
-            <property name="can_focus">False</property>
-            <property name="receives_default">False</property>
-            <property name="tooltip_text" translatable="yes">Mark the task as done</property>
-            <property name="valign">center</property>
-            <property name="action_name">app.mark_as_done</property>
-            <style>
-              <class name="suggested-action"/>
-            </style>
-          </object>
-        </child>
-        <child>
-          <object class="GtkButton" id="mark_as_undone">
-            <property name="label" translatable="yes">Mark as not Done</property>
-            <property name="can_focus">False</property>
-            <property name="receives_default">False</property>
-            <property name="tooltip_text" translatable="yes">Mark the task as to be done</property>
-            <property name="valign">center</property>
-            <property name="action_name">app.mark_as_done</property>
-          </object>
-          <packing>
-            <property name="position">1</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkMenuButton" id="editor_menu">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="receives_default">False</property>
-            <property name="tooltip_text" translatable="yes">Task action menu</property>
-            <property name="valign">center</property>
-            <property name="popover">editor_menu_popover</property>
-            <child>
-              <object class="GtkImage" id="menu-icon">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="icon_name">view-more-symbolic</property>
-                <property name="icon_size">1</property>
-              </object>
-            </child>
-          </object>
-          <packing>
-            <property name="pack_type">end</property>
-            <property name="position">2</property>
-          </packing>
-        </child>
-      </object>
-    </child>
     <child>
       <object class="GtkBox" id="main_box">
         <property name="visible">True</property>
@@ -418,6 +362,62 @@
         </child>
       </object>
     </child>
+    <child type="titlebar">
+      <object class="GtkHeaderBar" id="headerbar">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="title" translatable="yes">Task</property>
+        <property name="show_close_button">True</property>
+        <child>
+          <object class="GtkButton" id="mark_as_done">
+            <property name="label" translatable="yes">Mark as Done</property>
+            <property name="can_focus">False</property>
+            <property name="receives_default">False</property>
+            <property name="tooltip_text" translatable="yes">Mark the task as done</property>
+            <property name="valign">center</property>
+            <property name="action_name">app.mark_as_done</property>
+            <style>
+              <class name="suggested-action"/>
+            </style>
+          </object>
+        </child>
+        <child>
+          <object class="GtkButton" id="mark_as_undone">
+            <property name="label" translatable="yes">Mark as not Done</property>
+            <property name="can_focus">False</property>
+            <property name="receives_default">False</property>
+            <property name="tooltip_text" translatable="yes">Mark the task as to be done</property>
+            <property name="valign">center</property>
+            <property name="action_name">app.mark_as_done</property>
+          </object>
+          <packing>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkMenuButton" id="editor_menu">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="receives_default">False</property>
+            <property name="tooltip_text" translatable="yes">Task action menu</property>
+            <property name="valign">center</property>
+            <property name="popover">editor_menu_popover</property>
+            <child>
+              <object class="GtkImage" id="menu-icon">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="icon_name">view-more-symbolic</property>
+                <property name="icon_size">1</property>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="pack_type">end</property>
+            <property name="position">2</property>
+          </packing>
+        </child>
+      </object>
+    </child>
   </object>
   <object class="GtkPopover" id="closed_popover">
     <property name="can_focus">False</property>
@@ -457,8 +457,8 @@
       <object class="GtkBox" id="duedate_box">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="margin_left">12</property>
-        <property name="margin_right">12</property>
+        <property name="margin_start">12</property>
+        <property name="margin_end">12</property>
         <property name="margin_top">12</property>
         <property name="margin_bottom">12</property>
         <property name="orientation">vertical</property>
@@ -486,6 +486,7 @@
                 <property name="label" translatable="yes">Now</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
+                <property name="focus_on_click">False</property>
                 <property name="receives_default">True</property>
                 <signal name="clicked" handler="duedate_now_selected" swapped="no"/>
               </object>
@@ -500,6 +501,7 @@
                 <property name="label" translatable="yes">Soon</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
+                <property name="focus_on_click">False</property>
                 <property name="receives_default">True</property>
                 <signal name="clicked" handler="duedate_soon_selected" swapped="no"/>
               </object>
@@ -514,6 +516,7 @@
                 <property name="label" translatable="yes">Someday</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
+                <property name="focus_on_click">False</property>
                 <property name="receives_default">True</property>
                 <signal name="clicked" handler="duedate_someday_selected" swapped="no"/>
               </object>
@@ -538,6 +541,7 @@
             <property name="label">Clear</property>
             <property name="visible">True</property>
             <property name="can_focus">True</property>
+            <property name="focus_on_click">False</property>
             <property name="receives_default">True</property>
             <property name="margin_top">8</property>
             <signal name="clicked" handler="duedate_cleared" swapped="no"/>
@@ -559,8 +563,8 @@
       <object class="GtkBox" id="startdate_box">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="margin_left">12</property>
-        <property name="margin_right">12</property>
+        <property name="margin_start">12</property>
+        <property name="margin_end">12</property>
         <property name="margin_top">12</property>
         <property name="margin_bottom">12</property>
         <property name="orientation">vertical</property>
@@ -582,6 +586,7 @@
             <property name="label" translatable="yes">Clear</property>
             <property name="visible">True</property>
             <property name="can_focus">True</property>
+            <property name="focus_on_click">False</property>
             <property name="receives_default">True</property>
             <signal name="clicked" handler="startdate_cleared" swapped="no"/>
           </object>
