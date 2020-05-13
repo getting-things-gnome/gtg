@@ -128,8 +128,8 @@ class TaskEditor():
                 w, e, GTGCalendar.DATE_KIND_CLOSED),
         }
 
-        self.builder.connect_signals(dic)
         self.window = self.builder.get_object("TaskEditor")
+        self.builder.connect_signals(dic)
         self.window.set_application(app)
 
         if task.has_parent():
