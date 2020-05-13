@@ -8,8 +8,9 @@
     <link type="seealso" xref="gtg-shortcut-keys"/>
     <link type="seealso" xref="gtg-quickstart"/>
     
-      
-      <revision pkgversion="1401" date="2020-05-10" status="candidate"/>
+      <revision pkgversion="1301" date="2013-06-18" status="candidate"/>
+      <revision pkgversion="0.4.0" date="2020-05-10" status="candidate"/>
+
    <credit type="author copyright">
       <name>Radina Matic</name>
       <email its:translate="no">radina.matic@gmail.com</email>
@@ -46,8 +47,8 @@
   </item>
   <item>
     <title><em>Search</em></title>
-    <p>Search for tasks using <app>GTG's</app> <link xref="gtg-search-syntax">Search Syntax</link>. Enable the search field by selecting the <figure> <media type="image" mime="image/png" src="figures/search-icon.png"/>
-</figure> icon from the Toolbar. You can also save search queries.</p>
+    <p>Search for tasks using <app>GTG's</app> <link xref="gtg-search-syntax">Search Syntax</link>. Enable the search field by selecting the <media type="image" mime="image/png" src="figures/search-icon.png"/>
+icon from the Toolbar. You can also save search queries.</p>
   </item>
   <item>
     <title><em>Sidebar</em></title>

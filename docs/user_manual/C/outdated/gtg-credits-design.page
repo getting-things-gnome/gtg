@@ -1,15 +1,15 @@
 <page xmlns="http://projectmallard.org/1.0/"
       xmlns:its="http://www.w3.org/2005/11/its"
       type="topic" style="task"
-      id="gtg-credits-dev">
+      id="gtg-credits-design">
 
   <info>
     <link type="guide" xref="index#gtg-credits"/>
-    <link type="seealso" xref="gtg-credits-design"/>
+    <link type="seealso" xref="gtg-credits-dev"/>
     <link type="seealso" xref="gtg-credits-trans"/>
     <link type="seealso" xref="gtg-credits-collab"/>
-      
-      <revision pkgversion="1401" date="2020-05-10" status="outdated"/>
+      <revision pkgversion="1301" date="2013-06-18" status="candidate"/>
+      <revision pkgversion="0.4.0" date="2020-05-10" status="outdated"/>
    <credit type="author copyright">
       <name>Radina Matic</name>
       <email its:translate="no">radina.matic@gmail.com</email>
@@ -25,16 +25,9 @@
 
   </info>
 
-  <title>GTG Developers</title>
+  <title>GTG Design</title>
 
-<p>Lionel Dricot - <email>ploum@ploum.net</email></p>
 <p>Bertrand Rousseau - <email>bertrand.rousseau@gmail.com</email></p>
-<p>Paulo Cabido - <email>paulo.cabido@gmail.com</email></p>
-<p>Luca Invernizzi - <email>invernizzi.l@gmail.com</email></p>
-<p>Kevin Mehall - <email>km@kevinmehall.net</email></p>
-<p>Luca Falavigna - <email>dktrkranz@debian.org</email></p>
-<p>Izidor Matušov - <email>izidor.matusov@gmail.com</email></p>
-
-
+<p>Kalle Persson - <email>kalle@kallepersson.se</email></p>
 </page>
 
