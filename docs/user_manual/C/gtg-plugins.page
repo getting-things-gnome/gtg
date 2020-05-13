@@ -6,8 +6,9 @@
   <info>
     <link type="guide" xref="index#gtg-plugins"/>
      
-      
-      <revision pkgversion="1401" date="2020-05-10" status="candidate"/>
+      <revision pkgversion="1301" date="2013-06-18" status="candidate"/>
+      <revision pkgversion="0.4.0" date="2020-05-10" status="candidate"/>
+
    <credit type="author copyright">
       <name>Radina Matic</name>
       <email its:translate="no">radina.matic@gmail.com</email>

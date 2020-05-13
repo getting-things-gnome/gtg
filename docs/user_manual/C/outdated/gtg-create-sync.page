@@ -1,15 +1,16 @@
 <page xmlns="http://projectmallard.org/1.0/"
       xmlns:its="http://www.w3.org/2005/11/its"
       type="topic" style="task"
-      id="gtg-create-plugin">
+      id="gtg-create-sync">
 
   <info>
     <link type="guide" xref="index#gtg-advanced"/>
     <link type="seealso" xref="gtg-ppa"/>
-    <link type="seealso" xref="gtg-create-sync"/>
+    <link type="seealso" xref="gtg-create-plugin"/>
     <link type="seealso" xref="gtg-join-developers"/>
-      
-      <revision pkgversion="1401" date="2020-05-10" status="outdated"/>
+
+      <revision pkgversion="1301" date="2013-06-18" status="candidate"/>
+      <revision pkgversion="0.4.0" date="2020-05-10" status="outdated"/>
    <credit type="author copyright">
       <name>Radina Matic</name>
       <email its:translate="no">radina.matic@gmail.com</email>
@@ -24,17 +25,14 @@
     <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
 
   </info>
+ 
+  <title>Create your own Sync Service</title>
 
-  <title>Create your own Plugin</title>
+<p>Here are some resources in case you are interested in making your own Sync Service for <app>GTG</app>:</p>
 
-<p>Here are some resources in case you are interested in making your own plugin for <app>GTG</app>:</p>
+<p><link href="https://live.gnome.org/gtg/Backends">Sync Services (Backends)</link></p>
 
-<p><link href="https://live.gnome.org/gtg/pluginHowTo">How do plugins work and how can you build a plugin for <app>GTG</app></link></p>
-
-<p><link href="https://live.gnome.org/gtg/plugins">Plugin examples</link></p>
-
-
-
+<p><link href="https://live.gnome.org/gtg/dbus">DBus</link></p>
 
 </page>
 

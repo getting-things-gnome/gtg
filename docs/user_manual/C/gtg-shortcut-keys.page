@@ -9,7 +9,9 @@
     <link type="seealso" xref="gtg-quickstart"/>
     <link type="seealso" xref="gtg-main-window"/>
       
-      <revision pkgversion="1401" date="2020-05-10" status="candidate"/>
+      <revision pkgversion="1301" date="2013-06-18" status="candidate"/>
+      <revision pkgversion="0.4.0" date="2020-05-10" status="candidate"/>
+
    <credit type="author copyright">
       <name>Radina Matic</name>
       <email its:translate="no">radina.matic@gmail.com</email>
@@ -28,7 +30,7 @@
   <title>Shortcut Keys</title>
 
   <p>Use keyboard <gui>shortcut keys</gui> to perform common tasks faster than with the mouse and menus. The following table lists all of <app>GTG's</app> shortcut keys.</p>
-<br />
+
 
  <table rules="rows" frame="top bottom" ui:expanded="true">
     <title>GTG Window-Related shortcuts</title>
@@ -68,7 +70,7 @@
       </tbody>
     </table>
 
-<br/><br/>
+
     <table rules="rows" frame="top bottom" ui:expanded="true">
     <title>Task-Related Shortcuts</title>
       <thead>
