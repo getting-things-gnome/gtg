@@ -135,16 +135,6 @@ class PluginsDialog():
         self.plugin_depends = builder.get_object('PluginDepends')
 
         self.pengine = PluginEngine()
-        # plugin config initiation
-        if self.pengine.get_plugins():
-            self.config.set(
-                "disabled",
-                [p.module_name for p in self.pengine.get_plugins("disabled")],
-            )
-            self.config.set(
-                "enabled",
-                [p.module_name for p in self.pengine.get_plugins("enabled")],
-            )
 
         # see constants PLUGINS_COL_* for column meanings
         self.plugin_store = Gtk.ListStore(str, bool, str, str, bool)
