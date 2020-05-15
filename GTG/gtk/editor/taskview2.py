@@ -48,6 +48,20 @@ class LinkTag(Gtk.TextTag):
         self.set_property('strikethrough', False)
 
 
+class TitleTag(Gtk.TextTag):
+    """Title Text tag (only one per buffer)."""
+
+    TYPE = TagType.TITLE
+
+    def __init__(self) -> None:
+        super().__init__()
+
+        self.set_property('weight', Pango.Weight.BOLD)
+        self.set_property('size_points', 16)
+        self.set_property('pixels_above_lines', 15)
+        self.set_property('pixels_below_lines', 30)
+
+
 class TaskView(Gtk.TextView):
     """Taskview widget
 
@@ -89,11 +103,8 @@ class TaskView(Gtk.TextView):
         self.buffer.set_modified(False)
         self.table = self.buffer.get_tag_table()
 
-        self.title_tag = self.buffer.create_tag('title',
-                                                weight=Pango.Weight.BOLD,
-                                                size_points=16,
-                                                pixels_above_lines=15,
-                                                pixels_below_lines=30)
+        self.title_tag = TitleTag()
+        self.buffer.get_tag_table().add(self.title_tag)
 
         # Signals and callbacks
         self.id_modified = self.buffer.connect('changed', self.on_modified)
@@ -172,7 +183,7 @@ class TaskView(Gtk.TextView):
         buffer_end = self.buffer.get_end_iter()
 
         # Set the tag to the first line and remove it everywhere below
-        self.buffer.apply_tag_by_name('title', start, end)
-        self.buffer.remove_tag_by_name('title', end, buffer_end)
+        self.buffer.apply_tag(self.title_tag, start, end)
+        self.buffer.remove_tag(self.title_tag, end, buffer_end)
 
         return end
