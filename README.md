@@ -34,9 +34,9 @@ If you want to install the majority of those dependencies using Linux distributi
 
     # On Fedora:
     sudo dnf install python3-nose python3-pyxdg python3-pyflakes python3-pep8 python3-pycodestyle python3-mock python3-dbus gobject-introspection
-    
+
     # On Ubuntu/Debian:
-    sudo apt install python3-nose python3-xdg python3-pyflakes python3-pep8 python3-pycodestyle python3-mock python3-dbus gobject-introspection
+    sudo apt install python3-nose python3-xdg python3-pyflakes python3-pep8 python3-pycodestyle python3-mock python3-dbus gobject-introspection pkg-config libdbus-glib-1-dev libgirepository1.0-dev
 
 Still, running the developer version of GTG will not be possible without having "LibLarch" checked out or available on the system. The easiest way to have liblarch cloned and set up (along with all remaining missing dependencies, if any) is to let PIP do the work for you, with this command:
 
