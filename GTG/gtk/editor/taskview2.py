@@ -139,20 +139,8 @@ class TaskView(Gtk.TextView):
                 start.forward_line()
                 continue
 
-            # Find all matches
-            result = url_regex.search(text)
 
-            # Go through each with its own iterator and tag 'em
-            for f in result:
-                url_start = start.copy()
-                url_end = start.copy()
-
-                url_start.forward_chars(f.start())
-                url_end.forward_chars(f.end())
-
-                url_tag = LinkTag(f.group(0))
-                self.table.add(url_tag)
-                self.buffer.apply_tag(url_tag, url_start, url_end)
+            self.detect_url(text, start)
 
             start.forward_line()
 
@@ -161,6 +149,26 @@ class TaskView(Gtk.TextView):
         # and clear the handle for next time.
         self.timeout = None
         return False
+
+
+    def detect_url(self, text: str, start: Gtk.TextIter) -> None:
+        """Detect URLs and apply tags."""
+
+        # Find all matches
+        matches = url_regex.search(text)
+
+        # Go through each with its own iterator and tag 'em
+        for match in matches:
+            url_start = start.copy()
+            url_end = start.copy()
+
+            url_start.forward_chars(match.start())
+            url_end.forward_chars(match.end())
+
+            url_tag = LinkTag(match.group(0))
+
+            self.table.add(url_tag)
+            self.buffer.apply_tag(url_tag, url_start, url_end)
 
 
     def apply_title(self) -> Gtk.TextIter:
