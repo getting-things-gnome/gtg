@@ -125,7 +125,7 @@ class TaskView(Gtk.TextView):
 
         log.debug(f'Processing text buffer after {self.PROCESSING_DELAY} ms')
 
-        start = self.apply_title()
+        start = self.detect_title()
         start.forward_line()
 
         # Parse the text line by line until the end of the buffer
@@ -171,7 +171,7 @@ class TaskView(Gtk.TextView):
             self.buffer.apply_tag(url_tag, url_start, url_end)
 
 
-    def apply_title(self) -> Gtk.TextIter:
+    def detect_title(self) -> Gtk.TextIter:
         """Apply title tag to the first line."""
 
         start = self.buffer.get_start_iter()
