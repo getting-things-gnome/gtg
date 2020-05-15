@@ -104,7 +104,7 @@ class TaskView(Gtk.TextView):
         self.table = self.buffer.get_tag_table()
 
         self.title_tag = TitleTag()
-        self.buffer.get_tag_table().add(self.title_tag)
+        self.table.add(self.title_tag)
 
         # Signals and callbacks
         self.id_modified = self.buffer.connect('changed', self.on_modified)
@@ -151,8 +151,7 @@ class TaskView(Gtk.TextView):
                 url_end.forward_chars(f.end())
 
                 url_tag = LinkTag(f.group(0))
-                table = self.buffer.get_tag_table()
-                table.add(url_tag)
+                self.table.add(url_tag)
                 self.buffer.apply_tag(url_tag, url_start, url_end)
 
             start.forward_line()
