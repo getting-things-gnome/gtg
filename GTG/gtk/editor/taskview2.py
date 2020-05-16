@@ -19,7 +19,7 @@
 import re
 from time import time
 
-from gi.repository import Gtk, Pango, GLib
+from gi.repository import Gtk, Pango, GLib, Gdk
 
 from GTG.core.logger import log
 from GTG.core.requester import Requester
@@ -125,6 +125,10 @@ class TaskView(Gtk.TextView):
         self.set_editable(True)
         self.set_cursor_visible(True)
 
+        # Mouse cursors
+        self.cursor_hand = Gdk.Cursor.new(Gdk.CursorType.HAND2)
+        self.cursor_normal = Gdk.Cursor.new(Gdk.CursorType.XTERM)
+
         # Tags and buffer setup
         self.buffer = self.get_buffer()
         self.buffer.set_modified(False)
@@ -141,6 +145,7 @@ class TaskView(Gtk.TextView):
 
         # Signals and callbacks
         self.id_modified = self.buffer.connect('changed', self.on_modified)
+        self.connect('motion-notify-event', self.on_mouse_move)
 
 
     def on_modified(self, buffer: Gtk.TextBuffer) -> None:
@@ -263,6 +268,23 @@ class TaskView(Gtk.TextView):
         self.data['title'] = self.buffer.get_text(start, end, True)
 
         return end
+
+    # --------------------------------------------------------------------------
+    # INTERACTIVITY
+    # --------------------------------------------------------------------------
+
+    def on_mouse_move(self, view, event) -> None:
+        """Callback when the mouse moves."""
+
+        window = event.window
+        _, x, y, _ = window.get_pointer()
+        x, y = view.window_to_buffer_coords(Gtk.TextWindowType.TEXT, x, y)
+        tags = view.get_iter_at_location(x, y)[1].get_tags()
+        window.set_cursor(self.cursor_normal)
+
+        for tag in tags:
+            if tag.TYPE == TagType.LINK:
+                window.set_cursor(self.cursor_hand)
 
     # --------------------------------------------------------------------------
     # PUBLIC API
