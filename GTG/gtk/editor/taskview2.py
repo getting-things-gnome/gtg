@@ -132,6 +132,11 @@ class TaskView(Gtk.TextView):
         self.title_tag = TitleTag()
         self.table.add(self.title_tag)
 
+        # Task info
+        self.data = {
+            'title': ''
+        }
+
         # Signals and callbacks
         self.id_modified = self.buffer.connect('changed', self.on_modified)
 
@@ -177,6 +182,9 @@ class TaskView(Gtk.TextView):
         self.timeout = None
         return False
 
+    # --------------------------------------------------------------------------
+    # DETECTION
+    # --------------------------------------------------------------------------
 
     def detect_tag(self, text: str, start: Gtk.TextIter) -> None:
         """Detect GTGs tags and applies text tags to them."""
@@ -242,4 +250,15 @@ class TaskView(Gtk.TextView):
         self.buffer.apply_tag(self.title_tag, start, end)
         self.buffer.remove_tag(self.title_tag, end, buffer_end)
 
+        self.data['title'] = self.buffer.get_text(start, end, True)
+
         return end
+
+    # --------------------------------------------------------------------------
+    # PUBLIC API
+    # --------------------------------------------------------------------------
+
+    def get_title(self) -> str:
+        """Get the task's title."""
+
+        return self.data['title']
