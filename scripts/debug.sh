@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 #Don't let the user execute this as root, it breaks graphical login (Changes /tmp permissions)
 if [[ $UID -eq 0 ]]; then

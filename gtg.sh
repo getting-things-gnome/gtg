@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # This script allows contributors to run GTG directly from the gtg directory without the need to navigate
 # to the scripts folder. 

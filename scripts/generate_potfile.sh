@@ -1,4 +1,5 @@
-#!/bin/bash
+#!/usr/bin/env bash
+
 POTFILE="po/gtg.pot"
 rm ${POTFILE}
 touch ${POTFILE}
