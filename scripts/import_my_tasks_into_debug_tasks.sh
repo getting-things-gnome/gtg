@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #Imports your usual tags in the debug  data, so that you can 
 # play with your tasks without fear of destroying them
 ./scripts/debug.sh -n

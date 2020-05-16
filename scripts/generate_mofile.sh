@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 LANGUAGES=$(find po/ -type f -iname "*.po" | sed 's/po\/\(.*\).po/\1/')
 
