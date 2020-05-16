@@ -22,6 +22,7 @@ from gi.repository import Gtk, Pango, GLib
 
 from GTG.core.logger import log
 from GTG.core.requester import Requester
+from GTG.gtk.colors import background_color
 import GTG.core.urlregex as url_regex
 
 from enum import Enum
@@ -79,7 +80,7 @@ class TaskTagTag(Gtk.TextTag):
         self.tag_name = tag
 
         try:
-            self.color = req.get_tag(tag).get_attribute('color')
+            self.color = background_color([req.get_tag(tag)])
         except AttributeError:
             self.color = '#FFEA00'
 
