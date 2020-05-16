@@ -16,12 +16,18 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
+import re
+
 from gi.repository import Gtk, Pango, GLib
 
 from GTG.core.logger import log
+from GTG.core.requester import Requester
 import GTG.core.urlregex as url_regex
 
 from enum import Enum
+
+# Regex to find GTG's tags
+TAG_REGEX = re.compile(r'\@\w+')
 
 
 class TagType(Enum):
@@ -62,6 +68,25 @@ class TitleTag(Gtk.TextTag):
         self.set_property('pixels_below_lines', 30)
 
 
+class TaskTagTag(Gtk.TextTag):
+    """Text tag for task tags."""
+
+    TYPE = TagType.TASKTAG
+
+    def __init__(self, tag: str, req: Requester) -> None:
+        super().__init__()
+
+        self.tag_name = tag
+
+        try:
+            self.color = req.get_tag(tag).get_attribute('color')
+        except AttributeError:
+            self.color = '#FFEA00'
+
+        self.set_property('background', self.color)
+        self.set_property('foreground', 'black')
+
+
 class TaskView(Gtk.TextView):
     """Taskview widget
 
@@ -85,7 +110,7 @@ class TaskView(Gtk.TextView):
     # Handle ID for the modified signal handler
     id_modified = None
 
-    def __init__(self, req, clipboard) -> None:
+    def __init__(self, req: Requester, clipboard) -> None:
         super().__init__()
 
         self.req = req
@@ -141,6 +166,7 @@ class TaskView(Gtk.TextView):
 
 
             self.detect_url(text, start)
+            self.detect_tag(text, start)
 
             start.forward_line()
 
@@ -149,6 +175,28 @@ class TaskView(Gtk.TextView):
         # and clear the handle for next time.
         self.timeout = None
         return False
+
+
+    def detect_tag(self, text: str, start: Gtk.TextIter) -> None:
+        """Detect GTGs tags and applies text tags to them."""
+
+        # Find all matches
+        matches = re.finditer(TAG_REGEX, text)
+
+        # Go through each with its own iterator and tag 'em
+        for match in matches:
+            tag_start = start.copy()
+            tag_end = start.copy()
+
+            tag_start.forward_chars(match.start())
+            tag_end.forward_chars(match.end())
+
+            # I find this confusing too :)
+            tag_tag = TaskTagTag(match.group(0), self.req)
+
+            self.table.add(tag_tag)
+            self.buffer.apply_tag(tag_tag, tag_start, tag_end)
+
 
 
     def detect_url(self, text: str, start: Gtk.TextIter) -> None:
