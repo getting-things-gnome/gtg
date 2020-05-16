@@ -56,6 +56,18 @@ class LinkTag(Gtk.TextTag):
         self.set_property('strikethrough', False)
 
 
+    def set_hover(self) -> None:
+        """Change tag appareance when hovering."""
+
+        self.set_property('background', 'light gray')
+
+
+    def reset(self) -> None:
+        """Reset tag appareance when not hovering."""
+
+        self.set_property('background', 'white')
+
+
 class TitleTag(Gtk.TextTag):
     """Title Text tag (only one per buffer)."""
 
@@ -128,6 +140,9 @@ class TaskView(Gtk.TextView):
         # Mouse cursors
         self.cursor_hand = Gdk.Cursor.new(Gdk.CursorType.HAND2)
         self.cursor_normal = Gdk.Cursor.new(Gdk.CursorType.XTERM)
+
+        # Tag currently under the cursor
+        self.hovered_tag = None
 
         # Tags and buffer setup
         self.buffer = self.get_buffer()
@@ -276,15 +291,26 @@ class TaskView(Gtk.TextView):
     def on_mouse_move(self, view, event) -> None:
         """Callback when the mouse moves."""
 
+        # Get the tag at the X, Y coords of the mosue cursor
         window = event.window
         _, x, y, _ = window.get_pointer()
         x, y = view.window_to_buffer_coords(Gtk.TextWindowType.TEXT, x, y)
         tags = view.get_iter_at_location(x, y)[1].get_tags()
+
+        # Reset cursor and hover states
         window.set_cursor(self.cursor_normal)
 
-        for tag in tags:
+        if self.hovered_tag:
+            self.hovered_tag.reset()
+            self.hovered_tag = None
+
+        # Apply hover state if possible
+        if tags:
+            tag = tags[0]
             if tag.TYPE == TagType.LINK:
                 window.set_cursor(self.cursor_hand)
+                tag.set_hover()
+                self.hovered_tag = tag
 
     # --------------------------------------------------------------------------
     # PUBLIC API
