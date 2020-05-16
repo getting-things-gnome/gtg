@@ -131,6 +131,7 @@ class TaskView(Gtk.TextView):
 
         self.title_tag = TitleTag()
         self.table.add(self.title_tag)
+        self.tags = []
 
         # Task info
         self.data = {
@@ -155,6 +156,10 @@ class TaskView(Gtk.TextView):
         """Process the contents of the text buffer."""
 
         log.debug(f'Processing text buffer after {self.PROCESSING_DELAY} ms')
+
+        # Clear all tags first
+        [self.table.remove(t) for t in self.tags]
+        self.tags = []
 
         start = self.detect_title()
         start.forward_line()
@@ -202,6 +207,7 @@ class TaskView(Gtk.TextView):
 
             # I find this confusing too :)
             tag_tag = TaskTagTag(match.group(0), self.req)
+            self.tags.append(tag_tag)
 
             self.table.add(tag_tag)
             self.buffer.apply_tag(tag_tag, tag_start, tag_end)
@@ -223,6 +229,7 @@ class TaskView(Gtk.TextView):
             url_end.forward_chars(match.end())
 
             url_tag = LinkTag(match.group(0))
+            self.tags.append(url_tag)
 
             self.table.add(url_tag)
             self.buffer.apply_tag(url_tag, url_start, url_end)
