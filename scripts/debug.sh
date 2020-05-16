@@ -15,7 +15,7 @@ title=""
 mkdir -p tmp
 
 # Interpret arguments
-while getopts bdns: o
+while getopts bdnst: o
 do  case "$o" in
     b)   args="$args --boot-test";;
     d)   args="$args -d";;
