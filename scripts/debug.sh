@@ -54,4 +54,5 @@ fi
 
 if [[ "$norun" -eq 0 ]]; then
     PYTHONPATH=$(pwd ./GTG/gtg "$args" -t "$title")
+    export PYTHONPATH
 fi
