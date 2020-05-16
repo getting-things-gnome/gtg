@@ -5,4 +5,4 @@
 # It refers to the GTG debug script originally placed in /scripts/debug.sh.
 # Makes life much easier.
 
-exec ./scripts/debug.sh $@
+exec ./scripts/debug.sh "$@"
