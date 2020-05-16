@@ -17,6 +17,7 @@
 # -----------------------------------------------------------------------------
 
 import re
+from time import time
 
 from gi.repository import Gtk, Pango, GLib
 
@@ -156,6 +157,7 @@ class TaskView(Gtk.TextView):
         """Process the contents of the text buffer."""
 
         log.debug(f'Processing text buffer after {self.PROCESSING_DELAY} ms')
+        bench_start = time()
 
         # Clear all tags first
         [self.table.remove(t) for t in self.tags]
@@ -181,6 +183,7 @@ class TaskView(Gtk.TextView):
 
             start.forward_line()
 
+        log.debug(f'Processed in {time() - bench_start:.2} secs')
 
         # Return False to only run the function once,
         # and clear the handle for next time.
