@@ -423,6 +423,11 @@ class Application(Gtk.Application):
 
         self.edit_tag_dialog.hide()
 
+    def select_tag(self, tag):
+        """Select a tag in the browser."""
+
+        self.browser.select_on_sidebar(tag)
+
     # --------------------------------------------------------------------------
     # TASK EDITOR API
     # --------------------------------------------------------------------------

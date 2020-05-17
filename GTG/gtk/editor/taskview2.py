@@ -112,14 +112,37 @@ class TaskTagTag(Gtk.TextTag):
         super().__init__()
 
         self.tag_name = tag
+        self.tag = req.get_tag(tag)
 
         try:
-            self.color = background_color([req.get_tag(tag)])
+            self.color = background_color([self.tag])
         except AttributeError:
             self.color = '#FFEA00'
 
         self.set_property('background', self.color)
         self.set_property('foreground', 'black')
+
+        self.connect('event', self.on_tag)
+
+    def set_hover(self) -> None:
+        """Change tag appareance when hovering."""
+
+        self.set_property('background', self.tag.get_attribute('color'))
+
+
+    def reset(self) -> None:
+        """Reset tag appareance when not hovering."""
+
+        self.set_property('background', self.color)
+
+
+    def on_tag(self, tag, view, event, _iter) -> None:
+        """Callback for events that happen inside the tag."""
+
+        button = event.get_button()
+
+        if button[0] and button[1] == 1:
+            view.browse_tag(self.tag_name)
 
 
 class TaskView(Gtk.TextView):
@@ -186,6 +209,9 @@ class TaskView(Gtk.TextView):
         # Signals and callbacks
         self.id_modified = self.buffer.connect('changed', self.on_modified)
         self.connect('motion-notify-event', self.on_mouse_move)
+
+        # Callback when tags are clicked
+        self.browse_tag = NotImplemented
 
 
     def on_modified(self, buffer: Gtk.TextBuffer) -> None:
@@ -332,7 +358,7 @@ class TaskView(Gtk.TextView):
         # Apply hover state if possible
         if tags:
             tag = tags[0]
-            if tag.TYPE == TagType.LINK:
+            if tag.TYPE in {TagType.LINK, TagType.TASKTAG}:
                 window.set_cursor(self.cursor_hand)
                 tag.set_hover()
                 self.hovered_tag = tag

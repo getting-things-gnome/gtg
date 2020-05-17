@@ -177,6 +177,9 @@ class TaskEditor():
         conf_font_value = self.browser_config.get("font_name")
         if conf_font_value != "":
             self.textview.override_font(Pango.FontDescription(conf_font_value))
+
+        self.textview.browse_tag = app.select_tag
+
         # Voila! it's done
 
         """
