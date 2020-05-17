@@ -1,5 +1,6 @@
 <page xmlns="http://projectmallard.org/1.0/"
       xmlns:its="http://www.w3.org/2005/11/its"
+      xmlns:ui="http://projectmallard.org/ui/1.0/"
       type="guide" style="task 2column"
       id="gtg-quickadd">
 
@@ -7,15 +8,16 @@
     <link type="guide" xref="index#gtg-task-management" group="second"/>
       
       <revision pkgversion="1301" date="2013-06-18" status="candidate"/>
+<revision pkgversion="0.4.0" date="2020-05-16" status="candidate"/>
    <credit type="author copyright">
       <name>Radina Matic</name>
       <email its:translate="no">radina.matic@gmail.com</email>
       <years>2013</years>
     </credit>
-    <credit type="copyright editor">
-      <name></name>
-      <email its:translate="no"></email>
-      <years></years>
+    <credit type="editor copyright">
+      <name>Danielle Vansia</name>
+      <email its:translate="no">daniellevansia@gmail.com</email>
+      <years>2020</years>
     </credit>
 
     <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
@@ -24,7 +26,59 @@
 
   <title>Quick Add Entry</title>
 
-  <p>The Quick Add Entry is the fastest way to create a new task. To enable and disable the entry field in the main <app>GTG</app> menu go to <guiseq><gui>View</gui><gui>Quick Add Entry</gui></guiseq>.</p> 
-  
-  <links type="topic" groups="first second third fourth fifth sixth" style="2column"/>
+  <p>The Quick Add Entry is the fastest way to create a new task. The Quick Add Entry field is located below the Task Browser.</p> 
+
+<section id="quick-add-task">
+<title>Create a New Task Using the Quick Add Entry</title>
+
+<p>To add a task, type the task's title in the entry field and press <key>Enter</key>. Spaces are allowed when entering a title. The task is available in the task browser. If a tag is selected in the Sidebar before you create the task in the Quick Add Entry field, it will be applied to the task you created. </p>
+
+<figure>
+  <title>Quick Add Entry</title>
+  <desc> </desc>
+ <media type="image" mime="image/png" src="figures/quick_tag_entry.png"/>
+</figure>
+</section>
+
+<section id="quick-add-dates">
+<title>Add Dates and Tags to Tasks Using the Quick Add Entry</title> 
+
+<p>You can also create a task in the Quick Add Entry and at the same time specify its tags, start date, and due date. These spec</p>
+
+<terms>
+<item>
+     <title><em style="strong">tags:tag1,tag2,tag3</em></title>
+     <p>You can apply as many tags as you want using comma as a separator. Do not put a space between any tags.</p></item>
+<item>
+     <title><em style="strong">due:<code>date</code></em> or <em style="strong">start:<code>date</code></em></title>
+     <p>With this syntax you can apply a due date, start date, or both. Dates can be formatted as dates in your locale or yyyy-mm-dd (for example, 2020-04-01) or yyyymmdd (20200401) or mmdd (0401 - the year being is the current one). You can also use words such as today, tomorrow, or a weekday name (due:monday means due next Monday). Indefinite dates, such as someday or soon, can also be used.</p></item></terms>
+</section>     
+
+
+<section id="quickadd-examples">
+<title>Quick Add Entry Examples</title>
+<p>The following examples show the result of adding this syntax to the Quick Add Entry field.</p>
+
+<terms>
+  <item>
+     <title><em style="strong"><code>return book</code></em></title>
+        <p>Creates a new task with the title <em>return book</em>. No tags, start date, or due date are added.</p></item>
+  <item>
+     <title><em style="strong"><code>buy groceries tags:purchases,personal</code></em></title>
+       <p>Creates a new task with the title <em>buy groceries</em> and with the tags <em>purchases</em> and <em>personal</em>. No start date or due date are added.</p></item>
+<item>
+     <title><em style="strong"><code>write a book start:someday</code></em></title>
+        <p>Creates a new task with the title <em>write a book</em> with the start date of someday. No tags or due date are added.</p></item>
+  <item>
+    <title><em style="strong"><code>buy stationary tags:purchases,office due:20200330 start:tuesday</code></em></title>
+     <p>Creates a new task with the title <em>buy stationary</em>, with the tags <em>purchases</em> and <em>office</em>, with the due date March 30, 2020, and a start date of next Tuesday.</p></item>
+  <item>
+     <title><em style="strong"><code>call mum tags:family,calls due:sunday start:tomorrow</code></em></title>
+     <p>Creates a new task with the title <em>call mum</em>, with the tags <em>family</em> and <em>calls</em>, with the due date of next Sunday, and the start date tomorrow.</p></item>
+</terms>
+
+</section>    
+
+   
+ 
 </page>

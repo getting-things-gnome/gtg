@@ -3,10 +3,11 @@
       id="gtg-quickadd-dates">
 
   <info>
-    <link type="guide" xref="gtg-quickadd" group="fourth"/>
+   
     <link type="seealso" xref="gtg-quickadd-new-task"/>
     <link type="seealso" xref="gtg-quickadd-tags"/>
     <revision pkgversion="0.1" version="0.1" date="2012-07-03" status="candidate"/>
+<revision pkgversion="0.4.0" date="2020-05-16" status="outdated"/>
     <credit type="author">
       <name>Radina Matic</name>
      <email>radina.matic@gmail.com</email>

@@ -4,22 +4,24 @@
       id="gtg-create-new-task">
 
   <info>
-    <link type="guide" xref="gtg-tasks" group="first"/>
+    <link type="guide" xref="index#gtg-working-task" group="first"/>
     <link type="seealso" xref="gtg-edit-task"/>
     <link type="seealso" xref="gtg-dismiss-task"/>
     <link type="seealso" xref="gtg-delete-task"/>
+    <link type="seealso" xref="gtg-subtasks"/>
     <link type="seealso" xref="gtg-set-task-date"/>
       
       <revision pkgversion="1301" date="2013-06-18" status="candidate"/>
+<revision pkgversion="0.4.0" date="2020-05-16" status="candidate"/>
    <credit type="author copyright">
       <name>Radina Matic</name>
       <email its:translate="no">radina.matic@gmail.com</email>
       <years>2013</years>
     </credit>
-    <credit type="copyright editor">
-      <name></name>
-      <email its:translate="no"></email>
-      <years></years>
+    <credit type="editor copyright">
+      <name>Danielle Vansia</name>
+      <email its:translate="no">daniellevansia@gmail.com</email>
+      <years>2020</years>
     </credit>
 
     <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
@@ -31,17 +33,12 @@
   <p>There are three ways to create a new task in <app>GTG</app>:</p>
 
 <list>
-  <item><p>Go to <guiseq><gui>Tasks</gui><gui>New Task</gui></guiseq> in the main menu.</p></item>
-  <item><p>Click the <gui>New Task</gui> button in the toolbar.</p></item>
+  <item><p>Click the <gui>+</gui> button in the toolbar.</p></item>
   <item><p>Use the <keyseq><key>Ctrl</key><key>N</key></keyseq> shortcut.</p></item>
+<item><p>Use the <link xref="gtg-quickadd">Quick Add Entry</link>.</p></item>
 </list>
 
-  <!-- Insert Image Here -->
-
-  <p>The new task will open on top of the <app>GTG</app> main window, or any other tasks that you may have opened.</p>
+  <p>The new task opens on top of the <app>GTG</app> main window or any other tasks that you may have opened.</p>
 
 </page>
-
-
-
 

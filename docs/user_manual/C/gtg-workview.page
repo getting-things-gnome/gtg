@@ -1,10 +1,10 @@
 <page xmlns="http://projectmallard.org/1.0/"
       xmlns:its="http://www.w3.org/2005/11/its"
       type="guide" style="task 2column"
-      id="gtg-workview">
+      id="gtg-taskview">
 
   <info>
-    <link type="guide" xref="index#gtg-task-management" group="fourth"/>
+    <link type="guide" xref="index#gtg-task-management" group="third"/>
       
       <revision pkgversion="1301" date="2013-06-18" status="candidate"/>
    <credit type="author copyright">
@@ -22,7 +22,7 @@
 
   </info>
 
-  <title>Understand Work View</title>
+  <title>Understand Task View Modes</title>
   
     <p> If you press the <gui>Work View</gui> button, only actionable tasks will be displayed.</p> 
 
