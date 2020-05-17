@@ -1,5 +1,5 @@
 <page xmlns="http://projectmallard.org/1.0/"
-      xmlns:ui="http://projectmallard.org/experimental/ui/"
+      xmlns:ui="http://projectmallard.org/ui/1.0/"
       xmlns:its="http://www.w3.org/2005/11/its"
       type="guide" style="tip"
       id="gtg-shortcut-keys">
@@ -41,10 +41,10 @@
       </thead>
       <tbody>
         <tr>
-          <td><p>Show Task Editor Window</p></td>  <td><p>ENTER</p></td>
+          <td><p>Show Task Editor Window</p></td>  <td><p><key>ENTER</key></p></td>
         </tr>
         <tr>
-          <td><p>Hide Task Editor Window</p></td>  <td><p>ESC</p></td>
+          <td><p>Hide Task Editor Window</p></td>  <td><p><key>ESC</key></p></td>
         </tr>
 	<tr>
           <td><p>Move One Task Up in Task List</p></td>  <td><p>Up Arrow</p></td>
@@ -53,19 +53,19 @@
           <td><p>Move One Task Down in Task List</p></td>  <td><p>Down Arrow</p></td>
         </tr>
         <tr>
-          <td><p>Place Focus on Quick Add Task Entry Field</p></td>  <td><p>Ctrl + L</p></td>
+          <td><p>Place Focus on Quick Add Task Entry Field</p></td>  <td><p><keyseq><key>Ctrl</key><key>L</key></keyseq></p></td>
         </tr>
         <tr>
-          <td><p>Toggle Sidebar</p></td> <td><p>F9</p></td>
+          <td><p>Toggle Sidebar</p></td> <td><p><key>F9</key></p></td>
         </tr>
         <tr>
-          <td><p>Redo</p></td>  <td><p>Ctrl + Y</p></td>
+          <td><p>Redo</p></td>  <td><p><keyseq><key>Ctrl</key><key>Y</key></keyseq></p></td>
         </tr>
         <tr>
-          <td><p>Undo</p></td>  <td><p>Ctrl + Z</p></td>
+          <td><p>Undo</p></td>  <td><p><keyseq><key>Ctrl</key><key>Z</key></keyseq></p></td>
         </tr>
         <tr>
-          <td><p>Quit</p></td>  <td><p>Ctrl + Q</p></td>
+          <td><p>Quit</p></td>  <td><p><keyseq><key>Ctrl</key><key>Q</key></keyseq></p></td>
         </tr>
       </tbody>
     </table>
@@ -80,19 +80,19 @@
       </thead>
       <tbody>
         <tr>
-          <td><p>New Task</p></td> <td><p>Ctrl + N</p></td>
+          <td><p>New Task</p></td> <td><p><keyseq><key>Ctrl</key><key>N</key></keyseq></p></td>
         </tr>
         <tr>
-          <td><p>Mark Task as Done</p></td>  <td><p>Ctrl + D</p></td>
+          <td><p>Mark Task as Done</p></td>  <td><p><keyseq><key>Ctrl</key><key>D</key></keyseq></p></td>
         </tr>
         <tr>
-          <td><p>Dismiss Task</p></td>  <td><p>Ctrl + I</p></td>
+          <td><p>Dismiss Task</p></td>  <td><p><keyseq><key>Ctrl</key><key>I</key></keyseq></p><note style="tip"><p>This keyboard shortcut also undismisses a task when done in the <gui>Closed</gui> Task View Mode</p></note></td>
         </tr>
         <tr>
-          <td><p>Delete Task</p></td>  <td><p>DEL</p></td>
+          <td><p>Delete Task</p></td>  <td><p><keyseq><key>CTRL</key><key>DEL</key></keyseq></p></td>
         </tr>
         <tr>
-          <td><p>New Subtask</p></td>  <td><p>Ctrl+Shift+N</p></td>
+          <td><p>New Subtask</p></td>  <td><p><keyseq><key>Ctrl</key><key>Shift</key><key>N</key></keyseq></p></td>
         </tr>
       </tbody>
     </table>
@@ -108,7 +108,7 @@
       </thead>
       <tbody>
         <tr>
-          <td><p>Add/Modify Tag</p></td>  <td><p>Ctrl + T</p></td>
+          <td><p>Add/Modify Tag</p></td>  <td><p><keyseq><key>Ctrl</key><key>T</key></keyseq></p></td>
         </tr>
       </tbody>
     </table>

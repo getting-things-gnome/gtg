@@ -4,11 +4,12 @@
       id="gtg-quickadd-new-task">
 
   <info>
-    <link type="guide" xref="gtg-quickadd" group="fourth"/>
+   
     <link type="seealso" xref="gtg-quickadd-tags"/>
     <link type="seealso" xref="gtg-quickadd-dates"/>
       
       <revision pkgversion="1301" date="2013-06-18" status="candidate"/>
+ <revision pkgversion="0.4.0" date="2020-05-16" status="outdated"/>
    <credit type="author copyright">
       <name>Radina Matic</name>
       <email its:translate="no">radina.matic@gmail.com</email>

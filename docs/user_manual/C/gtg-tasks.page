@@ -4,9 +4,10 @@
       id="gtg-tasks">
 
   <info>
-    <link type="guide" xref="index#gtg-task-management" group="first"/>
+    
       
       <revision pkgversion="1301" date="2013-06-18" status="candidate"/>
+<revision pkgversion="0.4.0" date="2020-05-16" status="outdated"/>
    <credit type="author copyright">
       <name>Radina Matic</name>
       <email its:translate="no">radina.matic@gmail.com</email>
