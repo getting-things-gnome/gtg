@@ -127,7 +127,10 @@ class TaskTagTag(Gtk.TextTag):
     def set_hover(self) -> None:
         """Change tag appareance when hovering."""
 
-        self.set_property('background', self.tag.get_attribute('color'))
+        try:
+            self.set_property('background', self.tag.get_attribute('color'))
+        except AttributeError:
+            self.set_property('background', '#EBDB34')
 
 
     def reset(self) -> None:
