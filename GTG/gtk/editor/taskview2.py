@@ -25,6 +25,7 @@ from GTG.core.logger import log
 from GTG.core.requester import Requester
 from GTG.gtk.colors import background_color
 import GTG.core.urlregex as url_regex
+from webbrowser import open as openurl
 
 from enum import Enum
 
@@ -54,6 +55,18 @@ class LinkTag(Gtk.TextTag):
         self.set_property('foreground', '#007bff')
         self.set_property('underline', Pango.Underline.SINGLE)
         self.set_property('strikethrough', False)
+
+        self.connect('event', self.on_tag)
+
+
+    def on_tag(self, tag, view, event, _iter) -> None:
+        """Callback for events that happen inside the tag."""
+
+        button = event.get_button()
+
+        # If there was a click and it was a left click...
+        if button[0] and button[1] == 1:
+            openurl(self.url)
 
 
     def set_hover(self) -> None:
