@@ -379,7 +379,7 @@ class TaskView(Gtk.TextView):
             item_copy_link = Gtk.MenuItem()
             item_copy_link.set_label(_('Copy Link to Clipboard'))
             item_copy_link.connect('activate',
-                                   self.copy_link,
+                                   self.copy_url,
                                    self.clicked_link)
 
             popup.prepend(item_copy_link)
