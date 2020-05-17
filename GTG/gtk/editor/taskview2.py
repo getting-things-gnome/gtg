@@ -206,7 +206,8 @@ class TaskView(Gtk.TextView):
 
         # Task info
         self.data = {
-            'title': ''
+            'title': '',
+            'tags': ''
         }
 
         # Signals and callbacks
@@ -273,6 +274,7 @@ class TaskView(Gtk.TextView):
 
         # Find all matches
         matches = re.finditer(TAG_REGEX, text)
+        self.data['tags'] = []
 
         # Go through each with its own iterator and tag 'em
         for match in matches:
@@ -288,6 +290,7 @@ class TaskView(Gtk.TextView):
 
             self.table.add(tag_tag)
             self.buffer.apply_tag(tag_tag, tag_start, tag_end)
+            self.data['tags'].append(match.group(0))
 
 
 
