@@ -26,6 +26,7 @@ from GTG.core.requester import Requester
 from GTG.gtk.colors import background_color
 import GTG.core.urlregex as url_regex
 from webbrowser import open as openurl
+from GTG.core.translations import _
 
 from enum import Enum
 
@@ -64,9 +65,16 @@ class LinkTag(Gtk.TextTag):
 
         button = event.get_button()
 
-        # If there was a click and it was a left click...
-        if button[0] and button[1] == 1:
-            openurl(self.url)
+        # If there was a click...
+        if button[0]:
+
+            # Left click
+            if button[1] == 1:
+                openurl(self.url)
+
+            # Right click
+            elif button[1] == 3:
+                view.clicked_link = self.url
 
 
     def set_hover(self) -> None:
@@ -154,6 +162,9 @@ class TaskView(Gtk.TextView):
         self.cursor_hand = Gdk.Cursor.new(Gdk.CursorType.HAND2)
         self.cursor_normal = Gdk.Cursor.new(Gdk.CursorType.XTERM)
 
+        # URL when right-clicking (used to populate RMB menu)
+        self.clicked_link = None
+
         # Tag currently under the cursor
         self.hovered_tag = None
 
@@ -165,6 +176,7 @@ class TaskView(Gtk.TextView):
         self.title_tag = TitleTag()
         self.table.add(self.title_tag)
         self.tags = []
+
 
         # Task info
         self.data = {
@@ -306,7 +318,7 @@ class TaskView(Gtk.TextView):
 
         # Get the tag at the X, Y coords of the mosue cursor
         window = event.window
-        _, x, y, _ = window.get_pointer()
+        _unused, x, y, _unused = window.get_pointer()
         x, y = view.window_to_buffer_coords(Gtk.TextWindowType.TEXT, x, y)
         tags = view.get_iter_at_location(x, y)[1].get_tags()
 
@@ -324,6 +336,39 @@ class TaskView(Gtk.TextView):
                 window.set_cursor(self.cursor_hand)
                 tag.set_hover()
                 self.hovered_tag = tag
+
+
+    def do_populate_popup(self, popup) -> None:
+        """Adds link-related options to the context menu."""
+
+        if self.clicked_link:
+            item_open_link = Gtk.MenuItem()
+            item_open_link.set_label(_('Open Link'))
+            item_open_link.connect('activate',
+                                   lambda _m, url: openurl(url),
+                                   self.clicked_link)
+
+            popup.prepend(item_open_link)
+
+            item_copy_link = Gtk.MenuItem()
+            item_copy_link.set_label(_('Copy Link to Clipboard'))
+            item_copy_link.connect('activate',
+                                   self.copy_link,
+                                   self.clicked_link)
+
+            popup.prepend(item_copy_link)
+
+            popup.show_all()
+
+            self.clicked_link = ""
+
+
+    def copy_url(self, menu_item, url: str) -> None:
+        """Copy url to clipboard."""
+
+        clipboard = Gtk.Clipboard.get(Gdk.SELECTION_CLIPBOARD)
+        clipboard.set_text(url, -1)
+        clipboard.store()
 
     # --------------------------------------------------------------------------
     # PUBLIC API
