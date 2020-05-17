@@ -5,7 +5,7 @@
       id="index">
 
  <info>
-	<title type="link">Getting Things GNOME!</title>
+	<title type="link">Getting Things GNOME! User Manual</title>
     	<title type="text">Getting Things GNOME! User Manual</title>
 
       <revision pkgversion="1301" date="2013-06-18" status="candidate"/>
@@ -42,16 +42,18 @@
 </quote>
 <p>Welcome to the <app>Getting Things GNOME!</app> user manual.</p> <p><app>Getting Things GNOME! (GTG)</app> is the task manager and organizer for the GNOME desktop environment that is inspired by the <em>Getting Things Done (GTD)</em> methodology.  It focuses on usability and simplicity.  <app>GTG</app> provides a simple, yet flexible organization tool for life and work.</p>
 
-<p>For a quick introduction into both <app>GTG's</app> most basic features, as well as some advanced keyboard shortcuts, see <link xref="gtg-quickstart">Get Started</link> and <link xref="gtg-shortcut-keys">Shortcut Keys</link>. For details about <app>GTG's</app> interface, see <link xref="gtg-main-window">Understand GTG Main Window</link>.</p>
+<p>For a quick introduction into both <app>GTG's</app> most basic features, as well as some advanced keyboard shortcuts, see the following quickstart pages below. Other help topics are grouped together in the sections below. Enjoy using <app>Getting Things GNOME!</app></p>
 
- <p>Other help topics are grouped together in the sections below. Enjoy using <app>Getting Things GNOME!</app></p>
+ <section id="gtg-working-task" style="2column">
+    <title>Working With Tasks</title>
+ </section>
 
- <section id="gtg-task-management" style="2column">
-    <title>Task Management</title>
+<section id="gtg-task-management" style="2column">
+    <title>Managing Tasks</title>
  </section>
 
  <section id="gtg-search" style="2column">
-    <title>Search For Tasks</title>
+    <title>Searching For Tasks</title>
  </section>
  
  <section id="gtg-plugins" style="2column">
@@ -59,7 +61,7 @@
  </section>
 
  <section id="gtg-customization" style="2column">
-    <title>Customization</title>
+    <title>Customizing GTG</title>
  </section>
  
  <section id="gtg-advanced" style="2column">

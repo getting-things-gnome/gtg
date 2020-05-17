@@ -4,40 +4,57 @@
       id="gtg-dismiss-task">
 
   <info>
-    <link type="guide" xref="gtg-tasks" group="second"/>
+    <link type="guide" xref="index#gtg-working-task" group="fifth"/>
     <link type="seealso" xref="gtg-create-new-task"/>
     <link type="seealso" xref="gtg-edit-task"/>
     <link type="seealso" xref="gtg-delete-task"/>
+    <link type="seealso" xref="gtg-subtasks"/>
     <link type="seealso" xref="gtg-set-task-date"/>
       
       <revision pkgversion="1301" date="2013-06-18" status="candidate"/>
+<revision pkgversion="0.4.0" date="2020-05-16" status="candidate"/>
    <credit type="author copyright">
       <name>Radina Matic</name>
       <email its:translate="no">radina.matic@gmail.com</email>
       <years>2013</years>
     </credit>
-    <credit type="copyright editor">
-      <name></name>
-      <email its:translate="no"></email>
-      <years></years>
+    <credit type="editor copyright">
+      <name>Danielle Vansia</name>
+      <email its:translate="no">daniellevansia@gmail.com</email>
+      <years>2020</years>
     </credit>
 
-    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+   <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
 
   </info>
 
-  <title>Dismiss Task</title>
 
-  <p>When you decide that a certain task is not valid anymore (does not need to be accomplished), you can dismiss it. To dismiss a selected task from the main <app>GTG</app> window, you can:</p>
+  <title>Dismiss a Task</title>
+
+  <p>When you decide that a certain task is no longer valid (does not need to be accomplished), you can dismiss it. To dismiss a selected task from the <gui>Open</gui> or <gui>Actionable</gui> Task View Modes on the <app>GTG</app> window, you can:</p>
   
   <list>
-      <item><p>Go to <guiseq><gui>Tasks</gui><gui>Dismiss</gui></guiseq> in the main menu.</p></item>
-      <item><p>Click the <gui>Dismiss Task</gui> button in the <app>GTG</app> toolbar.</p></item>
       <item><p>Use the <keyseq><key>Ctrl</key><key>I</key></keyseq> keyboard shortcut.</p></item>
-      <item><p>Right-click the task and select <gui>Dismiss</gui> from the contextual menu.</p></item>
+      <item><p>Right-click the task and select <gui>Dismiss</gui> from the context menu.</p></item>
 </list> 
-  
-   <p>To dismiss an open <app>GTG</app> task click the <gui>Dismiss Task</gui> button in the task toolbar.</p>
-    <p>You can view all the tasks marked as dismissed and closed in the <gui>Closed Task Pane</gui>. To show and hide the <gui>Closed Task Pane</gui>, go to <guiseq><gui>View</gui><gui>Closed Task Pane</gui></guiseq> in the main <app>GTG</app> menu.</p> 
+<note style="tip"><p>You can perform this action on multiple tasks by selecting the tasks while holding <key>SHIFT</key>.</p></note>  
+
+    <p>To dismiss an open <app>GTG</app> task:</p>
+<steps>
+    <item><p>Click the <media type="image" src="figures/task-toolbar-menu.png"></media> icon in the task toolbar.</p></item>
+    <item><p>Click the <gui>Dismiss Task</gui> button.</p></item>
+</steps>
+    
+    <p>You can view all the tasks marked as dismissed and closed in the <gui>Closed</gui> Task View Mode.</p> 
+
+<section id="undismiss-task"><title>Undismiss a Task</title>
+      <p>From the <gui>Closed</gui> Task View Mode, you can:</p>
+     <list>
+     <item><p>Use the <keyseq><key>Ctrl</key><key>I</key></keyseq> keyboard shortcut.</p></item>
+     <item><p>Right-click the task and select <gui>Undismiss</gui> from the context menu.</p></item></list>
+</section>
+
+
 
 </page>
+

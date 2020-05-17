@@ -4,41 +4,43 @@
       id="gtg-edit-task">
 
   <info>
-    <link type="guide" xref="gtg-tasks" group="second"/>
+    <link type="guide" xref="index#gtg-working-task" group="fourth"/>
     <link type="seealso" xref="gtg-create-new-task"/>
     <link type="seealso" xref="gtg-dismiss-task"/>
     <link type="seealso" xref="gtg-delete-task"/>
+    <link type="seealso" xref="gtg-subtasks"/>
     <link type="seealso" xref="gtg-set-task-date"/>
       
       <revision pkgversion="1301" date="2013-06-18" status="candidate"/>
+<revision pkgversion="0.4.0" date="2020-05-16" status="candidate"/>
    <credit type="author copyright">
       <name>Radina Matic</name>
       <email its:translate="no">radina.matic@gmail.com</email>
       <years>2013</years>
     </credit>
-    <credit type="copyright editor">
-      <name></name>
-      <email its:translate="no"></email>
-      <years></years>
+    <credit type="editor copyright">
+      <name>Danielle Vansia</name>
+      <email its:translate="no">daniellevansia@gmail.com</email>
+      <years>2020</years>
     </credit>
 
     <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
 
   </info>
 
-  <title>Edit Task</title>
+  <title>Edit a Task</title>
 
-<p>To open and edit an already created task:</p>
+<p>To open and edit an already created task you can:</p>
 
  <list>
-      <item><p>Select the task in the task browser and double-click it or press <gui>ENTER</gui>.</p></item>
-      <item><p>Go to <guiseq><gui>Tasks</gui><gui>Edit</gui></guiseq> in the main menu.</p></item>
-      <item><p> Right-click the task and select <gui>Edit</gui> from the contextual menu.</p></item>  
+      <item><p>Select the task in the task browser and double-click it or press <key>ENTER</key>.</p></item>
+      <item><p> Right-click the task and select <gui>Edit</gui> from the context menu.</p></item>
+<item><p>Use the keyboard shortcut <keyseq><key>CTRL</key><key>E</key></keyseq> to open a selected task from the Task Browser.</p></item>  
 </list>
 
-<p>Write the desired task content in the task editor window. You can paste links, add tags (start with the sign “@”) and subtasks (start with “-”) inside the task editor. See the <link xref="gtg-subtasks">Subtasks</link> and <link xref="gtg-tags">Tags</link> sections for more details about the syntax.</p>
+<p>Enter a task description and content in the Task Editor window. You can paste links, add tags (start with the sign “@”), and add subtasks (start with “-”) inside the Task Editor. See the <link xref="gtg-subtasks">Subtasks</link> and <link xref="gtg-tags">Tags</link> sections for more details about the syntax.</p>
 
 
-<p>Remember that you do not need to save the changes to the task as GTG does that automatically while you write.</p>
+<note stlye="tip"><p>Remember that you do not need to save the changes to the task as GTG does that automatically while you write.</p></note>
 
 </page>
