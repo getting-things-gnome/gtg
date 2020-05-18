@@ -19,7 +19,7 @@
     </credit>
     <credit type="editor copyright">
       <name>Danielle Vansia</name>
-      <email its:translate="no">danielle.vansia@gmail.com</email>
+      <email its:translate="no">daniellevansia@gmail.com</email>
       <years>2020</years>
     </credit>
 
@@ -29,11 +29,11 @@
 
   <title>Shortcut Keys</title>
 
-  <p>Use keyboard <gui>shortcut keys</gui> to perform common tasks faster than with the mouse and menus. The following table lists all of <app>GTG's</app> shortcut keys.</p>
+  <p>Use keyboard shortcut keys to perform common tasks faster than with the mouse and menus. The following table lists all of <app>GTG's</app> shortcut keys.</p>
 
 
  <table rules="rows" frame="top bottom" ui:expanded="true">
-    <title>GTG Window-Related shortcuts</title>
+    <title><app>GTG</app> Window-Related shortcuts</title>
       <thead>
         <tr>
           <td><p><em style="strong">To Do This</em></p></td>  <td><p><em style="strong">Press This</em></p></td>
@@ -41,22 +41,22 @@
       </thead>
       <tbody>
         <tr>
-          <td><p>Show Task Editor Window</p></td>  <td><p><key>ENTER</key></p></td>
+          <td><p>Show <gui>Task Editor</gui> Window</p></td>  <td><p><key>ENTER</key></p></td>
         </tr>
         <tr>
-          <td><p>Hide Task Editor Window</p></td>  <td><p><key>ESC</key></p></td>
+          <td><p>Hide <gui>Task Editor</gui> Window</p></td>  <td><p><key>ESC</key></p></td>
         </tr>
 	<tr>
-          <td><p>Move One Task Up in Task List</p></td>  <td><p>Up Arrow</p></td>
+          <td><p>Move One Task Up in <gui>Task Browser</gui></p></td>  <td><p>Up Arrow</p></td>
         </tr>
 	<tr>
-          <td><p>Move One Task Down in Task List</p></td>  <td><p>Down Arrow</p></td>
+          <td><p>Move One Task Down in <gui>Task Browser</gui></p></td>  <td><p>Down Arrow</p></td>
         </tr>
         <tr>
-          <td><p>Place Focus on Quick Add Task Entry Field</p></td>  <td><p><keyseq><key>Ctrl</key><key>L</key></keyseq></p></td>
+          <td><p>Place Focus on <gui>Quick Add Entry</gui> Field</p></td>  <td><p><keyseq><key>Ctrl</key><key>L</key></keyseq></p></td>
         </tr>
         <tr>
-          <td><p>Toggle Sidebar</p></td> <td><p><key>F9</key></p></td>
+          <td><p>Toggle <gui>Sidebar</gui></p></td> <td><p><key>F9</key></p></td>
         </tr>
         <tr>
           <td><p>Redo</p></td>  <td><p><keyseq><key>Ctrl</key><key>Y</key></keyseq></p></td>
@@ -86,7 +86,7 @@
           <td><p>Mark Task as Done</p></td>  <td><p><keyseq><key>Ctrl</key><key>D</key></keyseq></p></td>
         </tr>
         <tr>
-          <td><p>Dismiss Task</p></td>  <td><p><keyseq><key>Ctrl</key><key>I</key></keyseq></p><note style="tip"><p>This keyboard shortcut also undismisses a task when done in the <gui>Closed</gui> Task View Mode</p></note></td>
+          <td><p>Dismiss Task</p></td>  <td><p><keyseq><key>Ctrl</key><key>I</key></keyseq></p><note style="tip"><p>This keyboard shortcut also undismisses a task when used in the <gui>Closed</gui> view mode.</p></note></td>
         </tr>
         <tr>
           <td><p>Delete Task</p></td>  <td><p><keyseq><key>CTRL</key><key>DEL</key></keyseq></p></td>

@@ -7,44 +7,44 @@
     <link type="guide" xref="index#gtg-task-management" group="third"/>
       
       <revision pkgversion="1301" date="2013-06-18" status="candidate"/>
+<revision pkgversion="0.4.0" date="2020-05-17" status="candidate"/>
    <credit type="author copyright">
       <name>Radina Matic</name>
       <email its:translate="no">radina.matic@gmail.com</email>
       <years>2013</years>
     </credit>
     <credit type="copyright editor">
-      <name></name>
-      <email its:translate="no"></email>
-      <years></years>
+      <name>Danielle Vansia</name>
+      <email its:translate="no">daniellevansia@gmail.com</email>
+      <years>2020</years>
     </credit>
 
     <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
 
   </info>
 
-  <title>Understand Task View Modes</title>
+  <title>Understand View Modes</title>
   
-    <p> If you press the <gui>Work View</gui> button, only actionable tasks will be displayed.</p> 
+    <p> <app>GTG</app> has three different view modes to aid with productivity and managing your tasks: <gui>Open</gui>, <gui>Actionable</gui>, and <gui>Closed</gui>. The <gui>Open</gui> view mode displays all tasks not marked as done or dismissed. The <gui>Closed</gui> view mode displays all completed tasks or tasks that you dismissed.</p> 
+
+<p>The <gui>Actionable</gui> view mode shows tasks that you can complete right now and meet the following conditions:</p>
+<list>
+      <item><p>The task must be "startable", meaning that the start date is today or has passed.</p></item>
+      <item><p>The task does not have any open subtasks, meaning that all its prerequisites are met and you can complete the task itself.</p></item> 
+</list>
+
+<p>You can further filter tasks by tag, in any view mode, by selecting a tag in the <gui>Sidebar</gui>.</p>
+
+<note style="tip"><p>You can use an option in the <gui>Edit tag</gui> window to hide tasks with certain tags from being displayed in the <gui>Actionable</gui> view mode. See the <link href="gtg-tag-color">Edit Tag Properties</link> section for more information.</p></note>
+
 
 
 <figure>
-  <title>Work View</title>
+  <title>View Modes</title>
   <desc> </desc>
  <media type="image" mime="image/png" src="figures/workview.png"/>
 </figure>
   
- <p>What is an actionable task? Actionable tasks are the ones that you can do directly, right now, and it has to meet two conditions:</p>
 
-<list>
-      <item><p>Be "start-able", meaning that the start date has already arrived or passed.</p></item>
-      <item><p>Not have any open subtasks, meaning that all its “prerequisites” are met and you can do the task itself directly.</p></item> 
-</list>
-
-<p>This way the <gui>Work View</gui> will only show you the tasks you can do right now.</p>
-
-<p>If you use <link xref="gtg-tags">tags</link>, you can right click on a tag in the sidebar and choose to hide tasks tagged with it in the <gui>Work View</gui>. This option is very useful if you have a tag like "someday" that you use for tasks you would like to do but are not particularly urgent.</p>
- 
- 
   
-  <links type="topic" groups="first second third fourth fifth sixth" style="2column"/>
 </page>

@@ -33,16 +33,16 @@
   <p>To delete a selected task from the main <app>GTG</app> window, use one of the following methods:</p>
   
   <list>
-      <item><p>From any of the Task View Modes, right-click the task and click <gui>Delete</gui> in the context menu.</p></item>
+      <item><p>From any of the task view modes, right-click the task and select <gui>Delete</gui> from the context menu.</p></item>
       <item><p>Use the <keyseq><key>CTRL</key><key>Del</key></keyseq> keyboard shortcut.</p></item>
 </list> 
-<note style="tip"><p>You can perform this action on multiple tasks by selecting the tasks while holding <key>SHIFT</key>.</p></note>
+<p>You can perform this action on multiple tasks by selecting the tasks while holding <key>SHIFT</key>.</p>
   
    <p>To delete an open <app>GTG</app> task:</p>
-<steps><item><p>Click the <media type="image" src="figures/task-toolbar-menu.png"></media> icon in the task toolbar.</p></item>
+<steps><item><p>Click the <media type="image" src="figures/task-toolbar-menu.png"></media> icon in the task's headerbar.</p></item>
 <item><p>Click <gui>Delete Task</gui>.</p></item></steps>
 
-<note style="warning"> <p>Deleting a task is a permanant action. Every time you delete as task, you will be asked to confirm the deletion. </p> </note>
+<note style="warning"> <p>Deleting a task is a permanent action. You will be asked to confirm the deletion before proceeding. </p> </note>
  
  
 </page>

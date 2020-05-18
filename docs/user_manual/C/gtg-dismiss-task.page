@@ -31,24 +31,24 @@
 
   <title>Dismiss a Task</title>
 
-  <p>When you decide that a certain task is no longer valid (does not need to be accomplished), you can dismiss it. To dismiss a selected task from the <gui>Open</gui> or <gui>Actionable</gui> Task View Modes on the <app>GTG</app> window, you can:</p>
+  <p>When you decide that a certain task is no longer valid (does not need to be accomplished), you can dismiss it. To dismiss a selected task from the <gui>Open</gui> or <gui>Actionable</gui> view modes, you can:</p>
   
   <list>
       <item><p>Use the <keyseq><key>Ctrl</key><key>I</key></keyseq> keyboard shortcut.</p></item>
       <item><p>Right-click the task and select <gui>Dismiss</gui> from the context menu.</p></item>
 </list> 
-<note style="tip"><p>You can perform this action on multiple tasks by selecting the tasks while holding <key>SHIFT</key>.</p></note>  
+<p>You can perform this action on multiple tasks by selecting the tasks while holding <key>SHIFT</key>.</p> 
 
     <p>To dismiss an open <app>GTG</app> task:</p>
 <steps>
-    <item><p>Click the <media type="image" src="figures/task-toolbar-menu.png"></media> icon in the task toolbar.</p></item>
-    <item><p>Click the <gui>Dismiss Task</gui> button.</p></item>
+    <item><p>Click the <media type="image" src="figures/task-toolbar-menu.png"></media> icon in the task headerbar.</p></item>
+    <item><p>Click <gui>Dismiss Task</gui>.</p></item>
 </steps>
     
-    <p>You can view all the tasks marked as dismissed and closed in the <gui>Closed</gui> Task View Mode.</p> 
+    <p>You can view all of the tasks that are marked as dismissed in the <gui>Closed</gui> view mode.</p> 
 
 <section id="undismiss-task"><title>Undismiss a Task</title>
-      <p>From the <gui>Closed</gui> Task View Mode, you can:</p>
+      <p>You may want to reopen a task that you previously dismissed. From the <gui>Closed</gui> view mode, you can:</p>
      <list>
      <item><p>Use the <keyseq><key>Ctrl</key><key>I</key></keyseq> keyboard shortcut.</p></item>
      <item><p>Right-click the task and select <gui>Undismiss</gui> from the context menu.</p></item></list>
