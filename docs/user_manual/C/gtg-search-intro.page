@@ -1,11 +1,12 @@
 <page xmlns="http://projectmallard.org/1.0/"
       xmlns:its="http://www.w3.org/2005/11/its"
-      type="guide" style="task 2column"
+      type="topic" style="task 2column"
       id="gtg-search-intro">
 
   <info>
     
     <link type="guide" xref="index#gtg-search" group="first"/>
+    <link type="seealso" xref="gtg-search-syntax"/>
 
     <revision pkgversion="0.1" version="0.1" date="2012-07-03" status="candidate" />
     <revision pkgversion="0.4.0" date="2020-05-12" status="candidate" />
@@ -22,13 +23,13 @@
     </credit>
   </info>
 
-  <title>GTG Search</title>
+  <title><app>GTG</app> Search</title>
 
 <p>To help you to find specific tasks more easily, <app>GTG</app> allows you to search for tasks based on their content.</p>
 
-<p>Click the <gui>Search</gui> icon in the toolbar to activate the search field. Search results are automatically displayed when you type.</p>
+<p>Click the <gui>Search</gui> icon in the <gui>Headerbar</gui> to activate the <gui>Search</gui> field. Search results are automatically displayed as you type.</p>
 
-<p>Click the <gui>Save Search</gui> button to save a search result. Saved searches are available from the Sidebar. Saved search results are automatically updated. You can delete as saved search by right-clicking that search and selecting <gui>Delete</gui> in the context menu.</p>
+<p>Click the <gui>Save Search</gui> button to save a search result. Saved searches are available from the <gui>Sidebar</gui> and are automatically updated. You can delete a saved search by right-clicking the saved search and selecting <gui>Delete</gui> in the context menu.</p>
 
 <note stlye="tip">
 <p>If you want to perform more detailed searches, you can use <app>GTG's</app> natural language parsing ability/special search syntax to to aid with efficiency. See

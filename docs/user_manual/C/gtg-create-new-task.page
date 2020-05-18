@@ -33,8 +33,8 @@
   <p>There are three ways to create a new task in <app>GTG</app>:</p>
 
 <list>
-  <item><p>Click the <gui>+</gui> button in the toolbar.</p></item>
-  <item><p>Use the <keyseq><key>Ctrl</key><key>N</key></keyseq> shortcut.</p></item>
+  <item><p>Click the <gui>+</gui> button in the <gui>Headerbar</gui>.</p></item>
+  <item><p>Use the <keyseq><key>Ctrl</key><key>N</key></keyseq> keyboard shortcut.</p></item>
 <item><p>Use the <link xref="gtg-quickadd">Quick Add Entry</link>.</p></item>
 </list>
 

@@ -12,7 +12,7 @@
 
    <credit type="author copyright">
       <name>Danielle Vansia</name>
-      <email its:translate="no">danielle.vansia@gmail.com</email>
+      <email its:translate="no">daniellevansia@gmail.com</email>
       <years>2020</years>
     </credit>
    
@@ -22,7 +22,7 @@
 
   <title>Preferences</title>
 
-<p><app>GTG</app> user preferences allow you to personalize the application. To access this window, go to the Main Menu and click <gui>Preferences</gui>.</p>
+<p><app>GTG</app> user preferences allow you to personalize the application. To access this window, go to the <gui>Main Menu</gui> and click <gui>Preferences</gui>.</p>
 
 <table rules="rows" frame="top bottom" ui:expanded="true">
 <title>Options in Preferences</title>
@@ -35,19 +35,19 @@
   <tbody>
     <tr>
       <td><p>Show description preview</p></td>
-      <td><p>Show an excerpt next to each task in the Task Browser. Click the <gui>ON/OFF</gui> toggle to activate or deactivate this option.</p></td>
+      <td><p>Show an excerpt from the description next to each task in the <gui>Task Browser</gui>. Click the <gui>ON/OFF</gui> toggle to activate or deactivate this option.</p></td>
     </tr>
 <tr>
       <td><p>Enable colored backgrounds</p></td>
-      <td><p>This option allows you to show a colored background for a task bosed on the color of its tags.</p></td>
+      <td><p>This option allows you to show a colored background for a task in the <gui>Task Browser</gui>, based on the color of its tags.</p></td>
     </tr>
 <tr>
       <td><p>Start of the day</p></td>
-      <td><p>Set the time for when the day starts. The Task Browser and view modes are refreshed at this time.</p></td>
+      <td><p>Set the time for when the day starts. The <gui>Task Browser</gui> and view modes are refreshed at this time.</p></td>
     </tr>
 <tr>
       <td><p>Task editor font</p></td>
-      <td><p>Change the default font style and font size for the task editor.</p></td>
+      <td><p>Change the default font style and font size for the <gui>Task Editor</gui>.</p></td>
     </tr>
 <tr>
       <td><p>Clean up options</p></td>

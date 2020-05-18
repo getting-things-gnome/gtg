@@ -16,7 +16,7 @@
     </credit>
     <credit type="editor copyright">
       <name>Danielle Vansia</name>
-      <email its:translate="no">danielle.vansia@gmail.com</email>
+      <email its:translate="no">daniellevansia@gmail.com</email>
       <years>2020</years>
     </credit>
 
@@ -28,28 +28,28 @@
 
 <p><app>GTG</app> plugins offer the possibility to extend the basic functionality of the program. Plugins allow you to add new features and change the way <app>GTG</app> works.</p>
 
-<p>To activate or deactivate GTG plugins, go to the Main Menu and select <gui>Plugins</gui>. Then, select the corresponding check box for a plugin.</p>
+<p>To activate or deactivate <app>GTG</app> plugins, go to the <gui>Main Menu</gui> and select <gui>Plugins</gui>. Then, select the corresponding check box for a plugin.</p>
 
 <note style="tip">
-<p>Sometimes there are missing dependencies that impede your ability to activate plugins. <app>GTG</app> tries to identify and list all of the missing dependencies for the deactivated plugin. Select a plugin from the list and click <gui>About Plugin</gui> to view more information about the plugin and any missing dependencies.</p>
+<p>Sometimes missing dependencies impede your ability to activate plugins. <app>GTG</app> tries to identify and list all of the missing dependencies for the deactivated plugin. Select a plugin from the list and click <gui>About Plugin</gui> to view more information about the plugin and any missing dependencies.</p>
 </note>
 
-<p>List of currently available plugins in <app>GTG</app>:</p>
+<p><em style="strong">List of currently available plugins in <app>GTG</app>:</em></p>
 
 <p><em>Untouched Tasks</em></p>
-<p>Assigns tasks that you haven't touched for a while with the @untouched tag.</p>
+<p>Assigns tasks that you haven't touched for a while with the <code>@untouched</code> tag.</p>
 
 <p><em>Send Tasks via Email</em></p>
-<p>Adds a button on the toolbar which allows to easily send a task (with its status, due dates, tags and subtasks) through email.</p>
+<p>Adds a button on the <gui>Headerbar</gui>, which allows you to easily send a task (with its status, due dates, tags, and subtasks) through email.</p>
 
 <p><em>Export and Print</em></p>
 <p>Exports the tasks in the current view into a variety of formats.</p>
 
 <p><em>Urgency Color</em></p>
-<p>This plugin calculates the urgency status of each of your currently active tasks and color-codes those tasks accordingly.</p>
+<p>Calculates the urgency status of each of your currently active tasks and color-codes those tasks accordingly.</p>
 
 <figure>
-  <title>GTG Plugins</title>
+  <title><app>GTG</app> Plugins</title>
   <desc> </desc>
  <media type="image" mime="image/png" src="figures/plugins.png"/>
 </figure>

@@ -6,8 +6,7 @@
   <info>
     <link type="guide" xref="gtg-tags" group="third"/>
     <link type="seealso" xref="gtg-add-tag"/>
-    <link type="seealso" xref="gtg-add-subtag"/>
-      
+          
       <revision pkgversion="1301" date="2013-06-18" status="candidate"/>
    <credit type="author copyright">
       <name>Radina Matic</name>
@@ -26,18 +25,21 @@
 
   <title>Edit Tag Properties</title>
 
-<p>You can easily edit tag name, color, or set a specific tag icon, by right-clicking the tag in the tags sidebar and selecting <gui>Edit Tag</gui> from the contextual menu:</p>
+<p>You can edit a tag's name, color, or set a specific tag icon, by right-clicking the tag in the <gui>Sidebar</gui> and selecting <gui>Edit Tag</gui> from the context menu. You can complete the following actions in the <gui>Edit tag</gui> window:</p>
 
 <list>
-      <item><p>To change the tag name edit the field <gui>Name</gui>.</p></item>
-      <item><p>Choose one of the predefined colors or press the <gui>Add custom color</gui> button. Select the desired color in the <gui>Choose color</gui> window and press the <gui>OK</gui> button to confirm.</p></item>
-      <item><p>Press the <gui>Click to set icon</gui> button and choose the icon you wish to use as a tag icon.</p></item>  
+      <item><p>To change the tag name, type a new name in the <gui>Name</gui> field.</p></item>
+      <item><p>Select a tag color from one of the predefined colors or click the <gui>Add custom color</gui> button. Select a color in the <gui>Choose a color</gui> window and click the <gui>Select</gui> button to confirm. To remove a selected color, click the <gui>Clear selected color</gui> button.</p></item>
+      <item><p>Click the <gui>Click to Set Icon</gui> button and choose a tag icon. To remove an icon, click the <gui>Remove selected icon</gui> button.</p></item>  
+<item><p>You also have the option to show or hide a task from the <gui>Actionable</gui> view mode. Select or deselect the <gui>Show Tag in Work View</gui> check box. This option is very useful if you have a tag such as "someday" that you use for tasks that you would like to complete at some point in the future but are not particularly urgent at this time.</p></item>
 </list>
+
+<note style="important"><p>When personalizing tags, note that <app>GTG</app> only shows icons OR tag color squares, not both shown at the same time. As a best practice, only select either a tag color or an icon to personalize a tag.</p></note>
 
 <figure>
   <title>Edit Tag</title>
   <desc> </desc>
  <media type="image" mime="image/png" src="figures/edit_tag.png"/>
-</figure>  
+</figure>
  
 </page>

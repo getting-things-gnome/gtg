@@ -1,11 +1,12 @@
 <page xmlns="http://projectmallard.org/1.0/"
       xmlns:ui="http://projectmallard.org/ui/1.0/"
       xmlns:its="http://www.w3.org/2005/11/its"
-      type="guide" style="tip"
+      type="topic" style="tip"
       id="gtg-search-syntax">
 
   <info>
     <link type="guide" xref="index#gtg-search" group="second"/>
+    <link type="seealso" xref="gtg-search"/>
 
     <revision pkgversion="0.1" version="0.1" date="2012-07-03" status="candidate" />
     <revision pkgversion="0.4.0" date="2020-05-12" status="candidate" />
@@ -17,17 +18,17 @@
     </credit>
      <credit type="editor copyright">
       <name>Danielle Vansia</name>
-      <email>danielle.vansia@gmail.com</email>
+      <email>daniellevansia@gmail.com</email>
       <years>2020</years>
     </credit>
   </info>
 
-  <title>GTG Search Syntax</title>
+  <title><app>GTG</app> Search Syntax</title>
 
 <p>When performing a search request, you can also use special keywords to help refine your results. The table below describes this syntax. This functionality allows you to more efficiently view tasks based on specific criteria and prioritize tasks that are immediately due.</p>
 
 <table rules="rows" frame="top bottom" ui:expanded="true">
-<title>GTG Search Keywords</title>
+<title><app>GTG</app> Search Keywords</title>
   <thead>
     <tr>
       <td><p><em style="strong">Search Query</em></p></td>
@@ -37,7 +38,7 @@
   <tbody>
     <tr>
       <td><p><code>word</code></p></td>
-      <td><p>Tasks that contain a single word</p></td>
+      <td><p>Tasks that contain a single word.</p></td>
     </tr>
     <tr>
       <td><p><code>"text"</code></p></td>
@@ -46,57 +47,57 @@
     </tr>
     <tr>
       <td><p><code>@tag</code></p></td>
-      <td><p>Tasks with this tag</p></td>
+      <td><p>Tasks with this tag.</p></td>
     </tr>
     <tr>
       <td><p><code>!notag</code></p></td>
-      <td><p>Tasks without tags</p></td>
+      <td><p>Tasks without tags.</p></td>
     </tr>
     <tr>
       <td><p><code>!before [date]</code></p></td>
       <td>
-        <p>Tasks that need to be completed before this date</p>
-        <p>See the note below for the the <code>[date]</code> element's format.</p>
+        <p>Tasks that need to be completed before the input date.</p>
+        <p>See the note below for the <code>[date]</code> element's format.</p>
       </td>
     </tr>
     <tr>
       <td><p><code>!after [date]</code></p></td>
       <td>
-        <p>Tasks that you can wait to complete until after this date. These tasks either have a start date that is after the input date or do not have a start date set and are due after the input date.</p>
+        <p>Tasks that you can wait to complete until after the input date. These tasks either have a start date that is after the input date or do not have a start date set and are due after the input date.</p>
         <p>See the note below for the <code>[date]</code> element's format.</p>
       </td>
     </tr>
     <tr>
       <td><p><code>!today</code></p></td>
-      <td><p>Tasks that are due today</p></td>
+      <td><p>Tasks that are due today.</p></td>
     </tr>
     <tr>
       <td><p><code>!tomorrow</code></p></td>
-      <td><p>Tasks that are due tomorrow</p></td>
+      <td><p>Tasks that are due tomorrow.</p></td>
     </tr>
     <tr>
       <td><p><code>!nodate</code></p></td>
-      <td><p>Tasks without a set due date</p></td>
+      <td><p>Tasks without a set due date.</p></td>
     </tr>
     <tr>
       <td><p><code>!now</code></p></td>
-      <td><p>Tasks with due date defined as "now"</p></td>
+      <td><p>Tasks with due date defined as "now."</p></td>
     </tr>
     <tr>
       <td><p><code>!soon</code></p></td>
-      <td><p>Tasks with due date defined as "soon"</p></td>
+      <td><p>Tasks with due date defined as "soon."</p></td>
     </tr>
     <tr>
       <td><p><code>!someday</code></p></td>
-      <td><p>Tasks with due date defined as "someday"</p></td>
+      <td><p>Tasks with due date defined as "someday."</p></td>
     </tr>
     <tr>
       <td><p><code>!not [query]</code></p></td>
-      <td><p>Tasks that do not include the next part of the query</p></td>
+      <td><p>Tasks that do not include the next part of the query.</p></td>
     </tr>
     <tr>
       <td><p><code>[query] !or [query]</code></p></td>
-      <td><p>Tasks with one of the specified elements</p></td>
+      <td><p>Tasks with one of the specified elements in the query.</p></td>
     </tr>
   </tbody>
 </table>
@@ -110,7 +111,7 @@
 <p>A date can also be <code>today</code>, <code>tomorrow</code>, or a weekday name (for example, <code>due:monday</code> means due next Monday).
 </p></note>
 
-<p>The search feature behaves like it adds an implicit logical <em>AND</em> between each element. The results include tasks that match all elements of the query.</p>
+<p>The search feature behaves like it adds an implicit, logical <em>AND</em> between each element. The results include tasks that match all elements of the query.</p>
 
 <section id="searchexamples">
 <title>Search Query Examples</title>
@@ -125,27 +126,23 @@
   <tbody>
     <tr>
       <td><p><em style="strong"><code>!tomorrow !or !today</code></em></p></td>
-      <td><p>Tasks that are due today or tomorrow</p></td>
+      <td><p>Tasks that are due today or tomorrow.</p></td>
     </tr>
     <tr>
       <td><p><em style="strong"><code>@gtg @writing</code></em></p></td>
-      <td><p>Tasks with both the @gtg and @writing tags</p></td>
+      <td><p>Tasks with both the <em style="strong"><code>@gtg</code></em> and <em style="strong"><code>@writing</code></em> tags.</p></td>
     </tr>
     <tr>
       <td><p><em style="strong"><code>@gtg !before 2020-03-01</code></em></p></td>
-      <td><p>Tasks that are due before March 1, 2020, and have the @gtg tag</p></td>
+      <td><p>Tasks that are due before March 1, 2020, and have the <em style="strong"><code>@gtg</code></em> tag.</p></td>
     </tr>
     <tr>
       <td><p><em style="strong"><code>buy @errands</code></em></p></td>
-      <td><p>Tasks that include the word <em style="strong"><code>buy</code></em> in the task title or description and contain the errands tag</p></td>
+      <td><p>Tasks that include the word <em style="strong"><code>buy</code></em> in the task title or description and contain the <em style="strong"><code>@errands</code></em> tag.</p></td>
     </tr>
     <tr>
       <td><p><em style="strong"><code>!not buy @errands</code></em></p></td>
-      <td><p>Tasks that contain the @errands tag but do not contain the word <em style="strong"><code>buy</code></em> in the task title or description</p></td>
-    </tr>
-    <tr>
-      <td><p><em style="strong"><code>!after "next month"</code></em></p></td>
-      <td><p>Show tasks after this month</p></td>
+      <td><p>Tasks that contain the <em style="strong"><code>@errands</code></em> tag but do not contain the word <em style="strong"><code>buy</code></em> in the task title or description.</p></td>
     </tr>
   </tbody>
 </table>
