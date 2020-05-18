@@ -30,22 +30,24 @@
 
   <title>Set Task Start and Due Date</title>
 
-<p>To set the start and due date for the task from the task browser in the <app>GTG</app> main window, right-click the task and select the desired days from the <gui>Set start date</gui> or <gui>Set due date</gui> options in the contextual menu. You have the option to pick a specific date or </p>
+<p>To set the start and due date for a task, from the <gui>Task Browser</gui>, right-click the task and select a date from the <gui>Set start date</gui> and <gui>Set due date</gui> options in the context menu.</p>
+
+<note style="tip"><p>You can also quickly set a task's start date to <em style="strong">tomorrow</em> by clicking the <gui>Start Tomorrow</gui> button in the main <gui>Headerbar</gui>. Click the down arrow button next to the <gui>Start Tomorrow</gui> button to select a different start date.</p></note>
 
 <figure>
-  <title>Set Dates From Task Browser</title>
+  <title>Set Dates From <gui>Task Browser</gui></title>
   <desc> </desc>
  <media type="image" mime="image/png" src="figures/set_date_task_browser.png"/>
 </figure>
 
-<p>To set the start and due date for the task that is already opened, use the calendar icon enter the dates in the <gui>Starts on</gui> and <gui>Due on</gui> fields.</p>
+<p>To set the start and due date for a task that is already opened, click the <gui>Starts on</gui> and <gui>Due on</gui> fields and use the calendar.</p>
 
 <figure>
   <title>Set Dates While Task is Open</title>
   <desc> </desc>
  <media type="image" mime="image/png" src="figures/set_date_task_open.png"/>
 </figure>
-<note style="tip"><p>You can enter indefinite dates such as "soon", "someday", or you can enter a day of the week such as "Monday", in both of these fields.</p></note>
+<note style="tip"><p>For both of these fields, you can enter indefinite dates such as "soon" or "someday." You can also enter a day of the week such as "Monday."</p></note>
 
 
 </page>
