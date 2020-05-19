@@ -6,8 +6,8 @@
 mkdir -p tmp/default/xdg/data/gtg/
 mkdir -p tmp/default/xdg/config/gtg/
 
-yes|cp -Rf ~/.local/share/gtg/* tmp/default/xdg/data/gtg/
-yes|cp -Rf ~/.config/gtg/* tmp/default/xdg/config/gtg/
+cp -Rf ~/.local/share/gtg/* tmp/default/xdg/data/gtg/
+cp -Rf ~/.config/gtg/* tmp/default/xdg/config/gtg/
 
 sed -i -e 's_\/home\/.*\/\.local\/share_tmp\/default\/xdg\/data_' tmp/default/xdg/data/gtg/projects.xml
 
