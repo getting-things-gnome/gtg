@@ -50,5 +50,7 @@ if [[ "$title" = "" ]]; then
 fi
 
 if [[ "$norun" -eq 0 ]]; then
+    # double quoting args seems to prevent python script from picking up flag arguments correctly
+    # shellcheck disable=SC2086
     PYTHONPATH=$(pwd) ./GTG/gtg ${args} -t "$title"
 fi
