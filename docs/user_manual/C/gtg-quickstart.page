@@ -37,7 +37,7 @@
  <media type="image" mime="image/png" src="figures/get_started.png"/>
 </figure>
 
-<p>To start a new task, click the <gui>+</gui> button. The Task Editor window displays. <app>GTG</app> automatically saves the task while you write. When you complete a task, click the <gui>Mark as Done</gui> button in the Task Editor window. The task no longer displays in the <gui>Open</gui> or <gui>Actionable</gui> view modes and is moved to the <gui>Closed</gui> view mode. If the task is no longer relevant, you can dismiss the task. Right-click the task in the Task Browser and select <gui>Dismiss</gui> from the task's context menu. This action archives the task. Dismissed tasks are viewable in the <gui>Closed</gui> view mode. </p>
+<p>To start a new task, click the <gui>+</gui> button. The <gui>Task Editor</gui> window displays. <app>GTG</app> automatically saves the task while you write. When you complete a task, click the <gui>Mark as Done</gui> button in the <gui>Task Editor</gui> window. The task no longer displays in the <gui>Open</gui> or <gui>Actionable</gui> view modes and is moved to the <gui>Closed</gui> view mode. If the task is no longer relevant, you can dismiss the task. Right-click the task in the <gui>Task Browser</gui> and select <gui>Dismiss</gui> from the task's context menu. This action archives the task. Dismissed tasks are viewable in the <gui>Closed</gui> view mode. </p>
 
 <p>You can learn more about the features in <app>GTG</app>  by exploring <link xref="index">the main page</link> of this user manual.</p>
 

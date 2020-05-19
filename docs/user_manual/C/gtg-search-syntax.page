@@ -108,10 +108,10 @@
 <item><p><code>yyyymmdd</code> (20200401)</p></item>
 <item><p><code>mmdd</code> (0401 - with the year implied as the current year)</p></item> 
 </list>
-<p>A date can also be <code>today</code>, <code>tomorrow</code>, or a weekday name (for example, <code>due:monday</code> means due next Monday).
+<p>A date can also be <code>today</code>, <code>tomorrow</code>, <code>someday</code>, <code>soon</code>, <code>now</code> or a weekday name (for example, <code>due:monday</code> means due next Monday).
 </p></note>
 
-<p>The search feature behaves like it adds an implicit, logical <em>AND</em> between each element. The results include tasks that match all elements of the query.</p>
+<p>The search feature behaves like it adds an implicit, logical <em>AND</em> between each element (unless the <code>!or</code> operator is used). The results include tasks that match all elements of the query.</p>
 
 <section id="searchexamples">
 <title>Search Query Examples</title>

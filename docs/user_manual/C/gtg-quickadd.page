@@ -48,10 +48,10 @@
 <terms>
 <item>
      <title><em style="strong">tags:tag1,tag2,tag3</em></title>
-     <p>You can apply as many tags as you want using comma as a separator. Do not put a space between any tags.</p></item>
+     <p>You can apply as many tags as you want using a comma as a separator. Do not put a space between any tags.</p></item>
 <item>
      <title><em style="strong">due:<code>date</code></em> or <em style="strong">start:<code>date</code></em></title>
-     <p>With this syntax, you can apply a due date, start date, or both. Dates can be formatted as yyyy-mm-dd (for example, 2020-04-01), yyyymmdd (20200401), or mmdd (0401 - the year being is the current one). You can also use words such as today, tomorrow, or a weekday name (due:monday means due next Monday). Indefinite dates, such as someday or soon, can also be used.</p></item></terms>
+     <p>With this syntax, you can apply a due date, start date, or both. Dates can be formatted as yyyy-mm-dd (for example, 2020-04-01), yyyymmdd (20200401), or mmdd (0401 - the year being is the current one). You can also use words such as today, tomorrow, or a weekday name (due:monday means due next Monday). Indefinite dates, such as someday, soon, or now can also be used.</p></item></terms>
 </section>     
 
 

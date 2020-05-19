@@ -56,11 +56,11 @@ icon on the <gui>Headerbar</gui>. You can also save search queries.</p>
   </item>
   <item>
     <title><em>Task Browser</em></title>
-    <p>Manage your tasks within the <gui>Task Browser</gui>. Tasks are displayed based on the selected view mode. You can sort tasks by <gui>Start date</gui> and <gui>Due</gui> date by clicking the column titles at the top of the browser. Right-click a selected task to view quick-edit options. Double-click a task to open the <gui>Task Editor</gui> window.</p>
+    <p>Manage your tasks within the <gui>Task Browser</gui>. Tasks are displayed based on the selected view mode. You can sort tasks by <gui>Start date</gui> and <gui>Due</gui> date by clicking the column titles at the top of the browser. Right-click a selected task to view quick-edit options. Double-click a task to open the <gui>Task Editor</gui> window. When you first use <app>GTG</app>, a few sample tasks are available in the <gui>Task Browser</gui> to help you understand the application.</p>
   </item>
   <item>
     <title><em>Headerbar</em></title>
-    <p>Create a new task, quickly change a task's due date, and access the <gui>Open</gui>, <gui>Actionable</gui>, and <gui>Closed</gui> view modes. You can also enable the <gui>Search</gui> option and access the <gui>Main Menu</gui>.</p>
+    <p>Create a new task, quickly change a task's start date, and access the <gui>Open</gui>, <gui>Actionable</gui>, and <gui>Closed</gui> view modes. You can also enable the <gui>Search</gui> option and access the <gui>Main Menu</gui>.</p>
   </item>
   <item>
     <title><em>View Modes</em></title>
