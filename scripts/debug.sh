@@ -28,8 +28,7 @@ do  case "$o" in
 done
 
 # Copy dataset
-if [[  "$dataset" != "default" && ! -d "./tmp/$dataset" ]]
-then
+if [[  "$dataset" != "default" && ! -d "./tmp/$dataset" ]]; then
     echo "Copying $dataset dataset to ./tmp/"
     cp -r "data/test-data/$dataset" tmp/
 fi
@@ -43,15 +42,13 @@ export XDG_CONFIG_HOME="./tmp/$dataset/xdg/config"
 
 # Title has to be passed to GTG directly, not through $args
 # title could be more word, and only the first word would be taken
-if [[ "$title" = "" ]]
-then
+if [[ "$title" = "" ]]; then
     title="Dev GTG: $(basename "$(pwd)")"
-    if [[ "$dataset" != "default" ]]
-    then
+    if [[ "$dataset" != "default" ]]; then
         title="$title ($dataset dataset)"
     fi
 fi
 
 if [[ "$norun" -eq 0 ]]; then
-    PYTHONPATH=$(pwd) ./GTG/gtg "$args" -t "$title"
+    PYTHONPATH=$(pwd) ./GTG/gtg ${args} -t "$title"
 fi
