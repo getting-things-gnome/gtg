@@ -29,11 +29,11 @@
 
   <title>Shortcut Keys</title>
 
-  <p>Use keyboard shortcut keys to perform common tasks faster than with the mouse and menus. The following table lists all of <app>GTG's</app> shortcut keys.</p>
+  <p>Use keyboard shortcut keys to perform common tasks faster than with the mouse and menus. The following tables lists all of <app>GTG's</app> shortcut keys.</p>
 
 
  <table rules="rows" frame="top bottom" ui:expanded="true">
-    <title><app>GTG</app> Window-Related shortcuts</title>
+    <title><app>GTG</app> Window-Related Shortcuts</title>
       <thead>
         <tr>
           <td><p><em style="strong">To Do This</em></p></td>  <td><p><em style="strong">Press This</em></p></td>
