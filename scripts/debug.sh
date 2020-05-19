@@ -1,7 +1,7 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 #Don't let the user execute this as root, it breaks graphical login (Changes /tmp permissions)
-if [ $UID -eq 0 ]; then
+if [[ $UID -eq 0 ]]; then
     echo "GTG shouldn't be run as root, terminating"
     exit
 fi
@@ -15,7 +15,7 @@ title=""
 mkdir -p tmp
 
 # Interpret arguments
-while getopts bdns: o
+while getopts bdnst: o
 do  case "$o" in
     b)   args="$args --boot-test";;
     d)   args="$args -d";;
@@ -28,10 +28,9 @@ do  case "$o" in
 done
 
 # Copy dataset
-if [  $dataset != "default" -a ! -d "./tmp/$dataset" ]
-then
+if [[  "$dataset" != "default" && ! -d "./tmp/$dataset" ]]; then
     echo "Copying $dataset dataset to ./tmp/"
-    cp -r data/test-data/$dataset tmp/
+    cp -r "data/test-data/$dataset" tmp/
 fi
 
 echo "Running the development/debug version - using separate user directories"
@@ -43,15 +42,15 @@ export XDG_CONFIG_HOME="./tmp/$dataset/xdg/config"
 
 # Title has to be passed to GTG directly, not through $args
 # title could be more word, and only the first word would be taken
-if [ "$title" = "" ]
-then
-    title="Dev GTG: $(basename `pwd`)"
-    if [ "$dataset" != "default" ]
-    then
+if [[ "$title" = "" ]]; then
+    title="Dev GTG: $(basename "$(pwd)")"
+    if [[ "$dataset" != "default" ]]; then
         title="$title ($dataset dataset)"
     fi
 fi
 
-if [ $norun -eq 0 ]; then
-    PYTHONPATH=`pwd` ./GTG/gtg $args -t "$title"
+if [[ "$norun" -eq 0 ]]; then
+    # double quoting args seems to prevent python script from picking up flag arguments correctly
+    # shellcheck disable=SC2086
+    PYTHONPATH=$(pwd) ./GTG/gtg ${args} -t "$title"
 fi
