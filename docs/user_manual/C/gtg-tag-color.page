@@ -8,15 +8,16 @@
     <link type="seealso" xref="gtg-add-tag"/>
           
       <revision pkgversion="1301" date="2013-06-18" status="candidate"/>
+      <revision pkgversion="0.4.0" date="2020-05-16" status="candidate"/>
    <credit type="author copyright">
       <name>Radina Matic</name>
       <email its:translate="no">radina.matic@gmail.com</email>
       <years>2013</years>
     </credit>
-    <credit type="copyright editor">
-      <name></name>
-      <email its:translate="no"></email>
-      <years></years>
+    <credit type="editor copyright">
+      <name>Danielle Vansia</name>
+      <email its:translate="no">daniellevansia@gmail.com</email>
+      <years>2020</years>
     </credit>
 
     <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
@@ -29,12 +30,12 @@
 
 <list>
       <item><p>To change the tag name, type a new name in the <gui>Name</gui> field.</p></item>
-      <item><p>Select a tag color from one of the predefined colors or click the <gui>Add custom color</gui> button. Select a color in the <gui>Choose a color</gui> window and click the <gui>Select</gui> button to confirm. To remove a selected color, click the <gui>Clear selected color</gui> button.</p></item>
+      <item><p>Select a tag color from one of the predefined colors or click the <gui>Add custom color</gui> button. Select a color from the <gui>Choose a color</gui> window and click the <gui>Select</gui> button to confirm. To remove a selected color, click the <gui>Clear selected color</gui> button.</p></item>
       <item><p>Click the <gui>Click to Set Icon</gui> button and choose a tag icon. To remove an icon, click the <gui>Remove selected icon</gui> button.</p></item>  
-<item><p>You also have the option to show or hide a task from the <gui>Actionable</gui> view mode. Select or deselect the <gui>Show Tag in Work View</gui> check box. This option is very useful if you have a tag such as "someday" that you use for tasks that you would like to complete at some point in the future but are not particularly urgent at this time.</p></item>
+	<item><p>You also have the option to show or hide a task from the <gui>Actionable</gui> view mode. Select or deselect the <gui>Show Tag in Work View</gui> check box. This option is very useful if you have a tag such as "someday" that you use for tasks that you would like to complete at some point in the future but are not particularly urgent at this time.</p></item>
 </list>
 
-<note style="important"><p>When personalizing tags, note that <app>GTG</app> only shows icons OR tag color squares, not both shown at the same time. As a best practice, only select either a tag color or an icon to personalize a tag.</p></note>
+<note style="important"><p>When personalizing tags, note that <app>GTG</app> only displays an icon <em style="strong">OR</em> a colored square for a tag, not both at the same time. As a best practice, only select either a tag color or an icon to personalize a tag.</p></note>
 
 <figure>
   <title>Edit Tag</title>

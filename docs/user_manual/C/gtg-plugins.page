@@ -30,14 +30,14 @@
 
 <p>To activate or deactivate <app>GTG</app> plugins, go to the <gui>Main Menu</gui> and select <gui>Plugins</gui>. Then, select the corresponding check box for a plugin.</p>
 
-<note style="tip">
+<note style="important">
 <p>Sometimes missing dependencies impede your ability to activate plugins. <app>GTG</app> tries to identify and list all of the missing dependencies for the deactivated plugin. Select a plugin from the list and click <gui>About Plugin</gui> to view more information about the plugin and any missing dependencies.</p>
 </note>
 
 <p><em style="strong">List of currently available plugins in <app>GTG</app>:</em></p>
 
 <p><em>Untouched Tasks</em></p>
-<p>Assigns tasks that you haven't touched for a while with the <code>@untouched</code> tag.</p>
+<p>Assigns tasks that you have not touched for a while with the <code>@untouched</code> tag.</p>
 
 <p><em>Send Tasks via Email</em></p>
 <p>Adds a button on the <gui>Headerbar</gui>, which allows you to easily send a task (with its status, due dates, tags, and subtasks) through email.</p>

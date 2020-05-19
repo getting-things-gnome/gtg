@@ -39,12 +39,12 @@
 
  <list>
       <item><p>Start a new line in the <gui>Task Editor</gui> window with a "-" and type the subtask's title.</p></item>
-      <item><p>Click the <media type="image" src="figures/insert_subtask_icon.png"/> button in the <gui>Task Editor</gui> headerbar.</p></item>
+      <item><p>Click the <media type="image" src="figures/insert_subtask_icon.png"/> button in the <gui>Task Editor</gui> toolbar.</p></item>
       <item><p>Use the <keyseq><key>Ctrl</key><key>Shift</key><key>N</key></keyseq> keyboard shortcut.</p></item>  
 </list>
 
 <p>The subtask title displays with an arrow bullet and is underlined. Click the link to open the subtask in a separate <gui>Task Editor</gui> window.</p>  
-<note style="tip"><p>When editing a subtask, you can click the <gui>Open Parent</gui> button in the <gui>Task Editor</gui> headerbar to view and edit the subtask's parent.</p></note>
+<note style="tip"><p>When editing a subtask, you can click the <gui>Open Parent</gui> button in the <gui>Task Editor</gui> toolbar to view and edit the subtask's parent.</p></note>
 
 <figure>
   <title>Insert Subtasks</title>
@@ -59,13 +59,11 @@
  	<item><p>When you mark a parent task as done, its subtasks will also be marked as done.</p></item>
  </list>
 
-<note style="tip"><p>To convert a task to a subtask, click the <gui>Add Parent</gui> button in the <gui>Task Editor</gui> headerbar.</p></note>
-
 </section>
  
   <section id="gtg-edit-delete-subtask">
    <title>Edit, Dismiss, and Delete Subtasks</title>
 
-  <p>Follow the same steps to edit subtasks as done for parent tasks.</p>
+  <p>Follow the same steps to edit, dismiss, and delete subtasks as done for parent tasks.</p>
     </section>
 </page>

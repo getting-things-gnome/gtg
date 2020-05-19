@@ -32,7 +32,7 @@
 <p>Click the <gui>Save Search</gui> button to save a search result. Saved searches are available from the <gui>Sidebar</gui> and are automatically updated. You can delete a saved search by right-clicking the saved search and selecting <gui>Delete</gui> in the context menu.</p>
 
 <note stlye="tip">
-<p>If you want to perform more detailed searches, you can use <app>GTG's</app> natural language parsing ability/special search syntax to to aid with efficiency. See
+<p>If you want to perform more detailed searches, you can use <app>GTG's</app> natural language parsing ability/special search syntax to aid with efficiency. See
 <link xref="gtg-search-syntax">GTG Search Syntax</link> for more information.</p>
 </note>
 

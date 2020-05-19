@@ -30,7 +30,7 @@
 <p>The <gui>Actionable</gui> view mode shows tasks that you can complete right now and meet the following conditions:</p>
 <list>
       <item><p>The task must be "startable", meaning that the start date is today or has passed.</p></item>
-      <item><p>The task does not have any open subtasks, meaning that all its prerequisites are met and you can complete the task itself.</p></item> 
+      <item><p>The task does not have any open subtasks, meaning that all of its prerequisites are met and you can complete the task itself.</p></item> 
 </list>
 
 <p>You can further filter tasks by tag, in any view mode, by selecting a tag in the <gui>Sidebar</gui>.</p>
