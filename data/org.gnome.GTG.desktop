@@ -15,9 +15,3 @@ Categories=Office;ProjectManagement;
 Keywords=Organizer;Task;Activity;Plan;Time;GTD;gtg;Todo;
 MimeType=x-scheme-handler/gtg;
 StartupNotify=true
-X-Ayatana-Desktop-Shortcuts=NewTask
-
-[NewTask Shortcut Group]
-Name=New Task
-Exec=gtg_new_task
-TargetEnvironment=Unity
