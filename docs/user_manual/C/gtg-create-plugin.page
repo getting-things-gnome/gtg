@@ -1,14 +1,12 @@
 <page xmlns="http://projectmallard.org/1.0/"
       xmlns:its="http://www.w3.org/2005/11/its"
       type="topic" style="task"
-      id="gtg-credits-design">
+      id="gtg-create-plugin">
 
   <info>
-    <link type="guide" xref="index#gtg-credits"/>
-    <link type="seealso" xref="gtg-credits-dev"/>
-    <link type="seealso" xref="gtg-credits-trans"/>
-    <link type="seealso" xref="gtg-credits-collab"/>
-      <revision pkgversion="1301" date="2013-06-18" status="candidate"/>
+
+      
+     <revision pkgversion="1301" date="2013-06-18" status="candidate"/>
       <revision pkgversion="0.4.0" date="2020-05-10" status="outdated"/>
    <credit type="author copyright">
       <name>Radina Matic</name>
@@ -25,9 +23,16 @@
 
   </info>
 
-  <title>GTG Design</title>
+  <title>Create your own Plugin</title>
 
-<p>Bertrand Rousseau - <email>bertrand.rousseau@gmail.com</email></p>
-<p>Kalle Persson - <email>kalle@kallepersson.se</email></p>
+<p>Here are some resources in case you are interested in making your own plugin for <app>GTG</app>:</p>
+
+<p><link href="https://live.gnome.org/gtg/pluginHowTo">How do plugins work and how can you build a plugin for <app>GTG</app></link></p>
+
+<p><link href="https://live.gnome.org/gtg/plugins">Plugin examples</link></p>
+
+
+
+
 </page>
 
