@@ -465,7 +465,7 @@
         <child>
           <object class="GtkCalendar" id="calendar_due">
             <property name="visible">True</property>
-            <property name="can_focus">True</property>
+            <property name="can_focus">False</property>
             <property name="year">2020</property>
             <property name="day">2</property>
           </object>
@@ -571,7 +571,7 @@
         <child>
           <object class="GtkCalendar" id="calendar_start">
             <property name="visible">True</property>
-            <property name="can_focus">True</property>
+            <property name="can_focus">False</property>
             <property name="year">2020</property>
             <property name="day">2</property>
           </object>
