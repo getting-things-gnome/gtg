@@ -41,7 +41,7 @@
 
     <p>To dismiss an open <app>GTG</app> task:</p>
 <steps>
-    <item><p>Click the <media type="image" src="figures/task-toolbar-menu.png"></media> icon in the task headerbar.</p></item>
+    <item><p>Click the <media type="image" src="figures/task-toolbar-menu.png"></media> icon in the task's headerbar.</p></item>
     <item><p>Click <gui>Dismiss Task</gui>.</p></item>
 </steps>
     
