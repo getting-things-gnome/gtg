@@ -55,5 +55,52 @@
     </tr>
 </tbody>
 </table>
+<section id="languages">
+	<title>Translation and Localization</title>
+	<p><app>GTG's</app> attributes are translated and can be used in your local language. The below table provides some examples of translated attributes.</p>
+	<table rules="rows" frame="top bottom" ui:expanded="true">
+<title>Attribute Translations</title>
+  <thead>
+    <tr>
+      <td><p><em style="strong">Language</em></p></td>
+      <td><p><em style="strong">Tags</em></p></td>
+      <td><p><em style="strong">Due</em></p></td>
+      <td><p><em style="strong">Defer (start)</em></p></td>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><p>Dutch</p></td>
+      <td><p>labels</p></td>
+      <td><p></p></td>
+      <td><p></p></td>
+    </tr>
+<tr>
+      <td><p>French</p></td>
+      <td><p>tags</p></td>
+      <td><p>échéance</p></td>
+      <td><p>reporter</p></td>
+    </tr>
+<tr>
+      <td><p>Italian</p></td>
+      <td><p>tag</p></td>
+      <td><p>dovuta</p></td>
+      <td><p>posticipa</p></td>
+    </tr>
+<tr>
+      <td><p>Malay</p></td>
+      <td><p>tanda</p></td>
+      <td><p>dijadualkan</p></td>
+      <td><p>tangguh</p></td>
+    </tr>
+<tr>
+      <td><p>Russian</p></td>
+      <td><p>метки</p></td>
+      <td><p>до</p></td>
+      <td><p>отложить</p></td>
+    </tr>        
+</tbody>
+</table>
+</section>
 </page>
 
