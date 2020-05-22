@@ -1,6 +1,6 @@
 # Things to check and do before a release
 
-1. Update the translation template file (using scripts/generate_potfile.sh ?) and notify the GNOME translation teams well in advance to request updated translations if needed.
+1. Update the translation template file (ninja gtg-pot) and notify the GNOME translation teams well in advance to request updated translations if needed.
 1. Check that code tests pass (run the `make check` command). See also the test suite [coverage testing](test suite - coverage testing.md)
 2. AUTHORS and GTG/info.py files are up to date. To get the list of top contributors to a release, use `git shortlog -s -n previous_tag...new_tag_or_HEAD` (for example `git shortlog -s -n v0.3.1..HEAD`)
 3. Retest all again
