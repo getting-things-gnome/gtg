@@ -53,19 +53,9 @@ latex_documents = [(
 # (source start file, name, description, authors, manual section).
 man_pages = [
     (
-        'man/gtcli', 'gtcli',
-        'Command-line interface for Getting Things GNOME!',
-        [], 1,
-    ),
-    (
         'man/gtg', 'gtg',
         'Getting Things GNOME!, a personal tasks and TODO-list items '
         'organizer for the GNOME desktop environment',
-        [], 1,
-    ),
-    (
-        'man/gtg_new_task', 'gtg_new_task',
-        'Adds a task to the Getting Things GNOME! organizer',
         [], 1,
     ),
 ]

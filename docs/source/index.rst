@@ -23,8 +23,6 @@ Man pages
    :maxdepth: 1
 
    man/gtg
-   man/gtg_new_task
-   man/gtcli
 
 Release notes
 =============
