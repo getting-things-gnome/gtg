@@ -88,4 +88,4 @@ You can see them on %(OH_stats)s and %(GH_stats)s.""" % {
 
 ARTISTS = ["Kalle Persson (logo)", "Bertrand Rousseau (UX)", "Jean-François Fortin Tam (UX)"]
 ARTISTS.sort()
-DOCUMENTERS = ["Radina Matic", "Jean-François Fortin Tam"]
+DOCUMENTERS = ["Radina Matic", "Jean-François Fortin Tam", "Danielle Vansia"]
