@@ -92,18 +92,6 @@ If you want to read the documentation directly from the source code, run this co
 
     yelp docs/user_manual/C/index.page
 
-# Interacting with GTG from the command line
-
-GTG provides two command line tools that allows interacting with the GTG application:
-
-* `gtcli` (provides many options to display, list or edit tasks)
-* `gtg_new_task` (allows quickly adding tasks on the commandline)
-
-If you want to know more about how to use these tools, please refer to the tools' man page. If you have gtg installed system-wide, you can access those by executing:
-
-    man gtcli
-    man gtg_new_task
-
 # Other documentation
 
 * Our wiki serves as our website: https://wiki.gnome.org/Apps/GTG

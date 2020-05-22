@@ -26,8 +26,6 @@ For full measurement, it will be something like:
 [run]
 source =
     gtg
-    gtcli
-    gtg_new_task
     GTG
     ../liblarch
 omit =
