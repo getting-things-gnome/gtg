@@ -1,5 +1,11 @@
 appdata_file = 'org.gnome.GTG.appdata.xml'
-install_data(appdata_file, install_dir: appdatadir)
+i18n.merge_file(appdata_file,
+  input: appdata_file + '.in',
+  output: appdata_file,
+  po_dir: meson.source_root() / 'po',
+  install: true,
+  install_dir: appdatadir,
+)
 
 desktop_file = 'org.gnome.GTG.desktop'
 i18n.merge_file(desktop_file,
