@@ -66,7 +66,7 @@ msgstr "Getting Things GNOME!"
 
 #: data/org.gnome.GTG.desktop.in:5
 msgid "Task Manager"
-msgstr ""
+msgstr "Organizador de Tareas"
 
 #: data/org.gnome.GTG.desktop.in:6
 #, fuzzy
