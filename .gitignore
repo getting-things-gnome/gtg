@@ -15,6 +15,8 @@ gtg.prof
 __pycache__
 .*.sw*
 docs/user_manual_html/
+flatpak/cache
+flatpak/.flatpak-builder
 
 # src/ usually has development version of liblarch
 src/
