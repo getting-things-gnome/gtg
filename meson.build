@@ -21,6 +21,15 @@ appdatadir = datadir / 'metainfo'
 desktopdir = datadir / 'applications'
 icondir = datadir / 'icons'
 servicedir = datadir / 'dbus-1' / 'services'
+pythondir = python3.get_path('purelib')
+
+bin_config = configuration_data()
+bin_config.set('local_build', 'False')
+bin_config.set('pythondir', pythondir)
+
+local_config = configuration_data()
+local_config.set('local_build', 'True')
+local_config.set('pythondir', meson.source_root())
 
 subdir('GTG')
 subdir('data')

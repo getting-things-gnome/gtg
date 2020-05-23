@@ -50,7 +50,11 @@ if [[ "$title" = "" ]]; then
 fi
 
 if [[ "$norun" -eq 0 ]]; then
+    if [[ ! -d .local_build ]]; then
+        meson .local_build
+    fi
+    ninja -C .local_build
     # double quoting args seems to prevent python script from picking up flag arguments correctly
     # shellcheck disable=SC2086
-    PYTHONPATH=$(pwd) ./GTG/gtg ${args} -t "$title"
+    ./.local_build/GTG/local-gtg ${args} -t "$title"
 fi
