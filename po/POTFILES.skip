@@ -1,0 +1,30 @@
+# List of source files that should *not* be translated.
+# Please keep this file sorted alphabetically.
+GTG/backends/unmaintained/backend_evolution.py
+GTG/backends/unmaintained/backend_gnote.py
+GTG/backends/unmaintained/backend_launchpad.py
+GTG/backends/unmaintained/backend_mantis.py
+GTG/backends/unmaintained/backend_rtm.py
+GTG/backends/unmaintained/backend_tomboy.py
+GTG/backends/unmaintained/generictomboy.py
+GTG/backends/unmaintained/rtm/__init__.py
+GTG/backends/unmaintained/rtm/rtm.py
+GTG/plugins/unmaintained/bugzilla/bug.py
+GTG/plugins/unmaintained/bugzilla/bugzilla.py
+GTG/plugins/unmaintained/bugzilla/__init__.py
+GTG/plugins/unmaintained/bugzilla/notification.py
+GTG/plugins/unmaintained/bugzilla/services.py
+GTG/plugins/unmaintained/geolocalized_tasks/geolocalized_tasks.py
+GTG/plugins/unmaintained/geolocalized_tasks/geolocalized.ui
+GTG/plugins/unmaintained/geolocalized_tasks/__init__.py
+GTG/plugins/unmaintained/geolocalized_tasks/marker.py
+GTG/plugins/unmaintained/hamster/hamster.py
+GTG/plugins/unmaintained/hamster/__init__.py
+GTG/plugins/unmaintained/hamster/prefs.ui
+GTG/plugins/unmaintained/notification_area/__init__.py
+GTG/plugins/unmaintained/notification_area/notification_area.py
+GTG/plugins/unmaintained/notification_area/notification_area.ui
+GTG/plugins/unmaintained/tomboy/combobox_enhanced.py
+GTG/plugins/unmaintained/tomboy/__init__.py
+GTG/plugins/unmaintained/tomboy/tomboy.py
+GTG/plugins/unmaintained/tomboy/tomboy.ui
