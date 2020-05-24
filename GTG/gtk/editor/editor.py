@@ -179,6 +179,9 @@ class TaskEditor():
             self.textview.override_font(Pango.FontDescription(conf_font_value))
 
         self.textview.browse_tag = app.select_tag
+        self.textview.new_subtask = self.new_subtask
+        self.textview.delete_subtask = self.remove_subtask
+        self.textview.rename_subtask = self.rename_subtask
 
         # Voila! it's done
 
@@ -693,6 +696,21 @@ class TaskEditor():
             subt.set_title(title)
             tid = subt.get_id()
         return tid
+
+    def remove_subtask(self, tid):
+        """Remove a subtask of this task."""
+
+        self.task.remove_child(tid)
+
+    def rename_subtask(self, tid, new_title):
+        """Rename a subtask of this task."""
+
+        try:
+            self.req.get_task(tid).set_title(new_title)
+        except AttributeError:
+            # There's no task at that tid
+            pass
+
 
     def insert_subtask(self, action=None, param=None):
         self.textview.insert_newtask()

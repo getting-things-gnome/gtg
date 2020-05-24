@@ -40,6 +40,36 @@ class TagType(Enum):
     LINK = 'Link'
     TASKTAG = 'Task Tag'
     TITLE = 'Title'
+    SUBTASK = 'Subtask'
+
+
+class SubTaskTag(Gtk.TextTag):
+    """Subtask Text tag."""
+
+    TYPE = TagType.SUBTASK
+
+    def __init__(self, tid: str) -> None:
+        super().__init__()
+
+        self.tid = tid
+
+        self.set_property('background', 'white')
+        self.set_property('foreground', '#007bff')
+        self.set_property('underline', Pango.Underline.SINGLE)
+        self.set_property('strikethrough', False)
+        self.set_property('left-margin', 40)
+
+
+    def set_hover(self) -> None:
+        """Change tag appareance when hovering."""
+
+        self.set_property('background', 'light gray')
+
+
+    def reset(self) -> None:
+        """Reset tag appareance when not hovering."""
+
+        self.set_property('background', 'white')
 
 
 class LinkTag(Gtk.TextTag):
@@ -202,6 +232,7 @@ class TaskView(Gtk.TextView):
         self.title_tag = TitleTag()
         self.table.add(self.title_tag)
         self.tags = []
+        self.subtask_tags = []
 
 
         # Task info
@@ -216,6 +247,9 @@ class TaskView(Gtk.TextView):
 
         # Callback when tags are clicked
         self.browse_tag = NotImplemented
+        self.new_subtask = NotImplemented
+        self.delete_subtask = NotImplemented
+        self.rename_subtask = NotImplemented
 
 
     def on_modified(self, buffer: Gtk.TextBuffer) -> None:
@@ -241,6 +275,8 @@ class TaskView(Gtk.TextView):
         start = self.detect_title()
         start.forward_line()
 
+        subtasks = self.subtask_tags.copy()
+
         # Parse the text line by line until the end of the buffer
         while not start.is_end():
             end = start.copy()
@@ -252,11 +288,46 @@ class TaskView(Gtk.TextView):
                 start.forward_line()
                 continue
 
+            if text.startswith('- '):
+                subtask_title = text[2:]
+
+                if not subtask_title:
+                    start.forward_line()
+                    continue
+
+                # If it starts with a tag, store the tid and name
+                if start.starts_tag():
+                    tag = start.get_tags()[0]
+                    tid = tag.tid
+
+                    if tag.TYPE == TagType.SUBTASK:
+                        subtasks.remove(tid)
+
+                    # Always rename if there's a tag
+                    self.rename_subtask(tid, subtask_title)
+
+                    # Remove subtask tag and recreate
+                    self.table.remove(tag)
+                else:
+                    tid = self.new_subtask(subtask_title)
+                    self.subtask_tags.append(tid)
+
+                subtask_tag = SubTaskTag(tid)
+                self.table.add(subtask_tag)
+                self.buffer.apply_tag(subtask_tag, start, end)
+
+                start.forward_line()
+                continue
 
             self.detect_url(text, start)
             self.detect_tag(text, start)
 
             start.forward_line()
+
+        # Remove subtasks that were deleted
+        for tid in subtasks:
+            self.delete_subtask(tid)
+            self.subtask_tags.remove(tid)
 
         log.debug(f'Processed in {time() - bench_start:.2} secs')
 
@@ -364,7 +435,7 @@ class TaskView(Gtk.TextView):
         # Apply hover state if possible
         if tags:
             tag = tags[0]
-            if tag.TYPE in {TagType.LINK, TagType.TASKTAG}:
+            if tag.TYPE in {TagType.LINK, TagType.TASKTAG, TagType.SUBTASK}:
                 window.set_cursor(self.cursor_hand)
                 tag.set_hover()
                 self.hovered_tag = tag
