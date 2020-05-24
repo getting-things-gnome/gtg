@@ -16,7 +16,7 @@
 
 """ Text only template """
 
-from GTG.core.translations import _
+from gettext import gettext as _
 
 title = _("Text-only")
 description = _("A template to create a simple text file with some tasks.")

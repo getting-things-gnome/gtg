@@ -33,7 +33,7 @@ from GTG.backends.periodic_import_backend import PeriodicImportBackend
 from GTG.backends.sync_engine import SyncEngine, SyncMeme
 from GTG.core.dirs import SYNC_CACHE_DIR
 from GTG.core.task import Task
-from GTG.core.translations import _
+from gettext import gettext as _
 from GTG.info import NAME as GTG_NAME
 from GTG.core.logger import log
 

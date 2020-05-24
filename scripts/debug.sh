@@ -51,10 +51,10 @@ fi
 
 if [[ "$norun" -eq 0 ]]; then
     if [[ ! -d .local_build ]]; then
-        meson .local_build
+        meson -Dprefix="$(pwd)"/.local_build/install .local_build
     fi
-    ninja -C .local_build
+    ninja -C .local_build install
     # double quoting args seems to prevent python script from picking up flag arguments correctly
     # shellcheck disable=SC2086
-    ./.local_build/GTG/local-gtg ${args} -t "$title"
+    ./.local_build/prefix-gtg.sh ./.local_build/install/bin/gtg ${args} -t "$title"
 fi

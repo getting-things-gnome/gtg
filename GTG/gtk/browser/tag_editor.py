@@ -28,7 +28,7 @@ for a tag.
 
 from gi.repository import GObject, Gtk, Gdk, GdkPixbuf
 
-from GTG.core.translations import _
+from gettext import gettext as _
 from GTG.gtk.browser.simple_color_selector import SimpleColorSelector
 from GTG.gtk.colors import color_add, color_remove
 from GTG.core.logger import log

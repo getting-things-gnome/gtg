@@ -19,7 +19,7 @@
 from datetime import date, timedelta
 from unittest import TestCase
 
-from GTG.core.translations import _
+from gettext import gettext as _
 from GTG.core.dates import Date
 
 

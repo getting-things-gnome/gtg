@@ -26,10 +26,21 @@ pythondir = python3.get_path('purelib')
 bin_config = configuration_data()
 bin_config.set('local_build', 'False')
 bin_config.set('pythondir', pythondir)
+bin_config.set('localedir', datadir / 'locale')
 
 local_config = configuration_data()
 local_config.set('local_build', 'True')
 local_config.set('pythondir', meson.source_root())
+local_config.set('localedir', meson.source_root() / 'po')
+
+# Wrapper to launch gtg with non-/usr prefix install PYTHONPATH
+wrapper_config = configuration_data()
+wrapper_config.set('python_installdir', python3.get_install_dir())
+configure_file(
+  input: 'prefix-gtg.sh.in',
+  output: 'prefix-gtg.sh',
+  configuration: wrapper_config,
+)
 
 subdir('GTG')
 subdir('data')

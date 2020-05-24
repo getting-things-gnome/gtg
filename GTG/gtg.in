@@ -46,6 +46,8 @@
 #=== IMPORT ===================================================================
 import sys
 import argparse
+import gettext
+import locale
 
 import gi
 gi.require_version('Gdk', '3.0')
@@ -95,6 +97,14 @@ if __name__ == "__main__":
         if args.title is not None:
             info.NAME = args.title
 
+        # Set up UI i18n
+        LOCALE_DIR = '@localedir@'
+        locale.bindtextdomain('gtg', LOCALE_DIR)
+        locale.textdomain('gtg')
+        gettext.bindtextdomain('gtg', LOCALE_DIR)
+        gettext.textdomain('gtg')
+
+        # Run the application
         application = Application(args.debug)
         application.uri_list = args.task_uri
         application.run()

@@ -38,7 +38,7 @@ from GTG.backends.rtm.rtm import createRTM, RTMError, RTMAPIError
 from GTG.backends.sync_engine import SyncEngine, SyncMeme
 from GTG.core.tag import ALLTASKS_TAG
 from GTG.core.task import Task
-from GTG.core.translations import _
+from gettext import gettext as _
 from GTG.core.dates import Date
 from GTG.core.interruptible import interruptible
 from GTG.core.logger import log

@@ -25,7 +25,7 @@ Should be updated for every release.
 """
 
 from datetime import date
-from GTG.core.translations import _
+from gettext import gettext as _
 
 # These variables get used by main_window.py to set the About dialog's metadata.
 # Translator credits are set dynamically in main_window.py, not hardcoded.
