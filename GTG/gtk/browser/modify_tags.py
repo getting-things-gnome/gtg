@@ -19,7 +19,7 @@
 
 from gi.repository import Gtk
 
-from GTG.core.translations import _
+from gettext import gettext as _
 from GTG.gtk.browser import GnomeConfig
 from GTG.core.tag import parse_tag_list
 

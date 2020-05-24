@@ -33,7 +33,7 @@ import os
 
 from gi.repository import GObject, Gtk, Gdk, Pango
 
-from GTG.core.translations import _
+from gettext import gettext as _
 from GTG.gtk.editor import serialize
 from GTG.core import urlregex
 

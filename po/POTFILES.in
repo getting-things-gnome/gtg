@@ -45,7 +45,6 @@ GTG/core/tag.py
 GTG/core/task.py
 GTG/core/taskxml.py
 GTG/core/timer.py
-GTG/core/translations.py
 GTG/core/treefactory.py
 GTG/core/twokeydict.py
 GTG/core/urlregex.py

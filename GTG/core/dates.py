@@ -27,7 +27,7 @@ import calendar
 import datetime
 import locale
 
-from GTG.core.translations import _, ngettext
+from gettext import gettext as _, ngettext
 
 __all__ = 'Date',
 

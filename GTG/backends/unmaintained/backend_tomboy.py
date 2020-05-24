@@ -23,7 +23,7 @@ shared with the Gnote backend.
 
 from GTG.backends.generic_backend import GenericBackend
 from GTG.backends.generictomboy import GenericTomboy
-from GTG.core.translations import _
+from gettext import gettext as _
 
 
 class Backend(GenericTomboy):

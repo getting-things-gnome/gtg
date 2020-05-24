@@ -18,7 +18,7 @@
 
 from gi.repository import Gtk
 
-from GTG.core.translations import _
+from gettext import gettext as _
 from GTG.gtk.backends.parameters_ui import ParametersUI
 from GTG.backends.backend_signals import BackendSignals
 

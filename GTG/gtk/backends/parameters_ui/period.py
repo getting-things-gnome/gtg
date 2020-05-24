@@ -18,7 +18,7 @@
 
 from gi.repository import Gtk
 
-from GTG.core.translations import _, ngettext
+from gettext import gettext as _, ngettext
 
 
 class PeriodUI(Gtk.Box):

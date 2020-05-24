@@ -20,7 +20,7 @@
 # This is the tool package. It contains some useful function and tool
 # that could be useful for any part of GTG.
 
-from GTG.core.translations import _
+from gettext import gettext as _
 
 
 class GnomeConfig():

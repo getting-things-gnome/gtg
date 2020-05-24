@@ -27,7 +27,7 @@ like a color picker)
 
 from gi.repository import Gtk
 
-from GTG.core.translations import _
+from gettext import gettext as _
 from GTG.gtk.colors import generate_tag_color, color_add, color_remove
 
 

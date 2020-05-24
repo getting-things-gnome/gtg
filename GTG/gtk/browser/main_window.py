@@ -29,7 +29,7 @@ from GTG.core.dirs import ICONS_DIR
 from GTG.core.search import parse_search_query, InvalidQuery
 from GTG.core.tag import SEARCH_TAG
 from GTG.core.task import Task
-from GTG.core.translations import _
+from gettext import gettext as _
 from GTG.gtk.browser import GnomeConfig
 from GTG.gtk.browser.backend_infobar import BackendInfoBar
 from GTG.gtk.browser.modify_tags import ModifyTagsDialog

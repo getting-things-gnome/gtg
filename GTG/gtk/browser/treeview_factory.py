@@ -25,7 +25,7 @@ from gi.repository import GObject, Gtk, Pango
 from GTG.core.search import parse_search_query, search_filter
 from GTG.core.tag import SEARCH_TAG
 from GTG.core.task import Task
-from GTG.core.translations import _
+from gettext import gettext as _
 from GTG.gtk import colors
 from GTG.gtk.browser.cell_renderer_tags import CellRendererTags
 from GTG.core.dates import Date

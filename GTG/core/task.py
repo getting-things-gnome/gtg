@@ -26,7 +26,7 @@ import uuid
 import xml.dom.minidom
 import xml.sax.saxutils as saxutils
 
-from GTG.core.translations import _
+from gettext import gettext as _
 from GTG.core.dates import Date
 from GTG.core.logger import log
 from GTG.core.tag import extract_tags_from_text

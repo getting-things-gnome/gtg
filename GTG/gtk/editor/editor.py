@@ -33,7 +33,7 @@ from GTG.core.dirs import UI_DIR
 from GTG.core.plugins.api import PluginAPI
 from GTG.core.plugins.engine import PluginEngine
 from GTG.core.task import Task
-from GTG.core.translations import _, ngettext
+from gettext import gettext as _, ngettext
 from GTG.gtk.editor import GnomeConfig
 from GTG.gtk.editor.calendar import GTGCalendar
 from GTG.gtk.editor.taskview import TaskView

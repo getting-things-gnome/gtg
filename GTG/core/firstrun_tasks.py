@@ -20,7 +20,7 @@
 
 Tasks should serve as a quick tutorial how GTG works """
 
-from GTG.core.translations import _
+from gettext import gettext as _
 from GTG.core import cleanxml
 from GTG.core.tag import extract_tags_from_text
 

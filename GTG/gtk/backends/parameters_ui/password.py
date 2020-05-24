@@ -18,7 +18,7 @@
 
 from gi.repository import Gtk
 
-from GTG.core.translations import _
+from gettext import gettext as _
 
 
 class PasswordUI(Gtk.Box):
