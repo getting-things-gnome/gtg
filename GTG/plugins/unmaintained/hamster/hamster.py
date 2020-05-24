@@ -26,7 +26,7 @@ import time
 from gi.repository import Gtk, GdkPixbuf
 
 from GTG.core.task import Task
-from GTG.core.translations import _
+from gettext import gettext as _
 from GTG.core.logger import log
 
 

@@ -23,7 +23,7 @@ simple, HIG compliant and well integrated with Gnome.
 """
 import os
 
-from GTG.core.translations import _
+from gettext import gettext as _
 
 
 class GnomeConfig():

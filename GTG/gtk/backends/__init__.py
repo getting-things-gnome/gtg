@@ -30,7 +30,7 @@ from gi.repository import Gtk
 from GTG.core import info
 from GTG.backends import BackendFactory
 from GTG.backends.generic_backend import GenericBackend
-from GTG.core.translations import _
+from gettext import gettext as _
 from GTG.gtk import ViewConfig
 from GTG.gtk.backends.addpanel import AddPanel
 from GTG.gtk.backends.backendstree import BackendsTree

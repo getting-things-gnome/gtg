@@ -5,7 +5,7 @@ import urllib.parse
 import urllib.error
 from hashlib import md5
 
-from GTG.core.translations import _
+from gettext import gettext as _
 from GTG.core.logger import log
 
 _use_jsonlib = False

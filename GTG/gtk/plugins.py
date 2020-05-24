@@ -23,7 +23,7 @@ from gi.repository import Gtk, Pango
 from GTG.core import info
 from GTG.core.plugins import GnomeConfig
 from GTG.core.plugins.engine import PluginEngine
-from GTG.core.translations import _
+from gettext import gettext as _
 from GTG.gtk import ViewConfig
 
 # columns in PluginsDialog.plugin_store

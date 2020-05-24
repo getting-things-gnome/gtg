@@ -28,7 +28,7 @@ import functools
 from gi.repository import Gtk
 
 from GTG.backends.generic_backend import GenericBackend
-from GTG.core.translations import _
+from gettext import gettext as _
 from GTG.gtk.backends.parameters_ui.checkbox import CheckBoxUI
 from GTG.gtk.backends.parameters_ui.import_tags import ImportTagsUI
 from GTG.gtk.backends.parameters_ui.password import PasswordUI

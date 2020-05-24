@@ -21,7 +21,7 @@ from datetime import datetime
 from GTG.core.search import search_filter
 from GTG.core import tag
 from GTG.core.task import Task
-from GTG.core.translations import _
+from gettext import gettext as _
 from GTG.core.dates import Date
 from liblarch import Tree
 

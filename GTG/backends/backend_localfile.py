@@ -29,7 +29,7 @@ import os
 from GTG.backends.backend_signals import BackendSignals
 from GTG.backends.generic_backend import GenericBackend
 from GTG.core.dirs import DATA_DIR
-from GTG.core.translations import _
+from gettext import gettext as _
 from GTG.core import cleanxml, taskxml
 
 # Ignore all other elements but this one

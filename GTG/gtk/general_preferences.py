@@ -25,7 +25,7 @@ import os
 from gi.repository import Gtk, Gdk
 
 from GTG.core.dirs import UI_DIR
-from GTG.core.translations import _
+from gettext import gettext as _
 
 
 class GeneralPreferences():

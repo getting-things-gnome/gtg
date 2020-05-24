@@ -20,7 +20,7 @@ import os.path
 
 from gi.repository import Gtk
 
-from GTG.core.translations import _
+from gettext import gettext as _
 
 
 class PathUI(Gtk.Box):

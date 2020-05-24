@@ -25,7 +25,7 @@ import math
 
 from gi.repository import GObject, Gtk, Gdk
 
-from GTG.core.translations import _
+from gettext import gettext as _
 
 DEFAULT_PALETTE = [
     "#EF2929", "#AD7FA8", "#729FCF", "#8AE234", "#E9B96E",

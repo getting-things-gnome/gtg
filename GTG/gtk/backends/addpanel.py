@@ -22,7 +22,7 @@ from gi.repository import Gtk
 
 from GTG.gtk.backends.backendscombo import BackendsCombo
 from GTG.backends import BackendFactory
-from GTG.core.translations import _, ngettext
+from gettext import gettext as _, ngettext
 
 
 class AddPanel(Gtk.Box):

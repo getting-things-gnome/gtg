@@ -19,7 +19,7 @@ import os
 
 from gi.repository import Gtk, Gdk, GdkPixbuf
 
-from GTG.core.translations import _
+from gettext import gettext as _
 from GTG.plugins.tomboy.combobox_enhanced import smartifyComboboxEntry
 
 

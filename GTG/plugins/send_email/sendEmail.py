@@ -25,7 +25,7 @@ import urllib.request
 import urllib.parse
 import urllib.error
 
-from GTG.core.translations import _
+from gettext import gettext as _
 
 
 class SendEmailPlugin():
