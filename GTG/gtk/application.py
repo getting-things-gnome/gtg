@@ -29,7 +29,6 @@ from GTG.gtk.editor.editor import TaskEditor
 from GTG.gtk.preferences import Preferences
 from GTG.gtk.plugins import PluginsDialog
 from webbrowser import open as openurl
-from GTG.core import info
 from GTG.core import clipboard
 from GTG.core.plugins.engine import PluginEngine
 from GTG.core.plugins.api import PluginAPI

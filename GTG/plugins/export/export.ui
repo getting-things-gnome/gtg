@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.22.2 -->
+<!-- Generated with glade 3.36.0 -->
 <interface>
-  <requires lib="gtk+" version="3.0"/>
+  <requires lib="gtk+" version="3.22"/>
   <object class="GtkAccelGroup" id="accelgroup1"/>
   <object class="GtkWindow" id="export_dialog">
     <property name="can_focus">False</property>
@@ -9,9 +9,6 @@
     <property name="window_position">mouse</property>
     <property name="destroy_with_parent">True</property>
     <signal name="delete-event" handler="on_export_dialog_delete_event" swapped="no"/>
-    <child type="titlebar">
-      <placeholder/>
-    </child>
     <child>
       <object class="GtkBox" id="vbox3">
         <property name="visible">True</property>
@@ -207,7 +204,7 @@
             <property name="spacing">23</property>
             <child>
               <object class="GtkButton" id="export_btn_open">
-                <property name="label">gtk-open</property>
+                <property name="label">Open</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
@@ -221,7 +218,7 @@
             </child>
             <child>
               <object class="GtkButton" id="export_btn_save">
-                <property name="label">gtk-save</property>
+                <property name="label">Save</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
@@ -242,6 +239,9 @@
         </child>
       </object>
     </child>
+    <child type="titlebar">
+      <placeholder/>
+    </child>
   </object>
   <object class="GtkWindow" id="preferences_dialog">
     <property name="can_focus">False</property>
@@ -249,9 +249,6 @@
     <property name="window_position">center-on-parent</property>
     <property name="type_hint">dialog</property>
     <signal name="delete-event" handler="on_preferences_dialog_delete_event" swapped="no"/>
-    <child type="titlebar">
-      <placeholder/>
-    </child>
     <child>
       <object class="GtkBox" id="vbox1">
         <property name="visible">True</property>
@@ -306,7 +303,7 @@
             <property name="spacing">50</property>
             <child>
               <object class="GtkButton" id="btn_preferences_cancel">
-                <property name="label">gtk-cancel</property>
+                <property name="label">Cancel</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
@@ -320,7 +317,7 @@
             </child>
             <child>
               <object class="GtkButton" id="btn_preferences_ok">
-                <property name="label">gtk-ok</property>
+                <property name="label">Ok</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
@@ -340,6 +337,9 @@
           </packing>
         </child>
       </object>
+    </child>
+    <child type="titlebar">
+      <placeholder/>
     </child>
   </object>
 </interface>
