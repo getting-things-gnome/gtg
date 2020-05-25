@@ -41,6 +41,7 @@ class TagType(Enum):
     TASKTAG = 'Task Tag'
     TITLE = 'Title'
     SUBTASK = 'Subtask'
+    INVISIBLE = 'Invisible Characters'
 
 
 class SubTaskTag(Gtk.TextTag):
@@ -70,6 +71,31 @@ class SubTaskTag(Gtk.TextTag):
         """Reset tag appareance when not hovering."""
 
         self.set_property('background', 'white')
+
+
+class InvisibleTag(Gtk.TextTag):
+    """Subtask Text tag."""
+
+    TYPE = TagType.INVISIBLE
+
+    def __init__(self) -> None:
+        super().__init__()
+
+        self.set_property('invisible', True)
+        self.set_property('left-margin', 40)
+        self.set_property('foreground', '#222222')
+
+
+    def set_hover(self) -> None:
+        """Change tag appareance when hovering."""
+
+        self.set_property('invisible', False)
+
+
+    def reset(self) -> None:
+        """Reset tag appareance when not hovering."""
+
+        self.set_property('invisible', True)
 
 
 class LinkTag(Gtk.TextTag):
@@ -295,6 +321,16 @@ class TaskView(Gtk.TextView):
                     start.forward_line()
                     continue
 
+                # Tag initial line as invisible
+                invisible_end = start.copy()
+                invisible_end.forward_chars(2)
+
+                invisible_tag = InvisibleTag()
+                self.table.add(invisible_tag)
+                self.buffer.apply_tag(invisible_tag, start, invisible_end)
+
+                start.forward_chars(2)
+
                 # If it starts with a tag, store the tid and name
                 if start.starts_tag():
                     tag = start.get_tags()[0]
@@ -435,7 +471,7 @@ class TaskView(Gtk.TextView):
         # Apply hover state if possible
         if tags:
             tag = tags[0]
-            if tag.TYPE in {TagType.LINK, TagType.TASKTAG, TagType.SUBTASK}:
+            if tag.TYPE is not TagType.TITLE:
                 window.set_cursor(self.cursor_hand)
                 tag.set_hover()
                 self.hovered_tag = tag
