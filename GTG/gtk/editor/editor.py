@@ -372,7 +372,7 @@ class TaskEditor():
             self.dismissbutton.show()
             self.undismissbutton.hide()
 
-        # Refreshing the the parent button
+        # Refreshing the parent button
         if self.task.has_parent():
             self.parent_button.set_label(_('Open Parent'))
         else:
@@ -635,8 +635,11 @@ class TaskEditor():
             self.textview.insert_text(" @", itera)
 
     def open_parent(self):
-        """Open the parent task (create it if none)."""
-
+        """
+        Open (or create) the parent task,
+        then close the child to avoid various window management issues
+        and to prevent visible content divergence when the child title changes.
+        """
         parents = self.task.get_parents()
 
         if not parents:
@@ -645,11 +648,14 @@ class TaskEditor():
             parent_id = parent.get_id()
 
             self.task.set_parent(parent_id)
-            self.parent_button.set_label(_('Open Parent'))
             self.app.open_task(parent_id)
+            # Prevent WM issues and risks of conflicting content changes:
+            self.close()
 
         elif len(parents) == 1:
             self.app.open_task(parents[0])
+            # Prevent WM issues and risks of conflicting content changes:
+            self.close()
 
         elif len(parents) > 1:
             self.show_multiple_parent_popover(parents)
@@ -669,11 +675,13 @@ class TaskEditor():
         self.parent_popover.set_transitions_enabled(True)
         self.parent_popover.show_all()
 
-    # On click handler for open_parent_button's menu items
+    # On click handler for open_parent menu items in the case of multiple parents
     def on_parent_item_clicked(self, widget, parent_id):
         self.app.open_task(parent_id)
         if self.parent_popover.get_visible():
             self.parent_popover.hide()
+        # Prevent WM issues and risks of conflicting content changes:
+        self.close()
 
     def save(self):
         self.task.set_title(self.textview.get_title())
@@ -697,8 +705,11 @@ class TaskEditor():
         if tosave:
             self.save()
 
-    # This will bring the Task Editor to front
     def present(self):
+        # This tries to bring the Task Editor to the front.
+        # If TaskEditor is a "utility" window type, this doesn't work on X11,
+        # it only works on GNOME's Wayland session, unless the child is closed.
+        # This is partly why we use self.close() in various places elsewhere.
         self.window.present()
 
     def get_position(self):
