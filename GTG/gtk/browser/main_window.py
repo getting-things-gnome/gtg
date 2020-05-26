@@ -174,6 +174,7 @@ class MainWindow(Gtk.ApplicationWindow):
             ('due_next_month', self.on_set_due_next_month, None),
             ('due_next_year', self.on_set_due_next_year, None),
             ('due_clear', self.on_set_due_clear, None),
+            ('due_now', self.on_set_due_now, None),
             ('due_soon', self.on_set_due_soon, None),
             ('due_custom', self.on_set_due_for_specific_date, None),
             ('due_someday', self.on_set_due_someday, None),
@@ -1026,6 +1027,9 @@ class MainWindow(Gtk.ApplicationWindow):
 
     def on_set_due_next_year(self, action, param):
         self.update_due_date(None, "next year")
+
+    def on_set_due_now(self, action, param):
+        self.update_due_date(None, "now")
 
     def on_set_due_soon(self, action, param):
         self.update_due_date(None, "soon")
