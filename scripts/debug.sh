@@ -14,8 +14,8 @@ title=""
 # Create execution-time data directory if needed
 mkdir -p tmp
 
-# Interpret arguments
-while getopts bdnst: o
+# Interpret arguments. The ":" following the letter indicates that the opstring (optarg) needs a parameter specified. See also: https://stackoverflow.com/questions/18414054/rreading-optarg-for-optional-flags
+while getopts "bdns:t:" o;
 do  case "$o" in
     b)   args="$args --boot-test";;
     d)   args="$args -d";;
