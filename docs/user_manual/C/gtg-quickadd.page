@@ -48,7 +48,7 @@
 <terms>
 <item>
      <title><em style="strong">tags:tag1,tag2,tag3</em></title>
-     <p>You can apply as many tags as you want using a comma as a separator. Do not put a space between any tags.</p></item>
+     <p>When using "tags:", you can apply as many tags as you want using a comma as a separator (do not put a space between any of those tags). You can also use individual "@" tags, even in combination with the tags, if you want to have the tag as part of the task title.</p></item>
 <item>
      <title><em style="strong">due:<code>date</code></em> or <em style="strong">start:<code>date</code></em></title>
      <p>With this syntax, you can apply a due date, start date, or both. Dates can be formatted as yyyy-mm-dd (for example, 2020-04-01), yyyymmdd (20200401), or mmdd (0401 - the year being is the current one). You can also use words such as today, tomorrow, or a weekday name (due:monday means due next Monday). Indefinite dates, such as someday, soon, or now can also be used.</p></item></terms>
@@ -70,11 +70,11 @@
      <title><em style="strong"><code>write a book start:someday</code></em></title>
         <p>Creates a new task with the title <em>write a book</em> and with the start date of <em>someday</em>. No tags or due date are added.</p></item>
   <item>
-    <title><em style="strong"><code>buy stationary tags:purchases,office due:20200330 start:tuesday</code></em></title>
-     <p>Creates a new task with the title <em>buy stationary</em>, with the tags <em>purchases</em> and <em>office</em>, with the due date <em>March 30, 2020</em>, and a start date of <em>next Tuesday</em>.</p></item>
+    <title><em style="strong"><code>buy stationary for the @office tags:purchases,errands start:tuesday due:20200330</code></em></title>
+     <p>Creates a new task with the title <em>buy stationary for the @office</em>, with the tags <em>office</em>, <em>purchases</em> and <em>errands</em>, with the due date <em>March 30, 2020</em>, and a start date of <em>next Tuesday</em>.</p></item>
   <item>
-     <title><em style="strong"><code>call mum tags:family,calls due:sunday start:tomorrow</code></em></title>
-     <p>Creates a new task with the title <em>call mum</em>, with the tags <em>family</em> and <em>calls</em>, with the due date of <em>next Sunday</em>, and the start date <em>tomorrow</em>.</p></item>
+     <title><em style="strong"><code>call mum about the broken @phone tags:family due:sunday start:tomorrow</code></em></title>
+     <p>Creates a new task with the title <em>call mum about the broken @phone</em>, with the tags <em>family</em> and <em>phone</em>, with the due date of <em>next Sunday</em>, and the start date <em>tomorrow</em>.</p></item>
 </terms>
 
 </section>    
