@@ -7,4 +7,4 @@ gtg_backend_sources = [
   'sync_engine.py',
 ]
 
-python3.install_sources(gtg_backend_sources, subdir: 'GTG' / 'backends')
+python3.install_sources(gtg_backend_sources, subdir: 'GTG' / 'backends', pure: true)

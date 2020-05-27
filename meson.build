@@ -35,7 +35,7 @@ local_config.set('localedir', meson.source_root() / 'po')
 
 # Wrapper to launch gtg with non-/usr prefix install PYTHONPATH
 wrapper_config = configuration_data()
-wrapper_config.set('python_installdir', python3.get_install_dir())
+wrapper_config.set('python_installdir', python3.get_install_dir(pure: true))
 configure_file(
   input: 'prefix-gtg.sh.in',
   output: 'prefix-gtg.sh',

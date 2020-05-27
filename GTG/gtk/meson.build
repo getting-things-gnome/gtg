@@ -62,9 +62,9 @@ gtg_editor_sources = [
   'editor/taskview.py',
 ]
 
-python3.install_sources(gtg_gtk_sources, subdir: 'GTG' / 'gtk')
-python3.install_sources(gtg_backend_sources, subdir: 'GTG' / 'gtk' / 'backends')
-python3.install_sources(gtg_backend_parameters_ui_sources, subdir: 'GTG' / 'gtk' / 'backends' / 'parameters_ui')
-python3.install_sources(gtg_browser_sources, subdir: 'GTG' / 'gtk' / 'browser')
-python3.install_sources(gtg_data_sources, subdir: 'GTG' / 'gtk' / 'data')
-python3.install_sources(gtg_editor_sources, subdir: 'GTG' / 'gtk' / 'editor')
+python3.install_sources(gtg_gtk_sources, subdir: 'GTG' / 'gtk', pure: true)
+python3.install_sources(gtg_backend_sources, subdir: 'GTG' / 'gtk' / 'backends', pure: true)
+python3.install_sources(gtg_backend_parameters_ui_sources, subdir: 'GTG' / 'gtk' / 'backends' / 'parameters_ui', pure: true)
+python3.install_sources(gtg_browser_sources, subdir: 'GTG' / 'gtk' / 'browser', pure: true)
+python3.install_sources(gtg_data_sources, subdir: 'GTG' / 'gtk' / 'data', pure: true)
+python3.install_sources(gtg_editor_sources, subdir: 'GTG' / 'gtk' / 'editor', pure: true)
