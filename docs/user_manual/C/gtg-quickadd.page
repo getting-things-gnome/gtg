@@ -51,8 +51,10 @@
      <p>When using "tags:", you can apply as many tags as you want using a comma as a separator (do not put a space between any of those tags). You can also use individual "@" tags, even in combination with the tags, if you want to have the tag as part of the task title.</p></item>
 <item>
      <title><em style="strong">due:<code>date</code></em> or <em style="strong">start:<code>date</code></em></title>
-     <p>With this syntax, you can apply a due date, start date, or both. Dates can be formatted as yyyy-mm-dd (for example, 2020-04-01), yyyymmdd (20200401), or mmdd (0401 - the year being is the current one). You can also use words such as today, tomorrow, or a weekday name (due:monday means due next Monday). Indefinite dates, such as someday, soon, or now can also be used.</p></item></terms>
-</section>     
+    <!-- TODO: consider splitting this section to a dedicated page about the date parsing syntax, to be crosslinked here and elsewhere? -->
+     <p>With this syntax, you can apply a due date, start date, or both. Dates can be formatted as yyyy-mm-dd (for example, 2020-04-01), yyyymmdd (20200401), mmdd (0401 — the year being assumed to be the current one), or even just the day number (ex: "27" will set it to the next future occurrence of the 27th, either in the current month or in the next month).</p>
+     <p>You can also use words such as "today", "tomorrow", weekday names (such as "Monday"), or indefinite dates, such as "someday", "soon", or "now". You can use the translated equivalent from your system's language (if available), or you can use the English versions regardless of the language you are using.</p></item></terms>
+</section>
 
 
 <section id="quickadd-examples">
