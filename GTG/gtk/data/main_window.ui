@@ -539,7 +539,7 @@
                     <property name="has_focus">True</property>
                     <property name="is_focus">True</property>
                     <property name="can_default">True</property>
-                    <property name="tooltip_text">You can create your tasks here</property>
+                    <property name="tooltip_text" translatable="yes">Ex.: "Buy a new printer for @Initech tags:equipment,office start:monday due:soon"</property>
                     <property name="margin_left">10</property>
                     <property name="margin_right">10</property>
                     <property name="margin_top">7</property>
