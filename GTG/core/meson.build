@@ -31,5 +31,5 @@ gtg_core_plugin_sources = [
   'plugins/engine.py',
 ]
 
-python3.install_sources(gtg_core_sources, subdir: 'GTG' / 'core')
-python3.install_sources(gtg_core_plugin_sources, subdir: 'GTG' / 'core' / 'plugins')
+python3.install_sources(gtg_core_sources, subdir: 'GTG' / 'core', pure: true)
+python3.install_sources(gtg_core_plugin_sources, subdir: 'GTG' / 'core' / 'plugins', pure: true)

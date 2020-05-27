@@ -4,4 +4,4 @@ gtg_plugin_untouched_tasks_sources = [
   'untouchedTasks.ui',
 ]
 
-python3.install_sources(gtg_plugin_untouched_tasks_sources, subdir: 'GTG' / 'plugins' / 'untouched_tasks')
+python3.install_sources(gtg_plugin_untouched_tasks_sources, subdir: 'GTG' / 'plugins' / 'untouched_tasks', pure: true)
