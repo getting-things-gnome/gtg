@@ -155,9 +155,8 @@
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="receives_default">True</property>
-            <property name="tooltip_text" translatable="yes">Start in another date</property>
             <property name="action_name">win.start_custom</property>
-            <property name="text" translatable="yes">Another Date…</property>
+            <property name="text" translatable="yes">Pick a date...</property>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -183,9 +182,8 @@
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="receives_default">True</property>
-            <property name="tooltip_text" translatable="yes">Clear start date</property>
             <property name="action_name">win.start_clear</property>
-            <property name="text" translatable="yes">Clear Date</property>
+            <property name="text" translatable="yes">Clear Start Date</property>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -429,7 +427,7 @@
                         <property name="can_default">True</property>
                         <property name="max_width_chars">40</property>
                         <property name="primary_icon_activatable">False</property>
-                        <property name="placeholder_text">Search here</property>
+                        <property name="placeholder_text" translatable="yes">Search here</property>
                         <signal name="search-changed" handler="on_search" swapped="no"/>
                       </object>
                       <packing>
@@ -545,7 +543,7 @@
                     <property name="margin_top">7</property>
                     <property name="margin_bottom">7</property>
                     <property name="primary_icon_activatable">False</property>
-                    <property name="placeholder_text">Quickly create tasks here</property>
+                    <property name="placeholder_text" translatable="yes">Quickly create tasks here</property>
                     <property name="input_hints">GTK_INPUT_HINT_SPELLCHECK | GTK_INPUT_HINT_NONE</property>
                     <property name="show_emoji_icon">True</property>
                     <signal name="activate" handler="on_quickadd_field_activate" swapped="no"/>
