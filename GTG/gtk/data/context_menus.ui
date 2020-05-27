@@ -111,7 +111,7 @@
 
       <section>
         <item>
-          <attribute name="label" translatable="yes">Clear Start date</attribute>
+          <attribute name="label" translatable="yes">Clear Start Date</attribute>
           <attribute name="action">win.start_clear</attribute>
         </item>
       </section>

@@ -17,7 +17,7 @@
           <object class="GtkModelButton" id="dismiss">
             <property name="can_focus">False</property>
             <property name="receives_default">False</property>
-            <property name="tooltip_text">Mark this task as not to be done anymore</property>
+            <property name="tooltip_text" translatable="yes">Mark this task as not to be done anymore</property>
             <property name="action_name">app.dismiss</property>
             <property name="text" translatable="yes">Dismiss Task</property>
           </object>
@@ -31,7 +31,7 @@
           <object class="GtkModelButton" id="undismiss">
             <property name="can_focus">False</property>
             <property name="receives_default">False</property>
-            <property name="tooltip_text">Mark this task as to be done</property>
+            <property name="tooltip_text" translatable="yes">Mark this task as to be done</property>
             <property name="action_name">app.dismiss</property>
             <property name="text" translatable="yes">Undismiss Task</property>
           </object>
@@ -59,7 +59,7 @@
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="receives_default">False</property>
-            <property name="tooltip_text">Permanently remove this task</property>
+            <property name="tooltip_text" translatable="yes">Permanently remove this task</property>
             <property name="action_name">app.editor.delete</property>
             <property name="text" translatable="yes">Delete Task</property>
           </object>
@@ -115,7 +115,7 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="receives_default">False</property>
-                    <property name="tooltip_text">Open the parent task (creating a parent if it doesn't have one)</property>
+                    <property name="tooltip_text" translatable="yes">Open the parent task (creating a parent if it doesn't have one)</property>
                     <property name="action_name">app.editor.show_parent</property>
                   </object>
                   <packing>
@@ -133,7 +133,7 @@
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="receives_default">False</property>
-                        <property name="tooltip_text">Add subtask to current task</property>
+                        <property name="tooltip_text" translatable="yes">Add subtask to current task</property>
                         <property name="action_name">app.new_subtask</property>
                         <child>
                           <object class="GtkImage" id="subtask_image">
@@ -155,7 +155,7 @@
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="receives_default">False</property>
-                        <property name="tooltip_text">Add tags to the task</property>
+                        <property name="tooltip_text" translatable="yes">Add tags to the task</property>
                         <property name="action_name">app.editor.open_tags_popup</property>
                         <property name="popover">tags_popover</property>
                         <child>
