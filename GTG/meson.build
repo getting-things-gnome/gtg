@@ -2,7 +2,10 @@ gtg_sources = [
   '__init__.py'
 ]
 
-python3.install_sources(gtg_sources, subdir: 'GTG')
+# The explicit `pure: true` can go away here and other files once we rely
+# on new enough meson to guarantee the default is pure as documented
+# https://github.com/mesonbuild/meson/pull/6848
+python3.install_sources(gtg_sources, subdir: 'GTG', pure: true)
 
 configure_file(
   input: 'gtg.in',

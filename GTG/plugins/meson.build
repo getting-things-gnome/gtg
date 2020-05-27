@@ -6,7 +6,7 @@ gtg_plugin_sources = [
   'urgency-color.gtg-plugin',
 ]
 
-python3.install_sources(gtg_plugin_sources, subdir: 'GTG' / 'plugins')
+python3.install_sources(gtg_plugin_sources, subdir: 'GTG' / 'plugins', pure: true)
 subdir('export')
 subdir('send_email')
 subdir('untouched_tasks')

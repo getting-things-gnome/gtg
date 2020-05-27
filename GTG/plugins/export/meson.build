@@ -26,5 +26,5 @@ gtg_plugin_export_template_sources = [
   'export_templates/thumbnail_textual.png',
 ]
 
-python3.install_sources(gtg_plugin_export_sources, subdir: 'GTG' / 'plugins' / 'export')
-python3.install_sources(gtg_plugin_export_template_sources, subdir: 'GTG' / 'plugins' / 'export' / 'export_templates')
+python3.install_sources(gtg_plugin_export_sources, subdir: 'GTG' / 'plugins' / 'export', pure: true)
+python3.install_sources(gtg_plugin_export_template_sources, subdir: 'GTG' / 'plugins' / 'export' / 'export_templates', pure: true)
