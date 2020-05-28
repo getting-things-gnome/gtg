@@ -8,7 +8,7 @@
 	<title type="link">Getting Things GNOME! User Manual</title>
     	<title type="text">Getting Things GNOME! User Manual</title>
 
-      <revision pkgversion="1301" date="2013-06-18" status="candidate"/>
+      <revision pkgversion="0.3.1" date="2013-06-18" status="candidate"/>
       <revision pkgversion="0.4.0" date="2020-05-10" status="candidate"/>
 
    <credit type="author copyright">
