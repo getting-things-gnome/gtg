@@ -217,7 +217,7 @@
                               <object class="GtkLabel">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
-                                <property name="label" translatable="yes">Automatically refreshes the task list and adjusts WorkView</property>
+                                <property name="label" translatable="yes">Automatically refreshes the task list and adjusts the "Actionable" view</property>
                                 <property name="xalign">0</property>
                                 <style>
                                   <class name="dim-label"/>
