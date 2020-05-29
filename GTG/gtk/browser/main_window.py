@@ -1055,7 +1055,7 @@ class MainWindow(Gtk.ApplicationWindow):
     def on_start_for_specific_date(self, action, param):
         """ Display Calendar to set start date of selected tasks """
 
-        self.calendar.set_title("Set Start Date")
+        self.calendar.set_title(_("Set Start Date"))
 
         # Get task from task name
         task = self.req.get_task(self.get_selected_tasks()[0])
@@ -1066,7 +1066,7 @@ class MainWindow(Gtk.ApplicationWindow):
     def on_set_due_for_specific_date(self, action, param):
         """ Display Calendar to set due date of selected tasks """
 
-        self.calendar.set_title("Set Due Date")
+        self.calendar.set_title(_("Set Due Date"))
 
         # Get task from task name
         task = self.req.get_task(self.get_selected_tasks()[0])

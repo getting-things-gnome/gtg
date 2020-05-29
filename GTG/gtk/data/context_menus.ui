@@ -5,13 +5,13 @@
   <menu id="closed_task_menu">
     <section>
       <item>
-        <attribute name="label" translatable="yes">Edit</attribute>
+        <attribute name="label" translatable="yes">Edit...</attribute>
         <attribute name="action">app.edit_task</attribute>
       </item>
     </section>
     <section>
       <item>
-        <attribute name="label" translatable="yes">Mark as not done</attribute>
+        <attribute name="label" translatable="yes">Mark as Not Done</attribute>
         <attribute name="action">app.mark_as_done</attribute>
       </item>
       <item>
@@ -28,17 +28,17 @@
   <menu id="task_menu">
     <section>
       <item>
-        <attribute name="label" translatable="yes">Add a subtask</attribute>
+        <attribute name="label" translatable="yes">Add a Subtask...</attribute>
         <attribute name="action">app.new_subtask</attribute>
       </item>
       <item>
-        <attribute name="label" translatable="yes">Edit</attribute>
+        <attribute name="label" translatable="yes">Edit...</attribute>
         <attribute name="action">app.edit_task</attribute>
       </item>
     </section>
     <section>
       <item>
-        <attribute name="label" translatable="yes">Mark as done</attribute>
+        <attribute name="label" translatable="yes">Mark as Done</attribute>
         <attribute name="action">app.mark_as_done</attribute>
       </item>
       <item>
@@ -104,7 +104,7 @@
       </item>
 
       <item>
-        <attribute name="label" translatable="yes">Pick a date...</attribute>
+        <attribute name="label" translatable="yes">Pick a Date...</attribute>
         <attribute name="action">win.start_custom</attribute>
       </item>
       </section>
@@ -141,7 +141,7 @@
       </item>
 
       <item>
-        <attribute name="label" translatable="yes">Pick a date...</attribute>
+        <attribute name="label" translatable="yes">Pick a Date...</attribute>
         <attribute name="action">win.due_custom</attribute>
       </item>
 
@@ -164,7 +164,7 @@
 
       <section>
         <item>
-          <attribute name="label" translatable="yes">Clear Due date</attribute>
+          <attribute name="label" translatable="yes">Clear Due Date</attribute>
           <attribute name="action">win.due_clear</attribute>
         </item>
       </section>

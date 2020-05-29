@@ -330,7 +330,7 @@ class TreeviewFactory():
         # "startdate" column
         col_name = 'startdate'
         col = {}
-        col['title'] = _("Start date")
+        col['title'] = _("Start Date")
         col['expandable'] = False
         col['resizable'] = False
         col['value'] = [str, self.task_sdate_column]
@@ -356,12 +356,12 @@ class TreeviewFactory():
 
     def closed_tasks_treeview(self, tree):
         # Build the title/label/tags columns
-        desc = self.common_desc_for_tasks(tree, "Closed Tasks")
+        desc = self.common_desc_for_tasks(tree, _("Closed Tasks"))
 
         # "startdate" column
         col_name = 'closeddate'
         col = {}
-        col['title'] = _("Closed date")
+        col['title'] = _("Closed Date")
         col['expandable'] = False
         col['resizable'] = False
         col['value'] = [str, self.task_cdate_column]

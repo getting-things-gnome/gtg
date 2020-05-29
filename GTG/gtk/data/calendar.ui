@@ -90,7 +90,7 @@
         </child>
         <child>
           <object class="GtkButton" id="button_clear">
-            <property name="label">Clear</property>
+            <property name="label" translatable="yes">Clear</property>
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>

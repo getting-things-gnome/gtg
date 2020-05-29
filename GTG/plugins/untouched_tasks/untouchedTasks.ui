@@ -133,7 +133,7 @@
             <property name="spacing">50</property>
             <child>
               <object class="GtkButton" id="btn_preferences_cancel">
-                <property name="label">Cancel</property>
+                <property name="label" translatable="yes">Cancel</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
@@ -147,7 +147,7 @@
             </child>
             <child>
               <object class="GtkButton" id="btn_preferences_ok">
-                <property name="label">Apply</property>
+                <property name="label" translatable="yes">Apply</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>

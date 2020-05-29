@@ -64,7 +64,7 @@
             <child>
               <object class="GtkShortcutsShortcut">
                 <property name="visible">True</property>
-                <property name="title" translatable="yes" context="shortcut window">Focus the quickentry input</property>
+                <property name="title" translatable="yes" context="shortcut window">Focus the Quick Add input</property>
                 <property name="accelerator">&lt;Primary&gt;L</property>
               </object>
             </child>
@@ -72,7 +72,7 @@
             <child>
               <object class="GtkShortcutsShortcut">
                 <property name="visible">True</property>
-                <property name="title" translatable="yes" context="shortcut window">Mark task as Done</property>
+                <property name="title" translatable="yes" context="shortcut window">Mark Task as Done</property>
                 <property name="accelerator">&lt;Primary&gt;D</property>
               </object>
             </child>
@@ -80,7 +80,7 @@
             <child>
               <object class="GtkShortcutsShortcut">
                 <property name="visible">True</property>
-                <property name="title" translatable="yes" context="shortcut window">Dismiss task</property>
+                <property name="title" translatable="yes" context="shortcut window">Dismiss Task</property>
                 <property name="accelerator">&lt;Primary&gt;I</property>
               </object>
             </child>
@@ -88,7 +88,7 @@
             <child>
               <object class="GtkShortcutsShortcut">
                 <property name="visible">True</property>
-                <property name="title" translatable="yes" context="shortcut window">Change Tags</property>
+                <property name="title" translatable="yes" context="shortcut window">Batch change tags on selected tasks</property>
                 <property name="accelerator">&lt;Primary&gt;T</property>
               </object>
             </child>

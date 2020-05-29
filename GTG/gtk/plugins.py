@@ -128,7 +128,7 @@ class PluginsDialog():
         builder.add_from_file(ViewConfig.PLUGINS_UI_FILE)
 
         self.dialog = builder.get_object("PluginsDialog")
-        self.dialog.set_title(_(f"Plugins - {info.NAME}"))
+        self.dialog.set_title(_("Plugins"))
         self.plugin_tree = builder.get_object("PluginTree")
         self.plugin_configure = builder.get_object("plugin_configure")
         self.plugin_about = builder.get_object("PluginAboutDialog")
