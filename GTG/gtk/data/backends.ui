@@ -134,7 +134,7 @@
             <property name="halign">start</property>
             <child>
               <object class="GtkButton" id="sync_help">
-                <property name="label">Help</property>
+                <property name="label" translatable="yes">Help</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>

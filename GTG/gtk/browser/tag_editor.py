@@ -303,7 +303,7 @@ class TagEditor(Gtk.Window):
         self.tn_entry.handler_block(self.tn_entry_clicked_hid)
         self.tag_icon_selector.handler_block(self.tis_selection_changed_hid)
         # Default icon
-        markup = "<span size='small'>%s</span>" % _("Click To\nSet Icon")
+        markup = "<span size='small'>%s</span>" % _("Click to\nSet Icon")
         self.ti_bt_label.set_justify(Gtk.Justification.CENTER)
         self.ti_bt_label.set_markup(markup)
         self.ti_bt_label.show()

@@ -52,7 +52,7 @@
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="receives_default">True</property>
-            <property name="tooltip_text" translatable="yes">Start Today</property>
+            <property name="tooltip_text" translatable="yes">Start today</property>
             <property name="action_name">win.start_today</property>
             <property name="text" translatable="yes">Today</property>
           </object>
@@ -156,7 +156,7 @@
             <property name="can_focus">False</property>
             <property name="receives_default">True</property>
             <property name="action_name">win.start_custom</property>
-            <property name="text" translatable="yes">Pick a date...</property>
+            <property name="text" translatable="yes">Pick a Date...</property>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -438,7 +438,7 @@
                     </child>
                     <child>
                       <object class="GtkButton" id="save_search">
-                        <property name="label">Save Search</property>
+                        <property name="label" translatable="yes">Save Search</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="receives_default">False</property>
@@ -480,7 +480,7 @@
                       </object>
                       <packing>
                         <property name="name">open_view</property>
-                        <property name="title">Open</property>
+                        <property name="title" translatable="yes">Open</property>
                       </packing>
                     </child>
                     <child>
@@ -494,7 +494,7 @@
                       </object>
                       <packing>
                         <property name="name">actionable_view</property>
-                        <property name="title">Actionable</property>
+                        <property name="title" translatable="yes">Actionable</property>
                         <property name="position">1</property>
                       </packing>
                     </child>
@@ -509,7 +509,7 @@
                       </object>
                       <packing>
                         <property name="name">closed_view</property>
-                        <property name="title">Closed</property>
+                        <property name="title" translatable="yes">Closed</property>
                         <property name="position">2</property>
                       </packing>
                     </child>

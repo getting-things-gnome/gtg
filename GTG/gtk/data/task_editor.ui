@@ -19,7 +19,7 @@
             <property name="receives_default">False</property>
             <property name="tooltip_text" translatable="yes">Mark this task as not to be done anymore</property>
             <property name="action_name">app.dismiss</property>
-            <property name="text" translatable="yes">Dismiss Task</property>
+            <property name="text" translatable="yes">Dismiss</property>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -33,7 +33,7 @@
             <property name="receives_default">False</property>
             <property name="tooltip_text" translatable="yes">Mark this task as to be done</property>
             <property name="action_name">app.dismiss</property>
-            <property name="text" translatable="yes">Undismiss Task</property>
+            <property name="text" translatable="yes">Undismiss</property>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -61,7 +61,7 @@
             <property name="receives_default">False</property>
             <property name="tooltip_text" translatable="yes">Permanently remove this task</property>
             <property name="action_name">app.editor.delete</property>
-            <property name="text" translatable="yes">Delete Task</property>
+            <property name="text" translatable="yes">Delete</property>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -133,7 +133,7 @@
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="receives_default">False</property>
-                        <property name="tooltip_text" translatable="yes">Add subtask to current task</property>
+                        <property name="tooltip_text" translatable="yes">Insert a subtask in this task</property>
                         <property name="action_name">app.new_subtask</property>
                         <child>
                           <object class="GtkImage" id="subtask_image">
@@ -155,7 +155,7 @@
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="receives_default">False</property>
-                        <property name="tooltip_text" translatable="yes">Add tags to the task</property>
+                        <property name="tooltip_text" translatable="yes">Add tags to this task</property>
                         <property name="action_name">app.editor.open_tags_popup</property>
                         <property name="popover">tags_popover</property>
                         <child>
@@ -383,7 +383,7 @@
         </child>
         <child>
           <object class="GtkButton" id="mark_as_undone">
-            <property name="label" translatable="yes">Mark as not Done</property>
+            <property name="label" translatable="yes">Mark as Not Done</property>
             <property name="can_focus">False</property>
             <property name="receives_default">False</property>
             <property name="tooltip_text" translatable="yes">Mark the task as to be done</property>
@@ -538,7 +538,7 @@
         </child>
         <child>
           <object class="GtkButton" id="duedate_clear">
-            <property name="label">Clear</property>
+            <property name="label" translatable="yes">Clear</property>
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="focus_on_click">False</property>

@@ -110,13 +110,12 @@ class BackendInfoBar(Gtk.InfoBar):
                 return
             self.set_message_type(Gtk.MessageType.WARNING)
             self.label.set_markup(self.NETWORK_MESSAGE % backend_name)
-            # FIXME: use icon-name button instead
-            self.add_button(_('Ok'), Gtk.ResponseType.CLOSE)
+            self.add_button(_('OK'), Gtk.ResponseType.CLOSE)
 
         elif error_code == BackendSignals.ERRNO_DBUS:
             self.set_message_type(Gtk.MessageType.WARNING)
             self.label.set_markup(self.DBUS_MESSAGE % backend_name)
-            self.add_button(_('Ok'), Gtk.ResponseType.CLOSE)
+            self.add_button(_('OK'), Gtk.ResponseType.CLOSE)
 
         self.show_all()
 
@@ -194,7 +193,7 @@ class BackendInfoBar(Gtk.InfoBar):
         align.add(self.text_box)
         vbox.pack_start(align, True, True, 0)
         button = Gtk.Button()
-        button.set_label("OK")
+        button.set_label(_("OK"))
         button.connect("clicked", self._on_text_confirmed)
         button.set_size_request(-1, 40)
         vbox.pack_start(button, False, True, 0)
