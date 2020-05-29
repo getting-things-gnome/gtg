@@ -614,7 +614,10 @@ class MainWindow(Gtk.ApplicationWindow):
         """Change text on sidebar button."""
 
         button = self.builder.get_object('toggle_sidebar_button')
-        button.props.text = f'{"Hide" if visible else "Show"} Sidebar'
+        if visible:
+            button.props.text = _("Hide Sidebar")
+        else:
+            button.props.text = _("Show Sidebar")
 
     def on_sidebar_toggled(self, action, param):
         """Toggle tags sidebar."""
