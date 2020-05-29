@@ -37,24 +37,21 @@ TRANSLATE_URL = "https://github.com/getting-things-gnome/gtg/"
 REPORT_BUG_URL = "https://github.com/getting-things-gnome/gtg/issues/new"
 EMAIL = "gtg-contributors@lists.launchpad.net"
 VERSION = '0.4.0'
-APP_COPYRIGHT = _("Copyright © 2008-%d the GTG contributors.") % date.today().year
 
+AUTHORS_MAINTAINERS = """
+• Diego Garcia Gangl
+• Jean-François Fortin Tam
+• Lionel Dricot
+"""
 # Per-release stats generated as per the "release process and checklist.md" file.
 # Including contributors with 2 or more commits.
 # No need to add extra line breaks between commas, Python/GTK handles them.
 # Don't indend lines inside a multi-line string, or it'll show in the About dialog.
-AUTHORS = [_("many contributors around the world."),
-    _("The GTG project is maintained/administered by:"),
-"""
-• Diego Garcia Gangl
-• Jean-François Fortin Tam
-• Lionel Dricot
-""",
-_("This release was brought to you by the efforts of these people:"),
-"""
+AUTHORS_RELEASE_CONTRIBUTORS = """
 • Diego Garcia Gangl
 • Izidor Matušov
 • Jean-François Fortin Tam
+• Mart Raudsepp
 • Xuan Hu
 • Nimit Shah
 • Parin Porecha
@@ -78,14 +75,8 @@ _("This release was brought to you by the efforts of these people:"),
 • François Boulogne
 • Joe R. Nassimian
 • Thomas Spura
-""",
-_("""Many others contributed to GTG over the years.
-You can see them on %(OH_stats)s and %(GH_stats)s.""" % {
-    "OH_stats": '<a href="https://www.openhub.net/p/gtg/contributors">OpenHub</a>',
-    "GH_stats": '<a href="https://github.com/getting-things-gnome/gtg/graphs/contributors">GitHub</a>'}),
-"\n"
-]
+"""
 
 ARTISTS = ["Kalle Persson (logo)", "Bertrand Rousseau (UX)", "Jean-François Fortin Tam (UX)"]
 ARTISTS.sort()
-DOCUMENTERS = ["Radina Matic", "Jean-François Fortin Tam", "Danielle Vansia"]
+DOCUMENTERS = [ "Danielle Vansia", "Radina Matic", "Jean-François Fortin Tam"]
