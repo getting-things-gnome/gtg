@@ -243,7 +243,7 @@ class TagEditor(Gtk.Window):
         self.tp_grid.attach(self.tn_entry, 1, 0, 1, 1)
         self.tn_cb_lbl_align = Gtk.Alignment.new(0, 0.5, 0, 0)
         self.tp_grid.attach(self.tn_cb_lbl_align, 0, 1, 1, 1)
-        self.tn_cb_lbl = Gtk.Label(label=_("Show Tag in Work View :"))
+        self.tn_cb_lbl = Gtk.Label(label=_('Show Tag in "Actionable" view:'))
         self.tn_cb_lbl_align.add(self.tn_cb_lbl)
         self.tn_cb = Gtk.CheckButton()
         self.tp_grid.attach(self.tn_cb, 1, 1, 1, 1)
