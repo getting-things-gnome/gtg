@@ -70,8 +70,7 @@ class TagContextMenu(Gtk.Menu):
                 self.mi_del_tag = Gtk.MenuItem()
                 self.mi_del_tag.set_label(_("Delete"))
                 self.append(self.mi_del_tag)
-                self.mi_del_tag.connect(
-                    'activate', self.app.browser.on_delete_tag_activate)
+                self.mi_del_tag.connect('activate', self.app.browser.on_delete_tag_activate)
 
         # Make it visible
         self.show_all()
