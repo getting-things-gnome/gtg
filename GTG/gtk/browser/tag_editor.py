@@ -199,7 +199,7 @@ class TagEditor(Gtk.Window):
         # Build up the window
         self.set_type_hint(Gdk.WindowTypeHint.DIALOG)
         self.set_position(Gtk.WindowPosition.CENTER)
-        self.set_title('Edit tag')
+        self.set_title(_('Editing Tag "%s"') % tag.get_name())
         self.set_border_width(10)
         self.set_resizable(False)
         self.__build_window()
