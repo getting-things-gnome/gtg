@@ -246,9 +246,11 @@ class MainWindow(Gtk.ApplicationWindow):
 
         tag_completion = TagCompletion(self.req.get_tag_tree())
         self.modifytags_dialog = ModifyTagsDialog(tag_completion, self.req)
+        self.modifytags_dialog.dialog.set_transient_for(self)
         self.deletetags_dialog = DeleteTagsDialog(self.req, self)
         self.calendar = GTGCalendar()
         self.calendar.set_transient_for(self)
+        self.calendar.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
         self.calendar.connect("date-changed", self.on_date_changed)
 
     def _set_defer_days(self, timer=None):
@@ -295,6 +297,7 @@ class MainWindow(Gtk.ApplicationWindow):
         """
         Show the about dialog
         """
+        self.about.set_transient_for(self)
         self.about.set_program_name(info.NAME)
         self.about.set_website(info.URL)
         self.about.set_website_label(_("GTG website"))
