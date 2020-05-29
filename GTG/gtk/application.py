@@ -262,6 +262,7 @@ class Application(Gtk.Application):
         """Callback to open the preferences dialog."""
 
         self.preferences_dialog.activate()
+        self.preferences_dialog.window.set_transient_for(self.browser)
 
     def open_about(self, action, param):
         """Callback to open the about dialog."""
@@ -272,6 +273,7 @@ class Application(Gtk.Application):
         """Callback to open the plugins manager dialog."""
 
         self.plugins_dialog.activate()
+        self.plugins_dialog.dialog.set_transient_for(self.browser)
 
     def close_focused_task(self, action, params):
         """Callback to close currently focused task editor."""
@@ -364,6 +366,7 @@ class Application(Gtk.Application):
 
         if not self.edit_tag_dialog:
             self.edit_tag_dialog = TagEditor(self.req, self, tag)
+            self.edit_tag_dialog.set_transient_for(self.browser)
         else:
             self.edit_tag_dialog.set_tag(tag)
 
