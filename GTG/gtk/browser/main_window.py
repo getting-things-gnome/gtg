@@ -297,16 +297,34 @@ class MainWindow(Gtk.ApplicationWindow):
         """
         Show the about dialog
         """
+        # These lines should be in info.py, but due to their dynamic nature
+        # there'd be no way to show them translated in Gtk's About dialog:
+
+        translated_copyright = _("Copyright © 2008-%d the GTG contributors.") % datetime.date.today().year
+
+        UNITED_AUTHORS_OF_GTGETTON = [
+            # GTK prefixes the first line with "Created by ",
+            # but we can't split the string because it would cause trouble for some languages.
+            _("GTG was made by many contributors around the world."),
+            _("The GTG project is maintained/administered by:"),
+            info.AUTHORS_MAINTAINERS,
+            _("This release was brought to you by the efforts of these people:"),
+            info.AUTHORS_RELEASE_CONTRIBUTORS,
+            _("Many others contributed to GTG over the years.\nYou can see them on {OH_stats} and {GH_stats}.").format(
+                    OH_stats = '<a href="https://www.openhub.net/p/gtg/contributors">OpenHub</a>',
+                    GH_stats = '<a href="https://github.com/getting-things-gnome/gtg/graphs/contributors">GitHub</a>'),
+            "\n"]
+
         self.about.set_transient_for(self)
         self.about.set_program_name(info.NAME)
         self.about.set_website(info.URL)
         self.about.set_website_label(_("GTG website"))
         self.about.set_version(info.VERSION)
-        self.about.set_comments(info.SHORT_DESCRIPTION)
-        self.about.set_copyright(info.APP_COPYRIGHT)
+        self.about.set_comments(_(info.SHORT_DESCRIPTION))  # This line translated in info.py works, as it has no strings replacements
+        self.about.set_copyright(translated_copyright)
         self.about.set_license_type(Gtk.License.GPL_3_0)
 
-        self.about.set_authors(info.AUTHORS)
+        self.about.set_authors(UNITED_AUTHORS_OF_GTGETTON)
         self.about.set_artists(info.ARTISTS)
         self.about.set_documenters(info.DOCUMENTERS)
 
