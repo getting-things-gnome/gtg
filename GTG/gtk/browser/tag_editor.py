@@ -19,11 +19,8 @@
 """
 tag_editor: this module contains two classes: TagIconSelector and TagEditor.
 
-TagEditor implement a dialog window that can be used to edit the properties
-of a tag.
-
-TagIconSelector is intended as a floating window that allows to select an icon
-for a tag.
+- TagEditor is a dialog window used to edit the properties of a tag.
+- TagIconSelector is a popover within that dialog to select an icon.
 """
 
 from gi.repository import GObject, Gtk, Gdk, GdkPixbuf
@@ -37,7 +34,7 @@ from GTG.core.logger import log
 class TagIconSelector(Gtk.Window):
     """
     TagIconSelector is intended as a floating window that allows to select
-    an icon for a tag. It display a list of icon in a popup window.
+    an icon for a tag. It displays a grid of icons in a popup window.
     """
 
     def __init__(self):
@@ -273,12 +270,11 @@ class TagEditor(Gtk.Window):
         # Set the callbacks
         self.ti_bt.connect('clicked', self.on_ti_bt_clicked)
         self.tis_selection_changed_hid = \
-            self.tag_icon_selector.connect('selection-changed',
-                                           self.on_tis_selection_changed)
+            self.tag_icon_selector.connect('selection-changed', self.on_tis_selection_changed)
         self.tn_entry_clicked_hid = \
             self.tn_entry.connect('changed', self.on_tn_entry_changed)
-        self.tn_cb_clicked_hid = self.tn_cb.connect('clicked',
-                                                    self.on_tn_cb_clicked)
+        self.tn_cb_clicked_hid = \
+            self.tn_cb.connect('clicked', self.on_tn_cb_clicked)
         # FIXME
         self.tc_cc_colsel.connect('color-changed', self.on_tc_colsel_changed)
         self.tc_cc_colsel.connect('color-added', self.on_tc_colsel_added)
@@ -313,8 +309,7 @@ class TagEditor(Gtk.Window):
         # Show in WV
         self.tn_cb.set_active(True)
         # Name entry
-        self.tn_entry.set_icon_from_icon_name(Gtk.EntryIconPosition.SECONDARY,
-                                              None)
+        self.tn_entry.set_icon_from_icon_name(Gtk.EntryIconPosition.SECONDARY, None)
         # Color selection
         # FIXME
         self.tc_cc_colsel.unselect_color()
@@ -337,8 +332,7 @@ class TagEditor(Gtk.Window):
         if icon is not None:
             for i in self.ti_bt:
                 self.ti_bt.remove(i)
-            ti_bt_img = Gtk.Image.new_from_icon_name(icon,
-                                                     Gtk.IconSize.BUTTON)
+            ti_bt_img = Gtk.Image.new_from_icon_name(icon, Gtk.IconSize.BUTTON)
             ti_bt_img.show()
             self.ti_bt.add(ti_bt_img)
         else:
@@ -421,14 +415,9 @@ class TagEditor(Gtk.Window):
             self.__set_icon(None)
 
     def on_ti_bt_clicked(self, widget):
-        """Callback: displays the tag icon selector widget next
-        to the button."""
+        """Callback: displays the icon selector widget next to the button."""
         rect = self.ti_bt.get_allocation()
-        # print self.ti_bt.get_window().get_origin()
-        # FIXME
-        result, pos_x, pos_y = \
-            self.ti_bt.get_window().get_origin()
-        #   self.ti_bt.window.get_origin()
+        result, pos_x, pos_y = self.ti_bt.get_window().get_origin()
         self.tag_icon_selector.show_at_position(
             pos_x + rect.x + rect.width + 2,
             pos_y + rect.y)
@@ -454,8 +443,7 @@ class TagEditor(Gtk.Window):
             # Also, wait 1 second before commiting the change in order to
             # reduce rename requests
             tn_entry_changes = self.watch_tn_entry_changes
-            self.tn_entry_watch_id = GObject.timeout_add(1000,
-                                                         tn_entry_changes)
+            self.tn_entry_watch_id = GObject.timeout_add(1000, tn_entry_changes)
 
     def on_tn_cb_clicked(self, widget):
         """Callback: toggle the nonworkview property according to the related
@@ -472,8 +460,7 @@ class TagEditor(Gtk.Window):
         if self.tag is not None:
             if color is not None:
                 my_color = Gdk.color_parse(color)
-                color = Gdk.Color(
-                    my_color.red, my_color.green, my_color.blue).to_string()
+                color = Gdk.Color(my_color.red, my_color.green, my_color.blue).to_string()
                 color_add(color)
                 self.tag.set_attribute('color', color)
             else:
@@ -494,8 +481,7 @@ class TagEditor(Gtk.Window):
                 self.tag.del_attribute('color')
 
     def on_tc_colsel_added(self, widget):
-        """Callback: if a new color is added, we register it in the
-        configuration"""
+        """Callback: if a new color is added, register it in the configuration"""
         self.custom_colors = self.tc_cc_colsel.get_custom_colors()
         self.config.set("custom_colors", self.custom_colors)
 

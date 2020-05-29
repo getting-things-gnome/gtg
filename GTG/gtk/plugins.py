@@ -140,16 +140,11 @@ class PluginsDialog():
         self.plugin_store = Gtk.ListStore(str, bool, str, str, bool)
 
         builder.connect_signals({
-                                'on_PluginsDialog_delete_event':
-                                self.on_close,
-                                'on_PluginTree_cursor_changed':
-                                self.on_plugin_select,
-                                'on_plugin_about':
-                                self.on_plugin_about,
-                                'on_plugin_configure':
-                                self.on_plugin_configure,
-                                'on_PluginAboutDialog_close':
-                                self.on_plugin_about_close,
+                                'on_PluginsDialog_delete_event': self.on_close,
+                                'on_PluginTree_cursor_changed': self.on_plugin_select,
+                                'on_plugin_about': self.on_plugin_about,
+                                'on_plugin_configure': self.on_plugin_configure,
+                                'on_PluginAboutDialog_close': self.on_plugin_about_close,
                                 })
 
     def _init_plugin_tree(self):
@@ -214,8 +209,7 @@ class PluginsDialog():
         iterator = self.plugin_store.get_iter(path)
         plugin_id = self.plugin_store.get_value(iterator, PLUGINS_COL_ID)
         plugin = self.pengine.get_plugin(plugin_id)
-        plugin.enabled = not self.plugin_store.get_value(iterator,
-                                                         PLUGINS_COL_ENABLED)
+        plugin.enabled = not self.plugin_store.get_value(iterator, PLUGINS_COL_ENABLED)
         plugins_enabled = self.config.get("enabled")
         plugins_disabled = self.config.get("disabled")
         if plugin.enabled:
@@ -228,10 +222,10 @@ class PluginsDialog():
             plugins_disabled.append(plugin.module_name)
             if plugin.module_name in plugins_enabled:
                 plugins_enabled.remove(plugin.module_name)
+
         self.config.set("enabled", plugins_enabled)
         self.config.set("disabled", plugins_disabled)
-        self.plugin_store.set_value(iterator, PLUGINS_COL_ENABLED,
-                                    plugin.enabled)
+        self.plugin_store.set_value(iterator, PLUGINS_COL_ENABLED, plugin.enabled)
         self._update_plugin_configure(plugin)
 
     def on_plugin_select(self, plugin_tree):
