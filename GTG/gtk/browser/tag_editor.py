@@ -313,7 +313,6 @@ class TagEditor(Gtk.Window):
         # Show in WV
         self.tn_cb.set_active(True)
         # Name entry
-        self.tn_entry.set_text(_("Enter tag name here"))
         self.tn_entry.set_icon_from_icon_name(Gtk.EntryIconPosition.SECONDARY,
                                               None)
         # Color selection
