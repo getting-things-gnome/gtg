@@ -101,7 +101,7 @@ class BackendInfoBar(Gtk.InfoBar):
         if error_code == BackendSignals.ERRNO_AUTHENTICATION:
             self.set_message_type(Gtk.MessageType.ERROR)
             self.label.set_markup(self.AUTHENTICATION_MESSAGE % backend_name)
-            self.add_button(_('Configure synchronization service'),
+            self.add_button(_('Configure'),
                             Gtk.ResponseType.ACCEPT)
             self.add_button(_('Ignore'), Gtk.ResponseType.CLOSE)
 
