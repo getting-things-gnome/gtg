@@ -117,7 +117,7 @@ A danger zone of 0 disables icon coloring.</property>
             <property name="spacing">50</property>
             <child>
               <object class="GtkButton" id="btn_preferences_cancel">
-                <property name="label">gtk-cancel</property>
+                <property name="label" translatable="yes">Cancel</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
@@ -132,7 +132,7 @@ A danger zone of 0 disables icon coloring.</property>
             </child>
             <child>
               <object class="GtkButton" id="btn_preferences_ok">
-                <property name="label">gtk-ok</property>
+                <property name="label" translatable="yes">OK</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
