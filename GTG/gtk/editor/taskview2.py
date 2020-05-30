@@ -509,8 +509,12 @@ class TaskView(Gtk.TextView):
             cursor_iter = self.buffer.get_iter_at_mark(cursor_mark)
 
             for tag in cursor_iter.get_tags():
-                if type(tag) in (LinkTag, SubTaskTag, TaskTagTag):
+                try:
                     tag.activate(self)
+
+                except AttributeError:
+                    # Not an interactive tag
+                    pass
 
             return True
 
@@ -532,12 +536,15 @@ class TaskView(Gtk.TextView):
             self.hovered_tag = None
 
         # Apply hover state if possible
-        if tags:
+        try:
             tag = tags[0]
-            if type(tag) is not TitleTag:
-                window.set_cursor(self.cursor_hand)
-                tag.set_hover()
-                self.hovered_tag = tag
+            tag.set_hover()
+            window.set_cursor(self.cursor_hand)
+            self.hovered_tag = tag
+
+        except (AttributeError, IndexError):
+            # Not an interactive tag, or no tag at all
+            pass
 
 
     def do_populate_popup(self, popup) -> None:
