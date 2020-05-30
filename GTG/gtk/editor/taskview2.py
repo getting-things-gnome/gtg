@@ -33,6 +33,12 @@ from GTG.core.task import Task
 # Regex to find GTG's tags
 TAG_REGEX = re.compile(r'\@\w+')
 
+# Regex to find internal links
+# Starts with gtg:// followed by a UUID.
+INTERNAL_REGEX = re.compile((r'gtg:\/\/'
+                             r'[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}'),
+                            re.IGNORECASE)
+
 
 class SubTaskTag(Gtk.TextTag):
     """Subtask Text tag."""
@@ -107,6 +113,55 @@ class InvisibleTag(Gtk.TextTag):
         """Reset tag appareance when not hovering."""
 
         self.set_property('invisible', True)
+
+
+class InternalLinkTag(Gtk.TextTag):
+    """Internal Link Text tag (for urls)."""
+
+
+    def __init__(self, task: Task) -> None:
+        super().__init__()
+
+        self.tid = task.tid
+
+        self.set_property('background', 'white')
+        self.set_property('underline', Pango.Underline.SINGLE)
+
+        if task.status == Task.STA_ACTIVE:
+            self.set_property('strikethrough', False)
+            self.set_property('foreground', '#007bff')
+        else:
+            self.set_property('strikethrough', True)
+            self.set_property('foreground', 'gray')
+
+        self.connect('event', self.on_tag)
+
+
+    def on_tag(self, tag, view, event, _iter) -> None:
+        """Callback for events that happen inside the tag."""
+
+        button = event.get_button()
+
+        # If there was a click...
+        if button[0] and button[1] == 1:
+            view.open_subtask(self.tid)
+
+
+    def activate(self, view) -> None:
+        """Open the link in this tag."""
+
+        view.open_subtask(self.tid)
+
+    def set_hover(self) -> None:
+        """Change tag appareance when hovering."""
+
+        self.set_property('background', 'light gray')
+
+
+    def reset(self) -> None:
+        """Reset tag appareance when not hovering."""
+
+        self.set_property('background', 'white')
 
 
 class LinkTag(Gtk.TextTag):
@@ -351,6 +406,7 @@ class TaskView(Gtk.TextView):
                 continue
 
             self.detect_url(text, start)
+            self.detect_internal_link(text, start)
             self.detect_tag(text, start)
 
             start.forward_line()
@@ -445,6 +501,30 @@ class TaskView(Gtk.TextView):
             self.buffer.apply_tag(tag_tag, tag_start, tag_end)
             self.data['tags'].append(match.group(0))
 
+
+    def detect_internal_link(self, text: str, start: Gtk.TextIter) -> None:
+        """Detect internal links (to other gtg tasks) and apply tags."""
+
+        # Find all matches
+        matches = re.finditer(INTERNAL_REGEX, text)
+
+        # Go through each with its own iterator and tag 'em
+        for match in matches:
+            url_start = start.copy()
+            url_end = start.copy()
+
+            url_start.forward_chars(match.start())
+            url_end.forward_chars(match.end())
+
+            tid = match.group(0).replace('gtg://', '')
+            task = self.req.get_task(tid)
+
+            if task:
+                link_tag = InternalLinkTag(task)
+                self.tags.append(link_tag)
+
+                self.table.add(link_tag)
+                self.buffer.apply_tag(link_tag, url_start, url_end)
 
 
     def detect_url(self, text: str, start: Gtk.TextIter) -> None:
