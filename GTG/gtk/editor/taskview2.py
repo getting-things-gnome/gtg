@@ -66,6 +66,25 @@ class SubTaskTag(Gtk.TextTag):
             self.set_property('strikethrough', True)
             self.set_property('foreground', 'gray')
 
+        self.connect('event', self.on_tag)
+
+
+    def on_tag(self, tag, view, event, _iter) -> None:
+        """Callback for events that happen inside the tag."""
+
+        button = event.get_button()
+
+        # If there was a click...
+        if button[0] and button[1] == 1:
+            view.open_subtask(self.tid)
+
+
+    def activate(self, view) -> None:
+        """Open the link in this tag."""
+
+        view.open_subtask(self.tid)
+
+
     def set_hover(self) -> None:
         """Change tag appareance when hovering."""
 
@@ -304,6 +323,7 @@ class TaskView(Gtk.TextView):
         self.new_subtask = NotImplemented
         self.delete_subtask = NotImplemented
         self.rename_subtask = NotImplemented
+        self.open_subtask = NotImplemented
 
 
     def on_modified(self, buffer: Gtk.TextBuffer) -> None:
@@ -505,7 +525,7 @@ class TaskView(Gtk.TextView):
             cursor_iter = self.buffer.get_iter_at_mark(cursor_mark)
 
             for tag in cursor_iter.get_tags():
-                if tag.TYPE in (TagType.LINK, TagType.TASKTAG):
+                if tag.TYPE in (TagType.LINK, TagType.TASKTAG, TagType.SUBTASK):
                     tag.activate(self)
 
             return True
