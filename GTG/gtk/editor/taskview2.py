@@ -29,26 +29,14 @@ from webbrowser import open as openurl
 from gettext import gettext as _
 from GTG.core.task import Task
 
-from enum import Enum
 
 # Regex to find GTG's tags
 TAG_REGEX = re.compile(r'\@\w+')
 
 
-class TagType(Enum):
-    """Custom Text tags for GTG."""
-
-    LINK = 'Link'
-    TASKTAG = 'Task Tag'
-    TITLE = 'Title'
-    SUBTASK = 'Subtask'
-    INVISIBLE = 'Invisible Characters'
-
-
 class SubTaskTag(Gtk.TextTag):
     """Subtask Text tag."""
 
-    TYPE = TagType.SUBTASK
 
     def __init__(self, task: Task) -> None:
         super().__init__()
@@ -100,7 +88,6 @@ class SubTaskTag(Gtk.TextTag):
 class InvisibleTag(Gtk.TextTag):
     """Subtask Text tag."""
 
-    TYPE = TagType.INVISIBLE
 
     def __init__(self) -> None:
         super().__init__()
@@ -125,7 +112,6 @@ class InvisibleTag(Gtk.TextTag):
 class LinkTag(Gtk.TextTag):
     """Link Text tag (for urls)."""
 
-    TYPE = TagType.LINK
 
     def __init__(self, url: str) -> None:
         super().__init__()
@@ -178,7 +164,6 @@ class LinkTag(Gtk.TextTag):
 class TitleTag(Gtk.TextTag):
     """Title Text tag (only one per buffer)."""
 
-    TYPE = TagType.TITLE
 
     def __init__(self) -> None:
         super().__init__()
@@ -192,7 +177,6 @@ class TitleTag(Gtk.TextTag):
 class TaskTagTag(Gtk.TextTag):
     """Text tag for task tags."""
 
-    TYPE = TagType.TASKTAG
 
     def __init__(self, tag: str, req: Requester) -> None:
         super().__init__()
@@ -418,7 +402,7 @@ class TaskView(Gtk.TextView):
             tag = start.get_tags()[0]
             tid = tag.tid
 
-            if tag.TYPE == TagType.SUBTASK:
+            if type(tag) is SubTaskTag:
                 self.subs_to_remove.remove(tid)
 
             # Always rename if there's a tag
@@ -525,7 +509,7 @@ class TaskView(Gtk.TextView):
             cursor_iter = self.buffer.get_iter_at_mark(cursor_mark)
 
             for tag in cursor_iter.get_tags():
-                if tag.TYPE in (TagType.LINK, TagType.TASKTAG, TagType.SUBTASK):
+                if type(tag) in (LinkTag, SubTaskTag, TaskTagTag):
                     tag.activate(self)
 
             return True
@@ -550,7 +534,7 @@ class TaskView(Gtk.TextView):
         # Apply hover state if possible
         if tags:
             tag = tags[0]
-            if tag.TYPE is not TagType.TITLE:
+            if type(tag) is not TitleTag:
                 window.set_cursor(self.cursor_hand)
                 tag.set_hover()
                 self.hovered_tag = tag
