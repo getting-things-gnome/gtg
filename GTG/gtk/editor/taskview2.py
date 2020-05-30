@@ -27,6 +27,7 @@ from GTG.gtk.colors import background_color
 import GTG.core.urlregex as url_regex
 from webbrowser import open as openurl
 from GTG.core.translations import _
+from GTG.core.task import Task
 
 from enum import Enum
 
@@ -49,17 +50,21 @@ class SubTaskTag(Gtk.TextTag):
 
     TYPE = TagType.SUBTASK
 
-    def __init__(self, tid: str) -> None:
+    def __init__(self, task: Task) -> None:
         super().__init__()
 
-        self.tid = tid
+        self.tid = task.tid
 
         self.set_property('background', 'white')
-        self.set_property('foreground', '#007bff')
         self.set_property('underline', Pango.Underline.SINGLE)
-        self.set_property('strikethrough', False)
         self.set_property('left-margin', 40)
 
+        if task.status == Task.STA_ACTIVE:
+            self.set_property('strikethrough', False)
+            self.set_property('foreground', '#007bff')
+        else:
+            self.set_property('strikethrough', True)
+            self.set_property('foreground', 'gray')
 
     def set_hover(self) -> None:
         """Change tag appareance when hovering."""
@@ -348,7 +353,8 @@ class TaskView(Gtk.TextView):
                     tid = self.new_subtask(subtask_title)
                     self.subtask_tags.append(tid)
 
-                subtask_tag = SubTaskTag(tid)
+                task = self.req.get_task(tid)
+                subtask_tag = SubTaskTag(task)
                 self.table.add(subtask_tag)
                 self.buffer.apply_tag(subtask_tag, start, end)
 
