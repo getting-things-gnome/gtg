@@ -262,8 +262,15 @@ class TaskView(Gtk.TextView):
 
         self.title_tag = TitleTag()
         self.table.add(self.title_tag)
+
+        # Tags applied to buffer
         self.tags = []
+
+        # Subtask tags
         self.subtask_tags = []
+
+        # Subtasks to be removed
+        self.subs_to_remove = []
 
 
         # Task info
@@ -306,7 +313,7 @@ class TaskView(Gtk.TextView):
         start = self.detect_title()
         start.forward_line()
 
-        subtasks = self.subtask_tags.copy()
+        self.subs_to_remove = self.subtask_tags.copy()
 
         # Parse the text line by line until the end of the buffer
         while not start.is_end():
@@ -319,45 +326,7 @@ class TaskView(Gtk.TextView):
                 start.forward_line()
                 continue
 
-            if text.startswith('- '):
-                subtask_title = text[2:]
-
-                if not subtask_title:
-                    start.forward_line()
-                    continue
-
-                # Tag initial line as invisible
-                invisible_end = start.copy()
-                invisible_end.forward_chars(2)
-
-                invisible_tag = InvisibleTag()
-                self.table.add(invisible_tag)
-                self.buffer.apply_tag(invisible_tag, start, invisible_end)
-
-                start.forward_chars(2)
-
-                # If it starts with a tag, store the tid and name
-                if start.starts_tag():
-                    tag = start.get_tags()[0]
-                    tid = tag.tid
-
-                    if tag.TYPE == TagType.SUBTASK:
-                        subtasks.remove(tid)
-
-                    # Always rename if there's a tag
-                    self.rename_subtask(tid, subtask_title)
-
-                    # Remove subtask tag and recreate
-                    self.table.remove(tag)
-                else:
-                    tid = self.new_subtask(subtask_title)
-                    self.subtask_tags.append(tid)
-
-                task = self.req.get_task(tid)
-                subtask_tag = SubTaskTag(task)
-                self.table.add(subtask_tag)
-                self.buffer.apply_tag(subtask_tag, start, end)
-
+            if self.detect_subtasks(text, start):
                 start.forward_line()
                 continue
 
@@ -367,7 +336,7 @@ class TaskView(Gtk.TextView):
             start.forward_line()
 
         # Remove subtasks that were deleted
-        for tid in subtasks:
+        for tid in self.subs_to_remove:
             self.delete_subtask(tid)
             self.subtask_tags.remove(tid)
 
@@ -381,6 +350,57 @@ class TaskView(Gtk.TextView):
     # --------------------------------------------------------------------------
     # DETECTION
     # --------------------------------------------------------------------------
+
+    def detect_subtasks(self, text: str, start: Gtk.TextIter) -> bool:
+        """Detect a subtask line. Returns True if a subtask was found."""
+
+        if not text.startswith('- '):
+            return False
+
+        subtask_title = text[2:]
+
+        if not subtask_title:
+            start.forward_line()
+            return True
+
+        # Tag initial line as invisible
+        invisible_end = start.copy()
+        invisible_end.forward_chars(2)
+
+        invisible_tag = InvisibleTag()
+        self.table.add(invisible_tag)
+        self.buffer.apply_tag(invisible_tag, start, invisible_end)
+
+        # Move beyond invisible tag
+        start.forward_chars(2)
+
+        end = start.copy()
+        end.forward_to_line_end()
+
+        # If it starts with a tag, store the tid and name
+        if start.starts_tag():
+            tag = start.get_tags()[0]
+            tid = tag.tid
+
+            if tag.TYPE == TagType.SUBTASK:
+                self.subs_to_remove.remove(tid)
+
+            # Always rename if there's a tag
+            self.rename_subtask(tid, subtask_title)
+
+            # Remove subtask tag and recreate
+            self.table.remove(tag)
+        else:
+            tid = self.new_subtask(subtask_title)
+            self.subtask_tags.append(tid)
+
+        task = self.req.get_task(tid)
+        subtask_tag = SubTaskTag(task)
+        self.table.add(subtask_tag)
+        self.buffer.apply_tag(subtask_tag, start, end)
+
+        return True
+
 
     def detect_tag(self, text: str, start: Gtk.TextIter) -> None:
         """Detect GTGs tags and applies text tags to them."""
