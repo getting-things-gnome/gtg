@@ -100,7 +100,8 @@ class InvisibleTag(Gtk.TextTag):
 
         self.set_property('invisible', True)
         self.set_property('left-margin', 40)
-        self.set_property('foreground', '#222222')
+        self.set_property('foreground', '#111111')
+        self.set_property('background', '#DDDDDD')
 
 
     def set_hover(self) -> None:
