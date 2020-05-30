@@ -138,6 +138,12 @@ class LinkTag(Gtk.TextTag):
                 view.clicked_link = self.url
 
 
+    def activate(self, view) -> None:
+        """Open the link in this tag."""
+
+        openurl(self.url)
+
+
     def set_hover(self) -> None:
         """Change tag appareance when hovering."""
 
@@ -185,6 +191,7 @@ class TaskTagTag(Gtk.TextTag):
 
         self.connect('event', self.on_tag)
 
+
     def set_hover(self) -> None:
         """Change tag appareance when hovering."""
 
@@ -207,6 +214,14 @@ class TaskTagTag(Gtk.TextTag):
 
         if button[0] and button[1] == 1:
             view.browse_tag(self.tag_name)
+
+
+    def activate(self, view) -> None:
+        """Open the link in this tag."""
+
+        view.browse_tag(self.tag_name)
+
+
 
 
 class TaskView(Gtk.TextView):
@@ -282,6 +297,7 @@ class TaskView(Gtk.TextView):
         # Signals and callbacks
         self.id_modified = self.buffer.connect('changed', self.on_modified)
         self.connect('motion-notify-event', self.on_mouse_move)
+        self.connect('key-press-event', self.on_key_pressed)
 
         # Callback when tags are clicked
         self.browse_tag = NotImplemented
@@ -477,6 +493,23 @@ class TaskView(Gtk.TextView):
     # --------------------------------------------------------------------------
     # INTERACTIVITY
     # --------------------------------------------------------------------------
+
+    def on_key_pressed(self, widget, event) -> None:
+        """Callback when a key is pressed."""
+
+        ctrl = event.state & Gdk.ModifierType.CONTROL_MASK
+        enter = event.keyval in (Gdk.KEY_Return, Gdk.KEY_KP_Enter)
+
+        if ctrl and enter:
+            cursor_mark = self.buffer.get_insert()
+            cursor_iter = self.buffer.get_iter_at_mark(cursor_mark)
+
+            for tag in cursor_iter.get_tags():
+                if tag.TYPE in (TagType.LINK, TagType.TASKTAG):
+                    tag.activate(self)
+
+            return True
+
 
     def on_mouse_move(self, view, event) -> None:
         """Callback when the mouse moves."""
