@@ -26,7 +26,7 @@ from GTG.core.requester import Requester
 from GTG.gtk.colors import background_color
 import GTG.core.urlregex as url_regex
 from webbrowser import open as openurl
-from GTG.core.translations import _
+from gettext import gettext as _
 from GTG.core.task import Task
 
 from enum import Enum
