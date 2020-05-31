@@ -559,11 +559,6 @@ class TaskView(Gtk.TextView):
         if start.is_end():
             return
 
-        # If the task starts with something that isn't a word (like
-        # whitespace or returns), then move forward until we hit a word.
-        while not start.starts_word():
-            start.forward_char()
-
         end = start.copy()
         end.forward_to_line_end()
         buffer_end = self.buffer.get_end_iter()
@@ -572,7 +567,7 @@ class TaskView(Gtk.TextView):
         self.buffer.apply_tag(self.title_tag, start, end)
         self.buffer.remove_tag(self.title_tag, end, buffer_end)
 
-        self.data['title'] = self.buffer.get_text(start, end, True)
+        self.data['title'] = self.buffer.get_text(start, end, False)
 
         return end
 
