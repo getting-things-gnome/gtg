@@ -192,8 +192,6 @@ class TaskEditor():
         """
         # self.dayleft_label = self.builder.get_object("dayleft")
 
-        self.task = task
-        tags = task.get_tags()
         # self.textview.subtasks_callback(task.get_children)
         # self.textview.removesubtask_callback(task.remove_child)
         # self.textview.set_get_tagslist_callback(task.get_tags_name)
@@ -203,8 +201,23 @@ class TaskEditor():
         # self.textview.connect('focus-in-event', self.on_textview_focus_in)
         # self.textview.connect('focus-out-event', self.on_textview_focus_out)
 
-        texte = self.task.get_text()
+        self.task = task
+        tags = task.get_tags()
+        text = self.task.get_text()
         title = self.task.get_title()
+
+        full_text = f'{title}\n'
+        full_text += ', '.join([t.get_name() for t in tags])
+        full_text += '\n'
+        full_text += text
+
+        self.textview.buffer.set_text(full_text)
+
+        if thisisnew:
+            self.textview.select_title()
+        else:
+            self.task.set_to_keep()
+
         # the first line is the title
         # self.textview.set_text(f"{title}\n")
         # we insert the rest of the task
