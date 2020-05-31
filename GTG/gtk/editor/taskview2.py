@@ -357,6 +357,7 @@ class TaskView(Gtk.TextView):
         self.id_modified = self.buffer.connect('changed', self.on_modified)
         self.connect('motion-notify-event', self.on_mouse_move)
         self.connect('key-press-event', self.on_key_pressed)
+        self.connect('key-release-event', self.on_key_released)
 
         # Callback when tags are clicked
         self.browse_tag = NotImplemented
@@ -598,6 +599,27 @@ class TaskView(Gtk.TextView):
                     pass
 
             return True
+
+
+    def on_key_released(self, widget, event):
+        """Callback when a key is released. Used for cursor hovering."""
+
+        try:
+            self.hovered_tag.reset()
+            self.hovered_tag = None
+        except AttributeError:
+            pass
+
+        cursor_mark = self.buffer.get_insert()
+        cursor_iter = self.buffer.get_iter_at_mark(cursor_mark)
+
+        for tag in cursor_iter.get_tags():
+            try:
+                tag.set_hover()
+                self.hovered_tag = tag
+
+            except AttributeError:
+                pass
 
 
     def on_mouse_move(self, view, event) -> None:
