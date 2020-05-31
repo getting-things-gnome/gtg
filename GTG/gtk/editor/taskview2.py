@@ -690,3 +690,21 @@ class TaskView(Gtk.TextView):
         """Get the task's title."""
 
         return self.data['title']
+
+
+    def select_title(self) -> None:
+        """Select the first line (title)."""
+
+        start = self.buffer.get_start_iter()
+        end = start.copy()
+        end.forward_to_line_end()
+        self.buffer.select_range(start, end)
+
+
+    def get_text(self) -> str:
+        """Get the text in the taskview."""
+
+        start = self.buffer.get_start_iter()
+        end = self.buffer.get_end_iter()
+
+        return self.buffer.get_text(start, end, False)
