@@ -77,10 +77,9 @@ class Application(Gtk.Application):
     delete_task_dialog = None
     edit_tag_dialog = None
 
-    def __init__(self, debug):
+    def __init__(self, app_id, debug):
         """Setup Application."""
 
-        app_id = f'org.gnome.GTG{"devel" if debug else ""}'
         super().__init__(application_id=app_id)
 
         if debug:
@@ -125,7 +124,7 @@ class Application(Gtk.Application):
         if not self.browser:
             self.browser = MainWindow(self.req, self)
 
-        if log.isEnabledFor(logging.DEBUG):
+        if self.props.application_id == 'org.gnome.GTGDevel':
             self.browser.get_style_context().add_class('devel')
 
         self.init_actions()

@@ -51,7 +51,7 @@ fi
 
 if [[ "$norun" -eq 0 ]]; then
     if [[ ! -d .local_build ]]; then
-        meson -Dprefix="$(pwd)"/.local_build/install .local_build
+        meson -Dprofile=development -Dprefix="$(pwd)"/.local_build/install .local_build
     fi
     ninja -C .local_build install
     # double quoting args seems to prevent python script from picking up flag arguments correctly

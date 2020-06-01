@@ -22,16 +22,24 @@ desktopdir = datadir / 'applications'
 icondir = datadir / 'icons'
 servicedir = datadir / 'dbus-1' / 'services'
 pythondir = python3.get_path('purelib')
+application_id = 'org.gnome.GTG'
+
+if get_option('profile') == 'development'
+  application_id = 'org.gnome.GTGDevel'
+endif
 
 bin_config = configuration_data()
 bin_config.set('local_build', 'False')
 bin_config.set('pythondir', pythondir)
 bin_config.set('localedir', datadir / 'locale')
+bin_config.set('APP_ID', application_id)
 
 local_config = configuration_data()
 local_config.set('local_build', 'True')
 local_config.set('pythondir', meson.source_root())
 local_config.set('localedir', meson.source_root() / 'po')
+local_config.set('APP_ID', application_id)
+
 
 # Wrapper to launch gtg with non-/usr prefix install PYTHONPATH
 wrapper_config = configuration_data()
