@@ -9,6 +9,7 @@ Exec=gtg %U
 Terminal=false
 Type=Application
 Categories=Office;ProjectManagement;
-Keywords=Organizer;Task;Activity;Plan;Time;GTD;gtg;Todo;
+# Translators: Search terms to find this application. Do NOT translate or localize the semicolons! The list MUST also end with a semicolon!
+Keywords=Organizer;Task;Tasks;Projects;Activities;Productivity;Plan;Planning;Planner;Time;Management;Scheduling;GTD;gtg;Todo;
 MimeType=x-scheme-handler/gtg;
 StartupNotify=true
