@@ -105,7 +105,7 @@ if __name__ == "__main__":
         gettext.textdomain('gtg')
 
         # Run the application
-        application = Application(args.debug)
+        application = Application('@APP_ID@', args.debug)
         application.uri_list = args.task_uri
         application.run()
 
