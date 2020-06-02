@@ -13,7 +13,7 @@ Ideally, in the spirit of [test-driven development](https://en.wikipedia.org/wik
 Unit tests live in ``tests/``.
 
 When you're ready to commit your changes (or even while you are making them),
-you should probably run the units tests to see if all is fine 
+you should probably run the units tests to see if all is fine
 (or at least that you did not introduce more problems than before):
 
     $ make check=python3
@@ -29,9 +29,9 @@ installed, you can also run the "tox" command to run tests.
 
 You can also manually test your changes with debugging data, by doing:
 
-    ./gtg.sh
+    ./launch.sh
 
-Running ``gtg.sh`` will prevent GTG from messing with your real data.
+Running ``launch.sh`` will prevent GTG from messing with your real data.
 Instead, it will create/store data in ``./tmp/default/``.
 
 
@@ -47,9 +47,9 @@ We share Pitivi's philosophy:
 
 > When deciding whether or not you should split your line when it exceeds
 > 79 characters, ask yourself: "Does it truly improve legibility?"
-> 
+>
 > What this translates to is:
-> 
+>
 > - Avoid having very long lines.
 > - When the contents only slightly exceeds the 80 chars limit,
 >   consider keeping it on one line. Otherwise it just hurts legibility and
@@ -69,7 +69,7 @@ from your Linux distribution's package repositories, or via:
 You can run the various code style checkers individually like this:
 
     $ pyflakes GTG/
-    
+
     $ find . -name '*.py' -print0 | xargs -0 pycodestyle --repeat --max-line-length=100 --ignore=E128
 
 These will output a list of various stylistic or quality issues in the code.

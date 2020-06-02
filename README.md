@@ -34,7 +34,7 @@ If you want to install the majority of those dependencies using Linux distributi
 
     # On Fedora:
     sudo dnf install python3-nose python3-pyxdg python3-pyflakes python3-spec python3-pycodestyle python3-mock python3-dbus gobject-introspection
-    
+
     # On Ubuntu/Debian:
     sudo apt install python3-nose python3-xdg python3-pyflakes python3-pep8 python3-pycodestyle python3-mock python3-dbus gobject-introspection
 
@@ -61,7 +61,7 @@ On Ubuntu you can install all that with:
 
 In order to run the developer/git version of GTG, you need to launch the `debug.sh` script. There is a shortcut to it in the root directory where you downloaded the code, that you can execute simply with this command:
 
-    ./gtg.sh
+    ./launch.sh
 
 This is the safest way to run the Git version, as it does not touch your normal user data (see below).
 
@@ -74,7 +74,7 @@ It depends:
   * ~/.config/gtg/
   * ~/.cache/gtg/
 * If you are running the Flatpak package version, those directories are all in ~/.var/app/org.gnome.Gtg/ (or something similar)
-* If you are running gtg.sh (the launcher from the Git/development version), GTG doesn't touch your normal user data, it uses the "tmp" subdirectory in your gtg development folder.
+* If you are running launch.sh (the launcher from the Git/development version), GTG doesn't touch your normal user data, it uses the "tmp" subdirectory in your gtg development folder.
 
 If you happen to move/copy data between those various instances, you will not only have to move/copy the folders and their contents, but also edit the destination's "projects.xml" file to change the path of the "tasks.xml" to match the new location (for example the traditional "/home/your_username/.local/share/gtg/tasks.xml" would become "/home/your_username/.var/app/org.gnome.Gtg/data/gtg/tasks.xml" when moving from the distro-provided GTG version to the Flatpak version).
 
