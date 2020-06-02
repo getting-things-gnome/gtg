@@ -10,7 +10,7 @@ Get the latest version of the GTG code [on GitHub](https://github.com/getting-th
 Launch GTG with debugging data (so it doesn't mess with your data):
 
     $ cd path/to/gtg
-    $ ./gtg.sh
+    $ ./launch.sh
 
 
 # Working on the feature in a branch
@@ -33,10 +33,10 @@ Pro tip: using a graphical tool like [gitg](https://wiki.gnome.org/Apps/Gitg/), 
 If your branch is solving specific reported issue, please include the number of the issue in the commit message or the pull request description. This will enable others to quickly navigate to the issue being solved. For example, this is a proper Git commit message:
 
     Make the Task Editor remember its width and height
-    
+
     The signals were not being correctly interpreted,
     and the data was not saved before closing.
-    
+
     This fixes GitHub issue #123
 
 Refer to https://chris.beams.io/posts/git-commit/ (for example) for best practices for writing great Git commit messages.
