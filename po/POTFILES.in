@@ -1,5 +1,5 @@
 # List of source files which contain translatable strings.
-data/org.gnome.GTG.appdata.xml.in
+data/org.gnome.GTG.appdata.xml.in.in
 data/org.gnome.GTG.desktop.in
 
 GTG/gtk/data/backends.ui
