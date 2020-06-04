@@ -4,11 +4,10 @@
       id="gtg-set-task-date">
 
   <info>
-    <link type="guide" xref="index#gtg-working-task" group="third"/>
+    <link type="guide" xref="index#gtg-working-task" group="fourth"/>
     <link type="seealso" xref="gtg-create-new-task"/>
     <link type="seealso" xref="gtg-edit-task"/>
-    <link type="seealso" xref="gtg-delete-task"/>
-    <link type="seealso" xref="gtg-dismiss-task"/>
+    <link type="seealso" xref="gtg-complete-dismiss-delete-task"/>
     <link type="seealso" xref="gtg-subtasks"/>
       
       <revision pkgversion="0.3.1" date="2013-06-18" status="candidate"/>
@@ -28,7 +27,7 @@
 
   </info>
 
-  <title>Setting Task Start Dates and Due Date</title>
+  <title>Setting Task Start Date and Due Date</title>
 
 <p>To set the start and due date for a task, from the <gui>Task Browser</gui>, right-click the task and select a date from the <gui>Set start date</gui> and <gui>Set due date</gui> options in the context menu.</p>
 
