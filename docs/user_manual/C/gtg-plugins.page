@@ -4,7 +4,7 @@
       id="gtg-plugins">
 
   <info>
-    <link type="guide" xref="index#gtg-plugins"/>
+    <link type="guide" xref="index#gtg-further"/>
      
       <revision pkgversion="0.3.1" date="2013-06-18" status="candidate"/>
       <revision pkgversion="0.4.0" date="2020-05-10" status="candidate"/>
@@ -24,7 +24,7 @@
 
   </info>
 
-  <title>Understand Plugins</title>
+  <title>Plugins</title>
 
 <p><app>GTG</app> plugins offer the possibility to extend the basic functionality of the program. Plugins allow you to add new features and change the way <app>GTG</app> works.</p>
 

@@ -24,7 +24,7 @@
 
   </info>
 
-  <title>Quick Add Entry</title>
+  <title>Using the Quick Add Entry</title>
 
   <p>The <gui>Quick Add Entry</gui> is the fastest way to create a new task. The <gui>Quick Add Entry</gui> field is located below the <gui>Task Browser</gui>.</p> 
 
@@ -41,7 +41,7 @@
 </section>
 
 <section id="quick-add-dates">
-<title>Add Dates and Tags to Tasks Using the Quick Add Entry</title> 
+<title>Adding Dates and Tags to Tasks Using the Quick Add Entry</title> 
 
 <p>You can also create a task in the <gui>Quick Add Entry</gui> and at the same time specify its tags, start date, and due date. Follow the below syntax to add these options:</p>
 
