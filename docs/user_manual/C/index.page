@@ -44,8 +44,12 @@
 
 <p>For a quick introduction into <app>GTG's</app> most basic features, as well as some advanced keyboard shortcuts, see the following quick-start pages below. Other help topics are grouped together in the sections below. Enjoy using <app>Getting Things GNOME!</app></p>
 
- <section id="gtg-working-task" style="2column">
+ <section id="gtg-working-task">
     <title>Working With Tasks</title>
+    <links type="topic" style="2column" groups="
+       first second
+       third fourth
+       fifth"/>
  </section>
 
 <section id="gtg-task-management" style="2column">
@@ -54,10 +58,15 @@
 
  <section id="gtg-search" style="2column">
     <title>Searching For Tasks</title>
+    <links type="topic" style="2column" groups="
+       first second"/>
  </section>
 
  <section id="gtg-further" style="2column">
     <title>Going Further</title>
+    <links type="topic" style="2column" groups="
+       first second
+       third fourth"/>
 </section>
 
 </page>

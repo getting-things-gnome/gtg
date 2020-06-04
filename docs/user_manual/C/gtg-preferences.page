@@ -5,7 +5,7 @@
       id="gtg-preferences">
 
   <info>
-    <link type="guide" xref="index#gtg-further"/>
+    <link type="guide" xref="index#gtg-further" group="first"/>
      
      
       <revision pkgversion="0.4.0" date="2020-05-10" status="candidate"/>

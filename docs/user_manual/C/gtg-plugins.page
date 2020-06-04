@@ -4,7 +4,7 @@
       id="gtg-plugins">
 
   <info>
-    <link type="guide" xref="index#gtg-further"/>
+    <link type="guide" xref="index#gtg-further" group="second"/>
      
       <revision pkgversion="0.3.1" date="2013-06-18" status="candidate"/>
       <revision pkgversion="0.4.0" date="2020-05-10" status="candidate"/>
