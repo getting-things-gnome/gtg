@@ -23,7 +23,7 @@
 
   </info>
 
-  <title>Understand View Modes</title>
+  <title>Understanding View Modes</title>
   
     <p> <app>GTG</app> has three different view modes to aid with productivity and managing your tasks: <gui>Open</gui>, <gui>Actionable</gui>, and <gui>Closed</gui>. The <gui>Open</gui> view mode displays all tasks not marked as done or dismissed. The <gui>Closed</gui> view mode displays all completed tasks or tasks that you dismissed.</p> 
 

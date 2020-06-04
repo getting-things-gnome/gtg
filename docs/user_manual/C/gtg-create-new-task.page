@@ -28,7 +28,7 @@
 
   </info>
 
-  <title>Create a New Task</title>
+  <title>Creating a New Task</title>
 
   <p>There are three ways to create a new task in <app>GTG</app>:</p>
 
@@ -39,6 +39,6 @@
 </list>
 
   <p>The new task opens on top of the <app>GTG</app> main window or any other tasks that you may have opened.</p>
-
+  
 </page>
 

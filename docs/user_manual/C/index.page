@@ -24,7 +24,7 @@
 
     <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
 
-</info>  
+</info>
 
  <title>
     <media type="image" mime="image/png" src="figures/gtg-icon.png">
@@ -32,7 +32,7 @@
     </media>
     Getting Things GNOME!
  </title>
- 
+
 
  <quote>
   <cite>David Allen, <em>Getting Things Done: The Art of Stress-Free Productivity</em></cite>
@@ -55,21 +55,9 @@
  <section id="gtg-search" style="2column">
     <title>Searching For Tasks</title>
  </section>
- 
- <section id="gtg-plugins" style="2column">
-    <title>Plugins</title>
- </section>
 
- <section id="gtg-customization" style="2column">
-    <title>Customizing GTG</title>
- </section>
-
- <section id="gtg-faq" style="2column">
-    <title>Frequently Asked Questions</title>
- </section>
- 
- <section id="gtg-advanced" style="2column">
-    <title>Advanced Topics</title>
+ <section id="gtg-further" style="2column">
+    <title>Going Further</title>
 </section>
 
 </page>

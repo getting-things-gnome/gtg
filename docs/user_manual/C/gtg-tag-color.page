@@ -24,7 +24,7 @@
 
   </info>
 
-  <title>Edit Tag Properties</title>
+  <title>Editing Tag Properties</title>
 
 <p>You can edit a tag's name, color, or set a specific tag icon, by right-clicking the tag in the <gui>Sidebar</gui> and selecting <gui>Edit Tag</gui> from the context menu. You can complete the following actions in the <gui>Edit tag</gui> window:</p>
 
