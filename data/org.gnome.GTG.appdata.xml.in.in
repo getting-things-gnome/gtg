@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <component type="desktop">
-    <id>org.gnome.GTG</id>
-    <launchable type="desktop-id">org.gnome.GTG.desktop</launchable>
+    <id>@APP_ID@</id>
+    <launchable type="desktop-id">@APP_ID@.desktop</launchable>
 
     <metadata_license>CC-BY-3.0</metadata_license>
     <project_license>GPL-3.0</project_license>
