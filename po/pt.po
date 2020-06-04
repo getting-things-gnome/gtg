@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-06-03 17:20-0400\n"
+"POT-Creation-Date: 2020-06-04 22:25+0300\n"
 "PO-Revision-Date: 2010-03-12 14:52+0000\n"
 "Last-Translator: Joel Patrão <joel.patrao@gmail.com>\n"
 "Language-Team: Portuguese <pt@li.org>\n"
@@ -19,44 +19,44 @@ msgstr ""
 "X-Launchpad-Export-Date: 2013-04-29 04:39+0000\n"
 "X-Generator: Launchpad (build 16580)\n"
 
-#: data/org.gnome.GTG.appdata.xml.in:9
+#: data/org.gnome.GTG.appdata.xml.in.in:9
 msgid ""
 "\"Getting Things GNOME\" (GTG) is a personal tasks and ToDo list organizer "
 "inspired by the \"Getting Things Done\" (GTD) methodology."
 msgstr ""
 
-#: data/org.gnome.GTG.appdata.xml.in:10
+#: data/org.gnome.GTG.appdata.xml.in.in:10
 msgid ""
 "GTG is intended to help you track everything you need to do and need to "
 "know, from small tasks to large projects. GTG's user interface is designed "
 "to accommodate many workflows, with features such as:"
 msgstr ""
 
-#: data/org.gnome.GTG.appdata.xml.in:12
+#: data/org.gnome.GTG.appdata.xml.in.in:12
 msgid "a very flexible tagging and searching system;"
 msgstr ""
 
-#: data/org.gnome.GTG.appdata.xml.in:13
+#: data/org.gnome.GTG.appdata.xml.in.in:13
 msgid "natural language parsing and a free-form task text editor;"
 msgstr ""
 
-#: data/org.gnome.GTG.appdata.xml.in:14
+#: data/org.gnome.GTG.appdata.xml.in.in:14
 msgid ""
 "projects/task dependencies (infinite sub-tasks), start dates and due dates;"
 msgstr ""
 
-#: data/org.gnome.GTG.appdata.xml.in:15
+#: data/org.gnome.GTG.appdata.xml.in.in:15
 msgid ""
 "an \"Actionable\" tasks view mode to help you stay focused during your work;"
 msgstr ""
 
-#: data/org.gnome.GTG.appdata.xml.in:16
+#: data/org.gnome.GTG.appdata.xml.in.in:16
 msgid ""
 "the ability to effortlessly defer tasks to common upcoming days, or to a "
 "custom date."
 msgstr ""
 
-#: data/org.gnome.GTG.appdata.xml.in:37
+#: data/org.gnome.GTG.appdata.xml.in.in:37
 msgid "The GTG team"
 msgstr ""
 

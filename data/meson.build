@@ -1,23 +1,21 @@
-appdata_file = 'org.gnome.GTG.appdata.xml'
-i18n.merge_file(appdata_file,
-  input: appdata_file + '.in',
-  output: appdata_file,
+i18n.merge_file(
+  input: configure_file(
+    output: rdnn_name + '.appdata.xml.in',
+    input: rdnn_name + '.appdata.xml.in.in',
+    configuration: bin_config),
+  output: application_id + '.appdata.xml',
   po_dir: meson.source_root() / 'po',
   install: true,
   install_dir: appdatadir,
 )
 
-desktop_file = 'org.gnome.GTG.desktop'
-i18n.merge_file(desktop_file,
-  input: desktop_file + '.in',
-  output: desktop_file,
+i18n.merge_file(
+  input: rdnn_name + '.desktop.in',
+  output: application_id + '.desktop',
   po_dir: meson.source_root() / 'po',
   install: true,
   install_dir: desktopdir,
   type: 'desktop'
 )
-
-service_file = 'org.gnome.GTG.service'
-install_data(service_file, install_dir: servicedir)
 
 subdir('icons')

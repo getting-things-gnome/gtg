@@ -20,12 +20,12 @@ datadir = prefix / get_option('datadir')
 appdatadir = datadir / 'metainfo'
 desktopdir = datadir / 'applications'
 icondir = datadir / 'icons'
-servicedir = datadir / 'dbus-1' / 'services'
 pythondir = python3.get_path('purelib')
-application_id = 'org.gnome.GTG'
+rdnn_name = 'org.gnome.GTG'
+application_id = rdnn_name
 
 if get_option('profile') == 'development'
-  application_id = 'org.gnome.GTGDevel'
+  application_id = rdnn_name + 'Devel'
 endif
 
 bin_config = configuration_data()
