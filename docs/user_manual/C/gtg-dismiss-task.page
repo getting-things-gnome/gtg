@@ -29,7 +29,7 @@
   </info>
 
 
-  <title>Dismiss a Task</title>
+  <title>Dismissing a Task</title>
 
   <p>When you decide that a certain task is no longer valid (does not need to be accomplished), you can dismiss it. To dismiss a selected task from the <gui>Open</gui> or <gui>Actionable</gui> view modes, you can:</p>
   
@@ -47,7 +47,7 @@
     
     <p>You can view all of the tasks that are marked as dismissed in the <gui>Closed</gui> view mode.</p> 
 
-<section id="undismiss-task"><title>Undismiss a Task</title>
+<section id="undismiss-task"><title>Undismissing a Task</title>
       <p>You may want to reopen a task that you previously dismissed. From the <gui>Closed</gui> view mode, you can:</p>
      <list>
      <item><p>Use the <keyseq><key>Ctrl</key><key>I</key></keyseq> keyboard shortcut.</p></item>
