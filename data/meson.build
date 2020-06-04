@@ -17,7 +17,4 @@ i18n.merge_file(desktop_file,
   type: 'desktop'
 )
 
-service_file = 'org.gnome.GTG.service'
-install_data(service_file, install_dir: servicedir)
-
 subdir('icons')
