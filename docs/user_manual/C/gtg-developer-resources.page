@@ -4,7 +4,7 @@
       id="gtg-developer-resources">
 
   <info>
-    <link type="guide" xref="index#gtg-further"/>
+    <link type="guide" xref="index#gtg-further" group="fourth"/>
     
       
       <revision pkgversion="0.4.0" date="2020-05-10" status="candidate"/>
