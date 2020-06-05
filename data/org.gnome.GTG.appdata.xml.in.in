@@ -22,10 +22,9 @@
     <url type="translate">https://wiki.gnome.org/TranslationProject#How_can_I_help.3F</url>
 
     <screenshots>
-        <screenshot type="default">http://gtgnome.net/wp-content/uploads/2013/01/gtg-0.3-browser-1024x640.png</screenshot>
-        <screenshot>http://gtgnome.net/wp-content/uploads/2013/01/gtg-0.3-browser-tasks-bgcolor-desc-1024x640.png</screenshot>
-        <screenshot>http://gtgnome.net/wp-content/uploads/2013/01/gtg-0.3-tag-editor.png</screenshot>
-        <screenshot>http://gtgnome.net/wp-content/uploads/2013/01/gtg-0.3-user-help-1024x640.png</screenshot>
+        <screenshot type="default">https://fortintam.com/gtg/screenshots/appstream/1.png</screenshot>
+        <screenshot>https://fortintam.com/gtg/screenshots/appstream/2.png</screenshot>
+        <screenshot>https://fortintam.com/gtg/screenshots/appstream/3.png</screenshot>
     </screenshots>
 
     <kudos>
