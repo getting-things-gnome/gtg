@@ -20,6 +20,7 @@ docs/user_manual_html/
 docs/user_manual/C/index.cache
 flatpak/cache
 flatpak/.flatpak-builder
+flatpak/bundles
 /.local_build/
 
 # src/ usually has development version of liblarch
