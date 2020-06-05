@@ -17,6 +17,7 @@ gtg.prof
 __pycache__
 .*.sw*
 docs/user_manual_html/
+docs/user_manual/C/index.cache
 flatpak/cache
 flatpak/.flatpak-builder
 /.local_build/
