@@ -70,7 +70,7 @@
                               <object class="GtkLabel">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
-                                <property name="label" translatable="yes">Show a task excerpt next to each task in Task Browser</property>
+                                <property name="label" translatable="yes">Show a task excerpt next to each task in the Task Browser</property>
                                 <property name="xalign">0</property>
                                 <style>
                                   <class name="dim-label"/>
@@ -130,7 +130,7 @@
                               <object class="GtkLabel">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
-                                <property name="label" translatable="yes">Enable coloured backgrounds</property>
+                                <property name="label" translatable="yes">Enable colored backgrounds</property>
                                 <property name="xalign">0</property>
                               </object>
                               <packing>
@@ -143,7 +143,7 @@
                               <object class="GtkLabel">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
-                                <property name="label" translatable="yes">Show coloured backgrounds for a task based on the colours of its tags</property>
+                                <property name="label" translatable="yes">Show colored backgrounds for a task based on the colors of its tags</property>
                                 <property name="xalign">0</property>
                                 <style>
                                   <class name="dim-label"/>
@@ -278,7 +278,7 @@
                           <object class="GtkLabel">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
-                            <property name="label" translatable="yes">Task editor font</property>
+                            <property name="label" translatable="yes">Task Editor font</property>
                             <property name="xalign">0</property>
                           </object>
                           <packing>
@@ -361,7 +361,7 @@
                           <object class="GtkLabel">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
-                            <property name="label" translatable="yes">Remove old closed tasks automatically</property>
+                            <property name="label" translatable="yes">Automatically remove old, closed tasks</property>
                             <property name="xalign">0</property>
                           </object>
                           <packing>
