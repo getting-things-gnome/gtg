@@ -7,28 +7,24 @@
 4. Update the NEWS file, and ideally prepare release notes and announcements in advance
 5. Test creating tarballs (see further below)
 6. Tag the release and create the tarballs and Flatpak packages
+7. Remember to update the historical wiki page at https://wiki.gnome.org/Apps/GTG/release_names
 
 # Release tagging (usually done by maintainers)
 
-Tag the revision (use `git tag -a`) with `vRELEASE_NUMBER` (ex: `git tag -a v0.3.1`, `git tag -a v0.4`) when on the correct commit. `git tag` lists all the tags. Update the historical wiki page at https://wiki.gnome.org/Apps/GTG/release_names.
+Tag the revision (use `git tag -a`) with `vRELEASE_NUMBER` (ex: `git tag -a v0.3.1`, `git tag -a v0.4`, etc.) when on the correct commit. `git tag` lists all the tags.
 
 When you are absolutely sure you tagged "correctly", you can use `git push --tags`.
 
+In GitHub and GitLab, a commit named "Release version 0.4" and tagged "v0.4", for example, will correctly show up in the "Releases" section of the repository's web interface.
+
 # Creating tarballs tarball (intended for distros)
 
-Use sanity scripts to test creating a tarball. They will tell you missing files in the tarball.
+This is now done simply like this (assuming you ran launch.sh at least once previously):
 
-    make clean
-    ./scripts/tarball_integrity.py
-    ./scripts/build_integrity.py
+    ninja -C .local_build/ dist
 
-You can install GTG into an empty folder so you exactly see what will be installed and what will not.
-
-    python3 setup.py install --prefix=./temp_folder
-
-Create a tarball and upload it to... wherever we're supposed to upload tarballs (someone should fix these instructions):
-
-    python3 setup.py sdist
+...which will create the .local_build/meson-dist/gtg-VERSIONNUMBER.tar.xz tarball.
+Then we need to upload the tarball to... wherever we're supposed to upload tarballs (someone should fix these instructions).
 
 # Flatpak package (intended for users)
 
