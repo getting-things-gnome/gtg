@@ -95,6 +95,10 @@ class TaskView(Gtk.TextView):
     CURSOR_HAND = Gdk.Cursor.new(Gdk.CursorType.HAND2)
     CURSOR_NORMAL = Gdk.Cursor.new(Gdk.CursorType.XTERM)
 
+    # Tags applied to the buffer. Does not include Title or subtasks, since
+    # this is used to remove the tags from the tag table, which also removes
+    # them from the buffer
+    tags_applied = []
 
     def __init__(self, req: Requester, clipboard) -> None:
         super().__init__()
@@ -122,9 +126,6 @@ class TaskView(Gtk.TextView):
 
         self.title_tag = TitleTag()
         self.table.add(self.title_tag)
-
-        # Tags applied to buffer
-        self.tags = []
 
         # Subtask tags
         self.subtask_tags = []
@@ -162,8 +163,8 @@ class TaskView(Gtk.TextView):
         bench_start = time()
 
         # Clear all tags first
-        [self.table.remove(t) for t in self.tags]
-        self.tags = []
+        [self.table.remove(t) for t in self.tags_applied]
+        self.tags_applied[:] = []
 
         # Keep a copy and clear list of task tags
         prev_tasktags = self.data['tags'].copy()
@@ -286,7 +287,7 @@ class TaskView(Gtk.TextView):
             # I find this confusing too :)
             tag_name = match.group(0)
             tag_tag = TaskTagTag(tag_name, self.req)
-            self.tags.append(tag_tag)
+            self.tags_applied.append(tag_tag)
 
             self.table.add(tag_tag)
             self.buffer.apply_tag(tag_tag, tag_start, tag_end)
@@ -314,7 +315,7 @@ class TaskView(Gtk.TextView):
 
             if task:
                 link_tag = InternalLinkTag(task)
-                self.tags.append(link_tag)
+                self.tags_applied.append(link_tag)
 
                 self.table.add(link_tag)
                 self.buffer.apply_tag(link_tag, url_start, url_end)
@@ -335,7 +336,7 @@ class TaskView(Gtk.TextView):
             url_end.forward_chars(match.end())
 
             url_tag = LinkTag(match.group(0))
-            self.tags.append(url_tag)
+            self.tags_applied.append(url_tag)
 
             self.table.add(url_tag)
             self.buffer.apply_tag(url_tag, url_start, url_end)
