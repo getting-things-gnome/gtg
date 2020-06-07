@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-06-04 22:25+0300\n"
+"POT-Creation-Date: 2020-06-07 14:37-0400\n"
 "PO-Revision-Date: 2012-05-26 14:33+0000\n"
 "Last-Translator: Stathis Iosifidis <Unknown>\n"
 "Language-Team: Ελληνικά, Σύγχρονα <opensuse-translation-el@opensuse.org>\n"
@@ -57,7 +57,7 @@ msgid ""
 "custom date."
 msgstr ""
 
-#: data/org.gnome.GTG.appdata.xml.in.in:37
+#: data/org.gnome.GTG.appdata.xml.in.in:36
 msgid "The GTG team"
 msgstr ""
 
@@ -226,15 +226,15 @@ msgid "Show description preview"
 msgstr ""
 
 #: GTG/gtk/data/general_preferences.ui:73
-msgid "Show a task excerpt next to each task in Task Browser"
+msgid "Show a task excerpt next to each task in the Task Browser"
 msgstr ""
 
 #: GTG/gtk/data/general_preferences.ui:133
-msgid "Enable coloured backgrounds"
+msgid "Enable colored backgrounds"
 msgstr ""
 
 #: GTG/gtk/data/general_preferences.ui:146
-msgid "Show coloured backgrounds for a task based on the colours of its tags"
+msgid "Show colored backgrounds for a task based on the colors of its tags"
 msgstr ""
 
 #: GTG/gtk/data/general_preferences.ui:207
@@ -248,7 +248,7 @@ msgid ""
 msgstr ""
 
 #: GTG/gtk/data/general_preferences.ui:281
-msgid "Task editor font"
+msgid "Task Editor font"
 msgstr ""
 
 #: GTG/gtk/data/general_preferences.ui:327
@@ -257,8 +257,9 @@ msgid "Clean Up"
 msgstr "Εκκαθάριση"
 
 #: GTG/gtk/data/general_preferences.ui:364
-msgid "Remove old closed tasks automatically"
-msgstr ""
+#, fuzzy
+msgid "Automatically remove old closed tasks"
+msgstr "Μόνιμη αφαίρεση επιλεγμένης εργασίας"
 
 #: GTG/gtk/data/general_preferences.ui:409
 msgid "Days to wait before removing a task"
@@ -1687,9 +1688,6 @@ msgstr "Εργασία: %(task_title)s"
 #, fuzzy
 #~ msgid "Mark the selected task as not done"
 #~ msgstr "Σημείωση της επιλεγμένης εργασίας ως ολοκληρωμένης"
-
-#~ msgid "Permanently remove the selected task"
-#~ msgstr "Μόνιμη αφαίρεση επιλεγμένης εργασίας"
 
 #, fuzzy
 #~ msgid "Delete Tag"

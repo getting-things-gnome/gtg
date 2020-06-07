@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-06-04 22:25+0300\n"
+"POT-Creation-Date: 2020-06-07 14:37-0400\n"
 "PO-Revision-Date: 2011-08-11 04:50+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: Interlingua <ia@li.org>\n"
@@ -56,7 +56,7 @@ msgid ""
 "custom date."
 msgstr ""
 
-#: data/org.gnome.GTG.appdata.xml.in.in:37
+#: data/org.gnome.GTG.appdata.xml.in.in:36
 msgid "The GTG team"
 msgstr ""
 
@@ -215,15 +215,15 @@ msgid "Show description preview"
 msgstr ""
 
 #: GTG/gtk/data/general_preferences.ui:73
-msgid "Show a task excerpt next to each task in Task Browser"
+msgid "Show a task excerpt next to each task in the Task Browser"
 msgstr ""
 
 #: GTG/gtk/data/general_preferences.ui:133
-msgid "Enable coloured backgrounds"
+msgid "Enable colored backgrounds"
 msgstr ""
 
 #: GTG/gtk/data/general_preferences.ui:146
-msgid "Show coloured backgrounds for a task based on the colours of its tags"
+msgid "Show colored backgrounds for a task based on the colors of its tags"
 msgstr ""
 
 #: GTG/gtk/data/general_preferences.ui:207
@@ -236,7 +236,7 @@ msgid ""
 msgstr ""
 
 #: GTG/gtk/data/general_preferences.ui:281
-msgid "Task editor font"
+msgid "Task Editor font"
 msgstr ""
 
 #: GTG/gtk/data/general_preferences.ui:327
@@ -244,7 +244,7 @@ msgid "Clean Up"
 msgstr ""
 
 #: GTG/gtk/data/general_preferences.ui:364
-msgid "Remove old closed tasks automatically"
+msgid "Automatically remove old closed tasks"
 msgstr ""
 
 #: GTG/gtk/data/general_preferences.ui:409
