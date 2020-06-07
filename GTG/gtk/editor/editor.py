@@ -184,6 +184,8 @@ class TaskEditor():
         self.textview.rename_subtask = self.rename_subtask
         self.textview.open_subtask = self.app.open_task
         self.textview.save = self.light_save
+        self.textview.add_tasktag = task.add_tag
+        self.textview.remove_tasktag = task.remove_tag
 
         # Voila! it's done
 
