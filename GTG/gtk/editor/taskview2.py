@@ -241,7 +241,7 @@ class TaskTagTag(Gtk.TextTag):
         self.tag = req.get_tag(tag)
 
         try:
-            self.color = background_color([self.tag])
+            self.color = background_color([self.tag]) or'#FFEA00'
         except AttributeError:
             self.color = '#FFEA00'
 
@@ -255,7 +255,8 @@ class TaskTagTag(Gtk.TextTag):
         """Change tag appareance when hovering."""
 
         try:
-            self.set_property('background', self.tag.get_attribute('color'))
+            color = self.tag.get_attribute('color') or '#EBDB34'
+            self.set_property('background', color)
         except AttributeError:
             self.set_property('background', '#EBDB34')
 
