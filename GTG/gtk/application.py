@@ -356,9 +356,9 @@ class Application(Gtk.Application):
         if not self.delete_task_dialog:
             self.delete_task_dialog = DeletionUI(self.req, window)
 
-        tags_to_delete = self.delete_task_dialog.show(tids)
+        tasks_to_delete = self.delete_task_dialog.show(tids)
 
-        [self.close_task(task.get_id()) for task in tags_to_delete
+        [self.close_task(task.get_id()) for task in tasks_to_delete
          if task.get_id() in self.open_tasks]
 
     def open_tag_editor(self, tag):
