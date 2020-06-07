@@ -91,6 +91,10 @@ class TaskView(Gtk.TextView):
     # Callback to save the task without refreshing the widget
     save_cb = NotImplemented
 
+    # Mouse cursors
+    CURSOR_HAND = Gdk.Cursor.new(Gdk.CursorType.HAND2)
+    CURSOR_NORMAL = Gdk.Cursor.new(Gdk.CursorType.XTERM)
+
 
     def __init__(self, req: Requester, clipboard) -> None:
         super().__init__()
@@ -104,10 +108,6 @@ class TaskView(Gtk.TextView):
         self.set_wrap_mode(Gtk.WrapMode.WORD)
         self.set_editable(True)
         self.set_cursor_visible(True)
-
-        # Mouse cursors
-        self.cursor_hand = Gdk.Cursor.new(Gdk.CursorType.HAND2)
-        self.cursor_normal = Gdk.Cursor.new(Gdk.CursorType.XTERM)
 
         # URL when right-clicking (used to populate RMB menu)
         self.clicked_link = None
@@ -131,7 +131,6 @@ class TaskView(Gtk.TextView):
 
         # Subtasks to be removed
         self.subs_to_remove = []
-
 
         # Task info
         self.data = {
@@ -419,7 +418,7 @@ class TaskView(Gtk.TextView):
         tags = view.get_iter_at_location(x, y)[1].get_tags()
 
         # Reset cursor and hover states
-        window.set_cursor(self.cursor_normal)
+        window.set_cursor(self.CURSOR_NORMAL)
 
         if self.hovered_tag:
             self.hovered_tag.reset()
@@ -429,7 +428,7 @@ class TaskView(Gtk.TextView):
         try:
             tag = tags[0]
             tag.set_hover()
-            window.set_cursor(self.cursor_hand)
+            window.set_cursor(self.CURSOR_HAND)
             self.hovered_tag = tag
 
         except (AttributeError, IndexError):
