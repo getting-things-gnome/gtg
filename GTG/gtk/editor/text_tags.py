@@ -57,7 +57,7 @@ class SubTaskTag(Gtk.TextTag):
 
         # If there was a click...
         if button[0] and button[1] == 1:
-            view.open_subtask(self.tid)
+            view.open_subtask_cb(self.tid)
 
 
     def activate(self, view) -> None:
@@ -132,13 +132,13 @@ class InternalLinkTag(Gtk.TextTag):
 
         # If there was a click...
         if button[0] and button[1] == 1:
-            view.open_subtask(self.tid)
+            view.open_subtask_cb(self.tid)
 
 
     def activate(self, view) -> None:
         """Open the link in this tag."""
 
-        view.open_subtask(self.tid)
+        view.open_subtask_cb(self.tid)
 
     def set_hover(self) -> None:
         """Change tag appareance when hovering."""
@@ -260,10 +260,10 @@ class TaskTagTag(Gtk.TextTag):
         button = event.get_button()
 
         if button[0] and button[1] == 1:
-            view.browse_tag(self.tag_name)
+            view.browse_tag_cb(self.tag_name)
 
 
     def activate(self, view) -> None:
         """Open the link in this tag."""
 
-        view.browse_tag(self.tag_name)
+        view.browse_tag_cb(self.tag_name)
