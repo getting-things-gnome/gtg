@@ -62,6 +62,7 @@ gtg_editor_sources = [
   'editor/taskview.py',
   'editor/recurring_menu.py'
   'editor/taskview2.py',
+  'editor/text_tags.py',
 ]
 
 python3.install_sources(gtg_gtk_sources, subdir: 'GTG' / 'gtk', pure: true)
