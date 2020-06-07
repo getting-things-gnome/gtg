@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-06-04 22:25+0300\n"
+"POT-Creation-Date: 2020-06-07 14:37-0400\n"
 "PO-Revision-Date: 2013-03-30 08:26+0000\n"
 "Last-Translator: Саша Петровић <salepetronije@gmail.com>\n"
 "Language-Team: Serbian <sr@li.org>\n"
@@ -57,7 +57,7 @@ msgid ""
 "custom date."
 msgstr ""
 
-#: data/org.gnome.GTG.appdata.xml.in.in:37
+#: data/org.gnome.GTG.appdata.xml.in.in:36
 msgid "The GTG team"
 msgstr ""
 
@@ -230,16 +230,16 @@ msgid "Show description preview"
 msgstr "Приказуј преглед описа у списку задарака."
 
 #: GTG/gtk/data/general_preferences.ui:73
-msgid "Show a task excerpt next to each task in Task Browser"
+msgid "Show a task excerpt next to each task in the Task Browser"
 msgstr ""
 
 #: GTG/gtk/data/general_preferences.ui:133
 #, fuzzy
-msgid "Enable coloured backgrounds"
+msgid "Enable colored backgrounds"
 msgstr "Омогући позадину у боји у списку задатака"
 
 #: GTG/gtk/data/general_preferences.ui:146
-msgid "Show coloured backgrounds for a task based on the colours of its tags"
+msgid "Show colored backgrounds for a task based on the colors of its tags"
 msgstr ""
 
 #: GTG/gtk/data/general_preferences.ui:207
@@ -253,7 +253,7 @@ msgid ""
 msgstr ""
 
 #: GTG/gtk/data/general_preferences.ui:281
-msgid "Task editor font"
+msgid "Task Editor font"
 msgstr ""
 
 #: GTG/gtk/data/general_preferences.ui:327
@@ -262,8 +262,9 @@ msgid "Clean Up"
 msgstr "Очисти"
 
 #: GTG/gtk/data/general_preferences.ui:364
-msgid "Remove old closed tasks automatically"
-msgstr ""
+#, fuzzy
+msgid "Automatically remove old closed tasks"
+msgstr "Трајно уклоните овај задатак"
 
 #: GTG/gtk/data/general_preferences.ui:409
 msgid "Days to wait before removing a task"
@@ -1726,9 +1727,6 @@ msgstr ""
 
 #~ msgid "Mark the selected task as to be done"
 #~ msgstr "Означите изабрани задатак за рад"
-
-#~ msgid "Permanently remove the selected task"
-#~ msgstr "Трајно уклоните овај задатак"
 
 #~ msgid "Create a new subtask"
 #~ msgstr "Направите нови подзадатак"

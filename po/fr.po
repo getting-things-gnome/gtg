@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-06-04 22:25+0300\n"
+"POT-Creation-Date: 2020-06-07 14:37-0400\n"
 "PO-Revision-Date: 2020-06-03 17:31-0400\n"
 "Last-Translator: Jean-François Fortin Tam <nekohayo@gmail.com>\n"
 "Language-Team: French <fr@li.org>\n"
@@ -68,7 +68,7 @@ msgstr ""
 "la possibilité de reporter rapidement des tâches au lendemain ou dates "
 "ultérieures."
 
-#: data/org.gnome.GTG.appdata.xml.in.in:37
+#: data/org.gnome.GTG.appdata.xml.in.in:36
 msgid "The GTG team"
 msgstr "L'équipe GTG"
 
@@ -231,17 +231,20 @@ msgid "Show description preview"
 msgstr "Afficher l'aperçu de la description des tâches"
 
 #: GTG/gtk/data/general_preferences.ui:73
-msgid "Show a task excerpt next to each task in Task Browser"
+#, fuzzy
+msgid "Show a task excerpt next to each task in the Task Browser"
 msgstr ""
 "Montrer un extrait du contenu à côté du titre des tâches dans la fenêtre "
 "principale"
 
 #: GTG/gtk/data/general_preferences.ui:133
-msgid "Enable coloured backgrounds"
+#, fuzzy
+msgid "Enable colored backgrounds"
 msgstr "Activer les fonds colorés"
 
 #: GTG/gtk/data/general_preferences.ui:146
-msgid "Show coloured backgrounds for a task based on the colours of its tags"
+#, fuzzy
+msgid "Show colored backgrounds for a task based on the colors of its tags"
 msgstr ""
 "Colorer l'arrière-plan des tâches dans la fenêtre principale avec les "
 "couleurs d'étiquettes"
@@ -257,7 +260,8 @@ msgstr ""
 "Met à jour automatiquement la liste des tâches et la vue « Actionable »"
 
 #: GTG/gtk/data/general_preferences.ui:281
-msgid "Task editor font"
+#, fuzzy
+msgid "Task Editor font"
 msgstr "Police de texte de l'éditeur de tâches"
 
 #: GTG/gtk/data/general_preferences.ui:327
@@ -265,8 +269,8 @@ msgid "Clean Up"
 msgstr "Nettoyage"
 
 #: GTG/gtk/data/general_preferences.ui:364
-msgid "Remove old closed tasks automatically"
-msgstr "Supprimer automatiquement les anciennes tâches fermées"
+msgid "Automatically remove old closed tasks"
+msgstr ""
 
 #: GTG/gtk/data/general_preferences.ui:409
 msgid "Days to wait before removing a task"
@@ -1896,6 +1900,9 @@ msgstr ""
 #, python-format
 msgid "Task: %(task_title)s"
 msgstr "Tâche : %(task_title)s"
+
+#~ msgid "Remove old closed tasks automatically"
+#~ msgstr "Supprimer automatiquement les anciennes tâches fermées"
 
 #~ msgid "Organizer;Task;Activity;Plan;Time;GTD;gtg;Todo;"
 #~ msgstr ""
