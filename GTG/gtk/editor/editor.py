@@ -178,14 +178,14 @@ class TaskEditor():
         if conf_font_value != "":
             self.textview.override_font(Pango.FontDescription(conf_font_value))
 
-        self.textview.browse_tag = app.select_tag
-        self.textview.new_subtask = self.new_subtask
-        self.textview.delete_subtask = self.remove_subtask
-        self.textview.rename_subtask = self.rename_subtask
-        self.textview.open_subtask = self.app.open_task
-        self.textview.save = self.light_save
-        self.textview.add_tasktag = task.add_tag
-        self.textview.remove_tasktag = task.remove_tag
+        self.textview.browse_tag_cb = app.select_tag
+        self.textview.new_subtask_cb = self.new_subtask
+        self.textview.delete_subtask_cb = self.remove_subtask
+        self.textview.rename_subtask_cb = self.rename_subtask
+        self.textview.open_subtask_cb = self.app.open_task
+        self.textview.save_cb = self.light_save
+        self.textview.add_tasktag_cb = task.add_tag
+        self.textview.remove_tasktag_cb = task.remove_tag
 
         # Voila! it's done
 

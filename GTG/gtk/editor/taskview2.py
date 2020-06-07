@@ -67,6 +67,31 @@ class TaskView(Gtk.TextView):
     # Handle ID for the modified signal handler
     id_modified = None
 
+    # Callback when tags are clicked
+    browse_tag_cb = NotImplemented
+
+    # Callback to add tags to task
+    add_tasktag_cb = NotImplemented
+
+    # Callback to remove tags from task
+    remove_tasktag_cb = NotImplemented
+
+    # Callback to add a new subtask
+    new_subtask_cb = NotImplemented
+
+    # Callback to open a subtask
+    open_task_cb = NotImplemented
+
+    # Callback to delete a subtask
+    delete_subtask_cb = NotImplemented
+
+    # Callback to rename a subtask
+    rename_subtask_cb = NotImplemented
+
+    # Callback to save the task without refreshing the widget
+    save_cb = NotImplemented
+
+
     def __init__(self, req: Requester, clipboard) -> None:
         super().__init__()
 
@@ -119,16 +144,6 @@ class TaskView(Gtk.TextView):
         self.connect('motion-notify-event', self.on_mouse_move)
         self.connect('key-press-event', self.on_key_pressed)
         self.connect('key-release-event', self.on_key_released)
-
-        # Callback when tags are clicked
-        self.browse_tag = NotImplemented
-        self.new_subtask = NotImplemented
-        self.delete_subtask = NotImplemented
-        self.rename_subtask = NotImplemented
-        self.open_subtask = NotImplemented
-        self.save = NotImplemented
-        self.add_tasktag = NotImplemented
-        self.remove_tasktag = NotImplemented
 
 
     def on_modified(self, buffer: Gtk.TextBuffer) -> None:
@@ -183,17 +198,17 @@ class TaskView(Gtk.TextView):
 
         # Remove subtasks that were deleted
         for tid in self.subs_to_remove:
-            self.delete_subtask(tid)
+            self.delete_subtask_cb(tid)
             self.subtask_tags.remove(tid)
 
         # Clear tags that were added but aren't used anymore
         for tasktag in prev_tasktags.difference(self.data['tags']):
-            self.remove_tasktag(tasktag)
+            self.remove_tasktag_cb(tasktag)
 
         log.debug(f'Processed in {time() - bench_start:.2} secs')
 
         self.buffer.set_modified(False)
-        self.save()
+        self.save_cb()
 
         # Return False to only run the function once,
         # and clear the handle for next time.
@@ -239,12 +254,12 @@ class TaskView(Gtk.TextView):
                 self.subs_to_remove.remove(tid)
 
             # Always rename if there's a tag
-            self.rename_subtask(tid, subtask_title)
+            self.rename_subtask_cb(tid, subtask_title)
 
             # Remove subtask tag and recreate
             self.table.remove(tag)
         else:
-            tid = self.new_subtask(subtask_title)
+            tid = self.new_subtask_cb(subtask_title)
             self.subtask_tags.append(tid)
 
         task = self.req.get_task(tid)
@@ -278,7 +293,7 @@ class TaskView(Gtk.TextView):
             self.buffer.apply_tag(tag_tag, tag_start, tag_end)
             self.data['tags'].add(tag_name)
 
-            self.add_tasktag(tag_name)
+            self.add_tasktag_cb(tag_name)
 
 
     def detect_internal_link(self, text: str, start: Gtk.TextIter) -> None:
