@@ -183,6 +183,8 @@ class TaskEditor():
         self.textview.delete_subtask = self.remove_subtask
         self.textview.rename_subtask = self.rename_subtask
         self.textview.open_subtask = self.app.open_task
+        self.textview.save = self.light_save
+
         # Voila! it's done
 
         """
