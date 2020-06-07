@@ -350,7 +350,7 @@ class TaskView(Gtk.TextView):
         # Task info
         self.data = {
             'title': '',
-            'tags': ''
+            'tags': set()
         }
 
         # Signals and callbacks
@@ -366,6 +366,8 @@ class TaskView(Gtk.TextView):
         self.rename_subtask = NotImplemented
         self.open_subtask = NotImplemented
         self.save = NotImplemented
+        self.add_tasktag = NotImplemented
+        self.remove_tasktag = NotImplemented
 
 
     def on_modified(self, buffer: Gtk.TextBuffer) -> None:
@@ -387,6 +389,10 @@ class TaskView(Gtk.TextView):
         # Clear all tags first
         [self.table.remove(t) for t in self.tags]
         self.tags = []
+
+        # Keep a copy and clear list of task tags
+        prev_tasktags = self.data['tags'].copy()
+        self.data['tags'].clear()
 
         start = self.detect_title()
         start.forward_line()
@@ -418,6 +424,10 @@ class TaskView(Gtk.TextView):
         for tid in self.subs_to_remove:
             self.delete_subtask(tid)
             self.subtask_tags.remove(tid)
+
+        # Clear tags that were added but aren't used anymore
+        for tasktag in prev_tasktags.difference(self.data['tags']):
+            self.remove_tasktag(tasktag)
 
         log.debug(f'Processed in {time() - bench_start:.2} secs')
 
@@ -489,7 +499,6 @@ class TaskView(Gtk.TextView):
 
         # Find all matches
         matches = re.finditer(TAG_REGEX, text)
-        self.data['tags'] = []
 
         # Go through each with its own iterator and tag 'em
         for match in matches:
@@ -500,12 +509,15 @@ class TaskView(Gtk.TextView):
             tag_end.forward_chars(match.end())
 
             # I find this confusing too :)
-            tag_tag = TaskTagTag(match.group(0), self.req)
+            tag_name = match.group(0)
+            tag_tag = TaskTagTag(tag_name, self.req)
             self.tags.append(tag_tag)
 
             self.table.add(tag_tag)
             self.buffer.apply_tag(tag_tag, tag_start, tag_end)
-            self.data['tags'].append(match.group(0))
+            self.data['tags'].add(tag_name)
+
+            self.add_tasktag(tag_name)
 
 
     def detect_internal_link(self, text: str, start: Gtk.TextIter) -> None:
