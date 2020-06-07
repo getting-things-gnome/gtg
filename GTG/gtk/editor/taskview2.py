@@ -365,6 +365,7 @@ class TaskView(Gtk.TextView):
         self.delete_subtask = NotImplemented
         self.rename_subtask = NotImplemented
         self.open_subtask = NotImplemented
+        self.save = NotImplemented
 
 
     def on_modified(self, buffer: Gtk.TextBuffer) -> None:
@@ -419,6 +420,9 @@ class TaskView(Gtk.TextView):
             self.subtask_tags.remove(tid)
 
         log.debug(f'Processed in {time() - bench_start:.2} secs')
+
+        self.buffer.set_modified(False)
+        self.save()
 
         # Return False to only run the function once,
         # and clear the handle for next time.
