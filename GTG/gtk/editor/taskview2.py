@@ -64,6 +64,12 @@ class TaskView(Gtk.TextView):
     # The timeout handler
     timeout = None
 
+    # Title of the task
+    title = None
+
+    # Tags applied to this task
+    task_tags = set()
+
     # Handle ID for the modified signal handler
     id_modified = None
 
@@ -100,6 +106,22 @@ class TaskView(Gtk.TextView):
     # them from the buffer
     tags_applied = []
 
+    # The tag currently hovered. This tag gets reset() when the mouse or cursor
+    # moves away
+    hovered_tag = None
+
+    # URL currently right-clicked. This is used to populate the context menu
+    clicked_link = None
+
+    # Keep track of subtasks in this task. Tags keeps all the subtask tags
+    # applied in the buffer, while 'to_delete' is a temporary list used in
+    # process() to determine which subtasks we have to delete from the task.
+    subtasks = {
+        'tags': [],
+        'to_delete': []
+    }
+
+
     def __init__(self, req: Requester, clipboard) -> None:
         super().__init__()
 
@@ -113,31 +135,14 @@ class TaskView(Gtk.TextView):
         self.set_editable(True)
         self.set_cursor_visible(True)
 
-        # URL when right-clicking (used to populate RMB menu)
-        self.clicked_link = None
-
-        # Tag currently under the cursor
-        self.hovered_tag = None
-
         # Tags and buffer setup
         self.buffer = self.get_buffer()
         self.buffer.set_modified(False)
         self.table = self.buffer.get_tag_table()
 
+        # Add title tag
         self.title_tag = TitleTag()
         self.table.add(self.title_tag)
-
-        # Subtask tags
-        self.subtask_tags = []
-
-        # Subtasks to be removed
-        self.subs_to_remove = []
-
-        # Task info
-        self.data = {
-            'title': '',
-            'tags': set()
-        }
 
         # Signals and callbacks
         self.id_modified = self.buffer.connect('changed', self.on_modified)
@@ -164,16 +169,16 @@ class TaskView(Gtk.TextView):
 
         # Clear all tags first
         [self.table.remove(t) for t in self.tags_applied]
-        self.tags_applied[:] = []
+        self.tags_applied = []
 
         # Keep a copy and clear list of task tags
-        prev_tasktags = self.data['tags'].copy()
-        self.data['tags'].clear()
+        prev_tasktags = self.task_tags.copy()
+        self.task_tags.clear()
 
         start = self.detect_title()
         start.forward_line()
 
-        self.subs_to_remove = self.subtask_tags.copy()
+        self.subtasks['to_delete'] = self.subtasks['tags'].copy()
 
         # Parse the text line by line until the end of the buffer
         while not start.is_end():
@@ -197,12 +202,12 @@ class TaskView(Gtk.TextView):
             start.forward_line()
 
         # Remove subtasks that were deleted
-        for tid in self.subs_to_remove:
+        for tid in self.subtasks['to_delete']:
             self.delete_subtask_cb(tid)
-            self.subtask_tags.remove(tid)
+            self.subtasks['tags'].remove(tid)
 
         # Clear tags that were added but aren't used anymore
-        for tasktag in prev_tasktags.difference(self.data['tags']):
+        for tasktag in prev_tasktags.difference(self.task_tags):
             self.remove_tasktag_cb(tasktag)
 
         log.debug(f'Processed in {time() - bench_start:.2} secs')
@@ -251,7 +256,7 @@ class TaskView(Gtk.TextView):
             tid = tag.tid
 
             if type(tag) is SubTaskTag:
-                self.subs_to_remove.remove(tid)
+                self.subtasks['to_delete'].remove(tid)
 
             # Always rename if there's a tag
             self.rename_subtask_cb(tid, subtask_title)
@@ -260,7 +265,7 @@ class TaskView(Gtk.TextView):
             self.table.remove(tag)
         else:
             tid = self.new_subtask_cb(subtask_title)
-            self.subtask_tags.append(tid)
+            self.subtasks['tags'].append(tid)
 
         task = self.req.get_task(tid)
         subtask_tag = SubTaskTag(task)
@@ -291,7 +296,7 @@ class TaskView(Gtk.TextView):
 
             self.table.add(tag_tag)
             self.buffer.apply_tag(tag_tag, tag_start, tag_end)
-            self.data['tags'].add(tag_name)
+            self.task_tags.add(tag_name)
 
             self.add_tasktag_cb(tag_name)
 
@@ -359,7 +364,7 @@ class TaskView(Gtk.TextView):
         self.buffer.apply_tag(self.title_tag, start, end)
         self.buffer.remove_tag(self.title_tag, end, buffer_end)
 
-        self.data['title'] = self.buffer.get_text(start, end, False)
+        self.title = self.buffer.get_text(start, end, False)
 
         return end
 
@@ -476,7 +481,7 @@ class TaskView(Gtk.TextView):
     def get_title(self) -> str:
         """Get the task's title."""
 
-        return self.data['title']
+        return self.title
 
 
     def select_title(self) -> None:
