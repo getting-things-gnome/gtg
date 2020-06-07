@@ -131,7 +131,7 @@ class DeletionUI():
 
         if response == Gtk.ResponseType.YES:
             self.on_delete_confirm()
-        elif response == Gtk.ResponseType.REJECT:
+        elif response == Gtk.ResponseType.CANCEL:
             tasklist = []
 
         return tasklist
