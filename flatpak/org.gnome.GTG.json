@@ -1,6 +1,6 @@
 {
   "app-id": "org.gnome.GTGDevel",
-  "runtime": "org.gnome.Sdk",
+  "runtime": "org.gnome.Platform",
   "runtime-version": "3.36",
   "sdk": "org.gnome.Sdk",
   "command": "gtg",
@@ -12,7 +12,7 @@
     "--socket=wayland",
     "--share=network",
     "--system-talk-name=org.freedesktop.login1",
-    "--own-name=org.gnome.GTG.devel"
+    "--own-name=org.gnome.GTGDevel"
   ],
   "cleanup": [
     "/include",
