@@ -1,6 +1,6 @@
 {
   "app-id": "org.gnome.GTGDevel",
-  "runtime": "org.gnome.Sdk",
+  "runtime": "org.gnome.Platform",
   "runtime-version": "3.36",
   "sdk": "org.gnome.Sdk",
   "command": "gtg",
