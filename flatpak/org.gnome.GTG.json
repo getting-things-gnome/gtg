@@ -12,7 +12,7 @@
     "--socket=wayland",
     "--share=network",
     "--system-talk-name=org.freedesktop.login1",
-    "--own-name=org.gnome.GTG.devel"
+    "--own-name=org.gnome.GTGDevel"
   ],
   "cleanup": [
     "/include",
