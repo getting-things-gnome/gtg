@@ -10,7 +10,10 @@ i18n.merge_file(
 )
 
 i18n.merge_file(
-  input: rdnn_name + '.desktop.in',
+  input: configure_file(
+    output: rdnn_name + '.desktop.in',
+    input: rdnn_name + '.desktop.in.in',
+    configuration: bin_config),
   output: application_id + '.desktop',
   po_dir: meson.source_root() / 'po',
   install: true,
