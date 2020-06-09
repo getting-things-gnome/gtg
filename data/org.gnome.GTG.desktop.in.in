@@ -4,7 +4,7 @@ Name=Getting Things GNOME!
 GenericName=Task Manager
 Comment=Personal tasks and TODO-list items organizer for the GNOME desktop environment.
 # Translators: Do NOT translate or transliterate this text (this is an icon file name)!
-Icon=org.gnome.GTG
+Icon=@APP_ID@
 Exec=gtg %U
 Terminal=false
 Type=Application

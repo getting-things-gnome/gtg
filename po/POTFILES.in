@@ -1,6 +1,6 @@
 # List of source files which contain translatable strings.
 data/org.gnome.GTG.appdata.xml.in.in
-data/org.gnome.GTG.desktop.in
+data/org.gnome.GTG.desktop.in.in
 
 GTG/gtk/data/backends.ui
 GTG/gtk/data/calendar.ui
