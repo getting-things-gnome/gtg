@@ -5,8 +5,8 @@
       id="index">
 
  <info>
-	<title type="link">Getting Things GNOME! User Manual</title>
-    	<title type="text">Getting Things GNOME! User Manual</title>
+	<title type="link">Getting Things GNOME! Help</title>
+    	<title type="text">Getting Things GNOME! Help</title>
 
       <revision pkgversion="0.3.1" date="2013-06-18" status="candidate"/>
       <revision pkgversion="0.4.0" date="2020-05-10" status="candidate"/>
@@ -30,19 +30,17 @@
     <media type="image" mime="image/png" src="figures/gtg-icon.png">
      gtg logo
     </media>
-    Getting Things GNOME!
+    Getting Things GNOME! Help
  </title>
 
+ <section id="getting-started">
+    <title>Introduction</title>
 
- <quote>
-  <cite>David Allen, <em>Getting Things Done: The Art of Stress-Free Productivity</em></cite>
+<p><app>Getting Things GNOME! (GTG)</app> is the task manager and organizer for the GNOME desktop environment that is inspired by the <em>Getting Things Done (GTD)</em> methodology. In <app>GTG</app>, everything is a task: from building a bridge over the Pacific Ocean, to changing a light bulb, or organizing a party. <app>GTG</app> focuses on usability and simplicity and provides a simple, yet flexible organization tool for life and work.</p>
+<links type="topic" style="2column" groups="
+   first second"/>
+</section>
 
-
-  <p>Getting things done, and feeling good about it, means being willing to recognize, acknowledge, and appropriately manage all the things that have your consciousness engaged. Mastering the art of stress-free productivity requires it.</p>
-</quote>
-<p>Welcome to the <app>Getting Things GNOME!</app> user manual.</p> <p><app>Getting Things GNOME! (GTG)</app> is the task manager and organizer for the GNOME desktop environment that is inspired by the <em>Getting Things Done (GTD)</em> methodology.  It focuses on usability and simplicity.  <app>GTG</app> provides a simple, yet flexible organization tool for life and work.</p>
-
-<p>For a quick introduction into <app>GTG's</app> most basic features, as well as some advanced keyboard shortcuts, see the following quick-start pages below. Other help topics are grouped together in the sections below. Enjoy using <app>Getting Things GNOME!</app></p>
 
  <section id="gtg-working-task">
     <title>Working With Tasks</title>
