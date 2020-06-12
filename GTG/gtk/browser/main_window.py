@@ -105,6 +105,7 @@ class MainWindow(Gtk.ApplicationWindow):
         self._init_widget_aliases()
 
         self.set_titlebar(self.headerbar)
+        self.set_title('Getting Things GNOME!')
         self.add(self.main_box)
 
         # Setup help overlay (shortcuts window)
