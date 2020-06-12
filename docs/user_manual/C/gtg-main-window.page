@@ -36,17 +36,20 @@
 <terms>
   <title><app>GTG</app> Main Window</title>
   <item>
-    <title><em>Main Menu</em></title>
-    <p>Access the <gui>Sidebar</gui>, <link xref="gtg-plugins"><gui>Plugins</gui></link>, <gui>Preferences</gui>, <link xref="gtg-shortcut-keys"><gui>Keyboard Shortcuts</gui></link>, <gui>Help</gui>, and <gui>About</gui> options.</p>
+    <title><em>Headerbar</em></title>
+    <p>The top bar on the main user interface. From the <gui>Headerbar</gui> you can create a new task, quickly change a task's start date, and access the <gui>Open</gui>, <gui>Actionable</gui>, and <gui>Closed</gui> view modes. You can also enable the <gui>Search</gui> option and access the <gui>Main Menu</gui>.</p>
   </item>
   <item>
-    <title><em>Quick Add Task Entry</em></title>
-    <p>Quickly create a task from this field. See <link xref="gtg-">Quick Add</link>.</p>
+    <title><em>View Modes</em></title>
+    <p>Tasks are viewable from three different modes: <gui>Open</gui>, <gui>Actionable</gui>, and <gui>Closed</gui>. You can toggle between these modes on the <gui>Headerbar</gui> All tasks are displayed in the <gui>Open</gui> view mode. Tasks that you can work on right now, without a future start date, are displayed in the <gui>Actionable</gui> view mode. Tasks that are marked as done are displayed in the <gui>Closed</gui> view mode.</p>
+  </item>
+  <item>
+    <title><em>Main Menu</em></title>
+    <p>The <gui>Main Menu</gui> is accessed from the hamburger menu on the <gui>Headerbar</gui>. From the <gui>Main Menu</gui> you can open the <gui>Sidebar</gui>, <link xref="gtg-plugins"><gui>Plugins</gui></link>, <gui>Preferences</gui>, <link xref="gtg-shortcut-keys"><gui>Keyboard Shortcuts</gui></link>, <gui>Help</gui>, and <gui>About</gui> options.</p>
   </item>
   <item>
     <title><em>Search</em></title>
-    <p>Search for tasks using <app>GTG's</app> <link xref="gtg-search-syntax">Search Syntax</link>. Enable the search field by selecting the <media type="image" mime="image/png" src="figures/search-icon.png"/>
-icon on the <gui>Headerbar</gui>. You can also save search queries.</p>
+    <p>Enable the <gui>Search</gui> field by clicking the magnifying glass icon on the <gui>Headerbar</gui>. Search for tasks using <app>GTG's</app> <link xref="gtg-search-syntax">Search Syntax</link>. You can also save search queries.</p>
   </item>
   <item>
     <title><em>Sidebar</em></title>
@@ -57,12 +60,8 @@ icon on the <gui>Headerbar</gui>. You can also save search queries.</p>
     <p>Manage your tasks within the <gui>Task Browser</gui>. Tasks are displayed based on the selected view mode. You can sort tasks by <gui>Start date</gui> and <gui>Due</gui> date by clicking the column titles at the top of the browser. Right-click a selected task to view quick-edit options. Double-click a task to open the <gui>Task Editor</gui> window. When you first use <app>GTG</app>, a few sample tasks are available in the <gui>Task Browser</gui> to help you understand the application.</p>
   </item>
   <item>
-    <title><em>Headerbar</em></title>
-    <p>Create a new task, quickly change a task's start date, and access the <gui>Open</gui>, <gui>Actionable</gui>, and <gui>Closed</gui> view modes. You can also enable the <gui>Search</gui> option and access the <gui>Main Menu</gui>.</p>
-  </item>
-  <item>
-    <title><em>View Modes</em></title>
-    <p>Tasks are viewable from three different modes: <gui>Open</gui>, <gui>Actionable</gui>, and <gui>Closed</gui>. All tasks are displayed in the <gui>Open</gui> view mode. Tasks that you can work on right now, without a future start date, are displayed in the <gui>Actionable</gui> view mode. Tasks that are marked as done are displayed in the <gui>Closed</gui> view mode.</p>
+    <title><em>Quick Add Task Entry</em></title>
+    <p>Quickly create a task from this field. See <link xref="gtg-quickadd">Using the Quick Add Entry</link>.</p>
   </item>
   </terms>
   
