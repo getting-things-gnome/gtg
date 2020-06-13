@@ -29,6 +29,7 @@ from GTG.core.requester import Requester
 import GTG.core.urlregex as url_regex
 from webbrowser import open as openurl
 from gettext import gettext as _
+from typing import List
 
 from GTG.gtk.editor.text_tags import (TitleTag, SubTaskTag, InvisibleTag,
                                       TaskTagTag, InternalLinkTag, LinkTag)
@@ -500,3 +501,34 @@ class TaskView(Gtk.TextView):
         end = self.buffer.get_end_iter()
 
         return self.buffer.get_text(start, end, False)
+
+
+    def insert_tags(self, tags: List) -> None:
+        """Insert tags in buffer."""
+
+        # Don't add tags that are already in the buffer
+        [tags.remove(t) for t in tags if t in self.task_tags]
+
+        if not tags:
+            # Bail early if there are no tags left in the list
+            return
+
+        # Check the first line (below the title). Do we have
+        # tags there already? If there aren't add a new line
+        # after the title, otherwise add a leading comma to
+        # the text since we are appending to the tags in
+        # that line
+        first_line = self.buffer.get_iter_at_line(1)
+        first_line_tags = first_line.get_tags()
+        first_line.forward_to_line_end()
+
+        if not first_line_tags:
+            first_line = self.buffer.get_start_iter()
+            first_line.forward_to_line_end()
+            self.buffer.insert(first_line, '\n')
+            text = ''
+        else:
+            text = ', '
+
+        text += ', '.join(tags)
+        self.buffer.insert(first_line, text)
