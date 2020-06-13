@@ -325,7 +325,7 @@ class TreeviewFactory():
 
     def active_tasks_treeview(self, tree):
         # Build the title/label/tags columns
-        desc = self.common_desc_for_tasks(tree, "Tasks")
+        desc = self.common_desc_for_tasks(tree, _("Tasks"))
 
         # "startdate" column
         col_name = 'startdate'
