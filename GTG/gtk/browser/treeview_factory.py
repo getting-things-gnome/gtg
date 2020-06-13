@@ -422,7 +422,7 @@ class TreeviewFactory():
         # "label" column
         col_name = 'label'
         col = {}
-        col['title'] = _(title_label)
+        col['title'] = title_label
         render_text = Gtk.CellRendererText()
         render_text.set_property("ellipsize", Pango.EllipsizeMode.END)
         col['renderer'] = ['markup', render_text]
