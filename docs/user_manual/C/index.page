@@ -43,7 +43,7 @@
 
 
  <section id="gtg-working-task">
-    <title>Working With Tasks</title>
+    <title>Creating and Managing Tasks</title>
     <links type="topic" style="2column" groups="
        first second
        third fourth
@@ -51,7 +51,10 @@
  </section>
 
 <section id="gtg-task-management" style="2column">
-    <title>Managing Tasks</title>
+    <title>Filtering and Organizing Tasks</title>
+    <links type="topic" style="2column" groups="
+       first second
+       third fourth"/>
  </section>
 
  <section id="gtg-search" style="2column">

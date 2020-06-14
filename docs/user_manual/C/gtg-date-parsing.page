@@ -1,0 +1,115 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      xmlns:its="http://www.w3.org/2005/11/its"
+      xmlns:ui="http://projectmallard.org/ui/1.0/"
+      type="guide" style="task 2column"
+      id="gtg-date-parsing">
+
+  <info>
+    <link type="guide" xref="index#gtg-task-management" group="fourth"/>
+
+<revision pkgversion="0.4.0" date="2020-06-13" status="candidate"/>
+     <credit type="author copyright">
+      <name>Danielle Vansia</name>
+      <email its:translate="no">daniellevansia@gmail.com</email>
+      <years>2020</years>
+    </credit>
+
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+
+  </info>
+
+  <title>Using the Date and Keyword Parsing Syntax</title>
+
+    <p><app>GTG</app> includes a smart, natural date and keyword parsing syntax. This allows you to use a variety of date formats when assigning dates throughout the application. You have the option to use both <em style="strong">literal dates</em>, which follow your locale's standards, as well as <em style="strong">fuzzy dates</em>, which represent non-exact timelines. This syntax can be used when assigning both start and due dates in the <gui>Task Editor</gui>, while managing tasks in the <gui>Task Browser</gui>, or when using the  <link xref="gtg-quickadd">Quick Add Entry</link>.</p>
+    <note style="tip"><p><app>GTG</app> is translated into a variety of languages. In the case of fuzzy dates, you can use the translated equivalents from your system's language (if available), or you can use the English versions, regardless of the language you are using.</p></note>
+
+<section id="literal-dates">
+<title>Using the Literal Date Syntax</title>
+    <p>You can assign literal dates based on the following formats:</p>
+
+<table rules="rows" frame="top bottom" ui:expanded="true">
+<title>Literal Date Syntax</title>
+  <thead>
+    <tr>
+      <td><p><em style="strong">Syntax</em></p></td>
+      <td><p><em style="strong">Example</em></p></td>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><p><code>yyyy-mm-dd</code> or <code>yyyy/mm/dd</code></p></td>
+      <td><p>2020-04-01 or 2020/04/01</p></td>
+    </tr>
+<tr>
+      <td><p><code>yyyymmdd</code></p></td>
+      <td><p>20200401</p></td>
+    </tr>
+<tr>
+      <td><p><code>mmdd</code></p></td>
+      <td><p>0401 (with the year being assumed as the current one)</p></td>
+    </tr>
+<tr>
+          <td><p><code>today</code></p></td>
+          <td><p>Today's date</p></td>
+        </tr>
+<tr>
+        <td><p><code>tomorrow</code></p></td>
+        <td><p>Tomorrow's date</p></td>
+        </tr>
+<tr>
+        <td><p><code>next week</code></p></td>
+        <td><p>Seven calendar days from the current date</p></td>
+                </tr>
+<tr>
+        <td><p><code>next month</code></p></td>
+        <td><p>One month from today's date</p></td>
+        </tr>
+<tr>
+        <td><p><code>next year</code></p></td>
+        <td><p>One year from today's date</p></td>
+        </tr>
+<tr>
+        <td><p><code>Monday</code> (or any day of the week)</p></td>
+        <td><p>The next future occurrence of that weekday.</p></td>
+        </tr>
+<tr>
+      <td><p><code>27</code> (or any day's number)</p></td>
+      <td><p>In this example, just typing the number 27 sets the entered date to the next future occurrence of the 27th, either in the current month or in the next month.</p></td>
+    </tr>
+</tbody>
+</table>
+</section>
+<section id="fuzzy-dates">
+<title>Using the Fuzzy Date Syntax</title>
+<p>Fuzzy dates allow you to quickly assign a timeline for the task. Fuzzy dates can dictate whether a task is actionable, and can be completed immediately, or if it is something that you would like to complete in the future. The following syntax can be used to represent fuzzy dates: </p>
+
+<table rules="rows" frame="top bottom" ui:expanded="true">
+<title>Fuzzy Date Syntax</title>
+  <thead>
+    <tr>
+      <td><p><em style="strong">Syntax</em></p></td>
+      <td><p><em style="strong">Definition</em></p></td>
+      <td><p><em style="strong">Example Use Case</em></p></td>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><p><code>now</code></p></td>
+      <td><p>These are actionable tasks that need to be completed immediately. They are due today.</p></td>
+      <td><p>You have a task that you need to complete such as creating a budget or a project plan that is needed in order to move ahead with your other work. This is something that you need to complete today and as soon as possible.</p></td>
+    </tr>
+<tr>
+      <td><p><code>soon</code></p></td>
+      <td><p>These are actionable tasks that need to be completed within the next two weeks.</p></td>
+      <td><p>You have a number of bugs to fix for a project that you are working on. You create a task for yourself called "Clean up ticket queue." You have a goal of working over the next two weeks to clear out your queue so that you can move ahead with your work.</p></td>
+    </tr>
+<tr>
+      <td><p><code>someday</code></p></td>
+      <td><p>This is a future goal with no actual due date. These tasks are not considered actionable at this time and are due at any time in the future.</p></td>
+      <td><p>You may have a number of goals and tasks that you want to complete at some point in the future. These tasks could be something like taking an online course, traveling around the world, or learning a new language. These are all tasks that you may not be able to complete right now. The <em>Getting Things Done</em> methodology encourages you to capture and process all tasks and ideas, even tasks that cannot be done at this time. By assigning a "someday" due date, you can record this information, reflect on these goals, and complete them in the future, when the time is right.</p></td>
+      </tr>
+</tbody>
+</table>
+<note style="tip"><p>You can also leave a date field blank. Tasks with no date are displayed in the <gui>Actionable</gui> view mode (unless they are a parent task with incomplete subtasks) and are available for you to complete at any time.</p></note>
+</section>
+</page>
