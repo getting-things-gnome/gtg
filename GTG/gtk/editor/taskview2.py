@@ -532,3 +532,24 @@ class TaskView(Gtk.TextView):
 
         text += ', '.join(tags)
         self.buffer.insert(first_line, text)
+
+
+    def insert_newtask(self) -> None:
+        """Insert a new subtask in the buffer."""
+
+        # Agregar en el cursor o en la siguiente linea
+        cursor_mark = self.buffer.get_insert()
+        cursor_iter = self.buffer.get_iter_at_mark(cursor_mark)
+
+        # Avoid title line
+        if cursor_iter.get_line() == 0:
+            cursor_iter.forward_line()
+
+        # Check if the line is empty
+        if cursor_iter.get_chars_in_line() > 1:
+            cursor_iter.forward_to_line_end()
+            self.buffer.insert(cursor_iter, '\n- ')
+        else:
+            self.buffer.insert(cursor_iter, '- ')
+
+        self.buffer.place_cursor(cursor_iter)
