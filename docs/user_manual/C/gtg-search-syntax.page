@@ -102,14 +102,7 @@
   </tbody>
 </table>
 
-<note style="tip"><title>Date Format</title><p><code>[date]</code> can be formatted in the following ways:</p> 
-<list>
-<item><p><code>yyyy-mm-dd</code> (2020-04-01)</p></item>
-<item><p><code>yyyymmdd</code> (20200401)</p></item>
-<item><p><code>mmdd</code> (0401 - with the year implied as the current year)</p></item> 
-</list>
-<p>A date can also be <code>today</code>, <code>tomorrow</code>, <code>someday</code>, <code>soon</code>, <code>now</code> or a weekday name (for example, <code>due:monday</code> means due next Monday).
-</p></note>
+<note style="tip"><title>Date Format</title><p><code>[date]</code> can be formatted in a number of ways using <app>GTG's</app> natural date parsing syntax. Dates can be literal (for example, "2020-04-20") or "fuzzy" (for example, "someday"). See <link xref="gtg-date-parsing">Using the Date and Keyword Parsing Syntax</link> for details.</p></note>
 
 <p>The search feature behaves like it adds an implicit, logical <em>AND</em> between each element (unless the <code>!or</code> operator is used). The results include tasks that match all elements of the query.</p>
 
