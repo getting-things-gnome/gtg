@@ -28,7 +28,6 @@ from GTG.gtk.browser.main_window import MainWindow
 from GTG.gtk.editor.editor import TaskEditor
 from GTG.gtk.preferences import Preferences
 from GTG.gtk.plugins import PluginsDialog
-from webbrowser import open as openurl
 from GTG.core import clipboard
 from GTG.core.plugins.engine import PluginEngine
 from GTG.core.plugins.api import PluginAPI
@@ -251,7 +250,10 @@ class Application(Gtk.Application):
     def open_help(self, action, param):
         """Open help callback."""
 
-        openurl("help:gtg")
+        try:
+            Gtk.show_uri(None, "help:gtg", Gdk.CURRENT_TIME)
+        except GLib.Error:
+            log.error('Could not open help')
 
     def open_backends_manager(self, action, param):
         """Callback to open the backends manager dialog."""
