@@ -92,9 +92,8 @@ msgstr ""
 
 #: GTG/gtk/data/backends.ui:137 GTG/gtk/data/main_window.ui:315
 #: GTG/gtk/data/plugins.ui:145
-#, fuzzy
 msgid "Help"
-msgstr "帮助(_H)"
+msgstr "帮助"
 
 #: GTG/gtk/data/calendar.ui:44 GTG/gtk/data/context_menus.ui:150
 #: GTG/gtk/data/task_editor.ui:486
@@ -104,7 +103,7 @@ msgstr "现在"
 #: GTG/gtk/data/calendar.ui:57 GTG/gtk/data/context_menus.ui:155
 #: GTG/gtk/data/task_editor.ui:501
 msgid "Soon"
-msgstr "马上"
+msgstr "很快"
 
 #: GTG/gtk/data/calendar.ui:70 GTG/gtk/data/context_menus.ui:160
 #: GTG/gtk/data/task_editor.ui:516
@@ -118,9 +117,8 @@ msgstr ""
 
 #: GTG/gtk/data/context_menus.ui:8 GTG/gtk/data/context_menus.ui:35
 #: GTG/gtk/browser/tag_context_menu.py:55
-#, fuzzy
 msgid "Edit..."
-msgstr "编辑"
+msgstr "编辑..."
 
 #: GTG/gtk/data/context_menus.ui:14 GTG/gtk/data/task_editor.ui:386
 msgid "Mark as Not Done"
@@ -137,9 +135,8 @@ msgid "Delete"
 msgstr "删除"
 
 #: GTG/gtk/data/context_menus.ui:31
-#, fuzzy
 msgid "Add a Subtask..."
-msgstr "增加一个子任务"
+msgstr "添加子任务..."
 
 #: GTG/gtk/data/context_menus.ui:41 GTG/gtk/data/task_editor.ui:373
 msgid "Mark as Done"
@@ -150,122 +147,114 @@ msgid "Dismiss"
 msgstr "解除"
 
 #: GTG/gtk/data/context_menus.ui:56 GTG/gtk/browser/main_window.py:1076
-#, fuzzy
 msgid "Set Start Date"
-msgstr "开始日期"
+msgstr "设置开始日期"
 
 #: GTG/gtk/data/context_menus.ui:60 GTG/gtk/data/context_menus.ui:124
 #: GTG/core/dates.py:455
 #, python-format
 msgid "Tomorrow"
 msgid_plural "In %(days)d days"
-msgstr[0] "%(days)d 天后"
+msgstr[0] "明天"
+msgstr[1] "%(days)d 天后"
 
 #: GTG/gtk/data/context_menus.ui:65
 msgid "In 2 days"
-msgstr ""
+msgstr "两天后"
 
 #: GTG/gtk/data/context_menus.ui:70
 msgid "In 3 days"
-msgstr ""
+msgstr "三天后"
 
 #: GTG/gtk/data/context_menus.ui:75
 msgid "In 4 days"
-msgstr ""
+msgstr "四天后"
 
 #: GTG/gtk/data/context_menus.ui:80
 msgid "In 5 days"
-msgstr ""
+msgstr "五天后"
 
 #: GTG/gtk/data/context_menus.ui:85
 msgid "In 6 days"
-msgstr ""
+msgstr "六天后"
 
 #: GTG/gtk/data/context_menus.ui:92 GTG/gtk/data/context_menus.ui:129
-#, fuzzy
 msgid "Next Week"
 msgstr "下周"
 
 #: GTG/gtk/data/context_menus.ui:97 GTG/gtk/data/context_menus.ui:134
-#, fuzzy
 msgid "Next Month"
-msgstr "下月"
+msgstr "下个月"
 
 #: GTG/gtk/data/context_menus.ui:102 GTG/gtk/data/context_menus.ui:139
-#, fuzzy
 msgid "Next Year"
 msgstr "明年"
 
 #: GTG/gtk/data/context_menus.ui:107 GTG/gtk/data/context_menus.ui:144
 #: GTG/gtk/data/main_window.ui:159
 msgid "Pick a Date..."
-msgstr ""
+msgstr "选择日期 ..."
 
 #: GTG/gtk/data/context_menus.ui:114 GTG/gtk/data/main_window.ui:186
-#, fuzzy
 msgid "Clear Start Date"
-msgstr "开始日期"
+msgstr "清除开始日期"
 
 #: GTG/gtk/data/context_menus.ui:121 GTG/gtk/browser/main_window.py:1087
 msgid "Set Due Date"
-msgstr ""
+msgstr "设置到期日期"
 
 #: GTG/gtk/data/context_menus.ui:167
-#, fuzzy
 msgid "Clear Due Date"
-msgstr "开始日期"
+msgstr "取消到期日期"
 
 #: GTG/gtk/data/context_menus.ui:175
 msgid "Modify Tags..."
-msgstr ""
+msgstr "更改标签..."
 
 #: GTG/gtk/data/general_preferences.ui:60
 msgid "Show description preview"
-msgstr ""
+msgstr "显示任务描述预览"
 
 #: GTG/gtk/data/general_preferences.ui:73
 msgid "Show a task excerpt next to each task in the Task Browser"
-msgstr ""
+msgstr "为每个任务显示内容摘要"
 
 #: GTG/gtk/data/general_preferences.ui:133
-#, fuzzy
 msgid "Enable colored backgrounds"
-msgstr "在任务列表中启用背景颜色"
+msgstr "启用背景颜色"
 
 #: GTG/gtk/data/general_preferences.ui:146
 msgid "Show colored backgrounds for a task based on the colors of its tags"
-msgstr ""
+msgstr "基于所关联的标签的颜色，为任务显示背景色。"
 
 #: GTG/gtk/data/general_preferences.ui:207
-#, fuzzy
 msgid "Start of the day"
-msgstr "开始日期"
+msgstr "一天之计始于"
 
 #: GTG/gtk/data/general_preferences.ui:220
 msgid ""
 "Automatically refreshes the task list and adjusts the \"Actionable\" view"
-msgstr ""
+msgstr "自动刷新任务列表以及调整\"Actionable\"视图"
 
 #: GTG/gtk/data/general_preferences.ui:281
 msgid "Task Editor font"
-msgstr ""
+msgstr "任务编辑器字体"
 
 #: GTG/gtk/data/general_preferences.ui:327
 msgid "Clean Up"
-msgstr ""
+msgstr "清理任务"
 
 #: GTG/gtk/data/general_preferences.ui:364
-#, fuzzy
 msgid "Automatically remove old closed tasks"
-msgstr "永久移除选择的任务."
+msgstr "自动删除许久前已完成的任务"
 
 #: GTG/gtk/data/general_preferences.ui:409
 msgid "Days to wait before removing a task"
-msgstr ""
+msgstr "删除任务之前等待的天数"
 
 #: GTG/gtk/data/general_preferences.ui:454
 msgid "Purge Now"
-msgstr ""
+msgstr "现在清除任务"
 
 #: GTG/gtk/data/help_overlay.ui:14
 msgctxt "shortcut window"
@@ -275,94 +264,82 @@ msgstr ""
 #: GTG/gtk/data/help_overlay.ui:19
 msgctxt "shortcut window"
 msgid "Preferences"
-msgstr ""
+msgstr "偏好设置"
 
 #: GTG/gtk/data/help_overlay.ui:27
 msgctxt "shortcut window"
 msgid "Open Help"
-msgstr ""
+msgstr "打开帮助文档"
 
 #: GTG/gtk/data/help_overlay.ui:35
 msgctxt "shortcut window"
 msgid "Quit"
-msgstr ""
+msgstr "退出"
 
 #: GTG/gtk/data/help_overlay.ui:46
-#, fuzzy
 msgctxt "shortcut window"
 msgid "Task Browser"
-msgstr "<b>任务浏览器</b>"
+msgstr "任务浏览器"
 
 #: GTG/gtk/data/help_overlay.ui:51
-#, fuzzy
 msgctxt "shortcut window"
 msgid "Search"
 msgstr "查询"
 
 #: GTG/gtk/data/help_overlay.ui:59
-#, fuzzy
 msgctxt "shortcut window"
 msgid "Toggle Sidebar"
-msgstr "标签栏(_T)"
+msgstr "显示或者关闭侧边栏"
 
 #: GTG/gtk/data/help_overlay.ui:67
 msgctxt "shortcut window"
 msgid "Focus the Quick Add input"
-msgstr ""
+msgstr "快速添加任务"
 
 #: GTG/gtk/data/help_overlay.ui:75
-#, fuzzy
 msgctxt "shortcut window"
 msgid "Mark Task as Done"
-msgstr "标记为完成"
+msgstr "把任务标记为完成"
 
 #: GTG/gtk/data/help_overlay.ui:83
-#, fuzzy
 msgctxt "shortcut window"
 msgid "Dismiss Task"
-msgstr "解除"
+msgstr "解除任务"
 
 #: GTG/gtk/data/help_overlay.ui:91
-#, fuzzy
 msgctxt "shortcut window"
 msgid "Batch change tags on selected tasks"
-msgstr "编辑选择的任务"
+msgstr "更改已选中任务的标签"
 
 #: GTG/gtk/data/help_overlay.ui:99 GTG/gtk/data/help_overlay.ui:139
-#, fuzzy
 msgctxt "shortcut window"
 msgid "New Task"
-msgstr "新任务"
+msgstr "新建任务"
 
 #: GTG/gtk/data/help_overlay.ui:107 GTG/gtk/data/help_overlay.ui:147
-#, fuzzy
 msgctxt "shortcut window"
 msgid "New Subtask"
-msgstr "新子任务"
+msgstr "添加子任务"
 
 #: GTG/gtk/data/help_overlay.ui:115
-#, fuzzy
 msgctxt "shortcut window"
 msgid "Delete Task"
-msgstr "删除"
+msgstr "删除任务"
 
 #: GTG/gtk/data/help_overlay.ui:123
-#, fuzzy
 msgctxt "shortcut window"
 msgid "Edit Task"
-msgstr "编辑"
+msgstr "编辑任务"
 
 #: GTG/gtk/data/help_overlay.ui:134
-#, fuzzy
 msgctxt "shortcut window"
 msgid "Editor"
-msgstr "编辑"
+msgstr "编辑器"
 
 #: GTG/gtk/data/help_overlay.ui:155
-#, fuzzy
 msgctxt "shortcut window"
 msgid "Close window"
-msgstr "结束于"
+msgstr "关闭窗口"
 
 #: GTG/gtk/data/main_window.ui:55
 #, fuzzy
@@ -423,22 +400,20 @@ msgid "Plugins"
 msgstr "插件"
 
 #: GTG/gtk/data/main_window.ui:260
-#, fuzzy
 msgid "Synchronization"
-msgstr "同步已开始"
+msgstr "同步"
 
 #: GTG/gtk/data/main_window.ui:287 GTG/gtk/data/preferences.ui:15
 msgid "Preferences"
-msgstr ""
+msgstr "偏好设置"
 
 #: GTG/gtk/data/main_window.ui:301
 msgid "Keyboard Shortcuts"
-msgstr ""
+msgstr "快捷键"
 
 #: GTG/gtk/data/main_window.ui:329
-#, fuzzy
 msgid "About GTG"
-msgstr "关于 GTG!"
+msgstr "关于GTG!"
 
 #: GTG/gtk/data/main_window.ui:382 GTG/gtk/browser/treeview_factory.py:290
 msgid "Tags"
@@ -450,9 +425,8 @@ msgid "Search here"
 msgstr "查询"
 
 #: GTG/gtk/data/main_window.ui:441
-#, fuzzy
 msgid "Save Search"
-msgstr "查询"
+msgstr "保存查询"
 
 #: GTG/gtk/data/main_window.ui:483 GTG/plugins/export/export.ui:207
 msgid "Open"
@@ -475,16 +449,15 @@ msgstr ""
 
 #: GTG/gtk/data/main_window.ui:546
 msgid "Quickly create tasks here"
-msgstr ""
+msgstr "从这里快速创建任务"
 
 #: GTG/gtk/data/main_window.ui:588
 msgid "Create a new task"
-msgstr "创建一个新任务"
+msgstr "创建任务"
 
 #: GTG/gtk/data/main_window.ui:608
-#, fuzzy
 msgid "Start Tomorrow"
-msgstr "%(days)d 天后"
+msgstr "明天开始"
 
 #: GTG/gtk/data/main_window.ui:613
 msgid ""
@@ -494,7 +467,7 @@ msgstr ""
 
 #: GTG/gtk/data/main_window.ui:689
 msgid "Activate Search Entry"
-msgstr ""
+msgstr "查找任务"
 
 #: GTG/gtk/data/modify_tags.ui:7
 msgid "Modify Tags"
@@ -504,7 +477,7 @@ msgstr "修改标签"
 #: GTG/plugins/untouched_tasks/untouchedTasks.ui:150
 #: GTG/plugins/urgency_color/preferences.ui:293
 msgid "Apply"
-msgstr ""
+msgstr "应用"
 
 #: GTG/gtk/data/modify_tags.ui:41 GTG/plugins/export/export.ui:306
 #: GTG/plugins/untouched_tasks/untouchedTasks.ui:136
@@ -523,7 +496,7 @@ msgstr "标签名称"
 msgid ""
 "Hint: you can add several tags by separating them with\n"
 "space. Place '!' before tags you want to remove."
-msgstr ""
+msgstr "提示: 可以用空格分隔标签。如需删除标签，在名称前使用 '!'。"
 
 #: GTG/gtk/data/modify_tags.ui:107
 msgid "Apply to subtasks"
@@ -531,25 +504,23 @@ msgstr "应用到子任务"
 
 #: GTG/gtk/data/plugins.ui:54
 msgid "<b>Dependencies</b>"
-msgstr "<b>依赖关系</b>"
+msgstr "<b>所需依赖</b>"
 
 #: GTG/gtk/data/plugins.ui:163
-#, fuzzy
 msgid "_Configure Plugin"
-msgstr "关于插件(_A)"
+msgstr "配置插件"
 
 #: GTG/gtk/data/plugins.ui:178
 msgid "_About Plugin"
-msgstr "关于插件(_A)"
+msgstr "关于插件"
 
 #: GTG/gtk/data/task_editor.ui:20
 msgid "Mark this task as not to be done anymore"
 msgstr "将此任务标记为过期"
 
 #: GTG/gtk/data/task_editor.ui:34
-#, fuzzy
 msgid "Mark this task as to be done"
-msgstr "将此任务标记为待办"
+msgstr "将此任务标记为待办事项"
 
 #: GTG/gtk/data/task_editor.ui:62
 msgid "Permanently remove this task"
@@ -562,7 +533,7 @@ msgstr "任务"
 #: GTG/gtk/data/task_editor.ui:114 GTG/gtk/editor/editor.py:136
 #: GTG/gtk/editor/editor.py:377
 msgid "Open Parent"
-msgstr ""
+msgstr "打开父任务"
 
 #: GTG/gtk/data/task_editor.ui:118
 msgid "Open the parent task (creating a parent if it doesn't have one)"
@@ -620,7 +591,7 @@ msgstr "导入标签"
 
 #: GTG/plugins/export/export.ui:38
 msgid "<b>Which tasks do you want to export?</b>"
-msgstr ""
+msgstr "<b>导出哪些任务？</b>"
 
 #: GTG/plugins/export/export.ui:54
 msgid "Active tasks shown in the browser"
@@ -632,7 +603,7 @@ msgstr ""
 
 #: GTG/plugins/export/export.ui:85
 msgid "Tasks finished last week"
-msgstr ""
+msgstr "上周完成的任务"
 
 #: GTG/plugins/export/export.ui:124
 msgid "<b>Select a format for your tasks</b>"
@@ -640,7 +611,7 @@ msgstr ""
 
 #: GTG/plugins/export/export.ui:221
 msgid "Save"
-msgstr ""
+msgstr "保存"
 
 #: GTG/plugins/export/export.ui:263
 msgid "How do you want to access the export plugin?"
@@ -658,22 +629,20 @@ msgid "OK"
 msgstr ""
 
 #: GTG/plugins/untouched_tasks/untouchedTasks.ui:36
-#, fuzzy
 msgid "Add "
-msgstr "添加标签"
+msgstr "把标签 "
 
 #: GTG/plugins/untouched_tasks/untouchedTasks.ui:61
 msgid " tag to task after it has been left untouched for at least "
-msgstr ""
+msgstr " 添加到至少 "
 
 #: GTG/plugins/untouched_tasks/untouchedTasks.ui:90
 msgid " days"
-msgstr ""
+msgstr " 天没有处理过的任务"
 
 #: GTG/plugins/untouched_tasks/untouchedTasks.ui:107
-#, fuzzy
 msgid "Check for untouched tasks automatically"
-msgstr "检查新任务每"
+msgstr "自动检查未处理过的任务"
 
 #: GTG/plugins/urgency_color/preferences.ui:37
 msgid "Danger zone span"
@@ -684,34 +653,32 @@ msgid "%"
 msgstr ""
 
 #: GTG/plugins/urgency_color/preferences.ui:80
-#, fuzzy
 msgid "<b>Danger zone</b>"
-msgstr "<b>依赖关系</b>"
+msgstr ""
 
 #: GTG/plugins/urgency_color/preferences.ui:128
 msgid "Overdue"
-msgstr ""
+msgstr "已逾期"
 
 #: GTG/plugins/urgency_color/preferences.ui:165
 msgid "High"
-msgstr ""
+msgstr "高"
 
 #: GTG/plugins/urgency_color/preferences.ui:202
 msgid "Normal"
-msgstr ""
+msgstr "中等"
 
 #: GTG/plugins/urgency_color/preferences.ui:239
-#, fuzzy
 msgid "Low"
-msgstr "现在"
+msgstr "低"
 
 #: GTG/plugins/urgency_color/preferences.ui:260
 msgid "<b>Urgency level color</b>"
-msgstr ""
+msgstr "<b>紧急级别颜色</b>"
 
 #: GTG/plugins/urgency_color/preferences.ui:279
 msgid "Reset"
-msgstr ""
+msgstr "重置"
 
 #: GTG/backends/backend_localfile.py:57
 msgid "Local File"
@@ -759,7 +726,7 @@ msgstr "下周"
 
 #: GTG/core/dates.py:377
 msgid "next month"
-msgstr "下月"
+msgstr "下个月"
 
 #: GTG/core/dates.py:379
 msgid "next year"
@@ -1003,7 +970,7 @@ msgstr ""
 #: GTG/core/firstrun_tasks.py:234
 #, fuzzy
 msgid "Learn How to Use the Quick Add Entry"
-msgstr "学习如何使用工作视图"
+msgstr "学习如何快速添加任务"
 
 #: GTG/core/firstrun_tasks.py:236
 msgid ""
@@ -1017,7 +984,7 @@ msgstr ""
 #: GTG/core/firstrun_tasks.py:244
 #, fuzzy
 msgid "Learn About Synchronization Services"
-msgstr "选择同步服务："
+msgstr "学习同步服务"
 
 #: GTG/core/firstrun_tasks.py:246
 msgid ""
@@ -1044,7 +1011,7 @@ msgstr ""
 #: GTG/core/firstrun_tasks.py:267
 #, fuzzy
 msgid "Learn How to Search for Tasks"
-msgstr "学习如何使用子任务"
+msgstr "学习如何查找任务"
 
 #: GTG/core/firstrun_tasks.py:269
 msgid ""
@@ -1080,15 +1047,15 @@ msgstr "已具备运行此插件的所有条件。"
 
 #: GTG/core/plugins/__init__.py:28
 msgid "The plugin can not be loaded"
-msgstr "无法载入此插件"
+msgstr "无法加载此插件"
 
 #: GTG/core/plugins/__init__.py:29
 msgid "Some python modules are missing"
-msgstr "缺少某些 python 模块"
+msgstr "缺少某些 Python 模块"
 
 #: GTG/core/plugins/__init__.py:30
 msgid "Please install the following python modules:"
-msgstr "请安装下列 python 模块："
+msgstr "请安装下列 Python 模块："
 
 #: GTG/core/plugins/__init__.py:32
 msgid "Some remote dbus objects are missing."
@@ -1171,9 +1138,8 @@ msgid "Tasks with no tags"
 msgstr "没有标签的任务"
 
 #: GTG/core/treefactory.py:98
-#, fuzzy
 msgid "Saved searches"
-msgstr "查询"
+msgstr "已保存的查询"
 
 #: GTG/gtk/backends/addpanel.py:70
 msgid "Select synchronization service:"
@@ -1182,11 +1148,11 @@ msgstr "选择同步服务："
 #: GTG/gtk/backends/addpanel.py:182
 msgid "Author"
 msgid_plural "Authors"
-msgstr[0] "创作者"
+msgstr[0] "作者"
 
 #: GTG/gtk/backends/configurepanel.py:144
 msgid "Disable syncing"
-msgstr "关闭同步"
+msgstr "禁用同步"
 
 #: GTG/gtk/backends/configurepanel.py:146
 msgid "Enable syncing"
@@ -1303,7 +1269,7 @@ msgstr "由于网络问题，无法连接<b>%s</b>同步服务"
 #, python-format
 msgid ""
 "Cannot connect to DBus, I've disabled the <b>%s</b> synchronization service."
-msgstr ""
+msgstr "无法连接到DBus，已经禁用了同步服务 <b>%s</b>"
 
 #: GTG/gtk/browser/backend_infobar.py:104
 msgid "Configure"
@@ -1311,27 +1277,27 @@ msgstr ""
 
 #: GTG/gtk/browser/backend_infobar.py:106
 msgid "Ignore"
-msgstr ""
+msgstr "忽略"
 
 #: GTG/gtk/browser/backend_infobar.py:139
 msgid "Confirm"
-msgstr ""
+msgstr "确认"
 
 #: GTG/gtk/browser/backend_infobar.py:141
 msgid "Continue"
-msgstr ""
+msgstr "继续"
 
 #: GTG/gtk/browser/delete_tag.py:51
 #, fuzzy
 msgid "Keep selected tag"
 msgid_plural "Keep selected tags"
-msgstr[0] "保留所选任务"
+msgstr[0] "保留已选择的标签"
 
 #: GTG/gtk/browser/delete_tag.py:55
 #, fuzzy
 msgid "Permanently remove tag"
 msgid_plural "Permanently remove tags"
-msgstr[0] "永久删除任务"
+msgstr[0] "永久删除标签"
 
 #: GTG/gtk/browser/delete_tag.py:59
 #, fuzzy
@@ -1350,21 +1316,21 @@ msgstr ""
 #: GTG/gtk/browser/delete_task.py:89
 msgid "Keep selected task"
 msgid_plural "Keep selected tasks"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "保留这个任务"
+msgstr[1] "保留这些任务"
 
 #: GTG/gtk/browser/delete_task.py:93
 msgid "Permanently remove task"
 msgid_plural "Permanently remove tasks"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "永久删除"
+msgstr[1] "永久删除"
 
 #: GTG/gtk/browser/delete_task.py:97
 msgid "Deleting a task cannot be undone, and will delete the following task: "
 msgid_plural ""
 "Deleting a task cannot be undone, and will delete the following tasks: "
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "无法恢复被删除的任务。以下任务将会被删除:"
+msgstr[1] "无法恢复被删除的任务。以下任务将会被删除:"
 
 #: GTG/gtk/browser/delete_task.py:109
 #, python-brace-format
@@ -1413,14 +1379,12 @@ msgid "translator-credits"
 msgstr ""
 
 #: GTG/gtk/browser/main_window.py:636
-#, fuzzy
 msgid "Hide Sidebar"
-msgstr "标签栏(_T)"
+msgstr "关闭侧边栏(_T)"
 
 #: GTG/gtk/browser/main_window.py:638
-#, fuzzy
 msgid "Show Sidebar"
-msgstr "标签栏(_T)"
+msgstr "显示侧边栏(_T)"
 
 #. Rember values from last time
 #: GTG/gtk/browser/modify_tags.py:40
@@ -1428,36 +1392,33 @@ msgid "NewTag"
 msgstr ""
 
 #: GTG/gtk/browser/simple_color_selector.py:237
-#, fuzzy
 msgid "Add Custom Color..."
-msgstr "添加自定义颜色"
+msgstr "添加自定义颜色..."
 
 #: GTG/gtk/browser/simple_color_selector.py:242
-#, fuzzy
 msgid "Clear Selected Color"
-msgstr "移除所选图标"
+msgstr "清除所选颜色"
 
 #: GTG/gtk/browser/simple_color_selector.py:283
 msgid "Choose a color"
 msgstr ""
 
 #: GTG/gtk/browser/tag_context_menu.py:60
-#, fuzzy
 msgid "Generate Color"
-msgstr "重置颜色"
+msgstr "生成颜色"
 
 #: GTG/gtk/browser/tag_editor.py:80
 msgid "Remove selected icon"
 msgstr "移除所选图标"
 
 #: GTG/gtk/browser/tag_editor.py:199
-#, fuzzy, python-format
+#, python-format
 msgid "Editing Tag \"%s\""
-msgstr "编辑"
+msgstr "编辑标签 \"%s\""
 
 #: GTG/gtk/browser/tag_editor.py:236
 msgid "Name : "
-msgstr ""
+msgstr "名称: "
 
 #: GTG/gtk/browser/tag_editor.py:243
 #, fuzzy
@@ -1474,9 +1435,10 @@ msgid ""
 "Click to\n"
 "Set Icon"
 msgstr ""
+"单击\n"
+"选择图标"
 
 #: GTG/gtk/browser/treeview_factory.py:333
-#, fuzzy
 msgid "Start Date"
 msgstr "开始日期"
 
@@ -1486,18 +1448,16 @@ msgstr "到期"
 
 #. Build the title/label/tags columns
 #: GTG/gtk/browser/treeview_factory.py:359
-#, fuzzy
 msgid "Closed Tasks"
-msgstr "关闭任务窗格(_C)"
+msgstr "已完成的任务"
 
 #: GTG/gtk/browser/treeview_factory.py:364
-#, fuzzy
 msgid "Closed Date"
-msgstr "结束于"
+msgstr "完成日期"
 
 #: GTG/gtk/editor/editor.py:138 GTG/gtk/editor/editor.py:379
 msgid "Add Parent"
-msgstr ""
+msgstr "添加父任务"
 
 #: GTG/gtk/editor/editor.py:442
 #, python-format
@@ -1539,7 +1499,7 @@ msgstr ""
 
 #: GTG/gtk/general_preferences.py:64
 msgid "General"
-msgstr ""
+msgstr "通用"
 
 #: GTG/plugins/export/export.py:121
 msgid "No task matches your criteria. Empty report can't be generated."
