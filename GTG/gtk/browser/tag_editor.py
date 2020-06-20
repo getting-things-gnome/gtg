@@ -381,7 +381,8 @@ class TagEditor(Gtk.Window):
     def watch_tn_entry_changes(self):
         """Monitors the value changes in the tag name entry. If no updates have
         been noticed after 1 second, request an update."""
-        cur_value = self.tn_entry.get_text()
+        cur_value = self.get_tn_text()
+
         if self.tn_entry_last_recorded_value != cur_value:
             # they're different: there's been some updates, wait further
             return True
@@ -389,7 +390,7 @@ class TagEditor(Gtk.Window):
             # they're the same. We can unregister the watcher and
             # update the tag name
             self.tn_entry_watch_id = None
-            if cur_value.strip() != '':
+            if cur_value != '':
                 if self.tag.is_search_tag():
                     new_name = cur_value
                 else:
@@ -426,12 +427,17 @@ class TagEditor(Gtk.Window):
         else:
             self.tag_icon_selector.set_remove_enabled(False)
 
+    def get_tn_text(self):
+        """Return text from the name input."""
+
+        return self.tn_entry.get_text().strip().replace(' ', '')
+
     def on_tn_entry_changed(self, widget):
         """ Callback: checks tag name validity and start value changes
         monitoring to decide when to update a tag's name."""
-        self.tn_entry_last_recorded_value = self.tn_entry.get_text()
+        self.tn_entry_last_recorded_value = self.get_tn_text()
         # check validity
-        if self.tn_entry_last_recorded_value.strip() == "":
+        if self.tn_entry_last_recorded_value == "":
             self.tn_entry.set_icon_from_icon_name(
                 Gtk.EntryIconPosition.SECONDARY, Gtk.STOCK_DIALOG_ERROR)
         else:
