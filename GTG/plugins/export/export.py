@@ -180,8 +180,9 @@ class ExportPlugin():
         """ Initialize all the GTK widgets """
         self.menu_entry = False
 
-        self.menu_item = Gtk.MenuItem(_("Export the tasks currently listed"))
-        self.menu_item.connect('activate', self.show_dialog)
+        self.menu_item = Gtk.ModelButton()
+        self.menu_item.set_label(_("Export the tasks currently listed"))
+        self.menu_item.connect('clicked', self.show_dialog)
         self.menu_item.show()
 
         builder = Gtk.Builder()
