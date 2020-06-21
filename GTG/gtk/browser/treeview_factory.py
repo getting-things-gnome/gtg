@@ -65,14 +65,14 @@ class TreeviewFactory():
                     real_count = real_count + 1
         return display_count < real_count
 
-    def task_bg_color(self, node, default_color):
+    def get_task_bg_color(self, node, default_color):
         if self.config.get('bg_color_enable'):
             return colors.background_color(node.get_tags(), default_color)
         else:
             return None
 
-    # return an ordered list of tags of a task
-    def task_tags_column(self, node):
+    def get_task_tags_column_contents(self, node):
+        """Returns an ordered list of tags of a task"""
         tags = node.get_tags()
 
         search_parent = self.req.get_tag(SEARCH_TAG)
@@ -88,12 +88,10 @@ class TreeviewFactory():
         tags.sort(key=lambda x: x.get_name())
         return tags
 
-    # task title
-    def task_title_column(self, node):
+    def get_task_title_column_string(self, node):
         return saxutils.escape(node.get_title())
 
-    # task title/label
-    def task_label_column(self, node):
+    def get_task_label_column_string(self, node):
         str_format = "%s"
 
         if node.get_status() == Task.STA_ACTIVE:
@@ -106,8 +104,7 @@ class TreeviewFactory():
 
         title = str_format % saxutils.escape(node.get_title())
         if node.get_status() == Task.STA_ACTIVE:
-            count = self.mainview.node_n_children(node.get_id(),
-                                                  recursive=True)
+            count = self.mainview.node_n_children(node.get_id(), recursive=True)
             if count != 0:
                 title += f" ({count})"
         elif node.get_status() == Task.STA_DISMISSED:
@@ -121,34 +118,33 @@ class TreeviewFactory():
                 % (self.unactive_color, excerpt)
         return title
 
-    # task start date
-    def task_sdate_column(self, node):
+    def get_task_startdate_column_string(self, node):
         return node.get_start_date().to_readable_string()
 
-    def task_duedate_column(self, node):
-        # We show the most constraining due date for task with no due dates.
+    def get_task_duedate_column_string(self, node):
+        # For tasks with no due dates, we show the most constraining due date.
         if node.get_due_date() == Date.no_date():
             return node.get_due_date_constraint().to_readable_string()
         else:
             # Other tasks show their due date (which *can* be fuzzy)
             return node.get_due_date().to_readable_string()
 
-    def task_cdate_column(self, node):
+    def get_task_closeddate_column_string(self, node):
         return node.get_closed_date().to_readable_string()
 
-    def start_date_sorting(self, task1, task2, order):
+    def sort_by_startdate(self, task1, task2, order):
         sort = self.__date_comp(task1, task2, 'start', order)
         return sort
 
-    def due_date_sorting(self, task1, task2, order):
+    def sort_by_duedate(self, task1, task2, order):
         sort = self.__date_comp(task1, task2, 'due', order)
         return sort
 
-    def closed_date_sorting(self, task1, task2, order):
+    def sort_by_closeddate(self, task1, task2, order):
         sort = self.__date_comp(task1, task2, 'closed', order)
         return sort
 
-    def title_sorting(self, task1, task2, order):
+    def sort_by_title(self, task1, task2, order):
         t1 = task1.get_title()
         t2 = task2.get_title()
         return (t1 > t2) - (t1 < t2)
@@ -181,8 +177,7 @@ class TreeviewFactory():
                     d = t2.date()
                     t2 = datetime(year=d.year, month=d.month, day=d.day)
             else:
-                raise ValueError(
-                    'invalid date comparison parameter: %s') % para
+                raise ValueError('invalid date comparison parameter: %s') % para
             sort = (t2 > t1) - (t2 < t1)
         else:
             sort = 0
@@ -219,7 +214,7 @@ class TreeviewFactory():
     #############################
     # Functions for tags columns
     #############################
-    def tag_name(self, node):
+    def get_tag_name(self, node):
         label = node.get_attribute("label")
         if label.startswith('@'):
             label = label[1:]
@@ -257,7 +252,7 @@ class TreeviewFactory():
             t2_order = t2.get_attribute("order")
             return (t1_order > t2_order) - (t1_order < t2_order)
 
-    def ontag_task_dnd(self, source, target):
+    def on_tag_task_dnd(self, source, target):
         task = self.req.get_task(source)
         if target.startswith('@'):
             task.add_tag(target)
@@ -301,7 +296,7 @@ class TreeviewFactory():
         render_text = Gtk.CellRendererText()
         render_text.set_property('ypad', 5)
         col['renderer'] = ['markup', render_text]
-        col['value'] = [str, self.tag_name]
+        col['value'] = [str, self.get_tag_name]
         col['expandable'] = True
         col['new_column'] = False
         col['order'] = 2
@@ -333,9 +328,9 @@ class TreeviewFactory():
         col['title'] = _("Start Date")
         col['expandable'] = False
         col['resizable'] = False
-        col['value'] = [str, self.task_sdate_column]
+        col['value'] = [str, self.get_task_startdate_column_string]
         col['order'] = 3
-        col['sorting_func'] = self.start_date_sorting
+        col['sorting_func'] = self.sort_by_startdate
         desc[col_name] = col
 
         # 'duedate' column
@@ -344,9 +339,9 @@ class TreeviewFactory():
         col['title'] = _("Due")
         col['expandable'] = False
         col['resizable'] = False
-        col['value'] = [str, self.task_duedate_column]
+        col['value'] = [str, self.get_task_duedate_column_string]
         col['order'] = 4
-        col['sorting_func'] = self.due_date_sorting
+        col['sorting_func'] = self.sort_by_duedate
         desc[col_name] = col
 
         # Returning the treeview
@@ -364,9 +359,9 @@ class TreeviewFactory():
         col['title'] = _("Closed Date")
         col['expandable'] = False
         col['resizable'] = False
-        col['value'] = [str, self.task_cdate_column]
+        col['value'] = [str, self.get_task_closeddate_column_string]
         col['order'] = 3
-        col['sorting_func'] = self.closed_date_sorting
+        col['sorting_func'] = self.sort_by_closeddate
         desc[col_name] = col
 
         # Returning the treeview
@@ -401,10 +396,10 @@ class TreeviewFactory():
         render_text = Gtk.CellRendererText()
         render_text.set_property("ellipsize", Pango.EllipsizeMode.END)
         col['renderer'] = ['markup', render_text]
-        col['value'] = [str, self.task_title_column]
+        col['value'] = [str, self.get_task_title_column_string]
         col['visible'] = False
         col['order'] = 0
-        col['sorting_func'] = self.title_sorting
+        col['sorting_func'] = self.sort_by_title
         desc[col_name] = col
 
         # "tags" column (no title)
@@ -413,7 +408,7 @@ class TreeviewFactory():
         render_tags = CellRendererTags()
         render_tags.set_property('xalign', 0.0)
         col['renderer'] = ['tag_list', render_tags]
-        col['value'] = [GObject.TYPE_PYOBJECT, self.task_tags_column]
+        col['value'] = [GObject.TYPE_PYOBJECT, self.get_task_tags_column_contents]
         col['expandable'] = False
         col['resizable'] = False
         col['order'] = 1
@@ -426,7 +421,7 @@ class TreeviewFactory():
         render_text = Gtk.CellRendererText()
         render_text.set_property("ellipsize", Pango.EllipsizeMode.END)
         col['renderer'] = ['markup', render_text]
-        col['value'] = [str, self.task_label_column]
+        col['value'] = [str, self.get_task_label_column_string]
         col['expandable'] = True
         col['resizable'] = True
         col['sorting'] = 'title'
@@ -441,14 +436,13 @@ class TreeviewFactory():
         treeview.set_expander_column('label')
         treeview.set_dnd_name('gtg/task-iter-str')
         # Background colors
-        treeview.set_bg_color(self.task_bg_color, 'bg_color')
+        treeview.set_bg_color(self.get_task_bg_color, 'bg_color')
         # Global treeview properties
         treeview.set_property("enable-tree-lines", False)
         treeview.set_rules_hint(False)
         treeview.set_multiple_selection(True)
         # Updating the unactive color (same for everyone)
-        color = treeview.get_style_context().get_color(
-            Gtk.StateFlags.INSENSITIVE)
+        color = treeview.get_style_context().get_color(Gtk.StateFlags.INSENSITIVE)
         # Convert color into #RRRGGGBBB
         self.unactive_color = color.to_color().to_string()
         return treeview
@@ -461,10 +455,9 @@ class TreeviewFactory():
         treeview.set_row_separator_func(self.is_tag_separator_filter)
         treeview.set_headers_visible(False)
         treeview.set_dnd_name('gtg/tag-iter-str')
-        treeview.set_dnd_external('gtg/task-iter-str', self.ontag_task_dnd)
+        treeview.set_dnd_external('gtg/task-iter-str', self.on_tag_task_dnd)
         # Updating the unactive color (same for everyone)
-        color = treeview.get_style_context().get_color(
-            Gtk.StateFlags.INSENSITIVE)
+        color = treeview.get_style_context().get_color(Gtk.StateFlags.INSENSITIVE)
         # Convert color into #RRRGGGBBB
         self.unactive_color = color.to_color().to_string()
 

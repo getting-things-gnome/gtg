@@ -188,7 +188,7 @@ class PluginAPI():
 
         # set default bgcolor?
         if func is None:
-            func = browser.tv_factory.task_bg_color
+            func = browser.tv_factory.get_task_bg_color
 
         for pane in browser.vtree_panes.values():
             pane.set_bg_color(func, 'bg_color')
