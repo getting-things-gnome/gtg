@@ -119,18 +119,32 @@ class TreeviewFactory():
         return title
 
     def get_task_startdate_column_string(self, node):
-        return node.get_start_date().to_readable_string()
+        start_date = node.get_start_date()
+        if start_date:
+            return _(start_date.to_readable_string())
+        else:
+            # Do not parse with gettext then, or you'll get undefined behavior.
+            return ""
 
     def get_task_duedate_column_string(self, node):
-        # For tasks with no due dates, we show the most constraining due date.
+        # For tasks with no due dates, we use the most constraining due date.
         if node.get_due_date() == Date.no_date():
+            # This particular call must NOT use the gettext "_" function,
+            # as you will get some very weird erratic behavior:
+            # strings showing up and changing on the fly when the mouse hovers,
+            # whereas no strings should even be shown at all.
             return node.get_due_date_constraint().to_readable_string()
         else:
             # Other tasks show their due date (which *can* be fuzzy)
-            return node.get_due_date().to_readable_string()
+            return _(node.get_due_date().to_readable_string())
 
     def get_task_closeddate_column_string(self, node):
-        return node.get_closed_date().to_readable_string()
+        closed_date = node.get_closed_date()
+        if closed_date:
+            return _(closed_date.to_readable_string())
+        else:
+            # Do not parse with gettext then, or you'll get undefined behavior.
+            return ""
 
     def sort_by_startdate(self, task1, task2, order):
         sort = self.__date_comp(task1, task2, 'start', order)
