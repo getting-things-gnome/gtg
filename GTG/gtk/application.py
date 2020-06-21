@@ -176,7 +176,8 @@ class Application(Gtk.Application):
             ('open_backends', self.open_backends_manager, None),
             ('open_help', self.open_help, ('app.open_help', ['F1'])),
             ('open_preferences', self.open_preferences, ('app.open_preferences', ['<ctrl>comma'])),
-            ('editor.close', self.close_focused_task, ('app.editor.close', ['Escape', '<ctrl>w'])),
+            ('close', self.close_context, ('app.close', ['Escape'])),
+            ('editor.close', self.close_focused_task, ('app.editor.close', ['<ctrl>w'])),
             ('editor.show_parent', self.open_parent_task, None),
             ('editor.delete', self.delete_editor_task, None),
             ('editor.open_tags_popup', self.open_tags_popup_in_editor, None),
@@ -277,6 +278,18 @@ class Application(Gtk.Application):
         self.plugins_dialog.activate()
         self.plugins_dialog.dialog.set_transient_for(self.browser)
 
+
+    def close_context(self, action, params):
+        """Callback to close based on the focus widget."""
+
+        editor = self.get_active_editor()
+        search = self.browser.search_entry.is_focus()
+
+        if editor:
+            self.close_task(editor.task.get_id())
+        elif search:
+            self.browser.toggle_search(action, params)
+
     def close_focused_task(self, action, params):
         """Callback to close currently focused task editor."""
 
@@ -369,6 +382,7 @@ class Application(Gtk.Application):
         if not self.edit_tag_dialog:
             self.edit_tag_dialog = TagEditor(self.req, self, tag)
             self.edit_tag_dialog.set_transient_for(self.browser)
+            self.edit_tag_dialog.insert_action_group('app', self)
         else:
             self.edit_tag_dialog.set_tag(tag)
 
