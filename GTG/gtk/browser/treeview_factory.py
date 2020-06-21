@@ -145,8 +145,11 @@ class TreeviewFactory():
         return sort
 
     def sort_by_title(self, task1, task2, order):
-        t1 = task1.get_title()
-        t2 = task2.get_title()
+        # Strip "@" and convert everything to lowercase to allow fair comparisons;
+        # otherwise, Capitalized Tasks get sorted after their lowercase equivalents,
+        # and tasks starting with a tag would get sorted before everything else.
+        t1 = task1.get_title().replace("@", "").lower()
+        t2 = task2.get_title().replace("@", "").lower()
         return (t1 > t2) - (t1 < t2)
 
     def __date_comp(self, task1, task2, para, order):
