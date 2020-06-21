@@ -48,11 +48,5 @@
 <p><em>Urgency Color</em></p>
 <p>Calculates the urgency status of each of your currently active tasks and color-codes those tasks accordingly.</p>
 
-<figure>
-  <title><app>GTG</app> Plugins</title>
-  <desc> </desc>
- <media type="image" mime="image/png" src="figures/plugins.png"/>
-</figure>
-
 </page>
 
