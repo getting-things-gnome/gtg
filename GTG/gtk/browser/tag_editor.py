@@ -283,13 +283,10 @@ class TagEditor(Gtk.Window):
         self.connect('delete-event', self.on_close)
 
         # allow fast closing by Escape key
-        # FIXME
-        """
         agr = Gtk.AccelGroup()
         self.add_accel_group(agr)
         key, modifier = Gtk.accelerator_parse('Escape')
-        agr.connect_group(key, modifier, Gtk.AccelFlags.VISIBLE, self.on_close)
-        """
+        agr.connect(key, modifier, Gtk.AccelFlags.VISIBLE, self.on_close)
 
     def __set_default_values(self):
         """Configure the widget components with their initial default values"""
