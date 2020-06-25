@@ -2,6 +2,8 @@
 <component type="desktop">
     <id>@APP_ID@</id>
     <launchable type="desktop-id">@APP_ID@.desktop</launchable>
+    <name>Getting Things GNOME!</name>
+    <summary>Personal tasks and TODO-list items organizer</summary>
 
     <metadata_license>CC-BY-3.0</metadata_license>
     <project_license>GPL-3.0</project_license>
@@ -27,11 +29,7 @@
         <screenshot>https://fortintam.com/gtg/screenshots/appstream/3.png</screenshot>
     </screenshots>
 
-    <kudos>
-        <kudo>UserDocs</kudo>
-        <kudo>ModernToolkit</kudo>
-    </kudos>
-
+    <content_rating type="oars-1.1" />
     <project_group>GNOME</project_group>
     <developer_name>The GTG team</developer_name>
     <updatecontact>nekohayo+gtg@gmail.com</updatecontact>
