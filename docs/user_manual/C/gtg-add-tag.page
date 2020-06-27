@@ -36,7 +36,7 @@
 
 <p>Add new tags separated by a space. To remove an already assigned tag, add the “!” sign in front of it.</p>
 
-<note style="tip"><p>Select the <gui>Apply to subtasks</gui> check box to add or remove the tags from any subtasks that associated with the task that you are editing.</p></note>
+<note style="tip"><p>Select the <gui>Apply to subtasks</gui> check box to add or remove the tags from any subtasks that are associated with the task that you are editing.</p></note>
 
 <figure>
   <title>Add or Modify Tags</title>
