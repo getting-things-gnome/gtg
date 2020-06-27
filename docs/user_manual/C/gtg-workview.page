@@ -25,17 +25,17 @@
 
   <title>Understanding View Modes</title>
   
-    <p> <app>GTG</app> has three different view modes to aid with productivity and managing your tasks: <gui>Open</gui>, <gui>Actionable</gui>, and <gui>Closed</gui>. The <gui>Open</gui> view mode displays all tasks not marked as done or dismissed. The <gui>Closed</gui> view mode displays all completed tasks or tasks that you dismissed.</p> 
+    <p> <app>GTG</app> has three different view modes to aid with productivity and managing your tasks: <gui>Open</gui>, <gui>Actionable</gui>, and <gui>Closed</gui>. The <gui>Open</gui> view mode displays all tasks that are not marked as done or dismissed. The <gui>Closed</gui> view mode displays all completed tasks or tasks that you dismissed.</p> 
 
-<p>The <gui>Actionable</gui> view mode shows tasks that you can complete right now and meet the following conditions:</p>
+<p>The <gui>Actionable</gui> view mode displays tasks that you can complete right now and meet the following conditions:</p>
 <list>
-      <item><p>The task must be "startable", meaning that the start date is today or has passed.</p></item>
+      <item><p>The task must be "startable," meaning that the start date is today or has passed.</p></item>
       <item><p>The task does not have any open subtasks, meaning that all of its prerequisites are met and you can complete the task itself.</p></item> 
 </list>
 
 <p>You can further filter tasks by tag, in any view mode, by selecting a tag in the <gui>Sidebar</gui>.</p>
 
-<note style="tip"><p>You can use an option in the <gui>Edit tag</gui> window to hide tasks with certain tags from being displayed in the <gui>Actionable</gui> view mode. See the <link href="gtg-tag-color">Edit Tag Properties</link> section for more information.</p></note>
+<note style="tip"><p>You can use an option in the <gui>Edit tag</gui> dialog box to hide tasks with certain tags from being displayed in the <gui>Actionable</gui> view mode. See the <link href="gtg-tag-color">Edit Tag Properties</link> section for more information.</p></note>
 
 
 

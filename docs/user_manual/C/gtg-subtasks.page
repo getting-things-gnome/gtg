@@ -34,10 +34,10 @@
  <section id="gtg-create-new-subtask">
  <title>Create a New Subtask</title>
 
-  <p>To create a subtask for the task that is currently opened, you can:</p>
+  <p>To create a subtask for the task that is currently opened, you can perform one of the following actions:</p>
 
  <list>
-      <item><p>Start a new line in the <gui>Task Editor</gui> window with a "-" and type the subtask's title.</p></item>
+      <item><p>Start a new line in the <gui>Task Editor</gui> window with a dash (-) and type the subtask's title.</p></item>
       <item><p>Click the <media type="image" src="figures/insert_subtask_icon.png"/> button in the <gui>Task Editor</gui> toolbar.</p></item>
       <item><p>Use the <keyseq><key>Ctrl</key><key>Shift</key><key>N</key></keyseq> keyboard shortcut.</p></item>  
 </list>
@@ -51,7 +51,7 @@
  <media type="image" mime="image/png" src="figures/subtasks.png"/>
 </figure>
 
-<p>You can reorganize tasks and subtasks by dragging and dropping tasks in the <gui>Task Browser</gui> to achieve the hierarchy and order that you require. Keep in mind that subtasks follow certain rules:</p>p>
+<p>You can reorganize tasks and subtasks by dragging and dropping tasks in the <gui>Task Browser</gui> to achieve the hierarchy and order that you require. Keep in mind that subtasks follow the below rules.</p>
 <list>
  	<item><p>A subtask's due date can never be after its parent's due date. If a subtask's due date is changed to after the parent task's due date, then the parent task's due date is updated to match the subtask.</p></item> 
  	<item><p>Subtasks inherit start and due dates as well as any tags assigned to the parent task <em style="strong">at the time that the subtask is created</em>. You can individually edit these characteristics as well as make bulk updates for both tasks and subtasks.</p></item> 

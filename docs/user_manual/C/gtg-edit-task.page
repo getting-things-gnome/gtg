@@ -29,15 +29,15 @@
 
   <title>Editing a Task</title>
 
-<p>To open and edit an already-created task, you can:</p>
+<p>To open and edit an already-created task, you can perform one of the following actions:</p>
 
  <list>
       <item><p>Select the task in the <gui>Task Browser</gui> and double-click it or press <key>ENTER</key>.</p></item>
-      <item><p> Right-click the task and select <gui>Edit</gui> from the context menu.</p></item>
+      <item><p> Right-click the task in the <gui>Task Browser</gui> and select <gui>Edit</gui> from the context menu.</p></item>
 <item><p>Use the keyboard shortcut <keyseq><key>CTRL</key><key>E</key></keyseq> to open a selected task from the <gui>Task Browser</gui>.</p></item>  
 </list>
 
-<p>Enter a task description and content in the <gui>Task Editor</gui> window. You can paste links, add tags (start with the “@” sign), and add subtasks (start with “-”) inside the <gui>Task Editor</gui>. See the <link xref="gtg-subtasks">Subtasks</link> and <link xref="gtg-tags">Tags</link> sections for more details about the syntax.</p>
+<p>Enter a task description and content in the <gui>Task Editor</gui> window. You can paste links, add tags (start with the “@” sign), and add subtasks (start with a dash “-”) inside the <gui>Task Editor</gui>. See the <link xref="gtg-subtasks">Subtasks</link> and <link xref="gtg-tags">Tags</link> sections for more details about the syntax.</p>
 
 
 <note stlye="tip"><p>Remember that you do not need to save changes that you make to a task as <app>GTG</app> does that automatically while you write.</p></note>

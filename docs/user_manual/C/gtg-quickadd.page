@@ -31,7 +31,7 @@
 <section id="quick-add-task">
 <title>Create a New Task Using the Quick Add Entry</title>
 
-<p>To add a task, type the task's title in the entry field and press <key>Enter</key>. Spaces are allowed when entering a title. The task is immediately available in the <gui>Task Browser</gui>. If a tag is selected in the <gui>Sidebar</gui> before you create the task in the <gui>Quick Add Entry</gui>, the tag will be applied to the task you created. </p>
+<p>To add a task, type the task's title in the entry field and press <key>Enter</key>. Spaces are allowed when entering a title. The task is immediately available in the <gui>Task Browser</gui>. If a tag is selected in the <gui>Sidebar</gui> before you create the task in the <gui>Quick Add Entry</gui>, the tag is then applied to the task that you create. </p>
 
 <figure>
   <title>Quick Add Entry</title>
@@ -43,12 +43,12 @@
 <section id="quick-add-dates">
 <title>Adding Dates and Tags to Tasks Using the Quick Add Entry</title> 
 
-<p>You can also create a task in the <gui>Quick Add Entry</gui> and at the same time specify its tags, start date, and due date. Follow the below syntax to add these options:</p>
+<p>You can also create a task in the <gui>Quick Add Entry</gui> and at the same time specify its tags, start date, and due date. Follow the below syntax to add these options.</p>
 
 <terms>
 <item>
      <title><em style="strong">tags:tag1,tag2,tag3</em></title>
-     <p>When using "tags:", you can apply as many tags as you want using a comma as a separator (do not put a space between any of those tags). You can also use individual "@" tags, even in combination with the tags, if you want to have the tag as part of the task title.</p></item>
+     <p>When using <em style="strong">tags:</em>, you can apply as many tags as you want using a comma as a separator (do not put a space between any of those tags). You can also use individual "@" tags, even in combination with the tags, if you want to have the tag as part of the task title.</p></item>
 <item>
      <title><em style="strong">due:<code>date</code></em> or <em style="strong">start:<code>date</code></em></title>
      <p>Use <app>GTG's</app> natural date parsing syntax to assign a start and due date in a variety of formats. See <link href="gtg-date-parsing">Using the Date and Keyword Parsing Syntax</link> for more information.</p></item></terms>
@@ -57,7 +57,7 @@
 
 <section id="quickadd-examples">
 <title>Quick Add Entry Examples</title>
-<p>The following examples show the result of adding this syntax to the <gui>Quick Add Entry</gui> field.</p>
+<p>The following examples show the result of adding this syntax to the <gui>Quick Add Entry</gui> field:</p>
 
 <terms>
   <item>
