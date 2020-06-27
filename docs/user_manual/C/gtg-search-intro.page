@@ -29,11 +29,11 @@
 
 <p>Click the <gui>Search</gui> icon in the <gui>Headerbar</gui> to activate the <gui>Search</gui> field. Search results are automatically displayed as you type.</p>
 
-<p>Click the <gui>Save Search</gui> button to save a search result. Saved searches are available from the <gui>Sidebar</gui> and are automatically updated. You can delete a saved search by right-clicking the saved search and selecting <gui>Delete</gui> in the context menu.</p>
+<p>Click the <gui>Save Search</gui> button to save a search result. Saved searches are available from the <gui>Sidebar</gui> and are automatically updated. You can delete a saved search by right-clicking the saved search and selecting <gui>Delete</gui> from the context menu.</p>
 
 <note stlye="tip">
 <p>If you want to perform more detailed searches, you can use <app>GTG's</app> natural language parsing ability/special search syntax to aid with efficiency. See
-<link xref="gtg-search-syntax">GTG Search Syntax</link> for more information.</p>
+<link xref="gtg-search-syntax"><em>GTG</em> Search Syntax</link> for more information.</p>
 </note>
 
 </page>

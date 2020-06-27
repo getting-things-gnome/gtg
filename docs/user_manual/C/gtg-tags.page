@@ -27,16 +27,16 @@
 
   <p>A tag is a simple word that begins with the <em style="strong">@</em> sign.</p>
   
-  <p>When you type a word beginning with @, it displays as highlighted yellow, which is the indicator that <app>GTG</app> considers the word to be a tag.</p>
+  <p>When you type a word beginning with @, it displays with yellow highlighting, which is the indicator that <app>GTG</app> considers the word to be a tag.</p>
 
 <figure>
   <title><app>GTG</app> Tag</title>
  <media type="image" mime="image/png" src="figures/tag.png"/>
 </figure>
 
-  <p>Tags are useful to sort your tasks. You can enable the <gui>Sidebar</gui> from the <gui>Main Menu</gui> on the <gui>Headerbar</gui>. This displays all of the tags that you have created. When a tag is selected, all tasks that are associated with that tag are displayed. There is no limit to the number of tags that a task can have.</p>
+  <p>You can use tags to sort your tasks. Tags are viewable in the <gui>Sidebar</gui>. You can enable the <gui>Sidebar</gui> from the <gui>Main Menu</gui> on the <gui>Headerbar</gui>. This displays all of the tags that you have created. When a tag is selected, all tasks that are associated with that tag are displayed. A task can have an unlimited number of tags.</p>
 
 <p>See the following sections for information on how to create and personalize tags.</p>
  
-  <links type="topic" groups="first second third fourth fifth sixth" style="2column"/>
+  <links type="topic" groups="first second" style="2column"/>
 </page>

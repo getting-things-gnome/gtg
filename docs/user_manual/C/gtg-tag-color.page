@@ -26,16 +26,17 @@
 
   <title>Editing Tag Properties</title>
 
-<p>You can edit a tag's name, color, or set a specific tag icon, by right-clicking the tag in the <gui>Sidebar</gui> and selecting <gui>Edit Tag</gui> from the context menu. You can complete the following actions in the <gui>Edit tag</gui> window:</p>
+<p>You can edit a tag's name, color, or set a specific tag icon. From the <gui>Sidebar</gui>, right-click the tag and select <gui>Edit Tag</gui> from the context menu. You can perform the following actions in the <gui>Edit tag</gui> window:</p>
 
 <list>
       <item><p>To change the tag name, type a new name in the <gui>Name</gui> field.</p></item>
-      <item><p>Select a tag color from one of the predefined colors or click the <gui>Add custom color</gui> button. Select a color from the <gui>Choose a color</gui> window and click the <gui>Select</gui> button to confirm. To remove a selected color, click the <gui>Clear selected color</gui> button.</p></item>
+      <item><p>Select a tag color from one of the predefined colors or click the <gui>Add custom color</gui> button. Select a color from the <gui>Choose a color</gui> dialog box. Then, click the <gui>Select</gui> button to confirm. To remove a selected color, click the <gui>Clear selected color</gui> button.</p></item>
       <item><p>Click the <gui>Click to Set Icon</gui> button and choose a tag icon. To remove an icon, click the <gui>Remove selected icon</gui> button.</p></item>  
-	<item><p>You also have the option to show or hide a task from the <gui>Actionable</gui> view mode. Select or deselect the <gui>Show Tag in Work View</gui> check box. This option is very useful if you have a tag such as "someday" that you use for tasks that you would like to complete at some point in the future but are not particularly urgent at this time.</p></item>
+	<item><p>You also have the option to show or hide tasks with a certain tag from the <gui>Actionable</gui> view mode. Select or deselect the <gui>Show Tag in Actionable view</gui> check box. This option is very useful if you have a tag such as "someday" that you use for tasks that you would like to complete at some point in the future but are not particularly urgent at this time.</p></item>
 </list>
 
-<note style="important"><p>When personalizing tags, note that <app>GTG</app> only displays an icon <em style="strong">OR</em> a colored square for a tag, not both at the same time. As a best practice, only select either a tag color or an icon to personalize a tag.</p></note>
+<note style="important"><p>When personalizing tags, note that <app>GTG</app> only displays an icon <em style="strong">OR</em> a colored square for a tag, not both at the same time. As a best practice, select only one of these options to personalize a tag.</p></note>
+ <note style="tip"><p>You can also generate a random color for your tag. Select and right-click a tag in the <gui>Sidebar</gui>. Then, select the <gui>Generate Color</gui> option from the context menu.</p></note>
 
 <figure>
   <title>Edit Tag</title>

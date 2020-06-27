@@ -37,15 +37,15 @@
   <title><app>GTG</app> Main Window</title>
   <item>
     <title><em>Headerbar</em></title>
-    <p>The top bar on the main user interface. From the <gui>Headerbar</gui> you can create a new task, quickly change a task's start date, and access the <gui>Open</gui>, <gui>Actionable</gui>, and <gui>Closed</gui> view modes. You can also enable the <gui>Search</gui> option and access the <gui>Main Menu</gui>.</p>
+    <p>The top bar on the main user interface. From the <gui>Headerbar</gui>, you can create a new task, quickly change a task's start date, and access the <gui>Open</gui>, <gui>Actionable</gui>, and <gui>Closed</gui> view modes. You can also enable the <gui>Search</gui> option and access the <gui>Main Menu</gui>.</p>
   </item>
   <item>
     <title><em>View Modes</em></title>
-    <p>Tasks are viewable from three different modes: <gui>Open</gui>, <gui>Actionable</gui>, and <gui>Closed</gui>. You can toggle between these modes on the <gui>Headerbar</gui> All tasks are displayed in the <gui>Open</gui> view mode. Tasks that you can work on right now, without a future start date, are displayed in the <gui>Actionable</gui> view mode. Tasks that are marked as done are displayed in the <gui>Closed</gui> view mode.</p>
+    <p>Tasks are viewable from three different modes: <gui>Open</gui>, <gui>Actionable</gui>, and <gui>Closed</gui>. You can toggle between these modes on the <gui>Headerbar</gui>. All tasks are displayed in the <gui>Open</gui> view mode. Tasks that you can work on right now, without a future start date, are displayed in the <gui>Actionable</gui> view mode. Tasks that are marked as done or dismissed are displayed in the <gui>Closed</gui> view mode.</p>
   </item>
   <item>
     <title><em>Main Menu</em></title>
-    <p>The <gui>Main Menu</gui> is accessed from the hamburger menu on the <gui>Headerbar</gui>. From the <gui>Main Menu</gui> you can open the <gui>Sidebar</gui>, <link xref="gtg-plugins"><gui>Plugins</gui></link>, <gui>Preferences</gui>, <link xref="gtg-shortcut-keys"><gui>Keyboard Shortcuts</gui></link>, <gui>Help</gui>, and <gui>About</gui> options.</p>
+    <p>The <gui>Main Menu</gui> is accessed from the hamburger menu on the <gui>Headerbar</gui>. From the <gui>Main Menu</gui>, you can open the <gui>Sidebar</gui>, <link xref="gtg-plugins"><gui>Plugins</gui></link>, <gui>Preferences</gui>, <link xref="gtg-shortcut-keys"><gui>Keyboard Shortcuts</gui></link>, <gui>Help</gui>, and <gui>About</gui> options.</p>
   </item>
   <item>
     <title><em>Search</em></title>
@@ -53,7 +53,7 @@
   </item>
   <item>
     <title><em>Sidebar</em></title>
-    <p>Enable the Sidebar from the <gui>Main Menu</gui>. You can view all tasks, saved searches, tasks with no tags, and tasks by individual tag in the <gui>Sidebar</gui>. Results are displayed in the <gui>Task Browser</gui>.</p>
+    <p>Enable the <gui>Sidebar</gui> from the <gui>Main Menu</gui>. You can view all tasks, saved searches, tasks with no tags, and tasks by individual tag in the <gui>Sidebar</gui>. Results are displayed in the <gui>Task Browser</gui>.</p>
   </item>
   <item>
     <title><em>Task Browser</em></title>
