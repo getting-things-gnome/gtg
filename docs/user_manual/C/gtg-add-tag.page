@@ -27,7 +27,7 @@
 
   <title>Adding or Modifying Tags</title>
 
-    <p>To add a new tag or modify tags that are already assigned to a selected task, from the <gui>Task Browser</gui>, you can:</p>
+    <p>To add a new tag or modify tags that are already assigned to a selected task, from the <gui>Task Browser</gui>, you can perform one of the following actions:</p>
   
   <list>
       <item><p>Use the <keyseq><key>Ctrl</key><key>T</key></keyseq> keyboard shortcut.</p></item>
@@ -36,7 +36,7 @@
 
 <p>Add new tags separated by a space. To remove an already assigned tag, add the “!” sign in front of it.</p>
 
-<note style="tip"><p>Select the <gui>Apply to subtasks</gui> check box to add or remove the input tags from any subtasks associated with the task that you are editing.</p></note>
+<note style="tip"><p>Select the <gui>Apply to subtasks</gui> check box to add or remove the tags from any subtasks that are associated with the task that you are editing.</p></note>
 
 <figure>
   <title>Add or Modify Tags</title>
@@ -46,12 +46,12 @@
 
    <p>To add a new tag to an open <app>GTG</app> task, type the "@" sign with the name of the new tag. The new tag is highlighted yellow and is displayed on the list of tags in the <gui>Sidebar</gui>.</p>
 
-   <p>To add an already existing tag to an open <app>GTG</app> task, click the <media type="image" mime="image/png" src="figures/add-tag.png"/> button in the <gui>Task Editor</gui> toolbar. This opens a dropdown list with all of the available tags that you can add to the task.</p>
+   <p>To add an already existing tag to an open <app>GTG</app> task, click the <media type="image" mime="image/png" src="figures/add-tag.png"/> button in the <gui>Task Editor</gui> toolbar. A drop-down list is displayed with all of the available tags that you can add to the task.</p>
 
-<note style="tip"><p>When you create a new tag, the tag is only applied to the task that you are working on. If the task has subtasks already created, the tag is not applied to subtasks. However, when you create a new subtask from a parent task, the subtask inherits the tags of its parent. You can modify the tags of a subtask to make it different from its parent's tags, if needed. Modifying tags associated with a subtask does not affect the parent task.</p></note>
+<note style="tip"><p>When you create a new tag, the tag is only applied to the task that you are working on. If the task has associated subtasks, the tag is not applied to those subtasks. However, when you create a new subtask from a parent task, the subtask inherits the tags of its parent. You can modify the tags of a subtask to make it different from its parent's tags, if needed. Modifying tags associated with a subtask does not affect the parent task.</p></note>
 
 <section id="add-subtags">
 <title>Adding a Subtag</title>
- <p>You can drag and drop a tag onto another tag in the <gui>Sidebar</gui> to create "subtags". As an example, if you drag the tag <code>@to_pay</code> onto the tag <code>@money</code>, every task tagged with <code>@to_pay</code> is also displayed when viewing tasks that have the parent tag of <code>@money</code>; however, the <code>@money</code> tag is not added to the task.</p>
+ <p>You can drag and drop a tag onto another tag in the <gui>Sidebar</gui> to create "subtags". For example, if you drag the tag <code>@to_pay</code> onto the tag <code>@money</code>, every task tagged with <code>@to_pay</code> is also displayed when viewing tasks that have the parent tag of <code>@money</code>; however, the <code>@money</code> tag is not added to the task.</p>
 </section>
 </page>

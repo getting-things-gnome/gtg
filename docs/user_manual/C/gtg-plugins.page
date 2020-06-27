@@ -40,7 +40,7 @@
 <p>Assigns tasks that you have not touched for a while with the <code>@untouched</code> tag.</p>
 
 <p><em>Send Tasks via Email</em></p>
-<p>Adds a button on the <gui>Headerbar</gui>, which allows you to easily send a task (with its status, due dates, tags, and subtasks) through email.</p>
+<p>Adds a button in the menu on the <gui>Task Editor</gui> toolbar, which allows you to easily send a task (with its status, due dates, tags, and subtasks) through email.</p>
 
 <p><em>Export and Print</em></p>
 <p>Exports the tasks in the current view into a variety of formats.</p>

@@ -29,7 +29,7 @@
 
   <title>Creating a New Task</title>
 
-  <p>There are three ways to create a new task in <app>GTG</app>:</p>
+  <p>You can create a new task in <app>GTG</app> using one of the following methods:</p>
 
 <list>
   <item><p>Click the <gui>+</gui> button in the <gui>Headerbar</gui>.</p></item>

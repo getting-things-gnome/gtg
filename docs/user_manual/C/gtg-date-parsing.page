@@ -21,7 +21,7 @@
   <title>Using the Date and Keyword Parsing Syntax</title>
 
     <p><app>GTG</app> includes a smart, natural date and keyword parsing syntax. This allows you to use a variety of date formats when assigning dates throughout the application. You have the option to use both <em style="strong">literal dates</em>, which follow your locale's standards, as well as <em style="strong">fuzzy dates</em>, which represent non-exact timelines. This syntax can be used when assigning both start and due dates in the <gui>Task Editor</gui>, while managing tasks in the <gui>Task Browser</gui>, or when using the  <link xref="gtg-quickadd">Quick Add Entry</link>.</p>
-    <note style="tip"><p><app>GTG</app> is translated into a variety of languages. In the case of fuzzy dates, you can use the translated equivalents from your system's language (if available), or you can use the English versions, regardless of the language you are using.</p></note>
+    <note style="tip"><p><app>GTG</app> is translated into a variety of languages. In the case of fuzzy dates, you can use the translated equivalents from your system's language (if available), or you can use the English versions, regardless of the language that you are using.</p></note>
 
 <section id="literal-dates">
 <title>Using the Literal Date Syntax</title>
@@ -70,7 +70,7 @@
         </tr>
 <tr>
         <td><p><code>Monday</code> (or any day of the week)</p></td>
-        <td><p>The next future occurrence of that weekday.</p></td>
+        <td><p>The next future occurrence of that weekday</p></td>
         </tr>
 <tr>
       <td><p><code>27</code> (or any day's number)</p></td>
@@ -106,7 +106,7 @@
 <tr>
       <td><p><code>someday</code></p></td>
       <td><p>This is a future goal with no actual due date. These tasks are not considered actionable at this time and are due at any time in the future.</p></td>
-      <td><p>You may have a number of goals and tasks that you want to complete at some point in the future. These tasks could be something like taking an online course, traveling around the world, or learning a new language. These are all tasks that you may not be able to complete right now. The <em>Getting Things Done</em> methodology encourages you to capture and process all tasks and ideas, even tasks that cannot be done at this time. By assigning a "someday" due date, you can record this information, reflect on these goals, and complete them in the future, when the time is right.</p></td>
+      <td><p>You may have a number of goals and tasks that you want to complete at some point in the future. These tasks could be something like taking an online course, traveling around the world, or learning a new language. These are all tasks that you may not be able to complete right now. By assigning a "someday" due date, you can record this information, reflect on these goals, and complete them in the future, when the time is right.</p></td>
       </tr>
 </tbody>
 </table>
