@@ -1,0 +1,116 @@
+===========
+Version 0.4
+===========
+These are abbreviated release notes.
+See https://fortintam.com/blog/gtg-0-4-released for complete release notes.
+
+The much-awaited 0.4 release of Getting Things GNOME (“GTG”) is a major overhaul
+that brings together many updates and enhancements, including new features, a
+modernized user interface and updated underlying technology (fully ported to
+Python 3, GTK 3, and GObject introspection). GTG itself has undergone over 630
+changes affecting over 500 files, and received hundreds of bug fixes, as can be
+seen on https://launchpad.net/gtg/+milestone/0.4 and
+https://github.com/getting-things-gnome/gtg/milestones
+
+The UI has been updated to follow the current GNOME HIG and design patterns:
+ • Client-side window decorations using the GTK HeaderBar widget.
+   Along with the removal of the menu bars, this saves a significant amount
+   of space and allows for more content to be displayed on screen.
+ • The Preferences dialog was redesigned, and its contents cleaned up to remove
+   obsolete settings (https://github.com/getting-things-gnome/gtg/pull/227).
+ • All windows are properly parented (set as transient) with the main window,
+   so that they can be handled better by window managers.
+ • Symbolic icons are available throughout the UI.
+ • Improvements to padding and borders are visible throughout the application.
+
+New Features
+ • You can now open (or create) a task’s parent task.
+ • You can now select multiple closed tasks and perform bulk actions on them.
+ • You can now rename or delete tags by right-clicking them in the main window.
+ • You can automatically generate and assign tag colors.
+ • The Quick Add entry now supports emojis 🤩
+ • The Task Editor now provides a searchable “tag picker” widget.
+ • The “Task Reaper” allows deleting old closed tasks for increased performance.
+   Previously available as a plugin, it is now a built-in feature,
+   available in the Preferences dialog.
+ • The Quick Deferral (previously, the “Do it Tomorrow” plugin) is now built-in.
+   It is now possible to defer multiple tasks at once to common upcoming days
+   or to a custom date.
+ • In the unlikely case where GTG encounters a problem opening your data file,
+   it will automatically attempt recovery from a previous backup snapshot
+   and let you know about it.
+
+Main window (“Task Browser”) improvements
+ • The menu bar has been replaced by a menu button.
+   Non-contextual actions have been moved to the main menu button.
+ • Searching is now handled through a dedicated Search Bar
+   that can be toggled on and off with the mouse,
+   or the Ctrl+F keyboard shortcut.
+ • The “Workview” mode has been renamed to the “Actionable” view.
+ • Sorting tasks by title is now case-insensitive and ignores @ characters
+   https://github.com/getting-things-gnome/gtg/issues/375
+ • Start/Due/Closed dates now display as properly translated in the Task Browser
+   https://github.com/getting-things-gnome/gtg/issues/357
+ • In the right-click context menus, more start/due dates choices are available,
+   including common upcoming dates and a custom date picker
+   https://github.com/getting-things-gnome/gtg/issues/244
+
+Task Editor improvements
+ • The Calendar date picker pop-up widgets have been improved
+   https://github.com/getting-things-gnome/gtg/pull/230
+ • The Task Editor now tries to place newly created windows more logically
+   https://github.com/getting-things-gnome/gtg/issues/287
+ • The title (first line of a task) has been changed to a neutral black header,
+   so that it doesn’t look like a hyperlink.
+
+Documentation Updates
+ • The user manual has been rewritten, reorganized, and updated with new images
+   https://github.com/getting-things-gnome/gtg/issues/243
+ • Contributor documentation was rewritten to make it easier to get involved
+   and to clarify project contribution guidelines.
+   https://github.com/getting-things-gnome/gtg/issues/200
+   https://fortintam.com/blog/improving-developer-experience-and-attracting-open-source-project-contributors/
+
+Backend and Code Quality improvements
+ • Updates were made to overall code quality to reduce barriers to contribution
+   https://github.com/getting-things-gnome/gtg/issues/237
+ • The code has been ported to use GtkApplication,
+   resulting in simpler and more robust UI code overall.
+ • GtkBuilder/Glade “.ui” files have been regrouped into one location.
+ • Reorganization of various .py files for consistency.
+ • The debugging/logging system has been simplified.
+ • Various improvements to the test suite.
+ • The codebase is mostly PEP8-compliant.
+ • We relaxed the PEP8 max line length convention to 100 cols for readability,
+   because this is not the nineties anymore.
+ • Support is available for Tox, for testing automation within virtualenvs
+ • The application’s translatable strings have been reviewed and harmonized,
+   to ensure the entire application is translatable.
+ • Application CSS has been moved to its own file
+   https://github.com/getting-things-gnome/gtg/pull/229
+ • GTG now provides an “AppData” (FreeDesktop AppStream metadata) file
+   to properly present itself in distro-agnostic software-centers.
+ • The Meson build system is now supported
+   https://github.com/getting-things-gnome/gtg/pull/315
+     • The development version’s launch script now allows running
+       with various languages, using the LANG environment variable for example.
+     • Appdata and desktop files are named based on the chosen Meson profile
+       https://github.com/getting-things-gnome/gtg/pull/349
+     • Depending on the Meson profile, the HeaderBar style changes dynamically
+       to indicate when run in a dev environment, such as GNOME Builder
+       https://github.com/getting-things-gnome/gtg/issues/341
+
+In order to bring this release out of the door, some plugins (and all
+synch services) have been disabled and are awaiting adoption by new
+contributors to test and maintain them.
+See https://github.com/getting-things-gnome/gtg/issues/222
+Please contribute to maintain your favorite plugin. Likewise, we had to remove
+the DBus module (and would welcome help to bring it back into a better shape,
+for those who want to control the app via DBus).
+
+
+==============
+Older releases
+==============
+They predate this file, and documenting them here is a questionable endeavor.
+See https://wiki.gnome.org/Apps/GTG/release_names for historical info.

@@ -3,7 +3,7 @@ recursive-include GTG *.gtg-plugin
 recursive-include GTG *.png
 recursive-include GTG *.svg
 recursive-include GTG/plugins/export *
-include CHANGELOG
+include NEWS
 include README.md
 include LICENSE
 include AUTHORS
