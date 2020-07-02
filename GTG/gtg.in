@@ -99,8 +99,14 @@ if __name__ == "__main__":
 
         # Set up UI i18n
         LOCALE_DIR = '@localedir@'
-        locale.bindtextdomain('gtg', LOCALE_DIR)
-        locale.textdomain('gtg')
+
+        try:
+            locale.bindtextdomain('gtg', LOCALE_DIR)
+            locale.textdomain('gtg')
+        except AttributeError as e:
+            # Python built without gettext support doesn't have bindtextdomain() and textdomain()
+            print("Couldn't bind the gettext translation domain. Some translations won't work.\n{}".format(e))
+
         gettext.bindtextdomain('gtg', LOCALE_DIR)
         gettext.textdomain('gtg')
 
