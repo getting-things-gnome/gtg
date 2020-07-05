@@ -23,24 +23,45 @@ Later, when you want to update to the latest development version (assuming you a
 
     git pull --rebase
 
-### Solving dependencies for the main application
+### Dependencies
 
-The main software dependencies are listed in the "requirements.txt" file, which is a file that Python's "PIP" dependency solving tool can use to install everything you need and make things easier. You can install PIP by typing one of the following commands:
+* meson
+* python3
+* dbus-python
+* pycairo
+* pygobject (>= 3.20)
+* libLarch (>= 3.0)
+* itstool
+* gettext
+* Introspection (GIR) files and libraries from:
+  - GLib
+  - pango
+  - gdk-pixbuf
+  - GTK 3
 
-    sudo dnf install python3-pip  # On Fedora
-    sudo apt install python3-pip  # On Ubuntu/Debian
+You can get most of those from your distribution packages:
 
-If you want to install the majority of those dependencies using Linux distribution packages (instead of PIP), you can do this:
+    # On Fedora
+    sudo dnf install meson python3-dbus python3-cairo python3-gobject gtk3 itstool gettext
+    # On Debian/Ubuntu
+    sudo apt install meson python3-dbus python3-cairo python3-gi gir1.2-pango-1.0 gir1.2-gdkpixbuf-2.0 gir1.2-gtk-3.0 itstool gettext
+
+liblarch may be harder to come by until distributions package the python3 version of it, alongside GTG 0.4+ itself.
+You can get it meanwhile via PIP (commonly provided by python3-pip package):
+
+    pip3 install --user -e git+https://github.com/getting-things-gnome/liblarch.git#egg=liblarch
+
+### Test dependencies
+
+To run the current testsuite, you need some additional packages (this list may be out of date):
 
     # On Fedora:
-    sudo dnf install python3-nose python3-pyflakes python3-spec python3-pycodestyle python3-mock python3-dbus gobject-introspection
+    sudo dnf install python3-nose python3-pyflakes python3-spec python3-pycodestyle python3-mock
 
     # On Ubuntu/Debian:
-    sudo apt install python3-nose python3-pyflakes python3-pep8 python3-pycodestyle python3-mock python3-dbus gobject-introspection
+    sudo apt install python3-nose python3-pyflakes python3-pep8 python3-pycodestyle python3-mock
 
-Still, running the developer version of GTG will not be possible without having "LibLarch" checked out or available on the system. The easiest way to have liblarch cloned and set up (along with all remaining missing dependencies, if any) is to let PIP do the work for you, with this command:
-
-    pip3 install --user -r requirements.txt
+You will currently also need the optional plugin dependencies, as the tests don't automatically skip them. (Help welcome improving that!)
 
 ### Solving dependencies for plugins (optional)
 
