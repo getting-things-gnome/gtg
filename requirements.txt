@@ -1,9 +1,0 @@
-nose
-spec
-pyflakes
-pycodestyle
-mock
--e git+http://github.com/getting-things-gnome/liblarch.git#egg=liblarch
-dbus-python
-PyGObject
-pycairo
