@@ -256,6 +256,13 @@ class Task(TreeNode):
             self.set_start_date(defer_date)
             self.set_recurring(recurring, recurring_term, newtask=True)
 
+    def toggle_status(self):
+
+        if self.status in [self.STA_DONE, self.STA_DISMISSED]:
+            self.set_status(self.STA_ACTIVE)
+        else:
+            self.set_status(self.STA_DONE)
+
     def set_status(self, status, donedate=None, propagation=False):
         old_status = self.status
         self.can_be_deleted = False
