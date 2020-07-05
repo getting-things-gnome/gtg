@@ -66,5 +66,4 @@ class SendEmailPlugin():
         parameters = urllib.parse.urlencode({'subject': title, 'body': body})
         parameters = parameters.replace('+', '%20')
 
-        Gio.app_info_get_default_for_uri_scheme('mailto').launch_uris(
-            ['mailto:' + 'gtg@example.com?' + parameters], None)
+        Gio.AppInfo.launch_default_for_uri(f'mailto:gtg@example.com?{parameters}')
