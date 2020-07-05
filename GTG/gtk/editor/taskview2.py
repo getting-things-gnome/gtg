@@ -22,7 +22,7 @@
 import re
 from time import time
 
-from gi.repository import Gtk, GLib, Gdk
+from gi.repository import Gtk, GLib, Gdk, GObject
 
 from GTG.core.logger import log
 from GTG.core.requester import Requester
@@ -31,8 +31,8 @@ from webbrowser import open as openurl
 from gettext import gettext as _
 from typing import List
 
-from GTG.gtk.editor.text_tags import (TitleTag, SubTaskTag, InvisibleTag,
-                                      TaskTagTag, InternalLinkTag, LinkTag)
+from GTG.gtk.editor.text_tags import (TitleTag, SubTaskTag, TaskTagTag,
+                                      InternalLinkTag, LinkTag)
 
 
 # Regex to find GTG's tags
@@ -114,14 +114,6 @@ class TaskView(Gtk.TextView):
     # URL currently right-clicked. This is used to populate the context menu
     clicked_link = None
 
-    # Keep track of subtasks in this task. Tags keeps all the subtask tags
-    # applied in the buffer, while 'to_delete' is a temporary list used in
-    # process() to determine which subtasks we have to delete from the task.
-    subtasks = {
-        'tags': [],
-        'to_delete': []
-    }
-
 
     def __init__(self, req: Requester, clipboard) -> None:
         super().__init__()
@@ -144,6 +136,15 @@ class TaskView(Gtk.TextView):
         # Add title tag
         self.title_tag = TitleTag()
         self.table.add(self.title_tag)
+
+        # Keep track of subtasks in this task. Tags keeps all the subtask tags
+        # applied in the buffer, while 'to_delete' is a temporary list used in
+        # process() to determine which subtasks we have to delete from the
+        # task.
+        self.subtasks = {
+            'tags': [],
+            'to_delete': []
+        }
 
         # Signals and callbacks
         self.id_modified = self.buffer.connect('changed', self.on_modified)
@@ -228,52 +229,117 @@ class TaskView(Gtk.TextView):
     def detect_subtasks(self, text: str, start: Gtk.TextIter) -> bool:
         """Detect a subtask line. Returns True if a subtask was found."""
 
-        if not text.startswith('- '):
-            return False
+        # This function has three paths:
+        # * "Initial" Path: We find the line starts with '- ' and has text.
+        # * "Modified" Path: We find the line starts with a subtask tag
+        # * "None" Path: The line doesn't have any subtasks
 
-        subtask_title = text[2:]
+        # The structure of a subtask in terms of text tags is:
+        # <subtask>[ ] <internal-link>Subtask name</internal-link></subtask>
 
-        if not subtask_title:
-            start.forward_line()
+        # Add a new subtask
+        if text.startswith('- ') and len(text[2:]) > 0:
+            # Remove the -
+            delete_end = start.copy()
+            delete_end.forward_chars(2)
+            self.buffer.delete(start, delete_end)
+
+            # Add new subtask
+            tid = self.new_subtask_cb(text[2:])
+            task = self.req.get_task(tid)
+
+            # Add the checkbox
+            self.add_checkbox(tid, start)
+            after_checkbox = start.copy()
+            after_checkbox.forward_char()
+
+            # Add the internal link
+            link_tag = InternalLinkTag(task)
+            self.table.add(link_tag)
+
+            end = start.copy()
+            end.forward_to_line_end()
+            self.buffer.apply_tag(link_tag, after_checkbox, end)
+            self.tags_applied.append(link_tag)
+
+            # Add the subtask tag
+            start.backward_char()
+            subtask_tag = SubTaskTag(task)
+            self.table.add(subtask_tag)
+            self.buffer.apply_tag(subtask_tag, start, end)
+
+            self.subtasks['tags'].append(tid)
             return True
 
-        # Tag initial line as invisible
-        invisible_end = start.copy()
-        invisible_end.forward_chars(2)
+        # A subtask already exists
+        elif start.starts_tag():
+            # Detect if it's a subtask tag
+            sub_tag = None
 
-        invisible_tag = InvisibleTag()
-        self.table.add(invisible_tag)
-        self.buffer.apply_tag(invisible_tag, start, invisible_end)
+            for tag in start.get_tags():
+                if type(tag) == SubTaskTag:
+                    sub_tag = tag
 
-        # Move beyond invisible tag
-        start.forward_chars(2)
+            # Otherwise return early
+            if not sub_tag:
+                return False
 
-        end = start.copy()
-        end.forward_to_line_end()
+            # Don't auto-remove it
+            tid = sub_tag.tid
+            self.subtasks['to_delete'].remove(tid)
+            self.rename_subtask_cb(tid, text)
 
-        # If it starts with a tag, store the tid and name
-        if start.starts_tag():
-            tag = start.get_tags()[0]
-            tid = tag.tid
+            # Get the task and instantiate an internal link tag
+            task = self.req.get_task(tid)
+            link_tag = InternalLinkTag(task)
+            self.table.add(link_tag)
 
-            if type(tag) is SubTaskTag:
-                self.subtasks['to_delete'].remove(tid)
+            # Apply the new internal link tag (which was removed
+            # by process())
+            after_checkbox = start.copy()
+            after_checkbox.forward_char()
+            end = start.copy()
+            end.forward_to_line_end()
+            self.buffer.apply_tag(link_tag, after_checkbox, end)
+            self.tags_applied.append(link_tag)
 
-            # Always rename if there's a tag
-            self.rename_subtask_cb(tid, subtask_title)
+            # Re-apply the subtask tag too
+            self.table.remove(sub_tag)
+            subtask_tag = SubTaskTag(task)
+            self.table.add(subtask_tag)
+            self.buffer.apply_tag(subtask_tag, start, end)
 
-            # Remove subtask tag and recreate
-            self.table.remove(tag)
+            return True
+
+        # No subtask, no fun
         else:
-            tid = self.new_subtask_cb(subtask_title)
-            self.subtasks['tags'].append(tid)
+            return False
+
+
+    def on_checkbox_toggle(self, task) -> None:
+        """Toggle a task status and refresh the subtask tag."""
+
+        task.toggle_status()
+        self.process()
+
+
+    def add_checkbox(self, tid: int, start: Gtk.TextIter) -> Gtk.TextIter:
+        """Add a checkbox for a subtask."""
 
         task = self.req.get_task(tid)
-        subtask_tag = SubTaskTag(task)
-        self.table.add(subtask_tag)
-        self.buffer.apply_tag(subtask_tag, start, end)
 
-        return True
+        checkbox = Gtk.CheckButton.new()
+        checkbox.connect('toggled', lambda _: self.on_checkbox_toggle(task))
+        checkbox.set_can_focus(False)
+
+        # Block the modified signal handler while we add the anchor
+        # for the checkbox widget
+        with GObject.signal_handler_block(self.buffer, self.id_modified):
+            anchor = self.buffer.create_child_anchor(start)
+            self.add_child_at_anchor(checkbox, anchor)
+
+        self.buffer.set_modified(False)
+        checkbox.show()
 
 
     def detect_tag(self, text: str, start: Gtk.TextIter) -> None:

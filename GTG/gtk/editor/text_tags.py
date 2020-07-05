@@ -30,52 +30,10 @@ from webbrowser import open as openurl
 class SubTaskTag(Gtk.TextTag):
     """Subtask Text tag."""
 
-
     def __init__(self, task: Task) -> None:
         super().__init__()
 
         self.tid = task.tid
-
-        self.set_property('background', 'white')
-        self.set_property('underline', Pango.Underline.SINGLE)
-        self.set_property('left-margin', 40)
-
-        if task.status == Task.STA_ACTIVE:
-            self.set_property('strikethrough', False)
-            self.set_property('foreground', '#007bff')
-        else:
-            self.set_property('strikethrough', True)
-            self.set_property('foreground', 'gray')
-
-        self.connect('event', self.on_tag)
-
-
-    def on_tag(self, tag, view, event, _iter) -> None:
-        """Callback for events that happen inside the tag."""
-
-        button = event.get_button()
-
-        # If there was a click...
-        if button[0] and button[1] == 1:
-            view.open_subtask_cb(self.tid)
-
-
-    def activate(self, view) -> None:
-        """Open the link in this tag."""
-
-        view.open_subtask(self.tid)
-
-
-    def set_hover(self) -> None:
-        """Change tag appareance when hovering."""
-
-        self.set_property('background', 'light gray')
-
-
-    def reset(self) -> None:
-        """Reset tag appareance when not hovering."""
-
-        self.set_property('background', 'white')
 
 
 class InvisibleTag(Gtk.TextTag):
@@ -112,7 +70,7 @@ class InternalLinkTag(Gtk.TextTag):
 
         self.tid = task.tid
 
-        self.set_property('background', 'white')
+        # self.set_property('background', 'white')
         self.set_property('underline', Pango.Underline.SINGLE)
 
         if task.status == Task.STA_ACTIVE:
