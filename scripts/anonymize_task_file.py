@@ -19,7 +19,8 @@ import os
 import sys
 
 from xml.dom.minidom import parse
-from xdg.BaseDirectory import xdg_data_home
+
+from gi.repository import GLib
 
 
 def anonymize(filename, outputfile):
@@ -83,7 +84,7 @@ def main():
         xmlfile = sys.argv[1]
     else:
         try:
-            data_dir = os.path.join(xdg_data_home, "gtg")
+            data_dir = os.path.join(GLib.get_user_data_dir(), "gtg")
             project_filepath = os.path.join(data_dir, "projects.xml")
             dom = parse(project_filepath)
             xmlproject = dom.getElementsByTagName("backend")[0]

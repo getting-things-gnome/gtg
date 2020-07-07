@@ -1,6 +1,5 @@
 nose
 spec
-pyxdg
 pyflakes
 pycodestyle
 mock
