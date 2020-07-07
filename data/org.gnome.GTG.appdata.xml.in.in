@@ -69,8 +69,8 @@
     <updatecontact>nekohayo+gtg@gmail.com</updatecontact>
 
     <releases>
-        <release version="0.4_RC" date="2020-06-11" type="development">
-            <url>https://fortintam.com/blog/2020-06-gtg-status-update/</url>
+        <release version="0.4" date="2020-07-07">
+            <url>https://fortintam.com/blog/gtg-0-4-released</url>
         </release>
         <release version="0.3.1" date="2013-11-24">
             <url>https://github.com/getting-things-gnome/gtg/blob/ba480d5ed61ec36702301b25ebc6c40d37c2c352/docs/source/releases/v0.3.1.rst</url>
