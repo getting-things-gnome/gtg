@@ -64,7 +64,7 @@ AUTHORS_RELEASE_CONTRIBUTORS = """
 • Luca Falavigna
 • Atit Anand
 • Chenxiong Qi
-• Januz
+• "Neui"
 • Pawan Hegde
 • Amy Chan
 • Olivier Mehani
@@ -74,6 +74,7 @@ AUTHORS_RELEASE_CONTRIBUTORS = """
 • Bertrand Rousseau
 • François Boulogne
 • Joe R. Nassimian
+• Josh Crompton
 • Thomas Spura
 """
 
