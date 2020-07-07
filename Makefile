@@ -37,11 +37,11 @@ clean:
 
 # Check for common & easily catchable Python mistakes.
 pyflakes:
-	$(PYFLAKES) GTG tests scripts run-tests setup.py
+	$(PYFLAKES) GTG tests scripts run-tests
 
 # Check for coding standard violations.
 pep8:
-	$(PEP8) --statistics --count --repeat --max-line-length=100 --ignore=E128 GTG tests scripts run-tests setup.py
+	$(PEP8) --statistics --count --repeat --max-line-length=100 --ignore=E128 GTG tests scripts run-tests
 
 # Check for coding standard violations & flakes.
 lint: pyflakes pep8
