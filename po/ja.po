@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-06-07 14:37-0400\n"
+"POT-Creation-Date: 2020-07-07 00:42-0400\n"
 "PO-Revision-Date: 2011-12-05 08:25+0000\n"
 "Last-Translator: 9APPAT3CH <Unknown>\n"
 "Language-Team: Japanese <debian-japanese@lists.debian.org>\n"
@@ -19,56 +19,63 @@ msgstr ""
 "X-Launchpad-Export-Date: 2013-04-29 04:39+0000\n"
 "X-Generator: Launchpad (build 16580)\n"
 
-#: data/org.gnome.GTG.appdata.xml.in.in:9
+#: data/org.gnome.GTG.appdata.xml.in.in:5 data/org.gnome.GTG.desktop.in.in:4
+msgid "Getting Things GNOME!"
+msgstr ""
+
+#: data/org.gnome.GTG.appdata.xml.in.in:6
+#, fuzzy
+msgid "Personal tasks and TODO-list items organizer"
+msgstr ""
+"\n"
+"Getting Things Gnome! は GNOME デスクトップ環境用のタスク管理ツールです。"
+
+#: data/org.gnome.GTG.appdata.xml.in.in:11
 msgid ""
 "\"Getting Things GNOME\" (GTG) is a personal tasks and ToDo list organizer "
 "inspired by the \"Getting Things Done\" (GTD) methodology."
 msgstr ""
 
-#: data/org.gnome.GTG.appdata.xml.in.in:10
+#: data/org.gnome.GTG.appdata.xml.in.in:12
 msgid ""
 "GTG is intended to help you track everything you need to do and need to "
 "know, from small tasks to large projects. GTG's user interface is designed "
 "to accommodate many workflows, with features such as:"
 msgstr ""
 
-#: data/org.gnome.GTG.appdata.xml.in.in:12
+#: data/org.gnome.GTG.appdata.xml.in.in:14
 msgid "a very flexible tagging and searching system;"
 msgstr ""
 
-#: data/org.gnome.GTG.appdata.xml.in.in:13
+#: data/org.gnome.GTG.appdata.xml.in.in:15
 msgid "natural language parsing and a free-form task text editor;"
 msgstr ""
 
-#: data/org.gnome.GTG.appdata.xml.in.in:14
+#: data/org.gnome.GTG.appdata.xml.in.in:16
 msgid ""
 "projects/task dependencies (infinite sub-tasks), start dates and due dates;"
 msgstr ""
 
-#: data/org.gnome.GTG.appdata.xml.in.in:15
+#: data/org.gnome.GTG.appdata.xml.in.in:17
 msgid ""
 "an \"Actionable\" tasks view mode to help you stay focused during your work;"
 msgstr ""
 
-#: data/org.gnome.GTG.appdata.xml.in.in:16
+#: data/org.gnome.GTG.appdata.xml.in.in:18
 msgid ""
 "the ability to effortlessly defer tasks to common upcoming days, or to a "
 "custom date."
 msgstr ""
 
-#: data/org.gnome.GTG.appdata.xml.in.in:36
+#: data/org.gnome.GTG.appdata.xml.in.in:68
 msgid "The GTG team"
 msgstr ""
 
-#: data/org.gnome.GTG.desktop.in:4
-msgid "Getting Things GNOME!"
-msgstr ""
-
-#: data/org.gnome.GTG.desktop.in:5
+#: data/org.gnome.GTG.desktop.in.in:5
 msgid "Task Manager"
 msgstr ""
 
-#: data/org.gnome.GTG.desktop.in:6
+#: data/org.gnome.GTG.desktop.in.in:6
 #, fuzzy
 msgid ""
 "Personal tasks and TODO-list items organizer for the GNOME desktop "
@@ -78,7 +85,7 @@ msgstr ""
 "Getting Things Gnome! は GNOME デスクトップ環境用のタスク管理ツールです。"
 
 #. Translators: Search terms to find this application. Do NOT translate or localize the semicolons! The list MUST also end with a semicolon!
-#: data/org.gnome.GTG.desktop.in:14
+#: data/org.gnome.GTG.desktop.in.in:14
 msgid ""
 "Organizer;Task;Tasks;Projects;Activities;Productivity;Plan;Planning;Planner;"
 "Time;Management;Scheduling;GTD;gtg;Todo;"
@@ -151,7 +158,7 @@ msgstr "完了にする"
 msgid "Dismiss"
 msgstr "片付ける"
 
-#: GTG/gtk/data/context_menus.ui:56 GTG/gtk/browser/main_window.py:1076
+#: GTG/gtk/data/context_menus.ui:56 GTG/gtk/browser/main_window.py:1077
 #, fuzzy
 msgid "Set Start Date"
 msgstr "開始日"
@@ -209,7 +216,7 @@ msgstr ""
 msgid "Clear Start Date"
 msgstr "開始日"
 
-#: GTG/gtk/data/context_menus.ui:121 GTG/gtk/browser/main_window.py:1087
+#: GTG/gtk/data/context_menus.ui:121 GTG/gtk/browser/main_window.py:1088
 msgid "Set Due Date"
 msgstr ""
 
@@ -439,7 +446,7 @@ msgstr ""
 msgid "About GTG"
 msgstr "GTG! について"
 
-#: GTG/gtk/data/main_window.ui:382 GTG/gtk/browser/treeview_factory.py:290
+#: GTG/gtk/data/main_window.ui:382 GTG/gtk/browser/treeview_factory.py:302
 msgid "Tags"
 msgstr "タグ"
 
@@ -451,17 +458,21 @@ msgstr ""
 msgid "Save Search"
 msgstr ""
 
-#: GTG/gtk/data/main_window.ui:483 GTG/plugins/export/export.ui:207
+#: GTG/gtk/data/main_window.ui:483
+msgctxt "tasks view name"
 msgid "Open"
 msgstr ""
 
 #: GTG/gtk/data/main_window.ui:497
+msgctxt "tasks view name"
 msgid "Actionable"
 msgstr ""
 
 #: GTG/gtk/data/main_window.ui:512
+#, fuzzy
+msgctxt "tasks view name"
 msgid "Closed"
-msgstr ""
+msgstr "終了日"
 
 #: GTG/gtk/data/main_window.ui:540
 msgid ""
@@ -627,6 +638,10 @@ msgstr ""
 
 #: GTG/plugins/export/export.ui:124
 msgid "<b>Select a format for your tasks</b>"
+msgstr ""
+
+#: GTG/plugins/export/export.ui:207
+msgid "Open"
 msgstr ""
 
 #: GTG/plugins/export/export.ui:221
@@ -1362,49 +1377,49 @@ msgstr ""
 
 #. These lines should be in info.py, but due to their dynamic nature
 #. there'd be no way to show them translated in Gtk's About dialog:
-#: GTG/gtk/browser/main_window.py:303
+#: GTG/gtk/browser/main_window.py:304
 #, python-format
 msgid "Copyright © 2008-%d the GTG contributors."
 msgstr ""
 
 #. GTK prefixes the first line with "Created by ",
 #. but we can't split the string because it would cause trouble for some languages.
-#: GTG/gtk/browser/main_window.py:308
+#: GTG/gtk/browser/main_window.py:309
 msgid "GTG was made by many contributors around the world."
 msgstr ""
 
-#: GTG/gtk/browser/main_window.py:309
+#: GTG/gtk/browser/main_window.py:310
 msgid "The GTG project is maintained/administered by:"
 msgstr ""
 
-#: GTG/gtk/browser/main_window.py:311
+#: GTG/gtk/browser/main_window.py:312
 msgid "This release was brought to you by the efforts of these people:"
 msgstr ""
 
-#: GTG/gtk/browser/main_window.py:313
+#: GTG/gtk/browser/main_window.py:314
 #, python-brace-format
 msgid ""
 "Many others contributed to GTG over the years.\n"
 "You can see them on {OH_stats} and {GH_stats}."
 msgstr ""
 
-#: GTG/gtk/browser/main_window.py:321
+#: GTG/gtk/browser/main_window.py:322
 msgid "GTG website"
 msgstr "GTG ウェブサイト"
 
 #. Translators for a particular language should put their names here.
 #. Please keep the width at 80 chars max, as GTK3's About dialog won't wrap text.
 #. GtkAboutDialog will detect if “translator-credits” is untranslated and auto-hide the tab.
-#: GTG/gtk/browser/main_window.py:334
+#: GTG/gtk/browser/main_window.py:335
 msgid "translator-credits"
 msgstr ""
 
-#: GTG/gtk/browser/main_window.py:636
+#: GTG/gtk/browser/main_window.py:637
 #, fuzzy
 msgid "Hide Sidebar"
 msgstr "サイドバーにタグ表示(_T)"
 
-#: GTG/gtk/browser/main_window.py:638
+#: GTG/gtk/browser/main_window.py:639
 #, fuzzy
 msgid "Show Sidebar"
 msgstr "サイドバーにタグ表示(_T)"
@@ -1453,28 +1468,34 @@ msgid "Select Tag Color:"
 msgstr ""
 
 #. Default icon
-#: GTG/gtk/browser/tag_editor.py:302
+#: GTG/gtk/browser/tag_editor.py:299
 msgid ""
 "Click to\n"
 "Set Icon"
 msgstr ""
 
-#: GTG/gtk/browser/treeview_factory.py:333
+#. Build the title/label/tags columns
+#: GTG/gtk/browser/treeview_factory.py:340
+#, fuzzy
+msgid "Tasks"
+msgstr "タスク(_T)"
+
+#: GTG/gtk/browser/treeview_factory.py:345
 #, fuzzy
 msgid "Start Date"
 msgstr "開始日"
 
-#: GTG/gtk/browser/treeview_factory.py:344
+#: GTG/gtk/browser/treeview_factory.py:356
 msgid "Due"
 msgstr "締切"
 
 #. Build the title/label/tags columns
-#: GTG/gtk/browser/treeview_factory.py:359
+#: GTG/gtk/browser/treeview_factory.py:371
 #, fuzzy
 msgid "Closed Tasks"
 msgstr "終了したタスクをパネルで表示(_C)"
 
-#: GTG/gtk/browser/treeview_factory.py:364
+#: GTG/gtk/browser/treeview_factory.py:376
 #, fuzzy
 msgid "Closed Date"
 msgstr "終了日"
@@ -1535,11 +1556,11 @@ msgstr ""
 msgid "GTG could not generate the document: %s"
 msgstr ""
 
-#: GTG/plugins/export/export.py:183
+#: GTG/plugins/export/export.py:184
 msgid "Export the tasks currently listed"
 msgstr ""
 
-#: GTG/plugins/export/export.py:314
+#: GTG/plugins/export/export.py:315
 msgid "Choose where to save your list"
 msgstr "リストをどこに保存するかを選んでください"
 
@@ -1631,6 +1652,10 @@ msgstr ""
 msgid "Task: %(task_title)s"
 msgstr ""
 
+#: GTG/plugins/untouched_tasks/untouchedTasks.py:64
+msgid "Add @untouched tag"
+msgstr ""
+
 #~ msgid "Mark as not done"
 #~ msgstr "未完了にする"
 
@@ -1687,9 +1712,6 @@ msgstr ""
 
 #~ msgid "Title"
 #~ msgstr "タイトル"
-
-#~ msgid "_Tasks"
-#~ msgstr "タスク(_T)"
 
 #~ msgid "New _Task"
 #~ msgstr "新しいタスク(_T)"
