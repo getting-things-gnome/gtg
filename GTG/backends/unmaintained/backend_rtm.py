@@ -24,12 +24,12 @@ from functools import reduce
 import html
 import datetime
 import os
-import subprocess
 import threading
 import time
 import uuid
 
 from dateutil.tz import tzutc, tzlocal
+from gi.repository import Gio
 
 from GTG.backends.backend_signals import BackendSignals
 from GTG.backends.generic_backend import GenericBackend
@@ -562,7 +562,7 @@ class RTMProxy():
             if not self.token:
                 self.rtm = createRTM(
                     self.PUBLIC_KEY, self.PRIVATE_KEY, self.token)
-                subprocess.Popen(['xdg-open', self.rtm.getAuthURL()])
+                Gio.AppInfo.launch_default_for_uri(self.rtm.getAuthURL(), None)
                 self.auth_confirm()
                 try:
                     time.sleep(1)
