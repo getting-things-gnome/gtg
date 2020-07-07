@@ -24,7 +24,6 @@ import subprocess
 import webbrowser
 
 from gi.repository import GObject, Gtk, GdkPixbuf
-from xdg.BaseDirectory import xdg_config_home
 
 from gettext import gettext as _
 from GTG.core.logger import log
@@ -42,40 +41,9 @@ for dependence in "pdflatex", "pdftk", "pdfjam":
         raise ImportError(f'Missing command "{dependence}"')
 
 
-def get_user_dir(key):
-    """
-    http://www.freedesktop.org/wiki/Software/xdg-user-dirs
-     - XDG_DESKTOP_DIR
-     - XDG_DOWNLOAD_DIR
-     - XDG_TEMPLATES_DIR
-     - XDG_PUBLICSHARE_DIR
-     - XDG_DOCUMENTS_DIR
-     - XDG_MUSIC_DIR
-     - XDG_PICTURES_DIR
-     - XDG_VIDEOS_DIR
-
-    Taken from FrontBringer
-    (distributed under the GNU GPL v3 license),
-    courtesy of Jean-François Fortin Tam.
-    """
-    user_dirs_dirs = os.path.join(xdg_config_home, "user-dirs.dirs")
-    user_dirs_dirs = os.path.expanduser(user_dirs_dirs)
-    if not os.path.exists(user_dirs_dirs):
-        return
-    for line in open(user_dirs_dirs, "r"):
-        if line.startswith(key):
-            return os.path.expandvars(line[len(key) + 2:-2])
-
-
 def get_desktop_dir():
-    """ Returns path to desktop dir based on XDG.
-
-    If XDG is not setup corectly, use home directory instead """
-    desktop_dir = get_user_dir("XDG_DESKTOP_DIR")
-    if desktop_dir is not None and os.path.exists(desktop_dir):
-        return desktop_dir
-    else:
-        return os.path.expanduser('~')
+    """ Returns path to desktop dir. """
+    return GLib.get_user_special_dir(GLib.UserDirectory.DIRECTORY_DESKTOP)
 
 
 class ExportPlugin():
