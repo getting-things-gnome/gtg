@@ -31,6 +31,7 @@ Later, when you want to update to the latest development version (assuming you a
 * pycairo
 * pygobject (>= 3.20)
 * libLarch (>= 3.0)
+* lxml
 * itstool
 * gettext
 * Introspection (GIR) files and libraries from:
@@ -42,9 +43,9 @@ Later, when you want to update to the latest development version (assuming you a
 You can get most of those from your distribution packages:
 
     # On Fedora
-    sudo dnf install meson python3-dbus python3-cairo python3-gobject gtk3 itstool gettext
+    sudo dnf install meson python3-dbus python3-cairo python3-gobject gtk3 itstool gettext python3-lxml
     # On Debian/Ubuntu
-    sudo apt install meson python3-dbus python3-cairo python3-gi gir1.2-pango-1.0 gir1.2-gdkpixbuf-2.0 gir1.2-gtk-3.0 itstool gettext
+    sudo apt install meson python3-dbus python3-cairo python3-gi gir1.2-pango-1.0 gir1.2-gdkpixbuf-2.0 gir1.2-gtk-3.0 itstool gettext python3-lxml
 
 liblarch may be harder to come by until distributions package the python3 version of it, alongside GTG 0.4+ itself.
 You can get it meanwhile via PIP (commonly provided by python3-pip package):
