@@ -19,6 +19,12 @@
 import gi
 
 try:
+    gi.require_version('Secret', '1')
+    from gi.repository import Secret
+except (ValueError, ImportError):
+    Secret = None
+
+try:
     gi.require_version('GnomeKeyring', '1.0')
     from gi.repository import GnomeKeyring
 except (ValueError, ImportError):
@@ -27,6 +33,31 @@ except (ValueError, ImportError):
 from GTG.core.borg import Borg
 from GTG.core.logger import log
 
+class SecretKeyring(Borg):
+    def __init__(self):
+        super().__init__()
+        self._SECRET_SCHEMA = Secret.Schema.new("io.github.getting-things-gnome.gtg.v1",
+            Secret.SchemaFlags.NONE,
+            {
+                "id": Secret.SchemaAttributeType.STRING,
+            }
+        )
+
+    def set_password(self, pass_name, password):
+        log.debug(f"set_password {pass_name}")
+        result = Secret.password_store_sync(
+                self._SECRET_SCHEMA, { "id": pass_name },
+                Secret.COLLECTION_DEFAULT, str(pass_name), password, None)
+
+        if not result:
+            raise Exception(f"Can't create a new password: {result}")
+
+        return pass_name
+
+    def get_password(self, pass_name):
+        log.debug(f"get_password {pass_name}")
+        passwd= Secret.password_lookup_sync(self._SECRET_SCHEMA, { "id": pass_name }, None)
+        return passwd or ""
 
 class GNOMEKeyring(Borg):
 
@@ -51,11 +82,11 @@ class GNOMEKeyring(Borg):
         if result != GnomeKeyring.Result.OK:
             raise Exception(f"Can't create a new password, error={result}")
 
-        return password_id
+        return str(password_id)
 
     def get_password(self, item_id):
         result, item_info = GnomeKeyring.item_get_info_sync(
-            self.keyring, item_id)
+            self.keyring, int(item_id))
         if result == GnomeKeyring.Result.OK:
             return item_info.get_secret()
         else:
@@ -79,13 +110,15 @@ class FallbackKeyring(Borg):
             self.max_key += 1
 
         self.keyring[self.max_key] = password
-        return self.max_key
+        return str(self.max_key)
 
     def get_password(self, key):
-        return self.keyring.get(key, "")
+        return self.keyring.get(int(key), "")
 
 
-if GnomeKeyring is not None:
+if Secret is not None:
+    Keyring = SecretKeyring
+elif GnomeKeyring is not None:
     Keyring = GNOMEKeyring
 else:
     log.info("GNOME keyring not found, passwords will be not stored after restarting GTG")
