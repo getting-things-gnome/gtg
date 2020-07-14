@@ -100,6 +100,8 @@ class Date():
             self._parse_init_value(NODATE)
         elif isinstance(value, datetime.date):
             self._real_date = value
+        elif isinstance(value, datetime.datetime):
+            self._real_date = value.date()
         elif isinstance(value, Date):
             # Copy internal values from other Date object
             self._real_date = value._real_date
@@ -161,6 +163,8 @@ class Date():
                 else:
                     return False
             return self.date() < other.date()
+        elif isinstance(other, datetime.datetime):
+            return self.date() < other.date()
         elif isinstance(other, datetime.date):
             return self.date() < other
         else:
@@ -176,6 +180,8 @@ class Date():
                 else:
                     return True
             return self.date() <= other.date()
+        elif isinstance(other, datetime.datetime):
+            return self.date() <= other.date()
         elif isinstance(other, datetime.date):
             return self.date() <= other
         else:
@@ -189,6 +195,8 @@ class Date():
                 return self.is_fuzzy() == other.is_fuzzy()
             else:
                 return False
+        elif isinstance(other, datetime.datetime):
+            return self.date() == other.date()
         elif isinstance(other, datetime.date):
             return self.date() == other
         else:
@@ -202,6 +210,8 @@ class Date():
                 return self.is_fuzzy() != other.is_fuzzy()
             else:
                 return True
+        elif isinstance(other, datetime.datetime):
+            return self.date() != other.date()
         elif isinstance(other, datetime.date):
             return self.date() != other
         else:
@@ -217,6 +227,8 @@ class Date():
                 else:
                     return False
             return self.date() > other.date()
+        elif isinstance(other, datetime.datetime):
+            return self.date() > other.date()
         elif isinstance(other, datetime.date):
             return self.date() > other
         else:
@@ -231,6 +243,8 @@ class Date():
                     return False
                 else:
                     return True
+            return self.date() >= other.date()
+        elif isinstance(other, datetime.datetime):
             return self.date() >= other.date()
         elif isinstance(other, datetime.date):
             return self.date() >= other

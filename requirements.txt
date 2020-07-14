@@ -7,3 +7,4 @@ mock
 dbus-python
 PyGObject
 pycairo
+caldav
