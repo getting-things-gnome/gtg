@@ -1,6 +1,7 @@
 gtg_backend_sources = [
   '__init__.py',
   'backend_localfile.py',
+  'backend_caldav.py',
   'backend_signals.py',
   'generic_backend.py',
   'periodic_import_backend.py',

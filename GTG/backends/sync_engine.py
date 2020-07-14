@@ -26,6 +26,7 @@ It works like this:
    update it or, if the other one has been removed, remove also this one
 """
 from GTG.core.twokeydict import TwoKeyDict
+from GTG.core.logger import log
 
 
 TYPE_LOCAL = "local"
@@ -207,22 +208,29 @@ class SyncEngine():
         if is_local:
             get_other_id = self.sync_memes.get_remote_id
             is_task_present = has_remote
+            msg = f"analyze_local_id(loc={element_id}, rem="
         else:
             get_other_id = self.sync_memes.get_local_id
             is_task_present = has_local
+            msg = f"analyze_remote_id(rem={element_id}, loc="
 
         try:
             other_id = get_other_id(element_id)
             if is_task_present(other_id):
                 if is_syncable:
+                    log.debug(f"{msg}{other_id}, present) -> update")
                     return self.UPDATE, other_id
                 else:
+                    log.debug(f"{msg}{other_id}, present, sync={is_syncable}) -> lost syncability")
                     return self.LOST_SYNCABILITY, other_id
             else:
+                log.debug(f"{msg}{other_id}, absent) -> remove")
                 return self.REMOVE, None
         except KeyError:
             if is_syncable:
+                log.debug(f"{msg}None) -> add")
                 return self.ADD, None
+            log.debug(f"{msg}None, sync={is_syncable}) -> None")
             return None, None
 
     def analyze_local_id(self, element_id, *other_args):
