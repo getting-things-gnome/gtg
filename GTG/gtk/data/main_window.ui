@@ -254,9 +254,9 @@
         <child>
           <object class="GtkModelButton" id="synchronization">
             <property name="visible">True</property>
-            <property name="sensitive">False</property>
             <property name="can_focus">False</property>
             <property name="receives_default">True</property>
+            <property name="action_name">app.open_backends</property>
             <property name="text" translatable="yes">Synchronization</property>
           </object>
           <packing>

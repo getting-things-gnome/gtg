@@ -27,8 +27,8 @@ Later, when you want to update to the latest development version (assuming you a
 
 The main software dependencies are listed in the "requirements.txt" file, which is a file that Python's "PIP" dependency solving tool can use to install everything you need and make things easier. You can install PIP by typing one of the following commands:
 
-    sudo dnf install python3-pip  # On Fedora
-    sudo apt install python3-pip  # On Ubuntu/Debian
+    sudo dnf install python3-pip python3-devel  # On Fedora
+    sudo apt install python3-pip python3-dev # On Ubuntu/Debian
 
 If you want to install the majority of those dependencies using Linux distribution packages (instead of PIP), you can do this:
 
