@@ -23,46 +23,97 @@
 
   <xs:include schemaLocation="_types.xsd"/>
   <xs:include schemaLocation="http://xml.r00t2.io/schema/lib/types/std.xsd"/>
+  <xs:include schemaLocation="http://xml.r00t2.io/schema/lib/types/unix.xsd"/>
 
   <!-- ############################################################################################################# -->
 
+  <xs:complexType name="e_gtg_tag">
+    <!--
+      If https://github.com/getting-things-gnome/gtg/issues/279#issuecomment-659198547 § "Tags" is implemented
+      (e.g. the name is switched to the text component instead of an attribute), uncomment the below and remove the
+      "name" attribute defined.
+    -->
+    <!--
+    <xs:simpleContent>
+      <xs:restriction base="t_std_UUID4"/>
+    </xs:simpleContent>
+    -->
+    <!--
+      TODO: Any restrictions on valid chars/length (min/max) for tag names?
+    -->
+    <xs:attribute name="name" type="xs:string" use="required"/>
+    <xs:attribute name="id" type="t_std_UUID4" use="required"/>
+    <!--
+      TODO: Down the line, you can set use="optional" and default="(whatever the default color's hex is)"
+            LXML can then auto-populate it at parse time, or explicitly populate it on creation based on default value
+            if one is not defined.
+    -->
+    <!--
+      TODO: Will tags currently always have a color defined explicitly?
+            If not, set use="optional".
+    -->
+    <xs:attribute name="color" type="xs:hexBinary" use="required"/>
+    <!--
+      TODO: Is this always a relative path or specific filename?
+            If always relative, change type to "t_unix_relfilepath".
+            If always a filename (i.e. no directory traversal), change type to "t_unix_portablePosixFilename".
+    -->
+    <xs:attribute name="icon" type="t_unix_anyfile" use="optional"/>
+  </xs:complexType>
+
   <xs:complexType name="e_gtg_task">
-    <xs:sequence>
-      <xs:choice minOccurs="1" maxOccurs="unbounded">
-        <xs:element name="title" type="xs:string"/>
+    <xs:sequence minOccurs="1" maxOccurs="5">
+      <xs:choice minOccurs="1" maxOccurs="5">
+        <xs:element name="title" type="xs:string" minOccurs="1" maxOccurs="1"/>
+        <xs:element name="tags" minOccurs="0" maxOccurs="1">
+          <xs:complexType>
+            <xs:sequence minOccurs="0" maxOccurs="unbounded">
+              <xs:element name="tag" type="t_std_UUID4" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
         <!--
-          TODO: In strict XML naming conventions, this should be "addedDate".
+          NOTE: xs:dateTime accepts several different ISO 8601 formats.
+                All *fixed* (i.e. non-fuzzy) dates MUST be in the form:
+                  %Y-%m-%dT%H:%M:%SZ (e.g. 2020-07-16T02:08:00Z)
+                so that it simplifies datetime.datetime.strptime() handling.
         -->
-        <xs:element name="addeddate" type="xs:dateTime" minOccurs="1" maxOccurs="1"/>
-        <!--
-          TODO: Should it allow unbounded modified times or does it only track the most recent?
-                Additionally, it should perhaps be renamed to "modifyDate" to conform to addedDate/doneDate.
-        -->
-        <xs:element name="modified" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
-        <xs:element name="subtask" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
-        <!--
-          TODO: In strict XML naming conventions, this should be "doneDate".
-        -->
-        <xs:element name="donedate" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
-        <!--
-          TODO: What exactly is this? Does it contain any attributes? Can it contain any children?
-        -->
-        <xs:element name="task-remote-ids" minOccurs="0" maxOccurs="1"/>
+        <xs:element name="dates" minOccurs="1" maxOccurs="1">
+          <xs:complexType>
+            <xs:sequence minOccurs="2" maxOccurs="5">
+              <xs:choice minOccurs="2" maxOccurs="5">
+                <xs:element name="addedDate" type="xs:dateTime" minOccurs="1" maxOccurs="1"/>
+                <xs:element name="modifyDate" type="xs:dateTime" minOccurs="1" maxOccurs="1"/>
+                <xs:element name="doneDate" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
+                <xs:element name="startDate" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
+                <!--
+                  NOTE: At MOST one of the below may (optionally) be specified in the task's dates.
+                -->
+                <xs:choice minOccurs="0" maxOccurs="1">
+                  <xs:element name="dueDate" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
+                  <xs:element name="fuzzyDueDate" type="t_gtg_fuzzyDueDates" minOccurs="0" maxOccurs="1"/>
+                </xs:choice>
+              </xs:choice>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
         <xs:element name="content" type="xs:string" minOccurs="1" maxOccurs="1"/>
+        <xs:element name="subtasks" minOccurs="0" maxOccurs="1">
+          <xs:complexType>
+            <xs:sequence minOccurs="1" maxOccurs="unbounded">
+              <xs:element name="sub" type="t_std_UUID4" minOccurs="1" maxOccurs="unbounded"/>
+            </xs:sequence>
+          </xs:complexType>
+          <xs:unique name="uniq_task_subtasks">
+            <xs:selector xpath="sub"/>
+            <xs:field xpath="."/>
+          </xs:unique>
+        </xs:element>
       </xs:choice>
     </xs:sequence>
-    <!--
-      NOTE: Technically, an ID of type t_std_UUID4.
-    -->
-    <xs:attribute name="id" type="xs:ID" use="required"/>
+    <xs:attribute name="id" type="t_std_UUID4" use="required"/>
     <xs:attribute name="status" type="t_gtg_taskStatus" use="required"/>
-    <xs:attribute name="uuid" type="t_std_UUID4" use="required"/>
-    <!--
-      TODO: Should this be a list? XSD specifies lists as space-separated.
-            Should it instead be split into a container child; would that make it easier to parse?
-            It would open up more flexibility in tag strings if so. And would allow us to verify via t_gtg_tagName.
-    -->
-    <xs:attribute name="tags" type="xs:string" use="optional"/>
+    <xs:attribute name="parent" type="t_std_UUID4" use="optional"/>
   </xs:complexType>
 
 </xs:schema>

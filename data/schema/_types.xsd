@@ -24,98 +24,19 @@
   <!-- ############################################################################################################# -->
   <!-- CUSTOM DATATYPES -->
 
-    <xs:simpleType name="t_gtg_backends">
+  <xs:simpleType name="t_gtg_fuzzyDueDates">
     <xs:restriction base="xs:string">
-      <!--
-        TODO: Since some backends start with "backend_" (except for generic_backend) and are already in their own
-              directory, do they really need the backend_ prefix/suffix?
-      -->
-      <xs:enumeration value="backend_localfile"/>
-      <xs:enumeration value="backend_signals"/>
-      <xs:enumeration value="generic_backend"/>
-      <xs:enumeration value="periodic_import_backend"/>
-      <xs:whiteSpace value="collapse"/>
+      <xs:enumeration value="now"/>
+      <xs:enumeration value="soon"/>
+      <xs:enumeration value="someday"/>
     </xs:restriction>
   </xs:simpleType>
 
-  <!--
-    TODO: Is it necessary for tag names to be prefixed with @? If not, they can be of type="xs:ID".
-          This will then allow attribute "parent" to use type="xs:IDREF" which will automatically fail
-          validation if its parent tag is not defined in the document. Or they can be NCName, etc.
-          Basically there's a way LXML can validate this for us automatically.
-          Or you can just use xs:ID without any validation of the @ prefix character ("@" is a valid char for
-          the xs:ID type if I recall correctly).
-    https://www.w3.org/TR/xmlschema-2/#ID
-    https://www.w3.org/TR/xmlschema-2/#IDREFS
-  -->
-  <xs:simpleType name="t_gtg_tagName">
-    <xs:restriction base="xs:string">
-      <!--
-        TODO: What are the valid characters for this?
-              Are characters from any human language allowed? Is hex? Are escape? etc.
-      -->
-      <!--
-        NOTE: Regex patterns in XML Schema are defined as having an implicit ^/$ anchor. Don't specify them.
-      -->
-      <xs:pattern value="@.*"/>
-      <xs:whiteSpace value="collapse"/>
-    </xs:restriction>
-  </xs:simpleType>
-
-  <!--
-    TODO: For what it's worth, XML supports native hex values.
-          I'd recommend removing the "#" prefix in the value and simply using type="xs:hexBinary".
-          Then you can get rid of the "t_gtg_hexColor" type definition.
-    https://www.w3.org/TR/xmlschema-2/#hexBinary
-  -->
-  <xs:simpleType name="t_gtg_hexColor">
-    <xs:restriction base="xs:string">
-      <xs:pattern value="#[A-Za-z0-9]{1,12}"/>
-      <xs:minLength value="2"/>
-      <xs:minLength value="13"/>
-      <!--
-        TODO: Does GTG assume full hex codes? Does it pad? It seems to pad, as my install has 6 and 12 char length
-              colors.
-              If it does not pad, comment out/remove the above pattern/minLength/maxLength and uncomment the below.
-              And let me know so I can create a more restrictive pattern to match possible value lengths.
-              But see the notes for the "color" attribute definition in `tags.xsd`.
-      -->
-      <!--
-      <xs:pattern value="#[A-Za-z]{6,12}"/>
-      <xs:minLength value="7"/>
-      <xs:maxLength value="13"/>
-      -->
-      <xs:whiteSpace value="collapse"/>
-    </xs:restriction>
-  </xs:simpleType>
-
-  <xs:simpleType name="t_gtg_special">
-    <xs:restriction base="xs:string">
-      <xs:enumeration value="all"/>
-      <xs:enumeration value="notag"/>
-      <xs:enumeration value="search"/>
-      <xs:enumeration value="sep"/>
-      <xs:whiteSpace value="collapse"/>
-    </xs:restriction>
-  </xs:simpleType>
-  
   <xs:simpleType name="t_gtg_taskStatus">
     <xs:restriction base="xs:string">
       <xs:enumeration value="Active"/>
       <xs:enumeration value="Dismiss"/>
       <xs:enumeration value="Done"/>
-      <xs:whiteSpace value="collapse"/>
-    </xs:restriction>
-  </xs:simpleType>
-
-  <!--
-    TODO: Currently, this is "True/False". I recommend changing the instances to "true"/"1" or "false"/"0" so you can
-          use the native xs:boolean type for it and get rid of the "t_gtg_strBool" type definition.
-  -->
-  <xs:simpleType name="t_gtg_strBool">
-    <xs:restriction base="xs:string">
-      <xs:enumeration value="True"/>
-      <xs:enumeration value="False"/>
       <xs:whiteSpace value="collapse"/>
     </xs:restriction>
   </xs:simpleType>

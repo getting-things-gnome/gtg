@@ -22,6 +22,7 @@ flatpak/cache
 flatpak/.flatpak-builder
 flatpak/bundles
 /.local_build/
+.idea/
 
 # src/ usually has development version of liblarch
 src/
