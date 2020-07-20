@@ -113,7 +113,6 @@
     </xs:sequence>
     <xs:attribute name="id" type="t_std_UUID4" use="required"/>
     <xs:attribute name="status" type="t_gtg_taskStatus" use="required"/>
-    <xs:attribute name="parent" type="t_std_UUID4" use="optional"/>
   </xs:complexType>
 
 </xs:schema>
