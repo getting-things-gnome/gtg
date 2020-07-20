@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xs:schema targetNamespace="https://wiki.gnome.org/Apps/GTG?projects"
+           xmlns="https://wiki.gnome.org/Apps/GTG?projects"
+           xmlns:config="https://wiki.gnome.org/Apps/GTG?projects"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           elementFormDefault="qualified"
+           attributeFormDefault="unqualified">
+
+  <!--
+    Getting Things GNOME! - a personal organizer for the GNOME desktop
+    Copyright (c) 2008-2013 - Lionel Dricot & Bertrand Rousseau
+
+    This program is free software: you can redistribute it and/or modify it under
+    the terms of the GNU General Public License as published by the Free Software
+    Foundation, either version 3 of the License, or (at your option) any later
+    version.
+
+    This program is distributed in the hope that it will be useful, but WITHOUT
+    ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+    FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+    details.
+
+    You should have received a copy of the GNU General Public License along with
+    this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+  <xs:include schemaLocation="http://xml.r00t2.io/schema/lib/types/unix.xsd"/>
+  <xs:include schemaLocation="_types.xsd"/>
+
+  <!-- ############################################################################################################# -->
+
+  <xs:element name="config">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="backend">
+          <xs:complexType>
+            <xs:attribute name="module" type="t_gtg_backends" use="required"/>
+            <!--
+              TODO: Is this always required? Only required for certain backends?
+            -->
+            <xs:attribute name="pid" type="xs:positiveInteger" use="optional" default="1"/>
+            <!--
+              TODO: If you wanted to follow strict XML naming conventions, "Default" should be lowercase.
+            -->
+            <xs:attribute name="Default" type="t_gtg_strBool" use="optional" default="False"/>
+            <xs:attribute name="enabled" type="t_gtg_strBool" use="optional" default="False"/>
+            <!--
+              TODO: Should this instead be an xs:list instead? How are tags entered?
+              https://www.w3schools.com/xml/el_list.asp
+            -->
+            <xs:attribute name="attached-tags" type="xs:string" use="optional"/>
+            <!--
+              There's no real way to validate this (just as pid) if it's conditional on the backend used.
+              XML Schema doesn't really have a concept of conditionals, just required vs. optional.
+            -->
+            <xs:attribute name="path" type="t_unix_anyfile" use="optional"/>
+            <!--
+              TODO: Are these all of the attributes for backends?
+            -->
+          </xs:complexType>
+        </xs:element>
+        <!--
+          TODO: Does config only contain backend elements or are other elements included?
+        -->
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+</xs:schema>

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xs:schema targetNamespace="https://wiki.gnome.org/Apps/GTG?tags"
+           xmlns="https://wiki.gnome.org/Apps/GTG?tags"
+           xmlns:tagstore="https://wiki.gnome.org/Apps/GTG?tags"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           elementFormDefault="qualified"
+           attributeFormDefault="unqualified">
+
+<!--
+  Getting Things GNOME! - a personal organizer for the GNOME desktop
+  Copyright (c) 2008-2013 - Lionel Dricot & Bertrand Rousseau
+
+  This program is free software: you can redistribute it and/or modify it under
+  the terms of the GNU General Public License as published by the Free Software
+  Foundation, either version 3 of the License, or (at your option) any later
+  version.
+
+  This program is distributed in the hope that it will be useful, but WITHOUT
+  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+  FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+  details.
+
+  You should have received a copy of the GNU General Public License along with
+  this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+  <xs:include schemaLocation="_types.xsd"/>
+
+  <!-- ############################################################################################################# -->
+
+  <xs:element name="tagstore">
+    <xs:complexType>
+      <xs:sequence minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="tag">
+          <xs:complexType>
+            <xs:attribute name="name" type="t_gtg_tagName" use="required"/>
+            <xs:attribute name="color" type="t_gtg_hexColor" use="optional"/>
+            <!--
+              TODO: Is there a default color defined statically or is that from the GTK settings/configuration?
+                    If it is defined statically, define it below and remove the above attribute definition.
+                    LXML can automatically populate defaults during validation, which are then available in
+                    the etree object as if they were defined by the user.
+            -->
+            <!-- <xs:attribute name="color" type="t_gtg_hexColor" default="#FFFFFF" use="optional"/> -->
+            <xs:attribute name="parent" type="t_gtg_tagName" use="optional"/>
+            <!--
+              TODO: Do any further restrictions need to be made on this string type? If so, it'll need a custom type.
+            -->
+            <xs:attribute name="icon" type="xs:string" use="optional"/>
+            <xs:attribute name="nonworkview" type="t_gtg_strBool" use="optional" default="false"/>
+            <!-- <xs:attribute name="nonworkview" type="xs:boolean" use="optional" default="false"/> -->
+            <xs:attribute name="special" type="t_gtg_special" use="optional"/>
+            <!--
+              TODO: Is this an accurate datatype?
+            -->
+            <xs:attribute name="label" type="xs:string" use="optional"/>
+            <xs:attribute name="order" type="xs:integer" use="optional" default="0"/>
+            <!--
+              TODO: Are those all of the attributes for tags?
+            -->
+          </xs:complexType>
+        </xs:element>
+        <!--
+          TODO: Does tagstore only contain tag elements or are other elements included?
+        -->
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+</xs:schema>

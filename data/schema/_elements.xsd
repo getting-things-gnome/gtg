@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           elementFormDefault="qualified"
+           attributeFormDefault="unqualified">
+
+  <!--
+    Getting Things GNOME! - a personal organizer for the GNOME desktop
+    Copyright (c) 2008-2013 - Lionel Dricot & Bertrand Rousseau
+
+    This program is free software: you can redistribute it and/or modify it under
+    the terms of the GNU General Public License as published by the Free Software
+    Foundation, either version 3 of the License, or (at your option) any later
+    version.
+
+    This program is distributed in the hope that it will be useful, but WITHOUT
+    ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+    FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+    details.
+
+    You should have received a copy of the GNU General Public License along with
+    this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+  <xs:include schemaLocation="_types.xsd"/>
+  <xs:include schemaLocation="http://xml.r00t2.io/schema/lib/types/std.xsd"/>
+
+  <!-- ############################################################################################################# -->
+
+  <xs:complexType name="e_gtg_task">
+    <xs:sequence>
+      <xs:choice minOccurs="1" maxOccurs="unbounded">
+        <xs:element name="title" type="xs:string"/>
+        <!--
+          TODO: In strict XML naming conventions, this should be "addedDate".
+        -->
+        <xs:element name="addeddate" type="xs:dateTime" minOccurs="1" maxOccurs="1"/>
+        <!--
+          TODO: Should it allow unbounded modified times or does it only track the most recent?
+                Additionally, it should perhaps be renamed to "modifyDate" to conform to addedDate/doneDate.
+        -->
+        <xs:element name="modified" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
+        <xs:element name="subtask" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+        <!--
+          TODO: In strict XML naming conventions, this should be "doneDate".
+        -->
+        <xs:element name="donedate" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
+        <!--
+          TODO: What exactly is this? Does it contain any attributes? Can it contain any children?
+        -->
+        <xs:element name="task-remote-ids" minOccurs="0" maxOccurs="1"/>
+        <xs:element name="content" type="xs:string" minOccurs="1" maxOccurs="1"/>
+      </xs:choice>
+    </xs:sequence>
+    <!--
+      NOTE: Technically, an ID of type t_std_UUID4.
+    -->
+    <xs:attribute name="id" type="xs:ID" use="required"/>
+    <xs:attribute name="status" type="t_gtg_taskStatus" use="required"/>
+    <xs:attribute name="uuid" type="t_std_UUID4" use="required"/>
+    <!--
+      TODO: Should this be a list? XSD specifies lists as space-separated.
+            Should it instead be split into a container child; would that make it easier to parse?
+            It would open up more flexibility in tag strings if so. And would allow us to verify via t_gtg_tagName.
+    -->
+    <xs:attribute name="tags" type="xs:string" use="optional"/>
+  </xs:complexType>
+
+</xs:schema>
