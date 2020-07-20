@@ -22,9 +22,6 @@ PYFLAKES=pyflakes
 
 check: tests pep8 pyflakes
 
-install:
-	pip3 install -r requirements.txt
-
 # Run all of the tests.
 tests:
 	./run-tests
