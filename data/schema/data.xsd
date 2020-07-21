@@ -85,10 +85,13 @@
             <!--
               This verifies that no two (or more!) tasks have the same content.
             -->
+            <!-- DISABLING BECAUSE IT WILL CHOKE ON EMPTY CONTENT ELEMENTS. -->
+            <!--
             <xs:unique name="uniq_task_content">
               <xs:selector xpath="gtgData:task/gtgData:content"/>
               <xs:field xpath="."/>
             </xs:unique>
+            -->
             <!--
               This verifies that no two (or more!) tasks have the same title (to avoid UX confusion).
             -->
