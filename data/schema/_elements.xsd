@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+<xs:schema targetNamespace="https://wiki.gnome.org/Apps/GTG"
+           xmlns="https://wiki.gnome.org/Apps/GTG"
+           xmlns:gtgData="https://wiki.gnome.org/Apps/GTG"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
            elementFormDefault="qualified"
            attributeFormDefault="unqualified">
 
@@ -71,6 +74,20 @@
               <xs:element name="tag" type="t_std_UUID4" minOccurs="0" maxOccurs="unbounded"/>
             </xs:sequence>
           </xs:complexType>
+          <!--
+            This verifies that tag IDs are valid...
+          -->
+          <xs:keyref name="key_task_tags" refer="key_tag_id">
+            <xs:selector xpath="*"/>
+            <xs:field xpath="@id"/>
+          </xs:keyref>
+          <!--
+            And this verifies that tag IDs are unique in a given task.
+          -->
+          <xs:unique name="uniq_task_tags">
+            <xs:selector xpath="*"/>
+            <xs:field xpath="."/>
+          </xs:unique>
         </xs:element>
         <!--
           NOTE: xs:dateTime accepts several different ISO 8601 formats.
@@ -104,8 +121,11 @@
               <xs:element name="sub" type="t_std_UUID4" minOccurs="1" maxOccurs="unbounded"/>
             </xs:sequence>
           </xs:complexType>
+          <!--
+            This verifies that subtask IDs are unique in a given task.
+          -->
           <xs:unique name="uniq_task_subtasks">
-            <xs:selector xpath="sub"/>
+            <xs:selector xpath="*"/>
             <xs:field xpath="."/>
           </xs:unique>
         </xs:element>
