@@ -166,6 +166,10 @@ class TaskView(Gtk.TextView):
     def process(self) -> None:
         """Process the contents of the text buffer."""
 
+        if not self.buffer.props.text:
+            # Why process if there's nothing to process
+            return
+
         log.debug(f'Processing text buffer after {self.PROCESSING_DELAY} ms')
         bench_start = time()
 
