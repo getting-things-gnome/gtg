@@ -216,7 +216,7 @@ class TaskView(Gtk.TextView):
         for tasktag in prev_tasktags.difference(self.task_tags):
             self.remove_tasktag_cb(tasktag)
 
-        log.debug(f'Processed in {time() - bench_start:.2} secs')
+        log.debug(f'Processed in {(time() - bench_start) * 1000:.2} ms')
 
         self.buffer.set_modified(False)
         self.save_cb()
