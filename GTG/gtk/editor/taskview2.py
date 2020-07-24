@@ -107,6 +107,9 @@ class TaskView(Gtk.TextView):
     # Callback to rename a subtask
     rename_subtask_cb = NotImplemented
 
+    # Refresh the task editor
+    refresh_cb = NotImplemented
+
     # Callback to save the task without refreshing the widget
     save_cb = NotImplemented
 
@@ -447,7 +450,12 @@ class TaskView(Gtk.TextView):
         self.buffer.apply_tag(self.title_tag, start, end)
         self.buffer.remove_tag(self.title_tag, end, buffer_end)
 
-        self.title = self.buffer.get_text(start, end, False)
+        title = self.buffer.get_text(start, end, False)
+
+        # If the title changed, save it and refresh the editor
+        if self.title != title:
+            self.title = title
+            self.refresh_cb(title)
 
         return end
 
