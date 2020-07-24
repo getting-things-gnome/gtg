@@ -186,7 +186,7 @@ class TaskEditor():
         self.textview.save_cb = self.light_save
         self.textview.add_tasktag_cb = task.add_tag
         self.textview.remove_tasktag_cb = task.remove_tag
-
+        self.textview.refresh_cb = self.refresh_editor
         # Voila! it's done
 
         """
