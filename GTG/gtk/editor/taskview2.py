@@ -50,7 +50,19 @@ class TaskView(Gtk.TextView):
 
     This is a specialized Gtk textview with GTG features. It waits [n] seconds
     after the user has modified the buffer and analyzes the contents to find
-    the title, tags, etc. When found, it applies Gtk.TextTags to them.
+    the title, tags, etc.
+
+    Process() starts by removing all tags except subtasks. Then goes
+    line-by-line detecting tags, subtasks, etc and applying Gtk.Textags
+    to them. The tags themselves are in the text_tags module.
+
+    Subtasks are not deleted since we need to keep a reference to the tasks.
+    They are deleted and reapplied if the content needs to be refreshed.
+    We also keep a reference to the subtask tids, we use this to know which
+    subtasks were deleted in the text and have to be removed.
+
+    This widget requires several callbacks to work. These have to be set
+    after the widget has been initialized, otherwise many things won't work.
     """
 
     # Requester
