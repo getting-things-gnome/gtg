@@ -156,7 +156,6 @@ class GeneralPreferences():
         """Toggle automatic deletion of old closed tasks."""
 
         self.config.set("autoclean", state)
-        self.autoclean_days.set_sensitive(state)
 
     def on_autoclean_days_changed(self, widget):
         """Update value for maximum days before removing a task."""
