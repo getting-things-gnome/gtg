@@ -48,6 +48,7 @@ import sys
 import argparse
 import gettext
 import locale
+import signal
 
 import gi
 gi.require_version('Gdk', '3.0')
@@ -113,6 +114,8 @@ if __name__ == "__main__":
         # Run the application
         application = Application('@APP_ID@', args.debug)
         application.uri_list = args.task_uri
+
+        signal.signal(signal.SIGTERM, lambda s, f: application.quit())
         application.run()
 
     except KeyboardInterrupt:
