@@ -1510,7 +1510,6 @@ msgstr "Passwort:"
 msgid "Filename:"
 msgstr "Dateiname:"
 
-# TODO: Check if it looks fine
 #: GTG/gtk/backends/parameters_ui/period.py:48
 msgid "Check for new tasks every"
 msgstr "Neue Aufgaben jede"
@@ -1636,7 +1635,6 @@ msgstr ""
 msgid "Copyright © 2008-%d the GTG contributors."
 msgstr "Copyright © 2008-%d Beitragende von GTG."
 
-# TODO: Sounds akward
 #. GTK prefixes the first line with "Created by ",
 #. but we can't split the string because it would cause trouble for some languages.
 #: GTG/gtk/browser/main_window.py:309
