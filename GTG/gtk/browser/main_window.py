@@ -41,6 +41,13 @@ from GTG.gtk.tag_completion import TagCompletion
 from GTG.core.dates import Date
 from GTG.core.logger import log
 
+PANE_STACK_NAMES_MAP = {
+    'closed_view': 'closed',
+    'open_view': 'active',
+    'actionable_view': 'workview',
+}
+PANE_STACK_NAMES_MAP_INVERTED = {v: k for k, v in PANE_STACK_NAMES_MAP.items()}
+
 class MainWindow(Gtk.ApplicationWindow):
     """ The UI for browsing open and closed tasks,
     and listing tags in a tree """
@@ -129,6 +136,8 @@ class MainWindow(Gtk.ApplicationWindow):
 
         app.timer.connect('refresh', self.refresh_all_views)
         app.timer.connect('refresh', self._set_defer_days)
+
+        self.stack_switcher.get_stack().connect('notify::visible-child', self._save_view_pane)
 
         # This needs to be called again after setting everything up,
         # so the buttons start disabled
@@ -538,6 +547,10 @@ class MainWindow(Gtk.ApplicationWindow):
             model.set_sort_column_id(sort_column, sort_order)
 
         self.restore_collapsed_tasks()
+
+        view_name = PANE_STACK_NAMES_MAP_INVERTED.get(self.config.get('view'),
+                                                      PANE_STACK_NAMES_MAP_INVERTED['active'])
+        self.stack_switcher.get_stack().set_visible_child_name(view_name)
 
         def open_task(req, t):
             """ Open the task if loaded. Otherwise ask for next iteration """
@@ -1201,6 +1214,9 @@ class MainWindow(Gtk.ApplicationWindow):
 
         self.applied_tags = new_taglist
 
+    def _save_view_pane(self, obj, pspec):
+        self.config.set('view', self.get_selected_pane())
+
 # PUBLIC METHODS ###########################################################
     def has_any_selection(self):
         """Determine if the current pane has any task selected."""
@@ -1214,13 +1230,8 @@ class MainWindow(Gtk.ApplicationWindow):
         """ Get the selected pane in the stack switcher """
 
         current = self.stack_switcher.get_stack().get_visible_child_name()
-        names = {
-            'closed_view': 'closed',
-            'open_view': 'active',
-            'actionable_view': 'workview'
-        }
 
-        return names[current]
+        return PANE_STACK_NAMES_MAP[current]
 
 
     def get_selected_task(self, tv=None):
