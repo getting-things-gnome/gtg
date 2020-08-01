@@ -203,7 +203,7 @@ class Unserializer():
     def parsexml(self, buf, ite, element):
         start = buf.create_mark(None, ite, True)
         end = buf.create_mark(None, ite, False)
-        subtasks = self.tv.get_subtasks()
+        subtasks = self.tv.get_subtasks_cb()
         taglist2 = []
         if element:
             for n in element.childNodes:

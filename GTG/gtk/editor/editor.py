@@ -180,6 +180,7 @@ class TaskEditor():
 
         self.textview.browse_tag_cb = app.select_tag
         self.textview.new_subtask_cb = self.new_subtask
+        self.textview.get_subtasks_cb = task.get_children
         self.textview.delete_subtask_cb = self.remove_subtask
         self.textview.rename_subtask_cb = self.rename_subtask
         self.textview.open_subtask_cb = self.app.open_task
