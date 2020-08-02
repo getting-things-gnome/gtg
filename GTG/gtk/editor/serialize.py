@@ -241,7 +241,7 @@ class Unserializer():
         # Now, we insert the remaining subtasks
         self.insert_subtasks(buf, subtasks)
         # We also insert the remaining tags (a a new line)
-        taglist = self.tv.get_tagslist()
+        taglist = self.tv.get_tagslist_cb()
         for t in taglist2:
             if t in taglist:
                 taglist.remove(t)

@@ -188,6 +188,8 @@ class TaskEditor():
         self.textview.add_tasktag_cb = task.add_tag
         self.textview.remove_tasktag_cb = task.remove_tag
         self.textview.refresh_cb = self.refresh_editor
+        self.textview.get_tagslist_cb = task.get_tags_name
+
         # Voila! it's done
 
         """
