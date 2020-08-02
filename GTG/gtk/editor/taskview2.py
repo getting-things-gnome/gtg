@@ -95,7 +95,12 @@ class TaskView(Gtk.TextView):
     # Callback to remove tags from task
     remove_tasktag_cb = NotImplemented
 
+    # Callback to get subtask list
     get_subtasks_cb = NotImplemented
+
+    # Get list of tags in the task
+    get_taglist_cb = NotImplemented
+
     # Callback to add a new subtask
     new_subtask_cb = NotImplemented
 
