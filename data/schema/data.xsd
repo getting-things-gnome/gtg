@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xs:schema targetNamespace="https://wiki.gnome.org/Apps/GTG"
+           xmlns="https://wiki.gnome.org/Apps/GTG"
+           xmlns:gtgData="https://wiki.gnome.org/Apps/GTG"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           elementFormDefault="qualified"
+           attributeFormDefault="unqualified">
+
+  <!--
+  Getting Things GNOME! - a personal organizer for the GNOME desktop
+  Copyright (c) 2008-2013 - Lionel Dricot & Bertrand Rousseau
+
+  This program is free software: you can redistribute it and/or modify it under
+  the terms of the GNU General Public License as published by the Free Software
+  Foundation, either version 3 of the License, or (at your option) any later
+  version.
+
+  This program is distributed in the hope that it will be useful, but WITHOUT
+  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+  FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+  details.
+
+  You should have received a copy of the GNU General Public License along with
+  this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+  <xs:include schemaLocation="_types.xsd"/>
+  <xs:include schemaLocation="_elements.xsd"/>
+
+  <!-- ############################################################################################################# -->
+
+  <xs:element name="gtgData">
+    <xs:complexType>
+      <!--
+        NOTE: We encapsulate a choice in the sequence so the order doesn't matter. (Normally, order specified in a
+              document has to match order specified in the schema if a sequence is used.)
+      -->
+      <xs:sequence minOccurs="1" maxOccurs="unbounded">
+        <xs:choice minOccurs="1" maxOccurs="unbounded">
+          <xs:element name="taglist" minOccurs="1" maxOccurs="1">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="tag" type="e_gtg_tag" minOccurs="1" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+            <!--
+              This verifies and indexes tags name.
+            -->
+            <!--
+              TODO: If the name is changed to be the *content* (text()) of the tag instead of an attribute,
+                    change xs:field's path attribute to "." instead of "@name".
+            -->
+            <xs:key name="key_tag_name">
+              <xs:selector xpath="gtgData:tag"/>
+              <xs:field xpath="@name"/>
+            </xs:key>
+            <!--
+              This verifies and indexes tags' id attribute.
+            -->
+            <xs:key name="key_tag_id">
+              <xs:selector xpath="gtgData:tag"/>
+              <xs:field xpath="@id"/>
+            </xs:key>
+          </xs:element>
+          <xs:element name="tasklist" minOccurs="1" maxOccurs="1">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="task" type="e_gtg_task" minOccurs="1" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+            <!--
+              This verifies and indexes tasks' id attribute.
+            -->
+            <xs:key name="key_task_id">
+              <xs:selector xpath="gtgData:task"/>
+              <xs:field xpath="@id"/>
+            </xs:key>
+            <!--
+              This verifies that subtask IDs are valid.
+            -->
+            <xs:keyref name="key_task_subtasks" refer="key_task_id">
+              <xs:selector xpath="gtgData:task/gtgData:subtasks/gtgData:sub/."/>
+              <xs:field xpath="."/>
+            </xs:keyref>
+            <!--
+              This verifies that no two (or more!) tasks have the same content.
+            -->
+            <!-- DISABLING BECAUSE IT WILL CHOKE ON EMPTY CONTENT ELEMENTS. -->
+            <!--
+            <xs:unique name="uniq_task_content">
+              <xs:selector xpath="gtgData:task/gtgData:content"/>
+              <xs:field xpath="."/>
+            </xs:unique>
+            -->
+            <!--
+              This verifies that no two (or more!) tasks have the same title (to avoid UX confusion).
+            -->
+            <xs:unique name="uniq_task_title">
+              <xs:selector xpath="gtgData:task/gtgData:title"/>
+              <xs:field xpath="."/>
+            </xs:unique>
+          </xs:element>
+        </xs:choice>
+      </xs:sequence>
+      <xs:attribute name="appVersion" type="xs:decimal" use="required"/>
+      <xs:attribute name="xmlVersion" type="xs:positiveInteger" use="required"/>
+    </xs:complexType>
+  </xs:element>
+
+</xs:schema>
