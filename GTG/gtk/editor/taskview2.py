@@ -27,6 +27,7 @@ from gi.repository import Gtk, GLib, Gdk, GObject
 from GTG.core.logger import log
 from GTG.core.requester import Requester
 import GTG.core.urlregex as url_regex
+from GTG.gtk.editor import serialize
 from webbrowser import open as openurl
 from gettext import gettext as _
 from typing import List
@@ -172,6 +173,11 @@ class TaskView(Gtk.TextView):
         self.connect('motion-notify-event', self.on_mouse_move)
         self.connect('key-press-event', self.on_key_pressed)
         self.connect('key-release-event', self.on_key_released)
+
+        serializer = serialize.Serializer()
+        self.serializer = serializer
+        unserializer = serialize.Unserializer(self)
+        self.unserializer = unserializer
 
 
     def on_modified(self, buffer: Gtk.TextBuffer) -> None:
