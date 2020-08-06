@@ -602,6 +602,13 @@ class TaskView(Gtk.TextView):
         # Title isn't part of the task contents
         start = self.buffer.get_start_iter()
         start.forward_line()
+
+        end = self.buffer.get_end_iter()
+
+        return self.serializer.serialize(
+            self.buffer, self.buffer, start, end, 1, None)
+
+
         end = self.buffer.get_end_iter()
 
         return self.buffer.get_text(start, end, False)
