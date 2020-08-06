@@ -609,9 +609,14 @@ class TaskView(Gtk.TextView):
             self.buffer, self.buffer, start, end, 1, None)
 
 
+    def insert(self, text: str) -> None:
+        """Unserialize and insert text in the buffer."""
+
         end = self.buffer.get_end_iter()
 
-        return self.buffer.get_text(start, end, False)
+        with GObject.signal_handler_block(self.buffer, self.id_modified):
+            self.unserializer.unserialize(
+                self.buffer, self.buffer, end, 0, text, None, None)
 
 
     def insert_tags(self, tags: List) -> None:
