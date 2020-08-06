@@ -593,7 +593,9 @@ class TaskView(Gtk.TextView):
     def get_text(self) -> str:
         """Get the text in the taskview."""
 
+        # Title isn't part of the task contents
         start = self.buffer.get_start_iter()
+        start.forward_line()
         end = self.buffer.get_end_iter()
 
         return self.buffer.get_text(start, end, False)
