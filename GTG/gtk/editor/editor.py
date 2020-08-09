@@ -733,7 +733,7 @@ class TaskEditor():
 
 
     def insert_subtask(self, action=None, param=None):
-        self.textview.insert_newtask()
+        self.textview.insert_new_subtask()
         self.textview.grab_focus()
 
     def inserttag_clicked(self, widget):
