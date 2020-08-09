@@ -1349,7 +1349,13 @@ class MainWindow(Gtk.ApplicationWindow):
     def select_on_sidebar(self, value):
         """Select a row in the tag treeview (by value)."""
 
-        selection = self.tagtreeview.get_selection()
+        try:
+            selection = self.tagtreeview.get_selection()
+
+        except AttributeError:
+            # tagtreeview is None if it's hidden
+            return
+
         model = self.tagtreeview.get_model()
         tree_iter = model.get_iter_first()
 
