@@ -669,3 +669,39 @@ class TaskView(Gtk.TextView):
             self.buffer.insert(cursor_iter, '- ')
 
         self.buffer.place_cursor(cursor_iter)
+
+
+    def insert_existing_subtask(self, tid: str, line: int) -> None:
+        """Insert an existing subtask in the buffer."""
+
+        # Check if the task exists first
+        if not self.req.has_task(tid):
+            return
+
+        start = self.buffer.get_iter_at_line(line)
+
+        # Add subtask name
+        task = self.req.get_task(tid)
+        self.buffer.insert(start, f'{task.get_title()}')
+
+        start.backward_line()
+        start.forward_line()
+
+        # Add checkbox
+        self.add_checkbox(tid, start)
+
+        # Apply link to subtask text
+        end = start.copy()
+        end.forward_to_line_end()
+
+        link_tag = InternalLinkTag(task)
+        self.table.add(link_tag)
+        self.buffer.apply_tag(link_tag, start, end)
+
+        # Apply subtask tag to everything
+        start.backward_char()
+        subtask_tag = SubTaskTag(task)
+        self.table.add(subtask_tag)
+        self.buffer.apply_tag(subtask_tag, start, end)
+
+        self.subtasks['tags'].append(tid)
