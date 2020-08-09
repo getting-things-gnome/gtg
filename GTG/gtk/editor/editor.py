@@ -213,39 +213,27 @@ class TaskEditor():
         text = self.task.get_text()
         title = self.task.get_title()
 
-        full_text = f'{title}\n'
-        full_text += ', '.join([t.get_name() for t in tags])
-        full_text += '\n'
-        full_text += text
+        self.textview.buffer.set_text(f"{title}\n")
 
-        self.textview.buffer.set_text(full_text)
+        if text:
+            self.textview.insert(text)
+        else:
+            # If not text, we insert tags
+            if tags:
+                for t in tags:
+                    self.textview.insert(f'{t.get_name()},')
+
+                self.textview.insert("\n")
+
+            subtasks = task.get_children()
+            if subtasks:
+                self.textview.insert_subtasks(subtasks)
 
         if thisisnew:
             self.textview.select_title()
         else:
             self.task.set_to_keep()
 
-        # the first line is the title
-        # self.textview.set_text(f"{title}\n")
-        # we insert the rest of the task
-        # if texte:
-        #     self.textview.insert(f"{texte}")
-        # else:
-        #     # If not text, we insert tags
-        #     if tags:
-        #         for t in tags:
-        #             self.textview.insert_text("%s, " % t.get_name())
-        #         self.textview.insert_text("\n")
-        #     # If we don't have text, we still need to insert subtasks if any
-        #     subtasks = task.get_children()
-        #     if subtasks:
-        #         self.textview.insert_subtasks(subtasks)
-        # We select the title if it's a new task
-        # if thisisnew:
-        #     self.textview.select_title()
-        # else:
-        #     self.task.set_to_keep()
-        # self.textview.modified(full=True)
         self.window.connect("destroy", self.destruction)
 
         # Connect search field to tags popup
