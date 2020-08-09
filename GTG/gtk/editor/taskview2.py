@@ -650,7 +650,7 @@ class TaskView(Gtk.TextView):
         self.buffer.insert(first_line, text)
 
 
-    def insert_newtask(self) -> None:
+    def insert_new_subtask(self) -> None:
         """Insert a new subtask in the buffer."""
 
         # Grab cursor position
