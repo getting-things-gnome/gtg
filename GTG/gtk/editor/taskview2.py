@@ -354,7 +354,7 @@ class TaskView(Gtk.TextView):
         self.process()
 
 
-    def add_checkbox(self, tid: int, start: Gtk.TextIter) -> Gtk.TextIter:
+    def add_checkbox(self, tid: int, start: Gtk.TextIter) -> None:
         """Add a checkbox for a subtask."""
 
         task = self.req.get_task(tid)
