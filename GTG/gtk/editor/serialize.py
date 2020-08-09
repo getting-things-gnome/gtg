@@ -19,6 +19,7 @@
 import xml.dom.minidom
 import re
 import xml.sax.saxutils as saxutils
+from GTG.gtk.editor.text_tags import SubTaskTag, TaskTagTag, LinkTag
 
 # The following functions are used by the Gtk.TextBuffer to serialize
 # the content of the task
@@ -53,11 +54,7 @@ class Serializer():
     def is_known_tag(self, tag):
         """Detect if 'tag' is one of our task tags."""
 
-        for known_tag in self.KNOWN_TAGS:
-            if hasattr(tag, known_tag):
-                return True
-
-        return False
+        return type(tag) in (SubTaskTag, TaskTagTag)
 
     def parse_buffer(self, buff, start, end, parent, doc):
         """
@@ -105,7 +102,7 @@ class Serializer():
                     end_it = it.copy()
                     end_it.backward_char()
 
-                    if hasattr(tag, 'is_tag'):
+                    if type(tag) is TaskTagTag:
                         # The current gtkTextTag is a tag
                         # Recursive call
                         nparent = doc.createElement("tag")
@@ -114,10 +111,10 @@ class Serializer():
 
                         parent.appendChild(child)
 
-                    elif hasattr(ta, 'is_subtask'):
+                    if type(ta) is SubTaskTag:
                         # The current gtkTextTag is a subtask
                         subt = doc.createElement('subtask')
-                        target = ta.child
+                        target = ta.tid
                         subt.appendChild(doc.createTextNode(target))
                         parent.appendChild(subt)
                         parent.appendChild(doc.createTextNode("\n"))
@@ -169,6 +166,7 @@ class Unserializer():
 
     def unserialize(self, register_buf, content_buf, ite, length,
                     data, cr_tags, udata):
+
         if data:
             element = xml.dom.minidom.parseString(data)
             success = self.parsexml(content_buf, ite, element.firstChild)
@@ -185,7 +183,7 @@ class Unserializer():
         if buff.get_text(start_end, end_end, True).strip():
             end_line += 1
         for tid in st_list:
-            self.tv.write_subtask(buff, end_line, tid)
+            self.tv.insert_existing_subtask(tid, end_line)
             end_line += 1
 
     # insert a GTG tag with its TextView tag.
@@ -209,7 +207,6 @@ class Unserializer():
             for n in element.childNodes:
                 itera = buf.get_iter_at_mark(end)
                 if n.nodeType == n.ELEMENT_NODE:
-                    # print "<%s>" %n.nodeName
                     if n.nodeName == "subtask":
                         tid = n.firstChild.nodeValue
                         # We remove the added subtask from the list
@@ -218,22 +215,24 @@ class Unserializer():
                         if tid in subtasks:
                             subtasks.remove(tid)
                             line_nbr = itera.get_line()
-                            self.tv.write_subtask(buf, line_nbr, tid)
+                            self.tv.insert_existing_subtask(tid, line_nbr)
                     elif n.nodeName == "tag":
-                        text = n.firstChild.nodeValue
-                        if text:
-                            self.insert_tag(buf, text, itera)
-                            # We remove the added tag from the tag list
-                            # of known tag for this task
-                            taglist2.append(text)
+                        buf.insert(itera, n.firstChild.nodeValue)
+                        # text = n.firstChild.nodeValue
+                        # if text:
+                        #     self.insert_tag(buf, text, itera)
+                        # We remove the added tag from the tag list
+                        # of known tag for this task
+                        taglist2.append(n.firstChild.nodeValue)
                     else:
                         self.parsexml(buf, itera, n)
                         s = buf.get_iter_at_mark(start)
                         e = buf.get_iter_at_mark(end)
                         if n.nodeName == "link":
                             anchor = n.get("target")
-                            tag = self.tv.create_anchor_tag(buf, anchor, None)
-                            buf.apply_tag(tag, s, e)
+                            # tag = self.tv.create_anchor_tag(buf, anchor, None)
+                            # buf.apply_tag(tag, s, e)
+                            buf.insert(anchor)
                         else:
                             buf.apply_tag_by_name(n.nodeName, s, e)
                 elif n.nodeType == n.TEXT_NODE:
@@ -242,7 +241,8 @@ class Unserializer():
         self.insert_subtasks(buf, subtasks)
         # We also insert the remaining tags (a a new line)
         taglist = self.tv.get_tagslist_cb()
-        for t in taglist2:
+        self.tv.process()
+        for t in self.tv.task_tags:
             if t in taglist:
                 taglist.remove(t)
         # We remove duplicates
@@ -250,6 +250,7 @@ class Unserializer():
             while t in taglist:
                 taglist.remove(t)
             taglist.append(t)
+
         if len(taglist) > 0:
             self.tv.insert_tags(taglist)
         buf.delete_mark(start)
