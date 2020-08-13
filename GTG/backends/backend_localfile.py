@@ -186,7 +186,7 @@ class Backend(GenericBackend):
 
         if element:
             element[0].getparent().remove(element[0])
-            xml.save_file(self.get_path(), True)
+            xml.save_file(self.get_path(), self.task_tree)
 
     def used_backup(self):
         """ This functions return a boolean value telling if backup files
