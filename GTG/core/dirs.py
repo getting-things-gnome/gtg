@@ -27,8 +27,6 @@ DATA_DIR = os.path.join(GLib.get_user_data_dir(), 'gtg')
 # Folder where configuration like opened tasks is stored
 CONFIG_DIR = os.path.join(GLib.get_user_config_dir(), 'gtg')
 
-# File defining used services and their parameters
-PROJECTS_XMLFILE = os.path.join(DATA_DIR, 'projects.xml')
 # File defining used tags
 TAGS_XMLFILE = os.path.join(DATA_DIR, 'tags.xml')
 
