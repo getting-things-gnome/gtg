@@ -29,7 +29,7 @@ from GTG.backends.backend_signals import BackendSignals
 from GTG.backends.generic_backend import GenericBackend
 from GTG.core.config import CoreConfig
 from GTG.core import requester
-from GTG.core.dirs import PROJECTS_XMLFILE, TAGS_XMLFILE
+from GTG.core.dirs import TAGS_XMLFILE
 from GTG.core.search import parse_search_query, search_filter, InvalidQuery
 from GTG.core.tag import Tag, SEARCH_TAG
 from GTG.core.task import Task
@@ -66,6 +66,7 @@ class DataStore():
         self._tagstore = self.treefactory.get_tags_tree(self.requester)
         self.load_tag_tree()
         self._backend_signals = BackendSignals()
+        self.conf = global_conf
 
         # Flag when turned to true, all pending operation should be
         # completed and then GTG should quit
@@ -574,8 +575,6 @@ class DataStore():
         except Exception:
             pass
 
-        doc = etree.Element('config')
-
         # we ask all the backends to quit first.
         if quit:
             # we quit backends in parallel
@@ -604,7 +603,8 @@ class DataStore():
 
         # we save the parameters
         for b in self.get_all_backends(disabled=True):
-            t_xml = etree.SubElement(doc, 'backend')
+            config = self.conf.get_backend_config(b.get_name())
+
 
             for key, value in b.get_parameters().items():
                 if key in ["backend", "xmlobject"]:
@@ -614,13 +614,9 @@ class DataStore():
 
                 param_type = b.get_parameter_type(key)
                 value = b.cast_param_type_to_string(param_type, value)
-                t_xml.set(str(key), value)
+                config.set(str(key), value)
 
-            # Saving all the projects at close
-            doc.append(t_xml)
-
-        xml.save_file(PROJECTS_XMLFILE, etree.ElementTree(doc))
-        xml.write_backups(PROJECTS_XMLFILE)
+        config.save()
 
         #  Saving the tagstore
         self.save_tagtree()
