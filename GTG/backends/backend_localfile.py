@@ -90,13 +90,6 @@ class Backend(GenericBackend):
         if self.KEY_DEFAULT_BACKEND not in parameters:
             parameters[self.KEY_DEFAULT_BACKEND] = True
 
-        self.task_tree = xml.open_file(self.get_path(), 'project')
-        self.backup_used = None
-
-        # Make safety daily backup after loading
-        xml.save_file(self.get_path(), self.task_tree)
-        xml.write_backups(self.get_path())
-
     def get_path(self) -> str:
         """Return the current path to XML
 
@@ -115,6 +108,10 @@ class Backend(GenericBackend):
 
         super(Backend, self).initialize()
         self.task_tree = xml.open_file(self.get_path(), 'project')
+
+        # Make safety daily backup after loading
+        xml.save_file(self.get_path(), self.task_tree)
+        xml.write_backups(self.get_path())
 
     def this_is_the_first_run(self, _) -> None:
         """ Called upon the very first GTG startup.
