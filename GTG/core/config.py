@@ -63,6 +63,7 @@ DEFAULTS = {
         'position': [],
         'size': [],
     },
+    'backend': {}
 }
 
 
@@ -195,11 +196,17 @@ class CoreConfig():
         self._task_conf_path = os.path.join(CONFIG_DIR, 'tasks.conf')
         self._task_conf = open_config_file(self._task_conf_path)
 
+        self._backends_conf_path = os.path.join(CONFIG_DIR, 'backends.conf')
+        self._backends_conf = open_config_file(self._backends_conf_path)
+
     def save_gtg_config(self):
         self._conf.write(open(self._conf_path, 'w'))
 
     def save_task_config(self):
         self._task_conf.write(open(self._task_conf_path, 'w'))
+
+    def save_backends_config(self):
+        self._backends_conf.write(open(self._backends_conf_path, 'w'))
 
     def get_subconfig(self, name):
         """ Returns configuration object for special section of config """
@@ -217,3 +224,16 @@ class CoreConfig():
             self._task_conf[task_id],
             DEFAULTS['task'],
             self.save_task_config)
+
+    def get_all_backends(self):
+        return self._backends_conf.sections()
+
+    def get_backend_config(self, backend):
+        if backend not in self._backends_conf:
+            self._backends_conf.add_section(backend)
+
+        return SectionConfig(
+            f'Backend {backend}',
+            self._backends_conf[backend],
+            DEFAULTS['backend'],
+            self.save_backends_config)
