@@ -718,7 +718,6 @@ class TaskView(Gtk.TextView):
         """Unserialize and insert text in the buffer."""
 
         subtasks = []
-        text = self.format_update(text)
         text = text.splitlines()
 
         for index, line in enumerate(text):
