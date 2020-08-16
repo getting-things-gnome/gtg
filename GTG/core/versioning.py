@@ -73,7 +73,7 @@ def convert(path: str, ds: datastore) -> et.ElementTree:
     for task in old_tree.iter('task'):
         new_task = convert_task(task, ds)
 
-        if new_task:
+        if new_task is not None:
             tasklist.append(new_task)
 
     return et.ElementTree(new_root)
