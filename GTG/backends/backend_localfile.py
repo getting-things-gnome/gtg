@@ -32,6 +32,8 @@ from GTG.core.dirs import DATA_DIR
 from gettext import gettext as _
 from GTG.core import xml
 from GTG.core import firstrun_tasks
+from GTG.core import versioning
+from GTG.core.logger import log
 
 from typing import Dict
 
@@ -107,7 +109,17 @@ class Backend(GenericBackend):
         """ This is called when a backend is enabled """
 
         super(Backend, self).initialize()
-        self.task_tree = xml.open_file(self.get_path(), 'project')
+        filepath = os.path.join(DATA_DIR, 'gtg_data.xml')
+
+        # TODO: Use proper paths when everything is working
+        if versioning.is_required(filepath):
+            log.warning('Found old file. Running versioning code.')
+            tree = versioning.convert(self.get_path(), self.datastore)
+            version_path = os.path.join(DATA_DIR, 'gtg_data.versioning.xml')
+
+            xml.save_file(version_path, tree)
+
+        self.task_tree = xml.open_file(self.get_path(), 'tasklist')
 
         # Make safety daily backup after loading
         xml.save_file(self.get_path(), self.task_tree)

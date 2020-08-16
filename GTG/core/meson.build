@@ -43,6 +43,7 @@ gtg_core_sources = [
   'twokeydict.py',
   'urlregex.py',
   'watchdog.py',
+  'versioning.py',
 ]
 
 gtg_core_plugin_sources = [
