@@ -74,7 +74,7 @@ class Backend(GenericBackend):
         "path": {
             GenericBackend.PARAM_TYPE: GenericBackend.TYPE_STRING,
             GenericBackend.PARAM_DEFAULT_VALUE:
-            'gtg_tasks.xml'}}
+            'gtg_data.xml'}}
 
     def __init__(self, parameters: Dict):
         """
@@ -109,17 +109,16 @@ class Backend(GenericBackend):
         """ This is called when a backend is enabled """
 
         super(Backend, self).initialize()
-        filepath = os.path.join(DATA_DIR, 'gtg_data.xml')
+        filepath = self.get_path()
 
-        # TODO: Use proper paths when everything is working
         if versioning.is_required(filepath):
             log.warning('Found old file. Running versioning code.')
-            tree = versioning.convert(self.get_path(), self.datastore)
-            version_path = os.path.join(DATA_DIR, 'gtg_data.versioning.xml')
+            old_path = os.path.join(DATA_DIR, 'gtg_tasks.xml')
+            tree = versioning.convert(old_path, self.datastore)
 
-            xml.save_file(version_path, tree)
+            xml.save_file(filepath, tree)
 
-        self.task_tree = xml.open_file(self.get_path(), 'tasklist')
+        self.task_tree = xml.open_file(filepath, 'tasklist')
 
         # Make safety daily backup after loading
         xml.save_file(self.get_path(), self.task_tree)
