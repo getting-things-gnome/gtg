@@ -220,10 +220,8 @@ class TaskEditor():
         else:
             # If not text, we insert tags
             if tags:
-                for t in tags:
-                    self.textview.insert(f'{t.get_name()},')
-
-                self.textview.insert("\n")
+                tag_names = [t.get_name() for t in tags]
+                self.textview.insert_tags(tag_names)
 
             subtasks = task.get_children()
             if subtasks:
