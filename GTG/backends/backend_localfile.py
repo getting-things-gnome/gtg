@@ -118,10 +118,11 @@ class Backend(GenericBackend):
 
             xml.save_file(filepath, tree)
 
-        self.task_tree = xml.open_file(filepath, 'tasklist')
+        self.data_tree = xml.open_file(filepath, 'gtgData')
+        self.task_tree = self.data_tree.find('tasklist')
 
         # Make safety daily backup after loading
-        xml.save_file(self.get_path(), self.task_tree)
+        xml.save_file(self.get_path(), self.data_tree)
         xml.write_backups(self.get_path())
 
     def this_is_the_first_run(self, _) -> None:
@@ -141,7 +142,8 @@ class Backend(GenericBackend):
         xml.write_xml(self.get_path(), root)
 
         # Load the newly created file
-        self.task_tree = xml.open_file(self.get_path(), 'project')
+        self.data_tree = xml.open_file(self.get_path(), 'gtgData')
+        self.task_tree = self.data_tree.find('tasklist')
         xml.backup_used = None
 
     def start_get_tasks(self) -> None:
@@ -152,7 +154,7 @@ class Backend(GenericBackend):
         """
 
         for element in self.task_tree.iter('task'):
-            tid = element.attrib['id']
+            tid = element.get('id')
             task = self.datastore.task_factory(tid)
 
             if task:
@@ -178,10 +180,10 @@ class Backend(GenericBackend):
             existing[0].getparent().replace(existing[0], element)
 
         else:
-            self.task_tree.getroot().append(element)
+            self.task_tree.append(element)
 
         # Write the xml
-        xml.save_file(self.get_path(), self.task_tree)
+        xml.save_file(self.get_path(), self.data_tree)
 
     def remove_task(self, tid: str) -> None:
         """ This function is called from GTG core whenever a task must be
@@ -190,11 +192,11 @@ class Backend(GenericBackend):
         @param tid: the id of the task to delete
         """
 
-        element = self.task_tree.findall(f"task[@id='{tid}']")
+        element = self.task_tree.findall(f'task[@id="{tid}"]')
 
         if element:
             element[0].getparent().remove(element[0])
-            xml.save_file(self.get_path(), self.task_tree)
+            xml.save_file(self.get_path(), self.data_tree)
 
     def used_backup(self):
         """ This functions return a boolean value telling if backup files
