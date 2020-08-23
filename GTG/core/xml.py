@@ -18,8 +18,6 @@
 
 import os
 import shutil
-import logging
-import xml.sax.saxutils as saxutils
 from datetime import datetime
 from GTG.core.dates import Date
 
@@ -36,71 +34,65 @@ backup_used = {}
 def task_from_element(task, element: etree.Element):
     """Populate task from XML element."""
 
-    task.set_uuid(element.get('uuid'))
     task.set_title(element.find('title').text)
+    task.set_uuid(element.get('id'))
+
+    dates = element.find('dates')
+
+    modified = dates.find('modified').text
+    task.set_modified(datetime.fromisoformat(modified))
+
+    added = dates.find('added').text
+    task.set_added_date(datetime.fromisoformat(added))
 
     # Dates
     try:
-        done_date = Date.parse(element.find('donedate').text)
+        done_date = Date.parse(dates.find('done').text)
         task.set_status(element.attrib['status'], donedate=done_date)
     except AttributeError:
         pass
 
     try:
-        due_date = Date.parse(element.find('duedate').text)
+        due_date = Date.parse(dates.find('due').text)
         task.set_due_date(due_date)
     except AttributeError:
         pass
 
     try:
-        modified = element.find('modified').text
-        modified = datetime.strptime(modified, "%Y-%m-%dT%H:%M:%S")
-        task.set_modified(modified)
-    except AttributeError:
-        pass
-
-    try:
-        added = element.find('addeddate').text
-        added = datetime.strptime(added, "%Y-%m-%dT%H:%M:%S")
-        task.set_added_date(added)
-    except AttributeError:
-        pass
-
-    try:
-        start = element.find('startdate').text
+        start = dates.find('start').text
         task.set_start_date(start)
     except (AttributeError, TypeError):
         pass
 
     # Recurring tasks
+    recurring = element.find('recurring')
+    recurring_enabled = recurring.get('enabled')
+
     try:
-        recurring = element.get('recurring')
-        recurring_term = element.find('recurring_term').text
-        task.set_recurring(recurring == 'True', None if recurring_term == 'None' else recurring_term)
+        recurring_term = element.find('term').text
+        task.set_recurring(recurring_enabled == 'true',
+                           None if recurring_term == 'None'
+                           else recurring_term)
+
     except AttributeError:
         pass
 
+    # TODO: Implement tags for tasks
     # Task Tags
-    tags = element.get('tags')
-    tags = [t for t in tags.split(',') if t.strip() != '']
+    # tags = element.get('tags')
 
-    [task.tag_added(t) for t in tags]
+    # if tags:
+    #     tags = [t for t in tags.split(',') if t.strip() != '']
+    #     [task.tag_added(t) for t in tags]
 
-    try:
-        content = element.find('content').text
-
-        # Content includes serialized xml, so it needs to be re-serialized
-        # and then deserialized again.
-        if content:
-            content = f"<content>{content}</content>"
-            task.set_text(content)
-
-    except AttributeError:
-        # Some tasks might not have a content tag
-        pass
+    content = element.find('content').text or ''
+    task.set_text(content)
 
     # Subtasks
-    [task.add_child(sub.text) for sub in element.findall('subtask')]
+    subtasks = element.find('subtasks')
+
+    for sub in subtasks.findall('sub'):
+        task.add_child(sub.text)
 
     return task
 
@@ -115,45 +107,48 @@ def task_to_element(task) -> etree.Element:
     element.set('uuid', task.get_uuid())
     element.set('recurring', str(task.get_recurring()))
 
-    tags = [saxutils.escape(str(t)) for t in task.get_tags_name()]
-    element.set('tags', ','.join(tags))
+    # TODO: Implement tags for tasks
+    # tags = [saxutils.escape(str(t)) for t in task.get_tags_name()]
+    # element.set('tags', ','.join(tags))
 
     title = etree.SubElement(element, 'title')
     title.text = task.get_title()
 
-    added_date = etree.SubElement(element, 'addeddate')
-    added_date.text = task.get_added_date_string()
+    dates = etree.SubElement(element, 'dates')
 
-    due_date = etree.SubElement(element, 'duedate')
-    due_date.text = task.get_due_date().xml_str()
+    added_date = etree.SubElement(dates, 'added')
+    added_date.text = task.get_added_date().isoformat()
 
-    modified_date = etree.SubElement(element, 'modified')
-    modified_date.text = task.get_modified_string()
+    modified_date = etree.SubElement(dates, 'modified')
+    modified_date.text = Date(task.get_modified()).xml_str()
 
-    start_date = etree.SubElement(element, 'startdate')
-    start_date.text = task.get_start_date().xml_str()
-
-    done_date = etree.SubElement(element, 'donedate')
+    done_date = etree.SubElement(dates, 'done')
     done_date.text = task.get_closed_date().xml_str()
 
-    recurring_term = etree.SubElement(element, 'recurring_term')
+    due_date = task.get_due_date()
+    due_tag = 'fuzzyDue' if due_date.is_fuzzy() else 'due'
+    due = etree.SubElement(dates, due_tag)
+    due.text = due_date.xml_str()
+
+    start_date = task.get_start_date()
+    start_tag = 'fuzzyStart' if start_date.is_fuzzy() else 'start'
+    start = etree.SubElement(dates, start_tag)
+    start.text = start_date.xml_str()
+
+    recurring = etree.SubElement(element, 'recurring')
+    recurring.set('enabled', str(task.recurring).lower())
+
+    recurring_term = etree.SubElement(recurring, 'term')
     recurring_term.text = str(task.get_recurring_term())
 
+    subtasks = etree.SubElement(element, 'subtasks')
+
     for subtask_id in task.get_children():
-        sub = etree.SubElement(element, 'subtask')
+        sub = etree.SubElement(subtasks, 'sub')
         sub.text = subtask_id
 
-    text = task.get_text()
-
-    if text:
-        # We take the xml text and convert it to a string
-        # but without the "<content />"
-        text = text.replace('</content>', '')
-        text = text.replace('<content>', '')
-        text = text.replace('→', '')
-
-        content = etree.SubElement(element, 'content')
-        content.text = text
+    content = etree.SubElement(element, 'content')
+    content.text = etree.CDATA(task.get_text())
 
     return element
 
@@ -332,3 +327,16 @@ def write_empty_file(filepath: str, root_tag: str) -> None:
 
     root = etree.Element(root_tag)
     save_file(filepath, etree.ElementTree(root))
+
+
+def skeleton() -> etree.Element:
+    """Generate root XML tag and basic subtags."""
+
+    root = etree.Element('gtgData')
+    root.set('appVersion', '0.5')
+    root.set('xmlVersion', '2')
+
+    etree.SubElement(root, 'taglist')
+    etree.SubElement(root, 'tasklist')
+
+    return root

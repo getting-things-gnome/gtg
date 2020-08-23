@@ -50,7 +50,7 @@ class Task(TreeNode):
         # tid is a string ! (we have to choose a type and stick to it)
         assert(isinstance(task_id, str) or isinstance(task_id, str))
         self.tid = str(task_id)
-        self.set_uuid(uuid.uuid4())
+        self.set_uuid(task_id)
         self.remote_ids = {}
         self.content = ""
         if Task.DEFAULT_TASK_NAME is None:
@@ -658,16 +658,7 @@ class Task(TreeNode):
 
     def set_text(self, texte):
         self.can_be_deleted = False
-        if texte != "<content/>":
-            # defensive programmation to filter bad formatted tasks
-            if not texte.startswith("<content>"):
-                texte = html.escape(texte, quote=True)
-                texte = f"<content>{texte}"
-            if not texte.endswith("</content>"):
-                texte = f"{texte}</content>"
-            self.content = str(texte)
-        else:
-            self.content = ''
+        self.content = html.unescape(str(texte))
 
     # SUBTASKS ###############################################################
     def new_subtask(self):
