@@ -172,7 +172,7 @@ def get_backup_name(filepath: str, i: int) -> str:
 def get_xml_tree(filepath: str) -> etree.ElementTree:
     """Parse XML file at filepath and get tree."""
 
-    parser = etree.XMLParser(remove_blank_text=True)
+    parser = etree.XMLParser(remove_blank_text=True, strip_cdata=False)
 
     with open(filepath, 'rb') as stream:
         tree = etree.parse(stream, parser=parser)
