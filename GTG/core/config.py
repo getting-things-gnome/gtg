@@ -150,10 +150,6 @@ class SectionConfig():
         None is returned
         """
         default_value = self._defaults.get(option)
-        if default_value is None:
-            log.warning('No default value for %s in %s',
-                        option, self._section_name)
-
         get_function = self._type_function(default_value)
 
         try:
