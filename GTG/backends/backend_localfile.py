@@ -120,6 +120,9 @@ class Backend(GenericBackend):
 
         self.data_tree = xml.open_file(filepath, 'gtgData')
         self.task_tree = self.data_tree.find('tasklist')
+        self.tag_tree = self.data_tree.find('taglist')
+
+        self.datastore.load_tag_tree(self.tag_tree)
 
         # Make safety daily backup after loading
         xml.save_file(self.get_path(), self.data_tree)
@@ -161,6 +164,7 @@ class Backend(GenericBackend):
             if task:
                 task = xml.task_from_element(task, element)
                 self.datastore.push_task(task)
+
 
     def set_task(self, task) -> None:
         """

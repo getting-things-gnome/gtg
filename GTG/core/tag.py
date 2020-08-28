@@ -23,6 +23,7 @@ Tagstore is to tag as datastore is to task. Of course, the tagstore is
 easier.  See the end of this file for the Tag object implementation.
 """
 
+import uuid
 import xml.sax.saxutils as saxutils
 import re
 
@@ -76,7 +77,7 @@ class Tag(TreeNode):
     for tags is C{name}, which always matches L{Tag.get_name()}.
     """
 
-    def __init__(self, name, req, attributes={}):
+    def __init__(self, name, req, attributes={}, tid=None):
         """Construct a tag.
 
         @param name: The name of the tag. Should be a string, generally
@@ -93,6 +94,11 @@ class Tag(TreeNode):
             self.set_attribute(key, value)
 
         self.viewcount = None
+
+        if tid:
+            self.tid = tid
+        else:
+            self.tid = uuid.uuid4()
 
     def __get_viewcount(self):
         if not self.viewcount and self.get_name() != "gtg-tags-sep":
