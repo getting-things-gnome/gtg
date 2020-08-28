@@ -66,6 +66,7 @@ class DataStore():
         self._tagstore = self.treefactory.get_tags_tree(self.requester)
         self._backend_signals = BackendSignals()
         self.conf = global_conf
+        self.tag_idmap = {}
 
         # Flag when turned to true, all pending operation should be
         # completed and then GTG should quit
@@ -248,7 +249,18 @@ class DataStore():
             if parent:
                 tag.set_parent(parent)
 
+            # Add to idmap for quick lookup based on ID
+            self.tag_idmap[tid] = tag
+
         self.tagfile_loaded = True
+
+    def get_tag_by_id(self, tid):
+        """Get a tag by its ID"""
+
+        try:
+            return self.tag_idmap[tid]
+        except KeyError:
+            return
 
     def save_tagtree(self):
         """ Saves the tag tree to an XML file """

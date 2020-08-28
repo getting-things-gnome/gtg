@@ -77,14 +77,12 @@ def task_from_element(task, element: etree.Element):
     except AttributeError:
         pass
 
-    # TODO: Implement tags for tasks
-    # Task Tags
-    # tags = element.get('tags')
+    taglist = element.find('tags')
 
-    # if tags:
-    #     tags = [t for t in tags.split(',') if t.strip() != '']
-    #     [task.tag_added(t) for t in tags]
+    if taglist is not None:
+        [task.tag_added_by_id(t.text) for t in taglist.iter('tag')]
 
+    # Content
     content = element.find('content').text or ''
     task.set_text(content)
 

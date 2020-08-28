@@ -785,6 +785,12 @@ class Task(TreeNode):
         self.req.get_tag(new).modified()
         self.sync()
 
+    def tag_added_by_id(self, tid):
+        """Add a tag by its ID"""
+
+        tag = self.req.ds.get_tag_by_id(tid)
+        self.tag_added('@' + tag.get_name())
+
     def tag_added(self, tagname):
         """
         Adds a tag. Does not add '@tag' to the contents. See add_tag
