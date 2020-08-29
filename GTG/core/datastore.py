@@ -264,40 +264,16 @@ class DataStore():
 
     def save_tagtree(self):
         """ Saves the tag tree to an XML file """
+
         if not self.tagfile_loaded:
             return
 
-        xmlroot = etree.Element(TAG_XMLROOT)
         tags = self._tagstore.get_main_view().get_all_nodes()
-        already_saved = []
 
-        for tagname in tags:
-            if tagname in already_saved:
-                continue
+        for backend in self.backends.values():
+            if backend.get_name() == 'backend_localfile':
+                backend.save_tags(tags, self._tagstore)
 
-            tag = self._tagstore.get_node(tagname)
-            attributes = tag.get_all_attributes(butname=True, withparent=True)
-            if "special" in attributes or len(attributes) == 0:
-                continue
-
-            t_xml = etree.SubElement(xmlroot, 'tag')
-            t_xml.set('name', tagname)
-
-            for attr in attributes:
-                # skip labels for search tags
-                if tag.is_search_tag() and attr == 'label':
-                    continue
-
-                value = tag.get_attribute(attr)
-
-                if value:
-                    t_xml.set(attr, value)
-
-            xmlroot.append(t_xml)
-            already_saved.append(tagname)
-
-        xml.save_file(TAGS_XMLFILE, etree.ElementTree(xmlroot))
-        xml.write_backups(TAGS_XMLFILE)
 
     # Tasks functions #########################################################
     def get_all_tasks(self):

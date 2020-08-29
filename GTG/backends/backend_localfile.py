@@ -36,6 +36,7 @@ from GTG.core import versioning
 from GTG.core.logger import log
 
 from typing import Dict
+from lxml import etree as et
 
 
 class Backend(GenericBackend):
@@ -148,6 +149,7 @@ class Backend(GenericBackend):
         # Load the newly created file
         self.data_tree = xml.open_file(self.get_path(), 'gtgData')
         self.task_tree = self.data_tree.find('tasklist')
+        self.tag_tree = self.data_tree.find('taglist')
         xml.backup_used = None
 
     def start_get_tasks(self) -> None:
@@ -202,6 +204,48 @@ class Backend(GenericBackend):
         if element:
             element[0].getparent().remove(element[0])
             xml.save_file(self.get_path(), self.data_tree)
+
+    def save_tags(self, tagnames, tagstore) -> None:
+        """Save changes to tags."""
+
+        already_saved = []
+
+        for tagname in tagnames:
+            if tagname in already_saved:
+                continue
+
+            tag = tagstore.get_node(tagname)
+
+            attributes = tag.get_all_attributes(butname=True, withparent=True)
+            if "special" in attributes or len(attributes) == 0:
+                continue
+
+            tid = str(tag.tid)
+            element = self.tag_tree.findall(f'tag[@id="{tid}"]')
+
+            if len(element) == 0:
+                element = et.SubElement(self.task_tree, 'tag')
+                self.tag_tree.append(element)
+            else:
+                element = element[0]
+
+            # Don't save the @ in the name
+            element.set('id', tid)
+            element.set('name', tagname)
+
+            for attr in attributes:
+                # skip labels for search tags
+                if tag.is_search_tag() and attr == 'label':
+                    continue
+
+                value = tag.get_attribute(attr)
+
+                if value:
+                    element.set(attr, value)
+
+            already_saved.append(tagname)
+
+        xml.save_file(self.get_path(), self.data_tree)
 
     def used_backup(self):
         """ This functions return a boolean value telling if backup files
