@@ -211,10 +211,11 @@ class TaskEditor():
             if tags:
                 tag_names = [t.get_name() for t in tags]
                 self.textview.insert_tags(tag_names)
+                self.textview.buffer.insert('\n')
 
             subtasks = task.get_children()
-            if subtasks:
-                self.textview.insert_subtasks(subtasks)
+            for sub in subtasks:
+                self.textview.insert_existing_subtask(sub)
 
         if thisisnew:
             self.textview.select_title()

@@ -671,14 +671,17 @@ class TaskView(Gtk.TextView):
         self.buffer.place_cursor(cursor_iter)
 
 
-    def insert_existing_subtask(self, tid: str, line: int) -> None:
+    def insert_existing_subtask(self, tid: str, line: int = None) -> None:
         """Insert an existing subtask in the buffer."""
 
         # Check if the task exists first
         if not self.req.has_task(tid):
             return
 
-        start = self.buffer.get_iter_at_line(line)
+        if line:
+            start = self.buffer.get_iter_at_line(line)
+        else:
+            start = self.buffer.get_end_iter()
 
         # Add subtask name
         task = self.req.get_task(tid)

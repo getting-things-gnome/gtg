@@ -17,9 +17,7 @@
 # -----------------------------------------------------------------------------
 
 import xml.dom.minidom
-import re
-import xml.sax.saxutils as saxutils
-from GTG.gtk.editor.text_tags import SubTaskTag, TaskTagTag, LinkTag
+from GTG.gtk.editor.text_tags import SubTaskTag, TaskTagTag
 
 # The following functions are used by the Gtk.TextBuffer to serialize
 # the content of the task
@@ -91,7 +89,7 @@ class Serializer():
 
                 # We stay out of a tag context
                 # We write the char in the xml node
-                elif it.get_char() != "":
+                elif it.get_char() != "" and it.get_char() != '\U00065532':
                     parent.appendChild(doc.createTextNode(it.get_char()))
 
             else:
@@ -236,7 +234,8 @@ class Unserializer():
                         else:
                             buf.apply_tag_by_name(n.nodeName, s, e)
                 elif n.nodeType == n.TEXT_NODE:
-                    buf.insert(itera, n.nodeValue)
+                    content = n.nodeValue.replace('→   ', '')
+                    buf.insert(itera, content)
         # Now, we insert the remaining subtasks
         self.insert_subtasks(buf, subtasks)
         # We also insert the remaining tags (a a new line)
