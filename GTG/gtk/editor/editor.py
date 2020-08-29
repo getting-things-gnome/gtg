@@ -37,7 +37,7 @@ from gettext import gettext as _, ngettext
 from GTG.gtk.editor import GnomeConfig
 from GTG.gtk.editor.calendar import GTGCalendar
 from GTG.gtk.editor.recurring_menu import RecurringMenu
-from GTG.gtk.editor.taskview2 import TaskView
+from GTG.gtk.editor.taskview import TaskView
 from GTG.gtk.tag_completion import tag_filter
 from GTG.core.dates import Date
 from GTG.core.logger import log
@@ -169,10 +169,6 @@ class TaskEditor():
         scrolled.remove(textview)
         self.textview = TaskView(self.req, self.clipboard)
         self.textview.show()
-        # self.textview.set_subtask_callback(self.new_subtask)
-        # self.textview.open_task_callback(self.app.open_task)
-        # self.textview.set_left_margin(20)
-        # self.textview.set_right_margin(20)
         scrolled.add(self.textview)
         conf_font_value = self.browser_config.get("font_name")
         if conf_font_value != "":
@@ -191,6 +187,8 @@ class TaskEditor():
         self.textview.get_tagslist_cb = task.get_tags_name
 
         # Voila! it's done
+        self.textview.connect('focus-in-event', self.on_textview_focus_in)
+        self.textview.connect('focus-out-event', self.on_textview_focus_out)
 
         """
         TODO(jakubbrindza): Once all the functionality in editor is back and
@@ -198,15 +196,6 @@ class TaskEditor():
         brought back, however its position is unsure.
         """
         # self.dayleft_label = self.builder.get_object("dayleft")
-
-        # self.textview.subtasks_callback(task.get_children)
-        # self.textview.removesubtask_callback(task.remove_child)
-        # self.textview.set_get_tagslist_callback(task.get_tags_name)
-        # self.textview.set_add_tag_callback(task.add_tag)
-        # self.textview.set_remove_tag_callback(task.remove_tag)
-        # self.textview.save_task_callback(self.light_save)
-        # self.textview.connect('focus-in-event', self.on_textview_focus_in)
-        # self.textview.connect('focus-out-event', self.on_textview_focus_out)
 
         self.task = task
         tags = task.get_tags()
@@ -248,7 +237,6 @@ class TaskEditor():
         self.pengine.onTaskLoad(self.plugin_api)
 
         # Putting the refresh callback at the end make the start a lot faster
-        # self.textview.refresh_callback(self.refresh_editor)
         self.refresh_editor()
         self.textview.grab_focus()
 
