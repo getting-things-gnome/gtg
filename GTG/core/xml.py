@@ -105,9 +105,11 @@ def task_to_element(task) -> etree.Element:
     element.set('uuid', task.get_uuid())
     element.set('recurring', str(task.get_recurring()))
 
-    # TODO: Implement tags for tasks
-    # tags = [saxutils.escape(str(t)) for t in task.get_tags_name()]
-    # element.set('tags', ','.join(tags))
+    tags = etree.SubElement(element, 'tags')
+
+    for t in task.get_tags():
+        tag_tag = etree.SubElement(tags, 'tag')
+        tag_tag.text = str(t.tid)
 
     title = etree.SubElement(element, 'title')
     title.text = task.get_title()
