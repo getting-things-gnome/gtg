@@ -166,6 +166,7 @@ class MainWindow(Gtk.ApplicationWindow):
             ('search', self.toggle_search, ('win.search', ['<ctrl>F'])),
             ('focus_quickentry', self.focus_quickentry, ('win.focus_quickentry', ['<ctrl>L'])),
             ('delete_task', self.on_delete_tasks, ('win.delete_task', ['<ctrl>Delete'])),
+            ('help_overlay', None, ('win.show-help-overlay', ['<ctrl>question'])),
             ('mark_as_started', self.on_mark_as_started, None),
             ('start_today', self.on_start_for_today, None),
             ('start_tomorrow', self.on_start_for_tomorrow, None),
@@ -192,11 +193,12 @@ class MainWindow(Gtk.ApplicationWindow):
         ]
 
         for action, callback, accel in action_entries:
-            simple_action = Gio.SimpleAction.new(action, None)
-            simple_action.connect('activate', callback)
-            simple_action.set_enabled(True)
+            if callback is not None:
+                simple_action = Gio.SimpleAction.new(action, None)
+                simple_action.connect('activate', callback)
+                simple_action.set_enabled(True)
 
-            self.add_action(simple_action)
+                self.add_action(simple_action)
 
             if accel is not None:
                 self.app.set_accels_for_action(*accel)
