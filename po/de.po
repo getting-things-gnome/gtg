@@ -26,7 +26,7 @@ msgstr "Getting Things GNOME!"
 
 #: data/org.gnome.GTG.appdata.xml.in.in:6
 msgid "Personal tasks and TODO-list items organizer"
-msgstr "Personeller Aufgaben- und TODO-Listen-Organisator"
+msgstr "Persönlicher Aufgaben- und TODO-Listen-Organisator"
 
 #: data/org.gnome.GTG.appdata.xml.in.in:11
 msgid ""
@@ -43,7 +43,7 @@ msgid ""
 "to accommodate many workflows, with features such as:"
 msgstr ""
 "GTG hilft Ihnen dabei, alles was Sie benötigen und wissen müssen "
-"aufzuzeichnen, von kleine Aufgaben zu große Projekte. Die Benutzeroberfläche "
+"aufzuzeichnen, von kleinen Aufgaben zu großen Projekten. Die Benutzeroberfläche "
 "kann sich nach vielen Arbeitsweisen anpassen, mit Funktionalitäten wie:"
 
 #: data/org.gnome.GTG.appdata.xml.in.in:14
@@ -52,7 +52,7 @@ msgstr "ein sehr flexibles Schlagwort- (tagging) und Suchsystem;"
 
 #: data/org.gnome.GTG.appdata.xml.in.in:15
 msgid "natural language parsing and a free-form task text editor;"
-msgstr "natürliche Sprachunterstützung und frei beschreibbaren Aufgabeneditor;"
+msgstr "natürliche Sprachunterstützung und frei beschreibbarer Aufgabeneditor;"
 
 #: data/org.gnome.GTG.appdata.xml.in.in:16
 msgid ""
@@ -71,8 +71,8 @@ msgid ""
 "the ability to effortlessly defer tasks to common upcoming days, or to a "
 "custom date."
 msgstr ""
-"die Möglichkeit, Aufgaben einfach in den nächsten Tagen (oder an einem "
-"festen Datum) zu verschieben."
+"die Möglichkeit, Aufgaben einfach in die nächsten Tage (oder an ein "
+"festes Datum) zu verschieben."
 
 #: data/org.gnome.GTG.appdata.xml.in.in:68
 msgid "The GTG team"
@@ -260,12 +260,12 @@ msgstr ""
 
 #: GTG/gtk/data/general_preferences.ui:207
 msgid "Start of the day"
-msgstr "Wann der Tag startet"
+msgstr "Wann der Tag anfängt"
 
 #: GTG/gtk/data/general_preferences.ui:220
 msgid ""
 "Automatically refreshes the task list and adjusts the \"Actionable\" view"
-msgstr "Aktualisiert automatisch die Aufgabenliste und den Arbeitsansicht"
+msgstr "Aktualisiert automatisch die Aufgabenliste und die Arbeitsansicht"
 
 # "Schrift" seems to be more commonly used in GNOME applications rather than "Schriftart"
 #: GTG/gtk/data/general_preferences.ui:281
@@ -468,7 +468,7 @@ msgstr "Offen"
 #: GTG/gtk/data/main_window.ui:497
 msgctxt "tasks view name"
 msgid "Actionable"
-msgstr "Bearbeitbar"
+msgstr "Umsetzbar"
 
 #: GTG/gtk/data/main_window.ui:512
 msgctxt "tasks view name"
@@ -486,7 +486,7 @@ msgstr ""
 
 #: GTG/gtk/data/main_window.ui:546
 msgid "Quickly create tasks here"
-msgstr "Hier schnell neue Aufgabe erstellen"
+msgstr "Hier schnell neue Aufgaben erstellen"
 
 #: GTG/gtk/data/main_window.ui:588
 msgid "Create a new task"
@@ -502,7 +502,7 @@ msgid ""
 "tomorrow!"
 msgstr ""
 "Keine Zeit mehr? Mehr Konzentration benötigt? Einfach die ausgewählten "
-"Aufgaben nach morgen verschieben!"
+"Aufgaben auf morgen verschieben!"
 
 # Other GNOME applications describe what it does in simpler words, which is what is done here
 #: GTG/gtk/data/main_window.ui:689
@@ -688,7 +688,7 @@ msgstr " Tagen nicht angefasst wurden"
 
 #: GTG/plugins/untouched_tasks/untouchedTasks.ui:107
 msgid "Check for untouched tasks automatically"
-msgstr "Überprüfe auf nicht angefasste Aufgaben automatisch"
+msgstr "Automatisch auf nicht angefasste Aufgaben überprüfen"
 
 #: GTG/plugins/urgency_color/preferences.ui:37
 msgid "Danger zone span"
@@ -877,7 +877,7 @@ msgstr ""
 "bis zum Wechseln einer Glühbirne, oder das Organisieren einer Party!\n"
 "\n"
 "Wenn Sie GTG das erste Mal verwenden, nehmen Sie sich bitte die Zeit, um "
-"diese Einführung zu lesen, denn es enthält nützliche Informationen, wie man "
+"diese Einführung zu lesen, denn diese enthält nützliche Informationen, wie man "
 "mit GTG den Alltag organisiert.\n"
 "\n"
 "Aufgaben erstellen und anpassen:\n"
@@ -951,7 +951,7 @@ msgstr ""
 #. Task 1@1: Learn to use subtasks
 #: GTG/core/firstrun_tasks.py:109
 msgid "Learn How to Use Subtasks"
-msgstr "Lerne, wie man Teilaufgaben verwendet"
+msgstr "Lernen Sie, wie man Teilaufgaben verwendet"
 
 #: GTG/core/firstrun_tasks.py:111
 msgid ""
@@ -981,25 +981,25 @@ msgid ""
 "between) each other in the tasks list."
 msgstr ""
 "Eine &quot;Teilaufgabe&quot; ist etwas, das man tun muss, bevor man die "
-"richtige Aufgabe fertigstellen kann. In GTG, der Zweck von Teilaufgaben ist "
-"die Aufteilung der Aufgabe (oder Projekt) in kleinere, mehr bearbeitbare "
+"richtige Aufgabe fertigstellen kann. In GTG ist der Zweck von Teilaufgaben"
+"die Aufteilung der Aufgabe (oder des Projektes) in kleinere, mehr bearbeitbare "
 "Teilaufgaben, die einfacher zu erledigen und verfolgbarer sind.\n"
 "\n"
 "Um eine Teilaufgaben im Editor zu erstellen (zum Beispiel dieses Fenster), "
-"beginne eine Zeile mit &quot;-&quot;, schreibe den Titel der Teilaufgabe und "
-"drücke Enter.\n"
+"beginnen Sie eine Zeile mit &quot;-&quot;, schreiben Sie den Titel der Teilaufgabe und "
+"drücken Sie Enter.\n"
 "\n"
-"Versuchen Sie es doch. Zum Beispiel, schreibe &quot;- Das ist meine erste "
-"Teilaufgabe!&quot; und drücke Enter:\n"
+"Versuchen Sie es doch. Zum Beispiel, schreiben Sie &quot;- Das ist meine erste "
+"Teilaufgabe!&quot; und drücken Sie Enter:\n"
 "\n"
 "\n"
 "\n"
 "Ansonsten kann man den &quot;Teilaufgabe hinzufügen&quot; Knopf in der "
 "Werkzeugleiste in diesem Fenster drücken.\n"
 "\n"
-"Beachte, dass Teilaufgaben unter einige Regeln unterstehen: Ernstes kann das "
+"Beachten Sie, dass Teilaufgaben einige Bedingungen erfüllen müssen: Erstens kann das "
 "Startdatum nicht nach dem Fälligkeitsdatum der dazugehörige Aufgabe sein. "
-"Zweitens, wenn eine Aufgabe erledigt ist, werden seine Teilaufgaben auch als "
+"Zweitens, wenn eine Aufgabe erledigt ist, werden ihre Teilaufgaben auch als "
 "erledigt markiert.\n"
 "\n"
 "Wenn Sie nicht glücklich über Ihre aktuelle Aufgabenorganisation sind, dann "
@@ -1011,7 +1011,7 @@ msgstr ""
 #: GTG/core/firstrun_tasks.py:137
 msgid "Learn How to Use Tags and Enable the Sidebar"
 msgstr ""
-"Lerne, wie man Schlagwörter und die dazugehörige Seitenleiste verwendet"
+"Lernen Sie, wie man Schlagwörter und die dazugehörige Seitenleiste verwendet"
 
 #: GTG/core/firstrun_tasks.py:139
 msgid ""
@@ -1043,26 +1043,26 @@ msgid ""
 "select @money."
 msgstr ""
 "Um Ihre Aufgaben zu organisieren nutzen Sie in GTG Schlagwörter. Ein "
-"Schlagwort ist ein einfaches Wort, dass mit &quot;@&quot; beginnt.\n"
+"Schlagwort ist ein einfaches Wort, das mit &quot;@&quot; beginnt.\n"
 "\n"
 "Versuchen Sie, hier ein mit &quot;@&quot; beginnendes Wort zu schreiben:\n"
 "\n"
-"Sobald es gelb erscheint, ist es dann ein Schlagwort, welcher mit der "
+"Sobald es gelb erscheint, ist es ein Schlagwort, welches mit der "
 "Aufgabe verknüpft ist.\n"
 "\n"
-"Über den Menüknopf oder der F9-Taste kann man die Seitenleiste ein- oder "
+"Über den Menüknopf oder die F9-Taste kann man die Seitenleiste ein- oder "
 "ausblenden, welche alle verwendeten Schlagwörter zeigt. Damit können alle "
 "mit einem Schlagwort verknüpften Aufgaben angezeigt werden.\n"
 "\n"
 "Mit einem Rechtsklick auf einem Schlagwort in der Seitenleiste kann man "
-"diese auch bearbeiten. Damit lassen sich beispielsweise eine Farbe oder ein "
-"Symbol verbinden. Dies ist ein Vorteil, wenn Sie schnell die Aufgaben Ihrer "
+"dieses auch bearbeiten. Damit lassen sich beispielsweise eine Farbe oder ein "
+"Symbol zuweisen. Dies ist ein Vorteil, wenn Sie schnell die Aufgaben Ihrer "
 "Aufgabenliste über die mit ihnen verknüpften Schlagworte identifizieren "
 "wollen.\n"
 "\n"
 "Neue Schlagwörter werden stets ausschließlich mit der gerade bearbeiteten "
-"Aufgabe verknüpft, und nicht einer Teilaufgabe. Eine neue Teilaufgabe wird "
-"jedoch die Markierungen ihrer Übergeordnete Aufgabe übernehmen.\n"
+"Aufgabe verknüpft, und nicht mit einer Teilaufgabe. Eine neue Teilaufgabe wird "
+"jedoch die Schlagwörter ihrer übergeordneten Aufgabe übernehmen.\n"
 "\n"
 "Wenn Sie eine weiter fortgeschrittenere Aufgabenplanung betreiben wollen, "
 "können Sie auch durch ziehen und ablegen (drag-and-drop) eine Hierarchie der "
@@ -1075,7 +1075,7 @@ msgstr ""
 #. Task 3@1: Using the Actionable tab
 #: GTG/core/firstrun_tasks.py:168
 msgid "Learn How to Use the Actionable View Mode"
-msgstr "Lerne, wie die Arbeitsansicht (\"Bearbeitbar) verwendet wird"
+msgstr "Lernen Sie, wie die Arbeitsansicht (\"Umsetzbar\") verwendet wird"
 
 #: GTG/core/firstrun_tasks.py:170
 msgid ""
@@ -1110,7 +1110,7 @@ msgid ""
 "tag hidden in the Actionable view, etc.). To avoid this, you may prefer to "
 "edit your task while in the &quot;Open&quot; tasks view instead."
 msgstr ""
-"Wenn Sie den &quot;Bearbeitbar&quot;-Tab oben auswählen, werden nur "
+"Wenn Sie den &quot;Umsetzbar&quot;-Tab oben auswählen, werden nur "
 "bearbeitbare Aufgaben angezeigt.\n"
 "\n"
 "Was ist eine bearbeitbare Aufgabe? Es ist eine Aufgabe, die Sie jetzt direkt "
@@ -1120,7 +1120,7 @@ msgstr ""
 "ist bereits eingetroffen.\n"
 "\n"
 "Es ist eine Aufgabe ohne offene Teilaufgaben, also können Sie die Aufgabe "
-"direkt ausführen, weil es nicht mehr von einer Aufgabe abhängt.\n"
+"direkt ausführen, weil sie nicht mehr von einer Aufgabe abhängt.\n"
 "\n"
 "Es ist eine Aufgabe, dessen Fälligkeitsdatum etwas anderes als &quot;"
 "Irgendwann&quot; ist, weil dieses spezielle Datum für Aufgaben da ist, die "
@@ -1134,13 +1134,13 @@ msgstr ""
 "Seitenleiste rechts-klicken und bearbeiten, und dann auswählen, ob Aufgaben "
 "mit dem Schlagwort in der Arbeitsansicht verborgen werden sollen oder nicht. "
 "Das ist sehr sinnvoll, wenn Sie ein Schlagwort wie &quot;warten&quot; für "
-"Aufgaben verwenden, die durch etwas Externes blockiert ist (z. B. ein "
+"Aufgaben verwenden, die durch etwas Externes blockiert sind (z. B. ein "
 "Telefonanruf, den Sie erwarten)."
 
 #. Task 5@1: Plugins
 #: GTG/core/firstrun_tasks.py:206
 msgid "Learn About Plugins"
-msgstr "Lerne über Erweiterungen"
+msgstr "Lernen Sie über Erweiterungen"
 
 #: GTG/core/firstrun_tasks.py:208
 msgid ""
@@ -1179,9 +1179,9 @@ msgid ""
 "reports and ideas are welcome... and patches even more so!"
 msgstr ""
 "Es ist bekannt, dass GTG k̶ä̶f̶e̶r̶f̶r̶e̶i̶ fehlerfrei ist! 🐛\n"
-"Jedoch, im Dunkeln können unerwartete Dinge geschehen...\n"
+"Jedoch können im Dunkeln unerwartete Dinge geschehen...\n"
 "\n"
-"Wenn Sie jedoch Abstürze oder Fehlverhalten feststellen, dann melden Sie es "
+"Wenn Sie aber Abstürze oder Fehlverhalten feststellen, dann melden Sie es "
 "bitte detailreich in unserem englischsprachigen Issue Tracking System unter "
 "https://github.com/getting-things-gnome/gtg/issues/new\n"
 "\n"
@@ -1191,7 +1191,7 @@ msgstr ""
 #. Task 6@1: Learn how to use the QuickAdd Entry
 #: GTG/core/firstrun_tasks.py:234
 msgid "Learn How to Use the Quick Add Entry"
-msgstr "Lerne, wie der Schnelleintrag verwendet wird"
+msgstr "Lerne Sie, wie der Schnelleintrag verwendet wird"
 
 #: GTG/core/firstrun_tasks.py:236
 msgid ""
@@ -1201,14 +1201,14 @@ msgid ""
 "about its features and syntax."
 msgstr ""
 "Der Schnelleintrag ist der schnellste Weg um neue Aufgaben ohne "
-"Unterbrechungen direkt im Hauptfenster zu erstellen. Es besitzt spezielle "
-"Syntax mit eigene Schlüsselwörter. Schauen Sie im Handbuch nach, um mehr "
+"Unterbrechungen direkt im Hauptfenster zu erstellen. Er besitzt spezielle "
+"Syntax mit eigenen Schlüsselwörter. Schauen Sie im Handbuch nach, um mehr "
 "darüber zu erfahren."
 
 #. Task 7@1: Learn How To Use Synchonization Services
 #: GTG/core/firstrun_tasks.py:244
 msgid "Learn About Synchronization Services"
-msgstr "Lerne über Synchronisierungsdienste"
+msgstr "Lernen Sie über Synchronisierungsdienste"
 
 #: GTG/core/firstrun_tasks.py:246
 msgid ""
@@ -1231,27 +1231,27 @@ msgid ""
 "import or export your tasks."
 msgstr ""
 "❗ Achtung: Seit GTG 0.4 wurden die Erweiterungen zu den "
-"Synchronisierungsdienste deaktiviert bis Jemand (Sie?) repariert und pflegt, "
+"Synchronisierungsdienste deaktiviert bis sie Jemand (Sie?) repariert und pflegt, "
 "weil diese noch nicht mit der neuen Code funktionieren, oder eine veraltete "
 "API vom entsprechenden Dienst nutzen, die aktualisiert werden soll.\n"
 "\n"
 "Synchronisierungsdienste erlauben GTG, Aufgaben, Notizen oder Fehler von "
 "bestimmten Webseiten oder Programme wie Remember the Milk, Tomboy, "
-"LaunchPad, etc. zu synchronisieren (oder zu im- oder exportieren).\n"
+"LaunchPad etc. zu synchronisieren (oder zu im- oder exportieren).\n"
 "\n"
 "Dies kann nützlich sein, wenn Sie zum Beispiel Aufgaben von mehreren GTG "
 "Instanzen auf anderen Computer verwalten wollen, oder wenn Sie Aufgaben bei "
 "einem Onlinedienst bearbeiten wollen.\n"
 "\n"
 "Um Synchronisierungsdienste zu nutzen, drücken Sie auf den Menüknopf im "
-"Hauptfenster, und wähle &quot;Synchronisation&quot;. Sie können dann Lokale "
+"Hauptfenster, und wählen Sie &quot;Synchronisation&quot;. Sie können dann Lokale "
 "und Onlinedienste auswählen, mit dem GTG sich synchronisieren (oder im- oder "
 "exportieren) soll."
 
 #. Task 8@1: Learn How To Search For Tasks
 #: GTG/core/firstrun_tasks.py:267
 msgid "Learn How to Search for Tasks"
-msgstr "Lerne, wie man nach Aufgaben sucht"
+msgstr "Lernen Sie, wie man nach Aufgaben sucht"
 
 # TODO: translate referenced user manual section
 #: GTG/core/firstrun_tasks.py:269
@@ -1276,21 +1276,21 @@ msgid ""
 "window's menu button."
 msgstr ""
 "GTG kann Aufgaben auch nach ihrer Beschreibung suchen, so dass es einfach "
-"ist, nach spezifische Aufgaben zu suchen.\n"
+"ist, nach spezifischen Aufgaben zu suchen.\n"
 "\n"
-"Die Suche ist einfach: Drücken Sie Strg+F und schreibe dass, was Sie suchen "
+"Die Suche ist einfach: Drücken Sie Strg+F und schreiben Sie dass, was Sie suchen "
 "wollen, in die Suche.\n"
 "\n"
 "GTG kann Suchvorgänge in der Seitenleiste unter &quot;Gespeicherte "
 "Suchvorgänge&quot; speichern. Damit ist es möglich, vorherige Suchen wieder "
 "durchzuführen. Die Suchergebnisse werden automatisch aktualisiert.\n"
 "\n"
-"Die Suche in GTG ist sehr mächtig, es akzeptiert viele Parameter um nach "
-"bestimmte Aufgaben zu suchen. Zum Beispiel, mit der Suche &quot;@Auftrag !"
-"Heute&quot; sucht man nach Aufgaben, die das Schlagwort @Auftrag besitzen "
-"und heute erledigt werden sollen. Um mehr über die verfügbare Parametern "
+"Die Suche in GTG ist sehr mächtig und akzeptiert viele Parameter um nach "
+"bestimmten Aufgaben zu suchen. Zum Beispiel sucht mit der Suche &quot;@Auftrag !"
+"Heute&quot; nach Aufgaben, die das Schlagwort @Auftrag besitzen "
+"und heute erledigt werden sollen. Um mehr über die verfügbare Parameter "
 "herauszufinden, schauen Sie im Benutzerhandbuch, welches im Menüknopf im "
-"Hauptprogramm unter &quot;Hilfe&quot; zu finden ist, nach &quot;Seach Syntax "
+"Hauptprogramm unter &quot;Hilfe&quot; zu finden ist, nach &quot;Search Syntax "
 "documentation&quot;."
 
 #: GTG/core/info.py:33
@@ -1298,7 +1298,7 @@ msgid ""
 "A personal productivity tool for GNOME,\n"
 "inspired by the GTD methodology."
 msgstr ""
-"Ein persönlicher Produktivitätswerkzeug für GNOME,\n"
+"Ein persönliches Produktivitätswerkzeug für GNOME,\n"
 "inspiriert durch die GTD Methodik."
 
 #: GTG/core/plugins/__init__.py:27
@@ -1452,7 +1452,7 @@ msgstr "Synchronisationsdienst - {info.NAME}"
 #: GTG/gtk/backends/__init__.py:269
 #, python-format
 msgid "Do you really want to remove the '%s' synchronization service?"
-msgstr "Wollen Sie wirklich Synchronisationsdienst '%s' entfernen?"
+msgstr "Wollen Sie wirklich den Synchronisationsdienst '%s' entfernen?"
 
 #: GTG/gtk/backends/parameters_ui/__init__.py:62
 msgid "Import tags"
@@ -1472,7 +1472,7 @@ msgstr "Zu synchronisierende Schlagwörter"
 
 #: GTG/gtk/backends/parameters_ui/__init__.py:70
 msgid "Tasks with these tags:"
-msgstr "Aufgaben mit folgende Schlagwörter:"
+msgstr "Aufgaben mit folgenden Schlagwörter:"
 
 #: GTG/gtk/backends/parameters_ui/__init__.py:75
 msgid "Username"
@@ -1484,7 +1484,7 @@ msgstr "Adresse des Dienstes"
 
 #: GTG/gtk/backends/parameters_ui/__init__.py:85
 msgid "Import tasks from @ replies directed to you"
-msgstr "Aufgaben aus an Sie gerichtete @ Antworten importieren"
+msgstr "Aufgaben aus an Sie gerichteten @ Antworten importieren"
 
 #: GTG/gtk/backends/parameters_ui/__init__.py:89
 msgid "Import tasks from direct messages"
@@ -1512,7 +1512,7 @@ msgstr "Dateiname:"
 
 #: GTG/gtk/backends/parameters_ui/period.py:48
 msgid "Check for new tasks every"
-msgstr "Neue Aufgaben jede"
+msgstr "Auf neue Aufgaben alle"
 
 #: GTG/gtk/backends/parameters_ui/period.py:94
 msgid " minute"
@@ -1528,7 +1528,7 @@ msgid ""
 "service."
 msgstr ""
 "Der Synchronisationsdienst <b>%s</b> kann sich nicht mit den angegeben  "
-"Authentifikation-Daten anmelden und wurde deaktiviert. Re-aktivieren Sie den "
+"Authentifikationdaten anmelden und wurde deaktiviert. Re-aktivieren Sie den "
 "Dienst, um die Anmeldung zu wiederholen."
 
 #: GTG/gtk/browser/backend_infobar.py:39
@@ -1639,7 +1639,7 @@ msgstr "Copyright © 2008-%d Beitragende von GTG."
 #. but we can't split the string because it would cause trouble for some languages.
 #: GTG/gtk/browser/main_window.py:309
 msgid "GTG was made by many contributors around the world."
-msgstr "GTG wurde von vielen Beitragende weltweit mitgewirkt."
+msgstr "GTG wurde von vielen beitragen."
 
 #: GTG/gtk/browser/main_window.py:310
 msgid "The GTG project is maintained/administered by:"
@@ -1648,7 +1648,7 @@ msgstr "Das GTG Projekt wird verwaltet und betreut von:"
 #: GTG/gtk/browser/main_window.py:312
 msgid "This release was brought to you by the efforts of these people:"
 msgstr ""
-"Diese Version wurden durch die Anstrengungen folgende Beitragenden möglich:"
+"Diese Version wurde durch die Anstrengungen folgende Beitragenden möglich:"
 
 #: GTG/gtk/browser/main_window.py:314
 #, python-brace-format
@@ -1656,7 +1656,7 @@ msgid ""
 "Many others contributed to GTG over the years.\n"
 "You can see them on {OH_stats} and {GH_stats}."
 msgstr ""
-"Über die Jahre haben viele GTG etwas beigetragen.\n"
+"Über die Jahre haben viele zu GTG etwas beigetragen.\n"
 "Unter {OH_stats} und {GH_stats} sind sie zu finden."
 
 #: GTG/gtk/browser/main_window.py:322
@@ -1709,7 +1709,7 @@ msgstr "Entferne ausgewähltes Symbol"
 #: GTG/gtk/browser/tag_editor.py:199
 #, python-format
 msgid "Editing Tag \"%s\""
-msgstr "Editiere Schlagwort \"%s\""
+msgstr "Bearbeite Schlagwort \"%s\""
 
 #: GTG/gtk/browser/tag_editor.py:236
 msgid "Name : "
@@ -1808,7 +1808,7 @@ msgstr "Allgemein"
 #: GTG/plugins/export/export.py:89
 msgid "No task matches your criteria. Empty report can't be generated."
 msgstr ""
-"Keine Aufgeben entsprechen Ihre Kriterien. Ein leerer Bericht kann nicht "
+"Keine Aufgaben entsprechen Ihre Kriterien. Ein leerer Bericht kann nicht "
 "erstellt werden."
 
 #: GTG/plugins/export/export.py:107
