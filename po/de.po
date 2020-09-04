@@ -141,7 +141,7 @@ msgstr "Leeren"
 #: GTG/gtk/data/context_menus.ui:8 GTG/gtk/data/context_menus.ui:35
 #: GTG/gtk/browser/tag_context_menu.py:55
 msgid "Edit..."
-msgstr "Bearbeiten..."
+msgstr "Bearbeiten…"
 
 # TODO: #377 → rename to Wiederherstellen (restore, maybe reopen?)
 #: GTG/gtk/data/context_menus.ui:14 GTG/gtk/data/task_editor.ui:386
@@ -161,7 +161,7 @@ msgstr "Löschen"
 
 #: GTG/gtk/data/context_menus.ui:31
 msgid "Add a Subtask..."
-msgstr "_Teilaufgabe hinzufügen..."
+msgstr "_Teilaufgabe hinzufügen…"
 
 #: GTG/gtk/data/context_menus.ui:41 GTG/gtk/data/task_editor.ui:373
 msgid "Mark as Done"
@@ -221,7 +221,7 @@ msgstr "Nächstes Jahr"
 #: GTG/gtk/data/context_menus.ui:107 GTG/gtk/data/context_menus.ui:144
 #: GTG/gtk/data/main_window.ui:159
 msgid "Pick a Date..."
-msgstr "Datum auswählen..."
+msgstr "Datum auswählen…"
 
 #: GTG/gtk/data/context_menus.ui:114 GTG/gtk/data/main_window.ui:186
 msgid "Clear Start Date"
@@ -238,7 +238,7 @@ msgstr "Fälligkeitsdatum entfernen"
 
 #: GTG/gtk/data/context_menus.ui:175
 msgid "Modify Tags..."
-msgstr "Schlagwörter bearbeiten..."
+msgstr "Schlagwörter bearbeiten…"
 
 #: GTG/gtk/data/general_preferences.ui:60
 msgid "Show description preview"
@@ -1179,7 +1179,7 @@ msgid ""
 "reports and ideas are welcome... and patches even more so!"
 msgstr ""
 "Es ist bekannt, dass GTG k̶ä̶f̶e̶r̶f̶r̶e̶i̶ fehlerfrei ist! 🐛\n"
-"Jedoch können im Dunkeln unerwartete Dinge geschehen...\n"
+"Jedoch können im Dunkeln unerwartete Dinge geschehen…\n"
 "\n"
 "Wenn Sie aber Abstürze oder Fehlverhalten feststellen, dann melden Sie es "
 "bitte detailreich in unserem englischsprachigen Issue Tracking System unter "
@@ -1688,7 +1688,7 @@ msgstr "Neues Schlagwort"
 
 #: GTG/gtk/browser/simple_color_selector.py:237
 msgid "Add Custom Color..."
-msgstr "Benutzerdefinierte Farbe hinzufügen..."
+msgstr "Benutzerdefinierte Farbe hinzufügen…"
 
 #: GTG/gtk/browser/simple_color_selector.py:242
 msgid "Clear Selected Color"
