@@ -9,6 +9,11 @@ GTG/backends/unmaintained/backend_tomboy.py
 GTG/backends/unmaintained/generictomboy.py
 GTG/backends/unmaintained/rtm/__init__.py
 GTG/backends/unmaintained/rtm/rtm.py
+GTG/plugins/export.gtg-plugin
+GTG/plugins/hamster.gtg-plugin
+GTG/plugins/send-email.gtg-plugin
+GTG/plugins/untouched-tasks.gtg-plugin
+GTG/plugins/urgency-color.gtg-plugin
 GTG/plugins/unmaintained/bugzilla/bug.py
 GTG/plugins/unmaintained/bugzilla/bugzilla.py
 GTG/plugins/unmaintained/bugzilla/__init__.py

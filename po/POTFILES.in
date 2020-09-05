@@ -2,6 +2,12 @@
 data/org.gnome.GTG.appdata.xml.in.in
 data/org.gnome.GTG.desktop.in.in
 
+GTG/plugins/export.gtg-plugin.desktop
+GTG/plugins/send-email.gtg-plugin.desktop
+GTG/plugins/untouched-tasks.gtg-plugin.desktop
+GTG/plugins/urgency-color.gtg-plugin.desktop
+GTG/plugins/hamster.gtg-plugin.desktop
+
 GTG/gtk/data/backends.ui
 GTG/gtk/data/calendar.ui
 GTG/gtk/data/context_menus.ui
