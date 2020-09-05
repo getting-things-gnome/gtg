@@ -55,7 +55,6 @@ class ExportPlugin():
     PLUGIN_NAME = "export"
 
     DEFAULT_PREFERENCES = {
-        "menu_entry": True,
         "last_template": None,
     }
 
@@ -146,12 +145,11 @@ class ExportPlugin():
 # GTK FUNCTIONS ###############################################################
     def _init_gtk(self):
         """ Initialize all the GTK widgets """
-        self.menu_entry = False
-
         self.menu_item = Gtk.ModelButton()
         self.menu_item.set_label(_("Export the tasks currently listed"))
         self.menu_item.connect('clicked', self.show_dialog)
         self.menu_item.show()
+        self.plugin_api.add_menu_item(self.menu_item)
 
         builder = Gtk.Builder()
         cur_dir = os.path.dirname(os.path.abspath(__file__))
@@ -169,8 +167,6 @@ class ExportPlugin():
 
         self.export_dialog = builder.get_object("export_dialog")
         self.export_image = builder.get_object("export_image")
-        self.preferences_dialog = builder.get_object("preferences_dialog")
-        self.pref_menu = builder.get_object("pref_chbox_menu")
         self.description_label = builder.get_object("label_description")
         self.save_button = builder.get_object("export_btn_save")
         self.open_button = builder.get_object("export_btn_open")
@@ -192,19 +188,11 @@ class ExportPlugin():
             self._hide_dialog,
             "on_export_combo_templ_changed":
             self.on_combo_changed,
-            "on_preferences_dialog_delete_event":
-            self.on_preferences_cancel,
-            "on_btn_preferences_cancel_clicked":
-            self.on_preferences_cancel,
-            "on_btn_preferences_ok_clicked":
-            self.on_preferences_ok,
         })
 
     def _gtk_deactivate(self):
         """ Remove Menu item for this plugin """
-        if self.menu_entry:
-            self.plugin_api.remove_menu_item(self.menu_item)
-            self.menu_entry = False
+        self.plugin_api.remove_menu_item(self.menu_item)
 
     def show_dialog(self, widget):
         """ Show dialog with options for export """
@@ -300,28 +288,11 @@ class ExportPlugin():
     @classmethod
     def is_configurable(cls):
         """A configurable plugin should have this method and return True"""
-        return True
+        return False
 
     def configure_dialog(self, manager_dialog):
         """ Display configuration dialog """
         self._preferences_load()
-        self.preferences_dialog.set_transient_for(manager_dialog)
-        self.pref_menu.set_active(self.preferences["menu_entry"])
-        self.preferences_dialog.show_all()
-
-    def on_preferences_cancel(self, widget, data=None):
-
-        """ Only hide the dialog """
-        self.preferences_dialog.hide()
-        return True
-
-    def on_preferences_ok(self, widget):
-        """ Apply and store new preferences """
-        self.preferences["menu_entry"] = self.pref_menu.get_active()
-        self.preferences_dialog.hide()
-
-        self._preferences_apply()
-        self._preferences_store()
 
     def _preferences_load(self):
         """ Restore user preferences """
@@ -335,11 +306,5 @@ class ExportPlugin():
             self.PLUGIN_NAME, "preferences", self.preferences)
 
     def _preferences_apply(self):
-        """ Add/remove menu entry """
-        if self.preferences["menu_entry"] and not self.menu_entry:
-            self.plugin_api.add_menu_item(self.menu_item)
-            self.menu_entry = True
-
-        elif not self.preferences["menu_entry"] and self.menu_entry:
-            self.plugin_api.remove_menu_item(self.menu_item)
-            self.menu_entry = False
+        """ Apply preferences """
+        pass
