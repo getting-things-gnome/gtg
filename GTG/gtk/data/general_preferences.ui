@@ -28,8 +28,8 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="valign">start</property>
-                <property name="margin_start">16</property>
-                <property name="margin_end">16</property>
+                <property name="margin_start">12</property>
+                <property name="margin_end">12</property>
                 <property name="margin_top">8</property>
                 <property name="margin_bottom">8</property>
                 <property name="selection_mode">none</property>
@@ -43,8 +43,8 @@
                       <object class="GtkBox">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="margin_left">8</property>
-                        <property name="margin_right">8</property>
+                        <property name="margin_start">12</property>
+                        <property name="margin_end">12</property>
                         <property name="margin_top">8</property>
                         <property name="margin_bottom">8</property>
                         <child>
@@ -116,8 +116,8 @@
                       <object class="GtkBox">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="margin_left">8</property>
-                        <property name="margin_right">8</property>
+                        <property name="margin_start">12</property>
+                        <property name="margin_end">12</property>
                         <property name="margin_top">8</property>
                         <property name="margin_bottom">8</property>
                         <child>
@@ -190,8 +190,8 @@
                       <object class="GtkBox">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="margin_left">8</property>
-                        <property name="margin_right">8</property>
+                        <property name="margin_start">12</property>
+                        <property name="margin_end">12</property>
                         <property name="margin_top">8</property>
                         <property name="margin_bottom">8</property>
                         <child>
@@ -270,8 +270,8 @@
                       <object class="GtkBox">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="margin_left">8</property>
-                        <property name="margin_right">8</property>
+                        <property name="margin_start">12</property>
+                        <property name="margin_end">12</property>
                         <property name="margin_top">8</property>
                         <property name="margin_bottom">8</property>
                         <child>
@@ -316,8 +316,8 @@
                       <object class="GtkBox">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="margin_start">16</property>
-                        <property name="margin_end">16</property>
+                        <property name="margin_start">12</property>
+                        <property name="margin_end">12</property>
                         <property name="margin_top">8</property>
                         <property name="margin_bottom">8</property>
                         <child>
@@ -366,8 +366,8 @@
               <object class="GtkLabel">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="margin_left">23</property>
-                <property name="margin_right">16</property>
+                <property name="margin_start">23</property>
+                <property name="margin_end">12</property>
                 <property name="margin_top">32</property>
                 <property name="label" translatable="yes">Clean Up</property>
                 <property name="xalign">0</property>
@@ -385,8 +385,8 @@
               <object class="GtkListBox">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="margin_left">16</property>
-                <property name="margin_right">16</property>
+                <property name="margin_start">12</property>
+                <property name="margin_end">12</property>
                 <property name="margin_top">5</property>
                 <property name="margin_bottom">8</property>
                 <child>
@@ -398,8 +398,8 @@
                       <object class="GtkBox">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="margin_left">8</property>
-                        <property name="margin_right">8</property>
+                        <property name="margin_start">12</property>
+                        <property name="margin_end">12</property>
                         <property name="margin_top">8</property>
                         <property name="margin_bottom">8</property>
                         <child>
@@ -443,8 +443,8 @@
                       <object class="GtkBox">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="margin_left">8</property>
-                        <property name="margin_right">8</property>
+                        <property name="margin_start">12</property>
+                        <property name="margin_end">12</property>
                         <property name="margin_top">8</property>
                         <property name="margin_bottom">8</property>
                         <child>
@@ -501,7 +501,7 @@
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="halign">end</property>
-                <property name="margin_right">18</property>
+                <property name="margin_end">18</property>
                 <signal name="clicked" handler="on_purge_clicked" swapped="no"/>
               </object>
               <packing>
