@@ -109,6 +109,9 @@ class Application(Gtk.Application):
         self.preferences_dialog = Preferences(self.req, self)
         self.plugins_dialog = PluginsDialog(self.req)
 
+        if self.config.get('dark_mode'):
+            self.toggle_darkmode()
+
         self.init_style()
 
 
@@ -160,6 +163,12 @@ class Application(Gtk.Application):
 
         provider.load_from_path(css_path)
         add_provider(screen, provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
+
+    def toggle_darkmode(self, state=True):
+        """Use dark mode theme."""
+
+        settings = Gtk.Settings.get_default()
+        settings.set_property("gtk-application-prefer-dark-theme", state)
 
     def init_actions(self):
         """Setup actions."""

@@ -49,6 +49,7 @@ class GeneralPreferences():
         self.refresh_time = builder.get_object("time_entry")
         self.autoclean_enable = builder.get_object("autoclean_enable")
         self.autoclean_days = builder.get_object("autoclean_days")
+        self.dark_mode = builder.get_object("darkmode_enable")
 
         builder.connect_signals(self)
 
@@ -99,6 +100,9 @@ class GeneralPreferences():
 
         autoclean_days = self.config.get("autoclean_days")
         self.autoclean_days.set_value(autoclean_days)
+
+        dark_mode = self.config.get("dark_mode")
+        self.dark_mode.set_active(dark_mode)
 
     def _refresh_task_browser(self):
         """ Refresh tasks in task browser """
@@ -166,3 +170,9 @@ class GeneralPreferences():
         """Purge old tasks immediately."""
 
         self.app.purge_old_tasks(widget)
+
+    def on_dark_mode_toggled(self, widget, state):
+        """Toggle darkmode."""
+
+        self.config.set("dark_mode", state)
+        self.app.toggle_darkmode(state)
