@@ -304,9 +304,13 @@ def generate() -> etree.Element:
         task_tag.attrib['id'] = task['id']
         task_tag.attrib['status'] = 'Active'
         task_tag.attrib['tags'] = ','.join(tags)
+        task_tag.attrib['recurring'] = 'False'
 
         title = etree.SubElement(task_tag, 'title')
         title.text = task['title']
+
+        recurring_term = etree.SubElement(task_tag, 'recurring_term')
+        recurring_term.text = 'None'
 
         for sub in task['subtasks']:
             subtask = etree.SubElement(task_tag, 'subtask')
