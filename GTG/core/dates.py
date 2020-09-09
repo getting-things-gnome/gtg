@@ -434,6 +434,116 @@ class Date():
         else:
             raise ValueError(f"Can't parse date '{string}'")
 
+    def _parse_only_month_day_for_recurrency(self, string):
+        """ Parse next Xth day in month from a certain date"""
+        try:
+            mday = int(string)
+            if not 1 <= mday <= 31 or string.startswith('0'):
+                return None
+        except ValueError:
+            return None
+
+        try:
+            result = self.replace(day=mday)
+        except ValueError:
+            result = None
+
+        if result is None or result <= self:
+            if self.month == 12:
+                next_month = 1
+                next_year = self.year + 1
+            else:
+                next_month = self.month + 1
+                next_year = self.year
+
+            try:
+                result = datetime.date(next_year, next_month, mday)
+            except ValueError:
+                pass
+
+        return result
+
+    def _parse_numerical_format_for_recurrency(self, string):
+        """ Parse numerical formats like %Y/%m/%d, %Y%m%d or %m%d and calculated from a certain date"""
+        result = None
+        
+        for fmt in ['%Y/%m/%d', '%Y%m%d', '%m%d']:
+            try:
+                da_ti = datetime.datetime.strptime(string, fmt)
+                result = convert_datetime_to_date(da_ti)
+                if '%Y' not in fmt:
+                    # If the day has passed, assume the next year
+                    if result.month > self.month or \
+                        (result.month == self.month and
+                         result.day >= self.day):
+                        year = self.year
+                    else:
+                        year = self.year + 1
+                    result = result.replace(year=year)
+            except ValueError:
+                continue
+        return result
+    
+    def _parse_text_representation_for_recurrency(self, string, newtask=False):
+        """ Match common text representation from a certain date """
+
+        # accepted date formats
+        formats = {
+            'day': 0 if newtask == True else 1,
+            _('day').lower(): 0 if newtask == True else 1,
+            'other-day': 1 if newtask == True else 2,
+            _('other-day').lower(): 1 if newtask == True else 2,
+            'week': 7,
+            _('week').lower(): 7,
+            'month': calendar.mdays[self.month],
+            _('month').lower(): calendar.mdays[self.month],
+            'year': 365 + int(calendar.isleap(self.year)),
+            _('year').lower(): 365 + int(calendar.isleap(self.year)),
+        }
+
+        # add week day names in the current locale
+        for i, (english, local) in enumerate([
+            ("Monday", _("Monday")),
+            ("Tuesday", _("Tuesday")),
+            ("Wednesday", _("Wednesday")),
+            ("Thursday", _("Thursday")),
+            ("Friday", _("Friday")),
+            ("Saturday", _("Saturday")),
+            ("Sunday", _("Sunday")),
+        ]):
+            offset = i - self.weekday() + 7 * int(i <= self.weekday())
+            formats[english.lower()] = offset
+            formats[local.lower()] = offset
+
+        offset = formats.get(string, None)
+        if offset is None:
+            return None
+        else:
+            return self + datetime.timedelta(offset)
+
+    def parse_from_date(self, string, newtask=False):
+        """parse_from_date returns the date from a string but counts since a given date"""
+        if string is None:
+            string = ''
+        else:
+            string = string.lower()
+        
+        try:
+            return Date(string)
+        except ValueError:
+            pass
+
+        result = self._parse_only_month_day_for_recurrency(string)
+        if result is None:
+            result = self._parse_numerical_format_for_recurrency(string)
+        if result is None:
+            result = self._parse_text_representation_for_recurrency(string, newtask)
+        
+        if result is not None:
+            return Date(result)
+        else:
+            raise ValueError(f"Can't parse date '{string}'")
+
     def to_readable_string(self):
         """ Return nice representation of date.
 

@@ -72,6 +72,14 @@ def task_from_element(task, element: etree.Element):
     except (AttributeError, TypeError):
         pass
 
+    # Recurring tasks
+    try:
+        recurring = element.attrib['recurring']
+        recurring_term = element.find('recurring_term').text
+        task.set_recurring(recurring == 'True', None if recurring_term == 'None' else recurring_term)
+    except AttributeError:
+        pass
+
     # Task Tags
     tags = element.get('tags')
     tags = [t for t in tags.split(',') if t.strip() != '']
@@ -105,6 +113,7 @@ def task_to_element(task) -> etree.Element:
     element.set('id', task.get_id())
     element.set('status', task.get_status())
     element.set('uuid', task.get_uuid())
+    element.set('recurring', str(task.get_recurring()))
 
     tags = [saxutils.escape(str(t)) for t in task.get_tags_name()]
     element.set('tags', ','.join(tags))
@@ -126,6 +135,9 @@ def task_to_element(task) -> etree.Element:
 
     done_date = etree.SubElement(element, 'donedate')
     done_date.text = task.get_closed_date().xml_str()
+
+    recurring_term = etree.SubElement(element, 'recurring_term')
+    recurring_term.text = str(task.get_recurring_term())
 
     for subtask_id in task.get_children():
         sub = etree.SubElement(element, 'subtask')

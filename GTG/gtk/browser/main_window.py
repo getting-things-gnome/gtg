@@ -961,6 +961,10 @@ class MainWindow(Gtk.ApplicationWindow):
             task = self.req.new_task(tags=tags, newtask=True)
             # task.add_parent(uid)
             zetask.add_child(task.get_id())
+
+            # if the parent task is recurring, its child must be also.
+            task.inherit_recursion()
+            
             self.app.open_task(task.get_id(), new=True)
 
     def on_edit_active_task(self, widget=None, row=None, col=None):
