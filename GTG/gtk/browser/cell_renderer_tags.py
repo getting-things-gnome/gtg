@@ -23,6 +23,13 @@ from GTG.core.logger import log
 
 
 class CellRendererTags(Gtk.CellRenderer):
+
+    SYMBOLIC_ICONS = (
+        'emblem-documents-symbolic',
+        'task-past-due-symbolic',
+        'system-search-symbolic',
+    )
+
     __gproperties__ = {
         'tag_list': (GObject.TYPE_PYOBJECT,
                      "Tag list", "A list of tags", GObject.PARAM_READWRITE),
@@ -70,13 +77,16 @@ class CellRendererTags(Gtk.CellRenderer):
         return count
 
     # Class methods
-    def __init__(self):
+    def __init__(self, config):
         super().__init__()
         self.tag_list = None
         self.tag = None
         self.xpad = 1
         self.ypad = 1
         self.PADDING = 1
+        self.config = config
+
+
 
     def do_set_property(self, pspec, value):
         if pspec.name == "tag-list":
@@ -103,6 +113,11 @@ class CellRendererTags(Gtk.CellRenderer):
         else:
             return
 
+        if self.config.get('dark_mode'):
+            symbolic_color = Gdk.RGBA(0.9, 0.9, 0.9, 1)
+        else:
+            symbolic_color = Gdk.RGBA(0, 0, 0, 1)
+
         # Drawing context
         gdkcontext = cr
         gdkcontext.set_antialias(cairo.ANTIALIAS_NONE)
@@ -126,8 +141,15 @@ class CellRendererTags(Gtk.CellRenderer):
 
             if my_tag_icon:
                 try:
-                    pixbuf = Gtk.IconTheme.get_default().load_icon(
-                        my_tag_icon, 16, 0)
+                    icon_theme = Gtk.IconTheme.get_default()
+
+                    if my_tag_icon in self.SYMBOLIC_ICONS:
+                        info = icon_theme.lookup_icon(my_tag_icon, 16, 0)
+                        load = info.load_symbolic(symbolic_color)
+                        pixbuf = load[0]
+                    else:
+                        pixbuf = icon_theme.load_icon(my_tag_icon, 16, 0)
+
                     Gdk.cairo_set_source_pixbuf(gdkcontext, pixbuf,
                                                 rect_x, rect_y)
                     gdkcontext.paint()

@@ -297,7 +297,7 @@ class TreeviewFactory():
         # Tags color
         col_name = 'color'
         col = {}
-        render_tags = CellRendererTags()
+        render_tags = CellRendererTags(self.config)
         render_tags.set_property('ypad', 5)
         col['title'] = _("Tags")
         col['renderer'] = ['tag', render_tags]
@@ -422,7 +422,7 @@ class TreeviewFactory():
         # "tags" column (no title)
         col_name = 'tags'
         col = {}
-        render_tags = CellRendererTags()
+        render_tags = CellRendererTags(self.config)
         render_tags.set_property('xalign', 0.0)
         col['renderer'] = ['tag_list', render_tags]
         col['value'] = [GObject.TYPE_PYOBJECT, self.get_task_tags_column_contents]
