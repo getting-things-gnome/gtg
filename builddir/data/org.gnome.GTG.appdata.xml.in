@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop">
+    <id>org.gnome.GTG</id>
+    <launchable type="desktop-id">org.gnome.GTG.desktop</launchable>
+    <name>Getting Things GNOME!</name>
+    <summary>Personal tasks and TODO-list items organizer</summary>
+
+    <metadata_license>CC-BY-3.0</metadata_license>
+    <project_license>GPL-3.0</project_license>
+    <description>
+        <p>"Getting Things GNOME" (GTG) is a personal tasks and ToDo list organizer inspired by the "Getting Things Done" (GTD) methodology.</p>
+        <p>GTG is intended to help you track everything you need to do and need to know, from small tasks to large projects. GTG's user interface is designed to accommodate many workflows, with features such as:</p>
+        <ul>
+          <li>a very flexible tagging and searching system;</li>
+          <li>natural language parsing and a free-form task text editor;</li>
+          <li>projects/task dependencies (infinite sub-tasks), start dates and due dates;</li>
+          <li>an "Actionable" tasks view mode to help you stay focused during your work;</li>
+          <li>the ability to effortlessly defer tasks to common upcoming days, or to a custom date.</li>
+        </ul>
+    </description>
+
+    <url type="homepage">https://wiki.gnome.org/Apps/GTG</url>
+    <url type="bugtracker">https://github.com/getting-things-gnome/gtg/issues</url>
+    <url type="translate">https://wiki.gnome.org/TranslationProject#How_can_I_help.3F</url>
+
+    <screenshots>
+        <screenshot type="default">https://fortintam.com/gtg/screenshots/appstream/1.png</screenshot>
+        <screenshot>https://fortintam.com/gtg/screenshots/appstream/2.png</screenshot>
+        <screenshot>https://fortintam.com/gtg/screenshots/appstream/3.png</screenshot>
+    </screenshots>
+
+    <kudos>
+        <kudo>UserDocs</kudo>
+        <kudo>ModernToolkit</kudo>
+    </kudos>
+
+    <content_rating type="oars-1.1">
+        <content_attribute id="violence-cartoon">none</content_attribute>
+        <content_attribute id="violence-fantasy">none</content_attribute>
+        <content_attribute id="violence-realistic">none</content_attribute>
+        <content_attribute id="violence-bloodshed">none</content_attribute>
+        <content_attribute id="violence-sexual">none</content_attribute>
+        <content_attribute id="violence-desecration">none</content_attribute>
+        <content_attribute id="violence-slavery">none</content_attribute>
+        <content_attribute id="violence-worship">none</content_attribute>
+        <content_attribute id="drugs-alcohol">none</content_attribute>
+        <content_attribute id="drugs-narcotics">none</content_attribute>
+        <content_attribute id="drugs-tobacco">none</content_attribute>
+        <content_attribute id="sex-nudity">none</content_attribute>
+        <content_attribute id="sex-themes">none</content_attribute>
+        <content_attribute id="sex-homosexuality">none</content_attribute>
+        <content_attribute id="sex-prostitution">none</content_attribute>
+        <content_attribute id="sex-adultery">none</content_attribute>
+        <content_attribute id="sex-appearance">none</content_attribute>
+        <content_attribute id="language-profanity">none</content_attribute>
+        <content_attribute id="language-humor">none</content_attribute>
+        <content_attribute id="language-discrimination">none</content_attribute>
+        <content_attribute id="social-chat">none</content_attribute>
+        <content_attribute id="social-info">none</content_attribute>
+        <content_attribute id="social-audio">none</content_attribute>
+        <content_attribute id="social-location">none</content_attribute>
+        <content_attribute id="social-contacts">none</content_attribute>
+        <content_attribute id="money-purchasing">none</content_attribute>
+        <content_attribute id="money-gambling">none</content_attribute>
+    </content_rating>
+
+    <project_group>GNOME</project_group>
+    <developer_name>The GTG team</developer_name>
+    <updatecontact>nekohayo+gtg@gmail.com</updatecontact>
+
+    <releases>
+        <release version="0.4" date="2020-07-07">
+            <url>https://fortintam.com/blog/gtg-0-4-released</url>
+        </release>
+        <release version="0.3.1" date="2013-11-24">
+            <url>https://github.com/getting-things-gnome/gtg/blob/ba480d5ed61ec36702301b25ebc6c40d37c2c352/docs/source/releases/v0.3.1.rst</url>
+        </release>
+        <release version="0.3" date="2012-11-06">
+            <url>https://web.archive.org/web/20130116063024/http://gtg.fritalk.com/post/2012/11/06/Announcing-GTG-0.3%21</url>
+        </release>
+        <release version="0.2.9" date="2012-02-13">
+            <url>https://web.archive.org/web/20120312060133/http://gtg.fritalk.com/post/gtg-0.2.9</url>
+        </release>
+        <release version="0.2.5" date="2011-12-01">
+            <url>https://web.archive.org/web/20111207173818/http://gtg.fritalk.com/post/2011/12/01/Getting-things-GNOME%21-Brandon%2C-time-to-take-out-the-trash-0.2.5-is-out%21</url>
+        </release>
+        <release version="0.2.4" date="2010-04-10" />
+        <release version="0.2.3" date="2010-03-02" />
+        <release version="0.2.2" date="2010-03-01">
+            <url>https://web.archive.org/web/20111207173818/http://gtg.fritalk.com/post/2010/03/01/Getting-Things-GNOME%21-0.2.2-%28Protector%29-release-is-out%21</url>
+        </release>
+        <release version="0.2.1" date="2010-01-31">
+            <url>https://web.archive.org/web/20111207173818/http://gtg.fritalk.com/post/2010/01/31/Getting-Things-GNOME%21-0.2.1-Beryllium-Sphere-is-out%21</url>
+        </release>
+        <release version="0.2" date="2009-12-12">
+            <url>https://web.archive.org/web/20111207173818/http://gtg.fritalk.com/post/2009/12/10/The-new-Getting-Things-GNOME%21-0.2-Gorignak-has-landed%21</url>
+        </release>
+        <release version="0.1.9" date="2009-12-02">
+            <url>https://web.archive.org/web/20111207173818/http://gtg.fritalk.com/post/2009/12/02/Getting-Things-GNOME%21-0.1.9-is-out%21</url>
+        </release>
+        <release version="0.1.2" date="2009-07-09">
+            <url>https://web.archive.org/web/20111117024753/http://gtg.fritalk.com/post/2009/07/09/GTG-0.1.2-%22Usually-it-s-just-cardboard-walls-in-a-garage%22</url>
+        </release>
+        <release version="0.1.1" date="2009-04-03">
+            <url>https://web.archive.org/web/20111207173818/http://gtg.fritalk.com/post/2009/04/03/GTG-0.1.1-is-out%21</url>
+        </release>
+        <release version="0.1" date="2009-03-07">
+            <url>https://web.archive.org/web/20111207173818/http://gtg.fritalk.com/post/2009/03/07/First-official-release-of-Getting-Things-Gnome%21%2C-GTG-%22Just-5-minutes-more%22-0.1</url>
+        </release>
+    </releases>
+</component>
