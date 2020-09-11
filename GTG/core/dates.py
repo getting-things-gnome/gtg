@@ -489,10 +489,10 @@ class Date():
 
         # accepted date formats
         formats = {
-            'day': 0 if newtask == True else 1,
-            _('day').lower(): 0 if newtask == True else 1,
-            'other-day': 1 if newtask == True else 2,
-            _('other-day').lower(): 1 if newtask == True else 2,
+            'day': 0 if newtask else 1,
+            _('day').lower(): 0 if newtask else 1,
+            'other-day': 1 if newtask else 2,
+            _('other-day').lower(): 1 if newtask else 2,
             'week': 7,
             _('week').lower(): 7,
             'month': calendar.mdays[self.month],
