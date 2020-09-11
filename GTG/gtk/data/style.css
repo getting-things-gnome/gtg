@@ -24,3 +24,11 @@
 .prefs_list row {
     border-bottom: solid 1px alpha(currentColor, 0.1);
 }
+
+.dark .prefs_list {
+    border-color: alpha(rgb(0, 0, 0), 0.4);
+}
+
+.dark .prefs_list row {
+    border-bottom-color: alpha(rgb(0, 0, 0), 0.2);
+}

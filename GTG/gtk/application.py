@@ -114,7 +114,6 @@ class Application(Gtk.Application):
 
         self.init_style()
 
-
     # --------------------------------------------------------------------------
     # INIT
     # --------------------------------------------------------------------------
@@ -168,7 +167,13 @@ class Application(Gtk.Application):
         """Use dark mode theme."""
 
         settings = Gtk.Settings.get_default()
+        prefs_css = self.preferences_dialog.window.get_style_context()
         settings.set_property("gtk-application-prefer-dark-theme", state)
+
+        if state:
+            prefs_css.add_class('dark')
+        else:
+            prefs_css.remove_class('dark')
 
     def init_actions(self):
         """Setup actions."""
