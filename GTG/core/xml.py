@@ -74,7 +74,7 @@ def task_from_element(task, element: etree.Element):
 
     # Recurring tasks
     try:
-        recurring = element.attrib['recurring']
+        recurring = element.get('recurring')
         recurring_term = element.find('recurring_term').text
         task.set_recurring(recurring == 'True', None if recurring_term == 'None' else recurring_term)
     except AttributeError:
