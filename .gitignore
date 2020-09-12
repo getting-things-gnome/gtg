@@ -1,5 +1,3 @@
-build
-_build
 dist
 po/**/
 tmp
@@ -7,10 +5,6 @@ tmp
 .project
 .settings
 .tox
-**/**.glade.h
-**/**.ui.h
-**/**.gladep
-**/**.gladep.bak
 MANIFEST
 **.patch
 gtg.prof
@@ -18,10 +12,24 @@ __pycache__
 .*.sw*
 docs/user_manual_html/
 docs/user_manual/C/index.cache
+
+
+# Build Dirs
+build
+_build
+/.local_build/
+builddir/**/*
+
+# Glade Files
+**/**.glade.h
+**/**.ui.h
+**/**.gladep
+**/**.gladep.bak
+
+# Flatpak bundles
 flatpak/cache
 flatpak/.flatpak-builder
 flatpak/bundles
-/.local_build/
 
 # src/ usually has development version of liblarch
 src/
