@@ -160,16 +160,17 @@ class Task(TreeNode):
     def duplicate_recursively(self):
         """ Duplicates recursively all the task itself and its children while keeping the relationship"""
         newtask = self.duplicate()
+        newtask.set_recurring(True, self.recurring_term)
+        nextdate = self.get_next_occurrence()
+        newtask.set_start_date(nextdate)
+        newtask.set_due_date(nextdate)
+
         if self.has_child():
             for c_tid in self.get_children():
                 child = self.req.get_task(c_tid)
                 if child.is_loaded():
                     newtask.add_child(child.duplicate_recursively())
-        
-        newtask.set_recurring(True, self.recurring_term)
-        nextdate = self.get_next_occurrence()
-        newtask.set_start_date(nextdate)
-        newtask.set_due_date(nextdate)
+                    
         newtask.sync()
         return newtask.tid
 
@@ -374,7 +375,7 @@ class Task(TreeNode):
                 child = self.req.get_task(c_tid)
                 if child.is_loaded() and child.get_status() in\
                     (self.STA_ACTIVE):
-                    child.set_recurring(recurring, recurring_term)
+                    child.set_recurring(recurring, recurring_term, newtask)
 
     def get_recurring(self):
         return self.recurring
@@ -389,6 +390,8 @@ class Task(TreeNode):
                 par = self.req.get_task(p_tid)
                 if par.get_recurring() and par.is_loaded():
                     self.set_recurring(True, par.get_recurring_term())
+                    self.set_due_date(par.due_date)
+                    self.set_start_date(par.start_date)
         else:
             self.set_recurring(False)
 
