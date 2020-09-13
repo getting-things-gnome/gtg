@@ -272,7 +272,7 @@ class Task(TreeNode):
                 # Because we want every subtask that is recurring 
                 # to occur another time after its parent has been set to done or dismiss.
                 # only recurring tasks without any recurring parent can be duplicated.
-                if self.recurring and not self.parent_recurring():
+                if self.recurring and not self.is_parent_recurring():
                     nexttask_tid = self.duplicate_recursively()
                     if self.has_parent():
                         for p_tid in self.get_parents():
@@ -341,11 +341,22 @@ class Task(TreeNode):
     # However when we are retrieving the task from the XML files, we should only set the
     # the recurring_term.
 
-    # Setting a task as recurrent implies that the
-    # children of a recurrent task will be also
-    # set to recurrent and will inherit 
-    # their parent's recurring term
     def set_recurring(self, recurring: bool, recurring_term: str=None, newtask=False):
+        """Sets a task as recurring or not, and its recurring term.
+        
+        Setting a task as recurrent implies that the
+        children of a recurrent task will be also
+        set to recurrent and will inherit 
+        their parent's recurring term
+        
+        Args:
+            recurring (bool): True if the task is recurring and False if not.
+            recurring_term (str, optional): the recurring period of a task (every Monday, day..). Defaults to None.
+            newtask (bool, optional): if this is a new task, we must set the due_date. Defaults to False.
+
+        Raises:
+            ValueError: if invalid recurring term
+        """
         # setting the task to recurrent
         self.recurring = recurring
         if self.recurring:
@@ -375,8 +386,12 @@ class Task(TreeNode):
     def get_recurring_term(self):
         return self.recurring_term
     
-    # If the task has a recurrent parent, it must be set to recurrent itself.
+    # 
     def inherit_recursion(self):
+        """
+            Inherits the recurrent state of the task's parent.
+            If the task has a recurrent parent, it must be set to recurrent itself.
+        """
         if self.has_parent():
             for p_tid in self.get_parents():
                 par = self.req.get_task(p_tid)
@@ -386,11 +401,22 @@ class Task(TreeNode):
         else:
             self.set_recurring(False)
 
-    # To know which is the correct next occurrence there are two rules:
-    # - if the task was marked as done before or during the open perid (before the duedate).
-    #       in this case, we need to deal with the issue of recurring task that recurr on the same date.
-    # - if the task was marked after the due date, we need to figure out the next occurrence after the current date(today).
-    def get_next_occurrence(self, newtask=False):
+
+    def get_next_occurrence(self):
+        """Calcutate the next occurrence of a recurring task
+
+        To know which is the correct next occurrence there are two rules:
+        - if the task was marked as done before or during the open perid (before the duedate).
+              in this case, we need to deal with the issue of recurring task that recur on the same date.
+              example: due_date is 09/09 and done_date is 09/09
+        - if the task was marked after the due date, we need to figure out the next occurrence after the current date(today).
+        
+        Raises:
+            ValueError: if the recurring_term is invalid
+
+        Returns:
+            Date: the next due date of a task
+        """
         today = date.today()
         if today < self.start_date or self.start_date <= today and today <= self.due_date:
             try:
@@ -410,7 +436,7 @@ class Task(TreeNode):
             except:
                 raise ValueError(f'Invalid recurring term {self.recurring_term}')
     
-    def parent_recurring(self):
+    def is_parent_recurring(self):
         if self.has_parent():
             for p_tid in self.get_parents():
                 p = self.req.get_task(p_tid)
