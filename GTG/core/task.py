@@ -149,10 +149,7 @@ class Task(TreeNode):
     def duplicate(self):
         """ Duplicates a task with a new ID """
         copy = self.req.ds.new_task()
-        # TODO: change the title so that it is more obvious that 
-        # the task is recurring and has been duplicated
-        # proposition: Name of the task (occurred 3)
-        copy.set_title(f"{self.title}")
+        copy.set_title(self.title)
         copy.content = self.content
         copy.tags = self.tags
         return copy
@@ -162,7 +159,6 @@ class Task(TreeNode):
         newtask = self.duplicate()
         newtask.set_recurring(True, self.recurring_term)
         nextdate = self.get_next_occurrence()
-        newtask.set_start_date(nextdate)
         newtask.set_due_date(nextdate)
 
         if self.has_child():
@@ -227,13 +223,10 @@ class Task(TreeNode):
                         due_date = Date.parse(args)
                     except:
                         valid_attribute = False
-                # NOTE: Should the recurring task repeat on the due date, the start date, or both?
-                # The current implementation sets the recurring date as the start and the due date.
+
                 elif attribute.lower() == "every" or \
                         attribute.lower() == _("every"):
                     try:
-                        # NOTE: for now the repeating task will highjack the due_date as well as the defer_date (SHOULD IT BE CHANGED?)
-                        # Should there be a separate date for the recurring tasks?
                         Date(self.added_date).parse_from_date(args)
                         recurring = True
                         recurring_term = args
@@ -361,7 +354,6 @@ class Task(TreeNode):
                 self.recurring_term = recurring_term
                 if newtask:
                     self.set_due_date(date)
-                    self.set_start_date(date)
             except:
                 if recurring_term == None:
                     self.recurring_term = None
@@ -391,7 +383,6 @@ class Task(TreeNode):
                 if par.get_recurring() and par.is_loaded():
                     self.set_recurring(True, par.get_recurring_term())
                     self.set_due_date(par.due_date)
-                    self.set_start_date(par.start_date)
         else:
             self.set_recurring(False)
 
