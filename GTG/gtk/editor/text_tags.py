@@ -46,7 +46,6 @@ class InvisibleTag(Gtk.TextTag):
         self.set_property('invisible', True)
         self.set_property('left-margin', 40)
         self.set_property('foreground', '#111111')
-        self.set_property('background', '#DDDDDD')
 
 
     def set_hover(self) -> None:
@@ -70,7 +69,6 @@ class InternalLinkTag(Gtk.TextTag):
 
         self.tid = task.tid
 
-        # self.set_property('background', 'white')
         self.set_property('underline', Pango.Underline.SINGLE)
 
         if task.status == Task.STA_ACTIVE:
@@ -119,7 +117,6 @@ class LinkTag(Gtk.TextTag):
 
         self.url = url
 
-        self.set_property('background', 'white')
         self.set_property('foreground', '#007bff')
         self.set_property('underline', Pango.Underline.SINGLE)
         self.set_property('strikethrough', False)
