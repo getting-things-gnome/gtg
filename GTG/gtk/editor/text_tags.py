@@ -26,6 +26,36 @@ from GTG.gtk.colors import background_color
 from GTG.core.requester import Requester
 from webbrowser import open as openurl
 
+# ------------------------------------------------------------------------------
+# COLORS
+# ------------------------------------------------------------------------------
+
+colors = {
+    'link_active': '#007bff',
+    'link_inactive': 'gray',
+    'background_hover': 'light gray',
+}
+
+
+def use_dark_mode() -> None:
+    """Change colors array to dark mode colors."""
+
+    colors['link_active'] = '#6eb4ff'
+    colors['link_inactive'] = 'gray'
+    colors['background_hover'] = '#454545'
+
+
+def use_light_mode() -> None:
+    """Change colors array to light mode colors."""
+
+    colors['link_active'] = '#007bff'
+    colors['link_inactive'] = 'gray'
+    colors['background_hover'] = 'light gray'
+
+
+# ------------------------------------------------------------------------------
+# TEXT TAGS
+# ------------------------------------------------------------------------------
 
 class SubTaskTag(Gtk.TextTag):
     """Subtask Text tag."""
@@ -73,10 +103,10 @@ class InternalLinkTag(Gtk.TextTag):
 
         if task.status == Task.STA_ACTIVE:
             self.set_property('strikethrough', False)
-            self.set_property('foreground', '#007bff')
+            self.set_property('foreground', colors['link_active'])
         else:
             self.set_property('strikethrough', True)
-            self.set_property('foreground', 'gray')
+            self.set_property('foreground', colors['link_inactive'])
 
         self.connect('event', self.on_tag)
 
@@ -99,13 +129,13 @@ class InternalLinkTag(Gtk.TextTag):
     def set_hover(self) -> None:
         """Change tag appareance when hovering."""
 
-        self.set_property('background', 'light gray')
+        self.set_property('background', colors['background_hover'])
 
 
     def reset(self) -> None:
         """Reset tag appareance when not hovering."""
 
-        self.set_property('background', 'white')
+        self.set_property('background', None)
 
 
 class LinkTag(Gtk.TextTag):
@@ -117,7 +147,7 @@ class LinkTag(Gtk.TextTag):
 
         self.url = url
 
-        self.set_property('foreground', '#007bff')
+        self.set_property('foreground', colors['link_active'])
         self.set_property('underline', Pango.Underline.SINGLE)
         self.set_property('strikethrough', False)
 
@@ -150,13 +180,13 @@ class LinkTag(Gtk.TextTag):
     def set_hover(self) -> None:
         """Change tag appareance when hovering."""
 
-        self.set_property('background', 'light gray')
+        self.set_property('background', colors['background_hover'])
 
 
     def reset(self) -> None:
         """Reset tag appareance when not hovering."""
 
-        self.set_property('background', 'white')
+        self.set_property('background', None)
 
 
 class TitleTag(Gtk.TextTag):

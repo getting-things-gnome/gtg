@@ -27,6 +27,7 @@ import urllib.parse # GLibs URI functions not available for some reason
 from GTG.gtk.browser.delete_task import DeletionUI
 from GTG.gtk.browser.main_window import MainWindow
 from GTG.gtk.editor.editor import TaskEditor
+from GTG.gtk.editor import text_tags
 from GTG.gtk.preferences import Preferences
 from GTG.gtk.plugins import PluginsDialog
 from GTG.core import clipboard
@@ -202,10 +203,13 @@ class Application(Gtk.Application):
         prefs_css = self.preferences_dialog.window.get_style_context()
         settings.set_property("gtk-application-prefer-dark-theme", state)
 
+        # Toggle dark mode for preferences and editors
         if state:
             prefs_css.add_class('dark')
+            text_tags.use_dark_mode()
         else:
             prefs_css.remove_class('dark')
+            text_tags.use_dark_mode()
 
     def init_actions(self):
         """Setup actions."""
