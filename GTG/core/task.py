@@ -420,18 +420,18 @@ class Task(TreeNode):
         today = date.today()
         if today < self.start_date or self.start_date <= today and today <= self.due_date:
             try:
-                nextdate = self.due_date.parse_from_date(self.recurring_term, newtask)
+                nextdate = self.due_date.parse_from_date(self.recurring_term)
                 while nextdate <= self.due_date:
                     nextdate.day += 1
-                    nextdate = nextdate.parse_from_date(self.recurring_term, newtask)
+                    nextdate = nextdate.parse_from_date(self.recurring_term)
                 return nextdate
             except:
                 raise ValueError(f'Invalid recurring term {self.recurring_term}')
         elif today > self.due_date:
             try:
-                next_date = self.due_date.parse_from_date(self.recurring_term, newtask)
+                next_date = self.due_date.parse_from_date(self.recurring_term)
                 while next_date < date.today():
-                    next_date = next_date.parse_from_date(self.recurring_term, newtask)
+                    next_date = next_date.parse_from_date(self.recurring_term)
                 return next_date
             except:
                 raise ValueError(f'Invalid recurring term {self.recurring_term}')
