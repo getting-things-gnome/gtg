@@ -485,10 +485,15 @@ class Date():
         return result
     
     def _parse_text_representation_for_recurrency(self, string, newtask=False):
-        """ Match common text representation from a certain date """
+        """Match common text representation from a certain date(self)
 
+        Args:
+            string (str): text representation.
+            newtask (bool, optional): depending on the task if it is a new one or not, the offset changes
+        """
         # accepted date formats
         formats = {
+            # change the offset depending on the task.
             'day': 0 if newtask else 1,
             _('day').lower(): 0 if newtask else 1,
             'other-day': 1 if newtask else 2,
