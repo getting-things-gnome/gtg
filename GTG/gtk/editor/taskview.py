@@ -465,6 +465,7 @@ class TaskView(Gtk.TextView):
         self.buffer.remove_tag(self.title_tag, end, buffer_end)
 
         title = self.buffer.get_text(start, end, False)
+        self.detect_tag(title, start)
 
         # If the title changed, save it and refresh the editor
         if self.title != title:
