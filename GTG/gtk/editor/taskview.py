@@ -304,6 +304,9 @@ class TaskView(Gtk.TextView):
             self.subtasks['tags'].append(tid)
             return True
 
+            # Detect GTG tags
+            self.detect_tag(text, after_checkbox)
+
         # A subtask already exists
         elif start.starts_tag():
             # Detect if it's a subtask tag
@@ -341,6 +344,9 @@ class TaskView(Gtk.TextView):
             subtask_tag = SubTaskTag(task)
             self.table.add(subtask_tag)
             self.buffer.apply_tag(subtask_tag, start, end)
+
+            # Apply GTG tags
+            self.detect_tag(text, after_checkbox)
 
             return True
 
