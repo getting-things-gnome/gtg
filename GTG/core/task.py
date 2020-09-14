@@ -277,8 +277,8 @@ class Task(TreeNode):
                     if self.has_parent():
                         for p_tid in self.get_parents():
                             par = self.req.get_task(p_tid)
-                            if par.is_loaded() and par.get_status() in\
-                                (self.STA_ACTIVE):
+                            if (par.is_loaded() and par.get_status() in
+                                (self.STA_ACTIVE)):
                                 par.add_child(nexttask_tid)
 
             # If we mark a task as Active and that some parent are not
@@ -376,8 +376,8 @@ class Task(TreeNode):
         if self.has_child() and self.recurring:
             for c_tid in self.get_children():
                 child = self.req.get_task(c_tid)
-                if child.is_loaded() and child.get_status() in\
-                    (self.STA_ACTIVE):
+                if (child.is_loaded() and child.get_status() in
+                    (self.STA_ACTIVE)):
                     child.set_recurring(recurring, recurring_term, newtask)
 
     def get_recurring(self):
@@ -440,8 +440,8 @@ class Task(TreeNode):
         if self.has_parent():
             for p_tid in self.get_parents():
                 p = self.req.get_task(p_tid)
-                if p.is_loaded() and p.get_status() in\
-                    (self.STA_ACTIVE) and p.get_recurring():
+                if (p.is_loaded() and p.get_status() in
+                    (self.STA_ACTIVE) and p.get_recurring()):
                     return True
         return False
 
