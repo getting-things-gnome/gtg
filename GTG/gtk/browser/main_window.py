@@ -48,6 +48,7 @@ PANE_STACK_NAMES_MAP = {
 }
 PANE_STACK_NAMES_MAP_INVERTED = {v: k for k, v in PANE_STACK_NAMES_MAP.items()}
 
+
 class MainWindow(Gtk.ApplicationWindow):
     """ The UI for browsing open and closed tasks,
     and listing tags in a tree """
@@ -156,7 +157,6 @@ class MainWindow(Gtk.ApplicationWindow):
         self.open_menu = Gtk.Menu.new_from_model(open_menu_model)
         self.open_menu.attach_to_widget(self.main_box)
 
-
     def _set_actions(self):
         """Setup actions."""
 
@@ -246,7 +246,6 @@ class MainWindow(Gtk.ApplicationWindow):
 
         self.tagpopup = TagContextMenu(self.req, self.app)
 
-
     def _init_ui_widget(self):
         """ Sets the main pane with three trees for active tasks,
         actionable tasks (workview), closed tasks and creates
@@ -304,7 +303,6 @@ class MainWindow(Gtk.ApplicationWindow):
         # expanding search tag does not work automatically, request it
         self.expand_search_tag()
 
-
     def _init_about_dialog(self):
         """
         Show the about dialog
@@ -354,6 +352,8 @@ class MainWindow(Gtk.ApplicationWindow):
             "on_add_subtask": self.on_add_subtask,
             "on_tagcontext_deactivate": self.on_tagcontext_deactivate,
             "on_quickadd_field_activate": self.on_quickadd_activate,
+            "on_quickadd_field_focus_in": self.on_quickadd_focus_in,
+            "on_quickadd_field_focus_out": self.on_quickadd_focus_out,
             "on_about_delete": self.on_about_close,
             "on_about_close": self.on_about_close,
             "on_search": self.on_search,
@@ -735,6 +735,19 @@ class MainWindow(Gtk.ApplicationWindow):
 
         self.quickadd_entry.grab_focus()
 
+    def on_quickadd_focus_in(self, widget, event):
+        self.toggle_delete_accel(False)
+
+    def on_quickadd_focus_out(self, widget, event):
+        self.toggle_delete_accel(True)
+
+    def toggle_delete_accel(self, enable_delete_accel):
+        """
+        enable/disabled delete task shortcut.
+        """
+        accels = ['<ctrl>Delete'] if enable_delete_accel else []
+        self.app.set_accels_for_action('win.delete_task', accels)
+
     def on_quickadd_activate(self, widget):
         """ Add a new task from quickadd toolbar """
         text = str(self.quickadd_entry.get_text())
@@ -992,7 +1005,6 @@ class MainWindow(Gtk.ApplicationWindow):
                  for uid in self.get_selected_tasks()
                  if uid is not None]
 
-
         next_day = Date.today() + datetime.timedelta(days=day_number)
 
         for task in tasks:
@@ -1234,7 +1246,6 @@ class MainWindow(Gtk.ApplicationWindow):
         current = self.stack_switcher.get_stack().get_visible_child_name()
 
         return PANE_STACK_NAMES_MAP[current]
-
 
     def get_selected_task(self, tv=None):
         """
