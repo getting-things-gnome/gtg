@@ -132,7 +132,7 @@ tasks = [
     },
 
     {
-        'title': _("Learn How To Use Tags"),
+        'title': _("Learn How to Use Tags and Enable the Sidebar"),
         'id': "2@1",
         'subtasks': [],
         'content': _(
@@ -201,7 +201,7 @@ tasks = [
     },
 
     {
-        'title': _("Learn How To Use Plugins"),
+        'title': _("Learn About Plugins"),
         'id': "4@1",
         'subtasks': [],
         'content': _(
@@ -241,7 +241,7 @@ tasks = [
     },
 
     {
-        'title': _("Learn How To Use Synchronization Services"),
+        'title': _("Learn About Synchronization Services"),
         'id': "7@1",
         'subtasks': [],
         'content': _(
