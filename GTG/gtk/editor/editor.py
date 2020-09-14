@@ -91,7 +91,6 @@ class TaskEditor():
         self.due_entry = self.builder.get_object("duedate_entry")
         self.due_calendar = self.builder.get_object("calendar_due")
 
-
         # Create our dictionary and connect it
         dic = {
             "on_tags_popover": self.open_tags_popover,
@@ -180,6 +179,8 @@ class TaskEditor():
         self.textview.set_add_tag_callback(task.add_tag)
         self.textview.set_remove_tag_callback(task.remove_tag)
         self.textview.save_task_callback(self.light_save)
+        self.textview.connect('focus-in-event', self.on_textview_focus_in)
+        self.textview.connect('focus-out-event', self.on_textview_focus_out)
 
         texte = self.task.get_text()
         title = self.task.get_title()
@@ -521,7 +522,6 @@ class TaskEditor():
 
             self.refresh_editor()
 
-
     def calendar_to_datetime(self, calendar):
         """
         Gtk.Calendar uses a 0-based convention for counting months.
@@ -566,8 +566,6 @@ class TaskEditor():
         elif kind == GTGCalendar.DATE_KIND_CLOSED:
             self.task.set_closed_date(Date(date))
             self.closed_entry.set_text(str(Date(date)))
-
-
 
     def on_date_changed(self, calendar):
         date, date_kind = calendar.get_selected_date()
@@ -720,6 +718,12 @@ class TaskEditor():
 
         self.config.set('position', list(self.window.get_position()))
         self.config.set('size', list(self.window.get_size()))
+
+    def on_textview_focus_in(self, widget, event):
+        self.app.browser.toggle_delete_accel(False)
+
+    def on_textview_focus_out(self, widget, event):
+        self.app.browser.toggle_delete_accel(True)
 
     # We define dummy variable for when close is called from a callback
     def close(self, action=None, param=None):
