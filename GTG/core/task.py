@@ -41,6 +41,7 @@ class Task(TreeNode):
     STA_ACTIVE = "Active"
     STA_DISMISSED = "Dismiss"
     STA_DONE = "Done"
+    DEFAULT_TASK_NAME = None
 
     def __init__(self, task_id, requester, newtask=False):
         super().__init__(task_id)
@@ -51,7 +52,9 @@ class Task(TreeNode):
         self.set_uuid(uuid.uuid4())
         self.remote_ids = {}
         self.content = ""
-        self.title = _("My new task")
+        if Task.DEFAULT_TASK_NAME is None:
+            Task.DEFAULT_TASK_NAME = _("My new task")
+        self.title = Task.DEFAULT_TASK_NAME
         # available status are: Active - Done - Dismiss - Note
         self.status = self.STA_ACTIVE
 
