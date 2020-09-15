@@ -281,6 +281,7 @@ class Task(TreeNode):
                                 (self.STA_ACTIVE)):
                                 par.add_child(nexttask_tid)
 
+                                par.sync()
             # If we mark a task as Active and that some parent are not
             # Active, we break the parent/child relation
             # It has no sense to have an active subtask of a done parent.
@@ -361,10 +362,10 @@ class Task(TreeNode):
         self.recurring = recurring
         if self.recurring:
             try:
-                date = Date(convert_datetime_to_date(self.added_date)).parse_from_date(recurring_term, newtask)
+                newdate = Date(convert_datetime_to_date(date.today())).parse_from_date(recurring_term, newtask)
                 self.recurring_term = recurring_term
                 if newtask:
-                    self.set_due_date(date)
+                    self.set_due_date(newdate)
             except:
                 if recurring_term == None:
                     self.recurring_term = None
@@ -741,8 +742,10 @@ class Task(TreeNode):
         # now we set inherited attributes only if it's a new task
         child = self.req.get_task(tid)
         if self.is_loaded() and child and child.can_be_deleted:
-            child.set_start_date(self.get_start_date())
-            child.set_due_date(self.get_due_date())
+            # If the the child is repeating no need to change the date
+            if not child.get_recurring():
+                child.set_start_date(self.get_start_date())
+                child.set_due_date(self.get_due_date())
             for t in self.get_tags():
                 child.add_tag(t.get_name())
         self.sync()

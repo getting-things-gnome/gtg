@@ -190,6 +190,12 @@ class MainWindow(Gtk.ApplicationWindow):
             ('due_custom', self.on_set_due_for_specific_date, None),
             ('due_someday', self.on_set_due_someday, None),
             ('save_search', self.on_save_search, None),
+            ('recurring_day', self.on_set_recurring_every_day, None),
+            ('recurring_other_day', self.on_set_recurring_every_otherday, None),
+            ('recurring_week', self.on_set_recurring_every_week, None),
+            ('recurring_month', self.on_set_recurring_every_month, None),
+            ('recurring_year', self.on_set_recurring_every_year, None),
+            ('recurring_toggle', self.on_toggle_recurring, None),
         ]
 
         for action, callback, accel in action_entries:
@@ -1128,6 +1134,33 @@ class MainWindow(Gtk.ApplicationWindow):
 
         self.calendar.set_date(date, GTGCalendar.DATE_KIND_DUE)
         self.calendar.show()
+
+    def update_recurring(self, recurring, recurring_term):
+        tasks = [self.req.get_task(uid)
+                 for uid in self.get_selected_tasks()
+                 if uid is not None]
+
+        for task in tasks:
+            task.set_recurring(recurring, recurring_term, True)
+
+
+    def on_set_recurring_every_day(self, action, param):
+        self.update_recurring(True, 'day')
+
+    def on_set_recurring_every_otherday(self, action, param):
+        self.update_recurring(True, 'other-day')
+
+    def on_set_recurring_every_week(self, action, param):
+        self.update_recurring(True, 'week')
+
+    def on_set_recurring_every_month(self, action, param):
+        self.update_recurring(True, 'month')
+
+    def on_set_recurring_every_year(self, action, param):
+        self.update_recurring(True, 'year')
+
+    def on_toggle_recurring(self, action, param):
+        self.update_recurring(False, None) 
 
     def on_date_changed(self, calendar):
         # Get tasks' list from task names' list
