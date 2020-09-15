@@ -152,16 +152,31 @@ class TreeviewFactory():
             return ""
 
     def sort_by_startdate(self, task1, task2, order):
-        sort = self.__date_comp(task1, task2, 'start', order)
-        return sort
+        t1 = task1.get_start_date()
+        t2 = task2.get_start_date()
+        return self.__date_comp_continue(task1, task2, order, t1, t2)
 
     def sort_by_duedate(self, task1, task2, order):
-        sort = self.__date_comp(task1, task2, 'due', order)
-        return sort
+        t1 = task1.get_urgent_date()
+        t2 = task2.get_urgent_date()
+        if t1 == Date.no_date():
+            t1 = task1.get_due_date_constraint()
+        if t2 == Date.no_date():
+            t2 = task2.get_due_date_constraint()
+        return self.__date_comp_continue(task1, task2, order, t1, t2)
 
     def sort_by_closeddate(self, task1, task2, order):
-        sort = self.__date_comp(task1, task2, 'closed', order)
-        return sort
+        t1 = task1.get_closed_date()
+        t2 = task2.get_closed_date()
+
+        # Convert both times to datetimes (accurate comparison)
+        if isinstance(t1, Date):
+            d = t1.date()
+            t1 = datetime(year=d.year, month=d.month, day=d.day)
+        if isinstance(t2, Date):
+            d = t2.date()
+            t2 = datetime(year=d.year, month=d.month, day=d.day)
+        return self.__date_comp_continue(task1, task2, order, t1, t2)
 
     def sort_by_title(self, task1, task2, order):
         # Strip "@" and convert everything to lowercase to allow fair comparisons;
@@ -171,66 +186,25 @@ class TreeviewFactory():
         t2 = task2.get_title().replace("@", "").lower()
         return (t1 > t2) - (t1 < t2)
 
-    def __date_comp(self, task1, task2, para, order):
-        """This is a quite complex method to sort tasks by date,
-        handling fuzzy date and complex situation.
-        Return -1 if nid1 is before nid2, return 1 otherwise
-        """
-        if task1 and task2:
-            if para == 'start':
-                t1 = task1.get_start_date()
-                t2 = task2.get_start_date()
-            elif para == 'due':
-                t1 = task1.get_urgent_date()
-                t2 = task2.get_urgent_date()
-                if t1 == Date.no_date():
-                    t1 = task1.get_due_date_constraint()
-                if t2 == Date.no_date():
-                    t2 = task2.get_due_date_constraint()
-            elif para == 'closed':
-                t1 = task1.get_closed_date()
-                t2 = task2.get_closed_date()
+    def __date_comp_continue(self, task1, task2, order, t1, t2):
+        sort = (t2 > t1) - (t2 < t1)
 
-                # Convert both times to datetimes (accurate comparison)
-                if isinstance(t1, Date):
-                    d = t1.date()
-                    t1 = datetime(year=d.year, month=d.month, day=d.day)
-                if isinstance(t2, Date):
-                    d = t2.date()
-                    t2 = datetime(year=d.year, month=d.month, day=d.day)
-            else:
-                raise ValueError('invalid date comparison parameter: %s') % para
-            sort = (t2 > t1) - (t2 < t1)
-        else:
-            sort = 0
+        if sort != 0:
+            return sort
 
-        # local function
-        def reverse_if_descending(s):
-            """Make a cmpare result relative to the top instead of following
-               user-specified sort direction"""
-            if order == Gtk.SortType.ASCENDING:
-                return s
-            else:
-                return -1 * s
-
-        if sort == 0:
-            # Group tasks with the same tag together for visual cleanness
-            t1_tags = task1.get_tags_name()
-            t1_tags.sort()
-            t2_tags = task2.get_tags_name()
-            t2_tags.sort()
-            cmp_tags = (t1_tags > t2_tags) - (t1_tags < t2_tags)
-            sort = reverse_if_descending(cmp_tags)
+        # Group tasks with the same tag together for visual cleanness
+        t1_tags = task1.get_tags_name()
+        t1_tags.sort()
+        t2_tags = task2.get_tags_name()
+        t1_tags.sort()
+        sort = (t1_tags > t2_tags) - (t1_tags < t2_tags)
 
         if sort == 0:
             # Break ties by sorting by title
-            t1_title = task1.get_title()
-            t2_title = task2.get_title()
-            t1_title = locale.strxfrm(t1_title)
-            t2_title = locale.strxfrm(t2_title)
-            cmp_title = (t1_title > t2_title) - (t1_title < t2_title)
-            sort = reverse_if_descending(cmp_title)
+            sort = locale.strcoll(task1.get_title(), task2.get_title())
 
+        if order != Gtk.SortType.ASCENDING:
+            return -sort
         return sort
 
     #############################
