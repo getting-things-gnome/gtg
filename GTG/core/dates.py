@@ -88,6 +88,7 @@ class Date():
       - a datetime.date or Date instance, or
       - a string containing a locale format date.
     """
+    _cached_date = None
     _real_date = None
     _fuzzy = None
 
@@ -100,19 +101,23 @@ class Date():
             self._parse_init_value(NODATE)
         elif isinstance(value, datetime.date):
             self._real_date = value
+            self._cached_date = date
         elif isinstance(value, Date):
             # Copy internal values from other Date object
             self._real_date = value._real_date
             self._fuzzy = value._fuzzy
+            self._cached_date = value._cached_date
         elif isinstance(value, str) or isinstance(value, str):
             try:
                 da_ti = datetime.datetime.strptime(value, locale_format).date()
                 self._real_date = convert_datetime_to_date(da_ti)
+                self._cached_date = self._real_date
             except ValueError:
                 try:
                     # allow both locale format and ISO format
                     da_ti = datetime.datetime.strptime(value, ISODATE).date()
                     self._real_date = convert_datetime_to_date(da_ti)
+                    self._cached_date = self._real_date
                 except ValueError:
                     # it must be a fuzzy date
                     try:
@@ -122,15 +127,13 @@ class Date():
                         raise ValueError(f"Unknown value for date: '{value}'")
         elif isinstance(value, int):
             self._fuzzy = value
+            self._cached_date = FUNCS[self._fuzzy]
         else:
             raise ValueError(f"Unknown value for date: '{value}'")
 
     def date(self):
         """ Map date into real date, i.e. convert fuzzy dates """
-        if self.is_fuzzy():
-            return FUNCS[self._fuzzy]
-        else:
-            return self._real_date
+        return self._cached_date
 
     def __add__(self, other):
         if isinstance(other, datetime.timedelta):
