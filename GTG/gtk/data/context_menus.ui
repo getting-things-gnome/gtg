@@ -170,6 +170,43 @@
       </section>
     </submenu>
 
+    <submenu>
+      <attribute name="label" translatable="yes">Set Recurring</attribute>
+
+      <item>
+        <attribute name="label" translatable="yes">Every Day</attribute>
+        <attribute name="action">win.recurring_day</attribute>
+      </item>
+
+      <item>
+        <attribute name="label" translatable="yes">Every Other-Day</attribute>
+        <attribute name="action">win.recurring_other_day</attribute>
+      </item>
+
+      <item>
+        <attribute name="label" translatable="yes">Every Week</attribute>
+        <attribute name="action">win.recurring_week</attribute>
+      </item>
+
+      <item>
+        <attribute name="label" translatable="yes">Every Month</attribute>
+        <attribute name="action">win.recurring_month</attribute>
+      </item>
+
+      <item>
+        <attribute name="label" translatable="yes">Every Year</attribute>
+        <attribute name="action">win.recurring_year</attribute>
+      </item>
+
+      <section>
+        <item>
+	  <attribute name="label" translatable="yes">Enable/Disable</attribute>
+          <attribute name="action">win.recurring_toggle</attribute>
+        </item>
+      </section>
+    </submenu>
+
+
     <section>
         <item>
           <attribute name="label" translatable="yes">Modify Tags...</attribute>
