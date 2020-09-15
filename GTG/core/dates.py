@@ -293,22 +293,22 @@ class Date():
     @classmethod
     def now(cls):
         """ Return date representing fuzzy date now """
-        return Date(NOW)
+        return _GLOBAL_DATE_NOW
 
     @classmethod
     def no_date(cls):
         """ Return date representing no (set) date """
-        return Date(NODATE)
+        return _GLOBAL_DATE_NODATE
 
     @classmethod
     def soon(cls):
         """ Return date representing fuzzy date soon """
-        return Date(SOON)
+        return _GLOBAL_DATE_SOON
 
     @classmethod
     def someday(cls):
         """ Return date representing fuzzy date someday """
-        return Date(SOMEDAY)
+        return _GLOBAL_DATE_SOMEDAY
 
     @classmethod
     def _parse_only_month_day(cls, string):
@@ -584,3 +584,9 @@ class Date():
                 locale_format = locale_format.replace('/%Y', '')
                 locale_format = locale_format.replace('.%Y', '.')
             return self._real_date.strftime(locale_format)
+
+
+_GLOBAL_DATE_NOW = Date(NOW)
+_GLOBAL_DATE_SOON = Date(SOON)
+_GLOBAL_DATE_NODATE = Date(NODATE)
+_GLOBAL_DATE_SOMEDAY = Date(SOMEDAY)
