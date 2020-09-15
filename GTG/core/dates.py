@@ -473,9 +473,9 @@ class Date():
                 result = convert_datetime_to_date(da_ti)
                 if '%Y' not in fmt:
                     # If the day has passed, assume the next year
-                    if result.month > self.month or \
+                    if (result.month > self.month or 
                         (result.month == self.month and
-                         result.day >= self.day):
+                         result.day >= self.day)):
                         year = self.year
                     else:
                         year = self.year + 1
