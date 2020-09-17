@@ -267,19 +267,18 @@ class ExportPlugin():
 
     def choose_file(self):
         """ Let user choose a file to save and return its path """
-        chooser = Gtk.NativeFileChooser(
-            title=_("Choose where to save your list"),
-            parent=self.export_dialog,
-            action=Gtk.FileChooserAction.SAVE,
-            buttons=(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
-                     Gtk.STOCK_SAVE, Gtk.ResponseType.OK))
+        chooser = Gtk.FileChooserNative.new(
+            _("Choose where to save your list"),
+            self.export_dialog,
+            Gtk.FileChooserAction.SAVE,
+            None,
+            None)
         chooser.set_do_overwrite_confirmation(True)
-        chooser.set_default_response(Gtk.ResponseType.OK)
         chooser.set_current_folder(get_desktop_dir())
         response = chooser.run()
         filename = chooser.get_filename()
         chooser.destroy()
-        if response == Gtk.ResponseType.OK:
+        if response == Gtk.ResponseType.ACCEPT:
             return filename
         else:
             return None
