@@ -123,7 +123,7 @@ class Template():
 
         suffix = ".%s" % self._get_suffix()
         output = tempfile.NamedTemporaryFile(suffix=suffix, delete=False)
-        output.write(str(document))
+        output.write(str(document).encode('utf-8'))
         self._document_path = output.name
         output.close()
 
