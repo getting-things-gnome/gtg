@@ -23,7 +23,7 @@ import shutil
 import subprocess
 import webbrowser
 
-from gi.repository import GObject, Gtk, GdkPixbuf
+from gi.repository import GObject, Gtk, GdkPixbuf, GLib
 
 from gettext import gettext as _
 from GTG.core.logger import log
