@@ -33,54 +33,56 @@ tasks = [
         'id': "0@1",
         'subtasks': ["1@1", "2@1", "3@1", "4@1", "5@1", "6@1", "7@1", "8@1"],
         'content': _(
-            "Welcome to Getting Things GNOME!, your new task manager! In Getting "
-            "Things GNOME! (GTG), everything is a task. From building a bridge"
-            " over the Pacific Ocean to changing a light bulb or organizing a"
-            " party!\n\n"
-            "If you are new to GTG, please take the time to read this, as it will"
-            " provide you useful information about how to use GTG to organize"
-            " your everyday life.\n"
+            "Welcome to Getting Things GNOME (GTG), your new task manager! In GTG, "
+            "everything is a task. From building a bridge over the Pacific Ocean "
+            "to changing a light bulb or organizing a party!\n\n"
+            "If you are new to GTG, please take the time to read this, as it will "
+            "provide you useful information about how to use GTG to organize "
+            "your everyday life.\n"
             "\n"
             "Creating and editing tasks:\n"
             "\n"
-            "Using GTG is easy: you organize what you have to do by creating new"
-            " tasks. To do this, simply press the &quot;New Task&quot; button, "
-            "edit the task by describing it, set some parameters, and that's "
-            "it! Once a task done, you can close it by pressing the &quot;Mark As"
-            " Done&quot; button.\n"
+            "Using GTG is easy: you organize what you have to do by creating new "
+            "tasks. To do this, simply press the &quot;New Task&quot; (+) button, "
+            "edit the task by describing it, set some parameters, and that's it! "
+            "Once a task is done, you can close it by pressing the &quot;Mark As "
+            "Done&quot; button.\n"
             "\n"
-            "In GTG, a task is automatically saved while you are editing it. No"
-            " need to press any &quot;Save&quot; button! Try it: add some text to"
-            " this task, close the window, and reopen it: your changes are still"
-            " there!\n\n"
+            "In GTG, a task is automatically saved while you are editing it. No "
+            "need to press any &quot;Save&quot; button! Try it: add some text to "
+            "this task, close the window, and reopen it: your changes are still "
+            "there!\n"
+            "\n"
             "About subtasks:\n"
             "\n"
             "In life, you often get more things done by refining them in "
             "smaller, more operational tasks. GTG helps to do just this by "
             "defining  &quot;subtasks&quot;. In GTG, those subtasks are "
-            "considered as prerequisites that must be completed before being able"
-            " to close their parent task.\n\n"
+            "considered as prerequisites that must be completed before being able "
+            "to close their parent task.\n"
+            "\n"
             "Therefore, in GTG, a task might host one or several subtasks. Those "
             "appear as links in the task description, just like the link below. "
-            "To open and edit a subtask, simply click on its link! Try it"
-            " yourself: open the following subtask:\n"
+            "To open and edit a subtask, simply click on its link! "
+            "You can always come back using the &quot;Open Parent&quot; button. "
+            "Try opening the following subtask for example:\n"
             "<subtask>1@1</subtask>\n"
             "\n"
             "Closing a task:\n"
             "\n"
             "In GTG, once you are done with a task, you can close it by pushing "
             "either the &quot;Mark as Done&quot; or the &quot;Dismiss&quot; "
-            "button. Use the first one if the task is done, and the latter if you"
-            " want to close it because it is not relevant anymore.\n"
+            "button. Use the first one if the task is done, and the latter if you "
+            "want to close it because it is not relevant anymore.\n"
             "\n"
-            "When you close a task, you will notice that all its subtasks will be"
-            " automatically closed too. Indeed, GTG considers that if you have"
-            " completed a given task, then you don't need to do its subtasks"
-            " anymore (they were prerequisites, after all).\n"
+            "When you close a task, you will notice that all its subtasks will be "
+            "automatically closed too. Indeed, GTG considers that if you have "
+            "completed a given task, then you don't need to do its subtasks "
+            "anymore (they were prerequisites, after all).\n"
             "\n"
             "Note that the tasks that you have marked as done or dismissed are "
-            "listed in the &quot;Closed Tasks&quot; view mode.\n"
-            "\n"""
+            "listed in the &quot;Closed&quot; tasks view mode.\n"
+            "\n"
             "Learn more about GTG:\n"
             "\n"
             "If you are interested in knowing more about "
@@ -96,21 +98,21 @@ tasks = [
             "We also recommend you read our user manual, by pressing F1 "
             "or using the &quot;Help&quot; entry in the main window's menu button.\n"
             "\n"
-            "We hope you will enjoy using GTG, and thank you for trying"
-            " it out! To learn more about the GTG project and how you can contribute, "
+            "We hope you will enjoy using GTG, and thank you for trying it out! "
+            "To learn more about the GTG project and how you can contribute, "
             "visit our web page: https://wiki.gnome.org/Apps/GTG/ \n"
             "\n"
-            "— The GTG team.")
+            "— The GTG team")
     },
     {
-        'title': _("Learn How To Use Subtasks"),
+        'title': _("Learn How to Use Subtasks"),
         'id': "1@1",
         'subtasks': [],
         'content': _(
             "A &quot;Subtask&quot; is something that you need to do first before "
             "being able to accomplish your task. In GTG, the purpose of subtasks "
-            "is to cut down a task (or project) in smaller, action-oriented subtasks that are easier to achieve"
-            " and to track down.\n\n"
+            "is to cut down a task (or project) in smaller, action-oriented subtasks "
+            "that are easier to achieve and to track down.\n\n"
             "To insert a subtask in the task description (this window, for "
             "instance), begin a line with &quot;-&quot;, then write the subtask "
             "title and press Enter.\n"
@@ -122,12 +124,12 @@ tasks = [
             "\n"
             "Alternatively, you can also use the subtask insertion button in "
             "the task editor toolbar.\n\n"
-            "Note that subtasks obey to some rules: first, a subtask's due date "
+            "Note that subtasks obey some rules: first, a subtask's due date "
             "can never happen after its parent's due date and, second, when you "
             "mark a parent task as done, its subtasks will also be marked as "
             "done.\n\n"
-            "And if you are not happy with your current tasks/subtasks "
-            "organization, you can always change it by drag-and-dropping tasks on"
+            "And if you are not happy with your current tasks/subtasks organization, "
+            "you can always change the relationships by drag-and-dropping tasks on "
             "(or between) each other in the tasks list.")
     },
 
@@ -136,8 +138,8 @@ tasks = [
         'id': "2@1",
         'subtasks': [],
         'content': _(
-            "In GTG, you use tags to sort your tasks. A tag is a simple word that"
-            " begins with &quot;@&quot;.\n"
+            "In GTG, you use tags to sort your tasks. A tag is a simple word that "
+            "begins with &quot;@&quot;.\n"
             "\n"
             "Try to type a word beginning with &quot;@&quot; here:\n"
             "\n"
@@ -148,7 +150,7 @@ tasks = [
             "you can enable a sidebar which displays all the tags you are using. "
             " This allows you to easily see all tasks associated to a given tag.\n"
             "\n"
-            "If you right-click on a tag in the sidebar, you can also edit it. It"
+            "If you right-click on a tag in the sidebar, you can also edit it. It "
             "allows you to assign a color to it, or an icon. This lets you quickly "
             "identify the tasks associated to a given tag in the task list!\n\n"
             "New tags are always added exclusively to the currently edited task, "
@@ -164,15 +166,16 @@ tasks = [
     },
 
     {
-        'title': _("Learn How To Use The Actionable View Mode"),
+        'title': _("Learn How to Use the Actionable View Mode"),
         'id': "3@1",
         'subtasks': [],
         'content': _(
-            "If you press the &quot;Actionable&quot; tab, only actionable tasks"
-            " will be displayed in your list.\n"
+            "If you press the &quot;Actionable&quot; tab, only actionable tasks "
+            "will be displayed in your list.\n"
             "\n"
             "What is an actionable task? It's a task you can do directly, right "
-            "now.\n\n"
+            "now.\n"
+            "\n"
             "It's a task that is already &quot;start-able&quot;, i.e. the start "
             "date is already over.\n"
             "\n"
@@ -187,11 +190,12 @@ tasks = [
             "it is very useful when you want to focus on the next actions to take "
             "to get things done!\n"
             "\n"
-            "If you use tags, you can right click on a tag in the sidebar and "
-            "choose to hide tasks assigned to this particular tag in the Actionable "
+            "If you use tags, you can right-click on a tag in the sidebar and  "
+            "choose to hide tasks assigned to this particular tag from the Actionable "
             "view. It is very useful if you have a tag like &quot;@waitingfor&quot; "
             "that you use for tasks blocked by some external event (i.e. such as "
             "a phone callback you're waiting for).\n"
+            "\n"
             "And finally, an important note: since the Actionable view is "
             "updated instantaneously, if you edit your task while inside the "
             "Actionable view, it might disappear from the view due to the change "
@@ -230,7 +234,7 @@ tasks = [
     },
 
     {
-        'title': _("Learn How To Use The Quick Add Entry"),
+        'title': _("Learn How to Use the Quick Add Entry"),
         'id': "6@1",
         'subtasks': [],
         'content': _(
@@ -265,7 +269,7 @@ tasks = [
     },
 
     {
-        'title': _("Learn How To Search For Tasks"),
+        'title': _("Learn How to Search for Tasks"),
         'id': "8@1",
         'subtasks': [],
         'content': _(
