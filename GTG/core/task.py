@@ -149,9 +149,15 @@ class Task(TreeNode):
     def duplicate(self):
         """ Duplicates a task with a new ID """
         copy = self.req.ds.new_task()
+        # Inherit the recurrency
+        copy.set_recurring(True, self.recurring_term)
+        nextdate = self.get_next_occurrence()
+        copy.set_due_date(nextdate)
+
         copy.set_title(self.title)
         copy.content = self.content
         copy.tags = self.tags
+        log.debug(f"Duppicating task {self.get_id()} as task {copy.get_id()}")
         return copy
     
     def duplicate_recursively(self):
@@ -379,7 +385,7 @@ class Task(TreeNode):
                 child = self.req.get_task(c_tid)
                 if (child.is_loaded() and child.get_status() in
                     (self.STA_ACTIVE)):
-                    child.set_recurring(recurring, recurring_term, newtask)
+                    child.inherit_recursion()
 
     def get_recurring(self):
         return self.recurring
@@ -387,7 +393,6 @@ class Task(TreeNode):
     def get_recurring_term(self):
         return self.recurring_term
     
-    # 
     def inherit_recursion(self):
         """
             Inherits the recurrent state of the task's parent.
@@ -748,6 +753,9 @@ class Task(TreeNode):
                 child.set_due_date(self.get_due_date())
             for t in self.get_tags():
                 child.add_tag(t.get_name())
+
+            child.inherit_recursion()
+
         self.sync()
         return True
 
@@ -793,6 +801,7 @@ class Task(TreeNode):
                 not self.due_date.is_fuzzy() and \
                     par_duedate < self.due_date:
                 self.set_due_date(par_duedate)
+            self.inherit_recursion()
         self.recursive_sync()
 
     def set_attribute(self, att_name, att_value, namespace=""):
