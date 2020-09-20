@@ -20,6 +20,7 @@
 
 
 import re
+import html
 from time import time
 
 from gi.repository import Gtk, GLib, Gdk, GObject
@@ -608,24 +609,68 @@ class TaskView(Gtk.TextView):
     def get_text(self) -> str:
         """Get the text in the taskview."""
 
-        # Title isn't part of the task contents
+        # Get all text (skip the first line, it's the title)
         start = self.buffer.get_start_iter()
         start.forward_line()
 
         end = self.buffer.get_end_iter()
+        text = self.buffer.get_text(start, end, False)
 
-        return self.serializer.serialize(
-            self.buffer, self.buffer, start, end, 1, None)
+        # Filter out subtasks. We only need to replace the names
+        # of the subtasks with the appropiate markdown containing
+        # the Task ID
+        text = text.splitlines()
+
+        while not start.is_end():
+            try:
+                tag = start.get_tags()[0]
+
+                if type(tag) == SubTaskTag:
+                    line = start.get_line()
+                    tid = tag.tid
+                    sub = f'{{! {tid} !}}'
+
+                    text[line] = sub
+
+            except IndexError:
+                pass
+
+            start.forward_to_tag_toggle()
+
+        return '\n'.join(text)
+
+        # Title isn't part of the task contents
+        return self.serialize()
 
 
     def insert(self, text: str) -> None:
         """Unserialize and insert text in the buffer."""
 
-        end = self.buffer.get_end_iter()
+        subtasks = []
+        text = self.format_update(text)
+        text = text.splitlines()
 
-        with GObject.signal_handler_block(self.buffer, self.id_modified):
-            self.unserializer.unserialize(
-                self.buffer, self.buffer, end, 0, text, None, None)
+        for index, line in enumerate(text):
+            # Find the subtasks and store their lines
+            if line.startswith('{!'):
+                # Get the Task ID
+                tid = line.replace('{! ', '').replace(' !}', '')
+
+                # Remember there's a line for the title at the top
+                real_index = index + 1
+
+                subtasks.append((tid, real_index))
+
+                # Clear lines where subtasks are
+                text[index] = ''
+
+        # Insert text (first line is taken by the title)
+        start = self.buffer.get_start_iter()
+        start.forward_line()
+        self.buffer.insert(start, '\n'.join(text))
+
+        # Insert subtasks
+        [self.insert_existing_subtask(*sub) for sub in subtasks]
 
 
     def insert_tags(self, tags: List) -> None:
@@ -687,17 +732,17 @@ class TaskView(Gtk.TextView):
         if not self.req.has_task(tid):
             return
 
-        if line:
+        if line is not None:
             start = self.buffer.get_iter_at_line(line)
         else:
             start = self.buffer.get_end_iter()
 
         # Add subtask name
         task = self.req.get_task(tid)
-        self.buffer.insert(start, f'{task.get_title()}')
+        self.buffer.insert(start, task.get_title())
 
-        start.backward_line()
-        start.forward_line()
+        # Reset iterator
+        start = self.buffer.get_iter_at_line(line)
 
         # Add checkbox
         self.add_checkbox(tid, start)
@@ -720,3 +765,30 @@ class TaskView(Gtk.TextView):
 
         # Make sure subtasks can be deleted when removed in the text editor
         task.can_be_deleted = True
+
+    # --------------------------------------------------------------------------
+    # VERSIONING
+    # --------------------------------------------------------------------------
+    @classmethod
+    def format_update(cls, text: str) -> str:
+        """Update the content's format to the new version."""
+
+        # Unescape &quot;a and friends
+        text = html.unescape(text)
+
+        # Get rid of the content tag if it slip all the way there
+        text = text.replace('</content>', '')
+        text = text.replace('<content>', '')
+
+        # Tag tags arent' needed anymore
+        text = text.replace('</tag>', '')
+        text = text.replace('<tag>', '')
+
+        # New subtask style
+        text = text.replace('</subtask>', ' !}')
+        text = text.replace('<subtask>', '{! ')
+
+        # Get rid of the arrow and indent
+        text = text.replace('→   ', '')
+
+        return text
