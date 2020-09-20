@@ -646,9 +646,9 @@ class TaskView(Gtk.TextView):
 
         for index, line in enumerate(text):
             # Find the subtasks and store their lines
-            if line.startswith('{!'):
+            if line.lstrip().startswith('{!'):
                 # Get the Task ID
-                tid = line.replace('{! ', '').replace(' !}', '')
+                tid = line.replace('{! ', '').replace(' !}', '').strip()
 
                 # Remember there's a line for the title at the top
                 real_index = index + 1
@@ -783,6 +783,6 @@ class TaskView(Gtk.TextView):
         text = text.replace('<subtask>', '{! ')
 
         # Get rid of the arrow and indent
-        text = text.replace('→   ', '')
+        text = text.replace('→', '')
 
         return text
