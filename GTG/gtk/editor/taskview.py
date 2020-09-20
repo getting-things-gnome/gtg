@@ -727,6 +727,7 @@ class TaskView(Gtk.TextView):
 
         # Check if the task exists first
         if not self.req.has_task(tid):
+            log.debug(f'Task {tid} not found')
             return
 
         if line is not None:
