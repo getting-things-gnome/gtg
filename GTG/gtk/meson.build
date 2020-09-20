@@ -58,7 +58,6 @@ gtg_editor_sources = [
   'editor/__init__.py',
   'editor/calendar.py',
   'editor/editor.py',
-  'editor/serialize.py',
   'editor/taskview.py',
   'editor/recurring_menu.py',
   'editor/text_tags.py',
