@@ -620,7 +620,10 @@ class TaskView(Gtk.TextView):
                 tag = start.get_tags()[0]
 
                 if type(tag) == SubTaskTag:
-                    line = start.get_line()
+                    # Sneaky! The text list starts after the title,
+                    # but the iterator is including that line. We need to
+                    # remove that here to get the right index
+                    line = start.get_line() - 1
                     tid = tag.tid
                     sub = f'{{! {tid} !}}'
 
