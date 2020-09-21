@@ -56,7 +56,7 @@ class Task(TreeNode):
         self.status = self.STA_ACTIVE
 
         self.recurring_term = None
-        self.recurring = self.inherit_recursion()
+        self.inherit_recursion()
 
         self.added_date = Date.no_date()
         if newtask:
@@ -163,9 +163,6 @@ class Task(TreeNode):
     def duplicate_recursively(self):
         """ Duplicates recursively all the task itself and its children while keeping the relationship"""
         newtask = self.duplicate()
-        newtask.set_recurring(True, self.recurring_term)
-        nextdate = self.get_next_occurrence()
-        newtask.set_due_date(nextdate)
 
         if self.has_child():
             for c_tid in self.get_children():
@@ -187,6 +184,10 @@ class Task(TreeNode):
             self.title = title.strip('\t\n')
         else:
             self.title = "(no title task)"
+        
+        # add the repeating indicator in case it was deleted
+        self.set_repeating_indicator(sync=False)
+
         # Avoid unnecessary sync
         if self.title != old_title:
             self.sync()
@@ -373,11 +374,12 @@ class Task(TreeNode):
                 if newtask:
                     self.set_due_date(newdate)
             except:
-                if recurring_term == None:
-                    self.recurring_term = None
-                    self.recurring = False
-                else:
-                    raise ValueError(f'Invalid recurring term {recurring_term}')
+                self.recurring_term = None
+                self.recurring = False
+                raise ValueError(f'Invalid recurring term {recurring_term} when setting recurring to True')
+
+        # We set the indicator to know whether the task is repeating or not.
+        self.set_repeating_indicator()
 
         # setting its children to recurrent
         if self.has_child() and self.recurring:
@@ -386,6 +388,16 @@ class Task(TreeNode):
                 if (child.is_loaded() and child.get_status() in
                     (self.STA_ACTIVE)):
                     child.inherit_recursion()
+
+    def toggle_recurring(self):
+        """ Toggle a task's recurrency ON/OFF """
+        # If there is no recurring_term, We assume it to recur every day.
+        newtask = False
+        if self.recurring_term is None:
+            self.recurring_term = 'day'
+            newtask = True
+        
+        self.set_recurring(not self.recurring, self.recurring_term, newtask)
 
     def get_recurring(self):
         return self.recurring
@@ -450,6 +462,30 @@ class Task(TreeNode):
                     (self.STA_ACTIVE) and p.get_recurring()):
                     return True
         return False
+
+    def set_repeating_indicator(self, sync=True):
+        """ Sets the repeating indicator in the title of the task 
+
+        Args:
+            sync (bool): if True we sync the title, 
+                        otherwise we only add or remove the indicator. 
+                        (useful when calling from set_title)
+        """
+        INDICATOR = "\U0001f5d8"
+        modified = False
+
+        if INDICATOR in self.title:
+            if not self.recurring:
+                self.title = self.title.replace(INDICATOR, '').strip()
+                modified = True
+        else:
+            if self.recurring:
+               self.title = f'{INDICATOR} {self.title}'
+               modified = True
+
+        # Avoid unnecessary sync
+        if sync and modified: self.sync()
+
 
     # ABOUT DUE DATES
     #
