@@ -213,8 +213,10 @@ class TaskEditor():
                 self.textview.insert_tags(tag_names)
                 self.textview.buffer.insert('\n')
 
-            subtasks = task.get_children()
-            for sub in subtasks:
+        # Insert subtasks if they weren't inserted in the text
+        subtasks = task.get_children()
+        for sub in subtasks:
+            if sub not in self.textview.subtasks['tags']:
                 self.textview.insert_existing_subtask(sub)
 
         if thisisnew:
