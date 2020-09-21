@@ -747,6 +747,8 @@ class TaskView(Gtk.TextView):
             start = self.buffer.get_iter_at_line(line)
         else:
             start = self.buffer.get_end_iter()
+            self.buffer.insert(start, '\n')
+            start.forward_line()
             line = start.get_line()
 
         # Add subtask name
