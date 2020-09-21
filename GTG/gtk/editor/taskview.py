@@ -666,8 +666,21 @@ class TaskView(Gtk.TextView):
         start.forward_line()
         self.buffer.insert(start, '\n'.join(text))
 
-        # Insert subtasks
-        [self.insert_existing_subtask(*sub) for sub in subtasks]
+        # Insert subtasks. Remove existing subtasks from the list, we
+        # will delete the rest at the end
+        for sub in subtasks.copy():
+            self.insert_existing_subtask(*sub)
+
+            if self.req.has_task(sub[0]):
+                subtasks.remove(sub)
+
+        # Remove non-existing subtasks (subtasks that have been deleted)
+        for sub in subtasks:
+            start = self.buffer.get_iter_at_line(sub[1])
+            end = start.copy()
+            end.forward_line()
+
+            self.buffer.delete(start, end)
 
 
     def insert_tags(self, tags: List) -> None:
