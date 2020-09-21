@@ -368,7 +368,7 @@ msgstr "Kezdés 2 nap múlva"
 
 #: GTG/gtk/data/main_window.ui:85 GTG/core/dates.py:385
 msgid "Tuesday"
-msgstr "Kedden"
+msgstr "Kedd"
 
 #: GTG/gtk/data/main_window.ui:98
 msgid "Start 3 days from now"
@@ -376,7 +376,7 @@ msgstr "Kezdés 3 nap múlva"
 
 #: GTG/gtk/data/main_window.ui:100 GTG/core/dates.py:386
 msgid "Wednesday"
-msgstr "Szerdán"
+msgstr "Szerda"
 
 #: GTG/gtk/data/main_window.ui:113
 msgid "Start 4 days from now"
@@ -384,7 +384,7 @@ msgstr "Kezdés 4 nap múlva"
 
 #: GTG/gtk/data/main_window.ui:115 GTG/core/dates.py:387
 msgid "Thursday"
-msgstr "Csütörtökön"
+msgstr "Csütörtök"
 
 #: GTG/gtk/data/main_window.ui:128
 msgid "Start 5 days from now"
@@ -392,7 +392,7 @@ msgstr "Kezdés 5 nap múlva"
 
 #: GTG/gtk/data/main_window.ui:130 GTG/core/dates.py:388
 msgid "Friday"
-msgstr "Pénteken"
+msgstr "Péntek"
 
 #: GTG/gtk/data/main_window.ui:143
 msgid "Start 6 days from now"
@@ -400,7 +400,7 @@ msgstr "Kezdés 6 nap múlva"
 
 #: GTG/gtk/data/main_window.ui:145 GTG/core/dates.py:389
 msgid "Saturday"
-msgstr "Szombaton"
+msgstr "Szombat"
 
 #: GTG/gtk/data/main_window.ui:219
 msgid "Toggle Sidebar"
@@ -458,6 +458,8 @@ msgid ""
 "Ex.: \"Buy a new printer for @Initech tags:equipment,office start:monday due:"
 "soon\""
 msgstr ""
+"Pl.: \"Új nyomtató vásárlása @Initech cégnek címke:felszerelés,iroda kezdés:hétfő esedékes:"
+"hamarosan\""
 
 #: GTG/gtk/data/main_window.ui:546
 msgid "Quickly create tasks here"
@@ -736,19 +738,19 @@ msgstr "holnap"
 
 #: GTG/core/dates.py:375
 msgid "next week"
-msgstr "következő héten"
+msgstr "következő hét"
 
 #: GTG/core/dates.py:377
 msgid "next month"
-msgstr "következő hónapban"
+msgstr "következő hónap"
 
 #: GTG/core/dates.py:379
 msgid "next year"
-msgstr "következő évben"
+msgstr "következő év"
 
 #: GTG/core/dates.py:384
 msgid "Monday"
-msgstr "Hétfőn"
+msgstr "Hétfő"
 
 #: GTG/core/dates.py:390
 msgid "Sunday"
@@ -840,12 +842,12 @@ msgstr ""
 "minden egy feladat, legyen az egy híd építése a Csendes-óceán fölé, "
 "egy villanykörte cseréje vagy egy party megszervezése!\n"
 "\n"
-"Ha új neked a GTG, szakíts időt ennek doksinak az elolvasására, mert hasznos infókat "
+"Ha új neked a GTG, szakíts időt ennek a doksinak az elolvasására, mert hasznos infókat "
 "tudhatsz meg arról, hogyan használhatod a GTG-t a mindennapjaid szervezésére.\n"
 "\n"
 "Feladatok létrehozása, szerkesztése:\n"
 "\n"
-"A GTG használata egyszerű: Úgy szervezed a teendőidet, hogy új feladatokat hozol létre. "
+"A GTG használata egyszerű: Úgy tudod szervezni a teendőidet, hogy új feladatokat hozol létre. "
 "Ehhez csak nyomd meg az &quot;Új Feladat&quot; (+) gombot, addj hozzá a feladathoz "
 "leírást, állíts be néhány paramétert, ennyi! Ha a feladat kész, "
 "bezárhatod a &quot;Befejezettnek Jelölés&quot; gomb megnyomásával.\n"
@@ -1008,7 +1010,7 @@ msgstr ""
 "összes, egy adott címkéhez társított feladatot.\n"
 "\n"
 "Ha az oldalsávon jobb-klikkelsz egy címkére, szerkesztheted is. Tudsz rendelni "
-"színt ésikont is a címkéhez. Ezzel az adott címkéhez rendelt feladatok "
+"színt és ikont is a címkéhez. Ezzel az adott címkéhez rendelt feladatok "
 "könnyen azonosíthatóak lesznek a feladatlistában is.\n"
 "\n"
 "Új címkék mindig kizárólag az aktuális feladathoz rendelődnek, sosem a feladat "
@@ -1081,7 +1083,7 @@ msgstr ""
 "\n"
 "Ha címkéket használsz, az oldalsávon a címkére való jobb-kattintással kiválaszthatod, "
 "hogy a címkéhez tartozó feladatokat elrejtsük a Végrehajtható nézetből. Ez akkor "
-"hasznos, amikor van egy &quot;@várakozik&quot; címkéd, melyet külső események "
+"hasznos, amikor pl. van egy &quot;@várakozik&quot; címkéd, melyet külső tényezők "
 "által akadályozott feladatokra használsz (pl. telefonos visszahívásra "
 "vársz).\n"
 "\n"
@@ -1108,9 +1110,9 @@ msgstr ""
 "A GTG-hez hozzáadhatóak bővítmények, hogy szélesítsük a funkciók tárházát.\n"
 "\n"
 "A Bővítménykezelőt a fő ablak menüjének &quot;Bővítmények&quot; pontjában "
-"találod. Szeretnénk bátorítani arra, hogy írd meg a saját bővítményedet, "
-"mellyel hozzájárulsz a GTG projekthez, mivel mi megfontoljuk, hogy "
-"a bővítményt betegyük-e a programba, mások számára nyilvánossá téve azt."
+"találod. Szeretnénk bátorítani arra, hogy írj saját bővítményt, "
+"mivel ezzel hozzájárulhatsz a GTG projekthez. Mi meg fogjuk fontolni, hogy "
+"a bővítményt betegyük a következő kiadásba, mások számára nyilvánossá téve azt."
 
 #. Task 5@1: Reporting bugs
 #: GTG/core/firstrun_tasks.py:219
@@ -1302,19 +1304,19 @@ msgstr "vagy"
 
 #: GTG/core/search.py:88
 msgid "after"
-msgstr "ez után:"
+msgstr "után"
 
 #: GTG/core/search.py:89
 msgid "before"
-msgstr "ez előtt:"
+msgstr "előtt"
 
 #: GTG/core/search.py:92
 msgid "nodate"
-msgstr "nincs_dátum"
+msgstr "nincsdátum"
 
 #: GTG/core/search.py:96
 msgid "notag"
-msgstr "nincs_címke"
+msgstr "nincscímke"
 
 #: GTG/core/task.py:54
 msgid "My new task"
