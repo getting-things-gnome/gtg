@@ -1144,6 +1144,12 @@ class MainWindow(Gtk.ApplicationWindow):
         for task in tasks:
             task.set_recurring(recurring, recurring_term, True)
 
+    def update_toggle_recurring(self):
+        tasks = [self.req.get_task(uid)
+                 for uid in self.get_selected_tasks()
+                 if uid is not None]
+        for task in tasks:
+            task.toggle_recurring()
 
     def on_set_recurring_every_day(self, action, param):
         self.update_recurring(True, 'day')
@@ -1161,7 +1167,7 @@ class MainWindow(Gtk.ApplicationWindow):
         self.update_recurring(True, 'year')
 
     def on_toggle_recurring(self, action, param):
-        self.update_recurring(False, None) 
+        self.update_toggle_recurring() 
 
     def on_date_changed(self, calendar):
         # Get tasks' list from task names' list
