@@ -1839,11 +1839,11 @@ msgstr ""
 msgid ""
 "\n"
 "Task content:\n"
-""
+"%s"
 msgstr ""
 "\n"
 "Feladat tartalma:\n"
-""
+"%s"
 
 #. Title contains the title and the start and due dates.
 #: GTG/plugins/send_email/sendEmail.py:64
