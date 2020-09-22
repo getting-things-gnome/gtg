@@ -22,10 +22,12 @@ do  case "$o" in
     n)   norun=1;;
     s)   dataset="$OPTARG";;
     t)   title="$OPTARG";;
-    [?]) echo >&2 "Usage: $0 [-s dataset] [-t title] [-b] [-d] [-n]"
+    [?]) echo >&2 "Usage: $0 [-s dataset] [-t title] [-b] [-d] [-n] (-- args passed to gtg)"
          exit 1;;
     esac
 done
+args_array=("${@}")
+extra_args=("${args_array[@]:$((OPTIND-1))}")
 
 # Copy dataset
 if [[  "$dataset" != "default" && ! -d "./tmp/$dataset" ]]; then
@@ -56,5 +58,5 @@ if [[ "$norun" -eq 0 ]]; then
     ninja -C .local_build install
     # double quoting args seems to prevent python script from picking up flag arguments correctly
     # shellcheck disable=SC2086
-    ./.local_build/prefix-gtg.sh ./.local_build/install/bin/gtg ${args} -t "$title"
+    ./.local_build/prefix-gtg.sh ./.local_build/install/bin/gtg ${args} -t "$title" "${extra_args[@]}"
 fi
