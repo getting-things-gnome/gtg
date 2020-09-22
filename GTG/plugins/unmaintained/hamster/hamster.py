@@ -140,7 +140,7 @@ class HamsterPlugin():
         fact = activity
         if category:
             fact += f"@{category}"
-        fact += f",{description}{tag_str}"
+        fact += f",, {description}{tag_str}"
         start_time = timegm(datetime.datetime.now().timetuple())
         hamster_id = self.hamster.AddFact(fact, start_time, 0, False)
 
@@ -240,7 +240,8 @@ class HamsterPlugin():
             self.button.set_sensitive(False)
             self.button.connect('clicked', self.browser_cb, plugin_api)
             self.button.show()
-            plugin_api.add_toolbar_item(self.button)
+            header_bar = plugin_api.get_gtk_builder().get_object('browser_headerbar')
+            header_bar.add(self.button)
             plugin_api.set_active_selection_changed_callback(
                 self.selection_changed)
 
@@ -248,6 +249,13 @@ class HamsterPlugin():
             ("node-modified-inview", self.on_task_modified),
             ("node-deleted-inview", self.on_task_deleted),
         ])
+
+        #TODO(flavin): SET ACTIVE TASK AT START
+        #              we need something like get_active_id
+        #              to setup the current hamster task running and
+        #              and check if is the gtg task list
+        #              with the title we can match.
+
 
         # set up preferences
         self.preference_dialog_init()
@@ -271,7 +279,7 @@ class HamsterPlugin():
             self.decide_button_mode(self.taskbutton, task)
             self.taskbutton.connect('clicked', self.task_cb, plugin_api)
             self.taskbutton.show()
-            plugin_api.add_toolbar_item(self.taskbutton)
+            plugin_api.add_widget_to_taskeditor(self.taskbutton)
 
         records = self.get_records(task)
 
@@ -304,15 +312,15 @@ class HamsterPlugin():
 
                 dateLabel = Gtk.Label(label=a)
                 dateLabel.set_use_markup(True)
-                dateLabel.set_alignment(halign=Gtk.Align.START,
-                                        valign=Gtk.Align.CENTER)
+                dateLabel.set_alignment(xalign=Gtk.Align.START,
+                                        yalign=Gtk.Align.CENTER)
                 dateLabel.set_size_request(200, -1)
                 w.attach(dateLabel, 0, offset, 1, 1)
 
                 durLabel = Gtk.Label(label=b)
                 durLabel.set_use_markup(True)
-                durLabel.set_alignment(halign=Gtk.Align.START,
-                                       valign=Gtk.Align.CENTER)
+                durLabel.set_alignment(xalign=Gtk.Align.START,
+                                       yalign=Gtk.Align.CENTER)
                 w.attach(durLabel, 1, offset, 1, 1)
 
             active_id = self.get_active_id()
@@ -376,14 +384,14 @@ class HamsterPlugin():
             self.change_button_to_start_activity(button)
 
     def change_button_to_start_activity(self, button):
-        self.menu_item.set_label(self.START_ACTIVITY_LABEL)
-        self.button.set_icon_widget(self.get_icon_widget(self.IMG_START_PATH))
-        self.button.set_tooltip_text(self.TOOLTIP_TEXT_START_ACTIVITY)
+        self.menu_item.set_label(self.START_ACTIVITY_LABEL)  #TODO flavin not used
+        button.set_icon_widget(self.get_icon_widget(self.IMG_START_PATH))
+        button.set_tooltip_text(self.TOOLTIP_TEXT_START_ACTIVITY)
 
     def change_button_to_stop_activity(self, button):
-        self.menu_item.set_label(self.STOP_ACTIVITY_LABEL)
-        self.button.set_icon_widget(self.get_icon_widget(self.IMG_STOP_PATH))
-        self.button.set_tooltip_text(self.TOOLTIP_TEXT_STOP_ACTIVITY)
+        self.menu_item.set_label(self.STOP_ACTIVITY_LABEL)  #TODO flavin not used menu
+        button.set_icon_widget(self.get_icon_widget(self.IMG_STOP_PATH))
+        button.set_tooltip_text(self.TOOLTIP_TEXT_STOP_ACTIVITY)
 
     # Preference Handling ###
     def is_configurable(self):
