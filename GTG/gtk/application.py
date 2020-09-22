@@ -22,6 +22,7 @@ from gi.repository import Gtk, Gdk, Gio
 import configparser
 import os
 import logging
+import urllib.parse # GLibs URI functions not available for some reason
 
 from GTG.gtk.browser.delete_task import DeletionUI
 from GTG.gtk.browser.main_window import MainWindow
@@ -45,9 +46,6 @@ class Application(Gtk.Application):
 
     # Requester
     req = None
-
-    # List of Task URIs to open
-    uri_list = None
 
     # List of opened tasks (task editor windows). Task IDs are keys,
     # while the editors are their values.
@@ -76,16 +74,11 @@ class Application(Gtk.Application):
     delete_task_dialog = None
     edit_tag_dialog = None
 
-    def __init__(self, app_id, debug):
+    def __init__(self, app_id):
         """Setup Application."""
 
-        super().__init__(application_id=app_id)
-
-        if debug:
-            log.setLevel(logging.DEBUG)
-            log.debug("Debug output enabled.")
-        else:
-            log.setLevel(logging.INFO)
+        super().__init__(application_id=app_id,
+                         flags=Gio.ApplicationFlags.HANDLES_OPEN)
 
         # Register backends
         datastore = DataStore()
@@ -121,19 +114,53 @@ class Application(Gtk.Application):
     def do_activate(self):
         """Callback when launched from the desktop."""
 
+        self.init_shared()
+
+        log.debug("Application activation finished")
+
+    def do_open(self, files, n_files, hint):
+        """Callback when opening files/tasks"""
+
+        self.init_shared()
+
+        log.debug(f'Received {len(files)} Task URIs')
+        if len(files) != n_files:
+            log.warning(f"Length of files {len(files)} != supposed length {n_files}")
+
+        for file in files:
+            if file.get_uri_scheme() == 'gtg':
+                uri = file.get_uri()
+                if uri[4:6] != '//':
+                    log.info(f"Malformed URI, needs gtg://: {uri}")
+                else:
+                    parsed = urllib.parse.urlparse(uri)
+                    task_id = parsed.netloc
+                    log.debug(f'Opening task {task_id}')
+                    self.open_task(task_id)
+            else:
+                log.info(f"Unknown task to open: {file.get_uri()}")
+
+        log.debug("Application opening finished")
+
+    def init_shared(self):
+        """
+        Initialize stuff that can't be done in the startup signal,
+        but in the open or activate signals, otherwise GTK will segfault
+        when creating windows in the startup signal
+        """
+        if not self.browser: # Prevent multiple inits
+            self.init_browser()
+            self.init_actions()
+            self.init_plugin_engine()
+            self.browser.present()
+
+    def init_browser(self):
         # Browser (still hidden)
         if not self.browser:
             self.browser = MainWindow(self.req, self)
 
-        if self.props.application_id == 'org.gnome.GTGDevel':
-            self.browser.get_style_context().add_class('devel')
-
-        self.init_actions()
-        self.init_plugin_engine()
-        self.browser.present()
-        self.open_uri_list()
-
-        log.debug("Application activation finished")
+            if self.props.application_id == 'org.gnome.GTGDevel':
+                self.browser.get_style_context().add_class('devel')
 
     def init_plugin_engine(self):
         """Setup the plugin engine."""
@@ -208,22 +235,6 @@ class Application(Gtk.Application):
                 self.set_accels_for_action(*accel)
 
         self.plugins_dialog.dialog.insert_action_group('app', self)
-
-    def open_uri_list(self):
-        """Open the Editor windows of the tasks associated with the uris given.
-           Uris are of the form gtg://<taskid>
-        """
-
-        log.debug(f'Received {len(self.uri_list)} Task URIs')
-
-        for uri in self.uri_list:
-            if uri.startswith('gtg://'):
-                log.debug(f'Opening task {uri[6:]}')
-                self.open_task(uri[6:])
-
-        # if no window was opened, we just quit
-        if not self.browser.is_visible() and not self.open_tasks:
-            self.quit()
 
     # --------------------------------------------------------------------------
     # ACTIONS
@@ -533,3 +544,16 @@ class Application(Gtk.Application):
         self.req.save_datastore(quit=True)
 
         Gtk.Application.do_shutdown(self)
+
+    # --------------------------------------------------------------------------
+    # MISC
+    # --------------------------------------------------------------------------
+
+    def set_debug_flag(self, debug):
+        """Set whenever it should activate debug stuff like logging or not"""
+        if debug:
+            log.setLevel(logging.DEBUG)
+            log.debug("Debug output enabled.")
+        else:
+            log.setLevel(logging.INFO)
+

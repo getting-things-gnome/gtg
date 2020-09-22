@@ -54,6 +54,8 @@ import gi
 gi.require_version('Gdk', '3.0')
 gi.require_version('Gtk', '3.0')
 
+from gi.repository import GLib
+
 _LOCAL = @local_build@
 
 if _LOCAL:
@@ -63,40 +65,37 @@ from GTG.core import info
 from GTG.gtk.application import Application
 
 
-def parse_args():
-    """Parse arguments from the command line."""
+def handle_local_options(application, options):
+    """
+    Handle local options passed to the application, such as --version, --debug
+    and --title.
+    This is called by the Application object via the handle_local_options signal
+    """
+    version = options.lookup_value("version", None)
+    if version is not None and version:
+        print("GTG (Getting Things GNOME!)", info.VERSION)
+        print("Using python", sys.version)
+        print("For more information:", info.URL)
+        return 0 # Exit successfully
 
-    parser = argparse.ArgumentParser()
+    debug = options.lookup_value("debug", None)
+    if debug is not None:
+        debug = debug.unpack()
+    application.set_debug_flag(bool(debug))
 
-    parser.add_argument('-v', '--version', help='Show program version',
-                        action="store_true")
+    title = options.lookup_value("title", None)
+    if title is not None:
+        info.NAME = str(title.unpack())
 
-    parser.add_argument('-d', '--debug', help='Enable debug output',
-                        action='store_true')
-
-    parser.add_argument('-t', '--title',
-                        help='Use special title for windows\' title')
-
-    parser.add_argument('task_uri', default='', nargs='*', type=str,
-                        help='Open a specific task via URI')
-
-    return parser.parse_args()
-
+    return -1 # Continue parsing
 
 if __name__ == "__main__":
     if _LOCAL:
         print("Running from source tree")
     try:
-        args = parse_args()
-
-        if args.version:
-            print("GTG (Getting Things GNOME!)", info.VERSION)
-            print()
-            print("For more information:", info.URL)
-            sys.exit(0)
-
-        if args.title is not None:
-            info.NAME = args.title
+        def N_(message):
+            """Mark as to be translated for gettext, don't do any translation here"""
+            return message
 
         # Set up UI i18n
         LOCALE_DIR = '@localedir@'
@@ -111,12 +110,37 @@ if __name__ == "__main__":
         gettext.bindtextdomain('gtg', LOCALE_DIR)
         gettext.textdomain('gtg')
 
-        # Run the application
-        application = Application('@APP_ID@', args.debug)
-        application.uri_list = args.task_uri
+        application = Application('@APP_ID@')
+
+        application.add_main_option(
+                "version", ord('v'),
+                GLib.OptionFlags.IN_MAIN,
+                GLib.OptionArg.NONE,
+                # Translators: -v --version cli argument description
+                N_("Show program version"),
+                None
+            )
+        application.add_main_option(
+                "debug", ord('d'),
+                GLib.OptionFlags.NONE,
+                GLib.OptionArg.NONE,
+                # Translators: -d --debug cli argument description
+                N_("Enable debug output"),
+                None
+            )
+        application.add_main_option(
+                "title", ord('t'),
+                GLib.OptionFlags.NONE,
+                GLib.OptionArg.STRING,
+                # Translators: -t --title=TITLE cli argument description
+                N_("Use special title for windows\' title"),
+                # Translators: -t --title=TITLE cli argument placeholder
+                N_("TITLE")
+            )
+        application.connect("handle-local-options", handle_local_options)
 
         signal.signal(signal.SIGTERM, lambda s, f: application.quit())
-        application.run()
+        application.run(sys.argv)
 
     except KeyboardInterrupt:
         sys.exit(1)
