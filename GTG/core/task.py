@@ -342,7 +342,7 @@ class Task(TreeNode):
 
     # ABOUT RECURRING TASKS
     # Like anything related to dates, repeating tasks are subtle and complex
-    # when creating a new task, the due date is calculated from the current date,
+    # when creating a new task, the due date is calculated from either the current date or the start date,
     # while we get the next occurrence of a task not from the current date but
     # from the due date itself.
     #
@@ -369,7 +369,13 @@ class Task(TreeNode):
         self.recurring = recurring
         if self.recurring:
             try:
-                newdate = Date(convert_datetime_to_date(date.today())).parse_from_date(recurring_term, newtask)
+                # If a start date is already set, we should calculate the next date from that day.
+                if self.start_date == Date.no_date():
+                    start_from = Date(convert_datetime_to_date(date.today()))
+                else:
+                    start_from = self.start_date
+
+                newdate = start_from.parse_from_date(recurring_term, newtask)
                 self.recurring_term = recurring_term
                 if newtask:
                     self.set_due_date(newdate)
