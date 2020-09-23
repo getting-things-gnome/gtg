@@ -303,22 +303,29 @@ class HamsterPlugin():
 
             total = 0
 
-            def add(row, col_1, col_2, top_offset, active=False):
+            def add(row, content_1, content_2, top_offset, active=False):
                 if not active:
-                    col_1 = f"<span color='#999999'>{col_1}</span>"
-                    col_2 = f"<span color='#999999'>{col_2}</span>"
+                    content_1 = f"<span color='#999999'>{content_1}</span>"
+                    content_2 = f"<span color='#999999'>{content_2}</span>"
 
-                dateLabel = Gtk.Label(label=col_1)
-                dateLabel.set_use_markup(True)
-                dateLabel.set_alignment(xalign=Gtk.Align.START,
+                column_1 = Gtk.Label(label=content_1)
+                column_1.set_margin_start(18)
+                column_1.set_margin_end(18)
+                column_1.set_margin_top(6)
+                column_1.set_margin_bottom(6)
+                column_1.set_use_markup(True)
+                column_1.set_alignment(xalign=Gtk.Align.START,
                                         yalign=Gtk.Align.CENTER)
-                row.attach(dateLabel, 0, top_offset, 1, 1)
+                row.attach(column_1, 0, top_offset, 1, 1)
 
-                durLabel = Gtk.Label(label=col_2)
-                durLabel.set_use_markup(True)
-                durLabel.set_alignment(xalign=Gtk.Align.END,
+                column_2 = Gtk.Label(label=content_2)
+                column_2.set_use_markup(True)
+                column_2.set_margin_end(18)
+                column_2.set_margin_top(6)
+                column_2.set_margin_bottom(6)
+                column_2.set_alignment(xalign=Gtk.Align.END,
                                        yalign=Gtk.Align.CENTER)
-                row.attach(durLabel, 1, top_offset, 4, 1)
+                row.attach(column_2, 1, top_offset, 4, 1)
 
             active_id = self.get_active_id()
             for offset, fact in enumerate(records):
