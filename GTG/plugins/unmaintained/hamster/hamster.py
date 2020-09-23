@@ -227,14 +227,8 @@ class HamsterPlugin():
         self.hamster = dbus.SessionBus().get_object('org.gnome.Hamster',
                                                     '/org/gnome/Hamster')
 
-        # add menu item
+        # add button
         if plugin_api.is_browser():
-            self.menu_item = Gtk.MenuItem(self.START_ACTIVITY_LABEL)
-            self.menu_item.show_all()
-            self.menu_item.connect('activate', self.browser_cb, plugin_api)
-            self.menu_item.set_sensitive(False)
-            plugin_api.add_menu_item(self.menu_item)
-            # and button
             self.button.set_label(self.START_ACTIVITY_BUTTON_LABEL)
             self.button.set_tooltip_text(self.TOOLTIP_TEXT_START_ACTIVITY)
             self.button.set_sensitive(False)
@@ -341,7 +335,6 @@ class HamsterPlugin():
 
     def deactivate(self, plugin_api):
         if plugin_api.is_browser():
-            plugin_api.remove_menu_item(self.menu_item)
             plugin_api.remove_toolbar_item(self.button)
         else:
             plugin_api.remove_toolbar_item(self.taskbutton)
@@ -372,14 +365,12 @@ class HamsterPlugin():
     def selection_changed(self, selection):
         if selection.count_selected_rows() == 1:
             self.button.set_sensitive(True)
-            self.menu_item.set_sensitive(True)
             task_id = self.plugin_api.get_browser().get_selected_task()
             task = self.plugin_api.get_requester().get_task(task_id)
             self.decide_button_mode(self.button, task)
         else:
             self.change_button_to_start_activity(self.button)
             self.button.set_sensitive(False)
-            self.menu_item.set_sensitive(False)
 
     def decide_button_mode(self, button, task):
         if self.is_task_active(task.get_id()):
@@ -388,12 +379,10 @@ class HamsterPlugin():
             self.change_button_to_start_activity(button)
 
     def change_button_to_start_activity(self, button):
-        self.menu_item.set_label(self.START_ACTIVITY_LABEL)
         button.set_label(self.START_ACTIVITY_BUTTON_LABEL)
         button.set_tooltip_text(self.TOOLTIP_TEXT_START_ACTIVITY)
 
     def change_button_to_stop_activity(self, button):
-        self.menu_item.set_label(self.STOP_ACTIVITY_LABEL)
         button.set_label(self.STOP_ACTIVITY_BUTTON_LABEL)
         button.set_tooltip_text(self.TOOLTIP_TEXT_STOP_ACTIVITY)
 
