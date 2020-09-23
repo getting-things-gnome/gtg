@@ -396,8 +396,8 @@ class HamsterPlugin():
         self.preferences_dialog.set_transient_for(manager_dialog)
 
         def pref_to_dialog(pref):
-            self.builder.get_object(pref + "_" + self.preferences[pref]) \
-                .set_active(True)
+            combo = self.builder.get_object(pref)
+            combo.set_active_id(self.preferences[pref])
 
         pref_to_dialog("activity")
         pref_to_dialog("category")
@@ -408,9 +408,10 @@ class HamsterPlugin():
 
     def on_preferences_close(self, widget=None, data=None):
 
-        def dialog_to_pref(pref, vals):
-            for val in vals:
-                if self.builder.get_object(pref + "_" + val).get_active():
+        def dialog_to_pref(pref, values):
+            for val in values:
+                combo = self.builder.get_object(pref)
+                if combo.get_active_id() == val:
                     self.preferences[pref] = val
                     break
 
