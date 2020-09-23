@@ -45,6 +45,8 @@ class HamsterPlugin():
                                    " to the selected task")
     START_ACTIVITY_LABEL = _("Start task in Hamster")
     STOP_ACTIVITY_LABEL = _("Stop Hamster Activity")
+    START_ACTIVITY_BUTTON_LABEL = _("Start Tracking")
+    STOP_ACTIVITY_BUTTON_LABEL = _("Stop Tracking")
     BUFFER_TIME = 60  # secs
     PLUGIN_PATH = os.path.dirname(os.path.abspath(__file__))
     IMG_START_PATH = "icons/hicolor/32x32/hamster-activity-start.png"
@@ -53,7 +55,7 @@ class HamsterPlugin():
     def __init__(self):
         # task editor widget
         self.vbox = None
-        self.button = Gtk.ToolButton()
+        self.button = Gtk.Button()
         self.other_stop_button = self.button
 
         self.tree = None
@@ -233,9 +235,7 @@ class HamsterPlugin():
             self.menu_item.set_sensitive(False)
             plugin_api.add_menu_item(self.menu_item)
             # and button
-            self.button.set_label(self.START_ACTIVITY_LABEL)
-            start_icon_widget = self.get_icon_widget(self.IMG_START_PATH)
-            self.button.set_icon_widget(start_icon_widget)
+            self.button.set_label(self.START_ACTIVITY_BUTTON_LABEL)
             self.button.set_tooltip_text(self.TOOLTIP_TEXT_START_ACTIVITY)
             self.button.set_sensitive(False)
             self.button.connect('clicked', self.browser_cb, plugin_api)
@@ -249,13 +249,6 @@ class HamsterPlugin():
             ("node-modified-inview", self.on_task_modified),
             ("node-deleted-inview", self.on_task_deleted),
         ])
-
-        #TODO(flavin): SET ACTIVE TASK AT START
-        #              we need something like get_active_id
-        #              to setup the current hamster task running and
-        #              and check if is the gtg task list
-        #              with the title we can match.
-
 
         # set up preferences
         self.preference_dialog_init()
@@ -273,65 +266,76 @@ class HamsterPlugin():
         # get the opened task
         task = plugin_api.get_ui().get_task()
 
-        if task.get_status() == Task.STA_ACTIVE:
-            # add button
-            self.taskbutton = Gtk.ToolButton()
-            self.decide_button_mode(self.taskbutton, task)
-            self.taskbutton.connect('clicked', self.task_cb, plugin_api)
-            self.taskbutton.show()
-            plugin_api.add_widget_to_taskeditor(self.taskbutton)
+        if task.get_status() != Task.STA_ACTIVE:
+            return
+
+        # add button
+        self.taskbutton = Gtk.Button()
+        self.decide_button_mode(self.taskbutton, task)
+        self.taskbutton.connect('clicked', self.task_cb, plugin_api)
+        self.taskbutton.show()
+        plugin_api.add_widget_to_taskeditor(self.taskbutton)
 
         records = self.get_records(task)
+        self.render_record_list(records, plugin_api)
 
+    def get_total_duration(self, records):
+        total = 0
+        for fact in records:
+            total += calc_duration(fact)
+        return total
+
+    def render_record_list(self, records, plugin_api):
         if len(records):
+            records.reverse()
             # add section to bottom of window
             vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
             inner_grid = Gtk.Grid()
-            if len(records) > 8:
-                s = Gtk.ScrolledWindow()
-                s.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
+            if len(records) > 4:
+                inner_container = Gtk.ScrolledWindow()
+                inner_container.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
                 v = Gtk.Viewport()
                 v.add(inner_grid)
-                s.add(v)
+                inner_container.add(v)
                 v.set_shadow_type(Gtk.ShadowType.NONE)
-                s.set_size_request(-1, 150)
+                inner_container.set_size_request(-1, 80)
             else:
-                s = inner_grid
+                inner_container = inner_grid
 
             outer_grid = Gtk.Grid()
-            vbox.pack_start(s, True, True, 0)
-            vbox.pack_start(outer_grid, True, True, 0)
-            vbox.pack_end(Gtk.Separator(), True, True, 0)
+            vbox.pack_start(inner_container, True, True, 4)
+            vbox.pack_start(Gtk.Separator(), True, True, 0)
+            vbox.pack_start(outer_grid, True, True, 4)
 
             total = 0
 
-            def add(w, a, b, offset, active=False):
-                if active:
-                    a = f"<span color='red'>{a}</span>"
-                    b = f"<span color='red'>{b}</span>"
+            def add(row, col_1, col_2, top_offset, active=False):
+                if not active:
+                    col_1 = f"<span color='#999999'>{col_1}</span>"
+                    col_2 = f"<span color='#999999'>{col_2}</span>"
 
-                dateLabel = Gtk.Label(label=a)
+                dateLabel = Gtk.Label(label=col_1)
                 dateLabel.set_use_markup(True)
                 dateLabel.set_alignment(xalign=Gtk.Align.START,
                                         yalign=Gtk.Align.CENTER)
-                dateLabel.set_size_request(200, -1)
-                w.attach(dateLabel, 0, offset, 1, 1)
+                row.attach(dateLabel, 0, top_offset, 1, 1)
 
-                durLabel = Gtk.Label(label=b)
+                durLabel = Gtk.Label(label=col_2)
                 durLabel.set_use_markup(True)
-                durLabel.set_alignment(xalign=Gtk.Align.START,
+                durLabel.set_alignment(xalign=Gtk.Align.END,
                                        yalign=Gtk.Align.CENTER)
-                w.attach(durLabel, 1, offset, 1, 1)
+                row.attach(durLabel, 1, top_offset, 4, 1)
 
             active_id = self.get_active_id()
-            for offset, i in enumerate(records):
-                t = calc_duration(i)
-                total += t
-                add(inner_grid, format_date(i), format_duration(t),
-                    offset, i[0] == active_id)
+            for offset, fact in enumerate(records):
+                duration = calc_duration(fact)
+                total += duration
+                add(inner_grid,format_date(fact), format_duration(duration), offset, fact[0] == active_id)
 
-            add(outer_grid, "<big><b>Total</b></big>",
-                "<big><b>%s</b></big>" % format_duration(total), 1)
+            add(outer_grid, "<b>Total</b>", f"<b>{format_duration(total)}</b>", 1)
+            if isinstance(inner_container, Gtk.ScrolledWindow):
+                adj = inner_container.get_vadjustment()
+                adj.set_value(adj.get_upper() - adj.get_page_size())
 
             self.vbox = plugin_api.add_widget_to_taskeditor(vbox)
 
@@ -384,13 +388,13 @@ class HamsterPlugin():
             self.change_button_to_start_activity(button)
 
     def change_button_to_start_activity(self, button):
-        self.menu_item.set_label(self.START_ACTIVITY_LABEL)  #TODO flavin not used
-        button.set_icon_widget(self.get_icon_widget(self.IMG_START_PATH))
+        self.menu_item.set_label(self.START_ACTIVITY_LABEL)
+        button.set_label(self.START_ACTIVITY_BUTTON_LABEL)
         button.set_tooltip_text(self.TOOLTIP_TEXT_START_ACTIVITY)
 
     def change_button_to_stop_activity(self, button):
-        self.menu_item.set_label(self.STOP_ACTIVITY_LABEL)  #TODO flavin not used menu
-        button.set_icon_widget(self.get_icon_widget(self.IMG_STOP_PATH))
+        self.menu_item.set_label(self.STOP_ACTIVITY_LABEL)
+        button.set_label(self.STOP_ACTIVITY_BUTTON_LABEL)
         button.set_tooltip_text(self.TOOLTIP_TEXT_STOP_ACTIVITY)
 
     # Preference Handling ###
