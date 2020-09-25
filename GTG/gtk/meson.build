@@ -60,6 +60,7 @@ gtg_editor_sources = [
   'editor/editor.py',
   'editor/serialize.py',
   'editor/taskview.py',
+  'editor/recurring_menu.py'
 ]
 
 python3.install_sources(gtg_gtk_sources, subdir: 'GTG' / 'gtk', pure: true)
