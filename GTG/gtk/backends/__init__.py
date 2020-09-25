@@ -65,7 +65,8 @@ class BackendsDialog():
         builder = Gtk.Builder()
         self._load_widgets_from_builder(builder)
         # Load and setup other widgets
-        self.dialog.set_title(_(f"Synchronization Services - {info.NAME}"))
+        dialog_title = _("Synchronization Services - {name}")
+        self.dialog.set_title(dialog_title.format(name=info.NAME))
         self._create_widgets_for_add_panel()
         self._create_widgets_for_conf_panel()
         self._setup_signal_connections(builder)
