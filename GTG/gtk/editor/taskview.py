@@ -363,6 +363,10 @@ class TaskView(Gtk.TextView):
         task = self.req.get_task(tid)
 
         checkbox = Gtk.CheckButton.new()
+
+        if task.status != task.STA_ACTIVE:
+            checkbox.set_active(True)
+
         checkbox.connect('toggled', lambda _: self.on_checkbox_toggle(task))
         checkbox.set_can_focus(False)
 
