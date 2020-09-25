@@ -1671,7 +1671,8 @@ msgstr "Webseite von GTG"
 msgid "translator-credits"
 msgstr ""
 "Borim\n"
-"Neui"
+"Neui\n"
+"Renehsz"
 
 #: GTG/gtk/browser/main_window.py:637
 msgid "Hide Sidebar"
