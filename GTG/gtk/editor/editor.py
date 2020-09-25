@@ -91,12 +91,34 @@ class TaskEditor():
         self.due_entry = self.builder.get_object("duedate_entry")
         self.due_calendar = self.builder.get_object("calendar_due")
 
+        # Recurrence
+        self.recur_header = self.builder.get_object("recurring_headerbar")
+        self.recur_switch = self.builder.get_object("recurring_switch")
+        self.selected_recurring_term = task.get_recurring_term()
+
+        # Update the editor using the task recurring status
+        if self.selected_recurring_term is not None:
+            self.recur_header.set_title("Every: " + self.selected_recurring_term)
+        if task.get_recurring():
+            self.recur_switch.set_active(True)
+
         # Create our dictionary and connect it
         dic = {
             "on_tags_popover": self.open_tags_popover,
             "on_tag_toggled": self.on_tag_toggled,
 
             "on_move": self.on_move,
+
+            "set_recurring_term_every_day": self.set_recurring_term_every_day,
+            "set_recurring_term_every_otherday": self.set_recurring_term_every_otherday,
+            "set_recurring_term_every_week": self.set_recurring_term_every_week,
+            "set_recurring_term_every_month": self.set_recurring_term_every_month,
+            "set_recurring_term_every_year": self.set_recurring_term_every_year,
+            "set_recurring_term_week_day": self.set_recurring_term_week_day,
+            "check_recurring_term_back_button": self.check_recurring_term_back_button,
+            "set_recurring_term_month_day": self.set_recurring_term_month_day,
+            "set_recurring_term_year_monthday": self.set_recurring_term_year_monthday,
+            "toggle_recurring_status": self.toggle_recurring_status,
 
             "show_popover_start": self.show_popover_start,
             "startingdate_changed": lambda w: self.date_changed(
@@ -233,6 +255,60 @@ class TaskEditor():
         self.textview.set_editable(True)
         self.window.set_transient_for(self.app.browser)
         self.window.show()
+
+    def toggle_recurring_status(self, widget, state):
+        if self.recur_switch.get_active():
+            if self.selected_recurring_term is not None:
+                self.task.set_recurring(True, self.selected_recurring_term, True)
+                self.refresh_editor()
+
+        else:
+            self.task.set_recurring(False, None, True)
+            self.refresh_editor()
+
+    def set_recurring_term_every_day(self, widget):
+        self.selected_recurring_term = 'day'
+        self.recur_header.set_title("Every: day")
+        self.recur_header.set_subtitle("")
+        
+    def set_recurring_term_every_otherday(self, widget):
+        self.selected_recurring_term = 'other-day'
+        self.recur_header.set_title("Every: other-day")
+        self.recur_header.set_subtitle("")
+
+    def set_recurring_term_every_week(self, widget):
+        self.selected_recurring_term = 'week'
+        self.recur_header.set_title("Every: week")
+        self.recur_header.set_subtitle("")
+
+    def set_recurring_term_every_month(self, widget):
+        self.selected_recurring_term = 'month'
+        self.recur_header.set_title("Every: month")
+        self.recur_header.set_subtitle("")
+
+    def set_recurring_term_every_year(self, widget):
+        self.selected_recurring_term = 'year'
+        self.recur_header.set_title("Every: year")
+        self.recur_header.set_subtitle("")
+
+    def set_recurring_term_week_day(self, widget):
+        text = widget.props.text
+        self.selected_recurring_term = text
+        self.recur_header.set_subtitle(text)
+
+    def set_recurring_term_month_day(self, widget):
+        self.recur_header.set_subtitle(str(widget.get_date()[2]))
+
+    def set_recurring_term_year_monthday(self, widget):
+        self.recur_header.set_subtitle(str(widget.get_date()[1]) + '-' + str(widget.get_date()[2]))
+
+    def check_recurring_term_back_button(self, widget):
+        """
+        reset the header title if the user didn't chose a day or a date
+        before returning back to the main stack window.
+        """
+        if self.recur_header.get_subtitle() == "":
+            self.recur_header.set_title("Every:")
 
     def show_popover_start(self, widget, event):
         """Open the start date calendar popup."""
