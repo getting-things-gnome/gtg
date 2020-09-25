@@ -37,6 +37,7 @@ from gettext import gettext as _, ngettext
 from GTG.gtk.editor import GnomeConfig
 from GTG.gtk.editor.calendar import GTGCalendar
 from GTG.gtk.editor.taskview import TaskView
+from GTG.gtk.editor.recurring_menu import RecurringMenu
 from GTG.gtk.tag_completion import tag_filter
 from GTG.core.dates import Date
 from GTG.core.logger import log
@@ -92,15 +93,7 @@ class TaskEditor():
         self.due_calendar = self.builder.get_object("calendar_due")
 
         # Recurrence
-        self.recur_header = self.builder.get_object("recurring_headerbar")
-        self.recur_switch = self.builder.get_object("recurring_switch")
-        self.selected_recurring_term = task.get_recurring_term()
-
-        # Update the editor using the task recurring status
-        if self.selected_recurring_term is not None:
-            self.recur_header.set_title("Every: " + self.selected_recurring_term)
-        if task.get_recurring():
-            self.recur_switch.set_active(True)
+        self.recurring_menu = RecurringMenu(task, self.builder)
 
         # Create our dictionary and connect it
         dic = {
@@ -109,15 +102,15 @@ class TaskEditor():
 
             "on_move": self.on_move,
 
-            "set_recurring_term_every_day": self.set_recurring_term_every_day,
+            "set_recurring_term_every_day": self.set_recurring_term_every_day, 
             "set_recurring_term_every_otherday": self.set_recurring_term_every_otherday,
             "set_recurring_term_every_week": self.set_recurring_term_every_week,
             "set_recurring_term_every_month": self.set_recurring_term_every_month,
             "set_recurring_term_every_year": self.set_recurring_term_every_year,
             "set_recurring_term_week_day": self.set_recurring_term_week_day,
-            "check_recurring_term_back_button": self.check_recurring_term_back_button,
-            "set_recurring_term_month_day": self.set_recurring_term_month_day,
-            "set_recurring_term_year_monthday": self.set_recurring_term_year_monthday,
+            "set_recurring_term_calender_month": self.set_recurring_term_month,
+            "set_recurring_term_calender_year": self.set_recurring_term_year,
+            "update_header_title": self.update_header,
             "toggle_recurring_status": self.toggle_recurring_status,
 
             "show_popover_start": self.show_popover_start,
@@ -151,6 +144,7 @@ class TaskEditor():
 
         self.window = self.builder.get_object("TaskEditor")
         self.builder.connect_signals(dic)
+        #self.builder.connect_signals(self._build_signals_recurring_menu())
         self.window.set_application(app)
 
         if task.has_parent():
@@ -256,60 +250,6 @@ class TaskEditor():
         self.window.set_transient_for(self.app.browser)
         self.window.show()
 
-    def toggle_recurring_status(self, widget, state):
-        if self.recur_switch.get_active():
-            if self.selected_recurring_term is not None:
-                self.task.set_recurring(True, self.selected_recurring_term, True)
-                self.refresh_editor()
-
-        else:
-            self.task.set_recurring(False, None, True)
-            self.refresh_editor()
-
-    def set_recurring_term_every_day(self, widget):
-        self.selected_recurring_term = 'day'
-        self.recur_header.set_title("Every: day")
-        self.recur_header.set_subtitle("")
-        
-    def set_recurring_term_every_otherday(self, widget):
-        self.selected_recurring_term = 'other-day'
-        self.recur_header.set_title("Every: other-day")
-        self.recur_header.set_subtitle("")
-
-    def set_recurring_term_every_week(self, widget):
-        self.selected_recurring_term = 'week'
-        self.recur_header.set_title("Every: week")
-        self.recur_header.set_subtitle("")
-
-    def set_recurring_term_every_month(self, widget):
-        self.selected_recurring_term = 'month'
-        self.recur_header.set_title("Every: month")
-        self.recur_header.set_subtitle("")
-
-    def set_recurring_term_every_year(self, widget):
-        self.selected_recurring_term = 'year'
-        self.recur_header.set_title("Every: year")
-        self.recur_header.set_subtitle("")
-
-    def set_recurring_term_week_day(self, widget):
-        text = widget.props.text
-        self.selected_recurring_term = text
-        self.recur_header.set_subtitle(text)
-
-    def set_recurring_term_month_day(self, widget):
-        self.recur_header.set_subtitle(str(widget.get_date()[2]))
-
-    def set_recurring_term_year_monthday(self, widget):
-        self.recur_header.set_subtitle(str(widget.get_date()[1]) + '-' + str(widget.get_date()[2]))
-
-    def check_recurring_term_back_button(self, widget):
-        """
-        reset the header title if the user didn't chose a day or a date
-        before returning back to the main stack window.
-        """
-        if self.recur_header.get_subtitle() == "":
-            self.recur_header.set_title("Every:")
-
     def show_popover_start(self, widget, event):
         """Open the start date calendar popup."""
 
@@ -378,6 +318,56 @@ class TaskEditor():
         """
         TODO(jakubbrindza): Add else case that will remove tag.
         """
+
+    def toggle_recurring_status(self, widget, state):
+        done = self.recurring_menu.update_task()
+        if done: self.refresh_editor()
+
+    def set_recurring_term_every_day(self, widget):
+        self.recurring_menu.set_selected_term('day')
+        self.recurring_menu.update_header()
+        self.recurring_menu.header.set_subtitle("")
+        
+    def set_recurring_term_every_otherday(self, widget):
+        self.recurring_menu.set_selected_term('other-day')
+        self.recurring_menu.update_header()
+        self.recurring_menu.header.set_subtitle("")
+
+    def set_recurring_term_every_week(self, widget):
+        self.recurring_menu.set_selected_term('week')
+        self.recurring_menu.update_header()
+        self.recurring_menu.header.set_subtitle("")
+
+    def set_recurring_term_every_month(self, widget):
+        self.recurring_menu.set_selected_term('month')
+        self.recurring_menu.update_header()
+        self.recurring_menu.header.set_subtitle("")
+
+    def set_recurring_term_every_year(self, widget):
+        self.recurring_menu.set_selected_term('year')
+        self.recurring_menu.update_header()
+        self.recurring_menu.header.set_subtitle("")
+
+    def set_recurring_term_week_day(self, widget):
+        text = widget.props.text
+        self.recurring_menu.set_selected_term(text)
+        self.recurring_menu.header.set_subtitle(text)
+        # TODO: every time a term is selected, we should verify the switch and update the task.
+        # Otherwise, if the switch is already ON and the user updates the term, it won't take effect.
+
+    def set_recurring_term_month(self, widget):
+        self.recurring_menu.header.set_subtitle(str(widget.get_date()[2]))
+
+    def set_recurring_term_year(self, widget):
+        self.recurring_menu.header.set_subtitle(str(widget.get_date()[1]) + '-' + str(widget.get_date()[2]))
+
+    def update_header(self, widget):
+        """
+        reset the header title if the user didn't chose a day or a date
+        before returning back to the main stack window.
+        """
+        if self.recurring_menu.header.get_subtitle() == "":
+            self.recurring_menu.header.set_title("Every:")
 
     def search_function(self, model, column, key, iter, *search_data):
         """Callback when searching in the tags popup."""
