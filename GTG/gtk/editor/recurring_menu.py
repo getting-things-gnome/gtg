@@ -9,12 +9,12 @@ class RecurringMenu():
         self.selected_recurring_term = task.get_recurring_term()
         self.task = task
         # Getting the necessary Gtk objects
-        self.header = builder.get_object("recurring_headerbar")
-        self.switch = builder.get_object("recurring_switch")
+        self.title = builder.get_object("title_label")
+        self.repeat_button = builder.get_object("repeat_checkbutton")
 
         # Update the editor using the task recurring status
         self.update_header()
-        self.switch.set_active(task.get_recurring())
+        self.repeat_button.set_active(task.get_recurring())
 
     def is_term_set(self):
         return self.selected_recurring_term is not None
@@ -23,7 +23,7 @@ class RecurringMenu():
         self.selected_recurring_term = string
 
     def update_task(self):
-        if self.switch.get_active() and self.is_term_set():
+        if self.repeat_button.get_active() and self.is_term_set():
             self.task.set_recurring(True, self.selected_recurring_term, newtask=True)
             return True
         else:
@@ -32,5 +32,5 @@ class RecurringMenu():
         return False
 
     def update_header(self):
-        self.header.set_title(RecurringMenu.PREFIX + 
+        self.title.set_text(RecurringMenu.PREFIX + 
                 self.selected_recurring_term if self.is_term_set() else RecurringMenu.PREFIX + '')
