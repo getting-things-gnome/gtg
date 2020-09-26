@@ -78,38 +78,20 @@
   </object>
   <object class="GtkPopover" id="recurring_popover">
     <property name="can_focus">False</property>
+    <property name="modal">False</property>
     <child>
       <object class="GtkBox" id="main_bo">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
+        <property name="margin_start">12</property>
+        <property name="margin_end">12</property>
+        <property name="margin_top">12</property>
+        <property name="margin_bottom">12</property>
         <property name="orientation">vertical</property>
-        <child>
-          <object class="GtkHeaderBar" id="recurring_headerbar">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="title" translatable="yes">Every:</property>
-            <child>
-              <object class="GtkSwitch" id="recurring_switch">
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <signal name="state-set" handler="toggle_recurring_status" swapped="no"/>
-              </object>
-              <packing>
-                <property name="pack_type">end</property>
-              </packing>
-            </child>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">0</property>
-          </packing>
-        </child>
         <child>
           <object class="GtkStack" id="main_stack">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="hhomogeneous">False</property>
             <property name="vhomogeneous">False</property>
             <property name="transition_type">slide-left-right</property>
             <child>
@@ -118,13 +100,10 @@
                 <property name="can_focus">False</property>
                 <property name="orientation">vertical</property>
                 <child>
-                  <object class="GtkModelButton" id="day_button">
+                  <object class="GtkLabel" id="title_label">
                     <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="text" translatable="yes">Day</property>
-                    <property name="centered">True</property>
-                    <signal name="clicked" handler="set_recurring_term_every_day" swapped="no"/>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">Every:</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -133,13 +112,11 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkModelButton" id="otherday_button">
+                  <object class="GtkSeparator">
                     <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="text" translatable="yes">Other Day</property>
-                    <property name="centered">True</property>
-                    <signal name="clicked" handler="set_recurring_term_every_otherday" swapped="no"/>
+                    <property name="can_focus">False</property>
+                    <property name="margin_top">6</property>
+                    <property name="margin_bottom">6</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -148,14 +125,39 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkModelButton" id="week_button">
+                  <object class="GtkBox">
                     <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="text" translatable="yes">Week</property>
-                    <property name="menu_name">page1</property>
-                    <property name="centered">True</property>
-                    <signal name="clicked" handler="set_recurring_term_every_week" swapped="no"/>
+                    <property name="can_focus">False</property>
+                    <child>
+                      <object class="GtkLabel" id="repeat_label">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="margin_left">5</property>
+                        <property name="label" translatable="yes">Repeat</property>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkCheckButton" id="repeat_checkbutton">
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">False</property>
+                        <property name="margin_right">4</property>
+                        <property name="use_stock">True</property>
+                        <property name="draw_indicator">True</property>
+                        <signal name="toggled" handler="toggle_recurring_status" swapped="no"/>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="pack_type">end</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -164,14 +166,11 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkModelButton" id="month_button">
+                  <object class="GtkSeparator">
                     <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="text" translatable="yes">Month</property>
-                    <property name="menu_name">page2</property>
-                    <property name="centered">True</property>
-                    <signal name="clicked" handler="set_recurring_term_every_month" swapped="no"/>
+                    <property name="can_focus">False</property>
+                    <property name="margin_top">6</property>
+                    <property name="margin_bottom">6</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -180,19 +179,73 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkModelButton" id="year_button">
+                  <object class="GtkModelButton" id="day_button">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
-                    <property name="text" translatable="yes">Year</property>
-                    <property name="menu_name">page3</property>
-                    <property name="centered">True</property>
-                    <signal name="clicked" handler="set_recurring_term_every_year" swapped="no"/>
+                    <property name="text" translatable="yes">Daily</property>
+                    <signal name="clicked" handler="set_recurring_term_every_day" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
                     <property name="fill">True</property>
                     <property name="position">4</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkModelButton" id="otherday_button">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="text" translatable="yes">Every other day</property>
+                    <signal name="clicked" handler="set_recurring_term_every_otherday" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">5</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkModelButton" id="week_button">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="text" translatable="yes">Weekly</property>
+                    <property name="menu_name">page1</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">6</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkModelButton" id="month_button">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="text" translatable="yes">Monthly</property>
+                    <property name="menu_name">page2</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">7</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkModelButton" id="year_button">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="text" translatable="yes">Yearly</property>
+                    <property name="menu_name">page3</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">8</property>
                   </packing>
                 </child>
               </object>
@@ -211,11 +264,10 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
-                    <property name="text" translatable="yes">Week</property>
+                    <property name="text" translatable="yes">Weekly</property>
                     <property name="menu_name">page0</property>
                     <property name="inverted">True</property>
                     <property name="centered">True</property>
-                    <signal name="clicked" handler="update_header_title" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -228,8 +280,7 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
-                    <property name="text" translatable="yes">Monday</property>
-                    <property name="centered">True</property>
+                    <property name="text" translatable="yes">On Monday</property>
                     <signal name="clicked" handler="set_recurring_term_week_day" swapped="no"/>
                   </object>
                   <packing>
@@ -243,8 +294,7 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
-                    <property name="text" translatable="yes">Tuesday</property>
-                    <property name="centered">True</property>
+                    <property name="text" translatable="yes">On Tuesday</property>
                     <signal name="clicked" handler="set_recurring_term_week_day" swapped="no"/>
                   </object>
                   <packing>
@@ -258,8 +308,7 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
-                    <property name="text" translatable="yes">Wednesday</property>
-                    <property name="centered">True</property>
+                    <property name="text" translatable="yes">On Wednesday</property>
                     <signal name="clicked" handler="set_recurring_term_week_day" swapped="no"/>
                   </object>
                   <packing>
@@ -273,8 +322,7 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
-                    <property name="text" translatable="yes">Thursday</property>
-                    <property name="centered">True</property>
+                    <property name="text" translatable="yes">On Thursday</property>
                     <signal name="clicked" handler="set_recurring_term_week_day" swapped="no"/>
                   </object>
                   <packing>
@@ -288,8 +336,7 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
-                    <property name="text" translatable="yes">Friday</property>
-                    <property name="centered">True</property>
+                    <property name="text" translatable="yes">On Friday</property>
                     <signal name="clicked" handler="set_recurring_term_week_day" swapped="no"/>
                   </object>
                   <packing>
@@ -303,8 +350,7 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
-                    <property name="text" translatable="yes">Saturday</property>
-                    <property name="centered">True</property>
+                    <property name="text" translatable="yes">On Saturday</property>
                     <signal name="clicked" handler="set_recurring_term_week_day" swapped="no"/>
                   </object>
                   <packing>
@@ -318,14 +364,40 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
-                    <property name="text" translatable="yes">Sunday</property>
-                    <property name="centered">True</property>
+                    <property name="text" translatable="yes">On Sunday</property>
                     <signal name="clicked" handler="set_recurring_term_week_day" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
                     <property name="fill">True</property>
                     <property name="position">7</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkSeparator">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="margin_top">6</property>
+                    <property name="margin_bottom">6</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">8</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkModelButton" id="week_today_button">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="text" translatable="yes">From Today</property>
+                    <signal name="clicked" handler="set_recurring_term_every_week" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">9</property>
                   </packing>
                 </child>
               </object>
@@ -345,11 +417,10 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
-                    <property name="text" translatable="yes">Month</property>
+                    <property name="text" translatable="yes">Monthly</property>
                     <property name="menu_name">page0</property>
                     <property name="inverted">True</property>
                     <property name="centered">True</property>
-                    <signal name="clicked" handler="update_header_title" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -374,6 +445,33 @@
                     <property name="position">1</property>
                   </packing>
                 </child>
+                <child>
+                  <object class="GtkSeparator">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="margin_top">6</property>
+                    <property name="margin_bottom">6</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">2</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkModelButton" id="month_today_button">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="text" translatable="yes">From Today</property>
+                    <signal name="clicked" handler="set_recurring_term_every_month" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">3</property>
+                  </packing>
+                </child>
               </object>
               <packing>
                 <property name="name">page2</property>
@@ -391,11 +489,10 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
-                    <property name="text" translatable="yes">Year</property>
+                    <property name="text" translatable="yes">Yearly</property>
                     <property name="menu_name">page0</property>
                     <property name="inverted">True</property>
                     <property name="centered">True</property>
-                    <signal name="clicked" handler="update_header_title" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -418,6 +515,33 @@
                     <property name="position">1</property>
                   </packing>
                 </child>
+                <child>
+                  <object class="GtkSeparator">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="margin_top">6</property>
+                    <property name="margin_bottom">6</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">2</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkModelButton" id="year_today_button">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="text" translatable="yes">From Today</property>
+                    <signal name="clicked" handler="set_recurring_term_every_year" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">3</property>
+                  </packing>
+                </child>
               </object>
               <packing>
                 <property name="name">page3</property>
@@ -429,7 +553,7 @@
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">1</property>
+            <property name="position">3</property>
           </packing>
         </child>
       </object>
@@ -533,14 +657,14 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkMenuButton" id="set_recurring">
+                      <object class="GtkMenuButton" id="set_repeat">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
                         <property name="tooltip_text" translatable="yes">Set this task to recur</property>
                         <property name="popover">recurring_popover</property>
                         <child>
-                          <object class="GtkImage">
+                          <object class="GtkImage" id="repeat_icon">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="has_focus">True</property>
