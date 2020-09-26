@@ -317,7 +317,12 @@ class TaskView(Gtk.TextView):
 
             # Don't auto-remove it
             tid = sub_tag.tid
-            self.subtasks['to_delete'].remove(tid)
+
+            try:
+                self.subtasks['to_delete'].remove(tid)
+            except ValueError:
+                pass
+
             self.rename_subtask_cb(tid, text)
 
             # Get the task and instantiate an internal link tag
