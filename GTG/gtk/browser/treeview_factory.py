@@ -94,11 +94,16 @@ class TreeviewFactory():
     def get_task_label_column_string(self, node):
         str_format = "%s"
 
+        # We add the indicator when task is repeating
+        INDICATOR = "\U0001f5d8 "
+        if node.get_recurring():
+            str_format = INDICATOR + str_format
+
         if node.get_status() == Task.STA_ACTIVE:
             # we mark in bold tasks which are due today or as Now
             days_left = node.get_days_left()
             if days_left is not None and days_left <= 0:
-                str_format = "<b>%s</b>"
+                str_format = f"<b>{str_format}</b>"
             if self._has_hidden_subtask(node):
                 str_format = f"<span color='{self.unactive_color}'>{str_format}</span>"
 

@@ -54,10 +54,7 @@ class Task(TreeNode):
         self.title = _("My new task")
         # available status are: Active - Done - Dismiss - Note
         self.status = self.STA_ACTIVE
-
-        self.recurring_term = None
-        self.inherit_recursion()
-
+        
         self.added_date = Date.no_date()
         if newtask:
             self.added_date = datetime.now()
@@ -77,6 +74,10 @@ class Task(TreeNode):
 #            self.req._task_loaded(self.tid)
         self.attributes = {}
         self._modified_update()
+
+        # Setting the attributes related to repeating tasks.
+        self.recurring_term = None
+        self.inherit_recursion()
 
     def get_added_date(self):
         return self.added_date
@@ -186,7 +187,7 @@ class Task(TreeNode):
             self.title = "(no title task)"
         
         # add the repeating indicator in case it was deleted
-        self.set_repeating_indicator(sync=False)
+        #self.set_repeating_indicator(sync=False)
 
         # Avoid unnecessary sync
         if self.title != old_title:
@@ -385,8 +386,9 @@ class Task(TreeNode):
                 raise ValueError(f'Invalid recurring term {recurring_term} when setting recurring to True')
 
         # We set the indicator to know whether the task is repeating or not.
-        self.set_repeating_indicator()
-
+        #self.set_repeating_indicator()
+        
+        self.sync()
         # setting its children to recurrent
         if self.has_child() and self.recurring:
             for c_tid in self.get_children():
