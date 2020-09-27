@@ -115,6 +115,7 @@ class Application(Gtk.Application):
         """Callback when launched from the desktop."""
 
         self.init_shared()
+        self.browser.present()
 
         log.debug("Application activation finished")
 
