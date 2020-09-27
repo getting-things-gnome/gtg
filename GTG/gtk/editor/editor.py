@@ -143,7 +143,6 @@ class TaskEditor():
 
         self.window = self.builder.get_object("TaskEditor")
         self.builder.connect_signals(dic)
-        #self.builder.connect_signals(self._build_signals_recurring_menu())
         self.window.set_application(app)
 
         if task.has_parent():
@@ -318,47 +317,40 @@ class TaskEditor():
         TODO(jakubbrindza): Add else case that will remove tag.
         """
 
-    def update_recurring(self):
+    """def update_recurring(self):
         done = self.recurring_menu.update_task()
-        if done: self.refresh_editor()
+        if done: self.refresh_editor()"""
 
     def toggle_recurring_status(self, widget):
-        self.update_recurring()
+        self.recurring_menu.update_tick()
 
     def set_recurring_term_every_day(self, widget):
         self.recurring_menu.set_selected_term('day')
-        self.recurring_menu.update_header()
-        self.update_recurring()
+        self.recurring_menu.update_term()
         
     def set_recurring_term_every_otherday(self, widget):
         self.recurring_menu.set_selected_term('other-day')
-        self.recurring_menu.update_header()
-        self.update_recurring()
+        self.recurring_menu.update_term()
 
     def set_recurring_term_every_week(self, widget):
         self.recurring_menu.set_selected_term('week')
-        self.recurring_menu.update_header()
-        self.update_recurring()
+        self.recurring_menu.update_term()
 
     def set_recurring_term_every_month(self, widget):
         self.recurring_menu.set_selected_term('month')
-        self.recurring_menu.update_header()
-        self.update_recurring()
+        self.recurring_menu.update_term()
 
     def set_recurring_term_every_year(self, widget):
         self.recurring_menu.set_selected_term('year')
-        self.recurring_menu.update_header()
-        self.update_recurring()
+        self.recurring_menu.update_term()
 
     def set_recurring_term_week_day(self, widget):
         self.recurring_menu.set_selected_term(widget.props.text[3::])
-        self.recurring_menu.update_header()
-        self.update_recurring()
+        self.recurring_menu.update_term()
 
     def set_recurring_term_month(self, widget):
         self.recurring_menu.set_selected_term(str(widget.get_date()[2]))
-        self.recurring_menu.update_header()
-        self.update_recurring()
+        self.recurring_menu.update_term()
 
     def set_recurring_term_year(self, widget):
         month = str(widget.get_date()[1] + 1)
@@ -368,8 +360,7 @@ class TaskEditor():
         if len(day) < 2:
             day = "0" + day
         self.recurring_menu.set_selected_term(month + day)
-        self.recurring_menu.update_header()
-        self.update_recurring()
+        self.recurring_menu.update_term()
 
     def search_function(self, model, column, key, iter, *search_data):
         """Callback when searching in the tags popup."""

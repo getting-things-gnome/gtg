@@ -366,28 +366,42 @@ class Task(TreeNode):
         Raises:
             ValueError: if invalid recurring term
         """
-        # setting the task to recurrent
-        self.recurring = recurring
-        if self.recurring:
+        def is_valid_term():
+            if recurring_term is None:
+                return False, None
+
             try:
-                # If a start date is already set, we should calculate the next date from that day.
+                # If a start date is already set,
+                # we should calculate the next date from that day.
                 if self.start_date == Date.no_date():
                     start_from = Date(convert_datetime_to_date(date.today()))
                 else:
                     start_from = self.start_date
 
                 newdate = start_from.parse_from_date(recurring_term, newtask)
+                return (True, newdate)
+            except Exception as e:
+                print(e)
+                return (False, None)
+
+        # setting the task to recurrent
+        self.recurring = recurring
+        valid, newdate = is_valid_term()
+
+        recurring_term = recurring_term if valid else None
+
+        if self.recurring:
+            if not valid:
+                self.recurring_term = None
+                self.recurring = False
+            else:
                 self.recurring_term = recurring_term
                 if newtask:
                     self.set_due_date(newdate)
-            except:
-                self.recurring_term = None
-                self.recurring = False
-                raise ValueError(f'Invalid recurring term {recurring_term} when setting recurring to True')
+        else:
+            if valid:
+                self.recurring_term = recurring_term
 
-        # We set the indicator to know whether the task is repeating or not.
-        #self.set_repeating_indicator()
-        
         self.sync()
         # setting its children to recurrent
         if self.has_child() and self.recurring:

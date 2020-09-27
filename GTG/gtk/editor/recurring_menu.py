@@ -1,4 +1,5 @@
 from gi.repository import Gdk, Gtk, Pango
+
 class RecurringMenu():
     """ RecurringMenu provides a simple layer of abstraction
     for the menu where the user enables a task to be repeating
@@ -21,25 +22,47 @@ class RecurringMenu():
         if task.get_recurring():
             self.icon_style.add_class('recurring-active')
 
+    def update_repeat_button(self, active=True):
+        if active:
+            self.icon_style.add_class('recurring-active')
+        else:
+            self.icon_style.remove_class('recurring-active')
+
     def is_term_set(self):
         return self.selected_recurring_term is not None
 
     def set_selected_term(self, string):
         self.selected_recurring_term = string
 
-    def update_task(self):
-        if self.repeat_button.get_active() and self.is_term_set():
-            self.task.set_recurring(True, self.selected_recurring_term, newtask=True)
-            self.icon_style.remove_class('recurring-inactive')
-            self.icon_style.add_class('recurring-active')
-            return True
+    def update_tick(self):
+        if self.repeat_button.get_active():
+            if not self.update_task(True):
+                # we have to reset the button to off, if no term is selected.
+                self.repeat_button.set_active(False)
+            else:
+                self.update_repeat_button()
         else:
-            self.task.set_recurring(False)
-            self.icon_style.remove_class('recurring-active')
-            self.icon_style.add_class('recurring-inactive')
-            return True
-        return False
+            self.update_task(False)
+            self.update_repeat_button(active=False)
 
+    def update_term(self):
+        self.update_header()
+        if self.repeat_button.get_active():
+            self.update_task(True)
+
+    def update_task(self, enable=True):
+        """ Updates the task object """
+        done = False
+        if enable:
+            if self.is_term_set():
+                self.task.set_recurring(enable, self.selected_recurring_term, newtask=True)
+                done = True
+        else:
+            self.task.set_recurring(enable)
+            done = True
+        return done
+            
     def update_header(self):
+        """ Updates the header anytime a term is selected """
         self.title.set_text(RecurringMenu.PREFIX + 
                 self.selected_recurring_term if self.is_term_set() else RecurringMenu.PREFIX + '')
