@@ -33,7 +33,7 @@ from gettext import gettext as _
 from typing import List
 
 from GTG.gtk.editor.text_tags import (TitleTag, SubTaskTag, TaskTagTag,
-                                      InternalLinkTag, LinkTag)
+                                      InternalLinkTag, LinkTag, CheckboxTag)
 
 
 # Regex to find GTG's tags.
@@ -156,6 +156,9 @@ class TaskView(Gtk.TextView):
         self.title_tag = TitleTag()
         self.table.add(self.title_tag)
 
+        self.checkbox_tag = CheckboxTag()
+        self.table.add(self.checkbox_tag)
+
         # Tags applied to the buffer. Does not include Title or subtasks,
         # since this is used to remove the tags from the tag table, which
         # also removes them from the buffer
@@ -263,7 +266,10 @@ class TaskView(Gtk.TextView):
         # * "None" Path: The line doesn't have any subtasks
 
         # The structure of a subtask in terms of text tags is:
-        # <subtask>[ ] <internal-link>Subtask name</internal-link></subtask>
+        # <subtask>
+        #   <checkbox>[ ]</checkbox>
+        #   <internal-link>Subtask name</internal-link>
+        # </subtask>
 
         # Add a new subtask
         if text.startswith('- ') and len(text[2:]) > 0:
@@ -315,6 +321,16 @@ class TaskView(Gtk.TextView):
             if not sub_tag:
                 return False
 
+            # Check that we still have a checkbox
+            after_checkbox = start.copy()
+            after_checkbox.forward_char()
+
+            has_checkbox = any(type(t) == CheckboxTag
+                               for t in after_checkbox.get_tags())
+
+            if not has_checkbox:
+                return False
+
             # Don't auto-remove it
             tid = sub_tag.tid
 
@@ -332,8 +348,6 @@ class TaskView(Gtk.TextView):
 
             # Apply the new internal link tag (which was removed
             # by process())
-            after_checkbox = start.copy()
-            after_checkbox.forward_char()
             end = start.copy()
             end.forward_to_line_end()
             self.buffer.apply_tag(link_tag, after_checkbox, end)
@@ -380,6 +394,9 @@ class TaskView(Gtk.TextView):
         with GObject.signal_handler_block(self.buffer, self.id_modified):
             anchor = self.buffer.create_child_anchor(start)
             self.add_child_at_anchor(checkbox, anchor)
+            end = start.copy()
+            end.forward_char()
+            self.buffer.apply_tag(self.checkbox_tag, start, end)
 
         self.buffer.set_modified(False)
         checkbox.show()
