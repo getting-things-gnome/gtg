@@ -1,6 +1,7 @@
 gtg_plugin_hamster = [
   '__init__.py',
   'hamster.py',
+  'helper.py',
   'prefs.ui',
 ]
 
