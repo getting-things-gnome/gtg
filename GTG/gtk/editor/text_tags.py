@@ -66,6 +66,13 @@ class SubTaskTag(Gtk.TextTag):
         self.tid = task.tid
 
 
+class CheckboxTag(Gtk.TextTag):
+    """Checkbox tag. Only used to detect when a checkbox has been deleted."""
+
+    def __init__(self) -> None:
+        super().__init__()
+
+
 class InvisibleTag(Gtk.TextTag):
     """Subtask Text tag."""
 
