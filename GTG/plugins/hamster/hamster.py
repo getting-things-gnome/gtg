@@ -16,18 +16,18 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-from calendar import timegm
 import datetime
-import dbus
 import os
 import re
 import time
-
-from gi.repository import Gtk, GdkPixbuf
-
-from GTG.core.task import Task
+from calendar import timegm
 from gettext import gettext as _
+
+import dbus
+from gi.repository import Gtk
+
 from GTG.core.logger import log
+from GTG.core.task import Task
 
 
 class HamsterPlugin():
@@ -54,20 +54,21 @@ class HamsterPlugin():
         # task editor widget
         self.vbox = None
         self.button = Gtk.ToggleButton()
-        self.other_stop_button = self.button
+        self.task_menu_item = Gtk.ModelButton()
 
         self.tree = None
         self.liblarch_callbacks = []
         self.tracked_task_id = None
 
-    def get_icon_image(self, image_name):
+    @staticmethod
+    def get_icon_image(image_name):
         icon = Gtk.Image()
         icon.set_from_icon_name(image_name, Gtk.IconSize.BUTTON)
         icon.show()
         return icon
 
     # Interaction with Hamster ###
-    def sendTask(self, task):
+    def send_task(self, task):
         """Send a gtg task to hamster-applet"""
         if task is None:
             return
@@ -78,8 +79,7 @@ class HamsterPlugin():
         if self.preferences['activity'] == 'tag':
             hamster_activities = set([str(x[0]).lower()
                                       for x in self.hamster.GetActivities('')])
-            activity_candidates = hamster_activities.intersection(
-                set(gtg_tags))
+            activity_candidates = hamster_activities.intersection(set(gtg_tags))
             if len(activity_candidates) >= 1:
                 activity = list(activity_candidates)[0]
         elif self.preferences['activity'] == 'title':
@@ -151,9 +151,9 @@ class HamsterPlugin():
         valid_ids = []
         for i in ids:
             try:
-                d = self.hamster.GetFact(i)
-                if d and i not in valid_ids:
-                    records.append(d)
+                fact = self.hamster.GetFact(i)
+                if fact and i not in valid_ids:
+                    records.append(fact)
                     valid_ids.append(i)
                     continue
             except dbus.DBusException:
@@ -189,11 +189,11 @@ class HamsterPlugin():
 
     # Datastore ###
     def get_hamster_ids(self, task):
-        a = task.get_attribute("id-list", namespace=self.PLUGIN_NAMESPACE)
-        if not a:
+        ids = task.get_attribute("id-list", namespace=self.PLUGIN_NAMESPACE)
+        if not ids:
             return []
         else:
-            return a.split(',')
+            return ids.split(',')
 
     def set_hamster_ids(self, task, ids):
         task.set_attribute("id-list", ",".join(ids),
@@ -254,24 +254,27 @@ class HamsterPlugin():
         if task.get_status() != Task.STA_ACTIVE:
             return
 
-        # add button
-        self.taskbutton = Gtk.Button()
-        self.decide_button_mode(self.taskbutton, task)
-        self.taskbutton.connect('clicked', self.task_cb, plugin_api)
-        self.taskbutton.show()
-        plugin_api.add_widget_to_taskeditor(self.taskbutton)
+        self.task_menu_item = Gtk.ModelButton()
+        if self.is_task_active(task.get_id()):
+            self.task_menu_item.set_label(self.STOP_ACTIVITY_LABEL)
+        else:
+            self.task_menu_item.set_label(self.START_ACTIVITY_LABEL)
+        self.task_menu_item.show_all()
+        self.task_menu_item.connect('clicked', self.task_cb, plugin_api)
+        plugin_api.add_menu_item(self.task_menu_item)
 
         records = self.get_records(task)
         self.render_record_list(records, plugin_api)
 
-    def get_total_duration(self, records):
+    @staticmethod
+    def get_total_duration(records):
         total = 0
         for fact in records:
             total += calc_duration(fact)
         return total
 
     def render_record_list(self, records, plugin_api):
-        if len(records):
+        if records:
             records.reverse()
             # add section to bottom of window
             vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
@@ -279,15 +282,18 @@ class HamsterPlugin():
             if len(records) > 4:
                 inner_container = Gtk.ScrolledWindow()
                 inner_container.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
-                v = Gtk.Viewport()
-                v.add(inner_grid)
-                inner_container.add(v)
-                v.set_shadow_type(Gtk.ShadowType.NONE)
+                viewport = Gtk.Viewport()
+                viewport.add(inner_grid)
+                inner_container.add(viewport)
+                viewport.set_shadow_type(Gtk.ShadowType.NONE)
                 inner_container.set_size_request(-1, 80)
             else:
                 inner_container = inner_grid
 
+            header_grid = Gtk.Grid()
             outer_grid = Gtk.Grid()
+            vbox.pack_start(header_grid, True, True, 0)
+            vbox.pack_start(Gtk.Separator(), True, True, 0)
             vbox.pack_start(inner_container, True, True, 4)
             vbox.pack_start(Gtk.Separator(), True, True, 0)
             vbox.pack_start(outer_grid, True, True, 4)
@@ -318,11 +324,14 @@ class HamsterPlugin():
                                        yalign=Gtk.Align.CENTER)
                 row.attach(column_2, 1, top_offset, 4, 1)
 
+            add(header_grid, "<b>Hamster Time Tracker Records:</b>", "", 0)
+
             active_id = self.get_active_id()
             for offset, fact in enumerate(records):
                 duration = calc_duration(fact)
                 total += duration
-                add(inner_grid,format_date(fact), format_duration(duration), offset, fact[0] == active_id)
+                add(inner_grid, format_date(fact), format_duration(duration),
+                    offset, fact[0] == active_id)
 
             add(outer_grid, "<b>Total</b>", f"<b>{format_duration(total)}</b>", 1)
             if isinstance(inner_container, Gtk.ScrolledWindow):
@@ -335,7 +344,7 @@ class HamsterPlugin():
         if plugin_api.is_browser():
             plugin_api.remove_toolbar_item(self.button)
         else:
-            plugin_api.remove_toolbar_item(self.taskbutton)
+            plugin_api.remove_menu_item(self.task_menu_item)
             plugin_api.remove_widget_from_taskeditor(self.vbox)
 
         # Deactivate LibLarch callbacks
@@ -358,7 +367,7 @@ class HamsterPlugin():
             self.stop_task(task.get_id())
         elif task.get_status() == Task.STA_ACTIVE:
             self.change_button_to_stop_activity(widget)
-            self.sendTask(task)
+            self.send_task(task)
 
     def selection_changed(self, selection):
         if selection.count_selected_rows() == 1:
@@ -379,10 +388,12 @@ class HamsterPlugin():
     def change_button_to_start_activity(self, button):
         button.set_tooltip_text(self.TOOLTIP_TEXT_START_ACTIVITY)
         button.set_image(self.get_icon_image('alarm-symbolic'))
+        self.task_menu_item.set_label(self.START_ACTIVITY_LABEL)
 
     def change_button_to_stop_activity(self, button):
         button.set_tooltip_text(self.TOOLTIP_TEXT_STOP_ACTIVITY)
         button.set_image(self.get_icon_image('process-stop-symbolic'))
+        self.task_menu_item.set_label(self.STOP_ACTIVITY_LABEL)
 
     # Preference Handling ###
     def is_configurable(self):
