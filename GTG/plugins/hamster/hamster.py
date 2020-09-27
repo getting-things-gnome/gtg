@@ -18,7 +18,6 @@
 
 import datetime
 import os
-import re
 import time
 from calendar import timegm
 from gettext import gettext as _
@@ -28,6 +27,7 @@ from gi.repository import Gtk
 
 from GTG.core.logger import log
 from GTG.core.task import Task
+from GTG.plugins.hamster.helper import FactBuilder
 
 
 class HamsterPlugin():
@@ -62,6 +62,7 @@ class HamsterPlugin():
 
     @staticmethod
     def get_icon_image(image_name):
+        """ Get a gtk.Image with a gtk stock icon. """
         icon = Gtk.Image()
         icon.set_from_icon_name(image_name, Gtk.IconSize.BUTTON)
         icon.show()
@@ -72,69 +73,7 @@ class HamsterPlugin():
         """Send a gtg task to hamster-applet"""
         if task is None:
             return
-        gtg_title = task.get_title()
-        gtg_tags = [tag_name.lstrip('@').lower() for tag_name in task.get_tags_name()]
-
-        activity = "Other"
-        if self.preferences['activity'] == 'tag':
-            hamster_activities = set([str(x[0]).lower()
-                                      for x in self.hamster.GetActivities('')])
-            activity_candidates = hamster_activities.intersection(set(gtg_tags))
-            if len(activity_candidates) >= 1:
-                activity = list(activity_candidates)[0]
-        elif self.preferences['activity'] == 'title':
-            activity = gtg_title
-        # hamster can't handle ',' or '@' in activity name
-        activity = activity.replace(',', '')
-        activity = re.sub('\ +@.*', '', activity)
-
-        category = ""
-        if self.preferences['category'] == 'auto_tag':
-            hamster_activities = dict([(str(x[0]), x[1])
-                                       for x in
-                                       self.hamster.GetActivities('')])
-            if (gtg_title in hamster_activities or gtg_title.replace(",", "") in hamster_activities):
-                category = f"{hamster_activities[gtg_title]}"
-
-        if (self.preferences['category'] == 'tag' or
-           (self.preferences['category'] == 'auto_tag' and not category)):
-            # See if any of the tags match existing categories
-            categories = dict([(str(x[1]).lower(), str(x[1]))
-                               for x in self.hamster.GetCategories()])
-            lower_gtg_tags = set([x.lower() for x in gtg_tags])
-            intersection = set(categories.keys()).intersection(lower_gtg_tags)
-            if len(intersection) > 0:
-                category = f"{categories[intersection.pop()]}"
-            elif len(gtg_tags) > 0:
-                # Force category if not found
-                category = gtg_tags[0]
-
-        description = ""
-        if self.preferences['description'] == 'title':
-            description = gtg_title
-        elif self.preferences['description'] == 'contents':
-            description = task.get_excerpt(strip_tags=True,
-                                           strip_subtasks=True)
-
-        tag_candidates = []
-        try:
-            if self.preferences['tags'] == 'existing':
-                hamster_tags = set([str(x[1]) for x in
-                                    self.hamster.GetTags(False)])
-                tag_candidates = list(hamster_tags.intersection(set(gtg_tags)))
-            elif self.preferences['tags'] == 'all':
-                tag_candidates = gtg_tags
-        except dbus.exceptions.DBusException:
-            # old hamster version, doesn't support tags
-            pass
-        tag_str = "".join([" #" + x for x in tag_candidates])
-
-        # Format of first argument of AddFact -
-        # `[-]start_time[-end_time] activity@category,, description #tag1 #tag2`
-        fact = activity
-        if category:
-            fact += f"@{category}"
-        fact += f",, {description}{tag_str}"
+        fact = FactBuilder(self.hamster, self.preferences).build(task)
         start_time = timegm(datetime.datetime.now().timetuple())
         hamster_id = self.hamster.AddFact(fact, start_time, 0, False)
 
@@ -165,13 +104,16 @@ class HamsterPlugin():
         return records
 
     def get_active_id(self):
+        """ returns active hamster task id, or None if hamster don't have active task """
         todays_facts = self.hamster.GetTodaysFacts()
-        if todays_facts and todays_facts[-1][2] == 0:
+        ID_INDEX = 0
+        END_TIME_INDEX = 2
+        if todays_facts and todays_facts[-1][END_TIME_INDEX] == 0:
             # todays_facts is a list. todays_facts[-1] gives the latest fact
             # if todays_facts[-1][-1] is the start time, and
             # todays_facts[-1][-2] is the end time of the fact (value 0 means
             # it is still being tracked upon which we return id of the fact)
-            return todays_facts[-1][0]
+            return todays_facts[-1][ID_INDEX]
         else:
             return None
 
@@ -267,6 +209,7 @@ class HamsterPlugin():
         self.render_record_list(records, plugin_api)
 
     def render_record_list(self, records, plugin_api):
+        """ show a table with previous records of facts in the current task view. """
         if records:
             records.reverse()
             # add section to bottom of window
@@ -294,6 +237,10 @@ class HamsterPlugin():
             total = 0
 
             def add(row, content_1, content_2, top_offset, active=False):
+                """
+                Add a row with two columns at the bottom of task view.
+                here is used to display total of time or fact records.
+                """
                 if not active:
                     content_1 = f"<span color='#444444'>{content_1}</span>"
                     content_2 = f"<span color='#444444'>{content_2}</span>"
