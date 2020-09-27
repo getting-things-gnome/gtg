@@ -7,8 +7,7 @@
     <property name="border_width">5</property>
     <property name="title" translatable="yes">Hamster Preferences</property>
     <property name="type_hint">dialog</property>
-    <signal name="delete_event" handler="prefs_close"/>
-
+    <signal name="delete-event" handler="prefs_close" swapped="no"/>
     <child type="titlebar">
       <placeholder/>
     </child>
@@ -24,19 +23,7 @@
             <property name="can_focus">False</property>
             <property name="layout_style">end</property>
             <child>
-              <object class="GtkButton" id="button1">
-                <property name="label" translatable="yes">OK</property>
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
-                <signal name="clicked" handler="prefs_close"/>
-                <signal name="activate" handler="prefs_close"/>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">False</property>
-                <property name="position">0</property>
-              </packing>
+              <placeholder/>
             </child>
           </object>
           <packing>
@@ -53,36 +40,53 @@
             <property name="orientation">vertical</property>
             <property name="baseline_position">top</property>
             <child>
-              <object class="GtkNotebook">
+              <object class="GtkListBox" id="prefs_list">
                 <property name="visible">True</property>
-                <property name="can_focus">True</property>
+                <property name="can_focus">False</property>
+                <property name="valign">start</property>
+                <property name="margin_left">12</property>
+                <property name="margin_right">12</property>
+                <property name="margin_start">12</property>
+                <property name="margin_end">12</property>
+                <property name="margin_top">8</property>
+                <property name="margin_bottom">8</property>
+                <property name="selection_mode">none</property>
                 <child>
-                  <object class="GtkBox">
+                  <object class="GtkListBoxRow">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="orientation">vertical</property>
+                    <property name="can_focus">True</property>
+                    <property name="selectable">False</property>
                     <child>
                       <object class="GtkBox">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="margin_left">12</property>
+                        <property name="margin_right">12</property>
+                        <property name="margin_start">12</property>
+                        <property name="margin_end">12</property>
+                        <property name="margin_top">8</property>
+                        <property name="margin_bottom">8</property>
                         <child>
                           <object class="GtkLabel">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
-                            <property name="label" translatable="yes">use activity title from</property>
-                            <property name="use_markup">True</property>
+                            <property name="label" translatable="yes">Activity Title</property>
+                            <property name="xalign">0</property>
                           </object>
                           <packing>
-                            <property name="expand">False</property>
+                            <property name="expand">True</property>
                             <property name="fill">True</property>
-                            <property name="padding">18</property>
                             <property name="position">0</property>
                           </packing>
+                        </child>
+                        <child>
+                          <placeholder/>
                         </child>
                         <child>
                           <object class="GtkComboBoxText" id="activity">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
+                            <property name="margin_left">18</property>
                             <property name="active">1</property>
                             <property name="button_sensitivity">on</property>
                             <property name="has_entry">True</property>
@@ -93,47 +97,57 @@
                             </items>
                             <child internal-child="entry">
                               <object class="GtkEntry">
-                                <property name="can_focus">False</property>
+                                <property name="can_focus">True</property>
                               </object>
                             </child>
                           </object>
                           <packing>
                             <property name="expand">False</property>
                             <property name="fill">True</property>
-                            <property name="padding">18</property>
                             <property name="pack_type">end</property>
-                            <property name="position">1</property>
+                            <property name="position">2</property>
                           </packing>
                         </child>
                       </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="padding">10</property>
-                        <property name="position">0</property>
-                      </packing>
                     </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkListBoxRow">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="selectable">False</property>
                     <child>
                       <object class="GtkBox">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="margin_left">12</property>
+                        <property name="margin_right">12</property>
+                        <property name="margin_start">12</property>
+                        <property name="margin_end">12</property>
+                        <property name="margin_top">8</property>
+                        <property name="margin_bottom">8</property>
                         <child>
                           <object class="GtkLabel">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
-                            <property name="label" translatable="yes">use category from</property>
+                            <property name="label" translatable="yes">Category</property>
+                            <property name="xalign">0</property>
                           </object>
                           <packing>
-                            <property name="expand">False</property>
+                            <property name="expand">True</property>
                             <property name="fill">True</property>
-                            <property name="padding">18</property>
                             <property name="position">0</property>
                           </packing>
+                        </child>
+                        <child>
+                          <placeholder/>
                         </child>
                         <child>
                           <object class="GtkComboBoxText" id="category">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
+                            <property name="margin_left">18</property>
                             <property name="active">1</property>
                             <property name="button_sensitivity">on</property>
                             <property name="has_entry">True</property>
@@ -145,7 +159,7 @@
                             </items>
                             <child internal-child="entry">
                               <object class="GtkEntry">
-                                <property name="can_focus">False</property>
+                                <property name="can_focus">True</property>
                                 <property name="text" translatable="yes">Let hamster choose</property>
                               </object>
                             </child>
@@ -153,40 +167,50 @@
                           <packing>
                             <property name="expand">False</property>
                             <property name="fill">True</property>
-                            <property name="padding">18</property>
                             <property name="pack_type">end</property>
-                            <property name="position">1</property>
+                            <property name="position">2</property>
                           </packing>
                         </child>
                       </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="padding">10</property>
-                        <property name="position">1</property>
-                      </packing>
                     </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkListBoxRow">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="selectable">False</property>
                     <child>
                       <object class="GtkBox">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="margin_left">12</property>
+                        <property name="margin_right">12</property>
+                        <property name="margin_start">12</property>
+                        <property name="margin_end">12</property>
+                        <property name="margin_top">8</property>
+                        <property name="margin_bottom">8</property>
                         <child>
                           <object class="GtkLabel">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
-                            <property name="label" translatable="yes">use  description from</property>
+                            <property name="label" translatable="yes">Description</property>
+                            <property name="xalign">0</property>
                           </object>
                           <packing>
-                            <property name="expand">False</property>
+                            <property name="expand">True</property>
                             <property name="fill">True</property>
-                            <property name="padding">18</property>
                             <property name="position">0</property>
                           </packing>
+                        </child>
+                        <child>
+                          <placeholder/>
                         </child>
                         <child>
                           <object class="GtkComboBoxText" id="description">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
+                            <property name="margin_left">18</property>
                             <property name="active">1</property>
                             <property name="button_sensitivity">on</property>
                             <property name="has_entry">True</property>
@@ -198,47 +222,58 @@
                             </items>
                             <child internal-child="entry">
                               <object class="GtkEntry">
-                                <property name="can_focus">False</property>
+                                <property name="can_focus">True</property>
                               </object>
                             </child>
                           </object>
                           <packing>
                             <property name="expand">False</property>
                             <property name="fill">True</property>
-                            <property name="padding">18</property>
                             <property name="pack_type">end</property>
-                            <property name="position">1</property>
+                            <property name="position">2</property>
                           </packing>
                         </child>
                       </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="padding">10</property>
-                        <property name="position">2</property>
-                      </packing>
                     </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkListBoxRow">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="selectable">False</property>
                     <child>
                       <object class="GtkBox">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="margin_left">12</property>
+                        <property name="margin_right">12</property>
+                        <property name="margin_start">12</property>
+                        <property name="margin_end">12</property>
+                        <property name="margin_top">8</property>
+                        <property name="margin_bottom">8</property>
                         <child>
                           <object class="GtkLabel">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
-                            <property name="label" translatable="yes">use tags from </property>
+                            <property name="label" translatable="yes">Tags</property>
+                            <property name="xalign">0</property>
                           </object>
                           <packing>
-                            <property name="expand">False</property>
+                            <property name="expand">True</property>
                             <property name="fill">True</property>
-                            <property name="padding">18</property>
+                            <property name="padding">8</property>
                             <property name="position">0</property>
                           </packing>
+                        </child>
+                        <child>
+                          <placeholder/>
                         </child>
                         <child>
                           <object class="GtkComboBoxText" id="tags">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
+                            <property name="margin_left">18</property>
                             <property name="active">1</property>
                             <property name="button_sensitivity">on</property>
                             <property name="has_entry">True</property>
@@ -250,55 +285,29 @@
                             </items>
                             <child internal-child="entry">
                               <object class="GtkEntry">
-                                <property name="can_focus">False</property>
+                                <property name="can_focus">True</property>
                               </object>
                             </child>
                           </object>
                           <packing>
                             <property name="expand">False</property>
-                            <property name="fill">True</property>
-                            <property name="padding">18</property>
+                            <property name="fill">False</property>
                             <property name="pack_type">end</property>
-                            <property name="position">1</property>
+                            <property name="position">2</property>
                           </packing>
                         </child>
                       </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="padding">10</property>
-                        <property name="position">3</property>
-                      </packing>
                     </child>
                   </object>
                 </child>
-                <child type="tab">
-                  <object class="GtkLabel" id="hamster_general">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">General</property>
-                  </object>
-                  <packing>
-                    <property name="tab_fill">False</property>
-                  </packing>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-                <child type="tab">
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-                <child type="tab">
-                  <placeholder/>
-                </child>
+                <style>
+                  <class name="prefs_list"/>
+                </style>
               </object>
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">True</property>
-                <property name="position">5</property>
+                <property name="position">0</property>
               </packing>
             </child>
           </object>
@@ -310,8 +319,5 @@
         </child>
       </object>
     </child>
-    <action-widgets>
-      <action-widget response="0">button1</action-widget>
-    </action-widgets>
   </object>
 </interface>
