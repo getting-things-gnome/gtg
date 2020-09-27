@@ -126,11 +126,6 @@ class TaskView(Gtk.TextView):
     CURSOR_HAND = Gdk.Cursor.new(Gdk.CursorType.HAND2)
     CURSOR_NORMAL = Gdk.Cursor.new(Gdk.CursorType.XTERM)
 
-    # Tags applied to the buffer. Does not include Title or subtasks, since
-    # this is used to remove the tags from the tag table, which also removes
-    # them from the buffer
-    tags_applied = []
-
     # The tag currently hovered. This tag gets reset() when the mouse or cursor
     # moves away
     hovered_tag = None
@@ -160,6 +155,11 @@ class TaskView(Gtk.TextView):
         # Add title tag
         self.title_tag = TitleTag()
         self.table.add(self.title_tag)
+
+        # Tags applied to the buffer. Does not include Title or subtasks,
+        # since this is used to remove the tags from the tag table, which
+        # also removes them from the buffer
+        self.tags_applied = []
 
         # Keep track of subtasks in this task. Tags keeps all the subtask tags
         # applied in the buffer, while 'to_delete' is a temporary list used in
@@ -777,6 +777,7 @@ class TaskView(Gtk.TextView):
         link_tag = InternalLinkTag(task)
         self.table.add(link_tag)
         self.buffer.apply_tag(link_tag, start, end)
+        self.tags_applied.append(link_tag)
 
         # Apply subtask tag to everything
         start.backward_char()
