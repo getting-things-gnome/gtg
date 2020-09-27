@@ -4,7 +4,7 @@ class RecurringMenu():
     """ RecurringMenu provides a simple layer of abstraction
     for the menu where the user enables a task to be repeating
     """
-    PREFIX = "Every: "
+    PREFIX = "Every "
 
     def __init__(self, task, builder):
         # General attributes
@@ -12,6 +12,7 @@ class RecurringMenu():
         self.task = task
         # Getting the necessary Gtk objects
         self.title = builder.get_object("title_label")
+        self.title_separator = builder.get_object("title_separator")
         self.repeat_button = builder.get_object("repeat_checkbutton")
         self.repeat_icon = builder.get_object("repeat_icon")
         self.icon_style = self.repeat_icon.get_style_context()
@@ -64,5 +65,10 @@ class RecurringMenu():
             
     def update_header(self):
         """ Updates the header anytime a term is selected """
-        self.title.set_text(RecurringMenu.PREFIX + 
-                self.selected_recurring_term if self.is_term_set() else RecurringMenu.PREFIX + '')
+        if self.is_term_set():
+            self.title.show()
+            self.title_separator.show()
+            self.title.set_markup(RecurringMenu.PREFIX + "<b>" + self.selected_recurring_term + "</b>")
+        else:
+            self.title.hide()
+            self.title_separator.hide()
