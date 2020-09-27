@@ -73,7 +73,7 @@ class HamsterPlugin():
         if task is None:
             return
         gtg_title = task.get_title()
-        gtg_tags = [t.lstrip('@').lower() for t in task.get_tags_name()]
+        gtg_tags = [tag_name.lstrip('@').lower() for tag_name in task.get_tags_name()]
 
         activity = "Other"
         if self.preferences['activity'] == 'tag':
@@ -265,13 +265,6 @@ class HamsterPlugin():
 
         records = self.get_records(task)
         self.render_record_list(records, plugin_api)
-
-    @staticmethod
-    def get_total_duration(records):
-        total = 0
-        for fact in records:
-            total += calc_duration(fact)
-        return total
 
     def render_record_list(self, records, plugin_api):
         if records:
