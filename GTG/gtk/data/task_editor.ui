@@ -104,6 +104,7 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="label" translatable="yes">Every:</property>
+                    <property name="use_markup">True</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -112,7 +113,7 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkSeparator">
+                  <object class="GtkSeparator" id="title_separator">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="margin_top">6</property>
@@ -391,7 +392,7 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
-                    <property name="text" translatable="yes">From Today</property>
+                    <property name="text" translatable="yes">On This Day</property>
                     <signal name="clicked" handler="set_recurring_term_every_week" swapped="no"/>
                   </object>
                   <packing>
@@ -463,7 +464,7 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
-                    <property name="text" translatable="yes">From Today</property>
+                    <property name="text" translatable="yes">On This Day</property>
                     <signal name="clicked" handler="set_recurring_term_every_month" swapped="no"/>
                   </object>
                   <packing>
@@ -533,7 +534,7 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
-                    <property name="text" translatable="yes">From Today</property>
+                    <property name="text" translatable="yes">On This Day</property>
                     <signal name="clicked" handler="set_recurring_term_every_year" swapped="no"/>
                   </object>
                   <packing>

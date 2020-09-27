@@ -34,9 +34,5 @@
 }
 
 .recurring-active {
-	color: rgb(17, 133, 161);
-}
-
-.recurring-inactive {
-	color: #202020;
+		color: rgb(52, 130, 224);
 }
