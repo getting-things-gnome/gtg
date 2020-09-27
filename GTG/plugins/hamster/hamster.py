@@ -49,28 +49,21 @@ class HamsterPlugin():
     STOP_ACTIVITY_BUTTON_LABEL = _("Stop Tracking")
     BUFFER_TIME = 60  # secs
     PLUGIN_PATH = os.path.dirname(os.path.abspath(__file__))
-    IMG_START_PATH = "icons/hicolor/32x32/hamster-activity-start.png"
-    IMG_STOP_PATH = "icons/hicolor/32x32/hamster-activity-stop.png"
 
     def __init__(self):
         # task editor widget
         self.vbox = None
-        self.button = Gtk.Button()
+        self.button = Gtk.ToggleButton()
         self.other_stop_button = self.button
 
         self.tree = None
         self.liblarch_callbacks = []
         self.tracked_task_id = None
 
-    def get_icon_widget(self, image_path):
-        image_path = os.path.join(self.PLUGIN_PATH, image_path)
-        pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(image_path, 24, 24)
-
-        # create the image and associate the pixbuf
+    def get_icon_image(self, image_name):
         icon = Gtk.Image()
-        icon.set_from_pixbuf(pixbuf)
+        icon.set_from_icon_name(image_name, Gtk.IconSize.BUTTON)
         icon.show()
-
         return icon
 
     # Interaction with Hamster ###
@@ -100,9 +93,8 @@ class HamsterPlugin():
             hamster_activities = dict([(str(x[0]), x[1])
                                        for x in
                                        self.hamster.GetActivities('')])
-            if (gtg_title in hamster_activities or
-                    gtg_title.replace(",", "") in hamster_activities):
-                    category = f"{hamster_activities[gtg_title]}"
+            if (gtg_title in hamster_activities or gtg_title.replace(",", "") in hamster_activities):
+                category = f"{hamster_activities[gtg_title]}"
 
         if (self.preferences['category'] == 'tag' or
            (self.preferences['category'] == 'auto_tag' and not category)):
@@ -138,7 +130,7 @@ class HamsterPlugin():
         tag_str = "".join([" #" + x for x in tag_candidates])
 
         # Format of first argument of AddFact -
-        # `[-]start_time[-end_time] activity@category, description #tag1 #tag2`
+        # `[-]start_time[-end_time] activity@category,, description #tag1 #tag2`
         fact = activity
         if category:
             fact += f"@{category}"
@@ -229,15 +221,14 @@ class HamsterPlugin():
 
         # add button
         if plugin_api.is_browser():
-            self.button.set_label(self.START_ACTIVITY_BUTTON_LABEL)
+            self.button.set_image(self.get_icon_image('alarm-symbolic'))
             self.button.set_tooltip_text(self.TOOLTIP_TEXT_START_ACTIVITY)
             self.button.set_sensitive(False)
             self.button.connect('clicked', self.browser_cb, plugin_api)
             self.button.show()
             header_bar = plugin_api.get_gtk_builder().get_object('browser_headerbar')
-            header_bar.add(self.button)
-            plugin_api.set_active_selection_changed_callback(
-                self.selection_changed)
+            header_bar.pack_end(self.button)
+            plugin_api.set_active_selection_changed_callback(self.selection_changed)
 
         self.subscribe_task_updates([
             ("node-modified-inview", self.on_task_modified),
@@ -305,8 +296,8 @@ class HamsterPlugin():
 
             def add(row, content_1, content_2, top_offset, active=False):
                 if not active:
-                    content_1 = f"<span color='#999999'>{content_1}</span>"
-                    content_2 = f"<span color='#999999'>{content_2}</span>"
+                    content_1 = f"<span color='#444444'>{content_1}</span>"
+                    content_2 = f"<span color='#444444'>{content_2}</span>"
 
                 column_1 = Gtk.Label(label=content_1)
                 column_1.set_margin_start(18)
@@ -386,12 +377,12 @@ class HamsterPlugin():
             self.change_button_to_start_activity(button)
 
     def change_button_to_start_activity(self, button):
-        button.set_label(self.START_ACTIVITY_BUTTON_LABEL)
         button.set_tooltip_text(self.TOOLTIP_TEXT_START_ACTIVITY)
+        button.set_image(self.get_icon_image('alarm-symbolic'))
 
     def change_button_to_stop_activity(self, button):
-        button.set_label(self.STOP_ACTIVITY_BUTTON_LABEL)
         button.set_tooltip_text(self.TOOLTIP_TEXT_STOP_ACTIVITY)
+        button.set_image(self.get_icon_image('process-stop-symbolic'))
 
     # Preference Handling ###
     def is_configurable(self):

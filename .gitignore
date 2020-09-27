@@ -5,6 +5,7 @@ tmp
 .project
 .settings
 .tox
+.vscode/
 MANIFEST
 **.patch
 gtg.prof
@@ -25,6 +26,7 @@ builddir/**/*
 **/**.ui.h
 **/**.gladep
 **/**.gladep.bak
+**/**.ui~
 
 # Flatpak bundles
 flatpak/cache

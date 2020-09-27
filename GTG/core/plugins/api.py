@@ -139,11 +139,9 @@ class PluginAPI():
         menu_box.show_all()
 
     def remove_menu_item(self, item):
-        """Adds a menu entry to the menu of the Task Browser or Task Editor.
+        """Remove a menu entry to the menu of the Task Browser or Task Editor.
 
         @param item: The Gtk.MenuItem that is going to be removed.
-        @return: Returns C{True} if the operation has sucess or c{False} if it
-        fails.
         """
 
         menu_box = self.__builder.get_object('menu_box')
