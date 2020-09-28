@@ -93,7 +93,7 @@ class TaskEditor():
         self.due_calendar = self.builder.get_object("calendar_due")
 
         # Recurrence
-        self.recurring_menu = RecurringMenu(task, self.builder)
+        self.recurring_menu = RecurringMenu(self.req, task.tid, self.builder)
 
         # Create our dictionary and connect it
         dic = {
@@ -323,6 +323,7 @@ class TaskEditor():
 
     def toggle_recurring_status(self, widget):
         self.recurring_menu.update_tick()
+        self.refresh_editor()
 
     def set_recurring_term_every_day(self, widget):
         self.recurring_menu.set_selected_term('day')
