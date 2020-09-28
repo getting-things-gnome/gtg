@@ -71,7 +71,7 @@ Make sure to this AFTER COMMITING YOUR CHANGES!
 
 * Not removing the `#, fuzzy` line/part, which causes the translation not to apply
 * During launching, it might complain about certain files not being found in [`po/POTFILES.in`][POTFILES.IN].
-  It is save to remove the lines from that file and re-run until it works.
+  It is safe to remove the lines from that file and re-run until it works.
   It would be useful to comment about that if you're submitting your translation, just in case.
 
 [POTFILES.IN]: ../../po/POTFILES.in
