@@ -1,0 +1,101 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      xmlns:its="http://www.w3.org/2005/11/its"
+      xmlns:ui="http://projectmallard.org/ui/1.0/"
+      type="guide" style="task 2column"
+      id="gtg-recurring-task">
+
+  <info>
+  <link type="guide" xref="index#gtg-working-task" group="sixth"/>
+    <credit type="author copyright">
+      <name>Drissi Mohieddine</name>
+      <email its:translate="no">m.drissi@protonmail.con</email>
+      <years>2020</years>
+    </credit>
+
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+
+  </info>
+
+  <title>Using Recurring/Repeating tasks</title>
+
+  <p>Repeating tasks are the tasks that must be done many times on a fixed perid (day, week, month, year). By making a task repeat, the due date will hold the date on which the task must be completed. If a start date is set, the occurence of that task will begin from that date.</p> 
+
+<section id="set-recurring-tasks">
+<title>How to set a task to repeat</title>
+
+<p>There are three ways to do so.<gui>The Quick Add Entry</gui> is the fastest with the simple keyword <em style="strong">every<em>. Furthermore, you can also use the <gui>Task Editor</gui>(from the circular button) and the context menu</p>
+
+<note stlye="tip"><p>In the task Editor, the circular button will light blue to notify you when the task is recurring. In the taskview, you will also have a similar icon.</p></note>
+</section>
+ 
+<section id="valid-recurring-terms">
+<title>What are the valid recurring terms</title>
+
+<p>The valid terms are very similar to <link href="gtg-date-parsing">Keyword Parsing Syntax</link> for start and due dates with the exception of some few keywords</p>
+<table rules="rows" frame="top bottom" ui:expanded="true">
+<title>Recurring term Syntax</title>
+  <thead>
+    <tr>
+      <td><p><em style="strong">Syntax</em></p></td>
+      <td><p><em style="strong">Example</em></p></td>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><p><code>yyyy-mm-dd</code> or <code>yyyy/mm/dd</code></p></td>
+      <td><p>2020-04-01 or 2020/04/01. This will repeat every year on 04/01.</p></td>
+    </tr>
+<tr>
+      <td><p><code>yyyymmdd</code></p></td>
+      <td><p>20200401 This will repeat every year on 04/01.</p></td>
+    </tr>
+<tr>
+      <td><p><code>mmdd</code></p></td>
+      <td><p>0401 (with the year being assumed as the current one). This will repeat every year on 04/01.</p></td>
+    </tr>
+<tr>
+          <td><p><code>day</code></p></td>
+          <td><p>With this syntax, the task repeats daily.</p></td>
+        </tr>
+<tr>
+        <td><p><code>other-day</code></p></td>
+        <td><p>With this syntax, the task repeats every other day.</p></td>
+        </tr>
+<tr>
+        <td><p><code>week</code></p></td>
+        <td><p>Will repeat every week on the same day that the task was set.</p></td>
+                </tr>
+<tr>
+        <td><p><code>month</code></p></td>
+        <td><p>Will repeat monthly.</p></td>
+        </tr>
+<tr>
+        <td><p><code>year</code></p></td>
+        <td><p>Will repeat yearly.</p></td>
+        </tr>
+<tr>
+        <td><p><code>Monday</code> (or any day of the week)</p></td>
+        <td><p>Will repeat on that day of the week</p></td>
+        </tr>
+<tr>
+      <td><p><code>27</code> (or any day's number)</p></td>
+      <td><p>In this example, the task will recur on every 27 of the month.</p></td>
+    </tr>
+</tbody>
+</table>
+
+</section>
+ <section id="recurring-examples">
+<title>Recurring Examples</title>
+<p>The following shows examples of how recurring terms work. These examples are made using the <gui>Quick Add Entry</gui> but do not deffer in results from the Task Editor.</p>
+
+<terms>
+  <item>
+     <title><em style="strong"><code>pay my taxes every:year</code></em></title>
+        <p>This task will repeat every year on the date which the task was created.</p></item>
+  <item>
+     <title><em style="strong"><code>Go out with my dog every:day start:next month</code></em></title>
+        <p>By setting a start date, this task will not recurr every date from today's date but from the start date</p></item>
+</terms>
+</section>
+</page>
