@@ -111,6 +111,7 @@ class TaskEditor():
             "set_recurring_term_calender_month": self.set_recurring_term_month,
             "set_recurring_term_calender_year": self.set_recurring_term_year,
             "toggle_recurring_status": self.toggle_recurring_status,
+            "on_repeat_icon_toggled": self.on_repeat_icon_toggled,
 
             "show_popover_start": self.show_popover_start,
             "startingdate_changed": lambda w: self.date_changed(
@@ -316,6 +317,9 @@ class TaskEditor():
         """
         TODO(jakubbrindza): Add else case that will remove tag.
         """
+    def on_repeat_icon_toggled(self, widget):
+        if widget.get_active():
+            self.recurring_menu.reset_stack()
 
     def toggle_recurring_status(self, widget):
         self.recurring_menu.update_tick()

@@ -16,6 +16,8 @@ class RecurringMenu():
         self.repeat_button = builder.get_object("repeat_checkbutton")
         self.repeat_icon = builder.get_object("repeat_icon")
         self.icon_style = self.repeat_icon.get_style_context()
+        self.stack = builder.get_object("main_stack")
+        self.page1 = builder.get_object("stack_main_box")
 
         # Update the editor using the task recurring status
         self.update_header()
@@ -72,3 +74,9 @@ class RecurringMenu():
         else:
             self.title.hide()
             self.title_separator.hide()
+
+    
+    def reset_stack(self):
+        self.stack.set_transition_duration(0)
+        self.stack.set_visible_child(self.page1)
+        self.stack.set_transition_duration(200)
