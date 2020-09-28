@@ -53,7 +53,7 @@ class HamsterPlugin():
     def __init__(self):
         # task editor widget
         self.vbox = None
-        self.button = Gtk.ToggleButton()
+        self.button = Gtk.Button()
         self.task_menu_item = Gtk.ModelButton()
 
         self.tree = None
@@ -208,6 +208,9 @@ class HamsterPlugin():
         records = self.get_records(task)
         self.render_record_list(records, plugin_api)
 
+    def onTaskClosed(self, plugin_api):
+        self.check_task_selected()
+
     def render_record_list(self, records, plugin_api):
         """ show a table with previous records of facts in the current task view. """
         if records:
@@ -312,12 +315,17 @@ class HamsterPlugin():
     def selection_changed(self, selection):
         if selection.count_selected_rows() == 1:
             self.button.set_sensitive(True)
-            task_id = self.plugin_api.get_browser().get_selected_task()
-            task = self.plugin_api.get_requester().get_task(task_id)
-            self.decide_button_mode(self.button, task)
+            self.check_task_selected()
         else:
             self.change_button_to_start_activity(self.button)
             self.button.set_sensitive(False)
+
+    def check_task_selected(self):
+        task_id = self.plugin_api.get_browser().get_selected_task()
+        if not task_id:
+            return
+        task = self.plugin_api.get_requester().get_task(task_id)
+        self.decide_button_mode(self.button, task)
 
     def decide_button_mode(self, button, task):
         if self.is_task_active(task.get_id()):
