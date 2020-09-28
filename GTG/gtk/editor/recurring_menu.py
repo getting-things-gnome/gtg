@@ -68,7 +68,7 @@ class RecurringMenu():
         if self.is_term_set():
             self.title.show()
             self.title_separator.show()
-            self.title.set_markup(RecurringMenu.PREFIX + "<b>" + self.selected_recurring_term + "</b>")
+            self.title.set_markup(f"{RecurringMenu.PREFIX} <b>{self.selected_recurring_term}</b>")
         else:
             self.title.hide()
             self.title_separator.hide()
