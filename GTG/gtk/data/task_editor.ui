@@ -78,7 +78,6 @@
   </object>
   <object class="GtkPopover" id="recurring_popover">
     <property name="can_focus">False</property>
-    <property name="modal">False</property>
     <child>
       <object class="GtkBox" id="main_bo">
         <property name="visible">True</property>
@@ -94,6 +93,7 @@
             <property name="can_focus">False</property>
             <property name="vhomogeneous">False</property>
             <property name="transition_type">slide-left-right</property>
+            <property name="interpolate_size">True</property>
             <child>
               <object class="GtkBox" id="stack_main_box">
                 <property name="visible">True</property>
@@ -147,7 +147,8 @@
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">False</property>
-                        <property name="margin_right">4</property>
+                        <property name="tooltip_text" translatable="yes">Tick to activate</property>
+                        <property name="margin_right">5</property>
                         <property name="use_stock">True</property>
                         <property name="draw_indicator">True</property>
                         <signal name="toggled" handler="toggle_recurring_status" swapped="no"/>
@@ -662,8 +663,9 @@
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
-                        <property name="tooltip_text" translatable="yes">Set this task to recur</property>
+                        <property name="tooltip_text" translatable="yes">Set this task to repeat</property>
                         <property name="popover">recurring_popover</property>
+                        <signal name="toggled" handler="on_repeat_icon_toggled" swapped="no"/>
                         <child>
                           <object class="GtkImage" id="repeat_icon">
                             <property name="visible">True</property>
