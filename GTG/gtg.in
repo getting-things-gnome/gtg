@@ -50,6 +50,20 @@ import gettext
 import locale
 import signal
 
+if __name__ == "__main__":
+    # Set up UI i18n so module-level translations work
+    LOCALE_DIR = '@localedir@'
+
+    try:
+        locale.bindtextdomain('gtg', LOCALE_DIR)
+        locale.textdomain('gtg')
+    except AttributeError as e:
+        # Python built without gettext support doesn't have bindtextdomain() and textdomain()
+        print("Couldn't bind the gettext translation domain. Some translations won't work.\n{}".format(e))
+
+    gettext.bindtextdomain('gtg', LOCALE_DIR)
+    gettext.textdomain('gtg')
+
 import gi
 gi.require_version('Gdk', '3.0')
 gi.require_version('Gtk', '3.0')
@@ -96,19 +110,6 @@ if __name__ == "__main__":
         def N_(message):
             """Mark as to be translated for gettext, don't do any translation here"""
             return message
-
-        # Set up UI i18n
-        LOCALE_DIR = '@localedir@'
-
-        try:
-            locale.bindtextdomain('gtg', LOCALE_DIR)
-            locale.textdomain('gtg')
-        except AttributeError as e:
-            # Python built without gettext support doesn't have bindtextdomain() and textdomain()
-            print("Couldn't bind the gettext translation domain. Some translations won't work.\n{}".format(e))
-
-        gettext.bindtextdomain('gtg', LOCALE_DIR)
-        gettext.textdomain('gtg')
 
         application = Application('@APP_ID@')
 
