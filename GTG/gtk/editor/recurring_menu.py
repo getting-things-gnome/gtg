@@ -6,10 +6,11 @@ class RecurringMenu():
     """
     PREFIX = "Every "
 
-    def __init__(self, task, builder):
+    def __init__(self, requester, tid, builder):
         # General attributes
-        self.selected_recurring_term = task.get_recurring_term()
-        self.task = task
+        self.task = requester.get_task(tid)
+        self.selected_recurring_term = self.task.get_recurring_term()
+        
         # Getting the necessary Gtk objects
         self.title = builder.get_object("title_label")
         self.title_separator = builder.get_object("title_separator")
@@ -21,8 +22,8 @@ class RecurringMenu():
 
         # Update the editor using the task recurring status
         self.update_header()
-        self.repeat_button.set_active(task.get_recurring())
-        if task.get_recurring():
+        self.repeat_button.set_active(self.task.get_recurring())
+        if self.task.get_recurring():
             self.icon_style.add_class('recurring-active')
 
     def update_repeat_button(self, active=True):
