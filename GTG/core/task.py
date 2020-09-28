@@ -186,9 +186,6 @@ class Task(TreeNode):
         else:
             self.title = "(no title task)"
         
-        # add the repeating indicator in case it was deleted
-        #self.set_repeating_indicator(sync=False)
-
         # Avoid unnecessary sync
         if self.title != old_title:
             self.sync()
@@ -353,6 +350,12 @@ class Task(TreeNode):
     def set_recurring(self, recurring: bool, recurring_term: str=None, newtask=False):
         """Sets a task as recurring or not, and its recurring term.
         
+        There are 4 cases to acknowledge when setting a task to recurring:
+            - if repeating but the term is invalid: it will be set to False.
+            - if repeating and the term is valid: we set it to True.
+            - if not repeating and the term is valid: we set the bool attr to True and set the term.
+            - if not repeating and the term is invalid: we set it to False and keep the previous term.
+
         Setting a task as recurrent implies that the
         children of a recurrent task will be also
         set to recurrent and will inherit 
@@ -360,13 +363,15 @@ class Task(TreeNode):
         
         Args:
             recurring (bool): True if the task is recurring and False if not.
-            recurring_term (str, optional): the recurring period of a task (every Monday, day..). Defaults to None.
+            recurring_term (str, optional): the recurring period of a task (every Monday, day..).
+                                            Defaults to None.
             newtask (bool, optional): if this is a new task, we must set the due_date. Defaults to False.
-
-        Raises:
-            ValueError: if invalid recurring term
         """
         def is_valid_term():
+            """ Verify if the term is valid and returns the appropriate Due date.
+
+            Return a tuple of (bool, Date)
+            """
             if recurring_term is None:
                 return False, None
 
@@ -383,9 +388,9 @@ class Task(TreeNode):
             except Exception as e:
                 print(e)
                 return (False, None)
-
-        # setting the task to recurrent
+ 
         self.recurring = recurring
+        # We verifiy if the term passed is valid
         valid, newdate = is_valid_term()
 
         recurring_term = recurring_term if valid else None
@@ -428,9 +433,8 @@ class Task(TreeNode):
         return self.recurring_term
     
     def inherit_recursion(self):
-        """
-            Inherits the recurrent state of the task's parent.
-            If the task has a recurrent parent, it must be set to recurrent itself.
+        """ Inherits the recurrent state of the parent.
+                If the task has a recurrent parent, it must be set to recur, itself.
         """
         if self.has_parent():
             for p_tid in self.get_parents():
@@ -484,29 +488,6 @@ class Task(TreeNode):
                     (self.STA_ACTIVE) and p.get_recurring()):
                     return True
         return False
-
-    def set_repeating_indicator(self, sync=True):
-        """ Sets the repeating indicator in the title of the task 
-
-        Args:
-            sync (bool): if True we sync the title, 
-                        otherwise we only add or remove the indicator. 
-                        (useful when calling from set_title)
-        """
-        INDICATOR = "\U0001f5d8"
-        modified = False
-
-        if INDICATOR in self.title:
-            if not self.recurring:
-                self.title = self.title.replace(INDICATOR, '').strip()
-                modified = True
-        else:
-            if self.recurring:
-               self.title = f'{INDICATOR} {self.title}'
-               modified = True
-
-        # Avoid unnecessary sync
-        if sync and modified: self.sync()
 
 
     # ABOUT DUE DATES
