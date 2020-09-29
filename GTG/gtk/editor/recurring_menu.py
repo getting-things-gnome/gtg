@@ -1,4 +1,3 @@
-from gi.repository import Gdk, Gtk, Pango
 
 class RecurringMenu():
     """ RecurringMenu provides a simple layer of abstraction
@@ -50,9 +49,9 @@ class RecurringMenu():
             self.update_repeat_button(active=False)
 
     def update_term(self):
-        self.update_header()
         if self.repeat_button.get_active():
             self.update_task(True)
+        self.update_header()
 
     def update_task(self, enable=True):
         """ Updates the task object """
@@ -68,10 +67,16 @@ class RecurringMenu():
             
     def update_header(self):
         """ Updates the header anytime a term is selected """
+        formated_term = self.selected_recurring_term
         if self.is_term_set():
+            if formated_term.isdigit():
+                if len(formated_term) <= 2 :
+                    formated_term = f"{self.task.due_date.strftime('%d')} of the Month"
+                else:
+                    formated_term = self.task.due_date.strftime('%d %B')
             self.title.show()
             self.title_separator.show()
-            self.title.set_markup(f"{RecurringMenu.PREFIX} <b>{self.selected_recurring_term}</b>")
+            self.title.set_markup(f"{RecurringMenu.PREFIX}<b>{formated_term}</b>")
         else:
             self.title.hide()
             self.title_separator.hide()

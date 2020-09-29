@@ -316,7 +316,8 @@ class TaskEditor():
             self.textview.insert_tags([tag_row[1]])
         """
         TODO(jakubbrindza): Add else case that will remove tag.
-        """
+        """   
+        
     def on_repeat_icon_toggled(self, widget):
         if widget.get_active():
             self.recurring_menu.reset_stack()

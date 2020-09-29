@@ -19,7 +19,7 @@
 """
 task.py contains the Task class which represents (guess what) a task
 """
-from datetime import datetime, date
+from datetime import datetime, date, timedelta
 import html
 import re
 import uuid
@@ -462,20 +462,19 @@ class Task(TreeNode):
             Date: the next due date of a task
         """
         today = date.today()
-        if today < self.start_date or self.start_date <= today and today <= self.due_date:
+        if today <= self.due_date:
             try:
-                nextdate = self.due_date.parse_from_date(self.recurring_term)
+                nextdate = self.due_date.parse_from_date(self.recurring_term, newtask=False)
                 while nextdate <= self.due_date:
-                    nextdate.day += 1
-                    nextdate = nextdate.parse_from_date(self.recurring_term)
+                    nextdate = nextdate.parse_from_date(self.recurring_term, newtask=False)
                 return nextdate
             except:
                 raise ValueError(f'Invalid recurring term {self.recurring_term}')
         elif today > self.due_date:
             try:
-                next_date = self.due_date.parse_from_date(self.recurring_term)
+                next_date = self.due_date.parse_from_date(self.recurring_term, newtask=False)
                 while next_date < date.today():
-                    next_date = next_date.parse_from_date(self.recurring_term)
+                    next_date = next_date.parse_from_date(self.recurring_term, newtask=False)
                 return next_date
             except:
                 raise ValueError(f'Invalid recurring term {self.recurring_term}')
