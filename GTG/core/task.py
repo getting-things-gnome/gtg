@@ -54,7 +54,7 @@ class Task(TreeNode):
         self.title = _("My new task")
         # available status are: Active - Done - Dismiss - Note
         self.status = self.STA_ACTIVE
-        
+
         self.added_date = Date.no_date()
         if newtask:
             self.added_date = datetime.now()
@@ -164,7 +164,6 @@ class Task(TreeNode):
     def duplicate_recursively(self):
         """ Duplicates recursively all the task itself and its children while keeping the relationship"""
         newtask = self.duplicate()
-
         if self.has_child():
             for c_tid in self.get_children():
                 child = self.req.get_task(c_tid)
@@ -287,6 +286,7 @@ class Task(TreeNode):
                                 par.add_child(nexttask_tid)
 
                                 par.sync()
+
             # If we mark a task as Active and that some parent are not
             # Active, we break the parent/child relation
             # It has no sense to have an active subtask of a done parent.
@@ -386,7 +386,6 @@ class Task(TreeNode):
                 newdate = start_from.parse_from_date(recurring_term, newtask)
                 return (True, newdate)
             except Exception as e:
-                print(e)
                 return (False, None)
  
         self.recurring = recurring
