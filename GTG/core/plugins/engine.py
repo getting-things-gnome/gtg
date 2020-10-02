@@ -19,8 +19,6 @@ import imp
 import os
 import configparser
 
-import dbus
-
 from GTG.core.dirs import PLUGIN_DIRS
 from GTG.core.borg import Borg
 from GTG.core.logger import log
