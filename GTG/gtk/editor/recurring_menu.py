@@ -1,4 +1,4 @@
-
+from datetime import datetime
 class RecurringMenu():
     """ RecurringMenu provides a simple layer of abstraction
     for the menu where the user enables a task to be repeating
@@ -71,9 +71,9 @@ class RecurringMenu():
         if self.is_term_set():
             if formated_term.isdigit():
                 if len(formated_term) <= 2 :
-                    formated_term = f"{self.task.due_date.strftime('%d')} of the Month"
+                    formated_term = f"{formated_term} of the Month"
                 else:
-                    formated_term = self.task.due_date.strftime('%d %B')
+                    formated_term = datetime.strptime(f"{formated_term[:2:]}-{formated_term[2::]}", '%m-%d').strftime('%d %B')
             self.title.show()
             self.title_separator.show()
             self.title.set_markup(f"{RecurringMenu.PREFIX}<b>{formated_term}</b>")
