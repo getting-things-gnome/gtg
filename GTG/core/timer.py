@@ -19,13 +19,10 @@
 """ General class for representing time and periodic time intervals in GTG """
 
 import datetime
-import dbus
 import re
 
-from gi.repository import GObject
+from gi.repository import GObject, Gio
 from GTG.core.logger import log
-
-from dbus.mainloop.glib import DBusGMainLoop
 
 
 class Timer(GObject.GObject):
@@ -43,12 +40,15 @@ class Timer(GObject.GObject):
         self.time_changed()
 
     def connect_to_dbus(self):
-        DBusGMainLoop(set_as_default=True)
-        bus = dbus.SystemBus()
-        bus.add_signal_receiver(self.on_prepare_for_sleep,
-                                'PrepareForSleep',
-                                'org.freedesktop.login1.Manager',
-                                'org.freedesktop.login1')
+        self._system_dbus = Gio.bus_get_sync(Gio.BusType.SYSTEM, None)
+        self._system_dbus.signal_subscribe('org.freedesktop.login1',
+                                           'org.freedesktop.login1.Manager',
+                                           'PrepareForSleep',
+                                           '/org/freedesktop/login1',
+                                           None,
+                                           Gio.DBusSignalFlags.NONE,
+                                           self.on_prepare_for_sleep,
+                                           None)
 
     def seconds_until(self, time):
         """Returns number of seconds remaining before next refresh"""
@@ -58,8 +58,11 @@ class Timer(GObject.GObject):
             secs_to_refresh += datetime.timedelta(days=1)
         return int(secs_to_refresh.total_seconds()) + 1
 
-    def on_prepare_for_sleep(self, sleeping):
+    def on_prepare_for_sleep(self, connection, sender_name, object_path, interface_name, signal_name, parameters, user_data):
         """Handle dbus prepare for sleep signal."""
+
+        sleeping = parameters[0]
+        log.debug(f"Received dbus signal {signal_name}{parameters} for Timer")
 
         # Only emit the signal if we are resuming from suspend,
         # not preparing for it.
