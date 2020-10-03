@@ -85,7 +85,7 @@ class CellRendererTags(Gtk.CellRenderer):
         self.ypad = 1
         self.PADDING = 1
         self.config = config
-
+        self._ignore_icon_error_for = set()
 
 
     def do_set_property(self, pspec, value):
@@ -154,11 +154,13 @@ class CellRendererTags(Gtk.CellRenderer):
                                                 rect_x, rect_y)
                     gdkcontext.paint()
                     count = count + 1
-                except GLib.GError:
+                except GLib.GError as e:
                     # In some rare cases an icon could not be found
                     # (e.g. wrong set icon path, missing icon)
                     # Raising an exception breaks UI and signal catcher badly
-                    log.error(f"Can't load icon '{my_tag_icon}'")
+                    if my_tag_icon not in self._ignore_icon_error_for:
+                        log.error(f"Can't load icon '{my_tag_icon}': {e}")
+                        self._ignore_icon_error_for.add(my_tag_icon)
 
             elif my_tag_color:
 
