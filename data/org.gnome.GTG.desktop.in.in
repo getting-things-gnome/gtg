@@ -13,3 +13,4 @@ Categories=Office;ProjectManagement;
 Keywords=Organizer;Task;Tasks;Projects;Activities;Productivity;Plan;Planning;Planner;Time;Management;Scheduling;GTD;gtg;Todo;
 MimeType=x-scheme-handler/gtg;
 StartupNotify=true
+DBusActivatable=true

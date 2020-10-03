@@ -19,6 +19,7 @@ datadir = prefix / get_option('datadir')
 
 appdatadir = datadir / 'metainfo'
 desktopdir = datadir / 'applications'
+dbusservicedir = datadir / 'dbus-1' / 'services'
 icondir = datadir / 'icons'
 pythondir = python3.get_path('purelib')
 rdnn_name = 'org.gnome.GTG'
@@ -33,6 +34,7 @@ bin_config.set('local_build', 'False')
 bin_config.set('pythondir', pythondir)
 bin_config.set('localedir', datadir / 'locale')
 bin_config.set('APP_ID', application_id)
+bin_config.set('bindir', bindir)
 
 local_config = configuration_data()
 local_config.set('local_build', 'True')
