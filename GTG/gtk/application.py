@@ -517,6 +517,9 @@ class Application(Gtk.Application):
     def save_plugin_settings(self):
         """Save plugin settings to configuration."""
 
+        if self.plugin_engine is None:
+            return # Can't save when none has been loaded
+
         if self.plugin_engine.plugins:
             self.config_plugins.set(
                 'disabled',
@@ -545,8 +548,9 @@ class Application(Gtk.Application):
 
         self.save_plugin_settings()
 
-        # Save data and shutdown datastore backends
-        self.req.save_datastore(quit=True)
+        if self.req is not None:
+            # Save data and shutdown datastore backends
+            self.req.save_datastore(quit=True)
 
         Gtk.Application.do_shutdown(self)
 
