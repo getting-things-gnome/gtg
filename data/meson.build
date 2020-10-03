@@ -21,4 +21,16 @@ i18n.merge_file(
   type: 'desktop'
 )
 
+service_config = configuration_data()
+service_config.set('APP_ID', application_id)
+service_config.set('bindir', bindir)
+
+configure_file(
+  input: rdnn_name + '.service.in',
+  output: application_id + '.service',
+  configuration: service_config,
+  install: true,
+  install_dir: dbusservicedir
+)
+
 subdir('icons')
