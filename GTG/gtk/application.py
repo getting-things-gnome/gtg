@@ -80,11 +80,19 @@ class Application(Gtk.Application):
         super().__init__(application_id=app_id,
                          flags=Gio.ApplicationFlags.HANDLES_OPEN)
 
+    # --------------------------------------------------------------------------
+    # INIT
+    # --------------------------------------------------------------------------
+
+    def do_startup(self):
+        """Callback when primary instance should initialize"""
+        Gtk.Application.do_startup(self)
+
         # Register backends
         datastore = DataStore()
 
-        [datastore.register_backend(backend_dic)
-         for backend_dic in BackendFactory().get_saved_backends_list()]
+        for backend_dic in BackendFactory().get_saved_backends_list():
+            datastore.register_backend(backend_dic)
 
         # Save the backends directly to be sure projects.xml is written
         datastore.save(quit=False)
@@ -106,10 +114,6 @@ class Application(Gtk.Application):
             self.toggle_darkmode()
 
         self.init_style()
-
-    # --------------------------------------------------------------------------
-    # INIT
-    # --------------------------------------------------------------------------
 
     def do_activate(self):
         """Callback when launched from the desktop."""
