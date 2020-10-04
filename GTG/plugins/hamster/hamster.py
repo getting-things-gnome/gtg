@@ -45,16 +45,14 @@ class HamsterPlugin():
                                    " to the selected task")
     START_ACTIVITY_LABEL = _("Start task in Hamster")
     STOP_ACTIVITY_LABEL = _("Stop Hamster Activity")
-    START_ACTIVITY_BUTTON_LABEL = _("Start Tracking")
-    STOP_ACTIVITY_BUTTON_LABEL = _("Stop Tracking")
     BUFFER_TIME = 60  # secs
     PLUGIN_PATH = os.path.dirname(os.path.abspath(__file__))
 
     def __init__(self):
         # task editor widget
-        self.vbox = None
+        self.vbox_id = None
         self.button = Gtk.Button()
-        self.task_menu_item = Gtk.ModelButton()
+        self.task_menu_items = {}
 
         self.tree = None
         self.liblarch_callbacks = []
@@ -98,7 +96,6 @@ class HamsterPlugin():
             except dbus.DBusException:
                 pass
             modified = True
-            print("Removing invalid fact", i)
         if modified:
             self.set_hamster_ids(task, valid_ids)
         return records
@@ -143,12 +140,10 @@ class HamsterPlugin():
 
     def on_task_deleted(self, task_id, path):
         """ Stop tracking a deleted task if it is being tracked """
-        log.info('Hamster: task deleted %s', task_id)
         self.stop_task(task_id)
 
     def on_task_modified(self, task_id, path):
         """ Stop task if it is tracked and it is Done/Dismissed """
-        log.debug('Hamster: task modified %s', task_id)
         task = self.plugin_api.get_requester().get_task(task_id)
         if not task:
             return
@@ -190,25 +185,28 @@ class HamsterPlugin():
             self.liblarch_callbacks.append((callback_id, event))
 
     def onTaskOpened(self, plugin_api):
-        # get the opened task
         task = plugin_api.get_ui().get_task()
 
         if task.get_status() != Task.STA_ACTIVE:
             return
 
-        self.task_menu_item = Gtk.ModelButton()
+        task_menu_item = Gtk.ModelButton()
+        self.task_menu_items.update({task.get_id(): task_menu_item})
         if self.is_task_active(task.get_id()):
-            self.task_menu_item.set_label(self.STOP_ACTIVITY_LABEL)
+            task_menu_item.set_label(self.STOP_ACTIVITY_LABEL)
         else:
-            self.task_menu_item.set_label(self.START_ACTIVITY_LABEL)
-        self.task_menu_item.show_all()
-        self.task_menu_item.connect('clicked', self.task_cb, plugin_api)
-        plugin_api.add_menu_item(self.task_menu_item)
+            task_menu_item.set_label(self.START_ACTIVITY_LABEL)
+        task_menu_item.show_all()
+        task_menu_item.connect('clicked', self.task_cb, plugin_api)
+        plugin_api.add_menu_item(task_menu_item)
 
         records = self.get_records(task)
         self.render_record_list(records, plugin_api)
 
     def onTaskClosed(self, plugin_api):
+        task = plugin_api.get_ui().get_task()
+        if task.get_id() in self.task_menu_items:
+            del self.task_menu_items[task.get_id()]
         self.check_task_selected()
 
     def render_record_list(self, records, plugin_api):
@@ -281,14 +279,17 @@ class HamsterPlugin():
                 adj = inner_container.get_vadjustment()
                 adj.set_value(adj.get_upper() - adj.get_page_size())
 
-            self.vbox = plugin_api.add_widget_to_taskeditor(vbox)
+            self.vbox_id = plugin_api.add_widget_to_taskeditor(vbox)
 
     def deactivate(self, plugin_api):
         if plugin_api.is_browser():
-            plugin_api.remove_toolbar_item(self.button)
+            # plugin_api.remove_toolbar_item(self.button)
+            header_bar = plugin_api.get_gtk_builder().get_object('browser_headerbar')
+            header_bar.remove(self.button)
         else:
-            plugin_api.remove_menu_item(self.task_menu_item)
-            plugin_api.remove_widget_from_taskeditor(self.vbox)
+            for _, menu_button in self.task_menu_items.items():
+                plugin_api.remove_menu_item(menu_button)
+            plugin_api.remove_widget_from_taskeditor(self.vbox_id)
 
         # Deactivate LibLarch callbacks
         for callback_id, event in self.liblarch_callbacks:
@@ -307,9 +308,11 @@ class HamsterPlugin():
     def decide_start_or_stop_activity(self, task, widget):
         if self.is_task_active(task.get_id()):
             self.change_button_to_start_activity(widget)
+            self.change_task_menu_to_start_activity(task.get_id())
             self.stop_task(task.get_id())
         elif task.get_status() == Task.STA_ACTIVE:
             self.change_button_to_stop_activity(widget)
+            self.change_task_menu_to_stop_activity(task.get_id())
             self.send_task(task)
 
     def selection_changed(self, selection):
@@ -330,18 +333,29 @@ class HamsterPlugin():
     def decide_button_mode(self, button, task):
         if self.is_task_active(task.get_id()):
             self.change_button_to_stop_activity(button)
+            self.change_task_menu_to_stop_activity(task.get_id())
         else:
             self.change_button_to_start_activity(button)
+            self.change_task_menu_to_start_activity(task.get_id())
 
     def change_button_to_start_activity(self, button):
         button.set_tooltip_text(self.TOOLTIP_TEXT_START_ACTIVITY)
         button.set_image(self.get_icon_image('alarm-symbolic'))
-        self.task_menu_item.set_label(self.START_ACTIVITY_LABEL)
 
     def change_button_to_stop_activity(self, button):
         button.set_tooltip_text(self.TOOLTIP_TEXT_STOP_ACTIVITY)
         button.set_image(self.get_icon_image('process-stop-symbolic'))
-        self.task_menu_item.set_label(self.STOP_ACTIVITY_LABEL)
+
+    def change_task_menu_to_start_activity(self, task_id):
+        if task_id in self.task_menu_items:
+            self.task_menu_items[task_id].set_label(self.START_ACTIVITY_LABEL)
+
+    def change_task_menu_to_stop_activity(self, task_id):
+        for item_id, button in self.task_menu_items.items():
+            if item_id == task_id:
+                button.set_label(self.STOP_ACTIVITY_LABEL)
+            else:
+                button.set_label(self.START_ACTIVITY_LABEL)
 
     # Preference Handling ###
     def is_configurable(self):
@@ -393,7 +407,7 @@ class HamsterPlugin():
 
     def preference_dialog_init(self):
         self.builder = Gtk.Builder()
-        path = "%s/prefs.ui" % os.path.dirname(os.path.abspath(__file__))
+        path = f"{self.PLUGIN_PATH}/prefs.ui"
         self.builder.add_from_file(path)
         self.preferences_dialog = self.builder.get_object("dialog1")
         SIGNAL_CONNECTIONS_DIC = {
