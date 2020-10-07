@@ -434,8 +434,9 @@ class Date():
         else:
             raise ValueError(f"Can't parse date '{string}'")
 
-    def _parse_only_month_day_for_recurrency(self, string):
+    def _parse_only_month_day_for_recurrency(self, string, newtask=True):
         """ Parse next Xth day in month from a certain date"""
+        if not newtask: self += datetime.timedelta(1)
         try:
             mday = int(string)
             if not 1 <= mday <= 31 or string.startswith('0'):
@@ -463,10 +464,10 @@ class Date():
 
         return result
 
-    def _parse_numerical_format_for_recurrency(self, string):
+    def _parse_numerical_format_for_recurrency(self, string, newtask=True):
         """ Parse numerical formats like %Y/%m/%d, %Y%m%d or %m%d and calculated from a certain date"""
         result = None
-        
+        if not newtask: self += datetime.timedelta(1)
         for fmt in ['%Y/%m/%d', '%Y%m%d', '%m%d']:
             try:
                 da_ti = datetime.datetime.strptime(string, fmt)
@@ -496,14 +497,14 @@ class Date():
             # change the offset depending on the task.
             'day': 0 if newtask else 1,
             _('day').lower(): 0 if newtask else 1,
-            'other-day': 1 if newtask else 2,
-            _('other-day').lower(): 1 if newtask else 2,
-            'week': 7,
-            _('week').lower(): 7,
+            'other-day': 0 if newtask else 1,
+            _('other-day').lower(): 0 if newtask else 1,
+            'week': 0 if newtask else 7,
+            _('week').lower(): 0 if newtask else 7,
             'month': calendar.mdays[self.month],
             _('month').lower(): calendar.mdays[self.month],
-            'year': 365 + int(calendar.isleap(self.year)),
-            _('year').lower(): 365 + int(calendar.isleap(self.year)),
+            'year': 0 if newtask else 365 + int(calendar.isleap(self.year)),
+            _('year').lower(): 0 if newtask else 365 + int(calendar.isleap(self.year)),
         }
 
         # add week day names in the current locale
@@ -538,9 +539,9 @@ class Date():
         except ValueError:
             pass
 
-        result = self._parse_only_month_day_for_recurrency(string)
+        result = self._parse_only_month_day_for_recurrency(string, newtask)
         if result is None:
-            result = self._parse_numerical_format_for_recurrency(string)
+            result = self._parse_numerical_format_for_recurrency(string, newtask)
         if result is None:
             result = self._parse_text_representation_for_recurrency(string, newtask)
         
