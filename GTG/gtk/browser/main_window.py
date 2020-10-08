@@ -328,6 +328,7 @@ class MainWindow(Gtk.ApplicationWindow):
         self.about.set_transient_for(self)
         self.about.set_program_name(info.NAME)
         self.about.set_website(info.URL)
+        self.about.set_logo_icon_name(self.app.props.application_id)
         self.about.set_website_label(_("GTG website"))
         self.about.set_version(info.VERSION)
         self.about.set_comments(_(info.SHORT_DESCRIPTION))  # This line translated in info.py works, as it has no strings replacements
@@ -964,7 +965,7 @@ class MainWindow(Gtk.ApplicationWindow):
 
             # if the parent task is recurring, its child must be also.
             task.inherit_recursion()
-            
+
             self.app.open_task(task.get_id(), new=True)
 
     def on_edit_active_task(self, widget=None, row=None, col=None):
