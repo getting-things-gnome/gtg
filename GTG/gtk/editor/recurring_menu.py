@@ -1,9 +1,10 @@
+from gettext import gettext as _
 from datetime import datetime
 class RecurringMenu():
     """ RecurringMenu provides a simple layer of abstraction
     for the menu where the user enables a task to be repeating
     """
-    PREFIX = "Every "
+    PREFIX = _('Every ')
 
     def __init__(self, requester, tid, builder):
         # General attributes
@@ -81,14 +82,14 @@ class RecurringMenu():
             if formated_term.isdigit():
                 if len(formated_term) <= 2 :
                     day = datetime.strptime(f'{formated_term}', '%d').strftime('%d')
-                    formated_term = '{day} of the Month'
+                    formated_term = _('{day} of the Month')
                     formated_term = formated_term.format(day=day)
                 else:
                     formated_term = datetime.strptime(f'{formated_term[:2:]}-{formated_term[2::]}', '%m-%d').strftime('%B %d')
             elif formated_term == 'week':
                 formated_term = datetime.today().strftime('%A')
             elif formated_term == 'month':
-                formated_term = '{day} of the Month'
+                formated_term = _('{day} of the Month')
                 formated_term = formated_term.format(day=datetime.today().strftime('%d'))
             elif formated_term == 'year':
                 formated_term = datetime.today().strftime('%B %d')
