@@ -14,7 +14,7 @@ class RecurringMenu():
         # Getting the necessary Gtk objects
         self.title = builder.get_object("title_label")
         self.title_separator = builder.get_object("title_separator")
-        self.repeat_button = builder.get_object("repeat_checkbutton")
+        self.repeat_checkbox = builder.get_object('repeat_checkbutton')
         self.repeat_icon = builder.get_object("repeat_icon")
         self.icon_style = self.repeat_icon.get_style_context()
         self.stack = builder.get_object("main_stack")
@@ -22,11 +22,11 @@ class RecurringMenu():
 
         # Update the editor using the task recurring status
         self.update_header()
-        self.repeat_button.set_active(self.task.get_recurring())
+        self.repeat_checkbox.set_active(self.task.get_recurring())
         if self.task.get_recurring():
             self.icon_style.add_class('recurring-active')
 
-    def update_repeat_button(self, active=True):
+    def update_repeat_button_icon(self, active=True):
         """ Update the icon color of the repeat-menu-button in the task editor """
         if active:
             self.icon_style.add_class('recurring-active')
@@ -39,26 +39,26 @@ class RecurringMenu():
     def set_selected_term(self, string):
         self.selected_recurring_term = string
 
-    def update_tick(self):
+    def update_repeat_checkbox(self):
         """
         Update the task object recurring status and all indicators
         according to the repeat-checkbox-button status
         """
-        if self.repeat_button.get_active():
+        if self.repeat_checkbox.get_active():
             if not self.is_term_set():
                 self.set_selected_term('day')
             self.update_term()
-            self.update_repeat_button()
+            self.update_repeat_button_icon()
         else:
             self.update_task(False)
-            self.update_repeat_button(active=False)
+            self.update_repeat_button_icon(active=False)
 
     def update_term(self):
         """
         Update the header and the task object(only if the repeat-checkbutton is checked)
         when a new term was selected
         """
-        if self.repeat_button.get_active():
+        if self.repeat_checkbox.get_active():
             self.update_task(True)
         self.update_header()
 

@@ -324,7 +324,7 @@ class TaskEditor():
             self.recurring_menu.reset_stack()
 
     def toggle_recurring_status(self, widget):
-        self.recurring_menu.update_tick()
+        self.recurring_menu.update_repeat_checkbox()
         self.refresh_editor()
 
     def set_recurring_term_every_day(self, widget):
