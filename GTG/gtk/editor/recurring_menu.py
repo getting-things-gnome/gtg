@@ -12,13 +12,13 @@ class RecurringMenu():
         self.selected_recurring_term = self.task.get_recurring_term()
         
         # Getting the necessary Gtk objects
-        self.title = builder.get_object("title_label")
-        self.title_separator = builder.get_object("title_separator")
+        self.title = builder.get_object('title_label')
+        self.title_separator = builder.get_object('title_separator')
         self.repeat_checkbox = builder.get_object('repeat_checkbutton')
-        self.repeat_icon = builder.get_object("repeat_icon")
+        self.repeat_icon = builder.get_object('repeat_icon')
         self.icon_style = self.repeat_icon.get_style_context()
-        self.stack = builder.get_object("main_stack")
-        self.page1 = builder.get_object("stack_main_box")
+        self.stack = builder.get_object('main_stack')
+        self.page1 = builder.get_object('stack_main_box')
 
         # Update the editor using the task recurring status
         self.update_header()
@@ -89,7 +89,7 @@ class RecurringMenu():
                 formated_term = datetime.today().strftime('%B %d')
             self.title.show()
             self.title_separator.show()
-            self.title.set_markup(f"{RecurringMenu.PREFIX}<b>{formated_term}</b>")
+            self.title.set_markup(f'{RecurringMenu.PREFIX}<b>{formated_term}</b>')
         else:
             self.title.hide()
             self.title_separator.hide()
