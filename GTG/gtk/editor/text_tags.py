@@ -19,7 +19,7 @@
 """Specialized Gtk.TextTags used in the Taskview widget."""
 
 
-from gi.repository import Gtk, Pango
+from gi.repository import Gtk, Pango, Gdk
 
 from GTG.core.task import Task
 from GTG.gtk.colors import background_color
@@ -122,9 +122,10 @@ class InternalLinkTag(Gtk.TextTag):
         """Callback for events that happen inside the tag."""
 
         button = event.get_button()
+        is_press = event.get_event_type() == Gdk.EventType.BUTTON_PRESS
 
         # If there was a click...
-        if button[0] and button[1] == 1:
+        if button[0] and button[1] == 1 and is_press:
             view.open_subtask_cb(self.tid)
 
 
@@ -165,9 +166,10 @@ class LinkTag(Gtk.TextTag):
         """Callback for events that happen inside the tag."""
 
         button = event.get_button()
+        is_press = event.get_event_type() == Gdk.EventType.BUTTON_PRESS
 
         # If there was a click...
-        if button[0]:
+        if button[0] and is_press:
 
             # Left click
             if button[1] == 1:
@@ -250,8 +252,9 @@ class TaskTagTag(Gtk.TextTag):
         """Callback for events that happen inside the tag."""
 
         button = event.get_button()
+        is_press = event.get_event_type() == Gdk.EventType.BUTTON_PRESS
 
-        if button[0] and button[1] == 1:
+        if button[0] and button[1] == 1 and is_press:
             view.browse_tag_cb(self.tag_name)
 
 
