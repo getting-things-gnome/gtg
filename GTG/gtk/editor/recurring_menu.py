@@ -84,7 +84,7 @@ class RecurringMenu():
                     formated_term = '{day} of the Month'
                     formated_term = formated_term.format(day=day)
                 else:
-                    formated_term = datetime.strptime(f"{formated_term[:2:]}-{formated_term[2::]}", '%m-%d').strftime('%d %B')
+                    formated_term = datetime.strptime(f'{formated_term[:2:]}-{formated_term[2::]}', '%m-%d').strftime('%B %d')
             elif formated_term == 'week':
                 formated_term = datetime.today().strftime('%A')
             elif formated_term == 'month':
