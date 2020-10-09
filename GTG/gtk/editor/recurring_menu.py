@@ -80,9 +80,18 @@ class RecurringMenu():
         if self.is_term_set():
             if formated_term.isdigit():
                 if len(formated_term) <= 2 :
-                    formated_term = f"{formated_term} of the Month"
+                    day = datetime.strptime(f'{formated_term}', '%d').strftime('%d')
+                    formated_term = '{day} of the Month'
+                    formated_term = formated_term.format(day=day)
                 else:
                     formated_term = datetime.strptime(f"{formated_term[:2:]}-{formated_term[2::]}", '%m-%d').strftime('%d %B')
+            elif formated_term == 'week':
+                formated_term = datetime.today().strftime('%A')
+            elif formated_term == 'month':
+                formated_term = '{day} of the Month'
+                formated_term = formated_term.format(day=datetime.today().strftime('%d'))
+            elif formated_term == 'year':
+                formated_term = datetime.today().strftime('%B %d')
             self.title.show()
             self.title_separator.show()
             self.title.set_markup(f"{RecurringMenu.PREFIX}<b>{formated_term}</b>")
