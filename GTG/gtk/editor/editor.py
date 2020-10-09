@@ -179,7 +179,7 @@ class TaskEditor():
         self.textview.get_subtasks_cb = task.get_children
         self.textview.delete_subtask_cb = self.remove_subtask
         self.textview.rename_subtask_cb = self.rename_subtask
-        self.textview.open_subtask_cb = self.app.open_task
+        self.textview.open_subtask_cb = self.open_subtask
         self.textview.save_cb = self.light_save
         self.textview.add_tasktag_cb = task.add_tag
         self.textview.remove_tasktag_cb = task.remove_tag
@@ -683,6 +683,13 @@ class TaskEditor():
             self.task.set_status(Task.STA_DONE)
             self.close_all_subtasks()
             self.close(None)
+
+    def open_subtask(self, tid):
+        """Open subtask (closing parent task)."""
+
+        task = self.req.get_task(tid)
+        self.app.open_task(tid)
+        self.app.close_task(task.parents[0])
 
     # Take the title as argument and return the subtask ID
     def new_subtask(self, title=None, tid=None):
