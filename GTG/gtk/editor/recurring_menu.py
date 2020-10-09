@@ -45,11 +45,10 @@ class RecurringMenu():
         according to the repeat-checkbox-button status
         """
         if self.repeat_button.get_active():
-            if not self.update_task(True):
-                # we have to reset the button to off, if no term is selected.
-                self.repeat_button.set_active(False)
-            else:
-                self.update_repeat_button()
+            if not self.is_term_set():
+                self.set_selected_term('day')
+            self.update_term()
+            self.update_repeat_button()
         else:
             self.update_task(False)
             self.update_repeat_button(active=False)
@@ -65,15 +64,10 @@ class RecurringMenu():
 
     def update_task(self, enable=True):
         """ Updates the task object """
-        done = False
         if enable:
-            if self.is_term_set():
-                self.task.set_recurring(enable, self.selected_recurring_term, newtask=True)
-                done = True
+            self.task.set_recurring(enable, self.selected_recurring_term, newtask=True)
         else:
             self.task.set_recurring(enable)
-            done = True
-        return done
             
     def update_header(self):
         """ Updates the header anytime a term is selected """
