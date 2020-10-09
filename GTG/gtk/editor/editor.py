@@ -319,6 +319,7 @@ class TaskEditor():
         """   
         
     def on_repeat_icon_toggled(self, widget):
+        """ Reset popup stack to the first page every time you open it """
         if widget.get_active():
             self.recurring_menu.reset_stack()
 

@@ -26,6 +26,7 @@ class RecurringMenu():
             self.icon_style.add_class('recurring-active')
 
     def update_repeat_button(self, active=True):
+        """ Update the icon color of the repeat-menu-button in the task editor """
         if active:
             self.icon_style.add_class('recurring-active')
         else:
@@ -38,6 +39,10 @@ class RecurringMenu():
         self.selected_recurring_term = string
 
     def update_tick(self):
+        """
+        Update the task object recurring status and all indicators
+        according to the repeat-checkbox-button status
+        """
         if self.repeat_button.get_active():
             if not self.update_task(True):
                 # we have to reset the button to off, if no term is selected.
@@ -49,6 +54,10 @@ class RecurringMenu():
             self.update_repeat_button(active=False)
 
     def update_term(self):
+        """
+        Update the header and the task object(only if the repeat-checkbutton is checked)
+        when a new term was selected
+        """
         if self.repeat_button.get_active():
             self.update_task(True)
         self.update_header()
@@ -80,9 +89,9 @@ class RecurringMenu():
         else:
             self.title.hide()
             self.title_separator.hide()
-
     
     def reset_stack(self):
+        """ Reset popup stack to the first page """
         self.stack.set_transition_duration(0)
         self.stack.set_visible_child(self.page1)
         self.stack.set_transition_duration(200)
