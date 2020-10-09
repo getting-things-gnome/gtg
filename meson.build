@@ -20,6 +20,7 @@ datadir = prefix / get_option('datadir')
 appdatadir = datadir / 'metainfo'
 desktopdir = datadir / 'applications'
 dbusservicedir = datadir / 'dbus-1' / 'services'
+dbusinterfacesdir = datadir / 'dbus-1' / 'interfaces'
 icondir = datadir / 'icons'
 pythondir = python3.get_path('purelib')
 rdnn_name = 'org.gnome.GTG'

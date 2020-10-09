@@ -1,0 +1,261 @@
+<!DOCTYPE node PUBLIC "-//freedesktop//DTD D-BUS Object Introspection 1.0//EN" "http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd">
+<node name="/org/gnome/GTG">
+    <!--
+        org.gnome.GTG.Tasks:
+        @short_description: Manage GTG Tasks
+
+        Interface that GTG implements to let other applications view and edit
+        tasks.
+
+        An common type used here would be the so-called "task dict(ionary)" or
+        a{sv}. It means it is a map of string to generic values. They could
+        contain:
+
+        * id (s): The ID the task can be identified, also called TID (task ID)
+        * title (s): Title of the task
+        * status (i): 0: Unknown/Invalid, 1: Active (Open),
+                      2: Dismissed (Closed), 3: Done (Closed)
+        * text (s): Text content of the task
+        * duedate (s): Due date in ISO 8601, or a fuzzy date
+                       "now", "soon", "someday"
+        * startdate (s): Start date in ISO 8601,
+                         or a fuzzy date "now", "soon", "someday"
+        * donedate (s): When the task was finished (status is 2 or 3),
+                        in ISO 8601 format. Ignore if status is 1 (Active/Open).
+        * tags (as): Tags the task has, without @
+        * children (as): TIDs of subtasks
+        * parents (s): TIDs of the parents task (empty or non-existent means
+                       root). Multiple parents aren't currently supported, but
+                       may in the future. Currently, only the first one, if
+                       any is being used.
+
+        TODO: Recurring tasks
+        TODO: Write more about Text content of the task
+    -->
+    <interface name="org.gnome.GTG.Tasks">
+        <!--
+            GetTasks:
+            @tids: An array of Task IDs, whose info should be retrieved
+            @tasks: An dictionary of the requested IDs to their task dictionary.
+
+            Simlpy return the task dictionary for the given TIDs.
+            Refer to the interface description for the task dict values.
+
+            Whenever an TID does not exists, it'll fail with gtg.TaskNotFound
+            exception.
+        -->
+        <method name="GetTasks">
+            <arg name="tids" type="as" direction="in"/>
+            <arg name="tasks" type="aa{sv}" direction="out"/>
+        </method>
+
+        <!--
+            GetActiveTaskIds:
+            @tasks: An array of TIDs that are currently active.
+
+            TODO: API documentation, explain what active means
+            Refer to the interface description for the task dict values.
+        -->
+        <method name="GetActiveTaskIds">
+            <arg name="tids" type="as" direction="out"/>
+        </method>
+
+        <!--
+            GetActiveTasks:
+            @tasks: An array of tasks dictionary that are currently active.
+
+            TODO: API documentation, explain what active means
+            Refer to the interface description for the task dict values.
+        -->
+        <method name="GetActiveTasks">
+            <arg name="tasks" type="aa{sv}" direction="out"/>
+        </method>
+
+        <!--
+            GetTaskIdsFiltered:
+            @filter: Filters to apply, also see filters_bank documentation
+            @task_ids: Filtered tasks ids matching the specified filters
+
+            TODO: API documentation
+            Also see the GetTaskFiltered method to find more about filters.
+        -->
+        <method name="GetTaskIdsFiltered">
+            <arg name="filter" type="as" direction="in"/>
+            <arg name="tids" type="as" direction="out"/>
+        </method>
+
+        <!--
+            GetTasksFiltered:
+            @filter: Filters to apply, also see filters_bank documentation
+            @tasks: Filtered tasks dicts matching the specified filters
+
+            TODO: API documentation, possibly explain some of filters_bank
+        -->
+        <method name="GetTasksFiltered">
+            <arg name="filter" type="as" direction="in"/>
+            <arg name="tasks" type="aa{sv}" direction="out"/>
+        </method>
+
+        <!--
+            SearchTasks:
+            @query: Search for tasks, like search bar with special options
+            @tasks: Filtered tasks ids matching the specified filters
+
+            TODO: API documentation, possibly explain some of the specials
+            (If used, need to check)
+        -->
+        <method name="SearchTaskIds">
+            <arg name="query" type="s" direction="in"/>
+            <arg name="tids" type="as" direction="out"/>
+        </method>
+
+        <!--
+            SearchTasks:
+            @query: Search for tasks, like the search bar with special options
+            @tasks: Filtered tasks dicts matching the specified filters
+
+            TODO: API documentation, possibly explain some of the specials
+            (If used, need to check)
+        -->
+        <method name="SearchTasks">
+            <arg name="query" type="s" direction="in"/>
+            <arg name="tasks" type="aa{sv}" direction="out"/>
+        </method>
+
+        <!--
+            HasTasks:
+            @tids: Array of task IDs to check
+            @successful: Map of task IDs to a boolean indicating it exists
+
+            Check whenever the task (by their ID) exists.
+            It returns an dictionary with the key being the requested task id,
+            and the value a boolean whenever the task exists (True) or not
+            (False).
+            Never fails by itself.
+        -->
+        <method name="HasTasks">
+            <arg name="tids" type="as" direction="in"/>
+            <arg name="present" type="a{sb}" direction="out"/>
+        </method>
+
+        <!--
+            DeleteTasks:
+            @tids Array of task IDs to delete
+            @successful: Map of task IDs to a boolean indication success deleting
+
+            Deletes the specified Tasks by their IDs, and returns a map
+            for each ID indicating whenever it got deleted (True) or not
+            (False).
+            Usually, the reason for not being able to delete something is
+            because it does not exists.
+
+            TODO: Recursive deletion?
+        -->
+        <method name="DeleteTasks">
+            <arg name="tids" type="as" direction="in"/>
+            <arg name="successful" type="a{sb}" direction="out"/>
+        </method>
+
+        <!--
+            NewTasks:
+            @data: Array of task dictionaries to add
+            @ids: Array of the new task IDs for the tasks
+
+            TODO: API documentation
+        -->
+        <method name="NewTasks">
+            <arg name="data" type="aa{sv}" direction="in"/>
+            <arg name="ids" type="as" direction="out"/>
+        </method>
+
+        <!--
+            ModifyTasks:
+            @patch: Array of task dictionaries to update, uses the TID to
+                    find the task to modify.
+            @resulting: Array of task dictionaries that was updated, containing
+                        the updated info.
+
+            Update the tasks with the provided information. The patch is an
+            array of task dicts, however attributes not to be modified are
+            simply left out.
+            The id key is required to identify the task to modify, then any
+            other attributes as described in the interface description
+            can then be specified to change.
+
+            When the task is being closed (status is 2 or 3), then it uses the
+            current date for the done date, unless one is explicitly specified.
+            This means any previous done date is overridden.
+
+            Quirks:
+            * The text content will contain the tags, but adding in the text
+              won't update correctly until the user opens the task itself.
+            * Likewise, adding tags will work better, but won't be visible
+              in the text section until the user opens the task itself.
+            * The text content will automatically gain the tags back when the
+              user opens the task itself.
+
+            The following errors can occur:
+            * gtg.InvalidTaskDict: Whenever the given dictionary types doesn't
+              match up.
+            * gtg.InvalidDateFormat: Whenever the date format is wrong
+            * gtg.MissingTaskId: Whenever the 'id'-attribute is missing
+            * gtg.InvalidStartDate: Whenever the start date is invalid
+              (It's a fuzzy date, which it does not allow)
+            * gtg.InvalidDoneDate: Whenever the done date is invalid
+              (It's a fuzzy date, which it does not allow)
+            * gtg.InvalidStatus: Whenever the status is invalid
+              (Outside of being 1, 2 or 3)
+
+            NOTE: Since GTG currently does not support being transactional,
+                  on error previous changes are applied while not later ones.
+        -->
+        <method name="ModifyTasks">
+            <arg name="patch" type="aa{sv}" direction="in"/>
+            <arg name="result" type="aa{sv}" direction="out"/>
+        </method>
+
+        <!--
+            TaskAdded:
+            @tid: Task ID that has been added.
+
+            Signal meaning a new task has been added/created.
+
+            Usually, the task will at this point contain default values,
+            since the user inputs data after creation. However, when creating
+            tasks programmatically (like via NewTasks method), it could already
+            contain data.
+        -->
+        <signal name="TaskAdded">
+            <arg name="tid" type="s"/>
+        </signal>
+
+        <!--
+            TaskModified
+            @tid: Task ID that has been modified.
+
+            Signal meaning a new task has been modified in some way.
+
+            TODO: API documentation
+        -->
+        <signal name="TaskModified">
+            <arg name="tid" type="s"/>
+        </signal>
+
+        <!--
+            TaskDeleted
+            @tid: Task ID that has been deleted.
+
+            Signal meaning a task has been deleted, either by the user
+            or programmatically (like via DeleteTasks method).
+            This does NOT mean it has been closed (which just changes the
+            status)
+
+            You can't access the tasks data of the specified TID since it
+            has been deleted. It is only useful if you keep track of it and
+            now remove it from your internal memory.
+        -->
+        <signal name="TaskDeleted">
+            <arg name="tid" type="s"/>
+        </signal>
+    </interface>
+</node>

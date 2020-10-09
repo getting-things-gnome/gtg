@@ -34,3 +34,4 @@ configure_file(
 )
 
 subdir('icons')
+subdir('dbus')

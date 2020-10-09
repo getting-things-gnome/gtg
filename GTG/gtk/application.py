@@ -40,6 +40,7 @@ from GTG.core.dates import Date
 from GTG.gtk.backends import BackendsDialog
 from GTG.gtk.browser.tag_editor import TagEditor
 from GTG.core.timer import Timer
+from GTG.core.dbus.tasks import DBusImplTasks
 
 log = logging.getLogger(__name__)
 
@@ -116,6 +117,10 @@ class Application(Gtk.Application):
             self.toggle_darkmode()
 
         self.init_style()
+
+        self.dbus_tasks = DBusImplTasks(self.req)
+        self.dbus_tasks.dbus_register(self.get_dbus_connection(),
+                                      self.get_dbus_object_path())
 
     def do_activate(self):
         """Callback when launched from the desktop."""
@@ -563,6 +568,9 @@ class Application(Gtk.Application):
         if self.req is not None:
             # Save data and shutdown datastore backends
             self.req.save_datastore(quit=True)
+
+        if self.dbus_tasks:
+            self.dbus_tasks.dbus_unregister()
 
         Gtk.Application.do_shutdown(self)
 
