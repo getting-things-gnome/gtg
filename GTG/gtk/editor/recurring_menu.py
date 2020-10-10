@@ -58,8 +58,9 @@ class RecurringMenu():
         Update the header and the task object(only if the repeat-checkbutton is checked)
         when a new term was selected
         """
-        if self.repeat_checkbox.get_active():
-            self.update_task(True)
+        if not self.repeat_checkbox.get_active():
+            self.repeat_checkbox.set_active(True)
+        self.update_task(True)
         self.update_header()
 
     def update_task(self, enable=True):
