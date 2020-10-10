@@ -385,7 +385,7 @@ class Task(TreeNode):
 
                 newdate = start_from.parse_from_date(recurring_term, newtask)
                 return (True, newdate)
-            except Exception as e:
+            except ValueError as e:
                 return (False, None)
  
         self.recurring = recurring
