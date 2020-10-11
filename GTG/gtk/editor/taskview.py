@@ -33,7 +33,8 @@ from gettext import gettext as _
 from typing import List
 
 from GTG.gtk.editor.text_tags import (TitleTag, SubTaskTag, TaskTagTag,
-                                      InternalLinkTag, LinkTag, CheckboxTag)
+                                      InternalLinkTag, LinkTag, CheckboxTag,
+                                      InvisibleTag, SubheadingTag)
 
 
 # Regex to find GTG's tags.
@@ -228,6 +229,7 @@ class TaskView(Gtk.TextView):
                 start.forward_line()
                 continue
 
+            self.detect_subheading(text, start)
             self.detect_url(text, start)
             self.detect_internal_link(text, start)
             self.detect_tag(text, start)
@@ -468,6 +470,28 @@ class TaskView(Gtk.TextView):
             self.buffer.apply_tag(url_tag, url_start, url_end)
 
 
+    def detect_subheading(self, text: str, start: Gtk.TextIter) -> None:
+        """Detect subheadings (akin to H2)."""
+
+        if text.startswith('# '):
+            end = start.copy()
+            end.forward_chars(2)
+
+            invisible_tag = InvisibleTag()
+            self.table.add(invisible_tag)
+            self.buffer.apply_tag(invisible_tag, start, end)
+
+            start.forward_chars(2)
+            end.forward_to_line_end()
+
+            subheading_tag = SubheadingTag()
+            self.table.add(subheading_tag)
+            self.buffer.apply_tag(subheading_tag, start, end)
+
+            self.tags_applied.append(subheading_tag)
+            self.tags_applied.append(invisible_tag)
+
+
     def detect_title(self) -> Gtk.TextIter:
         """Apply title tag to the first line."""
 
@@ -529,6 +553,13 @@ class TaskView(Gtk.TextView):
         except AttributeError:
             pass
 
+        try:
+            self.hovered_tag.cursor_reset()
+            self.hovered_tag = None
+        except AttributeError:
+            pass
+
+
         cursor_mark = self.buffer.get_insert()
         cursor_iter = self.buffer.get_iter_at_mark(cursor_mark)
 
@@ -540,6 +571,12 @@ class TaskView(Gtk.TextView):
             except AttributeError:
                 pass
 
+            try:
+                tag.set_cursor_hover()
+                self.hovered_tag = tag
+
+            except AttributeError:
+                pass
 
     def on_mouse_move(self, view, event) -> None:
         """Callback when the mouse moves."""
@@ -554,8 +591,12 @@ class TaskView(Gtk.TextView):
         window.set_cursor(self.CURSOR_NORMAL)
 
         if self.hovered_tag:
-            self.hovered_tag.reset()
-            self.hovered_tag = None
+            try:
+                self.hovered_tag.reset()
+                self.hovered_tag = None
+
+            except AttributeError:
+                pass
 
         # Apply hover state if possible
         try:
@@ -628,7 +669,7 @@ class TaskView(Gtk.TextView):
         start.forward_line()
 
         end = self.buffer.get_end_iter()
-        text = self.buffer.get_text(start, end, False)
+        text = self.buffer.get_text(start, end, True)
 
         # Filter out subtasks. We only need to replace the names
         # of the subtasks with the appropiate markdown containing

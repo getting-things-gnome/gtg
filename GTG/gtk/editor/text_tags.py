@@ -34,6 +34,7 @@ colors = {
     'link_active': '#007bff',
     'link_inactive': 'gray',
     'background_hover': 'light gray',
+    'invisible': '#888888',
 }
 
 
@@ -43,6 +44,7 @@ def use_dark_mode() -> None:
     colors['link_active'] = '#6eb4ff'
     colors['link_inactive'] = 'gray'
     colors['background_hover'] = '#454545'
+    colors['invisible'] = '#555555'
 
 
 def use_light_mode() -> None:
@@ -51,6 +53,7 @@ def use_light_mode() -> None:
     colors['link_active'] = '#007bff'
     colors['link_inactive'] = 'gray'
     colors['background_hover'] = 'light gray'
+    colors['invisible'] = '#888888'
 
 
 # ------------------------------------------------------------------------------
@@ -81,17 +84,17 @@ class InvisibleTag(Gtk.TextTag):
         super().__init__()
 
         self.set_property('invisible', True)
-        self.set_property('left-margin', 40)
-        self.set_property('foreground', '#111111')
+        self.set_property('foreground', colors['invisible'])
+        self.set_property('size_points', 16)
 
 
-    def set_hover(self) -> None:
+    def set_cursor_hover(self) -> None:
         """Change tag appareance when hovering."""
 
         self.set_property('invisible', False)
 
 
-    def reset(self) -> None:
+    def cursor_reset(self) -> None:
         """Reset tag appareance when not hovering."""
 
         self.set_property('invisible', True)
@@ -209,6 +212,18 @@ class TitleTag(Gtk.TextTag):
         self.set_property('size_points', 16)
         self.set_property('pixels_above_lines', 15)
         self.set_property('pixels_below_lines', 30)
+
+
+class SubheadingTag(Gtk.TextTag):
+    """Subheading Text tag."""
+
+
+    def __init__(self) -> None:
+        super().__init__()
+
+        self.set_property('size_points', 14)
+        self.set_property('pixels_above_lines', 25)
+        self.set_property('pixels_below_lines', 10)
 
 
 class TaskTagTag(Gtk.TextTag):
