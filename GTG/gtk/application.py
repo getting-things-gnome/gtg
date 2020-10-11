@@ -209,7 +209,7 @@ class Application(Gtk.Application):
             text_tags.use_dark_mode()
         else:
             prefs_css.remove_class('dark')
-            text_tags.use_dark_mode()
+            text_tags.use_light_mode()
 
     def init_actions(self):
         """Setup actions."""
