@@ -256,7 +256,7 @@ class Task(TreeNode):
             self.set_start_date(defer_date)
             self.set_recurring(recurring, recurring_term, newtask=True)
 
-    def set_status(self, status, donedate=None):
+    def set_status(self, status, donedate=None, propagation=False):
         old_status = self.status
         self.can_be_deleted = False
         # No need to update children or whatever if the task is not loaded
@@ -266,17 +266,18 @@ class Task(TreeNode):
             if status in [self.STA_DONE, self.STA_DISMISSED]:
                 for c in self.get_subtasks():
                     if c.get_status() in [self.STA_ACTIVE]:
-                        c.set_status(status, donedate=donedate)
+                        c.set_status(status, donedate=donedate, propagation=True)
 
                 # If the task is recurring, it must be duplicate with 
-                # another task id and the next occurence of the task
-                # Furthermore, the duplicated task's parents
-                # should be set the the parent's previous task
-                # as well as the children's.
-                # Because we want every subtask that is recurring 
-                # to occur another time after its parent has been set to done or dismiss.
-                # only recurring tasks without any recurring parent can be duplicated.
-                if self.recurring and not self.is_parent_recurring():
+                # another task id and the next occurence of the task 
+                # while preserving child/parent relations.
+                # For a task to be duplicated, it must satisfy 3 rules.
+                #   1- It is recurring.
+                #   2- It has no parent or no recurring parent.
+                #   3- It was directly marked as done (not by propagation from its parent).
+                rules = [self.recurring, not propagation]
+                if all(rules) and not self.is_parent_recurring():
+                    # duplicate all the children
                     nexttask_tid = self.duplicate_recursively()
                     if self.has_parent():
                         for p_tid in self.get_parents():
