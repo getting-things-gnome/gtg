@@ -18,7 +18,7 @@
 
 """Specialized Gtk.TextTags used in the Taskview widget."""
 
-
+from uuid import uuid4
 from gi.repository import Gtk, Pango, Gdk
 
 from GTG.core.task import Task
@@ -63,10 +63,10 @@ def use_light_mode() -> None:
 class SubTaskTag(Gtk.TextTag):
     """Subtask Text tag."""
 
-    def __init__(self, task: Task) -> None:
+    def __init__(self, tid: uuid4) -> None:
         super().__init__()
 
-        self.tid = task.tid
+        self.tid = tid
 
 
 class CheckboxTag(Gtk.TextTag):
@@ -104,14 +104,14 @@ class InternalLinkTag(Gtk.TextTag):
     """Internal Link Text tag (for urls)."""
 
 
-    def __init__(self, task: Task) -> None:
+    def __init__(self, tid: uuid4, status: str) -> None:
         super().__init__()
 
-        self.tid = task.tid
+        self.tid = tid
 
         self.set_property('underline', Pango.Underline.SINGLE)
 
-        if task.status == Task.STA_ACTIVE:
+        if status == Task.STA_ACTIVE:
             self.set_property('strikethrough', False)
             self.set_property('foreground', colors['link_active'])
         else:
