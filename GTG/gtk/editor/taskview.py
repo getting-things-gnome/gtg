@@ -22,6 +22,7 @@
 import re
 import html
 from time import time
+from uuid import uuid4
 
 from gi.repository import Gtk, GLib, Gdk, GObject
 
@@ -283,6 +284,7 @@ class TaskView(Gtk.TextView):
             # Add new subtask
             tid = self.new_subtask_cb(text[2:])
             task = self.req.get_task(tid)
+            status = task.get_status() if task else 'Active'
 
             # Add the checkbox
             self.add_checkbox(tid, start)
@@ -290,7 +292,7 @@ class TaskView(Gtk.TextView):
             after_checkbox.forward_char()
 
             # Add the internal link
-            link_tag = InternalLinkTag(task)
+            link_tag = InternalLinkTag(tid, status)
             self.table.add(link_tag)
 
             end = start.copy()
@@ -300,7 +302,7 @@ class TaskView(Gtk.TextView):
 
             # Add the subtask tag
             start.backward_char()
-            subtask_tag = SubTaskTag(task)
+            subtask_tag = SubTaskTag(tid)
             self.table.add(subtask_tag)
             self.buffer.apply_tag(subtask_tag, start, end)
 
@@ -342,7 +344,8 @@ class TaskView(Gtk.TextView):
 
             # Get the task and instantiate an internal link tag
             task = self.req.get_task(tid)
-            link_tag = InternalLinkTag(task)
+            status = task.get_status() if task else 'Active'
+            link_tag = InternalLinkTag(tid, status)
             self.table.add(link_tag)
 
             # Apply the new internal link tag (which was removed
@@ -354,7 +357,7 @@ class TaskView(Gtk.TextView):
 
             # Re-apply the subtask tag too
             self.table.remove(sub_tag)
-            subtask_tag = SubTaskTag(task)
+            subtask_tag = SubTaskTag(tid)
             self.table.add(subtask_tag)
             self.buffer.apply_tag(subtask_tag, start, end)
 
@@ -365,8 +368,14 @@ class TaskView(Gtk.TextView):
             return False
 
 
-    def on_checkbox_toggle(self, task) -> None:
+    def on_checkbox_toggle(self, tid: uuid4) -> None:
         """Toggle a task status and refresh the subtask tag."""
+
+        task = self.req.get_task(tid)
+
+        if not task:
+            log.warn(f'Failed to toggle status for {tid}')
+            return
 
         task.toggle_status()
         self.process()
@@ -376,13 +385,12 @@ class TaskView(Gtk.TextView):
         """Add a checkbox for a subtask."""
 
         task = self.req.get_task(tid)
-
         checkbox = Gtk.CheckButton.new()
 
-        if task.status != task.STA_ACTIVE:
+        if task and task.status != task.STA_ACTIVE:
             checkbox.set_active(True)
 
-        checkbox.connect('toggled', lambda _: self.on_checkbox_toggle(task))
+        checkbox.connect('toggled', lambda _: self.on_checkbox_toggle(tid))
         checkbox.set_can_focus(False)
 
         # Block the modified signal handler while we add the anchor
@@ -826,14 +834,14 @@ class TaskView(Gtk.TextView):
         end = start.copy()
         end.forward_to_line_end()
 
-        link_tag = InternalLinkTag(task)
+        link_tag = InternalLinkTag(tid, task.get_status())
         self.table.add(link_tag)
         self.buffer.apply_tag(link_tag, start, end)
         self.tags_applied.append(link_tag)
 
         # Apply subtask tag to everything
         start.backward_char()
-        subtask_tag = SubTaskTag(task)
+        subtask_tag = SubTaskTag(tid)
         self.table.add(subtask_tag)
         self.buffer.apply_tag(subtask_tag, start, end)
 
