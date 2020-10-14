@@ -16,11 +16,24 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
+import re
 from unittest import TestCase
-from GTG.gtk.editor.taskview import TaskView
+from GTG.gtk.editor.taskview import TaskView, TAG_REGEX
 
 
 class TestTaskView(TestCase):
+    def test_detect_tags(self):
+        """Check that tags are being detected correctly."""
+
+        content = 'mmmm @aaaa @aaa-bbbb @ @ccc @これはタグ'
+        matches = re.finditer(TAG_REGEX, content)
+
+        target_tags = ['@aaaa', '@aaa-bbbb', '@ccc', '@これはタグ']
+
+        for index, match in enumerate(matches):
+            self.assertEqual(match.group(0), target_tags[index])
+
+
     def test_convert_subtask(self):
         """Check subtask conversion."""
 
