@@ -25,13 +25,22 @@ class TestTaskView(TestCase):
     def test_detect_tags(self):
         """Check that tags are being detected correctly."""
 
-        content = 'mmmm @aaaa @aaa-bbbb @ @ccc @これはタグ'
+        content = 'mmmm @aaaa @aaa-bbbb @ @ccc @これはタグ @1234'
         matches = re.finditer(TAG_REGEX, content)
 
-        target_tags = ['@aaaa', '@aaa-bbbb', '@ccc', '@これはタグ']
+        target_tags = ['@aaaa', '@aaa-bbbb', '@ccc', '@これはタグ', '@1234']
 
         for index, match in enumerate(matches):
             self.assertEqual(match.group(0), target_tags[index])
+
+
+    def test_no_detect_tags(self):
+        """Check that things that aren't tags aren't being detected."""
+
+        content = 'mmmm an@email.com xxxx@ @--- no@tag'
+        matches = re.findall(TAG_REGEX, content)
+
+        self.assertEqual([], matches)
 
 
     def test_convert_subtask(self):
