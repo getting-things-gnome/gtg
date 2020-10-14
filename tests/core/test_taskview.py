@@ -38,7 +38,7 @@ class TestTaskView(TestCase):
         """Check subtask conversion."""
 
         source = '→   <subtask>b3f65b40-cf32-44d8-8d94-e4a1ed7199c3</subtask>'
-        target = '{! b3f65b40-cf32-44d8-8d94-e4a1ed7199c3 !}'
+        target = '   {! b3f65b40-cf32-44d8-8d94-e4a1ed7199c3 !}'
 
         self.assertEqual(target, TaskView.format_update(source))
 
@@ -70,10 +70,10 @@ To spice things up
 Some text here and there
 To spice things up
 
-{! 3454c8fe-21b7-41e1-abec-8060223a1a63 !}
-{! 92766ac9-1711-4163-ab7c-8a0f1fdfe3c0 !}
-{! f0c11f1e-76cb-47c3-b840-9378157cf022 !}
-{! 3a805a54-f9f0-43b2-8d38-7f66b59fc8e5 !}
-{! 28528f83-0e7f-4774-b887-499bfa3ef2a7 !}'''
+   {! 3454c8fe-21b7-41e1-abec-8060223a1a63 !}
+   {! 92766ac9-1711-4163-ab7c-8a0f1fdfe3c0 !}
+   {! f0c11f1e-76cb-47c3-b840-9378157cf022 !}
+   {! 3a805a54-f9f0-43b2-8d38-7f66b59fc8e5 !}
+   {! 28528f83-0e7f-4774-b887-499bfa3ef2a7 !}'''
 
         self.assertEqual(target, TaskView.format_update(source))
