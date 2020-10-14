@@ -41,7 +41,7 @@ from GTG.gtk.editor.text_tags import (TitleTag, SubTaskTag, TaskTagTag,
 # Regex to find GTG's tags.
 # GTG Tags start with @ and can contain alphanumeric
 # characters and/or dashes
-TAG_REGEX = re.compile(r'\@\w+(\-\w+)*')
+TAG_REGEX = re.compile(r'\B\@\w+(\-\w+)*')
 
 # Regex to find internal links
 # Starts with gtg:// followed by a UUID.
