@@ -95,7 +95,7 @@ class TreeviewFactory():
         str_format = "%s"
 
         # We add the indicator when task is repeating
-        INDICATOR = "\u2B6E "
+        INDICATOR = "\u21BB "
         if node.get_recurring():
             str_format = INDICATOR + str_format
 
