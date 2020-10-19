@@ -27,6 +27,7 @@ Testing the changes is useful since you can then see your translation in action 
 [Setup the environment][readme] and then simply run `LC_ALL=<lang>.UTF-8 LANGUAGE=<lang>.UTF-8 ./launch.sh` in the repository root to compile the translations and run GTG with the `<lang>` language.
 For example, `LC_ALL=de_DE.UTF-8 LANGUAGE=de_DE.UTF-8 ./launch.sh` would run GTG with the German translation.
 You don't need the `LC_ALL=<lang>.UTF-8 LANGUAGE=<lang>.UTF-8` part if you run the system in the destination language anyway.
+You can use the `C` language to run without any translations: `LC_ALL=C.UTF-8 LANGUAGE=C.UTF-8 ./launch.sh`
 
 # Submitting
 
