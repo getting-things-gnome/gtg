@@ -24,9 +24,9 @@ After that, you can then use the updated translation files and translate the mis
 
 Testing the changes is useful since you can then see your translation in action and see potentially mistranslation due to missing context.
 
-[Setup the environment][readme] and then simply run `LC_ALL=<lang>.UTF-8 ./launch.sh` in the repository root to compile the translations and run GTG with the `<lang>` language.
-For example, `LC_ALL=de_DE.UTF-8 ./launch.sh` would run GTG with the German translation.
-You don't need the `LC_ALL=<lang>.UTF-8` part if you run the system in the destination language anyway.
+[Setup the environment][readme] and then simply run `LC_ALL=<lang>.UTF-8 LANGUAGE=<lang>.UTF-8 ./launch.sh` in the repository root to compile the translations and run GTG with the `<lang>` language.
+For example, `LC_ALL=de_DE.UTF-8 LANGUAGE=de_DE.UTF-8 ./launch.sh` would run GTG with the German translation.
+You don't need the `LC_ALL=<lang>.UTF-8 LANGUAGE=<lang>.UTF-8` part if you run the system in the destination language anyway.
 
 # Submitting
 
