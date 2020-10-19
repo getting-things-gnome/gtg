@@ -497,12 +497,12 @@ class Date():
             # change the offset depending on the task.
             'day': 0 if newtask else 1,
             _('day').lower(): 0 if newtask else 1,
-            'other-day': 0 if newtask else 1,
-            _('other-day').lower(): 0 if newtask else 1,
+            'other-day': 0 if newtask else 2,
+            _('other-day').lower(): 0 if newtask else 2,
             'week': 0 if newtask else 7,
             _('week').lower(): 0 if newtask else 7,
-            'month': calendar.mdays[self.month],
-            _('month').lower(): calendar.mdays[self.month],
+            'month': 0 if newtask else calendar.mdays[self.month],
+            _('month').lower(): 0 if newtask else calendar.mdays[self.month],
             'year': 0 if newtask else 365 + int(calendar.isleap(self.year)),
             _('year').lower(): 0 if newtask else 365 + int(calendar.isleap(self.year)),
         }
