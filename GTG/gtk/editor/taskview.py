@@ -20,8 +20,6 @@
 
 
 import re
-import html
-import logging
 from time import time
 from uuid import uuid4
 
