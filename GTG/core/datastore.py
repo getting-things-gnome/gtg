@@ -29,9 +29,9 @@ from GTG.backends.backend_signals import BackendSignals
 from GTG.backends.generic_backend import GenericBackend
 from GTG.core.config import CoreConfig
 from GTG.core import requester
-from GTG.core.dirs import TAGS_XMLFILE
 from GTG.core.search import parse_search_query, search_filter, InvalidQuery
 from GTG.core.tag import Tag, SEARCH_TAG
+from GTG.core.dirs import TAGS_XMLFILE
 from GTG.core.task import Task
 from GTG.core.treefactory import TreeFactory
 from GTG.core import xml
