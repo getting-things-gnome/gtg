@@ -789,13 +789,12 @@ class Task(TreeNode):
         """Add a tag by its ID"""
 
         tag = self.req.ds.get_tag_by_id(tid)
-        self.tag_added('@' + tag.get_name())
+        self.tag_added(tag.get_name())
 
     def tag_added(self, tagname):
         """
         Adds a tag. Does not add '@tag' to the contents. See add_tag
         """
-        # Do not add the same tag twice
         if tagname not in self.tags:
             self.tags.append(tagname)
             if self.is_loaded():
@@ -855,7 +854,11 @@ class Task(TreeNode):
                 tag.modified()
 
     def _strip_tag(self, text, tagname, newtag=''):
-        inline_tag = tagname[1:]
+        if tagname.startswith('@'):
+            inline_tag = tagname[1:]
+        else:
+            inline_tag = tagname
+
         return (text
                 .replace(f'{tagname}\n\n', newtag)
                 .replace(f'{tagname}, ', newtag)
@@ -873,9 +876,10 @@ class Task(TreeNode):
                 toreturn = True
             else:
                 tag = self.req.get_tag(tagname)
-                for tagc_name in tag.get_children():
-                    if not toreturn:
-                        toreturn = children_tag(tagc_name)
+                if tag:
+                    for tagc_name in tag.get_children():
+                        if not toreturn:
+                            toreturn = children_tag(tagc_name)
             return toreturn
 
         # We want to see if the task has no tags

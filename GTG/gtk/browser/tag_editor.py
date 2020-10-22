@@ -227,10 +227,7 @@ class TagEditor(Gtk.Window):
             self.tn_entry.handler_block(self.tn_entry_clicked_hid)
             self.tag = tag
             # Update entry
-            if tag.is_search_tag():
-                name = tag.get_name()
-            else:
-                name = tag.get_name()[1:]
+            name = tag.get_name()
             self.tn_entry.set_text(name)
             # Update visibility in Work View
             s_hidden_in_wv = (self.tag.get_attribute("nonworkview") == "True")
@@ -276,10 +273,7 @@ class TagEditor(Gtk.Window):
             # update the tag name
             self.tn_entry_watch_id = None
             if cur_value != '':
-                if self.tag.is_search_tag():
-                    new_name = cur_value
-                else:
-                    new_name = "@" + cur_value
+                new_name = cur_value
 
                 self.req.rename_tag(self.tag.get_name(), new_name)
                 self.tag = self.req.get_tag(new_name)

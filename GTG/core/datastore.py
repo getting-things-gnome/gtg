@@ -180,12 +180,14 @@ class DataStore():
                 # Store old tag attributes
                 color = tag.get_attribute("color")
                 icon = tag.get_attribute("icon")
+                tid = tag.tid
 
                 my_task = self.get_task(task_id)
                 my_task.rename_tag(oldname, newname)
 
                 # Restore attributes on tag
                 new_tag = self.get_tag(newname)
+                new_tag.tid = tid
 
                 if color:
                     new_tag.set_attribute("color", color)
