@@ -425,6 +425,7 @@ class TaskView(Gtk.TextView):
 
             # I find this confusing too :)
             tag_name = match.group(0)
+            tag_name = tag_name.replace('@', '')
             tag_tag = TaskTagTag(tag_name, self.req)
             self.tags_applied.append(tag_tag)
 
@@ -778,7 +779,7 @@ class TaskView(Gtk.TextView):
         else:
             text = ', '
 
-        text += ', '.join(tags)
+        text += ', '.join(['@' + tag for tag in tags])
         self.buffer.insert(first_line, text)
 
 
