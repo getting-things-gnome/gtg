@@ -217,7 +217,7 @@ class Backend(GenericBackend):
             tag = tagstore.get_node(tagname)
 
             attributes = tag.get_all_attributes(butname=True, withparent=True)
-            if "special" in attributes or len(attributes) == 0:
+            if "special" in attributes:
                 continue
 
             tid = str(tag.tid)
