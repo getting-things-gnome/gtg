@@ -195,6 +195,9 @@ class DataStore():
                 if icon:
                     new_tag.set_attribute("icon", icon)
 
+            self.remove_tag(oldname)
+            self.save_tagtree()
+
             return None
 
         query = tag.get_attribute("query")
