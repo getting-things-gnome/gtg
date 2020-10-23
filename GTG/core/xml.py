@@ -337,6 +337,7 @@ def skeleton() -> etree.Element:
     root.set('xmlVersion', '2')
 
     etree.SubElement(root, 'taglist')
+    etree.SubElement(root, 'searchlist')
     etree.SubElement(root, 'tasklist')
 
     return root
