@@ -31,13 +31,9 @@ from GTG.core.config import CoreConfig
 from GTG.core import requester
 from GTG.core.search import parse_search_query, search_filter, InvalidQuery
 from GTG.core.tag import Tag, SEARCH_TAG
-from GTG.core.dirs import TAGS_XMLFILE
 from GTG.core.task import Task
 from GTG.core.treefactory import TreeFactory
-from GTG.core import xml
 from GTG.core.borg import Borg
-
-from lxml import etree
 
 
 log = logging.getLogger(__name__)

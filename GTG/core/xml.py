@@ -18,6 +18,7 @@
 
 import os
 import shutil
+import logging
 from datetime import datetime
 from GTG.core.dates import Date
 

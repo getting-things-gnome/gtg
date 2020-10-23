@@ -22,6 +22,7 @@
 import re
 from time import time
 from uuid import uuid4
+import logging
 
 from gi.repository import Gtk, GLib, Gdk, GObject
 
