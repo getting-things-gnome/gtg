@@ -86,7 +86,7 @@ def convert_tags(old_tree: et.Element) -> Tuple[et.Element, et.Element]:
     tree = xml.open_file(old_file, 'tagstore')
 
     taglist = et.Element('taglist')
-    searchlist = et.Element('searchList')
+    searchlist = et.Element('searchlist')
 
     for tag in tree.iter('tag'):
         name = tag.get('name')

@@ -122,8 +122,10 @@ class Backend(GenericBackend):
         self.data_tree = xml.open_file(filepath, 'gtgData')
         self.task_tree = self.data_tree.find('tasklist')
         self.tag_tree = self.data_tree.find('taglist')
+        self.search_tree = self.data_tree.find('searchlist')
 
         self.datastore.load_tag_tree(self.tag_tree)
+        self.datastore.load_search_tree(self.search_tree)
 
         # Make safety daily backup after loading
         xml.save_file(self.get_path(), self.data_tree)
@@ -206,7 +208,7 @@ class Backend(GenericBackend):
             xml.save_file(self.get_path(), self.data_tree)
 
     def save_tags(self, tagnames, tagstore) -> None:
-        """Save changes to tags."""
+        """Save changes to tags and saved searches."""
 
         already_saved = []
 
@@ -220,12 +222,19 @@ class Backend(GenericBackend):
             if "special" in attributes:
                 continue
 
+            if tag.is_search_tag():
+                root = self.search_tree
+                tag_type = 'savedSearch'
+            else:
+                root = self.tag_tree
+                tag_type = 'tag'
+
             tid = str(tag.tid)
-            element = self.tag_tree.findall(f'tag[@id="{tid}"]')
+            element = root.findall(f'{tag_type}[@id="{tid}"]')
 
             if len(element) == 0:
-                element = et.SubElement(self.task_tree, 'tag')
-                self.tag_tree.append(element)
+                element = et.SubElement(self.task_tree, tag_type)
+                root.append(element)
             else:
                 element = element[0]
 
