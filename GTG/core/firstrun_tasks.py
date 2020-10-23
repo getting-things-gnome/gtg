@@ -198,7 +198,7 @@ tasks = [
         'title': _("Learn How to Use the Actionable View Mode"),
         'id': task_ids[3],
         'subtasks': [],
-        'tags': [],
+        'tags': [tags['waitingfor']],
         'added': today,
         'modified': today,
         'content': _(
