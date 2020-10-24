@@ -19,11 +19,10 @@
 """
 task.py contains the Task class which represents (guess what) a task
 """
-from datetime import datetime, date, timedelta
+from datetime import datetime, date
 import html
 import re
 import uuid
-import xml.dom.minidom
 import xml.sax.saxutils as saxutils
 
 from gettext import gettext as _
@@ -732,33 +731,25 @@ class Task(TreeNode):
         # defensive programmation to avoid returning None
         if self.content:
             txt = self.content
-            if strip_tags:
-                for tag in self.get_tags_name():
-                    txt = self._strip_tag(txt, tag)
 
             # Prevent issues with & in content
-            regex = re.compile(r"&(?!amp;|lt;|gt;)")
-            escaped_txt = regex.sub("&amp;", txt)
-
-            # Remove content
-            escaped_txt = escaped_txt.replace('</content>', '')
-            escaped_txt = escaped_txt.replace('<content>', '')
-
-            # Escape
-            escaped_txt = saxutils.escape(escaped_txt)
-            escaped_txt = f'<content>{escaped_txt}</content>'
-
-            element = xml.dom.minidom.parseString(escaped_txt)
-            txt = self.__strip_content(element, strip_subtasks=strip_subtasks)
+            txt = saxutils.escape(txt)
             txt = txt.strip()
-            # We keep the desired number of lines
-            if lines > 0:
-                liste = txt.splitlines()
-                for i in liste:
-                    if i.strip() == "":
-                        liste.remove(i)
-                to_keep = liste[:lines]
-                txt = '\n'.join(to_keep)
+
+            if strip_tags:
+                for tag in self.get_tags_name():
+                    txt = (txt.replace(f'@{tag}, ', '')
+                              .replace(f'@{tag},', '')
+                              .replace(f'@{tag}', ''))
+
+            if strip_subtasks:
+                txt = re.sub(r'\{\!.+\!\}', '', txt)
+
+            # Strip blank lines and get desired amount of lines
+            txt = [l for l in txt.splitlines() if l]
+            txt = txt[:lines]
+            txt = '\n'.join(txt)
+
             # We keep the desired number of char
             if char > 0:
                 txt = txt[:char]
@@ -1010,12 +1001,6 @@ class Task(TreeNode):
     def _strip_tag(self, text, tagname, newtag=''):
         inline_tag = tagname[1:]
         return (text
-                .replace(f'<tag>{tagname}</tag>\n\n', newtag)  # trail \n
-                # trail comma
-                .replace(f'<tag>{tagname}</tag>, ', newtag)
-                .replace(f'<tag>{tagname}</tag>,', newtag)
-                .replace(f'<tag>{tagname}</tag>', newtag)
-                # in case XML is missing (bug #504899)
                 .replace(f'{tagname}\n\n', newtag)
                 .replace(f'{tagname}, ', newtag)
                 .replace(f'{tagname},', inline_tag)
