@@ -120,7 +120,7 @@ def convert_tags(old_tree: et.Element) -> Tuple[et.Element, et.Element]:
 
         # Remove # in color hex
         if color:
-            new_tag.set('color', color.upper())
+            new_tag.set('color', color[1:].upper())
 
         if icon:
             new_tag.set('icon', icon)

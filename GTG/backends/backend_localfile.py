@@ -250,6 +250,8 @@ class Backend(GenericBackend):
                 value = tag.get_attribute(attr)
 
                 if value:
+                    if attr == 'color':
+                        value = value[1:]
                     element.set(attr, value)
 
             already_saved.append(tagname)
