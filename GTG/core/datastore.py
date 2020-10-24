@@ -237,7 +237,7 @@ class DataStore():
             tag_attrs = {}
 
             if color:
-                tag_attrs['color'] = color
+                tag_attrs['color'] = '#' + color
 
             if icon:
                 tag_attrs['icon'] = icon
