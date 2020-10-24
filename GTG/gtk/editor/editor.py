@@ -387,13 +387,26 @@ class TaskEditor():
         # otherwise.
         return not model.get(iter, column)[0].startswith(key)
 
+
+    def get_monitor_dimensions(self) -> Gdk.Rectangle:
+        """Get dimensions for the monitor this window is in."""
+
+        screen = self.window.get_screen()
+        monitor = screen.get_monitor_at_window(screen.get_active_window())
+
+        return screen.get_monitor_geometry(monitor)
+
+
     def init_dimensions(self):
         """ Restores position and size of task if possible """
 
         position = self.config.get('position')
+        screen_size = self.get_monitor_dimensions()
+
         if position and len(position) == 2:
             try:
-                self.window.move(int(position[0]), int(position[1]))
+                x = max(0, min(int(position[0]), screen_size.width))
+                y = max(0, min(int(position[1]), screen_size.height))
             except ValueError:
                 log.warning(
                     'Invalid position configuration for task %s: %s',
@@ -402,7 +415,10 @@ class TaskEditor():
             device_manager = Gdk.Display.get_default().get_device_manager()
             pointer = device_manager.get_client_pointer()
             screen, x, y = pointer.get_position()
-            self.window.move(x, y)
+            x = max(0, min(int(x), screen_size.width))
+            y = max(0, min(int(y), screen_size.height))
+
+        self.window.move(x, y)
 
         size = self.config.get('size')
         if size and len(size) == 2:
