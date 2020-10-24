@@ -1,16 +1,36 @@
+# -----------------------------------------------------------------------------
+# Getting Things GNOME! - a personal organizer for the GNOME desktop
+# Copyright (c) - The GTG Team and contributors
+#
+# This program is free software: you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation, either version 3 of the License, or (at your option) any later
+# version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+# details.
+#
+# You should have received a copy of the GNU General Public License along with
+# this program.  If not, see <http://www.gnu.org/licenses/>.
+# -----------------------------------------------------------------------------
+
 from gettext import gettext as _
 from datetime import datetime
+
 class RecurringMenu():
-    """ RecurringMenu provides a simple layer of abstraction
-    for the menu where the user enables a task to be repeating
+    """Provides a simple layer of abstraction
+       for the menu where the user enables a task to be repeating
     """
+
     PREFIX = _('Every ')
 
     def __init__(self, requester, tid, builder):
         # General attributes
         self.task = requester.get_task(tid)
         self.selected_recurring_term = self.task.get_recurring_term()
-        
+
         # Getting the necessary Gtk objects
         self.title = builder.get_object('title_label')
         self.title_separator = builder.get_object('title_separator')
@@ -69,7 +89,7 @@ class RecurringMenu():
             self.task.set_recurring(enable, self.selected_recurring_term, newtask=True)
         else:
             self.task.set_recurring(enable)
-            
+
     def update_header(self):
         """ Updates the header anytime a term is selected """
         formated_term = self.selected_recurring_term
@@ -94,7 +114,7 @@ class RecurringMenu():
         else:
             self.title.hide()
             self.title_separator.hide()
-    
+
     def reset_stack(self):
         """ Reset popup stack to the first page """
         self.stack.set_transition_duration(0)
