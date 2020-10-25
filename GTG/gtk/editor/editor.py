@@ -401,12 +401,21 @@ class TaskEditor():
         """ Restores position and size of task if possible """
 
         position = self.config.get('position')
+        size = self.config.get('size')
         screen_size = self.get_monitor_dimensions()
+
+        if size and len(size) == 2:
+            try:
+                self.window.resize(int(size[0]), int(size[1]))
+            except ValueError:
+                log.warning(
+                    'Invalid size configuration for task %s: %s',
+                    self.task.get_id(), size)
 
         if position and len(position) == 2:
             try:
-                x = max(0, min(int(position[0]), screen_size.width))
-                y = max(0, min(int(position[1]), screen_size.height))
+                x = max(0, int(position[0]))
+                y = max(0, int(position[1]))
             except ValueError:
                 log.warning(
                     'Invalid position configuration for task %s: %s',
@@ -415,19 +424,19 @@ class TaskEditor():
             device_manager = Gdk.Display.get_default().get_device_manager()
             pointer = device_manager.get_client_pointer()
             screen, x, y = pointer.get_position()
-            x = max(0, min(int(x), screen_size.width))
-            y = max(0, min(int(y), screen_size.height))
+            x = int(x)
+            y = int(y)
+
+        width, height = self.window.get_size()
+
+        # Clamp positions to current screen size
+        if x + width > screen_size.width:
+            x = screen_size.width - width
+
+        if y + height > screen_size.height:
+            y = screen_size.height - height
 
         self.window.move(x, y)
-
-        size = self.config.get('size')
-        if size and len(size) == 2:
-            try:
-                self.window.resize(int(size[0]), int(size[1]))
-            except ValueError:
-                log.warning(
-                    'Invalid size configuration for task %s: %s',
-                    self.task.get_id(), size)
 
     # Can be called at any time to reflect the status of the Task
     # Refresh should never interfere with the TaskView.
