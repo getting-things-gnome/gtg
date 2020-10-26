@@ -82,6 +82,7 @@ GTG/gtk/browser/treeview_factory.py
 GTG/gtk/colors.py
 GTG/gtk/editor/calendar.py
 GTG/gtk/editor/editor.py
+GTG/gtk/editor/recurring_menu.py
 GTG/gtk/editor/__init__.py
 GTG/gtk/editor/serialize.py
 GTG/gtk/editor/taskview.py

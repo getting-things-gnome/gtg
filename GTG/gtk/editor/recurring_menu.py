@@ -24,8 +24,6 @@ class RecurringMenu():
        for the menu where the user enables a task to be repeating
     """
 
-    PREFIX = _('Every ')
-
     def __init__(self, requester, tid, builder):
         # General attributes
         self.task = requester.get_task(tid)
@@ -92,25 +90,29 @@ class RecurringMenu():
 
     def update_header(self):
         """ Updates the header anytime a term is selected """
-        formated_term = self.selected_recurring_term
         if self.is_term_set():
-            if formated_term.isdigit():
-                if len(formated_term) <= 2 :
-                    day = datetime.strptime(f'{formated_term}', '%d').strftime('%d')
-                    formated_term = _('{day} of the Month')
-                    formated_term = formated_term.format(day=day)
-                else:
-                    formated_term = datetime.strptime(f'{formated_term[:2:]}-{formated_term[2::]}', '%m-%d').strftime('%B %d')
-            elif formated_term == 'week':
-                formated_term = datetime.today().strftime('%A')
-            elif formated_term == 'month':
-                formated_term = _('{day} of the Month')
-                formated_term = formated_term.format(day=datetime.today().strftime('%d'))
-            elif formated_term == 'year':
-                formated_term = datetime.today().strftime('%B %d')
+            if self.selected_recurring_term.isdigit():
+                if len(self.selected_recurring_term) <= 2 : # Recurring monthly from selected date
+                    self.title.set_markup(_('Every <b>{month_day} of the month</b>').format(month_day=datetime.strptime(f'{self.selected_recurring_term}', '%d').strftime('%d')))
+                else: # Recurring yearly from selected date
+                    date = datetime.strptime(f'{self.selected_recurring_term[:2:]}-{self.selected_recurring_term[2::]}', '%m-%d')
+                    self.title.set_markup(_('Every <b>{month} {day}</b>').format(month=date.strftime('%B'), day=date.strftime('%d')))
+            elif self.selected_recurring_term == 'day': # Recurring daily
+                self.title.set_markup(_('Every <b>day</b>'))
+            elif self.selected_recurring_term == 'other-day': # Recurring every other day
+                self.title.set_markup(_('Every <b>other day</b>'))
+            elif self.selected_recurring_term == 'week': # Recurring weekly from today
+                self.title.set_markup(_('Every <b>{week_day}</b>').format(week_day=datetime.today().strftime('%A')))
+            elif self.selected_recurring_term == 'month': # Recurring monthly from today
+                self.title.set_markup(_('Every <b>{month_day} of the month</b>').format(month_day=datetime.today().strftime('%d')))
+            elif self.selected_recurring_term == 'year': # Recurring yearly from today
+                date = datetime.today()
+                self.title.set_markup(_('Every <b>{month} {day}</b>').format(month=date.strftime('%B'), day=date.strftime('%d')))
+            else: # Recurring weekly from selected week day
+                week_day = _(self.selected_recurring_term)
+                self.title.set_markup(_('Every <b>{week_day}</b>').format(week_day=week_day))
             self.title.show()
             self.title_separator.show()
-            self.title.set_markup(f'{RecurringMenu.PREFIX}<b>{formated_term}</b>')
         else:
             self.title.hide()
             self.title_separator.hide()
