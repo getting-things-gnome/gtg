@@ -357,7 +357,7 @@ class TaskEditor():
         self.refresh_editor()
 
     def set_recurring_term_week_day(self, widget):
-        self.recurring_menu.set_selected_term(widget.props.text[3::])
+        self.recurring_menu.set_selected_term(widget.get_property("name"))
         self.recurring_menu.update_term()
         self.refresh_editor()
 

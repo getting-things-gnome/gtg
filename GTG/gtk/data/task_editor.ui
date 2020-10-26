@@ -279,6 +279,7 @@
                 </child>
                 <child>
                   <object class="GtkModelButton" id="mon_button">
+                    <property name="name">Monday</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
@@ -293,6 +294,7 @@
                 </child>
                 <child>
                   <object class="GtkModelButton" id="tue_button">
+                    <property name="name">Tuesday</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
@@ -307,6 +309,7 @@
                 </child>
                 <child>
                   <object class="GtkModelButton" id="wed_button">
+                    <property name="name">Wednesday</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
@@ -321,6 +324,7 @@
                 </child>
                 <child>
                   <object class="GtkModelButton" id="thu_button">
+                    <property name="name">Thursday</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
@@ -335,6 +339,7 @@
                 </child>
                 <child>
                   <object class="GtkModelButton" id="fri_button">
+                    <property name="name">Friday</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
@@ -349,6 +354,7 @@
                 </child>
                 <child>
                   <object class="GtkModelButton" id="sat_button">
+                    <property name="name">Saturday</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
@@ -363,6 +369,7 @@
                 </child>
                 <child>
                   <object class="GtkModelButton" id="sun_button">
+                    <property name="name">Sunday</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
