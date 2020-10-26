@@ -481,7 +481,7 @@ class TaskView(Gtk.TextView):
     def detect_subheading(self, text: str, start: Gtk.TextIter) -> None:
         """Detect subheadings (akin to H2)."""
 
-        if text.startswith('# '):
+        if text.startswith('# ') and len(text) > 2:
             end = start.copy()
             end.forward_chars(2)
 
