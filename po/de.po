@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-07-28 20:57+0200\n"
-"PO-Revision-Date: 2020-07-28 21:02+0200\n"
+"POT-Creation-Date: 2020-10-27 00:39+0100\n"
+"PO-Revision-Date: 2020-10-27 01:29+0100\n"
 "Last-Translator: Neui <neui>\n"
 "Language-Team: Deutsch <>\n"
 "Language: de\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Launchpad-Export-Date: 2013-07-15 04:52+0000\n"
-"X-Generator: Gtranslator 2.91.7\n"
+"X-Generator: Gtranslator 3.36.0\n"
 
 #: data/org.gnome.GTG.appdata.xml.in.in:5 data/org.gnome.GTG.desktop.in.in:4
 msgid "Getting Things GNOME!"
@@ -43,8 +43,9 @@ msgid ""
 "to accommodate many workflows, with features such as:"
 msgstr ""
 "GTG hilft Ihnen dabei, alles was Sie benötigen und wissen müssen "
-"aufzuzeichnen, von kleinen Aufgaben zu großen Projekten. Die Benutzeroberfläche "
-"kann sich nach vielen Arbeitsweisen anpassen, mit Funktionalitäten wie:"
+"aufzuzeichnen, von kleinen Aufgaben zu großen Projekten. Die "
+"Benutzeroberfläche kann sich nach vielen Arbeitsweisen anpassen, mit "
+"Funktionalitäten wie:"
 
 #: data/org.gnome.GTG.appdata.xml.in.in:14
 msgid "a very flexible tagging and searching system;"
@@ -71,8 +72,8 @@ msgid ""
 "the ability to effortlessly defer tasks to common upcoming days, or to a "
 "custom date."
 msgstr ""
-"die Möglichkeit, Aufgaben einfach in die nächsten Tage (oder an ein "
-"festes Datum) zu verschieben."
+"die Möglichkeit, Aufgaben einfach in die nächsten Tage (oder an ein festes "
+"Datum) zu verschieben."
 
 #: data/org.gnome.GTG.appdata.xml.in.in:68
 msgid "The GTG team"
@@ -105,6 +106,101 @@ msgstr ""
 "Time;Management;Scheduling;GTD;gtg;Todo;Organisierer;organisieren;Aufgabe;"
 "Aufgaben;Projekte;Aktivitäten;Planen;Zeit;Verwaltung;"
 
+#: GTG/plugins/export.gtg-plugin.desktop:4
+msgid "Export and print"
+msgstr "Expotieren und drucken"
+
+#: GTG/plugins/export.gtg-plugin.desktop:5
+msgid "Exports the tasks in the current view into a variety of formats."
+msgstr "Exportiere die aktuell sichtbare Aufgaben nach verschiedene Formaten."
+
+#: GTG/plugins/export.gtg-plugin.desktop:6
+msgid ""
+"Exports the tasks in the current view into a variety of formats. You can "
+"also personalize the format of your tasks by writing your own template."
+msgstr ""
+"Exportiere die aktuell sichtbare Aufgaben nach verschiedene Formaten. Sie "
+"können es auch mit eigene Vorlagen individualisieren."
+
+#: GTG/plugins/send-email.gtg-plugin.desktop:4
+msgid "Send task via email"
+msgstr "Aufgaben per E-Mail versenden"
+
+#: GTG/plugins/send-email.gtg-plugin.desktop:5
+msgid "Easily send a task via email."
+msgstr "Einfach Aufgaben per E-Mail versenden."
+
+#: GTG/plugins/send-email.gtg-plugin.desktop:6
+msgid ""
+"Adds a button on the toolbar to send easily a task via email, also sends "
+"status, due_dates, tags and subtasks."
+msgstr ""
+"Fügt einen Knopf hinzu, um Aufgaben einfach per E-Mail zu versenden, samt "
+"Status, Fällgikeitsdatum, Schlagwörter und Unteraufgaben."
+
+#: GTG/plugins/untouched-tasks.gtg-plugin.desktop:4
+msgid "Untouched tasks"
+msgstr "Nicht angefasste Aufgaben"
+
+#: GTG/plugins/untouched-tasks.gtg-plugin.desktop:5
+msgid "Keep track of tasks you haven't touched for a while."
+msgstr ""
+"Behalte Aufgaben im Auge, die für einige Zeit nicht mehr angefasst wurden."
+
+#: GTG/plugins/untouched-tasks.gtg-plugin.desktop:6
+msgid ""
+"Assigns tasks that you haven't touched for a while with the @untouched tag."
+msgstr ""
+"Füge @untouched Schlagwort an Aufgaben hinzu, die für einige Zeit nicht mehr "
+"angefasst wurden."
+
+#: GTG/plugins/urgency-color.gtg-plugin.desktop:4
+msgid "Urgency Color"
+msgstr "Dringlichkeitsfarbe"
+
+#: GTG/plugins/urgency-color.gtg-plugin.desktop:5
+msgid "Task urgency color-coding"
+msgstr "Farbkodierung der Aufgaben nach Dringlichkeit"
+
+#: GTG/plugins/urgency-color.gtg-plugin.desktop:6
+msgid ""
+"This plugin will calculate the urgency status of every of your currently "
+"active tasks and color-code it accordingly.\n"
+"\n"
+"Color code\n"
+"\n"
+"Assuming your settings are default:\n"
+"Red means you are within the last 30% of days between the start-date and due-"
+"date, or your task is overdue.\n"
+"Yellow means your task's start-date has passed.\n"
+"Green means your task's start-date is oncoming."
+msgstr ""
+"Diese Erweiterung berechnet die Dringlichkeit der offenen Aufgaben und färbt "
+"diese ein.\n"
+"\n"
+"Bedeutung der Farben\n"
+"\n"
+"Angenommen, die Standardeinstellungen werden verwendet:\n"
+"Rot bedeutet, dass entweder heute in den letzten 30% Tagen zwischen dem "
+"Start- und Fälligkeitsdatum liegt, oder die Aufgabe schon fällg ist.\n"
+"Gelb bedeutet, dass die Aufgabe angefangen hat.\n"
+"Grün bedeutet, dass die Aufgabe bald anfängt."
+
+# Using the translated name:
+# https://github.com/projecthamster/hamster/blob/ceedcd87d7591301dcd7648c7f28a37604362486/po/de.po#L182-L184
+#: GTG/plugins/hamster.gtg-plugin.desktop:4
+msgid "Hamster Time Tracker Integration"
+msgstr "Hamster-Zeiterfassung Integration"
+
+#: GTG/plugins/hamster.gtg-plugin.desktop:5
+msgid "Track time of GTG task with Hamster applet."
+msgstr "Zeit mit Hilfe von Hamster-Zeiterfassung erfassen."
+
+#: GTG/plugins/hamster.gtg-plugin.desktop:6
+msgid "Adds the ability to send a task to the Hamster time tracking applet"
+msgstr ""
+"Fügt die Funktionalität, Aufgaben nach Hamster-Zeiterfassung zu senden, hinzu"
+
 #: GTG/gtk/data/backends.ui:60
 msgid "_Add"
 msgstr "_Hinzufügen"
@@ -119,22 +215,22 @@ msgid "Help"
 msgstr "Hilfe"
 
 #: GTG/gtk/data/calendar.ui:44 GTG/gtk/data/context_menus.ui:150
-#: GTG/gtk/data/task_editor.ui:486
+#: GTG/gtk/data/task_editor.ui:1000
 msgid "Now"
 msgstr "Jetzt"
 
 #: GTG/gtk/data/calendar.ui:57 GTG/gtk/data/context_menus.ui:155
-#: GTG/gtk/data/task_editor.ui:501
+#: GTG/gtk/data/task_editor.ui:1015
 msgid "Soon"
 msgstr "Bald"
 
 #: GTG/gtk/data/calendar.ui:70 GTG/gtk/data/context_menus.ui:160
-#: GTG/gtk/data/task_editor.ui:516
+#: GTG/gtk/data/task_editor.ui:1030
 msgid "Someday"
 msgstr "Irgendwann"
 
-#: GTG/gtk/data/calendar.ui:93 GTG/gtk/data/task_editor.ui:541
-#: GTG/gtk/data/task_editor.ui:586
+#: GTG/gtk/data/calendar.ui:93 GTG/gtk/data/task_editor.ui:1055
+#: GTG/gtk/data/task_editor.ui:1100
 msgid "Clear"
 msgstr "Leeren"
 
@@ -144,7 +240,7 @@ msgid "Edit..."
 msgstr "Bearbeiten…"
 
 # TODO: #377 → rename to Wiederherstellen (restore, maybe reopen?)
-#: GTG/gtk/data/context_menus.ui:14 GTG/gtk/data/task_editor.ui:386
+#: GTG/gtk/data/context_menus.ui:14 GTG/gtk/data/task_editor.ui:900
 msgid "Mark as Not Done"
 msgstr "Als unerledigt markieren"
 
@@ -163,7 +259,7 @@ msgstr "Löschen"
 msgid "Add a Subtask..."
 msgstr "_Teilaufgabe hinzufügen…"
 
-#: GTG/gtk/data/context_menus.ui:41 GTG/gtk/data/task_editor.ui:373
+#: GTG/gtk/data/context_menus.ui:41 GTG/gtk/data/task_editor.ui:887
 msgid "Mark as Done"
 msgstr "Als erledigt markieren"
 
@@ -172,13 +268,13 @@ msgid "Dismiss"
 msgstr "Verwerfen"
 
 # Also used as an window title, thus can't have an mnemonic
-#: GTG/gtk/data/context_menus.ui:56 GTG/gtk/browser/main_window.py:1077
+#: GTG/gtk/data/context_menus.ui:56 GTG/gtk/browser/main_window.py:1115
 msgid "Set Start Date"
 msgstr "Anfangsdatum setzen"
 
 # Seems you can't make an exception to make "In 2 days" → "Übermorgen".
 #: GTG/gtk/data/context_menus.ui:60 GTG/gtk/data/context_menus.ui:124
-#: GTG/core/dates.py:455
+#: GTG/core/dates.py:571
 #, python-format
 msgid "Tomorrow"
 msgid_plural "In %(days)d days"
@@ -228,7 +324,7 @@ msgid "Clear Start Date"
 msgstr "Anfangsdatum löschen"
 
 # Also used as an window title, thus can't have an mnemonic
-#: GTG/gtk/data/context_menus.ui:121 GTG/gtk/browser/main_window.py:1088
+#: GTG/gtk/data/context_menus.ui:121 GTG/gtk/browser/main_window.py:1126
 msgid "Set Due Date"
 msgstr "Fälligkeitsdatum setzen"
 
@@ -236,7 +332,35 @@ msgstr "Fälligkeitsdatum setzen"
 msgid "Clear Due Date"
 msgstr "Fälligkeitsdatum entfernen"
 
-#: GTG/gtk/data/context_menus.ui:175
+#: GTG/gtk/data/context_menus.ui:174
+msgid "Set Recurring"
+msgstr "Wiederholung setzen"
+
+#: GTG/gtk/data/context_menus.ui:177
+msgid "Every Day"
+msgstr "Jeden Tag"
+
+#: GTG/gtk/data/context_menus.ui:182
+msgid "Every Other-Day"
+msgstr "Jeden zweiten Tag"
+
+#: GTG/gtk/data/context_menus.ui:187
+msgid "Every Week"
+msgstr "Jede Woche"
+
+#: GTG/gtk/data/context_menus.ui:192
+msgid "Every Month"
+msgstr "Jeden Monat"
+
+#: GTG/gtk/data/context_menus.ui:197
+msgid "Every Year"
+msgstr "Jedes Jahr"
+
+#: GTG/gtk/data/context_menus.ui:203
+msgid "Enable/Disable"
+msgstr "Aktivieren/Deaktivieren"
+
+#: GTG/gtk/data/context_menus.ui:212
 msgid "Modify Tags..."
 msgstr "Schlagwörter bearbeiten…"
 
@@ -273,19 +397,23 @@ msgid "Task Editor font"
 msgstr "Schrift des Aufgabeneditors"
 
 #: GTG/gtk/data/general_preferences.ui:327
+msgid "Dark Mode"
+msgstr "Dunkelmodus"
+
+#: GTG/gtk/data/general_preferences.ui:372
 msgid "Clean Up"
 msgstr "Aufräumen"
 
-#: GTG/gtk/data/general_preferences.ui:364
+#: GTG/gtk/data/general_preferences.ui:409
 msgid "Automatically remove old closed tasks"
 msgstr "Automatisch alte abgeschlossene Aufgaben entfernen"
 
-#: GTG/gtk/data/general_preferences.ui:409
+#: GTG/gtk/data/general_preferences.ui:454
 msgid "Days to wait before removing a task"
 msgstr "Tage, bis eine abgeschossene Aufgabe entfernt wird"
 
 # To fit with the settings section title
-#: GTG/gtk/data/general_preferences.ui:453
+#: GTG/gtk/data/general_preferences.ui:498
 msgid "Purge Now"
 msgstr "Jetzt aufräumen"
 
@@ -304,72 +432,78 @@ msgctxt "shortcut window"
 msgid "Open Help"
 msgstr "Hilfe aufrufen"
 
+# From GNOME settings
 #: GTG/gtk/data/help_overlay.ui:35
+msgctxt "shortcut window"
+msgid "Show Keyboard Shortcuts"
+msgstr "Tastaturkürzeln anzeigen"
+
+#: GTG/gtk/data/help_overlay.ui:43
 msgctxt "shortcut window"
 msgid "Quit"
 msgstr "Beenden"
 
-#: GTG/gtk/data/help_overlay.ui:46
+#: GTG/gtk/data/help_overlay.ui:54
 msgctxt "shortcut window"
 msgid "Task Browser"
 msgstr "Aufgabenübersicht"
 
-#: GTG/gtk/data/help_overlay.ui:51
+#: GTG/gtk/data/help_overlay.ui:59
 msgctxt "shortcut window"
 msgid "Search"
 msgstr "Suchen"
 
-#: GTG/gtk/data/help_overlay.ui:59
+#: GTG/gtk/data/help_overlay.ui:67
 msgctxt "shortcut window"
 msgid "Toggle Sidebar"
 msgstr "Schlagwörter-Seitenleiste umschalten"
 
-#: GTG/gtk/data/help_overlay.ui:67
+#: GTG/gtk/data/help_overlay.ui:75
 msgctxt "shortcut window"
 msgid "Focus the Quick Add input"
 msgstr "Schnelleintrag fokussieren"
 
-#: GTG/gtk/data/help_overlay.ui:75
+#: GTG/gtk/data/help_overlay.ui:83
 msgctxt "shortcut window"
 msgid "Mark Task as Done"
 msgstr "Aufgabe als erledigt markieren"
 
-#: GTG/gtk/data/help_overlay.ui:83
+#: GTG/gtk/data/help_overlay.ui:91
 msgctxt "shortcut window"
 msgid "Dismiss Task"
 msgstr "Aufgabe verwerfen"
 
-#: GTG/gtk/data/help_overlay.ui:91
+#: GTG/gtk/data/help_overlay.ui:99
 msgctxt "shortcut window"
 msgid "Batch change tags on selected tasks"
 msgstr "Schlagwörter der ausgewählten Aufgaben ändern"
 
-#: GTG/gtk/data/help_overlay.ui:99 GTG/gtk/data/help_overlay.ui:139
+#: GTG/gtk/data/help_overlay.ui:107 GTG/gtk/data/help_overlay.ui:147
 msgctxt "shortcut window"
 msgid "New Task"
 msgstr "Neue Aufgabe"
 
-#: GTG/gtk/data/help_overlay.ui:107 GTG/gtk/data/help_overlay.ui:147
+#: GTG/gtk/data/help_overlay.ui:115 GTG/gtk/data/help_overlay.ui:155
 msgctxt "shortcut window"
 msgid "New Subtask"
 msgstr "Neue Teilaufgabe"
 
-#: GTG/gtk/data/help_overlay.ui:115
+#: GTG/gtk/data/help_overlay.ui:123
 msgctxt "shortcut window"
 msgid "Delete Task"
 msgstr "Aufgabe löschen"
 
-#: GTG/gtk/data/help_overlay.ui:123
+#: GTG/gtk/data/help_overlay.ui:131
 msgctxt "shortcut window"
 msgid "Edit Task"
 msgstr "Aufgabe bearbeiten"
 
-#: GTG/gtk/data/help_overlay.ui:134
+#: GTG/gtk/data/help_overlay.ui:142
 msgctxt "shortcut window"
 msgid "Editor"
 msgstr "Editor"
 
-#: GTG/gtk/data/help_overlay.ui:155
+#: GTG/gtk/data/help_overlay.ui:163
 msgctxt "shortcut window"
 msgid "Close window"
 msgstr "Fenster schließen"
@@ -378,7 +512,7 @@ msgstr "Fenster schließen"
 msgid "Start today"
 msgstr "Heute starten"
 
-#: GTG/gtk/data/main_window.ui:57 GTG/core/dates.py:449
+#: GTG/gtk/data/main_window.ui:57 GTG/core/dates.py:565
 msgid "Today"
 msgstr "Heute"
 
@@ -387,7 +521,7 @@ msgstr "Heute"
 msgid "Start 2 days from now"
 msgstr "In 2 Tagen starten"
 
-#: GTG/gtk/data/main_window.ui:85 GTG/core/dates.py:385
+#: GTG/gtk/data/main_window.ui:85 GTG/core/dates.py:385 GTG/core/dates.py:513
 msgid "Tuesday"
 msgstr "Dienstag"
 
@@ -395,7 +529,7 @@ msgstr "Dienstag"
 msgid "Start 3 days from now"
 msgstr "In 3 Tagen starten"
 
-#: GTG/gtk/data/main_window.ui:100 GTG/core/dates.py:386
+#: GTG/gtk/data/main_window.ui:100 GTG/core/dates.py:386 GTG/core/dates.py:514
 msgid "Wednesday"
 msgstr "Mittwoch"
 
@@ -403,7 +537,7 @@ msgstr "Mittwoch"
 msgid "Start 4 days from now"
 msgstr "In 4 Tagen starten"
 
-#: GTG/gtk/data/main_window.ui:115 GTG/core/dates.py:387
+#: GTG/gtk/data/main_window.ui:115 GTG/core/dates.py:387 GTG/core/dates.py:515
 msgid "Thursday"
 msgstr "Donnerstag"
 
@@ -411,7 +545,7 @@ msgstr "Donnerstag"
 msgid "Start 5 days from now"
 msgstr "In 5 Tagen starten"
 
-#: GTG/gtk/data/main_window.ui:130 GTG/core/dates.py:388
+#: GTG/gtk/data/main_window.ui:130 GTG/core/dates.py:388 GTG/core/dates.py:516
 msgid "Friday"
 msgstr "Freitag"
 
@@ -419,7 +553,7 @@ msgstr "Freitag"
 msgid "Start 6 days from now"
 msgstr "In 6 Tagen starten"
 
-#: GTG/gtk/data/main_window.ui:145 GTG/core/dates.py:389
+#: GTG/gtk/data/main_window.ui:145 GTG/core/dates.py:389 GTG/core/dates.py:517
 msgid "Saturday"
 msgstr "Samstag"
 
@@ -439,16 +573,19 @@ msgstr "Synchronisierung"
 msgid "Preferences"
 msgstr "Einstellungen"
 
-# From GNOME settings
+# GNOME Settings uses "Tastaturkürzel"
+# Nautilus & GTranslator uses "Tastenkombinationen"
+# The resulting window calls themselves "Tastenkürzel"
 #: GTG/gtk/data/main_window.ui:301
 msgid "Keyboard Shortcuts"
-msgstr "Tastaturkürzel"
+msgstr "Tastenkürzel"
 
+# Using https://wiki.gnome.org/de/StandardUebersetzungen
 #: GTG/gtk/data/main_window.ui:329
 msgid "About GTG"
-msgstr "Über GTG"
+msgstr "Info zu GTG"
 
-#: GTG/gtk/data/main_window.ui:382 GTG/gtk/browser/treeview_factory.py:302
+#: GTG/gtk/data/main_window.ui:382 GTG/gtk/browser/treeview_factory.py:307
 msgid "Tags"
 msgstr "Schlagwörter"
 
@@ -488,26 +625,26 @@ msgstr ""
 msgid "Quickly create tasks here"
 msgstr "Hier schnell neue Aufgaben erstellen"
 
-#: GTG/gtk/data/main_window.ui:588
+#: GTG/gtk/data/main_window.ui:597
 msgid "Create a new task"
 msgstr "Neue Aufgabe anlegen"
 
-#: GTG/gtk/data/main_window.ui:608
+# Other GNOME applications describe what it does in simpler words, which is what is done here
+#: GTG/gtk/data/main_window.ui:634
+msgid "Activate Search Entry"
+msgstr "Nach einer Aufgabe suchen"
+
+#: GTG/gtk/data/main_window.ui:658
 msgid "Start Tomorrow"
 msgstr "Morgen anfangen"
 
-#: GTG/gtk/data/main_window.ui:613
+#: GTG/gtk/data/main_window.ui:663
 msgid ""
 "Out of time? Need additional focus? Easily defer the selected task(s) to "
 "tomorrow!"
 msgstr ""
 "Keine Zeit mehr? Mehr Konzentration benötigt? Einfach die ausgewählten "
 "Aufgaben auf morgen verschieben!"
-
-# Other GNOME applications describe what it does in simpler words, which is what is done here
-#: GTG/gtk/data/main_window.ui:689
-msgid "Activate Search Entry"
-msgstr "Nach einer Aufgabe suchen"
 
 #: GTG/gtk/data/modify_tags.ui:7
 msgid "Modify Tags"
@@ -519,7 +656,7 @@ msgstr "Schlagwörter bearbeiten"
 msgid "Apply"
 msgstr "Anwenden"
 
-#: GTG/gtk/data/modify_tags.ui:41 GTG/plugins/export/export.ui:306
+#: GTG/gtk/data/modify_tags.ui:41
 #: GTG/plugins/untouched_tasks/untouchedTasks.ui:136
 msgid "Cancel"
 msgstr "Abbrechen"
@@ -570,54 +707,130 @@ msgstr "Als noch nicht erledigt markieren"
 msgid "Permanently remove this task"
 msgstr "Aufgabe dauerhaft löschen"
 
-#: GTG/gtk/data/task_editor.ui:89 GTG/gtk/data/task_editor.ui:369
+#: GTG/gtk/data/task_editor.ui:106
+msgid "Every:"
+msgstr "Jedes:"
+
+#: GTG/gtk/data/task_editor.ui:137
+msgid "Repeat"
+msgstr "Wiederholen"
+
+#: GTG/gtk/data/task_editor.ui:150
+msgid "Tick to activate"
+msgstr "Zum Aktivieren Ankreuzen"
+
+#: GTG/gtk/data/task_editor.ui:188
+msgid "Daily"
+msgstr "Täglich"
+
+#: GTG/gtk/data/task_editor.ui:202
+msgid "Every other day"
+msgstr "Jeden zweiten Tag"
+
+#: GTG/gtk/data/task_editor.ui:216 GTG/gtk/data/task_editor.ui:269
+#: GTG/gtk/data/task_editor.ui:415
+msgid "Weekly"
+msgstr "Wöchentlich"
+
+#: GTG/gtk/data/task_editor.ui:230 GTG/gtk/data/task_editor.ui:429
+#: GTG/gtk/data/task_editor.ui:487
+msgid "Monthly"
+msgstr "Monatlich"
+
+#: GTG/gtk/data/task_editor.ui:244 GTG/gtk/data/task_editor.ui:501
+#: GTG/gtk/data/task_editor.ui:556
+msgid "Yearly"
+msgstr "Jährlich"
+
+#: GTG/gtk/data/task_editor.ui:256
+msgid "Recurring"
+msgstr "Wiederholung"
+
+#: GTG/gtk/data/task_editor.ui:286
+msgid "On Monday"
+msgstr "Am Montag"
+
+#: GTG/gtk/data/task_editor.ui:301
+msgid "On Tuesday"
+msgstr "Am Dienstag"
+
+#: GTG/gtk/data/task_editor.ui:316
+msgid "On Wednesday"
+msgstr "Am Mittwoch"
+
+#: GTG/gtk/data/task_editor.ui:331
+msgid "On Thursday"
+msgstr "Am Donnerstag"
+
+#: GTG/gtk/data/task_editor.ui:346
+msgid "On Friday"
+msgstr "Am Freitag"
+
+#: GTG/gtk/data/task_editor.ui:361
+msgid "On Saturday"
+msgstr "Am Samstag"
+
+#: GTG/gtk/data/task_editor.ui:376
+msgid "On Sunday"
+msgstr "Am Sonntag"
+
+#: GTG/gtk/data/task_editor.ui:403 GTG/gtk/data/task_editor.ui:475
+#: GTG/gtk/data/task_editor.ui:544
+msgid "On This Day"
+msgstr "Am heutigen Tag"
+
+#: GTG/gtk/data/task_editor.ui:580 GTG/gtk/data/task_editor.ui:883
 msgid "Task"
 msgstr "Aufgabe"
 
 # TODO: Too long in my opinion
-#: GTG/gtk/data/task_editor.ui:114 GTG/gtk/editor/editor.py:136
-#: GTG/gtk/editor/editor.py:377
+#: GTG/gtk/data/task_editor.ui:605 GTG/gtk/editor/editor.py:150
+#: GTG/gtk/editor/editor.py:477
 msgid "Open Parent"
 msgstr "Übergeordnete Aufgabe öffnen"
 
 # Maybe improve the original
-#: GTG/gtk/data/task_editor.ui:118
+#: GTG/gtk/data/task_editor.ui:609
 msgid "Open the parent task (creating a parent if it doesn't have one)"
 msgstr "Erstellt oder öffnet die übergeordnete Aufgabe"
 
-#: GTG/gtk/data/task_editor.ui:136
+#: GTG/gtk/data/task_editor.ui:627
 msgid "Insert a subtask in this task"
 msgstr "Teilaufgabe erstellen"
 
-#: GTG/gtk/data/task_editor.ui:158
+#: GTG/gtk/data/task_editor.ui:649
 msgid "Add tags to this task"
 msgstr "Schlagwörter hinzufügen"
 
-#: GTG/gtk/data/task_editor.ui:194
+#: GTG/gtk/data/task_editor.ui:672
+msgid "Set this task to repeat"
+msgstr "Aufgabe wiederholen lassen"
+
+#: GTG/gtk/data/task_editor.ui:708
 msgid "Starts on"
 msgstr "Beginnt am"
 
-#: GTG/gtk/data/task_editor.ui:237
+#: GTG/gtk/data/task_editor.ui:751
 msgid "Due on"
 msgstr "Fällig am"
 
-#: GTG/gtk/data/task_editor.ui:280
+#: GTG/gtk/data/task_editor.ui:794
 msgid "Closed on"
 msgstr "Geschlossen am"
 
-#: GTG/gtk/data/task_editor.ui:376
+#: GTG/gtk/data/task_editor.ui:890
 msgid "Mark the task as done"
 msgstr "Aufgabe als erledigt markieren"
 
-#: GTG/gtk/data/task_editor.ui:389
+#: GTG/gtk/data/task_editor.ui:903
 msgid "Mark the task as to be done"
 msgstr "Aufgabe als noch nicht erledigt markieren"
 
-#: GTG/gtk/data/task_editor.ui:402
+#: GTG/gtk/data/task_editor.ui:916
 msgid "Task action menu"
 msgstr "Aufgabenaktionen"
 
-#: GTG/gtk/data/task_editor.ui:625
+#: GTG/gtk/data/task_editor.ui:1139
 msgid "Search"
 msgstr "Suche"
 
@@ -655,21 +868,6 @@ msgstr "Öffnen"
 #: GTG/plugins/export/export.ui:221
 msgid "Save"
 msgstr "Speichern"
-
-#: GTG/plugins/export/export.ui:263
-msgid "How do you want to access the export plugin?"
-msgstr "Wie möchten Sie auf das Exportplugin zugreifen?"
-
-#: GTG/plugins/export/export.ui:278
-msgid "Put an entry in the Plugins menu"
-msgstr "Einen Eintrag im Erweiterungsmenü"
-
-#: GTG/plugins/export/export.ui:320 GTG/gtk/browser/backend_infobar.py:113
-#: GTG/gtk/browser/backend_infobar.py:118
-#: GTG/gtk/browser/backend_infobar.py:143
-#: GTG/gtk/browser/backend_infobar.py:196
-msgid "OK"
-msgstr "OK"
 
 # complete sentence: Add [text] tag to task after it has been left untouched for at least [num] days
 #: GTG/plugins/untouched_tasks/untouchedTasks.ui:36
@@ -730,15 +928,7 @@ msgstr "Zurücksetzen"
 msgid "Local File"
 msgstr "Lokale Datei"
 
-#: GTG/backends/backend_localfile.py:62
-msgid ""
-"Your tasks are saved in a text file (XML format).  This is the most basic "
-"and the default way for GTG to save your tasks."
-msgstr ""
-"Ihre Aufgaben werden in einer Text-Datei im XML-Format gespeichert.  Dies "
-"ist der Standard und zudem der einfachste Weg, Aufgaben zu speichern."
-
-#: GTG/backends/backend_localfile.py:223
+#: GTG/backends/backend_localfile.py:219
 msgid ""
 "Oops, something unexpected happened! GTG tried to recover your tasks from "
 "backups. \n"
@@ -782,23 +972,42 @@ msgstr "Nächster Monat"
 msgid "next year"
 msgstr "Nächstes Jahr"
 
-#: GTG/core/dates.py:384
+#: GTG/core/dates.py:384 GTG/core/dates.py:512
 msgid "Monday"
 msgstr "Montag"
 
-#: GTG/core/dates.py:390
+#: GTG/core/dates.py:390 GTG/core/dates.py:518
 msgid "Sunday"
 msgstr "Sonntag"
 
-#: GTG/core/dates.py:452
+#: GTG/core/dates.py:499
+msgid "day"
+msgstr "tag"
+
+#: GTG/core/dates.py:501
+msgid "other-day"
+msgstr "zweiten-tag"
+
+#: GTG/core/dates.py:503
+msgid "week"
+msgstr "woche"
+
+#: GTG/core/dates.py:505
+msgid "month"
+msgstr "Monat"
+
+#: GTG/core/dates.py:507
+msgid "year"
+msgstr "jahr"
+
+#: GTG/core/dates.py:568
 #, python-format
 msgid "Yesterday"
 msgid_plural "%(days)d days ago"
 msgstr[0] "Gestern"
 msgstr[1] "Vor %(days)d Tagen"
 
-#. Task 0@1: Getting started with GTG
-#: GTG/core/firstrun_tasks.py:34
+#: GTG/core/firstrun_tasks.py:32
 msgid "Getting Started with GTG (read me first)"
 msgstr "Erste Schritte mit GTG (zuerst lesen)"
 
@@ -877,28 +1086,27 @@ msgstr ""
 "bis zum Wechseln einer Glühbirne, oder das Organisieren einer Party!\n"
 "\n"
 "Wenn Sie GTG das erste Mal verwenden, nehmen Sie sich bitte die Zeit, um "
-"diese Einführung zu lesen, denn diese enthält nützliche Informationen, wie man "
-"mit GTG den Alltag organisiert.\n"
+"diese Einführung zu lesen, denn diese enthält nützliche Informationen, wie "
+"man mit GTG den Alltag organisiert.\n"
 "\n"
 "Aufgaben erstellen und anpassen:\n"
 "\n"
 "GTG ist leicht: Sie verwalten alles, was Sie erledigen müssen, indem sie "
-"neue Aufgaben erstellen. Zu diesem Zweck klicken Sie auf den »Neue "
-"Aufgabe« Knopf, füllen Sie diesen aus, setzen ein paar Parameter und "
-"fertig! Wenn eine Aufgabe beendet ist, kann sie geschlossen werden, indem "
-"der »Als erledigt markieren« Knopf gedrückt wird.\n"
+"neue Aufgaben erstellen. Zu diesem Zweck klicken Sie auf den »Neue Aufgabe« "
+"Knopf, füllen Sie diesen aus, setzen ein paar Parameter und fertig! Wenn "
+"eine Aufgabe beendet ist, kann sie geschlossen werden, indem der »Als "
+"erledigt markieren« Knopf gedrückt wird.\n"
 "\n"
 "In GTG wird eine Aufgabe während des Schreibens automatisch gespeichert. Es "
-"gibt keine Notwendigkeit, irgendeinen »Speichern« Knopf zu "
-"drücken! Probieren Sie es aus: Fügen Sie etwas Text zu dieser Aufgabe hinzu, "
-"schließe dieses Fenster und öffne es wieder: Ihre Änderungen sind immer noch "
-"da!\n"
+"gibt keine Notwendigkeit, irgendeinen »Speichern« Knopf zu drücken! "
+"Probieren Sie es aus: Fügen Sie etwas Text zu dieser Aufgabe hinzu, schließe "
+"dieses Fenster und öffne es wieder: Ihre Änderungen sind immer noch da!\n"
 "\n"
 "Über Teilaufgaben:\n"
 "\n"
 "Im Leben bekommt man oft mehr erledigt, wenn man Aufgaben in kleinere, "
-"besser handhabbare Teile zerlegt. GTG hilft dir genau dabei, indem »"
-"Teilaufgaben« erstellt werden. In GTG werden diese Teilaufgaben als "
+"besser handhabbare Teile zerlegt. GTG hilft dir genau dabei, indem "
+"»Teilaufgaben« erstellt werden. In GTG werden diese Teilaufgaben als "
 "Vorbedingung angesehen, die erledigt werden müssen, bevor die übergeordnete "
 "Aufgabe abgeschlossen werden kann.\n"
 "\n"
@@ -912,10 +1120,10 @@ msgstr ""
 "Aufgabe abschließen:\n"
 "\n"
 "Wenn Sie mit einer Aufgabe fertig sind, können sie diese in GTG abschließen, "
-"indem Sie entweder den Knopf »Als erledigt markieren« oder »"
-"Verwerfen« drücken. Verwenden Sie den ersten Knopf, wenn die Aufgabe "
-"erledigt ist und den Anderen, wenn die Aufgabe geschlossen werden soll, weil "
-"sie nicht mehr relevant ist.\n"
+"indem Sie entweder den Knopf »Als erledigt markieren« oder »Verwerfen« "
+"drücken. Verwenden Sie den ersten Knopf, wenn die Aufgabe erledigt ist und "
+"den Anderen, wenn die Aufgabe geschlossen werden soll, weil sie nicht mehr "
+"relevant ist.\n"
 "\n"
 "Wenn eine Aufgabe abgeschlossen wird, werden Sie bemerken, dass alle "
 "dazugehörigen Teilaufgaben genauso geschlossen werden. In GTG wird davon "
@@ -923,8 +1131,7 @@ msgstr ""
 "erledigt werden müssen (schließlich waren es ja nur Vorbedingungen).\n"
 "\n"
 "Denken sie daran, dass Aufgaben, die Sie als erledigt markiert oder "
-"verworfen haben, in der »Beendete Aufgaben« Ansicht aufgelistet "
-"werden,.\n"
+"verworfen haben, in der »Beendete Aufgaben« Ansicht aufgelistet werden,.\n"
 "\n"
 "Erfahren Sie mehr über GTG:\n"
 "\n"
@@ -948,12 +1155,11 @@ msgstr ""
 "\n"
 "— Das GTG Team"
 
-#. Task 1@1: Learn to use subtasks
-#: GTG/core/firstrun_tasks.py:109
+#: GTG/core/firstrun_tasks.py:108
 msgid "Learn How to Use Subtasks"
 msgstr "Lernen Sie, wie man Teilaufgaben verwendet"
 
-#: GTG/core/firstrun_tasks.py:111
+#: GTG/core/firstrun_tasks.py:112
 msgid ""
 "A &quot;Subtask&quot; is something that you need to do first before being "
 "able to accomplish your task. In GTG, the purpose of subtasks is to cut down "
@@ -980,9 +1186,9 @@ msgid ""
 "can always change the relationships by drag-and-dropping tasks on (or "
 "between) each other in the tasks list."
 msgstr ""
-"Eine »Teilaufgabe« ist etwas, das man tun muss, bevor man die "
-"richtige Aufgabe fertigstellen kann. In GTG ist der Zweck von Teilaufgaben"
-"die Aufteilung der Aufgabe (oder des Projekts) in kleinere, mehr bearbeitbare "
+"Eine »Teilaufgabe« ist etwas, das man tun muss, bevor man die richtige "
+"Aufgabe fertigstellen kann. In GTG ist der Zweck von Teilaufgabendie "
+"Aufteilung der Aufgabe (oder des Projekts) in kleinere, mehr bearbeitbare "
 "Teilaufgaben, die einfacher zu erledigen und verfolgbarer sind.\n"
 "\n"
 "Um eine Teilaufgaben im Editor zu erstellen (zum Beispiel dieses Fenster), "
@@ -994,26 +1200,25 @@ msgstr ""
 "\n"
 "\n"
 "\n"
-"Ansonsten kann man den »Teilaufgabe hinzufügen« Knopf in der "
-"Werkzeugleiste in diesem Fenster drücken.\n"
+"Ansonsten kann man den »Teilaufgabe hinzufügen« Knopf in der Werkzeugleiste "
+"in diesem Fenster drücken.\n"
 "\n"
-"Beachten Sie, dass Teilaufgaben einige Bedingungen erfüllen müssen: Erstens kann das "
-"Startdatum nicht nach dem Fälligkeitsdatum der dazugehörige Aufgabe sein. "
-"Zweitens, wenn eine Aufgabe erledigt ist, werden ihre Teilaufgaben auch als "
-"erledigt markiert.\n"
+"Beachten Sie, dass Teilaufgaben einige Bedingungen erfüllen müssen: Erstens "
+"kann das Startdatum nicht nach dem Fälligkeitsdatum der dazugehörige Aufgabe "
+"sein. Zweitens, wenn eine Aufgabe erledigt ist, werden ihre Teilaufgaben "
+"auch als erledigt markiert.\n"
 "\n"
 "Wenn Sie nicht glücklich über Ihre aktuelle Aufgabenorganisation sind, dann "
 "können Sie die Aufgaben durch ziehen und ablegen (drag-and-drop) in "
 "Teilaufgaben anderer Aufgaben umwandeln, oder zwischen anderen Teilaufgaben "
 "ablegen, um die Verbindung zu trennen."
 
-#. Task 2@1: Learn to use tags
 #: GTG/core/firstrun_tasks.py:137
 msgid "Learn How to Use Tags and Enable the Sidebar"
 msgstr ""
 "Lernen Sie, wie man Schlagwörter und die dazugehörige Seitenleiste verwendet"
 
-#: GTG/core/firstrun_tasks.py:139
+#: GTG/core/firstrun_tasks.py:141
 msgid ""
 "In GTG, you use tags to sort your tasks. A tag is a simple word that begins "
 "with &quot;@&quot;.\n"
@@ -1047,8 +1252,8 @@ msgstr ""
 "\n"
 "Versuchen Sie, hier ein mit »@« beginnendes Wort zu schreiben:\n"
 "\n"
-"Sobald es gelb erscheint, ist es ein Schlagwort, welches mit der "
-"Aufgabe verknüpft ist.\n"
+"Sobald es gelb erscheint, ist es ein Schlagwort, welches mit der Aufgabe "
+"verknüpft ist.\n"
 "\n"
 "Über den Menüknopf oder die F9-Taste kann man die Seitenleiste ein- oder "
 "ausblenden, welche alle verwendeten Schlagwörter zeigt. Damit können alle "
@@ -1061,8 +1266,8 @@ msgstr ""
 "wollen.\n"
 "\n"
 "Neue Schlagwörter werden stets ausschließlich mit der gerade bearbeiteten "
-"Aufgabe verknüpft, und nicht mit einer Teilaufgabe. Eine neue Teilaufgabe wird "
-"jedoch die Schlagwörter ihrer übergeordneten Aufgabe übernehmen.\n"
+"Aufgabe verknüpft, und nicht mit einer Teilaufgabe. Eine neue Teilaufgabe "
+"wird jedoch die Schlagwörter ihrer übergeordneten Aufgabe übernehmen.\n"
 "\n"
 "Wenn Sie eine weiter fortgeschrittenere Aufgabenplanung betreiben wollen, "
 "können Sie auch durch ziehen und ablegen (drag-and-drop) eine Hierarchie der "
@@ -1072,12 +1277,11 @@ msgstr ""
 "definierten, und nun @zu_zahlen über @Geld verschieben, so wird nun jeder "
 "mit @zu_zahlen auch bei Angabe von @Geld angezeigt werden."
 
-#. Task 3@1: Using the Actionable tab
-#: GTG/core/firstrun_tasks.py:168
+#: GTG/core/firstrun_tasks.py:169
 msgid "Learn How to Use the Actionable View Mode"
 msgstr "Lernen Sie, wie die Arbeitsansicht (»Umsetzbar«) verwendet wird"
 
-#: GTG/core/firstrun_tasks.py:170
+#: GTG/core/firstrun_tasks.py:173
 msgid ""
 "If you press the &quot;Actionable&quot; tab, only actionable tasks will be "
 "displayed in your list.\n"
@@ -1110,21 +1314,21 @@ msgid ""
 "tag hidden in the Actionable view, etc.). To avoid this, you may prefer to "
 "edit your task while in the &quot;Open&quot; tasks view instead."
 msgstr ""
-"Wenn Sie den »Umsetzbar«-Tab oben auswählen, werden nur "
-"bearbeitbare Aufgaben angezeigt.\n"
+"Wenn Sie den »Umsetzbar«-Tab oben auswählen, werden nur bearbeitbare "
+"Aufgaben angezeigt.\n"
 "\n"
 "Was ist eine bearbeitbare Aufgabe? Es ist eine Aufgabe, die Sie jetzt direkt "
 "ausführen können.\n"
 "\n"
-"Es ist eine Aufgabe, die »startbar« ist, das heißt, das Startdatum "
-"ist bereits eingetroffen.\n"
+"Es ist eine Aufgabe, die »startbar« ist, das heißt, das Startdatum ist "
+"bereits eingetroffen.\n"
 "\n"
 "Es ist eine Aufgabe ohne offene Teilaufgaben, also können Sie die Aufgabe "
 "direkt ausführen, weil sie nicht mehr von einer Aufgabe abhängt.\n"
 "\n"
-"Es ist eine Aufgabe, dessen Fälligkeitsdatum etwas anderes als »"
-"Irgendwann« ist, weil dieses spezielle Datum für Aufgaben da ist, die "
-"mehr Bedenkzeit benötigen, bevor Sie ausgeführt werden können.\n"
+"Es ist eine Aufgabe, dessen Fälligkeitsdatum etwas anderes als »Irgendwann« "
+"ist, weil dieses spezielle Datum für Aufgaben da ist, die mehr Bedenkzeit "
+"benötigen, bevor Sie ausgeführt werden können.\n"
 "\n"
 "Die Arbeitsansicht wird Ihnen also nur Aufgaben zeigen, die Sie unmittelbar "
 "bearbeiten können, und ist deshalb nützlich, wenn Sie auf die nächste "
@@ -1133,16 +1337,15 @@ msgstr ""
 "Wenn Sie Schlagworte verwenden, können Sie auf ein Schlagwort in der "
 "Seitenleiste rechts-klicken und bearbeiten, und dann auswählen, ob Aufgaben "
 "mit dem Schlagwort in der Arbeitsansicht verborgen werden sollen oder nicht. "
-"Das ist sehr sinnvoll, wenn Sie ein Schlagwort wie »warten« für "
-"Aufgaben verwenden, die durch etwas Externes blockiert sind (z. B. ein "
-"Telefonanruf, den Sie erwarten)."
+"Das ist sehr sinnvoll, wenn Sie ein Schlagwort wie »warten« für Aufgaben "
+"verwenden, die durch etwas Externes blockiert sind (z. B. ein Telefonanruf, "
+"den Sie erwarten)."
 
-#. Task 5@1: Plugins
-#: GTG/core/firstrun_tasks.py:206
+#: GTG/core/firstrun_tasks.py:208
 msgid "Learn About Plugins"
 msgstr "Lernen Sie über Erweiterungen"
 
-#: GTG/core/firstrun_tasks.py:208
+#: GTG/core/firstrun_tasks.py:212
 msgid ""
 "GTG has the ability to add plugins to extend its core functionality.\n"
 "\n"
@@ -1153,20 +1356,19 @@ msgid ""
 msgstr ""
 "GTG kann mit Hilfe von Erweiterungen erweitert werden.\n"
 "\n"
-"Im Hauptmenüknopf können Sie unter »Erweiterungen« die "
-"Erweiterungen verwalten. Wir würden uns freuen, wenn Sie eigene "
-"Erweiterungen schreiben und diese dem GTG Projekt einbringen, so dass diese "
-"einer größeren Reichweite zur Verfügung steht."
+"Im Hauptmenüknopf können Sie unter »Erweiterungen« die Erweiterungen "
+"verwalten. Wir würden uns freuen, wenn Sie eigene Erweiterungen schreiben "
+"und diese dem GTG Projekt einbringen, so dass diese einer größeren "
+"Reichweite zur Verfügung steht."
 
-#. Task 5@1: Reporting bugs
-#: GTG/core/firstrun_tasks.py:219
+#: GTG/core/firstrun_tasks.py:221
 msgid "Reporting Bugs"
 msgstr "Fehler melden"
 
 # Added "engish speaking" for the issue tracker
 # Small "joke" added: bug-free (the insect) is added, but crossed out (with Unicode), then corrected with the real word.
-# "traceback" not included since I am not completely sure what it is meant (stacktrace?)
-#: GTG/core/firstrun_tasks.py:221
+# "traceback" as-is because AFAIK it is used as-is
+#: GTG/core/firstrun_tasks.py:225
 msgid ""
 "It is a well-known fact that GTG has no bugs! 🐛\n"
 "But sometimes, in the dark, unexpected things happen...\n"
@@ -1181,19 +1383,18 @@ msgstr ""
 "Es ist bekannt, dass GTG k̶ä̶f̶e̶r̶f̶r̶e̶i̶ fehlerfrei ist! 🐛\n"
 "Jedoch können im Dunkeln unerwartete Dinge geschehen…\n"
 "\n"
-"Wenn Sie aber Abstürze oder Fehlverhalten feststellen, dann melden Sie es "
-"bitte detailreich in unserem englischsprachigen Issue Tracking System unter "
-"https://github.com/getting-things-gnome/gtg/issues/new\n"
+"Wenn Sie aber Abstürze, Tracebacks oder Fehlverhalten feststellen, dann "
+"melden Sie es bitte detailreich in unserem englischsprachigen Issue Tracking "
+"System unter https://github.com/getting-things-gnome/gtg/issues/new\n"
 "\n"
 "Durch Ihre Hilfe und Beteiligung wird diese Software besser. Rückmeldungen, "
 "Fehlerberichte sowie Ideen sind willkommen, vor allem Patches!"
 
-#. Task 6@1: Learn how to use the QuickAdd Entry
-#: GTG/core/firstrun_tasks.py:234
+#: GTG/core/firstrun_tasks.py:237
 msgid "Learn How to Use the Quick Add Entry"
-msgstr "Lerne Sie, wie der Schnelleintrag verwendet wird"
+msgstr "Lernen Sie, wie der Schnelleintrag verwendet wird"
 
-#: GTG/core/firstrun_tasks.py:236
+#: GTG/core/firstrun_tasks.py:241
 msgid ""
 "The Quick Add entry is the fastest way to create a new task without "
 "disrupting your focus from the main window. It has a special syntax with "
@@ -1205,12 +1406,11 @@ msgstr ""
 "Syntax mit eigenen Schlüsselwörter. Schauen Sie im Handbuch nach, um mehr "
 "darüber zu erfahren."
 
-#. Task 7@1: Learn How To Use Synchonization Services
-#: GTG/core/firstrun_tasks.py:244
+#: GTG/core/firstrun_tasks.py:248
 msgid "Learn About Synchronization Services"
 msgstr "Lernen Sie über Synchronisierungsdienste"
 
-#: GTG/core/firstrun_tasks.py:246
+#: GTG/core/firstrun_tasks.py:252
 msgid ""
 "❗ Take note that as of GTG 0.4, synchronization backends/services have been "
 "disabled until someone (you?) steps forward to fix and maintain them, as "
@@ -1231,30 +1431,30 @@ msgid ""
 "import or export your tasks."
 msgstr ""
 "❗ Achtung: Seit GTG 0.4 wurden die Erweiterungen zu den "
-"Synchronisierungsdienste deaktiviert bis sie jemand (Sie?) repariert und pflegt, "
-"weil diese noch nicht mit der neuen Code funktionieren, oder eine veraltete "
-"API vom entsprechenden Dienst nutzen, die aktualisiert werden soll.\n"
+"Synchronisierungsdienste deaktiviert bis sie jemand (Sie?) repariert und "
+"pflegt, weil diese noch nicht mit der neuen Code funktionieren, oder eine "
+"veraltete API vom entsprechenden Dienst nutzen, die aktualisiert werden "
+"soll.\n"
 "\n"
 "Synchronisierungsdienste erlauben GTG, Aufgaben, Notizen oder Fehler von "
-"bestimmten Webseiten oder Programme wie Remember the Milk, Tomboy, "
-"LaunchPad etc. zu synchronisieren (oder zu im- oder exportieren).\n"
+"bestimmten Webseiten oder Programme wie Remember the Milk, Tomboy, LaunchPad "
+"etc. zu synchronisieren (oder zu im- oder exportieren).\n"
 "\n"
 "Dies kann nützlich sein, wenn Sie zum Beispiel Aufgaben von mehreren GTG "
 "Instanzen auf anderen Computer verwalten wollen, oder wenn Sie Aufgaben bei "
 "einem Onlinedienst bearbeiten wollen.\n"
 "\n"
 "Um Synchronisierungsdienste zu nutzen, drücken Sie auf den Menüknopf im "
-"Hauptfenster, und wählen Sie »Synchronisation«. Sie können dann Lokale "
-"und Onlinedienste auswählen, mit dem GTG sich synchronisieren (oder im- oder "
+"Hauptfenster, und wählen Sie »Synchronisation«. Sie können dann Lokale und "
+"Onlinedienste auswählen, mit dem GTG sich synchronisieren (oder im- oder "
 "exportieren) soll."
 
-#. Task 8@1: Learn How To Search For Tasks
-#: GTG/core/firstrun_tasks.py:267
+#: GTG/core/firstrun_tasks.py:272
 msgid "Learn How to Search for Tasks"
 msgstr "Lernen Sie, wie man nach Aufgaben sucht"
 
 # TODO: translate referenced user manual section
-#: GTG/core/firstrun_tasks.py:269
+#: GTG/core/firstrun_tasks.py:276
 msgid ""
 "To help you to find specific tasks more easily, GTG allows you to search for "
 "tasks based on their content.\n"
@@ -1278,17 +1478,17 @@ msgstr ""
 "GTG kann Aufgaben auch nach ihrer Beschreibung suchen, so dass es einfach "
 "ist, nach spezifischen Aufgaben zu suchen.\n"
 "\n"
-"Die Suche ist einfach: Drücken Sie Strg+F und schreiben Sie dass, was Sie suchen "
-"wollen, in die Suche.\n"
+"Die Suche ist einfach: Drücken Sie Strg+F und schreiben Sie dass, was Sie "
+"suchen wollen, in die Suche.\n"
 "\n"
-"GTG kann Suchvorgänge in der Seitenleiste unter »Gespeicherte "
-"Suchvorgänge« speichern. Damit ist es möglich, vorherige Suchen wieder "
-"durchzuführen. Die Suchergebnisse werden automatisch aktualisiert.\n"
+"GTG kann Suchvorgänge in der Seitenleiste unter »Gespeicherte Suchvorgänge« "
+"speichern. Damit ist es möglich, vorherige Suchen wieder durchzuführen. Die "
+"Suchergebnisse werden automatisch aktualisiert.\n"
 "\n"
 "Die Suche in GTG ist sehr mächtig und akzeptiert viele Parameter um nach "
 "bestimmten Aufgaben zu suchen. Zum Beispiel sucht mit der Suche »@Auftrag !"
-"Heute« nach Aufgaben, die das Schlagwort @Auftrag besitzen "
-"und heute erledigt werden sollen. Um mehr über die verfügbare Parameter "
+"Heute« nach Aufgaben, die das Schlagwort @Auftrag besitzen und heute "
+"erledigt werden sollen. Um mehr über die verfügbare Parameter "
 "herauszufinden, schauen Sie im Benutzerhandbuch, welches im Menüknopf im "
 "Hauptprogramm unter »Hilfe« zu finden ist, nach »Search Syntax "
 "documentation«."
@@ -1376,29 +1576,33 @@ msgid "My new task"
 msgstr "Meine neue Aufgabe"
 
 # Used in the "neutral" language parsing, needs to be lower case
-#: GTG/core/task.py:177
+#: GTG/core/task.py:212
 msgid "tags"
 msgstr "schlagwörter"
 
 # Used in the "neutral" language parsing, needs to be lower case
-#: GTG/core/task.py:177
+#: GTG/core/task.py:212
 msgid "tag"
 msgstr "schlagwort"
 
 # Used in the "neutral" language parsing, needs to be lower case
-#: GTG/core/task.py:183
+#: GTG/core/task.py:218
 msgid "defer"
 msgstr "verschieben"
 
 # Used in the "neutral" language parsing, needs to be lower case
-#: GTG/core/task.py:184
+#: GTG/core/task.py:219
 msgid "start"
 msgstr "start"
 
 # Used in the "neutral" language parsing, needs to be lower case
-#: GTG/core/task.py:190
+#: GTG/core/task.py:225
 msgid "due"
 msgstr "fällig"
+
+#: GTG/core/task.py:232
+msgid "every"
+msgstr "jedes"
 
 #: GTG/core/treefactory.py:76 GTG/gtk/backends/parameters_ui/__init__.py:69
 msgid "All tasks"
@@ -1446,10 +1650,10 @@ msgstr "Synchronisation ist <span color=\"red\">deaktiviert</span>."
 #. Load and setup other widgets
 #: GTG/gtk/backends/__init__.py:68
 #, python-brace-format
-msgid "Synchronization Services - {info.NAME}"
-msgstr "Synchronisationsdienst - {info.NAME}"
+msgid "Synchronization Services - {name}"
+msgstr "Synchronisationsdienst - {name}"
 
-#: GTG/gtk/backends/__init__.py:269
+#: GTG/gtk/backends/__init__.py:270
 #, python-format
 msgid "Do you really want to remove the '%s' synchronization service?"
 msgstr "Wollen Sie wirklich den Synchronisationsdienst »%s« entfernen?"
@@ -1556,6 +1760,13 @@ msgstr "Konfigurieren"
 msgid "Ignore"
 msgstr "Ignorieren"
 
+#: GTG/gtk/browser/backend_infobar.py:113
+#: GTG/gtk/browser/backend_infobar.py:118
+#: GTG/gtk/browser/backend_infobar.py:143
+#: GTG/gtk/browser/backend_infobar.py:196
+msgid "OK"
+msgstr "OK"
+
 #: GTG/gtk/browser/backend_infobar.py:139
 msgid "Confirm"
 msgstr "Bestätigen"
@@ -1630,27 +1841,27 @@ msgstr ""
 
 #. These lines should be in info.py, but due to their dynamic nature
 #. there'd be no way to show them translated in Gtk's About dialog:
-#: GTG/gtk/browser/main_window.py:304
+#: GTG/gtk/browser/main_window.py:319
 #, python-format
 msgid "Copyright © 2008-%d the GTG contributors."
 msgstr "Copyright © 2008-%d Beitragende von GTG."
 
 #. GTK prefixes the first line with "Created by ",
 #. but we can't split the string because it would cause trouble for some languages.
-#: GTG/gtk/browser/main_window.py:309
+#: GTG/gtk/browser/main_window.py:324
 msgid "GTG was made by many contributors around the world."
 msgstr "GTG wurde von vielen weltweit beigetragen."
 
-#: GTG/gtk/browser/main_window.py:310
+#: GTG/gtk/browser/main_window.py:325
 msgid "The GTG project is maintained/administered by:"
 msgstr "Das GTG Projekt wird verwaltet und betreut von:"
 
-#: GTG/gtk/browser/main_window.py:312
+#: GTG/gtk/browser/main_window.py:327
 msgid "This release was brought to you by the efforts of these people:"
 msgstr ""
 "Diese Version wurde durch die Anstrengungen folgende Beitragenden möglich:"
 
-#: GTG/gtk/browser/main_window.py:314
+#: GTG/gtk/browser/main_window.py:329
 #, python-brace-format
 msgid ""
 "Many others contributed to GTG over the years.\n"
@@ -1659,7 +1870,7 @@ msgstr ""
 "Über die Jahre haben viele zu GTG etwas beigetragen.\n"
 "Unter {OH_stats} und {GH_stats} sind sie zu finden."
 
-#: GTG/gtk/browser/main_window.py:322
+#: GTG/gtk/browser/main_window.py:338
 msgid "GTG website"
 msgstr "Webseite von GTG"
 
@@ -1667,18 +1878,18 @@ msgstr "Webseite von GTG"
 #. Translators for a particular language should put their names here.
 #. Please keep the width at 80 chars max, as GTK3's About dialog won't wrap text.
 #. GtkAboutDialog will detect if “translator-credits” is untranslated and auto-hide the tab.
-#: GTG/gtk/browser/main_window.py:335
+#: GTG/gtk/browser/main_window.py:351
 msgid "translator-credits"
 msgstr ""
 "Borim\n"
 "Neui\n"
 "Renehsz"
 
-#: GTG/gtk/browser/main_window.py:637
+#: GTG/gtk/browser/main_window.py:659
 msgid "Hide Sidebar"
 msgstr "Seitenleiste verstecken"
 
-#: GTG/gtk/browser/main_window.py:639
+#: GTG/gtk/browser/main_window.py:661
 msgid "Show Sidebar"
 msgstr "Seitenleiste anzeigen"
 
@@ -1735,93 +1946,122 @@ msgstr ""
 "festzulegen"
 
 #. Build the title/label/tags columns
-#: GTG/gtk/browser/treeview_factory.py:340
+#: GTG/gtk/browser/treeview_factory.py:345
 msgid "Tasks"
 msgstr "Aufgaben"
 
-#: GTG/gtk/browser/treeview_factory.py:345
+#: GTG/gtk/browser/treeview_factory.py:350
 msgid "Start Date"
-msgstr "Startdatum"
+msgstr "Beginnt am"
 
-#: GTG/gtk/browser/treeview_factory.py:356
+#: GTG/gtk/browser/treeview_factory.py:361
 msgid "Due"
 msgstr "Fällig am"
 
 #. Build the title/label/tags columns
-#: GTG/gtk/browser/treeview_factory.py:371
+#: GTG/gtk/browser/treeview_factory.py:376
 msgid "Closed Tasks"
 msgstr "Abgeschlossene Aufgaben"
 
-#: GTG/gtk/browser/treeview_factory.py:376
+#: GTG/gtk/browser/treeview_factory.py:381
 msgid "Closed Date"
 msgstr "Abgeschlossen am"
 
-#: GTG/gtk/editor/editor.py:138 GTG/gtk/editor/editor.py:379
+#: GTG/gtk/editor/editor.py:152 GTG/gtk/editor/editor.py:479
 msgid "Add Parent"
 msgstr "Übergeordnete Aufgabe hinzufügen"
 
-#: GTG/gtk/editor/editor.py:442
+#: GTG/gtk/editor/editor.py:542
 #, python-format
 msgid "Completed %(days)d day late"
 msgid_plural "Completed %(days)d days late"
 msgstr[0] "%(days)d Tag zu spät abgeschlossen"
 msgstr[1] "%(days)d Tage zu spät abgeschlossen"
 
-#: GTG/gtk/editor/editor.py:447
+#: GTG/gtk/editor/editor.py:547
 #, python-format
 msgid "Completed %(days)d day early"
 msgid_plural "Completed %(days)d days early"
 msgstr[0] "%(days)d Tag vorzeitig abgeschlossen"
 msgstr[1] "%(days)d Tage vorzeitig abgeschlossen"
 
-#: GTG/gtk/editor/editor.py:456
+#: GTG/gtk/editor/editor.py:556
 #, python-format
 msgid "Due tomorrow!"
 msgid_plural "%(days)d days left"
 msgstr[0] "Morgen fällig!"
 msgstr[1] "%(days)d Tage verbleiben"
 
-#: GTG/gtk/editor/editor.py:459
+#: GTG/gtk/editor/editor.py:559
 msgid "Due today!"
 msgstr "Heute fällig!"
 
-#: GTG/gtk/editor/editor.py:462
+#: GTG/gtk/editor/editor.py:562
 #, python-format
 msgid "Due yesterday!"
 msgid_plural "Was %(days)d days ago"
 msgstr[0] "War gestern fällig!"
 msgstr[1] "War vor %(days)d Tagen fällig"
 
+#. Recurring monthly from selected date
+#. Recurring monthly from today
+#: GTG/gtk/editor/recurring_menu.py:96 GTG/gtk/editor/recurring_menu.py:107
+#, python-brace-format
+msgid "Every <b>{month_day} of the month</b>"
+msgstr "Jeden <b>Monat den {month_day}.</b>"
+
+#: GTG/gtk/editor/recurring_menu.py:99 GTG/gtk/editor/recurring_menu.py:110
+#, python-brace-format
+msgid "Every <b>{month} {day}</b>"
+msgstr "Jeden <b>{day}. {month}</b>"
+
+# Not using "Täglich" to be more consistent with other "Every"-strings
+#. Recurring daily
+#: GTG/gtk/editor/recurring_menu.py:101
+msgid "Every <b>day</b>"
+msgstr "Jeden <b>Tag</b>"
+
+#. Recurring every other day
+#: GTG/gtk/editor/recurring_menu.py:103
+msgid "Every <b>other day</b>"
+msgstr "Jeden <b>zweiten Tag</b>"
+
+#. Recurring weekly from today
+#: GTG/gtk/editor/recurring_menu.py:105 GTG/gtk/editor/recurring_menu.py:113
+#, python-brace-format
+msgid "Every <b>{week_day}</b>"
+msgstr "Jeden <b>{week_day}</b>"
+
 # "Verweis" from GNOME terminal
-#: GTG/gtk/editor/taskview.py:1436
+#: GTG/gtk/editor/taskview.py:626
 msgid "Open Link"
 msgstr "Verweis öffnen"
 
 # "Verweis-Adresse" from GNOME terminal
-#: GTG/gtk/editor/taskview.py:1442
+#: GTG/gtk/editor/taskview.py:634
 msgid "Copy Link to Clipboard"
 msgstr "Verweis-Adresse kopieren"
 
-#: GTG/gtk/general_preferences.py:64
+#: GTG/gtk/general_preferences.py:65
 msgid "General"
 msgstr "Allgemein"
 
-#: GTG/plugins/export/export.py:89
+#: GTG/plugins/export/export.py:88
 msgid "No task matches your criteria. Empty report can't be generated."
 msgstr ""
 "Keine Aufgaben entsprechen Ihre Kriterien. Ein leerer Bericht kann nicht "
 "erstellt werden."
 
-#: GTG/plugins/export/export.py:107
+#: GTG/plugins/export/export.py:106
 #, python-format
 msgid "GTG could not generate the document: %s"
 msgstr "GTG kann das Dokument »%s« nicht generieren"
 
-#: GTG/plugins/export/export.py:152
+#: GTG/plugins/export/export.py:149
 msgid "Export the tasks currently listed"
 msgstr "Exportiere die aktuell gelisteten Aufgaben"
 
-#: GTG/plugins/export/export.py:283
+#: GTG/plugins/export/export.py:271
 msgid "Choose where to save your list"
 msgstr "Speicherort für die Liste auswählen"
 
@@ -1933,6 +2173,19 @@ msgstr "Aufgabe: %(task_title)s"
 #: GTG/plugins/untouched_tasks/untouchedTasks.py:64
 msgid "Add @untouched tag"
 msgstr "@untouched Schlagwort hinzufügen"
+
+#~ msgid "How do you want to access the export plugin?"
+#~ msgstr "Wie möchten Sie auf das Exportplugin zugreifen?"
+
+#~ msgid "Put an entry in the Plugins menu"
+#~ msgstr "Einen Eintrag im Erweiterungsmenü"
+
+#~ msgid ""
+#~ "Your tasks are saved in a text file (XML format).  This is the most basic "
+#~ "and the default way for GTG to save your tasks."
+#~ msgstr ""
+#~ "Ihre Aufgaben werden in einer Text-Datei im XML-Format gespeichert.  Dies "
+#~ "ist der Standard und zudem der einfachste Weg, Aufgaben zu speichern."
 
 #~ msgid "Edit"
 #~ msgstr "Bearbeiten"
