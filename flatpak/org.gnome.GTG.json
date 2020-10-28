@@ -12,6 +12,7 @@
     "--socket=wayland",
     "--share=network",
     "--system-talk-name=org.freedesktop.login1",
+    "--talk-name=org.gnome.Hamster",
     "--own-name=org.gnome.GTGDevel"
   ],
   "cleanup": [
