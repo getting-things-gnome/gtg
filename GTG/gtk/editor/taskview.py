@@ -819,8 +819,6 @@ class TaskView(Gtk.TextView):
 
         self.subtasks['tags'].append(tid)
 
-        # Make sure subtasks can be deleted when removed in the text editor
-        task.can_be_deleted = True
 
     # --------------------------------------------------------------------------
     # VERSIONING
