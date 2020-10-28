@@ -70,70 +70,12 @@ class TaskView(Gtk.TextView):
     after the widget has been initialized, otherwise many things won't work.
     """
 
-    # Requester
-    req = None
-
-    # Clipboard
-    clipboard = None
-
     # Timeout in milliseconds
     PROCESSING_DELAY = 250
-
-    # The timeout handler
-    timeout = None
-
-    # Title of the task
-    title = None
-
-    # Tags applied to this task
-    task_tags = set()
-
-    # Handle ID for the modified signal handler
-    id_modified = None
-
-    # Callback when tags are clicked
-    browse_tag_cb = NotImplemented
-
-    # Callback to add tags to task
-    add_tasktag_cb = NotImplemented
-
-    # Callback to remove tags from task
-    remove_tasktag_cb = NotImplemented
-
-    # Callback to get subtask list
-    get_subtasks_cb = NotImplemented
-
-    # Get list of tags in the task
-    get_taglist_cb = NotImplemented
-
-    # Callback to add a new subtask
-    new_subtask_cb = NotImplemented
-
-    # Callback to open a subtask
-    open_task_cb = NotImplemented
-
-    # Callback to delete a subtask
-    delete_subtask_cb = NotImplemented
-
-    # Callback to rename a subtask
-    rename_subtask_cb = NotImplemented
-
-    # Refresh the task editor
-    refresh_cb = NotImplemented
-
-    # Callback to save the task without refreshing the widget
-    save_cb = NotImplemented
 
     # Mouse cursors
     CURSOR_HAND = Gdk.Cursor.new(Gdk.CursorType.HAND2)
     CURSOR_NORMAL = Gdk.Cursor.new(Gdk.CursorType.XTERM)
-
-    # The tag currently hovered. This tag gets reset() when the mouse or cursor
-    # moves away
-    hovered_tag = None
-
-    # URL currently right-clicked. This is used to populate the context menu
-    clicked_link = None
 
 
     def __init__(self, req: Requester, clipboard) -> None:
@@ -141,6 +83,36 @@ class TaskView(Gtk.TextView):
 
         self.req = req
         self.clipboard = clipboard
+
+        # The timeout handler
+        self.timeout = None
+
+        # Title of the task
+        self.title = None
+
+        # Tags applied to this task
+        self.task_tags = set()
+
+        # Callbacks. These need to be set after init
+        self.browse_tag_cb = NotImplemented
+        self.add_tasktag_cb = NotImplemented
+        self.remove_tasktag_cb = NotImplemented
+        self.get_subtasks_cb = NotImplemented
+        self.get_taglist_cb = NotImplemented
+        self.new_subtask_cb = NotImplemented
+        self.open_task_cb = NotImplemented
+        self.delete_subtask_cb = NotImplemented
+        self.rename_subtask_cb = NotImplemented
+        self.refresh_cb = NotImplemented
+        self.save_cb = NotImplemented
+
+        # The tag currently hovered. This tag gets reset() when the mouse or
+        # cursor moves away
+        self.hovered_tag = None
+
+        # URL currently right-clicked. This is used to populate the context
+        # menu
+        self.clicked_link = None
 
         # Basic textview setup
         self.set_left_margin(20)
