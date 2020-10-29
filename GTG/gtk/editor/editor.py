@@ -389,12 +389,10 @@ class TaskEditor():
 
 
     def get_monitor_dimensions(self) -> Gdk.Rectangle:
-        """Get dimensions for the monitor this window is in."""
+        """Get dimensions for the first monitor."""
 
-        screen = self.window.get_screen()
-        monitor = screen.get_monitor_at_window(screen.get_active_window())
-
-        return screen.get_monitor_geometry(monitor)
+        monitor = Gdk.Display.get_default().get_monitor(0)
+        return monitor.get_geometry()
 
 
     def init_dimensions(self):
