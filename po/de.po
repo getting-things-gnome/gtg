@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-10-27 00:39+0100\n"
-"PO-Revision-Date: 2020-10-27 01:29+0100\n"
+"PO-Revision-Date: 2020-10-29 14:43+0100\n"
 "Last-Translator: Neui <neui>\n"
 "Language-Team: Deutsch <>\n"
 "Language: de\n"
@@ -108,7 +108,7 @@ msgstr ""
 
 #: GTG/plugins/export.gtg-plugin.desktop:4
 msgid "Export and print"
-msgstr "Expotieren und drucken"
+msgstr "Exportieren und drucken"
 
 #: GTG/plugins/export.gtg-plugin.desktop:5
 msgid "Exports the tasks in the current view into a variety of formats."
@@ -136,7 +136,7 @@ msgid ""
 "status, due_dates, tags and subtasks."
 msgstr ""
 "Fügt einen Knopf hinzu, um Aufgaben einfach per E-Mail zu versenden, samt "
-"Status, Fällgikeitsdatum, Schlagwörter und Unteraufgaben."
+"Status, Fälligkeitsdatum, Schlagwörter und Teilaufgaben."
 
 #: GTG/plugins/untouched-tasks.gtg-plugin.desktop:4
 msgid "Untouched tasks"
@@ -432,11 +432,10 @@ msgctxt "shortcut window"
 msgid "Open Help"
 msgstr "Hilfe aufrufen"
 
-# From GNOME settings
 #: GTG/gtk/data/help_overlay.ui:35
 msgctxt "shortcut window"
 msgid "Show Keyboard Shortcuts"
-msgstr "Tastaturkürzeln anzeigen"
+msgstr "Tastenkombinationen anzeigen"
 
 #: GTG/gtk/data/help_overlay.ui:43
 msgctxt "shortcut window"
@@ -574,11 +573,11 @@ msgid "Preferences"
 msgstr "Einstellungen"
 
 # GNOME Settings uses "Tastaturkürzel"
-# Nautilus & GTranslator uses "Tastenkombinationen"
-# The resulting window calls themselves "Tastenkürzel"
+# Nautilus & GTranslator use "Tastenkombinationen"
+# The resulting window of all 3 call themselves "Tastenkürzel"
 #: GTG/gtk/data/main_window.ui:301
 msgid "Keyboard Shortcuts"
-msgstr "Tastenkürzel"
+msgstr "Tastenkombinationen"
 
 # Using https://wiki.gnome.org/de/StandardUebersetzungen
 #: GTG/gtk/data/main_window.ui:329
@@ -681,7 +680,7 @@ msgstr ""
 
 #: GTG/gtk/data/modify_tags.ui:107
 msgid "Apply to subtasks"
-msgstr "Auf Unteraufgaben anwenden"
+msgstr "Auf Teilaufgaben anwenden"
 
 #: GTG/gtk/data/plugins.ui:54
 msgid "<b>Dependencies</b>"
@@ -717,7 +716,7 @@ msgstr "Wiederholen"
 
 #: GTG/gtk/data/task_editor.ui:150
 msgid "Tick to activate"
-msgstr "Zum Aktivieren Ankreuzen"
+msgstr "Zum Aktivieren ankreuzen"
 
 #: GTG/gtk/data/task_editor.ui:188
 msgid "Daily"
@@ -980,25 +979,30 @@ msgstr "Montag"
 msgid "Sunday"
 msgstr "Sonntag"
 
+# Made lowercase anyway (in GTG/core/dates.py)
 #: GTG/core/dates.py:499
 msgid "day"
-msgstr "tag"
+msgstr "Tag"
 
+# Made lowercase anyway (in GTG/core/dates.py)
 #: GTG/core/dates.py:501
 msgid "other-day"
-msgstr "zweiten-tag"
+msgstr "zweiten-Tag"
 
+# Made lowercase anyway (in GTG/core/dates.py)
 #: GTG/core/dates.py:503
 msgid "week"
-msgstr "woche"
+msgstr "Woche"
 
+# Made lowercase anyway (in GTG/core/dates.py)
 #: GTG/core/dates.py:505
 msgid "month"
 msgstr "Monat"
 
+# Made lowercase anyway (in GTG/core/dates.py)
 #: GTG/core/dates.py:507
 msgid "year"
-msgstr "jahr"
+msgstr "Jahr"
 
 #: GTG/core/dates.py:568
 #, python-format
@@ -1600,9 +1604,10 @@ msgstr "start"
 msgid "due"
 msgstr "fällig"
 
+# Used in the "neutral" language parsing for recurring dates, needs to be lower case
 #: GTG/core/task.py:232
 msgid "every"
-msgstr "jedes"
+msgstr "jeden"
 
 #: GTG/core/treefactory.py:76 GTG/gtk/backends/parameters_ui/__init__.py:69
 msgid "All tasks"
