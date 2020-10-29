@@ -1,6 +1,6 @@
 project('gtg',
   version: '0.4.0',
-  meson_version: '>= 0.50.0'
+  meson_version: '>= 0.51.0'
 )
 
 i18n = import('i18n')
