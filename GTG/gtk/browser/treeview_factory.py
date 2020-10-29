@@ -342,11 +342,13 @@ class TreeviewFactory():
 
     def active_tasks_treeview(self, tree):
         # Build the title/label/tags columns
+        # Translators: Column name, containing the task titles
         desc = self.common_desc_for_tasks(tree, _("Tasks"))
 
         # "startdate" column
         col_name = 'startdate'
         col = {}
+        # Translators: Column name, containing the start date
         col['title'] = _("Start Date")
         col['expandable'] = False
         col['resizable'] = False
@@ -358,6 +360,7 @@ class TreeviewFactory():
         # 'duedate' column
         col_name = 'duedate'
         col = {}
+        # Translators: Column name, containing the due date
         col['title'] = _("Due")
         col['expandable'] = False
         col['resizable'] = False
@@ -373,11 +376,13 @@ class TreeviewFactory():
 
     def closed_tasks_treeview(self, tree):
         # Build the title/label/tags columns
+        # Translators: Column name, containing the task titles
         desc = self.common_desc_for_tasks(tree, _("Closed Tasks"))
 
         # "startdate" column
         col_name = 'closeddate'
         col = {}
+        # Translators: Column name, containing the closed date
         col['title'] = _("Closed Date")
         col['expandable'] = False
         col['resizable'] = False

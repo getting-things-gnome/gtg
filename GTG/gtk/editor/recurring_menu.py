@@ -93,9 +93,11 @@ class RecurringMenu():
         if self.is_term_set():
             if self.selected_recurring_term.isdigit():
                 if len(self.selected_recurring_term) <= 2 : # Recurring monthly from selected date
+                    # Translators: Recurring monthly
                     self.title.set_markup(_('Every <b>{month_day} of the month</b>').format(month_day=datetime.strptime(f'{self.selected_recurring_term}', '%d').strftime('%d')))
                 else: # Recurring yearly from selected date
                     date = datetime.strptime(f'{self.selected_recurring_term[:2:]}-{self.selected_recurring_term[2::]}', '%m-%d')
+                    # Translators: Recurring yearly
                     self.title.set_markup(_('Every <b>{month} {day}</b>').format(month=date.strftime('%B'), day=date.strftime('%d')))
             elif self.selected_recurring_term == 'day': # Recurring daily
                 self.title.set_markup(_('Every <b>day</b>'))

@@ -200,6 +200,25 @@ class Task(TreeNode):
         defer_date = Date.no_date()
         recurring = False
         recurring_term = None
+
+        match_tags = [
+            "tags",
+            "tag",
+            # Translators: Used in parsing, no spaces, lowercased in code
+            _("tags").lower(),
+            # Translators: Used in parsing, no spaces, lowercased in code
+            _("tag").lower(),
+        ]
+        match_defer = [
+            "defer",
+            "start",
+            # Translators: Used in parsing, no spaces, lowercased in code
+            _("defer").lower(),
+            # Translators: Used in parsing, no spaces, lowercased in code
+            _("start").lower(),
+        ]
+
+
         if text:
             # Get tags in the title
             for match in extract_tags_from_text(text):
@@ -209,27 +228,26 @@ class Task(TreeNode):
             matches = re.findall(regexp, text, re.UNICODE)
             for spaces, attribute, args in matches:
                 valid_attribute = True
-                if attribute.lower() in ["tags", _("tags"), "tag", _("tag")]:
+                if attribute.lower() in match_tags:
                     for tag in args.split(","):
                         if not tag.strip() == "@" and not tag.strip() == "":
                             if not tag.startswith("@"):
                                 tag = "@" + tag
                             tags.append(tag)
-                elif attribute.lower() in ["defer", _("defer"), "start",
-                                           _("start")]:
+                elif attribute.lower() in match_defer:
                     try:
                         defer_date = Date.parse(args)
                     except ValueError:
                         valid_attribute = False
-                elif attribute.lower() == "due" or \
-                        attribute.lower() == _("due"):
+                # Translators: Used in parsing, no spaces, lowercased in code
+                elif attribute.lower() in ["due", _("due").lower()]:
                     try:
                         due_date = Date.parse(args)
                     except:
                         valid_attribute = False
 
-                elif attribute.lower() == "every" or \
-                        attribute.lower() == _("every"):
+                # Translators: Used in parsing, no spaces, lowercased in code
+                elif attribute.lower() in ["every", _("every").lower()]:
                     try:
                         Date(self.added_date).parse_from_date(args)
                         recurring = True

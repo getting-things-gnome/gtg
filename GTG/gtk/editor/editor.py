@@ -474,8 +474,10 @@ class TaskEditor():
 
         # Refreshing the parent button
         if self.task.has_parent():
+            # Translators: Button label to open the parent task
             self.parent_button.set_label(_('Open Parent'))
         else:
+            # Translators: Button label to add an new parent task
             self.parent_button.set_label(_('Add Parent'))
 
         # Refreshing the status bar labels and date boxes
