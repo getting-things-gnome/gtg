@@ -83,16 +83,27 @@ from GTG.core.dates import Date
 # Generate keywords and their possible translations
 # They must be listed because of gettext
 KEYWORDS = {
+    # Translators: Used in search parsing, no spaces, lowercased in code
     "not": _("not"),
+    # Translators: Used in search parsing, no spaces, lowercased in code
     "or": _("or"),
+    # Translators: Used in search parsing, no spaces, lowercased in code
     "after": _("after"),
+    # Translators: Used in search parsing, no spaces, lowercased in code
     "before": _("before"),
+    # Translators: Used in search parsing, no spaces, lowercased in code
     "today": _("today"),
+    # Translators: Used in search parsing, no spaces, lowercased in code
     "tomorrow": _("tomorrow"),
+    # Translators: Used in search parsing, no spaces, lowercased in code
     "nodate": _("nodate"),
+    # Translators: Used in search parsing, no spaces, lowercased in code
     "now": _("now"),
+    # Translators: Used in search parsing, no spaces, lowercased in code
     "soon": _("soon"),
+    # Translators: Used in search parsing, no spaces, lowercased in code
     "someday": _("someday"),
+    # Translators: Used in search parsing, no spaces, lowercased in code
     "notag": _("notag"),
 }
 

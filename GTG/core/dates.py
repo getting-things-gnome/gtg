@@ -41,20 +41,27 @@ ENGLISH_STRINGS = {
 }
 
 STRINGS = {
+    # Translators: Used for display
     NOW: _('now'),
+    # Translators: Used for display
     SOON: _('soon'),
+    # Translators: Used for display
     SOMEDAY: _('someday'),
     NODATE: '',
 }
 
 LOOKUP = {
     'now': NOW,
+    # Translators: Used in parsing, made lowercased in code
     _('now').lower(): NOW,
     'soon': SOON,
+    # Translators: Used in parsing, made lowercased in code
     _('soon').lower(): SOON,
     'later': SOMEDAY,
+    # Translators: Used in parsing, made lowercased in code
     _('later').lower(): SOMEDAY,
     'someday': SOMEDAY,
+    # Translators: Used in parsing, made lowercased in code
     _('someday').lower(): SOMEDAY,
     '': NODATE,
 }
@@ -368,14 +375,19 @@ class Date():
         # accepted date formats
         formats = {
             'today': 0,
+            # Translators: Used in parsing, made lowercased in code
             _('today').lower(): 0,
             'tomorrow': 1,
+            # Translators: Used in parsing, made lowercased in code
             _('tomorrow').lower(): 1,
             'next week': 7,
+            # Translators: Used in parsing, made lowercased in code
             _('next week').lower(): 7,
             'next month': calendar.mdays[today.month],
+            # Translators: Used in parsing, made lowercased in code
             _('next month').lower(): calendar.mdays[today.month],
             'next year': 365 + int(calendar.isleap(today.year)),
+            # Translators: Used in parsing, made lowercased in code
             _('next year').lower(): 365 + int(calendar.isleap(today.year)),
         }
 
@@ -496,14 +508,19 @@ class Date():
         formats = {
             # change the offset depending on the task.
             'day': 0 if newtask else 1,
+            # Translators: Used in recurring parsing, made lowercased in code
             _('day').lower(): 0 if newtask else 1,
             'other-day': 0 if newtask else 2,
+            # Translators: Used in recurring parsing, made lowercased in code
             _('other-day').lower(): 0 if newtask else 2,
             'week': 0 if newtask else 7,
+            # Translators: Used in recurring parsing, made lowercased in code
             _('week').lower(): 0 if newtask else 7,
             'month': 0 if newtask else calendar.mdays[self.month],
+            # Translators: Used in recurring parsing, made lowercased in code
             _('month').lower(): 0 if newtask else calendar.mdays[self.month],
             'year': 0 if newtask else 365 + int(calendar.isleap(self.year)),
+            # Translators: Used in recurring parsing, made lowercased in code
             _('year').lower(): 0 if newtask else 365 + int(calendar.isleap(self.year)),
         }
 
