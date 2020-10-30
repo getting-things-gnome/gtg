@@ -108,7 +108,7 @@ class Date():
             self._parse_init_value(NODATE)
         elif isinstance(value, datetime.date):
             self._real_date = value
-            self._cached_date = date
+            self._cached_date = value
         elif isinstance(value, Date):
             # Copy internal values from other Date object
             self._real_date = value._real_date
