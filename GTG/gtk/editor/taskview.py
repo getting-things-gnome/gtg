@@ -302,7 +302,17 @@ class TaskView(Gtk.TextView):
                                for t in after_checkbox.get_tags())
 
             if not has_checkbox:
-                return False
+                check = self.buffer.get_slice(start, after_checkbox, True)
+
+                # Check that there's still a checkbox. If the user has
+                # deleted all text including the space after the checkbox,
+                # the check for the tag will return False. In this case
+                # we want to check if the checkbox is still around, if it
+                # is the user might still type a new name for the task.
+                # Otherwise, if the checkbox was deleted, we return and let
+                # the text tags be deleted.
+                if check != u'\uFFFC':
+                    return False
 
             # Don't auto-remove it
             tid = sub_tag.tid
