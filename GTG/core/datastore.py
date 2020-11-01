@@ -588,7 +588,16 @@ class DataStore():
             for backend_id, thread in threads_dic.items():
                 # after 20 seconds, we give up
                 thread.join(20)
-                if thread.isAlive():
+
+                #TODO: This method got a new name in Python 3.9. We should
+                # remove this try/catch when we raise the minimum supported
+                # Python version
+                try:
+                    alive = thread.isAlive()
+                except AttributeError:
+                    alive = thread.is_alive()
+
+                if alive:
                     log.error("The %s backend stalled while quitting",
                               backend_id)
 
