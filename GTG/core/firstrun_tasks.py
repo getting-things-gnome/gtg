@@ -39,7 +39,17 @@ tags = {
 
 
 # TIDs for each initial task
-task_ids = [str(uuid4()) for _ in range(9)]
+task_ids = [
+    '33d9760d-2e07-4ae4-9c02-1fcdaeb46325',
+    '262d1410-71aa-4e35-abec-90ef1bab44d3',
+    '2d427a77-3077-4277-904c-073fcfcb4842',
+    '0653765c-f5d4-4b7f-9903-0065bb258940',
+    '3efd01b7-343d-4be1-9bac-8ed944517e3f',
+    '9b05a6c5-81e3-4fe5-a70d-3b569f65409c',
+    '21ed54a8-e7ff-408a-b648-8d12cc75e162',
+    'd1c73224-9eec-4889-b3c4-bb0281e5c1d3',
+    '586dd1a7-0772-4d0a-85db-34edfc8ee30c',
+]
 
 # Date for modified and added tags
 today = Date.today().xml_str()
@@ -88,7 +98,7 @@ tasks = [
             "To open and edit a subtask, simply click on its link! "
             "You can always come back using the &quot;Open Parent&quot; button. "
             "Try opening the following subtask for example:\n"
-            "{! " + task_ids[1] + " !}\n"
+            "{! 262d1410-71aa-4e35-abec-90ef1bab44d3 !}\n"
             "\n"
             "Closing a task:\n"
             "\n"
@@ -109,14 +119,14 @@ tasks = [
             "\n"
             "If you are interested in knowing more about "
             "GTG's other features, you will find more information here:\n"
-            "{! " + task_ids[1] + " !}\n"
-            "{! " + task_ids[2] + " !}\n"
-            "{! " + task_ids[3] + " !}\n"
-            "{! " + task_ids[4] + " !}\n"
-            "{! " + task_ids[5] + " !}\n"
-            "{! " + task_ids[6] + " !}\n"
-            "{! " + task_ids[7] + " !}\n"
-            "{! " + task_ids[8] + " !}\n"
+            "{! 262d1410-71aa-4e35-abec-90ef1bab44d3 !}\n"
+            "{! 2d427a77-3077-4277-904c-073fcfcb4842 !}\n"
+            "{! 0653765c-f5d4-4b7f-9903-0065bb258940 !}\n"
+            "{! 3efd01b7-343d-4be1-9bac-8ed944517e3f !}\n"
+            "{! 9b05a6c5-81e3-4fe5-a70d-3b569f65409c !}\n"
+            "{! 21ed54a8-e7ff-408a-b648-8d12cc75e162 !}\n"
+            "{! d1c73224-9eec-4889-b3c4-bb0281e5c1d3 !}\n"
+            "{! 586dd1a7-0772-4d0a-85db-34edfc8ee30c !}\n"
             "\n"
             "We also recommend you read our user manual, by pressing F1 "
             "or using the &quot;Help&quot; entry in the main window's menu button.\n"
