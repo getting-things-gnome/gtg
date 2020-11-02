@@ -142,6 +142,14 @@ class Backend(GenericBackend):
         @param xml: an xml object containing the default tasks.
         """
 
+        filepath = self.get_path()
+        if versioning.is_required(filepath):
+            log.warning('Found old file. Running versioning code.')
+            old_path = os.path.join(DATA_DIR, 'gtg_tasks.xml')
+            tree = versioning.convert(old_path, self.datastore)
+
+            xml.save_file(filepath, tree)
+
         self._parameters[self.KEY_DEFAULT_BACKEND] = True
 
         root = firstrun_tasks.generate()
