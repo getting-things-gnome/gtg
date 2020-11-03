@@ -31,6 +31,7 @@ from GTG.core.tag import SEARCH_TAG
 from GTG.core.task import Task
 from gettext import gettext as _
 from GTG.gtk.browser import GnomeConfig
+from GTG.gtk.browser import quick_add
 from GTG.gtk.browser.backend_infobar import BackendInfoBar
 from GTG.gtk.browser.modify_tags import ModifyTagsDialog
 from GTG.gtk.browser.delete_tag import DeleteTagsDialog
@@ -788,6 +789,8 @@ class MainWindow(Gtk.ApplicationWindow):
 
                 # It cannot be another thread than the main gtk thread !
                 GObject.idle_add(selecter, treemodelsort, path, iter, self)
+
+            data = quick_add.parse(text)
             # event that is set when the new task is created
             self.__last_quick_added_tid_event = threading.Event()
             self.__quick_add_select_handle = \
@@ -797,7 +800,20 @@ class MainWindow(Gtk.ApplicationWindow):
             task = self.req.new_task(newtask=True)
             self.__last_quick_added_tid = task.get_id()
             self.__last_quick_added_tid_event.set()
-            task.set_complex_title(text, tags=tags)
+
+            if data['title'] != '':
+                task.set_title(data['title'])
+                task.set_to_keep()
+
+            for tag in data['tags']:
+                task.add_tag(tag)
+
+            task.set_start_date(data['start'])
+            task.set_due_date(data['due'])
+
+            if data['recurring']:
+                task.set_recurring(True, data['recurring'], newtask=True)
+
             self.quickadd_entry.set_text('')
 
             # signal the event for the plugins to catch
@@ -1167,7 +1183,7 @@ class MainWindow(Gtk.ApplicationWindow):
         self.update_recurring(True, 'year')
 
     def on_toggle_recurring(self, action, param):
-        self.update_toggle_recurring() 
+        self.update_toggle_recurring()
 
     def on_date_changed(self, calendar):
         # Get tasks' list from task names' list
