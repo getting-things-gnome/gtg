@@ -7,6 +7,7 @@ GTG/plugins/send-email.gtg-plugin.desktop
 GTG/plugins/untouched-tasks.gtg-plugin.desktop
 GTG/plugins/urgency-color.gtg-plugin.desktop
 GTG/plugins/hamster.gtg-plugin.desktop
+GTG/plugins/gamify.gtg-plugin.desktop
 
 GTG/gtk/data/backends.ui
 GTG/gtk/data/calendar.ui
