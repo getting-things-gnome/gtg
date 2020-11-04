@@ -58,6 +58,7 @@ class MainWindow(Gtk.ApplicationWindow):
     __string_signal__ = (GObject.SignalFlags.RUN_FIRST, None, (str, ))
     __none_signal__ = (GObject.SignalFlags.RUN_FIRST, None, tuple())
     __gsignals__ = {'task-added-via-quick-add': __string_signal__,
+                    'task-marked-as-done': __string_signal__,
                     'visibility-toggled': __none_signal__,
                     }
 
@@ -1287,6 +1288,7 @@ class MainWindow(Gtk.ApplicationWindow):
             else:
                 task.set_status(Task.STA_DONE)
                 self.close_all_task_editors(uid)
+                GObject.idle_add(self.emit, "task-marked-as-done", task.get_id())
 
     def on_dismiss_task(self, widget=None):
         tasks_uid = [uid for uid in self.get_selected_tasks()
