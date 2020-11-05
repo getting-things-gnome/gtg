@@ -127,6 +127,7 @@ class TagEditor(Gtk.Window):
 
         text = self.hidden_entry.get_text()
         self.ti_bt_label.set_text(text)
+        self.ti_bt_label.set_opacity(1)
 
         with GObject.signal_handler_block(self.hidden_entry, self.emoji_id):
             self.hidden_entry.set_text('')
@@ -223,6 +224,13 @@ class TagEditor(Gtk.Window):
                 if len(icon) < 6:
                     self.ti_bt_label.set_text(icon)
                     self.tag.set_attribute('icon', icon)
+                    self.ti_bt_label.set_opacity(1)
+                else:
+                    self.ti_bt_label.set_text('🏷️')
+                    self.ti_bt_label.set_opacity(0.5)
+            else:
+                self.ti_bt_label.set_text('🏷️')
+                self.ti_bt_label.set_opacity(0.5)
             # If available, update color selection
             if (tag.get_attribute('color') is not None):
                 col = tag.get_attribute('color')
