@@ -17,7 +17,12 @@
 # -----------------------------------------------------------------------------
 
 from gi.repository import GObject, GLib, Gtk, Gdk
+import gi
 import cairo
+
+gi.require_version('PangoCairo', '1.0')
+from gi.repository import Pango
+from gi.repository import PangoCairo
 
 from GTG.core.logger import log
 
@@ -139,28 +144,25 @@ class CellRendererTags(Gtk.CellRenderer):
             rect_x = orig_x + self.PADDING * 2 * count + 16 * count
             rect_y = orig_y
 
-            if my_tag_icon:
-                try:
-                    icon_theme = Gtk.IconTheme.get_default()
 
-                    if my_tag_icon in self.SYMBOLIC_ICONS:
-                        info = icon_theme.lookup_icon(my_tag_icon, 16, 0)
-                        load = info.load_symbolic(symbolic_color)
-                        pixbuf = load[0]
-                    else:
-                        pixbuf = icon_theme.load_icon(my_tag_icon, 16, 0)
+            if my_tag_icon:
+                if my_tag_icon in self.SYMBOLIC_ICONS:
+                    icon_theme = Gtk.IconTheme.get_default()
+                    info = icon_theme.lookup_icon(my_tag_icon, 16, 0)
+                    load = info.load_symbolic(symbolic_color)
+                    pixbuf = load[0]
 
                     Gdk.cairo_set_source_pixbuf(gdkcontext, pixbuf,
                                                 rect_x, rect_y)
                     gdkcontext.paint()
-                    count = count + 1
-                except GLib.GError as e:
-                    # In some rare cases an icon could not be found
-                    # (e.g. wrong set icon path, missing icon)
-                    # Raising an exception breaks UI and signal catcher badly
-                    if my_tag_icon not in self._ignore_icon_error_for:
-                        log.error(f"Can't load icon '{my_tag_icon}': {e}")
-                        self._ignore_icon_error_for.add(my_tag_icon)
+                    count +=  1
+
+                else:
+                    layout = PangoCairo.create_layout(cr)
+                    layout.set_markup(my_tag_icon, -1)
+                    cr.move_to(rect_x - 2, rect_y - 1)
+                    PangoCairo.show_layout(cr, layout)
+                    count += 1
 
             elif my_tag_color:
 
@@ -169,7 +171,7 @@ class CellRendererTags(Gtk.CellRenderer):
                 Gdk.cairo_set_source_color(gdkcontext, my_color)
                 self.__roundedrec(gdkcontext, rect_x, rect_y, 16, 16, 8)
                 gdkcontext.fill()
-                count = count + 1
+                count += 1
 
                 # Outer line
                 Gdk.cairo_set_source_rgba(gdkcontext, Gdk.RGBA(0, 0, 0, 0.20))
