@@ -45,3 +45,17 @@ textview check {
 	margin-right: 10px;
 	margin-left: 25px;
 }
+
+.hidden {
+  background: transparent;
+  border: none;
+  color: transparent;
+  font-size: 0.001px;
+  margin: 0;
+  opacity: 0;
+  padding: 0;
+}
+
+.icon {
+    font-size: 36px;
+}
