@@ -67,8 +67,9 @@ class TagEditor(Gtk.Window):
         # FIXME
         self.hdr_align = Gtk.Alignment()
         self.top_vbox.pack_start(self.hdr_align, True, True, 0)
-        self.hdr_align.set_padding(0, 25, 0, 0)
+        self.hdr_align.set_padding(0, 5, 0, 0)
         self.hdr_box = Gtk.Box()
+        self.clear_box = Gtk.Box()
         self.hdr_align.add(self.hdr_box)
         self.hdr_box.set_spacing(10)
         # Button to tag icon selector
@@ -84,6 +85,10 @@ class TagEditor(Gtk.Window):
         self.ti_bt.set_size_request(64, 64)
         self.hidden_entry.set_size_request(0, 0)
         self.ti_bt.set_relief(Gtk.ReliefStyle.HALF)
+        self.ti_bt_clear = Gtk.Button()
+        self.ti_bt_clear.set_label('Remove icon')
+        self.clear_box.add(self.ti_bt_clear)
+
         # vbox for tag name and hid in WV
         self.tp_grid = Gtk.Grid()
         self.hdr_box.pack_start(self.tp_grid, True, True, 0)
@@ -105,6 +110,7 @@ class TagEditor(Gtk.Window):
         self.tp_grid.attach(self.tn_cb, 1, 1, 1, 1)
         # Tag color
         self.tc_vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
+        self.top_vbox.pack_start(self.clear_box, False, False, 0)
         self.top_vbox.pack_start(self.tc_vbox, True, True, 0)
         self.tc_label_align = Gtk.Alignment()
         self.tc_vbox.pack_start(self.tc_label_align, True, True, 0)
@@ -117,7 +123,7 @@ class TagEditor(Gtk.Window):
         # Tag color chooser
         self.tc_cc_align = Gtk.Alignment.new(0.5, 0.5, 0, 0)
         self.tc_vbox.pack_start(self.tc_cc_align, True, True, 0)
-        self.tc_cc_align.set_padding(15, 35, 10, 10)
+        self.tc_cc_align.set_padding(25, 15, 10, 10)
         self.tc_cc_colsel = SimpleColorSelector()
         # self.tc_cc_colsel = Gtk.ColorChooserWidget()
         self.tc_cc_align.add(self.tc_cc_colsel)
@@ -126,8 +132,15 @@ class TagEditor(Gtk.Window):
         """Set emoji as icon (both in settings and button label)."""
 
         text = self.hidden_entry.get_text()
-        self.ti_bt_label.set_text(text)
-        self.ti_bt_label.set_opacity(1)
+
+        if text:
+            self.ti_bt_label.set_text(text)
+            self.ti_bt_label.set_opacity(1)
+            self.ti_bt_clear.set_sensitive(True)
+        else:
+            self.ti_bt_label.set_text('🏷️')
+            self.ti_bt_label.set_opacity(0.1)
+            self.ti_bt_clear.set_sensitive(False)
 
         with GObject.signal_handler_block(self.hidden_entry, self.emoji_id):
             self.hidden_entry.set_text('')
@@ -139,10 +152,17 @@ class TagEditor(Gtk.Window):
 
         self.hidden_entry.do_insert_emoji(self.hidden_entry)
 
+    def clear_icon(self, widget):
+        """Remove icon."""
+
+        self.hidden_entry.set_text('')
+        self.set_emoji(None)
+
     def __set_callbacks(self):
         """Define the widget callbacks"""
         # Set the callbacks
         self.ti_bt.connect('clicked', self.call_emoji_popup)
+        self.ti_bt_clear.connect('clicked', self.clear_icon)
         self.emoji_id = self.hidden_entry.connect('changed', self.set_emoji)
 
         self.tn_entry_clicked_hid = \
@@ -225,12 +245,13 @@ class TagEditor(Gtk.Window):
                     self.ti_bt_label.set_text(icon)
                     self.tag.set_attribute('icon', icon)
                     self.ti_bt_label.set_opacity(1)
+                    self.ti_bt_clear.set_sensitive(False)
                 else:
                     self.ti_bt_label.set_text('🏷️')
-                    self.ti_bt_label.set_opacity(0.5)
+                    self.ti_bt_label.set_opacity(0.1)
             else:
                 self.ti_bt_label.set_text('🏷️')
-                self.ti_bt_label.set_opacity(0.5)
+                self.ti_bt_label.set_opacity(0.1)
             # If available, update color selection
             if (tag.get_attribute('color') is not None):
                 col = tag.get_attribute('color')
