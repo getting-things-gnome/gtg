@@ -16,10 +16,15 @@ class Gamify:
     def __init__(self):
         self.configureable = True
 
-    def _init_dialog_pref(self):
         self.builder = Gtk.Builder()
         path = f"{self.PLUGIN_PATH}/prefs.ui"
         self.builder.add_from_file(path)
+
+        self.menu = None
+        self.stack = None
+        self.submenu = None
+
+    def _init_dialog_pref(self):
         # Get the dialog widget
         self.pref_dialog = self.builder.get_object('gamify-pref-dialog')
         # Get the buttonSpin
@@ -34,16 +39,30 @@ class Gamify:
         }
         self.builder.connect_signals(SIGNALS) 
 
+    def add_submenu(self):
+        self.menu = self.plugin_api.get_menu()
+        self.stack = self.menu.get_child()
+        self.submenu = self.builder.get_object('submenu-popover')
+        self.stack.add_named(self.submenu, 'gamify')
+
+    def remove_submenu(self):
+        self.stack.remove(self.submenu)
+
+    def add_menu_enty(self):
+        self.menu_item = self.builder.get_object('gamify-entry')
+        self.menu_item.connect("clicked", self.on_marked_as_done, self.plugin_api)
+        self.plugin_api.add_menu_item(self.menu_item)
+
+    def remove_menu_entry(self):
+        self.plugin_api.remove_menu_item(self.menu_item)
 
     def activate(self, plugin_api):
         self.plugin_api = plugin_api
         self.browser = plugin_api.get_browser()
 
-        # Add a button to the MainWindow
-        self.menu_item = Gtk.ModelButton.new()
-        self.menu_item.set_label(_("Gamify"))
-        self.menu_item.connect("clicked", self.on_marked_as_done, plugin_api)
-        self.plugin_api.add_menu_item(self.menu_item)
+        # Settings up the menu 
+        self.add_submenu()
+        self.add_menu_enty()
 
         # Init the preference dialog
         try:
@@ -62,7 +81,8 @@ class Gamify:
         pass
     
     def deactivate(self, plugin_api):
-        self.plugin_api.remove_menu_item(self.menu_item)
+        self.remove_submenu()
+        self.remove_menu_entry()
 
     def is_configurable(self):
         return True
