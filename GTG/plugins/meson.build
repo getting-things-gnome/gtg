@@ -11,6 +11,7 @@ gtg_plugins = [
   'untouched-tasks',
   'urgency-color',
   'hamster',
+  'dev_console',
 ]
 
 foreach plugin : gtg_plugins
