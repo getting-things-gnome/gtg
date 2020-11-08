@@ -164,9 +164,12 @@
       </packing>
     </child>
     <child>
-      <object class="GtkLevelBar">
+      <object class="GtkLevelBar" id="gamify-level-bar">
         <property name="visible">True</property>
         <property name="can-focus">False</property>
+        <property name="value">4</property>
+        <property name="max-value">5</property>
+        <property name="mode">discrete</property>
       </object>
       <packing>
         <property name="expand">False</property>
@@ -186,16 +189,29 @@
       </packing>
     </child>
     <child>
-      <object class="GtkLabel" id="score_label">
+      <object class="GtkLabel" id="label">
         <property name="visible">True</property>
         <property name="can-focus">False</property>
-        <property name="label" translatable="yes">Your level</property>
+        <property name="label" translatable="yes">Your current level is</property>
         <property name="wrap">True</property>
       </object>
       <packing>
         <property name="expand">False</property>
         <property name="fill">True</property>
         <property name="position">4</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkLabel" id="score_label">
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+        <property name="label" translatable="yes">label</property>
+        <property name="wrap">True</property>
+      </object>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">True</property>
+        <property name="position">5</property>
       </packing>
     </child>
     <child>
@@ -207,7 +223,7 @@
       <packing>
         <property name="expand">False</property>
         <property name="fill">True</property>
-        <property name="position">5</property>
+        <property name="position">6</property>
       </packing>
     </child>
   </object>
