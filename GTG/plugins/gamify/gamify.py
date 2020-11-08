@@ -20,6 +20,16 @@ class Gamify:
     DEFAULT_PREFERENCES = {
         "target": 3
     }
+    LEVELS = {
+        100: 'Beginner',
+        1000: 'Novice',
+        2000: 'prefessional',
+        4000: 'Expert',
+        9000: 'Master',
+        13000: 'Master II',
+        19000: 'Grand Master',
+        25000: 'Productivity Lord'
+    }
 
     def __init__(self):
         self.configureable = True
@@ -88,6 +98,7 @@ class Gamify:
         self.update_date(preferences)
         self.update_streak(preferences)
         self.analitics_save(self.data)
+        self.update_widget()
         print(self.data)
 
     def on_marked_as_done(self, sender, task_id):
@@ -102,8 +113,38 @@ class Gamify:
         # if the target number of tasks was achieved
         self.data['last_task_number'] += 1
         self.update_streak(preferences)
+        self.data['score'] += self.get_points_for_task(task_id)
         self.analitics_save(self.data)
+        self.update_widget()
         print(self.data)
+
+    def get_points_for_task(self, task_id):
+        """Returns the number of point for doing a perticular task
+
+        If a task is taged as @hard: the user receives 3 points
+        If a task is taged as @meduim: the use receives 2 points
+        If a task is taged as @easy: the user receives 1 point
+        """
+        easy = False
+        meduim = False
+        hard = False
+        task = self.plugin_api.get_requester().get_task(task_id)
+        tags = task.get_tags_name()
+        for tag in tags:
+            if tag == '@easy':
+                easy = True
+            elif tag == '@meduim':
+                meduim = True
+            elif tag == '@hard':
+                hard = True
+        
+        if easy:
+            return 1
+        if meduim:
+            return 2
+        if hard:
+            return 3
+        return 1
 
     def OnTaskOpened(self, plugin_api):
         pass
@@ -155,6 +196,25 @@ class Gamify:
             self.data['goal_achieved'] = False
             self.data['last_task_number'] = 0
             self.data['last_task_date'] = today
+
+    def get_current_level(self):
+        return min([(score, level) for score,level in self.LEVELS.items() if score >= self.get_score()])[1]
+
+    def get_score(self):
+        return self.data['score']
+
+    def update_score(self):
+        score_label = self.builder.get_object('score_label')
+        score_label.set_markup(_("<b>Your current level is</b> {current_level}").format(current_level=self.get_current_level()))
+        score_value = self.builder.get_object('score_value')
+        score_value.set_markup(_('You have: <b>{score}</b> points').format(score=self.get_score()))
+
+    def update_goal(self):
+        pass
+
+    def update_widget(self):
+        self.update_score()
+        self.update_goal()
 
     def configure_dialog(self, manager_dialog):
         if not self.configureable:
