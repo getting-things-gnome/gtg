@@ -43,6 +43,7 @@ class Gamify:
         self.submenu = None
 
         self.data = None
+        self.preferences = None
 
     def _init_dialog_pref(self):
         # Get the dialog widget
@@ -93,28 +94,28 @@ class Gamify:
         # Connect to the signals
         self.connect_id = self.browser.connect("task-marked-as-done", self.on_marked_as_done)
 
-        self.data = self.analitics_load()
-        preferences = self.preferences_load()
-        self.update_date(preferences)
-        self.update_streak(preferences)
-        self.analitics_save(self.data)
+        self.analitics_load()
+        self.preferences_load()
+        self.update_date()
+        self.update_streak()
+        self.analitics_save()
         self.update_widget()
         print(self.data)
 
     def on_marked_as_done(self, sender, task_id):
         log.debug('a task has been marked as done')
-        self.data = self.analitics_load()
-        preferences = self.preferences_load()
+        self.analitics_load()
+        self.preferences_load()
 
         # Update the date, if it is different from today
-        self.update_date(preferences)
+        self.update_date()
 
         # Increase the number of tasks done and update the streak
         # if the target number of tasks was achieved
         self.data['last_task_number'] += 1
-        self.update_streak(preferences)
+        self.update_streak()
         self.data['score'] += self.get_points_for_task(task_id)
-        self.analitics_save(self.data)
+        self.analitics_save()
         self.update_widget()
         print(self.data)
 
@@ -157,41 +158,41 @@ class Gamify:
         return True
 
     def preferences_load(self):
-        return self.plugin_api.load_configuration_object(
+        self.preferences = self.plugin_api.load_configuration_object(
             self.PLUGIN_NAMESPACE, "preferences",
             default_values=self.DEFAULT_PREFERENCES
         )
 
-    def save_preferences(self, preferences):
+    def save_preferences(self):
         self.plugin_api.save_configuration_object(
             self.PLUGIN_NAMESPACE, 
             "preferences", 
-            preferences
+            self.preferences
         )
 
     def analitics_load(self):
-        return self.plugin_api.load_configuration_object(
+        self.data = self.plugin_api.load_configuration_object(
             self.PLUGIN_NAMESPACE, "analitics",
             default_values=self.DEFAULT_ANALITICS
         )
 
-    def analitics_save(self, analitics):
+    def analitics_save(self):
         self.plugin_api.save_configuration_object(
             self.PLUGIN_NAMESPACE,
             "analitics",
-            analitics
+            self.data
         )
 
-    def update_streak(self, preferences):
-        if self.data['last_task_number'] >= preferences['target']:
+    def update_streak(self):
+        if self.data['last_task_number'] >= self.preferences['target']:
             if not self.data['goal_achieved']:
                 self.data['goal_achieved'] = True
                 self.data['streak'] += 1
 
-    def update_date(self, preferences):
+    def update_date(self):
         today = date.today()
         if self.data['last_task_date'] != today:
-            if self.data['last_task_number'] < preferences['target']:
+            if self.data['last_task_number'] < self.preferences['target']:
                 self.data['streak'] = 0
             self.data['goal_achieved'] = False
             self.data['last_task_number'] = 0
@@ -203,6 +204,9 @@ class Gamify:
     def get_score(self):
         return self.data['score']
 
+    def get_number_of_tasks(self):
+        return self.data['last_task_number']
+
     def update_score(self):
         score_label = self.builder.get_object('score_label')
         score_label.set_markup(_("<b>Your current level is</b> {current_level}").format(current_level=self.get_current_level()))
@@ -210,7 +214,8 @@ class Gamify:
         score_value.set_markup(_('You have: <b>{score}</b> points').format(score=self.get_score()))
 
     def update_goal(self):
-        pass
+        goal_label = self.builder.get_object('goal_label')
+        goal_label.set_markup(_("<b>{tasks_done}/{goal}</b>").format(tasks_done=self.get_number_of_tasks(), goal=self.preferences['target']))
 
     def update_widget(self):
         self.update_score()
@@ -221,10 +226,10 @@ class Gamify:
             log.debug('trying to open preference menu, but dialog widget not loaded')
             return
 
-        preferences = self.preferences_load()
+        self.preferences_load()
         self.pref_dialog.set_transient_for(manager_dialog) 
         
-        self.spinner.set_value(preferences['target'])
+        self.spinner.set_value(self.preferences['target'])
 
         self.pref_dialog.show_all()
 
@@ -233,9 +238,9 @@ class Gamify:
         return True
 
     def on_preferences_changed(self, widget=None, data=None):
-        preferences = self.preferences_load()
+        self.preferences_load()
 
         # Get the new preferences
-        preferences['target'] = self.spinner.get_value()
+        self.preferences['target'] = self.spinner.get_value()
         
-        self.save_preferences(preferences) 
+        self.save_preferences() 
