@@ -209,13 +209,16 @@ class Gamify:
 
     def update_score(self):
         score_label = self.builder.get_object('score_label')
-        score_label.set_markup(_("<b>Your current level is</b> {current_level}").format(current_level=self.get_current_level()))
+        score_label.set_markup(_("<b>{current_level}</b>").format(current_level=self.get_current_level()))
         score_value = self.builder.get_object('score_value')
         score_value.set_markup(_('You have: <b>{score}</b> points').format(score=self.get_score()))
 
     def update_goal(self):
         goal_label = self.builder.get_object('goal_label')
         goal_label.set_markup(_("<b>{tasks_done}/{goal}</b>").format(tasks_done=self.get_number_of_tasks(), goal=self.preferences['target']))
+        levelbar = self.builder.get_object('gamify-level-bar')
+        levelbar.set_max_value(self.preferences['target'])
+        levelbar.set_value(self.get_number_of_tasks())
 
     def update_widget(self):
         self.update_score()
@@ -241,6 +244,7 @@ class Gamify:
         self.preferences_load()
 
         # Get the new preferences
-        self.preferences['target'] = self.spinner.get_value()
+        self.preferences['target'] = self.spinner.get_value_as_int()
         
         self.save_preferences() 
+        self.update_goal()
