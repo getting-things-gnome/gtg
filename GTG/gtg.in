@@ -141,7 +141,7 @@ if __name__ == "__main__":
         application.connect("handle-local-options", handle_local_options)
 
         signal.signal(signal.SIGTERM, lambda s, f: application.quit())
-        application.run(sys.argv)
+        sys.exit(application.run(sys.argv))
 
     except KeyboardInterrupt:
         sys.exit(1)
