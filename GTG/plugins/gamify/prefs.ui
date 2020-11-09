@@ -129,6 +129,51 @@
     <property name="text" translatable="yes">Gamify</property>
     <property name="menu-name">gamify</property>
   </object>
+  <object class="GtkPopover" id="headerbar-popover">
+    <property name="can-focus">False</property>
+    <child>
+      <object class="GtkBox">
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+        <property name="orientation">vertical</property>
+        <child>
+          <object class="GtkLabel" id="headerbar-label">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="label" translatable="yes">label</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+      </object>
+    </child>
+  </object>
+  <object class="GtkMenuButton" id="gamify-headerbar">
+    <property name="visible">True</property>
+    <property name="can-focus">True</property>
+    <property name="focus-on-click">False</property>
+    <property name="receives-default">True</property>
+    <property name="popover">headerbar-popover</property>
+    <child>
+      <object class="GtkLabel" id="headerbar-label-button">
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+        <property name="label" translatable="yes">0/5</property>
+        <attributes>
+          <attribute name="weight" value="bold"/>
+        </attributes>
+      </object>
+    </child>
+  </object>
   <object class="GtkBox" id="submenu-popover">
     <property name="visible">True</property>
     <property name="can-focus">False</property>
@@ -167,9 +212,8 @@
       <object class="GtkLevelBar" id="gamify-level-bar">
         <property name="visible">True</property>
         <property name="can-focus">False</property>
-        <property name="value">4</property>
+        <property name="value">3</property>
         <property name="max-value">5</property>
-        <property name="mode">discrete</property>
       </object>
       <packing>
         <property name="expand">False</property>

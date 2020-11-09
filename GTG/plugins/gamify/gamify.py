@@ -64,10 +64,15 @@ class Gamify:
         self.menu = self.plugin_api.get_menu()
         self.stack = self.menu.get_child()
         self.submenu = self.builder.get_object('submenu-popover')
+        self.headerbar_button = self.builder.get_object('gamify-headerbar')
+
         self.stack.add_named(self.submenu, 'gamify')
+        self.headerbar = self.plugin_api.get_header()
+        self.headerbar.add(self.headerbar_button)
 
     def remove_submenu(self):
         self.stack.remove(self.submenu)
+        self.headerbar.remove(self.headerbar_button)
 
     def add_menu_enty(self):
         self.menu_item = self.builder.get_object('gamify-entry')
@@ -215,8 +220,12 @@ class Gamify:
 
     def update_goal(self):
         goal_label = self.builder.get_object('goal_label')
-        goal_label.set_markup(_("<b>{tasks_done}/{goal}</b>").format(tasks_done=self.get_number_of_tasks(), goal=self.preferences['target']))
+        headerbar_label_button = self.builder.get_object('headerbar-label-button')
         levelbar = self.builder.get_object('gamify-level-bar')
+
+        goal_label.set_markup(_("<b>{tasks_done} tasks out of {goal}</b>").format(tasks_done=self.get_number_of_tasks(), goal=self.preferences['target']))
+        headerbar_label_button.set_markup("{tasks_done}/{goal}".format(tasks_done=self.get_number_of_tasks(), goal=self.preferences['target']))
+
         levelbar.set_max_value(self.preferences['target'])
         levelbar.set_value(self.get_number_of_tasks())
 
