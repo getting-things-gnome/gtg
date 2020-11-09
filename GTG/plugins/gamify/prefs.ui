@@ -135,12 +135,19 @@
       <object class="GtkBox">
         <property name="visible">True</property>
         <property name="can-focus">False</property>
+        <property name="margin-start">10</property>
+        <property name="margin-end">10</property>
+        <property name="margin-top">10</property>
+        <property name="margin-bottom">8</property>
         <property name="orientation">vertical</property>
         <child>
           <object class="GtkLabel" id="headerbar-label">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
             <property name="label" translatable="yes">label</property>
+            <attributes>
+              <attribute name="scale" value="2.5"/>
+            </attributes>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -149,7 +156,22 @@
           </packing>
         </child>
         <child>
-          <placeholder/>
+          <object class="GtkLabel" id="headerbar-msg">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="label" translatable="yes">Put a msg here</property>
+            <property name="justify">center</property>
+            <property name="wrap">True</property>
+            <attributes>
+              <attribute name="style" value="italic"/>
+              <attribute name="weight" value="bold"/>
+            </attributes>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
         </child>
         <child>
           <placeholder/>
@@ -177,6 +199,10 @@
   <object class="GtkBox" id="submenu-popover">
     <property name="visible">True</property>
     <property name="can-focus">False</property>
+    <property name="margin-start">10</property>
+    <property name="margin-end">10</property>
+    <property name="margin-top">8</property>
+    <property name="margin-bottom">10</property>
     <property name="orientation">vertical</property>
     <property name="spacing">7</property>
     <child>

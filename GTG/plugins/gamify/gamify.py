@@ -1,4 +1,5 @@
 import os
+import random
 from datetime import date
 
 from gi.repository import Gio
@@ -221,10 +222,28 @@ class Gamify:
     def update_goal(self):
         goal_label = self.builder.get_object('goal_label')
         headerbar_label_button = self.builder.get_object('headerbar-label-button')
+        headerbar_label = self.builder.get_object('headerbar-label')
+        headerbar_msg = self.builder.get_object('headerbar-msg')
         levelbar = self.builder.get_object('gamify-level-bar')
 
-        goal_label.set_markup(_("<b>{tasks_done} tasks out of {goal}</b>").format(tasks_done=self.get_number_of_tasks(), goal=self.preferences['target']))
-        headerbar_label_button.set_markup("{tasks_done}/{goal}".format(tasks_done=self.get_number_of_tasks(), goal=self.preferences['target']))
+        tasks_done = self.get_number_of_tasks()
+        target = self.preferences['target']
+        goal_label.set_markup(_("<b>{tasks_done} tasks out of {goal}</b>").format(tasks_done=tasks_done, goal=target))
+        headerbar_label_button.set_markup("{tasks_done}/{goal}".format(tasks_done=tasks_done, goal=target))
+
+        # Select a msg and emojo depending on the number of tasks done.
+        if tasks_done >= target:
+            emoji = ["\U0001F60E", "\U0001F920", "\U0001F640"]
+            headerbar_label.set_markup(random.choice(emoji))
+            headerbar_msg.set_markup(_("Good Job!\nYou have achieved your goal."))
+        elif tasks_done > 1:
+            emoji = ["\U0001F600", "\U0001F60C"]
+            headerbar_label.set_markup(random.choice(emoji))
+            headerbar_msg.set_markup(_("Only a few tasks to go!"))
+        else:
+            emoji = ["\U0001F643", "\U0001F648"]
+            headerbar_label.set_markup(random.choice(emoji))
+            headerbar_msg.set_markup(_("Get Down to Business\nYou haven't achieved any tasks today."))
 
         levelbar.set_max_value(self.preferences['target'])
         levelbar.set_value(self.get_number_of_tasks())
