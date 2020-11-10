@@ -122,13 +122,6 @@
       </object>
     </child>
   </object>
-  <object class="GtkModelButton" id="gamify-entry">
-    <property name="visible">True</property>
-    <property name="can-focus">True</property>
-    <property name="receives-default">True</property>
-    <property name="text" translatable="yes">Gamify</property>
-    <property name="menu-name">gamify</property>
-  </object>
   <object class="GtkPopover" id="headerbar-popover">
     <property name="can-focus">False</property>
     <child>
@@ -146,7 +139,7 @@
             <property name="can-focus">False</property>
             <property name="label" translatable="yes">label</property>
             <attributes>
-              <attribute name="scale" value="2.5"/>
+              <attribute name="scale" value="2"/>
             </attributes>
           </object>
           <packing>
@@ -163,8 +156,8 @@
             <property name="justify">center</property>
             <property name="wrap">True</property>
             <attributes>
-              <attribute name="style" value="italic"/>
-              <attribute name="weight" value="bold"/>
+              <attribute name="weight" value="normal"/>
+              <attribute name="scale" value="0.90000000000000002"/>
             </attributes>
           </object>
           <packing>
@@ -174,7 +167,93 @@
           </packing>
         </child>
         <child>
-          <placeholder/>
+          <object class="GtkSeparator">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">2</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="label" translatable="yes">Your current level is</property>
+            <property name="wrap">True</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">3</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="score_label">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="label" translatable="yes">label</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">4</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="score_value">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="label" translatable="yes">label</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">5</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkSeparator">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">6</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="streak_emoji">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="label" translatable="yes">label</property>
+            <attributes>
+              <attribute name="scale" value="1.3999999999999999"/>
+            </attributes>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">7</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="streak_number">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="label" translatable="yes">Your streak</property>
+            <attributes>
+              <attribute name="scale" value="0.80000000000000004"/>
+            </attributes>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">8</property>
+          </packing>
         </child>
       </object>
     </child>
@@ -194,107 +273,6 @@
           <attribute name="weight" value="bold"/>
         </attributes>
       </object>
-    </child>
-  </object>
-  <object class="GtkBox" id="submenu-popover">
-    <property name="visible">True</property>
-    <property name="can-focus">False</property>
-    <property name="margin-start">10</property>
-    <property name="margin-end">10</property>
-    <property name="margin-top">8</property>
-    <property name="margin-bottom">10</property>
-    <property name="orientation">vertical</property>
-    <property name="spacing">7</property>
-    <child>
-      <object class="GtkModelButton" id="return">
-        <property name="visible">True</property>
-        <property name="can-focus">True</property>
-        <property name="receives-default">True</property>
-        <property name="text" translatable="yes">Go back</property>
-        <property name="menu-name">main</property>
-        <property name="inverted">True</property>
-        <property name="centered">True</property>
-      </object>
-      <packing>
-        <property name="expand">False</property>
-        <property name="fill">True</property>
-        <property name="position">0</property>
-      </packing>
-    </child>
-    <child>
-      <object class="GtkLabel" id="goal_label">
-        <property name="visible">True</property>
-        <property name="can-focus">False</property>
-        <property name="label" translatable="yes">Your target</property>
-        <property name="wrap">True</property>
-      </object>
-      <packing>
-        <property name="expand">False</property>
-        <property name="fill">True</property>
-        <property name="position">1</property>
-      </packing>
-    </child>
-    <child>
-      <object class="GtkLevelBar" id="gamify-level-bar">
-        <property name="visible">True</property>
-        <property name="can-focus">False</property>
-        <property name="value">3</property>
-        <property name="max-value">5</property>
-      </object>
-      <packing>
-        <property name="expand">False</property>
-        <property name="fill">True</property>
-        <property name="position">2</property>
-      </packing>
-    </child>
-    <child>
-      <object class="GtkSeparator">
-        <property name="visible">True</property>
-        <property name="can-focus">False</property>
-      </object>
-      <packing>
-        <property name="expand">False</property>
-        <property name="fill">True</property>
-        <property name="position">3</property>
-      </packing>
-    </child>
-    <child>
-      <object class="GtkLabel" id="label">
-        <property name="visible">True</property>
-        <property name="can-focus">False</property>
-        <property name="label" translatable="yes">Your current level is</property>
-        <property name="wrap">True</property>
-      </object>
-      <packing>
-        <property name="expand">False</property>
-        <property name="fill">True</property>
-        <property name="position">4</property>
-      </packing>
-    </child>
-    <child>
-      <object class="GtkLabel" id="score_label">
-        <property name="visible">True</property>
-        <property name="can-focus">False</property>
-        <property name="label" translatable="yes">label</property>
-        <property name="wrap">True</property>
-      </object>
-      <packing>
-        <property name="expand">False</property>
-        <property name="fill">True</property>
-        <property name="position">5</property>
-      </packing>
-    </child>
-    <child>
-      <object class="GtkLabel" id="score_value">
-        <property name="visible">True</property>
-        <property name="can-focus">False</property>
-        <property name="label" translatable="yes">label</property>
-      </object>
-      <packing>
-        <property name="expand">False</property>
-        <property name="fill">True</property>
-        <property name="position">6</property>
-      </packing>
     </child>
   </object>
 </interface>
