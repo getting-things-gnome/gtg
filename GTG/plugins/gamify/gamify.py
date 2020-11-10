@@ -19,7 +19,7 @@ class Gamify:
         "score": 0
     }
     DEFAULT_PREFERENCES = {
-        "target": 3
+        "goal": 3
     }
     LEVELS = {
         100: 'Beginner',
@@ -103,7 +103,7 @@ class Gamify:
         self.update_date()
 
         # Increase the number of tasks done and update the streak
-        # if the target number of tasks was achieved
+        # if the goal number of tasks was achieved
         self.data['last_task_number'] += 1
         self.update_streak()
         self.data['score'] += self.get_points_for_task(task_id)
@@ -175,7 +175,7 @@ class Gamify:
         )
 
     def update_streak(self):
-        if self.data['last_task_number'] >= self.preferences['target']:
+        if self.data['last_task_number'] >= self.preferences['goal']:
             if not self.data['goal_achieved']:
                 self.data['goal_achieved'] = True
                 self.data['streak'] += 1
@@ -183,7 +183,7 @@ class Gamify:
     def update_date(self):
         today = date.today()
         if self.data['last_task_date'] != today:
-            if self.data['last_task_number'] < self.preferences['target']:
+            if self.data['last_task_number'] < self.preferences['goal']:
                 self.data['streak'] = 0
             self.data['goal_achieved'] = False
             self.data['last_task_number'] = 0
@@ -208,19 +208,16 @@ class Gamify:
         score_value.set_markup(_('You have: <b>{score}</b> points').format(score=self.get_score()))
 
     def update_goal(self):
-        goal_label = self.builder.get_object('goal_label')
         headerbar_label_button = self.builder.get_object('headerbar-label-button')
         headerbar_label = self.builder.get_object('headerbar-label')
         headerbar_msg = self.builder.get_object('headerbar-msg')
-        levelbar = self.builder.get_object('gamify-level-bar')
 
         tasks_done = self.get_number_of_tasks()
-        target = self.preferences['target']
-        goal_label.set_markup(_("<b>{tasks_done} tasks out of {goal}</b>").format(tasks_done=tasks_done, goal=target))
-        headerbar_label_button.set_markup("{tasks_done}/{goal}".format(tasks_done=tasks_done, goal=target))
+        goal = self.preferences['goal']
+        headerbar_label_button.set_markup("{tasks_done}/{goal}".format(tasks_done=tasks_done, goal=goal))
 
         # Select a msg and emojo depending on the number of tasks done.
-        if tasks_done >= target:
+        if tasks_done >= goal:
             emoji = ["\U0001F60E", "\U0001F920", "\U0001F640"]
             headerbar_label.set_markup(random.choice(emoji))
             headerbar_msg.set_markup(_("Good Job!\nYou have achieved your goal."))
@@ -232,9 +229,6 @@ class Gamify:
             emoji = ["\U0001F643", "\U0001F648"]
             headerbar_label.set_markup(random.choice(emoji))
             headerbar_msg.set_markup(_("Get Down to Business\nYou haven't achieved any tasks today."))
-
-        levelbar.set_max_value(self.preferences['target'])
-        levelbar.set_value(self.get_number_of_tasks())
 
     def update_streak_widget(self):
         streak_number = self.builder.get_object('streak_number')
@@ -259,7 +253,7 @@ class Gamify:
         self.preferences_load()
         self.pref_dialog.set_transient_for(manager_dialog) 
         
-        self.spinner.set_value(self.preferences['target'])
+        self.spinner.set_value(self.preferences['goal'])
 
         self.pref_dialog.show_all()
 
@@ -271,7 +265,7 @@ class Gamify:
         self.preferences_load()
 
         # Get the new preferences
-        self.preferences['target'] = self.spinner.get_value_as_int()
+        self.preferences['goal'] = self.spinner.get_value_as_int()
         
         self.save_preferences() 
         self.update_goal()
