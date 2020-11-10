@@ -61,34 +61,21 @@ class Gamify:
         }
         self.builder.connect_signals(SIGNALS) 
 
-    def add_submenu(self):
-        self.menu = self.plugin_api.get_menu()
-        self.stack = self.menu.get_child()
-        self.submenu = self.builder.get_object('submenu-popover')
+    def add_headerbar_button(self):
         self.headerbar_button = self.builder.get_object('gamify-headerbar')
 
-        self.stack.add_named(self.submenu, 'gamify')
         self.headerbar = self.plugin_api.get_header()
         self.headerbar.add(self.headerbar_button)
 
-    def remove_submenu(self):
-        self.stack.remove(self.submenu)
+    def remove_headerbar_button(self):
         self.headerbar.remove(self.headerbar_button)
-
-    def add_menu_enty(self):
-        self.menu_item = self.builder.get_object('gamify-entry')
-        self.plugin_api.add_menu_item(self.menu_item)
-
-    def remove_menu_entry(self):
-        self.plugin_api.remove_menu_item(self.menu_item)
 
     def activate(self, plugin_api):
         self.plugin_api = plugin_api
         self.browser = plugin_api.get_browser()
 
         # Settings up the menu 
-        self.add_submenu()
-        self.add_menu_enty()
+        self.add_headerbar_button()
 
         # Init the preference dialog
         try:
@@ -106,7 +93,6 @@ class Gamify:
         self.update_streak()
         self.analitics_save()
         self.update_widget()
-        print(self.data)
 
     def on_marked_as_done(self, sender, task_id):
         log.debug('a task has been marked as done')
@@ -123,7 +109,6 @@ class Gamify:
         self.data['score'] += self.get_points_for_task(task_id)
         self.analitics_save()
         self.update_widget()
-        print(self.data)
 
     def get_points_for_task(self, task_id):
         """Returns the number of point for doing a perticular task
@@ -213,6 +198,9 @@ class Gamify:
     def get_number_of_tasks(self):
         return self.data['last_task_number']
 
+    def get_streak(self):
+        return self.data['streak']
+
     def update_score(self):
         score_label = self.builder.get_object('score_label')
         score_label.set_markup(_("<b>{current_level}</b>").format(current_level=self.get_current_level()))
@@ -236,7 +224,7 @@ class Gamify:
             emoji = ["\U0001F60E", "\U0001F920", "\U0001F640"]
             headerbar_label.set_markup(random.choice(emoji))
             headerbar_msg.set_markup(_("Good Job!\nYou have achieved your goal."))
-        elif tasks_done > 1:
+        elif tasks_done >= 1:
             emoji = ["\U0001F600", "\U0001F60C"]
             headerbar_label.set_markup(random.choice(emoji))
             headerbar_msg.set_markup(_("Only a few tasks to go!"))
@@ -248,9 +236,20 @@ class Gamify:
         levelbar.set_max_value(self.preferences['target'])
         levelbar.set_value(self.get_number_of_tasks())
 
+    def update_streak_widget(self):
+        streak_number = self.builder.get_object('streak_number')
+        streak_emoji = self.builder.get_object('streak_emoji')
+        if self.get_streak() > 0:
+            streak_emoji.set_markup("\U0001F525")
+        else:
+            streak_emoji.set_markup("\U0001F9CA")
+        streak_number.set_markup(_("You've completed your goal {streak} day in a row.").format(streak=self.get_streak()))
+
+
     def update_widget(self):
         self.update_score()
         self.update_goal()
+        self.update_streak_widget()
 
     def configure_dialog(self, manager_dialog):
         if not self.configureable:
