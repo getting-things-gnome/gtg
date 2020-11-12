@@ -20,7 +20,7 @@
 """Developer console plugin."""
 
 import sys
-from gi.repository import Gtk, Gdk
+from gi.repository import Gtk, Gdk, Gio
 from GTG.core.plugins.api import PluginAPI
 
 from gettext import gettext as _
@@ -88,15 +88,26 @@ class DevConsolePlugin():
 
         self.terminal.connect("eof", self.eof_cb)
 
+        # Font and colors
         self.terminal.set_font('Source Code Pro 10')
         self.terminal.set_color(Gdk.RGBA(1.0, 1.0, 1.0, 1.0))
         self.terminal.set_stderr_color(Gdk.RGBA(0.96, 0.5, 0.5, 1.0))
         self.terminal.set_stdout_color(Gdk.RGBA(1.0, 1.0, 1.0, 1.0))
 
+        # Build window
         self.window.set_default_size(600, 400)
         self.window.set_title(_('Developer Console'))
         self.window.connect('delete-event', self.on_delete_event)
         self.window.add(self.terminal)
+
+        # Add F12 shortcut
+        open_action = Gio.SimpleAction.new('plugin.open_console', None)
+        open_action.connect('activate', self.open_window)
+        open_action.set_enabled(True)
+
+        app = self.api.get_view_manager()
+        app.add_action(open_action)
+        app.set_accels_for_action('app.plugin.open_console', ['F12'])
 
 
     def welcome_message(self, namespace):
@@ -122,7 +133,7 @@ class DevConsolePlugin():
         api.remove_menu_item(self.menu_btn)
 
 
-    def open_window(self, widget=None) -> None:
+    def open_window(self, widget=None, unsued=None) -> None:
         """Open developer console."""
 
         self.window.show_all()
