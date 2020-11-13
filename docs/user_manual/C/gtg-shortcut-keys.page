@@ -58,6 +58,15 @@
           <td><p>Toggle <gui>Sidebar</gui></p></td> <td><p><key>F9</key></p></td>
         </tr>
         <tr>
+          <td><p>Show Preferences screen</p></td> <td><p><key>Ctrl</key><key>,</key></p></td>
+        </tr>
+        <tr>
+          <td><p>Open Help screen</p></td> <td><p><key>F1</key></p></td>
+        </tr>
+        <tr>
+          <td><p>Show Keyboard Shortcuts screen</p></td> <td><p><key>Ctrl</key><key>?</key></p></td>
+        </tr>
+        <tr>
           <td><p>Redo</p></td>  <td><p><keyseq><key>Ctrl</key><key>Y</key></keyseq></p></td>
         </tr>
         <tr>
