@@ -36,17 +36,21 @@
 
 <p><em style="strong">List of currently available plugins in <app>GTG</app>:</em></p>
 
+<p><em>Export and Print</em></p>
+<p>Exports the tasks in the current view into a variety of formats.</p>
+
+<p><em>Hamster Time Tracker Integration</em></p>
+<p>Adds the ability to send a task to the Hamster Time Tracking applet.</p>
+
+<p><em>Urgency Color</em></p>
+<p>Calculates the urgency status of each of your currently active tasks and color-codes those tasks accordingly.</p>
+
 <p><em>Untouched Tasks</em></p>
 <p>Assigns tasks that you have not touched for a while with the <code>@untouched</code> tag.</p>
 
 <p><em>Send Tasks via Email</em></p>
 <p>Adds a button in the menu on the <gui>Task Editor</gui> toolbar, which allows you to easily send a task (with its status, due dates, tags, and subtasks) through email.</p>
 
-<p><em>Export and Print</em></p>
-<p>Exports the tasks in the current view into a variety of formats.</p>
-
-<p><em>Urgency Color</em></p>
-<p>Calculates the urgency status of each of your currently active tasks and color-codes those tasks accordingly.</p>
 
 </page>
 
