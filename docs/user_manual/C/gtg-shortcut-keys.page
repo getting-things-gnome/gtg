@@ -53,10 +53,10 @@
           <td><p>Move One Task Down in <gui>Task Browser</gui></p></td>  <td><p><key>Down</key></p></td>
         </tr>
         <tr>
-          <td><p>Unfold Treeview Items</p></td>  <td><p><keyseq><key>Shift</key><key>Down</key></keyseq></p></td>
+          <td><p>Unfold Treeview Items</p></td>  <td><p><keyseq><key>Shift</key><key>Right</key></keyseq></p></td>
         </tr>
         <tr>
-          <td><p>Fold Treeview Items</p></td>  <td><p><keyseq><key>Shift</key><key>Up</key></keyseq></p></td>
+          <td><p>Fold Treeview Items</p></td>  <td><p><keyseq><key>Shift</key><key>Left</key></keyseq></p></td>
         </tr>
         <tr>
           <td><p>Place Focus on <gui>Quick Add Entry</gui> Field</p></td>  <td><p><keyseq><key>Ctrl</key><key>L</key></keyseq></p></td>
