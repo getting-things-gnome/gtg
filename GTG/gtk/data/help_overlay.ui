@@ -53,6 +53,22 @@
             <property name="visible">True</property>
             <property name="title" translatable="yes" context="shortcut window">Task Browser</property>
 
+ 	  <child>
+            <object class="GtkShortcutsShortcut">
+              <property name="visible">True</property>
+              <property name="accelerator">&lt;Shift&gt;Right</property>
+              <property name="title" translatable="yes" context="shortcut window">Unfold Treeview Items in Task Browser</property>
+            </object>
+          </child>
+          
+          <child>
+            <object class="GtkShortcutsShortcut">
+              <property name="visible">True</property>
+              <property name="accelerator">&lt;Shift&gt;Left</property>
+              <property name="title" translatable="yes" context="shortcut window">Fold Treeview Items in Task Browser</property>
+            </object>
+          </child>
+
             <child>
               <object class="GtkShortcutsShortcut">
                 <property name="visible">True</property>
