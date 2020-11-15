@@ -9,6 +9,7 @@
      
      
       <revision pkgversion="0.4.0" date="2020-05-10" status="candidate"/>
+      <revision pkgversion="0.5.0" date="2020-11-15" status="candidate"/>
 
    <credit type="author copyright">
       <name>Danielle Vansia</name>
@@ -49,6 +50,10 @@
       <td><p>Task editor font</p></td>
       <td><p>Change the default font style and font size for the <gui>Task Editor</gui>.</p></td>
     </tr>
+<tr>
+      <td><p>Dark Mode</p></td>
+      <td><p>Turn on Dark Mode for the whole application.</p></td>
+    </tr>    
 <tr>
       <td><p>Clean up options</p></td>
       <td><p>You can use this option to automatically remove old, closed tasks as well as set the number of days before performing this operation.</p></td>
