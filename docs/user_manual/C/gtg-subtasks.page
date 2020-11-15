@@ -11,7 +11,8 @@
     <link type="seealso" xref="gtg-set-task-date"/>
       
       <revision pkgversion="0.3.1" date="2013-06-18" status="candidate"/>
-<revision pkgversion="0.4.0" date="2020-05-16" status="candidate"/>
+      <revision pkgversion="0.4.0" date="2020-05-16" status="candidate"/>
+      <revision pkgversion="0.5.0" date="2020-11-15" status="candidate"/>
    <credit type="author copyright">
       <name>Radina Matic</name>
       <email its:translate="no">radina.matic@gmail.com</email>
@@ -37,16 +38,17 @@
   <p>To create a subtask for the task that is currently opened, you can perform one of the following actions:</p>
 
  <list>
-      <item><p>Start a new line in the <gui>Task Editor</gui> window with a dash (-) and type the subtask's title.</p></item>
+      <item><p>Start a new line in the <gui>Task Editor</gui> window with a dash (-) and a space. Then, type the subtask's title.</p></item>
       <item><p>Click the <media type="image" src="figures/insert_subtask_icon.png"/> button in the <gui>Task Editor</gui> toolbar.</p></item>
       <item><p>Use the <keyseq><key>Ctrl</key><key>Shift</key><key>N</key></keyseq> keyboard shortcut.</p></item>  
 </list>
 
-<p>The subtask title displays with an arrow bullet and is underlined. Click the link to open the subtask in a separate <gui>Task Editor</gui> window.</p>  
+<p>The subtask title displays with a check box and is underlined. Click the link to open the subtask in a separate <gui>Task Editor</gui> window. The parent task window closes after the subtask is opened.</p>  
 <note style="tip"><p>When editing a subtask, you can click the <gui>Open Parent</gui> button in the <gui>Task Editor</gui> toolbar to view and edit the subtask's parent.</p></note>
+<note style="tip"><p>You can mark a subtask as complete while in the parent task by selecting the check box next to the subtask title. Finished subtasks are displayed with strikethrough text in the <gui>Task Editor</gui>.</p></note>
 
 <figure>
-  <title>Insert Subtasks</title>
+  <title> Open Subtasks From Parent Task</title>
   <desc> </desc>
  <media type="image" mime="image/png" src="figures/subtasks.png"/>
 </figure>
@@ -57,6 +59,8 @@
  	<item><p>Subtasks inherit start and due dates as well as any tags assigned to the parent task <em style="strong">at the time that the subtask is created</em>. You can individually edit these characteristics as well as make bulk updates for both tasks and subtasks.</p></item> 
  	<item><p>When you mark a parent task as done, its subtasks will also be marked as done.</p></item>
  </list>
+ 
+ <note style="tip"><p>The number of subtasks that are associated with a parent task are listed next to the parent task in the <gui>Task Browser</gui>. You can also expand and collapse parent tasks to view associated subtasks in the <gui>Task Browser</gui>.</p></note>
 
 </section>
  

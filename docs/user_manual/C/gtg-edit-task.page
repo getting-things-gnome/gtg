@@ -11,7 +11,8 @@
     <link type="seealso" xref="gtg-set-task-date"/>
       
       <revision pkgversion="0.3.1" date="2013-06-18" status="candidate"/>
-<revision pkgversion="0.4.0" date="2020-05-16" status="candidate"/>
+      <revision pkgversion="0.4.0" date="2020-05-16" status="candidate"/>
+      <revision pkgversion="0.5.0" date="2020-11-15" status="candidate"/>
    <credit type="author copyright">
       <name>Radina Matic</name>
       <email its:translate="no">radina.matic@gmail.com</email>
@@ -37,7 +38,7 @@
 <item><p>Use the keyboard shortcut <keyseq><key>CTRL</key><key>E</key></keyseq> to open a selected task from the <gui>Task Browser</gui>.</p></item>  
 </list>
 
-<p>Enter a task description and content in the <gui>Task Editor</gui> window. You can paste links, add tags (start with the “@” sign), and add subtasks (start with a dash “-”) inside the <gui>Task Editor</gui>. See the <link xref="gtg-subtasks">Subtasks</link> and <link xref="gtg-tags">Tags</link> sections for more details about the syntax.</p>
+<p>Enter a task description and content in the <gui>Task Editor</gui> window. You can paste links, add tags (start with the “@” sign), and add subtasks (start with a dash “-”) inside the <gui>Task Editor</gui>. You can also add a detailed description with subheadings. Type <code># Subheading</code> to create a new subheading in the description. See the <link xref="gtg-subtasks">Subtasks</link> and <link xref="gtg-tags">Tags</link> sections for more details about the syntax.</p>
 
 
 <note stlye="tip"><p>Remember that you do not need to save changes that you make to a task as <app>GTG</app> does that automatically while you write.</p></note>
