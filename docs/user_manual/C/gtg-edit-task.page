@@ -33,9 +33,9 @@
 <p>To open and edit an already-created task, you can perform one of the following actions:</p>
 
  <list>
-      <item><p>Select the task in the <gui>Task Browser</gui> and double-click it or press <key>ENTER</key>.</p></item>
+      <item><p>Select the task in the <gui>Task Browser</gui> and double-click it or press <key>Enter</key>.</p></item>
       <item><p> Right-click the task in the <gui>Task Browser</gui> and select <gui>Edit</gui> from the context menu.</p></item>
-<item><p>Use the keyboard shortcut <keyseq><key>CTRL</key><key>E</key></keyseq> to open a selected task from the <gui>Task Browser</gui>.</p></item>  
+<item><p>Use the keyboard shortcut <keyseq><key>Ctrl</key><key>E</key></keyseq> to open a selected task from the <gui>Task Browser</gui>.</p></item>  
 </list>
 
 <p>Enter a task description and content in the <gui>Task Editor</gui> window. You can paste links, add tags (start with the “@” sign), and add subtasks (start with a dash “-”) inside the <gui>Task Editor</gui>. You can also add a detailed description with subheadings. Type <code># Subheading</code> to create a new subheading in the description. See the <link xref="gtg-subtasks">Subtasks</link> and <link xref="gtg-tags">Tags</link> sections for more details about the syntax.</p>
