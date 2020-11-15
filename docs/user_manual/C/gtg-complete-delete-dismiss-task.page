@@ -68,7 +68,7 @@
 <section id="undismiss-task"><title>Undismissing a Task</title>
       <p>You may want to reopen a task that you previously dismissed. From the <gui>Closed</gui> view mode, you can perform one of the following actions:</p>
      <list>
-     <item><p>Use the <keyseq><key>Ctrl/key><key>I</key></keyseq> keyboard shortcut.</p></item>
+     <item><p>Use the <keyseq><key>Ctrl</key><key>I</key></keyseq> keyboard shortcut.</p></item>
      <item><p>Right-click the task in the <gui>Task Browser</gui> and select <gui>Undismiss</gui> from the context menu.</p></item></list>
 </section>
 </section>
