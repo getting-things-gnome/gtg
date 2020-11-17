@@ -1,3 +1,16 @@
+infodir = python3.get_install_dir()
+version = run_command('git', 'describe', '--dirty').stdout().strip()
+
+info_config = configuration_data()
+info_config.set('VCS_TAG', version)
+
+info_py = configure_file(
+            input : 'info.py.in',
+            output :'info.py',
+            configuration: info_config,
+            install : true,
+            install_dir: infodir / 'GTG/core')
+
 gtg_core_sources = [
   '__init__.py',
   'borg.py',
@@ -7,7 +20,6 @@ gtg_core_sources = [
   'dates.py',
   'dirs.py',
   'firstrun_tasks.py',
-  'info.py',
   'interruptible.py',
   'keyring.py',
   'logger.py',

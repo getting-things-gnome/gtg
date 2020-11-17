@@ -36,7 +36,7 @@ URL = "https://wiki.gnome.org/Apps/GTG"
 TRANSLATE_URL = "https://github.com/getting-things-gnome/gtg/"
 REPORT_BUG_URL = "https://github.com/getting-things-gnome/gtg/issues/new"
 EMAIL = "gtg-contributors@lists.launchpad.net"
-VERSION = '0.4.0'
+VERSION = '@VCS_TAG@'
 
 AUTHORS_MAINTAINERS = """
 • Diego Garcia Gangl
