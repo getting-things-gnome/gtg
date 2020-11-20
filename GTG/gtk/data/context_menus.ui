@@ -32,6 +32,10 @@
         <attribute name="action">app.new_subtask</attribute>
       </item>
       <item>
+        <attribute name="label" translatable="yes">Add a Parent task...</attribute>
+        <attribute name="action">app.add_parent</attribute>
+      </item>
+      <item>
         <attribute name="label" translatable="yes">Edit...</attribute>
         <attribute name="action">app.edit_task</attribute>
       </item>

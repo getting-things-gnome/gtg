@@ -996,6 +996,27 @@ class MainWindow(Gtk.ApplicationWindow):
 
             self.app.open_task(task.get_id(), new=True)
 
+    def on_add_parent(self, widget=None):
+        uid = self.get_selected_task()
+        selected_task = self.req.get_task(uid)
+        if uid:
+            parents = selected_task.get_parents()
+            if parents:
+                # Switch parents
+                for p_tid in parents:
+                    par = self.req.get_task(p_tid)
+                    if (par.is_loaded() and par.get_status() in
+                        (Task.STA_ACTIVE)):
+                        new_parent = par.new_subtask()
+                        par.remove_child(uid)
+                        new_parent.add_child(uid)
+            else:
+                # If the tasks has no parent already, no need to switch parents
+                new_parent = self.req.new_task(newtask=True)
+                new_parent.add_child(uid)
+
+            self.app.open_task(new_parent.get_id(), new=True)
+
     def on_edit_active_task(self, widget=None, row=None, col=None):
         tid = self.get_selected_task()
         if tid:
