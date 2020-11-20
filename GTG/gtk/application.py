@@ -220,6 +220,7 @@ class Application(Gtk.Application):
             ('open_plugins', self.open_plugins_manager, None),
             ('new_task', self.new_task, ('app.new_task', ['<ctrl>N'])),
             ('new_subtask', self.new_subtask, ('app.new_subtask', ['<ctrl><shift>N'])),
+            ('add_parent', self.add_parent, ('app.add_parent', ['<ctrl><shift>P'])),
             ('edit_task', self.edit_task, ('app.edit_task', ['<ctrl>E'])),
             ('mark_as_done', self.mark_as_done, ('app.mark_as_done', ['<ctrl>D'])),
             ('dismiss', self.dismiss, ('app.dismiss', ['<ctrl>I'])),
@@ -261,6 +262,10 @@ class Application(Gtk.Application):
             self.get_active_editor().insert_subtask()
         except AttributeError:
             self.browser.on_add_subtask()
+
+    def add_parent(self, param, action):
+        """Callback to add a parent to a task"""
+        self.browser.on_add_parent()
 
     def edit_task(self, param, action):
         """Callback to edit a task."""
