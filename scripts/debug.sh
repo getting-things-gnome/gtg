@@ -52,7 +52,7 @@ if [[ "$title" = "" ]]; then
 fi
 
 if [[ "$norun" -eq 0 ]]; then
-    if [[ ! -d .local_build ]]; then
+    if [[ ! -d .local_build ]] || [[ ! -e .local_build/build.ninja ]]; then
         meson -Dprofile=development -Dprefix="$(pwd)"/.local_build/install .local_build
     fi
     ninja -C .local_build install
