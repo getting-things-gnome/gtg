@@ -38,9 +38,9 @@ fi
 echo "Running the development/debug version - using separate user directories"
 echo "Your data is in the 'tmp' subdirectory with the '$dataset' dataset."
 echo "-----------------------------------------------------------------------"
-export XDG_DATA_HOME="./tmp/$dataset/xdg/data"
-export XDG_CACHE_HOME="./tmp/$dataset/xdg/cache"
-export XDG_CONFIG_HOME="./tmp/$dataset/xdg/config"
+export XDG_DATA_HOME="$PWD/tmp/$dataset/xdg/data"
+export XDG_CACHE_HOME="$PWD/tmp/$dataset/xdg/cache"
+export XDG_CONFIG_HOME="$PWD/tmp/$dataset/xdg/config"
 
 # Title has to be passed to GTG directly, not through $args
 # title could be more word, and only the first word would be taken
