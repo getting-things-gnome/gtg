@@ -999,8 +999,7 @@ class MainWindow(Gtk.ApplicationWindow):
                 # Switch parents
                 for p_tid in parents:
                     par = self.req.get_task(p_tid)
-                    if (par.is_loaded() and par.get_status() in
-                        (Task.STA_ACTIVE)):
+                    if par.get_status() == Task.STA_ACTIVE:
                         new_parent = par.new_subtask()
                         par.remove_child(uid)
                         new_parent.add_child(uid)
