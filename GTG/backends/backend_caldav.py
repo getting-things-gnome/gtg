@@ -312,8 +312,9 @@ class Backend(PeriodicImportBackend):
     def _add_to_cache(self, todo):
         if todo.parent_url not in self._cached_todos:
             self._cached_todos[todo.parent_url] = {'urls': {}, 'uids': {}}
-        self._cached_todos[todo.parent_url]['urls'][todo.url] = todo.uid
-        self._cached_todos[todo.parent_url]['uids'][todo.uid] = todo.url
+        todo_url = str(todo.url)
+        self._cached_todos[todo.parent_url]['urls'][todo_url] = todo.uid
+        self._cached_todos[todo.parent_url]['uids'][todo.uid] = todo_url
 
 ###############################################################################
 # Process tasks ###############################################################
