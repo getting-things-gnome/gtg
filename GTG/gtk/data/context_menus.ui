@@ -20,7 +20,7 @@
       </item>
       <item>
         <attribute name="label" translatable="yes">Delete</attribute>
-        <attribute name="action">win.delete</attribute>
+        <attribute name="action">win.delete_task</attribute>
       </item>
     </section>
   </menu>
@@ -150,7 +150,7 @@
           <attribute name="label" translatable="yes">Now</attribute>
           <attribute name="action">win.due_now</attribute>
         </item>
-        
+
         <item>
           <attribute name="label" translatable="yes">Soon</attribute>
           <attribute name="action">win.due_soon</attribute>
