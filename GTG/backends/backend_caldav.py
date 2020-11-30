@@ -21,10 +21,9 @@
 Backend for storing/loading tasks in CalDAV Tasks
 """
 
-from dateutil.tz import tzutc, tzlocal
+from dateutil.tz import tzutc
 import datetime
 import os
-import time
 import uuid
 import threading
 
@@ -41,7 +40,6 @@ from gettext import gettext as _
 from GTG.core.dates import Date
 from GTG.core.interruptible import interruptible
 from GTG.core.logger import log
-from GTG.core.tag import extract_tags_from_text
 
 # Dictionaries to translate GTG tasks in CalDAV ones
 _GTG_TO_CALDAV_STATUS = \
@@ -74,22 +72,22 @@ class Backend(PeriodicImportBackend):
     _static_parameters = {
         "period": {
             GenericBackend.PARAM_TYPE: GenericBackend.TYPE_INT,
-            GenericBackend.PARAM_DEFAULT_VALUE: 0.25, },
+            GenericBackend.PARAM_DEFAULT_VALUE: 0.25},
         "username": {
             GenericBackend.PARAM_TYPE: GenericBackend.TYPE_STRING,
-            GenericBackend.PARAM_DEFAULT_VALUE: 'insert your username', },
+            GenericBackend.PARAM_DEFAULT_VALUE: 'insert your username'},
         "password": {
             GenericBackend.PARAM_TYPE: GenericBackend.TYPE_PASSWORD,
-            GenericBackend.PARAM_DEFAULT_VALUE: '', },
+            GenericBackend.PARAM_DEFAULT_VALUE: ''},
         "service-url": {
             GenericBackend.PARAM_TYPE: GenericBackend.TYPE_STRING,
-            GenericBackend.PARAM_DEFAULT_VALUE: 'https://example.com/webdav/', },
+            GenericBackend.PARAM_DEFAULT_VALUE: 'https://example.com/webdav/'},
         "default-calendar-name": {
             GenericBackend.PARAM_TYPE: GenericBackend.TYPE_STRING,
-            GenericBackend.PARAM_DEFAULT_VALUE: '', },
+            GenericBackend.PARAM_DEFAULT_VALUE: ''},
         "is-first-run": {
             GenericBackend.PARAM_TYPE: GenericBackend.TYPE_BOOL,
-            GenericBackend.PARAM_DEFAULT_VALUE: True, },
+            GenericBackend.PARAM_DEFAULT_VALUE: True},
     }
 
 ###############################################################################
@@ -102,9 +100,14 @@ class Backend(PeriodicImportBackend):
         """
         super().__init__(parameters)
         # loading the saved state of the synchronization, if any
-        self.data_path_url = os.path.join('caldav', 'sync_engine-url-' + self.get_id())
-        self.sync_engine_url = self._load_pickled_file(self.data_path_url, SyncEngine())
+        self.data_path_url = os.path.join('caldav',
+                                          'sync_engine-url-' + self.get_id())
+        self.sync_engine_url = self._load_pickled_file(self.data_path_url,
+                                                       SyncEngine())
         self._mutex = threading.Lock()
+        self._dav = None
+        self._calendars = None
+        self._cached_todos = {}
 
     def save_state(self):
         """Saves the state of the synchronization"""
@@ -163,8 +166,9 @@ class Backend(PeriodicImportBackend):
                         continue
 
                     task = self.datastore.get_task(tid)
-                    url = task.get_attribute("url", namespace=self.get_namespace())
-                    todo = self._get_todo(url) # network lookup
+                    url = task.get_attribute("url",
+                                             namespace=self.get_namespace())
+                    todo = self._get_todo(url)  # network lookup
                     if todo is None:
                         continue
 
@@ -192,19 +196,20 @@ class Backend(PeriodicImportBackend):
             is_syncable = self._todo_is_syncable_per_attached_tags(todo)
             action, tid = self.sync_engine_url.analyze_remote_id(
                     str(todo.url),
-                    lambda tid: self._has_local_task(tid),
+                    self._has_local_task,
                     lambda url: self._has_remote_task(url, use_cache=True),
                     is_syncable)
-            log.debug(f"GTG<-CalDAV set task url={todo.url} ({action} {is_syncable}) tid={tid}")
+            log.debug("GTG<-CalDAV set task url=%s (%s %s) tid=%s",
+                      todo.url, action, is_syncable, tid)
 
             if action is None:
                 return
 
-            elif action == SyncEngine.ADD:
+            if action == SyncEngine.ADD:
                 if todo.get_status() != Task.STA_ACTIVE:
                     # OPTIMIZATION:
-                    # we don't sync tasks that have already been closed before we
-                    # even synced them once
+                    # we don't sync tasks that have already been closed before
+                    # we even synced them once
                     return
                 tid = str(uuid.uuid4())
                 task = self.datastore.task_factory(tid)
@@ -221,7 +226,8 @@ class Backend(PeriodicImportBackend):
             elif action == SyncEngine.UPDATE:
                 task = self.datastore.get_task(tid)
                 with self.datastore.get_backend_mutex():
-                    meme = self.sync_engine_url.get_meme_from_remote_id(str(todo.url))
+                    meme = self.sync_engine_url.get_meme_from_remote_id(
+                        str(todo.url))
                     newest = meme.which_is_newest(task.get_modified(),
                                                   todo.get_modified())
                     if newest == "remote":
@@ -259,8 +265,10 @@ class Backend(PeriodicImportBackend):
         # attributes
         task.set_attribute("url", todo.url, namespace=self.get_namespace())
         task.set_attribute("id", todo.id, namespace=self.get_namespace())
-        task.set_attribute("calendar_url", todo.parent_url, namespace=self.get_namespace())
-        task.set_attribute("calendar_name", todo.parent_name, namespace=self.get_namespace())
+        task.set_attribute("calendar_url", todo.parent_url,
+                           namespace=self.get_namespace())
+        task.set_attribute("calendar_name", todo.parent_name,
+                           namespace=self.get_namespace())
 
         # status
         status = todo.get_vstatus()
@@ -274,8 +282,11 @@ class Backend(PeriodicImportBackend):
         task.set_start_date(todo.get_start_date())
 
         # parent relationship
-        related = todo.vtodo.contents['related-to'] if 'related-to' in todo.vtodo.contents else None
-        todo_parents = set(todo.get_parents(from_id=lambda parent_url, uid: self._id_to_tid(parent_url, uid)))
+        try:  # FIXME: parent lookup fails because parent isn't loaded
+            todo_parents = set(
+                todo.get_parents(from_id=self._id_to_tid))
+        except Exception:
+            todo_parents = set()
         local_parents = set(task.get_parents())
 
         for parent in todo_parents.difference(local_parents):
@@ -284,8 +295,8 @@ class Backend(PeriodicImportBackend):
             local.remove_parent(parent)
 
         # tags
-        tags = set([self._tag_to_gtg(tag) for tag in todo.get_tags()])
-        gtg_tags = set([t.get_name() for t in task.get_tags()])
+        tags = {self._tag_to_gtg(tag) for tag in todo.get_tags()}
+        gtg_tags = {tag.get_name() for tag in task.get_tags()}
         # tags to remove
         for tag in gtg_tags.difference(tags):
             task.remove_tag(tag)
@@ -294,9 +305,9 @@ class Backend(PeriodicImportBackend):
         for tag in tags.difference(gtg_tags):
             task.add_tag(tag)
 
-    def _tag_to_gtg(self, tag):
-        tag = tag.replace(' ', '_')
-        return f"@{tag}"
+    @staticmethod
+    def _tag_to_gtg(tag):
+        return "@%s" % tag.replace(' ', '_')
 
     def _update_cache(self, cal, todos):
         urls = {}
@@ -330,11 +341,12 @@ class Backend(PeriodicImportBackend):
                 url = self.sync_engine_url.get_remote_id(tid)
             except KeyError:
                 task = self.datastore.get_task(tid)
-                url  = task.get_attribute("url", namespace=self.get_namespace())
-            log.debug(f"GTG<-CalDAV remove_task({tid}) url={url}")
+                url = task.get_attribute("url", namespace=self.get_namespace())
+            log.debug("GTG<-CalDAV remove_task(%s) url=%s", tid, url)
             try:
-                ev = self._get_todo(url) # network lookup
-                if ev != None: ev.delete()
+                ev = self._get_todo(url)  # network lookup
+                if ev is not None:
+                    ev.delete()
             finally:
                 try:
                     self.sync_engine_url.break_relationship(local_id=tid)
@@ -350,16 +362,16 @@ class Backend(PeriodicImportBackend):
             tid = task.get_id()
             is_syncable = self._gtg_task_is_syncable_per_attached_tags(task)
             action, url = self.sync_engine_url.analyze_local_id(
-                tid,
-                lambda tid: self._has_local_task(tid),
+                tid, self._has_local_task,
                 lambda url: self._has_remote_task(url, use_cache=True),
                 is_syncable)
-            log.debug(f'GTG->CalDAV set task tid={tid} ({action}, {is_syncable}) url={url}')
+            log.debug('GTG->CalDAV set task tid=%s (%s, %s) url=%s',
+                      tid, action, is_syncable, url)
 
             if action is None:
                 return
 
-            elif action == SyncEngine.ADD:
+            if action == SyncEngine.ADD:
                 with self.datastore.get_backend_mutex():
                     todo = self._create_todo(task)
                     self._populate_todo(task, todo, save_new=True)
@@ -373,10 +385,12 @@ class Backend(PeriodicImportBackend):
 
             elif action == SyncEngine.UPDATE:
                 with self.datastore.get_backend_mutex():
-                    todo = self._get_todo(url) # network lookup
-                    meme = self.sync_engine_url.get_meme_from_local_id(task.get_id())
-                    newest = meme.which_is_newest(task.get_modified(),
-                                                  todo.get_modified() or Date.no_date())
+                    todo = self._get_todo(url)  # network lookup
+                    meme = self.sync_engine_url.get_meme_from_local_id(
+                        task.get_id())
+                    newest = meme.which_is_newest(
+                        task.get_modified(),
+                        todo.get_modified() or Date.no_date())
                     if newest == "local":
                         self._populate_todo(task, todo, save_new=False)
                         meme.set_remote_last_modified(todo.get_modified())
@@ -393,7 +407,8 @@ class Backend(PeriodicImportBackend):
                     pass
 
             elif action == SyncEngine.LOST_SYNCABILITY:
-                todo = self._get_todo(url) # network lookup TODO: try to avoid it
+                # network lookup TODO: try to avoid it
+                todo = self._get_todo(url)
                 self._exec_lost_syncability(tid, todo)
 
             self.save_state()
@@ -409,7 +424,7 @@ class Backend(PeriodicImportBackend):
 
         # Parents
         parents = task.get_parents()
-        todo.set_parents(parents, to_id=lambda tid: self._tid_to_id(tid))
+        todo.set_parents(parents, to_id=self._tid_to_id)
 
         # dates
         todo.set_modified(task.get_modified())
@@ -426,7 +441,8 @@ class Backend(PeriodicImportBackend):
 
         # Tags
         cal_name = todo.parent_name
-        gtg_tags = set([self._tag_from_gtg(tag.get_name()) for tag in task.get_tags()])
+        gtg_tags = {self._tag_from_gtg(tag.get_name())
+                    for tag in task.get_tags()}
         todo_tags = set(todo.get_tags())
         # tags to add
         for tag in gtg_tags.difference(todo_tags):
@@ -436,16 +452,15 @@ class Backend(PeriodicImportBackend):
         for tag in todo_tags.difference(gtg_tags):
             todo.remove_tag(tag)
 
-
         try:
             todo.save(save_new=save_new)
-        except:
-            log.debug(f'_populate_todo todo.instance={todo.instance}')
+        except Exception:
+            log.debug('_populate_todo todo.instance=%s', todo.instance)
             raise
 
-    def _tag_from_gtg(self, tag):
-        tag = tag.replace('@', '', 1).replace('_', ' ')
-        return tag
+    @staticmethod
+    def _tag_from_gtg(tag):
+        return tag.replace('@', '', 1).replace('_', ' ')
 
     def _exec_lost_syncability(self, tid, todo):
         """
@@ -474,21 +489,23 @@ class Backend(PeriodicImportBackend):
     def _find_event_by_url(self, url):
         try:
             cal = self._find_calendar_matching_url(url)
-            return None if cal is None else cal.event_by_url(url) # TODO: avoid lookup
+            # TODO: avoid lookup
+            return None if cal is None else cal.event_by_url(url)
         except caldav.lib.error.NotFoundError:
             return None
 
     def _get_todo(self, url):
         try:
-            ev = self._find_event_by_url(url) # network lookup
-            if ev is None: return None
+            ev = self._find_event_by_url(url)  # network lookup
+            if ev is None:
+                return None
             return Todo(ev)
         except caldav.lib.error.NotFoundError:
             return None
 
     def _has_local_task(self, tid):
         res = self.datastore.has_task(tid)
-        log.debug(f"_has_local_task({tid}) -> {res}")
+        log.debug("_has_local_task(%s) -> %s", tid, res)
         return res
 
     def _has_remote_task(self, url, use_cache=False):
@@ -497,9 +514,8 @@ class Backend(PeriodicImportBackend):
                 if url.startswith(cal_url):
                     return url in self._cached_todos[cal_url]['urls']
             return False
-        else:
-            ev = self._find_event_by_url(url) # lookup
-            return ev != None and 'vtodo' in ev.instance.contents
+        ev = self._find_event_by_url(url)  # lookup
+        return ev is not None and 'vtodo' in ev.instance.contents
 
     def _find_calendar_by_name(self, cal_name):
         for cal in self.dav_calendars():
@@ -526,12 +542,14 @@ class Backend(PeriodicImportBackend):
         roots = find_roots(task, self.datastore)
 
         for root_task in roots:
-            name = root_task.get_attribute("calendar_name", namespace=self.get_namespace())
+            name = root_task.get_attribute("calendar_name",
+                                           namespace=self.get_namespace())
             if name is not None and name in self._calendar_names():
                 return name
 
         for root_task in roots:
-            tags = set([self._tag_from_gtg(tag.get_name()) for tag in root_task.get_tags()])
+            tags = {self._tag_from_gtg(tag.get_name())
+                    for tag in root_task.get_tags()}
             cals = list(tags.intersection(set(self._calendar_names())))
             if len(cals) > 0:
                 return cals[0]
@@ -569,7 +587,6 @@ class Backend(PeriodicImportBackend):
         return False
 
     def _create_todo(self, task):
-        tid = task.get_id()
         uid = str(uuid.uuid4())
 
         cal_name = self._calendar_name_for_task(task)
@@ -604,7 +621,6 @@ END:VCALENDAR"""))
     def on_continue_clicked(self, *args):
         """ Callback when the user clicks continue in the infobar
         """
-        pass
 
     def _calendar_names_info(self):
         return ','.join(self._calendar_names())
@@ -619,7 +635,7 @@ END:VCALENDAR"""))
             except KeyError:
                 pass
         if url is None:
-            todo = cal.todo_by_uid(uid) # network lookup
+            todo = cal.todo_by_uid(uid)  # network lookup
             url = str(todo.url)
         return self.sync_engine_url.get_local_id(url)
 
@@ -640,7 +656,7 @@ END:VCALENDAR"""))
                         pass
                     break
         if parent_url is None or uid is None:
-            ev = self._find_event_by_url(url) # network lookup
+            ev = self._find_event_by_url(url)  # network lookup
             try:
                 parent_url = ev.parent.url
                 uid = ev.instance.vtodo.uid.value
@@ -649,7 +665,8 @@ END:VCALENDAR"""))
                 uid = None
         return parent_url, uid
 
-class Todo():
+
+class Todo:
     def __init__(self, todo):
         self._event = todo
         self.url = todo.url
@@ -662,12 +679,12 @@ class Todo():
 
     def delete(self):
         data = self._event.data
-        log.debug(f"Delete {data}")
+        log.debug("Delete %s", data)
         return self._event.delete()
 
     def save(self, save_new=None):
         self._event.save()
-        log.debug(f"Save save_new={save_new} {self._event.data}")
+        log.debug("Save save_new=%r {%r}", save_new, self._event.data)
 
     def get_modified(self):
         try:
@@ -721,8 +738,7 @@ class Todo():
         status = self.get_vstatus()
         if status in _CALDAV_TO_GTG_STATUS:
             return _CALDAV_TO_GTG_STATUS[status]
-        else:
-            return Task.STA_ACTIVE
+        return Task.STA_ACTIVE
 
     def get_closed_date(self):
         try:
@@ -787,34 +803,35 @@ class Todo():
     def get_parents(self, from_id):
         if 'related-to' not in self.vtodo.contents:
             return []
-        else:
-            return [from_id(self.parent_url, rel.value) for rel in self.vtodo.contents['related-to']]
+        return [from_id(self.parent_url, rel.value)
+                for rel in self.vtodo.contents['related-to']]
 
-    def _datetime_to_gtg(self, dt):
+    @staticmethod
+    def _datetime_to_gtg(dt):
         if dt is None:
             return Date.no_date()
-        elif type(dt) == datetime.datetime:
+        if isinstance(dt, datetime.datetime):
             dt.replace(tzinfo=None)
             dt = dt.date()
-        elif type(dt) == datetime.date:
+        elif isinstance(dt, datetime.date):
             pass
-        elif type(dt) == str:
+        elif isinstance(dt, str):
             dt = stringToDate(dt)
         else:
-            assert False, type(dt)
+            raise AssertionError("wrong type for %r" % dt)
         return Date(dt)
 
-    def _gtg_to_datetime(self, gtg_date):
+    @staticmethod
+    def _gtg_to_datetime(gtg_date):
         if gtg_date is None or gtg_date == Date.no_date():
             return None
-        elif isinstance(gtg_date, datetime.datetime):
+        if isinstance(gtg_date, datetime.datetime):
             return gtg_date
-        elif isinstance(gtg_date, datetime.date):
+        if isinstance(gtg_date, datetime.date):
             return datetime.datetime.combine(gtg_date, datetime.time(0))
-        elif isinstance(gtg_date, Date):
+        if isinstance(gtg_date, Date):
             return datetime.datetime.combine(gtg_date.date(), datetime.time(0))
-        else:
-            raise NotImplementedError
+        raise NotImplementedError("Unknown type for %r" % gtg_date)
 
     def _gtg_to_datetime_str(self, gtg_date):
         dt = self._gtg_to_datetime(gtg_date)

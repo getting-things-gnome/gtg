@@ -33,7 +33,7 @@ TYPE_LOCAL = "local"
 TYPE_REMOTE = "remote"
 
 
-class SyncMeme():
+class SyncMeme:
     """
     A SyncMeme is the object storing the data needed to keep track of the state
     of two objects synchronization.
