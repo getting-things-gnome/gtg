@@ -60,13 +60,14 @@ class Backend(PeriodicImportBackend):
     """
 
     _general_description = {
-        GenericBackend.BACKEND_NAME: "backend_caldav",
-        GenericBackend.BACKEND_ICON: "applications-internet",
-        GenericBackend.BACKEND_HUMAN_NAME: _("CalDAV tasks"),
-        GenericBackend.BACKEND_AUTHORS: ["Mildred Ki'Lya"],
+        GenericBackend.BACKEND_NAME: 'backend_caldav',
+        GenericBackend.BACKEND_ICON: 'applications-internet',
+        GenericBackend.BACKEND_HUMAN_NAME: _('CalDAV tasks'),
+        GenericBackend.BACKEND_AUTHORS: ['Mildred Ki\'Lya',
+                                         'François Schmidts'],
         GenericBackend.BACKEND_TYPE: GenericBackend.TYPE_READWRITE,
         GenericBackend.BACKEND_DESCRIPTION:
-        _("Lets you synchronize your GTG tasks with CalDAV tasks"),
+        _('Lets you synchronize your GTG tasks with CalDAV tasks'),
     }
 
     _static_parameters = {

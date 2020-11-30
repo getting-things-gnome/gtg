@@ -54,6 +54,7 @@ class Backend(GenericBackend):
     # translated.
     _general_description = {
         GenericBackend.BACKEND_NAME: 'backend_localfile',
+        GenericBackend.BACKEND_ICON: 'folder',
         GenericBackend.BACKEND_HUMAN_NAME: _('Local File'),
         GenericBackend.BACKEND_AUTHORS: ['Lionel Dricot',
                                          'Luca Invernizzi'],
