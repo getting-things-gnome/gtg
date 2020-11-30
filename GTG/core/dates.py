@@ -141,7 +141,10 @@ class Date():
 
     def date(self):
         """ Map date into real date, i.e. convert fuzzy dates """
-        return self._cached_date
+        # FIXME, drop one of the two internal values
+        if self._cached_date:
+            return self._cached_date
+        return self._real_date
 
     def __add__(self, other):
         if isinstance(other, datetime.timedelta):
@@ -502,7 +505,7 @@ class Date():
                 result = convert_datetime_to_date(da_ti)
                 if '%Y' not in fmt:
                     # If the day has passed, assume the next year
-                    if (result.month > self.month or 
+                    if (result.month > self.month or
                         (result.month == self.month and
                          result.day >= self.day)):
                         year = self.year
@@ -512,7 +515,7 @@ class Date():
             except ValueError:
                 continue
         return result
-    
+
     def _parse_text_representation_for_recurrency(self, string, newtask=False):
         """Match common text representation from a certain date(self)
 
@@ -566,7 +569,7 @@ class Date():
             string = ''
         else:
             string = string.lower()
-        
+
         try:
             return Date(string)
         except ValueError:
@@ -577,7 +580,7 @@ class Date():
             result = self._parse_numerical_format_for_recurrency(string, newtask)
         if result is None:
             result = self._parse_text_representation_for_recurrency(string, newtask)
-        
+
         if result is not None:
             return Date(result)
         else:
