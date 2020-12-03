@@ -81,6 +81,10 @@ class ParametersUI(Gtk.Box):
                 "description": _("Service URL"),
                 "parameter_name": "service-url",
             })),
+            ("default-calendar-name", self.UI_generator(TextUI, {
+                "description": _("Default calendar name"),
+                "parameter_name": "default-calendar-name",
+            })),
             ("import-from-replies", self.UI_generator(CheckBoxUI, {
                 "text": _("Import tasks from @ replies directed to you"),
                 "parameter": "import-from-replies",
