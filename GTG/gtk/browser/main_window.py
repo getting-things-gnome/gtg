@@ -928,6 +928,9 @@ class MainWindow(Gtk.ApplicationWindow):
                 else:
                     treeview.set_cursor(path, col, 0)
                 treeview.grab_focus()
+                self.app.action_enabled_changed('add_parent', True)
+                if not self.have_same_parent():
+                    self.app.action_enabled_changed('add_parent', False)
                 self.open_menu.popup_at_pointer(event)
 
             return True
@@ -991,22 +994,24 @@ class MainWindow(Gtk.ApplicationWindow):
             self.app.open_task(task.get_id(), new=True)
 
     def on_add_parent(self, widget=None):
-        uid = self.get_selected_task()
-        selected_task = self.req.get_task(uid)
-        if uid:
-            parents = selected_task.get_parents()
+        selected_tasks = self.get_selected_tasks()
+        first_task = self.req.get_task(selected_tasks[0])
+        if len(selected_tasks):
+            parents = first_task.get_parents()
             if parents:
                 # Switch parents
                 for p_tid in parents:
                     par = self.req.get_task(p_tid)
                     if par.get_status() == Task.STA_ACTIVE:
                         new_parent = par.new_subtask()
-                        par.remove_child(uid)
-                        new_parent.add_child(uid)
+                        for uid_task in selected_tasks:
+                            par.remove_child(uid_task)
+                            new_parent.add_child(uid_task)
             else:
-                # If the tasks has no parent already, no need to switch parents
+                # If the tasks have no parent already, no need to switch parents
                 new_parent = self.req.new_task(newtask=True)
-                new_parent.add_child(uid)
+                for uid_task in selected_tasks:
+                    new_parent.add_child(uid_task)
 
             self.app.open_task(new_parent.get_id(), new=True)
 
@@ -1312,6 +1317,18 @@ class MainWindow(Gtk.ApplicationWindow):
         self.config.set('view', self.get_selected_pane())
 
 # PUBLIC METHODS ###########################################################
+    def have_same_parent(self):
+        """Determine whether the selected tasks have the same parent"""
+        selected_tasks = self.get_selected_tasks()
+        first_task = self.req.get_task(selected_tasks[0])
+        parents = first_task.get_parents()
+
+        for uid in selected_tasks[1:]:
+            task = self.req.get_task(uid)
+            if parents != task.get_parents():
+                return False
+        return True
+
     def has_any_selection(self):
         """Determine if the current pane has any task selected."""
 
