@@ -51,7 +51,7 @@ class TagEditor(Gtk.Window):
         self.set_position(Gtk.WindowPosition.CENTER)
         self.set_title(_('Editing Tag "%s"') % tag.get_name())
         self.set_border_width(10)
-        self.set_resizable(False)
+        self.set_resizable(True)
         self.__build_window()
         self.__set_callbacks()
         self.set_tag(tag)
@@ -66,7 +66,7 @@ class TagEditor(Gtk.Window):
         # header line: icon, grid with name and "hide in wv"
         # FIXME
         self.hdr_align = Gtk.Alignment()
-        self.top_vbox.pack_start(self.hdr_align, True, True, 0)
+        self.top_vbox.pack_start(self.hdr_align, False, True, 0)
         self.hdr_align.set_padding(0, 5, 0, 0)
         self.hdr_box = Gtk.Box()
         self.clear_box = Gtk.Box()
@@ -80,7 +80,7 @@ class TagEditor(Gtk.Window):
         self.hidden_entry.set_width_chars(1)
         self.ti_bt_label.get_style_context().add_class('icon')
         self.hidden_entry.get_style_context().add_class('hidden')
-        self.hdr_box.pack_start(self.ti_bt, True, True, 0)
+        self.hdr_box.pack_start(self.ti_bt, False, False, 0)
         self.hdr_box.pack_start(self.hidden_entry, False, False, 0)
         self.ti_bt.set_size_request(64, 64)
         self.hidden_entry.set_size_request(0, 0)
@@ -91,7 +91,7 @@ class TagEditor(Gtk.Window):
 
         # vbox for tag name and hid in WV
         self.tp_grid = Gtk.Grid()
-        self.hdr_box.pack_start(self.tp_grid, True, True, 0)
+        self.hdr_box.pack_start(self.tp_grid, False, True, 0)
         self.tp_grid.set_column_spacing(5)
         self.tn_entry_lbl_align = Gtk.Alignment.new(0, 0.5, 0, 0)
         self.tp_grid.add(self.tn_entry_lbl_align)
@@ -111,9 +111,9 @@ class TagEditor(Gtk.Window):
         # Tag color
         self.tc_vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         self.top_vbox.pack_start(self.clear_box, False, False, 0)
-        self.top_vbox.pack_start(self.tc_vbox, True, True, 0)
+        self.top_vbox.pack_start(self.tc_vbox, False, True, 0)
         self.tc_label_align = Gtk.Alignment()
-        self.tc_vbox.pack_start(self.tc_label_align, True, True, 0)
+        self.tc_vbox.pack_start(self.tc_label_align, False, True, 0)
         self.tc_label_align.set_padding(25, 0, 0, 0)
         self.tc_label = Gtk.Label()
         self.tc_label_align.add(self.tc_label)
@@ -122,7 +122,7 @@ class TagEditor(Gtk.Window):
         self.tc_label.set_alignment(0, 0.5)
         # Tag color chooser
         self.tc_cc_align = Gtk.Alignment.new(0.5, 0.5, 0, 0)
-        self.tc_vbox.pack_start(self.tc_cc_align, True, True, 0)
+        self.tc_vbox.pack_start(self.tc_cc_align, False, False, 0)
         self.tc_cc_align.set_padding(25, 15, 10, 10)
         self.tc_cc_colsel = SimpleColorSelector()
         # self.tc_cc_colsel = Gtk.ColorChooserWidget()
