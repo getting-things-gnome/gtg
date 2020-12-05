@@ -2,6 +2,7 @@
 # GTG Developer Console
 # Based on Pitivi Developer Console
 # Copyright (c) 2017-2018, Fabian Orccon <cfoch.fabian@gmail.com>
+# Copyright (c) The GTG Team
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
