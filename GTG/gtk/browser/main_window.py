@@ -801,6 +801,9 @@ class MainWindow(Gtk.ApplicationWindow):
             self.__last_quick_added_tid = task.get_id()
             self.__last_quick_added_tid_event.set()
 
+            # Combine tags from selection with tags from parsed text
+            data['tags'].update(tags)
+
             if data['title'] != '':
                 task.set_title(data['title'])
                 task.set_to_keep()
