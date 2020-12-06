@@ -76,7 +76,7 @@ class Backend(PeriodicImportBackend):
             GenericBackend.PARAM_DEFAULT_VALUE: 0.25},
         "username": {
             GenericBackend.PARAM_TYPE: GenericBackend.TYPE_STRING,
-            GenericBackend.PARAM_DEFAULT_VALUE: 'insert your username'},
+            GenericBackend.PARAM_DEFAULT_VALUE: _('insert your username')},
         "password": {
             GenericBackend.PARAM_TYPE: GenericBackend.TYPE_PASSWORD,
             GenericBackend.PARAM_DEFAULT_VALUE: ''},
@@ -122,6 +122,7 @@ class Backend(PeriodicImportBackend):
                 password=self._parameters['password'])
         self._calendars = None
         self._cached_todos = {}
+        self._callbacks = []
 
     def dav_principal(self):
         try:
@@ -191,6 +192,10 @@ class Backend(PeriodicImportBackend):
                 self._update_cache(cal, todos)
             for todo in todos:
                 self._process_todo(Todo(todo))
+            with self._mutex:
+                for callback in self._callbacks:
+                    callback()
+                self._callbacks.clear()
 
     def _process_todo(self, todo):
         with self._mutex:
@@ -283,17 +288,15 @@ class Backend(PeriodicImportBackend):
         task.set_start_date(todo.get_start_date())
 
         # parent relationship
-        try:  # FIXME: parent lookup fails because parent isn't loaded
-            todo_parents = set(
-                todo.get_parents(from_id=self._id_to_tid))
-        except Exception:
-            todo_parents = set()
-        local_parents = set(task.get_parents())
+        def link_parents_callback():
+            todo_parents = set(todo.get_parents(from_id=self._id_to_tid))
+            local_parents = set(task.get_parents())
 
-        for parent in todo_parents.difference(local_parents):
-            task.add_parent(parent)
-        for parent in local_parents.difference(todo_parents):
-            local.remove_parent(parent)
+            for parent in todo_parents.difference(local_parents):
+                task.add_parent(parent)
+            for parent in local_parents.difference(todo_parents):
+                task.remove_parent(parent)
+        self._callbacks.append(link_parents_callback)
 
         # tags
         tags = {self._tag_to_gtg(tag) for tag in todo.get_tags()}
