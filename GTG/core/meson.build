@@ -1,3 +1,26 @@
+# Find the version number and put it in info.py.
+# Use git --describe if available.
+
+git = find_program('git', required : false, disabler : true)
+git_description = run_command(git, 'describe', '--dirty')
+
+if not git.found() or git_description.returncode() != 0
+  version = meson.project_version()
+else
+  version = git_description.stdout().strip()
+endif
+
+info_config = configuration_data()
+info_config.set('VCS_TAG', version)
+
+infodir = python3.get_install_dir()
+info_py = configure_file(
+            input : 'info.py.in',
+            output :'info.py',
+            configuration: info_config,
+            install : true,
+            install_dir: infodir / 'GTG' / 'core')
+
 gtg_core_sources = [
   '__init__.py',
   'borg.py',
@@ -7,7 +30,6 @@ gtg_core_sources = [
   'dates.py',
   'dirs.py',
   'firstrun_tasks.py',
-  'info.py',
   'interruptible.py',
   'keyring.py',
   'logger.py',
