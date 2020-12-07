@@ -113,6 +113,5 @@ class PeriodicImportBackend(GenericBackend):
         except Exception:
             pass
 
-    @staticmethod
-    def do_periodic_import():
+    def do_periodic_import(self) -> None:
         raise NotImplementedError()

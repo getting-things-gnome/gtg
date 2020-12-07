@@ -38,7 +38,7 @@ from GTG.core.logger import log, log_debug_enabled
 PICKLE_BACKUP_NBR = 2
 
 
-class GenericBackend():
+class GenericBackend:
     """
     Base class for every backend.
     It defines the interface a backend must have and takes care of all the
@@ -64,7 +64,7 @@ class GenericBackend():
     #        _("Short description of the backend"),\
     #    }
     # The complete list of constants and their meaning is given below.
-    _general_description = {}
+    _general_description = {}  # type: dict
 
     # These are the parameters to configure a new backend of this type. A
     # parameter has a name, a type and a default value.
@@ -80,7 +80,7 @@ class GenericBackend():
     #        GenericBackend.PARAM_DEFAULT_VALUE: 42,
     #        }}
     # The complete list of constants and their meaning is given below.
-    _static_parameters = {}
+    _static_parameters = {}  # type: dict
 
     def initialize(self):
         """
@@ -103,7 +103,7 @@ class GenericBackend():
 
         @return: start_get_tasks() might not return or finish
         """
-        return
+        raise NotImplementedError()
 
     def set_task(self, task):
         """
@@ -114,7 +114,7 @@ class GenericBackend():
 
         @param task: the task object to save
         """
-        pass
+        raise NotImplementedError()
 
     def remove_task(self, tid):
         """ This function is called from GTG core whenever a task must be
@@ -122,7 +122,7 @@ class GenericBackend():
 
         @param tid: the id of the task to delete
         """
-        pass
+        raise NotImplementedError()
 
     def this_is_the_first_run(self, xml):
         """
@@ -134,7 +134,6 @@ class GenericBackend():
 
         @param xml: an xml object containing the default tasks.
         """
-        pass
 
     def quit(self, disable=False):
         """
@@ -158,7 +157,6 @@ class GenericBackend():
         pending actions have been done.
         Useful to ensure that the state is saved in a consistent manner
         """
-        pass
 
 ###############################################################################
 # You don't need to reimplement the functions below this line #################
@@ -298,6 +296,7 @@ class GenericBackend():
             lambda: self.please_quit)
         self.to_set = deque()
         self.to_remove = deque()
+        self.datastore = None
 
     def get_attached_tags(self):
         """
@@ -311,7 +310,7 @@ class GenericBackend():
             return [ALLTASKS_TAG]
         try:
             return self._parameters[self.KEY_ATTACHED_TAGS]
-        except:
+        except Exception:
             return []
 
     def set_attached_tags(self, tags):
@@ -397,24 +396,22 @@ class GenericBackend():
         """
         if param_type in cls._type_converter:
             return cls._type_converter[param_type](param_value)
-        elif param_type == cls.TYPE_BOOL:
+        if param_type == cls.TYPE_BOOL:
             if param_value == "True":
                 return True
-            elif param_value == "False":
+            if param_value == "False":
                 return False
-            else:
-                raise Exception(f"Unrecognized bool value '{param_type}'")
-        elif param_type == cls.TYPE_PASSWORD:
+            raise ValueError(f"Unrecognized bool value '{param_type}'")
+        if param_type == cls.TYPE_PASSWORD:
             if param_value == '':
                 return None
             return Keyring().get_password(param_value)
-        elif param_type == cls.TYPE_LIST_OF_STRINGS:
+        if param_type == cls.TYPE_LIST_OF_STRINGS:
             the_list = param_value.split(",")
             if not isinstance(the_list, list):
                 the_list = [the_list]
             return the_list
-        else:
-            raise NotImplemented(f"I don't know what type is '{param_type}'")
+        raise NotImplementedError(f"I don't know what type is '{param_type}'")
 
     def cast_param_type_to_string(self, param_type, param_value):
         """
@@ -427,15 +424,13 @@ class GenericBackend():
         if param_type == GenericBackend.TYPE_PASSWORD:
             if param_value is None:
                 return ''
-            else:
-                return str(Keyring().set_password(
-                    "GTG stored password -" + self.get_id(), param_value))
-        elif param_type == GenericBackend.TYPE_LIST_OF_STRINGS:
+            return str(Keyring().set_password(
+                "GTG stored password -" + self.get_id(), param_value))
+        if param_type == GenericBackend.TYPE_LIST_OF_STRINGS:
             if param_value == []:
                 return ""
             return reduce(lambda a, b: a + "," + b, param_value)
-        else:
-            return str(param_value)
+        return str(param_value)
 
     def get_id(self):
         """
@@ -465,8 +460,7 @@ class GenericBackend():
         if self.KEY_HUMAN_NAME in self._parameters and \
                 self._parameters[self.KEY_HUMAN_NAME] != "":
             return self._parameters[self.KEY_HUMAN_NAME]
-        else:
-            return self.get_human_default_name()
+        return self.get_human_default_name()
 
     def set_human_name(self, name):
         """
@@ -514,7 +508,7 @@ class GenericBackend():
         """
         try:
             return self.get_static_parameters()[param_name][self.PARAM_TYPE]
-        except:
+        except Exception:
             return None
 
     def register_datastore(self, datastore):
@@ -529,7 +523,8 @@ class GenericBackend():
 ###############################################################################
 # HELPER FUNCTIONS ############################################################
 ###############################################################################
-    def _store_pickled_file(self, path, data):
+    @staticmethod
+    def _store_pickled_file(path, data):
         """
         A helper function to save some object in a file.
 
@@ -564,7 +559,7 @@ class GenericBackend():
 
         # saving
         with open(path, 'wb') as file:
-                pickle.dump(data, file)
+            pickle.dump(data, file)
 
     def _load_pickled_file(self, path, default_value=None):
         """
@@ -583,7 +578,7 @@ class GenericBackend():
             try:
                 return pickle.load(file)
             except Exception:
-                log.error("Pickle file for backend '%s' is damaged" %
+                log.error("Pickle file for backend '%s' is damaged",
                           self.get_name())
 
         # Loading file failed, trying backups
@@ -593,16 +588,16 @@ class GenericBackend():
                 with open(backup_file, 'rb') as file:
                     try:
                         data = pickle.load(file)
-                        log.info("Succesfully restored backup #%d for '%s'" %
-                                 (i, self.get_name()))
+                        log.info("Succesfully restored backup #%d for '%s'",
+                                 i, self.get_name())
                         return data
                     except Exception:
-                        log.error("Backup #%d for '%s' is damaged as well" %
-                                  (i, self.get_name()))
+                        log.error("Backup #%d for '%s' is damaged as well",
+                                  i, self.get_name())
 
         # Data could not be loaded, degrade to default data
-        log.error(f"There is no suitable backup for '{self.get_name()}', "
-                  "loading default data")
+        log.error("There is no suitable backup for %r, loading default data",
+                  self.get_name())
         return default_value
 
     def _gtg_task_is_syncable_per_attached_tags(self, task):
@@ -699,11 +694,11 @@ class GenericBackend():
             self.please_quit = True
             try:
                 self.to_set_timer.cancel()
-            except:
+            except Exception:
                 pass
             try:
                 self.to_set_timer.join()
-            except:
+            except Exception:
                 pass
         self.launch_setting_thread(bypass_quit_request=True)
         self.save_state()
