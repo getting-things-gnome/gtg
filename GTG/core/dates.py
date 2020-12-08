@@ -25,13 +25,14 @@ Date.parse() parses all possible representations of a date. """
 
 from enum import Enum
 import calendar
-from datetime import datetime, date, timedelta
+from datetime import datetime, date, timedelta, timezone
 import locale
 
 from gettext import gettext as _, ngettext
 
 __all__ = ['Date']
 
+LOCAL_TIMEZONE = datetime.now(timezone.utc).astimezone().tzinfo
 NOW, SOON, SOMEDAY, NODATE = list(range(4))
 # strings representing fuzzy dates + no date
 ENGLISH_STRINGS = {
@@ -72,17 +73,18 @@ FUNCS = {NOW: datetime.now,
          NODATE: lambda: datetime.max - timedelta(days=1)}
 
 
-class Accuracy(Enum):
-    datetime = 'datetime'
-    date = 'date'
+class Accuracy(Enum):  # from less accurate from the most
     fuzzy = 'fuzzy'
+    date = 'date'
+    datetime = 'datetime'
+    timezone = 'timezone'
 
 
 # ISO 8601 date format
 # get date format from locale
 DATE_FORMATS = [(locale.nl_langinfo(locale.D_T_FMT), Accuracy.datetime),
-                ('%Y-%m-%dT%H:%M%S.%f%z', Accuracy.datetime),
-                ('%Y-%m-%d %H:%M%S.%f%z', Accuracy.datetime),
+                ('%Y-%m-%dT%H:%M%S.%f%z', Accuracy.timezone),
+                ('%Y-%m-%d %H:%M%S.%f%z', Accuracy.timezone),
                 ('%Y-%m-%dT%H:%M%S.%f', Accuracy.datetime),
                 ('%Y-%m-%d %H:%M%S.%f', Accuracy.datetime),
                 ('%Y-%m-%dT%H:%M%S', Accuracy.datetime),
@@ -113,14 +115,17 @@ class Date:
             self.fuzzy = NODATE
             self.datetime = FUNCS[NODATE]()
             self.accuracy = Accuracy.fuzzy
+        elif isinstance(value, datetime):
+            if value.tzinfo:
+                self.accuracy = Accuracy.timezone
+            else:
+                self.accuracy = Accuracy.datetime
+            self.datetime = value
         elif isinstance(value, date):
             self.accuracy = Accuracy.date
             self.datetime = datetime(
                 value.year, value.month, value.day,
-                self.DEFAULT_HOUR, self.DEFAULT_HOUR, self.DEFAULT_SECOND)
-        elif isinstance(value, datetime):
-            self.accuracy = Accuracy.datetime
-            self.datetime = value
+                self.DEFAULT_HOUR, self.DEFAULT_MINUTE, self.DEFAULT_SECOND)
         elif isinstance(value, Date):
             # Copy internal values from other Date object
             self.accuracy = value.accuracy
@@ -159,36 +164,42 @@ class Date:
         return self.datetime.date()
 
     def dt_by_accuracy(self, accuracy: str = None):
-        accuracy = accuracy or self.accuracy
-        if self.accuracy == Accuracy.datetime:
-            return self.datetime
-        if self.accuracy == Accuracy.date:
+        accuracy, datetime = accuracy or self.accuracy, self.datetime
+        if accuracy == Accuracy.timezone:
+            return datetime
+        if accuracy == Accuracy.datetime and datetime.tzinfo:
+            return datetime.astimezone(LOCAL_TIMEZONE).replace(tzinfo=None)
+        if accuracy == Accuracy.datetime:
+            return datetime
+        if accuracy == Accuracy.date:
             return self.date()
         return self.date()  # fuzzy ?
 
-    def _cast_for_operation(self, other):
+    def _cast_for_operation(self, other, operation='comparison'):
         if isinstance(other, timedelta):
+            if operation == 'comparison':
+                raise ValueError("can't compare with %r" % other)
             return self.dt_by_accuracy(), other
         other = self.__class__(other)
-        accuracies = {self.accuracy, other.accuracy}
-        op_accuracy = Accuracy.fuzzy if Accuracy.fuzzy in accuracies else (
-            Accuracy.date if Accuracy.date in accuracies
-            else Accuracy.datetime)
-        return (self.dt_by_accuracy(op_accuracy),
-                other.dt_by_accuracy(op_accuracy))
+        accuracies = {self.accuracy, other.accuracy,
+                      None, Accuracy.timezone}  # ensuring return
+        for op_accuracy in Accuracy:
+            if op_accuracy in accuracies:
+                return (self.dt_by_accuracy(op_accuracy),
+                        other.dt_by_accuracy(op_accuracy))
 
     def __add__(self, other):
-        a, b = self._cast_for_operation(other)
+        a, b = self._cast_for_operation(other, 'operation')
         return a + b
 
     __radd__ = __add__
 
     def __sub__(self, other):
-        a, b = self._cast_for_operation(other)
+        a, b = self._cast_for_operation(other, 'operation')
         return a - b
 
     def __rsub__(self, other):
-        a, b = self._cast_for_operation(other)
+        a, b = self._cast_for_operation(other, 'operation')
         return a - b
 
     def __lt__(self, other):

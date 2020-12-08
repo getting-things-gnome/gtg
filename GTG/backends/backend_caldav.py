@@ -21,9 +21,8 @@
 Backend for storing/loading tasks in CalDAV Tasks
 """
 
-import logging
 import threading
-from datetime import datetime
+from datetime import datetime, timezone
 from gettext import gettext as _
 
 import caldav
@@ -33,25 +32,17 @@ from GTG.backends.periodic_import_backend import PeriodicImportBackend
 from GTG.core.interruptible import interruptible
 from GTG.core.logger import log
 from GTG.core.task import Task
-from GTG.core.dates import Date
-from functools import wraps
+from GTG.core.dates import Date, LOCAL_TIMEZONE
 from vobject import iCalendar
 
-GTG_PRODID = "-//Getting Things Gnome//CalDAV Backend//EN"
 GTG_UID_KEY = 'gtg-task-uid'
 GTG_ID_KEY = 'gtg-task-id'
 GTG_START_KEY = 'gtg-start-date'
-# Dictionaries to translate GTG tasks in CalDAV ones
-_GTG_TO_CALDAV_STATUS = \
-    {Task.STA_ACTIVE: 'NEEDS-ACTION',
-     Task.STA_DONE: 'COMPLETED',
-     Task.STA_DISMISSED: 'CANCELLED'}
-
-_CALDAV_TO_GTG_STATUS = \
-    {'NEEDS-ACTION': Task.STA_ACTIVE,
-     'IN-PROCESS': Task.STA_ACTIVE,
-     'COMPLETED': Task.STA_DONE,
-     'CANCELLED': Task.STA_DISMISSED}
+DAV_IGNORE = {'last-modified',  # often updated alone by GTG
+              'sequence',  # internal DAV value, only set by translator
+              GTG_ID_KEY, GTG_UID_KEY,  # remote ids, not worthy of sync alone
+              'percent-complete',  # calculated on subtask and status
+              }
 
 
 class Backend(PeriodicImportBackend):
@@ -121,8 +112,8 @@ class Backend(PeriodicImportBackend):
         with self.datastore.get_backend_mutex():
             with self._get_lock('calendar-listing', raise_if_absent=False):
                 self._refresh_calendar_list()
-            self._todos_by_gtg_id.clear()
-            self._todos_by_gtg_uid.clear()
+            self._todos_by_gtg_id = {}
+            self._todos_by_gtg_uid = {}
             # browsing calendars
             # TODO filter task, not syncing children task
             for calendar in self._dav_calendars:
@@ -134,52 +125,56 @@ class Backend(PeriodicImportBackend):
                     else:
                         self._todos_by_uid[cal_url].clear()
                     log.info('Fetching todos from %r', calendar.url)
-                    todos = {todo.instance.vtodo.uid.value: todo
+                    todos = {UID_FIELD.get_dav(todo): todo
                              for todo in calendar.todos()}
-                    self._todos_by_uid[cal_url].update(todos)
-                    for todo in todos.values():
-                        tid = self._extract_from_todo(todo, GTG_ID_KEY)
+                    self._todos_by_uid[cal_url] = todos
+                    for uid, todo in todos.items():
+                        self._todos_by_gtg_uid[uid] = todo
+                        tid = GTG_ID_FIELD.get_dav(todo)
                         if tid:
                             self._todos_by_gtg_id[tid] = todo
-                        uid = self._extract_from_todo(todo, GTG_UID_KEY)
-                        if uid:
-                            self._todos_by_gtg_uid[uid] = todo
 
             # Updating and creating task according to todos
             task_by_uid = self._get_task_cache()
-            task_ids = set()
-            created, updated = 0, 0
+            seen_task_ids = set()
+            created, updated, unchanged = 0, 0, 0
             for todo in self._cached_todos:
                 task = self._get_task(todo, task_by_uid)
-                todo_uid = todo.instance.vtodo.uid.value or str(uuid.uuid4())
+                todo_uid = UID_FIELD.get_dav(todo)
                 if not task:  # not found, creating it
                     task = self.datastore.task_factory(todo_uid)
                     created += 1
-                    verb = "creating"
                 else:
+                    task_seq = SEQUENCE.get_gtg(task, self.namespace)
+                    todo_seq = SEQUENCE.get_dav(todo)
+                    if task_seq == todo_seq:
+                        unchanged += 1
+                        seen_task_ids.add(task.get_id())
+                        continue
                     updated += 1
-                    verb = "updating"
-                task_ids.add(task.get_id())
-                self._populate_task(task, todo)
-                log.debug('%s task %r', verb, task)
-                if not self.datastore.push_task(task):
-                    log.warning("couldn't create %r", task.get_id())
-            log.info('Created %d new task, %d existing ones from backend',
-                     created, updated)
+                seen_task_ids.add(task.get_id())
+                Translator.fill_task(todo, task, self.namespace)
+                self.datastore.push_task(task)
+            log.info('Created %d new task, updated %d ones from backend '
+                     '(ignored %d unchanged)', created, updated, unchanged)
 
             # removing task we didn't see during listing
             all_tids = {task_id
                         for task_id in self.datastore.get_all_tasks()}
             deleted = 0
-            for task_id in all_tids.difference(task_ids):
+            for task_id in all_tids.difference(seen_task_ids):
                 deleted += 1
                 self.datastore.request_task_deletion(task_id)
             log.info('Deleted %d task absent from backend', deleted)
+            self._parameters["is-first-run"] = False
 
     @interruptible
     def set_task(self, task: Task) -> None:
+        if self._parameters["is-first-run"]:
+            log.warning("not loaded yet, ignoring set_task")
+            return
         # TODO filter task, not syncing children task
-        log.info('set_task todo for %r', task)
+        log.info('set_task todo for %r', task.get_id())
         todo = self._get_todo(task=task)
         if todo:
             calendar = todo.parent
@@ -188,45 +183,52 @@ class Backend(PeriodicImportBackend):
         calendar_url = str(calendar.url)
         with self._get_lock(calendar_url):
             if todo:  # found one, saving it
-                for dav_key, get, __ in self._iter_translations(task,
-                                                                calendar.name):
-                    if dav_key == 'uid':
-                        continue  # do not override uid on update
-                    todo.instance.vtodo.contents.pop(dav_key, None)
-                    todo.instance.vtodo.add(dav_key).value = get()
+                if not Translator.should_sync(task, self.namespace, todo):
+                    return
+                for field, task_value, todo_value in Translator.changed_attrs(
+                        task, self.namespace, todo):
+                    log.debug('changed %s(%r != %r)', field,
+                              task_value, todo_value)
 
-                # updating dtstamp
-                todo.instance.vtodo.contents.pop('dtstamp', None)
-                todo.instance.vtodo.add('dtstamp').value = datetime.now()
-                # updating sequence
-                sequence = todo.instance.vtodo.contents.pop('sequence', None)
-                if sequence:
-                    sequence = str(int(sequence[0].value) + 1)
-                else:
-                    sequence = 1
-                todo.instance.vtodo.add('sequence').value = sequence
+                Translator.fill_vtodo(task, calendar.name, self.namespace,
+                                      todo.instance.vtodo)
                 # saving new todo
-                log.debug('updating todo %r', todo)
-                if log.isEnabledFor(logging.DEBUG):
-                    log.debug(todo.instance.vtodo.serialize())
+                log.info('updating todo %r', todo)
+                self._log(task, todo=todo)
                 todo.save()
             else:  # creating from task
-                new_vtodo = self._task_to_new_vtodo(task, calendar.name)
-                log.debug('creating todo for %r', task)
+                new_vtodo = Translator.fill_vtodo(
+                    task, calendar.name, self.namespace)
+                log.info('creating todo for %r', task)
+                self._log(task, vtodo=new_vtodo.vtodo)
                 new_todo = calendar.add_todo(new_vtodo.serialize())
                 self._todos_by_uid[calendar_url][new_todo.uid] = new_todo
+                self._todos_by_gtg_id[task.get_id()] = new_todo
+                self._todos_by_gtg_uid[task.get_uuid()] = new_todo
                 task.add_remote_id(self.get_id(), task.get_uuid())
+
+    def _log(self, task, todo=None, vtodo=None):
+        Translator.is_changed(task, self.namespace, todo, vtodo)
+        if todo:
+            vtodo = todo.instance.vtodo
+        for key in vtodo.contents:
+            log.debug("%s:%r", key, vtodo.contents[key])
+        log.debug(vtodo.serialize())
 
     @interruptible
     def remove_task(self, tid: str) -> None:
+        if self._parameters["is-first-run"]:
+            log.warning("not loaded yet, ignoring set_task")
+            return
         if not tid:
             return
         log.info('removing todo for Task(%s)', tid)
         todo = self._todos_by_gtg_id.pop(tid, None)
         if todo:
             with self._get_lock(str(todo.parent.url)):
-                uid = todo.instance.vtodo.uid.value
+                uid = UID_FIELD.get_dav(todo)
                 # cleaning cache
+                self._todos_by_gtg_id.pop(tid, None)
                 self._todos_by_gtg_uid.pop(uid, None)
                 self._todos_by_uid.pop(uid, None)
                 # deleting through caldav
@@ -257,89 +259,9 @@ class Backend(PeriodicImportBackend):
         if not def_cal_name or def_cal_name not in self._calendars_by_name:
             self._notify_user_about_default_calendar()
 
-    @classmethod
-    def _task_to_new_vtodo(cls, task: Task, calendar_name: str) -> iCalendar:
-        vcal = iCalendar()
-        vcal.prodid.value = GTG_PRODID
-        vtodo = vcal.add('vtodo')
-        vtodo.add('sequence').value = "0"
-        for dav_key, get, __ in cls._iter_translations(task, calendar_name):
-            vtodo.add(dav_key).value = get()
-        return vcal
-
     #
     # Utility methods
     #
-
-    @staticmethod
-    def _extract_from_todo(todo, key: str, default=None) -> str:
-        value = todo.instance.vtodo.contents.get(key)
-        if value:
-            return value[0].value
-        return default
-
-    @staticmethod
-    def _translate_to_category(tag):
-        return tag.get_name().replace('@', '', 1).replace('_', ' ')
-
-    @staticmethod
-    def _translate_to_tag(category):
-        return '@%s' % category.replace(' ', '_')
-
-    @classmethod
-    def _iter_translations(cls, task: Task, calendar_name: str):
-        def get_date(func):
-            @wraps(func)
-            def wrapper(*args, **kwargs):
-                result = func(*args, **kwargs)
-                if isinstance(result, Date):
-                    return result.datetime
-                return result
-            return wrapper
-
-        def set_only_if_not_none(func):
-            @wraps(func)
-            def wrapper(value):
-                if value is not None:
-                    return func(value)
-            return wrapper
-        yield 'summary', task.get_title, task.set_title
-        yield 'description', task.get_text, task.set_text
-        yield ('created', get_date(task.get_added_date),
-               set_only_if_not_none(task.set_added_date))
-        yield ('last-modified', get_date(task.get_modified),
-               set_only_if_not_none(task.set_modified))
-        yield ('due', get_date(task.get_due_date_constraint),
-               set_only_if_not_none(task.set_due_date))
-        yield ('completed', get_date(task.get_closed_date),
-               set_only_if_not_none(task.set_closed_date))
-        yield ('status', lambda: _GTG_TO_CALDAV_STATUS[task.get_status()],
-               lambda status: task.set_status(
-                   _CALDAV_TO_GTG_STATUS.get(status, Task.STA_ACTIVE)))
-        yield GTG_ID_KEY, task.get_id, lambda tid: setattr(task, 'tid', tid)
-        yield GTG_UID_KEY, task.get_uuid, task.set_uuid
-        yield 'uid', task.get_uuid, task.set_uuid
-        yield (GTG_START_KEY, get_date(task.get_start_date),
-               set_only_if_not_none(task.set_start_date))
-        yield ('percent-complete',
-               lambda: ('100' if task.get_status() == Task.STA_DONE else '0'),
-               lambda _: None)
-
-        def task_set_tags(categories):
-            local_tags = {tag.get_name() for tag in task.get_tags()}
-            remote_cats = {cls._translate_to_tag(cat) for cat in categories}
-            if cls._translate_to_tag(calendar_name) not in local_tags:
-                task.add_tag(cls._translate_to_tag(calendar_name))
-            for to_delete in local_tags.difference(remote_cats):
-                task.remove_tag(to_delete)
-            for to_add in remote_cats.difference(local_tags):
-                task.add_tag(to_add)
-
-        yield ('categories',
-               lambda: [cls._translate_to_category(tag)
-                        for tag in task.get_tags()
-                        if cls._translate_to_category(tag) != calendar_name],
-               lambda cats: task_set_tags(cats))
 
     def _get_lock(self, name: str, raise_if_absent: bool = False):
         if name not in self._locks:
@@ -375,23 +297,31 @@ class Backend(PeriodicImportBackend):
 
     def _get_todo(self, task: Task) -> caldav.Todo:
         task_id = task.get_id()
+        # log.debug('lookup in _todos_by_gtg_id by gtg id for id %r', task_id)
         # if the todo has the task id registered, we look it up
-        if task_id in self._todos_by_gtg_id:
-            return self._todos_by_gtg_id[task_id]
+        todo = self._todos_by_gtg_id.get(task_id)
+        if todo:
+            return todo
         # if the uuid is the same for the todo and the task
         tuid = task.get_uuid()
+        # log.debug('lookup in _todos_by_gtg_uid with uid %r', tuid)
+        todo = self._todos_by_gtg_uid.get(tuid)
+        if todo:
+            return todo
         for calendar in self._dav_calendars:
             cal_url = str(calendar.url)
+            # log.debug('lookup in _todos_by_uid[%s] with uid %r',
+            #           cal_url, tuid)
             if tuid in self._todos_by_uid[cal_url]:
                 return self._todos_by_uid[cal_url][tuid]
         # if the task has remote id for that backend
         remote_id = task.get_remote_ids().get(self.get_id())
+        # log.debug('browsing _cached_todos for remote_id:%r and tid:%r',
+        #           remote_id, task_id)
         for todo in self._cached_todos:
-            vtodo = todo.instance.vtodo
-            if remote_id and vtodo.uid.value == remote_id:
+            if remote_id and UID_FIELD.get_dav(todo) == remote_id:
                 return todo
-            if (GTG_ID_KEY in vtodo.contents
-                    and vtodo.contents[GTG_ID_KEY][0].value == task_id):
+            if GTG_ID_FIELD.get_dav(todo=todo) == task_id:
                 return todo
         return None
 
@@ -407,45 +337,27 @@ class Backend(PeriodicImportBackend):
         return task_by_uid
 
     def _get_task(self, todo, cache_uid: dict):
-        tid = self._extract_from_todo(todo, GTG_ID_KEY)
+        tid = GTG_ID_FIELD.get_dav(todo)
         if tid:  # vtodo has a task id, requesting datastore with it
             return self.datastore.get_task(tid)
         # trying to look up todo through uuid
-        task = cache_uid.get(todo.instance.vtodo.uid.value)
+        task = cache_uid.get(UID_FIELD.get_dav(todo))
         if task:
             return task
-        return cache_uid.get(self._extract_from_todo(todo, GTG_UID_KEY))
+        return cache_uid.get(GTG_UID_FIELD.get_dav(todo))
 
     def _get_calendar(self, task: Task) -> caldav.Calendar:
         calendar_url = task.get_attribute("calendar_url",
-                                          namespace=self.get_namespace())
+                                          namespace=self.namespace)
         calendar = self._calendars_by_url.get(calendar_url)
         if calendar:
             return calendar
         default_calendar_name = self._parameters['default-calendar-name']
         return self._calendars_by_name[default_calendar_name]
 
-    def get_namespace(self):
-        url = self._parameters['service-url']
-        return f"caldav:{url}"
-
-    def _populate_task(self, task, todo):
-        """
-        Copies the content of a VTODO in a Task
-        """
-        translations = self._iter_translations(task, todo.parent.name)
-        for dav_key, __, set_val in translations:
-            if dav_key == GTG_ID_KEY:
-                continue
-            set_val(self._extract_from_todo(todo, dav_key, ''))
-
-        # attributes
-        task.set_attribute("url", str(todo.url),
-                           namespace=self.get_namespace())
-        task.set_attribute("calendar_url", str(todo.parent.url),
-                           namespace=self.get_namespace())
-        task.set_attribute("calendar_name", todo.parent.name,
-                           namespace=self.get_namespace())
+    @property
+    def namespace(self):
+        return "caldav:%s" % self._parameters['service-url']
 
     def _notify_user_about_default_calendar(self):
         """ This function causes the infobar to show up with the message
@@ -459,3 +371,303 @@ class Backend(PeriodicImportBackend):
         BackendSignals().interaction_requested(
             self.get_id(), message,
             BackendSignals().INTERACTION_INFORM, "on_continue_clicked")
+
+
+class Field:
+
+    def __init__(self, dav_name: str,
+                 task_get_func_name: str, task_set_func_name: str,
+                 ignored_values: list = None):
+        self.dav_name = dav_name
+        self.task_get_func_name = task_get_func_name
+        self.task_set_func_name = task_set_func_name
+        self.ignored_values = ignored_values or ['', 'None', None]
+
+    def _is_value_allowed(self, value):
+        return value not in self.ignored_values
+
+    def get_gtg(self, task: Task, namespace: str = None):
+        return getattr(task, self.task_get_func_name)()
+
+    def clean_dav(self, todo: iCalendar):
+        todo.contents.pop(self.dav_name, None)
+
+    def write_dav(self, vtodo: iCalendar, value):
+        self.clean_dav(vtodo)
+        vtodo.add(self.dav_name).value = value
+
+    def set_dav(self, task: Task, vtodo: iCalendar, namespace: str) -> None:
+        value = self.get_gtg(task, namespace)
+        if self._is_value_allowed(value):
+            self.write_dav(vtodo, value)
+
+    def get_dav(self, todo=None, vtodo=None):
+        if todo:
+            vtodo = todo.instance.vtodo
+        value = vtodo.contents.get(self.dav_name)
+        if value:
+            return value[0].value
+
+    def set_gtg(self, todo: iCalendar, task: Task,
+                namespace: str = None) -> None:
+        if not self.task_set_func_name:
+            return
+        value = self.get_dav(todo)
+        if self._is_value_allowed(value):
+            set_func = getattr(task, self.task_set_func_name)
+            set_func(value)
+
+
+class DateField(Field):
+    """Offers translation for datetime field.
+    Datetime are :
+     * naive and at local timezone when in GTG
+     * naive or not at UTC timezone from CalDAV
+    """
+
+    def __init__(self, dav_name: str,
+                 task_get_func_name: str, task_set_func_name: str):
+        return super().__init__(
+            dav_name, task_get_func_name, task_set_func_name,
+            ['', None, 'None', Date.no_date(), Date.someday()])
+
+    @staticmethod
+    def _normalize(value):
+        if isinstance(value, Date):
+            value = value.datetime
+        try:
+            if value.year == 9999:
+                return None
+            return value.replace(microsecond=0, tzinfo=None)
+        except AttributeError:
+            return value
+
+    def write_dav(self, todo: iCalendar, value):
+        "Writing datetime as UTC naive"
+        if not value.tzinfo:
+            value = value - LOCAL_TIMEZONE.utcoffset(value)
+        else:
+            value = value - value.tzinfo.utcoffset(value)
+            value = value.replace(tzinfo=None)
+        return super().write_dav(todo, value)
+
+    def get_dav(self, todo=None, vtodo=None):
+        """Transforming to local naive,
+        if original value is naive, assuming UTC naive"""
+        value = super().get_dav(todo, vtodo)
+        if value:
+            return self._normalize(value.replace(tzinfo=LOCAL_TIMEZONE)
+                                   + LOCAL_TIMEZONE.utcoffset(value))
+
+    def get_gtg(self, task: Task, namespace: str = None):
+        return self._normalize(super().get_gtg(task, namespace))
+
+
+class Status(Field):
+    DEFAULT_CALDAV_STATUS = 'NEEDS-ACTIONS'
+    GTG_TO_CALDAV_STATUS = {Task.STA_ACTIVE: 'NEEDS-ACTION',
+                            Task.STA_DONE: 'COMPLETED',
+                            Task.STA_DISMISSED: 'CANCELLED'}
+    CALDAV_TO_GTG_STATUS = {'NEEDS-ACTION': Task.STA_ACTIVE,
+                            'IN-PROCESS': Task.STA_ACTIVE,
+                            'COMPLETED': Task.STA_DONE,
+                            'CANCELLED': Task.STA_DISMISSED}
+
+    def write_dav(self, todo: iCalendar, value):
+        self.clean_dav(todo)
+        todo.add(self.dav_name).value = self.GTG_TO_CALDAV_STATUS.get(
+            value, self.DEFAULT_CALDAV_STATUS)
+
+    def get_gtg(self, task: Task, namespace: str = None) -> str:
+        try:
+            return super().get_gtg(task, namespace) or Task.STA_ACTIVE
+        except ValueError:
+            return Task.STA_ACTIVE
+
+    def get_dav(self, todo=None, vtodo=None) -> str:
+        return self.CALDAV_TO_GTG_STATUS.get(super().get_dav(todo, vtodo),
+                                             Task.STA_ACTIVE)
+
+
+class Percent(Field):
+
+    def get_gtg(self, task: Task, namespace: str = None) -> str:
+        return '100' if task.get_status() == Task.STA_DONE else '0'
+
+
+class Categories(Field):
+
+    @staticmethod
+    def to_categ(tag):
+        return tag.replace('@', '', 1).replace('_', ' ')
+
+    @staticmethod
+    def to_tag(category):
+        return '@%s' % category.replace(' ', '_')
+
+    def get_gtg(self, task: Task, namespace: str = None) -> list:
+        return [self.to_categ(tag.get_name()) for tag in super().get_gtg(task)]
+
+    def get_dav(self, todo=None, vtodo=None):
+        if todo:
+            vtodo = todo.instance.vtodo
+        for sub_value in vtodo.contents.get(self.dav_name, []):
+            for category in sub_value.value:
+                if self._is_value_allowed(category):
+                    yield category
+
+    def ensure_tags(self, task: Task, todo: iCalendar):
+        calendar_name = todo.parent.name
+        remote_cats = {self.to_categ(cat) for cat in self.get_dav(todo)}
+        remote_cats.add(self.to_tag(calendar_name))
+        local_tags = set(tag.get_name() for tag in super().get_gtg(task))
+        for to_delete in local_tags.difference(remote_cats):
+            task.remove_tag(to_delete)
+        for to_add in remote_cats.difference(local_tags):
+            task.add_tag(to_add)
+
+
+class AttributeField(Field):
+
+    def get_gtg(self, task: Task, namespace: str = None) -> str:
+        return task.get_attribute(self.dav_name, namespace=namespace)
+
+    def set_gtg(self, todo: iCalendar, task: Task,
+                namespace: str = None) -> None:
+        value = self.get_dav(todo)
+        if self._is_value_allowed(value):
+            task.set_attribute(self.dav_name, str(value), namespace=namespace)
+
+
+class Sequence(AttributeField):
+
+    def get_gtg(self, task: Task, namespace: str = None):
+        try:
+            return int(super().get_gtg(task, namespace) or '0')
+        except ValueError:
+            return 0
+
+    def get_dav(self, todo=None, vtodo=None):
+        try:
+            return int(super().get_dav(todo, vtodo) or 0)
+        except ValueError:
+            return 0
+
+    def set_dav(self, task: Task, vtodo: iCalendar, namespace: str):
+        try:
+            self.write_dav(vtodo, str(self.get_gtg(task, namespace) + 1))
+        except ValueError:
+            self.write_dav(vtodo, '1')
+
+
+class Description(Field):
+    CONTENT_OPEN = '<content>'
+    LEN_CONTENT_OPEN = len(CONTENT_OPEN)
+    CONTENT_CLOSE = '</content>'
+    LEN_CONTENT_CLOSE = len(CONTENT_CLOSE)
+    TAG_OPEN = '<tag>'
+    TAG_CLOSE = '</tag>'
+    LEN_TAG_CLOSE = len(TAG_CLOSE)
+    LEN_LINE_RET = 2
+
+    def get_dav(self, todo=None, vtodo=None) -> str:
+        value = super().get_dav(todo, vtodo) or ''
+        # TODO handle subtask
+        return value
+
+    def get_gtg(self, task: Task, namespace: str = None) -> str:
+        cnt = task.content
+        if cnt.startswith(self.CONTENT_OPEN):
+            cnt = cnt[self.LEN_CONTENT_OPEN:]
+        while True:
+            tag_open = cnt.find(self.TAG_OPEN)
+            if tag_open == -1:
+                break
+            tag_close = cnt.find(self.TAG_CLOSE)
+            if tag_close == -1:
+                break
+            cnt = cnt[:tag_open] + cnt[tag_close + self.LEN_TAG_CLOSE:]
+        if cnt.startswith('\n\n'):
+            # four for two \n which to be randomly added
+            cnt = cnt[2:]
+        if cnt.endswith(self.CONTENT_CLOSE):
+            cnt = cnt[:-self.LEN_CONTENT_CLOSE]
+        return cnt
+
+
+UID_FIELD = Field('uid', 'get_uuid', 'set_uuid')
+GTG_ID_FIELD = Field(GTG_ID_KEY, 'get_id', '')
+GTG_UID_FIELD = Field(GTG_UID_KEY, 'get_uuid', '')
+SEQUENCE = Sequence('sequence', '<fake attribute>', '')
+CATEGORIES = Categories('categories', 'get_tags', '')
+DTSTAMP_FIELD = DateField('dtstamp', '', '')
+
+
+class Translator:
+    GTG_PRODID = "-//Getting Things Gnome//CalDAV Backend//EN"
+    fields = [Field('summary', 'get_title', 'set_title'),
+              Description('description', 'get_excerpt', 'set_text'),
+              DateField('due', 'get_due_date_constraint', 'set_due_date'),
+              DateField('completed', 'get_closed_date', 'set_closed_date'),
+              DateField(GTG_START_KEY, 'get_start_date', 'set_start_date'),
+              Status('status', 'get_status', 'set_status'),
+              Percent('percent-complete', 'get_status', ''),
+              GTG_ID_FIELD, GTG_UID_FIELD, SEQUENCE, UID_FIELD,
+              DateField('created', 'get_added_date', 'set_added_date'),
+              DateField('last-modified', 'get_modified', 'set_modified')]
+
+    @classmethod
+    def _get_new_vcal(cls) -> iCalendar:
+        vcal = iCalendar()
+        vcal.add('PRODID').value = cls.GTG_PRODID
+        vcal.add('vtodo')
+        return vcal
+
+    @classmethod
+    def fill_vtodo(cls, task: Task, calendar_name: str, namespace: str,
+                   vtodo: iCalendar = None) -> iCalendar:
+        vcal = None
+        if vtodo is None:
+            vcal = cls._get_new_vcal()
+            vtodo = vcal.vtodo
+        # updating dtstamp
+        DTSTAMP_FIELD.write_dav(vtodo, datetime.now())
+        CATEGORIES.clean_dav(vtodo)
+        for field in cls.fields:
+            if field.dav_name == 'uid' and UID_FIELD.get_dav(vtodo=vtodo):
+                # not overriding if already set from cache
+                continue
+            field.set_dav(task, vtodo, namespace)
+        return vcal
+
+    @classmethod
+    def fill_task(cls, todo: iCalendar, task: Task, namespace: str):
+        for field in cls.fields:
+            field.set_gtg(todo, task, namespace)
+        task.set_attribute("url", str(todo.url), namespace=namespace)
+        task.set_attribute("calendar_url", str(todo.parent.url),
+                           namespace=namespace)
+        task.set_attribute("calendar_name", todo.parent.name,
+                           namespace=namespace)
+        CATEGORIES.ensure_tags(task, todo)
+        return task
+
+    @classmethod
+    def changed_attrs(cls, task: Task, namespace: str, todo=None, vtodo=None):
+        for field in cls.fields:
+            task_value = field.get_gtg(task, namespace)
+            todo_value = field.get_dav(todo, vtodo)
+            if todo_value != task_value:
+                yield field.dav_name, task_value, todo_value
+
+    @classmethod
+    def should_sync(cls, task: Task, namespace: str,  todo=None, vtodo=None):
+        for field, __, __ in cls.changed_attrs(task, namespace, todo, vtodo):
+            if field not in DAV_IGNORE:
+                return True
+        return False
+
+    @classmethod
+    def is_changed(cls, task: Task, namespace: str, todo=None, vtodo=None):
+        return bool(list(cls.changed_attrs(task, namespace, todo, vtodo)))
+        return any(cls.changed_attrs(task, namespace, todo, vtodo))

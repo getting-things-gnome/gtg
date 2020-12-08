@@ -28,7 +28,6 @@ import xml.sax.saxutils as saxutils
 from gettext import gettext as _
 from GTG.core.dates import Date
 from GTG.core.logger import log
-from GTG.core.tag import extract_tags_from_text
 from liblarch import TreeNode
 
 
@@ -665,8 +664,9 @@ class Task(TreeNode):
                 txt = re.sub(r'\{\!.+\!\}', '', txt)
 
             # Strip blank lines and get desired amount of lines
-            txt = [l for l in txt.splitlines() if l]
-            txt = txt[:lines]
+            txt = [line for line in txt.splitlines() if line]
+            if lines > 0:
+                txt = txt[:lines]
             txt = '\n'.join(txt)
 
             # We keep the desired number of char
