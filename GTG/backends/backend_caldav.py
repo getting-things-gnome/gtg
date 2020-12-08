@@ -21,6 +21,7 @@
 Backend for storing/loading tasks in CalDAV Tasks
 """
 
+import logging
 import threading
 from datetime import datetime
 from gettext import gettext as _
@@ -116,7 +117,7 @@ class Backend(PeriodicImportBackend):
 
     @interruptible
     def do_periodic_import(self) -> None:
-        log.warning("%r: Running periodic import", self)
+        log.info("%r: Running periodic import", self)
         with self.datastore.get_backend_mutex():
             with self._get_lock('calendar-listing', raise_if_absent=False):
                 self._refresh_calendar_list()
@@ -132,6 +133,7 @@ class Backend(PeriodicImportBackend):
                         self._todos_by_uid[cal_url] = {}
                     else:
                         self._todos_by_uid[cal_url].clear()
+                    log.info('%r: Fetching todos from %r', self, calendar.url)
                     todos = {todo.instance.vtodo.uid.value: todo
                              for todo in calendar.todos()}
                     self._todos_by_uid[cal_url].update(todos)
@@ -164,8 +166,8 @@ class Backend(PeriodicImportBackend):
                      self, created, updated)
 
             # removing task we didn't see during listing
-            all_tids = {task.get_id()
-                        for task in self.datastore.get_all_tasks()}
+            all_tids = {task_id
+                        for task_id in self.datastore.get_all_tasks()}
             deleted = 0
             for task_id in all_tids.difference(task_ids):
                 deleted += 1
@@ -199,6 +201,8 @@ class Backend(PeriodicImportBackend):
                 todo.instance.vtodo.add('sequence').value = sequence
                 # saving new todo
                 log.debug('%r: updating todo %r', self, todo)
+                if log.isEnabledFor(logging.DEBUG):
+                    log.debug(todo.instance.vtodo.serialize())
                 todo.save()
             else:  # creating from task
                 new_vtodo = self._task_to_new_vtodo(task)
@@ -209,6 +213,8 @@ class Backend(PeriodicImportBackend):
 
     @interruptible
     def remove_task(self, tid: str) -> None:
+        if not tid:
+            return
         log.info('%r: removing todo for Task(%s)', self, tid)
         todo = self._todos_by_gtg_id.pop(tid, None)
         if todo:
@@ -356,7 +362,7 @@ class Backend(PeriodicImportBackend):
             if tuid in self._todos_by_uid[cal_url]:
                 return self._todos_by_uid[cal_url][tuid]
         # if the task has remote id for that backend
-        remote_id = task.get_remote_ids().get(self.get_id)
+        remote_id = task.get_remote_ids().get(self.get_id())
         for todo in self._cached_todos:
             vtodo = todo.instance.vtodo
             if remote_id and vtodo.uid.value == remote_id:
@@ -367,10 +373,12 @@ class Backend(PeriodicImportBackend):
         return None
 
     def _get_task_cache(self) -> dict:
-        task_by_uid = {task.get_uuid(): task
-                       for task in self.datastore.get_all_tasks()}
+        task_by_uid = {}
+        for task_id in self.datastore.get_all_tasks():
+            task = self.datastore.get_task(task_id)
+            task_by_uid[task.get_uuid()] = task
         for task in list(task_by_uid.values()):
-            remote_id = task.get_remote_ids(self.get_id())
+            remote_id = task.get_remote_ids().get(self.get_id())
             if remote_id:
                 task_by_uid[remote_id] = task
         return task_by_uid

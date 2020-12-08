@@ -134,9 +134,10 @@ class Date:
                     pass
             if not done:
                 try:  # it must be a fuzzy date
-                    self.datetime = FUNCS[LOOKUP[str(value).lower()]]()
+                    value = LOOKUP[str(value).lower()]
+                    self.fuzzy = value
+                    self.datetime = FUNCS[value]
                     self.accuracy = Accuracy.fuzzy
-                    self.fuzzy = str(value).lower()
                     done = True
                 except KeyError:
                     pass

@@ -288,6 +288,7 @@ class DataStore():
 
         @return a list of strings: a list of task ids
         """
+        # FIXME: should be named get_all_tasks_id
         return self._tasks.get_main_view().get_all_nodes()
 
     def has_task(self, tid):
