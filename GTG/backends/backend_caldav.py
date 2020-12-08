@@ -151,10 +151,9 @@ class Backend(PeriodicImportBackend):
             created, updated = 0, 0
             for todo in self._cached_todos:
                 task = self._get_task(todo, task_by_uid)
-                todo_uid = todo.instance.vtodo.uid.value
+                todo_uid = todo.instance.vtodo.uid.value or str(uuid.uuid4())
                 if not task:  # not found, creating it
                     task = self.datastore.task_factory(todo_uid)
-                    self.datastore.get_tasks_tree().add_node(task)
                     created += 1
                     verb = "creating"
                 else:
@@ -434,8 +433,10 @@ class Backend(PeriodicImportBackend):
         """
         Copies the content of a VTODO in a Task
         """
-        for dav_key, __, set_val in self._iter_translations(task,
-                                                            todo.parent.name):
+        translations = self._iter_translations(task, todo.parent.name)
+        for dav_key, __, set_val in translations:
+            if dav_key == GTG_ID_KEY:
+                continue
             set_val(self._extract_from_todo(todo, dav_key, ''))
 
         # attributes
