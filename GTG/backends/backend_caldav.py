@@ -117,7 +117,8 @@ class Backend(PeriodicImportBackend):
 
     @interruptible
     def do_periodic_import(self) -> None:
-            log.info("%r: Running periodic import", self)
+        log.info("%r: Running periodic import", self)
+        with self.datastore.get_backend_mutex():
             with self._get_lock('calendar-listing', raise_if_absent=False):
                 self._refresh_calendar_list()
             self._todos_by_gtg_id.clear()
@@ -153,6 +154,7 @@ class Backend(PeriodicImportBackend):
                 todo_uid = todo.instance.vtodo.uid.value
                 if not task:  # not found, creating it
                     task = self.datastore.task_factory(todo_uid, newtask=True)
+                    self.datastore.get_tasks_tree().add_node(task)
                     created += 1
                     verb = "creating"
                 else:
