@@ -32,6 +32,8 @@ from GTG.backends.periodic_import_backend import PeriodicImportBackend
 from GTG.core.interruptible import interruptible
 from GTG.core.logger import log
 from GTG.core.task import Task
+from GTG.core.dates import Date
+from functools import wraps
 from vobject import iCalendar
 
 GTG_PRODID = "-//Getting Things Gnome//CalDAV Backend//EN"
@@ -114,6 +116,7 @@ class Backend(PeriodicImportBackend):
 
     @interruptible
     def do_periodic_import(self) -> None:
+        log.warning("%r: Running periodic import", self)
         with self.datastore.get_backend_mutex():
             with self._get_lock('calendar-listing', raise_if_absent=False):
                 self._refresh_calendar_list()
@@ -143,25 +146,36 @@ class Backend(PeriodicImportBackend):
             # Updating and creating task according to todos
             task_by_uid = self._get_task_cache()
             task_ids = set()
+            created, updated = 0, 0
             for todo in self._cached_todos:
                 task = self._get_task(todo, task_by_uid)
                 if not task:  # not found, creating it
                     task = self.datastore.task_factory(
                         todo.instance.vtodo.uid.value)
+                    created += 1
+                    log.debug('Creating task %r from %r', task, self)
+                else:
+                    updated += 1
+                    log.debug('Creating task %r from %r', task, self)
                 task_ids.add(task.get_id())
                 self._populate_task(task, todo)
                 self.datastore.push_task(task)
+            log.info('%r: Created %d new task, %d existing ones from backend',
+                     self, created, updated)
 
             # removing task we didn't see during listing
             all_tids = {task.get_id()
                         for task in self.datastore.get_all_tasks()}
+            deleted = 0
             for task_id in all_tids.difference(task_ids):
+                deleted += 1
                 self.datastore.request_task_deletion(task_id)
+            log.info('%r: Deleted %d task absent from backend', self, deleted)
 
     @interruptible
     def set_task(self, task: Task) -> None:
         # TODO filter task, not syncing children task
-        log.debug('creating todo for %r', task)
+        log.info('%r: set_task todo for %r', self, task)
         todo = self._get_todo(task=task)
         if todo:
             calendar = todo.parent
@@ -184,16 +198,18 @@ class Backend(PeriodicImportBackend):
                 sequence = str(int(sequence) + 1)
                 todo.instance.vtodo.add('sequence').value = sequence
                 # saving new todo
+                log.debug('%r: updating todo %r', self, todo)
                 todo.save()
             else:  # creating from task
                 new_vtodo = self._task_to_new_vtodo(task)
+                log.debug('%r: creating todo for %r', self, task)
                 new_todo = calendar.add_todo(new_vtodo.serialize())
                 self._todos_by_uid[calendar_url][new_todo.uid] = new_todo
                 task.add_remote_id(self.get_id(), task.get_uuid())
 
     @interruptible
     def remove_task(self, tid: str) -> None:
-        log.debug('removing todo for Task(%s)', tid)
+        log.info('%r: removing todo for Task(%s)', self, tid)
         todo = self._todos_by_gtg_id.pop(tid, None)
         if todo:
             with self._get_lock(str(todo.parent.url)):
@@ -252,12 +268,32 @@ class Backend(PeriodicImportBackend):
 
     @staticmethod
     def _iter_translations(task: Task, with_uuid: bool = True):
+        def get_date(func):
+            @wraps(func)
+            def wrapper(*args, **kwargs):
+                result = func(*args, **kwargs)
+                if isinstance(result, Date):
+                    return result.datetime
+                return result
+            return wrapper
+
+        def set_only_if_not_none(func):
+            @wraps(func)
+            def wrapper(value):
+                if value is not None:
+                    return func(value)
+            return wrapper
         yield 'summary', task.get_title, task.set_title
         yield 'description', task.get_text, task.set_text
-        yield 'created', task.get_added_date, task.set_added_date
-        yield 'last-modified', task.get_modified, task.set_modified
-        yield 'due', task.get_due_date_constraint, task.set_due_date
-        yield 'completed', task.get_closed_date, task.set_closed_date
+        yield ('created',
+               get_date(task.get_added_date),
+               set_only_if_not_none(task.set_added_date))
+        yield ('last-modified', get_date(task.get_modified),
+               set_only_if_not_none(task.set_modified))
+        yield ('due', get_date(task.get_due_date_constraint),
+               set_only_if_not_none(task.set_due_date))
+        yield ('completed', get_date(task.get_closed_date),
+               set_only_if_not_none(task.set_closed_date))
         yield ('status',
                lambda: _GTG_TO_CALDAV_STATUS[task.get_status()],
                lambda status: task.set_status(
@@ -265,7 +301,8 @@ class Backend(PeriodicImportBackend):
         yield GTG_ID_KEY, task.get_id, lambda tid: setattr(task, 'tid', tid)
         yield GTG_UID_KEY, task.get_uuid, task.set_uuid
         yield 'uid', task.get_uuid, task.set_uuid
-        yield GTG_START_KEY, task.get_start_date, task.set_start_date
+        yield (GTG_START_KEY, task.get_start_date,
+               set_only_if_not_none(task.set_start_date))
         yield ('percent-complete',
                lambda: ('100' if task.get_status() == Task.STA_DONE else '0'),
                lambda _: None)
@@ -366,7 +403,7 @@ class Backend(PeriodicImportBackend):
         Copies the content of a VTODO in a Task
         """
         for dav_key, __, set_val in self._iter_translations(task):
-            set_val(self._extract_from_todo(todo, dav_key))
+            set_val(self._extract_from_todo(todo, dav_key, ''))
 
         # attributes
         task.set_attribute("url", str(todo.url),

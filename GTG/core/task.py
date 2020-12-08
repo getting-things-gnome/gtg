@@ -26,7 +26,7 @@ import uuid
 import xml.sax.saxutils as saxutils
 
 from gettext import gettext as _
-from GTG.core.dates import Date, convert_datetime_to_date
+from GTG.core.dates import Date
 from GTG.core.logger import log
 from GTG.core.tag import extract_tags_from_text
 from liblarch import TreeNode
@@ -325,13 +325,13 @@ class Task(TreeNode):
                 # If a start date is already set,
                 # we should calculate the next date from that day.
                 if self.start_date == Date.no_date():
-                    start_from = Date(convert_datetime_to_date(date.today()))
+                    start_from = Date(datetime.now())
                 else:
                     start_from = self.start_date
 
                 newdate = start_from.parse_from_date(recurring_term, newtask)
                 return (True, newdate)
-            except ValueError as e:
+            except ValueError:
                 return (False, None)
 
         self.recurring = recurring
