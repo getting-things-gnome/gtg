@@ -153,7 +153,7 @@ class Backend(PeriodicImportBackend):
                 task = self._get_task(todo, task_by_uid)
                 todo_uid = todo.instance.vtodo.uid.value
                 if not task:  # not found, creating it
-                    task = self.datastore.task_factory(todo_uid, newtask=True)
+                    task = self.datastore.task_factory(todo_uid)
                     self.datastore.get_tasks_tree().add_node(task)
                     created += 1
                     verb = "creating"
@@ -200,8 +200,11 @@ class Backend(PeriodicImportBackend):
                 todo.instance.vtodo.contents.pop('dtstamp', None)
                 todo.instance.vtodo.add('dtstamp').value = datetime.now()
                 # updating sequence
-                sequence = todo.instance.vtodo.contents.pop('sequence', '0')
-                sequence = str(int(sequence) + 1)
+                sequence = todo.instance.vtodo.contents.pop('sequence', None)
+                if sequence:
+                    sequence = str(int(sequence[0].value) + 1)
+                else:
+                    sequence = 1
                 todo.instance.vtodo.add('sequence').value = sequence
                 # saving new todo
                 log.debug('updating todo %r', todo)
@@ -336,7 +339,7 @@ class Backend(PeriodicImportBackend):
         yield ('categories',
                lambda: [cls._translate_to_category(tag)
                         for tag in task.get_tags()
-                        if _translate_to_category(tag) != calendar_name],
+                        if cls._translate_to_category(tag) != calendar_name],
                lambda cats: task_set_tags(cats))
 
     def _get_lock(self, name: str, raise_if_absent: bool = False):
