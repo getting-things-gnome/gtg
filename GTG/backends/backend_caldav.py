@@ -152,8 +152,7 @@ class Backend(PeriodicImportBackend):
                 task = self._get_task(todo, task_by_uid)
                 todo_uid = todo.instance.vtodo.uid.value
                 if not task:  # not found, creating it
-                    task = self.datastore.task_factory(todo_uid)
-                    task.tid = todo_uid
+                    task = self.datastore.task_factory(todo_uid, newtask=True)
                     created += 1
                     verb = "creating"
                 else:
@@ -276,7 +275,15 @@ class Backend(PeriodicImportBackend):
         return default
 
     @staticmethod
-    def _iter_translations(task: Task, calendar_name: str):
+    def _translate_to_category(tag):
+        return tag.get_name().replace('@', '', 1).replace('_', ' ')
+
+    @staticmethod
+    def _translate_to_tag(category):
+        return '@%s' % category.replace(' ', '_')
+
+    @classmethod
+    def _iter_translations(cls, task: Task, calendar_name: str):
         def get_date(func):
             @wraps(func)
             def wrapper(*args, **kwargs):
@@ -294,8 +301,7 @@ class Backend(PeriodicImportBackend):
             return wrapper
         yield 'summary', task.get_title, task.set_title
         yield 'description', task.get_text, task.set_text
-        yield ('created',
-               get_date(task.get_added_date),
+        yield ('created', get_date(task.get_added_date),
                set_only_if_not_none(task.set_added_date))
         yield ('last-modified', get_date(task.get_modified),
                set_only_if_not_none(task.set_modified))
@@ -303,31 +309,33 @@ class Backend(PeriodicImportBackend):
                set_only_if_not_none(task.set_due_date))
         yield ('completed', get_date(task.get_closed_date),
                set_only_if_not_none(task.set_closed_date))
-        yield ('status',
-               lambda: _GTG_TO_CALDAV_STATUS[task.get_status()],
+        yield ('status', lambda: _GTG_TO_CALDAV_STATUS[task.get_status()],
                lambda status: task.set_status(
                    _CALDAV_TO_GTG_STATUS.get(status, Task.STA_ACTIVE)))
         yield GTG_ID_KEY, task.get_id, lambda tid: setattr(task, 'tid', tid)
         yield GTG_UID_KEY, task.get_uuid, task.set_uuid
         yield 'uid', task.get_uuid, task.set_uuid
-        yield (GTG_START_KEY, task.get_start_date,
+        yield (GTG_START_KEY, get_date(task.get_start_date),
                set_only_if_not_none(task.set_start_date))
         yield ('percent-complete',
                lambda: ('100' if task.get_status() == Task.STA_DONE else '0'),
                lambda _: None)
 
-        def get_tags_from_task():
-            for tag in task.get_tags_name():
-                if tag == '@%s' % calendar_name.replace('_', ' '):
-                    continue
-                yield tag.replace('@', '', 1).replace('_', ' ')
+        def task_set_tags(categories):
+            local_tags = {tag.get_name() for tag in task.get_tags()}
+            remote_cats = {cls._translate_to_tag(cat) for cat in categories}
+            if cls._translate_to_tag(calendar_name) not in local_tags:
+                task.add_tag(cls._translate_to_tag(calendar_name))
+            for to_delete in local_tags.difference(remote_cats):
+                task.remove_tag(to_delete)
+            for to_add in remote_cats.difference(local_tags):
+                task.add_tag(to_add)
 
-        def tags_from_cats(categories=None):
-            yield '@%s' % calendar_name.replace(' ', '_')
-            for category in categories or []:
-                yield '@%s' % category.replace(' ', '_')
-        yield ('categories', lambda: list(get_tags_from_task()),
-               lambda tags: task.set_only_these_tags(tags_from_cats(tags)))
+        yield ('categories',
+               lambda: [cls._translate_to_category(tag)
+                        for tag in task.get_tags()
+                        if _translate_to_category(tag) != calendar_name],
+               lambda cats: task_set_tags(cats))
 
     def _get_lock(self, name: str, raise_if_absent: bool = False):
         if name not in self._locks:
