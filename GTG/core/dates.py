@@ -254,38 +254,38 @@ class Date:
             return None
         return (self.date() - date.today()).days
 
-    @classmethod
-    def today(cls):
+    @staticmethod
+    def today():
         """ Return date for today """
         return Date(date.today())
 
-    @classmethod
-    def tomorrow(cls):
+    @staticmethod
+    def tomorrow():
         """ Return date for tomorrow """
         return Date(date.today() + timedelta(days=1))
 
-    @classmethod
-    def now(cls):
+    @staticmethod
+    def now():
         """ Return date representing fuzzy date now """
         return _GLOBAL_DATE_NOW
 
-    @classmethod
-    def no_date(cls):
+    @staticmethod
+    def no_date():
         """ Return date representing no (set) date """
         return _GLOBAL_DATE_NODATE
 
-    @classmethod
-    def soon(cls):
+    @staticmethod
+    def soon():
         """ Return date representing fuzzy date soon """
         return _GLOBAL_DATE_SOON
 
-    @classmethod
-    def someday(cls):
+    @staticmethod
+    def someday():
         """ Return date representing fuzzy date someday """
         return _GLOBAL_DATE_SOMEDAY
 
-    @classmethod
-    def _parse_only_month_day(cls, string):
+    @staticmethod
+    def _parse_only_month_day(string):
         """ Parse next Xth day in month """
         try:
             mday = int(string)
@@ -315,8 +315,8 @@ class Date:
 
         return result
 
-    @classmethod
-    def _parse_numerical_format(cls, string):
+    @staticmethod
+    def _parse_numerical_format(string):
         """ Parse numerical formats like %Y/%m/%d, %Y%m%d or %m%d """
         result = None
         today = date.today()
@@ -336,8 +336,8 @@ class Date:
                 continue
         return result
 
-    @classmethod
-    def _parse_text_representation(cls, string):
+    @staticmethod
+    def _parse_text_representation(string):
         """ Match common text representation for date """
         today = date.today()
 
