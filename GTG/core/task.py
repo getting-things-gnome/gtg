@@ -46,8 +46,9 @@ class Task(TreeNode):
         super().__init__(task_id)
         # the id of this task in the project should be set
         # tid is a string ! (we have to choose a type and stick to it)
-        assert(isinstance(task_id, str) or isinstance(task_id, str))
-        self.tid = str(task_id)
+        if not isinstance(task_id, str):
+            raise ValueError("Wrong type for task_id %r", type(task_id))
+        self.tid = task_id
         self.set_uuid(uuid.uuid4())
         self.remote_ids = {}
         self.content = ""
@@ -899,8 +900,8 @@ class Task(TreeNode):
             tag = self.req.get_tag(tagname)
             # The ViewCount of the tag still doesn't know that
             # the task was removed. We need to update manually
-            tag.update_task(self.get_id())
             if tag:
+                tag.update_task(self.get_id())
                 tag.modified()
 
     def set_only_these_tags(self, tags_list):
@@ -965,3 +966,5 @@ class Task(TreeNode):
                 str(self.tags),
                 str(self.added_date),
                 str(self.recurring))
+
+    __repr__ = __str__

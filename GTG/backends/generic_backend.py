@@ -298,6 +298,9 @@ class GenericBackend:
         self.to_remove = deque()
         self.datastore = None
 
+    def __repr__(self):
+        return "<%s(%s)>" % (self.__class__.__name__, self.get_id())
+
     def get_attached_tags(self):
         """
         Returns the list of tags which are handled by this backend

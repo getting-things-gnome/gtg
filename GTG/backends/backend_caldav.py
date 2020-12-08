@@ -117,8 +117,7 @@ class Backend(PeriodicImportBackend):
 
     @interruptible
     def do_periodic_import(self) -> None:
-        log.info("%r: Running periodic import", self)
-        with self.datastore.get_backend_mutex():
+            log.info("%r: Running periodic import", self)
             with self._get_lock('calendar-listing', raise_if_absent=False):
                 self._refresh_calendar_list()
             self._todos_by_gtg_id.clear()
@@ -151,17 +150,20 @@ class Backend(PeriodicImportBackend):
             created, updated = 0, 0
             for todo in self._cached_todos:
                 task = self._get_task(todo, task_by_uid)
+                todo_uid = todo.instance.vtodo.uid.value
                 if not task:  # not found, creating it
-                    task = self.datastore.task_factory(
-                        todo.instance.vtodo.uid.value)
+                    task = self.datastore.task_factory(todo_uid)
+                    task.tid = todo_uid
                     created += 1
-                    log.debug('Creating task %r from %r', task, self)
+                    verb = "creating"
                 else:
                     updated += 1
-                    log.debug('Creating task %r from %r', task, self)
+                    verb = "updating"
                 task_ids.add(task.get_id())
                 self._populate_task(task, todo)
-                self.datastore.push_task(task)
+                log.debug('%r: %s task %r', self, verb, task)
+                if not self.datastore.push_task(task):
+                    log.warning("%r: couldn't create %r", self, task)
             log.info('%r: Created %d new task, %d existing ones from backend',
                      self, created, updated)
 
@@ -186,7 +188,8 @@ class Backend(PeriodicImportBackend):
         calendar_url = str(calendar.url)
         with self._get_lock(calendar_url):
             if todo:  # found one, saving it
-                for dav_key, get, __ in self._iter_translations(task):
+                for dav_key, get, __ in self._iter_translations(task,
+                                                                calendar.name):
                     if dav_key == 'uid':
                         continue  # do not override uid on update
                     todo.instance.vtodo.contents.pop(dav_key, None)
@@ -205,7 +208,7 @@ class Backend(PeriodicImportBackend):
                     log.debug(todo.instance.vtodo.serialize())
                 todo.save()
             else:  # creating from task
-                new_vtodo = self._task_to_new_vtodo(task)
+                new_vtodo = self._task_to_new_vtodo(task, calendar.name)
                 log.debug('%r: creating todo for %r', self, task)
                 new_todo = calendar.add_todo(new_vtodo.serialize())
                 self._todos_by_uid[calendar_url][new_todo.uid] = new_todo
@@ -252,12 +255,12 @@ class Backend(PeriodicImportBackend):
             self._notify_user_about_default_calendar()
 
     @classmethod
-    def _task_to_new_vtodo(cls, task: Task) -> iCalendar:
+    def _task_to_new_vtodo(cls, task: Task, calendar_name: str) -> iCalendar:
         vcal = iCalendar()
         vcal.prodid.value = GTG_PRODID
         vtodo = vcal.add('vtodo')
         vtodo.add('sequence').value = "0"
-        for dav_key, get, __ in cls._iter_translations(task):
+        for dav_key, get, __ in cls._iter_translations(task, calendar_name):
             vtodo.add(dav_key).value = get()
         return vcal
 
@@ -273,7 +276,7 @@ class Backend(PeriodicImportBackend):
         return default
 
     @staticmethod
-    def _iter_translations(task: Task, with_uuid: bool = True):
+    def _iter_translations(task: Task, calendar_name: str):
         def get_date(func):
             @wraps(func)
             def wrapper(*args, **kwargs):
@@ -312,11 +315,19 @@ class Backend(PeriodicImportBackend):
         yield ('percent-complete',
                lambda: ('100' if task.get_status() == Task.STA_DONE else '0'),
                lambda _: None)
-        yield ('categories',
-               lambda: [tag.replace('@', '', 1).replace('_', ' ')
-                        for tag in task.get_tags_name()],
-               lambda tags: task.set_only_these_tags(
-                   "@%s" % tag.replace(' ', '_') for tag in tags or []))
+
+        def get_tags_from_task():
+            for tag in task.get_tags_name():
+                if tag == '@%s' % calendar_name.replace('_', ' '):
+                    continue
+                yield tag.replace('@', '', 1).replace('_', ' ')
+
+        def tags_from_cats(categories=None):
+            yield '@%s' % calendar_name.replace(' ', '_')
+            for category in categories or []:
+                yield '@%s' % category.replace(' ', '_')
+        yield ('categories', lambda: list(get_tags_from_task()),
+               lambda tags: task.set_only_these_tags(tags_from_cats(tags)))
 
     def _get_lock(self, name: str, raise_if_absent: bool = False):
         if name not in self._locks:
@@ -410,7 +421,8 @@ class Backend(PeriodicImportBackend):
         """
         Copies the content of a VTODO in a Task
         """
-        for dav_key, __, set_val in self._iter_translations(task):
+        for dav_key, __, set_val in self._iter_translations(task,
+                                                            todo.parent.name):
             set_val(self._extract_from_todo(todo, dav_key, ''))
 
         # attributes
