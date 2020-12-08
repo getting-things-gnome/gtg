@@ -117,7 +117,7 @@ class Backend(PeriodicImportBackend):
 
     @interruptible
     def do_periodic_import(self) -> None:
-        log.info("%r: Running periodic import", self)
+        log.info("Running periodic import")
         with self.datastore.get_backend_mutex():
             with self._get_lock('calendar-listing', raise_if_absent=False):
                 self._refresh_calendar_list()
@@ -133,7 +133,7 @@ class Backend(PeriodicImportBackend):
                         self._todos_by_uid[cal_url] = {}
                     else:
                         self._todos_by_uid[cal_url].clear()
-                    log.info('%r: Fetching todos from %r', self, calendar.url)
+                    log.info('Fetching todos from %r', calendar.url)
                     todos = {todo.instance.vtodo.uid.value: todo
                              for todo in calendar.todos()}
                     self._todos_by_uid[cal_url].update(todos)
@@ -162,11 +162,11 @@ class Backend(PeriodicImportBackend):
                     verb = "updating"
                 task_ids.add(task.get_id())
                 self._populate_task(task, todo)
-                log.debug('%r: %s task %r', self, verb, task)
+                log.debug('%s task %r', verb, task)
                 if not self.datastore.push_task(task):
-                    log.warning("%r: couldn't create %r", self, task)
-            log.info('%r: Created %d new task, %d existing ones from backend',
-                     self, created, updated)
+                    log.warning("couldn't create %r", task.get_id())
+            log.info('Created %d new task, %d existing ones from backend',
+                     created, updated)
 
             # removing task we didn't see during listing
             all_tids = {task_id
@@ -175,12 +175,12 @@ class Backend(PeriodicImportBackend):
             for task_id in all_tids.difference(task_ids):
                 deleted += 1
                 self.datastore.request_task_deletion(task_id)
-            log.info('%r: Deleted %d task absent from backend', self, deleted)
+            log.info('Deleted %d task absent from backend', deleted)
 
     @interruptible
     def set_task(self, task: Task) -> None:
         # TODO filter task, not syncing children task
-        log.info('%r: set_task todo for %r', self, task)
+        log.info('set_task todo for %r', task)
         todo = self._get_todo(task=task)
         if todo:
             calendar = todo.parent
@@ -204,13 +204,13 @@ class Backend(PeriodicImportBackend):
                 sequence = str(int(sequence) + 1)
                 todo.instance.vtodo.add('sequence').value = sequence
                 # saving new todo
-                log.debug('%r: updating todo %r', self, todo)
+                log.debug('updating todo %r', todo)
                 if log.isEnabledFor(logging.DEBUG):
                     log.debug(todo.instance.vtodo.serialize())
                 todo.save()
             else:  # creating from task
                 new_vtodo = self._task_to_new_vtodo(task, calendar.name)
-                log.debug('%r: creating todo for %r', self, task)
+                log.debug('creating todo for %r', task)
                 new_todo = calendar.add_todo(new_vtodo.serialize())
                 self._todos_by_uid[calendar_url][new_todo.uid] = new_todo
                 task.add_remote_id(self.get_id(), task.get_uuid())
@@ -219,7 +219,7 @@ class Backend(PeriodicImportBackend):
     def remove_task(self, tid: str) -> None:
         if not tid:
             return
-        log.info('%r: removing todo for Task(%s)', self, tid)
+        log.info('removing todo for Task(%s)', tid)
         todo = self._todos_by_gtg_id.pop(tid, None)
         if todo:
             with self._get_lock(str(todo.parent.url)):

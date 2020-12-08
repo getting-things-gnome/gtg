@@ -105,11 +105,15 @@ class Date:
     DEFAULT_MINUTE = 0
     DEFAULT_SECOND = 0
 
-    def __init__(self, value=''):
+    def __init__(self, value=None):
         self.datetime = None
         self.accuracy = None  # datetime, date, or fuzzy
         self.fuzzy = None
-        if isinstance(value, date):
+        if value is None or value == '':
+            self.fuzzy = NODATE
+            self.datetime = FUNCS[NODATE]()
+            self.accuracy = Accuracy.fuzzy
+        elif isinstance(value, date):
             self.accuracy = Accuracy.date
             self.datetime = datetime(
                 value.year, value.month, value.day,
