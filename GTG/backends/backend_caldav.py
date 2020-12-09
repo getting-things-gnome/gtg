@@ -22,7 +22,7 @@ Backend for storing/loading tasks in CalDAV Tasks
 """
 
 import threading
-from datetime import datetime, timezone
+from datetime import datetime
 from gettext import gettext as _
 
 import caldav
@@ -64,7 +64,7 @@ class Backend(PeriodicImportBackend):
     _static_parameters = {
         "period": {
             GenericBackend.PARAM_TYPE: GenericBackend.TYPE_INT,
-            GenericBackend.PARAM_DEFAULT_VALUE: 0.25},
+            GenericBackend.PARAM_DEFAULT_VALUE: 15},
         "username": {
             GenericBackend.PARAM_TYPE: GenericBackend.TYPE_STRING,
             GenericBackend.PARAM_DEFAULT_VALUE: _('insert your username')},
@@ -82,9 +82,10 @@ class Backend(PeriodicImportBackend):
             GenericBackend.PARAM_DEFAULT_VALUE: True},
     }
 
-###############################################################################
-# Backend standard methods ####################################################
-###############################################################################
+    #
+    # Backend standard methods
+    #
+
     def __init__(self, parameters):
         """
         See GenericBackend for an explanation of this function.
@@ -155,8 +156,12 @@ class Backend(PeriodicImportBackend):
                 seen_task_ids.add(task.get_id())
                 Translator.fill_task(todo, task, self.namespace)
                 self.datastore.push_task(task)
-            log.info('Created %d new task, updated %d ones from backend '
-                     '(ignored %d unchanged)', created, updated, unchanged)
+            if created:
+                log.info('LOCAL created %d new tasks', created)
+            if updated:
+                log.info('LOCAL updated %d existing tasks', updated)
+            if unchanged:
+                log.info('LOCAL %d existing task stayed unchanged', unchanged)
 
             # removing task we didn't see during listing
             all_tids = {task_id
@@ -165,7 +170,8 @@ class Backend(PeriodicImportBackend):
             for task_id in all_tids.difference(seen_task_ids):
                 deleted += 1
                 self.datastore.request_task_deletion(task_id)
-            log.info('Deleted %d task absent from backend', deleted)
+            if deleted:
+                log.info('LOCAL deleted %d tasks absent from backend', deleted)
             self._parameters["is-first-run"] = False
 
     @interruptible
@@ -193,16 +199,17 @@ class Backend(PeriodicImportBackend):
                 Translator.fill_vtodo(task, calendar.name, self.namespace,
                                       todo.instance.vtodo)
                 # saving new todo
-                log.info('updating todo %r', todo)
+                log.info('SYNCING updating todo %r', todo)
                 self._log(task, todo=todo)
                 todo.save()
             else:  # creating from task
                 new_vtodo = Translator.fill_vtodo(
                     task, calendar.name, self.namespace)
-                log.info('creating todo for %r', task)
+                log.info('SYNCING creating todo for %r', task)
                 self._log(task, vtodo=new_vtodo.vtodo)
                 new_todo = calendar.add_todo(new_vtodo.serialize())
-                self._todos_by_uid[calendar_url][new_todo.uid] = new_todo
+                todo_uid = UID_FIELD.get_dav(todo=new_todo)
+                self._todos_by_uid[calendar_url][todo_uid] = new_todo
                 self._todos_by_gtg_id[task.get_id()] = new_todo
                 self._todos_by_gtg_uid[task.get_uuid()] = new_todo
                 task.add_remote_id(self.get_id(), task.get_uuid())
@@ -222,17 +229,18 @@ class Backend(PeriodicImportBackend):
             return
         if not tid:
             return
-        log.info('removing todo for Task(%s)', tid)
+        log.info('SYNCING removing todo for Task(%s)', tid)
         todo = self._todos_by_gtg_id.pop(tid, None)
         if todo:
             with self._get_lock(str(todo.parent.url)):
                 uid = UID_FIELD.get_dav(todo)
                 # cleaning cache
-                self._todos_by_gtg_id.pop(tid, None)
                 self._todos_by_gtg_uid.pop(uid, None)
                 self._todos_by_uid.pop(uid, None)
                 # deleting through caldav
                 todo.delete()
+        else:
+            log.error("Could not find todo for task(%s)", tid)
 
     #
     # Dav functions
