@@ -21,6 +21,13 @@
 Backend for storing/loading tasks in CalDAV Tasks
 """
 
+# TODO features:
+#  * registering task relation through RELATED-TO params        : KO
+#     * handle percent complete                                 : KO
+#     * handle task content formatting for compat with opentask : KO
+#  * push proper categories to dav                              : KO
+#  * handle DAV collection switch (CREATE + DELETE)             : KO
+
 import threading
 from datetime import datetime
 from gettext import gettext as _
@@ -110,7 +117,6 @@ class Backend(PeriodicImportBackend):
             with self._get_lock('calendar-listing', raise_if_absent=False):
                 self._refresh_calendar_list()
             # browsing calendars
-            # TODO filter task, not syncing children task
             with self._cache:
                 self._cache.clear_todo_cache()
                 for cal_url, calendar in self._cache.calendars:
@@ -169,7 +175,6 @@ class Backend(PeriodicImportBackend):
         if self._parameters["is-first-run"]:
             log.warning("not loaded yet, ignoring set_task")
             return
-        # TODO filter task, not syncing children task
         log.debug('set_task todo for %r', task.get_id())
         todo = self._get_todo(task=task)
         if todo:
@@ -211,7 +216,8 @@ class Backend(PeriodicImportBackend):
             return
         log.info('SYNCING removing todo for Task(%s)', tid)
         with self._cache:
-            todo = self._cache.get_todo(task_id=tid)
+            todo = self._cache.get_todo(task_id=tid,
+                                        todo_uid=tid, task_uid=tid)
             if todo:
                 with self._get_lock(str(todo.parent.url)):
                     uid = UID_FIELD.get_dav(todo)
@@ -298,8 +304,16 @@ class Backend(PeriodicImportBackend):
     def _get_calendar(self, task: Task) -> caldav.Calendar:
         calendar_url = task.get_attribute("calendar_url",
                                           namespace=self.namespace)
+        calendar = None
         with self._cache:
-            calendar = self._cache.get_calendar(url=calendar_url)
+            if calendar_url:
+                calendar = self._cache.get_calendar(url=calendar_url)
+            if not calendar:
+                for tag in CATEGORIES.get_gtg(task):
+                    if tag:
+                        calendar = self._cache.get_calendar(name=tag)
+                        if calendar:
+                            break
             if calendar:
                 return calendar
             default_calendar_name = self._parameters['default-calendar-name']
@@ -442,7 +456,6 @@ class Status(Field):
 class Percent(Field):
 
     def get_gtg(self, task: Task, namespace: str = None) -> str:
-        # TODO handle subtasks
         return '100' if task.get_status() == Task.STA_DONE else '0'
 
 
@@ -523,7 +536,6 @@ class Description(Field):
 
     def get_dav(self, todo=None, vtodo=None) -> str:
         value = super().get_dav(todo, vtodo) or ''
-        # TODO handle subtask
         return value
 
     def get_gtg(self, task: Task, namespace: str = None) -> str:
@@ -583,7 +595,7 @@ class Translator:
             vtodo = vcal.vtodo
         # updating dtstamp
         DTSTAMP_FIELD.write_dav(vtodo, datetime.now())
-        CATEGORIES.clean_dav(vtodo)  # TODO proper categories sync
+        CATEGORIES.clean_dav(vtodo)
         for field in cls.fields:
             if field.dav_name == 'uid' and UID_FIELD.get_dav(vtodo=vtodo):
                 # not overriding if already set from cache
@@ -649,6 +661,7 @@ class TodoCache:
             calendar = self.calendars_by_name.get(name)
             if calendar:
                 return calendar
+        log.error('no calendar for %r or %r', name, url)
 
     @property
     def calendars(self):
