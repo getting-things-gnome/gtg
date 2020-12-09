@@ -27,6 +27,7 @@ Backend for storing/loading tasks in CalDAV Tasks
 #     * handle task content formatting for compat with opentask : KO
 #  * push proper categories to dav                              : KO
 #  * handle DAV collection switch (CREATE + DELETE)             : KO
+#  * handle GTG task creation while DAV is updating             : KO
 
 import threading
 from datetime import datetime
@@ -203,7 +204,7 @@ class Backend(PeriodicImportBackend):
                 new_todo = calendar.add_todo(new_vtodo.serialize())
                 todo_uid = UID_FIELD.get_dav(todo=new_todo)
                 with self._cache:
-                    self._cache.set_todo(task.get_id(),
+                    self._cache.set_todo(new_todo, task.get_id(),
                                          todo_uid, task.get_uuid())
                 task.add_remote_id(self.get_id(), task.get_uuid())
 
@@ -697,6 +698,7 @@ class TodoCache:
                  task_id, todo_uid, task_uid)
 
     def clear_todo_cache(self):
+        assert self._lock.locked()
         self.todos_by_gtg_id.clear()
         self.todos_by_gtg_uid.clear()
         self.todos_by_uid.clear()
