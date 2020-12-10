@@ -28,6 +28,7 @@ Backend for storing/loading tasks in CalDAV Tasks
 #  * push proper categories to dav                              : KO
 #  * handle DAV collection switch (CREATE + DELETE)             : KO
 #  * handle GTG task creation while DAV is updating             : KO
+#  * support recurring events                                   : KO
 
 import threading
 from datetime import datetime
@@ -45,7 +46,6 @@ from vobject import iCalendar
 
 GTG_UID_KEY = 'gtg-task-uid'
 GTG_ID_KEY = 'gtg-task-id'
-GTG_START_KEY = 'gtg-start-date'
 DAV_IGNORE = {'last-modified',  # often updated alone by GTG
               'sequence',  # internal DAV value, only set by translator
               GTG_ID_KEY, GTG_UID_KEY,  # remote ids, not worthy of sync alone
@@ -407,13 +407,12 @@ class DateField(Field):
         except AttributeError:
             return value
 
-    def write_dav(self, todo: iCalendar, value):
+    def write_dav(self, todo: iCalendar, value: datetime):
         "Writing datetime as UTC naive"
-        if not value.tzinfo:
-            value = value - LOCAL_TIMEZONE.utcoffset(value)
-        else:
-            value = value - value.tzinfo.utcoffset(value)
-            value = value.replace(tzinfo=None)
+        if not value.tzinfo:  # assumring is LOCAL_TIMEZONEd
+            value = value.replace(tzinfo=LOCAL_TIMEZONE)
+        value = value - value.utcoffset()
+        value = value.replace(tzinfo=None)
         return super().write_dav(todo, value)
 
     def get_dav(self, todo=None, vtodo=None):
@@ -564,16 +563,16 @@ GTG_ID_FIELD = Field(GTG_ID_KEY, 'get_id', '')
 GTG_UID_FIELD = Field(GTG_UID_KEY, 'get_uuid', '')
 SEQUENCE = Sequence('sequence', '<fake attribute>', '')
 CATEGORIES = Categories('categories', 'get_tags', '')
-DTSTAMP_FIELD = DateField('dtstamp', '', '')
 
 
 class Translator:
     GTG_PRODID = "-//Getting Things Gnome//CalDAV Backend//EN"
+    DTSTAMP_FIELD = DateField('dtstamp', '', '')
     fields = [Field('summary', 'get_title', 'set_title'),
               Description('description', 'get_excerpt', 'set_text'),
               DateField('due', 'get_due_date_constraint', 'set_due_date'),
               DateField('completed', 'get_closed_date', 'set_closed_date'),
-              DateField(GTG_START_KEY, 'get_start_date', 'set_start_date'),
+              DateField('dtstart', 'get_start_date', 'set_start_date'),
               Status('status', 'get_status', 'set_status'),
               Percent('percent-complete', 'get_status', ''),
               GTG_ID_FIELD, GTG_UID_FIELD, SEQUENCE, UID_FIELD,
@@ -594,8 +593,8 @@ class Translator:
         if vtodo is None:
             vcal = cls._get_new_vcal()
             vtodo = vcal.vtodo
-        # updating dtstamp
-        DTSTAMP_FIELD.write_dav(vtodo, datetime.now())
+        # always write a DTSTAMP field to the `now`
+        cls.DTSTAMP_FIELD.write_dav(vtodo, datetime.now(LOCAL_TIMEZONE))
         CATEGORIES.clean_dav(vtodo)
         for field in cls.fields:
             if field.dav_name == 'uid' and UID_FIELD.get_dav(vtodo=vtodo):
