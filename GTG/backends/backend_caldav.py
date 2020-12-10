@@ -22,7 +22,7 @@ Backend for storing/loading tasks in CalDAV Tasks
 """
 
 # TODO features:
-#  * registering task relation through RELATED-TO params        : KO
+#  * registering task relation through RELATED-TO params        : OK
 #     * handle percent complete                                 : KO
 #     * handle task content formatting for compat with opentask : KO
 #  * push proper categories to dav                              : KO
@@ -142,7 +142,8 @@ class Backend(PeriodicImportBackend):
                                 continue
                             updated += 1
                         seen_task_ids.add(task.get_uuid())
-                        Translator.fill_task(todo, task, self.namespace)
+                        Translator.fill_task(todo, task, self.namespace,
+                                             do_related='none')
                         self.datastore.push_task(task)
             if created:
                 log.info('LOCAL created %d new tasks', created)
@@ -153,13 +154,20 @@ class Backend(PeriodicImportBackend):
 
             # removing task we didn't see during listing
             for task_id in self.datastore.get_all_tasks():
-                if task_id in seen_task_ids:
-                    continue
-                task = self.datastore.get_task(task_id)
-                if task.get_status() != Task.STA_DONE \
-                        or not self._cache.initialized:
-                    deleted += 1
-                    self.datastore.request_task_deletion(task_id)
+                task = None
+                if task_id not in seen_task_ids:
+                    task = self.datastore.get_task(task_id)
+                    if task.get_status() != Task.STA_DONE \
+                            or not self._cache.initialized:
+                        deleted += 1
+                        self.datastore.request_task_deletion(task_id)
+                        continue
+                if task is None:  # now that all task are loaded from backends
+                    # loading relationships
+                    task = self.datastore.get_task(task_id)
+                    todo = self._cache.get_todo(task_id)
+                    Translator.fill_task(todo, task, self.namespace,
+                                         do_related='only')
             if deleted:
                 log.info('LOCAL deleted %d tasks absent from backend', deleted)
             self._parameters["is-first-run"] = False
@@ -191,7 +199,7 @@ class Backend(PeriodicImportBackend):
                     log.exception('Something went wrong while updating '
                                   '%r => %r', task, todo)
             else:  # creating from task
-                new_vtodo = Translator.fill_vtodo(
+                new_todo, new_vtodo = None, Translator.fill_vtodo(
                     task, calendar.name, self.namespace)
                 log.info('SYNCING creating todo for %r', task)
                 try:
@@ -416,9 +424,9 @@ class Status(Field):
                             'COMPLETED': Task.STA_DONE,
                             'CANCELLED': Task.STA_DISMISSED}
 
-    def write_dav(self, todo: iCalendar, value):
-        self.clean_dav(todo)
-        todo.add(self.dav_name).value = self.GTG_TO_CALDAV_STATUS.get(
+    def write_dav(self, vtodo: iCalendar, value):
+        self.clean_dav(vtodo)
+        vtodo.add(self.dav_name).value = self.GTG_TO_CALDAV_STATUS.get(
             value, self.DEFAULT_CALDAV_STATUS)
 
     def get_gtg(self, task: Task, namespace: str = None) -> str:
@@ -537,6 +545,51 @@ class Description(Field):
         return cnt
 
 
+class RelatedTo(Field):
+
+    def __init__(self, *args, reltype: str, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.reltype = reltype.upper()
+
+    def _fit_reltype(self, sub_value):
+        reltype = sub_value.params.get('RELTYPE')
+        return len(reltype) == 1 and reltype[0] == self.reltype
+
+    def clean_dav(self, vtodo: iCalendar):
+        value = vtodo.contents.get(self.dav_name)
+        if value:
+            index_to_remove = []
+            for index, sub_value in enumerate(value):
+                if self._fit_reltype(sub_value):
+                    index_to_remove.append(index)
+            for index in sorted(index_to_remove, reverse=True):
+                value.pop(index)
+
+    def write_dav(self, vtodo: iCalendar, related_uids):
+        self.clean_dav(vtodo)
+        for related_uid in related_uids:
+            related = vtodo.add(self.dav_name)
+            related.value = related_uid
+            related.params['RELTYPE'] = [self.reltype]
+
+    def get_dav(self, todo=None, vtodo=None):
+        if todo:
+            vtodo = todo.instance.vtodo
+        value = vtodo.contents.get(self.dav_name)
+        result = []
+        if value:
+            for sub_value in value:
+                if self._fit_reltype(sub_value):
+                    result.append(sub_value.value)
+        return result
+
+    def set_gtg(self, todo: iCalendar, task: Task,
+                namespace: str = None) -> None:
+        for value in self.get_dav(todo):
+            if self._is_value_allowed(value):
+                getattr(task, self.task_set_func_name)(value)
+
+
 UID_FIELD = Field('uid', 'get_uuid', 'set_uuid')
 SEQUENCE = Sequence('sequence', '<fake attribute>', '')
 CATEGORIES = Categories('categories', 'get_tags', '')
@@ -553,6 +606,10 @@ class Translator:
               Status('status', 'get_status', 'set_status'),
               Percent('percent-complete', 'get_status', ''),
               SEQUENCE, UID_FIELD,
+              RelatedTo('related-to', 'get_parents', 'set_parent',
+                        reltype='parent'),
+              RelatedTo('related-to', 'get_children', 'add_child',
+                        reltype='child'),
               DateField('created', 'get_added_date', 'set_added_date'),
               DateField('last-modified', 'get_modified', 'set_modified')]
 
@@ -581,8 +638,14 @@ class Translator:
         return vcal
 
     @classmethod
-    def fill_task(cls, todo: iCalendar, task: Task, namespace: str):
+    def fill_task(cls, todo: iCalendar, task: Task, namespace: str,
+                  do_related: str):
+        assert do_related in {'only', 'none'}
         for field in cls.fields:
+            if do_related == 'only' and not isinstance(field, RelatedTo):
+                continue
+            if do_related == 'none' and isinstance(field, RelatedTo):
+                continue
             field.set_gtg(todo, task, namespace)
         task.set_attribute("url", str(todo.url), namespace=namespace)
         task.set_attribute("calendar_url", str(todo.parent.url),
