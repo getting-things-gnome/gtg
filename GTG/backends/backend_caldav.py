@@ -23,7 +23,7 @@ Backend for storing/loading tasks in CalDAV Tasks
 
 # TODO features:
 #  * registering task relation through RELATED-TO params        : OK
-#     * handle percent complete                                 : KO
+#     * handle percent complete                                 : OK
 #     * handle task content formatting for compat with opentask : KO
 #  * push proper categories to dav                              : KO
 #  * handle DAV collection switch (CREATE + DELETE)             : KO
@@ -440,10 +440,20 @@ class Status(Field):
                                              Task.STA_ACTIVE)
 
 
-class Percent(Field):
+class PercentComplete(Field):
+
+    @classmethod
+    def _browse_subtasks(cls, task: Task):
+        yield 1 if task.get_status() != Task.STA_ACTIVE else 0
+        for subtask in task.get_subtasks():
+            yield from cls._browse_subtasks(subtask)
 
     def get_gtg(self, task: Task, namespace: str = None) -> str:
-        return '100' if task.get_status() == Task.STA_DONE else '0'
+        total_cnt, not_active_cnt = 0, 0
+        for not_active_sub_cnt in self._browse_subtasks(task):
+            total_cnt += 1
+            not_active_cnt += not_active_sub_cnt
+        return str(int(100 * not_active_cnt / total_cnt))
 
 
 class Categories(Field):
@@ -604,7 +614,7 @@ class Translator:
               DateField('completed', 'get_closed_date', 'set_closed_date'),
               DateField('dtstart', 'get_start_date', 'set_start_date'),
               Status('status', 'get_status', 'set_status'),
-              Percent('percent-complete', 'get_status', ''),
+              PercentComplete('percent-complete', 'get_status', ''),
               SEQUENCE, UID_FIELD,
               RelatedTo('related-to', 'get_parents', 'set_parent',
                         reltype='parent'),
