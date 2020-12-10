@@ -423,21 +423,28 @@ class DateField(Field):
         except AttributeError:
             return value
 
-    def write_dav(self, todo: iCalendar, value: datetime):
+    def write_dav(self, todo: iCalendar, value):
         "Writing datetime as UTC naive"
         if not value.tzinfo:  # assumring is LOCAL_TIMEZONEd
             value = value.replace(tzinfo=LOCAL_TIMEZONE)
-        value = value - value.utcoffset()
-        value = value.replace(tzinfo=None)
+        value = (value - value.utcoffset()).replace(tzinfo=None)
         return super().write_dav(todo, value)
 
     def get_dav(self, todo=None, vtodo=None):
         """Transforming to local naive,
-        if original value is naive, assuming UTC naive"""
+        if original value MAY be naive and IS assuming UTC"""
         value = super().get_dav(todo, vtodo)
-        if value:
-            return self._normalize(value.replace(tzinfo=LOCAL_TIMEZONE)
-                                   + LOCAL_TIMEZONE.utcoffset(value))
+        if not isinstance(value, datetime):
+            try:
+                value = Date(value).datetime
+            except ValueError:
+                log.error("Coudln't translate value %r", value)
+                return
+        if value.tzinfo:  # if timezoned, translate to UTC
+            value = value - value.utcoffset()
+        value = value.replace(tzinfo=LOCAL_TIMEZONE)  # zoning to local
+        value = value + value.utcoffset()  # adding local offset
+        return self._normalize(value)  # return naive
 
     def get_gtg(self, task: Task, namespace: str = None):
         return self._normalize(super().get_gtg(task, namespace))

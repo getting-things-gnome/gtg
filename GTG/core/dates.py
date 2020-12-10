@@ -145,7 +145,7 @@ class Date:
                 try:  # it must be a fuzzy date
                     value = LOOKUP[str(value).lower()]
                     self.fuzzy = value
-                    self.datetime = FUNCS[value]
+                    self.datetime = FUNCS[value]()
                     self.accuracy = Accuracy.fuzzy
                     done = True
                 except KeyError:
