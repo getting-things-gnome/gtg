@@ -48,7 +48,7 @@ class Task(TreeNode):
         if not isinstance(task_id, str):
             raise ValueError("Wrong type for task_id %r", type(task_id))
         self.tid = task_id
-        self.set_uuid(uuid.uuid4())
+        self.set_uuid(task_id)
         self.remote_ids = {}
         self.content = ""
         if Task.DEFAULT_TASK_NAME is None:
