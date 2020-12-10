@@ -30,6 +30,7 @@ Backend for storing/loading tasks in CalDAV Tasks
 #  * handle GTG task creation while DAV is updating             : KO
 #  * support recurring events                                   : KO
 
+import logging
 import threading
 from datetime import datetime
 from gettext import gettext as _
@@ -180,11 +181,6 @@ class Backend(PeriodicImportBackend):
             if todo:  # found one, saving it
                 if not Translator.should_sync(task, self.namespace, todo):
                     return
-                for field, task_value, todo_value in Translator.changed_attrs(
-                        task, self.namespace, todo):
-                    log.debug('changed %s(%r != %r)', field,
-                              task_value, todo_value)
-
                 Translator.fill_vtodo(task, calendar.name, self.namespace,
                                       todo.instance.vtodo)
                 # saving new todo
@@ -606,15 +602,15 @@ class Translator:
 
     @classmethod
     def should_sync(cls, task: Task, namespace: str,  todo=None, vtodo=None):
-        for field, __, __ in cls.changed_attrs(task, namespace, todo, vtodo):
+        fields = cls.changed_attrs(task, namespace, todo, vtodo)
+        if log.isEnabledFor(logging.DEBUG):
+            fields = list(fields)
+            for field, task_v, todo_v in fields:
+                log.debug('changed %s(%r != %r)', field, task_v, todo_v)
+        for field, __, __ in fields:
             if field not in DAV_IGNORE:
                 return True
         return False
-
-    @classmethod
-    def is_changed(cls, task: Task, namespace: str, todo=None, vtodo=None):
-        return bool(list(cls.changed_attrs(task, namespace, todo, vtodo)))
-        return any(cls.changed_attrs(task, namespace, todo, vtodo))
 
 
 class TodoCache:
