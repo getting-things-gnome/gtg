@@ -25,7 +25,7 @@ Backend for storing/loading tasks in CalDAV Tasks
 #  * registering task relation through RELATED-TO params        : OK
 #     * handle percent complete                                 : OK
 #     * ensure compatibility with tasks.org                     : OK
-#  * push proper categories to dav                              : KO
+#  * push proper categories to dav                              : OK
 #  * handle DAV collection switch (CREATE + DELETE)             : KO
 #  * handle GTG task creation while DAV is updating             : KO
 #  * support recurring events                                   : KO
@@ -45,6 +45,7 @@ from GTG.core.task import Task, DisabledSyncCtx
 from GTG.core.dates import Date, LOCAL_TIMEZONE
 from vobject import iCalendar
 
+DAV_TAG_PREFIX = 'DAV-'
 DAV_IGNORE = {'last-modified',  # often updated alone by GTG
               'sequence',  # internal DAV value, only set by translator
               'percent-complete',  # calculated on subtask and status
@@ -130,6 +131,7 @@ class Backend(PeriodicImportBackend):
             log.warning("not loaded yet, ignoring set_task")
             return
         if not tid:
+            log.warning("no task id passed to remove_task call, ignoring")
             return
         with self.datastore.get_backend_mutex():
             self._remove_task(tid)
@@ -516,33 +518,36 @@ class PercentComplete(Field):
 class Categories(Field):
 
     @staticmethod
-    def to_categ(tag):
-        return tag.replace('@', '', 1).replace('_', ' ')
-
-    @staticmethod
-    def to_tag(category):
-        return '@%s' % category.replace(' ', '_')
+    def to_tag(category, prefix=''):
+        return '@%s%s' % (prefix, category.replace(' ', '_'))
 
     def get_gtg(self, task: Task, namespace: str = None) -> list:
-        return [self.to_categ(tag.get_name()) for tag in super().get_gtg(task)]
+        return [tag_name.replace('@', '', 1).replace('_', ' ')
+                for tag_name in super().get_gtg(task)
+                if not tag_name.startswith('@' + DAV_TAG_PREFIX)]
 
     def get_dav(self, todo=None, vtodo=None):
         if todo:
             vtodo = todo.instance.vtodo
+        categories = []
         for sub_value in vtodo.contents.get(self.dav_name, []):
             for category in sub_value.value:
                 if self._is_value_allowed(category):
-                    yield category
+                    categories.append(category)
+        return categories
 
-    def ensure_tags(self, task: Task, todo: iCalendar):
-        calendar_name = todo.parent.name
-        remote_cats = {self.to_categ(cat) for cat in self.get_dav(todo)}
-        remote_cats.add(self.to_tag(calendar_name))
-        local_tags = set(tag.get_name() for tag in super().get_gtg(task))
-        for to_delete in local_tags.difference(remote_cats):
-            task.remove_tag(to_delete)
-        for to_add in remote_cats.difference(local_tags):
+    def write_dav(self, vtodo: iCalendar, categories):
+        super().write_dav(vtodo, [cat for cat in categories
+                                  if not cat.startswith(DAV_TAG_PREFIX)])
+
+    def set_gtg(self, todo: iCalendar, task: Task,
+                namespace: str = None) -> None:
+        remote_tags = set(self.to_tag(categ) for categ in self.get_dav(todo))
+        local_tags = set(tag_name for tag_name in super().get_gtg(task))
+        for to_add in remote_tags.difference(local_tags):
             task.add_tag(to_add)
+        for to_delete in local_tags.difference(remote_tags):
+            task.remove_tag(to_delete)
 
 
 class AttributeField(Field):
@@ -670,7 +675,7 @@ class RelatedTo(Field):
 
 UID_FIELD = Field('uid', 'get_uuid', 'set_uuid')
 SEQUENCE = Sequence('sequence', '<fake attribute>', '')
-CATEGORIES = Categories('categories', 'get_tags', '')
+CATEGORIES = Categories('categories', 'get_tags_name', 'set_tags')
 
 
 class Translator:
@@ -683,7 +688,7 @@ class Translator:
               DateField('dtstart', 'get_start_date', 'set_start_date'),
               Status('status', 'get_status', 'set_status'),
               PercentComplete('percent-complete', 'get_status', ''),
-              SEQUENCE, UID_FIELD,
+              SEQUENCE, UID_FIELD, CATEGORIES,
               RelatedTo('related-to', 'get_parents', 'set_parent',
                         task_remove_func_name='remove_parent',
                         reltype='parent'),
@@ -708,7 +713,6 @@ class Translator:
             vtodo = vcal.vtodo
         # always write a DTSTAMP field to the `now`
         cls.DTSTAMP_FIELD.write_dav(vtodo, datetime.now(LOCAL_TIMEZONE))
-        CATEGORIES.clean_dav(vtodo)
         for field in cls.fields:
             if field.dav_name == 'uid' and UID_FIELD.get_dav(vtodo=vtodo):
                 # not overriding if already set from cache
@@ -731,7 +735,9 @@ class Translator:
             task.set_attribute("url", str(todo.url), **nmspc)
             task.set_attribute("calendar_url", str(todo.parent.url), **nmspc)
             task.set_attribute("calendar_name", todo.parent.name, **nmspc)
-            CATEGORIES.ensure_tags(task, todo)
+            calendar_tag = CATEGORIES.to_tag(todo.parent.name, DAV_TAG_PREFIX)
+            if calendar_tag not in task.get_tags_name():
+                task.add_tag(calendar_tag)
         return task
 
     @classmethod
