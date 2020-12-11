@@ -98,7 +98,6 @@ class Backend(PeriodicImportBackend):
         Re-loads the saved state of the synchronization
         """
         super().__init__(parameters)
-        self._locks = {}
         self._dav_client = None
         self._cache = TodoCache()
 
@@ -111,83 +110,8 @@ class Backend(PeriodicImportBackend):
 
     @interruptible
     def do_periodic_import(self) -> None:
-        log.info("Running periodic import")
-        with self._get_lock('calendar-listing', raise_if_absent=False), \
-                self.datastore.get_backend_mutex():
-            self._refresh_calendar_list()
-        # browsing calendars
-        with self._cache, self.datastore.get_backend_mutex():
-            seen_uids = set()
-            created, updated, unchanged, deleted = 0, 0, 0, 0
-            for cal_url, calendar in self._cache.calendars:
-                with self._get_lock(cal_url, raise_if_absent=False):
-                    # retrieving todos and updating various cache
-                    log.info('Fetching todos from %r', cal_url)
-                    inc_comp = not self._cache.initialized
-                    for todo in calendar.todos(include_completed=inc_comp):
-                        uid = UID_FIELD.get_dav(todo)
-                        seen_uids.add(uid)
-                        self._cache.set_todo(todo, uid)
-                        # Updating and creating task according to todos
-                        task = self.datastore.get_task(uid)
-                        if not task:  # not found, creating it
-                            task = self.datastore.task_factory(uid)
-                            created += 1
-                        else:
-                            task_seq = SEQUENCE.get_gtg(task, self.namespace)
-                            todo_seq = SEQUENCE.get_dav(todo)
-                            if task_seq >= todo_seq:
-                                unchanged += 1
-                                continue
-                            updated += 1
-                        Translator.fill_task(todo, task, self.namespace,
-                                             do_related='none')
-                        self.datastore.push_task(task)
-            if created:
-                log.info('LOCAL created %d new tasks', created)
-            if updated:
-                log.info('LOCAL updated %d existing tasks', updated)
-            if unchanged:
-                log.info('LOCAL %d existing tasks stayed unchanged', unchanged)
-
-            # browsing all task, removing missed ones, updating relationship
-            for uid in self.datastore.get_all_tasks():
-                todo, task, do_delete = None, None, False
-                # we missed some tasks when browsing todos
-                if uid not in seen_uids:
-                    task = self.datastore.get_task(uid)
-                    # if first run, we're getting all task, including completed
-                    # if we miss one, we delete it
-                    if not self._cache.initialized:
-                        do_delete = True
-                    # if cache is initialized, it's normal we missed completed
-                    # task, but we should have seen active ones
-                    elif task.get_status() == Task.STA_ACTIVE:
-                        calendar = self._get_calendar(task=task)
-                        if not calendar:
-                            log.warning("Couldn't find calendar for %r", task)
-                            continue
-                        try:  # fetching missing todo from server
-                            todo = calendar.todo_by_uid(uid)
-                        except caldav.lib.error.NotFoundError:
-                            do_delete = True
-                if do_delete:  # the task was missing for a good reason
-                    deleted += 1
-                    self._cache.del_todo(uid)
-                    self.datastore.request_task_deletion(uid)
-                    continue
-                if todo is None:
-                    todo = self._cache.get_todo(uid)
-                if task is None:
-                    task = self.datastore.get_task(uid)
-                # now that all task are loaded from backends
-                # loading relationships
-                Translator.fill_task(todo, task, self.namespace,
-                                     do_related='only')
-            if deleted:
-                log.info('LOCAL deleted %d tasks absent from backend', deleted)
-            self._parameters["is-first-run"] = False
-            self._cache.initialized = True
+        with self.datastore.get_backend_mutex():
+            self._do_periodic_import()
 
     @interruptible
     def set_task(self, task: Task) -> None:
@@ -197,40 +121,8 @@ class Backend(PeriodicImportBackend):
         if self._parameters["is-first-run"] or not self._cache.initialized:
             log.warning("not loaded yet, ignoring set_task")
             return
-        log.debug('set_task todo for %r', task.get_uuid())
-        todo = self._get_todo(task=task)
-        if todo:
-            calendar = todo.parent
-        else:
-            with self._cache:
-                calendar = self._get_calendar(task=task)
-        calendar_url = str(calendar.url)
-        with self._get_lock(calendar_url):
-            if todo:  # found one, saving it
-                if not Translator.should_sync(task, self.namespace, todo):
-                    log.debug('insufficient change, ignoring set_task call')
-                    return
-                Translator.fill_vtodo(task, calendar.name, self.namespace,
-                                      todo.instance.vtodo)
-                # saving new todo
-                log.info('SYNCING updating todo %r', todo)
-                try:
-                    todo.save()
-                except caldav.lib.error.DAVError:
-                    log.exception('Something went wrong while updating '
-                                  '%r => %r', task, todo)
-            else:  # creating from task
-                new_todo, new_vtodo = None, Translator.fill_vtodo(
-                    task, calendar.name, self.namespace)
-                log.info('SYNCING creating todo for %r', task)
-                try:
-                    new_todo = calendar.add_todo(new_vtodo.serialize())
-                except caldav.lib.error.DAVError:
-                    log.exception('Something went wrong while creating '
-                                  '%r => %r', task, new_todo)
-                uid = UID_FIELD.get_dav(todo=new_todo)
-                with self._cache:
-                    self._cache.set_todo(new_todo, uid)
+        with self.datastore.get_backend_mutex():
+            self._set_task(task)
 
     @interruptible
     def remove_task(self, tid: str) -> None:
@@ -239,20 +131,133 @@ class Backend(PeriodicImportBackend):
             return
         if not tid:
             return
+        with self.datastore.get_backend_mutex():
+            self._remove_task(tid)
+
+    #
+    # real main methods
+    #
+
+    def _do_periodic_import(self) -> None:
+        log.info("Running periodic import")
+        self._refresh_calendar_list()
+        # browsing calendars
+        seen_uids = set()
+        created, updated, unchanged, deleted = 0, 0, 0, 0
+        for cal_url, calendar in self._cache.calendars:
+            # retrieving todos and updating various cache
+            log.info('Fetching todos from %r', cal_url)
+            inc_comp = not self._cache.initialized
+            for todo in calendar.todos(include_completed=inc_comp):
+                uid = UID_FIELD.get_dav(todo)
+                seen_uids.add(uid)
+                self._cache.set_todo(todo, uid)
+                # Updating and creating task according to todos
+                task = self.datastore.get_task(uid)
+                if not task:  # not found, creating it
+                    task = self.datastore.task_factory(uid)
+                    created += 1
+                else:
+                    task_seq = SEQUENCE.get_gtg(task, self.namespace)
+                    todo_seq = SEQUENCE.get_dav(todo)
+                    if task_seq >= todo_seq:
+                        unchanged += 1
+                        continue
+                    updated += 1
+                Translator.fill_task(todo, task, self.namespace,
+                                     do_related='none')
+                self.datastore.push_task(task)
+        if created:
+            log.info('LOCAL created %d new tasks', created)
+        if updated:
+            log.info('LOCAL updated %d existing tasks', updated)
+        if unchanged:
+            log.info('LOCAL %d existing tasks stayed unchanged', unchanged)
+
+        # browsing all task, removing missed ones, updating relationship
+        for uid in self.datastore.get_all_tasks():
+            todo, task, do_delete = None, None, False
+            # we missed some tasks when browsing todos
+            if uid not in seen_uids:
+                task = self.datastore.get_task(uid)
+                # if first run, we're getting all task, including completed
+                # if we miss one, we delete it
+                if not self._cache.initialized:
+                    do_delete = True
+                # if cache is initialized, it's normal we missed completed
+                # task, but we should have seen active ones
+                elif task.get_status() == Task.STA_ACTIVE:
+                    calendar = self._get_calendar(task=task)
+                    if not calendar:
+                        log.warning("Couldn't find calendar for %r", task)
+                        continue
+                    try:  # fetching missing todo from server
+                        todo = calendar.todo_by_uid(uid)
+                    except caldav.lib.error.NotFoundError:
+                        do_delete = True
+            if do_delete:  # the task was missing for a good reason
+                deleted += 1
+                self._cache.del_todo(uid)
+                self.datastore.request_task_deletion(uid)
+                continue
+            if todo is None:
+                todo = self._cache.get_todo(uid)
+            if task is None:
+                task = self.datastore.get_task(uid)
+            # now that all task are loaded from backends
+            # loading relationships
+            Translator.fill_task(todo, task, self.namespace, do_related='only')
+        if deleted:
+            log.info('LOCAL deleted %d tasks absent from backend', deleted)
+        self._parameters["is-first-run"] = False
+        self._cache.initialized = True
+
+    def _set_task(self, task: Task) -> None:
+        log.debug('set_task todo for %r', task.get_uuid())
+        todo = self._get_todo(task=task)
+        if todo:
+            calendar = todo.parent
+        else:
+            calendar = self._get_calendar(task=task)
+        if todo:  # found one, saving it
+            if not Translator.should_sync(task, self.namespace, todo):
+                log.debug('insufficient change, ignoring set_task call')
+                return
+            Translator.fill_vtodo(task, calendar.name, self.namespace,
+                                  todo.instance.vtodo)
+            # saving new todo
+            log.info('SYNCING updating todo %r', todo)
+            try:
+                todo.save()
+            except caldav.lib.error.DAVError:
+                log.exception('Something went wrong while updating %r => %r',
+                              task, todo)
+        else:  # creating from task
+            new_todo, new_vtodo = None, Translator.fill_vtodo(
+                task, calendar.name, self.namespace)
+            log.info('SYNCING creating todo for %r', task)
+            try:
+                new_todo = calendar.add_todo(new_vtodo.serialize())
+            except caldav.lib.error.DAVError:
+                log.exception('Something went wrong while creating %r => %r',
+                              task, new_todo)
+            uid = UID_FIELD.get_dav(todo=new_todo)
+            with self._cache:
+                self._cache.set_todo(new_todo, uid)
+
+    def _remove_task(self, tid: str) -> None:
         log.info('SYNCING removing todo for Task(%s)', tid)
-        with self._cache:
-            todo = self._cache.get_todo(tid)
-            if todo:
-                with self._get_lock(str(todo.parent.url)):
-                    # cleaning cache
-                    self._cache.del_todo(tid)
-                    try:  # deleting through caldav
-                        todo.delete()
-                    except caldav.lib.error.DAVError:
-                        log.exception('Something went wrong while deleting '
-                                      '%r => %r', tid, todo)
-            else:
-                log.error("Could not find todo for task(%s)", tid)
+        todo = self._cache.get_todo(tid)
+        if todo:
+            # cleaning cache
+            self._cache.del_todo(tid)
+            try:  # deleting through caldav
+                todo.delete()
+            except caldav.lib.error.DAVError:
+                log.exception('Something went wrong while deleting %r => %r',
+                              tid, todo)
+        else:
+            log.error("Could not find todo for task(%s)", tid)
 
     #
     # Dav functions
@@ -282,13 +287,6 @@ class Backend(PeriodicImportBackend):
     #
     # Utility methods
     #
-
-    def _get_lock(self, name: str, raise_if_absent: bool = False):
-        if name not in self._locks:
-            if raise_if_absent:
-                raise RuntimeError('lock for %r should be present' % name)
-            self._locks[name] = threading.Lock()
-        return self._locks[name]
 
     @staticmethod
     def _update_cache(new_values: dict, cache: dict) -> None:
@@ -761,11 +759,10 @@ class TodoCache:
     _lock = threading.Lock()
 
     def __init__(self):
-        with self._lock:
-            self.calendars_by_name = {}
-            self.calendars_by_url = {}
-            self.todos_by_uid = {}
-            self._initialized = False
+        self.calendars_by_name = {}
+        self.calendars_by_url = {}
+        self.todos_by_uid = {}
+        self._initialized = False
 
     __enter__ = _lock.__enter__
     __exit__ = _lock.__exit__
@@ -776,14 +773,12 @@ class TodoCache:
 
     @initialized.setter
     def initialized(self, value):
-        assert self._lock.locked()
         if not value:
             raise ValueError("Can't uninitialize")
         self._initialized = True
 
     def get_calendar(self, name=None, url=None):
         assert name or url
-        assert self._lock.locked()
         if name is not None:
             calendar = self.calendars_by_name.get(name)
             if calendar:
@@ -796,23 +791,18 @@ class TodoCache:
 
     @property
     def calendars(self):
-        assert self._lock.locked()
         for url, calendar in self.calendars_by_url.items():
             yield url, calendar
 
     def set_calendar(self, calendar):
-        assert self._lock.locked()
         self.calendars_by_url[str(calendar.url)] = calendar
         self.calendars_by_name[calendar.name] = calendar
 
     def get_todo(self, uid):
-        assert self._lock.locked()
         return self.todos_by_uid.get(uid)
 
     def set_todo(self, todo, uid):
-        assert self._lock.locked()
         self.todos_by_uid[uid] = todo
 
     def del_todo(self, uid):
-        assert self._lock.locked()
         self.todos_by_uid.pop(uid, None)
