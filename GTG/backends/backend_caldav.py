@@ -344,6 +344,11 @@ class Backend(PeriodicImportBackend):
 
 
 class Field:
+    """ Basic field representation.
+
+    Allows to extract neutral values from GTG Task (attributes in integer or
+    tags without '@' for example) and from vTodo (translated datetime).
+    """
 
     def __init__(self, dav_name: str,
                  task_get_func_name: str, task_set_func_name: str,
@@ -357,21 +362,26 @@ class Field:
         return value not in self.ignored_values
 
     def get_gtg(self, task: Task, namespace: str = None):
+        "Extract value from GTG.core.task.Task according to specified getter"
         return getattr(task, self.task_get_func_name)()
 
     def clean_dav(self, todo: iCalendar):
+        """Will remove existing conflicting value from vTodo object"""
         todo.contents.pop(self.dav_name, None)
 
     def write_dav(self, vtodo: iCalendar, value):
+        """Will clean and write new value to vTodo object"""
         self.clean_dav(vtodo)
         vtodo.add(self.dav_name).value = value
 
     def set_dav(self, task: Task, vtodo: iCalendar, namespace: str) -> None:
+        """Will extract value from GTG.core.task.Task and set it to vTodo"""
         value = self.get_gtg(task, namespace)
         if self._is_value_allowed(value):
             self.write_dav(vtodo, value)
 
     def get_dav(self, todo=None, vtodo=None):
+        "Extract value from vTodo according to specified dav key name"
         if todo:
             vtodo = todo.instance.vtodo
         value = vtodo.contents.get(self.dav_name)
@@ -379,11 +389,13 @@ class Field:
             return value[0].value
 
     def write_gtg(self, task: Task, value, namespace: str = None):
+        """Will write new value to GTG.core.task.Task"""
         set_func = getattr(task, self.task_set_func_name)
         set_func(value)
 
     def set_gtg(self, todo: iCalendar, task: Task,
                 namespace: str = None) -> None:
+        """Will extract value from vTodo and set it to GTG.core.task.Task"""
         if not self.task_set_func_name:
             return
         value = self.get_dav(todo)
