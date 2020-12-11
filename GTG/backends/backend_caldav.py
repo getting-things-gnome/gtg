@@ -136,7 +136,7 @@ class Backend(PeriodicImportBackend):
                         else:
                             task_seq = SEQUENCE.get_gtg(task, self.namespace)
                             todo_seq = SEQUENCE.get_dav(todo)
-                            if task_seq == todo_seq:
+                            if task_seq >= todo_seq:
                                 unchanged += 1
                                 continue
                             updated += 1
@@ -191,6 +191,8 @@ class Backend(PeriodicImportBackend):
 
     @interruptible
     def set_task(self, task: Task) -> None:
+        seq_value = SEQUENCE.get_gtg(task, self.namespace)
+        SEQUENCE.write_gtg(task, seq_value + 1, self.namespace)
         if self._parameters["is-first-run"] or not self._cache.initialized:
             log.warning("not loaded yet, ignoring set_task")
             return
@@ -376,14 +378,17 @@ class Field:
         if value:
             return value[0].value
 
+    def write_gtg(self, task: Task, value, namespace: str = None):
+        set_func = getattr(task, self.task_set_func_name)
+        set_func(value)
+
     def set_gtg(self, todo: iCalendar, task: Task,
                 namespace: str = None) -> None:
         if not self.task_set_func_name:
             return
         value = self.get_dav(todo)
         if self._is_value_allowed(value):
-            set_func = getattr(task, self.task_set_func_name)
-            set_func(value)
+            self.write_gtg(task, value, namespace)
 
 
 class DateField(Field):
@@ -516,11 +521,14 @@ class AttributeField(Field):
     def get_gtg(self, task: Task, namespace: str = None) -> str:
         return task.get_attribute(self.dav_name, namespace=namespace)
 
+    def write_gtg(self, task: Task, value, namespace: str = None):
+        task.set_attribute(self.dav_name, value, namespace=namespace)
+
     def set_gtg(self, todo: iCalendar, task: Task,
                 namespace: str = None) -> None:
         value = self.get_dav(todo)
         if self._is_value_allowed(value):
-            task.set_attribute(self.dav_name, str(value), namespace=namespace)
+            self.write_gtg(task, value, namespace)
 
 
 class Sequence(AttributeField):
@@ -539,7 +547,7 @@ class Sequence(AttributeField):
 
     def set_dav(self, task: Task, vtodo: iCalendar, namespace: str):
         try:
-            self.write_dav(vtodo, str(self.get_gtg(task, namespace) + 1))
+            self.write_dav(vtodo, str(self.get_gtg(task, namespace)))
         except ValueError:
             self.write_dav(vtodo, '1')
 
@@ -625,7 +633,7 @@ class RelatedTo(Field):
         target_uids = set(self.get_dav(todo))
         gtg_uids = set(self.get_gtg(task, namespace))
         for value in target_uids.difference(gtg_uids):
-            getattr(task, self.task_set_func_name)(value)
+            self.write_gtg(task, value, namespace)
         if self.task_remove_func_name:
             for value in gtg_uids.difference(target_uids):
                 getattr(task, self.task_remove_func_name)(value)
