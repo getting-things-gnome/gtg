@@ -24,7 +24,7 @@ Backend for storing/loading tasks in CalDAV Tasks
 # TODO features:
 #  * registering task relation through RELATED-TO params        : OK
 #     * handle percent complete                                 : OK
-#     * handle task content formatting for compat with opentask : KO
+#     * ensure compatibility with tasks.org                     : OK
 #  * push proper categories to dav                              : KO
 #  * handle DAV collection switch (CREATE + DELETE)             : KO
 #  * handle GTG task creation while DAV is updating             : KO
@@ -134,8 +134,7 @@ class Backend(PeriodicImportBackend):
                             task = self.datastore.task_factory(uid)
                             created += 1
                         else:
-                            task_seq = SEQUENCE.get_gtg(task,
-                                                        self.namespace)
+                            task_seq = SEQUENCE.get_gtg(task, self.namespace)
                             todo_seq = SEQUENCE.get_dav(todo)
                             if task_seq == todo_seq:
                                 unchanged += 1
@@ -580,13 +579,17 @@ class Description(Field):
 
 
 class RelatedTo(Field):
+    # when related-to reltype isn't specified, assuming :
+    DEFAULT_RELTYPE = 'PARENT'
 
-    def __init__(self, *args, reltype: str, **kwargs):
+    def __init__(self, *args, task_remove_func_name: str = None, reltype: str,
+                 **kwargs):
         super().__init__(*args, **kwargs)
+        self.task_remove_func_name = task_remove_func_name
         self.reltype = reltype.upper()
 
     def _fit_reltype(self, sub_value):
-        reltype = sub_value.params.get('RELTYPE')
+        reltype = sub_value.params.get('RELTYPE') or [self.DEFAULT_RELTYPE]
         return len(reltype) == 1 and reltype[0] == self.reltype
 
     def clean_dav(self, vtodo: iCalendar):
@@ -619,9 +622,13 @@ class RelatedTo(Field):
 
     def set_gtg(self, todo: iCalendar, task: Task,
                 namespace: str = None) -> None:
-        for value in self.get_dav(todo):
-            if self._is_value_allowed(value):
-                getattr(task, self.task_set_func_name)(value)
+        target_uids = set(self.get_dav(todo))
+        gtg_uids = set(self.get_gtg(task, namespace))
+        for value in target_uids.difference(gtg_uids):
+            getattr(task, self.task_set_func_name)(value)
+        if self.task_remove_func_name:
+            for value in gtg_uids.difference(target_uids):
+                getattr(task, self.task_remove_func_name)(value)
 
 
 UID_FIELD = Field('uid', 'get_uuid', 'set_uuid')
@@ -641,9 +648,10 @@ class Translator:
               PercentComplete('percent-complete', 'get_status', ''),
               SEQUENCE, UID_FIELD,
               RelatedTo('related-to', 'get_parents', 'set_parent',
+                        task_remove_func_name='remove_parent',
                         reltype='parent'),
               RelatedTo('related-to', 'get_children', 'add_child',
-                        reltype='child'),
+                        task_remove_func_name='remove_child', reltype='child'),
               DateField('created', 'get_added_date', 'set_added_date'),
               DateField('last-modified', 'get_modified', 'set_modified')]
 
