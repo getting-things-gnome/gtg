@@ -117,7 +117,7 @@ class Backend(PeriodicImportBackend):
             self._refresh_calendar_list()
         # browsing calendars
         with self._cache, self.datastore.get_backend_mutex():
-            seen_task_ids = set()
+            seen_uids = set()
             created, updated, unchanged, deleted = 0, 0, 0, 0
             for cal_url, calendar in self._cache.calendars:
                 with self._get_lock(cal_url, raise_if_absent=False):
@@ -125,12 +125,13 @@ class Backend(PeriodicImportBackend):
                     log.info('Fetching todos from %r', cal_url)
                     inc_comp = not self._cache.initialized
                     for todo in calendar.todos(include_completed=inc_comp):
-                        todo_uid = UID_FIELD.get_dav(todo)
-                        self._cache.set_todo(todo, todo_uid)
+                        uid = UID_FIELD.get_dav(todo)
+                        seen_uids.add(uid)
+                        self._cache.set_todo(todo, uid)
                         # Updating and creating task according to todos
-                        task = self.datastore.get_task(todo_uid)
+                        task = self.datastore.get_task(uid)
                         if not task:  # not found, creating it
-                            task = self.datastore.task_factory(todo_uid)
+                            task = self.datastore.task_factory(uid)
                             created += 1
                         else:
                             task_seq = SEQUENCE.get_gtg(task,
@@ -138,10 +139,8 @@ class Backend(PeriodicImportBackend):
                             todo_seq = SEQUENCE.get_dav(todo)
                             if task_seq == todo_seq:
                                 unchanged += 1
-                                seen_task_ids.add(task.get_uuid())
                                 continue
                             updated += 1
-                        seen_task_ids.add(task.get_uuid())
                         Translator.fill_task(todo, task, self.namespace,
                                              do_related='none')
                         self.datastore.push_task(task)
@@ -152,22 +151,40 @@ class Backend(PeriodicImportBackend):
             if unchanged:
                 log.info('LOCAL %d existing tasks stayed unchanged', unchanged)
 
-            # removing task we didn't see during listing
-            for task_id in self.datastore.get_all_tasks():
-                task = None
-                if task_id not in seen_task_ids:
-                    task = self.datastore.get_task(task_id)
-                    if task.get_status() != Task.STA_DONE \
-                            or not self._cache.initialized:
-                        deleted += 1
-                        self.datastore.request_task_deletion(task_id)
-                        continue
-                if task is None:  # now that all task are loaded from backends
-                    # loading relationships
-                    task = self.datastore.get_task(task_id)
-                    todo = self._cache.get_todo(task_id)
-                    Translator.fill_task(todo, task, self.namespace,
-                                         do_related='only')
+            # browsing all task, removing missed ones, updating relationship
+            for uid in self.datastore.get_all_tasks():
+                todo, task, do_delete = None, None, False
+                # we missed some tasks when browsing todos
+                if uid not in seen_uids:
+                    task = self.datastore.get_task(uid)
+                    # if first run, we're getting all task, including completed
+                    # if we miss one, we delete it
+                    if not self._cache.initialized:
+                        do_delete = True
+                    # if cache is initialized, it's normal we missed completed
+                    # task, but we should have seen active ones
+                    elif task.get_status() == Task.STA_ACTIVE:
+                        calendar = self._get_calendar(task=task)
+                        if not calendar:
+                            log.warning("Couldn't find calendar for %r", task)
+                            continue
+                        try:  # fetching missing todo from server
+                            todo = calendar.todo_by_uid(uid)
+                        except caldav.lib.error.NotFoundError:
+                            do_delete = True
+                if do_delete:  # the task was missing for a good reason
+                    deleted += 1
+                    self._cache.del_todo(uid)
+                    self.datastore.request_task_deletion(uid)
+                    continue
+                if todo is None:
+                    todo = self._cache.get_todo(uid)
+                if task is None:
+                    task = self.datastore.get_task(uid)
+                # now that all task are loaded from backends
+                # loading relationships
+                Translator.fill_task(todo, task, self.namespace,
+                                     do_related='only')
             if deleted:
                 log.info('LOCAL deleted %d tasks absent from backend', deleted)
             self._parameters["is-first-run"] = False
@@ -183,11 +200,13 @@ class Backend(PeriodicImportBackend):
         if todo:
             calendar = todo.parent
         else:
-            calendar = self._get_calendar(task=task)
+            with self._cache:
+                calendar = self._get_calendar(task=task)
         calendar_url = str(calendar.url)
         with self._get_lock(calendar_url):
             if todo:  # found one, saving it
                 if not Translator.should_sync(task, self.namespace, todo):
+                    log.debug('insufficient change, ignoring set_task call')
                     return
                 Translator.fill_vtodo(task, calendar.name, self.namespace,
                                       todo.instance.vtodo)
@@ -207,9 +226,9 @@ class Backend(PeriodicImportBackend):
                 except caldav.lib.error.DAVError:
                     log.exception('Something went wrong while creating '
                                   '%r => %r', task, new_todo)
-                todo_uid = UID_FIELD.get_dav(todo=new_todo)
+                uid = UID_FIELD.get_dav(todo=new_todo)
                 with self._cache:
-                    self._cache.set_todo(new_todo, todo_uid)
+                    self._cache.set_todo(new_todo, uid)
 
     @interruptible
     def remove_task(self, tid: str) -> None:
@@ -283,22 +302,27 @@ class Backend(PeriodicImportBackend):
             return self._cache.get_todo(UID_FIELD.get_gtg(task))
 
     def _get_calendar(self, task: Task) -> caldav.Calendar:
-        calendar_url = task.get_attribute("calendar_url",
-                                          namespace=self.namespace)
+        # lookup by UID
+        for uid in task.get_id(), task.get_uuid():
+            todo = self._cache.get_todo(uid)
+            if todo and getattr(todo, 'parent', None):
+                return todo.parent
         calendar = None
-        with self._cache:
-            if calendar_url:
-                calendar = self._cache.get_calendar(url=calendar_url)
-            if not calendar:
-                for tag in CATEGORIES.get_gtg(task):
-                    if tag:
-                        calendar = self._cache.get_calendar(name=tag)
-                        if calendar:
-                            break
-            if calendar:
-                return calendar
-            default_calendar_name = self._parameters['default-calendar-name']
-            return self._cache.get_calendar(name=default_calendar_name)
+        # lookup by task attributes
+        cname = task.get_attribute('calendar_name', namespace=self.namespace)
+        curl = task.get_attribute("calendar_url", namespace=self.namespace)
+        if curl or cname:
+            calendar = self._cache.get_calendar(name=cname, url=curl)
+        # lookup by task
+        if not calendar:
+            for tag in CATEGORIES.get_gtg(task):
+                calendar = self._cache.get_calendar(name=tag)
+                if calendar:
+                    break
+        if calendar:
+            return calendar
+        default_calendar_name = self._parameters['default-calendar-name']
+        return self._cache.get_calendar(name=default_calendar_name)
 
     @property
     def namespace(self):
@@ -718,7 +742,7 @@ class TodoCache:
             if calendar:
                 return calendar
         if url is not None:
-            calendar = self.calendars_by_name.get(name)
+            calendar = self.calendars_by_name.get(url)
             if calendar:
                 return calendar
         log.error('no calendar for %r or %r', name, url)
@@ -734,14 +758,14 @@ class TodoCache:
         self.calendars_by_url[str(calendar.url)] = calendar
         self.calendars_by_name[calendar.name] = calendar
 
-    def get_todo(self, todo_uid):
+    def get_todo(self, uid):
         assert self._lock.locked()
-        return self.todos_by_uid.get(todo_uid)
+        return self.todos_by_uid.get(uid)
 
-    def set_todo(self, todo, todo_uid):
+    def set_todo(self, todo, uid):
         assert self._lock.locked()
-        self.todos_by_uid[todo_uid] = todo
+        self.todos_by_uid[uid] = todo
 
-    def del_todo(self, todo_uid):
+    def del_todo(self, uid):
         assert self._lock.locked()
-        self.todos_by_uid.pop(todo_uid, None)
+        self.todos_by_uid.pop(uid, None)
