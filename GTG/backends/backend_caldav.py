@@ -41,7 +41,7 @@ from GTG.backends.generic_backend import GenericBackend
 from GTG.backends.periodic_import_backend import PeriodicImportBackend
 from GTG.core.interruptible import interruptible
 from GTG.core.logger import log
-from GTG.core.task import Task
+from GTG.core.task import Task, DisabledSyncCtx
 from GTG.core.dates import Date, LOCAL_TIMEZONE
 from vobject import iCalendar
 
@@ -191,8 +191,9 @@ class Backend(PeriodicImportBackend):
 
     @interruptible
     def set_task(self, task: Task) -> None:
-        seq_value = SEQUENCE.get_gtg(task, self.namespace)
-        SEQUENCE.write_gtg(task, seq_value + 1, self.namespace)
+        with DisabledSyncCtx(task, sync_on_exit=False):
+            seq_value = SEQUENCE.get_gtg(task, self.namespace)
+            SEQUENCE.write_gtg(task, seq_value + 1, self.namespace)
         if self._parameters["is-first-run"] or not self._cache.initialized:
             log.warning("not loaded yet, ignoring set_task")
             return
@@ -721,18 +722,18 @@ class Translator:
     def fill_task(cls, todo: iCalendar, task: Task, namespace: str,
                   do_related: str):
         assert do_related in {'only', 'none'}
-        for field in cls.fields:
-            if do_related == 'only' and not isinstance(field, RelatedTo):
-                continue
-            if do_related == 'none' and isinstance(field, RelatedTo):
-                continue
-            field.set_gtg(todo, task, namespace)
-        task.set_attribute("url", str(todo.url), namespace=namespace)
-        task.set_attribute("calendar_url", str(todo.parent.url),
-                           namespace=namespace)
-        task.set_attribute("calendar_name", todo.parent.name,
-                           namespace=namespace)
-        CATEGORIES.ensure_tags(task, todo)
+        nmspc = {'namespace': namespace}
+        with DisabledSyncCtx(task):
+            for field in cls.fields:
+                if do_related == 'only' and not isinstance(field, RelatedTo):
+                    continue
+                if do_related == 'none' and isinstance(field, RelatedTo):
+                    continue
+                field.set_gtg(todo, task, **nmspc)
+            task.set_attribute("url", str(todo.url), **nmspc)
+            task.set_attribute("calendar_url", str(todo.parent.url), **nmspc)
+            task.set_attribute("calendar_name", todo.parent.name, **nmspc)
+            CATEGORIES.ensure_tags(task, todo)
         return task
 
     @classmethod

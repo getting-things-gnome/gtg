@@ -50,6 +50,8 @@ class Task(TreeNode):
         self.tid = task_id
         self.set_uuid(task_id)
         self.remote_ids = {}
+        # set to True to disable self.sync() and avoid flooding on task edit
+        self.sync_disabled = False
         self.content = ""
         if Task.DEFAULT_TASK_NAME is None:
             Task.DEFAULT_TASK_NAME = _("My new task")
@@ -174,7 +176,6 @@ class Task(TreeNode):
 
         newtask.sync()
         return newtask.tid
-
 
     # Return True if the title was changed.
     # False if the title was already the same.
@@ -801,6 +802,8 @@ class Task(TreeNode):
         return self.attributes.get((namespace, att_name), None)
 
     def sync(self):
+        if self.sync_disabled:
+            return self.is_loaded()
         self._modified_update()
         if self.is_loaded():
             # This is a liblarch call to the TreeNode ancestor
@@ -968,3 +971,21 @@ class Task(TreeNode):
                 str(self.recurring))
 
     __repr__ = __str__
+
+
+class DisabledSyncCtx:
+    """Context manager disabling GTG.core.task.Task.sync()
+    and firing one only sync on __exit__"""
+
+    def __init__(self, task: Task, sync_on_exit: bool = True):
+        self.task = task
+        self.sync_on_exit = sync_on_exit
+
+    def __enter__(self):
+        self.task.sync_disabled = True
+        return self.task
+
+    def __exit__(self, *args, **kwargs):
+        self.task.sync_disabled = False
+        if self.sync_on_exit:
+            self.task.sync()
