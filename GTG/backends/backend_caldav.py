@@ -27,7 +27,7 @@ Backend for storing/loading tasks in CalDAV Tasks
 #     * ensure compatibility with tasks.org                     : OK
 #  * push proper categories to dav                              : OK
 #  * handle DAV collection switch (CREATE + DELETE)             : KO
-#  * handle GTG task creation while DAV is updating             : KO
+#  * handle GTG task creation while DAV is updating             : OK
 #  * support recurring events                                   : KO
 
 import logging
@@ -142,6 +142,7 @@ class Backend(PeriodicImportBackend):
 
     def _do_periodic_import(self) -> None:
         log.info("Running periodic import")
+        start = datetime.now()
         self._refresh_calendar_list()
         # browsing calendars
         seen_uids = set()
@@ -182,9 +183,13 @@ class Backend(PeriodicImportBackend):
             # we missed some tasks when browsing todos
             if uid not in seen_uids:
                 task = self.datastore.get_task(uid)
+                # if task has been created after we start the period_import
+                # ignoring, it's not to be deleted, and wone have related toto
+                if start < task.get_added_date():
+                    continue
                 # if first run, we're getting all task, including completed
                 # if we miss one, we delete it
-                if not self._cache.initialized:
+                elif not self._cache.initialized:
                     do_delete = True
                 # if cache is initialized, it's normal we missed completed
                 # task, but we should have seen active ones
