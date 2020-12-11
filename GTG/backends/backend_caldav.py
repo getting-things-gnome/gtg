@@ -402,6 +402,12 @@ class Field:
         if self._is_value_allowed(value):
             self.write_gtg(task, value, namespace)
 
+    @classmethod
+    def _browse_subtasks(cls, task: Task):
+        yield task
+        for subtask in task.get_subtasks():
+            yield from cls._browse_subtasks(subtask)
+
 
 class DateField(Field):
     """Offers translation for datetime field.
@@ -455,45 +461,57 @@ class DateField(Field):
 
 
 class Status(Field):
-    DEFAULT_CALDAV_STATUS = 'NEEDS-ACTIONS'
-    GTG_TO_CALDAV_STATUS = {Task.STA_ACTIVE: 'NEEDS-ACTION',
-                            Task.STA_DONE: 'COMPLETED',
-                            Task.STA_DISMISSED: 'CANCELLED'}
-    CALDAV_TO_GTG_STATUS = {'NEEDS-ACTION': Task.STA_ACTIVE,
-                            'IN-PROCESS': Task.STA_ACTIVE,
-                            'COMPLETED': Task.STA_DONE,
-                            'CANCELLED': Task.STA_DISMISSED}
+    DEFAULT_STATUS = (Task.STA_ACTIVE, 'NEEDS-ACTIONS')
+    _status_mapping = ((Task.STA_ACTIVE, 'NEEDS-ACTION'),
+                       (Task.STA_ACTIVE, 'IN-PROCESS'),
+                       (Task.STA_DISMISSED, 'CANCELLED'),
+                       (Task.STA_DONE, 'COMPLETED'))
+
+    def _translate(self, gtg_value=None, dav_value=None):
+        for gtg_status, dav_status in self._status_mapping:
+            if gtg_value == gtg_status or dav_value == dav_status:
+                return gtg_status, dav_status
+        return self.DEFAULT_STATUS
 
     def write_dav(self, vtodo: iCalendar, value):
         self.clean_dav(vtodo)
-        vtodo.add(self.dav_name).value = self.GTG_TO_CALDAV_STATUS.get(
-            value, self.DEFAULT_CALDAV_STATUS)
+        vtodo.add(self.dav_name).value = value
 
     def get_gtg(self, task: Task, namespace: str = None) -> str:
-        try:
-            return super().get_gtg(task, namespace) or Task.STA_ACTIVE
-        except ValueError:
-            return Task.STA_ACTIVE
+        active, done = 0, 0
+        for task in self._browse_subtasks(task):
+            if task.get_status() == Task.STA_ACTIVE:
+                active += 1
+            elif task.get_status() == Task.STA_DONE:
+                done += 1
+            if active and done:
+                return 'IN-PROCESS'
+        if active:
+            return 'NEEDS-ACTIONS'
+        if done:
+            return 'COMPLETED'
+        return 'CANCELLED'
 
     def get_dav(self, todo=None, vtodo=None) -> str:
-        return self.CALDAV_TO_GTG_STATUS.get(super().get_dav(todo, vtodo),
-                                             Task.STA_ACTIVE)
+        return self._translate(dav_value=super().get_dav(todo, vtodo))[1]
+
+    def write_gtg(self, task: Task, value, namespace: str = None):
+        value = self._translate(dav_value=value, gtg_value=value)[0]
+        return super().write_gtg(task, value, namespace)
 
 
 class PercentComplete(Field):
 
-    @classmethod
-    def _browse_subtasks(cls, task: Task):
-        yield 1 if task.get_status() != Task.STA_ACTIVE else 0
-        for subtask in task.get_subtasks():
-            yield from cls._browse_subtasks(subtask)
-
     def get_gtg(self, task: Task, namespace: str = None) -> str:
-        total_cnt, not_active_cnt = 0, 0
-        for not_active_sub_cnt in self._browse_subtasks(task):
-            total_cnt += 1
-            not_active_cnt += not_active_sub_cnt
-        return str(int(100 * not_active_cnt / total_cnt))
+        total_cnt, done_cnt = 0, 0
+        for task in self._browse_subtasks(task):
+            if task.get_status() != Task.STA_DISMISSED:
+                total_cnt += 1
+                if task.get_status() == Task.STA_DONE:
+                    done_cnt += 1
+        if total_cnt:
+            return str(int(100 * done_cnt / total_cnt))
+        return '0'
 
 
 class Categories(Field):
