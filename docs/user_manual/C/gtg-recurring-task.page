@@ -109,7 +109,7 @@
      <title><em style="strong"><code>pay my taxes every:year</code></em></title>
         <p>This task will repeat every year on the date that the task was created.</p></item>
   <item>
-     <title><em style="strong"><code>Go out with my dog every:day start:next month</code></em></title>
+     <title><em style="strong"><code>Go out with my dog every:day start:tomorrow</code></em></title>
         <p>By setting a start date, this task will not recur every date from today's date but from the start date.</p></item>
 </terms>
 </section>
