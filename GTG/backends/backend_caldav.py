@@ -29,6 +29,7 @@ Backend for storing/loading tasks in CalDAV Tasks
 #  * handle DAV collection switch (CREATE + DELETE)             : KO
 #  * handle GTG task creation while DAV is updating             : OK
 #  * support recurring events                                   : KO
+#  * push proper task content                                   : KO
 
 import logging
 import threading
@@ -268,6 +269,22 @@ class Backend(PeriodicImportBackend):
                 counts['deleted'] += 1
                 self._cache.del_todo(uid)
                 self.datastore.request_task_deletion(uid)
+
+        # FIXME, GTG.core.task.Task.set_parent seems buggy so we can't use it
+        # Default caldav specs usually only specifies parent, here we use it
+        # to mark all the children
+        from collections import defaultdict
+        children = defaultdict(list)
+        for todo in todos:
+            parent = PARENT_FIELD.get_dav(todo)
+            if parent:
+                children[parent[0]].append(UID_FIELD.get_dav(todo))
+        todos_by_uid = {UID_FIELD.get_dav(todo): todo for todo in todos}
+        for uid, children_uids in children.items():
+            if uid not in todos_by_uid:
+                continue
+            vtodo = todos_by_uid[uid].instance.vtodo
+            CHILDREN_FIELD.write_dav(vtodo, children_uids)
 
         known_todos = set()  # type: set
         for todo in self.__sort_todos(todos, known_todos):
@@ -636,8 +653,7 @@ class Description(Field):
     LEN_LINE_RET = 2
 
     def get_dav(self, todo=None, vtodo=None) -> str:
-        value = super().get_dav(todo, vtodo) or ''
-        return value
+        return super().get_dav(todo, vtodo) or ''
 
     def get_gtg(self, task: Task, namespace: str = None) -> str:
         cnt = task.content
@@ -720,19 +736,15 @@ class RelatedTo(Field):
                                  self.reltype, self.dav_name)
 
 
-class RelatedToChildren(RelatedTo):
-
-    def set_gtg(self, todo: iCalendar, task: Task,
-                namespace: str = None) -> None:
-        return  # only writing to dav
-
-
 UID_FIELD = Field('uid', 'get_uuid', 'set_uuid')
 SEQUENCE = Sequence('sequence', '<fake attribute>', '')
 CATEGORIES = Categories('categories', 'get_tags_name', 'set_tags')
-PARENT_FIELD = RelatedTo('related-to', 'get_parents', 'add_parent',
+PARENT_FIELD = RelatedTo('related-to', 'get_parents', 'set_parent',
                          task_remove_func_name='remove_parent',
                          reltype='parent')
+CHILDREN_FIELD = RelatedTo('related-to', 'get_children', 'add_child',
+                           task_remove_func_name='remove_child',
+                           reltype='child')
 
 
 class Translator:
@@ -745,10 +757,7 @@ class Translator:
               DateField('dtstart', 'get_start_date', 'set_start_date'),
               Status('status', 'get_status', 'set_status'),
               PercentComplete('percent-complete', 'get_status', ''),
-              SEQUENCE, UID_FIELD, CATEGORIES,  PARENT_FIELD,
-              RelatedToChildren('related-to', 'get_children', 'add_child',
-                                task_remove_func_name='remove_child',
-                                reltype='child'),
+              SEQUENCE, UID_FIELD, CATEGORIES,  CHILDREN_FIELD,
               DateField('created', 'get_added_date', 'set_added_date'),
               DateField('last-modified', 'get_modified', 'set_modified')]
 
@@ -773,6 +782,9 @@ class Translator:
                 # not overriding if already set from cache
                 continue
             field.set_dav(task, vtodo, namespace)
+        # FIXME: discarding related-to parent from sync down
+        # due to bug on set_parent
+        PARENT_FIELD.set_dav(task, vtodo, namespace)
         return vcal
 
     @classmethod
