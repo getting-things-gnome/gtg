@@ -775,13 +775,14 @@ class Task(TreeNode):
         TreeNode.set_parent(self, parent_id)
         if parent_id is not None:
             par = self.req.get_task(parent_id)
-            if par is not None:
-                par_duedate = par.get_due_date_constraint()
-                if not par_duedate.is_fuzzy() and \
-                    not self.due_date.is_fuzzy() and \
-                        par_duedate < self.due_date:
-                    self.set_due_date(par_duedate)
-                self.inherit_recursion()
+            if par is None:
+                log.error('%r -> parent %r %r', self, parent_id, par)
+            par_duedate = par.get_due_date_constraint()
+            if not par_duedate.is_fuzzy() and \
+                not self.due_date.is_fuzzy() and \
+                    par_duedate < self.due_date:
+                self.set_due_date(par_duedate)
+            self.inherit_recursion()
         self.recursive_sync()
 
     def set_attribute(self, att_name, att_value, namespace=""):

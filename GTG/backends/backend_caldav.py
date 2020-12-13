@@ -145,77 +145,21 @@ class Backend(PeriodicImportBackend):
         start = datetime.now()
         self._refresh_calendar_list()
         # browsing calendars
-        seen_uids = set()
-        created, updated, unchanged, deleted = 0, 0, 0, 0
+        counts = {'created': 0, 'updated': 0, 'unchanged': 0, 'deleted': 0}
         for cal_url, calendar in self._cache.calendars:
             # retrieving todos and updating various cache
             log.info('Fetching todos from %r', cal_url)
-            inc_comp = not self._cache.initialized
-            for todo in calendar.todos(include_completed=inc_comp):
-                uid = UID_FIELD.get_dav(todo)
-                seen_uids.add(uid)
-                self._cache.set_todo(todo, uid)
-                # Updating and creating task according to todos
-                task = self.datastore.get_task(uid)
-                if not task:  # not found, creating it
-                    task = self.datastore.task_factory(uid)
-                    created += 1
-                else:
-                    task_seq = SEQUENCE.get_gtg(task, self.namespace)
-                    todo_seq = SEQUENCE.get_dav(todo)
-                    if task_seq >= todo_seq:
-                        unchanged += 1
-                        continue
-                    updated += 1
-                Translator.fill_task(todo, task, self.namespace,
-                                     do_related='none')
-                self.datastore.push_task(task)
-        if created:
-            log.info('LOCAL created %d new tasks', created)
-        if updated:
-            log.info('LOCAL updated %d existing tasks', updated)
-        if unchanged:
-            log.info('LOCAL %d existing tasks stayed unchanged', unchanged)
-
-        # browsing all task, removing missed ones, updating relationship
-        for uid in self.datastore.get_all_tasks():
-            todo, task, do_delete = None, None, False
-            # we missed some tasks when browsing todos
-            if uid not in seen_uids:
-                task = self.datastore.get_task(uid)
-                # if task has been created after we start the period_import
-                # ignoring, it's not to be deleted, and wone have related toto
-                if start < task.get_added_date():
-                    continue
-                # if first run, we're getting all task, including completed
-                # if we miss one, we delete it
-                elif not self._cache.initialized:
-                    do_delete = True
-                # if cache is initialized, it's normal we missed completed
-                # task, but we should have seen active ones
-                elif task.get_status() == Task.STA_ACTIVE:
-                    calendar = self._get_calendar(task=task)
-                    if not calendar:
-                        log.warning("Couldn't find calendar for %r", task)
-                        continue
-                    try:  # fetching missing todo from server
-                        todo = calendar.todo_by_uid(uid)
-                    except caldav.lib.error.NotFoundError:
-                        do_delete = True
-            if do_delete:  # the task was missing for a good reason
-                deleted += 1
-                self._cache.del_todo(uid)
-                self.datastore.request_task_deletion(uid)
-                continue
-            if todo is None:
-                todo = self._cache.get_todo(uid)
-            if task is None:
-                task = self.datastore.get_task(uid)
-            # now that all task are loaded from backends
-            # loading relationships
-            Translator.fill_task(todo, task, self.namespace, do_related='only')
-        if deleted:
-            log.info('LOCAL deleted %d tasks absent from backend', deleted)
+            self._import_calendar_todos(calendar, start, counts)
+        if counts['created']:
+            log.info('LOCAL created %d new tasks', counts['created'])
+        if counts['updated']:
+            log.info('LOCAL updated %d existing tasks', counts['updated'])
+        if counts['unchanged']:
+            log.info('LOCAL %d existing tasks stayed unchanged',
+                     counts['unchanged'])
+        if counts['deleted']:
+            log.info('LOCAL deleted %d tasks absent from backend',
+                     counts['deleted'])
         self._parameters["is-first-run"] = False
         self._cache.initialized = True
 
@@ -290,6 +234,87 @@ class Backend(PeriodicImportBackend):
         def_cal_name = self._parameters.get('default-calendar-name')
         if not def_cal_name or def_cal_name not in seen_calendars_names:
             self._notify_user_about_default_calendar()
+
+    def _import_calendar_todos(self, calendar: iCalendar,
+                               import_started_on: datetime, counts: dict):
+        todos = calendar.todos(include_completed=not self._cache.initialized)
+        todo_uids = {UID_FIELD.get_dav(todo) for todo in todos}
+
+        # browsing all task linked to current calendar,
+        # removing missed ones we don't see in fetched todos
+        calendar_tasks = {uid: task
+                          for uid, task in self._get_calendar_tasks(calendar)}
+        for uid in set(calendar_tasks).difference(todo_uids):
+            task, do_delete = None, False
+            task = calendar_tasks[uid]
+            if import_started_on < task.get_added_date():
+                continue
+            # if first run, we're getting all task, including completed
+            # if we miss one, we delete it
+            elif not self._cache.initialized:
+                do_delete = True
+            # if cache is initialized, it's normal we missed completed
+            # task, but we should have seen active ones
+            elif task.get_status() == Task.STA_ACTIVE:
+                calendar = self._get_calendar(task=task)
+                if not calendar:
+                    log.warning("Couldn't find calendar for %r", task)
+                    continue
+                try:  # fetching missing todo from server
+                    calendar.todo_by_uid(uid)
+                except caldav.lib.error.NotFoundError:
+                    do_delete = True
+            if do_delete:  # the task was missing for a good reason
+                counts['deleted'] += 1
+                self._cache.del_todo(uid)
+                self.datastore.request_task_deletion(uid)
+
+        known_todos = set()  # type: set
+        for todo in self.__sort_todos(todos, known_todos):
+            uid = UID_FIELD.get_dav(todo)
+            self._cache.set_todo(todo, uid)
+            # Updating and creating task according to todos
+            task = self.datastore.get_task(uid)
+            if not task:  # not found, creating it
+                task = self.datastore.task_factory(uid)
+                Translator.fill_task(todo, task, self.namespace)
+                self.datastore.push_task(task)
+                counts['created'] += 1
+            else:
+                task_seq = SEQUENCE.get_gtg(task, self.namespace)
+                todo_seq = SEQUENCE.get_dav(todo)
+                if task_seq >= todo_seq:
+                    counts['unchanged'] += 1
+                    continue
+                Translator.fill_task(todo, task, self.namespace)
+                counts['updated'] += 1
+            if __debug__:
+                if Translator.should_sync(task, self.namespace, todo):
+                    log.warning("Shouldn't be diff for %r", uid)
+
+    def __sort_todos(self, todos: list, known_todos: set, max_depth=500):
+        loop_nb = 0
+        while len(known_todos) < len(todos):
+            loop_nb += 1
+            for todo in todos:
+                uid = UID_FIELD.get_dav(todo)
+                if uid in known_todos:
+                    continue
+                parents = PARENT_FIELD.get_dav(todo)
+                if (not parents  # no parent mean no relationship on build
+                        or parents[0] in known_todos  # browsed relationship
+                        or self.datastore.get_task(uid)):  # already known uid
+                    yield todo
+                    known_todos.add(uid)
+            if loop_nb >= max_depth:
+                log.error("Too deep, %r recursion isn't supported", max_depth)
+                break
+
+    def _get_calendar_tasks(self, calendar: iCalendar):
+        for uid in self.datastore.get_all_tasks():
+            task = self.datastore.get_task(uid)
+            if CATEGORIES.has_calendar_tag(task, calendar):
+                yield uid, task
 
     #
     # Utility methods
@@ -396,8 +421,7 @@ class Field:
 
     def write_gtg(self, task: Task, value, namespace: str = None):
         """Will write new value to GTG.core.task.Task"""
-        set_func = getattr(task, self.task_set_func_name)
-        set_func(value)
+        return getattr(task, self.task_set_func_name)(value)
 
     def set_gtg(self, todo: iCalendar, task: Task,
                 namespace: str = None) -> None:
@@ -407,6 +431,9 @@ class Field:
         value = self.get_dav(todo)
         if self._is_value_allowed(value):
             self.write_gtg(task, value, namespace)
+
+    def __repr__(self):
+        return "<%s(%r)>" % (self.__class__.__name__, self.dav_name)
 
     @classmethod
     def _browse_subtasks(cls, task: Task):
@@ -554,6 +581,12 @@ class Categories(Field):
         for to_delete in local_tags.difference(remote_tags):
             task.remove_tag(to_delete)
 
+    def get_calendar_tag(self, calendar) -> str:
+        return self.to_tag(calendar.name, DAV_TAG_PREFIX)
+
+    def has_calendar_tag(self, task, calendar):
+        return self.get_calendar_tag(calendar) in task.get_tags_name()
+
 
 class AttributeField(Field):
 
@@ -669,18 +702,36 @@ class RelatedTo(Field):
 
     def set_gtg(self, todo: iCalendar, task: Task,
                 namespace: str = None) -> None:
+        if self.get_dav(todo) == self.get_gtg(task, namespace):
+            return  # do not edit if equal
         target_uids = set(self.get_dav(todo))
         gtg_uids = set(self.get_gtg(task, namespace))
         for value in target_uids.difference(gtg_uids):
-            self.write_gtg(task, value, namespace)
+            if not self.write_gtg(task, value, namespace):
+                log.error('FAILED writing Task.%s(%r, %r)',
+                          self.task_set_func_name, task, value)
         if self.task_remove_func_name:
             for value in gtg_uids.difference(target_uids):
                 getattr(task, self.task_remove_func_name)(value)
+
+    def __repr__(self):
+        return "<%s(%r, %r)>" % (self.__class__.__name__,
+                                 self.reltype, self.dav_name)
+
+
+class RelatedToChildren(RelatedTo):
+
+    def set_gtg(self, todo: iCalendar, task: Task,
+                namespace: str = None) -> None:
+        return  # only writing to dav
 
 
 UID_FIELD = Field('uid', 'get_uuid', 'set_uuid')
 SEQUENCE = Sequence('sequence', '<fake attribute>', '')
 CATEGORIES = Categories('categories', 'get_tags_name', 'set_tags')
+PARENT_FIELD = RelatedTo('related-to', 'get_parents', 'add_parent',
+                         task_remove_func_name='remove_parent',
+                         reltype='parent')
 
 
 class Translator:
@@ -693,12 +744,10 @@ class Translator:
               DateField('dtstart', 'get_start_date', 'set_start_date'),
               Status('status', 'get_status', 'set_status'),
               PercentComplete('percent-complete', 'get_status', ''),
-              SEQUENCE, UID_FIELD, CATEGORIES,
-              RelatedTo('related-to', 'get_parents', 'set_parent',
-                        task_remove_func_name='remove_parent',
-                        reltype='parent'),
-              RelatedTo('related-to', 'get_children', 'add_child',
-                        task_remove_func_name='remove_child', reltype='child'),
+              SEQUENCE, UID_FIELD, CATEGORIES,  PARENT_FIELD,
+              RelatedToChildren('related-to', 'get_children', 'add_child',
+                                task_remove_func_name='remove_child',
+                                reltype='child'),
               DateField('created', 'get_added_date', 'set_added_date'),
               DateField('last-modified', 'get_modified', 'set_modified')]
 
@@ -726,23 +775,16 @@ class Translator:
         return vcal
 
     @classmethod
-    def fill_task(cls, todo: iCalendar, task: Task, namespace: str,
-                  do_related: str):
-        assert do_related in {'only', 'none'}
+    def fill_task(cls, todo: iCalendar, task: Task, namespace: str):
         nmspc = {'namespace': namespace}
         with DisabledSyncCtx(task):
             for field in cls.fields:
-                if do_related == 'only' and not isinstance(field, RelatedTo):
-                    continue
-                if do_related == 'none' and isinstance(field, RelatedTo):
-                    continue
                 field.set_gtg(todo, task, **nmspc)
             task.set_attribute("url", str(todo.url), **nmspc)
             task.set_attribute("calendar_url", str(todo.parent.url), **nmspc)
             task.set_attribute("calendar_name", todo.parent.name, **nmspc)
-            calendar_tag = CATEGORIES.to_tag(todo.parent.name, DAV_TAG_PREFIX)
-            if calendar_tag not in task.get_tags_name():
-                task.add_tag(calendar_tag)
+            if not CATEGORIES.has_calendar_tag(task, todo.parent):
+                task.add_tag(CATEGORIES.get_calendar_tag(todo.parent))
         return task
 
     @classmethod
@@ -751,7 +793,7 @@ class Translator:
             task_value = field.get_gtg(task, namespace)
             todo_value = field.get_dav(todo, vtodo)
             if todo_value != task_value:
-                yield field.dav_name, task_value, todo_value
+                yield field, task_value, todo_value
 
     @classmethod
     def should_sync(cls, task: Task, namespace: str,  todo=None, vtodo=None):
@@ -759,9 +801,10 @@ class Translator:
         if log.isEnabledFor(logging.DEBUG):
             fields = list(fields)
             for field, task_v, todo_v in fields:
-                log.debug('changed %s(%r != %r)', field, task_v, todo_v)
+                log.debug('changed %r Task(%r) != vTodo(%r)',
+                          field, task_v, todo_v)
         for field, __, __ in fields:
-            if field not in DAV_IGNORE:
+            if field.dav_name not in DAV_IGNORE:
                 return True
         return False
 
