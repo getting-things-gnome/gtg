@@ -574,12 +574,13 @@ class Categories(Field):
 
     def set_gtg(self, todo: iCalendar, task: Task,
                 namespace: str = None) -> None:
-        remote_tags = set(self.to_tag(categ) for categ in self.get_dav(todo))
+        remote_tags = [self.to_tag(categ) for categ in self.get_dav(todo)]
         local_tags = set(tag_name for tag_name in super().get_gtg(task))
-        for to_add in remote_tags.difference(local_tags):
+        for to_add in set(remote_tags).difference(local_tags):
             task.add_tag(to_add)
         for to_delete in local_tags.difference(remote_tags):
             task.remove_tag(to_delete)
+        task.tags.sort(key=remote_tags.index)
 
     def get_calendar_tag(self, calendar) -> str:
         return self.to_tag(calendar.name, DAV_TAG_PREFIX)
