@@ -272,17 +272,19 @@ class Backend(PeriodicImportBackend):
         # Default caldav specs usually only specifies parent, here we use it
         # to mark all the children
         from collections import defaultdict
-        children = defaultdict(list)
+        children_by_parent = defaultdict(list)
         for todo in todos:
             parent = PARENT_FIELD.get_dav(todo)
             if parent:
-                children[parent[0]].append(UID_FIELD.get_dav(todo))
+                children_by_parent[parent[0]].append(todo)
         todos_by_uid = {UID_FIELD.get_dav(todo): todo for todo in todos}
-        for uid, children_uids in children.items():
+        for uid, children in children_by_parent.items():
             if uid not in todos_by_uid:
                 continue
             vtodo = todos_by_uid[uid].instance.vtodo
-            CHILDREN_FIELD.write_dav(vtodo, children_uids)
+            children.sort(key=lambda v: str(SORT_ORDER.get_dav(v)) or '')
+            CHILDREN_FIELD.write_dav(vtodo, [UID_FIELD.get_dav(child)
+                                             for child in children])
 
         known_todos = set()  # type: set
         for todo in self.__sort_todos(todos, known_todos):
@@ -718,19 +720,36 @@ class RelatedTo(Field):
                 namespace: str = None) -> None:
         if self.get_dav(todo) == self.get_gtg(task, namespace):
             return  # do not edit if equal
-        target_uids = set(self.get_dav(todo))
+        target_uids = self.get_dav(todo)
         gtg_uids = set(self.get_gtg(task, namespace))
-        for value in target_uids.difference(gtg_uids):
+        for value in set(target_uids).difference(gtg_uids):
             if not self.write_gtg(task, value, namespace):
                 log.error('FAILED writing Task.%s(%r, %r)',
                           self.task_set_func_name, task, value)
         if self.task_remove_func_name:
             for value in gtg_uids.difference(target_uids):
                 getattr(task, self.task_remove_func_name)(value)
+        task.children.sort(key=target_uids.index)
 
     def __repr__(self):
         return "<%s(%r, %r)>" % (self.__class__.__name__,
                                  self.reltype, self.dav_name)
+
+
+class OrderField(Field):
+
+    def get_gtg(self, task: Task, namespace: str = None):
+        parents = task.get_parents()
+        if not parents or not parents[0]:
+            return
+        parent = task.req.get_task(parents[0])
+        uid = UID_FIELD.get_gtg(task, namespace)
+        return parent.get_child_index(uid)
+
+    def set_dav(self, task: Task, vtodo: iCalendar, namespace: str) -> None:
+        parent_index = self.get_gtg(task, namespace)
+        if parent_index is not None:
+            return self.write_dav(vtodo, parent_index)
 
 
 UID_FIELD = Field('uid', 'get_uuid', 'set_uuid')
@@ -742,6 +761,7 @@ PARENT_FIELD = RelatedTo('related-to', 'get_parents', 'set_parent',
 CHILDREN_FIELD = RelatedTo('related-to', 'get_children', 'add_child',
                            task_remove_func_name='remove_child',
                            reltype='child')
+SORT_ORDER = OrderField('x-apple-sort-order', '', '')
 
 
 class Translator:
@@ -782,6 +802,7 @@ class Translator:
         # FIXME: discarding related-to parent from sync down
         # due to bug on set_parent
         PARENT_FIELD.set_dav(task, vtodo, namespace)
+        SORT_ORDER.set_dav(task, vtodo, namespace)
         return vcal
 
     @classmethod
