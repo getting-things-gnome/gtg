@@ -194,8 +194,7 @@ class Backend(PeriodicImportBackend):
                 log.exception('Something went wrong while creating %r => %r',
                               task, new_todo)
             uid = UID_FIELD.get_dav(todo=new_todo)
-            with self._cache:
-                self._cache.set_todo(new_todo, uid)
+            self._cache.set_todo(new_todo, uid)
 
     def _remove_task(self, tid: str) -> None:
         log.info('SYNCING removing todo for Task(%s)', tid)
@@ -229,9 +228,8 @@ class Backend(PeriodicImportBackend):
             raise error
         seen_calendars_names = set()
         for calendar in principal.calendars():
-            with self._cache:
-                self._cache.set_calendar(calendar)
-                seen_calendars_names.add(calendar.name)
+            self._cache.set_calendar(calendar)
+            seen_calendars_names.add(calendar.name)
         def_cal_name = self._parameters.get('default-calendar-name')
         if not def_cal_name or def_cal_name not in seen_calendars_names:
             self._notify_user_about_default_calendar()
@@ -347,8 +345,7 @@ class Backend(PeriodicImportBackend):
                 cache.pop(key)
 
     def _get_todo(self, task: Task) -> caldav.Todo:
-        with self._cache:
-            return self._cache.get_todo(UID_FIELD.get_gtg(task))
+        return self._cache.get_todo(UID_FIELD.get_gtg(task))
 
     def _get_calendar(self, task: Task) -> caldav.Calendar:
         # lookup by UID
@@ -823,16 +820,12 @@ class Translator:
 
 
 class TodoCache:
-    _lock = threading.Lock()
 
     def __init__(self):
         self.calendars_by_name = {}
         self.calendars_by_url = {}
         self.todos_by_uid = {}
         self._initialized = False
-
-    __enter__ = _lock.__enter__
-    __exit__ = _lock.__exit__
 
     @property
     def initialized(self):
