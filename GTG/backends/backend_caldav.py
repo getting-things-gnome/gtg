@@ -470,7 +470,7 @@ class DateField(Field):
 
     def __init__(self, dav_name: str,
                  task_get_func_name: str, task_set_func_name: str):
-        return super().__init__(
+        super().__init__(
             dav_name, task_get_func_name, task_set_func_name,
             ['', None, 'None', Date.no_date(), Date.someday()])
 
@@ -485,12 +485,12 @@ class DateField(Field):
         except AttributeError:
             return value
 
-    def write_dav(self, todo: iCalendar, value):
+    def write_dav(self, vtodo: iCalendar, value):
         "Writing datetime as UTC naive"
         if not value.tzinfo:  # assumring is LOCAL_TIMEZONEd
             value = value.replace(tzinfo=LOCAL_TIMEZONE)
         value = (value - value.utcoffset()).replace(tzinfo=None)
-        return super().write_dav(todo, value)
+        return super().write_dav(vtodo, value)
 
     def get_dav(self, todo=None, vtodo=None):
         """Transforming to local naive,
@@ -531,10 +531,10 @@ class Status(Field):
 
     def get_gtg(self, task: Task, namespace: str = None) -> str:
         active, done = 0, 0
-        for task in self._browse_subtasks(task):
-            if task.get_status() == Task.STA_ACTIVE:
+        for subtask in self._browse_subtasks(task):
+            if subtask.get_status() == Task.STA_ACTIVE:
                 active += 1
-            elif task.get_status() == Task.STA_DONE:
+            elif subtask.get_status() == Task.STA_DONE:
                 done += 1
             if active and done:
                 return 'IN-PROCESS'
@@ -556,10 +556,10 @@ class PercentComplete(Field):
 
     def get_gtg(self, task: Task, namespace: str = None) -> str:
         total_cnt, done_cnt = 0, 0
-        for task in self._browse_subtasks(task):
-            if task.get_status() != Task.STA_DISMISSED:
+        for subtask in self._browse_subtasks(task):
+            if subtask.get_status() != Task.STA_DISMISSED:
                 total_cnt += 1
-                if task.get_status() == Task.STA_DONE:
+                if subtask.get_status() == Task.STA_DONE:
                     done_cnt += 1
         if total_cnt:
             return str(int(100 * done_cnt / total_cnt))
@@ -587,9 +587,9 @@ class Categories(Field):
                     categories.append(category)
         return categories
 
-    def write_dav(self, vtodo: iCalendar, categories):
-        super().write_dav(vtodo, [cat for cat in categories
-                                  if not cat.startswith(DAV_TAG_PREFIX)])
+    def write_dav(self, vtodo: iCalendar, value):
+        super().write_dav(vtodo, [category for category in value
+                                  if not category.startswith(DAV_TAG_PREFIX)])
 
     def set_gtg(self, todo: iCalendar, task: Task,
                 namespace: str = None) -> None:
@@ -722,6 +722,14 @@ class RelatedTo(Field):
                     result.append(sub_value.value)
         return result
 
+    @staticmethod
+    def __sort_key(uids):
+        def wrap(uid):
+            if uid not in uids:
+                return 0
+            return uids.index(uid)
+        return wrap
+
     def set_gtg(self, todo: iCalendar, task: Task,
                 namespace: str = None) -> None:
         if self.get_dav(todo) == self.get_gtg(task, namespace):
@@ -735,7 +743,7 @@ class RelatedTo(Field):
         if self.task_remove_func_name:
             for value in gtg_uids.difference(target_uids):
                 getattr(task, self.task_remove_func_name)(value)
-        task.children.sort(key=target_uids.index)
+        task.children.sort(key=self.__sort_key(target_uids))
 
     def __repr__(self):
         return "<%s(%r, %r)>" % (self.__class__.__name__,
