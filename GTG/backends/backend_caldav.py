@@ -387,7 +387,7 @@ class Backend(PeriodicImportBackend):
         message = _(
             f"Could not find calendar {default_name}"
             "Configure CalDAV to save in a calendar from this list : \n"
-        ) + '\n'.join(list(self._calendars_by_name))
+        ) + '\n'.join(list(self._cache.calendars_by_name))
         BackendSignals().interaction_requested(
             self.get_id(), message,
             BackendSignals().INTERACTION_INFORM, "on_continue_clicked")
@@ -415,9 +415,9 @@ class Field:
         "Extract value from GTG.core.task.Task according to specified getter"
         return getattr(task, self.task_get_func_name)()
 
-    def clean_dav(self, todo: iCalendar):
+    def clean_dav(self, vtodo: iCalendar):
         """Will remove existing conflicting value from vTodo object"""
-        todo.contents.pop(self.dav_name, None)
+        vtodo.contents.pop(self.dav_name, None)
 
     def write_dav(self, vtodo: iCalendar, value):
         """Will clean and write new value to vTodo object"""
@@ -668,7 +668,10 @@ class Description(Field):
             tag_close = cnt.find(self.TAG_CLOSE)
             if tag_close == -1:
                 break
-            cnt = cnt[:tag_open] + cnt[tag_close + self.LEN_TAG_CLOSE:]
+            tag_close_end = tag_close + self.LEN_TAG_CLOSE
+            if cnt[tag_close_end:tag_close_end + 2] == ', ':
+                tag_close_end += 2
+            cnt = cnt[:tag_open] + cnt[tag_close_end:]
         if cnt.startswith('\n\n'):
             # four for two \n which to be randomly added
             cnt = cnt[2:]
@@ -701,9 +704,9 @@ class RelatedTo(Field):
             for index in sorted(index_to_remove, reverse=True):
                 value.pop(index)
 
-    def write_dav(self, vtodo: iCalendar, related_uids):
+    def write_dav(self, vtodo: iCalendar, value):
         self.clean_dav(vtodo)
-        for related_uid in related_uids:
+        for related_uid in value:
             related = vtodo.add(self.dav_name)
             related.value = related_uid
             related.params['RELTYPE'] = [self.reltype]
