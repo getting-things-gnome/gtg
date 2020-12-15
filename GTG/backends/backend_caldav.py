@@ -47,6 +47,7 @@ from GTG.core.task import DisabledSyncCtx, Task
 from vobject import iCalendar
 
 DAV_TAG_PREFIX = 'DAV-'
+# Set of fields whose change alone won't trigger a sync up
 DAV_IGNORE = {'last-modified',  # often updated alone by GTG
               'sequence',  # internal DAV value, only set by translator
               'percent-complete',  # calculated on subtask and status
@@ -154,7 +155,7 @@ class Backend(PeriodicImportBackend):
         if log.isEnabledFor(logging.INFO):
             for key in counts:
                 if counts.get(key):
-                    log.info('LOCAL %s %d tasks', key, counts['created'])
+                    log.info('LOCAL %s %d tasks', key, counts[key])
         self._parameters["is-first-run"] = False
         self._cache.initialized = True
 

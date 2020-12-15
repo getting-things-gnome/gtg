@@ -2,9 +2,15 @@ from datetime import datetime
 from unittest import TestCase
 
 import vobject
-from GTG.backends.backend_caldav import DAV_IGNORE, UID_FIELD, Translator
+from mock import Mock, patch
+from caldav.lib.error import NotFoundError
+
+from tests.test_utils import MockTimer
+
+from GTG.backends.backend_caldav import (DAV_IGNORE, UID_FIELD, Backend,
+                                         Translator, CHILDREN_FIELD)
+from GTG.core.datastore import DataStore
 from GTG.core.task import Task
-from mock import Mock
 
 NAMESPACE = 'unittest'
 VTODO_ROOT = """BEGIN:VTODO\r
@@ -16,40 +22,62 @@ DTSTAMP:20201212T172830Z\r
 LAST-MODIFIED:20201212T172558Z\r
 STATUS:NEEDS-ACTIONS\r
 SUMMARY:my summary\r
-UID:2771444325910370883\r
-X-APPLE-SORT-ORDER:629421506\r
+UID:ROOT\r
 END:VTODO\r
 """
 
-VTODO_CHILDREN = """BEGIN:VCALENDAR\r
-VERSION:2.0\r
-PRODID:+//IDN tasks.org//android-100401//EN\r
-BEGIN:VTODO\r
+VTODO_CHILD = """BEGIN:VTODO\r
 COMPLETED:20201212T172558Z\r
 CREATED:20201212T092155Z\r
 DTSTAMP:20201212T172830Z\r
 LAST-MODIFIED:20201212T172558Z\r
-PERCENT-COMPLETE:10\r
-PRIORITY:9\r
-RELATED-TO;RELTYPE=PARENT:2771444325910370883\r
+RELATED-TO;RELTYPE=PARENT:ROOT\r
+STATUS:NEEDS-ACTION\r
+SUMMARY:my child summary\r
+UID:CHILD\r
+X-APPLE-SORT-ORDER:1\r
+END:VTODO\r
+"""
+
+VTODO_CHILD_PARENT = """BEGIN:VTODO\r
+COMPLETED:20201212T172558Z\r
+CREATED:20201212T092155Z\r
+DTSTAMP:20201212T172830Z\r
+LAST-MODIFIED:20201212T172558Z\r
+RELATED-TO;RELTYPE=PARENT:ROOT\r
+RELATED-TO;RELTYPE=CHILD:GRAND-CHILD\r
 SEQUENCE:1\r
 STATUS:COMPLETED\r
-SUMMARY:my summary\r
-UID:1424529770309495136\r
-X-APPLE-SORT-ORDER:629421506\r
+SUMMARY:my child summary\r
+X-APPLE-SORT-ORDER:2\r
+UID:CHILD-PARENT\r
 END:VTODO\r
-END:VCALENDAR\r
+"""
+
+VTODO_GRAND_CHILD = """BEGIN:VTODO\r
+COMPLETED:20201212T172558Z\r
+CREATED:20201212T092155Z\r
+DTSTAMP:20201212T172830Z\r
+LAST-MODIFIED:20201212T172558Z\r
+RELATED-TO;RELTYPE=PARENT:CHILD-PARENT\r
+STATUS:NEEDS-ACTION\r
+SUMMARY:my child summary\r
+UID:GRAND-CHILD\r
+END:VTODO\r
 """
 
 
-class TestQuickAddParse(TestCase):
+class CalDAVTest(TestCase):
 
     @staticmethod
-    def _get_todo(vtodo_raw):
+    def _get_todo(vtodo_raw, parent=None):
         vtodo = vobject.readOne(vtodo_raw)
         todo = Mock()
         todo.instance.vtodo = vtodo
-        todo.parent.name = 'My Calendar'
+        if parent is None:
+            todo.parent.name = 'My Calendar'
+        else:
+            todo.parent = parent
         return todo
 
     def test_translate_from_vtodo(self):
@@ -83,3 +111,53 @@ class TestQuickAddParse(TestCase):
             vtodo_value = field.get_dav(vtodo=vtodo.vtodo)
             self.assertEqual(task_value, vtodo_value,
                              '%r has differing values' % field)
+
+    @patch('GTG.backends.periodic_import_backend.threading.Timer',
+           autospec=MockTimer)
+    @patch('GTG.backends.backend_caldav.caldav.DAVClient')
+    def test_do_periodic_import(self, dav_client, threading_pid):
+        calendar = Mock(name='my calendar')
+
+        todos = [self._get_todo(VTODO_CHILD_PARENT, calendar),
+                 self._get_todo(VTODO_ROOT, calendar),
+                 self._get_todo(VTODO_CHILD, calendar),
+                 self._get_todo(VTODO_GRAND_CHILD, calendar)]
+        calendar.todos.return_value = todos
+        datastore = DataStore()
+        parameters = {'pid': 'favorite', 'service-url': 'color',
+                      'username': 'blue', 'password': 'no red', 'period': 1,
+                      'default-calendar-name': calendar.name}
+        backend = Backend(parameters)
+        dav_client.return_value.principal.return_value.calendars.return_value \
+            = [calendar]
+        datastore.register_backend({'backend': backend, 'pid': 'backendid'})
+
+        self.assertEqual(4, len(datastore.get_all_tasks()))
+        task = datastore.get_task('ROOT')
+        self.assertIsNotNone(task)
+        self.assertEqual(['CHILD', 'CHILD-PARENT'],
+                         [subtask.get_id() for subtask in task.get_subtasks()])
+        self.assertEqual(
+            0, len(datastore.get_task('CHILD').get_subtasks()))
+        self.assertEqual(
+            1, len(datastore.get_task('CHILD-PARENT').get_subtasks()))
+
+        def get_todo(uid):
+            return next(todo for todo in todos
+                        if UID_FIELD.get_dav(todo) == uid)
+
+        self.assertEqual(['CHILD', 'CHILD-PARENT'],
+                         CHILDREN_FIELD.get_dav(get_todo('ROOT')),
+                         "todos should've been updated with children")
+
+        self.assertEqual(['GRAND-CHILD'],
+                         CHILDREN_FIELD.get_dav(get_todo('CHILD-PARENT')),
+                         "todos should've been updated with children")
+
+        calendar.todos.return_value = todos[:-1]
+        backend.do_periodic_import()
+        self.assertEqual(4, len(datastore.get_all_tasks()),
+                         "no not found raised, no reason to remove tasks")
+        calendar.todo_by_uid.side_effect = NotFoundError
+        backend.do_periodic_import()
+        self.assertEqual(3, len(datastore.get_all_tasks()))
