@@ -21,7 +21,7 @@
 Backend for storing/loading tasks in CalDAV Tasks
 """
 
-# TODO features:
+# features:
 #  * registering task relation through RELATED-TO params        : OK
 #     * handle percent complete                                 : OK
 #     * ensure compatibility with tasks.org                     : OK
@@ -32,7 +32,7 @@ Backend for storing/loading tasks in CalDAV Tasks
 #  * push proper task content                                   : KO
 
 import logging
-import threading
+from collections import defaultdict
 from datetime import datetime
 from gettext import gettext as _
 
@@ -40,10 +40,10 @@ import caldav
 from GTG.backends.backend_signals import BackendSignals
 from GTG.backends.generic_backend import GenericBackend
 from GTG.backends.periodic_import_backend import PeriodicImportBackend
+from GTG.core.dates import LOCAL_TIMEZONE, Date
 from GTG.core.interruptible import interruptible
 from GTG.core.logger import log
-from GTG.core.task import Task, DisabledSyncCtx
-from GTG.core.dates import Date, LOCAL_TIMEZONE
+from GTG.core.task import DisabledSyncCtx, Task
 from vobject import iCalendar
 
 DAV_TAG_PREFIX = 'DAV-'
@@ -151,16 +151,10 @@ class Backend(PeriodicImportBackend):
             # retrieving todos and updating various cache
             log.info('Fetching todos from %r', cal_url)
             self._import_calendar_todos(calendar, start, counts)
-        if counts['created']:
-            log.info('LOCAL created %d new tasks', counts['created'])
-        if counts['updated']:
-            log.info('LOCAL updated %d existing tasks', counts['updated'])
-        if counts['unchanged']:
-            log.info('LOCAL %d existing tasks stayed unchanged',
-                     counts['unchanged'])
-        if counts['deleted']:
-            log.info('LOCAL deleted %d tasks absent from backend',
-                     counts['deleted'])
+        if log.isEnabledFor(logging.INFO):
+            for key in counts:
+                if counts.get(key):
+                    log.info('LOCAL %s %d tasks', key, counts['created'])
         self._parameters["is-first-run"] = False
         self._cache.initialized = True
 
@@ -234,44 +228,38 @@ class Backend(PeriodicImportBackend):
         if not def_cal_name or def_cal_name not in seen_calendars_names:
             self._notify_user_about_default_calendar()
 
-    def _import_calendar_todos(self, calendar: iCalendar,
-                               import_started_on: datetime, counts: dict):
-        todos = calendar.todos(include_completed=not self._cache.initialized)
-        todo_uids = {UID_FIELD.get_dav(todo) for todo in todos}
-
-        # browsing all task linked to current calendar,
-        # removing missed ones we don't see in fetched todos
-        calendar_tasks = {uid: task
-                          for uid, task in self._get_calendar_tasks(calendar)}
-        for uid in set(calendar_tasks).difference(todo_uids):
-            task, do_delete = None, False
-            task = calendar_tasks[uid]
-            if import_started_on < task.get_added_date():
-                continue
-            # if first run, we're getting all task, including completed
-            # if we miss one, we delete it
-            elif not self._cache.initialized:
+    def _clean_task_missing_from_backend(self, uid: str,
+                                         calendar_tasks: dict, counts: dict,
+                                         import_started_on: datetime):
+        task, do_delete = None, False
+        task = calendar_tasks[uid]
+        if import_started_on < task.get_added_date():
+            return
+        # if first run, we're getting all task, including completed
+        # if we miss one, we delete it
+        if not self._cache.initialized:
+            do_delete = True
+        # if cache is initialized, it's normal we missed completed
+        # task, but we should have seen active ones
+        elif task.get_status() == Task.STA_ACTIVE:
+            calendar = self._get_calendar(task=task)
+            if not calendar:
+                log.warning("Couldn't find calendar for %r", task)
+                return
+            try:  # fetching missing todo from server
+                calendar.todo_by_uid(uid)
+            except caldav.lib.error.NotFoundError:
                 do_delete = True
-            # if cache is initialized, it's normal we missed completed
-            # task, but we should have seen active ones
-            elif task.get_status() == Task.STA_ACTIVE:
-                calendar = self._get_calendar(task=task)
-                if not calendar:
-                    log.warning("Couldn't find calendar for %r", task)
-                    continue
-                try:  # fetching missing todo from server
-                    calendar.todo_by_uid(uid)
-                except caldav.lib.error.NotFoundError:
-                    do_delete = True
-            if do_delete:  # the task was missing for a good reason
-                counts['deleted'] += 1
-                self._cache.del_todo(uid)
-                self.datastore.request_task_deletion(uid)
+        if do_delete:  # the task was missing for a good reason
+            counts['deleted'] += 1
+            self._cache.del_todo(uid)
+            self.datastore.request_task_deletion(uid)
 
-        # FIXME, GTG.core.task.Task.set_parent seems buggy so we can't use it
+    @staticmethod
+    def _denorm_children_on_vtodos(todos: list):
+        # NOTE: GTG.core.task.Task.set_parent seems buggy so we can't use it
         # Default caldav specs usually only specifies parent, here we use it
         # to mark all the children
-        from collections import defaultdict
         children_by_parent = defaultdict(list)
         for todo in todos:
             parent = PARENT_FIELD.get_dav(todo)
@@ -285,6 +273,20 @@ class Backend(PeriodicImportBackend):
             children.sort(key=lambda v: str(SORT_ORDER.get_dav(v)) or '')
             CHILDREN_FIELD.write_dav(vtodo, [UID_FIELD.get_dav(child)
                                              for child in children])
+
+    def _import_calendar_todos(self, calendar: iCalendar,
+                               import_started_on: datetime, counts: dict):
+        todos = calendar.todos(include_completed=not self._cache.initialized)
+        todo_uids = {UID_FIELD.get_dav(todo) for todo in todos}
+
+        # browsing all task linked to current calendar,
+        # removing missed ones we don't see in fetched todos
+        calendar_tasks = dict(self._get_calendar_tasks(calendar))
+        for uid in set(calendar_tasks).difference(todo_uids):
+            self._clean_task_missing_from_backend(uid, calendar_tasks, counts,
+                                                  import_started_on)
+
+        self._denorm_children_on_vtodos(todos)
 
         known_todos = set()  # type: set
         for todo in self.__sort_todos(todos, known_todos):
@@ -328,6 +330,7 @@ class Backend(PeriodicImportBackend):
                 break
 
     def _get_calendar_tasks(self, calendar: iCalendar):
+        """Getting all tasks that has the calendar tag"""
         for uid in self.datastore.get_all_tasks():
             task = self.datastore.get_task(uid)
             if CATEGORIES.has_calendar_tag(task, calendar):
@@ -774,7 +777,7 @@ class Translator:
               DateField('dtstart', 'get_start_date', 'set_start_date'),
               Status('status', 'get_status', 'set_status'),
               PercentComplete('percent-complete', 'get_status', ''),
-              SEQUENCE, UID_FIELD, CATEGORIES,  CHILDREN_FIELD,
+              SEQUENCE, UID_FIELD, CATEGORIES, CHILDREN_FIELD,
               DateField('created', 'get_added_date', 'set_added_date'),
               DateField('last-modified', 'get_modified', 'set_modified')]
 
@@ -799,7 +802,7 @@ class Translator:
                 # not overriding if already set from cache
                 continue
             field.set_dav(task, vtodo, namespace)
-        # FIXME: discarding related-to parent from sync down
+        # NOTE: discarding related-to parent from sync down
         # due to bug on set_parent
         PARENT_FIELD.set_dav(task, vtodo, namespace)
         SORT_ORDER.set_dav(task, vtodo, namespace)
@@ -827,7 +830,7 @@ class Translator:
                 yield field, task_value, todo_value
 
     @classmethod
-    def should_sync(cls, task: Task, namespace: str,  todo=None, vtodo=None):
+    def should_sync(cls, task: Task, namespace: str, todo=None, vtodo=None):
         fields = cls.changed_attrs(task, namespace, todo, vtodo)
         if log.isEnabledFor(logging.DEBUG):
             fields = list(fields)
