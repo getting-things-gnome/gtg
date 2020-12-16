@@ -5,7 +5,7 @@ import vobject
 from caldav.lib.error import NotFoundError
 from GTG.backends.backend_caldav import (CATEGORIES, CHILDREN_FIELD,
                                          DAV_IGNORE, UID_FIELD, Backend,
-                                         Translator)
+                                         Translator, PARENT_FIELD)
 from GTG.core.datastore import DataStore
 from GTG.core.task import Task
 from mock import Mock, patch
@@ -117,6 +117,34 @@ class CalDAVTest(TestCase):
             self.assertEqual(task_value, vtodo_value,
                              '%r has differing values' % field)
 
+    def test_translate_parent_field(self):
+        datastore = DataStore()
+        root_task = datastore.task_factory('root-task', newtask=True)
+        datastore.push_task(root_task)
+        child_task = datastore.task_factory('child-task', newtask=True)
+        datastore.push_task(child_task)
+        root_task.add_child(child_task.get_id())
+        self.assertEqual([child_task.get_id()], root_task.get_children())
+        self.assertEqual([root_task.get_id()], child_task.get_parents())
+        self.assertEqual([], PARENT_FIELD.get_gtg(root_task, NAMESPACE))
+        self.assertEqual(['child-task'],
+                         CHILDREN_FIELD.get_gtg(root_task, NAMESPACE))
+        self.assertEqual(['root-task'],
+                         PARENT_FIELD.get_gtg(child_task, NAMESPACE))
+        self.assertEqual([], CHILDREN_FIELD.get_gtg(child_task, NAMESPACE))
+        root_vtodo = Translator.fill_vtodo(root_task, 'calname', NAMESPACE)
+        child_vtodo = Translator.fill_vtodo(child_task, 'calname', NAMESPACE)
+        self.assertEqual([], PARENT_FIELD.get_dav(vtodo=root_vtodo.vtodo))
+        self.assertEqual(['child-task'],
+                         CHILDREN_FIELD.get_dav(vtodo=root_vtodo.vtodo))
+        self.assertEqual(['root-task'],
+                         PARENT_FIELD.get_dav(vtodo=child_vtodo.vtodo))
+        self.assertEqual([], CHILDREN_FIELD.get_dav(vtodo=child_vtodo.vtodo))
+        self.assertTrue('\r\nRELATED-TO;RELTYPE=CHILD:child-task\r\n'
+                        in root_vtodo.serialize())
+        self.assertTrue('\r\nRELATED-TO;RELTYPE=PARENT:root-task\r\n'
+                        in child_vtodo.serialize())
+
     @patch('GTG.backends.periodic_import_backend.threading.Timer',
            autospec=MockTimer)
     @patch('GTG.backends.backend_caldav.caldav.DAVClient')
@@ -181,26 +209,43 @@ class CalDAVTest(TestCase):
         # set_task no change, no update
         backend.set_task(task)
         child_todo.save.assert_not_called()
+        child_todo.delete.assert_not_called()
         calendar.add_todo.assert_not_called()
         # set_task, with ignorable changes
         task.set_status(task.STA_DONE)
         backend.set_task(task)
         child_todo.save.assert_called_once()
         calendar.add_todo.assert_not_called()
+        child_todo.delete.assert_not_called()
         child_todo.save.reset_mock()
         # no update
         backend.set_task(task)
         child_todo.save.assert_not_called()
         calendar.add_todo.assert_not_called()
+        child_todo.delete.assert_not_called()
 
         # creating task, refused : no tag
-        calendar.add_todo.return_value = self._get_todo(VTODO_NEW_CHILD)
         task = datastore.task_factory('NEW-CHILD')
+        datastore.push_task(task)
         backend.set_task(task)
         child_todo.save.assert_not_called()
         calendar.add_todo.assert_not_called()
+        child_todo.delete.assert_not_called()
         # creating task, accepted, new tag found
         task.add_tag(CATEGORIES.get_calendar_tag(calendar))
+        calendar.add_todo.return_value = child_todo
         backend.set_task(task)
         child_todo.save.assert_not_called()
         calendar.add_todo.assert_called_once()
+        child_todo.delete.assert_not_called()
+        calendar.add_todo.reset_mock()
+
+        backend.remove_task('uid never seen before')
+        child_todo.save.assert_not_called()
+        calendar.add_todo.assert_not_called()
+        child_todo.delete.assert_not_called()
+
+        backend.remove_task('CHILD')
+        child_todo.save.assert_not_called()
+        calendar.add_todo.assert_not_called()
+        child_todo.delete.assert_called_once()

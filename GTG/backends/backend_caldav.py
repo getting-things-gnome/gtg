@@ -174,6 +174,7 @@ class Backend(PeriodicImportBackend):
             except caldav.lib.error.DAVError:
                 logger.exception('Something went wrong while creating '
                                  '%r => %r', task, new_todo)
+                return
             uid = UID_FIELD.get_dav(todo=new_todo)
             self._cache.set_todo(new_todo, uid)
 
