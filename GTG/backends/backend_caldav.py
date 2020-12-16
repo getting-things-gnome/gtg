@@ -156,9 +156,9 @@ class Backend(PeriodicImportBackend):
             if not Translator.should_sync(task, self.namespace, todo):
                 logger.debug('insufficient change, ignoring set_task call')
                 return
+            # updating vtodo content
             Translator.fill_vtodo(task, calendar.name, self.namespace,
                                   todo.instance.vtodo)
-            # saving new todo
             logger.info('SYNCING updating todo %r', todo)
             try:
                 todo.save()
@@ -196,6 +196,8 @@ class Backend(PeriodicImportBackend):
     #
 
     def _refresh_calendar_list(self):
+        """Will browse calendar list available after principal call and cache
+        them"""
         try:
             principal = self._dav_client.principal()
         except caldav.lib.error.AuthorizationError as error:
@@ -215,6 +217,8 @@ class Backend(PeriodicImportBackend):
     def _clean_task_missing_from_backend(self, uid: str,
                                          calendar_tasks: dict, counts: dict,
                                          import_started_on: datetime):
+        """For a given UID will decide if we remove it from GTG or ignore the
+        fact that it's missing"""
         task, do_delete = None, False
         task = calendar_tasks[uid]
         if import_started_on < task.get_added_date():
@@ -296,6 +300,8 @@ class Backend(PeriodicImportBackend):
                     logger.warning("Shouldn't be diff for %r", uid)
 
     def __sort_todos(self, todos: list, known_todos: set, max_depth=500):
+        """For a given list of todos, will return first the one without parent
+        and then go deeper in the tree by browsing the tree."""
         loop_nb = 0
         while len(known_todos) < len(todos):
             loop_nb += 1
@@ -305,7 +311,7 @@ class Backend(PeriodicImportBackend):
                     continue
                 parents = PARENT_FIELD.get_dav(todo)
                 if (not parents  # no parent mean no relationship on build
-                        or parents[0] in known_todos  # browsed relationship
+                        or parents[0] in known_todos  # already known parent
                         or self.datastore.get_task(uid)):  # already known uid
                     yield todo
                     known_todos.add(uid)
@@ -324,16 +330,9 @@ class Backend(PeriodicImportBackend):
     # Utility methods
     #
 
-    @staticmethod
-    def _update_cache(new_values: dict, cache: dict) -> None:
-        for key in new_values:
-            if key not in cache:
-                cache[key] = new_values[key]
-        for key in list(cache):
-            if key not in new_values:
-                cache.pop(key)
-
     def _get_todo_and_calendar(self, task: Task):
+        """For a given task, try to get the todo out of the cache and figures
+        out its calendar if one is linked to it"""
         todo, calendar = self._cache.get_todo(UID_FIELD.get_gtg(task)), None
         if todo and getattr(todo, 'parent', None):
             logger.debug('Found from todo %r and %r', todo, todo.parent)
