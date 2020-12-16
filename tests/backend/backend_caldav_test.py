@@ -2,15 +2,14 @@ from datetime import datetime
 from unittest import TestCase
 
 import vobject
-from mock import Mock, patch
 from caldav.lib.error import NotFoundError
-
-from tests.test_utils import MockTimer
-
-from GTG.backends.backend_caldav import (DAV_IGNORE, UID_FIELD, Backend,
-                                         Translator, CHILDREN_FIELD)
+from GTG.backends.backend_caldav import (CATEGORIES, CHILDREN_FIELD,
+                                         DAV_IGNORE, UID_FIELD, Backend,
+                                         Translator)
 from GTG.core.datastore import DataStore
 from GTG.core.task import Task
+from mock import Mock, patch
+from tests.test_utils import MockTimer
 
 NAMESPACE = 'unittest'
 VTODO_ROOT = """BEGIN:VTODO\r
@@ -20,25 +19,22 @@ CREATED:20201212T092155Z\r
 DESCRIPTION:my description\r
 DTSTAMP:20201212T172830Z\r
 LAST-MODIFIED:20201212T172558Z\r
-STATUS:NEEDS-ACTIONS\r
+STATUS:NEEDS-ACTION\r
 SUMMARY:my summary\r
 UID:ROOT\r
-END:VTODO\r
-"""
-
+END:VTODO\r\n"""
 VTODO_CHILD = """BEGIN:VTODO\r
 COMPLETED:20201212T172558Z\r
 CREATED:20201212T092155Z\r
 DTSTAMP:20201212T172830Z\r
 LAST-MODIFIED:20201212T172558Z\r
 RELATED-TO;RELTYPE=PARENT:ROOT\r
+SEQUENCE:1
 STATUS:NEEDS-ACTION\r
 SUMMARY:my child summary\r
 UID:CHILD\r
 X-APPLE-SORT-ORDER:1\r
-END:VTODO\r
-"""
-
+END:VTODO\r\n"""
 VTODO_CHILD_PARENT = """BEGIN:VTODO\r
 COMPLETED:20201212T172558Z\r
 CREATED:20201212T092155Z\r
@@ -51,9 +47,7 @@ STATUS:COMPLETED\r
 SUMMARY:my child summary\r
 X-APPLE-SORT-ORDER:2\r
 UID:CHILD-PARENT\r
-END:VTODO\r
-"""
-
+END:VTODO\r\n"""
 VTODO_GRAND_CHILD = """BEGIN:VTODO\r
 COMPLETED:20201212T172558Z\r
 CREATED:20201212T092155Z\r
@@ -63,8 +57,19 @@ RELATED-TO;RELTYPE=PARENT:CHILD-PARENT\r
 STATUS:NEEDS-ACTION\r
 SUMMARY:my child summary\r
 UID:GRAND-CHILD\r
-END:VTODO\r
-"""
+END:VTODO\r\n"""
+VTODO_NEW_CHILD = """BEGIN:VTODO\r
+COMPLETED:20201212T172558Z\r
+CREATED:20201212T092155Z\r
+DTSTAMP:20201212T172830Z\r
+LAST-MODIFIED:20201212T172558Z\r
+RELATED-TO;RELTYPE=PARENT:ROOT\r
+SEQUENCE:1
+STATUS:NEEDS-ACTION\r
+SUMMARY:my new child summary\r
+UID:NEW-CHILD\r
+X-APPLE-SORT-ORDER:1\r
+END:VTODO\r\n"""
 
 
 class CalDAVTest(TestCase):
@@ -125,8 +130,7 @@ class CalDAVTest(TestCase):
         calendar.todos.return_value = todos
         datastore = DataStore()
         parameters = {'pid': 'favorite', 'service-url': 'color',
-                      'username': 'blue', 'password': 'no red', 'period': 1,
-                      'default-calendar-name': calendar.name}
+                      'username': 'blue', 'password': 'no red', 'period': 1}
         backend = Backend(parameters)
         dav_client.return_value.principal.return_value.calendars.return_value \
             = [calendar]
@@ -154,10 +158,49 @@ class CalDAVTest(TestCase):
                          CHILDREN_FIELD.get_dav(get_todo('CHILD-PARENT')),
                          "todos should've been updated with children")
 
-        calendar.todos.return_value = todos[:-1]
+        todos = todos[:-1]
+        child_todo = todos[-1]
+        child_todo.instance.vtodo.contents['summary'][0].value = 'new summary'
+        calendar.todos.return_value = todos
+        task = datastore.get_task(child_todo.instance.vtodo.uid.value)
+
+        # syncing with missing and updated todo, no change
         backend.do_periodic_import()
         self.assertEqual(4, len(datastore.get_all_tasks()),
                          "no not found raised, no reason to remove tasks")
+        self.assertEqual('my child summary', task.get_title(), "title shoul"
+                         "dn't have change because sequence wasn't updated")
+
+        # syncing with same data, delete one and edit remaining
         calendar.todo_by_uid.side_effect = NotFoundError
+        child_todo.instance.vtodo.contents['sequence'][0].value = '2'
         backend.do_periodic_import()
         self.assertEqual(3, len(datastore.get_all_tasks()))
+        self.assertEqual('new summary', task.get_title())
+
+        # set_task no change, no update
+        backend.set_task(task)
+        child_todo.save.assert_not_called()
+        calendar.add_todo.assert_not_called()
+        # set_task, with ignorable changes
+        task.set_status(task.STA_DONE)
+        backend.set_task(task)
+        child_todo.save.assert_called_once()
+        calendar.add_todo.assert_not_called()
+        child_todo.save.reset_mock()
+        # no update
+        backend.set_task(task)
+        child_todo.save.assert_not_called()
+        calendar.add_todo.assert_not_called()
+
+        # creating task, refused : no tag
+        calendar.add_todo.return_value = self._get_todo(VTODO_NEW_CHILD)
+        task = datastore.task_factory('NEW-CHILD')
+        backend.set_task(task)
+        child_todo.save.assert_not_called()
+        calendar.add_todo.assert_not_called()
+        # creating task, accepted, new tag found
+        task.add_tag(CATEGORIES.get_calendar_tag(calendar))
+        backend.set_task(task)
+        child_todo.save.assert_not_called()
+        calendar.add_todo.assert_called_once()

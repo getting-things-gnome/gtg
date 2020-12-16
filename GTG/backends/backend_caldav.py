@@ -42,10 +42,10 @@ from GTG.backends.generic_backend import GenericBackend
 from GTG.backends.periodic_import_backend import PeriodicImportBackend
 from GTG.core.dates import LOCAL_TIMEZONE, Date
 from GTG.core.interruptible import interruptible
-from GTG.core.logger import log
 from GTG.core.task import DisabledSyncCtx, Task
 from vobject import iCalendar
 
+logger = logging.getLogger(__name__)
 DAV_TAG_PREFIX = 'DAV-'
 # Set of fields whose change alone won't trigger a sync up
 DAV_IGNORE = {'last-modified',  # often updated alone by GTG
@@ -83,9 +83,6 @@ class Backend(PeriodicImportBackend):
         "service-url": {
             GenericBackend.PARAM_TYPE: GenericBackend.TYPE_STRING,
             GenericBackend.PARAM_DEFAULT_VALUE: 'https://example.com/webdav/'},
-        "default-calendar-name": {
-            GenericBackend.PARAM_TYPE: GenericBackend.TYPE_STRING,
-            GenericBackend.PARAM_DEFAULT_VALUE: ''},
         "is-first-run": {
             GenericBackend.PARAM_TYPE: GenericBackend.TYPE_BOOL,
             GenericBackend.PARAM_DEFAULT_VALUE: True},
@@ -122,88 +119,86 @@ class Backend(PeriodicImportBackend):
             seq_value = SEQUENCE.get_gtg(task, self.namespace)
             SEQUENCE.write_gtg(task, seq_value + 1, self.namespace)
         if self._parameters["is-first-run"] or not self._cache.initialized:
-            log.warning("not loaded yet, ignoring set_task")
+            logger.warning("not loaded yet, ignoring set_task")
             return
         with self.datastore.get_backend_mutex():
-            self._set_task(task)
+            return self._set_task(task)
 
     @interruptible
     def remove_task(self, tid: str) -> None:
         if self._parameters["is-first-run"] or not self._cache.initialized:
-            log.warning("not loaded yet, ignoring set_task")
+            logger.warning("not loaded yet, ignoring set_task")
             return
         if not tid:
-            log.warning("no task id passed to remove_task call, ignoring")
+            logger.warning("no task id passed to remove_task call, ignoring")
             return
         with self.datastore.get_backend_mutex():
-            self._remove_task(tid)
+            return self._remove_task(tid)
 
     #
     # real main methods
     #
 
     def _do_periodic_import(self) -> None:
-        log.info("Running periodic import")
+        logger.info("Running periodic import")
         start = datetime.now()
         self._refresh_calendar_list()
         # browsing calendars
         counts = {'created': 0, 'updated': 0, 'unchanged': 0, 'deleted': 0}
         for cal_url, calendar in self._cache.calendars:
             # retrieving todos and updating various cache
-            log.info('Fetching todos from %r', cal_url)
+            logger.info('Fetching todos from %r', cal_url)
             self._import_calendar_todos(calendar, start, counts)
-        if log.isEnabledFor(logging.INFO):
+        if logger.isEnabledFor(logging.INFO):
             for key in counts:
                 if counts.get(key):
-                    log.info('LOCAL %s %d tasks', key, counts[key])
+                    logger.info('LOCAL %s %d tasks', key, counts[key])
         self._parameters["is-first-run"] = False
         self._cache.initialized = True
 
     def _set_task(self, task: Task) -> None:
-        log.debug('set_task todo for %r', task.get_uuid())
-        todo = self._get_todo(task=task)
-        if todo:
-            calendar = todo.parent
-        else:
-            calendar = self._get_calendar(task=task)
+        logger.debug('set_task todo for %r', task.get_uuid())
+        todo, calendar = self._get_todo_and_calendar(task)
+        if not calendar:
+            logger.info("%r has no calendar to be synced with", task)
+            return
         if todo:  # found one, saving it
             if not Translator.should_sync(task, self.namespace, todo):
-                log.debug('insufficient change, ignoring set_task call')
+                logger.debug('insufficient change, ignoring set_task call')
                 return
             Translator.fill_vtodo(task, calendar.name, self.namespace,
                                   todo.instance.vtodo)
             # saving new todo
-            log.info('SYNCING updating todo %r', todo)
+            logger.info('SYNCING updating todo %r', todo)
             try:
                 todo.save()
             except caldav.lib.error.DAVError:
-                log.exception('Something went wrong while updating %r => %r',
-                              task, todo)
+                logger.exception('Something went wrong while updating '
+                                 '%r => %r', task, todo)
         else:  # creating from task
             new_todo, new_vtodo = None, Translator.fill_vtodo(
                 task, calendar.name, self.namespace)
-            log.info('SYNCING creating todo for %r', task)
+            logger.info('SYNCING creating todo for %r', task)
             try:
                 new_todo = calendar.add_todo(new_vtodo.serialize())
             except caldav.lib.error.DAVError:
-                log.exception('Something went wrong while creating %r => %r',
-                              task, new_todo)
+                logger.exception('Something went wrong while creating '
+                                 '%r => %r', task, new_todo)
             uid = UID_FIELD.get_dav(todo=new_todo)
             self._cache.set_todo(new_todo, uid)
 
     def _remove_task(self, tid: str) -> None:
-        log.info('SYNCING removing todo for Task(%s)', tid)
+        logger.info('SYNCING removing todo for Task(%s)', tid)
         todo = self._cache.get_todo(tid)
         if todo:
-            # cleaning cache
-            self._cache.del_todo(tid)
+            self._cache.del_todo(tid)  # cleaning cache
             try:  # deleting through caldav
                 todo.delete()
             except caldav.lib.error.DAVError:
-                log.exception('Something went wrong while deleting %r => %r',
-                              tid, todo)
+                logger.exception('Something went wrong while deleting '
+                                 '%r => %r', tid, todo)
         else:
-            log.error("Could not find todo for task(%s)", tid)
+            logger.error("Could not find todo for task(%s)", tid)
 
     #
     # Dav functions
@@ -225,9 +220,6 @@ class Backend(PeriodicImportBackend):
         for calendar in principal.calendars():
             self._cache.set_calendar(calendar)
             seen_calendars_names.add(calendar.name)
-        def_cal_name = self._parameters.get('default-calendar-name')
-        if not def_cal_name or def_cal_name not in seen_calendars_names:
-            self._notify_user_about_default_calendar()
 
     def _clean_task_missing_from_backend(self, uid: str,
                                          calendar_tasks: dict, counts: dict,
@@ -243,9 +235,9 @@ class Backend(PeriodicImportBackend):
         # if cache is initialized, it's normal we missed completed
         # task, but we should have seen active ones
         elif task.get_status() == Task.STA_ACTIVE:
-            calendar = self._get_calendar(task=task)
+            __, calendar = self._get_todo_and_calendar(task)
             if not calendar:
-                log.warning("Couldn't find calendar for %r", task)
+                logger.warning("Couldn't find calendar for %r", task)
                 return
             try:  # fetching missing todo from server
                 calendar.todo_by_uid(uid)
@@ -310,7 +302,7 @@ class Backend(PeriodicImportBackend):
                 counts['updated'] += 1
             if __debug__:
                 if Translator.should_sync(task, self.namespace, todo):
-                    log.warning("Shouldn't be diff for %r", uid)
+                    logger.warning("Shouldn't be diff for %r", uid)
 
     def __sort_todos(self, todos: list, known_todos: set, max_depth=500):
         loop_nb = 0
@@ -327,7 +319,7 @@ class Backend(PeriodicImportBackend):
                     yield todo
                     known_todos.add(uid)
             if loop_nb >= max_depth:
-                log.error("Too deep, %r recursion isn't supported", max_depth)
+                logger.error("Too deep, %r recursion isn't supported", max_depth)
                 break
 
     def _get_calendar_tasks(self, calendar: iCalendar):
@@ -350,48 +342,30 @@ class Backend(PeriodicImportBackend):
             if key not in new_values:
                 cache.pop(key)
 
-    def _get_todo(self, task: Task) -> caldav.Todo:
-        return self._cache.get_todo(UID_FIELD.get_gtg(task))
-
-    def _get_calendar(self, task: Task) -> caldav.Calendar:
-        # lookup by UID
-        for uid in task.get_id(), task.get_uuid():
-            todo = self._cache.get_todo(uid)
-            if todo and getattr(todo, 'parent', None):
-                return todo.parent
-        calendar = None
-        # lookup by task attributes
+    def _get_todo_and_calendar(self, task: Task):
+        todo, calendar = self._cache.get_todo(UID_FIELD.get_gtg(task)), None
+        if todo and getattr(todo, 'parent', None):
+            logger.debug('Found from todo %r and %r', todo, todo.parent)
+            return todo, todo.parent
         cname = task.get_attribute('calendar_name', namespace=self.namespace)
         curl = task.get_attribute("calendar_url", namespace=self.namespace)
         if curl or cname:
             calendar = self._cache.get_calendar(name=cname, url=curl)
+            if calendar:
+                logger.debug('Found from task attr %r and %r', todo, calendar)
+                return todo, calendar
         # lookup by task
         if not calendar:
-            for tag in CATEGORIES.get_gtg(task):
-                calendar = self._cache.get_calendar(name=tag)
-                if calendar:
-                    break
-        if calendar:
-            return calendar
-        default_calendar_name = self._parameters['default-calendar-name']
-        return self._cache.get_calendar(name=default_calendar_name)
+            for __, calendar in self._cache.calendars:
+                if CATEGORIES.has_calendar_tag(task, calendar):
+                    logger.debug('Found from task tag %r and %r',
+                                 todo, calendar)
+                    return todo, calendar
+        return None, None
 
     @property
     def namespace(self):
         return "caldav:%s" % self._parameters['service-url']
-
-    def _notify_user_about_default_calendar(self):
-        """ This function causes the infobar to show up with the message
-        about default calendar.
-        """
-        default_name = self._parameters['default-calendar-name']
-        message = _(
-            f"Could not find calendar {default_name}"
-            "Configure CalDAV to save in a calendar from this list : \n"
-        ) + '\n'.join(list(self._cache.calendars_by_name))
-        BackendSignals().interaction_requested(
-            self.get_id(), message,
-            BackendSignals().INTERACTION_INFORM, "on_continue_clicked")
 
 
 class Field:
@@ -501,7 +475,7 @@ class DateField(Field):
             try:
                 value = Date(value).datetime
             except ValueError:
-                log.error("Coudln't translate value %r", value)
+                logger.error("Coudln't translate value %r", value)
                 return
         if value.tzinfo:  # if timezoned, translate to UTC
             value = value - value.utcoffset()
@@ -514,7 +488,7 @@ class DateField(Field):
 
 
 class Status(Field):
-    DEFAULT_STATUS = (Task.STA_ACTIVE, 'NEEDS-ACTIONS')
+    DEFAULT_STATUS = (Task.STA_ACTIVE, 'NEEDS-ACTION')
     _status_mapping = ((Task.STA_ACTIVE, 'NEEDS-ACTION'),
                        (Task.STA_ACTIVE, 'IN-PROCESS'),
                        (Task.STA_DISMISSED, 'CANCELLED'),
@@ -540,7 +514,7 @@ class Status(Field):
             if active and done:
                 return 'IN-PROCESS'
         if active:
-            return 'NEEDS-ACTIONS'
+            return 'NEEDS-ACTION'
         if done:
             return 'COMPLETED'
         return 'CANCELLED'
@@ -739,8 +713,8 @@ class RelatedTo(Field):
         gtg_uids = set(self.get_gtg(task, namespace))
         for value in set(target_uids).difference(gtg_uids):
             if not self.write_gtg(task, value, namespace):
-                log.error('FAILED writing Task.%s(%r, %r)',
-                          self.task_set_func_name, task, value)
+                logger.error('FAILED writing Task.%s(%r, %r)',
+                             self.task_set_func_name, task, value)
         if self.task_remove_func_name:
             for value in gtg_uids.difference(target_uids):
                 getattr(task, self.task_remove_func_name)(value)
@@ -844,11 +818,12 @@ class Translator:
     @classmethod
     def should_sync(cls, task: Task, namespace: str, todo=None, vtodo=None):
         fields = cls.changed_attrs(task, namespace, todo, vtodo)
-        if log.isEnabledFor(logging.DEBUG):
+        if logger.isEnabledFor(logging.DEBUG):
             fields = list(fields)
-            for field, task_v, todo_v in fields:
-                log.debug('changed %r Task(%r) != vTodo(%r)',
-                          field, task_v, todo_v)
+            if logger.isEnabledFor(logging.DEBUG):
+                for field, task_v, todo_v in fields:
+                    logger.debug('changed %r Task(%r) != vTodo(%r)',
+                                 field, task_v, todo_v)
         for field, __, __ in fields:
             if field.dav_name not in DAV_IGNORE:
                 return True
@@ -883,7 +858,7 @@ class TodoCache:
             calendar = self.calendars_by_name.get(url)
             if calendar:
                 return calendar
-        log.error('no calendar for %r or %r', name, url)
+        logger.error('no calendar for %r or %r', name, url)
 
     @property
     def calendars(self):
