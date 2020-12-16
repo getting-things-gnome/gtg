@@ -35,7 +35,7 @@ from GTG.core.interruptible import interruptible
 from GTG.core.task import DisabledSyncCtx, Task
 from vobject import iCalendar
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('gtg.' + __name__)
 DAV_TAG_PREFIX = 'DAV-'
 # Set of fields whose change alone won't trigger a sync up
 DAV_IGNORE = {'last-modified',  # often updated alone by GTG
@@ -728,7 +728,7 @@ class OrderField(Field):
     def set_dav(self, task: Task, vtodo: iCalendar, namespace: str) -> None:
         parent_index = self.get_gtg(task, namespace)
         if parent_index is not None:
-            return self.write_dav(vtodo, parent_index)
+            return self.write_dav(vtodo, str(parent_index))
 
 
 UID_FIELD = Field('uid', 'get_uuid', 'set_uuid')
