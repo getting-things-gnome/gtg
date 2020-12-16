@@ -181,7 +181,14 @@ class CalDAVTest(TestCase):
         self.assertEqual(['CHILD', 'CHILD-PARENT'],
                          CHILDREN_FIELD.get_dav(get_todo('ROOT')),
                          "todos should've been updated with children")
-
+        self.assertEqual(['CHILD', 'CHILD-PARENT'],
+                         datastore.get_task('ROOT').get_children(),
+                         "todos should've been updated with children")
+        self.assertEqual(['ROOT'], datastore.get_task('CHILD').get_parents())
+        self.assertEqual(['ROOT'],
+                         datastore.get_task('CHILD-PARENT').get_parents())
+        self.assertEqual(['CHILD-PARENT'],
+                         datastore.get_task('GRAND-CHILD').get_parents())
         self.assertEqual(['GRAND-CHILD'],
                          CHILDREN_FIELD.get_dav(get_todo('CHILD-PARENT')),
                          "todos should've been updated with children")
@@ -190,9 +197,9 @@ class CalDAVTest(TestCase):
         child_todo = todos[-1]
         child_todo.instance.vtodo.contents['summary'][0].value = 'new summary'
         calendar.todos.return_value = todos
-        task = datastore.get_task(child_todo.instance.vtodo.uid.value)
 
         # syncing with missing and updated todo, no change
+        task = datastore.get_task(child_todo.instance.vtodo.uid.value)
         backend.do_periodic_import()
         self.assertEqual(4, len(datastore.get_all_tasks()),
                          "no not found raised, no reason to remove tasks")
