@@ -21,16 +21,6 @@
 Backend for storing/loading tasks in CalDAV Tasks
 """
 
-# features:
-#  * registering task relation through RELATED-TO params        : OK
-#     * handle percent complete                                 : OK
-#     * ensure compatibility with tasks.org                     : OK
-#  * push proper categories to dav                              : OK
-#  * handle DAV collection switch (CREATE + DELETE)             : KO
-#  * handle GTG task creation while DAV is updating             : OK
-#  * support recurring events                                   : KO
-#  * push proper task content                                   : KO
-
 import logging
 from collections import defaultdict
 from datetime import datetime
