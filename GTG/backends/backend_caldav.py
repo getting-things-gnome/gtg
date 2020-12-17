@@ -24,6 +24,7 @@ Backend for storing/loading tasks in CalDAV Tasks
 import logging
 from collections import defaultdict
 from datetime import datetime
+from dateutil.tz import UTC
 from gettext import gettext as _
 
 import caldav
@@ -41,6 +42,7 @@ DAV_TAG_PREFIX = 'DAV-'
 DAV_IGNORE = {'last-modified',  # often updated alone by GTG
               'sequence',  # internal DAV value, only set by translator
               'percent-complete',  # calculated on subtask and status
+              'completed',  # GTG date is constrained
               }
 
 
@@ -105,9 +107,6 @@ class Backend(PeriodicImportBackend):
 
     @interruptible
     def set_task(self, task: Task) -> None:
-        with DisabledSyncCtx(task, sync_on_exit=False):
-            seq_value = SEQUENCE.get_gtg(task, self.namespace)
-            SEQUENCE.write_gtg(task, seq_value + 1, self.namespace)
         if self._parameters["is-first-run"] or not self._cache.initialized:
             logger.warning("not loaded yet, ignoring set_task")
             return
@@ -148,6 +147,9 @@ class Backend(PeriodicImportBackend):
 
     def _set_task(self, task: Task) -> None:
         logger.debug('set_task todo for %r', task.get_uuid())
+        with DisabledSyncCtx(task, sync_on_exit=False):
+            seq_value = SEQUENCE.get_gtg(task, self.namespace)
+            SEQUENCE.write_gtg(task, seq_value + 1, self.namespace)
         todo, calendar = self._get_todo_and_calendar(task)
         if not calendar:
             logger.info("%r has no calendar to be synced with", task)
@@ -454,7 +456,7 @@ class DateField(Field):
         "Writing datetime as UTC naive"
         if not value.tzinfo:  # assumring is LOCAL_TIMEZONEd
             value = value.replace(tzinfo=LOCAL_TIMEZONE)
-        value = (value - value.utcoffset()).replace(tzinfo=None)
+        value = (value - value.utcoffset()).replace(tzinfo=UTC)
         return super().write_dav(vtodo, value)
 
     def get_dav(self, todo=None, vtodo=None):
