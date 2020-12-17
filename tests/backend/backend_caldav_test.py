@@ -178,20 +178,19 @@ class CalDAVTest(TestCase):
             return next(todo for todo in todos
                         if UID_FIELD.get_dav(todo) == uid)
 
-        self.assertEqual(['CHILD', 'CHILD-PARENT'],
-                         CHILDREN_FIELD.get_dav(get_todo('ROOT')),
-                         "todos should've been updated with children")
-        self.assertEqual(['CHILD', 'CHILD-PARENT'],
-                         datastore.get_task('ROOT').get_children(),
-                         "todos should've been updated with children")
-        self.assertEqual(['ROOT'], datastore.get_task('CHILD').get_parents())
-        self.assertEqual(['ROOT'],
-                         datastore.get_task('CHILD-PARENT').get_parents())
-        self.assertEqual(['CHILD-PARENT'],
-                         datastore.get_task('GRAND-CHILD').get_parents())
-        self.assertEqual(['GRAND-CHILD'],
-                         CHILDREN_FIELD.get_dav(get_todo('CHILD-PARENT')),
-                         "todos should've been updated with children")
+        for uid, parents, children in (
+                ('ROOT', [], ['CHILD', 'CHILD-PARENT']),
+                ('CHILD', ['ROOT'], []),
+                ('CHILD-PARENT', ['ROOT'], ['GRAND-CHILD'])):
+            task = datastore.get_task(uid)
+            self.assertEqual(children, CHILDREN_FIELD.get_dav(get_todo(uid)),
+                             "children should've been written by sync down")
+            self.assertEqual(children, task.get_children(),
+                             "children missing from task")
+            self.assertEqual(parents, PARENT_FIELD.get_dav(get_todo(uid)),
+                             "parent on todo aren't consistent")
+            self.assertEqual(parents, task.get_parents(),
+                             "parent missing from task")
 
         todos = todos[:-1]
         child_todo = todos[-1]
