@@ -154,7 +154,10 @@ class Backend(PeriodicImportBackend):
         if not calendar:
             logger.info("%r has no calendar to be synced with", task)
             return
-        if todo:  # found one, saving it
+        if todo and todo.parent.url != calendar.url:  # switch calendar
+            self._remove_todo(UID_FIELD.get_dav(todo), todo)
+            self._create_todo(task, calendar)
+        elif todo:  # found one, saving it
             if not Translator.should_sync(task, self.namespace, todo):
                 logger.debug('insufficient change, ignoring set_task call')
                 return
@@ -168,34 +171,40 @@ class Backend(PeriodicImportBackend):
                 logger.exception('Something went wrong while updating '
                                  '%r => %r', task, todo)
         else:  # creating from task
-            new_todo, new_vtodo = None, Translator.fill_vtodo(
-                task, calendar.name, self.namespace)
-            logger.info('SYNCING creating todo for %r', task)
-            try:
-                new_todo = calendar.add_todo(new_vtodo.serialize())
-            except caldav.lib.error.DAVError:
-                logger.exception('Something went wrong while creating '
-                                 '%r => %r', task, new_todo)
-                return
-            uid = UID_FIELD.get_dav(todo=new_todo)
-            self._cache.set_todo(new_todo, uid)
+            self._create_todo(task, calendar)
 
     def _remove_task(self, tid: str) -> None:
-        logger.info('SYNCING removing todo for Task(%s)', tid)
         todo = self._cache.get_todo(tid)
         if todo:
-            self._cache.del_todo(tid)  # cleaning cache
-            try:  # deleting through caldav
-                todo.delete()
-            except caldav.lib.error.DAVError:
-                logger.exception('Something went wrong while deleting '
-                                 '%r => %r', tid, todo)
+            self._remove_todo(tid, todo)
         else:
             logger.error("Could not find todo for task(%s)", tid)
 
     #
     # Dav functions
     #
+
+    def _create_todo(self, task: Task, calendar: iCalendar):
+        logger.info('SYNCING creating todo for %r', task)
+        new_todo, new_vtodo = None, Translator.fill_vtodo(
+            task, calendar.name, self.namespace)
+        try:
+            new_todo = calendar.add_todo(new_vtodo.serialize())
+        except caldav.lib.error.DAVError:
+            logger.exception('Something went wrong while creating '
+                                '%r => %r', task, new_todo)
+            return
+        uid = UID_FIELD.get_dav(todo=new_todo)
+        self._cache.set_todo(new_todo, uid)
+
+    def _remove_todo(self, uid: str, todo: iCalendar) -> None:
+        logger.info('SYNCING removing todo for Task(%s)', uid)
+        self._cache.del_todo(uid)  # cleaning cache
+        try:  # deleting through caldav
+            todo.delete()
+        except caldav.lib.error.DAVError:
+            logger.exception('Something went wrong while deleting %r => %r',
+                             uid , todo)
 
     def _refresh_calendar_list(self):
         """Will browse calendar list available after principal call and cache
@@ -336,9 +345,12 @@ class Backend(PeriodicImportBackend):
         """For a given task, try to get the todo out of the cache and figures
         out its calendar if one is linked to it"""
         todo, calendar = self._cache.get_todo(UID_FIELD.get_gtg(task)), None
-        if todo and getattr(todo, 'parent', None):
-            logger.debug('Found from todo %r and %r', todo, todo.parent)
-            return todo, todo.parent
+        # lookup by task
+        for __, calendar in self._cache.calendars:
+            if CATEGORIES.has_calendar_tag(task, calendar):
+                logger.debug('Found from task tag %r and %r',
+                                todo, calendar)
+                return todo, calendar
         cname = task.get_attribute('calendar_name', namespace=self.namespace)
         curl = task.get_attribute("calendar_url", namespace=self.namespace)
         if curl or cname:
@@ -346,13 +358,9 @@ class Backend(PeriodicImportBackend):
             if calendar:
                 logger.debug('Found from task attr %r and %r', todo, calendar)
                 return todo, calendar
-        # lookup by task
-        if not calendar:
-            for __, calendar in self._cache.calendars:
-                if CATEGORIES.has_calendar_tag(task, calendar):
-                    logger.debug('Found from task tag %r and %r',
-                                 todo, calendar)
-                    return todo, calendar
+        if todo and getattr(todo, 'parent', None):
+            logger.debug('Found from todo %r and %r', todo, todo.parent)
+            return todo, todo.parent
         return None, None
 
     @property

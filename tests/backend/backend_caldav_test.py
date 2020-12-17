@@ -13,7 +13,7 @@ from tests.test_utils import MockTimer
 
 NAMESPACE = 'unittest'
 VTODO_ROOT = """BEGIN:VTODO\r
-CATEGORIES:my first category, my second category\r
+CATEGORIES:my first category,my second category\r
 COMPLETED:20201212T172558Z\r
 CREATED:20201212T092155Z\r
 DESCRIPTION:my description\r
@@ -85,6 +85,21 @@ class CalDAVTest(TestCase):
             todo.parent = parent
         return todo
 
+    @staticmethod
+    def _setup_backend():
+        datastore = DataStore()
+        parameters = {'pid': 'favorite', 'service-url': 'color',
+                      'username': 'blue', 'password': 'no red', 'period': 1}
+        backend = Backend(parameters)
+        datastore.register_backend({'backend': backend, 'pid': 'backendid'})
+        return datastore, backend
+
+    @staticmethod
+    def _mock_calendar(name='my calendar', url='https://my.fa.ke/calendar'):
+        calendar = Mock()
+        calendar.name, calendar.url = name, url
+        return calendar
+
     def test_translate_from_vtodo(self):
         todo = self._get_todo(VTODO_ROOT)
         self.assertEqual(todo.instance.vtodo.serialize(), VTODO_ROOT)
@@ -149,20 +164,16 @@ class CalDAVTest(TestCase):
            autospec=MockTimer)
     @patch('GTG.backends.backend_caldav.caldav.DAVClient')
     def test_do_periodic_import(self, dav_client, threading_pid):
-        calendar = Mock(name='my calendar')
+        calendar = self._mock_calendar()
 
         todos = [self._get_todo(VTODO_CHILD_PARENT, calendar),
                  self._get_todo(VTODO_ROOT, calendar),
                  self._get_todo(VTODO_CHILD, calendar),
                  self._get_todo(VTODO_GRAND_CHILD, calendar)]
         calendar.todos.return_value = todos
-        datastore = DataStore()
-        parameters = {'pid': 'favorite', 'service-url': 'color',
-                      'username': 'blue', 'password': 'no red', 'period': 1}
-        backend = Backend(parameters)
         dav_client.return_value.principal.return_value.calendars.return_value \
             = [calendar]
-        datastore.register_backend({'backend': backend, 'pid': 'backendid'})
+        datastore, backend = self._setup_backend()
 
         self.assertEqual(4, len(datastore.get_all_tasks()))
         task = datastore.get_task('ROOT')
@@ -255,3 +266,32 @@ class CalDAVTest(TestCase):
         child_todo.save.assert_not_called()
         calendar.add_todo.assert_not_called()
         child_todo.delete.assert_called_once()
+
+    @patch('GTG.backends.periodic_import_backend.threading.Timer',
+           autospec=MockTimer)
+    @patch('GTG.backends.backend_caldav.caldav.DAVClient')
+    def test_switch_calendar(self, dav_client, threading_pid):
+        calendar1 = self._mock_calendar()
+        calendar2 = self._mock_calendar('other calendar', 'http://no.whe.re/')
+
+        todo = self._get_todo(VTODO_ROOT, calendar1)
+        calendar1.todos.return_value = [todo]
+        calendar2.todos.return_value = []
+        dav_client.return_value.principal.return_value.calendars.return_value \
+            = [calendar1, calendar2]
+        datastore, backend = self._setup_backend()
+        self.assertEqual(1, len(datastore.get_all_tasks()))
+        task = datastore.get_task(UID_FIELD.get_dav(todo))
+        self.assertTrue(CATEGORIES.has_calendar_tag(task, calendar1))
+        self.assertFalse(CATEGORIES.has_calendar_tag(task, calendar2))
+
+        task.remove_tag(CATEGORIES.get_calendar_tag(calendar1))
+        task.add_tag(CATEGORIES.get_calendar_tag(calendar2))
+        self.assertFalse(CATEGORIES.has_calendar_tag(task, calendar1))
+        self.assertTrue(CATEGORIES.has_calendar_tag(task, calendar2))
+
+        calendar2.add_todo.return_value = todo
+        backend.set_task(task)
+        calendar1.add_todo.assert_not_called()
+        calendar2.add_todo.assert_called_once()
+        todo.delete.assert_called_once()
