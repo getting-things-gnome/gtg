@@ -246,9 +246,13 @@ class Backend(PeriodicImportBackend):
                 logger.warning("Couldn't find calendar for %r", task)
                 return
             try:  # fetching missing todo from server
-                calendar.todo_by_uid(uid)
+                todo = calendar.todo_by_uid(uid)
             except caldav.lib.error.NotFoundError:
                 do_delete = True
+            else:
+                result = self._update_task(task, todo, force=True)
+                counts[result] += 1
+                return
         if do_delete:  # the task was missing for a good reason
             counts['deleted'] += 1
             self._cache.del_todo(uid)
@@ -299,16 +303,20 @@ class Backend(PeriodicImportBackend):
                 self.datastore.push_task(task)
                 counts['created'] += 1
             else:
-                task_seq = SEQUENCE.get_gtg(task, self.namespace)
-                todo_seq = SEQUENCE.get_dav(todo)
-                if task_seq >= todo_seq:
-                    counts['unchanged'] += 1
-                    continue
-                Translator.fill_task(todo, task, self.namespace)
-                counts['updated'] += 1
+                result = self._update_task(task, todo)
+                counts[result] += 1
             if __debug__:
                 if Translator.should_sync(task, self.namespace, todo):
                     logger.warning("Shouldn't be diff for %r", uid)
+
+    def _update_task(self, task: Task, todo: iCalendar, force: bool = False):
+        if not force:
+            task_seq = SEQUENCE.get_gtg(task, self.namespace)
+            todo_seq = SEQUENCE.get_dav(todo)
+            if task_seq >= todo_seq:
+                return 'unchanged'
+        Translator.fill_task(todo, task, self.namespace)
+        return 'updated'
 
     def __sort_todos(self, todos: list, known_todos: set, max_depth=500):
         """For a given list of todos, will return first the one without parent

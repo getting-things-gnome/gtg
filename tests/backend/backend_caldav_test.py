@@ -203,6 +203,7 @@ class CalDAVTest(TestCase):
             self.assertEqual(parents, task.get_parents(),
                              "parent missing from task")
 
+        calendar.todo_by_uid.return_value = todos[-1]
         todos = todos[:-1]
         child_todo = todos[-1]
         child_todo.instance.vtodo.contents['summary'][0].value = 'new summary'
@@ -295,3 +296,32 @@ class CalDAVTest(TestCase):
         calendar1.add_todo.assert_not_called()
         calendar2.add_todo.assert_called_once()
         todo.delete.assert_called_once()
+
+    @patch('GTG.backends.periodic_import_backend.threading.Timer',
+           autospec=MockTimer)
+    @patch('GTG.backends.backend_caldav.caldav.DAVClient')
+    def test_task_mark_as_done_from_backend(self, dav_client, threading_pid):
+        calendar = self._mock_calendar()
+        todo = self._get_todo(VTODO_ROOT, calendar)
+        calendar.todos.return_value = [todo]
+        dav_client.return_value.principal.return_value.calendars.return_value \
+            = [calendar]
+        datastore, backend = self._setup_backend()
+        uid = UID_FIELD.get_dav(todo)
+        self.assertEqual(1, len(datastore.get_all_tasks()))
+        task = datastore.get_task(uid)
+        self.assertEqual(Task.STA_ACTIVE, task.get_status())
+        calendar.todos.assert_called_once()
+        calendar.todo_by_uid.assert_not_called()
+        calendar.todos.reset_mock()
+
+        todo.instance.vtodo.contents['status'][0].value = 'COMPLETED'
+        calendar.todos.return_value = []
+        calendar.todo_by_uid.return_value = todo
+        backend.do_periodic_import()
+        calendar.todos.assert_called_once()
+        calendar.todo_by_uid.assert_called_once()
+
+        self.assertEqual(1, len(datastore.get_all_tasks()))
+        task = datastore.get_task(uid)
+        self.assertEqual(Task.STA_DONE, task.get_status())
