@@ -68,7 +68,6 @@ class MainWindow(Gtk.ApplicationWindow):
         self.app = app
         self.config = self.req.get_config('browser')
         self.tag_active = False
-        self.applied_tags = []
 
         # Treeviews handlers
         self.vtree_panes = {}
@@ -139,7 +138,7 @@ class MainWindow(Gtk.ApplicationWindow):
         app.timer.connect('refresh', self.refresh_all_views)
         app.timer.connect('refresh', self._set_defer_days)
 
-        self.stack_switcher.get_stack().connect('notify::visible-child', self._save_view_pane)
+        self.stack_switcher.get_stack().connect('notify::visible-child', self.on_pane_switch)
 
         # This needs to be called again after setting everything up,
         # so the buttons start disabled
@@ -427,27 +426,28 @@ class MainWindow(Gtk.ApplicationWindow):
         self.on_search_toggled()
 
     def on_search_toggled(self, widget=None):
-
         if self.searchbar.get_search_mode():
             self.search_button.set_active(False)
             self.searchbar.set_search_mode(False)
             self.search_entry.set_text('')
-            self.unapply_filter_on_panes(SEARCH_TAG, refresh=True)
+            self.get_selected_tree().unapply_filter(SEARCH_TAG)
         else:
             self.search_button.set_active(True)
             self.searchbar.set_search_mode(True)
             self.search_entry.grab_focus()
 
-    def on_search(self, data):
-        query = self.search_entry.get_text()
-        log.debug(f"Searching for '{query}'")
-
+    def _try_filter_by_query(self, query, refresh: bool = True):
+        log.debug("Searching for %r", query)
+        vtree = self.get_selected_tree()
         try:
-            parsed_query = parse_search_query(query)
-            self.apply_filter_on_panes(SEARCH_TAG, parameters=parsed_query)
-        except InvalidQuery as e:
-            self.unapply_filter_on_panes(SEARCH_TAG, refresh=True)
-            log.debug(f"Invalid query '{query}' : '{e}'")
+            vtree.apply_filter(SEARCH_TAG, parse_search_query(query),
+                               refresh=refresh)
+        except InvalidQuery as error:
+            log.debug("Invalid query %r: %r", query, error)
+            vtree.unapply_filter(SEARCH_TAG)
+
+    def on_search(self, data):
+        self._try_filter_by_query(self.search_entry.get_text())
 
     def on_save_search(self, action, param):
         query = self.search_entry.get_text()
@@ -459,7 +459,7 @@ class MainWindow(Gtk.ApplicationWindow):
         if self.tagtreeview is not None:
             self.select_search_tag(tag_id)
         else:
-            self.apply_filter_on_panes(tag_id)
+            self.get_selected_tree().apply_filter(tag_id)
 
     def select_search_tag(self, tag_id):
         tag = self.req.get_tag(tag_id)
@@ -1282,45 +1282,53 @@ class MainWindow(Gtk.ApplicationWindow):
                 task.set_status(Task.STA_DISMISSED)
                 self.close_all_task_editors(uid)
 
-    def apply_filter_on_panes(self, filter_name, refresh=True, parameters=None):
-        """ Apply filters for every pane: active tasks, closed tasks """
-
-        for pane in self.vtree_panes:
-            vtree = self.req.get_tasks_tree(name=pane, refresh=False)
-            vtree.apply_filter(filter_name, refresh=refresh, parameters=parameters)
-
-    def unapply_filter_on_panes(self, filter_name, refresh=True):
-        """ Apply filters for every pane: active tasks, closed tasks """
-        for pane in self.vtree_panes:
-            vtree = self.req.get_tasks_tree(name=pane, refresh=False)
-            vtree.unapply_filter(filter_name, refresh=refresh)
+    def _reapply_filter(self, current_pane):
+        filters = self.get_selected_tags()
+        filters.append(current_pane)
+        vtree = self.req.get_tasks_tree(name=current_pane, refresh=False)
+        # Re-applying search if some search is specified
+        search = self.search_entry.get_text()
+        if search:
+            filters.append(SEARCH_TAG)
+        # only resetting filters if the applied filters are different from
+        # current ones, leaving a chance for liblarch to make the good call on
+        # whether to refilter or not
+        if sorted(filters) != sorted(vtree.list_applied_filters()):
+            vtree.reset_filters(refresh=False)
+        # Browsing and applying filters. For performance optimization, only
+        # allowing liblarch to trigger a refresh on last item. This way the
+        # refresh is never triggered more than once and we let the possibility
+        # to liblarch not to trigger refresh is filters did not change.
+        for filter_name in filters:
+            is_last = filter_name == filters[-1]
+            if filter_name == SEARCH_TAG:
+                self._try_filter_by_query(search, refresh=is_last)
+            else:
+                vtree.apply_filter(filter_name, refresh=is_last)
 
     def on_select_tag(self, widget=None, row=None, col=None):
+        """ Callback for tag(s) selection from left sidebar.
+
+        Using liblarch built-in cache.
+        Optim: reseting it on first item, allows trigger refresh on last.
         """
-        callback for when selecting an element of the tagtree (left sidebar)
+        for tagname in self.get_selected_tags():
+            # In case of search tag, set query in quickadd for
+            # refining search query
+            tag = self.req.get_tag(tagname)
+            if tag.is_search_tag():
+                self.quickadd_entry.set_text(tag.get_attribute("query"))
+                break
+
+        self._reapply_filter(self.get_selected_pane())
+
+    def on_pane_switch(self, obj, pspec):
+        """ Callback for pane switching.
+        No reset of filters, allows trigger refresh on last tag filtering.
         """
-        # FIXME add support for multiple selection of tags in future
-
-        # When you click on a tag, you want to unselect the tasks
-        new_taglist = self.get_selected_tags()
-
-        for tagname in self.applied_tags:
-            if tagname not in new_taglist:
-                self.unapply_filter_on_panes(tagname, refresh=False)
-
-        for tagname in new_taglist:
-            if tagname not in self.applied_tags:
-                self.apply_filter_on_panes(tagname)
-                # In case of search tag, set query in quickadd for
-                # refining search query
-                tag = self.req.get_tag(tagname)
-                if tag.is_search_tag():
-                    self.quickadd_entry.set_text(tag.get_attribute("query"))
-
-        self.applied_tags = new_taglist
-
-    def _save_view_pane(self, obj, pspec):
-        self.config.set('view', self.get_selected_pane())
+        current_pane = self.get_selected_pane()
+        self.config.set('view', current_pane)
+        self._reapply_filter(current_pane)
 
 # PUBLIC METHODS ###########################################################
     def have_same_parent(self):
@@ -1349,6 +1357,10 @@ class MainWindow(Gtk.ApplicationWindow):
         current = self.stack_switcher.get_stack().get_visible_child_name()
 
         return PANE_STACK_NAMES_MAP[current]
+
+    def get_selected_tree(self, refresh: bool = False):
+        return self.req.get_tasks_tree(name=self.get_selected_pane(),
+                                       refresh=refresh)
 
     def get_selected_task(self, tv=None):
         """
