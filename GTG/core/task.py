@@ -665,9 +665,8 @@ class Task(TreeNode):
                 txt = re.sub(r'\{\!.+\!\}', '', txt)
 
             # Strip blank lines and get desired amount of lines
-            txt = [line for line in txt.splitlines() if line]
-            if lines > 0:
-                txt = txt[:lines]
+            txt = [l for l in txt.splitlines() if l]
+            txt = txt[:lines]
             txt = '\n'.join(txt)
 
             # We keep the desired number of char
@@ -775,8 +774,6 @@ class Task(TreeNode):
         TreeNode.set_parent(self, parent_id)
         if parent_id is not None:
             par = self.req.get_task(parent_id)
-            if par is None:
-                log.error('%r -> parent %r %r', self, parent_id, par)
             par_duedate = par.get_due_date_constraint()
             if not par_duedate.is_fuzzy() and \
                 not self.due_date.is_fuzzy() and \
