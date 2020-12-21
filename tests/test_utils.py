@@ -18,3 +18,6 @@ class MockTimer(MockThread):
             super().__init__(target=kwargs['function'])
         elif len(args) >= 2:
             super().__init__(target=args[1])
+        else:
+            raise AssertionError("%s couldn't find delayed function call"
+                                 % self.__class__.__name__)
