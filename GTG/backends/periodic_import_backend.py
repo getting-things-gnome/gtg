@@ -47,7 +47,6 @@ class PeriodicImportBackend(GenericBackend):
         super().__init__(parameters)
         self.running_iteration = False
         self.urgent_iteration = False
-        self.import_timer = None
 
     @interruptible
     def start_get_tasks(self):
@@ -112,6 +111,3 @@ class PeriodicImportBackend(GenericBackend):
             self.import_timer.join()
         except Exception:
             pass
-
-    def do_periodic_import(self) -> None:
-        raise NotImplementedError()
