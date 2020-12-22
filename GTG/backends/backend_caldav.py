@@ -663,7 +663,8 @@ class Description(Field):
         return None, ''
 
     def get_gtg(self, task: Task, namespace: str = None) -> tuple:
-        description = self._parse_for_dav(task.get_text())
+        description = self._parse_for_dav(task.get_text(),
+                                          task.get_subtasks())
         return self._get_content_hash(description), description
 
     def is_equal(self, task: Task, namespace: str, todo=None, vtodo=None):
@@ -686,8 +687,10 @@ class Description(Field):
             return
         return super().write_gtg(task, text)
 
-    def _parse_for_dav(self, content: str) -> str:
+    def _parse_for_dav(self, content: str, sub_tasks: list = None) -> str:
         result = ''
+        tasks = {task.get_id(): (task.get_title(), task.get_status())
+                 for task in (sub_tasks or [])}
         for line_no, line in enumerate(content.splitlines()):
             for tag in self.XML_TAGS:
                 while tag in line:
@@ -706,7 +709,11 @@ class Description(Field):
                         new_line += split.strip()
                 if new_line:
                     result += new_line + '\n'
-            elif line.strip():
+            elif line.startswith('{!') and line.endswith('!}'):
+                st_title, st_status = tasks[line[2:-2].strip()]
+                result += '[%s] %s\n' % ('x' if st_status != 'Active' else ' ',
+                                         st_title)
+            else:
                 result += line.strip() + '\n'
         return result.strip()
 
