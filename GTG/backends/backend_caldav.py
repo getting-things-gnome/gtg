@@ -663,8 +663,7 @@ class Description(Field):
         return None, ''
 
     def get_gtg(self, task: Task, namespace: str = None) -> tuple:
-        description = self._parse_for_dav(task.get_text(),
-                                          task.get_subtasks())
+        description = self._extract_plain_text(task)
         return self._get_content_hash(description), description
 
     def is_equal(self, task: Task, namespace: str, todo=None, vtodo=None):
@@ -687,32 +686,38 @@ class Description(Field):
             return
         return super().write_gtg(task, text)
 
-    def _parse_for_dav(self, content: str, sub_tasks: list = None) -> str:
-        result = ''
-        tasks = {task.get_id(): (task.get_title(), task.get_status())
-                 for task in (sub_tasks or [])}
+    @classmethod
+    def __clean_first_line(cls, line):
+        new_line = ''
+        for split in TAG_REGEX.split(line):
+            if split is None:
+                continue
+            if split.startswith(','):  # removing commas
+                split = split[1:]
+            if split.strip():
+                if result:
+                    result += ' '
+                new_line += split.strip()
+        return new_line
+
+    def _extract_plain_text(self, task: Task) -> str:
+        result, content = '', task.get_text()
         for line_no, line in enumerate(content.splitlines()):
             for tag in self.XML_TAGS:
                 while tag in line:
                     line = line.replace(tag, '')
 
             if line_no == 0:  # is first line, striping all tags on first line
-                new_line = ''
-                for split in TAG_REGEX.split(line):
-                    if split is None:
-                        continue
-                    if split.startswith(','):  # removing commas
-                        split = split[1:]
-                    if split.strip():
-                        if result:
-                            result += ' '
-                        new_line += split.strip()
+                new_line = self.__clean_first_line(line)
                 if new_line:
                     result += new_line + '\n'
             elif line.startswith('{!') and line.endswith('!}'):
-                st_title, st_status = tasks[line[2:-2].strip()]
-                result += '[%s] %s\n' % ('x' if st_status != 'Active' else ' ',
-                                         st_title)
+                subtask = task.req.get_task(line[2:-2].strip())
+                if not subtask:
+                    continue
+                result += '[%s] %s\n' % (
+                    'x' if subtask.get_status() == Task.STA_ACTIVE else ' ',
+                    subtask.get_title())
             else:
                 result += line.strip() + '\n'
         return result.strip()

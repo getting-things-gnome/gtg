@@ -407,7 +407,7 @@ class GenericBackend():
         elif param_type == cls.TYPE_PASSWORD:
             if param_value == -1:
                 return None
-            return Keyring().get_password(int(param_value))
+            return Keyring().get_password(param_value)
         elif param_type == cls.TYPE_LIST_OF_STRINGS:
             the_list = param_value.split(",")
             if not isinstance(the_list, list):
