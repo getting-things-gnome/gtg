@@ -36,7 +36,7 @@ from GTG.core.logger import log
 class SecretKeyring(Borg):
     def __init__(self):
         super().__init__()
-        self._SECRET_SCHEMA = Secret.Schema.new("io.github.getting-things-gnome.gtg.v1",
+        self._SECRET_SCHEMA = Secret.Schema.new("org.gnome.GTG.v1",
             Secret.SchemaFlags.NONE,
             {
                 "id": Secret.SchemaAttributeType.STRING,
