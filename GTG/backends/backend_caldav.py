@@ -405,7 +405,7 @@ class Field:
         vtodo.contents.pop(self.dav_name, None)
 
     def write_dav(self, vtodo: iCalendar, value):
-        """Will clean and write new value to vTodo object"""
+        """will clean and write new value to vtodo object"""
         self.clean_dav(vtodo)
         vtodo.add(self.dav_name).value = value
 
@@ -751,6 +751,48 @@ class OrderField(Field):
             return self.write_dav(vtodo, str(parent_index))
 
 
+class Recurrence(Field):
+    DAV_DAYS = ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA']
+
+    def get_gtg(self, task: Task, namespace: str = None) -> tuple:
+        return task.get_recurring(), task.get_recurring_term()
+
+    def get_dav(self, todo=None, vtodo=None) -> tuple:
+        if todo:
+            vtodo = todo.instance.vtodo
+        value = vtodo.contents.get(self.dav_name)
+        if not value:
+            return False, None
+        interval = value[0].params.get('INTERVAL')
+        freq = value[0].params.get('FREQ')
+        if interval and freq and interval[0] == '2' and freq[0] == 'DAILY':
+            return True, 'other-day'
+        if freq:
+            return True, freq[0].lower()[:-2]
+        return False, None
+
+    def write_dav(self, vtodo: iCalendar, value: tuple):
+        enabled, term = value
+        self.clean_dav(vtodo)
+        if not enabled:
+            return
+        assert term in {'day', 'other-day', 'week', 'month', 'year'}
+        rrule = vtodo.add(self.dav_name)
+        if term == 'other-day':
+            rrule.params['FREQ'] = ['DAILY']
+            rrule.params['INTERVAL'] = ['2']
+        else:
+            rrule.params['FREQ'] = [term.upper() + 'LY']
+            start_date = DTSTART.get_dav(vtodo=vtodo)
+            if term == 'week' and start_date:
+                index = int(start_date.strftime('%w'))
+                rrule.params['BYDAY'] = self.DAV_DAYS[index]
+
+    def write_gtg(self, task: Task, value, namespace: str = None):
+        return getattr(task, self.task_set_func_name)(*value)
+
+
+DTSTART = DateField('dtstart', 'get_start_date', 'set_start_date')
 UID_FIELD = Field('uid', 'get_uuid', 'set_uuid')
 SEQUENCE = Sequence('sequence', '<fake attribute>', '')
 CATEGORIES = Categories('categories', 'get_tags_name', 'set_tags')
@@ -770,7 +812,8 @@ class Translator:
               Description('description', 'get_excerpt', 'set_text'),
               DateField('due', 'get_due_date_constraint', 'set_due_date'),
               DateField('completed', 'get_closed_date', 'set_closed_date'),
-              DateField('dtstart', 'get_start_date', 'set_start_date'),
+              DTSTART,
+              Recurrence('rrule', 'get_recurring_term', 'set_recurring'),
               Status('status', 'get_status', 'set_status'),
               PercentComplete('percent-complete', 'get_status', ''),
               SEQUENCE, UID_FIELD, CATEGORIES, CHILDREN_FIELD,

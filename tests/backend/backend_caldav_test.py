@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from unittest import TestCase
 
 import vobject
@@ -124,6 +124,8 @@ class CalDAVTest(TestCase):
         task = Task('uuid', Mock())
         task.set_title('holy graal')
         task.set_text('the knights who says ni')
+        task.set_start_date(datetime.now() - timedelta(days=1))
+        task.set_recurring(True, 'other-day')
         task.set_due_date(datetime.now())
         vtodo = Translator.fill_vtodo(task, 'My Calendar Name', NAMESPACE)
         for field in Translator.fields:

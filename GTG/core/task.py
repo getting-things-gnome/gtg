@@ -80,7 +80,8 @@ class Task(TreeNode):
         self._modified_update()
 
         # Setting the attributes related to repeating tasks.
-        self.recurring_term = None
+        self.recurring = False  # type: bool
+        self.recurring_term = None  # type: str
         self.inherit_recursion()
 
     def get_added_date(self):
