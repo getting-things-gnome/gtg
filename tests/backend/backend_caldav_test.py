@@ -16,7 +16,7 @@ VTODO_ROOT = """BEGIN:VTODO\r
 CATEGORIES:my first category,my second category\r
 COMPLETED:20201212T172558Z\r
 CREATED:20201212T092155Z\r
-DESCRIPTION:my description\r
+DESCRIPTION;GTGCNTMD5=d48ef99fb21adab7cf5ddd85a4ecf343:my description\r
 DTSTAMP:20201212T172830Z\r
 LAST-MODIFIED:20201212T172558Z\r
 STATUS:NEEDS-ACTION\r
@@ -101,6 +101,8 @@ class CalDAVTest(TestCase):
         return calendar
 
     def test_translate_from_vtodo(self):
+        DESCRIPTION = Translator.fields[1]
+        self.assertEqual(DESCRIPTION.dav_name, 'description')
         todo = self._get_todo(VTODO_ROOT)
         self.assertEqual(todo.instance.vtodo.serialize(), VTODO_ROOT)
         uid = UID_FIELD.get_dav(todo)
@@ -112,13 +114,13 @@ class CalDAVTest(TestCase):
         for field in Translator.fields:
             if field.dav_name in DAV_IGNORE:
                 continue
-            task_value = field.get_gtg(task, NAMESPACE)
-            todo_value = field.get_dav(todo)
-            vtodo_value = field.get_dav(vtodo=vtodo.vtodo)
-            self.assertEqual(task_value, todo_value,
-                             '%r has differing values' % field)
-            self.assertEqual(task_value, vtodo_value,
-                             '%r has differing values' % field)
+            self.assertTrue(field.is_equal(task, NAMESPACE, todo))
+            self.assertTrue(field.is_equal(task, NAMESPACE, vtodo=vtodo.vtodo))
+        vtodo.vtodo.contents['description'][0].value = 'changed value'
+        self.assertTrue(DESCRIPTION.is_equal(task, NAMESPACE, todo), 'same '
+                        'hashes should prevent changes on vTodo to be noticed')
+        task.set_text(task.get_text() + 'more content')
+        self.assertFalse(DESCRIPTION.is_equal(task, NAMESPACE, todo))
 
     def test_translate_from_task(self):
         task = Task('uuid', Mock())
@@ -129,10 +131,8 @@ class CalDAVTest(TestCase):
         task.set_due_date(datetime.now())
         vtodo = Translator.fill_vtodo(task, 'My Calendar Name', NAMESPACE)
         for field in Translator.fields:
-            task_value = field.get_gtg(task, NAMESPACE)
-            vtodo_value = field.get_dav(vtodo=vtodo.vtodo)
-            self.assertEqual(task_value, vtodo_value,
-                             '%r has differing values' % field)
+            self.assertTrue(field.is_equal(task, NAMESPACE, vtodo=vtodo.vtodo),
+                            '%r has differing values' % field)
 
     def test_translate_parent_field(self):
         datastore = DataStore()

@@ -20,8 +20,9 @@
 """
 Backend for storing/loading tasks in CalDAV Tasks
 """
-
+import re
 import logging
+from hashlib import md5
 from collections import defaultdict
 from datetime import datetime
 from dateutil.tz import UTC
@@ -37,8 +38,10 @@ from GTG.core.task import DisabledSyncCtx, Task
 from vobject import iCalendar
 
 logger = logging.getLogger('gtg.' + __name__)
+TAG_REGEX = re.compile(r'\B\@\w+(\-\w+)*')
 MAX_CALENDAR_DEPTH = 500
-DAV_TAG_PREFIX = 'DAV-'
+DAV_TAG_PREFIX = 'DAV_'
+
 # Set of fields whose change alone won't trigger a sync up
 DAV_IGNORE = {'last-modified',  # often updated alone by GTG
               'sequence',  # internal DAV value, only set by translator
@@ -407,7 +410,9 @@ class Field:
     def write_dav(self, vtodo: iCalendar, value):
         """will clean and write new value to vtodo object"""
         self.clean_dav(vtodo)
-        vtodo.add(self.dav_name).value = value
+        vtodo_val = vtodo.add(self.dav_name)
+        vtodo_val.value = value
+        return vtodo_val
 
     def set_dav(self, task: Task, vtodo: iCalendar, namespace: str) -> None:
         """Will extract value from GTG.core.task.Task and set it to vTodo"""
@@ -435,6 +440,15 @@ class Field:
         value = self.get_dav(todo)
         if self._is_value_allowed(value):
             self.write_gtg(task, value, namespace)
+
+    def is_equal(self, task: Task, namespace: str, todo=None, vtodo=None):
+        assert todo is not None or vtodo is not None
+        dav = self.get_dav(todo, vtodo)
+        gtg = self.get_gtg(task, namespace)
+        if dav != gtg:
+            logger.debug('%r has differing values %r!=%r', self, gtg, dav)
+            return False
+        return True
 
     def __repr__(self):
         return "<%s(%r)>" % (self.__class__.__name__, self.dav_name)
@@ -552,13 +566,14 @@ class PercentComplete(Field):
 
 
 class Categories(Field):
+    CAT_SPACE = '_'
 
-    @staticmethod
-    def to_tag(category, prefix=''):
-        return '@%s%s' % (prefix, category.replace(' ', '_'))
+    @classmethod
+    def to_tag(cls, category, prefix=''):
+        return '@%s%s' % (prefix, category.replace(' ', cls.CAT_SPACE))
 
     def get_gtg(self, task: Task, namespace: str = None) -> list:
-        return [tag_name.replace('@', '', 1).replace('_', ' ')
+        return [tag_name.replace('@', '', 1).replace(self.CAT_SPACE, ' ')
                 for tag_name in super().get_gtg(task)
                 if not tag_name.startswith('@' + DAV_TAG_PREFIX)]
 
@@ -630,39 +645,76 @@ class Sequence(AttributeField):
 
 
 class Description(Field):
-    CONTENT_OPEN = '<content>'
-    LEN_CONTENT_OPEN = len(CONTENT_OPEN)
-    CONTENT_CLOSE = '</content>'
-    LEN_CONTENT_CLOSE = len(CONTENT_CLOSE)
-    TAG_OPEN = '<tag>'
-    TAG_CLOSE = '</tag>'
-    LEN_TAG_CLOSE = len(TAG_CLOSE)
-    LEN_LINE_RET = 2
+    HASH_PARAM = 'GTGCNTMD5'
+    XML_TAGS = ['<content>', '</content>', '<tag>', '</tag>']
 
-    def get_dav(self, todo=None, vtodo=None) -> str:
-        return super().get_dav(todo, vtodo) or ''
+    @staticmethod
+    def _get_content_hash(content: str) -> str:
+        return md5(content.encode('utf8')).hexdigest()
 
-    def get_gtg(self, task: Task, namespace: str = None) -> str:
-        cnt = task.content
-        if cnt.startswith(self.CONTENT_OPEN):
-            cnt = cnt[self.LEN_CONTENT_OPEN:]
-        while True:
-            tag_open = cnt.find(self.TAG_OPEN)
-            if tag_open == -1:
-                break
-            tag_close = cnt.find(self.TAG_CLOSE)
-            if tag_close == -1:
-                break
-            tag_close_end = tag_close + self.LEN_TAG_CLOSE
-            if cnt[tag_close_end:tag_close_end + 2] == ', ':
-                tag_close_end += 2
-            cnt = cnt[:tag_open] + cnt[tag_close_end:]
-        if cnt.startswith('\n\n'):
-            # four for two \n which to be randomly added
-            cnt = cnt[2:]
-        if cnt.endswith(self.CONTENT_CLOSE):
-            cnt = cnt[:-self.LEN_CONTENT_CLOSE]
-        return cnt
+    def get_dav(self, todo=None, vtodo=None) -> tuple:
+        if todo:
+            vtodo = todo.instance.vtodo
+        desc = vtodo.contents.get(self.dav_name)
+        if desc:
+            hash_val = desc[0].params.get(self.HASH_PARAM)
+            hash_val = hash_val[0] if hash_val else None
+            return hash_val, desc[0].value
+        return None, ''
+
+    def get_gtg(self, task: Task, namespace: str = None) -> tuple:
+        description = self._parse_for_dav(task.get_text())
+        return self._get_content_hash(description), description
+
+    def is_equal(self, task: Task, namespace: str, todo=None, vtodo=None):
+        gtg_hash, gtg_value = self.get_gtg(task, namespace)
+        dav_hash, dav_value = self.get_dav(todo, vtodo)
+        if dav_hash == gtg_hash:
+            logger.debug('%r calculated hash matches', self)
+            return True
+        if gtg_value == dav_value:
+            logger.debug('%r matching values', self)
+            return True
+        logger.debug('%r differing (%r!=%r) and (%r!=%r)',
+                     self, gtg_hash, dav_hash, gtg_value, dav_value)
+        return False
+
+    def write_gtg(self, task: Task, value, namespace: str = None):
+        hash_, text = value
+        if hash_ and hash_ == self._get_content_hash(task.get_text()):
+            logger.debug('not writing %r from vtodo, hash matches', task)
+            return
+        return super().write_gtg(task, text)
+
+    def _parse_for_dav(self, content: str) -> str:
+        result = ''
+        for line_no, line in enumerate(content.splitlines()):
+            for tag in self.XML_TAGS:
+                while tag in line:
+                    line = line.replace(tag, '')
+
+            if line_no == 0:  # is first line, striping all tags on first line
+                new_line = ''
+                for split in TAG_REGEX.split(line):
+                    if split is None:
+                        continue
+                    if split.startswith(','):  # removing commas
+                        split = split[1:]
+                    if split.strip():
+                        if result:
+                            result += ' '
+                        new_line += split.strip()
+                if new_line:
+                    result += new_line + '\n'
+            elif line.strip():
+                result += line.strip() + '\n'
+        return result.strip()
+
+    def write_dav(self, vtodo: iCalendar, value: tuple):
+        hash_, content = value
+        vtodo_val = super().write_dav(vtodo, content)
+        vtodo_val.params[self.HASH_PARAM] = [hash_]
+        return vtodo_val
 
 
 class RelatedTo(Field):
@@ -863,21 +915,12 @@ class Translator:
     @classmethod
     def changed_attrs(cls, task: Task, namespace: str, todo=None, vtodo=None):
         for field in cls.fields:
-            task_value = field.get_gtg(task, namespace)
-            todo_value = field.get_dav(todo, vtodo)
-            if todo_value != task_value:
-                yield field, task_value, todo_value
+            if not field.is_equal(task, namespace, todo, vtodo):
+                yield field
 
     @classmethod
     def should_sync(cls, task: Task, namespace: str, todo=None, vtodo=None):
-        fields = cls.changed_attrs(task, namespace, todo, vtodo)
-        if logger.isEnabledFor(logging.DEBUG):
-            fields = list(fields)
-            if logger.isEnabledFor(logging.DEBUG):
-                for field, task_v, todo_v in fields:
-                    logger.debug('changed %r Task(%r) != vTodo(%r)',
-                                 field, task_v, todo_v)
-        for field, __, __ in fields:
+        for field in cls.changed_attrs(task, namespace, todo, vtodo):
             if field.dav_name not in DAV_IGNORE:
                 return True
         return False

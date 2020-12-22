@@ -164,6 +164,14 @@ class Backend(GenericBackend):
         """
 
         tid = task.get_id()
+        print('############################## start debug')
+        print(task.get_text())
+        print(task.get_excerpt())
+        print(task.get_excerpt(strip_tags=True, strip_subtasks=True))
+        from GTG.backends.backend_caldav import Translator
+        print('############################## Translator content')
+        print(Translator.fields[1].get_gtg(task, ''))
+        print('##############################')
         element = xml.task_to_element(task)
         existing = self.task_tree.findall(f"task[@id='{tid}']")
 
