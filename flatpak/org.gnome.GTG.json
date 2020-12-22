@@ -56,6 +56,19 @@
       ]
     },
     {
+      "name": "caldav",
+      "buildsystem": "simple",
+      "build-commands": [
+        "pip3 install --no-index --find-links=\"file://${PWD}\" --prefix=${FLATPAK_DEST} lxml"
+      ],
+      "sources": [{
+        "type": "file",
+        "url": "https://files.pythonhosted.org/packages/73/5f/e824e6bedd35d022cd676d60e009a5371e4c39cdf7d6049efbff8ecf7722/caldav-0.7.1.tar.gz",
+        "sha256": "55173d7efa4856c4183bd2dab4195c6a2760a590b07e16245a6deec0e71a5666"
+          }
+      ]
+    },
+    {
       "name": "liblarch",
       "buildsystem": "simple",
       "build-commands": [
