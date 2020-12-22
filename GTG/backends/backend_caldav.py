@@ -37,6 +37,7 @@ from GTG.core.task import DisabledSyncCtx, Task
 from vobject import iCalendar
 
 logger = logging.getLogger('gtg.' + __name__)
+MAX_CALENDAR_DEPTH = 500
 DAV_TAG_PREFIX = 'DAV-'
 # Set of fields whose change alone won't trigger a sync up
 DAV_IGNORE = {'last-modified',  # often updated alone by GTG
@@ -318,12 +319,13 @@ class Backend(PeriodicImportBackend):
         Translator.fill_task(todo, task, self.namespace)
         return 'updated'
 
-    def __sort_todos(self, todos: list, known_todos: set, max_depth=500):
+    def __sort_todos(self, todos: list, known_todos: set,
+                     max_depth: int = 500):
         """For a given list of todos, will return first the one without parent
         and then go deeper in the tree by browsing the tree."""
-        loop_nb = 0
+        loop = 0
         while len(known_todos) < len(todos):
-            loop_nb += 1
+            loop += 1
             for todo in todos:
                 uid = UID_FIELD.get_dav(todo)
                 if uid in known_todos:
@@ -334,8 +336,8 @@ class Backend(PeriodicImportBackend):
                         or self.datastore.get_task(uid)):  # already known uid
                     yield todo
                     known_todos.add(uid)
-            if loop_nb >= max_depth:
-                logger.error("Too deep, %r recursion isn't supported", max_depth)
+            if loop >= MAX_CALENDAR_DEPTH:
+                logger.error("Too deep, %dth recursion isn't allowed", loop)
                 break
 
     def _get_calendar_tasks(self, calendar: iCalendar):
