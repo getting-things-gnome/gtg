@@ -188,7 +188,7 @@ class TreeviewFactory():
 
     def __date_comp_continue(self, task1, task2, order, t1, t2):
         sort = (t2 > t1) - (t2 < t1)
-        if sort != 0:
+        if sort != 0: # Ingore order, since this will be done automatically
             return sort
 
         # Dates are equal
