@@ -19,7 +19,8 @@ class Gamify:
         "score": 0
     }
     DEFAULT_PREFERENCES = {
-        "goal": 3
+        "goal": 3,
+        "ui_type": "FULL"
     }
     LEVELS = {
         100: 'Beginner',
@@ -51,6 +52,11 @@ class Gamify:
         self.pref_dialog = self.builder.get_object('gamify-pref-dialog')
         # Get the buttonSpin
         self.spinner = self.builder.get_object('target-spin-button')
+        # Get the radio buttons
+        self.button1 = self.builder.get_object('radiobutton0')
+        self.button2 = self.builder.get_object('radiobutton1')
+        self.button3 = self.builder.get_object('radiobutton2')
+
 
         if self.pref_dialog is None or self.spinner is None:
             raise ValueError('Cannot load preference dialog widget')
@@ -59,7 +65,7 @@ class Gamify:
             "on_preferences_changed": self.on_preferences_changed,
             "on_dialog_close": self.on_preferences_closed
         }
-        self.builder.connect_signals(SIGNALS) 
+        self.builder.connect_signals(SIGNALS)
 
     def add_headerbar_button(self):
         self.headerbar_button = self.builder.get_object('gamify-headerbar')
@@ -70,12 +76,26 @@ class Gamify:
     def remove_headerbar_button(self):
         self.headerbar.remove(self.headerbar_button)
 
+    def add_levelbar(self):
+        self.quickadd_pane = self.plugin_api.get_quickadd_pane()
+        self.levelbar = self.builder.get_object('goal-levelbar')
+        self.quickadd_pane.set_orientation(Gtk.Orientation.VERTICAL)
+        self.quickadd_pane.add(self.levelbar)
+
+    def remove_levelbar(self):
+        self.quickadd_pane.set_orientation(Gtk.Orientation.HORIZONTAL)
+        self.quickadd_pane.remove(self.levelbar)
+
     def activate(self, plugin_api):
         self.plugin_api = plugin_api
         self.browser = plugin_api.get_browser()
 
+        # Load preferences and data
+        self.analytics_load()
+        self.preferences_load()
+
         # Settings up the menu 
-        self.add_headerbar_button()
+        self.add_ui()
 
         # Init the preference dialog
         try:
@@ -87,16 +107,14 @@ class Gamify:
         # Connect to the signals
         self.connect_id = self.browser.connect("task-marked-as-done", self.on_marked_as_done)
 
-        self.analitics_load()
-        self.preferences_load()
         self.update_date()
         self.update_streak()
-        self.analitics_save()
+        self.analytics_save()
         self.update_widget()
 
     def on_marked_as_done(self, sender, task_id):
         log.debug('a task has been marked as done')
-        self.analitics_load()
+        self.analytics_load()
         self.preferences_load()
 
         # Update the date, if it is different from today
@@ -107,7 +125,7 @@ class Gamify:
         self.data['last_task_number'] += 1
         self.update_streak()
         self.data['score'] += self.get_points_for_task(task_id)
-        self.analitics_save()
+        self.analytics_save()
         self.update_widget()
 
     def get_points_for_task(self, task_id):
@@ -129,7 +147,7 @@ class Gamify:
                 meduim = True
             elif tag == '@hard':
                 hard = True
-        
+
         if easy:
             return 1
         if meduim:
@@ -140,10 +158,30 @@ class Gamify:
 
     def OnTaskOpened(self, plugin_api):
         pass
-    
+
+    def add_ui(self):
+        """Add the appropriate UI elements"""
+        if self.preferences['ui_type'] == 'FULL':
+            self.add_headerbar_button()
+            self.add_levelbar()
+        elif self.preferences['ui_type'] == 'BUTTON':
+            self.add_headerbar_button()
+        else:
+            self.add_levelbar()
+
+    def remove_ui(self):
+        """Remove all the UI elements of the plugin"""
+        try:
+            self.remove_headerbar_button()
+        except AttributeError:
+            pass
+        try:
+            self.remove_levelbar()
+        except AttributeError:
+            pass
+
     def deactivate(self, plugin_api):
-        self.remove_submenu()
-        self.remove_menu_entry()
+        self.remove_ui()
 
     def is_configurable(self):
         return True
@@ -156,21 +194,21 @@ class Gamify:
 
     def save_preferences(self):
         self.plugin_api.save_configuration_object(
-            self.PLUGIN_NAMESPACE, 
-            "preferences", 
+            self.PLUGIN_NAMESPACE,
+            "preferences",
             self.preferences
         )
 
-    def analitics_load(self):
+    def analytics_load(self):
         self.data = self.plugin_api.load_configuration_object(
-            self.PLUGIN_NAMESPACE, "analitics",
+            self.PLUGIN_NAMESPACE, "analytics",
             default_values=self.DEFAULT_ANALITICS
         )
 
-    def analitics_save(self):
+    def analytics_save(self):
         self.plugin_api.save_configuration_object(
             self.PLUGIN_NAMESPACE,
-            "analitics",
+            "analytics",
             self.data
         )
 
@@ -245,15 +283,27 @@ class Gamify:
         self.update_goal()
         self.update_streak_widget()
 
+    def update_ui(self):
+        """Updates the type of ui (FULL, BUTTON, or LEVELBAR)"""
+        self.remove_ui()
+        self.add_ui()
+
+
     def configure_dialog(self, manager_dialog):
         if not self.configureable:
             log.debug('trying to open preference menu, but dialog widget not loaded')
             return
 
         self.preferences_load()
-        self.pref_dialog.set_transient_for(manager_dialog) 
-        
+        self.pref_dialog.set_transient_for(manager_dialog)
+
         self.spinner.set_value(self.preferences['goal'])
+        if self.preferences['ui_type'] == 'FULL':
+            self.button1.set_active(True)
+        elif self.preferences['ui_type'] == 'BUTTON':
+            self.button2.set_active(True)
+        else:
+            self.button3.set_active(True)
 
         self.pref_dialog.show_all()
 
@@ -266,6 +316,13 @@ class Gamify:
 
         # Get the new preferences
         self.preferences['goal'] = self.spinner.get_value_as_int()
-        
-        self.save_preferences() 
+        if self.button1.get_active():
+            self.preferences['ui_type'] = "FULL"
+        elif self.button2.get_active():
+            self.preferences['ui_type'] = "BUTTON"
+        else:
+            self.preferences['ui_type'] = "LEVELBAR"
+
+        self.save_preferences()
+        self.update_ui()
         self.update_goal()

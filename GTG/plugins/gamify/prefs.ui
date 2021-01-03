@@ -158,14 +158,14 @@
                 <property name="can-focus">False</property>
                 <property name="homogeneous">True</property>
                 <child>
-                  <object class="GtkRadioButton" id="radiobutton2">
+                  <object class="GtkRadioButton" id="radiobutton0">
                     <property name="label" translatable="yes">Both/Full UI</property>
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
                     <property name="receives-default">False</property>
                     <property name="active">True</property>
                     <property name="draw-indicator">True</property>
-                    <property name="group">radiobutton1</property>
+                    <property name="group">radiobutton2</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -174,14 +174,14 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkRadioButton">
+                  <object class="GtkRadioButton" id="radiobutton1">
                     <property name="label" translatable="yes">Button UI</property>
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
                     <property name="receives-default">False</property>
                     <property name="active">True</property>
                     <property name="draw-indicator">True</property>
-                    <property name="group">radiobutton1</property>
+                    <property name="group">radiobutton2</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -190,7 +190,7 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkRadioButton" id="radiobutton1">
+                  <object class="GtkRadioButton" id="radiobutton2">
                     <property name="label" translatable="yes">Discrete mode</property>
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
@@ -221,6 +221,12 @@
         </child>
       </object>
     </child>
+  </object>
+  <object class="GtkLevelBar" id="goal-levelbar">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="max-value">3</property>
+    <property name="mode">discrete</property>
   </object>
   <object class="GtkPopover" id="headerbar-popover">
     <property name="can-focus">False</property>
