@@ -159,6 +159,18 @@ class Gamify:
     def OnTaskOpened(self, plugin_api):
         pass
 
+    def is_full(self):
+        """Return True if ui type is FULL"""
+        return self.preferences['ui_type'] == 'FULL'
+
+    def has_button(self):
+        """Return True if UI contains a BUTTON"""
+        return self.preferences['ui_type'] in ('BUTTON', 'FULL')
+
+    def has_levelbar(self):
+        """Return True if UI contains a LEVELBAR"""
+        return self.preferences['ui_type'] in ('LEVELBAR', 'FULL')
+
     def add_ui(self):
         """Add the appropriate UI elements"""
         if self.preferences['ui_type'] == 'FULL':
@@ -239,13 +251,15 @@ class Gamify:
     def get_streak(self):
         return self.data['streak']
 
-    def update_score(self):
+    def button_update_score(self):
+        """Update the score in the BUTTON widget"""
         score_label = self.builder.get_object('score_label')
         score_label.set_markup(_("<b>{current_level}</b>").format(current_level=self.get_current_level()))
         score_value = self.builder.get_object('score_value')
         score_value.set_markup(_('You have: <b>{score}</b> points').format(score=self.get_score()))
 
-    def update_goal(self):
+    def button_update_goal(self):
+        """Update the numbers of tasks done in the BUTTON widget"""
         headerbar_label_button = self.builder.get_object('headerbar-label-button')
         headerbar_label = self.builder.get_object('headerbar-label')
         headerbar_msg = self.builder.get_object('headerbar-msg')
@@ -268,7 +282,8 @@ class Gamify:
             headerbar_label.set_markup(random.choice(emoji))
             headerbar_msg.set_markup(_("Get Down to Business\nYou haven't achieved any tasks today."))
 
-    def update_streak_widget(self):
+    def button_update_streak(self):
+        """Update the streak numbers in the BUTTON widget"""
         streak_number = self.builder.get_object('streak_number')
         streak_emoji = self.builder.get_object('streak_emoji')
         if self.get_streak() > 0:
@@ -277,11 +292,27 @@ class Gamify:
             streak_emoji.set_markup("\U0001F9CA")
         streak_number.set_markup(_("You've completed your goal {streak} day in a row.").format(streak=self.get_streak()))
 
+    def update_levelbar(self):
+        self.levelbar.set_min_value(0.0)
+        self.levelbar.set_max_value(self.preferences['goal'])
+        self.levelbar.set_value(self.get_number_of_tasks())
+
 
     def update_widget(self):
-        self.update_score()
-        self.update_goal()
-        self.update_streak_widget()
+        """Update the information depending on the UI type"""
+        if self.has_button():
+            self.button_update_score()
+            self.button_update_goal()
+            self.button_update_streak()
+
+        if self.has_levelbar():
+            self.update_levelbar()
+
+    def update_goal(self):
+        if self.has_button():
+            self.button_update_goal()
+        if self.has_levelbar():
+            self.update_levelbar()
 
     def update_ui(self):
         """Updates the type of ui (FULL, BUTTON, or LEVELBAR)"""
@@ -324,5 +355,7 @@ class Gamify:
             self.preferences['ui_type'] = "LEVELBAR"
 
         self.save_preferences()
+        # Update the type of UI
         self.update_ui()
+        # Update the goal in the widget(s)
         self.update_goal()
