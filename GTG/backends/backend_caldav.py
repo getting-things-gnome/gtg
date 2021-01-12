@@ -688,6 +688,7 @@ class Description(Field):
 
     @classmethod
     def __clean_first_line(cls, line):
+        """Removing tags and commas after them from first line of content"""
         new_line = ''
         for split in TAG_REGEX.split(line):
             if split is None:
@@ -695,12 +696,14 @@ class Description(Field):
             if split.startswith(','):  # removing commas
                 split = split[1:]
             if split.strip():
-                if result:
-                    result += ' '
+                if new_line:
+                    new_line += ' '
                 new_line += split.strip()
         return new_line
 
     def _extract_plain_text(self, task: Task) -> str:
+        """Will extract plain text from task content, replacing subtask
+        referenced in the text by their proper titles"""
         result, content = '', task.get_text()
         for line_no, line in enumerate(content.splitlines()):
             for tag in self.XML_TAGS:
