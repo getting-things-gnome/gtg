@@ -27,6 +27,7 @@ Later, when you want to update to the latest development version (assuming you a
 
 * meson
 * python3
+* python-caldav
 * pycairo
 * pygobject (>= 3.20)
 * libLarch (>= 3.0)
