@@ -569,14 +569,9 @@ class MainWindow(Gtk.ApplicationWindow):
             GObject.idle_add(open_task, self.req, t)
 
     def refresh_all_views(self, timer):
-        active_tree = self.req.get_tasks_tree(name='active', refresh=False)
-        active_tree.refresh_all()
-
-        workview_tree = self.req.get_tasks_tree(name='workview', refresh=False)
-        workview_tree.refresh_all()
-
-        closed_tree = self.req.get_tasks_tree(name='closed', refresh=False)
-        closed_tree.refresh_all()
+        for pane in 'active', 'workview', 'closed':
+            self.req.get_tasks_tree(pane, False).reset_filters(refresh=False)
+        self._reapply_filter()
 
     def find_value_in_treestore(self, store, treeiter, value):
         """Search for value in tree store recursively."""
