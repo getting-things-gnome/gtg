@@ -75,21 +75,18 @@ class MainWindow(Gtk.ApplicationWindow):
 
         # Active Tasks
         self.activetree = self.req.get_tasks_tree(name='active', refresh=False)
-        self.activetree.apply_filter('active', refresh=False)
         self.vtree_panes['active'] = \
             self.tv_factory.active_tasks_treeview(self.activetree)
 
         # Workview Tasks
         self.workview_tree = \
             self.req.get_tasks_tree(name='workview', refresh=False)
-        self.workview_tree.apply_filter('workview', refresh=False)
         self.vtree_panes['workview'] = \
             self.tv_factory.active_tasks_treeview(self.workview_tree)
 
         # Closed Tasks
         self.closedtree = \
             self.req.get_tasks_tree(name='closed', refresh=False)
-        self.closedtree.apply_filter('closed', refresh=False)
         self.vtree_panes['closed'] = \
             self.tv_factory.closed_tasks_treeview(self.closedtree)
 
@@ -131,7 +128,7 @@ class MainWindow(Gtk.ApplicationWindow):
 
         self.restore_state_from_conf()
 
-        self.on_select_tag()
+        self._reapply_filter()
         self._set_defer_days()
         self.browser_shown = False
 
@@ -408,8 +405,6 @@ class MainWindow(Gtk.ApplicationWindow):
         clsd_tsk_key_prs = self.on_closed_task_treeview_key_press_event
         self.vtree_panes['closed'].connect('key-press-event', clsd_tsk_key_prs)
         self.vtree_panes['closed'].connect('cursor-changed', self.on_cursor_changed)
-
-        self.closedtree.apply_filter(self.get_selected_tags()[0], refresh=True)
 
         b_signals = BackendSignals()
         b_signals.connect(b_signals.BACKEND_FAILED, self.on_backend_failed)
@@ -1282,7 +1277,9 @@ class MainWindow(Gtk.ApplicationWindow):
                 task.set_status(Task.STA_DISMISSED)
                 self.close_all_task_editors(uid)
 
-    def _reapply_filter(self, current_pane):
+    def _reapply_filter(self, current_pane: str = None):
+        if current_pane is None:
+            current_pane = self.get_selected_pane()
         filters = self.get_selected_tags()
         filters.append(current_pane)
         vtree = self.req.get_tasks_tree(name=current_pane, refresh=False)
@@ -1320,7 +1317,7 @@ class MainWindow(Gtk.ApplicationWindow):
                 self.quickadd_entry.set_text(tag.get_attribute("query"))
                 break
 
-        self._reapply_filter(self.get_selected_pane())
+        self._reapply_filter()
 
     def on_pane_switch(self, obj, pspec):
         """ Callback for pane switching.
