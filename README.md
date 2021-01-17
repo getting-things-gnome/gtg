@@ -4,6 +4,10 @@ You are currently reading the index of the information intended for **new contri
 
 See [our website](https://wiki.gnome.org/Apps/GTG) for the list of features and information intended for **users** (including how to install the stable release with pre-built packages).
 
+[![Mastodon badge](https://img.shields.io/mastodon/follow/232134?domain=https%3A%2F%2Ffosstodon.org&label=Follow%20us%20on%20Mastodon&style=social)](https://fosstodon.org/@GettingThingsGNOME)
+
+[![Twitter badge](https://img.shields.io/twitter/follow/getthingsgnome.svg?style=social&label=Follow%20us%20on%20Twitter)](https://twitter.com/GetThingsGNOME)
+
 # Starting point for testers, bug reporters, and new contributors
 
 * Keep reading below for basic instructions on how to get the development version of GTG running.

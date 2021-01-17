@@ -171,7 +171,7 @@ class SimpleColorSelector(Gtk.Box):
         self.__reset_palette()
         # (re-)create the palette widget
         self.palette = Gtk.Alignment()
-        self.pack_start(self.palette, True, True, 0)
+        self.pack_start(self.palette, False, False, 0)
         # Draw the palette
         vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         self.palette.add(vbox)
@@ -179,7 +179,7 @@ class SimpleColorSelector(Gtk.Box):
         for i in range(len(self.colors)):
             if i % self.width == 0:
                 cur_box = Gtk.Box()
-                vbox.pack_start(cur_box, True, True, 0)
+                vbox.pack_start(cur_box, False, True, 0)
             # add the color box
             img = SimpleColorSelectorPaletteItem()
             img.set_size_request(
@@ -211,13 +211,13 @@ class SimpleColorSelector(Gtk.Box):
         # (re-)create the palette widget
         self.custom_palette = Gtk.Alignment.new(0, 0, 1, 0)
         self.custom_palette.set_padding(10, 0, 0, 0)
-        self.pack_start(self.custom_palette, True, True, 0)
+        self.pack_start(self.custom_palette, False, True, 0)
         # Draw the previous color palette: only one line
         cc_vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         self.custom_palette.add(cc_vbox)
         cc_vbox.set_spacing(4)
         cc_box = Gtk.Box()
-        cc_vbox.pack_start(cc_box, True, True, 0)
+        cc_vbox.pack_start(cc_box, False, True, 0)
         for i in range(len(self.custom_colors)):
             # add the color box
             img = SimpleColorSelectorPaletteItem()
@@ -232,15 +232,15 @@ class SimpleColorSelector(Gtk.Box):
             self.cc_buttons.append(img)
         # Draw the add button
         buttons_hbox = Gtk.Box()
-        cc_vbox.pack_start(buttons_hbox, True, True, 0)
+        cc_vbox.pack_start(buttons_hbox, False, True, 0)
         self.add_button = Gtk.Button()
         self.add_button.set_label(_("Add Custom Color..."))
-        buttons_hbox.pack_start(self.add_button, True, False, 0)
+        buttons_hbox.pack_start(self.add_button, False, False, 0)
         self.add_button.connect("clicked", self.on_color_add)
         # Draw the clear selected color button
         self.clear_button = Gtk.Button()
         self.clear_button.set_label(_("Clear Selected Color"))
-        buttons_hbox.pack_start(self.clear_button, True, False, 0)
+        buttons_hbox.pack_start(self.clear_button, False, False, 0)
         self.clear_button.connect("clicked", self.on_color_clear)
         self.clear_button.set_sensitive(False)
         # hide the custom palette if no custom color is defined

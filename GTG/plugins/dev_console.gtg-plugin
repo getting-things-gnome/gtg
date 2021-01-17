@@ -1,0 +1,9 @@
+[GTG Plugin]
+module=dev_console
+name=Developer Console
+short-description=Opens a Python interpreter with access to GTG internals
+description=Opens a new window with a Python interpreter that can access GTG data
+authors=Fabian Orccon <cfoch.fabian@gmail.com>, Diego Gangl <diego@sinestesia.co>
+version=1.0
+enabled=False
+dependencies=
