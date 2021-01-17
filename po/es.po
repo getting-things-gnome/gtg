@@ -9,15 +9,14 @@ msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-07-07 00:42-0400\n"
-"PO-Revision-Date: 2021-01-06 21:40+0100\n"
+"PO-Revision-Date: 2021-01-17 20:21+0100\n"
 "Last-Translator: Óscar Fernández Díaz <oscfdezdz@tuta.io>\n"
-"Language-Team: Spanish - Spain <oscfdezdz@tuta.io>\n"
-"Language: es_ES\n"
+"Language-Team: Spanish; Castilian <oscfdezdz@tuta.io>\n"
+"Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"X-Launchpad-Export-Date: 2013-06-03 06:03+0000\n"
 "X-Generator: Gtranslator 3.38.0\n"
 
 #: data/org.gnome.GTG.appdata.xml.in.in:5 data/org.gnome.GTG.desktop.in.in:4
@@ -26,7 +25,7 @@ msgstr "Getting Things GNOME!"
 
 #: data/org.gnome.GTG.appdata.xml.in.in:6
 msgid "Personal tasks and TODO-list items organizer"
-msgstr "Organizador de tareas personales y de artículos de la lista TODO"
+msgstr "Organizador de tareas personales para GNOME"
 
 #: data/org.gnome.GTG.appdata.xml.in.in:11
 msgid ""
@@ -76,8 +75,8 @@ msgid ""
 "the ability to effortlessly defer tasks to common upcoming days, or to a "
 "custom date."
 msgstr ""
-"la capacidad de aplazar sin esfuerzo las tareas para los próximos días "
-"comunes, o para una fecha personalizada."
+"la capacidad de aplazar sin esfuerzo las tareas para los próximos días, o "
+"para una fecha personalizada."
 
 #: data/org.gnome.GTG.appdata.xml.in.in:68
 msgid "The GTG team"
@@ -91,9 +90,7 @@ msgstr "Organizador de Tareas"
 msgid ""
 "Personal tasks and TODO-list items organizer for the GNOME desktop "
 "environment."
-msgstr ""
-"Organizador de tareas personales y elementos de la lista TODO para el "
-"entorno de escritorio GNOME."
+msgstr "Organizador de tareas personales para el entorno de escritorio GNOME."
 
 #. Translators: Search terms to find this application. Do NOT translate or localize the semicolons! The list MUST also end with a semicolon!
 #: data/org.gnome.GTG.desktop.in.in:14
@@ -228,7 +225,7 @@ msgstr "Establecer fecha de término"
 
 #: GTG/gtk/data/context_menus.ui:167
 msgid "Clear Due Date"
-msgstr "Limpiar fecha límite"
+msgstr "Limpiar fecha de término"
 
 #: GTG/gtk/data/context_menus.ui:175
 msgid "Modify Tags..."
@@ -273,11 +270,11 @@ msgstr "Limpiar"
 
 #: GTG/gtk/data/general_preferences.ui:364
 msgid "Automatically remove old closed tasks"
-msgstr "Eliminar automáticamente las tarea antiguas cerradas"
+msgstr "Eliminar automáticamente las tareas cerradas"
 
 #: GTG/gtk/data/general_preferences.ui:409
 msgid "Days to wait before removing a task"
-msgstr "Días que esperar antes de quitar una tarea"
+msgstr "Días a esperar antes de quitar una tarea"
 
 #: GTG/gtk/data/general_preferences.ui:454
 msgid "Purge Now"
@@ -336,7 +333,7 @@ msgstr "Descartar tarea"
 #: GTG/gtk/data/help_overlay.ui:91
 msgctxt "shortcut window"
 msgid "Batch change tags on selected tasks"
-msgstr "Etiquetas de cambio de lote en las tareas seleccionadas"
+msgstr "Cambiar etiquetas en tareas seleccionadas"
 
 #: GTG/gtk/data/help_overlay.ui:99 GTG/gtk/data/help_overlay.ui:139
 msgctxt "shortcut window"
@@ -370,7 +367,7 @@ msgstr "Cerrar ventana"
 
 #: GTG/gtk/data/main_window.ui:55
 msgid "Start today"
-msgstr "Empezar hoy"
+msgstr "Empieza hoy"
 
 #: GTG/gtk/data/main_window.ui:57 GTG/core/dates.py:449
 msgid "Today"
@@ -585,7 +582,7 @@ msgstr "Empieza el"
 
 #: GTG/gtk/data/task_editor.ui:237
 msgid "Due on"
-msgstr "Límite el"
+msgstr "Vencimiento para"
 
 #: GTG/gtk/data/task_editor.ui:280
 msgid "Closed on"
@@ -652,7 +649,7 @@ msgstr "Poner una entrada en el menú de complementos"
 #: GTG/gtk/browser/backend_infobar.py:143
 #: GTG/gtk/browser/backend_infobar.py:196
 msgid "OK"
-msgstr "VALE"
+msgstr "OK"
 
 #: GTG/plugins/untouched_tasks/untouchedTasks.ui:36
 msgid "Add "
@@ -1157,7 +1154,7 @@ msgid ""
 "Your help and involvement is what makes this software better. Feedback, bug "
 "reports and ideas are welcome... and patches even more so!"
 msgstr ""
-"¡Es un hecho bien conocido que GTG no tiene bichos! 🐛\n"
+"¡Es un hecho bien conocido que GTG no tiene fallos! 🐛\n"
 "Pero a veces, en la oscuridad, ocurren cosas inesperadas...\n"
 "\n"
 "Si encuentras cierres inesperados/fallos o comportamientos inesperados en "
@@ -1374,7 +1371,7 @@ msgstr "inicio"
 
 #: GTG/core/task.py:190
 msgid "due"
-msgstr "vence"
+msgstr "vencimiento"
 
 #: GTG/core/treefactory.py:76 GTG/gtk/backends/parameters_ui/__init__.py:69
 msgid "All tasks"
@@ -1512,8 +1509,8 @@ msgid ""
 "Due to a network problem, I cannot contact the <b>%s</b> synchronization "
 "service."
 msgstr ""
-"Por problemas de conección, no se pudo contactar el servicio de "
-"sincronización <b>%s</b>."
+"Por problemas de conexión, no se pudo contactar con el <b>%s</b> servicio de "
+"sincronización."
 
 #: GTG/gtk/browser/backend_infobar.py:42
 #, python-format
@@ -1747,18 +1744,18 @@ msgstr[1] "Completada con %(days)d días de antelación"
 #, python-format
 msgid "Due tomorrow!"
 msgid_plural "%(days)d days left"
-msgstr[0] "Vence mañana"
+msgstr[0] "¡Vence mañana!"
 msgstr[1] "Quedan %(days)d días"
 
 #: GTG/gtk/editor/editor.py:459
 msgid "Due today!"
-msgstr "Vence hoy"
+msgstr "¡Vence hoy!"
 
 #: GTG/gtk/editor/editor.py:462
 #, python-format
 msgid "Due yesterday!"
 msgid_plural "Was %(days)d days ago"
-msgstr[0] "Venció ayer"
+msgstr[0] "¡Venció ayer!"
 msgstr[1] "Venció hace %(days)d días"
 
 #: GTG/gtk/editor/taskview.py:1436
