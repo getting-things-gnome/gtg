@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-01-18 13:49+0100\n"
-"PO-Revision-Date: 2021-01-18 14:11+0100\n"
+"POT-Creation-Date: 2021-01-18 21:06+0100\n"
+"PO-Revision-Date: 2021-01-18 21:09+0100\n"
 "Last-Translator: Óscar Fernández Díaz <oscfdezdz@tuta.io>\n"
 "Language-Team: Spanish\n"
 "Language: es\n"
@@ -124,7 +124,7 @@ msgstr "Enviar tarea por correo electrónico"
 
 #: GTG/plugins/send-email.gtg-plugin.desktop:5
 msgid "Easily send a task via email."
-msgstr "Envia fácilmente una tarea por correo electrónico"
+msgstr "Envia fácilmente una tarea por correo electrónico."
 
 #: GTG/plugins/send-email.gtg-plugin.desktop:6
 msgid ""
@@ -183,17 +183,17 @@ msgstr ""
 
 #: GTG/plugins/hamster.gtg-plugin.desktop:4
 msgid "Hamster Time Tracker Integration"
-msgstr "Integración del seguidor de tiempo del Hamster"
+msgstr "Integración del organizador de tiempo Hamster"
 
 #: GTG/plugins/hamster.gtg-plugin.desktop:5
 msgid "Track time of GTG task with Hamster applet."
-msgstr "Seguimiento del tiempo de la tarea de GTG con el complemento Hamster."
+msgstr "Organizador de tiempo de la tarea de GTG con el complemento Hamster."
 
 #: GTG/plugins/hamster.gtg-plugin.desktop:6
 msgid "Adds the ability to send a task to the Hamster time tracking applet"
 msgstr ""
-"Añade la capacidad de enviar una tarea al complemento del seguidor de tiempo "
-"del Hamster."
+"Añade la capacidad de enviar una tarea al complemento del organizador de "
+"tiempo Hamster"
 
 #: GTG/gtk/data/backends.ui:60
 msgid "_Add"
@@ -1886,29 +1886,25 @@ msgstr "Elegir un color"
 msgid "Generate Color"
 msgstr "Generar color"
 
-#: GTG/gtk/browser/tag_editor.py:80
-msgid "Remove selected icon"
-msgstr "Eliminar el icono seleccionado"
-
-#: GTG/gtk/browser/tag_editor.py:199
+#: GTG/gtk/browser/tag_editor.py:52
 #, python-format
 msgid "Editing Tag \"%s\""
 msgstr "Editando tarea \"%s\""
 
-#: GTG/gtk/browser/tag_editor.py:236
+#: GTG/gtk/browser/tag_editor.py:100
 msgid "Name : "
 msgstr "Nombre: "
 
-#: GTG/gtk/browser/tag_editor.py:243
+#: GTG/gtk/browser/tag_editor.py:107
 msgid "Show Tag in \"Actionable\" view:"
 msgstr "Mostrar la etiqueta en la vista \"Accionable\":"
 
-#: GTG/gtk/browser/tag_editor.py:256
+#: GTG/gtk/browser/tag_editor.py:121
 msgid "Select Tag Color:"
 msgstr "Seleccionar color de la etiqueta:"
 
 #. Default icon
-#: GTG/gtk/browser/tag_editor.py:299
+#: GTG/gtk/browser/tag_editor.py:192
 msgid ""
 "Click to\n"
 "Set Icon"
@@ -2150,3 +2146,6 @@ msgstr "Tarea: %(task_title)s"
 #: GTG/plugins/untouched_tasks/untouchedTasks.py:64
 msgid "Add @untouched tag"
 msgstr "Añadir etiqueta @intacta"
+
+#~ msgid "Remove selected icon"
+#~ msgstr "Eliminar el icono seleccionado"
