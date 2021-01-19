@@ -25,7 +25,7 @@ import datetime
 import os
 import time
 import uuid
-
+import logging
 import evolution
 
 from GTG.backends.generic_backend import GenericBackend
@@ -36,7 +36,6 @@ from GTG.core.task import Task
 from gettext import gettext as _
 from GTG.core.dates import Date
 from GTG.core.interruptible import interruptible
-from GTG.core.logger import log
 from GTG.core.tag import extract_tags_from_text
 
 # Dictionaries to translate GTG tasks in Evolution ones
@@ -56,6 +55,8 @@ _EVOLUTION_TO_GTG_STATUS = \
      evolution.ecal.ICAL_STATUS_X: Task.STA_ACTIVE,
      evolution.ecal.ICAL_STATUS_COMPLETED: Task.STA_DONE,
      evolution.ecal.ICAL_STATUS_CANCELLED: Task.STA_DISMISSED}
+
+log = logging.getLogger(__name__)
 
 
 class Backend(PeriodicImportBackend):
@@ -196,7 +197,7 @@ class Backend(PeriodicImportBackend):
             self.datastore.has_task,
             self._evo_has_task,
             is_syncable)
-        log.debug(f'GTG->Evo set task ({action}, {is_syncable})')
+        log.debug('GTG->Evo set task (%s, %s)', action, is_syncable)
 
         if action is None:
             return
@@ -254,7 +255,7 @@ class Backend(PeriodicImportBackend):
             self.datastore.has_task,
             self._evo_has_task,
             is_syncable)
-        log.debug(f'GTG<-Evo set task ({action}, {is_syncable})')
+        log.debug('GTG<-Evo set task (%s, %s)', action, is_syncable)
 
         if action == SyncEngine.ADD:
             with self.datastore.get_backend_mutex():

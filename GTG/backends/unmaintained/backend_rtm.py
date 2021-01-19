@@ -27,6 +27,7 @@ import os
 import threading
 import time
 import uuid
+import logging
 
 from dateutil.tz import tzutc, tzlocal
 from gi.repository import Gio
@@ -41,7 +42,8 @@ from GTG.core.task import Task
 from gettext import gettext as _
 from GTG.core.dates import Date
 from GTG.core.interruptible import interruptible
-from GTG.core.logger import log
+
+log = logging.getLogger(__name__)
 
 
 class Backend(PeriodicImportBackend):
@@ -221,7 +223,7 @@ class Backend(PeriodicImportBackend):
                 self.rtm_proxy.refresh_rtm_tasks_dict()
             rtm_task = self.rtm_proxy.get_rtm_tasks_dict()[rtm_task_id]
             rtm_task.delete()
-            log.debug(f"removing task {rtm_task_id} from RTM")
+            log.debug("removing task %s from RTM", rtm_task_id)
         except KeyError:
             pass
             try:
@@ -248,7 +250,7 @@ class Backend(PeriodicImportBackend):
             self.datastore.has_task,
             self.rtm_proxy.has_rtm_task,
             is_syncable)
-        log.debug(f"GTG->RTM set task ({action}, {is_syncable})")
+        log.debug("GTG->RTM set task (%s, %s)", action, is_syncable)
 
         if action is None:
             return
@@ -348,7 +350,7 @@ class Backend(PeriodicImportBackend):
             self.datastore.has_task,
             self.rtm_proxy.has_rtm_task,
             is_syncable)
-        log.debug(f"GTG<-RTM set task ({action}, {is_syncable})")
+        log.debug("GTG<-RTM set task (%s, %s)", action, is_syncable)
 
         if action is None:
             return
@@ -588,8 +590,8 @@ class RTMProxy():
             self.rtm = createRTM(self.PUBLIC_KEY, self.PRIVATE_KEY, self.token)
             self.timeline = self.rtm.timelines.create().timeline
             return True
-        except (RTMError, RTMAPIError) as e:
-            log.error("RTM ERROR" + str(e))
+        except (RTMError, RTMAPIError):
+            log.exception("RTM ERROR:")
         return False
 
     ##########################################################################

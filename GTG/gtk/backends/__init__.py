@@ -27,6 +27,7 @@ This window is divided in two:
 
 from gi.repository import Gtk
 
+import logging
 from GTG.core import info
 from GTG.backends import BackendFactory
 from GTG.backends.generic_backend import GenericBackend
@@ -35,7 +36,8 @@ from GTG.gtk import ViewConfig
 from GTG.gtk.backends.addpanel import AddPanel
 from GTG.gtk.backends.backendstree import BackendsTree
 from GTG.gtk.backends.configurepanel import ConfigurePanel
-from GTG.core.logger import log
+
+log = logging.getLogger(__name__)
 
 
 class BackendsDialog():
@@ -134,7 +136,7 @@ class BackendsDialog():
             panel_to_add = self.add_panel
             side_is_enabled = False
         else:
-            log.error("panel name unknown")
+            log.error("panel name unknown %r", panel_name)
             return
         # Central pane
         # NOTE: self.central_pane is the Gtk.Container in which we load panels

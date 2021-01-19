@@ -28,16 +28,18 @@ import uuid
 import dbus
 import datetime
 import unicodedata
+import logging
 
 from GTG.core.borg import Borg
 from GTG.backends.generic_backend import GenericBackend
 from GTG.backends.backend_signals import BackendSignals
 from GTG.backends.sync_engine import SyncEngine, SyncMeme
 from GTG.core.tag import ALLTASKS_TAG
-from GTG.core.logger import log
 from GTG.core.watchdog import Watchdog
 from GTG.core.interruptible import interruptible
 from GTG.core.tag import extract_tags_from_text
+
+log = logging.getLogger(__name__)
 
 
 class GenericTomboy(GenericBackend):
@@ -206,7 +208,7 @@ class GenericTomboy(GenericBackend):
                                                                  has_task,
                                                                  note_exists,
                                                                  is_syncable)
-            log.debug(f"processing tomboy ({action}, {is_syncable})")
+            log.debug("processing tomboy (%s, %s)", action, is_syncable)
 
             if action == SyncEngine.ADD:
                 tid = str(uuid.uuid4())
@@ -262,7 +264,7 @@ class GenericTomboy(GenericBackend):
                                                                      has_task,
                                                                      has_note,
                                                                      can_sync)
-                log.debug(f"processing gtg ({action}, {is_syncable:d})")
+                log.debug("processing gtg (%s, %s)", action, is_syncable)
 
                 if action == SyncEngine.ADD:
                     # GTG allows multiple tasks with the same name,

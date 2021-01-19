@@ -18,14 +18,14 @@
 
 import os
 import shutil
+import logging
 import xml.sax.saxutils as saxutils
 from datetime import datetime
 from GTG.core.dates import Date
-from GTG.core.logger import log
 
 from lxml import etree
 
-
+log = logging.getLogger(__name__)
 # Total amount of backups
 BACKUPS = 7
 
@@ -211,7 +211,7 @@ def open_file(xml_path: str, root_tag: str) -> etree.ElementTree:
 
     for index, filepath in enumerate(files):
         try:
-            log.debug(f'Opening file {filepath}')
+            log.debug('Opening file %s', filepath)
             root = get_xml_tree(filepath)
 
             # This was a backup. We should inform the user
@@ -225,15 +225,15 @@ def open_file(xml_path: str, root_tag: str) -> etree.ElementTree:
             break
 
         except FileNotFoundError:
-            log.debug(f'File not found: {filepath}. Trying next.')
+            log.debug('File not found: %r. Trying next.', filepath)
             continue
 
         except PermissionError:
-            log.debug(f'Not allowed to open: {filepath}. Trying next.')
+            log.debug('Not allowed to open: %r. Trying next.', filepath)
             continue
 
-        except etree.XMLSyntaxError as e:
-            log.debug(f'Syntax error in {filepath}. {e}. Trying next.')
+        except etree.XMLSyntaxError as error:
+            log.debug('Syntax error in %r. %r. Trying next.', filepath, error)
             continue
 
     if root:
@@ -263,7 +263,7 @@ def write_backups(filepath: str) -> None:
         os.makedirs(backup_dir, exist_ok=True)
 
     except IOError:
-        log.error(f'Backup dir {backup_dir} cannot be created!')
+        log.error('Backup dir %r cannot be created!', backup_dir)
         return
 
     # Cycle backups
@@ -305,7 +305,7 @@ def create_dirs(filepath: str) -> None:
     try:
         os.makedirs(base_dir, exist_ok=True)
     except IOError as error:
-        log.error("Error while creating directories:", error)
+        log.error("Error while creating directories: %r", error)
 
 
 def save_file(filepath: str, root: etree.ElementTree) -> None:
@@ -323,7 +323,7 @@ def save_file(filepath: str, root: etree.ElementTree) -> None:
             os.remove(temp_file)
 
     except (IOError, FileNotFoundError):
-        log.error(f'Could not write XML file at {filepath}')
+        log.error('Could not write XML file at %r', filepath)
         create_dirs(filepath)
 
 
