@@ -23,13 +23,15 @@ from datetime import datetime, date
 import html
 import re
 import uuid
+import logging
 import xml.sax.saxutils as saxutils
 
 from gettext import gettext as _
 from GTG.core.dates import Date, convert_datetime_to_date
-from GTG.core.logger import log
 from GTG.core.tag import extract_tags_from_text
 from liblarch import TreeNode
+
+log = logging.getLogger(__name__)
 
 
 class Task(TreeNode):
@@ -160,7 +162,8 @@ class Task(TreeNode):
         copy.set_title(self.title)
         copy.content = self.content
         copy.tags = self.tags
-        log.debug(f"Duppicating task {self.get_id()} as task {copy.get_id()}")
+        log.debug("Duppicating task %s as task %s",
+                  self.get_id(), copy.get_id())
         return copy
 
     def duplicate_recursively(self):
@@ -717,7 +720,7 @@ class Task(TreeNode):
 
         @param child: the added task
         """
-        log.debug(f"adding child {tid} to task {self.get_id()}")
+        log.debug("adding child %s to task %s", tid, self.get_id())
         self.can_be_deleted = False
         # the core of the method is in the TreeNode object
         TreeNode.add_child(self, tid)

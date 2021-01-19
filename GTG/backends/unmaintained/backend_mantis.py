@@ -18,6 +18,7 @@
 
 import os
 import uuid
+import logging
 
 from GTG.backends.backend_signals import BackendSignals
 from GTG.backends.generic_backend import GenericBackend
@@ -25,7 +26,6 @@ from GTG.backends.periodic_import_backend import PeriodicImportBackend
 from GTG.backends.sync_engine import SyncEngine, SyncMeme
 from GTG.core.task import Task
 from gettext import gettext as _
-from GTG.core.logger import log
 
 from suds.client import Client
 
@@ -35,6 +35,8 @@ Backend for importing mantis issues in GTG
 Dependencies:
   * python-suds
 """
+
+log = logging.getLogger(__name__)
 
 
 class Backend(PeriodicImportBackend):
@@ -160,7 +162,7 @@ class Backend(PeriodicImportBackend):
         action, tid = self.sync_engine.analyze_remote_id(str(issue['id']),
                                                          has_task,
                                                          lambda b: True)
-        log.debug(f"processing mantis ({action})")
+        log.debug("processing mantis (%s)", action)
 
         if action is None:
             return

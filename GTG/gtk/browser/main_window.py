@@ -20,6 +20,7 @@
 
 import threading
 import datetime
+import logging
 
 from gi.repository import GObject, Gtk, Gdk, Gio
 
@@ -40,8 +41,8 @@ from GTG.gtk.browser.treeview_factory import TreeviewFactory
 from GTG.gtk.editor.calendar import GTGCalendar
 from GTG.gtk.tag_completion import TagCompletion
 from GTG.core.dates import Date
-from GTG.core.logger import log
 
+log = logging.getLogger(__name__)
 PANE_STACK_NAMES_MAP = {
     'closed_view': 'closed',
     'open_view': 'active',
@@ -824,8 +825,8 @@ class MainWindow(Gtk.ApplicationWindow):
         """
         deals with mouse click event on the tag tree
         """
-        log.debug("Received button event #%d at %d, %d" % (
-            event.button, event.x, event.y))
+        log.debug("Received button event #%d at %d, %d",
+                  event.button, event.x, event.y)
         if event.button == 3:
             x = int(event.x)
             y = int(event.y)
@@ -910,7 +911,8 @@ class MainWindow(Gtk.ApplicationWindow):
     def on_task_treeview_button_press_event(self, treeview, event):
         """ Pop up context menu on right mouse click in the main
         task tree view """
-        log.debug(f"Received button event #{event.button} at {event.x},{event.y}")
+        log.debug("Received button event #%s at %d,%d",
+                  event.button, event.x, event.y)
         if event.button == 3:
             x = int(event.x)
             y = int(event.y)
@@ -1032,7 +1034,7 @@ class MainWindow(Gtk.ApplicationWindow):
         else:
             tids_todelete = [tid]
 
-        log.debug(f"going to delete {tids_todelete}")
+        log.debug("going to delete %r", tids_todelete)
         self.app.delete_tasks(tids_todelete, self)
 
     def update_start_date(self, widget, new_start_date):

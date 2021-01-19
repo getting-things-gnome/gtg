@@ -27,14 +27,15 @@ import errno
 import os
 import pickle
 import threading
+import logging
 
 from GTG.backends.backend_signals import BackendSignals
 from GTG.core.tag import ALLTASKS_TAG
 from GTG.core.dirs import SYNC_DATA_DIR
 from GTG.core.interruptible import _cancellation_point
 from GTG.core.keyring import Keyring
-from GTG.core.logger import log, log_debug_enabled
 
+log = logging.getLogger(__name__)
 PICKLE_BACKUP_NBR = 2
 
 
@@ -287,7 +288,7 @@ class GenericBackend():
         # if debugging mode is enabled, tasks should be saved as soon as
         # they're marked as modified. If in normal mode, we prefer speed over
         # easier debugging.
-        if log_debug_enabled():
+        if log.isEnabledFor(logging.DEBUG):
             self.timer_timestep = 5
         else:
             self.timer_timestep = 1
@@ -575,7 +576,7 @@ class GenericBackend():
             try:
                 return pickle.load(file)
             except Exception:
-                log.error("Pickle file for backend '%s' is damaged" %
+                log.error("Pickle file for backend '%s' is damaged",
                           self.get_name())
 
         # Loading file failed, trying backups
@@ -585,16 +586,16 @@ class GenericBackend():
                 with open(backup_file, 'rb') as file:
                     try:
                         data = pickle.load(file)
-                        log.info("Succesfully restored backup #%d for '%s'" %
-                                 (i, self.get_name()))
+                        log.info("Succesfully restored backup #%d for %r",
+                                 i, self.get_name())
                         return data
                     except Exception:
-                        log.error("Backup #%d for '%s' is damaged as well" %
-                                  (i, self.get_name()))
+                        log.error("Backup #%d for %r is damaged as well",
+                                  i, self.get_name())
 
         # Data could not be loaded, degrade to default data
-        log.error(f"There is no suitable backup for '{self.get_name()}', "
-                  "loading default data")
+        log.error("There is no suitable backup for %r, loading default data",
+                  self.get_name())
         return default_value
 
     def _gtg_task_is_syncable_per_attached_tags(self, task):

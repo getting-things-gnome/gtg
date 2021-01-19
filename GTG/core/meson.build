@@ -32,7 +32,6 @@ gtg_core_sources = [
   'firstrun_tasks.py',
   'interruptible.py',
   'keyring.py',
-  'logger.py',
   'networkmanager.py',
   'requester.py',
   'search.py',

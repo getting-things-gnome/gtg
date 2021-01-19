@@ -17,11 +17,13 @@
 # -----------------------------------------------------------------------------
 import imp
 import os
+import logging
 from gi.repository import GLib
 
 from GTG.core.dirs import PLUGIN_DIRS
 from GTG.core.borg import Borg
-from GTG.core.logger import log
+
+log = logging.getLogger(__name__)
 
 
 class Plugin():
@@ -115,9 +117,8 @@ class Plugin():
                 # no dependencies in info file; use the ImportError instead
                 self.missing_modules.append(str(e).split(" ")[3])
             self.error = True
-        except Exception as e:
-            # load_module() failed for some other reason
-            log.error(e)
+        except Exception:
+            log.exception("load_module() failed for some other reason:")
             self.error = True
 
     def reload(self, module_paths):

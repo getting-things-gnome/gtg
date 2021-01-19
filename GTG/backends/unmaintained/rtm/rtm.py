@@ -6,7 +6,9 @@ import urllib.error
 from hashlib import md5
 
 from gettext import gettext as _
-from GTG.core.logger import log
+import logging
+
+log = logging.getLogger(__name__)
 
 _use_jsonlib = False
 try:
@@ -168,7 +170,7 @@ class RTMAPICategory():
 
         for param in params:
             if param not in rargs + oargs:
-                log.error(f'Invalid parameter ({param})')
+                log.error('Invalid parameter (%s)', param)
 
         return self.rtm.get(method=aname,
                             auth_token=self.rtm.authInfo.get('token'),

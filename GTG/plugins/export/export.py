@@ -22,13 +22,15 @@ import os
 import shutil
 import subprocess
 import webbrowser
+import logging
 
 from gi.repository import GObject, Gtk, GdkPixbuf, GLib
 
 from gettext import gettext as _
-from GTG.core.logger import log
 from GTG.plugins.export.task_str import get_task_wrappers
 from GTG.plugins.export.templates import Template, get_templates_paths
+
+log = logging.getLogger(__name__)
 
 
 # Enforce external dependencies
@@ -37,7 +39,7 @@ for dependence in "pdflatex", "pdftk", "pdfjam":
                              stdout=subprocess.PIPE,
                              stderr=subprocess.DEVNULL,)
     if retval != 0:
-        log.debug(f'Missing command "{dependence}"')
+        log.debug('Missing command %r', dependence)
         raise ImportError(f'Missing command "{dependence}"')
 
 

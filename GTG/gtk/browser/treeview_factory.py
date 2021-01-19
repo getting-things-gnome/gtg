@@ -188,7 +188,9 @@ class TreeviewFactory():
 
     def __date_comp_continue(self, task1, task2, order, t1, t2):
         sort = (t2 > t1) - (t2 < t1)
-        if sort != 0: # Ingore order, since this will be done automatically
+
+        if sort != 0:  # Ingore order, since this will be done automatically
+
             return sort
 
         # Dates are equal
@@ -199,7 +201,7 @@ class TreeviewFactory():
         t2_tags.sort()
         sort = (t1_tags > t2_tags) - (t1_tags < t2_tags)
 
-        if sort == 0: # Even tags are equal
+        if sort == 0:  # Even tags are equal
             # Break ties by sorting by title
             sort = locale.strcoll(task1.get_title(), task2.get_title())
 

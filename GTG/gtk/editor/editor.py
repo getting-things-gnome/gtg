@@ -24,6 +24,7 @@ The rest is the logic of the widget: date changing widgets, buttons, ...
 """
 import time
 import datetime
+import logging
 import os
 
 from gi.repository import Gdk, Gtk, Pango
@@ -40,10 +41,11 @@ from GTG.gtk.editor.recurring_menu import RecurringMenu
 from GTG.gtk.editor.taskview import TaskView
 from GTG.gtk.tag_completion import tag_filter
 from GTG.core.dates import Date
-from GTG.core.logger import log
 """
 TODO (jakubbrindza): re-factor tag_filter into a separate module
 """
+
+log = logging.getLogger(__name__)
 
 
 class TaskEditor():
@@ -406,18 +408,16 @@ class TaskEditor():
             try:
                 self.window.resize(int(size[0]), int(size[1]))
             except ValueError:
-                log.warning(
-                    'Invalid size configuration for task %s: %s',
-                    self.task.get_id(), size)
+                log.warning('Invalid size configuration for task %s: %s',
+                            self.task.get_id(), size)
 
         if position and len(position) == 2:
             try:
                 x = max(0, int(position[0]))
                 y = max(0, int(position[1]))
             except ValueError:
-                log.warning(
-                    'Invalid position configuration for task %s: %s',
-                    self.task.get_id(), position)
+                log.warning('Invalid position configuration for task %s:%s',
+                            self.task.get_id(), position)
         else:
             device_manager = Gdk.Display.get_default().get_device_manager()
             pointer = device_manager.get_client_pointer()
@@ -872,7 +872,7 @@ class TaskEditor():
         try:
             del self.app.open_tasks[tid]
         except KeyError:
-            log.debug(f'Task {tid} was already removed from the open list')
+            log.debug('Task %s was already removed from the open list', tid)
 
     def get_builder(self):
         return self.builder

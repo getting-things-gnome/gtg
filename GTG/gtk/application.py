@@ -36,11 +36,12 @@ from GTG.core.plugins.api import PluginAPI
 from GTG.backends import BackendFactory
 from GTG.core.datastore import DataStore
 from GTG.core.dirs import CSS_DIR
-from GTG.core.logger import log
 from GTG.core.dates import Date
 from GTG.gtk.backends import BackendsDialog
 from GTG.gtk.browser.tag_editor import TagEditor
 from GTG.core.timer import Timer
+
+log = logging.getLogger(__name__)
 
 
 class Application(Gtk.Application):
@@ -128,23 +129,24 @@ class Application(Gtk.Application):
         """Callback when opening files/tasks"""
 
         self.init_shared()
-
-        log.debug(f'Received {len(files)} Task URIs')
-        if len(files) != n_files:
-            log.warning(f"Length of files {len(files)} != supposed length {n_files}")
+        len_files = len(files)
+        log.debug("Received %d Task URIs", len_files)
+        if len_files != n_files:
+            log.warning("Length of files %d != supposed length %d",
+                           len_files, n_files)
 
         for file in files:
             if file.get_uri_scheme() == 'gtg':
                 uri = file.get_uri()
                 if uri[4:6] != '//':
-                    log.info(f"Malformed URI, needs gtg://: {uri}")
+                    log.info("Malformed URI, needs gtg://:%s", uri)
                 else:
                     parsed = urllib.parse.urlparse(uri)
                     task_id = parsed.netloc
-                    log.debug(f'Opening task {task_id}')
+                    log.debug("Opening task %s", task_id)
                     self.open_task(task_id)
             else:
-                log.info(f"Unknown task to open: {file.get_uri()}")
+                log.info("Unknown task to open: %s", file.get_uri())
 
         log.debug("Application opening finished")
 
@@ -486,7 +488,7 @@ class Application(Gtk.Application):
                 self.config.set("opened_tasks", open_tasks)
 
             else:
-                log.error(f'Task {uid} could not be found!')
+                log.error('Task %s could not be found!', uid)
 
         return editor
 
@@ -512,7 +514,7 @@ class Application(Gtk.Application):
             self.config.set("opened_tasks", open_tasks)
 
         except KeyError:
-            log.debug(f'Tried to close tid {tid} but it is not open')
+            log.debug('Tried to close tid %s but it is not open', tid)
 
     # --------------------------------------------------------------------------
     # SHUTDOWN
@@ -573,11 +575,18 @@ class Application(Gtk.Application):
     # MISC
     # --------------------------------------------------------------------------
 
-    def set_debug_flag(self, debug):
+    @staticmethod
+    def set_logging(debug: bool = False):
         """Set whenever it should activate debug stuff like logging or not"""
+        level = logging.DEBUG if debug else logging.INFO
+        handler = logging.StreamHandler()
+        formatter = logging.Formatter("%(asctime)s - %(levelname)s - "
+                                      "%(module)s:%(funcName)s:%(lineno)d - "
+                                      "%(message)s")
+        handler.setFormatter(formatter)
+        logger_ = logging.getLogger('GTG')
+        handler.setLevel(level)
+        logger_.addHandler(handler)
+        logger_.setLevel(level)
         if debug:
-            log.setLevel(logging.DEBUG)
-            log.debug("Debug output enabled.")
-        else:
-            log.setLevel(logging.INFO)
-
+            logger_.debug("Debug output enabled.")

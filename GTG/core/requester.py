@@ -19,11 +19,12 @@
 """
 A nice general purpose interface for the datastore and tagstore
 """
-
+import logging
 from gi.repository import GObject
 
 from GTG.core.tag import Tag
-from GTG.core.logger import log
+
+log = logging.getLogger(__name__)
 
 
 class Requester(GObject.GObject):
@@ -139,7 +140,7 @@ class Requester(GObject.GObject):
         @param tid: The id of the task to be deleted.
         """
         # send the signal before actually deleting the task !
-        log.debug(f"deleting task {tid}")
+        log.debug("deleting task %s", tid)
         return self.__basetree.del_node(tid, recursive=recursive)
 
     def get_task_id(self, task_title):
