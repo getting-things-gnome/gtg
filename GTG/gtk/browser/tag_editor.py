@@ -288,7 +288,7 @@ class TagEditor(Gtk.Window):
 
                 # Select on sidebar and update values
                 self.app.browser.select_on_sidebar(new_name)
-                self.app.browser.apply_filter_on_panes(new_name)
+                self.app.browser.reapply_filter()
 
             return False
 
