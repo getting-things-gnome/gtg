@@ -128,7 +128,7 @@ class MainWindow(Gtk.ApplicationWindow):
 
         self.restore_state_from_conf()
 
-        self._reapply_filter()
+        self.reapply_filter()
         self._set_defer_days()
         self.browser_shown = False
 
@@ -571,7 +571,7 @@ class MainWindow(Gtk.ApplicationWindow):
     def refresh_all_views(self, timer):
         for pane in 'active', 'workview', 'closed':
             self.req.get_tasks_tree(pane, False).reset_filters(refresh=False)
-        self._reapply_filter()
+        self.reapply_filter()
 
     def find_value_in_treestore(self, store, treeiter, value):
         """Search for value in tree store recursively."""
@@ -1272,7 +1272,7 @@ class MainWindow(Gtk.ApplicationWindow):
                 task.set_status(Task.STA_DISMISSED)
                 self.close_all_task_editors(uid)
 
-    def _reapply_filter(self, current_pane: str = None):
+    def reapply_filter(self, current_pane: str = None):
         if current_pane is None:
             current_pane = self.get_selected_pane()
         filters = self.get_selected_tags()
@@ -1312,7 +1312,7 @@ class MainWindow(Gtk.ApplicationWindow):
                 self.quickadd_entry.set_text(tag.get_attribute("query"))
                 break
 
-        self._reapply_filter()
+        self.reapply_filter()
 
     def on_pane_switch(self, obj, pspec):
         """ Callback for pane switching.
@@ -1320,7 +1320,7 @@ class MainWindow(Gtk.ApplicationWindow):
         """
         current_pane = self.get_selected_pane()
         self.config.set('view', current_pane)
-        self._reapply_filter(current_pane)
+        self.reapply_filter(current_pane)
 
 # PUBLIC METHODS ###########################################################
     def have_same_parent(self):
