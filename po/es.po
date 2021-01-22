@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-01-18 21:06+0100\n"
-"PO-Revision-Date: 2021-01-18 21:09+0100\n"
+"POT-Creation-Date: 2021-01-22 23:04+0100\n"
+"PO-Revision-Date: 2021-01-22 23:00+0100\n"
 "Last-Translator: Óscar Fernández Díaz <oscfdezdz@tuta.io>\n"
 "Language-Team: Spanish\n"
 "Language: es\n"
@@ -799,11 +799,11 @@ msgstr "Marcar esta tarea para repetir"
 
 #: GTG/gtk/data/task_editor.ui:708
 msgid "Starts on"
-msgstr "Empieza el"
+msgstr "Empieza"
 
 #: GTG/gtk/data/task_editor.ui:751
 msgid "Due on"
-msgstr "Vencimiento para"
+msgstr "Vence el"
 
 #: GTG/gtk/data/task_editor.ui:794
 msgid "Closed on"
@@ -1498,8 +1498,8 @@ msgstr ""
 "\n"
 "La función de búsqueda de GTG es realmente poderosa y acepta muchos "
 "parámetros que te permiten buscar tareas muy específicas. Por ejemplo, "
-"usando la consulta de búsqueda &quot;@errands !hoy&quot;, puedes buscar "
-"tareas con la etiqueta @errands que deben hacerse hoy. Para aprender más "
+"usando la consulta de búsqueda &quot;@recados !hoy&quot;, puedes buscar "
+"tareas con la etiqueta @recados que deben hacerse hoy. Para aprender más "
 "acerca de los diversos parámetros de búsqueda que puede utilizar, consulte "
 "la documentación de la sintaxis de búsqueda en el manual de usuario de GTG, "
 "que se encuentra a través de la opción de menú &quot;Ayuda&quot; en el botón "
@@ -1855,7 +1855,7 @@ msgstr "Web de GTG"
 #. GtkAboutDialog will detect if “translator-credits” is untranslated and auto-hide the tab.
 #: GTG/gtk/browser/main_window.py:352
 msgid "translator-credits"
-msgstr "Óscar Fernández Díaz, 2021"
+msgstr "Óscar Fernández Díaz"
 
 #: GTG/gtk/browser/main_window.py:660
 msgid "Hide Sidebar"
@@ -2146,6 +2146,3 @@ msgstr "Tarea: %(task_title)s"
 #: GTG/plugins/untouched_tasks/untouchedTasks.py:64
 msgid "Add @untouched tag"
 msgstr "Añadir etiqueta @intacta"
-
-#~ msgid "Remove selected icon"
-#~ msgstr "Eliminar el icono seleccionado"
