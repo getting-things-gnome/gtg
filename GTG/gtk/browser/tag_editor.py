@@ -86,7 +86,7 @@ class TagEditor(Gtk.Window):
         self.hidden_entry.set_size_request(0, 0)
         self.ti_bt.set_relief(Gtk.ReliefStyle.HALF)
         self.ti_bt_clear = Gtk.Button()
-        self.ti_bt_clear.set_label('Remove icon')
+        self.ti_bt_clear.set_label(_('Remove icon'))
         self.clear_box.add(self.ti_bt_clear)
 
         # vbox for tag name and hid in WV
