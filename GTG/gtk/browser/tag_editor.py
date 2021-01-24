@@ -139,7 +139,7 @@ class TagEditor(Gtk.Window):
             self.ti_bt_clear.set_sensitive(True)
         else:
             self.ti_bt_label.set_text('🏷️')
-            self.ti_bt_label.set_opacity(0.1)
+            self.ti_bt_label.set_opacity(0.4)
             self.ti_bt_clear.set_sensitive(False)
 
         with GObject.signal_handler_block(self.hidden_entry, self.emoji_id):
@@ -248,11 +248,11 @@ class TagEditor(Gtk.Window):
                     self.ti_bt_clear.set_sensitive(True)
                 else:
                     self.ti_bt_label.set_text('🏷️')
-                    self.ti_bt_label.set_opacity(0.1)
+                    self.ti_bt_label.set_opacity(0.4)
                     self.ti_bt_clear.set_sensitive(False)
             else:
                 self.ti_bt_label.set_text('🏷️')
-                self.ti_bt_label.set_opacity(0.1)
+                self.ti_bt_label.set_opacity(0.4)
                 self.ti_bt_clear.set_sensitive(False)
             # If available, update color selection
             if (tag.get_attribute('color') is not None):
