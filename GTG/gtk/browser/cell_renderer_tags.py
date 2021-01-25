@@ -167,8 +167,10 @@ class CellRendererTags(Gtk.CellRenderer):
             elif my_tag_color:
 
                 # Draw rounded rectangle
-                my_color = Gdk.color_parse(my_tag_color)
-                Gdk.cairo_set_source_color(gdkcontext, my_color)
+                my_color = Gdk.RGBA()
+                my_color.parse(my_tag_color)
+                Gdk.cairo_set_source_rgba(gdkcontext, my_color)
+
                 self.__roundedrec(gdkcontext, rect_x, rect_y, 16, 16, 8)
                 gdkcontext.fill()
                 count += 1
