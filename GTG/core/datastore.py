@@ -425,6 +425,8 @@ class DataStore():
                 log.error("registering a backend without pid.")
                 return None
             backend = backend_dic["backend"]
+            first_run = backend_dic["first_run"]
+
             # Checking that is a new backend
             if backend.get_id() in self.backends:
                 log.error("registering already registered backend")
