@@ -141,6 +141,7 @@ class BackendFactory(Borg):
             backend_data = {}
             specs = module.Backend.get_static_parameters()
             backend_data['pid'] = str(settings.get('pid'))
+            backend_data["first_run"] = False
 
             for param_name, param_dic in specs.items():
 
@@ -166,7 +167,7 @@ class BackendFactory(Borg):
             dic = BackendFactory().get_new_backend_dict(
                 "backend_localfile")
 
-            dic["backend"].this_is_the_first_run(None)
+            dic["first_run"] = True
             backends.append(dic)
 
         return backends
