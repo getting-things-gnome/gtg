@@ -38,7 +38,8 @@ from GTG.core.task import DisabledSyncCtx, Task
 from vobject import iCalendar
 
 logger = logging.getLogger('gtg.' + __name__)
-TAG_REGEX = re.compile(r'\B\@\w+(\-\w+)*')
+# found elsewhere, should be factorized
+TAG_REGEX = re.compile(r'\B@\w+[-_\w]*')
 MAX_CALENDAR_DEPTH = 500
 DAV_TAG_PREFIX = 'DAV_'
 
@@ -719,7 +720,7 @@ class Description(Field):
                 if not subtask:
                     continue
                 result += '[%s] %s\n' % (
-                    'x' if subtask.get_status() == Task.STA_ACTIVE else ' ',
+                    'x' if subtask.get_status() == Task.STA_DONE else ' ',
                     subtask.get_title())
             else:
                 result += line.strip() + '\n'

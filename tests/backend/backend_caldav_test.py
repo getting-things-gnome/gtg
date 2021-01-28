@@ -134,25 +134,45 @@ class CalDAVTest(TestCase):
             self.assertTrue(field.is_equal(task, NAMESPACE, vtodo=vtodo.vtodo),
                             '%r has differing values' % field)
 
-    def test_translate_parent_field(self):
+    def test_translate(self):
         datastore = DataStore()
         root_task = datastore.task_factory('root-task', newtask=True)
+        root_task.add_tag('@my-tag')
+        root_task.add_tag('@my-other-tag')
+        root_task.set_title('my task')
         datastore.push_task(root_task)
         child_task = datastore.task_factory('child-task', newtask=True)
+        child_task.set_title('my first child')
+        child_task.add_tag('@my-tag')
+        child_task.add_tag('@my-other-tag')
+        child_task.set_text("@my-tag, @my-other-tag, \n\ntask content")
         datastore.push_task(child_task)
         root_task.add_child(child_task.get_id())
-        self.assertEqual([child_task.get_id()], root_task.get_children())
+        child2_task = datastore.task_factory('done-child-task', newtask=True)
+        child2_task.set_title('my done child')
+        child2_task.add_tag('@my-tag')
+        child2_task.add_tag('@my-other-tag')
+        child2_task.set_text("@my-tag, @my-other-tag, \n\nother task txt")
+        child2_task.set_status(Task.STA_DONE)
+        datastore.push_task(child2_task)
+        root_task.add_child(child2_task.get_id())
+        root_task.set_text(f"@my-tag, @my-other-tag\n\nline\n"
+                           f"{{!{child_task.get_id()}!}}\n"
+                           f"{{!{child2_task.get_id()}!}}\n")
+        self.assertEqual([child_task.get_id(), child2_task.get_id()],
+                         root_task.get_children())
         self.assertEqual([root_task.get_id()], child_task.get_parents())
         self.assertEqual([], PARENT_FIELD.get_gtg(root_task, NAMESPACE))
-        self.assertEqual(['child-task'],
+        self.assertEqual(['child-task', 'done-child-task'],
                          CHILDREN_FIELD.get_gtg(root_task, NAMESPACE))
         self.assertEqual(['root-task'],
                          PARENT_FIELD.get_gtg(child_task, NAMESPACE))
         self.assertEqual([], CHILDREN_FIELD.get_gtg(child_task, NAMESPACE))
         root_vtodo = Translator.fill_vtodo(root_task, 'calname', NAMESPACE)
         child_vtodo = Translator.fill_vtodo(child_task, 'calname', NAMESPACE)
+        child2_vtodo = Translator.fill_vtodo(child2_task, 'calname', NAMESPACE)
         self.assertEqual([], PARENT_FIELD.get_dav(vtodo=root_vtodo.vtodo))
-        self.assertEqual(['child-task'],
+        self.assertEqual(['child-task', 'done-child-task'],
                          CHILDREN_FIELD.get_dav(vtodo=root_vtodo.vtodo))
         self.assertEqual(['root-task'],
                          PARENT_FIELD.get_dav(vtodo=child_vtodo.vtodo))
@@ -161,6 +181,18 @@ class CalDAVTest(TestCase):
                         in root_vtodo.serialize())
         self.assertTrue('\r\nRELATED-TO;RELTYPE=PARENT:root-task\r\n'
                         in child_vtodo.serialize())
+        root_contents = root_vtodo.contents['vtodo'][0].contents
+        child_cnt = child_vtodo.contents['vtodo'][0].contents
+        child2_cnt = child2_vtodo.contents['vtodo'][0].contents
+        for cnt in root_contents, child_cnt, child2_cnt:
+            self.assertEqual(['my-tag', 'my-other-tag'],
+                             cnt['categories'][0].value)
+        self.assertEqual('my first child', child_cnt['summary'][0].value)
+        self.assertEqual('my done child', child2_cnt['summary'][0].value)
+        self.assertEqual('task content', child_cnt['description'][0].value)
+        self.assertEqual('other task txt', child2_cnt['description'][0].value)
+        self.assertEqual('line\n[ ] my first child\n[x] my done child',
+                         root_contents['description'][0].value)
 
     @patch('GTG.backends.periodic_import_backend.threading.Timer',
            autospec=MockTimer)
