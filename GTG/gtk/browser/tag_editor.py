@@ -22,13 +22,11 @@ tag_editor: this module contains two classes: TagIconSelector and TagEditor.
 - TagEditor is a dialog window used to edit the properties of a tag.
 - TagIconSelector is a popover within that dialog to select an icon.
 """
-
 from gi.repository import GObject, Gtk, Gdk, GdkPixbuf
 
 from gettext import gettext as _
 from GTG.gtk.browser.simple_color_selector import SimpleColorSelector
 from GTG.gtk.colors import color_add, color_remove
-from GTG.core.logger import log
 
 
 class TagEditor(Gtk.Window):
@@ -86,7 +84,7 @@ class TagEditor(Gtk.Window):
         self.hidden_entry.set_size_request(0, 0)
         self.ti_bt.set_relief(Gtk.ReliefStyle.HALF)
         self.ti_bt_clear = Gtk.Button()
-        self.ti_bt_clear.set_label('Remove icon')
+        self.ti_bt_clear.set_label(_('Remove icon'))
         self.clear_box.add(self.ti_bt_clear)
 
         # vbox for tag name and hid in WV
@@ -139,7 +137,7 @@ class TagEditor(Gtk.Window):
             self.ti_bt_clear.set_sensitive(True)
         else:
             self.ti_bt_label.set_text('🏷️')
-            self.ti_bt_label.set_opacity(0.1)
+            self.ti_bt_label.set_opacity(0.4)
             self.ti_bt_clear.set_sensitive(False)
 
         with GObject.signal_handler_block(self.hidden_entry, self.emoji_id):
@@ -248,11 +246,11 @@ class TagEditor(Gtk.Window):
                     self.ti_bt_clear.set_sensitive(True)
                 else:
                     self.ti_bt_label.set_text('🏷️')
-                    self.ti_bt_label.set_opacity(0.1)
+                    self.ti_bt_label.set_opacity(0.4)
                     self.ti_bt_clear.set_sensitive(False)
             else:
                 self.ti_bt_label.set_text('🏷️')
-                self.ti_bt_label.set_opacity(0.1)
+                self.ti_bt_label.set_opacity(0.4)
                 self.ti_bt_clear.set_sensitive(False)
             # If available, update color selection
             if (tag.get_attribute('color') is not None):
@@ -288,7 +286,7 @@ class TagEditor(Gtk.Window):
 
                 # Select on sidebar and update values
                 self.app.browser.select_on_sidebar(new_name)
-                self.app.browser.apply_filter_on_panes(new_name)
+                self.app.browser.reapply_filter()
 
             return False
 

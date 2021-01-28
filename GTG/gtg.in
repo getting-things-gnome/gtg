@@ -95,7 +95,7 @@ def handle_local_options(application, options):
     debug = options.lookup_value("debug", None)
     if debug is not None:
         debug = debug.unpack()
-    application.set_debug_flag(bool(debug))
+    application.set_logging(bool(debug))
 
     title = options.lookup_value("title", None)
     if title is not None:

@@ -40,7 +40,6 @@ GTG/core/info.py
 GTG/core/__init__.py
 GTG/core/interruptible.py
 GTG/core/keyring.py
-GTG/core/logger.py
 GTG/core/networkmanager.py
 GTG/core/plugins/api.py
 GTG/core/plugins/engine.py

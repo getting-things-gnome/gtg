@@ -17,7 +17,7 @@
 # -----------------------------------------------------------------------------
 
 import gi
-
+import logging
 try:
     gi.require_version('Secret', '1')
     from gi.repository import Secret
@@ -31,7 +31,8 @@ except (ValueError, ImportError):
     GnomeKeyring = None
 
 from GTG.core.borg import Borg
-from GTG.core.logger import log
+
+log = logging.getLogger(__name__)
 
 class SecretKeyring(Borg):
     def __init__(self):
@@ -121,5 +122,6 @@ if Secret is not None:
 elif GnomeKeyring is not None:
     Keyring = GNOMEKeyring
 else:
-    log.info("GNOME keyring not found, passwords will be not stored after restarting GTG")
+    log.error("GNOME keyring not found, passwords will be "
+              "not stored after restarting GTG")
     Keyring = FallbackKeyring

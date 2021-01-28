@@ -67,8 +67,9 @@ class SimpleColorSelectorPaletteItem(Gtk.DrawingArea):
 
         # Draw rectangle
         if self.color is not None:
-            my_color = Gdk.color_parse(self.color)
-            Gdk.cairo_set_source_color(gdkcontext, my_color)
+            my_color = Gdk.RGBA()
+            my_color.parse(self.color)
+            Gdk.cairo_set_source_rgba(gdkcontext, my_color)
         else:
             Gdk.cairo_set_source_rgba(gdkcontext, Gdk.RGBA(0, 0, 0, 0))
         gdkcontext.rectangle(0, 0, alloc_w, alloc_h)

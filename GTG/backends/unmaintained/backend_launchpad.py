@@ -24,6 +24,7 @@ Backend for importing launchpad bugs in GTG
 import os
 import uuid
 import datetime
+import logging
 
 from launchpadlib.launchpad import Launchpad, EDGE_SERVICE_ROOT
 
@@ -35,11 +36,12 @@ from GTG.core.dirs import SYNC_CACHE_DIR
 from GTG.core.task import Task
 from gettext import gettext as _
 from GTG.info import NAME as GTG_NAME
-from GTG.core.logger import log
 
 # Uncomment this to see each http request
 # import httplib2
 # httplib2.debuglevel = 1
+
+log = logging.getLogger(__name__)
 
 
 class Backend(PeriodicImportBackend):

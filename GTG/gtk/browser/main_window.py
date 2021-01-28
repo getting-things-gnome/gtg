@@ -20,6 +20,7 @@
 
 import threading
 import datetime
+import logging
 
 from gi.repository import GObject, Gtk, Gdk, Gio
 
@@ -40,8 +41,8 @@ from GTG.gtk.browser.treeview_factory import TreeviewFactory
 from GTG.gtk.editor.calendar import GTGCalendar
 from GTG.gtk.tag_completion import TagCompletion
 from GTG.core.dates import Date
-from GTG.core.logger import log
 
+log = logging.getLogger(__name__)
 PANE_STACK_NAMES_MAP = {
     'closed_view': 'closed',
     'open_view': 'active',
@@ -128,7 +129,7 @@ class MainWindow(Gtk.ApplicationWindow):
 
         self.restore_state_from_conf()
 
-        self._reapply_filter()
+        self.reapply_filter()
         self._set_defer_days()
         self.browser_shown = False
 
@@ -571,7 +572,7 @@ class MainWindow(Gtk.ApplicationWindow):
     def refresh_all_views(self, timer):
         for pane in 'active', 'workview', 'closed':
             self.req.get_tasks_tree(pane, False).reset_filters(refresh=False)
-        self._reapply_filter()
+        self.reapply_filter()
 
     def find_value_in_treestore(self, store, treeiter, value):
         """Search for value in tree store recursively."""
@@ -824,8 +825,8 @@ class MainWindow(Gtk.ApplicationWindow):
         """
         deals with mouse click event on the tag tree
         """
-        log.debug("Received button event #%d at %d, %d" % (
-            event.button, event.x, event.y))
+        log.debug("Received button event #%d at %d, %d",
+                  event.button, event.x, event.y)
         if event.button == 3:
             x = int(event.x)
             y = int(event.y)
@@ -910,7 +911,8 @@ class MainWindow(Gtk.ApplicationWindow):
     def on_task_treeview_button_press_event(self, treeview, event):
         """ Pop up context menu on right mouse click in the main
         task tree view """
-        log.debug(f"Received button event #{event.button} at {event.x},{event.y}")
+        log.debug("Received button event #%s at %d,%d",
+                  event.button, event.x, event.y)
         if event.button == 3:
             x = int(event.x)
             y = int(event.y)
@@ -1032,7 +1034,7 @@ class MainWindow(Gtk.ApplicationWindow):
         else:
             tids_todelete = [tid]
 
-        log.debug(f"going to delete {tids_todelete}")
+        log.debug("going to delete %r", tids_todelete)
         self.app.delete_tasks(tids_todelete, self)
 
     def update_start_date(self, widget, new_start_date):
@@ -1272,7 +1274,7 @@ class MainWindow(Gtk.ApplicationWindow):
                 task.set_status(Task.STA_DISMISSED)
                 self.close_all_task_editors(uid)
 
-    def _reapply_filter(self, current_pane: str = None):
+    def reapply_filter(self, current_pane: str = None):
         if current_pane is None:
             current_pane = self.get_selected_pane()
         filters = self.get_selected_tags()
@@ -1312,7 +1314,7 @@ class MainWindow(Gtk.ApplicationWindow):
                 self.quickadd_entry.set_text(tag.get_attribute("query"))
                 break
 
-        self._reapply_filter()
+        self.reapply_filter()
 
     def on_pane_switch(self, obj, pspec):
         """ Callback for pane switching.
@@ -1320,7 +1322,7 @@ class MainWindow(Gtk.ApplicationWindow):
         """
         current_pane = self.get_selected_pane()
         self.config.set('view', current_pane)
-        self._reapply_filter(current_pane)
+        self.reapply_filter(current_pane)
 
 # PUBLIC METHODS ###########################################################
     def have_same_parent(self):

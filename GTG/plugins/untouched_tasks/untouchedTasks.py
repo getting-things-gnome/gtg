@@ -17,11 +17,12 @@
 from threading import Timer
 import datetime
 import os
+import logging
 from gettext import gettext as _
 
 from gi.repository import Gtk
 
-from GTG.core.logger import log
+log = logging.getLogger(__name__)
 
 
 class UntouchedTasksPlugin():
@@ -80,21 +81,17 @@ class UntouchedTasksPlugin():
         """
         plugin_api.remove_menu_item(self.menu_item)
 
-# HELPER FUNCTIONS ############################################################
-    def __log(self, message):
-        log.debug(message)
-
 # CORE FUNCTIONS ##############################################################
     def schedule_autopurge(self):
         self.timer = Timer(self.TIME_BETWEEN_PURGES,
                            self.add_untouched_tag)
         self.timer.setDaemon(True)
         self.timer.start()
-        self.__log("Automatic untouched tasks check scheduled")
+        log.debug("Automatic untouched tasks check scheduled")
 
     def cancel_autopurge(self):
         if self.timer:
-            self.__log("Automatic untouched tasks check cancelled")
+            log.debug("Automatic untouched tasks check cancelled")
             self.timer.cancel()
 
     def add_untouched_tag(self, widget=None):
@@ -107,7 +104,7 @@ class UntouchedTasksPlugin():
         if tag_name.find('@') != 0:
             tag_name = '@' + tag_name
 
-        self.__log("Starting process for adding " + tag_name)
+        log.debug("Starting process for adding %s", tag_name)
         today = datetime.datetime.now()
         max_days = self.preferences["max_days"]
         requester = self.plugin_api.get_requester()
@@ -120,9 +117,8 @@ class UntouchedTasksPlugin():
             modified_time = task.get_modified()
             new_time = modified_time + datetime.timedelta(days=max_days)
             if new_time < today:
-                self.__log('Adding ' + tag_name + ' tag to: "' + task.title +
-                           '" as last time it was modified was ' +
-                           str(modified_time))
+                log.debug('Adding %r tag to: %r as last time it was modified '
+                          'was %r', tag_name, task.get_title(), modified_time)
                 task.add_tag(tag_name)
 
         # If automatic purging is on, schedule another run
