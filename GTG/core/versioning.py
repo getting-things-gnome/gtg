@@ -92,7 +92,6 @@ def convert_tags(old_tree: et.Element) -> Tuple[et.Element, et.Element]:
         name = tag.get('name')
         parent = tag.get('parent')
         notactionable = tag.get('nonworkview')
-        icon = tag.get('icon')
         color = tag.get('color')
         tid = str(uuid4())
 
@@ -121,9 +120,6 @@ def convert_tags(old_tree: et.Element) -> Tuple[et.Element, et.Element]:
         # Remove # in color hex
         if color:
             new_tag.set('color', color[1:].upper())
-
-        if icon:
-            new_tag.set('icon', icon)
 
 
     # In older versions not all tags were saved in the tag file
