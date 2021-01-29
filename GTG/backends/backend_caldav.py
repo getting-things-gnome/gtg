@@ -222,13 +222,11 @@ class Backend(PeriodicImportBackend):
                 "Configure CalDAV with login information. Error:"
             )
             BackendSignals().interaction_requested(
-                self.get_id(), message + " " + str(error),
+                self.get_id(), "%s %r" % (message, error),
                 BackendSignals().INTERACTION_INFORM, "on_continue_clicked")
             raise error
-        seen_calendars_names = set()
         for calendar in principal.calendars():
             self._cache.set_calendar(calendar)
-            seen_calendars_names.add(calendar.name)
 
     def _clean_task_missing_from_backend(self, uid: str,
                                          calendar_tasks: dict, counts: dict,
@@ -296,8 +294,7 @@ class Backend(PeriodicImportBackend):
 
         self._denorm_children_on_vtodos(todos)
 
-        known_todos = set()  # type: set
-        for todo in self.__sort_todos(todos, known_todos):
+        for todo in self.__sort_todos(todos):
             uid = UID_FIELD.get_dav(todo)
             self._cache.set_todo(todo, uid)
             # Updating and creating task according to todos
@@ -323,11 +320,11 @@ class Backend(PeriodicImportBackend):
         Translator.fill_task(todo, task, self.namespace)
         return 'updated'
 
-    def __sort_todos(self, todos: list, known_todos: set,
-                     max_depth: int = 500):
+    def __sort_todos(self, todos: list, max_depth: int = 500):
         """For a given list of todos, will return first the one without parent
         and then go deeper in the tree by browsing the tree."""
         loop = 0
+        known_todos = set()  # type: set
         while len(known_todos) < len(todos):
             loop += 1
             for todo in todos:
