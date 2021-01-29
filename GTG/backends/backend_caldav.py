@@ -37,7 +37,7 @@ from GTG.core.interruptible import interruptible
 from GTG.core.task import DisabledSyncCtx, Task
 from vobject import iCalendar
 
-logger = logging.getLogger('gtg.' + __name__)
+logger = logging.getLogger(__name__)
 # found elsewhere, should be factorized
 TAG_REGEX = re.compile(r'\B@\w+[-_\w]*')
 MAX_CALENDAR_DEPTH = 500
