@@ -64,11 +64,11 @@ def convert(path: str, ds: datastore) -> et.ElementTree:
     tasklist = et.SubElement(new_root, 'tasklist')
 
     for task in old_tree.iter('task'):
-        tid = task.attrib['id']
 
-        if '@' in tid:
-            new_tid = task.attrib['uuid']
-            tid_cache[tid] = new_tid
+        # Keep a map of old style IDs to UUIDs for later
+        tid = task.attrib['id']
+        new_tid = task.attrib['uuid']
+        tid_cache[tid] = new_tid
 
     for task in old_tree.iter('task'):
         new_task = convert_task(task, ds)
@@ -248,14 +248,7 @@ def convert_task(task: et.Element, ds: datastore) -> Optional[et.Element]:
 
     for sub in task.findall('subtask'):
         new_sub = et.SubElement(subtasks, 'sub')
-
-        if '@' in sub.text:
-            # GTG used to have a "second" (or first?) type of ID, which
-            # looked like this: 2@1. It was used for subtasks (AFAIK).
-            # We need to figure out the UUID for that task.
-            new_sub.text = tid_cache[sub.text]
-        else:
-            new_sub.text = sub.text
+        new_sub.text = tid_cache[sub.text]
 
     new_content = et.SubElement(new_task, 'content')
 
