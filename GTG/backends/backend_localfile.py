@@ -25,6 +25,7 @@ wants to write a backend.
 """
 
 import os
+import logging
 
 from GTG.backends.backend_signals import BackendSignals
 from GTG.backends.generic_backend import GenericBackend
@@ -33,10 +34,11 @@ from gettext import gettext as _
 from GTG.core import xml
 from GTG.core import firstrun_tasks
 from GTG.core import versioning
-from GTG.core.logger import log
 
 from typing import Dict
 from lxml import etree as et
+
+log = logging.getLogger(__name__)
 
 
 class Backend(GenericBackend):
