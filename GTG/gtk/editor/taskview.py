@@ -752,12 +752,15 @@ class TaskView(Gtk.TextView):
 
             self.buffer.delete(start, end)
 
+        self.process()
 
     def insert_tags(self, tags: List) -> None:
         """Insert tags in buffer."""
 
         # Don't add tags that are already in the buffer
-        [tags.remove(t) for t in tags if t in self.task_tags]
+        for t in tags.copy():
+            if t in self.task_tags:
+                tags.remove(t)
 
         if not tags:
             # Bail early if there are no tags left in the list
