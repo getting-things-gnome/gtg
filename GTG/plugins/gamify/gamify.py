@@ -156,9 +156,6 @@ class Gamify:
             return 3
         return 1
 
-    def OnTaskOpened(self, plugin_api):
-        pass
-
     def is_full(self):
         """Return True if ui type is FULL"""
         return self.preferences['ui_type'] == 'FULL'
