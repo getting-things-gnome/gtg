@@ -11,7 +11,7 @@ from gettext import gettext as _
 class Gamify:
     PLUGIN_PATH = os.path.dirname(os.path.abspath(__file__))
     PLUGIN_NAMESPACE = 'gamify'
-    DEFAULT_ANALITICS = {
+    DEFAULT_ANALYTICS = {
         "last_task_date": date.today(), # The date of the last task marked as done
         "last_task_number": 0, # The number of tasks done today
         "streak": 0, # The number of days in which the goal was achieved
@@ -132,25 +132,26 @@ class Gamify:
         """Returns the number of point for doing a perticular task
 
         If a task is taged as @hard: the user receives 3 points
-        If a task is taged as @meduim: the use receives 2 points
+        If a task is taged as @medium: the use receives 2 points
         If a task is taged as @easy: the user receives 1 point
         """
         easy = False
-        meduim = False
+        medium = False
         hard = False
+
         task = self.plugin_api.get_requester().get_task(task_id)
         tags = task.get_tags_name()
         for tag in tags:
             if tag == '@easy':
                 easy = True
-            elif tag == '@meduim':
-                meduim = True
+            elif tag == '@medium':
+                medium = True
             elif tag == '@hard':
                 hard = True
 
         if easy:
             return 1
-        if meduim:
+        if medium:
             return 2
         if hard:
             return 3
@@ -211,7 +212,7 @@ class Gamify:
     def analytics_load(self):
         self.data = self.plugin_api.load_configuration_object(
             self.PLUGIN_NAMESPACE, "analytics",
-            default_values=self.DEFAULT_ANALITICS
+            default_values=self.DEFAULT_ANALYTICS
         )
 
     def analytics_save(self):
