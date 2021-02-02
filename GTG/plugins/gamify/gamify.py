@@ -23,14 +23,14 @@ class Gamify:
         "ui_type": "FULL"
     }
     LEVELS = {
-        100: 'Beginner',
-        1000: 'Novice',
-        2000: 'prefessional',
-        4000: 'Expert',
-        9000: 'Master',
-        13000: 'Master II',
-        19000: 'Grand Master',
-        25000: 'Productivity Lord'
+        100: _('Beginner'),
+        1000: _('Novice'),
+        2000: _('prefessional'),
+        4000: _('Expert'),
+        9000: _('Master'),
+        13000: _('Master II'),
+        19000: _('Grand Master'),
+        25000: _('Productivity Lord')
     }
 
     def __init__(self):
