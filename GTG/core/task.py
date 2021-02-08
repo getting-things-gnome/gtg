@@ -509,11 +509,6 @@ class Task(TreeNode):
         self.due_date = new_duedate_obj
         # If the new date is fuzzy or undefined, we don't update related tasks
         if not new_duedate_obj.is_fuzzy():
-            # if the task's start date happens later than the
-            # new due date, we update it (except for fuzzy dates)
-            if not self.get_start_date().is_fuzzy() and \
-                    self.get_start_date() > new_duedate_obj:
-                self.set_start_date(new_duedate)
             # if some ancestors' due dates happen before the task's new
             # due date, we update them (except for fuzzy dates)
             for par in __get_defined_parent_list(self):
@@ -587,20 +582,8 @@ class Task(TreeNode):
     #
     # Start date is the date at which the user has decided to work or consider
     # working on this task.
-    #
-    # The only constraint applied to start dates is that start dates cannot
-    # happen later than the task due date.
-    #
-    # The task due date (and any constrained relatives) is updated if a new
-    # task start date is chosen that does not respect this rule.
-    #
-    # Undefined/fizzy start dates don't constraint the task due date.
     def set_start_date(self, fulldate):
         self.start_date = Date(fulldate)
-        if not Date(fulldate).is_fuzzy() and \
-            not self.due_date.is_fuzzy() and \
-                Date(fulldate) > self.due_date:
-            self.set_due_date(fulldate)
         self.sync()
 
     def get_start_date(self):
