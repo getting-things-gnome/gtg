@@ -85,6 +85,8 @@ def task_from_element(task, element: etree.Element):
 
     # Content
     content = element.find('content').text or ''
+
+    content = content.replace(']]&gt;', ']]>')
     task.set_text(content)
 
     # Subtasks
@@ -149,7 +151,13 @@ def task_to_element(task) -> etree.Element:
         sub.text = subtask_id
 
     content = etree.SubElement(element, 'content')
-    content.text = etree.CDATA(task.get_text())
+    text = task.get_text()
+
+    # Poor man's encoding.
+    # CDATA's only poison is this combination of characters.
+    text = text.replace(']]>', ']]&gt;')
+
+    content.text = etree.CDATA(text)
 
     return element
 
