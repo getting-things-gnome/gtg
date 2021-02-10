@@ -18,9 +18,10 @@
 
 """Main class of GTG."""
 
-from gi.repository import Gtk, Gdk, Gio
+from gi.repository import Gtk, Gdk, Gio, GLib
 import configparser
 import os
+import sys
 import logging
 import urllib.parse  # GLibs URI functions not available for some reason
 
@@ -40,6 +41,7 @@ from GTG.core.dates import Date
 from GTG.gtk.backends import BackendsDialog
 from GTG.gtk.browser.tag_editor import TagEditor
 from GTG.core.timer import Timer
+from GTG.gtk.errorhandler import do_error_dialog
 
 log = logging.getLogger(__name__)
 
@@ -79,6 +81,15 @@ class Application(Gtk.Application):
     def __init__(self, app_id):
         """Setup Application."""
 
+        self._exception = None
+        """Exception that occurred in startup, None otherwise"""
+
+        self._exception_dialog_timeout_id = None
+        """
+        Gio Source ID of an timer used to automatically kill GTG on
+        startup error.
+        """
+
         super().__init__(application_id=app_id,
                          flags=Gio.ApplicationFlags.HANDLES_OPEN)
 
@@ -88,67 +99,122 @@ class Application(Gtk.Application):
 
     def do_startup(self):
         """Callback when primary instance should initialize"""
-        Gtk.Application.do_startup(self)
-        Gtk.Window.set_default_icon_name(self.props.application_id)
+        try:
+            Gtk.Application.do_startup(self)
+            Gtk.Window.set_default_icon_name(self.props.application_id)
 
-        # Register backends
-        datastore = DataStore()
+            # Register backends
+            datastore = DataStore()
 
-        for backend_dic in BackendFactory().get_saved_backends_list():
-            datastore.register_backend(backend_dic)
+            for backend_dic in BackendFactory().get_saved_backends_list():
+                datastore.register_backend(backend_dic)
 
-        # Save the backends directly to be sure projects.xml is written
-        datastore.save(quit=False)
+            # Save the backends directly to be sure projects.xml is written
+            datastore.save(quit=False)
 
-        self.req = datastore.get_requester()
+            self.req = datastore.get_requester()
 
-        self.config = self.req.get_config("browser")
-        self.config_plugins = self.req.get_config("plugins")
+            self.config = self.req.get_config("browser")
+            self.config_plugins = self.req.get_config("plugins")
 
-        self.clipboard = clipboard.TaskClipboard(self.req)
+            self.clipboard = clipboard.TaskClipboard(self.req)
 
-        self.timer = Timer(self.config)
-        self.timer.connect('refresh', self.autoclean)
+            self.timer = Timer(self.config)
+            self.timer.connect('refresh', self.autoclean)
 
-        self.preferences_dialog = Preferences(self.req, self)
-        self.plugins_dialog = PluginsDialog(self.req)
+            self.preferences_dialog = Preferences(self.req, self)
+            self.plugins_dialog = PluginsDialog(self.req)
 
-        if self.config.get('dark_mode'):
-            self.toggle_darkmode()
+            if self.config.get('dark_mode'):
+                self.toggle_darkmode()
 
-        self.init_style()
+            self.init_style()
+        except Exception as e:
+            self._exception = e
+            log.exception("Exception during startup")
+            self._exception_dialog_timeout_id = GLib.timeout_add(
+                # priority is a kwarg for some reason not reflected in the docs
+                5000, self._startup_exception_timeout, None)
+             # Don't re-raise to not trigger the global exception hook
 
     def do_activate(self):
         """Callback when launched from the desktop."""
 
-        self.init_shared()
-        self.browser.present()
+        if self._check_exception():
+            return
 
-        log.debug("Application activation finished")
+        try:
+            self.init_shared()
+            self.browser.present()
+
+            log.debug("Application activation finished")
+        except Exception as e:
+            log.exception("Exception during activation")
+            dialog = do_error_dialog(self._exception, "Activation", ignorable=False)
+            dialog.set_application(self)  # Keep application alive to show it
 
     def do_open(self, files, n_files, hint):
         """Callback when opening files/tasks"""
 
-        self.init_shared()
-        len_files = len(files)
-        log.debug("Received %d Task URIs", len_files)
-        if len_files != n_files:
-            log.warning("Length of files %d != supposed length %d", len_files, n_files)
+        if self._check_exception():
+            return
 
-        for file in files:
-            if file.get_uri_scheme() == 'gtg':
-                uri = file.get_uri()
-                if uri[4:6] != '//':
-                    log.info("Malformed URI, needs gtg://:%s", uri)
+        try:
+            self.init_shared()
+            len_files = len(files)
+            log.debug("Received %d Task URIs", len_files)
+            if len_files != n_files:
+                log.warning("Length of files %d != supposed length %d", len_files, n_files)
+
+            for file in files:
+                if file.get_uri_scheme() == 'gtg':
+                    uri = file.get_uri()
+                    if uri[4:6] != '//':
+                        log.info("Malformed URI, needs gtg://:%s", uri)
+                    else:
+                        parsed = urllib.parse.urlparse(uri)
+                        task_id = parsed.netloc
+                        log.debug("Opening task %s", task_id)
+                        self.open_task(task_id)
                 else:
-                    parsed = urllib.parse.urlparse(uri)
-                    task_id = parsed.netloc
-                    log.debug("Opening task %s", task_id)
-                    self.open_task(task_id)
-            else:
-                log.info("Unknown task to open: %s", file.get_uri())
+                    log.info("Unknown task to open: %s", file.get_uri())
 
-        log.debug("Application opening finished")
+            log.debug("Application opening finished")
+        except Exception as e:
+            log.exception("Exception during opening")
+            dialog = do_error_dialog(self._exception, "Opening", ignorable=False)
+            dialog.set_application(self)  # Keep application alive to show it
+
+    def _check_exception(self) -> bool:
+        """
+        Checks whenever an error occured before at startup, and shows an dialog.
+        Returns True whenever such error occurred, False otherwise.
+        """
+        if self._exception is not None:
+            GLib.Source.remove(self._exception_dialog_timeout_id)
+            self._exception_dialog_timeout_id = None
+            dialog = do_error_dialog(self._exception, "Startup", ignorable=False)
+            dialog.set_application(self)  # Keep application alive, for now
+        return self._exception is not None
+
+    def _startup_exception_timeout(self, user_data):
+        """
+        Called when an exception in startup occurred, but didn't go over
+        activation/opening a "file" within a specified amount of time.
+        This can be caused by for example trying to call an DBus service,
+        get an error during startup.
+
+        It also means GTG was started in the background, so showing the user
+        suddenly an error message isn't great, and thus this will just exit
+        the application.
+
+        Since this is an error case, the normal shutdown procedure isn't used
+        but rather a python exit.
+        """
+        log.info("Exiting because of startup exception timeout")
+        GLib.Source.remove(self._exception_dialog_timeout_id)
+        self._exception_dialog_timeout_id = None
+        sys.exit(1)
 
     def init_shared(self):
         """
