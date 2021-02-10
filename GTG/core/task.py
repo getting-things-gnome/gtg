@@ -810,8 +810,11 @@ class Task(TreeNode):
 
     def add_tag(self, tagname):
         "Add a tag to the task and insert '@tag' into the task's content"
+
         if self.tag_added(tagname):
             c = self.content
+            tagname = html.escape(tagname)
+            tagname = '@' + tagname if not tagname.startswith('@') else tagname
 
             if not c:
                 # don't need a separator if it's the only text
@@ -823,9 +826,10 @@ class Task(TreeNode):
                 # other text at the beginning, so put the tag on its own line
                 sep = '\n\n'
 
-            self.content = f'{html.escape(tagname)}{sep}{c}'
+            self.content = f'{tagname}{sep}{c}'
             # we modify the task internal state, thus we have to call for a
             # sync
+
             self.sync()
 
     # remove by tagname
