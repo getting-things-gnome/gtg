@@ -20,7 +20,12 @@ class Gamify:
     }
     DEFAULT_PREFERENCES = {
         "goal": 3,
-        "ui_type": "FULL"
+        "ui_type": "FULL",
+        "tag_mapping": {
+            _('easy'): 1,
+            _('medium'): 2,
+            _('hard'): 3
+        }
     }
     LEVELS = {
         100: _('Beginner'),
@@ -52,18 +57,26 @@ class Gamify:
         self.pref_dialog = self.builder.get_object('gamify-pref-dialog')
         # Get the buttonSpin
         self.spinner = self.builder.get_object('target-spin-button')
+
+        # Tag mapping
+        self.tag_entry_field = self.builder.get_object('tag-input-field')
+        self.tag_submit_entry = self.builder.get_object('tag-submit-button')
+        self.tag_listbox = self.builder.get_object('tag-listbox')
+
         # Get the radio buttons
         self.button1 = self.builder.get_object('radiobutton0')
         self.button2 = self.builder.get_object('radiobutton1')
         self.button3 = self.builder.get_object('radiobutton2')
 
 
-        if self.pref_dialog is None or self.spinner is None:
+        if self.pref_dialog is None:
             raise ValueError('Cannot load preference dialog widget')
 
         SIGNALS = {
             "on_preferences_changed": self.on_preferences_changed,
-            "on_dialog_close": self.on_preferences_closed
+            "on_dialog_close": self.on_preferences_closed,
+            "on_tag_submit_clicked": self.on_tag_submit_clicked,
+            "on_tag_delete_button_clicked": self.on_tag_delete_button_clicked
         }
         self.builder.connect_signals(SIGNALS)
 
@@ -327,6 +340,10 @@ class Gamify:
         self.pref_dialog.set_transient_for(manager_dialog)
 
         self.spinner.set_value(self.preferences['goal'])
+
+        # Tag Mapping
+        self.load_tag_listbox()
+
         if self.preferences['ui_type'] == 'FULL':
             self.button1.set_active(True)
         elif self.preferences['ui_type'] == 'BUTTON':
@@ -352,8 +369,46 @@ class Gamify:
         else:
             self.preferences['ui_type'] = "LEVELBAR"
 
+        # Save the new mappings
+        new_tag_mapping = {}
+        for row in self.tag_listbox.get_children():
+            box = row.get_child()
+            label = box.get_children()[0]
+            value = box.get_children()[-1]
+            new_tag_mapping[label.get_label()[1:]] = value.get_value_as_int()
+        self.preferences['tag_mapping'] = new_tag_mapping
+
         self.save_preferences()
         # Update the type of UI
         self.update_ui()
         # Update the goal in the widget(s)
         self.update_goal()
+
+    def load_tag_listbox(self):
+        self.preferences_load()
+
+        # If there are any old children, remove them from the ListBox
+        for child in self.tag_listbox.get_children():
+            self.tag_listbox.remove(child)
+
+        for key, value in self.preferences['tag_mapping'].items():
+            row = Gtk.ListBoxRow()
+            box = Gtk.HBox(orientation=Gtk.Orientation.HORIZONTAL)
+            label = Gtk.Label(f'@{key}')
+
+            spin = Gtk.SpinButton()
+            spin.set_adjustment(Gtk.Adjustment(upper=100, step_increment=1, page_increment=10))
+            spin.set_numeric(True)
+            spin.set_value(int(value))
+
+            row.add(box)
+            box.add(label)
+            box.add(spin)
+            self.tag_listbox.add(row)
+
+    def on_tag_delete_button_clicked(self, button):
+        if (row := self.tag_listbox.get_selected_row()) is not None:
+            self.tag_listbox.remove(row)
+
+    def on_tag_submit_clicked(self, widget=None, data=None):
+        pass
