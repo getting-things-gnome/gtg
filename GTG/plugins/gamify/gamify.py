@@ -379,7 +379,7 @@ class Gamify:
         for key, value in self.preferences['tag_mapping'].items():
             row = Gtk.ListBoxRow()
             box = Gtk.HBox(orientation=Gtk.Orientation.HORIZONTAL)
-            label = Gtk.Label(f'{key}')
+            label = Gtk.Label(key)
 
             spin = Gtk.SpinButton()
             spin.set_adjustment(Gtk.Adjustment(upper=100, step_increment=1, page_increment=10))
@@ -396,4 +396,18 @@ class Gamify:
             self.tag_listbox.remove(row)
 
     def on_tag_submit_clicked(self, widget=None, data=None):
-        pass
+        if tag := self.tag_entry_field.get_text():
+            row = Gtk.ListBoxRow()
+            box = Gtk.HBox(orientation=Gtk.Orientation.HORIZONTAL)
+            label = Gtk.Label(f'@{tag}')
+
+            spin = Gtk.SpinButton()
+            spin.set_adjustment(Gtk.Adjustment(upper=100, step_increment=1, page_increment=10))
+            spin.set_numeric(True)
+            spin.set_value(1)
+
+            row.add(box)
+            box.add(label)
+            box.add(spin)
+            self.tag_listbox.add(row)
+            self.tag_listbox.show_all()
