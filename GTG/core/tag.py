@@ -59,9 +59,6 @@ def parse_tag_list(text):
         else:
             is_positive = True
 
-        if not tag.startswith('@'):
-            tag = "@" + tag
-
         result.append((tag, is_positive))
     return result
 
