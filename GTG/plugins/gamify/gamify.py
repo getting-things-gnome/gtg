@@ -1,6 +1,7 @@
 import os
 import random
 from datetime import date
+from collections import defaultdict
 
 from gi.repository import Gio
 from gi.repository import Gtk
@@ -22,9 +23,9 @@ class Gamify:
         "goal": 3,
         "ui_type": "FULL",
         "tag_mapping": {
-            _('easy'): 1,
-            _('medium'): 2,
-            _('hard'): 3
+            _('@easy'): 1,
+            _('@medium'): 2,
+            _('@hard'): 3,
         }
     }
     LEVELS = {
@@ -141,34 +142,18 @@ class Gamify:
         self.analytics_save()
         self.update_widget()
 
+    def get_points(self, tag):
+        return defaultdict(int, self.preferences['tag_mapping'])[tag]
+
     def get_points_for_task(self, task_id):
         """Returns the number of point for doing a perticular task
-
-        If a task is taged as @hard: the user receives 3 points
-        If a task is taged as @medium: the use receives 2 points
-        If a task is taged as @easy: the user receives 1 point
+        By default the tag mappings are:
+        1 point for @easy
+        2 points for @medium
+        3 points for @hard
         """
-        easy = False
-        medium = False
-        hard = False
-
         task = self.plugin_api.get_requester().get_task(task_id)
-        tags = task.get_tags_name()
-        for tag in tags:
-            if tag == '@easy':
-                easy = True
-            elif tag == '@medium':
-                medium = True
-            elif tag == '@hard':
-                hard = True
-
-        if easy:
-            return 1
-        if medium:
-            return 2
-        if hard:
-            return 3
-        return 1
+        return max(list(map(self.get_points, task.get_tags_name())))
 
     def is_full(self):
         """Return True if ui type is FULL"""
@@ -375,7 +360,7 @@ class Gamify:
             box = row.get_child()
             label = box.get_children()[0]
             value = box.get_children()[-1]
-            new_tag_mapping[label.get_label()[1:]] = value.get_value_as_int()
+            new_tag_mapping[label.get_label()] = value.get_value_as_int()
         self.preferences['tag_mapping'] = new_tag_mapping
 
         self.save_preferences()
@@ -394,7 +379,7 @@ class Gamify:
         for key, value in self.preferences['tag_mapping'].items():
             row = Gtk.ListBoxRow()
             box = Gtk.HBox(orientation=Gtk.Orientation.HORIZONTAL)
-            label = Gtk.Label(f'@{key}')
+            label = Gtk.Label(f'{key}')
 
             spin = Gtk.SpinButton()
             spin.set_adjustment(Gtk.Adjustment(upper=100, step_increment=1, page_increment=10))
