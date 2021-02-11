@@ -8,6 +8,7 @@ from gi.repository import Gtk
 
 from GTG.core.logger import log
 from gettext import gettext as _
+from gettext import ngettext
 
 class Gamify:
     PLUGIN_PATH = os.path.dirname(os.path.abspath(__file__))
@@ -286,7 +287,7 @@ class Gamify:
             streak_emoji.set_markup("\U0001F525")
         else:
             streak_emoji.set_markup("\U0001F9CA")
-        streak_number.set_markup(_("You've completed your goal {streak} day in a row.").format(streak=self.get_streak()))
+        streak_number.set_markup(ngettext("You've completed your goal %d day in a row.", "You've completed your goal %d days in a row.", self.get_streak()) % self.get_streak())
 
     def update_levelbar(self):
         self.levelbar.set_min_value(0.0)
