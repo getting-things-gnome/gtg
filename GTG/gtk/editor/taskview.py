@@ -299,6 +299,27 @@ class TaskView(Gtk.TextView):
             if not sub_tag:
                 return False
 
+            # Don't auto-remove it
+            tid = sub_tag.tid
+            task = self.req.get_task(tid)
+            parents = task.get_parents()
+
+            # Remove if its not a child of this task
+            if not parents or parents[0] != self.tid:
+                log.debug('Task %s is not a subtask of %s', tid, self.tid)
+                log.debug('Removing subtask %s from content', tid)
+
+                end = start.copy()
+                end.forward_to_line_end()
+
+                # Move the start iter to take care of the newline at
+                # the previous line
+                start.backward_chars(2)
+
+                self.buffer.delete(start, end)
+
+                return False
+
             # Check that we still have a checkbox
             after_checkbox = start.copy()
             after_checkbox.forward_char()
@@ -319,8 +340,6 @@ class TaskView(Gtk.TextView):
                 if check != u'\uFFFC':
                     return False
 
-            # Don't auto-remove it
-            tid = sub_tag.tid
 
             try:
                 self.subtasks['to_delete'].remove(tid)
@@ -330,7 +349,6 @@ class TaskView(Gtk.TextView):
             self.rename_subtask_cb(tid, text)
 
             # Get the task and instantiate an internal link tag
-            task = self.req.get_task(tid)
             status = task.get_status() if task else 'Active'
             link_tag = InternalLinkTag(tid, status)
             self.table.add(link_tag)
