@@ -857,19 +857,6 @@ class Task(TreeNode):
             if tag:
                 tag.modified()
 
-    def set_only_these_tags(self, tags_list):
-        """
-        Given a list of strings representing tags, it makes sure that
-        this task has those and only those tags.
-        """
-        for tag in self.get_tags_name():
-            try:
-                tags_list.remove(tag)
-            except:
-                self.remove_tag(tag)
-        for tag in tags_list:
-            self.add_tag(tag)
-
     def _strip_tag(self, text, tagname, newtag=''):
         inline_tag = tagname[1:]
         return (text
