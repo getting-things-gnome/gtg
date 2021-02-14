@@ -259,12 +259,6 @@ class Tag(TreeNode):
             my_task = self.req.get_task(task_id)
             my_task.modified()
 
-    # is it useful to keep the tag in the tagstore.
-    # if no attributes and no tasks, it is not useful.
-    def is_removable(self):
-        attr = self.get_all_attributes(butname=True, withparent=True)
-        return (len(attr) <= 0 and not self.is_used())
-
     def is_special(self):
         return bool(self.get_attribute('special'))
 
