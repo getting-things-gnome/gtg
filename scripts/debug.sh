@@ -23,7 +23,19 @@ do  case "$o" in
     n)   norun=1;;
     s)   dataset="$OPTARG";;
     t)   title="$OPTARG";;
-    [?]) echo >&2 "Usage: $0 [-s dataset] [-t title] [-d] [-w] [-n] (-- args passed to gtg)"
+    [?]) cat >&2 <<EOF
+Usage: $0 [-s dataset] [-t title] [-d] [-w] [-n] (-- args passed to gtg)
+    -s dataset     Use the dataset located in $PWD/tmp/<dataset>
+    -t title       Set a custom title/program name to use.
+    -d             Enable debug mode, basically enables debug logging
+    -w             Enable python warnings like deprecation warnings,
+                   and other python 3.7+ development mode features.
+                   Also see https://docs.python.org/3/library/devmode.html
+    -n             Just generate the build system, don't actually run gtg
+    -- args passed to gtg
+                   These arguments are passed to the application as-is
+                   Use -- --help to get help for the application
+EOF
          exit 1;;
     esac
 done
