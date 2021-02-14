@@ -722,19 +722,6 @@ class Task(TreeNode):
         tree = self.get_tree()
         return [tree.get_node(node_id) for node_id in self.get_children()]
 
-    # FIXME: why is this function used ? It's higly specific. Remove it?
-    #        (Lionel)
-    # Agreed. it's only used by the "add tag to all subtasks" widget.
-    def get_self_and_all_subtasks(self, active_only=False, tasks=[]):
-        print("DEPRECATED FUNCTION: get_self_and_all_subtasks")
-        tasks.append(self)
-        for tid in self.get_children():
-            i = self.req.get_task(tid)
-            if i:
-                if not active_only or i.status == self.STA_ACTIVE:
-                    i.get_self_and_all_subtasks(active_only, tasks)
-        return tasks
-
     def set_parent(self, parent_id):
         """Update the task's parent. Refresh due date constraints."""
         TreeNode.set_parent(self, parent_id)

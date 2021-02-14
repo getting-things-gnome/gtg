@@ -82,7 +82,7 @@ class ModifyTagsDialog():
                 # FIXME: Python not reinitialize the default value of its
                 # parameter therefore it must be done manually. This function
                 # should be refractored # as far it is marked as depricated
-                for subtask in task.get_self_and_all_subtasks(tasks=[]):
+                for subtask in task.get_subtasks():
                     subtask_id = subtask.get_id()
                     if subtask_id not in self.tasks:
                         self.tasks.append(subtask_id)
