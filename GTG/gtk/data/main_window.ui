@@ -228,8 +228,6 @@
           <object class="GtkSeparator">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="margin_top">6</property>
-            <property name="margin_bottom">6</property>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -238,12 +236,12 @@
           </packing>
         </child>
         <child>
-          <object class="GtkModelButton" id="plugins">
+          <object class="GtkModelButton" id="collapse_all_tasks_button">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
+            <property name="can_focus">True</property>
             <property name="receives_default">True</property>
-            <property name="action_name">app.open_plugins</property>
-            <property name="text" translatable="yes">Plugins</property>
+            <property name="action_name">win.collapse_all_tasks</property>
+            <property name="text" translatable="yes">Collapse All Tasks</property>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -252,12 +250,12 @@
           </packing>
         </child>
         <child>
-          <object class="GtkModelButton" id="synchronization">
+          <object class="GtkModelButton" id="expand_all_tasks_button">
             <property name="visible">True</property>
-            <property name="sensitive">False</property>
-            <property name="can_focus">False</property>
+            <property name="can_focus">True</property>
             <property name="receives_default">True</property>
-            <property name="text" translatable="yes">Synchronization</property>
+            <property name="action_name">win.expand_all_tasks</property>
+            <property name="text" translatable="yes">Expand All Tasks</property>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -279,6 +277,47 @@
           </packing>
         </child>
         <child>
+          <object class="GtkModelButton" id="plugins">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="receives_default">True</property>
+            <property name="action_name">app.open_plugins</property>
+            <property name="text" translatable="yes">Plugins</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">5</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkModelButton" id="synchronization">
+            <property name="visible">True</property>
+            <property name="sensitive">False</property>
+            <property name="can_focus">False</property>
+            <property name="receives_default">True</property>
+            <property name="text" translatable="yes">Synchronization</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">6</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkSeparator">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="margin_top">6</property>
+            <property name="margin_bottom">6</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">7</property>
+          </packing>
+        </child>
+        <child>
           <object class="GtkModelButton" id="preferences">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
@@ -289,7 +328,7 @@
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">5</property>
+            <property name="position">8</property>
           </packing>
         </child>
         <child>
@@ -303,7 +342,7 @@
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">6</property>
+            <property name="position">9</property>
           </packing>
         </child>
         <child>
@@ -317,7 +356,7 @@
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">7</property>
+            <property name="position">10</property>
           </packing>
         </child>
         <child>
@@ -331,7 +370,7 @@
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">8</property>
+            <property name="position">11</property>
           </packing>
         </child>
       </object>

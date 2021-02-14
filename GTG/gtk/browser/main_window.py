@@ -160,6 +160,8 @@ class MainWindow(Gtk.ApplicationWindow):
 
         action_entries = [
             ('toggle_sidebar', self.on_sidebar_toggled, ('win.toggle_sidebar', ['F9'])),
+            ('collapse_all_tasks', self.on_collapse_all_tasks, None),
+            ('expand_all_tasks', self.on_expand_all_tasks, None),
             ('change_tags', self.on_modify_tags, ('win.change_tags', ['<ctrl>T'])),
             ('search', self.toggle_search, ('win.search', ['<ctrl>F'])),
             ('focus_quickentry', self.focus_quickentry, ('win.focus_quickentry', ['<ctrl>L'])),
@@ -668,6 +670,14 @@ class MainWindow(Gtk.ApplicationWindow):
             self.config.set("tag_pane", True)
 
         self.switch_sidebar_name(not visible)
+
+    def on_collapse_all_tasks(self, action, param):
+        """Collapse all tasks."""
+        self.vtree_panes['active'].collapse_all()
+
+    def on_expand_all_tasks(self, action, param):
+        """Expand all tasks."""
+        self.vtree_panes['active'].expand_all()
 
     def _expand_not_collapsed(self, model, path, iter, colt):
         """ Expand all not collapsed nodes
