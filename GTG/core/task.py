@@ -129,25 +129,6 @@ class Task(TreeNode):
             self.sync()
         return str(self.uuid)
 
-    def get_remote_ids(self):
-        """
-        A task usually has a different id in all the different backends.
-        This function returns a dictionary backend_id->the id the task has
-        in that backend
-        @returns dict: dictionary backend_id->task remote id
-        """
-        return self.remote_ids
-
-    def add_remote_id(self, backend_id, task_remote_id):
-        """
-        A task usually has a different id in all the different backends.
-        This function adds a relationship backend_id-> remote_id that can be
-        retrieved using get_remote_ids
-        @param backend_id: string representing the backend id
-        @param task_remote_id: the id for this task in the backend backend_id
-        """
-        self.remote_ids[str(backend_id)] = str(task_remote_id)
-
     def get_title(self):
         return self.title
 
