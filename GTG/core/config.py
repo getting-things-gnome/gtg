@@ -50,6 +50,7 @@ DEFAULTS = {
         'autoclean': True,
         'autoclean_days': 30,
         'dark_mode': False,
+        'maximized': False,
     },
     'tag_editor': {
         "custom_colors": [],

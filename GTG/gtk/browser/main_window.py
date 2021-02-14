@@ -517,7 +517,8 @@ class MainWindow(Gtk.ApplicationWindow):
 
         # checks for maximum size of window
         self.connect('window-state-event', self.on_window_state_event)
-        if self.config.get("max"):
+
+        if self.config.get("maximized"):
             self.maximize()
 
         xpos = self.config.get("x_pos")
