@@ -154,7 +154,7 @@ class Gamify:
         3 points for @hard
         """
         task = self.plugin_api.get_requester().get_task(task_id)
-        return max(list(map(self.get_points, task.get_tags_name())))
+        return max(list(map(self.get_points, task.get_tags_name())), default=1)
 
     def is_full(self):
         """Return True if ui type is FULL"""
