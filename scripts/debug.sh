@@ -16,15 +16,14 @@ title=""
 mkdir -p tmp
 
 # Interpret arguments. The ":" following the letter indicates that the opstring (optarg) needs a parameter specified. See also: https://stackoverflow.com/questions/18414054/rreading-optarg-for-optional-flags
-while getopts "bdwns:t:" o;
+while getopts "dwns:t:" o;
 do  case "$o" in
-    b)   args="$args --boot-test";;
     d)   args="$args -d";;
     w)   pydebug=1;;
     n)   norun=1;;
     s)   dataset="$OPTARG";;
     t)   title="$OPTARG";;
-    [?]) echo >&2 "Usage: $0 [-s dataset] [-t title] [-b] [-d] [-w] [-n] (-- args passed to gtg)"
+    [?]) echo >&2 "Usage: $0 [-s dataset] [-t title] [-d] [-w] [-n] (-- args passed to gtg)"
          exit 1;;
     esac
 done
