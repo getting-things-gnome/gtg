@@ -486,7 +486,7 @@ class MainWindow(Gtk.ApplicationWindow):
         and maximize it if needed """
         mask = Gdk.WindowState.MAXIMIZED
         is_maximized = widget.get_window().get_state() & mask == mask
-        self.config.set("max", is_maximized)
+        self.config.set("maximized", is_maximized)
 
     def restore_collapsed_tasks(self):
         for path_s in self.config.get("collapsed_tasks"):
