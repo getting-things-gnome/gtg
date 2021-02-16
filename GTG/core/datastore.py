@@ -76,7 +76,6 @@ class DataStore():
         self.is_default_backend_loaded = False
         self._backend_signals.connect('default-backend-loaded',
                                       self._activate_non_default_backends)
-        self.filtered_datastore = FilteredDataStore(self)
         self._backend_mutex = threading.Lock()
 
     # Accessor to embedded objects in DataStore ##############################
@@ -418,7 +417,7 @@ class DataStore():
             # filtering the tasks that should hit the backend.
             source = TaskSource(requester=self.requester,
                                 backend=backend,
-                                datastore=self.filtered_datastore)
+                                datastore=self)
             self.backends[backend.get_id()] = source
             # we notify that a new backend is present
             self._backend_signals.backend_added(backend.get_id())
@@ -656,7 +655,7 @@ class TaskSource():
 
         @param requester: a Requester
         @param backend:  the backend being wrapped
-        @param datastore: a FilteredDatastore
+        @param datastore: a Datastore
         """
         self.backend = backend
         self.req = requester
@@ -876,30 +875,3 @@ class TaskSource():
         else:
             return getattr(self.backend, attr)
 
-
-class FilteredDataStore(Borg):
-    """
-    This class acts as an interface to the Datastore.
-    It is used to hide most of the methods of the Datastore.
-    The backends can safely use the remaining methods.
-    """
-
-    def __init__(self, datastore):
-        super().__init__()
-        self.datastore = datastore
-
-    def __getattr__(self, attr):
-        if attr in ['task_factory',
-                    'push_task',
-                    'get_task',
-                    'has_task',
-                    'get_all_tasks',
-                    'get_tasks_tree',
-                    'get_backend_mutex',
-                    'flush_all_tasks',
-                    'request_task_deletion']:
-            return getattr(self.datastore, attr)
-        elif attr in ['get_all_tags']:
-            return self.datastore.requester.get_all_tags
-        else:
-            raise AttributeError(f"No attribute {attr}")
