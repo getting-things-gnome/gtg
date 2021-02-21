@@ -76,7 +76,6 @@ class TestSectionConfig(TestCase):
         config = self.make_section_config({'option': '1'})
         section = SectionConfig('Name', config, {}, Mock())
         value = section.get('option')
-        self.assertTrue(mock_log.warning.called)
         self.assertEqual('1', value)
 
     @patch('GTG.core.config.log')
@@ -157,7 +156,6 @@ class TestSectionConfig(TestCase):
         section = SectionConfig('Name', config, {}, Mock())
         with self.assertRaises(ValueError):
             section.get('option')
-        self.assertTrue(mock_log.warning.called)
 
     def test_can_set_value(self):
         config = self.make_section_config({})
