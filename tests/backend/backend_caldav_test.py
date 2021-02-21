@@ -91,7 +91,8 @@ class CalDAVTest(TestCase):
         parameters = {'pid': 'favorite', 'service-url': 'color',
                       'username': 'blue', 'password': 'no red', 'period': 1}
         backend = Backend(parameters)
-        datastore.register_backend({'backend': backend, 'pid': 'backendid'})
+        datastore.register_backend({'backend': backend, 'pid': 'backendid',
+                                    'first_run': True})
         return datastore, backend
 
     @staticmethod
