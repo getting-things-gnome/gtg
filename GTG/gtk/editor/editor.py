@@ -187,6 +187,7 @@ class TaskEditor():
         self.textview.remove_tasktag_cb = task.remove_tag
         self.textview.refresh_cb = self.refresh_editor
         self.textview.get_tagslist_cb = task.get_tags_name
+        self.textview.tid = task.tid
 
         # Voila! it's done
         self.textview.connect('focus-in-event', self.on_textview_focus_in)
@@ -208,6 +209,11 @@ class TaskEditor():
 
         if text:
             self.textview.insert(text)
+
+            # Insert any remaining tags
+            if tags:
+                tag_names = [t.get_name() for t in tags]
+                self.textview.insert_tags(tag_names)
         else:
             # If not text, we insert tags
             if tags:

@@ -25,6 +25,7 @@ wants to write a backend.
 """
 
 import os
+import logging
 
 from GTG.backends.backend_signals import BackendSignals
 from GTG.backends.generic_backend import GenericBackend
@@ -32,8 +33,12 @@ from GTG.core.dirs import DATA_DIR
 from gettext import gettext as _
 from GTG.core import xml
 from GTG.core import firstrun_tasks
+from GTG.core import versioning
 
 from typing import Dict
+from lxml import etree as et
+
+log = logging.getLogger(__name__)
 
 
 class Backend(GenericBackend):
@@ -73,7 +78,7 @@ class Backend(GenericBackend):
         "path": {
             GenericBackend.PARAM_TYPE: GenericBackend.TYPE_STRING,
             GenericBackend.PARAM_DEFAULT_VALUE:
-            'gtg_tasks.xml'}}
+            'gtg_data.xml'}}
 
     def __init__(self, parameters: Dict):
         """
@@ -90,13 +95,6 @@ class Backend(GenericBackend):
 
         if self.KEY_DEFAULT_BACKEND not in parameters:
             parameters[self.KEY_DEFAULT_BACKEND] = True
-
-        self.task_tree = xml.open_file(self.get_path(), 'project')
-        self.backup_used = None
-
-        # Make safety daily backup after loading
-        xml.save_file(self.get_path(), self.task_tree)
-        xml.write_backups(self.get_path())
 
     def get_path(self) -> str:
         """Return the current path to XML
@@ -115,7 +113,26 @@ class Backend(GenericBackend):
         """ This is called when a backend is enabled """
 
         super(Backend, self).initialize()
-        self.task_tree = xml.open_file(self.get_path(), 'project')
+        filepath = self.get_path()
+
+        if versioning.is_required(filepath):
+            log.warning('Found old file. Running versioning code.')
+            old_path = os.path.join(DATA_DIR, 'gtg_tasks.xml')
+            tree = versioning.convert(old_path, self.datastore)
+
+            xml.save_file(filepath, tree)
+
+        self.data_tree = xml.open_file(filepath, 'gtgData')
+        self.task_tree = self.data_tree.find('tasklist')
+        self.tag_tree = self.data_tree.find('taglist')
+        self.search_tree = self.data_tree.find('searchlist')
+
+        self.datastore.load_tag_tree(self.tag_tree)
+        self.datastore.load_search_tree(self.search_tree)
+
+        # Make safety daily backup after loading
+        xml.save_file(self.get_path(), self.data_tree)
+        xml.write_backups(self.get_path())
 
     def this_is_the_first_run(self, _) -> None:
         """ Called upon the very first GTG startup.
@@ -128,13 +145,24 @@ class Backend(GenericBackend):
         @param xml: an xml object containing the default tasks.
         """
 
+        filepath = self.get_path()
+        if versioning.is_required(filepath):
+            log.warning('Found old file. Running versioning code.')
+            old_path = os.path.join(DATA_DIR, 'gtg_tasks.xml')
+            tree = versioning.convert(old_path, self.datastore)
+
+            xml.save_file(filepath, tree)
+
         self._parameters[self.KEY_DEFAULT_BACKEND] = True
 
         root = firstrun_tasks.generate()
-        xml.write_xml(self.get_path(), root)
+        xml.create_dirs(self.get_path())
+        xml.save_file(self.get_path(), root)
 
         # Load the newly created file
-        self.task_tree = xml.open_file(self.get_path(), 'project')
+        self.data_tree = xml.open_file(self.get_path(), 'gtgData')
+        self.task_tree = self.data_tree.find('tasklist')
+        self.tag_tree = self.data_tree.find('taglist')
         xml.backup_used = None
 
     def start_get_tasks(self) -> None:
@@ -145,12 +173,13 @@ class Backend(GenericBackend):
         """
 
         for element in self.task_tree.iter('task'):
-            tid = element.attrib['id']
+            tid = element.get('id')
             task = self.datastore.task_factory(tid)
 
             if task:
                 task = xml.task_from_element(task, element)
                 self.datastore.push_task(task)
+
 
     def set_task(self, task) -> None:
         """
@@ -171,10 +200,10 @@ class Backend(GenericBackend):
             existing[0].getparent().replace(existing[0], element)
 
         else:
-            self.task_tree.getroot().append(element)
+            self.task_tree.append(element)
 
         # Write the xml
-        xml.save_file(self.get_path(), self.task_tree)
+        xml.save_file(self.get_path(), self.data_tree)
 
     def remove_task(self, tid: str) -> None:
         """ This function is called from GTG core whenever a task must be
@@ -183,11 +212,62 @@ class Backend(GenericBackend):
         @param tid: the id of the task to delete
         """
 
-        element = self.task_tree.findall(f"task[@id='{tid}']")
+        element = self.task_tree.findall(f'task[@id="{tid}"]')
 
         if element:
             element[0].getparent().remove(element[0])
-            xml.save_file(self.get_path(), self.task_tree)
+            xml.save_file(self.get_path(), self.data_tree)
+
+    def save_tags(self, tagnames, tagstore) -> None:
+        """Save changes to tags and saved searches."""
+
+        already_saved = []
+
+        for tagname in tagnames:
+            if tagname in already_saved:
+                continue
+
+            tag = tagstore.get_node(tagname)
+
+            attributes = tag.get_all_attributes(butname=True, withparent=True)
+            if "special" in attributes:
+                continue
+
+            if tag.is_search_tag():
+                root = self.search_tree
+                tag_type = 'savedSearch'
+            else:
+                root = self.tag_tree
+                tag_type = 'tag'
+
+            tid = str(tag.tid)
+            element = root.findall(f'{tag_type}[@id="{tid}"]')
+
+            if len(element) == 0:
+                element = et.SubElement(self.task_tree, tag_type)
+                root.append(element)
+            else:
+                element = element[0]
+
+            # Don't save the @ in the name
+            element.set('id', tid)
+            element.set('name', tagname)
+
+            for attr in attributes:
+                # skip labels for search tags
+                if tag.is_search_tag() and attr == 'label':
+                    continue
+
+                value = tag.get_attribute(attr)
+
+                if value:
+                    if attr == 'color':
+                        value = value[1:]
+                    element.set(attr, value)
+
+            already_saved.append(tagname)
+
+        xml.save_file(self.get_path(), self.data_tree)
 
     def used_backup(self):
         """ This functions return a boolean value telling if backup files

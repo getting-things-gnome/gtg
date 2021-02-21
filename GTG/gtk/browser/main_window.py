@@ -486,7 +486,7 @@ class MainWindow(Gtk.ApplicationWindow):
         and maximize it if needed """
         mask = Gdk.WindowState.MAXIMIZED
         is_maximized = widget.get_window().get_state() & mask == mask
-        self.config.set("max", is_maximized)
+        self.config.set("maximized", is_maximized)
 
     def restore_collapsed_tasks(self):
         for path_s in self.config.get("collapsed_tasks"):
@@ -517,7 +517,8 @@ class MainWindow(Gtk.ApplicationWindow):
 
         # checks for maximum size of window
         self.connect('window-state-event', self.on_window_state_event)
-        if self.config.get("max"):
+
+        if self.config.get("maximized"):
             self.maximize()
 
         xpos = self.config.get("x_pos")
@@ -1406,8 +1407,11 @@ class MainWindow(Gtk.ApplicationWindow):
         if not nospecial and (not taglist or len(taglist) < 0):
             taglist = ['gtg-tags-all']
         if nospecial:
+            special = ['gtg-tags-all', 'gtg-tags-none',
+                       'search', 'gtg-tags-sep']
+
             for t in list(taglist):
-                if not t.startswith('@'):
+                if t in special:
                     taglist.remove(t)
         return taglist
 

@@ -8,7 +8,8 @@
     <link type="guide" xref="index#gtg-task-management" group="second"/>
       
       <revision pkgversion="0.3.1" date="2013-06-18" status="candidate"/>
-<revision pkgversion="0.4.0" date="2020-05-16" status="candidate"/>
+      <revision pkgversion="0.4.0" date="2020-05-16" status="candidate"/>
+      <revision pkgversion="0.5.0" date="2020-11-15" status="candidate"/>
    <credit type="author copyright">
       <name>Radina Matic</name>
       <email its:translate="no">radina.matic@gmail.com</email>
@@ -55,9 +56,9 @@
 </section>
 
 <section id="quick-set-repeating">
-<title>Set repeating tasks Using the Quick Add Entry</title> 
+<title>Set Repeating Tasks Using the Quick Add Entry</title> 
 
-<p>The <gui>Quick Add Entry</gui> also offers the fastest way to set a task to repeat with the <em style="strong">every:</em> keyword.</p>
+<p>The <gui>Quick Add Entry</gui> is the fastest way to set a task to repeat with the <em style="strong">every:</em> keyword.</p>
 
 <terms>
 <item>

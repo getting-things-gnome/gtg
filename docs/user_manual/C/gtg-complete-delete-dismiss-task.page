@@ -11,7 +11,8 @@
     <link type="seealso" xref="gtg-set-task-date"/>
       
       <revision pkgversion="0.3.1" date="2013-06-18" status="candidate"/>
-<revision pkgversion="0.4.0" date="2020-05-16" status="candidate"/>
+      <revision pkgversion="0.4.0" date="2020-05-16" status="candidate"/>
+      <revision pkgversion="0.5.0" date="2020-11-15" status="candidate"/>
    <credit type="author copyright">
       <name>Radina Matic</name>
       <email its:translate="no">radina.matic@gmail.com</email>
@@ -28,7 +29,7 @@
   </info>
   <title>Completing, Dismissing, or Deleting Tasks</title>
   <p>There are three actions that you can perform to close tasks or remove them from your <gui>Open</gui> or <gui>Actionable</gui> view modes: complete, dismiss, or delete.</p>
-  <note><p>When working from any of the view modes, you can perform the below actions on multiple tasks by selecting the tasks while holding <key>SHIFT</key>. You can also perform complex, multi-selections using the <key>CTRL</key> key.</p></note> 
+  <note><p>When working from any of the view modes, you can perform the below actions on multiple tasks by selecting the tasks while holding <key>Shift</key>. You can also perform complex, multi-selections using the <key>Ctrl</key> key.</p></note> 
   <section id="complete-task">
 
   <title>Completing a Task</title>
@@ -42,7 +43,7 @@
   <section id="reopen-task"><title>Reopening a Complete Task</title>
       <p>You may want to reopen a task that you previously marked as done. From the <gui>Closed</gui> view mode, you can perform one of the following actions:</p>
      <list>
-     <item><p>Use the <keyseq><key>CTRL</key><key>D</key></keyseq> keyboard shortcut.</p></item>
+     <item><p>Use the <keyseq><key>Ctrl</key><key>D</key></keyseq> keyboard shortcut.</p></item>
      <item><p>Right-click the task in the <gui>Task Browser</gui> and select <gui>Mark as Not Done</gui> from the context menu.</p></item>
      <item><p>Click the <gui>Mark as Not Done</gui> button in the <gui>Task Editor</gui> window.</p></item></list>
 </section>
@@ -53,7 +54,7 @@
   <p>When you decide that a certain task is no longer valid (does not need to be accomplished), you can dismiss it. To dismiss a selected task from the <gui>Open</gui> or <gui>Actionable</gui> view modes, you can perform one of the following actions:</p>
   
   <list>
-      <item><p>Select the task and use the <keyseq><key>CTRL</key><key>I</key></keyseq> keyboard shortcut.</p></item>
+      <item><p>Select the task and use the <keyseq><key>Ctrl</key><key>I</key></keyseq> keyboard shortcut.</p></item>
       <item><p>Right-click the task in the <gui>Task Browser</gui> and select <gui>Dismiss</gui> from the context menu.</p></item>
 </list> 
     <p>To dismiss an open <app>GTG</app> task:</p>
@@ -67,7 +68,7 @@
 <section id="undismiss-task"><title>Undismissing a Task</title>
       <p>You may want to reopen a task that you previously dismissed. From the <gui>Closed</gui> view mode, you can perform one of the following actions:</p>
      <list>
-     <item><p>Use the <keyseq><key>CTRL</key><key>I</key></keyseq> keyboard shortcut.</p></item>
+     <item><p>Use the <keyseq><key>Ctrl</key><key>I</key></keyseq> keyboard shortcut.</p></item>
      <item><p>Right-click the task in the <gui>Task Browser</gui> and select <gui>Undismiss</gui> from the context menu.</p></item></list>
 </section>
 </section>
@@ -78,7 +79,7 @@
   <p>To delete a selected task from the main <app>GTG</app> window, you can perform one of the following actions:</p>
   
   <list>
-     <item><p>Select the task and use the <keyseq><key>CTRL</key><key>Del</key></keyseq> keyboard shortcut.</p></item>
+     <item><p>Select the task and use the <keyseq><key>Ctrl</key><key>Del</key></keyseq> keyboard shortcut.</p></item>
       <item><p>From any of the task view modes, right-click the task in the <gui>Task Browser</gui> and select <gui>Delete</gui> from the context menu.</p></item>
 </list> 
  

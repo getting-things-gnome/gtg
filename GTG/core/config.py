@@ -34,14 +34,12 @@ DEFAULTS = {
         "contents_preview_enable": False,
         'tag_pane': False,
         "sidebar_width": 120,
-        "closed_task_pane": False,
         'collapsed_tasks': [],
         'expanded_tags': [],
         'view': 'default',
         "opened_tasks": [],
         'width': 400,
         'height': 400,
-        'max': False,
         'x_pos': 10,
         'y_pos': 10,
         'tasklist_sort_column': 5,
@@ -52,6 +50,7 @@ DEFAULTS = {
         'autoclean': True,
         'autoclean_days': 30,
         'dark_mode': False,
+        'maximized': False,
     },
     'tag_editor': {
         "custom_colors": [],
@@ -64,6 +63,7 @@ DEFAULTS = {
         'position': [],
         'size': [],
     },
+    'backend': {}
 }
 
 
@@ -150,10 +150,6 @@ class SectionConfig():
         None is returned
         """
         default_value = self._defaults.get(option)
-        if default_value is None:
-            log.warning('No default value for %s in %s',
-                        option, self._section_name)
-
         get_function = self._type_function(default_value)
 
         try:
@@ -196,11 +192,17 @@ class CoreConfig():
         self._task_conf_path = os.path.join(CONFIG_DIR, 'tasks.conf')
         self._task_conf = open_config_file(self._task_conf_path)
 
+        self._backends_conf_path = os.path.join(CONFIG_DIR, 'backends.conf')
+        self._backends_conf = open_config_file(self._backends_conf_path)
+
     def save_gtg_config(self):
         self._conf.write(open(self._conf_path, 'w'))
 
     def save_task_config(self):
         self._task_conf.write(open(self._task_conf_path, 'w'))
+
+    def save_backends_config(self):
+        self._backends_conf.write(open(self._backends_conf_path, 'w'))
 
     def get_subconfig(self, name):
         """ Returns configuration object for special section of config """
@@ -218,3 +220,16 @@ class CoreConfig():
             self._task_conf[task_id],
             DEFAULTS['task'],
             self.save_task_config)
+
+    def get_all_backends(self):
+        return self._backends_conf.sections()
+
+    def get_backend_config(self, backend):
+        if backend not in self._backends_conf:
+            self._backends_conf.add_section(backend)
+
+        return SectionConfig(
+            f'Backend {backend}',
+            self._backends_conf[backend],
+            DEFAULTS['backend'],
+            self.save_backends_config)

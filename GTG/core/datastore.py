@@ -29,15 +29,11 @@ from GTG.backends.backend_signals import BackendSignals
 from GTG.backends.generic_backend import GenericBackend
 from GTG.core.config import CoreConfig
 from GTG.core import requester
-from GTG.core.dirs import PROJECTS_XMLFILE, TAGS_XMLFILE
 from GTG.core.search import parse_search_query, search_filter, InvalidQuery
 from GTG.core.tag import Tag, SEARCH_TAG
 from GTG.core.task import Task
 from GTG.core.treefactory import TreeFactory
-from GTG.core import xml
 from GTG.core.borg import Borg
-
-from lxml import etree
 
 
 log = logging.getLogger(__name__)
@@ -64,8 +60,9 @@ class DataStore():
         self.requester = requester.Requester(self, global_conf)
         self.tagfile_loaded = False
         self._tagstore = self.treefactory.get_tags_tree(self.requester)
-        self.load_tag_tree()
         self._backend_signals = BackendSignals()
+        self.conf = global_conf
+        self.tag_idmap = {}
 
         # Flag when turned to true, all pending operation should be
         # completed and then GTG should quit
@@ -76,7 +73,6 @@ class DataStore():
         self.is_default_backend_loaded = False
         self._backend_signals.connect('default-backend-loaded',
                                       self._activate_non_default_backends)
-        self.filtered_datastore = FilteredDataStore(self)
         self._backend_mutex = threading.Lock()
 
     # Accessor to embedded objects in DataStore ##############################
@@ -115,18 +111,18 @@ class DataStore():
         self._tagstore.add_node(tag, parent_id=parent_id)
         tag.set_save_callback(self.save)
 
-    def new_tag(self, name, attributes={}):
+    def new_tag(self, name, attributes={}, tid=None):
         """
         Create a new tag
 
         @returns GTG.core.tag.Tag: the new tag
         """
         parameters = {'tag': name}
-        tag = Tag(name, req=self.requester, attributes=attributes)
+        tag = Tag(name, req=self.requester, attributes=attributes, tid=tid)
         self._add_new_tag(name, tag, self.treefactory.tag_filter, parameters)
         return tag
 
-    def new_search_tag(self, name, query, attributes={}):
+    def new_search_tag(self, name, query, attributes={}, tid=None):
         """
         Create a new search tag
 
@@ -144,7 +140,7 @@ class DataStore():
         init_attr["label"] = name
         init_attr["query"] = query
 
-        tag = Tag(name, req=self.requester, attributes=init_attr)
+        tag = Tag(name, req=self.requester, attributes=init_attr, tid=tid)
         self._add_new_tag(name, tag, search_filter, parameters,
                           parent_id=SEARCH_TAG)
         self.save_tagtree()
@@ -180,18 +176,23 @@ class DataStore():
                 # Store old tag attributes
                 color = tag.get_attribute("color")
                 icon = tag.get_attribute("icon")
+                tid = tag.tid
 
                 my_task = self.get_task(task_id)
                 my_task.rename_tag(oldname, newname)
 
                 # Restore attributes on tag
                 new_tag = self.get_tag(newname)
+                new_tag.tid = tid
 
                 if color:
                     new_tag.set_attribute("color", color)
 
                 if icon:
                     new_tag.set_attribute("icon", icon)
+
+            self.remove_tag(oldname)
+            self.save_tagtree()
 
             return None
 
@@ -207,7 +208,7 @@ class DataStore():
             num += 1
             label = newname + " " + str(num)
 
-        self.new_search_tag(label, query)
+        self.new_search_tag(label, query, {}, tag.tid)
 
     def get_tag(self, tagname):
         """
@@ -220,68 +221,82 @@ class DataStore():
         else:
             return None
 
-    def load_tag_tree(self):
+    def load_tag_tree(self, tag_tree):
         """
         Loads the tag tree from a xml file
         """
-        xmlstore = xml.open_file(TAGS_XMLFILE, TAG_XMLROOT)
 
-        for t in xmlstore.getroot():
-            tagname = t.get('name')
-            parent = t.get('parent')
+        for element in tag_tree.iter('tag'):
+            tid = element.get('id')
+            name = element.get('name')
+            color = element.get('color')
+            icon = element.get('icon')
+            parent = element.get('parent')
+            nonactionable = element.get('nonactionable')
 
-            tag_attr = {}
+            tag_attrs = {}
 
-            for key, value in t.attrib.items():
-                if key not in ('name', 'parent'):
-                    tag_attr[key] = value
+            if color:
+                tag_attrs['color'] = '#' + color
 
-            if parent == SEARCH_TAG:
-                query = t.attrib.get('query')
-                tag = self.new_search_tag(tagname, query, tag_attr)
-            else:
-                tag = self.new_tag(tagname, tag_attr)
-                if parent:
-                    tag.set_parent(parent)
+            if icon:
+                tag_attrs['icon'] = icon
+
+            if nonactionable:
+                tag_attrs['nonactionable'] = nonactionable
+
+            tag = self.new_tag(name, tag_attrs, tid)
+
+            if parent:
+                tag.set_parent(parent)
+
+            # Add to idmap for quick lookup based on ID
+            self.tag_idmap[tid] = tag
 
         self.tagfile_loaded = True
 
+
+    def load_search_tree(self, search_tree):
+        """Load saved searches tree."""
+
+        for element in search_tree.iter('savedSearch'):
+            tid = element.get('id')
+            name = element.get('name')
+            color = element.get('color')
+            icon = element.get('icon')
+            query = element.get('query')
+
+            tag_attrs = {}
+
+            if color:
+                tag_attrs['color'] = color
+
+            if icon:
+                tag_attrs['icon'] = icon
+
+            self.new_search_tag(name, query, tag_attrs, tid)
+
+
+    def get_tag_by_id(self, tid):
+        """Get a tag by its ID"""
+
+        try:
+            return self.tag_idmap[tid]
+        except KeyError:
+            return
+
     def save_tagtree(self):
         """ Saves the tag tree to an XML file """
+
         if not self.tagfile_loaded:
             return
 
-        xmlroot = etree.Element(TAG_XMLROOT)
         tags = self._tagstore.get_main_view().get_all_nodes()
-        already_saved = []
 
-        for tagname in tags:
-            if tagname in already_saved:
-                continue
+        for backend in self.backends.values():
+            if backend.get_name() == 'backend_localfile':
+                backend.save_tags(tags, self._tagstore)
 
-            tag = self._tagstore.get_node(tagname)
-            attributes = tag.get_all_attributes(butname=True, withparent=True)
-            if "special" in attributes or len(attributes) == 0:
-                continue
-
-            t_xml = etree.SubElement(xmlroot, 'tag')
-            t_xml.set('name', tagname)
-
-            for attr in attributes:
-                # skip labels for search tags
-                if tag.is_search_tag() and attr == 'label':
-                    continue
-
-                value = tag.get_attribute(attr)
-
-                if value:
-                    t_xml.set(attr, value)
-
-            xmlroot.append(t_xml)
-            already_saved.append(tagname)
-
-        xml.save_file(TAGS_XMLFILE, etree.ElementTree(xmlroot))
-        xml.write_backups(TAGS_XMLFILE)
 
     # Tasks functions #########################################################
     def get_all_tasks(self):
@@ -410,6 +425,8 @@ class DataStore():
                 log.error("registering a backend without pid.")
                 return None
             backend = backend_dic["backend"]
+            first_run = backend_dic["first_run"]
+
             # Checking that is a new backend
             if backend.get_id() in self.backends:
                 log.error("registering already registered backend")
@@ -418,7 +435,7 @@ class DataStore():
             # filtering the tasks that should hit the backend.
             source = TaskSource(requester=self.requester,
                                 backend=backend,
-                                datastore=self.filtered_datastore)
+                                datastore=self)
             self.backends[backend.get_id()] = source
             # we notify that a new backend is present
             self._backend_signals.backend_added(backend.get_id())
@@ -575,8 +592,6 @@ class DataStore():
         except Exception:
             pass
 
-        doc = etree.Element('config')
-
         # we ask all the backends to quit first.
         if quit:
             # we quit backends in parallel
@@ -605,7 +620,8 @@ class DataStore():
 
         # we save the parameters
         for b in self.get_all_backends(disabled=True):
-            t_xml = etree.SubElement(doc, 'backend')
+            config = self.conf.get_backend_config(b.get_name())
+
 
             for key, value in b.get_parameters().items():
                 if key in ["backend", "xmlobject"]:
@@ -615,13 +631,9 @@ class DataStore():
 
                 param_type = b.get_parameter_type(key)
                 value = b.cast_param_type_to_string(param_type, value)
-                t_xml.set(str(key), value)
+                config.set(str(key), value)
 
-            # Saving all the projects at close
-            doc.append(t_xml)
-
-        xml.save_file(PROJECTS_XMLFILE, etree.ElementTree(doc))
-        xml.write_backups(PROJECTS_XMLFILE)
+        config.save()
 
         #  Saving the tagstore
         self.save_tagtree()
@@ -656,7 +668,7 @@ class TaskSource():
 
         @param requester: a Requester
         @param backend:  the backend being wrapped
-        @param datastore: a FilteredDatastore
+        @param datastore: a Datastore
         """
         self.backend = backend
         self.req = requester
@@ -876,30 +888,3 @@ class TaskSource():
         else:
             return getattr(self.backend, attr)
 
-
-class FilteredDataStore(Borg):
-    """
-    This class acts as an interface to the Datastore.
-    It is used to hide most of the methods of the Datastore.
-    The backends can safely use the remaining methods.
-    """
-
-    def __init__(self, datastore):
-        super().__init__()
-        self.datastore = datastore
-
-    def __getattr__(self, attr):
-        if attr in ['task_factory',
-                    'push_task',
-                    'get_task',
-                    'has_task',
-                    'get_all_tasks',
-                    'get_tasks_tree',
-                    'get_backend_mutex',
-                    'flush_all_tasks',
-                    'request_task_deletion']:
-            return getattr(self.datastore, attr)
-        elif attr in ['get_all_tags']:
-            return self.datastore.requester.get_all_tags
-        else:
-            raise AttributeError(f"No attribute {attr}")

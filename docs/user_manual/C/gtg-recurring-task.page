@@ -5,10 +5,18 @@
       id="gtg-recurring-task">
 
   <info>
+  <revision pkgversion="0.4.0" date="2020-11-12" status="candidate"/>
   <link type="guide" xref="index#gtg-working-task" group="sixth"/>
+  <link type="seealso" xref="gtg-quickadd"/>
+  <link type="seealso" xref="gtg-search-syntax"/>
     <credit type="author copyright">
       <name>Drissi Mohieddine</name>
-      <email its:translate="no">m.drissi@protonmail.con</email>
+      <email its:translate="no">m.drissi@protonmail.com</email>
+      <years>2020</years>
+    </credit>
+    <credit type="editor copyright">
+      <name>Danielle Vansia</name>
+      <email its:translate="no">daniellevansia@gmail.com</email>
       <years>2020</years>
     </credit>
 
@@ -16,24 +24,31 @@
 
   </info>
 
-  <title>Using Recurring/Repeating tasks</title>
+  <title>Using Recurring/Repeating Tasks</title>
 
-  <p>Repeating tasks are the tasks that must be done many times on a fixed perid (day, week, month, year). By making a task repeat, the due date will hold the date on which the task must be completed. If a start date is set, the occurence of that task will begin from that date.</p> 
+  <p>Repeating tasks are the tasks that must be done many times, in a fixed period (day, week, month, year). By making a task repeat, the due date will hold the date by which the task must be completed. If a start date is set, the first occurrence of that task will begin from that start date.</p> 
 
 <section id="set-recurring-tasks">
-<title>How to set a task to repeat</title>
+<title>Setting a Task to Repeat</title>
 
-<p>There are three ways to do so.<gui>The Quick Add Entry</gui> is the fastest with the simple keyword <em style="strong">every<em>. Furthermore, you can also use the <gui>Task Editor</gui>(from the circular button) and the context menu</p>
+<p>You can set a task to repeat using one of the following methods:</p> 
 
-<note stlye="tip"><p>In the task Editor, the circular button will light blue to notify you when the task is recurring. In the taskview, you will also have a similar icon.</p></note>
+<list>
+  <item><p>The <gui>Quick Add Entry</gui> is the fastest way. Use the keyword <em style="strong">every</em> when creating the task. See the Valid Recurring Terms section below for the valid syntax.</p></item>
+  <item><p>From the <gui>Task Editor</gui>, click the circular arrow button to open the Recurring Task menu.</p></item>
+<item><p>From the <gui>Task Browser</gui>, right-click a task. Select <em style="strong">Set Recurring</em> to open the Recurring Task context menu.</p></item>
+</list>
+
+<note stlye="tip"><p>In the <gui>Task Editor</gui>, the circular arrow button is displayed as light blue to notify you when the task is set to recurring. The circular arrow icon is also displayed next to a task in the <gui>Task Browser</gui>.</p></note>
+<note stlye="tip"><p>If you set a parent task to repeat, the associated subtasks will also be set to repeat.</p></note>
 </section>
- 
-<section id="valid-recurring-terms">
-<title>What are the valid recurring terms</title>
 
-<p>The valid terms are very similar to <link href="gtg-date-parsing">Keyword Parsing Syntax</link> for start and due dates with the exception of some few keywords</p>
+<section id="valid-recurring-terms">
+<title>Valid Recurring Terms</title>
+
+<p>The valid terms are very similar to the <link href="gtg-date-parsing">Keyword Parsing Syntax</link> for start and due dates with the exception of a few keywords.</p>
 <table rules="rows" frame="top bottom" ui:expanded="true">
-<title>Recurring term Syntax</title>
+<title>Recurring Term Syntax</title>
   <thead>
     <tr>
       <td><p><em style="strong">Syntax</em></p></td>
@@ -87,15 +102,15 @@
 </section>
  <section id="recurring-examples">
 <title>Recurring Examples</title>
-<p>The following shows examples of how recurring terms work. These examples are made using the <gui>Quick Add Entry</gui> but do not deffer in results from the Task Editor.</p>
+<p>Below are some examples of how recurring terms work. These examples are made using the <gui>Quick Add Entry</gui> but do not differ in result from the <gui>Task Editor</gui>.</p>
 
 <terms>
   <item>
      <title><em style="strong"><code>pay my taxes every:year</code></em></title>
-        <p>This task will repeat every year on the date which the task was created.</p></item>
+        <p>This task will repeat every year on the date that the task was created.</p></item>
   <item>
-     <title><em style="strong"><code>Go out with my dog every:day start:next month</code></em></title>
-        <p>By setting a start date, this task will not recurr every date from today's date but from the start date</p></item>
+     <title><em style="strong"><code>Go out with my dog every:day start:tomorrow</code></em></title>
+        <p>By setting a start date, this task will not recur every date from today's date but from the start date.</p></item>
 </terms>
 </section>
 </page>

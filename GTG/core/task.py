@@ -132,25 +132,6 @@ class Task(TreeNode):
             self.sync()
         return str(self.uuid)
 
-    def get_remote_ids(self):
-        """
-        A task usually has a different id in all the different backends.
-        This function returns a dictionary backend_id->the id the task has
-        in that backend
-        @returns dict: dictionary backend_id->task remote id
-        """
-        return self.remote_ids
-
-    def add_remote_id(self, backend_id, task_remote_id):
-        """
-        A task usually has a different id in all the different backends.
-        This function adds a relationship backend_id-> remote_id that can be
-        retrieved using get_remote_ids
-        @param backend_id: string representing the backend id
-        @param task_remote_id: the id for this task in the backend backend_id
-        """
-        self.remote_ids[str(backend_id)] = str(task_remote_id)
-
     def get_title(self):
         return self.title
 
@@ -180,6 +161,7 @@ class Task(TreeNode):
 
         newtask.sync()
         return newtask.tid
+
 
     # Return True if the title was changed.
     # False if the title was already the same.
@@ -511,11 +493,6 @@ class Task(TreeNode):
         self.due_date = new_duedate_obj
         # If the new date is fuzzy or undefined, we don't update related tasks
         if not new_duedate_obj.is_fuzzy():
-            # if the task's start date happens later than the
-            # new due date, we update it (except for fuzzy dates)
-            if not self.get_start_date().is_fuzzy() and \
-                    self.get_start_date() > new_duedate_obj:
-                self.set_start_date(new_duedate)
             # if some ancestors' due dates happen before the task's new
             # due date, we update them (except for fuzzy dates)
             for par in __get_defined_parent_list(self):
@@ -589,20 +566,8 @@ class Task(TreeNode):
     #
     # Start date is the date at which the user has decided to work or consider
     # working on this task.
-    #
-    # The only constraint applied to start dates is that start dates cannot
-    # happen later than the task due date.
-    #
-    # The task due date (and any constrained relatives) is updated if a new
-    # task start date is chosen that does not respect this rule.
-    #
-    # Undefined/fizzy start dates don't constraint the task due date.
     def set_start_date(self, fulldate):
         self.start_date = Date(fulldate)
-        if not Date(fulldate).is_fuzzy() and \
-            not self.due_date.is_fuzzy() and \
-                Date(fulldate) > self.due_date:
-            self.set_due_date(fulldate)
         self.sync()
 
     def get_start_date(self):
@@ -696,16 +661,7 @@ class Task(TreeNode):
 
     def set_text(self, texte):
         self.can_be_deleted = False
-        if texte != "<content/>":
-            # defensive programmation to filter bad formatted tasks
-            if not texte.startswith("<content>"):
-                texte = html.escape(texte, quote=True)
-                texte = f"<content>{texte}"
-            if not texte.endswith("</content>"):
-                texte = f"{texte}</content>"
-            self.content = str(texte)
-        else:
-            self.content = ''
+        self.content = html.unescape(str(texte))
 
     # SUBTASKS ###############################################################
     def new_subtask(self):
@@ -759,19 +715,6 @@ class Task(TreeNode):
     def get_subtasks(self):
         tree = self.get_tree()
         return [tree.get_node(node_id) for node_id in self.get_children()]
-
-    # FIXME: why is this function used ? It's higly specific. Remove it?
-    #        (Lionel)
-    # Agreed. it's only used by the "add tag to all subtasks" widget.
-    def get_self_and_all_subtasks(self, active_only=False, tasks=[]):
-        print("DEPRECATED FUNCTION: get_self_and_all_subtasks")
-        tasks.append(self)
-        for tid in self.get_children():
-            i = self.req.get_task(tid)
-            if i:
-                if not active_only or i.status == self.STA_ACTIVE:
-                    i.get_self_and_all_subtasks(active_only, tasks)
-        return tasks
 
     def set_parent(self, parent_id):
         """Update the task's parent. Refresh due date constraints."""
@@ -847,11 +790,16 @@ class Task(TreeNode):
         self.req.get_tag(new).modified()
         self.sync()
 
+    def tag_added_by_id(self, tid):
+        """Add a tag by its ID"""
+
+        tag = self.req.ds.get_tag_by_id(tid)
+        self.tag_added(tag.get_name())
+
     def tag_added(self, tagname):
         """
         Adds a tag. Does not add '@tag' to the contents. See add_tag
         """
-        # Do not add the same tag twice
         if tagname not in self.tags:
             self.tags.append(tagname)
             if self.is_loaded():
@@ -867,29 +815,26 @@ class Task(TreeNode):
 
     def add_tag(self, tagname):
         "Add a tag to the task and insert '@tag' into the task's content"
+
         if self.tag_added(tagname):
             c = self.content
-
-            # strip <content>...</content> tags
-            if c.startswith('<content>'):
-                c = c[len('<content>'):]
-            if c.endswith('</content>'):
-                c = c[:-len('</content>')]
+            tagname = html.escape(tagname)
+            tagname = '@' + tagname if not tagname.startswith('@') else tagname
 
             if not c:
                 # don't need a separator if it's the only text
                 sep = ''
-            elif c.startswith('<tag>'):
+            elif c.startswith('@'):
                 # if content starts with a tag, make a comma-separated list
                 sep = ', '
             else:
                 # other text at the beginning, so put the tag on its own line
                 sep = '\n\n'
 
-            self.content = "<content><tag>%s</tag>%s%s</content>" % (
-                html.escape(tagname), sep, c)
+            self.content = f'{tagname}{sep}{c}'
             # we modify the task internal state, thus we have to call for a
             # sync
+
             self.sync()
 
     # remove by tagname
@@ -910,21 +855,12 @@ class Task(TreeNode):
                 tag.update_task(self.get_id())
                 tag.modified()
 
-    def set_only_these_tags(self, tags_list):
-        """
-        Given a list of strings representing tags, it makes sure that
-        this task has those and only those tags.
-        """
-        for tag in self.get_tags_name():
-            try:
-                tags_list.remove(tag)
-            except:
-                self.remove_tag(tag)
-        for tag in tags_list:
-            self.add_tag(tag)
-
     def _strip_tag(self, text, tagname, newtag=''):
-        inline_tag = tagname[1:]
+        if tagname.startswith('@'):
+            inline_tag = tagname[1:]
+        else:
+            inline_tag = tagname
+
         return (text
                 .replace(f'{tagname}\n\n', newtag)
                 .replace(f'{tagname}, ', newtag)
@@ -942,9 +878,10 @@ class Task(TreeNode):
                 toreturn = True
             else:
                 tag = self.req.get_tag(tagname)
-                for tagc_name in tag.get_children():
-                    if not toreturn:
-                        toreturn = children_tag(tagc_name)
+                if tag:
+                    for tagc_name in tag.get_children():
+                        if not toreturn:
+                            toreturn = children_tag(tagc_name)
             return toreturn
 
         # We want to see if the task has no tags

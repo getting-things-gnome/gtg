@@ -20,10 +20,9 @@
 
 
 import re
-import html
-import logging
 from time import time
 from uuid import uuid4
+import logging
 
 from gi.repository import Gtk, GLib, Gdk, GObject
 
@@ -299,6 +298,27 @@ class TaskView(Gtk.TextView):
             if not sub_tag:
                 return False
 
+            # Don't auto-remove it
+            tid = sub_tag.tid
+            task = self.req.get_task(tid)
+            parents = task.get_parents()
+
+            # Remove if its not a child of this task
+            if not parents or parents[0] != self.tid:
+                log.debug('Task %s is not a subtask of %s', tid, self.tid)
+                log.debug('Removing subtask %s from content', tid)
+
+                end = start.copy()
+                end.forward_to_line_end()
+
+                # Move the start iter to take care of the newline at
+                # the previous line
+                start.backward_chars(2)
+
+                self.buffer.delete(start, end)
+
+                return False
+
             # Check that we still have a checkbox
             after_checkbox = start.copy()
             after_checkbox.forward_char()
@@ -319,8 +339,6 @@ class TaskView(Gtk.TextView):
                 if check != u'\uFFFC':
                     return False
 
-            # Don't auto-remove it
-            tid = sub_tag.tid
 
             try:
                 self.subtasks['to_delete'].remove(tid)
@@ -330,7 +348,6 @@ class TaskView(Gtk.TextView):
             self.rename_subtask_cb(tid, text)
 
             # Get the task and instantiate an internal link tag
-            task = self.req.get_task(tid)
             status = task.get_status() if task else 'Active'
             link_tag = InternalLinkTag(tid, status)
             self.table.add(link_tag)
@@ -409,6 +426,7 @@ class TaskView(Gtk.TextView):
 
             # I find this confusing too :)
             tag_name = match.group(0)
+            tag_name = tag_name.replace('@', '')
             tag_tag = TaskTagTag(tag_name, self.req)
             self.tags_applied.append(tag_tag)
 
@@ -692,15 +710,11 @@ class TaskView(Gtk.TextView):
 
         return '\n'.join(text)
 
-        # Title isn't part of the task contents
-        return self.serialize()
-
 
     def insert(self, text: str) -> None:
         """Unserialize and insert text in the buffer."""
 
         subtasks = []
-        text = self.format_update(text)
         text = text.splitlines()
 
         for index, line in enumerate(text):
@@ -738,12 +752,15 @@ class TaskView(Gtk.TextView):
 
             self.buffer.delete(start, end)
 
+        self.process()
 
     def insert_tags(self, tags: List) -> None:
         """Insert tags in buffer."""
 
         # Don't add tags that are already in the buffer
-        [tags.remove(t) for t in tags if t in self.task_tags]
+        for t in tags.copy():
+            if t in self.task_tags:
+                tags.remove(t)
 
         if not tags:
             # Bail early if there are no tags left in the list
@@ -766,7 +783,7 @@ class TaskView(Gtk.TextView):
         else:
             text = ', '
 
-        text += ', '.join(tags)
+        text += ', '.join(['@' + tag for tag in tags])
         self.buffer.insert(first_line, text)
 
 

@@ -22,16 +22,48 @@ Tasks should serve as a quick tutorial how GTG works """
 
 from gettext import gettext as _
 from GTG.core.tag import extract_tags_from_text
+from GTG.core import xml
+from GTG.core.dates import Date
 
+from uuid import uuid4
 from lxml import etree
 
-# flake8: noqa: E501
 
+# Tags for the initial tasks
+tags = {
+    'to_pay': str(uuid4()),
+    'money': str(uuid4()),
+    'errands': str(uuid4()),
+    'waitingfor': str(uuid4()),
+}
+
+
+# TIDs for each initial task
+task_ids = [
+    '33d9760d-2e07-4ae4-9c02-1fcdaeb46325',
+    '262d1410-71aa-4e35-abec-90ef1bab44d3',
+    '2d427a77-3077-4277-904c-073fcfcb4842',
+    '0653765c-f5d4-4b7f-9903-0065bb258940',
+    '3efd01b7-343d-4be1-9bac-8ed944517e3f',
+    '9b05a6c5-81e3-4fe5-a70d-3b569f65409c',
+    '21ed54a8-e7ff-408a-b648-8d12cc75e162',
+    'd1c73224-9eec-4889-b3c4-bb0281e5c1d3',
+    '586dd1a7-0772-4d0a-85db-34edfc8ee30c',
+]
+
+# Date for modified and added tags
+today = Date.today().xml_str()
+
+# Initial tasks
+# flake8: noqa: E501
 tasks = [
     {
         'title': _("Getting Started with GTG (read me first)"),
-        'id': "0@1",
-        'subtasks': ["1@1", "2@1", "3@1", "4@1", "5@1", "6@1", "7@1", "8@1"],
+        'id': task_ids[0],
+        'subtasks': task_ids[1:],
+        'added': today,
+        'modified': today,
+        'tags': [],
         'content': _(
             "Welcome to Getting Things GNOME (GTG), your new task manager! In GTG, "
             "everything is a task. From building a bridge over the Pacific Ocean "
@@ -66,7 +98,7 @@ tasks = [
             "To open and edit a subtask, simply click on its link! "
             "You can always come back using the &quot;Open Parent&quot; button. "
             "Try opening the following subtask for example:\n"
-            "<subtask>1@1</subtask>\n"
+            "{! 262d1410-71aa-4e35-abec-90ef1bab44d3 !}\n"
             "\n"
             "Closing a task:\n"
             "\n"
@@ -87,13 +119,14 @@ tasks = [
             "\n"
             "If you are interested in knowing more about "
             "GTG's other features, you will find more information here:\n"
-            "<subtask>2@1</subtask>\n"
-            "<subtask>3@1</subtask>\n"
-            "<subtask>4@1</subtask>\n"
-            "<subtask>5@1</subtask>\n"
-            "<subtask>6@1</subtask>\n"
-            "<subtask>7@1</subtask>\n"
-            "<subtask>8@1</subtask>\n"
+            "{! 262d1410-71aa-4e35-abec-90ef1bab44d3 !}\n"
+            "{! 2d427a77-3077-4277-904c-073fcfcb4842 !}\n"
+            "{! 0653765c-f5d4-4b7f-9903-0065bb258940 !}\n"
+            "{! 3efd01b7-343d-4be1-9bac-8ed944517e3f !}\n"
+            "{! 9b05a6c5-81e3-4fe5-a70d-3b569f65409c !}\n"
+            "{! 21ed54a8-e7ff-408a-b648-8d12cc75e162 !}\n"
+            "{! d1c73224-9eec-4889-b3c4-bb0281e5c1d3 !}\n"
+            "{! 586dd1a7-0772-4d0a-85db-34edfc8ee30c !}\n"
             "\n"
             "We also recommend you read our user manual, by pressing F1 "
             "or using the &quot;Help&quot; entry in the main window's menu button.\n"
@@ -106,8 +139,11 @@ tasks = [
     },
     {
         'title': _("Learn How to Use Subtasks"),
-        'id': "1@1",
+        'id': task_ids[1],
         'subtasks': [],
+        'tags': [],
+        'added': today,
+        'modified': today,
         'content': _(
             "A &quot;Subtask&quot; is something that you need to do first before "
             "being able to accomplish your task. In GTG, the purpose of subtasks "
@@ -135,8 +171,11 @@ tasks = [
 
     {
         'title': _("Learn How to Use Tags and Enable the Sidebar"),
-        'id': "2@1",
+        'id': task_ids[2],
         'subtasks': [],
+        'tags': [tags['money'], tags['to_pay'],],
+        'added': today,
+        'modified': today,
         'content': _(
             "In GTG, you use tags to sort your tasks. A tag is a simple word that "
             "begins with &quot;@&quot;.\n"
@@ -167,8 +206,11 @@ tasks = [
 
     {
         'title': _("Learn How to Use the Actionable View Mode"),
-        'id': "3@1",
+        'id': task_ids[3],
         'subtasks': [],
+        'tags': [tags['waitingfor']],
+        'added': today,
+        'modified': today,
         'content': _(
             "If you press the &quot;Actionable&quot; tab, only actionable tasks "
             "will be displayed in your list.\n"
@@ -206,8 +248,11 @@ tasks = [
 
     {
         'title': _("Learn About Plugins"),
-        'id': "4@1",
+        'id': task_ids[4],
         'subtasks': [],
+        'tags': [],
+        'added': today,
+        'modified': today,
         'content': _(
             "GTG has the ability to add plugins to extend its core functionality."
             "\n\n"
@@ -219,8 +264,11 @@ tasks = [
 
     {
         'title': _("Reporting Bugs"),
-        'id': "5@1",
+        'id': task_ids[5],
         'subtasks': [],
+        'tags': [],
+        'added': today,
+        'modified': today,
         'content': _(
             "It is a well-known fact that GTG has no bugs! 🐛\n"
             "But sometimes, in the dark, unexpected things happen...\n"
@@ -235,8 +283,11 @@ tasks = [
 
     {
         'title': _("Learn How to Use the Quick Add Entry"),
-        'id': "6@1",
+        'id': task_ids[6],
         'subtasks': [],
+        'tags': [],
+        'added': today,
+        'modified': today,
         'content': _(
             "The Quick Add entry is the fastest way to create a new task "
             "without disrupting your focus from the main window. "
@@ -246,8 +297,11 @@ tasks = [
 
     {
         'title': _("Learn About Synchronization Services"),
-        'id': "7@1",
+        'id': task_ids[7],
         'subtasks': [],
+        'tags': [],
+        'added': today,
+        'modified': today,
         'content': _(
             "❗ Take note that as of GTG 0.4, synchronization backends/services have "
             "been disabled until someone (you?) steps forward to fix and maintain "
@@ -270,8 +324,11 @@ tasks = [
 
     {
         'title': _("Learn How to Search for Tasks"),
-        'id': "8@1",
+        'id': task_ids[8],
         'subtasks': [],
+        'tags': [tags['errands']],
+        'added': today,
+        'modified': today,
         'content': _(
             "To help you to find specific tasks more easily, GTG allows you to "
             "search for tasks based on their content.\n"
@@ -299,28 +356,57 @@ def generate() -> etree.Element:
     """Generate the XML tree with first run tasks."""
 
     # Create an empty XML tree first
-    root = etree.Element('project')
+    root = xml.skeleton()
+    taskslist = root.find('tasklist')
+    taglist = root.find('taglist')
 
+    # Fill tags
+    for tag, tid in tags.items():
+        tag_tag = etree.SubElement(taglist, 'tag')
+        tag_tag.set('id', tid)
+        tag_tag.set('name', tag)
+
+
+    # Fill tasks
     for task in tasks:
-        tags = extract_tags_from_text(task['content'])
-
-        task_tag = etree.SubElement(root, 'task')
-        task_tag.attrib['id'] = task['id']
-        task_tag.attrib['status'] = 'Active'
-        task_tag.attrib['tags'] = ','.join(tags)
-        task_tag.attrib['recurring'] = 'False'
+        task_tag = etree.SubElement(taskslist, 'task')
+        task_tag.set('id', task['id'])
+        task_tag.set('status', 'Active')
 
         title = etree.SubElement(task_tag, 'title')
         title.text = task['title']
 
-        recurring_term = etree.SubElement(task_tag, 'recurring_term')
+        # Add tags for this task
+        task_tags = etree.SubElement(task_tag, 'tags')
+
+        for tag in task['tags']:
+            tag_tag = etree.SubElement(task_tags, 'tag')
+            tag_tag.text = tag
+
+        dates = etree.SubElement(task_tag, 'dates')
+        added = etree.SubElement(dates, 'added')
+        added.text = task['added']
+
+        recurring_enabled = etree.SubElement(dates, 'recurring_enabled')
+        recurring_enabled.text = 'false'
+
+        recurring = etree.SubElement(task_tag, 'recurring')
+        recurring.set('enabled', 'false')
+
+        recurring_term = etree.SubElement(recurring, 'term')
         recurring_term.text = 'None'
 
+        modify = etree.SubElement(dates, 'modified')
+        modify.text = task['modified']
+
+        # Add subtasks in this tasks
+        subtask = etree.SubElement(task_tag, 'subtasks')
+
         for sub in task['subtasks']:
-            subtask = etree.SubElement(task_tag, 'subtask')
-            subtask.text = sub
+            sub_tag = etree.SubElement(subtask, 'sub')
+            sub_tag.text = sub
 
         content = etree.SubElement(task_tag, 'content')
-        content.text = task['content']
+        content.text = etree.CDATA(task['content'])
 
     return etree.ElementTree(root)

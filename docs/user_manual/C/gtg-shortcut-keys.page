@@ -10,6 +10,7 @@
       
       <revision pkgversion="0.3.1" date="2013-06-18" status="candidate"/>
       <revision pkgversion="0.4.0" date="2020-05-10" status="candidate"/>
+      <revision pkgversion="0.5.0" date="2020-11-15" status="candidate"/>
 
    <credit type="author copyright">
       <name>Radina Matic</name>
@@ -40,22 +41,37 @@
       </thead>
       <tbody>
         <tr>
-          <td><p>Show <gui>Task Editor</gui> Window</p></td>  <td><p><key>ENTER</key></p></td>
+          <td><p>Show <gui>Task Editor</gui> Window</p></td>  <td><p><key>Enter</key></p></td>
         </tr>
         <tr>
-          <td><p>Hide <gui>Task Editor</gui> Window</p></td>  <td><p><key>ESC</key></p></td>
+          <td><p>Hide <gui>Task Editor</gui> Window</p></td>  <td><p><key>Esc</key></p></td>
         </tr>
 	<tr>
-          <td><p>Move One Task Up in <gui>Task Browser</gui></p></td>  <td><p>Up Arrow</p></td>
+          <td><p>Move One Task Up in <gui>Task Browser</gui></p></td>  <td><p><key>Up</key></p></td>
         </tr>
 	<tr>
-          <td><p>Move One Task Down in <gui>Task Browser</gui></p></td>  <td><p>Down Arrow</p></td>
+          <td><p>Move One Task Down in <gui>Task Browser</gui></p></td>  <td><p><key>Down</key></p></td>
+        </tr>
+        <tr>
+          <td><p>Unfold Treeview Items</p></td>  <td><p><keyseq><key>Shift</key><key>Right</key></keyseq></p></td>
+        </tr>
+        <tr>
+          <td><p>Fold Treeview Items</p></td>  <td><p><keyseq><key>Shift</key><key>Left</key></keyseq></p></td>
         </tr>
         <tr>
           <td><p>Place Focus on <gui>Quick Add Entry</gui> Field</p></td>  <td><p><keyseq><key>Ctrl</key><key>L</key></keyseq></p></td>
         </tr>
         <tr>
           <td><p>Toggle <gui>Sidebar</gui></p></td> <td><p><key>F9</key></p></td>
+        </tr>
+        <tr>
+          <td><p>Show Preferences screen</p></td> <td><p><key>Ctrl</key><key>,</key></p></td>
+        </tr>
+        <tr>
+          <td><p>Open Help screen</p></td> <td><p><key>F1</key></p></td>
+        </tr>
+        <tr>
+          <td><p>Show Keyboard Shortcuts screen</p></td> <td><p><key>Ctrl</key><key>?</key></p></td>
         </tr>
         <tr>
           <td><p>Redo</p></td>  <td><p><keyseq><key>Ctrl</key><key>Y</key></keyseq></p></td>
@@ -88,7 +104,7 @@
           <td><p>Dismiss Task</p></td>  <td><p><keyseq><key>Ctrl</key><key>I</key></keyseq></p><note style="tip"><p>This keyboard shortcut also undismisses a task when used in the <gui>Closed</gui> view mode.</p></note></td>
         </tr>
         <tr>
-          <td><p>Delete Task</p></td>  <td><p><keyseq><key>CTRL</key><key>DEL</key></keyseq></p></td>
+          <td><p>Delete Task</p></td>  <td><p><keyseq><key>Ctrl</key><key>Del</key></keyseq></p></td>
         </tr>
         <tr>
           <td><p>New Subtask</p></td>  <td><p><keyseq><key>Ctrl</key><key>Shift</key><key>N</key></keyseq></p></td>

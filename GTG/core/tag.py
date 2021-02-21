@@ -23,6 +23,7 @@ Tagstore is to tag as datastore is to task. Of course, the tagstore is
 easier.  See the end of this file for the Tag object implementation.
 """
 
+import uuid
 import xml.sax.saxutils as saxutils
 import re
 
@@ -58,9 +59,6 @@ def parse_tag_list(text):
         else:
             is_positive = True
 
-        if not tag.startswith('@'):
-            tag = "@" + tag
-
         result.append((tag, is_positive))
     return result
 
@@ -76,7 +74,7 @@ class Tag(TreeNode):
     for tags is C{name}, which always matches L{Tag.get_name()}.
     """
 
-    def __init__(self, name, req, attributes={}):
+    def __init__(self, name, req, attributes={}, tid=None):
         """Construct a tag.
 
         @param name: The name of the tag. Should be a string, generally
@@ -93,6 +91,11 @@ class Tag(TreeNode):
             self.set_attribute(key, value)
 
         self.viewcount = None
+
+        if tid:
+            self.tid = tid
+        else:
+            self.tid = uuid.uuid4()
 
     def __get_viewcount(self):
         if not self.viewcount and self.get_name() != "gtg-tags-sep":
@@ -258,12 +261,6 @@ class Tag(TreeNode):
         for task_id in self.get_related_tasks():
             my_task = self.req.get_task(task_id)
             my_task.modified()
-
-    # is it useful to keep the tag in the tagstore.
-    # if no attributes and no tasks, it is not useful.
-    def is_removable(self):
-        attr = self.get_all_attributes(butname=True, withparent=True)
-        return (len(attr) <= 0 and not self.is_used())
 
     def is_special(self):
         return bool(self.get_attribute('special'))
