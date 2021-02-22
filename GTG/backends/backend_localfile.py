@@ -122,6 +122,11 @@ class Backend(GenericBackend):
 
             xml.save_file(filepath, tree)
 
+        elif not os.path.isfile(filepath):
+            root = firstrun_tasks.generate()
+            xml.create_dirs(self.get_path())
+            xml.save_file(self.get_path(), root)
+
         self.data_tree = xml.open_file(filepath, 'gtgData')
         self.task_tree = self.data_tree.find('tasklist')
         self.tag_tree = self.data_tree.find('taglist')
