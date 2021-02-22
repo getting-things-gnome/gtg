@@ -436,6 +436,10 @@ class DataStore():
             source = TaskSource(requester=self.requester,
                                 backend=backend,
                                 datastore=self)
+
+            if first_run:
+                backend.this_is_the_first_run(None)
+
             self.backends[backend.get_id()] = source
             # we notify that a new backend is present
             self._backend_signals.backend_added(backend.get_id())
