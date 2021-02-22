@@ -78,13 +78,13 @@ class TestParseTagList(TestCase):
     """ parse_tag_list """
 
     def test_parses_positive_single_tag(self):
-        self.assertEqual(parse_tag_list("tag"), [("@tag", True)])
+        self.assertEqual(parse_tag_list("tag"), [("tag", True)])
         self.assertEqual(parse_tag_list("@tag"), [("@tag", True)])
 
     def test_parses_postivie_tag_list(self):
         self.assertEqual(
             parse_tag_list("a b c"),
-            [("@a", True), ("@b", True), ("@c", True)],
+            [("a", True), ("b", True), ("c", True)],
         )
         self.assertEqual(
             parse_tag_list("@a @b @c"),
@@ -92,13 +92,13 @@ class TestParseTagList(TestCase):
         )
 
     def test_parses_negative_single_tag(self):
-        self.assertEqual(parse_tag_list("!tag"), [("@tag", False)])
+        self.assertEqual(parse_tag_list("!tag"), [("tag", False)])
         self.assertEqual(parse_tag_list("!@tag"), [("@tag", False)])
 
     def test_parses_negative_tag_list(self):
         self.assertEqual(
             parse_tag_list("!a !b !c"),
-            [("@a", False), ("@b", False), ("@c", False)],
+            [("a", False), ("b", False), ("c", False)],
         )
         self.assertEqual(
             parse_tag_list("!@a !@b !@c"),
@@ -108,9 +108,9 @@ class TestParseTagList(TestCase):
     def test_parses_mixed_tags(self):
         self.assertEqual(
             parse_tag_list("add !remove"),
-            [("@add", True), ("@remove", False)],
+            [("add", True), ("remove", False)],
         )
         self.assertEqual(
-            parse_tag_list("!@remove @add"),
-            [("@remove", False), ("@add", True)],
+            parse_tag_list("!remove add"),
+            [("remove", False), ("add", True)],
         )
