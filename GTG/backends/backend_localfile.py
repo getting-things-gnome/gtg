@@ -157,12 +157,13 @@ class Backend(GenericBackend):
             tree = versioning.convert(old_path, self.datastore)
 
             xml.save_file(filepath, tree)
+        else:
+            root = firstrun_tasks.generate()
+            xml.create_dirs(self.get_path())
+            xml.save_file(self.get_path(), root)
+
 
         self._parameters[self.KEY_DEFAULT_BACKEND] = True
-
-        root = firstrun_tasks.generate()
-        xml.create_dirs(self.get_path())
-        xml.save_file(self.get_path(), root)
 
         # Load the newly created file
         self.data_tree = xml.open_file(self.get_path(), 'gtgData')
