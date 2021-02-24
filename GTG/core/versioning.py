@@ -67,7 +67,12 @@ def convert(path: str, ds: datastore) -> et.ElementTree:
 
         # Keep a map of old style IDs to UUIDs for later
         tid = task.attrib['id']
-        new_tid = task.attrib['uuid']
+
+        try:
+            new_tid = task.attrib['uuid']
+        except KeyError:
+            new_tid = str(uuid4())
+
         tid_cache[tid] = new_tid
 
     for task in old_tree.iter('task'):
@@ -150,7 +155,7 @@ def convert_task(task: et.Element, ds: datastore) -> Optional[et.Element]:
 
     # Get the old task properties
     # TIDs were stored as UUID, but sometimes they were not present
-    tid = task.get('uuid') or real_task.get_uuid() or tid
+    tid = task.get('uuid') or real_task.get_uuid() or tid_cache[tid]
     status = task.get('status')
     title = task.find('title').text
     content = task.find('content')
