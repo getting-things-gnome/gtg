@@ -9,5 +9,5 @@
 mkdir -p tmp/default/xdg/data/gtg/
 mkdir -p tmp/default/xdg/config/gtg/
 
-cp -Rf ~/.var/app/org.gnome.Gtg/data/gtg/* tmp/default/xdg/data/gtg/
-cp -Rf ~/.var/app/org.gnome.Gtg/config/gtg/* tmp/default/xdg/config/gtg/
+cp -Rf ~/.var/app/org.gnome.GTG/data/gtg/* tmp/default/xdg/data/gtg/
+cp -Rf ~/.var/app/org.gnome.GTG/config/gtg/* tmp/default/xdg/config/gtg/
