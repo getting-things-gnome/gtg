@@ -269,6 +269,9 @@ def convert_task(task: et.Element, ds: datastore) -> Optional[et.Element]:
 def convert_content(content: str) -> str:
     """Convert a task contents to new format."""
 
+    if not content:
+        return ''
+
     # Unescape &quot;a and friends
     text = html.unescape(content)
 
