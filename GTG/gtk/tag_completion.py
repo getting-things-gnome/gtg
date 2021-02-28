@@ -27,11 +27,9 @@ FILTER_NAME = '@@TagCompletion'
 def tag_filter(tag, parameters=None):
     """ Show only regular tags which has some active tasks or the user has
     changed an attribute (e.g. color, workview) => only important tags """
-    if tag.get_id().startswith('@'):
-        has_attributes = len(tag.get_all_attributes(butname=True)) > 0
-        return has_attributes or tag.get_active_tasks_count() > 0
-    else:
-        return False
+
+    has_attributes = len(tag.get_all_attributes(butname=True)) > 0
+    return has_attributes or tag.get_active_tasks_count() > 0
 
 
 def normalize_unicode(string):
