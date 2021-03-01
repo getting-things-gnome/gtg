@@ -801,9 +801,6 @@ class MainWindow(Gtk.ApplicationWindow):
                 task.set_to_keep()
 
             for tag in data['tags']:
-                if not tag.startswith('@'):
-                    tag = '@' + tag
-
                 task.add_tag(tag)
 
             task.set_start_date(data['start'])

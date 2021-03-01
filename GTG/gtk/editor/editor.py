@@ -183,7 +183,7 @@ class TaskEditor():
         self.textview.rename_subtask_cb = self.rename_subtask
         self.textview.open_subtask_cb = self.open_subtask
         self.textview.save_cb = self.light_save
-        self.textview.add_tasktag_cb = task.add_tag
+        self.textview.add_tasktag_cb = task.tag_added
         self.textview.remove_tasktag_cb = task.remove_tag
         self.textview.refresh_cb = self.refresh_editor
         self.textview.get_tagslist_cb = task.get_tags_name
