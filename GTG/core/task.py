@@ -800,7 +800,7 @@ class Task(TreeNode):
             if self.is_loaded():
                 for child in self.get_subtasks():
                     if child.can_be_deleted:
-                        child.add_tag(tagname)
+                        child.tag_added(tagname)
 
                 tag = self.req.get_tag(tagname)
                 if not tag:
