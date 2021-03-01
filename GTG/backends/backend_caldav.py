@@ -197,7 +197,7 @@ class Backend(PeriodicImportBackend):
             new_todo = calendar.add_todo(new_vtodo.serialize())
         except caldav.lib.error.DAVError:
             logger.exception('Something went wrong while creating '
-                                '%r => %r', task, new_todo)
+                             '%r => %r', task, new_todo)
             return
         uid = UID_FIELD.get_dav(todo=new_todo)
         self._cache.set_todo(new_todo, uid)
@@ -568,12 +568,12 @@ class Categories(Field):
 
     @classmethod
     def to_tag(cls, category, prefix=''):
-        return '@%s%s' % (prefix, category.replace(' ', cls.CAT_SPACE))
+        return '%s%s' % (prefix, category.replace(' ', cls.CAT_SPACE))
 
     def get_gtg(self, task: Task, namespace: str = None) -> list:
-        return [tag_name.replace('@', '', 1).replace(self.CAT_SPACE, ' ')
+        return [tag_name.lstrip('@').replace(self.CAT_SPACE, ' ')
                 for tag_name in super().get_gtg(task)
-                if not tag_name.startswith('@' + DAV_TAG_PREFIX)]
+                if not tag_name.lstrip('@').startswith(DAV_TAG_PREFIX)]
 
     def get_dav(self, todo=None, vtodo=None):
         if todo:
@@ -586,8 +586,8 @@ class Categories(Field):
         return categories
 
     def write_dav(self, vtodo: iCalendar, value):
-        super().write_dav(vtodo, [category for category in value
-                                  if not category.startswith(DAV_TAG_PREFIX)])
+        super().write_dav(vtodo, [category.lstrip('@') for category in value
+                                  if not category.lstrip('@').startswith(DAV_TAG_PREFIX)])
 
     def set_gtg(self, todo: iCalendar, task: Task,
                 namespace: str = None) -> None:
