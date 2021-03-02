@@ -862,6 +862,10 @@ class Task(TreeNode):
             inline_tag = tagname
 
         return (text
+                .replace(f'@{tagname}\n\n', newtag)
+                .replace(f'@{tagname}\n', newtag)
+                .replace(f'@{tagname}, ', newtag)
+                .replace(f'@{tagname}', newtag)
                 .replace(f'{tagname}\n\n', newtag)
                 .replace(f'{tagname}, ', newtag)
                 .replace(f'{tagname},', inline_tag)
