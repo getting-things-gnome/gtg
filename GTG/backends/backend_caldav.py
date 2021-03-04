@@ -417,6 +417,8 @@ class Field:
         value = self.get_gtg(task, namespace)
         if self._is_value_allowed(value):
             self.write_dav(vtodo, value)
+        else:
+            self.clean_dav(vtodo)
 
     def get_dav(self, todo=None, vtodo=None):
         "Extract value from vTodo according to specified dav key name"
