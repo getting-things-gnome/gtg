@@ -1001,6 +1001,9 @@ class MainWindow(Gtk.ApplicationWindow):
                     if par.get_status() == Task.STA_ACTIVE:
                         new_parent = par.new_subtask()
                         for uid_task in selected_tasks:
+                            # Make sure the task doesn't get deleted
+                            # while switching parents
+                            self.req.get_task(uid_task).set_to_keep()
                             par.remove_child(uid_task)
                             new_parent.add_child(uid_task)
             else:
