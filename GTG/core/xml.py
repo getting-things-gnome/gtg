@@ -120,7 +120,7 @@ def task_to_element(task) -> etree.Element:
     dates = etree.SubElement(element, 'dates')
 
     added_date = etree.SubElement(dates, 'added')
-    added_date.text = task.get_added_date().isoformat()
+    added_date.text = task.get_added_date().xml_str()
 
     modified_date = etree.SubElement(dates, 'modified')
     modified_date.text = Date(task.get_modified()).xml_str()

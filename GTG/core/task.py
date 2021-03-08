@@ -63,7 +63,7 @@ class Task(TreeNode):
 
         self.added_date = Date.no_date()
         if newtask:
-            self.added_date = datetime.now()
+            self.added_date = Date(datetime.now())
 
         self.closed_date = Date.no_date()
         self.due_date = Date.no_date()
@@ -89,19 +89,8 @@ class Task(TreeNode):
     def get_added_date(self):
         return self.added_date
 
-    def get_added_date_string(self):
-        FORMAT = '%Y-%m-%dT%H:%M:%S'
-
-        if self.added_date:
-            return self.added_date.strftime(FORMAT)
-        else:
-            return datetime.now().strftime(FORMAT)
-
-    def get_added_date_simple(self):
-        return self.added_date.strftime("%Y/%m/%d") if self.added_date else ""
-
-    def set_added_date(self, date):
-        self.added_date = date
+    def set_added_date(self, value):
+        self.added_date = Date(value)
 
     def is_loaded(self):
         return self.loaded
@@ -258,11 +247,8 @@ class Task(TreeNode):
     def get_modified(self):
         return self.last_modified
 
-    def get_modified_string(self):
-        return self.last_modified.strftime("%Y-%m-%dT%H:%M:%S")
-
-    def set_modified(self, modified):
-        self.last_modified = modified
+    def set_modified(self, value):
+        self.last_modified = Date(value)
 
     def recursive_sync(self):
         """Recursively sync the task and all task children. Defined"""
@@ -755,8 +741,7 @@ class Task(TreeNode):
             # This is a liblarch call to the TreeNode ancestor
             self.modified()
             return True
-        else:
-            return False
+        return False
 
     def _modified_update(self):
         """

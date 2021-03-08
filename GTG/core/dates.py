@@ -122,14 +122,22 @@ class Date:
         elif value in ['None', None, '']:
             self.dt_value = NODATE
         elif isinstance(value, str):
-            for date_format, accuracy in DATE_FORMATS:
+            for cls in date, datetime:
                 try:
-                    self.dt_value = datetime.strptime(value, date_format)
-                    if accuracy is Accuracy.date:
-                        self.dt_value = self.dt_value.date()
+                    self.dt_value = cls.fromisoformat(value)
                     break
-                except ValueError:
+                except (ValueError,  # ignoring no iso format value
+                        AttributeError):  # ignoring python < 3.7
                     pass
+            if self.dt_value is None:
+                for date_format, accuracy in DATE_FORMATS:
+                    try:
+                        self.dt_value = datetime.strptime(value, date_format)
+                        if accuracy is Accuracy.date:
+                            self.dt_value = self.dt_value.date()
+                        break
+                    except ValueError:
+                        pass
             if self.dt_value is None:
                 try:  # it must be a fuzzy date
                     self.dt_value = LOOKUP[str(value).lower()]
