@@ -1,12 +1,15 @@
-from datetime import datetime, timedelta
+import re
+from datetime import date, datetime
 from unittest import TestCase
 
 import vobject
 from caldav.lib.error import NotFoundError
+from dateutil.tz import UTC
 from GTG.backends.backend_caldav import (CATEGORIES, CHILDREN_FIELD,
-                                         DAV_IGNORE, UID_FIELD, Backend,
-                                         Translator, PARENT_FIELD)
+                                         DAV_IGNORE, PARENT_FIELD, UID_FIELD,
+                                         Backend, Translator)
 from GTG.core.datastore import DataStore
+from GTG.core.dates import LOCAL_TIMEZONE, Date
 from GTG.core.task import Task
 from mock import Mock, patch
 from tests.test_utils import MockTimer
@@ -52,6 +55,7 @@ VTODO_GRAND_CHILD = """BEGIN:VTODO\r
 COMPLETED:20201212T172558Z\r
 CREATED:20201212T092155Z\r
 DTSTAMP:20201212T172830Z\r
+DUE;VALUE=DATE:20201224\r
 LAST-MODIFIED:20201212T172558Z\r
 RELATED-TO;RELTYPE=PARENT:CHILD-PARENT\r
 STATUS:NEEDS-ACTION\r
@@ -104,13 +108,16 @@ class CalDAVTest(TestCase):
     def test_translate_from_vtodo(self):
         DESCRIPTION = Translator.fields[1]
         self.assertEqual(DESCRIPTION.dav_name, 'description')
-        todo = self._get_todo(VTODO_ROOT)
-        self.assertEqual(todo.instance.vtodo.serialize(), VTODO_ROOT)
+        todo = self._get_todo(VTODO_GRAND_CHILD)
+        self.assertEqual(todo.instance.vtodo.serialize(), VTODO_GRAND_CHILD)
+        self.assertEqual(date(2020, 12, 24),
+                         todo.instance.vtodo.contents['due'][0].value)
         uid = UID_FIELD.get_dav(todo)
         self.assertTrue(isinstance(uid, str), "should be str is %r" % uid)
         self.assertEqual(uid, UID_FIELD.get_dav(vtodo=todo.instance.vtodo))
         task = Task(uid, Mock())
         Translator.fill_task(todo, task, NAMESPACE)
+        self.assertEqual('date', task.get_due_date().accuracy.value)
         vtodo = Translator.fill_vtodo(task, todo.parent.name, NAMESPACE)
         for field in Translator.fields:
             if field.dav_name in DAV_IGNORE:
@@ -124,16 +131,50 @@ class CalDAVTest(TestCase):
         self.assertFalse(DESCRIPTION.is_equal(task, NAMESPACE, todo))
 
     def test_translate_from_task(self):
+        now, today = datetime.now(), date.today()
         task = Task('uuid', Mock())
         task.set_title('holy graal')
         task.set_text('the knights who says ni')
-        task.set_start_date(datetime.now() - timedelta(days=1))
         task.set_recurring(True, 'other-day')
-        task.set_due_date(datetime.now())
+        task.set_start_date(today)
+        task.set_due_date('soon')
+        task.set_closed_date(now)
         vtodo = Translator.fill_vtodo(task, 'My Calendar Name', NAMESPACE)
         for field in Translator.fields:
             self.assertTrue(field.is_equal(task, NAMESPACE, vtodo=vtodo.vtodo),
                             '%r has differing values' % field)
+        serialized = vtodo.serialize()
+        self.assertTrue(f"DTSTART;VALUE=DATE:{today.strftime('%Y%m%d')}"
+                        in serialized, f"missing from {serialized}")
+        self.assertTrue(re.search(r"COMPLETED:[0-9]{8}T[0-9]{6}Z",
+                                  serialized), f"missing from {serialized}")
+        self.assertTrue("DUE;GTGFUZZY=soon" in serialized,
+                        f"missing from {serialized}")
+        # trying to fill utc only with fuzzy
+        task.set_closed_date('someday')
+        vtodo = Translator.fill_vtodo(task, 'My Calendar Name', NAMESPACE)
+        serialized = vtodo.serialize()
+        self.assertTrue("COMPLETED;GTGFUZZY=someday:" in serialized,
+                        f"missing from {serialized}")
+        # trying to fill utc only with date
+        task.set_closed_date(today)
+        vtodo = Translator.fill_vtodo(task, 'My Calendar Name', NAMESPACE)
+        serialized = vtodo.serialize()
+        today_in_utc = now.replace(hour=0, minute=0, second=0)\
+            .replace(tzinfo=LOCAL_TIMEZONE).astimezone(UTC)\
+            .strftime('%Y%m%dT%H%M%SZ')
+        self.assertTrue(f"COMPLETED:{today_in_utc}" in serialized,
+                        f"missing {today_in_utc} from {serialized}")
+        # emptying date by setting None or no_date
+        task.set_closed_date(Date.no_date())
+        task.set_due_date(None)
+        task.set_start_date('')
+        vtodo = Translator.fill_vtodo(task, 'My Calendar Name', NAMESPACE)
+        serialized = vtodo.serialize()
+        self.assertTrue("CATEGORIES:" not in serialized)
+        self.assertTrue("COMPLETED:" not in serialized)
+        self.assertTrue("DUE:" not in serialized)
+        self.assertTrue("DTSTART:" not in serialized)
 
     def test_translate(self):
         datastore = DataStore()

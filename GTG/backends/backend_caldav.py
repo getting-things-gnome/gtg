@@ -20,19 +20,19 @@
 """
 Backend for storing/loading tasks in CalDAV Tasks
 """
-import re
 import logging
-from hashlib import md5
+import re
 from collections import defaultdict
-from datetime import datetime
-from dateutil.tz import UTC
+from datetime import date, datetime
 from gettext import gettext as _
+from hashlib import md5
 
 import caldav
+from dateutil.tz import UTC
 from GTG.backends.backend_signals import BackendSignals
 from GTG.backends.generic_backend import GenericBackend
 from GTG.backends.periodic_import_backend import PeriodicImportBackend
-from GTG.core.dates import LOCAL_TIMEZONE, Date
+from GTG.core.dates import LOCAL_TIMEZONE, Accuracy, Date
 from GTG.core.interruptible import interruptible
 from GTG.core.task import DisabledSyncCtx, Task
 from vobject import iCalendar
@@ -446,7 +446,8 @@ class Field:
         dav = self.get_dav(todo, vtodo)
         gtg = self.get_gtg(task, namespace)
         if dav != gtg:
-            logger.debug('%r has differing values %r!=%r', self, gtg, dav)
+            logger.debug('%r has differing values (DAV) %r!=%r (GTG)',
+                         self, gtg, dav)
             return False
         return True
 
@@ -466,49 +467,90 @@ class DateField(Field):
      * naive and at local timezone when in GTG
      * naive or not at UTC timezone from CalDAV
     """
+    FUZZY_MARK = 'GTGFUZZY'
 
     def __init__(self, dav_name: str,
                  task_get_func_name: str, task_set_func_name: str):
         super().__init__(
             dav_name, task_get_func_name, task_set_func_name,
-            ['', None, 'None', Date.no_date(), Date.someday()])
+            ['', None, 'None', Date.no_date()])
 
     @staticmethod
     def _normalize(value):
-        if isinstance(value, Date):
-            value = value.datetime
         try:
             if value.year == 9999:
                 return None
-            return value.replace(microsecond=0, tzinfo=None)
+            if getattr(value, 'microsecond'):
+                value = value.replace(microsecond=0)
         except AttributeError:
-            return value
+            pass
+        return value
+
+    @staticmethod
+    def _get_dt_for_dav_writing(value):
+        if isinstance(value, Date):
+            if value.accuracy is Accuracy.fuzzy:
+                return str(value), value.dt_by_accuracy(Accuracy.date)
+            if value.accuracy in {Accuracy.timezone, Accuracy.datetime,
+                                  Accuracy.date}:
+                return '', value.dt_value
+        return '', value
 
     def write_dav(self, vtodo: iCalendar, value):
         "Writing datetime as UTC naive"
-        if not value.tzinfo:  # assumring is LOCAL_TIMEZONEd
-            value = value.replace(tzinfo=LOCAL_TIMEZONE)
-        value = (value - value.utcoffset()).replace(tzinfo=UTC)
-        return super().write_dav(vtodo, value)
+        fuzzy_value, value = self._get_dt_for_dav_writing(value)
+        if isinstance(value, datetime):
+            value = self._normalize(value)
+            if not value.tzinfo:  # considering naive is local tz
+                value = value.replace(tzinfo=LOCAL_TIMEZONE)
+            if value.tzinfo != UTC:  # forcing UTC for value to write on dav
+                value = (value - value.utcoffset()).replace(tzinfo=UTC)
+        vtodo_val = super().write_dav(vtodo, value)
+        if isinstance(value, date) and not isinstance(value, datetime):
+            vtodo_val.params['VALUE'] = ['DATE']
+        if fuzzy_value:
+            vtodo_val.params[self.FUZZY_MARK] = [fuzzy_value]
+        return vtodo_val
 
     def get_dav(self, todo=None, vtodo=None):
         """Transforming to local naive,
         if original value MAY be naive and IS assuming UTC"""
         value = super().get_dav(todo, vtodo)
-        if not isinstance(value, datetime):
-            try:
-                value = Date(value).datetime
-            except ValueError:
-                logger.error("Coudln't translate value %r", value)
-                return
-        if value.tzinfo:  # if timezoned, translate to UTC
-            value = value - value.utcoffset()
-        value = value.replace(tzinfo=LOCAL_TIMEZONE)  # zoning to local
-        value = value + value.utcoffset()  # adding local offset
-        return self._normalize(value)  # return naive
+        if todo:
+            vtodo = todo.instance.vtodo
+        todo_value = vtodo.contents.get(self.dav_name)
+        if todo_value and todo_value[0].params.get(self.FUZZY_MARK):
+            return Date(todo_value[0].params[self.FUZZY_MARK][0])
+        if isinstance(value, (date, datetime)):
+            value = self._normalize(value)
+        try:
+            return Date(value)
+        except ValueError:
+            logger.error("Coudln't translate value %r", value)
+            return Date.no_date()
 
     def get_gtg(self, task: Task, namespace: str = None):
-        return self._normalize(super().get_gtg(task, namespace))
+        gtg_date = super().get_gtg(task, namespace)
+        if isinstance(gtg_date, Date):
+            if gtg_date.accuracy in {Accuracy.date, Accuracy.timezone,
+                                     Accuracy.datetime}:
+                return Date(self._normalize(gtg_date.dt_value))
+            return gtg_date
+        return Date(self._normalize(gtg_date))
+
+
+class UTCDateTimeField(DateField):
+
+    @staticmethod
+    def _get_dt_for_dav_writing(value):
+        if isinstance(value, Date):
+            if value.accuracy is Accuracy.timezone:
+                return '', value.dt_value
+            if value.accuracy is Accuracy.fuzzy:
+                return str(value), value.dt_by_accuracy(Accuracy.timezone)
+        else:
+            value = Date(value)
+        return '', value.dt_by_accuracy(Accuracy.timezone)
 
 
 class Status(Field):
@@ -586,10 +628,6 @@ class Categories(Field):
                 if self._is_value_allowed(category):
                     categories.append(category)
         return categories
-
-    def write_dav(self, vtodo: iCalendar, value):
-        super().write_dav(vtodo, [category.lstrip('@') for category in value
-                                  if not category.lstrip('@').startswith(DAV_TAG_PREFIX)])
 
     def set_gtg(self, todo: iCalendar, task: Task,
                 namespace: str = None) -> None:
@@ -862,7 +900,8 @@ class Recurrence(Field):
 DTSTART = DateField('dtstart', 'get_start_date', 'set_start_date')
 UID_FIELD = Field('uid', 'get_uuid', 'set_uuid')
 SEQUENCE = Sequence('sequence', '<fake attribute>', '')
-CATEGORIES = Categories('categories', 'get_tags_name', 'set_tags')
+CATEGORIES = Categories('categories', 'get_tags_name', 'set_tags',
+                        ignored_values=[[]])
 PARENT_FIELD = RelatedTo('related-to', 'get_parents', 'set_parent',
                          task_remove_func_name='remove_parent',
                          reltype='parent')
@@ -874,18 +913,20 @@ SORT_ORDER = OrderField('x-apple-sort-order', '', '')
 
 class Translator:
     GTG_PRODID = "-//Getting Things Gnome//CalDAV Backend//EN"
-    DTSTAMP_FIELD = DateField('dtstamp', '', '')
+    DTSTAMP_FIELD = UTCDateTimeField('dtstamp', '', '')
     fields = [Field('summary', 'get_title', 'set_title'),
               Description('description', 'get_excerpt', 'set_text'),
               DateField('due', 'get_due_date_constraint', 'set_due_date'),
-              DateField('completed', 'get_closed_date', 'set_closed_date'),
+              UTCDateTimeField(
+                  'completed', 'get_closed_date', 'set_closed_date'),
               DTSTART,
               Recurrence('rrule', 'get_recurring_term', 'set_recurring'),
               Status('status', 'get_status', 'set_status'),
               PercentComplete('percent-complete', 'get_status', ''),
               SEQUENCE, UID_FIELD, CATEGORIES, CHILDREN_FIELD,
-              DateField('created', 'get_added_date', 'set_added_date'),
-              DateField('last-modified', 'get_modified', 'set_modified')]
+              UTCDateTimeField('created', 'get_added_date', 'set_added_date'),
+              UTCDateTimeField(
+                  'last-modified', 'get_modified', 'set_modified')]
 
     @classmethod
     def _get_new_vcal(cls) -> iCalendar:
