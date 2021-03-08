@@ -253,6 +253,10 @@ class Date:
             return STRINGS[self.dt_value]
         return self.dt_value.isoformat()
 
+    @property
+    def date_str(self):
+        return self.date().strftime(locale.nl_langinfo(locale.D_FMT))
+
     def __repr__(self):
         return f"<Date({self})>"
 

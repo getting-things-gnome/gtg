@@ -629,6 +629,11 @@ class Categories(Field):
                     categories.append(category)
         return categories
 
+    def write_dav(self, vtodo: iCalendar, value):
+        super().write_dav(vtodo, [category.lstrip('@') for category in value
+                                  if not category.lstrip('@').startswith(DAV_TAG_PREFIX)])
+
+
     def set_gtg(self, todo: iCalendar, task: Task,
                 namespace: str = None) -> None:
         remote_tags = [self.to_tag(categ) for categ in self.get_dav(todo)]
