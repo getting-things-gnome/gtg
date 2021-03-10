@@ -622,17 +622,13 @@ class Categories(Field):
     def get_dav(self, todo=None, vtodo=None):
         if todo:
             vtodo = todo.instance.vtodo
-        categories = []
+        value_list = []
         for sub_value in vtodo.contents.get(self.dav_name, []):
-            for category in sub_value.value:
-                if self._is_value_allowed(category):
-                    categories.append(category)
-        return categories
-
-    def write_dav(self, vtodo: iCalendar, value):
-        super().write_dav(vtodo, [category.lstrip('@') for category in value
-                                  if not category.lstrip('@').startswith(DAV_TAG_PREFIX)])
-
+            for value in sub_value.value:
+                value = self.to_tag(value).strip()
+                if value and self._is_value_allowed(value):
+                    value_list.append(self.to_tag(value))
+        return value_list
 
     def set_gtg(self, todo: iCalendar, task: Task,
                 namespace: str = None) -> None:
@@ -644,10 +640,10 @@ class Categories(Field):
             task.remove_tag(to_delete)
         task.tags.sort(key=remote_tags.index)
 
-    def get_calendar_tag(self, calendar) -> str:
+    def get_calendar_tag(self, calendar: iCalendar) -> str:
         return self.to_tag(calendar.name, DAV_TAG_PREFIX)
 
-    def has_calendar_tag(self, task, calendar):
+    def has_calendar_tag(self, task: Task, calendar: iCalendar) -> bool:
         return self.get_calendar_tag(calendar) in task.get_tags_name()
 
 
