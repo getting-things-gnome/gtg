@@ -219,7 +219,7 @@ def parse_search_query(query):
                 raise InvalidQuery(f"Unknown command !{value}")
 
         elif token == 'tag':
-            cmd = (token, not_count % 2 == 0, value)
+            cmd = (token, not_count % 2 == 0, value.replace('@', ''))
         elif token in ['literal', 'word']:
             cmd = ('word', not_count % 2 == 0, value.strip('"').lower())
 
