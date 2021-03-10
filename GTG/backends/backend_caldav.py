@@ -490,7 +490,7 @@ class DateField(Field):
     def _get_dt_for_dav_writing(value):
         if isinstance(value, Date):
             if value.accuracy is Accuracy.fuzzy:
-                return str(value), value.dt_by_accuracy(Accuracy.date)
+                return value.xml_str(), value.dt_by_accuracy(Accuracy.date)
             if value.accuracy in {Accuracy.timezone, Accuracy.datetime,
                                   Accuracy.date}:
                 return '', value.dt_value

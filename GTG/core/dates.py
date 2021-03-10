@@ -70,7 +70,7 @@ LOOKUP = {
     NODATE: NODATE,
     '': NODATE,
     None: NODATE,
-    'None': NODATE,
+    'none': NODATE,
 }
 # functions giving absolute dates for fuzzy dates + no date
 FUNCS = {NOW: datetime.now,
@@ -255,6 +255,8 @@ class Date:
 
     @property
     def date_str(self):
+        if self.accuracy is Accuracy.fuzzy:
+            return STRINGS[self.dt_value]
         return self.date().strftime(locale.nl_langinfo(locale.D_FMT))
 
     def __repr__(self):
