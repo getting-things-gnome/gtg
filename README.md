@@ -80,7 +80,7 @@ Dependencies for the "Export and print" plugin:
 
 On Ubuntu you can install all that with:
 
-    sudo apt install python3-cheetah pdftk-java pdfjam texlive-latex-base
+    sudo apt install python3-cheetah pdftk-java texlive-extra-utils texlive-latex-base
 
 ### Running the beast
 
