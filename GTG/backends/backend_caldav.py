@@ -766,8 +766,12 @@ class Description(Field):
 
     def write_dav(self, vtodo: iCalendar, value: tuple):
         hash_, content = value
-        vtodo_val = super().write_dav(vtodo, content)
-        vtodo_val.params[self.HASH_PARAM] = [hash_]
+        vtodo_val = None
+        if content:
+            vtodo_val = super().write_dav(vtodo, content)
+            vtodo_val.params[self.HASH_PARAM] = [hash_]
+        else:
+            self.clean_dav(vtodo)
         return vtodo_val
 
 
