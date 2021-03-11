@@ -29,14 +29,13 @@ GTG/backends/__init__.py
 GTG/backends/periodic_import_backend.py
 GTG/backends/sync_engine.py
 GTG/core/borg.py
-GTG/core/cleanxml.py
+GTG/core/xml.py
 GTG/core/clipboard.py
 GTG/core/config.py
 GTG/core/datastore.py
 GTG/core/dates.py
 GTG/core/dirs.py
 GTG/core/firstrun_tasks.py
-GTG/core/info.py
 GTG/core/__init__.py
 GTG/core/interruptible.py
 GTG/core/keyring.py
@@ -48,7 +47,6 @@ GTG/core/requester.py
 GTG/core/search.py
 GTG/core/tag.py
 GTG/core/task.py
-GTG/core/taskxml.py
 GTG/core/timer.py
 GTG/core/treefactory.py
 GTG/core/twokeydict.py
@@ -83,7 +81,6 @@ GTG/gtk/editor/calendar.py
 GTG/gtk/editor/editor.py
 GTG/gtk/editor/recurring_menu.py
 GTG/gtk/editor/__init__.py
-GTG/gtk/editor/serialize.py
 GTG/gtk/editor/taskview.py
 GTG/gtk/general_preferences.py
 GTG/gtk/__init__.py
