@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-07-07 00:42-0400\n"
+"POT-Creation-Date: 2021-03-11 19:31-0300\n"
 "PO-Revision-Date: 2013-03-17 22:15+0000\n"
 "Last-Translator: Piotr Strębski <strebski@o2.pl>\n"
 "Language-Team: Polish <ponton@jabster.pl>\n"
@@ -93,6 +93,84 @@ msgid ""
 "Time;Management;Scheduling;GTD;gtg;Todo;"
 msgstr ""
 
+#: GTG/plugins/export.gtg-plugin.desktop:4
+msgid "Export and print"
+msgstr ""
+
+#: GTG/plugins/export.gtg-plugin.desktop:5
+msgid "Exports the tasks in the current view into a variety of formats."
+msgstr ""
+
+#: GTG/plugins/export.gtg-plugin.desktop:6
+msgid ""
+"Exports the tasks in the current view into a variety of formats. You can "
+"also personalize the format of your tasks by writing your own template."
+msgstr ""
+
+#: GTG/plugins/send-email.gtg-plugin.desktop:4
+#, fuzzy
+msgid "Send task via email"
+msgstr "Wyślij przez email"
+
+#: GTG/plugins/send-email.gtg-plugin.desktop:5
+#, fuzzy
+msgid "Easily send a task via email."
+msgstr "Wyślij przez email"
+
+#: GTG/plugins/send-email.gtg-plugin.desktop:6
+msgid ""
+"Adds a button on the toolbar to send easily a task via email, also sends "
+"status, due_dates, tags and subtasks."
+msgstr ""
+
+#: GTG/plugins/untouched-tasks.gtg-plugin.desktop:4
+#, fuzzy
+msgid "Untouched tasks"
+msgstr "brak aktywnych zadań"
+
+#: GTG/plugins/untouched-tasks.gtg-plugin.desktop:5
+msgid "Keep track of tasks you haven't touched for a while."
+msgstr ""
+
+#: GTG/plugins/untouched-tasks.gtg-plugin.desktop:6
+msgid ""
+"Assigns tasks that you haven't touched for a while with the @untouched tag."
+msgstr ""
+
+#: GTG/plugins/urgency-color.gtg-plugin.desktop:4
+msgid "Urgency Color"
+msgstr ""
+
+#: GTG/plugins/urgency-color.gtg-plugin.desktop:5
+msgid "Task urgency color-coding"
+msgstr ""
+
+#: GTG/plugins/urgency-color.gtg-plugin.desktop:6
+msgid ""
+"This plugin will calculate the urgency status of every of your currently "
+"active tasks and color-code it accordingly.\n"
+"\n"
+"Color code\n"
+"\n"
+"Assuming your settings are default:\n"
+"Red means you are within the last 30% of days between the start-date and due-"
+"date, or your task is overdue.\n"
+"Yellow means your task's start-date has passed.\n"
+"Green means your task's start-date is oncoming."
+msgstr ""
+
+#: GTG/plugins/hamster.gtg-plugin.desktop:4
+msgid "Hamster Time Tracker Integration"
+msgstr ""
+
+#: GTG/plugins/hamster.gtg-plugin.desktop:5
+msgid "Track time of GTG task with Hamster applet."
+msgstr ""
+
+#: GTG/plugins/hamster.gtg-plugin.desktop:6
+msgid "Adds the ability to send a task to the Hamster time tracking applet"
+msgstr ""
+
 #: GTG/gtk/data/backends.ui:60
 msgid "_Add"
 msgstr ""
@@ -107,33 +185,33 @@ msgstr ""
 msgid "Help"
 msgstr "Po_moc"
 
-#: GTG/gtk/data/calendar.ui:44 GTG/gtk/data/context_menus.ui:150
-#: GTG/gtk/data/task_editor.ui:486
+#: GTG/gtk/data/calendar.ui:44 GTG/gtk/data/context_menus.ui:154
+#: GTG/gtk/data/task_editor.ui:1000
 msgid "Now"
 msgstr "Teraz"
 
-#: GTG/gtk/data/calendar.ui:57 GTG/gtk/data/context_menus.ui:155
-#: GTG/gtk/data/task_editor.ui:501
+#: GTG/gtk/data/calendar.ui:57 GTG/gtk/data/context_menus.ui:159
+#: GTG/gtk/data/task_editor.ui:1015
 msgid "Soon"
 msgstr "Wkrótce"
 
-#: GTG/gtk/data/calendar.ui:70 GTG/gtk/data/context_menus.ui:160
-#: GTG/gtk/data/task_editor.ui:516
+#: GTG/gtk/data/calendar.ui:70 GTG/gtk/data/context_menus.ui:164
+#: GTG/gtk/data/task_editor.ui:1030
 msgid "Someday"
 msgstr "Kiedyś"
 
-#: GTG/gtk/data/calendar.ui:93 GTG/gtk/data/task_editor.ui:541
-#: GTG/gtk/data/task_editor.ui:586
+#: GTG/gtk/data/calendar.ui:93 GTG/gtk/data/task_editor.ui:1055
+#: GTG/gtk/data/task_editor.ui:1100
 msgid "Clear"
 msgstr "Wyczyść"
 
-#: GTG/gtk/data/context_menus.ui:8 GTG/gtk/data/context_menus.ui:35
+#: GTG/gtk/data/context_menus.ui:8 GTG/gtk/data/context_menus.ui:39
 #: GTG/gtk/browser/tag_context_menu.py:55
 #, fuzzy
 msgid "Edit..."
 msgstr "Zmodyfikuj znacznik..."
 
-#: GTG/gtk/data/context_menus.ui:14 GTG/gtk/data/task_editor.ui:386
+#: GTG/gtk/data/context_menus.ui:14 GTG/gtk/data/task_editor.ui:900
 msgid "Mark as Not Done"
 msgstr "Oznacz jako niewykonane"
 
@@ -141,7 +219,7 @@ msgstr "Oznacz jako niewykonane"
 msgid "Undismiss"
 msgstr "Cofnij porzucenie"
 
-#: GTG/gtk/data/context_menus.ui:22 GTG/gtk/data/context_menus.ui:49
+#: GTG/gtk/data/context_menus.ui:22 GTG/gtk/data/context_menus.ui:53
 #: GTG/gtk/data/task_editor.ui:64 GTG/gtk/browser/tag_context_menu.py:66
 #: GTG/gtk/browser/tag_context_menu.py:71
 msgid "Delete"
@@ -152,21 +230,26 @@ msgstr "Usuń"
 msgid "Add a Subtask..."
 msgstr "Dodaj podzadanie"
 
-#: GTG/gtk/data/context_menus.ui:41 GTG/gtk/data/task_editor.ui:373
+#: GTG/gtk/data/context_menus.ui:35
+#, fuzzy
+msgid "Add a Parent task..."
+msgstr "Dodaj podzadanie"
+
+#: GTG/gtk/data/context_menus.ui:45 GTG/gtk/data/task_editor.ui:887
 msgid "Mark as Done"
 msgstr "Oznacz jako wykonane"
 
-#: GTG/gtk/data/context_menus.ui:45 GTG/gtk/data/task_editor.ui:22
+#: GTG/gtk/data/context_menus.ui:49 GTG/gtk/data/task_editor.ui:22
 msgid "Dismiss"
 msgstr "Porzuć"
 
-#: GTG/gtk/data/context_menus.ui:56 GTG/gtk/browser/main_window.py:1077
+#: GTG/gtk/data/context_menus.ui:60 GTG/gtk/browser/main_window.py:1155
 #, fuzzy
 msgid "Set Start Date"
 msgstr "_Ustaw Datę Rozpoczęcia"
 
-#: GTG/gtk/data/context_menus.ui:60 GTG/gtk/data/context_menus.ui:124
-#: GTG/core/dates.py:455
+#: GTG/gtk/data/context_menus.ui:64 GTG/gtk/data/context_menus.ui:128
+#: GTG/core/dates.py:591
 #, python-format
 msgid "Tomorrow"
 msgid_plural "In %(days)d days"
@@ -174,61 +257,92 @@ msgstr[0] "Jutro"
 msgstr[1] "W ciągu %(days)d dni"
 msgstr[2] "W ciągu %(days)d dni"
 
-#: GTG/gtk/data/context_menus.ui:65
+#: GTG/gtk/data/context_menus.ui:69
 msgid "In 2 days"
 msgstr ""
 
-#: GTG/gtk/data/context_menus.ui:70
+#: GTG/gtk/data/context_menus.ui:74
 msgid "In 3 days"
 msgstr ""
 
-#: GTG/gtk/data/context_menus.ui:75
+#: GTG/gtk/data/context_menus.ui:79
 msgid "In 4 days"
 msgstr ""
 
-#: GTG/gtk/data/context_menus.ui:80
+#: GTG/gtk/data/context_menus.ui:84
 msgid "In 5 days"
 msgstr ""
 
-#: GTG/gtk/data/context_menus.ui:85
+#: GTG/gtk/data/context_menus.ui:89
 msgid "In 6 days"
 msgstr ""
 
-#: GTG/gtk/data/context_menus.ui:92 GTG/gtk/data/context_menus.ui:129
+#: GTG/gtk/data/context_menus.ui:96 GTG/gtk/data/context_menus.ui:133
 #, fuzzy
 msgid "Next Week"
 msgstr "Następny_Tydzień"
 
-#: GTG/gtk/data/context_menus.ui:97 GTG/gtk/data/context_menus.ui:134
+#: GTG/gtk/data/context_menus.ui:101 GTG/gtk/data/context_menus.ui:138
 #, fuzzy
 msgid "Next Month"
 msgstr "Następny_Miesiąc"
 
-#: GTG/gtk/data/context_menus.ui:102 GTG/gtk/data/context_menus.ui:139
+#: GTG/gtk/data/context_menus.ui:106 GTG/gtk/data/context_menus.ui:143
 #, fuzzy
 msgid "Next Year"
 msgstr "Następny_Rok"
 
-#: GTG/gtk/data/context_menus.ui:107 GTG/gtk/data/context_menus.ui:144
+#: GTG/gtk/data/context_menus.ui:111 GTG/gtk/data/context_menus.ui:148
 #: GTG/gtk/data/main_window.ui:159
 msgid "Pick a Date..."
 msgstr ""
 
-#: GTG/gtk/data/context_menus.ui:114 GTG/gtk/data/main_window.ui:186
+#: GTG/gtk/data/context_menus.ui:118 GTG/gtk/data/main_window.ui:186
 #, fuzzy
 msgid "Clear Start Date"
 msgstr "_Wymaż Datę Rozpoczęcia"
 
-#: GTG/gtk/data/context_menus.ui:121 GTG/gtk/browser/main_window.py:1088
+#: GTG/gtk/data/context_menus.ui:125 GTG/gtk/browser/main_window.py:1166
 msgid "Set Due Date"
 msgstr "Ustaw planowaną datę"
 
-#: GTG/gtk/data/context_menus.ui:167
+#: GTG/gtk/data/context_menus.ui:171
 #, fuzzy
 msgid "Clear Due Date"
 msgstr "Wy_czyść planowaną datę"
 
-#: GTG/gtk/data/context_menus.ui:175
+#: GTG/gtk/data/context_menus.ui:178
+msgid "Set Recurring"
+msgstr ""
+
+#: GTG/gtk/data/context_menus.ui:181
+msgid "Every Day"
+msgstr ""
+
+#: GTG/gtk/data/context_menus.ui:186
+msgid "Every Other-Day"
+msgstr ""
+
+#: GTG/gtk/data/context_menus.ui:191
+#, fuzzy
+msgid "Every Week"
+msgstr "Następny_Tydzień"
+
+#: GTG/gtk/data/context_menus.ui:196
+#, fuzzy
+msgid "Every Month"
+msgstr "Następny_Miesiąc"
+
+#: GTG/gtk/data/context_menus.ui:201
+#, fuzzy
+msgid "Every Year"
+msgstr "Następny_Rok"
+
+#: GTG/gtk/data/context_menus.ui:207
+msgid "Enable/Disable"
+msgstr ""
+
+#: GTG/gtk/data/context_menus.ui:216
 msgid "Modify Tags..."
 msgstr "Modyfikuj znaczniki..."
 
@@ -266,19 +380,24 @@ msgstr ""
 
 #: GTG/gtk/data/general_preferences.ui:327
 #, fuzzy
+msgid "Dark Mode"
+msgstr "Oznacz jako wykonane"
+
+#: GTG/gtk/data/general_preferences.ui:372
+#, fuzzy
 msgid "Clean Up"
 msgstr "Wyczyść"
 
-#: GTG/gtk/data/general_preferences.ui:364
+#: GTG/gtk/data/general_preferences.ui:409
 #, fuzzy
 msgid "Automatically remove old closed tasks"
 msgstr "Całkowicie usuń zaznaczone zadania"
 
-#: GTG/gtk/data/general_preferences.ui:409
+#: GTG/gtk/data/general_preferences.ui:454
 msgid "Days to wait before removing a task"
 msgstr ""
 
-#: GTG/gtk/data/general_preferences.ui:454
+#: GTG/gtk/data/general_preferences.ui:498
 msgid "Purge Now"
 msgstr ""
 
@@ -300,84 +419,99 @@ msgid "Open Help"
 msgstr "Otwórz pomoc GTG"
 
 #: GTG/gtk/data/help_overlay.ui:35
+msgctxt "shortcut window"
+msgid "Show Keyboard Shortcuts"
+msgstr ""
+
+#: GTG/gtk/data/help_overlay.ui:43
 #, fuzzy
 msgctxt "shortcut window"
 msgid "Quit"
 msgstr "_Wyjdź"
 
-#: GTG/gtk/data/help_overlay.ui:46
+#: GTG/gtk/data/help_overlay.ui:54
 #, fuzzy
 msgctxt "shortcut window"
 msgid "Task Browser"
 msgstr "<b>Lista zadań</b>"
 
-#: GTG/gtk/data/help_overlay.ui:51
+#: GTG/gtk/data/help_overlay.ui:60
+msgctxt "shortcut window"
+msgid "Unfold Treeview Items in Task Browser"
+msgstr ""
+
+#: GTG/gtk/data/help_overlay.ui:68
+msgctxt "shortcut window"
+msgid "Fold Treeview Items in Task Browser"
+msgstr ""
+
+#: GTG/gtk/data/help_overlay.ui:75
 #, fuzzy
 msgctxt "shortcut window"
 msgid "Search"
 msgstr "Znajdź"
 
-#: GTG/gtk/data/help_overlay.ui:59
+#: GTG/gtk/data/help_overlay.ui:83
 #, fuzzy
 msgctxt "shortcut window"
 msgid "Toggle Sidebar"
 msgstr "Panel _boczny znaczników"
 
-#: GTG/gtk/data/help_overlay.ui:67
+#: GTG/gtk/data/help_overlay.ui:91
 #, fuzzy
 msgctxt "shortcut window"
 msgid "Focus the Quick Add input"
 msgstr "Naucz się używać wpis QuickAdd"
 
-#: GTG/gtk/data/help_overlay.ui:75
+#: GTG/gtk/data/help_overlay.ui:99
 #, fuzzy
 msgctxt "shortcut window"
 msgid "Mark Task as Done"
 msgstr "Oznacz jako wykonane"
 
-#: GTG/gtk/data/help_overlay.ui:83
+#: GTG/gtk/data/help_overlay.ui:107
 #, fuzzy
 msgctxt "shortcut window"
 msgid "Dismiss Task"
 msgstr "Porzuć"
 
-#: GTG/gtk/data/help_overlay.ui:91
+#: GTG/gtk/data/help_overlay.ui:115
 #, fuzzy
 msgctxt "shortcut window"
 msgid "Batch change tags on selected tasks"
 msgstr "Edytuj zaznaczone zadania"
 
-#: GTG/gtk/data/help_overlay.ui:99 GTG/gtk/data/help_overlay.ui:139
+#: GTG/gtk/data/help_overlay.ui:123 GTG/gtk/data/help_overlay.ui:163
 #, fuzzy
 msgctxt "shortcut window"
 msgid "New Task"
 msgstr "Nowe zadanie"
 
-#: GTG/gtk/data/help_overlay.ui:107 GTG/gtk/data/help_overlay.ui:147
+#: GTG/gtk/data/help_overlay.ui:131 GTG/gtk/data/help_overlay.ui:171
 #, fuzzy
 msgctxt "shortcut window"
 msgid "New Subtask"
 msgstr "Nowe zadanie podrzędne"
 
-#: GTG/gtk/data/help_overlay.ui:115
+#: GTG/gtk/data/help_overlay.ui:139
 #, fuzzy
 msgctxt "shortcut window"
 msgid "Delete Task"
 msgstr "Usuń"
 
-#: GTG/gtk/data/help_overlay.ui:123
+#: GTG/gtk/data/help_overlay.ui:147
 #, fuzzy
 msgctxt "shortcut window"
 msgid "Edit Task"
 msgstr "Dodaj zadanie"
 
-#: GTG/gtk/data/help_overlay.ui:134
+#: GTG/gtk/data/help_overlay.ui:158
 #, fuzzy
 msgctxt "shortcut window"
 msgid "Editor"
 msgstr "Edycja"
 
-#: GTG/gtk/data/help_overlay.ui:155
+#: GTG/gtk/data/help_overlay.ui:179
 #, fuzzy
 msgctxt "shortcut window"
 msgid "Close window"
@@ -388,7 +522,7 @@ msgstr "Zamknięte dnia"
 msgid "Start today"
 msgstr "Data rozpoczęcia"
 
-#: GTG/gtk/data/main_window.ui:57 GTG/core/dates.py:449
+#: GTG/gtk/data/main_window.ui:57 GTG/core/dates.py:585
 msgid "Today"
 msgstr "Dziś"
 
@@ -396,7 +530,7 @@ msgstr "Dziś"
 msgid "Start 2 days from now"
 msgstr ""
 
-#: GTG/gtk/data/main_window.ui:85 GTG/core/dates.py:385
+#: GTG/gtk/data/main_window.ui:85 GTG/core/dates.py:400 GTG/core/dates.py:533
 msgid "Tuesday"
 msgstr "Wtorek"
 
@@ -404,7 +538,7 @@ msgstr "Wtorek"
 msgid "Start 3 days from now"
 msgstr ""
 
-#: GTG/gtk/data/main_window.ui:100 GTG/core/dates.py:386
+#: GTG/gtk/data/main_window.ui:100 GTG/core/dates.py:401 GTG/core/dates.py:534
 msgid "Wednesday"
 msgstr "Środa"
 
@@ -412,7 +546,7 @@ msgstr "Środa"
 msgid "Start 4 days from now"
 msgstr ""
 
-#: GTG/gtk/data/main_window.ui:115 GTG/core/dates.py:387
+#: GTG/gtk/data/main_window.ui:115 GTG/core/dates.py:402 GTG/core/dates.py:535
 msgid "Thursday"
 msgstr "Czwartek"
 
@@ -420,7 +554,7 @@ msgstr "Czwartek"
 msgid "Start 5 days from now"
 msgstr ""
 
-#: GTG/gtk/data/main_window.ui:130 GTG/core/dates.py:388
+#: GTG/gtk/data/main_window.ui:130 GTG/core/dates.py:403 GTG/core/dates.py:536
 msgid "Friday"
 msgstr "Piątek"
 
@@ -428,7 +562,7 @@ msgstr "Piątek"
 msgid "Start 6 days from now"
 msgstr ""
 
-#: GTG/gtk/data/main_window.ui:145 GTG/core/dates.py:389
+#: GTG/gtk/data/main_window.ui:145 GTG/core/dates.py:404 GTG/core/dates.py:537
 msgid "Saturday"
 msgstr "Sobota"
 
@@ -460,7 +594,7 @@ msgstr ""
 msgid "About GTG"
 msgstr "O programie GTG!"
 
-#: GTG/gtk/data/main_window.ui:382 GTG/gtk/browser/treeview_factory.py:302
+#: GTG/gtk/data/main_window.ui:382 GTG/gtk/browser/treeview_factory.py:283
 msgid "Tags"
 msgstr "Znaczniki"
 
@@ -501,23 +635,23 @@ msgstr ""
 msgid "Quickly create tasks here"
 msgstr ""
 
-#: GTG/gtk/data/main_window.ui:588
+#: GTG/gtk/data/main_window.ui:597
 msgid "Create a new task"
 msgstr "Utwórz nowe zadanie"
 
-#: GTG/gtk/data/main_window.ui:608
+#: GTG/gtk/data/main_window.ui:634
+msgid "Activate Search Entry"
+msgstr ""
+
+#: GTG/gtk/data/main_window.ui:658
 #, fuzzy
 msgid "Start Tomorrow"
 msgstr "Jutro"
 
-#: GTG/gtk/data/main_window.ui:613
+#: GTG/gtk/data/main_window.ui:663
 msgid ""
 "Out of time? Need additional focus? Easily defer the selected task(s) to "
 "tomorrow!"
-msgstr ""
-
-#: GTG/gtk/data/main_window.ui:689
-msgid "Activate Search Entry"
 msgstr ""
 
 #: GTG/gtk/data/modify_tags.ui:7
@@ -530,7 +664,7 @@ msgstr "Modyfikuj znaczniki"
 msgid "Apply"
 msgstr ""
 
-#: GTG/gtk/data/modify_tags.ui:41 GTG/plugins/export/export.ui:306
+#: GTG/gtk/data/modify_tags.ui:41
 #: GTG/plugins/untouched_tasks/untouchedTasks.ui:136
 msgid "Cancel"
 msgstr "Anuluj"
@@ -581,54 +715,140 @@ msgstr "Oznacz to zadanie jako do zrobienia"
 msgid "Permanently remove this task"
 msgstr "Trwale usuń zadanie"
 
-#: GTG/gtk/data/task_editor.ui:89 GTG/gtk/data/task_editor.ui:369
+#: GTG/gtk/data/task_editor.ui:106
+msgid "Every:"
+msgstr ""
+
+#: GTG/gtk/data/task_editor.ui:137
+msgid "Repeat"
+msgstr ""
+
+#: GTG/gtk/data/task_editor.ui:150
+msgid "Tick to activate"
+msgstr ""
+
+#: GTG/gtk/data/task_editor.ui:188
+msgid "Daily"
+msgstr ""
+
+#: GTG/gtk/data/task_editor.ui:202
+#, fuzzy
+msgid "Every other day"
+msgstr "Data rozpoczęcia"
+
+#: GTG/gtk/data/task_editor.ui:216 GTG/gtk/data/task_editor.ui:269
+#: GTG/gtk/data/task_editor.ui:415
+msgid "Weekly"
+msgstr ""
+
+#: GTG/gtk/data/task_editor.ui:230 GTG/gtk/data/task_editor.ui:429
+#: GTG/gtk/data/task_editor.ui:487
+msgid "Monthly"
+msgstr ""
+
+#: GTG/gtk/data/task_editor.ui:244 GTG/gtk/data/task_editor.ui:501
+#: GTG/gtk/data/task_editor.ui:556
+msgid "Yearly"
+msgstr ""
+
+#: GTG/gtk/data/task_editor.ui:256
+msgid "Recurring"
+msgstr ""
+
+#: GTG/gtk/data/task_editor.ui:286
+#, fuzzy
+msgid "On Monday"
+msgstr "Poniedziałek"
+
+#: GTG/gtk/data/task_editor.ui:301
+#, fuzzy
+msgid "On Tuesday"
+msgstr "Wtorek"
+
+#: GTG/gtk/data/task_editor.ui:316
+#, fuzzy
+msgid "On Wednesday"
+msgstr "Środa"
+
+#: GTG/gtk/data/task_editor.ui:331
+#, fuzzy
+msgid "On Thursday"
+msgstr "Czwartek"
+
+#: GTG/gtk/data/task_editor.ui:346
+#, fuzzy
+msgid "On Friday"
+msgstr "Piątek"
+
+#: GTG/gtk/data/task_editor.ui:361
+#, fuzzy
+msgid "On Saturday"
+msgstr "Sobota"
+
+#: GTG/gtk/data/task_editor.ui:376
+#, fuzzy
+msgid "On Sunday"
+msgstr "Niedziela"
+
+#: GTG/gtk/data/task_editor.ui:403 GTG/gtk/data/task_editor.ui:475
+#: GTG/gtk/data/task_editor.ui:544
+msgid "On This Day"
+msgstr ""
+
+#: GTG/gtk/data/task_editor.ui:580 GTG/gtk/data/task_editor.ui:883
 msgid "Task"
 msgstr "Zadanie"
 
-#: GTG/gtk/data/task_editor.ui:114 GTG/gtk/editor/editor.py:136
-#: GTG/gtk/editor/editor.py:377
+#. Translators: Button label to open the parent task
+#: GTG/gtk/data/task_editor.ui:605 GTG/gtk/editor/editor.py:152
+#: GTG/gtk/editor/editor.py:482
 #, fuzzy
 msgid "Open Parent"
 msgstr "Otwórz zadanie"
 
-#: GTG/gtk/data/task_editor.ui:118
+#: GTG/gtk/data/task_editor.ui:609
 msgid "Open the parent task (creating a parent if it doesn't have one)"
 msgstr ""
 
-#: GTG/gtk/data/task_editor.ui:136
+#: GTG/gtk/data/task_editor.ui:627
 msgid "Insert a subtask in this task"
 msgstr "Dodaj nowe zadanie podrzędne"
 
-#: GTG/gtk/data/task_editor.ui:158
+#: GTG/gtk/data/task_editor.ui:649
 #, fuzzy
 msgid "Add tags to this task"
 msgstr "Dodaj znacznik do zadania"
 
-#: GTG/gtk/data/task_editor.ui:194
+#: GTG/gtk/data/task_editor.ui:672
+#, fuzzy
+msgid "Set this task to repeat"
+msgstr "Ustaw lokalizację zadania"
+
+#: GTG/gtk/data/task_editor.ui:708
 #, fuzzy
 msgid "Starts on"
 msgstr "Zaczyna się"
 
-#: GTG/gtk/data/task_editor.ui:237
+#: GTG/gtk/data/task_editor.ui:751
 #, fuzzy
 msgid "Due on"
 msgstr "Do wykonania"
 
-#: GTG/gtk/data/task_editor.ui:280
+#: GTG/gtk/data/task_editor.ui:794
 msgid "Closed on"
 msgstr "Zamknięte dnia"
 
-#: GTG/gtk/data/task_editor.ui:376
+#: GTG/gtk/data/task_editor.ui:890
 #, fuzzy
 msgid "Mark the task as done"
 msgstr "Oznacz zadanie jako wykonane"
 
-#: GTG/gtk/data/task_editor.ui:389
+#: GTG/gtk/data/task_editor.ui:903
 #, fuzzy
 msgid "Mark the task as to be done"
 msgstr "Oznacz to zadanie jako do zrobienia"
 
-#: GTG/gtk/data/task_editor.ui:402
+#: GTG/gtk/data/task_editor.ui:916
 #, fuzzy
 msgid "Task action menu"
 msgstr ""
@@ -636,7 +856,7 @@ msgstr ""
 "Treść zadania:\n"
 "%s"
 
-#: GTG/gtk/data/task_editor.ui:625
+#: GTG/gtk/data/task_editor.ui:1139
 msgid "Search"
 msgstr "Znajdź"
 
@@ -672,21 +892,6 @@ msgstr "Otwórz zadanie"
 
 #: GTG/plugins/export/export.ui:221
 msgid "Save"
-msgstr ""
-
-#: GTG/plugins/export/export.ui:263
-msgid "How do you want to access the export plugin?"
-msgstr ""
-
-#: GTG/plugins/export/export.ui:278
-msgid "Put an entry in the Plugins menu"
-msgstr ""
-
-#: GTG/plugins/export/export.ui:320 GTG/gtk/browser/backend_infobar.py:113
-#: GTG/gtk/browser/backend_infobar.py:118
-#: GTG/gtk/browser/backend_infobar.py:143
-#: GTG/gtk/browser/backend_infobar.py:196
-msgid "OK"
 msgstr ""
 
 #: GTG/plugins/untouched_tasks/untouchedTasks.ui:36
@@ -745,67 +950,107 @@ msgstr ""
 msgid "Reset"
 msgstr ""
 
-#: GTG/backends/backend_localfile.py:57
+#: GTG/backends/backend_localfile.py:62
 msgid "Local File"
 msgstr "Plik lokalny"
 
-#: GTG/backends/backend_localfile.py:62
-msgid ""
-"Your tasks are saved in a text file (XML format).  This is the most basic "
-"and the default way for GTG to save your tasks."
-msgstr ""
-
-#: GTG/backends/backend_localfile.py:223
+#: GTG/backends/backend_localfile.py:306
 msgid ""
 "Oops, something unexpected happened! GTG tried to recover your tasks from "
 "backups. \n"
 msgstr ""
 
-#: GTG/core/dates.py:44 GTG/core/dates.py:52 GTG/core/search.py:93
+#. Translators: Used for display
+#. Translators: Used in parsing, made lowercased in code
+#. Translators: Used in search parsing, no spaces, lowercased in code
+#: GTG/core/dates.py:45 GTG/core/dates.py:56 GTG/core/search.py:101
 msgid "now"
 msgstr "teraz"
 
-#: GTG/core/dates.py:45 GTG/core/dates.py:54 GTG/core/search.py:94
+#. Translators: Used for display
+#. Translators: Used in parsing, made lowercased in code
+#. Translators: Used in search parsing, no spaces, lowercased in code
+#: GTG/core/dates.py:47 GTG/core/dates.py:59 GTG/core/search.py:103
 msgid "soon"
 msgstr "wkrótce"
 
-#: GTG/core/dates.py:46 GTG/core/dates.py:58 GTG/core/search.py:95
+#. Translators: Used for display
+#. Translators: Used in parsing, made lowercased in code
+#. Translators: Used in search parsing, no spaces, lowercased in code
+#: GTG/core/dates.py:49 GTG/core/dates.py:65 GTG/core/search.py:105
 msgid "someday"
 msgstr "kiedyś"
 
-#: GTG/core/dates.py:56
+#. Translators: Used in parsing, made lowercased in code
+#: GTG/core/dates.py:62
 msgid "later"
 msgstr "później"
 
-#: GTG/core/dates.py:371 GTG/core/search.py:90
+#. Translators: Used in parsing, made lowercased in code
+#. Translators: Used in search parsing, no spaces, lowercased in code
+#: GTG/core/dates.py:382 GTG/core/search.py:95
 msgid "today"
 msgstr "dziś"
 
-#: GTG/core/dates.py:373 GTG/core/search.py:91
+#. Translators: Used in parsing, made lowercased in code
+#. Translators: Used in search parsing, no spaces, lowercased in code
+#: GTG/core/dates.py:385 GTG/core/search.py:97
 msgid "tomorrow"
 msgstr "jutro"
 
-#: GTG/core/dates.py:375
+#. Translators: Used in parsing, made lowercased in code
+#: GTG/core/dates.py:388
 msgid "next week"
 msgstr "następny tydzień"
 
-#: GTG/core/dates.py:377
+#. Translators: Used in parsing, made lowercased in code
+#: GTG/core/dates.py:391
 msgid "next month"
 msgstr "następny miesiąc"
 
-#: GTG/core/dates.py:379
+#. Translators: Used in parsing, made lowercased in code
+#: GTG/core/dates.py:394
 msgid "next year"
 msgstr "następny rok"
 
-#: GTG/core/dates.py:384
+#: GTG/core/dates.py:399 GTG/core/dates.py:532
 msgid "Monday"
 msgstr "Poniedziałek"
 
-#: GTG/core/dates.py:390
+#: GTG/core/dates.py:405 GTG/core/dates.py:538
 msgid "Sunday"
 msgstr "Niedziela"
 
-#: GTG/core/dates.py:452
+#. Translators: Used in recurring parsing, made lowercased in code
+#: GTG/core/dates.py:515
+#, fuzzy
+msgid "day"
+msgstr "Dziś"
+
+#. Translators: Used in recurring parsing, made lowercased in code
+#: GTG/core/dates.py:518
+msgid "other-day"
+msgstr ""
+
+#. Translators: Used in recurring parsing, made lowercased in code
+#: GTG/core/dates.py:521
+#, fuzzy
+msgid "week"
+msgstr "następny tydzień"
+
+#. Translators: Used in recurring parsing, made lowercased in code
+#: GTG/core/dates.py:524
+#, fuzzy
+msgid "month"
+msgstr "następny miesiąc"
+
+#. Translators: Used in recurring parsing, made lowercased in code
+#: GTG/core/dates.py:527
+#, fuzzy
+msgid "year"
+msgstr "następny rok"
+
+#: GTG/core/dates.py:588
 #, python-format
 msgid "Yesterday"
 msgid_plural "%(days)d days ago"
@@ -813,13 +1058,12 @@ msgstr[0] "Wczoraj"
 msgstr[1] "%(days)d dni temu"
 msgstr[2] "%(days)d dni temu"
 
-#. Task 0@1: Getting started with GTG
-#: GTG/core/firstrun_tasks.py:34
+#: GTG/core/firstrun_tasks.py:61
 #, fuzzy
 msgid "Getting Started with GTG (read me first)"
 msgstr "Rozpocznij pracę z GTG"
 
-#: GTG/core/firstrun_tasks.py:36
+#: GTG/core/firstrun_tasks.py:68
 msgid ""
 "Welcome to Getting Things GNOME (GTG), your new task manager! In GTG, "
 "everything is a task. From building a bridge over the Pacific Ocean to "
@@ -851,7 +1095,7 @@ msgid ""
 "a subtask, simply click on its link! You can always come back using the "
 "&quot;Open Parent&quot; button. Try opening the following subtask for "
 "example:\n"
-"<subtask>1@1</subtask>\n"
+"{! 262d1410-71aa-4e35-abec-90ef1bab44d3 !}\n"
 "\n"
 "Closing a task:\n"
 "\n"
@@ -872,13 +1116,14 @@ msgid ""
 "\n"
 "If you are interested in knowing more about GTG's other features, you will "
 "find more information here:\n"
-"<subtask>2@1</subtask>\n"
-"<subtask>3@1</subtask>\n"
-"<subtask>4@1</subtask>\n"
-"<subtask>5@1</subtask>\n"
-"<subtask>6@1</subtask>\n"
-"<subtask>7@1</subtask>\n"
-"<subtask>8@1</subtask>\n"
+"{! 262d1410-71aa-4e35-abec-90ef1bab44d3 !}\n"
+"{! 2d427a77-3077-4277-904c-073fcfcb4842 !}\n"
+"{! 0653765c-f5d4-4b7f-9903-0065bb258940 !}\n"
+"{! 3efd01b7-343d-4be1-9bac-8ed944517e3f !}\n"
+"{! 9b05a6c5-81e3-4fe5-a70d-3b569f65409c !}\n"
+"{! 21ed54a8-e7ff-408a-b648-8d12cc75e162 !}\n"
+"{! d1c73224-9eec-4889-b3c4-bb0281e5c1d3 !}\n"
+"{! 586dd1a7-0772-4d0a-85db-34edfc8ee30c !}\n"
 "\n"
 "We also recommend you read our user manual, by pressing F1 or using the "
 "&quot;Help&quot; entry in the main window's menu button.\n"
@@ -890,13 +1135,12 @@ msgid ""
 "— The GTG team"
 msgstr ""
 
-#. Task 1@1: Learn to use subtasks
-#: GTG/core/firstrun_tasks.py:109
+#: GTG/core/firstrun_tasks.py:141
 #, fuzzy
 msgid "Learn How to Use Subtasks"
 msgstr "Naucz się jak używać podzadań"
 
-#: GTG/core/firstrun_tasks.py:111
+#: GTG/core/firstrun_tasks.py:148
 #, fuzzy
 msgid ""
 "A &quot;Subtask&quot; is something that you need to do first before being "
@@ -948,13 +1192,12 @@ msgstr ""
 "podzadania, zawsze możesz go zmienić wykorzystując metodę przeciągnij i "
 "upuść na liście zadań."
 
-#. Task 2@1: Learn to use tags
-#: GTG/core/firstrun_tasks.py:137
+#: GTG/core/firstrun_tasks.py:173
 #, fuzzy
 msgid "Learn How to Use Tags and Enable the Sidebar"
 msgstr "Naucz się jak używać widoku roboczego"
 
-#: GTG/core/firstrun_tasks.py:139
+#: GTG/core/firstrun_tasks.py:180
 msgid ""
 "In GTG, you use tags to sort your tasks. A tag is a simple word that begins "
 "with &quot;@&quot;.\n"
@@ -984,13 +1227,12 @@ msgid ""
 "select @money."
 msgstr ""
 
-#. Task 3@1: Using the Actionable tab
-#: GTG/core/firstrun_tasks.py:168
+#: GTG/core/firstrun_tasks.py:208
 #, fuzzy
 msgid "Learn How to Use the Actionable View Mode"
 msgstr "Naucz się jak używać widoku roboczego"
 
-#: GTG/core/firstrun_tasks.py:170
+#: GTG/core/firstrun_tasks.py:215
 #, fuzzy
 msgid ""
 "If you press the &quot;Actionable&quot; tab, only actionable tasks will be "
@@ -1043,13 +1285,12 @@ msgstr ""
 "używasz do oznaczenia zadań które chciałbyś(-aś) wykonać, ale jeszcze nie "
 "teraz."
 
-#. Task 5@1: Plugins
-#: GTG/core/firstrun_tasks.py:206
+#: GTG/core/firstrun_tasks.py:250
 #, fuzzy
 msgid "Learn About Plugins"
 msgstr "_Informacje o wtyczce"
 
-#: GTG/core/firstrun_tasks.py:208
+#: GTG/core/firstrun_tasks.py:257
 msgid ""
 "GTG has the ability to add plugins to extend its core functionality.\n"
 "\n"
@@ -1059,12 +1300,11 @@ msgid ""
 "for wider inclusion."
 msgstr ""
 
-#. Task 5@1: Reporting bugs
-#: GTG/core/firstrun_tasks.py:219
+#: GTG/core/firstrun_tasks.py:266
 msgid "Reporting Bugs"
 msgstr "Zgłaszanie błędów"
 
-#: GTG/core/firstrun_tasks.py:221
+#: GTG/core/firstrun_tasks.py:273
 msgid ""
 "It is a well-known fact that GTG has no bugs! 🐛\n"
 "But sometimes, in the dark, unexpected things happen...\n"
@@ -1077,13 +1317,12 @@ msgid ""
 "reports and ideas are welcome... and patches even more so!"
 msgstr ""
 
-#. Task 6@1: Learn how to use the QuickAdd Entry
-#: GTG/core/firstrun_tasks.py:234
+#: GTG/core/firstrun_tasks.py:285
 #, fuzzy
 msgid "Learn How to Use the Quick Add Entry"
 msgstr "Naucz się używać szybkiego dodawania wpisów"
 
-#: GTG/core/firstrun_tasks.py:236
+#: GTG/core/firstrun_tasks.py:292
 msgid ""
 "The Quick Add entry is the fastest way to create a new task without "
 "disrupting your focus from the main window. It has a special syntax with "
@@ -1091,13 +1330,12 @@ msgid ""
 "about its features and syntax."
 msgstr ""
 
-#. Task 7@1: Learn How To Use Synchonization Services
-#: GTG/core/firstrun_tasks.py:244
+#: GTG/core/firstrun_tasks.py:299
 #, fuzzy
 msgid "Learn About Synchronization Services"
 msgstr "Naucz Się Korzystać Z Usług Synchronizacji"
 
-#: GTG/core/firstrun_tasks.py:246
+#: GTG/core/firstrun_tasks.py:306
 msgid ""
 "❗ Take note that as of GTG 0.4, synchronization backends/services have been "
 "disabled until someone (you?) steps forward to fix and maintain them, as "
@@ -1118,13 +1356,12 @@ msgid ""
 "import or export your tasks."
 msgstr ""
 
-#. Task 8@1: Learn How To Search For Tasks
-#: GTG/core/firstrun_tasks.py:267
+#: GTG/core/firstrun_tasks.py:326
 #, fuzzy
 msgid "Learn How to Search for Tasks"
 msgstr "Naucz się jak wyszukiwać zadania"
 
-#: GTG/core/firstrun_tasks.py:269
+#: GTG/core/firstrun_tasks.py:333
 msgid ""
 "To help you to find specific tasks more easily, GTG allows you to search for "
 "tasks based on their content.\n"
@@ -1144,12 +1381,6 @@ msgid ""
 "parameters you can use, refer to the Search Syntax documentation in GTG's "
 "user manual, found through the &quot;Help&quot; menu item in the main "
 "window's menu button."
-msgstr ""
-
-#: GTG/core/info.py:33
-msgid ""
-"A personal productivity tool for GNOME,\n"
-"inspired by the GTD methodology."
 msgstr ""
 
 #: GTG/core/plugins/__init__.py:27
@@ -1192,53 +1423,39 @@ msgstr "Nieznany błąd podczas ładowania wtyczki."
 msgid "Very helpful message, isn't it? Please report a bug."
 msgstr "Bardzo pomocna informacja, nieprawdaż? Zgłoś błąd."
 
-#: GTG/core/search.py:86
+#. Translators: Used in search parsing, no spaces, lowercased in code
+#: GTG/core/search.py:87
 msgid "not"
 msgstr "nie"
 
-#: GTG/core/search.py:87
+#. Translators: Used in search parsing, no spaces, lowercased in code
+#: GTG/core/search.py:89
 msgid "or"
 msgstr "lub"
 
-#: GTG/core/search.py:88
+#. Translators: Used in search parsing, no spaces, lowercased in code
+#: GTG/core/search.py:91
 msgid "after"
 msgstr "po"
 
-#: GTG/core/search.py:89
+#. Translators: Used in search parsing, no spaces, lowercased in code
+#: GTG/core/search.py:93
 msgid "before"
 msgstr "przed"
 
-#: GTG/core/search.py:92
+#. Translators: Used in search parsing, no spaces, lowercased in code
+#: GTG/core/search.py:99
 msgid "nodate"
 msgstr "bezterminowe"
 
-#: GTG/core/search.py:96
+#. Translators: Used in search parsing, no spaces, lowercased in code
+#: GTG/core/search.py:107
 msgid "notag"
 msgstr "nieoznaczone"
 
-#: GTG/core/task.py:54
+#: GTG/core/task.py:57
 msgid "My new task"
 msgstr "Moje nowe zadanie"
-
-#: GTG/core/task.py:177
-msgid "tags"
-msgstr "znaczniki"
-
-#: GTG/core/task.py:177
-msgid "tag"
-msgstr "znacznik"
-
-#: GTG/core/task.py:183
-msgid "defer"
-msgstr "odrocz"
-
-#: GTG/core/task.py:184
-msgid "start"
-msgstr "start"
-
-#: GTG/core/task.py:190
-msgid "due"
-msgstr "due"
 
 #: GTG/core/treefactory.py:76 GTG/gtk/backends/parameters_ui/__init__.py:69
 msgid "All tasks"
@@ -1285,12 +1502,12 @@ msgid "Syncing is <span color=\"red\">disabled</span>."
 msgstr "Synchronizacja jest <span color=\"red\">wyłączona</span>."
 
 #. Load and setup other widgets
-#: GTG/gtk/backends/__init__.py:68
+#: GTG/gtk/backends/__init__.py:70
 #, fuzzy, python-brace-format
-msgid "Synchronization Services - {info.NAME}"
+msgid "Synchronization Services - {name}"
 msgstr "Usługi synchronizacji - %s"
 
-#: GTG/gtk/backends/__init__.py:269
+#: GTG/gtk/backends/__init__.py:272
 #, python-format
 msgid "Do you really want to remove the '%s' synchronization service?"
 msgstr "Czy na pewno chcesz usunąć usługę synchronizacji z '%s'?"
@@ -1398,6 +1615,13 @@ msgstr "Potwierdź"
 msgid "Ignore"
 msgstr "Zignoruj"
 
+#: GTG/gtk/browser/backend_infobar.py:113
+#: GTG/gtk/browser/backend_infobar.py:118
+#: GTG/gtk/browser/backend_infobar.py:143
+#: GTG/gtk/browser/backend_infobar.py:196
+msgid "OK"
+msgstr ""
+
 #: GTG/gtk/browser/backend_infobar.py:139
 msgid "Confirm"
 msgstr "Potwierdź"
@@ -1479,49 +1703,49 @@ msgstr ""
 
 #. These lines should be in info.py, but due to their dynamic nature
 #. there'd be no way to show them translated in Gtk's About dialog:
-#: GTG/gtk/browser/main_window.py:304
+#: GTG/gtk/browser/main_window.py:317
 #, python-format
 msgid "Copyright © 2008-%d the GTG contributors."
 msgstr ""
 
 #. GTK prefixes the first line with "Created by ",
 #. but we can't split the string because it would cause trouble for some languages.
-#: GTG/gtk/browser/main_window.py:309
+#: GTG/gtk/browser/main_window.py:322
 msgid "GTG was made by many contributors around the world."
 msgstr ""
 
-#: GTG/gtk/browser/main_window.py:310
+#: GTG/gtk/browser/main_window.py:323
 msgid "The GTG project is maintained/administered by:"
 msgstr ""
 
-#: GTG/gtk/browser/main_window.py:312
+#: GTG/gtk/browser/main_window.py:325
 msgid "This release was brought to you by the efforts of these people:"
 msgstr ""
 
-#: GTG/gtk/browser/main_window.py:314
+#: GTG/gtk/browser/main_window.py:327
 #, python-brace-format
 msgid ""
 "Many others contributed to GTG over the years.\n"
 "You can see them on {OH_stats} and {GH_stats}."
 msgstr ""
 
-#: GTG/gtk/browser/main_window.py:322
+#: GTG/gtk/browser/main_window.py:336
 msgid "GTG website"
 msgstr "witryna GTG"
 
 #. Translators for a particular language should put their names here.
 #. Please keep the width at 80 chars max, as GTK3's About dialog won't wrap text.
 #. GtkAboutDialog will detect if “translator-credits” is untranslated and auto-hide the tab.
-#: GTG/gtk/browser/main_window.py:335
+#: GTG/gtk/browser/main_window.py:349
 msgid "translator-credits"
 msgstr ""
 
-#: GTG/gtk/browser/main_window.py:637
+#: GTG/gtk/browser/main_window.py:652
 #, fuzzy
 msgid "Hide Sidebar"
 msgstr "Panel _boczny znaczników"
 
-#: GTG/gtk/browser/main_window.py:639
+#: GTG/gtk/browser/main_window.py:654
 #, fuzzy
 msgid "Show Sidebar"
 msgstr "Panel _boczny znaczników"
@@ -1531,17 +1755,17 @@ msgstr "Panel _boczny znaczników"
 msgid "NewTag"
 msgstr "NowyZnacznik"
 
-#: GTG/gtk/browser/simple_color_selector.py:237
+#: GTG/gtk/browser/simple_color_selector.py:238
 #, fuzzy
 msgid "Add Custom Color..."
 msgstr "Dodaj własny kolor"
 
-#: GTG/gtk/browser/simple_color_selector.py:242
+#: GTG/gtk/browser/simple_color_selector.py:243
 #, fuzzy
 msgid "Clear Selected Color"
 msgstr "Usuń zaznaczoną ikonę"
 
-#: GTG/gtk/browser/simple_color_selector.py:283
+#: GTG/gtk/browser/simple_color_selector.py:284
 msgid "Choose a color"
 msgstr "Wybierz kolor"
 
@@ -1550,30 +1774,31 @@ msgstr "Wybierz kolor"
 msgid "Generate Color"
 msgstr "Resetuj kolor"
 
-#: GTG/gtk/browser/tag_editor.py:80
-msgid "Remove selected icon"
-msgstr "Usuń zaznaczoną ikonę"
-
-#: GTG/gtk/browser/tag_editor.py:199
+#: GTG/gtk/browser/tag_editor.py:50
 #, fuzzy, python-format
 msgid "Editing Tag \"%s\""
 msgstr "Dodaj zadanie"
 
-#: GTG/gtk/browser/tag_editor.py:236
+#: GTG/gtk/browser/tag_editor.py:87
+#, fuzzy
+msgid "Remove icon"
+msgstr "Usuń zaznaczoną ikonę"
+
+#: GTG/gtk/browser/tag_editor.py:98
 msgid "Name : "
 msgstr "Nazwa: "
 
-#: GTG/gtk/browser/tag_editor.py:243
+#: GTG/gtk/browser/tag_editor.py:105
 #, fuzzy
 msgid "Show Tag in \"Actionable\" view:"
 msgstr "Pokaż znaczniki w widoku roboczym:"
 
-#: GTG/gtk/browser/tag_editor.py:256
+#: GTG/gtk/browser/tag_editor.py:119
 msgid "Select Tag Color:"
 msgstr "Zaznacz kolor znacznika:"
 
 #. Default icon
-#: GTG/gtk/browser/tag_editor.py:299
+#: GTG/gtk/browser/tag_editor.py:190
 #, fuzzy
 msgid ""
 "Click to\n"
@@ -1583,35 +1808,41 @@ msgstr ""
 "ustawić ikonę"
 
 #. Build the title/label/tags columns
-#: GTG/gtk/browser/treeview_factory.py:340
+#. Translators: Column name, containing the task titles
+#: GTG/gtk/browser/treeview_factory.py:322
 msgid "Tasks"
 msgstr "Zadania"
 
-#: GTG/gtk/browser/treeview_factory.py:345
+#. Translators: Column name, containing the start date
+#: GTG/gtk/browser/treeview_factory.py:328
 #, fuzzy
 msgid "Start Date"
 msgstr "Data rozpoczęcia"
 
-#: GTG/gtk/browser/treeview_factory.py:356
+#. Translators: Column name, containing the due date
+#: GTG/gtk/browser/treeview_factory.py:340
 msgid "Due"
 msgstr "Termin"
 
 #. Build the title/label/tags columns
-#: GTG/gtk/browser/treeview_factory.py:371
+#. Translators: Column name, containing the task titles
+#: GTG/gtk/browser/treeview_factory.py:356
 #, fuzzy
 msgid "Closed Tasks"
 msgstr "Panel _zamkniętych zadań"
 
-#: GTG/gtk/browser/treeview_factory.py:376
+#. Translators: Column name, containing the closed date
+#: GTG/gtk/browser/treeview_factory.py:362
 #, fuzzy
 msgid "Closed Date"
 msgstr "Data zakończenia"
 
-#: GTG/gtk/editor/editor.py:138 GTG/gtk/editor/editor.py:379
+#. Translators: Button label to add an new parent task
+#: GTG/gtk/editor/editor.py:154 GTG/gtk/editor/editor.py:485
 msgid "Add Parent"
 msgstr ""
 
-#: GTG/gtk/editor/editor.py:442
+#: GTG/gtk/editor/editor.py:548
 #, python-format
 msgid "Completed %(days)d day late"
 msgid_plural "Completed %(days)d days late"
@@ -1619,7 +1850,7 @@ msgstr[0] "Zakończono %(days)d dzień póżniej"
 msgstr[1] "Zakończono %(days)d dni póżniej"
 msgstr[2] "Zakończono %(days)d dni póżniej"
 
-#: GTG/gtk/editor/editor.py:447
+#: GTG/gtk/editor/editor.py:553
 #, python-format
 msgid "Completed %(days)d day early"
 msgid_plural "Completed %(days)d days early"
@@ -1627,7 +1858,7 @@ msgstr[0] "Zakończono %(days)d dzień wcześniej"
 msgstr[1] "Zakończono %(days)d dni wcześniej"
 msgstr[2] "Zakończono %(days)d dni wcześniej"
 
-#: GTG/gtk/editor/editor.py:456
+#: GTG/gtk/editor/editor.py:562
 #, python-format
 msgid "Due tomorrow!"
 msgid_plural "%(days)d days left"
@@ -1635,11 +1866,11 @@ msgstr[0] "Do jutra!"
 msgstr[1] "%(days)d dni zostało"
 msgstr[2] "%(days)d dni zostało"
 
-#: GTG/gtk/editor/editor.py:459
+#: GTG/gtk/editor/editor.py:565
 msgid "Due today!"
 msgstr "Do dzisiaj!"
 
-#: GTG/gtk/editor/editor.py:462
+#: GTG/gtk/editor/editor.py:568
 #, python-format
 msgid "Due yesterday!"
 msgid_plural "Was %(days)d days ago"
@@ -1647,36 +1878,66 @@ msgstr[0] "Do wczoraj!"
 msgstr[1] "Był %(days)d dni temu"
 msgstr[2] "Był %(days)d dni temu"
 
-#: GTG/gtk/editor/taskview.py:1436
+#. Recurring monthly from selected date
+#. Translators: Recurring monthly
+#. Recurring monthly from today
+#: GTG/gtk/editor/recurring_menu.py:97 GTG/gtk/editor/recurring_menu.py:109
+#, python-brace-format
+msgid "Every <b>{month_day} of the month</b>"
+msgstr ""
+
+#. Translators: Recurring yearly
+#: GTG/gtk/editor/recurring_menu.py:101 GTG/gtk/editor/recurring_menu.py:112
+#, python-brace-format
+msgid "Every <b>{month} {day}</b>"
+msgstr ""
+
+#. Recurring daily
+#: GTG/gtk/editor/recurring_menu.py:103
+msgid "Every <b>day</b>"
+msgstr ""
+
+#. Recurring every other day
+#: GTG/gtk/editor/recurring_menu.py:105
+msgid "Every <b>other day</b>"
+msgstr ""
+
+#. Recurring weekly from today
+#: GTG/gtk/editor/recurring_menu.py:107 GTG/gtk/editor/recurring_menu.py:115
+#, python-brace-format
+msgid "Every <b>{week_day}</b>"
+msgstr ""
+
+#: GTG/gtk/editor/taskview.py:631
 #, fuzzy
 msgid "Open Link"
 msgstr "Otwórz zadanie"
 
-#: GTG/gtk/editor/taskview.py:1442
+#: GTG/gtk/editor/taskview.py:639
 msgid "Copy Link to Clipboard"
 msgstr ""
 
-#: GTG/gtk/general_preferences.py:64
+#: GTG/gtk/general_preferences.py:65
 #, fuzzy
 msgid "General"
 msgstr "<b>Ogólne</b>"
 
-#: GTG/plugins/export/export.py:121
+#: GTG/plugins/export/export.py:90
 msgid "No task matches your criteria. Empty report can't be generated."
 msgstr ""
 "Brak zadań spełniających twoje kryteria. Puste raporty nie mogą zostać "
 "wygenerowane."
 
-#: GTG/plugins/export/export.py:139
+#: GTG/plugins/export/export.py:108
 #, python-format
 msgid "GTG could not generate the document: %s"
 msgstr "GTG nie może wygenerować dokumentu: %s"
 
-#: GTG/plugins/export/export.py:184
+#: GTG/plugins/export/export.py:151
 msgid "Export the tasks currently listed"
 msgstr "Eksportuj teraz wyświetlane zadania"
 
-#: GTG/plugins/export/export.py:315
+#: GTG/plugins/export/export.py:273
 msgid "Choose where to save your list"
 msgstr "Wybierz gdzie zapisać listę"
 
@@ -1786,9 +2047,24 @@ msgstr ""
 msgid "Task: %(task_title)s"
 msgstr "Zadanie: %(task_title)s"
 
-#: GTG/plugins/untouched_tasks/untouchedTasks.py:64
+#: GTG/plugins/untouched_tasks/untouchedTasks.py:65
 msgid "Add @untouched tag"
 msgstr ""
+
+#~ msgid "tags"
+#~ msgstr "znaczniki"
+
+#~ msgid "tag"
+#~ msgstr "znacznik"
+
+#~ msgid "defer"
+#~ msgstr "odrocz"
+
+#~ msgid "start"
+#~ msgstr "start"
+
+#~ msgid "due"
+#~ msgstr "due"
 
 #~ msgid "Edit"
 #~ msgstr "Edycja"
@@ -1932,9 +2208,6 @@ msgstr ""
 #~ msgid "Title"
 #~ msgstr "Tytuł"
 
-#~ msgid "no active tasks"
-#~ msgstr "brak aktywnych zadań"
-
 #~ msgid "%(tasks)d active task"
 #~ msgid_plural "%(tasks)d active tasks"
 #~ msgstr[0] "%(tasks)d aktywne zadanie"
@@ -2034,9 +2307,6 @@ msgstr ""
 #~ msgid "_Someday"
 #~ msgstr "_Kiedyś"
 
-#~ msgid "Mark Done"
-#~ msgstr "Oznacz jako wykonane"
-
 #~ msgid "Insert subtask"
 #~ msgstr "Wstaw zadanie podrzędne"
 
@@ -2088,9 +2358,6 @@ msgstr ""
 
 #~ msgid "_Show Main Window"
 #~ msgstr "_Pokaż główne okno"
-
-#~ msgid "Set the task's location"
-#~ msgstr "Ustaw lokalizację zadania"
 
 #~ msgid "Associate with new tag"
 #~ msgstr "Powiąż z nowym znacznikiem"

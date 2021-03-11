@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-07-07 00:42-0400\n"
+"POT-Creation-Date: 2021-03-11 19:31-0300\n"
 "PO-Revision-Date: 2020-09-21 10:16+0000\n"
 "Last-Translator: Zoltan Gera <gerazo@caesar.elte.hu>\n"
 "Language-Team: \n"
@@ -41,8 +41,8 @@ msgid ""
 "know, from small tasks to large projects. GTG's user interface is designed "
 "to accommodate many workflows, with features such as:"
 msgstr ""
-"A GTG arra készült, hogy minden teendőt, észben tartandót nyilvántarts benne, "
-"kis feladatoktól a nagy projektekig. A GTG felhasználói felülete "
+"A GTG arra készült, hogy minden teendőt, észben tartandót nyilvántarts "
+"benne, kis feladatoktól a nagy projektekig. A GTG felhasználói felülete "
 "különféle munkamódszereket támogat, mint:"
 
 #: data/org.gnome.GTG.appdata.xml.in.in:14
@@ -57,20 +57,23 @@ msgstr "természetes nyelvfeldolgozás és szabad formájú feladatszerkesztő;"
 msgid ""
 "projects/task dependencies (infinite sub-tasks), start dates and due dates;"
 msgstr ""
-"projekt/feladat függőségei (akármennyi részfeladattal), kezdés és esedékesség ideje;"
+"projekt/feladat függőségei (akármennyi részfeladattal), kezdés és "
+"esedékesség ideje;"
 
 #: data/org.gnome.GTG.appdata.xml.in.in:17
 msgid ""
 "an \"Actionable\" tasks view mode to help you stay focused during your work;"
 msgstr ""
-"\"Végrehajtható\" feladatokat mutató nézet, hogy segítsen a munkád során fenntartani a koncentrációt;"
+"\"Végrehajtható\" feladatokat mutató nézet, hogy segítsen a munkád során "
+"fenntartani a koncentrációt;"
 
 #: data/org.gnome.GTG.appdata.xml.in.in:18
 msgid ""
 "the ability to effortlessly defer tasks to common upcoming days, or to a "
 "custom date."
 msgstr ""
-"feladatok egyszerű halasztása a következő napokra vagy meghatározott időpontra."
+"feladatok egyszerű halasztása a következő napokra vagy meghatározott "
+"időpontra."
 
 #: data/org.gnome.GTG.appdata.xml.in.in:68
 msgid "The GTG team"
@@ -94,6 +97,88 @@ msgid ""
 "Time;Management;Scheduling;GTD;gtg;Todo;"
 msgstr ""
 
+#: GTG/plugins/export.gtg-plugin.desktop:4
+msgid "Export and print"
+msgstr ""
+
+#: GTG/plugins/export.gtg-plugin.desktop:5
+msgid "Exports the tasks in the current view into a variety of formats."
+msgstr ""
+
+#: GTG/plugins/export.gtg-plugin.desktop:6
+msgid ""
+"Exports the tasks in the current view into a variety of formats. You can "
+"also personalize the format of your tasks by writing your own template."
+msgstr ""
+
+#: GTG/plugins/send-email.gtg-plugin.desktop:4
+#, fuzzy
+msgid "Send task via email"
+msgstr "Küldés emailben."
+
+#: GTG/plugins/send-email.gtg-plugin.desktop:5
+#, fuzzy
+msgid "Easily send a task via email."
+msgstr "Küldés emailben."
+
+#: GTG/plugins/send-email.gtg-plugin.desktop:6
+msgid ""
+"Adds a button on the toolbar to send easily a task via email, also sends "
+"status, due_dates, tags and subtasks."
+msgstr ""
+
+#: GTG/plugins/untouched-tasks.gtg-plugin.desktop:4
+#, fuzzy
+msgid "Untouched tasks"
+msgstr "@untouched címke hozzáadása"
+
+#: GTG/plugins/untouched-tasks.gtg-plugin.desktop:5
+#, fuzzy
+msgid "Keep track of tasks you haven't touched for a while."
+msgstr ""
+" címke hozzárendelése a feladathoz, miután nem csináltunk vele semmit "
+"legalább "
+
+#: GTG/plugins/untouched-tasks.gtg-plugin.desktop:6
+msgid ""
+"Assigns tasks that you haven't touched for a while with the @untouched tag."
+msgstr ""
+
+#: GTG/plugins/urgency-color.gtg-plugin.desktop:4
+#, fuzzy
+msgid "Urgency Color"
+msgstr "<b>Sürgősség színe</b>"
+
+#: GTG/plugins/urgency-color.gtg-plugin.desktop:5
+msgid "Task urgency color-coding"
+msgstr ""
+
+#: GTG/plugins/urgency-color.gtg-plugin.desktop:6
+msgid ""
+"This plugin will calculate the urgency status of every of your currently "
+"active tasks and color-code it accordingly.\n"
+"\n"
+"Color code\n"
+"\n"
+"Assuming your settings are default:\n"
+"Red means you are within the last 30% of days between the start-date and due-"
+"date, or your task is overdue.\n"
+"Yellow means your task's start-date has passed.\n"
+"Green means your task's start-date is oncoming."
+msgstr ""
+
+#: GTG/plugins/hamster.gtg-plugin.desktop:4
+msgid "Hamster Time Tracker Integration"
+msgstr ""
+
+#: GTG/plugins/hamster.gtg-plugin.desktop:5
+msgid "Track time of GTG task with Hamster applet."
+msgstr ""
+
+#: GTG/plugins/hamster.gtg-plugin.desktop:6
+msgid "Adds the ability to send a task to the Hamster time tracking applet"
+msgstr ""
+
 #: GTG/gtk/data/backends.ui:60
 msgid "_Add"
 msgstr "Hozzáadás"
@@ -107,32 +192,32 @@ msgstr "Eltávolítás"
 msgid "Help"
 msgstr "Súgó"
 
-#: GTG/gtk/data/calendar.ui:44 GTG/gtk/data/context_menus.ui:150
-#: GTG/gtk/data/task_editor.ui:486
+#: GTG/gtk/data/calendar.ui:44 GTG/gtk/data/context_menus.ui:154
+#: GTG/gtk/data/task_editor.ui:1000
 msgid "Now"
 msgstr "Most"
 
-#: GTG/gtk/data/calendar.ui:57 GTG/gtk/data/context_menus.ui:155
-#: GTG/gtk/data/task_editor.ui:501
+#: GTG/gtk/data/calendar.ui:57 GTG/gtk/data/context_menus.ui:159
+#: GTG/gtk/data/task_editor.ui:1015
 msgid "Soon"
 msgstr "Hamarosan"
 
-#: GTG/gtk/data/calendar.ui:70 GTG/gtk/data/context_menus.ui:160
-#: GTG/gtk/data/task_editor.ui:516
+#: GTG/gtk/data/calendar.ui:70 GTG/gtk/data/context_menus.ui:164
+#: GTG/gtk/data/task_editor.ui:1030
 msgid "Someday"
 msgstr "Valamikor"
 
-#: GTG/gtk/data/calendar.ui:93 GTG/gtk/data/task_editor.ui:541
-#: GTG/gtk/data/task_editor.ui:586
+#: GTG/gtk/data/calendar.ui:93 GTG/gtk/data/task_editor.ui:1055
+#: GTG/gtk/data/task_editor.ui:1100
 msgid "Clear"
 msgstr "Törlés"
 
-#: GTG/gtk/data/context_menus.ui:8 GTG/gtk/data/context_menus.ui:35
+#: GTG/gtk/data/context_menus.ui:8 GTG/gtk/data/context_menus.ui:39
 #: GTG/gtk/browser/tag_context_menu.py:55
 msgid "Edit..."
 msgstr "Szerkesztés..."
 
-#: GTG/gtk/data/context_menus.ui:14 GTG/gtk/data/task_editor.ui:386
+#: GTG/gtk/data/context_menus.ui:14 GTG/gtk/data/task_editor.ui:900
 msgid "Mark as Not Done"
 msgstr "Befejezetlennek Jelölés"
 
@@ -140,7 +225,7 @@ msgstr "Befejezetlennek Jelölés"
 msgid "Undismiss"
 msgstr "Visszavétel"
 
-#: GTG/gtk/data/context_menus.ui:22 GTG/gtk/data/context_menus.ui:49
+#: GTG/gtk/data/context_menus.ui:22 GTG/gtk/data/context_menus.ui:53
 #: GTG/gtk/data/task_editor.ui:64 GTG/gtk/browser/tag_context_menu.py:66
 #: GTG/gtk/browser/tag_context_menu.py:71
 msgid "Delete"
@@ -150,76 +235,112 @@ msgstr "Törlés"
 msgid "Add a Subtask..."
 msgstr "Részfeladat Hozzáadása..."
 
-#: GTG/gtk/data/context_menus.ui:41 GTG/gtk/data/task_editor.ui:373
+#: GTG/gtk/data/context_menus.ui:35
+#, fuzzy
+msgid "Add a Parent task..."
+msgstr "Részfeladat Hozzáadása..."
+
+#: GTG/gtk/data/context_menus.ui:45 GTG/gtk/data/task_editor.ui:887
 msgid "Mark as Done"
 msgstr "Elvégzettnek Jelölés"
 
-#: GTG/gtk/data/context_menus.ui:45 GTG/gtk/data/task_editor.ui:22
+#: GTG/gtk/data/context_menus.ui:49 GTG/gtk/data/task_editor.ui:22
 msgid "Dismiss"
 msgstr "Elvetés"
 
-#: GTG/gtk/data/context_menus.ui:56 GTG/gtk/browser/main_window.py:1077
+#: GTG/gtk/data/context_menus.ui:60 GTG/gtk/browser/main_window.py:1155
 msgid "Set Start Date"
 msgstr "Kezdés Beállítása"
 
-#: GTG/gtk/data/context_menus.ui:60 GTG/gtk/data/context_menus.ui:124
-#: GTG/core/dates.py:455
+#: GTG/gtk/data/context_menus.ui:64 GTG/gtk/data/context_menus.ui:128
+#: GTG/core/dates.py:591
 #, python-format
 msgid "Tomorrow"
 msgid_plural "In %(days)d days"
 msgstr[0] "Holnap"
 msgstr[1] "%(days)d nap múlva"
 
-#: GTG/gtk/data/context_menus.ui:65
+#: GTG/gtk/data/context_menus.ui:69
 msgid "In 2 days"
 msgstr "2 nap múlva"
 
-#: GTG/gtk/data/context_menus.ui:70
+#: GTG/gtk/data/context_menus.ui:74
 msgid "In 3 days"
 msgstr "3 nap múlva"
 
-#: GTG/gtk/data/context_menus.ui:75
+#: GTG/gtk/data/context_menus.ui:79
 msgid "In 4 days"
 msgstr "4 nap múlva"
 
-#: GTG/gtk/data/context_menus.ui:80
+#: GTG/gtk/data/context_menus.ui:84
 msgid "In 5 days"
 msgstr "5 nap múlva"
 
-#: GTG/gtk/data/context_menus.ui:85
+#: GTG/gtk/data/context_menus.ui:89
 msgid "In 6 days"
 msgstr "6 nap múlva"
 
-#: GTG/gtk/data/context_menus.ui:92 GTG/gtk/data/context_menus.ui:129
+#: GTG/gtk/data/context_menus.ui:96 GTG/gtk/data/context_menus.ui:133
 msgid "Next Week"
 msgstr "Következő Hét"
 
-#: GTG/gtk/data/context_menus.ui:97 GTG/gtk/data/context_menus.ui:134
+#: GTG/gtk/data/context_menus.ui:101 GTG/gtk/data/context_menus.ui:138
 msgid "Next Month"
 msgstr "Következő Hónap"
 
-#: GTG/gtk/data/context_menus.ui:102 GTG/gtk/data/context_menus.ui:139
+#: GTG/gtk/data/context_menus.ui:106 GTG/gtk/data/context_menus.ui:143
 msgid "Next Year"
 msgstr "Következő Év"
 
-#: GTG/gtk/data/context_menus.ui:107 GTG/gtk/data/context_menus.ui:144
+#: GTG/gtk/data/context_menus.ui:111 GTG/gtk/data/context_menus.ui:148
 #: GTG/gtk/data/main_window.ui:159
 msgid "Pick a Date..."
 msgstr "Dátum Kiválasztása..."
 
-#: GTG/gtk/data/context_menus.ui:114 GTG/gtk/data/main_window.ui:186
+#: GTG/gtk/data/context_menus.ui:118 GTG/gtk/data/main_window.ui:186
 msgid "Clear Start Date"
 msgstr "Kezdés Törlése"
 
-#: GTG/gtk/data/context_menus.ui:121 GTG/gtk/browser/main_window.py:1088
+#: GTG/gtk/data/context_menus.ui:125 GTG/gtk/browser/main_window.py:1166
 msgid "Set Due Date"
 msgstr "Esedékesség Beállítása"
 
-#: GTG/gtk/data/context_menus.ui:167
+#: GTG/gtk/data/context_menus.ui:171
 msgid "Clear Due Date"
 msgstr "Esedékesség Törlése"
 
-#: GTG/gtk/data/context_menus.ui:175
+#: GTG/gtk/data/context_menus.ui:178
+msgid "Set Recurring"
+msgstr ""
+
+#: GTG/gtk/data/context_menus.ui:181
+msgid "Every Day"
+msgstr ""
+
+#: GTG/gtk/data/context_menus.ui:186
+msgid "Every Other-Day"
+msgstr ""
+
+#: GTG/gtk/data/context_menus.ui:191
+#, fuzzy
+msgid "Every Week"
+msgstr "Következő Hét"
+
+#: GTG/gtk/data/context_menus.ui:196
+#, fuzzy
+msgid "Every Month"
+msgstr "Következő Hónap"
+
+#: GTG/gtk/data/context_menus.ui:201
+#, fuzzy
+msgid "Every Year"
+msgstr "Következő Év"
+
+#: GTG/gtk/data/context_menus.ui:207
+msgid "Enable/Disable"
+msgstr ""
+
+#: GTG/gtk/data/context_menus.ui:216
 msgid "Modify Tags..."
 msgstr "Címkék Módosítása..."
 
@@ -237,7 +358,8 @@ msgstr "Színes háttér engedélyezése"
 
 #: GTG/gtk/data/general_preferences.ui:146
 msgid "Show colored backgrounds for a task based on the colors of its tags"
-msgstr "Színes háttér mutatása a feladathoz a kapcsolt címkéi színeinek megfelelően"
+msgstr ""
+"Színes háttér mutatása a feladathoz a kapcsolt címkéi színeinek megfelelően"
 
 #: GTG/gtk/data/general_preferences.ui:207
 msgid "Start of the day"
@@ -246,26 +368,29 @@ msgstr "Nap kezdő időpontja"
 #: GTG/gtk/data/general_preferences.ui:220
 msgid ""
 "Automatically refreshes the task list and adjusts the \"Actionable\" view"
-msgstr ""
-"Frissíti a feladatok listáját és állítja a \"Végrehajtható\" nézetet"
+msgstr "Frissíti a feladatok listáját és állítja a \"Végrehajtható\" nézetet"
 
 #: GTG/gtk/data/general_preferences.ui:281
 msgid "Task Editor font"
 msgstr "Feladatszerkesztő betűtípusa"
 
 #: GTG/gtk/data/general_preferences.ui:327
+msgid "Dark Mode"
+msgstr ""
+
+#: GTG/gtk/data/general_preferences.ui:372
 msgid "Clean Up"
 msgstr "Takarítás"
 
-#: GTG/gtk/data/general_preferences.ui:364
+#: GTG/gtk/data/general_preferences.ui:409
 msgid "Automatically remove old closed tasks"
 msgstr "Régi és lezárt feladatok automatikus törlése"
 
-#: GTG/gtk/data/general_preferences.ui:409
+#: GTG/gtk/data/general_preferences.ui:454
 msgid "Days to wait before removing a task"
 msgstr "Ennyi napot várjunk a feladat törlése előtt"
 
-#: GTG/gtk/data/general_preferences.ui:454
+#: GTG/gtk/data/general_preferences.ui:498
 msgid "Purge Now"
 msgstr "Takarítás Most"
 
@@ -285,71 +410,87 @@ msgid "Open Help"
 msgstr "Segítség Megnyitása"
 
 #: GTG/gtk/data/help_overlay.ui:35
+#, fuzzy
+msgctxt "shortcut window"
+msgid "Show Keyboard Shortcuts"
+msgstr "Billentyűparancsok"
+
+#: GTG/gtk/data/help_overlay.ui:43
 msgctxt "shortcut window"
 msgid "Quit"
 msgstr "Kilépés"
 
-#: GTG/gtk/data/help_overlay.ui:46
+#: GTG/gtk/data/help_overlay.ui:54
 msgctxt "shortcut window"
 msgid "Task Browser"
 msgstr "Feladatböngésző"
 
-#: GTG/gtk/data/help_overlay.ui:51
+#: GTG/gtk/data/help_overlay.ui:60
+msgctxt "shortcut window"
+msgid "Unfold Treeview Items in Task Browser"
+msgstr ""
+
+#: GTG/gtk/data/help_overlay.ui:68
+msgctxt "shortcut window"
+msgid "Fold Treeview Items in Task Browser"
+msgstr ""
+
+#: GTG/gtk/data/help_overlay.ui:75
 msgctxt "shortcut window"
 msgid "Search"
 msgstr "Keresés"
 
-#: GTG/gtk/data/help_overlay.ui:59
+#: GTG/gtk/data/help_overlay.ui:83
 msgctxt "shortcut window"
 msgid "Toggle Sidebar"
 msgstr "Oldalsáv Kapcsolása"
 
-#: GTG/gtk/data/help_overlay.ui:67
+#: GTG/gtk/data/help_overlay.ui:91
 msgctxt "shortcut window"
 msgid "Focus the Quick Add input"
 msgstr "Fókusz a Gyors Hozzáadás mezőre"
 
-#: GTG/gtk/data/help_overlay.ui:75
+#: GTG/gtk/data/help_overlay.ui:99
 msgctxt "shortcut window"
 msgid "Mark Task as Done"
 msgstr "Feladat Elvégzettnek Jelölése"
 
-#: GTG/gtk/data/help_overlay.ui:83
+#: GTG/gtk/data/help_overlay.ui:107
 msgctxt "shortcut window"
 msgid "Dismiss Task"
 msgstr "Feladat Elvetése"
 
-#: GTG/gtk/data/help_overlay.ui:91
+#: GTG/gtk/data/help_overlay.ui:115
 msgctxt "shortcut window"
 msgid "Batch change tags on selected tasks"
 msgstr "Kiválasztott feladatok együttes címkézése"
 
-#: GTG/gtk/data/help_overlay.ui:99 GTG/gtk/data/help_overlay.ui:139
+#: GTG/gtk/data/help_overlay.ui:123 GTG/gtk/data/help_overlay.ui:163
 msgctxt "shortcut window"
 msgid "New Task"
 msgstr "Új Feladat"
 
-#: GTG/gtk/data/help_overlay.ui:107 GTG/gtk/data/help_overlay.ui:147
+#: GTG/gtk/data/help_overlay.ui:131 GTG/gtk/data/help_overlay.ui:171
 msgctxt "shortcut window"
 msgid "New Subtask"
 msgstr "Új Részfeladat"
 
-#: GTG/gtk/data/help_overlay.ui:115
+#: GTG/gtk/data/help_overlay.ui:139
 msgctxt "shortcut window"
 msgid "Delete Task"
 msgstr "Feladat Törlése"
 
-#: GTG/gtk/data/help_overlay.ui:123
+#: GTG/gtk/data/help_overlay.ui:147
 msgctxt "shortcut window"
 msgid "Edit Task"
 msgstr "Feladat Szerkesztése"
 
-#: GTG/gtk/data/help_overlay.ui:134
+#: GTG/gtk/data/help_overlay.ui:158
 msgctxt "shortcut window"
 msgid "Editor"
 msgstr "Szerkesztő"
 
-#: GTG/gtk/data/help_overlay.ui:155
+#: GTG/gtk/data/help_overlay.ui:179
 msgctxt "shortcut window"
 msgid "Close window"
 msgstr "Ablak bezárása"
@@ -358,7 +499,7 @@ msgstr "Ablak bezárása"
 msgid "Start today"
 msgstr "Kezdés ma"
 
-#: GTG/gtk/data/main_window.ui:57 GTG/core/dates.py:449
+#: GTG/gtk/data/main_window.ui:57 GTG/core/dates.py:585
 msgid "Today"
 msgstr "Ma"
 
@@ -366,7 +507,7 @@ msgstr "Ma"
 msgid "Start 2 days from now"
 msgstr "Kezdés 2 nap múlva"
 
-#: GTG/gtk/data/main_window.ui:85 GTG/core/dates.py:385
+#: GTG/gtk/data/main_window.ui:85 GTG/core/dates.py:400 GTG/core/dates.py:533
 msgid "Tuesday"
 msgstr "Kedd"
 
@@ -374,7 +515,7 @@ msgstr "Kedd"
 msgid "Start 3 days from now"
 msgstr "Kezdés 3 nap múlva"
 
-#: GTG/gtk/data/main_window.ui:100 GTG/core/dates.py:386
+#: GTG/gtk/data/main_window.ui:100 GTG/core/dates.py:401 GTG/core/dates.py:534
 msgid "Wednesday"
 msgstr "Szerda"
 
@@ -382,7 +523,7 @@ msgstr "Szerda"
 msgid "Start 4 days from now"
 msgstr "Kezdés 4 nap múlva"
 
-#: GTG/gtk/data/main_window.ui:115 GTG/core/dates.py:387
+#: GTG/gtk/data/main_window.ui:115 GTG/core/dates.py:402 GTG/core/dates.py:535
 msgid "Thursday"
 msgstr "Csütörtök"
 
@@ -390,7 +531,7 @@ msgstr "Csütörtök"
 msgid "Start 5 days from now"
 msgstr "Kezdés 5 nap múlva"
 
-#: GTG/gtk/data/main_window.ui:130 GTG/core/dates.py:388
+#: GTG/gtk/data/main_window.ui:130 GTG/core/dates.py:403 GTG/core/dates.py:536
 msgid "Friday"
 msgstr "Péntek"
 
@@ -398,7 +539,7 @@ msgstr "Péntek"
 msgid "Start 6 days from now"
 msgstr "Kezdés 6 nap múlva"
 
-#: GTG/gtk/data/main_window.ui:145 GTG/core/dates.py:389
+#: GTG/gtk/data/main_window.ui:145 GTG/core/dates.py:404 GTG/core/dates.py:537
 msgid "Saturday"
 msgstr "Szombat"
 
@@ -426,7 +567,7 @@ msgstr "Billentyűparancsok"
 msgid "About GTG"
 msgstr "GTG Névjegye"
 
-#: GTG/gtk/data/main_window.ui:382 GTG/gtk/browser/treeview_factory.py:302
+#: GTG/gtk/data/main_window.ui:382 GTG/gtk/browser/treeview_factory.py:283
 msgid "Tags"
 msgstr "Címkék"
 
@@ -458,32 +599,32 @@ msgid ""
 "Ex.: \"Buy a new printer for @Initech tags:equipment,office start:monday due:"
 "soon\""
 msgstr ""
-"Pl.: \"Új nyomtató vásárlása @Initech cégnek címke:felszerelés,iroda kezdés:hétfő esedékes:"
-"hamarosan\""
+"Pl.: \"Új nyomtató vásárlása @Initech cégnek címke:felszerelés,iroda kezdés:"
+"hétfő esedékes:hamarosan\""
 
 #: GTG/gtk/data/main_window.ui:546
 msgid "Quickly create tasks here"
 msgstr "Itt hozz létre gyorsan feladatot"
 
-#: GTG/gtk/data/main_window.ui:588
+#: GTG/gtk/data/main_window.ui:597
 msgid "Create a new task"
 msgstr "Új feladat létrehozása"
 
-#: GTG/gtk/data/main_window.ui:608
+#: GTG/gtk/data/main_window.ui:634
+msgid "Activate Search Entry"
+msgstr "Keresési Mező Aktiválása"
+
+#: GTG/gtk/data/main_window.ui:658
 msgid "Start Tomorrow"
 msgstr "Kezdés Holnap"
 
-#: GTG/gtk/data/main_window.ui:613
+#: GTG/gtk/data/main_window.ui:663
 msgid ""
 "Out of time? Need additional focus? Easily defer the selected task(s) to "
 "tomorrow!"
 msgstr ""
-"Nincs elég időd? Másra koncentrálnál? Csak halaszd a kiválasztott feladato(ka)t "
-"holnapra!"
-
-#: GTG/gtk/data/main_window.ui:689
-msgid "Activate Search Entry"
-msgstr "Keresési Mező Aktiválása"
+"Nincs elég időd? Másra koncentrálnál? Csak halaszd a kiválasztott "
+"feladato(ka)t holnapra!"
 
 #: GTG/gtk/data/modify_tags.ui:7
 msgid "Modify Tags"
@@ -495,7 +636,7 @@ msgstr "Címkék Módosítása"
 msgid "Apply"
 msgstr "Alkalmazás"
 
-#: GTG/gtk/data/modify_tags.ui:41 GTG/plugins/export/export.ui:306
+#: GTG/gtk/data/modify_tags.ui:41
 #: GTG/plugins/untouched_tasks/untouchedTasks.ui:136
 msgid "Cancel"
 msgstr "Mégse"
@@ -544,52 +685,138 @@ msgstr "Feladat megjelölése elvégzendőre"
 msgid "Permanently remove this task"
 msgstr "Feladat végleges eltávolítása"
 
-#: GTG/gtk/data/task_editor.ui:89 GTG/gtk/data/task_editor.ui:369
+#: GTG/gtk/data/task_editor.ui:106
+msgid "Every:"
+msgstr ""
+
+#: GTG/gtk/data/task_editor.ui:137
+msgid "Repeat"
+msgstr ""
+
+#: GTG/gtk/data/task_editor.ui:150
+msgid "Tick to activate"
+msgstr ""
+
+#: GTG/gtk/data/task_editor.ui:188
+msgid "Daily"
+msgstr ""
+
+#: GTG/gtk/data/task_editor.ui:202
+#, fuzzy
+msgid "Every other day"
+msgstr "Nap kezdő időpontja"
+
+#: GTG/gtk/data/task_editor.ui:216 GTG/gtk/data/task_editor.ui:269
+#: GTG/gtk/data/task_editor.ui:415
+msgid "Weekly"
+msgstr ""
+
+#: GTG/gtk/data/task_editor.ui:230 GTG/gtk/data/task_editor.ui:429
+#: GTG/gtk/data/task_editor.ui:487
+msgid "Monthly"
+msgstr ""
+
+#: GTG/gtk/data/task_editor.ui:244 GTG/gtk/data/task_editor.ui:501
+#: GTG/gtk/data/task_editor.ui:556
+msgid "Yearly"
+msgstr ""
+
+#: GTG/gtk/data/task_editor.ui:256
+msgid "Recurring"
+msgstr ""
+
+#: GTG/gtk/data/task_editor.ui:286
+#, fuzzy
+msgid "On Monday"
+msgstr "Hétfő"
+
+#: GTG/gtk/data/task_editor.ui:301
+#, fuzzy
+msgid "On Tuesday"
+msgstr "Kedd"
+
+#: GTG/gtk/data/task_editor.ui:316
+#, fuzzy
+msgid "On Wednesday"
+msgstr "Szerda"
+
+#: GTG/gtk/data/task_editor.ui:331
+#, fuzzy
+msgid "On Thursday"
+msgstr "Csütörtök"
+
+#: GTG/gtk/data/task_editor.ui:346
+#, fuzzy
+msgid "On Friday"
+msgstr "Péntek"
+
+#: GTG/gtk/data/task_editor.ui:361
+#, fuzzy
+msgid "On Saturday"
+msgstr "Szombat"
+
+#: GTG/gtk/data/task_editor.ui:376
+#, fuzzy
+msgid "On Sunday"
+msgstr "Vasárnap"
+
+#: GTG/gtk/data/task_editor.ui:403 GTG/gtk/data/task_editor.ui:475
+#: GTG/gtk/data/task_editor.ui:544
+msgid "On This Day"
+msgstr ""
+
+#: GTG/gtk/data/task_editor.ui:580 GTG/gtk/data/task_editor.ui:883
 msgid "Task"
 msgstr "Feladat"
 
-#: GTG/gtk/data/task_editor.ui:114 GTG/gtk/editor/editor.py:136
-#: GTG/gtk/editor/editor.py:377
+#. Translators: Button label to open the parent task
+#: GTG/gtk/data/task_editor.ui:605 GTG/gtk/editor/editor.py:152
+#: GTG/gtk/editor/editor.py:482
 msgid "Open Parent"
 msgstr "Főfeladat Megnyitása"
 
-#: GTG/gtk/data/task_editor.ui:118
+#: GTG/gtk/data/task_editor.ui:609
 msgid "Open the parent task (creating a parent if it doesn't have one)"
 msgstr "Főfeladat megnyitása (főfeladat létrehozása, ha még nincs)"
 
-#: GTG/gtk/data/task_editor.ui:136
+#: GTG/gtk/data/task_editor.ui:627
 msgid "Insert a subtask in this task"
 msgstr "Részfeladat beszúrása ehhez a feladathoz"
 
-#: GTG/gtk/data/task_editor.ui:158
+#: GTG/gtk/data/task_editor.ui:649
 msgid "Add tags to this task"
 msgstr "Címke hozzáadása ehhez a feladathoz"
 
-#: GTG/gtk/data/task_editor.ui:194
+#: GTG/gtk/data/task_editor.ui:672
+#, fuzzy
+msgid "Set this task to repeat"
+msgstr "Feladat megjelölése elvégzendőre"
+
+#: GTG/gtk/data/task_editor.ui:708
 msgid "Starts on"
 msgstr "Kezdődik"
 
-#: GTG/gtk/data/task_editor.ui:237
+#: GTG/gtk/data/task_editor.ui:751
 msgid "Due on"
 msgstr "Esedékes"
 
-#: GTG/gtk/data/task_editor.ui:280
+#: GTG/gtk/data/task_editor.ui:794
 msgid "Closed on"
 msgstr "Lezárva"
 
-#: GTG/gtk/data/task_editor.ui:376
+#: GTG/gtk/data/task_editor.ui:890
 msgid "Mark the task as done"
 msgstr "Feladat elvégzettnek jelölése"
 
-#: GTG/gtk/data/task_editor.ui:389
+#: GTG/gtk/data/task_editor.ui:903
 msgid "Mark the task as to be done"
 msgstr "Feladat elvégzendőnek jelölése"
 
-#: GTG/gtk/data/task_editor.ui:402
+#: GTG/gtk/data/task_editor.ui:916
 msgid "Task action menu"
 msgstr "Műveletek feladatokon menü"
 
-#: GTG/gtk/data/task_editor.ui:625
+#: GTG/gtk/data/task_editor.ui:1139
 msgid "Search"
 msgstr "Keresés"
 
@@ -625,28 +852,15 @@ msgstr "Megnyitás"
 msgid "Save"
 msgstr "Mentés"
 
-#: GTG/plugins/export/export.ui:263
-msgid "How do you want to access the export plugin?"
-msgstr "Hogyan szeretnéd elérni az exportáló bővítményt?"
-
-#: GTG/plugins/export/export.ui:278
-msgid "Put an entry in the Plugins menu"
-msgstr "Bejegyzés hozzávétele a Bővítmények menühöz"
-
-#: GTG/plugins/export/export.ui:320 GTG/gtk/browser/backend_infobar.py:113
-#: GTG/gtk/browser/backend_infobar.py:118
-#: GTG/gtk/browser/backend_infobar.py:143
-#: GTG/gtk/browser/backend_infobar.py:196
-msgid "OK"
-msgstr "OK"
-
 #: GTG/plugins/untouched_tasks/untouchedTasks.ui:36
 msgid "Add "
 msgstr "Hozzáadás"
 
 #: GTG/plugins/untouched_tasks/untouchedTasks.ui:61
 msgid " tag to task after it has been left untouched for at least "
-msgstr " címke hozzárendelése a feladathoz, miután nem csináltunk vele semmit legalább "
+msgstr ""
+" címke hozzárendelése a feladathoz, miután nem csináltunk vele semmit "
+"legalább "
 
 #: GTG/plugins/untouched_tasks/untouchedTasks.ui:90
 msgid " days"
@@ -692,19 +906,11 @@ msgstr "<b>Sürgősség színe</b>"
 msgid "Reset"
 msgstr "Visszaállítás"
 
-#: GTG/backends/backend_localfile.py:57
+#: GTG/backends/backend_localfile.py:62
 msgid "Local File"
 msgstr "Helyi Fájl"
 
-#: GTG/backends/backend_localfile.py:62
-msgid ""
-"Your tasks are saved in a text file (XML format).  This is the most basic "
-"and the default way for GTG to save your tasks."
-msgstr ""
-"A feladataidat egy szöveges fájlba mentjük (XML).  Ez a legegyszerűbb "
-"és alapértelmezett módja annak, hogy a GTG elmentse a feladataidat."
-
-#: GTG/backends/backend_localfile.py:223
+#: GTG/backends/backend_localfile.py:306
 msgid ""
 "Oops, something unexpected happened! GTG tried to recover your tasks from "
 "backups. \n"
@@ -712,63 +918,109 @@ msgstr ""
 "Hopp, valami baj történt! A GTG megpróbálta visszaállítani a feladataidat "
 "mentésből. \n"
 
-#: GTG/core/dates.py:44 GTG/core/dates.py:52 GTG/core/search.py:93
+#. Translators: Used for display
+#. Translators: Used in parsing, made lowercased in code
+#. Translators: Used in search parsing, no spaces, lowercased in code
+#: GTG/core/dates.py:45 GTG/core/dates.py:56 GTG/core/search.py:101
 msgid "now"
 msgstr "most"
 
-#: GTG/core/dates.py:45 GTG/core/dates.py:54 GTG/core/search.py:94
+#. Translators: Used for display
+#. Translators: Used in parsing, made lowercased in code
+#. Translators: Used in search parsing, no spaces, lowercased in code
+#: GTG/core/dates.py:47 GTG/core/dates.py:59 GTG/core/search.py:103
 msgid "soon"
 msgstr "hamarosan"
 
-#: GTG/core/dates.py:46 GTG/core/dates.py:58 GTG/core/search.py:95
+#. Translators: Used for display
+#. Translators: Used in parsing, made lowercased in code
+#. Translators: Used in search parsing, no spaces, lowercased in code
+#: GTG/core/dates.py:49 GTG/core/dates.py:65 GTG/core/search.py:105
 msgid "someday"
 msgstr "valamikor"
 
-#: GTG/core/dates.py:56
+#. Translators: Used in parsing, made lowercased in code
+#: GTG/core/dates.py:62
 msgid "later"
 msgstr "később"
 
-#: GTG/core/dates.py:371 GTG/core/search.py:90
+#. Translators: Used in parsing, made lowercased in code
+#. Translators: Used in search parsing, no spaces, lowercased in code
+#: GTG/core/dates.py:382 GTG/core/search.py:95
 msgid "today"
 msgstr "ma"
 
-#: GTG/core/dates.py:373 GTG/core/search.py:91
+#. Translators: Used in parsing, made lowercased in code
+#. Translators: Used in search parsing, no spaces, lowercased in code
+#: GTG/core/dates.py:385 GTG/core/search.py:97
 msgid "tomorrow"
 msgstr "holnap"
 
-#: GTG/core/dates.py:375
+#. Translators: Used in parsing, made lowercased in code
+#: GTG/core/dates.py:388
 msgid "next week"
 msgstr "következő hét"
 
-#: GTG/core/dates.py:377
+#. Translators: Used in parsing, made lowercased in code
+#: GTG/core/dates.py:391
 msgid "next month"
 msgstr "következő hónap"
 
-#: GTG/core/dates.py:379
+#. Translators: Used in parsing, made lowercased in code
+#: GTG/core/dates.py:394
 msgid "next year"
 msgstr "következő év"
 
-#: GTG/core/dates.py:384
+#: GTG/core/dates.py:399 GTG/core/dates.py:532
 msgid "Monday"
 msgstr "Hétfő"
 
-#: GTG/core/dates.py:390
+#: GTG/core/dates.py:405 GTG/core/dates.py:538
 msgid "Sunday"
 msgstr "Vasárnap"
 
-#: GTG/core/dates.py:452
+#. Translators: Used in recurring parsing, made lowercased in code
+#: GTG/core/dates.py:515
+#, fuzzy
+msgid "day"
+msgstr "Ma"
+
+#. Translators: Used in recurring parsing, made lowercased in code
+#: GTG/core/dates.py:518
+msgid "other-day"
+msgstr ""
+
+#. Translators: Used in recurring parsing, made lowercased in code
+#: GTG/core/dates.py:521
+#, fuzzy
+msgid "week"
+msgstr "következő hét"
+
+#. Translators: Used in recurring parsing, made lowercased in code
+#: GTG/core/dates.py:524
+#, fuzzy
+msgid "month"
+msgstr "következő hónap"
+
+#. Translators: Used in recurring parsing, made lowercased in code
+#: GTG/core/dates.py:527
+#, fuzzy
+msgid "year"
+msgstr "következő év"
+
+#: GTG/core/dates.py:588
 #, python-format
 msgid "Yesterday"
 msgid_plural "%(days)d days ago"
 msgstr[0] "Tegnap"
 msgstr[1] "%(days)d napja"
 
-#. Task 0@1: Getting started with GTG
-#: GTG/core/firstrun_tasks.py:34
+#: GTG/core/firstrun_tasks.py:61
 msgid "Getting Started with GTG (read me first)"
 msgstr "Első lépések a GTG-vel (olvass el!)"
 
-#: GTG/core/firstrun_tasks.py:36
+#: GTG/core/firstrun_tasks.py:68
+#, fuzzy
 msgid ""
 "Welcome to Getting Things GNOME (GTG), your new task manager! In GTG, "
 "everything is a task. From building a bridge over the Pacific Ocean to "
@@ -800,7 +1052,7 @@ msgid ""
 "a subtask, simply click on its link! You can always come back using the "
 "&quot;Open Parent&quot; button. Try opening the following subtask for "
 "example:\n"
-"<subtask>1@1</subtask>\n"
+"{! 262d1410-71aa-4e35-abec-90ef1bab44d3 !}\n"
 "\n"
 "Closing a task:\n"
 "\n"
@@ -821,13 +1073,14 @@ msgid ""
 "\n"
 "If you are interested in knowing more about GTG's other features, you will "
 "find more information here:\n"
-"<subtask>2@1</subtask>\n"
-"<subtask>3@1</subtask>\n"
-"<subtask>4@1</subtask>\n"
-"<subtask>5@1</subtask>\n"
-"<subtask>6@1</subtask>\n"
-"<subtask>7@1</subtask>\n"
-"<subtask>8@1</subtask>\n"
+"{! 262d1410-71aa-4e35-abec-90ef1bab44d3 !}\n"
+"{! 2d427a77-3077-4277-904c-073fcfcb4842 !}\n"
+"{! 0653765c-f5d4-4b7f-9903-0065bb258940 !}\n"
+"{! 3efd01b7-343d-4be1-9bac-8ed944517e3f !}\n"
+"{! 9b05a6c5-81e3-4fe5-a70d-3b569f65409c !}\n"
+"{! 21ed54a8-e7ff-408a-b648-8d12cc75e162 !}\n"
+"{! d1c73224-9eec-4889-b3c4-bb0281e5c1d3 !}\n"
+"{! 586dd1a7-0772-4d0a-85db-34edfc8ee30c !}\n"
 "\n"
 "We also recommend you read our user manual, by pressing F1 or using the "
 "&quot;Help&quot; entry in the main window's menu button.\n"
@@ -839,56 +1092,58 @@ msgid ""
 "— The GTG team"
 msgstr ""
 "Üdv a Getting Things GNOME-ban (GTG), az új feladatkezelődben! A GTG-ben "
-"minden egy feladat, legyen az egy híd építése a Csendes-óceán fölé, "
-"egy villanykörte cseréje vagy egy party megszervezése!\n"
+"minden egy feladat, legyen az egy híd építése a Csendes-óceán fölé, egy "
+"villanykörte cseréje vagy egy party megszervezése!\n"
 "\n"
-"Ha új neked a GTG, szakíts időt ennek a doksinak az elolvasására, mert hasznos infókat "
-"tudhatsz meg arról, hogyan használhatod a GTG-t a mindennapjaid szervezésére.\n"
+"Ha új neked a GTG, szakíts időt ennek a doksinak az elolvasására, mert "
+"hasznos infókat tudhatsz meg arról, hogyan használhatod a GTG-t a "
+"mindennapjaid szervezésére.\n"
 "\n"
 "Feladatok létrehozása, szerkesztése:\n"
 "\n"
-"A GTG használata egyszerű: Úgy tudod szervezni a teendőidet, hogy új feladatokat hozol létre. "
-"Ehhez csak nyomd meg az &quot;Új Feladat&quot; (+) gombot, addj hozzá a feladathoz "
-"leírást, állíts be néhány paramétert, ennyi! Ha a feladat kész, "
-"bezárhatod a &quot;Befejezettnek Jelölés&quot; gomb megnyomásával.\n"
+"A GTG használata egyszerű: Úgy tudod szervezni a teendőidet, hogy új "
+"feladatokat hozol létre. Ehhez csak nyomd meg az &quot;Új Feladat&quot; (+) "
+"gombot, addj hozzá a feladathoz leírást, állíts be néhány paramétert, ennyi! "
+"Ha a feladat kész, bezárhatod a &quot;Befejezettnek Jelölés&quot; gomb "
+"megnyomásával.\n"
 "\n"
-"A GTG-ben egy feladat magától elmentődik szerkesztés közben. Nincs szükség "
-"a &quot;Mentés&quot; megnyomására! Próbáld ki: írj be ide valamit, zárd be "
-"az ablakot, nyisd meg újra: a változások még mindig itt vannak!\n"
+"A GTG-ben egy feladat magától elmentődik szerkesztés közben. Nincs szükség a "
+"&quot;Mentés&quot; megnyomására! Próbáld ki: írj be ide valamit, zárd be az "
+"ablakot, nyisd meg újra: a változások még mindig itt vannak!\n"
 "\n"
 "A részfeladatokról:\n"
 "\n"
-"Az életben sok dolgot úgy tudsz igazán megcsinálni, ha ezeket kisebb, egyszerűbb "
-"részfeladatokra bontod. A GTG segít ebben a  &quot;"
-"részfeladatok&quot; definiálásával. A GTG-ben, ezeket a részfeladatokat előfeltételként "
-"kezeljük, melyeket be kell fejezni, mielőtt a fő feladatot lezárhatnánk.\n"
+"Az életben sok dolgot úgy tudsz igazán megcsinálni, ha ezeket kisebb, "
+"egyszerűbb részfeladatokra bontod. A GTG segít ebben a  &quot;"
+"részfeladatok&quot; definiálásával. A GTG-ben, ezeket a részfeladatokat "
+"előfeltételként kezeljük, melyeket be kell fejezni, mielőtt a fő feladatot "
+"lezárhatnánk.\n"
 "\n"
-"Ezért a GTG-ben egy feladatnak számos részfeladata lehet. Ezek linkekként jelennek meg "
-"a feladat leírásában, pont úgy, mint az alábbi. A részfeladat megnyitásához és szerkesztéséhez "
-"csak kattints a linkre! Bármikor visszajöhetsz a "
-"&quot;Főfeladat Megnyitása&quot; gombbal. Próbáld megnyitni a következő részfeladatot, "
-"pl:\n"
+"Ezért a GTG-ben egy feladatnak számos részfeladata lehet. Ezek linkekként "
+"jelennek meg a feladat leírásában, pont úgy, mint az alábbi. A részfeladat "
+"megnyitásához és szerkesztéséhez csak kattints a linkre! Bármikor "
+"visszajöhetsz a &quot;Főfeladat Megnyitása&quot; gombbal. Próbáld megnyitni "
+"a következő részfeladatot, pl:\n"
 "<subtask>1@1</subtask>\n"
 "\n"
 "Feladat lezárása:\n"
 "\n"
-"Ha GTG-ben kész egy feladat, le tudod zárni a "
-"&quot;Befejezettnek Jelölés&quot; vagy az &quot;Elvetés&quot; gombbal. Használd az "
-"előbbit, ha megcsináltad a feladatot, az utóbbit, ha azért akarod lezárni, "
-"mert már érdektelen.\n"
+"Ha GTG-ben kész egy feladat, le tudod zárni a &quot;Befejezettnek "
+"Jelölés&quot; vagy az &quot;Elvetés&quot; gombbal. Használd az előbbit, ha "
+"megcsináltad a feladatot, az utóbbit, ha azért akarod lezárni, mert már "
+"érdektelen.\n"
 "\n"
-"Ha lezársz egy feladatot, észre fogod venni, hogy az összes hozzá tartozó részfeladat "
-"is magától lezáródik. Valójában a GTG szerint ha befejeztél egy feladatot, akkor "
-"már nem kell megcsinálnod a hozzá tartozó részfeladatokat sem (ezek "
-"végülis előfeltételek voltak).\n"
+"Ha lezársz egy feladatot, észre fogod venni, hogy az összes hozzá tartozó "
+"részfeladat is magától lezáródik. Valójában a GTG szerint ha befejeztél egy "
+"feladatot, akkor már nem kell megcsinálnod a hozzá tartozó részfeladatokat "
+"sem (ezek végülis előfeltételek voltak).\n"
 "\n"
-"A lezártnak vagy elvetettnek jelölt feladatokat a "
-"&quot;Lezárt&quot; feladatok nézetében láthatod.\n"
+"A lezártnak vagy elvetettnek jelölt feladatokat a &quot;Lezárt&quot; "
+"feladatok nézetében láthatod.\n"
 "\n"
 "Még többet a GTG-ről:\n"
 "\n"
-"Ha érdekelnek a GTG egyéb funkciói, itt találsz "
-"több infót:\n"
+"Ha érdekelnek a GTG egyéb funkciói, itt találsz több infót:\n"
 "<subtask>2@1</subtask>\n"
 "<subtask>3@1</subtask>\n"
 "<subtask>4@1</subtask>\n"
@@ -897,21 +1152,20 @@ msgstr ""
 "<subtask>7@1</subtask>\n"
 "<subtask>8@1</subtask>\n"
 "\n"
-"Javasoljuk, hogy olvasd el a felhasználói leírást az F1 gomb megnyomásával vagy a "
-"&quot;Súgó&quot; menüpont használatával a főablakban.\n"
+"Javasoljuk, hogy olvasd el a felhasználói leírást az F1 gomb megnyomásával "
+"vagy a &quot;Súgó&quot; menüpont használatával a főablakban.\n"
 "\n"
-"Reméljük, élvezni fogod a GTG használatát és köszi, hogy kipróbálod! A "
-"GTG projektről és az esetleges hozzájárulásról bővebben az oldalunkon olvashatsz: "
-"https://wiki.gnome.org/Apps/GTG/ \n"
+"Reméljük, élvezni fogod a GTG használatát és köszi, hogy kipróbálod! A GTG "
+"projektről és az esetleges hozzájárulásról bővebben az oldalunkon "
+"olvashatsz: https://wiki.gnome.org/Apps/GTG/ \n"
 "\n"
 "— A GTG csapat"
 
-#. Task 1@1: Learn to use subtasks
-#: GTG/core/firstrun_tasks.py:109
+#: GTG/core/firstrun_tasks.py:141
 msgid "Learn How to Use Subtasks"
 msgstr "Hogyan használjuk a részfeladatokat"
 
-#: GTG/core/firstrun_tasks.py:111
+#: GTG/core/firstrun_tasks.py:148
 msgid ""
 "A &quot;Subtask&quot; is something that you need to do first before being "
 "able to accomplish your task. In GTG, the purpose of subtasks is to cut down "
@@ -939,36 +1193,35 @@ msgid ""
 "between) each other in the tasks list."
 msgstr ""
 "Egy &quot;Részfeladat&quot; olyan valami, amit meg kell csinálnod, mielőtt "
-"befejezheted a fő feladatot. A GTG-ben a részfeladatok értelme, hogy egy projektet "
-"vagy feladatot kisebb, végrehajtható részfeladatokra bontsunk, melyeket könyebb "
-"megcsinálni és lekövetni.\n"
+"befejezheted a fő feladatot. A GTG-ben a részfeladatok értelme, hogy egy "
+"projektet vagy feladatot kisebb, végrehajtható részfeladatokra bontsunk, "
+"melyeket könyebb megcsinálni és lekövetni.\n"
 "\n"
-"Egy részfeladat beszúrásához a leírásban (pl. ebben az ablakban), "
-"kezdj el egy sort a &quot;-&quot; jellel, írd le a részfeladat nevét, "
-"majd üss Entert!\n"
+"Egy részfeladat beszúrásához a leírásban (pl. ebben az ablakban), kezdj el "
+"egy sort a &quot;-&quot; jellel, írd le a részfeladat nevét, majd üss "
+"Entert!\n"
 "\n"
-"Alább próbálj beszúrni egy részfeladatot! Írd be pl., hogy &quot;- Ez az első részfeladatom!"
-"&quot;, és nyomj Entert:\n"
+"Alább próbálj beszúrni egy részfeladatot! Írd be pl., hogy &quot;- Ez az "
+"első részfeladatom!&quot;, és nyomj Entert:\n"
 "\n"
 "\n"
 "\n"
-"Használhatod a részfeladat beszúrására való gombot is alul, a feladatszerkesztő "
-"eszköztárban.\n"
+"Használhatod a részfeladat beszúrására való gombot is alul, a "
+"feladatszerkesztő eszköztárban.\n"
 "\n"
-"A részfeladatokra van néhány szabály: egyrészt, a részfeladat esedékessége sosem lehet a "
-"főfeladat esedékessége után, másrészt, ha egy főfeladatot befejezettnek jelölsz, "
-"a részfeladatai szintén így lesznek megjelölve.\n"
+"A részfeladatokra van néhány szabály: egyrészt, a részfeladat esedékessége "
+"sosem lehet a főfeladat esedékessége után, másrészt, ha egy főfeladatot "
+"befejezettnek jelölsz, a részfeladatai szintén így lesznek megjelölve.\n"
 "\n"
-"Ha nem tetszik az aktuális feladat/részfeladat felbontás, bármikor megváltoztathatod a "
-"viszonyokat feladatok egymásra (vagy "
-"egymás közötti) húzásával a listában."
+"Ha nem tetszik az aktuális feladat/részfeladat felbontás, bármikor "
+"megváltoztathatod a viszonyokat feladatok egymásra (vagy egymás közötti) "
+"húzásával a listában."
 
-#. Task 2@1: Learn to use tags
-#: GTG/core/firstrun_tasks.py:137
+#: GTG/core/firstrun_tasks.py:173
 msgid "Learn How to Use Tags and Enable the Sidebar"
 msgstr "Hogyan használjuk a Címkéket és az Oldalsávot"
 
-#: GTG/core/firstrun_tasks.py:139
+#: GTG/core/firstrun_tasks.py:180
 msgid ""
 "In GTG, you use tags to sort your tasks. A tag is a simple word that begins "
 "with &quot;@&quot;.\n"
@@ -997,39 +1250,38 @@ msgid ""
 "@to_pay on @money, every task tagged with @to_pay will also appear when you "
 "select @money."
 msgstr ""
-"A GTG-ben címkéket használunk a feladatok csoportosítására. Egy címke egy sima szó, "
-"mely a &quot;@&quot; jellel kezdődik.\n"
+"A GTG-ben címkéket használunk a feladatok csoportosítására. Egy címke egy "
+"sima szó, mely a &quot;@&quot; jellel kezdődik.\n"
 "\n"
 "Próbálj meg beírni egy szót a &quot;@&quot; jellel ide:\n"
 "\n"
-"A szó kiemelése jelzi, hogy a rendszer a szót címkének ismerte fel, miközben a "
-"címke azonnal a feladathoz is rendelődik.\n"
+"A szó kiemelése jelzi, hogy a rendszer a szót címkének ismerte fel, miközben "
+"a címke azonnal a feladathoz is rendelődik.\n"
 "\n"
-"A fő ablakban a menüből vagy az F9 megnyomásával engedélyezheted az oldalsávot, "
-"mely mutatja az összes használt címkét.  Ezzel könnyen megnézheted az "
-"összes, egy adott címkéhez társított feladatot.\n"
+"A fő ablakban a menüből vagy az F9 megnyomásával engedélyezheted az "
+"oldalsávot, mely mutatja az összes használt címkét.  Ezzel könnyen "
+"megnézheted az összes, egy adott címkéhez társított feladatot.\n"
 "\n"
-"Ha az oldalsávon jobb-klikkelsz egy címkére, szerkesztheted is. Tudsz rendelni "
-"színt és ikont is a címkéhez. Ezzel az adott címkéhez rendelt feladatok "
-"könnyen azonosíthatóak lesznek a feladatlistában is.\n"
+"Ha az oldalsávon jobb-klikkelsz egy címkére, szerkesztheted is. Tudsz "
+"rendelni színt és ikont is a címkéhez. Ezzel az adott címkéhez rendelt "
+"feladatok könnyen azonosíthatóak lesznek a feladatlistában is.\n"
 "\n"
-"Új címkék mindig kizárólag az aktuális feladathoz rendelődnek, sosem a feladat "
-"részfeladataihoz. Ugyanakkor ha készítesz egy részfeladatot, az örökli a "
-"fő feladatának címkéit.\n"
+"Új címkék mindig kizárólag az aktuális feladathoz rendelődnek, sosem a "
+"feladat részfeladataihoz. Ugyanakkor ha készítesz egy részfeladatot, az "
+"örökli a fő feladatának címkéit.\n"
 "\n"
-"Ha még bonyolultabb feladatszervezésre van szükséged, megadhatsz hierachiát a "
-"címkék között is a címkéket egymásre húzogatva. Ez akkor hasznos, ha "
-"újra akarsz csoportosítani több címkét és szeretnéd látni az összes kapcsolódó "
-"feladatot. Pl., ha van két címkéd @pénz és @fizetni, akkor a "
-"@fizetni címkét a @pénz címkére húzva minden @fizetni -vel címkézett feladat "
-"akkor is meg fog jelenni, ha @pénz címkét választunk."
+"Ha még bonyolultabb feladatszervezésre van szükséged, megadhatsz hierachiát "
+"a címkék között is a címkéket egymásre húzogatva. Ez akkor hasznos, ha újra "
+"akarsz csoportosítani több címkét és szeretnéd látni az összes kapcsolódó "
+"feladatot. Pl., ha van két címkéd @pénz és @fizetni, akkor a @fizetni címkét "
+"a @pénz címkére húzva minden @fizetni -vel címkézett feladat akkor is meg "
+"fog jelenni, ha @pénz címkét választunk."
 
-#. Task 3@1: Using the Actionable tab
-#: GTG/core/firstrun_tasks.py:168
+#: GTG/core/firstrun_tasks.py:208
 msgid "Learn How to Use the Actionable View Mode"
 msgstr "A Végrehajtható Nézet használata"
 
-#: GTG/core/firstrun_tasks.py:170
+#: GTG/core/firstrun_tasks.py:215
 msgid ""
 "If you press the &quot;Actionable&quot; tab, only actionable tasks will be "
 "displayed in your list.\n"
@@ -1065,40 +1317,40 @@ msgstr ""
 "Ha a &quot;Végrehajtható&quot; fület választod, csak végrehajtható feladatok "
 "fognak megjelenni a listában.\n"
 "\n"
-"Mi egy végrehajtható feladat? Ez olyan feladat, amit most, azonnal meg lehet csinálni.\n"
+"Mi egy végrehajtható feladat? Ez olyan feladat, amit most, azonnal meg lehet "
+"csinálni.\n"
 "\n"
-"Egy olyan feladat, mely már &quot;elkezdhető&quot;, pl. a kezdő időpont "
-"már elmúlt.\n"
+"Egy olyan feladat, mely már &quot;elkezdhető&quot;, pl. a kezdő időpont már "
+"elmúlt.\n"
 "\n"
 "Egy olyan feladat, melynek nincs egy nyitott részfeladata sem, a feladatot "
 "közvetlenül meg tudod csinálni, semmi mástól nem függ.\n"
 "\n"
-"Ez egy olyan feladat, melynek az esedékessége nem &quot;Valamikor&quot;, mivel "
-"ez a fajta időpont olyan dolgokra használható, melyek még gondolkodást igényelnek, "
-"mielőtt végrehajthatóvá válnának.\n"
+"Ez egy olyan feladat, melynek az esedékessége nem &quot;Valamikor&quot;, "
+"mivel ez a fajta időpont olyan dolgokra használható, melyek még gondolkodást "
+"igényelnek, mielőtt végrehajthatóvá válnának.\n"
 "\n"
-"Mivel a Végrehajtható nézet csak jelenleg is elvégezhető feladatokat mutat, ez a "
-"nézet nagyon hasznos arra, hogy koncentrálhass az éppen elvégzendő feladataidra, "
-"hogy minél gyorsabban haladj a dolgaiddal!\n"
+"Mivel a Végrehajtható nézet csak jelenleg is elvégezhető feladatokat mutat, "
+"ez a nézet nagyon hasznos arra, hogy koncentrálhass az éppen elvégzendő "
+"feladataidra, hogy minél gyorsabban haladj a dolgaiddal!\n"
 "\n"
-"Ha címkéket használsz, az oldalsávon a címkére való jobb-kattintással kiválaszthatod, "
-"hogy a címkéhez tartozó feladatokat elrejtsük a Végrehajtható nézetből. Ez akkor "
-"hasznos, amikor pl. van egy &quot;@várakozik&quot; címkéd, melyet külső tényezők "
-"által akadályozott feladatokra használsz (pl. telefonos visszahívásra "
-"vársz).\n"
+"Ha címkéket használsz, az oldalsávon a címkére való jobb-kattintással "
+"kiválaszthatod, hogy a címkéhez tartozó feladatokat elrejtsük a "
+"Végrehajtható nézetből. Ez akkor hasznos, amikor pl. van egy &quot;"
+"@várakozik&quot; címkéd, melyet külső tényezők által akadályozott "
+"feladatokra használsz (pl. telefonos visszahívásra vársz).\n"
 "\n"
-"Végül egy fontos megjegyzés: Mivel a Végrehajtható nézet azonnal frissül, "
-"ha átszerkesztesz egy feladatot a Végrehajtható nézetben, az eltűnhet "
-"onnan a változtatásodnak köszönhetően (pl. egy címkét adsz hozzá, mely "
-"el van rejtve a Végrehajtható nézetből, stb.). Ennek elkerülésére lehetséges, "
-"hogy egy feladat szerkesztése jobb, ha a &quot;Nyitott&quot; nézetben történik."
+"Végül egy fontos megjegyzés: Mivel a Végrehajtható nézet azonnal frissül, ha "
+"átszerkesztesz egy feladatot a Végrehajtható nézetben, az eltűnhet onnan a "
+"változtatásodnak köszönhetően (pl. egy címkét adsz hozzá, mely el van rejtve "
+"a Végrehajtható nézetből, stb.). Ennek elkerülésére lehetséges, hogy egy "
+"feladat szerkesztése jobb, ha a &quot;Nyitott&quot; nézetben történik."
 
-#. Task 5@1: Plugins
-#: GTG/core/firstrun_tasks.py:206
+#: GTG/core/firstrun_tasks.py:250
 msgid "Learn About Plugins"
 msgstr "A Bővítményekről"
 
-#: GTG/core/firstrun_tasks.py:208
+#: GTG/core/firstrun_tasks.py:257
 msgid ""
 "GTG has the ability to add plugins to extend its core functionality.\n"
 "\n"
@@ -1110,16 +1362,15 @@ msgstr ""
 "A GTG-hez hozzáadhatóak bővítmények, hogy szélesítsük a funkciók tárházát.\n"
 "\n"
 "A Bővítménykezelőt a fő ablak menüjének &quot;Bővítmények&quot; pontjában "
-"találod. Szeretnénk bátorítani arra, hogy írj saját bővítményt, "
-"mivel ezzel hozzájárulhatsz a GTG projekthez. Mi meg fogjuk fontolni, hogy "
-"a bővítményt betegyük a következő kiadásba, mások számára nyilvánossá téve azt."
+"találod. Szeretnénk bátorítani arra, hogy írj saját bővítményt, mivel ezzel "
+"hozzájárulhatsz a GTG projekthez. Mi meg fogjuk fontolni, hogy a bővítményt "
+"betegyük a következő kiadásba, mások számára nyilvánossá téve azt."
 
-#. Task 5@1: Reporting bugs
-#: GTG/core/firstrun_tasks.py:219
+#: GTG/core/firstrun_tasks.py:266
 msgid "Reporting Bugs"
 msgstr "Hibák Bejelentése"
 
-#: GTG/core/firstrun_tasks.py:221
+#: GTG/core/firstrun_tasks.py:273
 msgid ""
 "It is a well-known fact that GTG has no bugs! 🐛\n"
 "But sometimes, in the dark, unexpected things happen...\n"
@@ -1135,35 +1386,34 @@ msgstr ""
 "De néha, a sötétben váratlan dolgok történnek...\n"
 "\n"
 "Ha összefutsz összeomlásokkal/traceback-ekkel vagy váratlan viselkedéssel, "
-"küldj egy részletes hibajelentést a hibakövetőnkbe a https://github."
-"com/getting-things-gnome/gtg/issues/new címen!\n"
+"küldj egy részletes hibajelentést a hibakövetőnkbe a https://github.com/"
+"getting-things-gnome/gtg/issues/new címen!\n"
 "\n"
-"A segítséged és közbenjárásod az, amitől jobb lesz ez a szoftver. Visszajelzések, "
-"hibajelentések és ötletek mind jöhetnek... és különösen javítások!"
+"A segítséged és közbenjárásod az, amitől jobb lesz ez a szoftver. "
+"Visszajelzések, hibajelentések és ötletek mind jöhetnek... és különösen "
+"javítások!"
 
-#. Task 6@1: Learn how to use the QuickAdd Entry
-#: GTG/core/firstrun_tasks.py:234
+#: GTG/core/firstrun_tasks.py:285
 msgid "Learn How to Use the Quick Add Entry"
 msgstr "A Gyors Hozzáadás mező használata"
 
-#: GTG/core/firstrun_tasks.py:236
+#: GTG/core/firstrun_tasks.py:292
 msgid ""
 "The Quick Add entry is the fastest way to create a new task without "
 "disrupting your focus from the main window. It has a special syntax with "
 "additional keywords you can use; refer to the user manual to learn more "
 "about its features and syntax."
 msgstr ""
-"A Gyors Hozzáadás mező használata a leggyorsabb módja egy feladat létrehozásának úgy, "
-"hogy ne vonjuk el a fókuszt a fő ablkaról. Különleges szintaxisa van ennek a "
-"funkciónak speciális kifejezésekkel; nézd meg a felhasználói kézikönyvet a "
-"funkciók és szintaxis megismeréséhez!"
+"A Gyors Hozzáadás mező használata a leggyorsabb módja egy feladat "
+"létrehozásának úgy, hogy ne vonjuk el a fókuszt a fő ablkaról. Különleges "
+"szintaxisa van ennek a funkciónak speciális kifejezésekkel; nézd meg a "
+"felhasználói kézikönyvet a funkciók és szintaxis megismeréséhez!"
 
-#. Task 7@1: Learn How To Use Synchonization Services
-#: GTG/core/firstrun_tasks.py:244
+#: GTG/core/firstrun_tasks.py:299
 msgid "Learn About Synchronization Services"
 msgstr "Szinkronizációs Szolgáltatások"
 
-#: GTG/core/firstrun_tasks.py:246
+#: GTG/core/firstrun_tasks.py:306
 msgid ""
 "❗ Take note that as of GTG 0.4, synchronization backends/services have been "
 "disabled until someone (you?) steps forward to fix and maintain them, as "
@@ -1183,30 +1433,30 @@ msgid ""
 "to select among several online or local services from/to where you can "
 "import or export your tasks."
 msgstr ""
-"❗ Fontos megjegyezni, hogy a GTG 0.4-es verziójában a szinkronizációs szolgáltatásokat "
-"letiltottuk, amíg valaki (te?) megjavítja és karban is tartja őket, mivel "
-"ezeket nem frissítették az új kódbázissal való együttműködésre, "
-"illetve a szolgáltatások legújabb API-jaival való együttműködésre.\n"
+"❗ Fontos megjegyezni, hogy a GTG 0.4-es verziójában a szinkronizációs "
+"szolgáltatásokat letiltottuk, amíg valaki (te?) megjavítja és karban is "
+"tartja őket, mivel ezeket nem frissítették az új kódbázissal való "
+"együttműködésre, illetve a szolgáltatások legújabb API-jaival való "
+"együttműködésre.\n"
 "\n"
-"A szinkronizációs szolgáltatások használatával a GTG szinkronizál (import/export) "
-"feladatokat, jegyzeteket, hibákat más weboldalakról vagy alkalmazásokból, mint pl. "
-"Remember the Milk, Tomboy, LaunchPad, stb.\n"
+"A szinkronizációs szolgáltatások használatával a GTG szinkronizál (import/"
+"export) feladatokat, jegyzeteket, hibákat más weboldalakról vagy "
+"alkalmazásokból, mint pl. Remember the Milk, Tomboy, LaunchPad, stb.\n"
 "\n"
-"Ez akkor hasznos, ha szeretnéd a feladataidat több helyről is elérni, "
-"pl. más gépeken futó GTG-kből, illetve ha szeretnéd őket egy online "
+"Ez akkor hasznos, ha szeretnéd a feladataidat több helyről is elérni, pl. "
+"más gépeken futó GTG-kből, illetve ha szeretnéd őket egy online "
 "szolgáltatással is szerkeszteni.\n"
 "\n"
 "A szinkronizációs szolgáltatások használatához kattints a főablak menüjére, "
-"majd válaszd a &quot;Szinkronizáció&quot; pontot. Tudsz majd választani számos "
-"online vagy helyi szolgáltatás közül feladatok importálásához vagy "
+"majd válaszd a &quot;Szinkronizáció&quot; pontot. Tudsz majd választani "
+"számos online vagy helyi szolgáltatás közül feladatok importálásához vagy "
 "exportálásához."
 
-#. Task 8@1: Learn How To Search For Tasks
-#: GTG/core/firstrun_tasks.py:267
+#: GTG/core/firstrun_tasks.py:326
 msgid "Learn How to Search for Tasks"
 msgstr "Hogyan Keressünk Feladatok után"
 
-#: GTG/core/firstrun_tasks.py:269
+#: GTG/core/firstrun_tasks.py:333
 msgid ""
 "To help you to find specific tasks more easily, GTG allows you to search for "
 "tasks based on their content.\n"
@@ -1227,36 +1477,29 @@ msgid ""
 "user manual, found through the &quot;Help&quot; menu item in the main "
 "window's menu button."
 msgstr ""
-"A feladatok könnyű keresése végett a GTG lehetővé teszi, hogy feladatokat "
-"a tartalmuk alapján keressél.\n"
+"A feladatok könnyű keresése végett a GTG lehetővé teszi, hogy feladatokat a "
+"tartalmuk alapján keressél.\n"
 "\n"
-"A feladatok keresése egyszerű: a fő ablakban Ctrl+F-et nyomsz, majd beírod "
-"a keresett szavakat a mezőbe.\n"
+"A feladatok keresése egyszerű: a fő ablakban Ctrl+F-et nyomsz, majd beírod a "
+"keresett szavakat a mezőbe.\n"
 "\n"
 "A GTG el tudja menteni a kereséseidet az oldalsávra, a &quot;Mentett "
 "Keresések&quot; részbe. Így bármikor vissza tudsz menni előző keresésekre, "
 "ha szükséges. A keresési eredmények automatikusan frissülnek, így mindig "
 "azokat a feladatokat kapod, melyek éppen illeszkednek a kérésre.\n"
 "\n"
-"A GTG-nek nagyon komoly kereső funkciója van, mely sokféle paramétert elfogad, "
-"így nagyon célzottan is kereshetünk feladatokat. Pl. az "
-"&quot;@intézendő !ma&quot; kereséssel olyan feladatokat találhatunk, melyeken "
-"rajta van az @intézendő címke és ma kell megcsinálnunk. A különböző használható "
-"keresési paraméterek megismeréséhez nézd át a Keresési Szintaxis doksit a GTG "
-"felhasználói kézikönyvében, melyet a &quot;Súgó&quot; menüpontban találsz "
-"a főablakon."
-
-#: GTG/core/info.py:33
-msgid ""
-"A personal productivity tool for GNOME,\n"
-"inspired by the GTD methodology."
-msgstr ""
-"Személyi produktivitás eszköz GNOME környezethez,\n"
-"a GTD módszer alapján."
+"A GTG-nek nagyon komoly kereső funkciója van, mely sokféle paramétert "
+"elfogad, így nagyon célzottan is kereshetünk feladatokat. Pl. az &quot;"
+"@intézendő !ma&quot; kereséssel olyan feladatokat találhatunk, melyeken "
+"rajta van az @intézendő címke és ma kell megcsinálnunk. A különböző "
+"használható keresési paraméterek megismeréséhez nézd át a Keresési Szintaxis "
+"doksit a GTG felhasználói kézikönyvében, melyet a &quot;Súgó&quot; "
+"menüpontban találsz a főablakon."
 
 #: GTG/core/plugins/__init__.py:27
 msgid "Everything necessary to run this plugin is available."
-msgstr "Minden, ami ennek a bővítménynek a futtatásához kell rendelkezésre áll."
+msgstr ""
+"Minden, ami ennek a bővítménynek a futtatásához kell rendelkezésre áll."
 
 #: GTG/core/plugins/__init__.py:28
 msgid "The plugin can not be loaded"
@@ -1294,53 +1537,39 @@ msgstr "Ismeretlen hiba a bővítmény betöltése közben."
 msgid "Very helpful message, isn't it? Please report a bug."
 msgstr "Nagyon hasznos üzenet, ugye? Kérlek, jelentsd a hibát."
 
-#: GTG/core/search.py:86
+#. Translators: Used in search parsing, no spaces, lowercased in code
+#: GTG/core/search.py:87
 msgid "not"
 msgstr "nem"
 
-#: GTG/core/search.py:87
+#. Translators: Used in search parsing, no spaces, lowercased in code
+#: GTG/core/search.py:89
 msgid "or"
 msgstr "vagy"
 
-#: GTG/core/search.py:88
+#. Translators: Used in search parsing, no spaces, lowercased in code
+#: GTG/core/search.py:91
 msgid "after"
 msgstr "után"
 
-#: GTG/core/search.py:89
+#. Translators: Used in search parsing, no spaces, lowercased in code
+#: GTG/core/search.py:93
 msgid "before"
 msgstr "előtt"
 
-#: GTG/core/search.py:92
+#. Translators: Used in search parsing, no spaces, lowercased in code
+#: GTG/core/search.py:99
 msgid "nodate"
 msgstr "nincsdátum"
 
-#: GTG/core/search.py:96
+#. Translators: Used in search parsing, no spaces, lowercased in code
+#: GTG/core/search.py:107
 msgid "notag"
 msgstr "nincscímke"
 
-#: GTG/core/task.py:54
+#: GTG/core/task.py:57
 msgid "My new task"
 msgstr "Új feladat"
-
-#: GTG/core/task.py:177
-msgid "tags"
-msgstr "címkék"
-
-#: GTG/core/task.py:177
-msgid "tag"
-msgstr "címke"
-
-#: GTG/core/task.py:183
-msgid "defer"
-msgstr "elhalasztás"
-
-#: GTG/core/task.py:184
-msgid "start"
-msgstr "kezdés"
-
-#: GTG/core/task.py:190
-msgid "due"
-msgstr "esedékes"
 
 #: GTG/core/treefactory.py:76 GTG/gtk/backends/parameters_ui/__init__.py:69
 msgid "All tasks"
@@ -1385,12 +1614,12 @@ msgid "Syncing is <span color=\"red\">disabled</span>."
 msgstr "Szinkronizálás <span color=\"red\">letiltva</span>."
 
 #. Load and setup other widgets
-#: GTG/gtk/backends/__init__.py:68
-#, python-brace-format
-msgid "Synchronization Services - {info.NAME}"
+#: GTG/gtk/backends/__init__.py:70
+#, fuzzy, python-brace-format
+msgid "Synchronization Services - {name}"
 msgstr "Szinkronizációs Szolgáltatások - {info.NAME}"
 
-#: GTG/gtk/backends/__init__.py:269
+#: GTG/gtk/backends/__init__.py:272
 #, python-format
 msgid "Do you really want to remove the '%s' synchronization service?"
 msgstr "Tényleg el akarod távolítani a '%s' szinkronizációs szolgáltatást?"
@@ -1486,7 +1715,8 @@ msgstr ""
 msgid ""
 "Cannot connect to DBus, I've disabled the <b>%s</b> synchronization service."
 msgstr ""
-"Nincs kapcsolat a DBus-hoz, letiltottuk a <b>%s</b> szinkronizációs szolgáltatást."
+"Nincs kapcsolat a DBus-hoz, letiltottuk a <b>%s</b> szinkronizációs "
+"szolgáltatást."
 
 #: GTG/gtk/browser/backend_infobar.py:104
 msgid "Configure"
@@ -1495,6 +1725,13 @@ msgstr "Beállítás"
 #: GTG/gtk/browser/backend_infobar.py:106
 msgid "Ignore"
 msgstr "Elvetés"
+
+#: GTG/gtk/browser/backend_infobar.py:113
+#: GTG/gtk/browser/backend_infobar.py:118
+#: GTG/gtk/browser/backend_infobar.py:143
+#: GTG/gtk/browser/backend_infobar.py:196
+msgid "OK"
+msgstr "OK"
 
 #: GTG/gtk/browser/backend_infobar.py:139
 msgid "Confirm"
@@ -1520,8 +1757,10 @@ msgstr[1] "Címkék végleges eltávolítása"
 msgid "Deleting a tag cannot be undone, and will delete the following tag: "
 msgid_plural ""
 "Deleting a tag cannot be undone, and will delete the following tag: "
-msgstr[0] "Egy címke törlését nem lehet visszacsinálni, a következőt töröljük: "
-msgstr[1] "Egy címke törlését nem lehet visszacsinálni, a következőket töröljük: "
+msgstr[0] ""
+"Egy címke törlését nem lehet visszacsinálni, a következőt töröljük: "
+msgstr[1] ""
+"Egy címke törlését nem lehet visszacsinálni, a következőket töröljük: "
 
 #: GTG/gtk/browser/delete_tag.py:74
 #, python-format
@@ -1549,7 +1788,8 @@ msgid "Deleting a task cannot be undone, and will delete the following task: "
 msgid_plural ""
 "Deleting a task cannot be undone, and will delete the following tasks: "
 msgstr[0] "Egy feladat törlése nem csinálható vissza, a következőt töröljük: "
-msgstr[1] "Egy feladat törlése nem csinálható vissza, a következőket töröljük: "
+msgstr[1] ""
+"Egy feladat törlése nem csinálható vissza, a következőket töröljük: "
 
 #: GTG/gtk/browser/delete_task.py:109
 #, python-brace-format
@@ -1562,26 +1802,26 @@ msgstr ""
 
 #. These lines should be in info.py, but due to their dynamic nature
 #. there'd be no way to show them translated in Gtk's About dialog:
-#: GTG/gtk/browser/main_window.py:304
+#: GTG/gtk/browser/main_window.py:317
 #, python-format
 msgid "Copyright © 2008-%d the GTG contributors."
 msgstr "Copyright © 2008-%d a GTG közreműködői."
 
 #. GTK prefixes the first line with "Created by ",
 #. but we can't split the string because it would cause trouble for some languages.
-#: GTG/gtk/browser/main_window.py:309
+#: GTG/gtk/browser/main_window.py:322
 msgid "GTG was made by many contributors around the world."
 msgstr "A GTG-t számos közreműködő készítette a világ minden országából."
 
-#: GTG/gtk/browser/main_window.py:310
+#: GTG/gtk/browser/main_window.py:323
 msgid "The GTG project is maintained/administered by:"
 msgstr "A GTG projekt karbantartója és adminja: "
 
-#: GTG/gtk/browser/main_window.py:312
+#: GTG/gtk/browser/main_window.py:325
 msgid "This release was brought to you by the efforts of these people:"
 msgstr "Ez a kiadás a következő emberek segítségével készült:"
 
-#: GTG/gtk/browser/main_window.py:314
+#: GTG/gtk/browser/main_window.py:327
 #, python-brace-format
 msgid ""
 "Many others contributed to GTG over the years.\n"
@@ -1590,22 +1830,22 @@ msgstr ""
 "Sokan mások is segítettek az évek során a GTG készítésében.\n"
 "Őket itt {OH_stats} és itt {GH_stats} találod."
 
-#: GTG/gtk/browser/main_window.py:322
+#: GTG/gtk/browser/main_window.py:336
 msgid "GTG website"
 msgstr "A GTG honlapja"
 
 #. Translators for a particular language should put their names here.
 #. Please keep the width at 80 chars max, as GTK3's About dialog won't wrap text.
 #. GtkAboutDialog will detect if “translator-credits” is untranslated and auto-hide the tab.
-#: GTG/gtk/browser/main_window.py:335
+#: GTG/gtk/browser/main_window.py:349
 msgid "translator-credits"
 msgstr "Zoltán Gera"
 
-#: GTG/gtk/browser/main_window.py:637
+#: GTG/gtk/browser/main_window.py:652
 msgid "Hide Sidebar"
 msgstr "Oldalsáv Elrejtése"
 
-#: GTG/gtk/browser/main_window.py:639
+#: GTG/gtk/browser/main_window.py:654
 msgid "Show Sidebar"
 msgstr "Oldalsáv Mutatása"
 
@@ -1614,15 +1854,15 @@ msgstr "Oldalsáv Mutatása"
 msgid "NewTag"
 msgstr "ÚjCímke"
 
-#: GTG/gtk/browser/simple_color_selector.py:237
+#: GTG/gtk/browser/simple_color_selector.py:238
 msgid "Add Custom Color..."
 msgstr "Egyedi Szín Hozzáadása..."
 
-#: GTG/gtk/browser/simple_color_selector.py:242
+#: GTG/gtk/browser/simple_color_selector.py:243
 msgid "Clear Selected Color"
 msgstr "Kiválasztott Szín Törlése"
 
-#: GTG/gtk/browser/simple_color_selector.py:283
+#: GTG/gtk/browser/simple_color_selector.py:284
 msgid "Choose a color"
 msgstr "Válassz egy színt"
 
@@ -1630,28 +1870,30 @@ msgstr "Válassz egy színt"
 msgid "Generate Color"
 msgstr "Szín Generálása"
 
-#: GTG/gtk/browser/tag_editor.py:80
-msgid "Remove selected icon"
-msgstr "Választott ikon eltávolítása"
-
-#: GTG/gtk/browser/tag_editor.py:199
+#: GTG/gtk/browser/tag_editor.py:50
+#, python-format
 msgid "Editing Tag \"%s\""
 msgstr "\"%s\" Címke Szerkesztése"
 
-#: GTG/gtk/browser/tag_editor.py:236
+#: GTG/gtk/browser/tag_editor.py:87
+#, fuzzy
+msgid "Remove icon"
+msgstr "Választott ikon eltávolítása"
+
+#: GTG/gtk/browser/tag_editor.py:98
 msgid "Name : "
 msgstr "Név : "
 
-#: GTG/gtk/browser/tag_editor.py:243
+#: GTG/gtk/browser/tag_editor.py:105
 msgid "Show Tag in \"Actionable\" view:"
 msgstr "Címke mutatása a \"Végrehajtható\" nézetben:"
 
-#: GTG/gtk/browser/tag_editor.py:256
+#: GTG/gtk/browser/tag_editor.py:119
 msgid "Select Tag Color:"
 msgstr "Címke Színének Kiválasztása:"
 
 #. Default icon
-#: GTG/gtk/browser/tag_editor.py:299
+#: GTG/gtk/browser/tag_editor.py:190
 msgid ""
 "Click to\n"
 "Set Icon"
@@ -1660,89 +1902,126 @@ msgstr ""
 "Beállításához"
 
 #. Build the title/label/tags columns
-#: GTG/gtk/browser/treeview_factory.py:340
+#. Translators: Column name, containing the task titles
+#: GTG/gtk/browser/treeview_factory.py:322
 msgid "Tasks"
 msgstr "Feladatok"
 
-#: GTG/gtk/browser/treeview_factory.py:345
+#. Translators: Column name, containing the start date
+#: GTG/gtk/browser/treeview_factory.py:328
 msgid "Start Date"
 msgstr "Kezdés dátuma"
 
-#: GTG/gtk/browser/treeview_factory.py:356
+#. Translators: Column name, containing the due date
+#: GTG/gtk/browser/treeview_factory.py:340
 msgid "Due"
 msgstr "Esedékes"
 
 #. Build the title/label/tags columns
-#: GTG/gtk/browser/treeview_factory.py:371
+#. Translators: Column name, containing the task titles
+#: GTG/gtk/browser/treeview_factory.py:356
 msgid "Closed Tasks"
 msgstr "Lezárt Feladatok"
 
-#: GTG/gtk/browser/treeview_factory.py:376
+#. Translators: Column name, containing the closed date
+#: GTG/gtk/browser/treeview_factory.py:362
 msgid "Closed Date"
 msgstr "Lezárás Dátuma"
 
-#: GTG/gtk/editor/editor.py:138 GTG/gtk/editor/editor.py:379
+#. Translators: Button label to add an new parent task
+#: GTG/gtk/editor/editor.py:154 GTG/gtk/editor/editor.py:485
 msgid "Add Parent"
 msgstr "Főfeladat Hozzáadása"
 
-#: GTG/gtk/editor/editor.py:442
+#: GTG/gtk/editor/editor.py:548
 #, python-format
 msgid "Completed %(days)d day late"
 msgid_plural "Completed %(days)d days late"
 msgstr[0] "Befejezve %(days)d nap késéssel"
 msgstr[1] "Befejezve %(days)d nap késéssel"
 
-#: GTG/gtk/editor/editor.py:447
+#: GTG/gtk/editor/editor.py:553
 #, python-format
 msgid "Completed %(days)d day early"
 msgid_plural "Completed %(days)d days early"
 msgstr[0] "Befejezve %(days)d nappal előbb"
 msgstr[1] "Befejezve %(days)d nappal előbb"
 
-#: GTG/gtk/editor/editor.py:456
+#: GTG/gtk/editor/editor.py:562
 #, python-format
 msgid "Due tomorrow!"
 msgid_plural "%(days)d days left"
 msgstr[0] "Holnap esedékes!"
 msgstr[1] "%(days)d nap maradt"
 
-#: GTG/gtk/editor/editor.py:459
+#: GTG/gtk/editor/editor.py:565
 msgid "Due today!"
 msgstr "Ma esedékes!"
 
-#: GTG/gtk/editor/editor.py:462
+#: GTG/gtk/editor/editor.py:568
 #, python-format
 msgid "Due yesterday!"
 msgid_plural "Was %(days)d days ago"
 msgstr[0] "Tegnap volt esedékes!"
 msgstr[1] "%(days)d nappal ezelőtt"
 
-#: GTG/gtk/editor/taskview.py:1436
+#. Recurring monthly from selected date
+#. Translators: Recurring monthly
+#. Recurring monthly from today
+#: GTG/gtk/editor/recurring_menu.py:97 GTG/gtk/editor/recurring_menu.py:109
+#, python-brace-format
+msgid "Every <b>{month_day} of the month</b>"
+msgstr ""
+
+#. Translators: Recurring yearly
+#: GTG/gtk/editor/recurring_menu.py:101 GTG/gtk/editor/recurring_menu.py:112
+#, python-brace-format
+msgid "Every <b>{month} {day}</b>"
+msgstr ""
+
+#. Recurring daily
+#: GTG/gtk/editor/recurring_menu.py:103
+msgid "Every <b>day</b>"
+msgstr ""
+
+#. Recurring every other day
+#: GTG/gtk/editor/recurring_menu.py:105
+msgid "Every <b>other day</b>"
+msgstr ""
+
+#. Recurring weekly from today
+#: GTG/gtk/editor/recurring_menu.py:107 GTG/gtk/editor/recurring_menu.py:115
+#, python-brace-format
+msgid "Every <b>{week_day}</b>"
+msgstr ""
+
+#: GTG/gtk/editor/taskview.py:631
 msgid "Open Link"
 msgstr "Hivatkozás Megnyitása"
 
-#: GTG/gtk/editor/taskview.py:1442
+#: GTG/gtk/editor/taskview.py:639
 msgid "Copy Link to Clipboard"
 msgstr "Hivatkozás Másolása a Vágólapra"
 
-#: GTG/gtk/general_preferences.py:64
+#: GTG/gtk/general_preferences.py:65
 msgid "General"
 msgstr "Általános"
 
-#: GTG/plugins/export/export.py:121
+#: GTG/plugins/export/export.py:90
 msgid "No task matches your criteria. Empty report can't be generated."
-msgstr "Nincs a kritériumhoz illő feladat. Üres jelentést nem tudunk létrehozni."
+msgstr ""
+"Nincs a kritériumhoz illő feladat. Üres jelentést nem tudunk létrehozni."
 
-#: GTG/plugins/export/export.py:139
+#: GTG/plugins/export/export.py:108
 #, python-format
 msgid "GTG could not generate the document: %s"
 msgstr "A GTG nem tudta létrehozni a dokumentumot: %s"
 
-#: GTG/plugins/export/export.py:184
+#: GTG/plugins/export/export.py:151
 msgid "Export the tasks currently listed"
 msgstr "Listázott feladatok exportálása"
 
-#: GTG/plugins/export/export.py:315
+#: GTG/plugins/export/export.py:273
 msgid "Choose where to save your list"
 msgstr "Válaszd ki, hová mentsük a listát"
 
@@ -1759,8 +2038,8 @@ msgid ""
 "are required."
 msgstr ""
 "Sablon, mellyel\n"
-"<a href=\"http://www.pocketmod.com\">PocketMod</a>-ot lehet készíteni, "
-"mely egy kicsi, összehajtható\n"
+"<a href=\"http://www.pocketmod.com\">PocketMod</a>-ot lehet készíteni, mely "
+"egy kicsi, összehajtható\n"
 "könyvecske. A <b>pdflatex</b>, <b>pdftk</b> és <b>pdfjam</b>\n"
 "csomagok szükségesek hozzá."
 
@@ -1794,7 +2073,9 @@ msgstr "Helyzetjelentés"
 
 #: GTG/plugins/export/export_templates/description_statusrpt.py:20
 msgid "A template to create a compact text file listing only task titles."
-msgstr "Sablon, mellyel olyan tömör szoveges fájl készíthető, mely csak a feladatok nevét mutatja."
+msgstr ""
+"Sablon, mellyel olyan tömör szoveges fájl készíthető, mely csak a feladatok "
+"nevét mutatja."
 
 #: GTG/plugins/export/export_templates/description_textual.py:21
 msgid "Text-only"
@@ -1802,7 +2083,8 @@ msgstr "Csak-szöveg"
 
 #: GTG/plugins/export/export_templates/description_textual.py:22
 msgid "A template to create a simple text file with some tasks."
-msgstr "Sablon, mellyel egyszerű szöveges fájlt lehet készíteni pár faladot mutatva."
+msgstr ""
+"Sablon, mellyel egyszerű szöveges fájlt lehet készíteni pár faladot mutatva."
 
 #: GTG/plugins/send_email/sendEmail.py:40
 msgid "Send via email"
@@ -1851,9 +2133,44 @@ msgstr ""
 msgid "Task: %(task_title)s"
 msgstr "Feladat: %(task_title)s"
 
-#: GTG/plugins/untouched_tasks/untouchedTasks.py:64
+#: GTG/plugins/untouched_tasks/untouchedTasks.py:65
 msgid "Add @untouched tag"
 msgstr "@untouched címke hozzáadása"
+
+#~ msgid "How do you want to access the export plugin?"
+#~ msgstr "Hogyan szeretnéd elérni az exportáló bővítményt?"
+
+#~ msgid "Put an entry in the Plugins menu"
+#~ msgstr "Bejegyzés hozzávétele a Bővítmények menühöz"
+
+#~ msgid ""
+#~ "Your tasks are saved in a text file (XML format).  This is the most basic "
+#~ "and the default way for GTG to save your tasks."
+#~ msgstr ""
+#~ "A feladataidat egy szöveges fájlba mentjük (XML).  Ez a legegyszerűbb és "
+#~ "alapértelmezett módja annak, hogy a GTG elmentse a feladataidat."
+
+#~ msgid ""
+#~ "A personal productivity tool for GNOME,\n"
+#~ "inspired by the GTD methodology."
+#~ msgstr ""
+#~ "Személyi produktivitás eszköz GNOME környezethez,\n"
+#~ "a GTD módszer alapján."
+
+#~ msgid "tags"
+#~ msgstr "címkék"
+
+#~ msgid "tag"
+#~ msgstr "címke"
+
+#~ msgid "defer"
+#~ msgstr "elhalasztás"
+
+#~ msgid "start"
+#~ msgstr "kezdés"
+
+#~ msgid "due"
+#~ msgstr "esedékes"
 
 #, fuzzy
 #~ msgid "Start in another date"
