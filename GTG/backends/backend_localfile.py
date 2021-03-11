@@ -227,6 +227,7 @@ class Backend(GenericBackend):
         """Save changes to tags and saved searches."""
 
         already_saved = []
+        self.search_tree.clear()
 
         for tagname in tagnames:
             if tagname in already_saved:
