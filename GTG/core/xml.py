@@ -77,7 +77,7 @@ def task_from_element(task, element: etree.Element):
     recurring_enabled = recurring.get('enabled')
 
     try:
-        recurring_term = element.find('term').text
+        recurring_term = recurring.getchildren()[0].text
         task.set_recurring(recurring_enabled == 'true',
                            None if recurring_term == 'None'
                            else recurring_term)
