@@ -76,14 +76,13 @@ def task_from_element(task, element: etree.Element):
     recurring = element.find('recurring')
     recurring_enabled = recurring.get('enabled')
 
-    try:
-        recurring_term = element.find('term').text
-        task.set_recurring(recurring_enabled == 'true',
-                           None if recurring_term == 'None'
-                           else recurring_term)
+    recurring_term = recurring.findtext('term')
 
-    except AttributeError:
-        pass
+    if recurring_term:
+        task.set_recurring(recurring_enabled == 'true',
+                            None if recurring_term == 'None'
+                            else recurring_term)
+
 
     taglist = element.find('tags')
 
