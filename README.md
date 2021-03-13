@@ -74,9 +74,9 @@ There are additional plugins (modules for extending the user interface) and sync
 Dependencies for the "Export and print" plugin:
 
 * python3-cheetah
-* pdflatex (in the "texlive-extra-utils" package on Ubuntu)
-* pdfjam (in the "texlive-extra-utils" package on Ubuntu, possibly in "texlive-pdfjam" on Fedora)
-* pdftk (now called pdftk-java in Ubuntu, and no longer available in Fedora)
+* pdflatex (in the `texlive-extra-utils` package on Ubuntu)
+* pdfjam (in the `texlive-extra-utils` package on Ubuntu, possibly in `texlive-pdfjam` on Fedora)
+* pdftk (now called `pdftk-java` in Ubuntu, and no longer available in Fedora)
 
 On Ubuntu you can install all that with:
 
@@ -95,15 +95,15 @@ This is the safest way to run the Git version, as it does not touch your normal 
 It depends:
 
 * If you are running a version installed system-wide (ex: a package provided by a Linux distribution), as GTG adheres to the FreeDesktop XDG User Directories specification, you will typically find it spread across:
-  * ~/.local/share/gtg/
-  * ~/.config/gtg/
-  * ~/.cache/gtg/
-* If you are running the Flatpak package version, those directories are all in ~/.var/app/org.gnome.Gtg/ (or something similar)
-* If you are running launch.sh (the launcher from the Git/development version), GTG doesn't touch your normal user data, it uses the "tmp" subdirectory in your gtg development folder.
+  * `~/.local/share/gtg/`
+  * `~/.config/gtg/`
+  * `~/.cache/gtg/`
+* If you are running the Flatpak package version, those directories are all in `~/.var/app/org.gnome.GTG/` (or something similar)
+* If you are running `launch.sh` (the launcher from the Git/development version), GTG doesn't touch your normal user data, it uses the `tmp` subdirectory in your gtg development folder.
 
-If you happen to move/copy data between those various instances, you will not only have to move/copy the folders and their contents, but also edit the destination's "projects.xml" file to change the path of the "tasks.xml" to match the new location (for example the traditional "/home/your_username/.local/share/gtg/tasks.xml" would become "/home/your_username/.var/app/org.gnome.Gtg/data/gtg/tasks.xml" when moving from the distro-provided GTG version to the Flatpak version).
+If you happen to move/copy data between those various instances, you will not only have to move/copy the folders and their contents, but also edit the destination's `projects.xml` file to change the path of the `tasks.xml` to match the new location (for example the traditional `/home/$USER/.local/share/gtg/tasks.xml` would become `/home/$USER/.var/app/org.gnome.GTG/data/gtg/tasks.xml` when moving from the distro-provided GTG version to the Flatpak version).
 
-If, for testing purposes, you want to copy your user data over to the Git version's directory and automatically fix the resulting "projects.xml" file to reference the correct path, you can run `scripts/import_my_tasks_into_debug_tasks.sh` instead of having to do it manually.
+If, for testing purposes, you want to copy your user data over to the Git version's directory and automatically fix the resulting `projects.xml` file to reference the correct path, you can run `scripts/import_my_tasks_into_debug_tasks.sh` instead of having to do it manually.
 
 # Viewing the user manual
 
