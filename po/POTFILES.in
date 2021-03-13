@@ -104,3 +104,6 @@ GTG/plugins/untouched_tasks/__init__.py
 GTG/plugins/untouched_tasks/untouchedTasks.py
 GTG/plugins/urgency_color/__init__.py
 GTG/plugins/urgency_color/urgency_color.py
+GTG/plugins/dev_console.gtg-plugin.desktop
+GTG/plugins/dev_console/console.py
+GTG/plugins/dev_console/utils.py
