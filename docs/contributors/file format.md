@@ -126,6 +126,7 @@ A single task tag.
 | name                | Tag name (without @). Always present.        |
 | color               | Custom color (in hex)                        |
 | icon                | Custom icon name                             |
+| nonworkview         | If the tag should show up in work view       |
 
 
 
