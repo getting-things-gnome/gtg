@@ -354,5 +354,7 @@ class TagEditor(Gtk.Window):
         Arguments arg1-arg3 are needed to satisfy callback when closing
         by Escape
         """
+
+        self.destroy()
         self.app.close_tag_editor()
         return True
