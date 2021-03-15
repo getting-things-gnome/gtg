@@ -96,7 +96,7 @@ def convert_tags(old_tree: et.Element) -> Tuple[et.Element, et.Element]:
     for tag in tree.iter('tag'):
         name = tag.get('name')
         parent = tag.get('parent')
-        notactionable = tag.get('nonworkview')
+        nonactionable = tag.get('nonworkview')
         color = tag.get('color')
         tid = str(uuid4())
 
@@ -117,8 +117,8 @@ def convert_tags(old_tree: et.Element) -> Tuple[et.Element, et.Element]:
             if parent:
                 new_tag.set('parent', parent[1:])
 
-            if notactionable:
-                new_tag.set('notactionable', notactionable)
+            if nonactionable:
+                new_tag.set('nonactionable', nonactionable)
 
         new_tag.set('id', tid)
 
