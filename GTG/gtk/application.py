@@ -421,19 +421,14 @@ class Application(Gtk.Application):
     def open_tag_editor(self, tag):
         """Open Tag editor dialog."""
 
-        if not self.edit_tag_dialog:
-            self.edit_tag_dialog = TagEditor(self.req, self, tag)
-            self.edit_tag_dialog.set_transient_for(self.browser)
-            self.edit_tag_dialog.insert_action_group('app', self)
-        else:
-            self.edit_tag_dialog.set_tag(tag)
-
-        self.edit_tag_dialog.present()
+        self.edit_tag_dialog = TagEditor(self.req, self, tag)
+        self.edit_tag_dialog.set_transient_for(self.browser)
+        self.edit_tag_dialog.insert_action_group('app', self)
 
     def close_tag_editor(self):
         """Close tag editor dialog."""
 
-        self.edit_tag_dialog.hide()
+        self.edit_tag_dialog = None
 
     def select_tag(self, tag):
         """Select a tag in the browser."""

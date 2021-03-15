@@ -114,18 +114,16 @@ class DevConsolePlugin():
     def welcome_message(self, namespace):
         """Print a message when opening the console window."""
 
-        msg = _('Welcome to GTG\'s Developer Console')
-        msg += '\n\n'
-        msg += _('You can use the following shortcuts:')
-        msg += '\n'
-        msg += '- app (The application class)\n'
-        msg += '- req (The requester class)\n'
-        msg += '- browser (The main window)\n'
-        msg += '\n'
-        msg += _('Type "{help}(<command>)" for more information.').format(help="help")
-        msg += '\n\n'
-
-        return msg
+        return _('Welcome to GTG\'s Developer Console'
+                 '\n\n'
+                 'You can use the following shortcuts:'
+                 '\n'
+                 '- app (The application class)\n'
+                 '- req (The requester class)\n'
+                 '- browser (The main window)\n'
+                 '\n'
+                 'Type "help (<command>)" for more information.'
+                 '\n\n')
 
 
     def deactivate(self, api: PluginAPI) -> None:

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-01-22 23:04+0100\n"
+"POT-Creation-Date: 2021-03-14 21:15-0300\n"
 "PO-Revision-Date: 2021-01-22 23:00+0100\n"
 "Last-Translator: Óscar Fernández Díaz <oscfdezdz@tuta.io>\n"
 "Language-Team: Spanish\n"
@@ -263,7 +263,7 @@ msgstr "Marcar como terminada"
 msgid "Dismiss"
 msgstr "Descartar"
 
-#: GTG/gtk/data/context_menus.ui:60 GTG/gtk/browser/main_window.py:1162
+#: GTG/gtk/data/context_menus.ui:60 GTG/gtk/browser/main_window.py:1155
 msgid "Set Start Date"
 msgstr "Establecer fecha de inicio"
 
@@ -316,7 +316,7 @@ msgstr "Escoge una fecha..."
 msgid "Clear Start Date"
 msgstr "Limpiar fecha de inicio"
 
-#: GTG/gtk/data/context_menus.ui:125 GTG/gtk/browser/main_window.py:1173
+#: GTG/gtk/data/context_menus.ui:125 GTG/gtk/browser/main_window.py:1166
 msgid "Set Due Date"
 msgstr "Establecer fecha de término"
 
@@ -581,7 +581,7 @@ msgstr "Atajos de teclado"
 msgid "About GTG"
 msgstr "Acerca de GTG"
 
-#: GTG/gtk/data/main_window.ui:382 GTG/gtk/browser/treeview_factory.py:281
+#: GTG/gtk/data/main_window.ui:382 GTG/gtk/browser/treeview_factory.py:283
 msgid "Tags"
 msgstr "Etiquetas"
 
@@ -776,8 +776,8 @@ msgid "Task"
 msgstr "Tarea"
 
 #. Translators: Button label to open the parent task
-#: GTG/gtk/data/task_editor.ui:605 GTG/gtk/editor/editor.py:150
-#: GTG/gtk/editor/editor.py:476
+#: GTG/gtk/data/task_editor.ui:605 GTG/gtk/editor/editor.py:152
+#: GTG/gtk/editor/editor.py:482
 msgid "Open Parent"
 msgstr "Abrir principal"
 
@@ -909,11 +909,11 @@ msgstr "<b>Color del nivel de importancia</b>"
 msgid "Reset"
 msgstr "Restablecer"
 
-#: GTG/backends/backend_localfile.py:57
+#: GTG/backends/backend_localfile.py:62
 msgid "Local File"
 msgstr "Archivo local"
 
-#: GTG/backends/backend_localfile.py:219
+#: GTG/backends/backend_localfile.py:306
 msgid ""
 "Oops, something unexpected happened! GTG tried to recover your tasks from "
 "backups. \n"
@@ -1014,11 +1014,12 @@ msgid_plural "%(days)d days ago"
 msgstr[0] "Ayer"
 msgstr[1] "Hace %(days)d días"
 
-#: GTG/core/firstrun_tasks.py:32
+#: GTG/core/firstrun_tasks.py:61
 msgid "Getting Started with GTG (read me first)"
 msgstr "Empezando con GTG (léeme primero)"
 
-#: GTG/core/firstrun_tasks.py:36
+#: GTG/core/firstrun_tasks.py:68
+#, fuzzy
 msgid ""
 "Welcome to Getting Things GNOME (GTG), your new task manager! In GTG, "
 "everything is a task. From building a bridge over the Pacific Ocean to "
@@ -1050,7 +1051,7 @@ msgid ""
 "a subtask, simply click on its link! You can always come back using the "
 "&quot;Open Parent&quot; button. Try opening the following subtask for "
 "example:\n"
-"<subtask>1@1</subtask>\n"
+"{! 262d1410-71aa-4e35-abec-90ef1bab44d3 !}\n"
 "\n"
 "Closing a task:\n"
 "\n"
@@ -1071,13 +1072,14 @@ msgid ""
 "\n"
 "If you are interested in knowing more about GTG's other features, you will "
 "find more information here:\n"
-"<subtask>2@1</subtask>\n"
-"<subtask>3@1</subtask>\n"
-"<subtask>4@1</subtask>\n"
-"<subtask>5@1</subtask>\n"
-"<subtask>6@1</subtask>\n"
-"<subtask>7@1</subtask>\n"
-"<subtask>8@1</subtask>\n"
+"{! 262d1410-71aa-4e35-abec-90ef1bab44d3 !}\n"
+"{! 2d427a77-3077-4277-904c-073fcfcb4842 !}\n"
+"{! 0653765c-f5d4-4b7f-9903-0065bb258940 !}\n"
+"{! 3efd01b7-343d-4be1-9bac-8ed944517e3f !}\n"
+"{! 9b05a6c5-81e3-4fe5-a70d-3b569f65409c !}\n"
+"{! 21ed54a8-e7ff-408a-b648-8d12cc75e162 !}\n"
+"{! d1c73224-9eec-4889-b3c4-bb0281e5c1d3 !}\n"
+"{! 586dd1a7-0772-4d0a-85db-34edfc8ee30c !}\n"
 "\n"
 "We also recommend you read our user manual, by pressing F1 or using the "
 "&quot;Help&quot; entry in the main window's menu button.\n"
@@ -1160,11 +1162,11 @@ msgstr ""
 "\n"
 "— El equipo de GTG"
 
-#: GTG/core/firstrun_tasks.py:108
+#: GTG/core/firstrun_tasks.py:141
 msgid "Learn How to Use Subtasks"
 msgstr "Aprende a utilizar las subtareas"
 
-#: GTG/core/firstrun_tasks.py:112
+#: GTG/core/firstrun_tasks.py:148
 msgid ""
 "A &quot;Subtask&quot; is something that you need to do first before being "
 "able to accomplish your task. In GTG, the purpose of subtasks is to cut down "
@@ -1218,11 +1220,11 @@ msgstr ""
 "actuales, siempre puedes cambiar las relaciones arrastrando y soltando las "
 "tareas unas sobre otras (o entre ellas) en la lista de tareas."
 
-#: GTG/core/firstrun_tasks.py:137
+#: GTG/core/firstrun_tasks.py:173
 msgid "Learn How to Use Tags and Enable the Sidebar"
 msgstr "Aprende a utilizar las etiquetas y a activar la barra lateral"
 
-#: GTG/core/firstrun_tasks.py:141
+#: GTG/core/firstrun_tasks.py:180
 msgid ""
 "In GTG, you use tags to sort your tasks. A tag is a simple word that begins "
 "with &quot;@&quot;.\n"
@@ -1280,11 +1282,11 @@ msgstr ""
 "etiquetas @dinero y @por_pagar, y arrastra @por_pagar en @dinero, cada tarea "
 "etiquetada con @por_pagar también aparecerá cuando seleccione @dinero."
 
-#: GTG/core/firstrun_tasks.py:169
+#: GTG/core/firstrun_tasks.py:208
 msgid "Learn How to Use the Actionable View Mode"
 msgstr "Aprende a usar el modo de vista accionable"
 
-#: GTG/core/firstrun_tasks.py:173
+#: GTG/core/firstrun_tasks.py:215
 msgid ""
 "If you press the &quot;Actionable&quot; tab, only actionable tasks will be "
 "displayed in your list.\n"
@@ -1351,11 +1353,11 @@ msgstr ""
 "etc.). Para evitar esto, es posible que prefieras editar tu tarea mientras "
 "te encuentras en la vista &quot;Abrir&quot; tareas en su lugar."
 
-#: GTG/core/firstrun_tasks.py:208
+#: GTG/core/firstrun_tasks.py:250
 msgid "Learn About Plugins"
 msgstr "Aprende acerca de los complementos"
 
-#: GTG/core/firstrun_tasks.py:212
+#: GTG/core/firstrun_tasks.py:257
 msgid ""
 "GTG has the ability to add plugins to extend its core functionality.\n"
 "\n"
@@ -1372,11 +1374,11 @@ msgstr ""
 "animarte a que escribas tus propios complementos y los aportes al proyecto "
 "GTG para que podamos considerarlos para una inclusión más amplia."
 
-#: GTG/core/firstrun_tasks.py:221
+#: GTG/core/firstrun_tasks.py:266
 msgid "Reporting Bugs"
 msgstr "Informando errores"
 
-#: GTG/core/firstrun_tasks.py:225
+#: GTG/core/firstrun_tasks.py:273
 msgid ""
 "It is a well-known fact that GTG has no bugs! 🐛\n"
 "But sometimes, in the dark, unexpected things happen...\n"
@@ -1400,11 +1402,11 @@ msgstr ""
 "comentarios, informes de errores e ideas son bienvenidos... ¡y los parches "
 "aún más!"
 
-#: GTG/core/firstrun_tasks.py:237
+#: GTG/core/firstrun_tasks.py:285
 msgid "Learn How to Use the Quick Add Entry"
 msgstr "Aprende a utilizar la entrada de tarea rápida"
 
-#: GTG/core/firstrun_tasks.py:241
+#: GTG/core/firstrun_tasks.py:292
 msgid ""
 "The Quick Add entry is the fastest way to create a new task without "
 "disrupting your focus from the main window. It has a special syntax with "
@@ -1416,11 +1418,11 @@ msgstr ""
 "especial con palabras clave adicionales que puede utilizar; consulte el "
 "manual de usuario para conocer más sobre sus características y sintaxis."
 
-#: GTG/core/firstrun_tasks.py:248
+#: GTG/core/firstrun_tasks.py:299
 msgid "Learn About Synchronization Services"
 msgstr "Más información sobre los servicios de sincronización"
 
-#: GTG/core/firstrun_tasks.py:252
+#: GTG/core/firstrun_tasks.py:306
 msgid ""
 "❗ Take note that as of GTG 0.4, synchronization backends/services have been "
 "disabled until someone (you?) steps forward to fix and maintain them, as "
@@ -1459,11 +1461,11 @@ msgstr ""
 "continuación, tendrás la posibilidad de seleccionar entre varios servicios "
 "en línea o locales desde/a donde puede importar o exportar sus tareas."
 
-#: GTG/core/firstrun_tasks.py:272
+#: GTG/core/firstrun_tasks.py:326
 msgid "Learn How to Search for Tasks"
 msgstr "Aprende a buscar tareas"
 
-#: GTG/core/firstrun_tasks.py:276
+#: GTG/core/firstrun_tasks.py:333
 msgid ""
 "To help you to find specific tasks more easily, GTG allows you to search for "
 "tasks based on their content.\n"
@@ -1578,7 +1580,7 @@ msgstr "sinfecha"
 msgid "notag"
 msgstr "sinetiqueta"
 
-#: GTG/core/task.py:55
+#: GTG/core/task.py:57
 msgid "My new task"
 msgstr "Mi nueva tarea"
 
@@ -1625,12 +1627,12 @@ msgid "Syncing is <span color=\"red\">disabled</span>."
 msgstr "La sincronización está <span color=\"red\">desactivada</span>."
 
 #. Load and setup other widgets
-#: GTG/gtk/backends/__init__.py:68
+#: GTG/gtk/backends/__init__.py:70
 #, python-brace-format
 msgid "Synchronization Services - {name}"
 msgstr "Servicios de sincronización - {name}"
 
-#: GTG/gtk/backends/__init__.py:270
+#: GTG/gtk/backends/__init__.py:272
 #, python-format
 msgid "Do you really want to remove the '%s' synchronization service?"
 msgstr "¿Realmente quiere eliminar el servicio de sincronización «%s»?"
@@ -1818,26 +1820,26 @@ msgstr ""
 
 #. These lines should be in info.py, but due to their dynamic nature
 #. there'd be no way to show them translated in Gtk's About dialog:
-#: GTG/gtk/browser/main_window.py:320
+#: GTG/gtk/browser/main_window.py:317
 #, python-format
 msgid "Copyright © 2008-%d the GTG contributors."
 msgstr "Copyright © 2008-%d the GTG contributors."
 
 #. GTK prefixes the first line with "Created by ",
 #. but we can't split the string because it would cause trouble for some languages.
-#: GTG/gtk/browser/main_window.py:325
+#: GTG/gtk/browser/main_window.py:322
 msgid "GTG was made by many contributors around the world."
 msgstr "GTG fue hecho por muchos colaboradores alrededor del mundo."
 
-#: GTG/gtk/browser/main_window.py:326
+#: GTG/gtk/browser/main_window.py:323
 msgid "The GTG project is maintained/administered by:"
 msgstr "El proyecto GTG es mantenido/administrado por:"
 
-#: GTG/gtk/browser/main_window.py:328
+#: GTG/gtk/browser/main_window.py:325
 msgid "This release was brought to you by the efforts of these people:"
 msgstr "Esta publicación fue traída por los esfuerzos de estas personas:"
 
-#: GTG/gtk/browser/main_window.py:330
+#: GTG/gtk/browser/main_window.py:327
 #, python-brace-format
 msgid ""
 "Many others contributed to GTG over the years.\n"
@@ -1846,22 +1848,22 @@ msgstr ""
 "Muchos otros contribuyeron a GTG a lo largo de los años.\n"
 "Puedes verlos en {OH_stats} y {GH_stats}."
 
-#: GTG/gtk/browser/main_window.py:339
+#: GTG/gtk/browser/main_window.py:336
 msgid "GTG website"
 msgstr "Web de GTG"
 
 #. Translators for a particular language should put their names here.
 #. Please keep the width at 80 chars max, as GTK3's About dialog won't wrap text.
 #. GtkAboutDialog will detect if “translator-credits” is untranslated and auto-hide the tab.
-#: GTG/gtk/browser/main_window.py:352
+#: GTG/gtk/browser/main_window.py:349
 msgid "translator-credits"
 msgstr "Óscar Fernández Díaz"
 
-#: GTG/gtk/browser/main_window.py:660
+#: GTG/gtk/browser/main_window.py:652
 msgid "Hide Sidebar"
 msgstr "Ocultar barra lateral"
 
-#: GTG/gtk/browser/main_window.py:662
+#: GTG/gtk/browser/main_window.py:654
 msgid "Show Sidebar"
 msgstr "Mostrar barra lateral"
 
@@ -1870,15 +1872,15 @@ msgstr "Mostrar barra lateral"
 msgid "NewTag"
 msgstr "Etiqueta nueva"
 
-#: GTG/gtk/browser/simple_color_selector.py:237
+#: GTG/gtk/browser/simple_color_selector.py:238
 msgid "Add Custom Color..."
 msgstr "Añadir color personalizado..."
 
-#: GTG/gtk/browser/simple_color_selector.py:242
+#: GTG/gtk/browser/simple_color_selector.py:243
 msgid "Clear Selected Color"
 msgstr "Limpiar color seleccionado"
 
-#: GTG/gtk/browser/simple_color_selector.py:283
+#: GTG/gtk/browser/simple_color_selector.py:284
 msgid "Choose a color"
 msgstr "Elegir un color"
 
@@ -1886,25 +1888,30 @@ msgstr "Elegir un color"
 msgid "Generate Color"
 msgstr "Generar color"
 
-#: GTG/gtk/browser/tag_editor.py:52
+#: GTG/gtk/browser/tag_editor.py:50
 #, python-format
 msgid "Editing Tag \"%s\""
 msgstr "Editando tarea \"%s\""
 
-#: GTG/gtk/browser/tag_editor.py:100
+#: GTG/gtk/browser/tag_editor.py:87
+#, fuzzy
+msgid "Remove icon"
+msgstr "_Quitar"
+
+#: GTG/gtk/browser/tag_editor.py:98
 msgid "Name : "
 msgstr "Nombre: "
 
-#: GTG/gtk/browser/tag_editor.py:107
+#: GTG/gtk/browser/tag_editor.py:105
 msgid "Show Tag in \"Actionable\" view:"
 msgstr "Mostrar la etiqueta en la vista \"Accionable\":"
 
-#: GTG/gtk/browser/tag_editor.py:121
+#: GTG/gtk/browser/tag_editor.py:119
 msgid "Select Tag Color:"
 msgstr "Seleccionar color de la etiqueta:"
 
 #. Default icon
-#: GTG/gtk/browser/tag_editor.py:192
+#: GTG/gtk/browser/tag_editor.py:190
 msgid ""
 "Click to\n"
 "Set Icon"
@@ -1914,62 +1921,62 @@ msgstr ""
 
 #. Build the title/label/tags columns
 #. Translators: Column name, containing the task titles
-#: GTG/gtk/browser/treeview_factory.py:320
+#: GTG/gtk/browser/treeview_factory.py:322
 msgid "Tasks"
 msgstr "Tareas"
 
 #. Translators: Column name, containing the start date
-#: GTG/gtk/browser/treeview_factory.py:326
+#: GTG/gtk/browser/treeview_factory.py:328
 msgid "Start Date"
 msgstr "Fecha de inicio"
 
 #. Translators: Column name, containing the due date
-#: GTG/gtk/browser/treeview_factory.py:338
+#: GTG/gtk/browser/treeview_factory.py:340
 msgid "Due"
 msgstr "Vence"
 
 #. Build the title/label/tags columns
 #. Translators: Column name, containing the task titles
-#: GTG/gtk/browser/treeview_factory.py:354
+#: GTG/gtk/browser/treeview_factory.py:356
 msgid "Closed Tasks"
 msgstr "Tareas terminadas"
 
 #. Translators: Column name, containing the closed date
-#: GTG/gtk/browser/treeview_factory.py:360
+#: GTG/gtk/browser/treeview_factory.py:362
 msgid "Closed Date"
 msgstr "Fecha de cierre"
 
 #. Translators: Button label to add an new parent task
-#: GTG/gtk/editor/editor.py:152 GTG/gtk/editor/editor.py:479
+#: GTG/gtk/editor/editor.py:154 GTG/gtk/editor/editor.py:485
 msgid "Add Parent"
 msgstr "Añadir principal"
 
-#: GTG/gtk/editor/editor.py:542
+#: GTG/gtk/editor/editor.py:548
 #, python-format
 msgid "Completed %(days)d day late"
 msgid_plural "Completed %(days)d days late"
 msgstr[0] "Completada con %(days)d día de retraso"
 msgstr[1] "Completada con %(days)d días de retraso"
 
-#: GTG/gtk/editor/editor.py:547
+#: GTG/gtk/editor/editor.py:553
 #, python-format
 msgid "Completed %(days)d day early"
 msgid_plural "Completed %(days)d days early"
 msgstr[0] "Completada con %(days)d día de antelación"
 msgstr[1] "Completada con %(days)d días de antelación"
 
-#: GTG/gtk/editor/editor.py:556
+#: GTG/gtk/editor/editor.py:562
 #, python-format
 msgid "Due tomorrow!"
 msgid_plural "%(days)d days left"
 msgstr[0] "¡Vence mañana!"
 msgstr[1] "Quedan %(days)d días"
 
-#: GTG/gtk/editor/editor.py:559
+#: GTG/gtk/editor/editor.py:565
 msgid "Due today!"
 msgstr "¡Vence hoy!"
 
-#: GTG/gtk/editor/editor.py:562
+#: GTG/gtk/editor/editor.py:568
 #, python-format
 msgid "Due yesterday!"
 msgid_plural "Was %(days)d days ago"
@@ -2006,11 +2013,11 @@ msgstr "Cada <b>día alterno</b>"
 msgid "Every <b>{week_day}</b>"
 msgstr "Cada <b>{week_day}</b>"
 
-#: GTG/gtk/editor/taskview.py:608
+#: GTG/gtk/editor/taskview.py:631
 msgid "Open Link"
 msgstr "Abrir enlace"
 
-#: GTG/gtk/editor/taskview.py:616
+#: GTG/gtk/editor/taskview.py:639
 msgid "Copy Link to Clipboard"
 msgstr "Copiar enlace al portapapeles"
 
@@ -2018,22 +2025,22 @@ msgstr "Copiar enlace al portapapeles"
 msgid "General"
 msgstr "General"
 
-#: GTG/plugins/export/export.py:88
+#: GTG/plugins/export/export.py:90
 msgid "No task matches your criteria. Empty report can't be generated."
 msgstr ""
 "No hay tareas que coincidan con su búsqueda. No se puede generar un reporte "
 "vacío."
 
-#: GTG/plugins/export/export.py:106
+#: GTG/plugins/export/export.py:108
 #, python-format
 msgid "GTG could not generate the document: %s"
 msgstr "GTG no pudo generar el documento: %s"
 
-#: GTG/plugins/export/export.py:149
+#: GTG/plugins/export/export.py:151
 msgid "Export the tasks currently listed"
 msgstr "Exportar la lista de tareas actual"
 
-#: GTG/plugins/export/export.py:271
+#: GTG/plugins/export/export.py:273
 msgid "Choose where to save your list"
 msgstr "Escoja donde quiere guardar su lista"
 
@@ -2143,6 +2150,38 @@ msgstr ""
 msgid "Task: %(task_title)s"
 msgstr "Tarea: %(task_title)s"
 
-#: GTG/plugins/untouched_tasks/untouchedTasks.py:64
+#: GTG/plugins/untouched_tasks/untouchedTasks.py:65
 msgid "Add @untouched tag"
 msgstr "Añadir etiqueta @intacta"
+
+#: GTG/plugins/dev_console.gtg-plugin.desktop:4
+#: GTG/plugins/dev_console/console.py:71 GTG/plugins/dev_console/console.py:100
+msgid "Developer Console"
+msgstr ""
+
+#: GTG/plugins/dev_console.gtg-plugin.desktop:5
+msgid "Opens a Python interpreter with access to GTG internals"
+msgstr ""
+
+#: GTG/plugins/dev_console.gtg-plugin.desktop:6
+msgid "Opens a new window with a Python interpreter that can access GTG data"
+msgstr ""
+
+#: GTG/plugins/dev_console/console.py:117
+msgid ""
+"Welcome to GTG's Developer Console\n"
+"\n"
+"You can use the following shortcuts:\n"
+"- app (The application class)\n"
+"- req (The requester class)\n"
+"- browser (The main window)\n"
+"\n"
+"Type \"help (<command>)\" for more information.\n"
+"\n"
+msgstr ""
+
+#: GTG/plugins/dev_console/utils.py:86
+#, python-brace-format
+msgid ""
+"Not possible to override {key}, because shortcuts commands are read-only."
+msgstr ""
