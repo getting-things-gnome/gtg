@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-03-11 19:31-0300\n"
+"POT-Creation-Date: 2021-03-14 21:15-0300\n"
 "PO-Revision-Date: 2013-03-17 22:15+0000\n"
 "Last-Translator: Piotr Strębski <strebski@o2.pl>\n"
 "Language-Team: Polish <ponton@jabster.pl>\n"
@@ -2049,6 +2049,38 @@ msgstr "Zadanie: %(task_title)s"
 
 #: GTG/plugins/untouched_tasks/untouchedTasks.py:65
 msgid "Add @untouched tag"
+msgstr ""
+
+#: GTG/plugins/dev_console.gtg-plugin.desktop:4
+#: GTG/plugins/dev_console/console.py:71 GTG/plugins/dev_console/console.py:100
+msgid "Developer Console"
+msgstr ""
+
+#: GTG/plugins/dev_console.gtg-plugin.desktop:5
+msgid "Opens a Python interpreter with access to GTG internals"
+msgstr ""
+
+#: GTG/plugins/dev_console.gtg-plugin.desktop:6
+msgid "Opens a new window with a Python interpreter that can access GTG data"
+msgstr ""
+
+#: GTG/plugins/dev_console/console.py:117
+msgid ""
+"Welcome to GTG's Developer Console\n"
+"\n"
+"You can use the following shortcuts:\n"
+"- app (The application class)\n"
+"- req (The requester class)\n"
+"- browser (The main window)\n"
+"\n"
+"Type \"help (<command>)\" for more information.\n"
+"\n"
+msgstr ""
+
+#: GTG/plugins/dev_console/utils.py:86
+#, python-brace-format
+msgid ""
+"Not possible to override {key}, because shortcuts commands are read-only."
 msgstr ""
 
 #~ msgid "tags"
