@@ -233,18 +233,13 @@ class TagEditor(Gtk.Window):
             s_hidden_in_wv = (self.tag.get_attribute("nonworkview") == "True")
             self.tn_cb.set_active(not s_hidden_in_wv)
             # If available, update icon
-            if (tag.get_attribute('icon') is not None):
-                icon = tag.get_attribute('icon')
-                #TODO: Remove if-block once we release 0.5
-                if len(icon) < 6:
-                    self.ti_bt_label.set_text(icon)
-                    self.tag.set_attribute('icon', icon)
-                    self.ti_bt_label.set_opacity(1)
-                    self.ti_bt_clear.set_sensitive(True)
-                else:
-                    self.ti_bt_label.set_text('🏷️')
-                    self.ti_bt_label.set_opacity(0.4)
-                    self.ti_bt_clear.set_sensitive(False)
+            icon = tag.get_attribute('icon')
+
+            if icon:
+                self.ti_bt_label.set_text(icon)
+                self.tag.set_attribute('icon', icon)
+                self.ti_bt_label.set_opacity(1)
+                self.ti_bt_clear.set_sensitive(True)
             else:
                 self.ti_bt_label.set_text('🏷️')
                 self.ti_bt_label.set_opacity(0.4)
