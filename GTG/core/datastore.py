@@ -232,7 +232,7 @@ class DataStore():
             color = element.get('color')
             icon = element.get('icon')
             parent = element.get('parent')
-            nonworkview = element.get('nonworkview')
+            nonactionable = element.get('nonactionable')
 
             tag_attrs = {}
 
@@ -242,8 +242,8 @@ class DataStore():
             if icon:
                 tag_attrs['icon'] = icon
 
-            if nonworkview:
-                tag_attrs['nonworkview'] = nonworkview
+            if nonactionable:
+                tag_attrs['nonactionable'] = nonactionable
 
             tag = self.new_tag(name, tag_attrs, tid)
 

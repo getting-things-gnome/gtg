@@ -222,9 +222,9 @@ class TreeFactory():
         return ret
 
     def no_disabled_tag(self, task, parameters=None):
-        """Filter of task that don't have any disabled/nonworkview tag"""
+        """Filter of task that don't have any disabled/nonactionable tag"""
         toreturn = True
         for t in task.get_tags():
-            if t.get_attribute("nonworkview") == "True":
+            if t.get_attribute("nonactionable") == "True":
                 toreturn = False
         return toreturn
