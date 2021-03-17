@@ -229,9 +229,9 @@ class TagEditor(Gtk.Window):
             # Update entry
             name = tag.get_name()
             self.tn_entry.set_text(name)
-            # Update visibility in Work View
-            s_hidden_in_wv = (self.tag.get_attribute("nonworkview") == "True")
-            self.tn_cb.set_active(not s_hidden_in_wv)
+            # Update visibility in Actionable View
+            s_hidden_in_av = (self.tag.get_attribute("nonactionable") == "True")
+            self.tn_cb.set_active(not s_hidden_in_av)
             # If available, update icon
             icon = tag.get_attribute('icon')
 
@@ -304,12 +304,12 @@ class TagEditor(Gtk.Window):
             self.tn_entry_watch_id = GObject.timeout_add(1000, tn_entry_changes)
 
     def on_tn_cb_clicked(self, widget):
-        """Callback: toggle the nonworkview property according to the related
+        """Callback: toggle the nonactionable property according to the related
         widget's state."""
         if self.tag is not None:
             show_in_wv = self.tn_cb.get_active()
             hide_in_wv = not show_in_wv
-            self.tag.set_attribute('nonworkview', str(hide_in_wv))
+            self.tag.set_attribute('nonactionable', str(hide_in_wv))
 
     def on_tc_colsel_changed(self, widget):
         """Callback: update the tag color depending on the current color

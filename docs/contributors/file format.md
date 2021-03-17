@@ -120,12 +120,13 @@ A single task tag.
 - Zero or more per file.
 
 
-| Attribute           | Description                                  |
-|---------------------|----------------------------------------------|
-| id                  | Tag UUID. Always present.                    |
-| name                | Tag name (without @). Always present.        |
-| color               | Custom color (in hex)                        |
-| icon                | Custom icon name                             |
+| Attribute           | Description                                   |
+|---------------------|-----------------------------------------------|
+| id                  | Tag UUID. Always present.                     |
+| name                | Tag name (without @). Always present.         |
+| color               | Custom color (in hex)                         |
+| icon                | Custom icon name                              |
+| nonactionable       | Tagged items won't show up in actionable view |
 
 
 

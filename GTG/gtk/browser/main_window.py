@@ -22,7 +22,7 @@ import threading
 import datetime
 import logging
 
-from gi.repository import GObject, Gtk, Gdk, Gio
+from gi.repository import GObject, Gtk, Gdk, Gio, GLib
 
 from GTG.core import info
 from GTG.backends.backend_signals import BackendSignals
@@ -69,6 +69,9 @@ class MainWindow(Gtk.ApplicationWindow):
         self.app = app
         self.config = self.req.get_config('browser')
         self.tag_active = False
+
+        # Timeout handler for search
+        self.search_timeout = None
 
         # Treeviews handlers
         self.vtree_panes = {}
@@ -442,8 +445,26 @@ class MainWindow(Gtk.ApplicationWindow):
             log.debug("Invalid query %r: %r", query, error)
             vtree.unapply_filter(SEARCH_TAG)
 
-    def on_search(self, data):
+
+    def do_search(self):
+        """Perform the actual search and cancel the timeout."""
+
         self._try_filter_by_query(self.search_entry.get_text())
+        GLib.source_remove(self.search_timeout)
+        self.search_timeout = None
+
+
+    def on_search(self, data):
+        """Callback everytime a character is inserted in the search field."""
+
+        TIMEOUT = 500
+
+        if self.search_timeout:
+            GLib.source_remove(self.search_timeout)
+            self.search_timeout = None
+
+        self.search_timeout = GLib.timeout_add(TIMEOUT, self.do_search)
+
 
     def on_save_search(self, action, param):
         query = self.search_entry.get_text()
