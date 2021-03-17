@@ -301,24 +301,26 @@ class Backend(PeriodicImportBackend):
             task = self.datastore.get_task(uid)
             if not task:  # not found, creating it
                 task = self.datastore.task_factory(uid)
-                Translator.fill_task(todo, task, self.namespace)
-                self.datastore.push_task(task)
+                with DisabledSyncCtx(task):
+                    Translator.fill_task(todo, task, self.namespace)
+                    self.datastore.push_task(task)
                 counts['created'] += 1
             else:
                 result = self._update_task(task, todo)
                 counts[result] += 1
-            if __debug__:
+            if logger.isEnabledFor(logging.DEBUG):
                 if Translator.should_sync(task, self.namespace, todo):
                     logger.warning("Shouldn't be diff for %r", uid)
 
     def _update_task(self, task: Task, todo: iCalendar, force: bool = False):
-        if not force:
-            task_seq = SEQUENCE.get_gtg(task, self.namespace)
-            todo_seq = SEQUENCE.get_dav(todo)
-            if task_seq >= todo_seq:
-                return 'unchanged'
-        Translator.fill_task(todo, task, self.namespace)
-        return 'updated'
+        with DisabledSyncCtx(task):
+            if not force:
+                task_seq = SEQUENCE.get_gtg(task, self.namespace)
+                todo_seq = SEQUENCE.get_dav(todo)
+                if task_seq >= todo_seq:
+                    return 'unchanged'
+            Translator.fill_task(todo, task, self.namespace)
+            return 'updated'
 
     def __sort_todos(self, todos: list, max_depth: int = 500):
         """For a given list of todos, will return first the one without parent
