@@ -36,7 +36,7 @@ class TestSearchQuery(TestCase):
 
     def test_tag_query(self):
         self.assertEqual(parse("@gtg"),
-                         {'q': [("tag", True, '@gtg')]})
+                         {'q': [("tag", True, 'gtg')]})
 
     def test_literal_tag_query(self):
         self.assertEqual(parse('"@gtg"'),
@@ -70,7 +70,7 @@ class TestSearchQuery(TestCase):
 
     def test_not_tag_query(self):
         self.assertEqual(parse("!not @gtg"),
-                         {'q': [("tag", False, '@gtg')]})
+                         {'q': [("tag", False, 'gtg')]})
 
     def test_not_literal_tag_query(self):
         self.assertEqual(parse('!not "@gtg"'),
@@ -78,16 +78,16 @@ class TestSearchQuery(TestCase):
 
     def test_or(self):
         parsed = {'q': [
-            ("or", True, [("tag", True, "@gtg"), ("tag", True, "@gtd")]),
+            ("or", True, [("tag", True, "gtg"), ("tag", True, "gtd")]),
         ]}
         self.assertEqual(parse("@gtg !or @gtd"), parsed)
 
     def test_or_or(self):
         parsed = {'q': [
             ("or", True, [
-                ("tag", True, "@gtg"),
-                ("tag", True, "@gtd"),
-                ("tag", True, "@a"),
+                ("tag", True, "gtg"),
+                ("tag", True, "gtd"),
+                ("tag", True, "a"),
             ]),
         ]}
         self.assertEqual(parse("@gtg !or @gtd !or @a"), parsed)
@@ -95,11 +95,11 @@ class TestSearchQuery(TestCase):
     def test_or_or_or_or_or(self):
         parsed = {'q': [
             ("or", True, [
-                ("tag", True, "@gtg"),
-                ("tag", True, "@gtd"),
-                ("tag", True, "@a"),
-                ("tag", True, "@b"),
-                ("tag", True, "@c"),
+                ("tag", True, "gtg"),
+                ("tag", True, "gtd"),
+                ("tag", True, "a"),
+                ("tag", True, "b"),
+                ("tag", True, "c"),
             ])
         ]}
         self.assertEqual(parse("@gtg !or @gtd !or @a !or @b !or @c"), parsed)
@@ -132,10 +132,10 @@ class TestSearchQuery(TestCase):
         # Test other things as well
         self.assertEqual(parse("!after tomorrow @gtg"),
                          {'q': [('after', True, d('tomorrow')),
-                                ('tag', True, '@gtg')]})
+                                ('tag', True, 'gtg')]})
         self.assertEqual(parse("!after tomorrow !not @gtg"),
                          {'q': [('after', True, d('tomorrow')),
-                                ('tag', False, '@gtg')]})
+                                ('tag', False, 'gtg')]})
         self.assertEqual(parse("!after tomorrow mytask"),
                          {'q': [('after', True, d('tomorrow')),
                                 ('word', True, 'mytask')]})
@@ -170,15 +170,15 @@ class TestSearchQuery(TestCase):
 
         # Test other things as well
         parsed = {'q': [
-            ('tag', True, '@gtg'),
+            ('tag', True, 'gtg'),
             ('before', True, d('tomorrow')),
-            ('tag', True, '@gtg'),
+            ('tag', True, 'gtg'),
         ]}
         self.assertEqual(parse("@gtg !before tomorrow @gtg"), parsed)
 
         parsed = {'q': [
             ('before', True, d('tomorrow')),
-            ('tag', False, '@gtg'),
+            ('tag', False, 'gtg'),
         ]}
         self.assertEqual(parse("!before tomorrow !not @gtg"), parsed)
 
