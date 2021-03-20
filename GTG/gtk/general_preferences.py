@@ -51,6 +51,7 @@ class GeneralPreferences():
         self.autoclean_days = builder.get_object("autoclean_days")
         self.dark_mode = builder.get_object("darkmode_enable")
 
+        self._refresh_preferences_store()
         builder.connect_signals(self)
 
     # Following 3 methods: get_name, get_title, get_ui are
@@ -71,7 +72,7 @@ class GeneralPreferences():
         return self.ui_widget
 
     def activate(self):
-        self._refresh_preferences_store()
+        pass
 
     def get_default_editor_font(self):
         editor_font = self.config.get("font_name")
