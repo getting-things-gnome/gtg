@@ -107,8 +107,12 @@ class GeneralPreferences():
 
     def _refresh_task_browser(self):
         """ Refresh tasks in task browser """
+
+        collapsed = self.config.get("collapsed_tasks")
         task_tree = self.req.get_tasks_tree(refresh=False).get_basetree()
         task_tree.refresh_all()
+
+        self.app.browser.restore_collapsed_tasks(collapsed)
 
     def on_valid_time_check(self, widget):
         """

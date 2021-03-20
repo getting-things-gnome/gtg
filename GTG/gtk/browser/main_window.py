@@ -509,8 +509,10 @@ class MainWindow(Gtk.ApplicationWindow):
         is_maximized = widget.get_window().get_state() & mask == mask
         self.config.set("maximized", is_maximized)
 
-    def restore_collapsed_tasks(self):
-        for path_s in self.config.get("collapsed_tasks"):
+    def restore_collapsed_tasks(self, tasks=None):
+        tasks = tasks or self.config.get("collapsed_tasks")
+
+        for path_s in tasks:
             # the tuple was stored as a string. we have to reconstruct it
             path = ()
             for p in path_s[1:-1].split(","):
