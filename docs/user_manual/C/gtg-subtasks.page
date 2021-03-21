@@ -61,6 +61,8 @@
  </list>
  
  <note style="tip"><p>The number of subtasks that are associated with a parent task are listed next to the parent task in the <gui>Task Browser</gui>. You can also expand and collapse parent tasks to view associated subtasks in the <gui>Task Browser</gui>.</p></note>
+ 
+<note style="tip"><p>In the <gui>Task Browser</gui>, you also have the ability to add a parent task to an existing subtask by right-clicking that subtask and selecting <em style="strong">Add a Parent task...</em> from the context menu.</p></note> 
 
 </section>
  
