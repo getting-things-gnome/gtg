@@ -108,3 +108,5 @@ GTG/plugins/urgency_color/urgency_color.py
 GTG/plugins/dev_console.gtg-plugin.desktop
 GTG/plugins/dev_console/console.py
 GTG/plugins/dev_console/utils.py
+GTG/plugins/gamify/gamify.py
+GTG/plugins/gamify/__init__.py
