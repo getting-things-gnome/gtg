@@ -1341,7 +1341,6 @@ class MainWindow(Gtk.ApplicationWindow):
             # refining search query
             tag = self.req.get_tag(tagname)
             if tag.is_search_tag():
-                self.quickadd_entry.set_text(tag.get_attribute("query"))
                 break
 
         self.reapply_filter()
