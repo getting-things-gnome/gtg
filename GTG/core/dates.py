@@ -34,12 +34,10 @@ __all__ = ['Date', 'Accuracy']
 
 # trick to obtain the timezone of the machine GTG is executed on
 LOCAL_TIMEZONE = datetime.now(timezone.utc).astimezone().tzinfo
-NOW, SOON, SOMEDAY, NODATE = list(range(4))
+SOON, SOMEDAY, NODATE = list(range(1, 4))
 
 # Localized strings for fuzzy values
 STRINGS = {
-    # Translators: Used for display
-    NOW: _('now'),
     # Translators: Used for display
     SOON: _('soon'),
     # Translators: Used for display
@@ -48,12 +46,9 @@ STRINGS = {
 }
 
 # Allows looking up any value which is not a date but points towards one and
-# find one of the four constant for fuzzy dates: NOW, SOON, SOMEDAY, and NODATE
+# find one of the four constant for fuzzy dates: SOON, SOMEDAY, and NODATE
 LOOKUP = {
-    NOW: NOW,
-    'now': NOW,
     # Translators: Used in parsing, made lowercased in code
-    _('now').lower(): NOW,
     SOON: SOON,
     'soon': SOON,
     # Translators: Used in parsing, made lowercased in code
@@ -126,6 +121,8 @@ class Date:
             self.dt_value = NODATE
         elif isinstance(value, str):
             self.dt_value = self.__parse_dt_str(value)
+        elif value == 0:  # support for dropped falsly fuzzy NOW
+            self.dt_value = datetime.now()
         elif value in LOOKUP:
             self.dt_value = LOOKUP[value]
         if self.dt_value is None:
@@ -148,6 +145,8 @@ class Date:
                 return dt_value
             except ValueError:
                 pass
+        if string in {'now', _('now').lower()}:
+            return datetime.now()
         return LOOKUP.get(str(string).lower(), None)
 
     @property
@@ -194,7 +193,7 @@ class Date:
             return self.dt_value
         if self.accuracy is Accuracy.fuzzy:
             now = datetime.now()
-            delta_days = {NOW: 0, SOON: 15, SOMEDAY: 365, NODATE: 9999}
+            delta_days = {SOON: 15, SOMEDAY: 365, NODATE: 9999}
             gtg_date = Date(now + timedelta(delta_days[self.dt_value]))
             if gtg_date.accuracy is wanted_accuracy:
                 return gtg_date.dt_value
@@ -277,7 +276,7 @@ class Date:
     def xml_str(self):
         """ Representation for XML - fuzzy dates are in English """
         if self.accuracy is Accuracy.fuzzy:
-            strs = {NOW: 'now', SOON: 'soon', SOMEDAY: 'someday', NODATE: ''}
+            strs = {SOON: 'soon', SOMEDAY: 'someday', NODATE: ''}
             return strs[self.dt_value]
         return self.dt_by_accuracy(Accuracy.date).isoformat()
 
@@ -307,10 +306,10 @@ class Date:
         """ Return date for tomorrow """
         return cls(date.today() + timedelta(days=1))
 
-    @staticmethod
-    def now():
+    @classmethod
+    def now(cls):
         """ Return date representing fuzzy date now """
-        return _GLOBAL_DATE_NOW
+        return cls.today()
 
     @staticmethod
     def no_date():
@@ -617,7 +616,6 @@ class Date:
             return self.dt_by_accuracy(Accuracy.date).strftime(locale_format)
 
 
-_GLOBAL_DATE_NOW = Date(NOW)
 _GLOBAL_DATE_SOON = Date(SOON)
 _GLOBAL_DATE_NODATE = Date(NODATE)
 _GLOBAL_DATE_SOMEDAY = Date(SOMEDAY)
