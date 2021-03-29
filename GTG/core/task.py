@@ -789,7 +789,9 @@ class Task(TreeNode):
         """Add a tag by its ID"""
 
         tag = self.req.ds.get_tag_by_id(tid)
-        self.tag_added(tag.get_name())
+
+        if tag:
+            self.tag_added(tag.get_name())
 
     def tag_added(self, tagname):
         """
