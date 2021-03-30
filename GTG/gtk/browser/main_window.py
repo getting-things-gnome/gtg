@@ -997,8 +997,9 @@ class MainWindow(Gtk.ApplicationWindow):
             return True
 
     def on_add_task(self, widget=None):
-        tags = [tag for tag in self.get_selected_tags()
-                if tag.startswith('@') and not tag.is_special()]
+        tags = [tag for tag in self.get_selected_tags(nospecial=True)
+                if tag.startswith('@')]
+
         task = self.req.new_task(tags=tags, newtask=True)
         uid = task.get_id()
         self.app.open_task(uid, new=True)
