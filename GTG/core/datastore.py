@@ -122,7 +122,7 @@ class DataStore():
         self._add_new_tag(name, tag, self.treefactory.tag_filter, parameters)
         return tag
 
-    def new_search_tag(self, name, query, attributes={}, tid=None):
+    def new_search_tag(self, name, query, attributes={}, tid=None, save=True):
         """
         Create a new search tag
 
@@ -143,7 +143,10 @@ class DataStore():
         tag = Tag(name, req=self.requester, attributes=init_attr, tid=tid)
         self._add_new_tag(name, tag, search_filter, parameters,
                           parent_id=SEARCH_TAG)
-        self.save_tagtree()
+
+        if save:
+            self.save_tagtree()
+
         return tag
 
     def remove_tag(self, name):
@@ -274,7 +277,7 @@ class DataStore():
             if icon:
                 tag_attrs['icon'] = icon
 
-            self.new_search_tag(name, query, tag_attrs, tid)
+            self.new_search_tag(name, query, tag_attrs, tid, False)
 
 
     def get_tag_by_id(self, tid):
