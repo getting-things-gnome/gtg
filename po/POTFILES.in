@@ -28,6 +28,7 @@ GTG/backends/generic_backend.py
 GTG/backends/__init__.py
 GTG/backends/periodic_import_backend.py
 GTG/backends/sync_engine.py
+GTG/core/info.py.in
 GTG/core/borg.py
 GTG/core/xml.py
 GTG/core/clipboard.py
