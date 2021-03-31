@@ -191,6 +191,7 @@ class Gamify:
             pass
 
     def deactivate(self, plugin_api):
+        self.browser.disconnect(self.connect_id)
         self.remove_ui()
 
     def is_configurable(self):
