@@ -6,8 +6,9 @@
 3. Retest all again
 4. Update the NEWS file, and ideally prepare release notes and announcements in advance
 5. Test creating tarballs (see further below)
-6. Tag the release and create the tarballs and Flatpak packages
-7. Remember to update the historical wiki page at https://wiki.gnome.org/Apps/GTG/release_names
+6. Update `data/org.gnome.GTG.appdata.xml.in.in` to add the new release version number, date, and planned announcement (release notes) URL
+7. Tag the release and create the tarballs and Flatpak packages
+8. Remember to update the historical wiki page at https://wiki.gnome.org/Apps/GTG/release_names
 
 # Release tagging (usually done by maintainers)
 
