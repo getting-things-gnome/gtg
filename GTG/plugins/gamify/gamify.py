@@ -2,14 +2,15 @@ import os
 import random
 from datetime import date
 from collections import defaultdict
+import logging
 
 from gi.repository import Gio
 from gi.repository import Gtk
 
-from GTG.core.logger import log
 from gettext import gettext as _
 from gettext import ngettext
 
+log = logging.getLogger(__name__)
 class Gamify:
     PLUGIN_PATH = os.path.dirname(os.path.abspath(__file__))
     PLUGIN_NAMESPACE = 'gamify'
