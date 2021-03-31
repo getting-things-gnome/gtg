@@ -1440,6 +1440,11 @@ class MainWindow(Gtk.ApplicationWindow):
             for t in list(taglist):
                 if t in special:
                     taglist.remove(t)
+                else:
+                    tag = self.req.get_tag(t)
+                    if tag and tag.is_search_tag():
+                        taglist.remove(t)
+
         return taglist
 
     def select_on_sidebar(self, value):
