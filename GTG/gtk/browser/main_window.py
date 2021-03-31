@@ -1337,8 +1337,7 @@ class MainWindow(Gtk.ApplicationWindow):
         Optim: reseting it on first item, allows trigger refresh on last.
         """
         for tagname in self.get_selected_tags():
-            # In case of search tag, set query in quickadd for
-            # refining search query
+            # In case of search tag, refining search query
             tag = self.req.get_tag(tagname)
             if tag.is_search_tag():
                 break
