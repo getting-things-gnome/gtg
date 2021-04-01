@@ -11,6 +11,7 @@ dataset="default"
 norun=0
 pydebug=0
 title=""
+explicit_title=0
 
 # Create execution-time data directory if needed
 mkdir -p tmp
@@ -22,11 +23,13 @@ do  case "$o" in
     w)   pydebug=1;;
     n)   norun=1;;
     s)   dataset="$OPTARG";;
-    t)   title="$OPTARG";;
+    t)   title="$OPTARG" explicit_title=1;;
     [?]) cat >&2 <<EOF
 Usage: $0 [-s dataset] [-t title] [-d] [-w] [-n] (-- args passed to gtg)
     -s dataset     Use the dataset located in $PWD/tmp/<dataset>
     -t title       Set a custom title/program name to use.
+                   Use -t '' (empty) to un-set the title
+                   (default is: Dev GTG: (<dataset> dataset))
     -d             Enable debug mode, basically enables debug logging
     -w             Enable python warnings like deprecation warnings,
                    and other python 3.7+ development mode features.
@@ -55,13 +58,14 @@ export XDG_DATA_HOME="$PWD/tmp/$dataset/xdg/data"
 export XDG_CACHE_HOME="$PWD/tmp/$dataset/xdg/cache"
 export XDG_CONFIG_HOME="$PWD/tmp/$dataset/xdg/config"
 
-# Title has to be passed to GTG directly, not through $args
-# title could be more word, and only the first word would be taken
-if [[ "$title" = "" ]]; then
+if [[ "$title" = "" ]] && [[ "$explicit_title" == 0 ]]; then
     title="Dev GTG: $(basename "$(pwd)")"
     if [[ "$dataset" != "default" ]]; then
         title="$title ($dataset dataset)"
     fi
+fi
+if ! [[ "$title" = "" ]]; then
+    extra_args=('--title' "$title" "${extra_args[@]}")
 fi
 
 if [[ "$norun" -eq 0 ]]; then
@@ -75,5 +79,5 @@ if [[ "$norun" -eq 0 ]]; then
     fi
     # double quoting args seems to prevent python script from picking up flag arguments correctly
     # shellcheck disable=SC2086
-    ./.local_build/prefix-gtg.sh ./.local_build/install/bin/gtg ${args} -t "$title" "${extra_args[@]}" || exit $?
+    ./.local_build/prefix-gtg.sh ./.local_build/install/bin/gtg ${args} "${extra_args[@]}" || exit $?
 fi
