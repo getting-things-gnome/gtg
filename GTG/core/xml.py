@@ -37,40 +37,26 @@ def task_from_element(task, element: etree.Element):
 
     task.set_title(element.find('title').text)
     task.set_uuid(element.get('id'))
+    task.set_status(element.attrib['status'])
 
+    # Retrieving all dates
     dates = element.find('dates')
+    for key, set_date in (('modified', task.set_modified),
+                          ('added', task.set_added_date),
+                          ('due', task.set_due_date),
+                          ('done', task.set_closed_date),
+                          ('start', task.set_start_date)):
+        value = dates.find(key)
+        if value is not None and value.text:
+            set_date(Date(value.text))
 
-    modified = dates.find('modified').text
-    task.set_modified(datetime.fromisoformat(modified))
-
-    added = dates.find('added').text
-    task.set_added_date(datetime.fromisoformat(added))
-
-    # Dates
-    try:
-        done_date = Date.parse(dates.find('done').text)
-        task.set_status(element.attrib['status'], donedate=done_date)
-    except AttributeError:
-        pass
-
-
-    fuzzy_due_date = Date.parse(dates.findtext('fuzzyDue'))
-    due_date = Date.parse(dates.findtext('due'))
-
-    if fuzzy_due_date:
-        task.set_due_date(fuzzy_due_date)
-    elif due_date:
-        task.set_due_date(due_date)
-
-
-    fuzzy_start = dates.findtext('fuzzyStart')
-    start = dates.findtext('start')
-
-    if fuzzy_start:
-        task.set_start_date(fuzzy_start)
-    elif start:
-        task.set_start_date(start)
-
+    # supporting old ways of salvaging fuzzy dates
+    for key, get_date, set_date in (
+            ('fuzzyDue', task.get_due_date, task.set_due_date),
+            ('fuzzyStart', task.get_start_date, task.set_start_date)):
+        if not get_date() and dates.find(key) is not None \
+                and dates.find(key).text:
+            set_date(Date(dates.find(key).text))
 
     # Recurring tasks
     recurring = element.find('recurring')
@@ -85,7 +71,7 @@ def task_from_element(task, element: etree.Element):
 
     try:
         recurring_updated_date = recurring.find('updated_date').text
-        task.set_recurring_updated_date(datetime.fromisoformat(recurring_updated_date))
+        task.set_recurring_updated_date(Date(recurring_updated_date))
     except AttributeError:
         pass
 
@@ -131,24 +117,14 @@ def task_to_element(task) -> etree.Element:
 
     dates = etree.SubElement(element, 'dates')
 
-    added_date = etree.SubElement(dates, 'added')
-    added_date.text = task.get_added_date().xml_str()
-
-    modified_date = etree.SubElement(dates, 'modified')
-    modified_date.text = Date(task.get_modified()).xml_str()
-
-    done_date = etree.SubElement(dates, 'done')
-    done_date.text = task.get_closed_date().xml_str()
-
-    due_date = task.get_due_date()
-    due_tag = 'fuzzyDue' if due_date.is_fuzzy() else 'due'
-    due = etree.SubElement(dates, due_tag)
-    due.text = due_date.xml_str()
-
-    start_date = task.get_start_date()
-    start_tag = 'fuzzyStart' if start_date.is_fuzzy() else 'start'
-    start = etree.SubElement(dates, start_tag)
-    start.text = start_date.xml_str()
+    for key, get_date in (('added', task.get_added_date),
+                          ('modified', task.get_modified),
+                          ('done', task.get_closed_date),
+                          ('due', task.get_due_date),
+                          ('start', task.get_start_date)):
+        value = get_date()
+        if value:
+            etree.SubElement(dates, key).text = str(value)
 
     recurring = etree.SubElement(element, 'recurring')
     recurring.set('enabled', str(task.recurring).lower())
@@ -157,7 +133,7 @@ def task_to_element(task) -> etree.Element:
     recurring_term.text = str(task.get_recurring_term())
 
     recurring_updated_date = etree.SubElement(recurring, 'updated_date')
-    recurring_updated_date.text = task.get_recurring_updated_date().isoformat()
+    recurring_updated_date.text = str(task.get_recurring_updated_date())
 
     subtasks = etree.SubElement(element, 'subtasks')
 

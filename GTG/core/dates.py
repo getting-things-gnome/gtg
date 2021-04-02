@@ -257,8 +257,10 @@ class Date:
         return a >= b
 
     def __str__(self):
+        """ String representation - fuzzy dates are in English """
         if self.accuracy is Accuracy.fuzzy:
-            return STRINGS[self.dt_value]
+            strs = {SOON: 'soon', SOMEDAY: 'someday', NODATE: ''}
+            return strs[self.dt_value]
         return self.dt_value.isoformat()
 
     @property
@@ -272,13 +274,6 @@ class Date:
 
     def __repr__(self):
         return f"<Date({self})>"
-
-    def xml_str(self):
-        """ Representation for XML - fuzzy dates are in English """
-        if self.accuracy is Accuracy.fuzzy:
-            strs = {SOON: 'soon', SOMEDAY: 'someday', NODATE: ''}
-            return strs[self.dt_value]
-        return self.dt_by_accuracy(Accuracy.date).isoformat()
 
     def __bool__(self):
         return self.dt_value != NODATE

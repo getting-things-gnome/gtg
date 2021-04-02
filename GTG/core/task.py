@@ -355,7 +355,7 @@ class Task(TreeNode):
         return self.recurring_updated_date
 
     def set_recurring_updated_date(self, date):
-        self.recurring_updated_date = date
+        self.recurring_updated_date = Date(date)
 
     def inherit_recursion(self):
         """ Inherits the recurrent state of the parent.
@@ -902,5 +902,5 @@ class Task(TreeNode):
                 self.tid,
                 self.status,
                 str(self.tags),
-                str(self.added_date),
+                self.added_date,
                 str(self.recurring))
