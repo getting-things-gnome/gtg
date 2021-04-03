@@ -10,6 +10,11 @@
 7. Tag the release and create the tarballs and Flatpak packages
 8. Remember to update the historical wiki page at https://wiki.gnome.org/Apps/GTG/release_names
 
+Tip: You can prepare the release commit in advance by setting both the authorship and commit date to the future planned release date and time, and keeping the commit sitting in your personal fork's branch, with a command such as: `GIT_AUTHOR_DATE='the date and time' GIT_COMMITTER_DATE='the date and time' git commit` (note that if you rebase the branch, you should also reuse that `GIT_COMMITTER_DATE` environment variable, otherwise your resulting rebased commit will have the rebase time set as the new commit date).
+
+Git accepts various dates formats (including ISO 8601), see its [documentation on date formats](https://github.com/git/git/blob/master/Documentation/date-formats.txt).
+
+
 # Release tagging (usually done by maintainers)
 
 Tag the revision (use `git tag -a`) with `vRELEASE_NUMBER` (ex: `git tag -a v0.3.1`, `git tag -a v0.4`, etc.) when on the correct commit. `git tag` lists all the tags.
