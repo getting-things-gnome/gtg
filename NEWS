@@ -1,4 +1,35 @@
 ===========
+Version 0.5
+===========
+These are abbreviated release notes.
+See https://fortintam.com/blog/gtg-0-5-released for complete release notes.
+
+GTG 0.5 brings many user experience refinements, bugfixes,
+a completely revamped file format and task editor,
+and a couple of notable performance improvements.
+
+It requires liblarch 3.1 to benefit from some of the optimizations.
+
+Performance improvements include:
+
+ • Much faster startup time
+ • Much faster switching between tags
+ • Much more efficient (and faster) live searching
+ • Less UI micro-freezes (if at all) when editing tasks
+ • Much faster read/write operations on the file format
+
+Among new features, you can find:
+
+ • Recurring (repeating) tasks
+ • A much wider choice of emblems for your tags, as they now use emojis
+ • Much improved visual representation of contents in the task editor
+ • Support for sub-headings in the task editor
+ • The resurrection of the Hamster plugin
+ • Dark mode
+
+See the blog post mentioned above for more.
+
+===========
 Version 0.4
 ===========
 These are abbreviated release notes.
