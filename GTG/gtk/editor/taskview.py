@@ -251,7 +251,7 @@ class TaskView(Gtk.TextView):
         # </subtask>
 
         # Add a new subtask
-        if text.startswith('- ') and len(text[2:]) > 0:
+        if text.lstrip().startswith('- ') and len(text[2:]) > 0:
             # Remove the -
             delete_end = start.copy()
             delete_end.forward_chars(2)

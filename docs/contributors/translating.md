@@ -2,12 +2,13 @@
 
 Like many other open source software, GTG uses gettext to deal with translations.
 Basically, [`po/gtg.pot`][gtg-pot] is a template you copy to `po/<lang>.po` and do the translation in.
-You can use [GNOME Translation Editor][gtranslator], any text editor, or other applications to do the translation in.
+You can use [GNOME Translation Editor][gtranslator], [Poedit][poedit], any text editor, or other applications to do the translation in.
 For existing translations, you would use the old language as a basis, but it is likely not updated to the latest strings.
 Because of that, you may need to update the translation files manually.
 
 [gtg-pot]: ../../po/gtg.pot
 [gtranslator]: https://wiki.gnome.org/Apps/Gtranslator/
+[poedit]: https://poedit.net/
 [gettext-plural]: https://www.gnu.org/software/gettext/manual/html_node/Translating-plural-forms.html#Translating-plural-forms
 
 # Updating the translation files

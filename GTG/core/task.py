@@ -84,6 +84,7 @@ class Task(TreeNode):
         # Setting the attributes related to repeating tasks.
         self.recurring = False  # type: bool
         self.recurring_term = None  # type: str
+        self.recurring_updated_date = Date.no_date()
         self.inherit_recursion()
 
     def get_added_date(self):
@@ -319,11 +320,13 @@ class Task(TreeNode):
                 self.recurring = False
             else:
                 self.recurring_term = recurring_term
+                self.recurring_updated_date = datetime.now()
                 if newtask:
                     self.set_due_date(newdate)
         else:
             if valid:
                 self.recurring_term = recurring_term
+                self.recurring_updated_date = datetime.now()
 
         self.sync()
         # setting its children to recurrent
@@ -337,7 +340,7 @@ class Task(TreeNode):
                         child.set_due_date(newdate)
 
     def toggle_recurring(self):
-        """ Toggle a task's recurrency ON/OFF """
+        """ Toggle a task's recurrency ON/OFF. Use this function to toggle, not set_recurring"""
         # If there is no recurring_term, We assume it to recur every day.
         newtask = False
         if self.recurring_term is None:
@@ -351,6 +354,12 @@ class Task(TreeNode):
 
     def get_recurring_term(self):
         return self.recurring_term
+
+    def get_recurring_updated_date(self):
+        return self.recurring_updated_date
+
+    def set_recurring_updated_date(self, date):
+        self.recurring_updated_date = date
 
     def inherit_recursion(self):
         """ Inherits the recurrent state of the parent.
@@ -779,7 +788,9 @@ class Task(TreeNode):
         """Add a tag by its ID"""
 
         tag = self.req.ds.get_tag_by_id(tid)
-        self.tag_added(tag.get_name())
+
+        if tag:
+            self.tag_added(tag.get_name())
 
     def tag_added(self, tagname):
         """

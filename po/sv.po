@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-03-14 21:15-0300\n"
+"POT-Creation-Date: 2021-03-31 17:25-0400\n"
 "PO-Revision-Date: 2020-10-27 12:51+0100\n"
 "Last-Translator: Gleb Vassiljev <gleb@netkom.se>\n"
 "Language-Team: Translation Project Svenska <tp-sv@listor.tp-sv.se>\n"
@@ -253,7 +253,7 @@ msgstr "Märk som utförd"
 msgid "Dismiss"
 msgstr "Avfärda"
 
-#: GTG/gtk/data/context_menus.ui:60 GTG/gtk/browser/main_window.py:1155
+#: GTG/gtk/data/context_menus.ui:60 GTG/gtk/browser/main_window.py:1184
 msgid "Set Start Date"
 msgstr "Startdatum"
 
@@ -306,7 +306,7 @@ msgstr "Välj datum..."
 msgid "Clear Start Date"
 msgstr "Töm startdatum"
 
-#: GTG/gtk/data/context_menus.ui:125 GTG/gtk/browser/main_window.py:1166
+#: GTG/gtk/data/context_menus.ui:125 GTG/gtk/browser/main_window.py:1195
 msgid "Set Due Date"
 msgstr "Välj slutdatum"
 
@@ -923,6 +923,14 @@ msgstr ""
 "Ojdå, något oförutsett har hänt! GTG försökte att återställa dina uppgifter "
 "från säkerhetskopior. \n"
 
+#: GTG/core/info.py.in:33
+msgid ""
+"A personal productivity tool for GNOME,\n"
+"inspired by the GTD methodology."
+msgstr ""
+"Personlig produktivitetsverktyg gör GNOME,\n"
+"inspirerad av GTD metodiken."
+
 #. Translators: Used for display
 #. Translators: Used in parsing, made lowercased in code
 #. Translators: Used in search parsing, no spaces, lowercased in code
@@ -1034,7 +1042,7 @@ msgid ""
 "If you are new to GTG, please take the time to read this, as it will provide "
 "you useful information about how to use GTG to organize your everyday life.\n"
 "\n"
-"Creating and editing tasks:\n"
+"# Creating and editing tasks\n"
 "\n"
 "Using GTG is easy: you organize what you have to do by creating new tasks. "
 "To do this, simply press the &quot;New Task&quot; (+) button, edit the task "
@@ -1045,7 +1053,7 @@ msgid ""
 "press any &quot;Save&quot; button! Try it: add some text to this task, close "
 "the window, and reopen it: your changes are still there!\n"
 "\n"
-"About subtasks:\n"
+"# About subtasks\n"
 "\n"
 "In life, you often get more things done by refining them in smaller, more "
 "operational tasks. GTG helps to do just this by defining  &quot;"
@@ -1059,7 +1067,7 @@ msgid ""
 "example:\n"
 "{! 262d1410-71aa-4e35-abec-90ef1bab44d3 !}\n"
 "\n"
-"Closing a task:\n"
+"# Closing a task\n"
 "\n"
 "In GTG, once you are done with a task, you can close it by pushing either "
 "the &quot;Mark as Done&quot; or the &quot;Dismiss&quot; button. Use the "
@@ -1074,7 +1082,7 @@ msgid ""
 "Note that the tasks that you have marked as done or dismissed are listed in "
 "the &quot;Closed&quot; tasks view mode.\n"
 "\n"
-"Learn more about GTG:\n"
+"# Learn more about GTG\n"
 "\n"
 "If you are interested in knowing more about GTG's other features, you will "
 "find more information here:\n"
@@ -1104,7 +1112,7 @@ msgstr ""
 "dig värdefull information om hur du kan använda GTG för att organisera "
 "vardagslivet.\n"
 "\n"
-"Skapa och redigera uppgifter:\n"
+"# Skapa och redigera uppgifter\n"
 "\n"
 "Att använda GTG är enkelt: du organiserar det du vill göra genom att skapa "
 "nya uppgifter. För att göra det, helt enkelt tryck på &quot;Ny Uppgift&quot; "
@@ -1117,7 +1125,7 @@ msgstr ""
 "lite text till denna uppgift, stäng fönstret, och sedan öppna igen: dina "
 "ändringar är fortfarande kvar!\n"
 "\n"
-"Om underuppgifter:\n"
+"# Om underuppgifter\n"
 "\n"
 "I livet, när du ofta får mer saker att gjorda om du omarbetar det i fler "
 "mindre steg, i mer konkreta små uppgifter. GTG hjälper dig att göra just det "
@@ -1130,9 +1138,9 @@ msgstr ""
 "öppna och redigera en uppgift, behöver du endast klicka på länken! Du kan "
 "alltid komma tillbacks genom att klicka på &quot;Öppna överordnad&quot; "
 "knappen. Försök öppna följandeunderuppgift t.ex:\n"
-"<subtask>1@1</subtask>\n"
+"{! 262d1410-71aa-4e35-abec-90ef1bab44d3 !}\n"
 "\n"
-"Avsluta en uppgift:\n"
+"# Avsluta en uppgift\n"
 "\n"
 "I GTG, när du är klar med en uppgift kan du stänga den genom att antingen "
 "klicka på &quot;Märk som utförd &quot; eller &quot;Avfärda&quot; knappen. "
@@ -1147,17 +1155,18 @@ msgstr ""
 "Notera att uppgifter som du har markerat som färdiga eller avbröts listas då "
 "i visningsläge som &quot;Avslutade&quot; uppgifter.\n"
 "\n"
-"Lär dig mer om GTG:\n"
+"# Lär dig mer om GTG\n"
 "\n"
 "Om du är intresserad av att veta mer om andra funktionaliteter i GTG, så kan "
 "du hitta mer information här:\n"
-"<subtask>2@1</subtask>\n"
-"<subtask>3@1</subtask>\n"
-"<subtask>4@1</subtask>\n"
-"<subtask>5@1</subtask>\n"
-"<subtask>6@1</subtask>\n"
-"<subtask>7@1</subtask>\n"
-"<subtask>8@1</subtask>\n"
+"{! 262d1410-71aa-4e35-abec-90ef1bab44d3 !}\n"
+"{! 2d427a77-3077-4277-904c-073fcfcb4842 !}\n"
+"{! 0653765c-f5d4-4b7f-9903-0065bb258940 !}\n"
+"{! 3efd01b7-343d-4be1-9bac-8ed944517e3f !}\n"
+"{! 9b05a6c5-81e3-4fe5-a70d-3b569f65409c !}\n"
+"{! 21ed54a8-e7ff-408a-b648-8d12cc75e162 !}\n"
+"{! d1c73224-9eec-4889-b3c4-bb0281e5c1d3 !}\n"
+"{! 586dd1a7-0772-4d0a-85db-34edfc8ee30c !}\n"
 "\n"
 "Vi rekommenderar också att läsa användarmanualen, som du kommer åt genom att "
 "trycka på F1 knappen eller genom att klicka på &quot;Hjälp&quot; som väljs "
@@ -1816,26 +1825,26 @@ msgstr ""
 
 #. These lines should be in info.py, but due to their dynamic nature
 #. there'd be no way to show them translated in Gtk's About dialog:
-#: GTG/gtk/browser/main_window.py:317
+#: GTG/gtk/browser/main_window.py:320
 #, python-format
 msgid "Copyright © 2008-%d the GTG contributors."
 msgstr "Copyright © 2008-%d GTG och medverkande."
 
 #. GTK prefixes the first line with "Created by ",
 #. but we can't split the string because it would cause trouble for some languages.
-#: GTG/gtk/browser/main_window.py:322
+#: GTG/gtk/browser/main_window.py:325
 msgid "GTG was made by many contributors around the world."
 msgstr "GTG är skapad av många medverkande över hela världen."
 
-#: GTG/gtk/browser/main_window.py:323
+#: GTG/gtk/browser/main_window.py:326
 msgid "The GTG project is maintained/administered by:"
 msgstr "GTG projekt upprätthålls/administreras av:"
 
-#: GTG/gtk/browser/main_window.py:325
+#: GTG/gtk/browser/main_window.py:328
 msgid "This release was brought to you by the efforts of these people:"
 msgstr "Denna utgåva har skapats tack vare insatser från följande människor:"
 
-#: GTG/gtk/browser/main_window.py:327
+#: GTG/gtk/browser/main_window.py:330
 #, python-brace-format
 msgid ""
 "Many others contributed to GTG over the years.\n"
@@ -1844,22 +1853,22 @@ msgstr ""
 "Många andra har bidragit till GTG genom åren.\n"
 "Du kan se dessa på {OH_stats} och {GH_stats}."
 
-#: GTG/gtk/browser/main_window.py:336
+#: GTG/gtk/browser/main_window.py:339
 msgid "GTG website"
 msgstr "Webbplats för GTG"
 
 #. Translators for a particular language should put their names here.
 #. Please keep the width at 80 chars max, as GTK3's About dialog won't wrap text.
 #. GtkAboutDialog will detect if “translator-credits” is untranslated and auto-hide the tab.
-#: GTG/gtk/browser/main_window.py:349
+#: GTG/gtk/browser/main_window.py:352
 msgid "translator-credits"
 msgstr "översättning"
 
-#: GTG/gtk/browser/main_window.py:652
+#: GTG/gtk/browser/main_window.py:679
 msgid "Hide Sidebar"
 msgstr "Göm sidofält"
 
-#: GTG/gtk/browser/main_window.py:654
+#: GTG/gtk/browser/main_window.py:681
 msgid "Show Sidebar"
 msgstr "Visa sidofält"
 
@@ -2017,7 +2026,7 @@ msgstr "Öppna länk"
 msgid "Copy Link to Clipboard"
 msgstr "Kopiera länk till urklipp"
 
-#: GTG/gtk/general_preferences.py:65
+#: GTG/gtk/general_preferences.py:66
 msgid "General"
 msgstr "Allmänt"
 
@@ -2194,13 +2203,6 @@ msgstr ""
 #~ msgstr ""
 #~ "Dina uppgifter är sparade i en textfil (XML format).  Det är det mest "
 #~ "grundläggande och förvalda sättet för att spara GTG uppgifter."
-
-#~ msgid ""
-#~ "A personal productivity tool for GNOME,\n"
-#~ "inspired by the GTD methodology."
-#~ msgstr ""
-#~ "Personlig produktivitetsverktyg gör GNOME,\n"
-#~ "inspirerad av GTD metodiken."
 
 #~ msgid "tags"
 #~ msgstr "etiketter"

@@ -109,6 +109,9 @@
         <tr>
           <td><p>New Subtask</p></td>  <td><p><keyseq><key>Ctrl</key><key>Shift</key><key>N</key></keyseq></p></td>
         </tr>
+        <tr>
+          <td><p>New Parent Task</p></td>  <td><p><keyseq><key>Ctrl</key><key>Shift</key><key>P</key></keyseq></p></td>
+        </tr>
       </tbody>
     </table>
 

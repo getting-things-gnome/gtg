@@ -509,8 +509,10 @@ class MainWindow(Gtk.ApplicationWindow):
         is_maximized = widget.get_window().get_state() & mask == mask
         self.config.set("maximized", is_maximized)
 
-    def restore_collapsed_tasks(self):
-        for path_s in self.config.get("collapsed_tasks"):
+    def restore_collapsed_tasks(self, tasks=None):
+        tasks = tasks or self.config.get("collapsed_tasks")
+
+        for path_s in tasks:
             # the tuple was stored as a string. we have to reconstruct it
             path = ()
             for p in path_s[1:-1].split(","):
@@ -592,9 +594,13 @@ class MainWindow(Gtk.ApplicationWindow):
             GObject.idle_add(open_task, self.req, t)
 
     def refresh_all_views(self, timer):
+        collapsed = self.config.get("collapsed_tasks")
+
         for pane in 'active', 'workview', 'closed':
             self.req.get_tasks_tree(pane, False).reset_filters(refresh=False)
         self.reapply_filter()
+
+        self.restore_collapsed_tasks(collapsed)
 
     def find_value_in_treestore(self, store, treeiter, value):
         """Search for value in tree store recursively."""
@@ -991,7 +997,9 @@ class MainWindow(Gtk.ApplicationWindow):
             return True
 
     def on_add_task(self, widget=None):
-        tags = [tag for tag in self.get_selected_tags() if tag.startswith('@')]
+        tags = [tag for tag in self.get_selected_tags(nospecial=True)
+                if tag.startswith('@')]
+
         task = self.req.new_task(tags=tags, newtask=True)
         uid = task.get_id()
         self.app.open_task(uid, new=True)
@@ -1329,11 +1337,9 @@ class MainWindow(Gtk.ApplicationWindow):
         Optim: reseting it on first item, allows trigger refresh on last.
         """
         for tagname in self.get_selected_tags():
-            # In case of search tag, set query in quickadd for
-            # refining search query
+            # In case of search tag, refining search query
             tag = self.req.get_tag(tagname)
             if tag.is_search_tag():
-                self.quickadd_entry.set_text(tag.get_attribute("query"))
                 break
 
         self.reapply_filter()
@@ -1434,6 +1440,11 @@ class MainWindow(Gtk.ApplicationWindow):
             for t in list(taglist):
                 if t in special:
                     taglist.remove(t)
+                else:
+                    tag = self.req.get_tag(t)
+                    if tag and tag.is_search_tag():
+                        taglist.remove(t)
+
         return taglist
 
     def select_on_sidebar(self, value):

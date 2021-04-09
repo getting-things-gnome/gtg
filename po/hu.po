@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-03-14 21:15-0300\n"
+"POT-Creation-Date: 2021-03-31 17:25-0400\n"
 "PO-Revision-Date: 2020-09-21 10:16+0000\n"
 "Last-Translator: Zoltan Gera <gerazo@caesar.elte.hu>\n"
 "Language-Team: \n"
@@ -248,7 +248,7 @@ msgstr "Elvégzettnek Jelölés"
 msgid "Dismiss"
 msgstr "Elvetés"
 
-#: GTG/gtk/data/context_menus.ui:60 GTG/gtk/browser/main_window.py:1155
+#: GTG/gtk/data/context_menus.ui:60 GTG/gtk/browser/main_window.py:1184
 msgid "Set Start Date"
 msgstr "Kezdés Beállítása"
 
@@ -301,7 +301,7 @@ msgstr "Dátum Kiválasztása..."
 msgid "Clear Start Date"
 msgstr "Kezdés Törlése"
 
-#: GTG/gtk/data/context_menus.ui:125 GTG/gtk/browser/main_window.py:1166
+#: GTG/gtk/data/context_menus.ui:125 GTG/gtk/browser/main_window.py:1195
 msgid "Set Due Date"
 msgstr "Esedékesség Beállítása"
 
@@ -918,6 +918,14 @@ msgstr ""
 "Hopp, valami baj történt! A GTG megpróbálta visszaállítani a feladataidat "
 "mentésből. \n"
 
+#: GTG/core/info.py.in:33
+msgid ""
+"A personal productivity tool for GNOME,\n"
+"inspired by the GTD methodology."
+msgstr ""
+"Személyi produktivitás eszköz GNOME környezethez,\n"
+"a GTD módszer alapján."
+
 #. Translators: Used for display
 #. Translators: Used in parsing, made lowercased in code
 #. Translators: Used in search parsing, no spaces, lowercased in code
@@ -1020,7 +1028,6 @@ msgid "Getting Started with GTG (read me first)"
 msgstr "Első lépések a GTG-vel (olvass el!)"
 
 #: GTG/core/firstrun_tasks.py:68
-#, fuzzy
 msgid ""
 "Welcome to Getting Things GNOME (GTG), your new task manager! In GTG, "
 "everything is a task. From building a bridge over the Pacific Ocean to "
@@ -1029,7 +1036,7 @@ msgid ""
 "If you are new to GTG, please take the time to read this, as it will provide "
 "you useful information about how to use GTG to organize your everyday life.\n"
 "\n"
-"Creating and editing tasks:\n"
+"# Creating and editing tasks\n"
 "\n"
 "Using GTG is easy: you organize what you have to do by creating new tasks. "
 "To do this, simply press the &quot;New Task&quot; (+) button, edit the task "
@@ -1040,7 +1047,7 @@ msgid ""
 "press any &quot;Save&quot; button! Try it: add some text to this task, close "
 "the window, and reopen it: your changes are still there!\n"
 "\n"
-"About subtasks:\n"
+"# About subtasks\n"
 "\n"
 "In life, you often get more things done by refining them in smaller, more "
 "operational tasks. GTG helps to do just this by defining  &quot;"
@@ -1054,7 +1061,7 @@ msgid ""
 "example:\n"
 "{! 262d1410-71aa-4e35-abec-90ef1bab44d3 !}\n"
 "\n"
-"Closing a task:\n"
+"# Closing a task\n"
 "\n"
 "In GTG, once you are done with a task, you can close it by pushing either "
 "the &quot;Mark as Done&quot; or the &quot;Dismiss&quot; button. Use the "
@@ -1069,7 +1076,7 @@ msgid ""
 "Note that the tasks that you have marked as done or dismissed are listed in "
 "the &quot;Closed&quot; tasks view mode.\n"
 "\n"
-"Learn more about GTG:\n"
+"# Learn more about GTG\n"
 "\n"
 "If you are interested in knowing more about GTG's other features, you will "
 "find more information here:\n"
@@ -1099,7 +1106,7 @@ msgstr ""
 "hasznos infókat tudhatsz meg arról, hogyan használhatod a GTG-t a "
 "mindennapjaid szervezésére.\n"
 "\n"
-"Feladatok létrehozása, szerkesztése:\n"
+"# Feladatok létrehozása, szerkesztése\n"
 "\n"
 "A GTG használata egyszerű: Úgy tudod szervezni a teendőidet, hogy új "
 "feladatokat hozol létre. Ehhez csak nyomd meg az &quot;Új Feladat&quot; (+) "
@@ -1111,7 +1118,7 @@ msgstr ""
 "&quot;Mentés&quot; megnyomására! Próbáld ki: írj be ide valamit, zárd be az "
 "ablakot, nyisd meg újra: a változások még mindig itt vannak!\n"
 "\n"
-"A részfeladatokról:\n"
+"# A részfeladatokról\n"
 "\n"
 "Az életben sok dolgot úgy tudsz igazán megcsinálni, ha ezeket kisebb, "
 "egyszerűbb részfeladatokra bontod. A GTG segít ebben a  &quot;"
@@ -1124,9 +1131,9 @@ msgstr ""
 "megnyitásához és szerkesztéséhez csak kattints a linkre! Bármikor "
 "visszajöhetsz a &quot;Főfeladat Megnyitása&quot; gombbal. Próbáld megnyitni "
 "a következő részfeladatot, pl:\n"
-"<subtask>1@1</subtask>\n"
+"{! 262d1410-71aa-4e35-abec-90ef1bab44d3 !}\n"
 "\n"
-"Feladat lezárása:\n"
+"# Feladat lezárása\n"
 "\n"
 "Ha GTG-ben kész egy feladat, le tudod zárni a &quot;Befejezettnek "
 "Jelölés&quot; vagy az &quot;Elvetés&quot; gombbal. Használd az előbbit, ha "
@@ -1141,16 +1148,17 @@ msgstr ""
 "A lezártnak vagy elvetettnek jelölt feladatokat a &quot;Lezárt&quot; "
 "feladatok nézetében láthatod.\n"
 "\n"
-"Még többet a GTG-ről:\n"
+"# Még többet a GTG-ről\n"
 "\n"
 "Ha érdekelnek a GTG egyéb funkciói, itt találsz több infót:\n"
-"<subtask>2@1</subtask>\n"
-"<subtask>3@1</subtask>\n"
-"<subtask>4@1</subtask>\n"
-"<subtask>5@1</subtask>\n"
-"<subtask>6@1</subtask>\n"
-"<subtask>7@1</subtask>\n"
-"<subtask>8@1</subtask>\n"
+"{! 262d1410-71aa-4e35-abec-90ef1bab44d3 !}\n"
+"{! 2d427a77-3077-4277-904c-073fcfcb4842 !}\n"
+"{! 0653765c-f5d4-4b7f-9903-0065bb258940 !}\n"
+"{! 3efd01b7-343d-4be1-9bac-8ed944517e3f !}\n"
+"{! 9b05a6c5-81e3-4fe5-a70d-3b569f65409c !}\n"
+"{! 21ed54a8-e7ff-408a-b648-8d12cc75e162 !}\n"
+"{! d1c73224-9eec-4889-b3c4-bb0281e5c1d3 !}\n"
+"{! 586dd1a7-0772-4d0a-85db-34edfc8ee30c !}\n"
 "\n"
 "Javasoljuk, hogy olvasd el a felhasználói leírást az F1 gomb megnyomásával "
 "vagy a &quot;Súgó&quot; menüpont használatával a főablakban.\n"
@@ -1802,26 +1810,26 @@ msgstr ""
 
 #. These lines should be in info.py, but due to their dynamic nature
 #. there'd be no way to show them translated in Gtk's About dialog:
-#: GTG/gtk/browser/main_window.py:317
+#: GTG/gtk/browser/main_window.py:320
 #, python-format
 msgid "Copyright © 2008-%d the GTG contributors."
 msgstr "Copyright © 2008-%d a GTG közreműködői."
 
 #. GTK prefixes the first line with "Created by ",
 #. but we can't split the string because it would cause trouble for some languages.
-#: GTG/gtk/browser/main_window.py:322
+#: GTG/gtk/browser/main_window.py:325
 msgid "GTG was made by many contributors around the world."
 msgstr "A GTG-t számos közreműködő készítette a világ minden országából."
 
-#: GTG/gtk/browser/main_window.py:323
+#: GTG/gtk/browser/main_window.py:326
 msgid "The GTG project is maintained/administered by:"
 msgstr "A GTG projekt karbantartója és adminja: "
 
-#: GTG/gtk/browser/main_window.py:325
+#: GTG/gtk/browser/main_window.py:328
 msgid "This release was brought to you by the efforts of these people:"
 msgstr "Ez a kiadás a következő emberek segítségével készült:"
 
-#: GTG/gtk/browser/main_window.py:327
+#: GTG/gtk/browser/main_window.py:330
 #, python-brace-format
 msgid ""
 "Many others contributed to GTG over the years.\n"
@@ -1830,22 +1838,22 @@ msgstr ""
 "Sokan mások is segítettek az évek során a GTG készítésében.\n"
 "Őket itt {OH_stats} és itt {GH_stats} találod."
 
-#: GTG/gtk/browser/main_window.py:336
+#: GTG/gtk/browser/main_window.py:339
 msgid "GTG website"
 msgstr "A GTG honlapja"
 
 #. Translators for a particular language should put their names here.
 #. Please keep the width at 80 chars max, as GTK3's About dialog won't wrap text.
 #. GtkAboutDialog will detect if “translator-credits” is untranslated and auto-hide the tab.
-#: GTG/gtk/browser/main_window.py:349
+#: GTG/gtk/browser/main_window.py:352
 msgid "translator-credits"
 msgstr "Zoltán Gera"
 
-#: GTG/gtk/browser/main_window.py:652
+#: GTG/gtk/browser/main_window.py:679
 msgid "Hide Sidebar"
 msgstr "Oldalsáv Elrejtése"
 
-#: GTG/gtk/browser/main_window.py:654
+#: GTG/gtk/browser/main_window.py:681
 msgid "Show Sidebar"
 msgstr "Oldalsáv Mutatása"
 
@@ -2003,7 +2011,7 @@ msgstr "Hivatkozás Megnyitása"
 msgid "Copy Link to Clipboard"
 msgstr "Hivatkozás Másolása a Vágólapra"
 
-#: GTG/gtk/general_preferences.py:65
+#: GTG/gtk/general_preferences.py:66
 msgid "General"
 msgstr "Általános"
 
@@ -2181,13 +2189,6 @@ msgstr ""
 #~ msgstr ""
 #~ "A feladataidat egy szöveges fájlba mentjük (XML).  Ez a legegyszerűbb és "
 #~ "alapértelmezett módja annak, hogy a GTG elmentse a feladataidat."
-
-#~ msgid ""
-#~ "A personal productivity tool for GNOME,\n"
-#~ "inspired by the GTD methodology."
-#~ msgstr ""
-#~ "Személyi produktivitás eszköz GNOME környezethez,\n"
-#~ "a GTD módszer alapján."
 
 #~ msgid "tags"
 #~ msgstr "címkék"

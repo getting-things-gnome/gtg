@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-03-14 21:15-0300\n"
+"POT-Creation-Date: 2021-03-31 17:25-0400\n"
 "PO-Revision-Date: 2013-07-17 11:47+0000\n"
 "Last-Translator: Frederico Lopes <Unknown>\n"
 "Language-Team: Brazilian Portuguese <gnome-pt_br-list@gnome.org>\n"
@@ -237,7 +237,7 @@ msgstr "Marcar como concluída"
 msgid "Dismiss"
 msgstr "Descartar"
 
-#: GTG/gtk/data/context_menus.ui:60 GTG/gtk/browser/main_window.py:1155
+#: GTG/gtk/data/context_menus.ui:60 GTG/gtk/browser/main_window.py:1184
 #, fuzzy
 msgid "Set Start Date"
 msgstr "_Alterar Data de Início"
@@ -295,7 +295,7 @@ msgstr ""
 msgid "Clear Start Date"
 msgstr "_Limpar Data de Início"
 
-#: GTG/gtk/data/context_menus.ui:125 GTG/gtk/browser/main_window.py:1166
+#: GTG/gtk/data/context_menus.ui:125 GTG/gtk/browser/main_window.py:1195
 msgid "Set Due Date"
 msgstr "Alterar Data de Vencimento"
 
@@ -956,6 +956,12 @@ msgid ""
 "backups. \n"
 msgstr ""
 
+#: GTG/core/info.py.in:33
+msgid ""
+"A personal productivity tool for GNOME,\n"
+"inspired by the GTD methodology."
+msgstr ""
+
 #. Translators: Used for display
 #. Translators: Used in parsing, made lowercased in code
 #. Translators: Used in search parsing, no spaces, lowercased in code
@@ -1067,7 +1073,7 @@ msgid ""
 "If you are new to GTG, please take the time to read this, as it will provide "
 "you useful information about how to use GTG to organize your everyday life.\n"
 "\n"
-"Creating and editing tasks:\n"
+"# Creating and editing tasks\n"
 "\n"
 "Using GTG is easy: you organize what you have to do by creating new tasks. "
 "To do this, simply press the &quot;New Task&quot; (+) button, edit the task "
@@ -1078,7 +1084,7 @@ msgid ""
 "press any &quot;Save&quot; button! Try it: add some text to this task, close "
 "the window, and reopen it: your changes are still there!\n"
 "\n"
-"About subtasks:\n"
+"# About subtasks\n"
 "\n"
 "In life, you often get more things done by refining them in smaller, more "
 "operational tasks. GTG helps to do just this by defining  &quot;"
@@ -1092,7 +1098,7 @@ msgid ""
 "example:\n"
 "{! 262d1410-71aa-4e35-abec-90ef1bab44d3 !}\n"
 "\n"
-"Closing a task:\n"
+"# Closing a task\n"
 "\n"
 "In GTG, once you are done with a task, you can close it by pushing either "
 "the &quot;Mark as Done&quot; or the &quot;Dismiss&quot; button. Use the "
@@ -1107,7 +1113,7 @@ msgid ""
 "Note that the tasks that you have marked as done or dismissed are listed in "
 "the &quot;Closed&quot; tasks view mode.\n"
 "\n"
-"Learn more about GTG:\n"
+"# Learn more about GTG\n"
 "\n"
 "If you are interested in knowing more about GTG's other features, you will "
 "find more information here:\n"
@@ -1705,49 +1711,49 @@ msgstr ""
 
 #. These lines should be in info.py, but due to their dynamic nature
 #. there'd be no way to show them translated in Gtk's About dialog:
-#: GTG/gtk/browser/main_window.py:317
+#: GTG/gtk/browser/main_window.py:320
 #, python-format
 msgid "Copyright © 2008-%d the GTG contributors."
 msgstr ""
 
 #. GTK prefixes the first line with "Created by ",
 #. but we can't split the string because it would cause trouble for some languages.
-#: GTG/gtk/browser/main_window.py:322
+#: GTG/gtk/browser/main_window.py:325
 msgid "GTG was made by many contributors around the world."
 msgstr ""
 
-#: GTG/gtk/browser/main_window.py:323
+#: GTG/gtk/browser/main_window.py:326
 msgid "The GTG project is maintained/administered by:"
 msgstr ""
 
-#: GTG/gtk/browser/main_window.py:325
+#: GTG/gtk/browser/main_window.py:328
 msgid "This release was brought to you by the efforts of these people:"
 msgstr ""
 
-#: GTG/gtk/browser/main_window.py:327
+#: GTG/gtk/browser/main_window.py:330
 #, python-brace-format
 msgid ""
 "Many others contributed to GTG over the years.\n"
 "You can see them on {OH_stats} and {GH_stats}."
 msgstr ""
 
-#: GTG/gtk/browser/main_window.py:336
+#: GTG/gtk/browser/main_window.py:339
 msgid "GTG website"
 msgstr "Site do GTG"
 
 #. Translators for a particular language should put their names here.
 #. Please keep the width at 80 chars max, as GTK3's About dialog won't wrap text.
 #. GtkAboutDialog will detect if “translator-credits” is untranslated and auto-hide the tab.
-#: GTG/gtk/browser/main_window.py:349
+#: GTG/gtk/browser/main_window.py:352
 msgid "translator-credits"
 msgstr ""
 
-#: GTG/gtk/browser/main_window.py:652
+#: GTG/gtk/browser/main_window.py:679
 #, fuzzy
 msgid "Hide Sidebar"
 msgstr "Barra lateral de e_tiquetas"
 
-#: GTG/gtk/browser/main_window.py:654
+#: GTG/gtk/browser/main_window.py:681
 #, fuzzy
 msgid "Show Sidebar"
 msgstr "Barra lateral de e_tiquetas"
@@ -1916,7 +1922,7 @@ msgstr "Tarefa aberta"
 msgid "Copy Link to Clipboard"
 msgstr ""
 
-#: GTG/gtk/general_preferences.py:65
+#: GTG/gtk/general_preferences.py:66
 #, fuzzy
 msgid "General"
 msgstr "<b>Geral</b>"

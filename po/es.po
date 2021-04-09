@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-03-14 21:15-0300\n"
+"POT-Creation-Date: 2021-03-31 17:25-0400\n"
 "PO-Revision-Date: 2021-01-22 23:00+0100\n"
 "Last-Translator: Óscar Fernández Díaz <oscfdezdz@tuta.io>\n"
 "Language-Team: Spanish\n"
@@ -263,7 +263,7 @@ msgstr "Marcar como terminada"
 msgid "Dismiss"
 msgstr "Descartar"
 
-#: GTG/gtk/data/context_menus.ui:60 GTG/gtk/browser/main_window.py:1155
+#: GTG/gtk/data/context_menus.ui:60 GTG/gtk/browser/main_window.py:1184
 msgid "Set Start Date"
 msgstr "Establecer fecha de inicio"
 
@@ -316,7 +316,7 @@ msgstr "Escoge una fecha..."
 msgid "Clear Start Date"
 msgstr "Limpiar fecha de inicio"
 
-#: GTG/gtk/data/context_menus.ui:125 GTG/gtk/browser/main_window.py:1166
+#: GTG/gtk/data/context_menus.ui:125 GTG/gtk/browser/main_window.py:1195
 msgid "Set Due Date"
 msgstr "Establecer fecha de término"
 
@@ -921,6 +921,12 @@ msgstr ""
 "¡Uy, algo inesperado sucedió! GTG trató de recuperar sus tareas de las "
 "copias de seguridad.\n"
 
+#: GTG/core/info.py.in:33
+msgid ""
+"A personal productivity tool for GNOME,\n"
+"inspired by the GTD methodology."
+msgstr ""
+
 #. Translators: Used for display
 #. Translators: Used in parsing, made lowercased in code
 #. Translators: Used in search parsing, no spaces, lowercased in code
@@ -1019,7 +1025,6 @@ msgid "Getting Started with GTG (read me first)"
 msgstr "Empezando con GTG (léeme primero)"
 
 #: GTG/core/firstrun_tasks.py:68
-#, fuzzy
 msgid ""
 "Welcome to Getting Things GNOME (GTG), your new task manager! In GTG, "
 "everything is a task. From building a bridge over the Pacific Ocean to "
@@ -1028,7 +1033,7 @@ msgid ""
 "If you are new to GTG, please take the time to read this, as it will provide "
 "you useful information about how to use GTG to organize your everyday life.\n"
 "\n"
-"Creating and editing tasks:\n"
+"# Creating and editing tasks\n"
 "\n"
 "Using GTG is easy: you organize what you have to do by creating new tasks. "
 "To do this, simply press the &quot;New Task&quot; (+) button, edit the task "
@@ -1039,7 +1044,7 @@ msgid ""
 "press any &quot;Save&quot; button! Try it: add some text to this task, close "
 "the window, and reopen it: your changes are still there!\n"
 "\n"
-"About subtasks:\n"
+"# About subtasks\n"
 "\n"
 "In life, you often get more things done by refining them in smaller, more "
 "operational tasks. GTG helps to do just this by defining  &quot;"
@@ -1053,7 +1058,7 @@ msgid ""
 "example:\n"
 "{! 262d1410-71aa-4e35-abec-90ef1bab44d3 !}\n"
 "\n"
-"Closing a task:\n"
+"# Closing a task\n"
 "\n"
 "In GTG, once you are done with a task, you can close it by pushing either "
 "the &quot;Mark as Done&quot; or the &quot;Dismiss&quot; button. Use the "
@@ -1068,7 +1073,7 @@ msgid ""
 "Note that the tasks that you have marked as done or dismissed are listed in "
 "the &quot;Closed&quot; tasks view mode.\n"
 "\n"
-"Learn more about GTG:\n"
+"# Learn more about GTG\n"
 "\n"
 "If you are interested in knowing more about GTG's other features, you will "
 "find more information here:\n"
@@ -1098,7 +1103,7 @@ msgstr ""
 "proporcionará información útil sobre cómo usar GTG para organizar tu vida "
 "diaria.\n"
 "\n"
-"Creando y editando tareas:\n"
+"# Creando y editando tareas\n"
 "\n"
 "Usar GTG es fácil: organizas lo que tienes que hacer creando nuevas tareas. "
 "Para ello, simplemente presiona el botón &quot;Nueva tarea&quot; (+), edita "
@@ -1111,7 +1116,7 @@ msgstr ""
 "añade algo de texto a esta tarea, cierre la ventana, y vuelva a abrirla: "
 "¡tus cambios siguen ahí!\n"
 "\n"
-"Acerca de las subtareas:\n"
+"# Acerca de las subtareas\n"
 "\n"
 "En la vida, a menudo se consiguen más cosas refinándolas en tareas más "
 "pequeñas y operativas. GTG ayuda a hacer esto definiendo &quot;"
@@ -1123,9 +1128,9 @@ msgstr ""
 "que figura a continuación. Para abrir y editar una subtarea, simplemente "
 "haga clic en su enlace! Siempre puedes volver usando el botón &quot;Abrir "
 "principal&quot;. Intenta abrir la siguiente subtarea por ejemplo:\n"
-"<subtask>1@1</subtask>\n"
+"{! 262d1410-71aa-4e35-abec-90ef1bab44d3 !}\n"
 "\n"
-"Cerrando una tarea:\n"
+"# Cerrando una tarea\n"
 "\n"
 "En GTG, una vez que has terminado una tarea, puedes cerrarla pulsando el "
 "botón &quot;Marcar como hecha&quot; o el botón &quot;Descartar&quot;. Usa el "
@@ -1140,17 +1145,18 @@ msgstr ""
 "Ten en cuenta que las tareas que has marcado como hechas o descartadas se "
 "listan en el modo de vista de tareas &quot;Terminadas&quot;.\n"
 "\n"
-"Aprende más sobre GTG:\n"
+"# Aprende más sobre GTG\n"
 "\n"
 "Si estás interesado en saber más sobre las otras características de GTG, "
 "encontrarás más información aquí:\n"
-"<subtask>2@1</subtask>\n"
-"<subtask>3@1</subtask>\n"
-"<subtask>4@1</subtask>\n"
-"<subtask>5@1</subtask>\n"
-"<subtask>6@1</subtask>\n"
-"<subtask>7@1</subtask>\n"
-"<subtask>8@1</subtask>\n"
+"{! 262d1410-71aa-4e35-abec-90ef1bab44d3 !}\n"
+"{! 2d427a77-3077-4277-904c-073fcfcb4842 !}\n"
+"{! 0653765c-f5d4-4b7f-9903-0065bb258940 !}\n"
+"{! 3efd01b7-343d-4be1-9bac-8ed944517e3f !}\n"
+"{! 9b05a6c5-81e3-4fe5-a70d-3b569f65409c !}\n"
+"{! 21ed54a8-e7ff-408a-b648-8d12cc75e162 !}\n"
+"{! d1c73224-9eec-4889-b3c4-bb0281e5c1d3 !}\n"
+"{! 586dd1a7-0772-4d0a-85db-34edfc8ee30c !}\n"
 "\n"
 "También te recomendamos que leas nuestro manual de usuario, pulsando F1 o "
 "usando la entrada &quot;Ayuda&quot; en el botón de menú de la ventana "
@@ -1820,26 +1826,26 @@ msgstr ""
 
 #. These lines should be in info.py, but due to their dynamic nature
 #. there'd be no way to show them translated in Gtk's About dialog:
-#: GTG/gtk/browser/main_window.py:317
+#: GTG/gtk/browser/main_window.py:320
 #, python-format
 msgid "Copyright © 2008-%d the GTG contributors."
 msgstr "Copyright © 2008-%d the GTG contributors."
 
 #. GTK prefixes the first line with "Created by ",
 #. but we can't split the string because it would cause trouble for some languages.
-#: GTG/gtk/browser/main_window.py:322
+#: GTG/gtk/browser/main_window.py:325
 msgid "GTG was made by many contributors around the world."
 msgstr "GTG fue hecho por muchos colaboradores alrededor del mundo."
 
-#: GTG/gtk/browser/main_window.py:323
+#: GTG/gtk/browser/main_window.py:326
 msgid "The GTG project is maintained/administered by:"
 msgstr "El proyecto GTG es mantenido/administrado por:"
 
-#: GTG/gtk/browser/main_window.py:325
+#: GTG/gtk/browser/main_window.py:328
 msgid "This release was brought to you by the efforts of these people:"
 msgstr "Esta publicación fue traída por los esfuerzos de estas personas:"
 
-#: GTG/gtk/browser/main_window.py:327
+#: GTG/gtk/browser/main_window.py:330
 #, python-brace-format
 msgid ""
 "Many others contributed to GTG over the years.\n"
@@ -1848,22 +1854,22 @@ msgstr ""
 "Muchos otros contribuyeron a GTG a lo largo de los años.\n"
 "Puedes verlos en {OH_stats} y {GH_stats}."
 
-#: GTG/gtk/browser/main_window.py:336
+#: GTG/gtk/browser/main_window.py:339
 msgid "GTG website"
 msgstr "Web de GTG"
 
 #. Translators for a particular language should put their names here.
 #. Please keep the width at 80 chars max, as GTK3's About dialog won't wrap text.
 #. GtkAboutDialog will detect if “translator-credits” is untranslated and auto-hide the tab.
-#: GTG/gtk/browser/main_window.py:349
+#: GTG/gtk/browser/main_window.py:352
 msgid "translator-credits"
 msgstr "Óscar Fernández Díaz"
 
-#: GTG/gtk/browser/main_window.py:652
+#: GTG/gtk/browser/main_window.py:679
 msgid "Hide Sidebar"
 msgstr "Ocultar barra lateral"
 
-#: GTG/gtk/browser/main_window.py:654
+#: GTG/gtk/browser/main_window.py:681
 msgid "Show Sidebar"
 msgstr "Mostrar barra lateral"
 
@@ -1894,9 +1900,8 @@ msgid "Editing Tag \"%s\""
 msgstr "Editando tarea \"%s\""
 
 #: GTG/gtk/browser/tag_editor.py:87
-#, fuzzy
 msgid "Remove icon"
-msgstr "_Quitar"
+msgstr "Quitar el icono"
 
 #: GTG/gtk/browser/tag_editor.py:98
 msgid "Name : "
@@ -2021,7 +2026,7 @@ msgstr "Abrir enlace"
 msgid "Copy Link to Clipboard"
 msgstr "Copiar enlace al portapapeles"
 
-#: GTG/gtk/general_preferences.py:65
+#: GTG/gtk/general_preferences.py:66
 msgid "General"
 msgstr "General"
 

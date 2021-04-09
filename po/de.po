@@ -2,14 +2,14 @@
 # Copyright (c) 2009 Rosetta Contributors and Canonical Ltd 2009
 # This file is distributed under the same license as the gtg package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2009.
-# Neui <neui>, 2020.
+# Neui <neui>, 2020-2021.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-03-14 21:15-0300\n"
-"PO-Revision-Date: 2020-10-29 14:43+0100\n"
+"POT-Creation-Date: 2021-03-31 17:25-0400\n"
+"PO-Revision-Date: 2021-03-16 19:57+0100\n"
 "Last-Translator: Neui <neui>\n"
 "Language-Team: Deutsch <>\n"
 "Language: de\n"
@@ -255,9 +255,8 @@ msgid "Add a Subtask..."
 msgstr "_Teilaufgabe hinzufügen…"
 
 #: GTG/gtk/data/context_menus.ui:35
-#, fuzzy
 msgid "Add a Parent task..."
-msgstr "_Teilaufgabe hinzufügen…"
+msgstr "_Übergeordnete Aufgabe hinzufügen…"
 
 #: GTG/gtk/data/context_menus.ui:45 GTG/gtk/data/task_editor.ui:887
 msgid "Mark as Done"
@@ -268,7 +267,7 @@ msgid "Dismiss"
 msgstr "Verwerfen"
 
 # Also used as an window title, thus can't have an mnemonic
-#: GTG/gtk/data/context_menus.ui:60 GTG/gtk/browser/main_window.py:1155
+#: GTG/gtk/data/context_menus.ui:60 GTG/gtk/browser/main_window.py:1184
 msgid "Set Start Date"
 msgstr "Anfangsdatum setzen"
 
@@ -324,7 +323,7 @@ msgid "Clear Start Date"
 msgstr "Anfangsdatum löschen"
 
 # Also used as an window title, thus can't have an mnemonic
-#: GTG/gtk/data/context_menus.ui:125 GTG/gtk/browser/main_window.py:1166
+#: GTG/gtk/data/context_menus.ui:125 GTG/gtk/browser/main_window.py:1195
 msgid "Set Due Date"
 msgstr "Fälligkeitsdatum setzen"
 
@@ -450,12 +449,12 @@ msgstr "Aufgabenübersicht"
 #: GTG/gtk/data/help_overlay.ui:60
 msgctxt "shortcut window"
 msgid "Unfold Treeview Items in Task Browser"
-msgstr ""
+msgstr "Teilaufgaben ausklappen"
 
 #: GTG/gtk/data/help_overlay.ui:68
 msgctxt "shortcut window"
 msgid "Fold Treeview Items in Task Browser"
-msgstr ""
+msgstr "Teilaufgaben einklappen"
 
 #: GTG/gtk/data/help_overlay.ui:75
 msgctxt "shortcut window"
@@ -946,6 +945,14 @@ msgstr ""
 "Oh nein, etwas unerwartetes ist geschehen! GTG versuchte, die Aufgaben von "
 "einer Datensicherung wiederherzustellen. \n"
 
+#: GTG/core/info.py.in:33
+msgid ""
+"A personal productivity tool for GNOME,\n"
+"inspired by the GTD methodology."
+msgstr ""
+"Ein persönliches Produktivitätswerkzeug für GNOME,\n"
+"inspiriert durch die GTD Methodik."
+
 #. Translators: Used for display
 #. Translators: Used in parsing, made lowercased in code
 #. Translators: Used in search parsing, no spaces, lowercased in code
@@ -1049,7 +1056,6 @@ msgid "Getting Started with GTG (read me first)"
 msgstr "Erste Schritte mit GTG (zuerst lesen)"
 
 #: GTG/core/firstrun_tasks.py:68
-#, fuzzy
 msgid ""
 "Welcome to Getting Things GNOME (GTG), your new task manager! In GTG, "
 "everything is a task. From building a bridge over the Pacific Ocean to "
@@ -1058,7 +1064,7 @@ msgid ""
 "If you are new to GTG, please take the time to read this, as it will provide "
 "you useful information about how to use GTG to organize your everyday life.\n"
 "\n"
-"Creating and editing tasks:\n"
+"# Creating and editing tasks\n"
 "\n"
 "Using GTG is easy: you organize what you have to do by creating new tasks. "
 "To do this, simply press the &quot;New Task&quot; (+) button, edit the task "
@@ -1069,7 +1075,7 @@ msgid ""
 "press any &quot;Save&quot; button! Try it: add some text to this task, close "
 "the window, and reopen it: your changes are still there!\n"
 "\n"
-"About subtasks:\n"
+"# About subtasks\n"
 "\n"
 "In life, you often get more things done by refining them in smaller, more "
 "operational tasks. GTG helps to do just this by defining  &quot;"
@@ -1083,7 +1089,7 @@ msgid ""
 "example:\n"
 "{! 262d1410-71aa-4e35-abec-90ef1bab44d3 !}\n"
 "\n"
-"Closing a task:\n"
+"# Closing a task\n"
 "\n"
 "In GTG, once you are done with a task, you can close it by pushing either "
 "the &quot;Mark as Done&quot; or the &quot;Dismiss&quot; button. Use the "
@@ -1098,7 +1104,7 @@ msgid ""
 "Note that the tasks that you have marked as done or dismissed are listed in "
 "the &quot;Closed&quot; tasks view mode.\n"
 "\n"
-"Learn more about GTG:\n"
+"# Learn more about GTG\n"
 "\n"
 "If you are interested in knowing more about GTG's other features, you will "
 "find more information here:\n"
@@ -1128,7 +1134,7 @@ msgstr ""
 "diese Einführung zu lesen, denn diese enthält nützliche Informationen, wie "
 "man mit GTG den Alltag organisiert.\n"
 "\n"
-"Aufgaben erstellen und anpassen:\n"
+"# Aufgaben erstellen und anpassen\n"
 "\n"
 "GTG ist leicht: Sie verwalten alles, was Sie erledigen müssen, indem sie "
 "neue Aufgaben erstellen. Zu diesem Zweck klicken Sie auf den »Neue Aufgabe« "
@@ -1141,7 +1147,7 @@ msgstr ""
 "Probieren Sie es aus: Fügen Sie etwas Text zu dieser Aufgabe hinzu, schließe "
 "dieses Fenster und öffne es wieder: Ihre Änderungen sind immer noch da!\n"
 "\n"
-"Über Teilaufgaben:\n"
+"# Über Teilaufgaben\n"
 "\n"
 "Im Leben bekommt man oft mehr erledigt, wenn man Aufgaben in kleinere, "
 "besser handhabbare Teile zerlegt. GTG hilft dir genau dabei, indem "
@@ -1154,9 +1160,9 @@ msgstr ""
 "genauso wie der Verweis unten. Um eine Teilaufgabe zu öffnen und anzupassen, "
 "klicken Sie einfach auf den entsprechenden Verweis! Probieren Sie es selbst "
 "aus: Öffnen sie folgende Teilaufgabe:\n"
-"<subtask>1@1</subtask>\n"
+"{! 262d1410-71aa-4e35-abec-90ef1bab44d3 !}\n"
 "\n"
-"Aufgabe abschließen:\n"
+"# Aufgabe abschließen\n"
 "\n"
 "Wenn Sie mit einer Aufgabe fertig sind, können sie diese in GTG abschließen, "
 "indem Sie entweder den Knopf »Als erledigt markieren« oder »Verwerfen« "
@@ -1172,17 +1178,18 @@ msgstr ""
 "Denken sie daran, dass Aufgaben, die Sie als erledigt markiert oder "
 "verworfen haben, in der »Beendete Aufgaben« Ansicht aufgelistet werden,.\n"
 "\n"
-"Erfahren Sie mehr über GTG:\n"
+"# Erfahren Sie mehr über GTG\n"
 "\n"
 "Wenn Sie mehr über die anderen Möglichkeiten von GTG erfahren möchten, dann "
 "finden Sie hier weitere Informationen unter:\n"
-"<subtask>2@1</subtask>\n"
-"<subtask>3@1</subtask>\n"
-"<subtask>4@1</subtask>\n"
-"<subtask>5@1</subtask>\n"
-"<subtask>6@1</subtask>\n"
-"<subtask>7@1</subtask>\n"
-"<subtask>8@1</subtask>\n"
+"{! 262d1410-71aa-4e35-abec-90ef1bab44d3 !}\n"
+"{! 2d427a77-3077-4277-904c-073fcfcb4842 !}\n"
+"{! 0653765c-f5d4-4b7f-9903-0065bb258940 !}\n"
+"{! 3efd01b7-343d-4be1-9bac-8ed944517e3f !}\n"
+"{! 9b05a6c5-81e3-4fe5-a70d-3b569f65409c !}\n"
+"{! 21ed54a8-e7ff-408a-b648-8d12cc75e162 !}\n"
+"{! d1c73224-9eec-4889-b3c4-bb0281e5c1d3 !}\n"
+"{! 586dd1a7-0772-4d0a-85db-34edfc8ee30c !}\n"
 "\n"
 "Genauso können Sie die GTG Dokumentation durchsuchen, indem sie F1 drücken, "
 "oder das Hilfe Menü verwenden.\n"
@@ -1849,27 +1856,27 @@ msgstr ""
 
 #. These lines should be in info.py, but due to their dynamic nature
 #. there'd be no way to show them translated in Gtk's About dialog:
-#: GTG/gtk/browser/main_window.py:317
+#: GTG/gtk/browser/main_window.py:320
 #, python-format
 msgid "Copyright © 2008-%d the GTG contributors."
 msgstr "Copyright © 2008-%d Beitragende von GTG."
 
 #. GTK prefixes the first line with "Created by ",
 #. but we can't split the string because it would cause trouble for some languages.
-#: GTG/gtk/browser/main_window.py:322
+#: GTG/gtk/browser/main_window.py:325
 msgid "GTG was made by many contributors around the world."
 msgstr "GTG wurde von vielen weltweit beigetragen."
 
-#: GTG/gtk/browser/main_window.py:323
+#: GTG/gtk/browser/main_window.py:326
 msgid "The GTG project is maintained/administered by:"
 msgstr "Das GTG Projekt wird verwaltet und betreut von:"
 
-#: GTG/gtk/browser/main_window.py:325
+#: GTG/gtk/browser/main_window.py:328
 msgid "This release was brought to you by the efforts of these people:"
 msgstr ""
 "Diese Version wurde durch die Anstrengungen folgende Beitragenden möglich:"
 
-#: GTG/gtk/browser/main_window.py:327
+#: GTG/gtk/browser/main_window.py:330
 #, python-brace-format
 msgid ""
 "Many others contributed to GTG over the years.\n"
@@ -1878,7 +1885,7 @@ msgstr ""
 "Über die Jahre haben viele zu GTG etwas beigetragen.\n"
 "Unter {OH_stats} und {GH_stats} sind sie zu finden."
 
-#: GTG/gtk/browser/main_window.py:336
+#: GTG/gtk/browser/main_window.py:339
 msgid "GTG website"
 msgstr "Webseite von GTG"
 
@@ -1886,18 +1893,18 @@ msgstr "Webseite von GTG"
 #. Translators for a particular language should put their names here.
 #. Please keep the width at 80 chars max, as GTK3's About dialog won't wrap text.
 #. GtkAboutDialog will detect if “translator-credits” is untranslated and auto-hide the tab.
-#: GTG/gtk/browser/main_window.py:349
+#: GTG/gtk/browser/main_window.py:352
 msgid "translator-credits"
 msgstr ""
 "Borim\n"
 "Neui\n"
 "Renehsz"
 
-#: GTG/gtk/browser/main_window.py:652
+#: GTG/gtk/browser/main_window.py:679
 msgid "Hide Sidebar"
 msgstr "Seitenleiste verstecken"
 
-#: GTG/gtk/browser/main_window.py:654
+#: GTG/gtk/browser/main_window.py:681
 msgid "Show Sidebar"
 msgstr "Seitenleiste anzeigen"
 
@@ -1912,7 +1919,7 @@ msgstr "Benutzerdefinierte Farbe hinzufügen…"
 
 #: GTG/gtk/browser/simple_color_selector.py:243
 msgid "Clear Selected Color"
-msgstr "Entferne ausgewählte Farbe"
+msgstr "Ausgewählte Farbe entfernen"
 
 #: GTG/gtk/browser/simple_color_selector.py:284
 msgid "Choose a color"
@@ -1928,9 +1935,8 @@ msgid "Editing Tag \"%s\""
 msgstr "Bearbeite Schlagwort »%s«"
 
 #: GTG/gtk/browser/tag_editor.py:87
-#, fuzzy
 msgid "Remove icon"
-msgstr "Entferne ausgewähltes Symbol"
+msgstr "Symbol entfernen"
 
 #: GTG/gtk/browser/tag_editor.py:98
 msgid "Name : "
@@ -2059,7 +2065,7 @@ msgstr "Verweis öffnen"
 msgid "Copy Link to Clipboard"
 msgstr "Verweis-Adresse kopieren"
 
-#: GTG/gtk/general_preferences.py:65
+#: GTG/gtk/general_preferences.py:66
 msgid "General"
 msgstr "Allgemein"
 
@@ -2194,15 +2200,18 @@ msgstr "@untouched Schlagwort hinzufügen"
 #: GTG/plugins/dev_console.gtg-plugin.desktop:4
 #: GTG/plugins/dev_console/console.py:71 GTG/plugins/dev_console/console.py:100
 msgid "Developer Console"
-msgstr ""
+msgstr "Entwicklerkonsole"
 
 #: GTG/plugins/dev_console.gtg-plugin.desktop:5
 msgid "Opens a Python interpreter with access to GTG internals"
 msgstr ""
+"Öffnet einen Python-Interpreter mit Zugriff auf GTG-interne Datenstrukturen"
 
 #: GTG/plugins/dev_console.gtg-plugin.desktop:6
 msgid "Opens a new window with a Python interpreter that can access GTG data"
 msgstr ""
+"Öffnet ein neues Fenster mit dem Python-Interpreter welcher Zugriff auf GTG-"
+"interne Datenstrukturen besitzt."
 
 #: GTG/plugins/dev_console/console.py:117
 msgid ""
@@ -2216,22 +2225,34 @@ msgid ""
 "Type \"help (<command>)\" for more information.\n"
 "\n"
 msgstr ""
+"Willkommen in GTGs Entwicklerkonsole\n"
+"\n"
+"Folgende Variablen sind verfügbar:\n"
+"- app (Die Applikation-Klasse)\n"
+"- req (Die Requester-Klasse)\n"
+"- browser (Das Hauptfenster)\n"
+"\n"
+"Tippe help(<Variable>) für mehr Informationen.\n"
 
 #: GTG/plugins/dev_console/utils.py:86
 #, python-brace-format
 msgid ""
 "Not possible to override {key}, because shortcuts commands are read-only."
 msgstr ""
+"{key} kann nicht überschrieben werden, weil diese Variablen nicht verändert "
+"werden können."
 
 #~ msgid "@APP_ID@"
 #~ msgstr "@APP_ID@"
 
-#~ msgid ""
-#~ "A personal productivity tool for GNOME,\n"
-#~ "inspired by the GTD methodology."
-#~ msgstr ""
-#~ "Ein persönliches Produktivitätswerkzeug für GNOME,\n"
-#~ "inspiriert durch die GTD Methodik."
+#~ msgid "Welcome to GTG's Developer Console"
+#~ msgstr "Willkommen im GTGs Entwickerkonsole"
+
+#~ msgid "You can use the following shortcuts:"
+#~ msgstr "Folgende Variablen sind verfügbar:"
+
+#~ msgid "Type \"{help}(<command>)\" for more information."
+#~ msgstr "Tippe \"{help}(<Variable>)\" für mehr Informationen."
 
 # Used in the "neutral" language parsing, needs to be lower case
 #~ msgid "tags"

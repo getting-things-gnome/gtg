@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-03-14 21:15-0300\n"
+"POT-Creation-Date: 2021-03-31 17:25-0400\n"
 "PO-Revision-Date: 2021-03-13 13:41+0100\n"
 "Last-Translator: Heimen Stoffels <vistausss@outlook.com>\n"
 "Language-Team: Dutch <nl@li.org>\n"
@@ -258,7 +258,7 @@ msgstr "Markeren als afgerond"
 msgid "Dismiss"
 msgstr "Verwerpen"
 
-#: GTG/gtk/data/context_menus.ui:60 GTG/gtk/browser/main_window.py:1155
+#: GTG/gtk/data/context_menus.ui:60 GTG/gtk/browser/main_window.py:1184
 msgid "Set Start Date"
 msgstr "Begindatum instellen"
 
@@ -311,7 +311,7 @@ msgstr "Kies een datum…"
 msgid "Clear Start Date"
 msgstr "Begindatum wissen"
 
-#: GTG/gtk/data/context_menus.ui:125 GTG/gtk/browser/main_window.py:1166
+#: GTG/gtk/data/context_menus.ui:125 GTG/gtk/browser/main_window.py:1195
 msgid "Set Due Date"
 msgstr "Einddatum instellen"
 
@@ -913,6 +913,14 @@ msgstr ""
 "Er is een onverwachte fout opgetreden. GTG heeft getracht uw taken te "
 "herstellen uit de back-ups.\n"
 
+#: GTG/core/info.py.in:33
+msgid ""
+"A personal productivity tool for GNOME,\n"
+"inspired by the GTD methodology."
+msgstr ""
+"Een persoonlijke productiviteitstoepassing voor GNOME,\n"
+"geïnspireerd door de GTD-methodologie."
+
 #. Translators: Used for display
 #. Translators: Used in parsing, made lowercased in code
 #. Translators: Used in search parsing, no spaces, lowercased in code
@@ -1011,6 +1019,7 @@ msgid "Getting Started with GTG (read me first)"
 msgstr "Aan de slag met GTG (neem dit even door)"
 
 #: GTG/core/firstrun_tasks.py:68
+#, fuzzy
 msgid ""
 "Welcome to Getting Things GNOME (GTG), your new task manager! In GTG, "
 "everything is a task. From building a bridge over the Pacific Ocean to "
@@ -1019,7 +1028,7 @@ msgid ""
 "If you are new to GTG, please take the time to read this, as it will provide "
 "you useful information about how to use GTG to organize your everyday life.\n"
 "\n"
-"Creating and editing tasks:\n"
+"# Creating and editing tasks\n"
 "\n"
 "Using GTG is easy: you organize what you have to do by creating new tasks. "
 "To do this, simply press the &quot;New Task&quot; (+) button, edit the task "
@@ -1030,7 +1039,7 @@ msgid ""
 "press any &quot;Save&quot; button! Try it: add some text to this task, close "
 "the window, and reopen it: your changes are still there!\n"
 "\n"
-"About subtasks:\n"
+"# About subtasks\n"
 "\n"
 "In life, you often get more things done by refining them in smaller, more "
 "operational tasks. GTG helps to do just this by defining  &quot;"
@@ -1044,7 +1053,7 @@ msgid ""
 "example:\n"
 "{! 262d1410-71aa-4e35-abec-90ef1bab44d3 !}\n"
 "\n"
-"Closing a task:\n"
+"# Closing a task\n"
 "\n"
 "In GTG, once you are done with a task, you can close it by pushing either "
 "the &quot;Mark as Done&quot; or the &quot;Dismiss&quot; button. Use the "
@@ -1059,7 +1068,7 @@ msgid ""
 "Note that the tasks that you have marked as done or dismissed are listed in "
 "the &quot;Closed&quot; tasks view mode.\n"
 "\n"
-"Learn more about GTG:\n"
+"# Learn more about GTG\n"
 "\n"
 "If you are interested in knowing more about GTG's other features, you will "
 "find more information here:\n"
@@ -1088,7 +1097,7 @@ msgstr ""
 "Als dit de eerste keer is dat u GTG gebruikt, neem dit dan even door zodat u "
 "weet hoe u GTG kunt gebruiken in uw dagelijks leven.\n"
 "\n"
-"Toevoegen en bewerken van taken:\n"
+"# Toevoegen en bewerken van taken\n"
 "\n"
 "In GTG deelt u uw bezigheden in als taken. Klik op de knop '+Nieuwe taak' om "
 "een taak toe te voegen, voeg een omschrijving en een paar kenmerken toe en "
@@ -1100,7 +1109,7 @@ msgstr ""
 "taak, sluit het venster en heropen het. Zoals u ziet staat de tekst er nog "
 "steeds.\n"
 "\n"
-"Bijkomende taken:\n"
+"# Bijkomende taken\n"
 "\n"
 "Mensen krijgen vaak meer gedaan als ze taken opdelen. GTG helpt u hierbij "
 "middels 'bijkomende taken'. Deze dient u af te ronden voordat u een "
@@ -1113,7 +1122,7 @@ msgstr ""
 "onderstaande bijkomende taak te openen:\n"
 "{! 262d1410-71aa-4e35-abec-90ef1bab44d3 !}\n"
 "\n"
-"Sluiten van taken:\n"
+"# Sluiten van taken\n"
 "\n"
 "In GTG kunt u een taak afronden door te klikken op de knop 'Markeren als "
 "afgerond' of de knop 'Verwerpen'. Klik op de eerste knop als de taak is "
@@ -1126,7 +1135,7 @@ msgstr ""
 "Afgeronde of verworpen taken zijn terug te vinden in de weergavemodus "
 "'Gesloten'.\n"
 "\n"
-"Meer informatie over GTG:\n"
+"# Meer informatie over GTG\n"
 "\n"
 "Als u nóg meer te weten wilt komen over GTG's mogelijkheden, open dan "
 "onderstaande taken:\n"
@@ -1783,26 +1792,26 @@ msgstr ""
 
 #. These lines should be in info.py, but due to their dynamic nature
 #. there'd be no way to show them translated in Gtk's About dialog:
-#: GTG/gtk/browser/main_window.py:317
+#: GTG/gtk/browser/main_window.py:320
 #, python-format
 msgid "Copyright © 2008-%d the GTG contributors."
 msgstr "Copyright © 2008-%d de GTG-bijdragers."
 
 #. GTK prefixes the first line with "Created by ",
 #. but we can't split the string because it would cause trouble for some languages.
-#: GTG/gtk/browser/main_window.py:322
+#: GTG/gtk/browser/main_window.py:325
 msgid "GTG was made by many contributors around the world."
 msgstr "GTG wordt gemaakt door bijdragers van over heel de wereld."
 
-#: GTG/gtk/browser/main_window.py:323
+#: GTG/gtk/browser/main_window.py:326
 msgid "The GTG project is maintained/administered by:"
 msgstr "Het GTG-project wordt beheerd door:"
 
-#: GTG/gtk/browser/main_window.py:325
+#: GTG/gtk/browser/main_window.py:328
 msgid "This release was brought to you by the efforts of these people:"
 msgstr "Deze uitgave is mogelijk gemaakt door de inzet van:"
 
-#: GTG/gtk/browser/main_window.py:327
+#: GTG/gtk/browser/main_window.py:330
 #, python-brace-format
 msgid ""
 "Many others contributed to GTG over the years.\n"
@@ -1811,22 +1820,22 @@ msgstr ""
 "Vele anderen hebben door de jaren heen bijgedragen aan GTG.\n"
 "Een lijst met deze personen is te vinden op {OH_stats} en {GH_stats}."
 
-#: GTG/gtk/browser/main_window.py:336
+#: GTG/gtk/browser/main_window.py:339
 msgid "GTG website"
 msgstr "GTG-website"
 
 #. Translators for a particular language should put their names here.
 #. Please keep the width at 80 chars max, as GTK3's About dialog won't wrap text.
 #. GtkAboutDialog will detect if “translator-credits” is untranslated and auto-hide the tab.
-#: GTG/gtk/browser/main_window.py:349
+#: GTG/gtk/browser/main_window.py:352
 msgid "translator-credits"
 msgstr "Heimen Stoffels"
 
-#: GTG/gtk/browser/main_window.py:652
+#: GTG/gtk/browser/main_window.py:679
 msgid "Hide Sidebar"
 msgstr "Zijpaneel verbergen"
 
-#: GTG/gtk/browser/main_window.py:654
+#: GTG/gtk/browser/main_window.py:681
 msgid "Show Sidebar"
 msgstr "Zijpaneel tonen"
 
@@ -1983,7 +1992,7 @@ msgstr "Link openen"
 msgid "Copy Link to Clipboard"
 msgstr "Link kopiëren naar klembord"
 
-#: GTG/gtk/general_preferences.py:65
+#: GTG/gtk/general_preferences.py:66
 msgid "General"
 msgstr "Algemeen"
 
@@ -2160,13 +2169,6 @@ msgstr ""
 #~ msgstr ""
 #~ "Uw taken zijn opgeslagen in een tekstbestand met xml-formaat. Dit is de "
 #~ "eenvoudigste en tevens standaard opslagmethode van GTG."
-
-#~ msgid ""
-#~ "A personal productivity tool for GNOME,\n"
-#~ "inspired by the GTD methodology."
-#~ msgstr ""
-#~ "Een persoonlijke productiviteitstoepassing voor GNOME,\n"
-#~ "geïnspireerd door de GTD-methodologie."
 
 #~ msgid "tags"
 #~ msgstr "labels"

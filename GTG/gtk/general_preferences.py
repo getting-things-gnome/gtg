@@ -51,6 +51,7 @@ class GeneralPreferences():
         self.autoclean_days = builder.get_object("autoclean_days")
         self.dark_mode = builder.get_object("darkmode_enable")
 
+        self._refresh_preferences_store()
         builder.connect_signals(self)
 
     # Following 3 methods: get_name, get_title, get_ui are
@@ -71,7 +72,7 @@ class GeneralPreferences():
         return self.ui_widget
 
     def activate(self):
-        self._refresh_preferences_store()
+        pass
 
     def get_default_editor_font(self):
         editor_font = self.config.get("font_name")
@@ -106,8 +107,12 @@ class GeneralPreferences():
 
     def _refresh_task_browser(self):
         """ Refresh tasks in task browser """
+
+        collapsed = self.config.get("collapsed_tasks")
         task_tree = self.req.get_tasks_tree(refresh=False).get_basetree()
         task_tree.refresh_all()
+
+        self.app.browser.restore_collapsed_tasks(collapsed)
 
     def on_valid_time_check(self, widget):
         """
@@ -176,6 +181,7 @@ class GeneralPreferences():
 
         self.config.set("dark_mode", state)
         self.app.toggle_darkmode(state)
+        collapsed = self.config.get("collapsed_tasks")
 
         # Refresh panes
         func = self.app.browser.tv_factory.get_task_bg_color
@@ -183,3 +189,5 @@ class GeneralPreferences():
         for pane in self.app.browser.vtree_panes.values():
             pane.set_bg_color(func, 'bg_color')
             pane.basetree.get_basetree().refresh_all()
+
+        self.app.browser.restore_collapsed_tasks(collapsed)
