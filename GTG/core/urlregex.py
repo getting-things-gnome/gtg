@@ -28,7 +28,6 @@ import re
 UTF_CHARS = r'a-z0-9_\u00c0-\u00d6\u00d8-\u00f6\u00f8-\u00ff'
 
 SUBST_DICT = {
-    "pre": r'(?:[^/"\':!=]|^|\:)',
     "domain": r'([\.-]|[^\s_\!\.\/])+\.[a-z]{2,}(?::[0-9]+)?',
     "path": r'(?:[\.,]?[%s!\*\'\(\);:&=\+\$/%s#\[\]\-_,~@])' % (
         UTF_CHARS, '%'),
@@ -38,7 +37,7 @@ SUBST_DICT = {
     "query_end": '[a-z0-9_&=#]',
 }
 
-HTTP_URI = '((%(pre)s)((https?://|www\\.)(%(domain)s)(\/%(path)s*' \
+HTTP_URI = '(((https?://|www\\.)(%(domain)s)(\/%(path)s*' \
     '%(path_end)s?)?(\?%(query)s*%(query_end)s)?))' % SUBST_DICT
 FILE_URI = f"(file:///({SUBST_DICT['path']}*{SUBST_DICT['path_end']}?)?)"
 
