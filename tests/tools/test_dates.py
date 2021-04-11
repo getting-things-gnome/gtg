@@ -127,3 +127,21 @@ class TestDates(TestCase):
                 aday = aday.replace(day=i)
 
             self.assertEqual(Date.parse(str(i)), aday)
+
+    def test_parse_only_month_day_for_recurrency(self):
+        test_set = [
+            #["today", "day of month", newtask, "expected"]
+            ["2020-01-01", "15",    True,  "2020-01-15"],
+            ["2020-01-15", "16",    True,  "2020-01-16"],
+            ["2020-01-15", "16",    False, "2020-02-16"],
+            ["2020-12-29", "10",    True,  "2021-01-10"],
+            ["2020-01-30", "29",    True,  "2020-02-29"],
+            ["2021-01-30", "29",    True,  "2021-01-29"],
+            ["2021-07-21", "month", True,  None        ],
+            ["2021-07-21", "01",    True,  None        ],
+            ["2021-02-21", "31",    True,  "2021-03-31"],
+        ]
+        for data in test_set:
+            init_date, param, newtask, expected = data
+            r = Date(init_date)._parse_only_month_day_for_recurrency(param, newtask)
+            self.assertEqual(str(r), str(expected))
