@@ -143,7 +143,10 @@ class TagEditor(Gtk.Window):
         with GObject.signal_handler_block(self.hidden_entry, self.emoji_id):
             self.hidden_entry.set_text('')
 
-        self.tag.set_attribute('icon', text)
+        if text:
+            self.tag.set_attribute('icon', text)
+        else:
+            self.tag.del_attribute('icon')
 
     def call_emoji_popup(self, widget):
         """Bring the emoji selector."""
