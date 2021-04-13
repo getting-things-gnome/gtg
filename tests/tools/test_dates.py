@@ -71,7 +71,6 @@ class TestDates(TestCase):
 
     def test_parse_fuzzy_dates_str(self):
         """ Print fuzzy dates in localized version """
-        self.assertEqual(str(Date.parse("now")), _("now"))
         self.assertEqual(str(Date.parse("soon")), _("soon"))
         self.assertEqual(str(Date.parse("later")), _("someday"))
         self.assertEqual(str(Date.parse("someday")), _("someday"))

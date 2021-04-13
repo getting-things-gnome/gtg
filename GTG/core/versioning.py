@@ -208,7 +208,7 @@ def convert_task(task: et.Element, ds: datastore) -> Optional[et.Element]:
     new_modified = et.SubElement(dates, 'modified')
 
     if added:
-        added = Date(added).xml_str()
+        added = str(Date(added))
     else:
         added = date.today().isoformat()
 
@@ -216,7 +216,7 @@ def convert_task(task: et.Element, ds: datastore) -> Optional[et.Element]:
 
     if modified:
         modified = modified[:10]
-        modified = Date(modified).xml_str()
+        modified = str(Date(modified))
     else:
         modified = date.today().isoformat()
 
@@ -224,7 +224,7 @@ def convert_task(task: et.Element, ds: datastore) -> Optional[et.Element]:
 
     if done_date:
         new_done = et.SubElement(dates, 'done')
-        new_done.text = Date(done_date).xml_str()
+        new_done.text = str(Date(done_date))
 
     if start:
         start = Date(start)
@@ -234,7 +234,7 @@ def convert_task(task: et.Element, ds: datastore) -> Optional[et.Element]:
         else:
             new_start = et.SubElement(dates, 'start')
 
-        new_start.text = start.xml_str()
+        new_start.text = str(start)
 
     if due_date:
         due_date = Date(due_date)
@@ -244,7 +244,7 @@ def convert_task(task: et.Element, ds: datastore) -> Optional[et.Element]:
         else:
             new_due = et.SubElement(dates, 'due')
 
-        new_due.text = due_date.xml_str()
+        new_due.text = str(due_date)
 
     recurring = et.SubElement(new_task, 'recurring')
     recurring.set('enabled', 'false')

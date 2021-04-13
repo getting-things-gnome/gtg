@@ -104,11 +104,11 @@ class RecurringMenu():
             elif self.selected_recurring_term == 'other-day': # Recurring every other day
                 self.title.set_markup(_('Every <b>other day</b>'))
             elif self.selected_recurring_term == 'week': # Recurring weekly from today
-                self.title.set_markup(_('Every <b>{week_day}</b>').format(week_day=self.task.get_recurring_updated_date().strftime('%A')))
+                self.title.set_markup(_('Every <b>{week_day}</b>').format(week_day=self.task.get_recurring_updated_date().date().strftime('%A')))
             elif self.selected_recurring_term == 'month': # Recurring monthly from today
-                self.title.set_markup(_('Every <b>{month_day} of the month</b>').format(month_day=self.task.get_recurring_updated_date().strftime('%d')))
+                self.title.set_markup(_('Every <b>{month_day} of the month</b>').format(month_day=self.task.get_recurring_updated_date().date().strftime('%d')))
             elif self.selected_recurring_term == 'year': # Recurring yearly from today
-                date = self.task.get_recurring_updated_date()
+                date = self.task.get_recurring_updated_date().date()
                 self.title.set_markup(_('Every <b>{month} {day}</b>').format(month=date.strftime('%B'), day=date.strftime('%d')))
             else: # Recurring weekly from selected week day
                 week_day = _(self.selected_recurring_term)
