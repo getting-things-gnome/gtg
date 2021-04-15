@@ -44,6 +44,10 @@ gtg_core_sources = [
   'urlregex.py',
   'watchdog.py',
   'versioning.py',
+  'base_store.py',
+  'tasks2.py',
+  'tags2.py',
+  'saved_searches.py',
 ]
 
 gtg_core_plugin_sources = [
