@@ -48,6 +48,7 @@ gtg_core_sources = [
   'tasks2.py',
   'tags2.py',
   'saved_searches.py',
+  'datastore2.py',
 ]
 
 gtg_core_plugin_sources = [
