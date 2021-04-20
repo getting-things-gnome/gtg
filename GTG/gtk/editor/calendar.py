@@ -18,7 +18,7 @@
 
 import datetime
 
-from gi.repository import GObject, Gdk, Gtk
+from gi.repository import GObject, GLib, Gdk, Gtk
 
 from GTG.gtk.editor import GnomeConfig
 from GTG.core.dates import Date
@@ -188,7 +188,7 @@ class GTGCalendar(GObject.GObject):
         else:
             # inform the Editor that the date has changed
             self.close_calendar()
-            GObject.idle_add(self.emit, "date-changed")
+            GLib.idle_add(self.emit, "date-changed")
 
     def __from_calendar_date_to_datetime(self, calendar_date):
         """

@@ -593,7 +593,7 @@ class MainWindow(Gtk.ApplicationWindow):
                 return True
 
         for t in self.config.get("opened_tasks"):
-            GObject.idle_add(open_task, self.req, t)
+            GLib.idle_add(open_task, self.req, t)
 
     def refresh_all_views(self, timer):
         collapsed = self.config.get("collapsed_tasks")
@@ -817,7 +817,7 @@ class MainWindow(Gtk.ApplicationWindow):
                     selection.select_iter(iter)
 
                 # It cannot be another thread than the main gtk thread !
-                GObject.idle_add(selecter, treemodelsort, path, iter, self)
+                GLib.idle_add(selecter, treemodelsort, path, iter, self)
 
             data = quick_add.parse(text)
             # event that is set when the new task is created
@@ -849,7 +849,7 @@ class MainWindow(Gtk.ApplicationWindow):
             self.quickadd_entry.set_text('')
 
             # signal the event for the plugins to catch
-            GObject.idle_add(self.emit, "task-added-via-quick-add", task.get_id())
+            GLib.idle_add(self.emit, "task-added-via-quick-add", task.get_id())
         else:
             # if no text is selected, we open the currently selected task
             nids = self.vtree_panes['active'].get_selected_nodes()
@@ -1535,7 +1535,7 @@ class MainWindow(Gtk.ApplicationWindow):
         """ Hides the task browser """
         self.browser_shown = False
         self.hide()
-        GObject.idle_add(self.emit, "visibility-toggled")
+        GLib.idle_add(self.emit, "visibility-toggled")
 
     def show(self):
         """ Unhides the MainWindow """
@@ -1545,7 +1545,7 @@ class MainWindow(Gtk.ApplicationWindow):
         self.present()
         self.grab_focus()
         self.quickadd_entry.grab_focus()
-        GObject.idle_add(self.emit, "visibility-toggled")
+        GLib.idle_add(self.emit, "visibility-toggled")
 
     def iconify(self):
         """ Minimizes the MainWindow """

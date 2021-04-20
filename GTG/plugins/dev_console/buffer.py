@@ -38,7 +38,7 @@ class ConsoleHistory(GObject.Object):
     """Represents a console commands history."""
 
     __gsignals__ = {
-        "pos-changed": (GObject.SIGNAL_RUN_FIRST, None, ()),
+        "pos-changed": (GObject.SignalFlags.RUN_FIRST, None, ()),
     }
 
     def __init__(self):

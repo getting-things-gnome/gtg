@@ -34,9 +34,9 @@ class CellRendererTags(Gtk.CellRenderer):
 
     __gproperties__ = {
         'tag_list': (GObject.TYPE_PYOBJECT,
-                     "Tag list", "A list of tags", GObject.PARAM_READWRITE),
+                     "Tag list", "A list of tags", GObject.ParamFlags.READWRITE),
         'tag': (GObject.TYPE_PYOBJECT, "Tag",
-                "Tag", GObject.PARAM_READWRITE),
+                "Tag", GObject.ParamFlags.READWRITE),
     }
 
     # Private methods

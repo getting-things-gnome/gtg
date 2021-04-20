@@ -358,6 +358,6 @@ class SimpleColorSelector(Gtk.Box):
 
 GObject.type_register(SimpleColorSelector)
 GObject.signal_new("color-changed", SimpleColorSelector,
-                   GObject.SIGNAL_RUN_FIRST, GObject.TYPE_NONE, ())
+                   GObject.SignalFlags.RUN_FIRST, GObject.TYPE_NONE, ())
 GObject.signal_new("color-added", SimpleColorSelector,
-                   GObject.SIGNAL_RUN_FIRST, GObject.TYPE_NONE, ())
+                   GObject.SignalFlags.RUN_FIRST, GObject.TYPE_NONE, ())

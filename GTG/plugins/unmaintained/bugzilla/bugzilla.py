@@ -14,7 +14,7 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import GObject
+from gi.repository import GObject, GLib
 import re
 import threading
 import xmlrpc.client
@@ -81,14 +81,14 @@ class GetBugInformationTask(threading.Thread):
             send_notification(bugzillaService.name, err.message)
         else:
             title = f'#{bug_id}: {bug.summary}'
-            GObject.idle_add(self.task.set_title, title)
+            GLib.idle_add(self.task.set_title, title)
             text = f"{bug_url}\n\n{bug.description}"
-            GObject.idle_add(self.task.set_text, text)
+            GLib.idle_add(self.task.set_text, text)
 
             tags = bugzillaService.getTags(bug)
             if tags is not None and tags:
                 for tag in tags:
-                    GObject.idle_add(self.task.add_tag, f'@{tag}')
+                    GLib.idle_add(self.task.add_tag, f'@{tag}')
 
 
 class BugzillaPlugin():
@@ -102,7 +102,7 @@ class BugzillaPlugin():
     def task_added_cb(self, sender, task_id):
         # this is a gobject callback that will block the Browser.
         # decoupling with a thread. All interaction with task and tags objects
-        # (anything in a Tree) must be done with gobject.idle_add (invernizzi)
+        # (anything in a Tree) must be done with GLib.idle_add (invernizzi)
 
         task = self.plugin_api.get_requester().get_task(task_id)
         bugTask = GetBugInformationTask(task)
