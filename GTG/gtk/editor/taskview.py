@@ -74,10 +74,6 @@ class TaskView(Gtk.TextView):
     # Timeout in milliseconds
     PROCESSING_DELAY = 250
 
-    # Mouse cursors
-    CURSOR_HAND = Gdk.Cursor.new(Gdk.CursorType.HAND2)
-    CURSOR_NORMAL = Gdk.Cursor.new(Gdk.CursorType.XTERM)
-
 
     def __init__(self, req: Requester, clipboard) -> None:
         super().__init__()
@@ -601,7 +597,9 @@ class TaskView(Gtk.TextView):
         tags = view.get_iter_at_location(x, y)[1].get_tags()
 
         # Reset cursor and hover states
-        window.set_cursor(self.CURSOR_NORMAL)
+        cursor = Gdk.Cursor.new_for_display(window.get_display(),
+                                            Gdk.CursorType.XTERM)
+        window.set_cursor(cursor)
 
         if self.hovered_tag:
             try:
@@ -615,7 +613,9 @@ class TaskView(Gtk.TextView):
         try:
             tag = tags[0]
             tag.set_hover()
-            window.set_cursor(self.CURSOR_HAND)
+            cursor = Gdk.Cursor.new_for_display(window.get_display(),
+                                                Gdk.CursorType.HAND2)
+            window.set_cursor(cursor)
             self.hovered_tag = tag
 
         except (AttributeError, IndexError):
