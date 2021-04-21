@@ -94,7 +94,7 @@ class GeneralPreferences():
         self.refresh_time.set_text(self.timer.get_formatted_time())
         self.refresh_time.modify_fg(Gtk.StateFlags.NORMAL, None)
 
-        self.font_button.set_font_name(self.get_default_editor_font())
+        self.font_button.set_font(self.get_default_editor_font())
 
         enable_autoclean = self.config.get("autoclean")
         self.autoclean_enable.set_active(enable_autoclean)
@@ -159,7 +159,7 @@ class GeneralPreferences():
 
     def on_font_change(self, widget):
         """ Set a new font for editor """
-        self.config.set("font_name", self.font_button.get_font_name())
+        self.config.set("font_name", self.font_button.get_font())
 
     def on_autoclean_toggled(self, widget, state):
         """Toggle automatic deletion of old closed tasks."""
