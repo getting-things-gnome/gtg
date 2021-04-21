@@ -27,6 +27,9 @@ from gi.repository import Gtk, Gdk
 from GTG.core.dirs import UI_DIR
 from gettext import gettext as _
 
+import logging
+
+log = logging.getLogger(__name__)
 
 class GeneralPreferences():
 
@@ -77,9 +80,15 @@ class GeneralPreferences():
     def get_default_editor_font(self):
         editor_font = self.config.get("font_name")
         if editor_font == "":
-            font = self.ui_widget.get_style_context().get_font(
-                Gtk.StateFlags.NORMAL)
-            editor_font = font.to_string()
+            try:
+                font = self.ui_widget.get_style_context().get_property(
+                    "font", Gtk.StateFlags.NORMAL)
+                editor_font = font.to_string()
+            except UnicodeError:
+                log.exception("Using deprecated but still working font way")
+                font = self.ui_widget.get_style_context().get_font(
+                    Gtk.StateFlags.NORMAL)
+                editor_font = font.to_string()
         return editor_font
 
     def _refresh_preferences_store(self):
