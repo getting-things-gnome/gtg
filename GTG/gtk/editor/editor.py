@@ -417,30 +417,44 @@ class TaskEditor():
                 log.warning('Invalid size configuration for task %s: %s',
                             self.task.get_id(), size)
 
+        can_move = True
         if position and len(position) == 2:
             try:
                 x = max(0, int(position[0]))
                 y = max(0, int(position[1]))
+                can_move = True
             except ValueError:
+                can_move = False
                 log.warning('Invalid position configuration for task %s:%s',
                             self.task.get_id(), position)
         else:
-            device_manager = Gdk.Display.get_default().get_device_manager()
-            pointer = device_manager.get_client_pointer()
-            screen, x, y = pointer.get_position()
-            x = int(x)
-            y = int(y)
+            gdk_window = self.window.get_window()
+            if gdk_window is None:
+                log.debug("Using default display to position editor window")
+                display = Gdk.Display.get_default()
+            else:
+                # TODO: AFAIK never happens because window is not realized at
+                #       this point, but maybe we should just in case the display
+                #       is actually different.
+                display = gdk_window.get_display()
+            seat = display.get_default_seat()
+            pointer = seat.get_pointer()
+            if pointer is None:
+                can_move = False
+                log.debug("Didn't receiver pointer info, can't move editor window")
+            else:
+                screen, x, y = pointer.get_position()
+                assert isinstance(x, int)
+                assert isinstance(y, int)
 
-        width, height = self.window.get_size()
+        if can_move:
+            width, height = self.window.get_size()
 
-        # Clamp positions to current screen size
-        if x + width > screen_size.width:
-            x = screen_size.width - width
+            # Clamp positions to current screen size
+            x = min(x, screen_size.width - width)
+            y = min(y, screen_size.height - height)
 
-        if y + height > screen_size.height:
-            y = screen_size.height - height
-
-        self.window.move(x, y)
+            self.window.move(x, y)
 
     # Can be called at any time to reflect the status of the Task
     # Refresh should never interfere with the TaskView.
