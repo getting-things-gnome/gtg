@@ -43,6 +43,7 @@ Later, when you want to update to the latest development version (assuming you a
   - gdk-pixbuf
   - GTK 3
 
+
 You can get most of those from your distribution packages:
 
     # On Fedora
@@ -81,6 +82,9 @@ Dependencies for the "Export and print" plugin:
 On Ubuntu you can install all that with:
 
     sudo apt install python3-cheetah pdftk-java texlive-extra-utils texlive-latex-base
+
+Optional Dependencies:
+* setproctitle (to set the process title when listing processes like `ps`)
 
 ### Running the beast
 
