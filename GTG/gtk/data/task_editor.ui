@@ -441,8 +441,7 @@
                   <object class="GtkCalendar" id="month_calender">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="year">2020</property>
-                    <property name="month">11</property>
+                    <property name="month">0</property>
                     <property name="show_heading">False</property>
                     <property name="show_day_names">False</property>
                     <property name="no_month_change">True</property>
@@ -513,8 +512,6 @@
                   <object class="GtkCalendar" id="year_calender">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="year">2020</property>
-                    <property name="month">8</property>
                     <signal name="day-selected" handler="set_recurring_term_calender_year" swapped="no"/>
                   </object>
                   <packing>
