@@ -505,9 +505,7 @@ class MainWindow(Gtk.ApplicationWindow):
         and stores the state in self.config.max
         This is used to check the window state afterwards
         and maximize it if needed """
-        mask = Gdk.WindowState.MAXIMIZED
-        is_maximized = widget.get_window().get_state() & mask == mask
-        self.config.set("maximized", is_maximized)
+        self.config.set("maximized", self.is_maximized())
 
     def restore_collapsed_tasks(self, tasks=None):
         tasks = tasks or self.config.get("collapsed_tasks")
