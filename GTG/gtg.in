@@ -64,6 +64,12 @@ if __name__ == "__main__":
     gettext.bindtextdomain('gtg', LOCALE_DIR)
     gettext.textdomain('gtg')
 
+    try:
+        import setproctitle
+        setproctitle.setproctitle("gtg")
+    except ImportError:
+        pass
+
 import gi
 gi.require_version('Gdk', '3.0')
 gi.require_version('Gtk', '3.0')
