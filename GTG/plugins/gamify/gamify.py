@@ -270,15 +270,15 @@ class Gamify:
 
         # Select a msg and emojo depending on the number of tasks done.
         if tasks_done >= goal:
-            emoji = ["\U0001F60E", "\U0001F920", "\U0001F640"]
+            emoji = ["\U0001F60E", "\U0001F920", "\U0001F640", "\U0001F31F"]
             headerbar_label.set_markup(random.choice(emoji))
             headerbar_msg.set_markup(_("Good Job!\nYou have achieved your goal."))
         elif tasks_done >= 1:
-            emoji = ["\U0001F600", "\U0001F60C"]
+            emoji = ["\U0001F600", "\U0001F60C", "\U0000270A"]
             headerbar_label.set_markup(random.choice(emoji))
             headerbar_msg.set_markup(_("Only a few tasks to go!"))
         else:
-            emoji = ["\U0001F643", "\U0001F648"]
+            emoji = ["\U0001F643", "\U0001F648", "\U0001F995", "\U0001F9A5"]
             headerbar_label.set_markup(random.choice(emoji))
             headerbar_msg.set_markup(_("Get Down to Business\nYou haven't achieved any tasks today."))
 
