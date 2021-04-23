@@ -25,9 +25,9 @@ class Gamify:
         "goal": 3,
         "ui_type": "FULL",
         "tag_mapping": {
-            _('@easy'): 1,
-            _('@medium'): 2,
-            _('@hard'): 3,
+            _('easy'): 1,
+            _('medium'): 2,
+            _('hard'): 3,
         }
     }
     LEVELS = {
@@ -232,8 +232,9 @@ class Gamify:
     def update_date(self):
         today = date.today()
         if self.data['last_task_date'] != today:
-            if self.data['last_task_number'] < self.preferences['goal']:
+            if self.data['last_task_number'] < self.preferences['goal'] or (today - self.data['last_task_date']).days > 1:
                 self.data['streak'] = 0
+
             self.data['goal_achieved'] = False
             self.data['last_task_number'] = 0
             self.data['last_task_date'] = today
@@ -253,9 +254,9 @@ class Gamify:
     def button_update_score(self):
         """Update the score in the BUTTON widget"""
         score_label = self.builder.get_object('score_label')
-        score_label.set_markup(_("<b>{current_level}</b>").format(current_level=self.get_current_level()))
+        score_label.set_markup(_("Level: <b>{current_level}</b>").format(current_level=self.get_current_level()))
         score_value = self.builder.get_object('score_value')
-        score_value.set_markup(_('You have: <b>{score}</b> points').format(score=self.get_score()))
+        score_value.set_markup(ngettext("%d Point", "%d Points",self.get_score()) % self.get_score())
 
     def button_update_goal(self):
         """Update the numbers of tasks done in the BUTTON widget"""
@@ -284,12 +285,12 @@ class Gamify:
     def button_update_streak(self):
         """Update the streak numbers in the BUTTON widget"""
         streak_number = self.builder.get_object('streak_number')
-        streak_emoji = self.builder.get_object('streak_emoji')
         if self.get_streak() > 0:
-            streak_emoji.set_markup("\U0001F525")
+            streak_emoji = "\U0001F525"
         else:
-            streak_emoji.set_markup("\U0001F9CA")
-        streak_number.set_markup(ngettext("You've completed your goal %d day in a row.", "You've completed your goal %d days in a row.", self.get_streak()) % self.get_streak())
+            streak_emoji = "\U0001F9CA"
+
+        streak_number.set_markup(_("{emoji} <b>{streak} day</b> streak").format(streak=self.get_streak(), emoji=streak_emoji))
 
     def update_levelbar(self):
         self.levelbar.set_min_value(0.0)
