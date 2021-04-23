@@ -359,6 +359,7 @@
     <property name="mode">discrete</property>
   </object>
   <object class="GtkPopover" id="headerbar-popover">
+    <property name="width-request">260</property>
     <property name="can-focus">False</property>
     <child>
       <object class="GtkBox">
@@ -367,12 +368,13 @@
         <property name="margin-start">10</property>
         <property name="margin-end">10</property>
         <property name="margin-top">10</property>
-        <property name="margin-bottom">8</property>
+        <property name="margin-bottom">13</property>
         <property name="orientation">vertical</property>
         <child>
           <object class="GtkLabel" id="headerbar-label">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
+            <property name="margin-bottom">7</property>
             <property name="label" translatable="yes">label</property>
             <attributes>
               <attribute name="scale" value="2"/>
@@ -388,6 +390,10 @@
           <object class="GtkLabel" id="headerbar-msg">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
+            <property name="margin-start">10</property>
+            <property name="margin-end">10</property>
+            <property name="margin-top">7</property>
+            <property name="margin-bottom">10</property>
             <property name="label" translatable="yes">Put a msg here</property>
             <property name="justify">center</property>
             <property name="wrap">True</property>
@@ -414,23 +420,10 @@
           </packing>
         </child>
         <child>
-          <object class="GtkLabel">
-            <property name="visible">True</property>
-            <property name="can-focus">False</property>
-            <property name="label" translatable="yes">Your current level is</property>
-            <property name="wrap">True</property>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">3</property>
-          </packing>
-        </child>
-        <child>
           <object class="GtkLabel" id="score_label">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
-            <property name="label" translatable="yes">label</property>
+            <property name="label" translatable="yes">Level</property>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -442,7 +435,7 @@
           <object class="GtkLabel" id="score_value">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
-            <property name="label" translatable="yes">label</property>
+            <property name="label" translatable="yes">Points</property>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -462,27 +455,12 @@
           </packing>
         </child>
         <child>
-          <object class="GtkLabel" id="streak_emoji">
-            <property name="visible">True</property>
-            <property name="can-focus">False</property>
-            <property name="label" translatable="yes">label</property>
-            <attributes>
-              <attribute name="scale" value="1.3999999999999999"/>
-            </attributes>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">7</property>
-          </packing>
-        </child>
-        <child>
           <object class="GtkLabel" id="streak_number">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
             <property name="label" translatable="yes">Your streak</property>
             <attributes>
-              <attribute name="scale" value="0.80000000000000004"/>
+              <attribute name="scale" value="1"/>
             </attributes>
           </object>
           <packing>
