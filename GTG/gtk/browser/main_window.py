@@ -59,6 +59,7 @@ class MainWindow(Gtk.ApplicationWindow):
     __none_signal__ = (GObject.SignalFlags.RUN_FIRST, None, tuple())
     __gsignals__ = {'task-added-via-quick-add': __string_signal__,
                     'task-marked-as-done': __string_signal__,
+                    'task-marked-as-not-done': __string_signal__,
                     'visibility-toggled': __none_signal__,
                     }
 
@@ -1280,6 +1281,7 @@ class MainWindow(Gtk.ApplicationWindow):
             if status == Task.STA_DONE:
                 # Marking as undone
                 task.set_status(Task.STA_ACTIVE)
+                GObject.idle_add(self.emit, "task-marked-as-not-done", task.get_id())
                 # Parents of that task must be updated - not to be shown
                 # in workview, update children count, etc.
                 for parent_id in task.get_parents():
