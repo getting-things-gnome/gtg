@@ -121,7 +121,8 @@ class Gamify:
             log.debug('Cannot load preference dialog widget')
 
         # Connect to the signals
-        self.connect_id = self.browser.connect("task-marked-as-done", self.on_marked_as_done)
+        self.done_connect_id = self.browser.connect("task-marked-as-done", self.on_marked_as_done)
+        self.not_done_connect_id = self.browser.connect("task-marked-as-not-done", self.on_marked_as_not_done)
 
         self.update_date()
         self.update_streak()
@@ -141,6 +142,22 @@ class Gamify:
         self.data['last_task_number'] += 1
         self.update_streak()
         self.data['score'] += self.get_points_for_task(task_id)
+        self.analytics_save()
+        self.update_widget()
+
+    def on_marked_as_not_done(self, sender, task_id):
+        log.debug('a task has been marked as not done')
+        self.analytics_load()
+        self.preferences_load()
+
+        self.update_date()
+
+        self.data['last_task_number'] = self.data['last_task_number'] - 1 if self.data['last_task_number'] > 0 else 0
+        self.update_streak()
+        if self.data['score'] - (score := self.get_points_for_task(task_id)) >= 0:
+            self.data['score'] -= score
+        else:
+            self.data['score'] = 0
         self.analytics_save()
         self.update_widget()
 
@@ -191,7 +208,8 @@ class Gamify:
             pass
 
     def deactivate(self, plugin_api):
-        self.browser.disconnect(self.connect_id)
+        self.browser.disconnect(self.done_connect_id)
+        self.browser.disconnect(self.not_done_connect_id)
         self.remove_ui()
 
     def is_configurable(self):
@@ -228,11 +246,16 @@ class Gamify:
             if not self.data['goal_achieved']:
                 self.data['goal_achieved'] = True
                 self.data['streak'] += 1
+        else:
+            if self.data['goal_achieved']:
+                self.data['streak'] -= 1
+                self.data['goal_achieved'] = False
 
     def update_date(self):
         today = date.today()
         if self.data['last_task_date'] != today:
-            if self.data['last_task_number'] < self.preferences['goal'] or (today - self.data['last_task_date']).days > 1:
+            if (self.data['last_task_number'] < self.preferences['goal'] or 
+                    (today - self.data['last_task_date']).days > 1):
                 self.data['streak'] = 0
 
             self.data['goal_achieved'] = False
@@ -403,7 +426,7 @@ class Gamify:
         if tag := self.tag_entry_field.get_text():
             row = Gtk.ListBoxRow()
             box = Gtk.HBox(orientation=Gtk.Orientation.HORIZONTAL)
-            label = Gtk.Label(f'@{tag}')
+            label = Gtk.Label(f'{tag}')
 
             spin = Gtk.SpinButton()
             spin.set_adjustment(Gtk.Adjustment(upper=100, step_increment=1, page_increment=10))
