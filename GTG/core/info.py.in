@@ -49,35 +49,25 @@ AUTHORS_MAINTAINERS = """
 # Don't indend lines inside a multi-line string, or it'll show in the About dialog.
 AUTHORS_RELEASE_CONTRIBUTORS = """
 • Diego Garcia Gangl
-• Izidor Matušov
-• Jean-François Fortin Tam
-• Mart Raudsepp
-• Xuan Hu
-• Nimit Shah
-• Parin Porecha
-• Lionel Dricot
-• Sagar Ghuge
-• Àlex Magaz Graça
-• Sara Ribeiro
-• Jakub Brindza
-• Parth Panchal
-• Luca Falavigna
-• Atit Anand
-• Chenxiong Qi
 • "Neui"
-• Pawan Hegde
-• Amy Chan
-• Olivier Mehani
-• Sushant Raikar
-• J. Diez
-• A. MacHattie
-• Bertrand Rousseau
-• François Boulogne
-• Joe R. Nassimian
-• Josh Crompton
-• Thomas Spura
+• Mohieddine Drissi
+• Youssef Toukabri
+• Francisco Lavin
+• Jean-François Fortin Tam
+• François Schmidts
+• Fridolin Weisser
+• Izidor Matušov
+• Mart Raudsepp
+• Paul Michel
+• Arkadiusz Lenart
+• Elsie Hupp
+• Heimen Stoffels
+• Scott Worley
+• Carlo
+• Jordan Pisaniello
+• "morhe-blip"
 """
 
-ARTISTS = ["Kalle Persson (logo)", "Bertrand Rousseau (UX)", "Jean-François Fortin Tam (UX)"]
+ARTISTS = ["Diego Garcia Gangl (2021 logo)", "Tobias Bernard (2021 logo)", "Kalle Persson (2009 logo)", "Bertrand Rousseau (UX)", "Jean-François Fortin Tam (UX)"]
 ARTISTS.sort()
 DOCUMENTERS = [ "Danielle Vansia", "Radina Matic", "Jean-François Fortin Tam"]
