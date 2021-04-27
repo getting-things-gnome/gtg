@@ -16,7 +16,7 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-from gi.repository import GObject
+from gi.repository import GObject, GLib
 
 from GTG.core.borg import Borg
 
@@ -104,7 +104,7 @@ class _BackendSignalsGObject(GObject.GObject):
     # As a general rule, signals should only be emitted in the GenericBackend
     # class
     def _emit_signal(self, signal, backend_id):
-        GObject.idle_add(self.emit, signal, backend_id)
+        GLib.idle_add(self.emit, signal, backend_id)
 
     def backend_state_changed(self, backend_id):
         self._emit_signal(self.BACKEND_STATE_TOGGLED, backend_id)
@@ -119,15 +119,15 @@ class _BackendSignalsGObject(GObject.GObject):
         self._emit_signal(self.BACKEND_REMOVED, backend_id)
 
     def default_backend_loaded(self):
-        GObject.idle_add(self.emit, self.DEFAULT_BACKEND_LOADED)
+        GLib.idle_add(self.emit, self.DEFAULT_BACKEND_LOADED)
 
     def backend_failed(self, backend_id, error_code):
-        GObject.idle_add(self.emit, self.BACKEND_FAILED, backend_id,
+        GLib.idle_add(self.emit, self.BACKEND_FAILED, backend_id,
                          error_code)
 
     def interaction_requested(self, backend_id, description,
                               interaction_type, callback_str):
-        GObject.idle_add(self.emit, self.INTERACTION_REQUESTED,
+        GLib.idle_add(self.emit, self.INTERACTION_REQUESTED,
                          backend_id, description, interaction_type,
                          callback_str)
 

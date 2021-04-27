@@ -163,6 +163,8 @@ class MainWindow(Gtk.ApplicationWindow):
 
         action_entries = [
             ('toggle_sidebar', self.on_sidebar_toggled, ('win.toggle_sidebar', ['F9'])),
+            ('collapse_all_tasks', self.on_collapse_all_tasks, None),
+            ('expand_all_tasks', self.on_expand_all_tasks, None),
             ('change_tags', self.on_modify_tags, ('win.change_tags', ['<ctrl>T'])),
             ('search', self.toggle_search, ('win.search', ['<ctrl>F'])),
             ('focus_quickentry', self.focus_quickentry, ('win.focus_quickentry', ['<ctrl>L'])),
@@ -505,9 +507,7 @@ class MainWindow(Gtk.ApplicationWindow):
         and stores the state in self.config.max
         This is used to check the window state afterwards
         and maximize it if needed """
-        mask = Gdk.WindowState.MAXIMIZED
-        is_maximized = widget.get_window().get_state() & mask == mask
-        self.config.set("maximized", is_maximized)
+        self.config.set("maximized", self.is_maximized())
 
     def restore_collapsed_tasks(self, tasks=None):
         tasks = tasks or self.config.get("collapsed_tasks")
@@ -591,7 +591,7 @@ class MainWindow(Gtk.ApplicationWindow):
                 return True
 
         for t in self.config.get("opened_tasks"):
-            GObject.idle_add(open_task, self.req, t)
+            GLib.idle_add(open_task, self.req, t)
 
     def refresh_all_views(self, timer):
         collapsed = self.config.get("collapsed_tasks")
@@ -696,6 +696,14 @@ class MainWindow(Gtk.ApplicationWindow):
             self.config.set("tag_pane", True)
 
         self.switch_sidebar_name(not visible)
+
+    def on_collapse_all_tasks(self, action, param):
+        """Collapse all tasks."""
+        self.vtree_panes['active'].collapse_all()
+
+    def on_expand_all_tasks(self, action, param):
+        """Expand all tasks."""
+        self.vtree_panes['active'].expand_all()
 
     def _expand_not_collapsed(self, model, path, iter, colt):
         """ Expand all not collapsed nodes
@@ -807,7 +815,7 @@ class MainWindow(Gtk.ApplicationWindow):
                     selection.select_iter(iter)
 
                 # It cannot be another thread than the main gtk thread !
-                GObject.idle_add(selecter, treemodelsort, path, iter, self)
+                GLib.idle_add(selecter, treemodelsort, path, iter, self)
 
             data = quick_add.parse(text)
             # event that is set when the new task is created
@@ -839,7 +847,7 @@ class MainWindow(Gtk.ApplicationWindow):
             self.quickadd_entry.set_text('')
 
             # signal the event for the plugins to catch
-            GObject.idle_add(self.emit, "task-added-via-quick-add", task.get_id())
+            GLib.idle_add(self.emit, "task-added-via-quick-add", task.get_id())
         else:
             # if no text is selected, we open the currently selected task
             nids = self.vtree_panes['active'].get_selected_nodes()
@@ -1525,7 +1533,7 @@ class MainWindow(Gtk.ApplicationWindow):
         """ Hides the task browser """
         self.browser_shown = False
         self.hide()
-        GObject.idle_add(self.emit, "visibility-toggled")
+        GLib.idle_add(self.emit, "visibility-toggled")
 
     def show(self):
         """ Unhides the MainWindow """
@@ -1535,7 +1543,7 @@ class MainWindow(Gtk.ApplicationWindow):
         self.present()
         self.grab_focus()
         self.quickadd_entry.grab_focus()
-        GObject.idle_add(self.emit, "visibility-toggled")
+        GLib.idle_add(self.emit, "visibility-toggled")
 
     def iconify(self):
         """ Minimizes the MainWindow """

@@ -259,6 +259,11 @@ class Backend(GenericBackend):
             element.set('id', tid)
             element.set('name', tagname)
 
+            # Remove these and don't re-add them if not needed
+            element.attrib.pop('icon', None)
+            element.attrib.pop('color', None)
+            element.attrib.pop('parent', None)
+
             for attr in attributes:
                 # skip labels for search tags
                 if tag.is_search_tag() and attr == 'label':

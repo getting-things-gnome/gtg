@@ -27,6 +27,9 @@ from gi.repository import Gtk, Gdk
 from GTG.core.dirs import UI_DIR
 from gettext import gettext as _
 
+import logging
+
+log = logging.getLogger(__name__)
 
 class GeneralPreferences():
 
@@ -77,9 +80,15 @@ class GeneralPreferences():
     def get_default_editor_font(self):
         editor_font = self.config.get("font_name")
         if editor_font == "":
-            font = self.ui_widget.get_style_context().get_font(
-                Gtk.StateFlags.NORMAL)
-            editor_font = font.to_string()
+            try:
+                font = self.ui_widget.get_style_context().get_property(
+                    "font", Gtk.StateFlags.NORMAL)
+                editor_font = font.to_string()
+            except UnicodeError:
+                log.exception("Using deprecated but still working font way")
+                font = self.ui_widget.get_style_context().get_font(
+                    Gtk.StateFlags.NORMAL)
+                editor_font = font.to_string()
         return editor_font
 
     def _refresh_preferences_store(self):
@@ -94,7 +103,7 @@ class GeneralPreferences():
         self.refresh_time.set_text(self.timer.get_formatted_time())
         self.refresh_time.modify_fg(Gtk.StateFlags.NORMAL, None)
 
-        self.font_button.set_font_name(self.get_default_editor_font())
+        self.font_button.set_font(self.get_default_editor_font())
 
         enable_autoclean = self.config.get("autoclean")
         self.autoclean_enable.set_active(enable_autoclean)
@@ -159,7 +168,7 @@ class GeneralPreferences():
 
     def on_font_change(self, widget):
         """ Set a new font for editor """
-        self.config.set("font_name", self.font_button.get_font_name())
+        self.config.set("font_name", self.font_button.get_font())
 
     def on_autoclean_toggled(self, widget, state):
         """Toggle automatic deletion of old closed tasks."""

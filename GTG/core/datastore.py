@@ -613,13 +613,7 @@ class DataStore():
                 # after 20 seconds, we give up
                 thread.join(20)
 
-                #TODO: This method got a new name in Python 3.9. We should
-                # remove this try/catch when we raise the minimum supported
-                # Python version
-                try:
-                    alive = thread.isAlive()
-                except AttributeError:
-                    alive = thread.is_alive()
+                alive = thread.is_alive()
 
                 if alive:
                     log.error("The %s backend stalled while quitting",

@@ -22,7 +22,7 @@ import datetime
 import re
 import logging
 
-from gi.repository import GObject, Gio
+from gi.repository import GObject, GLib, Gio
 
 log = logging.getLogger(__name__)
 
@@ -86,8 +86,8 @@ class Timer(GObject.GObject):
         if self.timeout_source:
             GObject.source_remove(self.timeout_source)
 
-        self.timeout_source = GObject.timeout_add_seconds(secs_to_refresh,
-                                                          self.emit_refresh)
+        self.timeout_source = GLib.timeout_add_seconds(secs_to_refresh,
+                                                       self.emit_refresh)
 
     def set_configuration(self, time):
         self.config.set('hour', time.hour)
