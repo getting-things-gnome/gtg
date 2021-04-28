@@ -130,7 +130,7 @@ class Date:
 
     @staticmethod
     def __parse_dt_str(string):
-        "Will try casting given string into a datetime or a date."
+        """Will try casting given string into a datetime or a date."""
         for cls in date, datetime:
             try:
                 return cls.fromisoformat(string)
