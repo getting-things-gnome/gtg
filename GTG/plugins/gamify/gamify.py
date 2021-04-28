@@ -41,6 +41,8 @@ class Gamify:
         25000: _('Productivity Lord')
     }
 
+    # INIT #####################################################################
+    
     def __init__(self):
         self.configureable = True
 
@@ -48,59 +50,46 @@ class Gamify:
         path = f"{self.PLUGIN_PATH}/prefs.ui"
         self.builder.add_from_file(path)
 
-        self.menu = None
-        self.stack = None
-        self.submenu = None
-
         self.data = None
         self.preferences = None
 
     def _init_dialog_pref(self):
         # Get the dialog widget
-        self.pref_dialog = self.builder.get_object('gamify-pref-dialog')
-        # Get the buttonSpin
-        self.spinner = self.builder.get_object('target-spin-button')
+        self.pref_dialog = self.builder.get_object('Preferences')
 
-        # Tag mapping
-        self.tag_entry_field = self.builder.get_object('tag-input-field')
-        self.tag_submit_entry = self.builder.get_object('tag-submit-button')
-        self.tag_listbox = self.builder.get_object('tag-listbox')
+        # Get the listboxs
+        self.general_label = self.builder.get_object('general-label')
+        self.general_listbox = self.builder.get_object('general-listbox')
+        self.mappings_label = self.builder.get_object('mappings-label')
+        self.mappings_listbox = self.builder.get_object('mappings-listbox')
 
-        # Get the radio buttons
-        self.button1 = self.builder.get_object('radiobutton0')
-        self.button2 = self.builder.get_object('radiobutton1')
-        self.button3 = self.builder.get_object('radiobutton2')
+        # target tasks
+        self.target_tasks = self.builder.get_object('target-tasks')
+        self.target_spinbutton = self.builder.get_object('target-spinbutton')
+        self.target_label = self.builder.get_object('target-label')
 
+        # UI mode Box
+        self.ui_mode = self.builder.get_object('ui-mode')
+        self.ui_combobox = self.builder.get_object('ui-combobox')
+        self.ui_label = self.builder.get_object('ui-label')
+
+        # Mappings objects
+        self.new_mapping_dialog = self.builder.get_object('new-mapping-dialog')
+        self.new_mapping_entry = self.builder.get_object('new-mapping-entry')
+        self.new_mapping_spinner = self.builder.get_object('new-mapping-spinner')
 
         if self.pref_dialog is None:
             raise ValueError('Cannot load preference dialog widget')
 
+        self.load_general_listbox()
+
         SIGNALS = {
-            "on_preferences_changed": self.on_preferences_changed,
-            "on_dialog_close": self.on_preferences_closed,
-            "on_tag_submit_clicked": self.on_tag_submit_clicked,
-            "on_tag_delete_button_clicked": self.on_tag_delete_button_clicked
+            "on-preferences-changed": self.on_preferences_changed,
+            "on-preferences-closed": self.on_preferences_closed,
+            "dismiss-new-mapping": self.on_dismiss_new_mapping,
+            "submit-new-mapping": self.on_add_new_mapping
         }
         self.builder.connect_signals(SIGNALS)
-
-    def add_headerbar_button(self):
-        self.headerbar_button = self.builder.get_object('gamify-headerbar')
-
-        self.headerbar = self.plugin_api.get_header()
-        self.headerbar.add(self.headerbar_button)
-
-    def remove_headerbar_button(self):
-        self.headerbar.remove(self.headerbar_button)
-
-    def add_levelbar(self):
-        self.quickadd_pane = self.plugin_api.get_quickadd_pane()
-        self.levelbar = self.builder.get_object('goal-levelbar')
-        self.quickadd_pane.set_orientation(Gtk.Orientation.VERTICAL)
-        self.quickadd_pane.add(self.levelbar)
-
-    def remove_levelbar(self):
-        self.quickadd_pane.set_orientation(Gtk.Orientation.HORIZONTAL)
-        self.quickadd_pane.remove(self.levelbar)
 
     def activate(self, plugin_api):
         self.plugin_api = plugin_api
@@ -128,6 +117,78 @@ class Gamify:
         self.update_streak()
         self.analytics_save()
         self.update_widget()
+
+    def deactivate(self, plugin_api):
+        self.browser.disconnect(self.done_connect_id)
+        self.browser.disconnect(self.not_done_connect_id)
+        self.remove_ui()
+
+    def is_configurable(self):
+        return True
+
+
+    # SAVE/LOAD DATA ##########################################################
+        
+    def preferences_load(self):
+        self.preferences = self.plugin_api.load_configuration_object(
+            self.PLUGIN_NAMESPACE, "preferences",
+            default_values=self.DEFAULT_PREFERENCES
+        )
+
+    def save_preferences(self):
+        self.plugin_api.save_configuration_object(
+            self.PLUGIN_NAMESPACE,
+            "preferences",
+            self.preferences
+        )
+
+    def analytics_load(self):
+        self.data = self.plugin_api.load_configuration_object(
+            self.PLUGIN_NAMESPACE, "analytics",
+            default_values=self.DEFAULT_ANALYTICS
+        )
+
+    def analytics_save(self):
+        self.plugin_api.save_configuration_object(
+            self.PLUGIN_NAMESPACE,
+            "analytics",
+            self.data
+        )
+
+    # GAMIFY LOGIC #############################################################
+
+    def update_streak(self):
+        if self.data['last_task_number'] >= self.preferences['goal']:
+            if not self.data['goal_achieved']:
+                self.data['goal_achieved'] = True
+                self.data['streak'] += 1
+        else:
+            if self.data['goal_achieved']:
+                self.data['streak'] -= 1
+                self.data['goal_achieved'] = False
+
+    def update_date(self):
+        today = date.today()
+        if self.data['last_task_date'] != today:
+            if (self.data['last_task_number'] < self.preferences['goal'] or 
+                    (today - self.data['last_task_date']).days > 1):
+                self.data['streak'] = 0
+
+            self.data['goal_achieved'] = False
+            self.data['last_task_number'] = 0
+            self.data['last_task_date'] = today
+
+    def get_current_level(self):
+        return min([(score, level) for score,level in self.LEVELS.items() if score >= self.get_score()])[1]
+
+    def get_score(self):
+        return self.data['score']
+
+    def get_number_of_tasks(self):
+        return self.data['last_task_number']
+
+    def get_streak(self):
+        return self.data['streak']
 
     def on_marked_as_done(self, sender, task_id):
         log.debug('a task has been marked as done')
@@ -173,7 +234,9 @@ class Gamify:
         """
         task = self.plugin_api.get_requester().get_task(task_id)
         return max(list(map(self.get_points, task.get_tags_name())), default=1)
-
+    
+    # FRONTEND/UI #############################################################
+    
     def is_full(self):
         """Return True if ui type is FULL"""
         return self.preferences['ui_type'] == 'FULL'
@@ -185,6 +248,25 @@ class Gamify:
     def has_levelbar(self):
         """Return True if UI contains a LEVELBAR"""
         return self.preferences['ui_type'] in ('LEVELBAR', 'FULL')
+
+    def add_headerbar_button(self):
+        self.headerbar_button = self.builder.get_object('gamify-headerbar')
+
+        self.headerbar = self.plugin_api.get_header()
+        self.headerbar.add(self.headerbar_button)
+
+    def remove_headerbar_button(self):
+        self.headerbar.remove(self.headerbar_button)
+
+    def add_levelbar(self):
+        self.quickadd_pane = self.plugin_api.get_quickadd_pane()
+        self.levelbar = self.builder.get_object('goal-levelbar')
+        self.quickadd_pane.set_orientation(Gtk.Orientation.VERTICAL)
+        self.quickadd_pane.add(self.levelbar)
+
+    def remove_levelbar(self):
+        self.quickadd_pane.set_orientation(Gtk.Orientation.HORIZONTAL)
+        self.quickadd_pane.remove(self.levelbar)
 
     def add_ui(self):
         """Add the appropriate UI elements"""
@@ -207,73 +289,8 @@ class Gamify:
         except AttributeError:
             pass
 
-    def deactivate(self, plugin_api):
-        self.browser.disconnect(self.done_connect_id)
-        self.browser.disconnect(self.not_done_connect_id)
-        self.remove_ui()
 
-    def is_configurable(self):
-        return True
-
-    def preferences_load(self):
-        self.preferences = self.plugin_api.load_configuration_object(
-            self.PLUGIN_NAMESPACE, "preferences",
-            default_values=self.DEFAULT_PREFERENCES
-        )
-
-    def save_preferences(self):
-        self.plugin_api.save_configuration_object(
-            self.PLUGIN_NAMESPACE,
-            "preferences",
-            self.preferences
-        )
-
-    def analytics_load(self):
-        self.data = self.plugin_api.load_configuration_object(
-            self.PLUGIN_NAMESPACE, "analytics",
-            default_values=self.DEFAULT_ANALYTICS
-        )
-
-    def analytics_save(self):
-        self.plugin_api.save_configuration_object(
-            self.PLUGIN_NAMESPACE,
-            "analytics",
-            self.data
-        )
-
-    def update_streak(self):
-        if self.data['last_task_number'] >= self.preferences['goal']:
-            if not self.data['goal_achieved']:
-                self.data['goal_achieved'] = True
-                self.data['streak'] += 1
-        else:
-            if self.data['goal_achieved']:
-                self.data['streak'] -= 1
-                self.data['goal_achieved'] = False
-
-    def update_date(self):
-        today = date.today()
-        if self.data['last_task_date'] != today:
-            if (self.data['last_task_number'] < self.preferences['goal'] or 
-                    (today - self.data['last_task_date']).days > 1):
-                self.data['streak'] = 0
-
-            self.data['goal_achieved'] = False
-            self.data['last_task_number'] = 0
-            self.data['last_task_date'] = today
-
-    def get_current_level(self):
-        return min([(score, level) for score,level in self.LEVELS.items() if score >= self.get_score()])[1]
-
-    def get_score(self):
-        return self.data['score']
-
-    def get_number_of_tasks(self):
-        return self.data['last_task_number']
-
-    def get_streak(self):
-        return self.data['streak']
-
+    # UPDATE UI ###############################################################
     def button_update_score(self):
         """Update the score in the BUTTON widget"""
         score_label = self.builder.get_object('score_label')
@@ -320,7 +337,6 @@ class Gamify:
         self.levelbar.set_max_value(self.preferences['goal'])
         self.levelbar.set_value(self.get_number_of_tasks())
 
-
     def update_widget(self):
         """Update the information depending on the UI type"""
         if self.has_button():
@@ -343,6 +359,8 @@ class Gamify:
         self.add_ui()
 
 
+    # PREFERENCES ############################################################
+
     def configure_dialog(self, manager_dialog):
         if not self.configureable:
             log.debug('trying to open preference menu, but dialog widget not loaded')
@@ -351,17 +369,11 @@ class Gamify:
         self.preferences_load()
         self.pref_dialog.set_transient_for(manager_dialog)
 
-        self.spinner.set_value(self.preferences['goal'])
-
         # Tag Mapping
-        self.load_tag_listbox()
+        self.load_mappings_listbox()
 
-        if self.preferences['ui_type'] == 'FULL':
-            self.button1.set_active(True)
-        elif self.preferences['ui_type'] == 'BUTTON':
-            self.button2.set_active(True)
-        else:
-            self.button3.set_active(True)
+        self.load_ui_mode()
+        self.load_target_task()
 
         self.pref_dialog.show_all()
 
@@ -373,21 +385,22 @@ class Gamify:
         self.preferences_load()
 
         # Get the new preferences
-        self.preferences['goal'] = self.spinner.get_value_as_int()
-        if self.button1.get_active():
+        self.preferences['goal'] = self.target_spinbutton.get_value_as_int()
+
+        ui_mode = int(self.get_ui_mode_combo_value())
+        if ui_mode == 0:
             self.preferences['ui_type'] = "FULL"
-        elif self.button2.get_active():
+        elif ui_mode == 1:
             self.preferences['ui_type'] = "BUTTON"
-        else:
+        elif ui_mode == 2:
             self.preferences['ui_type'] = "LEVELBAR"
 
         # Save the new mappings
         new_tag_mapping = {}
-        for row in self.tag_listbox.get_children():
-            box = row.get_child()
-            label = box.get_children()[0]
-            value = box.get_children()[-1]
+        for row in self.mappings_listbox.get_children()[:-1]:
+            label, value = self.get_tag_value_from_mapping_row(row)
             new_tag_mapping[label.get_label()] = value.get_value_as_int()
+
         self.preferences['tag_mapping'] = new_tag_mapping
 
         self.save_preferences()
@@ -396,45 +409,127 @@ class Gamify:
         # Update the goal in the widget(s)
         self.update_goal()
 
-    def load_tag_listbox(self):
+    def get_ui_mode_combo_value(self):
+        return self.ui_combobox.get_active_id()
+
+    def make_mapping_row(self, label_text: str, spin_value):
+        row = Gtk.ListBoxRow()
+        upper_box = Gtk.Box(spacing=3)
+        box = Gtk.HBox(orientation=Gtk.Orientation.HORIZONTAL)
+        box.set_homogeneous(True)
+        label = Gtk.Label(label_text)
+        label.set_alignment(0.05,0)
+        label.set_valign(Gtk.Align.CENTER)
+
+        spin = Gtk.SpinButton()
+        spin.set_adjustment(Gtk.Adjustment(upper=100, step_increment=1, page_increment=10))
+        spin.set_numeric(True)
+        spin.set_value(int(spin_value))
+
+        remove_icon = Gio.ThemedIcon(name="user-trash-symbolic")
+        remove = Gtk.Image.new_from_gicon(remove_icon, Gtk.IconSize.BUTTON)
+        button = Gtk.Button()
+        button.connect("clicked", self.remove_mapping)
+        button.add(remove)
+
+        row.add(upper_box)
+        upper_box.pack_start(box, True, True, 0)
+        upper_box.pack_end(button, False, True, 0)
+        box.add(label)
+        box.add(spin)
+        return row
+
+    def load_mappings_listbox(self):
+        self.mappings_label.set_alignment(0,0)
         self.preferences_load()
 
         # If there are any old children, remove them from the ListBox
-        for child in self.tag_listbox.get_children():
-            self.tag_listbox.remove(child)
+        for child in self.mappings_listbox.get_children():
+            self.mappings_listbox.remove(child)
+            child.destroy()
 
+        # Construct the listBoxRows
         for key, value in self.preferences['tag_mapping'].items():
-            row = Gtk.ListBoxRow()
-            box = Gtk.HBox(orientation=Gtk.Orientation.HORIZONTAL)
-            label = Gtk.Label(key)
+            row = self.make_mapping_row(label_text=key, spin_value=value)
+            self.mappings_listbox.add(row)
 
-            spin = Gtk.SpinButton()
-            spin.set_adjustment(Gtk.Adjustment(upper=100, step_increment=1, page_increment=10))
-            spin.set_numeric(True)
-            spin.set_value(int(value))
+        self.add_row = Gtk.ListBoxRow()
+        box = Gtk.HBox(orientation=Gtk.Orientation.HORIZONTAL)
+        box.set_homogeneous(True)
 
-            row.add(box)
-            box.add(label)
-            box.add(spin)
-            self.tag_listbox.add(row)
+        add_icon = Gio.ThemedIcon(name="list-add-symbolic")
+        add = Gtk.Image.new_from_gicon(add_icon, Gtk.IconSize.BUTTON)
+        box.add(add)
 
-    def on_tag_delete_button_clicked(self, button):
-        if (row := self.tag_listbox.get_selected_row()) is not None:
-            self.tag_listbox.remove(row)
+        event_box = Gtk.EventBox()
+        event_box.connect("button-press-event", self.add_mapping_clicked)
+        event_box.add(box)
 
-    def on_tag_submit_clicked(self, widget=None, data=None):
-        if tag := self.tag_entry_field.get_text():
-            row = Gtk.ListBoxRow()
-            box = Gtk.HBox(orientation=Gtk.Orientation.HORIZONTAL)
-            label = Gtk.Label(f'{tag}')
+        self.add_row.add(event_box)
+        self.mappings_listbox.add(self.add_row)
 
-            spin = Gtk.SpinButton()
-            spin.set_adjustment(Gtk.Adjustment(upper=100, step_increment=1, page_increment=10))
-            spin.set_numeric(True)
-            spin.set_value(1)
+    def add_mapping_clicked(self, widget, event):
+        self.new_mapping_dialog.set_transient_for(self.pref_dialog)
 
-            row.add(box)
-            box.add(label)
-            box.add(spin)
-            self.tag_listbox.add(row)
-            self.tag_listbox.show_all()
+        self.new_mapping_entry.set_text("")
+        self.new_mapping_spinner.set_value(0)
+
+        self.new_mapping_dialog.show_all()
+
+    def remove_mapping(self, widget, event=None):
+        self.mappings_listbox.remove(self.get_row_from_remove_mapping(widget))
+
+    def get_row_from_remove_mapping(self, button):
+        return button.get_parent().get_parent()
+
+    def get_tag_value_from_mapping_row(self, row):
+        box = row.get_child().get_children()[0]
+        box_children = box.get_children()
+        return (box_children[0], box_children[1])
+
+    def on_dismiss_new_mapping(self, widget=None, event=None):
+        self.new_mapping_dialog.hide()
+
+    def on_add_new_mapping(self, widget=None, event=None):
+        if tag := self.new_mapping_entry.get_text():
+            row = self.make_mapping_row(label_text=tag, spin_value=self.new_mapping_spinner.get_value())
+            self.mappings_listbox.remove(self.add_row)
+            self.mappings_listbox.add(row)
+            self.mappings_listbox.add(self.add_row)
+            self.mappings_listbox.show_all()
+
+            self.on_dismiss_new_mapping()
+
+    def load_general_listbox(self):
+        self.general_label.set_alignment(0,0)
+        self.target_label.set_alignment(0,0)
+        self.ui_label.set_alignment(0,0)
+
+        self.load_ui_mode()
+        self.load_target_task()
+
+        for child in self.general_listbox.get_children():
+            self.general_listbox.remove(child)
+
+        target_row = Gtk.ListBoxRow()
+        target_row.add(self.target_tasks)
+
+        ui_row = Gtk.ListBoxRow()
+        ui_row.add(self.ui_mode)
+
+        self.general_listbox.add(target_row)
+        self.general_listbox.add(ui_row)
+
+    def load_target_task(self):
+        self.preferences_load()
+        
+        self.target_spinbutton.set_value(self.preferences['goal'])
+
+    def load_ui_mode(self):
+        self.preferences_load()
+        if self.preferences['ui_type'] == 'FULL':
+            self.ui_combobox.set_entry_text_column(0)
+        elif self.preferences['ui_type'] == 'BUTTON':
+            self.ui_combobox.set_entry_text_column(1)
+        else:
+            self.ui_combobox.set_entry_text_column(2)
