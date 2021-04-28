@@ -52,7 +52,7 @@ task_ids = [
 ]
 
 # Date for modified and added tags
-today = Date.today().xml_str()
+today = str(Date.today())
 
 # Initial tasks
 # flake8: noqa: E501
