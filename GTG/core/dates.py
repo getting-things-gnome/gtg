@@ -70,7 +70,7 @@ LOOKUP = {
 class Accuracy(Enum):
     """ GTg.core.dates.Date supported accuracies
 
-    From less accurate to the most :
+    From less accurate to the most:
      * fuzzy is when a date is just a string not representing a real date
        (like `someday`)
      * date is a date accurate to the day (see datetime.date)
