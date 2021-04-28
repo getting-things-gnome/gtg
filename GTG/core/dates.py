@@ -21,7 +21,7 @@
 Dates Could be normal like 2012-04-01 or fuzzy like now, soon,
 someday, later or no date.
 
-Date.parse() parses all possible representations of a date. """
+Date.parse() parses all possible representations of a datetime.date. """
 
 import calendar
 import locale
@@ -68,15 +68,15 @@ LOOKUP = {
 
 
 class Accuracy(Enum):
-    """ GTg.core.dates.Date supported accuracies
+    """ GTG.core.dates.Date supported accuracies
 
     From less accurate to the most:
      * fuzzy is when a date is just a string not representing a real date
        (like `someday`)
-     * date is a date accurate to the day (see datetime.date)
-     * datetime is a datetime accurate to the microseconds
+     * date is a datetime.date accurate to the day (see datetime.date)
+     * datetime is a datetime.datetime accurate to the microseconds
        (see datetime.datetime)
-     * timezone ia a datetime accurate to the microseconds with tzinfo
+     * timezone ia a datetime.datetime accurate to the microseconds with tzinfo
     """
     fuzzy = 'fuzzy'
     date = 'date'
@@ -100,11 +100,12 @@ DATE_FORMATS = [(locale.nl_langinfo(locale.D_T_FMT), Accuracy.datetime),
 class Date:
     """A date class that supports fuzzy dates.
 
-    Date supports all the methods of the standard date class. A Date
-    can be constructed with:
+    A Date can be constructed with:
       - the fuzzy strings 'now', 'soon', '' (no date, default), or 'someday'
-      - a string containing an ISO format date: YYYY-MM-DD, or
-      - a date or Date instance, or
+      - a string containing an ISO format date: YYYY-MM-DD
+      - a datetime.date instance
+      - a datetime.datetime instance
+      - a GTG.core.dates.Date instance
       - a string containing a locale format date.
     """
 
