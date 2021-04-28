@@ -26,8 +26,7 @@ import datetime
 import logging
 import os
 import time
-from gettext import gettext as _
-from gettext import ngettext
+from gettext import gettext as _, ngettext
 
 from gi.repository import Gdk, Gtk, Pango
 from gi.repository.GObject import signal_handler_block
