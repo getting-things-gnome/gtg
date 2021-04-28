@@ -34,10 +34,12 @@ __all__ = ['Date', 'Accuracy']
 
 # trick to obtain the timezone of the machine GTG is executed on
 LOCAL_TIMEZONE = datetime.now(timezone.utc).astimezone().tzinfo
-SOON, SOMEDAY, NODATE = list(range(1, 4))
+NOW, SOON, SOMEDAY, NODATE = list(range(4))
 
 # Localized strings for fuzzy values
 STRINGS = {
+    # Translators: Used for display
+    NOW: _('now'),
     # Translators: Used for display
     SOON: _('soon'),
     # Translators: Used for display
@@ -48,7 +50,10 @@ STRINGS = {
 # Allows looking up any value which is not a date but points towards one and
 # find one of the four constant for fuzzy dates: SOON, SOMEDAY, and NODATE
 LOOKUP = {
+    NOW: NOW,
+    'now': NOW,
     # Translators: Used in parsing, made lowercased in code
+    _('now'): NOW,
     SOON: SOON,
     'soon': SOON,
     # Translators: Used in parsing, made lowercased in code
@@ -205,7 +210,7 @@ class Date:
 
     def _cast_for_operation(self, other, is_comparison: bool = True):
         """Returns two values compatibles for operation or comparison.
-        Will settle for the less accuracy : comparing a date and a datetime
+        Will settle for the less accuracy: comparing a date and a datetime
         will cast the datetime to a date to allow comparison.
         """
         if isinstance(other, timedelta):
@@ -271,6 +276,11 @@ class Date:
         """
         if self.accuracy is Accuracy.fuzzy:
             return STRINGS[self.dt_value]
+        if self.accuracy is Accuracy.datetime:
+            span = timedelta(hours=1)
+            now = datetime.now()
+            if now - span <= self.dt_value < now + span:
+                return _('now')
         return self.date().strftime(locale.nl_langinfo(locale.D_FMT))
 
     def __repr__(self):

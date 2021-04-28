@@ -55,26 +55,27 @@ class TestDates(TestCase):
 
     def test_parse_fuzzy_dates(self):
         """ Parse fuzzy dates like now, soon, later, someday """
-        self.assertEqual(Date.parse("now"), Date.now())
-        self.assertEqual(Date.parse("soon"), Date.soon())
-        self.assertEqual(Date.parse("later"), Date.someday())
-        self.assertEqual(Date.parse("someday"), Date.someday())
-        self.assertEqual(Date.parse(""), Date.no_date())
+        self.assertEqual(Date("now"), Date.now())
+        self.assertEqual(Date("soon"), Date.soon())
+        self.assertEqual(Date("later"), Date.someday())
+        self.assertEqual(Date("someday"), Date.someday())
+        self.assertEqual(Date(""), Date.no_date())
 
     def test_parse_local_fuzzy_dates(self):
         """ Parse fuzzy dates in their localized version """
-        self.assertEqual(Date.parse(_("now")), Date.now())
-        self.assertEqual(Date.parse(_("soon")), Date.soon())
-        self.assertEqual(Date.parse(_("later")), Date.someday())
-        self.assertEqual(Date.parse(_("someday")), Date.someday())
-        self.assertEqual(Date.parse(""), Date.no_date())
+        self.assertEqual(Date(_("now")), Date.now())
+        self.assertEqual(Date(_("soon")), Date.soon())
+        self.assertEqual(Date(_("later")), Date.someday())
+        self.assertEqual(Date(_("someday")), Date.someday())
+        self.assertEqual(Date(""), Date.no_date())
 
     def test_parse_fuzzy_dates_str(self):
         """ Print fuzzy dates in localized version """
-        self.assertEqual(str(Date.parse("soon")), _("soon"))
-        self.assertEqual(str(Date.parse("later")), _("someday"))
-        self.assertEqual(str(Date.parse("someday")), _("someday"))
-        self.assertEqual(str(Date.parse("")), "")
+        self.assertEqual(Date("now").localized_str, _("now"))
+        self.assertEqual(Date("soon").localized_str, _("soon"))
+        self.assertEqual(Date("later").localized_str, _("someday"))
+        self.assertEqual(Date("someday").localized_str, _("someday"))
+        self.assertEqual(str(Date("")), "")
 
     def test_parse_week_days(self):
         """ Parse name of week days and don't care about case-sensitivity """
