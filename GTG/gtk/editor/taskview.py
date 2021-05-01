@@ -597,8 +597,8 @@ class TaskView(Gtk.TextView):
         tags = view.get_iter_at_location(x, y)[1].get_tags()
 
         # Reset cursor and hover states
-        cursor = Gdk.Cursor.new_for_display(window.get_display(),
-                                            Gdk.CursorType.XTERM)
+        cursor = Gdk.Cursor.new_from_name(window.get_display(),
+                                          'text')
         window.set_cursor(cursor)
 
         if self.hovered_tag:
@@ -613,8 +613,8 @@ class TaskView(Gtk.TextView):
         try:
             tag = tags[0]
             tag.set_hover()
-            cursor = Gdk.Cursor.new_for_display(window.get_display(),
-                                                Gdk.CursorType.HAND2)
+            cursor = Gdk.Cursor.new_from_name(window.get_display(),
+                                              'pointer')
             window.set_cursor(cursor)
             self.hovered_tag = tag
 
