@@ -599,7 +599,6 @@ class TaskView(Gtk.TextView):
         # Reset cursor and hover states
         cursor = Gdk.Cursor.new_from_name(window.get_display(),
                                           'text')
-        window.set_cursor(cursor)
 
         if self.hovered_tag:
             try:
@@ -615,12 +614,12 @@ class TaskView(Gtk.TextView):
             tag.set_hover()
             cursor = Gdk.Cursor.new_from_name(window.get_display(),
                                               'pointer')
-            window.set_cursor(cursor)
             self.hovered_tag = tag
 
         except (AttributeError, IndexError):
             # Not an interactive tag, or no tag at all
             pass
+        window.set_cursor(cursor)
 
 
     def do_populate_popup(self, popup) -> None:
