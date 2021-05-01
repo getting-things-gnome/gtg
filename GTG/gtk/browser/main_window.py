@@ -220,8 +220,6 @@ class MainWindow(Gtk.ApplicationWindow):
         """
         # TODO(izidor): Add icon dirs on app level
         Gtk.IconTheme.get_default().prepend_search_path(ICONS_DIR)
-        # TODO(izidor): Set it outside browser as it applies to every window
-        Gtk.Window.set_default_icon_name("gtg")
 
     def _init_widget_aliases(self):
         """
