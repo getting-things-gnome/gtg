@@ -355,11 +355,25 @@ tasks = [
 ]
 
 
+def skeleton() -> etree.Element:
+    """Generate root XML tag and basic subtags."""
+
+    root = etree.Element('gtgData')
+    root.set('appVersion', '0.5')
+    root.set('xmlVersion', '2')
+
+    etree.SubElement(root, 'taglist')
+    etree.SubElement(root, 'searchlist')
+    etree.SubElement(root, 'tasklist')
+
+    return root
+
+
 def generate() -> etree.Element:
     """Generate the XML tree with first run tasks."""
 
     # Create an empty XML tree first
-    root = xml.skeleton()
+    root = skeleton()
     taskslist = root.find('tasklist')
     taglist = root.find('taglist')
 
