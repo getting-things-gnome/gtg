@@ -204,3 +204,31 @@ def errorhandler_fatal(func, *args, **kwargs):
         kwargs['ignorable'] = False
     return errorhandler(func, *args, **kwargs)
 
+
+def replacement_excepthook(etype, value, tb, thread=None):
+    """sys.excepthook compatible exception handler showing an dialog."""
+    do_error_dialog(value, "Global generic exception", ignorable=True)
+    original_excepthook(etype, value, tb)
+
+
+original_excepthook = None
+
+
+def replace_excepthook(replacement=replacement_excepthook) -> bool:
+    """Replaces the (default) exception handler."""
+    global original_excepthook
+    if original_excepthook is not None:
+        return False
+    original_excepthook = sys.excepthook
+    sys.excepthook = replacement
+    return True
+
+
+def restore_excepthook() -> bool:
+    """Restore the old exception handler."""
+    global original_excepthook
+    if original_excepthook is None:
+        return False
+    sys.excepthook = original_excepthook
+    original_excepthook = None
+
