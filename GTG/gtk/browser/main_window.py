@@ -114,6 +114,7 @@ class MainWindow(Gtk.ApplicationWindow):
 
         # Define aliases for specific widgets to reuse them easily in the code
         self._init_widget_aliases()
+        self.sidebar.connect('notify::visible', self._on_sidebar_visible)
 
         self.set_titlebar(self.headerbar)
         self.set_title('Getting Things GNOME!')
@@ -551,16 +552,7 @@ class MainWindow(Gtk.ApplicationWindow):
             self.move(xpos, ypos)
 
         tag_pane = self.config.get("tag_pane")
-
-        if not tag_pane:
-            self.sidebar.hide()
-        else:
-            if not self.tagtreeview:
-                self.init_tags_sidebar()
-
-            self.sidebar.show()
-
-        self.switch_sidebar_name(tag_pane)
+        self.sidebar.props.visible = tag_pane
 
         sidebar_width = self.config.get("sidebar_width")
         self.builder.get_object("main_hpanes").set_position(sidebar_width)
@@ -679,31 +671,19 @@ class MainWindow(Gtk.ApplicationWindow):
         main_menu_btn = self.builder.get_object('main_menu_btn')
         main_menu_btn.props.active = not main_menu_btn.props.active
 
-    def switch_sidebar_name(self, visible):
-        """Change text on sidebar button."""
-
-        button = self.builder.get_object('toggle_sidebar_button')
-        if visible:
-            button.props.text = _("Hide Sidebar")
-        else:
-            button.props.text = _("Show Sidebar")
-
     def on_sidebar_toggled(self, action, param):
-        """Toggle tags sidebar."""
+        """Toggle tags sidebar via the action."""
 
-        visible = self.sidebar.get_property("visible")
+        self.sidebar.props.visible = not self.sidebar.props.visible
 
-        if visible:
-            self.config.set("tag_pane", False)
-            self.sidebar.hide()
-        else:
-            if not self.tagtreeview:
-                self.init_tags_sidebar()
+    def _on_sidebar_visible(self, obj, param):
+        """Visibility of the sidebar changed."""
 
-            self.sidebar.show()
-            self.config.set("tag_pane", True)
-
-        self.switch_sidebar_name(not visible)
+        assert param.name == 'visible'
+        visible = obj.get_property(param.name)
+        self.config.set("tag_pane", visible)
+        if visible and not self.tagtreeview:
+            self.init_tags_sidebar()
 
     def on_collapse_all_tasks(self, action, param):
         """Collapse all tasks."""
