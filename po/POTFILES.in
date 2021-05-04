@@ -74,6 +74,7 @@ GTG/gtk/browser/delete_task.py
 GTG/gtk/browser/__init__.py
 GTG/gtk/browser/main_window.py
 GTG/gtk/browser/modify_tags.py
+GTG/gtk/browser/quick_add.py
 GTG/gtk/browser/simple_color_selector.py
 GTG/gtk/browser/tag_context_menu.py
 GTG/gtk/browser/tag_editor.py
