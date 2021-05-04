@@ -115,6 +115,7 @@ class MainWindow(Gtk.ApplicationWindow):
         # Define aliases for specific widgets to reuse them easily in the code
         self._init_widget_aliases()
         self.sidebar.connect('notify::visible', self._on_sidebar_visible)
+        self.add_action(Gio.PropertyAction.new('sidebar', self.sidebar, 'visible'))
 
         self.set_titlebar(self.headerbar)
         self.set_title('Getting Things GNOME!')

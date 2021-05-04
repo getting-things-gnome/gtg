@@ -211,11 +211,11 @@
         <property name="margin_bottom">8</property>
         <property name="orientation">vertical</property>
         <child>
-          <object class="GtkCheckButton" id="toggle_sidebar_button">
+          <object class="GtkModelButton" id="toggle_sidebar_button">
             <property name="visible">True</property>
-            <property name="receives_default">True</property>
-            <property name="label" translatable="yes">Show Sidebar</property>
-            <property name="active" bind-source="sidebar_vbox" bind-property="visible" bind-flags="bidirectional" />
+            <property name="text" translatable="yes">Show Sidebar</property>
+            <property name="action-name">win.sidebar</property>
+            <property name="active" bind-source="sidebar_vbox" bind-property="visible" />
           </object>
           <packing>
             <property name="expand">False</property>
