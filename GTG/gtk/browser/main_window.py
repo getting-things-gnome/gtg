@@ -165,6 +165,7 @@ class MainWindow(Gtk.ApplicationWindow):
 
         action_entries = [
             ('toggle_sidebar', self.on_sidebar_toggled, ('win.toggle_sidebar', ['F9'])),
+            ('show_main_menu', self._show_main_menu, ('win.show_main_menu', ['F10'])),
             ('collapse_all_tasks', self.on_collapse_all_tasks, None),
             ('expand_all_tasks', self.on_expand_all_tasks, None),
             ('change_tags', self.on_modify_tags, ('win.change_tags', ['<ctrl>T'])),
@@ -670,6 +671,13 @@ class MainWindow(Gtk.ApplicationWindow):
 
     def on_tagcontext_deactivate(self, menushell):
         self.reset_cursor()
+
+    def _show_main_menu(self, action, param):
+        """
+        Action callback to show the main menu.
+        """
+        main_menu_btn = self.builder.get_object('main_menu_btn')
+        main_menu_btn.props.active = not main_menu_btn.props.active
 
     def switch_sidebar_name(self, visible):
         """Change text on sidebar button."""
