@@ -52,6 +52,7 @@ gtg_data_sources = [
   'data/plugins.ui',
   'data/preferences.ui',
   'data/style.css',
+  'data/tag_editor.ui',
   'data/task_editor.ui',
 ]
 

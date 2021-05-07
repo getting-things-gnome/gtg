@@ -31,3 +31,4 @@ class GnomeConfig():
     HELP_OVERLAY_UI_FILE = os.path.join(data, "help_overlay.ui")
     MENUS_UI_FILE = os.path.join(data, "context_menus.ui")
     MODIFYTAGS_UI_FILE = os.path.join(data, "modify_tags.ui")
+    TAG_EDITOR_UI_FILE = os.path.join(data, "tag_editor.ui")
