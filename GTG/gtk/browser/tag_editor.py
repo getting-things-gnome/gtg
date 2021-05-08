@@ -46,8 +46,8 @@ class TagEditor(Gtk.Window):
         self.set_titlebar(self._builder.get_object('headerbar'))
         self.add(self._builder.get_object('main'))
         self.set_type_hint(Gdk.WindowTypeHint.DIALOG)
-        self.set_position(Gtk.WindowPosition.CENTER)
-        # self.set_border_width(10)
+        self.set_position(Gtk.WindowPosition.MOUSE)
+        self.set_border_width(9)
         self.set_resizable(True)
         self.set_default(self._builder.get_object('apply'))
         self._title_format = self.get_title()
@@ -71,18 +71,12 @@ class TagEditor(Gtk.Window):
                            self._builder.get_object('apply'),
                            'sensitive',
                            0)
-        self.bind_property('has_icon',
-                           self._builder.get_object('remove-icon'),
-                           'sensitive',
-                           0)
+        self.bind_property('use_icon',
+                           self._builder.get_object('icon-switch'),
+                           'active',
+                           GObject.BindingFlags.BIDIRECTIONAL)
         self.bind_property('tag_name', self._name_entry, 'text',
                            GObject.BindingFlags.BIDIRECTIONAL)
-
-        self.tag_rgba = Gdk.RGBA(1.0, 1.0, 1.0, 1.0)
-        self.use_color = False
-        self.tag_name = ''
-        self.tag_is_actionable = True
-        self.is_valid = True
 
         self._builder.connect_signals({
             'cancel': self._cancel,
@@ -94,6 +88,15 @@ class TagEditor(Gtk.Window):
         })
         self._emoji_entry_changed_id = self._emoji_entry.connect(
             'changed', self._set_emoji)
+
+        self.tag_rgba = Gdk.RGBA(1.0, 1.0, 1.0, 1.0)
+        self.use_color = False
+        self._use_icon = False # Used in validation
+        self.tag_name = ''
+        self.tag_is_actionable = True
+        self.is_valid = True
+        self._emoji = None
+        self.use_icon = False
 
         accelGroup = Gtk.AccelGroup()
         self.add_accel_group(accelGroup)
@@ -129,7 +132,7 @@ class TagEditor(Gtk.Window):
     @tag_name.setter
     def tag_name(self, value: str):
         self._tag_name = value.strip().replace(' ', '')
-        self._validate_tag_name()
+        self._validate()
 
     @GObject.Property(type=bool, default=False)
     def tag_is_actionable(self):
@@ -141,6 +144,25 @@ class TagEditor(Gtk.Window):
     @tag_is_actionable.setter
     def tag_is_actionable(self, value: bool):
         self._tag_is_actionable = value
+
+    @GObject.Property(type=bool, default=False)
+    def use_icon(self):
+        """Whenever it should use and save the specified icon."""
+        return self._use_icon
+
+    @use_icon.setter
+    def use_icon(self, value: bool):
+        self._use_icon = value
+
+        if value and (text := self._emoji):
+            self._icon_button.set_label(text)
+            if label := self._icon_button.get_child():
+                label.set_opacity(1)
+        else:
+            self._icon_button.set_label('🏷️')
+            if label := self._icon_button.get_child():
+                label.set_opacity(0.4)
+        self._validate()
 
     @GObject.Property(type=bool, default=True)
     def is_valid(self):
@@ -170,6 +192,21 @@ class TagEditor(Gtk.Window):
                                           self._emoji_entry_changed_id):
             self._emoji_entry.set_text('')
 
+    def _validate(self):
+        """
+        Validates the current tag preferences.
+        Returns true whenever it passes validation, False otherwise,
+        and modifies the is_valid property appropriately.
+        On failure, the widgets are modified accordingly to show the user
+        why it doesn't accept it.
+        """
+        valid = True
+        valid &= self._validate_tag_name()
+        # To use an icon you need one
+        valid &= not self.use_icon or bool(self.use_icon and self._emoji)
+        self.is_valid = valid
+        return valid
+
     def _validate_tag_name(self):
         """
         Validates the current tag name.
@@ -183,12 +220,10 @@ class TagEditor(Gtk.Window):
                 Gtk.EntryIconPosition.SECONDARY, Gtk.STOCK_DIALOG_ERROR)
             self._name_entry.props.secondary_icon_tooltip_text = \
                 _("Tag name can not be empty")
-            self.is_valid = False
             return False
         else:
             self._name_entry.set_icon_from_icon_name(
                 Gtk.EntryIconPosition.SECONDARY, None)
-            self.is_valid = True
             return True
 
     # PUBLIC API #####
@@ -212,7 +247,7 @@ class TagEditor(Gtk.Window):
         if color := tag.get_attribute('color'):
             if not rgba.parse(color):
                 log.warning("Failed to parse tag color for %r: %r",
-                            (tag.get_name(), color))
+                            tag.get_name(), color)
         self.use_color = bool(color)
         self.tag_rgba = rgba
         self.tag_name = tag.get_name()
@@ -241,8 +276,12 @@ class TagEditor(Gtk.Window):
             self._cancel(widget)
             return
 
-        if self._emoji:
+        if self.use_icon and self._emoji:
             self.tag.set_attribute('icon', self._emoji)
+        elif self.use_icon:
+            log.warning("Tried to set icon for %r but no icon given",
+                        self.tag.get_name())
+            self.tag.del_attribute('icon')
         else:
             self.tag.del_attribute('icon')
 
@@ -289,6 +328,10 @@ class TagEditor(Gtk.Window):
         Button to set the icon/emoji has been clicked.
         """
         self._reset_emoji_entry()
+        # Resize to make the emoji picker fit (can't go outside of the
+        # window for some reason, at least in GTK3)
+        w, h = self.get_size()
+        self.resize(max(w, 550), max(h, 300))
         self._emoji_entry.do_insert_emoji(self._emoji_entry)
 
     def _set_emoji(self, widget: GObject.Object, text: str = None):
@@ -301,15 +344,9 @@ class TagEditor(Gtk.Window):
         if text is None:
             text = self._emoji_entry.get_text()
 
-        if text:
-            self._emoji = text
-            self._icon_button.set_label(text)
-            self._icon_button.set_opacity(1)
-        else:
-            self._emoji = None
-            self._icon_button.set_label('🏷️')
-            self._icon_button.set_opacity(0.4)
+        self._emoji = text if text else None
         self.notify('has-icon')
+        self.use_icon = True if text else False
 
         self._reset_emoji_entry()
 
