@@ -49,7 +49,7 @@ def task_from_element(task, element: etree.Element):
     # Dates
     try:
         done_date = Date.parse(dates.find('done').text)
-        task.set_status(element.attrib['status'], donedate=done_date)
+        task.set_status(element.attrib['status'], donedate=done_date, init=True)
     except AttributeError:
         pass
 
