@@ -37,17 +37,17 @@
   <object class="GtkBox" id="main">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="margin_left">9</property>
-    <property name="margin_right">9</property>
-    <property name="margin_top">9</property>
-    <property name="margin_bottom">9</property>
+    <property name="margin_left">18</property>
+    <property name="margin_right">18</property>
+    <property name="margin_top">18</property>
+    <property name="margin_bottom">18</property>
+    <property name="spacing">12</property>
     <child>
       <object class="GtkBox">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="halign">center</property>
         <property name="valign">start</property>
-        <property name="margin_bottom">9</property>
         <property name="orientation">vertical</property>
         <property name="spacing">6</property>
         <child>
@@ -110,7 +110,7 @@
           <object class="GtkButton" id="icon-remove">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
-            <property name="receives_default">True</property>
+            <property name="receives_default">False</property>
             <property name="tooltip_text" translatable="yes">Delete the currently selected icon</property>
             <property name="halign">center</property>
             <signal name="clicked" handler="remove_icon" swapped="no"/>
@@ -140,13 +140,11 @@
       <object class="GtkBox">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="margin_left">6</property>
         <property name="orientation">vertical</property>
         <child>
           <object class="GtkGrid">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="margin_top">9</property>
             <property name="margin_bottom">9</property>
             <property name="row_spacing">6</property>
             <property name="column_spacing">12</property>
@@ -187,9 +185,7 @@
           <object class="GtkGrid">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="margin_left">12</property>
             <property name="margin_top">9</property>
-            <property name="margin_bottom">9</property>
             <property name="row_spacing">6</property>
             <property name="column_spacing">12</property>
             <child>

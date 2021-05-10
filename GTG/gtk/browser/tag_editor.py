@@ -47,7 +47,6 @@ class TagEditor(Gtk.Window):
         self.add(self._builder.get_object('main'))
         self.set_type_hint(Gdk.WindowTypeHint.DIALOG)
         self.set_position(Gtk.WindowPosition.MOUSE)
-        self.set_border_width(9)
         self.set_resizable(True)
         self.set_default(self._builder.get_object('apply'))
         self._title_format = self.get_title()
