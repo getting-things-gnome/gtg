@@ -243,7 +243,6 @@
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
                     <property name="tooltip_text" translatable="yes">Change the color of the tag</property>
-                    <property name="halign">end</property>
                     <signal name="color-set" handler="activate_color" swapped="no"/>
                   </object>
                   <packing>
