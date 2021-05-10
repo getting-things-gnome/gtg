@@ -10,6 +10,8 @@ from gi.repository import Gtk
 from gettext import gettext as _
 from gettext import ngettext
 
+from GTG.core.task import Task
+
 log = logging.getLogger(__name__)
 class Gamify:
     PLUGIN_PATH = os.path.dirname(os.path.abspath(__file__))
@@ -110,8 +112,7 @@ class Gamify:
             log.debug('Cannot load preference dialog widget')
 
         # Connect to the signals
-        self.done_connect_id = self.browser.connect("task-marked-as-done", self.on_marked_as_done)
-        self.not_done_connect_id = self.browser.connect("task-marked-as-not-done", self.on_marked_as_not_done)
+        self.signal_connect_id = self.plugin_api.get_requester().connect("status-changed", self.on_status_changed)
 
         self.update_date()
         self.update_streak()
@@ -119,8 +120,7 @@ class Gamify:
         self.update_widget()
 
     def deactivate(self, plugin_api):
-        self.browser.disconnect(self.done_connect_id)
-        self.browser.disconnect(self.not_done_connect_id)
+        self.browser.disconnect(self.signal_connect_id)
         self.remove_ui()
 
     def is_configurable(self):
@@ -190,7 +190,13 @@ class Gamify:
     def get_streak(self):
         return self.data['streak']
 
-    def on_marked_as_done(self, sender, task_id):
+    def on_status_changed(self, sender, task_id, status):
+        if status == Task.STA_DONE:
+            self.on_marked_as_done(task_id)
+        else:
+            self.on_marked_as_not_done(task_id)
+
+    def on_marked_as_done(self, task_id):
         log.debug('a task has been marked as done')
         self.analytics_load()
         self.preferences_load()
@@ -206,7 +212,7 @@ class Gamify:
         self.analytics_save()
         self.update_widget()
 
-    def on_marked_as_not_done(self, sender, task_id):
+    def on_marked_as_not_done(self, task_id):
         log.debug('a task has been marked as not done')
         self.analytics_load()
         self.preferences_load()
