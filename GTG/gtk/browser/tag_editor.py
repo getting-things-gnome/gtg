@@ -55,10 +55,10 @@ class TagEditor(Gtk.Window):
         self._emoji_entry = self._builder.get_object('emoji-entry')
         self._icon_button = self._builder.get_object('icon-button')
         self._name_entry = self._builder.get_object('name-entry')
-        self.bind_property('use_color',
-                           self._builder.get_object('color-switch'),
-                           'active',
-                           GObject.BindingFlags.BIDIRECTIONAL)
+        self.bind_property('has_color',
+                           self._builder.get_object('color-remove'),
+                           'sensitive',
+                           0)
         self.bind_property('tag_rgba',
                            self._builder.get_object('color-button'),
                            'rgba',
@@ -71,10 +71,10 @@ class TagEditor(Gtk.Window):
                            self._builder.get_object('apply'),
                            'sensitive',
                            0)
-        self.bind_property('use_icon',
-                           self._builder.get_object('icon-switch'),
-                           'active',
-                           GObject.BindingFlags.BIDIRECTIONAL)
+        self.bind_property('has_icon',
+                           self._builder.get_object('icon-remove'),
+                           'sensitive',
+                           0)
         self.bind_property('tag_name', self._name_entry, 'text',
                            GObject.BindingFlags.BIDIRECTIONAL)
 
@@ -85,13 +85,12 @@ class TagEditor(Gtk.Window):
             'random_color': self._random_color,
             'set_icon': self._set_icon,
             'remove_icon': self._remove_icon,
+            'remove_color': self._remove_color,
         })
         self._emoji_entry_changed_id = self._emoji_entry.connect(
             'changed', self._set_emoji)
 
         self.tag_rgba = Gdk.RGBA(1.0, 1.0, 1.0, 1.0)
-        self.use_color = False
-        self._use_icon = False # Used in validation
         self.tag_name = ''
         self.tag_is_actionable = True
         self.is_valid = True
@@ -107,13 +106,13 @@ class TagEditor(Gtk.Window):
         self.show_all()
 
     @GObject.Property(type=bool, default=False)
-    def use_color(self):
-        """Whenever it should use and save the specified color."""
-        return self._use_color
+    def has_color(self):
+        """Whenever the tag has a color."""
+        return self._has_color
 
-    @use_color.setter
-    def use_color(self, value: bool):
-        self._use_color = value
+    @has_color.setter
+    def has_color(self, value: bool):
+        self._has_color = value
 
     @GObject.Property(type=Gdk.RGBA)
     def tag_rgba(self):
@@ -144,25 +143,6 @@ class TagEditor(Gtk.Window):
     @tag_is_actionable.setter
     def tag_is_actionable(self, value: bool):
         self._tag_is_actionable = value
-
-    @GObject.Property(type=bool, default=False)
-    def use_icon(self):
-        """Whenever it should use and save the specified icon."""
-        return self._use_icon
-
-    @use_icon.setter
-    def use_icon(self, value: bool):
-        self._use_icon = value
-
-        if value and (text := self._emoji):
-            self._icon_button.set_label(text)
-            if label := self._icon_button.get_child():
-                label.set_opacity(1)
-        else:
-            self._icon_button.set_label('🏷️')
-            if label := self._icon_button.get_child():
-                label.set_opacity(0.4)
-        self._validate()
 
     @GObject.Property(type=bool, default=True)
     def is_valid(self):
@@ -202,8 +182,6 @@ class TagEditor(Gtk.Window):
         """
         valid = True
         valid &= self._validate_tag_name()
-        # To use an icon you need one
-        valid &= not self.use_icon or bool(self.use_icon and self._emoji)
         self.is_valid = valid
         return valid
 
@@ -248,7 +226,7 @@ class TagEditor(Gtk.Window):
             if not rgba.parse(color):
                 log.warning("Failed to parse tag color for %r: %r",
                             tag.get_name(), color)
-        self.use_color = bool(color)
+        self.has_color = bool(color)
         self.tag_rgba = rgba
         self.tag_name = tag.get_name()
         self.tag_is_actionable = \
@@ -276,16 +254,16 @@ class TagEditor(Gtk.Window):
             self._cancel(widget)
             return
 
-        if self.use_icon and self._emoji:
+        if self.has_icon and self._emoji:
             self.tag.set_attribute('icon', self._emoji)
-        elif self.use_icon:
+        elif self.has_icon: # Should never happen, but just in case
             log.warning("Tried to set icon for %r but no icon given",
                         self.tag.get_name())
             self.tag.del_attribute('icon')
         else:
             self.tag.del_attribute('icon')
 
-        if self.use_color:
+        if self.has_color:
             rgba = self.tag_rgba
             color = "#%02x%02x%02x" % (int(max(0, min(rgba.red, 1)) * 255),
                                        int(max(0, min(rgba.green, 1)) * 255),
@@ -311,7 +289,7 @@ class TagEditor(Gtk.Window):
         The random color button has been clicked, overriding the color
         with an random color.
         """
-        self.use_color = True
+        self.has_color = True
         self.tag_rgba = Gdk.RGBA(random.uniform(0.0, 1.0),
                                  random.uniform(0.0, 1.0),
                                  random.uniform(0.0, 1.0),
@@ -321,7 +299,7 @@ class TagEditor(Gtk.Window):
         """
         Enable using the selected color because a color has been selected.
         """
-        self.use_color = True
+        self.has_color = True
 
     def _set_icon(self, widget: GObject.Object):
         """
@@ -345,8 +323,17 @@ class TagEditor(Gtk.Window):
             text = self._emoji_entry.get_text()
 
         self._emoji = text if text else None
+        if text:
+            self._emoji = text
+            self._icon_button.set_label(text)
+            if label := self._icon_button.get_child():
+                label.set_opacity(1)
+        else:
+            self._emoji = None
+            self._icon_button.set_label('🏷️')
+            if label := self._icon_button.get_child():
+                label.set_opacity(0.4)
         self.notify('has-icon')
-        self.use_icon = True if text else False
 
         self._reset_emoji_entry()
 
@@ -355,6 +342,13 @@ class TagEditor(Gtk.Window):
         Callback to remove the icon.
         """
         self._set_emoji(self._emoji_entry, text='')
+
+    def _remove_color(self, widget: GObject.Object):
+        """
+        Callback to remove the color.
+        """
+        self.tag_rgba = Gdk.RGBA(1.0, 1.0, 1.0, 1.0)
+        self.has_color = False
 
     def _on_escape(self, accel_group: Gtk.AccelGroup,
                    acceleratable: GObject.Object, keyval: int,
