@@ -45,120 +45,82 @@
       <object class="GtkBox">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="margin_right">6</property>
+        <property name="halign">center</property>
+        <property name="valign">start</property>
+        <property name="margin_bottom">9</property>
         <property name="orientation">vertical</property>
+        <property name="spacing">6</property>
         <child>
-          <object class="GtkBox" id="icon-box">
+          <object class="GtkBox">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="halign">center</property>
-            <property name="valign">start</property>
-            <property name="margin_bottom">9</property>
             <child>
-              <object class="GtkBox">
+              <object class="GtkButton" id="icon-button">
+                <property name="label" translatable="yes">🏷️</property>
+                <property name="width_request">64</property>
+                <property name="height_request">64</property>
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">False</property>
+                <property name="tooltip_text" translatable="yes">Click here to set an icon for this tag</property>
                 <property name="halign">center</property>
-                <child>
-                  <object class="GtkButton" id="icon-button">
-                    <property name="label" translatable="yes">🏷️</property>
-                    <property name="width_request">64</property>
-                    <property name="height_request">64</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">False</property>
-                    <property name="tooltip_text" translatable="yes">Click here to set an icon for this tag</property>
-                    <property name="halign">center</property>
-                    <signal name="clicked" handler="set_icon" swapped="no"/>
-                    <style>
-                      <class name="icon"/>
-                    </style>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">0</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkEntry" id="emoji-entry">
-                    <property name="width_request">0</property>
-                    <property name="height_request">0</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="opacity">0</property>
-                    <property name="editable">False</property>
-                    <property name="max_length">1</property>
-                    <property name="width_chars">1</property>
-                    <property name="overwrite_mode">True</property>
-                    <property name="caps_lock_warning">False</property>
-                    <property name="input_hints">GTK_INPUT_HINT_NO_SPELLCHECK | GTK_INPUT_HINT_EMOJI | GTK_INPUT_HINT_NONE</property>
-                    <style>
-                      <class name="hidden"/>
-                    </style>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">1</property>
-                  </packing>
-                </child>
+                <signal name="clicked" handler="set_icon" swapped="no"/>
+                <style>
+                  <class name="icon"/>
+                </style>
               </object>
               <packing>
-                <property name="expand">True</property>
+                <property name="expand">False</property>
                 <property name="fill">True</property>
                 <property name="position">0</property>
               </packing>
             </child>
+            <child>
+              <object class="GtkEntry" id="emoji-entry">
+                <property name="width_request">0</property>
+                <property name="height_request">0</property>
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="opacity">0</property>
+                <property name="editable">False</property>
+                <property name="max_length">1</property>
+                <property name="width_chars">1</property>
+                <property name="overwrite_mode">True</property>
+                <property name="caps_lock_warning">False</property>
+                <property name="input_hints">GTK_INPUT_HINT_NO_SPELLCHECK | GTK_INPUT_HINT_EMOJI | GTK_INPUT_HINT_NONE</property>
+                <style>
+                  <class name="hidden"/>
+                </style>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
           </object>
           <packing>
-            <property name="expand">False</property>
-            <property name="fill">False</property>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
             <property name="position">0</property>
           </packing>
         </child>
         <child>
-          <object class="GtkButtonBox" id="color-box">
+          <object class="GtkButton" id="icon-remove">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="margin_top">9</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="tooltip_text" translatable="yes">Delete the currently selected icon</property>
+            <property name="halign">center</property>
+            <signal name="clicked" handler="remove_icon" swapped="no"/>
             <child>
-              <object class="GtkColorButton" id="color-button">
+              <object class="GtkImage">
                 <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
-                <property name="tooltip_text" translatable="yes">Change the color of the tag</property>
-                <property name="sensitive" bind-source="color-switch" bind-property="active" bind-flags="bidirectional"/>
-                <signal name="color-set" handler="activate_color" swapped="no"/>
-                <style>
-                  <class name="linked"/>
-                </style>
+                <property name="sensitive">False</property>
+                <property name="can_focus">False</property>
+                <property name="icon_name">user-trash-symbolic</property>
               </object>
-              <packing>
-                <property name="expand">True</property>
-                <property name="fill">True</property>
-                <property name="position">1</property>
-                <property name="non_homogeneous">True</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkButton" id="color-random">
-                <property name="label" translatable="yes">Random</property>
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
-                <property name="tooltip_text" translatable="yes">Generate and use an random color</property>
-                <property name="sensitive" bind-source="color-switch" bind-property="active" bind-flags="bidirectional"/>
-                <signal name="clicked" handler="random_color" swapped="no"/>
-                <style>
-                  <class name="linked"/>
-                </style>
-              </object>
-              <packing>
-                <property name="expand">True</property>
-                <property name="fill">True</property>
-                <property name="position">2</property>
-              </packing>
             </child>
           </object>
           <packing>
@@ -170,7 +132,7 @@
       </object>
       <packing>
         <property name="expand">False</property>
-        <property name="fill">False</property>
+        <property name="fill">True</property>
         <property name="position">0</property>
       </packing>
     </child>
@@ -248,7 +210,7 @@
               <object class="GtkLabel" id="label-color">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="tooltip_text" translatable="yes">Whenever to use the color (on) or the icon (off), or no icon at all (off and no icon)</property>
+                <property name="tooltip_text" translatable="yes">The color of the tag, also used to color the background of the task when enabled</property>
                 <property name="halign">end</property>
                 <property name="label" translatable="yes">Color</property>
                 <property name="xalign">1</property>
@@ -272,39 +234,66 @@
               </packing>
             </child>
             <child>
-              <object class="GtkLabel" id="icon-label">
+              <object class="GtkButtonBox">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="tooltip_text" translatable="yes">Whenever the tag should have the icon</property>
-                <property name="halign">end</property>
-                <property name="label" translatable="yes">Icon</property>
-                <property name="xalign">1</property>
-              </object>
-              <packing>
-                <property name="left_attach">0</property>
-                <property name="top_attach">2</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkSwitch" id="icon-switch">
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="tooltip_text" translatable="yes">Whenever the tag should have the icon</property>
-                <property name="halign">start</property>
-                <property name="valign">center</property>
-              </object>
-              <packing>
-                <property name="left_attach">1</property>
-                <property name="top_attach">2</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkSwitch" id="color-switch">
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="tooltip_text" translatable="yes">Whenever to use the color (on) or the icon (off), or no icon at all (off and no icon)</property>
-                <property name="halign">start</property>
-                <property name="valign">center</property>
+                <child>
+                  <object class="GtkColorButton" id="color-button">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="tooltip_text" translatable="yes">Change the color of the tag</property>
+                    <property name="halign">end</property>
+                    <signal name="color-set" handler="activate_color" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                    <property name="non_homogeneous">True</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkButton" id="color-random">
+                    <property name="label" translatable="yes">Random</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="tooltip_text" translatable="yes">Generate and use an random color</property>
+                    <signal name="clicked" handler="random_color" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkButton" id="color-remove">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="tooltip_text" translatable="yes">Delete the currently selected color</property>
+                    <property name="halign">start</property>
+                    <signal name="clicked" handler="remove_color" swapped="no"/>
+                    <child>
+                      <object class="GtkImage">
+                        <property name="visible">True</property>
+                        <property name="sensitive">False</property>
+                        <property name="can_focus">False</property>
+                        <property name="icon_name">user-trash-symbolic</property>
+                      </object>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
+                    <property name="position">2</property>
+                  </packing>
+                </child>
+                <style>
+                  <class name="linked"/>
+                </style>
               </object>
               <packing>
                 <property name="left_attach">1</property>
@@ -326,12 +315,11 @@
       </packing>
     </child>
   </object>
-  <object class="GtkSizeGroup">
+  <object class="GtkSizeGroup" id="names">
     <widgets>
       <widget name="name-label"/>
       <widget name="label-actionable"/>
       <widget name="label-color"/>
-      <widget name="icon-label"/>
     </widgets>
   </object>
 </interface>
