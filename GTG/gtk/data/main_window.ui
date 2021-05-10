@@ -503,7 +503,6 @@
                       <object class="GtkScrolledWindow" id="open_pane">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
-                        <property name="hscrollbar_policy">never</property>
                         <child>
                           <placeholder/>
                         </child>
@@ -517,7 +516,6 @@
                       <object class="GtkScrolledWindow" id="actionable_pane">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
-                        <property name="hscrollbar_policy">never</property>
                         <child>
                           <placeholder/>
                         </child>
@@ -532,7 +530,6 @@
                       <object class="GtkScrolledWindow" id="closed_pane">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
-                        <property name="hscrollbar_policy">never</property>
                         <child>
                           <placeholder/>
                         </child>
