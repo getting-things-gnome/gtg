@@ -30,10 +30,16 @@ from GTG.gtk.browser import GnomeConfig
 
 log = logging.getLogger(__name__)
 
+@Gtk.Template(filename=GnomeConfig.TAG_EDITOR_UI_FILE)
 class TagEditor(Gtk.Window):
     """
     A window to edit certain properties of an tag.
     """
+
+    __gtype_name__ = 'GTG_TagEditor'
+    _emoji_entry = Gtk.Template.Child('emoji-entry')
+    _icon_button = Gtk.Template.Child('icon-button')
+    _name_entry = Gtk.Template.Child('name-entry')
 
     def __init__(self, req, app, tag=None):
         super().__init__()
@@ -42,50 +48,8 @@ class TagEditor(Gtk.Window):
         self.app = app
         self.tag = tag
 
-        self._builder = Gtk.Builder.new_from_file(GnomeConfig.TAG_EDITOR_UI_FILE)
-        self.set_titlebar(self._builder.get_object('headerbar'))
-        self.add(self._builder.get_object('main'))
-        self.set_type_hint(Gdk.WindowTypeHint.DIALOG)
-        self.set_position(Gtk.WindowPosition.MOUSE)
-        self.set_resizable(True)
-        self.set_default(self._builder.get_object('apply'))
         self._title_format = self.get_title()
 
-        self._emoji_entry = self._builder.get_object('emoji-entry')
-        self._icon_button = self._builder.get_object('icon-button')
-        self._name_entry = self._builder.get_object('name-entry')
-        self.bind_property('has_color',
-                           self._builder.get_object('color-remove'),
-                           'sensitive',
-                           0)
-        self.bind_property('tag_rgba',
-                           self._builder.get_object('color-button'),
-                           'rgba',
-                           GObject.BindingFlags.BIDIRECTIONAL)
-        self.bind_property('tag_is_actionable',
-                           self._builder.get_object('actionable-switch'),
-                           'active',
-                           GObject.BindingFlags.BIDIRECTIONAL)
-        self.bind_property('is_valid',
-                           self._builder.get_object('apply'),
-                           'sensitive',
-                           0)
-        self.bind_property('has_icon',
-                           self._builder.get_object('icon-remove'),
-                           'sensitive',
-                           0)
-        self.bind_property('tag_name', self._name_entry, 'text',
-                           GObject.BindingFlags.BIDIRECTIONAL)
-
-        self._builder.connect_signals({
-            'cancel': self._cancel,
-            'apply': self._apply,
-            'activate_color': self._activate_color,
-            'random_color': self._random_color,
-            'set_icon': self._set_icon,
-            'remove_icon': self._remove_icon,
-            'remove_color': self._remove_color,
-        })
         self._emoji_entry_changed_id = self._emoji_entry.connect(
             'changed', self._set_emoji)
 
@@ -95,11 +59,6 @@ class TagEditor(Gtk.Window):
         self.is_valid = True
         self._emoji = None
         self.use_icon = False
-
-        accelGroup = Gtk.AccelGroup()
-        self.add_accel_group(accelGroup)
-        accelGroup.connect(*Gtk.accelerator_parse('Escape'),
-                           Gtk.AccelFlags.VISIBLE, self._on_escape)
 
         self.set_tag(tag)
         self.show_all()
@@ -236,6 +195,7 @@ class TagEditor(Gtk.Window):
         super().destroy()
 
     # CALLBACKS #####
+    @Gtk.Template.Callback('cancel')
     def _cancel(self, widget: GObject.Object):
         """
         Cancel button has been clicked, closing the editor window without
@@ -243,6 +203,7 @@ class TagEditor(Gtk.Window):
         """
         self.destroy()
 
+    @Gtk.Template.Callback('apply')
     def _apply(self, widget: GObject.Object):
         """
         Apply button has been clicked, applying the settings and closing the
@@ -283,6 +244,7 @@ class TagEditor(Gtk.Window):
 
         self.destroy()
 
+    @Gtk.Template.Callback('random_color')
     def _random_color(self, widget: GObject.Object):
         """
         The random color button has been clicked, overriding the color
@@ -294,12 +256,14 @@ class TagEditor(Gtk.Window):
                                  random.uniform(0.0, 1.0),
                                  1.0)
 
+    @Gtk.Template.Callback('activate_color')
     def _activate_color(self, widget: GObject.Object):
         """
         Enable using the selected color because a color has been selected.
         """
         self.has_color = True
 
+    @Gtk.Template.Callback('set_icon')
     def _set_icon(self, widget: GObject.Object):
         """
         Button to set the icon/emoji has been clicked.
@@ -336,12 +300,14 @@ class TagEditor(Gtk.Window):
 
         self._reset_emoji_entry()
 
+    @Gtk.Template.Callback('remove_icon')
     def _remove_icon(self, widget: GObject.Object):
         """
         Callback to remove the icon.
         """
         self._set_emoji(self._emoji_entry, text='')
 
+    @Gtk.Template.Callback('remove_color')
     def _remove_color(self, widget: GObject.Object):
         """
         Callback to remove the color.
@@ -349,11 +315,3 @@ class TagEditor(Gtk.Window):
         self.tag_rgba = Gdk.RGBA(1.0, 1.0, 1.0, 1.0)
         self.has_color = False
 
-    def _on_escape(self, accel_group: Gtk.AccelGroup,
-                   acceleratable: GObject.Object, keyval: int,
-                   modifier: Gdk.ModifierType) -> bool:
-        """
-        Callback to close the window when ESC (Escape) is being pressed.
-        """
-        self.destroy()
-        return True
