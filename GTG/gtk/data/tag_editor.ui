@@ -46,10 +46,10 @@
       <object class="GtkBox">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="halign">center</property>
         <property name="valign">start</property>
         <property name="orientation">vertical</property>
         <property name="spacing">6</property>
+        <property name="margin-end">18</property>
         <child>
           <object class="GtkBox">
             <property name="visible">True</property>
@@ -141,11 +141,11 @@
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="orientation">vertical</property>
+        <property name="spacing">18</property>
         <child>
           <object class="GtkGrid">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="margin_bottom">9</property>
             <property name="row_spacing">6</property>
             <property name="column_spacing">12</property>
             <child>
@@ -185,7 +185,6 @@
           <object class="GtkGrid">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="margin_top">9</property>
             <property name="row_spacing">6</property>
             <property name="column_spacing">12</property>
             <child>
