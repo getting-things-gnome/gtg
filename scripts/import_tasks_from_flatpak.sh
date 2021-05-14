@@ -1,8 +1,7 @@
-#!/usr/bin/env bash
+#!/bin/sh
 # Imports your usual tags in the debug data, so that you can
-# play with your tasks without fear of destroying them
-# This has to be run from the root of the repo
-
+# play with your tasks without fear of destroying them.
+# This has to be run from the root of the repo.
 
 ./scripts/debug.sh -n
 
