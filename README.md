@@ -123,6 +123,12 @@ you can append to the command, such as:
 * `-p prefix-prog` to prepend `prefix-prog` to the main gtg executable script,
   useful to run under a debugger: `./launch.sh -p 'python3 -m pudb'` (with
   [pudb][pudb]) or a profiler: `./launch.sh -p 'python3 -m cProfile -o gtg.prof'`
+* `-s dataset` to use the dataset called `dataset`. It'll store it inside the `tmp`
+  folder of the current working directory. If it doesn't exists, it'll create
+  an new clean one. There are pre-made ones you can use by replacing `dataset`
+  with one of the following:
+  * `bryce` - An anonymized dataset with a fair number of tasks
+  * `screenshots` - Pre-made tasks that can be used to show off GTG
 
 If you somehow need to pass arguments directly to the `gtg` binary itself,
 anything after `--` is passed to gtg directly.

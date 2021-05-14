@@ -50,7 +50,9 @@ args_array=("${@}")
 extra_args=("${args_array[@]:$((OPTIND-1))}")
 
 # Copy dataset
-if [[  "$dataset" != "default" && ! -d "./tmp/$dataset" ]]; then
+if [[  "$dataset" != "default" \
+        && ! -d "./tmp/$dataset" \
+        && -d "data/test-data/$dataset" ]]; then
     echo "Copying $dataset dataset to ./tmp/"
     cp -r "data/test-data/$dataset" tmp/ || exit $?
 fi
