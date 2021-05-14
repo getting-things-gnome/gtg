@@ -1,14 +1,23 @@
-.TH gtg 1 2012-08-16 "gtg"
+.TH gtg 1 2021-05-14 "gtg"
 .SH NAME
-gtg \-  Getting Things GNOME!, a personal tasks and TODO-list items organizer
+gtg \-  Getting Things GNOME!, a personal tasks and ToDo list organizer
 for the GNOME desktop environment
 .SH SYNOPSIS
-.B gtg [options]
+.B gtg [options...] [task-ids...]
 .SH DESCRIPTION
-Getting Things GNOME! is a personal tasks and TODO-list items organizer for the
-GNOME desktop environment inspired by the Getting Things Done (GTD)
-methodology. GTG is designed with flexibility, adaptability, and ease of use
-in mind so it can be used as more than just GTD software.
+"Getting Things GNOME" (GTG) is a personal tasks and ToDo list organizer inspired by the "Getting Things Done" (GTD) methodology.
+.PP
+GTG is intended to help you track everything you need to do and need to know, from small tasks to large projects. GTG's user interface is designed to accommodate many workflows, with features such as:
+.bu
+a very flexible tagging and searching system;
+.bu
+natural language parsing and a free-form task text editor;
+.bu
+projects/task dependencies (infinite sub-tasks), start dates and due dates;
+.bu
+an "Actionable" tasks view mode to help you stay focused during your work;
+.bu
+the ability to effortlessly defer tasks to common upcoming days, or to a custom date.
 .PP
 GTG is intended to help you track everything you need to do and need to know,
 from small tasks to large projects.
@@ -18,16 +27,6 @@ can automatically recognize metadata such as tags and subtasks through the use
 of a very simple syntax.
 .SH OPTIONS
 .TP
-\fB\-b, \-\-boot\-test\fB
-Boot-up only.  Causes gtg to exit immediately after completing the first
-iteration of the main loop.  Useful for boot performance testing work.
-.TP
-\fB\-c, \-\-no-crash\-handler\fB
-Disable crash handler.  Causes the Apport automatic crash reporting
-utility to not be invoked when gtg crashes; instead it will print out a
-normal python backtrace.  This can be useful for debugging crash bugs,
-or if the crash handler is misbehaving.
-.TP
 \fB\-d, \-\-debug\fB
 Debug mode.  Prints extra information to the console which may be useful
 for understanding and reporting bugs.
@@ -35,15 +34,14 @@ for understanding and reporting bugs.
 \fB\-h, \-\-help\fB
 Prints some information about gtg's usage and options.
 .TP
-\fB\-l, \-\-local-liblarch\fB
-Use local liblarch. Look for the liblarch python library in ../liblarch.
-This is mainly useful for testing purpose.
-.TP
 \fB\-t TITLE, \-\-title=TITLE\fB
-Set the window's title to TITLE.
+Set the application name to TITLE.
 .TP
 \fB\-v, \-\-version\fB
 Prints version and exits.
+.TP
+\fBtask-id\fB
+Task to open, in the format of gtg://task-id.
 .SH COPYRIGHT
 This manual page is Copyright 2009, 2012 Luca Falavigna <dktrkranz@debian.org>
 and Bertrand Rousseau <bertrand.rousseau@gmail.com>. Permission is granted
