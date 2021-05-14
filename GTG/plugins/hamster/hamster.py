@@ -22,8 +22,7 @@ import time
 from calendar import timegm
 from gettext import gettext as _
 
-import dbus
-from gi.repository import Gtk
+from gi.repository import GLib, Gtk, Gio
 
 from GTG.core.task import Task
 from GTG.plugins.hamster.helper import FactBuilder
@@ -72,7 +71,7 @@ class HamsterPlugin():
             return
         fact = FactBuilder(self.hamster, self.preferences).build(task)
         start_time = timegm(datetime.datetime.now().timetuple())
-        hamster_id = self.hamster.AddFact(fact, start_time, 0, False)
+        hamster_id = self.hamster.AddFact('(siib)', fact, start_time, 0, False)
 
         ids = self.get_hamster_ids(task)
         ids.append(str(hamster_id))
@@ -87,13 +86,21 @@ class HamsterPlugin():
         valid_ids = []
         for i in ids:
             try:
-                fact = self.hamster.GetFact(i)
+                fact = self.hamster.GetFact('(i)', int(i))
                 if fact and i not in valid_ids:
                     records.append(fact)
                     valid_ids.append(i)
                     continue
-            except dbus.DBusException:
-                pass
+            except GLib.Error as e:
+                dbus_error_domain = GLib.quark_to_string(Gio.DBusError.quark())
+                if e.matches(Gio.io_error_quark(), Gio.IOErrorEnum.DBUS_ERROR) \
+                        or e.domain == dbus_error_domain:
+                    # Imitating the previous code that just caught DBus errors
+                    # Not sure what is was catching for. Trying to give an
+                    # invalid ID results in using that Gio DBUS_ERROR error
+                    pass
+                else:
+                    raise e
             modified = True
         if modified:
             self.set_hamster_ids(task, valid_ids)
@@ -122,7 +129,7 @@ class HamsterPlugin():
             # Hamster deletes an activity if it's finish time is set earlier
             # than current time. Hence, we are setting finish time
             # some buffer secs from now
-            self.hamster.StopTracking(now + self.BUFFER_TIME)
+            self.hamster.StopTracking('(i)', now + self.BUFFER_TIME)
             self.tracked_task_id = None
 
     # Datastore ###
@@ -152,8 +159,10 @@ class HamsterPlugin():
     # Plugin api methods ###
     def activate(self, plugin_api):
         self.plugin_api = plugin_api
-        self.hamster = dbus.SessionBus().get_object('org.gnome.Hamster',
-                                                    '/org/gnome/Hamster')
+        dbus = Gio.bus_get_sync(Gio.BusType.SESSION, None)
+        self.hamster = Gio.DBusProxy.new_sync(
+            dbus, Gio.DBusProxyFlags.NONE, None, 'org.gnome.Hamster',
+            '/org/gnome/Hamster', 'org.gnome.Hamster', None)
 
         # add button
         if plugin_api.is_browser():
