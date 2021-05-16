@@ -762,8 +762,7 @@ class MainWindow(Gtk.ApplicationWindow):
 
     def focus_sidebar(self, action, param):
         """Callback to focus the sidebar widget."""
-        if not self.tagtreeview or not self.sidebar.get_property('visible'):
-            self.on_sidebar_toggled(action, param)
+        self.sidebar.props.visible = True
         self.tagtreeview.grab_focus()
 
     def on_quickadd_focus_in(self, widget, event):
