@@ -682,13 +682,20 @@
         <property name="halign">start</property>
         <child>
           <object class="GtkButton" id="defer_task_button">
-            <property name="label" translatable="yes">Start Tomorrow</property>
             <property name="visible">True</property>
             <property name="sensitive">False</property>
             <property name="can_focus">False</property>
             <property name="receives_default">True</property>
             <property name="tooltip_text" translatable="yes">Out of time? Need additional focus? Easily defer the selected task(s) to tomorrow!</property>
             <property name="action_name">win.start_tomorrow</property>
+            <child>
+              <object class="GtkImage" id="tomorrow_icon">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="icon-name">task-due</property>
+                <property name="icon_size">1</property>
+              </object>
+            </child>
           </object>
           <packing>
             <property name="expand">True</property>
