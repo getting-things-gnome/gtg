@@ -927,7 +927,7 @@ class Translator:
               UTCDateTimeField(
                   'completed', 'get_closed_date', 'set_closed_date'),
               DTSTART,
-              Recurrence('rrule', 'get_recurring_term', 'set_recurring'),
+              #Recurrence('rrule', 'get_recurring_term', 'set_recurring'),
               Status('status', 'get_status', 'set_status'),
               PercentComplete('percent-complete', 'get_status', ''),
               SEQUENCE, UID_FIELD, CATEGORIES, CHILDREN_FIELD,
