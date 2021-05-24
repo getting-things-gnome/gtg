@@ -49,7 +49,7 @@ def task_from_element(task, element: etree.Element):
     # Dates
     try:
         done_date = Date.parse(dates.find('done').text)
-        task.set_status(element.attrib['status'], donedate=done_date)
+        task.set_status(element.attrib['status'], donedate=done_date, init=True)
     except AttributeError:
         pass
 
@@ -85,7 +85,8 @@ def task_from_element(task, element: etree.Element):
 
     try:
         recurring_updated_date = recurring.find('updated_date').text
-        task.set_recurring_updated_date(datetime.fromisoformat(recurring_updated_date))
+        if recurring_updated_date:
+            task.set_recurring_updated_date(datetime.fromisoformat(recurring_updated_date))
     except AttributeError:
         pass
 
@@ -157,7 +158,8 @@ def task_to_element(task) -> etree.Element:
     recurring_term.text = str(task.get_recurring_term())
 
     recurring_updated_date = etree.SubElement(recurring, 'updated_date')
-    recurring_updated_date.text = task.get_recurring_updated_date().isoformat()
+    if date := task.get_recurring_updated_date():
+        recurring_updated_date.text = date.isoformat()
 
     subtasks = etree.SubElement(element, 'subtasks')
 

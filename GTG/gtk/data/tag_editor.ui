@@ -1,0 +1,337 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.22.2 -->
+<interface>
+  <requires lib="gtk+" version="3.20"/>
+  <template class="GTG_TagEditor" parent="GtkWindow">
+    <property name="can_focus">False</property>
+    <property name="window_position">mouse</property>
+    <property name="type_hint">dialog</property>
+    <child type="titlebar">
+      <object class="GtkHeaderBar" id="headerbar">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="title" translatable="yes" comments="Edit tag windwo title">Edit %s</property>
+        <property name="has_subtitle">False</property>
+        <child>
+          <object class="GtkButton" id="cancel">
+            <property name="label" translatable="yes">Cancel</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <signal name="clicked" handler="cancel" swapped="no"/>
+            <accelerator key="Escape" signal="clicked"/>
+          </object>
+        </child>
+        <child>
+          <object class="GtkButton" id="apply">
+            <property name="label" translatable="yes">Apply</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="can_default">True</property>
+            <property name="has_default">True</property>
+            <property name="receives_default">True</property>
+            <property name="sensitive" bind-source="GTG_TagEditor" bind-property="is_valid" />
+            <signal name="clicked" handler="apply" swapped="no"/>
+            <style>
+              <class name="suggested-action"/>
+            </style>
+          </object>
+          <packing>
+            <property name="pack_type">end</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+    <child>
+      <object class="GtkBox" id="main">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="margin_left">18</property>
+        <property name="margin_right">18</property>
+        <property name="margin_top">18</property>
+        <property name="margin_bottom">18</property>
+        <property name="spacing">12</property>
+        <child>
+          <object class="GtkBox">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="valign">start</property>
+            <property name="margin_end">18</property>
+            <property name="orientation">vertical</property>
+            <property name="spacing">6</property>
+            <child>
+              <object class="GtkBox">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="halign">center</property>
+                <child>
+                  <object class="GtkButton" id="icon-button">
+                    <property name="label" translatable="yes">🏷️</property>
+                    <property name="width_request">64</property>
+                    <property name="height_request">64</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">False</property>
+                    <property name="tooltip_text" translatable="yes">Click here to set an icon for this tag</property>
+                    <property name="halign">center</property>
+                    <signal name="clicked" handler="set_icon" swapped="no"/>
+                    <accelerator key="i" modifiers="GDK_CONTROL_MASK" signal="clicked"/>
+                    <style>
+                      <class name="icon"/>
+                    </style>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkEntry" id="emoji-entry">
+                    <property name="width_request">0</property>
+                    <property name="height_request">0</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="opacity">0</property>
+                    <property name="editable">False</property>
+                    <property name="max_length">1</property>
+                    <property name="width_chars">1</property>
+                    <property name="overwrite_mode">True</property>
+                    <property name="caps_lock_warning">False</property>
+                    <property name="input_hints">GTK_INPUT_HINT_NO_SPELLCHECK | GTK_INPUT_HINT_EMOJI | GTK_INPUT_HINT_NONE</property>
+                    <style>
+                      <class name="hidden"/>
+                    </style>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="icon-remove">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">False</property>
+                <property name="tooltip_text" translatable="yes">Delete the currently selected icon</property>
+                <property name="halign">center</property>
+                <property name="sensitive" bind-source="GTG_TagEditor" bind-property="has_icon" />
+                <signal name="clicked" handler="remove_icon" swapped="no"/>
+                <child>
+                  <object class="GtkImage">
+                    <property name="visible">True</property>
+                    <property name="sensitive">False</property>
+                    <property name="can_focus">False</property>
+                    <property name="icon_name">user-trash-symbolic</property>
+                  </object>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkBox">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="orientation">vertical</property>
+            <property name="spacing">18</property>
+            <child>
+              <object class="GtkGrid">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="row_spacing">6</property>
+                <property name="column_spacing">12</property>
+                <child>
+                  <object class="GtkLabel" id="name-label">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="halign">end</property>
+                    <property name="label" translatable="yes">Name</property>
+                    <property name="xalign">1</property>
+                  </object>
+                  <packing>
+                    <property name="left_attach">0</property>
+                    <property name="top_attach">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkEntry" id="name-entry">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="valign">center</property>
+                    <property name="hexpand">True</property>
+                    <property name="activates_default">True</property>
+                    <property name="text" bind-source="GTG_TagEditor" bind-property="tag_name" bind-flags="bidirectional" />
+                  </object>
+                  <packing>
+                    <property name="left_attach">1</property>
+                    <property name="top_attach">0</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkGrid">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="row_spacing">6</property>
+                <property name="column_spacing">12</property>
+                <child>
+                  <object class="GtkLabel" id="label-actionable">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="tooltip_text" translatable="yes">Whenever to show this tag in the Actionable view</property>
+                    <property name="halign">end</property>
+                    <property name="label" translatable="yes">Actionable</property>
+                    <property name="xalign">1</property>
+                  </object>
+                  <packing>
+                    <property name="left_attach">0</property>
+                    <property name="top_attach">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="label-color">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="tooltip_text" translatable="yes">The color of the tag, also used to color the background of the task when enabled</property>
+                    <property name="halign">end</property>
+                    <property name="label" translatable="yes">Color</property>
+                    <property name="xalign">1</property>
+                  </object>
+                  <packing>
+                    <property name="left_attach">0</property>
+                    <property name="top_attach">1</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkSwitch" id="actionable-switch">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="tooltip_text" translatable="yes">Whenever to show this tag in the Actionable view</property>
+                    <property name="halign">start</property>
+                    <property name="valign">center</property>
+                    <property name="active" bind-source="GTG_TagEditor" bind-property="tag_is_actionable" bind-flags="bidirectional" />
+                  </object>
+                  <packing>
+                    <property name="left_attach">1</property>
+                    <property name="top_attach">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkButtonBox">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <child>
+                      <object class="GtkColorButton" id="color-button">
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">True</property>
+                        <property name="tooltip_text" translatable="yes">Change the color of the tag</property>
+                        <property name="rgba" bind-source="GTG_TagEditor" bind-property="tag_rgba" bind-flags="bidirectional" />
+                        <signal name="color-set" handler="activate_color" swapped="no"/>
+                      </object>
+                      <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
+                        <property name="position">0</property>
+                        <property name="non_homogeneous">True</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkButton" id="color-random">
+                        <property name="label" translatable="yes">Random</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">True</property>
+                        <property name="tooltip_text" translatable="yes">Generate and use an random color</property>
+                        <signal name="clicked" handler="random_color" swapped="no"/>
+                      </object>
+                      <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkButton" id="color-remove">
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">True</property>
+                        <property name="tooltip_text" translatable="yes">Delete the currently selected color</property>
+                        <property name="halign">start</property>
+                        <property name="sensitive" bind-source="GTG_TagEditor" bind-property="has_color" />
+                        <signal name="clicked" handler="remove_color" swapped="no"/>
+                        <child>
+                          <object class="GtkImage">
+                            <property name="visible">True</property>
+                            <property name="sensitive">False</property>
+                            <property name="can_focus">False</property>
+                            <property name="icon_name">user-trash-symbolic</property>
+                          </object>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
+                        <property name="position">2</property>
+                      </packing>
+                    </child>
+                    <style>
+                      <class name="linked"/>
+                    </style>
+                  </object>
+                  <packing>
+                    <property name="left_attach">1</property>
+                    <property name="top_attach">1</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </template>
+  <object class="GtkSizeGroup" id="names">
+    <widgets>
+      <widget name="name-label"/>
+      <widget name="label-actionable"/>
+      <widget name="label-color"/>
+    </widgets>
+  </object>
+</interface>

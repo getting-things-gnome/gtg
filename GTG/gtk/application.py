@@ -89,6 +89,7 @@ class Application(Gtk.Application):
     def do_startup(self):
         """Callback when primary instance should initialize"""
         Gtk.Application.do_startup(self)
+        Gtk.Window.set_default_icon_name(self.props.application_id)
 
         # Register backends
         datastore = DataStore()

@@ -34,9 +34,9 @@ class CellRendererTags(Gtk.CellRenderer):
 
     __gproperties__ = {
         'tag_list': (GObject.TYPE_PYOBJECT,
-                     "Tag list", "A list of tags", GObject.PARAM_READWRITE),
+                     "Tag list", "A list of tags", GObject.ParamFlags.READWRITE),
         'tag': (GObject.TYPE_PYOBJECT, "Tag",
-                "Tag", GObject.PARAM_READWRITE),
+                "Tag", GObject.ParamFlags.READWRITE),
     }
 
     # Private methods
@@ -122,7 +122,6 @@ class CellRendererTags(Gtk.CellRenderer):
 
         # Drawing context
         gdkcontext = cr
-        gdkcontext.set_antialias(cairo.ANTIALIAS_NONE)
 
         # Coordinates of the origin point
         x_align = self.get_property("xalign")
@@ -145,13 +144,17 @@ class CellRendererTags(Gtk.CellRenderer):
             if my_tag_icon:
                 if my_tag_icon in self.SYMBOLIC_ICONS:
                     icon_theme = Gtk.IconTheme.get_default()
-                    info = icon_theme.lookup_icon(my_tag_icon, 16, 0)
-                    load = info.load_symbolic(symbolic_color)
-                    pixbuf = load[0]
+                    scale_factor = widget.get_scale_factor()
+                    info = icon_theme.lookup_icon_for_scale(my_tag_icon, 16,
+                                                            scale_factor, 0)
+                    pixbuf, was_symbolic = info.load_symbolic(symbolic_color)
 
-                    Gdk.cairo_set_source_pixbuf(gdkcontext, pixbuf,
-                                                rect_x, rect_y)
-                    gdkcontext.paint()
+                    surface = Gdk.cairo_surface_create_from_pixbuf(
+                        pixbuf, scale_factor, widget.get_window())
+                    Gtk.render_icon_surface(
+                        widget.get_style_context(), gdkcontext, surface,
+                        rect_x, rect_y)
+
                     count +=  1
 
                 else:

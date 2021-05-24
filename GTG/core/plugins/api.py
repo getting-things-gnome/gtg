@@ -110,6 +110,20 @@ class PluginAPI():
         """
         return self.__view_manager.browser
 
+    def get_menu(self):
+        """
+        Return the menu entry to the menu of the Task Browser or Task Editor.
+        """
+        return self.__builder.get_object('main_menu')
+
+    def get_header(self):
+        """Return the headerbar of the mainwindow"""
+        return self.__builder.get_object('browser_headerbar')
+
+    def get_quickadd_pane(self):
+        """Return the quickadd pane"""
+        return self.__builder.get_object('quickadd_pane')
+
     def get_selected(self):
         """
         Returns the selected tasks in the browser or the task ID if the editor

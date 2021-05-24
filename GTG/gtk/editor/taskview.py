@@ -42,7 +42,7 @@ log = logging.getLogger(__name__)
 # Regex to find GTG's tags.
 # GTG Tags start with @ and can contain alphanumeric
 # characters and/or dashes
-TAG_REGEX = re.compile(r'\B\@\w+(\-\w+)*')
+TAG_REGEX = re.compile(r'\B\@\w+([\-\w+\.\+\%\$\\(\)\[\]\{\}\^\=\/\*])*')
 
 # Regex to find internal links
 # Starts with gtg:// followed by a UUID.
@@ -73,10 +73,6 @@ class TaskView(Gtk.TextView):
 
     # Timeout in milliseconds
     PROCESSING_DELAY = 250
-
-    # Mouse cursors
-    CURSOR_HAND = Gdk.Cursor.new(Gdk.CursorType.HAND2)
-    CURSOR_NORMAL = Gdk.Cursor.new(Gdk.CursorType.XTERM)
 
 
     def __init__(self, req: Requester, clipboard) -> None:
@@ -601,7 +597,8 @@ class TaskView(Gtk.TextView):
         tags = view.get_iter_at_location(x, y)[1].get_tags()
 
         # Reset cursor and hover states
-        window.set_cursor(self.CURSOR_NORMAL)
+        cursor = Gdk.Cursor.new_from_name(window.get_display(),
+                                          'text')
 
         if self.hovered_tag:
             try:
@@ -615,12 +612,14 @@ class TaskView(Gtk.TextView):
         try:
             tag = tags[0]
             tag.set_hover()
-            window.set_cursor(self.CURSOR_HAND)
+            cursor = Gdk.Cursor.new_from_name(window.get_display(),
+                                              'pointer')
             self.hovered_tag = tag
 
         except (AttributeError, IndexError):
             # Not an interactive tag, or no tag at all
             pass
+        window.set_cursor(cursor)
 
 
     def do_populate_popup(self, popup) -> None:

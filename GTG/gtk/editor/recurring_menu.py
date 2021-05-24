@@ -37,9 +37,12 @@ class RecurringMenu():
         self.icon_style = self.repeat_icon.get_style_context()
         self.stack = builder.get_object('main_stack')
         self.page1 = builder.get_object('stack_main_box')
+        self._monthly_calendar = builder.get_object('month_calender')
+        self._yearly_calendar = builder.get_object('year_calender')
 
         # Update the editor using the task recurring status
         self.update_header()
+        self.update_calendar()
         self.repeat_checkbox.set_active(self.task.get_recurring())
         if self.task.get_recurring():
             self.icon_style.add_class('recurring-active')
@@ -80,6 +83,7 @@ class RecurringMenu():
             self.repeat_checkbox.set_active(True)
         self.update_task(True)
         self.update_header()
+        # self.update_calendar() would cause infinite recursion
 
     def update_task(self, enable=True):
         """ Updates the task object """
@@ -118,6 +122,49 @@ class RecurringMenu():
         else:
             self.title.hide()
             self.title_separator.hide()
+
+    def update_calendar(self, update_monthly=True, update_yearly=True):
+        """
+        Update the calendar widgets with the correct date of the recurring
+        task, if set.
+        """
+        if self.is_term_set():
+            need_month_hack = False
+            if self.selected_recurring_term in ('month', 'year'):
+                # Recurring monthly/yearly from 'today'
+                d = self.task.get_recurring_updated_date()
+                need_month_hack = self.selected_recurring_term == 'month'
+            elif self.selected_recurring_term.isdigit():
+                if len(self.selected_recurring_term) <= 2:
+                    # Recurring monthly from selected date
+                    d = datetime.strptime(f'{self.selected_recurring_term}', '%d')
+                    need_month_hack = True
+                else:
+                    # Recurring yearly from selected date
+                    d = datetime.strptime(f'{self.selected_recurring_term[:2:]}-{self.selected_recurring_term[2::]}', '%m-%d')
+                d = d.replace(year=datetime.today().year) # Don't be stuck at 1900
+            else:
+                return
+            if update_monthly:
+                self._monthly_calendar.select_month(d.month - 1, d.year)
+                self._monthly_calendar.select_day(d.day)
+            if need_month_hack:
+                # Don't show that we're secretly staying on January since
+                # it has 31 days
+                month = datetime.today().month
+                year = datetime.today().year
+                while True:
+                    try:
+                        d = d.replace(month=month, year=year)
+                        break
+                    except ValueError: # day is out of range for month
+                        month += 1
+                        if month == 13:
+                            month = 1
+                            year += 1
+            if update_yearly:
+                self._yearly_calendar.select_month(d.month - 1, d.year)
+                self._yearly_calendar.select_day(d.day)
 
     def reset_stack(self):
         """ Reset popup stack to the first page """

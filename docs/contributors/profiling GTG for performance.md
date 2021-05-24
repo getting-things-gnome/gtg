@@ -3,12 +3,13 @@ There are various tools to profile (measure) performance and identify problems.
 * cProfile
 * gprof2dot
 * sysprof
+* flameprof
 
 # Profiling with cProfile
 
 Python's [cProfile](http://docs.python.org/library/profile.html) allows profiling the whole GTG app. Do this following:
 
-    $ python3 -m cProfile -o gtg.prof ./gtg
+    ./launch.sh -p 'python3 -m cProfile -o gtg.prof'
 
 Let GTG launch. Quit, and do the following to parse the results:
 
@@ -54,13 +55,27 @@ This should display profiling results, sorted by cumulative time, and displaying
 
 Install [gprof2dot](https://github.com/jrfonseca/gprof2dot), then execute:
 
-    ./scripts/debug.sh -p
+    ./launch.sh -p 'python3 -m cProfile -o gtg.prof'
     python gprof2dot.py -f pstats gtg.prof | dot -Tpng -o output.png
 
 ...and watch the resulting pretty image!
 
-![](https://wiki.gnome.org/Apps/GTG/development?action=AttachFile&do=get&target=profile.png)
+![Generated image](https://wiki.gnome.org/Apps/GTG/development?action=AttachFile&do=get&target=profile.png)
 
 # Sysprof
 
-Sysprof is a really cool graphical user interface for system-wide (or application-specific) profiling. If it can be useful for profiling GTG, someone should document how to use it here...
+Sysprof is a really cool graphical user interface for system-wide (or application-specific) profiling.
+If it can be useful for profiling GTG, someone should document how to use it here...
+
+# flameprof (flamegraph)
+
+You can use [flameprof](https://pypi.org/project/flameprof/) to generate
+an [flamegraph](https://www.brendangregg.com/flamegraphs.html), which roughly
+shows what GTG does over time.
+
+```sh
+./launch.sh -p 'python3 -m cProfile -o gtg.prof'
+flameprof -o gtg.svg gtg.prof
+```
+
+![Generated image (not GTG)](https://raw.githubusercontent.com/brendangregg/FlameGraph/master/example-perf.svg)

@@ -58,6 +58,8 @@ class MainWindow(Gtk.ApplicationWindow):
     __string_signal__ = (GObject.SignalFlags.RUN_FIRST, None, (str, ))
     __none_signal__ = (GObject.SignalFlags.RUN_FIRST, None, tuple())
     __gsignals__ = {'task-added-via-quick-add': __string_signal__,
+                    'task-marked-as-done': __string_signal__,
+                    'task-marked-as-not-done': __string_signal__,
                     'visibility-toggled': __none_signal__,
                     }
 
@@ -112,6 +114,8 @@ class MainWindow(Gtk.ApplicationWindow):
 
         # Define aliases for specific widgets to reuse them easily in the code
         self._init_widget_aliases()
+        self.sidebar.connect('notify::visible', self._on_sidebar_visible)
+        self.add_action(Gio.PropertyAction.new('sidebar', self.sidebar, 'visible'))
 
         self.set_titlebar(self.headerbar)
         self.set_title('Getting Things GNOME!')
@@ -163,6 +167,9 @@ class MainWindow(Gtk.ApplicationWindow):
 
         action_entries = [
             ('toggle_sidebar', self.on_sidebar_toggled, ('win.toggle_sidebar', ['F9'])),
+            ('show_main_menu', self._show_main_menu, ('win.show_main_menu', ['F10'])),
+            ('collapse_all_tasks', self.on_collapse_all_tasks, None),
+            ('expand_all_tasks', self.on_expand_all_tasks, None),
             ('change_tags', self.on_modify_tags, ('win.change_tags', ['<ctrl>T'])),
             ('search', self.toggle_search, ('win.search', ['<ctrl>F'])),
             ('focus_quickentry', self.focus_quickentry, ('win.focus_quickentry', ['<ctrl>L'])),
@@ -216,8 +223,6 @@ class MainWindow(Gtk.ApplicationWindow):
         """
         # TODO(izidor): Add icon dirs on app level
         Gtk.IconTheme.get_default().prepend_search_path(ICONS_DIR)
-        # TODO(izidor): Set it outside browser as it applies to every window
-        Gtk.Window.set_default_icon_name("gtg")
 
     def _init_widget_aliases(self):
         """
@@ -505,9 +510,7 @@ class MainWindow(Gtk.ApplicationWindow):
         and stores the state in self.config.max
         This is used to check the window state afterwards
         and maximize it if needed """
-        mask = Gdk.WindowState.MAXIMIZED
-        is_maximized = widget.get_window().get_state() & mask == mask
-        self.config.set("maximized", is_maximized)
+        self.config.set("maximized", self.is_maximized())
 
     def restore_collapsed_tasks(self, tasks=None):
         tasks = tasks or self.config.get("collapsed_tasks")
@@ -550,16 +553,7 @@ class MainWindow(Gtk.ApplicationWindow):
             self.move(xpos, ypos)
 
         tag_pane = self.config.get("tag_pane")
-
-        if not tag_pane:
-            self.sidebar.hide()
-        else:
-            if not self.tagtreeview:
-                self.init_tags_sidebar()
-
-            self.sidebar.show()
-
-        self.switch_sidebar_name(tag_pane)
+        self.sidebar.props.visible = tag_pane
 
         sidebar_width = self.config.get("sidebar_width")
         self.builder.get_object("main_hpanes").set_position(sidebar_width)
@@ -591,7 +585,7 @@ class MainWindow(Gtk.ApplicationWindow):
                 return True
 
         for t in self.config.get("opened_tasks"):
-            GObject.idle_add(open_task, self.req, t)
+            GLib.idle_add(open_task, self.req, t)
 
     def refresh_all_views(self, timer):
         collapsed = self.config.get("collapsed_tasks")
@@ -671,31 +665,34 @@ class MainWindow(Gtk.ApplicationWindow):
     def on_tagcontext_deactivate(self, menushell):
         self.reset_cursor()
 
-    def switch_sidebar_name(self, visible):
-        """Change text on sidebar button."""
-
-        button = self.builder.get_object('toggle_sidebar_button')
-        if visible:
-            button.props.text = _("Hide Sidebar")
-        else:
-            button.props.text = _("Show Sidebar")
+    def _show_main_menu(self, action, param):
+        """
+        Action callback to show the main menu.
+        """
+        main_menu_btn = self.builder.get_object('main_menu_btn')
+        main_menu_btn.props.active = not main_menu_btn.props.active
 
     def on_sidebar_toggled(self, action, param):
-        """Toggle tags sidebar."""
+        """Toggle tags sidebar via the action."""
 
-        visible = self.sidebar.get_property("visible")
+        self.sidebar.props.visible = not self.sidebar.props.visible
 
-        if visible:
-            self.config.set("tag_pane", False)
-            self.sidebar.hide()
-        else:
-            if not self.tagtreeview:
-                self.init_tags_sidebar()
+    def _on_sidebar_visible(self, obj, param):
+        """Visibility of the sidebar changed."""
 
-            self.sidebar.show()
-            self.config.set("tag_pane", True)
+        assert param.name == 'visible'
+        visible = obj.get_property(param.name)
+        self.config.set("tag_pane", visible)
+        if visible and not self.tagtreeview:
+            self.init_tags_sidebar()
 
-        self.switch_sidebar_name(not visible)
+    def on_collapse_all_tasks(self, action, param):
+        """Collapse all tasks."""
+        self.vtree_panes['active'].collapse_all()
+
+    def on_expand_all_tasks(self, action, param):
+        """Expand all tasks."""
+        self.vtree_panes['active'].expand_all()
 
     def _expand_not_collapsed(self, model, path, iter, colt):
         """ Expand all not collapsed nodes
@@ -807,7 +804,7 @@ class MainWindow(Gtk.ApplicationWindow):
                     selection.select_iter(iter)
 
                 # It cannot be another thread than the main gtk thread !
-                GObject.idle_add(selecter, treemodelsort, path, iter, self)
+                GLib.idle_add(selecter, treemodelsort, path, iter, self)
 
             data = quick_add.parse(text)
             # event that is set when the new task is created
@@ -839,7 +836,7 @@ class MainWindow(Gtk.ApplicationWindow):
             self.quickadd_entry.set_text('')
 
             # signal the event for the plugins to catch
-            GObject.idle_add(self.emit, "task-added-via-quick-add", task.get_id())
+            GLib.idle_add(self.emit, "task-added-via-quick-add", task.get_id())
         else:
             # if no text is selected, we open the currently selected task
             nids = self.vtree_panes['active'].get_selected_nodes()
@@ -1281,6 +1278,7 @@ class MainWindow(Gtk.ApplicationWindow):
             if status == Task.STA_DONE:
                 # Marking as undone
                 task.set_status(Task.STA_ACTIVE)
+                GObject.idle_add(self.emit, "task-marked-as-not-done", task.get_id())
                 # Parents of that task must be updated - not to be shown
                 # in workview, update children count, etc.
                 for parent_id in task.get_parents():
@@ -1289,6 +1287,7 @@ class MainWindow(Gtk.ApplicationWindow):
             else:
                 task.set_status(Task.STA_DONE)
                 self.close_all_task_editors(uid)
+                GObject.idle_add(self.emit, "task-marked-as-done", task.get_id())
 
     def on_dismiss_task(self, widget=None):
         tasks_uid = [uid for uid in self.get_selected_tasks()
@@ -1525,7 +1524,7 @@ class MainWindow(Gtk.ApplicationWindow):
         """ Hides the task browser """
         self.browser_shown = False
         self.hide()
-        GObject.idle_add(self.emit, "visibility-toggled")
+        GLib.idle_add(self.emit, "visibility-toggled")
 
     def show(self):
         """ Unhides the MainWindow """
@@ -1535,7 +1534,7 @@ class MainWindow(Gtk.ApplicationWindow):
         self.present()
         self.grab_focus()
         self.quickadd_entry.grab_focus()
-        GObject.idle_add(self.emit, "visibility-toggled")
+        GLib.idle_add(self.emit, "visibility-toggled")
 
     def iconify(self):
         """ Minimizes the MainWindow """

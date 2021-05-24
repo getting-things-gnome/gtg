@@ -69,7 +69,7 @@ def parse(text: str) -> Dict:
         data = match.group(0)
         result['tags'].add(data[1:])
 
-    for match in re.finditer(TOKEN_REGEX, text):
+    while match := re.search(TOKEN_REGEX, text):
         token = match.group(2)
         data = match.group(3)
 

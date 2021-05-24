@@ -1,6 +1,6 @@
 # -----------------------------------------------------------------------------
-# Getting Things GNOME! - a personal organizer for the GNOME desktop
-# Copyright (c) 2008-2013 - Lionel Dricot & Bertrand Rousseau
+# Gettings Things GNOME! - a personal organizer for the GNOME desktop
+# Copyright (c) 2008-2021 - the GTG contributors
 #
 # This program is free software: you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -15,20 +15,12 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-"""
-The GTK frontend for browsing collections of tasks.
 
-This is the gnome_frontend package. It's a GTK interface that wants to be
-simple, HIG compliant and well integrated with Gnome.
-"""
-import os
+from unittest import TestCase
+import GTG.core.urlregex as urlregex
 
-
-class GnomeConfig():
-    current_rep = os.path.dirname(os.path.abspath(__file__))
-    data = os.path.join(current_rep, '..', 'data')
-    BROWSER_UI_FILE = os.path.join(data, "main_window.ui")
-    HELP_OVERLAY_UI_FILE = os.path.join(data, "help_overlay.ui")
-    MENUS_UI_FILE = os.path.join(data, "context_menus.ui")
-    MODIFYTAGS_UI_FILE = os.path.join(data, "modify_tags.ui")
-    TAG_EDITOR_UI_FILE = os.path.join(data, "tag_editor.ui")
+class TestUrlregex(TestCase):
+    def test_search_does_not_include_preceeding_whitespace(self):
+        match = urlregex.search("This snippet contains an url with whitespace"
+            "before it:  https://wiki.gnome.org/Apps/GTG/")
+        self.assertEqual(list(match)[0].group(), "https://wiki.gnome.org/Apps/GTG/")
