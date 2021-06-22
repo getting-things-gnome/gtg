@@ -46,8 +46,8 @@ class BackendFactory(Borg):
     BACKEND_PREFIX = "backend_"
 
     def __init__(self):
-        """
-         Creates a dictionary of the currently available backend modules
+        """ Creates a dictionary of the modules containing a GenericBackend
+        subclass (which are all available backends)
         """
         super().__init__()
         if hasattr(self, "backend_modules"):
@@ -73,8 +73,17 @@ class BackendFactory(Borg):
                 log.exception("Malformated backend %s:", module_name)
                 continue
 
-            self.backend_modules[module_name] = \
-                sys.modules[extended_module_name]
+        def browse_subclasses(cls):
+            """Will yield all subclasses with a valid `_general_description`"""
+            for subcls in cls.__subclasses__():
+                gen_desc = getattr(subcls, '_general_description', {})
+                if gen_desc and gen_desc.get('name'):
+                    yield gen_desc['name'], subcls.__module__
+                yield from browse_subclasses(subcls)
+
+        # Adding all available backend to backend_modules dict
+        for module_name, module in browse_subclasses(GenericBackend):
+            self.backend_modules[module_name] = sys.modules[module]
 
     def _find_backend_files(self):
         # Look for backends in the GTG/backends dir
