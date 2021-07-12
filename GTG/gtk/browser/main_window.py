@@ -188,6 +188,7 @@ class MainWindow(Gtk.ApplicationWindow):
             ('start_next_year', self.on_start_for_next_year, None),
             ('start_custom', self.on_start_for_specific_date, None),
             ('start_clear', self.on_start_clear, None),
+            ('due_today', self.on_set_due_today, None),
             ('due_tomorrow', self.on_set_due_tomorrow, None),
             ('due_next_week', self.on_set_due_next_week, None),
             ('due_next_month', self.on_set_due_next_month, None),
