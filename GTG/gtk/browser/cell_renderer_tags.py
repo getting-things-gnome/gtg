@@ -174,7 +174,7 @@ class CellRendererTags(Gtk.CellRenderer):
                         widget.get_style_context(), gdkcontext, surface,
                         rect_x, rect_y)
 
-                    count +=  1
+                    count += 1
 
                 else:
                     layout = PangoCairo.create_layout(cr)
