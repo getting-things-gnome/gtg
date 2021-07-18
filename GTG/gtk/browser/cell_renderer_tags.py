@@ -109,7 +109,6 @@ class CellRendererTags(Gtk.CellRenderer):
         self.config = config
         self._ignore_icon_error_for = set()
 
-
     def do_set_property(self, pspec, value):
         if pspec.name == "tag-list":
             self.tag_list = value
