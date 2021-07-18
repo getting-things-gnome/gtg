@@ -228,4 +228,5 @@ class CellRendererTags(Gtk.CellRenderer):
         else:
             return (self.xpad, self.ypad, self.xpad * 2, self.ypad * 2)
 
+
 GObject.type_register(CellRendererTags)
