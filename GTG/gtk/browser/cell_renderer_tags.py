@@ -51,35 +51,35 @@ class CellRendererTags(Gtk.CellRenderer):
 
         context.move_to(
             x + r, y
-        ) # Move to A
-        context.line_to(x + w - r, y)     # Line to B
+        )  # Move to A
+        context.line_to(x + w - r, y)      # Line to B
 
         context.curve_to(
             x + w, y,
             x + w, y,
             x + w, y + r
-        ) # Curve to C
-        context.line_to(x + w, y + h - r) # Line to D
+        )  # Curve to C
+        context.line_to(x + w, y + h - r)  # Line to D
 
         context.curve_to(
             x + w, y + h,
             x + w, y + h,
             x + w - r, y + h
-        ) # Curve to E
-        context.line_to(x + r, y + h)     # Line to F
+        )  # Curve to E
+        context.line_to(x + r, y + h)      # Line to F
 
         context.curve_to(
             x, y + h,
             x, y + h,
             x, y + h - r
-        ) # Curve to G
-        context.line_to(x, y + r)         # Line to H
+        )  # Curve to G
+        context.line_to(x, y + r)          # Line to H
 
         context.curve_to(
             x, y,
             x, y,
             x + r, y
-        ) # Curve to A
+        )  # Curve to A
         return
 
     def __count_viewable_tags(self):
