@@ -146,9 +146,10 @@ class CellRendererTags(Gtk.CellRenderer):
         x_align = self.get_property("xalign")
         y_align = self.get_property("yalign")
         padding = self.PADDING
-        orig_x = cell_area.x + int((cell_area.width - 16 * vw_tags -
-                                    padding * 2 * (vw_tags - 1)) * x_align)
-        orig_y = cell_area.y + int((cell_area.height - 16) * y_align)
+        orig_x = cell_area.x + int(
+            (cell_area.width - 16 * vw_tags - padding * 2 * (vw_tags - 1)) * x_align)
+        orig_y = cell_area.y + int(
+            (cell_area.height - 16) * y_align)
 
         # We draw the icons & squares
         for my_tag in tags:
