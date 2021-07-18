@@ -16,13 +16,13 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-from gi.repository import Pango
-from gi.repository import PangoCairo
-from gi.repository import GObject, GLib, Gtk, Gdk
-
 import gi
 import cairo
 gi.require_version('PangoCairo', '1.0')
+
+from gi.repository import Pango
+from gi.repository import PangoCairo
+from gi.repository import GObject, GLib, Gtk, Gdk
 
 
 class CellRendererTags(Gtk.CellRenderer):
