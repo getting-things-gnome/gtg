@@ -49,9 +49,7 @@ class CellRendererTags(Gtk.CellRenderer):
         #  G       D
         #   F  *  E
 
-        context.move_to(
-            x + r, y
-        )  # Move to A
+        context.move_to(x + r, y)          # Move to A
         context.line_to(x + w - r, y)      # Line to B
 
         context.curve_to(
