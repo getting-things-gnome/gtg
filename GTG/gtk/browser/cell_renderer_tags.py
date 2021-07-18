@@ -160,7 +160,6 @@ class CellRendererTags(Gtk.CellRenderer):
             rect_x = orig_x + self.PADDING * 2 * count + 16 * count
             rect_y = orig_y
 
-
             if my_tag_icon:
                 if my_tag_icon in self.SYMBOLIC_ICONS:
                     icon_theme = Gtk.IconTheme.get_default()
