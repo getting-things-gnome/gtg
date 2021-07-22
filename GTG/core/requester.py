@@ -36,7 +36,7 @@ class Requester(GObject.GObject):
     Multiple L{Requester}s can exist on the same datastore, so they should
     never have state of their own.
     """
-    __gsignals__ = {'status-changed':(GObject.SignalFlags.RUN_FIRST, None, (str, str,))}
+    __gsignals__ = {'status-changed': (GObject.SignalFlags.RUN_FIRST, None, (str, str,))}
 
     def __init__(self, datastore, global_conf):
         """Construct a L{Requester}."""

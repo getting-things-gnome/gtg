@@ -88,7 +88,7 @@ class Plugin():
         for mod_name in self.module_depends:
             try:
                 __import__(mod_name)
-            except:
+            except Exception:
                 self.missing_modules.append(mod_name)
                 self.error = True
 
@@ -150,7 +150,7 @@ class PluginEngine(Borg):
                 if os.path.isfile(info_file) and f.endswith('.gtg-plugin'):
                     parser = GLib.KeyFile.new()
                     parser.load_from_file(info_file, GLib.KeyFileFlags.NONE)
-                    keys = parser.get_keys("GTG Plugin")[0] # The list of keys
+                    keys = parser.get_keys("GTG Plugin")[0]  # The list of keys
                     info = {key: parser.get_locale_string("GTG Plugin", key, None) for key in keys}
                     p = Plugin(info, PLUGIN_DIRS)
                     self.plugins[p.module_name] = p
@@ -173,10 +173,11 @@ class PluginEngine(Borg):
             return all_plugins
 
         def filter_fun(plugin):
-            return ((kind_of_plugins == "active" and plugin.active) or
-                    (kind_of_plugins == "inactive" and not plugin.active) or
-                    (kind_of_plugins == "enabled" and plugin.enabled) or
-                    (kind_of_plugins == "disabled" and not plugin.enabled))
+            return (kind_of_plugins == "active" and plugin.active) or \
+                (kind_of_plugins == "inactive" and not plugin.active) or \
+                (kind_of_plugins == "enabled" and plugin.enabled) or \
+                (kind_of_plugins == "disabled" and not plugin.enabled)
+
         return list(filter(filter_fun, all_plugins))
 
     def register_api(self, api):

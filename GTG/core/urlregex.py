@@ -37,8 +37,8 @@ SUBST_DICT = {
     "query_end": '[a-z0-9_&=#]',
 }
 
-HTTP_URI = '(((https?://|www\\.)(%(domain)s)(\/%(path)s*' \
-    '%(path_end)s?)?(\?%(query)s*%(query_end)s)?))' % SUBST_DICT
+HTTP_URI = r'(((https?://|www\\.)(%(domain)s)(\/%(path)s*' \
+    r'%(path_end)s?)?(\?%(query)s*%(query_end)s)?))' % SUBST_DICT
 FILE_URI = f"(file:///({SUBST_DICT['path']}*{SUBST_DICT['path_end']}?)?)"
 
 URL_REGEX = re.compile(f'{HTTP_URI}|{FILE_URI}', re.IGNORECASE)
