@@ -75,7 +75,6 @@ class DevConsolePlugin():
         sys.ps1 = ">>> "
         sys.ps2 = "... "
 
-
     def activate(self, api: PluginAPI) -> None:
         """Plugin is activated."""
 
@@ -110,7 +109,6 @@ class DevConsolePlugin():
         app.add_action(open_action)
         app.set_accels_for_action('app.plugin.open_console', ['F12'])
 
-
     def welcome_message(self, namespace):
         """Print a message when opening the console window."""
 
@@ -125,12 +123,10 @@ class DevConsolePlugin():
                  'Type "help (<command>)" for more information.'
                  '\n\n')
 
-
     def deactivate(self, api: PluginAPI) -> None:
         """Deactivates the plugin."""
 
         api.remove_menu_item(self.menu_btn)
-
 
     def open_window(self, widget=None, unsued=None) -> None:
         """Open developer console."""
@@ -138,11 +134,9 @@ class DevConsolePlugin():
         self.window.show_all()
         self.window.set_keep_above(True)
 
-
     def eof_cb(self, unused_widget):
         self.window.hide()
         return True
-
 
     def on_delete_event(self, widget, data):
         """Callback when window is closed."""
