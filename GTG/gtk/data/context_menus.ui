@@ -125,6 +125,11 @@
       <attribute name="label" translatable="yes">Set Due Date</attribute>
 
       <item>
+        <attribute name="label" translatable="yes">Today</attribute>
+        <attribute name="action">win.due_today</attribute>
+      </item>
+
+      <item>
         <attribute name="label" translatable="yes">Tomorrow</attribute>
         <attribute name="action">win.due_tomorrow</attribute>
       </item>

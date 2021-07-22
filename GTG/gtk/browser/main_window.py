@@ -171,6 +171,7 @@ class MainWindow(Gtk.ApplicationWindow):
             ('collapse_all_tasks', self.on_collapse_all_tasks, None),
             ('expand_all_tasks', self.on_expand_all_tasks, None),
             ('change_tags', self.on_modify_tags, ('win.change_tags', ['<ctrl>T'])),
+            ('focus_sidebar', self.focus_sidebar, ('win.focus_sidebar', ['<ctrl>B'])),
             ('search', self.toggle_search, ('win.search', ['<ctrl>F'])),
             ('focus_quickentry', self.focus_quickentry, ('win.focus_quickentry', ['<ctrl>L'])),
             ('delete_task', self.on_delete_tasks, ('win.delete_task', ['<ctrl>Delete'])),
@@ -188,6 +189,7 @@ class MainWindow(Gtk.ApplicationWindow):
             ('start_next_year', self.on_start_for_next_year, None),
             ('start_custom', self.on_start_for_specific_date, None),
             ('start_clear', self.on_start_clear, None),
+            ('due_today', self.on_set_due_today, None),
             ('due_tomorrow', self.on_set_due_tomorrow, None),
             ('due_next_week', self.on_set_due_next_week, None),
             ('due_next_month', self.on_set_due_next_month, None),
@@ -758,6 +760,11 @@ class MainWindow(Gtk.ApplicationWindow):
         """Callback to focus the quick entry widget."""
 
         self.quickadd_entry.grab_focus()
+
+    def focus_sidebar(self, action, param):
+        """Callback to focus the sidebar widget."""
+        self.sidebar.props.visible = True
+        self.tagtreeview.grab_focus()
 
     def on_quickadd_focus_in(self, widget, event):
         self.toggle_delete_accel(False)

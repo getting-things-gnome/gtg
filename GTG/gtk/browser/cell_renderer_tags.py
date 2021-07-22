@@ -16,12 +16,13 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-from gi.repository import GObject, GLib, Gtk, Gdk
 import gi
 import cairo
 gi.require_version('PangoCairo', '1.0')
+
 from gi.repository import Pango
 from gi.repository import PangoCairo
+from gi.repository import GObject, GLib, Gtk, Gdk
 
 
 class CellRendererTags(Gtk.CellRenderer):
@@ -42,24 +43,41 @@ class CellRendererTags(Gtk.CellRenderer):
     # Private methods
     def __roundedrec(self, context, x, y, w, h, r=10):
         "Draw a rounded rectangle"
-        #   A****BQ
-        #  H      C
-        #  *      *
-        #  G      D
-        #   F****E
+        #   A  *  BQ
+        #  H       C
+        #  *       *
+        #  G       D
+        #   F  *  E
 
-        context.move_to(x + r, y)                          # Move to A
-        context.line_to(
-            x + w - r, y)                        # Straight line to B
-        # Curve to C, Control points are both at Q
-        context.curve_to(x + w, y, x + w, y, x + w, y + r)
-        context.line_to(x + w, y + h - r)                      # Move to D
+        context.move_to(x + r, y)          # Move to A
+        context.line_to(x + w - r, y)      # Line to B
+
         context.curve_to(
-            x + w, y + h, x + w, y + h, x + w - r, y + h)  # Curve to E
-        context.line_to(x + r, y + h)                        # Line to F
-        context.curve_to(x, y + h, x, y + h, x, y + h - r)       # Curve to G
-        context.line_to(x, y + r)                          # Line to H
-        context.curve_to(x, y, x, y, x + r, y)             # Curve to A
+            x + w, y,
+            x + w, y,
+            x + w, y + r
+        )  # Curve to C
+        context.line_to(x + w, y + h - r)  # Line to D
+
+        context.curve_to(
+            x + w, y + h,
+            x + w, y + h,
+            x + w - r, y + h
+        )  # Curve to E
+        context.line_to(x + r, y + h)      # Line to F
+
+        context.curve_to(
+            x, y + h,
+            x, y + h,
+            x, y + h - r
+        )  # Curve to G
+        context.line_to(x, y + r)          # Line to H
+
+        context.curve_to(
+            x, y,
+            x, y,
+            x + r, y
+        )  # Curve to A
         return
 
     def __count_viewable_tags(self):
@@ -88,7 +106,6 @@ class CellRendererTags(Gtk.CellRenderer):
         self.PADDING = 1
         self.config = config
         self._ignore_icon_error_for = set()
-
 
     def do_set_property(self, pspec, value):
         if pspec.name == "tag-list":
@@ -127,9 +144,10 @@ class CellRendererTags(Gtk.CellRenderer):
         x_align = self.get_property("xalign")
         y_align = self.get_property("yalign")
         padding = self.PADDING
-        orig_x = cell_area.x + int((cell_area.width - 16 * vw_tags -
-                                    padding * 2 * (vw_tags - 1)) * x_align)
-        orig_y = cell_area.y + int((cell_area.height - 16) * y_align)
+        orig_x = cell_area.x + int(
+            (cell_area.width - 16 * vw_tags - padding * 2 * (vw_tags - 1)) * x_align)
+        orig_y = cell_area.y + int(
+            (cell_area.height - 16) * y_align)
 
         # We draw the icons & squares
         for my_tag in tags:
@@ -139,7 +157,6 @@ class CellRendererTags(Gtk.CellRenderer):
 
             rect_x = orig_x + self.PADDING * 2 * count + 16 * count
             rect_y = orig_y
-
 
             if my_tag_icon:
                 if my_tag_icon in self.SYMBOLIC_ICONS:
@@ -155,7 +172,7 @@ class CellRendererTags(Gtk.CellRenderer):
                         widget.get_style_context(), gdkcontext, surface,
                         rect_x, rect_y)
 
-                    count +=  1
+                    count += 1
 
                 else:
                     layout = PangoCairo.create_layout(cr)
@@ -208,5 +225,6 @@ class CellRendererTags(Gtk.CellRenderer):
                     16 + 2 * self.ypad)
         else:
             return (self.xpad, self.ypad, self.xpad * 2, self.ypad * 2)
+
 
 GObject.type_register(CellRendererTags)
