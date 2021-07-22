@@ -24,8 +24,8 @@ from .services import BugzillaServiceFactory
 from .services import BugzillaServiceNotExist
 from .notification import send_notification
 
-bugIdPattern = re.compile('^\d+$')
-bugURLPattern = re.compile('^(https?)://(.+)/show_bug\.cgi\?id=(\d+)$')
+bugIdPattern = re.compile(r'^\d+$')
+bugURLPattern = re.compile(r'^(https?)://(.+)/show_bug\.cgi\?id=(\d+)$')
 
 
 class GetBugInformationTask(threading.Thread):
