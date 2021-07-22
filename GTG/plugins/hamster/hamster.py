@@ -37,10 +37,10 @@ class HamsterPlugin():
         "description": "contents",
         "tags": "existing",
     }
-    TOOLTIP_TEXT_START_ACTIVITY = _("Start a new activity in Hamster Time" +
+    TOOLTIP_TEXT_START_ACTIVITY = _("Start a new activity in Hamster Time"
                                     " Tracker based on the selected task")
-    TOOLTIP_TEXT_STOP_ACTIVITY = _("Stop tracking the current activity in" +
-                                   " Hamster Time Tracker corresponding" +
+    TOOLTIP_TEXT_STOP_ACTIVITY = _("Stop tracking the current activity in"
+                                   " Hamster Time Tracker corresponding"
                                    " to the selected task")
     START_ACTIVITY_LABEL = _("Start task in Hamster")
     STOP_ACTIVITY_LABEL = _("Stop Hamster Activity")
@@ -251,8 +251,7 @@ class HamsterPlugin():
                 column_1.set_margin_top(6)
                 column_1.set_margin_bottom(6)
                 column_1.set_use_markup(True)
-                column_1.set_alignment(xalign=Gtk.Align.START,
-                                        yalign=Gtk.Align.CENTER)
+                column_1.set_alignment(xalign=Gtk.Align.START, yalign=Gtk.Align.CENTER)
                 row.attach(column_1, 0, top_offset, 1, 1)
 
                 column_2 = Gtk.Label(label=content_2)
