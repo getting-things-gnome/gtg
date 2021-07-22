@@ -41,9 +41,7 @@ class UntouchedTasksPlugin():
         self.path = os.path.dirname(os.path.abspath(__file__))
         # GUI initialization
         self.builder = Gtk.Builder()
-        self.builder.add_from_file(os.path.join(
-                                   os.path.dirname(os.path.abspath(__file__)) +
-                                   "/untouchedTasks.ui"))
+        self.builder.add_from_file(os.path.join(f'{self.path}/untouchedTasks.ui'))
         self.preferences_dialog = self.builder.get_object("preferences_dialog")
         self.pref_chbox_is_automatic = \
             self.builder.get_object("pref_chbox_is_automatic")
