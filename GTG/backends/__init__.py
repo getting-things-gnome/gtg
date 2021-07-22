@@ -63,7 +63,6 @@ class BackendFactory(Borg):
             extended_module_name = "GTG.backends." + module_name
             try:
                 __import__(extended_module_name)
-                sys.modules[extended_module_name].Backend
             except ImportError as exception:
                 # Something is wrong with this backend, skipping
                 log.warning("Backend %s could not be loaded: %r",
