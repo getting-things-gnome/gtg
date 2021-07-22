@@ -229,7 +229,7 @@ class Backend(PeriodicImportBackend):
             try:
                 self.sync_engine.break_relationship(local_id=tid)
                 self.save_state()
-            except:
+            except Exception:
                 pass
 
 ###############################################################################
@@ -264,7 +264,7 @@ class Backend(PeriodicImportBackend):
             try:
                 rtm_task = self.rtm_proxy.create_new_rtm_task(task.get_title())
                 self._populate_rtm_task(task, rtm_task)
-            except:
+            except Exception:
                 rtm_task.delete()
                 raise
             meme = SyncMeme(task.get_modified(),
@@ -290,7 +290,7 @@ class Backend(PeriodicImportBackend):
                     try:
                         self._populate_rtm_task(
                             task, rtm_task, transaction_ids)
-                    except:
+                    except Exception:
                         self.rtm_proxy.unroll_changes(transaction_ids)
                         raise
                     meme.set_remote_last_modified(rtm_task.get_modified())
@@ -472,7 +472,7 @@ class Backend(PeriodicImportBackend):
         for i in range(MAX_ATTEMPTS):
             try:
                 return fun(*args)
-            except:
+            except Exception:
                 if i >= MAX_ATTEMPTS:
                     raise
 
@@ -552,7 +552,7 @@ class RTMProxy():
         """
         try:
             return self.token
-        except:
+        except Exception:
             return None
 
     def _authenticate(self):

@@ -62,7 +62,7 @@ class PeriodicImportBackend(GenericBackend):
                 # if an iteration was scheduled, we cancel it
                 if self.import_timer:
                     self.import_timer.cancel()
-            except:
+            except Exception:
                 pass
             if self.is_enabled() is False:
                 return

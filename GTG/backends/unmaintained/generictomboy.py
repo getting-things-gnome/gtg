@@ -334,7 +334,7 @@ class GenericTomboy(GenericBackend):
             self.cancellation_point()
             try:
                 del self._tomboy_setting_timers[note]
-            except:
+            except Exception:
                 pass
             self._process_tomboy_note(note)
             self.save_state()
@@ -449,8 +449,7 @@ class GenericTomboy(GenericBackend):
         title = task.get_title()
         with self.TomboyConnection(self, *self.BUS_ADDRESS) as tomboy:
             with self.DbusWatchdog(self):
-                tomboy.SetNoteContents(note, title + '\n' +
-                                       task.get_excerpt(strip_tags=False))
+                tomboy.SetNoteContents(note, title + '\n' + task.get_excerpt(strip_tags=False))
 
     def break_relationship(self, *args, **kwargs):
         """
