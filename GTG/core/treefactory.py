@@ -179,25 +179,21 @@ class TreeFactory():
             return days_left < 0
 
     def workview(self, task, parameters=None):
-        wv = (self.active(task) and
-              self.is_started(task) and
-              self.is_workable(task) and
-              self.no_disabled_tag(task) and
-              task.get_due_date() != Date.someday())
+        wv = self.active(task) and \
+            self.is_started(task) and \
+            self.is_workable(task) and \
+            self.no_disabled_tag(task) and \
+            task.get_due_date() != Date.someday()
         return wv
 
     def workdue(self, task):
         """ Filter for tasks due within the next day """
-        wv = (self.workview(task) and
-              task.get_due_date() and
-              task.get_days_left() < 2)
+        wv = self.workview(task) and task.get_due_date() and task.get_days_left() < 2
         return wv
 
     def worklate(self, task):
         """ Filter for tasks due within the next day """
-        wv = (self.workview(task) and
-              task.get_due_date() and
-              task.get_days_late() > 0)
+        wv = self.workview(task) and task.get_due_date() and task.get_days_late() > 0
         return wv
 
     def workstarted(self, task):

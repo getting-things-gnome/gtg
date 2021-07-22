@@ -126,7 +126,6 @@ def convert_tags(old_tree: et.Element) -> Tuple[et.Element, et.Element]:
         if color:
             new_tag.set('color', color[1:].upper())
 
-
     # In older versions not all tags were saved in the tag file
     # Some were just saved in the tasks, so we need to loop
     # through the tasks to make sure we get *all* tags and have
@@ -184,7 +183,6 @@ def convert_task(task: et.Element, ds: datastore) -> Optional[et.Element]:
         start = task.find('startdate').text
     except AttributeError:
         start = None
-
 
     # Build the new task
     new_task = et.Element('task')
@@ -261,7 +259,6 @@ def convert_task(task: et.Element, ds: datastore) -> Optional[et.Element]:
         new_content.text = et.CDATA(convert_content(content.text))
     else:
         new_content.text = et.CDATA('')
-
 
     return new_task
 

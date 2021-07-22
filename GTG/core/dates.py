@@ -360,8 +360,7 @@ class Date():
                 if '%Y' not in fmt:
                     # If the day has passed, assume the next year
                     if result.month > today.month or \
-                        (result.month == today.month and
-                         result.day >= today.day):
+                            (result.month == today.month and result.day >= today.day):
                         year = today.year
                     else:
                         year = today.year + 1
@@ -451,7 +450,9 @@ class Date():
 
     def _parse_only_month_day_for_recurrency(self, string, newtask=True):
         """ Parse next Xth day in month from a certain date"""
-        if not newtask: self += datetime.timedelta(1)
+        if not newtask:
+            self += datetime.timedelta(1)
+
         try:
             mday = int(string)
             if not 1 <= mday <= 31 or string.startswith('0'):
@@ -480,18 +481,22 @@ class Date():
         return result
 
     def _parse_numerical_format_for_recurrency(self, string, newtask=True):
-        """ Parse numerical formats like %Y/%m/%d, %Y%m%d or %m%d and calculated from a certain date"""
+        """
+        Parse numerical formats like %Y/%m/%d, %Y%m%d or %m%d and calculated from a certain date
+        """
         result = None
-        if not newtask: self += datetime.timedelta(1)
+
+        if not newtask:
+            self += datetime.timedelta(1)
+
         for fmt in ['%Y/%m/%d', '%Y%m%d', '%m%d']:
             try:
                 da_ti = datetime.datetime.strptime(string, fmt)
                 result = convert_datetime_to_date(da_ti)
                 if '%Y' not in fmt:
                     # If the day has passed, assume the next year
-                    if (result.month > self.month or 
-                        (result.month == self.month and
-                         result.day >= self.day)):
+                    if result.month > self.month or \
+                            (result.month == self.month and result.day >= self.day):
                         year = self.year
                     else:
                         year = self.year + 1
@@ -499,13 +504,13 @@ class Date():
             except ValueError:
                 continue
         return result
-    
+
     def _parse_text_representation_for_recurrency(self, string, newtask=False):
         """Match common text representation from a certain date(self)
 
         Args:
             string (str): text representation.
-            newtask (bool, optional): depending on the task if it is a new one or not, the offset changes
+            newtask (bool, optional): depending on the task if it is new, the offset changes
         """
         # accepted date formats
         formats = {
@@ -553,7 +558,7 @@ class Date():
             string = ''
         else:
             string = string.lower()
-        
+
         try:
             return Date(string)
         except ValueError:
@@ -564,7 +569,7 @@ class Date():
             result = self._parse_numerical_format_for_recurrency(string, newtask)
         if result is None:
             result = self._parse_text_representation_for_recurrency(string, newtask)
-        
+
         if result is not None:
             return Date(result)
         else:

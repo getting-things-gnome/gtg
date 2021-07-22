@@ -53,7 +53,6 @@ def task_from_element(task, element: etree.Element):
     except AttributeError:
         pass
 
-
     fuzzy_due_date = Date.parse(dates.findtext('fuzzyDue'))
     due_date = Date.parse(dates.findtext('due'))
 
@@ -61,7 +60,6 @@ def task_from_element(task, element: etree.Element):
         task.set_due_date(fuzzy_due_date)
     elif due_date:
         task.set_due_date(due_date)
-
 
     fuzzy_start = dates.findtext('fuzzyStart')
     start = dates.findtext('start')
@@ -71,7 +69,6 @@ def task_from_element(task, element: etree.Element):
     elif start:
         task.set_start_date(start)
 
-
     # Recurring tasks
     recurring = element.find('recurring')
     recurring_enabled = recurring.get('enabled')
@@ -80,8 +77,7 @@ def task_from_element(task, element: etree.Element):
 
     if recurring_term:
         task.set_recurring(recurring_enabled == 'true',
-                            None if recurring_term == 'None'
-                            else recurring_term)
+                           None if recurring_term == 'None' else recurring_term)
 
     try:
         recurring_updated_date = recurring.find('updated_date').text
@@ -89,7 +85,6 @@ def task_from_element(task, element: etree.Element):
             task.set_recurring_updated_date(datetime.fromisoformat(recurring_updated_date))
     except AttributeError:
         pass
-
 
     taglist = element.find('tags')
 

@@ -47,7 +47,7 @@ class Watchdog():
         """Aborts the countdown"""
         try:
             self.timer.cancel()
-        except:
+        except Exception:
             pass
         if value is None:
             return True

@@ -173,7 +173,7 @@ tasks = [
         'title': _("Learn How to Use Tags and Enable the Sidebar"),
         'id': task_ids[2],
         'subtasks': [],
-        'tags': [tags['money'], tags['to_pay'],],
+        'tags': [tags['money'], tags['to_pay']],
         'added': today,
         'modified': today,
         'content': _(
@@ -365,7 +365,6 @@ def generate() -> etree.Element:
         tag_tag = etree.SubElement(taglist, 'tag')
         tag_tag.set('id', tid)
         tag_tag.set('name', tag)
-
 
     # Fill tasks
     for task in tasks:
