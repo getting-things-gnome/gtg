@@ -278,10 +278,10 @@ class GenericBackend():
             parameters[self.KEY_DEFAULT_BACKEND] = True
 
         # default backends should get all the tasks
-        attach_tags = self.KEY_ATTACHED_TAGS not in parameters and \
+        no_attached_tags = self.KEY_ATTACHED_TAGS not in parameters and \
             self._general_description[self.BACKEND_TYPE] == self.TYPE_READWRITE
 
-        if parameters[self.KEY_DEFAULT_BACKEND] or attach_tags:
+        if parameters[self.KEY_DEFAULT_BACKEND] or no_attached_tags:
             parameters[self.KEY_ATTACHED_TAGS] = [ALLTASKS_TAG]
 
         self._parameters = parameters
