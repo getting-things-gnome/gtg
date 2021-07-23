@@ -23,7 +23,7 @@ import cairo
 gi.require_version('PangoCairo', '1.0')
 # XXX: disable PEP8 checking on this line to prevent an E402 error due to
 #      require_version needing to be called before the PangoCairo import
-from gi.repository import PangoCairo  # nopep8
+from gi.repository import PangoCairo  # noqa
 
 
 class CellRendererTags(Gtk.CellRenderer):
