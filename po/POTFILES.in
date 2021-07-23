@@ -7,6 +7,7 @@ GTG/plugins/send-email.gtg-plugin.desktop
 GTG/plugins/untouched-tasks.gtg-plugin.desktop
 GTG/plugins/urgency-color.gtg-plugin.desktop
 GTG/plugins/hamster.gtg-plugin.desktop
+GTG/plugins/gamify.gtg-plugin.desktop
 
 GTG/gtk/data/backends.ui
 GTG/gtk/data/calendar.ui
@@ -73,6 +74,7 @@ GTG/gtk/browser/delete_task.py
 GTG/gtk/browser/__init__.py
 GTG/gtk/browser/main_window.py
 GTG/gtk/browser/modify_tags.py
+GTG/gtk/browser/quick_add.py
 GTG/gtk/browser/simple_color_selector.py
 GTG/gtk/browser/tag_context_menu.py
 GTG/gtk/browser/tag_editor.py
@@ -108,3 +110,5 @@ GTG/plugins/urgency_color/urgency_color.py
 GTG/plugins/dev_console.gtg-plugin.desktop
 GTG/plugins/dev_console/console.py
 GTG/plugins/dev_console/utils.py
+GTG/plugins/gamify/gamify.py
+GTG/plugins/gamify/__init__.py

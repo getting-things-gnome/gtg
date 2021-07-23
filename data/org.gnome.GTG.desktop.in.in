@@ -14,3 +14,4 @@ Keywords=Organizer;Task;Tasks;Projects;Activities;Productivity;Plan;Planning;Pla
 MimeType=x-scheme-handler/gtg;
 StartupNotify=true
 DBusActivatable=true
+StartupWMClass=Gtg

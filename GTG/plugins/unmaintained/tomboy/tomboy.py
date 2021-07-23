@@ -337,8 +337,8 @@ class TomboyPlugin():
         # cursor changes to a hand
 
         def realize_callback(widget):
-            cursor = Gdk.Cursor.new_for_display(eventbox.window.get_display(),
-                                                Gdk.CursorType.HAND2)
+            cursor = Gdk.Cursor.new_from_name(eventbox.window.get_display(),
+                                              'pointer')
             eventbox.window.set_cursor(cursor)
         eventbox.connect("realize", realize_callback)
         return eventbox

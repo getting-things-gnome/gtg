@@ -50,7 +50,9 @@ args_array=("${@}")
 extra_args=("${args_array[@]:$((OPTIND-1))}")
 
 # Copy dataset
-if [[  "$dataset" != "default" && ! -d "./tmp/$dataset" ]]; then
+if [[  "$dataset" != "default" \
+        && ! -d "./tmp/$dataset" \
+        && -d "data/test-data/$dataset" ]]; then
     echo "Copying $dataset dataset to ./tmp/"
     cp -r "data/test-data/$dataset" tmp/ || exit $?
 fi
@@ -73,10 +75,11 @@ if ! [[ "$title" = "" ]]; then
     extra_args=('--title' "$title" "${extra_args[@]}")
 fi
 
+if [[ ! -d .local_build ]] || [[ ! -e .local_build/build.ninja ]]; then
+    meson -Dprofile=development -Dprefix="$(pwd)"/.local_build/install .local_build || exit $?
+fi
+
 if [[ "$norun" -eq 0 ]]; then
-    if [[ ! -d .local_build ]] || [[ ! -e .local_build/build.ninja ]]; then
-        meson -Dprofile=development -Dprefix="$(pwd)"/.local_build/install .local_build || exit $?
-    fi
     ninja -C .local_build install || exit $?
     if [ "$pydebug" = 1 ]; then
         # https://docs.python.org/3/library/devmode.html#devmode

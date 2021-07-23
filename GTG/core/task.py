@@ -26,6 +26,8 @@ import uuid
 import logging
 import xml.sax.saxutils as saxutils
 
+from gi.repository import GObject
+
 from gettext import gettext as _
 from GTG.core.dates import Date
 from liblarch import TreeNode
@@ -174,7 +176,7 @@ class Task(TreeNode):
         else:
             self.set_status(self.STA_DONE)
 
-    def set_status(self, status, donedate=None, propagation=False):
+    def set_status(self, status, donedate=None, propagation=False, init=False):
         old_status = self.status
         self.can_be_deleted = False
         # No need to update children or whatever if the task is not loaded
@@ -226,6 +228,8 @@ class Task(TreeNode):
 
         # then the task itself
         if status:
+            if not init:
+                GObject.idle_add(self.req.emit, "status-changed", self.tid, status)
             self.status = status
 
         # Set closing date

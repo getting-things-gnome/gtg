@@ -213,10 +213,9 @@
         <child>
           <object class="GtkModelButton" id="toggle_sidebar_button">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="receives_default">True</property>
-            <property name="action_name">win.toggle_sidebar</property>
-            <property name="text" translatable="yes">Toggle Sidebar</property>
+            <property name="text" translatable="yes">Show Sidebar</property>
+            <property name="action-name">win.sidebar</property>
+            <property name="active" bind-source="sidebar_vbox" bind-property="visible" />
           </object>
           <packing>
             <property name="expand">False</property>
@@ -238,7 +237,6 @@
         <child>
           <object class="GtkModelButton" id="collapse_all_tasks_button">
             <property name="visible">True</property>
-            <property name="can_focus">True</property>
             <property name="receives_default">True</property>
             <property name="action_name">win.collapse_all_tasks</property>
             <property name="text" translatable="yes">Collapse All Tasks</property>
@@ -252,7 +250,6 @@
         <child>
           <object class="GtkModelButton" id="expand_all_tasks_button">
             <property name="visible">True</property>
-            <property name="can_focus">True</property>
             <property name="receives_default">True</property>
             <property name="action_name">win.expand_all_tasks</property>
             <property name="text" translatable="yes">Expand All Tasks</property>
@@ -279,7 +276,6 @@
         <child>
           <object class="GtkModelButton" id="plugins">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="receives_default">True</property>
             <property name="action_name">app.open_plugins</property>
             <property name="text" translatable="yes">Plugins</property>
@@ -294,7 +290,6 @@
           <object class="GtkModelButton" id="synchronization">
             <property name="visible">True</property>
             <property name="sensitive">False</property>
-            <property name="can_focus">False</property>
             <property name="receives_default">True</property>
             <property name="text" translatable="yes">Synchronization</property>
           </object>
@@ -320,7 +315,6 @@
         <child>
           <object class="GtkModelButton" id="preferences">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="receives_default">True</property>
             <property name="action_name">app.open_preferences</property>
             <property name="text" translatable="yes">Preferences</property>
@@ -334,7 +328,6 @@
         <child>
           <object class="GtkModelButton" id="help_overlay_btn">
             <property name="visible">True</property>
-            <property name="can_focus">True</property>
             <property name="receives_default">True</property>
             <property name="action_name">win.show-help-overlay</property>
             <property name="text" translatable="yes">Keyboard Shortcuts</property>
@@ -348,7 +341,6 @@
         <child>
           <object class="GtkModelButton" id="help">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="receives_default">True</property>
             <property name="action_name">app.open_help</property>
             <property name="text" translatable="yes">Help</property>
@@ -362,7 +354,6 @@
         <child>
           <object class="GtkModelButton" id="about">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="receives_default">True</property>
             <property name="action_name">app.open_about</property>
             <property name="text" translatable="yes">About GTG</property>
@@ -512,7 +503,6 @@
                       <object class="GtkScrolledWindow" id="open_pane">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
-                        <property name="hscrollbar_policy">never</property>
                         <child>
                           <placeholder/>
                         </child>
@@ -526,7 +516,6 @@
                       <object class="GtkScrolledWindow" id="actionable_pane">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
-                        <property name="hscrollbar_policy">never</property>
                         <child>
                           <placeholder/>
                         </child>
@@ -541,7 +530,6 @@
                       <object class="GtkScrolledWindow" id="closed_pane">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
-                        <property name="hscrollbar_policy">never</property>
                         <child>
                           <placeholder/>
                         </child>

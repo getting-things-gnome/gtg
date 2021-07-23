@@ -37,10 +37,10 @@ def task_from_element(task, element: etree.Element):
 
     task.set_title(element.find('title').text)
     task.set_uuid(element.get('id'))
-    task.set_status(element.attrib['status'])
 
     # Retrieving all dates
     dates = element.find('dates')
+    done_date = None
     for key, set_date in (('modified', task.set_modified),
                           ('added', task.set_added_date),
                           ('due', task.set_due_date),

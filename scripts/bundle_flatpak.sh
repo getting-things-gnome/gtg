@@ -32,14 +32,14 @@ do
 done
 
 
-cd ../flatpak || exit
+cd ../flatpak || exit 1
 
 mkdir -p tmp
 mkdir -p bundles
 
-flatpak-builder --repo=tmp/$repo --force-clean tmp/$app "$manifest"
-flatpak build-bundle tmp/$repo bundles/$appid.flatpak $appid
-flatpak uninstall -y --user $appid
-flatpak install -y --user bundles/$appid.flatpak
+flatpak-builder --repo=tmp/$repo --force-clean tmp/$app "$manifest" && \
+    flatpak build-bundle tmp/$repo bundles/$appid.flatpak $appid && \
+    flatpak uninstall -y --user $appid && \
+    flatpak install -y --user bundles/$appid.flatpak || exit 1
 
 echo -e "\nAll done. You can find the flatpak file in ../flatpak/bundles"

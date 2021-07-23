@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-03-31 17:25-0400\n"
+"POT-Creation-Date: 2021-05-04 19:44+0200\n"
 "PO-Revision-Date: 2011-04-30 14:37+0000\n"
 "Last-Translator: Runar Ingebrigtsen <Unknown>\n"
 "Language-Team: Norwegian Bokmal <nb@li.org>\n"
@@ -85,6 +85,11 @@ msgstr ""
 "\n"
 "Getting Things Gnome! (GTG) er et gjøremålsverktøy for skrivebordsmiljøet "
 "GNOME."
+
+#. Translators: Do NOT translate or transliterate this text (this is an icon file name)!
+#: data/org.gnome.GTG.desktop.in.in:8
+msgid "@APP_ID@"
+msgstr ""
 
 #. Translators: Search terms to find this application. Do NOT translate or localize the semicolons! The list MUST also end with a semicolon!
 #: data/org.gnome.GTG.desktop.in.in:14
@@ -169,6 +174,18 @@ msgstr ""
 msgid "Adds the ability to send a task to the Hamster time tracking applet"
 msgstr ""
 
+#: GTG/plugins/gamify.gtg-plugin.desktop:4
+msgid "Gamify"
+msgstr ""
+
+#: GTG/plugins/gamify.gtg-plugin.desktop:5
+msgid "Gamify adds a game aspect to your GTG workflow."
+msgstr ""
+
+#: GTG/plugins/gamify.gtg-plugin.desktop:6
+msgid "tracks how many tasks you have done during the day."
+msgstr ""
+
 #: GTG/gtk/data/backends.ui:60
 msgid "_Add"
 msgstr ""
@@ -177,29 +194,29 @@ msgstr ""
 msgid "_Remove"
 msgstr ""
 
-#: GTG/gtk/data/backends.ui:137 GTG/gtk/data/main_window.ui:315
+#: GTG/gtk/data/backends.ui:137 GTG/gtk/data/main_window.ui:354
 #: GTG/gtk/data/plugins.ui:145
 #, fuzzy
 msgid "Help"
 msgstr "_Hjelp"
 
 #: GTG/gtk/data/calendar.ui:44 GTG/gtk/data/context_menus.ui:154
-#: GTG/gtk/data/task_editor.ui:1000
+#: GTG/gtk/data/task_editor.ui:997
 msgid "Now"
 msgstr "Nå"
 
 #: GTG/gtk/data/calendar.ui:57 GTG/gtk/data/context_menus.ui:159
-#: GTG/gtk/data/task_editor.ui:1015
+#: GTG/gtk/data/task_editor.ui:1012
 msgid "Soon"
 msgstr "Snart"
 
 #: GTG/gtk/data/calendar.ui:70 GTG/gtk/data/context_menus.ui:164
-#: GTG/gtk/data/task_editor.ui:1030
+#: GTG/gtk/data/task_editor.ui:1027
 msgid "Someday"
 msgstr ""
 
-#: GTG/gtk/data/calendar.ui:93 GTG/gtk/data/task_editor.ui:1055
-#: GTG/gtk/data/task_editor.ui:1100
+#: GTG/gtk/data/calendar.ui:93 GTG/gtk/data/task_editor.ui:1052
+#: GTG/gtk/data/task_editor.ui:1097
 msgid "Clear"
 msgstr ""
 
@@ -209,7 +226,7 @@ msgstr ""
 msgid "Edit..."
 msgstr "Rediger"
 
-#: GTG/gtk/data/context_menus.ui:14 GTG/gtk/data/task_editor.ui:900
+#: GTG/gtk/data/context_menus.ui:14 GTG/gtk/data/task_editor.ui:897
 msgid "Mark as Not Done"
 msgstr "Merk som ikke utført"
 
@@ -233,7 +250,7 @@ msgstr "Legg til delmål"
 msgid "Add a Parent task..."
 msgstr "Legg til delmål"
 
-#: GTG/gtk/data/context_menus.ui:45 GTG/gtk/data/task_editor.ui:887
+#: GTG/gtk/data/context_menus.ui:45 GTG/gtk/data/task_editor.ui:884
 msgid "Mark as Done"
 msgstr "Merk som utført"
 
@@ -241,7 +258,7 @@ msgstr "Merk som utført"
 msgid "Dismiss"
 msgstr "Avvis"
 
-#: GTG/gtk/data/context_menus.ui:60 GTG/gtk/browser/main_window.py:1184
+#: GTG/gtk/data/context_menus.ui:60 GTG/gtk/browser/main_window.py:1192
 #, fuzzy
 msgid "Set Start Date"
 msgstr "Startdato"
@@ -299,7 +316,7 @@ msgstr ""
 msgid "Clear Start Date"
 msgstr "Startdato"
 
-#: GTG/gtk/data/context_menus.ui:125 GTG/gtk/browser/main_window.py:1195
+#: GTG/gtk/data/context_menus.ui:125 GTG/gtk/browser/main_window.py:1203
 msgid "Set Due Date"
 msgstr ""
 
@@ -560,80 +577,90 @@ msgstr ""
 msgid "Toggle Sidebar"
 msgstr "Sidevindu for Etiketter"
 
-#: GTG/gtk/data/main_window.ui:246 GTG/gtk/plugins.py:131
+#: GTG/gtk/data/main_window.ui:244
+#, fuzzy
+msgid "Collapse All Tasks"
+msgstr "_Felt For Lukkede Oppgaver"
+
+#: GTG/gtk/data/main_window.ui:258
+#, fuzzy
+msgid "Expand All Tasks"
+msgstr "Alle oppgaver"
+
+#: GTG/gtk/data/main_window.ui:285 GTG/gtk/plugins.py:131
 msgid "Plugins"
 msgstr "Programtillegg"
 
-#: GTG/gtk/data/main_window.ui:260
+#: GTG/gtk/data/main_window.ui:299
 #, fuzzy
 msgid "Synchronization"
 msgstr "Synkronisering startet"
 
-#: GTG/gtk/data/main_window.ui:287 GTG/gtk/data/preferences.ui:15
+#: GTG/gtk/data/main_window.ui:326 GTG/gtk/data/preferences.ui:15
 msgid "Preferences"
 msgstr ""
 
-#: GTG/gtk/data/main_window.ui:301
+#: GTG/gtk/data/main_window.ui:340
 msgid "Keyboard Shortcuts"
 msgstr ""
 
-#: GTG/gtk/data/main_window.ui:329
+#: GTG/gtk/data/main_window.ui:368
 #, fuzzy
 msgid "About GTG"
 msgstr "Om GTG!"
 
-#: GTG/gtk/data/main_window.ui:382 GTG/gtk/browser/treeview_factory.py:283
+#: GTG/gtk/data/main_window.ui:421 GTG/gtk/browser/treeview_factory.py:283
 msgid "Tags"
 msgstr "Etiketter"
 
-#: GTG/gtk/data/main_window.ui:430
+#: GTG/gtk/data/main_window.ui:469
 msgid "Search here"
 msgstr ""
 
-#: GTG/gtk/data/main_window.ui:441
+#: GTG/gtk/data/main_window.ui:480
 msgid "Save Search"
 msgstr ""
 
-#: GTG/gtk/data/main_window.ui:483
+#: GTG/gtk/data/main_window.ui:522
 msgctxt "tasks view name"
 msgid "Open"
 msgstr ""
 
-#: GTG/gtk/data/main_window.ui:497
+#: GTG/gtk/data/main_window.ui:536
 msgctxt "tasks view name"
 msgid "Actionable"
 msgstr ""
 
-#: GTG/gtk/data/main_window.ui:512
+#: GTG/gtk/data/main_window.ui:551
 #, fuzzy
 msgctxt "tasks view name"
 msgid "Closed"
 msgstr "Lukket den"
 
-#: GTG/gtk/data/main_window.ui:540
+#: GTG/gtk/data/main_window.ui:579
 msgid ""
 "Ex.: \"Buy a new printer for @Initech tags:equipment,office start:monday due:"
 "soon\""
 msgstr ""
 
-#: GTG/gtk/data/main_window.ui:546
+#: GTG/gtk/data/main_window.ui:585
 msgid "Quickly create tasks here"
 msgstr ""
 
-#: GTG/gtk/data/main_window.ui:597
+#: GTG/gtk/data/main_window.ui:636
 msgid "Create a new task"
 msgstr "Opprett nytt gjøremål"
 
-#: GTG/gtk/data/main_window.ui:634
+#: GTG/gtk/data/main_window.ui:673
 msgid "Activate Search Entry"
 msgstr ""
 
-#: GTG/gtk/data/main_window.ui:658
+#: GTG/gtk/data/main_window.ui:697
 #, fuzzy
 msgid "Start Tomorrow"
 msgstr "I morgen"
 
-#: GTG/gtk/data/main_window.ui:663
+#: GTG/gtk/data/main_window.ui:702
 msgid ""
 "Out of time? Need additional focus? Easily defer the selected task(s) to "
 "tomorrow!"
@@ -725,12 +752,12 @@ msgid "Weekly"
 msgstr ""
 
 #: GTG/gtk/data/task_editor.ui:230 GTG/gtk/data/task_editor.ui:429
-#: GTG/gtk/data/task_editor.ui:487
+#: GTG/gtk/data/task_editor.ui:486
 msgid "Monthly"
 msgstr ""
 
-#: GTG/gtk/data/task_editor.ui:244 GTG/gtk/data/task_editor.ui:501
-#: GTG/gtk/data/task_editor.ui:556
+#: GTG/gtk/data/task_editor.ui:244 GTG/gtk/data/task_editor.ui:500
+#: GTG/gtk/data/task_editor.ui:553
 msgid "Yearly"
 msgstr ""
 
@@ -773,68 +800,68 @@ msgstr "lørdag"
 msgid "On Sunday"
 msgstr "søndag"
 
-#: GTG/gtk/data/task_editor.ui:403 GTG/gtk/data/task_editor.ui:475
-#: GTG/gtk/data/task_editor.ui:544
+#: GTG/gtk/data/task_editor.ui:403 GTG/gtk/data/task_editor.ui:474
+#: GTG/gtk/data/task_editor.ui:541
 msgid "On This Day"
 msgstr ""
 
-#: GTG/gtk/data/task_editor.ui:580 GTG/gtk/data/task_editor.ui:883
+#: GTG/gtk/data/task_editor.ui:577 GTG/gtk/data/task_editor.ui:880
 msgid "Task"
 msgstr "Gjøremål"
 
 #. Translators: Button label to open the parent task
-#: GTG/gtk/data/task_editor.ui:605 GTG/gtk/editor/editor.py:152
-#: GTG/gtk/editor/editor.py:482
+#: GTG/gtk/data/task_editor.ui:602 GTG/gtk/editor/editor.py:152
+#: GTG/gtk/editor/editor.py:496
 msgid "Open Parent"
 msgstr ""
 
-#: GTG/gtk/data/task_editor.ui:609
+#: GTG/gtk/data/task_editor.ui:606
 msgid "Open the parent task (creating a parent if it doesn't have one)"
 msgstr ""
 
-#: GTG/gtk/data/task_editor.ui:627
+#: GTG/gtk/data/task_editor.ui:624
 msgid "Insert a subtask in this task"
 msgstr "Legg til delmål for gjøremålet"
 
-#: GTG/gtk/data/task_editor.ui:649
+#: GTG/gtk/data/task_editor.ui:646
 #, fuzzy
 msgid "Add tags to this task"
 msgstr "Sett en etikett på dette gjøremålet"
 
-#: GTG/gtk/data/task_editor.ui:672
+#: GTG/gtk/data/task_editor.ui:669
 #, fuzzy
 msgid "Set this task to repeat"
 msgstr "Angi sted for oppgave"
 
-#: GTG/gtk/data/task_editor.ui:708
+#: GTG/gtk/data/task_editor.ui:705
 #, fuzzy
 msgid "Starts on"
 msgstr "Startdato"
 
-#: GTG/gtk/data/task_editor.ui:751
+#: GTG/gtk/data/task_editor.ui:748
 #, fuzzy
 msgid "Due on"
 msgstr "Forfallsdato"
 
-#: GTG/gtk/data/task_editor.ui:794
+#: GTG/gtk/data/task_editor.ui:791
 msgid "Closed on"
 msgstr "Lukket den"
 
-#: GTG/gtk/data/task_editor.ui:890
+#: GTG/gtk/data/task_editor.ui:887
 #, fuzzy
 msgid "Mark the task as done"
 msgstr "Merk dette gjøremålet som utført"
 
-#: GTG/gtk/data/task_editor.ui:903
+#: GTG/gtk/data/task_editor.ui:900
 #, fuzzy
 msgid "Mark the task as to be done"
 msgstr "Merk dette gjøremålet som ikke utført"
 
-#: GTG/gtk/data/task_editor.ui:916
+#: GTG/gtk/data/task_editor.ui:913
 msgid "Task action menu"
 msgstr ""
 
-#: GTG/gtk/data/task_editor.ui:1139
+#: GTG/gtk/data/task_editor.ui:1136
 msgid "Search"
 msgstr ""
 
@@ -929,7 +956,7 @@ msgstr ""
 msgid "Local File"
 msgstr ""
 
-#: GTG/backends/backend_localfile.py:306
+#: GTG/backends/backend_localfile.py:311
 msgid ""
 "Oops, something unexpected happened! GTG tried to recover your tasks from "
 "backups. \n"
@@ -1557,6 +1584,34 @@ msgstr ""
 msgid "Continue"
 msgstr ""
 
+#. Translators: Used in parsing, no spaces, lowercased in code
+#: GTG/gtk/browser/quick_add.py:34
+msgid "tags"
+msgstr "etiketter"
+
+#. Translators: Used in parsing, no spaces, lowercased in code
+#: GTG/gtk/browser/quick_add.py:36
+msgid "tag"
+msgstr "etikett"
+
+#. Translators: Used in parsing, no spaces, lowercased in code
+#: GTG/gtk/browser/quick_add.py:44
+msgid "defer"
+msgstr "utsett"
+
+#. Translators: Used in parsing, no spaces, lowercased in code
+#: GTG/gtk/browser/quick_add.py:46
+msgid "start"
+msgstr ""
+
+#: GTG/gtk/browser/quick_add.py:49
+msgid "due"
+msgstr "forfaller"
+
+#: GTG/gtk/browser/quick_add.py:50
+msgid "every"
+msgstr ""
+
 #: GTG/gtk/browser/delete_tag.py:51
 #, fuzzy
 msgid "Keep selected tag"
@@ -1618,40 +1673,40 @@ msgstr ""
 
 #. These lines should be in info.py, but due to their dynamic nature
 #. there'd be no way to show them translated in Gtk's About dialog:
-#: GTG/gtk/browser/main_window.py:320
+#: GTG/gtk/browser/main_window.py:322
 #, python-format
 msgid "Copyright © 2008-%d the GTG contributors."
 msgstr ""
 
 #. GTK prefixes the first line with "Created by ",
 #. but we can't split the string because it would cause trouble for some languages.
-#: GTG/gtk/browser/main_window.py:325
+#: GTG/gtk/browser/main_window.py:327
 msgid "GTG was made by many contributors around the world."
 msgstr ""
 
-#: GTG/gtk/browser/main_window.py:326
+#: GTG/gtk/browser/main_window.py:328
 msgid "The GTG project is maintained/administered by:"
 msgstr ""
 
-#: GTG/gtk/browser/main_window.py:328
+#: GTG/gtk/browser/main_window.py:330
 msgid "This release was brought to you by the efforts of these people:"
 msgstr ""
 
-#: GTG/gtk/browser/main_window.py:330
+#: GTG/gtk/browser/main_window.py:332
 #, python-brace-format
 msgid ""
 "Many others contributed to GTG over the years.\n"
 "You can see them on {OH_stats} and {GH_stats}."
 msgstr ""
 
-#: GTG/gtk/browser/main_window.py:339
+#: GTG/gtk/browser/main_window.py:341
 msgid "GTG website"
 msgstr "GTG nettsted"
 
 #. Translators for a particular language should put their names here.
 #. Please keep the width at 80 chars max, as GTK3's About dialog won't wrap text.
 #. GtkAboutDialog will detect if “translator-credits” is untranslated and auto-hide the tab.
-#: GTG/gtk/browser/main_window.py:352
+#: GTG/gtk/browser/main_window.py:354
 msgid "translator-credits"
 msgstr ""
 
@@ -1709,7 +1764,7 @@ msgid "Select Tag Color:"
 msgstr ""
 
 #. Default icon
-#: GTG/gtk/browser/tag_editor.py:190
+#: GTG/gtk/browser/tag_editor.py:193
 msgid ""
 "Click to\n"
 "Set Icon"
@@ -1747,36 +1802,36 @@ msgid "Closed Date"
 msgstr "Lukket den"
 
 #. Translators: Button label to add an new parent task
-#: GTG/gtk/editor/editor.py:154 GTG/gtk/editor/editor.py:485
+#: GTG/gtk/editor/editor.py:154 GTG/gtk/editor/editor.py:499
 msgid "Add Parent"
 msgstr ""
 
-#: GTG/gtk/editor/editor.py:548
+#: GTG/gtk/editor/editor.py:562
 #, python-format
 msgid "Completed %(days)d day late"
 msgid_plural "Completed %(days)d days late"
 msgstr[0] "Fullført %(days)d dag på overtid"
 msgstr[1] "Fullført %(days)d dager på overtid"
 
-#: GTG/gtk/editor/editor.py:553
+#: GTG/gtk/editor/editor.py:567
 #, python-format
 msgid "Completed %(days)d day early"
 msgid_plural "Completed %(days)d days early"
 msgstr[0] "Fullført %(days)d dag i forkant"
 msgstr[1] "Fullført %(days)d dager i forkant"
 
-#: GTG/gtk/editor/editor.py:562
+#: GTG/gtk/editor/editor.py:576
 #, python-format
 msgid "Due tomorrow!"
 msgid_plural "%(days)d days left"
 msgstr[0] ""
 msgstr[1] ""
 
-#: GTG/gtk/editor/editor.py:565
+#: GTG/gtk/editor/editor.py:579
 msgid "Due today!"
 msgstr "Skal være ferdig i dag"
 
-#: GTG/gtk/editor/editor.py:568
+#: GTG/gtk/editor/editor.py:582
 #, python-format
 msgid "Due yesterday!"
 msgid_plural "Was %(days)d days ago"
@@ -1786,29 +1841,29 @@ msgstr[1] ""
 #. Recurring monthly from selected date
 #. Translators: Recurring monthly
 #. Recurring monthly from today
-#: GTG/gtk/editor/recurring_menu.py:97 GTG/gtk/editor/recurring_menu.py:109
+#: GTG/gtk/editor/recurring_menu.py:101 GTG/gtk/editor/recurring_menu.py:113
 #, python-brace-format
 msgid "Every <b>{month_day} of the month</b>"
 msgstr ""
 
 #. Translators: Recurring yearly
-#: GTG/gtk/editor/recurring_menu.py:101 GTG/gtk/editor/recurring_menu.py:112
+#: GTG/gtk/editor/recurring_menu.py:105 GTG/gtk/editor/recurring_menu.py:116
 #, python-brace-format
 msgid "Every <b>{month} {day}</b>"
 msgstr ""
 
 #. Recurring daily
-#: GTG/gtk/editor/recurring_menu.py:103
+#: GTG/gtk/editor/recurring_menu.py:107
 msgid "Every <b>day</b>"
 msgstr ""
 
 #. Recurring every other day
-#: GTG/gtk/editor/recurring_menu.py:105
+#: GTG/gtk/editor/recurring_menu.py:109
 msgid "Every <b>other day</b>"
 msgstr ""
 
 #. Recurring weekly from today
-#: GTG/gtk/editor/recurring_menu.py:107 GTG/gtk/editor/recurring_menu.py:115
+#: GTG/gtk/editor/recurring_menu.py:111 GTG/gtk/editor/recurring_menu.py:119
 #, python-brace-format
 msgid "Every <b>{week_day}</b>"
 msgstr ""
@@ -1821,7 +1876,7 @@ msgstr ""
 msgid "Copy Link to Clipboard"
 msgstr ""
 
-#: GTG/gtk/general_preferences.py:66
+#: GTG/gtk/general_preferences.py:69
 #, fuzzy
 msgid "General"
 msgstr "<b>Generelt</b>"
@@ -1967,17 +2022,82 @@ msgid ""
 "Not possible to override {key}, because shortcuts commands are read-only."
 msgstr ""
 
-#~ msgid "tags"
-#~ msgstr "etiketter"
+#: GTG/plugins/gamify/gamify.py:28
+msgid "easy"
+msgstr ""
 
-#~ msgid "tag"
-#~ msgstr "etikett"
+#: GTG/plugins/gamify/gamify.py:29
+msgid "medium"
+msgstr ""
 
-#~ msgid "defer"
-#~ msgstr "utsett"
+#: GTG/plugins/gamify/gamify.py:30
+msgid "hard"
+msgstr ""
 
-#~ msgid "due"
-#~ msgstr "forfaller"
+#: GTG/plugins/gamify/gamify.py:34
+msgid "Beginner"
+msgstr ""
+
+#: GTG/plugins/gamify/gamify.py:35
+msgid "Novice"
+msgstr ""
+
+#: GTG/plugins/gamify/gamify.py:36
+msgid "prefessional"
+msgstr ""
+
+#: GTG/plugins/gamify/gamify.py:37
+msgid "Expert"
+msgstr ""
+
+#: GTG/plugins/gamify/gamify.py:38
+msgid "Master"
+msgstr ""
+
+#: GTG/plugins/gamify/gamify.py:39
+msgid "Master II"
+msgstr ""
+
+#: GTG/plugins/gamify/gamify.py:40
+msgid "Grand Master"
+msgstr ""
+
+#: GTG/plugins/gamify/gamify.py:41
+msgid "Productivity Lord"
+msgstr ""
+
+#: GTG/plugins/gamify/gamify.py:297
+#, python-brace-format
+msgid "Level: <b>{current_level}</b>"
+msgstr ""
+
+#: GTG/plugins/gamify/gamify.py:299
+#, python-format
+msgid "%d Point"
+msgid_plural "%d Points"
+msgstr[0] ""
+msgstr[1] ""
+
+#: GTG/plugins/gamify/gamify.py:315
+msgid ""
+"Good Job!\n"
+"You have achieved your goal."
+msgstr ""
+
+#: GTG/plugins/gamify/gamify.py:319
+msgid "Only a few tasks to go!"
+msgstr ""
+
+#: GTG/plugins/gamify/gamify.py:323
+msgid ""
+"Get Down to Business\n"
+"You haven't achieved any tasks today."
+msgstr ""
+
+#: GTG/plugins/gamify/gamify.py:333
+#, python-brace-format
+msgid "{emoji} <b>{streak} day</b> streak"
+msgstr ""
 
 #~ msgid "Mark as not done"
 #~ msgstr "Merk som ikke utført"

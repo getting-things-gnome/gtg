@@ -17,20 +17,29 @@
 # -----------------------------------------------------------------------------
 
 """
-tag_editor: this module contains two classes: TagIconSelector and TagEditor.
-
-- TagEditor is a dialog window used to edit the properties of a tag.
-- TagIconSelector is a popover within that dialog to select an icon.
+This module contains the TagEditor class which is a window that allows the
+user to edit a tag properties.
 """
 from gi.repository import GObject, Gtk, Gdk, GdkPixbuf
 
+import logging
+import random
 from gettext import gettext as _
-from GTG.gtk.browser.simple_color_selector import SimpleColorSelector
 from GTG.gtk.colors import color_add, color_remove
+from GTG.gtk.browser import GnomeConfig
 
+log = logging.getLogger(__name__)
 
+@Gtk.Template(filename=GnomeConfig.TAG_EDITOR_UI_FILE)
 class TagEditor(Gtk.Window):
-    """Window allowing to edit a tag's properties."""
+    """
+    A window to edit certain properties of an tag.
+    """
+
+    __gtype_name__ = 'GTG_TagEditor'
+    _emoji_entry = Gtk.Template.Child('emoji-entry')
+    _icon_button = Gtk.Template.Child('icon-button')
+    _name_entry = Gtk.Template.Child('name-entry')
 
     def __init__(self, req, app, tag=None):
         super().__init__()
@@ -38,321 +47,271 @@ class TagEditor(Gtk.Window):
         self.req = req
         self.app = app
         self.tag = tag
-        self.config = self.req.get_config('tag_editor')
-        self.custom_colors = None
-        self.tn_entry_watch_id = None
-        self.tn_cb_clicked_hid = None
-        self.tn_entry_clicked_hid = None
-        self.tis_selection_changed_hid = None
-        # Build up the window
-        self.set_type_hint(Gdk.WindowTypeHint.DIALOG)
-        self.set_position(Gtk.WindowPosition.CENTER)
-        self.set_title(_('Editing Tag "%s"') % tag.get_name())
-        self.set_border_width(10)
-        self.set_resizable(True)
-        self.__build_window()
-        self.__set_callbacks()
+
+        self._title_format = self.get_title()
+
+        self._emoji_entry_changed_id = self._emoji_entry.connect(
+            'changed', self._set_emoji)
+
+        self.tag_rgba = Gdk.RGBA(1.0, 1.0, 1.0, 1.0)
+        self.tag_name = ''
+        self.tag_is_actionable = True
+        self.is_valid = True
+        self._emoji = None
+        self.use_icon = False
+
         self.set_tag(tag)
-        # Make it visible
         self.show_all()
 
-    def __build_window(self):
-        """Build up the widget"""
-        # toplevel widget
-        self.top_vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
-        self.add(self.top_vbox)
-        # header line: icon, grid with name and "hide in wv"
-        # FIXME
-        self.hdr_align = Gtk.Alignment()
-        self.top_vbox.pack_start(self.hdr_align, False, True, 0)
-        self.hdr_align.set_padding(0, 5, 0, 0)
-        self.hdr_box = Gtk.Box()
-        self.clear_box = Gtk.Box()
-        self.hdr_align.add(self.hdr_box)
-        self.hdr_box.set_spacing(10)
-        # Button to tag icon selector
-        self.ti_bt = Gtk.Button()
-        self.ti_bt_label = Gtk.Label()
-        self.ti_bt.add(self.ti_bt_label)
-        self.hidden_entry = Gtk.Entry()
-        self.hidden_entry.set_width_chars(1)
-        self.ti_bt_label.get_style_context().add_class('icon')
-        self.hidden_entry.get_style_context().add_class('hidden')
-        self.hdr_box.pack_start(self.ti_bt, False, False, 0)
-        self.hdr_box.pack_start(self.hidden_entry, False, False, 0)
-        self.ti_bt.set_size_request(64, 64)
-        self.hidden_entry.set_size_request(0, 0)
-        self.ti_bt.set_relief(Gtk.ReliefStyle.HALF)
-        self.ti_bt_clear = Gtk.Button()
-        self.ti_bt_clear.set_label(_('Remove icon'))
-        self.clear_box.add(self.ti_bt_clear)
+    @GObject.Property(type=bool, default=False)
+    def has_color(self):
+        """Whenever the tag has a color."""
+        return self._has_color
 
-        # vbox for tag name and hid in WV
-        self.tp_grid = Gtk.Grid()
-        self.hdr_box.pack_start(self.tp_grid, False, True, 0)
-        self.tp_grid.set_column_spacing(5)
-        self.tn_entry_lbl_align = Gtk.Alignment.new(0, 0.5, 0, 0)
-        self.tp_grid.add(self.tn_entry_lbl_align)
-        self.tn_entry_lbl = Gtk.Label()
-        self.tn_entry_lbl.set_markup("<span weight='bold'>%s</span>"
-                                     % _("Name : "))
-        self.tn_entry_lbl_align.add(self.tn_entry_lbl)
-        self.tn_entry = Gtk.Entry()
-        self.tn_entry.set_width_chars(20)
-        self.tp_grid.attach(self.tn_entry, 1, 0, 1, 1)
-        self.tn_cb_lbl_align = Gtk.Alignment.new(0, 0.5, 0, 0)
-        self.tp_grid.attach(self.tn_cb_lbl_align, 0, 1, 1, 1)
-        self.tn_cb_lbl = Gtk.Label(label=_('Show Tag in "Actionable" view:'))
-        self.tn_cb_lbl_align.add(self.tn_cb_lbl)
-        self.tn_cb = Gtk.CheckButton()
-        self.tp_grid.attach(self.tn_cb, 1, 1, 1, 1)
-        # Tag color
-        self.tc_vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
-        self.top_vbox.pack_start(self.clear_box, False, False, 0)
-        self.top_vbox.pack_start(self.tc_vbox, False, True, 0)
-        self.tc_label_align = Gtk.Alignment()
-        self.tc_vbox.pack_start(self.tc_label_align, False, True, 0)
-        self.tc_label_align.set_padding(25, 0, 0, 0)
-        self.tc_label = Gtk.Label()
-        self.tc_label_align.add(self.tc_label)
-        self.tc_label.set_markup(
-            "<span weight='bold'>%s</span>" % _("Select Tag Color:"))
-        self.tc_label.set_alignment(0, 0.5)
-        # Tag color chooser
-        self.tc_cc_align = Gtk.Alignment.new(0.5, 0.5, 0, 0)
-        self.tc_vbox.pack_start(self.tc_cc_align, False, False, 0)
-        self.tc_cc_align.set_padding(25, 15, 10, 10)
-        self.tc_cc_colsel = SimpleColorSelector()
-        # self.tc_cc_colsel = Gtk.ColorChooserWidget()
-        self.tc_cc_align.add(self.tc_cc_colsel)
+    @has_color.setter
+    def has_color(self, value: bool):
+        self._has_color = value
 
-    def set_emoji(self, widget):
-        """Set emoji as icon (both in settings and button label)."""
+    @GObject.Property(type=Gdk.RGBA)
+    def tag_rgba(self):
+        """The color of the tag. Alpha is ignored."""
+        return self._tag_rgba
 
-        text = self.hidden_entry.get_text()
+    @tag_rgba.setter
+    def tag_rgba(self, value: Gdk.RGBA):
+        self._tag_rgba = value
 
-        if text:
-            self.ti_bt_label.set_text(text)
-            self.ti_bt_label.set_opacity(1)
-            self.ti_bt_clear.set_sensitive(True)
+    @GObject.Property(type=str, default='')
+    def tag_name(self):
+        """The (new) name of the tag."""
+        return self._tag_name
+
+    @tag_name.setter
+    def tag_name(self, value: str):
+        self._tag_name = value.strip().replace(' ', '')
+        self._validate()
+
+    @GObject.Property(type=bool, default=False)
+    def tag_is_actionable(self):
+        """
+        Whenever the tag should show up in the actionable tab.
+        """
+        return self._tag_is_actionable
+
+    @tag_is_actionable.setter
+    def tag_is_actionable(self, value: bool):
+        self._tag_is_actionable = value
+
+    @GObject.Property(type=bool, default=True)
+    def is_valid(self):
+        """
+        Whenever it is valid to apply the changes (like malformed tag name).
+        """
+        return self._is_valid
+
+    @is_valid.setter
+    def is_valid(self, value: bool):
+        self._is_valid = value
+
+    @GObject.Property(type=bool, default=False)
+    def has_icon(self):
+        """
+        Whenever the tag will have an icon.
+        """
+        return bool(self._emoji)
+
+    def _reset_emoji_entry(self):
+        """
+        The emoji entry should stay clear in order to function properly.
+        When something is being inserted, then it should be cleared after
+        either starting editing a new tag, selected one, or otherwise changed.
+        """
+        with GObject.signal_handler_block(self._emoji_entry,
+                                          self._emoji_entry_changed_id):
+            self._emoji_entry.set_text('')
+
+    def _validate(self):
+        """
+        Validates the current tag preferences.
+        Returns true whenever it passes validation, False otherwise,
+        and modifies the is_valid property appropriately.
+        On failure, the widgets are modified accordingly to show the user
+        why it doesn't accept it.
+        """
+        valid = True
+        valid &= self._validate_tag_name()
+        self.is_valid = valid
+        return valid
+
+    def _validate_tag_name(self):
+        """
+        Validates the current tag name.
+        Returns true whenever it passes validation, False otherwise.
+        On failure, the widgets are modified accordingly to show the user
+        why it doesn't accept it.
+        """
+        # TODO: Possibly add more restrictions.
+        if self.tag_name == '':
+            self._name_entry.set_icon_from_icon_name(
+                Gtk.EntryIconPosition.SECONDARY, Gtk.STOCK_DIALOG_ERROR)
+            self._name_entry.props.secondary_icon_tooltip_text = \
+                _("Tag name can not be empty")
+            return False
         else:
-            self.ti_bt_label.set_text('🏷️')
-            self.ti_bt_label.set_opacity(0.4)
-            self.ti_bt_clear.set_sensitive(False)
-
-        with GObject.signal_handler_block(self.hidden_entry, self.emoji_id):
-            self.hidden_entry.set_text('')
-
-        if text:
-            self.tag.set_attribute('icon', text)
-        else:
-            self.tag.del_attribute('icon')
-
-    def call_emoji_popup(self, widget):
-        """Bring the emoji selector."""
-
-        self.hidden_entry.do_insert_emoji(self.hidden_entry)
-
-    def clear_icon(self, widget):
-        """Remove icon."""
-
-        self.hidden_entry.set_text('')
-        self.set_emoji(None)
-
-    def __set_callbacks(self):
-        """Define the widget callbacks"""
-        # Set the callbacks
-        self.ti_bt.connect('clicked', self.call_emoji_popup)
-        self.ti_bt_clear.connect('clicked', self.clear_icon)
-        self.emoji_id = self.hidden_entry.connect('changed', self.set_emoji)
-
-        self.tn_entry_clicked_hid = \
-            self.tn_entry.connect('changed', self.on_tn_entry_changed)
-        self.tn_cb_clicked_hid = \
-            self.tn_cb.connect('clicked', self.on_tn_cb_clicked)
-        # FIXME
-        self.tc_cc_colsel.connect('color-changed', self.on_tc_colsel_changed)
-        self.tc_cc_colsel.connect('color-added', self.on_tc_colsel_added)
-        # self.tc_cc_colsel.connect('color-activated',
-        #                           self.on_tc_colsel_activated)
-        self.connect('delete-event', self.on_close)
-
-        # allow fast closing by Escape key
-        agr = Gtk.AccelGroup()
-        self.add_accel_group(agr)
-        key, modifier = Gtk.accelerator_parse('Escape')
-        agr.connect(key, modifier, Gtk.AccelFlags.VISIBLE, self.on_close)
-
-    def __set_default_values(self):
-        """Configure the widget components with their initial default values"""
-        # Disable some handlers while setting up the widget to avoid
-        # interferences
-        self.tn_cb.handler_block(self.tn_cb_clicked_hid)
-        self.tn_entry.handler_block(self.tn_entry_clicked_hid)
-        # Default icon
-        markup = "<span size='small'>%s</span>" % _("Click to\nSet Icon")
-        # self.ti_bt_label.set_justify(Gtk.Justification.CENTER)
-        # self.ti_bt_label.set_markup(markup)
-        # self.ti_bt_label.show()
-        # self.__set_icon(None)
-        # Unselect any previously selected icon
-        # Show in WV
-        self.tn_cb.set_active(True)
-        # Name entry
-        self.tn_entry.set_icon_from_icon_name(Gtk.EntryIconPosition.SECONDARY, None)
-        # Color selection
-        # FIXME
-        self.tc_cc_colsel.unselect_color()
-        # self.tc_cc_colsel.set_use_alpha(False)
-        # self.tc_cc_colsel.set_rgba(self.tc_cc_colsel, None)
-        # Custom colors
-        self.custom_colors = self.config.get('custom_colors')
-        if len(self.custom_colors) > 0:
-            self.tc_cc_colsel.set_custom_colors(self.custom_colors)
-        # Focus
-        self.tn_entry.grab_focus()
-        # Re-enable checkbutton handler_block
-        self.tn_cb.handler_unblock(self.tn_cb_clicked_hid)
-        self.tn_entry.handler_unblock(self.tn_entry_clicked_hid)
+            self._name_entry.set_icon_from_icon_name(
+                Gtk.EntryIconPosition.SECONDARY, None)
+            return True
 
     # PUBLIC API #####
     def set_tag(self, tag):
-        """Update the context menu items using the tag attributes."""
-        # set_active emit the 'toggle' signal, so we have to disable
-        # the handler when we update programmatically
-        self.__set_default_values()
+        """
+        Set the tag to edit.
+        Widgets are updated with the information of the tag,
+        the previous information/state is lost.
+        """
+        self.tag = tag
         if tag is None:
-            self.tag = None
-        else:
-            # Disable some handlers while setting up the widget to avoid
-            # interferences
-            self.tn_cb.handler_block(self.tn_cb_clicked_hid)
-            self.tn_entry.handler_block(self.tn_entry_clicked_hid)
-            self.tag = tag
-            # Update entry
-            name = tag.get_name()
-            self.tn_entry.set_text(name)
-            # Update visibility in Actionable View
-            s_hidden_in_av = (self.tag.get_attribute("nonactionable") == "True")
-            self.tn_cb.set_active(not s_hidden_in_av)
-            # If available, update icon
-            icon = tag.get_attribute('icon')
+            return
 
-            if icon:
-                self.ti_bt_label.set_text(icon)
-                self.tag.set_attribute('icon', icon)
-                self.ti_bt_label.set_opacity(1)
-                self.ti_bt_clear.set_sensitive(True)
-            else:
-                self.ti_bt_label.set_text('🏷️')
-                self.ti_bt_label.set_opacity(0.4)
-                self.ti_bt_clear.set_sensitive(False)
-            # If available, update color selection
-            if (tag.get_attribute('color') is not None):
-                col = tag.get_attribute('color')
-                if not self.tc_cc_colsel.has_color(col):
-                    self.tc_cc_colsel.add_custom_color(col)
-                self.tc_cc_colsel.set_selected_color(col)
-            # Re-enable checkbutton handler_block
-            self.tn_cb.handler_unblock(self.tn_cb_clicked_hid)
-            self.tn_entry.handler_unblock(self.tn_entry_clicked_hid)
+        icon = tag.get_attribute('icon')
+        self._set_emoji(self._emoji_entry, text=icon if icon else '')
+
+        self.tag_name = tag.get_name()
+        self.set_title(self._title_format % ('@' + tag.get_name(),))
+
+        rgba = Gdk.RGBA(1.0, 1.0, 1.0, 1.0)
+        if color := tag.get_attribute('color'):
+            if not rgba.parse(color):
+                log.warning("Failed to parse tag color for %r: %r",
+                            tag.get_name(), color)
+        self.has_color = bool(color)
+        self.tag_rgba = rgba
+        self.tag_name = tag.get_name()
+        self.tag_is_actionable = \
+            self.tag.get_attribute("nonactionable") != "True"
+
+    def do_destroy(self):
+        self.app.close_tag_editor()
+        super().destroy()
 
     # CALLBACKS #####
-    def watch_tn_entry_changes(self):
-        """Monitors the value changes in the tag name entry. If no updates have
-        been noticed after 1 second, request an update."""
-        cur_value = self.get_tn_text()
-
-        if self.tn_entry_last_recorded_value != cur_value:
-            # they're different: there's been some updates, wait further
-            return True
-        else:
-            # they're the same. We can unregister the watcher and
-            # update the tag name
-            self.tn_entry_watch_id = None
-            if cur_value != '':
-                new_name = cur_value
-
-                self.req.rename_tag(self.tag.get_name(), new_name)
-                self.tag = self.req.get_tag(new_name)
-
-                # Select on sidebar and update values
-                self.app.browser.select_on_sidebar(new_name)
-                self.app.browser.reapply_filter()
-
-            return False
-
-    def get_tn_text(self):
-        """Return text from the name input."""
-
-        return self.tn_entry.get_text().strip().replace(' ', '')
-
-    def on_tn_entry_changed(self, widget):
-        """ Callback: checks tag name validity and start value changes
-        monitoring to decide when to update a tag's name."""
-        self.tn_entry_last_recorded_value = self.get_tn_text()
-        # check validity
-        if self.tn_entry_last_recorded_value == "":
-            self.tn_entry.set_icon_from_icon_name(
-                Gtk.EntryIconPosition.SECONDARY, Gtk.STOCK_DIALOG_ERROR)
-        else:
-            self.tn_entry.set_icon_from_icon_name(
-                Gtk.EntryIconPosition.SECONDARY, None)
-        # filter out change requests to reduce commit overhead
-        if self.tn_entry_watch_id is None:
-            # There is no watchers for the text entry. Register one.
-            # Also, wait 1 second before commiting the change in order to
-            # reduce rename requests
-            tn_entry_changes = self.watch_tn_entry_changes
-            self.tn_entry_watch_id = GObject.timeout_add(1000, tn_entry_changes)
-
-    def on_tn_cb_clicked(self, widget):
-        """Callback: toggle the nonactionable property according to the related
-        widget's state."""
-        if self.tag is not None:
-            show_in_wv = self.tn_cb.get_active()
-            hide_in_wv = not show_in_wv
-            self.tag.set_attribute('nonactionable', str(hide_in_wv))
-
-    def on_tc_colsel_changed(self, widget):
-        """Callback: update the tag color depending on the current color
-        selection"""
-        color = self.tc_cc_colsel.get_selected_color()
-        if self.tag is not None:
-            if color is not None:
-                my_color = Gdk.color_parse(color)
-                color = Gdk.Color(my_color.red, my_color.green, my_color.blue).to_string()
-                color_add(color)
-                self.tag.set_attribute('color', color)
-            else:
-                color_remove(self.tag.get_attribute('color'))
-                self.tag.del_attribute('color')
-
-    def on_tc_colsel_activated(self, widget, color):
-        """Callback: update the tag color depending on the current color
-        selection"""
-        print("activated", widget, color, " <--- ignoring for now")
-        return
-        # color = self.tc_cc_colsel.get_rgba().to_color()
-        color = color.to_color()
-        if self.tag is not None:
-            if color is not None:
-                self.tag.set_attribute('color', color)
-            else:
-                self.tag.del_attribute('color')
-
-    def on_tc_colsel_added(self, widget):
-        """Callback: if a new color is added, register it in the configuration"""
-        self.custom_colors = self.tc_cc_colsel.get_custom_colors()
-        self.config.set("custom_colors", self.custom_colors)
-
-    def on_close(self, widget, event, arg1=None, arg2=None, arg3=None):
-        """ Callback: hide the tag editor when the close the window.
-
-        Arguments arg1-arg3 are needed to satisfy callback when closing
-        by Escape
+    @Gtk.Template.Callback('cancel')
+    def _cancel(self, widget: GObject.Object):
         """
+        Cancel button has been clicked, closing the editor window without
+        applying changes.
+        """
+        self.destroy()
+
+    @Gtk.Template.Callback('apply')
+    def _apply(self, widget: GObject.Object):
+        """
+        Apply button has been clicked, applying the settings and closing the
+        editor window.
+        """
+        if self.tag is None:
+            log.warning("Trying to apply but no tag set, shouldn't happen")
+            self._cancel(widget)
+            return
+
+        if self.has_icon and self._emoji:
+            self.tag.set_attribute('icon', self._emoji)
+        elif self.has_icon: # Should never happen, but just in case
+            log.warning("Tried to set icon for %r but no icon given",
+                        self.tag.get_name())
+            self.tag.del_attribute('icon')
+        else:
+            self.tag.del_attribute('icon')
+
+        if self.has_color:
+            rgba = self.tag_rgba
+            color = "#%02x%02x%02x" % (int(max(0, min(rgba.red, 1)) * 255),
+                                       int(max(0, min(rgba.green, 1)) * 255),
+                                       int(max(0, min(rgba.blue, 1)) * 255))
+            color_add(color)
+            self.tag.set_attribute('color', color)
+        else:
+            if tag_color := self.tag.get_attribute('color'):
+                color_remove(tag_color)
+            self.tag.del_attribute('color')
+
+        self.tag.set_attribute('nonactionable', str(not self.tag_is_actionable))
+
+        if self.tag_name != self.tag.get_name():
+            log.debug("Renaming %r → %r", self.tag.get_name(), self.tag_name)
+            self.req.rename_tag(self.tag.get_name(), self.tag_name)
+            self.tag = self.req.get_tag(self.tag_name)
 
         self.destroy()
-        self.app.close_tag_editor()
-        return True
+
+    @Gtk.Template.Callback('random_color')
+    def _random_color(self, widget: GObject.Object):
+        """
+        The random color button has been clicked, overriding the color
+        with an random color.
+        """
+        self.has_color = True
+        self.tag_rgba = Gdk.RGBA(random.uniform(0.0, 1.0),
+                                 random.uniform(0.0, 1.0),
+                                 random.uniform(0.0, 1.0),
+                                 1.0)
+
+    @Gtk.Template.Callback('activate_color')
+    def _activate_color(self, widget: GObject.Object):
+        """
+        Enable using the selected color because a color has been selected.
+        """
+        self.has_color = True
+
+    @Gtk.Template.Callback('set_icon')
+    def _set_icon(self, widget: GObject.Object):
+        """
+        Button to set the icon/emoji has been clicked.
+        """
+        self._reset_emoji_entry()
+        # Resize to make the emoji picker fit (can't go outside of the
+        # window for some reason, at least in GTK3)
+        w, h = self.get_size()
+        self.resize(max(w, 550), max(h, 300))
+        self._emoji_entry.do_insert_emoji(self._emoji_entry)
+
+    def _set_emoji(self, widget: GObject.Object, text: str = None):
+        """
+        Callback when an emoji has been inserted.
+        This is part of the emoji insertion hack.
+        The text parameter can be used to override the emoji to use, used
+        for initialization.
+        """
+        if text is None:
+            text = self._emoji_entry.get_text()
+
+        self._emoji = text if text else None
+        if text:
+            self._emoji = text
+            self._icon_button.set_label(text)
+            if label := self._icon_button.get_child():
+                label.set_opacity(1)
+        else:
+            self._emoji = None
+            self._icon_button.set_label('🏷️')
+            if label := self._icon_button.get_child():
+                label.set_opacity(0.4)
+        self.notify('has-icon')
+
+        self._reset_emoji_entry()
+
+    @Gtk.Template.Callback('remove_icon')
+    def _remove_icon(self, widget: GObject.Object):
+        """
+        Callback to remove the icon.
+        """
+        self._set_emoji(self._emoji_entry, text='')
+
+    @Gtk.Template.Callback('remove_color')
+    def _remove_color(self, widget: GObject.Object):
+        """
+        Callback to remove the color.
+        """
+        self.tag_rgba = Gdk.RGBA(1.0, 1.0, 1.0, 1.0)
+        self.has_color = False
+
