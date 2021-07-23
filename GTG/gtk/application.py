@@ -22,7 +22,7 @@ from gi.repository import Gtk, Gdk, Gio
 import configparser
 import os
 import logging
-import urllib.parse # GLibs URI functions not available for some reason
+import urllib.parse  # GLibs URI functions not available for some reason
 
 from GTG.gtk.browser.delete_task import DeletionUI
 from GTG.gtk.browser.main_window import MainWindow
@@ -133,8 +133,7 @@ class Application(Gtk.Application):
         len_files = len(files)
         log.debug("Received %d Task URIs", len_files)
         if len_files != n_files:
-            log.warning("Length of files %d != supposed length %d",
-                           len_files, n_files)
+            log.warning("Length of files %d != supposed length %d", len_files, n_files)
 
         for file in files:
             if file.get_uri_scheme() == 'gtg':
@@ -157,7 +156,7 @@ class Application(Gtk.Application):
         but in the open or activate signals, otherwise GTK will segfault
         when creating windows in the startup signal
         """
-        if not self.browser: # Prevent multiple inits
+        if not self.browser:  # Prevent multiple inits
             self.init_browser()
             self.init_actions()
             self.init_plugin_engine()
@@ -320,7 +319,6 @@ class Application(Gtk.Application):
 
         self.plugins_dialog.activate()
         self.plugins_dialog.dialog.set_transient_for(self.browser)
-
 
     def close_context(self, action, params):
         """Callback to close based on the focus widget."""
@@ -531,7 +529,7 @@ class Application(Gtk.Application):
         """Save plugin settings to configuration."""
 
         if self.plugin_engine is None:
-            return # Can't save when none has been loaded
+            return  # Can't save when none has been loaded
 
         if self.plugin_engine.plugins:
             self.config_plugins.set(

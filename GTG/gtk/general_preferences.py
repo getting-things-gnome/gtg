@@ -31,6 +31,7 @@ import logging
 
 log = logging.getLogger(__name__)
 
+
 class GeneralPreferences():
 
     GENERAL_PREFERENCES_UI = os.path.join(UI_DIR, "general_preferences.ui")

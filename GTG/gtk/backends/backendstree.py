@@ -190,8 +190,7 @@ class BackendsTree(Gtk.TreeView):
         @param new_text: the new name of the backend
         """
         # we strip everything not permitted in backend names
-        new_text = ''.join(c for c in new_text if (c.isalnum() or
-                                                   c in [" ", "-", "_"]))
+        new_text = ''.join(c for c in new_text if (c.isalnum() or c in [" ", "-", "_"]))
         selected_iter = self.liststore.get_iter(path)
         # update the backend name
         backend_id = self.liststore.get_value(selected_iter,

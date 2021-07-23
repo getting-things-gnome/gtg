@@ -49,9 +49,9 @@ START_TOKEN = (
 DUE_TOKEN = ("due", _("due").lower())
 REPEAT_TOKEN = ("every", _("every").lower())
 
-# Math a word ending in :, followed by a space and some text.
+# Match a word ending in :, followed by a space and some text.
 # Examples: "start: monday", "due: friday", "tags: home,pet"
-TOKEN_REGEX = re.compile('([\s]*)([\w-]+):\s*([^\s]+)')
+TOKEN_REGEX = re.compile(r'([\s]*)([\w-]+):\s*([^\s]+)')
 
 
 def parse(text: str) -> Dict:

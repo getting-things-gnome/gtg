@@ -79,7 +79,6 @@ class CheckboxTag(Gtk.TextTag):
 class InvisibleTag(Gtk.TextTag):
     """Subtask Text tag."""
 
-
     def __init__(self) -> None:
         super().__init__()
 
@@ -87,12 +86,10 @@ class InvisibleTag(Gtk.TextTag):
         self.set_property('foreground', colors['invisible'])
         self.set_property('size_points', 16)
 
-
     def set_cursor_hover(self) -> None:
         """Change tag appareance when hovering."""
 
         self.set_property('invisible', False)
-
 
     def cursor_reset(self) -> None:
         """Reset tag appareance when not hovering."""
@@ -102,7 +99,6 @@ class InvisibleTag(Gtk.TextTag):
 
 class InternalLinkTag(Gtk.TextTag):
     """Internal Link Text tag (for urls)."""
-
 
     def __init__(self, tid: uuid4, status: str) -> None:
         super().__init__()
@@ -120,7 +116,6 @@ class InternalLinkTag(Gtk.TextTag):
 
         self.connect('event', self.on_tag)
 
-
     def on_tag(self, tag, view, event, _iter) -> None:
         """Callback for events that happen inside the tag."""
 
@@ -130,7 +125,6 @@ class InternalLinkTag(Gtk.TextTag):
         # If there was a click...
         if button[0] and button[1] == 1 and is_press:
             view.open_subtask_cb(self.tid)
-
 
     def activate(self, view) -> None:
         """Open the link in this tag."""
@@ -142,7 +136,6 @@ class InternalLinkTag(Gtk.TextTag):
 
         self.set_property('background', colors['background_hover'])
 
-
     def reset(self) -> None:
         """Reset tag appareance when not hovering."""
 
@@ -151,7 +144,6 @@ class InternalLinkTag(Gtk.TextTag):
 
 class LinkTag(Gtk.TextTag):
     """Link Text tag (for urls)."""
-
 
     def __init__(self, url: str) -> None:
         super().__init__()
@@ -163,7 +155,6 @@ class LinkTag(Gtk.TextTag):
         self.set_property('strikethrough', False)
 
         self.connect('event', self.on_tag)
-
 
     def on_tag(self, tag, view, event, _iter) -> None:
         """Callback for events that happen inside the tag."""
@@ -182,18 +173,15 @@ class LinkTag(Gtk.TextTag):
             elif button[1] == 3:
                 view.clicked_link = self.url
 
-
     def activate(self, view) -> None:
         """Open the link in this tag."""
 
         openurl(self.url)
 
-
     def set_hover(self) -> None:
         """Change tag appareance when hovering."""
 
         self.set_property('background', colors['background_hover'])
-
 
     def reset(self) -> None:
         """Reset tag appareance when not hovering."""
@@ -203,7 +191,6 @@ class LinkTag(Gtk.TextTag):
 
 class TitleTag(Gtk.TextTag):
     """Title Text tag (only one per buffer)."""
-
 
     def __init__(self) -> None:
         super().__init__()
@@ -217,7 +204,6 @@ class TitleTag(Gtk.TextTag):
 class SubheadingTag(Gtk.TextTag):
     """Subheading Text tag."""
 
-
     def __init__(self) -> None:
         super().__init__()
 
@@ -229,7 +215,6 @@ class SubheadingTag(Gtk.TextTag):
 class TaskTagTag(Gtk.TextTag):
     """Text tag for task tags."""
 
-
     def __init__(self, tag: str, req: Requester) -> None:
         super().__init__()
 
@@ -237,7 +222,7 @@ class TaskTagTag(Gtk.TextTag):
         self.tag = req.get_tag(tag)
 
         try:
-            self.color = background_color([self.tag]) or'#FFEA00'
+            self.color = background_color([self.tag]) or '#FFEA00'
         except AttributeError:
             self.color = '#FFEA00'
 
@@ -245,7 +230,6 @@ class TaskTagTag(Gtk.TextTag):
         self.set_property('foreground', 'black')
 
         self.connect('event', self.on_tag)
-
 
     def set_hover(self) -> None:
         """Change tag appareance when hovering."""
@@ -256,12 +240,10 @@ class TaskTagTag(Gtk.TextTag):
         except AttributeError:
             self.set_property('background', '#EBDB34')
 
-
     def reset(self) -> None:
         """Reset tag appareance when not hovering."""
 
         self.set_property('background', self.color)
-
 
     def on_tag(self, tag, view, event, _iter) -> None:
         """Callback for events that happen inside the tag."""
@@ -271,7 +253,6 @@ class TaskTagTag(Gtk.TextTag):
 
         if button[0] and button[1] == 1 and is_press:
             view.browse_tag_cb(self.tag_name)
-
 
     def activate(self, view) -> None:
         """Open the link in this tag."""

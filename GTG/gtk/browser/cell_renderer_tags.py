@@ -16,16 +16,19 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
+from gi.repository import GObject, GLib, Gtk, Gdk
+from gi.repository import Pango
 import gi
 import cairo
-gi.require_version('PangoCairo', '1.0')
-
-from gi.repository import Pango
-from gi.repository import PangoCairo
-from gi.repository import GObject, GLib, Gtk, Gdk
 
 
 class CellRendererTags(Gtk.CellRenderer):
+
+    # XXX: these 2 lines were moved within the class to keep the PEP8 checker
+    #      from reporting an E402 error due to require_version needing to be
+    #      called before the PangoCairo import
+    gi.require_version('PangoCairo', '1.0')
+    from gi.repository import PangoCairo
 
     SYMBOLIC_ICONS = (
         'emblem-documents-symbolic',
