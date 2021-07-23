@@ -8,17 +8,6 @@ from .bug import BugFactory
 
 __all__ = ('BugzillaServiceFactory',)
 
-# Register bugzilla services manually, however store them in someplace and load
-# them at once is better.
-services = {
-    'bugzilla.gnome.org': GnomeBugzilla,
-    'bugs.freedesktop.org': FreedesktopBugzilla,
-    'bugzilla.mozilla.org': MozillaBugzilla,
-    'bugzilla.samba.org': SambaBugzilla,
-    'bugs.gentoo.org': GentooBugzilla,
-    'bugzilla.redhat.com': RedHatBugzilla,
-}
-
 
 class BugzillaService():
     name = 'Bugzilla Service'
@@ -87,6 +76,18 @@ class RedHatBugzilla(BugzillaService):
     """ Bugzilla service provided by Red Hat """
 
     name = 'Red Hat Bugzilla Service'
+
+
+# Register bugzilla services manually, however store them in someplace and load
+# them at once is better.
+services = {
+    'bugzilla.gnome.org': GnomeBugzilla,
+    'bugs.freedesktop.org': FreedesktopBugzilla,
+    'bugzilla.mozilla.org': MozillaBugzilla,
+    'bugzilla.samba.org': SambaBugzilla,
+    'bugs.gentoo.org': GentooBugzilla,
+    'bugzilla.redhat.com': RedHatBugzilla,
+}
 
 
 class BugzillaServiceNotExist(Exception):
