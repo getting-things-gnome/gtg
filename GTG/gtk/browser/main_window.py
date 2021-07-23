@@ -324,7 +324,12 @@ class MainWindow(Gtk.ApplicationWindow):
         # These lines should be in info.py, but due to their dynamic nature
         # there'd be no way to show them translated in Gtk's About dialog:
 
-        translated_copyright = _("Copyright © 2008-%d the GTG contributors.") % datetime.date.today().year
+        translated_copyright = _("Copyright © 2008-%d the GTG contributors.") \
+            % datetime.date.today().year
+
+        ohstats_url = '<a href="https://www.openhub.net/p/gtg/contributors">OpenHub</a>'
+        ghstats_url = \
+            '<a href="https://github.com/getting-things-gnome/gtg/graphs/contributors">GitHub</a>'
 
         UNITED_AUTHORS_OF_GTGETTON = [
             # GTK prefixes the first line with "Created by ",
@@ -334,9 +339,9 @@ class MainWindow(Gtk.ApplicationWindow):
             info.AUTHORS_MAINTAINERS,
             _("This release was brought to you by the efforts of these people:"),
             info.AUTHORS_RELEASE_CONTRIBUTORS,
-            _("Many others contributed to GTG over the years.\nYou can see them on {OH_stats} and {GH_stats}.").format(
-                    OH_stats = '<a href="https://www.openhub.net/p/gtg/contributors">OpenHub</a>',
-                    GH_stats = '<a href="https://github.com/getting-things-gnome/gtg/graphs/contributors">GitHub</a>'),
+            _("Many others contributed to GTG over the years.\n" \
+              "You can see them on {OH_stats} and {GH_stats}.").format(
+                  OH_stats=ohstats_url, GH_stats=ghstats_url),
             "\n"]
 
         self.about.set_transient_for(self)
@@ -345,7 +350,10 @@ class MainWindow(Gtk.ApplicationWindow):
         self.about.set_logo_icon_name(self.app.props.application_id)
         self.about.set_website_label(_("GTG website"))
         self.about.set_version(info.VERSION)
-        self.about.set_comments(_(info.SHORT_DESCRIPTION))  # This line translated in info.py works, as it has no strings replacements
+
+        # This line translated in info.py works, as it has no strings replacements
+        self.about.set_comments(_(info.SHORT_DESCRIPTION))
+
         self.about.set_copyright(translated_copyright)
         self.about.set_license_type(Gtk.License.GPL_3_0)
 
@@ -423,7 +431,6 @@ class MainWindow(Gtk.ApplicationWindow):
         b_signals.connect(b_signals.INTERACTION_REQUESTED, self.on_backend_needing_interaction)
         self.selection = self.vtree_panes['active'].get_selection()
 
-
 # HELPER FUNCTIONS ##########################################################
 
     def toggle_search(self, action, param):
@@ -452,14 +459,12 @@ class MainWindow(Gtk.ApplicationWindow):
             log.debug("Invalid query %r: %r", query, error)
             vtree.unapply_filter(SEARCH_TAG)
 
-
     def do_search(self):
         """Perform the actual search and cancel the timeout."""
 
         self._try_filter_by_query(self.search_entry.get_text())
         GLib.source_remove(self.search_timeout)
         self.search_timeout = None
-
 
     def on_search(self, data):
         """Callback everytime a character is inserted in the search field."""
@@ -471,7 +476,6 @@ class MainWindow(Gtk.ApplicationWindow):
             self.search_timeout = None
 
         self.search_timeout = GLib.timeout_add(TIMEOUT, self.do_search)
-
 
     def on_save_search(self, action, param):
         query = self.search_entry.get_text()
@@ -899,8 +903,7 @@ class MainWindow(Gtk.ApplicationWindow):
 
     def on_tag_treeview_key_press_event(self, treeview, event):
         keyname = Gdk.keyval_name(event.keyval)
-        is_shift_f10 = (keyname == "F10" and
-                        event.get_state() & Gdk.ModifierType.SHIFT_MASK)
+        is_shift_f10 = (keyname == "F10" and event.get_state() & Gdk.ModifierType.SHIFT_MASK)
         if is_shift_f10 or keyname == "Menu":
             selected_tags = self.get_selected_tags(nospecial=True)
             selected_search = self.get_selected_search()
@@ -964,8 +967,7 @@ class MainWindow(Gtk.ApplicationWindow):
 
     def on_task_treeview_key_press_event(self, treeview, event):
         keyname = Gdk.keyval_name(event.keyval)
-        is_shift_f10 = (keyname == "F10" and
-                        event.get_state() & Gdk.ModifierType.SHIFT_MASK)
+        is_shift_f10 = (keyname == "F10" and event.get_state() & Gdk.ModifierType.SHIFT_MASK)
 
         if is_shift_f10 or keyname == "Menu":
             self.open_menu.popup_at_pointer(event)
@@ -993,8 +995,7 @@ class MainWindow(Gtk.ApplicationWindow):
 
     def on_closed_task_treeview_key_press_event(self, treeview, event):
         keyname = Gdk.keyval_name(event.keyval)
-        is_shift_f10 = (keyname == "F10" and
-                        event.get_state() & Gdk.ModifierType.SHIFT_MASK)
+        is_shift_f10 = (keyname == "F10" and event.get_state() & Gdk.ModifierType.SHIFT_MASK)
 
         if is_shift_f10 or keyname == "Menu":
             self.closed_menu.popup_at_pointer(event)

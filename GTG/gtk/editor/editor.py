@@ -154,14 +154,14 @@ class TaskEditor():
             self.parent_button.set_label(_('Add Parent'))
 
         # Connect signals for the calendar
-        self.start_handle = self.start_calendar.connect('day-selected',
-                                                        lambda c: self.on_date_selected(c, GTGCalendar.DATE_KIND_START))
+        self.start_handle = self.start_calendar.connect(
+            'day-selected', lambda c: self.on_date_selected(c, GTGCalendar.DATE_KIND_START))
 
-        self.due_handle = self.due_calendar.connect('day-selected',
-                                                    lambda c: self.on_date_selected(c, GTGCalendar.DATE_KIND_DUE))
+        self.due_handle = self.due_calendar.connect(
+            'day-selected', lambda c: self.on_date_selected(c, GTGCalendar.DATE_KIND_DUE))
 
-        self.closed_handle = self.closed_calendar.connect('day-selected',
-                                                          lambda c: self.on_date_selected(c, GTGCalendar.DATE_KIND_CLOSED))
+        self.closed_handle = self.closed_calendar.connect(
+            'day-selected', lambda c: self.on_date_selected(c, GTGCalendar.DATE_KIND_CLOSED))
 
         # Removing the Normal textview to replace it by our own
         # So don't try to change anything with glade, this is a home-made
@@ -395,13 +395,11 @@ class TaskEditor():
         # otherwise.
         return not model.get(iter, column)[0].startswith(key)
 
-
     def get_monitor_dimensions(self) -> Gdk.Rectangle:
         """Get dimensions for the first monitor."""
 
         monitor = Gdk.Display.get_default().get_monitor(0)
         return monitor.get_geometry()
-
 
     def init_dimensions(self):
         """ Restores position and size of task if possible """
@@ -760,7 +758,6 @@ class TaskEditor():
         except AttributeError:
             # There's no task at that tid
             pass
-
 
     def insert_subtask(self, action=None, param=None):
         self.textview.insert_new_subtask()

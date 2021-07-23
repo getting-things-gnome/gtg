@@ -22,6 +22,7 @@ from gi.repository import Gtk
 from gettext import gettext as _, ngettext
 from GTG.gtk import ViewConfig
 
+
 class DeletionUI():
 
     MAXIMUM_TIDS_TO_SHOW = 5
@@ -68,7 +69,6 @@ class DeletionUI():
             [self.recursive_list_tasks(tasklist, i)
              for i in root.get_subtasks() if i not in tasklist]
 
-
     def show(self, tids=None):
         self.tids_todelete = tids or self.tids_todelete
 
@@ -86,13 +86,10 @@ class DeletionUI():
 
         # Prepare Labels
         singular = len(tasklist)
-        cancel_text = ngettext("Keep selected task",
-                               "Keep selected tasks",
-                                singular)
 
-        delete_text = ngettext("Permanently remove task",
-                               "Permanently remove tasks",
-                                singular)
+        cancel_text = ngettext("Keep selected task", "Keep selected tasks", singular)
+
+        delete_text = ngettext("Permanently remove task", "Permanently remove tasks", singular)
 
         label_text = ngettext("Deleting a task cannot be undone, "
                               "and will delete the following task: ",
@@ -107,13 +104,12 @@ class DeletionUI():
         if missing_titles_count >= 2:
             tasks = tasklist[: self.MAXIMUM_TIDS_TO_SHOW]
             titles_suffix = _("\nAnd {missing_titles_count:d} more tasks")
-            titles_suffix = titles_suffix.format(missing_titles_count= missing_titles_count)
+            titles_suffix = titles_suffix.format(missing_titles_count=missing_titles_count)
         else:
             tasks = tasklist
             titles_suffix = ""
 
         titles = "".join("\n• " + task.get_title() for task in tasks)
-
 
         # Build and run dialog
         dialog = Gtk.MessageDialog(transient_for=self.window, modal=True)
