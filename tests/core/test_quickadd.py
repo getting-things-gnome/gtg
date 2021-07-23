@@ -35,7 +35,6 @@ class TestQuickAddParse(TestCase):
 
         self.assertEqual(default_dict, parse(''))
 
-
     def test_basic_title(self):
         expected = {
             'title': 'Do a thing',
@@ -66,7 +65,6 @@ class TestQuickAddParse(TestCase):
         self.assertEqual(expected, parse(text3))
         self.assertEqual(expected, parse(text4))
 
-
     def test_strip_at(self):
         expected1 = {
             'title': 'Do a thing',
@@ -90,7 +88,6 @@ class TestQuickAddParse(TestCase):
         self.assertEqual(expected1, parse(text1))
         self.assertEqual(expected2, parse(text2))
 
-
     def test_tags_in_title(self):
         expected1 = {
             'title': '@phone Maruk about @work',
@@ -113,7 +110,6 @@ class TestQuickAddParse(TestCase):
 
         self.assertEqual(expected1, parse(text1))
         self.assertEqual(expected2, parse(text2))
-
 
     def test_start(self):
         expected1 = {
@@ -151,7 +147,6 @@ class TestQuickAddParse(TestCase):
         self.assertEqual(expected1, parse(text3))
         self.assertEqual(expected3, parse(text5))
 
-
     def test_due(self):
         expected1 = {
             'title': 'Do a thing',
@@ -187,7 +182,6 @@ class TestQuickAddParse(TestCase):
         self.assertEqual(expected1, parse(text2))
         self.assertEqual(expected1, parse(text3))
         self.assertEqual(expected3, parse(text5))
-
 
     def test_repeat(self):
         expected1 = {

@@ -30,7 +30,6 @@ class TestVersioning(TestCase):
 
         self.assertEqual(target, versioning.convert_content(source))
 
-
     def test_convert_tags(self):
         """Make sure tags are being deleted."""
 
@@ -38,7 +37,6 @@ class TestVersioning(TestCase):
         target = '@one_tag, @another_tag,'
 
         self.assertEqual(target, versioning.convert_content(source))
-
 
     def test_convert_full_task(self):
 
