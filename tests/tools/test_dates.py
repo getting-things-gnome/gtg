@@ -33,8 +33,7 @@ def next_month(aday, day=None):
 
     if aday.month == 12:
         return aday.replace(day=day, month=1, year=aday.year + 1)
-    else:
-        return aday.replace(day=day, month=aday.month + 1)
+    return aday.replace(day=day, month=aday.month + 1)
 
 
 class TestDates(TestCase):
@@ -75,7 +74,7 @@ class TestDates(TestCase):
         self.assertEqual(Date("soon").localized_str, _("soon"))
         self.assertEqual(Date("later").localized_str, _("someday"))
         self.assertEqual(Date("someday").localized_str, _("someday"))
-        self.assertEqual(str(Date("")), "")
+        self.assertEqual(Date("").localized_str, "")
 
     def test_parse_week_days(self):
         """ Parse name of week days and don't care about case-sensitivity """
