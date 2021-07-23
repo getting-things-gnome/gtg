@@ -187,9 +187,9 @@ class Date:
             return dt_value.astimezone(LOCAL_TIMEZONE).replace(tzinfo=None)
         if wanted_accuracy is Accuracy.date:
             return dt_value.date()
-        raise AssertionError(f"Shouldn't get in that position for '{dt_value}'"
-                             f" actual {accuracy.value} "
-                             f"and wanted {wanted_accuracy.value}")
+        raise AssertionError(f"Couldn't process {dt_value!r} with actual "
+                             f"accuracy is {accuracy.value} "
+                             f"and we wanted {wanted_accuracy.value}")
 
     def dt_by_accuracy(self, wanted_accuracy: Accuracy):
         """Cast Date to the desired accuracy and returns either string
