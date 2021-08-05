@@ -52,5 +52,12 @@ gtg_core_plugin_sources = [
   'plugins/engine.py',
 ]
 
+gtg_core_dbus_sources = [
+  'dbus/__init__.py',
+  'dbus/dbus.py',
+  'dbus/tasks.py',
+]
+
 python3.install_sources(gtg_core_sources, subdir: 'GTG' / 'core', pure: true)
 python3.install_sources(gtg_core_plugin_sources, subdir: 'GTG' / 'core' / 'plugins', pure: true)
+python3.install_sources(gtg_core_dbus_sources, subdir: 'GTG' / 'core' / 'dbus', pure: true)
