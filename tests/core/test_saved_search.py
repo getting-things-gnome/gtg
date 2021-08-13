@@ -20,7 +20,7 @@ from unittest import TestCase
 from uuid import uuid4
 
 from GTG.core.saved_searches import SavedSearch, SavedSearchStore
-from lxml.etree import Element, SubElement, XML
+from lxml.etree import Element, XML
 
 
 class TestSavedSearch(TestCase):
@@ -106,8 +106,6 @@ class TestSavedSearch(TestCase):
         store.add(search_4, search_3.id)
         store.add(search_5, search_3.id)
 
-        store.print_tree()
-
 
     def test_remove_tree(self):
         store = SavedSearchStore()
@@ -121,7 +119,7 @@ class TestSavedSearch(TestCase):
         child_3 = store.new('Child search 3', '@another_tag', child_2.id)
 
         self.assertEqual(len(store.lookup), 5)
-        store.remove_child(child_2.id, child_3.id)
+        store.remove(child_3.id)
 
         self.assertEqual(len(store.lookup), 4)
         self.assertEqual(len(child_2.children), 0)
@@ -170,8 +168,8 @@ class TestSavedSearch(TestCase):
     <searchList>
         <savedSearch id="4796b97b-3690-4e74-a056-4153061958df" name="Urgent in tasks" query="urgent" />
         <savedSearch id="2ff11525-a209-4cd9-8f50-859592f1ee37" name="Other tasks" query="@other" />
-        <savedSearch id="89fdc73c-6776-4d65-8220-dffec1953fae" name="More tasks" query="@another" parent="2ff11525-a209-4cd9-8f50-859592f1ee37"/>
-        <savedSearch id="588c9ffa-e96b-42a1-862b-8684fc09181e" name="More tasks 2" query="@yet_another" parent="89fdc73c-6776-4d65-8220-dffec1953fae"/>
+        <savedSearch id="89fdc73c-6776-4d65-8220-dffec1953fae" name="More tasks" query="@another" parent="Other tasks"/>
+        <savedSearch id="588c9ffa-e96b-42a1-862b-8684fc09181e" name="More tasks 2" query="@yet_another" parent="More tasks 2"/>
     </searchList>
                  ''')
 
@@ -181,19 +179,6 @@ class TestSavedSearch(TestCase):
 
         self.assertEqual(store.lookup['4796b97b-3690-4e74-a056-4153061958df'].query, 'urgent')
         self.assertEqual(len(store.lookup['2ff11525-a209-4cd9-8f50-859592f1ee37'].children), 1)
-
-
-    def test_xml_load_bad(self):
-        store = SavedSearchStore()
-        xml_doc = XML('''
-    <searchList>
-        <savedSearch id="4796b97b-3690-4e74-a056-4153061958df" name="Urgent in tasks" query="urgent" />
-        <savedSearch id="588c9ffa-e96b-42a1-862b-8684fc09181e" name="More tasks 2" query="@yet_another" parent="89fdc73c-6776-4d65-8220-dffec1953fae"/>
-    </searchList>
-                 ''')
-
-        with self.assertRaises(KeyError):
-            store.from_xml(xml_doc)
 
 
     def test_xml_write_simple(self):
@@ -216,3 +201,49 @@ class TestSavedSearch(TestCase):
         xml_root = store.to_xml()
 
         self.assertEqual(len(xml_root), 2)
+
+
+    def test_parent(self):
+
+        store = SavedSearchStore()
+        search1 = store.new('Some @tag', 'Looking for some tag')
+        search2 = store.new('Some @other @tag', 'Looking for more')
+
+        self.assertEqual(len(store.lookup), 2)
+        self.assertEqual(len(store.data), 2)
+
+        store.parent(search1.id, search2.id)
+
+        self.assertEqual(len(store.data), 1)
+        self.assertEqual(len(search2.children), 1)
+        self.assertEqual(len(store.lookup), 2)
+
+        search3 = store.new('Some @other @tag', 'Looking for more')
+        store.parent(search3.id, search1.id)
+
+        self.assertEqual(len(store.data), 1)
+        self.assertEqual(len(search1.children), 1)
+        self.assertEqual(len(search2.children), 1)
+        self.assertEqual(len(store.lookup), 3)
+
+
+    def test_unparent(self):
+
+        store = SavedSearchStore()
+        search1 = store.new('Some @tag', 'Looking for some tag')
+        search2 = store.new('Some @other @tag', 'Looking for more')
+
+        self.assertEqual(len(store.lookup), 2)
+        self.assertEqual(len(store.data), 2)
+
+        store.parent(search1.id, search2.id)
+
+        self.assertEqual(len(store.data), 1)
+        self.assertEqual(len(search2.children), 1)
+        self.assertEqual(len(store.lookup), 2)
+
+        store.unparent(search1.id, search2.id)
+
+        self.assertEqual(len(store.data), 2)
+        self.assertEqual(len(search2.children), 0)
+        self.assertEqual(len(store.lookup), 2)
