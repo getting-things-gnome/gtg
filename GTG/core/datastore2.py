@@ -22,14 +22,16 @@ import os
 import threading
 import logging
 import shutil
-from datetime import datetime
+from datetime import datetime, timedelta
 from time import time
-from collections import Counter
+import random
+import string
 
-from GTG.core.tasks2 import TaskStore, Status, Filter
+from GTG.core.tasks2 import TaskStore, Filter
 from GTG.core.tags2 import TagStore
 from GTG.core.saved_searches import SavedSearchStore
 from GTG.core import firstrun_tasks
+from GTG.core.dates import Date
 from GTG.backends.backend_signals import BackendSignals
 from GTG.backends.generic_backend import GenericBackend
 import GTG.core.info as info
@@ -577,3 +579,114 @@ class Datastore2:
         t.start()
         self.backends[backend_id].start_get_tasks()
 
+
+    # --------------------------------------------------------------------------
+    # TESTING AND UTILS
+    # --------------------------------------------------------------------------
+
+    def fill_with_samples(self, tasks_count: int) -> None:
+        """Fill the Datastore with sample data."""
+
+        def random_date(start: datetime = None):
+            start = start or datetime.now()
+            end = start + timedelta(days=random.randint(1, 365 * 5))
+
+            return start + (end - start)
+
+
+        def random_boolean() -> bool:
+            return bool(random.getrandbits(1))
+
+
+        def random_word(length: int) -> str:
+            letters = string.ascii_lowercase
+            return ''.join(random.choice(letters) for _ in range(length))
+
+
+        if tasks_count == 0:
+            return
+
+
+        tags_count = random.randint(tasks_count // 10, tasks_count)
+        search_count = random.randint(0, tasks_count // 10)
+        task_sizes = [random.randint(0, 200) for _ in range(10)]
+        randint = random.randint
+        tag_words = [random_word(randint(2, 14)) for _ in range(tags_count)]
+
+        # Generate saved searches
+        for _ in range(search_count):
+            name = random_word(randint(2, 10))
+            query = random_word(randint(2, 10))
+            self.saved_searches.new(name, query)
+
+        # Generate tags
+        for tag_name in tag_words:
+            tag = self.tags.new(tag_name)
+            tag.actionable = random_boolean()
+            tag.color = self.tags.generate_color()
+
+
+        # Parent the tags
+        for tag in self.tags.data:
+            if bool(random.getrandbits(1)):
+                parent = random.choice(self.tags.data)
+
+                if tag.id == parent.id:
+                    continue
+
+                self.tags.parent(tag.id, parent.id)
+
+
+        # Generate tasks
+        for _ in range(tasks_count):
+            title = ''
+            content = ''
+            content_size = random.choice(task_sizes)
+
+            for _ in range(random.randint(1, 15)):
+                word = random_word(randint(4, 20))
+
+                if word in tag_words:
+                    word = '@' + word
+
+                title += word + ' '
+
+            task = self.tasks.new(title)
+
+            for _ in range(random.randint(0, 10)):
+                tag = self.tags.find(random.choice(tag_words))
+                task.add_tag(tag)
+
+            if random_boolean():
+                task.toggle_status()
+
+            if random_boolean():
+                task.dismiss()
+
+            for _ in range(random.randint(0, content_size)):
+                word = random_word(randint(4, 20))
+
+                if word in tag_words:
+                    word = '@' + word
+
+                content += word + ' '
+                content += '\n' if random_boolean() else ''
+
+            task.content = content
+
+            if random_boolean():
+                task.date_start = random_date()
+
+            if random_boolean():
+                task.date_due = Date(random_date())
+
+
+        # Parent the tasks
+        for task in self.tasks.data:
+            if bool(random.getrandbits(1)):
+                parent = random.choice(self.tasks.data)
+
+                if task.id == parent.id:
+                    continue
+
+                self.tasks.parent(task.id, parent.id)
