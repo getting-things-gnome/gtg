@@ -50,13 +50,13 @@ class BaseStore(GObject.Object):
 
 
     def get(self, key: str) -> Any:
-        """Get a saved search by id."""
+        """Get an item by id."""
 
         return self.lookup[key]
 
 
     def add(self, item: Any, parent_id: UUID = None) -> None:
-        """Add an existing search to the store."""
+        """Add an existing item to the store."""
 
         if item.id in self.lookup.keys():
             log.warn('Failed to add item with id %s, already added!',
@@ -102,7 +102,7 @@ class BaseStore(GObject.Object):
 
 
     def remove(self, item_id: UUID) -> None:
-        """Remove an existing search from the store."""
+        """Remove an existing item from the store."""
 
         item = self.lookup[item_id]
         parent = item.parent
@@ -125,7 +125,7 @@ class BaseStore(GObject.Object):
     # --------------------------------------------------------------------------
 
     def parent(self, item_id: UUID, parent_id: UUID) -> None:
-        """Add a child to a search."""
+        """Add a child to an item."""
 
         try:
             item = self.lookup[item_id]
@@ -143,7 +143,7 @@ class BaseStore(GObject.Object):
 
 
     def unparent(self, item_id: UUID, parent_id: UUID) -> None:
-        """Remove child search from a parent."""
+        """Remove child item from a parent."""
 
         for child in self.lookup[parent_id].children:
             if child.id == item_id:
@@ -176,7 +176,7 @@ class BaseStore(GObject.Object):
     # --------------------------------------------------------------------------
 
     def count(self, root_only: bool = False) -> int:
-        """Count all the searches in the store."""
+        """Count all the items in the store."""
 
         if root_only:
             return len(self.data)
@@ -185,7 +185,7 @@ class BaseStore(GObject.Object):
 
 
     def print_list(self) -> None:
-        """Print the entre list of searches."""
+        """Print the entre list of items."""
 
         print(self)
 
@@ -194,7 +194,7 @@ class BaseStore(GObject.Object):
 
 
     def print_tree(self) -> None:
-        """Print the all the searches as a tree."""
+        """Print the all the items as a tree."""
 
         def recursive_print(tree: List, indent: int) -> None:
             """Inner print function. """
