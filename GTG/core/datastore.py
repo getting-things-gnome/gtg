@@ -257,6 +257,7 @@ class DataStore():
 
         self.tagfile_loaded = True
 
+
     def load_search_tree(self, search_tree):
         """Load saved searches tree."""
 
@@ -277,6 +278,7 @@ class DataStore():
 
             self.new_search_tag(name, query, tag_attrs, tid, False)
 
+
     def get_tag_by_id(self, tid):
         """Get a tag by its ID"""
 
@@ -296,6 +298,7 @@ class DataStore():
         for backend in self.backends.values():
             if backend.get_name() == 'backend_localfile':
                 backend.save_tags(tags, self._tagstore)
+
 
     # Tasks functions #########################################################
     def get_all_tasks(self):
@@ -618,6 +621,7 @@ class DataStore():
         # we save the parameters
         for b in self.get_all_backends(disabled=True):
             config = self.conf.get_backend_config(b.get_name())
+
 
             for key, value in b.get_parameters().items():
                 if key in ["backend", "xmlobject"]:

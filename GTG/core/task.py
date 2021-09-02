@@ -164,6 +164,7 @@ class Task(TreeNode):
         newtask.sync()
         return newtask.tid
 
+
     def set_title(self, title):
         """Set the tasks title. Returns True if title was changed."""
 
@@ -386,6 +387,7 @@ class Task(TreeNode):
         else:
             self.set_recurring(False)
 
+
     def get_next_occurrence(self):
         """Calcutate the next occurrence of a recurring task
 
@@ -427,6 +429,7 @@ class Task(TreeNode):
                 if p.is_loaded() and p.get_status() in (self.STA_ACTIVE) and p.get_recurring():
                     return True
         return False
+
 
     # ABOUT DUE DATES
     #

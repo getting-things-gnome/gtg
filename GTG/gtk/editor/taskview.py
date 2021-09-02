@@ -74,6 +74,7 @@ class TaskView(Gtk.TextView):
     # Timeout in milliseconds
     PROCESSING_DELAY = 250
 
+
     def __init__(self, req: Requester, clipboard) -> None:
         super().__init__()
 
@@ -149,6 +150,7 @@ class TaskView(Gtk.TextView):
         self.connect('key-press-event', self.on_key_pressed)
         self.connect('key-release-event', self.on_key_released)
 
+
     def on_modified(self, buffer: Gtk.TextBuffer) -> None:
         """Called every time the text buffer changes."""
 
@@ -157,6 +159,7 @@ class TaskView(Gtk.TextView):
             self.timeout = None
 
         self.timeout = GLib.timeout_add(self.PROCESSING_DELAY, self.process)
+
 
     def process(self) -> None:
         """Process the contents of the text buffer."""
@@ -332,6 +335,7 @@ class TaskView(Gtk.TextView):
                 if check != u'\uFFFC':
                     return False
 
+
             try:
                 self.subtasks['to_delete'].remove(tid)
             except ValueError:
@@ -363,6 +367,7 @@ class TaskView(Gtk.TextView):
         else:
             return False
 
+
     def on_checkbox_toggle(self, tid: uuid4) -> None:
         """Toggle a task status and refresh the subtask tag."""
 
@@ -374,6 +379,7 @@ class TaskView(Gtk.TextView):
 
         task.toggle_status()
         self.process()
+
 
     def add_checkbox(self, tid: int, start: Gtk.TextIter) -> None:
         """Add a checkbox for a subtask."""
@@ -398,6 +404,7 @@ class TaskView(Gtk.TextView):
 
         self.buffer.set_modified(False)
         checkbox.show()
+
 
     def detect_tag(self, text: str, start: Gtk.TextIter) -> None:
         """Detect GTGs tags and applies text tags to them."""
@@ -425,6 +432,7 @@ class TaskView(Gtk.TextView):
 
             self.add_tasktag_cb(tag_name)
 
+
     def detect_internal_link(self, text: str, start: Gtk.TextIter) -> None:
         """Detect internal links (to other gtg tasks) and apply tags."""
 
@@ -449,6 +457,7 @@ class TaskView(Gtk.TextView):
                 self.table.add(link_tag)
                 self.buffer.apply_tag(link_tag, url_start, url_end)
 
+
     def detect_url(self, text: str, start: Gtk.TextIter) -> None:
         """Detect URLs and apply tags."""
 
@@ -468,6 +477,7 @@ class TaskView(Gtk.TextView):
 
             self.table.add(url_tag)
             self.buffer.apply_tag(url_tag, url_start, url_end)
+
 
     def detect_subheading(self, text: str, start: Gtk.TextIter) -> None:
         """Detect subheadings (akin to H2)."""
@@ -489,6 +499,7 @@ class TaskView(Gtk.TextView):
 
             self.tags_applied.append(subheading_tag)
             self.tags_applied.append(invisible_tag)
+
 
     def detect_title(self) -> Gtk.TextIter:
         """Apply title tag to the first line."""
@@ -541,6 +552,7 @@ class TaskView(Gtk.TextView):
 
             return True
 
+
     def on_key_released(self, widget, event):
         """Callback when a key is released. Used for cursor hovering."""
 
@@ -555,6 +567,7 @@ class TaskView(Gtk.TextView):
             self.hovered_tag = None
         except AttributeError:
             pass
+
 
         cursor_mark = self.buffer.get_insert()
         cursor_iter = self.buffer.get_iter_at_mark(cursor_mark)
@@ -608,6 +621,7 @@ class TaskView(Gtk.TextView):
             pass
         window.set_cursor(cursor)
 
+
     def do_populate_popup(self, popup) -> None:
         """Adds link-related options to the context menu."""
 
@@ -632,6 +646,7 @@ class TaskView(Gtk.TextView):
 
             self.clicked_link = ""
 
+
     def copy_url(self, menu_item, url: str) -> None:
         """Copy url to clipboard."""
 
@@ -648,6 +663,7 @@ class TaskView(Gtk.TextView):
 
         return self.title
 
+
     def select_title(self) -> None:
         """Select the first line (title)."""
 
@@ -655,6 +671,7 @@ class TaskView(Gtk.TextView):
         end = start.copy()
         end.forward_to_line_end()
         self.buffer.select_range(start, end)
+
 
     def get_text(self) -> str:
         """Get the text in the taskview."""
@@ -691,6 +708,7 @@ class TaskView(Gtk.TextView):
             start.forward_to_tag_toggle()
 
         return '\n'.join(text)
+
 
     def insert(self, text: str) -> None:
         """Unserialize and insert text in the buffer."""
@@ -767,6 +785,7 @@ class TaskView(Gtk.TextView):
         text += ', '.join(['@' + tag for tag in tags])
         self.buffer.insert(first_line, text)
 
+
     def insert_new_subtask(self) -> None:
         """Insert a new subtask in the buffer."""
 
@@ -786,6 +805,7 @@ class TaskView(Gtk.TextView):
             self.buffer.insert(cursor_iter, '- ')
 
         self.buffer.place_cursor(cursor_iter)
+
 
     def insert_existing_subtask(self, tid: str, line: int = None) -> None:
         """Insert an existing subtask in the buffer."""
@@ -829,6 +849,7 @@ class TaskView(Gtk.TextView):
         self.buffer.apply_tag(subtask_tag, start, end)
 
         self.subtasks['tags'].append(tid)
+
 
     # --------------------------------------------------------------------------
     # VERSIONING

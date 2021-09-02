@@ -69,6 +69,7 @@ class DeletionUI():
             [self.recursive_list_tasks(tasklist, i)
              for i in root.get_subtasks() if i not in tasklist]
 
+
     def show(self, tids=None):
         self.tids_todelete = tids or self.tids_todelete
 

@@ -37,8 +37,9 @@ pyflakes:
 	$(PYFLAKES) GTG tests scripts run-tests
 
 # Check for coding standard violations.
+# Ignoring all blank line (E3) errors
 pep8:
-	$(PEP8) --statistics --count --repeat --max-line-length=100 --ignore=E128 GTG tests scripts run-tests
+	$(PEP8) --statistics --count --repeat --max-line-length=100 --ignore=E128,E3 GTG tests scripts run-tests
 
 # Check for coding standard violations & flakes.
 lint: pyflakes pep8

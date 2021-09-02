@@ -431,6 +431,7 @@ class MainWindow(Gtk.ApplicationWindow):
         b_signals.connect(b_signals.INTERACTION_REQUESTED, self.on_backend_needing_interaction)
         self.selection = self.vtree_panes['active'].get_selection()
 
+
 # HELPER FUNCTIONS ##########################################################
 
     def toggle_search(self, action, param):
@@ -459,12 +460,14 @@ class MainWindow(Gtk.ApplicationWindow):
             log.debug("Invalid query %r: %r", query, error)
             vtree.unapply_filter(SEARCH_TAG)
 
+
     def do_search(self):
         """Perform the actual search and cancel the timeout."""
 
         self._try_filter_by_query(self.search_entry.get_text())
         GLib.source_remove(self.search_timeout)
         self.search_timeout = None
+
 
     def on_search(self, data):
         """Callback everytime a character is inserted in the search field."""
@@ -476,6 +479,7 @@ class MainWindow(Gtk.ApplicationWindow):
             self.search_timeout = None
 
         self.search_timeout = GLib.timeout_add(TIMEOUT, self.do_search)
+
 
     def on_save_search(self, action, param):
         query = self.search_entry.get_text()

@@ -395,11 +395,13 @@ class TaskEditor():
         # otherwise.
         return not model.get(iter, column)[0].startswith(key)
 
+
     def get_monitor_dimensions(self) -> Gdk.Rectangle:
         """Get dimensions for the first monitor."""
 
         monitor = Gdk.Display.get_default().get_monitor(0)
         return monitor.get_geometry()
+
 
     def init_dimensions(self):
         """ Restores position and size of task if possible """
@@ -758,6 +760,7 @@ class TaskEditor():
         except AttributeError:
             # There's no task at that tid
             pass
+
 
     def insert_subtask(self, action=None, param=None):
         self.textview.insert_new_subtask()
