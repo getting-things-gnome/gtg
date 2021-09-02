@@ -33,6 +33,7 @@ class TestTaskView(TestCase):
         for index, match in enumerate(matches):
             self.assertEqual(match.group(0), target_tags[index])
 
+
     def test_no_detect_tags(self):
         """Check that things that aren't tags aren't being detected."""
 

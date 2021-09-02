@@ -320,6 +320,7 @@ class Application(Gtk.Application):
         self.plugins_dialog.activate()
         self.plugins_dialog.dialog.set_transient_for(self.browser)
 
+
     def close_context(self, action, params):
         """Callback to close based on the focus widget."""
 

@@ -366,6 +366,7 @@ def generate() -> etree.Element:
         tag_tag.set('id', tid)
         tag_tag.set('name', tag)
 
+
     # Fill tasks
     for task in tasks:
         task_tag = etree.SubElement(taskslist, 'task')

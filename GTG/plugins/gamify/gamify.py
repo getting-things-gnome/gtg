@@ -126,6 +126,7 @@ class Gamify:
         self.browser.disconnect(self.signal_connect_id)
         self.remove_ui()
 
+
     def is_configurable(self):
         return True
 
@@ -292,6 +293,7 @@ class Gamify:
         else:
             self.add_levelbar()
 
+
     def remove_ui(self):
         """Remove all the UI elements of the plugin"""
         try:
@@ -365,6 +367,7 @@ class Gamify:
 
         if self.has_levelbar():
             self.update_levelbar()
+
 
     def update_goal(self):
         if self.has_button():

@@ -161,6 +161,7 @@ class Backend(GenericBackend):
             xml.create_dirs(self.get_path())
             xml.save_file(self.get_path(), root)
 
+
         self._parameters[self.KEY_DEFAULT_BACKEND] = True
 
         # Load the newly created file
@@ -183,6 +184,7 @@ class Backend(GenericBackend):
             if task:
                 task = xml.task_from_element(task, element)
                 self.datastore.push_task(task)
+
 
     def set_task(self, task) -> None:
         """
@@ -299,6 +301,7 @@ class Backend(GenericBackend):
 
         else:
             return 'No backups found. Created a new file'
+
 
     def notify_user_about_backup(self) -> None:
         """ This function causes the inforbar to show up with the message
