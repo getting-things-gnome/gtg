@@ -22,7 +22,7 @@ A nice general purpose interface for the datastore and tagstore
 import logging
 from gi.repository import GObject
 
-from GTG.core.tag import Tag
+from GTG.core.tag import Tag, SEARCH_TAG_PREFIX
 
 log = logging.getLogger(__name__)
 
@@ -192,7 +192,7 @@ class Requester(GObject.GObject):
         name, number = label, 1
         already_search = False
         while True:
-            tag = self.get_tag(name)
+            tag = self.get_tag(SEARCH_TAG_PREFIX + name)
             if tag is None:
                 break
 
@@ -207,7 +207,7 @@ class Requester(GObject.GObject):
         if not already_search:
             tag = self.ds.new_search_tag(name, query)
 
-        return name
+        return SEARCH_TAG_PREFIX + name
 
     def remove_tag(self, name):
         """ calls datastore to remove a given tag """

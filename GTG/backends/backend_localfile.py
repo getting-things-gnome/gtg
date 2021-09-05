@@ -34,6 +34,7 @@ from gettext import gettext as _
 from GTG.core import xml
 from GTG.core import firstrun_tasks
 from GTG.core import versioning
+from GTG.core.tag import SEARCH_TAG_PREFIX
 
 from typing import Dict
 from lxml import etree as et
@@ -258,7 +259,7 @@ class Backend(GenericBackend):
 
             # Don't save the @ in the name
             element.set('id', tid)
-            element.set('name', tagname)
+            element.set('name', tag.get_friendly_name())
 
             # Remove these and don't re-add them if not needed
             element.attrib.pop('icon', None)

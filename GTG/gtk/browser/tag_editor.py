@@ -177,8 +177,8 @@ class TagEditor(Gtk.Window):
         icon = tag.get_attribute('icon')
         self._set_emoji(self._emoji_entry, text=icon if icon else '')
 
-        self.tag_name = tag.get_name()
-        self.set_title(self._title_format % ('@' + tag.get_name(),))
+        self.tag_name = tag.get_friendly_name()
+        self.set_title(self._title_format % ('@' + self.tag_name,))
 
         rgba = Gdk.RGBA(1.0, 1.0, 1.0, 1.0)
         if color := tag.get_attribute('color'):
@@ -187,7 +187,6 @@ class TagEditor(Gtk.Window):
                             tag.get_name(), color)
         self.has_color = bool(color)
         self.tag_rgba = rgba
-        self.tag_name = tag.get_name()
         self.tag_is_actionable = \
             self.tag.get_attribute("nonactionable") != "True"
 
@@ -238,7 +237,7 @@ class TagEditor(Gtk.Window):
 
         self.tag.set_attribute('nonactionable', str(not self.tag_is_actionable))
 
-        if self.tag_name != self.tag.get_name():
+        if self.tag_name != self.tag.get_friendly_name():
             log.debug("Renaming %r → %r", self.tag.get_name(), self.tag_name)
             self.req.rename_tag(self.tag.get_name(), self.tag_name)
             self.tag = self.req.get_tag(self.tag_name)
