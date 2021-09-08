@@ -19,7 +19,7 @@ def _notify_via_notify(title, message):
     nt.set_timeout(TIMEOUT)
     try:
         nt.show()
-    except:
+    except Exception:
         # Keep quiet here when notification service is not avialable currently
         # sometime. For example, if user is using LXDE, no notifyd by default.
         pass

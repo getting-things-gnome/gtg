@@ -352,8 +352,7 @@ class Date:
                 if '%Y' not in fmt:
                     # If the day has passed, assume the next year
                     if result.month > today.month or \
-                        (result.month == today.month and
-                         result.day >= today.day):
+                            (result.month == today.month and result.day >= today.day):
                         year = today.year
                     else:
                         year = today.year + 1
@@ -501,7 +500,7 @@ class Date:
 
         Args:
             string (str): text representation.
-            newtask (bool, optional): depending on the task if it is a new one or not, the offset changes
+            newtask (bool, optional): depending on the task if it is new, the offset changes
         """
         # accepted date formats
         self_date = self.dt_by_accuracy(Accuracy.date)

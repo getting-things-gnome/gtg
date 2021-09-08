@@ -131,8 +131,7 @@ class DataStore():
         try:
             parameters = parse_search_query(query)
         except InvalidQuery as error:
-            log.warning("Problem with parsing query %r (skipping): %s",
-                           query, error.message)
+            log.warning("Problem with parsing query %r (skipping): %s", query, error.message)
             return None
 
         # Create own copy of attributes and add special attributes label, query
@@ -888,4 +887,3 @@ class TaskSource():
             return self.__dict__[attr]
         else:
             return getattr(self.backend, attr)
-

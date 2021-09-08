@@ -277,12 +277,14 @@ class GenericBackend():
             # if it's not specified, then this is the default backend
             # (for retro-compatibility with the GTG 0.2 series)
             parameters[self.KEY_DEFAULT_BACKEND] = True
+
         # default backends should get all the tasks
-        if parameters[self.KEY_DEFAULT_BACKEND] or \
-                (self.KEY_ATTACHED_TAGS not in parameters and
-                 self._general_description[self.BACKEND_TYPE] ==
-                    self.TYPE_READWRITE):
+        no_attached_tags = self.KEY_ATTACHED_TAGS not in parameters and \
+            self._general_description[self.BACKEND_TYPE] == self.TYPE_READWRITE
+
+        if parameters[self.KEY_DEFAULT_BACKEND] or no_attached_tags:
             parameters[self.KEY_ATTACHED_TAGS] = [ALLTASKS_TAG]
+
         self._parameters = parameters
         self._signal_manager = BackendSignals()
         self._is_initialized = False
@@ -312,7 +314,7 @@ class GenericBackend():
             return [ALLTASKS_TAG]
         try:
             return self._parameters[self.KEY_ATTACHED_TAGS]
-        except:
+        except Exception:
             return []
 
     def set_attached_tags(self, tags):
@@ -515,7 +517,7 @@ class GenericBackend():
         """
         try:
             return self.get_static_parameters()[param_name][self.PARAM_TYPE]
-        except:
+        except Exception:
             return None
 
     def register_datastore(self, datastore):
@@ -565,7 +567,7 @@ class GenericBackend():
 
         # saving
         with open(path, 'wb') as file:
-                pickle.dump(data, file)
+            pickle.dump(data, file)
 
     def _load_pickled_file(self, path, default_value=None):
         """
@@ -700,11 +702,11 @@ class GenericBackend():
             self.please_quit = True
             try:
                 self.to_set_timer.cancel()
-            except:
+            except Exception:
                 pass
             try:
                 self.to_set_timer.join()
-            except:
+            except Exception:
                 pass
         self.launch_setting_thread(bypass_quit_request=True)
         self.save_state()

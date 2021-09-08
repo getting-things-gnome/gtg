@@ -356,6 +356,7 @@ class SimpleColorSelector(Gtk.Box):
             self.selected_col = None
         self.clear_button.set_sensitive(False)
 
+
 GObject.type_register(SimpleColorSelector)
 GObject.signal_new("color-changed", SimpleColorSelector,
                    GObject.SignalFlags.RUN_FIRST, GObject.TYPE_NONE, ())

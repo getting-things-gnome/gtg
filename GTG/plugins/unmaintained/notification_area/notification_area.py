@@ -21,7 +21,7 @@ import os
 from gi.repository import Gtk
 try:
     from gi.repository import AppIndicator3 as appindicator
-except:
+except Exception:
     pass
 
 from GTG.core.dirs import ICONS_DIR
@@ -47,7 +47,7 @@ class TheIndicator(Borg):
                     "gtg",
                     "indicator-messages",
                     appindicator.CATEGORY_APPLICATION_STATUS)
-            except:
+            except Exception:
                 self._indicator = None
 
     def get_indicator(self):

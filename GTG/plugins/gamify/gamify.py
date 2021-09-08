@@ -13,14 +13,16 @@ from gettext import ngettext
 from GTG.core.task import Task
 
 log = logging.getLogger(__name__)
+
+
 class Gamify:
     PLUGIN_PATH = os.path.dirname(os.path.abspath(__file__))
     PLUGIN_NAMESPACE = 'gamify'
     DEFAULT_ANALYTICS = {
-        "last_task_date": date.today(), # The date of the last task marked as done
-        "last_task_number": 0, # The number of tasks done today
-        "streak": 0, # The number of days in which the goal was achieved
-        "goal_achieved": False, # achieved today's goal
+        "last_task_date": date.today(),  # The date of the last task marked as done
+        "last_task_number": 0,           # The number of tasks done today
+        "streak": 0,                     # The number of days in which the goal was achieved
+        "goal_achieved": False,          # achieved today's goal
         "score": 0
     }
     DEFAULT_PREFERENCES = {
@@ -44,7 +46,7 @@ class Gamify:
     }
 
     # INIT #####################################################################
-    
+
     def __init__(self):
         self.configureable = True
 
@@ -101,7 +103,7 @@ class Gamify:
         self.analytics_load()
         self.preferences_load()
 
-        # Settings up the menu 
+        # Settings up the menu
         self.add_ui()
 
         # Init the preference dialog
@@ -112,7 +114,8 @@ class Gamify:
             log.debug('Cannot load preference dialog widget')
 
         # Connect to the signals
-        self.signal_connect_id = self.plugin_api.get_requester().connect("status-changed", self.on_status_changed)
+        self.signal_connect_id = self.plugin_api.get_requester().connect("status-changed",
+                self.on_status_changed)
 
         self.update_date()
         self.update_streak()
@@ -123,12 +126,12 @@ class Gamify:
         self.browser.disconnect(self.signal_connect_id)
         self.remove_ui()
 
+
     def is_configurable(self):
         return True
 
-
     # SAVE/LOAD DATA ##########################################################
-        
+
     def preferences_load(self):
         self.preferences = self.plugin_api.load_configuration_object(
             self.PLUGIN_NAMESPACE, "preferences",
@@ -170,8 +173,8 @@ class Gamify:
     def update_date(self):
         today = date.today()
         if self.data['last_task_date'] != today:
-            if (self.data['last_task_number'] < self.preferences['goal'] or 
-                    (today - self.data['last_task_date']).days > 1):
+            if self.data['last_task_number'] < self.preferences['goal'] or \
+                    (today - self.data['last_task_date']).days > 1:
                 self.data['streak'] = 0
 
             self.data['goal_achieved'] = False
@@ -179,7 +182,9 @@ class Gamify:
             self.data['last_task_date'] = today
 
     def get_current_level(self):
-        return min([(score, level) for score,level in self.LEVELS.items() if score >= self.get_score()])[1]
+        score_levels = [(score, level) for score, level in self.LEVELS.items()
+                if score >= self.get_score()]
+        return min(score_levels)[1]
 
     def get_score(self):
         return self.data['score']
@@ -219,7 +224,11 @@ class Gamify:
 
         self.update_date()
 
-        self.data['last_task_number'] = self.data['last_task_number'] - 1 if self.data['last_task_number'] > 0 else 0
+        if self.data['last_task_number'] > 0:
+            self.data['last_task_number'] -= 1
+        else:
+            self.data['last_task_number'] = 0
+
         self.update_streak()
         if self.data['score'] - (score := self.get_points_for_task(task_id)) >= 0:
             self.data['score'] -= score
@@ -240,9 +249,9 @@ class Gamify:
         """
         task = self.plugin_api.get_requester().get_task(task_id)
         return max(list(map(self.get_points, task.get_tags_name())), default=1)
-    
+
     # FRONTEND/UI #############################################################
-    
+
     def is_full(self):
         """Return True if ui type is FULL"""
         return self.preferences['ui_type'] == 'FULL'
@@ -284,6 +293,7 @@ class Gamify:
         else:
             self.add_levelbar()
 
+
     def remove_ui(self):
         """Remove all the UI elements of the plugin"""
         try:
@@ -295,14 +305,16 @@ class Gamify:
         except AttributeError:
             pass
 
-
     # UPDATE UI ###############################################################
+
     def button_update_score(self):
         """Update the score in the BUTTON widget"""
         score_label = self.builder.get_object('score_label')
-        score_label.set_markup(_("Level: <b>{current_level}</b>").format(current_level=self.get_current_level()))
+        score_label.set_markup(_("Level: <b>{current_level}</b>").format(
+            current_level=self.get_current_level()))
         score_value = self.builder.get_object('score_value')
-        score_value.set_markup(ngettext("%d Point", "%d Points",self.get_score()) % self.get_score())
+        text = ngettext("%d Point", "%d Points", self.get_score())
+        score_value.set_markup(text % self.get_score())
 
     def button_update_goal(self):
         """Update the numbers of tasks done in the BUTTON widget"""
@@ -312,7 +324,8 @@ class Gamify:
 
         tasks_done = self.get_number_of_tasks()
         goal = self.preferences['goal']
-        headerbar_label_button.set_markup("{tasks_done}/{goal}".format(tasks_done=tasks_done, goal=goal))
+        headerbar_label_button.set_markup("{tasks_done}/{goal}".format(
+            tasks_done=tasks_done, goal=goal))
 
         # Select a msg and emojo depending on the number of tasks done.
         if tasks_done >= goal:
@@ -326,7 +339,8 @@ class Gamify:
         else:
             emoji = ["\U0001F643", "\U0001F648", "\U0001F995", "\U0001F9A5"]
             headerbar_label.set_markup(random.choice(emoji))
-            headerbar_msg.set_markup(_("Get Down to Business\nYou haven't achieved any tasks today."))
+            headerbar_msg.set_markup(
+                _("Get Down to Business\nYou haven't achieved any tasks today."))
 
     def button_update_streak(self):
         """Update the streak numbers in the BUTTON widget"""
@@ -336,7 +350,8 @@ class Gamify:
         else:
             streak_emoji = "\U0001F9CA"
 
-        streak_number.set_markup(_("{emoji} <b>{streak} day</b> streak").format(streak=self.get_streak(), emoji=streak_emoji))
+        streak_number.set_markup(_("{emoji} <b>{streak} day</b> streak").format(
+            streak=self.get_streak(), emoji=streak_emoji))
 
     def update_levelbar(self):
         self.levelbar.set_min_value(0.0)
@@ -353,6 +368,7 @@ class Gamify:
         if self.has_levelbar():
             self.update_levelbar()
 
+
     def update_goal(self):
         if self.has_button():
             self.button_update_goal()
@@ -363,7 +379,6 @@ class Gamify:
         """Updates the type of ui (FULL, BUTTON, or LEVELBAR)"""
         self.remove_ui()
         self.add_ui()
-
 
     # PREFERENCES ############################################################
 
@@ -424,7 +439,7 @@ class Gamify:
         box = Gtk.HBox(orientation=Gtk.Orientation.HORIZONTAL)
         box.set_homogeneous(True)
         label = Gtk.Label(label_text)
-        label.set_alignment(0.05,0)
+        label.set_alignment(0.05, 0)
         label.set_valign(Gtk.Align.CENTER)
 
         spin = Gtk.SpinButton()
@@ -446,7 +461,7 @@ class Gamify:
         return row
 
     def load_mappings_listbox(self):
-        self.mappings_label.set_alignment(0,0)
+        self.mappings_label.set_alignment(0, 0)
         self.preferences_load()
 
         # If there are any old children, remove them from the ListBox
@@ -498,7 +513,8 @@ class Gamify:
 
     def on_add_new_mapping(self, widget=None, event=None):
         if tag := self.new_mapping_entry.get_text():
-            row = self.make_mapping_row(label_text=tag, spin_value=self.new_mapping_spinner.get_value())
+            row = self.make_mapping_row(label_text=tag,
+                                        spin_value=self.new_mapping_spinner.get_value())
             self.mappings_listbox.remove(self.add_row)
             self.mappings_listbox.add(row)
             self.mappings_listbox.add(self.add_row)
@@ -507,9 +523,9 @@ class Gamify:
             self.on_dismiss_new_mapping()
 
     def load_general_listbox(self):
-        self.general_label.set_alignment(0,0)
-        self.target_label.set_alignment(0,0)
-        self.ui_label.set_alignment(0,0)
+        self.general_label.set_alignment(0, 0)
+        self.target_label.set_alignment(0, 0)
+        self.ui_label.set_alignment(0, 0)
 
         self.load_ui_mode()
         self.load_target_task()
@@ -528,7 +544,6 @@ class Gamify:
 
     def load_target_task(self):
         self.preferences_load()
-        
         self.target_spinbutton.set_value(self.preferences['goal'])
 
     def load_ui_mode(self):

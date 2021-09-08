@@ -237,7 +237,7 @@ class TaskTagTag(Gtk.TextTag):
         self.tag = req.get_tag(tag)
 
         try:
-            self.color = background_color([self.tag]) or'#FFEA00'
+            self.color = background_color([self.tag]) or '#FFEA00'
         except AttributeError:
             self.color = '#FFEA00'
 

@@ -83,6 +83,7 @@ if _LOCAL:
 
 from GTG.core import info
 from GTG.gtk.application import Application
+from GTG.gtk.errorhandler import replace_excepthook
 
 
 def handle_local_options(application, options):
@@ -147,6 +148,7 @@ if __name__ == "__main__":
         application.connect("handle-local-options", handle_local_options)
 
         signal.signal(signal.SIGTERM, lambda s, f: application.quit())
+        replace_excepthook()
         sys.exit(application.run(sys.argv))
 
     except KeyboardInterrupt:

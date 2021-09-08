@@ -174,7 +174,7 @@ class GeolocalizedTasks():
         try:
             if self.context_item:
                 plugin_api.remove_menu_tagpopup(self.context_item)
-        except:
+        except Exception:
             pass
 
         try:
@@ -184,7 +184,7 @@ class GeolocalizedTasks():
                     "location_determination_method":
                     self.LOCATION_DETERMINATION_METHOD,
                 }
-        except:
+        except Exception:
             pass
 
         # remove the filters
@@ -254,15 +254,15 @@ class GeolocalizedTasks():
                 if has_location:
                     # do the actual filter
                     for tag in tags:
-                            if tag.get_attribute("location"):
-                                position = eval(tag.get_attribute("location"))
-                                if not self.geoclue.compare_position(
-                                        position[0], position[1],
-                                        float(self.PROXIMITY_FACTOR)):
-                                    self.plugin_api.add_task_to_filter(tid)
-                                    if tid not in self.location_filter:
-                                        self.location_filter.append(tid)
-                                    return False
+                        if tag.get_attribute("location"):
+                            position = eval(tag.get_attribute("location"))
+                            if not self.geoclue.compare_position(
+                                    position[0], position[1],
+                                    float(self.PROXIMITY_FACTOR)):
+                                self.plugin_api.add_task_to_filter(tid)
+                                if tid not in self.location_filter:
+                                    self.location_filter.append(tid)
+                                return False
         return True
 
     # GEOLOCALIZED PREFERENCES===============================================
@@ -437,7 +437,7 @@ class GeolocalizedTasks():
                         try:
                             if tag['has_color'] == "yes":
                                 color = tag['color']
-                        except:
+                        except Exception:
                             # PROBLEM: the tag doesn't have color
                             # Possibility, use a color from another tag
                             pass
@@ -452,7 +452,7 @@ class GeolocalizedTasks():
                         plugin_api.get_task_title(),
                         self.location['latitude'],
                         self.location['longitude']))
-            except:
+            except Exception:
                 self.marker_list.append(layer.add_marker(
                     plugin_api.get_task_title(), None, None))
 
@@ -533,7 +533,7 @@ class GeolocalizedTasks():
                 if self.location['longitude'] and self.location['latitude']:
                     champlain_view.center_on(self.location['latitude'],
                                              self.location['longitude'])
-            except:
+            except Exception:
                 pass
 
     def task_location_close(self, dialog, response=None):
@@ -612,13 +612,13 @@ class GeolocalizedTasks():
         # get the tag's location
         try:
             tag_location = eval(tag.get_attribute("location"))
-        except:
+        except Exception:
             tag_location = None
 
         # get the tag's color
         try:
             tag_color = self.HTMLColorToRGB(tag.get_attribute("color"))
-        except:
+        except Exception:
             tag_color = None
 
         champlain_view = champlain.View()
@@ -639,7 +639,7 @@ class GeolocalizedTasks():
                                                   self.location['latitude'],
                                                   self.location['longitude'],
                                                   tag_color)
-            except:
+            except Exception:
                 marker_tag = layer.add_marker(tag.get_attribute("name"),
                                               None, None)
 
@@ -685,7 +685,7 @@ class GeolocalizedTasks():
                 if self.location['longitude'] and self.location['latitude']:
                     champlain_view.center_on(self.location['latitude'],
                                              self.location['longitude'])
-            except:
+            except Exception:
                 pass
 
     def champlain__tag_change_marker(self, widget, event, view, marker):

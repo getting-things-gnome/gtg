@@ -124,7 +124,7 @@ class Backend(PeriodicImportBackend):
             self.cancellation_point()
             self.launchpad = Launchpad.login_anonymously(
                 GTG_NAME, EDGE_SERVICE_ROOT, CACHE_DIR)
-        except:
+        except Exception:
             # The connection is not working (the exception type can be
             # anything)
             BackendSignals().backend_failed(self.get_id(),

@@ -122,14 +122,15 @@ class _BackendSignalsGObject(GObject.GObject):
         GLib.idle_add(self.emit, self.DEFAULT_BACKEND_LOADED)
 
     def backend_failed(self, backend_id, error_code):
-        GLib.idle_add(self.emit, self.BACKEND_FAILED, backend_id,
-                         error_code)
+        GLib.idle_add(self.emit, self.BACKEND_FAILED, backend_id, error_code)
 
-    def interaction_requested(self, backend_id, description,
-                              interaction_type, callback_str):
-        GLib.idle_add(self.emit, self.INTERACTION_REQUESTED,
-                         backend_id, description, interaction_type,
-                         callback_str)
+    def interaction_requested(self, backend_id, description, interaction_type, callback_str):
+        GLib.idle_add(self.emit,
+                      self.INTERACTION_REQUESTED,
+                      backend_id,
+                      description,
+                      interaction_type,
+                      callback_str)
 
     def backend_sync_started(self, backend_id):
         self._emit_signal(self.BACKEND_SYNC_STARTED, backend_id)
@@ -139,7 +140,7 @@ class _BackendSignalsGObject(GObject.GObject):
         self._emit_signal(self.BACKEND_SYNC_ENDED, backend_id)
         try:
             self.backends_currently_syncing.remove(backend_id)
-        except:
+        except Exception:
             pass
 
     def is_backend_syncing(self, backend_id):

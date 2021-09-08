@@ -30,6 +30,7 @@ from GTG.gtk.browser import GnomeConfig
 
 log = logging.getLogger(__name__)
 
+
 @Gtk.Template(filename=GnomeConfig.TAG_EDITOR_UI_FILE)
 class TagEditor(Gtk.Window):
     """
@@ -216,7 +217,7 @@ class TagEditor(Gtk.Window):
 
         if self.has_icon and self._emoji:
             self.tag.set_attribute('icon', self._emoji)
-        elif self.has_icon: # Should never happen, but just in case
+        elif self.has_icon:  # Should never happen, but just in case
             log.warning("Tried to set icon for %r but no icon given",
                         self.tag.get_name())
             self.tag.del_attribute('icon')
@@ -314,4 +315,3 @@ class TagEditor(Gtk.Window):
         """
         self.tag_rgba = Gdk.RGBA(1.0, 1.0, 1.0, 1.0)
         self.has_color = False
-

@@ -34,7 +34,7 @@ class FactBuilder():
             activity = task.get_title()
         # hamster can't handle ',' or '@' in activity name
         activity = activity.replace(',', '')
-        activity = re.sub('\ +@.*', '', activity)
+        activity = re.sub(' +@.*', '', activity)
         return activity
 
     def _build_category(self, task):
@@ -47,12 +47,12 @@ class FactBuilder():
                 str(activity[0]): activity[1]
                 for activity in self.hamster.GetActivities('')
             }
-            if (gtg_title in hamster_activities
-                    or gtg_title.replace(",", "") in hamster_activities):
+            if gtg_title in hamster_activities or \
+                    gtg_title.replace(",", "") in hamster_activities:
                 category = f"{hamster_activities[gtg_title]}"
 
-        if (self.preferences['category'] == 'tag' or
-            (self.preferences['category'] == 'auto_tag' and not category)):
+        if self.preferences['category'] == 'tag' or \
+                (self.preferences['category'] == 'auto_tag' and not category):
             # See if any of the tags match existing categories
             categories = dict([(str(x[1]).lower(), str(x[1]))
                                for x in self.hamster.GetCategories()])

@@ -112,7 +112,10 @@ class ConsoleWidget(Gtk.ScrolledWindow):
         """
         pango_font_desc = Pango.FontDescription.from_string(font_desc)
         self._css_values["textview"]["font-family"] = pango_font_desc.get_family()
-        self._css_values["textview"]["font-size"] = "%dpt" % int(pango_font_desc.get_size() / Pango.SCALE)
+
+        self._css_values["textview"]["font-size"] = "%dpt" % \
+            int(pango_font_desc.get_size() / Pango.SCALE)
+
         self._css_values["textview"]["font-style"] = pango_font_desc.get_style().value_nick
         self._css_values["textview"]["font-variant"] = pango_font_desc.get_variant().value_nick
         self._css_values["textview"]["font-weight"] = int(pango_font_desc.get_weight())
@@ -186,4 +189,3 @@ class ConsoleWidget(Gtk.ScrolledWindow):
 
     def __insert_text_cb(self, buf, unused_iter, unused_text, unused_len):
         GLib.idle_add(self.scroll_to_end)
-

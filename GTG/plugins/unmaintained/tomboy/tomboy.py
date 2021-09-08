@@ -127,18 +127,18 @@ class TomboyPlugin():
         token_position = text.find(self.token_start)
         token_ending = text.find(self.token_end, token_position)
         while not token_position < 0 and not token_ending < 0:
+
             # delete the text of the token
-            tomboy_note_title = text[token_position + len(self.token_start):
-                                     token_ending]
-            start_iter = self.textview.buff.get_iter_at_offset(text_offset +
-                                                               token_position)
-            end_iter = self.textview.buff.get_iter_at_offset(text_offset +
-                                                             token_ending + 1)
+            tomboy_note_title = text[token_position + len(self.token_start): token_ending]
+            start_iter = self.textview.buff.get_iter_at_offset(text_offset + token_position)
+            end_iter = self.textview.buff.get_iter_at_offset(text_offset + token_ending + 1)
             self.textview.buff.delete(start_iter, end_iter)
+
             # add the widget
             widget = self.widgetCreate(tomboy_note_title)
             anchor = self.textviewInsertWidget(widget, start_iter)
             self.anchors.append(anchor)
+
             # find the next
             start_iter = self.textview.buff.get_iter_at_child_anchor(anchor)
             start_iter.forward_char()
