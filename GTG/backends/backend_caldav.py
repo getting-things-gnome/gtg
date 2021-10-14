@@ -209,7 +209,7 @@ class Backend(PeriodicImportBackend):
             todo.delete()
         except caldav.lib.error.DAVError:
             logger.exception('Something went wrong while deleting %r => %r',
-                             uid , todo)
+                             uid, todo)
 
     def _refresh_calendar_list(self):
         """Will browse calendar list available after principal call and cache
@@ -361,8 +361,7 @@ class Backend(PeriodicImportBackend):
         # lookup by task
         for __, calendar in self._cache.calendars:
             if CATEGORIES.has_calendar_tag(task, calendar):
-                logger.debug('Found from task tag %r and %r',
-                                todo, calendar)
+                logger.debug('Found from task tag %r and %r', todo, calendar)
                 return todo, calendar
         cname = task.get_attribute('calendar_name', namespace=self.namespace)
         curl = task.get_attribute("calendar_url", namespace=self.namespace)
@@ -927,7 +926,7 @@ class Translator:
               UTCDateTimeField(
                   'completed', 'get_closed_date', 'set_closed_date'),
               DTSTART,
-              #Recurrence('rrule', 'get_recurring_term', 'set_recurring'),
+              # Recurrence('rrule', 'get_recurring_term', 'set_recurring'),
               Status('status', 'get_status', 'set_status'),
               PercentComplete('percent-complete', 'get_status', ''),
               SEQUENCE, UID_FIELD, CATEGORIES, CHILDREN_FIELD,
