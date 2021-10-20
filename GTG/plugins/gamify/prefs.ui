@@ -21,8 +21,8 @@
               <object class="GtkBox" id="General">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
-                <property name="margin-left">25</property>
-                <property name="margin-right">22</property>
+                <property name="margin-start">25</property>
+                <property name="margin-end">22</property>
                 <property name="margin-top">15</property>
                 <property name="margin-bottom">9</property>
                 <property name="orientation">vertical</property>
@@ -200,8 +200,8 @@
       <object class="GtkLabel" id="target-label">
         <property name="visible">True</property>
         <property name="can-focus">False</property>
-        <property name="margin-left">13</property>
-        <property name="margin-right">117</property>
+        <property name="margin-start">13</property>
+        <property name="margin-end">117</property>
         <property name="label" translatable="yes">Target Tasks per day</property>
       </object>
       <packing>
@@ -283,8 +283,8 @@
           <object class="GtkBox">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
-            <property name="margin-left">12</property>
-            <property name="margin-right">12</property>
+            <property name="margin-start">12</property>
+            <property name="margin-end">12</property>
             <property name="margin-top">27</property>
             <property name="margin-bottom">47</property>
             <property name="orientation">vertical</property>
@@ -527,7 +527,7 @@
         <property name="visible">True</property>
         <property name="can-focus">False</property>
         <property name="margin-left">13</property>
-        <property name="margin-right">124</property>
+        <property name="margin-end">124</property>
         <property name="label" translatable="yes">UI mode</property>
       </object>
       <packing>

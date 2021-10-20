@@ -44,8 +44,8 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="valign">start</property>
-                <property name="margin_left">12</property>
-                <property name="margin_right">12</property>
+                <property name="margin_start">12</property>
+                <property name="margin_end">12</property>
                 <property name="margin_start">12</property>
                 <property name="margin_end">12</property>
                 <property name="margin_top">8</property>
@@ -60,8 +60,8 @@
                       <object class="GtkBox">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="margin_left">12</property>
-                        <property name="margin_right">12</property>
+                        <property name="margin_start">12</property>
+                        <property name="margin_end">12</property>
                         <property name="margin_start">12</property>
                         <property name="margin_end">12</property>
                         <property name="margin_top">8</property>
@@ -86,7 +86,7 @@
                           <object class="GtkComboBoxText" id="activity">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
-                            <property name="margin_left">18</property>
+                            <property name="margin_start">18</property>
                             <property name="active">1</property>
                             <property name="button_sensitivity">on</property>
                             <property name="has_entry">True</property>
@@ -121,8 +121,8 @@
                       <object class="GtkBox">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="margin_left">12</property>
-                        <property name="margin_right">12</property>
+                        <property name="margin_start">12</property>
+                        <property name="margin_end">12</property>
                         <property name="margin_start">12</property>
                         <property name="margin_end">12</property>
                         <property name="margin_top">8</property>
@@ -147,7 +147,7 @@
                           <object class="GtkComboBoxText" id="category">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
-                            <property name="margin_left">18</property>
+                            <property name="margin_start">18</property>
                             <property name="active">1</property>
                             <property name="button_sensitivity">on</property>
                             <property name="has_entry">True</property>
@@ -184,8 +184,8 @@
                       <object class="GtkBox">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="margin_left">12</property>
-                        <property name="margin_right">12</property>
+                        <property name="margin_start">12</property>
+                        <property name="margin_end">12</property>
                         <property name="margin_start">12</property>
                         <property name="margin_end">12</property>
                         <property name="margin_top">8</property>
@@ -210,7 +210,7 @@
                           <object class="GtkComboBoxText" id="description">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
-                            <property name="margin_left">18</property>
+                            <property name="margin_start">18</property>
                             <property name="active">1</property>
                             <property name="button_sensitivity">on</property>
                             <property name="has_entry">True</property>
@@ -246,8 +246,8 @@
                       <object class="GtkBox">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="margin_left">12</property>
-                        <property name="margin_right">12</property>
+                        <property name="margin_start">12</property>
+                        <property name="margin_end">12</property>
                         <property name="margin_start">12</property>
                         <property name="margin_end">12</property>
                         <property name="margin_top">8</property>
@@ -273,7 +273,7 @@
                           <object class="GtkComboBoxText" id="tags">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
-                            <property name="margin_left">18</property>
+                            <property name="margin_start">18</property>
                             <property name="active">1</property>
                             <property name="button_sensitivity">on</property>
                             <property name="has_entry">True</property>
