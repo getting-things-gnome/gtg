@@ -78,7 +78,6 @@
             <property name="invisible_char">●</property>
             <property name="activates_default">True</property>
             <property name="text" translatable="yes">TagName</property>
-            <property name="shadow_type">none</property>
           </object>
           <packing>
             <property name="expand">False</property>
