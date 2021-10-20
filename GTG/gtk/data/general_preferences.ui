@@ -21,6 +21,7 @@
         <child>
           <object class="GtkBox">
             <property name="visible">True</property>
+            <property name="halign">start</property>
             <property name="can_focus">False</property>
             <property name="orientation">vertical</property>
             <child>
@@ -60,11 +61,6 @@
                                 <property name="label" translatable="yes">Show description preview</property>
                                 <property name="xalign">0</property>
                               </object>
-                              <packing>
-                                <property name="expand">False</property>
-                                <property name="fill">False</property>
-                                <property name="position">0</property>
-                              </packing>
                             </child>
                             <child>
                               <object class="GtkLabel">
@@ -76,32 +72,18 @@
                                   <class name="dim-label"/>
                                 </style>
                               </object>
-                              <packing>
-                                <property name="expand">False</property>
-                                <property name="fill">False</property>
-                                <property name="position">1</property>
-                              </packing>
                             </child>
                           </object>
-                          <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">False</property>
-                            <property name="position">0</property>
-                          </packing>
                         </child>
                         <child>
                           <object class="GtkSwitch" id="preview_button">
                             <property name="visible">True</property>
-                            <property name="can_focus">True</property>
+                            <property name="halign">end</property>
                             <property name="valign">center</property>
+                            <property name="hexpand">True</property>
+                            <property name="can_focus">True</property>
                             <signal name="state-set" handler="on_preview_toggled" swapped="no"/>
                           </object>
-                          <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">False</property>
-                            <property name="pack_type">end</property>
-                            <property name="position">1</property>
-                          </packing>
                         </child>
                       </object>
                     </child>
@@ -133,11 +115,6 @@
                                 <property name="label" translatable="yes">Enable colored backgrounds</property>
                                 <property name="xalign">0</property>
                               </object>
-                              <packing>
-                                <property name="expand">False</property>
-                                <property name="fill">False</property>
-                                <property name="position">0</property>
-                              </packing>
                             </child>
                             <child>
                               <object class="GtkLabel">
@@ -149,32 +126,18 @@
                                   <class name="dim-label"/>
                                 </style>
                               </object>
-                              <packing>
-                                <property name="expand">False</property>
-                                <property name="fill">False</property>
-                                <property name="position">1</property>
-                              </packing>
                             </child>
                           </object>
-                          <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">False</property>
-                            <property name="position">0</property>
-                          </packing>
                         </child>
                         <child>
                           <object class="GtkSwitch" id="bg_color_button">
                             <property name="visible">True</property>
+                            <property name="hexpand">True</property>
                             <property name="can_focus">True</property>
+                            <property name="halign">end</property>
                             <property name="valign">center</property>
                             <signal name="state-set" handler="on_bg_color_toggled" swapped="no"/>
                           </object>
-                          <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">False</property>
-                            <property name="pack_type">end</property>
-                            <property name="position">1</property>
-                          </packing>
                         </child>
                       </object>
                     </child>
@@ -207,11 +170,6 @@
                                 <property name="label" translatable="yes">Start of the day</property>
                                 <property name="xalign">0</property>
                               </object>
-                              <packing>
-                                <property name="expand">False</property>
-                                <property name="fill">False</property>
-                                <property name="position">0</property>
-                              </packing>
                             </child>
                             <child>
                               <object class="GtkLabel">
@@ -223,25 +181,16 @@
                                   <class name="dim-label"/>
                                 </style>
                               </object>
-                              <packing>
-                                <property name="expand">False</property>
-                                <property name="fill">False</property>
-                                <property name="position">1</property>
-                              </packing>
                             </child>
                           </object>
-                          <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">False</property>
-                            <property name="position">0</property>
-                          </packing>
                         </child>
                         <child>
                           <object class="GtkEntry" id="time_entry">
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
-                            <property name="halign">center</property>
+                            <property name="hexpand">True</property>
                             <property name="valign">center</property>
+                            <property name="halign">end</property>
                             <property name="max_length">8</property>
                             <property name="width_chars">8</property>
                             <property name="max_width_chars">8</property>
@@ -249,12 +198,6 @@
                             <signal name="changed" handler="on_valid_time_check" swapped="no"/>
                             <signal name="focus-out-event" handler="on_leave_time_entry" swapped="no"/>
                           </object>
-                          <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">False</property>
-                            <property name="pack_type">end</property>
-                            <property name="position">1</property>
-                          </packing>
                         </child>
                       </object>
                     </child>
@@ -281,27 +224,18 @@
                             <property name="label" translatable="yes">Task Editor font</property>
                             <property name="xalign">0</property>
                           </object>
-                          <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">True</property>
-                            <property name="position">0</property>
-                          </packing>
                         </child>
                         <child>
                           <object class="GtkFontButton" id="font_button">
                             <property name="visible">True</property>
+                            <property name="hexpand">True</property>
+                            <property name="halign">end</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">True</property>
                             <property name="font">Sans 12</property>
                             <property name="preview_text"/>
                             <signal name="font-set" handler="on_font_change" swapped="no"/>
                           </object>
-                          <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">True</property>
-                            <property name="pack_type">end</property>
-                            <property name="position">1</property>
-                          </packing>
                         </child>
                       </object>
                     </child>
@@ -327,26 +261,17 @@
                             <property name="label" translatable="yes">Dark Mode</property>
                             <property name="xalign">0</property>
                           </object>
-                          <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">True</property>
-                            <property name="position">0</property>
-                          </packing>
                         </child>
                         <child>
                           <object class="GtkSwitch" id="darkmode_enable">
                             <property name="name">autoclean_button</property>
                             <property name="visible">True</property>
+                            <property name="hexpand">True</property>
                             <property name="can_focus">True</property>
+                            <property name="halign">end</property>
                             <property name="valign">center</property>
                             <signal name="state-set" handler="on_dark_mode_toggled" swapped="no"/>
                           </object>
-                          <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">False</property>
-                            <property name="pack_type">end</property>
-                            <property name="position">1</property>
-                          </packing>
                         </child>
                       </object>
                     </child>
@@ -356,11 +281,6 @@
                   <class name="prefs_list"/>
                 </style>
               </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">0</property>
-              </packing>
             </child>
             <child>
               <object class="GtkLabel">
@@ -375,11 +295,6 @@
                   <attribute name="weight" value="bold"/>
                 </attributes>
               </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">1</property>
-              </packing>
             </child>
             <child>
               <object class="GtkListBox">
@@ -409,26 +324,17 @@
                             <property name="label" translatable="yes">Automatically remove old closed tasks</property>
                             <property name="xalign">0</property>
                           </object>
-                          <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">True</property>
-                            <property name="position">0</property>
-                          </packing>
                         </child>
                         <child>
                           <object class="GtkSwitch" id="autoclean_enable">
                             <property name="name">autoclean_button</property>
                             <property name="visible">True</property>
+                            <property name="hexpand">True</property>
                             <property name="can_focus">True</property>
                             <property name="valign">center</property>
+                            <property name="halign">end</property>
                             <signal name="state-set" handler="on_autoclean_toggled" swapped="no"/>
                           </object>
-                          <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">False</property>
-                            <property name="pack_type">end</property>
-                            <property name="position">1</property>
-                          </packing>
                         </child>
                       </object>
                     </child>
@@ -454,16 +360,13 @@
                             <property name="label" translatable="yes">Days to wait before removing a task</property>
                             <property name="xalign">0</property>
                           </object>
-                          <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">True</property>
-                            <property name="position">0</property>
-                          </packing>
                         </child>
                         <child>
                           <object class="GtkSpinButton" id="autoclean_days">
                             <property name="name">autoclean_days</property>
                             <property name="visible">True</property>
+                            <property name="hexpand">True</property>
+                            <property name="halign">end</property>
                             <property name="can_focus">True</property>
                             <property name="text" translatable="no">30</property>
                             <property name="progress_pulse_step">0.5</property>
@@ -472,12 +375,6 @@
                             <property name="numeric">True</property>
                             <signal name="value-changed" handler="on_autoclean_days_changed" swapped="no"/>
                           </object>
-                          <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">True</property>
-                            <property name="pack_type">end</property>
-                            <property name="position">1</property>
-                          </packing>
                         </child>
                       </object>
                     </child>
@@ -487,11 +384,6 @@
                   <class name="prefs_list"/>
                 </style>
               </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">2</property>
-              </packing>
             </child>
             <child>
               <object class="GtkButton">
@@ -504,11 +396,6 @@
                 <property name="margin_end">18</property>
                 <signal name="clicked" handler="on_purge_clicked" swapped="no"/>
               </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">False</property>
-                <property name="position">3</property>
-              </packing>
             </child>
           </object>
         </child>
