@@ -8,8 +8,8 @@
       <object class="GtkBox" id="menu_box">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="margin_left">12</property>
-        <property name="margin_right">12</property>
+        <property name="margin_start">12</property>
+        <property name="margin_end">12</property>
         <property name="margin_top">8</property>
         <property name="margin_bottom">8</property>
         <property name="orientation">vertical</property>
@@ -133,7 +133,7 @@
                       <object class="GtkLabel" id="repeat_label">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="margin_left">5</property>
+                        <property name="margin_start">5</property>
                         <property name="label" translatable="yes">Repeat</property>
                       </object>
                       <packing>
@@ -148,7 +148,7 @@
                         <property name="can_focus">True</property>
                         <property name="receives_default">False</property>
                         <property name="tooltip_text" translatable="yes">Tick to activate</property>
-                        <property name="margin_right">5</property>
+                        <property name="margin_end">5</property>
                         <property name="use_stock">True</property>
                         <property name="draw_indicator">True</property>
                         <signal name="toggled" handler="toggle_recurring_status" swapped="no"/>
@@ -592,8 +592,8 @@
               <object class="GtkBox" id="task_toolbar_box">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="margin_left">10</property>
-                <property name="margin_right">10</property>
+                <property name="margin_start">10</property>
+                <property name="margin_end">10</property>
                 <property name="margin_top">5</property>
                 <property name="margin_bottom">5</property>
                 <property name="spacing">5</property>
@@ -938,8 +938,8 @@
       <object class="GtkBox" id="closeddate_box">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="margin_left">12</property>
-        <property name="margin_right">12</property>
+        <property name="margin_start">12</property>
+        <property name="margin_end">12</property>
         <property name="margin_top">12</property>
         <property name="margin_bottom">12</property>
         <property name="orientation">vertical</property>
@@ -1120,8 +1120,8 @@
       <object class="GtkBox" id="tags_box">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="margin_left">12</property>
-        <property name="margin_right">12</property>
+        <property name="margin_start">12</property>
+        <property name="margin_end">12</property>
         <property name="margin_top">8</property>
         <property name="margin_bottom">8</property>
         <property name="orientation">vertical</property>
