@@ -22,12 +22,6 @@
             <property name="can_focus">False</property>
             <property name="layout_style">end</property>
           </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="pack_type">end</property>
-            <property name="position">0</property>
-          </packing>
         </child>
       </object>
     </child>
@@ -56,11 +50,6 @@
             <property name="action_name">win.start_next_day_2</property>
             <property name="text" translatable="no">label placeholder - in 2 days</property>
           </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">0</property>
-          </packing>
         </child>
         <child>
           <object class="GtkModelButton" id="defer_3_btn">
@@ -71,11 +60,6 @@
             <property name="action_name">win.start_next_day_3</property>
             <property name="text" translatable="no">label placeholder - in 3 days</property>
           </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">1</property>
-          </packing>
         </child>
         <child>
           <object class="GtkModelButton" id="defer_4_btn">
@@ -86,11 +70,6 @@
             <property name="action_name">win.start_next_day_4</property>
             <property name="text" translatable="no">label placeholder - in 4 days</property>
           </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">2</property>
-          </packing>
         </child>
         <child>
           <object class="GtkModelButton" id="defer_5_btn">
@@ -101,11 +80,6 @@
             <property name="action_name">win.start_next_day_5</property>
             <property name="text" translatable="no">label placeholder - in 5 days</property>
           </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">3</property>
-          </packing>
         </child>
         <child>
           <object class="GtkModelButton" id="defer_6_btn">
@@ -116,11 +90,6 @@
             <property name="action_name">win.start_next_day_6</property>
             <property name="text" translatable="no">label placeholder - in 6 days</property>
           </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">4</property>
-          </packing>
         </child>
         <child>
           <object class="GtkModelButton" id="defer_nextweek_btn">
@@ -131,11 +100,6 @@
             <property name="action_name">win.start_next_week</property>
             <property name="text" translatable="yes">Next Week</property>
           </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">5</property>
-          </packing>
         </child>
         <child>
           <object class="GtkSeparator">
@@ -144,11 +108,6 @@
             <property name="margin_top">6</property>
             <property name="margin_bottom">6</property>
           </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">6</property>
-          </packing>
         </child>
         <child>
           <object class="GtkModelButton" id="start_another_date">
@@ -158,11 +117,6 @@
             <property name="action_name">win.start_custom</property>
             <property name="text" translatable="yes">Pick a Date...</property>
           </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">7</property>
-          </packing>
         </child>
         <child>
           <object class="GtkSeparator">
@@ -171,11 +125,6 @@
             <property name="margin_top">6</property>
             <property name="margin_bottom">6</property>
           </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">8</property>
-          </packing>
         </child>
         <child>
           <object class="GtkModelButton" id="due_clear_button">
@@ -185,17 +134,8 @@
             <property name="action_name">win.start_clear</property>
             <property name="text" translatable="yes">Clear Start Date</property>
           </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">9</property>
-          </packing>
         </child>
       </object>
-      <packing>
-        <property name="submenu">main</property>
-        <property name="position">1</property>
-      </packing>
     </child>
   </object>
   <object class="GtkPopoverMenu" id="main_menu">
@@ -217,22 +157,12 @@
             <property name="action-name">win.sidebar</property>
             <property name="active" bind-source="sidebar_vbox" bind-property="visible" />
           </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">0</property>
-          </packing>
         </child>
         <child>
           <object class="GtkSeparator">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
           </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">1</property>
-          </packing>
         </child>
         <child>
           <object class="GtkModelButton" id="collapse_all_tasks_button">
@@ -241,11 +171,6 @@
             <property name="action_name">win.collapse_all_tasks</property>
             <property name="text" translatable="yes">Collapse All Tasks</property>
           </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">2</property>
-          </packing>
         </child>
         <child>
           <object class="GtkModelButton" id="expand_all_tasks_button">
@@ -254,11 +179,6 @@
             <property name="action_name">win.expand_all_tasks</property>
             <property name="text" translatable="yes">Expand All Tasks</property>
           </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">3</property>
-          </packing>
         </child>
         <child>
           <object class="GtkSeparator">
@@ -267,11 +187,6 @@
             <property name="margin_top">6</property>
             <property name="margin_bottom">6</property>
           </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">4</property>
-          </packing>
         </child>
         <child>
           <object class="GtkModelButton" id="plugins">
@@ -280,11 +195,6 @@
             <property name="action_name">app.open_plugins</property>
             <property name="text" translatable="yes">Plugins</property>
           </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">5</property>
-          </packing>
         </child>
         <child>
           <object class="GtkModelButton" id="synchronization">
@@ -294,11 +204,6 @@
             <property name="action_name">app.open_backends</property>
             <property name="text" translatable="yes">Synchronization</property>
           </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">6</property>
-          </packing>
         </child>
         <child>
           <object class="GtkSeparator">
@@ -307,11 +212,6 @@
             <property name="margin_top">6</property>
             <property name="margin_bottom">6</property>
           </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">7</property>
-          </packing>
         </child>
         <child>
           <object class="GtkModelButton" id="preferences">
@@ -320,11 +220,6 @@
             <property name="action_name">app.open_preferences</property>
             <property name="text" translatable="yes">Preferences</property>
           </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">8</property>
-          </packing>
         </child>
         <child>
           <object class="GtkModelButton" id="help_overlay_btn">
@@ -333,11 +228,6 @@
             <property name="action_name">win.show-help-overlay</property>
             <property name="text" translatable="yes">Keyboard Shortcuts</property>
           </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">9</property>
-          </packing>
         </child>
         <child>
           <object class="GtkModelButton" id="help">
@@ -346,11 +236,6 @@
             <property name="action_name">app.open_help</property>
             <property name="text" translatable="yes">Help</property>
           </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">10</property>
-          </packing>
         </child>
         <child>
           <object class="GtkModelButton" id="about">
@@ -359,17 +244,8 @@
             <property name="action_name">app.open_about</property>
             <property name="text" translatable="yes">About GTG</property>
           </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">11</property>
-          </packing>
         </child>
       </object>
-      <packing>
-        <property name="submenu">main</property>
-        <property name="position">1</property>
-      </packing>
     </child>
   </object>
   <object class="GtkBox" id="main_view_box">
@@ -388,6 +264,7 @@
             <child>
               <object class="GtkNotebook" id="sidebar_notebook">
                 <property name="visible">True</property>
+                <property name="vexpand">True</property>
                 <property name="can_focus">True</property>
                 <property name="margin_top">10</property>
                 <property name="margin_bottom">10</property>
@@ -412,23 +289,14 @@
                     <property name="can_focus">False</property>
                     <property name="label" translatable="yes">Tags</property>
                   </object>
-                  <packing>
-                    <property name="tab_fill">False</property>
-                  </packing>
                 </child>
               </object>
-              <packing>
-                <property name="expand">True</property>
-                <property name="fill">True</property>
-                <property name="position">1</property>
-              </packing>
             </child>
             <style>
               <class name="sidebar"/>
             </style>
           </object>
           <packing>
-            <property name="resize">False</property>
             <property name="shrink">False</property>
           </packing>
         </child>
@@ -461,11 +329,6 @@
                         <property name="placeholder_text" translatable="yes">Search here</property>
                         <signal name="search-changed" handler="on_search" swapped="no"/>
                       </object>
-                      <packing>
-                        <property name="expand">True</property>
-                        <property name="fill">True</property>
-                        <property name="position">0</property>
-                      </packing>
                     </child>
                     <child>
                       <object class="GtkButton" id="save_search">
@@ -475,24 +338,15 @@
                         <property name="receives_default">False</property>
                         <property name="action_name">win.save_search</property>
                       </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">1</property>
-                      </packing>
                     </child>
                   </object>
                 </child>
               </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">0</property>
-              </packing>
             </child>
             <child>
               <object class="GtkPaned" id="main_vpanes">
                 <property name="visible">True</property>
+                <property name="vexpand">True</property>
                 <property name="can_focus">True</property>
                 <property name="orientation">vertical</property>
                 <child>
@@ -542,17 +396,8 @@
                       </packing>
                     </child>
                   </object>
-                  <packing>
-                    <property name="resize">False</property>
-                    <property name="shrink">True</property>
-                  </packing>
                 </child>
               </object>
-              <packing>
-                <property name="expand">True</property>
-                <property name="fill">True</property>
-                <property name="position">1</property>
-              </packing>
             </child>
             <child>
               <object class="GtkBox" id="quickadd_pane">
@@ -561,6 +406,7 @@
                 <child>
                   <object class="GtkEntry" id="quickadd_field">
                     <property name="visible">True</property>
+                    <property name="hexpand">True</property>
                     <property name="can_focus">True</property>
                     <property name="has_focus">True</property>
                     <property name="is_focus">True</property>
@@ -578,32 +424,12 @@
                     <signal name="focus-in-event" handler="on_quickadd_field_focus_in" swapped="no"/>
                     <signal name="focus-out-event" handler="on_quickadd_field_focus_out" swapped="no"/>
                   </object>
-                  <packing>
-                    <property name="expand">True</property>
-                    <property name="fill">True</property>
-                    <property name="position">0</property>
-                  </packing>
                 </child>
               </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">False</property>
-                <property name="padding">2</property>
-                <property name="position">2</property>
-              </packing>
             </child>
           </object>
-          <packing>
-            <property name="resize">True</property>
-            <property name="shrink">True</property>
-          </packing>
         </child>
       </object>
-      <packing>
-        <property name="expand">True</property>
-        <property name="fill">True</property>
-        <property name="position">1</property>
-      </packing>
     </child>
   </object>
   <object class="GtkHeaderBar" id="browser_headerbar">
@@ -651,7 +477,6 @@
       </object>
       <packing>
         <property name="pack_type">end</property>
-        <property name="position">1</property>
       </packing>
     </child>
     <child>
@@ -673,7 +498,6 @@
       </object>
       <packing>
         <property name="pack_type">end</property>
-        <property name="position">3</property>
       </packing>
     </child>
     <child>
@@ -710,11 +534,6 @@
               </object>
             </child>
           </object>
-          <packing>
-            <property name="expand">True</property>
-            <property name="fill">False</property>
-            <property name="position">0</property>
-          </packing>
         </child>
         <child>
           <object class="GtkMenuButton" id="defer_menu_btn">
@@ -738,19 +557,11 @@
               <class name="menu-disclose"/>
             </style>
           </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">False</property>
-            <property name="position">1</property>
-          </packing>
         </child>
         <style>
           <class name="linked"/>
         </style>
       </object>
-      <packing>
-        <property name="position">4</property>
-      </packing>
     </child>
   </object>
 </interface>

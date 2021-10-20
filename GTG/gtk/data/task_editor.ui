@@ -21,11 +21,6 @@
             <property name="action_name">app.dismiss</property>
             <property name="text" translatable="yes">Dismiss</property>
           </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">0</property>
-          </packing>
         </child>
         <child>
           <object class="GtkModelButton" id="undismiss">
@@ -35,11 +30,6 @@
             <property name="action_name">app.dismiss</property>
             <property name="text" translatable="yes">Undismiss</property>
           </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">1</property>
-          </packing>
         </child>
         <child>
           <object class="GtkSeparatorMenuItem">
@@ -48,11 +38,6 @@
             <property name="margin_top">6</property>
             <property name="margin_bottom">6</property>
           </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">2</property>
-          </packing>
         </child>
         <child>
           <object class="GtkModelButton" id="delete">
@@ -63,17 +48,8 @@
             <property name="action_name">app.editor.delete</property>
             <property name="text" translatable="yes">Delete</property>
           </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">3</property>
-          </packing>
         </child>
       </object>
-      <packing>
-        <property name="submenu">main</property>
-        <property name="position">1</property>
-      </packing>
     </child>
   </object>
   <object class="GtkPopover" id="recurring_popover">
@@ -106,11 +82,6 @@
                     <property name="label" translatable="yes">Every:</property>
                     <property name="use_markup">True</property>
                   </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">0</property>
-                  </packing>
                 </child>
                 <child>
                   <object class="GtkSeparator" id="title_separator">
@@ -119,11 +90,6 @@
                     <property name="margin_top">6</property>
                     <property name="margin_bottom">6</property>
                   </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">1</property>
-                  </packing>
                 </child>
                 <child>
                   <object class="GtkBox">
@@ -136,15 +102,12 @@
                         <property name="margin_start">5</property>
                         <property name="label" translatable="yes">Repeat</property>
                       </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">0</property>
-                      </packing>
                     </child>
                     <child>
                       <object class="GtkCheckButton" id="repeat_checkbutton">
                         <property name="visible">True</property>
+                        <property name="hexpand">True</property>
+                        <property name="halign">end</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">False</property>
                         <property name="tooltip_text" translatable="yes">Tick to activate</property>
@@ -153,19 +116,8 @@
                         <property name="draw_indicator">True</property>
                         <signal name="toggled" handler="toggle_recurring_status" swapped="no"/>
                       </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="pack_type">end</property>
-                        <property name="position">1</property>
-                      </packing>
                     </child>
                   </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">2</property>
-                  </packing>
                 </child>
                 <child>
                   <object class="GtkSeparator">
@@ -174,11 +126,6 @@
                     <property name="margin_top">6</property>
                     <property name="margin_bottom">6</property>
                   </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">3</property>
-                  </packing>
                 </child>
                 <child>
                   <object class="GtkModelButton" id="day_button">
@@ -188,11 +135,6 @@
                     <property name="text" translatable="yes">Daily</property>
                     <signal name="clicked" handler="set_recurring_term_every_day" swapped="no"/>
                   </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">4</property>
-                  </packing>
                 </child>
                 <child>
                   <object class="GtkModelButton" id="otherday_button">
@@ -202,11 +144,6 @@
                     <property name="text" translatable="yes">Every other day</property>
                     <signal name="clicked" handler="set_recurring_term_every_otherday" swapped="no"/>
                   </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">5</property>
-                  </packing>
                 </child>
                 <child>
                   <object class="GtkModelButton" id="week_button">
@@ -216,11 +153,6 @@
                     <property name="text" translatable="yes">Weekly</property>
                     <property name="menu_name">page1</property>
                   </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">6</property>
-                  </packing>
                 </child>
                 <child>
                   <object class="GtkModelButton" id="month_button">
@@ -230,11 +162,6 @@
                     <property name="text" translatable="yes">Monthly</property>
                     <property name="menu_name">page2</property>
                   </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">7</property>
-                  </packing>
                 </child>
                 <child>
                   <object class="GtkModelButton" id="year_button">
@@ -244,11 +171,6 @@
                     <property name="text" translatable="yes">Yearly</property>
                     <property name="menu_name">page3</property>
                   </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">8</property>
-                  </packing>
                 </child>
               </object>
               <packing>
@@ -271,11 +193,6 @@
                     <property name="inverted">True</property>
                     <property name="centered">True</property>
                   </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">0</property>
-                  </packing>
                 </child>
                 <child>
                   <object class="GtkModelButton" id="mon_button">
@@ -286,11 +203,6 @@
                     <property name="text" translatable="yes">On Monday</property>
                     <signal name="clicked" handler="set_recurring_term_week_day" swapped="no"/>
                   </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">1</property>
-                  </packing>
                 </child>
                 <child>
                   <object class="GtkModelButton" id="tue_button">
@@ -301,11 +213,6 @@
                     <property name="text" translatable="yes">On Tuesday</property>
                     <signal name="clicked" handler="set_recurring_term_week_day" swapped="no"/>
                   </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">2</property>
-                  </packing>
                 </child>
                 <child>
                   <object class="GtkModelButton" id="wed_button">
@@ -316,11 +223,6 @@
                     <property name="text" translatable="yes">On Wednesday</property>
                     <signal name="clicked" handler="set_recurring_term_week_day" swapped="no"/>
                   </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">3</property>
-                  </packing>
                 </child>
                 <child>
                   <object class="GtkModelButton" id="thu_button">
@@ -331,11 +233,6 @@
                     <property name="text" translatable="yes">On Thursday</property>
                     <signal name="clicked" handler="set_recurring_term_week_day" swapped="no"/>
                   </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">4</property>
-                  </packing>
                 </child>
                 <child>
                   <object class="GtkModelButton" id="fri_button">
@@ -346,11 +243,6 @@
                     <property name="text" translatable="yes">On Friday</property>
                     <signal name="clicked" handler="set_recurring_term_week_day" swapped="no"/>
                   </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">5</property>
-                  </packing>
                 </child>
                 <child>
                   <object class="GtkModelButton" id="sat_button">
@@ -361,11 +253,6 @@
                     <property name="text" translatable="yes">On Saturday</property>
                     <signal name="clicked" handler="set_recurring_term_week_day" swapped="no"/>
                   </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">6</property>
-                  </packing>
                 </child>
                 <child>
                   <object class="GtkModelButton" id="sun_button">
@@ -376,11 +263,6 @@
                     <property name="text" translatable="yes">On Sunday</property>
                     <signal name="clicked" handler="set_recurring_term_week_day" swapped="no"/>
                   </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">7</property>
-                  </packing>
                 </child>
                 <child>
                   <object class="GtkSeparator">
@@ -389,11 +271,6 @@
                     <property name="margin_top">6</property>
                     <property name="margin_bottom">6</property>
                   </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">8</property>
-                  </packing>
                 </child>
                 <child>
                   <object class="GtkModelButton" id="week_today_button">
@@ -403,17 +280,11 @@
                     <property name="text" translatable="yes">On This Day</property>
                     <signal name="clicked" handler="set_recurring_term_every_week" swapped="no"/>
                   </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">9</property>
-                  </packing>
                 </child>
               </object>
               <packing>
                 <property name="name">page1</property>
                 <property name="title" translatable="yes">Weekly</property>
-                <property name="position">1</property>
               </packing>
             </child>
             <child>
@@ -431,11 +302,6 @@
                     <property name="inverted">True</property>
                     <property name="centered">True</property>
                   </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">0</property>
-                  </packing>
                 </child>
                 <child>
                   <object class="GtkCalendar" id="month_calender">
@@ -447,11 +313,6 @@
                     <property name="no_month_change">True</property>
                     <signal name="day-selected" handler="set_recurring_term_calender_month" swapped="no"/>
                   </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">1</property>
-                  </packing>
                 </child>
                 <child>
                   <object class="GtkSeparator">
@@ -460,11 +321,6 @@
                     <property name="margin_top">6</property>
                     <property name="margin_bottom">6</property>
                   </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">2</property>
-                  </packing>
                 </child>
                 <child>
                   <object class="GtkModelButton" id="month_today_button">
@@ -474,17 +330,11 @@
                     <property name="text" translatable="yes">On This Day</property>
                     <signal name="clicked" handler="set_recurring_term_every_month" swapped="no"/>
                   </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">3</property>
-                  </packing>
                 </child>
               </object>
               <packing>
                 <property name="name">page2</property>
                 <property name="title" translatable="yes">Monthly</property>
-                <property name="position">2</property>
               </packing>
             </child>
             <child>
@@ -502,11 +352,6 @@
                     <property name="inverted">True</property>
                     <property name="centered">True</property>
                   </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">0</property>
-                  </packing>
                 </child>
                 <child>
                   <object class="GtkCalendar" id="year_calender">
@@ -514,11 +359,6 @@
                     <property name="can_focus">True</property>
                     <signal name="day-selected" handler="set_recurring_term_calender_year" swapped="no"/>
                   </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">1</property>
-                  </packing>
                 </child>
                 <child>
                   <object class="GtkSeparator">
@@ -527,11 +367,6 @@
                     <property name="margin_top">6</property>
                     <property name="margin_bottom">6</property>
                   </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">2</property>
-                  </packing>
                 </child>
                 <child>
                   <object class="GtkModelButton" id="year_today_button">
@@ -541,25 +376,14 @@
                     <property name="text" translatable="yes">On This Day</property>
                     <signal name="clicked" handler="set_recurring_term_every_year" swapped="no"/>
                   </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">3</property>
-                  </packing>
                 </child>
               </object>
               <packing>
                 <property name="name">page3</property>
                 <property name="title" translatable="yes">Yearly</property>
-                <property name="position">3</property>
               </packing>
             </child>
           </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">3</property>
-          </packing>
         </child>
       </object>
     </child>
@@ -606,11 +430,6 @@
                     <property name="tooltip_text" translatable="yes">Open the parent task (creating a parent if it doesn't have one)</property>
                     <property name="action_name">app.editor.show_parent</property>
                   </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">0</property>
-                  </packing>
                 </child>
                 <child>
                   <object class="GtkBox" id="task_options">
@@ -632,11 +451,6 @@
                           </object>
                         </child>
                       </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">0</property>
-                      </packing>
                     </child>
                     <child>
                       <object class="GtkMenuButton" id="tags">
@@ -655,11 +469,6 @@
                           </object>
                         </child>
                       </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">1</property>
-                      </packing>
                     </child>
                     <child>
                       <object class="GtkMenuButton" id="set_repeat">
@@ -678,26 +487,18 @@
                           </object>
                         </child>
                       </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">2</property>
-                      </packing>
                     </child>
                     <style>
                       <class name="linked"/>
                     </style>
                   </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">1</property>
-                  </packing>
                 </child>
                 <child>
                   <object class="GtkBox" id="start_box">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="margin_start">10</property>
+                    <property name="spacing">10</property>
                     <child>
                       <object class="GtkLabel" id="start_label">
                         <property name="visible">True</property>
@@ -708,12 +509,6 @@
                           <attribute name="weight" value="bold"/>
                         </attributes>
                       </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="padding">10</property>
-                        <property name="position">0</property>
-                      </packing>
                     </child>
                     <child>
                       <object class="GtkEntry" id="startdate_entry">
@@ -724,23 +519,15 @@
                         <signal name="focus-in-event" handler="show_popover_start" swapped="no"/>
                         <signal name="focus-out-event" handler="startdate_focus_out" swapped="no"/>
                       </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">False</property>
-                        <property name="position">1</property>
-                      </packing>
                     </child>
                   </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">2</property>
-                  </packing>
                 </child>
                 <child>
                   <object class="GtkBox" id="end_box">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="margin_start">10</property>
+                    <property name="spacing">10</property>
                     <child>
                       <object class="GtkLabel" id="end_label">
                         <property name="visible">True</property>
@@ -751,12 +538,6 @@
                           <attribute name="weight" value="bold"/>
                         </attributes>
                       </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">False</property>
-                        <property name="padding">10</property>
-                        <property name="position">0</property>
-                      </packing>
                     </child>
                     <child>
                       <object class="GtkEntry" id="duedate_entry">
@@ -767,23 +548,15 @@
                         <signal name="focus-in-event" handler="show_popover_due" swapped="no"/>
                         <signal name="focus-out-event" handler="duedate_focus_out" swapped="no"/>
                       </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">False</property>
-                        <property name="position">1</property>
-                      </packing>
                     </child>
                   </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">3</property>
-                  </packing>
                 </child>
                 <child>
                   <object class="GtkBox" id="closed_box">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="margin_start">10</property>
+                    <property name="spacing">10</property>
                     <child>
                       <object class="GtkLabel" id="closed_label">
                         <property name="visible">True</property>
@@ -794,12 +567,6 @@
                           <attribute name="weight" value="bold"/>
                         </attributes>
                       </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">False</property>
-                        <property name="padding">10</property>
-                        <property name="position">0</property>
-                      </packing>
                     </child>
                     <child>
                       <object class="GtkEntry" id="closeddate_entry">
@@ -810,32 +577,12 @@
                         <signal name="focus-in-event" handler="show_popover_closed" swapped="no"/>
                         <signal name="focus-out-event" handler="closeddate_focus_out" swapped="no"/>
                       </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">False</property>
-                        <property name="position">1</property>
-                      </packing>
                     </child>
                   </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">4</property>
-                  </packing>
                 </child>
               </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">0</property>
-              </packing>
             </child>
           </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">0</property>
-          </packing>
         </child>
         <child>
           <object class="GtkScrolledWindow" id="scrolledtask">
@@ -853,11 +600,6 @@
               </object>
             </child>
           </object>
-          <packing>
-            <property name="expand">True</property>
-            <property name="fill">True</property>
-            <property name="position">1</property>
-          </packing>
         </child>
         <child>
           <object class="GtkBox" id="pluginbox">
@@ -865,11 +607,6 @@
             <property name="can_focus">False</property>
             <property name="orientation">vertical</property>
           </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">2</property>
-          </packing>
         </child>
       </object>
     </child>
@@ -901,9 +638,6 @@
             <property name="valign">center</property>
             <property name="action_name">app.mark_as_done</property>
           </object>
-          <packing>
-            <property name="position">1</property>
-          </packing>
         </child>
         <child>
           <object class="GtkMenuButton" id="editor_menu">
@@ -923,8 +657,7 @@
             </child>
           </object>
           <packing>
-            <property name="pack_type">end</property>
-            <property name="position">2</property>
+            <property name="pack-type">end</property>
           </packing>
         </child>
       </object>
@@ -948,11 +681,6 @@
             <property name="visible">True</property>
             <property name="can_focus">False</property>
           </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">0</property>
-          </packing>
         </child>
         <style>
           <class name="linked"/>
@@ -980,11 +708,6 @@
             <property name="year">2020</property>
             <property name="day">2</property>
           </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">0</property>
-          </packing>
         </child>
         <child>
           <object class="GtkBox" id="due_fuzzy">
@@ -1001,11 +724,6 @@
                 <property name="receives_default">True</property>
                 <signal name="clicked" handler="duedate_now_selected" swapped="no"/>
               </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">0</property>
-              </packing>
             </child>
             <child>
               <object class="GtkButton" id="due_soon">
@@ -1016,11 +734,6 @@
                 <property name="receives_default">True</property>
                 <signal name="clicked" handler="duedate_soon_selected" swapped="no"/>
               </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">1</property>
-              </packing>
             </child>
             <child>
               <object class="GtkButton" id="due_someday">
@@ -1031,21 +744,11 @@
                 <property name="receives_default">True</property>
                 <signal name="clicked" handler="duedate_someday_selected" swapped="no"/>
               </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">2</property>
-              </packing>
             </child>
             <style>
               <class name="linked"/>
             </style>
           </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">1</property>
-          </packing>
         </child>
         <child>
           <object class="GtkButton" id="duedate_clear">
@@ -1057,11 +760,6 @@
             <property name="margin_top">8</property>
             <signal name="clicked" handler="duedate_cleared" swapped="no"/>
           </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">False</property>
-            <property name="position">2</property>
-          </packing>
         </child>
       </object>
     </child>
@@ -1086,11 +784,6 @@
             <property name="year">2020</property>
             <property name="day">2</property>
           </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">0</property>
-          </packing>
         </child>
         <child>
           <object class="GtkButton" id="startdate_clear">
@@ -1101,11 +794,6 @@
             <property name="receives_default">True</property>
             <signal name="clicked" handler="startdate_cleared" swapped="no"/>
           </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">1</property>
-          </packing>
         </child>
         <style>
           <class name="linked"/>
@@ -1135,11 +823,6 @@
             <property name="primary_icon_sensitive">False</property>
             <property name="placeholder_text" translatable="yes">Search</property>
           </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">0</property>
-          </packing>
         </child>
         <child>
           <object class="GtkScrolledWindow">
@@ -1177,17 +860,8 @@
               </object>
             </child>
           </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">1</property>
-          </packing>
         </child>
       </object>
-      <packing>
-        <property name="submenu">main</property>
-        <property name="position">1</property>
-      </packing>
     </child>
   </object>
 </interface>
