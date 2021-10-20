@@ -31,6 +31,7 @@ import logging
 
 log = logging.getLogger(__name__)
 
+
 class GeneralPreferences():
 
     GENERAL_PREFERENCES_UI = os.path.join(UI_DIR, "general_preferences.ui")
@@ -84,8 +85,9 @@ class GeneralPreferences():
                 font = self.ui_widget.get_style_context().get_property(
                     "font", Gtk.StateFlags.NORMAL)
                 editor_font = font.to_string()
-            except UnicodeError:
-                log.exception("Using deprecated but still working font way")
+            except UnicodeError as e:
+                log.warning("Using deprecated but still working font way (%r)",
+                            e)
                 font = self.ui_widget.get_style_context().get_font(
                     Gtk.StateFlags.NORMAL)
                 editor_font = font.to_string()

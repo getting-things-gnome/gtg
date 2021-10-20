@@ -222,7 +222,7 @@ class PluginAPI():
             with open(path, 'rb') as file:
                 item = pickle.load(file)
                 config.update(item)
-        except:
+        except Exception:
             pass
         return config
 

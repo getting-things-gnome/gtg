@@ -77,6 +77,7 @@ class RedHatBugzilla(BugzillaService):
 
     name = 'Red Hat Bugzilla Service'
 
+
 # Register bugzilla services manually, however store them in someplace and load
 # them at once is better.
 services = {

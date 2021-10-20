@@ -182,7 +182,7 @@ class Backend(PeriodicImportBackend):
             pass
         try:
             self.sync_engine.break_relationship(local_id=tid)
-        except:
+        except Exception:
             pass
 
     @interruptible

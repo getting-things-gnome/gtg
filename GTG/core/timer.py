@@ -55,12 +55,19 @@ class Timer(GObject.GObject):
     def seconds_until(self, time):
         """Returns number of seconds remaining before next refresh"""
         now = datetime.datetime.now()
-        secs_to_refresh = time-now
+        secs_to_refresh = time - now
         if secs_to_refresh.total_seconds() < 0:
             secs_to_refresh += datetime.timedelta(days=1)
         return int(secs_to_refresh.total_seconds()) + 1
 
-    def on_prepare_for_sleep(self, connection, sender_name, object_path, interface_name, signal_name, parameters, user_data):
+    def on_prepare_for_sleep(self,
+                             connection,
+                             sender_name,
+                             object_path,
+                             interface_name,
+                             signal_name,
+                             parameters,
+                             user_data):
         """Handle dbus prepare for sleep signal."""
 
         sleeping = parameters[0]

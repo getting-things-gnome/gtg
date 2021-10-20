@@ -21,6 +21,7 @@
 
 import builtins
 import code
+import traceback
 import keyword
 import os
 import re
@@ -32,6 +33,23 @@ from gi.repository import Gtk
 from GTG.plugins.dev_console.utils import display_autocompletion
 from GTG.plugins.dev_console.utils import FakeOut
 from GTG.plugins.dev_console.utils import swap_std
+
+
+class InteractiveConsole(code.InteractiveConsole):
+    """
+    Like Pythons InteractiveConsole, but doesn't call the global exception
+    handler if overridden, so there won't be an error popup.
+    """
+
+    def showsyntaxerror(self, filename=None):
+        etype, exc, tb = sys.exc_info()
+        lines = traceback.format_exception_only(etype, exc)
+        self.write(''.join(lines))
+
+    def showtraceback(self):
+        etype, exc, tb = sys.exc_info()
+        lines = traceback.format_exception(etype, exc, tb.tb_next)
+        self.write(''.join(lines))
 
 
 class ConsoleHistory(GObject.Object):
@@ -88,10 +106,12 @@ class ConsoleBuffer(Gtk.TextBuffer):
         self.error = self.create_tag("error")
         self._stdout = FakeOut(self, self.output)
         self._stderr = FakeOut(self, self.error)
-        self._console = code.InteractiveConsole(namespace)
+        self._console = InteractiveConsole(namespace)
 
         self.insert(self.get_end_iter(), welcome_message)
-        self.before_prompt_mark = self.create_mark("before-prompt", self.get_end_iter(), left_gravity=True)
+        self.before_prompt_mark = self.create_mark("before-prompt",
+                                                   self.get_end_iter(),
+                                                   left_gravity=True)
         self.insert_at_cursor(sys.ps1)
         self.prompt_mark = self.create_mark("after-prompt", self.get_end_iter(), left_gravity=True)
 
@@ -199,7 +219,7 @@ class ConsoleBuffer(Gtk.TextBuffer):
             else:
                 str_eval = "dir()"
             maybe_matches = eval(str_eval, namespace, self._console.locals)
-        except:
+        except Exception:
             return [], maybe_scannable_object, input_text
         if pos != -1:
             # Get substring after last dot (.)
@@ -223,7 +243,8 @@ class ConsoleBuffer(Gtk.TextBuffer):
             if pos == -1:
                 new_input_text = input_text[:maybe_scannable_pos] + common
             else:
-                new_input_text = input_text[:maybe_scannable_pos] + maybe_scannable_object[:pos] + "." + common
+                new_input_text = input_text[:maybe_scannable_pos] + \
+                    maybe_scannable_object[:pos] + "." + common
 
         return matches, rest, new_input_text
 

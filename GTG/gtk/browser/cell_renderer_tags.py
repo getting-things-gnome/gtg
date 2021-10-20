@@ -16,13 +16,14 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
+from gi.repository import GObject, GLib, Gtk, Gdk
+from gi.repository import Pango
 import gi
 import cairo
 gi.require_version('PangoCairo', '1.0')
-
-from gi.repository import Pango
-from gi.repository import PangoCairo
-from gi.repository import GObject, GLib, Gtk, Gdk
+# XXX: disable PEP8 checking on this line to prevent an E402 error due to
+#      require_version needing to be called before the PangoCairo import
+from gi.repository import PangoCairo  # noqa
 
 
 class CellRendererTags(Gtk.CellRenderer):

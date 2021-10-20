@@ -92,7 +92,7 @@ def main():
             xmlfile = os.path.join(data_dir, xmlfile)
 
             print("Reading tasks from %s" % (xmlfile))
-        except:
+        except Exception:
             print()
             usage()
 
@@ -104,6 +104,7 @@ def main():
         print("Saving anonymized tasks to %s" % (outputfile))
 
     anonymize(xmlfile, outputfile)
+
 
 if __name__ == "__main__":
     main()

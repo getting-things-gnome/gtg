@@ -21,6 +21,7 @@ from gi.repository import Gtk
 
 from gettext import gettext as _, ngettext
 
+
 class DeleteTagsDialog():
 
     MAXIMUM_TAGS_TO_SHOW = 5
@@ -48,13 +49,10 @@ class DeleteTagsDialog():
 
         # Prepare labels
         singular = len(self.tags_todelete)
-        cancel_text = ngettext("Keep selected tag",
-                               "Keep selected tags",
-                                singular)
 
-        delete_text = ngettext("Permanently remove tag",
-                               "Permanently remove tags",
-                                singular)
+        cancel_text = ngettext("Keep selected tag", "Keep selected tags", singular)
+
+        delete_text = ngettext("Permanently remove tag", "Permanently remove tags", singular)
 
         label_text = ngettext("Deleting a tag cannot be undone, "
                               "and will delete the following tag: ",

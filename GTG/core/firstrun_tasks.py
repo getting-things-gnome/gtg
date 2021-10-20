@@ -173,7 +173,7 @@ tasks = [
         'title': _("Learn How to Use Tags and Enable the Sidebar"),
         'id': task_ids[2],
         'subtasks': [],
-        'tags': [tags['money'], tags['to_pay'],],
+        'tags': [tags['money'], tags['to_pay']],
         'added': today,
         'modified': today,
         'content': _(

@@ -118,4 +118,3 @@ class FakeOut(TextIOBase):
 
     def writelines(self, lines):
         self.buf.write(lines, self.tag)
-

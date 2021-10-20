@@ -2,6 +2,7 @@ gtg_gtk_sources = [
   '__init__.py',
   'application.py',
   'colors.py',
+  'errorhandler.py',
   'general_preferences.py',
   'plugins.py',
   'preferences.py',

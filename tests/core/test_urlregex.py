@@ -19,6 +19,7 @@
 from unittest import TestCase
 import GTG.core.urlregex as urlregex
 
+
 class TestUrlregex(TestCase):
     def test_search_does_not_include_preceeding_whitespace(self):
         match = urlregex.search("This snippet contains an url with whitespace"

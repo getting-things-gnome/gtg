@@ -139,7 +139,9 @@ class Task(TreeNode):
         return copy
 
     def duplicate_recursively(self):
-        """ Duplicates recursively all the task itself and its children while keeping the relationship"""
+        """
+        Duplicates recursively all the task itself and its children while keeping the relationship
+        """
         newtask = self.duplicate()
         if self.has_child():
             for c_tid in self.get_children():
@@ -151,8 +153,6 @@ class Task(TreeNode):
         return newtask.tid
 
 
-    # Return True if the title was changed.
-    # False if the title was already the same.
     def set_title(self, title):
         """Set the tasks title. Returns True if title was changed."""
 
@@ -202,10 +202,8 @@ class Task(TreeNode):
                     if self.has_parent():
                         for p_tid in self.get_parents():
                             par = self.req.get_task(p_tid)
-                            if (par.is_loaded() and par.get_status() in
-                                (self.STA_ACTIVE)):
+                            if par.is_loaded() and par.get_status() in (self.STA_ACTIVE):
                                 par.add_child(nexttask_tid)
-
                                 par.sync()
 
             # If we mark a task as Active and that some parent are not
@@ -260,21 +258,21 @@ class Task(TreeNode):
 
     # ABOUT RECURRING TASKS
     # Like anything related to dates, repeating tasks are subtle and complex
-    # when creating a new task, the due date is calculated from either the current date or the start date,
-    # while we get the next occurrence of a task not from the current date but
+    # when creating a new task, the due date is calculated from either the current date or
+    # the start date, while we get the next occurrence of a task not from the current date but
     # from the due date itself.
     #
     # However when we are retrieving the task from the XML files, we should only set the
     # the recurring_term.
 
-    def set_recurring(self, recurring: bool, recurring_term: str=None, newtask=False):
+    def set_recurring(self, recurring: bool, recurring_term: str = None, newtask=False):
         """Sets a task as recurring or not, and its recurring term.
 
         There are 4 cases to acknowledge when setting a task to recurring:
-            - if repeating but the term is invalid: it will be set to False.
-            - if repeating and the term is valid: we set it to True.
-            - if not repeating and the term is valid: we set the bool attr to True and set the term.
-            - if not repeating and the term is invalid: we set it to False and keep the previous term.
+          - if repeating but the term is invalid: it will be set to False.
+          - if repeating and the term is valid: we set it to True.
+          - if not repeating and the term is valid: we set the bool attr to True and set the term.
+          - if not repeating and the term is invalid: we set it to False and keep the previous term.
 
         Setting a task as recurrent implies that the
         children of a recurrent task will be also
@@ -285,7 +283,8 @@ class Task(TreeNode):
             recurring (bool): True if the task is recurring and False if not.
             recurring_term (str, optional): the recurring period of a task (every Monday, day..).
                                             Defaults to None.
-            newtask (bool, optional): if this is a new task, we must set the due_date. Defaults to False.
+            newtask (bool, optional): if this is a new task, we must set the due_date.
+                                      Defaults to False.
         """
         def is_valid_term():
             """ Verify if the term is valid and returns the appropriate Due date.
@@ -333,8 +332,7 @@ class Task(TreeNode):
         if self.has_child():
             for c_tid in self.get_children():
                 child = self.req.get_task(c_tid)
-                if (child.is_loaded() and child.get_status() in
-                    (self.STA_ACTIVE)):
+                if child.is_loaded() and child.get_status() in (self.STA_ACTIVE):
                     child.set_recurring(self.recurring, self.recurring_term)
                     if self.recurring:
                         child.set_due_date(newdate)
@@ -379,10 +377,11 @@ class Task(TreeNode):
         """Calcutate the next occurrence of a recurring task
 
         To know which is the correct next occurrence there are two rules:
-        - if the task was marked as done before or during the open perid (before the duedate).
-              in this case, we need to deal with the issue of recurring task that recur on the same date.
-              example: due_date is 09/09 and done_date is 09/09
-        - if the task was marked after the due date, we need to figure out the next occurrence after the current date(today).
+        - if the task was marked as done before or during the open period (before the duedate);
+          in this case, we need to deal with the issue of tasks that recur on the same date.
+          example: due_date is 09/09 and done_date is 09/09
+        - if the task was marked after the due date, we need to figure out the next occurrence
+          after the current date(today).
 
         Raises:
             ValueError: if the recurring_term is invalid
@@ -397,7 +396,7 @@ class Task(TreeNode):
                 while nextdate <= self.due_date:
                     nextdate = nextdate.parse_from_date(self.recurring_term, newtask=False)
                 return nextdate
-            except:
+            except Exception:
                 raise ValueError(f'Invalid recurring term {self.recurring_term}')
         elif today > self.due_date:
             try:
@@ -405,15 +404,14 @@ class Task(TreeNode):
                 while next_date < date.today():
                     next_date = next_date.parse_from_date(self.recurring_term, newtask=False)
                 return next_date
-            except:
+            except Exception:
                 raise ValueError(f'Invalid recurring term {self.recurring_term}')
 
     def is_parent_recurring(self):
         if self.has_parent():
             for p_tid in self.get_parents():
                 p = self.req.get_task(p_tid)
-                if (p.is_loaded() and p.get_status() in
-                    (self.STA_ACTIVE) and p.get_recurring()):
+                if p.is_loaded() and p.get_status() in (self.STA_ACTIVE) and p.get_recurring():
                     return True
         return False
 
@@ -629,7 +627,7 @@ class Task(TreeNode):
                 txt = re.sub(r'\{\!.+\!\}', '', txt)
 
             # Strip blank lines and get desired amount of lines
-            txt = [l for l in txt.splitlines() if l]
+            txt = [line for line in txt.splitlines() if line]
             txt = txt[:lines]
             txt = '\n'.join(txt)
 
@@ -764,13 +762,13 @@ class Task(TreeNode):
 
     # return a copy of the list of tag objects
     def get_tags(self):
-        l = []
+        tags = []
         for tname in self.tags:
             tag = self.req.get_tag(tname)
             if not tag:
                 tag = self.req.new_tag(tname)
-            l.append(tag)
-        return l
+            tags.append(tag)
+        return tags
 
     def rename_tag(self, old, new):
         eold = saxutils.escape(saxutils.unescape(old))
@@ -902,9 +900,9 @@ class Task(TreeNode):
 
     def __str__(self):
         return '<Task title="%s" id="%s" status="%s" tags="%s" added="%s" recurring="%s">' % (
-                self.title,
-                self.tid,
-                self.status,
-                str(self.tags),
-                self.added_date,
-                str(self.recurring))
+            self.title,
+            self.tid,
+            self.status,
+            self.tags,
+            self.added_date,
+            self.recurring)
