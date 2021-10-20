@@ -170,6 +170,7 @@ class TaskEditor:
         scrolled = self.builder.get_object("scrolledtask")
         scrolled.remove(textview)
         self.textview = TaskView(self.req, self.clipboard)
+        self.textview.set_vexpand(True)
         self.textview.show()
         scrolled.add(self.textview)
         conf_font_value = self.browser_config.get("font_name")

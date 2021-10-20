@@ -44,19 +44,8 @@
                 <property name="receives_default">False</property>
                 <property name="use_action_appearance">False</property>
               </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">False</property>
-                <property name="position">1</property>
-              </packing>
             </child>
           </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="pack_type">end</property>
-            <property name="position">0</property>
-          </packing>
         </child>
         <child>
           <object class="GtkLabel" id="modifytags_label">
@@ -64,11 +53,6 @@
             <property name="can_focus">False</property>
             <property name="label" translatable="yes">Enter the name of the tag(s) you wish to add or remove:</property>
           </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">1</property>
-          </packing>
         </child>
         <child>
           <object class="GtkEntry" id="tag_entry">
@@ -79,11 +63,6 @@
             <property name="activates_default">True</property>
             <property name="text" translatable="yes">TagName</property>
           </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">2</property>
-          </packing>
         </child>
         <child>
           <object class="GtkLabel" id="hint_label">
@@ -95,11 +74,6 @@ space. Place '!' before tags you want to remove.</property>
               <attribute name="foreground" value="#77bd77bd77bd"/>
             </attributes>
           </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">3</property>
-          </packing>
         </child>
         <child>
           <object class="GtkCheckButton" id="apply_to_subtasks">
@@ -110,11 +84,6 @@ space. Place '!' before tags you want to remove.</property>
             <property name="use_action_appearance">False</property>
             <property name="draw_indicator">True</property>
           </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">4</property>
-          </packing>
         </child>
       </object>
     </child>
