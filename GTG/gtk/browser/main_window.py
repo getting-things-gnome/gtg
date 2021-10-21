@@ -530,8 +530,8 @@ class MainWindow(Gtk.ApplicationWindow):
     def quit(self, widget=None, data=None):
         self.app.quit()
 
-    def on_window_state_event(self, widget, event, data=None):
-        """ This event checks for the window state: maximized?
+    def on_maximize(self, window, pspec):
+        """ This event checks for the maximization state: maximized?
         and stores the state in self.config.max
         This is used to check the window state afterwards
         and maximize it if needed """
@@ -566,8 +566,8 @@ class MainWindow(Gtk.ApplicationWindow):
         if width and height:
             self.resize(width, height)
 
-        # checks for maximum size of window
-        self.connect('window-state-event', self.on_window_state_event)
+        # checks for maximization window
+        self.connect('notify::is-maximized', self.on_maximize)
 
         if self.config.get("maximized"):
             self.maximize()
