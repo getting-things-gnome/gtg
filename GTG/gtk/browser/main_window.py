@@ -393,9 +393,6 @@ class MainWindow(Gtk.ApplicationWindow):
         self.connect("destroy", self.quit)
 
         # Store window position
-        self.connect('configure-event', self.on_move)
-
-        # Store window position
         self.connect('size-allocate', self.on_size_allocate)
 
         # Active tasks TreeView
@@ -570,11 +567,6 @@ class MainWindow(Gtk.ApplicationWindow):
         if self.config.get("maximized"):
             self.maximize()
 
-        xpos = self.config.get("x_pos")
-        ypos = self.config.get("y_pos")
-        if ypos and xpos:
-            self.move(xpos, ypos)
-
         tag_pane = self.config.get("tag_pane")
         self.sidebar.props.visible = tag_pane
 
@@ -648,11 +640,6 @@ class MainWindow(Gtk.ApplicationWindow):
 
         self.config.set('tasklist_sort_column', sort_column)
         self.config.set('tasklist_sort_order', sort_order)
-
-    def on_move(self, widget=None, data=None):
-        xpos, ypos = self.get_position()
-        self.config.set('x_pos', xpos)
-        self.config.set('y_pos', ypos)
 
     def on_size_allocate(self, widget=None, data=None):
         width, height = self.get_size()
