@@ -146,9 +146,11 @@ class TaskView(GtkSource.View):
 
         # Signals and callbacks
         self.id_modified = self.buffer.connect('changed', self.on_modified)
-        self.connect('motion-notify-event', self.on_mouse_move)
-        self.connect('key-press-event', self.on_key_pressed)
-        self.connect('key-release-event', self.on_key_released)
+        self.motion_controller = Gtk.EventControllerMotion(widget=self)
+        self.motion_controller.connect('motion', self.on_mouse_move)
+        self.key_controller = Gtk.EventControllerKey(widget=self)
+        self.key_controller.connect('key-pressed', self.on_key_pressed)
+        self.key_controller.connect('key-released', self.on_key_released)
 
 
     def on_modified(self, buffer: Gtk.TextBuffer) -> None:
@@ -534,11 +536,11 @@ class TaskView(GtkSource.View):
     # INTERACTIVITY
     # --------------------------------------------------------------------------
 
-    def on_key_pressed(self, widget, event) -> None:
+    def on_key_pressed(self, controller, keyval, keycode, state) -> None:
         """Callback when a key is pressed."""
 
-        ctrl = event.state & Gdk.ModifierType.CONTROL_MASK
-        enter = event.keyval in (Gdk.KEY_Return, Gdk.KEY_KP_Enter)
+        ctrl = state & Gdk.ModifierType.CONTROL_MASK
+        enter = keyval in (Gdk.KEY_Return, Gdk.KEY_KP_Enter)
 
         if ctrl and enter:
             cursor_mark = self.buffer.get_insert()
@@ -555,7 +557,7 @@ class TaskView(GtkSource.View):
             return True
 
 
-    def on_key_released(self, widget, event):
+    def on_key_released(self, controller, keyval, keycode, state):
         """Callback when a key is released. Used for cursor hovering."""
 
         try:
@@ -589,14 +591,13 @@ class TaskView(GtkSource.View):
             except AttributeError:
                 pass
 
-    def on_mouse_move(self, view, event) -> None:
+    def on_mouse_move(self, controller, wx, wy) -> None:
         """Callback when the mouse moves."""
 
         # Get the tag at the X, Y coords of the mosue cursor
-        window = event.window
-        _unused, x, y, _unused = window.get_pointer()
-        x, y = view.window_to_buffer_coords(Gtk.TextWindowType.TEXT, x, y)
-        tags = view.get_iter_at_location(x, y)[1].get_tags()
+        window = Gtk.Widget.get_window(self)
+        x, y = self.window_to_buffer_coords(Gtk.TextWindowType.TEXT, wx, wy)
+        tags = self.get_iter_at_location(x, y)[1].get_tags()
 
         # Reset cursor and hover states
         cursor = Gdk.Cursor.new_from_name(window.get_display(),
