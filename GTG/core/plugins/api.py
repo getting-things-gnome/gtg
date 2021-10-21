@@ -169,7 +169,7 @@ class PluginAPI():
         """
         vbox = self.__builder.get_object('pluginbox')
         if vbox:
-            vbox.pack_start(widget, True, True, 0)
+            vbox.add(widget)
             vbox.reorder_child(widget, -2)
             widget.show_all()
             self.taskwidget_id += 1
