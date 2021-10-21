@@ -305,10 +305,14 @@ class MainWindow(Gtk.ApplicationWindow):
         self.tagtree = self.req.get_tag_tree()
         self.tagtreeview = self.tv_factory.tags_treeview(self.tagtree)
         self.tagtreeview.get_selection().connect('changed', self.on_select_tag)
-        self.tagtreeview.connect('button-press-event', self.on_tag_treeview_button_press_event)
-        self.tagtreeview.connect('key-press-event', self.on_tag_treeview_key_press_event)
+
+        self.tagtree_gesture_single = Gtk.GestureSingle(widget=self.tagtreeview, button=Gdk.BUTTON_SECONDARY)
+        self.tagtree_gesture_single.connect('begin', self.on_tag_treeview_click_begin)
+        self.tagtree_key_controller = Gtk.EventControllerKey(widget=self.tagtreeview)
+        self.tagtree_key_controller.connect('key-pressed', self.on_tag_treeview_key_press_event)
         self.tagtreeview.connect('node-expanded', self.on_tag_expanded)
         self.tagtreeview.connect('node-collapsed', self.on_tag_collapsed)
+
         self.sidebar_container.add(self.tagtreeview)
 
         for path_t in self.config.get("expanded_tags"):
@@ -403,10 +407,13 @@ class MainWindow(Gtk.ApplicationWindow):
         self.vtree_panes['active'].connect('row-activated', self.on_edit_active_task)
         self.vtree_panes['active'].connect('cursor-changed', self.on_cursor_changed)
 
-        tsk_treeview_btn_press = self.on_task_treeview_button_press_event
-        self.vtree_panes['active'].connect('button-press-event', tsk_treeview_btn_press)
+        tsk_treeview_btn_press = self.on_task_treeview_click_begin
+        self.active_pane_gesture_single = Gtk.GestureSingle(widget=self.vtree_panes['active'], button=Gdk.BUTTON_SECONDARY,
+            propagation_phase=Gtk.PropagationPhase.CAPTURE)
+        self.active_pane_gesture_single.connect('begin', tsk_treeview_btn_press)
         task_treeview_key_press = self.on_task_treeview_key_press_event
-        self.vtree_panes['active'].connect('key-press-event', task_treeview_key_press)
+        self.active_pane_key_controller = Gtk.EventControllerKey(widget=self.vtree_panes['active'])
+        self.active_pane_key_controller.connect('key-pressed', task_treeview_key_press)
         self.vtree_panes['active'].connect('node-expanded', self.on_task_expanded)
         self.vtree_panes['active'].connect('node-collapsed', self.on_task_collapsed)
 
@@ -414,20 +421,26 @@ class MainWindow(Gtk.ApplicationWindow):
         self.vtree_panes['workview'].connect('row-activated', self.on_edit_active_task)
         self.vtree_panes['workview'].connect('cursor-changed', self.on_cursor_changed)
 
-        tsk_treeview_btn_press = self.on_task_treeview_button_press_event
-        self.vtree_panes['workview'].connect('button-press-event', tsk_treeview_btn_press)
+        tsk_treeview_btn_press = self.on_task_treeview_click_begin
+        self.workview_pane_gesture_single = Gtk.GestureSingle(widget=self.vtree_panes['workview'], button=Gdk.BUTTON_SECONDARY,
+            propagation_phase=Gtk.PropagationPhase.CAPTURE)
+        self.workview_pane_gesture_single.connect('begin', tsk_treeview_btn_press)
         task_treeview_key_press = self.on_task_treeview_key_press_event
-        self.vtree_panes['workview'].connect('key-press-event', task_treeview_key_press)
+        self.workview_pane_key_controller = Gtk.EventControllerKey(widget=self.vtree_panes['workview'])
+        self.workview_pane_key_controller.connect('key-pressed', task_treeview_key_press)
         self.vtree_panes['workview'].set_col_visible('startdate', False)
 
         # Closed tasks Treeview
         self.vtree_panes['closed'].connect('row-activated', self.on_edit_done_task)
         # I did not want to break the variable and there was no other
         # option except this name:(Nimit)
-        clsd_tsk_btn_prs = self.on_closed_task_treeview_button_press_event
-        self.vtree_panes['closed'].connect('button-press-event', clsd_tsk_btn_prs)
+        clsd_tsk_btn_prs = self.on_closed_task_treeview_click_begin
+        self.closed_pane_gesture_single = Gtk.GestureSingle(widget=self.vtree_panes['closed'], button=Gdk.BUTTON_SECONDARY,
+            propagation_phase=Gtk.PropagationPhase.CAPTURE)
+        self.closed_pane_gesture_single.connect('begin', clsd_tsk_btn_prs)
         clsd_tsk_key_prs = self.on_closed_task_treeview_key_press_event
-        self.vtree_panes['closed'].connect('key-press-event', clsd_tsk_key_prs)
+        self.closed_pane_key_controller = Gtk.EventControllerKey(widget=self.vtree_panes['closed'])
+        self.closed_pane_key_controller.connect('key-pressed', clsd_tsk_key_prs)
         self.vtree_panes['closed'].connect('cursor-changed', self.on_cursor_changed)
 
         b_signals = BackendSignals()
@@ -873,23 +886,24 @@ class MainWindow(Gtk.ApplicationWindow):
             for nid in nids:
                 self.app.open_task(nid)
 
-    def on_tag_treeview_button_press_event(self, treeview, event):
+    def on_tag_treeview_click_begin(self, gesture, sequence):
         """
         deals with mouse click event on the tag tree
         """
+        event = Gtk.get_current_event()
         log.debug("Received button event #%d at %d, %d",
                   event.button, event.x, event.y)
-        if event.button == 3:
+        if event.button.button == 3:
             x = int(event.x)
             y = int(event.y)
             time = event.time
-            pthinfo = treeview.get_path_at_pos(x, y)
+            pthinfo = self.tagtreeview.get_path_at_pos(x, y)
             if pthinfo is not None:
                 path, col, cellx, celly = pthinfo
-                treeview.grab_focus()
+                self.tagtreeview.grab_focus()
                 # The location we want the cursor to return to
                 # after we're done.
-                self.previous_cursor = treeview.get_cursor()
+                self.previous_cursor = self.tagtreeview.get_cursor()
                 # For use in is_task_visible
                 self.previous_tag = self.get_selected_tags()
                 # Let's us know that we're working on a tag.
@@ -898,7 +912,7 @@ class MainWindow(Gtk.ApplicationWindow):
                 # This location is stored in case we need to work with it
                 # later on.
                 self.target_cursor = path, col
-                treeview.set_cursor(path, col, 0)
+                self.tagtreeview.set_cursor(path, col, 0)
                 # the nospecial=True disable right clicking for special tags
                 selected_tags = self.get_selected_tags(nospecial=True)
                 selected_search = self.get_selected_search()
@@ -908,21 +922,21 @@ class MainWindow(Gtk.ApplicationWindow):
                 if selected_search is not None:
                     my_tag = self.req.get_tag(selected_search)
                     self.tagpopup.set_tag(my_tag)
-                    self.tagpopup.popup(None, None, None, None, event.button, time)
+                    self.tagpopup.popup(None, None, None, None, event.button.button, time)
                 elif len(selected_tags) > 0:
                     # Then we are looking at single, normal tag rather than
                     # the special 'All tags' or 'Tasks without tags'. We only
                     # want to popup the menu for normal tags.
                     my_tag = self.req.get_tag(selected_tags[0])
                     self.tagpopup.set_tag(my_tag)
-                    self.tagpopup.popup(None, None, None, None, event.button, time)
+                    self.tagpopup.popup(None, None, None, None, event.button.button, time)
                 else:
                     self.reset_cursor()
-            return True
 
-    def on_tag_treeview_key_press_event(self, treeview, event):
-        keyname = Gdk.keyval_name(event.keyval)
-        is_shift_f10 = (keyname == "F10" and event.get_state() & Gdk.ModifierType.SHIFT_MASK)
+    def on_tag_treeview_key_press_event(self, controller, keyval, keycode, state):
+        keyname = Gdk.keyval_name(keyval)
+        event = Gtk.get_current_event()
+        is_shift_f10 = (keyname == "F10" and state & Gdk.ModifierType.SHIFT_MASK)
         if is_shift_f10 or keyname == "Menu":
             selected_tags = self.get_selected_tags(nospecial=True)
             selected_search = self.get_selected_search()
@@ -966,12 +980,14 @@ class MainWindow(Gtk.ApplicationWindow):
         self.tagtreeview.set_cursor(0)
         self.on_select_tag()
 
-    def on_task_treeview_button_press_event(self, treeview, event):
+    def on_task_treeview_click_begin(self, gesture, sequence):
         """ Pop up context menu on right mouse click in the main
         task tree view """
+        event = Gtk.get_current_event()
+        treeview = gesture.get_widget()
         log.debug("Received button event #%s at %d,%d",
                   event.button, event.x, event.y)
-        if event.button == 3:
+        if event.button.button == 3:
             x = int(event.x)
             y = int(event.y)
             pthinfo = treeview.get_path_at_pos(x, y)
@@ -989,18 +1005,19 @@ class MainWindow(Gtk.ApplicationWindow):
                     self.app.action_enabled_changed('add_parent', False)
                 self.open_menu.popup_at_pointer(event)
 
-            return True
-
-    def on_task_treeview_key_press_event(self, treeview, event):
-        keyname = Gdk.keyval_name(event.keyval)
-        is_shift_f10 = (keyname == "F10" and event.get_state() & Gdk.ModifierType.SHIFT_MASK)
+    def on_task_treeview_key_press_event(self, controller, keyval, keycode, state):
+        keyname = Gdk.keyval_name(keyval)
+        event = Gtk.get_current_event()
+        is_shift_f10 = (keyname == "F10" and state & Gdk.ModifierType.SHIFT_MASK)
 
         if is_shift_f10 or keyname == "Menu":
             self.open_menu.popup_at_pointer(event)
             return True
 
-    def on_closed_task_treeview_button_press_event(self, treeview, event):
-        if event.button == 3:
+    def on_closed_task_treeview_click_begin(self, gesture, sequence):
+        event = Gtk.get_current_event()
+        treeview = gesture.get_widget()
+        if event.button.button == 3:
             x = int(event.x)
             y = int(event.y)
             pthinfo = treeview.get_path_at_pos(x, y)
@@ -1017,11 +1034,10 @@ class MainWindow(Gtk.ApplicationWindow):
                 treeview.grab_focus()
                 self.closed_menu.popup_at_pointer(event)
 
-            return True
-
-    def on_closed_task_treeview_key_press_event(self, treeview, event):
-        keyname = Gdk.keyval_name(event.keyval)
-        is_shift_f10 = (keyname == "F10" and event.get_state() & Gdk.ModifierType.SHIFT_MASK)
+    def on_closed_task_treeview_key_press_event(self, controller, keyval, keycode, state):
+        keyname = Gdk.keyval_name(keyval)
+        event = Gtk.get_current_event()
+        is_shift_f10 = (keyname == "F10" and state & Gdk.ModifierType.SHIFT_MASK)
 
         if is_shift_f10 or keyname == "Menu":
             self.closed_menu.popup_at_pointer(event)
