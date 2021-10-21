@@ -1660,7 +1660,8 @@ class MainWindow(Gtk.ApplicationWindow):
         self.vbox_toolbars.foreach(self.__remove_backend_infobar, backend_id)
         # add a new one
         infobar = BackendInfoBar(self.req, self, self.app, backend_id)
-        self.vbox_toolbars.pack_start(infobar, True, True, 0)
+        infobar.set_vexpand(True)
+        self.vbox_toolbars.add(infobar)
         return infobar
 
 # SEARCH RELATED STUFF ########################################################
