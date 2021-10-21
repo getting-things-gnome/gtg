@@ -126,7 +126,8 @@ class GTGCalendar(GObject.GObject):
         if self.get_decorated():
             self.__window.connect("delete-event", self.close_calendar)
         else:
-            self.__window.connect('button-press-event', self.__focus_out)
+            self.__window_gesture_single = Gtk.GestureSingle(widget=self.__window)
+            self.__window_gesture_single.connect('begin', self.__focus_out)
         self.__sigid = self.__calendar.connect("day-selected",
                                                self.__day_selected,
                                                "RealDate",)
@@ -140,7 +141,8 @@ class GTGCalendar(GObject.GObject):
         self.__is_user_just_browsing_the_calendar = False
         self.__mark_today_in_bold()
 
-    def __focus_out(self, w=None, e=None):
+    def __focus_out(self, g=None, s=None):
+        w = g.get_widget()
         # We should only close if the pointer click is out of the calendar !
         p = self.__window.get_window().get_pointer()
         s = self.__window.get_size()
