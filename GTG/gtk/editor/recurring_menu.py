@@ -141,7 +141,7 @@ class RecurringMenu():
             need_month_hack = False
             if self.selected_recurring_term in ('month', 'year'):
                 # Recurring monthly/yearly from 'today'
-                d = self.task.get_recurring_updated_date()
+                d = self.task.get_recurring_updated_date().date()
                 need_month_hack = self.selected_recurring_term == 'month'
             elif self.selected_recurring_term.isdigit():
                 if len(self.selected_recurring_term) <= 2:

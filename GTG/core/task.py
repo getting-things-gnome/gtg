@@ -29,8 +29,7 @@ import xml.sax.saxutils as saxutils
 from gi.repository import GObject
 
 from gettext import gettext as _
-from GTG.core.dates import Date, convert_datetime_to_date
-from GTG.core.tag import extract_tags_from_text
+from GTG.core.dates import Date
 from liblarch import TreeNode
 
 log = logging.getLogger(__name__)
@@ -63,7 +62,7 @@ class Task(TreeNode):
 
         self.added_date = Date.no_date()
         if newtask:
-            self.added_date = datetime.now()
+            self.added_date = Date(datetime.now())
 
         self.closed_date = Date.no_date()
         self.due_date = Date.no_date()
@@ -89,19 +88,8 @@ class Task(TreeNode):
     def get_added_date(self):
         return self.added_date
 
-    def get_added_date_string(self):
-        FORMAT = '%Y-%m-%dT%H:%M:%S'
-
-        if self.added_date:
-            return self.added_date.strftime(FORMAT)
-        else:
-            return datetime.now().strftime(FORMAT)
-
-    def get_added_date_simple(self):
-        return self.added_date.strftime("%Y/%m/%d") if self.added_date else ""
-
     def set_added_date(self, date):
-        self.added_date = date
+        self.added_date = Date(date)
 
     def is_loaded(self):
         return self.loaded
@@ -258,11 +246,8 @@ class Task(TreeNode):
     def get_modified(self):
         return self.last_modified
 
-    def get_modified_string(self):
-        return self.last_modified.strftime("%Y-%m-%dT%H:%M:%S")
-
-    def set_modified(self, modified):
-        self.last_modified = modified
+    def set_modified(self, value):
+        self.last_modified = Date(value)
 
     def recursive_sync(self):
         """Recursively sync the task and all task children. Defined"""
@@ -313,14 +298,14 @@ class Task(TreeNode):
                 # If a start date is already set,
                 # we should calculate the next date from that day.
                 if self.start_date == Date.no_date():
-                    start_from = Date(convert_datetime_to_date(date.today()))
+                    start_from = Date(datetime.now())
                 else:
                     start_from = self.start_date
 
                 newdate = start_from.parse_from_date(recurring_term, newtask)
-                return (True, newdate)
-            except ValueError as e:
-                return (False, None)
+                return True, newdate
+            except ValueError:
+                return False, None
 
         self.recurring = recurring
         # We verifiy if the term passed is valid
@@ -372,7 +357,7 @@ class Task(TreeNode):
         return self.recurring_updated_date
 
     def set_recurring_updated_date(self, date):
-        self.recurring_updated_date = date
+        self.recurring_updated_date = Date(date)
 
     def inherit_recursion(self):
         """ Inherits the recurrent state of the parent.
@@ -918,6 +903,6 @@ class Task(TreeNode):
             self.title,
             self.tid,
             self.status,
-            str(self.tags),
-            str(self.added_date),
-            str(self.recurring))
+            self.tags,
+            self.added_date,
+            self.recurring)

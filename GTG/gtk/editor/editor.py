@@ -22,25 +22,25 @@ It's the window you see when you double-click on a Task
 The main text widget is a home-made TextView called TaskView (see taskview.py)
 The rest is the logic of the widget: date changing widgets, buttons, ...
 """
-import time
 import datetime
 import logging
 import os
+import time
+from gettext import gettext as _, ngettext
 
 from gi.repository import Gdk, Gtk, Pango
 from gi.repository.GObject import signal_handler_block
-
+from GTG.core.dates import Accuracy, Date
 from GTG.core.dirs import UI_DIR
 from GTG.core.plugins.api import PluginAPI
 from GTG.core.plugins.engine import PluginEngine
 from GTG.core.task import Task
-from gettext import gettext as _, ngettext
 from GTG.gtk.editor import GnomeConfig
 from GTG.gtk.editor.calendar import GTGCalendar
 from GTG.gtk.editor.recurring_menu import RecurringMenu
 from GTG.gtk.editor.taskview import TaskView
 from GTG.gtk.tag_completion import tag_filter
-from GTG.core.dates import Date
+
 """
 TODO (jakubbrindza): re-factor tag_filter into a separate module
 """
@@ -48,7 +48,7 @@ TODO (jakubbrindza): re-factor tag_filter into a separate module
 log = logging.getLogger(__name__)
 
 
-class TaskEditor():
+class TaskEditor:
 
     EDITOR_UI_FILE = os.path.join(UI_DIR, "task_editor.ui")
 
@@ -264,7 +264,7 @@ class TaskEditor():
     def show_popover_start(self, widget, event):
         """Open the start date calendar popup."""
 
-        start_date = self.task.get_start_date() or Date.today()
+        start_date = (self.task.get_start_date() or Date.today()).date()
 
         with signal_handler_block(self.start_calendar, self.start_handle):
             self.start_calendar.select_day(start_date.day)
@@ -281,6 +281,8 @@ class TaskEditor():
         if not due_date or due_date.is_fuzzy():
             due_date = Date.today()
 
+        due_date = due_date.date()
+
         with signal_handler_block(self.due_calendar, self.due_handle):
             self.due_calendar.select_day(due_date.day)
             self.due_calendar.select_month(due_date.month - 1,
@@ -291,7 +293,7 @@ class TaskEditor():
     def show_popover_closed(self, widget, popover):
         """Open the closed date calendar popup."""
 
-        closed_date = self.task.get_closed_date()
+        closed_date = self.task.get_closed_date().date()
 
         with signal_handler_block(self.closed_calendar, self.closed_handle):
             self.closed_calendar.select_day(closed_date.day)
@@ -395,13 +397,10 @@ class TaskEditor():
         # otherwise.
         return not model.get(iter, column)[0].startswith(key)
 
-
-    def get_monitor_dimensions(self) -> Gdk.Rectangle:
+    @staticmethod
+    def get_monitor_dimensions() -> Gdk.Rectangle:
         """Get dimensions for the first monitor."""
-
-        monitor = Gdk.Display.get_default().get_monitor(0)
-        return monitor.get_geometry()
-
+        return Gdk.Display.get_default().get_monitor(0).get_geometry()
 
     def init_dimensions(self):
         """ Restores position and size of task if possible """
@@ -515,7 +514,7 @@ class TaskEditor():
             update_date = True
 
         if update_date:
-            self.start_entry.set_text(str(startdate))
+            self.start_entry.set_text(startdate.localized_str)
 
         # refreshing the due date field
         duedate = self.task.get_due_date()
@@ -526,13 +525,13 @@ class TaskEditor():
             update_date = True
 
         if update_date:
-            self.due_entry.set_text(str(duedate))
+            self.due_entry.set_text(duedate.localized_str)
 
         # refreshing the closed date field
         closeddate = self.task.get_closed_date()
         prevcldate = Date.parse(self.closed_entry.get_text())
         if closeddate != prevcldate:
-            self.closed_entry.set_text(str(closeddate))
+            self.closed_entry.set_text(closeddate.localized_str)
 
         # refreshing the day left label
         """
@@ -656,7 +655,7 @@ class TaskEditor():
         """ Callback when a fuzzy date is selected through the popup. """
 
         self.task.set_due_date(date)
-        self.due_entry.set_text(str(date))
+        self.due_entry.set_text(date.localized_str)
 
     def on_date_cleared(self, widget, kind):
         """ Callback when a date is cleared through the popups. """
@@ -676,15 +675,15 @@ class TaskEditor():
 
         if kind == GTGCalendar.DATE_KIND_START:
             self.task.set_start_date(Date(date))
-            self.start_entry.set_text(str(Date(date)))
+            self.start_entry.set_text(Date(date).localized_str)
 
         elif kind == GTGCalendar.DATE_KIND_DUE:
             self.task.set_due_date(Date(date))
-            self.due_entry.set_text(str(Date(date)))
+            self.due_entry.set_text(Date(date).localized_str)
 
         elif kind == GTGCalendar.DATE_KIND_CLOSED:
             self.task.set_closed_date(Date(date))
-            self.closed_entry.set_text(str(Date(date)))
+            self.closed_entry.set_text(Date(date).localized_str)
 
     def on_date_changed(self, calendar):
         date, date_kind = calendar.get_selected_date()
