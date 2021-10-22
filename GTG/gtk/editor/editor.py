@@ -28,7 +28,7 @@ import os
 import time
 from gettext import gettext as _, ngettext
 
-from gi.repository import Gdk, Gtk, Pango
+from gi.repository import Gdk, Gtk, GLib, Pango
 from gi.repository.GObject import signal_handler_block
 from GTG.core.dates import Accuracy, Date
 from GTG.core.dirs import UI_DIR
@@ -71,10 +71,9 @@ class TaskEditor:
         self.clipboard = clipboard
         self.builder = Gtk.Builder()
         self.builder.add_from_file(self.EDITOR_UI_FILE)
+        self.editormenu = self.builder.get_object("editor_menu")
         self.donebutton = self.builder.get_object("mark_as_done")
         self.undonebutton = self.builder.get_object("mark_as_undone")
-        self.dismissbutton = self.builder.get_object("dismiss")
-        self.undismissbutton = self.builder.get_object("undismiss")
         self.add_subtask = self.builder.get_object("add_subtask")
         self.tag_store = self.builder.get_object("tag_store")
         self.parent_button = self.builder.get_object("parent")
@@ -332,6 +331,35 @@ class TaskEditor:
                 alphabetically
                 """
 
+    def set_dismissable_in_menu(self, dismissable):
+        """
+        Set the task editor's menu items to how they are when the
+        task is already dismissed/isn't. This shouldn't be called more than once with
+        different arguments
+        """
+        # For some reason here using the menu section directly from the UI file
+        # causes a crash and a weird reference count assertion error. Retrieving it from
+        # the main menu instead avoids the cryptic crash
+        __, __, editor_menu_con_sec = self.editormenu.iterate_item_links(0).get_next()
+
+        # Plugins may add menu items to here, which is why we need to only remove
+        # the specific item that we need instead of everything
+        # Manual iteration without GI overrides is ugly
+        length = editor_menu_con_sec.get_n_items()
+        i = 0
+        while i < length:
+            name = ''.join(editor_menu_con_sec.get_item_attribute_value(
+                i,
+                'label',
+                GLib.VariantType.new('s')).get_string()
+            )
+            # this might cause problems with localization if it isn't translated
+            # here the same
+            if name == (_("Undismiss") if dismissable else _("Dismiss")):
+                editor_menu_con_sec.remove(i)
+                return
+            i += 1
+
     def on_tag_toggled(self, widget, path, column):
         """We toggle by tag_row variable. tag_row is
         meant to be a tuple (is_used, tagname)"""
@@ -488,18 +516,15 @@ class TaskEditor:
         if status == Task.STA_DISMISSED:
             self.donebutton.show()
             self.undonebutton.hide()
-            self.dismissbutton.hide()
-            self.undismissbutton.show()
+            self.set_dismissable_in_menu(False)
         elif status == Task.STA_DONE:
             self.donebutton.hide()
             self.undonebutton.show()
-            self.dismissbutton.show()
-            self.undismissbutton.hide
+            self.set_dismissable_in_menu(True)
         else:
             self.donebutton.show()
             self.undonebutton.hide()
-            self.dismissbutton.show()
-            self.undismissbutton.hide()
+            self.set_dismissable_in_menu(True)
 
         # Refreshing the parent button
         if self.task.has_parent():

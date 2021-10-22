@@ -286,16 +286,23 @@ class MainWindow(Gtk.ApplicationWindow):
         Set dynamic day labels for the toolbar's task deferring menubutton.
         """
         today = datetime.datetime.today()
+        dynamic_days_menu_section = self.builder.get_object("defer_menu_dydays_section")
+
         # Day 0 is "Today", day 1 is "Tomorrow",
         # so we don't need to calculate the weekday name for those.
-        for i in range(2, 7):
-            defer_btn = self.builder.get_object(f"defer_{i}_btn")
-
-            weekday_name = (today + datetime.timedelta(days=i)).strftime('%A')
+        for i in range(0, 5):
+            weekday_name = (today + datetime.timedelta(days=i + 2)).strftime('%A')
             translated_weekday_combo = _("In {number_of_days} days — {weekday}").format(
-                      weekday=weekday_name, number_of_days=i)
+                weekday=weekday_name, number_of_days=i + 2)
 
-            defer_btn.props.text = translated_weekday_combo
+            action = ''.join(dynamic_days_menu_section.get_item_attribute_value(
+                i,
+                'action',
+                GLib.VariantType.new('s')).get_string()
+            )
+            replacement_item = Gio.MenuItem.new(translated_weekday_combo, action)
+            dynamic_days_menu_section.remove(i)
+            dynamic_days_menu_section.insert_item(i, replacement_item)
 
     def init_tags_sidebar(self):
         """
