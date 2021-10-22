@@ -29,226 +29,92 @@
       <placeholder/>
     </child>
   </object>
-  <object class="GtkPopoverMenu" id="defer_menu">
-    <property name="name">main_menu</property>
-    <property name="can_focus">False</property>
-    <child>
-      <object class="GtkBox" id="defer_menu_box">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="margin_start">14</property>
-        <property name="margin_end">14</property>
-        <property name="margin_top">8</property>
-        <property name="margin_bottom">8</property>
-        <property name="orientation">vertical</property>
-        <child>
-          <object class="GtkModelButton" id="defer_0_btn">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="receives_default">True</property>
-            <property name="tooltip_text" translatable="yes">Start today</property>
-            <property name="action_name">win.start_today</property>
-            <property name="text" translatable="yes">Today</property>
-          </object>
-        </child>
-        <child>
-          <object class="GtkSeparator">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="margin_top">6</property>
-            <property name="margin_bottom">6</property>
-          </object>
-        </child>
-        <child>
-          <object class="GtkModelButton" id="defer_2_btn">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="receives_default">True</property>
-            <property name="tooltip_text" translatable="yes">Start 2 days from now</property>
-            <property name="action_name">win.start_next_day_2</property>
-            <property name="text" translatable="yes">Tuesday</property>
-          </object>
-        </child>
-        <child>
-          <object class="GtkModelButton" id="defer_3_btn">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="receives_default">True</property>
-            <property name="tooltip_text" translatable="yes">Start 3 days from now</property>
-            <property name="action_name">win.start_next_day_3</property>
-            <property name="text" translatable="yes">Wednesday</property>
-          </object>
-        </child>
-        <child>
-          <object class="GtkModelButton" id="defer_4_btn">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="receives_default">True</property>
-            <property name="tooltip_text" translatable="yes">Start 4 days from now</property>
-            <property name="action_name">win.start_next_day_4</property>
-            <property name="text" translatable="yes">Thursday</property>
-          </object>
-        </child>
-        <child>
-          <object class="GtkModelButton" id="defer_5_btn">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="receives_default">True</property>
-            <property name="tooltip_text" translatable="yes">Start 5 days from now</property>
-            <property name="action_name">win.start_next_day_5</property>
-            <property name="text" translatable="yes">Friday</property>
-          </object>
-        </child>
-        <child>
-          <object class="GtkModelButton" id="defer_6_btn">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="receives_default">True</property>
-            <property name="tooltip_text" translatable="yes">Start 6 days from now</property>
-            <property name="action_name">win.start_next_day_6</property>
-            <property name="text" translatable="yes">Saturday</property>
-          </object>
-        </child>
-        <child>
-          <object class="GtkModelButton" id="start_another_date">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="receives_default">True</property>
-            <property name="action_name">win.start_custom</property>
-            <property name="text" translatable="yes">Pick a Date...</property>
-          </object>
-        </child>
-        <child>
-          <object class="GtkSeparator">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="margin_top">6</property>
-            <property name="margin_bottom">6</property>
-          </object>
-        </child>
-        <child>
-          <object class="GtkModelButton" id="due_clear_button">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="receives_default">True</property>
-            <property name="action_name">win.start_clear</property>
-            <property name="text" translatable="yes">Clear Start Date</property>
-          </object>
-        </child>
-      </object>
-    </child>
-  </object>
-  <object class="GtkPopoverMenu" id="main_menu">
-    <property name="name">main_menu</property>
-    <property name="can_focus">False</property>
-    <child>
-      <object class="GtkBox" id="menu_box">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="margin_start">14</property>
-        <property name="margin_end">14</property>
-        <property name="margin_top">8</property>
-        <property name="margin_bottom">8</property>
-        <property name="orientation">vertical</property>
-        <child>
-          <object class="GtkModelButton" id="toggle_sidebar_button">
-            <property name="visible">True</property>
-            <property name="text" translatable="yes">Show Sidebar</property>
-            <property name="action-name">win.sidebar</property>
-            <property name="active" bind-source="sidebar_vbox" bind-property="visible" />
-          </object>
-        </child>
-        <child>
-          <object class="GtkSeparator">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-          </object>
-        </child>
-        <child>
-          <object class="GtkModelButton" id="collapse_all_tasks_button">
-            <property name="visible">True</property>
-            <property name="receives_default">True</property>
-            <property name="action_name">win.collapse_all_tasks</property>
-            <property name="text" translatable="yes">Collapse All Tasks</property>
-          </object>
-        </child>
-        <child>
-          <object class="GtkModelButton" id="expand_all_tasks_button">
-            <property name="visible">True</property>
-            <property name="receives_default">True</property>
-            <property name="action_name">win.expand_all_tasks</property>
-            <property name="text" translatable="yes">Expand All Tasks</property>
-          </object>
-        </child>
-        <child>
-          <object class="GtkSeparator">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="margin_top">6</property>
-            <property name="margin_bottom">6</property>
-          </object>
-        </child>
-        <child>
-          <object class="GtkModelButton" id="plugins">
-            <property name="visible">True</property>
-            <property name="receives_default">True</property>
-            <property name="action_name">app.open_plugins</property>
-            <property name="text" translatable="yes">Plugins</property>
-          </object>
-        </child>
-        <child>
-          <object class="GtkModelButton" id="synchronization">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="sensitive">False</property>
-            <property name="receives_default">True</property>
-            <property name="action_name">app.open_backends</property>
-            <property name="text" translatable="yes">Synchronization</property>
-          </object>
-        </child>
-        <child>
-          <object class="GtkSeparator">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="margin_top">6</property>
-            <property name="margin_bottom">6</property>
-          </object>
-        </child>
-        <child>
-          <object class="GtkModelButton" id="preferences">
-            <property name="visible">True</property>
-            <property name="receives_default">True</property>
-            <property name="action_name">app.open_preferences</property>
-            <property name="text" translatable="yes">Preferences</property>
-          </object>
-        </child>
-        <child>
-          <object class="GtkModelButton" id="help_overlay_btn">
-            <property name="visible">True</property>
-            <property name="receives_default">True</property>
-            <property name="action_name">win.show-help-overlay</property>
-            <property name="text" translatable="yes">Keyboard Shortcuts</property>
-          </object>
-        </child>
-        <child>
-          <object class="GtkModelButton" id="help">
-            <property name="visible">True</property>
-            <property name="receives_default">True</property>
-            <property name="action_name">app.open_help</property>
-            <property name="text" translatable="yes">Help</property>
-          </object>
-        </child>
-        <child>
-          <object class="GtkModelButton" id="about">
-            <property name="visible">True</property>
-            <property name="receives_default">True</property>
-            <property name="action_name">app.open_about</property>
-            <property name="text" translatable="yes">About GTG</property>
-          </object>
-        </child>
-      </object>
-    </child>
-  </object>
+  <menu id="defer_menu">
+    <section>
+      <item>
+        <attribute name="action">win.start_today</attribute>
+        <attribute name="label" translatable="yes">Today</attribute>
+      </item>
+    </section>
+    <section id="defer_menu_dydays_section">
+      <item>
+        <attribute name="action">win.start_next_day_2</attribute>
+        <attribute name="label" translatable="yes">Tuesday</attribute>
+      </item>
+      <item>
+        <attribute name="action">win.start_next_day_3</attribute>
+        <attribute name="label" translatable="yes">Wednesday</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">Thursday</attribute>
+        <attribute name="action">win.start_next_day_4</attribute>
+      </item>
+      <item>
+        <attribute name="action">win.start_next_day_5</attribute>
+        <attribute name="label" translatable="yes">Friday</attribute>
+      </item>
+      <item>
+        <attribute name="action">win.start_next_day_6</attribute>
+        <attribute name="label" translatable="yes">Saturday</attribute>
+      </item>
+      <item>
+        <attribute name="action">win.start_custom</attribute>
+        <attribute name="label" translatable="yes">Pick a Date...</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
+        <attribute name="action">win.start_clear</attribute>
+        <attribute name="label" translatable="yes">Clear Start Date</attribute>
+      </item>
+    </section>
+  </menu>
+  <menu id="main_menu">
+    <section>
+      <item>
+        <attribute name="action">win.sidebar</attribute>
+        <attribute name="label" translatable="yes">Show Sidebar</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
+        <attribute name="action">win.collapse_all_tasks</attribute>
+        <attribute name="label" translatable="yes">Collapse All Tasks</attribute>
+      </item>
+      <item>
+        <attribute name="action">win.expand_all_tasks</attribute>
+        <attribute name="label" translatable="yes">Expand All Tasks</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
+        <attribute name="action">app.open_plugins</attribute>
+        <attribute name="label" translatable="yes">Plugins</attribute>
+      </item>
+      <item>
+        <attribute name="action">app.open_backends</attribute>
+        <attribute name="label" translatable="yes">Synchronization</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
+        <attribute name="action">app.open_preferences</attribute>
+        <attribute name="label" translatable="yes">Preferences</attribute>
+      </item>
+      <item>
+        <attribute name="action">win.show-help-overlay</attribute>
+        <attribute name="label" translatable="yes">Keyboard Shortcuts</attribute>
+      </item>
+      <item>
+        <attribute name="action">app.open_help</attribute>
+        <attribute name="label" translatable="yes">Help</attribute>
+      </item>
+      <item>
+        <attribute name="action">app.open_about</attribute>
+        <attribute name="label" translatable="yes">About GTG</attribute>
+      </item>
+    </section>
+  </menu>
   <object class="GtkBox" id="main_view_box">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
@@ -467,7 +333,7 @@
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="receives_default">True</property>
-        <property name="popover">main_menu</property>
+        <property name="menu_model">main_menu</property>
         <child>
           <object class="GtkImage" id="main_menu_icon">
             <property name="visible">True</property>
@@ -523,7 +389,7 @@
             <property name="sensitive">False</property>
             <property name="can_focus">False</property>
             <property name="receives_default">True</property>
-            <property name="popover">defer_menu</property>
+            <property name="menu-model">defer_menu</property>
             <child>
               <object class="GtkImage" id="defer_menu_icon">
                 <property name="visible">True</property>

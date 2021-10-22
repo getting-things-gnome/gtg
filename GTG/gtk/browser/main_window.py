@@ -283,15 +283,23 @@ class MainWindow(Gtk.ApplicationWindow):
     def _set_defer_days(self, timer=None):
         """Set days for the defer task menu."""
 
-        # Today is day 0, tomorrow is day 1. We don't need
-        # to calculate the weekday for those.
+        # tommorow starts at day 0, so when calculating the delta
+        # we get the next day. We don't need to calculate the weekday for those.
 
         today = datetime.datetime.today()
+        dynamic_days_menu_section = self.builder.get_object("defer_menu_dydays_section")
 
-        for i in range(2, 7):
-            defer_btn = self.builder.get_object(f"defer_{i}_btn")
-            name = (today + datetime.timedelta(days=i)).strftime('%A')
-            defer_btn.props.text = name
+        for i in range(0, 5):
+            name = (today + datetime.timedelta(days=i+1)).strftime('%A')
+
+            action = ''.join(dynamic_days_menu_section.get_item_attribute_value(
+                i,
+                'action',
+                GLib.VariantType.new('s')).get_string()
+            )
+            replacement_item = Gio.MenuItem.new(name, action)
+            dynamic_days_menu_section.remove(i)
+            dynamic_days_menu_section.insert_item(i, replacement_item)
 
     def init_tags_sidebar(self):
         """

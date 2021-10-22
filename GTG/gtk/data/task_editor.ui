@@ -2,56 +2,24 @@
 <!-- Generated with glade 3.36.0 -->
 <interface>
   <requires lib="gtk+" version="3.22"/>
-  <object class="GtkPopoverMenu" id="editor_menu_popover">
-    <property name="can_focus">False</property>
-    <child>
-      <object class="GtkBox" id="menu_box">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="margin_start">12</property>
-        <property name="margin_end">12</property>
-        <property name="margin_top">8</property>
-        <property name="margin_bottom">8</property>
-        <property name="orientation">vertical</property>
-        <child>
-          <object class="GtkModelButton" id="dismiss">
-            <property name="can_focus">False</property>
-            <property name="receives_default">False</property>
-            <property name="tooltip_text" translatable="yes">Mark this task as not to be done anymore</property>
-            <property name="action_name">app.dismiss</property>
-            <property name="text" translatable="yes">Dismiss</property>
-          </object>
-        </child>
-        <child>
-          <object class="GtkModelButton" id="undismiss">
-            <property name="can_focus">False</property>
-            <property name="receives_default">False</property>
-            <property name="tooltip_text" translatable="yes">Mark this task as to be done</property>
-            <property name="action_name">app.dismiss</property>
-            <property name="text" translatable="yes">Undismiss</property>
-          </object>
-        </child>
-        <child>
-          <object class="GtkSeparatorMenuItem">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="margin_top">6</property>
-            <property name="margin_bottom">6</property>
-          </object>
-        </child>
-        <child>
-          <object class="GtkModelButton" id="delete">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="receives_default">False</property>
-            <property name="tooltip_text" translatable="yes">Permanently remove this task</property>
-            <property name="action_name">app.editor.delete</property>
-            <property name="text" translatable="yes">Delete</property>
-          </object>
-        </child>
-      </object>
-    </child>
-  </object>
+  <menu id="editor_menu">
+    <section id="editor_menu_con_section">
+      <item>
+        <attribute name="action">app.dismiss</attribute>
+        <attribute name="label" translatable="yes">Dismiss</attribute>
+      </item>
+      <item>
+        <attribute name="action">app.dismiss</attribute>
+        <attribute name="label" translatable="yes">Undismiss</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
+        <attribute name="action">app.editor.delete</attribute>
+        <attribute name="label" translatable="yes">Delete</attribute>
+      </item>
+    </section>
+  </menu>
   <object class="GtkPopover" id="recurring_popover">
     <property name="can_focus">False</property>
     <child>
@@ -640,13 +608,13 @@
           </object>
         </child>
         <child>
-          <object class="GtkMenuButton" id="editor_menu">
+          <object class="GtkMenuButton">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="receives_default">False</property>
             <property name="tooltip_text" translatable="yes">Task action menu</property>
             <property name="valign">center</property>
-            <property name="popover">editor_menu_popover</property>
+            <property name="menu-model">editor_menu</property>
             <child>
               <object class="GtkImage" id="menu-icon">
                 <property name="visible">True</property>

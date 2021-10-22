@@ -2,11 +2,6 @@
  * MAIN WINDOW
  * --------------------------------------------------------------------------------
  */
-#main_menu GtkModelButton,
-#defer_menu GtkModelButton {
-    padding: 10px 5px;
-}
-
 .menu-disclose {
     min-width: 16px;
 }
