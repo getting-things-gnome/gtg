@@ -307,9 +307,9 @@ class Task(TreeNode):
                     start_from = self.start_date
 
                 newdate = start_from.parse_from_date(recurring_term, newtask)
-                return (True, newdate)
+                return True, newdate
             except ValueError:
-                return (False, None)
+                return False, None
 
         self.recurring = recurring
         # We verifiy if the term passed is valid
@@ -361,7 +361,7 @@ class Task(TreeNode):
         return self.recurring_updated_date
 
     def set_recurring_updated_date(self, date):
-        self.recurring_updated_date = date
+        self.recurring_updated_date = Date(date)
 
     def inherit_recursion(self):
         """ Inherits the recurrent state of the parent.
@@ -908,9 +908,9 @@ class Task(TreeNode):
             self.title,
             self.tid,
             self.status,
-            str(self.tags),
-            str(self.added_date),
-            str(self.recurring))
+            self.tags,
+            self.added_date,
+            self.recurring)
 
     __repr__ = __str__
 

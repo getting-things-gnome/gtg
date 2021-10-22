@@ -21,7 +21,7 @@
 Dates Could be normal like 2012-04-01 or fuzzy like now, soon,
 someday, later or no date.
 
-Date.parse() parses all possible representations of a date. """
+Date.parse() parses all possible representations of a datetime.date. """
 
 import calendar
 import locale
@@ -30,19 +30,15 @@ from enum import Enum
 from gettext import gettext as _
 from gettext import ngettext
 
-__all__ = ['Date']
+__all__ = ['Date', 'Accuracy']
 
+# trick to obtain the timezone of the machine GTG is executed on
 LOCAL_TIMEZONE = datetime.now(timezone.utc).astimezone().tzinfo
 NOW, SOON, SOMEDAY, NODATE = list(range(4))
-# strings representing fuzzy dates + no date
-ENGLISH_STRINGS = {
-    NOW: 'now',
-    SOON: 'soon',
-    SOMEDAY: 'someday',
-    NODATE: '',
-}
 
+# Localized strings for fuzzy values
 STRINGS = {
+    # Translators: Used for display
     NOW: _('now'),
     # Translators: Used for display
     SOON: _('soon'),
@@ -51,11 +47,13 @@ STRINGS = {
     NODATE: '',
 }
 
+# Allows looking up any value which is not a date but points towards one and
+# find one of the four constant for fuzzy dates: SOON, SOMEDAY, and NODATE
 LOOKUP = {
     NOW: NOW,
     'now': NOW,
     # Translators: Used in parsing, made lowercased in code
-    _('now').lower(): NOW,
+    _('now'): NOW,
     SOON: SOON,
     'soon': SOON,
     # Translators: Used in parsing, made lowercased in code
@@ -72,14 +70,19 @@ LOOKUP = {
     None: NODATE,
     'none': NODATE,
 }
-# functions giving absolute dates for fuzzy dates + no date
-FUNCS = {NOW: datetime.now,
-         SOON: lambda: date.today() + timedelta(days=15),
-         SOMEDAY: lambda: date.today() + timedelta(days=365),
-         NODATE: lambda: date.max - timedelta(days=1)}
 
 
-class Accuracy(Enum):  # from less accurate from the most
+class Accuracy(Enum):
+    """ GTG.core.dates.Date supported accuracies
+
+    From less accurate to the most:
+     * fuzzy is when a date is just a string not representing a real date
+       (like `someday`)
+     * date is a datetime.date accurate to the day (see datetime.date)
+     * datetime is a datetime.datetime accurate to the microseconds
+       (see datetime.datetime)
+     * timezone ia a datetime.datetime accurate to the microseconds with tzinfo
+    """
     fuzzy = 'fuzzy'
     date = 'date'
     datetime = 'datetime'
@@ -102,11 +105,12 @@ DATE_FORMATS = [(locale.nl_langinfo(locale.D_T_FMT), Accuracy.datetime),
 class Date:
     """A date class that supports fuzzy dates.
 
-    Date supports all the methods of the standard date class. A Date
-    can be constructed with:
+    A Date can be constructed with:
       - the fuzzy strings 'now', 'soon', '' (no date, default), or 'someday'
-      - a string containing an ISO format date: YYYY-MM-DD, or
-      - a date or Date instance, or
+      - a string containing an ISO format date: YYYY-MM-DD
+      - a datetime.date instance
+      - a datetime.datetime instance
+      - a GTG.core.dates.Date instance
       - a string containing a locale format date.
     """
 
@@ -119,36 +123,37 @@ class Date:
         elif isinstance(value, Date):
             # Copy internal values from other Date object
             self.dt_value = value.dt_value
-        elif value in ['None', None, '']:
+        elif value in {'None', None, ''}:
             self.dt_value = NODATE
         elif isinstance(value, str):
-            for cls in date, datetime:
-                try:
-                    self.dt_value = cls.fromisoformat(value)
-                    break
-                except (ValueError,  # ignoring no iso format value
-                        AttributeError):  # ignoring python < 3.7
-                    pass
-            if self.dt_value is None:
-                for date_format, accuracy in DATE_FORMATS:
-                    try:
-                        self.dt_value = datetime.strptime(value, date_format)
-                        if accuracy is Accuracy.date:
-                            self.dt_value = self.dt_value.date()
-                        break
-                    except ValueError:
-                        pass
-            if self.dt_value is None:
-                try:  # it must be a fuzzy date
-                    self.dt_value = LOOKUP[str(value).lower()]
-                except KeyError:
-                    pass
-            if self.dt_value is None:
-                raise ValueError(f"Unknown value for date: '{value}'")
+            self.dt_value = self.__parse_dt_str(value)
+        elif value == 0:  # support for dropped falsly fuzzy NOW
+            self.dt_value = datetime.now()
         elif value in LOOKUP:
             self.dt_value = LOOKUP[value]
-        else:
+        if self.dt_value is None:
             raise ValueError(f"Unknown value for date: '{value}'")
+
+    @staticmethod
+    def __parse_dt_str(string):
+        """Will try casting given string into a datetime or a date."""
+        for cls in date, datetime:
+            try:
+                return cls.fromisoformat(string)
+            except (ValueError,  # ignoring no iso format value
+                    AttributeError):  # ignoring python < 3.7
+                pass
+        for date_format, accuracy in DATE_FORMATS:
+            try:
+                dt_value = datetime.strptime(string, date_format)
+                if accuracy is Accuracy.date:
+                    dt_value = dt_value.date()
+                return dt_value
+            except ValueError:
+                pass
+        if string in {'now', _('now').lower()}:
+            return datetime.now()
+        return LOOKUP.get(str(string).lower(), None)
 
     @property
     def accuracy(self):
@@ -182,15 +187,20 @@ class Date:
             return dt_value.astimezone(LOCAL_TIMEZONE).replace(tzinfo=None)
         if wanted_accuracy is Accuracy.date:
             return dt_value.date()
-        raise AssertionError(f"Shouldn't get in that position for '{dt_value}'"
-                             f" actual {accuracy.value} "
-                             f"and wanted {wanted_accuracy.value}")
+        raise AssertionError(f"Couldn't process {dt_value!r} with actual "
+                             f"accuracy is {accuracy.value} "
+                             f"and we wanted {wanted_accuracy.value}")
 
     def dt_by_accuracy(self, wanted_accuracy: Accuracy):
+        """Cast Date to the desired accuracy and returns either string
+        for fuzzy, date, datetime or datetime with tzinfo.
+        """
         if wanted_accuracy == self.accuracy:
             return self.dt_value
         if self.accuracy is Accuracy.fuzzy:
-            gtg_date = self.__class__(FUNCS[self.dt_value]())
+            now = datetime.now()
+            delta_days = {SOON: 15, SOMEDAY: 365, NODATE: 9999}
+            gtg_date = Date(now + timedelta(delta_days[self.dt_value]))
             if gtg_date.accuracy is wanted_accuracy:
                 return gtg_date.dt_value
             return self._dt_by_accuracy(gtg_date.dt_value, gtg_date.accuracy,
@@ -198,9 +208,13 @@ class Date:
         return self._dt_by_accuracy(self.dt_value, self.accuracy,
                                     wanted_accuracy)
 
-    def _cast_for_operation(self, other, operation='comparison'):
+    def _cast_for_operation(self, other, is_comparison: bool = True):
+        """Returns two values compatibles for operation or comparison.
+        Will settle for the less accuracy: comparing a date and a datetime
+        will cast the datetime to a date to allow comparison.
+        """
         if isinstance(other, timedelta):
-            if operation == 'comparison':
+            if is_comparison:
                 raise ValueError("can't compare with %r" % other)
             return self.dt_value, other
         if not isinstance(other, self.__class__):
@@ -215,11 +229,11 @@ class Date:
                 other.dt_by_accuracy(Accuracy.fuzzy))
 
     def __add__(self, other):
-        a, b = self._cast_for_operation(other, 'operation')
+        a, b = self._cast_for_operation(other, is_comparison=False)
         return a + b
 
     def __sub__(self, other):
-        a, b = self._cast_for_operation(other, 'operation')
+        a, b = self._cast_for_operation(other, is_comparison=False)
         return a - b
 
     __radd__ = __add__
@@ -249,27 +263,38 @@ class Date:
         return a >= b
 
     def __str__(self):
+        """ String representation - fuzzy dates are in English """
         if self.accuracy is Accuracy.fuzzy:
-            return STRINGS[self.dt_value]
+            strs = {SOON: 'soon', SOMEDAY: 'someday', NODATE: ''}
+            return strs[self.dt_value]
         return self.dt_value.isoformat()
 
     @property
-    def date_str(self):
+    def localized_str(self):
+        """Will return displayable and localized string representation
+        of the GTG.core.dates.Date.
+        """
         if self.accuracy is Accuracy.fuzzy:
             return STRINGS[self.dt_value]
+        if self.accuracy is Accuracy.datetime:
+            span = timedelta(hours=1)
+            now = datetime.now()
+            if now - span <= self.dt_value < now + span:
+                return _('now')
         return self.date().strftime(locale.nl_langinfo(locale.D_FMT))
 
     def __repr__(self):
         return f"<Date({self})>"
 
-    def xml_str(self):
-        """ Representation for XML - fuzzy dates are in English """
-        if self.accuracy is Accuracy.fuzzy:
-            return ENGLISH_STRINGS[self.dt_value]
-        return self.dt_by_accuracy(Accuracy.date).isoformat()
-
     def __bool__(self):
         return self.dt_value != NODATE
+
+    def is_fuzzy(self):
+        """
+        True if the Date is one of the fuzzy values:
+        now, soon, someday or no_date
+        """
+        return self.accuracy is Accuracy.fuzzy
 
     def days_left(self):
         """ Return the difference between the date and today in dates """
@@ -277,23 +302,20 @@ class Date:
             return None
         return (self.dt_by_accuracy(Accuracy.date) - date.today()).days
 
-    def is_fuzzy(self):
-        return self.accuracy is Accuracy.fuzzy
-
-    @staticmethod
-    def today():
+    @classmethod
+    def today(cls):
         """ Return date for today """
-        return Date(date.today())
+        return cls(date.today())
 
-    @staticmethod
-    def tomorrow():
+    @classmethod
+    def tomorrow(cls):
         """ Return date for tomorrow """
-        return Date(date.today() + timedelta(days=1))
+        return cls(date.today() + timedelta(days=1))
 
-    @staticmethod
-    def now():
+    @classmethod
+    def now(cls):
         """ Return date representing fuzzy date now """
-        return _GLOBAL_DATE_NOW
+        return cls.today()
 
     @staticmethod
     def no_date():
@@ -402,8 +424,7 @@ class Date:
         offset = formats.get(string, None)
         if offset is None:
             return None
-        else:
-            return today + timedelta(offset)
+        return today + timedelta(offset)
 
     @classmethod
     def parse(cls, string):
@@ -423,7 +444,7 @@ class Date:
 
         # try the default formats
         try:
-            return Date(string)
+            return cls(string)
         except ValueError:
             pass
 
@@ -436,7 +457,7 @@ class Date:
 
         # Announce the result
         if result is not None:
-            return Date(result)
+            return cls(result)
         else:
             raise ValueError(f"Can't parse date '{string}'")
 

@@ -26,8 +26,7 @@ import datetime
 import logging
 import os
 import time
-from gettext import gettext as _
-from gettext import ngettext
+from gettext import gettext as _, ngettext
 
 from gi.repository import Gdk, Gtk, Pango
 from gi.repository.GObject import signal_handler_block
@@ -515,7 +514,7 @@ class TaskEditor:
             update_date = True
 
         if update_date:
-            self.start_entry.set_text(startdate.date_str)
+            self.start_entry.set_text(startdate.localized_str)
 
         # refreshing the due date field
         duedate = self.task.get_due_date()
@@ -526,13 +525,13 @@ class TaskEditor:
             update_date = True
 
         if update_date:
-            self.due_entry.set_text(duedate.date_str)
+            self.due_entry.set_text(duedate.localized_str)
 
         # refreshing the closed date field
         closeddate = self.task.get_closed_date()
         prevcldate = Date.parse(self.closed_entry.get_text())
         if closeddate != prevcldate:
-            self.closed_entry.set_text(closeddate.date_str)
+            self.closed_entry.set_text(closeddate.localized_str)
 
         # refreshing the day left label
         """
@@ -656,7 +655,7 @@ class TaskEditor:
         """ Callback when a fuzzy date is selected through the popup. """
 
         self.task.set_due_date(date)
-        self.due_entry.set_text(date.date_str)
+        self.due_entry.set_text(date.localized_str)
 
     def on_date_cleared(self, widget, kind):
         """ Callback when a date is cleared through the popups. """
@@ -676,15 +675,15 @@ class TaskEditor:
 
         if kind == GTGCalendar.DATE_KIND_START:
             self.task.set_start_date(Date(date))
-            self.start_entry.set_text(Date(date).date_str)
+            self.start_entry.set_text(Date(date).localized_str)
 
         elif kind == GTGCalendar.DATE_KIND_DUE:
             self.task.set_due_date(Date(date))
-            self.due_entry.set_text(Date(date).date_str)
+            self.due_entry.set_text(Date(date).localized_str)
 
         elif kind == GTGCalendar.DATE_KIND_CLOSED:
             self.task.set_closed_date(Date(date))
-            self.closed_entry.set_text(Date(date).date_str)
+            self.closed_entry.set_text(Date(date).localized_str)
 
     def on_date_changed(self, calendar):
         date, date_kind = calendar.get_selected_date()
