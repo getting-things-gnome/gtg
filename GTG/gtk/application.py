@@ -271,13 +271,13 @@ class Application(Gtk.Application):
     def init_style(self):
         """Load the application's CSS file."""
 
-        screen = Gdk.Screen.get_default()
+        display = Gdk.Display.get_default()
         provider = Gtk.CssProvider()
-        add_provider = Gtk.StyleContext.add_provider_for_screen
+        add_provider = Gtk.StyleContext.add_provider_for_display
         css_path = os.path.join(CSS_DIR, 'style.css')
 
         provider.load_from_path(css_path)
-        add_provider(screen, provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
+        add_provider(display, provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
 
     def toggle_darkmode(self, state=True):
         """Use dark mode theme."""

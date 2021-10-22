@@ -105,21 +105,6 @@ class GTGCalendar(GObject.GObject):
             # to let GTK solve it's bussiness.
             self.__calendar.clear_marks()
 
-    def move_calendar_inside(self, width, height, x, y):
-        """ This method moves the calender inside the screen whenever part of
-        it is displayed outside the screen """
-        screen_width = Gdk.Screen.width()
-        # To display calendar inside the screen when editor window is
-        # outside leftside of the screen
-        if x < width:
-            self.__window.move(2, y - height)
-        # To display calendar inside the screen when editor window is outside
-        # rightside of the screen
-        elif x > (screen_width - 2):
-            self.__window.move(screen_width - width - 2, y - height)
-        else:
-            self.__window.move(x - width, y - height)
-
     def show(self):
         self.__window.show()
 
