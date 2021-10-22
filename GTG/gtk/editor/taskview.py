@@ -653,9 +653,8 @@ class TaskView(GtkSource.View):
     def copy_url(self, menu_item, url: str) -> None:
         """Copy url to clipboard."""
 
-        clipboard = Gtk.Clipboard.get(Gdk.SELECTION_CLIPBOARD)
-        clipboard.set_text(url, -1)
-        clipboard.store()
+        clipboard = self.get_clipboard()
+        clipboard.set(url)
 
     # --------------------------------------------------------------------------
     # PUBLIC API
