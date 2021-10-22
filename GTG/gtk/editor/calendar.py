@@ -120,27 +120,7 @@ class GTGCalendar(GObject.GObject):
             self.__window.move(x - width, y - height)
 
     def show(self):
-        width, height = self.__window.get_size()
         self.__window.show()
-        self.__window.grab_add()
-
-        # We grab the pointer in the calendar
-        # Gdk.pointer_grab(
-        #   self.__window.get_window(),
-        #   True,
-        #   Gdk.ModifierType.BUTTON1_MASK | Gdk.ModifierType.MOD2_MASK
-        # )
-        # FIXME THIS DOES NOT WORK!!!!!!!
-        Gdk.pointer_grab(
-            self.get_window(),
-            True,
-            # Gdk.ModifierType.BUTTON1_MASK | Gdk.ModifierType.MOD2_MASK,
-            # FIXME!!!! JUST GUESSING THE TYPE
-            Gdk.EventMask.ALL_EVENTS_MASK,
-            None,
-            None,
-            0,
-        )
 
         if self.get_decorated():
             self.__window.connect("delete-event", self.close_calendar)
@@ -168,8 +148,6 @@ class GTGCalendar(GObject.GObject):
 
     def close_calendar(self, widget=None, e=None):
         self.__window.hide()
-        Gdk.pointer_ungrab(0)
-        self.__window.grab_remove()
         if self.__sigid is not None:
             self.__calendar.disconnect(self.__sigid)
             self.__sigid = None
