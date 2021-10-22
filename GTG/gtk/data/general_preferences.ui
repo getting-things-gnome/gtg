@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.36.0 -->
 <interface>
-  <requires lib="gtk+" version="3.22"/>
+  <requires lib="gtk" version="4.0"/>
   <object class="GtkAdjustment" id="adjustment1">
     <property name="upper">999</property>
     <property name="value">30</property>
@@ -9,24 +8,19 @@
     <property name="page_increment">10</property>
   </object>
   <object class="GtkScrolledWindow" id="general_pref_window">
-    <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="hscrollbar_policy">never</property>
     <property name="min_content_height">450</property>
-    <child>
+    <property name="child">
       <object class="GtkViewport">
-        <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="shadow_type">none</property>
-        <child>
+        <property name="child">
           <object class="GtkBox">
-            <property name="visible">True</property>
             <property name="halign">start</property>
             <property name="can_focus">False</property>
             <property name="orientation">vertical</property>
             <child>
               <object class="GtkListBox" id="prefs_list">
-                <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="valign">start</property>
                 <property name="margin_start">12</property>
@@ -36,13 +30,10 @@
                 <property name="selection_mode">none</property>
                 <child>
                   <object class="GtkListBoxRow" id="description_row">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
                     <property name="selectable">False</property>
                     <signal name="activate" handler="on_preview_toggled" swapped="no"/>
-                    <child>
+                    <property name="child">
                       <object class="GtkBox">
-                        <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="margin_start">12</property>
                         <property name="margin_end">12</property>
@@ -50,13 +41,11 @@
                         <property name="margin_bottom">8</property>
                         <child>
                           <object class="GtkBox">
-                            <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="valign">center</property>
                             <property name="orientation">vertical</property>
                             <child>
                               <object class="GtkLabel">
-                                <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <property name="label" translatable="yes">Show description preview</property>
                                 <property name="xalign">0</property>
@@ -64,7 +53,6 @@
                             </child>
                             <child>
                               <object class="GtkLabel">
-                                <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <property name="label" translatable="yes">Show a task excerpt next to each task in the Task Browser</property>
                                 <property name="xalign">0</property>
@@ -77,26 +65,21 @@
                         </child>
                         <child>
                           <object class="GtkSwitch" id="preview_button">
-                            <property name="visible">True</property>
                             <property name="halign">end</property>
                             <property name="valign">center</property>
                             <property name="hexpand">True</property>
-                            <property name="can_focus">True</property>
                             <signal name="state-set" handler="on_preview_toggled" swapped="no"/>
                           </object>
                         </child>
                       </object>
-                    </child>
+                    </property>
                   </object>
                 </child>
                 <child>
                   <object class="GtkListBoxRow">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
                     <property name="selectable">False</property>
-                    <child>
+                    <property name="child">
                       <object class="GtkBox">
-                        <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="margin_start">12</property>
                         <property name="margin_end">12</property>
@@ -104,13 +87,11 @@
                         <property name="margin_bottom">8</property>
                         <child>
                           <object class="GtkBox">
-                            <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="valign">center</property>
                             <property name="orientation">vertical</property>
                             <child>
                               <object class="GtkLabel">
-                                <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <property name="label" translatable="yes">Enable colored backgrounds</property>
                                 <property name="xalign">0</property>
@@ -118,7 +99,6 @@
                             </child>
                             <child>
                               <object class="GtkLabel">
-                                <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <property name="label" translatable="yes">Show colored backgrounds for a task based on the colors of its tags</property>
                                 <property name="xalign">0</property>
@@ -131,27 +111,22 @@
                         </child>
                         <child>
                           <object class="GtkSwitch" id="bg_color_button">
-                            <property name="visible">True</property>
                             <property name="hexpand">True</property>
-                            <property name="can_focus">True</property>
                             <property name="halign">end</property>
                             <property name="valign">center</property>
                             <signal name="state-set" handler="on_bg_color_toggled" swapped="no"/>
                           </object>
                         </child>
                       </object>
-                    </child>
+                    </property>
                   </object>
                 </child>
                 <child>
                   <object class="GtkListBoxRow">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
                     <property name="activatable">False</property>
                     <property name="selectable">False</property>
-                    <child>
+                    <property name="child">
                       <object class="GtkBox">
-                        <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="margin_start">12</property>
                         <property name="margin_end">12</property>
@@ -159,13 +134,11 @@
                         <property name="margin_bottom">8</property>
                         <child>
                           <object class="GtkBox">
-                            <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="valign">center</property>
                             <property name="orientation">vertical</property>
                             <child>
                               <object class="GtkLabel">
-                                <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <property name="label" translatable="yes">Start of the day</property>
                                 <property name="xalign">0</property>
@@ -173,7 +146,6 @@
                             </child>
                             <child>
                               <object class="GtkLabel">
-                                <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <property name="label" translatable="yes">Automatically refreshes the task list and adjusts the "Actionable" view</property>
                                 <property name="xalign">0</property>
@@ -186,8 +158,6 @@
                         </child>
                         <child>
                           <object class="GtkEntry" id="time_entry">
-                            <property name="visible">True</property>
-                            <property name="can_focus">True</property>
                             <property name="hexpand">True</property>
                             <property name="valign">center</property>
                             <property name="halign">end</property>
@@ -200,18 +170,15 @@
                           </object>
                         </child>
                       </object>
-                    </child>
+                    </property>
                   </object>
                 </child>
                 <child>
                   <object class="GtkListBoxRow">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
                     <property name="selectable">False</property>
                     <signal name="activate" handler="on_font_change" swapped="no"/>
-                    <child>
+                    <property name="child">
                       <object class="GtkBox">
-                        <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="margin_start">12</property>
                         <property name="margin_end">12</property>
@@ -219,7 +186,6 @@
                         <property name="margin_bottom">8</property>
                         <child>
                           <object class="GtkLabel">
-                            <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="label" translatable="yes">Task Editor font</property>
                             <property name="xalign">0</property>
@@ -227,10 +193,8 @@
                         </child>
                         <child>
                           <object class="GtkFontButton" id="font_button">
-                            <property name="visible">True</property>
                             <property name="hexpand">True</property>
                             <property name="halign">end</property>
-                            <property name="can_focus">True</property>
                             <property name="receives_default">True</property>
                             <property name="font">Sans 12</property>
                             <property name="preview_text"/>
@@ -238,17 +202,14 @@
                           </object>
                         </child>
                       </object>
-                    </child>
+                    </property>
                   </object>
                 </child>
                 <child>
                   <object class="GtkListBoxRow">
                     <property name="width_request">100</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <child>
+                    <property name="child">
                       <object class="GtkBox">
-                        <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="margin_start">12</property>
                         <property name="margin_end">12</property>
@@ -256,7 +217,6 @@
                         <property name="margin_bottom">8</property>
                         <child>
                           <object class="GtkLabel">
-                            <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="label" translatable="yes">Dark Mode</property>
                             <property name="xalign">0</property>
@@ -265,16 +225,14 @@
                         <child>
                           <object class="GtkSwitch" id="darkmode_enable">
                             <property name="name">autoclean_button</property>
-                            <property name="visible">True</property>
                             <property name="hexpand">True</property>
-                            <property name="can_focus">True</property>
                             <property name="halign">end</property>
                             <property name="valign">center</property>
                             <signal name="state-set" handler="on_dark_mode_toggled" swapped="no"/>
                           </object>
                         </child>
                       </object>
-                    </child>
+                    </property>
                   </object>
                 </child>
                 <style>
@@ -284,7 +242,6 @@
             </child>
             <child>
               <object class="GtkLabel">
-                <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="margin_start">23</property>
                 <property name="margin_end">12</property>
@@ -298,7 +255,6 @@
             </child>
             <child>
               <object class="GtkListBox">
-                <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="margin_start">12</property>
                 <property name="margin_end">12</property>
@@ -306,12 +262,9 @@
                 <property name="margin_bottom">8</property>
                 <child>
                   <object class="GtkListBoxRow">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
                     <property name="selectable">False</property>
-                    <child>
+                    <property name="child">
                       <object class="GtkBox">
-                        <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="margin_start">12</property>
                         <property name="margin_end">12</property>
@@ -319,7 +272,6 @@
                         <property name="margin_bottom">8</property>
                         <child>
                           <object class="GtkLabel">
-                            <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="label" translatable="yes">Automatically remove old closed tasks</property>
                             <property name="xalign">0</property>
@@ -328,26 +280,21 @@
                         <child>
                           <object class="GtkSwitch" id="autoclean_enable">
                             <property name="name">autoclean_button</property>
-                            <property name="visible">True</property>
                             <property name="hexpand">True</property>
-                            <property name="can_focus">True</property>
                             <property name="valign">center</property>
                             <property name="halign">end</property>
                             <signal name="state-set" handler="on_autoclean_toggled" swapped="no"/>
                           </object>
                         </child>
                       </object>
-                    </child>
+                    </property>
                   </object>
                 </child>
                 <child>
                   <object class="GtkListBoxRow">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
                     <property name="selectable">False</property>
-                    <child>
+                    <property name="child">
                       <object class="GtkBox">
-                        <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="margin_start">12</property>
                         <property name="margin_end">12</property>
@@ -355,7 +302,6 @@
                         <property name="margin_bottom">8</property>
                         <child>
                           <object class="GtkLabel">
-                            <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="label" translatable="yes">Days to wait before removing a task</property>
                             <property name="xalign">0</property>
@@ -364,20 +310,16 @@
                         <child>
                           <object class="GtkSpinButton" id="autoclean_days">
                             <property name="name">autoclean_days</property>
-                            <property name="visible">True</property>
                             <property name="hexpand">True</property>
                             <property name="halign">end</property>
-                            <property name="can_focus">True</property>
                             <property name="text">30</property>
-                            <property name="progress_pulse_step">0.5</property>
-                            <property name="input_purpose">number</property>
                             <property name="adjustment">adjustment1</property>
                             <property name="numeric">True</property>
                             <signal name="value-changed" handler="on_autoclean_days_changed" swapped="no"/>
                           </object>
                         </child>
                       </object>
-                    </child>
+                    </property>
                   </object>
                 </child>
                 <style>
@@ -389,8 +331,6 @@
               <object class="GtkButton">
                 <property name="label" translatable="yes">Purge Now</property>
                 <property name="name">purge_now_button</property>
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="halign">end</property>
                 <property name="margin_end">18</property>
@@ -398,8 +338,8 @@
               </object>
             </child>
           </object>
-        </child>
+        </property>
       </object>
-    </child>
+    </property>
   </object>
 </interface>
