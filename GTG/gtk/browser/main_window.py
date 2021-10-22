@@ -885,7 +885,7 @@ class MainWindow(Gtk.ApplicationWindow):
         """
         deals with mouse click event on the tag tree
         """
-        event = Gtk.get_current_event()
+        event = gesture.get_current_event()
         log.debug("Received button event #%d at %d, %d",
                   event.button, event.x, event.y)
         if event.button.button == 3:
@@ -930,7 +930,7 @@ class MainWindow(Gtk.ApplicationWindow):
 
     def on_tag_treeview_key_press_event(self, controller, keyval, keycode, state):
         keyname = Gdk.keyval_name(keyval)
-        event = Gtk.get_current_event()
+        event = controller.get_current_event()
         is_shift_f10 = (keyname == "F10" and state & Gdk.ModifierType.SHIFT_MASK)
         if is_shift_f10 or keyname == "Menu":
             selected_tags = self.get_selected_tags(nospecial=True)
@@ -978,7 +978,7 @@ class MainWindow(Gtk.ApplicationWindow):
     def on_task_treeview_click_begin(self, gesture, sequence):
         """ Pop up context menu on right mouse click in the main
         task tree view """
-        event = Gtk.get_current_event()
+        event = gesture.get_current_event()
         treeview = gesture.get_widget()
         log.debug("Received button event #%s at %d,%d",
                   event.button, event.x, event.y)
@@ -1002,7 +1002,7 @@ class MainWindow(Gtk.ApplicationWindow):
 
     def on_task_treeview_key_press_event(self, controller, keyval, keycode, state):
         keyname = Gdk.keyval_name(keyval)
-        event = Gtk.get_current_event()
+        event = controller.get_current_event()
         is_shift_f10 = (keyname == "F10" and state & Gdk.ModifierType.SHIFT_MASK)
 
         if is_shift_f10 or keyname == "Menu":
@@ -1010,7 +1010,7 @@ class MainWindow(Gtk.ApplicationWindow):
             return True
 
     def on_closed_task_treeview_click_begin(self, gesture, sequence):
-        event = Gtk.get_current_event()
+        event = gesture.get_current_event()
         treeview = gesture.get_widget()
         if event.button.button == 3:
             x = int(event.x)
@@ -1031,7 +1031,7 @@ class MainWindow(Gtk.ApplicationWindow):
 
     def on_closed_task_treeview_key_press_event(self, controller, keyval, keycode, state):
         keyname = Gdk.keyval_name(keyval)
-        event = Gtk.get_current_event()
+        event = controller.get_current_event()
         is_shift_f10 = (keyname == "F10" and state & Gdk.ModifierType.SHIFT_MASK)
 
         if is_shift_f10 or keyname == "Menu":
