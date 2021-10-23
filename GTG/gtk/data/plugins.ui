@@ -14,11 +14,6 @@
       <object class="GtkBox" id="pa-vbox1">
         <property name="orientation">vertical</property>
         <property name="spacing">2</property>
-        <child internal-child="action_area">
-          <object class="GtkButtonBox" id="pa-action_area1">
-            <property name="layout_style">end</property>
-          </object>
-        </child>
         <child>
           <object class="GtkFrame" id="pa-frame1">
             <property name="child">
@@ -119,16 +114,6 @@
               </object>
             </child>
           </object>
-        </child>
-      </object>
-    </child>
-    <child internal-child="action_area">
-      <object class="GtkButtonBox">
-        <child>
-          <placeholder/>
-        </child>
-        <child>
-          <placeholder/>
         </child>
       </object>
     </child>
