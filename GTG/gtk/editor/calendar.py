@@ -49,6 +49,10 @@ class GTGCalendar(GObject.GObject):
 
     def __init_gtk__(self):
         self.__window = self.__builder.get_object("calendar")
+        self.__window.add_shortcut(Gtk.Shortcut.new(
+            Gtk.ShortcutTrigger.parse_string("Escape"),
+            Gtk.CallbackAction.new(self._esc_close)
+        ))
         self.__calendar = self.__builder.get_object("calendar1")
         self.__fuzzydate_btns = self.__builder.get_object("fuzzydate_btns")
         self.__builder.get_object("button_clear").connect(
@@ -59,11 +63,6 @@ class GTGCalendar(GObject.GObject):
             "clicked", lambda w: self.__day_selected(w, "soon"))
         self.__builder.get_object("button_someday").connect(
             "clicked", lambda w: self.  __day_selected(w, "someday"))
-        # allow fast closing by Escape key
-        agr = Gtk.AccelGroup()
-        self.add_accel_group(agr)
-        key, modifier = Gtk.accelerator_parse('Escape')
-        agr.connect(key, modifier, Gtk.AccelFlags.VISIBLE, self._esc_close)
 
     def set_date(self, date, date_kind):
         self.__date_kind = date_kind
@@ -181,13 +180,9 @@ class GTGCalendar(GObject.GObject):
     def __getattr__(self, attr):
         return getattr(self.__window, attr)
 
-    def _esc_close(self, widget, event, arg1=None, arg2=None, arg3=None):
+    def _esc_close(self, widget=None, args=None):
         """
         Callback: Close this window when pressing Escape.
-
-        Arguments arg1-arg3 are needed to satisfy callback when closing
-        by Escape
         """
-
         self.close_calendar()
         return True
