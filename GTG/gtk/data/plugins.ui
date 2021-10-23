@@ -4,7 +4,7 @@
   <object class="GtkAboutDialog" id="PluginAboutDialog">
     <property name="logo_icon_name">system-run-symbolic</property>
     <signal name="close" handler="on_PluginAboutDialog_close" swapped="no"/>
-    <signal name="delete-event" handler="on_PluginAboutDialog_close" swapped="no"/>
+    <signal name="close-request" handler="on_PluginAboutDialog_close" swapped="no"/>
     <signal name="response" handler="on_PluginAboutDialog_close" swapped="no"/>
     <child>
       <placeholder/>
@@ -39,7 +39,7 @@
   <object class="GtkDialog" id="PluginsDialog">
     <property name="default_width">500</property>
     <property name="default_height">500</property>
-    <signal name="delete-event" handler="on_PluginsDialog_delete_event" swapped="no"/>
+    <signal name="close-request" handler="on_PluginsDialog_delete_event" swapped="no"/>
     <child>
       <placeholder/>
     </child>
