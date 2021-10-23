@@ -396,14 +396,13 @@ class MainWindow(Gtk.ApplicationWindow):
             "on_quickadd_field_activate": self.on_quickadd_activate,
             "on_quickadd_field_focus_in": self.on_quickadd_focus_in,
             "on_quickadd_field_focus_out": self.on_quickadd_focus_out,
-            "on_about_delete": self.on_about_close,
             "on_about_close": self.on_about_close,
             "on_search": self.on_search,
         }
         self.builder.connect_signals(SIGNAL_CONNECTIONS_DIC)
 
         # When destroying this window, quit GTG
-        self.connect("destroy", self.quit)
+        self.connect("close-request", self.quit)
 
         # Store window position
         self.connect('size-allocate', self.on_size_allocate)
