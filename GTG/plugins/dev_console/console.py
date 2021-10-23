@@ -67,9 +67,7 @@ class DevConsolePlugin():
         self.window = None
         self.terminal = None
 
-        self.menu_btn = Gtk.ModelButton.new()
-        self.menu_btn.props.text = _('Developer Console')
-        self.menu_btn.connect('clicked', self.open_window)
+        self.menu_item = Gio.MenuItem.new('Developer Console', 'app.plugin.open_console')
 
         # Set prompt.
         sys.ps1 = ">>> "
@@ -80,7 +78,7 @@ class DevConsolePlugin():
         """Plugin is activated."""
 
         self.api = api
-        self.api.add_menu_item(self.menu_btn)
+        self.api.add_menu_item(self.menu_item)
 
         namespace = GTGNamespace(self.api.get_view_manager())
         self.window = Gtk.Window()
@@ -129,7 +127,7 @@ class DevConsolePlugin():
     def deactivate(self, api: PluginAPI) -> None:
         """Deactivates the plugin."""
 
-        api.remove_menu_item(self.menu_btn)
+        api.remove_menu_item(self.menu_item)
 
 
     def open_window(self, widget=None, unsued=None) -> None:

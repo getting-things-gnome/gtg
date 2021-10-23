@@ -24,7 +24,7 @@ import subprocess
 import webbrowser
 import logging
 
-from gi.repository import GObject, Gtk, GdkPixbuf, GLib
+from gi.repository import GObject, Gtk, GdkPixbuf, GLib, Gio
 
 from gettext import gettext as _
 from GTG.plugins.export.task_str import get_task_wrappers
@@ -147,10 +147,10 @@ class ExportPlugin():
 # GTK FUNCTIONS ###############################################################
     def _init_gtk(self):
         """ Initialize all the GTK widgets """
-        self.menu_item = Gtk.ModelButton()
-        self.menu_item.props.text = _("Export the tasks currently listed")
-        self.menu_item.connect('clicked', self.show_dialog)
-        self.menu_item.show()
+        self.menu_item = Gio.MenuItem.new(_("Export the tasks currently listed"), "app.plugin.open_export")
+        open_action = Gio.SimpleAction.new('plugin.open_export', None)
+        open_action.connect('activate', self.show_dialog)
+        self.plugin_api.get_view_manager().add_action(open_action)
         self.plugin_api.add_menu_item(self.menu_item)
 
         builder = Gtk.Builder()
@@ -196,7 +196,7 @@ class ExportPlugin():
         """ Remove Menu item for this plugin """
         self.plugin_api.remove_menu_item(self.menu_item)
 
-    def show_dialog(self, widget):
+    def show_dialog(self, action, param):
         """ Show dialog with options for export """
         parent_window = self.plugin_api.get_ui().get_window()
         self.export_dialog.set_transient_for(parent_window)

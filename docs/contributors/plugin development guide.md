@@ -83,8 +83,8 @@ A helloword plugin is packed along with GTG for example purposes. You can check 
 
 | **Method** | **Description** |
 |------------|-----------------|
-|add_menu_item(item) | Adds a menu to the Plugin Menu in the menu bar of the task browser. <br> **item** is the gtk.MenuItem that is going to be added. |
-|remove_menu_item(item) | Removes a menu from the Plugin Menu in the menu bar of the task browser. <br> **item** is the gtk.MenuItem that is going to be removed. |
+|add_menu_item(item) | Adds a menu to the Plugin Menu in the menu bar of the task browser. <br> **item** is the gio.MenuItem that is going to be added. |
+|remove_menu_item(item) | Removes a menu from the Plugin Menu in the menu bar of the task browser. <br> **item** is the gio.MenuItem that is going to be removed. |
 |add_toolbar_item(item) | Adds a button to the task browser's toolbar. <br> **item** is the gtk.ToolButton that is going to be added to the toolbar. <br> **Returns**: a integer that represents the position of the item in the toolbar. |
 |remove_toolbar_item(item, n=None) | Removes a toolbar button from the task browser's toolbar. <br> **item** is the gtk.ToolButton that is going to be removed. <br> **n** is the position of the item to be removed. It's useful to remove gtk.SeparatorToolItem(). ie, remove_toolbar_item(None, 14) |
 |add_task_toolbar_item(item) | Adds a button to the task editor's toolbar. <br> **item** is the gtk.ToolButton that is going to be added to the toolbar. |

@@ -30,16 +30,29 @@ from gettext import gettext as _
 
 class SendEmailPlugin():
 
+    ACTION_GROUP_PREF = "editor_plugin_email"
+
     def onTaskOpened(self, plugin_api):
         """
         Adds the button when a task is opened.
         """
-        self.plugin_api = plugin_api
+        group = Gio.SimpleActionGroup()
+        send_action = Gio.SimpleAction.new("send_as_email", None)
+        send_action.connect("activate", self._on_send_activate, plugin_api)
+        group.add_action(send_action)
+        plugin_api.get_ui().window.insert_action_group(self.ACTION_GROUP_PREF, group)
 
-        self.menu_item = Gtk.ModelButton.new()
-        self.menu_item.props.text = _("Send via email")
-        self.menu_item.connect("clicked", self.onTbTaskButton, plugin_api)
-        self.plugin_api.add_menu_item(self.menu_item)
+        self.menu_item = Gio.MenuItem.new(
+            _("Send via email"), ".".join([self.ACTION_GROUP_PREF, "send_as_email"])
+        )
+        plugin_api.add_menu_item(self.menu_item)
+
+    def onTaskClosed(self, plugin_api):
+        """
+        Removes the button when a task is closed.
+        """
+        plugin_api.get_ui().window.insert_action_group(self.ACTION_GROUP_PREF, None)
+        plugin_api.remove_menu_item(self.menu_item)
 
     def deactivate(self, plugin_api):
         """
@@ -47,7 +60,7 @@ class SendEmailPlugin():
         """
         pass
 
-    def onTbTaskButton(self, widget, plugin_api):
+    def _on_send_activate(self, action, param, plugin_api):
         """
         When the user presses the button.
         """
