@@ -6,9 +6,6 @@
     <property name="resizable">False</property>
     <property name="modal">True</property>
     <property name="destroy_with_parent">True</property>
-    <child>
-      <placeholder/>
-    </child>
     <property name="child">
       <object class="GtkBox" id="vbox5">
         <property name="margin_start">12</property>
