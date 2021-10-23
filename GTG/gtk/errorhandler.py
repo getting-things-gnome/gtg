@@ -69,18 +69,17 @@ Please report the bug in <a href="{url}">our issue tracker</a>, with steps to tr
         expander_content = Gtk.ScrolledWindow()
         expander_content.set_border_width(12) # Outer padding around text
         expander_content.set_child(self._additional_info)
-        expander = Gtk.Expander()
-        expander.set_label(_("Details to paste in your bug report"))
-        expander.set_child(expander_content)
-        self.get_content_area().append(expander)
+        self._expander = Gtk.Expander()
+        self._expander.set_label(_("Details to report"))
+        self._expander.set_child(expander_content)
+        self.get_content_area().append(self._expander)
+        self._expander.bind_property("expanded", self, "resizable",
+                                     GObject.BindingFlags.SYNC_CREATE)
 
         # Prevent the window from becoming too tall, or having a weird aspect ratio:
         expander_content.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
         expander_content.props.height_request = 200
         self.props.width_request = 450
-
-        expander.bind_property("expanded", self, "resizable", GObject.BindingFlags.SYNC_CREATE)
-        expander.show_all()
 
         self._exception = exception
         self.context_info = context_info # Also refreshes the text
@@ -209,7 +208,7 @@ def do_error_dialog(exception, context: str = None, ignorable: bool = True, main
     """
     dialog = ExceptionHandlerDialog(exception, main_msg, ignorable, context)
     dialog.connect('response', handle_response)
-    dialog.show_all()
+    dialog.show()
     return dialog
 
 

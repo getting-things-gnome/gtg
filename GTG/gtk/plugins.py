@@ -197,7 +197,7 @@ class PluginsDialog():
             self._init_plugin_tree()
         else:
             self._refresh_plugin_store()
-        self.dialog.show_all()
+        self.dialog.show()
 
     def on_close(self, widget, data=None):
         """ Close the plugins dialog."""
@@ -276,7 +276,7 @@ class PluginsDialog():
         description = plugin.description.replace(r'\n', "\n")
         self.plugin_about.set_comments(description)
         self.plugin_depends.set_label(plugin_error_text(plugin))
-        self.plugin_about.show_all()
+        self.plugin_about.show()
 
     def on_plugin_about_close(self, widget, data=None):
 
