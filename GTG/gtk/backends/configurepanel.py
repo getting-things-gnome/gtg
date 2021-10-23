@@ -224,7 +224,6 @@ class ConfigurePanel(Gtk.Box):
         if active:
             if isinstance(self.spinner, Gtk.Spinner):
                 self.spinner.start()
-            self.spinner.show()
         else:
             self.spinner.hide()
             if isinstance(self.spinner, Gtk.Spinner):

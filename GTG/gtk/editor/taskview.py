@@ -409,7 +409,6 @@ class TaskView(GtkSource.View):
             self.buffer.apply_tag(self.checkbox_tag, start, end)
 
         self.buffer.set_modified(False)
-        checkbox.show()
 
 
     def detect_tag(self, text: str, start: Gtk.TextIter) -> None:
