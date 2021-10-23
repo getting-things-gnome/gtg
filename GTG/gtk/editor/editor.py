@@ -170,7 +170,6 @@ class TaskEditor:
         scrolled.set_child(None)
         self.textview = TaskView(self.req, self.clipboard)
         self.textview.set_vexpand(True)
-        self.textview.show()
         scrolled.set_child(self.textview)
         conf_font_value = self.browser_config.get("font_name")
         if conf_font_value != "":
@@ -843,7 +842,7 @@ class TaskEditor:
         self.parent_popover = Gtk.Popover.new(self.parent_button)
         self.parent_popover.set_child(parent_box)
         self.parent_popover.set_transitions_enabled(True)
-        self.parent_popover.show_all()
+        self.parent_popover.show()
 
     # On click handler for open_parent menu items in the case of multiple parents
     def on_parent_item_clicked(self, widget, parent_id):

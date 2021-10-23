@@ -72,9 +72,6 @@ class TagContextMenu(Gtk.Menu):
                 self.append(self.mi_del_tag)
                 self.mi_del_tag.connect('activate', self.app.browser.on_delete_tag_activate)
 
-        # Make it visible
-        self.show_all()
-
     # PUBLIC API ##############################################################
     def set_tag(self, tag):
         """Update the context menu items using the tag attributes."""

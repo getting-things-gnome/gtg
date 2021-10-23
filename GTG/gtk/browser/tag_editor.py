@@ -62,7 +62,7 @@ class TagEditor(Gtk.Window):
         self.use_icon = False
 
         self.set_tag(tag)
-        self.show_all()
+        self.show()
 
     @GObject.Property(type=bool, default=False)
     def has_color(self):

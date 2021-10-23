@@ -70,7 +70,6 @@ However, more unexpected things can happen, and thus be careful.""")
         self.get_content_area().append(self._expander)
         self._expander.bind_property("expanded", self, "resizable",
                                      GObject.BindingFlags.SYNC_CREATE)
-        self._expander.show_all()
 
         self._exception = exception
         self.context_info = context_info # Also refreshes the text
@@ -167,7 +166,7 @@ def do_error_dialog(exception, context: str = None, ignorable: bool = True, main
     """
     dialog = ExceptionHandlerDialog(exception, main_msg, ignorable, context)
     dialog.connect('response', handle_response)
-    dialog.show_all()
+    dialog.show()
     return dialog
 
 

@@ -192,7 +192,6 @@ class PluginAPI():
         vbox = self.__builder.get_object('pluginbox')
         if vbox:
             vbox.append(widget)
-            widget.show_all()
             self.taskwidget_id += 1
             self.taskwidget_widg.append(widget)
             return self.taskwidget_id
