@@ -174,7 +174,6 @@ class BackendInfoBar(Gtk.InfoBar):
         self.dialog.set_title(title)
         self.dialog.set_transient_for(self.browser.window)
         self.dialog.set_destroy_with_parent(True)
-        self.dialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
         self.dialog.set_modal(True)
         #        self.dialog.set_size_request(300,170)
         vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)

@@ -279,7 +279,6 @@ class MainWindow(Gtk.ApplicationWindow):
         self.deletetags_dialog = DeleteTagsDialog(self.req, self)
         self.calendar = GTGCalendar()
         self.calendar.set_transient_for(self)
-        self.calendar.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
         self.calendar.connect("date-changed", self.on_date_changed)
 
     def _set_defer_days(self, timer=None):
