@@ -2,9 +2,9 @@
 <interface>
   <requires lib="gtk" version="4.0"/>
   <template class="GTG_TagEditor" parent="GtkWindow">
+    <property name="title" translatable="yes" comments="Edit tag windwo title">Edit %s</property>
     <child type="titlebar">
       <object class="GtkHeaderBar" id="headerbar">
-        <property name="title" translatable="yes" comments="Edit tag windwo title">Edit %s</property>
         <child>
           <object class="GtkButton" id="cancel">
             <property name="label" translatable="yes">Cancel</property>
