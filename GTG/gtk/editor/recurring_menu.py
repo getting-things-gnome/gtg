@@ -35,7 +35,6 @@ class RecurringMenu():
         self.title_separator = builder.get_object('title_separator')
         self.repeat_checkbox = builder.get_object('repeat_checkbutton')
         self.repeat_icon = builder.get_object('repeat_icon')
-        self.icon_style = self.repeat_icon.get_style_context()
         self.stack = builder.get_object('main_stack')
         self.page1 = builder.get_object('stack_main_box')
         self._monthly_calendar = builder.get_object('month_calender')
@@ -46,14 +45,14 @@ class RecurringMenu():
         self.update_calendar()
         self.repeat_checkbox.set_active(self.task.get_recurring())
         if self.task.get_recurring():
-            self.icon_style.add_class('recurring-active')
+            self.repeat_icon.add_css_class('recurring-active')
 
     def update_repeat_button_icon(self, active=True):
         """ Update the icon color of the repeat-menu-button in the task editor """
         if active:
-            self.icon_style.add_class('recurring-active')
+            self.repeat_icon.add_css_class('recurring-active')
         else:
-            self.icon_style.remove_class('recurring-active')
+            self.repeat_icon.remove_css_class('recurring-active')
 
     def is_term_set(self):
         return self.selected_recurring_term is not None

@@ -235,7 +235,7 @@ class Application(Gtk.Application):
             self.browser = MainWindow(self.req, self)
 
             if self.props.application_id == 'org.gnome.GTGDevel':
-                self.browser.get_style_context().add_class('devel')
+                self.browser.add_css_class('devel')
 
     def init_plugin_engine(self):
         """Setup the plugin engine."""
@@ -269,15 +269,14 @@ class Application(Gtk.Application):
         """Use dark mode theme."""
 
         settings = Gtk.Settings.get_default()
-        prefs_css = self.preferences_dialog.window.get_style_context()
         settings.set_property("gtk-application-prefer-dark-theme", state)
 
         # Toggle dark mode for preferences and editors
         if state:
-            prefs_css.add_class('dark')
+            self.preferences_dialog.window.add_css_class('dark')
             text_tags.use_dark_mode()
         else:
-            prefs_css.remove_class('dark')
+            self.preferences_dialog.window.remove_css_class('dark')
             text_tags.use_light_mode()
 
     def init_actions(self):
