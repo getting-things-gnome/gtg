@@ -4,6 +4,7 @@
   <object class="GtkDialog" id="modifytags_dialog">
     <property name="border_width">5</property>
     <property name="title" translatable="yes">Modify Tags</property>
+    <signal name="response" handler="on_modifytags_response"/>
     <child internal-child="content_area">
       <object class="GtkBox" id="modifytags_dialog_vbox">
         <property name="orientation">vertical</property>
@@ -36,34 +37,19 @@ space. Place '!' before tags you want to remove.</property>
         </child>
       </object>
     </child>
-    <action-widgets>
-      <action-widget response="0">modifytags_ok</action-widget>
-      <action-widget response="0">modifytags_cancel</action-widget>
-    </action-widgets>
-    <child internal-child="action_area">
-      <object class="GtkButtonBox" id="dialog_action_area">
-        <property name="layout_style">end</property>
-        <child>
-          <object class="GtkButton" id="modifytags_ok">
-            <property name="label" translatable="yes">Apply</property>
-            <property name="can_default">True</property>
-            <property name="has_default">1</property>
-            <signal name="activate" handler="on_modifytags_confirm" swapped="no"/>
-            <signal name="clicked" handler="on_modifytags_confirm" swapped="no"/>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">False</property>
-            <property name="position">0</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkButton" id="modifytags_cancel">
-            <property name="label" translatable="yes">Cancel</property>
-            <property name="use_action_appearance">False</property>
-          </object>
-        </child>
+    <child type="action">
+      <object class="GtkButton" id="modifytags_apply">
+        <property name="label" translatable="yes">Apply</property>
       </object>
     </child>
+    <child type="action">
+      <object class="GtkButton" id="modifytags_cancel">
+        <property name="label" translatable="yes">Cancel</property>
+      </object>
+    </child>
+    <action-widgets>
+      <action-widget response="apply">modifytags_apply</action-widget>
+      <action-widget response="cancel">modifytags_cancel</action-widget>
+    </action-widgets>
   </object>
 </interface>

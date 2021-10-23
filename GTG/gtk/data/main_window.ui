@@ -12,12 +12,6 @@
       <object class="GtkBox" id="about_dialog_vbox">
         <property name="orientation">vertical</property>
         <property name="spacing">2</property>
-        <child internal-child="action_area">
-          <object class="GtkButtonBox" id="dialog-action_area2">
-            <property name="visible">True</property>
-            <property name="layout_style">end</property>
-          </object>
-        </child>
       </object>
     </child>
     <child type="titlebar">
