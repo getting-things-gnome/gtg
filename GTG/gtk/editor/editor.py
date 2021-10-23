@@ -843,7 +843,6 @@ class TaskEditor:
         self.parent_popover = Gtk.Popover.new(self.parent_button)
         self.parent_popover.add(parent_box)
         self.parent_popover.set_property("border-width", 0)
-        self.parent_popover.set_position(Gtk.PositionType.BOTTOM)
         self.parent_popover.set_transitions_enabled(True)
         self.parent_popover.show_all()
 
