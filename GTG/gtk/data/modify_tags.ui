@@ -2,23 +2,19 @@
 <interface>
   <requires lib="gtk" version="4.0"/>
   <object class="GtkDialog" id="modifytags_dialog">
-    <property name="can_focus">False</property>
     <property name="border_width">5</property>
     <property name="title" translatable="yes">Modify Tags</property>
     <child internal-child="content_area">
       <object class="GtkBox" id="modifytags_dialog_vbox">
-        <property name="can_focus">False</property>
         <property name="orientation">vertical</property>
         <property name="spacing">2</property>
         <child>
           <object class="GtkLabel" id="modifytags_label">
-            <property name="can_focus">False</property>
             <property name="label" translatable="yes">Enter the name of the tag(s) you wish to add or remove:</property>
           </object>
         </child>
         <child>
           <object class="GtkEntry" id="tag_entry">
-            <property name="is_focus">True</property>
             <property name="invisible_char">●</property>
             <property name="activates_default">True</property>
             <property name="text" translatable="yes">TagName</property>
@@ -26,7 +22,6 @@
         </child>
         <child>
           <object class="GtkLabel" id="hint_label">
-            <property name="can_focus">False</property>
             <property name="label" translatable="yes">Hint: you can add several tags by separating them with
 space. Place '!' before tags you want to remove.</property>
             <attributes>
@@ -47,7 +42,6 @@ space. Place '!' before tags you want to remove.</property>
     </action-widgets>
     <child internal-child="action_area">
       <object class="GtkButtonBox" id="dialog_action_area">
-        <property name="can_focus">False</property>
         <property name="layout_style">end</property>
         <child>
           <object class="GtkButton" id="modifytags_ok">

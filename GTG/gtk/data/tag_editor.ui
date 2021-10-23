@@ -2,10 +2,8 @@
 <interface>
   <requires lib="gtk" version="4.0"/>
   <template class="GTG_TagEditor" parent="GtkWindow">
-    <property name="can_focus">False</property>
     <child type="titlebar">
       <object class="GtkHeaderBar" id="headerbar">
-        <property name="can_focus">False</property>
         <property name="title" translatable="yes" comments="Edit tag windwo title">Edit %s</property>
         <child>
           <object class="GtkButton" id="cancel">
@@ -34,7 +32,6 @@
     </child>
     <property name="child">
       <object class="GtkBox" id="main">
-        <property name="can_focus">False</property>
         <property name="margin_start">18</property>
         <property name="margin_end">18</property>
         <property name="margin_top">18</property>
@@ -42,14 +39,12 @@
         <property name="spacing">12</property>
         <child>
           <object class="GtkBox">
-            <property name="can_focus">False</property>
             <property name="valign">start</property>
             <property name="margin_end">18</property>
             <property name="orientation">vertical</property>
             <property name="spacing">6</property>
             <child>
               <object class="GtkBox">
-                <property name="can_focus">False</property>
                 <property name="halign">center</property>
                 <child>
                   <object class="GtkButton" id="icon-button">
@@ -69,7 +64,6 @@
                   <object class="GtkEntry" id="emoji-entry">
                     <property name="width_request">0</property>
                     <property name="height_request">0</property>
-                    <property name="can_focus">False</property>
                     <property name="opacity">0</property>
                     <property name="editable">False</property>
                     <property name="max_length">1</property>
@@ -92,7 +86,6 @@
                 <child>
                   <object class="GtkImage">
                     <property name="sensitive">False</property>
-                    <property name="can_focus">False</property>
                     <property name="icon_name">user-trash-symbolic</property>
                   </object>
                 </child>
@@ -102,17 +95,14 @@
         </child>
         <child>
           <object class="GtkBox">
-            <property name="can_focus">False</property>
             <property name="orientation">vertical</property>
             <property name="spacing">18</property>
             <child>
               <object class="GtkGrid">
-                <property name="can_focus">False</property>
                 <property name="row_spacing">6</property>
                 <property name="column_spacing">12</property>
                 <child>
                   <object class="GtkLabel" id="name-label">
-                    <property name="can_focus">False</property>
                     <property name="halign">end</property>
                     <property name="label" translatable="yes">Name</property>
                     <property name="xalign">1</property>
@@ -138,12 +128,10 @@
             </child>
             <child>
               <object class="GtkGrid">
-                <property name="can_focus">False</property>
                 <property name="row_spacing">6</property>
                 <property name="column_spacing">12</property>
                 <child>
                   <object class="GtkLabel" id="label-actionable">
-                    <property name="can_focus">False</property>
                     <property name="tooltip_text" translatable="yes">Whenever to show this tag in the Actionable view</property>
                     <property name="halign">end</property>
                     <property name="label" translatable="yes">Actionable</property>
@@ -156,7 +144,6 @@
                 </child>
                 <child>
                   <object class="GtkLabel" id="label-color">
-                    <property name="can_focus">False</property>
                     <property name="tooltip_text" translatable="yes">The color of the tag, also used to color the background of the task when enabled</property>
                     <property name="halign">end</property>
                     <property name="label" translatable="yes">Color</property>
@@ -181,7 +168,6 @@
                 </child>
                 <child>
                   <object class="GtkButtonBox">
-                    <property name="can_focus">False</property>
                     <child>
                       <object class="GtkColorButton" id="color-button">
                         <property name="receives_default">True</property>
@@ -208,7 +194,6 @@
                         <child>
                           <object class="GtkImage">
                             <property name="sensitive">False</property>
-                            <property name="can_focus">False</property>
                             <property name="icon_name">user-trash-symbolic</property>
                           </object>
                         </child>
