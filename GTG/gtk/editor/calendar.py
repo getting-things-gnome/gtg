@@ -108,7 +108,7 @@ class GTGCalendar(GObject.GObject):
         self.__window.show()
 
         if self.get_decorated():
-            self.__window.connect("delete-event", self.close_calendar)
+            self.__window.connect("close-request", self.close_calendar)
         else:
             window_gesture_single = Gtk.GestureSingle()
             window_gesture_single.connect('begin', self.__focus_out)
