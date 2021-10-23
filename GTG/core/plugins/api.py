@@ -19,6 +19,7 @@
 import os
 import pickle
 import logging
+from gi.repository import GLib
 from GTG.core.dirs import plugin_configuration_dir
 
 log = logging.getLogger(__name__)
@@ -146,21 +147,42 @@ class PluginAPI():
     def add_menu_item(self, item):
         """Adds a menu entry to the menu of the Task Browser or Task Editor.
 
-        @param item: The Gtk.MenuItem that is going to be added.
+        @param item: The Gio.MenuItem that is going to be added.
         """
-        menu_box = self.__builder.get_object('menu_box')
-        menu_box.add(item)
-        menu_box.reorder_child(item, 1)
-        menu_box.show_all()
+        _, _, menu = self.__builder.get_object(
+            'editor_menu' if self.is_editor() else 'main_menu'
+        ).iterate_item_links(0).get_next()
+        menu.append_item(item)
 
     def remove_menu_item(self, item):
         """Remove a menu entry to the menu of the Task Browser or Task Editor.
 
-        @param item: The Gtk.MenuItem that is going to be removed.
+        @param item: The Gio.MenuItem that is going to be removed.
         """
+        # you cannot remove items by identity since there values are simply copied
+        # when adding a new one. A reliable solution is to instead find the first one
+        # with the same label as the given one.
+        _, _, menu = self.__builder.get_object(
+            'editor_menu' if self.is_editor() else 'main_menu'
+        # all menu items are added to the first section
+        ).iterate_item_links(0).get_next()
 
-        menu_box = self.__builder.get_object('menu_box')
-        menu_box.remove(item)
+        length = menu.get_n_items()
+        i = 0
+        while i < length:
+            name = ''.join(menu.get_item_attribute_value(
+                i,
+                'label',
+                GLib.VariantType.new('s')).get_string()
+            )
+
+            if name == ''.join(item.get_attribute_value(
+                'label',
+                GLib.VariantType.new('s')).get_string()
+            ):
+                menu.remove(i)
+                return
+            i += 1
 
     def add_widget_to_taskeditor(self, widget):
         """Adds a widget to the bottom of the task editor dialog

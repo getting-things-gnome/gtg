@@ -20,7 +20,7 @@ import os
 import logging
 from gettext import gettext as _
 
-from gi.repository import Gtk
+from gi.repository import Gtk, Gio
 
 log = logging.getLogger(__name__)
 
@@ -59,9 +59,7 @@ class UntouchedTasksPlugin():
         }
 
         self.builder.connect_signals(SIGNAL_CONNECTIONS_DIC)
-        self.menu_item = Gtk.ModelButton.new()
-        self.menu_item.set_label(_("Add @untouched tag"))
-        self.menu_item.connect("clicked", self.add_untouched_tag)
+        self.menu_item = Gio.MenuItem.new(_("Add @untouched tag"), "app.plugin.add_untouched_tag")
 
     def activate(self, plugin_api):
         self.plugin_api = plugin_api
@@ -71,6 +69,9 @@ class UntouchedTasksPlugin():
         self.preferences_load()
         self.preferences_apply()
         # add menu item
+        self.add_untouched_action = Gio.SimpleAction.new("plugin.add_untouched_tag", None)
+        self.add_untouched_action.connect('activate', self.add_untouched_tag)
+        self.plugin_api.get_view_manager().add_action(self.add_untouched_action)
         self.plugin_api.add_menu_item(self.menu_item)
 
     def deactivate(self, plugin_api):
@@ -92,7 +93,7 @@ class UntouchedTasksPlugin():
             log.debug("Automatic untouched tasks check cancelled")
             self.timer.cancel()
 
-    def add_untouched_tag(self, widget=None):
+    def add_untouched_tag(self, action=None, param=None):
         # If no tag is picked up from preferences
         tag_name = self.pref_tag_name.get_text()
         if not tag_name:
