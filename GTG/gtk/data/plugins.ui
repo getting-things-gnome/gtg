@@ -2,7 +2,6 @@
 <interface>
   <requires lib="gtk" version="4.0"/>
   <object class="GtkAboutDialog" id="PluginAboutDialog">
-    <property name="can_focus">False</property>
     <property name="border_width">5</property>
     <property name="logo_icon_name">system-run-symbolic</property>
     <signal name="close" handler="on_PluginAboutDialog_close" swapped="no"/>
@@ -13,28 +12,23 @@
     </child>
     <child internal-child="vbox">
       <object class="GtkBox" id="pa-vbox1">
-        <property name="can_focus">False</property>
         <property name="orientation">vertical</property>
         <property name="spacing">2</property>
         <child internal-child="action_area">
           <object class="GtkButtonBox" id="pa-action_area1">
-            <property name="can_focus">False</property>
             <property name="layout_style">end</property>
           </object>
         </child>
         <child>
           <object class="GtkFrame" id="pa-frame1">
-            <property name="can_focus">False</property>
             <property name="child">
               <object class="GtkLabel" id="PluginDepends">
-                <property name="can_focus">False</property>
                 <property name="margin_start">12</property>
                 <property name="use_markup">True</property>
               </object>
             </property>
             <child type="label">
               <object class="GtkLabel" id="pa-label1">
-                <property name="can_focus">False</property>
                 <property name="label" translatable="yes">&lt;b&gt;Dependencies&lt;/b&gt;</property>
                 <property name="use_markup">True</property>
               </object>
@@ -45,7 +39,6 @@
     </child>
   </object>
   <object class="GtkDialog" id="PluginsDialog">
-    <property name="can_focus">False</property>
     <property name="border_width">10</property>
     <property name="default_width">500</property>
     <property name="default_height">500</property>
@@ -55,11 +48,9 @@
     </child>
     <child internal-child="content_area">
       <object class="GtkBox" id="dialog-vbox5">
-        <property name="can_focus">False</property>
         <property name="orientation">vertical</property>
         <child>
           <object class="GtkBox" id="plugins-vbox6">
-            <property name="can_focus">False</property>
             <property name="orientation">vertical</property>
             <property name="spacing">6</property>
             <child>
@@ -84,7 +75,6 @@
             </child>
             <child>
               <object class="GtkBox" id="buttons_box">
-                <property name="can_focus">False</property>
                 <property name="margin_start">12</property>
                 <property name="margin_end">12</property>
                 <property name="margin_top">12</property>
@@ -100,7 +90,6 @@
                   <object class="GtkBox" id="plugin_buttons_box">
                     <property name="hexpand">True</property>
                     <property name="halign">end</property>
-                    <property name="can_focus">False</property>
                     <child>
                       <object class="GtkButton" id="plugin_configure">
                         <property name="visible">False</property>
@@ -135,7 +124,6 @@
     </child>
     <child internal-child="action_area">
       <object class="GtkButtonBox">
-        <property name="can_focus">False</property>
         <child>
           <placeholder/>
         </child>

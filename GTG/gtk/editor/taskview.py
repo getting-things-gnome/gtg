@@ -397,7 +397,7 @@ class TaskView(GtkSource.View):
             checkbox.set_active(True)
 
         checkbox.connect('toggled', lambda _: self.on_checkbox_toggle(tid))
-        checkbox.set_can_focus(False)
+        checkbox.set_focusable(False)
 
         # Block the modified signal handler while we add the anchor
         # for the checkbox widget

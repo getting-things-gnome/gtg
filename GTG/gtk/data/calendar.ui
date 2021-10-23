@@ -2,7 +2,6 @@
 <interface>
   <requires lib="gtk" version="4.0"/>
   <object class="GtkWindow" id="calendar">
-    <property name="can_focus">False</property>
     <property name="events">GDK_STRUCTURE_MASK | GDK_PROXIMITY_OUT_MASK</property>
     <property name="resizable">False</property>
     <property name="modal">True</property>
@@ -12,7 +11,6 @@
     </child>
     <property name="child">
       <object class="GtkBox" id="vbox5">
-        <property name="can_focus">False</property>
         <property name="margin_start">12</property>
         <property name="margin_end">12</property>
         <property name="margin_top">12</property>
@@ -23,7 +21,6 @@
         </child>
         <child>
           <object class="GtkBox" id="fuzzydate_btns">
-            <property name="can_focus">False</property>
             <property name="margin_top">8</property>
             <property name="homogeneous">True</property>
             <child>
