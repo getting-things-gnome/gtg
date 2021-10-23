@@ -2,7 +2,6 @@
 <interface>
   <requires lib="gtk" version="4.0"/>
   <object class="GtkAboutDialog" id="about_dialog">
-    <property name="border_width">6</property>
     <property name="window_position">center-on-parent</property>
     <property name="type_hint">dialog</property>
     <property name="logo_icon_name">gtg</property>
