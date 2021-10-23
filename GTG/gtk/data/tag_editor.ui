@@ -167,7 +167,7 @@
                   </object>
                 </child>
                 <child>
-                  <object class="GtkButtonBox">
+                  <object class="GtkBox">
                     <child>
                       <object class="GtkColorButton" id="color-button">
                         <property name="receives_default">True</property>
