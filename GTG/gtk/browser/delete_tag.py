@@ -95,7 +95,7 @@ class DeleteTagsDialog():
         dialog.add_button(cancel_text, Gtk.ResponseType.CANCEL)
 
         delete_btn = dialog.add_button(delete_text, Gtk.ResponseType.YES)
-        delete_btn.get_style_context().add_class("destructive-action")
+        delete_btn.add_css_class("destructive-action")
 
         dialog.props.use_markup = True
         dialog.props.text = "<span weight=\"bold\">" + label_text + "</span>"

@@ -643,7 +643,7 @@ class TaskEditor:
                                abs_result) % {'days': abs_result}
 
         style_context = self.window.get_style_context()
-        color = style_context.get_color(Gtk.StateFlags.INSENSITIVE).to_color()
+        color = style_context.get_color().to_color()
         self.dayleft_label.set_markup(
             f"<span color='{rgb_to_hex(color)}'>{txt}</span>")
 
