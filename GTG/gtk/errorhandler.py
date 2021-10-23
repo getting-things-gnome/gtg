@@ -68,11 +68,11 @@ Please report the bug in <a href="{url}">our issue tracker</a>, with steps to tr
 
         expander_content = Gtk.ScrolledWindow()
         expander_content.set_border_width(12) # Outer padding around text
-        expander_content.add(self._additional_info)
+        expander_content.set_child(self._additional_info)
         expander = Gtk.Expander()
         expander.set_label(_("Details to paste in your bug report"))
-        expander.add(expander_content)
-        self.get_content_area().add(expander)
+        expander.set_child(expander_content)
+        self.get_content_area().append(expander)
 
         # Prevent the window from becoming too tall, or having a weird aspect ratio:
         expander_content.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)

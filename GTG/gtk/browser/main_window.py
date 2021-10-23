@@ -123,7 +123,7 @@ class MainWindow(Gtk.ApplicationWindow):
 
         self.set_titlebar(self.headerbar)
         self.set_title('Getting Things GNOME!')
-        self.add(self.main_box)
+        self.set_child(self.main_box)
 
         # Setup help overlay (shortcuts window)
         self.set_help_overlay(self.help_overlay)
@@ -321,7 +321,7 @@ class MainWindow(Gtk.ApplicationWindow):
         self.tagtreeview.connect('node-expanded', self.on_tag_expanded)
         self.tagtreeview.connect('node-collapsed', self.on_tag_collapsed)
 
-        self.sidebar_container.add(self.tagtreeview)
+        self.sidebar_container.set_child(self.tagtreeview)
 
         for path_t in self.config.get("expanded_tags"):
             # the tuple was stored as a string. we have to reconstruct it
