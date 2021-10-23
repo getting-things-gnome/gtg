@@ -480,7 +480,6 @@
     </property>
     <child type="titlebar">
       <object class="GtkHeaderBar" id="headerbar">
-        <property name="title" translatable="yes">Task</property>
         <child>
           <object class="GtkButton" id="mark_as_done">
             <property name="visible">False</property>
