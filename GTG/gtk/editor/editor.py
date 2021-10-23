@@ -176,11 +176,11 @@ class TaskEditor:
         # widget
         textview = self.builder.get_object("textview")
         scrolled = self.builder.get_object("scrolledtask")
-        scrolled.remove(textview)
+        scrolled.set_child(None)
         self.textview = TaskView(self.req, self.clipboard)
         self.textview.set_vexpand(True)
         self.textview.show()
-        scrolled.add(self.textview)
+        scrolled.set_child(self.textview)
         conf_font_value = self.browser_config.get("font_name")
         if conf_font_value != "":
             self.textview.override_font(Pango.FontDescription(conf_font_value))
@@ -902,10 +902,10 @@ class TaskEditor:
             parent_name = self.req.get_task(parent).get_title()
             button = Gtk.ToolButton.new(None, parent_name)
             button.connect("clicked", self.on_parent_item_clicked, parent)
-            parent_box.add(button)
+            parent_box.append(button)
 
         self.parent_popover = Gtk.Popover.new(self.parent_button)
-        self.parent_popover.add(parent_box)
+        self.parent_popover.set_child(parent_box)
         self.parent_popover.set_property("border-width", 0)
         self.parent_popover.set_transitions_enabled(True)
         self.parent_popover.show_all()
