@@ -46,10 +46,8 @@ class ModifyTagsDialog():
         builder = Gtk.Builder()
         builder.add_from_file(GnomeConfig.MODIFYTAGS_UI_FILE)
         builder.connect_signals({
-            "on_modifytags_confirm":
-            self.on_confirm,
-            "on_modifytags_cancel":
-            lambda dialog: dialog.hide,
+            "on_modifytags_response":
+            self.on_response,
         })
 
         self.tag_entry = builder.get_object("tag_entry")
@@ -72,7 +70,13 @@ class ModifyTagsDialog():
 
         self.tasks = []
 
-    def on_confirm(self, widget):
+    def on_response(self, widget, response):
+        if response == Gtk.ResponseType.APPLY:
+            self.apply_changes()
+        else:
+            self.dialog.hide()
+
+    def apply_changes(self):
         """ Apply changes """
         tags = parse_tag_list(self.tag_entry.get_text())
 
