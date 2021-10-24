@@ -673,7 +673,7 @@ class MainWindow(Gtk.ApplicationWindow):
         self.about.show()
 
     @Gtk.Template.Callback()
-    def on_about_close(self, widget, response):
+    def on_about_close(self, widget):
         """
         close the about dialog
         """
