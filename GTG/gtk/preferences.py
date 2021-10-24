@@ -62,4 +62,4 @@ class Preferences():
         All children are added using this function from __init__"""
         page_name = page.get_name()
         self.pages[page_name] = page
-        self.stack.add_titled(page.get_ui(), page_name, page.get_title())
+        self.stack.add_titled(page, page_name, page.get_title())
