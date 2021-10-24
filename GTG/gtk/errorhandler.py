@@ -20,6 +20,7 @@ class ExceptionHandlerDialog(Gtk.MessageDialog):
         CONTINUE = enum.auto()
 
     def __init__(self, exception=None, main_msg=None, ignorable: bool = False, context_info: str = None):
+        super().__init__(resizable=False, modal=True, destroy_with_parent=True, message_type=Gtk.MessageType.ERROR)
         self.ignorable = ignorable
 
         formatting = {
@@ -42,15 +43,11 @@ However, more unexpected things can happen, and thus be careful.""")
             desc = _("""{appname} encountered an internal fatal error and needs to exit.""")
         title = title.format(**formatting)
         desc = desc.format(**formatting)
-
-        super().__init__(None,
-                         Gtk.DialogFlags.MODAL | Gtk.DialogFlags.DESTROY_WITH_PARENT,
-                         Gtk.MessageType.ERROR,
-                         Gtk.ButtonsType.NONE,
-                         None)
-        self.set_title(title)
-        self.set_markup(desc)
-        self.props.secondary_text = desc2
+        # You may think that GtkWindow:title is the property you need,
+        # however GtkWindow:title is awkwardly styled on GtkMessageDialog,
+        # and GtkMessageDialog:text is styled like a title.
+        self.props.text = title
+        self.props.secondary_text = desc + 2*"\n" + desc2
         self.props.secondary_use_markup = True
 
         self.add_button(_("Exit"), self.Response.EXIT)
@@ -61,10 +58,9 @@ However, more unexpected things can happen, and thus be careful.""")
         self._additional_info.set_buffer(Gtk.TextBuffer())
         self._additional_info.set_editable(False)
         self._additional_info.set_wrap_mode(Gtk.WrapMode.WORD_CHAR)
-        self._additional_info.props.expand = True
-        expander_content = Gtk.ScrolledWindow()
+        expander_content = Gtk.ScrolledWindow(vexpand=True, min_content_height=90)
         expander_content.set_child(self._additional_info)
-        self._expander = Gtk.Expander()
+        self._expander = Gtk.Expander(vexpand=True)
         self._expander.set_label(_("Details to report"))
         self._expander.set_child(expander_content)
         self.get_content_area().append(self._expander)
