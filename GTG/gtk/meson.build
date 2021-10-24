@@ -47,7 +47,6 @@ gtg_data_sources = [
   'data/calendar.ui',
   'data/context_menus.ui',
   'data/general_preferences.ui',
-  'data/help_overlay.ui',
   'data/main_window.ui',
   'data/modify_tags.ui',
   'data/plugins.ui',
