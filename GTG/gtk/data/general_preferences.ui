@@ -7,7 +7,7 @@
     <property name="step_increment">1</property>
     <property name="page_increment">10</property>
   </object>
-  <object class="GtkScrolledWindow" id="general_pref_window">
+  <template class="GeneralPreferences" parent="GtkScrolledWindow">
     <property name="hscrollbar_policy">never</property>
     <property name="min_content_height">450</property>
     <property name="child">
@@ -56,7 +56,7 @@
                           </object>
                         </child>
                         <child>
-                          <object class="GtkSwitch" id="preview_button">
+                          <object class="GtkSwitch" id="_preview_button">
                             <property name="halign">end</property>
                             <property name="valign">center</property>
                             <property name="hexpand">True</property>
@@ -98,7 +98,7 @@
                           </object>
                         </child>
                         <child>
-                          <object class="GtkSwitch" id="bg_color_button">
+                          <object class="GtkSwitch" id="_bg_color_button">
                             <property name="hexpand">True</property>
                             <property name="halign">end</property>
                             <property name="valign">center</property>
@@ -141,7 +141,7 @@
                           </object>
                         </child>
                         <child>
-                          <object class="GtkEntry" id="time_entry">
+                          <object class="GtkEntry" id="_refresh_time_entry">
                             <property name="hexpand">True</property>
                             <property name="valign">center</property>
                             <property name="halign">end</property>
@@ -174,7 +174,7 @@
                           </object>
                         </child>
                         <child>
-                          <object class="GtkFontButton" id="font_button">
+                          <object class="GtkFontButton" id="_font_button">
                             <property name="hexpand">True</property>
                             <property name="halign">end</property>
                             <property name="receives_default">True</property>
@@ -203,7 +203,7 @@
                           </object>
                         </child>
                         <child>
-                          <object class="GtkSwitch" id="darkmode_enable">
+                          <object class="GtkSwitch" id="_dark_mode_switch">
                             <property name="name">autoclean_button</property>
                             <property name="hexpand">True</property>
                             <property name="halign">end</property>
@@ -254,7 +254,7 @@
                           </object>
                         </child>
                         <child>
-                          <object class="GtkSwitch" id="autoclean_enable">
+                          <object class="GtkSwitch" id="_autoclean_switch">
                             <property name="name">autoclean_button</property>
                             <property name="hexpand">True</property>
                             <property name="valign">center</property>
@@ -282,7 +282,7 @@
                           </object>
                         </child>
                         <child>
-                          <object class="GtkSpinButton" id="autoclean_days">
+                          <object class="GtkSpinButton" id="_autoclean_days_spin">
                             <property name="name">autoclean_days</property>
                             <property name="hexpand">True</property>
                             <property name="halign">end</property>
@@ -315,5 +315,5 @@
         </property>
       </object>
     </property>
-  </object>
+  </template>
 </interface>
