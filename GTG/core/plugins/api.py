@@ -53,11 +53,9 @@ class PluginAPI():
         self.selection_changed_callback_listeners = []
         if taskeditor:
             self.__ui = taskeditor
-            self.__builder = self.__ui.get_builder()
             self.__task_id = taskeditor.get_task()
         else:
             self.__ui = self.__view_manager.browser
-            self.__builder = self.__ui.get_builder()
             self.__task_id = None
             self.__view_manager.browser.selection.connect(
                 "changed", self.__selection_changed)
@@ -93,12 +91,6 @@ class PluginAPI():
         """
         return self.__requester
 
-    def get_gtk_builder(self):
-        """
-        Returns the gtk builder for the parent window
-        """
-        return self.__builder
-
     def get_ui(self):
         """
         Returns a Browser or an Editor
@@ -115,15 +107,15 @@ class PluginAPI():
         """
         Return the menu entry to the menu of the Task Browser or Task Editor.
         """
-        return self.__builder.get_object('main_menu')
+        return self.__ui.get_template_child('main_menu')
 
     def get_header(self):
         """Return the headerbar of the mainwindow"""
-        return self.__builder.get_object('browser_headerbar')
+        return self.__ui.get_template_child('browser_headerbar')
 
     def get_quickadd_pane(self):
         """Return the quickadd pane"""
-        return self.__builder.get_object('quickadd_pane')
+        return self.__ui.get_template_child('quickadd_pane')
 
     def get_selected(self):
         """
@@ -149,7 +141,7 @@ class PluginAPI():
 
         @param item: The Gio.MenuItem that is going to be added.
         """
-        _, _, menu = self.__builder.get_object(
+        _, _, menu = self.__ui.get_template_child(
             'editor_menu' if self.is_editor() else 'main_menu'
         ).iterate_item_links(0).get_next()
         menu.append_item(item)
@@ -162,7 +154,7 @@ class PluginAPI():
         # you cannot remove items by identity since there values are simply copied
         # when adding a new one. A reliable solution is to instead find the first one
         # with the same label as the given one.
-        _, _, menu = self.__builder.get_object(
+        _, _, menu = self.__ui.get_template_child(
             'editor_menu' if self.is_editor() else 'main_menu'
         # all menu items are added to the first section
         ).iterate_item_links(0).get_next()
@@ -189,7 +181,7 @@ class PluginAPI():
 
         @param widget: The Gtk.Widget that is going to be added.
         """
-        vbox = self.__builder.get_object('pluginbox')
+        vbox = self.__ui.get_template_child('pluginbox')
         if vbox:
             vbox.append(widget)
             self.taskwidget_id += 1
@@ -205,7 +197,7 @@ class PluginAPI():
         """
         if self.is_editor() and widg_id:
             try:
-                wi = self.__builder.get_object('vbox4')
+                wi = self.__ui.get_template_child('vbox4')
                 if wi and widg_id in self.taskwidget_widg:
                     wi.remove(self.taskwidget_widg.pop(widg_id))
             except Exception:
