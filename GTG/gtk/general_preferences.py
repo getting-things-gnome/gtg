@@ -53,6 +53,10 @@ class GeneralPreferences(Gtk.ScrolledWindow):
         self.app = app
         self.timer = app.timer
 
+        time_entry_focus_controller = Gtk.EventControllerFocus()
+        time_entry_focus_controller.connect("leave", self.on_leave_time_entry)
+        self._refresh_time_entry.add_controller(time_entry_focus_controller)
+
         self._refresh_preferences_store()
 
     # Following 3 methods: get_name, get_title, get_ui are
@@ -128,7 +132,6 @@ class GeneralPreferences(Gtk.ScrolledWindow):
         except ValueError:
             self._refresh_time_entry.add_css_class("error")
 
-    @Gtk.Template.Callback()
     def on_leave_time_entry(self, widget, data=None):
         """
         This function not only parses the user input, but is

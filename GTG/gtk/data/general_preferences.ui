@@ -150,7 +150,6 @@
                             <property name="max_width_chars">8</property>
                             <property name="xalign">0.5</property>
                             <signal name="changed" handler="on_valid_time_check" swapped="no"/>
-                            <signal name="focus-out-event" handler="on_leave_time_entry" swapped="no"/>
                           </object>
                         </child>
                       </object>
