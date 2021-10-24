@@ -66,29 +66,32 @@ def plugin_error_short_text(plugin):
 
 def plugin_error_text(plugin):
     """ Generate some helpful text about missing module dependencies. """
+    text = _('System support for plugin status: {}\n')
     if not plugin.error:
-        return GnomeConfig.CANLOAD
+        return text.format(GnomeConfig.CANLOAD)
 
     # describe missing dependencies
-    text = f"<b>{GnomeConfig.CANNOTLOAD}</b>. \n"
+    text = text.format(GnomeConfig.CANNOTLOAD)
     # get lists
     modules = plugin.missing_modules
     dbus = plugin.missing_dbus
 
     # convert to strings
     if modules:
-        modules = "<small><b>%s</b></small>" % ', '.join(modules)
+        modules = ', '.join(modules)
     if dbus:
         ifaces = [f"{a}:{b}" for (a, b) in dbus]
-        dbus = "<small><b>%s</b></small>" % ', '.join(ifaces)
+        dbus = ', '.join(ifaces)
 
     # combine
+    text += '\n'
+    text += _('System doesn\'t support plugin because:\n\n')
     if modules and not dbus:
-        text += '\n'.join((GnomeConfig.MODULEMISSING, modules))
+        text += '\n\n'.join((GnomeConfig.MODULEMISSING, modules))
     elif dbus and not modules:
-        text += '\n'.join((GnomeConfig.DBUSMISSING, dbus))
+        text += '\n\n'.join((GnomeConfig.DBUSMISSING, dbus))
     elif modules and dbus:
-        text += '\n'.join((GnomeConfig.MODULANDDBUS, modules, dbus))
+        text += '\n\n'.join((GnomeConfig.MODULANDDBUS, modules, dbus))
     else:
         text += GnomeConfig.UNKNOWN
 
@@ -125,8 +128,6 @@ class PluginsDialog(Gtk.Dialog):
 
     _plugin_tree = Gtk.Template.Child()
     _plugin_configure_button = Gtk.Template.Child()
-    _plugin_about_dialog = Gtk.Template.Child()
-    _plugin_depends_label = Gtk.Template.Child()
 
     def __init__(self, requester):
         super().__init__()
@@ -262,22 +263,16 @@ class PluginsDialog(Gtk.Dialog):
         # FIXME repair it!
         # FIXME Author is not usually set and is preserved from
         # previous plugin... :/
-        self._plugin_about_dialog.set_program_name(plugin.full_name)
-        self._plugin_about_dialog.set_version(plugin.version)
         authors = plugin.authors
         if isinstance(authors, str):
             authors = "\n".join(author.strip()
                                 for author in authors.split(','))
             authors = [authors, ]
-        self._plugin_about_dialog.set_authors(authors)
-        description = plugin.description.replace(r'\n', "\n")
-        self._plugin_about_dialog.set_comments(description)
-        self._plugin_about_dialog.set_label(plugin_error_text(plugin))
-        self._plugin_about_dialog.show()
-
-    @Gtk.Template.Callback()
-    def on_plugin_about_close(self, widget, data=None):
-
-        """ Close the PluginAboutDialog. """
-        self._plugin_about_dialog.hide()
-        return True
+        about_dialog = Gtk.AboutDialog(
+            program_name=plugin.full_name,
+            logo_icon_name='system-run-symbolic',
+            version=plugin.version,
+            system_information=plugin_error_text(plugin),
+            comments=plugin.description
+        )
+        about_dialog.present()

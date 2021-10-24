@@ -146,20 +146,8 @@
     </child>
   </object>
   <object class="GtkAboutDialog" id="about_dialog">
-    <property name="window_position">center-on-parent</property>
-    <property name="type_hint">dialog</property>
     <property name="logo_icon_name">gtg</property>
     <signal name="close-request" handler="on_about_close" swapped="no"/>
-    <signal name="response" handler="on_about_close" swapped="no"/>
-    <child internal-child="vbox">
-      <object class="GtkBox" id="about_dialog_vbox">
-        <property name="orientation">vertical</property>
-        <property name="spacing">2</property>
-      </object>
-    </child>
-    <child type="titlebar">
-      <placeholder/>
-    </child>
   </object>
   <menu id="defer_menu">
     <section>
