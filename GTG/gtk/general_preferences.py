@@ -36,8 +36,6 @@ log = logging.getLogger(__name__)
 class GeneralPreferences(Gtk.ScrolledWindow):
     __gtype_name__ = 'GeneralPreferences'
 
-    INVALID_COLOR = Gdk.Color(50000, 0, 0)
-
     _preview_button = Gtk.Template.Child()
     _bg_color_button = Gtk.Template.Child()
     _font_button = Gtk.Template.Child()
@@ -96,7 +94,6 @@ class GeneralPreferences(Gtk.ScrolledWindow):
         self._bg_color_button.set_active(bg_color)
 
         self._refresh_time_entry.set_text(self.timer.get_formatted_time())
-        self._refresh_time_entry.modify_fg(Gtk.StateFlags.NORMAL, None)
 
         self._font_button.set_font(self.get_default_editor_font())
 
@@ -127,11 +124,9 @@ class GeneralPreferences(Gtk.ScrolledWindow):
         try:
             input_time = self._refresh_time_entry.get_text()
             self.timer.parse_time(input_time)
-            color = None
+            self._refresh_time_entry.remove_css_class("error")
         except ValueError:
-            color = self.INVALID_COLOR
-
-        self._refresh_time_entry.modify_fg(Gtk.StateFlags.NORMAL, color)
+            self._refresh_time_entry.add_css_class("error")
 
     @Gtk.Template.Callback()
     def on_leave_time_entry(self, widget, data=None):
