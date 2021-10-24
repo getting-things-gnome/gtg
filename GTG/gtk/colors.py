@@ -28,7 +28,8 @@ used_color = []
 
 def background_color(tags, bgcolor=None):
     if not bgcolor:
-        bgcolor = Gdk.color_parse("#FFFFFF")
+        bgcolor = Gdk.RGBA()
+        bgcolor.parse("#FFFFFF")
     # Compute color
     my_color = None
     color_count = 0.0
@@ -40,7 +41,8 @@ def background_color(tags, bgcolor=None):
         if my_color_str is not None and my_color_str not in used_color:
             used_color.append(my_color_str)
         if my_color_str:
-            my_color = Gdk.color_parse(my_color_str)
+            my_color = Gdk.RGBA()
+            my_color.parse(my_color_str)
             color_count = color_count + 1
             red = red + my_color.red
             green = green + my_color.green
@@ -57,7 +59,11 @@ def background_color(tags, bgcolor=None):
         green = int(green * alpha + bgcolor.green * (1 - alpha))
         blue = int(blue * alpha + bgcolor.blue * (1 - alpha))
 
-        my_color = Gdk.Color(red, green, blue).to_string()
+        gcolor = Gdk.RGBA()
+        gcolor.red = red
+        gcolor.green = green
+        gcolor.blue = blue
+        my_color = gcolor.to_string()
     return my_color
 
 
