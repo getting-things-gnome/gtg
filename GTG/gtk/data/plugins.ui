@@ -63,7 +63,7 @@
                         <property name="sensitive">False</property>
                         <property name="receives_default">True</property>
                         <property name="use_underline">True</property>
-                        <signal name="released" handler="on_plugin_configure" swapped="no"/>
+                        <signal name="clicked" handler="on_plugin_configure" swapped="no"/>
                       </object>
                     </child>
                     <child>
@@ -71,7 +71,7 @@
                         <property name="label" translatable="yes">_About Plugin</property>
                         <property name="receives_default">True</property>
                         <property name="use_underline">True</property>
-                        <signal name="released" handler="on_plugin_about" swapped="no"/>
+                        <signal name="clicked" handler="on_plugin_about" swapped="no"/>
                       </object>
                     </child>
                     <style>
