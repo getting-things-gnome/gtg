@@ -273,10 +273,10 @@ class Application(Gtk.Application):
 
         # Toggle dark mode for preferences and editors
         if state:
-            self.preferences_dialog.window.add_css_class('dark')
+            self.preferences_dialog.add_css_class('dark')
             text_tags.use_dark_mode()
         else:
-            self.preferences_dialog.window.remove_css_class('dark')
+            self.preferences_dialog.remove_css_class('dark')
             text_tags.use_light_mode()
 
     def init_actions(self):
@@ -313,7 +313,7 @@ class Application(Gtk.Application):
             if accel is not None:
                 self.set_accels_for_action(*accel)
 
-        self.plugins_dialog.dialog.insert_action_group('app', self)
+        self.plugins_dialog.insert_action_group('app', self)
 
     # --------------------------------------------------------------------------
     # ACTIONS
@@ -388,7 +388,7 @@ class Application(Gtk.Application):
         """Callback to open the preferences dialog."""
 
         self.preferences_dialog.activate()
-        self.preferences_dialog.window.set_transient_for(self.browser)
+        self.preferences_dialog.set_transient_for(self.browser)
 
     def open_about(self, action, param):
         """Callback to open the about dialog."""
@@ -399,7 +399,7 @@ class Application(Gtk.Application):
         """Callback to open the plugins manager dialog."""
 
         self.plugins_dialog.activate()
-        self.plugins_dialog.dialog.set_transient_for(self.browser)
+        self.plugins_dialog.set_transient_for(self.browser)
 
 
     def close_context(self, action, params):

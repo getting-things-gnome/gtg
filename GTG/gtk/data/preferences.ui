@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
   <requires lib="gtk" version="4.0"/>
-  <object class="GtkWindow" id="Preferences">
+  <template class="Preferences" parent="GtkWindow">
     <property name="default_width">700</property>
     <property name="default_height">500</property>
     <property name="title" translatable="yes">Preferences</property>
@@ -19,7 +19,7 @@
               <object class="GtkStackSidebar" id="sidebar">
                 <property name="width_request">150</property>
                 <property name="vexpand">True</property>
-                <property name="stack">stack</property>
+                <property name="stack">_page_stack</property>
               </object>
             </child>
           </object>
@@ -30,7 +30,7 @@
           </object>
         </child>
         <child>
-          <object class="GtkStack" id="stack">
+          <object class="GtkStack" id="_page_stack">
             <property name="transition_type">crossfade</property>
             <child>
               <placeholder/>
@@ -39,6 +39,6 @@
         </child>
       </object>
     </child>
-  </object>
+  </template>
   <object class="GtkSizeGroup"/>
 </interface>
