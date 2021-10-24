@@ -443,6 +443,13 @@ class MainWindow(Gtk.ApplicationWindow):
 
 # HELPER FUNCTIONS ##########################################################
 
+    def show_tagpopup_at(self, x, y):
+        rect = Gdk.Rectangle()
+        rect.x = x
+        rect.y = y
+        self.tagpopup.set_pointing_to(rect)
+        self.tagpopup.popup()
+
     def toggle_search(self, action, param):
         """Callback to toggle search bar."""
 
@@ -896,14 +903,14 @@ class MainWindow(Gtk.ApplicationWindow):
                 if selected_search is not None:
                     my_tag = self.req.get_tag(selected_search)
                     self.tagpopup.set_tag(my_tag)
-                    self.tagpopup.popup(None, None, None, None, event.button.button, time)
+                    self.show_tagpopup_at(x, y)
                 elif len(selected_tags) > 0:
                     # Then we are looking at single, normal tag rather than
                     # the special 'All tags' or 'Tasks without tags'. We only
                     # want to popup the menu for normal tags.
                     my_tag = self.req.get_tag(selected_tags[0])
                     self.tagpopup.set_tag(my_tag)
-                    self.tagpopup.popup(None, None, None, None, event.button.button, time)
+                    self.show_tagpopup_at(x, y)
                 else:
                     self.reset_cursor()
 
@@ -919,14 +926,14 @@ class MainWindow(Gtk.ApplicationWindow):
             # popup menu for searches
             if selected_search is not None:
                 self.tagpopup.set_tag(selected_search)
-                self.tagpopup.popup(None, None, None, None, 0, event.time)
+                self.show_tagpopup_at(x, y)
             elif len(selected_tags) > 0:
                 # Then we are looking at single, normal tag rather than
                 # the special 'All tags' or 'Tasks without tags'. We only
                 # want to popup the menu for normal tags.
                 selected_tag = self.req.get_tag(selected_tags[0])
                 self.tagpopup.set_tag(selected_tag)
-                self.tagpopup.popup(None, None, None, None, 0, event.time)
+                self.show_tagpopup_at(x, y)
             else:
                 self.reset_cursor()
             return True

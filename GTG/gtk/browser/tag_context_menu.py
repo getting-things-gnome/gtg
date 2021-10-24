@@ -25,13 +25,14 @@ Also, it is supposed to handle more complex menus (with non-std widgets,
 like a color picker)
 """
 
-from gi.repository import Gtk
+from gi.repository import Gtk, Gio
 
 from gettext import gettext as _
 from GTG.gtk.colors import generate_tag_color, color_add, color_remove
+from GTG.gtk.browser import GnomeConfig
 
 
-class TagContextMenu(Gtk.Menu):
+class TagContextMenu(Gtk.PopoverMenu):
     """Context menu fo the tag i the sidebar"""
 
     def __init__(self, req, app, tag=None):
@@ -39,38 +40,36 @@ class TagContextMenu(Gtk.Menu):
         self.req = req
         self.app = app
         self.tag = tag
+
+        for action_disc in [
+            ("edit_tag", self.on_mi_cc_activate),
+            ("generate_tag_color", self.on_mi_ctag_activate),
+            ("delete_search_tag", self.on_mi_del_activate),
+            ("delete_tag", lambda w, a, p : self.app.browser.on_delete_tag_activate())
+        ]:
+            self.install_action(
+                ".".join(["tags_popup", action_disc[0]]), None, action_disc[1]
+            )
+
         # Build up the menu
         self.set_tag(tag)
         self.__build_menu()
 
     def __build_menu(self):
         """Build up the widget"""
-        # Reset the widget
-        for i in self:
-            self.remove(i)
-            i.destroy()
         if self.tag is not None:
-            # Color chooser FIXME: SHOULD BECOME A COLOR PICKER
-            self.mi_cc = Gtk.MenuItem()
-            self.mi_cc.set_label(_("Edit..."))
-            self.append(self.mi_cc)
-            self.mi_cc.connect('activate', self.on_mi_cc_activate)
-
-            self.mi_ctag = Gtk.MenuItem()
-            self.mi_ctag.set_label(_("Generate Color"))
-            self.append(self.mi_ctag)
-            self.mi_ctag.connect('activate', self.on_mi_ctag_activate)
+            menu_builder = Gtk.Builder()
+            menu_builder.add_from_file(GnomeConfig.MENUS_UI_FILE)
+            menu_model = menu_builder.get_object("tag_context_menu")
 
             if self.tag.is_search_tag():
-                self.mi_del = Gtk.MenuItem()
-                self.mi_del.set_label(_("Delete"))
-                self.append(self.mi_del)
-                self.mi_del.connect('activate', self.on_mi_del_activate)
+                self.mi_del_search_tag = Gio.MenuItem.new(_("Delete"), "tags_popup.delete_search_tag")
+                menu_model.append_item(self.mi_del_search_tag)
             else:
-                self.mi_del_tag = Gtk.MenuItem()
-                self.mi_del_tag.set_label(_("Delete"))
-                self.append(self.mi_del_tag)
-                self.mi_del_tag.connect('activate', self.app.browser.on_delete_tag_activate)
+                self.mi_del_tag = Gio.MenuItem.new(_("Delete"), "tags_popup.delete_tag")
+                menu_model.append_item(self.mi_del_tag)
+
+            self.set_menu_model(menu_model)
 
     # PUBLIC API ##############################################################
     def set_tag(self, tag):
@@ -79,11 +78,11 @@ class TagContextMenu(Gtk.Menu):
         self.__build_menu()
 
     # CALLBACKS ###############################################################
-    def on_mi_cc_activate(self, widget):
+    def on_mi_cc_activate(self, widget, action_name, param):
         """Callback: show the tag editor upon request"""
         self.app.open_tag_editor(self.tag)
 
-    def on_mi_ctag_activate(self, widget):
+    def on_mi_ctag_activate(self, widget, action_name, param):
         random_color = generate_tag_color()
         present_color = self.tag.get_attribute('color')
         if present_color is not None:
@@ -91,6 +90,6 @@ class TagContextMenu(Gtk.Menu):
         self.tag.set_attribute('color', random_color)
         color_add(random_color)
 
-    def on_mi_del_activate(self, widget):
+    def on_mi_del_activate(self, wudget, action_name, param):
         """ delete a selected search """
         self.req.remove_tag(self.tag.get_name())

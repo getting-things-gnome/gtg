@@ -222,4 +222,15 @@
     </section>
   </menu>
 
+  <menu id="tag_context_menu">
+    <item>
+      <attribute name="label" translatable="yes">Edit...</attribute>
+      <attribute name="action">tags_popup.edit_tag</attribute>
+    </item>
+    <item>
+      <attribute name="label" translatable="yes">Generate Color</attribute>
+      <attribute name="action">tags_popup.generate_tag_color</attribute>
+    </item>
+  </menu>
+
 </interface>
