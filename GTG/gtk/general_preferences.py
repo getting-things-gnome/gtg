@@ -76,16 +76,7 @@ class GeneralPreferences(Gtk.ScrolledWindow):
     def get_default_editor_font(self):
         editor_font = self.config.get("font_name")
         if editor_font == "":
-            try:
-                font = self.get.get_style_context().get_property(
-                    "font", Gtk.StateFlags.NORMAL)
-                editor_font = font.to_string()
-            except UnicodeError as e:
-                log.warning("Using deprecated but still working font way (%r)",
-                            e)
-                font = self.get_style_context().get_font(
-                    Gtk.StateFlags.NORMAL)
-                editor_font = font.to_string()
+            editor_font = Gtk.Settings.get_default().get_property("gtk-font-name")
         return editor_font
 
     def _refresh_preferences_store(self):
