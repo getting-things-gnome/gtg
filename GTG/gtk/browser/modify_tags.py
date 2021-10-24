@@ -23,36 +23,30 @@ from gettext import gettext as _
 from GTG.gtk.browser import GnomeConfig
 from GTG.core.tag import parse_tag_list
 
+@Gtk.Template(filename=GnomeConfig.MODIFYTAGS_UI_FILE)
 
-class ModifyTagsDialog():
+class ModifyTagsDialog(Gtk.Dialog):
     """
     Dialog for batch adding/removal of tags
     """
 
+    __gtype_name__ = "ModifyTagsDialog"
+
+    _tag_entry = Gtk.Template.Child()
+    _apply_to_subtasks_check = Gtk.Template.Child()
+
     def __init__(self, tag_completion, req, app):
+        super().__init__()
+
         self.req = req
         self.app = app
         self.tasks = []
 
-        self._init_dialog()
-        self.tag_entry.set_completion(tag_completion)
+        self._tag_entry.set_completion(tag_completion)
 
         # Rember values from last time
         self.last_tag_entry = _("NewTag")
         self.last_apply_to_subtasks = False
-
-    def _init_dialog(self):
-        """ Init GtkBuilder .ui file """
-        builder = Gtk.Builder()
-        builder.add_from_file(GnomeConfig.MODIFYTAGS_UI_FILE)
-        builder.connect_signals({
-            "on_modifytags_response":
-            self.on_response,
-        })
-
-        self.tag_entry = builder.get_object("tag_entry")
-        self.apply_to_subtasks = builder.get_object("apply_to_subtasks")
-        self.dialog = builder.get_object("modifytags_dialog")
 
     def modify_tags(self, tasks):
         """ Show and run dialog for selected tasks """
@@ -61,27 +55,26 @@ class ModifyTagsDialog():
 
         self.tasks = tasks
 
-        self.tag_entry.set_text(self.last_tag_entry)
-        self.tag_entry.grab_focus()
-        self.apply_to_subtasks.set_active(self.last_apply_to_subtasks)
+        self._tag_entry.set_text(self.last_tag_entry)
+        self._tag_entry.grab_focus()
+        self._apply_to_subtasks_check.set_active(self.last_apply_to_subtasks)
 
-        self.dialog.run()
-        self.dialog.hide()
+        self.show()
 
         self.tasks = []
 
+    @Gtk.Template.Callback()
     def on_response(self, widget, response):
         if response == Gtk.ResponseType.APPLY:
             self.apply_changes()
-        else:
-            self.dialog.hide()
+        self.hide()
 
     def apply_changes(self):
         """ Apply changes """
-        tags = parse_tag_list(self.tag_entry.get_text())
+        tags = parse_tag_list(self._tag_entry.get_text())
 
         # If the checkbox is checked, find all subtasks
-        if self.apply_to_subtasks.get_active():
+        if self._apply_to_subtasks_check.get_active():
             for task_id in self.tasks:
                 task = self.req.get_task(task_id)
                 # FIXME: Python not reinitialize the default value of its
@@ -116,6 +109,6 @@ class ModifyTagsDialog():
         self.app.ds.save()
 
         # Rember the last actions
-        self.last_tag_entry = self.tag_entry.get_text()
-        self.last_apply_to_subtasks = self.apply_to_subtasks.get_active()
+        self.last_tag_entry = self._tag_entry.get_text()
+        self.last_apply_to_subtasks = self._apply_to_subtasks_check.get_active()
 # -----------------------------------------------------------------------------

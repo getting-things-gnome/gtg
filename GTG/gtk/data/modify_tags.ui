@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
   <requires lib="gtk" version="4.0"/>
-  <object class="GtkDialog" id="modifytags_dialog">
+  <template class="ModifyTagsDialog" parent="GtkDialog">
     <property name="title" translatable="yes">Modify Tags</property>
-    <signal name="response" handler="on_modifytags_response"/>
+    <property name="default-widget">modifytags_apply</property>
+    <signal name="response" handler="on_response"/>
     <child internal-child="content_area">
       <object class="GtkBox" id="modifytags_dialog_vbox">
         <property name="orientation">vertical</property>
@@ -18,7 +19,7 @@
           </object>
         </child>
         <child>
-          <object class="GtkEntry" id="tag_entry">
+          <object class="GtkEntry" id="_tag_entry">
             <property name="invisible_char">●</property>
             <property name="activates_default">True</property>
             <property name="text" translatable="yes">TagName</property>
@@ -34,7 +35,7 @@ space. Place '!' before tags you want to remove.</property>
           </object>
         </child>
         <child>
-          <object class="GtkCheckButton" id="apply_to_subtasks">
+          <object class="GtkCheckButton" id="_apply_to_subtasks_check">
             <property name="label" translatable="yes">Apply to subtasks</property>
           </object>
         </child>
@@ -54,5 +55,5 @@ space. Place '!' before tags you want to remove.</property>
       <action-widget response="apply">modifytags_apply</action-widget>
       <action-widget response="cancel">modifytags_cancel</action-widget>
     </action-widgets>
-  </object>
+  </template>
 </interface>
