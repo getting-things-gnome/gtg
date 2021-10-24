@@ -55,9 +55,12 @@ PANE_STACK_NAMES_MAP = {
 PANE_STACK_NAMES_MAP_INVERTED = {v: k for k, v in PANE_STACK_NAMES_MAP.items()}
 
 
+@Gtk.Template(filename=GnomeConfig.BROWSER_UI_FILE)
 class MainWindow(Gtk.ApplicationWindow):
     """ The UI for browsing open and closed tasks,
     and listing tags in a tree """
+
+    __gtype_name__ = 'MainWindow'
 
     __string_signal__ = (GObject.SignalFlags.RUN_FIRST, None, (str, ))
     __none_signal__ = (GObject.SignalFlags.RUN_FIRST, None, tuple())
@@ -66,6 +69,42 @@ class MainWindow(Gtk.ApplicationWindow):
                     'task-marked-as-not-done': __string_signal__,
                     'visibility-toggled': __none_signal__,
                     }
+
+    taskpopup = Gtk.Template.Child('task_context_menu')
+    defertopopup = Gtk.Template.Child('defer_to_context_menu')
+    ctaskpopup = Gtk.Template.Child('closed_task_context_menu')
+
+    main_hpanes = Gtk.Template.Child()
+    open_pane = Gtk.Template.Child()
+    actionable_pane = Gtk.Template.Child()
+    closed_pane = Gtk.Template.Child()
+
+    menu_view_workview = Gtk.Template.Child('view_workview')
+    toggle_workview = Gtk.Template.Child('workview_toggle')
+
+    search_entry = Gtk.Template.Child()
+    searchbar = Gtk.Template.Child()
+    search_button = Gtk.Template.Child()
+
+    quickadd_entry = Gtk.Template.Child('quickadd_field')
+    quickadd_pane = Gtk.Template.Child()
+
+    sidebar = Gtk.Template.Child('sidebar_vbox')
+    sidebar_container = Gtk.Template.Child('sidebar-scroll')
+    sidebar_notebook = Gtk.Template.Child()
+    main_notebook = Gtk.Template.Child()
+
+    vbox_toolbars = None
+    stack_switcher = Gtk.Template.Child()
+    main_box = Gtk.Template.Child('main_view_box')
+
+    defer_btn = Gtk.Template.Child('defer_task_button')
+    defer_menu_btn = Gtk.Template.Child()
+    defer_menu_days_section = Gtk.Template.Child()
+
+    main_menu_btn = Gtk.Template.Child()
+    help_overlay = Gtk.Template.Child('shortcuts')
+    about = Gtk.Template.Child('about_dialog')
 
     def __init__(self, requester, app):
         super().__init__(application=app)
@@ -110,20 +149,10 @@ class MainWindow(Gtk.ApplicationWindow):
         # Tags
         self.tagtree = None
         self.tagtreeview = None
+        self.tagpopup = TagContextMenu(self.req, self.app)
 
-        # Load window tree
-        self.builder = Gtk.Builder()
-        self.builder.add_from_file(GnomeConfig.BROWSER_UI_FILE)
-        self.builder.add_from_file(GnomeConfig.HELP_OVERLAY_UI_FILE)
-
-        # Define aliases for specific widgets to reuse them easily in the code
-        self._init_widget_aliases()
         self.sidebar.connect('notify::visible', self._on_sidebar_visible)
         self.add_action(Gio.PropertyAction.new('sidebar', self.sidebar, 'visible'))
-
-        self.set_titlebar(self.headerbar)
-        self.set_title('Getting Things GNOME!')
-        self.set_child(self.main_box)
 
         # Setup help overlay (shortcuts window)
         self.set_help_overlay(self.help_overlay)
@@ -135,7 +164,7 @@ class MainWindow(Gtk.ApplicationWindow):
         # Initialize "About" dialog
         self._init_about_dialog()
 
-        # Create our dictionary and connect it
+        # Connect manual signals
         self._init_signal_connections()
 
         self.restore_state_from_conf()
@@ -230,40 +259,6 @@ class MainWindow(Gtk.ApplicationWindow):
         # TODO(izidor): Add icon dirs on app level
         Gtk.IconTheme.get_default().prepend_search_path(ICONS_DIR)
 
-    def _init_widget_aliases(self):
-        """
-        Defines aliases for UI elements found in the GtkBuilder file
-        """
-
-        self.taskpopup = self.builder.get_object("task_context_menu")
-        self.defertopopup = self.builder.get_object("defer_to_context_menu")
-        self.ctaskpopup = self.builder.get_object("closed_task_context_menu")
-        self.about = self.builder.get_object("about_dialog")
-        self.open_pane = self.builder.get_object("open_pane")
-        self.actionable_pane = self.builder.get_object("actionable_pane")
-        self.closed_pane = self.builder.get_object("closed_pane")
-        self.menu_view_workview = self.builder.get_object("view_workview")
-        self.toggle_workview = self.builder.get_object("workview_toggle")
-        self.search_entry = self.builder.get_object("search_entry")
-        self.searchbar = self.builder.get_object("searchbar")
-        self.search_button = self.builder.get_object("search_button")
-        self.quickadd_entry = self.builder.get_object("quickadd_field")
-        self.quickadd_pane = self.builder.get_object("quickadd_pane")
-        self.sidebar = self.builder.get_object("sidebar_vbox")
-        self.sidebar_container = self.builder.get_object("sidebar-scroll")
-        self.sidebar_notebook = self.builder.get_object("sidebar_notebook")
-        self.main_notebook = self.builder.get_object("main_notebook")
-        self.accessory_notebook = self.builder.get_object("accessory_notebook")
-        self.vbox_toolbars = self.builder.get_object("vbox_toolbars")
-        self.stack_switcher = self.builder.get_object("stack_switcher")
-        self.headerbar = self.builder.get_object("browser_headerbar")
-        self.main_box = self.builder.get_object("main_view_box")
-        self.defer_btn = self.builder.get_object("defer_task_button")
-        self.defer_menu_btn = self.builder.get_object("defer_menu_btn")
-        self.help_overlay = self.builder.get_object("shortcuts")
-
-        self.tagpopup = TagContextMenu(self.req, self.app)
-
     def _init_ui_widget(self):
         """ Sets the main pane with three trees for active tasks,
         actionable tasks (workview), closed tasks and creates
@@ -286,7 +281,6 @@ class MainWindow(Gtk.ApplicationWindow):
         Set dynamic day labels for the toolbar's task deferring menubutton.
         """
         today = datetime.datetime.today()
-        dynamic_days_menu_section = self.builder.get_object("defer_menu_dydays_section")
 
         # Day 0 is "Today", day 1 is "Tomorrow",
         # so we don't need to calculate the weekday name for those.
@@ -295,14 +289,14 @@ class MainWindow(Gtk.ApplicationWindow):
             translated_weekday_combo = _("In {number_of_days} days — {weekday}").format(
                 weekday=weekday_name, number_of_days=i + 2)
 
-            action = ''.join(dynamic_days_menu_section.get_item_attribute_value(
+            action = ''.join(self.defer_menu_days_section.get_item_attribute_value(
                 i,
                 'action',
                 GLib.VariantType.new('s')).get_string()
             )
             replacement_item = Gio.MenuItem.new(translated_weekday_combo, action)
-            dynamic_days_menu_section.remove(i)
-            dynamic_days_menu_section.insert_item(i, replacement_item)
+            self.defer_menu_days_section.remove(i)
+            self.defer_menu_days_section.insert_item(i, replacement_item)
 
     def init_tags_sidebar(self):
         """
@@ -389,18 +383,6 @@ class MainWindow(Gtk.ApplicationWindow):
         """
         connects signals on UI elements
         """
-        SIGNAL_CONNECTIONS_DIC = {
-            "on_edit_done_task": self.on_edit_done_task,
-            "on_add_subtask": self.on_add_subtask,
-            "on_tagcontext_deactivate": self.on_tagcontext_deactivate,
-            "on_quickadd_field_activate": self.on_quickadd_activate,
-            "on_quickadd_field_focus_in": self.on_quickadd_focus_in,
-            "on_quickadd_field_focus_out": self.on_quickadd_focus_out,
-            "on_about_close": self.on_about_close,
-            "on_search": self.on_search,
-        }
-        self.builder.connect_signals(SIGNAL_CONNECTIONS_DIC)
-
         # When destroying this window, quit GTG
         self.connect("close-request", self.quit)
 
@@ -506,6 +488,7 @@ class MainWindow(Gtk.ApplicationWindow):
         self.search_timeout = None
 
 
+    @Gtk.Template.Callback()
     def on_search(self, data):
         """Callback everytime a character is inserted in the search field."""
 
@@ -598,8 +581,8 @@ class MainWindow(Gtk.ApplicationWindow):
         self.sidebar.props.visible = tag_pane
 
         sidebar_width = self.config.get("sidebar_width")
-        self.builder.get_object("main_hpanes").set_position(sidebar_width)
-        self.builder.get_object("main_hpanes").connect('notify::position',
+        self.main_hpanes.set_position(sidebar_width)
+        self.main_hpanes.connect('notify::position',
                                                        self.on_sidebar_width)
 
         # Callbacks for sorting and restoring previous state
@@ -682,6 +665,7 @@ class MainWindow(Gtk.ApplicationWindow):
         """
         self.about.show()
 
+    @Gtk.Template.Callback()
     def on_about_close(self, widget, response):
         """
         close the about dialog
@@ -707,7 +691,7 @@ class MainWindow(Gtk.ApplicationWindow):
         """
         Action callback to show the main menu.
         """
-        main_menu_btn = self.builder.get_object('main_menu_btn')
+        main_menu_btn = self.main_menu_btn
         main_menu_btn.props.active = not main_menu_btn.props.active
 
     def on_sidebar_toggled(self, action, param):
@@ -800,9 +784,11 @@ class MainWindow(Gtk.ApplicationWindow):
         self.sidebar.props.visible = True
         self.tagtreeview.grab_focus()
 
+    @Gtk.Template.Callback()
     def on_quickadd_focus_in(self, widget, event):
         self.toggle_delete_accel(False)
 
+    @Gtk.Template.Callback()
     def on_quickadd_focus_out(self, widget, event):
         self.toggle_delete_accel(True)
 
@@ -813,6 +799,7 @@ class MainWindow(Gtk.ApplicationWindow):
         accels = ['<ctrl>Delete'] if enable_delete_accel else []
         self.app.set_accels_for_action('win.delete_task', accels)
 
+    @Gtk.Template.Callback()
     def on_quickadd_activate(self, widget):
         """ Add a new task from quickadd toolbar """
         text = str(self.quickadd_entry.get_text())
@@ -1688,9 +1675,6 @@ class MainWindow(Gtk.ApplicationWindow):
         """ Returns true if window is the currently active window """
 
         return self.get_property("is-active") or self.menu.is_visible()
-
-    def get_builder(self):
-        return self.builder
 
     def get_window(self):
         return self
