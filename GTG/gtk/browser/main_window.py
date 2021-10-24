@@ -273,7 +273,7 @@ class MainWindow(Gtk.ApplicationWindow):
 
         tag_completion = TagCompletion(self.req.get_tag_tree())
         self.modifytags_dialog = ModifyTagsDialog(tag_completion, self.req)
-        self.modifytags_dialog.dialog.set_transient_for(self)
+        self.modifytags_dialog.set_transient_for(self)
         self.deletetags_dialog = DeleteTagsDialog(self.req, self)
         self.calendar = GTGCalendar()
         self.calendar.set_transient_for(self)
