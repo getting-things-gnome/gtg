@@ -430,7 +430,7 @@ class Application(Gtk.Application):
         if task.is_new():
             self.close_task(task.get_id())
         else:
-            self.delete_tasks([task.get_id()], editor.window)
+            self.delete_tasks([task.get_id()], editor)
 
     def open_tags_popup_in_editor(self, action, params):
         """Callback to open the tags popup in the focused task editor."""
@@ -572,7 +572,7 @@ class Application(Gtk.Application):
         """Get focused task editor window."""
 
         for editor in self.open_tasks.values():
-            if editor.window.is_active():
+            if editor.is_active():
                 return editor
 
     def close_task(self, tid):
