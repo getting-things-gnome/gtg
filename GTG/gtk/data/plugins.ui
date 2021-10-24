@@ -1,41 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
   <requires lib="gtk" version="4.0"/>
-  <object class="GtkAboutDialog" id="_plugin_about_dialog">
-    <property name="logo_icon_name">system-run-symbolic</property>
-    <signal name="close" handler="on_PluginAboutDialog_close" swapped="no"/>
-    <signal name="close-request" handler="on_plugin_about_close" swapped="no"/>
-    <signal name="response" handler="on_PluginAboutDialog_close" swapped="no"/>
-    <child>
-      <placeholder/>
-    </child>
-    <child internal-child="vbox">
-      <object class="GtkBox" id="pa-vbox1">
-        <property name="margin-start">5</property>
-        <property name="margin-end">5</property>
-        <property name="margin-top">5</property>
-        <property name="margin-bottom">5</property>
-        <property name="orientation">vertical</property>
-        <property name="spacing">2</property>
-        <child>
-          <object class="GtkFrame" id="pa-frame1">
-            <property name="child">
-              <object class="GtkLabel" id="PluginDepends">
-                <property name="margin_start">12</property>
-                <property name="use_markup">True</property>
-              </object>
-            </property>
-            <child type="label">
-              <object class="GtkLabel" id="pa-label1">
-                <property name="label" translatable="yes">&lt;b&gt;Dependencies&lt;/b&gt;</property>
-                <property name="use_markup">True</property>
-              </object>
-            </child>
-          </object>
-        </child>
-      </object>
-    </child>
-  </object>
   <template class="PluginsDialog" parent="GtkDialog">
     <property name="default_width">500</property>
     <property name="default_height">500</property>
