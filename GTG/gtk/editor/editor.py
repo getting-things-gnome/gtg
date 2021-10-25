@@ -652,7 +652,7 @@ class TaskEditor(Gtk.Window):
                                abs_result) % {'days': abs_result}
 
         style_context = self.get_style_context()
-        color = style_context.get_color().to_color()
+        color = style_context.get_color()
         self.dayleft_label.set_markup(
             f"<span color='{rgb_to_hex(color)}'>{txt}</span>")
 
