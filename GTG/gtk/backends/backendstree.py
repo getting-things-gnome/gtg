@@ -122,7 +122,7 @@ class BackendsTree(Gtk.TreeView):
                 # flag and returns color as #RRGGBB
                 style_context = self.get_style_context()
                 color = style_context.get_color()
-                color = color.to_color().to_string()
+                color = color.to_string()
                 text = f"<span color='{color}'>{backend_name}</span>"
             self.liststore[b_path][self.COLUMN_TEXT] = text
 

@@ -462,7 +462,7 @@ class TreeviewFactory():
         # Updating the unactive color (same for everyone)
         color = treeview.get_style_context().get_color()
         # Convert color into #RRRGGGBBB
-        self.unactive_color = color.to_color().to_string()
+        self.unactive_color = color.to_string()
 
         treeview.set_sort_column('tag_id')
         self.tags_view = treeview
