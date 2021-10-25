@@ -442,19 +442,17 @@ class TreeviewFactory():
         treeview.set_bg_color(self.get_task_bg_color, 'bg_color')
         # Global treeview properties
         treeview.set_property("enable-tree-lines", False)
-        treeview.set_rules_hint(False)
         treeview.set_multiple_selection(True)
         # Updating the unactive color (same for everyone)
         color = treeview.get_style_context().get_color()
         # Convert color into #RRRGGGBBB
-        self.unactive_color = color.to_color().to_string()
+        self.unactive_color = color.to_string()
         return treeview
 
     def build_tag_treeview(self, tree, desc):
         treeview = TreeView(tree, desc)
         # Global treeview properties
         treeview.set_property("enable-tree-lines", False)
-        treeview.set_rules_hint(False)
         treeview.set_row_separator_func(self.is_tag_separator_filter)
         treeview.set_headers_visible(False)
         treeview.set_dnd_name('gtg/tag-iter-str')
