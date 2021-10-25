@@ -58,7 +58,6 @@
                     <property name="halign">end</property>
                     <child>
                       <object class="GtkButton" id="_plugin_configure_button">
-                        <property name="visible">False</property>
                         <property name="label" translatable="yes">_Configure Plugin</property>
                         <property name="sensitive">False</property>
                         <property name="receives_default">True</property>
