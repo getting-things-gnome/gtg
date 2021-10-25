@@ -70,17 +70,10 @@ class MainWindow(Gtk.ApplicationWindow):
                     'visibility-toggled': __none_signal__,
                     }
 
-    taskpopup = Gtk.Template.Child('task_context_menu')
-    defertopopup = Gtk.Template.Child('defer_to_context_menu')
-    ctaskpopup = Gtk.Template.Child('closed_task_context_menu')
-
     main_hpanes = Gtk.Template.Child()
     open_pane = Gtk.Template.Child()
     actionable_pane = Gtk.Template.Child()
     closed_pane = Gtk.Template.Child()
-
-    menu_view_workview = Gtk.Template.Child('view_workview')
-    toggle_workview = Gtk.Template.Child('workview_toggle')
 
     search_entry = Gtk.Template.Child()
     searchbar = Gtk.Template.Child()
@@ -92,7 +85,6 @@ class MainWindow(Gtk.ApplicationWindow):
     sidebar = Gtk.Template.Child('sidebar_vbox')
     sidebar_container = Gtk.Template.Child('sidebar-scroll')
     sidebar_notebook = Gtk.Template.Child()
-    main_notebook = Gtk.Template.Child()
 
     vbox_toolbars = None
     stack_switcher = Gtk.Template.Child()
@@ -1632,30 +1624,6 @@ class MainWindow(Gtk.ApplicationWindow):
         @param page: Gtk.Frame-based panel to be added
         """
         return self._add_page(self.sidebar_notebook, icon, page)
-
-    def add_page_to_main_notebook(self, title, page):
-        """Adds a new page tab to the top right main panel.  The tab
-        will be added as the last tab.  Also causes the tabs to be
-        shown.
-        @param title: Short text to use for the tab label
-        @param page: Gtk.Frame-based panel to be added
-        """
-        return self._add_page(self.main_notebook, Gtk.Label(label=title), page)
-
-    def remove_page_from_sidebar_notebook(self, page):
-        """Removes a new page tab from the left panel.  If this leaves
-        only one tab in the notebook, the tab selector will be hidden.
-        @param page: Gtk.Frame-based panel to be removed
-        """
-        return self._remove_page(self.sidebar_notebook, page)
-
-    def remove_page_from_main_notebook(self, page):
-        """Removes a new page tab from the top right main panel.  If
-        this leaves only one tab in the notebook, the tab selector will
-        be hidden.
-        @param page: Gtk.Frame-based panel to be removed
-        """
-        return self._remove_page(self.main_notebook, page)
 
     def hide(self):
         """ Hides the task browser """
