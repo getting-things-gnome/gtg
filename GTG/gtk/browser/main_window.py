@@ -384,7 +384,8 @@ class MainWindow(Gtk.ApplicationWindow):
         self.connect("close-request", self.quit)
 
         # Store window position
-        self.connect('size-allocate', self.on_size_allocate)
+        self.connect('notify::default-width', self.on_window_resize)
+        self.connect('notify::default-height', self.on_window_resize)
 
         # # Active tasks TreeView
         # tsk_treeview_btn_press = self.on_task_treeview_click_begin
@@ -563,20 +564,16 @@ class MainWindow(Gtk.ApplicationWindow):
                 print(f"Invalid liblarch path {path}")
 
     def restore_state_from_conf(self):
-        # Extract state from configuration dictionary
-        # if "browser" not in self.config:
-        #     #necessary to have the minimum width of the tag pane
-        #     # inferior to the "first run" width
-        #     self.builder.get_object("hpaned1").set_position(250)
-        #     return
-
+        # NOTE: for the window state to be restored, this must
+        # be called **before** the window is realized. The size
+        # of the window cannot manually be changed later.
         width = self.config.get('width')
         height = self.config.get('height')
         if width and height:
-            self.resize(width, height)
+            self.set_default_size(width, height)
 
         # checks for maximization window
-        self.connect('notify::is-maximized', self.on_maximize)
+        self.connect('notify::maximized', self.on_maximize)
 
         if self.config.get("maximized"):
             self.maximize()
@@ -655,8 +652,8 @@ class MainWindow(Gtk.ApplicationWindow):
         self.config.set('tasklist_sort_column', sort_column)
         self.config.set('tasklist_sort_order', sort_order)
 
-    def on_size_allocate(self, widget=None, data=None):
-        width, height = self.get_size()
+    def on_window_resize(self, widget=None, gparam=None):
+        width, height = self.get_default_size()
         self.config.set('width', width)
         self.config.set('height', height)
 
