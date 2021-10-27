@@ -141,7 +141,6 @@ class MainWindow(Gtk.ApplicationWindow):
         # Tags
         self.tagtree = None
         self.tagtreeview = None
-        self.tagpopup = TagContextMenu(self.req, self.app)
 
         self.sidebar.connect('notify::visible', self._on_sidebar_visible)
         self.add_action(Gio.PropertyAction.new('sidebar', self.sidebar, 'visible'))
@@ -303,6 +302,10 @@ class MainWindow(Gtk.ApplicationWindow):
         self.tagtreeview = self.tv_factory.tags_treeview(self.tagtree)
         self.tagtreeview.get_selection().connect('changed', self.on_select_tag)
 
+        self.tagpopup = TagContextMenu(self.req, self.app)
+        self.tagpopup.set_parent(self.sidebar_container)
+        self.tagpopup.set_position(Gtk.PositionType.BOTTOM)
+
         tagtree_gesture_single = Gtk.GestureSingle(button=Gdk.BUTTON_SECONDARY)
         tagtree_gesture_single.connect('begin', self.on_tag_treeview_click_begin)
         tagtree_key_controller = Gtk.EventControllerKey()
@@ -451,12 +454,12 @@ class MainWindow(Gtk.ApplicationWindow):
 
 # HELPER FUNCTIONS ##########################################################
 
-    def show_tagpopup_at(self, x, y):
+    def show_popup_at(self, popup, x, y):
         rect = Gdk.Rectangle()
         rect.x = x
         rect.y = y
-        self.tagpopup.set_pointing_to(rect)
-        self.tagpopup.popup()
+        popup.set_pointing_to(rect)
+        popup.popup()
 
     def toggle_search(self, action, param):
         """Callback to toggle search bar."""
@@ -886,13 +889,10 @@ class MainWindow(Gtk.ApplicationWindow):
         """
         deals with mouse click event on the tag tree
         """
-        event = gesture.get_current_event()
+        _, x, y = gesture.get_point(sequence)
         log.debug("Received button event #%d at %d, %d",
-                  event.button, event.x, event.y)
-        if event.button.button == 3:
-            x = int(event.x)
-            y = int(event.y)
-            time = event.time
+                  gesture.get_button(), x, y)
+        if gesture.get_button() == 3:
             pthinfo = self.tagtreeview.get_path_at_pos(x, y)
             if pthinfo is not None:
                 path, col, cellx, celly = pthinfo
@@ -918,20 +918,19 @@ class MainWindow(Gtk.ApplicationWindow):
                 if selected_search is not None:
                     my_tag = self.req.get_tag(selected_search)
                     self.tagpopup.set_tag(my_tag)
-                    self.show_tagpopup_at(x, y)
+                    self.show_popup_at(self.tagpopup, x, y)
                 elif len(selected_tags) > 0:
                     # Then we are looking at single, normal tag rather than
                     # the special 'All tags' or 'Tasks without tags'. We only
                     # want to popup the menu for normal tags.
                     my_tag = self.req.get_tag(selected_tags[0])
                     self.tagpopup.set_tag(my_tag)
-                    self.show_tagpopup_at(x, y)
+                    self.show_popup_at(self.tagpopup, x, y)
                 else:
                     self.reset_cursor()
 
     def on_tag_treeview_key_press_event(self, controller, keyval, keycode, state):
         keyname = Gdk.keyval_name(keyval)
-        event = controller.get_current_event()
         is_shift_f10 = (keyname == "F10" and state & Gdk.ModifierType.SHIFT_MASK)
         if is_shift_f10 or keyname == "Menu":
             selected_tags = self.get_selected_tags(nospecial=True)
@@ -941,22 +940,22 @@ class MainWindow(Gtk.ApplicationWindow):
             # popup menu for searches
             if selected_search is not None:
                 self.tagpopup.set_tag(selected_search)
-                self.show_tagpopup_at(x, y)
+                self.tagpopup.popup()
             elif len(selected_tags) > 0:
                 # Then we are looking at single, normal tag rather than
                 # the special 'All tags' or 'Tasks without tags'. We only
                 # want to popup the menu for normal tags.
                 selected_tag = self.req.get_tag(selected_tags[0])
                 self.tagpopup.set_tag(selected_tag)
-                self.show_tagpopup_at(x, y)
+                self.tagpopup.popoup()
             else:
                 self.reset_cursor()
             return True
         if keyname == "Delete":
-            self.on_delete_tag_activate(event)
+            self.on_delete_tag_activate()
             return True
 
-    def on_delete_tag_activate(self, event):
+    def on_delete_tag_activate(self):
         tags = self.get_selected_tags()
         self.deletetags_dialog.delete_tags(tags)
 
