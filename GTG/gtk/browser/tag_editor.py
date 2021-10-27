@@ -38,7 +38,7 @@ class TagEditor(Gtk.Window):
     """
 
     __gtype_name__ = 'GTG_TagEditor'
-    _emoji_entry = Gtk.Template.Child('emoji-entry')
+    _emoji_chooser = Gtk.Template.Child('emoji-chooser')
     _icon_button = Gtk.Template.Child('icon-button')
     _name_entry = Gtk.Template.Child('name-entry')
 
@@ -50,9 +50,7 @@ class TagEditor(Gtk.Window):
         self.tag = tag
 
         self._title_format = self.get_title()
-
-        self._emoji_entry_changed_id = self._emoji_entry.connect(
-            'changed', self._set_emoji)
+        self._emoji_chooser.set_parent(self._icon_button)
 
         self.tag_rgba = RGBA(1.0, 1.0, 1.0, 1.0)
         self.tag_name = ''
@@ -121,16 +119,6 @@ class TagEditor(Gtk.Window):
         """
         return bool(self._emoji)
 
-    def _reset_emoji_entry(self):
-        """
-        The emoji entry should stay clear in order to function properly.
-        When something is being inserted, then it should be cleared after
-        either starting editing a new tag, selected one, or otherwise changed.
-        """
-        with GObject.signal_handler_block(self._emoji_entry,
-                                          self._emoji_entry_changed_id):
-            self._emoji_entry.set_text('')
-
     def _validate(self):
         """
         Validates the current tag preferences.
@@ -175,7 +163,7 @@ class TagEditor(Gtk.Window):
             return
 
         icon = tag.get_attribute('icon')
-        self._set_emoji(self._emoji_entry, text=icon if icon else '')
+        self._set_emoji(self._emoji_chooser, text=icon if icon else '')
 
         self.tag_name = tag.get_friendly_name()
         self.set_title(self._title_format % ('@' + self.tag_name,))
@@ -262,23 +250,13 @@ class TagEditor(Gtk.Window):
         """
         Button to set the icon/emoji has been clicked.
         """
-        self._reset_emoji_entry()
-        # Resize to make the emoji picker fit (can't go outside of the
-        # window for some reason, at least in GTK3)
-        w, h = self.get_size()
-        self.resize(max(w, 550), max(h, 300))
-        self._emoji_entry.do_insert_emoji(self._emoji_entry)
+        self._emoji_chooser.popup()
 
+    @Gtk.Template.Callback('emoji_set')
     def _set_emoji(self, widget: GObject.Object, text: str = None):
         """
         Callback when an emoji has been inserted.
-        This is part of the emoji insertion hack.
-        The text parameter can be used to override the emoji to use, used
-        for initialization.
         """
-        if text is None:
-            text = self._emoji_entry.get_text()
-
         self._emoji = text if text else None
         if text:
             self._emoji = text
@@ -292,14 +270,12 @@ class TagEditor(Gtk.Window):
                 label.set_opacity(0.4)
         self.notify('has-icon')
 
-        self._reset_emoji_entry()
-
     @Gtk.Template.Callback('remove_icon')
     def _remove_icon(self, widget: GObject.Object):
         """
         Callback to remove the icon.
         """
-        self._set_emoji(self._emoji_entry, text='')
+        self._set_emoji(self._emoji_chooser, text='')
 
     @Gtk.Template.Callback('remove_color')
     def _remove_color(self, widget: GObject.Object):
