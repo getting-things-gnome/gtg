@@ -30,7 +30,10 @@
         </child>
       </object>
     </child>
-    <property name="child">
+    <object class="GtkEmojiChooser" id="emoji-chooser">
+      <signal name="emoji-picked" handler="emoji_set"/>
+    </object>
+    <child internal-child="content_area">
       <object class="GtkBox" id="main">
         <property name="margin_start">18</property>
         <property name="margin_end">18</property>
@@ -57,21 +60,6 @@
                     <accelerator key="i" modifiers="GDK_CONTROL_MASK" signal="clicked"/>
                     <style>
                       <class name="icon"/>
-                    </style>
-                  </object>
-                </child>
-                <child>
-                  <object class="GtkEntry" id="emoji-entry">
-                    <property name="width_request">0</property>
-                    <property name="height_request">0</property>
-                    <property name="opacity">0</property>
-                    <property name="editable">False</property>
-                    <property name="max_length">1</property>
-                    <property name="width_chars">1</property>
-                    <property name="overwrite_mode">True</property>
-                    <property name="input_hints">GTK_INPUT_HINT_NO_SPELLCHECK | GTK_INPUT_HINT_EMOJI | GTK_INPUT_HINT_NONE</property>
-                    <style>
-                      <class name="hidden"/>
                     </style>
                   </object>
                 </child>
