@@ -2,8 +2,9 @@
 <interface>
   <requires lib="gtk" version="4.0"/>
   <template class="ModifyTagsDialog" parent="GtkDialog">
-    <property name="title" translatable="yes">Modify Tags</property>
     <property name="default-widget">modifytags_apply</property>
+    <property name="title" translatable="yes">Modify Tags</property>
+    <property name="modal">True</property>
     <signal name="response" handler="on_response"/>
     <child internal-child="content_area">
       <object class="GtkBox" id="modifytags_dialog_vbox">
