@@ -50,7 +50,6 @@
                     <property name="tooltip_text" translatable="yes">Click here to set an icon for this tag</property>
                     <property name="halign">center</property>
                     <signal name="clicked" handler="set_icon" swapped="no"/>
-                    <accelerator key="i" modifiers="GDK_CONTROL_MASK" signal="clicked"/>
                     <style>
                       <class name="icon"/>
                     </style>
