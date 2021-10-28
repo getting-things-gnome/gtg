@@ -74,6 +74,7 @@ class MainWindow(Gtk.ApplicationWindow):
     open_pane = Gtk.Template.Child()
     actionable_pane = Gtk.Template.Child()
     closed_pane = Gtk.Template.Child()
+    tree_stack = Gtk.Template.Child('stack')
 
     search_entry = Gtk.Template.Child()
     searchbar = Gtk.Template.Child()
@@ -179,12 +180,12 @@ class MainWindow(Gtk.ApplicationWindow):
         builder.add_from_file(GnomeConfig.MENUS_UI_FILE)
 
         closed_menu_model = builder.get_object('closed_task_menu')
-        self.closed_menu = Gtk.Menu.new_from_model(closed_menu_model)
-        self.closed_menu.attach_to_widget(self.main_box)
+        self.closed_menu = Gtk.PopoverMenu(menu_model=closed_menu_model)
+        self.closed_menu.set_parent(self.tree_stack)
 
         open_menu_model = builder.get_object('task_menu')
-        self.open_menu = Gtk.Menu.new_from_model(open_menu_model)
-        self.open_menu.attach_to_widget(self.main_box)
+        self.open_menu = Gtk.PopoverMenu(menu_model=open_menu_model)
+        self.open_menu.set_parent(self.tree_stack)
 
     def _set_actions(self):
         """Setup actions."""
@@ -460,6 +461,11 @@ class MainWindow(Gtk.ApplicationWindow):
         rect.y = y
         popup.set_pointing_to(rect)
         popup.popup()
+
+    def show_popup_at_tree_cursor(self, popup, treeview):
+        _, selected_paths = treeview.get_selection().get_selected_rows()
+        rect = treeview.get_cell_area(selected_paths[0], None)
+        self.show_popup_at(popup, 0, rect.y+2*rect.height)
 
     def toggle_search(self, action, param):
         """Callback to toggle search bar."""
@@ -891,8 +897,8 @@ class MainWindow(Gtk.ApplicationWindow):
         """
         _, x, y = gesture.get_point(sequence)
         log.debug("Received button event #%d at %d, %d",
-                  gesture.get_button(), x, y)
-        if gesture.get_button() == 3:
+                  gesture.get_current_button(), x, y)
+        if gesture.get_current_button() == 3:
             pthinfo = self.tagtreeview.get_path_at_pos(x, y)
             if pthinfo is not None:
                 path, col, cellx, celly = pthinfo
@@ -940,14 +946,16 @@ class MainWindow(Gtk.ApplicationWindow):
             # popup menu for searches
             if selected_search is not None:
                 self.tagpopup.set_tag(selected_search)
-                self.tagpopup.popup()
+                self.show_popup_at_tree_cursor(self.tagpopup, self.tagtreeview)
             elif len(selected_tags) > 0:
                 # Then we are looking at single, normal tag rather than
                 # the special 'All tags' or 'Tasks without tags'. We only
                 # want to popup the menu for normal tags.
                 selected_tag = self.req.get_tag(selected_tags[0])
                 self.tagpopup.set_tag(selected_tag)
-                self.tagpopup.popoup()
+                model, titer = self.tagtreeview.get_selection().get_selected()
+                rect = self.tagtreeview.get_cell_area(model.get_path(titer), None)
+                self.show_popup_at_tree_cursor(self.tagpopup, self.tagtreeview)
             else:
                 self.reset_cursor()
             return True
@@ -978,14 +986,18 @@ class MainWindow(Gtk.ApplicationWindow):
     def on_task_treeview_click_begin(self, gesture, sequence):
         """ Pop up context menu on right mouse click in the main
         task tree view """
-        event = gesture.get_current_event()
         treeview = gesture.get_widget()
+        _, x, y = gesture.get_point(sequence)
         log.debug("Received button event #%s at %d,%d",
-                  event.button, event.x, event.y)
-        if event.button.button == 3:
-            x = int(event.x)
-            y = int(event.y)
-            pthinfo = treeview.get_path_at_pos(x, y)
+                  gesture.get_current_button(), x, y)
+        if gesture.get_current_button() == 3:
+            # Only when using a filtered treeview (you have selected a specific
+            # tag in tagtree), for some reason the standard coordinates become
+            # wrong and you must convert them.
+            # The original coordinates are still needed to put the popover
+            # in the correct place
+            tx, ty = treeview.convert_widget_to_bin_window_coords(x, y)
+            pthinfo = treeview.get_path_at_pos(tx, ty)
             if pthinfo is not None:
                 path, col, cellx, celly = pthinfo
                 selection = treeview.get_selection()
@@ -998,7 +1010,7 @@ class MainWindow(Gtk.ApplicationWindow):
                 self.app.action_enabled_changed('add_parent', True)
                 if not self.have_same_parent():
                     self.app.action_enabled_changed('add_parent', False)
-                self.open_menu.popup_at_pointer(event)
+                self.show_popup_at(self.open_menu, x, y)
 
     def on_task_treeview_key_press_event(self, controller, keyval, keycode, state):
         keyname = Gdk.keyval_name(keyval)
@@ -1006,16 +1018,14 @@ class MainWindow(Gtk.ApplicationWindow):
         is_shift_f10 = (keyname == "F10" and state & Gdk.ModifierType.SHIFT_MASK)
 
         if is_shift_f10 or keyname == "Menu":
-            self.open_menu.popup_at_pointer(event)
-            return True
+            self.show_popup_at_tree_cursor(self.open_menu, controller.get_widget())
 
     def on_closed_task_treeview_click_begin(self, gesture, sequence):
-        event = gesture.get_current_event()
         treeview = gesture.get_widget()
-        if event.button.button == 3:
-            x = int(event.x)
-            y = int(event.y)
-            pthinfo = treeview.get_path_at_pos(x, y)
+        _, x, y = gesture.get_point(sequence)
+        if gesture.get_current_button() == 3:
+            tx, ty = treeview.convert_widget_to_bin_window_coords(x, y)
+            pthinfo = treeview.get_path_at_pos(tx, ty)
 
             if pthinfo is not None:
                 path, col, cellx, celly = pthinfo
@@ -1027,7 +1037,7 @@ class MainWindow(Gtk.ApplicationWindow):
                     treeview.set_cursor(path, col, 0)
 
                 treeview.grab_focus()
-                self.closed_menu.popup_at_pointer(event)
+                self.show_popup_at(self.closed_menu, x, y)
 
     def on_closed_task_treeview_key_press_event(self, controller, keyval, keycode, state):
         keyname = Gdk.keyval_name(keyval)
@@ -1035,8 +1045,7 @@ class MainWindow(Gtk.ApplicationWindow):
         is_shift_f10 = (keyname == "F10" and state & Gdk.ModifierType.SHIFT_MASK)
 
         if is_shift_f10 or keyname == "Menu":
-            self.closed_menu.popup_at_pointer(event)
-            return True
+            self.show_popup_at_tree_cursor(self.closed_menu, controller.get_widget())
 
     def on_add_task(self, widget=None):
         tags = [tag for tag in self.get_selected_tags(nospecial=True)]
