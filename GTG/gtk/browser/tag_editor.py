@@ -20,7 +20,7 @@
 This module contains the TagEditor class which is a window that allows the
 user to edit a tag properties.
 """
-from gi.repository import GObject, Gtk, Gdk, GdkPixbuf
+from gi.repository import GObject, Gtk, Gdk, GdkPixbuf, GLib
 
 import logging
 import random
@@ -44,6 +44,12 @@ class TagEditor(Gtk.Dialog):
 
     def __init__(self, req, app, tag=None):
         super().__init__(use_header_bar=1)
+
+        set_icon_shortcut = Gtk.Shortcut.new(
+            Gtk.ShortcutTrigger.parse_string("<Control>I"),
+            Gtk.CallbackAction.new(self._set_icon)
+        )
+        self.add_shortcut(set_icon_shortcut)
 
         self.req = req
         self.app = app
@@ -250,7 +256,7 @@ class TagEditor(Gtk.Dialog):
         self.has_color = True
 
     @Gtk.Template.Callback('set_icon')
-    def _set_icon(self, widget: GObject.Object):
+    def _set_icon(self, widget: GObject.Object, shargs: GLib.Variant = None):
         """
         Button to set the icon/emoji has been clicked.
         """
