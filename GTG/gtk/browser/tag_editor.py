@@ -141,14 +141,13 @@ class TagEditor(Gtk.Window):
         """
         # TODO: Possibly add more restrictions.
         if self.tag_name == '':
-            self._name_entry.set_icon_from_icon_name(
-                Gtk.EntryIconPosition.SECONDARY, Gtk.STOCK_DIALOG_ERROR)
-            self._name_entry.props.secondary_icon_tooltip_text = \
+            self._name_entry.add_css_class("error")
+            self._name_entry.props.tooltip_text = \
                 _("Tag name can not be empty")
             return False
         else:
-            self._name_entry.set_icon_from_icon_name(
-                Gtk.EntryIconPosition.SECONDARY, None)
+            self._name_entry.remove_css_class("error")
+            self._name_entry.props.tooltip_text = ""
             return True
 
     # PUBLIC API #####
