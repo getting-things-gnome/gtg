@@ -41,6 +41,17 @@ space. Place '!' before tags you want to remove.</property>
         </child>
       </object>
     </child>
+    <child internal-child="action_area">
+      <object class="GtkBox">
+        <property name="vexpand">True</property>
+        <property name="valign">end</property>
+        <property name="spacing">4</property>
+        <property name="margin-start">4</property>
+        <property name="margin-end">4</property>
+        <property name="margin-top">4</property>
+        <property name="margin-bottom">4</property>
+      </object>
+    </child>
     <child type="action">
       <object class="GtkButton" id="modifytags_apply">
         <property name="label" translatable="yes">Apply</property>
