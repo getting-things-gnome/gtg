@@ -247,7 +247,7 @@ class MainWindow(Gtk.ApplicationWindow):
         sets the deafault theme for icon and its directory
         """
         # TODO(izidor): Add icon dirs on app level
-        Gtk.IconTheme.get_default().prepend_search_path(ICONS_DIR)
+        Gtk.IconTheme.get_for_display(self.get_display()).add_search_path(ICONS_DIR)
 
     def _init_ui_widget(self):
         """ Sets the main pane with three trees for active tasks,
