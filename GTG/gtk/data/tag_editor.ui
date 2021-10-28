@@ -1,35 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
   <requires lib="gtk" version="4.0"/>
-  <template class="GTG_TagEditor" parent="GtkWindow">
+  <template class="GTG_TagEditor" parent="GtkDialog">
     <property name="title" translatable="yes" comments="Edit tag windwo title">Edit %s</property>
-    <child type="titlebar">
-      <object class="GtkHeaderBar" id="headerbar">
-        <child>
-          <object class="GtkButton" id="cancel">
-            <property name="label" translatable="yes">Cancel</property>
-            <property name="receives_default">True</property>
-            <signal name="clicked" handler="cancel" swapped="no"/>
-            <accelerator key="Escape" signal="clicked"/>
-          </object>
-        </child>
-        <child>
-          <object class="GtkButton" id="apply">
-            <property name="label" translatable="yes">Apply</property>
-            <property name="has_default">True</property>
-            <property name="receives_default">True</property>
-            <property name="sensitive" bind-source="GTG_TagEditor" bind-property="is_valid"/>
-            <signal name="clicked" handler="apply" swapped="no"/>
-            <style>
-              <class name="suggested-action"/>
-            </style>
-          </object>
-          <packing>
-            <property name="pack_type">end</property>
-          </packing>
-        </child>
+    <property name="default-widget">apply</property>
+    <signal name="response" handler="response"/>
+    <child type="action">
+      <object class="GtkButton" id="cancel">
+        <property name="label" translatable="yes">Cancel</property>
       </object>
     </child>
+    <child type="action">
+      <object class="GtkButton" id="apply">
+        <property name="label" translatable="yes">Apply</property>
+        <property name="sensitive" bind-source="GTG_TagEditor" bind-property="is_valid"/>
+        <style>
+          <class name="suggested-action"/>
+        </style>
+      </object>
+    </child>
+    <action-widgets>
+      <action-widget response="cancel">cancel</action-widget>
+      <action-widget response="apply" default="true">apply</action-widget>
+    </action-widgets>
     <object class="GtkEmojiChooser" id="emoji-chooser">
       <signal name="emoji-picked" handler="emoji_set"/>
     </object>
@@ -201,7 +194,7 @@
           </object>
         </child>
       </object>
-    </property>
+    </child>
   </template>
   <object class="GtkSizeGroup" id="names">
     <widgets>
