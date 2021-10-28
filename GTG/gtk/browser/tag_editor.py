@@ -32,7 +32,7 @@ log = logging.getLogger(__name__)
 
 
 @Gtk.Template(filename=GnomeConfig.TAG_EDITOR_UI_FILE)
-class TagEditor(Gtk.Window):
+class TagEditor(Gtk.Dialog):
     """
     A window to edit certain properties of an tag.
     """
@@ -43,7 +43,7 @@ class TagEditor(Gtk.Window):
     _name_entry = Gtk.Template.Child('name-entry')
 
     def __init__(self, req, app, tag=None):
-        super().__init__()
+        super().__init__(use_header_bar=1)
 
         self.req = req
         self.app = app
@@ -181,24 +181,21 @@ class TagEditor(Gtk.Window):
         self.app.close_tag_editor()
         super().destroy()
 
-    # CALLBACKS #####
-    @Gtk.Template.Callback('cancel')
-    def _cancel(self, widget: GObject.Object):
+    def _cancel(self):
         """
         Cancel button has been clicked, closing the editor window without
         applying changes.
         """
         self.destroy()
 
-    @Gtk.Template.Callback('apply')
-    def _apply(self, widget: GObject.Object):
+    def _apply(self):
         """
         Apply button has been clicked, applying the settings and closing the
         editor window.
         """
         if self.tag is None:
             log.warning("Trying to apply but no tag set, shouldn't happen")
-            self._cancel(widget)
+            self._cancel()
             return
 
         if self.has_icon and self._emoji:
@@ -227,6 +224,14 @@ class TagEditor(Gtk.Window):
             self.tag = self.req.get_tag(self.tag_name)
 
         self.destroy()
+
+    # CALLBACKS #####
+    @Gtk.Template.Callback('response')
+    def _response(self, widget: GObject.Object, response: Gtk.ResponseType):
+        if response == Gtk.ResponseType.APPLY:
+            self._apply()
+        else:
+            self._cancel()
 
     @Gtk.Template.Callback('random_color')
     def _random_color(self, widget: GObject.Object):
