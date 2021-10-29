@@ -443,10 +443,6 @@ class TreeviewFactory():
         # Global treeview properties
         treeview.set_property("enable-tree-lines", False)
         treeview.set_multiple_selection(True)
-        # Updating the unactive color (same for everyone)
-        color = treeview.get_style_context().get_color()
-        # Convert color into #RRRGGGBBB
-        self.unactive_color = color.to_string()
         return treeview
 
     def build_tag_treeview(self, tree, desc):
@@ -457,10 +453,6 @@ class TreeviewFactory():
         treeview.set_headers_visible(False)
         treeview.set_dnd_name('gtg/tag-iter-str')
         treeview.set_dnd_external('gtg/task-iter-str', self.on_tag_task_dnd)
-        # Updating the unactive color (same for everyone)
-        color = treeview.get_style_context().get_color()
-        # Convert color into #RRRGGGBBB
-        self.unactive_color = color.to_string()
 
         treeview.set_sort_column('tag_id')
         self.tags_view = treeview
