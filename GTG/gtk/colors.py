@@ -109,8 +109,7 @@ def background_color(tags, bgcolor=None, galpha_scale=1, use_alpha=True):
         gcolor = RGBA(red, green, blue)
         gcolor.alpha = (1.0 - abs(brightness - target_brightness)) * galpha_scale
 
-        # TODO: Remove GTK3 check on gtk4 port
-        if not use_alpha or Gtk.get_major_version() == 3:
+        if not use_alpha:
             gcolor.red = (1 - gcolor.alpha) * gcolor.red + gcolor.alpha * bgcolor.red
             gcolor.green = (1 - gcolor.alpha) * gcolor.green + gcolor.alpha * bgcolor.green
             gcolor.blue = (1 - gcolor.alpha) * gcolor.blue + gcolor.alpha * bgcolor.blue
@@ -165,6 +164,21 @@ def generate_tag_color():
             flag = 1
     used_color.append(my_color)
     return my_color
+
+
+def grgba_to_hex(rgba, ignore_alpha=True):
+    """
+    Simply convert a Gdk.RGBA to a #ffffff style color representation,
+    Gdk.Color used to have this built in, however Gdk.RGBA.to_string
+    gives it in rgb(255, 255, 255) which can't be used in certain
+    cases.
+    """
+    colors = [int(rgba.red * 255), int(rgba.green * 255), int(rgba.blue * 255)]
+    format_string = '#%02x%02x%02x'
+    if not ignore_alpha:
+        colors.append(int(rgba.alpha * 255))
+        format_string += '%02x'
+    return format_string % tuple(colors)
 
 
 def color_add(present_color):
