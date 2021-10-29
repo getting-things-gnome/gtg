@@ -89,15 +89,19 @@ class DevConsolePlugin():
 
         # Font and colors
         self.terminal.set_font('Source Code Pro 10')
-        self.terminal.set_color(Gdk.RGBA(1.0, 1.0, 1.0, 1.0))
-        self.terminal.set_stderr_color(Gdk.RGBA(0.96, 0.5, 0.5, 1.0))
-        self.terminal.set_stdout_color(Gdk.RGBA(1.0, 1.0, 1.0, 1.0))
+        c = Gdk.RGBA()
+        c.red, c.green, c.blue, c.alpha = 1.0, 1.0, 1.0, 1.0
+        self.terminal.set_color(c)
+        c.red, c.green, c.blue = 1.0, 1.0, 1.0
+        self.terminal.set_stdout_color(c)
+        c.red, c.green, c.blue = 0.96, 0.5, 0.5
+        self.terminal.set_stderr_color(c)
 
         # Build window
         self.window.set_default_size(600, 400)
         self.window.set_title(_('Developer Console'))
-        self.window.connect('delete-event', self.on_delete_event)
-        self.window.add(self.terminal)
+        self.window.set_hide_on_close(True)
+        self.window.set_child(self.terminal)
 
         # Add F12 shortcut
         open_action = Gio.SimpleAction.new('plugin.open_console', None)
@@ -133,16 +137,9 @@ class DevConsolePlugin():
     def open_window(self, widget=None, unsued=None) -> None:
         """Open developer console."""
 
-        self.window.show_all()
-        self.window.set_keep_above(True)
+        self.window.show()
 
 
     def eof_cb(self, unused_widget):
         self.window.hide()
         return True
-
-
-    def on_delete_event(self, widget, data):
-        """Callback when window is closed."""
-
-        return self.window.hide_on_delete()
