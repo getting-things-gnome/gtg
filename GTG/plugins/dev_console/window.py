@@ -67,9 +67,11 @@ class ConsoleWidget(Gtk.ScrolledWindow):
         buf = ConsoleBuffer(namespace, welcome_message)
         self._view.set_buffer(buf)
         self._view.set_editable(True)
-        self.add(self._view)
+        self.set_child(self._view)
 
-        self._view.connect("key-press-event", self.__key_press_event_cb)
+        key_controller = Gtk.EventControllerKey()
+        key_controller.connect("key-pressed", self.__key_press_event_cb)
+        self._view.add_controller(key_controller)
         buf.connect("mark-set", self.__mark_set_cb)
         buf.connect("insert-text", self.__insert_text_cb)
 
@@ -127,7 +129,7 @@ class ConsoleWidget(Gtk.ScrolledWindow):
         Args:
             color (Gdk.RGBA): a color.
         """
-        self._css_values["textview > *"]["color"] = color.to_string()
+        self._css_values["textview"]["color"] = color.to_string()
         self._apply_css()
 
     def _apply_css(self):
@@ -153,30 +155,30 @@ class ConsoleWidget(Gtk.ScrolledWindow):
         self._view.get_buffer().error.set_property("foreground-rgba", color)
 
     # pylint: disable=too-many-return-statements
-    def __key_press_event_cb(self, view, event):
-        buf = view.get_buffer()
-        state = event.state & Gtk.accelerator_get_default_mod_mask()
+    def __key_press_event_cb(self, controller, keyval, keycode, state):
+        buf = self._view.get_buffer()
+        state = state & Gtk.accelerator_get_default_mod_mask()
         ctrl = state & Gdk.ModifierType.CONTROL_MASK
 
-        if event.keyval == Gdk.KEY_Return:
+        if keyval == Gdk.KEY_Return:
             buf.process_command_line()
             return True
 
-        if event.keyval in (Gdk.KEY_KP_Down, Gdk.KEY_Down):
+        if keyval in (Gdk.KEY_KP_Down, Gdk.KEY_Down):
             buf.history.down(buf.get_command_line())
             return True
-        if event.keyval in (Gdk.KEY_KP_Up, Gdk.KEY_Up):
+        if keyval in (Gdk.KEY_KP_Up, Gdk.KEY_Up):
             buf.history.up(buf.get_command_line())
             return True
 
-        if event.keyval in (Gdk.KEY_KP_Left, Gdk.KEY_Left, Gdk.KEY_BackSpace):
+        if keyval in (Gdk.KEY_KP_Left, Gdk.KEY_Left, Gdk.KEY_BackSpace):
             return buf.is_cursor(at=True)
 
-        if event.keyval in (Gdk.KEY_KP_Home, Gdk.KEY_Home):
+        if keyval in (Gdk.KEY_KP_Home, Gdk.KEY_Home):
             buf.place_cursor(buf.get_iter_at_mark(buf.prompt_mark))
             return True
 
-        if (ctrl and event.keyval == Gdk.KEY_d) or event.keyval == Gdk.KEY_Escape:
+        if (ctrl and keyval == Gdk.KEY_d) or keyval == Gdk.KEY_Escape:
             return self.emit("eof")
 
         return False
