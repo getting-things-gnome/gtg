@@ -95,7 +95,9 @@ class MainWindow(Gtk.ApplicationWindow):
     defer_menu_btn = Gtk.Template.Child()
     defer_menu_days_section = Gtk.Template.Child()
 
+    headerbar = Gtk.Template.Child('browser_headerbar')
     main_menu_btn = Gtk.Template.Child()
+    main_menu = Gtk.Template.Child()
     help_overlay = Gtk.Template.Child('shortcuts')
     about = Gtk.Template.Child('about_dialog')
 
@@ -1014,7 +1016,6 @@ class MainWindow(Gtk.ApplicationWindow):
 
     def on_task_treeview_key_press_event(self, controller, keyval, keycode, state):
         keyname = Gdk.keyval_name(keyval)
-        event = controller.get_current_event()
         is_shift_f10 = (keyname == "F10" and state & Gdk.ModifierType.SHIFT_MASK)
 
         if is_shift_f10 or keyname == "Menu":
@@ -1041,7 +1042,6 @@ class MainWindow(Gtk.ApplicationWindow):
 
     def on_closed_task_treeview_key_press_event(self, controller, keyval, keycode, state):
         keyname = Gdk.keyval_name(keyval)
-        event = controller.get_current_event()
         is_shift_f10 = (keyname == "F10" and state & Gdk.ModifierType.SHIFT_MASK)
 
         if is_shift_f10 or keyname == "Menu":
@@ -1486,6 +1486,18 @@ class MainWindow(Gtk.ApplicationWindow):
         self.reapply_filter(current_pane)
 
 # PUBLIC METHODS ###########################################################
+    def get_menu(self):
+        """Get the primary application menu"""
+        return self.main_menu
+
+    def get_headerbar(self):
+        """Get the headerbar for the window"""
+        return self.headerbar
+
+    def get_quickadd_pane(self):
+        """Get the quickadd pane"""
+        return self.quickadd_pane
+
     def have_same_parent(self):
         """Determine whether the selected tasks have the same parent"""
         selected_tasks = self.get_selected_tasks()
