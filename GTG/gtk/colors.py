@@ -49,6 +49,10 @@ def rgb_to_hex(rgba: Gdk.RGBA) -> str:
     """
     Convert an Gdk.RGBA to a string by using the hexadecimal 8-bit color
     notation, so #RRGGBB. Alpha is ignored.
+
+    This is useful because GTG worked with the hex notation, but
+    Gdk.RGBA.to_string() outputs something like `rgb(255, 255, 255)`, which
+    isn't expected.
     """
     return "#%02x%02x%02x" % (int(max(0, min(rgba.red, 1)) * 255),
                               int(max(0, min(rgba.green, 1)) * 255),
@@ -72,7 +76,7 @@ def rgba_to_hex(rgba: Gdk.RGBA) -> str:
 used_color = []
 
 
-def background_color(tags, bgcolor=None):
+def background_color(tags, bgcolor=None, galpha_scale=1, use_alpha=True):
     if not bgcolor:
         bgcolor = Gdk.RGBA()
         bgcolor.parse("#FFFFFF")
@@ -94,22 +98,27 @@ def background_color(tags, bgcolor=None):
             green = green + my_color.green
             blue = blue + my_color.blue
     if color_count != 0:
-        red = int(red / color_count)
-        green = int(green / color_count)
-        blue = int(blue / color_count)
+        red = red / color_count
+        green = green / color_count
+        blue = blue / color_count
         brightness = (red + green + blue) / 3.0
         target_brightness = (bgcolor.red + bgcolor.green + bgcolor.blue) / 3.0
 
-        alpha = (1 - abs(brightness - target_brightness) / 65535.0) / 2.0
-        red = int(red * alpha + bgcolor.red * (1 - alpha))
-        green = int(green * alpha + bgcolor.green * (1 - alpha))
-        blue = int(blue * alpha + bgcolor.blue * (1 - alpha))
+        gcolor = RGBA(red, green, blue)
+        gcolor.alpha = (brightness
+                       / (target_brightness if target_brightness else 1.0)
+                       * galpha_scale)
 
-        gcolor = Gdk.RGBA()
-        gcolor.red = red
-        gcolor.green = green
-        gcolor.blue = blue
-        my_color = gcolor.to_string()
+        # In some cases it may be desired to use the assumption of a white
+        # background on RGB instead of RGBA. (Eg: overlays in darkmode)
+        # https://graphicdesign.stackexchange.com/questions/113007/
+        if not use_alpha:
+            gcolor.red = 1 - gcolor.alpha * (1 - gcolor.red)
+            gcolor.green = 1 - gcolor.alpha * (1 - gcolor.green)
+            gcolor.blue = 1 - gcolor.alpha * (1 - gcolor.blue)
+            my_color = rgb_to_hex(gcolor)
+        else:
+            my_color = rgba_to_hex(gcolor)
     return my_color
 
 
@@ -149,13 +158,11 @@ def get_colored_tags_markup(req, tag_names):
 
 def generate_tag_color():
 
-    maxvalue = 65535
+    maxvalue = 1.0
     flag = 0
     while(flag == 0):
-        red = random.randint(0, maxvalue)
-        green = random.randint(0, maxvalue)
-        blue = random.randint(0, maxvalue)
-        my_color = Gdk.Color(red, green, blue).to_string()
+        rgba = random_color()
+        my_color = rgb_to_hex(rgba)
         if my_color not in used_color:
             flag = 1
     used_color.append(my_color)

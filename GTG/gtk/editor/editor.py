@@ -40,7 +40,7 @@ from GTG.gtk.editor.calendar import GTGCalendar
 from GTG.gtk.editor.recurring_menu import RecurringMenu
 from GTG.gtk.editor.taskview import TaskView
 from GTG.gtk.tag_completion import tag_filter
-
+from GTG.gtk.colors import rgb_to_hex
 """
 TODO (jakubbrindza): re-factor tag_filter into a separate module
 """
@@ -588,7 +588,7 @@ class TaskEditor:
         style_context = self.window.get_style_context()
         color = style_context.get_color(Gtk.StateFlags.INSENSITIVE).to_color()
         self.dayleft_label.set_markup(
-            f"<span color='{color.to_string()}'>{txt}</span>")
+            f"<span color='{rgb_to_hex(color)}'>{txt}</span>")
 
     def reload_editor(self):
         task = self.task

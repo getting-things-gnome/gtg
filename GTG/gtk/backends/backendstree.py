@@ -20,7 +20,7 @@ from gi.repository import Gtk
 from gi.repository import GdkPixbuf
 
 from GTG.core.tag import ALLTASKS_TAG
-from GTG.gtk.colors import get_colored_tags_markup
+from GTG.gtk.colors import get_colored_tags_markup, rgb_to_hex
 from GTG.backends.backend_signals import BackendSignals
 
 
@@ -122,7 +122,7 @@ class BackendsTree(Gtk.TreeView):
                 # flag and returns color as #RRGGBB
                 style_context = self.get_style_context()
                 color = style_context.get_color(Gtk.StateFlags.INSENSITIVE)
-                color = color.to_color().to_string()
+                color = rgba_to_hex(color)
                 text = f"<span color='{color}'>{backend_name}</span>"
             self.liststore[b_path][self.COLUMN_TEXT] = text
 
