@@ -16,14 +16,13 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-from gi.repository import GObject, GLib, Gtk, Gdk
+from gi.repository import GObject, GLib, Gtk, Gdk, Graphene
 from gi.repository import Pango
 import gi
 import cairo
 gi.require_version('PangoCairo', '1.0')
 # XXX: disable PEP8 checking on this line to prevent an E402 error due to
 #      require_version needing to be called before the PangoCairo import
-from gi.repository import PangoCairo  # noqa
 
 
 class CellRendererTags(Gtk.CellRenderer):
@@ -120,7 +119,7 @@ class CellRendererTags(Gtk.CellRenderer):
         else:
             return getattr(self, pspec.name)
 
-    def do_render(self, cr, widget, background_area, cell_area, flags):
+    def do_snapshot(self, snapshot, widget, background_area, cell_area, flags):
 
         vw_tags = self.__count_viewable_tags()
         count = 0
@@ -134,12 +133,20 @@ class CellRendererTags(Gtk.CellRenderer):
             return
 
         if self.config.get('dark_mode'):
-            symbolic_color = Gdk.RGBA(0.9, 0.9, 0.9, 1)
+            symbolic_color = Gdk.RGBA()
+            symbolic_color.red = 1
+            symbolic_color.green = 1
+            symbolic_color.blue = 1
+            symbolic_color.alpha = 0.9
         else:
-            symbolic_color = Gdk.RGBA(0, 0, 0, 1)
+            symbolic_color = Gdk.RGBA()
+            symbolic_color.alpha = 1
 
         # Drawing context
-        gdkcontext = cr
+        cell_area_graphrect = Graphene.Rect.alloc().init(
+            cell_area.x, cell_area.y, cell_area.width + 64, cell_area.height
+        )
+        gdkcontext = snapshot.append_cairo(cell_area_graphrect)
         scale_factor = widget.get_scale_factor()
         # Don't blur border on lodpi
         if scale_factor == 1:
@@ -165,24 +172,31 @@ class CellRendererTags(Gtk.CellRenderer):
 
             if my_tag_icon:
                 if my_tag_icon in self.SYMBOLIC_ICONS:
-                    icon_theme = Gtk.IconTheme.get_default()
-                    info = icon_theme.lookup_icon_for_scale(my_tag_icon, 16,
-                                                            scale_factor, 0)
-                    pixbuf, was_symbolic = info.load_symbolic(symbolic_color)
+                    icon_theme = Gtk.IconTheme.get_for_display(widget.get_display())
 
-                    surface = Gdk.cairo_surface_create_from_pixbuf(
-                        pixbuf, scale_factor, widget.get_window())
-                    Gtk.render_icon_surface(
-                        widget.get_style_context(), gdkcontext, surface,
-                        rect_x, rect_y)
+                    snapshot.save()
+                    point = Graphene.Point.alloc().init(rect_x, rect_y)
+                    snapshot.translate(point)
+
+                    gicon = icon_theme.lookup_icon(
+                        my_tag_icon, None, 16, scale_factor, 0, 0
+                    )
+                    gicon.snapshot_symbolic(snapshot, 16, 16, [symbolic_color])
+                    snapshot.restore()
 
                     count += 1
 
                 else:
-                    layout = PangoCairo.create_layout(cr)
-                    layout.set_markup(my_tag_icon, -1)
-                    cr.move_to(rect_x - 2, rect_y - 1)
-                    PangoCairo.show_layout(cr, layout)
+                    layout = Pango.Layout(widget.get_pango_context())
+                    layout.set_markup(my_tag_icon)
+
+                    snapshot.save()
+                    point = Graphene.Point.alloc().init(rect_x - 2, rect_y - 1)
+                    snapshot.translate(point)
+
+                    snapshot.append_layout(layout, widget.get_style_context().get_color())
+                    snapshot.restore()
+
                     count += 1
 
             elif my_tag_color:
@@ -197,7 +211,9 @@ class CellRendererTags(Gtk.CellRenderer):
                 count += 1
 
                 # Outer line
-                Gdk.cairo_set_source_rgba(gdkcontext, Gdk.RGBA(0, 0, 0, 0.20))
+                color = Gdk.RGBA()
+                color.red, color.green, color.blue, color.alpha = 0, 0, 0, 0.20
+                Gdk.cairo_set_source_rgba(gdkcontext, color)
                 gdkcontext.set_line_width(1.0)
                 self.__roundedrec(gdkcontext, rect_x, rect_y, 16, 16, 8)
                 gdkcontext.stroke()
@@ -209,26 +225,29 @@ class CellRendererTags(Gtk.CellRenderer):
 
             if not my_tag_icon and not my_tag_color:
                 # Draw rounded rectangle
-                Gdk.cairo_set_source_rgba(gdkcontext,
-                                          Gdk.RGBA(0.95, 0.95, 0.95, 1))
+                color = Gdk.RGBA()
+                color.red, color.blue, color.green, color.alpha = 0.95, 0.95, 0.95, 1
+                Gdk.cairo_set_source_rgba(gdkcontext,color)
                 self.__roundedrec(gdkcontext, rect_x, rect_y, 16, 16, 8)
                 gdkcontext.fill()
 
                 # Outer line
-                Gdk.cairo_set_source_rgba(gdkcontext, Gdk.RGBA(0, 0, 0, 0.20))
+                color = Gdk.RGBA()
+                color.alpha = 0.20
+                Gdk.cairo_set_source_rgba(gdkcontext, color)
                 gdkcontext.set_line_width(1.0)
                 self.__roundedrec(gdkcontext, rect_x, rect_y, 16, 16, 8)
                 gdkcontext.stroke()
 
-    def do_get_size(self, widget, cell_area=None):
+    def do_get_preferred_width(self, widget):
         count = self.__count_viewable_tags()
+        required_size = self.xpad * 2 + 16 * count + 2 * count * self.PADDING
 
-        if count != 0:
-            return (self.xpad, self.ypad,
-                    self.xpad * 2 + 16 * count + 2 * count * self.PADDING,
-                    16 + 2 * self.ypad)
-        else:
-            return (self.xpad, self.ypad, self.xpad * 2, self.ypad * 2)
+        return required_size, required_size
+
+    def do_get_preferred_height(self, widget):
+        required_size = 16 + 2 * self.ypad
+        return required_size, required_size
 
 
 GObject.type_register(CellRendererTags)
