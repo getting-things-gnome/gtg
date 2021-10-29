@@ -107,15 +107,15 @@ class PluginAPI():
         """
         Return the menu entry to the menu of the Task Browser or Task Editor.
         """
-        return self.__ui.get_template_child('main_menu')
+        return self.__ui.get_menu()
 
     def get_header(self):
         """Return the headerbar of the mainwindow"""
-        return self.__ui.get_template_child('browser_headerbar')
+        return self.__ui.get_headerbar()
 
     def get_quickadd_pane(self):
         """Return the quickadd pane"""
-        return self.__ui.get_template_child('quickadd_pane')
+        return self.__ui.get_quickadd_pane()
 
     def get_selected(self):
         """
@@ -141,9 +141,8 @@ class PluginAPI():
 
         @param item: The Gio.MenuItem that is going to be added.
         """
-        _, _, menu = self.__ui.get_template_child(
-            'editor_menu' if self.is_editor() else 'main_menu'
-        ).iterate_item_links(0).get_next()
+        # All menu items are added to the first section
+        _, _, menu = self.__ui.get_menu().iterate_item_links(0).get_next()
         menu.append_item(item)
 
     def remove_menu_item(self, item):
@@ -154,10 +153,8 @@ class PluginAPI():
         # you cannot remove items by identity since there values are simply copied
         # when adding a new one. A reliable solution is to instead find the first one
         # with the same label as the given one.
-        _, _, menu = self.__ui.get_template_child(
-            'editor_menu' if self.is_editor() else 'main_menu'
-        # all menu items are added to the first section
-        ).iterate_item_links(0).get_next()
+        # All menu items are added to the first section
+        _, _, menu = self.get_menu().iterate_item_links(0).get_next()
 
         length = menu.get_n_items()
         i = 0
@@ -181,7 +178,7 @@ class PluginAPI():
 
         @param widget: The Gtk.Widget that is going to be added.
         """
-        vbox = self.__ui.get_template_child('pluginbox')
+        vbox = self.__ui.get_plugin_box()
         if vbox:
             vbox.append(widget)
             self.taskwidget_id += 1
@@ -197,7 +194,7 @@ class PluginAPI():
         """
         if self.is_editor() and widg_id:
             try:
-                wi = self.__ui.get_template_child('vbox4')
+                wi = self.__ui.get_plugin_box()
                 if wi and widg_id in self.taskwidget_widg:
                     wi.remove(self.taskwidget_widg.pop(widg_id))
             except Exception:

@@ -59,6 +59,7 @@ class TaskEditor(Gtk.Window):
     tag_store = Gtk.Template.Child()
     parent_button = Gtk.Template.Child("parent")
     scrolled = Gtk.Template.Child("scrolledtask")
+    plugin_box = Gtk.Template.Child("pluginbox")
 
     # Closed date
     closed_box = Gtk.Template.Child()
@@ -119,7 +120,6 @@ class TaskEditor(Gtk.Window):
         # Removing the Normal textview to replace it by our own
         # So don't try to change anything with glade, this is a home-made
         # widget
-        textview = self.get_template_child("textview")
         scrolled.set_child(None)
         self.textview = TaskView(self.req, self.clipboard)
         self.textview.set_vexpand(True)
@@ -934,4 +934,10 @@ class TaskEditor(Gtk.Window):
 
     def get_window(self):
         return self
+
+    def get_menu(self):
+        return self.editormenu
+
+    def get_plugin_box(self):
+        return self.plugin_box
 # -----------------------------------------------------------------------------
