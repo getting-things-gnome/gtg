@@ -67,7 +67,7 @@ class TreeviewFactory():
 
     def get_task_bg_color(self, node, default_color):
         if self.config.get('bg_color_enable'):
-            return colors.background_color(node.get_tags(), default_color)
+            return colors.background_color(node.get_tags(), default_color, 0.5)
         else:
             return None
 
