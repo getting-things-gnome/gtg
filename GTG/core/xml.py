@@ -37,6 +37,7 @@ def task_from_element(task, element: etree.Element):
 
     task.set_title(element.find('title').text)
     task.set_uuid(element.get('id'))
+    task.set_status(element.attrib['status'], init=True) # Done date set later
 
     # Retrieving all dates
     dates = element.find('dates')
