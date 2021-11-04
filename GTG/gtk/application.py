@@ -508,10 +508,10 @@ class Application(Gtk.Application):
         if not self.delete_task_dialog:
             self.delete_task_dialog = DeletionUI(self.req, window)
 
-        tasks_to_delete = self.delete_task_dialog.show(tids)
-
-        [self.close_task(task.get_id()) for task in tasks_to_delete
-         if task.get_id() in self.open_tasks]
+        def on_show_async_callback(tasks_to_delete):
+            [self.close_task(task.get_id()) for task in tasks_to_delete
+            if task.get_id() in self.open_tasks]
+        self.delete_task_dialog.show_async(tids, on_show_async_callback)
 
     def open_tag_editor(self, tag):
         """Open Tag editor dialog."""
