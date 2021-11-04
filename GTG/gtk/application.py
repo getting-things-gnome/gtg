@@ -92,6 +92,7 @@ class Application(Gtk.Application):
 
         super().__init__(application_id=app_id,
                          flags=Gio.ApplicationFlags.HANDLES_OPEN)
+        self.set_option_context_parameter_string("[gtg://TASK-ID…]")
 
     # --------------------------------------------------------------------------
     # INIT
