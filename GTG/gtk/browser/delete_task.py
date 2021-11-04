@@ -35,6 +35,17 @@ class DeletionUI():
         self.update_tags = []
         self.window = window
 
+    def on_response(self, dialog, response, tasklist, callback):
+        dialog.destroy()
+
+        if response == Gtk.ResponseType.YES:
+            self.on_delete_confirm()
+        elif response == Gtk.ResponseType.CANCEL:
+            tasklist = []
+
+        if callback:
+            callback(tasklist)
+
     def on_delete_confirm(self):
         """if we pass a tid as a parameter, we delete directly
         otherwise, we will look which tid is selected"""
@@ -70,7 +81,7 @@ class DeletionUI():
              for i in root.get_subtasks() if i not in tasklist]
 
 
-    def show(self, tids=None):
+    def show_async(self, tids=None, callback=None):
         self.tids_todelete = tids or self.tids_todelete
 
         if not self.tids_todelete:
@@ -120,16 +131,10 @@ class DeletionUI():
         delete_btn.add_css_class("destructive-action")
 
         dialog.props.use_markup = True
-        dialog.props.text = "<span weight=\"bold\">" + label_text + "</span>"
+        # Decrease size of title to workaround not being able to put two texts in GTK4
+        dialog.props.text = "<span size=\"small\" weight=\"bold\">" + label_text + "</span>"
 
         dialog.props.secondary_text = titles + titles_suffix
 
-        response = dialog.run()
-        dialog.destroy()
-
-        if response == Gtk.ResponseType.YES:
-            self.on_delete_confirm()
-        elif response == Gtk.ResponseType.CANCEL:
-            tasklist = []
-
-        return tasklist
+        dialog.connect("response", self.on_response, tasklist, callback)
+        dialog.present()
