@@ -967,7 +967,7 @@ class MainWindow(Gtk.ApplicationWindow):
 
     def on_delete_tag_activate(self):
         tags = self.get_selected_tags()
-        self.deletetags_dialog.delete_tags(tags)
+        self.deletetags_dialog.delete_tags_async(tags)
 
     def on_delete_tag(self, event):
         tags = self.get_selected_tags()

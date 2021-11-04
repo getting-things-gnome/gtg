@@ -50,7 +50,18 @@ class DeleteTagsDialog():
 
         self.tags_todelete = []
 
-    def delete_tags(self, tags=None):
+    def on_response(self, dialog, response, tagslist, callback):
+        dialog.destroy()
+
+        if response == Gtk.ResponseType.YES:
+            self.on_delete_confirm()
+        elif response == Gtk.ResponseType.REJECT:
+            tagslist = []
+
+        if callback:
+            callback(tagslist)
+
+    def delete_tags_async(self, tags=None, callback=None):
         self.tags_todelete = tags or self.tags_todelete
 
         if not self.tags_todelete:
@@ -98,16 +109,10 @@ class DeleteTagsDialog():
         delete_btn.add_css_class("destructive-action")
 
         dialog.props.use_markup = True
-        dialog.props.text = "<span weight=\"bold\">" + label_text + "</span>"
+        # Decrease size of title to workaround not being able to put two texts in GTK4
+        dialog.props.text = "<span size=\"small\" weight=\"bold\">" + label_text + "</span>"
 
         dialog.props.secondary_text = titles + titles_suffix
 
-        response = dialog.run()
-        dialog.destroy()
-
-        if response == Gtk.ResponseType.YES:
-            self.on_delete_confirm()
-        elif response == Gtk.ResponseType.REJECT:
-            tagslist = []
-
-        return tagslist
+        dialog.connect("response", self.on_response, tagslist, callback)
+        dialog.present()
