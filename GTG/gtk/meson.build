@@ -54,6 +54,7 @@ gtg_data_sources = [
   'data/style.css',
   'data/tag_editor.ui',
   'data/task_editor.ui',
+  'data/recurring_menu.ui'
 ]
 
 gtg_editor_sources = [
