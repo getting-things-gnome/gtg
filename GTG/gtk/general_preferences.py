@@ -22,7 +22,7 @@ It enables user to set the most general settings of GTG."""
 
 import os
 
-from gi.repository import Gtk, Gdk
+from gi.repository import Gtk, Gdk, GLib
 
 from GTG.core.dirs import UI_DIR
 from gettext import gettext as _
@@ -56,8 +56,10 @@ class GeneralPreferences(Gtk.ScrolledWindow):
         time_entry_focus_controller = Gtk.EventControllerFocus()
         time_entry_focus_controller.connect("leave", self.on_leave_time_entry)
         self._refresh_time_entry.add_controller(time_entry_focus_controller)
-
-        self._refresh_preferences_store()
+        # setting preference values should not block,
+        # as setting certain preferences depends on the complete initialization
+        # of the app.
+        GLib.idle_add(self._refresh_preferences_store)
 
     # Following 3 methods: get_name, get_title, get_ui are
     # required for all children of stack in Preferences class.
