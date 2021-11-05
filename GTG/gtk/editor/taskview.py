@@ -112,6 +112,7 @@ class TaskView(GtkSource.View):
         self.clicked_link = None
 
         # Basic textview setup
+        self.add_css_class('taskview')
         self.set_left_margin(20)
         self.set_right_margin(20)
         self.set_wrap_mode(Gtk.WrapMode.WORD)

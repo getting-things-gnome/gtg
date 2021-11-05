@@ -43,6 +43,7 @@ DEFAULTS = {
         'tasklist_sort_column': 5,
         'tasklist_sort_order': 1,
         "font_name": "",
+        "font_size": 0,
         'hour': "00",
         'min': "00",
         'autoclean': True,

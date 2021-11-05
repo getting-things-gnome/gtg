@@ -141,9 +141,21 @@ class TaskEditor(Gtk.Window):
         self.textview = TaskView(self.req, self.clipboard)
         self.textview.set_vexpand(True)
         self.scrolled.set_child(self.textview)
-        conf_font_value = self.browser_config.get("font_name")
-        if conf_font_value != "":
-            self.textview.override_font(Pango.FontDescription(conf_font_value))
+        conf_font_name = self.browser_config.get("font_name")
+        conf_font_size = self.browser_config.get("font_size")
+        if conf_font_name or conf_font_size:
+            provider = Gtk.CssProvider.new()
+            family_string = f'font-family:{conf_font_name};' if conf_font_name else ''
+            size_string = f'font-size:{conf_font_size}pt;' if conf_font_size else ''
+            provider.load_from_data(
+            f""".taskview {{
+                    {family_string}
+                    {size_string}
+                }}""".encode('utf-8')
+            )
+            self.textview.get_style_context().add_provider(
+                provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
+            )
 
         self.textview.browse_tag_cb = app.select_tag
         self.textview.new_subtask_cb = self.new_subtask
