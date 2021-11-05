@@ -153,6 +153,9 @@ class TaskView(GtkSource.View):
         key_controller.connect('key-pressed', self.on_key_pressed)
         key_controller.connect('key-released', self.on_key_released)
         self.add_controller(key_controller)
+        press_gesture = Gtk.GestureSingle(button=0)
+        press_gesture.connect('begin', self.on_single_begin)
+        self.add_controller(press_gesture)
 
 
     def on_modified(self, buffer: Gtk.TextBuffer) -> None:
@@ -592,17 +595,33 @@ class TaskView(GtkSource.View):
             except AttributeError:
                 pass
 
+    def on_single_begin(self, gesture, sequence) -> None:
+        """Callback when a mouse button press happens, passed to the
+        relevant custom tags to deal with it"""
+        _, x, y = gesture.get_point(sequence)
+        tx, ty = self.window_to_buffer_coords(Gtk.TextWindowType.WIDGET, x, y)
+        _, titer = self.get_iter_at_location(tx, ty)
+        for tag in titer.get_tags():
+            # In the case of a checkboxtag coming before for example
+            # an internallink, if we call do_clicked on the internallink
+            # the checkbox somehow misses that event and the conflicting internallink
+            # click consequences happen instead.
+            # We should return on encountering a checkbox, this doesn't seem
+            # to break anything
+            if isinstance(tag, CheckboxTag):
+                return
+            if hasattr(tag, "do_clicked"):
+                tag.do_clicked(self, gesture.get_current_button())
+
     def on_mouse_move(self, controller, wx, wy) -> None:
         """Callback when the mouse moves."""
 
         # Get the tag at the X, Y coords of the mosue cursor
-        window = Gtk.Widget.get_window(self)
         x, y = self.window_to_buffer_coords(Gtk.TextWindowType.TEXT, wx, wy)
         tags = self.get_iter_at_location(x, y)[1].get_tags()
 
         # Reset cursor and hover states
-        cursor = Gdk.Cursor.new_from_name(window.get_display(),
-                                          'text')
+        cursor = Gdk.Cursor.new_from_name('text', None)
 
         if self.hovered_tag:
             try:
@@ -616,14 +635,13 @@ class TaskView(GtkSource.View):
         try:
             tag = tags[0]
             tag.set_hover()
-            cursor = Gdk.Cursor.new_from_name(window.get_display(),
-                                              'pointer')
+            cursor = Gdk.Cursor.new_from_name('pointer', None)
             self.hovered_tag = tag
 
         except (AttributeError, IndexError):
             # Not an interactive tag, or no tag at all
             pass
-        window.set_cursor(cursor)
+        self.set_cursor(cursor)
 
 
     def do_populate_popup(self, popup) -> None:
@@ -748,7 +766,7 @@ class TaskView(GtkSource.View):
 
         # Remove non-existing subtasks (subtasks that have been deleted)
         for sub in subtasks:
-            start = self.buffer.get_iter_at_line(sub[1])
+            _, start = self.buffer.get_iter_at_line(sub[1])
             end = start.copy()
             end.forward_line()
 
@@ -773,7 +791,7 @@ class TaskView(GtkSource.View):
         # after the title, otherwise add a leading comma to
         # the text since we are appending to the tags in
         # that line
-        first_line = self.buffer.get_iter_at_line(1)
+        _, first_line = self.buffer.get_iter_at_line(1)
         first_line_tags = first_line.get_tags()
         first_line.forward_to_line_end()
 
@@ -819,7 +837,7 @@ class TaskView(GtkSource.View):
             return
 
         if line is not None:
-            start = self.buffer.get_iter_at_line(line)
+            _, start = self.buffer.get_iter_at_line(line)
         else:
             start = self.buffer.get_end_iter()
             self.buffer.insert(start, '\n')
@@ -831,7 +849,7 @@ class TaskView(GtkSource.View):
         self.buffer.insert(start, task.get_title())
 
         # Reset iterator
-        start = self.buffer.get_iter_at_line(line)
+        _, start = self.buffer.get_iter_at_line(line)
 
         # Add checkbox
         self.add_checkbox(tid, start)
