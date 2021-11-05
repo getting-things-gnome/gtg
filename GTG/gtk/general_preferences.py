@@ -74,9 +74,10 @@ class GeneralPreferences(Gtk.ScrolledWindow):
         pass
 
     def get_default_editor_font(self):
-        editor_font = self.config.get("font_name")
-        if editor_font == "":
+        if not self.config.get("font_name") or not self.config.get("font_size"):
             editor_font = Gtk.Settings.get_default().get_property("gtk-font-name")
+        else:
+            editor_font = self.config.get("font_name") + " " + str(self.config.get("font_size"))
         return editor_font
 
     def _refresh_preferences_store(self):
@@ -157,7 +158,8 @@ class GeneralPreferences(Gtk.ScrolledWindow):
     @Gtk.Template.Callback()
     def on_font_change(self, widget):
         """ Set a new font for editor """
-        self.config.set("font_name", self._font_button.get_font())
+        self.config.set("font_name", self._font_button.get_font_family().get_name())
+        self.config.set("font_size", int(self._font_button.get_font_size()/1000))
 
     @Gtk.Template.Callback()
     def on_autoclean_toggled(self, widget, state):
