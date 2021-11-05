@@ -193,6 +193,7 @@ class GeneralPreferences(Gtk.ScrolledWindow):
         func = self.app.browser.tv_factory.get_task_bg_color
 
         for pane in self.app.browser.vtree_panes.values():
+            pane.set_is_dark(state)
             pane.set_bg_color(func, 'bg_color')
             pane.basetree.get_basetree().refresh_all()
 
