@@ -99,14 +99,28 @@
             "sha256": "b8aa58f8cf793ffd8782d3d8cb19e66ef36f7aba4353eec859e74678b01b07a7"
         },
         {
-	    "type": "file",
-	    "url": "https://files.pythonhosted.org/packages/2c/4d/3ec1ea8512a7fbf57f02dee3035e2cce2d63d0e9c0ab8e4e376e01452597/lxml-4.5.2.tar.gz",
-	    "sha256": "cdc13a1682b2a6241080745b1953719e7fe0850b40a5c71ca574f090a1391df6"
+	          "type": "file",
+	          "url": "https://files.pythonhosted.org/packages/2c/4d/3ec1ea8512a7fbf57f02dee3035e2cce2d63d0e9c0ab8e4e376e01452597/lxml-4.5.2.tar.gz",
+	          "sha256": "cdc13a1682b2a6241080745b1953719e7fe0850b40a5c71ca574f090a1391df6"
         },
         {
             "type": "file",
             "url": "https://files.pythonhosted.org/packages/97/b9/7d66fcc73bcc186ae018ee919f20498da86f095a632e4e26b3cebce584a3/caldav-0.8.0.tar.gz",
             "sha256": "5b40dc2b39950e78989d515ce6a2c1131f20cc2c413ba28f8d5b582546b40a4c"
+        }
+      ]
+    },
+    {
+      "name": "python3-gobject",
+      "buildsystem": "simple",
+      "build-commands": [
+        "python3 setup.py install --prefix /app"
+      ],
+      "sources": [
+        {
+          "type": "git",
+          "url": "https://gitlab.gnome.org/gnome/pygobject.git",
+          "commit": "963c5f278e23d971a5bdf055c900b3ae156fbeb3"
         }
       ]
     },

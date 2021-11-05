@@ -45,6 +45,11 @@
 
 #=== IMPORT ===================================================================
 import sys
+import os
+# this is a standard file path for detecting if running in flatpak
+if os.path.isfile('/.flatpak-info'):
+    # import our bundled PyGObject instead of the one from the runtime
+    sys.path.insert(1, '/app/lib/python3.9/site-packages/PyGObject-3.43.0.dev0-py3.9-linux-x86_64.egg')
 import argparse
 import gettext
 import locale
