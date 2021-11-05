@@ -118,17 +118,12 @@ class InternalLinkTag(Gtk.TextTag):
             self.set_property('strikethrough', True)
             self.set_property('foreground', colors['link_inactive'])
 
-        self.connect('event', self.on_tag)
 
-
-    def on_tag(self, tag, view, event, _iter) -> None:
-        """Callback for events that happen inside the tag."""
-
-        button = event.get_button()
-        is_press = event.get_event_type() == Gdk.EventType.BUTTON_PRESS
+    def do_clicked(self, view, button) -> None:
+        """Externally called callback for clicks that happen inside the tag."""
 
         # If there was a click...
-        if button[0] and button[1] == 1 and is_press:
+        if button == Gdk.BUTTON_PRIMARY:
             view.open_subtask_cb(self.tid)
 
 
@@ -162,25 +157,17 @@ class LinkTag(Gtk.TextTag):
         self.set_property('underline', Pango.Underline.SINGLE)
         self.set_property('strikethrough', False)
 
-        self.connect('event', self.on_tag)
 
+    def do_clicked(self, view, button) -> None:
+        """Externally called callback for clicks that happen inside the tag."""
 
-    def on_tag(self, tag, view, event, _iter) -> None:
-        """Callback for events that happen inside the tag."""
+        # Left click
+        if button == Gdk.BUTTON_PRIMARY:
+            openurl(self.url)
 
-        button = event.get_button()
-        is_press = event.get_event_type() == Gdk.EventType.BUTTON_PRESS
-
-        # If there was a click...
-        if button[0] and is_press:
-
-            # Left click
-            if button[1] == 1:
-                openurl(self.url)
-
-            # Right click
-            elif button[1] == 3:
-                view.clicked_link = self.url
+        # Right click
+        elif button == Gdk.BUTTON_SECONDARY:
+            view.clicked_link = self.url
 
 
     def activate(self, view) -> None:
@@ -237,14 +224,14 @@ class TaskTagTag(Gtk.TextTag):
         self.tag = req.get_tag(tag)
 
         try:
-            self.color = background_color([self.tag]) or '#FFEA00'
+            # In darkmode, where the backdrop itself is dark we want
+            # to increase the brightness.
+            self.color = background_color([self.tag], use_alpha=False) or '#FFEA00'
         except AttributeError:
             self.color = '#FFEA00'
 
         self.set_property('background', self.color)
         self.set_property('foreground', 'black')
-
-        self.connect('event', self.on_tag)
 
 
     def set_hover(self) -> None:
@@ -263,13 +250,10 @@ class TaskTagTag(Gtk.TextTag):
         self.set_property('background', self.color)
 
 
-    def on_tag(self, tag, view, event, _iter) -> None:
-        """Callback for events that happen inside the tag."""
+    def do_clicked(self, view, button) -> None:
+        """Externally called callback for clicks that happen inside the tag."""
 
-        button = event.get_button()
-        is_press = event.get_event_type() == Gdk.EventType.BUTTON_PRESS
-
-        if button[0] and button[1] == 1 and is_press:
+        if button == Gdk.BUTTON_PRIMARY:
             view.browse_tag_cb(self.tag_name)
 
 

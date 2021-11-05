@@ -61,11 +61,14 @@ class TaskEditor(Gtk.Window):
     scrolled = Gtk.Template.Child("scrolledtask")
     plugin_box = Gtk.Template.Child("pluginbox")
 
+    tags_entry = Gtk.Template.Child()
+    tags_tree = Gtk.Template.Child()
+
     # Closed date
     closed_box = Gtk.Template.Child()
     closed_popover = Gtk.Template.Child()
-    closed_entry = Gtk.Template.Child()
-    closed_calendar = Gtk.Template.Child()
+    closed_entry = Gtk.Template.Child("closeddate_entry")
+    closed_calendar = Gtk.Template.Child("calendar_closed")
 
     # Start date
     start_box = Gtk.Template.Child()
@@ -116,14 +119,28 @@ class TaskEditor(Gtk.Window):
 
         self.closed_handle = self.closed_calendar.connect(
             'day-selected', lambda c: self.on_date_selected(c, GTGCalendar.DATE_KIND_CLOSED))
+        start_entry_controller = Gtk.EventControllerFocus()
+        start_entry_controller.connect("enter", self.show_popover_start)
+        start_entry_controller.connect("leave", self.startdate_focus_out)
+        self.start_entry.add_controller(start_entry_controller)
+        due_entry_controller = Gtk.EventControllerFocus()
+        due_entry_controller.connect("enter", self.show_popover_due)
+        due_entry_controller.connect("leave", self.duedate_focus_out)
+        self.due_entry.add_controller(due_entry_controller)
+        closed_entry_controller = Gtk.EventControllerFocus()
+        closed_entry_controller.connect("enter", self.show_popover_closed)
+        closed_entry_controller.connect("leave", self.closeddate_focus_out)
+        self.closed_entry.add_controller(closed_entry_controller)
+
+        self.connect("notify::is-active", self.on_window_focus_change)
 
         # Removing the Normal textview to replace it by our own
         # So don't try to change anything with glade, this is a home-made
         # widget
-        scrolled.set_child(None)
+        self.scrolled.set_child(None)
         self.textview = TaskView(self.req, self.clipboard)
         self.textview.set_vexpand(True)
-        scrolled.set_child(self.textview)
+        self.scrolled.set_child(self.textview)
         conf_font_value = self.browser_config.get("font_name")
         if conf_font_value != "":
             self.textview.override_font(Pango.FontDescription(conf_font_value))
@@ -142,8 +159,10 @@ class TaskEditor(Gtk.Window):
         self.textview.tid = task.tid
 
         # Voila! it's done
-        self.textview.connect('focus-in-event', self.on_textview_focus_in)
-        self.textview.connect('focus-out-event', self.on_textview_focus_out)
+        textview_focus_controller = Gtk.EventControllerFocus()
+        textview_focus_controller.connect("enter", self.on_textview_focus_in)
+        textview_focus_controller.connect("leave", self.on_textview_focus_out)
+        self.textview.add_controller(textview_focus_controller)
 
         """
         TODO(jakubbrindza): Once all the functionality in editor is back and
@@ -189,12 +208,9 @@ class TaskEditor(Gtk.Window):
             self.task.set_to_keep()
 
         self.textview.buffer.end_not_undoable_action()
-        self.connect("destroy", self.destruction)
+        self.connect("close-request", self.destruction)
 
         # Connect search field to tags popup
-        self.tags_entry = self.builder.get_object("tags_entry")
-        self.tags_tree = self.builder.get_object("tags_tree")
-
         self.tags_tree.set_search_entry(self.tags_entry)
         self.tags_tree.set_search_equal_func(self.search_function, None)
 
@@ -210,28 +226,22 @@ class TaskEditor(Gtk.Window):
 
         self.init_dimensions()
 
-        self.insert_action_group('app', app)
-        self.insert_action_group('win', app.browser)
-
         self.textview.set_editable(True)
         self.set_transient_for(self.app.browser)
         self.show()
 
-    @Gtk.Template.Callback()
-    def show_popover_start(self, widget, event):
+    def show_popover_start(self, _=None):
         """Open the start date calendar popup."""
 
         start_date = (self.task.get_start_date() or Date.today()).date()
 
         with signal_handler_block(self.start_calendar, self.start_handle):
-            self.start_calendar.select_day(start_date.day)
-            self.start_calendar.select_month(start_date.month - 1,
-                                             start_date.year)
+            gtime = GLib.DateTime.new_local(start_date.year, start_date.month, start_date.day, 0, 0, 0)
+            self.start_calendar.select_day(gtime)
 
         self.start_popover.popup()
 
-    @Gtk.Template.Callback()
-    def show_popover_due(self, widget, popover):
+    def show_popover_due(self, _=None):
         """Open the due date calendar popup."""
 
         due_date = self.task.get_due_date()
@@ -242,26 +252,24 @@ class TaskEditor(Gtk.Window):
         due_date = due_date.date()
 
         with signal_handler_block(self.due_calendar, self.due_handle):
-            self.due_calendar.select_day(due_date.day)
-            self.due_calendar.select_month(due_date.month - 1,
-                                           due_date.year)
+            gtime = GLib.DateTime.new_local(due_date.year, due_date.month, due_date.day, 0, 0, 0)
+            self.due_calendar.select_day(gtime)
 
         self.due_popover.popup()
 
-    @Gtk.Template.Callback()
-    def show_popover_closed(self, widget, popover):
+    def show_popover_closed(self, _=None):
         """Open the closed date calendar popup."""
 
         closed_date = self.task.get_closed_date().date()
 
         with signal_handler_block(self.closed_calendar, self.closed_handle):
-            self.closed_calendar.select_day(closed_date.day)
-            self.closed_calendar.select_month(closed_date.month - 1,
-                                              closed_date.year)
+            gtime = GLib.DateTime.new_local(closed_date.year, closed_date.month, closed_date.day, 0, 0, 0)
+            self.closed_calendar.select_day(gtime)
 
         self.closed_popover.popup()
 
-    def open_tags_popover(self):
+    @Gtk.Template.Callback()
+    def sync_tag_store(self, widget=None):
         self.tag_store.clear()
 
         tags = self.req.get_tag_tree().get_all_nodes()
@@ -322,10 +330,9 @@ class TaskEditor(Gtk.Window):
         """
 
     @Gtk.Template.Callback()
-    def on_repeat_icon_toggled(self, widget):
+    def on_repeat_icon_activated(self, widget):
         """ Reset popup stack to the first page every time you open it """
-        if widget.get_active():
-            self.recurring_menu.reset_stack()
+        self.recurring_menu.reset_stack()
 
     @Gtk.Template.Callback()
     def toggle_recurring_status(self, widget):
@@ -394,9 +401,8 @@ class TaskEditor(Gtk.Window):
     def startdate_cleared(self, w):
         self.on_date_cleared(w, GTGCalendar.DATE_KIND_START)
 
-    @Gtk.Template.Callback()
-    def startdate_focus_out(self, w, e):
-        self.date_focus_out(w, e, GTGCalendar.DATE_KIND_START)
+    def startdate_focus_out(self, c):
+        self.date_focus_out(c.get_widget(), GTGCalendar.DATE_KIND_START)
 
     @Gtk.Template.Callback()
     def duedate_changed(self, w):
@@ -418,17 +424,15 @@ class TaskEditor(Gtk.Window):
     def duedate_cleared(self, w):
         self.on_date_cleared(w, GTGCalendar.DATE_KIND_DUE)
 
-    @Gtk.Template.Callback()
-    def duedate_focus_out(self, w, e):
-        self.date_focus_out(w, e, GTGCalendar.DATE_KIND_DUE)
+    def duedate_focus_out(self, c):
+        self.date_focus_out(c.get_widget(), GTGCalendar.DATE_KIND_DUE)
 
     @Gtk.Template.Callback()
     def closeddate_changed(self, w):
         self.date_changed(w, GTGCalendar.DATE_KIND_CLOSED)
 
-    @Gtk.Template.Callback()
-    def closeddate_focus_out(self, w, e):
-        self.date_focus_out(w, e, GTGCalendar.DATE_KIND_CLOSED)
+    def closeddate_focus_out(self, c):
+        self.date_focus_out(c.get_widget(), GTGCalendar.DATE_KIND_CLOSED)
 
     def search_function(self, model, column, key, iter, *search_data):
         """Callback when searching in the tags popup."""
@@ -446,57 +450,16 @@ class TaskEditor(Gtk.Window):
         return Gdk.Display.get_default().get_monitor(0).get_geometry()
 
     def init_dimensions(self):
-        """ Restores position and size of task if possible """
+        """ Sets up size of task if possible """
 
-        position = self.config.get('position')
         size = self.config.get('size')
-        screen_size = self.get_monitor_dimensions()
 
-        if size and len(size) == 2:
+        if size:
             try:
-                self.resize(int(size[0]), int(size[1]))
-            except ValueError:
+                self.set_default_size(int(size[0]), int(size[1]))
+            except ValueError as e:
                 log.warning('Invalid size configuration for task %s: %s',
                             self.task.get_id(), size)
-
-        can_move = True
-        if position and len(position) == 2:
-            try:
-                x = max(0, int(position[0]))
-                y = max(0, int(position[1]))
-                can_move = True
-            except ValueError:
-                can_move = False
-                log.warning('Invalid position configuration for task %s:%s',
-                            self.task.get_id(), position)
-        else:
-            gdk_window = self.get_window()
-            if gdk_window is None:
-                log.debug("Using default display to position editor window")
-                display = Gdk.Display.get_default()
-            else:
-                # TODO: AFAIK never happens because window is not realized at
-                #       this point, but maybe we should just in case the display
-                #       is actually different.
-                display = gdk_window.get_display()
-            seat = display.get_default_seat()
-            pointer = seat.get_pointer()
-            if pointer is None:
-                can_move = False
-                log.debug("Didn't receiver pointer info, can't move editor window")
-            else:
-                screen, x, y = pointer.get_position()
-                assert isinstance(x, int)
-                assert isinstance(y, int)
-
-        if can_move:
-            width, height = self.get_size()
-
-            # Clamp positions to current screen size
-            x = min(x, screen_size.width - width)
-            y = min(y, screen_size.height - height)
-
-            self.move(x, y)
 
     # Can be called at any time to reflect the status of the Task
     # Refresh should never interfere with the TaskView.
@@ -645,21 +608,12 @@ class TaskEditor(Gtk.Window):
             valid = False
 
         if valid:
-            # If the date is valid, we write with default color in the widget
-            # "none" will set the default color.
-            widget.override_color(Gtk.StateType.NORMAL, None)
-            widget.override_background_color(Gtk.StateType.NORMAL, None)
+            widget.remove_css_class("error")
         else:
             # We should write in red in the entry if the date is not valid
-            text_color = Gdk.RGBA()
-            text_color.parse("#F00")
-            widget.override_color(Gtk.StateType.NORMAL, text_color)
+            widget.add_css_class("error")
 
-            bg_color = Gdk.RGBA()
-            bg_color.parse("#F88")
-            widget.override_background_color(Gtk.StateType.NORMAL, bg_color)
-
-    def date_focus_out(self, widget, event, date_kind):
+    def date_focus_out(self, widget, date_kind):
         try:
             datetoset = Date.parse(widget.get_text())
         except ValueError:
@@ -682,14 +636,14 @@ class TaskEditor(Gtk.Window):
 
     def calendar_to_datetime(self, calendar):
         """
-        Gtk.Calendar uses a 0-based convention for counting months.
-        The rest of the world, including the datetime module, starts from 1.
+        Gtk.Calendar uses a GLib based convention for counting time.
+        The rest of the world, including the datetime module, doesn't use GLib.
         This is a converter between the two. GTG follows the datetime
         convention.
         """
-
-        year, month, day = calendar.get_date()
-        return datetime.date(year, month + 1, day)
+        gtime = calendar.get_date()
+        year, month, day = gtime.get_year(), gtime.get_month(), gtime.get_day_of_month()
+        return datetime.date(year, month, day)
 
     def on_duedate_fuzzy(self, widget, date):
         """ Callback when a fuzzy date is selected through the popup. """
@@ -886,28 +840,49 @@ class TaskEditor(Gtk.Window):
             self.save()
 
     @Gtk.Template.Callback()
-    def on_move(self, widget, event):
-        """ Save position and size of window """
+    def on_resize(self, widget, gparam):
+        """ Save size of window """
+        if self.get_realized():
+            self.config.set('size', list(self.get_default_size()))
 
-        self.config.set('position', list(self.get_position()))
-        self.config.set('size', list(self.get_size()))
-
-    def on_textview_focus_in(self, widget, event):
+    def on_textview_focus_in(self, controller):
         self.app.browser.toggle_delete_accel(False)
 
-    def on_textview_focus_out(self, widget, event):
+    def on_textview_focus_out(self, controller):
         self.app.browser.toggle_delete_accel(True)
+
+    def on_window_focus_change(self, window, gparam):
+        # if they are not popped down, alt-tab will look broken
+        if not self.is_active():
+            self.start_popover.popdown()
+            self.due_popover.popdown()
+            self.closed_popover.popdown()
+        # when focus returns on the window, the focus hasn't moved,
+        # so the focus callbacks won't fire to bring back the popovers
+        else:
+            # HACK: the text inside the entry is focused, not the entry itself.
+            # so we get the parent of the text, which is one of the entries.
+            # This is an implementation detail and can change at any moment.
+            # (get_parent() is basically undefined)
+            focus = self.get_focus().get_parent()
+            if focus == self.start_entry:
+                self.show_popover_start()
+            elif focus == self.due_entry:
+                self.show_popover_due()
+            elif focus == self.closed_entry:
+                self.show_popover_closed()
 
     # We define dummy variable for when close is called from a callback
     def close(self, action=None, param=None):
 
         # We should also destroy the whole taskeditor object.
         if self:
+            self.destruction()
             self.destroy()
             self = None
 
     def destruction(self, _=None):
-        """Callback when destroying the window."""
+        """Callback when closing the window."""
 
         # Save should be also called when buffer is modified
         self.pengine.onTaskClose(self.plugin_api)

@@ -299,8 +299,7 @@ class Application(Gtk.Application):
             ('close', self.close_context, ('app.close', ['Escape'])),
             ('editor.close', self.close_focused_task, ('app.editor.close', ['<ctrl>w'])),
             ('editor.show_parent', self.open_parent_task, None),
-            ('editor.delete', self.delete_editor_task, None),
-            ('editor.open_tags_popup', self.open_tags_popup_in_editor, None),
+            ('editor.delete', self.delete_editor_task, None)
         ]
 
         for action, callback, accel in action_entries:
@@ -431,12 +430,6 @@ class Application(Gtk.Application):
             self.close_task(task.get_id())
         else:
             self.delete_tasks([task.get_id()], editor)
-
-    def open_tags_popup_in_editor(self, action, params):
-        """Callback to open the tags popup in the focused task editor."""
-
-        editor = self.get_active_editor()
-        editor.open_tags_popover()
 
     def open_parent_task(self, action, params):
         """Callback to open the parent of the currently open task."""
