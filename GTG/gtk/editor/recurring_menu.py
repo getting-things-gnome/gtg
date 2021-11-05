@@ -16,140 +16,204 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
+import os
 from gettext import gettext as _
 from datetime import datetime
+from gi.repository import Gtk, Gio, GLib, GObject
+from GTG.core.dirs import UI_DIR
 
 
-class RecurringMenu():
+@Gtk.Template(filename=os.path.join(UI_DIR, 'recurring_menu.ui'))
+class RecurringMenu(Gtk.PopoverMenu):
     """Provides a simple layer of abstraction
        for the menu where the user enables a task to be repeating
     """
 
-    def __init__(self, requester, tid, builder):
+    __gtype_name__ = 'RecurringMenu'
+
+    _menu_model = Gtk.Template.Child()
+
+    _month_calendar = Gtk.Template.Child()
+    _year_calendar = Gtk.Template.Child()
+
+    def __init__(self, requester, tid, editor):
+        # Setting up the actions
+        # Before super().__init__ as install_*_action acts on the class,
+        # and in this case doesn't work for all instances if you do it after
+        # initialization.
+        prefix = 'recurring_menu'
+        for action_disc in [
+            ('is_recurring', 'is-task-recurring'),
+            ('recurr_every_day', self._on_recurr_every_day, None),
+            ('recurr_every_otherday', self._on_recurr_every_otherday, None),
+            ('recurr_every_week', self._on_recurr_every_week, None),
+            ('recurr_week_day', self._on_recurr_week_day, 's'),
+            ('recurr_month_today', self._on_recurr_month_today, None),
+            ('recurr_year_today', self._on_recurr_year_today, None),
+        ]:
+            # is property action (property name instead of callback)
+            if type(action_disc[1]) == str:
+                self.install_property_action('.'.join([prefix, action_disc[0]]), action_disc[1])
+            else:
+                self.install_action('.'.join([prefix, action_disc[0]]), action_disc[2], action_disc[1])
+
+        super().__init__()
+
         # General attributes
         self.task = requester.get_task(tid)
-        self.selected_recurring_term = self.task.get_recurring_term()
+        self._editor = editor
+        self._selected_recurring_term = self.task.get_recurring_term()
 
-        # Getting the necessary Gtk objects
-        self.title = builder.get_object('title_label')
-        self.title_separator = builder.get_object('title_separator')
-        self.repeat_checkbox = builder.get_object('repeat_checkbutton')
-        self.repeat_icon = builder.get_object('repeat_icon')
-        self.stack = builder.get_object('main_stack')
-        self.page1 = builder.get_object('stack_main_box')
-        self._monthly_calendar = builder.get_object('month_calender')
-        self._yearly_calendar = builder.get_object('year_calender')
+        self._is_header_menu_item_shown = False
 
-        # Update the editor using the task recurring status
-        self.update_header()
-        self.update_calendar()
-        self.repeat_checkbox.set_active(self.task.get_recurring())
-        if self.task.get_recurring():
-            self.repeat_icon.add_css_class('recurring-active')
+        self._update_header()
+        self._update_calendar()
 
-    def update_repeat_button_icon(self, active=True):
-        """ Update the icon color of the repeat-menu-button in the task editor """
-        if active:
-            self.repeat_icon.add_css_class('recurring-active')
+        # Prevent user from switching month in month calendar with
+        # scrollwheel.
+        # Why not only set month? Because if the month is the first or last
+        # of the year, the year switches and then we switch the month, which
+        # won't be the same one.
+        self._original_month = self._month_calendar.props.month
+        self._original_year = self._month_calendar.props.year
+        self._month_calendar.connect(
+            'notify::month',
+            lambda o, g : self._month_calendar.set_property('month', self._original_month)
+        )
+        self._month_calendar.connect(
+            'notify::year',
+            lambda o, g : self._month_calendar.set_property('year', self._original_year)
+        )
+
+    @GObject.Property(type=bool, default=False)
+    def is_task_recurring(self):
+        """
+        Wrapper property for changing the tasks recurring status because
+        to have a checkbutton in a GtkPopoverMenu you need to use a
+        GPropertyAction, however the tag class itself doesn't use GObject
+        properties.
+        """
+        return self.task.get_recurring()
+
+    @is_task_recurring.setter
+    def is_task_recurring(self, recurs: bool):
+        if recurs:
+            if not self._is_term_set():
+                self._set_selected_term('day')
+            self._update_term()
         else:
-            self.repeat_icon.remove_css_class('recurring-active')
+            self._update_task(False)
+            self._update_header()
+        self._editor.refresh_editor()
 
-    def is_term_set(self):
-        return self.selected_recurring_term is not None
+    def _is_term_set(self):
+        return self._selected_recurring_term is not None
 
-    def set_selected_term(self, string):
-        self.selected_recurring_term = string
+    def _set_selected_term(self, string):
+        self._selected_recurring_term = string
 
-    def update_repeat_checkbox(self):
+    def _update_term(self):
         """
-        Update the task object recurring status and all indicators
-        according to the repeat-checkbox-button status
+        Update the header and the underlying task object.
+        NOTE: You should not call this, but set the GObject property instead
+        to ensure that the check in the menu is in sync.
         """
-        if self.repeat_checkbox.get_active():
-            if not self.is_term_set():
-                self.set_selected_term('day')
-            self.update_term()
-            self.update_repeat_button_icon()
-        else:
-            self.update_task(False)
-            self.update_repeat_button_icon(active=False)
+        self._update_task(True)
+        self._update_header()
+        self._update_calendar()
 
-    def update_term(self):
+    def _update_task(self, enable=True):
         """
-        Update the header and the task object(only if the repeat-checkbutton is checked)
-        when a new term was selected
+        Updates the task object.
+        NOTE: You should not call this, but set the GObject property instead
+        to ensure that the check in the menu is in sync.
         """
-        if not self.repeat_checkbox.get_active():
-            self.repeat_checkbox.set_active(True)
-        self.update_task(True)
-        self.update_header()
-        # self.update_calendar() would cause infinite recursion
-
-    def update_task(self, enable=True):
-        """ Updates the task object """
         if enable:
-            self.task.set_recurring(enable, self.selected_recurring_term, newtask=True)
+            self.task.set_recurring(enable, self._selected_recurring_term, newtask=True)
         else:
             self.task.set_recurring(enable)
 
-    def update_header(self):
+    def _update_header(self):
         """ Updates the header anytime a term is selected """
-        if self.is_term_set():
-            if self.selected_recurring_term.isdigit():
-                if len(self.selected_recurring_term) <= 2:  # Recurring monthly from selected date
+        if self._is_term_set():
+            if self._selected_recurring_term.isdigit():
+                if len(self._selected_recurring_term) <= 2:  # Recurring monthly from selected date
                     # Translators: Recurring monthly
-                    mdval = datetime.strptime(f'{self.selected_recurring_term}', '%d')
+                    mdval = datetime.strptime(f'{self._selected_recurring_term}', '%d')
                     mdval = mdval.strftime('%d')
-                    self.title.set_markup(_('Every <b>{month_day} of the month</b>').format(
-                        month_day=mdval))
+                    markup = _('Every <b>{month_day} of the month</b>').format(month_day=mdval)
                 else:  # Recurring yearly from selected date
-                    val = f'{self.selected_recurring_term[:2:]}-{self.selected_recurring_term[2::]}'
+                    val = f'{self._selected_recurring_term[:2:]}-{self._selected_recurring_term[2::]}'
                     date = datetime.strptime(val, '%m-%d')
                     # Translators: Recurring yearly
-                    self.title.set_markup(_('Every <b>{month} {day}</b>').format(
-                        month=date.strftime('%B'), day=date.strftime('%d')))
-            elif self.selected_recurring_term == 'day':  # Recurring daily
-                self.title.set_markup(_('Every <b>day</b>'))
-            elif self.selected_recurring_term == 'other-day':  # Recurring every other day
-                self.title.set_markup(_('Every <b>other day</b>'))
-            elif self.selected_recurring_term == 'week':  # Recurring weekly from today
-                self.title.set_markup(_('Every <b>{week_day}</b>').format(
-                    week_day=self.task.get_recurring_updated_date().strftime('%A')))
-            elif self.selected_recurring_term == 'month':  # Recurring monthly from today
-                self.title.set_markup(_('Every <b>{month_day} of the month</b>').format(
-                    month_day=self.task.get_recurring_updated_date().strftime('%d')))
-            elif self.selected_recurring_term == 'year':  # Recurring yearly from today
+                    markup = _('Every <b>{month} {day}</b>').format(
+                        month=date.strftime('%B'), day=date.strftime('%d'))
+            elif self._selected_recurring_term == 'day':  # Recurring daily
+                markup = _('Every <b>day</b>')
+            elif self._selected_recurring_term == 'other-day':  # Recurring every other day
+                markup = _('Every <b>other day</b>')
+            elif self._selected_recurring_term == 'week':  # Recurring weekly from today
+                markup = _('Every <b>{week_day}</b>').format(
+                    week_day=self.task.get_recurring_updated_date().strftime('%A'))
+            elif self._selected_recurring_term == 'month':  # Recurring monthly from today
+                markup = _('Every <b>{month_day} of the month</b>').format(
+                    month_day=self.task.get_recurring_updated_date().strftime('%d'))
+            elif self._selected_recurring_term == 'year':  # Recurring yearly from today
                 date = self.task.get_recurring_updated_date()
-                self.title.set_markup(_('Every <b>{month} {day}</b>').format(
-                    month=date.strftime('%B'), day=date.strftime('%d')))
+                markup = _('Every <b>{month} {day}</b>').format(
+                    month=date.strftime('%B'), day=date.strftime('%d'))
             else:  # Recurring weekly from selected week day
-                week_day = _(self.selected_recurring_term)
-                self.title.set_markup(_('Every <b>{week_day}</b>').format(week_day=week_day))
-            self.title.show()
-            self.title_separator.show()
-        else:
-            self.title.hide()
-            self.title_separator.hide()
+                week_day = _(self._selected_recurring_term)
+                markup = _('Every <b>{week_day}</b>').format(week_day=week_day)
+            menu_item = Gio.MenuItem.new(markup, None)
+            menu_item.set_attribute_value('use-markup', GLib.Variant.new_boolean(True))
 
-    def update_calendar(self, update_monthly=True, update_yearly=True):
+            if self._is_header_menu_item_shown:
+                self._menu_model.remove(0)
+            self._menu_model.insert_item(0, menu_item)
+            self._is_header_menu_item_shown = True
+
+            # HACK: we need to enable use-markup on the header label,
+            # this used to be the default for labels in PopoverMenus, but
+            # later that bug was fixed as it wasn't intended.
+            # In **extremely** recent versions of GTK4, PopoverMenu supports
+            # 'use-markup' attribute on menu items to enable Pango Markup.
+            # However that just doesn't work, (it is set above 100% correctly)
+            # At first I wanted to bundle a patched version of GTK instead,
+            # however I dicided to instead recursively traverse the widget tree
+            # and enable use-markup on all our labels.
+            def try_enable_markup_recursive(c: Gtk.Widget):
+                for c in c:
+                    try:
+                        c.set_property('use-markup', True)
+                    except TypeError:
+                        pass
+                    try_enable_markup_recursive(c)
+            try_enable_markup_recursive(self)
+        else:
+            if self._is_header_menu_item_shown:
+                self._menu_model.remove(0)
+
+    def _update_calendar(self, update_monthly=True, update_yearly=True):
         """
         Update the calendar widgets with the correct date of the recurring
         task, if set.
         """
-        if self.is_term_set():
+        self._month_calendar.set_property('month', 0)
+        if self._is_term_set():
             need_month_hack = False
-            if self.selected_recurring_term in ('month', 'year'):
+            if self._selected_recurring_term in ('month', 'year'):
                 # Recurring monthly/yearly from 'today'
                 d = self.task.get_recurring_updated_date().date()
-                need_month_hack = self.selected_recurring_term == 'month'
-            elif self.selected_recurring_term.isdigit():
-                if len(self.selected_recurring_term) <= 2:
+                need_month_hack = self._set_selected_term == 'month'
+            elif self._selected_recurring_term.isdigit():
+                if len(self._selected_recurring_term) <= 2:
                     # Recurring monthly from selected date
-                    d = datetime.strptime(f'{self.selected_recurring_term}', '%d')
+                    d = datetime.strptime(f'{self._selected_recurring_term}', '%d')
                     need_month_hack = True
                 else:
                     # Recurring yearly from selected date
-                    val = f'{self.selected_recurring_term[:2:]}-{self.selected_recurring_term[2::]}'
+                    val = f'{self._selected_recurring_term[:2:]}-{self._selected_recurring_term[2::]}'
                     d = datetime.strptime(val, '%m-%d')
 
                 d = d.replace(year=datetime.today().year)  # Don't be stuck at 1900
@@ -158,11 +222,10 @@ class RecurringMenu():
                 return
 
             if update_monthly:
-                self._monthly_calendar.select_month(d.month - 1, d.year)
-                self._monthly_calendar.select_day(d.day)
+                self._month_calendar.set_property('day', d.day)
             if need_month_hack:
-                # Don't show that we're secretly staying on January since
-                # it has 31 days
+                # Don't show that we're secretly staying on January since it has
+                # 31 days
                 month = datetime.today().month
                 year = datetime.today().year
                 while True:
@@ -175,11 +238,43 @@ class RecurringMenu():
                             month = 1
                             year += 1
             if update_yearly:
-                self._yearly_calendar.select_month(d.month - 1, d.year)
-                self._yearly_calendar.select_day(d.day)
+                gtime = GLib.DateTime.new_local(d.year, d.month, d.day, 0, 0, 0)
+                self._year_calendar.select_day(gtime)
 
-    def reset_stack(self):
-        """ Reset popup stack to the first page """
-        self.stack.set_transition_duration(0)
-        self.stack.set_visible_child(self.page1)
-        self.stack.set_transition_duration(200)
+    def _on_recurr_every_day(self, widget, action_name, param: None):
+        self._set_selected_term('day')
+        self.set_property('is-task-recurring', True)
+
+    def _on_recurr_every_otherday(self, widget, action_name, param: None):
+        self._set_selected_term('other-day')
+        self.set_property('is-task-recurring', True)
+
+    def _on_recurr_every_week(self, widget, action_name, param: None):
+        self._set_selected_term('week')
+        self.set_property('is-task-recurring', True)
+
+    def _on_recurr_week_day(self, widget, action_name, param: GLib.Variant):
+        week_day = ''.join(param.get_string())
+        self._set_selected_term(week_day)
+        self.set_property('is_task_recurring', True)
+
+    def _on_recurr_month_today(self, widget, action_name, param: None):
+        self._set_selected_term('month')
+        self.set_property('is-task-recurring', True)
+
+    def _on_recurr_year_today(self, widget, action_name, param: None):
+        self._set_selected_term('year')
+        self.set_property('is-task-recurring', True)
+
+    @Gtk.Template.Callback()
+    def _on_monthly_selected(self, widget):
+        self._set_selected_term(str(self._month_calendar.props.day))
+        self.set_property('is-task-recurring', True)
+
+    @Gtk.Template.Callback()
+    def _on_yearly_selected(self, widget):
+        date_string = self._year_calendar.get_date().format(
+            r'%m%d'
+        )
+        self._set_selected_term(date_string)
+        self.set_property('is-task-recurring', True)
