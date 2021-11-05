@@ -60,6 +60,7 @@ class TaskEditor(Gtk.Window):
     add_subtask = Gtk.Template.Child()
     tag_store = Gtk.Template.Child()
     parent_button = Gtk.Template.Child("parent")
+    repeat_button = Gtk.Template.Child('set_repeat')
     scrolled = Gtk.Template.Child("scrolledtask")
     plugin_box = Gtk.Template.Child("pluginbox")
 
@@ -101,9 +102,6 @@ class TaskEditor(Gtk.Window):
         self.config = self.req.get_task_config(task.get_id())
         self.time = None
         self.clipboard = clipboard
-
-        # Recurrence
-        self.recurring_menu = RecurringMenu(self.req, task.tid, self.builder)
 
         # TODO: Remove old code when new core is stable
         # If new add to new DS
@@ -234,6 +232,12 @@ class TaskEditor(Gtk.Window):
         self.tags_tree.set_search_entry(self.tags_entry)
         self.tags_tree.set_search_equal_func(self.search_function, None)
 
+        # Recurrence
+        self.recurring_menu = RecurringMenu(self.req, task.tid, self)
+        self.recurring_menu.connect('notify::is-task-recurring', self.sync_repeat_button)
+        self.repeat_button.set_popover(self.recurring_menu)
+        self.sync_repeat_button()
+
         # plugins
         self.pengine = PluginEngine()
         self.plugin_api = PluginAPI(self.req, self.app, self)
@@ -330,6 +334,12 @@ class TaskEditor(Gtk.Window):
                 alphabetically
                 """
 
+    def sync_repeat_button(self, object=None, pspec=None):
+        if self.recurring_menu.is_task_recurring:
+            self.repeat_button.add_css_class('recurring-active')
+        else:
+            self.repeat_button.remove_css_class('recurring-active')
+
     def set_dismissable_in_menu(self, dismissable):
         """
         Set the task editor's menu items to how they are when the
@@ -371,70 +381,6 @@ class TaskEditor(Gtk.Window):
         """
         TODO(jakubbrindza): Add else case that will remove tag.
         """
-
-    @Gtk.Template.Callback()
-    def on_repeat_icon_activated(self, widget):
-        """ Reset popup stack to the first page every time you open it """
-        self.recurring_menu.reset_stack()
-
-    @Gtk.Template.Callback()
-    def toggle_recurring_status(self, widget):
-        self.recurring_menu.update_repeat_checkbox()
-        self.refresh_editor()
-
-    @Gtk.Template.Callback()
-    def set_recurring_term_every_day(self, widget):
-        self.recurring_menu.set_selected_term('day')
-        self.recurring_menu.update_term()
-        self.refresh_editor()
-
-    @Gtk.Template.Callback()
-    def set_recurring_term_every_otherday(self, widget):
-        self.recurring_menu.set_selected_term('other-day')
-        self.recurring_menu.update_term()
-        self.refresh_editor()
-
-    @Gtk.Template.Callback()
-    def set_recurring_term_every_week(self, widget):
-        self.recurring_menu.set_selected_term('week')
-        self.recurring_menu.update_term()
-        self.refresh_editor()
-
-    @Gtk.Template.Callback()
-    def set_recurring_term_every_month(self, widget):
-        self.recurring_menu.set_selected_term('month')
-        self.recurring_menu.update_term()
-        self.refresh_editor()
-
-    @Gtk.Template.Callback()
-    def set_recurring_term_every_year(self, widget):
-        self.recurring_menu.set_selected_term('year')
-        self.recurring_menu.update_term()
-        self.refresh_editor()
-
-    @Gtk.Template.Callback()
-    def set_recurring_term_week_day(self, widget):
-        self.recurring_menu.set_selected_term(widget.get_property("name"))
-        self.recurring_menu.update_term()
-        self.refresh_editor()
-
-    @Gtk.Template.Callback()
-    def set_recurring_term_month(self, widget):
-        self.recurring_menu.set_selected_term(str(widget.get_date()[2]))
-        self.recurring_menu.update_term()
-        self.refresh_editor()
-
-    @Gtk.Template.Callback()
-    def set_recurring_term_year(self, widget):
-        month = str(widget.get_date()[1] + 1)
-        day = str(widget.get_date()[2])
-        if len(month) < 2:
-            month = "0" + month
-        if len(day) < 2:
-            day = "0" + day
-        self.recurring_menu.set_selected_term(month + day)
-        self.recurring_menu.update_term()
-        self.refresh_editor()
 
     @Gtk.Template.Callback()
     def startingdate_changed(self, w):
@@ -962,6 +908,8 @@ class TaskEditor(Gtk.Window):
         # We should also destroy the whole taskeditor object.
         if self:
             self.destruction()
+            self.destroy()
+            self = None
 
     def destruction(self, _=None):
         """Callback when closing the window."""
