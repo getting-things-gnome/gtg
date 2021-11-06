@@ -13,18 +13,13 @@ from gettext import ngettext
 from GTG.core.task import Task
 
 log = logging.getLogger(__name__)
+PLUGIN_PATH = os.path.dirname(os.path.abspath(__file__))
 
 
-class Gamify:
-    PLUGIN_PATH = os.path.dirname(os.path.abspath(__file__))
-    PLUGIN_NAMESPACE = 'gamify'
-    DEFAULT_ANALYTICS = {
-        "last_task_date": date.today(),  # The date of the last task marked as done
-        "last_task_number": 0,           # The number of tasks done today
-        "streak": 0,                     # The number of days in which the goal was achieved
-        "goal_achieved": False,          # achieved today's goal
-        "score": 0
-    }
+@Gtk.Template(filename=f'{PLUGIN_PATH}/prefs.ui')
+class GamifyPreferences(Gtk.Window):
+    __gtype_name__ = 'GamifyPreferences'
+
     DEFAULT_PREFERENCES = {
         "goal": 3,
         "ui_type": "FULL",
@@ -33,6 +28,213 @@ class Gamify:
             _('medium'): 2,
             _('hard'): 3,
         }
+    }
+
+    entry_sizegroup = Gtk.Template.Child('entry-sizegroup')
+
+    general_label = Gtk.Template.Child('general-label')
+    general_listbox = Gtk.Template.Child('general-listbox')
+    mappings_label = Gtk.Template.Child('mappings-label')
+    mappings_listbox = Gtk.Template.Child('mappings-listbox')
+
+    # target tasks
+    target_tasks = Gtk.Template.Child('target-tasks')
+    target_spinbutton = Gtk.Template.Child('target-spinbutton')
+    target_label = Gtk.Template.Child('target-label')
+
+    # UI mode Box
+    ui_mode = Gtk.Template.Child('ui-mode')
+    ui_combobox = Gtk.Template.Child('ui-combobox')
+    ui_label = Gtk.Template.Child('ui-label')
+
+    # Mappings objects
+    new_mapping_dialog = Gtk.Template.Child('new-mapping-dialog')
+    new_mapping_entry = Gtk.Template.Child('new-mapping-entry')
+    new_mapping_spinner = Gtk.Template.Child('new-mapping-spinner')
+
+    def __init__(self, plugin, api, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.plugin = plugin
+        self.api = api
+        self.load_general_listbox()
+
+    @Gtk.Template.Callback('on-preferences-closed')
+    def on_preferences_closed(self, widget=None, data=None):
+        self.hide()
+        return True
+
+    @Gtk.Template.Callback('on-preferences-changed')
+    def on_preferences_changed(self, widget=None, data=None):
+        self.load_preferences()
+
+        # Get the new preferences
+        self.plugin.preferences['goal'] = self.target_spinbutton.get_value_as_int()
+
+        ui_mode = int(self.get_ui_mode_combo_value())
+        if ui_mode == 0:
+            self.plugin.preferences['ui_type'] = "FULL"
+        elif ui_mode == 1:
+            self.plugin.preferences['ui_type'] = "BUTTON"
+        elif ui_mode == 2:
+            self.plugin.preferences['ui_type'] = "LEVELBAR"
+
+        # Save the new mappings
+        new_tag_mapping = {}
+        for row in list(self.mappings_listbox)[:-1]:
+            label, value = self.get_tag_value_from_mapping_row(row)
+            new_tag_mapping[label.get_label()] = value.get_value_as_int()
+
+        self.plugin.preferences['tag_mapping'] = new_tag_mapping
+
+        self.save_preferences()
+        self.load_general_listbox()
+        # Update the type of UI
+        self.plugin.update_ui()
+        # Update the goal in the widget(s)
+        self.plugin.update_goal()
+
+    @Gtk.Template.Callback('dismiss-new-mapping')
+    def on_dismiss_new_mapping(self, widget=None, event=None):
+        self.new_mapping_dialog.hide()
+
+    @Gtk.Template.Callback('submit-new-mapping')
+    def on_add_new_mapping(self, widget=None, event=None):
+        if tag := self.new_mapping_entry.get_text():
+            row = self.make_mapping_row(label_text=tag,
+                                        spin_value=self.new_mapping_spinner.get_value(),
+                                        entry_sizegroup=self.entry_sizegroup)
+            self.mappings_listbox.remove(self.add_row)
+            self.mappings_listbox.append(row)
+            self.mappings_listbox.append(self.add_row)
+
+            self.on_dismiss_new_mapping()
+
+    def load_preferences(self):
+        self.plugin.preferences = self.api.load_configuration_object(
+            self.plugin.PLUGIN_NAMESPACE, "preferences",
+            default_values=self.DEFAULT_PREFERENCES
+        )
+
+    def save_preferences(self):
+        self.api.save_configuration_object(
+            self.plugin.PLUGIN_NAMESPACE,
+            "preferences",
+            self.plugin.preferences
+        )
+
+    def make_mapping_row(self, label_text: str, spin_value, entry_sizegroup=None):
+        row = Gtk.ListBoxRow()
+        upper_box = Gtk.Box(spacing=3)
+        box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, hexpand=True, halign=Gtk.Align.END)
+        label = Gtk.Label(label=label_text, margin_start=6)
+
+        spin = Gtk.SpinButton()
+        spin.set_hexpand(True)
+        spin.set_adjustment(Gtk.Adjustment(upper=100, step_increment=1, page_increment=10))
+        spin.set_numeric(True)
+        spin.set_value(int(spin_value))
+        if entry_sizegroup:
+            entry_sizegroup.add_widget(box)
+
+        button = Gtk.Button(icon_name="user-trash-symbolic")
+        button.connect("clicked", self.remove_mapping)
+
+        row.set_child(upper_box)
+        upper_box.append(label)
+        upper_box.append(box)
+        box.append(spin)
+        box.append(button)
+        return row
+
+    def load_mappings_listbox(self):
+        self.load_preferences()
+
+        # If there are any old children, remove them from the ListBox
+        for child in list(self.mappings_listbox):
+            self.mappings_listbox.remove(child)
+
+        # Construct the listBoxRows
+        for key, value in self.plugin.preferences['tag_mapping'].items():
+            row = self.make_mapping_row(
+                label_text=key, spin_value=value, entry_sizegroup=self.entry_sizegroup
+            )
+            self.mappings_listbox.append(row)
+
+        self.add_row = Gtk.ListBoxRow()
+        box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
+        box.set_homogeneous(True)
+        box_click_gesture = Gtk.GestureSingle()
+        box_click_gesture.connect("begin", self.add_mapping_clicked)
+        box.add_controller(box_click_gesture)
+
+        add = Gtk.Image(icon_name="list-add-symbolic")
+        box.append(add)
+
+        self.add_row.set_child(box)
+        self.mappings_listbox.append(self.add_row)
+
+    def add_mapping_clicked(self, controller, sequence):
+        self.new_mapping_dialog.set_transient_for(self)
+
+        self.new_mapping_entry.set_text("")
+        self.new_mapping_spinner.set_value(0)
+
+        self.new_mapping_dialog.present()
+
+    def remove_mapping(self, widget, event=None):
+        self.mappings_listbox.remove(self.get_row_from_remove_mapping(widget))
+
+    def get_row_from_remove_mapping(self, button):
+        return button.get_parent().get_parent()
+
+    def get_tag_value_from_mapping_row(self, row):
+        label = list(row.get_child())[0]
+        spin = list(list(row.get_child())[1])[0]
+        return (label, spin)
+
+    def load_general_listbox(self):
+        self.load_ui_mode()
+        self.load_target_task()
+
+        for child in list(self.general_listbox):
+            child.set_child(None)
+            self.general_listbox.remove(child)
+
+        target_row = Gtk.ListBoxRow()
+        target_row.set_child(self.target_tasks)
+
+        ui_row = Gtk.ListBoxRow()
+        ui_row.set_child(self.ui_mode)
+
+        self.general_listbox.append(target_row)
+        self.general_listbox.append(ui_row)
+
+    def load_target_task(self):
+        self.load_preferences()
+        self.target_spinbutton.set_value(self.plugin.preferences['goal'])
+
+    def get_ui_mode_combo_value(self):
+        value = self.ui_combobox.get_active_id()
+        return value if value else 0
+
+    def load_ui_mode(self):
+        self.load_preferences()
+        if self.plugin.preferences['ui_type'] == 'FULL':
+            self.ui_combobox.set_active_id(str(0))
+        elif self.plugin.preferences['ui_type'] == 'BUTTON':
+            self.ui_combobox.set_active_id(str(1))
+        else:
+            self.ui_combobox.set_active_id(str(2))
+
+
+class Gamify:
+    PLUGIN_NAMESPACE = 'gamify'
+    DEFAULT_ANALYTICS = {
+        "last_task_date": date.today(),  # The date of the last task marked as done
+        "last_task_number": 0,           # The number of tasks done today
+        "streak": 0,                     # The number of days in which the goal was achieved
+        "goal_achieved": False,          # achieved today's goal
+        "score": 0
     }
     LEVELS = {
         100: _('Beginner'),
@@ -50,50 +252,9 @@ class Gamify:
     def __init__(self):
         self.configureable = True
 
-        self.builder = Gtk.Builder()
-        path = f"{self.PLUGIN_PATH}/prefs.ui"
-        self.builder.add_from_file(path)
-
         self.data = None
         self.preferences = None
-
-    def _init_dialog_pref(self):
-        # Get the dialog widget
-        self.pref_dialog = self.builder.get_object('Preferences')
-
-        # Get the listboxs
-        self.general_label = self.builder.get_object('general-label')
-        self.general_listbox = self.builder.get_object('general-listbox')
-        self.mappings_label = self.builder.get_object('mappings-label')
-        self.mappings_listbox = self.builder.get_object('mappings-listbox')
-
-        # target tasks
-        self.target_tasks = self.builder.get_object('target-tasks')
-        self.target_spinbutton = self.builder.get_object('target-spinbutton')
-        self.target_label = self.builder.get_object('target-label')
-
-        # UI mode Box
-        self.ui_mode = self.builder.get_object('ui-mode')
-        self.ui_combobox = self.builder.get_object('ui-combobox')
-        self.ui_label = self.builder.get_object('ui-label')
-
-        # Mappings objects
-        self.new_mapping_dialog = self.builder.get_object('new-mapping-dialog')
-        self.new_mapping_entry = self.builder.get_object('new-mapping-entry')
-        self.new_mapping_spinner = self.builder.get_object('new-mapping-spinner')
-
-        if self.pref_dialog is None:
-            raise ValueError('Cannot load preference dialog widget')
-
-        self.load_general_listbox()
-
-        SIGNALS = {
-            "on-preferences-changed": self.on_preferences_changed,
-            "on-preferences-closed": self.on_preferences_closed,
-            "dismiss-new-mapping": self.on_dismiss_new_mapping,
-            "submit-new-mapping": self.on_add_new_mapping
-        }
-        self.builder.connect_signals(SIGNALS)
+        self.builder = Gtk.Builder.new_from_file(f'{PLUGIN_PATH}/gamify.ui')
 
     def activate(self, plugin_api):
         self.plugin_api = plugin_api
@@ -103,19 +264,19 @@ class Gamify:
         if plugin_api.is_editor():
             return
 
+        # Init the preference dialog
+        try:
+            self.pref_dialog = GamifyPreferences(self, self.plugin_api)
+        except:
+            self.configureable = False
+            log.debug('Cannot load preference dialog widget')
+
         # Load preferences and data
         self.analytics_load()
-        self.preferences_load()
+        self.pref_dialog.load_preferences()
 
         # Settings up the menu
         self.add_ui()
-
-        # Init the preference dialog
-        try:
-            self._init_dialog_pref()
-        except ValueError:
-            self.configureable = False
-            log.debug('Cannot load preference dialog widget')
 
         # Connect to the signals
         self.signal_connect_id = self.plugin_api.get_requester().connect("status-changed",
@@ -128,26 +289,13 @@ class Gamify:
 
     def deactivate(self, plugin_api):
         self.browser.disconnect(self.signal_connect_id)
+        self.pref_dialog.destroy()
         self.remove_ui()
-
 
     def is_configurable(self):
         return True
 
     # SAVE/LOAD DATA ##########################################################
-
-    def preferences_load(self):
-        self.preferences = self.plugin_api.load_configuration_object(
-            self.PLUGIN_NAMESPACE, "preferences",
-            default_values=self.DEFAULT_PREFERENCES
-        )
-
-    def save_preferences(self):
-        self.plugin_api.save_configuration_object(
-            self.PLUGIN_NAMESPACE,
-            "preferences",
-            self.preferences
-        )
 
     def analytics_load(self):
         self.data = self.plugin_api.load_configuration_object(
@@ -208,7 +356,7 @@ class Gamify:
     def on_marked_as_done(self, task_id):
         log.debug('a task has been marked as done')
         self.analytics_load()
-        self.preferences_load()
+        self.pref_dialog.load_preferences()
 
         # Update the date, if it is different from today
         self.update_date()
@@ -224,7 +372,7 @@ class Gamify:
     def on_marked_as_not_done(self, task_id):
         log.debug('a task has been marked as not done')
         self.analytics_load()
-        self.preferences_load()
+        self.pref_dialog.load_preferences()
 
         self.update_date()
 
@@ -274,7 +422,7 @@ class Gamify:
         self.headerbar = self.plugin_api.get_header()
 
         if self.headerbar:
-            self.headerbar.add(self.headerbar_button)
+            self.headerbar.pack_start(self.headerbar_button)
 
     def remove_headerbar_button(self):
         self.headerbar.remove(self.headerbar_button)
@@ -283,7 +431,7 @@ class Gamify:
         self.quickadd_pane = self.plugin_api.get_quickadd_pane()
         self.levelbar = self.builder.get_object('goal-levelbar')
         self.quickadd_pane.set_orientation(Gtk.Orientation.VERTICAL)
-        self.quickadd_pane.add(self.levelbar)
+        self.quickadd_pane.append(self.levelbar)
 
     def remove_levelbar(self):
         self.quickadd_pane.set_orientation(Gtk.Orientation.HORIZONTAL)
@@ -393,171 +541,13 @@ class Gamify:
             log.debug('trying to open preference menu, but dialog widget not loaded')
             return
 
-        self.preferences_load()
+        self.pref_dialog.load_preferences()
         self.pref_dialog.set_transient_for(manager_dialog)
 
         # Tag Mapping
-        self.load_mappings_listbox()
+        self.pref_dialog.load_mappings_listbox()
 
-        self.load_ui_mode()
-        self.load_target_task()
+        self.pref_dialog.load_ui_mode()
+        self.pref_dialog.load_target_task()
 
-        self.pref_dialog.show_all()
-
-    def on_preferences_closed(self, widget=None, data=None):
-        self.pref_dialog.hide()
-        return True
-
-    def on_preferences_changed(self, widget=None, data=None):
-        self.preferences_load()
-
-        # Get the new preferences
-        self.preferences['goal'] = self.target_spinbutton.get_value_as_int()
-
-        ui_mode = int(self.get_ui_mode_combo_value())
-        if ui_mode == 0:
-            self.preferences['ui_type'] = "FULL"
-        elif ui_mode == 1:
-            self.preferences['ui_type'] = "BUTTON"
-        elif ui_mode == 2:
-            self.preferences['ui_type'] = "LEVELBAR"
-
-        # Save the new mappings
-        new_tag_mapping = {}
-        for row in self.mappings_listbox.get_children()[:-1]:
-            label, value = self.get_tag_value_from_mapping_row(row)
-            new_tag_mapping[label.get_label()] = value.get_value_as_int()
-
-        self.preferences['tag_mapping'] = new_tag_mapping
-
-        self.save_preferences()
-        # Update the type of UI
-        self.update_ui()
-        # Update the goal in the widget(s)
-        self.update_goal()
-
-    def get_ui_mode_combo_value(self):
-        return self.ui_combobox.get_active_id()
-
-    def make_mapping_row(self, label_text: str, spin_value):
-        row = Gtk.ListBoxRow()
-        upper_box = Gtk.Box(spacing=3)
-        box = Gtk.HBox(orientation=Gtk.Orientation.HORIZONTAL)
-        box.set_homogeneous(True)
-        label = Gtk.Label(label_text)
-        label.set_alignment(0.05, 0)
-        label.set_valign(Gtk.Align.CENTER)
-
-        spin = Gtk.SpinButton()
-        spin.set_adjustment(Gtk.Adjustment(upper=100, step_increment=1, page_increment=10))
-        spin.set_numeric(True)
-        spin.set_value(int(spin_value))
-
-        remove_icon = Gio.ThemedIcon(name="user-trash-symbolic")
-        remove = Gtk.Image.new_from_gicon(remove_icon, Gtk.IconSize.BUTTON)
-        button = Gtk.Button()
-        button.connect("clicked", self.remove_mapping)
-        button.add(remove)
-
-        row.add(upper_box)
-        upper_box.pack_start(box, True, True, 0)
-        upper_box.pack_end(button, False, True, 0)
-        box.add(label)
-        box.add(spin)
-        return row
-
-    def load_mappings_listbox(self):
-        self.mappings_label.set_alignment(0, 0)
-        self.preferences_load()
-
-        # If there are any old children, remove them from the ListBox
-        for child in self.mappings_listbox.get_children():
-            self.mappings_listbox.remove(child)
-            child.destroy()
-
-        # Construct the listBoxRows
-        for key, value in self.preferences['tag_mapping'].items():
-            row = self.make_mapping_row(label_text=key, spin_value=value)
-            self.mappings_listbox.add(row)
-
-        self.add_row = Gtk.ListBoxRow()
-        box = Gtk.HBox(orientation=Gtk.Orientation.HORIZONTAL)
-        box.set_homogeneous(True)
-
-        add_icon = Gio.ThemedIcon(name="list-add-symbolic")
-        add = Gtk.Image.new_from_gicon(add_icon, Gtk.IconSize.BUTTON)
-        box.add(add)
-
-        event_box = Gtk.EventBox()
-        event_box.connect("button-press-event", self.add_mapping_clicked)
-        event_box.add(box)
-
-        self.add_row.add(event_box)
-        self.mappings_listbox.add(self.add_row)
-
-    def add_mapping_clicked(self, widget, event):
-        self.new_mapping_dialog.set_transient_for(self.pref_dialog)
-
-        self.new_mapping_entry.set_text("")
-        self.new_mapping_spinner.set_value(0)
-
-        self.new_mapping_dialog.show_all()
-
-    def remove_mapping(self, widget, event=None):
-        self.mappings_listbox.remove(self.get_row_from_remove_mapping(widget))
-
-    def get_row_from_remove_mapping(self, button):
-        return button.get_parent().get_parent()
-
-    def get_tag_value_from_mapping_row(self, row):
-        box = row.get_child().get_children()[0]
-        box_children = box.get_children()
-        return (box_children[0], box_children[1])
-
-    def on_dismiss_new_mapping(self, widget=None, event=None):
-        self.new_mapping_dialog.hide()
-
-    def on_add_new_mapping(self, widget=None, event=None):
-        if tag := self.new_mapping_entry.get_text():
-            row = self.make_mapping_row(label_text=tag,
-                                        spin_value=self.new_mapping_spinner.get_value())
-            self.mappings_listbox.remove(self.add_row)
-            self.mappings_listbox.add(row)
-            self.mappings_listbox.add(self.add_row)
-            self.mappings_listbox.show_all()
-
-            self.on_dismiss_new_mapping()
-
-    def load_general_listbox(self):
-        self.general_label.set_alignment(0, 0)
-        self.target_label.set_alignment(0, 0)
-        self.ui_label.set_alignment(0, 0)
-
-        self.load_ui_mode()
-        self.load_target_task()
-
-        for child in self.general_listbox.get_children():
-            self.general_listbox.remove(child)
-
-        target_row = Gtk.ListBoxRow()
-        target_row.add(self.target_tasks)
-
-        ui_row = Gtk.ListBoxRow()
-        ui_row.add(self.ui_mode)
-
-        self.general_listbox.add(target_row)
-        self.general_listbox.add(ui_row)
-
-    def load_target_task(self):
-        self.preferences_load()
-        self.target_spinbutton.set_value(self.preferences['goal'])
-
-    def load_ui_mode(self):
-        self.preferences_load()
-        if self.preferences['ui_type'] == 'FULL':
-            self.ui_combobox.set_active(0)
-        elif self.preferences['ui_type'] == 'BUTTON':
-            self.ui_combobox.set_active(1)
-        else:
-            self.ui_combobox.set_active(2)
-
+        self.pref_dialog.present()

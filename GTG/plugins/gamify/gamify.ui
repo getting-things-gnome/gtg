@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <requires lib="gtk" version="4.0"/>
+  <object class="GtkImage">
+    <property name="icon-name">list-remove-symbolic</property>
+  </object>
+  <object class="GtkAdjustment" id="adjustment3">
+    <property name="lower">1</property>
+    <property name="upper">100</property>
+    <property name="step-increment">1</property>
+    <property name="page-increment">10</property>
+  </object>
+  <object class="GtkLevelBar" id="goal-levelbar">
+    <property name="max-value">3</property>
+    <property name="mode">discrete</property>
+  </object>
+  <object class="GtkPopover" id="headerbar-popover">
+    <property name="width-request">260</property>
+    <property name="child">
+      <object class="GtkBox">
+        <property name="margin-start">4</property>
+        <property name="margin-end">4</property>
+        <property name="margin-top">4</property>
+        <property name="margin-bottom">7</property>
+        <property name="orientation">vertical</property>
+        <child>
+          <object class="GtkLabel" id="headerbar-label">
+            <property name="margin-bottom">7</property>
+            <property name="label" translatable="yes">label</property>
+            <attributes>
+              <attribute name="scale" value="2"></attribute>
+            </attributes>
+          </object>
+        </child>
+        <child>
+          <object class="GtkLabel" id="headerbar-msg">
+            <property name="margin-start">10</property>
+            <property name="margin-end">10</property>
+            <property name="margin-top">7</property>
+            <property name="margin-bottom">10</property>
+            <property name="label" translatable="yes">Put a msg here</property>
+            <property name="justify">center</property>
+            <property name="wrap">True</property>
+            <attributes>
+              <attribute name="weight" value="normal"/>
+              <attribute name="scale" value="0.90000000000000002"/>
+            </attributes>
+          </object>
+        </child>
+        <child>
+          <object class="GtkSeparator"/>
+        </child>
+        <child>
+          <object class="GtkLabel" id="score_label">
+            <property name="label" translatable="yes">Level</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkLabel" id="score_value">
+            <property name="label" translatable="yes">Points</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkSeparator"/>
+        </child>
+        <child>
+          <object class="GtkLabel" id="streak_number">
+            <property name="label" translatable="yes">Your streak</property>
+            <attributes>
+              <attribute name="scale" value="1"></attribute>
+            </attributes>
+          </object>
+        </child>
+      </object>
+    </property>
+  </object>
+  <object class="GtkMenuButton" id="gamify-headerbar">
+    <property name="popover">headerbar-popover</property>
+    <child>
+      <object class="GtkLabel" id="headerbar-label-button">
+        <property name="label" translatable="yes">0/5</property>
+        <attributes>
+          <attribute name="weight" value="bold"></attribute>
+        </attributes>
+      </object>
+    </child>
+  </object>
+</interface>
