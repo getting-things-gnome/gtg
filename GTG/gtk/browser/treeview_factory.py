@@ -280,6 +280,7 @@ class TreeviewFactory():
         col = {}
         render_tags = CellRendererTags(self.config)
         render_tags.set_property('ypad', 5)
+        render_tags.set_property('xpad', 2)
         col['title'] = _("Tags")
         col['renderer'] = ['tag', render_tags]
         col['value'] = [GObject.TYPE_PYOBJECT, lambda node: node]
@@ -292,7 +293,7 @@ class TreeviewFactory():
         col_name = 'tagname'
         col = {}
         render_text = Gtk.CellRendererText()
-        render_text.set_property('ypad', 5)
+        render_text.set_property('ypad', 7)
         col['renderer'] = ['markup', render_text]
         col['value'] = [str, self.get_tag_name]
         col['expandable'] = True
@@ -305,7 +306,7 @@ class TreeviewFactory():
         col = {}
         render_text = Gtk.CellRendererText()
         render_text.set_property('xpad', 17)
-        render_text.set_property('ypad', 5)
+        render_text.set_property('ypad', 6)
         render_text.set_property('xalign', 1)
         col['renderer'] = ['markup', render_text]
         col['value'] = [str, self.get_tag_count]
@@ -423,6 +424,7 @@ class TreeviewFactory():
         col['title'] = title_label
         render_text = Gtk.CellRendererText()
         render_text.set_property("ellipsize", Pango.EllipsizeMode.END)
+        render_text.set_property('ypad', 4)
         col['renderer'] = ['markup', render_text]
         col['value'] = [str, self.get_task_label_column_string]
         col['expandable'] = True
