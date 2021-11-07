@@ -58,7 +58,9 @@ class TagEditor(Gtk.Dialog):
         self._title_format = self.get_title()
         self._emoji_chooser.set_parent(self._icon_button)
 
-        self.tag_rgba = RGBA(1.0, 1.0, 1.0, 1.0)
+        self.tag_rgba = Gdk.RGBA()
+        (self.tag_rgba.red, self.tag_rgba.green,
+         self.tag_rgba.blue, self.tag_rgba.alpha) = 1.0, 1.0, 1.0, 1.0
         self.tag_name = ''
         self.tag_is_actionable = True
         self.is_valid = True
@@ -173,7 +175,8 @@ class TagEditor(Gtk.Dialog):
         self.tag_name = tag.get_friendly_name()
         self.set_title(self._title_format % ('@' + self.tag_name,))
 
-        rgba = RGBA(1.0, 1.0, 1.0, 1.0)
+        rgba = Gdk.RGBA()
+        rgba.red, rgba.green, rgba.blue, rgba.alpha = 1.0, 1.0, 1.0, 1.0
         if color := tag.get_attribute('color'):
             if not rgba.parse(color):
                 log.warning("Failed to parse tag color for %r: %r",
@@ -246,7 +249,14 @@ class TagEditor(Gtk.Dialog):
         with an random color.
         """
         self.has_color = True
-        self.tag_rgba = random_color()
+        c = Gdk.RGBA()
+        c.red, c.green, c.blue, c.alpha = (
+            random.uniform(0.0, 1.0),
+            random.uniform(0.0, 1.0),
+            random.uniform(0.0, 1.0),
+            1.0
+        )
+        self.tag_rgba = c
 
     @Gtk.Template.Callback('activate_color')
     def _activate_color(self, widget: GObject.Object):
@@ -292,5 +302,7 @@ class TagEditor(Gtk.Dialog):
         """
         Callback to remove the color.
         """
-        self.tag_rgba = RGBA(1.0, 1.0, 1.0, 1.0)
+        c = Gdk.RGBA()
+        c.red, c.green, c.blue, c.alpha = 1.0, 1.0, 1.0, 1.0
+        self.tag_rgba = c
         self.has_color = False
