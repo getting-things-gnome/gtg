@@ -101,8 +101,6 @@ class CellRendererTags(Gtk.CellRenderer):
         super().__init__()
         self.tag_list = None
         self.tag = None
-        self.xpad = 1
-        self.ypad = 1
         self.PADDING = 1
         self.config = config
         self._ignore_icon_error_for = set()
@@ -241,12 +239,12 @@ class CellRendererTags(Gtk.CellRenderer):
 
     def do_get_preferred_width(self, widget):
         count = self.__count_viewable_tags()
-        required_size = self.xpad * 2 + 16 * count + 2 * count * self.PADDING
+        required_size = self.props.xpad * 2 + 16 * count + 2 * count * self.PADDING
 
         return required_size, required_size
 
     def do_get_preferred_height(self, widget):
-        required_size = 16 + 2 * self.ypad
+        required_size = 16 + 2 * self.props.ypad
         return required_size, required_size
 
 
