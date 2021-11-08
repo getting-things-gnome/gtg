@@ -40,7 +40,7 @@ class SendEmailPlugin():
         send_action = Gio.SimpleAction.new("send_as_email", None)
         send_action.connect("activate", self._on_send_activate, plugin_api)
         group.add_action(send_action)
-        plugin_api.get_ui().window.insert_action_group(self.ACTION_GROUP_PREF, group)
+        plugin_api.get_ui().insert_action_group(self.ACTION_GROUP_PREF, group)
 
         self.menu_item = Gio.MenuItem.new(
             _("Send via email"), ".".join([self.ACTION_GROUP_PREF, "send_as_email"])
@@ -51,7 +51,7 @@ class SendEmailPlugin():
         """
         Removes the button when a task is closed.
         """
-        plugin_api.get_ui().window.insert_action_group(self.ACTION_GROUP_PREF, None)
+        plugin_api.get_ui().insert_action_group(self.ACTION_GROUP_PREF, None)
         plugin_api.remove_menu_item(self.menu_item)
 
     def deactivate(self, plugin_api):
