@@ -47,16 +47,8 @@ class UntouchedTasksPlugin():
             self.builder.get_object("pref_spinbtn_max_days")
         self.pref_tag_name = \
             self.builder.get_object("pref_tag_name")
-        SIGNAL_CONNECTIONS_DIC = {
-            "on_preferences_dialog_delete_event":
-                self.on_preferences_cancel,
-            "on_btn_preferences_cancel_clicked":
-                self.on_preferences_cancel,
-            "on_btn_preferences_ok_clicked":
-                self.on_preferences_ok,
-        }
+        self.preferences_dialog.connect('response', self.on_preferences_response)
 
-        self.builder.connect_signals(SIGNAL_CONNECTIONS_DIC)
         self.menu_item = Gio.MenuItem.new(_("Add @untouched tag"), "app.plugin.add_untouched_tag")
 
     def activate(self, plugin_api):
@@ -136,22 +128,21 @@ class UntouchedTasksPlugin():
             self.preferences["max_days"])
         self.pref_tag_name.set_text(
             self.preferences["default_tag"])
-        self.preferences_dialog.show_all()
+        self.preferences_dialog.present()
 
-    def on_preferences_cancel(self, widget=None, data=None):
-        self.preferences_dialog.hide()
-        return True
-
-    def on_preferences_ok(self, widget=None, data=None):
-        self.preferences["is_automatic"] = \
-            self.pref_chbox_is_automatic.get_active()
-        self.preferences["max_days"] = \
-            self.pref_spinbtn_max_days.get_value()
-        self.preferences['default_tag'] = \
-            self.pref_tag_name.get_text()
-        self.preferences_apply()
-        self.preferences_store()
-        self.preferences_dialog.hide()
+    def on_preferences_response(self, dialog, response):
+        if response == Gtk.ResponseType.OK:
+            self.preferences["is_automatic"] = \
+                self.pref_chbox_is_automatic.get_active()
+            self.preferences["max_days"] = \
+                self.pref_spinbtn_max_days.get_value()
+            self.preferences['default_tag'] = \
+                self.pref_tag_name.get_text()
+            self.preferences_apply()
+            self.preferences_store()
+            self.preferences_dialog.hide()
+        else:
+            self.preferences_dialog.hide()
 
     def preferences_load(self):
         self.preferences = self.plugin_api.load_configuration_object(
