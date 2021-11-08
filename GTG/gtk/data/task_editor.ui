@@ -56,11 +56,7 @@
                       <object class="GtkButton" id="add_subtask">
                         <property name="tooltip_text" translatable="yes">Insert a subtask in this task</property>
                         <property name="action_name">app.new_subtask</property>
-                        <child>
-                          <object class="GtkImage" id="subtask_image">
-                            <property name="icon_name">format-indent-more-symbolic</property>
-                          </object>
-                        </child>
+                        <property name="icon_name">format-indent-more-symbolic</property>
                       </object>
                     </child>
                     <child>

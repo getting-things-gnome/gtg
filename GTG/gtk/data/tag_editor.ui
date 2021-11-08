@@ -62,14 +62,9 @@
               <object class="GtkButton" id="icon-remove">
                 <property name="tooltip_text" translatable="yes">Delete the currently selected icon</property>
                 <property name="halign">center</property>
+                <property name="icon_name">user-trash-symbolic</property>
                 <property name="sensitive" bind-source="GTG_TagEditor" bind-property="has_icon" />
                 <signal name="clicked" handler="remove_icon" swapped="no"/>
-                <child>
-                  <object class="GtkImage">
-                    <property name="sensitive">False</property>
-                    <property name="icon_name">user-trash-symbolic</property>
-                  </object>
-                </child>
               </object>
             </child>
           </object>
@@ -170,14 +165,9 @@
                         <property name="receives_default">True</property>
                         <property name="tooltip_text" translatable="yes">Delete the currently selected color</property>
                         <property name="halign">start</property>
+                        <property name="icon_name">user-trash-symbolic</property>
                         <property name="sensitive" bind-source="GTG_TagEditor" bind-property="has_color" />
                         <signal name="clicked" handler="remove_color" swapped="no"/>
-                        <child>
-                          <object class="GtkImage">
-                            <property name="sensitive">False</property>
-                            <property name="icon_name">user-trash-symbolic</property>
-                          </object>
-                        </child>
                       </object>
                     </child>
                     <style>
