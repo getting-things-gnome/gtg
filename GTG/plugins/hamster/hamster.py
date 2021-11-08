@@ -23,7 +23,7 @@ from calendar import timegm
 from gettext import gettext as _
 
 import dbus
-from gi.repository import Gtk
+from gi.repository import Gtk, Gio
 
 from GTG.core.task import Task
 from GTG.plugins.hamster.helper import FactBuilder
@@ -44,6 +44,12 @@ class HamsterPlugin():
                                    " to the selected task")
     START_ACTIVITY_LABEL = _("Start task in Hamster")
     STOP_ACTIVITY_LABEL = _("Stop Hamster Activity")
+    EDIT_ACTIVITY_ACTION = "edit_task"
+    # having dots in prefix causes CRASH
+    EDIT_ACTIVITY_ACTION_PREF = "app_editor_" + PLUGIN_NAMESPACE
+    EDIT_ACTIVITY_ACTION_FULL = ".".join(
+        [EDIT_ACTIVITY_ACTION_PREF, EDIT_ACTIVITY_ACTION]
+    )
     BUFFER_TIME = 60  # secs
     PLUGIN_PATH = os.path.dirname(os.path.abspath(__file__))
 
@@ -56,14 +62,6 @@ class HamsterPlugin():
         self.tree = None
         self.liblarch_callbacks = []
         self.tracked_task_id = None
-
-    @staticmethod
-    def get_icon_image(image_name):
-        """ Get a gtk.Image with a gtk stock icon. """
-        icon = Gtk.Image()
-        icon.set_from_icon_name(image_name, Gtk.IconSize.BUTTON)
-        icon.show()
-        return icon
 
     # Interaction with Hamster ###
     def send_task(self, task):
@@ -157,12 +155,12 @@ class HamsterPlugin():
 
         # add button
         if plugin_api.is_browser():
-            self.button.set_image(self.get_icon_image('alarm-symbolic'))
+            self.button.set_icon_name('alarm-symbolic')
             self.button.set_tooltip_text(self.TOOLTIP_TEXT_START_ACTIVITY)
             self.button.set_sensitive(False)
             self.button.connect('clicked', self.browser_cb, plugin_api)
             self.button.show()
-            header_bar = plugin_api.get_gtk_builder().get_object('browser_headerbar')
+            header_bar = plugin_api.get_header()
             header_bar.pack_end(self.button)
             plugin_api.set_active_selection_changed_callback(self.selection_changed)
 
@@ -189,7 +187,17 @@ class HamsterPlugin():
         if task.get_status() != Task.STA_ACTIVE:
             return
 
-        task_menu_item = Gtk.ModelButton()
+        group = Gio.SimpleActionGroup()
+        track_task_action = Gio.SimpleAction.new(self.EDIT_ACTIVITY_ACTION, None)
+        track_task_action.connect('activate', self.task_cb, plugin_api)
+        group.add_action(track_task_action)
+        plugin_api.get_ui().insert_action_group(self.EDIT_ACTIVITY_ACTION_PREF, group)
+
+        task_menu_item = Gio.MenuItem.new(
+            (self.STOP_ACTIVITY_LABEL if self.is_task_active(task.get_id())
+             else self.START_ACTIVITY_LABEL),
+            self.EDIT_ACTIVITY_ACTION_FULL
+        )
         self.task_menu_items.update({task.get_id(): task_menu_item})
         if self.is_task_active(task.get_id()):
             task_menu_item.props.text = self.STOP_ACTIVITY_LABEL
@@ -204,6 +212,7 @@ class HamsterPlugin():
 
     def onTaskClosed(self, plugin_api):
         task = plugin_api.get_ui().get_task()
+        plugin_api.get_ui().insert_action_group(self.EDIT_ACTIVITY_ACTION_PREF, None)
         if task.get_id() in self.task_menu_items:
             del self.task_menu_items[task.get_id()]
         self.check_task_selected()
@@ -228,11 +237,11 @@ class HamsterPlugin():
 
             header_grid = Gtk.Grid()
             outer_grid = Gtk.Grid()
-            vbox.pack_start(header_grid, True, True, 0)
-            vbox.pack_start(Gtk.Separator(), True, True, 0)
-            vbox.pack_start(inner_container, True, True, 4)
-            vbox.pack_start(Gtk.Separator(), True, True, 0)
-            vbox.pack_start(outer_grid, True, True, 4)
+            vbox.append(header_grid)
+            vbox.append(Gtk.Separator())
+            vbox.append(inner_container)
+            vbox.append(Gtk.Separator())
+            vbox.append(outer_grid)
 
             total = 0
 
@@ -246,21 +255,21 @@ class HamsterPlugin():
                     content_2 = f"<span color='#444444'>{content_2}</span>"
 
                 column_1 = Gtk.Label(label=content_1)
+                column_1.set_xalign(0.0)
                 column_1.set_margin_start(18)
                 column_1.set_margin_end(18)
                 column_1.set_margin_top(6)
                 column_1.set_margin_bottom(6)
                 column_1.set_use_markup(True)
-                column_1.set_alignment(xalign=Gtk.Align.START, yalign=Gtk.Align.CENTER)
                 row.attach(column_1, 0, top_offset, 1, 1)
 
                 column_2 = Gtk.Label(label=content_2)
+                column_2.set_hexpand(True)
                 column_2.set_use_markup(True)
+                column_2.set_xalign(1.0)
                 column_2.set_margin_end(18)
                 column_2.set_margin_top(6)
                 column_2.set_margin_bottom(6)
-                column_2.set_alignment(xalign=Gtk.Align.END,
-                                       yalign=Gtk.Align.CENTER)
                 row.attach(column_2, 1, top_offset, 4, 1)
 
             add(header_grid, "<b>Hamster Time Tracker Records:</b>", "", 0)
@@ -282,7 +291,7 @@ class HamsterPlugin():
     def deactivate(self, plugin_api):
         if plugin_api.is_browser():
             # plugin_api.remove_toolbar_item(self.button)
-            header_bar = plugin_api.get_gtk_builder().get_object('browser_headerbar')
+            header_bar = plugin_api.get_header()
             header_bar.remove(self.button)
         else:
             for _, menu_button in self.task_menu_items.items():
@@ -299,18 +308,18 @@ class HamsterPlugin():
         task = plugin_api.get_requester().get_task(task_id)
         self.decide_start_or_stop_activity(task, widget)
 
-    def task_cb(self, widget, plugin_api):
+    def task_cb(self, action, gparam, plugin_api):
         task = plugin_api.get_ui().get_task()
-        self.decide_start_or_stop_activity(task, widget)
+        self.decide_start_or_stop_activity(task, plugin_api)
 
-    def decide_start_or_stop_activity(self, task, widget):
+    def decide_start_or_stop_activity(self, task, plugin_api):
         if self.is_task_active(task.get_id()):
-            self.change_button_to_start_activity(widget)
-            self.change_task_menu_to_start_activity(task.get_id())
+            self.change_button_to_start_activity(self.button)
+            self.change_task_menu_to_start_activity(task.get_id(), plugin_api)
             self.stop_task(task.get_id())
         elif task.get_status() == Task.STA_ACTIVE:
-            self.change_button_to_stop_activity(widget)
-            self.change_task_menu_to_stop_activity(task.get_id())
+            self.change_button_to_stop_activity(self.button)
+            self.change_task_menu_to_stop_activity(task.get_id(), plugin_api)
             self.send_task(task)
 
     def selection_changed(self, selection):
@@ -331,29 +340,34 @@ class HamsterPlugin():
     def decide_button_mode(self, button, task):
         if self.is_task_active(task.get_id()):
             self.change_button_to_stop_activity(button)
-            self.change_task_menu_to_stop_activity(task.get_id())
         else:
             self.change_button_to_start_activity(button)
-            self.change_task_menu_to_start_activity(task.get_id())
 
     def change_button_to_start_activity(self, button):
         button.set_tooltip_text(self.TOOLTIP_TEXT_START_ACTIVITY)
-        button.set_image(self.get_icon_image('alarm-symbolic'))
+        button.set_icon_name('alarm-symbolic')
 
     def change_button_to_stop_activity(self, button):
         button.set_tooltip_text(self.TOOLTIP_TEXT_STOP_ACTIVITY)
-        button.set_image(self.get_icon_image('process-stop-symbolic'))
+        button.set_icon_name('process-stop-symbolic')
 
-    def change_task_menu_to_start_activity(self, task_id):
+    def change_task_menu_to_start_activity(self, task_id, plugin_api):
         if task_id in self.task_menu_items:
-            self.task_menu_items[task_id].set_label(self.START_ACTIVITY_LABEL)
+            plugin_api.remove_menu_item(self.task_menu_items[task_id][0])
+            replacement_item = Gio.MenuItem.new(
+                self.START_ACTIVITY_LABEL, self.EDIT_ACTIVITY_ACTION_FULL
+            )
+            self.task_menu_items[task_id] = replacement_item
+            plugin_api.add_menu_item(replacement_item)
 
-    def change_task_menu_to_stop_activity(self, task_id):
-        for item_id, button in self.task_menu_items.items():
-            if item_id == task_id:
-                button.set_label(self.STOP_ACTIVITY_LABEL)
-            else:
-                button.set_label(self.START_ACTIVITY_LABEL)
+    def change_task_menu_to_stop_activity(self, task_id, plugin_api):
+        if task_id in self.task_menu_items:
+            plugin_api.remove_menu_item(self.task_menu_items[task_id][0])
+            replacement_item = Gio.MenuItem.new(
+                self.STOP_ACTIVITY_LABEL, self.EDIT_ACTIVITY_ACTION_FULL
+            )
+            self.task_menu_items[task_id] = replacement_item
+            plugin_api.add_menu_item(replacement_item)
 
     # Preference Handling ###
     def is_configurable(self):
@@ -373,7 +387,7 @@ class HamsterPlugin():
         pref_to_dialog("description")
         pref_to_dialog("tags")
 
-        self.preferences_dialog.show_all()
+        self.preferences_dialog.present()
 
     def on_preferences_close(self, widget=None, data=None):
 
@@ -408,10 +422,7 @@ class HamsterPlugin():
         path = f"{self.PLUGIN_PATH}/prefs.ui"
         self.builder.add_from_file(path)
         self.preferences_dialog = self.builder.get_object("dialog1")
-        SIGNAL_CONNECTIONS_DIC = {
-            "prefs_close": self.on_preferences_close,
-        }
-        self.builder.connect_signals(SIGNAL_CONNECTIONS_DIC)
+        self.preferences_dialog.connect("close-request", self.on_preferences_close)
 
 
 def format_date(task):
