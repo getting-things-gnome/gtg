@@ -250,23 +250,14 @@
             <property name="tooltip_text" translatable="yes">Create a new task</property>
             <property name="valign">center</property>
             <property name="action_name">app.new_task</property>
-            <child>
-              <object class="GtkImage" id="search_icon1">
-                <property name="icon_name">list-add-symbolic</property>
-                <property name="icon_size">1</property>
-              </object>
-            </child>
+            <property name="icon_name">list-add-symbolic</property>
           </object>
         </child>
         <child type="end">
           <object class="GtkMenuButton" id="main_menu_btn">
             <property name="receives_default">True</property>
             <property name="menu_model">main_menu</property>
-            <child>
-              <object class="GtkImage" id="main_menu_icon">
-                <property name="icon_name">open-menu-symbolic</property>
-              </object>
-            </child>
+            <property name="icon_name">open-menu-symbolic</property>
           </object>
         </child>
         <child type="end">
@@ -274,12 +265,7 @@
             <property name="tooltip_text" translatable="yes">Activate Search Entry</property>
             <property name="valign">center</property>
             <property name="action_name">win.search</property>
-            <child>
-              <object class="GtkImage" id="search_icon">
-                <property name="icon_name">edit-find-symbolic</property>
-                <property name="icon_size">1</property>
-              </object>
-            </child>
+            <property name="icon_name">edit-find-symbolic</property>
           </object>
         </child>
         <child>
@@ -299,14 +285,7 @@
                 <property name="sensitive">False</property>
                 <property name="receives_default">True</property>
                 <property name="menu-model">defer_menu</property>
-                <child>
-                  <object class="GtkImage" id="defer_menu_icon">
-                    <property name="sensitive">False</property>
-                    <property name="halign">start</property>
-                    <property name="icon_name">pan-down-symbolic</property>
-                    <property name="icon_size">1</property>
-                  </object>
-                </child>
+                <property name="icon_name">pan-down-symbolic</property>
                 <style>
                   <class name="image-button"/>
                   <class name="menu-disclose"/>
