@@ -140,6 +140,10 @@ class CellRendererTags(Gtk.CellRenderer):
 
         # Drawing context
         gdkcontext = cr
+        scale_factor = widget.get_scale_factor()
+        # Don't blur border on lodpi
+        if scale_factor == 1:
+            gdkcontext.set_antialias(cairo.ANTIALIAS_NONE)
 
         # Coordinates of the origin point
         x_align = self.get_property("xalign")
@@ -162,7 +166,6 @@ class CellRendererTags(Gtk.CellRenderer):
             if my_tag_icon:
                 if my_tag_icon in self.SYMBOLIC_ICONS:
                     icon_theme = Gtk.IconTheme.get_default()
-                    scale_factor = widget.get_scale_factor()
                     info = icon_theme.lookup_icon_for_scale(my_tag_icon, 16,
                                                             scale_factor, 0)
                     pixbuf, was_symbolic = info.load_symbolic(symbolic_color)
