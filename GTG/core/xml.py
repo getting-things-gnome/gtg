@@ -135,8 +135,9 @@ def task_to_element(task) -> etree.Element:
 
     recurring_updated_date_elem = etree.SubElement(recurring, 'updated_date')
     recurring_updated_date = task.get_recurring_updated_date()
+
     if recurring_updated_date: 
-        recurring_updated_date_elem.text = recurring_update_date.isoformat()
+        recurring_updated_date_elem.text = str(recurring_updated_date)
 
     subtasks = etree.SubElement(element, 'subtasks')
 
