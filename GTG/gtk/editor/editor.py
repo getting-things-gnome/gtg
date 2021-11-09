@@ -356,6 +356,14 @@ class TaskEditor(Gtk.Window):
         self.date_changed(w, GTGCalendar.DATE_KIND_START)
 
     @Gtk.Template.Callback()
+    def startdate_today(self, w):
+        # change the day to something other than the current day
+        # so that we could select it
+        current_day = self.start_calendar.get_property('day')
+        self.start_calendar.set_property('day', 1 if current_day > 1 else 2)
+        self.start_calendar.select_day(GLib.DateTime.new_now_local())
+
+    @Gtk.Template.Callback()
     def startdate_cleared(self, w):
         self.on_date_cleared(w, GTGCalendar.DATE_KIND_START)
 
