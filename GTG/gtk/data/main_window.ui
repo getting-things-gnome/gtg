@@ -249,6 +249,7 @@
   </menu>
   <template class="MainWindow" parent="GtkApplicationWindow">
     <property name="title">Getting Things GNOME!</property>
+    <property name="focus-widget">quickadd_field</property>
     <child type="titlebar">
       <object class="GtkHeaderBar" id="browser_headerbar">
         <child type="title">
