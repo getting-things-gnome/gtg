@@ -268,6 +268,11 @@ class MainWindow(Gtk.ApplicationWindow):
         # self.actionable_pane.add(self.vtree_panes['workview'])
         # self.closed_pane.add(self.vtree_panes['closed'])
 
+        quickadd_focus_controller = Gtk.EventControllerFocus()
+        quickadd_focus_controller.connect('enter', self.on_quickadd_focus_in)
+        quickadd_focus_controller.connect('leave', self.on_quickadd_focus_out)
+        self.quickadd_entry.add_controller(quickadd_focus_controller)
+
         tag_completion = TagCompletion(self.req.get_tag_tree())
         self.modifytags_dialog = ModifyTagsDialog(tag_completion, self.req, self.app)
         self.modifytags_dialog.set_transient_for(self)
@@ -791,12 +796,10 @@ class MainWindow(Gtk.ApplicationWindow):
         self.sidebar.props.visible = True
         self.tagtreeview.grab_focus()
 
-    @Gtk.Template.Callback()
-    def on_quickadd_focus_in(self, widget, event):
+    def on_quickadd_focus_in(self, controller):
         self.toggle_delete_accel(False)
 
-    @Gtk.Template.Callback()
-    def on_quickadd_focus_out(self, widget, event):
+    def on_quickadd_focus_out(self, controller):
         self.toggle_delete_accel(True)
 
     def toggle_delete_accel(self, enable_delete_accel):
