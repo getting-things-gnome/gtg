@@ -103,11 +103,18 @@
                                 <property name="margin_end">6</property>
                                 <property name="margin_top">6</property>
                                 <property name="margin_bottom">6</property>
+                                <property name="spacing">6</property>
                                 <property name="orientation">vertical</property>
                                 <child>
                                   <object class="GtkCalendar" id="calendar_start">
                                     <property name="year">2020</property>
                                     <property name="day">2</property>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkButton">
+                                    <property name="label" translatable="yes">Today</property>
+                                    <signal name="clicked" handler="startdate_today" swapped="no"/>
                                   </object>
                                 </child>
                                 <child>
@@ -117,9 +124,6 @@
                                     <signal name="clicked" handler="startdate_cleared" swapped="no"/>
                                   </object>
                                 </child>
-                                <style>
-                                  <class name="linked"/>
-                                </style>
                               </object>
                             </property>
                           </object>
