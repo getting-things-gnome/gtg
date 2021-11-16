@@ -180,12 +180,20 @@ class MainWindow(Gtk.ApplicationWindow):
         builder.add_from_file(GnomeConfig.MENUS_UI_FILE)
 
         closed_menu_model = builder.get_object('closed_task_menu')
-        self.closed_menu = Gtk.PopoverMenu(menu_model=closed_menu_model)
+        self.closed_menu = Gtk.PopoverMenu.new_from_model_full(
+            closed_menu_model, Gtk.PopoverMenuFlags.NESTED
+        )
         self.closed_menu.set_parent(self.tree_stack)
+        self.closed_menu.set_halign(Gtk.Align.START)
+        self.closed_menu.set_has_arrow(False)
 
         open_menu_model = builder.get_object('task_menu')
-        self.open_menu = Gtk.PopoverMenu(menu_model=open_menu_model)
+        self.open_menu = Gtk.PopoverMenu.new_from_model_full(
+            open_menu_model, Gtk.PopoverMenuFlags.NESTED
+        )
         self.open_menu.set_parent(self.tree_stack)
+        self.open_menu.set_halign(Gtk.Align.START)
+        self.open_menu.set_has_arrow(False)
 
     def _set_actions(self):
         """Setup actions."""
@@ -303,6 +311,7 @@ class MainWindow(Gtk.ApplicationWindow):
 
         self.tagpopup = TagContextMenu(self.req, self.app)
         self.tagpopup.set_parent(self.sidebar_container)
+        self.tagpopup.set_halign(Gtk.Align.START)
         self.tagpopup.set_position(Gtk.PositionType.BOTTOM)
 
         tagtree_gesture_single = Gtk.GestureSingle(button=Gdk.BUTTON_SECONDARY)

@@ -36,7 +36,7 @@ class TagContextMenu(Gtk.PopoverMenu):
     """Context menu fo the tag i the sidebar"""
 
     def __init__(self, req, app, tag=None):
-        super().__init__()
+        super().__init__(has_arrow=False)
         self.req = req
         self.app = app
         self.tag = tag
