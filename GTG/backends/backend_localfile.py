@@ -228,6 +228,7 @@ class Backend(GenericBackend):
 
         already_saved = []
         self.search_tree.clear()
+        self.tag_tree.clear()
 
         for tagname in tagnames:
             if tagname in already_saved:
