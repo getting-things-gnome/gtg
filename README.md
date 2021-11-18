@@ -50,6 +50,7 @@ git pull --rebase
   - pango
   - gdk-pixbuf
   - GTK 3
+  - GtkSourceView 4
 
 You can get most of those from your distribution packages:
 
