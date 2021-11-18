@@ -205,6 +205,9 @@ class TaskEditor:
         text = self.task.get_text()
         title = self.task.get_title()
 
+        # Insert text and tags as a non_undoable action, otherwise
+        # the user can CTRL+Z even this inserts.
+        self.textview.buffer.begin_not_undoable_action()
         self.textview.buffer.set_text(f"{title}\n")
 
         if text:
@@ -233,6 +236,7 @@ class TaskEditor:
         else:
             self.task.set_to_keep()
 
+        self.textview.buffer.end_not_undoable_action()
         self.window.connect("destroy", self.destruction)
 
         # Connect search field to tags popup
