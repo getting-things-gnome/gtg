@@ -24,7 +24,7 @@ from time import time
 from uuid import uuid4
 import logging
 
-from gi.repository import Gtk, GLib, Gdk, GObject
+from gi.repository import Gtk, GLib, Gdk, GObject, GtkSource
 
 from GTG.core.requester import Requester
 import GTG.core.urlregex as url_regex
@@ -51,7 +51,7 @@ INTERNAL_REGEX = re.compile((r'gtg:\/\/'
                             re.IGNORECASE)
 
 
-class TaskView(Gtk.TextView):
+class TaskView(GtkSource.View):
     """Taskview widget
 
     This is a specialized Gtk textview with GTG features. It waits [n] seconds
@@ -251,7 +251,9 @@ class TaskView(Gtk.TextView):
             # Remove the -
             delete_end = start.copy()
             delete_end.forward_chars(2)
+            self.buffer.begin_not_undoable_action()
             self.buffer.delete(start, delete_end)
+            self.buffer.end_not_undoable_action()
 
             # Add new subtask
             tid = self.new_subtask_cb(text[2:])
