@@ -729,6 +729,10 @@ class TaskEditor:
             self.close_all_subtasks()
             self.close(None)
 
+    def reopen(self):
+        self.task.set_status(Task.STA_ACTIVE)
+        self.refresh_editor()
+
     def open_subtask(self, tid):
         """Open subtask (closing parent task)."""
 

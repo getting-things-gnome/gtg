@@ -1315,6 +1315,23 @@ class MainWindow(Gtk.ApplicationWindow):
                 task.set_status(Task.STA_DISMISSED)
                 self.close_all_task_editors(uid)
 
+    def on_reopen_task(self, widget=None):
+        tasks_uid = [uid for uid in self.get_selected_tasks()
+                     if uid is not None]
+        tasks = [self.req.get_task(uid) for uid in tasks_uid]
+        tasks_status = [task.get_status() for task in tasks]
+        for uid, task, status in zip(tasks_uid, tasks, tasks_status):
+            if status == Task.STA_DONE:
+                task.set_status(Task.STA_ACTIVE)
+                GObject.idle_add(self.emit, "task-marked-as-not-done", task.get_id())
+                # Parents of that task must be updated - not to be shown
+                # in workview, update children count, etc.
+                for parent_id in task.get_parents():
+                    parent = self.req.get_task(parent_id)
+                    parent.modified()
+            elif status == Task.STA_DISMISSED:
+                task.set_status(Task.STA_ACTIVE)
+
     def reapply_filter(self, current_pane: str = None):
         if current_pane is None:
             current_pane = self.get_selected_pane()

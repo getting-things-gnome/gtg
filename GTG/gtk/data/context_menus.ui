@@ -11,12 +11,8 @@
     </section>
     <section>
       <item>
-        <attribute name="label" translatable="yes">Mark as Not Done</attribute>
-        <attribute name="action">app.mark_as_done</attribute>
-      </item>
-      <item>
-        <attribute name="label" translatable="yes">Undismiss</attribute>
-        <attribute name="action">app.dismiss</attribute>
+        <attribute name="label" translatable="yes">Reopen</attribute>
+        <attribute name="action">app.reopen</attribute>
       </item>
       <item>
         <attribute name="label" translatable="yes">Delete</attribute>

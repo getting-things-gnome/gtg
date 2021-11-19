@@ -293,6 +293,7 @@ class Application(Gtk.Application):
             ('edit_task', self.edit_task, ('app.edit_task', ['<ctrl>E'])),
             ('mark_as_done', self.mark_as_done, ('app.mark_as_done', ['<ctrl>D'])),
             ('dismiss', self.dismiss, ('app.dismiss', ['<ctrl>I'])),
+            ('reopen', self.reopen, ('app.reopen', ['<ctrl>O'])),
             ('open_backends', self.open_backends_manager, None),
             ('open_help', self.open_help, ('app.open_help', ['F1'])),
             ('open_preferences', self.open_preferences, ('app.open_preferences', ['<ctrl>comma'])),
@@ -356,6 +357,14 @@ class Application(Gtk.Application):
             self.get_active_editor().dismiss()
         except AttributeError:
             self.browser.on_dismiss_task()
+    
+    def reopen(self, param, action):
+        """Callback to mark task as open."""
+
+        try:
+            self.get_active_editor().reopen()
+        except AttributeError:
+            self.browser.on_reopen_task()
 
     def open_help(self, action, param):
         """Open help callback."""
