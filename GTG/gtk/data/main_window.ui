@@ -683,13 +683,32 @@
         <property name="halign">start</property>
         <child>
           <object class="GtkButton" id="defer_task_button">
-            <property name="label" translatable="yes">Start Tomorrow</property>
             <property name="visible">True</property>
             <property name="sensitive">False</property>
             <property name="can_focus">False</property>
             <property name="receives_default">True</property>
-            <property name="tooltip_text" translatable="yes">Out of time? Need additional focus? Easily defer the selected task(s) to tomorrow!</property>
+            <property name="tooltip_text" translatable="yes">Defer selected task(s) to tomorrow. Useful if you are out of focus or need additional time.</property>
             <property name="action_name">win.start_tomorrow</property>
+            <child>
+              <object class="GTGAdaptiveFittingWidget">
+                <property name="visible">True</property>
+                <property name="draw-smallest-child-if-smaller">True</property>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="ellipsize">PANGO_ELLIPSIZE_MIDDLE</property>
+                    <property name="width-chars">9</property>
+                    <property name="label" translatable="yes">Start Tomorrow</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkImage">
+                    <property name="visible">True</property>
+                    <property name="icon-name">appointment-new-symbolic</property>
+                  </object>
+                </child>
+              </object>
+            </child>
           </object>
           <packing>
             <property name="expand">True</property>
