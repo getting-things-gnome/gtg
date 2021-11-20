@@ -29,6 +29,7 @@ gtg_backend_parameters_ui_sources = [
 
 gtg_browser_sources = [
   'browser/__init__.py',
+  'browser/adaptive_button.py',
   'browser/backend_infobar.py',
   'browser/cell_renderer_tags.py',
   'browser/delete_tag.py',
