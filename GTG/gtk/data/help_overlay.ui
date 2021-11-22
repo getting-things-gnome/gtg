@@ -112,6 +112,14 @@
             <child>
               <object class="GtkShortcutsShortcut">
                 <property name="visible">True</property>
+                <property name="title" translatable="yes" context="shortcut window">Reopen Task</property>
+                <property name="accelerator">&lt;Primary&gt;O</property>
+              </object>
+            </child>
+
+            <child>
+              <object class="GtkShortcutsShortcut">
+                <property name="visible">True</property>
                 <property name="title" translatable="yes" context="shortcut window">Batch change tags on selected tasks</property>
                 <property name="accelerator">&lt;Primary&gt;T</property>
               </object>
