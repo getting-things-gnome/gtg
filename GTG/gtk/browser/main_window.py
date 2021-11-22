@@ -241,6 +241,7 @@ class MainWindow(Gtk.ApplicationWindow):
         self.menu_view_workview = self.builder.get_object("view_workview")
         self.toggle_workview = self.builder.get_object("workview_toggle")
         self.search_entry = self.builder.get_object("search_entry")
+        self.search_cheatsheet = self.builder.get_object("search_cheatsheet")
         self.searchbar = self.builder.get_object("searchbar")
         self.search_button = self.builder.get_object("search_button")
         self.quickadd_entry = self.builder.get_object("quickadd_field")
@@ -259,6 +260,17 @@ class MainWindow(Gtk.ApplicationWindow):
         self.help_overlay = self.builder.get_object("shortcuts")
 
         self.tagpopup = TagContextMenu(self.req, self.app)
+
+        # Setup search syntax popup button
+        self.search_entry.connect('icon-release', 
+                                  self.on_search_box_help_icon_click)
+
+
+    def on_search_box_help_icon_click(self, widget, icon_pos, event) -> None:
+        """Show search syntax popup"""
+
+        self.search_cheatsheet.popup()
+
 
     def _init_ui_widget(self):
         """ Sets the main pane with three trees for active tasks,

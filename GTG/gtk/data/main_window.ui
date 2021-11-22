@@ -3,57 +3,59 @@
 <interface>
   <requires lib="gtk+" version="3.20"/>
   <object class="GtkAboutDialog" id="about_dialog">
-    <property name="can_focus">False</property>
-    <property name="border_width">6</property>
-    <property name="window_position">center-on-parent</property>
-    <property name="type_hint">dialog</property>
-    <property name="logo_icon_name">gtg</property>
+    <property name="can-focus">False</property>
+    <property name="border-width">6</property>
+    <property name="window-position">center-on-parent</property>
+    <property name="type-hint">dialog</property>
+    <property name="logo-icon-name">gtg</property>
     <signal name="delete-event" handler="on_about_delete" swapped="no"/>
     <signal name="response" handler="on_about_close" swapped="no"/>
     <child internal-child="vbox">
       <object class="GtkBox" id="about_dialog_vbox">
         <property name="visible">True</property>
-        <property name="can_focus">False</property>
+        <property name="can-focus">False</property>
         <property name="orientation">vertical</property>
         <property name="spacing">2</property>
         <child internal-child="action_area">
           <object class="GtkButtonBox" id="dialog-action_area2">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="layout_style">end</property>
+            <property name="can-focus">False</property>
+            <property name="layout-style">end</property>
           </object>
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="pack_type">end</property>
+            <property name="pack-type">end</property>
             <property name="position">0</property>
           </packing>
         </child>
       </object>
     </child>
-    <child type="titlebar">
-      <placeholder/>
-    </child>
+  </object>
+  <object class="GtkAdjustment" id="adjustment1">
+    <property name="upper">100</property>
+    <property name="step-increment">1</property>
+    <property name="page-increment">10</property>
   </object>
   <object class="GtkPopoverMenu" id="defer_menu">
     <property name="name">main_menu</property>
-    <property name="can_focus">False</property>
+    <property name="can-focus">False</property>
     <child>
       <object class="GtkBox" id="defer_menu_box">
         <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="margin_left">14</property>
-        <property name="margin_right">14</property>
-        <property name="margin_top">8</property>
-        <property name="margin_bottom">8</property>
+        <property name="can-focus">False</property>
+        <property name="margin-left">14</property>
+        <property name="margin-right">14</property>
+        <property name="margin-top">8</property>
+        <property name="margin-bottom">8</property>
         <property name="orientation">vertical</property>
         <child>
           <object class="GtkModelButton" id="defer_0_btn">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="receives_default">True</property>
-            <property name="tooltip_text" translatable="yes">Start today</property>
-            <property name="action_name">win.start_today</property>
+            <property name="can-focus">False</property>
+            <property name="receives-default">True</property>
+            <property name="tooltip-text" translatable="yes">Start today</property>
+            <property name="action-name">win.start_today</property>
             <property name="text" translatable="yes">Today</property>
           </object>
           <packing>
@@ -65,9 +67,9 @@
         <child>
           <object class="GtkSeparator">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="margin_top">6</property>
-            <property name="margin_bottom">6</property>
+            <property name="can-focus">False</property>
+            <property name="margin-top">6</property>
+            <property name="margin-bottom">6</property>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -78,10 +80,10 @@
         <child>
           <object class="GtkModelButton" id="defer_2_btn">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="receives_default">True</property>
-            <property name="tooltip_text" translatable="yes">Start 2 days from now</property>
-            <property name="action_name">win.start_next_day_2</property>
+            <property name="can-focus">False</property>
+            <property name="receives-default">True</property>
+            <property name="tooltip-text" translatable="yes">Start 2 days from now</property>
+            <property name="action-name">win.start_next_day_2</property>
             <property name="text" translatable="yes">Tuesday</property>
           </object>
           <packing>
@@ -93,10 +95,10 @@
         <child>
           <object class="GtkModelButton" id="defer_3_btn">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="receives_default">True</property>
-            <property name="tooltip_text" translatable="yes">Start 3 days from now</property>
-            <property name="action_name">win.start_next_day_3</property>
+            <property name="can-focus">False</property>
+            <property name="receives-default">True</property>
+            <property name="tooltip-text" translatable="yes">Start 3 days from now</property>
+            <property name="action-name">win.start_next_day_3</property>
             <property name="text" translatable="yes">Wednesday</property>
           </object>
           <packing>
@@ -108,10 +110,10 @@
         <child>
           <object class="GtkModelButton" id="defer_4_btn">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="receives_default">True</property>
-            <property name="tooltip_text" translatable="yes">Start 4 days from now</property>
-            <property name="action_name">win.start_next_day_4</property>
+            <property name="can-focus">False</property>
+            <property name="receives-default">True</property>
+            <property name="tooltip-text" translatable="yes">Start 4 days from now</property>
+            <property name="action-name">win.start_next_day_4</property>
             <property name="text" translatable="yes">Thursday</property>
           </object>
           <packing>
@@ -123,10 +125,10 @@
         <child>
           <object class="GtkModelButton" id="defer_5_btn">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="receives_default">True</property>
-            <property name="tooltip_text" translatable="yes">Start 5 days from now</property>
-            <property name="action_name">win.start_next_day_5</property>
+            <property name="can-focus">False</property>
+            <property name="receives-default">True</property>
+            <property name="tooltip-text" translatable="yes">Start 5 days from now</property>
+            <property name="action-name">win.start_next_day_5</property>
             <property name="text" translatable="yes">Friday</property>
           </object>
           <packing>
@@ -138,10 +140,10 @@
         <child>
           <object class="GtkModelButton" id="defer_6_btn">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="receives_default">True</property>
-            <property name="tooltip_text" translatable="yes">Start 6 days from now</property>
-            <property name="action_name">win.start_next_day_6</property>
+            <property name="can-focus">False</property>
+            <property name="receives-default">True</property>
+            <property name="tooltip-text" translatable="yes">Start 6 days from now</property>
+            <property name="action-name">win.start_next_day_6</property>
             <property name="text" translatable="yes">Saturday</property>
           </object>
           <packing>
@@ -153,9 +155,9 @@
         <child>
           <object class="GtkModelButton" id="start_another_date">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="receives_default">True</property>
-            <property name="action_name">win.start_custom</property>
+            <property name="can-focus">False</property>
+            <property name="receives-default">True</property>
+            <property name="action-name">win.start_custom</property>
             <property name="text" translatable="yes">Pick a Date...</property>
           </object>
           <packing>
@@ -167,9 +169,9 @@
         <child>
           <object class="GtkSeparator">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="margin_top">6</property>
-            <property name="margin_bottom">6</property>
+            <property name="can-focus">False</property>
+            <property name="margin-top">6</property>
+            <property name="margin-bottom">6</property>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -180,9 +182,9 @@
         <child>
           <object class="GtkModelButton" id="due_clear_button">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="receives_default">True</property>
-            <property name="action_name">win.start_clear</property>
+            <property name="can-focus">False</property>
+            <property name="receives-default">True</property>
+            <property name="action-name">win.start_clear</property>
             <property name="text" translatable="yes">Clear Start Date</property>
           </object>
           <packing>
@@ -200,22 +202,23 @@
   </object>
   <object class="GtkPopoverMenu" id="main_menu">
     <property name="name">main_menu</property>
-    <property name="can_focus">False</property>
+    <property name="can-focus">False</property>
     <child>
       <object class="GtkBox" id="menu_box">
         <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="margin_left">14</property>
-        <property name="margin_right">14</property>
-        <property name="margin_top">8</property>
-        <property name="margin_bottom">8</property>
+        <property name="can-focus">False</property>
+        <property name="margin-left">14</property>
+        <property name="margin-right">14</property>
+        <property name="margin-top">8</property>
+        <property name="margin-bottom">8</property>
         <property name="orientation">vertical</property>
         <child>
           <object class="GtkModelButton" id="toggle_sidebar_button">
             <property name="visible">True</property>
-            <property name="text" translatable="yes">Show Sidebar</property>
+            <property name="can-focus">False</property>
+            <property name="receives-default">False</property>
             <property name="action-name">win.sidebar</property>
-            <property name="active" bind-source="sidebar_vbox" bind-property="visible" />
+            <property name="text" translatable="yes">Show Sidebar</property>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -226,7 +229,7 @@
         <child>
           <object class="GtkSeparator">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
+            <property name="can-focus">False</property>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -237,8 +240,9 @@
         <child>
           <object class="GtkModelButton" id="collapse_all_tasks_button">
             <property name="visible">True</property>
-            <property name="receives_default">True</property>
-            <property name="action_name">win.collapse_all_tasks</property>
+            <property name="can-focus">False</property>
+            <property name="receives-default">True</property>
+            <property name="action-name">win.collapse_all_tasks</property>
             <property name="text" translatable="yes">Collapse All Tasks</property>
           </object>
           <packing>
@@ -250,8 +254,9 @@
         <child>
           <object class="GtkModelButton" id="expand_all_tasks_button">
             <property name="visible">True</property>
-            <property name="receives_default">True</property>
-            <property name="action_name">win.expand_all_tasks</property>
+            <property name="can-focus">False</property>
+            <property name="receives-default">True</property>
+            <property name="action-name">win.expand_all_tasks</property>
             <property name="text" translatable="yes">Expand All Tasks</property>
           </object>
           <packing>
@@ -263,9 +268,9 @@
         <child>
           <object class="GtkSeparator">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="margin_top">6</property>
-            <property name="margin_bottom">6</property>
+            <property name="can-focus">False</property>
+            <property name="margin-top">6</property>
+            <property name="margin-bottom">6</property>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -276,8 +281,9 @@
         <child>
           <object class="GtkModelButton" id="plugins">
             <property name="visible">True</property>
-            <property name="receives_default">True</property>
-            <property name="action_name">app.open_plugins</property>
+            <property name="can-focus">False</property>
+            <property name="receives-default">True</property>
+            <property name="action-name">app.open_plugins</property>
             <property name="text" translatable="yes">Plugins</property>
           </object>
           <packing>
@@ -290,7 +296,8 @@
           <object class="GtkModelButton" id="synchronization">
             <property name="visible">True</property>
             <property name="sensitive">False</property>
-            <property name="receives_default">True</property>
+            <property name="can-focus">False</property>
+            <property name="receives-default">True</property>
             <property name="text" translatable="yes">Synchronization</property>
           </object>
           <packing>
@@ -302,9 +309,9 @@
         <child>
           <object class="GtkSeparator">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="margin_top">6</property>
-            <property name="margin_bottom">6</property>
+            <property name="can-focus">False</property>
+            <property name="margin-top">6</property>
+            <property name="margin-bottom">6</property>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -315,8 +322,9 @@
         <child>
           <object class="GtkModelButton" id="preferences">
             <property name="visible">True</property>
-            <property name="receives_default">True</property>
-            <property name="action_name">app.open_preferences</property>
+            <property name="can-focus">False</property>
+            <property name="receives-default">True</property>
+            <property name="action-name">app.open_preferences</property>
             <property name="text" translatable="yes">Preferences</property>
           </object>
           <packing>
@@ -328,8 +336,9 @@
         <child>
           <object class="GtkModelButton" id="help_overlay_btn">
             <property name="visible">True</property>
-            <property name="receives_default">True</property>
-            <property name="action_name">win.show-help-overlay</property>
+            <property name="can-focus">False</property>
+            <property name="receives-default">True</property>
+            <property name="action-name">win.show-help-overlay</property>
             <property name="text" translatable="yes">Keyboard Shortcuts</property>
           </object>
           <packing>
@@ -341,8 +350,9 @@
         <child>
           <object class="GtkModelButton" id="help">
             <property name="visible">True</property>
-            <property name="receives_default">True</property>
-            <property name="action_name">app.open_help</property>
+            <property name="can-focus">False</property>
+            <property name="receives-default">True</property>
+            <property name="action-name">app.open_help</property>
             <property name="text" translatable="yes">Help</property>
           </object>
           <packing>
@@ -354,8 +364,9 @@
         <child>
           <object class="GtkModelButton" id="about">
             <property name="visible">True</property>
-            <property name="receives_default">True</property>
-            <property name="action_name">app.open_about</property>
+            <property name="can-focus">False</property>
+            <property name="receives-default">True</property>
+            <property name="action-name">app.open_about</property>
             <property name="text" translatable="yes">About GTG</property>
           </object>
           <packing>
@@ -373,30 +384,30 @@
   </object>
   <object class="GtkBox" id="main_view_box">
     <property name="visible">True</property>
-    <property name="can_focus">False</property>
+    <property name="can-focus">False</property>
     <property name="orientation">vertical</property>
     <child>
       <object class="GtkPaned" id="main_hpanes">
         <property name="visible">True</property>
-        <property name="can_focus">True</property>
+        <property name="can-focus">True</property>
         <child>
           <object class="GtkBox" id="sidebar_vbox">
-            <property name="width_request">75</property>
-            <property name="can_focus">False</property>
+            <property name="width-request">75</property>
+            <property name="can-focus">False</property>
             <property name="orientation">vertical</property>
             <child>
               <object class="GtkNotebook" id="sidebar_notebook">
                 <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="margin_top">10</property>
-                <property name="margin_bottom">10</property>
-                <property name="tab_pos">bottom</property>
-                <property name="show_tabs">False</property>
-                <property name="show_border">False</property>
+                <property name="can-focus">True</property>
+                <property name="margin-top">10</property>
+                <property name="margin-bottom">10</property>
+                <property name="tab-pos">bottom</property>
+                <property name="show-tabs">False</property>
+                <property name="show-border">False</property>
                 <child>
                   <object class="GtkScrolledWindow" id="sidebar-scroll">
                     <property name="visible">True</property>
-                    <property name="can_focus">True</property>
+                    <property name="can-focus">True</property>
                     <child>
                       <placeholder/>
                     </child>
@@ -408,11 +419,11 @@
                 <child type="tab">
                   <object class="GtkLabel" id="tags_tree_label">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
+                    <property name="can-focus">False</property>
                     <property name="label" translatable="yes">Tags</property>
                   </object>
                   <packing>
-                    <property name="tab_fill">False</property>
+                    <property name="tab-fill">False</property>
                   </packing>
                 </child>
               </object>
@@ -434,30 +445,31 @@
         <child>
           <object class="GtkBox" id="main_vbox">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
+            <property name="can-focus">False</property>
             <property name="orientation">vertical</property>
             <child>
               <object class="GtkSearchBar" id="searchbar">
                 <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="has_focus">True</property>
-                <property name="is_focus">True</property>
+                <property name="can-focus">True</property>
+                <property name="has-focus">True</property>
+                <property name="is-focus">True</property>
                 <property name="valign">center</property>
                 <child>
                   <object class="GtkBox" id="searchbox">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
+                    <property name="can-focus">False</property>
                     <property name="spacing">6</property>
                     <child>
                       <object class="GtkSearchEntry" id="search_entry">
                         <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="has_focus">True</property>
-                        <property name="is_focus">True</property>
-                        <property name="can_default">True</property>
-                        <property name="max_width_chars">40</property>
-                        <property name="primary_icon_activatable">False</property>
-                        <property name="placeholder_text" translatable="yes">Search here</property>
+                        <property name="can-focus">True</property>
+                        <property name="has-focus">True</property>
+                        <property name="is-focus">True</property>
+                        <property name="can-default">True</property>
+                        <property name="max-width-chars">40</property>
+                        <property name="secondary-icon-name">help-faq-symbolic</property>
+                        <property name="primary-icon-activatable">False</property>
+                        <property name="placeholder-text" translatable="yes">Search here</property>
                         <signal name="search-changed" handler="on_search" swapped="no"/>
                       </object>
                       <packing>
@@ -470,9 +482,9 @@
                       <object class="GtkButton" id="save_search">
                         <property name="label" translatable="yes">Save Search</property>
                         <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="receives_default">False</property>
-                        <property name="action_name">win.save_search</property>
+                        <property name="can-focus">False</property>
+                        <property name="receives-default">False</property>
+                        <property name="action-name">win.save_search</property>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -492,17 +504,17 @@
             <child>
               <object class="GtkPaned" id="main_vpanes">
                 <property name="visible">True</property>
-                <property name="can_focus">True</property>
+                <property name="can-focus">True</property>
                 <property name="orientation">vertical</property>
                 <child>
                   <object class="GtkStack" id="stack">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="transition_type">crossfade</property>
+                    <property name="can-focus">False</property>
+                    <property name="transition-type">crossfade</property>
                     <child>
                       <object class="GtkScrolledWindow" id="open_pane">
                         <property name="visible">True</property>
-                        <property name="can_focus">True</property>
+                        <property name="can-focus">True</property>
                         <child>
                           <placeholder/>
                         </child>
@@ -515,7 +527,7 @@
                     <child>
                       <object class="GtkScrolledWindow" id="actionable_pane">
                         <property name="visible">True</property>
-                        <property name="can_focus">True</property>
+                        <property name="can-focus">True</property>
                         <child>
                           <placeholder/>
                         </child>
@@ -529,7 +541,7 @@
                     <child>
                       <object class="GtkScrolledWindow" id="closed_pane">
                         <property name="visible">True</property>
-                        <property name="can_focus">True</property>
+                        <property name="can-focus">True</property>
                         <child>
                           <placeholder/>
                         </child>
@@ -556,23 +568,23 @@
             <child>
               <object class="GtkBox" id="quickadd_pane">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
+                <property name="can-focus">False</property>
                 <child>
                   <object class="GtkEntry" id="quickadd_field">
                     <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="has_focus">True</property>
-                    <property name="is_focus">True</property>
-                    <property name="can_default">True</property>
-                    <property name="tooltip_text" translatable="yes">Ex.: "Buy a new printer for @Initech tags:equipment,office start:monday due:soon"</property>
-                    <property name="margin_left">10</property>
-                    <property name="margin_right">10</property>
-                    <property name="margin_top">7</property>
-                    <property name="margin_bottom">7</property>
-                    <property name="primary_icon_activatable">False</property>
-                    <property name="placeholder_text" translatable="yes">Quickly create tasks here</property>
-                    <property name="input_hints">GTK_INPUT_HINT_SPELLCHECK | GTK_INPUT_HINT_NONE</property>
-                    <property name="show_emoji_icon">True</property>
+                    <property name="can-focus">True</property>
+                    <property name="has-focus">True</property>
+                    <property name="is-focus">True</property>
+                    <property name="can-default">True</property>
+                    <property name="tooltip-text" translatable="yes">Ex.: "Buy a new printer for @Initech tags:equipment,office start:monday due:soon"</property>
+                    <property name="margin-left">10</property>
+                    <property name="margin-right">10</property>
+                    <property name="margin-top">7</property>
+                    <property name="margin-bottom">7</property>
+                    <property name="primary-icon-activatable">False</property>
+                    <property name="placeholder-text" translatable="yes">Quickly create tasks here</property>
+                    <property name="input-hints">GTK_INPUT_HINT_SPELLCHECK | GTK_INPUT_HINT_NONE</property>
+                    <property name="show-emoji-icon">True</property>
                     <signal name="activate" handler="on_quickadd_field_activate" swapped="no"/>
                     <signal name="focus-in-event" handler="on_quickadd_field_focus_in" swapped="no"/>
                     <signal name="focus-out-event" handler="on_quickadd_field_focus_out" swapped="no"/>
@@ -607,28 +619,28 @@
   </object>
   <object class="GtkHeaderBar" id="browser_headerbar">
     <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="show_close_button">True</property>
+    <property name="can-focus">False</property>
+    <property name="show-close-button">True</property>
     <child type="title">
       <object class="GtkStackSwitcher" id="stack_switcher">
         <property name="visible">True</property>
-        <property name="can_focus">False</property>
+        <property name="can-focus">False</property>
         <property name="stack">stack</property>
       </object>
     </child>
     <child>
       <object class="GtkButton" id="new_task">
         <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="receives_default">False</property>
-        <property name="tooltip_text" translatable="yes">Create a new task</property>
+        <property name="can-focus">False</property>
+        <property name="receives-default">False</property>
+        <property name="tooltip-text" translatable="yes">Create a new task</property>
         <property name="valign">center</property>
-        <property name="action_name">app.new_task</property>
+        <property name="action-name">app.new_task</property>
         <child>
           <object class="GtkImage" id="search_icon1">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="icon_name">list-add-symbolic</property>
+            <property name="can-focus">False</property>
+            <property name="icon-name">list-add-symbolic</property>
             <property name="icon_size">1</property>
           </object>
         </child>
@@ -637,58 +649,58 @@
     <child>
       <object class="GtkMenuButton" id="main_menu_btn">
         <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="receives_default">True</property>
+        <property name="can-focus">False</property>
+        <property name="receives-default">True</property>
         <property name="popover">main_menu</property>
         <child>
           <object class="GtkImage" id="main_menu_icon">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="icon_name">open-menu-symbolic</property>
+            <property name="can-focus">False</property>
+            <property name="icon-name">open-menu-symbolic</property>
           </object>
         </child>
       </object>
       <packing>
-        <property name="pack_type">end</property>
+        <property name="pack-type">end</property>
         <property name="position">1</property>
       </packing>
     </child>
     <child>
       <object class="GtkToggleButton" id="search_button">
         <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="receives_default">False</property>
-        <property name="tooltip_text" translatable="yes">Activate Search Entry</property>
+        <property name="can-focus">False</property>
+        <property name="receives-default">False</property>
+        <property name="tooltip-text" translatable="yes">Activate Search Entry</property>
         <property name="valign">center</property>
-        <property name="action_name">win.search</property>
+        <property name="action-name">win.search</property>
         <child>
           <object class="GtkImage" id="search_icon">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="icon_name">edit-find-symbolic</property>
+            <property name="can-focus">False</property>
+            <property name="icon-name">edit-find-symbolic</property>
             <property name="icon_size">1</property>
           </object>
         </child>
       </object>
       <packing>
-        <property name="pack_type">end</property>
+        <property name="pack-type">end</property>
         <property name="position">3</property>
       </packing>
     </child>
     <child>
       <object class="GtkBox" id="defer_task_box">
         <property name="visible">True</property>
-        <property name="can_focus">False</property>
+        <property name="can-focus">False</property>
         <property name="halign">start</property>
         <child>
           <object class="GtkButton" id="defer_task_button">
             <property name="label" translatable="yes">Start Tomorrow</property>
             <property name="visible">True</property>
             <property name="sensitive">False</property>
-            <property name="can_focus">False</property>
-            <property name="receives_default">True</property>
-            <property name="tooltip_text" translatable="yes">Out of time? Need additional focus? Easily defer the selected task(s) to tomorrow!</property>
-            <property name="action_name">win.start_tomorrow</property>
+            <property name="can-focus">False</property>
+            <property name="receives-default">True</property>
+            <property name="tooltip-text" translatable="yes">Out of time? Need additional focus? Easily defer the selected task(s) to tomorrow!</property>
+            <property name="action-name">win.start_tomorrow</property>
           </object>
           <packing>
             <property name="expand">True</property>
@@ -700,16 +712,16 @@
           <object class="GtkMenuButton" id="defer_menu_btn">
             <property name="visible">True</property>
             <property name="sensitive">False</property>
-            <property name="can_focus">False</property>
-            <property name="receives_default">True</property>
+            <property name="can-focus">False</property>
+            <property name="receives-default">True</property>
             <property name="popover">defer_menu</property>
             <child>
               <object class="GtkImage" id="defer_menu_icon">
                 <property name="visible">True</property>
                 <property name="sensitive">False</property>
-                <property name="can_focus">False</property>
+                <property name="can-focus">False</property>
                 <property name="halign">start</property>
-                <property name="icon_name">pan-down-symbolic</property>
+                <property name="icon-name">pan-down-symbolic</property>
                 <property name="icon_size">1</property>
               </object>
             </child>
@@ -731,6 +743,440 @@
       <packing>
         <property name="position">4</property>
       </packing>
+    </child>
+  </object>
+  <object class="GtkPopover" id="search_cheatsheet">
+    <property name="can-focus">False</property>
+    <property name="halign">end</property>
+    <property name="relative-to">search_entry</property>
+    <child>
+      <object class="GtkBox">
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+        <property name="margin-start">36</property>
+        <property name="margin-end">36</property>
+        <property name="margin-top">16</property>
+        <property name="margin-bottom">22</property>
+        <property name="orientation">vertical</property>
+        <child>
+          <object class="GtkLabel">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="margin-bottom">20</property>
+            <property name="label" translatable="yes">Search Syntax</property>
+            <property name="xalign">0</property>
+            <attributes>
+              <attribute name="weight" value="normal"/>
+              <attribute name="scale" value="1.2"/>
+            </attributes>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkViewport">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="vadjustment">adjustment1</property>
+            <property name="shadow-type">none</property>
+            <child>
+              <!-- n-columns=2 n-rows=14 -->
+              <object class="GtkGrid">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="row-spacing">6</property>
+                <property name="column-spacing">25</property>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="label" translatable="yes">!notag</property>
+                    <property name="xalign">0</property>
+                  </object>
+                  <packing>
+                    <property name="left-attach">0</property>
+                    <property name="top-attach">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="label" translatable="yes">Tasks without tags</property>
+                    <property name="xalign">0</property>
+                    <style>
+                      <class name="dim-label"/>
+                    </style>
+                  </object>
+                  <packing>
+                    <property name="left-attach">1</property>
+                    <property name="top-attach">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="label" translatable="yes">@tag</property>
+                    <property name="xalign">0</property>
+                  </object>
+                  <packing>
+                    <property name="left-attach">0</property>
+                    <property name="top-attach">1</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="label" translatable="yes">Tasks with this tag</property>
+                    <property name="xalign">0</property>
+                    <style>
+                      <class name="dim-label"/>
+                    </style>
+                  </object>
+                  <packing>
+                    <property name="left-attach">1</property>
+                    <property name="top-attach">1</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="label" translatable="yes">[word]</property>
+                    <property name="xalign">0</property>
+                  </object>
+                  <packing>
+                    <property name="left-attach">0</property>
+                    <property name="top-attach">2</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="label" translatable="yes">Tasks that contain [word]</property>
+                    <property name="xalign">0</property>
+                    <style>
+                      <class name="dim-label"/>
+                    </style>
+                  </object>
+                  <packing>
+                    <property name="left-attach">1</property>
+                    <property name="top-attach">2</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="label" translatable="yes">"Some Text"</property>
+                    <property name="xalign">0</property>
+                  </object>
+                  <packing>
+                    <property name="left-attach">0</property>
+                    <property name="top-attach">3</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="label" translatable="yes">Tasks that contain exactly the text in quotes</property>
+                    <property name="xalign">0</property>
+                    <style>
+                      <class name="dim-label"/>
+                    </style>
+                  </object>
+                  <packing>
+                    <property name="left-attach">1</property>
+                    <property name="top-attach">3</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="label" translatable="yes">!before [date]</property>
+                    <property name="xalign">2.2351741291171123e-10</property>
+                  </object>
+                  <packing>
+                    <property name="left-attach">0</property>
+                    <property name="top-attach">4</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="label" translatable="yes">Tasks that need to be done before [date]</property>
+                    <property name="xalign">0</property>
+                    <style>
+                      <class name="dim-label"/>
+                    </style>
+                  </object>
+                  <packing>
+                    <property name="left-attach">1</property>
+                    <property name="top-attach">4</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="label" translatable="yes">!after [date]</property>
+                    <property name="xalign">0</property>
+                  </object>
+                  <packing>
+                    <property name="left-attach">0</property>
+                    <property name="top-attach">5</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="label" translatable="yes">Tasks that need to be done after [date]</property>
+                    <property name="xalign">0</property>
+                    <style>
+                      <class name="dim-label"/>
+                    </style>
+                  </object>
+                  <packing>
+                    <property name="left-attach">1</property>
+                    <property name="top-attach">5</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="label" translatable="yes">!today</property>
+                    <property name="xalign">0</property>
+                  </object>
+                  <packing>
+                    <property name="left-attach">0</property>
+                    <property name="top-attach">6</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="label" translatable="yes">Tasks that are due today</property>
+                    <property name="xalign">0</property>
+                    <style>
+                      <class name="dim-label"/>
+                    </style>
+                  </object>
+                  <packing>
+                    <property name="left-attach">1</property>
+                    <property name="top-attach">6</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="label" translatable="yes">!tomorrow</property>
+                    <property name="xalign">0</property>
+                  </object>
+                  <packing>
+                    <property name="left-attach">0</property>
+                    <property name="top-attach">7</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="label" translatable="yes">!nodate</property>
+                    <property name="xalign">0</property>
+                  </object>
+                  <packing>
+                    <property name="left-attach">0</property>
+                    <property name="top-attach">8</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="label" translatable="yes">!now</property>
+                    <property name="xalign">0</property>
+                  </object>
+                  <packing>
+                    <property name="left-attach">0</property>
+                    <property name="top-attach">9</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="label" translatable="yes">!soon</property>
+                    <property name="xalign">0</property>
+                  </object>
+                  <packing>
+                    <property name="left-attach">0</property>
+                    <property name="top-attach">10</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="label" translatable="yes">Tasks that are due tomorrow</property>
+                    <property name="xalign">0</property>
+                    <style>
+                      <class name="dim-label"/>
+                    </style>
+                  </object>
+                  <packing>
+                    <property name="left-attach">1</property>
+                    <property name="top-attach">7</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="label" translatable="yes">Tasks without a set due date</property>
+                    <property name="xalign">0</property>
+                    <style>
+                      <class name="dim-label"/>
+                    </style>
+                  </object>
+                  <packing>
+                    <property name="left-attach">1</property>
+                    <property name="top-attach">8</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="label" translatable="yes">Tasks with due date defined as "now"</property>
+                    <property name="xalign">0</property>
+                    <style>
+                      <class name="dim-label"/>
+                    </style>
+                  </object>
+                  <packing>
+                    <property name="left-attach">1</property>
+                    <property name="top-attach">9</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="label" translatable="yes">Tasks with due date defined as "soon"</property>
+                    <property name="xalign">0</property>
+                    <style>
+                      <class name="dim-label"/>
+                    </style>
+                  </object>
+                  <packing>
+                    <property name="left-attach">1</property>
+                    <property name="top-attach">10</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="label" translatable="yes">!someday</property>
+                    <property name="xalign">0</property>
+                  </object>
+                  <packing>
+                    <property name="left-attach">0</property>
+                    <property name="top-attach">11</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="label" translatable="yes">!not [query]</property>
+                    <property name="xalign">0</property>
+                  </object>
+                  <packing>
+                    <property name="left-attach">0</property>
+                    <property name="top-attach">12</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="label" translatable="yes">[query] !or [query]</property>
+                    <property name="xalign">0</property>
+                  </object>
+                  <packing>
+                    <property name="left-attach">0</property>
+                    <property name="top-attach">13</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="label" translatable="yes">Tasks with due date defined as "someday"</property>
+                    <property name="xalign">0</property>
+                    <style>
+                      <class name="dim-label"/>
+                    </style>
+                  </object>
+                  <packing>
+                    <property name="left-attach">1</property>
+                    <property name="top-attach">11</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="label" translatable="yes">Tasks that do not include the next part of the query</property>
+                    <property name="xalign">0</property>
+                    <style>
+                      <class name="dim-label"/>
+                    </style>
+                  </object>
+                  <packing>
+                    <property name="left-attach">1</property>
+                    <property name="top-attach">12</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="label" translatable="yes">Tasks with one of the specified elements in the query</property>
+                    <property name="xalign">0</property>
+                    <style>
+                      <class name="dim-label"/>
+                    </style>
+                  </object>
+                  <packing>
+                    <property name="left-attach">1</property>
+                    <property name="top-attach">13</property>
+                  </packing>
+                </child>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+      </object>
     </child>
   </object>
 </interface>
