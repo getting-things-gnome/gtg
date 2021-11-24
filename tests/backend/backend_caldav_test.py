@@ -1,5 +1,5 @@
 import re
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 from unittest import TestCase
 
 import vobject
@@ -7,7 +7,7 @@ from caldav.lib.error import NotFoundError
 from dateutil.tz import UTC
 from GTG.backends.backend_caldav import (CATEGORIES, CHILDREN_FIELD,
                                          DAV_IGNORE, PARENT_FIELD, UID_FIELD,
-                                         Backend, Translator)
+                                         Backend, DueDateField, Translator)
 from GTG.core.datastore import DataStore
 from GTG.core.dates import LOCAL_TIMEZONE, Date
 from GTG.core.task import Task
@@ -114,7 +114,7 @@ class CalDAVTest(TestCase):
         self.assertEqual(date(2020, 12, 24),
                          todo.instance.vtodo.contents['due'][0].value)
         uid = UID_FIELD.get_dav(todo)
-        self.assertTrue(isinstance(uid, str), "should be str is %r" % uid)
+        self.assertTrue(isinstance(uid, str), f"should be str is {uid!r}")
         self.assertEqual(uid, UID_FIELD.get_dav(vtodo=todo.instance.vtodo))
         task = Task(uid, Mock())
         Translator.fill_task(todo, task, NAMESPACE)
@@ -143,7 +143,7 @@ class CalDAVTest(TestCase):
         vtodo = Translator.fill_vtodo(task, 'My Calendar Name', NAMESPACE)
         for field in Translator.fields:
             self.assertTrue(field.is_equal(task, NAMESPACE, vtodo=vtodo.vtodo),
-                            '%r has differing values' % field)
+                            f'{field!r} has differing values')
         serialized = vtodo.serialize()
         self.assertTrue(f"DTSTART;VALUE=DATE:{today.strftime('%Y%m%d')}"
                         in serialized, f"missing from {serialized}")
@@ -402,3 +402,16 @@ class CalDAVTest(TestCase):
         self.assertEqual(1, len(datastore.get_all_tasks()))
         task = datastore.get_task(uid)
         self.assertEqual(Task.STA_DONE, task.get_status())
+
+    def test_due_date_caldav_restriction(self):
+        task = Task('uid', Mock())
+        later = datetime(2021, 11, 24, 21, 52, 45)
+        before = later - timedelta(days=1)
+        task.set_start_date(later)
+        task.set_due_date(before)
+        field = DueDateField('due', 'get_due_date_constraint', 'set_due_date')
+        self.assertEqual(later, field.get_gtg(task, '').dt_value)
+
+        task.set_start_date(before)
+        task.set_due_date(later)
+        self.assertEqual(later, field.get_gtg(task, '').dt_value)

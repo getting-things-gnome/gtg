@@ -903,6 +903,19 @@ class Recurrence(Field):
         return getattr(task, self.task_set_func_name)(*value)
 
 
+class DueDateField(DateField):
+
+    def get_gtg(self, task: Task, namespace: str = None):
+        """Enforcing Caldav restriction, due can't be before start"""
+        due = super().get_gtg(task, namespace)
+        start = DTSTART.get_gtg(task, namespace)
+        if not due or not start:
+            return due
+        if due <= start:
+            return start
+        return due
+
+
 DTSTART = DateField('dtstart', 'get_start_date', 'set_start_date')
 UID_FIELD = Field('uid', 'get_uuid', 'set_uuid')
 SEQUENCE = Sequence('sequence', '<fake attribute>', '')
@@ -922,7 +935,7 @@ class Translator:
     DTSTAMP_FIELD = UTCDateTimeField('dtstamp', '', '')
     fields = [Field('summary', 'get_title', 'set_title'),
               Description('description', 'get_excerpt', 'set_text'),
-              DateField('due', 'get_due_date_constraint', 'set_due_date'),
+              DueDateField('due', 'get_due_date_constraint', 'set_due_date'),
               UTCDateTimeField(
                   'completed', 'get_closed_date', 'set_closed_date'),
               DTSTART,
