@@ -37,6 +37,7 @@ def task_from_element(task, element: etree.Element):
 
     task.set_title(element.find('title').text)
     task.set_uuid(element.get('id'))
+    task.set_status(element.attrib['status'], init=True) # Done date set later
 
     # Retrieving all dates
     dates = element.find('dates')
@@ -134,8 +135,9 @@ def task_to_element(task) -> etree.Element:
 
     recurring_updated_date_elem = etree.SubElement(recurring, 'updated_date')
     recurring_updated_date = task.get_recurring_updated_date()
+
     if recurring_updated_date: 
-        recurring_updated_date_elem.text = recurring_update_date.isoformat()
+        recurring_updated_date_elem.text = str(recurring_updated_date)
 
     subtasks = etree.SubElement(element, 'subtasks')
 

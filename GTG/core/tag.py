@@ -36,6 +36,7 @@ NOTAG_TAG = "gtg-tags-none"
 SEP_TAG = "gtg-tags-sep"
 SEARCH_TAG = "search"
 
+SEARCH_TAG_PREFIX = "__SAVED_SEARCH_" # For name inside the tagtree
 
 def extract_tags_from_text(text):
     """ Given a string, returns a list of the @tags contained in that """
@@ -140,8 +141,15 @@ class Tag(TreeNode):
             TreeNode.add_child(self, child_id)
 
     def get_name(self):
-        """Return the name of the tag."""
+        """Return the internal name of the tag, as saved in the tree."""
         return self.get_attribute("name")
+
+    def get_friendly_name(self):
+        """Return the name of the tag, but without the internal search tag prefix."""
+        if self.is_search_tag():
+            return self.get_attribute("name")[len(SEARCH_TAG_PREFIX):]
+        else:
+            return self.get_attribute("name")
 
     def set_save_callback(self, save):
         self._save = save

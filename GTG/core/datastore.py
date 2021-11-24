@@ -30,7 +30,7 @@ from GTG.backends.generic_backend import GenericBackend
 from GTG.core.config import CoreConfig
 from GTG.core import requester
 from GTG.core.search import parse_search_query, search_filter, InvalidQuery
-from GTG.core.tag import Tag, SEARCH_TAG
+from GTG.core.tag import Tag, SEARCH_TAG, SEARCH_TAG_PREFIX
 from GTG.core.task import Task
 from GTG.core.treefactory import TreeFactory
 from GTG.core.borg import Borg
@@ -139,6 +139,7 @@ class DataStore():
         init_attr["label"] = name
         init_attr["query"] = query
 
+        name = SEARCH_TAG_PREFIX + name
         tag = Tag(name, req=self.requester, attributes=init_attr, tid=tid)
         self._add_new_tag(name, tag, search_filter, parameters,
                           parent_id=SEARCH_TAG)
@@ -206,7 +207,7 @@ class DataStore():
             newname = '_' + newname
 
         label, num = newname, 1
-        while self._tagstore.has_node(label):
+        while self._tagstore.has_node(SEARCH_TAG_PREFIX + label):
             num += 1
             label = newname + " " + str(num)
 
