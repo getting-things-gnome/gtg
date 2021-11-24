@@ -144,9 +144,9 @@ class Backend(PeriodicImportBackend):
             logger.info('Fetching todos from %r', cal_url)
             self._import_calendar_todos(calendar, start, counts)
         if logger.isEnabledFor(logging.INFO):
-            for key in counts:
-                if counts.get(key):
-                    logger.info('LOCAL %s %d tasks', key, counts[key])
+            for key, value in counts.items():
+                if value:
+                    logger.info('LOCAL %s %d tasks', key, value)
         self._parameters["is-first-run"] = False
         self._cache.initialized = True
 
@@ -222,7 +222,7 @@ class Backend(PeriodicImportBackend):
                 "Configure CalDAV with login information. Error:"
             )
             BackendSignals().interaction_requested(
-                self.get_id(), "%s %r" % (message, error),
+                self.get_id(), f"{message} {error!r}",
                 BackendSignals().INTERACTION_INFORM, "on_continue_clicked")
             raise error
         for calendar in principal.calendars():
@@ -377,7 +377,7 @@ class Backend(PeriodicImportBackend):
 
     @property
     def namespace(self):
-        return "caldav:%s" % self._parameters['service-url']
+        return f"caldav:{self._parameters['service-url']}"
 
 
 class Field:
@@ -453,7 +453,7 @@ class Field:
         return True
 
     def __repr__(self):
-        return "<%s(%r)>" % (self.__class__.__name__, self.dav_name)
+        return f"<{self.__class__.__name__}({self.dav_name})>"
 
     @classmethod
     def _browse_subtasks(cls, task: Task):
@@ -513,7 +513,7 @@ class DateField(Field):
             vtodo_val.params[self.FUZZY_MARK] = [fuzzy_value]
         return vtodo_val
 
-    def get_dav(self, todo=None, vtodo=None):
+    def get_dav(self, todo=None, vtodo=None) -> Date:
         """Transforming to local naive,
         if original value MAY be naive and IS assuming UTC"""
         value = super().get_dav(todo, vtodo)
@@ -613,7 +613,7 @@ class Categories(Field):
 
     @classmethod
     def to_tag(cls, category, prefix=''):
-        return '%s%s' % (prefix, category.replace(' ', cls.CAT_SPACE))
+        return f"{prefix}{category.replace(' ', cls.CAT_SPACE)}"
 
     def get_gtg(self, task: Task, namespace: str = None) -> list:
         return [tag_name.lstrip('@').replace(self.CAT_SPACE, ' ')
@@ -758,9 +758,10 @@ class Description(Field):
                 subtask = task.req.get_task(line[2:-2].strip())
                 if not subtask:
                     continue
-                result += '[%s] %s\n' % (
-                    'x' if subtask.get_status() == Task.STA_DONE else ' ',
-                    subtask.get_title())
+                if subtask.get_status() == Task.STA_DONE:
+                    result += f"[x] {subtask.get_title()}\n"
+                else:
+                    result += f"[ ] {subtask.get_title()}\n"
             else:
                 result += line.strip() + '\n'
         return result.strip()
@@ -842,8 +843,7 @@ class RelatedTo(Field):
         task.children.sort(key=self.__sort_key(target_uids))
 
     def __repr__(self):
-        return "<%s(%r, %r)>" % (self.__class__.__name__,
-                                 self.reltype, self.dav_name)
+        return f"<{self.__class__.__name__}({self.reltype}, {self.dav_name})>"
 
 
 class OrderField(Field):
@@ -896,7 +896,7 @@ class Recurrence(Field):
             rrule.params['FREQ'] = [term.upper() + 'LY']
             start_date = DTSTART.get_dav(vtodo=vtodo)
             if term == 'week' and start_date:
-                index = int(start_date.strftime('%w'))
+                index = int(start_date.dt_value.strftime('%w'))
                 rrule.params['BYDAY'] = self.DAV_DAYS[index]
 
     def write_gtg(self, task: Task, value, namespace: str = None):
