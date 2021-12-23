@@ -16,7 +16,8 @@ We are always looking for new people to help fix bugs (if any), improve the qual
 Not a programmer but want to contribute in other ways? There's a lot to do. We also welcome help in these areas:
 
 * Public communications (helping research & write release notes, announcements and status updates, sharing those with journalists or on social media and public forums, etc.)
-* Documentation (improving the user manual or contributors' documentation, maintaining the wiki contents)
+* Documentation (improving the user manual or contributors' documentation, maintaining the wiki contents). See the "Contributing to the User Manual" guide in the [docs/contributors/](docs/contributors) subfolder for information on getting started with the user manual.
+
 * Testing and troubleshooting, researching & analyzing potential technical solutions. Take a look at our "bug reporting and triaging" guide in the [docs/contributors/](docs/contributors) subfolder.
 * Helping maintain our official Flatpak packages, packaging for various Linux distributions (and keeping those packages up to date!)
 * Translating & localizing the app and its user manual
