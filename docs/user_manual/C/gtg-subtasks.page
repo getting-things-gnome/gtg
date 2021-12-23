@@ -13,6 +13,7 @@
       <revision pkgversion="0.3.1" date="2013-06-18" status="candidate"/>
       <revision pkgversion="0.4.0" date="2020-05-16" status="candidate"/>
       <revision pkgversion="0.5.0" date="2020-11-15" status="candidate"/>
+      <revision pkgversion="0.6.0" date="2021-12-22" status="candidate"/>
    <credit type="author copyright">
       <name>Radina Matic</name>
       <email its:translate="no">radina.matic@gmail.com</email>
@@ -55,7 +56,7 @@
 
 <p>You can reorganize tasks and subtasks by dragging and dropping tasks in the <gui>Task Browser</gui> to achieve the hierarchy and order that you require. Keep in mind that subtasks follow the below rules.</p>
 <list>
- 	<item><p>A subtask's due date can never be after its parent's due date. If a subtask's due date is changed to after the parent task's due date, then the parent task's due date is updated to match the subtask.</p></item> 
+ 	<item><p>A subtask's due date can never be after its parent's due date. If a subtask's due date is changed to be a date after the parent task's due date, then the parent task's due date is updated to match the subtask.</p></item> 
  	<item><p>Subtasks inherit start and due dates as well as any tags assigned to the parent task <em style="strong">at the time that the subtask is created</em>. You can individually edit these characteristics as well as make bulk updates for both tasks and subtasks.</p></item> 
  	<item><p>When you mark a parent task as done, its subtasks will also be marked as done.</p></item>
  </list>
