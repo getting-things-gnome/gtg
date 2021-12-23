@@ -12,6 +12,8 @@
       
       <revision pkgversion="0.3.1" date="2013-06-18" status="candidate"/>
 <revision pkgversion="0.4.0" date="2020-05-16" status="candidate"/>
+<revision pkgversion="0.6.0" date="2021-12-22" status="candidate"/>
+
    <credit type="author copyright">
       <name>Radina Matic</name>
       <email its:translate="no">radina.matic@gmail.com</email>
@@ -29,7 +31,7 @@
 
   <title>Setting Task Start Date and Due Date</title>
 
-<p>To set the start and due date for a task, from the <gui>Task Browser</gui>, right-click the task and select a date from the <gui>Set start date</gui> and <gui>Set due date</gui> options in the context menu.</p>
+<p>To set the start and due date for a task, from the <gui>Task Browser</gui>, right-click the task and select a date from the <gui>Set start date</gui> and <gui>Set due date</gui> options in the context menu. You can also set a task as recurring. See <link xref="gtg-recurring-task">Using Recurring/Repeating Task</link> for more information.</p>
 
 <note style="tip"><p>You can also quickly set a task's start date to <em style="strong">tomorrow</em> by clicking the <gui>Start Tomorrow</gui> button in the main <gui>Headerbar</gui>. Click the down arrow next to the <gui>Start Tomorrow</gui> button to select a different start date.</p></note>
 
