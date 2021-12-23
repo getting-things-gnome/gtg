@@ -11,6 +11,7 @@
       <revision pkgversion="0.3.1" date="2013-06-18" status="candidate"/>
       <revision pkgversion="0.4.0" date="2020-05-10" status="candidate"/>
       <revision pkgversion="0.5.0" date="2020-11-15" status="candidate"/>
+      <revision pkgversion="0.6.0" date="2021-12-22" status="candidate"/>
 
    <credit type="author copyright">
       <name>Radina Matic</name>
@@ -59,6 +60,9 @@
           <td><p>Fold Treeview Items</p></td>  <td><p><keyseq><key>Shift</key><key>Left</key></keyseq></p></td>
         </tr>
         <tr>
+          <td><p>Place Focus on <gui>Sidebar</gui></p></td>  <td><p><keyseq><key>Ctrl</key><key>B</key></keyseq></p></td>
+        </tr>
+        <tr>
           <td><p>Place Focus on <gui>Quick Add Entry</gui> Field</p></td>  <td><p><keyseq><key>Ctrl</key><key>L</key></keyseq></p></td>
         </tr>
         <tr>
@@ -66,6 +70,9 @@
         </tr>
         <tr>
           <td><p>Show Preferences screen</p></td> <td><p><key>Ctrl</key><key>,</key></p></td>
+        </tr>
+        <tr>
+          <td><p>Open <gui>Main Menu</gui>.</p></td> <td><p><key>F10</key></p></td>
         </tr>
         <tr>
           <td><p>Open Help screen</p></td> <td><p><key>F1</key></p></td>
