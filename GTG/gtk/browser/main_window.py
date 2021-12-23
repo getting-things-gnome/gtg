@@ -21,6 +21,8 @@
 import threading
 import datetime
 import logging
+import ast
+import liblarch_gtk  # Just for types
 
 from gi.repository import GObject, Gtk, Gdk, Gio, GLib
 
@@ -411,8 +413,6 @@ class MainWindow(Gtk.ApplicationWindow):
         self.vtree_panes['workview'].connect('button-press-event', tsk_treeview_btn_press)
         task_treeview_key_press = self.on_task_treeview_key_press_event
         self.vtree_panes['workview'].connect('key-press-event', task_treeview_key_press)
-        self.vtree_panes['workview'].connect('node-expanded', self.on_task_expanded)
-        self.vtree_panes['workview'].connect('node-collapsed', self.on_task_collapsed)
         self.vtree_panes['workview'].set_col_visible('startdate', False)
 
         # Closed tasks Treeview
@@ -704,31 +704,29 @@ class MainWindow(Gtk.ApplicationWindow):
         """Expand all tasks."""
         self.vtree_panes['active'].expand_all()
 
-    def _expand_not_collapsed(self, model, path, iter, colt):
-        """ Expand all not collapsed nodes
+    def on_task_expanded(self, sender: liblarch_gtk.TreeView, path: str):
+        # For some reason, path is turned from a tuple into a string of a
+        # tuple
+        if type(path) is str:
+            path = ast.literal_eval(path)
+        tid = path[-1]
 
-        Workaround around bug in Gtk, see LP #1076909 """
-        # Generate tid from treeview
-        tid_build = []
-        current_iter = iter
-        while current_iter is not None:
-            tid = str(model.get_value(current_iter, 0))
-            tid_build.insert(0, tid)
-            current_iter = model.iter_parent(current_iter)
-        tid = str(tuple(tid_build))
+        collapsed_tasks = self.config.get("collapsed_tasks")
+        stringified_path = str(path)
+        if stringified_path in collapsed_tasks:
+            collapsed_tasks.remove(stringified_path)
+            self.config.set("collapsed_tasks", collapsed_tasks)
 
-        # expand if the node was not stored as collapsed
-        if tid not in colt:
-            self.vtree_panes['active'].expand_row(path, False)
-
-    def on_task_expanded(self, sender, tid):
-        colt = self.config.get("collapsed_tasks")
-        if tid in colt:
-            colt.remove(tid)
         # restore expanded state of subnodes
-        self.vtree_panes['active'].get_model().foreach(
-            self._expand_not_collapsed, colt)
-        self.config.set("collapsed_tasks", colt)
+        # liblarch already has basic tracking of collapsed nodes and expanding
+        # them necessary, but we still need to do it ourselves for subnodes
+        model: liblarch_gtk.treemodel.TreeModel = sender.get_model()
+        for child_id in model.tree.node_all_children(tid):
+            child_path = path + (child_id,)
+            if str(child_path) not in collapsed_tasks:
+                # Warning: Recursion. We expect having not too many nested
+                # subtasks for now.
+                sender.expand_node(child_path)
 
     def on_task_collapsed(self, sender, tid):
         colt = self.config.get("collapsed_tasks")
