@@ -13,6 +13,7 @@
       <revision pkgversion="0.3.1" date="2013-06-18" status="candidate"/>
       <revision pkgversion="0.4.0" date="2020-05-16" status="candidate"/>
       <revision pkgversion="0.5.0" date="2020-11-15" status="candidate"/>
+      <revision pkgversion="0.6.0" date="2021-12-22" status="candidate"/>
    <credit type="author copyright">
       <name>Radina Matic</name>
       <email its:translate="no">radina.matic@gmail.com</email>
@@ -34,7 +35,7 @@
 
  <list>
       <item><p>Select the task in the <gui>Task Browser</gui> and double-click it or press <key>Enter</key>.</p></item>
-      <item><p> Right-click the task in the <gui>Task Browser</gui> and select <gui>Edit</gui> from the context menu.</p></item>
+      <item><p> Right-click the task in the <gui>Task Browser</gui>, and select <gui>Edit</gui> from the context menu.</p></item>
 <item><p>Use the keyboard shortcut <keyseq><key>Ctrl</key><key>E</key></keyseq> to open a selected task from the <gui>Task Browser</gui>.</p></item>  
 </list>
 
