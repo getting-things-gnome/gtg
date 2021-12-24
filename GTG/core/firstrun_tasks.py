@@ -305,7 +305,7 @@ tasks = [
         'content': _(
             "❗ Take note that as of GTG 0.4, synchronization backends/services have "
             "been disabled until someone (you?) steps forward to fix and maintain "
-            "them, as they have not been fully updated to work with the new codebase."
+            "them, as they have not been fully updated to work with the new codebase "
             "or to interface with the latest APIs of those online services.\n"
             "\n"
             "Synchronization services allow GTG to synchronize (or import/export) "
