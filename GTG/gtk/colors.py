@@ -20,6 +20,52 @@ from gi.repository import Gdk
 from functools import reduce
 import random
 
+
+def RGBA(red: float, green: float, blue: float, alpha: float = 1.0
+         ) -> Gdk.RGBA:
+    """
+    Return a new instance of Gdk.RGBA initialized with the specified
+    colors. Each color is a float from 0 (no color/black) to
+    1 (full color/white).
+    This is a replacement for GDK 3 Gdk.RGBA(...) quick syntax, which doesn't
+    seem to exists for GDK 4.
+    """
+    c = Gdk.RGBA()
+    c.red, c.green, c.blue, c.alpha = red, green, blue, alpha
+    return c
+
+
+def random_color() -> Gdk.RGBA:
+    """
+    Generate a new random color. Alpha is always 1.
+    """
+    return RGBA(random.uniform(0.0, 1.0),
+                random.uniform(0.0, 1.0),
+                random.uniform(0.0, 1.0),
+                1.0)
+
+
+def rgb_to_hex(rgba: Gdk.RGBA) -> str:
+    """
+    Convert an Gdk.RGBA to a string by using the hexadecimal 8-bit color
+    notation, so #RRGGBB. Alpha is ignored.
+    """
+    return "#%02x%02x%02x" % (int(max(0, min(rgba.red, 1)) * 255),
+                              int(max(0, min(rgba.green, 1)) * 255),
+                              int(max(0, min(rgba.blue, 1)) * 255))
+
+
+def rgba_to_hex(rgba: Gdk.RGBA) -> str:
+    """
+    Convert an Gdk.RGBA to a string by using the hexadecimal 8-bit color
+    notation with alpha, so #RRGGBBAA.
+    """
+    return "#%02x%02x%02x%02x" % (int(max(0, min(rgba.red, 1)) * 255),
+                                  int(max(0, min(rgba.green, 1)) * 255),
+                                  int(max(0, min(rgba.red, 1)) * 255),
+                                  int(max(0, min(rgba.alpha, 1)) * 255))
+
+
 # Take list of Tags and give the background color that should be applied
 # The returned color might be None (in which case, the default is used)
 
