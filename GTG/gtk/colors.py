@@ -16,7 +16,7 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-from gi.repository import Gdk
+from gi.repository import Gdk, Gtk
 from functools import reduce
 import random
 
@@ -112,7 +112,8 @@ def background_color(tags, bgcolor=None, galpha_scale=1, use_alpha=True):
         # In some cases it may be desired to use the assumption of a white
         # background on RGB instead of RGBA. (Eg: overlays in darkmode)
         # https://graphicdesign.stackexchange.com/questions/113007/
-        if not use_alpha:
+        # TODO: Remove GTK3 check on gtk4 port
+        if not use_alpha or Gtk.get_major_version() == 3:
             gcolor.red = 1 - gcolor.alpha * (1 - gcolor.red)
             gcolor.green = 1 - gcolor.alpha * (1 - gcolor.green)
             gcolor.blue = 1 - gcolor.alpha * (1 - gcolor.blue)
