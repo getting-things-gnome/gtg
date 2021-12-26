@@ -259,9 +259,9 @@ class TaskView(GtkSource.View):
             # Remove the -
             delete_end = start.copy()
             delete_end.forward_chars(2)
-            self.buffer.begin_not_undoable_action()
+            self.buffer.begin_irreversible_action()
             self.buffer.delete(start, delete_end)
-            self.buffer.end_not_undoable_action()
+            self.buffer.end_irreversible_action()
 
             # Add new subtask
             tid = self.new_subtask_cb(text[2:])
