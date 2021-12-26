@@ -188,7 +188,7 @@ class TaskEditor(Gtk.Window):
 
         # Insert text and tags as a non_undoable action, otherwise
         # the user can CTRL+Z even this inserts.
-        self.textview.buffer.begin_not_undoable_action()
+        self.textview.buffer.begin_irreversible_action()
         self.textview.buffer.set_text(f"{title}\n")
 
         if text:
@@ -217,7 +217,7 @@ class TaskEditor(Gtk.Window):
         else:
             self.task.set_to_keep()
 
-        self.textview.buffer.end_not_undoable_action()
+        self.textview.buffer.end_irreversible_action()
         self.connect("close-request", self.destruction)
 
         # Connect search field to tags popup
