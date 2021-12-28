@@ -107,18 +107,13 @@ def background_color(tags, bgcolor=None, galpha_scale=1, use_alpha=True):
         target_brightness = (bgcolor.red + bgcolor.green + bgcolor.blue) / 3.0
 
         gcolor = RGBA(red, green, blue)
-        gcolor.alpha = (brightness
-                       / (target_brightness if target_brightness else 1.0)
-                       * galpha_scale)
+        gcolor.alpha = (1.0 - abs(brightness - target_brightness)) * galpha_scale
 
-        # In some cases it may be desired to use the assumption of a white
-        # background on RGB instead of RGBA. (Eg: overlays in darkmode)
-        # https://graphicdesign.stackexchange.com/questions/113007/
         # TODO: Remove GTK3 check on gtk4 port
         if not use_alpha or Gtk.get_major_version() == 3:
-            gcolor.red = 1 - gcolor.alpha * (1 - gcolor.red)
-            gcolor.green = 1 - gcolor.alpha * (1 - gcolor.green)
-            gcolor.blue = 1 - gcolor.alpha * (1 - gcolor.blue)
+            gcolor.red = (1 - gcolor.alpha) * gcolor.red + gcolor.alpha * bgcolor.red
+            gcolor.green = (1 - gcolor.alpha) * gcolor.green + gcolor.alpha * bgcolor.green
+            gcolor.blue = (1 - gcolor.alpha) * gcolor.blue + gcolor.alpha * bgcolor.blue
             my_color = rgb_to_hex(gcolor)
         else:
             my_color = rgba_to_hex(gcolor)
