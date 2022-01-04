@@ -49,10 +49,13 @@ class Task(TreeNode):
         super().__init__(task_id)
         # the id of this task in the project should be set
         # tid is a string ! (we have to choose a type and stick to it)
-        assert(isinstance(task_id, str) or isinstance(task_id, str))
-        self.tid = str(task_id)
+        if not isinstance(task_id, str):
+            raise ValueError("Wrong type for task_id %r", type(task_id))
+        self.tid = task_id
         self.set_uuid(task_id)
         self.remote_ids = {}
+        # set to True to disable self.sync() and avoid flooding on task edit
+        self.sync_disabled = False
         self.content = ""
         if Task.DEFAULT_TASK_NAME is None:
             Task.DEFAULT_TASK_NAME = _("My new task")
@@ -81,15 +84,16 @@ class Task(TreeNode):
         self._modified_update()
 
         # Setting the attributes related to repeating tasks.
-        self.recurring_term = None
+        self.recurring = False  # type: bool
+        self.recurring_term = None  # type: str
         self.recurring_updated_date = Date.no_date()
         self.inherit_recursion()
 
     def get_added_date(self):
         return self.added_date
 
-    def set_added_date(self, date):
-        self.added_date = Date(date)
+    def set_added_date(self, value):
+        self.added_date = Date(value)
 
     def is_loaded(self):
         return self.loaded
@@ -741,13 +745,14 @@ class Task(TreeNode):
         return self.attributes.get((namespace, att_name), None)
 
     def sync(self):
+        if self.sync_disabled:
+            return self.is_loaded()
         self._modified_update()
         if self.is_loaded():
             # This is a liblarch call to the TreeNode ancestor
             self.modified()
             return True
-        else:
-            return False
+        return False
 
     def _modified_update(self):
         """
@@ -844,8 +849,8 @@ class Task(TreeNode):
             tag = self.req.get_tag(tagname)
             # The ViewCount of the tag still doesn't know that
             # the task was removed. We need to update manually
-            tag.update_task(self.get_id())
             if tag:
+                tag.update_task(self.get_id())
                 tag.modified()
 
     def _strip_tag(self, text, tagname, newtag=''):
@@ -906,3 +911,23 @@ class Task(TreeNode):
             self.tags,
             self.added_date,
             self.recurring)
+
+    __repr__ = __str__
+
+
+class DisabledSyncCtx:
+    """Context manager disabling GTG.core.task.Task.sync()
+    and firing one only sync on __exit__"""
+
+    def __init__(self, task: Task, sync_on_exit: bool = True):
+        self.task = task
+        self.sync_on_exit = sync_on_exit
+
+    def __enter__(self):
+        self.task.sync_disabled = True
+        return self.task
+
+    def __exit__(self, *args, **kwargs):
+        self.task.sync_disabled = False
+        if self.sync_on_exit:
+            self.task.sync()

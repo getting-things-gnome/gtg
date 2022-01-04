@@ -94,7 +94,7 @@ class BackendsTree(Gtk.TreeView):
         if backend:
             backend_iter = self.liststore.append([
                 backend.get_id(),
-                self.dialog.get_pixbuf_from_icon_name(backend.get_name(),
+                self.dialog.get_pixbuf_from_icon_name(backend.get_icon(),
                                                       16),
                 backend.get_human_name(),
                 self._get_markup_for_tags(backend.get_attached_tags()),
