@@ -9,6 +9,7 @@
           
       <revision pkgversion="0.3.1" date="2013-06-18" status="candidate"/>
       <revision pkgversion="0.4.0" date="2020-05-16" status="candidate"/>
+      <revision pkgversion="0.6.0" date="2022-01-06" status="candidate"/>
    <credit type="author copyright">
       <name>Radina Matic</name>
       <email its:translate="no">radina.matic@gmail.com</email>
@@ -26,17 +27,18 @@
 
   <title>Editing Tag Properties</title>
 
-<p>You can edit a tag's name, color, or set a specific tag icon. From the <gui>Sidebar</gui>, right-click the tag and select <gui>Edit Tag</gui> from the context menu. You can perform the following actions in the <gui>Edit tag</gui> window:</p>
+<p>You can edit a tag's name, color, or set a specific tag icon. From the <gui>Sidebar</gui>, right-click the tag, and select <gui>Edit</gui> from the context menu. You can perform the following actions in the <gui>Edit tag</gui> window:</p>
 
 <list>
       <item><p>To change the tag name, type a new name in the <gui>Name</gui> field.</p></item>
-      <item><p>Select a tag color from one of the predefined colors or click the <gui>Add custom color</gui> button. Select a color from the <gui>Choose a color</gui> dialog box. Then, click the <gui>Select</gui> button to confirm. To remove a selected color, click the <gui>Clear selected color</gui> button.</p></item>
-      <item><p>Click the <gui>Click to Set Icon</gui> button and choose a tag icon. To remove an icon, click the <gui>Remove selected icon</gui> button.</p></item>  
-	<item><p>You also have the option to show or hide tasks with a certain tag from the <gui>Actionable</gui> view mode. Select or deselect the <gui>Show Tag in Actionable view</gui> check box. This option is very useful if you have a tag such as "someday" that you use for tasks that you would like to complete at some point in the future but are not particularly urgent at this time.</p></item>
+      <item><p>Select a tag color from one of the predefined colors. To add your own color, in the <gui>Pick a Color</gui> pop-up, click the <gui>+</gui> under <gui>Custom</gui>. Then, click <gui>Select</gui> to confirm your color choice. To remove a selected color, click the trash icon next to the color.</p> 
+      	<note style="tip"><p>You can also generate a random color for your tag. You can do this directly from the <gui>Tag Editor</gui> by choosing <em style="strong">Random</em>. You can also select and right-click a tag in the <gui>Sidebar</gui>. Then, select the <gui>Generate Color</gui> option from the context menu.</p></note></item>
+      <item><p>Select an icon on the left. To remove an icon, click the trash can symbol under the selected icon button.
+</p></item> 
+<item><p>You also have the option to show or hide tasks with a certain tag from the <gui>Actionable</gui> view mode. Enable or disable the <gui>Actionable</gui> toggle. This option is very useful if you have a tag such as "someday" that you use for tasks that you would like to complete at some point in the future but are not particularly urgent at this time.</p></item> 
 </list>
 
-<note style="important"><p>When personalizing tags, note that <app>GTG</app> only displays an icon <em style="strong">OR</em> a colored square for a tag, not both at the same time. As a best practice, select only one of these options to personalize a tag.</p></note>
- <note style="tip"><p>You can also generate a random color for your tag. Select and right-click a tag in the <gui>Sidebar</gui>. Then, select the <gui>Generate Color</gui> option from the context menu.</p></note>
+<note style="important"><p>When personalizing tags, note that <app>GTG</app> displays only an icon <em style="strong">OR</em> a colored square next to a tag in the <gui>Sidebar</gui> — not both at the same time. If you select a color for a tag, you can enable the corresponding tasks to be highlighted by that color in the <gui>Taskview</gui>. See <link href="gtg-preferences">Preferences</link> for more information.</p></note>
 
 <figure>
   <title>Edit Tag</title>
