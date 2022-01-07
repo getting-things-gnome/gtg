@@ -119,7 +119,7 @@ class BackendFactory(Borg):
         """
         if backend_name not in self.backend_modules:
             return None
-        dic = {}
+        dic = {'first_run': True}
         module = self.get_backend(backend_name)
         # Different pids are necessary to discern between backends of the same
         # type

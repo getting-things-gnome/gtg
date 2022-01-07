@@ -182,6 +182,6 @@ class AddPanel(Gtk.Box):
             (ngettext("Author", "Authors", len(authors)),
              reduce(lambda a, b: a + "\n" + "   - " + b, authors))
         self.label_author.set_markup(author_txt)
-        pixbuf = self.dialog.get_pixbuf_from_icon_name(backend_name, 128)
+        pixbuf = self.dialog.get_pixbuf_from_icon_name(backend.Backend.get_icon(), 128)
         self.image_icon.set_from_pixbuf(pixbuf)
         self.show_all()

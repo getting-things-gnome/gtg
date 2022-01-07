@@ -39,6 +39,7 @@ git pull --rebase
 
 * meson (>= 0.51.0)
 * python3 (>= 3.8)
+* python-caldav
 * pycairo
 * pygobject (>= 3.20)
 * libLarch (>= 3.0)

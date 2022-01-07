@@ -175,6 +175,7 @@ class GenericBackend():
     # the backend gtg internal name
     # (doesn't change in translations, *must be unique*)
     BACKEND_NAME = "name"
+    BACKEND_ICON = "icon"
     BACKEND_HUMAN_NAME = "human-friendly-name"  # The name shown to the user
     BACKEND_DESCRIPTION = "description"  # A short description of the backend
     BACKEND_AUTHORS = "authors"  # a list of strings
@@ -354,6 +355,13 @@ class GenericBackend():
         return cls._get_from_general_description(cls.BACKEND_NAME)
 
     @classmethod
+    def get_icon(cls):
+        """
+        Returns the ison of the backend as it should be displayed in the UI
+        """
+        return cls._get_from_general_description(cls.BACKEND_ICON)
+
+    @classmethod
     def get_description(cls):
         """Returns a description of the backend"""
         return cls._get_from_general_description(cls.BACKEND_DESCRIPTION)
@@ -402,7 +410,7 @@ class GenericBackend():
         elif param_type == cls.TYPE_PASSWORD:
             if param_value == -1:
                 return None
-            return Keyring().get_password(int(param_value))
+            return Keyring().get_password(param_value)
         elif param_type == cls.TYPE_LIST_OF_STRINGS:
             the_list = param_value.split(",")
             if not isinstance(the_list, list):

@@ -621,6 +621,7 @@ class Date:
             return self.dt_by_accuracy(Accuracy.date).strftime(locale_format)
 
 
+_GLOBAL_DATE_NOW = Date(NOW)
 _GLOBAL_DATE_SOON = Date(SOON)
 _GLOBAL_DATE_NODATE = Date(NODATE)
 _GLOBAL_DATE_SOMEDAY = Date(SOMEDAY)
