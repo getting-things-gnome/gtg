@@ -232,3 +232,14 @@ class TestQuickAddParse(TestCase):
         self.assertEqual(expected1, parse(text2))
         self.assertEqual(expected2, parse(text3))
         self.assertEqual(expected4, parse(text5))
+
+    def test_invalid_date(self):
+        expected = {
+            'title': 'Do a thing',
+            'tags': set(),
+            'start': None,
+            'due': None,
+            'recurring': None
+        }
+
+        self.assertEqual(expected, parse('Do a thing due:never'))

@@ -85,20 +85,20 @@ def parse(text: str) -> Dict:
             try:
                 result['start'] = Date.parse(data)
             except ValueError:
-                continue
+                pass
 
         elif token in DUE_TOKEN:
             try:
                 result['due'] = Date.parse(data)
             except ValueError:
-                continue
+                pass
 
         elif token in REPEAT_TOKEN:
             try:
                 Date.today().parse_from_date(data)
                 result['recurring'] = data
             except ValueError:
-                continue
+                pass
 
         # Remove this part from the title
         text = text[:match.start()] + text[match.end():]
