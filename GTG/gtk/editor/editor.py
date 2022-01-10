@@ -787,6 +787,7 @@ class TaskEditor:
         and to prevent visible content divergence when the child title changes.
         """
         parents = self.task.get_parents()
+        self.save()
 
         if not parents:
             tags = [t.get_name() for t in self.task.get_tags()]
