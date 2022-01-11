@@ -17,7 +17,7 @@ an issue rather than continue reading.
 
 * Keep reading below for basic instructions on how to get the development version of GTG running.
 * See the [CONTRIBUTING.md](CONTRIBUTING.md) file to ensure you have realistic expectations regarding feature requests, and to learn how you can effectively help the project. Your involvement is what keeps this project moving forward, and we need you to play an active part in implementing desired improvements!
-  * Explore the [docs/contributing/ subfolder](./docs/contributing) to see reference documentation for contributors, including coding/style conventions, how to deal with Git and submit patches, etc.
+  * Explore the [docs/contributors/ subfolder](./docs/contributors) to see reference documentation for contributors, including coding/style conventions, how to deal with Git and submit patches, etc.
 
 ## Setting up & running the development version
 
