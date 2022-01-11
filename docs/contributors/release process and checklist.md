@@ -17,11 +17,13 @@ Git accepts various dates formats (including ISO 8601), see its [documentation o
 
 # Release tagging (usually done by maintainers)
 
-Tag the revision (use `git tag -a`) with `vRELEASE_NUMBER` (ex: `git tag -a v0.3.1`, `git tag -a v0.4`, etc.) when on the correct commit. `git tag` lists all the tags.
+Tag the revision (use `git tag -a`) with `vRELEASE_NUMBER` (ex: `git tag -a v0.3.1`, `git tag -a v0.4`, etc.) when on the correct commit. `git tag` lists all the tags. As a tag description (when git prompts you for it) you can use something like `Release version 0.4` if the commit's description was `Release GTG 0.4`, for example.
 
 When you are absolutely sure you tagged "correctly", you can use `git push --tags`.
 
 In GitHub and GitLab, a commit named "Release version 0.4" and tagged "v0.4", for example, will correctly show up in the "Releases" section of the repository's web interface.
+
+However, even though such a tag automatically shows up in the "releases" section, you may need to also explicitly tell GitHub to ["create" a release](https://github.com/getting-things-gnome/gtg/releases/new) out of that existing tag in order to be able to give it a nickname (such as `0.4: "You Are (Not) Done"`) and for it to be identified as the "Latest release" in the web interface.
 
 # Creating tarballs tarball (intended for distros)
 
