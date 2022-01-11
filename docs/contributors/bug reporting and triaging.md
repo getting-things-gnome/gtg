@@ -4,6 +4,7 @@ Bug reports and feature requests need to go on [GTG's official/upstream issue tr
 * Nobody among the GTG maintainers will look at bug reports in downstream (Linux distros) bug trackers. Distro bug trackers are where bug reports go to die.
 * Our Flatpak packages (whether the latest stable version, or the nightly dev snapshot), or a manual git checkout, are the only "officially" supported testing/QA/bug reporting platform.
 * Bugs reportedly occurring with the git version (with the "reproducible-in-git" tag) have a higher chance of being fixed, as the difference between the current state of the development and the bug are minimal.
+* In some rare cases where an issue occurs on your computer but not ours, if you suspect the issue might have something to do with your data file specifically (especially true for performance issues or potential "race conditions"), you might want to share your `gtg_data.xml` file with us so we can try it on our computers. To protect your privacy, you can execute the `scripts/anonymize_task_file.py` file, which will conveniently generate a copy of your data file where every character has been replaced by the letter "m". You can specify a data file as an argument, or it will try to find your data file from the default locations otherwise.
 
 GitHub has a rather simplistic issue tracker with an open-ended, flexible workflow.
 Below are some clarifications on how we use it.
