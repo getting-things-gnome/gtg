@@ -34,13 +34,11 @@ omit =
     ../liblarch/test*
 ```
 
-# Coverage
+# Running the test
+
+Simply execute:
 
     coverage run gtg -d
-
-You can add more arguments for gtg at the end of command above. For example, if you would like to use local `liblarch` for both testing, you can use:
-
-    coverage run gtg -d -l
 
 # Report
 

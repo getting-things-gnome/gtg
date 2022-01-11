@@ -42,10 +42,6 @@ OPTIONS
 **-h, --help**
     Prints some information about gtg's usage and options.
 
-**-l, --local-liblarch**
-    Use local liblarch. Look for the liblarch python library in ../liblarch.
-    This is mainly useful for testing purpose.
-
 **-t TITLE, --title=TITLE**
     Set the window's title to TITLE.
 
