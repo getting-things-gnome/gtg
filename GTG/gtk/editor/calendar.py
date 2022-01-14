@@ -111,8 +111,9 @@ class GTGCalendar(GObject.GObject):
         if self.get_decorated():
             self.__window.connect("delete-event", self.close_calendar)
         else:
-            self.__window_gesture_single = Gtk.GestureSingle(widget=self.__window)
-            self.__window_gesture_single.connect('begin', self.__focus_out)
+            window_gesture_single = Gtk.GestureSingle()
+            window_gesture_single.connect('begin', self.__focus_out)
+            self.__window.add_controller(window_gesture_single)
         self.__sigid = self.__calendar.connect("day-selected",
                                                self.__day_selected,
                                                "RealDate",)
