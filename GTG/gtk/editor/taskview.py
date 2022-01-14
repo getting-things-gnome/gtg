@@ -146,11 +146,13 @@ class TaskView(GtkSource.View):
 
         # Signals and callbacks
         self.id_modified = self.buffer.connect('changed', self.on_modified)
-        self.motion_controller = Gtk.EventControllerMotion(widget=self)
-        self.motion_controller.connect('motion', self.on_mouse_move)
-        self.key_controller = Gtk.EventControllerKey(widget=self)
-        self.key_controller.connect('key-pressed', self.on_key_pressed)
-        self.key_controller.connect('key-released', self.on_key_released)
+        motion_controller = Gtk.EventControllerMotion()
+        motion_controller.connect('motion', self.on_mouse_move)
+        self.add_controller(motion_controller)
+        key_controller = Gtk.EventControllerKey()
+        key_controller.connect('key-pressed', self.on_key_pressed)
+        key_controller.connect('key-released', self.on_key_released)
+        self.add_controller(key_controller)
 
 
     def on_modified(self, buffer: Gtk.TextBuffer) -> None:
