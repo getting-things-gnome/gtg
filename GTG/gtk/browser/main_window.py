@@ -309,10 +309,12 @@ class MainWindow(Gtk.ApplicationWindow):
         self.tagtreeview = self.tv_factory.tags_treeview(self.tagtree)
         self.tagtreeview.get_selection().connect('changed', self.on_select_tag)
 
-        self.tagtree_gesture_single = Gtk.GestureSingle(widget=self.tagtreeview, button=Gdk.BUTTON_SECONDARY)
-        self.tagtree_gesture_single.connect('begin', self.on_tag_treeview_click_begin)
-        self.tagtree_key_controller = Gtk.EventControllerKey(widget=self.tagtreeview)
-        self.tagtree_key_controller.connect('key-pressed', self.on_tag_treeview_key_press_event)
+        tagtree_gesture_single = Gtk.GestureSingle(button=Gdk.BUTTON_SECONDARY)
+        tagtree_gesture_single.connect('begin', self.on_tag_treeview_click_begin)
+        tagtree_key_controller = Gtk.EventControllerKey()
+        tagtree_key_controller.connect('key-pressed', self.on_tag_treeview_key_press_event)
+        self.tagtreeview.add_controller(tagtree_gesture_single)
+        self.tagtreeview.add_controller(tagtree_key_controller)
         self.tagtreeview.connect('node-expanded', self.on_tag_expanded)
         self.tagtreeview.connect('node-collapsed', self.on_tag_collapsed)
 
@@ -408,12 +410,15 @@ class MainWindow(Gtk.ApplicationWindow):
         self.vtree_panes['active'].connect('cursor-changed', self.on_cursor_changed)
 
         tsk_treeview_btn_press = self.on_task_treeview_click_begin
-        self.active_pane_gesture_single = Gtk.GestureSingle(widget=self.vtree_panes['active'], button=Gdk.BUTTON_SECONDARY,
-            propagation_phase=Gtk.PropagationPhase.CAPTURE)
-        self.active_pane_gesture_single.connect('begin', tsk_treeview_btn_press)
+        active_pane_gesture_single = Gtk.GestureSingle(
+            button=Gdk.BUTTON_SECONDARY, propagation_phase=Gtk.PropagationPhase.CAPTURE
+        )
+        active_pane_gesture_single.connect('begin', tsk_treeview_btn_press)
         task_treeview_key_press = self.on_task_treeview_key_press_event
-        self.active_pane_key_controller = Gtk.EventControllerKey(widget=self.vtree_panes['active'])
-        self.active_pane_key_controller.connect('key-pressed', task_treeview_key_press)
+        active_pane_key_controller = Gtk.EventControllerKey()
+        active_pane_key_controller.connect('key-pressed', task_treeview_key_press)
+        self.vtree_panes['active'].add_controller(active_pane_gesture_single)
+        self.vtree_panes['active'].add_controller(active_pane_key_controller)
         self.vtree_panes['active'].connect('node-expanded', self.on_task_expanded)
         self.vtree_panes['active'].connect('node-collapsed', self.on_task_collapsed)
 
@@ -422,12 +427,15 @@ class MainWindow(Gtk.ApplicationWindow):
         self.vtree_panes['workview'].connect('cursor-changed', self.on_cursor_changed)
 
         tsk_treeview_btn_press = self.on_task_treeview_click_begin
-        self.workview_pane_gesture_single = Gtk.GestureSingle(widget=self.vtree_panes['workview'], button=Gdk.BUTTON_SECONDARY,
-            propagation_phase=Gtk.PropagationPhase.CAPTURE)
-        self.workview_pane_gesture_single.connect('begin', tsk_treeview_btn_press)
+        workview_pane_gesture_single = Gtk.GestureSingle(
+            button=Gdk.BUTTON_SECONDARY, propagation_phase=Gtk.PropagationPhase.CAPTURE
+        )
+        workview_pane_gesture_single.connect('begin', tsk_treeview_btn_press)
         task_treeview_key_press = self.on_task_treeview_key_press_event
-        self.workview_pane_key_controller = Gtk.EventControllerKey(widget=self.vtree_panes['workview'])
-        self.workview_pane_key_controller.connect('key-pressed', task_treeview_key_press)
+        workview_pane_key_controller = Gtk.EventControllerKey()
+        workview_pane_key_controller.connect('key-pressed', task_treeview_key_press)
+        self.vtree_panes['workview'].add_controller(workview_pane_gesture_single)
+        self.vtree_panes['workview'].add_controller(workview_pane_key_controller)
         self.vtree_panes['workview'].set_col_visible('startdate', False)
 
         # Closed tasks Treeview
@@ -435,12 +443,15 @@ class MainWindow(Gtk.ApplicationWindow):
         # I did not want to break the variable and there was no other
         # option except this name:(Nimit)
         clsd_tsk_btn_prs = self.on_closed_task_treeview_click_begin
-        self.closed_pane_gesture_single = Gtk.GestureSingle(widget=self.vtree_panes['closed'], button=Gdk.BUTTON_SECONDARY,
-            propagation_phase=Gtk.PropagationPhase.CAPTURE)
-        self.closed_pane_gesture_single.connect('begin', clsd_tsk_btn_prs)
+        closed_pane_gesture_single = Gtk.GestureSingle(
+            button=Gdk.BUTTON_SECONDARY, propagation_phase=Gtk.PropagationPhase.CAPTURE
+        )
+        closed_pane_gesture_single.connect('begin', clsd_tsk_btn_prs)
         clsd_tsk_key_prs = self.on_closed_task_treeview_key_press_event
-        self.closed_pane_key_controller = Gtk.EventControllerKey(widget=self.vtree_panes['closed'])
-        self.closed_pane_key_controller.connect('key-pressed', clsd_tsk_key_prs)
+        closed_pane_key_controller = Gtk.EventControllerKey()
+        closed_pane_key_controller.connect('key-pressed', clsd_tsk_key_prs)
+        self.vtree_panes['closed'].add_controller(closed_pane_gesture_single)
+        self.vtree_panes['closed'].add_controller(closed_pane_key_controller)
         self.vtree_panes['closed'].connect('cursor-changed', self.on_cursor_changed)
 
         b_signals = BackendSignals()
