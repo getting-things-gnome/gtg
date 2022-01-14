@@ -80,8 +80,6 @@ def background_color(tags, bgcolor=None, galpha_scale=1, use_alpha=True):
     if not bgcolor:
         bgcolor = Gdk.RGBA()
         bgcolor.parse("#FFFFFF")
-    if type(bgcolor) is Gdk.Color: # TODO remove on gtk4 port, caused by liblarch
-        bgcolor = Gdk.RGBA.from_color(bgcolor)
     # Compute color
     my_color = None
     color_count = 0.0
