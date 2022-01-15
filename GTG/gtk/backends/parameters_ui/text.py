@@ -44,19 +44,19 @@ class TextUI(Gtk.Box):
 
         @param width: the width of the Gtk.Label object
         """
+        self.set_spacing(10)
         label = Gtk.Label(label=f"{self.description}:")
-        label.set_line_wrap(True)
-        label.set_alignment(xalign=0, yalign=0.5)
+        label.set_wrap(True)
+        label.set_xalign(0)
+        label.set_yalign(0.5)
         label.set_size_request(width=width, height=-1)
-        self.pack_start(label, False, True, 0)
-        align = Gtk.Alignment.new(0, 0.5, 1, 0)
-        align.set_padding(0, 0, 10, 0)
-        self.pack_start(align, True, True, 0)
+        self.append(label)
         self.textbox = Gtk.Entry()
+        self.textbox.set_hexpand(True)
         backend_parameters = self.backend.get_parameters()[self.parameter_name]
         self.textbox.set_text(backend_parameters)
         self.textbox.connect('changed', self.on_text_modified)
-        align.add(self.textbox)
+        self.append(self.textbox)
 
     def commit_changes(self):
         """Saves the changes to the backend parameter"""
