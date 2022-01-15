@@ -45,30 +45,29 @@ class PeriodUI(Gtk.Box):
 
         @param width: the width of the Gtk.Label object
         """
+        self.set_spacing(10)
         period_label = Gtk.Label(label=_("Check for new tasks every"))
-        period_label.set_alignment(xalign=0, yalign=0.5)
-        period_label.set_line_wrap(True)
+        period_label.set_xalign(0)
+        period_label.set_yalign(0.5)
+        period_label.set_wrap(True)
         period_label.set_size_request(width=width, height=-1)
-        self.pack_start(period_label, False, True, 0)
-        align = Gtk.Alignment.new(0, 0.5, 1, 0)
-        align.set_padding(0, 0, 10, 0)
-        self.pack_start(align, False, True, 0)
+        self.append(period_label)
         period = self.backend.get_parameters()['period']
         self.adjustment = Gtk.Adjustment(value=period,
                                          lower=1,
                                          upper=120,
-                                         step_incr=1,
-                                         page_incr=0,
+                                         step_increment=1,
+                                         page_increment=0,
                                          page_size=0)
         self.period_spin = Gtk.SpinButton(adjustment=self.adjustment,
                                           climb_rate=0.3,
                                           digits=0)
+        self.append(self.period_spin)
         self.minutes_label = Gtk.Label()
         self.update_minutes_label()
-        self.minutes_label.set_alignment(xalign=0, yalign=0.5)
-        self.pack_start(self.minutes_label, False, True, 0)
-        align.add(self.period_spin)
-        self.show_all()
+        self.minutes_label.set_xalign(0)
+        self.minutes_label.set_yalign(0.5)
+        self.append(self.minutes_label)
 
     def _connect_signals(self):
         """Connects the gtk signals"""
