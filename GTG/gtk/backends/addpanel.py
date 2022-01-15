@@ -39,6 +39,7 @@ class AddPanel(Gtk.Box):
         loaded
         """
         super().__init__(orientation=Gtk.Orientation.VERTICAL)
+        self.set_spacing(24)
         self.dialog = backends
         self._create_widgets()
 
@@ -51,14 +52,17 @@ class AddPanel(Gtk.Box):
         top = Gtk.Box()
         top.set_spacing(6)
         middle = Gtk.Box()
+        middle.set_valign(Gtk.Align.CENTER)
+        middle.set_vexpand(True)
         bottom = Gtk.Box()
+        bottom.set_valign(Gtk.Align.END)
+        bottom.set_vexpand(True)
         self._fill_top_box(top)
         self._fill_middle_box(middle)
         self._fill_bottom_box(bottom)
-        self.pack_start(top, False, True, 0)
-        self.pack_start(middle, True, True, 0)
-        self.pack_start(bottom, True, True, 0)
-        self.set_border_width(12)
+        self.append(top)
+        self.append(middle)
+        self.append(bottom)
 
     def _fill_top_box(self, box):
         """
@@ -68,14 +72,15 @@ class AddPanel(Gtk.Box):
         @param box: the Gtk.Box to fill
         """
         label = Gtk.Label(label=_("Select synchronization service:"))
-        label.set_alignment(0, 0.5)
+        label.set_xalign(0)
+        label.set_yalign(0.5)
         self.combo_types = BackendsCombo(self.dialog)
         # FIXME
         # self.combo_types.get_child().connect(
         #     'changed', self.on_combo_changed)
         self.combo_types.connect('changed', self.on_combo_changed)
-        box.pack_start(label, False, True, 0)
-        box.pack_start(self.combo_types, False, True, 0)
+        box.append(label)
+        box.append(self.combo_types)
 
     def _fill_middle_box(self, box):
         """
@@ -84,34 +89,30 @@ class AddPanel(Gtk.Box):
 
         @param box: the Gtk.Box to fill
         """
-        self.label_name = Gtk.Label(label="name")
-        self.label_name.set_alignment(xalign=0.5, yalign=1)
+        self.label_name = Gtk.Label()
         self.label_description = Gtk.Label()
-        self.label_description.set_justify(Gtk.Justification.FILL)
-        self.label_description.set_line_wrap(True)
-        self.label_description.set_size_request(300, -1)
-        self.label_description.set_alignment(xalign=0, yalign=0.5)
-        self.label_author = Gtk.Label(label="")
-        self.label_author.set_line_wrap(True)
-        self.label_author.set_alignment(xalign=0, yalign=0)
-        self.label_modules = Gtk.Label(label="")
-        self.label_modules.set_line_wrap(True)
-        self.label_modules.set_alignment(xalign=0, yalign=0)
+        self.label_description.set_xalign(0)
+        self.label_description.set_wrap(True)
+        self.label_author = Gtk.Label()
+        self.label_modules = Gtk.Label()
         self.image_icon = Gtk.Image()
-        self.image_icon.set_size_request(128, 128)
-        align_image = Gtk.Alignment.new(1, 0, 0, 0)
-        align_image.add(self.image_icon)
+        self.image_icon.set_hexpand(True)
+        self.image_icon.set_halign(Gtk.Align.END)
+        self.image_icon.set_pixel_size(128)
         labels_vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
-        labels_vbox.pack_start(self.label_description, True, True, 10)
-        labels_vbox.pack_start(self.label_author, True, True, 0)
-        labels_vbox.pack_start(self.label_modules, True, True, 0)
+        labels_vbox.set_spacing(6)
+        labels_vbox.append(self.label_description)
+        labels_vbox.append(self.label_author)
+        labels_vbox.append(self.label_modules)
         low_box = Gtk.Box()
-        low_box.pack_start(labels_vbox, True, True, 0)
-        low_box.pack_start(align_image, True, True, 0)
+        low_box.set_vexpand(True)
+        low_box.append(labels_vbox)
+        low_box.append(self.image_icon)
         vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
-        vbox.pack_start(self.label_name, True, True, 0)
-        vbox.pack_start(low_box, True, True, 0)
-        box.pack_start(vbox, True, True, 0)
+        vbox.set_spacing(12)
+        vbox.append(self.label_name)
+        vbox.append(low_box)
+        box.append(vbox)
 
     def _fill_bottom_box(self, box):
         """
@@ -124,17 +125,12 @@ class AddPanel(Gtk.Box):
         cancel_button.set_label("Cancel")
         cancel_button.connect('clicked', self.on_cancel)
         self.ok_button = Gtk.Button()
+        self.ok_button.set_hexpand(True)
+        self.ok_button.set_halign(Gtk.Align.END)
         self.ok_button.set_label("OK")
         self.ok_button.connect('clicked', self.on_confirm)
-        align = Gtk.Alignment.new(0.5, 1, 1, 0)
-        align.set_padding(0, 10, 0, 0)
-        buttonbox = Gtk.ButtonBox()
-        buttonbox.set_layout(Gtk.ButtonBoxStyle.EDGE)
-        buttonbox.add(cancel_button)
-        buttonbox.set_child_secondary(cancel_button, False)
-        buttonbox.add(self.ok_button)
-        align.add(buttonbox)
-        box.pack_start(align, True, True, 0)
+        box.append(cancel_button)
+        box.append(self.ok_button)
 
     def refresh_backends(self):
         """Populates the combo box containing the available backends"""
@@ -182,6 +178,4 @@ class AddPanel(Gtk.Box):
             (ngettext("Author", "Authors", len(authors)),
              reduce(lambda a, b: a + "\n" + "   - " + b, authors))
         self.label_author.set_markup(author_txt)
-        pixbuf = self.dialog.get_pixbuf_from_icon_name(backend.Backend.get_icon(), 128)
-        self.image_icon.set_from_pixbuf(pixbuf)
-        self.show_all()
+        self.image_icon.set_from_icon_name(backend.Backend.get_icon())

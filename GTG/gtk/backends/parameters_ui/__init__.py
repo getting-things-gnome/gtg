@@ -55,6 +55,11 @@ class ParametersUI(Gtk.Box):
         self.req = requester
         self.set_spacing(10)
 
+        # Keep track of our children, for some reason iterating through
+        # them the regular way to remove them just doesn't always work.
+        # And this is the recommended way anyway.
+        self.displayed_params = []
+
         # builds a list of widget generators. More precisely, it's a
         # list of tuples: (backend_parameter_name, widget_generator)
         self.parameter_widgets = (
@@ -128,9 +133,9 @@ class ParametersUI(Gtk.Box):
         @param backend: the backend that is being configured
         """
         # remove the old parameters UIs
-        def _remove_child(self, child, data=None):
-            self.remove(child)
-        self.foreach(functools.partial(_remove_child, self), None)
+        for p_widget in self.displayed_params:
+            self.remove(p_widget)
+        self.displayed_params.clear()
         # add new widgets
         backend_parameters = backend.get_parameters()
         if backend_parameters[GenericBackend.KEY_DEFAULT_BACKEND]:
@@ -139,15 +144,14 @@ class ParametersUI(Gtk.Box):
         for parameter_name, widget in self.parameter_widgets:
             if parameter_name in backend_parameters:
                 # FIXME I am not 100% about this change
-                self.pack_start(widget(backend), True, True, 0)
-        self.show_all()
+                p_widget = widget(backend)
+                self.append(p_widget)
+                self.displayed_params.append(p_widget)
 
     def commit_changes(self):
         """
         Saves all the parameters at their current state (the user may have
         modified them)
         """
-
-        def _commit_changes(child, data=None):
-            child.commit_changes()
-        self.foreach(_commit_changes, None)
+        for p_widget in self.displayed_params:
+            p_widget.commit_changes()

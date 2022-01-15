@@ -44,15 +44,15 @@ class PasswordUI(Gtk.Box):
 
         @param width: the width of the Gtk.Label object
         """
+        self.set_spacing(10)
         password_label = Gtk.Label(label=_("Password:"))
-        password_label.set_alignment(xalign=0, yalign=0)
+        password_label.set_yalign(0)
+        password_label.set_xalign(0)
         password_label.set_size_request(width=width, height=-1)
-        self.pack_start(password_label, False, True, 0)
-        align = Gtk.Alignment.new(0, 0.5, 1, 0)
-        align.set_padding(0, 0, 10, 0)
-        self.pack_start(align, True, True, 0)
+        self.append(password_label)
         self.password_textbox = Gtk.Entry()
-        align.add(self.password_textbox)
+        self.password_textbox.set_hexpand(True)
+        self.append(self.password_textbox)
 
     def _load_password(self):
         """Loads the password from the backend"""

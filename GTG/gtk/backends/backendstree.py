@@ -17,10 +17,9 @@
 # -----------------------------------------------------------------------------
 
 from gi.repository import Gtk
-from gi.repository import GdkPixbuf
 
 from GTG.core.tag import ALLTASKS_TAG
-from GTG.gtk.colors import get_colored_tags_markup, rgb_to_hex
+from GTG.gtk.colors import get_colored_tags_markup
 from GTG.backends.backend_signals import BackendSignals
 
 
@@ -33,6 +32,7 @@ class BackendsTree(Gtk.TreeView):
     COLUMN_ICON = 1
     COLUMN_TEXT = 2  # holds the backend "human-readable" name
     COLUMN_TAGS = 3
+    COLUMN_ENABLED = 4
 
     def __init__(self, backendsdialog):
         """
@@ -94,10 +94,10 @@ class BackendsTree(Gtk.TreeView):
         if backend:
             backend_iter = self.liststore.append([
                 backend.get_id(),
-                self.dialog.get_pixbuf_from_icon_name(backend.get_icon(),
-                                                      16),
+                backend.get_icon(),
                 backend.get_human_name(),
                 self._get_markup_for_tags(backend.get_attached_tags()),
+                backend.is_enabled()
             ])
             self.backendid_to_iter[backend.get_id()] = backend_iter
 
@@ -114,17 +114,8 @@ class BackendsTree(Gtk.TreeView):
             b_path = self.liststore.get_path(b_iter)
             backend = self.req.get_backend(backend_id)
             backend_name = backend.get_human_name()
-            if backend.is_enabled():
-                text = backend_name
-            else:
-                # FIXME This snippet is on more than 2 places!!!
-                # FIXME create a function which takes a widget and
-                # flag and returns color as #RRGGBB
-                style_context = self.get_style_context()
-                color = style_context.get_color()
-                color = grgba_to_hex(color)
-                text = f"<span color='{color}'>{backend_name}</span>"
-            self.liststore[b_path][self.COLUMN_TEXT] = text
+            self.liststore[b_path][self.COLUMN_TEXT] = backend_name
+            self.liststore[b_path][self.COLUMN_ENABLED] = backend.is_enabled()
 
             # Also refresh the tags
             new_tags = self._get_markup_for_tags(backend.get_attached_tags())
@@ -156,7 +147,7 @@ class BackendsTree(Gtk.TreeView):
 
     def _init_liststore(self):
         """Creates the liststore"""
-        self.liststore = Gtk.ListStore(object, GdkPixbuf.Pixbuf, str, str)
+        self.liststore = Gtk.ListStore(object, str, str, str, bool)
         self.set_model(self.liststore)
 
     def _init_renderers(self):
@@ -166,12 +157,13 @@ class BackendsTree(Gtk.TreeView):
         # For the backend icon
         pixbuf_cell = Gtk.CellRendererPixbuf()
         tvcolumn_pixbuf = Gtk.TreeViewColumn('Icon', pixbuf_cell)
-        tvcolumn_pixbuf.add_attribute(pixbuf_cell, 'pixbuf', self.COLUMN_ICON)
+        tvcolumn_pixbuf.add_attribute(pixbuf_cell, 'icon-name', self.COLUMN_ICON)
         self.append_column(tvcolumn_pixbuf)
         # For the backend name
         text_cell = Gtk.CellRendererText()
         tvcolumn_text = Gtk.TreeViewColumn('Name', text_cell)
         tvcolumn_text.add_attribute(text_cell, 'markup', self.COLUMN_TEXT)
+        tvcolumn_text.add_attribute(text_cell, 'sensitive', self.COLUMN_ENABLED)
         self.append_column(tvcolumn_text)
         text_cell.connect('edited', self.cell_edited_callback)
         text_cell.set_property('editable', True)

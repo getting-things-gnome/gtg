@@ -51,7 +51,7 @@ class CheckBoxUI(Gtk.Box):
         backend_parameters = self.backend.get_parameters()[self.parameter]
         self.checkbutton.set_active(backend_parameters)
         self.checkbutton.connect("toggled", self.on_modified)
-        self.pack_start(self.checkbutton, False, True, 0)
+        self.append(self.checkbutton)
 
     def commit_changes(self):
         """Saves the changes to the backend parameter"""
