@@ -6,43 +6,43 @@
   <info>
     <link type="guide" xref="index#gtg-sync" group="second"/>
      <link type="seealso" xref="gtg-sync"/>
-      <link type="seealso" xref="gtg-remove-sync"/>
+      <link type="seealso" xref="gtg-create-sync"/>
      
      <revision pkgversion="0.3.1" date="2013-06-18" status="candidate"/> 
       <revision pkgversion="0.4.0" date="2020-05-10" status="outdated"/>
+      <revision pkgversion="0.6.0" date="2022-01-17" status="candidate"/>
    <credit type="author copyright">
       <name>Radina Matic</name>
       <email its:translate="no">radina.matic@gmail.com</email>
       <years>2013</years>
     </credit>
     <credit type="copyright editor">
-      <name></name>
-      <email its:translate="no"></email>
-      <years></years>
+      <name>Danielle Vansia</name>
+      <email its:translate="no">daniellevansia@gmail.com</email>
+      <years>2022</years>
     </credit>
 
     <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
 
   </info>
 
-  <title>Enable/Disable Sync Service</title>
+  <title>Enable/Disable Sync Services</title>
+  
+   <p>To enable or disable Sync Services, from the <app>GTG</app> main menu:</p>
+<steps>
+    <item><p>Select <em style="strong">Synchronization.</em></p></item>
+    <item><p>From the left-side menu, click the <em style="strong">+</em> button to add a new service. </p></item>
+    <item><p>Select the desired Sync Service from the dropdown menu on the right.</p></item>
+    <item><p>For each Sync Service that you wish to enable, you will have to set certain parameters as well as provide a username and password (if necessary).</p></item>
+    <item><p>Once you have filled in the required fields, click <gui>Enable syncing</gui>.</p></item>
+</steps>
 
-<p>To enable or disable Sync Services in the GTG main menu go to <guiseq><gui>Edit</gui><gui>Setup Sync Services</gui></guiseq>. Press the button <gui>Add</gui> and choose the desired sync service from the drop down menu on the right.</p>
+<note style="tip"><p>To disable a Sync Service, click <gui>Disable syncing</gui>.</p></note>
 
 <figure>
-  <title>Enable Sync Service</title>
+  <title>Sync Service</title>
   <desc> </desc>
  <media type="image" mime="image/png" src="figures/select-sync.png"/>
-</figure>
-
-<p>For each sync service that you wish to enable you will have to set certain parameters, provide the user name and password if necessary and press the <gui>Enable syncing</gui> button.</p>
-
-<p>To disable a sync service press the <gui>Disable syncing</gui> button.</p>
-
-<figure>
-  <title>Configure Sync Service</title>
-  <desc> </desc>
- <media type="image" mime="image/png" src="figures/configure-sync.png"/>
 </figure>
 
 </page>

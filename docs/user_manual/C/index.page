@@ -63,6 +63,13 @@
        first second"/>
  </section>
 
+<section id="gtg-sync" style="2column">
+    <title>Synchronization Services</title>
+    <links type="topic" style="2column" groups="
+       first second
+       third fourth"/>
+</section>
+       
  <section id="gtg-further" style="2column">
     <title>Going Further</title>
     <links type="topic" style="2column" groups="
