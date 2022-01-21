@@ -1,0 +1,57 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      xmlns:its="http://www.w3.org/2005/11/its"
+      xmlns:ui="http://projectmallard.org/ui/1.0/"
+      type="guide" style="task 2column"
+      id="gtg-caldav">
+
+  <info>
+      <link type="guide" xref="index#gtg-sync" group="fourth"/>
+      <link type="seealso" xref="gtg-sync"/>
+      <link type="seealso" xref="gtg-add-sync"/>
+      <link type="seealso" xref="gtg-create-sync"/>
+      
+      <revision pkgversion="0.6.0" date="2022-01-21" status="candidate"/>
+   <credit type="author copyright">
+      <name>Danielle Vansia</name>
+      <email its:translate="no">daniellevansia@gmail.com</email>
+      <years>2022</years>
+    </credit>
+    <credit type="editor copyright">
+      <name></name>
+      <email its:translate="no"></email>
+      <years></years>
+    </credit>
+
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+
+  </info>
+
+  <title>CalDAV Sync Service</title>
+
+  <p>CalDAV is a calendaring protocol that allows a client to access items from a server. Sync your third-party applications that support the CalDAV standard with <app>GTG</app> to manage all of your tasks and calendar items in one place. The options and required fields for the CalDAV Sync Service are described below. Once you have filled in all of the required information, click <em style="strong">Enable syncing</em> to start importing your CalDAV items.</p> 
+
+<terms>
+<item>
+     <title><em style="strong">Tags to sync</em></title>
+     <p>You have the option to sync all of your <app>GTG</app> tasks or select only certain tags. This could be useful in a situation where you have connected a work-related CalDAV profile and you want to only share <app>GTG</app> tasks you have marked with a <em style="strong">work</em> tag.</p></item>
+<item>
+     <title><em style="strong">Username</em></title>
+     <p>Enter your account's username.</p></item>
+<item>
+     <title><em style="strong">Password</em></title>
+     <p>Enter your account's password.</p></item>
+<item>
+     <title><em style="strong">Check for new tasks</em></title>
+     <p>Select how often you want <app>GTG</app> to check for new tasks to sync. You can set this to a minimum of 1 minute or a maximum of 120 minutes.</p></item>
+<item>
+     <title><em style="strong">Service URL</em></title>
+     <p>Enter the URL for the service you are looking to connect. You may need to refer to your service provider's CalDAV-related documentation to obtain this URL.</p></item></terms>
+
+
+<figure>
+  <title>CalDAV Sync Service</title>
+  <desc> </desc>
+ <media type="image" mime="image/png" src="figures/caldav.png"/>
+</figure>
+
+</page>

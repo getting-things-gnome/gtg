@@ -7,6 +7,7 @@
     <link type="guide" xref="index#gtg-sync" group="second"/>
      <link type="seealso" xref="gtg-sync"/>
       <link type="seealso" xref="gtg-create-sync"/>
+      <link type="seealso" xref="gtg-caldav"/>
      
      <revision pkgversion="0.3.1" date="2013-06-18" status="candidate"/> 
       <revision pkgversion="0.4.0" date="2020-05-10" status="outdated"/>
