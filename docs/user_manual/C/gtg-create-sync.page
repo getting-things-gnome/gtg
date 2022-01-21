@@ -4,33 +4,36 @@
       id="gtg-create-sync">
 
   <info>
-    
+    <link type="guide" xref="index#gtg-sync" group="third"/>
+     <link type="seealso" xref="gtg-sync"/>
+      <link type="seealso" xref="gtg-add-sync"/>
   
 
       <revision pkgversion="0.3.1" date="2013-06-18" status="candidate"/>
       <revision pkgversion="0.4.0" date="2020-05-10" status="outdated"/>
+      <revision pkgversion="0.6.0" date="2022-01-17" status="candidate"/>
    <credit type="author copyright">
       <name>Radina Matic</name>
       <email its:translate="no">radina.matic@gmail.com</email>
       <years>2013</years>
     </credit>
     <credit type="copyright editor">
-      <name></name>
-      <email its:translate="no"></email>
-      <years></years>
+      <name>Danielle Vansia</name>
+      <email its:translate="no">daniellevansia@gmail.com</email>
+      <years>2022</years>
     </credit>
 
     <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
 
   </info>
  
-  <title>Create your own Sync Service</title>
+  <title>Create Your Own Sync Service</title>
 
 <p>Here are some resources in case you are interested in making your own Sync Service for <app>GTG</app>:</p>
 
-<p><link href="https://live.gnome.org/gtg/Backends">Sync Services (Backends)</link></p>
+<p><link href="https://github.com/getting-things-gnome/gtg/tree/64d535aee2c59e78fdc269ddd4baaecf257b64b4/GTG/backends"><app>GTG</app> Backends</link></p>
 
-<p><link href="https://live.gnome.org/gtg/dbus">DBus</link></p>
+<p><link href="https://github.com/getting-things-gnome/gtg/blob/master/docs/contributors/DBus%20API%20v1.md">DBus</link></p>
 
 </page>
 
