@@ -31,7 +31,7 @@
   
    <p>To enable or disable Sync Services, from the <app>GTG</app> main menu:</p>
 <steps>
-    <item><p>Select <em style="strong">Synchronization.</em></p></item>
+    <item><p>Select <em style="strong">Synchronization</em>.</p></item>
     <item><p>From the left-side menu, click the <em style="strong">+</em> button to add a new service. </p></item>
     <item><p>Select the desired Sync Service from the dropdown menu on the right.</p></item>
     <item><p>For each Sync Service that you wish to enable, you will have to set certain parameters as well as provide a username and password (if necessary).</p></item>

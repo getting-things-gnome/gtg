@@ -26,9 +26,11 @@
 
   </info>
 
-  <title>CalDAV Sync Service</title>
+  <title>CalDAV: Calendar Sync Service</title>
 
-  <p>CalDAV is a calendaring protocol that allows a client to access items from a server. Sync your third-party applications that support the CalDAV standard with <app>GTG</app> to manage all of your tasks and calendar items in one place. The options and required fields for the CalDAV Sync Service are described below. Once you have filled in all of the required information, click <em style="strong">Enable syncing</em> to start importing your CalDAV items.</p> 
+  <p>CalDAV is a calendaring protocol that allows a client to access items from a server. CalDAV is often provided by calendar and task/groupware services. Sync your third-party applications that support the CalDAV standard with <app>GTG</app> to manage all of your tasks and calendar items in one place. The options and required fields for the CalDAV Sync Service are described below. Once you have filled in all of the required information, click <em style="strong">Enable syncing</em> to start importing your CalDAV items.</p> 
+  
+ <note style="important"><p>Tasks need to be tagged in <app>GTG</app> with <code>DAV_[CALENDAR_NAME]</code> to be synced.</p></note>
 
 <terms>
 <item>
@@ -46,6 +48,8 @@
 <item>
      <title><em style="strong">Service URL</em></title>
      <p>Enter the URL for the service you are looking to connect. You may need to refer to your service provider's CalDAV-related documentation to obtain this URL.</p></item></terms>
+     
+<note style="important"><p>The CalDAV provider might give you a URL for a specific calendar, but actually send the todos from all calendars. In this case, the CalDAV backend will end up syncing all calendars.</p></note>
 
 
 <figure>
