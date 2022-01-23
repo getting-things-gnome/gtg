@@ -4,15 +4,12 @@
       id="gtg-create-sync">
 
   <info>
-    <link type="guide" xref="index#gtg-sync" group="third"/>
-     <link type="seealso" xref="gtg-sync"/>
-      <link type="seealso" xref="gtg-add-sync"/>
-      <link type="seealso" xref="gtg-caldav"/>
+    
   
 
       <revision pkgversion="0.3.1" date="2013-06-18" status="candidate"/>
       <revision pkgversion="0.4.0" date="2020-05-10" status="outdated"/>
-      <revision pkgversion="0.6.0" date="2022-01-17" status="candidate"/>
+      <revision pkgversion="0.6.0" date="2022-01-17" status="outdated"/>
    <credit type="author copyright">
       <name>Radina Matic</name>
       <email its:translate="no">radina.matic@gmail.com</email>

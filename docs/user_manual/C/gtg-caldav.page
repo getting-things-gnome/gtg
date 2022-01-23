@@ -5,10 +5,10 @@
       id="gtg-caldav">
 
   <info>
-      <link type="guide" xref="index#gtg-sync" group="fourth"/>
+      <link type="guide" xref="index#gtg-sync" group="third"/>
       <link type="seealso" xref="gtg-sync"/>
       <link type="seealso" xref="gtg-add-sync"/>
-      <link type="seealso" xref="gtg-create-sync"/>
+
       
       <revision pkgversion="0.6.0" date="2022-01-21" status="candidate"/>
    <credit type="author copyright">
