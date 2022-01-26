@@ -85,7 +85,7 @@ To run the current testsuite, you need some additional packages (this list may b
 # On Fedora:
 sudo dnf install python3-nose python3-pyflakes python3-spec python3-pycodestyle python3-mock
 # On Ubuntu/Debian:
-sudo apt install python3-nose python3-pyflakes python3-pep8 python3-pycodestyle python3-mock
+sudo apt install python3-nose python3-pyflakes python3-pep8 python3-pycodestyle python3-mock python3-caldav
 ```
 
 You will currently also need the optional plugin dependencies, as the tests don't automatically skip them. (Help welcome improving that!)
