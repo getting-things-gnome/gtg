@@ -1,4 +1,74 @@
 ===========
+Version 0.6
+===========
+
+GTG 0.6 brings even more performance improvements, bug fixes,
+the introduction of the CalDAV synchronization service, 
+the new Gamify plugin, and a redesign of the Tag Editor. 
+
+New Features:
+
+ • CalDAV is a calendaring protocol that allows a client to access items 
+   from a server. GTG now provides support for this standard, and with this new sync 
+   service, you can manage all your tasks in one place.
+ • New CalDAV backends are available, and the backends dialog is available again.
+ • The new Gamify plugin adds a game aspect to your GTG workflow, 
+   such as the ability to set task targets and task completion streaks.
+ • The Tag Editor was completely redesigned.
+ • Added support for undo/redo actions in the Task Editor.
+ • Added the ability to collapse and expand all tasks in the main menu.
+ • Added the F10 shortcut to open the main menu.
+ • ESC now closes the calendar picker window.
+ • Added the CTRL+B shortcut to set focus on the sidebar.
+ • Added an option to set the due date to "today" in the context menu.
+ • Added a unified "Reopen" action for closed tasks.
+ 
+ Backend, Code Quality, and Performance Improvements:
+ 
+ • Made task expansion more efficient (prevents the maximum recursion depth error).
+ • Made an improvement to avoid infinite loops when entering invalid 
+   dates in the Quick Add dialog.
+ • Made an update to prevent errors when no task is selected.
+ • Removed some deprecation warnings.
+ • Added StartupWMClass to make pinning on KDE work.
+ • Used application ID as the window icon (so KDE shows the correct icon).
+ • Made several changes in preparation for Gtk 4.0, as well as updated 
+   a number of deprecated GTK-related items.
+ • Made a ton of PEP8 and style fixes.
+ • Refactored the date class.
+ • Updated the ability to render tag icons better on HiDPI.
+ • Introduced an exception popup (i.e., a dialog that comes up when there’s an error).
+ • Updated the anonymize script.
+ • Added gtg://TASK-ID to the command-line help.
+ • Added the -p parameter for profiling in debug.sh.
+ 
+Bug Fixes:
+ 
+ • Made a change to save a task before creating a parent. 
+   This prevents an error that appeared when a task title would be reset 
+   after adding a parent.
+ • Fixed an issue with tasks losing their status during restart.
+ • Fixed an issue where tags were being duplicated.
+ • Fixed an issue where tags and saved searches with the same name were 
+    being considered duplicates.
+ • Fixed a bug where every editor window would come back if GTG wasn’t 
+    closed cleanly (i.e., shut down).
+ • Made several fixes for scripts.
+ • Fixed certain main menu entries not being selectable via the keyboard.
+ • Fixed the cut-off when you expand the columns too much.
+  
+Documentation Updates:
+
+ • Added documentation to the Contributor Docs for contributing to the User Manual 
+   (i.e., for writing help files).
+ • Added information about using flamegraph for profiling GTG for 
+   performance documentation (in the Contributor Docs).
+ • Updated the user manual for this release.
+
+For details on all of these new features, improvements, and fixes,
+see the release's milestone: https://github.com/getting-things-gnome/gtg/milestone/4. 
+
+===========
 Version 0.5
 ===========
 These are abbreviated release notes.
