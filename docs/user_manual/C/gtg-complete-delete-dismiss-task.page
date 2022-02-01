@@ -13,6 +13,7 @@
       <revision pkgversion="0.3.1" date="2013-06-18" status="candidate"/>
       <revision pkgversion="0.4.0" date="2020-05-16" status="candidate"/>
       <revision pkgversion="0.5.0" date="2020-11-15" status="candidate"/>
+      <revision pkgversion="0.6.0" date="2022-01-31" status="candidate"/>
    <credit type="author copyright">
       <name>Radina Matic</name>
       <email its:translate="no">radina.matic@gmail.com</email>
@@ -37,15 +38,15 @@
   <p>When you are finished with a task, you can close the task by performing one of the following actions:</p>
   <list>
   <item><p>In the <gui>Open</gui> or <gui>Actionable</gui> view modes, select the task and use the <keyseq><key>Ctrl</key><key>D</key></keyseq> keyboard shortcut.</p></item>
-  <item><p>Right-click the task in the <gui>Task Browser</gui> and select <gui>Mark as done</gui> from the context menu.</p></item>
+  <item><p>Right-click the task in the <gui>Task Browser</gui>, and select <gui>Mark as Done</gui> from the context menu.</p></item>
   <item><p>Click the <gui>Mark as Done</gui> button in the <gui>Task Editor</gui> window.</p></item></list> 
   <p>Once a task is marked as done, it is viewable in the <gui>Closed</gui> view mode.</p>
   <section id="reopen-task"><title>Reopening a Complete Task</title>
       <p>You may want to reopen a task that you previously marked as done. From the <gui>Closed</gui> view mode, you can perform one of the following actions:</p>
      <list>
      <item><p>Use the <keyseq><key>Ctrl</key><key>D</key></keyseq> keyboard shortcut.</p></item>
-     <item><p>Right-click the task in the <gui>Task Browser</gui> and select <gui>Mark as Not Done</gui> from the context menu.</p></item>
-     <item><p>Click the <gui>Mark as Not Done</gui> button in the <gui>Task Editor</gui> window.</p></item></list>
+     <item><p>Right-click the task in the <gui>Task Browser</gui>, and select <gui>Reopen</gui> from the context menu.</p></item>
+     <item><p>Double click to edit the task, and click the <gui>Mark as Not Done</gui> button in the <gui>Task Editor</gui> window.</p></item></list>
 </section>
   </section>
   <section id="dismiss-task">
@@ -54,13 +55,13 @@
   <p>When you decide that a certain task is no longer valid (does not need to be accomplished), you can dismiss it. To dismiss a selected task from the <gui>Open</gui> or <gui>Actionable</gui> view modes, you can perform one of the following actions:</p>
   
   <list>
-      <item><p>Select the task and use the <keyseq><key>Ctrl</key><key>I</key></keyseq> keyboard shortcut.</p></item>
-      <item><p>Right-click the task in the <gui>Task Browser</gui> and select <gui>Dismiss</gui> from the context menu.</p></item>
+      <item><p>Select the task, and use the <keyseq><key>Ctrl</key><key>I</key></keyseq> keyboard shortcut.</p></item>
+      <item><p>Right-click the task in the <gui>Task Browser</gui>, and select <gui>Dismiss</gui> from the context menu.</p></item>
 </list> 
     <p>To dismiss an open <app>GTG</app> task:</p>
 <steps>
     <item><p>Click the <media type="image" src="figures/task-toolbar-menu.png"></media> icon in the task's headerbar.</p></item>
-    <item><p>Select <gui>Dismiss Task</gui>.</p></item>
+    <item><p>Select <gui>Dismiss</gui>.</p></item>
 </steps>
     
     <p>You can view all of the tasks that are marked as dismissed in the <gui>Closed</gui> view mode.</p> 
@@ -69,7 +70,8 @@
       <p>You may want to reopen a task that you previously dismissed. From the <gui>Closed</gui> view mode, you can perform one of the following actions:</p>
      <list>
      <item><p>Use the <keyseq><key>Ctrl</key><key>I</key></keyseq> keyboard shortcut.</p></item>
-     <item><p>Right-click the task in the <gui>Task Browser</gui> and select <gui>Undismiss</gui> from the context menu.</p></item></list>
+     <item><p>Right-click the task in the <gui>Task Browser</gui>, and select <gui>Reopen</gui> from the context menu.</p></item>
+     <item><p>Double click to open the task, and then click the <media type="image" src="figures/task-toolbar-menu.png"></media> icon in the task's headerbar. Select <gui>Undismiss</gui>.</p></item></list>
 </section>
 </section>
   <section id="delete">
@@ -79,13 +81,13 @@
   <p>To delete a selected task from the main <app>GTG</app> window, you can perform one of the following actions:</p>
   
   <list>
-     <item><p>Select the task and use the <keyseq><key>Ctrl</key><key>Del</key></keyseq> keyboard shortcut.</p></item>
-      <item><p>From any of the task view modes, right-click the task in the <gui>Task Browser</gui> and select <gui>Delete</gui> from the context menu.</p></item>
+     <item><p>Select the task, and use the <keyseq><key>Ctrl</key><key>Del</key></keyseq> keyboard shortcut.</p></item>
+      <item><p>From any of the task view modes, right-click the task in the <gui>Task Browser</gui>, and select <gui>Delete</gui> from the context menu.</p></item>
 </list> 
  
    <p>To delete an open <app>GTG</app> task:</p>
 <steps><item><p>Click the <media type="image" src="figures/task-toolbar-menu.png"></media> icon in the task's headerbar.</p></item>
-<item><p>Select <gui>Delete Task</gui>.</p></item></steps>
+<item><p>Select <gui>Delete</gui>.</p></item></steps>
 
 <note style="warning"> <p>Deleting a task is a permanent action. You will be asked to confirm the deletion before proceeding. If you want the ability to undo task deletions, consider using the <gui>Mark as Done</gui> or <gui>Dismiss</gui> actions instead.</p> </note>
 </section> 
