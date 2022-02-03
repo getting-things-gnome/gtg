@@ -483,8 +483,12 @@ class Date:
                 next_month = 1
                 next_year = self_date.year + 1
             else:
-                next_month = self_date.month + 1
                 next_year = self_date.year
+                next_month = self_date.month + 1
+                max_mday = calendar.monthrange(next_year, next_month)[1]
+                if mday > max_mday:
+                    mday = max_mday
+
 
             try:
                 result = date(next_year, next_month, mday)
