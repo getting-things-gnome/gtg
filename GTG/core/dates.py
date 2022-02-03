@@ -464,8 +464,7 @@ class Date:
     def _parse_only_month_day_for_recurrency(self, string, newtask=True):
         """ Parse next Xth day in month from a certain date"""
         self_date = self.dt_by_accuracy(Accuracy.date)
-        if not newtask:
-            self_date += timedelta(1)
+
         try:
             mday = int(string)
             if not 1 <= mday <= 31 or string.startswith('0'):
@@ -478,7 +477,10 @@ class Date:
         except ValueError:
             result = None
 
-        if result is None or result <= self_date:
+        # If it's not possible to recreate the date by replacing or
+        # newtask=False and the result is still less than self_date,
+        # we need to jump to the next month.
+        if result is None or (not newtask and result <= self_date):
             if self_date.month == 12:
                 next_month = 1
                 next_year = self_date.year + 1
