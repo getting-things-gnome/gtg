@@ -461,6 +461,25 @@ class Date:
         else:
             raise ValueError(f"Can't parse date '{string}'")
 
+    @staticmethod
+    def date_in_the_next_month(mday, dt):
+        if dt.month == 12:
+            next_month = 1
+            next_year = dt.year + 1
+        else:
+            next_year = dt.year
+            next_month = dt.month + 1
+            max_mday = calendar.monthrange(next_year, next_month)[1]
+            if mday > max_mday:
+                mday = max_mday
+
+        result = None
+        try:
+            result = date(next_year, next_month, mday)
+        except ValueError:
+            pass
+        return result
+
     def _parse_only_month_day_for_recurrency(self, string, newtask=True):
         """ Parse next Xth day in month from a certain date"""
         self_date = self.dt_by_accuracy(Accuracy.date)
@@ -472,32 +491,16 @@ class Date:
         except ValueError:
             return None
 
-        try:
-            result = self_date.replace(day=mday)
-        except ValueError:
-            result = None
-
-        # If it's not possible to recreate the date by replacing or
-        # newtask=False and the result is still less than self_date,
-        # we need to jump to the next month.
-        if result is None or (not newtask and result <= self_date):
-            if self_date.month == 12:
-                next_month = 1
-                next_year = self_date.year + 1
+        if newtask:
+            max_month = calendar.monthrange(self_date.year, self_date.month)[1]
+            # If the recurring term can be set during the running month
+            if self_date.day <= mday <= max_month:
+                return self_date.replace(day=mday)
             else:
-                next_year = self_date.year
-                next_month = self_date.month + 1
-                max_mday = calendar.monthrange(next_year, next_month)[1]
-                if mday > max_mday:
-                    mday = max_mday
+                return self.date_in_the_next_month(mday, self_date)
+        else:
+            return self.date_in_the_next_month(mday, self_date)
 
-
-            try:
-                result = date(next_year, next_month, mday)
-            except ValueError:
-                pass
-
-        return result
 
     def _parse_numerical_format_for_recurrency(self, string, newtask=True):
         """ Parse numerical formats like %Y/%m/%d,
