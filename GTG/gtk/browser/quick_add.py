@@ -69,27 +69,33 @@ def parse(text: str) -> Dict:
         data = match.group(0)
         result['tags'].add(data[1:])
 
-    while match := re.search(TOKEN_REGEX, text):
+    for match in re.finditer(TOKEN_REGEX, text):
         token = match.group(2)
         data = match.group(3)
+        matched = False
 
         if token in TAGS_TOKEN:
-            for t in data.split(','):
-                # Strip @
-                if t.startswith('@'):
-                    t = t[1:]
+            for tag in data.split(','):
+                if tag:
+                    # Strip @
+                    if tag.startswith('@'):
+                        tag = t[1:]
 
-                result['tags'].add(t)
+                    result['tags'].add(tag)
+
+            matched = True
 
         elif token in START_TOKEN:
             try:
                 result['start'] = Date.parse(data)
+                matched = True
             except ValueError:
                 pass
 
         elif token in DUE_TOKEN:
             try:
                 result['due'] = Date.parse(data)
+                matched = True
             except ValueError:
                 pass
 
@@ -97,11 +103,14 @@ def parse(text: str) -> Dict:
             try:
                 Date.today().parse_from_date(data)
                 result['recurring'] = data
+                matched = True
             except ValueError:
                 pass
 
         # Remove this part from the title
-        text = text[:match.start()] + text[match.end():]
+        if matched:
+            text = text.replace(match[0], '')
 
     result['title'] = text
     return result
+
