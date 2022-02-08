@@ -52,7 +52,7 @@
      <p>When using <em style="strong">tags:</em>, you can apply as many tags as you want using a comma as a separator (do not put a space between any of those tags). You can also use individual "@" tags, even in combination with the tags, if you want to have the tag as part of the task title.</p></item>
 <item>
      <title><em style="strong">due:<code>date</code></em> or <em style="strong">start:<code>date</code></em></title>
-     <p>Use <app>GTG's</app> natural date parsing syntax to assign a start and due date in a variety of formats. See <link href="gtg-date-parsing">Using the Date and Keyword Parsing Syntax</link> for more information.</p></item></terms>
+     <p>Use <app>GTG's</app> natural date parsing syntax to assign a start and due date in a variety of formats. See <link xref="gtg-date-parsing">Using the Date and Keyword Parsing Syntax</link> for more information.</p></item></terms>
 </section>
 
 <section id="quick-set-repeating">
@@ -63,7 +63,7 @@
 <terms>
 <item>
      <title><em style="strong">every:<code>recurring term</code></em></title>
-     <p>Similar to setting the date in the <gui>Quick Add Entry</gui>, use <app>GTG's</app> natural date parsing syntax to assign a <link href="gtg-recurring-task">recurring term</link> in a variety of formats.</p></item></terms>
+     <p>Similar to setting the date in the <gui>Quick Add Entry</gui>, use <app>GTG's</app> natural date parsing syntax to assign a <link xref="gtg-recurring-task">recurring term</link> in a variety of formats.</p></item></terms>
 </section>
 
 <section id="quickadd-examples">

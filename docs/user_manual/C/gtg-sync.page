@@ -41,7 +41,7 @@
 <p>List of available Sync Services in <app>GTG</app>:</p>
 
 <list>
-	<item><p><em style="strong"><link href="gtg-caldav.page">CalDAV</link></em>: Allows you to synchronize your <app>GTG</app> tasks with CalDAV tasks (full synchronization). CalDav is often provided by calendar and tasks/groupware services. </p></item>
+	<item><p><em style="strong"><link xref="gtg-caldav">CalDAV</link></em>: Allows you to synchronize your <app>GTG</app> tasks with CalDAV tasks (full synchronization). CalDAV is often provided by calendar and tasks/groupware services.</p></item>
 </list>
 
 </page>

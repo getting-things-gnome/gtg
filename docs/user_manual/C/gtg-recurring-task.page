@@ -46,7 +46,7 @@
 <section id="valid-recurring-terms">
 <title>Valid Recurring Terms</title>
 
-<p>The valid terms are very similar to the <link href="gtg-date-parsing">Keyword Parsing Syntax</link> for start and due dates with the exception of a few keywords.</p>
+<p>The valid terms are very similar to the <link xref="gtg-date-parsing">Keyword Parsing Syntax</link> for start and due dates with the exception of a few keywords.</p>
 <table rules="rows" frame="top bottom" ui:expanded="true">
 <title>Recurring Term Syntax</title>
   <thead>

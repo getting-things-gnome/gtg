@@ -38,7 +38,7 @@
 <item><p>You also have the option to show or hide tasks with a certain tag from the <gui>Actionable</gui> view mode. Enable or disable the <gui>Actionable</gui> toggle. This option is very useful if you have a tag such as "someday" that you use for tasks that you would like to complete at some point in the future but are not particularly urgent at this time.</p></item> 
 </list>
 
-<note style="important"><p>When personalizing tags, note that <app>GTG</app> displays only an icon <em style="strong">OR</em> a colored square next to a tag in the <gui>Sidebar</gui> — not both at the same time. If you select a color for a tag, you can enable the corresponding tasks to be highlighted by that color in the <gui>Taskview</gui>. See <link href="gtg-preferences">Preferences</link> for more information.</p></note>
+<note style="important"><p>When personalizing tags, note that <app>GTG</app> displays only an icon <em style="strong">OR</em> a colored square next to a tag in the <gui>Sidebar</gui> — not both at the same time. If you select a color for a tag, you can enable the corresponding tasks to be highlighted by that color in the <gui>Taskview</gui>. See <link xref="gtg-preferences">Preferences</link> for more information.</p></note>
 
 <figure>
   <title>Edit Tag</title>

@@ -28,7 +28,7 @@
 
   <p>A tag is a simple word that begins with the <em style="strong">@</em> sign.</p>
   
-  <p>When you type a word beginning with <em style="strong">@</em>, it is displayed with yellow highlighting, which is the indicator that <app>GTG</app> considers the word to be a tag. You have the option to associate tags with custom colors. Tags are displayed with any associated custom color in the <gui>Task Editor</gui>. See <link href="gtg-tag-color.page">Editing Tag Properties</link> for more information. You can select a tag while working in the <gui>Task Editor</gui> to view all other associated tasks in the <gui>Task Browser</gui>.</p>
+  <p>When you type a word beginning with <em style="strong">@</em>, it is displayed with yellow highlighting, which is the indicator that <app>GTG</app> considers the word to be a tag. You have the option to associate tags with custom colors. Tags are displayed with any associated custom color in the <gui>Task Editor</gui>. See <link xref="gtg-tag-color">Editing Tag Properties</link> for more information. You can select a tag while working in the <gui>Task Editor</gui> to view all other associated tasks in the <gui>Task Browser</gui>.</p>
 
 <figure>
   <title><app>GTG</app> Tag</title>

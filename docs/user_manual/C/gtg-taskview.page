@@ -35,7 +35,7 @@
 
 <p>You can further filter tasks by tag, in any view mode, by selecting a tag in the <gui>Sidebar</gui>.</p>
 
-<note style="tip"><p>You can use an option in the <gui>Edit tag</gui> pop-up box to hide tasks with certain tags from being displayed in the <gui>Actionable</gui> view mode. See the <link href="gtg-tag-color">Edit Tag Properties</link> section for more information.</p></note>
+<note style="tip"><p>You can use an option in the <gui>Edit tag</gui> pop-up box to hide tasks with certain tags from being displayed in the <gui>Actionable</gui> view mode. See the <link xref="gtg-tag-color">Edit Tag Properties</link> section for more information.</p></note>
 
 
 

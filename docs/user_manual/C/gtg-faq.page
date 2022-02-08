@@ -34,7 +34,7 @@
 </item> 
 
 <item><p><em>I cannot activate some of the <app>GTG</app> plugins.</em></p>
-<p>Sometimes missing dependencies impede the activation of a plugin. <app>GTG</app> tries to identify and list all of the missing dependencies, in bold, below the deactivated plugin description so that you can install them. See the <link href="gtg-plugins">Plugins</link> section for details.</p>
+<p>Sometimes missing dependencies impede the activation of a plugin. <app>GTG</app> tries to identify and list all of the missing dependencies, in bold, below the deactivated plugin description so that you can install them. See the <link xref="gtg-plugins">Plugins</link> section for details.</p>
 </item> 
 
 <item><p><em>Is there a way to set up a "waiting task" in cases where I am waiting for somebody/something else to happen before I can proceed with the task?</em></p>
