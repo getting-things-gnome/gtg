@@ -303,14 +303,15 @@ tasks = [
         'added': today,
         'modified': today,
         'content': _(
-            "❗ Take note that as of GTG 0.4, synchronization backends/services have "
-            "been disabled until someone (you?) steps forward to fix and maintain "
-            "them, as they have not been fully updated to work with the new codebase "
-            "or to interface with the latest APIs of those online services.\n"
+            "❗ Take note that as of GTG 0.6, the majority of synchronization "
+            "backends/services have been disabled until someone (you?) steps "
+            "forward to fix and maintain them, as they have not been fully "
+            "updated to work with the new codebase or to interface with the "
+            "latest APIs of those online services.\n"
             "\n"
             "Synchronization services allow GTG to synchronize (or import/export) "
             "tasks, notes or bugs from some websites or applications such as "
-            "Remember the Milk, Tomboy, LaunchPad, etc.\n"
+            "CalDAV compatible services.\n"
             "\n"
             "This can useful if, for instance, you want to access your "
             "tasks on several instances of GTG running on separate computers, or "
@@ -319,7 +320,9 @@ tasks = [
             "To use synchronization services, click the menu button in the main window, "
             "and select &quot;Synchronization&quot;. You will then have the "
             "possibility to select among several online or local services "
-            "from/to where you can import or export your tasks.")
+            "from/to where you can import or export your tasks.\n"
+            "As of v0.6, only CalDAV is available. You need to have the "
+            "&quot;caldav&quot; Python package installed if it doesn't appear.")
     },
 
     {
