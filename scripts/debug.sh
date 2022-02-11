@@ -31,7 +31,7 @@ Usage: $0 [-s dataset] [-t title] [-d] [-w] [-n] (-- args passed to gtg)
     -s dataset     Use the dataset located in $PWD/tmp/<dataset>
     -t title       Set a custom title/program name to use.
                    Use -t '' (empty) to un-set the title
-                   (default is: Dev GTG: (<dataset> dataset))
+                   (default is: 'GTG (debug version — "<dataset>" dataset)')
     -p prefix-prog Insert prefix-prog before the application file when
                    executing GTG. Example: -p 'python3 -m cProfile -o gtg.prof'
     -d             Enable debug mode, basically enables debug logging
@@ -66,9 +66,9 @@ export XDG_CONFIG_HOME="$PWD/tmp/$dataset/xdg/config"
 export XDG_DATA_DIRS="$PWD/.local_build/install/share:${XDG_DATA_DIRS:-/usr/local/share:/usr/share}"
 
 if [[ "$title" = "" ]] && [[ "$explicit_title" == 0 ]]; then
-    title="Dev GTG: $(basename "$(pwd)")"
+    title="GTG (debug version)"
     if [[ "$dataset" != "default" ]]; then
-        title="$title ($dataset dataset)"
+        title='GTG (debug version, "'$dataset'" dataset)'
     fi
 fi
 if ! [[ "$title" = "" ]]; then
