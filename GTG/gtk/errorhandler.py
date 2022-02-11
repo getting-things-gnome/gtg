@@ -24,24 +24,21 @@ class ExceptionHandlerDialog(Gtk.MessageDialog):
 
         formatting = {
             'url': info.REPORT_BUG_URL,
-            'urlname': info.REPORT_BUG_URL,
-            'appname': info.NAME,
         }
 
-        desc2 = _("""Please report the error with the following details and steps to trigger it to:
-<a href="{url}">{urlname}</a>
-Warning: Exiting may lose unsaved changes.""")
-        desc2 = desc2.format(**formatting)
-
         if ignorable:
-            title = _("{appname} encountered an error")
-            desc = _("""{appname} encountered an internal error, but it'll continue running.
-However, more unexpected things can happen, and thus be careful.""")
+            title = _("Internal error — GTG")
+            desc = _("""GTG encountered an internal error, but can continue running. Unexpected behavior may occur, so be careful.""")
         else:
-            title = _("{appname} encountered an error and needs to exit")
-            desc = _("""{appname} encountered an internal fatal error and needs to exit.""")
+            title = _("Fatal internal error — GTG")
+            desc = _("""GTG encountered an internal fatal error and needs to exit.""")
         title = title.format(**formatting)
         desc = desc.format(**formatting)
+
+        desc2 = _("""Recently unsaved changes (from the last few seconds) may be lost, so make sure to check your recent changes when launching GTG again afterwards.
+
+Please report the bug in <a href="{url}">our issue tracker</a>, with steps to trigger the problem and the error's details below.""")
+        desc2 = desc2.format(**formatting)
 
         super().__init__(None,
                          Gtk.DialogFlags.MODAL | Gtk.DialogFlags.DESTROY_WITH_PARENT,
@@ -52,6 +49,7 @@ However, more unexpected things can happen, and thus be careful.""")
         self.set_markup(desc)
         self.props.secondary_text = desc2
         self.props.secondary_use_markup = True
+        self.get_style_context().add_class("errorhandler")
 
         self.add_button(_("Exit"), self.Response.EXIT)
         if ignorable:
@@ -62,15 +60,24 @@ However, more unexpected things can happen, and thus be careful.""")
         self._additional_info.set_editable(False)
         self._additional_info.set_wrap_mode(Gtk.WrapMode.WORD_CHAR)
         self._additional_info.props.expand = True
+        self._additional_info.set_border_width(6) # Internal padding around text
+        self._additional_info.get_style_context().add_class("debug_text")
+
         expander_content = Gtk.ScrolledWindow()
+        expander_content.set_border_width(12) # Outer padding around text
         expander_content.add(self._additional_info)
-        self._expander = Gtk.Expander()
-        self._expander.set_label(_("Details to report"))
-        self._expander.add(expander_content)
-        self.get_content_area().add(self._expander)
-        self._expander.bind_property("expanded", self, "resizable",
-                                     GObject.BindingFlags.SYNC_CREATE)
-        self._expander.show_all()
+        expander = Gtk.Expander()
+        expander.set_label(_("Details to paste in your bug report"))
+        expander.add(expander_content)
+        self.get_content_area().add(expander)
+
+        # Prevent the window from becoming too tall, or having a weird aspect ratio:
+        expander_content.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
+        expander_content.props.height_request = 200
+        self.props.width_request = 450
+
+        expander.bind_property("expanded", self, "resizable", GObject.BindingFlags.SYNC_CREATE)
+        expander.show_all()
 
         self._exception = exception
         self.context_info = context_info # Also refreshes the text
@@ -108,15 +115,18 @@ However, more unexpected things can happen, and thus be careful.""")
 
         text = ""
         if self._context_info is not None:
-            text = text + "Context: " + self._context_info + "\n\n"
-        text = text + body + "\n\n"
+            text = text + "**Context:** " + self._context_info + "\n\n"
+        text = text + "```python-traceback\n" + body + "```\n\n"
         text = text + _collect_versions()
 
         self._additional_info.get_buffer().set_text(text)
 
 
 def _collect_versions() -> str:
-    """Collect version information of various components."""
+    """
+    Collect version information of various components,
+    and lay it out in markdown format to facilitate bug reports.
+    """
     def t2v(version_tuple) -> str:
         """Version tuple to a string."""
         return '.'.join(map(str, version_tuple))
@@ -124,11 +134,12 @@ def _collect_versions() -> str:
     gtk_version = (Gtk.get_major_version(),
                    Gtk.get_minor_version(),
                    Gtk.get_micro_version())
-    versions = f"""{info.NAME} {info.VERSION}
-{platform.python_implementation()} {python_version}
-GTK {t2v(gtk_version)}, GLib {t2v(GLib.glib_version)}
-PyGLib {t2v(GLib.pyglib_version)}, PyGObject {t2v(GObject.pygobject_version)}
-{platform.platform()}"""
+    versions = f"""**Software versions:**
+* {info.NAME} {info.VERSION}
+* {platform.python_implementation()} {python_version}
+* GTK {t2v(gtk_version)}, GLib {t2v(GLib.glib_version)}
+* PyGLib {t2v(GLib.pyglib_version)}, PyGObject {t2v(GObject.pygobject_version)}
+* {platform.platform()}"""
     return versions
 
 
