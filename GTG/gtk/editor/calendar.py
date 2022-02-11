@@ -76,6 +76,7 @@ class GTGCalendar(GObject.GObject):
             date = Date.today()
         self.__date = date
         if not date.is_fuzzy():
+            date = date.date()
             self.__calendar.select_day(date.day)
             # Calendar use 0..11 for a month so we need -1
             # We can't use conversion through python's datetime
