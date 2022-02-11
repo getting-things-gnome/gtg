@@ -34,7 +34,7 @@ SHORT_DESCRIPTION = _("""A personal productivity tool for GNOME,
 inspired by the GTD methodology.""") # A manual line break looks better in the About dialog.
 URL = "https://wiki.gnome.org/Apps/GTG"
 TRANSLATE_URL = "https://github.com/getting-things-gnome/gtg/"
-REPORT_BUG_URL = "https://github.com/getting-things-gnome/gtg/issues/new"
+REPORT_BUG_URL = "https://github.com/getting-things-gnome/gtg/issues/"
 EMAIL = "gtg-contributors@lists.launchpad.net"
 VERSION = '@VCS_TAG@'
 
