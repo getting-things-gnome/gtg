@@ -48,18 +48,78 @@
         <property name="margin_bottom">8</property>
         <property name="orientation">vertical</property>
         <child>
-          <object class="GtkModelButton" id="defer_0_btn">
+          <object class="GtkModelButton" id="defer_2_btn">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="receives_default">True</property>
-            <property name="tooltip_text" translatable="yes">Start today</property>
-            <property name="action_name">win.start_today</property>
-            <property name="text" translatable="yes">Today</property>
+            <property name="tooltip_text" translatable="yes">Start 2 days from now</property>
+            <property name="action_name">win.start_next_day_2</property>
+            <property name="text" translatable="no">label placeholder - in 2 days</property>
           </object>
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
             <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkModelButton" id="defer_3_btn">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="receives_default">True</property>
+            <property name="tooltip_text" translatable="yes">Start 3 days from now</property>
+            <property name="action_name">win.start_next_day_3</property>
+            <property name="text" translatable="no">label placeholder - in 3 days</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkModelButton" id="defer_4_btn">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="receives_default">True</property>
+            <property name="tooltip_text" translatable="yes">Start 4 days from now</property>
+            <property name="action_name">win.start_next_day_4</property>
+            <property name="text" translatable="no">label placeholder - in 4 days</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">2</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkModelButton" id="defer_5_btn">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="receives_default">True</property>
+            <property name="tooltip_text" translatable="yes">Start 5 days from now</property>
+            <property name="action_name">win.start_next_day_5</property>
+            <property name="text" translatable="no">label placeholder - in 5 days</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">3</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkModelButton" id="defer_6_btn">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="receives_default">True</property>
+            <property name="tooltip_text" translatable="yes">Start 6 days from now</property>
+            <property name="action_name">win.start_next_day_6</property>
+            <property name="text" translatable="no">label placeholder - in 6 days</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">4</property>
           </packing>
         </child>
         <child>
@@ -72,82 +132,7 @@
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">1</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkModelButton" id="defer_2_btn">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="receives_default">True</property>
-            <property name="tooltip_text" translatable="yes">Start 2 days from now</property>
-            <property name="action_name">win.start_next_day_2</property>
-            <property name="text" translatable="yes">Tuesday</property>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">2</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkModelButton" id="defer_3_btn">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="receives_default">True</property>
-            <property name="tooltip_text" translatable="yes">Start 3 days from now</property>
-            <property name="action_name">win.start_next_day_3</property>
-            <property name="text" translatable="yes">Wednesday</property>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">3</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkModelButton" id="defer_4_btn">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="receives_default">True</property>
-            <property name="tooltip_text" translatable="yes">Start 4 days from now</property>
-            <property name="action_name">win.start_next_day_4</property>
-            <property name="text" translatable="yes">Thursday</property>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">4</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkModelButton" id="defer_5_btn">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="receives_default">True</property>
-            <property name="tooltip_text" translatable="yes">Start 5 days from now</property>
-            <property name="action_name">win.start_next_day_5</property>
-            <property name="text" translatable="yes">Friday</property>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
             <property name="position">5</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkModelButton" id="defer_6_btn">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="receives_default">True</property>
-            <property name="tooltip_text" translatable="yes">Start 6 days from now</property>
-            <property name="action_name">win.start_next_day_6</property>
-            <property name="text" translatable="yes">Saturday</property>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">6</property>
           </packing>
         </child>
         <child>
@@ -161,7 +146,7 @@
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">8</property>
+            <property name="position">6</property>
           </packing>
         </child>
         <child>
@@ -174,7 +159,7 @@
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">9</property>
+            <property name="position">7</property>
           </packing>
         </child>
         <child>
@@ -188,7 +173,7 @@
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">10</property>
+            <property name="position">8</property>
           </packing>
         </child>
       </object>

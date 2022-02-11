@@ -282,17 +282,20 @@ class MainWindow(Gtk.ApplicationWindow):
         self.calendar.connect("date-changed", self.on_date_changed)
 
     def _set_defer_days(self, timer=None):
-        """Set days for the defer task menu."""
-
-        # Today is day 0, tomorrow is day 1. We don't need
-        # to calculate the weekday for those.
-
+        """
+        Set dynamic day labels for the toolbar's task deferring menubutton.
+        """
         today = datetime.datetime.today()
-
+        # Day 0 is "Today", day 1 is "Tomorrow",
+        # so we don't need to calculate the weekday name for those.
         for i in range(2, 7):
             defer_btn = self.builder.get_object(f"defer_{i}_btn")
-            name = (today + datetime.timedelta(days=i)).strftime('%A')
-            defer_btn.props.text = name
+
+            weekday_name = (today + datetime.timedelta(days=i)).strftime('%A')
+            translated_weekday_combo = _("In {number_of_days} days — {weekday}").format(
+                      weekday=weekday_name, number_of_days=i)
+
+            defer_btn.props.text = translated_weekday_combo
 
     def init_tags_sidebar(self):
         """
