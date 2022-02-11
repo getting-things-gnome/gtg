@@ -85,14 +85,14 @@
         <attribute name="label" translatable="yes">In 6 days</attribute>
         <attribute name="action">win.start_next_day_6</attribute>
       </item>
-      </section>
-      <section>
 
       <item>
         <attribute name="label" translatable="yes">Next Week</attribute>
         <attribute name="action">win.start_next_week</attribute>
       </item>
+      </section>
 
+      <section>
       <item>
         <attribute name="label" translatable="yes">Next Month</attribute>
         <attribute name="action">win.start_next_month</attribute>
@@ -102,7 +102,9 @@
         <attribute name="label" translatable="yes">Next Year</attribute>
         <attribute name="action">win.start_next_year</attribute>
       </item>
+      </section>
 
+      <section>
       <item>
         <attribute name="label" translatable="yes">Pick a Date...</attribute>
         <attribute name="action">win.start_custom</attribute>
@@ -120,6 +122,7 @@
     <submenu>
       <attribute name="label" translatable="yes">Set Due Date</attribute>
 
+    <section>
       <item>
         <attribute name="label" translatable="yes">Today</attribute>
         <attribute name="action">win.due_today</attribute>
@@ -129,7 +132,9 @@
         <attribute name="label" translatable="yes">Tomorrow</attribute>
         <attribute name="action">win.due_tomorrow</attribute>
       </item>
+      </section>
 
+      <section>
       <item>
         <attribute name="label" translatable="yes">Next Week</attribute>
         <attribute name="action">win.due_next_week</attribute>
@@ -144,11 +149,7 @@
         <attribute name="label" translatable="yes">Next Year</attribute>
         <attribute name="action">win.due_next_year</attribute>
       </item>
-
-      <item>
-        <attribute name="label" translatable="yes">Pick a Date...</attribute>
-        <attribute name="action">win.due_custom</attribute>
-      </item>
+      </section>
 
       <section>
         <item>
@@ -164,6 +165,13 @@
         <item>
           <attribute name="label" translatable="yes">Someday</attribute>
           <attribute name="action">win.due_someday</attribute>
+        </item>
+      </section>
+
+      <section>
+        <item>
+          <attribute name="label" translatable="yes">Pick a Date...</attribute>
+          <attribute name="action">win.due_custom</attribute>
         </item>
       </section>
 
