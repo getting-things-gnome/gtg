@@ -231,7 +231,7 @@ class Task(TreeNode):
         # then the task itself
         if status:
             if not init:
-                GObject.idle_add(self.req.emit, "status-changed", self.tid, status)
+                GObject.idle_add(self.req.emit, "status-changed", self.tid, self.status, status)
             self.status = status
 
         # Set closing date
