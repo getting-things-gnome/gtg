@@ -549,8 +549,9 @@ class Gamify:
     def load_ui_mode(self):
         self.preferences_load()
         if self.preferences['ui_type'] == 'FULL':
-            self.ui_combobox.set_entry_text_column(0)
+            self.ui_combobox.set_active(0)
         elif self.preferences['ui_type'] == 'BUTTON':
-            self.ui_combobox.set_entry_text_column(1)
+            self.ui_combobox.set_active(1)
         else:
-            self.ui_combobox.set_entry_text_column(2)
+            self.ui_combobox.set_active(2)
+

@@ -4,5 +4,5 @@ name=Gamify
 short-description=Gamify adds a game aspect to your GTG workflow.
 description=tracks how many tasks you have done during the day.
 authors=Zeddo123 <m.drissi@protonmail.com>
-version=0.1
+version=0.1.1
 enabled=False
