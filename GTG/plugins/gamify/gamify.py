@@ -195,10 +195,10 @@ class Gamify:
     def get_streak(self):
         return self.data['streak']
 
-    def on_status_changed(self, sender, task_id, status):
+    def on_status_changed(self, sender, task_id, old_status, status):
         if status == Task.STA_DONE:
             self.on_marked_as_done(task_id)
-        else:
+        elif status == Task.STA_ACTIVE and old_status == Task.STA_DONE:
             self.on_marked_as_not_done(task_id)
 
     def on_marked_as_done(self, task_id):
