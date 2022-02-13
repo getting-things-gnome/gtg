@@ -209,6 +209,11 @@ class AdaptiveFittingWidget(Gtk.Container):
         self.set_realized(True)
 
         allocation = self.get_allocation()
+        if self._spammy_debug:
+            log.debug("allocation={x=%r, y=%r, w=%r, h=%r}",
+                      allocation.x, allocation.y,
+                      allocation.width, allocation.height)
+
         attributes = Gdk.WindowAttr()
         attributes.window_type = Gdk.WindowType.CHILD
         attributes.x = allocation.x
@@ -233,8 +238,11 @@ class AdaptiveFittingWidget(Gtk.Container):
                       allocation.width, allocation.height)
 
         self.set_allocation(allocation)
+        Gtk.Container.do_size_allocate(self, allocation)  # Resizes Gdk.Window
+
         for ci in self._children:
             ci.widget.size_allocate(allocation)
+
         self._determine_and_save_active_child()
 
     # ------------------------------------------------------------------------
