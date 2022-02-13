@@ -51,7 +51,8 @@ Please report the bug in <a href="{url}">our issue tracker</a>, with steps to tr
         self.props.secondary_use_markup = True
         self.get_style_context().add_class("errorhandler")
 
-        self.add_button(_("Exit"), self.Response.EXIT)
+        exit_button = self.add_button(_("Exit"), self.Response.EXIT)
+        exit_button.get_style_context().add_class("destructive-action")
         if ignorable:
             self.add_button(_("Continue"), self.Response.CONTINUE)
 
