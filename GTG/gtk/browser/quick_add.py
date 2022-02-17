@@ -79,7 +79,7 @@ def parse(text: str) -> Dict:
                 if tag:
                     # Strip @
                     if tag.startswith('@'):
-                        tag = t[1:]
+                        tag = tag[1:]
 
                     result['tags'].add(tag)
 
