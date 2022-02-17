@@ -70,7 +70,7 @@ class TestQuickAddParse(TestCase):
     def test_strip_at(self):
         expected1 = {
             'title': 'Do a thing',
-            'tags': set(('home', 'work')),
+            'tags': {'home', 'work'},
             'start': None,
             'due': None,
             'recurring': None
@@ -78,7 +78,7 @@ class TestQuickAddParse(TestCase):
 
         expected2 = {
             'title': 'Do a thing',
-            'tags': set(('家', '仕事')),
+            'tags': {'家', '仕事'},
             'start': None,
             'due': None,
             'recurring': None
@@ -231,11 +231,12 @@ class TestQuickAddParse(TestCase):
         self.assertEqual(expected1, parse(text1))
         self.assertEqual(expected1, parse(text2))
         self.assertEqual(expected2, parse(text3))
+        self.assertEqual(expected3, parse(text4))
         self.assertEqual(expected4, parse(text5))
 
     def test_invalid_date(self):
         expected = {
-            'title': 'Do a thing',
+            'title': 'Do a thing due:never',
             'tags': set(),
             'start': None,
             'due': None,
