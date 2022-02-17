@@ -43,7 +43,8 @@ New Features:
  • Updated the anonymize script.
  • Added gtg://TASK-ID to the command-line help.
  • Added the -p parameter for profiling in debug.sh.
- 
+ • Switched to Pytest for unit testing
+
 Bug Fixes:
 
  • Fixed possible crash when trying to create parent task, and similar operations, 
