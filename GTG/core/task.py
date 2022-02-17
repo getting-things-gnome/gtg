@@ -26,7 +26,7 @@ import uuid
 import logging
 import xml.sax.saxutils as saxutils
 
-from gi.repository import GObject
+from gi.repository import GLib
 
 from gettext import gettext as _
 from GTG.core.dates import Date
@@ -231,7 +231,7 @@ class Task(TreeNode):
         # then the task itself
         if status:
             if not init:
-                GObject.idle_add(self.req.emit, "status-changed", self.tid, self.status, status)
+                GLib.idle_add(self.req.emit, "status-changed", self.tid, self.status, status)
             self.status = status
 
         # Set closing date
