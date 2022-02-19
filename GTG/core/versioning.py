@@ -54,7 +54,9 @@ def convert(path: str, ds: datastore) -> et.ElementTree:
     old_tree = xml.open_file(path, 'project')
 
     new_root = et.Element('gtgData')
-    new_root.set('appVersion', '0.5')
+    # Bump this on each new GTG release, no matter what:
+    new_root.set('appVersion', '0.6')
+    # Bump this when there are known file format changes:
     new_root.set('xmlVersion', '2')
 
     taglist, searches = convert_tags(old_tree)

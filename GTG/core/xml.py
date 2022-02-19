@@ -339,8 +339,10 @@ def skeleton() -> etree.Element:
     """Generate root XML tag and basic subtags."""
 
     root = etree.Element('gtgData')
-    root.set('appVersion', '0.5')
-    root.set('xmlVersion', '2')
+    # Bump this on each new GTG release, no matter what:
+    new_root.set('appVersion', '0.6')
+    # Bump this when there are known file format changes:
+    new_root.set('xmlVersion', '2')
 
     etree.SubElement(root, 'taglist')
     etree.SubElement(root, 'searchlist')
