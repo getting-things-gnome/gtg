@@ -20,6 +20,7 @@ GTG/gtk/data/plugins.ui
 GTG/gtk/data/preferences.ui
 GTG/gtk/data/task_editor.ui
 GTG/plugins/export/export.ui
+GTG/plugins/gamify/prefs.ui
 GTG/plugins/untouched_tasks/untouchedTasks.ui
 GTG/plugins/urgency_color/preferences.ui
 

@@ -37,7 +37,7 @@ class Gamify:
     LEVELS = {
         100: _('Beginner'),
         1000: _('Novice'),
-        2000: _('prefessional'),
+        2000: _('Professional'),
         4000: _('Expert'),
         9000: _('Master'),
         13000: _('Master II'),
@@ -313,7 +313,7 @@ class Gamify:
         score_label.set_markup(_("Level: <b>{current_level}</b>").format(
             current_level=self.get_current_level()))
         score_value = self.builder.get_object('score_value')
-        text = ngettext("%d Point", "%d Points", self.get_score())
+        text = ngettext("%d point", "%d points", self.get_score())
         score_value.set_markup(text % self.get_score())
 
     def button_update_goal(self):
@@ -331,7 +331,7 @@ class Gamify:
         if tasks_done >= goal:
             emoji = ["\U0001F60E", "\U0001F920", "\U0001F640", "\U0001F31F"]
             headerbar_label.set_markup(random.choice(emoji))
-            headerbar_msg.set_markup(_("Good Job!\nYou have achieved your goal."))
+            headerbar_msg.set_markup(_("<i>Good Job!</i>\nYou have achieved your daily goal."))
         elif tasks_done >= 1:
             emoji = ["\U0001F600", "\U0001F60C", "\U0000270A"]
             headerbar_label.set_markup(random.choice(emoji))
@@ -340,7 +340,7 @@ class Gamify:
             emoji = ["\U0001F643", "\U0001F648", "\U0001F995", "\U0001F9A5"]
             headerbar_label.set_markup(random.choice(emoji))
             headerbar_msg.set_markup(
-                _("Get Down to Business\nYou haven't achieved any tasks today."))
+                _("<i>Get Down to Business!</i>\nYou haven't achieved any tasks today."))
 
     def button_update_streak(self):
         """Update the streak numbers in the BUTTON widget"""
