@@ -206,7 +206,7 @@ class PluginEngine(Borg):
                         # also refresh the content of the task
                         tv = api.get_ui().get_textview()
                         if tv:
-                            tv.modified(refresheditor=False)
+                            tv.on_modified(None)
 
     def deactivate_plugins(self, plugins=[]):
         """Deactivate plugins."""
@@ -227,7 +227,7 @@ class PluginEngine(Borg):
                         # also refresh the content of the task
                         tv = api.get_ui().get_textview()
                         if tv:
-                            tv.modified(refresheditor=False)
+                            tv.on_modified(None)
                 plugin.active = False
             # if plugin is enabled and has onQuit member, execute it
             else:
