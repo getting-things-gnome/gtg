@@ -99,6 +99,10 @@ class Gamify:
         self.plugin_api = plugin_api
         self.browser = plugin_api.get_browser()
 
+        # Don't "activate" for task editors
+        if plugin_api.is_editor():
+            return
+
         # Load preferences and data
         self.analytics_load()
         self.preferences_load()
@@ -268,7 +272,9 @@ class Gamify:
         self.headerbar_button = self.builder.get_object('gamify-headerbar')
 
         self.headerbar = self.plugin_api.get_header()
-        self.headerbar.add(self.headerbar_button)
+
+        if self.headerbar:
+            self.headerbar.add(self.headerbar_button)
 
     def remove_headerbar_button(self):
         self.headerbar.remove(self.headerbar_button)
