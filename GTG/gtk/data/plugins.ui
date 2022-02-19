@@ -166,6 +166,9 @@
                         <property name="receives_default">True</property>
                         <property name="use_underline">True</property>
                         <signal name="released" handler="on_plugin_configure" swapped="no"/>
+                        <style>
+                          <class name="suggested-action"/>
+                        </style>
                       </object>
                       <packing>
                         <property name="expand">False</property>
