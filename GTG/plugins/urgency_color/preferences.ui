@@ -1,44 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.36.0 -->
+<!-- Generated with glade 3.38.2 -->
 <interface>
   <requires lib="gtk+" version="3.22"/>
   <object class="GtkAdjustment" id="spinbutton_reddays_adjustment">
     <property name="upper">100</property>
-    <property name="step_increment">5</property>
-    <property name="page_increment">10</property>
+    <property name="step-increment">5</property>
+    <property name="page-increment">10</property>
   </object>
   <object class="GtkWindow" id="prefs_window">
-    <property name="can_focus">False</property>
-    <property name="border_width">5</property>
-    <property name="type_hint">dialog</property>
+    <property name="can-focus">False</property>
+    <property name="border-width">12</property>
     <property name="title" translatable="yes">Plugin Preferences</property>
+    <property name="type-hint">dialog</property>
     <signal name="delete-event" handler="on_prefs_window_delete_event" swapped="no"/>
     <child>
       <object class="GtkBox" id="vbox_main">
-        <property name="can_focus">False</property>
+        <property name="can-focus">False</property>
         <property name="orientation">vertical</property>
-        <property name="spacing">2</property>
+        <property name="spacing">12</property>
         <child>
           <object class="GtkFrame" id="frame_reddays">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="label_xalign">0</property>
-            <property name="shadow_type">in</property>
+            <property name="can-focus">False</property>
+            <property name="label-xalign">0</property>
+            <property name="shadow-type">none</property>
             <child>
               <object class="GtkBox" id="box_reddays">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="margin_start">12</property>
-                <property name="margin_top">5</property>
-                <property name="margin_bottom">5</property>
+                <property name="can-focus">False</property>
+                <property name="margin-start">12</property>
+                <property name="margin-top">5</property>
+                <property name="margin-bottom">5</property>
+                <property name="spacing">6</property>
                 <child>
                   <object class="GtkLabel" id="label3">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">Danger zone span</property>
+                    <property name="can-focus">False</property>
+                    <property name="label" translatable="yes">Danger zone span:</property>
+                    <property name="xalign">0</property>
                   </object>
                   <packing>
-                    <property name="expand">True</property>
+                    <property name="expand">False</property>
                     <property name="fill">True</property>
                     <property name="position">0</property>
                   </packing>
@@ -46,10 +48,10 @@
                 <child>
                   <object class="GtkSpinButton" id="spinbutton_reddays">
                     <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="invisible_char">•</property>
+                    <property name="can-focus">True</property>
+                    <property name="invisible-char">•</property>
                     <property name="adjustment">spinbutton_reddays_adjustment</property>
-                    <property name="climb_rate">10</property>
+                    <property name="climb-rate">10</property>
                     <property name="numeric">True</property>
                     <signal name="value-changed" handler="on_prefs_spinbutton_reddays_changed" swapped="no"/>
                   </object>
@@ -62,7 +64,7 @@
                 <child>
                   <object class="GtkLabel" id="label4">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
+                    <property name="can-focus">False</property>
                     <property name="label" translatable="yes">%</property>
                   </object>
                   <packing>
@@ -77,9 +79,12 @@
             <child type="label">
               <object class="GtkLabel" id="label1">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="label" translatable="yes">&lt;b&gt;Danger zone&lt;/b&gt;</property>
-                <property name="use_markup">True</property>
+                <property name="can-focus">False</property>
+                <property name="label" translatable="yes">Danger zone</property>
+                <attributes>
+                  <attribute name="weight" value="bold"/>
+                  <attribute name="scale" value="1.2"/>
+                </attributes>
               </object>
             </child>
           </object>
@@ -92,28 +97,29 @@
         <child>
           <object class="GtkFrame" id="frame_colors">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="label_xalign">0</property>
-            <property name="shadow_type">in</property>
+            <property name="can-focus">False</property>
+            <property name="label-xalign">0</property>
+            <property name="shadow-type">none</property>
             <child>
               <object class="GtkBox" id="vbox_colors">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="margin_start">12</property>
-                <property name="margin_top">5</property>
-                <property name="margin_bottom">5</property>
+                <property name="can-focus">False</property>
+                <property name="margin-start">12</property>
+                <property name="margin-top">5</property>
+                <property name="margin-bottom">5</property>
                 <property name="orientation">vertical</property>
-                <property name="spacing">5</property>
+                <property name="spacing">6</property>
                 <child>
                   <object class="GtkBox" id="box_colors_overdue">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
+                    <property name="can-focus">False</property>
+                    <property name="spacing">6</property>
                     <child>
                       <object class="GtkColorButton" id="colorbutton_overdue">
-                        <property name="use_action_appearance">False</property>
+                        <property name="use-action-appearance">False</property>
                         <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="receives_default">True</property>
+                        <property name="can-focus">True</property>
+                        <property name="receives-default">True</property>
                         <signal name="color-set" handler="on_prefs_colorbutton_overdue_changed" swapped="no"/>
                       </object>
                       <packing>
@@ -125,8 +131,9 @@
                     <child>
                       <object class="GtkLabel" id="label20">
                         <property name="visible">True</property>
-                        <property name="can_focus">False</property>
+                        <property name="can-focus">False</property>
                         <property name="label" translatable="yes">Overdue</property>
+                        <property name="xalign">0</property>
                       </object>
                       <packing>
                         <property name="expand">True</property>
@@ -144,13 +151,14 @@
                 <child>
                   <object class="GtkBox" id="box_colors_high">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
+                    <property name="can-focus">False</property>
+                    <property name="spacing">6</property>
                     <child>
                       <object class="GtkColorButton" id="colorbutton_high">
-                        <property name="use_action_appearance">False</property>
+                        <property name="use-action-appearance">False</property>
                         <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="receives_default">True</property>
+                        <property name="can-focus">True</property>
+                        <property name="receives-default">True</property>
                         <signal name="color-set" handler="on_prefs_colorbutton_high_changed" swapped="no"/>
                       </object>
                       <packing>
@@ -162,8 +170,9 @@
                     <child>
                       <object class="GtkLabel" id="label5">
                         <property name="visible">True</property>
-                        <property name="can_focus">False</property>
+                        <property name="can-focus">False</property>
                         <property name="label" translatable="yes">High</property>
+                        <property name="xalign">0</property>
                       </object>
                       <packing>
                         <property name="expand">True</property>
@@ -181,13 +190,14 @@
                 <child>
                   <object class="GtkBox" id="box_colors_normal">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
+                    <property name="can-focus">False</property>
+                    <property name="spacing">6</property>
                     <child>
                       <object class="GtkColorButton" id="colorbutton_normal">
-                        <property name="use_action_appearance">False</property>
+                        <property name="use-action-appearance">False</property>
                         <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="receives_default">True</property>
+                        <property name="can-focus">True</property>
+                        <property name="receives-default">True</property>
                         <signal name="color-set" handler="on_prefs_colorbutton_normal_changed" swapped="no"/>
                       </object>
                       <packing>
@@ -199,8 +209,9 @@
                     <child>
                       <object class="GtkLabel" id="label6">
                         <property name="visible">True</property>
-                        <property name="can_focus">False</property>
+                        <property name="can-focus">False</property>
                         <property name="label" translatable="yes">Normal</property>
+                        <property name="xalign">0</property>
                       </object>
                       <packing>
                         <property name="expand">True</property>
@@ -218,13 +229,14 @@
                 <child>
                   <object class="GtkBox" id="box_colors_low">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
+                    <property name="can-focus">False</property>
+                    <property name="spacing">6</property>
                     <child>
                       <object class="GtkColorButton" id="colorbutton_low">
-                        <property name="use_action_appearance">False</property>
+                        <property name="use-action-appearance">False</property>
                         <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="receives_default">True</property>
+                        <property name="can-focus">True</property>
+                        <property name="receives-default">True</property>
                         <signal name="color-set" handler="on_prefs_colorbutton_low_changed" swapped="no"/>
                       </object>
                       <packing>
@@ -236,8 +248,9 @@
                     <child>
                       <object class="GtkLabel" id="label7">
                         <property name="visible">True</property>
-                        <property name="can_focus">False</property>
+                        <property name="can-focus">False</property>
                         <property name="label" translatable="yes">Low</property>
+                        <property name="xalign">0</property>
                       </object>
                       <packing>
                         <property name="expand">True</property>
@@ -257,9 +270,12 @@
             <child type="label">
               <object class="GtkLabel" id="label2">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="label" translatable="yes">&lt;b&gt;Urgency level color&lt;/b&gt;</property>
-                <property name="use_markup">True</property>
+                <property name="can-focus">False</property>
+                <property name="label" translatable="yes">Urgency level colors</property>
+                <attributes>
+                  <attribute name="weight" value="bold"/>
+                  <attribute name="scale" value="1.2"/>
+                </attributes>
               </object>
             </child>
           </object>
@@ -270,18 +286,31 @@
           </packing>
         </child>
         <child>
+          <object class="GtkSeparator">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">2</property>
+          </packing>
+        </child>
+        <child>
           <object class="GtkButtonBox" id="hbuttonbox">
-            <property name="can_focus">False</property>
-            <property name="margin_top">5</property>
-            <property name="border_width">6</property>
-            <property name="homogeneous">True</property>
+            <property name="can-focus">False</property>
+            <property name="margin-top">5</property>
+            <property name="border-width">6</property>
             <child>
               <object class="GtkButton" id="button_reset">
                 <property name="label" translatable="yes">Reset</property>
                 <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
+                <property name="can-focus">True</property>
+                <property name="receives-default">True</property>
                 <signal name="clicked" handler="on_prefs_reset_event" swapped="no"/>
+                <style>
+                  <class name="destructive-action"/>
+                </style>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -293,8 +322,8 @@
               <object class="GtkButton" id="button_apply">
                 <property name="label" translatable="yes">Apply</property>
                 <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
+                <property name="can-focus">True</property>
+                <property name="receives-default">True</property>
                 <signal name="clicked" handler="on_prefs_apply_event" swapped="no"/>
               </object>
               <packing>
@@ -307,13 +336,10 @@
           <packing>
             <property name="expand">True</property>
             <property name="fill">True</property>
-            <property name="position">3</property>
+            <property name="position">4</property>
           </packing>
         </child>
       </object>
-    </child>
-    <child type="titlebar">
-      <placeholder/>
     </child>
   </object>
 </interface>
