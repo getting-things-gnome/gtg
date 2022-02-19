@@ -11,6 +11,7 @@
     <property name="can_focus">False</property>
     <property name="border_width">5</property>
     <property name="type_hint">dialog</property>
+    <property name="title" translatable="yes">Plugin Preferences</property>
     <signal name="delete-event" handler="on_prefs_window_delete_event" swapped="no"/>
     <child>
       <object class="GtkBox" id="vbox_main">

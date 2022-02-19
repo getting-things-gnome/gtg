@@ -205,7 +205,6 @@ class UrgencyColorPlugin():
         # Get the widgets
         #   Window
         self.prefs_window = self.builder.get_object('prefs_window')
-        self.prefs_window.set_title((f'GTG - {self.PLUGIN_NAME} preferences'))
         self.prefs_window.set_size_request(300, -1)
         self.prefs_window.hide_on_delete()
 
