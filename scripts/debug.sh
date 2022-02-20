@@ -80,6 +80,7 @@ if [[ ! -d .local_build ]] || [[ ! -e .local_build/build.ninja ]]; then
 fi
 
 if [[ "$norun" -eq 0 ]]; then
+    rm -f .local_build/GTG/plugins/*.gtg-plugin # Regenerate for translations
     ninja -C .local_build install || exit $?
     if [ "$pydebug" = 1 ]; then
         # https://docs.python.org/3/library/devmode.html#devmode
