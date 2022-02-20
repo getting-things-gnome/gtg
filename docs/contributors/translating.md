@@ -30,6 +30,24 @@ For example, `LC_ALL=de_DE.UTF-8 LANGUAGE=de_DE.UTF-8 ./launch.sh` would run GTG
 You don't need the `LC_ALL=<lang>.UTF-8 LANGUAGE=<lang>.UTF-8` part if you run the system in the destination language anyway.
 You can use the `C` language to run without any translations: `LC_ALL=C.UTF-8 LANGUAGE=C.UTF-8 ./launch.sh`
 
+## Testing error handler dialog
+
+There is the error handler dialog which is used when an unhandled exception occurs.
+Optimally it would never show up, but if it does, then it asks the user to report the error.
+Under normal circumstances you won't be able to make it show up, but for translation testing here is how to make it show up.
+
+Activate the developer console plugin, then open the developer console (under the main menu button) and paste:
+
+```python
+import GTG.gtk.errorhandler; GTG.gtk.errorhandler.do_error_dialog(Exception("Exception description"), "This is English only because it is for developers", True)
+```
+
+There is a variation when the error isn't recoverable and continuing isn't an option (currently when something happens at startup):
+
+```python
+import GTG.gtk.errorhandler; GTG.gtk.errorhandler.do_error_dialog(Exception("Exception description"), "This is English only because it is for developers", False)
+```
+
 # Submitting
 
 Done translating and it looks good?
