@@ -37,7 +37,7 @@ class SendEmailPlugin():
         self.plugin_api = plugin_api
 
         self.menu_item = Gtk.ModelButton.new()
-        self.menu_item.set_label(_("Send via email"))
+        self.menu_item.props.text = _("Send via email")
         self.menu_item.connect("clicked", self.onTbTaskButton, plugin_api)
         self.plugin_api.add_menu_item(self.menu_item)
 

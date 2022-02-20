@@ -192,9 +192,9 @@ class HamsterPlugin():
         task_menu_item = Gtk.ModelButton()
         self.task_menu_items.update({task.get_id(): task_menu_item})
         if self.is_task_active(task.get_id()):
-            task_menu_item.set_label(self.STOP_ACTIVITY_LABEL)
+            task_menu_item.props.text = self.STOP_ACTIVITY_LABEL
         else:
-            task_menu_item.set_label(self.START_ACTIVITY_LABEL)
+            task_menu_item.props.text = self.START_ACTIVITY_LABEL
         task_menu_item.show_all()
         task_menu_item.connect('clicked', self.task_cb, plugin_api)
         plugin_api.add_menu_item(task_menu_item)
