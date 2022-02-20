@@ -93,8 +93,5 @@ Make sure to this AFTER COMMITING YOUR CHANGES!
 * During launching, it might complain about certain files not being found in [`po/POTFILES.in`][POTFILES.IN].
   It is safe to remove the lines from that file and re-run until it works.
   It would be useful to comment about that if you're submitting your translation, just in case.
-* Plugin related strings don't update after updating the translation.
-  The cause is unknown, but you can delete the plugin files to re-generate
-  them using the new translations: `rm -f .local_build/GTG/plugins/*.gtg-plugin`
 
 [POTFILES.IN]: ../../po/POTFILES.in
