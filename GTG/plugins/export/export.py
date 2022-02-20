@@ -148,7 +148,7 @@ class ExportPlugin():
     def _init_gtk(self):
         """ Initialize all the GTK widgets """
         self.menu_item = Gtk.ModelButton()
-        self.menu_item.set_label(_("Export the tasks currently listed"))
+        self.menu_item.props.text = _("Export the tasks currently listed")
         self.menu_item.connect('clicked', self.show_dialog)
         self.menu_item.show()
         self.plugin_api.add_menu_item(self.menu_item)

@@ -60,7 +60,7 @@ class UntouchedTasksPlugin():
 
         self.builder.connect_signals(SIGNAL_CONNECTIONS_DIC)
         self.menu_item = Gtk.ModelButton.new()
-        self.menu_item.set_label(_("Add @untouched tag"))
+        self.menu_item.props.text = _("Add @untouched tag")
         self.menu_item.connect("clicked", self.add_untouched_tag)
 
     def activate(self, plugin_api):
