@@ -21,9 +21,11 @@ GTG/gtk/data/preferences.ui
 GTG/gtk/data/task_editor.ui
 GTG/plugins/export/export.ui
 GTG/plugins/gamify/prefs.ui
+GTG/plugins/hamster/prefs.ui
 GTG/plugins/untouched_tasks/untouchedTasks.ui
 GTG/plugins/urgency_color/preferences.ui
 
+GTG/backends/backend_caldav.py
 GTG/backends/backend_localfile.py
 GTG/backends/backend_signals.py
 GTG/backends/generic_backend.py
@@ -86,6 +88,7 @@ GTG/gtk/editor/editor.py
 GTG/gtk/editor/recurring_menu.py
 GTG/gtk/editor/__init__.py
 GTG/gtk/editor/taskview.py
+GTG/gtk/errorhandler.py
 GTG/gtk/general_preferences.py
 GTG/gtk/__init__.py
 GTG/gtk/plugins.py
@@ -113,3 +116,4 @@ GTG/plugins/dev_console/console.py
 GTG/plugins/dev_console/utils.py
 GTG/plugins/gamify/gamify.py
 GTG/plugins/gamify/__init__.py
+GTG/plugins/hamster/hamster.py
