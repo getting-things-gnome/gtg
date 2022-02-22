@@ -1,0 +1,22 @@
+# Generate a development Flatpak every friday at midnight
+
+on:
+  schedule:
+  - cron: "0 0 * * 5"
+
+name: Weekly Development Flatpak
+jobs:
+  flatpak:
+    name: "Flatpak"
+    runs-on: ubuntu-latest
+    container:
+      image: bilelmoussaoui/flatpak-github-actions:gnome-41
+      options: --privileged
+    steps:
+    - uses: actions/checkout@v2
+    - uses: bilelmoussaoui/flatpak-github-actions/flatpak-builder@v4
+      with:
+        bundle: org.gnome.GTGDevel.flatpak
+        manifest-path: flatpak/org.gnome.GTG.json
+        cache-key: flatpak-builder-${{ github.sha }}
+
