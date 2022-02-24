@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-02-19 02:05-0500\n"
+"POT-Creation-Date: 2022-02-24 11:39-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -135,16 +135,17 @@ msgstr ""
 
 #: GTG/plugins/urgency-color.gtg-plugin.desktop:6
 msgid ""
-"This plugin will calculate the urgency status of every of your currently "
+"This plugin will calculate the urgency status of every one of your currently "
 "active tasks and color-code it accordingly.\n"
 "\n"
 "Color code\n"
 "\n"
 "Assuming your settings are default:\n"
+"Grey means your task is overdue.\n"
 "Red means you are within the last 30% of days between the start-date and due-"
-"date, or your task is overdue.\n"
+"date.\n"
 "Yellow means your task's start-date has passed.\n"
-"Green means your task's start-date is oncoming."
+"Green means your task's start-date is upcoming."
 msgstr ""
 
 #: GTG/plugins/hamster.gtg-plugin.desktop:4
@@ -171,16 +172,16 @@ msgstr ""
 msgid "tracks how many tasks you have done during the day."
 msgstr ""
 
-#: GTG/gtk/data/backends.ui:58
+#: GTG/gtk/data/backends.ui:61
 msgid "_Add"
 msgstr ""
 
-#: GTG/gtk/data/backends.ui:72
+#: GTG/gtk/data/backends.ui:75
 msgid "_Remove"
 msgstr ""
 
-#: GTG/gtk/data/backends.ui:136 GTG/gtk/data/main_window.ui:347
-#: GTG/gtk/data/plugins.ui:139
+#: GTG/gtk/data/backends.ui:139 GTG/gtk/data/main_window.ui:347
+#: GTG/gtk/data/plugins.ui:145
 msgid "Help"
 msgstr ""
 
@@ -543,7 +544,8 @@ msgstr ""
 msgid "About GTG"
 msgstr ""
 
-#: GTG/gtk/data/main_window.ui:413 GTG/gtk/browser/treeview_factory.py:283
+#: GTG/gtk/data/main_window.ui:413 GTG/plugins/hamster/prefs.ui:259
+#: GTG/gtk/browser/treeview_factory.py:283
 msgid "Tags"
 msgstr ""
 
@@ -602,44 +604,44 @@ msgstr ""
 msgid "Modify Tags"
 msgstr ""
 
-#: GTG/gtk/data/modify_tags.ui:23 GTG/plugins/gamify/prefs.ui:138
+#: GTG/gtk/data/modify_tags.ui:23 GTG/plugins/gamify/prefs.ui:258
+#: GTG/plugins/untouched_tasks/untouchedTasks.ui:136
+msgid "Cancel"
+msgstr ""
+
+#: GTG/gtk/data/modify_tags.ui:37 GTG/plugins/gamify/prefs.ui:138
 #: GTG/plugins/untouched_tasks/untouchedTasks.ui:150
 #: GTG/plugins/urgency_color/preferences.ui:323
 msgid "Apply"
 msgstr ""
 
-#: GTG/gtk/data/modify_tags.ui:41 GTG/plugins/gamify/prefs.ui:258
-#: GTG/plugins/untouched_tasks/untouchedTasks.ui:136
-msgid "Cancel"
-msgstr ""
-
-#: GTG/gtk/data/modify_tags.ui:65
+#: GTG/gtk/data/modify_tags.ui:68
 msgid "Enter the name of the tag(s) you wish to add or remove:"
 msgstr ""
 
-#: GTG/gtk/data/modify_tags.ui:80
+#: GTG/gtk/data/modify_tags.ui:83
 msgid "TagName"
 msgstr ""
 
-#: GTG/gtk/data/modify_tags.ui:92
+#: GTG/gtk/data/modify_tags.ui:95
 msgid ""
 "Hint: you can add several tags by separating them with\n"
 "space. Place '!' before tags you want to remove."
 msgstr ""
 
-#: GTG/gtk/data/modify_tags.ui:106
+#: GTG/gtk/data/modify_tags.ui:109
 msgid "Apply to subtasks"
 msgstr ""
 
-#: GTG/gtk/data/plugins.ui:51
+#: GTG/gtk/data/plugins.ui:54
 msgid "<b>Dependencies</b>"
 msgstr ""
 
-#: GTG/gtk/data/plugins.ui:157
+#: GTG/gtk/data/plugins.ui:163
 msgid "_Configure Plugin"
 msgstr ""
 
-#: GTG/gtk/data/plugins.ui:175
+#: GTG/gtk/data/plugins.ui:181
 msgid "_About Plugin"
 msgstr ""
 
@@ -890,6 +892,62 @@ msgstr ""
 msgid "Discrete bar only"
 msgstr ""
 
+#: GTG/plugins/hamster/prefs.ui:8
+msgid "Hamster Preferences"
+msgstr ""
+
+#: GTG/plugins/hamster/prefs.ui:73
+msgid "Activity Title"
+msgstr ""
+
+#: GTG/plugins/hamster/prefs.ui:95
+msgid "Task Title"
+msgstr ""
+
+#: GTG/plugins/hamster/prefs.ui:96
+msgid "Task Tag"
+msgstr ""
+
+#: GTG/plugins/hamster/prefs.ui:134
+msgid "Category"
+msgstr ""
+
+#: GTG/plugins/hamster/prefs.ui:156 GTG/plugins/hamster/prefs.ui:163
+msgid "Let hamster choose"
+msgstr ""
+
+#: GTG/plugins/hamster/prefs.ui:157
+msgid "GTG Tag"
+msgstr ""
+
+#: GTG/plugins/hamster/prefs.ui:158
+msgid "Default GTG Tag if activity is unsorted"
+msgstr ""
+
+#: GTG/plugins/hamster/prefs.ui:197
+msgid "Description"
+msgstr ""
+
+#: GTG/plugins/hamster/prefs.ui:219
+msgid "GTG task title"
+msgstr ""
+
+#: GTG/plugins/hamster/prefs.ui:220
+msgid "GTG task contents"
+msgstr ""
+
+#: GTG/plugins/hamster/prefs.ui:221 GTG/plugins/hamster/prefs.ui:284
+msgid "None"
+msgstr ""
+
+#: GTG/plugins/hamster/prefs.ui:282
+msgid "All GTG tags"
+msgstr ""
+
+#: GTG/plugins/hamster/prefs.ui:283
+msgid "GTG tags already used in Hamster"
+msgstr ""
+
 #: GTG/plugins/untouched_tasks/untouchedTasks.ui:36
 msgid "Add "
 msgstr ""
@@ -940,6 +998,24 @@ msgstr ""
 
 #: GTG/plugins/urgency_color/preferences.ui:306
 msgid "Reset"
+msgstr ""
+
+#: GTG/backends/backend_caldav.py:62
+msgid "CalDAV tasks"
+msgstr ""
+
+#: GTG/backends/backend_caldav.py:67
+msgid "Lets you synchronize your GTG tasks with CalDAV tasks"
+msgstr ""
+
+#: GTG/backends/backend_caldav.py:76
+msgid "insert your username"
+msgstr ""
+
+#: GTG/backends/backend_caldav.py:221
+msgid ""
+"You need a correct login to CalDAVConfigure CalDAV with login information. "
+"Error:"
 msgstr ""
 
 #: GTG/backends/backend_localfile.py:64
@@ -1581,7 +1657,7 @@ msgstr ""
 msgid "Confirm"
 msgstr ""
 
-#: GTG/gtk/browser/backend_infobar.py:142
+#: GTG/gtk/browser/backend_infobar.py:142 GTG/gtk/errorhandler.py:57
 msgid "Continue"
 msgstr ""
 
@@ -1834,6 +1910,42 @@ msgstr ""
 msgid "Copy Link to Clipboard"
 msgstr ""
 
+#: GTG/gtk/errorhandler.py:30
+msgid "Internal error — GTG"
+msgstr ""
+
+#: GTG/gtk/errorhandler.py:31
+msgid ""
+"GTG encountered an internal error, but can continue running. Unexpected "
+"behavior may occur, so be careful."
+msgstr ""
+
+#: GTG/gtk/errorhandler.py:33
+msgid "Fatal internal error — GTG"
+msgstr ""
+
+#: GTG/gtk/errorhandler.py:34
+msgid "GTG encountered an internal fatal error and needs to exit."
+msgstr ""
+
+#: GTG/gtk/errorhandler.py:38
+#, python-brace-format
+msgid ""
+"Recently unsaved changes (from the last few seconds) may be lost, so make "
+"sure to check your recent changes when launching GTG again afterwards.\n"
+"\n"
+"Please report the bug in <a href=\"{url}\">our issue tracker</a>, with steps "
+"to trigger the problem and the error's details below."
+msgstr ""
+
+#: GTG/gtk/errorhandler.py:54
+msgid "Exit"
+msgstr ""
+
+#: GTG/gtk/errorhandler.py:71
+msgid "Details to paste in your bug report"
+msgstr ""
+
 #: GTG/plugins/export/export.py:90
 msgid "No task matches your criteria. Empty report can't be generated."
 msgstr ""
@@ -2019,35 +2131,53 @@ msgstr ""
 msgid "Productivity Lord"
 msgstr ""
 
-#: GTG/plugins/gamify/gamify.py:313
+#: GTG/plugins/gamify/gamify.py:319
 #, python-brace-format
 msgid "Level: <b>{current_level}</b>"
 msgstr ""
 
-#: GTG/plugins/gamify/gamify.py:316
+#: GTG/plugins/gamify/gamify.py:322
 #, python-format
 msgid "%d point"
 msgid_plural "%d points"
 msgstr[0] ""
 msgstr[1] ""
 
-#: GTG/plugins/gamify/gamify.py:334
+#: GTG/plugins/gamify/gamify.py:340
 msgid ""
 "<i>Good Job!</i>\n"
 "You have achieved your daily goal."
 msgstr ""
 
-#: GTG/plugins/gamify/gamify.py:338
+#: GTG/plugins/gamify/gamify.py:344
 msgid "Only a few tasks to go!"
 msgstr ""
 
-#: GTG/plugins/gamify/gamify.py:343
+#: GTG/plugins/gamify/gamify.py:349
 msgid ""
 "<i>Get Down to Business!</i>\n"
 "You haven't achieved any tasks today."
 msgstr ""
 
-#: GTG/plugins/gamify/gamify.py:353
+#: GTG/plugins/gamify/gamify.py:359
 #, python-brace-format
 msgid "{emoji} <b>{streak} day</b> streak"
+msgstr ""
+
+#: GTG/plugins/hamster/hamster.py:40
+msgid "Start a new activity in Hamster Time Tracker based on the selected task"
+msgstr ""
+
+#: GTG/plugins/hamster/hamster.py:42
+msgid ""
+"Stop tracking the current activity in Hamster Time Tracker corresponding to "
+"the selected task"
+msgstr ""
+
+#: GTG/plugins/hamster/hamster.py:45
+msgid "Start task in Hamster"
+msgstr ""
+
+#: GTG/plugins/hamster/hamster.py:46
+msgid "Stop Hamster Activity"
 msgstr ""

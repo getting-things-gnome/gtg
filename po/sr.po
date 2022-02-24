@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-05-04 19:44+0200\n"
+"POT-Creation-Date: 2022-02-24 11:39-0300\n"
 "PO-Revision-Date: 2013-03-30 08:26+0000\n"
 "Last-Translator: Саша Петровић <salepetronije@gmail.com>\n"
 "Language-Team: Serbian <sr@li.org>\n"
@@ -85,11 +85,6 @@ msgstr ""
 "\n"
 "Гномов добављач ствари! је приређивач за Гномово радно окружење."
 
-#. Translators: Do NOT translate or transliterate this text (this is an icon file name)!
-#: data/org.gnome.GTG.desktop.in.in:8
-msgid "@APP_ID@"
-msgstr ""
-
 #. Translators: Search terms to find this application. Do NOT translate or localize the semicolons! The list MUST also end with a semicolon!
 #: data/org.gnome.GTG.desktop.in.in:14
 msgid ""
@@ -149,16 +144,17 @@ msgstr ""
 
 #: GTG/plugins/urgency-color.gtg-plugin.desktop:6
 msgid ""
-"This plugin will calculate the urgency status of every of your currently "
+"This plugin will calculate the urgency status of every one of your currently "
 "active tasks and color-code it accordingly.\n"
 "\n"
 "Color code\n"
 "\n"
 "Assuming your settings are default:\n"
+"Grey means your task is overdue.\n"
 "Red means you are within the last 30% of days between the start-date and due-"
-"date, or your task is overdue.\n"
+"date.\n"
 "Yellow means your task's start-date has passed.\n"
-"Green means your task's start-date is oncoming."
+"Green means your task's start-date is upcoming."
 msgstr ""
 
 #: GTG/plugins/hamster.gtg-plugin.desktop:4
@@ -185,31 +181,31 @@ msgstr ""
 msgid "tracks how many tasks you have done during the day."
 msgstr ""
 
-#: GTG/gtk/data/backends.ui:60
+#: GTG/gtk/data/backends.ui:61
 msgid "_Add"
 msgstr ""
 
-#: GTG/gtk/data/backends.ui:74
+#: GTG/gtk/data/backends.ui:75
 msgid "_Remove"
 msgstr ""
 
-#: GTG/gtk/data/backends.ui:137 GTG/gtk/data/main_window.ui:354
+#: GTG/gtk/data/backends.ui:139 GTG/gtk/data/main_window.ui:347
 #: GTG/gtk/data/plugins.ui:145
 #, fuzzy
 msgid "Help"
 msgstr "По_моћ"
 
-#: GTG/gtk/data/calendar.ui:44 GTG/gtk/data/context_menus.ui:154
+#: GTG/gtk/data/calendar.ui:44 GTG/gtk/data/context_menus.ui:156
 #: GTG/gtk/data/task_editor.ui:997
 msgid "Now"
 msgstr "Сада"
 
-#: GTG/gtk/data/calendar.ui:57 GTG/gtk/data/context_menus.ui:159
+#: GTG/gtk/data/calendar.ui:57 GTG/gtk/data/context_menus.ui:161
 #: GTG/gtk/data/task_editor.ui:1012
 msgid "Soon"
 msgstr "Ускоро"
 
-#: GTG/gtk/data/calendar.ui:70 GTG/gtk/data/context_menus.ui:164
+#: GTG/gtk/data/calendar.ui:70 GTG/gtk/data/context_menus.ui:166
 #: GTG/gtk/data/task_editor.ui:1027
 msgid "Someday"
 msgstr ""
@@ -219,51 +215,47 @@ msgstr ""
 msgid "Clear"
 msgstr "Очисти"
 
-#: GTG/gtk/data/context_menus.ui:8 GTG/gtk/data/context_menus.ui:39
+#: GTG/gtk/data/context_menus.ui:8 GTG/gtk/data/context_menus.ui:35
 #: GTG/gtk/browser/tag_context_menu.py:55
 #, fuzzy
 msgid "Edit..."
 msgstr "Уреди"
 
-#: GTG/gtk/data/context_menus.ui:14 GTG/gtk/data/task_editor.ui:897
-msgid "Mark as Not Done"
-msgstr "Означи неурађеним"
+#: GTG/gtk/data/context_menus.ui:14
+msgid "Reopen"
+msgstr ""
 
-#: GTG/gtk/data/context_menus.ui:18 GTG/gtk/data/task_editor.ui:36
-msgid "Undismiss"
-msgstr "Поништи одбацивање"
-
-#: GTG/gtk/data/context_menus.ui:22 GTG/gtk/data/context_menus.ui:53
+#: GTG/gtk/data/context_menus.ui:18 GTG/gtk/data/context_menus.ui:49
 #: GTG/gtk/data/task_editor.ui:64 GTG/gtk/browser/tag_context_menu.py:66
 #: GTG/gtk/browser/tag_context_menu.py:71
 msgid "Delete"
 msgstr "Обриши"
 
-#: GTG/gtk/data/context_menus.ui:31
+#: GTG/gtk/data/context_menus.ui:27
 #, fuzzy
 msgid "Add a Subtask..."
 msgstr "Додајте подзадатак"
 
-#: GTG/gtk/data/context_menus.ui:35
+#: GTG/gtk/data/context_menus.ui:31
 #, fuzzy
 msgid "Add a Parent task..."
 msgstr "Додајте подзадатак"
 
-#: GTG/gtk/data/context_menus.ui:45 GTG/gtk/data/task_editor.ui:884
+#: GTG/gtk/data/context_menus.ui:41 GTG/gtk/data/task_editor.ui:884
 msgid "Mark as Done"
 msgstr "Означи урађеним"
 
-#: GTG/gtk/data/context_menus.ui:49 GTG/gtk/data/task_editor.ui:22
+#: GTG/gtk/data/context_menus.ui:45 GTG/gtk/data/task_editor.ui:22
 msgid "Dismiss"
 msgstr "Одбаци"
 
-#: GTG/gtk/data/context_menus.ui:60 GTG/gtk/browser/main_window.py:1192
+#: GTG/gtk/data/context_menus.ui:56 GTG/gtk/browser/main_window.py:1195
 #, fuzzy
 msgid "Set Start Date"
 msgstr "Датум почетка"
 
-#: GTG/gtk/data/context_menus.ui:64 GTG/gtk/data/context_menus.ui:128
-#: GTG/core/dates.py:591
+#: GTG/gtk/data/context_menus.ui:60 GTG/gtk/data/context_menus.ui:132
+#: GTG/core/dates.py:618
 #, python-format
 msgid "Tomorrow"
 msgid_plural "In %(days)d days"
@@ -271,92 +263,97 @@ msgstr[0] "За %(days)d дан"
 msgstr[1] "За %(days)d дана"
 msgstr[2] "За %(days)d дана"
 
-#: GTG/gtk/data/context_menus.ui:69
+#: GTG/gtk/data/context_menus.ui:65
 msgid "In 2 days"
 msgstr ""
 
-#: GTG/gtk/data/context_menus.ui:74
+#: GTG/gtk/data/context_menus.ui:70
 msgid "In 3 days"
 msgstr ""
 
-#: GTG/gtk/data/context_menus.ui:79
+#: GTG/gtk/data/context_menus.ui:75
 msgid "In 4 days"
 msgstr ""
 
-#: GTG/gtk/data/context_menus.ui:84
+#: GTG/gtk/data/context_menus.ui:80
 msgid "In 5 days"
 msgstr ""
 
-#: GTG/gtk/data/context_menus.ui:89
+#: GTG/gtk/data/context_menus.ui:85
 msgid "In 6 days"
 msgstr ""
 
-#: GTG/gtk/data/context_menus.ui:96 GTG/gtk/data/context_menus.ui:133
+#: GTG/gtk/data/context_menus.ui:90 GTG/gtk/data/context_menus.ui:139
+#: GTG/gtk/data/main_window.ui:132
 #, fuzzy
 msgid "Next Week"
 msgstr "следеће седмице"
 
-#: GTG/gtk/data/context_menus.ui:101 GTG/gtk/data/context_menus.ui:138
+#: GTG/gtk/data/context_menus.ui:97 GTG/gtk/data/context_menus.ui:144
 #, fuzzy
 msgid "Next Month"
 msgstr "следећег месеца"
 
-#: GTG/gtk/data/context_menus.ui:106 GTG/gtk/data/context_menus.ui:143
+#: GTG/gtk/data/context_menus.ui:102 GTG/gtk/data/context_menus.ui:149
 #, fuzzy
 msgid "Next Year"
 msgstr "следеће године"
 
-#: GTG/gtk/data/context_menus.ui:111 GTG/gtk/data/context_menus.ui:148
+#: GTG/gtk/data/context_menus.ui:109 GTG/gtk/data/context_menus.ui:173
 #: GTG/gtk/data/main_window.ui:159
 msgid "Pick a Date..."
 msgstr ""
 
-#: GTG/gtk/data/context_menus.ui:118 GTG/gtk/data/main_window.ui:186
+#: GTG/gtk/data/context_menus.ui:116 GTG/gtk/data/main_window.ui:186
 #, fuzzy
 msgid "Clear Start Date"
 msgstr "Датум почетка"
 
-#: GTG/gtk/data/context_menus.ui:125 GTG/gtk/browser/main_window.py:1203
+#: GTG/gtk/data/context_menus.ui:123 GTG/gtk/browser/main_window.py:1206
 msgid "Set Due Date"
 msgstr ""
 
-#: GTG/gtk/data/context_menus.ui:171
+#: GTG/gtk/data/context_menus.ui:127 GTG/core/dates.py:612
+msgid "Today"
+msgstr "Данас"
+
+#: GTG/gtk/data/context_menus.ui:180
 #, fuzzy
 msgid "Clear Due Date"
 msgstr "Очисти"
 
-#: GTG/gtk/data/context_menus.ui:178
+#: GTG/gtk/data/context_menus.ui:187
 msgid "Set Recurring"
 msgstr ""
 
-#: GTG/gtk/data/context_menus.ui:181
+#: GTG/gtk/data/context_menus.ui:190
 msgid "Every Day"
 msgstr ""
 
-#: GTG/gtk/data/context_menus.ui:186
+#: GTG/gtk/data/context_menus.ui:195
 msgid "Every Other-Day"
 msgstr ""
 
-#: GTG/gtk/data/context_menus.ui:191
+#: GTG/gtk/data/context_menus.ui:200
 #, fuzzy
 msgid "Every Week"
 msgstr "следеће седмице"
 
-#: GTG/gtk/data/context_menus.ui:196
+#: GTG/gtk/data/context_menus.ui:205
 #, fuzzy
 msgid "Every Month"
 msgstr "следећег месеца"
 
-#: GTG/gtk/data/context_menus.ui:201
+#: GTG/gtk/data/context_menus.ui:210
 #, fuzzy
 msgid "Every Year"
 msgstr "следеће године"
 
-#: GTG/gtk/data/context_menus.ui:207
+#: GTG/gtk/data/context_menus.ui:216
 msgid "Enable/Disable"
 msgstr ""
 
-#: GTG/gtk/data/context_menus.ui:216
+#: GTG/gtk/data/context_menus.ui:225
 msgid "Modify Tags..."
 msgstr ""
 
@@ -489,213 +486,196 @@ msgstr "Одбаци"
 #: GTG/gtk/data/help_overlay.ui:115
 #, fuzzy
 msgctxt "shortcut window"
+msgid "Reopen Task"
+msgstr "Обриши"
+
+#: GTG/gtk/data/help_overlay.ui:123
+#, fuzzy
+msgctxt "shortcut window"
 msgid "Batch change tags on selected tasks"
 msgstr "Уредите изабрани задатак"
 
-#: GTG/gtk/data/help_overlay.ui:123 GTG/gtk/data/help_overlay.ui:163
+#: GTG/gtk/data/help_overlay.ui:131 GTG/gtk/data/help_overlay.ui:171
 #, fuzzy
 msgctxt "shortcut window"
 msgid "New Task"
 msgstr "Нови задатак"
 
-#: GTG/gtk/data/help_overlay.ui:131 GTG/gtk/data/help_overlay.ui:171
+#: GTG/gtk/data/help_overlay.ui:139 GTG/gtk/data/help_overlay.ui:179
 #, fuzzy
 msgctxt "shortcut window"
 msgid "New Subtask"
 msgstr "Нови подзадатак"
 
-#: GTG/gtk/data/help_overlay.ui:139
+#: GTG/gtk/data/help_overlay.ui:147
 #, fuzzy
 msgctxt "shortcut window"
 msgid "Delete Task"
 msgstr "Обриши"
 
-#: GTG/gtk/data/help_overlay.ui:147
+#: GTG/gtk/data/help_overlay.ui:155
 #, fuzzy
 msgctxt "shortcut window"
 msgid "Edit Task"
 msgstr "Уреди"
 
-#: GTG/gtk/data/help_overlay.ui:158
+#: GTG/gtk/data/help_overlay.ui:166
 #, fuzzy
 msgctxt "shortcut window"
 msgid "Editor"
 msgstr "Уреди"
 
-#: GTG/gtk/data/help_overlay.ui:179
+#: GTG/gtk/data/help_overlay.ui:187
 #, fuzzy
 msgctxt "shortcut window"
 msgid "Close window"
 msgstr "Затворен"
 
 #: GTG/gtk/data/main_window.ui:55
-#, fuzzy
-msgid "Start today"
-msgstr "Датум почетка"
-
-#: GTG/gtk/data/main_window.ui:57 GTG/core/dates.py:585
-msgid "Today"
-msgstr "Данас"
-
-#: GTG/gtk/data/main_window.ui:83
 msgid "Start 2 days from now"
 msgstr ""
 
-#: GTG/gtk/data/main_window.ui:85 GTG/core/dates.py:400 GTG/core/dates.py:533
-msgid "Tuesday"
-msgstr ""
-
-#: GTG/gtk/data/main_window.ui:98
+#: GTG/gtk/data/main_window.ui:70
 msgid "Start 3 days from now"
 msgstr ""
 
-#: GTG/gtk/data/main_window.ui:100 GTG/core/dates.py:401 GTG/core/dates.py:534
-msgid "Wednesday"
-msgstr ""
-
-#: GTG/gtk/data/main_window.ui:113
+#: GTG/gtk/data/main_window.ui:85
 msgid "Start 4 days from now"
 msgstr ""
 
-#: GTG/gtk/data/main_window.ui:115 GTG/core/dates.py:402 GTG/core/dates.py:535
-msgid "Thursday"
-msgstr ""
-
-#: GTG/gtk/data/main_window.ui:128
+#: GTG/gtk/data/main_window.ui:100
 msgid "Start 5 days from now"
 msgstr ""
 
-#: GTG/gtk/data/main_window.ui:130 GTG/core/dates.py:403 GTG/core/dates.py:536
-msgid "Friday"
-msgstr ""
-
-#: GTG/gtk/data/main_window.ui:143
+#: GTG/gtk/data/main_window.ui:115
 msgid "Start 6 days from now"
 msgstr ""
 
-#: GTG/gtk/data/main_window.ui:145 GTG/core/dates.py:404 GTG/core/dates.py:537
-msgid "Saturday"
-msgstr ""
-
-#: GTG/gtk/data/main_window.ui:219
+#: GTG/gtk/data/main_window.ui:130
 #, fuzzy
-msgid "Toggle Sidebar"
+msgid "Start 7 days from now"
+msgstr "Почиње"
+
+#: GTG/gtk/data/main_window.ui:216
+#, fuzzy
+msgid "Show Sidebar"
 msgstr "_Бочна трака ознака"
 
-#: GTG/gtk/data/main_window.ui:244
+#: GTG/gtk/data/main_window.ui:242
 #, fuzzy
 msgid "Collapse All Tasks"
 msgstr "_Окно затворених задатака"
 
-#: GTG/gtk/data/main_window.ui:258
+#: GTG/gtk/data/main_window.ui:255
 #, fuzzy
 msgid "Expand All Tasks"
 msgstr "Сви задаци"
 
-#: GTG/gtk/data/main_window.ui:285 GTG/gtk/plugins.py:131
+#: GTG/gtk/data/main_window.ui:281 GTG/gtk/plugins.py:131
 msgid "Plugins"
 msgstr "Прикључци"
 
-#: GTG/gtk/data/main_window.ui:299
+#: GTG/gtk/data/main_window.ui:295
 #, fuzzy
 msgid "Synchronization"
 msgstr "Усклађивање је започело"
 
-#: GTG/gtk/data/main_window.ui:326 GTG/gtk/data/preferences.ui:15
+#: GTG/gtk/data/main_window.ui:321 GTG/gtk/data/preferences.ui:15
 #, fuzzy
 msgid "Preferences"
 msgstr "Поставке - %s"
 
-#: GTG/gtk/data/main_window.ui:340
+#: GTG/gtk/data/main_window.ui:334
 msgid "Keyboard Shortcuts"
 msgstr ""
 
-#: GTG/gtk/data/main_window.ui:368
+#: GTG/gtk/data/main_window.ui:360
 #, fuzzy
 msgid "About GTG"
 msgstr "О ГДС-у!"
 
-#: GTG/gtk/data/main_window.ui:421 GTG/gtk/browser/treeview_factory.py:283
+#: GTG/gtk/data/main_window.ui:413 GTG/plugins/hamster/prefs.ui:259
+#: GTG/gtk/browser/treeview_factory.py:283
 msgid "Tags"
 msgstr "Ознаке"
 
-#: GTG/gtk/data/main_window.ui:469
+#: GTG/gtk/data/main_window.ui:461
 msgid "Search here"
 msgstr ""
 
-#: GTG/gtk/data/main_window.ui:480
+#: GTG/gtk/data/main_window.ui:472
 msgid "Save Search"
 msgstr ""
 
-#: GTG/gtk/data/main_window.ui:522
+#: GTG/gtk/data/main_window.ui:513
 msgctxt "tasks view name"
 msgid "Open"
 msgstr ""
 
-#: GTG/gtk/data/main_window.ui:536
+#: GTG/gtk/data/main_window.ui:526
 msgctxt "tasks view name"
 msgid "Actionable"
 msgstr ""
 
-#: GTG/gtk/data/main_window.ui:551
+#: GTG/gtk/data/main_window.ui:540
 #, fuzzy
 msgctxt "tasks view name"
 msgid "Closed"
 msgstr "Затворен"
 
-#: GTG/gtk/data/main_window.ui:579
+#: GTG/gtk/data/main_window.ui:568
 msgid ""
 "Ex.: \"Buy a new printer for @Initech tags:equipment,office start:monday due:"
 "soon\""
 msgstr ""
 
-#: GTG/gtk/data/main_window.ui:585
+#: GTG/gtk/data/main_window.ui:574
 msgid "Quickly create tasks here"
 msgstr ""
 
-#: GTG/gtk/data/main_window.ui:636
+#: GTG/gtk/data/main_window.ui:625
 msgid "Create a new task"
 msgstr "Направите нови задатак"
 
-#: GTG/gtk/data/main_window.ui:673
+#: GTG/gtk/data/main_window.ui:662
 msgid "Activate Search Entry"
 msgstr ""
 
-#: GTG/gtk/data/main_window.ui:697
+#: GTG/gtk/data/main_window.ui:690
+msgid ""
+"Defer selected task(s) to tomorrow. Useful if you are out of focus or need "
+"additional time."
+msgstr ""
+
+#: GTG/gtk/data/main_window.ui:701
 #, fuzzy
 msgid "Start Tomorrow"
 msgstr "За %(days)d дан"
-
-#: GTG/gtk/data/main_window.ui:702
-msgid ""
-"Out of time? Need additional focus? Easily defer the selected task(s) to "
-"tomorrow!"
-msgstr ""
 
 #: GTG/gtk/data/modify_tags.ui:7
 msgid "Modify Tags"
 msgstr "Измените ознаке"
 
-#: GTG/gtk/data/modify_tags.ui:23
-#: GTG/plugins/untouched_tasks/untouchedTasks.ui:150
-#: GTG/plugins/urgency_color/preferences.ui:293
-msgid "Apply"
-msgstr ""
-
-#: GTG/gtk/data/modify_tags.ui:41
+#: GTG/gtk/data/modify_tags.ui:23 GTG/plugins/gamify/prefs.ui:258
 #: GTG/plugins/untouched_tasks/untouchedTasks.ui:136
 msgid "Cancel"
 msgstr "Откажи"
 
-#: GTG/gtk/data/modify_tags.ui:65
+#: GTG/gtk/data/modify_tags.ui:37 GTG/plugins/gamify/prefs.ui:138
+#: GTG/plugins/untouched_tasks/untouchedTasks.ui:150
+#: GTG/plugins/urgency_color/preferences.ui:323
+msgid "Apply"
+msgstr ""
+
+#: GTG/gtk/data/modify_tags.ui:68
 msgid "Enter the name of the tag(s) you wish to add or remove:"
 msgstr "Унесите назив ознаке(а) коју(е) желите да уклоните:"
 
-#: GTG/gtk/data/modify_tags.ui:80
+#: GTG/gtk/data/modify_tags.ui:83
 msgid "TagName"
 msgstr "Назив ознаке"
 
-#: GTG/gtk/data/modify_tags.ui:93
+#: GTG/gtk/data/modify_tags.ui:95
 msgid ""
 "Hint: you can add several tags by separating them with\n"
 "space. Place '!' before tags you want to remove."
@@ -703,7 +683,7 @@ msgstr ""
 "Напомена: можете додати неколико ознака одвајајући их\n"
 "размаком. Поставите „!“ пре ознака које желит уклонити."
 
-#: GTG/gtk/data/modify_tags.ui:107
+#: GTG/gtk/data/modify_tags.ui:109
 msgid "Apply to subtasks"
 msgstr "Примени на подзадатке"
 
@@ -716,7 +696,7 @@ msgstr "<b>Зависности</b>"
 msgid "_Configure Plugin"
 msgstr "_О прикључку"
 
-#: GTG/gtk/data/plugins.ui:178
+#: GTG/gtk/data/plugins.ui:181
 msgid "_About Plugin"
 msgstr "_О прикључку"
 
@@ -728,6 +708,10 @@ msgstr "Означите овај задатак да не мора више д�
 #, fuzzy
 msgid "Mark this task as to be done"
 msgstr "Означите овај задатак за рад"
+
+#: GTG/gtk/data/task_editor.ui:36
+msgid "Undismiss"
+msgstr "Поништи одбацивање"
 
 #: GTG/gtk/data/task_editor.ui:62
 msgid "Permanently remove this task"
@@ -819,7 +803,7 @@ msgstr "Задатак"
 
 #. Translators: Button label to open the parent task
 #: GTG/gtk/data/task_editor.ui:602 GTG/gtk/editor/editor.py:152
-#: GTG/gtk/editor/editor.py:496
+#: GTG/gtk/editor/editor.py:499
 msgid "Open Parent"
 msgstr ""
 
@@ -859,6 +843,10 @@ msgstr "Затворен"
 #, fuzzy
 msgid "Mark the task as done"
 msgstr "Означите овај задатак урађеним"
+
+#: GTG/gtk/data/task_editor.ui:897
+msgid "Mark as Not Done"
+msgstr "Означи неурађеним"
 
 #: GTG/gtk/data/task_editor.ui:900
 #, fuzzy
@@ -906,6 +894,141 @@ msgstr ""
 msgid "Save"
 msgstr ""
 
+#: GTG/plugins/gamify/prefs.ui:40 GTG/plugins/gamify/prefs.ui:164
+#: GTG/gtk/general_preferences.py:70
+#, fuzzy
+msgid "General"
+msgstr "<b>Опште</b>"
+
+#: GTG/plugins/gamify/prefs.ui:97
+msgid "Tag Mappings"
+msgstr ""
+
+#: GTG/plugins/gamify/prefs.ui:180 GTG/plugins/urgency_color/preferences.ui:13
+#, fuzzy
+msgid "Plugin Preferences"
+msgstr "Поставке - %s"
+
+#: GTG/plugins/gamify/prefs.ui:208
+msgid "Target tasks per day"
+msgstr ""
+
+#: GTG/plugins/gamify/prefs.ui:254
+msgid "Create a tag mapping"
+msgstr ""
+
+#: GTG/plugins/gamify/prefs.ui:255
+msgid "Associate a number of points with a custom tag name"
+msgstr ""
+
+#: GTG/plugins/gamify/prefs.ui:267
+#, fuzzy
+msgid "Add"
+msgstr "Додај ознаку"
+
+#: GTG/plugins/gamify/prefs.ui:305
+#, fuzzy
+msgid "Tag Name:"
+msgstr "Назив ознаке"
+
+#: GTG/plugins/gamify/prefs.ui:341
+msgid "Points:"
+msgstr ""
+
+#: GTG/plugins/gamify/prefs.ui:410
+msgid "label"
+msgstr ""
+
+#: GTG/plugins/gamify/prefs.ui:458
+msgid "Level"
+msgstr ""
+
+#: GTG/plugins/gamify/prefs.ui:470
+msgid "Points"
+msgstr ""
+
+#: GTG/plugins/gamify/prefs.ui:493
+msgid "Your streak"
+msgstr ""
+
+#: GTG/plugins/gamify/prefs.ui:534
+msgid "UI mode"
+msgstr ""
+
+#: GTG/plugins/gamify/prefs.ui:551
+msgid "Button + discrete bar"
+msgstr ""
+
+#: GTG/plugins/gamify/prefs.ui:552
+msgid "Button only"
+msgstr ""
+
+#: GTG/plugins/gamify/prefs.ui:553
+msgid "Discrete bar only"
+msgstr ""
+
+#: GTG/plugins/hamster/prefs.ui:8
+#, fuzzy
+msgid "Hamster Preferences"
+msgstr "Поставке - %s"
+
+#: GTG/plugins/hamster/prefs.ui:73
+msgid "Activity Title"
+msgstr ""
+
+#: GTG/plugins/hamster/prefs.ui:95
+#, fuzzy
+msgid "Task Title"
+msgstr "Наслов"
+
+#: GTG/plugins/hamster/prefs.ui:96
+#, fuzzy
+msgid "Task Tag"
+msgstr "Задатак"
+
+#: GTG/plugins/hamster/prefs.ui:134
+msgid "Category"
+msgstr ""
+
+#: GTG/plugins/hamster/prefs.ui:156 GTG/plugins/hamster/prefs.ui:163
+msgid "Let hamster choose"
+msgstr ""
+
+#: GTG/plugins/hamster/prefs.ui:157
+msgid "GTG Tag"
+msgstr ""
+
+#: GTG/plugins/hamster/prefs.ui:158
+msgid "Default GTG Tag if activity is unsorted"
+msgstr ""
+
+#: GTG/plugins/hamster/prefs.ui:197
+msgid "Description"
+msgstr ""
+
+#: GTG/plugins/hamster/prefs.ui:219
+#, fuzzy
+msgid "GTG task title"
+msgstr "Веб страница ГДС-а"
+
+#: GTG/plugins/hamster/prefs.ui:220
+msgid "GTG task contents"
+msgstr ""
+
+#: GTG/plugins/hamster/prefs.ui:221 GTG/plugins/hamster/prefs.ui:284
+msgid "None"
+msgstr ""
+
+#: GTG/plugins/hamster/prefs.ui:282
+#, fuzzy
+msgid "All GTG tags"
+msgstr "Све ознаке"
+
+#: GTG/plugins/hamster/prefs.ui:283
+#, fuzzy
+msgid "GTG tags already used in Hamster"
+msgstr "Започни задатак у Вредном хрчку"
+
 #: GTG/plugins/untouched_tasks/untouchedTasks.ui:36
 #, fuzzy
 msgid "Add "
@@ -924,49 +1047,69 @@ msgstr ""
 msgid "Check for untouched tasks automatically"
 msgstr "Провери има ли нових задатака сваких"
 
-#: GTG/plugins/urgency_color/preferences.ui:37
-msgid "Danger zone span"
-msgstr ""
+#: GTG/plugins/urgency_color/preferences.ui:39
+#, fuzzy
+msgid "Danger zone span:"
+msgstr "<b>Зависности</b>"
 
-#: GTG/plugins/urgency_color/preferences.ui:65
+#: GTG/plugins/urgency_color/preferences.ui:68
 msgid "%"
 msgstr ""
 
-#: GTG/plugins/urgency_color/preferences.ui:80
+#: GTG/plugins/urgency_color/preferences.ui:83
 #, fuzzy
-msgid "<b>Danger zone</b>"
+msgid "Danger zone"
 msgstr "<b>Зависности</b>"
 
-#: GTG/plugins/urgency_color/preferences.ui:128
+#: GTG/plugins/urgency_color/preferences.ui:135
 msgid "Overdue"
 msgstr ""
 
-#: GTG/plugins/urgency_color/preferences.ui:165
+#: GTG/plugins/urgency_color/preferences.ui:174
 msgid "High"
 msgstr ""
 
-#: GTG/plugins/urgency_color/preferences.ui:202
+#: GTG/plugins/urgency_color/preferences.ui:213
 msgid "Normal"
 msgstr ""
 
-#: GTG/plugins/urgency_color/preferences.ui:239
+#: GTG/plugins/urgency_color/preferences.ui:252
 #, fuzzy
 msgid "Low"
 msgstr "Сада"
 
-#: GTG/plugins/urgency_color/preferences.ui:260
-msgid "<b>Urgency level color</b>"
+#: GTG/plugins/urgency_color/preferences.ui:274
+msgid "Urgency level colors"
 msgstr ""
 
-#: GTG/plugins/urgency_color/preferences.ui:279
+#: GTG/plugins/urgency_color/preferences.ui:306
 msgid "Reset"
 msgstr ""
 
-#: GTG/backends/backend_localfile.py:62
+#: GTG/backends/backend_caldav.py:62
+#, fuzzy
+msgid "CalDAV tasks"
+msgstr "Сви задаци"
+
+#: GTG/backends/backend_caldav.py:67
+msgid "Lets you synchronize your GTG tasks with CalDAV tasks"
+msgstr ""
+
+#: GTG/backends/backend_caldav.py:76
+msgid "insert your username"
+msgstr ""
+
+#: GTG/backends/backend_caldav.py:221
+msgid ""
+"You need a correct login to CalDAVConfigure CalDAV with login information. "
+"Error:"
+msgstr ""
+
+#: GTG/backends/backend_localfile.py:64
 msgid "Local File"
 msgstr ""
 
-#: GTG/backends/backend_localfile.py:311
+#: GTG/backends/backend_localfile.py:314
 msgid ""
 "Oops, something unexpected happened! GTG tried to recover your tasks from "
 "backups. \n"
@@ -981,94 +1124,115 @@ msgstr ""
 #. Translators: Used for display
 #. Translators: Used in parsing, made lowercased in code
 #. Translators: Used in search parsing, no spaces, lowercased in code
-#: GTG/core/dates.py:45 GTG/core/dates.py:56 GTG/core/search.py:101
+#: GTG/core/dates.py:42 GTG/core/dates.py:56 GTG/core/dates.py:154
+#: GTG/core/dates.py:283 GTG/core/search.py:101
 msgid "now"
 msgstr "сада"
 
 #. Translators: Used for display
 #. Translators: Used in parsing, made lowercased in code
 #. Translators: Used in search parsing, no spaces, lowercased in code
-#: GTG/core/dates.py:47 GTG/core/dates.py:59 GTG/core/search.py:103
+#: GTG/core/dates.py:44 GTG/core/dates.py:60 GTG/core/search.py:103
 msgid "soon"
 msgstr "ускоро"
 
 #. Translators: Used for display
 #. Translators: Used in parsing, made lowercased in code
 #. Translators: Used in search parsing, no spaces, lowercased in code
-#: GTG/core/dates.py:49 GTG/core/dates.py:65 GTG/core/search.py:105
+#: GTG/core/dates.py:46 GTG/core/dates.py:67 GTG/core/search.py:105
 msgid "someday"
 msgstr ""
 
 #. Translators: Used in parsing, made lowercased in code
-#: GTG/core/dates.py:62
+#: GTG/core/dates.py:64
 msgid "later"
 msgstr "касније"
 
 #. Translators: Used in parsing, made lowercased in code
 #. Translators: Used in search parsing, no spaces, lowercased in code
-#: GTG/core/dates.py:382 GTG/core/search.py:95
+#: GTG/core/dates.py:395 GTG/core/search.py:95
 msgid "today"
 msgstr "данас"
 
 #. Translators: Used in parsing, made lowercased in code
 #. Translators: Used in search parsing, no spaces, lowercased in code
-#: GTG/core/dates.py:385 GTG/core/search.py:97
+#: GTG/core/dates.py:398 GTG/core/search.py:97
 msgid "tomorrow"
 msgstr "сутра"
 
 #. Translators: Used in parsing, made lowercased in code
-#: GTG/core/dates.py:388
+#: GTG/core/dates.py:401
 msgid "next week"
 msgstr "следеће седмице"
 
 #. Translators: Used in parsing, made lowercased in code
-#: GTG/core/dates.py:391
+#: GTG/core/dates.py:404
 msgid "next month"
 msgstr "следећег месеца"
 
 #. Translators: Used in parsing, made lowercased in code
-#: GTG/core/dates.py:394
+#: GTG/core/dates.py:407
 msgid "next year"
 msgstr "следеће године"
 
-#: GTG/core/dates.py:399 GTG/core/dates.py:532
+#: GTG/core/dates.py:412 GTG/core/dates.py:558
 msgid "Monday"
 msgstr ""
 
-#: GTG/core/dates.py:405 GTG/core/dates.py:538
+#: GTG/core/dates.py:413 GTG/core/dates.py:559
+msgid "Tuesday"
+msgstr ""
+
+#: GTG/core/dates.py:414 GTG/core/dates.py:560
+msgid "Wednesday"
+msgstr ""
+
+#: GTG/core/dates.py:415 GTG/core/dates.py:561
+msgid "Thursday"
+msgstr ""
+
+#: GTG/core/dates.py:416 GTG/core/dates.py:562
+msgid "Friday"
+msgstr ""
+
+#: GTG/core/dates.py:417 GTG/core/dates.py:563
+msgid "Saturday"
+msgstr ""
+
+#: GTG/core/dates.py:418 GTG/core/dates.py:564
 msgid "Sunday"
 msgstr ""
 
 #. Translators: Used in recurring parsing, made lowercased in code
-#: GTG/core/dates.py:515
+#: GTG/core/dates.py:541
 #, fuzzy
 msgid "day"
 msgstr "Данас"
 
 #. Translators: Used in recurring parsing, made lowercased in code
-#: GTG/core/dates.py:518
+#: GTG/core/dates.py:544
 msgid "other-day"
 msgstr ""
 
 #. Translators: Used in recurring parsing, made lowercased in code
-#: GTG/core/dates.py:521
+#: GTG/core/dates.py:547
 #, fuzzy
 msgid "week"
 msgstr "следеће седмице"
 
 #. Translators: Used in recurring parsing, made lowercased in code
-#: GTG/core/dates.py:524
+#: GTG/core/dates.py:550
 #, fuzzy
 msgid "month"
 msgstr "следећег месеца"
 
 #. Translators: Used in recurring parsing, made lowercased in code
-#: GTG/core/dates.py:527
+#: GTG/core/dates.py:553
 #, fuzzy
 msgid "year"
 msgstr "следеће године"
 
-#: GTG/core/dates.py:588
+#: GTG/core/dates.py:615
 #, python-format
 msgid "Yesterday"
 msgid_plural "%(days)d days ago"
@@ -1311,14 +1475,14 @@ msgstr "Одаберите услугу усклађивања"
 
 #: GTG/core/firstrun_tasks.py:306
 msgid ""
-"❗ Take note that as of GTG 0.4, synchronization backends/services have been "
-"disabled until someone (you?) steps forward to fix and maintain them, as "
-"they have not been fully updated to work with the new codebase.or to "
-"interface with the latest APIs of those online services.\n"
+"❗ Take note that as of GTG 0.6, the majority of synchronization backends/"
+"services have been disabled until someone (you?) steps forward to fix and "
+"maintain them, as they have not been fully updated to work with the new "
+"codebase or to interface with the latest APIs of those online services.\n"
 "\n"
 "Synchronization services allow GTG to synchronize (or import/export) tasks, "
-"notes or bugs from some websites or applications such as Remember the Milk, "
-"Tomboy, LaunchPad, etc.\n"
+"notes or bugs from some websites or applications such as CalDAV compatible "
+"services.\n"
 "\n"
 "This can useful if, for instance, you want to access your tasks on several "
 "instances of GTG running on separate computers, or if you want to edit your "
@@ -1327,15 +1491,17 @@ msgid ""
 "To use synchronization services, click the menu button in the main window, "
 "and select &quot;Synchronization&quot;. You will then have the possibility "
 "to select among several online or local services from/to where you can "
-"import or export your tasks."
+"import or export your tasks.\n"
+"As of v0.6, only CalDAV is available. You need to have the &quot;"
+"caldav&quot; Python package installed if it doesn't appear."
 msgstr ""
 
-#: GTG/core/firstrun_tasks.py:326
+#: GTG/core/firstrun_tasks.py:329
 #, fuzzy
 msgid "Learn How to Search for Tasks"
 msgstr "Научите како да користите подзадатке"
 
-#: GTG/core/firstrun_tasks.py:333
+#: GTG/core/firstrun_tasks.py:336
 msgid ""
 "To help you to find specific tasks more easily, GTG allows you to search for "
 "tasks based on their content.\n"
@@ -1362,11 +1528,13 @@ msgid "Everything necessary to run this plugin is available."
 msgstr "Све неопходно за покретање овог прикључка је доступно."
 
 #: GTG/core/plugins/__init__.py:28
-msgid "The plugin can not be loaded"
+#, fuzzy
+msgid "This plugin can not be loaded."
 msgstr "Не могу да учитам прикључак"
 
 #: GTG/core/plugins/__init__.py:29
-msgid "Some python modules are missing"
+#, fuzzy
+msgid "Some python modules are missing."
 msgstr "Недостају неки питонови модули"
 
 #: GTG/core/plugins/__init__.py:30
@@ -1374,7 +1542,8 @@ msgid "Please install the following python modules:"
 msgstr "Инсталирајте следеће питонове модуле:"
 
 #: GTG/core/plugins/__init__.py:32
-msgid "Some remote dbus objects are missing."
+#, fuzzy
+msgid "Some remote D-Bus objects are missing."
 msgstr "Недостају неки удаљени предмети д-сабирнице."
 
 #: GTG/core/plugins/__init__.py:33
@@ -1382,7 +1551,8 @@ msgid "Please start the following applications:"
 msgstr "Покрените следеће програме:"
 
 #: GTG/core/plugins/__init__.py:35
-msgid "Some modules and remote dbus objects are missing."
+#, fuzzy
+msgid "Some modules and remote D-Bus objects are missing."
 msgstr "Недостају неки модули и удаљени предмети д-сабирнице."
 
 #: GTG/core/plugins/__init__.py:36
@@ -1390,7 +1560,8 @@ msgid "Please install or start the following components:"
 msgstr "Инсталирајте или покрените следеће компоненте:"
 
 #: GTG/core/plugins/__init__.py:38
-msgid "Unknown error while loading the plugin."
+#, fuzzy
+msgid "An unknown error occurred while loading the plugin."
 msgstr "Непозната грешка приликом учитавања прикључка."
 
 #: GTG/core/plugins/__init__.py:39
@@ -1427,7 +1598,7 @@ msgstr ""
 msgid "notag"
 msgstr ""
 
-#: GTG/core/task.py:57
+#: GTG/core/task.py:61
 msgid "My new task"
 msgstr "Мој нови задатак"
 
@@ -1578,29 +1749,139 @@ msgstr ""
 "Нисам успео да се повежем са Д-сабирницом, и онемогућио сам услугу "
 "усклађивања <b>%s</b>."
 
-#: GTG/gtk/browser/backend_infobar.py:104
+#: GTG/gtk/browser/backend_infobar.py:105
 #, fuzzy
 msgid "Configure"
 msgstr "Потврди"
 
-#: GTG/gtk/browser/backend_infobar.py:106
+#: GTG/gtk/browser/backend_infobar.py:107
 msgid "Ignore"
 msgstr "Занемари"
 
-#: GTG/gtk/browser/backend_infobar.py:113
-#: GTG/gtk/browser/backend_infobar.py:118
-#: GTG/gtk/browser/backend_infobar.py:143
-#: GTG/gtk/browser/backend_infobar.py:196
+#: GTG/gtk/browser/backend_infobar.py:114
+#: GTG/gtk/browser/backend_infobar.py:119
+#: GTG/gtk/browser/backend_infobar.py:144
+#: GTG/gtk/browser/backend_infobar.py:199
 msgid "OK"
 msgstr ""
 
-#: GTG/gtk/browser/backend_infobar.py:139
+#: GTG/gtk/browser/backend_infobar.py:140
 msgid "Confirm"
 msgstr "Потврди"
 
-#: GTG/gtk/browser/backend_infobar.py:141
+#: GTG/gtk/browser/backend_infobar.py:142 GTG/gtk/errorhandler.py:57
 msgid "Continue"
 msgstr "Настави"
+
+#: GTG/gtk/browser/delete_tag.py:53
+#, fuzzy
+msgid "Keep selected tag"
+msgid_plural "Keep selected tags"
+msgstr[0] "Задржи изабране задатке"
+msgstr[1] "Задржи изабране задатке"
+msgstr[2] "Задржи изабране задатке"
+
+#: GTG/gtk/browser/delete_tag.py:55
+#, fuzzy
+msgid "Permanently remove tag"
+msgid_plural "Permanently remove tags"
+msgstr[0] "Трајно уклони задатке"
+msgstr[1] "Трајно уклони задатке"
+msgstr[2] "Трајно уклони задатке"
+
+#: GTG/gtk/browser/delete_tag.py:57
+#, fuzzy
+msgid "Deleting a tag cannot be undone, and will delete the following tag: "
+msgid_plural ""
+"Deleting a tag cannot be undone, and will delete the following tag: "
+msgstr[0] ""
+"Брисање задатка не може бити поништено, а обрисаћу следеће задатке: "
+msgstr[1] ""
+"Брисање задатка не може бити поништено, а обрисаћу следеће задатке: "
+msgstr[2] ""
+"Брисање задатка не може бити поништено, а обрисаћу следеће задатке: "
+
+#: GTG/gtk/browser/delete_tag.py:72
+#, python-format
+msgid ""
+"\n"
+"And %d more tags"
+msgstr ""
+
+#: GTG/gtk/browser/delete_task.py:91
+msgid "Keep selected task"
+msgid_plural "Keep selected tasks"
+msgstr[0] ""
+msgstr[1] ""
+
+#: GTG/gtk/browser/delete_task.py:93
+msgid "Permanently remove task"
+msgid_plural "Permanently remove tasks"
+msgstr[0] ""
+msgstr[1] ""
+
+#: GTG/gtk/browser/delete_task.py:95
+msgid "Deleting a task cannot be undone, and will delete the following task: "
+msgid_plural ""
+"Deleting a task cannot be undone, and will delete the following tasks: "
+msgstr[0] ""
+msgstr[1] ""
+
+#: GTG/gtk/browser/delete_task.py:107
+#, python-brace-format
+msgid ""
+"\n"
+"And {missing_titles_count:d} more tasks"
+msgstr ""
+
+#: GTG/gtk/browser/main_window.py:295
+#, python-brace-format
+msgid "In {number_of_days} days — {weekday}"
+msgstr ""
+
+#. These lines should be in info.py, but due to their dynamic nature
+#. there'd be no way to show them translated in Gtk's About dialog:
+#: GTG/gtk/browser/main_window.py:333
+#, python-format
+msgid "Copyright © 2008-%d the GTG contributors."
+msgstr ""
+
+#. GTK prefixes the first line with "Created by ",
+#. but we can't split the string because it would cause trouble for some languages.
+#: GTG/gtk/browser/main_window.py:343
+msgid "GTG was made by many contributors around the world."
+msgstr ""
+
+#: GTG/gtk/browser/main_window.py:344
+msgid "The GTG project is maintained/administered by:"
+msgstr ""
+
+#: GTG/gtk/browser/main_window.py:346
+msgid "This release was brought to you by the efforts of these people:"
+msgstr ""
+
+#: GTG/gtk/browser/main_window.py:348
+#, python-brace-format
+msgid ""
+"Many others contributed to GTG over the years.\n"
+"You can see them on {OH_stats} and {GH_stats}."
+msgstr ""
+
+#: GTG/gtk/browser/main_window.py:357
+msgid "GTG website"
+msgstr "Веб страница ГДС-а"
+
+#. Translators for a particular language should put their names here.
+#. Please keep the width at 80 chars max, as GTK3's About dialog won't wrap text.
+#. GtkAboutDialog will detect if “translator-credits” is untranslated and auto-hide the tab.
+#: GTG/gtk/browser/main_window.py:373
+msgid "translator-credits"
+msgstr ""
+
+#. Rember values from last time
+#: GTG/gtk/browser/modify_tags.py:40
+msgid "NewTag"
+msgstr ""
 
 #. Translators: Used in parsing, no spaces, lowercased in code
 #: GTG/gtk/browser/quick_add.py:34
@@ -1630,121 +1911,6 @@ msgstr "рок"
 msgid "every"
 msgstr ""
 
-#: GTG/gtk/browser/delete_tag.py:51
-#, fuzzy
-msgid "Keep selected tag"
-msgid_plural "Keep selected tags"
-msgstr[0] "Задржи изабране задатке"
-msgstr[1] "Задржи изабране задатке"
-msgstr[2] "Задржи изабране задатке"
-
-#: GTG/gtk/browser/delete_tag.py:55
-#, fuzzy
-msgid "Permanently remove tag"
-msgid_plural "Permanently remove tags"
-msgstr[0] "Трајно уклони задатке"
-msgstr[1] "Трајно уклони задатке"
-msgstr[2] "Трајно уклони задатке"
-
-#: GTG/gtk/browser/delete_tag.py:59
-#, fuzzy
-msgid "Deleting a tag cannot be undone, and will delete the following tag: "
-msgid_plural ""
-"Deleting a tag cannot be undone, and will delete the following tag: "
-msgstr[0] ""
-"Брисање задатка не може бити поништено, а обрисаћу следеће задатке: "
-msgstr[1] ""
-"Брисање задатка не може бити поништено, а обрисаћу следеће задатке: "
-msgstr[2] ""
-"Брисање задатка не може бити поништено, а обрисаћу следеће задатке: "
-
-#: GTG/gtk/browser/delete_tag.py:74
-#, python-format
-msgid ""
-"\n"
-"And %d more tags"
-msgstr ""
-
-#: GTG/gtk/browser/delete_task.py:89
-msgid "Keep selected task"
-msgid_plural "Keep selected tasks"
-msgstr[0] ""
-msgstr[1] ""
-
-#: GTG/gtk/browser/delete_task.py:93
-msgid "Permanently remove task"
-msgid_plural "Permanently remove tasks"
-msgstr[0] ""
-msgstr[1] ""
-
-#: GTG/gtk/browser/delete_task.py:97
-msgid "Deleting a task cannot be undone, and will delete the following task: "
-msgid_plural ""
-"Deleting a task cannot be undone, and will delete the following tasks: "
-msgstr[0] ""
-msgstr[1] ""
-
-#: GTG/gtk/browser/delete_task.py:109
-#, python-brace-format
-msgid ""
-"\n"
-"And {missing_titles_count:d} more tasks"
-msgstr ""
-
-#. These lines should be in info.py, but due to their dynamic nature
-#. there'd be no way to show them translated in Gtk's About dialog:
-#: GTG/gtk/browser/main_window.py:322
-#, python-format
-msgid "Copyright © 2008-%d the GTG contributors."
-msgstr ""
-
-#. GTK prefixes the first line with "Created by ",
-#. but we can't split the string because it would cause trouble for some languages.
-#: GTG/gtk/browser/main_window.py:327
-msgid "GTG was made by many contributors around the world."
-msgstr ""
-
-#: GTG/gtk/browser/main_window.py:328
-msgid "The GTG project is maintained/administered by:"
-msgstr ""
-
-#: GTG/gtk/browser/main_window.py:330
-msgid "This release was brought to you by the efforts of these people:"
-msgstr ""
-
-#: GTG/gtk/browser/main_window.py:332
-#, python-brace-format
-msgid ""
-"Many others contributed to GTG over the years.\n"
-"You can see them on {OH_stats} and {GH_stats}."
-msgstr ""
-
-#: GTG/gtk/browser/main_window.py:341
-msgid "GTG website"
-msgstr "Веб страница ГДС-а"
-
-#. Translators for a particular language should put their names here.
-#. Please keep the width at 80 chars max, as GTK3's About dialog won't wrap text.
-#. GtkAboutDialog will detect if “translator-credits” is untranslated and auto-hide the tab.
-#: GTG/gtk/browser/main_window.py:354
-msgid "translator-credits"
-msgstr ""
-
-#: GTG/gtk/browser/main_window.py:679
-#, fuzzy
-msgid "Hide Sidebar"
-msgstr "_Бочна трака ознака"
-
-#: GTG/gtk/browser/main_window.py:681
-#, fuzzy
-msgid "Show Sidebar"
-msgstr "_Бочна трака ознака"
-
-#. Rember values from last time
-#: GTG/gtk/browser/modify_tags.py:40
-msgid "NewTag"
-msgstr ""
-
 #: GTG/gtk/browser/simple_color_selector.py:238
 #, fuzzy
 msgid "Add Custom Color..."
@@ -1764,35 +1930,10 @@ msgstr "Изаберите боју"
 msgid "Generate Color"
 msgstr "Поврати боју"
 
-#: GTG/gtk/browser/tag_editor.py:50
-#, fuzzy, python-format
-msgid "Editing Tag \"%s\""
-msgstr "Уреди"
-
-#: GTG/gtk/browser/tag_editor.py:87
+#: GTG/gtk/browser/tag_editor.py:159
 #, fuzzy
-msgid "Remove icon"
-msgstr "Уклони означену икону"
-
-#: GTG/gtk/browser/tag_editor.py:98
-msgid "Name : "
-msgstr ""
-
-#: GTG/gtk/browser/tag_editor.py:105
-#, fuzzy
-msgid "Show Tag in \"Actionable\" view:"
-msgstr "Приказуј ову ознаку у радном прегледу"
-
-#: GTG/gtk/browser/tag_editor.py:119
-msgid "Select Tag Color:"
-msgstr ""
-
-#. Default icon
-#: GTG/gtk/browser/tag_editor.py:193
-msgid ""
-"Click to\n"
-"Set Icon"
-msgstr ""
+msgid "Tag name can not be empty"
+msgstr "Не могу да учитам прикључак"
 
 #. Build the title/label/tags columns
 #. Translators: Column name, containing the task titles
@@ -1826,11 +1967,11 @@ msgid "Closed Date"
 msgstr "Очисти"
 
 #. Translators: Button label to add an new parent task
-#: GTG/gtk/editor/editor.py:154 GTG/gtk/editor/editor.py:499
+#: GTG/gtk/editor/editor.py:154 GTG/gtk/editor/editor.py:502
 msgid "Add Parent"
 msgstr ""
 
-#: GTG/gtk/editor/editor.py:562
+#: GTG/gtk/editor/editor.py:565
 #, python-format
 msgid "Completed %(days)d day late"
 msgid_plural "Completed %(days)d days late"
@@ -1838,7 +1979,7 @@ msgstr[0] "Завршено %(days)d дан касније"
 msgstr[1] "Завршено %(days)d дана касније"
 msgstr[2] "Завршено %(days)d дана касније"
 
-#: GTG/gtk/editor/editor.py:567
+#: GTG/gtk/editor/editor.py:570
 #, python-format
 msgid "Completed %(days)d day early"
 msgid_plural "Completed %(days)d days early"
@@ -1846,66 +1987,95 @@ msgstr[0] "Завршено %(days)d дан раније"
 msgstr[1] "Завршено %(days)d дана раније"
 msgstr[2] "Завршено %(days)d дана раније"
 
-#: GTG/gtk/editor/editor.py:576
+#: GTG/gtk/editor/editor.py:579
 #, python-format
 msgid "Due tomorrow!"
 msgid_plural "%(days)d days left"
 msgstr[0] ""
 msgstr[1] ""
 
-#: GTG/gtk/editor/editor.py:579
+#: GTG/gtk/editor/editor.py:582
 msgid "Due today!"
 msgstr ""
 
-#: GTG/gtk/editor/editor.py:582
+#: GTG/gtk/editor/editor.py:585
 #, python-format
 msgid "Due yesterday!"
 msgid_plural "Was %(days)d days ago"
 msgstr[0] ""
 msgstr[1] ""
 
-#. Recurring monthly from selected date
-#. Translators: Recurring monthly
 #. Recurring monthly from today
-#: GTG/gtk/editor/recurring_menu.py:101 GTG/gtk/editor/recurring_menu.py:113
+#: GTG/gtk/editor/recurring_menu.py:104 GTG/gtk/editor/recurring_menu.py:120
 #, python-brace-format
 msgid "Every <b>{month_day} of the month</b>"
 msgstr ""
 
 #. Translators: Recurring yearly
-#: GTG/gtk/editor/recurring_menu.py:105 GTG/gtk/editor/recurring_menu.py:116
+#: GTG/gtk/editor/recurring_menu.py:110 GTG/gtk/editor/recurring_menu.py:124
 #, python-brace-format
 msgid "Every <b>{month} {day}</b>"
 msgstr ""
 
 #. Recurring daily
-#: GTG/gtk/editor/recurring_menu.py:107
+#: GTG/gtk/editor/recurring_menu.py:113
 msgid "Every <b>day</b>"
 msgstr ""
 
 #. Recurring every other day
-#: GTG/gtk/editor/recurring_menu.py:109
+#: GTG/gtk/editor/recurring_menu.py:115
 msgid "Every <b>other day</b>"
 msgstr ""
 
 #. Recurring weekly from today
-#: GTG/gtk/editor/recurring_menu.py:111 GTG/gtk/editor/recurring_menu.py:119
+#: GTG/gtk/editor/recurring_menu.py:117 GTG/gtk/editor/recurring_menu.py:128
 #, python-brace-format
 msgid "Every <b>{week_day}</b>"
 msgstr ""
 
-#: GTG/gtk/editor/taskview.py:631
+#: GTG/gtk/editor/taskview.py:632
 msgid "Open Link"
 msgstr ""
 
-#: GTG/gtk/editor/taskview.py:639
+#: GTG/gtk/editor/taskview.py:640
 msgid "Copy Link to Clipboard"
 msgstr ""
 
-#: GTG/gtk/general_preferences.py:69
-#, fuzzy
-msgid "General"
-msgstr "<b>Опште</b>"
+#: GTG/gtk/errorhandler.py:30
+msgid "Internal error — GTG"
+msgstr ""
+
+#: GTG/gtk/errorhandler.py:31
+msgid ""
+"GTG encountered an internal error, but can continue running. Unexpected "
+"behavior may occur, so be careful."
+msgstr ""
+
+#: GTG/gtk/errorhandler.py:33
+msgid "Fatal internal error — GTG"
+msgstr ""
+
+#: GTG/gtk/errorhandler.py:34
+msgid "GTG encountered an internal fatal error and needs to exit."
+msgstr ""
+
+#: GTG/gtk/errorhandler.py:38
+#, python-brace-format
+msgid ""
+"Recently unsaved changes (from the last few seconds) may be lost, so make "
+"sure to check your recent changes when launching GTG again afterwards.\n"
+"\n"
+"Please report the bug in <a href=\"{url}\">our issue tracker</a>, with steps "
+"to trigger the problem and the error's details below."
+msgstr ""
+
+#: GTG/gtk/errorhandler.py:54
+msgid "Exit"
+msgstr ""
+
+#: GTG/gtk/errorhandler.py:71
+msgid "Details to paste in your bug report"
+msgstr ""
 
 #: GTG/plugins/export/export.py:90
 msgid "No task matches your criteria. Empty report can't be generated."
@@ -2012,7 +2182,7 @@ msgstr ""
 msgid "Task: %(task_title)s"
 msgstr ""
 
-#: GTG/plugins/untouched_tasks/untouchedTasks.py:65
+#: GTG/plugins/untouched_tasks/untouchedTasks.py:63
 msgid "Add @untouched tag"
 msgstr ""
 
@@ -2048,83 +2218,126 @@ msgid ""
 "Not possible to override {key}, because shortcuts commands are read-only."
 msgstr ""
 
-#: GTG/plugins/gamify/gamify.py:28
+#: GTG/plugins/gamify/gamify.py:32
 msgid "easy"
 msgstr ""
 
-#: GTG/plugins/gamify/gamify.py:29
+#: GTG/plugins/gamify/gamify.py:33
 msgid "medium"
 msgstr ""
 
-#: GTG/plugins/gamify/gamify.py:30
+#: GTG/plugins/gamify/gamify.py:34
 msgid "hard"
 msgstr ""
 
-#: GTG/plugins/gamify/gamify.py:34
+#: GTG/plugins/gamify/gamify.py:38
 msgid "Beginner"
 msgstr ""
 
-#: GTG/plugins/gamify/gamify.py:35
+#: GTG/plugins/gamify/gamify.py:39
 msgid "Novice"
 msgstr ""
 
-#: GTG/plugins/gamify/gamify.py:36
-msgid "prefessional"
-msgstr ""
-
-#: GTG/plugins/gamify/gamify.py:37
-msgid "Expert"
-msgstr ""
-
-#: GTG/plugins/gamify/gamify.py:38
-msgid "Master"
-msgstr ""
-
-#: GTG/plugins/gamify/gamify.py:39
-msgid "Master II"
-msgstr ""
-
 #: GTG/plugins/gamify/gamify.py:40
-msgid "Grand Master"
+msgid "Professional"
 msgstr ""
 
 #: GTG/plugins/gamify/gamify.py:41
+msgid "Expert"
+msgstr ""
+
+#: GTG/plugins/gamify/gamify.py:42
+msgid "Master"
+msgstr ""
+
+#: GTG/plugins/gamify/gamify.py:43
+msgid "Master II"
+msgstr ""
+
+#: GTG/plugins/gamify/gamify.py:44
+msgid "Grand Master"
+msgstr ""
+
+#: GTG/plugins/gamify/gamify.py:45
 msgid "Productivity Lord"
 msgstr ""
 
-#: GTG/plugins/gamify/gamify.py:297
+#: GTG/plugins/gamify/gamify.py:319
 #, python-brace-format
 msgid "Level: <b>{current_level}</b>"
 msgstr ""
 
-#: GTG/plugins/gamify/gamify.py:299
+#: GTG/plugins/gamify/gamify.py:322
 #, python-format
-msgid "%d Point"
-msgid_plural "%d Points"
+msgid "%d point"
+msgid_plural "%d points"
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
 
-#: GTG/plugins/gamify/gamify.py:315
+#: GTG/plugins/gamify/gamify.py:340
 msgid ""
-"Good Job!\n"
-"You have achieved your goal."
+"<i>Good Job!</i>\n"
+"You have achieved your daily goal."
 msgstr ""
 
-#: GTG/plugins/gamify/gamify.py:319
+#: GTG/plugins/gamify/gamify.py:344
 msgid "Only a few tasks to go!"
 msgstr ""
 
-#: GTG/plugins/gamify/gamify.py:323
+#: GTG/plugins/gamify/gamify.py:349
 msgid ""
-"Get Down to Business\n"
+"<i>Get Down to Business!</i>\n"
 "You haven't achieved any tasks today."
 msgstr ""
 
-#: GTG/plugins/gamify/gamify.py:333
+#: GTG/plugins/gamify/gamify.py:359
 #, python-brace-format
 msgid "{emoji} <b>{streak} day</b> streak"
 msgstr ""
+
+#: GTG/plugins/hamster/hamster.py:40
+#, fuzzy
+msgid "Start a new activity in Hamster Time Tracker based on the selected task"
+msgstr "Започни нову делатност у Времену Вредног хрчка "
+
+#: GTG/plugins/hamster/hamster.py:42
+msgid ""
+"Stop tracking the current activity in Hamster Time Tracker corresponding to "
+"the selected task"
+msgstr ""
+
+#: GTG/plugins/hamster/hamster.py:45
+msgid "Start task in Hamster"
+msgstr "Започни задатак у Вредном хрчку"
+
+#: GTG/plugins/hamster/hamster.py:46
+msgid "Stop Hamster Activity"
+msgstr ""
+
+#, fuzzy
+#~ msgid "Start today"
+#~ msgstr "Датум почетка"
+
+#, fuzzy
+#~ msgid "Toggle Sidebar"
+#~ msgstr "_Бочна трака ознака"
+
+#, fuzzy
+#~ msgid "Hide Sidebar"
+#~ msgstr "_Бочна трака ознака"
+
+#, fuzzy, python-format
+#~ msgid "Editing Tag \"%s\""
+#~ msgstr "Уреди"
+
+#, fuzzy
+#~ msgid "Remove icon"
+#~ msgstr "Уклони означену икону"
+
+#, fuzzy
+#~ msgid "Show Tag in \"Actionable\" view:"
+#~ msgstr "Приказуј ову ознаку у радном прегледу"
 
 #~ msgid "Mark as not done"
 #~ msgstr "Означи неурађеним"
@@ -2216,9 +2429,6 @@ msgstr ""
 #~ msgid "Confirm task deletion"
 #~ msgstr "Потврдите брисање задатка"
 
-#~ msgid "Title"
-#~ msgstr "Наслов"
-
 #~ msgid "%(tasks)d active task"
 #~ msgid_plural "%(tasks)d active tasks"
 #~ msgstr[0] "%(tasks)d покренут задатак"
@@ -2306,9 +2516,6 @@ msgstr ""
 
 #~ msgid "<b>Proximity Factor</b>"
 #~ msgstr "<b>Чинилац блискости</b>"
-
-#~ msgid "Start task in Hamster"
-#~ msgstr "Започни задатак у Вредном хрчку"
 
 #~ msgid ""
 #~ "Tomboy/Gnote not found. Please install it or disable the Tomboy/Gnote "
@@ -2778,9 +2985,6 @@ msgstr ""
 
 #~ msgid "Start a new activity in Hamster Time"
 #~ msgstr "Започни нову делатност у Времену Вредног хрчка"
-
-#~ msgid "Start a new activity in Hamster Time "
-#~ msgstr "Започни нову делатност у Времену Вредног хрчка "
 
 #~ msgid "Synchronize with RTM"
 #~ msgstr "Усклади помоћу ССМ-а"
