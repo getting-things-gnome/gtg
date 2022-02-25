@@ -218,8 +218,8 @@ class Backend(PeriodicImportBackend):
             principal = self._dav_client.principal()
         except caldav.lib.error.AuthorizationError as error:
             message = _(
-                "You need a correct login to CalDAV"
-                "Configure CalDAV with login information. Error:"
+                "You need a correct login to CalDAV\n"
+                "Configure CalDAV with login information.\n Error:"
             )
             BackendSignals().interaction_requested(
                 self.get_id(), f"{message} {error!r}",
