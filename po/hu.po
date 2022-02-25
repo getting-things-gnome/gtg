@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-02-24 11:39-0300\n"
-"PO-Revision-Date: 2020-09-21 10:16+0000\n"
+"PO-Revision-Date: 2022-02-25 16:00+0000\n"
 "Last-Translator: Zoltan Gera <gerazo@caesar.elte.hu>\n"
 "Language-Team: \n"
 "Language: hu\n"
@@ -21,7 +21,7 @@ msgstr ""
 
 #: data/org.gnome.GTG.appdata.xml.in.in:5 data/org.gnome.GTG.desktop.in.in:4
 msgid "Getting Things GNOME!"
-msgstr ""
+msgstr "Getting Things GNOME!"
 
 #: data/org.gnome.GTG.appdata.xml.in.in:6
 msgid "Personal tasks and TODO-list items organizer"
@@ -96,62 +96,68 @@ msgid ""
 "Organizer;Task;Tasks;Projects;Activities;Productivity;Plan;Planning;Planner;"
 "Time;Management;Scheduling;GTD;gtg;Todo;"
 msgstr ""
+"Szervező;Feladat;Feladatok;Projekt;Tevékenység;Produktivitás;Terv;Tervezés;"
+"Tervező;Idő;Menedzsment;Beosztás;GTD;gtg;Teendő;"
 
 #: GTG/plugins/export.gtg-plugin.desktop:4
 msgid "Export and print"
-msgstr ""
+msgstr "Exportálás és nyomtatás"
 
 #: GTG/plugins/export.gtg-plugin.desktop:5
 msgid "Exports the tasks in the current view into a variety of formats."
 msgstr ""
+"Kiexportálja az aktuális nézetben található feladatokat különböző "
+"formátumokba."
 
 #: GTG/plugins/export.gtg-plugin.desktop:6
 msgid ""
 "Exports the tasks in the current view into a variety of formats. You can "
 "also personalize the format of your tasks by writing your own template."
 msgstr ""
+"Kiexportálja az aktuális nézetben található feladatokat különböző "
+"formátumokba. Személyre is szabhatod a feladatok kimeneti formátumát egy "
+"sablon megírásával."
 
 #: GTG/plugins/send-email.gtg-plugin.desktop:4
-#, fuzzy
 msgid "Send task via email"
-msgstr "Küldés emailben."
+msgstr "Küldés emailben"
 
 #: GTG/plugins/send-email.gtg-plugin.desktop:5
-#, fuzzy
 msgid "Easily send a task via email."
-msgstr "Küldés emailben."
+msgstr "A feladat egyszerű átküldése emailben."
 
 #: GTG/plugins/send-email.gtg-plugin.desktop:6
 msgid ""
 "Adds a button on the toolbar to send easily a task via email, also sends "
 "status, due_dates, tags and subtasks."
 msgstr ""
+"Egy gomb hozzáadása az eszköztárhoz, hogy könnyen küldessünk feladatokat "
+"emailben. Ezen kívül küldhető állapot, esedékesség ideje, címke és alfeladat "
+"is."
 
 #: GTG/plugins/untouched-tasks.gtg-plugin.desktop:4
-#, fuzzy
 msgid "Untouched tasks"
-msgstr "@untouched címke hozzáadása"
+msgstr "Érintetlen feladatok"
 
 #: GTG/plugins/untouched-tasks.gtg-plugin.desktop:5
-#, fuzzy
 msgid "Keep track of tasks you haven't touched for a while."
-msgstr ""
-" címke hozzárendelése a feladathoz, miután nem csináltunk vele semmit "
-"legalább "
+msgstr "Olyan feladatok nyomonkövetése, melyekkel egy ideje nem foglalkoztál."
 
 #: GTG/plugins/untouched-tasks.gtg-plugin.desktop:6
 msgid ""
 "Assigns tasks that you haven't touched for a while with the @untouched tag."
 msgstr ""
+"Kövesd az @untouched címkével azokat a feladatokat, melyekkel egy ideje nem "
+"foglalkoztál."
 
 #: GTG/plugins/urgency-color.gtg-plugin.desktop:4
 #, fuzzy
 msgid "Urgency Color"
-msgstr "<b>Sürgősség színe</b>"
+msgstr "Sürgősségi Színek"
 
 #: GTG/plugins/urgency-color.gtg-plugin.desktop:5
 msgid "Task urgency color-coding"
-msgstr ""
+msgstr "Feladatok sürgősségi színkódja"
 
 #: GTG/plugins/urgency-color.gtg-plugin.desktop:6
 msgid ""
@@ -167,33 +173,43 @@ msgid ""
 "Yellow means your task's start-date has passed.\n"
 "Green means your task's start-date is upcoming."
 msgstr ""
+"Ez a beépülő kiszámolja a sürgősségi állapotát minden aktív feladatodnak és "
+"ennek megfelelően színekkel megjelöli őket.\n"
+"\n"
+"Színkód\n"
+"\n"
+"Feltételezve alapértelmezett beállításokat:\n"
+"A szürke azt jelenti, hogy a feladatod túl van az esedékességén.\n"
+"A piros azt jelenti, hogy benne vagy az esedékességig hátralévő idő utolsó "
+"30%-ban.\n"
+"A sárga azt jelenti, hogy a feladatod kezdési ideje elmúlt.\n"
+"A zöld azt jelenti, hogy a feladatod kezdési ideje közeleg."
 
 #: GTG/plugins/hamster.gtg-plugin.desktop:4
 msgid "Hamster Time Tracker Integration"
-msgstr ""
+msgstr "Hamster Időnyilvántartó Integrációja"
 
 #: GTG/plugins/hamster.gtg-plugin.desktop:5
 msgid "Track time of GTG task with Hamster applet."
-msgstr ""
+msgstr "Kövesd a GTG feladatokkal eltöltött időt a Hamster kisalkalmazással."
 
 #: GTG/plugins/hamster.gtg-plugin.desktop:6
 msgid "Adds the ability to send a task to the Hamster time tracking applet"
 msgstr ""
+"Képessé tesz arra, hogy egy feladatot átküldj a Hamster időnyilvántartó "
+"kisalkalmazásnak"
 
 #: GTG/plugins/gamify.gtg-plugin.desktop:4
 msgid "Gamify"
-msgstr ""
+msgstr "Gamify"
 
 #: GTG/plugins/gamify.gtg-plugin.desktop:5
 msgid "Gamify adds a game aspect to your GTG workflow."
-msgstr ""
+msgstr "A Gamify játékossá teszi a GTG munkameneteidet."
 
 #: GTG/plugins/gamify.gtg-plugin.desktop:6
-#, fuzzy
 msgid "tracks how many tasks you have done during the day."
-msgstr ""
-" címke hozzárendelése a feladathoz, miután nem csináltunk vele semmit "
-"legalább "
+msgstr "követi, hogy mennyi feladatot csináltál meg a nap folyamán."
 
 #: GTG/gtk/data/backends.ui:61
 msgid "_Add"
@@ -235,7 +251,7 @@ msgstr "Szerkesztés..."
 
 #: GTG/gtk/data/context_menus.ui:14
 msgid "Reopen"
-msgstr ""
+msgstr "Újranyitás"
 
 #: GTG/gtk/data/context_menus.ui:18 GTG/gtk/data/context_menus.ui:49
 #: GTG/gtk/data/task_editor.ui:64 GTG/gtk/browser/tag_context_menu.py:66
@@ -248,9 +264,8 @@ msgid "Add a Subtask..."
 msgstr "Részfeladat Hozzáadása..."
 
 #: GTG/gtk/data/context_menus.ui:31
-#, fuzzy
 msgid "Add a Parent task..."
-msgstr "Részfeladat Hozzáadása..."
+msgstr "Főfeladat Hozzáadása..."
 
 #: GTG/gtk/data/context_menus.ui:41 GTG/gtk/data/task_editor.ui:884
 msgid "Mark as Done"
@@ -328,34 +343,31 @@ msgstr "Esedékesség Törlése"
 
 #: GTG/gtk/data/context_menus.ui:187
 msgid "Set Recurring"
-msgstr ""
+msgstr "Ismétlődés Beállítása"
 
 #: GTG/gtk/data/context_menus.ui:190
 msgid "Every Day"
-msgstr ""
+msgstr "Minden Nap"
 
 #: GTG/gtk/data/context_menus.ui:195
 msgid "Every Other-Day"
-msgstr ""
+msgstr "Minden Másnap"
 
 #: GTG/gtk/data/context_menus.ui:200
-#, fuzzy
 msgid "Every Week"
-msgstr "Következő Hét"
+msgstr "Minden Héten"
 
 #: GTG/gtk/data/context_menus.ui:205
-#, fuzzy
 msgid "Every Month"
-msgstr "Következő Hónap"
+msgstr "Minden Hónapban"
 
 #: GTG/gtk/data/context_menus.ui:210
-#, fuzzy
 msgid "Every Year"
-msgstr "Következő Év"
+msgstr "Minden Évben"
 
 #: GTG/gtk/data/context_menus.ui:216
 msgid "Enable/Disable"
-msgstr ""
+msgstr "Engedélyezés/Letiltás"
 
 #: GTG/gtk/data/context_menus.ui:225
 msgid "Modify Tags..."
@@ -393,7 +405,7 @@ msgstr "Feladatszerkesztő betűtípusa"
 
 #: GTG/gtk/data/general_preferences.ui:327
 msgid "Dark Mode"
-msgstr ""
+msgstr "Sötét Mód"
 
 #: GTG/gtk/data/general_preferences.ui:372
 msgid "Clean Up"
@@ -427,10 +439,9 @@ msgid "Open Help"
 msgstr "Segítség Megnyitása"
 
 #: GTG/gtk/data/help_overlay.ui:35
-#, fuzzy
 msgctxt "shortcut window"
 msgid "Show Keyboard Shortcuts"
-msgstr "Billentyűparancsok"
+msgstr "Billentyűparancsok Mutatása"
 
 #: GTG/gtk/data/help_overlay.ui:43
 msgctxt "shortcut window"
@@ -445,12 +456,12 @@ msgstr "Feladatböngésző"
 #: GTG/gtk/data/help_overlay.ui:60
 msgctxt "shortcut window"
 msgid "Unfold Treeview Items in Task Browser"
-msgstr ""
+msgstr "Fanézet elemeinek kinyitása a Feladatböngészőben"
 
 #: GTG/gtk/data/help_overlay.ui:68
 msgctxt "shortcut window"
 msgid "Fold Treeview Items in Task Browser"
-msgstr ""
+msgstr "Fanézet elemeinek összecsukása a Feladatböngészőben"
 
 #: GTG/gtk/data/help_overlay.ui:75
 msgctxt "shortcut window"
@@ -478,10 +489,9 @@ msgid "Dismiss Task"
 msgstr "Feladat Elvetése"
 
 #: GTG/gtk/data/help_overlay.ui:115
-#, fuzzy
 msgctxt "shortcut window"
 msgid "Reopen Task"
-msgstr "Feladat Törlése"
+msgstr "Feladat Újranyitása"
 
 #: GTG/gtk/data/help_overlay.ui:123
 msgctxt "shortcut window"
@@ -539,23 +549,20 @@ msgid "Start 6 days from now"
 msgstr "Kezdés 6 nap múlva"
 
 #: GTG/gtk/data/main_window.ui:130
-#, fuzzy
 msgid "Start 7 days from now"
-msgstr "Kezdés 2 nap múlva"
+msgstr "Kezdés 7 nap múlva"
 
 #: GTG/gtk/data/main_window.ui:216
 msgid "Show Sidebar"
 msgstr "Oldalsáv Mutatása"
 
 #: GTG/gtk/data/main_window.ui:242
-#, fuzzy
 msgid "Collapse All Tasks"
-msgstr "Lezárt Feladatok"
+msgstr "Minden Feladat Összecsukása"
 
 #: GTG/gtk/data/main_window.ui:255
-#, fuzzy
 msgid "Expand All Tasks"
-msgstr "Minden feladat"
+msgstr "Minden Feladat Kinyitása"
 
 #: GTG/gtk/data/main_window.ui:281 GTG/gtk/plugins.py:131
 msgid "Plugins"
@@ -630,6 +637,8 @@ msgid ""
 "Defer selected task(s) to tomorrow. Useful if you are out of focus or need "
 "additional time."
 msgstr ""
+"A kiválasztott feladatok holnapra halasztása. Hasznos, ha kiestél a "
+"fókuszból vagy időre van még szükséged."
 
 #: GTG/gtk/data/main_window.ui:701
 msgid "Start Tomorrow"
@@ -700,83 +709,75 @@ msgstr "Feladat végleges eltávolítása"
 
 #: GTG/gtk/data/task_editor.ui:106
 msgid "Every:"
-msgstr ""
+msgstr "Minden:"
 
 #: GTG/gtk/data/task_editor.ui:137
 msgid "Repeat"
-msgstr ""
+msgstr "Ismétlés"
 
 #: GTG/gtk/data/task_editor.ui:150
 msgid "Tick to activate"
-msgstr ""
+msgstr "Jelöld az aktiváláshoz"
 
 #: GTG/gtk/data/task_editor.ui:188
 msgid "Daily"
-msgstr ""
+msgstr "Napi"
 
 #: GTG/gtk/data/task_editor.ui:202
-#, fuzzy
 msgid "Every other day"
-msgstr "Nap kezdő időpontja"
+msgstr "Minden másnap"
 
 #: GTG/gtk/data/task_editor.ui:216 GTG/gtk/data/task_editor.ui:269
 #: GTG/gtk/data/task_editor.ui:415
 msgid "Weekly"
-msgstr ""
+msgstr "Heti"
 
 #: GTG/gtk/data/task_editor.ui:230 GTG/gtk/data/task_editor.ui:429
 #: GTG/gtk/data/task_editor.ui:486
 msgid "Monthly"
-msgstr ""
+msgstr "Havi"
 
 #: GTG/gtk/data/task_editor.ui:244 GTG/gtk/data/task_editor.ui:500
 #: GTG/gtk/data/task_editor.ui:553
 msgid "Yearly"
-msgstr ""
+msgstr "Éves"
 
 #: GTG/gtk/data/task_editor.ui:256
 msgid "Recurring"
-msgstr ""
+msgstr "Ismétlődő"
 
 #: GTG/gtk/data/task_editor.ui:286
-#, fuzzy
 msgid "On Monday"
-msgstr "Hétfő"
+msgstr "Hétfőn"
 
 #: GTG/gtk/data/task_editor.ui:301
-#, fuzzy
 msgid "On Tuesday"
-msgstr "Kedd"
+msgstr "Kedden"
 
 #: GTG/gtk/data/task_editor.ui:316
-#, fuzzy
 msgid "On Wednesday"
-msgstr "Szerda"
+msgstr "Szerdán"
 
 #: GTG/gtk/data/task_editor.ui:331
-#, fuzzy
 msgid "On Thursday"
-msgstr "Csütörtök"
+msgstr "Csütörtökön"
 
 #: GTG/gtk/data/task_editor.ui:346
-#, fuzzy
 msgid "On Friday"
-msgstr "Péntek"
+msgstr "Pénteken"
 
 #: GTG/gtk/data/task_editor.ui:361
-#, fuzzy
 msgid "On Saturday"
-msgstr "Szombat"
+msgstr "Szombaton"
 
 #: GTG/gtk/data/task_editor.ui:376
-#, fuzzy
 msgid "On Sunday"
 msgstr "Vasárnap"
 
 #: GTG/gtk/data/task_editor.ui:403 GTG/gtk/data/task_editor.ui:474
 #: GTG/gtk/data/task_editor.ui:541
 msgid "On This Day"
-msgstr ""
+msgstr "Mai Nap"
 
 #: GTG/gtk/data/task_editor.ui:577 GTG/gtk/data/task_editor.ui:880
 msgid "Task"
@@ -801,9 +802,8 @@ msgid "Add tags to this task"
 msgstr "Címke hozzáadása ehhez a feladathoz"
 
 #: GTG/gtk/data/task_editor.ui:669
-#, fuzzy
 msgid "Set this task to repeat"
-msgstr "Feladat megjelölése elvégzendőre"
+msgstr "Feladat beállítása ismétlődőre"
 
 #: GTG/gtk/data/task_editor.ui:705
 msgid "Starts on"
@@ -876,135 +876,123 @@ msgstr "Általános"
 
 #: GTG/plugins/gamify/prefs.ui:97
 msgid "Tag Mappings"
-msgstr ""
+msgstr "Címke-hozzárendelések"
 
 #: GTG/plugins/gamify/prefs.ui:180 GTG/plugins/urgency_color/preferences.ui:13
-#, fuzzy
 msgid "Plugin Preferences"
-msgstr "Beállítások"
+msgstr "Bővítmény Beállításai"
 
 #: GTG/plugins/gamify/prefs.ui:208
 msgid "Target tasks per day"
-msgstr ""
+msgstr "Célfeladatok naponta"
 
 #: GTG/plugins/gamify/prefs.ui:254
 msgid "Create a tag mapping"
-msgstr ""
+msgstr "Címkehozzárendelés létrehozása"
 
 #: GTG/plugins/gamify/prefs.ui:255
 msgid "Associate a number of points with a custom tag name"
-msgstr ""
+msgstr "Egy saját címkéhez pontok hozzárendelése"
 
 #: GTG/plugins/gamify/prefs.ui:267
-#, fuzzy
 msgid "Add"
 msgstr "Hozzáadás"
 
 #: GTG/plugins/gamify/prefs.ui:305
-#, fuzzy
 msgid "Tag Name:"
 msgstr "CímkeNév"
 
 #: GTG/plugins/gamify/prefs.ui:341
 msgid "Points:"
-msgstr ""
+msgstr "Pont:"
 
 #: GTG/plugins/gamify/prefs.ui:410
 msgid "label"
-msgstr ""
+msgstr "címke"
 
 #: GTG/plugins/gamify/prefs.ui:458
 msgid "Level"
-msgstr ""
+msgstr "Szint"
 
 #: GTG/plugins/gamify/prefs.ui:470
 msgid "Points"
-msgstr ""
+msgstr "Pont"
 
 #: GTG/plugins/gamify/prefs.ui:493
 msgid "Your streak"
-msgstr ""
+msgstr "Utolsó Sorozatod"
 
 #: GTG/plugins/gamify/prefs.ui:534
 msgid "UI mode"
-msgstr ""
+msgstr "UI üzemmód"
 
 #: GTG/plugins/gamify/prefs.ui:551
 msgid "Button + discrete bar"
-msgstr ""
+msgstr "Gomb + külön sáv"
 
 #: GTG/plugins/gamify/prefs.ui:552
 msgid "Button only"
-msgstr ""
+msgstr "Csak gomb"
 
 #: GTG/plugins/gamify/prefs.ui:553
 msgid "Discrete bar only"
-msgstr ""
+msgstr "Csak külön sáv"
 
 #: GTG/plugins/hamster/prefs.ui:8
-#, fuzzy
 msgid "Hamster Preferences"
-msgstr "Beállítások"
+msgstr "Hamster Beállítások"
 
 #: GTG/plugins/hamster/prefs.ui:73
 msgid "Activity Title"
-msgstr ""
+msgstr "Tevékenység Neve"
 
 #: GTG/plugins/hamster/prefs.ui:95
-#, fuzzy
 msgid "Task Title"
-msgstr "Cím"
+msgstr "Feladat Neve"
 
 #: GTG/plugins/hamster/prefs.ui:96
-#, fuzzy
 msgid "Task Tag"
-msgstr "Feladatkezelő"
+msgstr "Feladatcímke"
 
 #: GTG/plugins/hamster/prefs.ui:134
 msgid "Category"
-msgstr ""
+msgstr "Kategória"
 
 #: GTG/plugins/hamster/prefs.ui:156 GTG/plugins/hamster/prefs.ui:163
 msgid "Let hamster choose"
-msgstr ""
+msgstr "Válasszon a Hamster"
 
 #: GTG/plugins/hamster/prefs.ui:157
 msgid "GTG Tag"
-msgstr ""
+msgstr "GTG Címke"
 
 #: GTG/plugins/hamster/prefs.ui:158
 msgid "Default GTG Tag if activity is unsorted"
-msgstr ""
+msgstr "Alapértelmezett GTG Címke, ha a tevékenység nincs berendezve"
 
 #: GTG/plugins/hamster/prefs.ui:197
 msgid "Description"
-msgstr ""
+msgstr "Leírás"
 
 #: GTG/plugins/hamster/prefs.ui:219
-#, fuzzy
 msgid "GTG task title"
-msgstr "Feladat: %(task_title)s"
+msgstr "GTG feladatcím"
 
 #: GTG/plugins/hamster/prefs.ui:220
-#, fuzzy
 msgid "GTG task contents"
-msgstr ""
-"\n"
-"Feladat tartalma:\n"
-"%s"
+msgstr "GTG feladat tartalma"
 
 #: GTG/plugins/hamster/prefs.ui:221 GTG/plugins/hamster/prefs.ui:284
 msgid "None"
-msgstr ""
+msgstr "Nincs"
 
 #: GTG/plugins/hamster/prefs.ui:282
-#, fuzzy
 msgid "All GTG tags"
-msgstr "Minden címke"
+msgstr "Minden GTG címke"
 
 #: GTG/plugins/hamster/prefs.ui:283
 msgid "GTG tags already used in Hamster"
-msgstr ""
+msgstr "A Hamsterben már használt GTG címkék"
 
 #: GTG/plugins/untouched_tasks/untouchedTasks.ui:36
 msgid "Add "
@@ -1025,18 +1013,16 @@ msgid "Check for untouched tasks automatically"
 msgstr "Érintetlen feladatok automatikus ellenőrzése"
 
 #: GTG/plugins/urgency_color/preferences.ui:39
-#, fuzzy
 msgid "Danger zone span:"
-msgstr "Veszélyzóna mértéke"
+msgstr "Veszélyzóna mérete:"
 
 #: GTG/plugins/urgency_color/preferences.ui:68
 msgid "%"
-msgstr ""
+msgstr "%"
 
 #: GTG/plugins/urgency_color/preferences.ui:83
-#, fuzzy
 msgid "Danger zone"
-msgstr "Veszélyzóna mértéke"
+msgstr "Veszélyzóna"
 
 #: GTG/plugins/urgency_color/preferences.ui:135
 msgid "Overdue"
@@ -1055,32 +1041,32 @@ msgid "Low"
 msgstr "Alacsony"
 
 #: GTG/plugins/urgency_color/preferences.ui:274
-#, fuzzy
 msgid "Urgency level colors"
-msgstr "<b>Sürgősség színe</b>"
+msgstr "Sürgősség színe"
 
 #: GTG/plugins/urgency_color/preferences.ui:306
 msgid "Reset"
 msgstr "Visszaállítás"
 
 #: GTG/backends/backend_caldav.py:62
-#, fuzzy
 msgid "CalDAV tasks"
-msgstr "Minden feladat"
+msgstr "CalDAV feladatok"
 
 #: GTG/backends/backend_caldav.py:67
 msgid "Lets you synchronize your GTG tasks with CalDAV tasks"
-msgstr ""
+msgstr "Szinkronizálhatod a GTG feladataidat CalDAV feladataiddal"
 
 #: GTG/backends/backend_caldav.py:76
 msgid "insert your username"
-msgstr ""
+msgstr "írd ide a felhasználóneved"
 
 #: GTG/backends/backend_caldav.py:221
 msgid ""
 "You need a correct login to CalDAVConfigure CalDAV with login information. "
 "Error:"
 msgstr ""
+"Helyes felhasználói információt kell megadni a CalDAVConfigure CalDAV-nak. "
+"Hiba:"
 
 #: GTG/backends/backend_localfile.py:64
 msgid "Local File"
@@ -1186,32 +1172,28 @@ msgstr "Vasárnap"
 
 #. Translators: Used in recurring parsing, made lowercased in code
 #: GTG/core/dates.py:541
-#, fuzzy
 msgid "day"
-msgstr "Ma"
+msgstr "nap"
 
 #. Translators: Used in recurring parsing, made lowercased in code
 #: GTG/core/dates.py:544
 msgid "other-day"
-msgstr ""
+msgstr "másnap"
 
 #. Translators: Used in recurring parsing, made lowercased in code
 #: GTG/core/dates.py:547
-#, fuzzy
 msgid "week"
-msgstr "következő hét"
+msgstr "hét"
 
 #. Translators: Used in recurring parsing, made lowercased in code
 #: GTG/core/dates.py:550
-#, fuzzy
 msgid "month"
-msgstr "következő hónap"
+msgstr "hónap"
 
 #. Translators: Used in recurring parsing, made lowercased in code
 #: GTG/core/dates.py:553
-#, fuzzy
 msgid "year"
-msgstr "következő év"
+msgstr "év"
 
 #: GTG/core/dates.py:615
 #, python-format
@@ -1619,7 +1601,6 @@ msgid "Learn About Synchronization Services"
 msgstr "Szinkronizációs Szolgáltatások"
 
 #: GTG/core/firstrun_tasks.py:306
-#, fuzzy
 msgid ""
 "❗ Take note that as of GTG 0.6, the majority of synchronization backends/"
 "services have been disabled until someone (you?) steps forward to fix and "
@@ -1641,15 +1622,15 @@ msgid ""
 "As of v0.6, only CalDAV is available. You need to have the &quot;"
 "caldav&quot; Python package installed if it doesn't appear."
 msgstr ""
-"❗ Fontos megjegyezni, hogy a GTG 0.4-es verziójában a szinkronizációs "
-"szolgáltatásokat letiltottuk, amíg valaki (te?) megjavítja és karban is "
-"tartja őket, mivel ezeket nem frissítették az új kódbázissal való "
+"❗ Fontos megjegyezni, hogy a GTG 0.6-es verziójában a legtöbb "
+"szinkronizációs szolgáltatást letiltottuk, amíg valaki (te?) megjavítja és "
+"karban is tartja őket, mivel ezeket nem frissítették az új kódbázissal való "
 "együttműködésre, illetve a szolgáltatások legújabb API-jaival való "
 "együttműködésre.\n"
 "\n"
 "A szinkronizációs szolgáltatások használatával a GTG szinkronizál (import/"
 "export) feladatokat, jegyzeteket, hibákat más weboldalakról vagy "
-"alkalmazásokból, mint pl. Remember the Milk, Tomboy, LaunchPad, stb.\n"
+"alkalmazásokból, mint pl. CalDAV kompatibilis szolgáltatrások.\n"
 "\n"
 "Ez akkor hasznos, ha szeretnéd a feladataidat több helyről is elérni, pl. "
 "más gépeken futó GTG-kből, illetve ha szeretnéd őket egy online "
@@ -1659,6 +1640,8 @@ msgstr ""
 "majd válaszd a &quot;Szinkronizáció&quot; pontot. Tudsz majd választani "
 "számos online vagy helyi szolgáltatás közül feladatok importálásához vagy "
 "exportálásához."
+"A v0.6-os verzióban csak CalDAV áll rendelkezésre. Szükséged van a &quot;"
+"caldav&quot; Python csomag telepítésére, ha ez nem jelenik meg."
 
 #: GTG/core/firstrun_tasks.py:329
 msgid "Learn How to Search for Tasks"
@@ -1710,12 +1693,10 @@ msgstr ""
 "Minden, ami ennek a bővítménynek a futtatásához kell rendelkezésre áll."
 
 #: GTG/core/plugins/__init__.py:28
-#, fuzzy
 msgid "This plugin can not be loaded."
 msgstr "A bővítményt nem lehet betölteni"
 
 #: GTG/core/plugins/__init__.py:29
-#, fuzzy
 msgid "Some python modules are missing."
 msgstr "Néhány python modul hiányzik"
 
@@ -1724,25 +1705,22 @@ msgid "Please install the following python modules:"
 msgstr "Kérlek, telepítsd a következő python modulokat:"
 
 #: GTG/core/plugins/__init__.py:32
-#, fuzzy
 msgid "Some remote D-Bus objects are missing."
-msgstr "Néhány távoli dbus objektum hiányzik."
+msgstr "Néhány távoli D-Bus objektum hiányzik."
 
 #: GTG/core/plugins/__init__.py:33
 msgid "Please start the following applications:"
 msgstr "Kérlek, indítsd el a következő alkalmazásokat:"
 
 #: GTG/core/plugins/__init__.py:35
-#, fuzzy
 msgid "Some modules and remote D-Bus objects are missing."
-msgstr "Néhány modul és távoli dbus objektum hiányzik."
+msgstr "Néhány modul és távoli D-Bus objektum hiányzik."
 
 #: GTG/core/plugins/__init__.py:36
 msgid "Please install or start the following components:"
 msgstr "Kérlek, telepítsd vagy indítsd el a kovetkező komponenseket:"
 
 #: GTG/core/plugins/__init__.py:38
-#, fuzzy
 msgid "An unknown error occurred while loading the plugin."
 msgstr "Ismeretlen hiba a bővítmény betöltése közben."
 
@@ -1828,9 +1806,9 @@ msgstr "Szinkronizálás <span color=\"red\">letiltva</span>."
 
 #. Load and setup other widgets
 #: GTG/gtk/backends/__init__.py:70
-#, fuzzy, python-brace-format
+#, python-brace-format
 msgid "Synchronization Services - {name}"
-msgstr "Szinkronizációs Szolgáltatások - {info.NAME}"
+msgstr "Szinkronizációs Szolgáltatások - {name}"
 
 #: GTG/gtk/backends/__init__.py:272
 #, python-format
@@ -2016,7 +1994,7 @@ msgstr ""
 #: GTG/gtk/browser/main_window.py:295
 #, python-brace-format
 msgid "In {number_of_days} days — {weekday}"
-msgstr ""
+msgstr "{number_of_days} napon belül — {weekday}"
 
 #. These lines should be in info.py, but due to their dynamic nature
 #. there'd be no way to show them translated in Gtk's About dialog:
@@ -2109,9 +2087,8 @@ msgid "Generate Color"
 msgstr "Szín Generálása"
 
 #: GTG/gtk/browser/tag_editor.py:159
-#, fuzzy
 msgid "Tag name can not be empty"
-msgstr "A bővítményt nem lehet betölteni"
+msgstr "A címke neve nem lehet üres"
 
 #. Build the title/label/tags columns
 #. Translators: Column name, containing the task titles
@@ -2181,29 +2158,29 @@ msgstr[1] "%(days)d nappal ezelőtt"
 #: GTG/gtk/editor/recurring_menu.py:104 GTG/gtk/editor/recurring_menu.py:120
 #, python-brace-format
 msgid "Every <b>{month_day} of the month</b>"
-msgstr ""
+msgstr "A hónap minden <b>{month_day} napján</b>"
 
 #. Translators: Recurring yearly
 #: GTG/gtk/editor/recurring_menu.py:110 GTG/gtk/editor/recurring_menu.py:124
 #, python-brace-format
 msgid "Every <b>{month} {day}</b>"
-msgstr ""
+msgstr "Minden <b>{month} {day}</b>"
 
 #. Recurring daily
 #: GTG/gtk/editor/recurring_menu.py:113
 msgid "Every <b>day</b>"
-msgstr ""
+msgstr "Minden <b>nap</b>"
 
 #. Recurring every other day
 #: GTG/gtk/editor/recurring_menu.py:115
 msgid "Every <b>other day</b>"
-msgstr ""
+msgstr "Every <b>másnap</b>"
 
 #. Recurring weekly from today
 #: GTG/gtk/editor/recurring_menu.py:117 GTG/gtk/editor/recurring_menu.py:128
 #, python-brace-format
 msgid "Every <b>{week_day}</b>"
-msgstr ""
+msgstr "Minden <b>{week_day}</b>"
 
 #: GTG/gtk/editor/taskview.py:632
 msgid "Open Link"
@@ -2215,21 +2192,23 @@ msgstr "Hivatkozás Másolása a Vágólapra"
 
 #: GTG/gtk/errorhandler.py:30
 msgid "Internal error — GTG"
-msgstr ""
+msgstr "Belső hiba — GTG"
 
 #: GTG/gtk/errorhandler.py:31
 msgid ""
 "GTG encountered an internal error, but can continue running. Unexpected "
 "behavior may occur, so be careful."
 msgstr ""
+"A GTG belső hibát észlelt, de tovább tud futni. Váratlan viselkedés "
+"előfordulhat, így légy óvatos."
 
 #: GTG/gtk/errorhandler.py:33
 msgid "Fatal internal error — GTG"
-msgstr ""
+msgstr "Súlyos belső hiba — GTG"
 
 #: GTG/gtk/errorhandler.py:34
 msgid "GTG encountered an internal fatal error and needs to exit."
-msgstr ""
+msgstr "A GTG súlyos belső hibát észlelt, így ki kell lépnie."
 
 #: GTG/gtk/errorhandler.py:38
 #, python-brace-format
@@ -2240,14 +2219,19 @@ msgid ""
 "Please report the bug in <a href=\"{url}\">our issue tracker</a>, with steps "
 "to trigger the problem and the error's details below."
 msgstr ""
+"Az épp nem mentett változások (utolsó pár másodperc) elveszhetnek, így "
+"ellenőrizd az utolsó változtatásaidat, miután a GTG-t újraindítottad.\n"
+"\n"
+"Kérlek, jelentsd a hibát a <a href=\"{url}\">hibakövetőnkben</a>, alább "
+"leírva a hiba leírásával együtt azokat a lépéseket, melyek ide vezettek."
 
 #: GTG/gtk/errorhandler.py:54
 msgid "Exit"
-msgstr ""
+msgstr "Kilépés"
 
 #: GTG/gtk/errorhandler.py:71
 msgid "Details to paste in your bug report"
-msgstr ""
+msgstr "Részletek, melyeket bemásolhatsz a hibajelentésedbe"
 
 #: GTG/plugins/export/export.py:90
 msgid "No task matches your criteria. Empty report can't be generated."
@@ -2382,15 +2366,17 @@ msgstr "@untouched címke hozzáadása"
 #: GTG/plugins/dev_console.gtg-plugin.desktop:4
 #: GTG/plugins/dev_console/console.py:71 GTG/plugins/dev_console/console.py:100
 msgid "Developer Console"
-msgstr ""
+msgstr "Fejlesztői Konzol"
 
 #: GTG/plugins/dev_console.gtg-plugin.desktop:5
 msgid "Opens a Python interpreter with access to GTG internals"
-msgstr ""
+msgstr "Python interpreter megnyitása a GTG belsejének elérésével"
 
 #: GTG/plugins/dev_console.gtg-plugin.desktop:6
 msgid "Opens a new window with a Python interpreter that can access GTG data"
 msgstr ""
+"Megnyit egy új ablakot egy Python interpreterrel, mely GTG adatokat tud "
+"elérni"
 
 #: GTG/plugins/dev_console/console.py:117
 msgid ""
@@ -2404,108 +2390,125 @@ msgid ""
 "Type \"help (<command>)\" for more information.\n"
 "\n"
 msgstr ""
+"Üdv a GTG Fejlesztői Konzolban\n"
+"\n"
+"A következő rövidítéseket használhatod:\n"
+"- app (Az alkalmazás osztálya)\n"
+"- req (A kérést indító osztálya)\n"
+"- browser (A főablak)\n"
+"\n"
+"Használd a \"help (<parancs>)\" alakot több információért.\n"
+"\n"
 
 #: GTG/plugins/dev_console/utils.py:86
 #, python-brace-format
 msgid ""
 "Not possible to override {key}, because shortcuts commands are read-only."
 msgstr ""
+"Nem lehet felülírni a {key} kulcsot, mert a rövidítések csak olvashatóak."
 
 #: GTG/plugins/gamify/gamify.py:32
 msgid "easy"
-msgstr ""
+msgstr "könnyű"
 
 #: GTG/plugins/gamify/gamify.py:33
 msgid "medium"
-msgstr ""
+msgstr "közepes"
 
 #: GTG/plugins/gamify/gamify.py:34
 msgid "hard"
-msgstr ""
+msgstr "nehéz"
 
 #: GTG/plugins/gamify/gamify.py:38
 msgid "Beginner"
-msgstr ""
+msgstr "Kezdő"
 
 #: GTG/plugins/gamify/gamify.py:39
 msgid "Novice"
-msgstr ""
+msgstr "Haladó"
 
 #: GTG/plugins/gamify/gamify.py:40
 msgid "Professional"
-msgstr ""
+msgstr "Profi"
 
 #: GTG/plugins/gamify/gamify.py:41
 msgid "Expert"
-msgstr ""
+msgstr "Specialista"
 
 #: GTG/plugins/gamify/gamify.py:42
 msgid "Master"
-msgstr ""
+msgstr "Mester"
 
 #: GTG/plugins/gamify/gamify.py:43
 msgid "Master II"
-msgstr ""
+msgstr "Mester II"
 
 #: GTG/plugins/gamify/gamify.py:44
 msgid "Grand Master"
-msgstr ""
+msgstr "Nagymester"
 
 #: GTG/plugins/gamify/gamify.py:45
 msgid "Productivity Lord"
-msgstr ""
+msgstr "A Produktivitás Ura"
 
 #: GTG/plugins/gamify/gamify.py:319
 #, python-brace-format
 msgid "Level: <b>{current_level}</b>"
-msgstr ""
+msgstr "Szint: <b>{current_level}</b>"
 
 #: GTG/plugins/gamify/gamify.py:322
 #, python-format
 msgid "%d point"
 msgid_plural "%d points"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d pont"
+msgstr[1] "%d pont"
 
 #: GTG/plugins/gamify/gamify.py:340
 msgid ""
 "<i>Good Job!</i>\n"
 "You have achieved your daily goal."
 msgstr ""
+"<i>Szép Munka!</i>\n"
+"Elérted a napi célkitűzésedet."
 
 #: GTG/plugins/gamify/gamify.py:344
 msgid "Only a few tasks to go!"
-msgstr ""
+msgstr "Már csak pár feladat van hátra!"
 
 #: GTG/plugins/gamify/gamify.py:349
 msgid ""
 "<i>Get Down to Business!</i>\n"
 "You haven't achieved any tasks today."
 msgstr ""
+"<i>Láss Neki!</i>\n"
+"Még egy feladatot sem csináltál meg ma."
 
 #: GTG/plugins/gamify/gamify.py:359
 #, python-brace-format
 msgid "{emoji} <b>{streak} day</b> streak"
-msgstr ""
+msgstr "{emoji} <b>{streak} napos</b> sorozat"
 
 #: GTG/plugins/hamster/hamster.py:40
 msgid "Start a new activity in Hamster Time Tracker based on the selected task"
 msgstr ""
+"Új tevékenység indítása a Hamster Időnyilvántartóban a kiválasztott feladat "
+"alapján"
 
 #: GTG/plugins/hamster/hamster.py:42
 msgid ""
 "Stop tracking the current activity in Hamster Time Tracker corresponding to "
 "the selected task"
 msgstr ""
+"Az aktuális tevékenység követésének leállítása a Hamster Időnyilvántartóban, "
+"a kiválasztott feladathoz kapcsolódóan"
 
 #: GTG/plugins/hamster/hamster.py:45
-#, fuzzy
 msgid "Start task in Hamster"
-msgstr "Kezdés dátuma"
+msgstr "Feladat indítása a Hamsterben"
 
 #: GTG/plugins/hamster/hamster.py:46
 msgid "Stop Hamster Activity"
-msgstr ""
+msgstr "Feladat leállítása a Hamsterben"
 
 #~ msgid "Start today"
 #~ msgstr "Kezdés ma"
