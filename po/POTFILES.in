@@ -16,6 +16,7 @@ GTG/gtk/data/general_preferences.ui
 GTG/gtk/data/help_overlay.ui
 GTG/gtk/data/main_window.ui
 GTG/gtk/data/modify_tags.ui
+GTG/gtk/data/tag_editor.ui
 GTG/gtk/data/plugins.ui
 GTG/gtk/data/preferences.ui
 GTG/gtk/data/task_editor.ui
