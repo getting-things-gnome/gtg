@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-02-24 11:39-0300\n"
+"POT-Creation-Date: 2022-02-25 14:21-0300\n"
 "PO-Revision-Date: 2013-09-20 13:34+0000\n"
 "Last-Translator: Joseph Lew <liuyiming1210@gmail.com>\n"
 "Language-Team: Simplified Chinese <zh_CN@li.org>\n"
@@ -626,12 +626,14 @@ msgstr "明天开始"
 msgid "Modify Tags"
 msgstr "修改标签"
 
-#: GTG/gtk/data/modify_tags.ui:23 GTG/plugins/gamify/prefs.ui:258
+#: GTG/gtk/data/modify_tags.ui:23 GTG/gtk/data/tag_editor.ui:17
+#: GTG/plugins/gamify/prefs.ui:258
 #: GTG/plugins/untouched_tasks/untouchedTasks.ui:136
 msgid "Cancel"
 msgstr "取消"
 
-#: GTG/gtk/data/modify_tags.ui:37 GTG/plugins/gamify/prefs.ui:138
+#: GTG/gtk/data/modify_tags.ui:37 GTG/gtk/data/tag_editor.ui:27
+#: GTG/plugins/gamify/prefs.ui:138
 #: GTG/plugins/untouched_tasks/untouchedTasks.ui:150
 #: GTG/plugins/urgency_color/preferences.ui:323
 msgid "Apply"
@@ -654,6 +656,64 @@ msgstr "提示: 可以用空格分隔标签。如需删除标签，在名称前�
 #: GTG/gtk/data/modify_tags.ui:109
 msgid "Apply to subtasks"
 msgstr "应用到子任务"
+
+#. Edit tag windwo title
+#: GTG/gtk/data/tag_editor.ui:13
+#, fuzzy
+msgid "Edit %s"
+msgstr "编辑任务"
+
+#: GTG/gtk/data/tag_editor.ui:70
+msgid "🏷️"
+msgstr ""
+
+#: GTG/gtk/data/tag_editor.ui:76
+msgid "Click here to set an icon for this tag"
+msgstr ""
+
+#: GTG/gtk/data/tag_editor.ui:125
+msgid "Delete the currently selected icon"
+msgstr ""
+
+#: GTG/gtk/data/tag_editor.ui:168
+#, fuzzy
+msgid "Name"
+msgstr "标签名称"
+
+#: GTG/gtk/data/tag_editor.ui:207 GTG/gtk/data/tag_editor.ui:235
+#, fuzzy
+msgid "Whenever to show this tag in the Actionable view"
+msgstr "在工作流中显示此标签"
+
+#: GTG/gtk/data/tag_editor.ui:209
+msgid "Actionable"
+msgstr ""
+
+#: GTG/gtk/data/tag_editor.ui:221
+msgid ""
+"The color of the tag, also used to color the background of the task when "
+"enabled"
+msgstr ""
+
+#: GTG/gtk/data/tag_editor.ui:223
+msgid "Color"
+msgstr ""
+
+#: GTG/gtk/data/tag_editor.ui:254
+msgid "Change the color of the tag"
+msgstr ""
+
+#: GTG/gtk/data/tag_editor.ui:267
+msgid "Random"
+msgstr ""
+
+#: GTG/gtk/data/tag_editor.ui:271
+msgid "Generate and use an random color"
+msgstr ""
+
+#: GTG/gtk/data/tag_editor.ui:285
+msgid "Delete the currently selected color"
+msgstr ""
 
 #: GTG/gtk/data/plugins.ui:54
 msgid "<b>Dependencies</b>"
@@ -1071,8 +1131,9 @@ msgstr ""
 
 #: GTG/backends/backend_caldav.py:221
 msgid ""
-"You need a correct login to CalDAVConfigure CalDAV with login information. "
-"Error:"
+"You need a correct login to CalDAV\n"
+"Configure CalDAV with login information.\n"
+" Error:"
 msgstr ""
 
 #: GTG/backends/backend_localfile.py:64
@@ -2379,9 +2440,6 @@ msgstr ""
 
 #~ msgid "Display only the currently actionable tasks"
 #~ msgstr "只显示当前可付诸行动的任务"
-
-#~ msgid "Show this tag in the workview"
-#~ msgstr "在工作流中显示此标签"
 
 #~ msgid "You can create, open or filter your tasks here"
 #~ msgstr "你可以在这里创建、打开或者筛选你的任务"

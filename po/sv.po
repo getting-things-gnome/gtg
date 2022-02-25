@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-02-24 11:39-0300\n"
+"POT-Creation-Date: 2022-02-25 14:21-0300\n"
 "PO-Revision-Date: 2020-10-27 12:51+0100\n"
 "Last-Translator: Gleb Vassiljev <gleb@netkom.se>\n"
 "Language-Team: Translation Project Svenska <tp-sv@listor.tp-sv.se>\n"
@@ -644,12 +644,14 @@ msgstr "Börja imorgon"
 msgid "Modify Tags"
 msgstr "Redigera etiketter"
 
-#: GTG/gtk/data/modify_tags.ui:23 GTG/plugins/gamify/prefs.ui:258
+#: GTG/gtk/data/modify_tags.ui:23 GTG/gtk/data/tag_editor.ui:17
+#: GTG/plugins/gamify/prefs.ui:258
 #: GTG/plugins/untouched_tasks/untouchedTasks.ui:136
 msgid "Cancel"
 msgstr "Avbryt"
 
-#: GTG/gtk/data/modify_tags.ui:37 GTG/plugins/gamify/prefs.ui:138
+#: GTG/gtk/data/modify_tags.ui:37 GTG/gtk/data/tag_editor.ui:27
+#: GTG/plugins/gamify/prefs.ui:138
 #: GTG/plugins/untouched_tasks/untouchedTasks.ui:150
 #: GTG/plugins/urgency_color/preferences.ui:323
 msgid "Apply"
@@ -674,6 +676,65 @@ msgstr ""
 #: GTG/gtk/data/modify_tags.ui:109
 msgid "Apply to subtasks"
 msgstr "Tillämpa till deluppgifter"
+
+#. Edit tag windwo title
+#: GTG/gtk/data/tag_editor.ui:13
+#, fuzzy
+msgid "Edit %s"
+msgstr "Redigera uppgift"
+
+#: GTG/gtk/data/tag_editor.ui:70
+msgid "🏷️"
+msgstr ""
+
+#: GTG/gtk/data/tag_editor.ui:76
+msgid "Click here to set an icon for this tag"
+msgstr ""
+
+#: GTG/gtk/data/tag_editor.ui:125
+msgid "Delete the currently selected icon"
+msgstr ""
+
+#: GTG/gtk/data/tag_editor.ui:168
+#, fuzzy
+msgid "Name"
+msgstr "Etikettnamn"
+
+#: GTG/gtk/data/tag_editor.ui:207 GTG/gtk/data/tag_editor.ui:235
+#, fuzzy
+msgid "Whenever to show this tag in the Actionable view"
+msgstr "Visa etikett i \"Handlingsbar\" vyn:"
+
+#: GTG/gtk/data/tag_editor.ui:209
+#, fuzzy
+msgid "Actionable"
+msgstr "Handlingsbar"
+
+#: GTG/gtk/data/tag_editor.ui:221
+msgid ""
+"The color of the tag, also used to color the background of the task when "
+"enabled"
+msgstr ""
+
+#: GTG/gtk/data/tag_editor.ui:223
+msgid "Color"
+msgstr ""
+
+#: GTG/gtk/data/tag_editor.ui:254
+msgid "Change the color of the tag"
+msgstr ""
+
+#: GTG/gtk/data/tag_editor.ui:267
+msgid "Random"
+msgstr ""
+
+#: GTG/gtk/data/tag_editor.ui:271
+msgid "Generate and use an random color"
+msgstr ""
+
+#: GTG/gtk/data/tag_editor.ui:285
+msgid "Delete the currently selected color"
+msgstr ""
 
 #: GTG/gtk/data/plugins.ui:54
 msgid "<b>Dependencies</b>"
@@ -1082,8 +1143,9 @@ msgstr ""
 
 #: GTG/backends/backend_caldav.py:221
 msgid ""
-"You need a correct login to CalDAVConfigure CalDAV with login information. "
-"Error:"
+"You need a correct login to CalDAV\n"
+"Configure CalDAV with login information.\n"
+" Error:"
 msgstr ""
 
 #: GTG/backends/backend_localfile.py:64
@@ -2549,9 +2611,6 @@ msgstr ""
 
 #~ msgid "Name : "
 #~ msgstr "Namn : "
-
-#~ msgid "Show Tag in \"Actionable\" view:"
-#~ msgstr "Visa etikett i \"Handlingsbar\" vyn:"
 
 #~ msgid "Select Tag Color:"
 #~ msgstr "Välj färg för etikett:"

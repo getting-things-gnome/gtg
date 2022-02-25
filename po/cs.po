@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-02-24 11:39-0300\n"
+"POT-Creation-Date: 2022-02-25 14:21-0300\n"
 "PO-Revision-Date: 2013-04-08 07:02+0000\n"
 "Last-Translator: David Kovář <davidkov@gmx.com>\n"
 "Language-Team: Czech <cs@li.org>\n"
@@ -661,12 +661,14 @@ msgstr "Zítra"
 msgid "Modify Tags"
 msgstr "Změnit štítky"
 
-#: GTG/gtk/data/modify_tags.ui:23 GTG/plugins/gamify/prefs.ui:258
+#: GTG/gtk/data/modify_tags.ui:23 GTG/gtk/data/tag_editor.ui:17
+#: GTG/plugins/gamify/prefs.ui:258
 #: GTG/plugins/untouched_tasks/untouchedTasks.ui:136
 msgid "Cancel"
 msgstr "Zrušit"
 
-#: GTG/gtk/data/modify_tags.ui:37 GTG/plugins/gamify/prefs.ui:138
+#: GTG/gtk/data/modify_tags.ui:37 GTG/gtk/data/tag_editor.ui:27
+#: GTG/plugins/gamify/prefs.ui:138
 #: GTG/plugins/untouched_tasks/untouchedTasks.ui:150
 #: GTG/plugins/urgency_color/preferences.ui:323
 msgid "Apply"
@@ -691,6 +693,64 @@ msgstr ""
 #: GTG/gtk/data/modify_tags.ui:109
 msgid "Apply to subtasks"
 msgstr "Aplikovat na podúkoly"
+
+#. Edit tag windwo title
+#: GTG/gtk/data/tag_editor.ui:13
+#, fuzzy
+msgid "Edit %s"
+msgstr "Přidat úkol"
+
+#: GTG/gtk/data/tag_editor.ui:70
+msgid "🏷️"
+msgstr ""
+
+#: GTG/gtk/data/tag_editor.ui:76
+msgid "Click here to set an icon for this tag"
+msgstr ""
+
+#: GTG/gtk/data/tag_editor.ui:125
+msgid "Delete the currently selected icon"
+msgstr ""
+
+#: GTG/gtk/data/tag_editor.ui:168
+#, fuzzy
+msgid "Name"
+msgstr "NázevŠtítku"
+
+#: GTG/gtk/data/tag_editor.ui:207 GTG/gtk/data/tag_editor.ui:235
+#, fuzzy
+msgid "Whenever to show this tag in the Actionable view"
+msgstr "Zobrazit tento štítek v pracovním pohledu"
+
+#: GTG/gtk/data/tag_editor.ui:209
+msgid "Actionable"
+msgstr ""
+
+#: GTG/gtk/data/tag_editor.ui:221
+msgid ""
+"The color of the tag, also used to color the background of the task when "
+"enabled"
+msgstr ""
+
+#: GTG/gtk/data/tag_editor.ui:223
+msgid "Color"
+msgstr ""
+
+#: GTG/gtk/data/tag_editor.ui:254
+msgid "Change the color of the tag"
+msgstr ""
+
+#: GTG/gtk/data/tag_editor.ui:267
+msgid "Random"
+msgstr ""
+
+#: GTG/gtk/data/tag_editor.ui:271
+msgid "Generate and use an random color"
+msgstr ""
+
+#: GTG/gtk/data/tag_editor.ui:285
+msgid "Delete the currently selected color"
+msgstr ""
 
 #: GTG/gtk/data/plugins.ui:54
 msgid "<b>Dependencies</b>"
@@ -1117,8 +1177,9 @@ msgstr ""
 
 #: GTG/backends/backend_caldav.py:221
 msgid ""
-"You need a correct login to CalDAVConfigure CalDAV with login information. "
-"Error:"
+"You need a correct login to CalDAV\n"
+"Configure CalDAV with login information.\n"
+" Error:"
 msgstr ""
 
 #: GTG/backends/backend_localfile.py:64
@@ -2619,9 +2680,6 @@ msgstr ""
 
 #~ msgid "Hide this tag from the workview"
 #~ msgstr "Skrýt tento štítek v pracovním pohledu"
-
-#~ msgid "Show this tag in the workview"
-#~ msgstr "Zobrazit tento štítek v pracovním pohledu"
 
 #, fuzzy
 #~ msgid "Delete Tag"
