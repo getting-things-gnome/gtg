@@ -2,6 +2,7 @@
 # Copyright (c) 2009 Rosetta Contributors and Canonical Ltd 2009
 # This file is distributed under the same license as the gtg package.
 # Tomasz Maciejewski <ponton@jabster.pl>, 2009.
+# Piotr Strębski <strebski@o2.pl>, 2013.
 # Daniel Koć <daniel@xn--ko-wla.pl>, 2022.
 msgid ""
 msgstr ""
@@ -10,7 +11,7 @@ msgstr ""
 "POT-Creation-Date: 2022-02-25 14:21-0300\n"
 "PO-Revision-Date: 2022-02-25 18:37+0100\n"
 "Last-Translator: Daniel Koć <daniel@xn--ko-wla.pl>\n"
-"Language-Team: Polish <ponton@jabster.pl>\n"
+"Language-Team: Polish\n"
 "Language: pl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -2101,6 +2102,7 @@ msgstr "Witryna GTG"
 msgid "translator-credits"
 msgstr ""
 "Tomasz Maciejewski\n"
+"Piotr Strębski\n"
 "Daniel Koć"
 
 #. Rember values from last time
