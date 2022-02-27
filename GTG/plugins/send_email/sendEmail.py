@@ -58,7 +58,7 @@ class SendEmailPlugin():
             _("\nTags: %s") % (", ".join(task.get_tags_name())) + \
             _("\nSubtasks:\n%s") % (
                 "\n - ".join([i.get_title() for i in task.get_subtasks()])) + \
-            _("\nTask content:\n%s") % (task.get_excerpt())
+            _("\nTask content:\n%s") % (task.get_text())
 
         # Title contains the title and the start and due dates.
         title = _("Task: %(task_title)s") % {'task_title': task.get_title()}
