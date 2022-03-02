@@ -69,7 +69,10 @@
     <updatecontact>nekohayo+gtg@gmail.com</updatecontact>
 
     <releases>
-        <release version="0.5" date="2021-04-06">
+        <release version="0.6" date="2022-03-02" type="stable">
+            <url>https://fortintam.com/blog/gtg-0-6-released</url>
+        </release>
+        <release version="0.5" date="2021-04-06" date_eol="2022-03-03" type="stable">
             <url>https://fortintam.com/blog/gtg-0-5-released</url>
         </release>
         <release version="0.4" date="2020-07-07" date_eol="2021-04-06" type="stable">

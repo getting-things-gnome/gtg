@@ -41,31 +41,28 @@ VERSION = '@VCS_TAG@'
 AUTHORS_MAINTAINERS = """
 • Diego Garcia Gangl
 • Jean-François Fortin Tam
-• Lionel Dricot
 """
 # Per-release stats generated as per the "release process and checklist.md" file.
 # Including contributors with 2 or more commits.
 # No need to add extra line breaks between commas, Python/GTK handles them.
 # Don't indend lines inside a multi-line string, or it'll show in the About dialog.
 AUTHORS_RELEASE_CONTRIBUTORS = """
-• Diego Garcia Gangl
 • "Neui"
 • Mohieddine Drissi
-• Youssef Toukabri
-• Francisco Lavin
+• "odoood"
+• Diego Garcia Gangl
 • Jean-François Fortin Tam
+• Jacob Anderson
+• Raidro Manchester
+• Daniel Koć
 • François Schmidts
+• Sebastian Grabowski
 • Fridolin Weisser
-• Izidor Matušov
-• Mart Raudsepp
-• Paul Michel
-• Arkadiusz Lenart
-• Elsie Hupp
-• Heimen Stoffels
-• Scott Worley
-• Carlo
-• Jordan Pisaniello
-• "morhe-blip"
+• Tommy Priest 
+• Laurent Combe
+• Smitty
+• Tiziana Sellitto
+• "unsupported-transceiver"
 """
 
 ARTISTS = ["Diego Garcia Gangl (2021 logo)", "Tobias Bernard (2021 logo)", "Kalle Persson (2009 logo)", "Bertrand Rousseau (UX)", "Jean-François Fortin Tam (UX)"]

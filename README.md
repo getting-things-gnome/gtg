@@ -42,7 +42,7 @@ git pull --rebase
 * python-caldav
 * pycairo
 * pygobject (>= 3.20)
-* libLarch (>= 3.0)
+* libLarch (>= 3.2)
 * lxml
 * itstool
 * gettext
