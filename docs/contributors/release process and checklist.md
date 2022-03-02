@@ -20,6 +20,8 @@ Git accepts various dates formats (including ISO 8601), see its [documentation o
 
 Tag the revision (use `git tag -a`) with `vRELEASE_NUMBER` (ex: `git tag -a v0.3.1`, `git tag -a v0.4`, etc.) when on the correct commit. `git tag` lists all the tags. As a tag description (when git prompts you for it) you can use something like `Release version 0.4` if the commit's description was `Release GTG 0.4`, for example.
 
+In addition to `git log` to see the tag within the history, you can also use `git show the_tag_name` to see the tag's metadata/details.
+
 When you are absolutely sure you tagged "correctly", you can use `git push --tags`.
 
 In GitHub and GitLab, a commit named "Release version 0.4" and tagged "v0.4", for example, will correctly show up in the "Releases" section of the repository's web interface.
