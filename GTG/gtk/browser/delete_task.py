@@ -110,7 +110,11 @@ class DeletionUI():
             tasks = tasklist
             titles_suffix = ""
 
-        titles = "".join("\n• " + task.get_title() for task in tasks)
+        if len(tasklist) == 1:
+            # Don't show a bulleted list if there's only one item
+            titles = "".join(task.get_title() for task in tasks)
+        else:
+            titles = "".join("\n• " + task.get_title() for task in tasks)
 
         # Build and run dialog
         dialog = Gtk.MessageDialog(transient_for=self.window, modal=True)
