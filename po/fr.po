@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-02-25 14:21-0300\n"
-"PO-Revision-Date: 2021-03-31 17:19-0400\n"
+"PO-Revision-Date: 2022-03-02 12:51-0500\n"
 "Last-Translator: Jean-François Fortin Tam <nekohayo@gmail.com>\n"
 "Language-Team: French <fr@li.org>\n"
 "Language: fr\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 2.4.2\n"
+"X-Generator: Poedit 3.0\n"
 
 #: data/org.gnome.GTG.appdata.xml.in.in:5 data/org.gnome.GTG.desktop.in.in:4
 msgid "Getting Things GNOME!"
@@ -159,7 +159,6 @@ msgid "Task urgency color-coding"
 msgstr "Tâches colorées selon l'urgence"
 
 #: GTG/plugins/urgency-color.gtg-plugin.desktop:6
-#, fuzzy
 msgid ""
 "This plugin will calculate the urgency status of every one of your currently "
 "active tasks and color-code it accordingly.\n"
@@ -176,12 +175,14 @@ msgstr ""
 "Ce greffon calcule l'urgence de toutes vos tâches actives et leur assigne "
 "une couleur en fonction de cela.\n"
 "\n"
-"Code de couleurs par défaut:\n"
+"Code de couleurs par défaut\n"
 "\n"
-"Rouge pour les tâches en retard ou lorsque vous êtes dans le dernier 30% de "
-"nombre de jours entre la date de début et la date d'échéance.\n"
-"Jaune pour les tâches dont la date de début est passée.\n"
-"Vert pour les tâches dont la date de début est encore dans le futur."
+"Si vous utilisez les couleurs par défaut, voici leur signification:\n"
+"- Gris indique une tâche en retard.\n"
+"- Rouge indique une tâche où vous êtes dans le dernier 30% de nombre de "
+"jours entre la date de début et la date d'échéance.\n"
+"- Jaune indique les tâches dont la date de début est passée.\n"
+"- Vert indique les tâches dont la date de début est encore dans le futur."
 
 #: GTG/plugins/hamster.gtg-plugin.desktop:4
 msgid "Hamster Time Tracker Integration"
@@ -199,16 +200,16 @@ msgstr ""
 
 #: GTG/plugins/gamify.gtg-plugin.desktop:4
 msgid "Gamify"
-msgstr ""
+msgstr "Ludification"
 
 #: GTG/plugins/gamify.gtg-plugin.desktop:5
 msgid "Gamify adds a game aspect to your GTG workflow."
-msgstr ""
+msgstr "Ajoute un élément de jeu motivationnel dans votre travail quotidien."
 
 #: GTG/plugins/gamify.gtg-plugin.desktop:6
-#, fuzzy
 msgid "tracks how many tasks you have done during the day."
-msgstr "Facilite le suivi des tâches que vous avez négligées depuis un moment."
+msgstr ""
+"indique le nombre de tâches que vous avez accomplies durant la journée."
 
 #: GTG/gtk/data/backends.ui:61
 msgid "_Add"
@@ -250,7 +251,7 @@ msgstr "Modifier..."
 
 #: GTG/gtk/data/context_menus.ui:14
 msgid "Reopen"
-msgstr ""
+msgstr "Rouvrir"
 
 #: GTG/gtk/data/context_menus.ui:18 GTG/gtk/data/context_menus.ui:49
 #: GTG/gtk/data/task_editor.ui:64 GTG/gtk/browser/tag_context_menu.py:66
@@ -492,10 +493,9 @@ msgid "Dismiss Task"
 msgstr "Abandonner la tâche"
 
 #: GTG/gtk/data/help_overlay.ui:115
-#, fuzzy
 msgctxt "shortcut window"
 msgid "Reopen Task"
-msgstr "Supprimer la tâche"
+msgstr "Rouvrir la tâche"
 
 #: GTG/gtk/data/help_overlay.ui:123
 msgctxt "shortcut window"
@@ -553,23 +553,20 @@ msgid "Start 6 days from now"
 msgstr "Début dans 6 jours"
 
 #: GTG/gtk/data/main_window.ui:130
-#, fuzzy
 msgid "Start 7 days from now"
-msgstr "Début dans 2 jours"
+msgstr "Début dans 7 jours"
 
 #: GTG/gtk/data/main_window.ui:216
 msgid "Show Sidebar"
 msgstr "Afficher le panneau latéral d'étiquettes"
 
 #: GTG/gtk/data/main_window.ui:242
-#, fuzzy
 msgid "Collapse All Tasks"
-msgstr "Tâches clôturées"
+msgstr "Replier toutes les tâches"
 
 #: GTG/gtk/data/main_window.ui:255
-#, fuzzy
 msgid "Expand All Tasks"
-msgstr "Toutes les tâches"
+msgstr "Déplier toutes les tâches"
 
 #: GTG/gtk/data/main_window.ui:281 GTG/gtk/plugins.py:131
 msgid "Plugins"
@@ -644,6 +641,8 @@ msgid ""
 "Defer selected task(s) to tomorrow. Useful if you are out of focus or need "
 "additional time."
 msgstr ""
+"Plus le temps? Besoin d'un peu de clarté? Remettez les tâches sélectionnées "
+"à demain!"
 
 #: GTG/gtk/data/main_window.ui:701
 msgid "Start Tomorrow"
@@ -690,62 +689,59 @@ msgstr "Appliquer aux sous-tâches"
 
 #. Edit tag windwo title
 #: GTG/gtk/data/tag_editor.ui:13
-#, fuzzy
 msgid "Edit %s"
-msgstr "Modifier la tâche"
-
-#: GTG/gtk/data/tag_editor.ui:70
-msgid "🏷️"
-msgstr ""
+msgstr "Modifier %s"
 
 #: GTG/gtk/data/tag_editor.ui:76
 msgid "Click here to set an icon for this tag"
-msgstr ""
+msgstr "Cliquez pour spécifier une icône à associer à l'étiquette"
 
 #: GTG/gtk/data/tag_editor.ui:125
 msgid "Delete the currently selected icon"
-msgstr ""
+msgstr "Dissocier l'icône présentement associée"
 
 #: GTG/gtk/data/tag_editor.ui:168
-#, fuzzy
 msgid "Name"
-msgstr "Nom de l'étiquette"
+msgstr "Nom"
 
 #: GTG/gtk/data/tag_editor.ui:207 GTG/gtk/data/tag_editor.ui:235
-#, fuzzy
 msgid "Whenever to show this tag in the Actionable view"
-msgstr "Afficher l'étiquette dans la vue « Actionnable » :"
+msgstr ""
+"Contrôle le fait que les tâches associées à cette étiquette puissent "
+"s'afficher ou non dans la vue « Actionnable »"
 
 #: GTG/gtk/data/tag_editor.ui:209
-#, fuzzy
 msgid "Actionable"
-msgstr "Actionnables"
+msgstr "Actionnable"
 
 #: GTG/gtk/data/tag_editor.ui:221
 msgid ""
 "The color of the tag, also used to color the background of the task when "
 "enabled"
 msgstr ""
+"La couleur associée à l'étiquette (également utilisée pour la couleur de "
+"l'arrière-plan des tâches comportant cette étiquette, si cette fonctionalité "
+"est activée)"
 
 #: GTG/gtk/data/tag_editor.ui:223
 msgid "Color"
-msgstr ""
+msgstr "Couleur"
 
 #: GTG/gtk/data/tag_editor.ui:254
 msgid "Change the color of the tag"
-msgstr ""
+msgstr "Changer la couleur de l'étiquette"
 
 #: GTG/gtk/data/tag_editor.ui:267
 msgid "Random"
-msgstr ""
+msgstr "Aléatoire"
 
 #: GTG/gtk/data/tag_editor.ui:271
 msgid "Generate and use an random color"
-msgstr ""
+msgstr "Générer et assigner une couleur aléatoire"
 
 #: GTG/gtk/data/tag_editor.ui:285
 msgid "Delete the currently selected color"
-msgstr ""
+msgstr "Enlever la couleur actuellement associée"
 
 #: GTG/gtk/data/plugins.ui:54
 msgid "<b>Dependencies</b>"
@@ -946,136 +942,125 @@ msgstr "Général"
 
 #: GTG/plugins/gamify/prefs.ui:97
 msgid "Tag Mappings"
-msgstr ""
+msgstr "Correspondance d'étiquettes"
 
 #: GTG/plugins/gamify/prefs.ui:180 GTG/plugins/urgency_color/preferences.ui:13
-#, fuzzy
 msgid "Plugin Preferences"
-msgstr "Préférences"
+msgstr "Préférences du greffon"
 
 #: GTG/plugins/gamify/prefs.ui:208
 msgid "Target tasks per day"
-msgstr ""
+msgstr "Objectif de tâches par jour"
 
 #: GTG/plugins/gamify/prefs.ui:254
 msgid "Create a tag mapping"
-msgstr ""
+msgstr "Créer une association d'étiquettes"
 
 #: GTG/plugins/gamify/prefs.ui:255
 msgid "Associate a number of points with a custom tag name"
 msgstr ""
+"Attribue un certain nombre de points avec un nom d'étiquette personnalisé"
 
 #: GTG/plugins/gamify/prefs.ui:267
-#, fuzzy
 msgid "Add"
-msgstr "_Ajouter"
+msgstr "Ajouter"
 
 #: GTG/plugins/gamify/prefs.ui:305
-#, fuzzy
 msgid "Tag Name:"
-msgstr "Nom de l'étiquette"
+msgstr "Nom de l'étiquette:"
 
 #: GTG/plugins/gamify/prefs.ui:341
 msgid "Points:"
-msgstr ""
+msgstr "Points:"
 
 #: GTG/plugins/gamify/prefs.ui:410
 msgid "label"
-msgstr ""
+msgstr "étiquette"
 
 #: GTG/plugins/gamify/prefs.ui:458
 msgid "Level"
-msgstr ""
+msgstr "Niveau"
 
 #: GTG/plugins/gamify/prefs.ui:470
 msgid "Points"
-msgstr ""
+msgstr "Points"
 
 #: GTG/plugins/gamify/prefs.ui:493
 msgid "Your streak"
-msgstr ""
+msgstr "Votre chaîne"
 
 #: GTG/plugins/gamify/prefs.ui:534
 msgid "UI mode"
-msgstr ""
+msgstr "Mode d'affichage"
 
 #: GTG/plugins/gamify/prefs.ui:551
 msgid "Button + discrete bar"
-msgstr ""
+msgstr "Bouton + barre discrète"
 
 #: GTG/plugins/gamify/prefs.ui:552
 msgid "Button only"
-msgstr ""
+msgstr "Bouton seulement"
 
 #: GTG/plugins/gamify/prefs.ui:553
 msgid "Discrete bar only"
-msgstr ""
+msgstr "Barre discrète seulement"
 
 #: GTG/plugins/hamster/prefs.ui:8
-#, fuzzy
 msgid "Hamster Preferences"
-msgstr "Préférences"
+msgstr "Préférences Hamster"
 
 #: GTG/plugins/hamster/prefs.ui:73
 msgid "Activity Title"
-msgstr ""
+msgstr "Titre d'activité"
 
 #: GTG/plugins/hamster/prefs.ui:95
-#, fuzzy
 msgid "Task Title"
-msgstr "Tâche : %(task_title)s"
+msgstr "Titre de tâche"
 
 #: GTG/plugins/hamster/prefs.ui:96
-#, fuzzy
 msgid "Task Tag"
-msgstr "Gestionnaire de tâches"
+msgstr "Étiquette de la tâche"
 
 #: GTG/plugins/hamster/prefs.ui:134
 msgid "Category"
-msgstr ""
+msgstr "Catégorie"
 
 #: GTG/plugins/hamster/prefs.ui:156 GTG/plugins/hamster/prefs.ui:163
 msgid "Let hamster choose"
-msgstr ""
+msgstr "Laisser Hamster choisir"
 
 #: GTG/plugins/hamster/prefs.ui:157
 msgid "GTG Tag"
-msgstr ""
+msgstr "Étiquette GTG"
 
 #: GTG/plugins/hamster/prefs.ui:158
 msgid "Default GTG Tag if activity is unsorted"
 msgstr ""
+"L'étiquette GTG par défaut si une activité n'est pas spécifiquement associée"
 
 #: GTG/plugins/hamster/prefs.ui:197
 msgid "Description"
-msgstr ""
+msgstr "Description"
 
 #: GTG/plugins/hamster/prefs.ui:219
-#, fuzzy
 msgid "GTG task title"
-msgstr "Tâche : %(task_title)s"
+msgstr "Titre de la tâche GTG"
 
 #: GTG/plugins/hamster/prefs.ui:220
-#, fuzzy
 msgid "GTG task contents"
-msgstr ""
-"\n"
-"Contenu de la tâche : \n"
-"%s"
+msgstr "Contenu de la tâche"
 
 #: GTG/plugins/hamster/prefs.ui:221 GTG/plugins/hamster/prefs.ui:284
 msgid "None"
-msgstr ""
+msgstr "Aucun"
 
 #: GTG/plugins/hamster/prefs.ui:282
-#, fuzzy
 msgid "All GTG tags"
-msgstr "Toutes les étiquettes"
+msgstr "Toutes les étiquettes GTG"
 
 #: GTG/plugins/hamster/prefs.ui:283
-#, fuzzy
 msgid "GTG tags already used in Hamster"
-msgstr "Commencer une tâche dans Hamster"
+msgstr "Étiquettes GTG déjà utilisées dans Hamster"
 
 #: GTG/plugins/untouched_tasks/untouchedTasks.ui:36
 msgid "Add "
@@ -1094,18 +1079,16 @@ msgid "Check for untouched tasks automatically"
 msgstr "Étiqueter périodiquement les tâches négligées"
 
 #: GTG/plugins/urgency_color/preferences.ui:39
-#, fuzzy
 msgid "Danger zone span:"
-msgstr "Intervalle de zone de danger"
+msgstr "Intervalle de zone de danger:"
 
 #: GTG/plugins/urgency_color/preferences.ui:68
 msgid "%"
 msgstr "%"
 
 #: GTG/plugins/urgency_color/preferences.ui:83
-#, fuzzy
 msgid "Danger zone"
-msgstr "Intervalle de zone de danger"
+msgstr "Zone de danger"
 
 #: GTG/plugins/urgency_color/preferences.ui:135
 msgid "Overdue"
@@ -1124,27 +1107,24 @@ msgid "Low"
 msgstr "Basse"
 
 #: GTG/plugins/urgency_color/preferences.ui:274
-#, fuzzy
 msgid "Urgency level colors"
-msgstr "<b>Couleur de niveaux d'urgence</b>"
+msgstr "Couleurs de niveaux d'urgence"
 
 #: GTG/plugins/urgency_color/preferences.ui:306
 msgid "Reset"
 msgstr "Réinitialiser"
 
 #: GTG/backends/backend_caldav.py:62
-#, fuzzy
 msgid "CalDAV tasks"
-msgstr "Toutes les tâches"
+msgstr "Tâches CalDAV"
 
 #: GTG/backends/backend_caldav.py:67
-#, fuzzy
 msgid "Lets you synchronize your GTG tasks with CalDAV tasks"
-msgstr "Permet de synchroniser vos tâches GTG avec les tâches d'Evolution"
+msgstr "Permet de synchroniser vos tâches GTG avec des tâches CalDAV"
 
 #: GTG/backends/backend_caldav.py:76
 msgid "insert your username"
-msgstr ""
+msgstr "saisir le nom d'utilisateur"
 
 #: GTG/backends/backend_caldav.py:221
 msgid ""
@@ -1152,6 +1132,9 @@ msgid ""
 "Configure CalDAV with login information.\n"
 " Error:"
 msgstr ""
+"Des identifiants valides sont nécessaires\n"
+"Configurez votre nom d'usager et mot de passe CalDAV.\n"
+" Erreur:"
 
 #: GTG/backends/backend_localfile.py:64
 msgid "Local File"
@@ -1706,7 +1689,6 @@ msgid "Learn About Synchronization Services"
 msgstr "En savoir plus sur les services de synchronisation"
 
 #: GTG/core/firstrun_tasks.py:306
-#, fuzzy
 msgid ""
 "❗ Take note that as of GTG 0.6, the majority of synchronization backends/"
 "services have been disabled until someone (you?) steps forward to fix and "
@@ -1728,7 +1710,7 @@ msgid ""
 "As of v0.6, only CalDAV is available. You need to have the &quot;"
 "caldav&quot; Python package installed if it doesn't appear."
 msgstr ""
-"❗ Prenez note que, depuis la version 0.4 de GTG, les services de "
+"❗ Prenez note que, depuis la version 0.4 de GTG, la majorité des services de "
 "synchronisation ont été désactivés jusqu'à ce que quelqu'un (vous?) se prête "
 "volontaire pour les réparer et les maintenir, car ils n'ont pas été mis à "
 "jour pour le nouveau code de GTG ou pour s'interfacer avec les nouveaux APIs "
@@ -1736,8 +1718,8 @@ msgstr ""
 "\n"
 "Les services de synchronisation permettent à GTG de synchroniser (ou "
 "importer/exporter) des tâches, notes ou rapports d'anomalies provenant de "
-"sites web ou de logiciels tels que Remember the Milk, Tomboy, LaunchPad, "
-"etc.\n"
+"certains sites web ou de logiciels, tels que les services compatibles "
+"CalDAV.\n"
 "\n"
 "Ceci peut être utile, par exemple, si vous voulez accéder à vos tâches sur "
 "plusieurs instances de GTG sur des ordinateurs séparés, ou si vous voules "
@@ -1746,7 +1728,10 @@ msgstr ""
 "Pour utiliser un service de synchronisation, cliquez le bouton de menus de "
 "la fenêtre principale, et sélectionnez « Synchronisation ». Vous aurez alors "
 "la possibilité de sélectionner parmi plusieurs services en ligne ou locaux "
-"avec lesquels importer/exporter vos tâches."
+"avec lesquels importer/exporter vos tâches.\n"
+"En date de la version 0.6 de GTG, seul le service CalDAV est disponible. "
+"Vous devez avoir le paquet Python « caldav » installé pour que ce système de "
+"synchronisation soit disponible dans l'interface de GTG."
 
 #: GTG/core/firstrun_tasks.py:329
 msgid "Learn How to Search for Tasks"
@@ -1801,39 +1786,34 @@ msgstr ""
 "Tout ce qui est nécessaire au fonctionnement du greffon est disponible."
 
 #: GTG/core/plugins/__init__.py:28
-#, fuzzy
 msgid "This plugin can not be loaded."
-msgstr "Le greffon ne peut pas être chargé"
+msgstr "Le greffon ne peut pas être chargé."
 
 #: GTG/core/plugins/__init__.py:29
-#, fuzzy
 msgid "Some python modules are missing."
-msgstr "Il manque certains modules Python"
+msgstr "Il manque certains modules Python."
 
 #: GTG/core/plugins/__init__.py:30
 msgid "Please install the following python modules:"
 msgstr "Merci d'installer les modules Python suivants :"
 
 #: GTG/core/plugins/__init__.py:32
-#, fuzzy
 msgid "Some remote D-Bus objects are missing."
-msgstr "Il manque des composants DBus."
+msgstr "Il manque des composants D-Bus."
 
 #: GTG/core/plugins/__init__.py:33
 msgid "Please start the following applications:"
 msgstr "Merci de démarrer les applications suivantes :"
 
 #: GTG/core/plugins/__init__.py:35
-#, fuzzy
 msgid "Some modules and remote D-Bus objects are missing."
-msgstr "Il manque des modules et des composants DBus."
+msgstr "Il manque des modules et des composants D-Bus."
 
 #: GTG/core/plugins/__init__.py:36
 msgid "Please install or start the following components:"
 msgstr "Veuillez installer ou démarrer les composants suivants :"
 
 #: GTG/core/plugins/__init__.py:38
-#, fuzzy
 msgid "An unknown error occurred while loading the plugin."
 msgstr "Une erreur inconnue s'est produite lors du chargement du greffon."
 
@@ -2112,7 +2092,7 @@ msgstr ""
 #: GTG/gtk/browser/main_window.py:295
 #, python-brace-format
 msgid "In {number_of_days} days — {weekday}"
-msgstr ""
+msgstr "Dans {number_of_days} jours — {weekday}"
 
 #. These lines should be in info.py, but due to their dynamic nature
 #. there'd be no way to show them translated in Gtk's About dialog:
@@ -2165,35 +2145,31 @@ msgstr "NouvelleÉtiquette"
 
 #. Translators: Used in parsing, no spaces, lowercased in code
 #: GTG/gtk/browser/quick_add.py:34
-#, fuzzy
 msgid "tags"
-msgstr "Toutes les étiquettes"
+msgstr "étiquettes"
 
 #. Translators: Used in parsing, no spaces, lowercased in code
 #: GTG/gtk/browser/quick_add.py:36
-#, fuzzy
 msgid "tag"
-msgstr "aucune étiquette"
+msgstr "étiquette"
 
 #. Translators: Used in parsing, no spaces, lowercased in code
 #: GTG/gtk/browser/quick_add.py:44
 msgid "defer"
-msgstr ""
+msgstr "reporter"
 
 #. Translators: Used in parsing, no spaces, lowercased in code
 #: GTG/gtk/browser/quick_add.py:46
 msgid "start"
-msgstr ""
+msgstr "début"
 
 #: GTG/gtk/browser/quick_add.py:49
-#, fuzzy
 msgid "due"
-msgstr "Échéance"
+msgstr "échéance"
 
 #: GTG/gtk/browser/quick_add.py:50
-#, fuzzy
 msgid "every"
-msgstr "Chaque :"
+msgstr "chaque"
 
 #: GTG/gtk/browser/simple_color_selector.py:238
 msgid "Add Custom Color..."
@@ -2212,9 +2188,8 @@ msgid "Generate Color"
 msgstr "Générer une couleur automatiquement"
 
 #: GTG/gtk/browser/tag_editor.py:159
-#, fuzzy
 msgid "Tag name can not be empty"
-msgstr "Le greffon ne peut pas être chargé"
+msgstr "Le nom d'étiquette ne peut pas être vide"
 
 #. Build the title/label/tags columns
 #. Translators: Column name, containing the task titles
@@ -2318,21 +2293,24 @@ msgstr "Copier l'hyperlien vers le presse-papiers"
 
 #: GTG/gtk/errorhandler.py:30
 msgid "Internal error — GTG"
-msgstr ""
+msgstr "Erreur interne — GTG"
 
 #: GTG/gtk/errorhandler.py:31
 msgid ""
 "GTG encountered an internal error, but can continue running. Unexpected "
 "behavior may occur, so be careful."
 msgstr ""
+"GTG a rencontré une erreur interne, mais peut continuer à fonctionner. "
+"Toutefois, soyez avisé(e), car il se peut que GTG ne se comporte pas "
+"correctement."
 
 #: GTG/gtk/errorhandler.py:33
 msgid "Fatal internal error — GTG"
-msgstr ""
+msgstr "Erreur critique — GTG"
 
 #: GTG/gtk/errorhandler.py:34
 msgid "GTG encountered an internal fatal error and needs to exit."
-msgstr ""
+msgstr "GTG a rencontré une erreur critique et doit être redémarré."
 
 #: GTG/gtk/errorhandler.py:38
 #, python-brace-format
@@ -2343,14 +2321,22 @@ msgid ""
 "Please report the bug in <a href=\"{url}\">our issue tracker</a>, with steps "
 "to trigger the problem and the error's details below."
 msgstr ""
+"Les changements récents (des dernières secondes) pourraient avoir été "
+"perdus, assurez-vous alors de vérifier les changements récents lorsque vous "
+"redémarrez GTG.\n"
+"\n"
+"Veuillez signaler (en anglais) l'anomalie, sur <a href=\"{url}\">notre "
+"système de suivi d'anomalies</a>, avec des instructions pour que nous "
+"puissions reproduire le problème, ainsi que les détails de l'erreur (ci-"
+"dessous)."
 
 #: GTG/gtk/errorhandler.py:54
 msgid "Exit"
-msgstr ""
+msgstr "Quitter"
 
 #: GTG/gtk/errorhandler.py:71
 msgid "Details to paste in your bug report"
-msgstr ""
+msgstr "Détails à copier-coller dans votre rapport d'anomalie"
 
 #: GTG/plugins/export/export.py:90
 msgid "No task matches your criteria. Empty report can't be generated."
@@ -2530,91 +2516,100 @@ msgstr ""
 
 #: GTG/plugins/gamify/gamify.py:32
 msgid "easy"
-msgstr ""
+msgstr "facile"
 
 #: GTG/plugins/gamify/gamify.py:33
 msgid "medium"
-msgstr ""
+msgstr "medium"
 
 #: GTG/plugins/gamify/gamify.py:34
 msgid "hard"
-msgstr ""
+msgstr "difficile"
 
 #: GTG/plugins/gamify/gamify.py:38
 msgid "Beginner"
-msgstr ""
+msgstr "Débutant"
 
 #: GTG/plugins/gamify/gamify.py:39
 msgid "Novice"
-msgstr ""
+msgstr "Novice"
 
 #: GTG/plugins/gamify/gamify.py:40
 msgid "Professional"
-msgstr ""
+msgstr "Pro"
 
 #: GTG/plugins/gamify/gamify.py:41
 msgid "Expert"
-msgstr ""
+msgstr "Expert"
 
 #: GTG/plugins/gamify/gamify.py:42
 msgid "Master"
-msgstr ""
+msgstr "Maître"
 
 #: GTG/plugins/gamify/gamify.py:43
 msgid "Master II"
-msgstr ""
+msgstr "Maître niveau 2"
 
 #: GTG/plugins/gamify/gamify.py:44
 msgid "Grand Master"
-msgstr ""
+msgstr "Grand Maître"
 
 #: GTG/plugins/gamify/gamify.py:45
 msgid "Productivity Lord"
-msgstr ""
+msgstr "Seigneur de la productivité"
 
 #: GTG/plugins/gamify/gamify.py:319
 #, python-brace-format
 msgid "Level: <b>{current_level}</b>"
-msgstr ""
+msgstr "Niveau: <b>{current_level}</b>"
 
 #: GTG/plugins/gamify/gamify.py:322
 #, python-format
 msgid "%d point"
 msgid_plural "%d points"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d point"
+msgstr[1] "%d points"
 
 #: GTG/plugins/gamify/gamify.py:340
 msgid ""
 "<i>Good Job!</i>\n"
 "You have achieved your daily goal."
 msgstr ""
+"<i>Bon travail !</i>\n"
+"Vous avez atteint votre objectif de tâches aujourd'hui."
 
 #: GTG/plugins/gamify/gamify.py:344
 msgid "Only a few tasks to go!"
 msgstr ""
+"Il ne vous reste que quelques tâches à accomplir pour votre objectif "
+"aujourd'hui !"
 
 #: GTG/plugins/gamify/gamify.py:349
 msgid ""
 "<i>Get Down to Business!</i>\n"
 "You haven't achieved any tasks today."
 msgstr ""
+"<i>Pô l'temps d'niaiser !</i>\n"
+"Vous n'avez pas encore accompli de tâches aujourd'hui."
 
 #: GTG/plugins/gamify/gamify.py:359
 #, python-brace-format
 msgid "{emoji} <b>{streak} day</b> streak"
-msgstr ""
+msgstr "{emoji} <b>{streak} jours</b> d'affilée"
 
 #: GTG/plugins/hamster/hamster.py:40
-#, fuzzy
 msgid "Start a new activity in Hamster Time Tracker based on the selected task"
-msgstr "Démarrer une nouvelle activité dans le gestionnaire de temps Hamster "
+msgstr ""
+"Démarrer une nouvelle activité dans le gestionnaire de temps Hamster, selon "
+"la tâche présentement sélectionnée"
 
 #: GTG/plugins/hamster/hamster.py:42
 msgid ""
 "Stop tracking the current activity in Hamster Time Tracker corresponding to "
 "the selected task"
 msgstr ""
+"Arrêter le suivi du temps de l'activité en cours (correspondant à la tâche "
+"GTG sélectionnée) dans Hamster"
 
 #: GTG/plugins/hamster/hamster.py:45
 msgid "Start task in Hamster"
@@ -2622,96 +2617,10 @@ msgstr "Commencer une tâche dans Hamster"
 
 #: GTG/plugins/hamster/hamster.py:46
 msgid "Stop Hamster Activity"
-msgstr ""
-
-#~ msgid "Start today"
-#~ msgstr "Début aujourd'hui"
-
-#~ msgid "Toggle Sidebar"
-#~ msgstr "Afficher/cacher le panneau latéral d'étiquettes"
-
-#~ msgid ""
-#~ "Out of time? Need additional focus? Easily defer the selected task(s) to "
-#~ "tomorrow!"
-#~ msgstr ""
-#~ "Plus le temps? Besoin d'un peu de clarté? Remettez les tâches "
-#~ "sélectionnées à demain!"
-
-#~ msgid "<b>Danger zone</b>"
-#~ msgstr "<b>Zone de danger</b>"
-
-#~ msgid "Hide Sidebar"
-#~ msgstr "Cacher le panneau latéral d'étiquettes"
-
-#, python-format
-#~ msgid "Editing Tag \"%s\""
-#~ msgstr "Modification de l'étiquette « %s »"
-
-#~ msgid "Remove icon"
-#~ msgstr "Enlever l'icône"
-
-#~ msgid "Name : "
-#~ msgstr "Nom : "
-
-#~ msgid "Select Tag Color:"
-#~ msgstr "Sélectionnez la couleur de l'étiquette:"
-
-#~ msgid ""
-#~ "Click to\n"
-#~ "Set Icon"
-#~ msgstr ""
-#~ "Choisir\n"
-#~ "l'icône"
-
-#~ msgid "Clear Date"
-#~ msgstr "Effacer la date d'échéance"
-
-#~ msgid "Dismiss Task"
-#~ msgstr "Abandonner"
-
-#~ msgid "Undismiss Task"
-#~ msgstr "Restaurer"
-
-#~ msgid "Delete Task"
-#~ msgstr "Supprimer la tâche"
+msgstr "Arrêter l'activité Hamster"
 
 #~ msgid "Configure synchronization service"
 #~ msgstr "Configurer le service de synchronisation"
-
-#~ msgid "Edit Tag..."
-#~ msgstr "Modifier l'étiquette..."
-
-#~ msgid "Enter tag name here"
-#~ msgstr "Entrer le nom de l'étiquette ici"
-
-#~ msgid "<b>Editor</b>"
-#~ msgstr "<b>Éditeur</b>"
-
-#~ msgid "Confirm task deletion"
-#~ msgstr "Confirmer la suppression de la tâche"
-
-#~ msgid "Warning"
-#~ msgstr "Avertissement"
-
-#~ msgid "_Tasks"
-#~ msgstr "_Tâches"
-
-#~ msgid "New _Task"
-#~ msgstr "Nouvelle _tâche"
-
-#~ msgid "New _Subtask"
-#~ msgstr "Nouvelle _Sous-tâche"
-
-#~ msgid "Mark as _Done"
-#~ msgstr "Marquer comme _fait"
-
-#~ msgid "D_ismiss"
-#~ msgstr "_Abandonner"
-
-#~ msgid "Are you sure you want to delete this task?"
-#~ msgid_plural "Are you sure you want to delete these tasks?"
-#~ msgstr[0] "Voulez-vous vraiment supprimer cette tâche ?"
-#~ msgstr[1] "Voulez-vous vraiment supprimer ces tâches ?"
 
 #~ msgid "Geolocalized-tasks Preferences"
 #~ msgstr "Préferences des tâches géolocalisées"
@@ -2952,9 +2861,6 @@ msgstr ""
 #~ msgid "Trying to access, please stand by..."
 #~ msgstr "Tentative d'accès, merci de patienter…"
 
-#~ msgid "Due yesterday"
-#~ msgstr "Pour hier"
-
 #~ msgid "This Tomboy note does not exist anymore. Do you want to create it?"
 #~ msgstr "Cette note Tomboy n'existe plus. Voulez-vous la créer ?"
 
@@ -2987,9 +2893,6 @@ msgstr ""
 
 #~ msgid "Keep selected tasks"
 #~ msgstr "Garder les tâches sélectionnées"
-
-#~ msgid "Synchronize with Evolution"
-#~ msgstr "Synchroniser avec Evolution"
 
 #~ msgid "Please retry."
 #~ msgstr "Veuillez réessayer."
