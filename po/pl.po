@@ -679,10 +679,6 @@ msgstr "Zastosuj do zadań podrzędnych"
 msgid "Edit %s"
 msgstr "Edytuj %s"
 
-#: GTG/gtk/data/tag_editor.ui:70
-msgid "🏷️"
-msgstr "🏷️"
-
 #: GTG/gtk/data/tag_editor.ui:76
 msgid "Click here to set an icon for this tag"
 msgstr "Kliknij tu aby wybrać ikonkę dla tego znacznika"

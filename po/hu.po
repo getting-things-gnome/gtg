@@ -685,10 +685,6 @@ msgstr "Alkalmazás részfeladatokra"
 msgid "Edit %s"
 msgstr "%s szerkesztése"
 
-#: GTG/gtk/data/tag_editor.ui:70
-msgid "🏷️"
-msgstr "🏷️"
-
 #: GTG/gtk/data/tag_editor.ui:76
 msgid "Click here to set an icon for this tag"
 msgstr "Kattins ide, hogy beállíts egy ikont ehhez a címkéhez"

@@ -694,10 +694,6 @@ msgstr "Føj til delopgaver"
 msgid "Edit %s"
 msgstr "Redigér"
 
-#: GTG/gtk/data/tag_editor.ui:70
-msgid "🏷️"
-msgstr ""
-
 #: GTG/gtk/data/tag_editor.ui:76
 msgid "Click here to set an icon for this tag"
 msgstr ""

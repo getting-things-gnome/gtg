@@ -687,10 +687,6 @@ msgstr "Aplica a les subtasques"
 msgid "Edit %s"
 msgstr "Edita"
 
-#: GTG/gtk/data/tag_editor.ui:70
-msgid "🏷️"
-msgstr ""
-
 #: GTG/gtk/data/tag_editor.ui:76
 msgid "Click here to set an icon for this tag"
 msgstr ""

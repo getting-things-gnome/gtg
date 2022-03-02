@@ -682,10 +682,6 @@ msgstr "サブタスクに適用"
 msgid "Edit %s"
 msgstr "編集"
 
-#: GTG/gtk/data/tag_editor.ui:70
-msgid "🏷️"
-msgstr ""
-
 #: GTG/gtk/data/tag_editor.ui:76
 msgid "Click here to set an icon for this tag"
 msgstr ""

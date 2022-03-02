@@ -685,10 +685,6 @@ msgstr "하위 목록 허용"
 msgid "Edit %s"
 msgstr "편집"
 
-#: GTG/gtk/data/tag_editor.ui:70
-msgid "🏷️"
-msgstr ""
-
 #: GTG/gtk/data/tag_editor.ui:76
 msgid "Click here to set an icon for this tag"
 msgstr ""

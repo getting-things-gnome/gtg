@@ -465,7 +465,7 @@
                             <property name="name">autoclean_days</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
-                            <property name="text">30</property>
+                            <property name="text" translatable="no">30</property>
                             <property name="progress_pulse_step">0.5</property>
                             <property name="input_purpose">number</property>
                             <property name="adjustment">adjustment1</property>

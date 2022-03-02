@@ -67,7 +67,7 @@
                 <property name="halign">center</property>
                 <child>
                   <object class="GtkButton" id="icon-button">
-                    <property name="label" translatable="yes">🏷️</property>
+                    <property name="label" translatable="no">🏷️</property>
                     <property name="width_request">64</property>
                     <property name="height_request">64</property>
                     <property name="visible">True</property>
