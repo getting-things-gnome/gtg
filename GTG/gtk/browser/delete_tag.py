@@ -74,7 +74,11 @@ class DeleteTagsDialog():
             tagslist = self.tags_todelete
             titles_suffix = ""
 
-        titles = "".join("\n• " + tag for tag in tagslist)
+        if len(tagslist) == 1:
+            # Don't show a bulleted list if there's only one item
+            titles = "".join(tag for tag in tagslist)
+        else:
+            titles = "".join("\n• " + tag for tag in tagslist)
 
         # Build and run dialog
         dialog = Gtk.MessageDialog(transient_for=self.browser, modal=True)
