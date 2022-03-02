@@ -105,7 +105,7 @@
               <object class="GtkShortcutsShortcut">
                 <property name="visible">True</property>
                 <property name="title" translatable="yes" context="shortcut window">Dismiss Task</property>
-                <property name="accelerator">&lt;Primary&gt;I</property>
+                <property name="accelerator">&lt;Primary&gt;&lt;Shift&gt;D</property>
               </object>
             </child>
 

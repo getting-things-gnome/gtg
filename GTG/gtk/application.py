@@ -292,7 +292,7 @@ class Application(Gtk.Application):
             ('add_parent', self.add_parent, ('app.add_parent', ['<ctrl><shift>P'])),
             ('edit_task', self.edit_task, ('app.edit_task', ['<ctrl>E'])),
             ('mark_as_done', self.mark_as_done, ('app.mark_as_done', ['<ctrl>D'])),
-            ('dismiss', self.dismiss, ('app.dismiss', ['<ctrl>I'])),
+            ('dismiss', self.dismiss, ('app.dismiss', ['<ctrl><shift>D'])),
             ('reopen', self.reopen, ('app.reopen', ['<ctrl>O'])),
             ('open_backends', self.open_backends_manager, None),
             ('open_help', self.open_help, ('app.open_help', ['F1'])),

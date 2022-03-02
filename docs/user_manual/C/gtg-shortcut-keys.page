@@ -108,7 +108,7 @@
           <td><p>Mark Task as Done</p></td>  <td><p><keyseq><key>Ctrl</key><key>D</key></keyseq></p></td>
         </tr>
         <tr>
-          <td><p>Dismiss Task</p></td>  <td><p><keyseq><key>Ctrl</key><key>I</key></keyseq></p><note style="tip"><p>This keyboard shortcut also undismisses a task when used in the <gui>Closed</gui> view mode.</p></note></td>
+          <td><p>Dismiss Task</p></td>  <td><p><keyseq><key>Ctrl</key><key>Shift</key><key>D</key></keyseq></p><note style="tip"><p>This keyboard shortcut also undismisses a task when used in the <gui>Closed</gui> view mode.</p></note></td>
         </tr>
         <tr>
           <td><p>Delete Task</p></td>  <td><p><keyseq><key>Ctrl</key><key>Del</key></keyseq></p></td>
