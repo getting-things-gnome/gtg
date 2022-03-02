@@ -48,8 +48,7 @@ class ConfigurePanel(Gtk.Box):
         """ Connects the backends generated signals """
         _signals = BackendSignals()
         _signals.connect(_signals.BACKEND_RENAMED, self.refresh_title)
-        _signals.connect(_signals.BACKEND_STATE_TOGGLED,
-                         self.refresh_sync_status)
+        _signals.connect(_signals.BACKEND_STATE_TOGGLED, self.refresh_sync_status)
         _signals.connect(_signals.BACKEND_SYNC_STARTED, self.on_sync_started)
         _signals.connect(_signals.BACKEND_SYNC_ENDED, self.on_sync_ended)
 
@@ -58,9 +57,11 @@ class ConfigurePanel(Gtk.Box):
         This function fills this box with widgets
         """
         # Division of the available space in three segments:
-        # top, middle and bottom
+        # top, middle and bottom (parameters_ui)
         top = Gtk.Box()
+        top.set_spacing(6)
         middle = Gtk.Box()
+        middle.set_spacing(6)
         self._fill_top_box(top)
         self._fill_middle_box(middle)
         self.pack_start(top, False, True, 0)
@@ -93,7 +94,6 @@ class ConfigurePanel(Gtk.Box):
         align_spin = Gtk.Alignment.new(1, 0, 0, 0)
         align_spin.add(self.spinner)
 
-        box.set_spacing(10)
         box.pack_start(self.image_icon, False, True, 0)
         box.pack_start(self.human_name_label, True, True, 0)
         box.pack_start(align_spin, False, True, 0)

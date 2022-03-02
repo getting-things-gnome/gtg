@@ -121,10 +121,10 @@ class AddPanel(Gtk.Box):
         @param box: the Gtk.Box to fill
         """
         cancel_button = Gtk.Button()
-        cancel_button.set_label("Cancel")
+        cancel_button.set_label(_("Cancel"))
         cancel_button.connect('clicked', self.on_cancel)
         self.ok_button = Gtk.Button()
-        self.ok_button.set_label("OK")
+        self.ok_button.set_label(_("OK"))
         self.ok_button.connect('clicked', self.on_confirm)
         align = Gtk.Alignment.new(0.5, 1, 1, 0)
         align.set_padding(0, 10, 0, 0)
