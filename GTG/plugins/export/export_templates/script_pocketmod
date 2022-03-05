@@ -27,8 +27,7 @@ pdflatex -interaction nonstopmode -output-directory $TMPFOLDER -jobname temp $SO
 PDFFILE=$TMPFOLDER/temp.pdf
 pdftk $PDFFILE cat 6 7 8 1 output $TMPFOLDER/seite6781.pdf   1>&2
 pdftk $PDFFILE cat 5 4 3 2 output $TMPFOLDER/seite5432.pdf   1>&2
-pdfjam --angle 90 $TMPFOLDER/seite5432.pdf --outfile $TMPFOLDER/seite5432-r.pdf      1>&2
-pdfjam --angle 90 $TMPFOLDER/seite5432-r.pdf --outfile $TMPFOLDER/seite5432-r2.pdf      1>&2
+pdfjam --angle 180 $TMPFOLDER/seite5432.pdf --outfile $TMPFOLDER/seite5432-r2.pdf      1>&2
 pdftk $TMPFOLDER/seite6781.pdf $TMPFOLDER/seite5432-r2.pdf cat output $TMPFOLDER/gesamt.pdf      1>&2
 pdfjam $TMPFOLDER/gesamt.pdf --nup 4x2 --landscape --outfile $OUTFILE      1>&2
 rm -rf $TMPFOLDER      1>&2
