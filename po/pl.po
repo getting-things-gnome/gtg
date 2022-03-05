@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-02-25 14:21-0300\n"
-"PO-Revision-Date: 2022-02-25 18:37+0100\n"
+"PO-Revision-Date: 2022-03-05 19:38+0100\n"
 "Last-Translator: Daniel Koć <daniel@xn--ko-wla.pl>\n"
 "Language-Team: Polish\n"
 "Language: pl\n"
@@ -893,15 +893,15 @@ msgstr "<b>Które zadania chcesz wyeksportować?</b>"
 
 #: GTG/plugins/export/export.ui:54
 msgid "Active tasks shown in the browser"
-msgstr "Aktywne zadania widoczne na liście"
+msgstr "aktywne zadania widoczne na liście"
 
 #: GTG/plugins/export/export.ui:70
 msgid "Completed tasks shown in the browser"
-msgstr "Zakończone zadania widoczne na liście"
+msgstr "zakończone zadania widoczne na liście"
 
 #: GTG/plugins/export/export.ui:85
 msgid "Tasks finished last week"
-msgstr "Zadania zakończone w zeszłym tygodniu"
+msgstr "zadania zakończone w ostatnim tygodniu"
 
 #: GTG/plugins/export/export.ui:124
 msgid "<b>Select a format for your tasks</b>"
@@ -974,7 +974,7 @@ msgstr "Wygląd"
 
 #: GTG/plugins/gamify/prefs.ui:551
 msgid "Button + discrete bar"
-msgstr "przycisk i mały pasek"
+msgstr "przycisk i dyskretny pasek"
 
 #: GTG/plugins/gamify/prefs.ui:552
 msgid "Button only"
@@ -982,7 +982,7 @@ msgstr "tylko przycisk"
 
 #: GTG/plugins/gamify/prefs.ui:553
 msgid "Discrete bar only"
-msgstr "tylko mały pasek"
+msgstr "tylko dyskretny pasek"
 
 #: GTG/plugins/hamster/prefs.ui:8
 msgid "Hamster Preferences"
@@ -1506,7 +1506,7 @@ msgstr ""
 "zadań podrzędnych. Jeśli jednak utworzysz nowe zadanie podrzędne, to "
 "odziedziczy ono znaczniki zadania nadrzędnego.\n"
 "\n"
-"Jesli potrzebujesz bardziej złożonej organizacji znaczników, to możesz "
+"Jeśli potrzebujesz bardziej złożonej organizacji znaczników, to możesz "
 "utworzyć ich hierarchię przeciągając jeden znacznik na drugi. Jest to "
 "przydatne jeśli chcesz zgrupować zestaw znaczników i wygodnie przeglądać "
 "powiązane z nimi zadania. Na przykład jeśli masz dwa znaczniki, @finanse i "
@@ -2314,7 +2314,7 @@ msgstr "GTG nie może wygenerować dokumentu: %s"
 
 #: GTG/plugins/export/export.py:151
 msgid "Export the tasks currently listed"
-msgstr "Eksportuj teraz wyświetlane zadania"
+msgstr "Eksportuj zadania"
 
 #: GTG/plugins/export/export.py:273
 msgid "Choose where to save your list"
@@ -2322,7 +2322,7 @@ msgstr "Wybierz gdzie zapisać listę"
 
 #: GTG/plugins/export/export_templates/description_pocketmod.py:19
 msgid "Foldable booklet (PDF)"
-msgstr "Składana broszura (PDF)"
+msgstr "składana broszura (PDF)"
 
 #: GTG/plugins/export/export_templates/description_pocketmod.py:20
 msgid ""
@@ -2332,14 +2332,13 @@ msgid ""
 "booklet. Packages <b>pdflatex</b>, <b>pdftk</b> and <b>pdfjam</b>\n"
 "are required."
 msgstr ""
-"Szablon do stworzenia\n"
-"<a href=\"http://www.pocketmod.com\">PocketMod</a>, będący małą składaną\n"
-"broszurką. Pakiety <b>pdflatex</b>, <b>pdftk</b> oraz <b>pdfjam</b>\n"
-"są wymagane."
+"Szablon do tworzenia <a href=\"http://www.pocketmod.com\">PocketMod</a>, \n"
+"będącego małą składaną broszurką. Potrzebne są pakiety <b>pdflatex</b>,\n"
+"<b>pdftk</b> oraz <b>pdfjam</b>."
 
 #: GTG/plugins/export/export_templates/description_sexy.py:19
 msgid "A professional-looking HTML page"
-msgstr "Profesjonalna strona HTML"
+msgstr "profesjonalna strona HTML"
 
 #: GTG/plugins/export/export_templates/description_sexy.py:20
 msgid ""
@@ -2351,7 +2350,7 @@ msgstr ""
 
 #: GTG/plugins/export/export_templates/description_simple.py:19
 msgid "A simple Web page that can be easily printed."
-msgstr "Prosta strona internetowa (do wydruku)"
+msgstr "prosta strona internetowa (do wydruku)"
 
 #: GTG/plugins/export/export_templates/description_simple.py:20
 msgid ""
@@ -2362,7 +2361,7 @@ msgstr ""
 
 #: GTG/plugins/export/export_templates/description_statusrpt.py:19
 msgid "Status report"
-msgstr "Raport"
+msgstr "raport"
 
 #: GTG/plugins/export/export_templates/description_statusrpt.py:20
 msgid "A template to create a compact text file listing only task titles."
@@ -2372,7 +2371,7 @@ msgstr ""
 
 #: GTG/plugins/export/export_templates/description_textual.py:21
 msgid "Text-only"
-msgstr "Tylko tekst"
+msgstr "tylko tekst"
 
 #: GTG/plugins/export/export_templates/description_textual.py:22
 msgid "A template to create a simple text file with some tasks."
@@ -2546,7 +2545,7 @@ msgid ""
 "You haven't achieved any tasks today."
 msgstr ""
 "<i>Wracaj do pracy</i>\n"
-"Żadne cele na dziś nie zostały jeszcze wykonane."
+"Żadne zadania na dziś nie zostały jeszcze wykonane."
 
 #: GTG/plugins/gamify/gamify.py:359
 #, python-brace-format
@@ -2555,18 +2554,17 @@ msgstr "{emoji} <b>{streak} dzień</b> aktywności"
 
 #: GTG/plugins/hamster/hamster.py:40
 msgid "Start a new activity in Hamster Time Tracker based on the selected task"
-msgstr "Rozpocznij nową aktywność dla zaznaczonych zadań w aplikacji Hamster"
+msgstr "Zacznij nową aktywność w aplikacji Hamster"
 
 #: GTG/plugins/hamster/hamster.py:42
 msgid ""
 "Stop tracking the current activity in Hamster Time Tracker corresponding to "
 "the selected task"
-msgstr ""
-"Zatrzymaj aktywność odpowiadającą zaznaczonemu zadaniu w aplikacji Hamster"
+msgstr "Zatrzymaj bieżącą aktywność w aplikacji Hamster"
 
 #: GTG/plugins/hamster/hamster.py:45
 msgid "Start task in Hamster"
-msgstr "Zacznij zadanie w Hamster"
+msgstr "Zacznij zadanie w aplikacji Hamster"
 
 #: GTG/plugins/hamster/hamster.py:46
 msgid "Stop Hamster Activity"
