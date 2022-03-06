@@ -30,13 +30,7 @@ from lxml import etree
 
 
 # Tags for the initial tasks
-tags = {
-    'to_pay': str(uuid4()),
-    'money': str(uuid4()),
-    'errands': str(uuid4()),
-    'waitingfor': str(uuid4()),
-}
-
+tags = {}
 
 # TIDs for each initial task
 task_ids = [
@@ -63,7 +57,6 @@ tasks = [
         'subtasks': task_ids[1:],
         'added': today,
         'modified': today,
-        'tags': [],
         'content': _(
             "Welcome to Getting Things GNOME (GTG), your new task manager! In GTG, "
             "everything is a task. From building a bridge over the Pacific Ocean "
@@ -141,7 +134,6 @@ tasks = [
         'title': _("Learn How to Use Subtasks"),
         'id': task_ids[1],
         'subtasks': [],
-        'tags': [],
         'added': today,
         'modified': today,
         'content': _(
@@ -173,7 +165,6 @@ tasks = [
         'title': _("Learn How to Use Tags and Enable the Sidebar"),
         'id': task_ids[2],
         'subtasks': [],
-        'tags': [tags['money'], tags['to_pay']],
         'added': today,
         'modified': today,
         'content': _(
@@ -208,7 +199,6 @@ tasks = [
         'title': _("Learn How to Use the Actionable View Mode"),
         'id': task_ids[3],
         'subtasks': [],
-        'tags': [tags['waitingfor']],
         'added': today,
         'modified': today,
         'content': _(
@@ -234,7 +224,7 @@ tasks = [
             "\n"
             "If you use tags, you can right-click on a tag in the sidebar and  "
             "choose to hide tasks assigned to this particular tag from the Actionable "
-            "view. It is very useful if you have a tag like &quot;@waitingfor&quot; "
+            "view. It is very useful if you have a tag like @waitingfor "
             "that you use for tasks blocked by some external event (i.e. such as "
             "a phone callback you're waiting for).\n"
             "\n"
@@ -250,7 +240,6 @@ tasks = [
         'title': _("Learn About Plugins"),
         'id': task_ids[4],
         'subtasks': [],
-        'tags': [],
         'added': today,
         'modified': today,
         'content': _(
@@ -266,7 +255,6 @@ tasks = [
         'title': _("Reporting Bugs"),
         'id': task_ids[5],
         'subtasks': [],
-        'tags': [],
         'added': today,
         'modified': today,
         'content': _(
@@ -285,7 +273,6 @@ tasks = [
         'title': _("Learn How to Use the Quick Add Entry"),
         'id': task_ids[6],
         'subtasks': [],
-        'tags': [],
         'added': today,
         'modified': today,
         'content': _(
@@ -299,7 +286,6 @@ tasks = [
         'title': _("Learn About Synchronization Services"),
         'id': task_ids[7],
         'subtasks': [],
-        'tags': [],
         'added': today,
         'modified': today,
         'content': _(
@@ -329,7 +315,6 @@ tasks = [
         'title': _("Learn How to Search for Tasks"),
         'id': task_ids[8],
         'subtasks': [],
-        'tags': [tags['errands']],
         'added': today,
         'modified': today,
         'content': _(
@@ -377,13 +362,6 @@ def generate() -> etree.Element:
     taskslist = root.find('tasklist')
     taglist = root.find('taglist')
 
-    # Fill tags
-    for tag, tid in tags.items():
-        tag_tag = etree.SubElement(taglist, 'tag')
-        tag_tag.set('id', tid)
-        tag_tag.set('name', tag)
-
-
     # Fill tasks
     for task in tasks:
         task_tag = etree.SubElement(taskslist, 'task')
@@ -396,9 +374,11 @@ def generate() -> etree.Element:
         # Add tags for this task
         task_tags = etree.SubElement(task_tag, 'tags')
 
-        for tag in task['tags']:
+        for tag in set(extract_tags_from_text(task['content'])):
+            tag_name = tag.replace('@', '')
+            tags.update({tag_name: str(uuid4()),})
             tag_tag = etree.SubElement(task_tags, 'tag')
-            tag_tag.text = tag
+            tag_tag.text = tags.get(tag_name)
 
         dates = etree.SubElement(task_tag, 'dates')
         added = etree.SubElement(dates, 'added')
@@ -426,4 +406,10 @@ def generate() -> etree.Element:
         content = etree.SubElement(task_tag, 'content')
         content.text = etree.CDATA(task['content'])
 
+    # Fill tags
+    for tag, tid in tags.items():
+        tag_tag = etree.SubElement(taglist, 'tag')
+        tag_tag.set('id', tid)
+        tag_tag.set('name', tag)
+        
     return etree.ElementTree(root)
