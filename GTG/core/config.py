@@ -32,7 +32,7 @@ DEFAULTS = {
     'browser': {
         "bg_color_enable": True,
         "contents_preview_enable": False,
-        'tag_pane': False,
+        'tag_pane': True,
         "sidebar_width": 120,
         'collapsed_tasks': [],
         'expanded_tags': [],
