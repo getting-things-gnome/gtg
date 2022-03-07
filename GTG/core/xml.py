@@ -39,26 +39,6 @@ def task_from_element(task, element: etree.Element):
     task.set_uuid(element.get('id'))
     task.set_status(element.attrib['status'], init=True) # Done date set later
 
-    # Retrieving all dates
-    dates = element.find('dates')
-    done_date = None
-    for key, set_date in (('modified', task.set_modified),
-                          ('added', task.set_added_date),
-                          ('due', task.set_due_date),
-                          ('done', task.set_closed_date),
-                          ('start', task.set_start_date)):
-        value = dates.find(key)
-        if value is not None and value.text:
-            set_date(Date(value.text))
-
-    # supporting old ways of salvaging fuzzy dates
-    for key, get_date, set_date in (
-            ('fuzzyDue', task.get_due_date, task.set_due_date),
-            ('fuzzyStart', task.get_start_date, task.set_start_date)):
-        if not get_date() and dates.find(key) is not None \
-                and dates.find(key).text:
-            set_date(Date(dates.find(key).text))
-
     # Recurring tasks
     recurring = element.find('recurring')
     recurring_enabled = recurring.get('enabled')
@@ -94,6 +74,28 @@ def task_from_element(task, element: etree.Element):
     for sub in subtasks.findall('sub'):
         task.add_child(sub.text)
 
+    # Retrieving all dates
+    dates = element.find('dates')
+    done_date = None
+            
+    # supporting old ways of salvaging fuzzy dates
+    for key, get_date, set_date in (
+            ('fuzzyDue', task.get_due_date, task.set_due_date),
+            ('fuzzyStart', task.get_start_date, task.set_start_date)):
+        if not get_date() and dates.find(key) is not None \
+                and dates.find(key).text:
+            set_date(Date(dates.find(key).text))
+
+    # modified date from file needs to be set as last action to survive
+    for key, set_date in (('added', task.set_added_date),
+                          ('due', task.set_due_date),
+                          ('done', task.set_closed_date),
+                          ('start', task.set_start_date),
+                          ('modified', task.set_modified),):
+        value = dates.find(key)
+        if value is not None and value.text:
+            set_date(Date(value.text))
+            
     return task
 
 
