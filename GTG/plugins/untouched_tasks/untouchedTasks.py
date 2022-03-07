@@ -29,7 +29,7 @@ class UntouchedTasksPlugin():
 
     DEFAULT_PREFERENCES = {'max_days': 30,
                            'is_automatic': False,
-                           'default_tag': '@untouched'}
+                           'default_tag': 'untouched'}
 
     PLUGIN_NAME = "untouched-tasks"
 
@@ -97,10 +97,6 @@ class UntouchedTasksPlugin():
         tag_name = self.pref_tag_name.get_text()
         if not tag_name:
             tag_name = self.preferences['default_tag']
-
-        # Add @ if user has not entered it
-        if tag_name.find('@') != 0:
-            tag_name = '@' + tag_name
 
         log.debug("Starting process for adding %s", tag_name)
         today = datetime.datetime.now()
