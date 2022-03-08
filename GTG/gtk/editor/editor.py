@@ -312,10 +312,17 @@ class TaskEditor:
         tags = self.req.get_tag_tree().get_all_nodes()
 
         used_tags = self.task.get_tags()
+        
+        special_tags = ["search", 
+                        "gtg-tags-all", 
+                        "gtg-tags-none", 
+                        "gtg-tags-sep"]
 
         for tagname in tags:
             tag = self.req.get_tag(tagname)
-            if tag_filter(tag):
+            if tag_filter(tag) \
+                    and tagname not in special_tags \
+                    and "__SAVED_SEARCH_" not in tagname:
                 is_used = tag in used_tags
                 self.tag_store.append([is_used, tagname])
                 """
