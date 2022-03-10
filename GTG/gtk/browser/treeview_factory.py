@@ -163,7 +163,7 @@ class TreeviewFactory():
             t1 = task1.get_due_date_constraint()
         if t2 == Date.no_date():
             t2 = task2.get_due_date_constraint()
-        return self.__date_comp_continue(task1, task2, order, t1, t2)
+        return self.__date_comp_continue(task1, task2, order, t2, t1)
 
     def sort_by_closeddate(self, task1, task2, order):
         t1 = task1.get_closed_date()
