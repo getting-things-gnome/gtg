@@ -279,9 +279,10 @@ class Datastore2:
 
         now = time()
         day_in_secs = 86_400
+        basedir = os.path.dirname(path)
 
-        for filename in os.listdir(path):
-            filename = os.path.join(path, filename)
+        for filename in os.listdir(basedir):
+            filename = os.path.join(basedir, filename)
             filestamp = os.stat(filename).st_mtime
             filecompare = now - (days * day_in_secs)
 
