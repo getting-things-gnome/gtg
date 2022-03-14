@@ -653,6 +653,11 @@ class Application(Gtk.Application):
 
         self.save_plugin_settings()
 
+        # TODO: Save and load from the same file once the
+        # new core is fully tested
+        data_file = os.path.join(DATA_DIR, 'gtg_data2.xml')
+        self.ds.save(data_file)
+
         if self.req is not None:
             # Save data and shutdown datastore backends
             self.req.save_datastore(quit=True)
