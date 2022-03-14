@@ -25,6 +25,10 @@ import sys
 import logging
 import urllib.parse  # GLibs URI functions not available for some reason
 
+
+from GTG.core.dirs import DATA_DIR
+from GTG.core.datastore2 import Datastore2
+
 from GTG.gtk.browser.delete_task import DeletionUI
 from GTG.gtk.browser.main_window import MainWindow
 from GTG.gtk.editor.editor import TaskEditor
@@ -47,6 +51,9 @@ log = logging.getLogger(__name__)
 
 
 class Application(Gtk.Application):
+
+    ds: Datastore2 = Datastore2()
+    """Datastore loaded with the default data file"""
 
     # Requester
     req = None
@@ -103,6 +110,10 @@ class Application(Gtk.Application):
         try:
             Gtk.Application.do_startup(self)
             Gtk.Window.set_default_icon_name(self.props.application_id)
+
+            # Load default file
+            data_file = os.path.join(DATA_DIR, 'gtg_data.xml')
+            self.ds.load_file(data_file)
 
             # Register backends
             datastore = DataStore()
