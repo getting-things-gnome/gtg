@@ -24,7 +24,7 @@ from GTG.core.task import Task
 from gettext import gettext as _
 from GTG.core.dates import Date
 from liblarch import Tree
-
+from GTG.core.config import CoreConfig
 
 class TreeFactory():
 
@@ -173,8 +173,16 @@ class TreeFactory():
             # without startdate
             return True
         elif days_left == 0:
-            # Don't count today's tasks started until morning
-            return datetime.now().hour > 4
+            coreconfig = CoreConfig()
+            browser_subconfig = coreconfig.get_subconfig('browser')
+            hour_shift = browser_subconfig.get("hour")
+            if datetime.now().hour > int(hour_shift):
+                return True
+            if datetime.now().hour == int(hour_shift):
+                minute_shift = browser_subconfig.get("min")
+                return datetime.now().minute >= int(minute_shift)
+            else:
+                return False
         else:
             return days_left < 0
 
