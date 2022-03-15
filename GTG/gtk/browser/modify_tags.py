@@ -29,8 +29,9 @@ class ModifyTagsDialog():
     Dialog for batch adding/removal of tags
     """
 
-    def __init__(self, tag_completion, req):
+    def __init__(self, tag_completion, req, app):
         self.req = req
+        self.app = app
         self.tasks = []
 
         self._init_dialog()
@@ -95,6 +96,8 @@ class ModifyTagsDialog():
                 else:
                     task.remove_tag(tag)
             task.sync()
+
+        self.app.ds.save()
 
         # Rember the last actions
         self.last_tag_entry = self.tag_entry.get_text()
