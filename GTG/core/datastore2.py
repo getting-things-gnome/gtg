@@ -38,6 +38,8 @@ import GTG.core.info as info
 
 from lxml import etree as et
 
+from typing import Optional
+
 
 log = logging.getLogger(__name__)
 
@@ -73,6 +75,8 @@ class Datastore2:
             'closed': {'all': 0, 'untagged': 0},
         }
 
+        self.data_path = None
+
 
     @property
     def mutex(self) -> threading.Lock:
@@ -107,6 +111,9 @@ class Datastore2:
             log.debug('Processed file %s in %.2fms',
                       path, (time() - bench_start) * 1000)
 
+        # Store path, so we can call save() on it
+        self.data_path = path
+
 
     def generate_xml(self) -> et.ElementTree:
         """Generate lxml element object with all data."""
@@ -132,9 +139,10 @@ class Datastore2:
                        encoding='UTF-8')
 
 
-    def save(self, path: str) -> None:
+    def save(self, path: Optional[str] = None) -> None:
         """Write GTG data file."""
 
+        path = path or self.data_path
         temp_file = path + '__'
         bench_start = 0
 
