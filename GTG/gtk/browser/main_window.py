@@ -273,7 +273,7 @@ class MainWindow(Gtk.ApplicationWindow):
         self.closed_pane.add(self.vtree_panes['closed'])
 
         tag_completion = TagCompletion(self.req.get_tag_tree())
-        self.modifytags_dialog = ModifyTagsDialog(tag_completion, self.req)
+        self.modifytags_dialog = ModifyTagsDialog(tag_completion, self.req, self.app)
         self.modifytags_dialog.dialog.set_transient_for(self)
         self.deletetags_dialog = DeleteTagsDialog(self.req, self)
         self.calendar = GTGCalendar()
