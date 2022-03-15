@@ -844,6 +844,14 @@ class TaskEditor:
         if self.config is not None:
             self.config.save()
         self.time = time.time()
+
+        # TODO: New core, remove previous code once stable
+        t = self.app.ds.tasks.get(self.task.tid)
+        t.title = self.textview.get_title()
+        t.contents = self.textview.get_text()
+        self.app.ds.save()
+
+
     # light_save save the task without refreshing every 30seconds
     # We will reduce the time when the get_text will be in another thread
 
