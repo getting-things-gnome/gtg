@@ -115,6 +115,9 @@ class Application(Gtk.Application):
             data_file = os.path.join(DATA_DIR, 'gtg_data.xml')
             self.ds.load_file(data_file)
 
+            # TODO: Remove this once the new core is stable
+            self.ds.data_path = os.path.join(DATA_DIR, 'gtg_data2.xml')
+
             # Register backends
             datastore = DataStore()
 
@@ -652,11 +655,7 @@ class Application(Gtk.Application):
         """Callback when GTG is closed."""
 
         self.save_plugin_settings()
-
-        # TODO: Save and load from the same file once the
-        # new core is fully tested
-        data_file = os.path.join(DATA_DIR, 'gtg_data2.xml')
-        self.ds.save(data_file)
+        self.ds.save()
 
         if self.req is not None:
             # Save data and shutdown datastore backends
