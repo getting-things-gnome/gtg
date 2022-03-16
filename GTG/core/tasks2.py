@@ -327,10 +327,11 @@ class TaskStore(BaseStore):
         return self.lookup[tid]
 
 
-    def new(self, title: str, parent: UUID = None) -> Task2:
+    def new(self, title: str = None, parent: UUID = None) -> Task2:
         """Create a new task and add it to the store."""
 
         tid = uuid4()
+        title = title or _('New Task')
         task = Task2(id=tid, title=title)
         task.date_added = Date.now()
 
