@@ -41,6 +41,8 @@ from GTG.gtk.editor.recurring_menu import RecurringMenu
 from GTG.gtk.editor.taskview import TaskView
 from GTG.gtk.tag_completion import tag_filter
 from GTG.gtk.colors import rgb_to_hex
+from GTG.core.tasks2 import Task2
+
 """
 TODO (jakubbrindza): re-factor tag_filter into a separate module
 """
@@ -96,6 +98,13 @@ class TaskEditor:
 
         # Recurrence
         self.recurring_menu = RecurringMenu(self.req, task.tid, self.builder)
+
+        # TODO: Remove old code when new core is stable
+        # If new add to new DS
+        if thisisnew:
+            new_task = Task2(task.tid, task.get_title())
+            self.app.ds.tasks.add(new_task)
+
 
         # Create our dictionary and connect it
         dic = {
@@ -755,23 +764,29 @@ class TaskEditor:
     def new_subtask(self, title=None, tid=None):
         if tid:
             self.task.add_child(tid)
+            self.app.ds.tasks.parent(self.task.tid, tid)
         elif title:
             subt = self.task.new_subtask()
             subt.set_title(title)
             tid = subt.get_id()
+
+            self.app.ds.tasks.new(title, self.task.tid)
+
         return tid
 
     def remove_subtask(self, tid):
         """Remove a subtask of this task."""
 
         self.task.remove_child(tid)
+        self.app.ds.unparent(tid, self.task.tid)
 
     def rename_subtask(self, tid, new_title):
         """Rename a subtask of this task."""
 
         try:
             self.req.get_task(tid).set_title(new_title)
-        except AttributeError:
+            self.app.ds.tasks.get(tid).title = new_title
+        except (AttributeError, KeyError):
             # There's no task at that tid
             pass
 
@@ -802,6 +817,14 @@ class TaskEditor:
             parent_id = parent.get_id()
 
             self.task.set_parent(parent_id)
+
+            # TODO: New Core, remove old code when stable
+            parent2 = Task2(title=_('New Task'), id=parent_id)
+            parent2.tags = self.app.ds.tasks.get(self.task.tid).tags
+            self.app.ds.tasks.add(parent2)
+            self.app.ds.tasks.parent(self.task.tid, parent2.id)
+
+
             self.app.open_task(parent_id)
             # Prevent WM issues and risks of conflicting content changes:
             self.close()
