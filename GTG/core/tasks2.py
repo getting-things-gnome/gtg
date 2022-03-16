@@ -35,6 +35,7 @@ from lxml.etree import Element, SubElement, CDATA
 from GTG.core.base_store import BaseStore
 from GTG.core.tags2 import Tag2, TagStore
 from GTG.core.dates import Date
+from GTG.core.repeating import Repeating
 
 log = logging.getLogger(__name__)
 
@@ -99,6 +100,8 @@ class Task2(GObject.Object):
         self._date_start = Date.no_date()
         self._date_closed = Date.no_date()
         self._date_modified = Date(datetime.datetime.now())
+
+        self.repeating = Repeating()
 
 
     def is_actionable(self) -> bool:
