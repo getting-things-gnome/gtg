@@ -56,8 +56,8 @@ class SendEmailPlugin():
         # Body contains Status Tags, Subtasks and Content.
         body = _("Status: %s") % (task.get_status()) + \
             _("\nTags: %s") % (", ".join(task.get_tags_name())) + \
-            _("\nSubtasks:\n%s") % (
-                "\n - ".join([i.get_title() for i in task.get_subtasks()])) + \
+            _("\nSubtasks: %s") % (
+                "".join(["\n- "+subtask.get_title() for subtask in task.get_subtasks()])) + \
             _("\nTask content:\n%s") % (task.get_text())
 
         # Title contains the title and the start and due dates.
