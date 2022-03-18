@@ -192,8 +192,8 @@ class TaskEditor:
         self.textview.rename_subtask_cb = self.rename_subtask
         self.textview.open_subtask_cb = self.open_subtask
         self.textview.save_cb = self.light_save
-        self.textview.add_tasktag_cb = task.tag_added
-        self.textview.remove_tasktag_cb = task.remove_tag
+        self.textview.add_tasktag_cb = self.tag_added
+        self.textview.remove_tasktag_cb = self.tag_removed
         self.textview.refresh_cb = self.refresh_editor
         self.textview.get_tagslist_cb = task.get_tags_name
         self.textview.tid = task.tid
@@ -273,6 +273,21 @@ class TaskEditor:
         self.textview.set_editable(True)
         self.window.set_transient_for(self.app.browser)
         self.window.show()
+
+
+    def tag_added(self, name):
+
+        self.task.tag_added(name)
+        t = self.app.ds.tasks.get(self.task.tid)
+        t.add_tag(self.app.ds.tags.new(name))
+
+
+    def tag_removed(self, name):
+
+        self.task.remove_tag(name)
+        t = self.app.ds.tasks.get(self.task.tid)
+        t.remove_tag(name)
+
 
     def show_popover_start(self, widget, event):
         """Open the start date calendar popup."""
