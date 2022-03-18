@@ -1,3 +1,4 @@
+import copy
 import datetime
 from enum import Enum
 
@@ -9,11 +10,12 @@ class RepeatingOn(Enum):
 
 
 class Repeating:
-    def __init__(self, task, timestamp=datetime.datetime.now(), enabled=False, repeats_on=RepeatingOn.DUE, count=1, old_tid=None):
+    def __init__(self, task, timestamp=datetime.datetime.now(), rset=None,
+                 enabled=False, repeats_on=RepeatingOn.DUE, count=1, old_tid=None):
         self._enabled = enabled
 
         # dateutil ruleset
-        self.rset = rruleset()
+        self.rset = rruleset() if rset is None else rset
         self.repeats_on = repeats_on
 
         self.task = task
@@ -72,6 +74,12 @@ class Repeating:
 
     @property
     def date(self):
+        # Rruleset doesn't seem to provide a way of counting
+        # the numbers of rrules in a set. We have to use the private
+        # field `_rrule`
+        if len(self.rset._rrule) == 0:
+            raise RruleNotFound(f'No rrule was found in ruleset')
+
         d = self.timestamp.date()
         dt = datetime.datetime(d.year, d.month, d.day)
         return self.rset.after(dt, True).date()
@@ -85,9 +93,28 @@ class Repeating:
             self.task.due_date = self.date
 
 
+    def get_next_occurrence(self, duplicated_task):
+        new_rset = copy.deepcopy(self.rset)
+        d = self.date
+        new_rset.exdate(datetime.datetime(d.year, d.month, d.day))
+
+        return Repeating(
+            duplicated_task,
+            rset=new_rset,
+            enabled=True,
+            repeats_on=self.repeats_on,
+            count=self.count + 1,
+            old_tid=self.task.id
+        )
+
+
     def __repr__(self):
         return (f'Repeating(enabled={self.enabled}, '
+                f'rset={str(self.rset)},'
                 f'repeats_on={self.repeats_on}, '
                 f'count={self.count}, '
                 f'old_tid={self.old_tid})')
 
+
+class RruleNotFound(Exception):
+    pass

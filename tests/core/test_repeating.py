@@ -4,17 +4,18 @@ import pytest
 from dateutil.rrule import MONTHLY, WEEKLY, DAILY, rrule
 
 from GTG.core.repeating import RepeatingOn, Repeating
+from GTG.core.datastore2 import Datastore2
 
 
 @pytest.fixture
-def ds():
-    return Datastore2()
+def task():
+    return Datastore2().tasks.new('new Task')
 
 
 @pytest.fixture
-def weekold_weekly_repeating():
+def weekold_weekly_repeating(task):
     last_week = datetime.now() - timedelta(days=7)
-    rep = Repeating(None)
+    rep = Repeating(task)
     rep.timestamp = last_week
     rep.add_rule(
         rrule(WEEKLY, dtstart=last_week)
@@ -62,23 +63,37 @@ def test_update_date():
 
 
 @pytest.mark.parametrize(
-    'rrule, expected',
+    'rule,expected',
     [
         (rrule(DAILY), date.today()),
         (rrule(WEEKLY), date.today()),
-        (rrule(MONTHLY, dtstart=date.today() + timedelta(days=10)),
+        (rrule(MONTHLY, dtstart=datetime.today() + timedelta(days=10)),
             date.today() + timedelta(days=10)),
         (rrule(WEEKLY, dtstart=datetime.now() - timedelta(days=6)),
-            date.today() + timedelta(days=1))
+            date.today() + timedelta(days=1)),
     ]
 )
-def test_get_date(rrule, expected):
+def test_get_date(rule, expected):
     rep = Repeating(None)
     rep.add_rule(
-        rrule
+        rule
     )
     assert expected == rep.date
 
 
 def test_get_date_for_old_task(weekold_weekly_repeating):
     assert weekold_weekly_repeating.date == date.today() - timedelta(days=7)
+
+
+def test_get_next_occurrence_after_due(weekold_weekly_repeating, task):
+    next_rep = weekold_weekly_repeating.get_next_occurrence(task)
+    assert next_rep.date >= date.today()
+    assert next_rep.date == weekold_weekly_repeating.date + timedelta(days=7)
+
+
+def test_get_next_occurrence_before_due():
+    pass
+
+
+def test_get_next_occurrence_on_due():
+    pass
