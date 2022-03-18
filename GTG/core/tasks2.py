@@ -454,16 +454,12 @@ class TaskStore(BaseStore):
                 done_date.text = str(task.date_closed)
 
             if task.date_due:
-                due_date = task.date_due
-                due_tag = 'fuzzyDue' if due_date.is_fuzzy() else 'due'
-                due = SubElement(dates, due_tag)
-                due.text = str(due_date)
+                due = SubElement(dates, 'due')
+                due.text = str(task.date_due)
 
             if task.date_start:
-                start_date = task.date_start
-                start_tag = 'fuzzyStart' if start_date.is_fuzzy() else 'start'
-                start = SubElement(dates, start_tag)
-                start.text = str(start_date)
+                start = SubElement(dates, 'start')
+                start.text = str(task.date_start)
 
             subtasks = SubElement(element, 'subtasks')
 
