@@ -13,6 +13,7 @@ __pycache__
 .*.sw*
 docs/user_manual_html/
 docs/user_manual/C/index.cache
+pyrightconfig.json
 
 
 # Build Dirs
