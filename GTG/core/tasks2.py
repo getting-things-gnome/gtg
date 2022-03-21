@@ -116,7 +116,7 @@ class Task2(GObject.Object):
                 and can_start)
 
 
-    def toggle_status(self, propagate: bool = True) -> None:
+    def toggle_active(self, propagate: bool = True) -> None:
         """Toggle between possible statuses."""
 
         if self.status is Status.ACTIVE:
@@ -128,17 +128,30 @@ class Task2(GObject.Object):
             self.date_closed = Date.no_date()
 
             if self.parent and self.parent.status is not Status.ACTIVE:
-                self.parent.toggle_status(propagate=False)
+                self.parent.toggle_active(propagate=False)
 
         if propagate:
             for child in self.children:
-                child.toggle_status()
+                child.toggle_active()
 
 
-    def dismiss(self) -> None:
+    def toggle_dismiss(self, propagate: bool = True) -> None:
         """Set this task to be dismissed."""
 
-        self.set_status(Status.DISMISSED)
+        if self.status is Status.ACTIVE:
+            self.status = Status.DISMISSED
+            self.date_closed = Date.today()
+
+        else:
+            self.status = Status.ACTIVE
+            self.date_closed = Date.no_date()
+
+            if self.parent and self.parent.status is not Status.ACTIVE:
+                self.parent.toggle_active(propagate=False)
+
+        if propagate:
+            for child in self.children:
+                child.toggle_active()
 
 
     def set_status(self, status: Status) -> None:

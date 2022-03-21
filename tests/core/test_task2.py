@@ -55,47 +55,47 @@ class TestTask2(TestCase):
 
         self.assertEqual(task.status, Status.ACTIVE)
 
-        task.toggle_status()
+        task.toggle_active()
         self.assertEqual(task.status, Status.DONE)
         self.assertEqual(task.date_closed, Date.today())
 
-        task.dismiss()
+        task.toggle_dismiss()
         self.assertEqual(task.status, Status.DISMISSED)
         self.assertEqual(task.date_closed, Date.today())
 
-        task.toggle_status()
+        task.toggle_active()
         self.assertEqual(task.status, Status.ACTIVE)
         self.assertEqual(task.date_closed, Date.no_date())
 
-        task.dismiss()
+        task.toggle_dismiss()
         self.assertEqual(task.status, Status.DISMISSED)
         self.assertEqual(task.date_closed, Date.no_date())
 
-        task.toggle_status()
+        task.toggle_active()
 
         task2 = Task2(id=uuid4(), title='A Child Task')
         task.children.append(task2)
         task2.parent = task
 
-        task.toggle_status()
+        task.toggle_active()
         self.assertEqual(task.status, Status.DONE)
         self.assertEqual(task.date_closed, Date.today())
         self.assertEqual(task2.status, Status.DONE)
         self.assertEqual(task2.date_closed, Date.today())
 
-        task.toggle_status()
+        task.toggle_active()
         self.assertEqual(task.status, Status.ACTIVE)
         self.assertEqual(task.date_closed, Date.no_date())
         self.assertEqual(task2.status, Status.ACTIVE)
         self.assertEqual(task2.date_closed, Date.no_date())
 
-        task.dismiss()
+        task.toggle_dismiss()
         self.assertEqual(task.status, Status.DISMISSED)
         self.assertEqual(task.date_closed, Date.no_date())
         self.assertEqual(task2.status, Status.DISMISSED)
         self.assertEqual(task2.date_closed, Date.no_date())
 
-        task2.toggle_status()
+        task2.toggle_active()
         self.assertEqual(task.status, Status.ACTIVE)
         self.assertEqual(task.date_closed, Date.no_date())
         self.assertEqual(task2.status, Status.ACTIVE)
@@ -458,9 +458,9 @@ class TestTask2(TestCase):
         task3 = task_store.new('My Other Other Task')
         task4 = task_store.new('My Other Other Other Task')
 
-        task1.toggle_status()
-        task2.dismiss()
-        task3.toggle_status()
+        task1.toggle_active()
+        task2.toggle_dismiss()
+        task3.toggle_active()
 
         filtered = task_store.filter(Filter.STATUS, Status.ACTIVE)
         expected = [task4]

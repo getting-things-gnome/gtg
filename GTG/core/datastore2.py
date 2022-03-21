@@ -667,10 +667,10 @@ class Datastore2:
                 task.add_tag(tag)
 
             if random_boolean():
-                task.toggle_status()
+                task.toggle_active()
 
             if random_boolean():
-                task.dismiss()
+                task.toggle_dismiss()
 
             for _ in range(random.randint(0, content_size)):
                 word = random_word(randint(4, 20))
