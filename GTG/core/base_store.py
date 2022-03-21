@@ -184,6 +184,23 @@ class BaseStore(GObject.Object):
             return len(self.lookup)
 
 
+    def refresh_lookup_cache(self) -> None:
+        """Refresh lookup cache."""
+
+        def add_children(nodes) -> None:
+            """Recursively add children to lookup."""
+
+            for n in nodes:
+                self.lookup[n.id] = n
+
+                if n.children:
+                    add_children(n.children)
+
+
+        self.lookup.clear()
+        add_children(self.data)
+
+
     def print_list(self) -> None:
         """Print the entre list of items."""
 
