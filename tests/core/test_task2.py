@@ -50,7 +50,7 @@ class TestTask2(TestCase):
         self.assertEqual(task.excerpt, expected)
 
 
-    def test_status(self):
+    def test_toggle_active_single(self):
         task = Task2(id=uuid4(), title='A Task')
 
         self.assertEqual(task.status, Status.ACTIVE)
@@ -59,20 +59,12 @@ class TestTask2(TestCase):
         self.assertEqual(task.status, Status.DONE)
         self.assertEqual(task.date_closed, Date.today())
 
-        task.toggle_dismiss()
-        self.assertEqual(task.status, Status.DISMISSED)
-        self.assertEqual(task.date_closed, Date.today())
-
         task.toggle_active()
         self.assertEqual(task.status, Status.ACTIVE)
         self.assertEqual(task.date_closed, Date.no_date())
 
-        task.toggle_dismiss()
-        self.assertEqual(task.status, Status.DISMISSED)
-        self.assertEqual(task.date_closed, Date.no_date())
-
-        task.toggle_active()
-
+    def test_toggle_active_children(self):
+        task = Task2(id=uuid4(), title='A Task')
         task2 = Task2(id=uuid4(), title='A Child Task')
         task.children.append(task2)
         task2.parent = task
@@ -89,13 +81,32 @@ class TestTask2(TestCase):
         self.assertEqual(task2.status, Status.ACTIVE)
         self.assertEqual(task2.date_closed, Date.no_date())
 
+
+    def test_toggle_dismiss_single(self):
+        task = Task2(id=uuid4(), title='A Task')
+
         task.toggle_dismiss()
         self.assertEqual(task.status, Status.DISMISSED)
-        self.assertEqual(task.date_closed, Date.no_date())
-        self.assertEqual(task2.status, Status.DISMISSED)
-        self.assertEqual(task2.date_closed, Date.no_date())
+        self.assertEqual(task.date_closed, Date.today())
 
-        task2.toggle_active()
+        task.toggle_dismiss()
+        self.assertEqual(task.status, Status.ACTIVE)
+        self.assertEqual(task.date_closed, Date.no_date())
+
+
+    def test_toggle_dismiss_children(self):
+        task = Task2(id=uuid4(), title='A Task')
+        task2 = Task2(id=uuid4(), title='A Child Task')
+        task.children.append(task2)
+        task2.parent = task
+
+        task.toggle_dismiss()
+        self.assertEqual(task.status, Status.DISMISSED)
+        self.assertEqual(task.date_closed, Date.today())
+        self.assertEqual(task2.status, Status.DISMISSED)
+        self.assertEqual(task2.date_closed, Date.today())
+
+        task.toggle_dismiss()
         self.assertEqual(task.status, Status.ACTIVE)
         self.assertEqual(task.date_closed, Date.no_date())
         self.assertEqual(task2.status, Status.ACTIVE)
