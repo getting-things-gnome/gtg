@@ -142,16 +142,16 @@ class Task2(GObject.Object):
             self.status = Status.DISMISSED
             self.date_closed = Date.today()
 
-        else:
+        elif self.status is Status.DISMISSED:
             self.status = Status.ACTIVE
             self.date_closed = Date.no_date()
 
             if self.parent and self.parent.status is not Status.ACTIVE:
-                self.parent.toggle_active(propagate=False)
+                self.parent.toggle_dismiss(propagate=False)
 
         if propagate:
             for child in self.children:
-                child.toggle_active()
+                child.toggle_dismiss()
 
 
     def set_status(self, status: Status) -> None:
