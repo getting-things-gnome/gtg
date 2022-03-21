@@ -43,6 +43,7 @@ from GTG.gtk.browser.treeview_factory import TreeviewFactory
 from GTG.gtk.editor.calendar import GTGCalendar
 from GTG.gtk.tag_completion import TagCompletion
 from GTG.core.dates import Date
+from GTG.core.tasks2 import Filter
 from GTG.gtk.browser.adaptive_button import AdaptiveFittingWidget # Register type
 
 log = logging.getLogger(__name__)
@@ -943,6 +944,13 @@ class MainWindow(Gtk.ApplicationWindow):
             self.req.delete_tag(tagname)
             tag = self.req.get_tag(tagname)
             self.app.reload_opened_editors(tag.get_related_tasks())
+
+            # TODO: New core
+            self.app.ds.tags.remove(self.app.ds.tags.find(tagname).id)
+            tasks = self.app.ds.tasks.filter(Filter.TAG, tagname)
+            for t in tasks:
+                t.remove_tag(tagname)
+
         self.tagtreeview.set_cursor(0)
         self.on_select_tag()
 
@@ -1012,6 +1020,14 @@ class MainWindow(Gtk.ApplicationWindow):
         
         task = self.req.new_task(tags=tags, newtask=True)
         uid = task.get_id()
+
+        # TODO: New core
+        new_task = self.app.ds.tasks.new()
+        new_task.id = uid
+
+        for t in tags:
+            new_task.add_tag(self.app.ds.tags.new(t))
+
         self.app.open_task(uid, new=True)
 
     def on_add_subtask(self, widget=None):
@@ -1026,6 +1042,10 @@ class MainWindow(Gtk.ApplicationWindow):
             # if the parent task is recurring, its child must be also.
             task.inherit_recursion()
 
+            # TODO: New core
+            t = self.app.ds.tasks.new(parent=uid)
+            t.tags = self.app.ds.tasks.get(uid).tags
+
             self.app.open_task(task.get_id(), new=True)
 
     def on_add_parent(self, widget=None):
@@ -1037,19 +1057,36 @@ class MainWindow(Gtk.ApplicationWindow):
                 # Switch parents
                 for p_tid in parents:
                     par = self.req.get_task(p_tid)
+
+                    # TODO: New core
+                    new_p = self.app.ds.tasks.get(p_tid)
+
                     if par.get_status() == Task.STA_ACTIVE:
                         new_parent = par.new_subtask()
+                        nc_parent = self.app.ds.tasks.new(parent=p_tid)
+                        nc_parent.id = new_parent.tid
+
                         for uid_task in selected_tasks:
                             # Make sure the task doesn't get deleted
                             # while switching parents
                             self.req.get_task(uid_task).set_to_keep()
                             par.remove_child(uid_task)
                             new_parent.add_child(uid_task)
+
+                            # TODO: New Core
+                            self.app.ds.tasks.unparent(uid_task, p_tid)
+                            self.app.ds.tasks.parent(uid_task, nc_parent.id)
+
             else:
                 # If the tasks have no parent already, no need to switch parents
                 new_parent = self.req.new_task(newtask=True)
                 for uid_task in selected_tasks:
                     new_parent.add_child(uid_task)
+
+                    # TODO: New Core
+                    t = self.app.ds.tasks.new()
+                    t.id = new_parent.tid
+                    self.app.ds.tasks.parent(uid_task, new_parent.tid)
 
             self.app.open_task(new_parent.get_id(), new=True)
 
@@ -1077,6 +1114,10 @@ class MainWindow(Gtk.ApplicationWindow):
         log.debug("going to delete %r", tids_todelete)
         self.app.delete_tasks(tids_todelete, self)
 
+        # TODO: New core core
+        for tid in tids_todelete:
+            self.app.ds.tasks.remove(tid)
+
     def update_start_date(self, widget, new_start_date):
         tasks = [self.req.get_task(uid)
                  for uid in self.get_selected_tasks()
@@ -1087,6 +1128,12 @@ class MainWindow(Gtk.ApplicationWindow):
         # FIXME:If the task dialog is displayed, refresh its start_date widget
         for task in tasks:
             task.set_start_date(start_date)
+
+        # TODO: New core
+        for uid in self.get_selected_tasks():
+            if uid:
+                t = self.app.ds.tasks.get(uid)
+                t.date_start = start_date
 
     def update_start_to_next_day(self, day_number):
         """Update start date to N days from today."""
@@ -1160,6 +1207,12 @@ class MainWindow(Gtk.ApplicationWindow):
         # FIXME: If the task dialog is displayed, refresh its due_date widget
         for task in tasks:
             task.set_due_date(due_date)
+
+        # TODO: New core
+        for uid in self.get_selected_tasks():
+            if uid:
+                t = self.app.ds.tasks.get(uid)
+                t.date_due = due_date
 
     def on_set_due_today(self, action, param):
         self.update_due_date(None, "today")
@@ -1302,6 +1355,11 @@ class MainWindow(Gtk.ApplicationWindow):
                 self.close_all_task_editors(uid)
                 GObject.idle_add(self.emit, "task-marked-as-done", task.get_id())
 
+        # TODO: New core
+        for uid in tasks_uid:
+            t = self.app.ds.tasks.get(uid)
+            t.toggle_active()
+
     def on_dismiss_task(self, widget=None):
         tasks_uid = [uid for uid in self.get_selected_tasks()
                      if uid is not None]
@@ -1315,6 +1373,12 @@ class MainWindow(Gtk.ApplicationWindow):
             else:
                 task.set_status(Task.STA_DISMISSED)
                 self.close_all_task_editors(uid)
+
+        # TODO: New core
+        for uid in tasks_uid:
+            t = self.app.ds.tasks.get(uid)
+            t.toggle_dismiss()
+
 
     def on_reopen_task(self, widget=None):
         tasks_uid = [uid for uid in self.get_selected_tasks()
@@ -1332,6 +1396,12 @@ class MainWindow(Gtk.ApplicationWindow):
                     parent.modified()
             elif status == Task.STA_DISMISSED:
                 task.set_status(Task.STA_ACTIVE)
+
+        # TODO: New core
+        for uid in tasks_uid:
+            t = self.app.ds.tasks.get(uid)
+            t.toggle_active()
+
 
     def reapply_filter(self, current_pane: str = None):
         if current_pane is None:
