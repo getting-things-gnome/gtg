@@ -374,7 +374,7 @@ class Application(Gtk.Application):
         """Callback to mark a task as done."""
 
         try:
-            self.get_active_editor().dismiss()
+            self.get_active_editor().toggle_dismiss()
         except AttributeError:
             self.browser.on_dismiss_task()
     
