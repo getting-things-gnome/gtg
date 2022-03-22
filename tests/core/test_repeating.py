@@ -7,13 +7,12 @@ from GTG.core.repeating import RepeatingOn, Repeating
 from GTG.core.datastore2 import Datastore2
 
 
-@pytest.fixture
-def task():
-    return Datastore2().tasks.new('new Task')
+def get_task():
+    return Datastore2().tasks.new('new task')
 
 
-@pytest.fixture
-def weekold_weekly_repeating(task):
+def weekold_weekly_repeating():
+    task = get_task()
     last_week = datetime.now() - timedelta(days=7)
     rep = Repeating(task)
     rep.timestamp = last_week
@@ -23,8 +22,8 @@ def weekold_weekly_repeating(task):
     return rep
 
 
-@pytest.fixture
-def weekold_monthly_repeating(task):
+def weekold_monthly_repeating():
+    task = get_task()
     last_week = datetime(2022, 3, 13)
     rep = Repeating(task, timestamp=last_week)
     rep.add_rule(
@@ -33,7 +32,6 @@ def weekold_monthly_repeating(task):
     return rep
 
 
-@pytest.fixture
 def daily_repeating(task):
     today = date.today()
     td = datetime(today.year, today.month, today.day)
@@ -103,23 +101,47 @@ def test_get_date(rule, expected):
     assert expected == rep.date
 
 
-def test_get_date_for_old_task(weekold_weekly_repeating):
-    assert weekold_weekly_repeating.date == date.today() - timedelta(days=7)
+@pytest.mark.parametrize(
+    'rep,expected',
+    [
+        (weekold_weekly_repeating(), date.today() - timedelta(days=7))
+    ]
+)
+def test_get_date_for_old_task(rep, expected):
+    assert rep.date == expected
 
 
-def test_get_next_occurrence_after_due(weekold_weekly_repeating, task):
-    next_rep = weekold_weekly_repeating.get_next_occurrence(task)
+@pytest.mark.parametrize(
+    'rep,expected',
+    [
+        (weekold_weekly_repeating(), weekold_weekly_repeating().date + timedelta(days=7))
+    ]
+)
+def test_get_next_occurrence_after_due(rep, expected):
+    next_rep = rep.get_next_occurrence(get_task())
     assert next_rep.date >= date.today()
-    assert next_rep.date == weekold_weekly_repeating.date + timedelta(days=7)
+    assert next_rep.date == expected
 
 
-def test_get_next_occurrence_before_due(weekold_monthly_repeating, task):
-    next_rep = weekold_monthly_repeating.get_next_occurrence(task)
-    assert weekold_monthly_repeating.date < next_rep.date
-    assert next_rep.date == datetime(2022, 4, 30).date()
+@pytest.mark.parametrize(
+    'rep,expected',
+    [
+        (weekold_monthly_repeating(), datetime(2022, 4, 30).date())
+    ]
+)
+def test_get_next_occurrence_before_due(rep, expected):
+    next_rep = rep.get_next_occurrence(get_task())
+    assert rep.date < next_rep.date
+    assert next_rep.date == expected
 
 
-def test_get_next_occurrence_on_due(daily_repeating, task):
-    next_rep = daily_repeating.get_next_occurrence(task)
-    assert next_rep.date > daily_repeating.date
+@pytest.mark.parametrize(
+    'rep,expected',
+    [
+        (daily_repeating(get_task()), date.today() + timedelta(days=1))
+    ]
+)
+def test_get_next_occurrence_on_due(rep, expected):
+    next_rep = rep.get_next_occurrence(get_task())
+    assert next_rep.date > rep.date
     assert next_rep.date == date.today() + timedelta(days=1)
