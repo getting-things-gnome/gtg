@@ -23,6 +23,28 @@ def weekold_weekly_repeating(task):
     return rep
 
 
+@pytest.fixture
+def weekold_monthly_repeating(task):
+    last_week = datetime(2022, 3, 13)
+    rep = Repeating(task, timestamp=last_week)
+    rep.add_rule(
+        rrule(MONTHLY, bymonthday=30, dtstart=last_week)
+    )
+    return rep
+
+
+@pytest.fixture
+def daily_repeating(task):
+    today = date.today()
+    td = datetime(today.year, today.month, today.day)
+    rep = Repeating(task)
+    rep.add_rule(
+        rrule(DAILY, dtstart=td)
+    )
+    return rep
+
+
+
 def test_repeats_on():
     rep = Repeating(None)
     # By default tasks should be set to repeat on due dates
@@ -91,9 +113,13 @@ def test_get_next_occurrence_after_due(weekold_weekly_repeating, task):
     assert next_rep.date == weekold_weekly_repeating.date + timedelta(days=7)
 
 
-def test_get_next_occurrence_before_due():
-    pass
+def test_get_next_occurrence_before_due(weekold_monthly_repeating, task):
+    next_rep = weekold_monthly_repeating.get_next_occurrence(task)
+    assert weekold_monthly_repeating.date < next_rep.date
+    assert next_rep.date == datetime(2022, 4, 30).date()
 
 
-def test_get_next_occurrence_on_due():
-    pass
+def test_get_next_occurrence_on_due(daily_repeating, task):
+    next_rep = daily_repeating.get_next_occurrence(task)
+    assert next_rep.date > daily_repeating.date
+    assert next_rep.date == date.today() + timedelta(days=1)
