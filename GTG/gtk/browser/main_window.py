@@ -853,6 +853,15 @@ class MainWindow(Gtk.ApplicationWindow):
 
             self.quickadd_entry.set_text('')
 
+            # TODO: New Core
+            new_t = self.app.ds.tasks.new(data['title'])
+            new_t.date_start = data['start']
+            new_t.date_due = data['due']
+
+            for tag in data['tags']:
+                _tag = self.app.ds.tags.new(tag)
+                new_t.add_tag(_tag)
+
             # signal the event for the plugins to catch
             GLib.idle_add(self.emit, "task-added-via-quick-add", task.get_id())
         else:
@@ -1074,6 +1083,7 @@ class MainWindow(Gtk.ApplicationWindow):
                             new_parent.add_child(uid_task)
 
                             # TODO: New Core
+                            self.app.ds.tasks.refresh_lookup_cache()
                             self.app.ds.tasks.unparent(uid_task, p_tid)
                             self.app.ds.tasks.parent(uid_task, nc_parent.id)
 
@@ -1086,6 +1096,7 @@ class MainWindow(Gtk.ApplicationWindow):
                     # TODO: New Core
                     t = self.app.ds.tasks.new()
                     t.id = new_parent.tid
+                    self.app.ds.tasks.refresh_lookup_cache()
                     self.app.ds.tasks.parent(uid_task, new_parent.tid)
 
             self.app.open_task(new_parent.get_id(), new=True)
