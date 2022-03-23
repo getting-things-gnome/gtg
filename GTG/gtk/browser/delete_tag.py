@@ -55,9 +55,9 @@ class DeleteTagsDialog():
         delete_text = ngettext("Permanently remove tag", "Permanently remove tags", singular)
 
         label_text = ngettext("Deleting a tag cannot be undone, "
-                              "and will delete the following tag: ",
+                              "and will delete the tag shown below. Tasks containing this tag will not be deleted: ",
                               "Deleting a tag cannot be undone, "
-                              "and will delete the following tag: ",
+                              "and will delete the tag shown below. Tasks containing this tag will not be deleted:",
                               singular)
 
         label_text = label_text[0:label_text.find(":") + 1]
