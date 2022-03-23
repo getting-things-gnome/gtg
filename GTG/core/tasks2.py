@@ -502,7 +502,7 @@ class TaskStore(BaseStore):
             for t in self.data:
                 tags = [_tag for _tag in t.tags]
 
-                # Include the tag's childrens
+                # Include the tag's children
                 for _tag in t.tags:
                     for child in _tag.children:
                         tags.append(child)
