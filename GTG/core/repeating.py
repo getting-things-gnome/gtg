@@ -11,7 +11,7 @@ class RepeatingOn(Enum):
 
 class Repeating:
     def __init__(self, task, timestamp=datetime.datetime.now(), rset=None,
-                 enabled=False, repeats_on=RepeatingOn.DUE, count=1, old_tid=None):
+                 enabled=False, repeats_on=RepeatingOn.DUE, count=1, next_tid=None):
         self._enabled = enabled
 
         # dateutil ruleset
@@ -19,7 +19,7 @@ class Repeating:
         self.repeats_on = repeats_on
 
         self.task = task
-        self.old_tid = old_tid
+        self.next_tid = next_tid
         self.count = count
 
         self.timestamp = timestamp
@@ -80,6 +80,7 @@ class Repeating:
         if len(self.rset._rrule) == 0:
             raise RruleNotFound(f'No rrule was found in ruleset')
 
+        # Removing the h/m/s data from the timestamp
         d = self.timestamp.date()
         dt = datetime.datetime(d.year, d.month, d.day)
         return self.rset.after(dt, True).date()
@@ -94,6 +95,9 @@ class Repeating:
 
 
     def get_next_occurrence(self, duplicated_task):
+        # save next task id in previous occurrence
+        self.next_tid = duplicated_task.id
+
         new_rset = copy.deepcopy(self.rset)
         d = self.date
         new_rset.exdate(datetime.datetime(d.year, d.month, d.day))
@@ -104,7 +108,6 @@ class Repeating:
             enabled=True,
             repeats_on=self.repeats_on,
             count=self.count + 1,
-            old_tid=self.task.id
         )
 
 
@@ -113,7 +116,7 @@ class Repeating:
                 f'rset={str(self.rset)},'
                 f'repeats_on={self.repeats_on}, '
                 f'count={self.count}, '
-                f'old_tid={self.old_tid})')
+                f'next_tid={self.next_tid})')
 
 
 class RruleNotFound(Exception):

@@ -32,7 +32,8 @@ def weekold_monthly_repeating():
     return rep
 
 
-def daily_repeating(task):
+def daily_repeating():
+    task = get_task()
     today = date.today()
     td = datetime(today.year, today.month, today.day)
     rep = Repeating(task)
@@ -138,7 +139,7 @@ def test_get_next_occurrence_before_due(rep, expected):
 @pytest.mark.parametrize(
     'rep,expected',
     [
-        (daily_repeating(get_task()), date.today() + timedelta(days=1))
+        (daily_repeating(), date.today() + timedelta(days=1))
     ]
 )
 def test_get_next_occurrence_on_due(rep, expected):
