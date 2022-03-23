@@ -18,6 +18,7 @@
 
 
 from gi.repository import Gtk
+from GTG.core.tasks2 import Filter
 
 from gettext import gettext as _, ngettext
 
@@ -37,6 +38,15 @@ class DeleteTagsDialog():
 
         for tag in self.tags_todelete:
             self.req.delete_tag(tag)
+
+            # TODO: New Core
+            the_tag = self.browser.app.ds.tags.find(tag)
+            tasks = self.browser.app.ds.tasks.filter(Filter.TAG, the_tag)
+
+            for t in tasks:
+                t.remove_tag(tag)
+
+            self.browser.app.ds.tags.remove(the_tag.id)
 
         self.tags_todelete = []
 
