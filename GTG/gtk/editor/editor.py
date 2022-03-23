@@ -101,7 +101,7 @@ class TaskEditor:
 
         # TODO: Remove old code when new core is stable
         # If new add to new DS
-        if thisisnew:
+        if thisisnew and task.tid not in self.app.ds.tasks.lookup.keys():
             new_task = Task2(task.tid, task.get_title())
             self.app.ds.tasks.add(new_task)
 
