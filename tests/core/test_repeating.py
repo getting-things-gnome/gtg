@@ -122,6 +122,7 @@ def test_get_next_occurrence_after_due(rep, expected):
     next_rep = rep.get_next_occurrence(get_task())
     assert next_rep.date >= date.today()
     assert next_rep.date == expected
+    assert rep.next_tid == next_rep.task.id
 
 
 @pytest.mark.parametrize(
@@ -134,6 +135,7 @@ def test_get_next_occurrence_before_due(rep, expected):
     next_rep = rep.get_next_occurrence(get_task())
     assert rep.date < next_rep.date
     assert next_rep.date == expected
+    assert rep.next_tid == next_rep.task.id
 
 
 @pytest.mark.parametrize(
@@ -146,3 +148,4 @@ def test_get_next_occurrence_on_due(rep, expected):
     next_rep = rep.get_next_occurrence(get_task())
     assert next_rep.date > rep.date
     assert next_rep.date == date.today() + timedelta(days=1)
+    assert rep.next_tid == next_rep.task.id
