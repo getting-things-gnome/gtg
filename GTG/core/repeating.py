@@ -1,8 +1,11 @@
+from __future__ import annotations
 import copy
 import datetime
 from enum import Enum
 
 from dateutil.rrule import rrule, rruleset
+
+from GTG.core.dates import Date
 
 
 class RepeatingOn(Enum):
@@ -86,15 +89,17 @@ class Repeating:
         return self.rset.after(dt, True).date()
 
 
-    def update_date(self, from_=datetime.date.today()):
-        "Updates the due date or/and the start date with the occurrence"
-        if self.repeats_on_start():
-            self.task.start_date = self.date
-        if self.repeats_on_due():
-            self.task.due_date = self.date
+    def update_date(self, from_=datetime.date.today()) -> None:
+        """Updates the due date or/and the start date with the occurrence.
+        NOTE: verify if from_ is necessary."""
+        dt = Date(self.date)
+        if self.repeats_on_start:
+            self.task.date_start = dt
+        if self.repeats_on_due:
+            self.task.date_due = dt
 
 
-    def get_next_occurrence(self, duplicated_task):
+    def get_next_occurrence(self, duplicated_task) -> Repeating:
         # save next task id in previous occurrence
         self.next_tid = duplicated_task.id
 

@@ -79,8 +79,22 @@ def test_enabled():
     assert rep.enabled == False
 
 
-def test_update_date():
-    pass
+@pytest.mark.parametrize(
+    'rep',
+    [
+        weekold_monthly_repeating(),
+        weekold_weekly_repeating(),
+        daily_repeating(),
+
+    ]
+)
+def test_update_date(rep):
+    rep.update_date()
+    if rep.repeats_on_due:
+        assert rep.date == rep.task.date_due
+
+    if rep.repeats_on_start:
+        assert rep.date == rep.task.date_start
 
 
 @pytest.mark.parametrize(
