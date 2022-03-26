@@ -661,16 +661,22 @@ class TaskEditor:
             datetoset = None
 
         if datetoset is not None:
+            # TODO: New Core
+            t = self.app.ds.tasks.get(self.task.tid)
+
             if date_kind == GTGCalendar.DATE_KIND_START:
                 self.task.set_start_date(datetoset)
+                t.date_start = datetoset
                 self.start_popover.popdown()
 
             elif date_kind == GTGCalendar.DATE_KIND_DUE:
                 self.task.set_due_date(datetoset)
+                t.date_due = datetoset
                 self.due_popover.popdown()
 
             elif date_kind == GTGCalendar.DATE_KIND_CLOSED:
                 self.task.set_closed_date(datetoset)
+                t.date_closed = datetoset
                 self.closed_popover.popdown()
 
             self.refresh_editor()
@@ -746,6 +752,9 @@ class TaskEditor:
 
     def dismiss(self):
         stat = self.task.get_status()
+        t = self.app.ds.tasks.get(self.task.tid)
+        t.toggle_dismissed()
+
         if stat == Task.STA_DISMISSED:
             self.task.set_status(Task.STA_ACTIVE)
             self.refresh_editor()
@@ -756,6 +765,9 @@ class TaskEditor:
 
     def change_status(self):
         stat = self.task.get_status()
+        t = self.app.ds.tasks.get(self.task.tid)
+        t.toggle_active()
+
         if stat == Task.STA_DONE:
             self.task.set_status(Task.STA_ACTIVE)
             self.refresh_editor()
@@ -765,6 +777,9 @@ class TaskEditor:
             self.close(None)
 
     def reopen(self):
+        t = self.app.ds.tasks.get(self.task.tid)
+        t.toggle_active()
+
         self.task.set_status(Task.STA_ACTIVE)
         self.refresh_editor()
 
@@ -785,7 +800,10 @@ class TaskEditor:
             subt.set_title(title)
             tid = subt.get_id()
 
-            self.app.ds.tasks.new(title, self.task.tid)
+            # TODO: New Core
+            t = self.app.ds.tasks.new(title, self.task.tid)
+            t.id = tid
+            self.app.ds.tasks.refresh_lookup_cache()
 
         return tid
 
@@ -793,7 +811,7 @@ class TaskEditor:
         """Remove a subtask of this task."""
 
         self.task.remove_child(tid)
-        self.app.ds.unparent(tid, self.task.tid)
+        self.app.ds.tasks.unparent(tid, self.task.tid)
 
     def rename_subtask(self, tid, new_title):
         """Rename a subtask of this task."""
@@ -946,6 +964,7 @@ class TaskEditor:
 
         if self.task.is_new():
             self.req.delete_task(tid)
+            self.app.ds.tasks.remove(tid)
         else:
             self.save()
             [sub.set_to_keep() for sub in self.task.get_subtasks() if sub]
