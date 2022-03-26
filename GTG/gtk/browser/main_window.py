@@ -857,6 +857,9 @@ class MainWindow(Gtk.ApplicationWindow):
             new_t = self.app.ds.tasks.new(data['title'])
             new_t.date_start = data['start']
             new_t.date_due = data['due']
+            new_t.id = task.tid
+            self.app.ds.tasks.refresh_lookup_cache()
+
 
             for tag in data['tags']:
                 _tag = self.app.ds.tags.new(tag)
