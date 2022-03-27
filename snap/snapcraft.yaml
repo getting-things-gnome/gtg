@@ -1,0 +1,58 @@
+name: getting-things-gnome
+base: core20
+compression: lzo
+grade: stable
+license: GPL-3.0
+adopt-info: gtg
+confinement: strict
+
+apps:
+  gtg:
+    command: usr/bin/gtg
+    extensions: [gnome-3-38]
+    environment:
+      PYTHONPATH: $SNAP/usr/lib/python3/dist-packages:$PYTHONPATH
+    common-id: org.gnome.GTG
+    plugs: [network]
+    slots: [dbus-service]
+ 
+slots:
+  dbus-service:
+    interface: dbus
+    name: org.gnome.GTG
+    bus: session
+
+parts:
+  gtg:
+    source: .
+    plugin: meson
+    build-environment: [PYTHONPATH: '']
+    build-packages: [gettext, itstool]
+    meson-parameters: [--prefix=/usr]
+    parse-info: [usr/share/metainfo/org.gnome.GTG.appdata.xml]
+    stage-packages:
+      - python3-caldav
+      - python3-dateutil
+      - python3-dbus
+      - python3-lxml
+      - python3-vobject
+    stage:
+        - usr/bin/gtg
+        - usr/lib/python3/
+        - usr/share/
+        - -usr/share/doc/
+        - -usr/share/lintian/
+        - -usr/share/man/
+
+  liblarch:
+    source: https://github.com/getting-things-gnome/liblarch
+    source-tag: v3.2.0
+    source-type: git    
+    plugin: python
+    build-environment:
+      - SNAPCRAFT_PYTHON_INTERPRETER: python3.8
+      - PATH: $SNAPCRAFT_PART_INSTALL/bin:$PATH
+      - PYTHONPATH: ''
+    organize:
+      lib/python3.8/site-packages/liblarch*: usr/lib/python3/dist-packages/
+    stage: [usr/lib/python3/dist-packages, -usr/lib/python3/dist-packages/liblarch*/__pycache__]
