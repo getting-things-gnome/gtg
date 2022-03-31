@@ -39,7 +39,7 @@ from vobject import iCalendar
 
 logger = logging.getLogger(__name__)
 # found elsewhere, should be factorized
-TAG_REGEX = re.compile(r'\B@\w+[-_\w]*')
+TAG_REGEX = re.compile(r'\B@\w+[-_()\w]*')
 MAX_CALENDAR_DEPTH = 500
 DAV_TAG_PREFIX = 'DAV_'
 
