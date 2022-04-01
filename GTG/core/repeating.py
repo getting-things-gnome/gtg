@@ -29,6 +29,7 @@ class Repeating:
 
 
     def _update_date(func):
+        """Decorator to update task's date if repeating is enabled"""
         def inner(self, *args, **kwargs):
             result = func(self, *args, **kwargs)
             if self.enabled:
@@ -37,11 +38,30 @@ class Repeating:
 
 
     def update_stamp(func):
+        """Decorator to update timestamp"""
         def inner(self, *args, **kwargs):
             result = func(self, *args, **kwargs)
             self.timestamp = datetime.datetime.now()
         return inner
 
+
+    def propagate_status(func):
+        """Decorator to propagate status to children (if enabled)"""
+        def inner(self, *args, **kwargs):
+            result = func(self, *args, **kwargs)
+            if self.enabled:
+                for child in self.task.children:
+                    child.repeating.enabled = True
+        return inner
+
+    
+    def propagate_rrules(func):
+        """Decorator to propagate rrules to children"""
+        def inner(self, *args, **kwargs):
+            result = func(self, *args, **kwargs)
+            for child in self.task.children:
+                child.repeating.set_rrules(copy.deepcopy(self.rset))
+        return inner
 
     @property
     def enabled(self):
@@ -50,6 +70,8 @@ class Repeating:
 
     @enabled.setter
     @update_stamp
+    @propagate_rrules
+    @propagate_status
     def enabled(self, value: bool) -> bool:
         self._enabled = value
         return self._enabled
@@ -68,6 +90,11 @@ class Repeating:
     @property
     def repeats_on_both(self):
         return self.repeats_on == RepeatingOn.BOTH
+
+
+    @propagate_rrules
+    def set_rrules(self, rset):
+        self.rset = rset
 
 
     @_update_date
@@ -116,6 +143,15 @@ class Repeating:
         )
 
 
+    def crawl(self):
+        """returns all the tids of the repeating tasks that came after"""
+        tids = []
+        while (tid := task.repeating.next_tid) != None:
+            tids.append(tid)
+            task = req.get_task(tid)
+        return tids
+
+
     def __repr__(self):
         return (f'Repeating(enabled={self.enabled}, '
                 f'rset={str(self.rset)},'
@@ -126,3 +162,13 @@ class Repeating:
 
 class RruleNotFound(Exception):
     pass
+
+
+# There's no way to get the string representation
+# of a rruleset. We have to access "private" members.
+def rrule_to_str(rset: rruleset) -> str:
+    ret = '\n'.join([str(rrule) for rrule in rset._rrule])
+    ret += "\nEXDATE:"
+    for date in rset._exdate:
+        ret += date.strftime("%Y%m%dT%H%M%S")+","
+    return ret[:-1]

@@ -3,12 +3,20 @@ from datetime import datetime, date, timedelta
 import pytest
 from dateutil.rrule import MONTHLY, WEEKLY, DAILY, rrule
 
-from GTG.core.repeating import RepeatingOn, Repeating
+from GTG.core.repeating import RepeatingOn, Repeating, rrule_to_str
 from GTG.core.datastore2 import Datastore2
 
 
 def get_task():
     return Datastore2().tasks.new('new task')
+
+def get_task_with_children(depth):
+    ds = Datastore2()
+    parent = ds.tasks.new('new task')
+    child = parent
+    for i in range(depth):
+        child = ds.tasks.new('new child', child.id)
+    return parent
 
 
 def weekold_weekly_repeating():
@@ -44,6 +52,25 @@ def daily_repeating():
 
 
 
+@pytest.mark.parametrize(
+    'task',
+    [
+        # Task with no children
+        get_task(),
+        # Task 2 levels deep (tests propagation)
+        get_task_with_children(1),
+        # Task 3 levels deep (tests propagation)
+        get_task_with_children(2)
+    ]
+)
+def test_enabled_True(task):
+    task.repeating.enabled = True
+    assert task.repeating.enabled
+    for child in task.children:
+        assert child.repeating.enabled
+        # Verify that they have the same rrules
+        assert rrule_to_str(child.repeating.rset) == rrule_to_str(task.repeating.rset)
+
 def test_repeats_on():
     rep = Repeating(None)
     # By default tasks should be set to repeat on due dates
@@ -66,17 +93,6 @@ def test_count():
     rep = Repeating(None)
     # Count should always start at 1 (even if repeating no enabled)
     assert rep.count == 1
-
-
-def test_enabled():
-    rep = Repeating(None)
-    assert rep.enabled == False
-
-    rep.enabled = True
-    assert rep.enabled == True
-
-    rep.enabled = False
-    assert rep.enabled == False
 
 
 @pytest.mark.parametrize(
