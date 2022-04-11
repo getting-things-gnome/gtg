@@ -151,14 +151,13 @@ To examine the UI elements, you might be interested to use [GTKs interactive deb
 GTK_DEBUG=interactive ./launch.sh
 ```
 
-[gtk-interactive]: https://developer.gnome.org/gtk3/stable/gtk-running.html#interactive-debugging
-
 If there is any problem with meson (the build system) or anything else,
 try deleting the build folder first and try again: `rm -rf .local_build`.
 No data should be lost since it is just re-generateable build files.
 
 [pythondevmode]: https://docs.python.org/3/library/devmode.html
 [pudb]: https://pypi.org/project/pudb/
+[gtk-interactive]: https://developer.gnome.org/gtk3/stable/gtk-running.html#interactive-debugging
 
 # "Where is my user data and config stored?"
 
@@ -174,13 +173,13 @@ It depends:
   You can pass `-s name` to use a different folder inside the `tmp` directory,
   the default being `default`.
 
-[basedir-spec]: https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html
-
 If you want to import a copy of your gtg data to the development version, simply run at the repository root one of the following commands:
 ```sh
 ./scripts/import_tasks_from_local.sh # local/system-wide install data
 ./scripts/import_tasks_from_flatpak.sh # flatpak data
 ```
+
+[basedir-spec]: https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html
 
 # Viewing the user manual
 
