@@ -17,7 +17,7 @@ So if you simply want to contribute to the project, get started with [CONTRIBUTI
 GTG developers are frequent contributors who have requested more hands-on project management powers and responsibilities, such as:
 
  * "direct commit" access to the main "master" branch (and any other branch) of GTG;
- * full admin powers on the bugs database (assigning, targetting, changing statuses, etc.);
+ * full admin powers on the bugs database (assigning, targeting, changing statuses, etc.);
  * ability to make releases;
  * ability to review and approve/reject merge requests from contributors and developers;
  * getting an email notification for everything that is going on in the project's issue tracker (say goodbye to your Inbox Zero, fool!);
@@ -37,9 +37,9 @@ Also, it has to make sense for you.
 
 * If you are a plugin developer, it can be convenient for you to have access to the trunk so you can maintain your plugins if you are doing that frequently, but if you want to commit to a previously unknown part of code, we would ask that you submit a patch / undergo peer-review through a merge request.
 
-The fact that you have all the abilities listed above doesn't mean that you _should_ use them. When in doubt, ask! Developer privileges simply means that we trust your judgement, meaning that you know "What you can do without risk vs what you should ask advice for".
+The fact that you have all the abilities listed above doesn't mean that you _should_ use them. When in doubt, ask! Developer privileges simply means that we trust your judgement, meaning that you know "What you can do without risk" vs "What you should ask advice for".
 
-As a rule of thumb, changes to the UI behaviour or to the internal API should be agreed in an issue ticket.
+As a rule of thumb, changes to the UI behaviour or to the internal API should be agreed on in an issue ticket.
 
 When closing a bug as fixed, you have to assign that bug to the next release. When this release comes out, we then know what was fixed in a particular release. If an unexpected intermediate release happens, we simply rename the milestone and add new ones (or we can retarget issues).
 
