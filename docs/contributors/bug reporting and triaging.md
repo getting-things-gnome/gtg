@@ -13,7 +13,7 @@ Below are some clarifications on how we use it.
 
 * **Open**: the bug (or feature request) has not been solved yet, nor has it been found to be invalid or rejected. Help is always welcome. For a feature request, if after a very long time nobody offered to help, we may close the request.
 
-* **Closed**: the issue has been fixed (and targetted to the next milestone), or found to be invalid (not a bug), out of scope ("wontfix"), or the bug reporter did not provide the requested information ("needinfo") in a timely manner.
+* **Closed**: the issue has been fixed (and targeted to the next milestone), or found to be invalid (not a bug), out of scope ("wontfix"), or the bug reporter did not provide the requested information ("needinfo") in a timely manner.
 
 # Labels: more precise statuses
 
@@ -25,19 +25,19 @@ In particular, "[low-hanging-fruit](https://github.com/getting-things-gnome/gtg/
 
 Unlike the statuses, the priorities tags/labels are more up to our appreciation. They are just there to give a rough order of priorities, but are not set in stone.
 
-* **Critical**: GTG arguably cannot be released without solving this issue. This include crashes, tracebacks, *very* odd behaviour, or things that are messing with our ability to be productive in developing GTG, or negatively affecting the new contributors experience. As we are closer to the release, more bugs become criticals.
+* **Critical**: GTG arguably cannot be released without solving this issue. This includes crashes, tracebacks, *very* odd behaviour, or things that are messing with our ability to be productive in developing GTG, or negatively affecting the new contributors experience. As we are closer to the release, more bugs become criticals.
 
 * **High**: Bug that might be critical for *some* users or that give a bad user experience.
 
-* **Medium**: ideally we want to fix that bug; it might not make it in the next release. We will try.
+* **Medium**: Ideally we want to fix that bug; it might not make it in the next release. We will try.
 
-* **Low**: we'd like to have that.
+* **Low**: We'd like to have that.
 
-* **Enhancement**: a feature request (such as an idea for a plugin) and this feature is clearly not critical for GTG (almost none of them are). If it's not assigned to someone, it probably won't happen until someone takes an initiative.
+* **Enhancement**: A feature request (such as an idea for a plugin) and this feature is clearly not critical for GTG (almost none of them are). If it's not assigned to someone, it probably won't happen until someone takes an initiative.
 
 # Milestones: roadmap of future releases
 
-See https://github.com/getting-things-gnome/gtg/milestones
+See [https://github.com/getting-things-gnome/gtg/milestones](https://github.com/getting-things-gnome/gtg/milestones)
 
 Milestones serve as our dynamic roadmap (and also complement release notes). They can change, and it rarely makes sense to plan more than 1 or 2 releases in advance. Ensure that each newly fixed issue is targeted at the nearest unreleased milestone.
 
@@ -59,11 +59,11 @@ This list serves mostly for historical purposes, and to explain what we don't/ca
 
 * **New**: this is replaced by the "Open" status in GitHub, which does not distinguish between "New", "Confirmed", or "Triaged".
   
-  > "the bug has not been accepted or clarified enough. Maybe you just have to wait. If you want that specific bug to be confirmed, you might help by adding a precise way to reproduce the bug or, if it's a feature request, by clarifying the feature (mockups, usecases). If this is a feature request which is not clear, we usually set the Importance to Wishlist and leave the status to New."
+  > "the bug has not been accepted or clarified enough. Maybe you just have to wait. If you want that specific bug to be confirmed, you might help by adding a precise way to reproduce the bug or, if it's a feature request, by clarifying the feature (mockups, use cases). If this is a feature request which is not clear, we usually set the Importance to Wishlist and leave the status to New."
 
 * **Confirmed**: the closest approximation is the "reproducible-in-git" status we use to indicate whether the bug has been tested to affect the latest development version. If we can't reproduce the bug, then it would be tagged "needinfo".
   
-  > "the bug has been accepted as a bug we want to see fixed. It doesn't mean that we plan to work on it soon. See the importance field for that. It also doesn't mean that we agreed on a solution (even if the original bug describes a particular solution). It only means that we acknowledge that there is a problem that need to be adressed. If you work on one of those bug in your branch, you have no guarantee that it will be accepted."
+  > "the bug has been accepted as a bug we want to see fixed. It doesn't mean that we plan to work on it soon. See the importance field for that. It also doesn't mean that we agreed on a solution (even if the original bug describes a particular solution). It only means that we acknowledge that there is a problem that need to be addressed. If you work on one of those bug in your branch, you have no guarantee that it will be accepted."
 
 * **Triaged**: much like "confirmed", this does not make much sense in this day and age. We either leave a bug/feature ticket open, or we close it.
   
@@ -77,6 +77,6 @@ This list serves mostly for historical purposes, and to explain what we don't/ca
   
   > "The bug has been fixed in the trunk (not in your branch). When changing to this status, always add the revision number that fixes that particular bug. You also have to be sure that the bug is targeted for the next release. Indeed, if the fix is in the trunk, it will be in the next release. Don't forget to do that! Also, every Fix Committed bug should be assigned to someone. If multiple people have worked to fix a bug, use the last one that will commit the fix."
 
-* **Fix Released**: unfortunately, GitHub does not have this notion of half-open tickets. Tickets are either open or closed, and when a release comes out then all the issues that were targetted to it can be considered "released".
+* **Fix Released**: unfortunately, GitHub does not have this notion of half-open tickets. Tickets are either open or closed, and when a release comes out then all the issues that were targeted to it can be considered "released".
   
   > "On a given release, all the Fix Committed bugs are switched to that state."

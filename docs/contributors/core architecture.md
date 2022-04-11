@@ -31,11 +31,11 @@ and emit Gtk signals that can be used by the UI and plugins.
 
 ## The stores
 
-The store classes take care of managing the data types. Data is held in the 
+The store classes take care of managing the data types. Data is held in the
 `data` property. There's also a cache called `lookup`, which is a dictionary
-you can use to access items by their id. Some stores might other caches on top
-of that. In addition to accessing by id, you can also use the `find()` method in the
-`TagStore` to get a tag by name. 
+you can use to access items by their id. Some stores might have other caches on
+top of that. In addition to accessing by id, you can also use the `find()`
+method in the `TagStore` to get a tag by name.
 
 As mentioned above, the stores take care of (un)parenting, as well as adding an
 existing item, creating a new one, or removing one. The `TaskStore` also

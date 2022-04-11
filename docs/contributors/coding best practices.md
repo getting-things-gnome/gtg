@@ -8,12 +8,13 @@ Note: GTG is a Python 3 application. New code must not be written in Python 2.
 
 # Test suite (a.k.a. ensuring you didn't break everything)
 
-Ideally, in the spirit of [test-driven development](https://en.wikipedia.org/wiki/Test-driven_development), you should write tests for the features you write or refactor.
+Ideally, in the spirit of [test-driven development](https://en.wikipedia.org/wiki/Test-driven_development),
+you should write tests for the features you write or refactor.
 
 Unit tests live in ``tests/``.
 
 When you're ready to commit your changes (or even while you are making them),
-you should probably run the units tests to see if all is fine
+you should probably run the unit tests to see if all is fine
 (or at least that you did not introduce more problems than before):
 
     $ make check=python3
@@ -58,7 +59,7 @@ We share Pitivi's philosophy:
 Python code is by nature pretty compact. Often, with Python+GTK code, the line
 lengths are just _a bit_ over 80 characters. So our rule of thumb in GTG is,
 if it's under 90-100 characters, keep it on one line if it improves legibility.
-This is why, in the example below, we use "--max-line-length=100 --ignore=E128".
+This is why, in the example below, we use ``--max-line-length=100 --ignore=E128``.
 
 There are various code quality & style checkers that let you check compliance.
 The "pycodestyle" (previously known as "pep8") tool can be installed
@@ -171,7 +172,7 @@ Modules should begin with the following header (updated to the current year):
 ```
 # -----------------------------------------------------------------------------
 # Gettings Things GNOME! - a personal organizer for the GNOME desktop
-# Copyright (c) 2008-2020 - the GTG contributors
+# Copyright (c) 2008-2022 - the GTG contributors
 #
 # This program is free software: you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software

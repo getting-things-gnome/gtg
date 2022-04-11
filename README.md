@@ -68,7 +68,7 @@ sudo apt install meson python3-gi-cairo python3-gi gir1.2-pango-1.0 gir1.2-gdkpi
 ```
 
 liblarch may be harder to come by until distributions package the python3 version of it, alongside GTG 0.6+ itself.
-You can get it meanwhile via PIP (commonly provided by `python3-pip` package):
+You can get it in the meanwhile via PIP (commonly provided by `python3-pip` package):
 
 ```sh
 pip3 install --user -e git+https://github.com/getting-things-gnome/liblarch.git#egg=liblarch
@@ -79,11 +79,11 @@ Alternatively, if you had checked out a specific version of liblarch that you wa
 #### Optional Dependencies
 
 * [setproctitle](https://pypi.org/project/setproctitle/)
-  (to set the process title when listing processes like `ps`)
+  (to set the process title when listing processes with `ps` et al.)
 
 ### Test dependencies
 
-To run the current testsuite, you need some additional packages (this list may be out of date):
+To run the current test suite, you need some additional packages (this list may be out of date):
 
 ```sh
 # On Fedora:
@@ -92,7 +92,7 @@ sudo dnf install python3-pytest python3-pyflakes python3-spec python3-pycodestyl
 sudo apt install python3-pytest python3-pyflakes python3-pep8 python3-pycodestyle python3-caldav
 ```
 
-You will currently also need the optional plugin dependencies, as the tests don't automatically skip them. (Help welcome improving that!)
+You currently also need the optional plugin dependencies, as the tests don't automatically skip them. (Help welcome improving that!)
 
 ### Solving dependencies for plugins (optional)
 
@@ -114,7 +114,7 @@ sudo apt install python3-cheetah pdftk-java texlive-extra-utils texlive-latex-ba
 
 ### Running the beast
 
-In order to run the developer/git version of GTG, you need to launch the `debug.sh` script
+In order to run the development/git version of GTG, you need to launch the `debug.sh` script
 There is a shortcut to it in the root directory where you downloaded the code, that you can execute simply with this command:
 
 ```sh
@@ -133,7 +133,7 @@ you can append to the command, such as:
   [pudb][pudb]) or a profiler: `./launch.sh -p 'python3 -m cProfile -o gtg.prof'`
 * `-s dataset` to use the dataset called `dataset`. It'll store it inside the `tmp`
   folder of the current working directory. If it doesn't exists, it'll create
-  an new clean one. There are pre-made ones you can use by replacing `dataset`
+  a new clean one. There are pre-made ones you can use by replacing `dataset`
   with one of the following:
   * `bryce` - An anonymized dataset with a fair number of tasks
   * `screenshots` - Pre-made tasks that can be used to show off GTG
@@ -164,7 +164,7 @@ No data should be lost since it is just re-generateable build files.
 
 It depends:
 
-* If you are running a version installed system-wide (ex: a package provided by a Linux distribution), as GTG adheres to the [FreeDesktop XDG Base Directories specification][basedir-spec], you will typically find it spread across:
+* If you are running a version installed system-wide (ex: a package provided by a Linux distribution), as GTG adheres to the [Freedesktop XDG Base Directories specification][basedir-spec], you will typically find it spread across:
   * `${XDG_DATA_HOME:-$HOME/.local/share}/gtg` like `~/.local/share/gtg/`
   * `${XDG_CONFIG_HOME:-$HOME/.config}/gtg`    like `~/.config/gtg/`
   * `${XDG_CACHE_HOME:-$HOME/.cache}/gtg`      like `~/.cache/gtg/`
