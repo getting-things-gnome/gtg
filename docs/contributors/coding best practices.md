@@ -113,23 +113,23 @@ out and solve the problem.
 
 So instead of this:
 
-    #foo.animate(x)
+    # foo.animate(x)
 
 consider doing it like this:
 
-    #FIXME:  If x is None, it causes animate() to crash.  But x should
-    #never be None, so this *should* always work.  I can't reproduce the
-    #crash so can't tell what makes x None.  Leaving it disabled for now
-    #until someone can reproduce it and investigate.  (LP: #12345)
-    #
-    #foo.animate(x)
+    # FIXME:  If x is None, it causes animate() to crash.  But x should
+    # never be None, so this *should* always work.  I can't reproduce the
+    # crash so can't tell what makes x None.  Leaving it disabled for now
+    # until someone can reproduce it and investigate.  (LP: #12345)
+    # 
+    # foo.animate(x)
 
 Avoid committing commented out code (or print statements) used for debugging.
 Use a graphical tool like gitg to select only the relevant lines to commit,
 or use GTG's built-in logging system (which has various debug levels).
 So instead of this:
 
-    #print "Testing: ", 1, 2, 3
+    # print "Testing: ", 1, 2, 3
 
 ...you could do this:
 
