@@ -195,7 +195,7 @@ yelp docs/user_manual/C/index.page
 
 # Other documentation
 
-* Our wiki serves as our website: https://wiki.gnome.org/Apps/GTG
+* Our wiki serves as our website: [https://wiki.gnome.org/Apps/GTG](https://wiki.gnome.org/Apps/GTG)
 * Check out the [docs folder in the main repository](./docs/) for more
   information and documentation for contributors
 
