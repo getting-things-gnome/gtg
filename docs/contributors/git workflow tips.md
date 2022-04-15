@@ -3,7 +3,7 @@ GTG uses [Git](https://git-scm.com) for versioning. It might be useful to take a
 
 # Getting the code
 
-Get the latest version of the GTG code [on GitHub](https://github.com/getting-things-gnome/gtg). We suggest forking the master branch at first (you can do this with the GitHub web interface). Then clone the forked repository from GitHub to your local computer:
+Get the latest version of the GTG code on GitHub. We suggest forking the master branch at first (you can do this with the GitHub web interface). Then clone the forked repository from GitHub to your local computer:
 
     $ git clone https://github.com/YOUR_GITHUB_USERNAME/gtg.git
 
@@ -39,7 +39,7 @@ If your branch is solving specific reported issue, please include the number of 
 
     This fixes GitHub issue #123
 
-Refer to [https://chris.beams.io/posts/git-commit/](https://chris.beams.io/posts/git-commit/) (for example) for best practices for writing great Git commit messages.
+Refer to https://chris.beams.io/posts/git-commit/ (for example) for best practices for writing great Git commit messages.
 
 
 # What if the original master branch has changed?
@@ -58,7 +58,7 @@ Or if you know what you're doing,
 
     $ git rebase -i master
 
-You may be interested in this video to understand how Git's interactive rebase works: [https://youtube.com/watch?v=6WU4jKti_vo](https://youtube.com/watch?v=6WU4jKti_vo)
+You may be interested in this video to understand how Git's interactive rebase works: https://youtube.com/watch?v=6WU4jKti_vo
 
 
 # Submitting your changes for review
@@ -69,6 +69,6 @@ Afterwards, you need to push your work to your own fork on GitHub (where cool_ne
 
     $ git push origin cool_new_feature
 
-When you have pushed your changes to your own repository on GitHub, you can do a pull request to merge your work with the original GTG master. To do this, go to your account on GitHub and click on "New Pull Request". Create a pull request and comment on the corresponding bug (open one at [https://github.com/getting-things-gnome/gtg/issues/new](https://github.com/getting-things-gnome/gtg/issues/new) if there wasn't one already).
+When you have pushed your changes to your own repository on GitHub, you can do a pull request to merge your work with the original GTG master. To do this, go to your account on GitHub and click on "New Pull Request". Create a pull request and comment on the corresponding bug (open one at https://github.com/getting-things-gnome/gtg/issues/new if there wasn't one already).
 
 See also our "coding best practices" guide included in our docs/contributors/ folder, as well as the [Git tips & tricks from the Pitivi project](https://gitlab.gnome.org/GNOME/pitivi/-/blob/master/docs/Git.md) as complementary reading.
