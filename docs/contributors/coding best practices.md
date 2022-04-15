@@ -129,7 +129,7 @@ Use a graphical tool like gitg to select only the relevant lines to commit,
 or use GTG's built-in logging system (which has various debug levels).
 So instead of this:
 
-    # print "Testing: ", 1, 2, 3
+    # print("Testing: ", 1, 2, 3)
 
 ...you could do this:
 
