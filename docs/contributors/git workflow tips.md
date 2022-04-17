@@ -3,7 +3,7 @@ GTG uses [Git](https://git-scm.com) for versioning. It might be useful to take a
 
 # Getting the code
 
-Get the latest version of the GTG code [on GitHub](https://github.com/getting-things-gnome/gtg). We suggest forking the master branch at first (you can do this with the GitHub web interface). Then clone the forked repository from GitHub to your local computer:
+Get the latest version of the GTG code on GitHub. We suggest forking the master branch at first (you can do this with the GitHub web interface). Then clone the forked repository from GitHub to your local computer:
 
     $ git clone https://github.com/YOUR_GITHUB_USERNAME/gtg.git
 
