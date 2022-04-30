@@ -113,7 +113,7 @@ class Application(Gtk.Application):
 
             # Load default file
             data_file = os.path.join(DATA_DIR, 'gtg_data.xml')
-            self.ds.load_file(data_file)
+            self.ds.find_and_load_file(data_file)
 
             # TODO: Remove this once the new core is stable
             self.ds.data_path = os.path.join(DATA_DIR, 'gtg_data2.xml')
