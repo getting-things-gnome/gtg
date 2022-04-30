@@ -34,7 +34,14 @@ from GTG.core import firstrun_tasks
 from GTG.core.dates import Date
 from GTG.backends.backend_signals import BackendSignals
 from GTG.backends.generic_backend import GenericBackend
-import GTG.core.info as info
+try:
+    # Running the app
+    import GTG.core.info as info
+except ImportError:
+    # Unit tests
+    import mock
+    info = mock.Mock()
+    info.VERSION = 'v0.6'
 
 from lxml import etree as et
 

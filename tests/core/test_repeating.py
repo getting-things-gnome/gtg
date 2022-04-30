@@ -1,0 +1,181 @@
+from datetime import datetime, date, timedelta
+
+import pytest
+from dateutil.rrule import MONTHLY, WEEKLY, DAILY, rrule
+
+from GTG.core.repeating import RepeatingOn, Repeating, rrule_to_str
+from GTG.core.datastore2 import Datastore2
+
+
+def get_task():
+    return Datastore2().tasks.new('new task')
+
+def get_task_with_children(depth):
+    ds = Datastore2()
+    parent = ds.tasks.new('new task')
+    child = parent
+    for i in range(depth):
+        child = ds.tasks.new('new child', child.id)
+    return parent
+
+
+def weekold_weekly_repeating():
+    task = get_task()
+    last_week = datetime.now() - timedelta(days=7)
+    rep = Repeating(task)
+    rep.timestamp = last_week
+    rep.add_rule(
+        rrule(WEEKLY, dtstart=last_week)
+    )
+    return rep
+
+
+def weekold_monthly_repeating():
+    task = get_task()
+    last_week = datetime(2022, 3, 13)
+    rep = Repeating(task, timestamp=last_week)
+    rep.add_rule(
+        rrule(MONTHLY, bymonthday=30, dtstart=last_week)
+    )
+    return rep
+
+
+def daily_repeating():
+    task = get_task()
+    today = date.today()
+    td = datetime(today.year, today.month, today.day)
+    rep = Repeating(task)
+    rep.add_rule(
+        rrule(DAILY, dtstart=td)
+    )
+    return rep
+
+
+
+@pytest.mark.parametrize(
+    'task',
+    [
+        # Task with no children
+        get_task(),
+        # Task 2 levels deep (tests propagation)
+        get_task_with_children(1),
+        # Task 3 levels deep (tests propagation)
+        get_task_with_children(2)
+    ]
+)
+def test_enabled_True(task):
+    task.repeating.enabled = True
+    assert task.repeating.enabled
+    for child in task.children:
+        assert child.repeating.enabled
+        # Verify that they have the same rrules
+        assert rrule_to_str(child.repeating.rset) == rrule_to_str(task.repeating.rset)
+
+def test_repeats_on():
+    rep = Repeating(None)
+    # By default tasks should be set to repeat on due dates
+    assert not rep.repeats_on_start
+    assert rep.repeats_on_due
+    assert not rep.repeats_on_both
+
+    rep = Repeating(None, repeats_on=RepeatingOn.START)
+    assert rep.repeats_on_start
+    assert not rep.repeats_on_due
+    assert not rep.repeats_on_both
+
+    rep = Repeating(None, repeats_on=RepeatingOn.BOTH)
+    assert rep.repeats_on_start
+    assert rep.repeats_on_due
+    assert rep.repeats_on_both
+
+
+def test_count():
+    rep = Repeating(None)
+    # Count should always start at 1 (even if repeating no enabled)
+    assert rep.count == 1
+
+
+@pytest.mark.parametrize(
+    'rep',
+    [
+        weekold_monthly_repeating(),
+        weekold_weekly_repeating(),
+        daily_repeating(),
+
+    ]
+)
+def test_update_date(rep):
+    rep.update_date()
+    if rep.repeats_on_due:
+        assert rep.date == rep.task.date_due
+
+    if rep.repeats_on_start:
+        assert rep.date == rep.task.date_start
+
+
+@pytest.mark.parametrize(
+    'rule,expected',
+    [
+        (rrule(DAILY), date.today()),
+        (rrule(WEEKLY), date.today()),
+        (rrule(MONTHLY, dtstart=datetime.today() + timedelta(days=10)),
+            date.today() + timedelta(days=10)),
+        (rrule(WEEKLY, dtstart=datetime.now() - timedelta(days=6)),
+            date.today() + timedelta(days=1)),
+    ]
+)
+def test_get_date(rule, expected):
+    rep = Repeating(None)
+    rep.add_rule(
+        rule
+    )
+    assert expected == rep.date
+
+
+@pytest.mark.parametrize(
+    'rep,expected',
+    [
+        (weekold_weekly_repeating(), date.today() - timedelta(days=7))
+    ]
+)
+def test_get_date_for_old_task(rep, expected):
+    assert rep.date == expected
+
+
+@pytest.mark.parametrize(
+    'rep,expected',
+    [
+        (weekold_weekly_repeating(), weekold_weekly_repeating().date + timedelta(days=7))
+    ]
+)
+def test_get_next_occurrence_after_due(rep, expected):
+    next_rep = rep.get_next_occurrence(get_task())
+    assert next_rep.date >= date.today()
+    assert next_rep.date == expected
+    assert rep.next_tid == next_rep.task.id
+
+
+@pytest.mark.parametrize(
+    'rep,expected',
+    [
+        (weekold_monthly_repeating(), datetime(2022, 4, 30).date())
+    ]
+)
+def test_get_next_occurrence_before_due(rep, expected):
+    next_rep = rep.get_next_occurrence(get_task())
+    assert rep.date < next_rep.date
+    assert next_rep.date == expected
+    assert rep.next_tid == next_rep.task.id
+
+
+@pytest.mark.parametrize(
+    'rep,expected',
+    [
+        (daily_repeating(), date.today() + timedelta(days=1))
+    ]
+)
+def test_get_next_occurrence_on_due(rep, expected):
+    next_rep = rep.get_next_occurrence(get_task())
+    assert next_rep.date > rep.date
+    assert next_rep.date == date.today() + timedelta(days=1)
+    assert rep.next_tid == next_rep.task.id

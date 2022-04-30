@@ -35,6 +35,7 @@ from lxml.etree import Element, SubElement, CDATA
 from GTG.core.base_store import BaseStore
 from GTG.core.tags2 import Tag2, TagStore
 from GTG.core.dates import Date
+from GTG.core.repeating import Repeating
 
 log = logging.getLogger(__name__)
 
@@ -85,7 +86,7 @@ class Task2(GObject.Object):
                  '_date_modified']
 
 
-    def __init__(self, id: UUID, title: str) -> None:
+    def __init__(self, id: UUID, title: str, **kwarg) -> None:
         self.id = id
         self.raw_title = title.strip('\t\n')
         self.content =  ''
@@ -99,6 +100,8 @@ class Task2(GObject.Object):
         self._date_start = Date.no_date()
         self._date_closed = Date.no_date()
         self._date_modified = Date(datetime.datetime.now())
+
+        self.repeating = Repeating(self, **kwarg)
 
 
     def is_actionable(self) -> bool:
@@ -327,11 +330,11 @@ class TaskStore(BaseStore):
         return self.lookup[tid]
 
 
-    def new(self, title: str, parent: UUID = None) -> Task2:
+    def new(self, title: str, parent: UUID = None, **kwarg) -> Task2:
         """Create a new task and add it to the store."""
 
         tid = uuid4()
-        task = Task2(id=tid, title=title)
+        task = Task2(id=tid, title=title, **kwarg)
         task.date_added = Date.now()
 
         if parent:
