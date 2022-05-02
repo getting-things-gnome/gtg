@@ -59,8 +59,8 @@ class PluginAPI():
             self.__ui = self.__view_manager.browser
             self.__builder = self.__ui.get_builder()
             self.__task_id = None
-            self.__view_manager.browser.selection.connect(
-                "changed", self.__selection_changed)
+            # self.__view_manager.browser.selection.connect(
+            #     "changed", self.__selection_changed)
         self.taskwidget_id = 0
         self.taskwidget_widg = []
 
@@ -223,12 +223,12 @@ class PluginAPI():
         browser = self.get_browser()
 
         # set default bgcolor?
-        if func is None:
-            func = browser.tv_factory.get_task_bg_color
+        # if func is None:
+        #     func = browser.tv_factory.get_task_bg_color
 
-        for pane in browser.vtree_panes.values():
-            pane.set_bg_color(func, 'bg_color')
-            pane.basetree.get_basetree().refresh_all()
+        # for pane in browser.vtree_panes.values():
+        #     pane.set_bg_color(func, 'bg_color')
+        #     pane.basetree.get_basetree().refresh_all()
 
 # file saving/loading =======================================================
     def load_configuration_object(self, plugin_name, filename,

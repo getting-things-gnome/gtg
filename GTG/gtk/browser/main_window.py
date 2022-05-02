@@ -39,7 +39,7 @@ from GTG.gtk.browser.backend_infobar import BackendInfoBar
 from GTG.gtk.browser.modify_tags import ModifyTagsDialog
 from GTG.gtk.browser.delete_tag import DeleteTagsDialog
 from GTG.gtk.browser.tag_context_menu import TagContextMenu
-from GTG.gtk.browser.treeview_factory import TreeviewFactory
+# from GTG.gtk.browser.treeview_factory import TreeviewFactory
 from GTG.gtk.editor.calendar import GTGCalendar
 from GTG.gtk.tag_completion import TagCompletion
 from GTG.core.dates import Date
@@ -80,25 +80,25 @@ class MainWindow(Gtk.ApplicationWindow):
         self.search_timeout = None
 
         # Treeviews handlers
-        self.vtree_panes = {}
-        self.tv_factory = TreeviewFactory(self.req, self.config)
+        # self.vtree_panes = {}
+        # self.tv_factory = TreeviewFactory(self.req, self.config)
 
         # Active Tasks
-        self.activetree = self.req.get_tasks_tree(name='active', refresh=False)
-        self.vtree_panes['active'] = \
-            self.tv_factory.active_tasks_treeview(self.activetree)
+        # self.activetree = self.req.get_tasks_tree(name='active', refresh=False)
+        # self.vtree_panes['active'] = \
+        #     self.tv_factory.active_tasks_treeview(self.activetree)
 
         # Workview Tasks
-        self.workview_tree = \
-            self.req.get_tasks_tree(name='workview', refresh=False)
-        self.vtree_panes['workview'] = \
-            self.tv_factory.active_tasks_treeview(self.workview_tree)
+        # self.workview_tree = \
+        #     self.req.get_tasks_tree(name='workview', refresh=False)
+        # self.vtree_panes['workview'] = \
+        #     self.tv_factory.active_tasks_treeview(self.workview_tree)
 
         # Closed Tasks
-        self.closedtree = \
-            self.req.get_tasks_tree(name='closed', refresh=False)
-        self.vtree_panes['closed'] = \
-            self.tv_factory.closed_tasks_treeview(self.closedtree)
+        # self.closedtree = \
+        #     self.req.get_tasks_tree(name='closed', refresh=False)
+        # self.vtree_panes['closed'] = \
+        #     self.tv_factory.closed_tasks_treeview(self.closedtree)
 
         # YOU CAN DEFINE YOUR INTERNAL MECHANICS VARIABLES BELOW
         # Setup GTG icon theme
@@ -269,9 +269,9 @@ class MainWindow(Gtk.ApplicationWindow):
         actionable tasks (workview), closed tasks and creates
         ModifyTagsDialog & Calendar """
         # Tasks treeviews
-        self.open_pane.add(self.vtree_panes['active'])
-        self.actionable_pane.add(self.vtree_panes['workview'])
-        self.closed_pane.add(self.vtree_panes['closed'])
+        # self.open_pane.add(self.vtree_panes['active'])
+        # self.actionable_pane.add(self.vtree_panes['workview'])
+        # self.closed_pane.add(self.vtree_panes['closed'])
 
         tag_completion = TagCompletion(self.req.get_tag_tree())
         self.modifytags_dialog = ModifyTagsDialog(tag_completion, self.req, self.app)
@@ -407,51 +407,51 @@ class MainWindow(Gtk.ApplicationWindow):
         # Store window position
         self.connect('size-allocate', self.on_size_allocate)
 
-        # Active tasks TreeView
-        self.vtree_panes['active'].connect('row-activated', self.on_edit_active_task)
-        self.vtree_panes['active'].connect('cursor-changed', self.on_cursor_changed)
+        # # Active tasks TreeView
+        # self.vtree_panes['active'].connect('row-activated', self.on_edit_active_task)
+        # self.vtree_panes['active'].connect('cursor-changed', self.on_cursor_changed)
 
-        tsk_treeview_btn_press = self.on_task_treeview_click_begin
-        self.active_pane_gesture_single = Gtk.GestureSingle(widget=self.vtree_panes['active'], button=Gdk.BUTTON_SECONDARY,
-            propagation_phase=Gtk.PropagationPhase.CAPTURE)
-        self.active_pane_gesture_single.connect('begin', tsk_treeview_btn_press)
-        task_treeview_key_press = self.on_task_treeview_key_press_event
-        self.active_pane_key_controller = Gtk.EventControllerKey(widget=self.vtree_panes['active'])
-        self.active_pane_key_controller.connect('key-pressed', task_treeview_key_press)
-        self.vtree_panes['active'].connect('node-expanded', self.on_task_expanded)
-        self.vtree_panes['active'].connect('node-collapsed', self.on_task_collapsed)
+        # tsk_treeview_btn_press = self.on_task_treeview_click_begin
+        # self.active_pane_gesture_single = Gtk.GestureSingle(widget=self.vtree_panes['active'], button=Gdk.BUTTON_SECONDARY,
+        #     propagation_phase=Gtk.PropagationPhase.CAPTURE)
+        # self.active_pane_gesture_single.connect('begin', tsk_treeview_btn_press)
+        # task_treeview_key_press = self.on_task_treeview_key_press_event
+        # self.active_pane_key_controller = Gtk.EventControllerKey(widget=self.vtree_panes['active'])
+        # self.active_pane_key_controller.connect('key-pressed', task_treeview_key_press)
+        # self.vtree_panes['active'].connect('node-expanded', self.on_task_expanded)
+        # self.vtree_panes['active'].connect('node-collapsed', self.on_task_collapsed)
 
-        # Workview tasks TreeView
-        self.vtree_panes['workview'].connect('row-activated', self.on_edit_active_task)
-        self.vtree_panes['workview'].connect('cursor-changed', self.on_cursor_changed)
+        # # Workview tasks TreeView
+        # self.vtree_panes['workview'].connect('row-activated', self.on_edit_active_task)
+        # self.vtree_panes['workview'].connect('cursor-changed', self.on_cursor_changed)
 
-        tsk_treeview_btn_press = self.on_task_treeview_click_begin
-        self.workview_pane_gesture_single = Gtk.GestureSingle(widget=self.vtree_panes['workview'], button=Gdk.BUTTON_SECONDARY,
-            propagation_phase=Gtk.PropagationPhase.CAPTURE)
-        self.workview_pane_gesture_single.connect('begin', tsk_treeview_btn_press)
-        task_treeview_key_press = self.on_task_treeview_key_press_event
-        self.workview_pane_key_controller = Gtk.EventControllerKey(widget=self.vtree_panes['workview'])
-        self.workview_pane_key_controller.connect('key-pressed', task_treeview_key_press)
-        self.vtree_panes['workview'].set_col_visible('startdate', False)
+        # tsk_treeview_btn_press = self.on_task_treeview_click_begin
+        # self.workview_pane_gesture_single = Gtk.GestureSingle(widget=self.vtree_panes['workview'], button=Gdk.BUTTON_SECONDARY,
+        #     propagation_phase=Gtk.PropagationPhase.CAPTURE)
+        # self.workview_pane_gesture_single.connect('begin', tsk_treeview_btn_press)
+        # task_treeview_key_press = self.on_task_treeview_key_press_event
+        # self.workview_pane_key_controller = Gtk.EventControllerKey(widget=self.vtree_panes['workview'])
+        # self.workview_pane_key_controller.connect('key-pressed', task_treeview_key_press)
+        # self.vtree_panes['workview'].set_col_visible('startdate', False)
 
-        # Closed tasks Treeview
-        self.vtree_panes['closed'].connect('row-activated', self.on_edit_done_task)
-        # I did not want to break the variable and there was no other
-        # option except this name:(Nimit)
-        clsd_tsk_btn_prs = self.on_closed_task_treeview_click_begin
-        self.closed_pane_gesture_single = Gtk.GestureSingle(widget=self.vtree_panes['closed'], button=Gdk.BUTTON_SECONDARY,
-            propagation_phase=Gtk.PropagationPhase.CAPTURE)
-        self.closed_pane_gesture_single.connect('begin', clsd_tsk_btn_prs)
-        clsd_tsk_key_prs = self.on_closed_task_treeview_key_press_event
-        self.closed_pane_key_controller = Gtk.EventControllerKey(widget=self.vtree_panes['closed'])
-        self.closed_pane_key_controller.connect('key-pressed', clsd_tsk_key_prs)
-        self.vtree_panes['closed'].connect('cursor-changed', self.on_cursor_changed)
+        # # Closed tasks Treeview
+        # self.vtree_panes['closed'].connect('row-activated', self.on_edit_done_task)
+        # # I did not want to break the variable and there was no other
+        # # option except this name:(Nimit)
+        # clsd_tsk_btn_prs = self.on_closed_task_treeview_click_begin
+        # self.closed_pane_gesture_single = Gtk.GestureSingle(widget=self.vtree_panes['closed'], button=Gdk.BUTTON_SECONDARY,
+        #     propagation_phase=Gtk.PropagationPhase.CAPTURE)
+        # self.closed_pane_gesture_single.connect('begin', clsd_tsk_btn_prs)
+        # clsd_tsk_key_prs = self.on_closed_task_treeview_key_press_event
+        # self.closed_pane_key_controller = Gtk.EventControllerKey(widget=self.vtree_panes['closed'])
+        # self.closed_pane_key_controller.connect('key-pressed', clsd_tsk_key_prs)
+        # self.vtree_panes['closed'].connect('cursor-changed', self.on_cursor_changed)
 
         b_signals = BackendSignals()
         b_signals.connect(b_signals.BACKEND_FAILED, self.on_backend_failed)
         b_signals.connect(b_signals.BACKEND_STATE_TOGGLED, self.remove_backend_infobar)
         b_signals.connect(b_signals.INTERACTION_REQUESTED, self.on_backend_needing_interaction)
-        self.selection = self.vtree_panes['active'].get_selection()
+        # self.selection = self.vtree_panes['active'].get_selection()
 
 
 # HELPER FUNCTIONS ##########################################################
@@ -588,20 +588,20 @@ class MainWindow(Gtk.ApplicationWindow):
                                                        self.on_sidebar_width)
 
         # Callbacks for sorting and restoring previous state
-        model = self.vtree_panes['active'].get_model()
-        model.connect('sort-column-changed', self.on_sort_column_changed)
-        sort_column = self.config.get('tasklist_sort_column')
-        sort_order = self.config.get('tasklist_sort_order')
+        # model = self.vtree_panes['active'].get_model()
+        # model.connect('sort-column-changed', self.on_sort_column_changed)
+        # sort_column = self.config.get('tasklist_sort_column')
+        # sort_order = self.config.get('tasklist_sort_order')
 
-        if sort_column and sort_order:
-            sort_column, sort_order = int(sort_column), int(sort_order)
-            model.set_sort_column_id(sort_column, sort_order)
+        # if sort_column and sort_order:
+        #     sort_column, sort_order = int(sort_column), int(sort_order)
+        #     model.set_sort_column_id(sort_column, sort_order)
 
-        self.restore_collapsed_tasks()
+        # self.restore_collapsed_tasks()
 
-        view_name = PANE_STACK_NAMES_MAP_INVERTED.get(self.config.get('view'),
-                                                      PANE_STACK_NAMES_MAP_INVERTED['active'])
-        self.stack_switcher.get_stack().set_visible_child_name(view_name)
+        # view_name = PANE_STACK_NAMES_MAP_INVERTED.get(self.config.get('view'),
+        #                                               PANE_STACK_NAMES_MAP_INVERTED['active'])
+        # self.stack_switcher.get_stack().set_visible_child_name(view_name)
 
         def open_task(req, t):
             """ Open the task if loaded. Otherwise ask for next iteration """
@@ -677,12 +677,13 @@ class MainWindow(Gtk.ApplicationWindow):
     def on_cursor_changed(self, widget=None):
         """Callback when the treeview's cursor changes."""
 
-        if self.has_any_selection():
-            self.defer_btn.set_sensitive(True)
-            self.defer_menu_btn.set_sensitive(True)
-        else:
-            self.defer_btn.set_sensitive(False)
-            self.defer_menu_btn.set_sensitive(False)
+        ...
+        # if self.has_any_selection():
+        #     self.defer_btn.set_sensitive(True)
+        #     self.defer_menu_btn.set_sensitive(True)
+        # else:
+        #     self.defer_btn.set_sensitive(False)
+        #     self.defer_menu_btn.set_sensitive(False)
 
     def on_tagcontext_deactivate(self, menushell):
         self.reset_cursor()
@@ -705,8 +706,8 @@ class MainWindow(Gtk.ApplicationWindow):
         assert param.name == 'visible'
         visible = obj.get_property(param.name)
         self.config.set("tag_pane", visible)
-        if visible and not self.tagtreeview:
-            self.init_tags_sidebar()
+        # if visible and not self.tagtreeview:
+        #     self.init_tags_sidebar()
 
     def on_collapse_all_tasks(self, action, param):
         """Collapse all tasks."""
@@ -834,10 +835,10 @@ class MainWindow(Gtk.ApplicationWindow):
             data = quick_add.parse(text)
             # event that is set when the new task is created
             self.__last_quick_added_tid_event = threading.Event()
-            self.__quick_add_select_handle = \
-                self.vtree_panes['active'].get_model().connect(
-                    "row-inserted", select_next_added_task_in_browser,
-                    self)
+            # self.__quick_add_select_handle = \
+                # self.vtree_panes['active'].get_model().connect(
+                #     "row-inserted", select_next_added_task_in_browser,
+                #     self)
             task = self.req.new_task(newtask=True)
             self.__last_quick_added_tid = task.get_id()
             self.__last_quick_added_tid_event.set()
