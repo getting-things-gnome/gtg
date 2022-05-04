@@ -22,7 +22,7 @@ import threading
 import datetime
 import logging
 import ast
-import liblarch_gtk  # Just for types
+#import liblarch_gtk  # Just for types
 
 from gi.repository import GObject, Gtk, Gdk, Gio, GLib
 
@@ -717,7 +717,7 @@ class MainWindow(Gtk.ApplicationWindow):
         """Expand all tasks."""
         self.vtree_panes['active'].expand_all()
 
-    def on_task_expanded(self, sender: liblarch_gtk.TreeView, path: str):
+    def on_task_expanded(self, sender, path: str):
         # For some reason, path is turned from a tuple into a string of a
         # tuple
         if type(path) is str:
