@@ -151,8 +151,8 @@ def _tokenize_query(query):
         if token_type != 'space':
             yield token_type, token_value
     if pos != len(query):
-        raise InvalidQuery('tokenizer stopped at pos %r of %r left of "%s"' % (
-            pos, len(query), query[pos:pos + 10]))
+        raise InvalidQuery(f"tokenizer stopped at pos {pos!} of {len(query)} "
+                           f"left of {query[pos:pos + 10]!r}")
 
 
 def parse_search_query(query):
@@ -176,13 +176,14 @@ def parse_search_query(query):
 
         if require_date:
             if token not in ['date', 'word', 'literal']:
-                raise InvalidQuery(f"Unexpected token '{token}' after '{require_date}'")
+                raise InvalidQuery(f"Unexpected token {token!r} "
+                                   f"after {require_date!r}")
 
             value = value.strip('"')
             try:
                 date = Date.parse(value)
             except ValueError:
-                raise InvalidQuery(f"Date '{value}' in wrong format")
+                raise InvalidQuery(f"Date {value!r} in wrong format")
 
             cmd = (require_date, not_count % 2 == 0, date)
             require_date = None
@@ -216,7 +217,7 @@ def parse_search_query(query):
                 found = True
                 break
             if not found:
-                raise InvalidQuery(f"Unknown command !{value}")
+                raise InvalidQuery(f"Unknown command! {value!r}")
 
         elif token == 'tag':
             cmd = (token, not_count % 2 == 0, value.replace('@', ''))
@@ -238,7 +239,7 @@ def parse_search_query(query):
         raise InvalidQuery("Or is not allowed at the end of query")
 
     if require_date:
-        raise InvalidQuery(f"Required date after '{require_date}'")
+        raise InvalidQuery(f"Required date after {require_date!r}")
 
     return {'q': commands}
 

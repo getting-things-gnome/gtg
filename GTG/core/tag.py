@@ -165,8 +165,7 @@ class Tag(TreeNode):
         """
         modified = False
         if att_name == "name":
-            raise KeyError(
-                "The name of tag cannot be set manually")
+            raise KeyError("The name of tag cannot be set manually")
         elif att_name == "parent":
             self.add_parent(att_value)
             modified = True

@@ -216,13 +216,13 @@ class Datastore2:
             'closed': {'all': 0, 'untagged': 0},
         }
 
-        count_tasks(self.task_count['open'], 
+        count_tasks(self.task_count['open'],
                     self.tasks.filter(Filter.ACTIVE))
 
-        count_tasks(self.task_count['closed'], 
+        count_tasks(self.task_count['closed'],
                     self.tasks.filter(Filter.CLOSED))
 
-        count_tasks(self.task_count['actionable'], 
+        count_tasks(self.task_count['actionable'],
                     self.tasks.filter(Filter.ACTIONABLE))
 
 
@@ -357,7 +357,7 @@ class Datastore2:
                 self.first_run(path)
 
             except IOError:
-                raise SystemError(f'Could not write a file at {path}')
+                raise SystemError(f"Could not write a file at {path}")
 
 
     def purge(self, max_days: int) -> None:

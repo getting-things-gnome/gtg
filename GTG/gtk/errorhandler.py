@@ -198,9 +198,8 @@ def errorhandler(func, context: str = None, ignorable: bool = True, reraise: boo
                 do_error_dialog(e, context, ignorable)
             except Exception:
                 log.exception("Exception occured while trying to show it")
-
             if reraise:
-                raise e
+                raise
             else:
                 log.debug("Not re-raising exception because it has been explicitly disabled: %r", e)
     return inner

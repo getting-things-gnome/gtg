@@ -224,7 +224,7 @@ class Backend(PeriodicImportBackend):
             BackendSignals().interaction_requested(
                 self.get_id(), f"{message} {error!r}",
                 BackendSignals().INTERACTION_INFORM, "on_continue_clicked")
-            raise error
+            raise
         for calendar in principal.calendars():
             self._cache.set_calendar(calendar)
 

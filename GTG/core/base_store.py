@@ -46,7 +46,7 @@ class BaseStore(GObject.Object):
     # --------------------------------------------------------------------------
 
     def new(self) -> Any:
-        raise NotImplemented
+        raise NotImplementedError()
 
 
     def get(self, key: str) -> Any:
@@ -62,7 +62,7 @@ class BaseStore(GObject.Object):
             log.warn('Failed to add item with id %s, already added!',
                      item.id)
 
-            raise KeyError
+            raise KeyError(item.id)
 
         if parent_id:
             try:
@@ -156,7 +156,7 @@ class BaseStore(GObject.Object):
                           self.lookup[parent_id])
                 return
 
-        raise KeyError
+        raise KeyError()
 
 
     # --------------------------------------------------------------------------
@@ -164,11 +164,11 @@ class BaseStore(GObject.Object):
     # --------------------------------------------------------------------------
 
     def from_xml(self, xml: Element) -> Any:
-        raise NotImplemented
+        raise NotImplementedError()
 
 
     def to_xml(self) -> Element:
-        raise NotImplemented
+        raise NotImplementedError()
 
 
     # --------------------------------------------------------------------------
