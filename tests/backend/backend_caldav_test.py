@@ -111,7 +111,7 @@ class CalDAVTest(TestCase):
         self.assertEqual(DESCRIPTION.dav_name, 'description')
         todo = self._get_todo(VTODO_GRAND_CHILD)
         self.assertEqual(todo.instance.vtodo.serialize(), VTODO_GRAND_CHILD)
-        self.assertEqual(date(2020, 12, 25),
+        self.assertEqual(date(2020, 12, 24),
                          todo.instance.vtodo.contents['due'][0].value)
         uid = UID_FIELD.get_dav(todo)
         self.assertTrue(isinstance(uid, str), f"should be str is {uid!r}")
