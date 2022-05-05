@@ -151,7 +151,7 @@ def _tokenize_query(query):
         if token_type != 'space':
             yield token_type, token_value
     if pos != len(query):
-        raise InvalidQuery(f"tokenizer stopped at pos {pos!} of {len(query)} "
+        raise InvalidQuery(f"tokenizer stopped at pos {pos!r} of {len(query)} "
                            f"left of {query[pos:pos + 10]!r}")
 
 
