@@ -275,9 +275,12 @@ class MainWindow(Gtk.ApplicationWindow):
         quickadd_focus_controller.connect('leave', self.on_quickadd_focus_out)
         self.quickadd_entry.add_controller(quickadd_focus_controller)
 
-        tag_completion = TagCompletion(self.req.get_tag_tree())
-        self.modifytags_dialog = ModifyTagsDialog(tag_completion, self.req, self.app)
-        self.modifytags_dialog.set_transient_for(self)
+        # TODO: Re-enable with Gtk 4.6
+        # tag_completion = TagCompletion(self.req.get_tag_tree())
+        # self.modifytags_dialog = ModifyTagsDialog(tag_completion, self.req, self.app)
+        # self.modifytags_dialog.set_transient_for(self)
+        self.modifytags_dialog = None
+
         self.deletetags_dialog = DeleteTagsDialog(self.req, self)
         self.calendar = GTGCalendar()
         self.calendar.set_transient_for(self)
