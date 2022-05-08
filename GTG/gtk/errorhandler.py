@@ -35,13 +35,20 @@ class ExceptionHandlerDialog(Gtk.MessageDialog):
         else:
             title = _("Fatal internal error — GTG")
             desc = _("""GTG encountered an internal fatal error and needs to exit.""")
+
         title = title.format(**formatting)
         desc = desc.format(**formatting)
+
+        desc2 = _("""Recently unsaved changes (from the last few seconds) may be lost, so make sure to check your recent changes when launching GTG again afterwards.
+        Please report the bug in <a href="{url}">our issue tracker</a>, with steps to trigger the problem and the error's details below.""")
+        desc2 = desc2.format(**formatting)
+
         # You may think that GtkWindow:title is the property you need,
         # however GtkWindow:title is awkwardly styled on GtkMessageDialog,
         # and GtkMessageDialog:text is styled like a title.
         self.props.text = title
-        self.props.secondary_text = desc + 2*"\n" + desc2
+        self.set_markup(desc)
+        self.props.secondary_text = desc2
         self.props.secondary_use_markup = True
         self.get_style_context().add_class("errorhandler")
 
