@@ -37,15 +37,13 @@ class Tag2(GObject.Object):
     """A tag that can be applied to a Task."""
 
     __gtype_name__ = 'gtg_Tag'
-    __slots__ = ['id', 'name', 'icon', 'color', 'actionable', 'children']
-
 
     def __init__(self, id: UUID, name: str) -> None:
         self.id = id
-        self.name = name
+        self._name = name
 
-        self.icon = None
-        self.color = None
+        self._icon = None
+        self._color = None
         self.actionable = True
         self.children = []
         self.parent = None
@@ -67,6 +65,42 @@ class Tag2(GObject.Object):
         """Equivalence."""
 
         return self.id == other.id
+
+
+    @GObject.Property(type=str)
+    def name(self) -> str:
+        """Read only property."""
+
+        return self._name
+
+
+    @name.setter
+    def set_name(self, value: str) -> None:
+        self._name = value
+
+
+    @GObject.Property(type=str)
+    def icon(self) -> str:
+        """Read only property."""
+
+        return self._icon
+
+
+    @icon.setter
+    def set_icon(self, value: str) -> None:
+        self._icon = value
+
+
+    @GObject.Property(type=str)
+    def color(self) -> str:
+        """Read only property."""
+
+        return self._color
+
+
+    @color.setter
+    def set_color(self, value: str) -> None:
+        self._color = value
 
 
 class TagStore(BaseStore):
