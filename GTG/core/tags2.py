@@ -48,6 +48,7 @@ class Tag2(GObject.Object):
         self.children = []
         self.parent = None
 
+        super(Tag2, self).__init__()
 
     def __str__(self) -> str:
         """String representation."""
