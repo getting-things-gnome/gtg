@@ -23,12 +23,11 @@ from GTG.core.tasks2 import Filter
 from gettext import gettext as _, ngettext
 
 
-class DeleteTagsDialog():
+class DeleteTagsDialog:
 
     MAXIMUM_TAGS_TO_SHOW = 5
 
-    def __init__(self, req, browser):
-        self.req = req
+    def __init__(self, browser):
         self.browser = browser
         self.tags_todelete = []
 
@@ -37,16 +36,12 @@ class DeleteTagsDialog():
         otherwise, we will look which tid is selected"""
 
         for tag in self.tags_todelete:
-            self.req.delete_tag(tag)
-
-            # TODO: New Core
-            the_tag = self.browser.app.ds.tags.find(tag)
-            tasks = self.browser.app.ds.tasks.filter(Filter.TAG, the_tag)
+            tasks = self.browser.app.ds.tasks.filter(Filter.TAG, tag)
 
             for t in tasks:
-                t.remove_tag(tag)
+                t.remove_tag(tag.name)
 
-            self.browser.app.ds.tags.remove(the_tag.id)
+            self.browser.app.ds.tags.remove(tag.id)
 
         self.tags_todelete = []
 
@@ -61,7 +56,7 @@ class DeleteTagsDialog():
         if callback:
             callback(tagslist)
 
-    def delete_tags_async(self, tags=None, callback=None):
+    def show(self, tags=None, callback=None):
         self.tags_todelete = tags or self.tags_todelete
 
         if not self.tags_todelete:
@@ -97,9 +92,9 @@ class DeleteTagsDialog():
 
         if len(tagslist) == 1:
             # Don't show a bulleted list if there's only one item
-            titles = "".join(tag for tag in tagslist)
+            titles = "".join(tag.name for tag in tagslist)
         else:
-            titles = "".join("\n• " + tag for tag in tagslist)
+            titles = "".join("\n• " + tag.name for tag in tagslist)
 
         # Build and run dialog
         dialog = Gtk.MessageDialog(transient_for=self.browser, modal=True)

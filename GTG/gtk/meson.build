@@ -37,10 +37,12 @@ gtg_browser_sources = [
   'browser/main_window.py',
   'browser/modify_tags.py',
   'browser/simple_color_selector.py',
-  'browser/tag_context_menu.py',
+  'browser/sidebar_context_menu.py',
+  'browser/search_editor.py',
   'browser/tag_editor.py',
   'browser/treeview_factory.py',
   'browser/quick_add.py',
+  'browser/sidebar.py',
 ]
 
 gtg_data_sources = [
@@ -54,6 +56,7 @@ gtg_data_sources = [
   'data/preferences.ui',
   'data/style.css',
   'data/tag_editor.ui',
+  'data/search_editor.ui',
   'data/task_editor.ui',
   'data/recurring_menu.ui'
 ]
