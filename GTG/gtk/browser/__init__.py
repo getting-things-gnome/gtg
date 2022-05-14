@@ -32,3 +32,4 @@ class GnomeConfig():
     MENUS_UI_FILE = os.path.join(data, "context_menus.ui")
     MODIFYTAGS_UI_FILE = os.path.join(data, "modify_tags.ui")
     TAG_EDITOR_UI_FILE = os.path.join(data, "tag_editor.ui")
+    SEARCH_EDITOR_UI_FILE = os.path.join(data, "search_editor.ui")

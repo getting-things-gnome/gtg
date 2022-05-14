@@ -17,32 +17,31 @@
 # -----------------------------------------------------------------------------
 
 """
-This module contains the TagEditor class which is a window that allows the
-user to edit a tag properties.
+This module contains the SearchEditor class which is a window that allows the
+user to edit a saved search properties.
 """
 from gi.repository import GObject, Gtk, Gdk, GdkPixbuf, GLib
 
 import logging
 import random
 from gettext import gettext as _
-from GTG.gtk.colors import color_add, color_remove, RGBA, rgb_to_hex, random_color
 from GTG.gtk.browser import GnomeConfig
 
 log = logging.getLogger(__name__)
 
 
-@Gtk.Template(filename=GnomeConfig.TAG_EDITOR_UI_FILE)
-class TagEditor(Gtk.Dialog):
+@Gtk.Template(filename=GnomeConfig.SEARCH_EDITOR_UI_FILE)
+class SearchEditor(Gtk.Dialog):
     """
-    A window to edit certain properties of an tag.
+    A window to edit certain properties of a saved search.
     """
 
-    __gtype_name__ = 'GTG_TagEditor'
+    __gtype_name__ = 'GTG_SearchEditor'
     _emoji_chooser = Gtk.Template.Child('emoji-chooser')
     _icon_button = Gtk.Template.Child('icon-button')
     _name_entry = Gtk.Template.Child('name-entry')
 
-    def __init__(self, req, app, tag=None):
+    def __init__(self, req, app, search=None):
         super().__init__(use_header_bar=1)
 
         set_icon_shortcut = Gtk.Shortcut.new(
@@ -53,73 +52,47 @@ class TagEditor(Gtk.Dialog):
 
         self.req = req
         self.app = app
-        self.tag = tag
+        self.search = search
 
         self.set_transient_for(app.browser)
         self._title_format = self.get_title()
         self._emoji_chooser.set_parent(self._icon_button)
 
-        self.tag_rgba = Gdk.RGBA()
-        (self.tag_rgba.red, self.tag_rgba.green,
-         self.tag_rgba.blue, self.tag_rgba.alpha) = 1.0, 1.0, 1.0, 1.0
-        self.tag_name = ''
-        self.tag_is_actionable = True
         self.is_valid = True
         self._emoji = None
         self.use_icon = False
+        self._search_name = ''
 
-        self.set_tag(tag)
+        self.set_search(search)
         self.show()
 
-    @GObject.Property(type=bool, default=False)
-    def has_color(self):
-        """Whenever the tag has a color."""
-
-        return self._has_color
-
-    @has_color.setter
-    def has_color(self, value: bool):
-
-        self._has_color = value
-
-    @GObject.Property(type=Gdk.RGBA)
-    def tag_rgba(self):
-        """The color of the tag. Alpha is ignored."""
-
-        return self._tag_rgba
-
-    @tag_rgba.setter
-    def tag_rgba(self, value: Gdk.RGBA):
-
-        self._tag_rgba = value
 
     @GObject.Property(type=str, default='')
-    def tag_name(self):
-        """The (new) name of the tag."""
+    def search_name(self):
+        """The (new) name of the search."""
 
-        return self._tag_name
+        return self._search_name
 
-    @tag_name.setter
-    def tag_name(self, value: str):
-        self._tag_name = value.strip().replace(' ', '')
+    @search_name.setter
+    def search_name(self, value: str):
+        self._search_name = value
         self._validate()
 
-    @GObject.Property(type=bool, default=False)
-    def tag_is_actionable(self):
-        """
-        Whenever the tag should show up in the actionable tab.
-        """
+    @GObject.Property(type=str, default='')
+    def search_query(self):
+        """The (new) name of the search."""
 
-        return self._tag_is_actionable
+        return self._search_query
 
-    @tag_is_actionable.setter
-    def tag_is_actionable(self, value: bool):
-        self._tag_is_actionable = value
+    @search_query.setter
+    def search_query(self, value: str):
+        self._search_query = value
+        self._validate()
 
     @GObject.Property(type=bool, default=True)
     def is_valid(self):
         """
-        Whenever it is valid to apply the changes (like malformed tag name).
+        Whenever it is valid to apply the changes (like malformed search name).
         """
 
         return self._is_valid
@@ -131,14 +104,14 @@ class TagEditor(Gtk.Dialog):
     @GObject.Property(type=bool, default=False)
     def has_icon(self):
         """
-        Whenever the tag will have an icon.
+        Whenever the search will have an icon.
         """
 
         return bool(self._emoji)
 
     def _validate(self):
         """
-        Validates the current tag preferences.
+        Validates the current search preferences.
         Returns true whenever it passes validation, False otherwise,
         and modifies the is_valid property appropriately.
         On failure, the widgets are modified accordingly to show the user
@@ -146,59 +119,49 @@ class TagEditor(Gtk.Dialog):
         """
 
         valid = True
-        valid &= self._validate_tag_name()
+        valid &= self._validate_search_name()
         self.is_valid = valid
         return valid
 
-    def _validate_tag_name(self):
+    def _validate_search_name(self):
         """
-        Validates the current tag name.
+        Validates the current search name.
         Returns true whenever it passes validation, False otherwise.
         On failure, the widgets are modified accordingly to show the user
         why it doesn't accept it.
         """
 
-        if self.tag_name == '':
+        if self.search_name == '':
             self._name_entry.add_css_class("error")
             self._name_entry.props.tooltip_text = \
-                _("Tag name can not be empty")
+                _("search name can not be empty")
             return False
         else:
             self._name_entry.remove_css_class("error")
             self._name_entry.props.tooltip_text = ""
             return True
 
-    def set_tag(self, tag):
+    def set_search(self, search):
         """
-        Set the tag to edit.
-        Widgets are updated with the information of the tag,
+        Set the search to edit.
+        Widgets are updated with the information of the search,
         the previous information/state is lost.
         """
-        self.tag = tag
-        if tag is None:
+        self.search = search
+        if search is None:
             return
 
-        icon = tag.icon
+        icon = search.icon
         self._set_emoji(self._emoji_chooser, text=icon if icon else '')
 
-        self.tag_name = tag.name
-        self.set_title(self._title_format % ('@' + self.tag_name,))
+        self.search_name = search.name
+        self.search_query = search.query
+        self.set_title(self._title_format % self.search_name)
 
-        rgba = Gdk.RGBA()
-        rgba.red, rgba.green, rgba.blue, rgba.alpha = 1.0, 1.0, 1.0, 1.0
-
-        if color := tag.color:
-            if not rgba.parse('#' + color):
-                log.warning("Failed to parse tag color for %r: %r",
-                            tag.name, color)
-
-        self.has_color = bool(color)
-        self.tag_rgba = rgba
-        self.tag_is_actionable = self.tag.actionable
 
     def do_destroy(self):
 
-        self.app.close_tag_editor()
+        self.app.close_search_editor()
         super().destroy()
 
     def _cancel(self):
@@ -214,41 +177,25 @@ class TagEditor(Gtk.Dialog):
         Apply button has been clicked, applying the settings and closing the
         editor window.
         """
-        if self.tag is None:
-            log.warning("Trying to apply but no tag set, shouldn't happen")
+        if self.search is None:
+            log.warning("Trying to apply but no search set, shouldn't happen")
             self._cancel()
             return
 
         if self.has_icon and self._emoji:
-            self.tag.icon = self._emoji
+            self.search.icon = self._emoji
         elif self.has_icon:  # Should never happen, but just in case
             log.warning("Tried to set icon for %r but no icon given",
-                        self.tag.name)
-            self.tag.icon = None
+                        self.search.name)
+            self.search.icon = None
         else:
-            self.tag.icon = None
+            self.search.icon = None
 
-        if self.has_color:
-            color = rgb_to_hex(self.tag_rgba)
-            color_add(color)
-            self.tag.color = color
-        else:
-            if tag_color := self.tag.color:
-                color_remove(tag_color)
+        if self.search_name != self.search.name:
+            log.debug("Renaming %r → %r", self.search.name, self.search_name)
+            self.search.name = self.search_name
 
-            self.tag.color = None
-
-        self.tag.actionable = self.tag_is_actionable
-
-        if self.tag_name != self.tag.name:
-            log.debug("Renaming %r → %r", self.tag.name, self.tag_name)
-
-            for t in self.app.ds.tasks.lookup.values():
-                t.rename_tag(self.tag.name, self.tag_name)
-                
-            self.tag.name = self.tag_name
-
-        self.app.ds.tags.tree_model.emit('items-changed', 0, 0, 0)
+        self.app.ds.saved_searches.model.emit('items-changed', 0, 0, 0)
         self.destroy()
 
     # CALLBACKS #####
@@ -259,26 +206,6 @@ class TagEditor(Gtk.Dialog):
         else:
             self._cancel()
 
-    @Gtk.Template.Callback('random_color')
-    def _random_color(self, widget: GObject.Object):
-        """
-        The random color button has been clicked, overriding the color
-        with an random color.
-        """
-        self.has_color = True
-        color = self.app.ds.tags.generate_color()
-        c = Gdk.RGBA()
-        c.red, c.green, c.blue, c.alpha = 1.0, 1.0, 1.0, 1.0
-        c.parse('#' + color)
-        self.tag_rgba = c
-        
-    @Gtk.Template.Callback('activate_color')
-    def _activate_color(self, widget: GObject.Object):
-        """
-        Enable using the selected color because a color has been selected.
-        """
-
-        self.has_color = True
 
     @Gtk.Template.Callback('set_icon')
     def _set_icon(self, widget: GObject.Object, shargs: GLib.Variant = None):
@@ -314,14 +241,3 @@ class TagEditor(Gtk.Dialog):
         """
 
         self._set_emoji(self._emoji_chooser, text='')
-
-    @Gtk.Template.Callback('remove_color')
-    def _remove_color(self, widget: GObject.Object):
-        """
-        Callback to remove the color.
-        """
-
-        c = Gdk.RGBA()
-        c.red, c.green, c.blue, c.alpha = 1.0, 1.0, 1.0, 1.0
-        self.tag_rgba = c
-        self.has_color = False

@@ -241,4 +241,16 @@
     </item>
   </menu>
 
+  <menu id="search_context_menu">
+    <item>
+      <attribute name="label" translatable="yes">Edit...</attribute>
+      <attribute name="action">search_popup.edit_search</attribute>
+    </item>
+    <item>
+      <attribute name="label" translatable="yes">Delete</attribute>
+      <attribute name="action">search_popup.delete_search</attribute>
+    </item>
+  </menu>
+
+
 </interface>

@@ -44,6 +44,7 @@ from GTG.core.dirs import CSS_DIR
 from GTG.core.dates import Date
 from GTG.gtk.backends import BackendsDialog
 from GTG.gtk.browser.tag_editor import TagEditor
+from GTG.gtk.browser.search_editor import SearchEditor
 from GTG.core.timer import Timer
 from GTG.gtk.errorhandler import do_error_dialog
 
@@ -512,6 +513,19 @@ class Application(Gtk.Application):
         self.edit_tag_dialog = TagEditor(self.req, self, tag)
         self.edit_tag_dialog.set_transient_for(self.browser)
         self.edit_tag_dialog.insert_action_group('app', self)
+
+
+    def open_search_editor(self, search):
+        """Open Saved search editor dialog."""
+
+        self.edit_search_dialog = SearchEditor(self.req, self, search)
+        self.edit_search_dialog.set_transient_for(self.browser)
+        self.edit_search_dialog.insert_action_group('app', self)
+
+    def close_search_editor(self):
+        """Close search editor dialog."""
+
+        self.edit_search_dialog = None
 
     def close_tag_editor(self):
         """Close tag editor dialog."""

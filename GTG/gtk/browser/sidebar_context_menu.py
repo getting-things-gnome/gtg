@@ -35,61 +35,85 @@ from GTG.gtk.browser import GnomeConfig
 class TagContextMenu(Gtk.PopoverMenu):
     """Context menu fo the tag i the sidebar"""
 
-    def __init__(self, req, app, tag=None):
+    def __init__(self, ds, app, tag):
         super().__init__(has_arrow=False)
-        self.req = req
-        self.app = app
         self.tag = tag
+        self.app = app
+        self.ds = ds
 
-        for action_disc in [
+        actions = [
             ("edit_tag", self.on_mi_cc_activate),
             ("generate_tag_color", self.on_mi_ctag_activate),
-            ("delete_search_tag", self.on_mi_del_activate),
-            ("delete_tag", lambda w, a, p : self.app.browser.on_delete_tag_activate())
-        ]:
+            ("delete_tag", lambda w, a, p : self.app.browser.on_delete_tag_activate([self.tag]))
+        ]
+
+        for action_disc in actions:
             self.install_action(
-                ".".join(["tags_popup", action_disc[0]]), None, action_disc[1]
-            )
+                ".".join(["tags_popup", action_disc[0]]), None, action_disc[1])
 
         # Build up the menu
-        self.set_tag(tag)
-        self.__build_menu()
+        self.build_menu()
 
-    def __build_menu(self):
+
+    def build_menu(self):
         """Build up the widget"""
-        if self.tag is not None:
+        if self.tag:
             menu_builder = Gtk.Builder()
             menu_builder.add_from_file(GnomeConfig.MENUS_UI_FILE)
             menu_model = menu_builder.get_object("tag_context_menu")
-
-            if self.tag.is_search_tag():
-                self.mi_del_search_tag = Gio.MenuItem.new(_("Delete"), "tags_popup.delete_search_tag")
-                menu_model.append_item(self.mi_del_search_tag)
-            else:
-                self.mi_del_tag = Gio.MenuItem.new(_("Delete"), "tags_popup.delete_tag")
-                menu_model.append_item(self.mi_del_tag)
+            self.mi_del_tag = Gio.MenuItem.new(_("Delete"), "tags_popup.delete_tag")
+            menu_model.append_item(self.mi_del_tag)
 
             self.set_menu_model(menu_model)
 
-    # PUBLIC API ##############################################################
-    def set_tag(self, tag):
-        """Update the context menu items using the tag attributes."""
-        self.tag = tag
-        self.__build_menu()
 
     # CALLBACKS ###############################################################
     def on_mi_cc_activate(self, widget, action_name, param):
         """Callback: show the tag editor upon request"""
+
         self.app.open_tag_editor(self.tag)
 
-    def on_mi_ctag_activate(self, widget, action_name, param):
-        random_color = generate_tag_color()
-        present_color = self.tag.get_attribute('color')
-        if present_color is not None:
-            color_remove(present_color)
-        self.tag.set_attribute('color', random_color)
-        color_add(random_color)
 
-    def on_mi_del_activate(self, wudget, action_name, param):
-        """ delete a selected search """
-        self.req.remove_tag(self.tag.get_name())
+    def on_mi_ctag_activate(self, widget, action_name, param):
+
+        self.tag.color = self.ds.tags.generate_color()
+        self.ds.tags.tree_model.emit('items-changed', 0, 0, 0)
+
+
+class SearchesContextMenu(Gtk.PopoverMenu):
+    """Context menu fo the tag i the sidebar"""
+
+    def __init__(self, ds, app, search):
+        super().__init__(has_arrow=False)
+        self.search = search
+        self.app = app
+        self.ds = ds
+
+        actions = [
+            ("edit_search", lambda w, a, p: app.open_search_editor(search)),
+            ("delete_search", lambda w, a, p : ds.saved_searches.remove(self.search.id))
+        ]
+
+        for action_disc in actions:
+            self.install_action(
+                ".".join(["search_popup", action_disc[0]]), None, action_disc[1])
+
+        # Build up the menu
+        self.build_menu()
+
+
+    def build_menu(self):
+        """Build up the widget"""
+
+        menu_builder = Gtk.Builder()
+        menu_builder.add_from_file(GnomeConfig.MENUS_UI_FILE)
+        menu_model = menu_builder.get_object("search_context_menu")
+
+        self.set_menu_model(menu_model)
+
+
+    # CALLBACKS ###############################################################
+    def on_mi_cc_activate(self, widget, action_name, param):
+        """Callback: show the tag editor upon request"""
+
+        # self.app.open_tag_editor(self.tag)

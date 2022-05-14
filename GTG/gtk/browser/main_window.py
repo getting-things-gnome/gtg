@@ -38,7 +38,8 @@ from GTG.gtk.browser import quick_add
 from GTG.gtk.browser.backend_infobar import BackendInfoBar
 from GTG.gtk.browser.modify_tags import ModifyTagsDialog
 from GTG.gtk.browser.delete_tag import DeleteTagsDialog
-from GTG.gtk.browser.tag_context_menu import TagContextMenu
+# from GTG.gtk.browser.tag_context_menu import TagContextMenu
+from GTG.gtk.browser.sidebar import Sidebar
 # from GTG.gtk.browser.treeview_factory import TreeviewFactory
 from GTG.gtk.editor.calendar import GTGCalendar
 from GTG.gtk.tag_completion import TagCompletion
@@ -112,6 +113,8 @@ class MainWindow(Gtk.ApplicationWindow):
 
         # Timeout handler for search
         self.search_timeout = None
+
+        self.sidebar_container.set_child(Sidebar(app, app.ds))
 
         # Treeviews handlers
         # self.vtree_panes = {}
@@ -281,7 +284,7 @@ class MainWindow(Gtk.ApplicationWindow):
         # self.modifytags_dialog.set_transient_for(self)
         self.modifytags_dialog = None
 
-        self.deletetags_dialog = DeleteTagsDialog(self.req, self)
+        self.deletetags_dialog = DeleteTagsDialog(self)
         self.calendar = GTGCalendar()
         self.calendar.set_transient_for(self)
         self.calendar.connect("date-changed", self.on_date_changed)
@@ -316,10 +319,10 @@ class MainWindow(Gtk.ApplicationWindow):
         self.tagtreeview = self.tv_factory.tags_treeview(self.tagtree)
         self.tagtreeview.get_selection().connect('changed', self.on_select_tag)
 
-        self.tagpopup = TagContextMenu(self.req, self.app)
-        self.tagpopup.set_parent(self.sidebar_container)
-        self.tagpopup.set_halign(Gtk.Align.START)
-        self.tagpopup.set_position(Gtk.PositionType.BOTTOM)
+        # self.tagpopup = TagContextMenu(self.req, self.app)
+        # self.tagpopup.set_parent(self.sidebar_container)
+        # self.tagpopup.set_halign(Gtk.Align.START)
+        # self.tagpopup.set_position(Gtk.PositionType.BOTTOM)
 
         tagtree_gesture_single = Gtk.GestureSingle(button=Gdk.BUTTON_SECONDARY)
         tagtree_gesture_single.connect('begin', self.on_tag_treeview_click_begin)
@@ -977,9 +980,9 @@ class MainWindow(Gtk.ApplicationWindow):
             self.on_delete_tag_activate()
             return True
 
-    def on_delete_tag_activate(self):
-        tags = self.get_selected_tags()
-        self.deletetags_dialog.delete_tags_async(tags)
+    def on_delete_tag_activate(self, tags=[]):
+        tags = tags or self.get_selected_tags()
+        self.deletetags_dialog.show(tags)
 
     def on_delete_tag(self, event):
         tags = self.get_selected_tags()
