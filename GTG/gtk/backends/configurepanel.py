@@ -139,7 +139,8 @@ class ConfigurePanel(Gtk.Box):
         """
         Refreshes the state of the button that enables the backend
         """
-        self.sync_button.set_sensitive(not self.backend.is_default())
+        if self.backend.is_default():
+            self.sync_button.hide()
         if self.backend.is_enabled():
             label = _("Disable syncing")
         else:
@@ -178,6 +179,8 @@ class ConfigurePanel(Gtk.Box):
         self.parameters_ui.commit_changes()
         self.req.set_backend_enabled(self.backend.get_id(),
                                      not self.backend.is_enabled())
+
+        print(self.backend.get_id())
 
     def on_sync_started(self, sender, backend_id):
         """
