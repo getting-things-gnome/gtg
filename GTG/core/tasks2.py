@@ -275,6 +275,13 @@ class Task2(GObject.Object):
                              .replace(f'{tag_name}', ''))
 
 
+    def rename_tag(self, old_tag_name: str, new_tag_name: str) -> None:
+        """Replace a tag's name in the content."""
+
+        self.content = (self.content.replace(f'@{old_tag_name}', 
+                                             f'@{new_tag_name}'))
+
+
     @property
     def days_left(self) -> Optional[Date]:
         return self.date_due.days_left()
