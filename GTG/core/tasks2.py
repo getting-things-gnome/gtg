@@ -270,9 +270,9 @@ class Task2(GObject.Object):
         for t in self.tags:
             if t.name == tag_name:
                 self.tags.remove(t)
-                (self.content.replace(f'{tag_name}\n\n', '')
-                             .replace(f'{tag_name},', '')
-                             .replace(f'{tag_name}', ''))
+                self.content = (self.content.replace(f'{tag_name}\n\n', '')
+                                            .replace(f'{tag_name},', '')
+                                            .replace(f'{tag_name}', ''))
 
 
     def rename_tag(self, old_tag_name: str, new_tag_name: str) -> None:
