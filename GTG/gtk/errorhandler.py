@@ -1,6 +1,7 @@
 
 from gi.repository import GObject, GLib, Gtk
 from gettext import gettext as _
+from typing import Optional
 import traceback
 import sys
 import os
@@ -8,6 +9,7 @@ import platform
 import functools
 import enum
 import logging
+import configparser
 
 from GTG.core import info
 
@@ -141,7 +143,35 @@ def _collect_versions() -> str:
 * GTK {t2v(gtk_version)}, GLib {t2v(GLib.glib_version)}
 * PyGLib {t2v(GLib.pyglib_version)}, PyGObject {t2v(GObject.pygobject_version)}
 * {platform.platform()}"""
+
+    flatpak_info = _collect_flatpak_info()
+    if flatpak_info is not None:
+        versions += f"""
+* Flatpak {flatpak_info.get('Instance.flatpak-version')}
+* Flatpak runtime: {flatpak_info.get('Application.runtime')} ({flatpak_info.get('Instance.runtime-commit')})
+* Flatpak app: {flatpak_info.get('Application.name')} ({flatpak_info.get('Instance.app-commit')})"""
+
     return versions
+
+
+def _collect_flatpak_info() -> Optional[dict]:
+    """
+    Collect all kinds of information easily available when running inside
+    the flatpak environment.
+    Returns None if not running in a flatpak.
+    """
+    try:
+        fconfig = configparser.ConfigParser()
+        if fconfig.read('/.flatpak-info') == []:
+            return None
+        d = {}
+        for section in fconfig.sections():
+            for option in fconfig[section]:
+                d[f'{section}.{option}'] = fconfig[section][option]
+        return d
+    except Exception as e:  # Just in case
+        log.exception("Exception occurred while trying to collcet flatpak info")
+        return None
 
 
 def _format_exception(exception: Exception) -> str:
