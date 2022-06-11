@@ -19,7 +19,7 @@
 """Everything related to saved searches."""
 
 
-from gi.repository import GObject
+from gi.repository import GObject, Gio
 
 from uuid import uuid4, UUID
 from typing import Optional
@@ -108,6 +108,11 @@ class SavedSearchStore(BaseStore):
     #: Tag to look for in XML
     XML_TAG = 'savedSearch'
 
+    def __init__(self) -> None:
+        super().__init__()
+
+        self.model = Gio.ListStore.new(SavedSearch)
+
 
     def __str__(self) -> str:
         """String representation."""
@@ -163,5 +168,16 @@ class SavedSearchStore(BaseStore):
 
         self.data.append(search)
         self.lookup[search_id] = search
+        self.model.append(search)
 
         return search
+    
+
+    def add(self, item, parent_id: UUID = None) -> None:
+        """Add a tag to the tagstore."""
+
+        super().add(item, parent_id)
+        self.lookup[item.name] = item
+        self.model.append(item)
+
+        self.emit('added', item)
