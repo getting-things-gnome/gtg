@@ -40,9 +40,45 @@ class SavedSearch(GObject.Object):
 
     def __init__(self, id: UUID, name: str, query: str) -> None:
         self.id = id
-        self.name = name
-        self.query = query
-        self.icon = None
+        self._name = name
+        self._query = query
+        self._icon = None
+
+        super(SavedSearch, self).__init__()
+
+    @GObject.Property(type=str)
+    def name(self) -> str:
+        """Read only property."""
+
+        return self._name
+
+    @name.setter
+    def set_name(self, value: str) -> None:
+        self._name = value
+
+
+    @GObject.Property(type=str)
+    def icon(self) -> str:
+        """Read only property."""
+
+        return self._icon
+
+
+    @icon.setter
+    def set_icon(self, value: str) -> None:
+        self._icon = value
+
+
+    @GObject.Property(type=str)
+    def query(self) -> str:
+        """Read only property."""
+
+        return self._query
+
+
+    @query.setter
+    def set_query(self, value: str) -> None:
+        self._query = value
 
 
     def __str__(self) -> str:
