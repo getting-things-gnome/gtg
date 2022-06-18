@@ -105,10 +105,16 @@ class BaseStore(GObject.Object):
         """Remove an existing item from the store."""
 
         item = self.lookup[item_id]
-        parent = item.parent
+        
+        try:
+            parent = item.parent
 
-        for child in item.children:
-            del self.lookup[child.id]
+            for child in item.children:
+                del self.lookup[child.id]
+
+        except AttributeError:
+            parent = None
+
 
         if parent:
             parent.children.remove(item)
