@@ -428,21 +428,15 @@ class Sidebar(Gtk.ScrolledWindow):
         box = SearchBox()
         label = Gtk.Label()
         icon = Gtk.Label()
-        count_label = Gtk.Label()
 
         icon.set_margin_end(6)
         label.set_halign(Gtk.Align.START)
         label.set_hexpand(True)
 
-        count_label.set_halign(Gtk.Align.START)
-        count_label.add_css_class('dim-label')
-        count_label.set_text('0')
-
         box.set_margin_start(18)
 
         box.append(icon)
         box.append(label)
-        box.append(count_label)
         listitem.set_child(box)
 
         searches_RMB_controller = Gtk.GestureSingle(button=Gdk.BUTTON_SECONDARY)
@@ -455,7 +449,6 @@ class Sidebar(Gtk.ScrolledWindow):
 
         icon = listitem.get_child().get_first_child()
         label = icon.get_next_sibling()
-        count_label = icon.get_next_sibling()
         box = listitem.get_child()
 
         item = unwrap(listitem, SavedSearch)
