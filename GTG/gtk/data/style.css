@@ -84,3 +84,7 @@ textview check {
 .arrow-only-expander indent {
   -gtk-icon-size: 0px;
 }
+
+.closed-task {
+    opacity: 0.5;
+}
