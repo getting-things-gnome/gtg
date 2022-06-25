@@ -101,7 +101,6 @@ class Sidebar(Gtk.ScrolledWindow):
         searches_button.get_style_context().add_class('flat')
 
         searches_button.set_margin_top(6)
-        searches_button.set_margin_bottom(6)
         searches_button.set_margin_start(6)
         searches_button.set_margin_end(6)
 
@@ -159,7 +158,6 @@ class Sidebar(Gtk.ScrolledWindow):
         button.get_style_context().add_class('flat')
 
         button.set_margin_top(6)
-        button.set_margin_bottom(6)
         button.set_margin_start(6)
         button.set_margin_end(6)
 

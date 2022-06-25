@@ -44,6 +44,7 @@ gtg_browser_sources = [
   'browser/quick_add.py',
   'browser/sidebar.py',
   'browser/tag_pill.py',
+  'browser/task_pane.py',
 ]
 
 gtg_data_sources = [
