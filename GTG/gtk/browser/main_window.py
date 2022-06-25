@@ -40,6 +40,7 @@ from GTG.gtk.browser.modify_tags import ModifyTagsDialog
 from GTG.gtk.browser.delete_tag import DeleteTagsDialog
 # from GTG.gtk.browser.tag_context_menu import TagContextMenu
 from GTG.gtk.browser.sidebar import Sidebar
+from GTG.gtk.browser.task_pane import TaskPane
 # from GTG.gtk.browser.treeview_factory import TreeviewFactory
 from GTG.gtk.editor.calendar import GTGCalendar
 from GTG.gtk.tag_completion import TagCompletion
@@ -115,6 +116,7 @@ class MainWindow(Gtk.ApplicationWindow):
         self.search_timeout = None
 
         self.sidebar_container.set_child(Sidebar(app, app.ds))
+        self.open_pane.set_child(TaskPane(app))
 
         # Treeviews handlers
         # self.vtree_panes = {}
