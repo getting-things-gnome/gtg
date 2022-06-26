@@ -43,7 +43,7 @@ log = logging.getLogger(__name__)
 # REGEXES
 # ------------------------------------------------------------------------------
 
-TAG_REGEX = re.compile(r'^\B\@\w+(\-\w+)*\,+')
+TAG_REGEX = re.compile(r'^\B\@\w+(\-\w+)*\,*')
 SUB_REGEX = re.compile(r'\{\!.+\!\}')
 
 
