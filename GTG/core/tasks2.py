@@ -19,7 +19,7 @@
 """Everything related to tasks."""
 
 
-from gi.repository import GObject
+from gi.repository import GObject, Gio, Gtk
 from gettext import gettext as _
 
 from uuid import uuid4, UUID
@@ -332,6 +332,23 @@ class TaskStore(BaseStore):
     def __init__(self) -> None:
         super().__init__()
 
+        self.model = Gio.ListStore.new(Task2)
+        self.tree_model = Gtk.TreeListModel.new(self.model, False, False, self.model_expand)
+
+
+    def model_expand(self, item):
+        model = Gio.ListStore.new(Task2)
+
+        if type(item) == Gtk.TreeListRow:
+            item = item.get_item()
+
+        # open the first one
+        if item.children:
+            for child in item.children:
+                model.append(child)
+
+        return Gtk.TreeListModel.new(model, False, False, self.model_expand)
+
 
     def __str__(self) -> str:
         """String representation."""
@@ -356,8 +373,7 @@ class TaskStore(BaseStore):
         if parent:
             self.add(task, parent)
         else:
-            self.data.append(task)
-            self.lookup[tid] = task
+            self.add(task)
 
         self.emit('added', task)
         return task
@@ -494,6 +510,32 @@ class TaskStore(BaseStore):
             content.text = CDATA(text)
 
         return root
+
+    def add(self, item: Any, parent_id: UUID = None) -> None:
+        """Add a tag to the tagstore."""
+
+        super().add(item, parent_id)
+
+        if not parent_id:
+            self.model.append(item)
+
+        self.emit('added', item)
+
+
+    def parent(self, item_id: UUID, parent_id: UUID) -> None:
+
+        super().parent(item_id, parent_id)
+        item = self.lookup[item_id]
+        pos = self.model.find(item)
+        self.model.remove(pos[1])
+
+
+
+    def unparent(self, item_id: UUID, parent_id: UUID) -> None:
+
+        super().unparent(item_id, parent_id)
+        item = self.lookup[item_id]
+        self.model.append(item)
 
 
     def filter(self, filter_type: Filter, arg = None) -> list:
