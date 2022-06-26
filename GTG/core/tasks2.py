@@ -79,11 +79,6 @@ class Task2(GObject.Object):
     """A single task."""
 
     __gtype_name__ = 'gtg_Task'
-    __slots__ = ['id', 'raw_title', 'content', 'tags',
-                 'children', 'status', 'parent', '_date_added',
-                 '_date_due', '_date_start', '_date_closed',
-                 '_date_modified']
-
 
     def __init__(self, id: UUID, title: str) -> None:
         self.id = id
@@ -100,7 +95,10 @@ class Task2(GObject.Object):
         self._date_closed = Date.no_date()
         self._date_modified = Date(datetime.datetime.now())
 
+        super(Task2, self).__init__()
 
+
+    @GObject.Property(type=bool, default=True)
     def is_actionable(self) -> bool:
         """Determine if this task is actionable."""
 
@@ -229,7 +227,7 @@ class Task2(GObject.Object):
         self._date_modified = Date(value)
 
 
-    @property
+    @GObject.Property(type=str)
     def title(self) -> str:
         return self.raw_title
 
@@ -239,7 +237,7 @@ class Task2(GObject.Object):
         self.raw_title = value.strip('\t\n') or _('(no title)')
 
 
-    @property
+    @GObject.Property(type=str)
     def excerpt(self) -> str:
         if not self.content:
             return ''
@@ -530,7 +528,7 @@ class TaskStore(BaseStore):
             return [t for t in self.data if t.status != Status.ACTIVE]
 
         elif filter_type == Filter.ACTIONABLE:
-            return [t for t in self.data if t.is_actionable()]
+            return [t for t in self.data if t.is_actionable]
 
         elif filter_type == Filter.PARENT:
             return [t for t in self.lookup.values() if not t.parent]
