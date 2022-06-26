@@ -43,6 +43,7 @@ gtg_browser_sources = [
   'browser/treeview_factory.py',
   'browser/quick_add.py',
   'browser/sidebar.py',
+  'browser/tag_pill.py',
 ]
 
 gtg_data_sources = [
