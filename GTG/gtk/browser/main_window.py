@@ -116,7 +116,8 @@ class MainWindow(Gtk.ApplicationWindow):
         self.search_timeout = None
 
         self.sidebar_container.set_child(Sidebar(app, app.ds))
-        self.open_pane.set_child(TaskPane(app))
+        self.task_pane = TaskPane(app)
+        self.open_pane.set_child(self.task_pane)
 
         # Treeviews handlers
         # self.vtree_panes = {}
@@ -1384,74 +1385,18 @@ class MainWindow(Gtk.ApplicationWindow):
         for task in all_subtasks:
             self.app.close_task(task.get_id())
 
-    def on_mark_as_done(self, widget=None):
-        tasks_uid = [uid for uid in self.get_selected_tasks()
-                     if uid is not None]
-        if len(tasks_uid) == 0:
-            return
-        tasks = [self.req.get_task(uid) for uid in tasks_uid]
-        tasks_status = [task.get_status() for task in tasks]
-        for uid, task, status in zip(tasks_uid, tasks, tasks_status):
-            if status == Task.STA_DONE:
-                # Marking as undone
-                task.set_status(Task.STA_ACTIVE)
-                GObject.idle_add(self.emit, "task-marked-as-not-done", task.get_id())
-                # Parents of that task must be updated - not to be shown
-                # in workview, update children count, etc.
-                for parent_id in task.get_parents():
-                    parent = self.req.get_task(parent_id)
-                    parent.modified()
-            else:
-                task.set_status(Task.STA_DONE)
-                self.close_all_task_editors(uid)
-                GObject.idle_add(self.emit, "task-marked-as-done", task.get_id())
 
-        # TODO: New core
-        for uid in tasks_uid:
-            t = self.app.ds.tasks.get(uid)
-            t.toggle_active()
+    def on_mark_as_done(self, widget=None):
+        for task in self.task_pane.get_selection():
+            task.toggle_active()
 
     def on_dismiss_task(self, widget=None):
-        tasks_uid = [uid for uid in self.get_selected_tasks()
-                     if uid is not None]
-        if len(tasks_uid) == 0:
-            return
-        tasks = [self.req.get_task(uid) for uid in tasks_uid]
-        tasks_status = [task.get_status() for task in tasks]
-        for uid, task, status in zip(tasks_uid, tasks, tasks_status):
-            if status == Task.STA_DISMISSED:
-                task.set_status(Task.STA_ACTIVE)
-            else:
-                task.set_status(Task.STA_DISMISSED)
-                self.close_all_task_editors(uid)
-
-        # TODO: New core
-        for uid in tasks_uid:
-            t = self.app.ds.tasks.get(uid)
-            t.toggle_dismiss()
-
+        for task in self.task_pane.get_selection():
+            task.toggle_dismiss()
 
     def on_reopen_task(self, widget=None):
-        tasks_uid = [uid for uid in self.get_selected_tasks()
-                     if uid is not None]
-        tasks = [self.req.get_task(uid) for uid in tasks_uid]
-        tasks_status = [task.get_status() for task in tasks]
-        for uid, task, status in zip(tasks_uid, tasks, tasks_status):
-            if status == Task.STA_DONE:
-                task.set_status(Task.STA_ACTIVE)
-                GObject.idle_add(self.emit, "task-marked-as-not-done", task.get_id())
-                # Parents of that task must be updated - not to be shown
-                # in workview, update children count, etc.
-                for parent_id in task.get_parents():
-                    parent = self.req.get_task(parent_id)
-                    parent.modified()
-            elif status == Task.STA_DISMISSED:
-                task.set_status(Task.STA_ACTIVE)
-
-        # TODO: New core
-        for uid in tasks_uid:
-            t = self.app.ds.tasks.get(uid)
-            t.toggle_active()
+        for task in self.task_pane.get_selection():
+            task.toggle_active()
 
 
     def reapply_filter(self, current_pane: str = None):
