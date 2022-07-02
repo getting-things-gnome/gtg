@@ -85,7 +85,7 @@ class MainWindow(Gtk.ApplicationWindow):
     quickadd_entry = Gtk.Template.Child('quickadd_field')
     quickadd_pane = Gtk.Template.Child()
 
-    sidebar = Gtk.Template.Child('sidebar_vbox')
+    sidebar_vbox = Gtk.Template.Child('sidebar_vbox')
     sidebar_container = Gtk.Template.Child('sidebar-scroll')
     sidebar_notebook = Gtk.Template.Child()
 
@@ -115,7 +115,9 @@ class MainWindow(Gtk.ApplicationWindow):
         # Timeout handler for search
         self.search_timeout = None
 
-        self.sidebar_container.set_child(Sidebar(app, app.ds))
+        self.sidebar = Sidebar(app, app.ds)
+        self.sidebar_container.set_child(self.sidebar)
+
         self.task_pane = TaskPane(app)
         self.open_pane.set_child(self.task_pane)
 
@@ -151,8 +153,8 @@ class MainWindow(Gtk.ApplicationWindow):
         self.tagtree = None
         self.tagtreeview = None
 
-        self.sidebar.connect('notify::visible', self._on_sidebar_visible)
-        self.add_action(Gio.PropertyAction.new('sidebar', self.sidebar, 'visible'))
+        self.sidebar_vbox.connect('notify::visible', self._on_sidebar_visible)
+        self.add_action(Gio.PropertyAction.new('sidebar', self.sidebar_vbox, 'visible'))
 
         # Setup help overlay (shortcuts window)
         self.set_help_overlay(self.help_overlay)
@@ -608,7 +610,7 @@ class MainWindow(Gtk.ApplicationWindow):
             self.maximize()
 
         tag_pane = self.config.get("tag_pane")
-        self.sidebar.props.visible = tag_pane
+        self.sidebar_vbox.props.visible = tag_pane
 
         sidebar_width = self.config.get("sidebar_width")
         self.main_hpanes.set_position(sidebar_width)
@@ -727,7 +729,7 @@ class MainWindow(Gtk.ApplicationWindow):
     def on_sidebar_toggled(self, action, param):
         """Toggle tags sidebar via the action."""
 
-        self.sidebar.props.visible = not self.sidebar.props.visible
+        self.sidebar_vbox.props.visible = not self.sidebar_vbox.props.visible
 
     def _on_sidebar_visible(self, obj, param):
         """Visibility of the sidebar changed."""
@@ -811,7 +813,7 @@ class MainWindow(Gtk.ApplicationWindow):
 
     def focus_sidebar(self, action, param):
         """Callback to focus the sidebar widget."""
-        self.sidebar.props.visible = True
+        self.sidebar_vbox.props.visible = True
         self.tagtreeview.grab_focus()
 
     def on_quickadd_focus_in(self, controller):
@@ -828,88 +830,42 @@ class MainWindow(Gtk.ApplicationWindow):
         self.app.set_accels_for_action('win.delete_task', accels)
 
     @Gtk.Template.Callback()
-    def on_quickadd_activate(self, widget):
+    def on_quickadd_activate(self, widget) -> None:
         """ Add a new task from quickadd toolbar """
-        text = str(self.quickadd_entry.get_text())
-        text = text.strip()
-        if text:
-            tags = self.get_selected_tags(nospecial=True)
 
-            # We will select quick-added task in browser.
-            # This has proven to be quite complex and deserves an explanation.
-            # We register a callback on the sorted treemodel that we're
-            # displaying, which is a TreeModelSort. When a row gets added,
-            # we're notified of it.
-            # We have to verify that that row belongs to the task we should
-            # select. So, we have to wait for the task to be created, and then
-            # wait for its tid to show up (invernizzi)
-            def select_next_added_task_in_browser(treemodelsort, path, iter, self):
-                # copy() is required because boxed structures are not copied
-                # when passed in a callback without transfer
-                # See https://bugzilla.gnome.org/show_bug.cgi?id=722899
-                iter = iter.copy()
+        text = self.quickadd_entry.get_text().strip()
 
-                def selecter(treemodelsort, path, iter, self):
-                    self.__last_quick_added_tid_event.wait()
-                    treeview = self.vtree_panes['active']
-                    treemodelsort.disconnect(self.__quick_add_select_handle)
-                    selection = treeview.get_selection()
-                    selection.unselect_all()
-                    # Since we use iter for selection,
-                    # the task selected is bound to be correct
-                    selection.select_iter(iter)
-
-                # It cannot be another thread than the main gtk thread !
-                GLib.idle_add(selecter, treemodelsort, path, iter, self)
-
-            data = quick_add.parse(text)
-            # event that is set when the new task is created
-            self.__last_quick_added_tid_event = threading.Event()
-            # self.__quick_add_select_handle = \
-                # self.vtree_panes['active'].get_model().connect(
-                #     "row-inserted", select_next_added_task_in_browser,
-                #     self)
-            task = self.req.new_task(newtask=True)
-            self.__last_quick_added_tid = task.get_id()
-            self.__last_quick_added_tid_event.set()
-
-            # Combine tags from selection with tags from parsed text
-            data['tags'].update(tags)
-
-            if data['title'] != '':
-                task.set_title(data['title'])
-                task.set_to_keep()
-
-            for tag in data['tags']:
-                task.add_tag(tag)
-
-            task.set_start_date(data['start'])
-            task.set_due_date(data['due'])
-
-            if data['recurring']:
-                task.set_recurring(True, data['recurring'], newtask=True)
-
-            self.quickadd_entry.set_text('')
-
-            # TODO: New Core
-            new_t = self.app.ds.tasks.new(data['title'])
-            new_t.date_start = data['start']
-            new_t.date_due = data['due']
-            new_t.id = task.tid
-            self.app.ds.tasks.refresh_lookup_cache()
-
-
-            for tag in data['tags']:
-                _tag = self.app.ds.tags.new(tag)
-                new_t.add_tag(_tag)
-
-            # signal the event for the plugins to catch
-            GLib.idle_add(self.emit, "task-added-via-quick-add", task.get_id())
-        else:
+        if not text:
+            # TODO: Adapt this to new core
             # if no text is selected, we open the currently selected task
             nids = self.vtree_panes['active'].get_selected_nodes()
             for nid in nids:
                 self.app.open_task(nid)
+            
+            return
+            
+        tags = self.sidebar.selected_tags(names_only=True)
+        data = quick_add.parse(text)
+
+        # Combine tags from selection with tags from parsed text
+        data['tags'].update(tags)
+        self.quickadd_entry.set_text('')
+
+        task = self.app.ds.tasks.new(data['title'])
+        task.date_start = data['start']
+        task.date_due = data['due']
+        self.app.ds.tasks.refresh_lookup_cache()
+
+        #TODO: Add back recurring
+
+        for tag in data['tags']:
+            _tag = self.app.ds.tags.new(tag)
+            task.add_tag(_tag)
+
+        # signal the event for the plugins to catch
+        GLib.idle_add(self.emit, "task-added-via-quick-add", task.id)
+        self.task_pane.select_last()
+
 
     def on_tag_treeview_click_begin(self, gesture, sequence):
         """
