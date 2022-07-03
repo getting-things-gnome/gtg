@@ -41,11 +41,8 @@ from GTG.gtk.editor.recurring_menu import RecurringMenu
 from GTG.gtk.editor.taskview import TaskView
 from GTG.gtk.tag_completion import tag_filter
 from GTG.gtk.colors import rgb_to_hex
-from GTG.core.tasks2 import Task2
+from GTG.core.tasks2 import Task2, Status, DEFAULT_TITLE
 
-"""
-TODO (jakubbrindza): re-factor tag_filter into a separate module
-"""
 
 log = logging.getLogger(__name__)
 
@@ -84,34 +81,20 @@ class TaskEditor(Gtk.Window):
     due_entry = Gtk.Template.Child("duedate_entry")
     due_calendar = Gtk.Template.Child("calendar_due")
 
-    def __init__(self,
-                 requester,
-                 app,
-                 task,
-                 thisisnew=False,
-                 clipboard=None):
-        """
-        req is the requester
-        app is the view manager
-        thisisnew is True when a new task is created and opened
-        """
+    def __init__(self, app, task):
         super().__init__()
-        self.req = requester
-        self.app = app
-        self.browser_config = self.req.get_config('browser')
-        self.config = self.req.get_task_config(task.get_id())
-        self.time = None
-        self.clipboard = clipboard
 
-        # TODO: Remove old code when new core is stable
-        # If new add to new DS
-        if thisisnew and task.tid not in self.app.ds.tasks.lookup.keys():
-            new_task = Task2(task.tid, task.get_title())
-            self.app.ds.tasks.add(new_task)
+        self.app = app
+        self.ds = app.ds
+        self.task = task
+        self.config = app.config_core
+        self.task_config = self.config.get_task_config(str(task.id))
+        self.time = None
+        self.clipboard = app.clipboard
 
         self.set_application(app)
 
-        if task.has_parent():
+        if task.parent:
             self.parent_button.set_label(_('Open Parent'))
         else:
             self.parent_button.set_label(_('Add Parent'))
@@ -144,11 +127,14 @@ class TaskEditor(Gtk.Window):
         # So don't try to change anything with glade, this is a home-made
         # widget
         self.scrolled.set_child(None)
-        self.textview = TaskView(self.req, self.clipboard)
+        self.textview = TaskView(app.ds, task, self.clipboard)
         self.textview.set_vexpand(True)
         self.scrolled.set_child(self.textview)
-        conf_font_name = self.browser_config.get("font_name")
-        conf_font_size = self.browser_config.get("font_size")
+
+        browser_config = self.config.get_subconfig('browser')
+        conf_font_name = browser_config.get("font_name")
+        conf_font_size = browser_config.get("font_size")
+
         if conf_font_name or conf_font_size:
             provider = Gtk.CssProvider.new()
             family_string = f'font-family:{conf_font_name};' if conf_font_name else ''
@@ -163,9 +149,21 @@ class TaskEditor(Gtk.Window):
                 provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
             )
 
+        # self.textview.browse_tag_cb = app.select_tag
+        # self.textview.new_subtask_cb = self.new_subtask
+        # self.textview.get_subtasks_cb = task.get_children
+        # self.textview.delete_subtask_cb = self.remove_subtask
+        # self.textview.rename_subtask_cb = self.rename_subtask
+        # self.textview.open_subtask_cb = self.open_subtask
+        # self.textview.save_cb = self.light_save
+        # self.textview.add_tasktag_cb = self.tag_added
+        # self.textview.remove_tasktag_cb = self.tag_removed
+        # self.textview.refresh_cb = self.refresh_editor
+        # self.textview.get_tagslist_cb = task.get_tags_name
+        # self.textview.tid = task.id
+
         self.textview.browse_tag_cb = app.select_tag
         self.textview.new_subtask_cb = self.new_subtask
-        self.textview.get_subtasks_cb = task.get_children
         self.textview.delete_subtask_cb = self.remove_subtask
         self.textview.rename_subtask_cb = self.rename_subtask
         self.textview.open_subtask_cb = self.open_subtask
@@ -173,8 +171,7 @@ class TaskEditor(Gtk.Window):
         self.textview.add_tasktag_cb = self.tag_added
         self.textview.remove_tasktag_cb = self.tag_removed
         self.textview.refresh_cb = self.refresh_editor
-        self.textview.get_tagslist_cb = task.get_tags_name
-        self.textview.tid = task.tid
+        self.textview.tid = task.id
 
         # Voila! it's done
         textview_focus_controller = Gtk.EventControllerFocus()
@@ -182,17 +179,9 @@ class TaskEditor(Gtk.Window):
         textview_focus_controller.connect("leave", self.on_textview_focus_out)
         self.textview.add_controller(textview_focus_controller)
 
-        """
-        TODO(jakubbrindza): Once all the functionality in editor is back and
-        working, bring back also the accelerators! Dayleft_label needs to be
-        brought back, however its position is unsure.
-        """
-        # self.dayleft_label = self.builder.get_object("dayleft")
-
-        self.task = task
-        tags = task.get_tags()
-        text = self.task.get_text()
-        title = self.task.get_title()
+        tags = task.tags
+        text = self.task.content
+        title = self.task.title
 
         # Insert text and tags as a non_undoable action, otherwise
         # the user can CTRL+Z even this inserts.
@@ -204,45 +193,44 @@ class TaskEditor(Gtk.Window):
 
             # Insert any remaining tags
             if tags:
-                tag_names = [t.get_name() for t in tags]
+                tag_names = [t.name for t in tags]
                 self.textview.insert_tags(tag_names)
         else:
             # If not text, we insert tags
             if tags:
-                tag_names = [t.get_name() for t in tags]
+                tag_names = [t.name for t in tags]
                 self.textview.insert_tags(tag_names)
                 start = self.textview.buffer.get_end_iter()
                 self.textview.buffer.insert(start, '\n')
 
         # Insert subtasks if they weren't inserted in the text
-        subtasks = task.get_children()
+        subtasks = task.children
         for sub in subtasks:
             if sub not in self.textview.subtasks['tags']:
                 self.textview.insert_existing_subtask(sub)
 
-        if thisisnew:
-            self.textview.select_title()
-        else:
-            self.task.set_to_keep()
+        # if thisisnew:
+        #     self.textview.select_title()
+        # else:
+            # self.task.set_to_keep()
 
         self.textview.buffer.end_irreversible_action()
-        self.connect("close-request", self.destruction)
 
         # Connect search field to tags popup
         self.tags_tree.set_search_entry(self.tags_entry)
         self.tags_tree.set_search_equal_func(self.search_function, None)
 
         # Recurrence
-        self.recurring_menu = RecurringMenu(self.req, task.tid, self)
-        self.recurring_menu.connect('notify::is-task-recurring', self.sync_repeat_button)
-        self.repeat_button.set_popover(self.recurring_menu)
-        self.sync_repeat_button()
+        # self.recurring_menu = RecurringMenu(self.req, task.tid, self)
+        # self.recurring_menu.connect('notify::is-task-recurring', self.sync_repeat_button)
+        # self.repeat_button.set_popover(self.recurring_menu)
+        # self.sync_repeat_button()
 
         # plugins
-        self.pengine = PluginEngine()
-        self.plugin_api = PluginAPI(self.req, self.app, self)
-        self.pengine.register_api(self.plugin_api)
-        self.pengine.onTaskLoad(self.plugin_api)
+        # self.pengine = PluginEngine()
+        # self.plugin_api = PluginAPI(self.req, self.app, self)
+        # self.pengine.register_api(self.plugin_api)
+        # self.pengine.onTaskLoad(self.plugin_api)
 
         # Putting the refresh callback at the end make the start a lot faster
         self.refresh_editor()
@@ -250,6 +238,7 @@ class TaskEditor(Gtk.Window):
 
         self.init_dimensions()
 
+        self.connect("close-request", self.destruction)
         self.textview.set_editable(True)
         self.set_transient_for(self.app.browser)
         self.show()
@@ -257,8 +246,7 @@ class TaskEditor(Gtk.Window):
 
     def tag_added(self, name):
 
-        self.task.tag_added(name)
-        t = self.app.ds.tasks.get(self.task.tid)
+        t = self.app.ds.tasks.get(self.task.id)
         t.add_tag(self.app.ds.tags.new(name))
 
 
@@ -269,11 +257,10 @@ class TaskEditor(Gtk.Window):
         t.remove_tag(name)
 
 
-    @Gtk.Template.Callback()
     def show_popover_start(self, _=None):
         """Open the start date calendar popup."""
 
-        start_date = (self.task.get_start_date() or Date.today()).date()
+        start_date = (self.task.date_start or Date.today()).date()
 
         with signal_handler_block(self.start_calendar, self.start_handle):
             gtime = GLib.DateTime.new_local(start_date.year, start_date.month, start_date.day, 0, 0, 0)
@@ -284,7 +271,7 @@ class TaskEditor(Gtk.Window):
     def show_popover_due(self, _=None):
         """Open the due date calendar popup."""
 
-        due_date = self.task.get_due_date()
+        due_date = self.task.date_due
 
         if not due_date or due_date.is_fuzzy():
             due_date = Date.today()
@@ -300,7 +287,7 @@ class TaskEditor(Gtk.Window):
     def show_popover_closed(self, _=None):
         """Open the closed date calendar popup."""
 
-        closed_date = self.task.get_closed_date().date()
+        closed_date = self.task.date_closed
 
         with signal_handler_block(self.closed_calendar, self.closed_handle):
             gtime = GLib.DateTime.new_local(closed_date.year, closed_date.month, closed_date.day, 0, 0, 0)
@@ -310,29 +297,19 @@ class TaskEditor(Gtk.Window):
 
     @Gtk.Template.Callback()
     def sync_tag_store(self, widget=None):
+
         self.tag_store.clear()
+        used = set()
+        
+        for used_tag in self.task.tags:
+            # First parameter marks the tag as used
+            self.tag_store.append((True, used_tag.name))
+            used.add(used_tag.name)
 
-        tags = self.req.get_tag_tree().get_all_nodes()
-
-        used_tags = self.task.get_tags()
-
-        special_tags = ["search",
-                        "gtg-tags-all",
-                        "gtg-tags-none",
-                        "gtg-tags-sep"]
-
-        for tagname in tags:
-            tag = self.req.get_tag(tagname)
-            if tag_filter(tag) \
-                    and tagname not in special_tags \
-                    and "__SAVED_SEARCH_" not in tagname:
-                is_used = tag in used_tags
-                self.tag_store.append([is_used, tagname])
-                """
-                TODO(jakubbrindza): add sorting of the tags based on
-                True | False and within each sub-group arrange them
-                alphabetically
-                """
+        for tag_name in self.ds.tags.lookup_names.keys():
+            if tag_name not in used:
+                self.tag_store.append((False, tag_name))
+            
 
     def sync_repeat_button(self, object=None, pspec=None):
         if self.recurring_menu.is_task_recurring:
@@ -449,7 +426,7 @@ class TaskEditor(Gtk.Window):
     def init_dimensions(self):
         """ Sets up size of task if possible """
 
-        size = self.config.get('size')
+        size = self.task_config.get('size')
 
         if size:
             try:
@@ -467,20 +444,22 @@ class TaskEditor(Gtk.Window):
     def refresh_editor(self, title=None, refreshtext=False):
         if self is None:
             return
+
         to_save = False
+
         # title of the window
         if title:
             self.set_title(title)
             to_save = True
         else:
-            self.set_title(self.task.get_title())
+            self.set_title(self.task.title)
 
-        status = self.task.get_status()
-        if status == Task.STA_DISMISSED:
+        status = self.task.status
+        if status == Status.ACTIVE:
             self.donebutton.show()
             self.undonebutton.hide()
             self.set_dismissable_in_menu(False)
-        elif status == Task.STA_DONE:
+        elif status == Status.DONE:
             self.donebutton.hide()
             self.undonebutton.show()
             self.set_dismissable_in_menu(True)
@@ -490,7 +469,7 @@ class TaskEditor(Gtk.Window):
             self.set_dismissable_in_menu(True)
 
         # Refreshing the parent button
-        if self.task.has_parent():
+        if self.task.parent:
             # Translators: Button label to open the parent task
             self.parent_button.set_label(_('Open Parent'))
         else:
@@ -498,7 +477,7 @@ class TaskEditor(Gtk.Window):
             self.parent_button.set_label(_('Add Parent'))
 
         # Refreshing the status bar labels and date boxes
-        if status in [Task.STA_DISMISSED, Task.STA_DONE]:
+        if status in [Status.DISMISSED, Status.DONE]:
             self.start_box.hide()
             self.closed_box.show()
         else:
@@ -506,7 +485,7 @@ class TaskEditor(Gtk.Window):
             self.start_box.show()
 
         # refreshing the start date field
-        startdate = self.task.get_start_date()
+        startdate = self.task.date_start
         try:
             prevdate = Date.parse(self.start_entry.get_text())
             update_date = startdate != prevdate
@@ -517,7 +496,7 @@ class TaskEditor(Gtk.Window):
             self.start_entry.set_text(startdate.localized_str)
 
         # refreshing the due date field
-        duedate = self.task.get_due_date()
+        duedate = self.task.date_due
         try:
             prevdate = Date.parse(self.due_entry.get_text())
             update_date = duedate != prevdate
@@ -528,18 +507,12 @@ class TaskEditor(Gtk.Window):
             self.due_entry.set_text(duedate.localized_str)
 
         # refreshing the closed date field
-        closeddate = self.task.get_closed_date()
+        closeddate = self.task.date_closed
         prevcldate = Date.parse(self.closed_entry.get_text())
+
         if closeddate != prevcldate:
             self.closed_entry.set_text(closeddate.localized_str)
 
-        # refreshing the day left label
-        """
-        TODO(jakubbrindza): re-enable refreshing the day left.
-        We need to come up how and where this information is viewed
-        in the editor window.
-        """
-        # self.refresh_day_left()
 
         if refreshtext:
             self.textview.modified(refresheditor=False)
@@ -589,13 +562,17 @@ class TaskEditor(Gtk.Window):
     def reload_editor(self):
         task = self.task
         textview = self.textview
-        task_text = task.get_text()
-        task_title = task.get_title()
+        task_text = task.content
+        task_title = task.title
+        
         textview.set_text(f"{task_title}\n")
+
         if task_text:
             textview.insert(f"{task_text}")
-        task.set_title(task_title)
+
+        task.title = task_title
         textview.modified(full=True)
+
 
     def date_changed(self, widget, data):
         try:
@@ -617,22 +594,17 @@ class TaskEditor(Gtk.Window):
             datetoset = None
 
         if datetoset is not None:
-            # TODO: New Core
-            t = self.app.ds.tasks.get(self.task.tid)
 
             if date_kind == GTGCalendar.DATE_KIND_START:
-                self.task.set_start_date(datetoset)
-                t.date_start = datetoset
+                self.task.date_start = datetoset
                 self.start_popover.popdown()
 
             elif date_kind == GTGCalendar.DATE_KIND_DUE:
-                self.task.set_due_date(datetoset)
-                t.date_due = datetoset
+                self.task.date_due = datetoset
                 self.due_popover.popdown()
 
             elif date_kind == GTGCalendar.DATE_KIND_CLOSED:
-                self.task.set_closed_date(datetoset)
-                t.date_closed = datetoset
+                self.task.date_closed = datetoset
                 self.closed_popover.popdown()
 
             self.refresh_editor()
@@ -651,18 +623,18 @@ class TaskEditor(Gtk.Window):
     def on_duedate_fuzzy(self, widget, date):
         """ Callback when a fuzzy date is selected through the popup. """
 
-        self.task.set_due_date(date)
+        self.task.date_due = date
         self.due_entry.set_text(date.localized_str)
 
     def on_date_cleared(self, widget, kind):
         """ Callback when a date is cleared through the popups. """
 
         if kind == GTGCalendar.DATE_KIND_START:
-            self.task.set_start_date(Date.no_date())
+            self.task.date_start = Date.no_date()
             self.start_entry.set_text('')
 
         elif kind == GTGCalendar.DATE_KIND_DUE:
-            self.task.set_due_date(Date.no_date())
+            self.task.date_due = Date.no_date()
             self.due_entry.set_text('')
 
     def on_date_selected(self, calendar, kind):
@@ -671,25 +643,25 @@ class TaskEditor(Gtk.Window):
         date = self.calendar_to_datetime(calendar)
 
         if kind == GTGCalendar.DATE_KIND_START:
-            self.task.set_start_date(Date(date))
+            self.task.date_start = Date(date)
             self.start_entry.set_text(Date(date).localized_str)
 
         elif kind == GTGCalendar.DATE_KIND_DUE:
-            self.task.set_due_date(Date(date))
+            self.task.date_due = Date(date)
             self.due_entry.set_text(Date(date).localized_str)
 
         elif kind == GTGCalendar.DATE_KIND_CLOSED:
-            self.task.set_closed_date(Date(date))
+            self.task.date_closed = Date(date)
             self.closed_entry.set_text(Date(date).localized_str)
 
     def on_date_changed(self, calendar):
         date, date_kind = calendar.get_selected_date()
         if date_kind == GTGCalendar.DATE_KIND_DUE:
-            self.task.set_due_date(date)
+            self.task.date_due = date
         elif date_kind == GTGCalendar.DATE_KIND_START:
-            self.task.set_start_date(date)
+            self.task.date_start = date
         elif date_kind == GTGCalendar.DATE_KIND_CLOSED:
-            self.task.set_closed_date(date)
+            self.task.date_closed = date
         self.refresh_editor()
 
     def close_all_subtasks(self):
@@ -707,73 +679,65 @@ class TaskEditor(Gtk.Window):
             self.app.close_task(task.get_id())
 
     def dismiss(self):
-        stat = self.task.get_status()
-        t = self.app.ds.tasks.get(self.task.tid)
-        t.toggle_dismissed()
+        self.task.toggle_dismissed()
+        self.refresh_editor()
 
-        if stat == Task.STA_DISMISSED:
-            self.task.set_status(Task.STA_ACTIVE)
-            self.refresh_editor()
-        else:
-            self.task.set_status(Task.STA_DISMISSED)
+        if self.task.status != Status.ACTIVE:
             self.close_all_subtasks()
             self.close(None)
+
 
     def change_status(self):
-        stat = self.task.get_status()
-        t = self.app.ds.tasks.get(self.task.tid)
-        t.toggle_active()
+        self.task.toggle_active()
+        self.refresh_editor()
 
-        if stat == Task.STA_DONE:
-            self.task.set_status(Task.STA_ACTIVE)
-            self.refresh_editor()
-        else:
-            self.task.set_status(Task.STA_DONE)
+        if self.task.status != Status.ACTIVE:
             self.close_all_subtasks()
             self.close(None)
 
-    def reopen(self):
-        t = self.app.ds.tasks.get(self.task.tid)
-        t.toggle_active()
 
-        self.task.set_status(Task.STA_ACTIVE)
+    def reopen(self):
+        self.task.toggle_active()
         self.refresh_editor()
 
     def open_subtask(self, tid):
         """Open subtask (closing parent task)."""
 
-        task = self.req.get_task(tid)
-        self.app.open_task(tid)
-        self.app.close_task(task.parents[0])
+        task = self.ds.tasks.lookup[tid]
+        self.app.open_task(task)
+        
+        if task.parent:
+            self.app.close_task(task.parent.id)
 
-    # Take the title as argument and return the subtask ID
     def new_subtask(self, title=None, tid=None):
         if tid:
-            self.task.add_child(tid)
-            self.app.ds.tasks.parent(self.task.tid, tid)
-        elif title:
-            subt = self.task.new_subtask()
-            subt.set_title(title)
-            tid = subt.get_id()
+            self.app.ds.tasks.parent(self.task.id, tid)
 
-            # TODO: New Core
-            t = self.app.ds.tasks.new(title, self.task.tid)
-            t.id = tid
+            return self.app.ds.tasks.lookup[tid]
+        
+        elif title and not tid:
+            t = self.app.ds.tasks.new(title, self.task.id)
+            tid = t.id
             self.app.ds.tasks.refresh_lookup_cache()
 
-        return tid
+            return t
+        
+        elif title and tid:
+            t = self.app.ds.tasks.new(title, self.task.id)
+            t.id = tid
+            self.app.ds.tasks.refresh_lookup_cache()
+            
+            return t
 
     def remove_subtask(self, tid):
         """Remove a subtask of this task."""
 
-        self.task.remove_child(tid)
         self.app.ds.tasks.unparent(tid, self.task.tid)
 
     def rename_subtask(self, tid, new_title):
         """Rename a subtask of this task."""
 
         try:
-            self.req.get_task(tid).set_title(new_title)
             self.app.ds.tasks.get(tid).title = new_title
         except (AttributeError, KeyError):
             # There's no task at that tid
@@ -797,34 +761,22 @@ class TaskEditor(Gtk.Window):
         then close the child to avoid various window management issues
         and to prevent visible content divergence when the child title changes.
         """
-        parents = self.task.get_parents()
+        parent = self.task.parent
         self.save()
 
-        if not parents:
-            tags = [t.get_name() for t in self.task.get_tags()]
-            parent = self.req.new_task(tags=tags, newtask=True)
-            parent_id = parent.get_id()
+        if not parent:
+            parent = self.ds.tasks.new()
+            parent.tags = self.task.tags
+            self.app.ds.tasks.parent(self.task.id, parent.id)
 
-            self.task.set_parent(parent_id)
+            self.app.open_task(parent)
 
-            # TODO: New Core, remove old code when stable
-            parent2 = Task2(title=_('New Task'), id=parent_id)
-            parent2.tags = self.app.ds.tasks.get(self.task.tid).tags
-            self.app.ds.tasks.add(parent2)
-            self.app.ds.tasks.parent(self.task.tid, parent2.id)
-
-
-            self.app.open_task(parent_id)
             # Prevent WM issues and risks of conflicting content changes:
             self.close()
 
-        elif len(parents) == 1:
-            self.app.open_task(parents[0])
-            # Prevent WM issues and risks of conflicting content changes:
-            self.close()
+        else:
+            self.app.open_task(parent)
 
-        elif len(parents) > 1:
-            self.show_multiple_parent_popover(parents)
 
     def show_multiple_parent_popover(self, parent_ids):
         parent_box = Gtk.Box.new(Gtk.Orientation.VERTICAL, 0)
@@ -848,18 +800,15 @@ class TaskEditor(Gtk.Window):
         self.close()
 
     def save(self):
-        self.task.set_title(self.textview.get_title())
-        self.task.set_text(self.textview.get_text())
-        self.task.sync()
-        if self.config is not None:
-            self.config.save()
-        self.time = time.time()
-
-        # TODO: New core, remove previous code once stable
-        t = self.app.ds.tasks.get(self.task.tid)
+        t = self.app.ds.tasks.get(self.task.id)
         t.title = self.textview.get_title()
         t.contents = self.textview.get_text()
         self.app.ds.save()
+
+        if self.task_config is not None:
+            self.task_config.save()
+
+        self.time = time.time()
 
 
     # light_save save the task without refreshing every 30seconds
@@ -881,7 +830,7 @@ class TaskEditor(Gtk.Window):
     def on_resize(self, widget, gparam):
         """ Save size of window """
         if self.get_realized():
-            self.config.set('size', list(self.get_default_size()))
+            self.task_config.set('size', list(self.get_default_size()))
 
     def on_textview_focus_in(self, controller):
         self.app.browser.toggle_delete_accel(False)
@@ -919,26 +868,31 @@ class TaskEditor(Gtk.Window):
             self.destroy()
             self = None
 
+
+    def is_new(self) -> bool:
+        return (self.task.title == DEFAULT_TITLE 
+                and self.textview.buffer.get_text() == '')
+        
+
     def destruction(self, _=None):
         """Callback when closing the window."""
 
         # Save should be also called when buffer is modified
-        self.pengine.onTaskClose(self.plugin_api)
-        self.pengine.remove_api(self.plugin_api)
+        # self.pengine.onTaskClose(self.plugin_api)
+        # self.pengine.remove_api(self.plugin_api)
 
-        tid = self.task.get_id()
+        tid = self.task.id
 
-        if self.task.is_new():
-            self.req.delete_task(tid)
+        if self.is_new():
             self.app.ds.tasks.remove(tid)
         else:
             self.save()
-            [sub.set_to_keep() for sub in self.task.get_subtasks() if sub]
 
         try:
             del self.app.open_tasks[tid]
         except KeyError:
             log.debug('Task %s was already removed from the open list', tid)
+
 
     def get_task(self):
         return self.task
