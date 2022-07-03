@@ -26,7 +26,8 @@ import logging
 
 from gi.repository import Gtk, GLib, Gdk, GObject, GtkSource
 
-from GTG.core.requester import Requester
+from GTG.core.datastore2 import Datastore2
+from GTG.core.tasks2 import Status
 import GTG.core.urlregex as url_regex
 from webbrowser import open as openurl
 from gettext import gettext as _
@@ -75,10 +76,10 @@ class TaskView(GtkSource.View):
     PROCESSING_DELAY = 250
 
 
-    def __init__(self, req: Requester, clipboard) -> None:
+    def __init__(self, ds: Datastore2, task, clipboard) -> None:
         super().__init__()
 
-        self.req = req
+        self.ds = ds
         self.clipboard = clipboard
 
         # The timeout handler
@@ -90,12 +91,12 @@ class TaskView(GtkSource.View):
         # Tags applied to this task
         self.task_tags = set()
 
+        self.task = task
+
         # Callbacks. These need to be set after init
         self.browse_tag_cb = NotImplemented
         self.add_tasktag_cb = NotImplemented
         self.remove_tasktag_cb = NotImplemented
-        self.get_subtasks_cb = NotImplemented
-        self.get_taglist_cb = NotImplemented
         self.new_subtask_cb = NotImplemented
         self.open_task_cb = NotImplemented
         self.delete_subtask_cb = NotImplemented
@@ -264,17 +265,16 @@ class TaskView(GtkSource.View):
             self.buffer.end_irreversible_action()
 
             # Add new subtask
-            tid = self.new_subtask_cb(text[2:])
-            task = self.req.get_task(tid)
-            status = task.get_status() if task else 'Active'
+            task = self.new_subtask_cb(text[2:])
+            status = task.status if task else 'Active'
 
             # Add the checkbox
-            self.add_checkbox(tid, start)
+            self.add_checkbox(task.id, start)
             after_checkbox = start.copy()
             after_checkbox.forward_char()
 
             # Add the internal link
-            link_tag = InternalLinkTag(tid, status)
+            link_tag = InternalLinkTag(task.id, status)
             self.table.add(link_tag)
 
             end = start.copy()
@@ -284,11 +284,11 @@ class TaskView(GtkSource.View):
 
             # Add the subtask tag
             start.backward_char()
-            subtask_tag = SubTaskTag(tid)
+            subtask_tag = SubTaskTag(task.id)
             self.table.add(subtask_tag)
             self.buffer.apply_tag(subtask_tag, start, end)
 
-            self.subtasks['tags'].append(tid)
+            self.subtasks['tags'].append(task.id)
             return True
 
         # A subtask already exists
@@ -306,11 +306,11 @@ class TaskView(GtkSource.View):
 
             # Don't auto-remove it
             tid = sub_tag.tid
-            task = self.req.get_task(tid)
-            parents = task.get_parents()
+            task = self.ds.tasks.lookup[tid]
+            parent = task.parent
 
             # Remove if its not a child of this task
-            if not parents or parents[0] != self.tid:
+            if not parent or parent != self.task:
                 log.debug('Task %s is not a subtask of %s', tid, self.tid)
                 log.debug('Removing subtask %s from content', tid)
 
@@ -354,7 +354,7 @@ class TaskView(GtkSource.View):
             self.rename_subtask_cb(tid, text)
 
             # Get the task and instantiate an internal link tag
-            status = task.get_status() if task else 'Active'
+            status = str(task.status) if task else 'Active'
             link_tag = InternalLinkTag(tid, status)
             self.table.add(link_tag)
 
@@ -381,7 +381,7 @@ class TaskView(GtkSource.View):
     def on_checkbox_toggle(self, tid: uuid4) -> None:
         """Toggle a task status and refresh the subtask tag."""
 
-        task = self.req.get_task(tid)
+        task = self.ds.tasks.lookup[tid]
 
         if not task:
             log.warn('Failed to toggle status for %s', tid)
@@ -394,10 +394,10 @@ class TaskView(GtkSource.View):
     def add_checkbox(self, tid: int, start: Gtk.TextIter) -> None:
         """Add a checkbox for a subtask."""
 
-        task = self.req.get_task(tid)
+        task = self.ds.tasks.lookup[tid]
         checkbox = Gtk.CheckButton.new()
 
-        if task and task.status != task.STA_ACTIVE:
+        if task and task.status != Status.ACTIVE:
             checkbox.set_active(True)
 
         checkbox.connect('toggled', lambda _: self.on_checkbox_toggle(tid))
@@ -432,7 +432,7 @@ class TaskView(GtkSource.View):
             # I find this confusing too :)
             tag_name = match.group(0)
             tag_name = tag_name.replace('@', '')
-            tag_tag = TaskTagTag(tag_name, self.req)
+            tag_tag = TaskTagTag(tag_name, self.ds)
             self.tags_applied.append(tag_tag)
 
             self.table.add(tag_tag)
@@ -457,7 +457,7 @@ class TaskView(GtkSource.View):
             url_end.forward_chars(match.end())
 
             tid = match.group(0).replace('gtg://', '')
-            task = self.req.get_task(tid)
+            task = self.ds.tasks.lookup[tid]
 
             if task:
                 link_tag = InternalLinkTag(task)
@@ -760,10 +760,15 @@ class TaskView(GtkSource.View):
         # Insert subtasks. Remove existing subtasks from the list, we
         # will delete the rest at the end
         for sub in subtasks.copy():
-            self.insert_existing_subtask(*sub)
+            try:
+                _sub = self.ds.tasks.get(sub[0])
+                self.insert_existing_subtask(_sub, sub[1])
 
-            if self.req.has_task(sub[0]):
-                subtasks.remove(sub)
+                if sub[0] in self.ds.tasks.lookup.keys():
+                    subtasks.remove(sub)
+            except KeyError:
+                # The task has been deleted
+                pass
 
         # Remove non-existing subtasks (subtasks that have been deleted)
         for sub in subtasks:
@@ -829,11 +834,11 @@ class TaskView(GtkSource.View):
         self.buffer.place_cursor(cursor_iter)
 
 
-    def insert_existing_subtask(self, tid: str, line: int = None) -> None:
+    def insert_existing_subtask(self, task, line: int = None) -> None:
         """Insert an existing subtask in the buffer."""
 
         # Check if the task exists first
-        if not self.req.has_task(tid):
+        if task.id not in self.ds.tasks.lookup.keys():
             log.debug('Task %s not found', tid)
             return
 
@@ -846,31 +851,30 @@ class TaskView(GtkSource.View):
             line = start.get_line()
 
         # Add subtask name
-        task = self.req.get_task(tid)
-        self.buffer.insert(start, task.get_title())
+        self.buffer.insert(start, task.title)
 
         # Reset iterator
         _, start = self.buffer.get_iter_at_line(line)
 
         # Add checkbox
-        self.add_checkbox(tid, start)
+        self.add_checkbox(task.id, start)
 
         # Apply link to subtask text
         end = start.copy()
         end.forward_to_line_end()
 
-        link_tag = InternalLinkTag(tid, task.get_status())
+        link_tag = InternalLinkTag(task.id, str(task.status))
         self.table.add(link_tag)
         self.buffer.apply_tag(link_tag, start, end)
         self.tags_applied.append(link_tag)
 
         # Apply subtask tag to everything
         start.backward_char()
-        subtask_tag = SubTaskTag(tid)
+        subtask_tag = SubTaskTag(task.id)
         self.table.add(subtask_tag)
         self.buffer.apply_tag(subtask_tag, start, end)
 
-        self.subtasks['tags'].append(tid)
+        self.subtasks['tags'].append(task.id)
 
 
     # --------------------------------------------------------------------------

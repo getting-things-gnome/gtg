@@ -614,8 +614,7 @@ class MainWindow(Gtk.ApplicationWindow):
 
         sidebar_width = self.config.get("sidebar_width")
         self.main_hpanes.set_position(sidebar_width)
-        self.main_hpanes.connect('notify::position',
-                                                       self.on_sidebar_width)
+        self.main_hpanes.connect('notify::position', self.on_sidebar_width)
 
         # Callbacks for sorting and restoring previous state
         # model = self.vtree_panes['active'].get_model()
@@ -633,16 +632,17 @@ class MainWindow(Gtk.ApplicationWindow):
         #                                               PANE_STACK_NAMES_MAP_INVERTED['active'])
         # self.stack_switcher.get_stack().set_visible_child_name(view_name)
 
-        def open_task(req, t):
+        def open_task(ds, tid):
             """ Open the task if loaded. Otherwise ask for next iteration """
-            if req.has_task(t):
-                self.app.open_task(t)
+            try:
+                task = ds.tasks.lookup[tid]
+                self.app.open_task(task)
                 return False
-            else:
+            except KeyError:
                 return True
 
         for t in self.config.get("opened_tasks"):
-            GLib.idle_add(open_task, self.req, t)
+            GLib.idle_add(open_task, self.app.ds, t)
 
     def refresh_all_views(self, timer):
         collapsed = self.config.get("collapsed_tasks")
@@ -1099,9 +1099,9 @@ class MainWindow(Gtk.ApplicationWindow):
             self.app.open_task(new_parent.get_id(), new=True)
 
     def on_edit_active_task(self, widget=None, row=None, col=None):
-        tid = self.get_selected_task()
-        if tid:
-            self.app.open_task(tid)
+        selection = self.task_pane.get_selection()
+        if selection:
+            self.app.open_task(selection[0])
 
     def on_edit_done_task(self, widget, row=None, col=None):
         tid = self.get_selected_task('closed')

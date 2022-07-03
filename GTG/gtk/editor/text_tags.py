@@ -21,9 +21,9 @@
 from uuid import uuid4
 from gi.repository import Gtk, Pango, Gdk
 
+from GTG.core.datastore2 import Datastore2
 from GTG.core.task import Task
 from GTG.gtk.colors import background_color
-from GTG.core.requester import Requester
 from webbrowser import open as openurl
 
 # ------------------------------------------------------------------------------
@@ -217,11 +217,11 @@ class TaskTagTag(Gtk.TextTag):
     """Text tag for task tags."""
 
 
-    def __init__(self, tag: str, req: Requester) -> None:
+    def __init__(self, tag: str, ds: Datastore2) -> None:
         super().__init__()
 
         self.tag_name = tag
-        self.tag = req.get_tag(tag)
+        self.tag = ds.tags.lookup_names[tag]
 
         try:
             # In darkmode, where the backdrop itself is dark we want

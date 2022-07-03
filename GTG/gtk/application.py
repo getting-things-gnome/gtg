@@ -130,6 +130,7 @@ class Application(Gtk.Application):
 
             self.req = datastore.get_requester()
 
+            self.config_core = self.req._config
             self.config = self.req.get_config("browser")
             self.config_plugins = self.req.get_config("plugins")
 
@@ -554,40 +555,33 @@ class Application(Gtk.Application):
         else:
             [task.reload_editor() for task in self.open_tasks]
 
-    def open_task(self, uid, new=False):
+    def open_task(self, task, new=False):
         """Open the task identified by 'uid'.
 
             If a Task editor is already opened for a given task, we present it.
             Otherwise, we create a new one.
         """
-
-        if uid in self.open_tasks:
-            editor = self.open_tasks[uid]
+        
+        if task.id in self.open_tasks:
+            editor = self.open_tasks[task.id]
             editor.present()
 
         else:
-            task = self.req.get_task(uid)
-            editor = None
+            editor = TaskEditor(app=self, task=task)
+            editor.present()
 
-            if task:
-                editor = TaskEditor(requester=self.req, app=self, task=task,
-                                    thisisnew=new, clipboard=self.clipboard)
+            self.open_tasks[task.id] = editor
 
-                editor.present()
-                self.open_tasks[uid] = editor
+            # Save open tasks to config
+            config_open_tasks = self.config.get("opened_tasks")
 
-                # Save open tasks to config
-                open_tasks = self.config.get("opened_tasks")
+            if task.id not in config_open_tasks:
+                config_open_tasks.append(task.id)
 
-                if uid not in open_tasks:
-                    open_tasks.append(uid)
-
-                self.config.set("opened_tasks", open_tasks)
-
-            else:
-                log.error('Task %s could not be found!', uid)
+            self.config.set("opened_tasks", config_open_tasks)
 
         return editor
+
 
     def get_active_editor(self):
         """Get focused task editor window."""
