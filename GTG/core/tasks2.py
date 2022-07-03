@@ -75,6 +75,9 @@ class Filter(Enum):
 # TASK
 # ------------------------------------------------------------------------------
 
+DEFAULT_TITLE = _('New Task')
+
+
 class Task2(GObject.Object):
     """A single task."""
 
@@ -366,7 +369,7 @@ class TaskStore(BaseStore):
         """Create a new task and add it to the store."""
 
         tid = uuid4()
-        title = title or _('New Task')
+        title = title or DEFAULT_TITLE
         task = Task2(id=tid, title=title)
         task.date_added = Date.now()
 
