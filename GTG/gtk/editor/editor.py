@@ -246,15 +246,12 @@ class TaskEditor(Gtk.Window):
 
     def tag_added(self, name):
 
-        t = self.app.ds.tasks.get(self.task.id)
-        t.add_tag(self.app.ds.tags.new(name))
+        self.task.add_tag(self.ds.tags.new(name))
 
 
     def tag_removed(self, name):
 
         self.task.remove_tag(name)
-        t = self.app.ds.tasks.get(self.task.tid)
-        t.remove_tag(name)
 
 
     def show_popover_start(self, _=None):
