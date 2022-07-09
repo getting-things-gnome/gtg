@@ -1099,9 +1099,8 @@ class MainWindow(Gtk.ApplicationWindow):
             self.app.open_task(new_parent.get_id(), new=True)
 
     def on_edit_active_task(self, widget=None, row=None, col=None):
-        selection = self.task_pane.get_selection()
-        if selection:
-            self.app.open_task(selection[0])
+        for task in self.task_pane.get_selection():
+            self.app.open_task(task)
 
     def on_edit_done_task(self, widget, row=None, col=None):
         tid = self.get_selected_task('closed')
