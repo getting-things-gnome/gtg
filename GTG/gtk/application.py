@@ -442,10 +442,10 @@ class Application(Gtk.Application):
         editor = self.get_active_editor()
         task = editor.task
 
-        if task.is_new():
-            self.close_task(task.get_id())
+        if editor.is_new():
+            self.close_task(task)
         else:
-            self.delete_tasks([task.get_id()], editor)
+            self.delete_tasks([task], editor)
 
     def open_parent_task(self, action, params):
         """Callback to open the parent of the currently open task."""
@@ -497,16 +497,17 @@ class Application(Gtk.Application):
         if backend_id:
             self.backends_dialog.show_config_for_backend(backend_id)
 
-    def delete_tasks(self, tids, window):
+    def delete_tasks(self, tasks, window):
         """Present the delete task confirmation dialog."""
 
         if not self.delete_task_dialog:
-            self.delete_task_dialog = DeletionUI(self.req, window)
+            self.delete_task_dialog = DeletionUI(window, self.ds)
 
         def on_show_async_callback(tasks_to_delete):
-            [self.close_task(task.get_id()) for task in tasks_to_delete
-            if task.get_id() in self.open_tasks]
-        self.delete_task_dialog.show_async(tids, on_show_async_callback)
+            [self.close_task(task.id) for task in tasks_to_delete
+            if task.id in self.open_tasks]
+
+        self.delete_task_dialog.show_async(tasks, on_show_async_callback)
 
     def open_tag_editor(self, tag):
         """Open Tag editor dialog."""
