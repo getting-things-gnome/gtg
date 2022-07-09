@@ -1108,23 +1108,21 @@ class MainWindow(Gtk.ApplicationWindow):
         if tid:
             self.app.open_task(tid)
 
+
     def on_delete_tasks(self, widget=None, tid=None):
         # If we don't have a parameter, then take the selection in the
         # treeview
         if not tid:
-            # tid_to_delete is a [project, task] tuple
-            tids_todelete = self.get_selected_tasks()
-            if not tids_todelete:
+            tasks_todelete = self.task_pane.get_selection()
+
+            if not tasks_todelete:
                 return
         else:
-            tids_todelete = [tid]
+            tasks_todelete = [self.ds.tasks.lookup[tid]]
 
-        log.debug("going to delete %r", tids_todelete)
-        self.app.delete_tasks(tids_todelete, self)
+        log.debug("going to delete %r", tasks_todelete)
+        self.app.delete_tasks(tasks_todelete, self)
 
-        # TODO: New core core
-        for tid in tids_todelete:
-            self.app.ds.tasks.remove(tid)
 
     def update_start_date(self, widget, new_start_date):
         tasks = [self.req.get_task(uid)
