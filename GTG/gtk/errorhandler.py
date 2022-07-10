@@ -161,7 +161,7 @@ def _collect_flatpak_info() -> Optional[dict]:
     Returns None if not running in a flatpak.
     """
     try:
-        fconfig = configparser.ConfigParser()
+        fconfig = configparser.ConfigParser(interpolation=None)
         if fconfig.read('/.flatpak-info') == []:
             return None
         d = {}
