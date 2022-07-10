@@ -81,7 +81,7 @@ def open_config_file(config_file):
         raise Exception("File " + config_file + " is a configuration file "
                         "for gtg, but it cannot be read or written. "
                         "Please check it")
-    config = configparser.ConfigParser()
+    config = configparser.ConfigParser(interpolation=None)
     try:
         config.read(config_file)
     except configparser.Error as e:
