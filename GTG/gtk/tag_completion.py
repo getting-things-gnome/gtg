@@ -63,7 +63,7 @@ class TagCompletion(Gtk.EntryCompletion):
 
        The list of tasks is updated by LibLarch callbacks """
 
-    def __init__(self, tree):
+    def __init__(self, tagstore):
         """ Initialize entry completion
 
         Create a list store which is connected to a LibLarch and
@@ -72,13 +72,6 @@ class TagCompletion(Gtk.EntryCompletion):
 
         self.tags = Gtk.ListStore(str)
 
-        tree = tree.get_basetree()
-        tree.add_filter(FILTER_NAME, tag_filter, {'flat': True})
-        tag_tree = tree.get_viewtree('tag_completion', False)
-        tag_tree.register_cllbck('node-added-inview', self._on_tag_added)
-        tag_tree.register_cllbck('node-deleted-inview', self._on_tag_deleted)
-        tag_tree.apply_filter(FILTER_NAME)
-
         self.set_model(self.tags)
         self.set_text_column(0)
         self.set_match_func(tag_match, 0)
@@ -86,9 +79,14 @@ class TagCompletion(Gtk.EntryCompletion):
         self.set_inline_selection(True)
         self.set_popup_single_match(False)
 
+        for tag in tagstore.lookup.values():
+            self._on_tag_added(tag.name)
+
+
     def _try_insert(self, name):
         """ Insert an item into ListStore if it is not already there.
         It keeps the list sorted. """
+
         position = 0
         for position, row in enumerate(self.tags, 1):
             if row[0] == name:
@@ -97,25 +95,32 @@ class TagCompletion(Gtk.EntryCompletion):
             elif row[0] > name:
                 position -= 1
                 break
+
         self.tags.insert(position, (name, ))
 
-    def _on_tag_added(self, tag, path):
+
+    def _on_tag_added(self, tag):
         """ Add all variants of tag """
+
         tag = normalize_unicode(tag)
         self._try_insert(tag)
         self._try_insert('!' + tag)
         self._try_insert(tag[1:])
         self._try_insert('!' + tag[1:])
 
+
     def _try_delete(self, name):
         """ Delete an item if it is in the list """
+        
         for row in self.tags:
             if row[0] == name:
                 self.tags.remove(row.iter)
                 break
 
+
     def _on_tag_deleted(self, tag, path):
         """ Delete all variants of tag """
+
         tag = normalize_unicode(tag)
         self._try_delete(tag)
         self._try_delete('!' + tag)

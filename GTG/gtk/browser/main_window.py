@@ -283,11 +283,9 @@ class MainWindow(Gtk.ApplicationWindow):
         quickadd_focus_controller.connect('leave', self.on_quickadd_focus_out)
         self.quickadd_entry.add_controller(quickadd_focus_controller)
 
-        # TODO: Re-enable with Gtk 4.6
-        # tag_completion = TagCompletion(self.req.get_tag_tree())
-        # self.modifytags_dialog = ModifyTagsDialog(tag_completion, self.req, self.app)
-        # self.modifytags_dialog.set_transient_for(self)
-        self.modifytags_dialog = None
+        tag_completion = TagCompletion(self.app.ds.tags)
+        self.modifytags_dialog = ModifyTagsDialog(tag_completion, self.app)
+        self.modifytags_dialog.set_transient_for(self)
 
         self.deletetags_dialog = DeleteTagsDialog(self)
         self.calendar = GTGCalendar()
@@ -1320,7 +1318,7 @@ class MainWindow(Gtk.ApplicationWindow):
     def on_modify_tags(self, action, params):
         """Open modify tags dialog for selected tasks."""
 
-        tasks = self.get_selected_tasks()
+        tasks = self.task_pane.get_selection()
         self.modifytags_dialog.modify_tags(tasks)
 
     def close_all_task_editors(self, task_id):
