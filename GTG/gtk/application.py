@@ -434,7 +434,7 @@ class Application(Gtk.Application):
         editor = self.get_active_editor()
 
         if editor:
-            self.close_task(editor.task.get_id())
+            self.close_task(editor.task.id)
 
     def delete_editor_task(self, action, params):
         """Callback to delete the task currently open."""
