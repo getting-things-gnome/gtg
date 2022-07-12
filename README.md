@@ -46,6 +46,7 @@ git pull --rebase
 * lxml
 * itstool
 * gettext
+* GtkSourceView (>= 4.0)
 * libsecret
 * Introspection (GIR) files and libraries from:
   - GLib
