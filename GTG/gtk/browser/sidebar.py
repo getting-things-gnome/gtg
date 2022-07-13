@@ -21,6 +21,7 @@
 from gi.repository import Gtk, GObject, Gdk
 
 from GTG.core.tags2 import Tag2
+from GTG.core.filters import TagEmptyFilter
 from GTG.core.saved_searches import SavedSearch
 from GTG.core.datastore2 import Datastore2
 from GTG.gtk.browser.sidebar_context_menu import TagContextMenu, SearchesContextMenu
@@ -130,7 +131,11 @@ class Sidebar(Gtk.ScrolledWindow):
         # -------------------------------------------------------------------------------
         # Tags Section
         # -------------------------------------------------------------------------------
-        self.tag_selection = Gtk.MultiSelection.new(ds.tags.tree_model)
+        filtered = Gtk.FilterListModel()
+        filtered.set_model(ds.tags.tree_model)
+        filtered.set_filter(TagEmptyFilter(ds, 'open'))
+        
+        self.tag_selection = Gtk.MultiSelection.new(filtered)
         self.tag_handle = self.tag_selection.connect('selection-changed', self.on_tag_selected)
 
         tags_signals = Gtk.SignalListItemFactory()
