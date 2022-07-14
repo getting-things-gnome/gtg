@@ -104,6 +104,10 @@ class Tag2(GObject.Object):
         self._color = value
 
 
+    def __hash__(self):
+        return id(self)
+        
+        
 class TagStore(BaseStore):
     """A tree of tags."""
 
