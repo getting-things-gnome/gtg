@@ -20,6 +20,7 @@
 
 from gi.repository import Gtk, GObject, Gdk
 from GTG.core.tasks2 import Task2, Status
+from GTG.core.filters import TaskFilter
 from GTG.gtk.browser.tag_pill import TagPill
 
 
@@ -83,8 +84,12 @@ class TaskPane(Gtk.ScrolledWindow):
         # Task List
         # -------------------------------------------------------------------------------
 
-        self.task_selection = Gtk.MultiSelection.new(app.ds.tasks.tree_model)
-        # self.task_handle = self.tag_selection.connect('selection-changed', self.on_tag_selected)
+        filtered = Gtk.FilterListModel()
+        self.filter = TaskFilter(app.ds, Status.ACTIVE)
+        filtered.set_model(app.ds.tasks.tree_model)
+        filtered.set_filter(self.filter)
+
+        self.task_selection = Gtk.MultiSelection.new(filtered)
 
         tasks_signals = Gtk.SignalListItemFactory()
         tasks_signals.connect('setup', self.task_setup_cb)
@@ -102,6 +107,18 @@ class TaskPane(Gtk.ScrolledWindow):
         wrap_box.append(title_box)
         wrap_box.append(view)
         self.set_child(wrap_box)
+
+
+    def set_filter_status(self, status=Status.ACTIVE) -> None:
+        """Change tasks filter."""
+
+        self.filter.status = status
+
+
+    def set_filter_tags(self, tags=[]) -> None:
+        """Change tasks filter."""
+
+        self.filter.tags = tags
 
 
     def on_listview_activated(self, listview, position, user_data = None):
