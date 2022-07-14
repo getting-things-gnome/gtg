@@ -21,6 +21,7 @@
 from gi.repository import Gtk, GObject, Gdk
 
 from GTG.core.tags2 import Tag2
+from GTG.core.tasks2 import Status
 from GTG.core.filters import TagEmptyFilter
 from GTG.core.saved_searches import SavedSearch
 from GTG.core.datastore2 import Datastore2
@@ -399,7 +400,7 @@ class Sidebar(Gtk.ScrolledWindow):
         
         while iterator.is_valid():
             val = iterator.get_value()
-            item = unwrap(model.get_item(val), Tag2)
+            item = unwrap(self.tag_selection.get_item(val), Tag2)
             selected.append(item.name if names_only else item)
             iterator.next()
         
@@ -411,6 +412,8 @@ class Sidebar(Gtk.ScrolledWindow):
 
         self.unselect_general_box()
         self.unselect_searches()
+
+        self.app.browser.task_pane.set_filter_tags(set(self.selected_tags()))
 
 
     def on_tag_reveal(self, event) -> None:
