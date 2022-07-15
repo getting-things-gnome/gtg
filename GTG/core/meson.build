@@ -50,6 +50,7 @@ gtg_core_sources = [
   'saved_searches.py',
   'datastore2.py',
   'filters.py',
+  'sorters.py',
 ]
 
 gtg_core_plugin_sources = [
