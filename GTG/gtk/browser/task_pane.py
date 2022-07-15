@@ -21,6 +21,7 @@
 from gi.repository import Gtk, GObject, Gdk
 from GTG.core.tasks2 import Task2, Status
 from GTG.core.filters import TaskFilter
+from GTG.core.sorters import *
 from GTG.gtk.browser.tag_pill import TagPill
 
 
@@ -44,7 +45,7 @@ def unwrap(row, expected_type):
 class TaskPane(Gtk.ScrolledWindow):
     """The task pane widget"""
     
-    def __init__(self, app):
+    def __init__(self, app, sort_menu):
 
         super(TaskPane, self).__init__()
         self.ds = app.ds
@@ -74,7 +75,9 @@ class TaskPane(Gtk.ScrolledWindow):
         title.add_css_class('title-1')
         title_box.append(title)
         
-        sort_btn = Gtk.Button.new_from_icon_name('view-more-symbolic')
+        sort_btn = Gtk.MenuButton()
+        sort_btn.set_icon_name('view-more-symbolic')
+        sort_btn.set_popover(sort_menu)
         sort_btn.add_css_class('flat')
         
         title_box.append(sort_btn)
@@ -89,7 +92,13 @@ class TaskPane(Gtk.ScrolledWindow):
         filtered.set_model(app.ds.tasks.tree_model)
         filtered.set_filter(self.filter)
 
-        self.task_selection = Gtk.MultiSelection.new(filtered)
+        self.sort_model = Gtk.TreeListRowSorter()
+        
+        main_sorter = Gtk.SortListModel()
+        main_sorter.set_model(filtered)
+        main_sorter.set_sorter(self.sort_model)
+
+        self.task_selection = Gtk.MultiSelection.new(main_sorter)
 
         tasks_signals = Gtk.SignalListItemFactory()
         tasks_signals.connect('setup', self.task_setup_cb)
@@ -119,6 +128,27 @@ class TaskPane(Gtk.ScrolledWindow):
         """Change tasks filter."""
 
         self.filter.tags = tags
+
+
+    def set_sorter(self, method=None) -> None:
+        """Change tasks filter."""
+
+        sorter = None
+
+        if method == 'Start':
+            sorter = TaskStartSorter()
+        if method == 'Due':
+            sorter = TaskDueSorter()
+        if method == 'Modified':
+            sorter = TaskModifiedSorter()
+        elif method == 'Added':
+            sorter = TaskAddedSorter()
+        elif method == 'Tags':
+            sorter = TaskTagSorter()
+        elif method == 'Title':
+            sorter = TaskTitleSorter()
+
+        self.sort_model.set_sorter(sorter)
 
 
     def on_listview_activated(self, listview, position, user_data = None):
