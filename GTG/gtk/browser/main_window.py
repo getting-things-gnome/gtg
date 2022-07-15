@@ -120,7 +120,7 @@ class MainWindow(Gtk.ApplicationWindow):
         self.sidebar = Sidebar(app, app.ds)
         self.sidebar_container.set_child(self.sidebar)
 
-        self.task_pane = TaskPane(app, self.sort_menu)
+        self.task_pane = TaskPane(self)
         self.open_pane.set_child(self.task_pane)
 
         # Treeviews handlers
@@ -194,16 +194,12 @@ class MainWindow(Gtk.ApplicationWindow):
         self.closed_menu = Gtk.PopoverMenu.new_from_model_full(
             closed_menu_model, Gtk.PopoverMenuFlags.NESTED
         )
-        self.closed_menu.set_parent(self.tree_stack)
-        self.closed_menu.set_halign(Gtk.Align.START)
         self.closed_menu.set_has_arrow(False)
 
         open_menu_model = builder.get_object('task_menu')
         self.open_menu = Gtk.PopoverMenu.new_from_model_full(
             open_menu_model, Gtk.PopoverMenuFlags.NESTED
         )
-        self.open_menu.set_parent(self.tree_stack)
-        self.open_menu.set_halign(Gtk.Align.START)
         self.open_menu.set_has_arrow(False)
 
         sort_menu_model = builder.get_object('sort_menu')

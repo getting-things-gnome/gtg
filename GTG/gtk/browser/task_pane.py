@@ -45,11 +45,12 @@ def unwrap(row, expected_type):
 class TaskPane(Gtk.ScrolledWindow):
     """The task pane widget"""
     
-    def __init__(self, app, sort_menu):
+    def __init__(self, browser):
 
         super(TaskPane, self).__init__()
-        self.ds = app.ds
-        self.app = app
+        self.ds = browser.app.ds
+        self.app = browser.app
+        self.browser = browser
 
         self.set_vexpand(True)
         self.set_hexpand(True)
@@ -77,7 +78,7 @@ class TaskPane(Gtk.ScrolledWindow):
         
         sort_btn = Gtk.MenuButton()
         sort_btn.set_icon_name('view-more-symbolic')
-        sort_btn.set_popover(sort_menu)
+        sort_btn.set_popover(browser.sort_menu)
         sort_btn.add_css_class('flat')
         
         title_box.append(sort_btn)
@@ -88,8 +89,8 @@ class TaskPane(Gtk.ScrolledWindow):
         # -------------------------------------------------------------------------------
 
         filtered = Gtk.FilterListModel()
-        self.filter = TaskFilter(app.ds, Status.ACTIVE)
-        filtered.set_model(app.ds.tasks.tree_model)
+        self.filter = TaskFilter(self.app.ds, Status.ACTIVE)
+        filtered.set_model(self.app.ds.tasks.tree_model)
         filtered.set_filter(self.filter)
 
         self.sort_model = Gtk.TreeListRowSorter()
@@ -254,6 +255,10 @@ class TaskPane(Gtk.ScrolledWindow):
 
         # box.add_controller(drop)
 
+        task_RMB_controller = Gtk.GestureSingle(button=Gdk.BUTTON_SECONDARY)
+        task_RMB_controller.connect('end', self.on_task_RMB_click)
+        box.add_controller(task_RMB_controller)
+
         box.append(expander)
         box.append(check)
         box.append(label)
@@ -389,3 +394,25 @@ class TaskPane(Gtk.ScrolledWindow):
 
         if source.get_widget():
             source.get_widget().set_opacity(1)
+
+
+    def on_task_RMB_click(self, gesture, sequence) -> None:
+        """Callback when right-clicking on an open task."""
+
+        task = gesture.get_widget().task
+
+        if task.status == Status.ACTIVE:
+            menu = self.browser.open_menu
+        else:
+            menu = self.browser.closed_menu
+            
+        menu.set_parent(gesture.get_widget())
+        menu.set_halign(Gtk.Align.START)
+        menu.set_position(Gtk.PositionType.BOTTOM)
+
+        point = gesture.get_point(sequence)
+        rect = Gdk.Rectangle()
+        rect.x = point.x
+        rect.y = point.y
+        menu.set_pointing_to(rect)
+        menu.popup()
