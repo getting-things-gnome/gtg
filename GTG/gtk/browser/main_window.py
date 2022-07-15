@@ -115,10 +115,12 @@ class MainWindow(Gtk.ApplicationWindow):
         # Timeout handler for search
         self.search_timeout = None
 
+        self._init_context_menus()
+
         self.sidebar = Sidebar(app, app.ds)
         self.sidebar_container.set_child(self.sidebar)
 
-        self.task_pane = TaskPane(app)
+        self.task_pane = TaskPane(app, self.sort_menu)
         self.open_pane.set_child(self.task_pane)
 
         # Treeviews handlers
@@ -161,7 +163,6 @@ class MainWindow(Gtk.ApplicationWindow):
 
         # Init non-GtkBuilder widgets
         self._init_ui_widget()
-        self._init_context_menus()
 
         # Initialize "About" dialog
         self._init_about_dialog()
@@ -204,6 +205,10 @@ class MainWindow(Gtk.ApplicationWindow):
         self.open_menu.set_parent(self.tree_stack)
         self.open_menu.set_halign(Gtk.Align.START)
         self.open_menu.set_has_arrow(False)
+
+        sort_menu_model = builder.get_object('sort_menu')
+        self.sort_menu = Gtk.PopoverMenu.new_from_model(sort_menu_model)
+
 
     def _set_actions(self):
         """Setup actions."""
@@ -249,6 +254,13 @@ class MainWindow(Gtk.ApplicationWindow):
             ('recurring_month', self.on_set_recurring_every_month, None),
             ('recurring_year', self.on_set_recurring_every_year, None),
             ('recurring_toggle', self.on_toggle_recurring, None),
+            ('sort_by_start', self.on_sort_start, None),
+            ('sort_by_due', self.on_sort_due, None),
+            ('sort_by_added', self.on_sort_added, None),
+            ('sort_by_title', self.on_sort_title, None),
+            ('sort_by_modified', self.on_sort_modified, None),
+            ('sort_by_added', self.on_sort_added, None),
+            ('sort_by_tags', self.on_sort_tags, None),
         ]
 
         for action, callback, accel in action_entries:
@@ -1320,6 +1332,49 @@ class MainWindow(Gtk.ApplicationWindow):
 
         tasks = self.task_pane.get_selection()
         self.modifytags_dialog.modify_tags(tasks)
+
+
+    def on_sort_start(self, action, params) -> None:
+        """Callback when changing task sorting."""
+
+        self.task_pane.set_sorter('Start')
+        
+
+    def on_sort_due(self, action, params) -> None:
+        """Callback when changing task sorting."""
+        
+        self.task_pane.set_sorter('Due')
+        
+
+    def on_sort_added(self, action, params) -> None:
+        """Callback when changing task sorting."""
+        
+        self.task_pane.set_sorter('Added')
+        
+
+    def on_sort_title(self, action, params) -> None:
+        """Callback when changing task sorting."""
+        
+        self.task_pane.set_sorter('Title')
+        
+
+    def on_sort_modified(self, action, params) -> None:
+        """Callback when changing task sorting."""
+        
+        self.task_pane.set_sorter('Modified')
+        
+
+    def on_sort_added(self, action, params) -> None:
+        """Callback when changing task sorting."""
+        
+        self.task_pane.set_sorter('Added')
+        
+
+    def on_sort_tags(self, action, params) -> None:
+        """Callback when changing task sorting."""
+        
+        self.task_pane.set_sorter('Tags')
+        
 
     def close_all_task_editors(self, task_id):
         """ Including editors of subtasks """
