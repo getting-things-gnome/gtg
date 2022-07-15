@@ -241,11 +241,11 @@ class TaskPane(Gtk.ScrolledWindow):
         start.set_margin_end(12)
 
         # DnD stuff
-        # source = Gtk.DragSource() 
-        # source.connect('prepare', prepare)
-        # source.connect('drag-begin', drag_begin)
-        # source.connect('drag-end', drag_end)
-        # box.add_controller(source)
+        source = Gtk.DragSource() 
+        source.connect('prepare', self.drag_prepare)
+        source.connect('drag-begin', self.drag_begin)
+        source.connect('drag-end', self.drag_end)
+        box.add_controller(source)
 
         # Set drop for DnD
         # drop = Gtk.DropTarget.new(Task2, Gdk.DragAction.COPY)
@@ -358,3 +358,34 @@ class TaskPane(Gtk.ScrolledWindow):
             start_icon.set_visible(False)
 
         check.connect('toggled', self.on_checkbox_toggled, item)
+
+
+    def drag_prepare(self, source, x, y):
+        """Callback to prepare for the DnD operation"""
+
+        # Get content from source
+        data = source.get_widget().props.task
+
+        # Set it as content provider
+        content = Gdk.ContentProvider.new_for_value(data)
+        return content
+
+
+    def drag_begin(self, source, drag):
+        """Callback when DnD beings"""
+
+        source.get_widget().set_opacity(0.25)
+        icon = Gtk.DragIcon.get_for_drag(drag)
+        frame = Gtk.Frame()
+        picture = Gtk.Picture.new_for_paintable(
+            Gtk.WidgetPaintable.new(source.get_widget()))
+
+        frame.set_child(picture)
+        icon.set_child(frame)
+
+
+    def drag_end(self, source, drag, unused):
+        """Callback when DnD ends"""
+
+        if source.get_widget():
+            source.get_widget().set_opacity(1)

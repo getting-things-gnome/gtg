@@ -21,7 +21,7 @@
 from gi.repository import Gtk, GObject, Gdk
 
 from GTG.core.tags2 import Tag2
-from GTG.core.tasks2 import Status
+from GTG.core.tasks2 import Task2
 from GTG.core.filters import TagEmptyFilter
 from GTG.core.saved_searches import SavedSearch
 from GTG.core.datastore2 import Datastore2
@@ -280,6 +280,11 @@ class Sidebar(Gtk.ScrolledWindow):
         drop.connect('drop', self.drag_drop)
         drop.connect('enter', self.drop_enter)
         box.add_controller(drop)
+
+        task_drop = Gtk.DropTarget.new(Task2, Gdk.DragAction.COPY)
+        task_drop.connect('drop', self.task_drag_drop)
+        task_drop.connect('enter', self.drop_enter)
+        box.add_controller(task_drop)
 
         box.append(expander)
         box.append(color)
@@ -541,6 +546,13 @@ class Sidebar(Gtk.ScrolledWindow):
         # and will think you're dragging outside the window.
 
         return Gdk.DragAction.COPY
+
+
+    def task_drag_drop(self, target, task, x, y):
+        """Callback when dropping onto a target"""
+
+        tag = target.get_widget().props.tag
+        task.add_tag(tag)
 
 
     def on_toplevel_tag_drop(self, drop_target, tag, x, y):
