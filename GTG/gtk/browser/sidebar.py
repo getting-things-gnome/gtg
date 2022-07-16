@@ -18,7 +18,7 @@
 
 """Sidebar widgets."""
 
-from gi.repository import Gtk, GObject, Gdk
+from gi.repository import Gtk, GObject, Gdk, Gio
 
 from GTG.core.tags2 import Tag2
 from GTG.core.tasks2 import Task2
@@ -285,6 +285,12 @@ class Sidebar(Gtk.ScrolledWindow):
         task_drop.connect('drop', self.task_drag_drop)
         task_drop.connect('enter', self.drop_enter)
         box.add_controller(task_drop)
+
+        multi_task_drop = Gtk.DropTarget.new(Gio.ListModel, Gdk.DragAction.COPY)
+        multi_task_drop.connect('drop', self.multi_task_drag_drop)
+        multi_task_drop.connect('enter', self.drop_enter)
+        box.add_controller(multi_task_drop)
+
 
         box.append(expander)
         box.append(color)
@@ -553,6 +559,14 @@ class Sidebar(Gtk.ScrolledWindow):
 
         tag = target.get_widget().props.tag
         task.add_tag(tag)
+
+
+    def multi_task_drag_drop(self, target, tasklist, x, y):
+        """Callback when dropping onto a target"""
+
+        for task in list(tasklist):
+            tag = target.get_widget().props.tag
+            task.add_tag(tag)
 
 
     def on_toplevel_tag_drop(self, drop_target, tag, x, y):

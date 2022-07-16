@@ -18,7 +18,7 @@
 
 """Task pane and list."""
 
-from gi.repository import Gtk, GObject, Gdk
+from gi.repository import Gtk, GObject, Gdk, Gio
 from GTG.core.tasks2 import Task2, Status
 from GTG.core.filters import TaskFilter
 from GTG.core.sorters import *
@@ -368,12 +368,22 @@ class TaskPane(Gtk.ScrolledWindow):
     def drag_prepare(self, source, x, y):
         """Callback to prepare for the DnD operation"""
 
-        # Get content from source
-        data = source.get_widget().props.task
+        selection = self.get_selection()
+        
+        if len(selection) > 1:
+            data = Gio.ListStore()
+            data.splice(0, 0, selection)
 
-        # Set it as content provider
-        content = Gdk.ContentProvider.new_for_value(data)
-        return content
+            content = Gdk.ContentProvider.new_for_value(GObject.Value(Gio.ListModel, data))
+            return content
+
+        else:
+            # Get content from source
+            data = source.get_widget().props.task
+
+            # Set it as content provider
+            content = Gdk.ContentProvider.new_for_value(data)
+            return content
 
 
     def drag_begin(self, source, drag):
