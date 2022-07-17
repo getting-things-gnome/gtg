@@ -45,7 +45,7 @@ from GTG.gtk.browser.task_pane import TaskPane
 from GTG.gtk.editor.calendar import GTGCalendar
 from GTG.gtk.tag_completion import TagCompletion
 from GTG.core.dates import Date
-from GTG.core.tasks2 import Filter
+from GTG.core.tasks2 import Filter, Status
 from GTG.gtk.browser.adaptive_button import AdaptiveFittingWidget # Register type
 
 log = logging.getLogger(__name__)
@@ -1028,81 +1028,51 @@ class MainWindow(Gtk.ApplicationWindow):
             self.show_popup_at_tree_cursor(self.closed_menu, controller.get_widget())
 
     def on_add_task(self, widget=None):
-        tags = [tag for tag in self.get_selected_tags(nospecial=True)]
-
-        task = self.req.new_task(tags=tags, newtask=True)
-        uid = task.get_id()
-
-        # TODO: New core
         new_task = self.app.ds.tasks.new()
-        new_task.id = uid
 
-        for t in tags:
-            new_task.add_tag(self.app.ds.tags.new(t))
+        for tag in self.sidebar.selected_tags():
+            new_task.add_tag(tag)
 
-        self.app.open_task(uid, new=True)
+        self.app.open_task(new_task)
+
 
     def on_add_subtask(self, widget=None):
-        uid = self.get_selected_task()
-        if uid:
-            zetask = self.req.get_task(uid)
-            tags = [t.get_name() for t in zetask.get_tags()]
-            task = self.req.new_task(tags=tags, newtask=True)
-            # task.add_parent(uid)
-            zetask.add_child(task.get_id())
 
-            # if the parent task is recurring, its child must be also.
-            task.inherit_recursion()
-
-            # TODO: New core
-            t = self.app.ds.tasks.new(parent=uid)
-            t.tags = self.app.ds.tasks.get(uid).tags
-
-            self.app.open_task(task.get_id(), new=True)
+        for task in self.task_pane.get_selection():
+            new_task = self.app.ds.tasks.new(parent=task.id)
+            new_task.tags = task.tags
+            self.app.open_task(new_task)
+            
 
     def on_add_parent(self, widget=None):
-        selected_tasks = self.get_selected_tasks()
-        first_task = self.req.get_task(selected_tasks[0])
-        if len(selected_tasks):
-            parents = first_task.get_parents()
-            if parents:
-                # Switch parents
-                for p_tid in parents:
-                    par = self.req.get_task(p_tid)
+        selection = self.task_pane.get_selection()
+        
+        if not selection:
+            return
+        
+        parent = selection[0].parent
 
-                    # TODO: New core
-                    new_p = self.app.ds.tasks.get(p_tid)
-
-                    if par.get_status() == Task.STA_ACTIVE:
-                        new_parent = par.new_subtask()
-                        nc_parent = self.app.ds.tasks.new(parent=p_tid)
-                        nc_parent.id = new_parent.tid
-
-                        for uid_task in selected_tasks:
-                            # Make sure the task doesn't get deleted
-                            # while switching parents
-                            self.req.get_task(uid_task).set_to_keep()
-                            par.remove_child(uid_task)
-                            new_parent.add_child(uid_task)
-
-                            # TODO: New Core
-                            self.app.ds.tasks.refresh_lookup_cache()
-                            self.app.ds.tasks.unparent(uid_task, p_tid)
-                            self.app.ds.tasks.parent(uid_task, nc_parent.id)
-
-            else:
-                # If the tasks have no parent already, no need to switch parents
-                new_parent = self.req.new_task(newtask=True)
-                for uid_task in selected_tasks:
-                    new_parent.add_child(uid_task)
-
-                    # TODO: New Core
-                    t = self.app.ds.tasks.new()
-                    t.id = new_parent.tid
+        # Check all tasks have the same parent
+        if any(t.parent != parent for t in selection):
+            return
+        
+        if parent:
+            if parent.status == Status.ACTIVE:
+                new_parent = self.app.ds.tasks.new(parent=parent.id)
+                
+                for task in selection:
                     self.app.ds.tasks.refresh_lookup_cache()
-                    self.app.ds.tasks.parent(uid_task, new_parent.tid)
+                    self.app.ds.tasks.unparent(task.id, parent.id)
+                    self.app.ds.tasks.parent(task.id, new_parent.id)
+        else:
+            new_parent = self.app.ds.tasks.new()
 
-            self.app.open_task(new_parent.get_id(), new=True)
+            for task in selection:
+                self.app.ds.tasks.refresh_lookup_cache()
+                self.app.ds.tasks.parent(task.id, new_parent.id)
+        
+            self.app.open_task(new_parent)
+
 
     def on_edit_active_task(self, widget=None, row=None, col=None):
         for task in self.task_pane.get_selection():
@@ -1130,33 +1100,17 @@ class MainWindow(Gtk.ApplicationWindow):
 
 
     def update_start_date(self, widget, new_start_date):
-        tasks = [self.req.get_task(uid)
-                 for uid in self.get_selected_tasks()
-                 if uid is not None]
-
-        start_date = Date.parse(new_start_date)
-
-        # FIXME:If the task dialog is displayed, refresh its start_date widget
-        for task in tasks:
-            task.set_start_date(start_date)
-
-        # TODO: New core
-        for uid in self.get_selected_tasks():
-            if uid:
-                t = self.app.ds.tasks.get(uid)
-                t.date_start = start_date
+        for task in self.task_pane.get_selection():
+            task.date_start = new_start_date
 
     def update_start_to_next_day(self, day_number):
         """Update start date to N days from today."""
 
-        tasks = [self.req.get_task(uid)
-                 for uid in self.get_selected_tasks()
-                 if uid is not None]
-
         next_day = Date.today() + datetime.timedelta(days=day_number)
 
-        for task in tasks:
-            task.set_start_date(next_day)
+        for task in self.task_pane.get_selection():
+            task.date_start = next_day
+
 
     def on_mark_as_started(self, action, param):
         self.update_start_date(None, "today")
@@ -1209,21 +1163,10 @@ class MainWindow(Gtk.ApplicationWindow):
         self.update_start_date(None, None)
 
     def update_due_date(self, widget, new_due_date):
-        tasks = [self.req.get_task(uid)
-                 for uid in self.get_selected_tasks()
-                 if uid is not None]
-
         due_date = Date.parse(new_due_date)
 
-        # FIXME: If the task dialog is displayed, refresh its due_date widget
-        for task in tasks:
-            task.set_due_date(due_date)
-
-        # TODO: New core
-        for uid in self.get_selected_tasks():
-            if uid:
-                t = self.app.ds.tasks.get(uid)
-                t.date_due = due_date
+        for task in self.task_pane.get_selection():
+            task.date_due = due_date
 
     def on_set_due_today(self, action, param):
         self.update_due_date(None, "today")
@@ -1464,6 +1407,7 @@ class MainWindow(Gtk.ApplicationWindow):
 
     def have_same_parent(self):
         """Determine whether the selected tasks have the same parent"""
+
         selected_tasks = self.get_selected_tasks()
         first_task = self.req.get_task(selected_tasks[0])
         parents = first_task.get_parents()

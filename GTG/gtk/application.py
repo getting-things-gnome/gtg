@@ -350,13 +350,8 @@ class Application(Gtk.Application):
     def add_parent(self, param, action):
         """Callback to add a parent to a task"""
         
-        try:
-            if self.browser.have_same_parent():
-                self.browser.on_add_parent()
+        self.browser.on_add_parent()
 
-        # When no task has been selected
-        except IndexError:
-            return
 
     def edit_task(self, param, action):
         """Callback to edit a task."""
