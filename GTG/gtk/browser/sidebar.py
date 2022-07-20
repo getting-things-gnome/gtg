@@ -387,12 +387,15 @@ class Sidebar(Gtk.ScrolledWindow):
             self.general_box.unselect_all()
 
 
-    def on_general_box_selected(self, row, user_data=None):
+    def on_general_box_selected(self, listbox, user_data=None):
         """Callback when clicking on a row in the general listbox"""
 
-        if row:
-            self.unselect_tags()
-            self.unselect_searches()
+        self.unselect_tags()
+        self.unselect_searches()
+        index = listbox.get_selected_row().get_index()
+
+        if index == 0:
+            self.app.browser.task_pane.set_filter_tags()
             
 
     def on_search_selected(self, model, position, user_data=None):
