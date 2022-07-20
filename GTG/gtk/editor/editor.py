@@ -206,7 +206,7 @@ class TaskEditor(Gtk.Window):
         # Insert subtasks if they weren't inserted in the text
         subtasks = task.children
         for sub in subtasks:
-            if sub not in self.textview.subtasks['tags']:
+            if sub.id not in self.textview.subtasks['tags']:
                 self.textview.insert_existing_subtask(sub)
 
         # if thisisnew:
@@ -868,7 +868,7 @@ class TaskEditor(Gtk.Window):
 
     def is_new(self) -> bool:
         return (self.task.title == DEFAULT_TITLE 
-                and self.textview.buffer.get_text() == '')
+                and self.textview.get_text() == '')
         
 
     def destruction(self, _=None):
